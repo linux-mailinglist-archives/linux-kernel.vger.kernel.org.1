@@ -2,153 +2,157 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15A3D294E9C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:24:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CD2B294EA0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:25:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443466AbgJUOY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:24:29 -0400
-Received: from mx07-00178001.pphosted.com ([185.132.182.106]:31510 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2442899AbgJUOY2 (ORCPT
+        id S2443472AbgJUOZw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:25:52 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:36580 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2441119AbgJUOZw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:24:28 -0400
-Received: from pps.filterd (m0046037.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LEM35R032420;
-        Wed, 21 Oct 2020 16:24:10 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=5W8utT3kmuoZEHHu3EI7BfGuu0kcDg/mhhNgyncNGJI=;
- b=CpP1lgYm4JjMnhSKHGz7Ip6Luy+rpnXqLb7o592JjyCPCh9Wdhd4JgHAFVCggdudoLlU
- jhv4fG0v3X3OeVkXlY8snXVsv1QtA2L7+ulf7qxb8pkyJdy4MHtLTLDtmr7p1m4BSo59
- TJ7anUs0r1npmkFWuCV4/kqQx9IHV2oUaip1u5Kqg9cRPOkADmrM2+EyPnWyeOv9vDpr
- 4eH2Hqdhfs5AUcegDmGiLtUYX81/x6vc3Oc+xdW4jFWrtuIjSP1ICIpE8QT7ScDyJwcV
- SMZKs5dwXZzxdSMGYk9Sk0aUjeN945n1YbwAbs73gQ7X+5Y1EY6VjCoSHBZqF19KtGVE ww== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34apedg3np-1
+        Wed, 21 Oct 2020 10:25:52 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LE3RrJ122996;
+        Wed, 21 Oct 2020 10:25:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : in-reply-to : references : date : message-id : mime-version :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=DL04KC57DYhStT+elOirXhVnkDXKA/W9W+m5Q9WWhcg=;
+ b=qcsnyblpXYmW3lpC3fHzaT1j4dzx595DdTYfGlPAqR1N9ygcTfW/A13GxVQ2+0+18EmN
+ hKkSTZ6H4VxLR6c4R4NkLDT5wMjaKK3Nbbs4VwxSds4raeSEXTS2jqpZvZVpNg1NfCz8
+ mTC82qXXrVzx8IsRFaMUedetQuaZhZBv6MHsISn46wKkcn4yvCbfegml2B0XSJD3N+N5
+ ySNGQJ5eqqb1uYvbiO/XlXNFPkJD/DCaFxjzNoptdf6O0LieE2GsbKhSIcFgBOGcTchY
+ Z76yVzsVFgvDHQObIYmE7IO7lKmM7Db/h3D9/Yzt+TQKaDUaperwN76LPHAefI5M70Oq +Q== 
+Received: from ppma05wdc.us.ibm.com (1b.90.2fa9.ip4.static.sl-reverse.com [169.47.144.27])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34apcx8vyn-1
         (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 16:24:10 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id 29BE410002A;
-        Wed, 21 Oct 2020 16:24:09 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag2node2.st.com [10.75.127.5])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id EF1082C758D;
-        Wed, 21 Oct 2020 16:24:08 +0200 (CEST)
-Received: from SFHDAG1NODE1.st.com (10.75.127.1) by SFHDAG2NODE2.st.com
- (10.75.127.5) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Wed, 21 Oct
- 2020 16:24:08 +0200
-Received: from SFHDAG1NODE1.st.com ([fe80::91:9840:ca1f:420f]) by
- SFHDAG1NODE1.st.com ([fe80::91:9840:ca1f:420f%20]) with mapi id
- 15.00.1473.003; Wed, 21 Oct 2020 16:24:08 +0200
-From:   Hugues FRUCHET <hugues.fruchet@st.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-CC:     Alexandre TORGUE <alexandre.torgue@st.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Rob Herring <robh+dt@kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        Alain VOLMAT <alain.volmat@st.com>,
-        Yannick FERTRE <yannick.fertre@st.com>,
-        Philippe CORNU <philippe.cornu@st.com>
-Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
- support of BT656
-Thread-Topic: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
- support of BT656
-Thread-Index: AQHWp6o+yOOEjcdb0U+f2PjTKsCmiqmh+tEA
-Date:   Wed, 21 Oct 2020 14:24:08 +0000
-Message-ID: <657634eb-690a-53a6-2ac1-de3c06a1cec4@st.com>
-References: <1603188889-23664-1-git-send-email-hugues.fruchet@st.com>
- <1603188889-23664-3-git-send-email-hugues.fruchet@st.com>
- <20201021130033.GI2703@paasikivi.fi.intel.com>
-In-Reply-To: <20201021130033.GI2703@paasikivi.fi.intel.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.45]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <333325C122772E4489157C905ABF9912@st.com>
-Content-Transfer-Encoding: base64
+        Wed, 21 Oct 2020 10:25:18 -0400
+Received: from pps.filterd (ppma05wdc.us.ibm.com [127.0.0.1])
+        by ppma05wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LEHFia019299;
+        Wed, 21 Oct 2020 14:25:17 GMT
+Received: from b01cxnp22033.gho.pok.ibm.com (b01cxnp22033.gho.pok.ibm.com [9.57.198.23])
+        by ppma05wdc.us.ibm.com with ESMTP id 347r890ma5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 14:25:17 +0000
+Received: from b01ledav001.gho.pok.ibm.com (b01ledav001.gho.pok.ibm.com [9.57.199.106])
+        by b01cxnp22033.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LEPHXF49414552
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 14:25:17 GMT
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5D3102805C;
+        Wed, 21 Oct 2020 14:25:17 +0000 (GMT)
+Received: from b01ledav001.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2D49D28059;
+        Wed, 21 Oct 2020 14:25:15 +0000 (GMT)
+Received: from skywalker.linux.ibm.com (unknown [9.85.82.214])
+        by b01ledav001.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Oct 2020 14:25:14 +0000 (GMT)
+X-Mailer: emacs 28.0.50 (via feedmail 11-beta-1 I)
+From:   "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>
+To:     Christophe Leroy <christophe.leroy@csgroup.eu>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] powerpc/mm: Add mask of always present MMU features
+In-Reply-To: <4bc99005-f3c0-045b-e0d5-f8b6f2b2e90d@csgroup.eu>
+References: <06bf0e094463533e7aec6900bddd435171e9f44f.1602517171.git.christophe.leroy@csgroup.eu>
+ <4bc99005-f3c0-045b-e0d5-f8b6f2b2e90d@csgroup.eu>
+Date:   Wed, 21 Oct 2020 19:55:11 +0530
+Message-ID: <871rhrejw8.fsf@linux.ibm.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-TM-AS-GCONF: 00
 X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
  definitions=2020-10-21_06:2020-10-20,2020-10-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ phishscore=0 clxscore=1015 impostorscore=0 malwarescore=0
+ lowpriorityscore=0 spamscore=0 priorityscore=1501 adultscore=0
+ mlxlogscore=999 bulkscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010210107
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-SGkgU2FrYXJpLA0KDQpPbiAxMC8yMS8yMCAzOjAwIFBNLCBTYWthcmkgQWlsdXMgd3JvdGU6DQo+
-IEhpIEh1Z3VlcywNCj4gDQo+IE9uIFR1ZSwgT2N0IDIwLCAyMDIwIGF0IDEyOjE0OjQ5UE0gKzAy
-MDAsIEh1Z3VlcyBGcnVjaGV0IHdyb3RlOg0KPj4gQWRkIHN1cHBvcnQgb2YgQlQ2NTYgcGFyYWxs
-ZWwgYnVzIG1vZGUgaW4gRENNSS4NCj4+IFRoaXMgbW9kZSBpcyBlbmFibGVkIHdoZW4gaHN5bmMt
-YWN0aXZlICYgdnN5bmMtYWN0aXZlDQo+PiBmaWVsZHMgYXJlIG5vdCBzcGVjaWZpZWQuDQo+Pg0K
-Pj4gU2lnbmVkLW9mZi1ieTogSHVndWVzIEZydWNoZXQgPGh1Z3Vlcy5mcnVjaGV0QHN0LmNvbT4N
-Cj4+IC0tLQ0KPj4gICAuLi4vZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9zdCxzdG0zMi1kY21p
-LnlhbWwgICB8IDMwICsrKysrKysrKysrKysrKysrKysrKysNCj4+ICAgMSBmaWxlIGNoYW5nZWQs
-IDMwIGluc2VydGlvbnMoKykNCj4+DQo+PiBkaWZmIC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZp
-Y2V0cmVlL2JpbmRpbmdzL21lZGlhL3N0LHN0bTMyLWRjbWkueWFtbCBiL0RvY3VtZW50YXRpb24v
-ZGV2aWNldHJlZS9iaW5kaW5ncy9tZWRpYS9zdCxzdG0zMi1kY21pLnlhbWwNCj4+IGluZGV4IDNm
-ZTc3OGMuLjFlZTUyMWEgMTAwNjQ0DQo+PiAtLS0gYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvbWVkaWEvc3Qsc3RtMzItZGNtaS55YW1sDQo+PiArKysgYi9Eb2N1bWVudGF0aW9u
-L2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvc3Qsc3RtMzItZGNtaS55YW1sDQo+PiBAQCAtNDQs
-NiArNDQsMzYgQEAgcHJvcGVydGllczoNCj4+ICAgICAgICAgYmluZGluZ3MgZGVmaW5lZCBpbg0K
-Pj4gICAgICAgICBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvbWVkaWEvdmlkZW8t
-aW50ZXJmYWNlcy50eHQuDQo+PiAgIA0KPj4gKyAgICBwcm9wZXJ0aWVzOg0KPj4gKyAgICAgIGVu
-ZHBvaW50Og0KPj4gKyAgICAgICAgdHlwZTogb2JqZWN0DQo+PiArDQo+PiArICAgICAgICBwcm9w
-ZXJ0aWVzOg0KPj4gKyAgICAgICAgICBidXMtd2lkdGg6IHRydWUNCj4+ICsNCj4+ICsgICAgICAg
-ICAgaHN5bmMtYWN0aXZlOg0KPj4gKyAgICAgICAgICAgIGRlc2NyaXB0aW9uOg0KPj4gKyAgICAg
-ICAgICAgICAgSWYgYm90aCBIU1lOQyBhbmQgVlNZTkMgcG9sYXJpdGllcyBhcmUgbm90IHNwZWNp
-ZmllZCwgQlQ2NTYNCj4+ICsgICAgICAgICAgICAgIGVtYmVkZGVkIHN5bmNocm9uaXphdGlvbiBp
-cyBzZWxlY3RlZC4NCj4+ICsgICAgICAgICAgICBkZWZhdWx0OiAwDQo+PiArDQo+PiArICAgICAg
-ICAgIHZzeW5jLWFjdGl2ZToNCj4+ICsgICAgICAgICAgICBkZXNjcmlwdGlvbjoNCj4+ICsgICAg
-ICAgICAgICAgIElmIGJvdGggSFNZTkMgYW5kIFZTWU5DIHBvbGFyaXRpZXMgYXJlIG5vdCBzcGVj
-aWZpZWQsIEJUNjU2DQo+PiArICAgICAgICAgICAgICBlbWJlZGRlZCBzeW5jaHJvbml6YXRpb24g
-aXMgc2VsZWN0ZWQuDQo+PiArICAgICAgICAgICAgZGVmYXVsdDogMA0KPiANCj4gU2hvdWxkIEkg
-dW5kZXJzdGFuZCB0aGlzIGFzIGlmIHRoZSBwb2xhcml0aWVzIHdlcmUgbm90IHNwZWNpZmllZCwg
-QlQuNjU2DQo+IHdpbGwgYmUgdXNlZD8NCg0KWWVzLCB0aGlzIGlzIHdoYXQgaXMgZG9jdW1lbnRl
-ZCBpbiB2aWRlby1pbnRlcmZhY2VzLnR4dDoNCiINCiAgIE5vdGUsIHRoYXQgaWYgSFNZTkMgYW5k
-IFZTWU5DIHBvbGFyaXRpZXMgYXJlIG5vdCBzcGVjaWZpZWQsIGVtYmVkZGVkDQogICBzeW5jaHJv
-bml6YXRpb24gbWF5IGJlIHJlcXVpcmVkLCB3aGVyZSBzdXBwb3J0ZWQuDQoiDQphbmQNCiINCgkJ
-CQkvKiBJZiBoc3luYy1hY3RpdmUvdnN5bmMtYWN0aXZlIGFyZSBtaXNzaW5nLA0KCQkJCSAgIGVt
-YmVkZGVkIEJULjY1NiBzeW5jIGlzIHVzZWQgKi8NCgkJCQloc3luYy1hY3RpdmUgPSA8MD47CS8q
-IEFjdGl2ZSBsb3cgKi8NCgkJCQl2c3luYy1hY3RpdmUgPSA8MD47CS8qIEFjdGl2ZSBsb3cgKi8N
-CiINCmFuZCBJIGZvdW5kIGFsc28gdGhpcyBpbiANCkRvY3VtZW50YXRpb24vZGV2aWNldHJlZS9i
-aW5kaW5ncy9tZWRpYS9yZW5lc2FzLHZpbi55YW1sDQoiDQogICAgICAgICAgIGhzeW5jLWFjdGl2
-ZToNCiAgICAgICAgICAgICBkZXNjcmlwdGlvbjoNCiAgICAgICAgICAgICAgIElmIGJvdGggSFNZ
-TkMgYW5kIFZTWU5DIHBvbGFyaXRpZXMgYXJlIG5vdCBzcGVjaWZpZWQsIA0KZW1iZWRkZWQNCiAg
-ICAgICAgICAgICAgIHN5bmNocm9uaXphdGlvbiBpcyBzZWxlY3RlZC4NCiAgICAgICAgICAgICBk
-ZWZhdWx0OiAxDQoNCiAgICAgICAgICAgdnN5bmMtYWN0aXZlOg0KICAgICAgICAgICAgIGRlc2Ny
-aXB0aW9uOg0KICAgICAgICAgICAgICAgSWYgYm90aCBIU1lOQyBhbmQgVlNZTkMgcG9sYXJpdGll
-cyBhcmUgbm90IHNwZWNpZmllZCwgDQplbWJlZGRlZA0KICAgICAgICAgICAgICAgc3luY2hyb25p
-emF0aW9uIGlzIHNlbGVjdGVkLg0KICAgICAgICAgICAgIGRlZmF1bHQ6IDENCiINCg0KSW4gdGhl
-IG90aGVyIGhhbmQgSSd2ZSBmb3VuZCBmZXcgb2NjdXJlbmNlcyBvZiAiYnVzLXR5cGUiIA0KKG1h
-cnZlbGwsbW1wMi1jY2ljLnlhbWwpLCBpdCBpcyB3aHkgSSBhc2tlZCB5b3UgaWYgImJ1cy10eXBl
-IiBpcyB0aGUgbmV3IA0Kd2F5IHRvIGdvIHZlcnN1cyBwcmV2aW91cyB3YXkgdG8gc2lnbmFsIEJU
-NjU2ICh3aXRob3V0IGhzeW5jL3ZzeW5jKSA/DQpBcyBleHBsYWluZWQgcHJldmlvdXNseSwgSSBw
-cmVmZXIgdGhpcyBsYXN0IHdheSBmb3IgYmFja3dhcmQgY29tcGF0aWJpbGl0eS4NCg0KDQpUaGUg
-YmluZGluZ3MgcHJldmlvdXNseSBkb2N1bWVudGVkIEJULjYwMSAocGFyYWxsZWwpIG9ubHksIHNv
-DQo+IGl0IHdhcyBzb21ld2hhdCBhbWJpZ2lvdXMgdG8gYmVnaW4gd2l0aC4gSXMgdGhlcmUgYSBy
-aXNrIG9mIGludGVycHJldGluZw0KPiBvbGQgQlQuNjAxIGJpbmRpbmdzIGFzIEJULjY1Nj8NCkkg
-ZG9uJ3QgdGhpbmsgc28uDQoNCldpdGggYnVzLXR5cGUgcHJvcGVydHksIEkgYmVsaWV2ZSB5b3Ug
-Y291bGQNCj4gYXZvaWQgYXQgbGVhc3QgdGhhdCByaXNrLg0KeWVzIGJ1dCBhcyBleHBsYWluZWQs
-IEknbGwgcHJlZmVyIG5vdCB0byBhbWVuZCBjdXJyZW50IGJvYXJkcyBkZXZpY2UgDQp0cmVlIGZp
-bGVzLg0KDQo+IA0KPiBBbHNvIG5vdCBzcGVjaWZ5aW5nIGF0IGxlYXN0IG9uZSBvZiB0aGUgZGVm
-YXVsdCB2YWx1ZXMgbGVhZHMgdG8gQlQuNjU2DQo+IHdpdGhvdXQgYnVzLXR5cGUuIFRoYXQgY291
-bGQgYmUgYWRkcmVzc2VkIGJ5IHJlbW92aW5nIHRoZSBkZWZhdWx0cy4NCj4gDQpJJ20gbmV3IHRv
-IHlhbWwsIEkndmUgdGFrZW4gdGhhdCBmcm9tIHJlbmVzYXMsdmluLnlhbWwuIFNob3VsZCBJIGp1
-c3QgDQpkcm9wIHRoZSAiZGVmYXVsdDogMSIgbGluZXMgPw0KDQo+PiArDQo+PiArICAgICAgICAg
-IHBjbGstc2FtcGxlOiB0cnVlDQo+PiArDQo+PiArICAgICAgICAgIHJlbW90ZS1lbmRwb2ludDog
-dHJ1ZQ0KPj4gKw0KPj4gKyAgICAgICAgcmVxdWlyZWQ6DQo+PiArICAgICAgICAgIC0gcmVtb3Rl
-LWVuZHBvaW50DQo+PiArDQo+PiArICAgICAgICBhZGRpdGlvbmFsUHJvcGVydGllczogZmFsc2UN
-Cj4+ICsNCj4+ICsgICAgYWRkaXRpb25hbFByb3BlcnRpZXM6IGZhbHNlDQo+PiArDQo+PiAgIHJl
-cXVpcmVkOg0KPj4gICAgIC0gY29tcGF0aWJsZQ0KPj4gICAgIC0gcmVnDQo+IA0KDQpCUiwNCkh1
-Z3Vlcy4=
+Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+
+> Le 12/10/2020 =C3=A0 17:39, Christophe Leroy a =C3=A9crit=C2=A0:
+>> On the same principle as commit 773edeadf672 ("powerpc/mm: Add mask
+>> of possible MMU features"), add mask for MMU features that are
+>> always there in order to optimise out dead branches.
+>>=20
+>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>> ---
+>> v2: Features must be anded with MMU_FTRS_POSSIBLE instead of ~0, otherwi=
+se
+>>      MMU_FTRS_ALWAYS is ~0 when no #ifdef matches.
+>
+> This is still not enough. For BOOK3S/32, MMU_FTRS_POSSIBLE is still too m=
+uch.
+> We need a #ifdef CONFIG_PPC_BOOK3S_32 with 0.
+>
+> Christophe
+>
+>> ---
+>>   arch/powerpc/include/asm/mmu.h | 25 +++++++++++++++++++++++++
+>>   1 file changed, 25 insertions(+)
+>>=20
+>> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/m=
+mu.h
+>> index 255a1837e9f7..64e7e7f7cda9 100644
+>> --- a/arch/powerpc/include/asm/mmu.h
+>> +++ b/arch/powerpc/include/asm/mmu.h
+>> @@ -201,8 +201,30 @@ enum {
+>>   		0,
+>>   };
+>>=20=20=20
+>> +enum {
+>> +	MMU_FTRS_ALWAYS =3D
+>> +#ifdef CONFIG_PPC_8xx
+>> +		MMU_FTR_TYPE_8xx &
+>> +#endif
+>> +#ifdef CONFIG_40x
+>> +		MMU_FTR_TYPE_40x &
+>> +#endif
+>> +#ifdef CONFIG_PPC_47x
+>> +		MMU_FTR_TYPE_47x &
+>> +#elif defined(CONFIG_44x)
+>> +		MMU_FTR_TYPE_44x &
+>> +#endif
+>> +#if defined(CONFIG_E200) || defined(CONFIG_E500)
+>> +		MMU_FTR_TYPE_FSL_E &
+>> +#endif
+>> +		MMU_FTRS_POSSIBLE,
+>> +};
+
+Will it be simpler if we make it a #define like below?
+
+#ifdef CONFIG_PPC_8XX
+#define MMU_FTR_ALWAYS  MMU_FTR_TYPE_8XX & MMU_FTR_POSSIBLE
+#endif
+
+
+
+>> +
+>>   static inline bool early_mmu_has_feature(unsigned long feature)
+>>   {
+>> +	if (MMU_FTRS_ALWAYS & feature)
+>> +		return true;
+>> +
+>>   	return !!(MMU_FTRS_POSSIBLE & cur_cpu_spec->mmu_features & feature);
+>>   }
+>>=20=20=20
+>> @@ -231,6 +253,9 @@ static __always_inline bool mmu_has_feature(unsigned=
+ long feature)
+>>   	}
+>>   #endif
+>>=20=20=20
+>> +	if (MMU_FTRS_ALWAYS & feature)
+>> +		return true;
+>> +
+>>   	if (!(MMU_FTRS_POSSIBLE & feature))
+>>   		return false;
+>>=20=20=20
+>>=20
