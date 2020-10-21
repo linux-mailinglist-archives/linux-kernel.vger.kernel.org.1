@@ -2,103 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62A6E2953FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:17:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E397D295401
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:17:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505975AbgJUVQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:16:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        id S2505988AbgJUVRG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:17:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43598 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505965AbgJUVQw (ORCPT
+        with ESMTP id S2505979AbgJUVRG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:16:52 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2676EC0613CE;
-        Wed, 21 Oct 2020 14:16:52 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id b26so2250340pff.3;
-        Wed, 21 Oct 2020 14:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=LjEMR+RvxUAU+81ZngdDVY7KFUetPWRBhlcZRlrbWTM=;
-        b=OtbvTaTjOhxeRj3LLmn0KyRuvranTgvXawtEOjZbnyotpxY/yFBKBDbhU6sQm9W8uo
-         P24+/ASmVuB5gdow7ePMK6A9yX2X1qxSk2zISwUb8c95FEEaQqpLfmtUQ5TCzKJX2gsA
-         PypaNLGZuELOxxK+ZZPpopI/C0H0tIvoB3Io9tinImcbXlh2+Z6HEs3pUGMcLFQtnbRY
-         hdfsm5Ur3YVJRk6aOXt3lkChUWbsCKVb9h73Wy9s1sqm77daomwV2dIThXhggmtPCT7f
-         4rFuvUEYn+VejbcKX8h21n5LdGGdwOIGQ2li02jMh6y1Z24iMOf3SeOHX7PPQM1+2hhi
-         ZwBw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=LjEMR+RvxUAU+81ZngdDVY7KFUetPWRBhlcZRlrbWTM=;
-        b=sXmx1PhzLKzlpcm7WhyVyMgFV5M6R1mRaFhIy7V06fhICMZ7RX4MRoVmGVrvH4de4q
-         u5FqDZhXhqDg3aLdIut0hl7EZ/tUF7V9tw4xXVfCAM/YeZ7DYSC0BZzy/FhpntLlBErc
-         F2ex7KMJnpeYwn029DRic2ZYy+McM2hEI9cN511kJ1IDS4Jz9SzvhDm18Z1391XP0cZP
-         IJXShAyQiEUzbvaMkyblUkhagEnREQkEe2Wfk/W22Q+DSYn6y2bsWFOFbZ8SV3b7dtoS
-         hgxORje5/0+mhfcRps34N4BUVJv+3P52jnC6CAPX2Dw0GzkHMtimW6VjM1DdN0n51ZSJ
-         AXEQ==
-X-Gm-Message-State: AOAM530UkjrRNSq2hHChwuD1OMN467JYVsIkdMKEx/fzQVK/LpxfeOaX
-        brVyOBBrTR8wm1+TKSAiE+k=
-X-Google-Smtp-Source: ABdhPJz/NqKws5TvHKaVDM4XPLrDvxcZl5xFUdIaq1uNYBQ5nklC6g8p6qIR/7jawo+ZMj/hDJJM+w==
-X-Received: by 2002:a62:1b02:0:b029:154:fdbe:4d2a with SMTP id b2-20020a621b020000b0290154fdbe4d2amr5382913pfb.27.1603315011599;
-        Wed, 21 Oct 2020 14:16:51 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id s20sm3189870pfc.201.2020.10.21.14.16.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 14:16:50 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 14:16:48 -0700
-From:   dmitry.torokhov@gmail.com
-To:     kholk11@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org
-Subject: Re: [PATCH v5 2/3] Input: Add Novatek NT36xxx touchscreen driver
-Message-ID: <20201021211648.GE444962@dtor-ws>
-References: <20201017190152.12780-1-kholk11@gmail.com>
- <20201017190152.12780-3-kholk11@gmail.com>
+        Wed, 21 Oct 2020 17:17:06 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B454BC0613CE;
+        Wed, 21 Oct 2020 14:17:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
+        :Reply-To:Content-ID:Content-Description;
+        bh=L9KnamqfyhOdaOnsHrZ3+u3zuYCeeODQD2KveoFX8B4=; b=dxGEwJFIkFhR4AGD6OIasdLsGm
+        X7Zaf8U/UPlthCqRigt8VFsfISdBNgvkrkhOklbHb/6VuifWU6K9BSH7Hkm+IUAqlU/JbuPSzHoBQ
+        PaEfpdRROppqf3ViL7v1UVvef4kT2LE75Dcqgvt1JKESCoJJm93AibfBs5GqJrGAjoA508w0w2myy
+        ECuBgm9HUAX3dnxQJtY0U1NgeOlBIltWkqISdxf8iLWkBsupONq8ph2kxoTeUshHBnOQ4ABgf3tjx
+        bxSkfOsjyoXWtFPhJLv78Vlz9JimQEYkILK+GHsn27XoLJRj4s3pwK/u9tDdgprEHJUNdVrrxqnXM
+        w2ftX8Fg==;
+Received: from [2601:1c0:6280:3f0::507c]
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVLTi-0008Cd-8p; Wed, 21 Oct 2020 21:17:02 +0000
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
+ selecting it
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>
+Cc:     Theodore Ts'o <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+References: <20201020073740.29081-1-geert@linux-m68k.org>
+ <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+From:   Randy Dunlap <rdunlap@infradead.org>
+Message-ID: <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
+Date:   Wed, 21 Oct 2020 14:16:56 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201017190152.12780-3-kholk11@gmail.com>
+In-Reply-To: <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi AngeloGioacchino,
+On 10/21/20 2:15 PM, Brendan Higgins wrote:
+> On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+>>
+>> EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
+>> user may not want to enable.  Fix this by making the test depend on
+>> EXT4_FS instead.
+>>
+>> Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
+>> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+> 
+> If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
+> something that Ted specifically requested, but I don't have any strong
+> feelings on it either way.
 
-[obviously not a complete review, but wanted to call out regmap concern]
-
-On Sat, Oct 17, 2020 at 09:01:51PM +0200, kholk11@gmail.com wrote:
-> +static int nt36xxx_read_pid(struct nt36xxx_i2c *ts)
-> +{
-> +	u8 buf[2] = { 0 };
-
-	__be16 pid;
-
-> +	int ret = 0;
-> +
-> +	ret = nt36xxx_set_page(ts, ts->mmap->evtbuf_addr);
-> +	if (unlikely(ret < 0))
-> +		return ret;
-
-regmap is supposed to help with the paged registers, that is why I
-recommended using it.
-
-> +
-> +	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_PROJECTID,
-> +				buf, sizeof(buf));
-> +	if (unlikely(ret < 0))
-> +		return ret;
-> +
-> +	ts->fw_info.nvt_pid = (buf[1] << 8) + buf[0];
-
-	ts->fw_info.nvt_pid = be16_to_cpu(pid);
-
-Thanks.
+omg, please No. depends on is the right fix here.
 
 -- 
-Dmitry
+~Randy
+
