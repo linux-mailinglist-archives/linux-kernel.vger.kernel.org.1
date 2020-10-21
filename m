@@ -2,104 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2865C295117
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:49:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1060029511E
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:51:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503165AbgJUQtq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:49:46 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25267 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2503157AbgJUQtq (ORCPT
+        id S2503182AbgJUQvD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:51:03 -0400
+Received: from smtprelay0011.hostedemail.com ([216.40.44.11]:58960 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2444579AbgJUQvD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:49:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603298984;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EBKIX4NScpYanL37LvbZAWmxt6PXSYIFIAOMsAhRQoo=;
-        b=OzBMRE9huCdQpPbDy2s92gt+eRlpTVVksGbHJOHyRU3KPPOlq6giEO1t5O578ggwLDuFay
-        QNGNmdoYer/5F0CpmpjFnIea2Lb9hw6WwRRJCxSF+3wB8MiiAEbcSgdHKMTuX2yDFmU0dw
-        /dpnkfeIwQo7FsAcWEvQ7E6UIzhDnDw=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-429-IGvRjFQzPdiBi1AylCyuRA-1; Wed, 21 Oct 2020 12:49:39 -0400
-X-MC-Unique: IGvRjFQzPdiBi1AylCyuRA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 0A50B5F9C1;
-        Wed, 21 Oct 2020 16:49:37 +0000 (UTC)
-Received: from x2.localnet (ovpn-117-184.rdu2.redhat.com [10.10.117.184])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 406B6389;
-        Wed, 21 Oct 2020 16:49:26 +0000 (UTC)
-From:   Steve Grubb <sgrubb@redhat.com>
-To:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com
-Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
-        simo@redhat.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>,
-        Richard Guy Briggs <rgb@redhat.com>
-Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
-Date:   Wed, 21 Oct 2020 12:49:25 -0400
-Message-ID: <2174083.ElGaqSPkdT@x2>
-Organization: Red Hat
-In-Reply-To: <20201021163926.GA3929765@madcap2.tricolour.ca>
-References: <cover.1593198710.git.rgb@redhat.com> <20201002195231.GH2882171@madcap2.tricolour.ca> <20201021163926.GA3929765@madcap2.tricolour.ca>
+        Wed, 21 Oct 2020 12:51:03 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 13750182CED28;
+        Wed, 21 Oct 2020 16:51:02 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2689:2828:3138:3139:3140:3141:3142:3353:3622:3653:3865:3866:3867:3871:3872:3874:4321:5007:10007:10128:10400:10848:11232:11658:11914:12295:12297:12555:12740:12760:12895:13019:13069:13161:13229:13311:13357:13439:14181:14659:14721:14799:21080:21222:21326:21627:21660:21740:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:1:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: ink53_4217b0127249
+X-Filterd-Recvd-Size: 2566
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf14.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 21 Oct 2020 16:51:00 +0000 (UTC)
+Message-ID: <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com
+Date:   Wed, 21 Oct 2020 09:50:59 -0700
+In-Reply-To: <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
+References: <20201021150120.29920-1-yashsri421@gmail.com>
+         <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
+         <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, October 21, 2020 12:39:26 PM EDT Richard Guy Briggs wrote:
-> > I think I have a way to generate a signal to multiple targets in one
-> > syscall...  The added challenge is to also give those targets different
-> > audit container identifiers.
+On Wed, 2020-10-21 at 08:28 -0700, Joe Perches wrote:
+> On Wed, 2020-10-21 at 08:18 -0700, Joe Perches wrote:
+> > I might add that check to the line below where
+> > the repeated words are checked against long
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > @@ -3062,6 +3062,7 @@ sub process {
+> >  
+> >  				next if ($first ne $second);
+> >  				next if ($first eq 'long');
+> > +				next if ($first =~ /^$Hex$/;
 > 
-> Here is an exmple I was able to generate after updating the testsuite
-> script to include a signalling example of a nested audit container
-> identifier:
-> 
-> ----
-> type=PROCTITLE msg=audit(2020-10-21 10:31:16.655:6731) :
-> proctitle=/usr/bin/perl -w containerid/test type=CONTAINER_ID
-> msg=audit(2020-10-21 10:31:16.655:6731) :
-> contid=7129731255799087104^3333941723245477888 type=OBJ_PID
-> msg=audit(2020-10-21 10:31:16.655:6731) : opid=115583 oauid=root ouid=root
-> oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> ocomm=perl type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
-> contid=3333941723245477888 type=OBJ_PID msg=audit(2020-10-21
-> 10:31:16.655:6731) : opid=115580 oauid=root ouid=root oses=1
-> obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
-> type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
-> contid=8098399240850112512^3333941723245477888 type=OBJ_PID
-> msg=audit(2020-10-21 10:31:16.655:6731) : opid=115582 oauid=root ouid=root
-> oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> ocomm=perl type=SYSCALL msg=audit(2020-10-21 10:31:16.655:6731) :
-> arch=x86_64 syscall=kill success=yes exit=0 a0=0xfffe3c84 a1=SIGTERM
-> a2=0x4d524554 a3=0x0 items=0 ppid=115564 pid=115567 auid=root uid=root
-> gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root
-> tty=ttyS0 ses=1 comm=perl exe=/usr/bin/perl
-> subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> key=testsuite-1603290671-AcLtUulY ----
-> 
-> There are three CONTAINER_ID records which need some way of associating
-> with OBJ_PID records.  An additional CONTAINER_ID record would be present
-> if the killing process itself had an audit container identifier.  I think
-> the most obvious way to connect them is with a pid= field in the
-> CONTAINER_ID record.
+> oops.  with a close parenthesis added of course...
 
-pid is the process sending the signal, opid is the process receiving the 
-signal. I think you mean opid?
+That doesn't work as $Hex expects a leading 0x.
 
--Steve
+But this does...
+
+The negative of this approach is it would also not emit
+a warning on these repeated words: (doesn't seem too bad)
+
+$ grep -P '^[0-9a-f]{2,}$' /usr/share/dict/words
+abed
+accede
+acceded
+ace
+aced
+ad
+add
+added
+baa
+baaed
+babe
+bad
+bade
+be
+bead
+beaded
+bed
+bedded
+bee
+beef
+beefed
+cab
+cabbed
+cad
+cede
+ceded
+dab
+dabbed
+dad
+dead
+deaf
+deb
+decade
+decaf
+deed
+deeded
+deface
+defaced
+ebb
+ebbed
+efface
+effaced
+fa
+facade
+face
+faced
+fad
+fade
+faded
+fed
+fee
+feed
+---
+ scripts/checkpatch.pl | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..79d7a4cba19e 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -3062,6 +3062,7 @@ sub process {
+ 
+ 				next if ($first ne $second);
+ 				next if ($first eq 'long');
++				next if ($first =~ /^[0-9a-f]+$/i);
+ 
+ 				if (WARN("REPEATED_WORD",
+ 					 "Possible repeated word: '$first'\n" . $herecurr) &&
+
 
 
