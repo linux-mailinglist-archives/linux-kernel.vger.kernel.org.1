@@ -2,147 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B8DB294BD4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:35:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C488E294BD6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442026AbgJULfK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:35:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:34006 "EHLO foss.arm.com"
+        id S2442035AbgJULfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:35:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:52026 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410786AbgJULfJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:35:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 193021FB;
-        Wed, 21 Oct 2020 04:35:09 -0700 (PDT)
-Received: from e120937-lin (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 99F013F66E;
-        Wed, 21 Oct 2020 04:35:07 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 12:35:05 +0100
-From:   Cristian Marussi <cristian.marussi@arm.com>
-To:     Thara Gopinath <thara.gopinath@linaro.org>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        sudeep.holla@arm.com, lukasz.luba@arm.com,
-        james.quinlan@broadcom.com, Jonathan.Cameron@Huawei.com,
-        f.fainelli@gmail.com, etienne.carriere@linaro.org,
-        vincent.guittot@linaro.org, souvik.chakravarty@arm.com
-Subject: Re: [PATCH 10/11] [DEBUG] firmware: arm_scmi: add custom_dummy SCMI
- devname
-Message-ID: <20201021113505.GD20482@e120937-lin>
-References: <20201014150545.44807-1-cristian.marussi@arm.com>
- <20201014150545.44807-11-cristian.marussi@arm.com>
- <c0a300b7-7589-bfb1-6731-f07fdd7391fd@linaro.org>
+        id S2410774AbgJULfp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 07:35:45 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 2E17FABE3;
+        Wed, 21 Oct 2020 11:35:43 +0000 (UTC)
+Message-ID: <704546dadc3c1d39d260a29e850ae100fdf47fba.camel@suse.de>
+Subject: Re: [RFC] of/platform: Create device link between simple-mfd and
+ its children
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Wysocki, Rafael J" <rafael.j.wysocki@intel.com>,
+        Frank Rowand <frowand.list@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        "moderated list:BROADCOM BCM2835 ARM ARCHITECTURE" 
+        <linux-rpi-kernel@lists.infradead.org>,
+        Saravana Kannan <saravanak@google.com>,
+        devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Date:   Wed, 21 Oct 2020 13:35:41 +0200
+In-Reply-To: <20201019065208.x5k2zpuxjfhpmhdc@pengutronix.de>
+References: <20201015114346.15743-1-nsaenzjulienne@suse.de>
+         <CAL_JsqLvzsdAfx56jQqPSd1r=P20C8DURKKZ9kke-L2owqr0fg@mail.gmail.com>
+         <0f0b7021e85a832afd42c6f9016158d6d8b0b28b.camel@suse.de>
+         <20201019065208.x5k2zpuxjfhpmhdc@pengutronix.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-y+CDlaV1ZewhdsGwsFAA"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c0a300b7-7589-bfb1-6731-f07fdd7391fd@linaro.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:49:23PM -0400, Thara Gopinath wrote:
-> 
-> 
-> On 10/14/20 11:05 AM, Cristian Marussi wrote:
-> > Add custom_dummy SCMI devname.
-> > 
-> > Signed-off-by: Cristian Marussi <cristian.marussi@arm.com>
-> > ---
-> >   drivers/firmware/arm_scmi/driver.c | 1 +
-> >   1 file changed, 1 insertion(+)
-> > 
-> > diff --git a/drivers/firmware/arm_scmi/driver.c b/drivers/firmware/arm_scmi/driver.c
-> > index 55df134c2338..5c39a738866a 100644
-> > --- a/drivers/firmware/arm_scmi/driver.c
-> > +++ b/drivers/firmware/arm_scmi/driver.c
-> > @@ -993,6 +993,7 @@ static struct scmi_prot_devnames devnames[] = {
-> >   	{ SCMI_PROTOCOL_CLOCK,  { "clocks" },},
-> >   	{ SCMI_PROTOCOL_SENSOR, { "hwmon" },},
-> >   	{ SCMI_PROTOCOL_RESET,  { "reset" },},
-> > +	{ SCMI_PROTOCOL_CUSTOM_DUMMY,  { "custom_dummy" },},
-> 
-> Hi Cristian,
-> 
-> Thanks for the sample dummy custom protocol and driver!
-> The problem with adding scmi devname into the array is that every time a
-> custom vendor protocol is added, the array has to be extended. Instead since
-> the scmi spec supports the range 0x80-0xff for custom protocols, why not
-> check for that range in scmi_create_protocol_devices and go ahead with
-> registering the creating the protocol device via
-> scmi_create_protocol_device?
-> 
 
-Hi,
+--=-y+CDlaV1ZewhdsGwsFAA
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-so this is really a good point, and in fact in some earlier (non-public)
-iterations I had a mechanism to just get rid of these device tables,
-thinking that if you want to enable custom protocols loading, it seemed
-better to let the related devices being created dynamically at will, so
-that an SCMI driver can just 'declare' its own device name and that will
-be created if the corresponding protocol is found in the DT and
-implemented in fw.
+Hi Uwe,
+Sorry for the late reply, got distracted with other stuff.
 
-Anyway this complicated the code a lot in some dubious ways.
+On Mon, 2020-10-19 at 08:52 +0200, Uwe Kleine-K=C3=B6nig wrote:
+> On Fri, Oct 16, 2020 at 05:26:56PM +0200, Nicolas Saenz Julienne wrote:
+> > On Fri, 2020-10-16 at 09:38 -0500, Rob Herring wrote:
+> > > On Thu, Oct 15, 2020 at 6:43 AM Nicolas Saenz Julienne
+> > > <nsaenzjulienne@suse.de> wrote:
+> > > > 'simple-mfd' usage implies there might be some kind of resource sha=
+ring
+> > > > between the parent device and its children.
+> > >=20
+> > > It does? No! The reason behind simple-mfd was specifically because
+> > > there was no parent driver or dependency on the parent. No doubt
+> > > simple-mfd has been abused.
+> >=20
+> > Fair enough, so we're doing things wrong. Just for the record, I'm look=
+ing at
+> > RPi=C2=B4s firmware interface:
+> >=20
+> > 	firmware: firmware {
+> > 		compatible =3D "raspberrypi,bcm2835-firmware", "simple-mfd";
+> > 		#address-cells =3D <1>;
+> > 		#size-cells =3D <1>;
+> > 		mboxes =3D <&mailbox>;
+> >=20
+> > 		firmware_clocks: clocks {
+> > 			compatible =3D "raspberrypi,firmware-clocks";
+> > 			#clock-cells =3D <1>;
+> > 		};
+> >=20
+> > 		reset: reset {
+> > 			compatible =3D "raspberrypi,firmware-reset";
+> > 			#reset-cells =3D <1>;
+> > 		};
+> > 		[...]
+> > 	};
+> >=20
+> > Note that "raspberrypi,bcm2835-firmware" has a driver, it's not just a
+> > placeholder. Consumer drivers get a handle to RPi's firmware interface =
+through
+> > the supplier's API, rpi_firmware_get(). The handle to firmware becomes
+> > meaningless if it is unbinded, which I want to protect myself against.
+> >=20
+> > A simpler solution would be to manually create a device link between bo=
+th
+> > devices ("raspberrypi,bcm2835-firmware" and "raspberrypi,firmware-clock=
+s" for
+> > example) upon calling rpi_firmware_get(). But I wanted to try addressin=
+g the
+> > problem in a generic way first.
+>=20
+> IMHO rpi_firmware_get() should get a reference on the firmware device
+> (and call try_module_get()) which prevents unbinding it.
 
-In a built-in scenario you end up with your driver being probe before the
-platform SCMI driver, so you cannot create the device straight away in
-your driver (there's not even an SCMI bus still) and you anyway need the
-platform SCMI driver to be up and running to check the DT and initialize
-basic transport to talk to the fw and check the protocol is supported by
-fw before creating the device itself: so I ended up basically having the
-SCMI driver just 'requesting' some device name to the core and then having
-the core creating the device later on when the SCMI platform was probed
-iff the DT and the fw supported that protocol (or immediately if your
-driver was a module and the SCMI platform was already initialized)
+Yes, it seems the way to go. Just one last question WRT this, since
+'drv->remove(dev)' can't fail should I just block until the reference count
+hits zero?
 
-All of the above, even if working, led to a lot of machinery to track all
-these requested devices properly and properly create/destroy them, and
-also it does not seem the right thing to do, since it's basically
-mimicing/duplicating all the usual probe deferring standard mechanism.
+Regards,
+Nicolas
 
-Maybe this could have been addressed in different ways but I've not
-explored further.
 
-So at the end I removed such dynamic device creation support from this
-series.
+--=-y+CDlaV1ZewhdsGwsFAA
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-Now you proposal would be, if I understood correctly, to just create
-straight away a custom device whenever its protocol is defined in the DT
-and supported by fw, so that the custom driver above would not have to
-declare anything statically, and it will just be associated with some
-"dev_proto_99" matching just on protocol number.
+-----BEGIN PGP SIGNATURE-----
 
-I'd like this option because it simplifies a lot the above issues, but
-I don't think it is viable because in this way you are no more able to
-define 2 distinct SCMI drivers for the same protocol (like you
-can do now defining multiple names in the match table: as an example you
-could not create a different "custom_dummy_2" SCMI driver using the
-custom protocol 0x99, because there;s only one single "dev_proto_99"
-device created and already probed for "custom_dummy".
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+QHQ0ACgkQlfZmHno8
+x/7PvAf/YPL3B9XkRBQ4azT4+l5kztL5y0A2T8nT+JN7jHnDZm7XYQKh9QFVm9Wg
+8u8MpGUcAnv1W59qbbCznJDRtKIOQjM3YEB3b0g0uELCfOaAFk1WI4I9zsspRqPE
+DaSFl0Xbp5p3FwnCKyJQUMghMtXixC1zxvB9xkxBbupRIBtezLjl2okW2X2drNeg
+HLKbyTXZovJkF0EpY/44Z1haP8SryoxoALLvfmF6G8e3EE9qmcbY9nmxltKGqUfr
+YRmMH2Q8648cGNjV5vy9cT2i6dc85VOOuYZuESGHTcGTrPcJxugC5wydDpsOGEUG
+ZtHLJLGw50uiGJ8Tgb2kMwdNwFEf6A==
+=OwyT
+-----END PGP SIGNATURE-----
 
-So the problem is again that if you want to support multiple SCMI
-drivers they have to be able to declare their own devname, against which
-the platform SCMI driver can match and initialized if needed the
-underlying device.
+--=-y+CDlaV1ZewhdsGwsFAA--
 
-In short, I want certainly to explore the dynamic device creation
-further, but for the moment I put it apart trying to consolidate
-all the rest.
-
-Maybe I could re-introduce something better later on in future versions
-of this series, or maybe just address this a distinct series later on.
-
-Sorry for the flood-style email :D
-
-Thanks
-
-Cristian
-
-> 
-> >   };
-> >   static inline void
-> > 
-> 
-> -- 
-> Warm Regards
-> Thara
