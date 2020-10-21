@@ -2,98 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A677294E37
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:05:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 449A2294E3B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:07:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443224AbgJUOFl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:05:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33154 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440711AbgJUOFk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:05:40 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 506D9C0613CE;
-        Wed, 21 Oct 2020 07:05:40 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id m128so2178045oig.7;
-        Wed, 21 Oct 2020 07:05:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=hWackn7QgGCUo6C9ARR0K33SjtrNVEEV12sdSP+7vYA=;
-        b=FBRKvaEz9LujHwoT6c0nbLZ6cHP5qHloQPItQFyTxhpqcGutJuiB6D0u04Zc8S/riw
-         tTRv4Y7fBJproOaWBQi34kokvwa1+mt0PJFwq/88B/EI2IHWwaf02tezI9IjriNMj5qH
-         I/YEXFtL/pFvk0Ai6pNGQTSYqZWZdIb8cQzeDOSDnhGPsQi6xdjrYP/B6mvsUihwMchN
-         5UGhnpiEEFj883NiIozTaehhwJS7GQn1JSGHGrURppnDDOCfkxuu8qsMfCgogXivKAU2
-         ljuRYZzn7hYhEJmLal2lu7ingvOdfBgvRiLUCk7VfvAAH/dZWyfnT++xtCDmxpJGv7Cw
-         vJ5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hWackn7QgGCUo6C9ARR0K33SjtrNVEEV12sdSP+7vYA=;
-        b=OzMmpxgmcPGdqaoWDzayMskvaH6xohcb8PPEXT9rnep7fwFgj9C9r1v7i42SPUeAsC
-         DG+BYSnxycBEMGQfhdn4+QORk2Fvyu/yfZRxY7fV4aMGU29IKXcCMdQvJVpqTCZcWX6L
-         cyEQWXxEhRSSCZWWDhtz85meYEp9kRQdQluL79LH3d5Sam2dzfs9PRnDQ202evZOCq+R
-         vYEXhYPVzHJJhCC0y3Ln97O2aotQ82bBMOnn8vQauaakikKclxn3ogmbeUhvLv9gZ2Y7
-         /kX6r7OllMd2SVH/oMSXbdf0cyWz6BPRahXmZMP4wkWmDXd23pOCDqdcnYcpKquEpgUS
-         f+ew==
-X-Gm-Message-State: AOAM532k5ABfqbLvnDPLXeFAoP5fpyYf6DS/o5CC0kXDwN327IiJP/rs
-        RMakJIIofgZNiPNP95LiiiJ2e7QtzznechCuXVtmQmX1tlQ=
-X-Google-Smtp-Source: ABdhPJxKAJyFGKy1WNdsaIUOhazX+MRMNzKXnpZL6qckOtqBiRgDUmsCOtygh+0mb39mZzoQKlavlsF3G0uKieV2o3U=
-X-Received: by 2002:aca:420a:: with SMTP id p10mr2263655oia.117.1603289139712;
- Wed, 21 Oct 2020 07:05:39 -0700 (PDT)
+        id S2442531AbgJUOHS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:07:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43488 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2440763AbgJUOHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:07:18 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E9AF22248;
+        Wed, 21 Oct 2020 14:07:16 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 10:07:14 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: sched: Reenable interrupts in do sched_yield()
+Message-ID: <20201021100714.5ba25a96@gandalf.local.home>
+In-Reply-To: <87h7qo6ntx.fsf@nanos.tec.linutronix.de>
+References: <87r1pt7y5c.fsf@nanos.tec.linutronix.de>
+        <20201020113830.378b4a4c@gandalf.local.home>
+        <87o8kw93n4.fsf@nanos.tec.linutronix.de>
+        <20201020160732.5f8fc24e@oasis.local.home>
+        <87h7qo6ntx.fsf@nanos.tec.linutronix.de>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-References: <20201021135140.51300-1-alexandru.ardelean@analog.com> <20201021135802.GM139700@lunn.ch>
-In-Reply-To: <20201021135802.GM139700@lunn.ch>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 21 Oct 2020 17:05:28 +0300
-Message-ID: <CA+U=DsoRVt66cANFJD896R-aOJseAF-1VkgcvLZHQ1rUTks3Eg@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: phy: adin: clear the diag clock and set
- LINKING_EN during autoneg
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        alexaundru.ardelean@analog.com,
-        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
-        David Miller <davem@davemloft.net>, kuba@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 4:58 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> On Wed, Oct 21, 2020 at 04:51:39PM +0300, Alexandru Ardelean wrote:
-> > The LINKING_EN bit is always cleared during reset. Initially it was set
-> > during the downshift setup, because it's in the same register as the
-> > downshift retry count (PHY_CTRL1).
->
-> Hi Alexandru
->
-> For those of us how have not read the datasheet, could you give a
-> brief explanation what LINKING_EN does?
+On Wed, 21 Oct 2020 09:27:22 +0200
+Thomas Gleixner <tglx@linutronix.de> wrote:
 
-So, clearing this bit puts the PHY in a standby-state.
-The PHY doesn't do any autonegotiation or link handling.
+> On Tue, Oct 20 2020 at 16:07, Steven Rostedt wrote:
+> > On Tue, 20 Oct 2020 20:02:55 +0200
+> > Thomas Gleixner <tglx@linutronix.de> wrote:
+> > What I wrote wasn't exactly what I meant. What I meant to have:
+> >
+> > 	/*
+> > 	 * Since we are going to call schedule() anyways, there's
+> > 	 * no need to do the preemption check when the rq_lock is released.
+> > 	 */
+> >
+> > That is, to document why we have the preempt_disable() before the unlock:  
+> 
+> which is pretty obvious, but I let Peter decide on that.
 
->
-> > This change moves the handling of LINKING_EN from the downshift handler to
-> > the autonegotiation handler. Also, during autonegotiation setup, the
-> > diagnostics clock is cleared.
->
-> And what is the diagnostics clock used for?
+To us maybe, but I like to have comments that explain why things are done to
+average people. ;-)
 
-The clock diagnostics is used for 2 things: the diagnostics block
-[mostly for stuff like cable-diagnostics] and the frame-generator.
-The frame-generator is an interesting feature of the PHY, that's not
-useful for the current phylib; the PHY can send packages [like a
-signal generator], and then these can be looped back, or sent over the
-wire.
-Maybe it's being used mostly internally by the group that created the PHY
+If I go to another kernel developer outside the core kernel, would they know
+why there's a preempt_disable() there?
 
-Having said this, I'll include some comments for these in a V2 of this patchset.
 
->
->     Andrew
+ 	preempt_disable();
+	rq_unlock_irq(rq, &rf);
+ 	sched_preempt_enable_no_resched();
+ 
+ 	schedule();
+
+
+Not everyone knows that the rq_unlock_irq() would trigger a schedule if an
+interrupt happened as soon as irqs were enabled again and need_resched was
+set.
+
+-- Steve
