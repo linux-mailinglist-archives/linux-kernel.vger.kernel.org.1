@@ -2,81 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E490295396
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:44:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120D3295399
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:45:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504400AbgJUUof (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:44:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38602 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440812AbgJUUoe (ORCPT
+        id S2505485AbgJUUo6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:44:58 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:60242 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505026AbgJUUo5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:44:34 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4A8AC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:44:34 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h6so2213676pgk.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:44:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ToNH8GJuZ5rTdifevtZT8GFNBviH6s2F8SrsK2qyVY0=;
-        b=eR/u85b/Zu/amsL8sCxSY2DnlP2Ehk3lIHJnhKz0Lo/gM0vBBdbixGiQlZ5J0xQZlv
-         yODucoIDiS4Ab48gtTtCHB/X3vsuT6qGAxVE24qmG8mbpb6olpl5oVeertMysd1tJsGh
-         AiYx01TeIjGW48ApOv7+VvBCHqaW4SXpJafYy+HNJhciEPo/XjPuL6fthVdBi039Qcyq
-         PBxp/I+h/ujkmKG9JRqjH7UWvXIamXWIJhcfBYz7fdH/cv8hti7OXrGpzkcNYmmeRDK4
-         N0nIw3DY+7L0dnJmCLkbJmOC4ie0iYQ0L2VxBD2aac7T10/NYiRhHhY8z5gujzDp6yS2
-         srNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ToNH8GJuZ5rTdifevtZT8GFNBviH6s2F8SrsK2qyVY0=;
-        b=WB+kvIbdGAVysSnCKVheW8S2xKksa8l991t/ObVcMJdZs7nDOJ/ePChj/Y00qHln1H
-         PdnbJDtltrT4HeE2QaQSHozIJ38Gv0FxNY3+z5k1s8S8GLbkoF9kIPw3D18W8d3yV6fH
-         godc5r6BU4aeC1yD0OcPNP+ekz+ZTllC5f0Tbr3KTBW69amnRVxXS96jjQl1y4L8khA7
-         I2Vpve96RG2Nf89IzcU8tKayqtHNHNInu70+2eoYZexDqF2cjIM7XY9c6KnS9XiZSgXU
-         Oo50qTNNx3dcK2UEFijDaoRLCPAHyui1U2wFqQ11qCT71Lbnmvr2sFZQhAK/X1nkEtVa
-         3YHg==
-X-Gm-Message-State: AOAM532UeZUg6YqtWagQxYRcV4+G7nVMcV3FP7JAkFPgBdC/FyPRe85Y
-        7GDmpdZCJNjR0mb16I83+u3eE1bwc25colzMnWdepA==
-X-Google-Smtp-Source: ABdhPJxCBzWvlDptnlUC4y/kkY4UVyb3az9b3ad04JiC78/1Nkpox0BI5W6rCZyYsH1x3/hNf+ty4ao55Bww36Fop0U=
-X-Received: by 2002:a62:d44d:0:b029:152:ebc:77f8 with SMTP id
- u13-20020a62d44d0000b02901520ebc77f8mr5394843pfl.14.1603313073426; Wed, 21
- Oct 2020 13:44:33 -0700 (PDT)
+        Wed, 21 Oct 2020 16:44:57 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LKiCWd162250;
+        Wed, 21 Oct 2020 20:44:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2020-01-29; bh=1b8YRCjA/uvkQdkZbUeVGHOgdFx9CEWFOQ/Jb+PIWWc=;
+ b=EYv7vOYML6S00NFk6CmZRhtPZjcDRyjPbSE/XlfY4XUadiruIkhpj3opG4bAhexwH6BB
+ kshbgx8yq6RGLixVHCBloBss3vB4QHBz7ChITvtcQn6lyRIiXOgiogA2MQgB3p+zhb4x
+ FjNkEdZPbu0Fx3awiSWcQDQyjnFoTT5rb6ycleitsq0U8WAiRN2YtiWnpPsu9Pm5vF90
+ tET7OqHukLmH/PFuQlTOHW+hBvaoUtBxa/RIUc5KNWnaGawZWkOVWpdWk/Q2DccuItSk
+ 8PkHql863X/Dlas7TTjEjmNOjKYxCmUUXtD5NxP6UnhenPQNrz+XkSUVh0qDXyrM7LKj pQ== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34ak16k3dk-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Wed, 21 Oct 2020 20:44:43 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LKZ0ik100071;
+        Wed, 21 Oct 2020 20:44:43 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 348ahy1bh5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 20:44:43 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09LKiff1003552;
+        Wed, 21 Oct 2020 20:44:41 GMT
+Received: from monkey.oracle.com (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Oct 2020 13:44:41 -0700
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+To:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Cc:     David Hildenbrand <david@redhat.com>,
+        Mina Almasry <almasrymina@google.com>,
+        Michal Privoznik <mprivozn@redhat.com>,
+        "Michael S . Tsirkin" <mst@redhat.com>,
+        Michal Hocko <mhocko@kernel.org>,
+        Muchun Song <songmuchun@bytedance.com>,
+        "Aneesh Kumar K . V" <aneesh.kumar@linux.vnet.ibm.com>,
+        Tejun Heo <tj@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>, stable@vger.kernel.org
+Subject: [PATCH] hugetlb_cgroup: fix reservation accounting
+Date:   Wed, 21 Oct 2020 13:44:26 -0700
+Message-Id: <20201021204426.36069-1-mike.kravetz@oracle.com>
+X-Mailer: git-send-email 2.25.4
 MIME-Version: 1.0
-References: <20201021192518.31187-1-sjpark@amazon.com>
-In-Reply-To: <20201021192518.31187-1-sjpark@amazon.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 21 Oct 2020 13:44:22 -0700
-Message-ID: <CAFd5g45cz=8ytDt+xC_kkF19j0rU2TvkM2siiGCpG4nXxe6CEQ@mail.gmail.com>
-Subject: Re: [PATCH] Documentation: kunit: Update Kconfig parts for KUNIT's
- module support
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     Jonathan Corbet <corbet@lwn.net>, SeongJae Park <sjpark@amazon.de>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        David Gow <davidgow@google.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=2
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010210142
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210143
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:32 PM SeongJae Park <sjpark@amazon.com> wrote:
->
-> From: SeongJae Park <sjpark@amazon.de>
->
-> If 'CONFIG_KUNIT=m', letting kunit tests that do not support loadable
-> module build depends on 'KUNIT' instead of 'KUNIT=y' result in compile
-> errors.  This commit updates the document for this.
->
-> Fixes: 9fe124bf1b77 ("kunit: allow kunit to be loaded as a module")
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> Reviewed-by: David Gow <davidgow@google.com>
+Michal Privoznik was using "free page reporting" in QEMU/virtio-balloon
+with hugetlbfs and hit the warning below.  QEMU with free page hinting
+uses fallocate(FALLOC_FL_PUNCH_HOLE) to discard pages that are reported
+as free by a VM. The reporting granularity is in pageblock granularity.
+So when the guest reports 2M chunks, we fallocate(FALLOC_FL_PUNCH_HOLE)
+one huge page in QEMU.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+[  315.251417] ------------[ cut here ]------------
+[  315.251424] WARNING: CPU: 7 PID: 6636 at mm/page_counter.c:57 page_counter_uncharge+0x4b/0x50
+[  315.251425] Modules linked in: ...
+[  315.251466] CPU: 7 PID: 6636 Comm: qemu-system-x86 Not tainted 5.9.0 #137
+[  315.251467] Hardware name: Gigabyte Technology Co., Ltd. X570 AORUS PRO/X570 AORUS PRO, BIOS F21 07/31/2020
+[  315.251469] RIP: 0010:page_counter_uncharge+0x4b/0x50
+...
+[  315.251479] Call Trace:
+[  315.251485]  hugetlb_cgroup_uncharge_file_region+0x4b/0x80
+[  315.251487]  region_del+0x1d3/0x300
+[  315.251489]  hugetlb_unreserve_pages+0x39/0xb0
+[  315.251492]  remove_inode_hugepages+0x1a8/0x3d0
+[  315.251495]  ? tlb_finish_mmu+0x7a/0x1d0
+[  315.251497]  hugetlbfs_fallocate+0x3c4/0x5c0
+[  315.251519]  ? kvm_arch_vcpu_ioctl_run+0x614/0x1700 [kvm]
+[  315.251522]  ? file_has_perm+0xa2/0xb0
+[  315.251524]  ? inode_security+0xc/0x60
+[  315.251525]  ? selinux_file_permission+0x4e/0x120
+[  315.251527]  vfs_fallocate+0x146/0x290
+[  315.251529]  __x64_sys_fallocate+0x3e/0x70
+[  315.251531]  do_syscall_64+0x33/0x40
+[  315.251533]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+...
+[  315.251542] ---[ end trace 4c88c62ccb1349c9 ]---
+
+Investigation of the issue uncovered bugs in hugetlb cgroup reservation
+accounting.  This patch addresses the found issues.
+
+Fixes: 075a61d07a8e ("hugetlb_cgroup: add accounting for shared mappings")
+Cc: <stable@vger.kernel.org>
+Reported-by: Michal Privoznik <mprivozn@redhat.com>
+Co-developed-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
+---
+ mm/hugetlb.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/mm/hugetlb.c b/mm/hugetlb.c
+index 67fc6383995b..b853a11de14f 100644
+--- a/mm/hugetlb.c
++++ b/mm/hugetlb.c
+@@ -655,6 +655,8 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 			}
+ 
+ 			del += t - f;
++			hugetlb_cgroup_uncharge_file_region(
++				resv, rg, t - f);
+ 
+ 			/* New entry for end of split region */
+ 			nrg->from = t;
+@@ -667,9 +669,6 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 			/* Original entry is trimmed */
+ 			rg->to = f;
+ 
+-			hugetlb_cgroup_uncharge_file_region(
+-				resv, rg, nrg->to - nrg->from);
+-
+ 			list_add(&nrg->link, &rg->link);
+ 			nrg = NULL;
+ 			break;
+@@ -685,17 +684,17 @@ static long region_del(struct resv_map *resv, long f, long t)
+ 		}
+ 
+ 		if (f <= rg->from) {	/* Trim beginning of region */
+-			del += t - rg->from;
+-			rg->from = t;
+-
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+ 							    t - rg->from);
+-		} else {		/* Trim end of region */
+-			del += rg->to - f;
+-			rg->to = f;
+ 
++			del += t - rg->from;
++			rg->from = t;
++		} else {		/* Trim end of region */
+ 			hugetlb_cgroup_uncharge_file_region(resv, rg,
+ 							    rg->to - f);
++
++			del += rg->to - f;
++			rg->to = f;
+ 		}
+ 	}
+ 
+@@ -2454,6 +2453,9 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
+ 
+ 		rsv_adjust = hugepage_subpool_put_pages(spool, 1);
+ 		hugetlb_acct_memory(h, -rsv_adjust);
++		if (deferred_reserve)
++			hugetlb_cgroup_uncharge_page_rsvd(hstate_index(h),
++					pages_per_huge_page(h), page);
+ 	}
+ 	return page;
+ 
+-- 
+2.25.4
+
