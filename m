@@ -2,66 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0308F294E56
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:15:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FC72294E58
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:16:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443355AbgJUOP0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:15:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46050 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442646AbgJUOP0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:15:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 06DB722248;
-        Wed, 21 Oct 2020 14:15:23 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 10:15:22 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        tglx@linutronix.de, paul.walmsley@sifive.com,
-        palmerdabbelt@google.com, guoren@kernel.org, atishp@atishpatra.org,
-        mhiramat@kernel.org, greentime.hu@sifive.com,
-        colin.king@canonical.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-Message-ID: <20201021101522.3d1f3865@gandalf.local.home>
-In-Reply-To: <20201021101216.4d840e15@gandalf.local.home>
-References: <20201021073839.43935-1-zong.li@sifive.com>
-        <20201021101216.4d840e15@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2443370AbgJUOQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:16:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34802 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408411AbgJUOQP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:16:15 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 199CFC0613CE;
+        Wed, 21 Oct 2020 07:16:15 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id h10so2228340oie.5;
+        Wed, 21 Oct 2020 07:16:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xUmNqNf011uR7tg0J0IGY/1uNWCq3cTFpXxi+e1PlcE=;
+        b=oFuUqrcQu2/VexDMPJ4hNqPPO70JMTIirpAZAlzCxd6vJTunI5JlqWoEhF6ZCytlIF
+         KsNmRlFiZt+V9AXnca3CWmiXKYDzsuWvi6MIOWvaRYrLoG0VwM5yw/BkcAmYvUxHoJLP
+         J4owwMshxFW40QHvT4pg+8SatIS/YOGsAOW6zM4IucTI8vQ8VK+AvWFssU9bxoiXMj+J
+         brMZ5TUjVrsMN4D47GTTLLAvwvAM/lgIQf1/2VXc/tXEPU82tI+DSXhZj2LDjeo6I/ww
+         k/uOxKUo7kUjCb+iNYcdnw5W4+WhPAEfIeWrC6Nnk0uqWuiVaJ3vd+EBX7GThXg2dEIA
+         W24Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xUmNqNf011uR7tg0J0IGY/1uNWCq3cTFpXxi+e1PlcE=;
+        b=mchIX/leqlKiwAEtDKpUJY6KwG0BYhqibcKJIhxLqH/V7VawsWzc033Hu6dssHVvqu
+         KSCGdPK6yr4BLxo+jhExEe4RIAIq5cbWBoTIB8C/yAugbzh+I2OqR3XmCvy3wS8FUMCn
+         bl8ICu8Z0aQJrvj0Eod24AP6deh9ggf1dgMyKSHrCSNo90ZeBzkAKqXYlsuJVLJD+LGQ
+         TLYMQaQ4BhzY3uehnzNpLVuXTGkJWderHG7zbN2f0bPn8y4iG3SVAI/aF1TvxDMK+3pB
+         prJ8EMmiaZYSxQXkse/pNJKgfJ83B7+7II7u05pHFQoreBN4m+J7evvf98mTLZiUjmqu
+         UWjQ==
+X-Gm-Message-State: AOAM533uRHOW/QdOpvXF+kCRHh+fgiRWAnaZ4kcDYhSWBEqcYupMqkTF
+        sm7BJ2N4+M4yLZALlQoPxac7QwrONtaaiFlJ0sk=
+X-Google-Smtp-Source: ABdhPJz5cRGLf834K6Hy1EmFtbZU8SqqdgCI0HHvn1Y+w4kFcU1UtNqw2/ZupbkiNH1O5H5/JL59Tq+g9eR5jqPpMQY=
+X-Received: by 2002:aca:420a:: with SMTP id p10mr2301545oia.117.1603289774390;
+ Wed, 21 Oct 2020 07:16:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201021135140.51300-1-alexandru.ardelean@analog.com>
+ <20201021135140.51300-2-alexandru.ardelean@analog.com> <20201021140852.GN139700@lunn.ch>
+In-Reply-To: <20201021140852.GN139700@lunn.ch>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 21 Oct 2020 17:16:03 +0300
+Message-ID: <CA+U=DsrZM4gRpmez6KqT8XTEBYwA-gwHjHQWa3Pn+G1nsYD3CA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] net: phy: adin: implement cable-test support
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
+        David Miller <davem@davemloft.net>, kuba@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 10:12:16 -0400
-Steven Rostedt <rostedt@goodmis.org> wrote:
+On Wed, Oct 21, 2020 at 5:09 PM Andrew Lunn <andrew@lunn.ch> wrote:
+>
+> > Signed-off-by: Alexandru Ardelean <alexandru.ardelean@analog.com>
+>
 
-> > Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-> > Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
-> > multi_cpu_stop()")  
-> 
-> I really do not like to add "notrace" to core functions because a single
-> architecture has issues with it. Why does RISCV have problems with these
-> functions but no other architecture does?
-> 
-> NACK from me until it is shown that these are issues for a broader set of
-> architectures.
+removed my typo-ed email
 
-After looking at the two above fixes, I take back my NACK ;-)
+> Hi Alexandru
+>
+> Overall, this looks good.
+>
+> > +static int adin_cable_test_report_trans(int result)
+> > +{
+> > +     int mask;
+> > +
+> > +     if (result & ADIN1300_CDIAG_RSLT_GOOD)
+> > +             return ETHTOOL_A_CABLE_RESULT_CODE_OK;
+> > +     if (result & ADIN1300_CDIAG_RSLT_OPEN)
+> > +             return ETHTOOL_A_CABLE_RESULT_CODE_OPEN;
+> > +
+> > +     /* short with other pairs */
+> > +     mask = ADIN1300_CDIAG_RSLT_XSHRT3 |
+> > +            ADIN1300_CDIAG_RSLT_XSHRT2 |
+> > +            ADIN1300_CDIAG_RSLT_XSHRT1;
+> > +     if (result & mask)
+> > +             return ETHTOOL_A_CABLE_RESULT_CODE_CROSS_SHORT;
+>
+> The nice thing about the netlink API is that it is extendable without
+> breaking backwards compatibility. You could if you want add another
+> attribute, indicating what pair it is shorted to.
 
-One of them duplicates an already notraced function, so that looks fine.
-The other makes a static function global, which could cause issues as well.
+That would be an idea.
 
-After further review:
+Actually, I'd also be interested [for this PHY], to report a
+"significance impedance" detection, which is similar to the
+short-detection that is already done.
+At first, this report would sound like it could be interesting; but
+feel free to disagree with me.
 
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+And there's also some "busy" indicator; as-in "unknown activity during
+diagnostics"; to-be-honest, I don't know what this is yet.
+I'd need to check, but odds are that I'd need to also ask about it.
+So, I don't think I'd implement this.
 
--- Steve
-
+>
+>         Andrew
