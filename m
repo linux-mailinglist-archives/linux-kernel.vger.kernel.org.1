@@ -2,96 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDB0C29462D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 03:14:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 54903294632
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 03:16:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439839AbgJUBOo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 21:14:44 -0400
-Received: from esa4.mentor.iphmx.com ([68.232.137.252]:7913 "EHLO
-        esa4.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439830AbgJUBOo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 21:14:44 -0400
-IronPort-SDR: vfMMZbMrvhynx/OHgDO01je5JhrfEJXz4n0Goj22cn35m5OTsfmbJgp/mYTCVegcRx13zLvlVj
- +OGzYXpR3S8ZN0t5UMY/CToFQ0PcQpyxEYLaRGVtzXhTymS8o68ezFjMbybiU2JnZHSdiEWuIS
- YfMrO0uTWY0oj6A94ekr4gyfIiqeijJGrwmiSqMF4zNUiSZq/mKx6it/ywudLYLHfRfcd2jZO7
- jX8vjAsSplVla0rxwWTGA4/vD3VPBbEQ2BduU7RYTS0eDZw9Dqm9w16aS9Bn6fkND8TK/eREpF
- TRo=
-X-IronPort-AV: E=Sophos;i="5.77,399,1596528000"; 
-   d="scan'208";a="54294566"
-Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
-  by esa4.mentor.iphmx.com with ESMTP; 20 Oct 2020 17:14:43 -0800
-IronPort-SDR: 85YMpVnbLfxUK1a+jmxhDCviXgDNMb8OelwxFri+DnANo5VLi2+uV9HRtg85TTf4D5RxfI0pJd
- twwUxlr7wjnHBJzcYgWEQU2yqmjkp/8Peac8BtAZECdDUoXkijOFPJR+pMxdpFixS4OxSIiq7D
- FPTVDjCf97Eqaf2DZkpDAz8PbVIkd8vOzPqsG1WXPSWdnG8Pe4urz5eRwhB062UtB0QBOdNztL
- yzzvgzXh5BbqjGMZ9ZUE4IKX//UHy1Wn4LrS1DOyvM68Y5vwXo/xnp307dsbQv5OZvmrHfWdGb
- oRY=
-Subject: Re: [PATCH v3 0/3] implement I2C retries for mXT1368
-To:     <dmitry.torokhov@gmail.com>, <robh+dt@kernel.org>,
-        <thierry.reding@gmail.com>, <digetx@gmail.com>,
-        <jonathanh@nvidia.com>
-CC:     <nick@shmanahar.org>, <linux-input@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-        <erosca@de.adit-jv.com>, <andrew_gabbasov@mentor.com>
-References: <20200930151259.18119-1-jiada_wang@mentor.com>
-From:   "Wang, Jiada" <jiada_wang@mentor.com>
-Message-ID: <653c24a4-704a-4d65-2622-49c55a82c901@mentor.com>
-Date:   Wed, 21 Oct 2020 10:14:29 +0900
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2439861AbgJUBQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 21:16:15 -0400
+Received: from mga06.intel.com ([134.134.136.31]:13877 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2439855AbgJUBQO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 21:16:14 -0400
+IronPort-SDR: 1Un73EzYBPoyuGbLmdOysyEGk+O/b+5t2F+sjCQ/zD800N2TjoOP4C4mDR9FuKn0g64MhQ6A6Q
+ ZlKg/nzdGlYg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="228926060"
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="228926060"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga005.fm.intel.com ([10.253.24.32])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 18:16:12 -0700
+IronPort-SDR: AiWrXrX0loI69n1OxE36AJmNeQ5t0Qrkjk5zopbBUprrLUka6R0q1mTrXXNGEq9R13PD7cpz9N
+ sLRjDeyjJeqQ==
+X-IronPort-AV: E=Sophos;i="5.77,399,1596524400"; 
+   d="scan'208";a="523720033"
+Received: from shuo-intel.sh.intel.com (HELO localhost) ([10.239.154.30])
+  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Oct 2020 18:16:08 -0700
+Date:   Wed, 21 Oct 2020 09:16:06 +0800
+From:   Shuo A Liu <shuo.a.liu@intel.com>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Fengwei Yin <fengwei.yin@intel.com>,
+        Zhi Wang <zhi.a.wang@intel.com>,
+        Zhenyu Wang <zhenyuw@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Segher Boessenkool <segher@kernel.crashing.org>
+Subject: Re: [PATCH v5 04/17] x86/acrn: Introduce hypercall interfaces
+Message-ID: <20201021011606.GB12408@shuo-intel.sh.intel.com>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+ <20201019061803.13298-5-shuo.a.liu@intel.com>
+ <20201019221515.GA2875488@rani.riverdale.lan>
+ <20201020013809.GA11038@shuo-intel.sh.intel.com>
+ <20201020020851.GA2996696@rani.riverdale.lan>
+ <20201020023017.GA12408@shuo-intel.sh.intel.com>
+ <20201020141602.GD2996696@rani.riverdale.lan>
 MIME-Version: 1.0
-In-Reply-To: <20200930151259.18119-1-jiada_wang@mentor.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: svr-orw-mbx-04.mgc.mentorg.com (147.34.90.204) To
- svr-orw-mbx-03.mgc.mentorg.com (147.34.90.203)
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201020141602.GD2996696@rani.riverdale.lan>
+User-Agent: Mutt/1.8.3 (2017-05-23)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dmitry and all
+On Tue 20.Oct'20 at 10:16:02 -0400, Arvind Sankar wrote:
+>On Tue, Oct 20, 2020 at 10:30:17AM +0800, Shuo A Liu wrote:
+>> On Mon 19.Oct'20 at 22:08:51 -0400, Arvind Sankar wrote:
+>> >On Tue, Oct 20, 2020 at 09:38:09AM +0800, Shuo A Liu wrote:
+>> >> On Mon 19.Oct'20 at 18:15:15 -0400, Arvind Sankar wrote:
+>> >> >On Mon, Oct 19, 2020 at 02:17:50PM +0800, shuo.a.liu@intel.com wrote:
+>> >> >> From: Shuo Liu <shuo.a.liu@intel.com>
+>> >> >>
+>> >> >> The Service VM communicates with the hypervisor via conventional
+>> >> >> hypercalls. VMCALL instruction is used to make the hypercalls.
+>> >> >>
+>> >> >> ACRN hypercall ABI:
+>> >> >>   * Hypercall number is in R8 register.
+>> >> >>   * Up to 2 parameters are in RDI and RSI registers.
+>> >> >>   * Return value is in RAX register.
+>> >> >>
+>> >> >> Introduce the ACRN hypercall interfaces. Because GCC doesn't support R8
+>> >> >> register as direct register constraints, use supported constraint as
+>> >> >> input with a explicit MOV to R8 in beginning of asm.
+>> >> >>
+>> >> >> +static inline long acrn_hypercall0(unsigned long hcall_id)
+>> >> >> +{
+>> >> >> +	long result;
+>> >> >> +
+>> >> >> +	asm volatile("movl %1, %%r8d\n\t"
+>> >> >> +		     "vmcall\n\t"
+>> >> >> +		     : "=a" (result)
+>> >> >> +		     : "ir" (hcall_id)
+>> >> >
+>> >> >Is the hypercall id an unsigned long (64 bits) or an unsigned int (32
+>> >> >bits)? This will generate broken assembly if the "r" option is chosen,
+>> >> >eg something like
+>> >> >	movl %rdi, %r8d
+>> >>
+>> >> Yes, it can be an unsigned long. So do MOV explicitly.
+>> >>
+>> >> 	asm volatile("movq %1, %%r8\n\t"
+>> >> 		     "vmcall\n\t"
+>> >> 		     : "=a" (result)
+>> >> 		     : "ir" (hcall_id)
+>> >>
+>> >> Thanks
+>> >
+>> >All the hypercall ID's defined seem to be only 32 bits though?
+>>
+>> Yes, they are.
+>> The paramter is unsigned long, use movq to align it.
+>
+>I don't understand what you mean by alignment here, but I was asking why
+>hcall_id is unsigned long and not unsigned int (or u32) if you only need
+>32 bits?
 
-Kind reminder on this patch-set
-
-
-Thanks,
-Jiada
-
-On 2020/10/01 0:12, Jiada Wang wrote:
-> According to datasheet, mXT1386 chip has a WAKE line, it is used
-> to wake the chip up from deep sleep mode before communicating with
-> it via the I2C-compatible interface.
->      
-> if the WAKE line is connected to a GPIO line, the line must be
-> asserted 25 ms before the host attempts to communicate with the
-> mXT1386.
-> If the WAKE line is connected to the SCL pin, the mXT1386 will send
-> a NACK on the first attempt to address it, the host must then retry
-> 25 ms later.
->      
-> This patch adds compatible string "atmel,mXT1386" for mXT1386 controller,
-> when I2C transfer on mXT1386 fails, retry the transfer once after a
-> 25 ms sleep.
-> 
-> 
-> Jiada Wang (3):
->    dt-bindings: input: atmel: add compatible for mXT1386
->    Input: atmel_mxt_ts - implement I2C retries for mXT1368
->    ARM: tegra: add mXT1386 compatible
-> 
-> ---
-> v3:
-> change compatible string to lowercase
-> 
-> v2:
-> add bool retry_i2c_transfers to struct mxt_data,
-> to indicate whether retry is needed when i2c transfer fails
-> 
-> v1: initial version
-> ---
->   .../bindings/input/atmel,maxtouch.txt         |  1 +
->   .../boot/dts/tegra20-acer-a500-picasso.dts    |  2 +-
->   drivers/input/touchscreen/atmel_mxt_ts.c      | 62 +++++++++++++++----
->   3 files changed, 52 insertions(+), 13 deletions(-)
-> 
+The hypervisor is using R8 as the input of hcall_id. So i just want to
+keep it consistent.
