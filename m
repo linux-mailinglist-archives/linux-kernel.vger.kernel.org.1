@@ -2,129 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0D7B42953FC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 62A6E2953FF
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:17:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505963AbgJUVQs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:16:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40606 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505955AbgJUVQr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:16:47 -0400
-Received: from localhost (cha74-h07-176-172-165-167.dsl.sta.abo.bbox.fr [176.172.165.167])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DA2A924198;
-        Wed, 21 Oct 2020 21:16:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603315006;
-        bh=bOHoiYFZ+xyJgLQtXuLgV3l45KEiMTOiKzJhlF/pyQQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uAu0US1Dgp1dTdHuMFxmsvdz8SKGoYc/C6M6PJjSHlApjf2EOiu7O74o7vutUMNJ8
-         WUAw05TEbMZXEif9lA4bfO9U0d9ypzZMCojpcXfM4rYH/aWiLdg1sc5wJo3emGrRb6
-         O3pt2NWWPo0MFKDQaS8bK0WY5peOAXRzfAJqHclc=
-Date:   Wed, 21 Oct 2020 23:16:43 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
-To:     Joel Fernandes <joel@joelfernandes.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain
- smp_mb()
-Message-ID: <20201021211643.GA78735@lothringen>
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org>
- <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com>
- <20201017031941.GD4015033@google.com>
- <20201017132954.GA15657@lothringen>
- <20201018003556.GA1034551@google.com>
- <20201019123730.GA34192@lothringen>
- <CAEXW_YTtYspPNw_eL1vmGXhY8nJ8uQonSc5KuA1weYv3G+bWPg@mail.gmail.com>
+        id S2505975AbgJUVQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:16:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43562 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505965AbgJUVQw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 17:16:52 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2676EC0613CE;
+        Wed, 21 Oct 2020 14:16:52 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id b26so2250340pff.3;
+        Wed, 21 Oct 2020 14:16:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=LjEMR+RvxUAU+81ZngdDVY7KFUetPWRBhlcZRlrbWTM=;
+        b=OtbvTaTjOhxeRj3LLmn0KyRuvranTgvXawtEOjZbnyotpxY/yFBKBDbhU6sQm9W8uo
+         P24+/ASmVuB5gdow7ePMK6A9yX2X1qxSk2zISwUb8c95FEEaQqpLfmtUQ5TCzKJX2gsA
+         PypaNLGZuELOxxK+ZZPpopI/C0H0tIvoB3Io9tinImcbXlh2+Z6HEs3pUGMcLFQtnbRY
+         hdfsm5Ur3YVJRk6aOXt3lkChUWbsCKVb9h73Wy9s1sqm77daomwV2dIThXhggmtPCT7f
+         4rFuvUEYn+VejbcKX8h21n5LdGGdwOIGQ2li02jMh6y1Z24iMOf3SeOHX7PPQM1+2hhi
+         ZwBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=LjEMR+RvxUAU+81ZngdDVY7KFUetPWRBhlcZRlrbWTM=;
+        b=sXmx1PhzLKzlpcm7WhyVyMgFV5M6R1mRaFhIy7V06fhICMZ7RX4MRoVmGVrvH4de4q
+         u5FqDZhXhqDg3aLdIut0hl7EZ/tUF7V9tw4xXVfCAM/YeZ7DYSC0BZzy/FhpntLlBErc
+         F2ex7KMJnpeYwn029DRic2ZYy+McM2hEI9cN511kJ1IDS4Jz9SzvhDm18Z1391XP0cZP
+         IJXShAyQiEUzbvaMkyblUkhagEnREQkEe2Wfk/W22Q+DSYn6y2bsWFOFbZ8SV3b7dtoS
+         hgxORje5/0+mhfcRps34N4BUVJv+3P52jnC6CAPX2Dw0GzkHMtimW6VjM1DdN0n51ZSJ
+         AXEQ==
+X-Gm-Message-State: AOAM530UkjrRNSq2hHChwuD1OMN467JYVsIkdMKEx/fzQVK/LpxfeOaX
+        brVyOBBrTR8wm1+TKSAiE+k=
+X-Google-Smtp-Source: ABdhPJz/NqKws5TvHKaVDM4XPLrDvxcZl5xFUdIaq1uNYBQ5nklC6g8p6qIR/7jawo+ZMj/hDJJM+w==
+X-Received: by 2002:a62:1b02:0:b029:154:fdbe:4d2a with SMTP id b2-20020a621b020000b0290154fdbe4d2amr5382913pfb.27.1603315011599;
+        Wed, 21 Oct 2020 14:16:51 -0700 (PDT)
+Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
+        by smtp.gmail.com with ESMTPSA id s20sm3189870pfc.201.2020.10.21.14.16.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 14:16:50 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 14:16:48 -0700
+From:   dmitry.torokhov@gmail.com
+To:     kholk11@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org
+Subject: Re: [PATCH v5 2/3] Input: Add Novatek NT36xxx touchscreen driver
+Message-ID: <20201021211648.GE444962@dtor-ws>
+References: <20201017190152.12780-1-kholk11@gmail.com>
+ <20201017190152.12780-3-kholk11@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAEXW_YTtYspPNw_eL1vmGXhY8nJ8uQonSc5KuA1weYv3G+bWPg@mail.gmail.com>
+In-Reply-To: <20201017190152.12780-3-kholk11@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:57:04AM -0700, Joel Fernandes wrote:
-> On Mon, Oct 19, 2020 at 5:37 AM Frederic Weisbecker <frederic@kernel.org> wrote:
-> > Now, reading the documentation of rcu_barrier() (thanks to you!):
-> >
-> >     Pseudo-code using rcu_barrier() is as follows:
-> >
-> >    1. Prevent any new RCU callbacks from being posted.
-> >    2. Execute rcu_barrier().
-> >    3. Allow the module to be unloaded.
-> >
-> 
-> Basically, you are saying that if all CPUs agree that len == 0
-> henceforth (through other memory barriers), then callback enqueuing
-> does not need a memory barrier before setting length to 0.
+Hi AngeloGioacchino,
 
-I think setting length to 0 isn't much an issue. At worst we send a useless
-IPI and queue a needless callback. But incrementing from 0 to 1 is precisely
-what we don't want to miss.
+[obviously not a complete review, but wanted to call out regmap concern]
 
-> I think that makes sense but is it worth removing the memory barrier
-> before WRITE(len, 1) and hoping after #1, the caller would have
-> ensured things are fine? Also I am not sure if the above is the only
-> usecase for rcu_barrier().
+On Sat, Oct 17, 2020 at 09:01:51PM +0200, kholk11@gmail.com wrote:
+> +static int nt36xxx_read_pid(struct nt36xxx_i2c *ts)
+> +{
+> +	u8 buf[2] = { 0 };
 
-I'm not sure either. Also I need to check your scenario again.
+	__be16 pid;
 
-> > cancel_work_sync() also seem to really sync as well. I'm less sure about del_timer_sync().
-> >
-> > Say we have:
-> >
-> > expire_timers (CPU 0)                               CPU 1
-> > -------------                                       -----------
-> > detach_timer(timer)
-> > raw_spin_unlock(&base->lock);
-> > call_timer_fn(timer, fn, baseclk);
-> >    -> enqueue callback
-> > //would need at least smp_wmb() here
+> +	int ret = 0;
+> +
+> +	ret = nt36xxx_set_page(ts, ts->mmap->evtbuf_addr);
+> +	if (unlikely(ret < 0))
+> +		return ret;
 
-Aah, my bad, the smp_mb() after inc_len does that.
+regmap is supposed to help with the paged registers, that is why I
+recommended using it.
 
-> > base->running_timer = NULL;
-> >
-> >                                                     del_timer_sync() {
-> >                                                         raw_spin_lock(&base->lock);
-> >                                                         if (base->running_timer != timer)
-> >                                                             ret = detach_if_pending(timer, base, true);
-> >                                                                 if (!timer_pending())
-> >                                                                     return 0;
-> >                                                         raw_spin_unlock(&base->lock);
-> >                                                     }
-> >                                                     //would need at least smp_rmb() here
+> +
+> +	ret = regmap_noinc_read(ts->fw_regmap, NT36XXX_EVT_PROJECTID,
+> +				buf, sizeof(buf));
+> +	if (unlikely(ret < 0))
+> +		return ret;
+> +
+> +	ts->fw_info.nvt_pid = (buf[1] << 8) + buf[0];
 
-And rcu_seq_start() implies that, although I'm not sure that's what was intended.
-So we are good.
+	ts->fw_info.nvt_pid = be16_to_cpu(pid);
 
-> 
-> Regarding "would need at least smp_rmb.." :
-> But the rcu_barrier() has the control dependency we discussed in last
-> emails, between READ(len) and whatever follows the rcu_barrier().
-> That itself will provide the ordering right?
+Thanks.
 
-I'm not sure that was enough. The len itself has to be synchronized against
-whatever callback enqueuer that got stopped.
-
-> I could be missing something too :-/. But I'll include this patch in
-> my next posting anyway and let us also maybe see if Paul disagrees.
-
-Ok.
-
-Thanks!
+-- 
+Dmitry
