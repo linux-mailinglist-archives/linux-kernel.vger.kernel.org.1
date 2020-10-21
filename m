@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7732A295370
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:25:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E334295373
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503118AbgJUUZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:25:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42750 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408285AbgJUUZv (ORCPT
+        id S2505290AbgJUU0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:26:05 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:43714 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504936AbgJUU0D (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:25:51 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603311949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ErBlktAm/VDZfe11k5xiz2G5eeFjMBryMubxpLgI90=;
-        b=lAs4GHqKsxFj2ehxfTNtvW6HA/OFk73TgWU9NNny0xClUy9lV3pa0W2oLtGILx/5+6IOaj
-        kiP+OrcbeSZswKH0PNvs6kl+cZ0yljZA20keIiuAoOoLHbuecNCk8Rk7WG952LfmSVCq5Z
-        Kkgn0blrKnDKJ0DGDhdgUUZT6JSwy1B/BeEfXU+3zCGjCO3nkdjSO4BZcPPh3twnJ3kdLz
-        vih60WESW5odQfOVoD1IRz2ZqSOjovNza8g9gJZQEB8ZfYnFLyHc3WZ0IgVDfqSAPygZyd
-        8jx0pYbfQ9rwtnwciHVhkCutMekhR4bTANCWeuz3KyofRgJNMLsMNNPZ2JOoDA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603311949;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0ErBlktAm/VDZfe11k5xiz2G5eeFjMBryMubxpLgI90=;
-        b=CKysLuROojLRHKTKNJPL+SuMqZe5T2j0BnTXahqjamQZMuEe9GG6lsjkfBNsx0nVCUNULw
-        mVjXQAOmVi6sOoCg==
-To:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com, Jakub Kicinski <kuba@kernel.org>,
-        Dave Miller <davem@davemloft.net>
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <87lfg093fo.fsf@nanos.tec.linutronix.de>
-References: <20200928183529.471328-1-nitesh@redhat.com> <20200928183529.471328-5-nitesh@redhat.com> <87v9f57zjf.fsf@nanos.tec.linutronix.de> <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com> <87lfg093fo.fsf@nanos.tec.linutronix.de>
-Date:   Wed, 21 Oct 2020 22:25:48 +0200
-Message-ID: <877drj72cz.fsf@nanos.tec.linutronix.de>
+        Wed, 21 Oct 2020 16:26:03 -0400
+Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
+ id 209d3efdcc2be77e; Wed, 21 Oct 2020 22:26:00 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        viresh.kumar@linaro.org, srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Date:   Wed, 21 Oct 2020 22:25:59 +0200
+Message-ID: <2376963.UiH3HBYXtl@kreacher>
+In-Reply-To: <alpine.DEB.2.22.394.2010212147230.8475@hadrien>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20581608.8Dxr8OdOFj@kreacher> <alpine.DEB.2.22.394.2010212147230.8475@hadrien>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20 2020 at 20:07, Thomas Gleixner wrote:
-> On Tue, Oct 20 2020 at 12:18, Nitesh Narayan Lal wrote:
->> However, IMHO we would still need a logic to prevent the devices from
->> creating excess vectors.
->
-> Managed interrupts are preventing exactly that by pinning the interrupts
-> and queues to one or a set of CPUs, which prevents vector exhaustion on
-> CPU hotplug.
->
-> Non-managed, yes that is and always was a problem. One of the reasons
-> why managed interrupts exist.
+On Wednesday, October 21, 2020 9:47:51 PM CEST Julia Lawall wrote:
+> 
+> On Wed, 21 Oct 2020, Rafael J. Wysocki wrote:
+> 
+> > On Wednesday, October 21, 2020 2:42:20 PM CEST Julia Lawall wrote:
+> > >
+> > > On Wed, 21 Oct 2020, Peter Zijlstra wrote:
+> > >
+> > > > On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
+> > > > > Prior to 5.8, my machine was using intel_pstate and had few background
+> > > > > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
+> > > > > the kernel decided that intel_cpufreq would be more appropriate, which
+> > > > > introduced kworkers every 0.004 seconds on all cores.
+> > > >
+> > > > That still doesn't make any sense. Are you running the legacy on-demand
+> > > > thing or something?
+> > > >
+> > > > Rafael, Srinivas, Viresh, how come it defaults to that?
+> > >
+> > > The relevant commits are 33aa46f252c7, and 39a188b88332 that fixes a small
+> > > bug.  I have a Intel(R) Xeon(R) CPU E7-8870 v4 @ 2.10GHz that does not
+> > > have the HWP feature, even though the cores seemed to be able to change
+> > > their frequencies at the hardware level.
+> >
+> > That's in the range of "turbo" P-states (if a P-state above a certain threshold
+> > is requested by the governor, the processor has a license to choose P-states
+> > in the range above this threshold by itself).
+> 
+> Sorry, but I don't understand this answer at all.
 
-But why is this only a problem for isolation? The very same problem
-exists vs. CPU hotplug and therefore hibernation.
+Well, sorry about that and let me rephrase then.
 
-On x86 we have at max. 204 vectors available for device interrupts per
-CPU. So assumed the only device interrupt in use is networking then any
-machine which has more than 204 network interrupts (queues, aux ...)
-active will prevent the machine from hibernation.
+Contemporary CPUs have two ranges of P-states, the so called "guaranteed
+performance" range and the "turbo" range.
 
-Aside of that it's silly to have multiple queues targeted at a single
-CPU in case of hotplug. And that's not a theoretical problem.  Some
-power management schemes shut down sockets when the utilization of a
-system is low enough, e.g. outside of working hours.
+In the "guaranteed performance" range the CPU runs in the P-state requested
+by the governor, unless a higher P-state has been requested for another CPU in
+its frequency domain (usually covering the entire processor package) , in which
+case that higher P-state will be used (the effective P-state for all CPUs in the
+frequency domain is the maximum of all P-states requested for individual CPUs).
 
-The whole point of multi-queue is to have locality so that traffic from
-a CPU goes through the CPU local queue. What's the point of having two
-or more queues on a CPU in case of hotplug?
+However, if the governor requests a P-state from the "turbo" range, the
+processor is not required to take that request literally and the PM unit in it may
+override the governor's choice and cause the CPU to run in a different P-state
+(also from the "turbo" range), even if lower P-states have been requested for
+the other CPUs in the processor package.
 
-The right answer to this is to utilize managed interrupts and have
-according logic in your network driver to handle CPU hotplug. When a CPU
-goes down, then the queue which is associated to that CPU is quiesced
-and the interrupt core shuts down the relevant interrupt instead of
-moving it to an online CPU (which causes the whole vector exhaustion
-problem on x86). When the CPU comes online again, then the interrupt is
-reenabled in the core and the driver reactivates the queue.
+This is also explained in Documentation/admin-guide/pm/intel_pstate.rst (in the
+Turbo P-states Support section), in more detail and hopefully more clearly.
 
-Thanks,
-
-        tglx
+Cheers!
 
 
 
