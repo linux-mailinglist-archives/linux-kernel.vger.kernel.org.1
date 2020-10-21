@@ -2,121 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A0AF294FEE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE4F4294FF0
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:24:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502462AbgJUPXy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:23:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45448 "EHLO
+        id S2502473AbgJUPYA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:24:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45464 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502253AbgJUPXy (ORCPT
+        with ESMTP id S2502253AbgJUPX6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:23:54 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 32B66C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:23:54 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h4so1309830pjk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:23:54 -0700 (PDT)
+        Wed, 21 Oct 2020 11:23:58 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49928C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:23:57 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id t14so1682323pgg.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:23:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VJt9mpGw3XVLr896N5J+yAHDMbRZltPHKTigqN+nL2A=;
-        b=gACjmOgPvCkWNF7wjR5zlSrIOcPkspaajkYXUm27/lMdpQgZC6kA8xfliZmASpA4sd
-         x1/SxpB7Vcc2Zx2bW7/Aqo4qeiTjg+vYSt8wZJUoCWrm/13vqk+T31WCsnsY+rUFDQ8E
-         xOhY6dN6aBQZL1cX12GfJCfPT8J9GOXjuw8Ks83sRt9+F2xOMB6V3NvyLlqm11wxi7xk
-         NAMflSjrgUHQpAOr13ym/NOAvq/PQyzLppAuEp+8OjUGSe5vGbTmoZ3Bje1RfE/ZmdUH
-         /J/u0WUKwD2WSN1adturfNYbdx8QDdJxV8aDf5xNhbqv1LnJBwbzPW+7/3iPLiQ6hj3h
-         SaMw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=xRwf4DqoMUvHNwkwB3XZH8t7Lnkw92COkggpTduZ+jA=;
+        b=f5OT90S3NNEZJYktsRffHk7/rB2owOU/c/N9NOViJaDLwvuEKEtqmxWfktPXLFhtRR
+         e2LPqLiYNzQdFE9jdVe2Jvn3UWFsyazCYvHtdSGU98rB20V9Px0OBRoaulyXzRHym5nl
+         6+bsTaWjCcMHHocYXnPu6Fi+tEAwEoggtKXew=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VJt9mpGw3XVLr896N5J+yAHDMbRZltPHKTigqN+nL2A=;
-        b=pwIy5YKNCBhhqm9IVUFWzVWYUV4RwLx40Uf7Vpb0dWMtQtTXyt1VtLwxXTCJBt72Gr
-         7ClE/7HxsRi+lBthB+pIFfeUebCZdtrybuwC6s5SraqwD4bpAhRxoAXzzQkNU6awTWtE
-         BlDHrR0M4wNvzmxI4r30wVW+WNQ97Mj8h+LMZgAElZ9vgs/l8UUd6FMWYx2+Ff3y5LNW
-         RnW3Ey+dO+Oz5CFNYj4JfQxhey51AP5WlceSuCSAw1nL08h2MIDRpz3cEnkvvRfmafuy
-         BZ65lXfihGHR3QKLO5HMlLO2T+2LZxw9GzcBZfG7QIqcuC0632ksJrCjM7MARD3TMXGW
-         dJMw==
-X-Gm-Message-State: AOAM531wjZYpW8OpqXFP8yDfbqNnHzaDUebhoQLKoRc6kXN7OnmIJAsd
-        ndZBQzQCqeb+TK6jhrKT+BmO
-X-Google-Smtp-Source: ABdhPJybEqWhquCChr+znUy67PAOtl0jxYpXKn2UoKv0jw6Hp8vNIki/CWSLvezi74dVRjn7ONVyqg==
-X-Received: by 2002:a17:90a:aa90:: with SMTP id l16mr3865288pjq.0.1603293833626;
-        Wed, 21 Oct 2020 08:23:53 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:70e:2a27:314a:6d22:ec47:a603])
-        by smtp.gmail.com with ESMTPSA id z5sm2615951pfn.20.2020.10.21.08.23.48
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Oct 2020 08:23:52 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 20:53:45 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org
-Subject: Re: [PATCH v7 2/4] bus: mhi: core: Move MHI_MAX_MTU to external
- header file
-Message-ID: <20201021152345.GC3334@Mani-XPS-13-9360>
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-3-git-send-email-hemantk@codeaurora.org>
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=xRwf4DqoMUvHNwkwB3XZH8t7Lnkw92COkggpTduZ+jA=;
+        b=s44poeS48F/vL78LBLAVrF2Ebrm66Tn3hz89GLkTY/XPgt3+xIi8Br8xTHKjWZfgqQ
+         5A29fgg4eMzZp/52fgr9bvIz78+0jXnYz7tpbrndvE5AmUyq/HjEsqGIvVsymBD0dsK/
+         skZ0Hd/+MrdQ9QjpItgKn82psBwqKMStcyoy/fJv1C4+XK5Uim1jrLRuQAjkC0sMe669
+         4yO4Q5c+AXbqMCaM1we3UlsNIruiEpFm1y4aZUn/N8QkTSQEvXz7wKx+sN9K4NVZ4E0u
+         JN6rpPBUXom/LrBfNGYCVmcXXNb2SsoZCEYBWgValh/LyehrmyspPbgYylmgoxTkWWwo
+         uY2w==
+X-Gm-Message-State: AOAM533f+cKfOqf0I6+RirfYn/1HjK3gRTw0PWGstgTeswAWb0bYAfX5
+        cYf+64fspRKGuMtk2GovTw5Ecw==
+X-Google-Smtp-Source: ABdhPJwt51nNoKa4JQW4NJKHdHhGHVnSfPJkAa5O/BNFYPCTK14wy34SaToysRnSlcpNeZksQW51Pw==
+X-Received: by 2002:a65:5b09:: with SMTP id y9mr3739101pgq.155.1603293836817;
+        Wed, 21 Oct 2020 08:23:56 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id w19sm2647509pfn.174.2020.10.21.08.23.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 08:23:56 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602907457-13680-3-git-send-email-hemantk@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021075722.GA17230@willie-the-truck>
+References: <20201020214544.3206838-1-swboyd@chromium.org> <20201020214544.3206838-2-swboyd@chromium.org> <20201021075722.GA17230@willie-the-truck>
+Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+To:     Will Deacon <will@kernel.org>
+Date:   Wed, 21 Oct 2020 08:23:54 -0700
+Message-ID: <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:04:15PM -0700, Hemant Kumar wrote:
-> Currently this macro is defined in internal MHI header as
-> a TRE length mask. Moving it to external header allows MHI
-> client drivers to set this upper bound for the transmit
-> buffer size.
-> 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+Quoting Will Deacon (2020-10-21 00:57:23)
+> On Tue, Oct 20, 2020 at 02:45:43PM -0700, Stephen Boyd wrote:
+> > According to the SMCCC spec (7.5.2 Discovery) the
+> > ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+> > SMCCC_RET_NOT_SUPPORTED corresponding to "workaround required",
+> > "workaround not required but implemented", and "who knows, you're on
+> > your own" respectively. For kvm hypercalls (hvc), we've implemented this
+> > function id to return SMCCC_RET_NOT_SUPPORTED, 1, and
+> > SMCCC_RET_NOT_REQUIRED. The SMCCC_RET_NOT_REQUIRED return value is not a
+> > thing for this function id, and is probably copy/pasted from the
+> > SMCCC_ARCH_WORKAROUND_2 function id that does support it.
+> >=20
+> > Clean this up by returning 0, 1, and SMCCC_RET_NOT_SUPPORTED
+> > appropriately. Changing this exposes the problem that
+> > spectre_v2_get_cpu_fw_mitigation_state() assumes a
+> > SMCCC_RET_NOT_SUPPORTED return value means we are vulnerable, but really
+> > it means we have no idea and should assume we can't do anything about
+> > mitigation. Put another way, it better be unaffected because it can't be
+> > mitigated in the firmware (in this case kvm) as the call isn't
+> > implemented!
+> >=20
+> > Cc: Andre Przywara <andre.przywara@arm.com>
+> > Cc: Steven Price <steven.price@arm.com>
+> > Cc: Marc Zyngier <maz@kernel.org>
+> > Cc: stable@vger.kernel.org
+> > Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround =
+state to KVM guests")
+> > Fixes: 73f381660959 ("arm64: Advertise mitigation of Spectre-v2, or lac=
+k thereof")
+> > Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+> > ---
+> >=20
+> > This will require a slightly different backport to stable kernels, but
+> > at least it looks like this is a problem given that this return value
+> > isn't valid per the spec and we've been going around it by returning
+> > something invalid for some time.
+> >=20
+> >  arch/arm64/kernel/proton-pack.c | 3 +--
+> >  arch/arm64/kvm/hypercalls.c     | 2 +-
+> >  2 files changed, 2 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton=
+-pack.c
+> > index 68b710f1b43f..00bd54f63f4f 100644
+> > --- a/arch/arm64/kernel/proton-pack.c
+> > +++ b/arch/arm64/kernel/proton-pack.c
+> > @@ -149,10 +149,9 @@ static enum mitigation_state spectre_v2_get_cpu_fw=
+_mitigation_state(void)
+> >       case SMCCC_RET_SUCCESS:
+> >               return SPECTRE_MITIGATED;
+> >       case SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED:
+> > +     case SMCCC_RET_NOT_SUPPORTED: /* Good luck w/ the Gatekeeper of G=
+ozer */
+> >               return SPECTRE_UNAFFECTED;
+>=20
+> Hmm, I'm not sure this is correct. The SMCCC spec is terrifically
+> unhelpful:
+>=20
+>   NOT_SUPPORTED:
+>   Either:
+>   * None of the PEs in the system require firmware mitigation for CVE-201=
+7-5715.
+>   * The system contains at least 1 PE affected by CVE-2017-5715 that has =
+no firmware
+>     mitigation available.
+>   * The firmware does not provide any information about whether firmware =
+mitigation is
+>     required.
+>=20
+> so we can't tell whether the thing is vulnerable or not in this case, and
+> have to assume that it is.
 
-I've already reviewed this patch. Please make sure to collect reviews while
-posting incremental revisions.
+If I'm reading the TF-A code correctly it looks like this will return
+SMC_UNK if the platform decides that "This flag can be set to 0 by the
+platform if none of the PEs in the system need the workaround." Where
+the flag is WORKAROUND_CVE_2017_5715 and the call handler returns 1 if
+the errata doesn't apply but the config is enabled, 0 if the errata
+applies and the config is enabled, or SMC_UNK (I guess this is
+NOT_SUPPORTED?) if the config is disabled[2].
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+So TF-A could disable this config and then the kernel would think it is
+vulnerable when it actually isn't? The spec is a pile of ectoplasma
+here.
 
-Thanks,
-Mani
+>=20
+> >       default:
+> > -             fallthrough;
+> > -     case SMCCC_RET_NOT_SUPPORTED:
+> >               return SPECTRE_VULNERABLE;
+> >       }
+> >  }
+> > diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+> > index 9824025ccc5c..868486957808 100644
+> > --- a/arch/arm64/kvm/hypercalls.c
+> > +++ b/arch/arm64/kvm/hypercalls.c
+> > @@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+> >                               val =3D SMCCC_RET_SUCCESS;
+> >                               break;
+> >                       case SPECTRE_UNAFFECTED:
+> > -                             val =3D SMCCC_RET_NOT_REQUIRED;
+> > +                             val =3D SMCCC_RET_NOT_SUPPORTED;
+>=20
+> Which means we need to return SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED here, I
+> suppose?
+>=20
 
-> ---
->  drivers/bus/mhi/core/internal.h | 1 -
->  include/linux/mhi.h             | 3 +++
->  2 files changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-> index 7989269..4abf0cf 100644
-> --- a/drivers/bus/mhi/core/internal.h
-> +++ b/drivers/bus/mhi/core/internal.h
-> @@ -453,7 +453,6 @@ enum mhi_pm_state {
->  #define CMD_EL_PER_RING			128
->  #define PRIMARY_CMD_RING		0
->  #define MHI_DEV_WAKE_DB			127
-> -#define MHI_MAX_MTU			0xffff
->  #define MHI_RANDOM_U32_NONZERO(bmsk)	(prandom_u32_max(bmsk) + 1)
->  
->  enum mhi_er_type {
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index 7829b1d..6e1122c 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -15,6 +15,9 @@
->  #include <linux/wait.h>
->  #include <linux/workqueue.h>
->  
-> +/* MHI client drivers to set this upper bound for tx buffer */
-> +#define MHI_MAX_MTU 0xffff
-> +
->  #define MHI_MAX_OEM_PK_HASH_SEGMENTS 16
->  
->  struct mhi_chan;
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+Does the kernel implement a workaround in the case that no guest PE is
+affected? If so then returning 1 sounds OK to me, but otherwise
+NOT_SUPPORTED should work per the spec.
+
+[1] https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/tree/docs/d=
+esign/cpu-specific-build-macros.rst#n14
+[2] https://git.trustedfirmware.org/TF-A/trusted-firmware-a.git/tree/servic=
+es/arm_arch_svc/arm_arch_svc_setup.c#n30
