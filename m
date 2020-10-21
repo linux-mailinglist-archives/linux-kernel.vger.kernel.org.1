@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61B5E294E44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:10:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 551BD294E4B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:12:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443289AbgJUOJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:09:58 -0400
-Received: from mx4.veeam.com ([104.41.138.86]:45980 "EHLO mx4.veeam.com"
+        id S2443309AbgJUOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:12:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440751AbgJUOJ6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:09:58 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
+        id S2443301AbgJUOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:12:20 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 255F68B1B6;
-        Wed, 21 Oct 2020 17:09:55 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1603289395; bh=S6/ARzVD8H7/67HYgZs8YGKPZVCfzESpZ3pgvBKiAGg=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=VeV/DnbLBfCV6NCAbN2AZTuCJpbMCyv+ggraoRGqdsZhB0jEcmcbc8m1qVhHsuD2X
-         k314WdS65AVHt3oiOE0eEeoP9ctoZ6/gfDgwwokbcRqQkjfKkJvdZUXGt36y3XYVYz
-         bSP8IrlYgxS0pjvb9WPL4EZbNOIn04eC8KV9r/b4=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Wed, 21 Oct 2020
- 16:09:53 +0200
-Date:   Wed, 21 Oct 2020 17:10:44 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Hannes Reinecke <hare@suse.de>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
-Message-ID: <20201021141044.GF20749@veeam.com>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D2EC22249;
+        Wed, 21 Oct 2020 14:12:18 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 10:12:16 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Zong Li <zong.li@sifive.com>
+Cc:     paulmck@kernel.org, josh@joshtriplett.org,
+        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
+        joel@joelfernandes.org, vincent.whitchurch@axis.com,
+        tglx@linutronix.de, paul.walmsley@sifive.com,
+        palmerdabbelt@google.com, guoren@kernel.org, atishp@atishpatra.org,
+        mhiramat@kernel.org, greentime.hu@sifive.com,
+        colin.king@canonical.com, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
+Subject: Re: [PATCH] stop_machine: Mark functions as notrace
+Message-ID: <20201021101216.4d840e15@gandalf.local.home>
+In-Reply-To: <20201021073839.43935-1-zong.li@sifive.com>
+References: <20201021073839.43935-1-zong.li@sifive.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A677566
-X-Veeam-MMEX: True
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/21/2020 16:31, Hannes Reinecke wrote:
-> I do understand where you are coming from, but then we already have a 
-> dm-snap which does exactly what you want to achieve.
-> Of course, that would require a reconfiguration of the storage stack on 
-> the machine, which is not always possible (or desired).
+On Wed, 21 Oct 2020 15:38:39 +0800
+Zong Li <zong.li@sifive.com> wrote:
 
-Yes, reconfiguring the storage stack on a machine is almost impossible.
+> Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
+> as notrace"), some architectures assume that the stopped CPUs don't make
+> function calls to traceable functions when they are in the stopped
+> state. For example, it causes unexpected kernel crashed when switching
+> tracer on RISC-V.
+> 
+> The following patches added calls to these two functions, fix it by
+> adding the notrace annotations.
+> 
+> Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
+> Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
+> multi_cpu_stop()")
+
+I really do not like to add "notrace" to core functions because a single
+architecture has issues with it. Why does RISCV have problems with these
+functions but no other architecture does?
+
+NACK from me until it is shown that these are issues for a broader set of
+architectures.
+
+It sounds to me like you are treating a symptom and not the disease.
+
+-- Steve
+
 
 > 
-> What I _could_ imagine would be a 'dm-intercept' thingie, which 
-> redirects the current submit_bio() function for any block device, and 
-> re-routes that to a linear device-mapper device pointing back to the 
-> original block device.
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> ---
+>  kernel/rcu/tree.c     | 2 +-
+>  kernel/stop_machine.c | 2 +-
+>  2 files changed, 2 insertions(+), 2 deletions(-)
 > 
-> That way you could attach it to basically any block device, _and_ can 
-> use the existing device-mapper functionality to do fancy stuff once the 
-> submit_io() callback has been re-routed.
-> 
-> And it also would help in other scenarios, too; with such a 
-> functionality we could seamlessly clone devices without having to move 
-> the whole setup to device-mapper first.
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 06895ef85d69..2a52f42f64b6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
+>   *
+>   * The caller must have disabled interrupts and must not be idle.
+>   */
+> -void rcu_momentary_dyntick_idle(void)
+> +notrace void rcu_momentary_dyntick_idle(void)
+>  {
+>  	int special;
+>  
+> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
+> index 865bb0228ab6..890b79cf0e7c 100644
+> --- a/kernel/stop_machine.c
+> +++ b/kernel/stop_machine.c
+> @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
+>  		set_state(msdata, msdata->state + 1);
+>  }
+>  
+> -void __weak stop_machine_yield(const struct cpumask *cpumask)
+> +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
+>  {
+>  	cpu_relax();
+>  }
 
-Hm... 
-Did I understand correctly that the filter itself can be left approximately
-as it is, but the blk-snap module can be replaced with 'dm-intercept',
-which would use the re-route mechanism from the dm?
-I think I may be able to implement it, if you describe your idea in more
-detail.
-
-
--- 
-Sergei Shtepa
-Veeam Software developer.
