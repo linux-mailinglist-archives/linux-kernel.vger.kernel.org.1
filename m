@@ -2,394 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 107532951C0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:48:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2299C2951C2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:48:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503713AbgJURsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:48:03 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39528 "EHLO
+        id S2503724AbgJURsh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:48:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438120AbgJURsC (ORCPT
+        with ESMTP id S2503717AbgJURsh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:48:02 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2CDC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:02 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id g7so3299663ilr.12
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:02 -0700 (PDT)
+        Wed, 21 Oct 2020 13:48:37 -0400
+Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30433C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:37 -0700 (PDT)
+Received: by mail-ed1-x541.google.com with SMTP id w23so2798250edl.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:48:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=intel-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=AQUcDFzJFblfHlA+B+MogOP0gBbXquhbNXhSACWAoMU=;
-        b=rL1tcuWnW9KU7ZKKDPFBRffumE+NJVIz83davgNR8ItETCVqNKa5Ehg5xNW+bLna0i
-         mbAeZ92bh2UX6O1wVwtBFUobM2HN/gLQv2NFucqbf8GfLiOKpLXIBBeVqZzGRv4g+8HR
-         V49VGf5q7F+1shQ6liPDWgFnkAnKueulnt+ZwtOgCS+/rMAg1IvYywADra+cKQhyCw4/
-         dTt11Qs027S+t+dmwyEJcM9dLadlcKIramcT35Tz2rWEVTsrBRDyRg7Hozzsq+eu8Ean
-         STnSA5VGtI34Q08XvzURL2ydsetVUfF9agP/woPE8gR833rGWhi1IVq8B2mvx0ou2jA/
-         hWzA==
+        bh=wz+eFQ9E3XaBY60yIiY6/7ACNu1JGiJC/eGXK+f1jPc=;
+        b=DVzkzBJthtEEE9BytDByy1Zyi6AvIrMMfqilJKnpXorOKZpcoMkmRc0+51O1rnlt68
+         bMY0od0cPkgr22Fq/K+EKbRk9QUUZlKvr9mGhIHdkRS+RFdmguKEoaDMpwVT2MTekysU
+         aICew+9IVF+RRyoiu/PaGJVFHpxpM2ZfnviDOpSraD9hqMuMque7/usM9pzF/eaK9iyi
+         qZF3JdUTjmf2nLs5oVUYf43A1aDD3wYoYI9oxDRZY55ia14p0XqJNtzi/CDl0A92VIsH
+         Ytn7i5HZw9HsfFtKjUgs2Sf+IlYn4ti3aGTMDIrNugvXoKAtZI0M50rVaCu67NNkO/yB
+         jfiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=AQUcDFzJFblfHlA+B+MogOP0gBbXquhbNXhSACWAoMU=;
-        b=A14WCbvkXnwe5M/UcLSk/KxAqGUKaZZbv9RTH2gHhk3dlzPEYEmCrz4Z+srmRI4xwO
-         ECcenymoo1p96Eb0WdJSyC7qw8nO0vC+K3ZedWJ586LxpSBbGSiD48IMrjAX9gPEg+iv
-         9p4nVMdEVgxFkp3RBzVL84zbYo3EMSB7adpMy5CRPDVQYAC4aNnREx04ChKelLe5qLlM
-         HojgjfTODJ86Rj4OOV2NcIvjQKGBdX6asz1D9V4f52JPYgjpeqNafhrTsd7TANPSVpDy
-         3DOXVWKSqtuN0qfYXLUg2YXOjRq0BUSQWMInZKhRqkVSnPWtc8Rlhirze+Wty/VnFZup
-         7SRg==
-X-Gm-Message-State: AOAM5322m+LslLz+0KMK3+zZVY+baxn8GlluVu8ZSWVDrMn6cnOtGBj/
-        MiCaHiAwjYIkBxYGZJFPJOfM7aDXGoHCgaH0ivVW1A==
-X-Google-Smtp-Source: ABdhPJxagEcVg5ZW/9yxyPzEcjFxm9A81qhC/fwvWpzDZVoWR97Kn5yQWB6KUqZHotSHmajsWxjewkLEqhVspMZDHCo=
-X-Received: by 2002:a05:6e02:60c:: with SMTP id t12mr2994467ils.253.1603302481380;
- Wed, 21 Oct 2020 10:48:01 -0700 (PDT)
+        bh=wz+eFQ9E3XaBY60yIiY6/7ACNu1JGiJC/eGXK+f1jPc=;
+        b=XPbs9kjiyGHEzwd3wbnEgfyWUtptByVeSPxJGVBdZZfJHA2Hj3L/plp33DE8pKzTQO
+         U0SauI4+XUxY+Dp3ktHtsjW6/DuA/XSKetCJr5/JlFtvhzLhZW74fcOU+7oTiPqIIgZ9
+         MmBiuowwvPo99QylzhRMb97gfVQT221FaV5iPFrJCVs1eE6AD8hxu5sTmEjymM1kVFEc
+         u8oVaAZWX8mYVpyg4Alg/QjpSKjp9P84Nin50UMK4K9/qLHSfpHdelqRiT8pjGMLzZkx
+         dwoITm75GYh5FMSrp+5/e5XT3i3AhqgPMJO1YqZQqvEFAakCZSmk+Z1/2p7R5sjh+liV
+         xEwA==
+X-Gm-Message-State: AOAM531bYVp/A4mIlD69dhup4gzsca2/iHEUjNSXB/u/wBjeMtxE6PbL
+        6y8FVEdxbcR4+/irOLvMVeAO5QEpD0gLArO2mp65iw==
+X-Google-Smtp-Source: ABdhPJyjfO8m3iOuqLFtlf+FomXd1BC4F7cQcApVrqZXlZQ1jUukEoyZcjOKoq++KT+r97hpdUtXqWK1yOAZ0wQ8O8o=
+X-Received: by 2002:a05:6402:31b3:: with SMTP id dj19mr4292662edb.210.1603302515911;
+ Wed, 21 Oct 2020 10:48:35 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201019224556.3536790-1-dlatypov@google.com> <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
-In-Reply-To: <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
-From:   Daniel Latypov <dlatypov@google.com>
-Date:   Wed, 21 Oct 2020 10:47:50 -0700
-Message-ID: <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
-Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
-To:     David Gow <davidgow@google.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
+References: <20201012162736.65241-1-nmeeramohide@micron.com>
+ <20201015080254.GA31136@infradead.org> <SN6PR08MB420880574E0705BBC80EC1A3B3030@SN6PR08MB4208.namprd08.prod.outlook.com>
+ <CAPcyv4j7a0gq++rL--2W33fL4+S0asYjYkvfBfs+hY+3J=c_GA@mail.gmail.com>
+ <SN6PR08MB420843C280D54D7B5B76EB78B31E0@SN6PR08MB4208.namprd08.prod.outlook.com>
+ <CAPcyv4iYOk3i0pPgXxDTy47BxWCXqqXS0J6mrY5o+1M_41XoAw@mail.gmail.com> <SN6PR08MB4208A22F5C94AB05439A2703B31C0@SN6PR08MB4208.namprd08.prod.outlook.com>
+In-Reply-To: <SN6PR08MB4208A22F5C94AB05439A2703B31C0@SN6PR08MB4208.namprd08.prod.outlook.com>
+From:   Dan Williams <dan.j.williams@intel.com>
+Date:   Wed, 21 Oct 2020 10:48:24 -0700
+Message-ID: <CAPcyv4gOGi392Q3knF=cAuvKONnmp2AoKX82VQEQJU0c7o7AKA@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v2 00/22] add Object Storage Media Pool (mpool)
+To:     "Nabeel Meeramohideen Mohamed (nmeeramohide)" 
+        <nmeeramohide@micron.com>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "Steve Moyer (smoyer)" <smoyer@micron.com>,
+        "Greg Becker (gbecker)" <gbecker@micron.com>,
+        "Pierre Labat (plabat)" <plabat@micron.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 8:40 PM David Gow <davidgow@google.com> wrote:
+On Wed, Oct 21, 2020 at 10:11 AM Nabeel Meeramohideen Mohamed
+(nmeeramohide) <nmeeramohide@micron.com> wrote:
 >
-> On Tue, Oct 20, 2020 at 6:46 AM Daniel Latypov <dlatypov@google.com> wrote:
+> On Tuesday, October 20, 2020 3:36 PM, Dan Williams <dan.j.williams@intel.com> wrote:
 > >
-> > Add basic test coverage for files that don't require any config options:
-> > * gcd.c
-> > * lcm.c
-> > * int_sqrt.c
-> > * reciprocal_div.c
-> > (Ignored int_pow.c since it's a simple textbook algorithm.)
+> >     What does Linux get from merging mpool?
 > >
-> I don't see a particular reason why int_pow.c being a simple algorithm
-> means it shouldn't be tested. I'm not saying it has to be tested by
-> this particular change -- and I doubt the test would be
-> earth-shatteringly interesting -- but there's no real reason against
-> testing it.
-
-Agreed on principle, but int_pow() feels like a special case.
-I've written it the exact same way (modulo variable names+types)
-several times in personal projects.
-Even the spacing matched exactly in a few of those...
-
 >
-> > These tests aren't particularly interesting, but
-> > * they're chosen as easy to understand examples of how to write tests
-> > * provides a place to add tests for any new files in this dir
-> > * written so adding new test cases to cover edge cases should be easy
->
-> I think these tests can stand on their own merits, rather than just as
-> examples (though I do think they do make good additional examples for
-> how to test these sorts of functions).
-> So, I'd treat this as an actual test of the maths functions (and
-> you've got what seems to me a decent set of test cases for that,
-> though there are a couple of comments below) first, and any use it
-> gains as an example is sort-of secondary to that (anything that makes
-> it a better example is likely to make it a better test anyway).
->
-> In any case, modulo the comments below, this seems good to me.
+> What Linux gets from merging mpool is a generic object store target with some
+> unique and beneficial features:
 
-Ack.
-I'll wait on Andy's input before deciding whether or not to push out a
-v2 with the changes.
-
->
-> -- David
->
-> > Signed-off-by: Daniel Latypov <dlatypov@google.com>
-> > ---
-> >  lib/math/Kconfig     |   5 ++
-> >  lib/math/Makefile    |   2 +
-> >  lib/math/math_test.c | 197 +++++++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 204 insertions(+)
-> >  create mode 100644 lib/math/math_test.c
-> >
-> > diff --git a/lib/math/Kconfig b/lib/math/Kconfig
-> > index f19bc9734fa7..6ba8680439c1 100644
-> > --- a/lib/math/Kconfig
-> > +++ b/lib/math/Kconfig
-> > @@ -15,3 +15,8 @@ config PRIME_NUMBERS
-> >
-> >  config RATIONAL
-> >         bool
-> > +
-> > +config MATH_KUNIT_TEST
-> > +       tristate "KUnit test for lib/math" if !KUNIT_ALL_TESTS
-> > +       default KUNIT_ALL_TESTS
-> > +       depends on KUNIT
-> > diff --git a/lib/math/Makefile b/lib/math/Makefile
-> > index be6909e943bd..fba6fe90f50b 100644
-> > --- a/lib/math/Makefile
-> > +++ b/lib/math/Makefile
-> > @@ -4,3 +4,5 @@ obj-y += div64.o gcd.o lcm.o int_pow.o int_sqrt.o reciprocal_div.o
-> >  obj-$(CONFIG_CORDIC)           += cordic.o
-> >  obj-$(CONFIG_PRIME_NUMBERS)    += prime_numbers.o
-> >  obj-$(CONFIG_RATIONAL)         += rational.o
-> > +
-> > +obj-$(CONFIG_MATH_KUNIT_TEST)  += math_test.o
-> > diff --git a/lib/math/math_test.c b/lib/math/math_test.c
-> > new file mode 100644
-> > index 000000000000..6f4681ea7c72
-> > --- /dev/null
-> > +++ b/lib/math/math_test.c
-> > @@ -0,0 +1,197 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +/*
-> > + * Simple KUnit suite for math helper funcs that are always enabled.
-> > + *
-> > + * Copyright (C) 2020, Google LLC.
-> > + * Author: Daniel Latypov <dlatypov@google.com>
-> > + */
-> > +
-> > +#include <kunit/test.h>
-> > +#include <linux/gcd.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/lcm.h>
-> > +#include <linux/reciprocal_div.h>
-> > +
-> > +/* Generic test case for unsigned long inputs. */
-> > +struct test_case {
-> > +       unsigned long a, b;
-> > +       unsigned long result;
-> > +};
-> > +
-> > +static void gcd_test(struct kunit *test)
-> > +{
-> > +       const char *message_fmt = "gcd(%lu, %lu)";
-> > +       int i;
-> > +
-> > +       struct test_case test_cases[] = {
-> > +               {
-> > +                       .a = 0, .b = 1,
-> > +                       .result = 1,
-> > +               },
-> > +               {
-> > +                       .a = 2, .b = 2,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 2, .b = 4,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 3, .b = 5,
-> > +                       .result = 1,
-> > +               },
-> > +               {
-> > +                       .a = 3*9, .b = 3*5,
-> > +                       .result = 3,
-> > +               },
-> > +               {
-> > +                       .a = 3*5*7, .b = 3*5*11,
-> > +                       .result = 15,
-> > +               },
-> > +               {
-> > +                       .a = (1 << 21) - 1,
-> > +                       .b = (1 << 22) - 1,
->
-> It might be worth noting the factors of these (7^2*127*337 and
-> 3*23*89*683) in a comment.
-> They aren't mersenne primes, if that's what you were going for, though
-> they are coprime.
-
-Yes, they aren't primes.
-But 2^x-1 2^(x+1)-1 should always be coprime.
-So I figured it was an easy way to get "large" coprimes.
-
-I can pick a pair of Mersenne primes (and comment to that effect) if
-you think that'd be clearer.
-
->
-> > +                       .result = 1,
-> > +               },
-> > +       };
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
-> > +               KUNIT_EXPECT_EQ_MSG(test, test_cases[i].result,
-> > +                                   gcd(test_cases[i].a, test_cases[i].b),
-> > +                                   message_fmt, test_cases[i].a,
-> > +                                   test_cases[i].b);
-> > +
-> > +               /* gcd(a,b) == gcd(b,a) */
-> > +               KUNIT_EXPECT_EQ_MSG(test, test_cases[i].result,
-> > +                                   gcd(test_cases[i].b, test_cases[i].a),
-> > +                                   message_fmt, test_cases[i].b,
-> > +                                   test_cases[i].a);
-> > +       }
-> > +}
-> > +
-> > +static void lcm_test(struct kunit *test)
-> > +{
-> > +       const char *message_fmt = "lcm(%lu, %lu)";
-> > +       int i;
-> > +
-> > +       struct test_case test_cases[] = {
-> > +               {
-> > +                       .a = 0, .b = 1,
-> > +                       .result = 0,
-> > +               },
-> > +               {
-> > +                       .a = 1, .b = 2,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 2, .b = 2,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 3*5, .b = 3*7,
-> > +                       .result = 3*5*7,
-> > +               },
->
-> If you were looking for extra testcases here, one where b < a would be nice.
-
-Good point, added
-+               {
-+                       .a = 42, .b = 9999,
-+                       .result = 0,
-+               },
-
->
-> > +       };
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
-> > +               KUNIT_EXPECT_EQ_MSG(test, test_cases[i].result,
-> > +                                   lcm(test_cases[i].a, test_cases[i].b),
-> > +                                   message_fmt, test_cases[i].a,
-> > +                                   test_cases[i].b);
-> > +
-> > +               /* lcm(a,b) == lcm(b,a) */
-> > +               KUNIT_EXPECT_EQ_MSG(test, test_cases[i].result,
-> > +                                   lcm(test_cases[i].b, test_cases[i].a),
-> > +                                   message_fmt, test_cases[i].b,
-> > +                                   test_cases[i].a);
-> > +       }
-> > +}
-> > +
->
-> Again, not pushing for it in this test, but lcm_not_zero() could be
-> worth testing at some point, too...
-
-Ack.
-I'll hold off on adding that for now, since reusing the lcm table
-would require basically a copy paste of the internal logic to figure
-out what we'd expect in the zero case.
-And atm, it doesn't seem interesting enough to add another separate
-test case, esp. if there's already concern the lcm test isn't really
-worth having.
-
->
-> > +static void int_sqrt_test(struct kunit *test)
-> > +{
-> > +       const char *message_fmt = "sqrt(%lu)";
-> > +       int i;
-> > +
-> > +       struct test_case test_cases[] = {
-> > +               {
-> > +                       .a = 0,
-> > +                       .result = 0,
-> > +               },
-> > +               {
-> > +                       .a = 1,
-> > +                       .result = 1,
-> > +               },
-> > +               {
-> > +                       .a = 4,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 5,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 8,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = 1UL >> 32,
-> > +                       .result = 1UL >> 16,
->
-> As the kernel test robot noted, these are wrong (the shifts go the
-> wrong way, 2^32 might not fit in an unsigned long).
-
-Thanks, fixed locally.
-
-
->
-> > +               },
-> > +       };
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
-> > +               KUNIT_EXPECT_EQ_MSG(test, int_sqrt(test_cases[i].a),
-> > +                                   test_cases[i].result, message_fmt,
-> > +                                   test_cases[i].a);
-> > +       }
-> > +}
-> > +
-> > +struct reciprocal_test_case {
-> > +       u32 a, b;
-> > +       u32 result;
-> > +};
-> > +
-> > +static void reciprocal_div_test(struct kunit *test)
-> > +{
-> > +       int i;
-> > +       struct reciprocal_value rv;
-> > +       struct reciprocal_test_case test_cases[] = {
-> > +               {
-> > +                       .a = 0, .b = 1,
-> > +                       .result = 0,
-> > +               },
-> > +               {
-> > +                       .a = 42, .b = 20,
-> > +                       .result = 2,
-> > +               },
-> > +               {
-> > +                       .a = (1<<16), .b = (1<<14),
-> > +                       .result = 1<<2,
-> > +               },
-> > +       };
-> > +
-> > +       for (i = 0; i < ARRAY_SIZE(test_cases); ++i) {
-> > +               rv = reciprocal_value(test_cases[i].b);
-> > +               KUNIT_EXPECT_EQ_MSG(test, test_cases[i].result,
-> > +                                   reciprocal_divide(test_cases[i].a, rv),
-> > +                                   "reciprocal_divide(%u, %u)",
-> > +                                   test_cases[i].a, test_cases[i].b);
-> > +       }
-> > +}
-> > +
-> > +static struct kunit_case math_test_cases[] = {
-> > +       KUNIT_CASE(gcd_test),
-> > +       KUNIT_CASE(lcm_test),
-> > +       KUNIT_CASE(int_sqrt_test),
-> > +       KUNIT_CASE(reciprocal_div_test),
-> > +       {}
-> > +};
-> > +
-> > +static struct kunit_suite math_test_suite = {
-> > +       .name = "lib-math",
-> > +       .test_cases = math_test_cases,
-> > +};
-> > +
-> > +kunit_test_suites(&math_test_suite);
-> > +
-> > +MODULE_LICENSE("GPL v2");
-> >
-> > base-commit: 7cf726a59435301046250c42131554d9ccc566b8
-> > --
-> > 2.29.0.rc1.297.gfa9743e501-goog
-> >
+I'll try to make the point a different way. Mpool points out places
+where the existing apis fail to scale. Rather than attempt to fix that
+problem it proposes to replace the old apis. However, the old apis are
+still there. So now upstream has 2 maintenance burdens when it could
+have just had one. So when I ask "what does Linux get" it is in
+reference to the fact that Linux gets a compounded maintenance problem
+and whether the benefits of mpool outweigh that burden. Historically
+Linux has been able to evolve to meet the scaling requirements of new
+applications, so I am asking whether you have tried to solve the
+application problem by evolving rather than replacing existing
+infrastructure? The justification to replace rather than evolve is
+high because that's how core Linux stays relevant.
