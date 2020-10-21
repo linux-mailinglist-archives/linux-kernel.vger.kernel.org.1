@@ -2,55 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9A642954DE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:39:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AF5C2954E0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:45:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506844AbgJUWjf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 18:39:35 -0400
-Received: from mga11.intel.com ([192.55.52.93]:55175 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506826AbgJUWjf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 18:39:35 -0400
-IronPort-SDR: rIDdQlgALiuoSJ1dD096SBs0B7om9x/klowQ08DEGFjO8V56oZdGoeYIkIQpztGzAf7SsdkyeG
- FumbZR5brqNA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="163951281"
-X-IronPort-AV: E=Sophos;i="5.77,402,1596524400"; 
-   d="scan'208";a="163951281"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 15:39:33 -0700
-IronPort-SDR: W97OYR0agkN6TAlZuHKb58WWV18JKY9PMagwAJUdkPPFOgMMn7bUVubWgpxgo1WWgs/xNz3rx3
- 6ub3EJ7AoNfA==
-X-IronPort-AV: E=Sophos;i="5.77,402,1596524400"; 
-   d="scan'208";a="533706728"
-Received: from tassilo.jf.intel.com ([10.54.74.11])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 15:39:33 -0700
-Date:   Wed, 21 Oct 2020 15:39:32 -0700
-From:   Andi Kleen <ak@linux.intel.com>
-To:     Stephane Eranian <eranian@google.com>
-Cc:     linux-kernel@vger.kernel.org, kan.liang@intel.com,
-        jolsa@redhat.com, peterz@infradead.org, mingo@elte.hu,
-        irogers@google.com, namhyung@kernel.org
-Subject: Re: [PATCH] perf/x86/intel: make anythread filter support conditional
-Message-ID: <20201021223932.GP466880@tassilo.jf.intel.com>
-References: <20201021211612.2026234-1-eranian@google.com>
+        id S2506901AbgJUWpJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 18:45:09 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:51720 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506696AbgJUWpJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 18:45:09 -0400
+Received: by mail-il1-f197.google.com with SMTP id e3so2752553ilq.18
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:45:07 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
+         :from:to;
+        bh=7JOVTJJfIbS3N5OEHaDdyiuANlR9ab6tKBOsWZoF0WU=;
+        b=IbnfxfSDDrFvY85fL4WxJuz1S6Hls1Kw7rLQ42Uh3lnDYsr8TGbBBPFv2hhzROpfR0
+         r6SYTuk78FJKT06goXO3m0KrCubbM1MpOeAAyI7RCWbkXnfDZP39WEMN3+oQJzYexP6v
+         /mB+vrXHPpdc8q/A7bzk5PuOsJXk8GvgWCcE/VVHryRkj+mRfbqvVIqv6OVr5dQz+9oN
+         NvkENuUX/7tYjvlzIPKJGt6+uOgBNwWA1ymfr9rVHcvTh9lNiZqf6h665HrronD/PXIG
+         kEd3782DjWUK9O8Eo1iR5kO91HCmlx+kXF3DWm4U+WRQg61OqFgWhRQlTR4Bo5lDeYzd
+         G9bA==
+X-Gm-Message-State: AOAM530L/ChE5ogKw1g39dx472sk21DJdO/y81btafrI83ulm+EcX7eY
+        9wiptGzJzWQF01wBGeDHWPuJJDNVCthPqURon63m/98lRg4G
+X-Google-Smtp-Source: ABdhPJwN64BJqaeYhdPFxyZgp216gXtiWrfyXedsv28m6nR0w3XVay2RZzjVFcyl7xUj2MEtlepDUzCq6jwfiyEJdFioX6l3HEc7
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021211612.2026234-1-eranian@google.com>
+X-Received: by 2002:a05:6638:20a:: with SMTP id e10mr4774996jaq.20.1603320306871;
+ Wed, 21 Oct 2020 15:45:06 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 15:45:06 -0700
+In-Reply-To: <089e0825cec8180a2b0568c4ee1d@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000005a390a05b2361916@google.com>
+Subject: Re: WARNING in ext4_set_page_dirty
+From:   syzbot <syzbot+9a44753ac327c557796a@syzkaller.appspotmail.com>
+To:     adilger.kernel@dilger.ca, chris@chris-wilson.co.uk,
+        dvyukov@google.com, jack@suse.cz, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, mika.kuoppala@linux.intel.com,
+        rodrigo.vivi@intel.com, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 02:16:12PM -0700, Stephane Eranian wrote:
-> Starting with Arch Perfmon v5, the anythread filter on generic counters may be
-> deprecated. The current kernel was exporting the any filter without checking.
-> On Icelake, it means you could do cpu/event=0x3c,any/ even though the filter
-> does not exist. This patch corrects the problem by relying on the CPUID 0xa leaf
-> function to determine if anythread is supported or not as described in the
-> Intel SDM Vol3b 18.2.5.1 AnyThread Deprecation section.
+syzbot suspects this issue was fixed by commit:
 
-Reviewed-by: Andi Kleen <ak@linux.intel.com>
+commit 7dfbf8a07cf8c936b0d6cc810df6ae7923954d5b
+Author: Chris Wilson <chris@chris-wilson.co.uk>
+Date:   Tue Jun 30 15:27:24 2020 +0000
 
--Andi
+    drm/i915: Skip stale object handle for debugfs per-file-stats
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=153d895f900000
+start commit:   46cf053e Linux 5.5-rc3
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ed9d672709340e35
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a44753ac327c557796a
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10055799e00000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15b852c6e00000
+
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: drm/i915: Skip stale object handle for debugfs per-file-stats
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
