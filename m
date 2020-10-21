@@ -2,102 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 551BD294E4B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:12:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6FED4294E4F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:13:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443309AbgJUOMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:12:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45588 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443301AbgJUOMU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:12:20 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D2EC22249;
-        Wed, 21 Oct 2020 14:12:18 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 10:12:16 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Zong Li <zong.li@sifive.com>
-Cc:     paulmck@kernel.org, josh@joshtriplett.org,
-        mathieu.desnoyers@efficios.com, jiangshanlai@gmail.com,
-        joel@joelfernandes.org, vincent.whitchurch@axis.com,
-        tglx@linutronix.de, paul.walmsley@sifive.com,
-        palmerdabbelt@google.com, guoren@kernel.org, atishp@atishpatra.org,
-        mhiramat@kernel.org, greentime.hu@sifive.com,
-        colin.king@canonical.com, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-Message-ID: <20201021101216.4d840e15@gandalf.local.home>
-In-Reply-To: <20201021073839.43935-1-zong.li@sifive.com>
-References: <20201021073839.43935-1-zong.li@sifive.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2443339AbgJUOND (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:13:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34300 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441041AbgJUONC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:13:02 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73748C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:13:02 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id k6so3326708ior.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:13:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=uIZP42Vh+ckbjFikdJfke/JG3gnAQkbegdmiTzAtVuQ=;
+        b=qr0IsgILjZxYrcVxGnK0xMFQSsO4X2yUBYbxxx5/nLK7I4WUdVcGC+34t4t24//QSL
+         lTi4C0rDLabB3WIATPVWq7Gx/tClFCZ26ycN9QS95x4RDvZp0J2sXw5D+VUWn4HeevL5
+         9mlEyDGjiTobyQUQ1YoHuLvss6/a2hI2Ib37yCMMxKF4C+EtpbfKXE2vZDIEdir5FO5t
+         bdD5Z5+CdQOc8gOIcQ1DIcd8CmBk0YUtQLxA/TQEDeSKFQWQ/gFiITJ6VXJsfUHk+84M
+         XmTk8SnOYNiwPKDMCnkIhk1n0PZuZLgZsSosmhg96ZH/wYjZ8O5PZ3awgID9f+9DFC98
+         DMGg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=uIZP42Vh+ckbjFikdJfke/JG3gnAQkbegdmiTzAtVuQ=;
+        b=L7HanXufPdTRelxqr4ETEHMPy+R79rCX9QCyC8ves1UHM1AnxqSb8ldEP+hy+d2P4z
+         wm3/SIERBSaspX6G/vaBZ9eBANZiAjnLuEQnk78nK02F9QyFQAc+ihQ1N5vadT5+mCay
+         VqaH/8g9ZKgRK/ovjt8ot+FHPpwEqlB5We4ReDtX+yDh6M6sEpleKGGIdhANfE66TcDJ
+         vRUxW/g43HBMDlT2wMbDFildwhZRMjJ7vfeWMIagcy6zrSfzRsa5VJXXGSNZzO9h6ycD
+         6ROML9GKC7mdyBltsnI2I25wBhhfu8J1g1eoyEa9emFQIbf+PL9Wyloh04skUJk/YvRZ
+         vSBQ==
+X-Gm-Message-State: AOAM531VSCBW29X6YpsJCO4m2H6BFjVpDfeVxhPMf6zG54fqNn4wTvWq
+        rZeuIG6oyiXR71hh/F6Y3xbkm98PpaiCaoYCHAvDtA==
+X-Google-Smtp-Source: ABdhPJwb36VWE/96YU44fNuEzYtyD4OBEaEHy05VO9xeNMg79V+hWEmkV1UktkKwfQgUqer4fxUfs/k/5T92j2nxOgY=
+X-Received: by 2002:a6b:8b95:: with SMTP id n143mr442371iod.36.1603289581571;
+ Wed, 21 Oct 2020 07:13:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <CGME20201021063555eucas1p24f8486354866fea4640a8f28e487d3c4@eucas1p2.samsung.com>
+ <CA+G9fYuL9O2BLDfCWN7+aJRER3sQW=C-ayo4Tb7QKdffjMYKDw@mail.gmail.com> <12dfa2bb-e567-fb42-d74f-5aaa0c5c43df@samsung.com>
+In-Reply-To: <12dfa2bb-e567-fb42-d74f-5aaa0c5c43df@samsung.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 21 Oct 2020 19:42:50 +0530
+Message-ID: <CA+G9fYsoJgvVi0rU-HgvKWEYFTtXopxd+0-L0Um41-g2HMHL3Q@mail.gmail.com>
+Subject: Re: arm64 build broken on linux next 20201021 - include/uapi/asm-generic/unistd.h:862:26:
+ error: array index in initializer exceeds array bounds
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     Stephen Rothwell <sfr@canb.auug.org.au>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org, Netdev <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-arch@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+        Christian Brauner <christian@brauner.io>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 15:38:39 +0800
-Zong Li <zong.li@sifive.com> wrote:
+On Wed, 21 Oct 2020 at 12:06, Marek Szyprowski <m.szyprowski@samsung.com> wrote:
+>
+> Hi Naresh,
+>
+> On 21.10.2020 07:05, Naresh Kamboju wrote:
+> > arm64 build broken while building linux next 20201021 tag.
+> >
+> > include/uapi/asm-generic/unistd.h:862:26: error: array index in
+> > initializer exceeds array bounds
+> > #define __NR_watch_mount 441
+> >                           ^
+> >
+> > Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+>
+> Conflict resolution in commit 5394c6318b32f is incomplete.
+>
+> This fixes the build:
 
-> Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
-> as notrace"), some architectures assume that the stopped CPUs don't make
-> function calls to traceable functions when they are in the stopped
-> state. For example, it causes unexpected kernel crashed when switching
-> tracer on RISC-V.
-> 
-> The following patches added calls to these two functions, fix it by
-> adding the notrace annotations.
-> 
-> Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-> Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
-> multi_cpu_stop()")
+Thanks for the patch.
+I have applied this patch and build pass on arm64.
+Tested-by: Naresh Kamboju <naresh.kamboju@linaro.org>
 
-I really do not like to add "notrace" to core functions because a single
-architecture has issues with it. Why does RISCV have problems with these
-functions but no other architecture does?
+>
+> diff --git a/arch/arm64/include/asm/unistd.h
+> b/arch/arm64/include/asm/unistd.h
+> index b3b2019f8d16..86a9d7b3eabe 100644
+> --- a/arch/arm64/include/asm/unistd.h
+> +++ b/arch/arm64/include/asm/unistd.h
+> @@ -38,7 +38,7 @@
+>   #define __ARM_NR_compat_set_tls (__ARM_NR_COMPAT_BASE + 5)
+>   #define __ARM_NR_COMPAT_END            (__ARM_NR_COMPAT_BASE + 0x800)
+>
+> -#define __NR_compat_syscalls           441
+> +#define __NR_compat_syscalls           442
+>   #endif
+>
+>   #define __ARCH_WANT_SYS_CLONE
+> diff --git a/include/uapi/asm-generic/unistd.h
+> b/include/uapi/asm-generic/unistd.h
+> index 094a685aa0f9..5df46517260e 100644
+> --- a/include/uapi/asm-generic/unistd.h
+> +++ b/include/uapi/asm-generic/unistd.h
+> @@ -863,7 +863,7 @@ __SYSCALL(__NR_process_madvise, sys_process_madvise)
+>   __SYSCALL(__NR_watch_mount, sys_watch_mount)
+>
+>   #undef __NR_syscalls
+> -#define __NR_syscalls 441
+> +#define __NR_syscalls 442
+>
+>   /*
+>    * 32 bit systems traditionally used different
+>
 
-NACK from me until it is shown that these are issues for a broader set of
-architectures.
-
-It sounds to me like you are treating a symptom and not the disease.
-
--- Steve
-
-
-> 
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  kernel/rcu/tree.c     | 2 +-
->  kernel/stop_machine.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 06895ef85d69..2a52f42f64b6 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
->   *
->   * The caller must have disabled interrupts and must not be idle.
->   */
-> -void rcu_momentary_dyntick_idle(void)
-> +notrace void rcu_momentary_dyntick_idle(void)
->  {
->  	int special;
->  
-> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-> index 865bb0228ab6..890b79cf0e7c 100644
-> --- a/kernel/stop_machine.c
-> +++ b/kernel/stop_machine.c
-> @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
->  		set_state(msdata, msdata->state + 1);
->  }
->  
-> -void __weak stop_machine_yield(const struct cpumask *cpumask)
-> +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
->  {
->  	cpu_relax();
->  }
-
+- Naresh
