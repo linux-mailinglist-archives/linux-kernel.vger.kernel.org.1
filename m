@@ -2,92 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74174294C4C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 28715294C5D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:17:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442230AbgJUMMN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:12:13 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:44365 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442217AbgJUMMK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:12:10 -0400
-Received: by mail-wr1-f66.google.com with SMTP id t9so2756214wrq.11;
-        Wed, 21 Oct 2020 05:12:08 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Geiy1luQDgrfk0QA0gnO6sNJwWrWgtM6sqCvbinnx6Q=;
-        b=Cn49ODJJldqRnkq/1Gr8s+PMe84Ug8R9/b6V2ql4RdVlvDfEVAeTrj+Ys/a71J5RIi
-         PCK2y8EZJuXslfMN7q03nkmzIM6bA61C4QbxLcwE7Zmq4dw165S+mtBa8lzNQuWXB3a6
-         CtRZyyiVpG9sviG6xl7GiP136/kg0cZKHmcd9ja/wSt6XFL+nBqzQTMYjztiEW8592QF
-         w9buINHtHK8Oh9HqKRppejMEnsL//ZPgql5a9UCJu+FqOh/yL86W4UZuuHu0fw262LI0
-         6FHKggSQq/vzEygRPBl8Niw2SEG9ho+AjwaiiDp90g/4NNnAIdkoF9YATTQiR4vLuEa7
-         ThGw==
-X-Gm-Message-State: AOAM532D/Cdjv3H8XAhs5ZK+NjGcj1XHgn4C8nTtWiXpm66QeFclF/XR
-        ye1mu0l8s9dDo/gg5W/Zrho=
-X-Google-Smtp-Source: ABdhPJwvRquWAPFs7VrnzvZyJL7W79RWO7ff1FG6dMYkQ4h8LuMyEN2mtueYmm6OIT7J/ADjIi9dkw==
-X-Received: by 2002:a5d:4987:: with SMTP id r7mr4140251wrq.327.1603282327552;
-        Wed, 21 Oct 2020 05:12:07 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id h4sm3765965wrv.11.2020.10.21.05.12.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 05:12:05 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 14:12:03 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>, linux-pci@vger.kernel.org,
-        devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH 2/6] Documetation: dt-bindings: add the
- samsung,exynos-pcie binding
-Message-ID: <20201021121203.GA27418@kozik-lap>
-References: <20201019094715.15343-1-m.szyprowski@samsung.com>
- <CGME20201019094739eucas1p18cd4c7e5a0197393d2e7c5c6fcc2777d@eucas1p1.samsung.com>
- <20201019094715.15343-3-m.szyprowski@samsung.com>
- <20201019101233.GB51073@kozik-lap>
- <CAJKOXPcyruYQxcioPxGE8J8jS0Yey+09HpXxFgQm4f2w98s5cg@mail.gmail.com>
- <50b13de0-168b-3fad-1e84-cc86f1a376d8@samsung.com>
+        id S2442282AbgJUMRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:17:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59180 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2411517AbgJUMRc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:17:32 -0400
+Received: from mail.kernel.org (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1F6A422453;
+        Wed, 21 Oct 2020 12:17:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603282651;
+        bh=ZThY5uPrN8m7PVeYj6yV3k4YTH50nRqHVbTBxoDTc5M=;
+        h=From:To:Cc:Subject:Date:From;
+        b=eLjiVAUbctSCqXFNEqOjYCcD0lD36EsozUQwQLXQib17OkD1maRKTKIGr2Sfggau3
+         MkRA3zzFiQNh47QZlV8cJjzX/nrnNCZAV/sHmguIAyCCH4oLr9VIY1qSgtkUKuBp7s
+         7Q/wiluVMS9Ay8unKODOQ7hNqNbe2LcMEjwM37mg=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kVD3Y-001U2X-88; Wed, 21 Oct 2020 14:17:28 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel@vger.kernel.org, Jonathan Corbet <corbet@lwn.net>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        Alan Maguire <alan.maguire@oracle.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Andrey Grodzovsky <andrey.grodzovsky@amd.com>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Bart Van Assche <bvanassche@acm.org>,
+        Ben Skeggs <bskeggs@redhat.com>,
+        Bernard Zhao <bernard@vivo.com>,
+        Boqun Feng <boqun.feng@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Colton Lewis <colton.w.lewis@protonmail.com>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Dave Airlie <airlied@redhat.com>,
+        David Airlie <airlied@linux.ie>,
+        David Sterba <dsterba@suse.com>, Dennis Li <Dennis.Li@amd.com>,
+        Doug Ledford <dledford@redhat.com>,
+        Evan Quan <evan.quan@amd.com>,
+        Goldwyn Rodrigues <rgoldwyn@suse.com>,
+        Hawking Zhang <Hawking.Zhang@amd.com>,
+        Ingo Molnar <mingo@kernel.org>, Ingo Molnar <mingo@redhat.com>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Jann Horn <jannh@google.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Josef Bacik <josef@toxicpanda.com>,
+        Kees Cook <keescook@chromium.org>,
+        Luben Tuikov <luben.tuikov@amd.com>,
+        Max Gurtovoy <maxg@mellanox.com>,
+        Nikolay Borisov <nborisov@suse.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Sagi Grimberg <sagi@grimberg.me>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Stephen Boyd <sboyd@kernel.org>, Will Deacon <will@kernel.org>,
+        Yamin Friedman <yaminf@mellanox.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-rdma@vger.kernel.org, target-devel@vger.kernel.org
+Subject: [PATCH v3 0/6] Documentation build fixes against upstream
+Date:   Wed, 21 Oct 2020 14:17:21 +0200
+Message-Id: <cover.1603282193.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <50b13de0-168b-3fad-1e84-cc86f1a376d8@samsung.com>
+Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 01:59:25PM +0200, Marek Szyprowski wrote:
- >>> +required:
-> >>> +  - reg
-> >>> +  - reg-names
-> >>> +  - interrupts
-> >>> +  - interrupt-names
-> >>> +  - clocks
-> >>> +  - clock-names
-> >>> +  - phys
-> >>> +  - phy-names
-> >>> +  - vdd10-supply
-> >> additionalProperties: false
-> > This can be unevaluatedProperties, since you include pci-bus schema.
-> > However still you should either include designware schema or include
-> > it's properties here.
-> 
-> Frankly, I would like to include designware-pci bindling/schema, but it 
-> has not been converted to yaml yet. I don't feel that I know PCI enough 
-> to do that conversion...
+As we're close to the end of the merge window for Kernel 5.10,
+this series contain the patches from the past two documentation
+fix series I sent during the merge window and that required more
+work.
 
-I think you need then include all properties in your dtschema. Otherwise
-DTS will not pass (neither the example here) the checks.
+It is based on the top of upstream. The full series with the patches
+that either didn't generate any reply or have been acked is on
+this branch:
 
-Best regards,
-Krzysztof
+	https://git.linuxtv.org/mchehab/experimental.git/log/?h=docs_for_v5.10
+
+There are a couple of warnings that aren't addressed here, because
+they don't show at linux-next. I'm keeping a second patch series 
+against next-20201021 fixing additional warnings caused by patches
+pending merges.
+
+I'll be posting those in separate.
+
+Regards,
+Mauro
+
+Mauro Carvalho Chehab (6):
+  drm: amdgpu: kernel-doc: update some adev parameters
+  docs: lockdep-design: fix some warning issues
+  locking/refcount: move kernel-doc markups to the proper place
+  IB/srpt: docs: add a description for cq_size  member
+  kunit: test: fix remaining kernel-doc warnings
+  docs: fs: api-summary.rst: get rid of kernel-doc include
+
+ Documentation/filesystems/api-summary.rst    |   3 -
+ Documentation/locking/lockdep-design.rst     |  51 +++---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   |  28 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  |   6 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_vram_mgr.c |   7 +-
+ drivers/infiniband/ulp/srpt/ib_srpt.h        |   1 +
+ include/kunit/test.h                         |  16 +-
+ include/linux/refcount.h                     | 158 +++++++++----------
+ 8 files changed, 139 insertions(+), 131 deletions(-)
+
+-- 
+2.26.2
+
 
