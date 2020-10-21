@@ -2,87 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08C53294F01
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:47:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AC91B294F07
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:49:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443738AbgJUOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:47:05 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443730AbgJUOrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:47:03 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E0EE1222C8;
-        Wed, 21 Oct 2020 14:47:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603291622;
-        bh=0NLUXsL5nZSTu+tt4TPTX6Sh3M6zxBuxgNfiiDG7Fpo=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Bfvo/x5A8xKQQpTGJw8BZgjqA4Ld52q97GDNBC4BKcfuqnVOPbW2H0ZWQx+qbPYIY
-         tc6PtJ4QA6KnRX5ASSliuqK10I1I/kQ4Uah+LNxYrcrE04zoAvHjx6agj6PhA24ZVX
-         l6OJo54sJI5gSwQOM46j1vUX7Np2h3VU0ZifM3Rc=
-Date:   Wed, 21 Oct 2020 15:46:50 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-Subject: Re: [PATCH v2 3/6] spi: cadence-quadspi: Add multi-chipselect
- support for Intel LGM SoC
-Message-ID: <20201021144650.GG4497@sirena.org.uk>
-References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S2443431AbgJUOta (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:49:30 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:39510 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442644AbgJUOta (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:49:30 -0400
+Received: by mail-oi1-f194.google.com with SMTP id u127so2344555oib.6;
+        Wed, 21 Oct 2020 07:49:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=NtlmBu5h4iBh+zHC2TUxv/prMu3eprBos0xHpsw4cig=;
+        b=K4iy6uMlrvnAYqBbLyCBojyC0e0+vGJm9bSIu+/KItua83wMUbkf2djbk+QQ/iYYQF
+         oLARrBNoLaxNP+342AlYLBAtsydflIR3pdMualQWbk9eI5E53j2IZTgzHLT05nFsVv5c
+         1aeCWLFs0kbUyH6MahbdJD7sBZOTRkX/RroQZTX8I+rZ05XebuVidBBDpOqW3jSNnILa
+         IlWLWF3bEtNBBVyAfru5v55mcrdwPHP8j8bmY/GPTGp/AqnplPxsFOnnzHHqwalKkSM+
+         I40eTOTlEfA2q3TRUAhpW80D9FioJZieTQqKOVmtXNUwWL2vv3thbRbkvIRI5hZuVxbK
+         yImQ==
+X-Gm-Message-State: AOAM533mN2TFI3UlmMDO8YWDM9lVNCf7xdutJIW+KtOPS88emUMHpSg7
+        CAvasMPDqiamqV4715OHf/+Ka1YH4g==
+X-Google-Smtp-Source: ABdhPJwO0ZRqPMszwKp5Dk5j2KSjbKG9sYl+Mws9bBotwxs921MNAUZKWIdI040bfSmMgcNWQNflgQ==
+X-Received: by 2002:aca:cdc4:: with SMTP id d187mr2672003oig.19.1603291769336;
+        Wed, 21 Oct 2020 07:49:29 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id q7sm737163oig.42.2020.10.21.07.49.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 07:49:28 -0700 (PDT)
+Received: (nullmailer pid 2769342 invoked by uid 1000);
+        Wed, 21 Oct 2020 14:49:27 -0000
+Date:   Wed, 21 Oct 2020 09:49:27 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Guru Das Srinagesh <gurus@codeaurora.org>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-kernel@vger.kernel.org, Stephen Boyd <sboyd@kernel.org>,
+        devicetree@vger.kernel.org,
+        David Collins <collinsd@codeaurora.org>,
+        Andy Gross <agross@kernel.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>
+Subject: Re: [RESEND PATCH v2 1/2] bindings: pm8941-misc: Convert to YAML and
+ add support for VBUS detection
+Message-ID: <20201021144927.GA2768609@bogus>
+References: <cover.1603231949.git.gurus@codeaurora.org>
+ <1407c8a264de11cb9cd7a13b8f7b5f66ca957127.1603231949.git.gurus@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Cookie: That does not compute.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <1407c8a264de11cb9cd7a13b8f7b5f66ca957127.1603231949.git.gurus@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Tue, 20 Oct 2020 15:17:24 -0700, Guru Das Srinagesh wrote:
+> From: Anirudh Ghayal <aghayal@codeaurora.org>
+> 
+> Convert bindings to YAML. Also add compatible string that adds support
+> for reporting the VBUS status that can be detected via a dedicated PMIC
+> pin.
+> 
+> Signed-off-by: Anirudh Ghayal <aghayal@codeaurora.org>
+> Signed-off-by: Guru Das Srinagesh <gurus@codeaurora.org>
+> ---
+>  .../bindings/extcon/qcom,pm8941-misc.txt           | 41 ----------------
+>  .../bindings/extcon/qcom,pm8941-misc.yaml          | 56 ++++++++++++++++++++++
+>  2 files changed, 56 insertions(+), 41 deletions(-)
+>  delete mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.txt
+>  create mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
+> 
 
---xjyYRNSh/RebjC6o
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-On Wed, Oct 21, 2020 at 10:55:04AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+My bot found errors running 'make dt_binding_check' on your patch:
 
-> Add multiple chipselect support for Intel LGM SoCs,
-> currently QSPI-NOR and QSPI-NAND supported.
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml: properties:compatible:oneOf:0:const: ['qcom,pm8941-misc', 'qcom,pmd-vbus-det'] is not of type 'string'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml: properties:interrupt-names:anyOf:0:const: ['usb_id', 'usb_vbus'] is not of type 'string'
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml: ignoring, error in schema: properties: compatible: oneOf: 0: const
+warning: no schema found in file: ./Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
+Error: Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.example.dts:23.49-50 syntax error
+FATAL ERROR: Unable to parse input tree
+make[1]: *** [scripts/Makefile.lib:342: Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.example.dt.yaml] Error 1
+make[1]: *** Waiting for unfinished jobs....
+make: *** [Makefile:1366: dt_binding_check] Error 2
 
-> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
-> +		master->num_chipselect = cqspi->num_chipselect;
 
-I'm not seeing anywhere else where we reference num_chipselect in this
-patch - we parse the value, set it in the SPI controller and then never
-otherwise use it?  This makes me wonder if the property is really
-mandatory.  If it is then there should be something in the binding
-document saying that it's required when the compatible is your new
-compatible string, that way the validation can verify that the property
-is present in DTs including this controller.
+See https://patchwork.ozlabs.org/patch/1385252
 
---xjyYRNSh/RebjC6o
-Content-Type: application/pgp-signature; name="signature.asc"
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
 
------BEGIN PGP SIGNATURE-----
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
 
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QSdoACgkQJNaLcl1U
-h9BCUAf9HN/1ZjEGsiutV1X75aof27IiVliID+mogMUMJjQFl3XjdW3Aw87evS9v
-WHiFPZ97HYyVjogF7gHKUA26LPqa3k7RL816DcD2F4yMIMizhiaCcMBtfpdBE73E
-rkPpiv+/coyx4Z4OxEN2BeVAHxWorDwUXylWEHV9QBWGVyborj+Ltcr2+0iAfKuy
-8uiKsr/tK8N1RJ4Yk7FqSjUSZPslq3sOjBnWs4tzgfLnLszmbzI6id7E/hg3+4YH
-dqCe7aFU/MV0v91lO37TxoXQzwaEpzl2NyPUFzuHXPVy5sfUq/ldKSt5z/zfHxV0
-yge74zz8U4bkVoDwq1R4+6vJxYqRgg==
-=ABDR
------END PGP SIGNATURE-----
+pip3 install dtschema --upgrade
 
---xjyYRNSh/RebjC6o--
+Please check and re-submit.
+
