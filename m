@@ -2,180 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECD929528C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:57:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F74729528F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:58:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504547AbgJUS5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 14:57:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50278 "EHLO
+        id S2504555AbgJUS6L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 14:58:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50420 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441013AbgJUS5Q (ORCPT
+        with ESMTP id S2395162AbgJUS6K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 14:57:16 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 625E7C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:57:16 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id b8so4267349ioh.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:57:16 -0700 (PDT)
+        Wed, 21 Oct 2020 14:58:10 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 67270C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:58:10 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id p5so4790597ejj.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:58:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
+        d=amarulasolutions.com; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=+6EflYSSZfOJagfG1O7mOEg57cGG/t7TshjLdR/LpOU=;
-        b=KikvC/dDNLSipbLp2+aex8FEZZ8QHyTcBR9YEPMK14+YoVBgYNENGhEtp1wZlFQNxu
-         88w9qUncx3OkQTBkuiCFiKRGfj1YRtcgePVn8LM3i5Eo3Urrs+zZ1VMlyOolryAhbEF2
-         2G6ZJUyA4Lp3TkNNbGIFOVpeNX9mxTB7dVhu8=
+        bh=RD6Pe7uFsqq6lLUnSY5SK+FGVJWIcdwyWReVf1JamtI=;
+        b=FPt5Dr2PZVxmcHgGu0EzzWnbd0bBvRHH6JgMV3HonwzIQVLkhj4B4muP3EYJzeuWZH
+         R1WTUDZv7Td6B59Tjr6IplLiSgIvMuPgUMzeQkhjuE+qJ/QNXPBSpn59Je+EjX1RXyU4
+         IRHj/pG29Ey6zFbGxa4sArGg1YWSAupQ3kKoQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=+6EflYSSZfOJagfG1O7mOEg57cGG/t7TshjLdR/LpOU=;
-        b=sPpE1f+bBs8d0BsW5OZRQM9WjYiJBrLdnJfVDa2m10OG7qjZ5k72neZZFSvv81Hr8k
-         kNieXwL7t5mPVJLMZTzqtddLWACLmiXFZZb+Jr/w8sFhV1zB0bLmHfdoZBphm8bTKpcu
-         fGTTp8f+ZvE0x7xKz/GgC/EPjOcNIOhAvION+XF738WlwCeV6jz4Xd07yNLU7YDKPUm0
-         /J4kfeqAHLjcJf5425PvFXdzmBcqdCYjrBLghkUiaCAFAvvdV0pS3pDpwweTadqOgznM
-         mM1C0OiDLtGCR1WStTeMtietozc/TM0ALTlWkIpKfzy1ckSdr2vzsvcXTVLETVwR+KAu
-         wFEA==
-X-Gm-Message-State: AOAM531IPHnQBlRTKr4JIiXuVPJAQOyPNyerja4fSi6JvH1ohUrtfwfY
-        zKa0hIaRR31hnpTy8amw8rr3TBatasKSz+g6f7n6WEe96aQwcA==
-X-Google-Smtp-Source: ABdhPJyM64AKqnLUu6x0WWL/eowTsE/8okZDxiOOBQLiBeGkshsaHRFPdx1S+xiMm/AoZ6/EHATMsVD1SnGIM2xQICU=
-X-Received: by 2002:a5e:9e02:: with SMTP id i2mr3891537ioq.154.1603306635690;
- Wed, 21 Oct 2020 11:57:15 -0700 (PDT)
+        bh=RD6Pe7uFsqq6lLUnSY5SK+FGVJWIcdwyWReVf1JamtI=;
+        b=FX4VKQnziw+QOLS15u3Z7o9lJTb58I7j/AsIPEPYhBsAVimIZ5u9cj6gQ8dB9ByYo4
+         zCvIP5sw6/z0mipW3cOOrbYL8vEf/71D1WpYmWK7Vhpyw0MxVbNpj/Iye2YR/Fa2wasp
+         5s7QZt+TuY3LdeZy+6PRPYxWlQ80KdhsroQlq4K+UARMeCyzXk9du3rc+f4+g16l8RQs
+         tPJPayWyvXb8e8iaOmlsnO2NlVGopVE4R84Nx7X2KsBYag4SUmjd9IGeiXEtujsYLT5P
+         TewLHSkQ7tfq4BsvzKvrAXqXiM5najiGa5KEEdiYAPTasr6kVVY7r1r82v9std4oZMv0
+         VOog==
+X-Gm-Message-State: AOAM5308yhc2eWRyYVprQ4MEPmk3uASI9N/wyyBg1tp40W3GrbGT+3pO
+        JALyDlY6UP9zULeWnuwqW+PyFdGdFoezLNqg+pL7aA==
+X-Google-Smtp-Source: ABdhPJxxfUjj7Hta8BePOHoLY9p4KODnXrLobEgMBRj1B+m1IjCAXKJZnnKVfNnNHt3piiQTSKReHx4YebGVv6yUsHk=
+X-Received: by 2002:a17:907:a8d:: with SMTP id by13mr4710348ejc.295.1603306689022;
+ Wed, 21 Oct 2020 11:58:09 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201015002301.101830-1-joel@joelfernandes.org>
- <20201015002301.101830-7-joel@joelfernandes.org> <20201015133511.GB127222@lothringen>
- <20201017012753.GB4015033@google.com> <20201017031941.GD4015033@google.com>
- <20201017132954.GA15657@lothringen> <20201018003556.GA1034551@google.com> <20201019123730.GA34192@lothringen>
-In-Reply-To: <20201019123730.GA34192@lothringen>
-From:   Joel Fernandes <joel@joelfernandes.org>
-Date:   Wed, 21 Oct 2020 11:57:04 -0700
-Message-ID: <CAEXW_YTtYspPNw_eL1vmGXhY8nJ8uQonSc5KuA1weYv3G+bWPg@mail.gmail.com>
-Subject: Re: [PATCH v7 6/6] rcu/segcblist: Add additional comments to explain smp_mb()
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu <rcu@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>,
-        Frederic Weisbecker <fweisbec@gmail.com>,
-        Neeraj upadhyay <neeraj.iitr10@gmail.com>,
-        Alan Stern <stern@rowland.harvard.edu>
+References: <20200929083217.25406-1-jagan@amarulasolutions.com>
+In-Reply-To: <20200929083217.25406-1-jagan@amarulasolutions.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Thu, 22 Oct 2020 00:27:57 +0530
+Message-ID: <CAMty3ZDHDC5TMF=8HJRmZd7HijOM6RP-k4y9JkdWVQGgPKyGvg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/7] arm64: dts: rockchip: Add Engicam PX30.Core
+To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>
+Cc:     Suniel Mahesh <sunil@amarulasolutions.com>,
+        Michael Trimarchi <michael@amarulasolutions.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-amarula <linux-amarula@amarulasolutions.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 5:37 AM Frederic Weisbecker <frederic@kernel.org> wrote:
->
-[..]
-> > >
-> > > I'm very likely missing something obvious somewhere.
-> > >
-> > >       CPU 0                                CPU 1
-> > >       rcu_barrier()                        call_rcu()/rcu_segcblist_enqueue()
-> > >       ------------                         --------
-> > >
-> > >                                            smp_mb();
-> > >                                            inc_len();
-> > >                                        smp_mb();
-> > >                                        queue callback;
-> > >       for_each_possible_cpu(cpu)
-> > >           if (!rcu_segcblist_n_cbs(&rdp->cblist))
-> > >           continue;
-> > >
-> >
-> > >                                             invoke_callback
-> >
-> > If CPU 0 saw the enqueue of the callback (that is the CPU 1's writes to the
-> > segcb_list propagated to CPU 0), then it would have also seen the
-> > effects of the inc_len. I forced this case in my last litmus test by this
-> > code in P1():
->
-> But then I can't find to which part of rcu_barrier() this refers to.
-> I see the len read before anything else.
->
-> >
-> >         r1 = READ_ONCE(*enq);
-> >         smp_mb();               /* barrier Just for test purpose to show that the.. */
-> >                                 /* ..rcu_barrier() saw list modification */
-> >
-> > On the other hand, if CPU 0 did not see the enqueue, then there is really no
-> > issue. Since that is the same case where call_rcu() happened _after_ the
-> > rcu_barrier() and there's no race. rcu_barrier() does not need to wait if
-> > there was no callback enqueued.
-> >
-> > This is not exactly the easiest thing to explain, hence the litmus.
->
-> Now, reading the documentation of rcu_barrier() (thanks to you!):
->
->     Pseudo-code using rcu_barrier() is as follows:
->
->    1. Prevent any new RCU callbacks from being posted.
->    2. Execute rcu_barrier().
->    3. Allow the module to be unloaded.
->
+Hi Heiko,
 
-Basically, you are saying that if all CPUs agree that len == 0
-henceforth (through other memory barriers), then callback enqueuing
-does not need a memory barrier before setting length to 0.
-
-I think that makes sense but is it worth removing the memory barrier
-before WRITE(len, 1) and hoping after #1, the caller would have
-ensured things are fine? Also I am not sure if the above is the only
-usecase for rcu_barrier().
-
-> I think with point 1, it is assumed that the caller of rcu_barrier() must have
-> not only stopped but also sync'ed with the possible enqueuers. Correct me if I'm wrong
-> here. So for example if a kthread used to post the module RCU callbacks, calling kthread_stop()
-> does the job as it prevents from further RCU callbacks from being enqueued and it also syncs
-> with the kthread thanks to the completion implied by any caller of kthread_stop() which then
-> sees what the kthread has read and written, including RCU callbacks enqueued. So if the caller
-> of kthread_stop() calls rcu_barrier() right after, rcu_barrier() should see at least the len
-> corresponding to the last enqueue.
+On Tue, Sep 29, 2020 at 2:02 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
 >
-> cancel_work_sync() also seem to really sync as well. I'm less sure about del_timer_sync().
+> PX30.Core is an EDIMM SOM based on Rockchip PX30 from Engicam.
 >
-> Say we have:
+> PX30.Core needs to mount on top of Engicam baseboards for creating
+> complete platform boards.
 >
-> expire_timers (CPU 0)                               CPU 1
-> -------------                                       -----------
-> detach_timer(timer)
-> raw_spin_unlock(&base->lock);
-> call_timer_fn(timer, fn, baseclk);
->    -> enqueue callback
-> //would need at least smp_wmb() here
-> base->running_timer = NULL;
+> Possible baseboards are,
+> - EDIMM2.2 Starter Kit
+> - C.TOUCH 2.0 Carrier Board
 >
->                                                     del_timer_sync() {
->                                                         raw_spin_lock(&base->lock);
->                                                         if (base->running_timer != timer)
->                                                             ret = detach_if_pending(timer, base, true);
->                                                                 if (!timer_pending())
->                                                                     return 0;
->                                                         raw_spin_unlock(&base->lock);
->                                                     }
->                                                     //would need at least smp_rmb() here
-
-Regarding "would need at least smp_rmb.." :
-But the rcu_barrier() has the control dependency we discussed in last
-emails, between READ(len) and whatever follows the rcu_barrier().
-That itself will provide the ordering right?
-
->                                                     //although rcu_seq_start() implies a full barrier
->                                                     rcu_barrier() {
->                                                         // Sees rcu_segcblist_n_cbs(rdp(CPU 0)->cblist) == 0
->                                                         // So ignore it
+> Changes for v4:
+> - collect Rob A-b
+> Changes for v3:
+> - resolved Johan comments about sorting node properties
+> - add copyright to Amarula Solutions
+> - update px30 dtsi author
+> Changes for v2:
+> - include C.TOUCH 2.0 carrier board
+> - skip 10" OF LCD as it requires separate dts with panel support.
 >
+> Note: These baseboards can be used for i.MX8 SOM's as well. So having
+> baseboard on respective SoC seems to be easy rather than making it
+> common across all.
 >
-> But I'm sure I'm missing something obvious. That's my specialism.
+> Any inputs?
+> Jagan.
+>
+> Jagan Teki (6):
+>   dt-bindings: arm: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+>   arm64: dts: rockchip: px30: Add Engicam EDIMM2.2 Starter Kit
+>   arm64: dts: rockchip: Add Engicam PX30.Core EDIMM2.2 Starter Kit
+>   dt-bindings: arm: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+>   arm64: dts: rockchip: px30: Add Engicam C.TOUCH 2.0
+>   arm64: dts: rockchip: Add Engicam PX30.Core C.TOUCH 2.0
+>
+> Michael Trimarchi (1):
+>   arm64: dts: rockchip: Add Engicam PX30.Core SOM
+>
+>  .../devicetree/bindings/arm/rockchip.yaml     |  12 +
+>  arch/arm64/boot/dts/rockchip/Makefile         |   2 +
+>  .../dts/rockchip/px30-engicam-common.dtsi     |  39 +++
+>  .../dts/rockchip/px30-engicam-ctouch2.dtsi    |   8 +
+>  .../dts/rockchip/px30-engicam-edimm2.2.dtsi   |   7 +
+>  .../dts/rockchip/px30-px30-core-ctouch2.dts   |  22 ++
+>  .../dts/rockchip/px30-px30-core-edimm2.2.dts  |  21 ++
+>  .../boot/dts/rockchip/px30-px30-core.dtsi     | 232 ++++++++++++++++++
+>  8 files changed, 343 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-common.dtsi
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-ctouch2.dtsi
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-engicam-edimm2.2.dtsi
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-ctouch2.dts
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core-edimm2.2.dts
+>  create mode 100644 arch/arm64/boot/dts/rockchip/px30-px30-core.dtsi
 
-I could be missing something too :-/. But I'll include this patch in
-my next posting anyway and let us also maybe see if Paul disagrees.
+Any further comments?
 
-thanks,
-
- - Joel
+Jagan.
