@@ -2,110 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 014F1294E6D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:23:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F95E294E7A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:23:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437414AbgJUOWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:22:55 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49708 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2437241AbgJUOWz (ORCPT
+        id S2443451AbgJUOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:23:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442847AbgJUOXM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:22:55 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603290173;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yp3OQZh03TZtBBh//ZUnTZtHQGcv7MxFTpyYeikglDA=;
-        b=HDtSe+1KEyXRuiGcMGdpjv3vsU8ye4vjXoRPENJUbY94D8CR7iZnGwu/rKQV6T2AjKe1oj
-        QLY/1k6y6sCxt2pbG/m+VpM2+ywV8ST5hd1v3NrbRIE8fyj89Lm3nPg80SuMmZgrUsmMMm
-        FSeGQyMp938vw9iwrK2D/8Vu8oKGjzw=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-383-LW4_haPVNnuizcEb93YPEg-1; Wed, 21 Oct 2020 10:22:52 -0400
-X-MC-Unique: LW4_haPVNnuizcEb93YPEg-1
-Received: by mail-wr1-f71.google.com with SMTP id t11so2777926wrv.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:22:51 -0700 (PDT)
+        Wed, 21 Oct 2020 10:23:12 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B43C0613CE;
+        Wed, 21 Oct 2020 07:23:12 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id m22so1974572ots.4;
+        Wed, 21 Oct 2020 07:23:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=qjwRFR9+DVMdexTdUNgx5g1bJ7um932k+2im+PVjM5M=;
+        b=Cec+XKIjuVF7NrU5Jn3c1em3s/DtISpzwZaoGp2I5S8IuT7dr+SApPrZ22JjIVydUB
+         GvxFYScjirjwR5106VcVWSU8RELtz2bfAJQAqnx+m/Wtzjv9eL74X899yTMHLAh6C1lk
+         0ivLgDLGEQCs4gjyY+utrybPgZsoKj063UZdpAoiIzXFxmxsyZvh/jozOeNrvN/dZNBU
+         2Q36Rc0jV5pBJ9xFMWB4cyQqHnamM4qfYw1+X7Ahih2Q+jjaARmFm6VLFtRP5+vIo8sh
+         QC8sdTT2dYvPFU8/hl8f2X7aStvY6TqrT0rfY+/c7sQI8OusKbegNtfhYUnti5FLbl/y
+         mqeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=Yp3OQZh03TZtBBh//ZUnTZtHQGcv7MxFTpyYeikglDA=;
-        b=LJW+g+T5xZEJSWDmcbJ3XRZlqUWkyXvtt6YKdNv4ix7/VrUQElCQu61QDkQMDdm+LU
-         OEm1cWivpEnJlCbYajXsPlbxvEfXt2hRvaI60g9/vSgOVSI7VlmfVOCkkjl37yf93sm1
-         5z/gFY+DoNQ0UZ2OiGtVSMcVxuwxbEUwzAj64C949wsa3PDFiyUNbJPjOKZbaJyOV5eo
-         PMlziBciy0dw15BkXUT+HieF//De+kpCkHUNhYETfJAcmWXjb2AwsqLcCmxVM3H975gQ
-         PoBIJDi1XSy9F3YX/ta/nR+lpWd6YLpVaKy/lugEpDxuQecZTDvvatxh8Chcblqie232
-         I6Mw==
-X-Gm-Message-State: AOAM531QfF+vPRIhoPVCxt/zcKFv9YycYRZUQQJ2vxzA75zIhh82dtPY
-        0/TidTNjk48BDzvBgVvBXecwk+VrEuuU65tFuYHHhXM3Pnej0o5QmTpmTZ1xF/3iQBJwhNARNZx
-        OwYDy5hiLNqfEX8Btbrd0d5xv
-X-Received: by 2002:a7b:c762:: with SMTP id x2mr3947349wmk.102.1603290170046;
-        Wed, 21 Oct 2020 07:22:50 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwzI0babsXTfkHvpBywnFhVI0rRhxJ+HbO+aHyxoWr0eH5bbHIxBdCFCtR3bE85jVIbhRKW+w==
-X-Received: by 2002:a7b:c762:: with SMTP id x2mr3947334wmk.102.1603290169859;
-        Wed, 21 Oct 2020 07:22:49 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id q8sm4168755wro.32.2020.10.21.07.22.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 07:22:48 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 09/10] KVM: VMX: Skip additional Hyper-V TLB EPTP flushes if one fails
-In-Reply-To: <20201020215613.8972-10-sean.j.christopherson@intel.com>
-References: <20201020215613.8972-1-sean.j.christopherson@intel.com> <20201020215613.8972-10-sean.j.christopherson@intel.com>
-Date:   Wed, 21 Oct 2020 16:22:47 +0200
-Message-ID: <87lffz4q14.fsf@vitty.brq.redhat.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=qjwRFR9+DVMdexTdUNgx5g1bJ7um932k+2im+PVjM5M=;
+        b=fJ8IQK4CaBzIc4J9V2Ol97hepjrdtVoaXnqZlfCZdn7X7O/yuOU2iQEaOXanuee8jh
+         Sz/IC48anQJiISBZmQjiyMD9PpjTCzK6KNS0vUS289ZRFZY7v4gkluI+KcU7wl1jPkQe
+         7I92kMwBPTfbhaiw13kO1Ogd589RFvGkBCrtNyflFv5bHM2YEQPQd7u9NHKcWVhF64F6
+         5C6kdbutWhh1y2zB9wL1mDjRWU9n3vvNzGvcsiKILkJ3BqhmwcZdOD7hzvGidwikn17s
+         PBZsUz6OJt54XYTVl7fkab+VZo6tMZi1wAwsu+eTue/Sy3Zwlg6TIE+NFVr2HyY4uOTq
+         wjnA==
+X-Gm-Message-State: AOAM533cwUFW/p4p3jer0rLXIX47rAoRz0WfjdcgKzd11CrCNFaTS7gU
+        ZyA2LKsIov9s8v9bNU3myqZa8iLKTxBoVWD9onQ=
+X-Google-Smtp-Source: ABdhPJy14GHvBmnHtWpHKx8pr7r4KJMhVCOvw8lp9YX3oK/seimfYX7CNXf7X0g+mQK9jsk2DBdr0E0CJTluG7UwYCo=
+X-Received: by 2002:a05:6830:2153:: with SMTP id r19mr2690572otd.207.1603290191675;
+ Wed, 21 Oct 2020 07:23:11 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20201021135140.51300-1-alexandru.ardelean@analog.com>
+ <20201021135802.GM139700@lunn.ch> <CA+U=DsoRVt66cANFJD896R-aOJseAF-1VkgcvLZHQ1rUTks3Eg@mail.gmail.com>
+ <20201021141342.GO139700@lunn.ch>
+In-Reply-To: <20201021141342.GO139700@lunn.ch>
+From:   Alexandru Ardelean <ardeleanalex@gmail.com>
+Date:   Wed, 21 Oct 2020 17:23:00 +0300
+Message-ID: <CA+U=DsoEbrYn8i+GcLBzNHLY7xbKLOnZOLo00r7YwcQ_rXF94w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] net: phy: adin: clear the diag clock and set
+ LINKING_EN during autoneg
+To:     Andrew Lunn <andrew@lunn.ch>
+Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
+        David Miller <davem@davemloft.net>, kuba@kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
-
-> Skip additional EPTP flushes if one fails when processing EPTPs for
-> Hyper-V's paravirt TLB flushing.  If _any_ flush fails, KVM falls back
-> to a full global flush, i.e. additional flushes are unnecessary (and
-> will likely fail anyways).
+On Wed, Oct 21, 2020 at 5:13 PM Andrew Lunn <andrew@lunn.ch> wrote:
 >
-> Continue processing the loop unless a mismatch was already detected,
-> e.g. to handle the case where the first flush fails and there is a
-> yet-to-be-detected mismatch.
+> > The frame-generator is an interesting feature of the PHY, that's not
+> > useful for the current phylib; the PHY can send packages [like a
+> > signal generator], and then these can be looped back, or sent over the
+> > wire.
 >
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+
+removed my typo-ed [work] email
+i use gmail as a mirror-email for my work email, because.... reasons
+and i added my work-email to the --cc list with a typo, because the
+universe seems to have wanted that [in a manner of saying it]
+
+> Many PHYs that that. I posted some patches to the list a few years ago
+> adding basic support for the Marvell PHY frame generator. They got
+> NACKed. The netlink API, and some of the infrastructure i added for
+> cable testing would make it possible to fix the issues that caused the
+> NACK.
+
+i'll think about the frame-generator;
+
+i was super-happy when the cable-test support was added;
+when i first wrote the PHY, i actually wrote this logic for
+cable-testing, then scrapped it because the code [without any
+framework around it] just looked bad, and like it was asking to cause
+trouble;
+
+with this minimal framework in place, cable-testing looks like a neat
+feature [and neatly implemented];
+and it took me less than a day to write and test it;
+so, thank you for this :)
+
 >
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index a45a90d44d24..e0fea09a6e42 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -517,7 +517,11 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
->  			else
->  				mismatch = true;
->  
-> -			ret |= hv_remote_flush_eptp(tmp_eptp, range);
-> +			if (!ret)
-> +				ret = hv_remote_flush_eptp(tmp_eptp, range);
-> +
-> +			if (ret && mismatch)
-> +				break;
->  		}
->  		if (mismatch)
->  			kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
-
-In case my suggestion on PATCH5 gets dismissed,
-
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
-
--- 
-Vitaly
-
+> > Having said this, I'll include some comments for these in a V2 of this patchset.
+>
+> Thanks.
+>
+>         Andrew
+>
+> P.S.
+>
+> Your mail is broken somehow:
+>
+> Delivery has failed to these recipients or groups:
+>
+> alexaundru.ardelean@analog.com
+> The email address you entered couldn't be found. Please check the recipient's
+> email address and try to resend the message. If the problem continues, please
+> contact your email admin.
