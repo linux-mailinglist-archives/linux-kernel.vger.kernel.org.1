@@ -2,122 +2,303 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55C08295074
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:12:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 91FAC295083
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:13:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502867AbgJUQMH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:12:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52888 "EHLO
+        id S2502910AbgJUQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:12:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52980 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502860AbgJUQMG (ORCPT
+        with ESMTP id S2502900AbgJUQMi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:12:06 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 20635C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:05 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id y14so1731287pfp.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:05 -0700 (PDT)
+        Wed, 21 Oct 2020 12:12:38 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 17B92C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:38 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id z2so3020620ilh.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:12:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:content-transfer-encoding:in-reply-to:references
-         :subject:from:cc:to:date:message-id:user-agent;
-        bh=pjUFlnUt0sVqVNyXUeX+2nYGGLuzFr1RFnAsc9/hEZc=;
-        b=JCger6du92m4uwhDkZiF26D9g8XCS3IORIK1mOhO1qFNmYhHtF/mFbu6yQx24U7B2z
-         FzYMJ03BMOmbBWbWA2VbdvUVXqQJXNn1nzcKmD0NoRL8k/0iL7k7toPtuTTYLOOCH6pt
-         cIUfsq6GHJPz94pdNX9yQU2rrmUpxApasi2uw=
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=4TUU6hGGI9Z94LbatnJF8LAX/xchi+VJPPQ2WB0pkiA=;
+        b=X4IV+nUsCYkk1vFe9xS8Jm3ZYugYDe7pbFXAmRInA7rBSgbvuHiayEK+i3chwYxRAV
+         BTE0Vl4w70eARrayWkfwMDXCZigXAi/0X0oIcCQtlZgBLdnibFbR4waujxJvAEPZPVGV
+         URjmwlV/WaApBIsB6NGSkdet2TRPKDVOmjY5BsIl5cKyxqCDeUXKMZLFz2Sb7teV7cTj
+         5zV5skOaIMYXUpp+wJT2CLbz7vnCKWetokTivIBiYHU9FG2DOIym/qGdDHr3iwUb9TDa
+         D8rf1ZIU87JzVD7sPqrJANTvBDugPUMAK4zSM+cAr+8BvrRX+gF5WN/MLLKXPBGy/irA
+         xNmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:content-transfer-encoding
-         :in-reply-to:references:subject:from:cc:to:date:message-id
-         :user-agent;
-        bh=pjUFlnUt0sVqVNyXUeX+2nYGGLuzFr1RFnAsc9/hEZc=;
-        b=Es/5q4VLYmdBnrN6LBGGZD3EG/sRtLt9OtG1sP3b5p/FXe6gzmf9GOhDUY5hdUVCjo
-         xnYnItM9+s7qc7OC99WUJnBMpZYLzEPvHkUWsarhRxY7JQ58VrfjHsSE8589nAvN2F8F
-         hFDbbBj6Iry5y/4XWqKtyCxRYPyxXp9YkNz7vBSiRaojkIVGSKPz8CNSZ+ZSaj8e6R6z
-         LIVSBCygfdlxe2/OjBwyzk50YV2t4tfXpDtRnnKqa+R1bcOrkIPRdRixbu6TuclVlum0
-         7IR/04JKn410AdicSBHQF6qpvsZc7gOctsFujlg/5ezfhdQh3r7wXscpic+i3kuVs7AI
-         271w==
-X-Gm-Message-State: AOAM531HsRNceAk01D6eWbiLpCTTssc5Mp1v6XfSmHtcVhKNAl0e9QUE
-        5XgqJFd3gPni7B7/8RGS2p1VPw==
-X-Google-Smtp-Source: ABdhPJy2tdWNalf6KEessz3fjq5gBCehPaa8JHjz83PsXY3krrxY+BLqr8tr8gywsLgOTQFh/BGoWg==
-X-Received: by 2002:a62:8c55:0:b029:152:b326:9558 with SMTP id m82-20020a628c550000b0290152b3269558mr4171999pfd.72.1603296724583;
-        Wed, 21 Oct 2020 09:12:04 -0700 (PDT)
-Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id g15sm2881355pgi.89.2020.10.21.09.12.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 09:12:03 -0700 (PDT)
-Content-Type: text/plain; charset="utf-8"
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=4TUU6hGGI9Z94LbatnJF8LAX/xchi+VJPPQ2WB0pkiA=;
+        b=cg6sDhK2lVR6K8fRAV1c2L1e5gIgpKBplYjApKhyA12znL4ixxphw/CnQbrr1+wRQm
+         euDW/Uztrb3k8xoAz7GSe1NiqjDgLl6p9pDE1Aq+1Bnyuz7l5jbmHDtzWp/ucOkW8eEW
+         LPpFSSpkIa3itCY7FdMzLEWm8bqzNqvaipb43nCWw3ccb7nkeesvHXnOI9jueVxERDzT
+         VUsIVbyX8v2932QOzbydlxJxWG/+Imu8xIwqi/zQLt0zJKCybvtPo4nAa+0z3bIv4p/T
+         hqJY3XkWebdgNdXi/XAo6Zqw8LFFcHDDWo7s3HZpFcF3LWcyMH3+TQwGz24cwUr5Nxmr
+         zk8w==
+X-Gm-Message-State: AOAM533sjaAF52Y8YOjVwhekhnjloogPgdYG/bfYq3RP0DQpLYBIQGH0
+        S4vcZKvEO379KKNzRAY9ojLM6OiViBR21x6TYGiW5XMWqZ44HY2o
+X-Google-Smtp-Source: ABdhPJz/ApjGKwRy8S99DcxVGawKQn5hiW1QKCDLCWkbzoXpW83eMI0U2jHt2ZzRsg33h08fQ6RREaznv5WzjW79QLk=
+X-Received: by 2002:a05:6e02:664:: with SMTP id l4mr3209239ilt.81.1603296756271;
+ Wed, 21 Oct 2020 09:12:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20201021154909.GD18071@willie-the-truck>
-References: <20201020214544.3206838-1-swboyd@chromium.org> <20201020214544.3206838-2-swboyd@chromium.org> <20201021075722.GA17230@willie-the-truck> <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com> <20201021154909.GD18071@willie-the-truck>
-Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
-From:   Stephen Boyd <swboyd@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
-To:     Will Deacon <will@kernel.org>
-Date:   Wed, 21 Oct 2020 09:12:02 -0700
-Message-ID: <160329672229.884498.3370140649393072677@swboyd.mtv.corp.google.com>
-User-Agent: alot/0.9.1
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Wed, 21 Oct 2020 21:42:25 +0530
+Message-ID: <CA+G9fYsZJXU+BDkhAXqxq=fq5hNr1RJaenDDW8P4gC6-=Q=dQg@mail.gmail.com>
+Subject: FAIL: LTP: clone08.c:135: FAIL: ctid != getpid() (0 != 1008)
+To:     open list <linux-kernel@vger.kernel.org>,
+        linux-m68k@lists.linux-m68k.org, X86 ML <x86@kernel.org>,
+        LTP List <ltp@lists.linux.it>, lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>
+Cc:     Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Quoting Will Deacon (2020-10-21 08:49:09)
-> On Wed, Oct 21, 2020 at 08:23:54AM -0700, Stephen Boyd wrote:
-> >=20
-> > If I'm reading the TF-A code correctly it looks like this will return
-> > SMC_UNK if the platform decides that "This flag can be set to 0 by the
-> > platform if none of the PEs in the system need the workaround." Where
-> > the flag is WORKAROUND_CVE_2017_5715 and the call handler returns 1 if
-> > the errata doesn't apply but the config is enabled, 0 if the errata
-> > applies and the config is enabled, or SMC_UNK (I guess this is
-> > NOT_SUPPORTED?) if the config is disabled[2].
-> >=20
-> > So TF-A could disable this config and then the kernel would think it is
-> > vulnerable when it actually isn't? The spec is a pile of ectoplasma
-> > here.
->=20
-> Yes, but there's not a lot we can do in that case as we rely on the
-> firmware to tell us whether or not we're affected. We do have the
-> "safelist" as a last resort, but that's about it.
+LTP syscalls clone08 and clone301 FAILED on x86_64 KASAN enabled build
+But tests are getting PASS on Non KASAN build.
+This regression started happening from Linux next-20201015 nowards
+Please refer to the strace output at the bottom of this email.
 
-There are quite a few platforms that set this config to 0. Should they
-be setting it to 1?
+There are few more regression on linux next i will share those failure
+in a separate email,
+ ltp-syscalls-tests:
+    * clone08
+    * clone301
+    * fcntl34
+    * fcntl34_64
+    * fcntl36
+    * fcntl36_64
+    * keyctl02
+    * rt_tgsigqueueinfo01
 
- tf-a $ git grep WORKAROUND_CVE_2017_5715 -- **/platform.mk | wc -l
- 17
+metadata:
+  git branch: master
+  git repo: https://gitlab.com/Linaro/lkft/mirrors/next/linux-next
+  git describe: next-20201015
+  kernel-config:
+https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/kernel.config
 
-This looks like a disconnect between kernel and TF-A but I'm not aware
-of all the details here.
+steps to reproduce:
+  # boot x86_64 with KASAN enabled kernel and run tests
+  # cd /opt/ltp/testcases/bin
+  # ./clone08
+  # ./clone301
 
->=20
-> >=20
-> > Does the kernel implement a workaround in the case that no guest PE is
-> > affected? If so then returning 1 sounds OK to me, but otherwise
-> > NOT_SUPPORTED should work per the spec.
->=20
-> I don't follow you here. The spec says that "SMCCC_RET_NOT_SUPPORTED" is
-> valid return code in the case that "The system contains at least 1 PE
-> affected by CVE-2017-5715 that has no firmware mitigation available."
-> and do the guest would end up in the "vulnerable" state.
->=20
+clone08:
+---------
+clone08.c:71: INFO: running CLONE_PARENT
+clone08.c:115: PASS: clone and forked child has the same parent
+clone08.c:71: INFO: running CLONE_CHILD_SETTID
+clone08.c:135: FAIL: ctid != getpid() (0 != 1008)
+clone08.c:71: INFO: running CLONE_PARENT_SETTID
+clone08.c:145: FAIL: ptid != getpid() (0 != 1009)
+clone08.c:71: INFO: running CLONE_THREAD
+clone08.c:222: PASS: clone has the same thread id
+clone08.c:212: PASS: futex exit on ctid change, ctid: 0
 
-Returning 1 says "SMCCC_ARCH_WORKAROUND_1 can be invoked safely on all
-PEs in the system" so I am not sure that invoking it is from a guest is
-safe on systems that don't require the workaround? If it is always safe
-to invoke the call from guest to host then returning 1 should be fine
-here.
+clone301:
+----------
+clone301.c:159: PASS: Parent got correct signal SIGCHLD
+clone301.c:159: PASS: Parent got correct signal SIGUSR2
+clone301.c:159: PASS: Parent got correct signal SIGCHLD
+clone301.c:159: PASS: Parent got correct signal SIGCHLD
+clone301.c:138: FAIL: pidfd_send_signal() failed: EBADF (9)
+clone301.c:79: FAIL: Child haven't got signal
 
-My read of the spec was that the intent is to remove the call at some
-point and have the removal of the call mean that it isn't vulnerable.
-Because NOT_SUPPORTED per the spec means "not needed", "maybe needed",
-or "firmware doesn't know". Aha maybe they wanted us to make the call on
-each CPU (i.e. PE) and then if any of them return 0 we should consider
-it vulnerable and if they return NOT_SUPPORTED we should keep calling
-for each CPU until we are sure we don't see a 0 and only see a 1 or
-NOT_SUPPORTED? Looks like a saturating value sort of thing, across CPUs
-that we care/know about.
+Reported-by: Naresh Kamboju <naresh.kamboju@linaro.org>
+
+full test log link,
+https://lkft.validation.linaro.org/scheduler/job/1844087
+
+strace output:
++ strace -f ./clone08
+execve(\"./clone08\", [\"./clone08\"], 0x7ffe70dccb78 /* 22 vars */) = 0
+brk(NULL)                               = 0x2531000
+access(\"/etc/ld.so.preload\", R_OK)      = -1 ENOENT (No such file or
+directory)
+openat(AT_FDCWD, \"/etc/ld.so.cache\", O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=19408, ...}) = 0
+mmap(NULL, 19408, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f7e61446000
+close(3)                                = 0
+openat(AT_FDCWD, \"/lib/libc.so.6\", O_RDONLY|O_CLOEXEC) = 3
+read(3, \"\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0p\2\0\0\0\0\0\"...,
+832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=1771456, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1,
+0) = 0x7f7e61444000
+mmap(NULL, 3877600, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3,
+0) = 0x7f7e60e74000
+mprotect(0x7f7e6101e000, 2093056, PROT_NONE) = 0
+mmap(0x7f7e6121d000, 24576, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1a9000) = 0x7f7e6121d000
+mmap(0x7f7e61223000, 15072, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f7e61223000
+close(3)                                = 0
+arch_prctl(ARCH_SET_FS, 0x7f7e61445580) = 0
+mprotect(0x7f7e6121d000, 16384, PROT_READ) = 0
+mprotect(0x61c000, 4096, PROT_READ)     = 0
+mprotect(0x7f7e6144b000, 4096, PROT_READ) = 0
+munmap(0x7f7e61446000, 19408)           = 0
+getpid()                                = 525
+access(\"/dev/shm\", F_OK)                = 0
+getpid()                                = 525
+openat(AT_FDCWD, \"/dev/shm/ltp_clone08_525\", O_RDWR|O_CREAT|O_EXCL, 0600) = 3
+chmod(\"/dev/shm/ltp_clone08_525\", 0666) = 0
+ftruncate(3, 4096)                      = 0
+mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_SHARED, 3, 0) = 0x7f7e6144a000
+unlink(\"/dev/shm/ltp_clone08_525\")      = 0
+close(3)                                = 0
+rt_sigaction(SIGALRM, {sa_handler=0x403e40, sa_mask=[ALRM],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+rt_sigaction(SIGUSR1, {sa_handler=0x403ce0, sa_mask=[USR1],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+ioctl(2, TCGETS, {B115200 opost isig icanon echo ...}) = 0
+write(2, \"tst_test.c:1246: INFO: [\"..., 64tst_test.c:1246: INFO:
+Timeout per run is 0h 05m 00s
+) = 64
+getpid()                                = 525
+alarm(300)                              = 0
+rt_sigaction(SIGINT, {sa_handler=0x403df0, sa_mask=[INT],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=SIG_DFL, sa_mask=[], sa_flags=0}, 8) = 0
+clone(strace: Process 526 attached
+child_stack=NULL,
+flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
+child_tidptr=0x7f7e61445850) = 526
+[pid   525] wait4(526,  <unfinished ...>
+[pid   526] rt_sigaction(SIGALRM, {sa_handler=SIG_DFL, sa_mask=[ALRM],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=0x403e40, sa_mask=[ALRM], sa_flags=SA_RESTORER|SA_RESTART,
+sa_restorer=0x7f7e60ea85b0}, 8) = 0
+[pid   526] rt_sigaction(SIGUSR1, {sa_handler=SIG_DFL, sa_mask=[USR1],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=0x403ce0, sa_mask=[USR1], sa_flags=SA_RESTORER|SA_RESTART,
+sa_restorer=0x7f7e60ea85b0}, 8) = 0
+[pid   526] rt_sigaction(SIGINT, {sa_handler=SIG_DFL, sa_mask=[INT],
+sa_flags=SA_RESTORER|SA_RESTART, sa_restorer=0x7f7e60ea85b0},
+{sa_handler=0x403df0, sa_mask=[INT], sa_flags=SA_RESTORER|SA_RESTART,
+sa_restorer=0x7f7e60ea85b0}, 8) = 0
+[pid   526] setpgid(0, 0)               = 0
+[pid   526] clock_gettime(CLOCK_MONOTONIC, {tv_sec=248, tv_nsec=252551861}) = 0
+[pid   526] getppid()                   = 525
+[pid   526] kill(525, SIGUSR1)          = 0
+[pid   525] <... wait4 resumed> 0x7ffc8bca80d8, 0, NULL) = ?
+ERESTARTSYS (To be restarted if SA_RESTART is set)
+[pid   525] --- SIGUSR1 {si_signo=SIGUSR1, si_code=SI_USER,
+si_pid=526, si_uid=0} ---
+[pid   525] alarm(300 <unfinished ...>
+[pid   526] brk(NULL <unfinished ...>
+[pid   525] <... alarm resumed> )       = 300
+[pid   526] <... brk resumed> )         = 0x2531000
+[pid   525] rt_sigreturn({mask=[]} <unfinished ...>
+[pid   526] brk(0x2552000 <unfinished ...>
+[pid   525] <... rt_sigreturn resumed> ) = 61
+[pid   526] <... brk resumed> )         = 0x2552000
+[pid   525] wait4(526,  <unfinished ...>
+[pid   526] getpid()                    = 526
+[pid   526] mmap(NULL, 1052672, PROT_READ|PROT_WRITE,
+MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f7e61343000
+[pid   526] getpid()                    = 526
+[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 52clone08.c:71:
+INFO: running CLONE_PARENT
+) = 52
+[pid   526] clone(child_stack=NULL,
+flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD,
+child_tidptr=0x7f7e61445850) = 527
+strace: Process 527 attached
+[pid   526] wait4(-1,  <unfinished ...>
+[pid   527] getppid()                   = 526
+[pid   527] clone(strace: Process 528 attached
+ <unfinished ...>
+[pid   528] getppid( <unfinished ...>
+[pid   527] <... clone resumed> child_stack=0x7f7e61443000,
+flags=CLONE_PARENT|SIGCHLD) = 528
+[pid   528] <... getppid resumed> )     = 526
+[pid   527] exit_group(0)               = ?
+[pid   528] write(2, \"clone08.c:115: PASS: "..., 75clone08.c:115:
+PASS: clone and forked child has the same parent
+) = 75
+[pid   528] exit(0)                     = ?
+[pid   527] +++ exited with 0 +++
+[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
+0}], 0, NULL) = 527
+[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
+si_pid=527, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+[pid   526] wait4(-1,  <unfinished ...>
+[pid   528] +++ exited with 0 +++
+[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
+0}], 0, NULL) = 528
+[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
+si_pid=528, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
+[pid   526] getpid()                    = 526
+[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
+[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 58clone08.c:71:
+INFO: running CLONE_CHILD_SETTID
+) = 58
+[pid   526] clone(strace: Process 529 attached
+child_stack=0x7f7e61443000, flags=CLONE_CHILD_SETTID|SIGCHLD,
+child_tidptr=0x61d2e4) = 529
+[pid   529] getpid( <unfinished ...>
+[pid   526] wait4(-1,  <unfinished ...>
+[pid   529] <... getpid resumed> )      = 529
+[pid   529] getpid()                    = 529
+[pid   529] write(2, \"clone08.c:135: FAIL: "..., 60clone08.c:135:
+FAIL: ctid != getpid() (0 != 529)
+) = 60
+[pid   529] exit(0)                     = ?
+[pid   529] +++ exited with 0 +++
+[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
+0}], 0, NULL) = 529
+[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
+si_pid=529, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
+[pid   526] getpid()                    = 526
+[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
+[pid   526] write(2, \"clone08.c:71: INFO: r\"..., 59clone08.c:71:
+INFO: running CLONE_PARENT_SETTID
+) = 59
+[pid   526] clone(strace: Process 530 attached
+child_stack=0x7f7e61443000,
+flags=CLONE_VM|CLONE_PARENT_SETTID|SIGCHLD, parent_tidptr=0x61d2e8) =
+530
+[pid   530] getpid( <unfinished ...>
+[pid   526] wait4(-1,  <unfinished ...>
+[pid   530] <... getpid resumed> )      = 530
+[pid   530] getpid()                    = 530
+[pid   530] write(2, \"clone08.c:145: FAIL: "..., 60clone08.c:145:
+FAIL: ptid != getpid() (0 != 530)
+) = 60
+[pid   530] exit(0)                     = ?
+[pid   530] +++ exited with 0 +++
+[pid   526] <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) ==
+0}], 0, NULL) = 530
+[pid   526] --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED,
+si_pid=530, si_uid=0, si_status=0, si_utime=0, si_stime=0} ---
+[pid   526] wait4(-1, 0x7ffc8bca809c, 0, NULL) = -1 ECHILD (No child processes)
+[pid   526] getpid()                    = 526
+
+strace output log link,
+https://lkft.validation.linaro.org/scheduler/job/1865313#L2121
+
+Test case links:
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/clone/clone08.c
+https://github.com/linux-test-project/ltp/blob/master/testcases/kernel/syscalls/clone3/clone301.c
+
+-- 
+Linaro LKFT
+https://lkft.linaro.org
