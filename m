@@ -2,142 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C7BB2953B3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D06C2953BD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:59:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505551AbgJUU7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:59:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40846 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2393312AbgJUU7I (ORCPT
+        id S2505695AbgJUU7v convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Oct 2020 16:59:51 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33418 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2505683AbgJUU7t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:59:08 -0400
-Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DCE7C0613CE;
-        Wed, 21 Oct 2020 13:59:08 -0700 (PDT)
-Received: by mail-wm1-x344.google.com with SMTP id z22so3178052wmi.0;
-        Wed, 21 Oct 2020 13:59:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=Q1NKMcSOe9b+qsiaH8aTA03vYMnG2ZoSX2yxXb05R/Y=;
-        b=qKfACjW2xnC0rvQ9v1HOxbYmaCSjKpED0TSJihI0QBTvhtCiis0darmOpowu4MyWKS
-         Q8P26L902olFs+g5evVwyF8DDWzqwmRQndqWngey3FHPxuPNg1UNwL14CMrUugqEVG/g
-         upnRt+sLlY6bj2cNLmnQ5mOmHLZA8S2jbAKyauglzuQToySTmdGAph/DARBqyo12GD5S
-         32ncNvCWM2md84bQtQHoTVmnJzb3WR3gjXiG1hbbCr1VCiNhAeKLL+nxhHYECuIpFBSn
-         lP3PiiXZjUuFe1H1T5cWnBkGw6CHDXcgn8bsXHnCAncLGgEnJYx0gV8Uy/KV9PLcIEs1
-         etWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=Q1NKMcSOe9b+qsiaH8aTA03vYMnG2ZoSX2yxXb05R/Y=;
-        b=R2APsGJRNCRpB8I0Hl8357+y65f6KeNV9hazHeehcvX2D7Yj4OghhoQdHT4oL4t5CL
-         /wUMgHJd+JhF1sZ37+5pdLibu1S2pTLKQhYbWbRCcF4y4lIv5cGwSk8R7NYw5EL+gedp
-         Wf8u/0G9R9eEAx0H34VuM1qLO5CM3iaNeHCJurlIcl9rFz5vSNrrGeLJILneHLnRd8EU
-         QkPVpYM2Jmxv2he3rWW4DWY0/NF1hc6IGCT2sw9tcXBzQLPTmOrQP1Q/dw4vLxbx16mJ
-         nmRgSRvDb6BOALcWS7ZGwu3E5arjH6oJf/OYIY0pzBhOq/uP9AC8JO/WzQuGyDSntjOL
-         p0gQ==
-X-Gm-Message-State: AOAM532+JMuGBUrmX6c8rqabWY5b1nZ/rFJG9miqYSQzq5cPQ9jGc0/x
-        Iiu8/TfeLHr0aYi/jbo74Xj17VrkgfLzlHdv
-X-Google-Smtp-Source: ABdhPJxk7m3kz98eLybI4oIBAgM3mVENX60rImBbxPPZhlnRmpb2+OzopUJImL3tVZBjRQx9m2Xe8w==
-X-Received: by 2002:a1c:4904:: with SMTP id w4mr4739912wma.99.1603313947284;
-        Wed, 21 Oct 2020 13:59:07 -0700 (PDT)
-Received: from [192.168.1.158] ([2.26.187.29])
-        by smtp.gmail.com with ESMTPSA id d30sm5980990wrc.19.2020.10.21.13.59.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 13:59:06 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 0/9] Add functionality to ipu3-cio2 driver allowing
- software_node connections to sensors on platforms designed for Windows
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        prabhakar.mahadev-lad.rj@bp.renesas.com,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        David Miller <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        tian.shu.qiu@intel.com, Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        yong.zhi@intel.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        kitakar@gmail.com, dan.carpenter@oracle.org,
-        Linus Walleij <linus.walleij@linaro.org>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <CAJZ5v0g2hQV9RNq3LZqrpQ5LP0rR+fxwdWcwwnzWh1g2dLdmjw@mail.gmail.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <6aa10740-ae07-16c3-d3a2-8c42af2a259a@gmail.com>
-Date:   Wed, 21 Oct 2020 21:59:04 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 21 Oct 2020 16:59:49 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-133-TE6JN5gZMAinUsbykq2bUQ-1; Wed, 21 Oct 2020 21:59:44 +0100
+X-MC-Unique: TE6JN5gZMAinUsbykq2bUQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Wed, 21 Oct 2020 21:59:43 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Wed, 21 Oct 2020 21:59:43 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Greg KH' <gregkh@linuxfoundation.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>
+CC:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWp8T3NDfnH4y9nkGWtfqJueR1KKmiiApA
+Date:   Wed, 21 Oct 2020 20:59:43 +0000
+Message-ID: <b416290b76684ac392e8c43d764645f8@AcuMS.aculab.com>
+References: <20200925045146.1283714-1-hch@lst.de>
+ <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
+In-Reply-To: <20201021161301.GA1196312@kroah.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <CAJZ5v0g2hQV9RNq3LZqrpQ5LP0rR+fxwdWcwwnzWh1g2dLdmjw@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20/10/2020 14:38, Rafael J. Wysocki wrote:
-> [Fix the Linus Walleij's address.]
-Thanks - much appreciated
-> On Tue, Oct 20, 2020 at 12:59 AM Daniel Scally <djrscally@gmail.com> wrote:
->> Hello all
->>
->> This series adds support to the ipu3-cio2 driver for fwnode connections
->> between cio2 and sensors to be defined via software_nodes. The final patch
->> in the series deals wholly with those changes - the preceding patches are
->> either supporting changes to accommodate that or incidental fixes along
->> the way:
->>
->> 1/9 adds a function to drivers/base/swnode.c unwinding arrays of software
->> nodes in reverse order
->>
->> 2/9 uses that function in lib/test_printf.c
->>
->> 3/9 fixes what seems to me to be a bug in the existing swnode.c code in
->> that software_node_get_next_child() does not increase the refcount of the
->> returned node (in contrast to, for example, of_get_next_child_node() which
->> does increase the count)
->>
->> 4/9 adds the fwnode_graph*() family of functions to the software_node
->> implementation
->>
->> 5/9 adds a T: entry to MAINTAINERS for the ipu3-cio2 driver
->>
->> 6/9 renames the ipu3-cio2.c file to ipu3-cio2-main.c and fixes Makefile
->> to accommodate that change
->>
->> 7/9 alters the ipu3-cio2 driver to check if the pci_dev's fwnode is a
->> software_node and pass flags to fwnode_graph_get_endpoint_by_id() if so
->>
->> 8/9 alters match_fwnode() in v4l2-async.c to additionally try to match on
->> a fwnode_handle's secondary if the primary doesn't match
->>
->> 9/9 alters the ipu3-cio2 driver to do the actual building of software_node
->> connections between the sensor devices and the cio2 device.
->>
->> This is still not ready for integration - hence the RFC label - as there
->> is ongoing work to extend the ipu3-cio2 driver further to parse ACPI
->> to discover resources such as regulators and GPIOs that are defined there
->> in unusual ways and map them to the sensor devices so that their drivers
->> can consume them transparently through the usual frameworks. Given this
->> has changed quite extensively from v2 though, I wanted to submit it for
->> feedback at this point in case it needs further large scale change.
-> I would appreciate it if you posted the next version of this series
-> (all patches) to linux-acpi@vger.kernel.org for easier review.
->
-> Thanks!
-Sure thing, I'll make sure to add that list to next version
+From: Greg KH
+> Sent: 21 October 2020 17:13
+> 
+> On Fri, Sep 25, 2020 at 06:51:39AM +0200, Christoph Hellwig wrote:
+> > From: David Laight <David.Laight@ACULAB.COM>
+> >
+> > This lets the compiler inline it into import_iovec() generating
+> > much better code.
+> >
+> > Signed-off-by: David Laight <david.laight@aculab.com>
+> > Signed-off-by: Christoph Hellwig <hch@lst.de>
+> > ---
+> >  fs/read_write.c | 179 ------------------------------------------------
+> >  lib/iov_iter.c  | 176 +++++++++++++++++++++++++++++++++++++++++++++++
+> >  2 files changed, 176 insertions(+), 179 deletions(-)
+> 
+> Strangely, this commit causes a regression in Linus's tree right now.
+> 
+> I can't really figure out what the regression is, only that this commit
+> triggers a "large Android system binary" from working properly.  There's
+> no kernel log messages anywhere, and I don't have any way to strace the
+> thing in the testing framework, so any hints that people can provide
+> would be most appreciated.
+
+My original commit just moved the function source from one file to another.
+So it is odd that it makes any difference.
+I don't even know if it gets inlined by Christoph's actual patch.
+(I have another patch that depended on it that I need to resubmit.)
+
+Some of the other changes from Christoph's same patch set might
+make a difference though.
+
+Might be worth forcing it to be not inlined - so it is no change.
+Or try adding a kernel log to import_iovec() or the associated
+copy failing.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
