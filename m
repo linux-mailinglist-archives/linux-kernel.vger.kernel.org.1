@@ -2,122 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65244294CE2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:40:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08227294CE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:40:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442493AbgJUMkS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:40:18 -0400
-Received: from 8bytes.org ([81.169.241.247]:35630 "EHLO theia.8bytes.org"
+        id S2442507AbgJUMkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:40:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407873AbgJUMkG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:40:06 -0400
-Received: from cap.home.8bytes.org (p549add56.dip0.t-ipconnect.de [84.154.221.86])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
+        id S2394405AbgJUMkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:40:22 -0400
+Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by theia.8bytes.org (Postfix) with ESMTPSA id E5F1F2A5;
-        Wed, 21 Oct 2020 14:40:04 +0200 (CEST)
-From:   Joerg Roedel <joro@8bytes.org>
-To:     x86@kernel.org
-Cc:     Joerg Roedel <joro@8bytes.org>, Joerg Roedel <jroedel@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Kees Cook <keescook@chromium.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Martin Radev <martin.b.radev@gmail.com>,
-        Tom Lendacky <thomas.lendacky@amd.com>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] x86/sev-es: Do not support MMIO to/from encrypted memory
-Date:   Wed, 21 Oct 2020 14:39:38 +0200
-Message-Id: <20201021123938.3696-6-joro@8bytes.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201021123938.3696-1-joro@8bytes.org>
-References: <20201021123938.3696-1-joro@8bytes.org>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AEEF2242F;
+        Wed, 21 Oct 2020 12:40:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603284021;
+        bh=D2u3+25VPgAQHY5Nn343gmMQCCel5dPS87ZHZwoyNjM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=SulhYNa9FDK7tCPx33fBxxU+9Yxu+f5QO9QlRPrywEn983DgQfusZOtcpYTDYgJtl
+         0jc9q7B7J7DkpABX85e7jROgeSzwaPxWLHB12B0gNmJLxAJCLZ35PWuBDL+WAGWqOK
+         LX9z2XZfy4yU4K1vKtZXacaRvI8yXZxvYo7JhGZQ=
+Received: by mail-qk1-f174.google.com with SMTP id 188so2106396qkk.12;
+        Wed, 21 Oct 2020 05:40:21 -0700 (PDT)
+X-Gm-Message-State: AOAM53068OFj3P5j1hpIYInsaU2EowYBR4PYKe3uHHBfrTMaI17I3tzv
+        e+9J1II58X0PQEQr+pAqp9XOVVLlwYc5rWgSex8=
+X-Google-Smtp-Source: ABdhPJxaYfqMELfS/UA0bXc2jA/eaagXcZCcnNsgAaV8d9zfQVqdARFwKphCh/C0TXvS9gdaX5eGQgOxG4PgPN+L8lc=
+X-Received: by 2002:a37:2dc6:: with SMTP id t189mr2894076qkh.394.1603284020397;
+ Wed, 21 Oct 2020 05:40:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201020220639.130696-1-joel@jms.id.au>
+In-Reply-To: <20201020220639.130696-1-joel@jms.id.au>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Wed, 21 Oct 2020 14:40:04 +0200
+X-Gmail-Original-Message-ID: <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
+Message-ID: <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
+Subject: Re: [PATCH] net: ftgmac100: Ensure tx descriptor updates are visible
+To:     Joel Stanley <joel@jms.id.au>
+Cc:     Jakub Kicinski <kuba@kernel.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Dylan Hung <dylan_hung@aspeedtech.com>,
+        Networking <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joerg Roedel <jroedel@suse.de>
+On Wed, Oct 21, 2020 at 12:39 PM Joel Stanley <joel@jms.id.au> wrote:
 
-MMIO memory is usually not mapped encrypted, so there is no reason to
-support emulated MMIO when it is mapped encrypted.
+>
+> diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
+> index 331d4bdd4a67..15cdfeb135b0 100644
+> --- a/drivers/net/ethernet/faraday/ftgmac100.c
+> +++ b/drivers/net/ethernet/faraday/ftgmac100.c
+> @@ -653,6 +653,11 @@ static bool ftgmac100_tx_complete_packet(struct ftgmac100 *priv)
+>         ftgmac100_free_tx_packet(priv, pointer, skb, txdes, ctl_stat);
+>         txdes->txdes0 = cpu_to_le32(ctl_stat & priv->txdes0_edotr_mask);
+>
+> +       /* Ensure the descriptor config is visible before setting the tx
+> +        * pointer.
+> +        */
+> +       smp_wmb();
+> +
+>         priv->tx_clean_pointer = ftgmac100_next_tx_pointer(priv, pointer);
+>
+>         return true;
+> @@ -806,6 +811,11 @@ static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
+>         dma_wmb();
+>         first->txdes0 = cpu_to_le32(f_ctl_stat);
+>
+> +       /* Ensure the descriptor config is visible before setting the tx
+> +        * pointer.
+> +        */
+> +       smp_wmb();
+> +
 
-This prevents a possible hypervisor attack where it maps a RAM page as
-an MMIO page in the nested page-table, so that any guest access to it
-will trigger a #VC exception and leak the data on that page to the
-hypervisor or allows the hypervisor to inject data into the guest.
+Shouldn't these be paired with smp_rmb() on the reader side?
 
-Signed-off-by: Joerg Roedel <jroedel@suse.de>
----
- arch/x86/kernel/sev-es.c | 20 +++++++++++++-------
- 1 file changed, 13 insertions(+), 7 deletions(-)
-
-diff --git a/arch/x86/kernel/sev-es.c b/arch/x86/kernel/sev-es.c
-index 4a96726fbaf8..0bd1a0fc587e 100644
---- a/arch/x86/kernel/sev-es.c
-+++ b/arch/x86/kernel/sev-es.c
-@@ -374,8 +374,8 @@ static enum es_result vc_read_mem(struct es_em_ctxt *ctxt,
- 	return ES_EXCEPTION;
- }
- 
--static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
--				 unsigned long vaddr, phys_addr_t *paddr)
-+static enum es_result vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
-+					   unsigned long vaddr, phys_addr_t *paddr)
- {
- 	unsigned long va = (unsigned long)vaddr;
- 	unsigned int level;
-@@ -394,15 +394,19 @@ static bool vc_slow_virt_to_phys(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 		if (user_mode(ctxt->regs))
- 			ctxt->fi.error_code |= X86_PF_USER;
- 
--		return false;
-+		return ES_EXCEPTION;
- 	}
- 
-+	if (WARN_ON_ONCE(pte_val(*pte) & _PAGE_ENC))
-+		/* Emulated MMIO to/from encrypted memory not supported */
-+		return ES_UNSUPPORTED;
-+
- 	pa = (phys_addr_t)pte_pfn(*pte) << PAGE_SHIFT;
- 	pa |= va & ~page_level_mask(level);
- 
- 	*paddr = pa;
- 
--	return true;
-+	return ES_OK;
- }
- 
- /* Include code shared with pre-decompression boot stage */
-@@ -731,6 +735,7 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- {
- 	u64 exit_code, exit_info_1, exit_info_2;
- 	unsigned long ghcb_pa = __pa(ghcb);
-+	enum es_result res;
- 	phys_addr_t paddr;
- 	void __user *ref;
- 
-@@ -740,11 +745,12 @@ static enum es_result vc_do_mmio(struct ghcb *ghcb, struct es_em_ctxt *ctxt,
- 
- 	exit_code = read ? SVM_VMGEXIT_MMIO_READ : SVM_VMGEXIT_MMIO_WRITE;
- 
--	if (!vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr)) {
--		if (!read)
-+	res = vc_slow_virt_to_phys(ghcb, ctxt, (unsigned long)ref, &paddr);
-+	if (res != ES_OK) {
-+		if (res == ES_EXCEPTION && !read)
- 			ctxt->fi.error_code |= X86_PF_WRITE;
- 
--		return ES_EXCEPTION;
-+		return res;
- 	}
- 
- 	exit_info_1 = paddr;
--- 
-2.28.0
-
+      Arnd
