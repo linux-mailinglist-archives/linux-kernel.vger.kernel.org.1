@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B979D29542F
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:28:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F103D295436
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506122AbgJUV2U (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:28:20 -0400
-Received: from smtprelay-out1.synopsys.com ([149.117.73.133]:56258 "EHLO
-        smtprelay-out1.synopsys.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2506102AbgJUV2U (ORCPT
+        id S2506196AbgJUVaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:30:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45628 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506187AbgJUVaH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:28:20 -0400
-Received: from mailhost.synopsys.com (mdc-mailhost2.synopsys.com [10.225.0.210])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits))
-        (No client certificate requested)
-        by smtprelay-out1.synopsys.com (Postfix) with ESMTPS id D79AF401D8;
-        Wed, 21 Oct 2020 21:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=synopsys.com; s=mail;
-        t=1603315699; bh=JYFScV9SdffGkhcxF4oYe3j7zFfnehqnn1E3sxkj/H8=;
-        h=From:To:Cc:Subject:Date:From;
-        b=YEObjLZ+AaCLU20P12YEg/TX12EpGr+X2/+wrMAnJqeAsZj4DC6o5msbiGLX3hWi5
-         Z7WIaxJDf4ueqqDCdcp/J8PlY93lcfH7HCzrh2O60vNtG+ohxn1k/sAeMIqgJ5q2I1
-         3XQbN8q0zBY2XYEQsRpXIFvyqM6Nj2vpWi6tCmE9PgikWZRuUj5cpcT7cO+ODeyWCK
-         XRZZVyFRaKsjGB2obxDvUMVKOp3HrONqEooDMOgZ0TjCDJ1HynExZjU9pet0j8pv2Z
-         0v+LvQbRlFy6Y9caTXpPi2MTstkBWq28kSLnIftPj0maXGE+uKKnhWr3lt5M6YSV2l
-         B5xXxjC85WJ9A==
-Received: from de02dwia024.internal.synopsys.com (de02dwia024.internal.synopsys.com [10.225.19.81])
-        by mailhost.synopsys.com (Postfix) with ESMTP id 3B0AEA01F1;
-        Wed, 21 Oct 2020 21:28:16 +0000 (UTC)
-X-SNPS-Relay: synopsys.com
-From:   Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>
-To:     Kishon Vijay Abraham I <kishon@ti.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Joao Pinto <Joao.Pinto@synopsys.com>,
-        Gustavo Pimentel <Gustavo.Pimentel@synopsys.com>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] misc: pci_endpoint_test: Remove unnecessary verification
-Date:   Wed, 21 Oct 2020 23:28:10 +0200
-Message-Id: <142cbbc215bed4243a219ea17b46f4256ceccb22.1603315690.git.gustavo.pimentel@synopsys.com>
-X-Mailer: git-send-email 2.7.4
+        Wed, 21 Oct 2020 17:30:07 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 60DEAC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:30:05 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id c21so4098521ljn.13
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:30:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mvkMHt0GAbtDgYL3KpRFDq4C21jdunTAygdT94qSi7A=;
+        b=Dko0txgSagp+xh1KY3V9M20nfT+Ux1+GvS1ca+e7GijiKd+tbKZZ7XS9fO2QpJqo0M
+         EX6+XbCePy1uh2WxKsL379jsVE0xbwQB1wWt4fhdI94P+5qSaD9bUtFZnrS9mZjep7Pl
+         aseeZQdGBykLEPklS+WhF42lA8p5QXmBbo7E4TRX/uxHahdOeFbe8OIahCvDmkhkGkST
+         5qEeo9Hy657JKP5z1d2ni4ceFb2hcMk0EZE0iVLugRPdy1AVfv4PWwp2wM8ZnowJkm4o
+         TBQ3JzCcCTkVb6T2cnHsr1aGElwo2z2P7miTXBxO9igKorBT+RgEBAba6QxNfkMWqO03
+         ZUFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mvkMHt0GAbtDgYL3KpRFDq4C21jdunTAygdT94qSi7A=;
+        b=TwVQKuE05+eLPiUkFll8InE8lLchG2Su1m9jVW7krXmiaW2ZWPIvk53A5XLzFgK0cq
+         DEit0neBrqNcyKGC2puYWxGV8jLgtBOFA/efBMDA6gCajZVdmNDIxO6ZD2qxOfVLWvsg
+         ynOTGh1UChslBAvFzDXoHH7Y7M9PXzABTV/7LhVZQYjwwyuWu9F6jNGrhEq/1g44cRyE
+         b7WLyt8gIMze1h7oe5W3KqXGlHN9wnje4EafBXXWWCtCjuWHy4nI8+nBSaxurJXeR16r
+         Hx+poFFvaPISuSWjq3/2PL24w4KwJT/U1dDzKWp9oV2K1xY3ywhzJiOP+VoOylfQZjpO
+         8snw==
+X-Gm-Message-State: AOAM533U8iDc7zo3rBgpD7AYbpBkc5Rdnef9AYPaYHW1CiFHMeq5KTiu
+        IKzmsav7oc9Zy4tJ1UplVHpdPmdHKScntwJ6mokG4Q==
+X-Google-Smtp-Source: ABdhPJxVg4C8vJ1STalwkyI39fP21TgMa+uha1pRFAzyGxRsheqtH1EdcHfBQrzZlr7jTDyUXRDhDiL4TiUlaXspspU=
+X-Received: by 2002:a2e:9789:: with SMTP id y9mr2111004lji.456.1603315803692;
+ Wed, 21 Oct 2020 14:30:03 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201020073740.29081-1-geert@linux-m68k.org> <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+In-Reply-To: <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+From:   David Gow <davidgow@google.com>
+Date:   Thu, 22 Oct 2020 05:29:49 +0800
+Message-ID: <CABVgOSmRbZqDw83f1Z14nSSVQTeFOvyehXhB=NnbaaANrwe=FQ@mail.gmail.com>
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
+ selecting it
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The first condition of the if statement can never be true, because
-bar variable is an enum variable type defined between 0 and 5, and
-also bar variable acquires the value from arg function parameter which
-is an unsigned long variable.
+On Thu, Oct 22, 2020 at 5:15 AM Brendan Higgins
+<brendanhiggins@google.com> wrote:
+>
+> On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+> >
+> > EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
+> > user may not want to enable.  Fix this by making the test depend on
+> > EXT4_FS instead.
+> >
+> > Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
+> > Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
+>
+> If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
+> something that Ted specifically requested, but I don't have any strong
+> feelings on it either way.
 
-The constant 5 was replaced the the equivalent enum type, in this case
-BAR_5.
+For what it's worth, the upcoming FAT filesystem tests[1] are also
+select-ing FAT_FS at the moment, so if this changes here, I'll likely
+update it there as well.
 
-Signed-off-by: Gustavo Pimentel <gustavo.pimentel@synopsys.com>
----
- drivers/misc/pci_endpoint_test.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+-- David
 
-diff --git a/drivers/misc/pci_endpoint_test.c b/drivers/misc/pci_endpoint_test.c
-index e060796..b86f9f7 100644
---- a/drivers/misc/pci_endpoint_test.c
-+++ b/drivers/misc/pci_endpoint_test.c
-@@ -704,7 +704,7 @@ static long pci_endpoint_test_ioctl(struct file *file, unsigned int cmd,
- 	switch (cmd) {
- 	case PCITEST_BAR:
- 		bar = arg;
--		if (bar < 0 || bar > 5)
-+		if (bar > BAR_5)
- 			goto ret;
- 		if (is_am654_pci_dev(pdev) && bar == BAR_0)
- 			goto ret;
--- 
-2.7.4
-
+[1]: https://lore.kernel.org/linux-kselftest/20201021061713.1545931-1-davidgow@google.com/T/#u
