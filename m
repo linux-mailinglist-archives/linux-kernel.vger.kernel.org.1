@@ -2,193 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BD5029491B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:54:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A685429491F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502098AbgJUHys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:54:48 -0400
-Received: from mout.kundenserver.de ([212.227.17.13]:57879 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502072AbgJUHyr (ORCPT
+        id S2502115AbgJUH4R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:56:17 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:48956 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2502101AbgJUH4Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:54:47 -0400
-Received: from [192.168.100.1] ([82.252.139.38]) by mrelayeu.kundenserver.de
- (mreue106 [213.165.67.119]) with ESMTPSA (Nemesis) id
- 1MbBQU-1jtbGx3EMK-00bXUA; Wed, 21 Oct 2020 09:54:24 +0200
-Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
-To:     Finn Thain <fthain@telegraphics.com.au>,
-        Brad Boyer <brad@allandria.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org,
-        Joshua Thompson <funaho@jurai.org>,
-        linux-serial@vger.kernel.org,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        linux-m68k@lists.linux-m68k.org,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Paul Mackerras <paulus@samba.org>,
-        linuxppc-dev@lists.ozlabs.org,
-        Michael Ellerman <mpe@ellerman.id.au>
-References: <20201020162303.1730562-1-laurent@vivier.eu>
- <20201020162844.GA865546@kroah.com>
- <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu>
- <20201020173745.GA882703@kroah.com>
- <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu>
- <20201020183246.GA912431@kroah.com>
- <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
- <20201020224446.GA15066@allandria.com>
- <alpine.LNX.2.23.453.2010211038390.6@nippy.intranet>
-From:   Laurent Vivier <laurent@vivier.eu>
-Autocrypt: addr=laurent@vivier.eu; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <311d17ed-75fa-a7fe-6c70-177a6eec4519@vivier.eu>
-Date:   Wed, 21 Oct 2020 09:54:17 +0200
+        Wed, 21 Oct 2020 03:56:16 -0400
+Received: from pps.filterd (m0098393.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09L7X16V066044;
+        Wed, 21 Oct 2020 03:56:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=lv0GwBldnmbZQXrayavRSYj6mxTJ2VfqBwFS3jQIG0c=;
+ b=dUv4rTX/nfJgprmkjOdg/5aMNPuqyVb/enj5JDQw9bniaKU2bnh8sbD2Y8UOdBgiaPty
+ 9nnPLGBESYPJKwDsDB98+duUeED7csFciXP23ClQhtZhGQ1arOV75HXtSWrTF3bTdM/a
+ R1XwxPsvjilXzGOOu7JJ8R95o65oCrwFvZte6e1Piz4lya872/SzZHEoZ7GsuMzH19al
+ 0rnOqou3KlBmxWNZKa7kH6GzbDoXTeeuyhHGV02HSvREsYslXl3QtEAplEW7VW7RnHaK
+ AjKKmH/TdGcIYX/5UDQoDExVw2rwMpxPlF1iFwQjshxFzKC3jAP0OSpSWpJICUaYtCvb vg== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34agdm96ad-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 03:56:03 -0400
+Received: from m0098393.ppops.net (m0098393.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09L7Y7ob070104;
+        Wed, 21 Oct 2020 03:56:03 -0400
+Received: from ppma06fra.de.ibm.com (48.49.7a9f.ip4.static.sl-reverse.com [159.122.73.72])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34agdm969c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 03:56:03 -0400
+Received: from pps.filterd (ppma06fra.de.ibm.com [127.0.0.1])
+        by ppma06fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09L7plEK007941;
+        Wed, 21 Oct 2020 07:56:00 GMT
+Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
+        by ppma06fra.de.ibm.com with ESMTP id 347qvha47f-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 07:56:00 +0000
+Received: from d06av23.portsmouth.uk.ibm.com (d06av23.portsmouth.uk.ibm.com [9.149.105.59])
+        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09L7twAb32506250
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 07:55:58 GMT
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 4BD5DA4051;
+        Wed, 21 Oct 2020 07:55:58 +0000 (GMT)
+Received: from d06av23.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 88367A4055;
+        Wed, 21 Oct 2020 07:55:57 +0000 (GMT)
+Received: from [9.145.178.173] (unknown [9.145.178.173])
+        by d06av23.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Oct 2020 07:55:57 +0000 (GMT)
+Subject: Re: [PATCH v2 08/17] s390/pci: Remove races against pte updates
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+        linux-mm@kvack.org, linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
+        linux-s390@vger.kernel.org,
+        Gerald Schaefer <gerald.schaefer@linux.ibm.com>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>
+References: <20201009075934.3509076-1-daniel.vetter@ffwll.ch>
+ <20201009075934.3509076-9-daniel.vetter@ffwll.ch>
+ <6deb08dd-46f3-bf26-5362-fdc696f6fd74@linux.ibm.com>
+ <20201012141906.GX438822@phenom.ffwll.local>
+From:   Niklas Schnelle <schnelle@linux.ibm.com>
+Message-ID: <3594c115-541f-806a-ee33-e99a2d1d31e8@linux.ibm.com>
+Date:   Wed, 21 Oct 2020 09:55:57 +0200
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <alpine.LNX.2.23.453.2010211038390.6@nippy.intranet>
+In-Reply-To: <20201012141906.GX438822@phenom.ffwll.local>
 Content-Type: text/plain; charset=utf-8
-Content-Language: fr
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:sK3pQorlW5Y3AulDsX1Ord5gsV8qBNs3mw3a/mAQyWRqBslpDKS
- TTXNZXWvucPxkxxVcDklBC4WLo3/+/MYtao9kL4q7Mn99ujykcYOnDb8mVydvyuSSpDoXta
- rNs4BrqVqKSI/BA1XBd5Tt9ls3WBGR2Mb71leVy2+Y4kmvk74Y/hV5ccAB5F6EJhCYd2COp
- fpXLxRUzIxt1TIxtiWXPw==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:hk9fdEHY5Iw=:N+J0UeWG/JRWPOOe+Ar6iX
- IOAOBw4+tU7HyPcQGuhzJmWerHmf1OiBpF+NaOKjuVT4HTrDa0eOBoVhUeQGo+McBVbVrKCy2
- 3dIXZXQZRQyBdnZPasA/PjLCGeSFn/OvH98/5NG2bz4esiSvDBf7jnjZgZkb8xL8g1qkiJRVg
- MbBrYrzpJPP1o7hEoAPmlK/xlkKwF6TgPCU6PXHlVJ2odK/ZT1C7k7bSUuYUqTV+6WiyuHqfW
- 15oXvAPb6K73yOZAObjN6r0sWsd4oE4ON2LJCQzBmztSKuw/+yZMudmUkUJAup1VoFFtV2zuD
- lqj1s1b52mc+4eEjgQyZA4iYD75AD68GPT0KWBBHbO6Jjca5j69yBDMdc3yiHy8p3MQW5EhJM
- tgHX5q4wGz3kdF7mJU3lJ3hUHprSyR6/xUxg4QM5rUUEX9aUU5bD56rufGRaJ+iDk7bWNYXfZ
- 7TzwzWXnwA==
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-21_03:2020-10-20,2020-10-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999
+ lowpriorityscore=0 spamscore=0 suspectscore=0 adultscore=0 phishscore=0
+ malwarescore=0 bulkscore=0 clxscore=1015 mlxscore=0 impostorscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210060
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Le 21/10/2020 à 01:43, Finn Thain a écrit :
-> On Tue, 20 Oct 2020, Brad Boyer wrote:
-> 
+Hi Daniel,
+
+friendly ping. I haven't seen a new version of this patch series,
+as I said I think your change for s390/pci is generally useful so
+I'm curious, are you planning on sending a new version soon?
+If you want you can also just sent this patch with the last few
+nitpicks (primarily the mail address) fixed and I'll happily apply.
+
+Best regards,
+Niklas Schnelle
+
+On 10/12/20 4:19 PM, Daniel Vetter wrote:
+> On Mon, Oct 12, 2020 at 04:03:28PM +0200, Niklas Schnelle wrote:
+... snip ....
+>>> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+>>> Cc: Dan Williams <dan.j.williams@intel.com>
+>>> Cc: Kees Cook <keescook@chromium.org>
+>>> Cc: Andrew Morton <akpm@linux-foundation.org>
+>>> Cc: John Hubbard <jhubbard@nvidia.com>
+>>> Cc: Jérôme Glisse <jglisse@redhat.com>
+>>> Cc: Jan Kara <jack@suse.cz>
+>>> Cc: Dan Williams <dan.j.williams@intel.com>
 >>
->> Wouldn't it be better to rearrange this code to only run if the devices 
->> are present? This is a macio driver on pmac and a platform driver on 
->> mac, so shouldn't it be possible to only run this code when the 
->> appropriate entries are present in the right data structures?
+>> The above Cc: line for Dan Williams is a duplicate
 >>
->> I didn't look at a lot of the other serial drivers, but some other mac 
->> drivers have recently been updated to no longer have MACH_IS_MAC checks 
->> due to being converted to platform drivers.
+>>> Cc: linux-mm@kvack.org
+>>> Cc: linux-arm-kernel@lists.infradead.org
+>>> Cc: linux-samsung-soc@vger.kernel.org
+>>> Cc: linux-media@vger.kernel.org
+>>> Cc: Niklas Schnelle <schnelle@linux.ibm.com>
+>>> Cc: Gerald Schaefer <gerald.schaefer@linux.ibm.com>
+>>> Cc: linux-s390@vger.kernel.org
+>>> --
+>>> v2: Move VM_IO | VM_PFNMAP checks around so they keep returning EINVAL
+>>> like before (Gerard)
 >>
+>> I think the above should go before the CC/Signed-off/Reviewev block.
 > 
-> Actually, it's not simply a platform driver or macio driver. I think the 
-> console is supposed to be registered before the normal bus matching takes 
-> place. Hence this comment in pmac_zilog.c,
+> This is a per-subsystem bikeshed :-) drivers/gpu definitely wants it
+> above, but most core subsystems want it below. I'll move it.
 > 
->         /* 
->          * First, we need to do a direct OF-based probe pass. We
->          * do that because we want serial console up before the
->          * macio stuffs calls us back, and since that makes it
->          * easier to pass the proper number of channels to
->          * uart_register_driver()
->          */
+>>> ---
+>>>  arch/s390/pci/pci_mmio.c | 98 +++++++++++++++++++++++-----------------
+>>>  1 file changed, 57 insertions(+), 41 deletions(-)
+>>>
+>>> diff --git a/arch/s390/pci/pci_mmio.c b/arch/s390/pci/pci_mmio.c
+>>> index 401cf670a243..1a6adbc68ee8 100644
+>>> --- a/arch/s390/pci/pci_mmio.c
+>>> +++ b/arch/s390/pci/pci_mmio.c
+>>> @@ -119,33 +119,15 @@ static inline int __memcpy_toio_inuser(void __iomem *dst,
+>>>  	return rc;
+>>>  }
+>>>  
+>>> -static long get_pfn(unsigned long user_addr, unsigned long access,
+>>> -		    unsigned long *pfn)
+>>> -{
+>>> -	struct vm_area_struct *vma;
+>>> -	long ret;
+>>> -
+>>> -	mmap_read_lock(current->mm);
+>>> -	ret = -EINVAL;
+>>> -	vma = find_vma(current->mm, user_addr);
+>>> -	if (!vma)
+>>> -		goto out;
+>>> -	ret = -EACCES;
+>>> -	if (!(vma->vm_flags & access))
+>>> -		goto out;
+>>> -	ret = follow_pfn(vma, user_addr, pfn);
+>>> -out:
+>>> -	mmap_read_unlock(current->mm);
+>>> -	return ret;
+>>> -}
+>>> -
+>>>  SYSCALL_DEFINE3(s390_pci_mmio_write, unsigned long, mmio_addr,
+>>>  		const void __user *, user_buffer, size_t, length)
+>>>  {
+>>>  	u8 local_buf[64];
+>>>  	void __iomem *io_addr;
+>>>  	void *buf;
+>>> -	unsigned long pfn;
+>>> +	struct vm_area_struct *vma;
+>>> +	pte_t *ptep;
+>>> +	spinlock_t *ptl;
+>>
+>> With checkpatch.pl --strict the above yields a complained
+>> "CHECK: spinlock_t definition without comment" but I think
+>> that's really okay since your commit description is very clear.
+>> Same oin line 277.
 > 
-> Laurent, can we avoid the irq == 0 warning splat like this?
+> I think this is a falls positive, checkpatch doesn't realize that
+> SYSCALL_DEFINE3 is a function, not a structure. And in a structure I'd
+> have added the kerneldoc or comment.
 > 
-> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
-> index 96e7aa479961..7db600cd8cc7 100644
-> --- a/drivers/tty/serial/pmac_zilog.c
-> +++ b/drivers/tty/serial/pmac_zilog.c
-> @@ -1701,8 +1701,10 @@ static int __init pmz_init_port(struct uart_pmac_port *uap)
->  	int irq;
->  
->  	r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
-> +	if (!r_ports)
-> +		return -ENODEV;
->  	irq = platform_get_irq(uap->pdev, 0);
-> -	if (!r_ports || irq <= 0)
-> +	if (irq <= 0)
->  		return -ENODEV;
->  
->  	uap->port.mapbase  = r_ports->start;
+> I'll fix up all the nits you've found for the next round. Thanks for
+> taking a look.
+> -Daniel
 > 
-
-No, this doesn't fix the problem.
-
-The message is still:
-
-[    0.000000] ------------[ cut here ]------------
-[    0.000000] WARNING: CPU: 0 PID: 0 at drivers/base/platform.c:224
-platform_get_irq_optional+0x7a/0x80
-[    0.000000] 0 is an invalid IRQ number
-[    0.000000] Modules linked in:
-[    0.000000] CPU: 0 PID: 0 Comm: swapper Not tainted 5.9.0+ #324
-[    0.000000] Stack from 004e7f24:
-                       004e7f24 0046c1d3 0046c1d3 0002cb26 004985fb
-000000e0 00000009 00000000
-                       0002cb6a 004985fb 000000e0 002a5b86 00000009
-00000000 004e7f70 00553cc4
-                       00000000 00000000 00000000 004985df 004e7f90
-004e7ff8 002a5b86 004985fb
-                       000000e0 00000009 004985df 004eb290 002a5bd2
-004eb290 00000000 00553cc4
-                       0057bb66 00553cc4 00573d6e 004eb290 00000000
-00573d38 0021c42c 00573e06
-                       00553cc4 0046df15 00583a7c 00573e58 00564b74
-0005299a 0055ce34 00000000
-[    0.000000] Call Trace: [<0002cb26>] __warn+0xb2/0xb4
-[    0.000000]  [<0002cb6a>] warn_slowpath_fmt+0x42/0x64
-[    0.000000]  [<002a5b86>] platform_get_irq_optional+0x7a/0x80
-[    0.000000]  [<002a5b86>] platform_get_irq_optional+0x7a/0x80
-[    0.000000]  [<002a5bd2>] platform_get_irq+0x16/0x42
-[    0.000000]  [<00573d6e>] pmz_init_port+0x36/0x9e
-[    0.000000]  [<00573d38>] pmz_init_port+0x0/0x9e
-[    0.000000]  [<0021c42c>] strlen+0x0/0x14
-[    0.000000]  [<00573e06>] pmz_probe+0x30/0x7e
-[    0.000000]  [<00573e58>] pmz_console_init+0x4/0x22
-[    0.000000]  [<00564b74>] console_init+0x1e/0x20
-[    0.000000]  [<0005299a>] printk+0x0/0x18
-[    0.000000]  [<0055ce34>] start_kernel+0x332/0x4c4
-[    0.000000]  [<0055b8c6>] _sinittext+0x8c6/0x1268
-[    0.000000] ---[ end trace 32d780b8cd50b829 ]---
-
-Thanks,
-Laurent
