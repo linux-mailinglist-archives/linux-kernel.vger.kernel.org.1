@@ -2,114 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F95E294E7A
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:23:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C5239294E98
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:24:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443451AbgJUOXN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:23:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35904 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442847AbgJUOXM (ORCPT
+        id S2443455AbgJUOYT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:24:19 -0400
+Received: from mail-pf1-f196.google.com ([209.85.210.196]:42565 "EHLO
+        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2388975AbgJUOYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:23:12 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4B43C0613CE;
-        Wed, 21 Oct 2020 07:23:12 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m22so1974572ots.4;
-        Wed, 21 Oct 2020 07:23:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=qjwRFR9+DVMdexTdUNgx5g1bJ7um932k+2im+PVjM5M=;
-        b=Cec+XKIjuVF7NrU5Jn3c1em3s/DtISpzwZaoGp2I5S8IuT7dr+SApPrZ22JjIVydUB
-         GvxFYScjirjwR5106VcVWSU8RELtz2bfAJQAqnx+m/Wtzjv9eL74X899yTMHLAh6C1lk
-         0ivLgDLGEQCs4gjyY+utrybPgZsoKj063UZdpAoiIzXFxmxsyZvh/jozOeNrvN/dZNBU
-         2Q36Rc0jV5pBJ9xFMWB4cyQqHnamM4qfYw1+X7Ahih2Q+jjaARmFm6VLFtRP5+vIo8sh
-         QC8sdTT2dYvPFU8/hl8f2X7aStvY6TqrT0rfY+/c7sQI8OusKbegNtfhYUnti5FLbl/y
-         mqeg==
+        Wed, 21 Oct 2020 10:24:19 -0400
+Received: by mail-pf1-f196.google.com with SMTP id x13so1568868pfa.9;
+        Wed, 21 Oct 2020 07:24:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=qjwRFR9+DVMdexTdUNgx5g1bJ7um932k+2im+PVjM5M=;
-        b=fJ8IQK4CaBzIc4J9V2Ol97hepjrdtVoaXnqZlfCZdn7X7O/yuOU2iQEaOXanuee8jh
-         Sz/IC48anQJiISBZmQjiyMD9PpjTCzK6KNS0vUS289ZRFZY7v4gkluI+KcU7wl1jPkQe
-         7I92kMwBPTfbhaiw13kO1Ogd589RFvGkBCrtNyflFv5bHM2YEQPQd7u9NHKcWVhF64F6
-         5C6kdbutWhh1y2zB9wL1mDjRWU9n3vvNzGvcsiKILkJ3BqhmwcZdOD7hzvGidwikn17s
-         PBZsUz6OJt54XYTVl7fkab+VZo6tMZi1wAwsu+eTue/Sy3Zwlg6TIE+NFVr2HyY4uOTq
-         wjnA==
-X-Gm-Message-State: AOAM533cwUFW/p4p3jer0rLXIX47rAoRz0WfjdcgKzd11CrCNFaTS7gU
-        ZyA2LKsIov9s8v9bNU3myqZa8iLKTxBoVWD9onQ=
-X-Google-Smtp-Source: ABdhPJy14GHvBmnHtWpHKx8pr7r4KJMhVCOvw8lp9YX3oK/seimfYX7CNXf7X0g+mQK9jsk2DBdr0E0CJTluG7UwYCo=
-X-Received: by 2002:a05:6830:2153:: with SMTP id r19mr2690572otd.207.1603290191675;
- Wed, 21 Oct 2020 07:23:11 -0700 (PDT)
+        bh=Kd24n8fvExqkMZoTQn7ZLbjiXdKLPg+Z9WhqJAOkLno=;
+        b=XWHyi5y3L7LufXP4cUT+y2T8cASFrWbqFR+NNfKmjAczEJC1bgQqPNHlJL0Qo2cccF
+         322HT8/VBJn1cqZ+V8E/1Y2g22qOA7q1Z/ZIXH94FeTs8/OBm70RXjZ5VLa2wdMJ17wz
+         F9sB/Xbg94zNF/Tb1ORB3oewYa2GTxJtV70OLeXUVgSL5gwQlyHeWCDo4pac/2z9G15d
+         jlGzek9sOu2K9MrXyWIwxNJwN3w48utbOT4BOgFELKjZeYZ5Fm3S6wPkAiGv1/jiJ+4I
+         eiLaTGmzsZnWd7/ko0uMcMrVkbET8xhTT2Fp+FJqV7/OSAInxSRP61LFxNjko/CG9ou0
+         CbqQ==
+X-Gm-Message-State: AOAM532H4ScbvJnCH0xeP1g7bgFfsTgcRRmA9tn3ARJ7oSERcvJNFXsK
+        M+AzrWH4f150RpmKhJRAphmY9zGwpRAzsntowzY=
+X-Google-Smtp-Source: ABdhPJzzUagLy2/wTR2reR/iEjOUzGDitwgsUDsCMI6OUJ3VjWJ4T7EinTswEywdjKJZfSeH/cpZeoxXijk2LTN0EIQ=
+X-Received: by 2002:a63:a546:: with SMTP id r6mr3613847pgu.160.1603290258598;
+ Wed, 21 Oct 2020 07:24:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201021135140.51300-1-alexandru.ardelean@analog.com>
- <20201021135802.GM139700@lunn.ch> <CA+U=DsoRVt66cANFJD896R-aOJseAF-1VkgcvLZHQ1rUTks3Eg@mail.gmail.com>
- <20201021141342.GO139700@lunn.ch>
-In-Reply-To: <20201021141342.GO139700@lunn.ch>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 21 Oct 2020 17:23:00 +0300
-Message-ID: <CA+U=DsoEbrYn8i+GcLBzNHLY7xbKLOnZOLo00r7YwcQ_rXF94w@mail.gmail.com>
-Subject: Re: [PATCH 1/2] net: phy: adin: clear the diag clock and set
- LINKING_EN during autoneg
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
-        David Miller <davem@davemloft.net>, kuba@kernel.org
+References: <20201012162736.65241-1-nmeeramohide@micron.com>
+ <20201015080254.GA31136@infradead.org> <SN6PR08MB420880574E0705BBC80EC1A3B3030@SN6PR08MB4208.namprd08.prod.outlook.com>
+ <CAPcyv4j7a0gq++rL--2W33fL4+S0asYjYkvfBfs+hY+3J=c_GA@mail.gmail.com>
+In-Reply-To: <CAPcyv4j7a0gq++rL--2W33fL4+S0asYjYkvfBfs+hY+3J=c_GA@mail.gmail.com>
+From:   Mike Snitzer <snitzer@redhat.com>
+Date:   Wed, 21 Oct 2020 10:24:05 -0400
+Message-ID: <CAMM=eLf+2VYHB6vZVjn_=GA5uXJWKL-d6PuCpHEBPz=_Loe58A@mail.gmail.com>
+Subject: Re: [EXT] Re: [PATCH v2 00/22] add Object Storage Media Pool (mpool)
+To:     Dan Williams <dan.j.williams@intel.com>
+Cc:     "Nabeel Meeramohideen Mohamed (nmeeramohide)" 
+        <nmeeramohide@micron.com>, Christoph Hellwig <hch@infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-nvme@lists.infradead.org" <linux-nvme@lists.infradead.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "linux-nvdimm@lists.01.org" <linux-nvdimm@lists.01.org>,
+        "Steve Moyer (smoyer)" <smoyer@micron.com>,
+        "Greg Becker (gbecker)" <gbecker@micron.com>,
+        "Pierre Labat (plabat)" <plabat@micron.com>,
+        "John Groves (jgroves)" <jgroves@micron.com>,
+        device-mapper development <dm-devel@redhat.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 5:13 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > The frame-generator is an interesting feature of the PHY, that's not
-> > useful for the current phylib; the PHY can send packages [like a
-> > signal generator], and then these can be looped back, or sent over the
-> > wire.
->
+Hey Dan,
 
-removed my typo-ed [work] email
-i use gmail as a mirror-email for my work email, because.... reasons
-and i added my work-email to the --cc list with a typo, because the
-universe seems to have wanted that [in a manner of saying it]
+On Fri, Oct 16, 2020 at 6:38 PM Dan Williams <dan.j.williams@intel.com> wrote:
+>
+> On Fri, Oct 16, 2020 at 2:59 PM Nabeel Meeramohideen Mohamed
+> (nmeeramohide) <nmeeramohide@micron.com> wrote:
+>
+> > (5) Representing an mpool as a /dev/mpool/<mpool-name> device file provides a
+> > convenient mechanism for controlling access to and managing the multiple storage
+> > volumes, and in the future pmem devices, that may comprise an logical mpool.
+>
+> Christoph and I have talked about replacing the pmem driver's
+> dependence on device-mapper for pooling.
 
-> Many PHYs that that. I posted some patches to the list a few years ago
-> adding basic support for the Marvell PHY frame generator. They got
-> NACKed. The netlink API, and some of the infrastructure i added for
-> cable testing would make it possible to fix the issues that caused the
-> NACK.
+Was this discussion done publicly or private?  If public please share
+a pointer to the thread.
 
-i'll think about the frame-generator;
+I'd really like to understand the problem statement that is leading to
+pursuing a pmem native alternative to existing DM.
 
-i was super-happy when the cable-test support was added;
-when i first wrote the PHY, i actually wrote this logic for
-cable-testing, then scrapped it because the code [without any
-framework around it] just looked bad, and like it was asking to cause
-trouble;
-
-with this minimal framework in place, cable-testing looks like a neat
-feature [and neatly implemented];
-and it took me less than a day to write and test it;
-so, thank you for this :)
-
->
-> > Having said this, I'll include some comments for these in a V2 of this patchset.
->
-> Thanks.
->
->         Andrew
->
-> P.S.
->
-> Your mail is broken somehow:
->
-> Delivery has failed to these recipients or groups:
->
-> alexaundru.ardelean@analog.com
-> The email address you entered couldn't be found. Please check the recipient's
-> email address and try to resend the message. If the problem continues, please
-> contact your email admin.
+Thanks,
+Mike
