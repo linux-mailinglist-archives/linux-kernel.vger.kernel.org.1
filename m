@@ -2,79 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF8C294BA3
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:11:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582D4294BA4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:12:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441888AbgJULLm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:11:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34572 "EHLO
+        id S2441896AbgJULMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:12:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410576AbgJULLj (ORCPT
+        with ESMTP id S2441884AbgJULMP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:11:39 -0400
-Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D49C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:11:37 -0700 (PDT)
-Received: by mail-lj1-x241.google.com with SMTP id y16so2206283ljk.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:11:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=A4W516nHeaJArblifyO5xloC9Sa78F58jblVLqZpa7U=;
-        b=VjKHVKN6Rl7G5o0v7ib1B1TzhN/XdLVKQWTL6zgu6HxCB1Ce8YXj44EtSDMXAIsINq
-         +OqbyfE0+GA0bO6UURBL9wMQzxiz+B3jdIexTVYBW3Y3uFuOIQC182AsCJcLVStPQgd8
-         6oFR0wzkMpMSnrmR4l3zvPtotnEilLe5JSd9XtfzeQkI9TeUx46MmWPowcErefEwIMwY
-         tK1xZ9beZYfiLAzjmY5gFoesfixPj5Hzye9/XOkRmoBwrLp4BFMGce2Jmn3KNPxrkqh1
-         Kgj/AeU0aNMXIMSt4Mujb/1HTu3BJYCLk1NmC1T+aN3+ntgY0La2DJnlTfp8F/tkfmmD
-         uURg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=A4W516nHeaJArblifyO5xloC9Sa78F58jblVLqZpa7U=;
-        b=Lhh81s0JqB2+30x++ophMgUFRj2U8HAw7GvD6guxv/1Q2GmstK1vIbKA8Csj0odT1N
-         +iXHfTQj9gHLG9i5GUEQHm8m447AnnR/QLCVEcYd006fLterKTy5QCQwMyAn7g9ZAdo2
-         8AtDqVCSH4c/8k6+QVE0wfKZXA1EAFckNPtoFaqbuetRX7QvFhsmSGecNveA1IlVDP2C
-         QRwx2fdx7Ggg488q1INnJNI3ctkTEJnuPrtLkqoBks9X10ryTahCfaS4+ExMyOhRsZjv
-         bn/bZYxOBF3df8JVRvvLOm7r0wynkZnVqau6BXD95LmcNoKJ8dy5jtbfleu6Fb5Fwy45
-         z+Aw==
-X-Gm-Message-State: AOAM532xZ/9fHNXKlhHthzbmBME3iR3eQWP34bMPFePFtfgBQpQXJbn6
-        SIkfPnwnePVyhz/J4nQeez1w9PosVkYWqzQCxHo=
-X-Google-Smtp-Source: ABdhPJydI93IW2I74pZFsoEIqfIVovnTUTBYkeaAS6Yn0Yh0ozxXtaoQlqCu/DdtuUt/Rxx8NbfwSaopl/8yO2/gScE=
-X-Received: by 2002:a2e:b4f5:: with SMTP id s21mr1255575ljm.44.1603278696233;
- Wed, 21 Oct 2020 04:11:36 -0700 (PDT)
+        Wed, 21 Oct 2020 07:12:15 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EF755C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:12:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=J062tuoslxNIr5Exk1gMbJFrpEyifl3qGCa0Wcwm4Gw=; b=tIrj9FsxgpkEJ7p8GoYLhM4Qxb
+        O6/muOhWKfwnQwUDWm5GoVA2wmRO/phVg7Tq2TtXVuTofIWSE7RKBN0AEEZZr+FTpBWhLLJnYaXaf
+        IrOQ5tzhwutxhkzbVgLjZk6Yk05PMQGP4MUw9BBiDF4x0EsMFNKhP5N7MloHxCYvnI61UBQF42JEt
+        EOs8vTf0+fy1v+lhkbV2wUjUSgRCIG5X5SeCf8JDb2H//5azK1fSUGHA5a/R5eekI2jFlDPtf1SuY
+        QSyNOLNFprmCAqowmi+FYTj5miyWkLiAgObKGsk00UsvrKCDyMId7VYzr1vXO7wuoMsseXlzK49aT
+        DsucPvug==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVC29-00014e-Gz; Wed, 21 Oct 2020 11:11:57 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 4882B304D28;
+        Wed, 21 Oct 2020 13:11:56 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 174BC203CC49B; Wed, 21 Oct 2020 13:11:56 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 13:11:56 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xi Wang <xii@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Don <joshdon@google.com>, linux-kernel@vger.kernel.org,
+        Paul Turner <pjt@google.com>,
+        Paul McKenney <paulmck@kernel.org>
+Subject: Re: [PATCH v2 1/1] sched: watchdog: Touch kernel watchdog with sched
+ count
+Message-ID: <20201021111156.GX2651@hirez.programming.kicks-ass.net>
+References: <20201020205704.1741543-1-xii@google.com>
+ <20201020205704.1741543-2-xii@google.com>
+ <20201021101257.GC2628@hirez.programming.kicks-ass.net>
+ <20201021102420.GW2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <1603262006-28217-1-git-send-email-peng.fan@nxp.com>
-In-Reply-To: <1603262006-28217-1-git-send-email-peng.fan@nxp.com>
-From:   Fabio Estevam <festevam@gmail.com>
-Date:   Wed, 21 Oct 2020 08:11:26 -0300
-Message-ID: <CAOMZO5DJ==aRqZAg8hmBZeBy3yeHKxTd08Vmym=meW31hqtWBg@mail.gmail.com>
-Subject: Re: [PATCH] arm64: defconfig: enable CONFIG_GPIO_MXC
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-        Michael Walle <michael@walle.cc>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Olof Johansson <olof@lixom.net>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        NXP Linux Team <linux-imx@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021102420.GW2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peng,
+On Wed, Oct 21, 2020 at 12:24:20PM +0200, Peter Zijlstra wrote:
+> +void resched_current_from_IRQ(void)
+> +{
+> +	struct pt_regs *regs = get_irq_regs();
+> +
+> +	WARN_ON_ONCE(!in_irq());
+> +	WARN_ON_ONCE(user_mode(regs) || IS_ENABLED(CONFIG_PREEMPTION));
 
-On Wed, Oct 21, 2020 at 3:38 AM <peng.fan@nxp.com> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> To i.MX8MP, always met "Waiting for root device /dev/mmcblk1p2...",
-> it is because the gpio driver not enabled. So enable CONFIG_GPIO_MXC
-> to make sure it could boot well.
->
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+! that, obviously :/
 
-Anson has already submitted this change:
-https://patchwork.ozlabs.org/project/linux-gpio/patch/1600320829-1453-2-git-send-email-Anson.Huang@nxp.com/
+> +
+> +	set_tsk_need_resched(tsk);
+> +	set_preempt_need_resched();
+> +}
