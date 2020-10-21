@@ -2,96 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7644F294EB7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:33:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ED1FB294EBC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:34:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443548AbgJUOdU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:33:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37478 "EHLO
+        id S2443560AbgJUOeU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:34:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37628 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410075AbgJUOdU (ORCPT
+        with ESMTP id S2443539AbgJUOeT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:33:20 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88F51C0613CE;
-        Wed, 21 Oct 2020 07:33:20 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id t14so1599134pgg.1;
-        Wed, 21 Oct 2020 07:33:20 -0700 (PDT)
+        Wed, 21 Oct 2020 10:34:19 -0400
+Received: from mail-vk1-xa44.google.com (mail-vk1-xa44.google.com [IPv6:2607:f8b0:4864:20::a44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19144C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:19 -0700 (PDT)
+Received: by mail-vk1-xa44.google.com with SMTP id m3so535579vki.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zmZGMIPGGmtLtowrdMYO23WbB3s1asSBgU+m0EE+qT8=;
-        b=ATLgApS7Y80FNwvZ59Dzx4Y98S/P7jDo7kQJJJgQP3SLNhb61qwUzAke6Z4Us9MI+w
-         amFiRq8p/6tr3CPdWn/v5kf5ev+H2TBTcFiBg5/oLWrG4YzsSgicwBIhw3DYfaTJdRa9
-         EsA7RQbQ1NMsWLqWoydbuIuMu3sUV3Lz/rMbT7ulWLk0kGH4cNx15yinvtuXWwBHwvMj
-         rJoOiPdrOxs/mAZIs90I5BZZJlw4WyoumAjK5AAVoWOdUOjrL87jQG4McHNX+ei+saDn
-         RAIeG/e8G5EOKIifz8d0NF5cjN7sD5MXYIxmwnaUaDZeBGiBbEVw2hNeO4O9Pt70OVNU
-         2+Rw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VmRKVQeRsF5XXdxrVGzoz/VPiQ1G/DrEd5eWr/793iM=;
+        b=IhHKSipK6sX/mITywnB42dvTSeILc1wMT0ISsC1r4OnOF6ON6M5yEkOw+PaQOM9i2I
+         WUdUr89l2WpLNCmW8VRTMoCNBFqXMihiNngIpZ+HiVJdr1jFuGVjjCMEOUifu3pRAAbh
+         DFfed1lcby+zWbYVttxksMQHFcR6OQcHEFfWxnTHj5CN5tY0a3w1tTWEhofIwP8N5NNT
+         7RIMn4q+dDYJ6Y11WLpE/nUXKyHMeAdB/FvPlfGXD8YDmzS0J5PqWmI1B1VvUPiVwS3S
+         1+mQPdhK93QDmCExjEHzN4QTkzwgE/mxWhmWXdkrmMQDSFYh3wrBvfsOlQlbZ4Z31hpD
+         M3Bw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=zmZGMIPGGmtLtowrdMYO23WbB3s1asSBgU+m0EE+qT8=;
-        b=Q8VhHMh90VyWHuRovZg1L6u1f460W8F98tIgVTKqgKJY69YtrC+Nxs8Ce2sOM3Ducg
-         Lk4uQ5jBh14xDrQTX4F1XUWBNx66ECWN2AZuSBCzIT0bU53FdaPMOop8g/m8479A8Y18
-         ig75NUDuAZYFMtbEbTUisqXum2tdpYpStH29R02jfUsXMRZ7rx0runKj5sx9HiXV7vgF
-         itaAS9Vg+rorXw1EbAxvXqVEZIsRZC/OsuI5I5uchUCTnxB5rEUKRvUeXvIpwfPgQFxy
-         fcQRvRyYGzrj0zW9Q8tx8nZUz5Xp0xl8/K/yCcQuNBIdgvN6nvyWynJBaef4k7QtEc1p
-         K0sg==
-X-Gm-Message-State: AOAM532mi9HUu3iLFrP2ISeRK2Te09b0ZP3B7SXUje1u/U9ZF72IXKD6
-        qZsh2BG1WzCQNSOCG0losFeJvE1sJ/Iy4A==
-X-Google-Smtp-Source: ABdhPJxgXiLfVVGS1CVUIv3UPK1Ykt7ymME4AIy868lfIv7CRi+oitwagPm+kMMymcxj7wHx2GyD0g==
-X-Received: by 2002:a63:3004:: with SMTP id w4mr3606200pgw.249.1603290799359;
-        Wed, 21 Oct 2020 07:33:19 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id hi22sm2384987pjb.21.2020.10.21.07.33.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 07:33:18 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-To:     linux-input@vger.kernel.org
-Cc:     =?UTF-8?q?Barnab=C3=A1s=20P=C5=91cze?= <pobrn@protonmail.com>,
-        Jiri Kosina <jikos@kernel.org>,
-        Benjamin Tissoires <benjamin.tissoires@redhat.com>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] HID: i2c-hid: show the error of failing to fetch the HID Descriptor
-Date:   Wed, 21 Oct 2020 22:33:05 +0800
-Message-Id: <20201021143305.475182-1-coiby.xu@gmail.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VmRKVQeRsF5XXdxrVGzoz/VPiQ1G/DrEd5eWr/793iM=;
+        b=sAuK2cUFdYx2T+SrO5lEgB9Ci/v8ECT8/O/0UifflLvGNMvpsq0HYCnnC5qdkOGe/f
+         571oRWlFQs2nGwRav/xQ88cDQnay99Zw4AKrU2bCCnfiEJSKQ75AhBEBnBuO80CqzqFs
+         LkXh9w3+8mW2KPQB0+/b8l0MxO92UQNF6V1A32EZnSri/HUiKSclsPPlpcnc0LfPTaGa
+         vxVMA+6mIQQNDfaZks8RI1WoS7ve+XQWpDLX3RcKVY53oNTN/0Uwdpd6VNDCZFm0P2bz
+         frLdNLhrIAnDM9NSymJi4h84hfpgBTg9mbm/H/VxNEUB/s9W7Q/ShuIM7KVoNcr94Aug
+         qFjw==
+X-Gm-Message-State: AOAM531Hyq/yFqdo5s0mTbb0ABjl6GHpK4tXNN8wjUGDM6mdDaOpf/ie
+        jWLrRuhZLgiJZjn97UxEmJW8ZOS9tWg=
+X-Google-Smtp-Source: ABdhPJwyE0yTLwnQIAmEnDRrDzOufS9CMgU5Rc+vPAYdgJLcRN06yGnSgaOEl7stE86RurjbHpJdGg==
+X-Received: by 2002:a1f:f2c1:: with SMTP id q184mr2099970vkh.11.1603290857375;
+        Wed, 21 Oct 2020 07:34:17 -0700 (PDT)
+Received: from mail-vs1-f49.google.com (mail-vs1-f49.google.com. [209.85.217.49])
+        by smtp.gmail.com with ESMTPSA id e125sm308192vkh.44.2020.10.21.07.34.13
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 07:34:14 -0700 (PDT)
+Received: by mail-vs1-f49.google.com with SMTP id b3so1354337vsc.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:34:13 -0700 (PDT)
+X-Received: by 2002:a67:7704:: with SMTP id s4mr2165928vsc.51.1603290853086;
+ Wed, 21 Oct 2020 07:34:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20201021142944.13615-1-mst@redhat.com>
+In-Reply-To: <20201021142944.13615-1-mst@redhat.com>
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+Date:   Wed, 21 Oct 2020 10:33:37 -0400
+X-Gmail-Original-Message-ID: <CA+FuTSdG=mPvSWpGLqoQ1YB0duQQvOkkV+KPW3BBTHGStS5_Qg@mail.gmail.com>
+Message-ID: <CA+FuTSdG=mPvSWpGLqoQ1YB0duQQvOkkV+KPW3BBTHGStS5_Qg@mail.gmail.com>
+Subject: Re: [PATCH v4] Revert "virtio-net: ethtool configurable RXCSUM"
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        Tonghao Zhang <xiangxia.m.yue@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Jason Wang <jasowang@redhat.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Jesper Dangaard Brouer <hawk@kernel.org>,
+        John Fastabend <john.fastabend@gmail.com>,
+        virtualization@lists.linux-foundation.org,
+        Network Development <netdev@vger.kernel.org>,
+        bpf <bpf@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-i2c_hid_probe should notify the user of the error of failing to fetch
-the HID Descriptor instead of silently exiting.
+On Wed, Oct 21, 2020 at 10:30 AM Michael S. Tsirkin <mst@redhat.com> wrote:
+>
+> This reverts commit 3618ad2a7c0e78e4258386394d5d5f92a3dbccf8.
+>
+> When control vq is not negotiated, that commit causes a crash:
+>
+> [   72.229171] kernel BUG at drivers/net/virtio_net.c:1667!
+> [   72.230266] invalid opcode: 0000 [#1] PREEMPT SMP
+> [   72.231172] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 5.9.0-rc8-02934-g3618ad2a7c0e7 #1
+> [   72.231172] EIP: virtnet_send_command+0x120/0x140
+> [   72.231172] Code: 00 0f 94 c0 8b 7d f0 65 33 3d 14 00 00 00 75 1c 8d 65 f4 5b 5e 5f 5d c3 66 90 be 01 00 00 00 e9 6e ff ff ff 8d b6 00
+> +00 00 00 <0f> 0b e8 d9 bb 82 00 eb 17 8d b4 26 00 00 00 00 8d b4 26 00 00 00
+> [   72.231172] EAX: 0000000d EBX: f72895c0 ECX: 00000017 EDX: 00000011
+> [   72.231172] ESI: f7197800 EDI: ed69bd00 EBP: ed69bcf4 ESP: ed69bc98
+> [   72.231172] DS: 007b ES: 007b FS: 00d8 GS: 00e0 SS: 0068 EFLAGS: 00010246
+> [   72.231172] CR0: 80050033 CR2: 00000000 CR3: 02c84000 CR4: 000406f0
+> [   72.231172] Call Trace:
+> [   72.231172]  ? __virt_addr_valid+0x45/0x60
+> [   72.231172]  ? ___cache_free+0x51f/0x760
+> [   72.231172]  ? kobject_uevent_env+0xf4/0x560
+> [   72.231172]  virtnet_set_guest_offloads+0x4d/0x80
+> [   72.231172]  virtnet_set_features+0x85/0x120
+> [   72.231172]  ? virtnet_set_guest_offloads+0x80/0x80
+> [   72.231172]  __netdev_update_features+0x27a/0x8e0
+> [   72.231172]  ? kobject_uevent+0xa/0x20
+> [   72.231172]  ? netdev_register_kobject+0x12c/0x160
+> [   72.231172]  register_netdevice+0x4fe/0x740
+> [   72.231172]  register_netdev+0x1c/0x40
+> [   72.231172]  virtnet_probe+0x728/0xb60
+> [   72.231172]  ? _raw_spin_unlock+0x1d/0x40
+> [   72.231172]  ? virtio_vdpa_get_status+0x1c/0x20
+> [   72.231172]  virtio_dev_probe+0x1c6/0x271
+> [   72.231172]  really_probe+0x195/0x2e0
+> [   72.231172]  driver_probe_device+0x26/0x60
+> [   72.231172]  device_driver_attach+0x49/0x60
+> [   72.231172]  __driver_attach+0x46/0xc0
+> [   72.231172]  ? device_driver_attach+0x60/0x60
+> [   72.231172]  bus_add_driver+0x197/0x1c0
+> [   72.231172]  driver_register+0x66/0xc0
+> [   72.231172]  register_virtio_driver+0x1b/0x40
+> [   72.231172]  virtio_net_driver_init+0x61/0x86
+> [   72.231172]  ? veth_init+0x14/0x14
+> [   72.231172]  do_one_initcall+0x76/0x2e4
+> [   72.231172]  ? rdinit_setup+0x2a/0x2a
+> [   72.231172]  do_initcalls+0xb2/0xd5
+> [   72.231172]  kernel_init_freeable+0x14f/0x179
+> [   72.231172]  ? rest_init+0x100/0x100
+> [   72.231172]  kernel_init+0xd/0xe0
+> [   72.231172]  ret_from_fork+0x1c/0x30
+> [   72.231172] Modules linked in:
+> [   72.269563] ---[ end trace a6ebc4afea0e6cb1 ]---
+>
+> The reason is that virtnet_set_features now calls virtnet_set_guest_offloads
+> unconditionally, it used to only call it when there is something
+> to configure.
+>
+> If device does not have a control vq, everything breaks.
+>
+> Revert the original commit for now.
+>
+> Cc: Tonghao Zhang <xiangxia.m.yue@gmail.com>
+> Cc: Willem de Bruijn <willemb@google.com>
+> Fixes: 3618ad2a7c0e7 ("virtio-net: ethtool configurable RXCSUM")
+> Reported-by: kernel test robot <lkp@intel.com>
+> Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
 
-Link: https://forum.manjaro.org/t/elan-touchpad-working-in-live-but-not-in-native-os/31860/55
-Cc: Barnabás Pőcze <pobrn@protonmail.com>
-Signed-off-by: Coiby Xu <coiby.xu@gmail.com>
----
- drivers/hid/i2c-hid/i2c-hid-core.c | 5 ++++-
- 1 file changed, 4 insertions(+), 1 deletion(-)
+Acked-by: Willem de Bruijn <willemb@google.com>
 
-diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i2c-hid-core.c
-index 786e3e9af1c9..577d324be16d 100644
---- a/drivers/hid/i2c-hid/i2c-hid-core.c
-+++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-@@ -1099,8 +1099,11 @@ static int i2c_hid_probe(struct i2c_client *client,
- 	}
- 
- 	ret = i2c_hid_fetch_hid_descriptor(ihid);
--	if (ret < 0)
-+	if (ret < 0) {
-+		dev_err(&client->dev,
-+			"Failed to fetch the HID Descriptor\n");
- 		goto err_regulator;
-+	}
- 
- 	ret = i2c_hid_init_irq(client);
- 	if (ret < 0)
--- 
-2.28.0
-
+Thanks Michael.
