@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0664C2950DD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:37:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 876302950E5
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:37:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502991AbgJUQhH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:37:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56744 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502979AbgJUQhG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:37:06 -0400
-Received: from mail-qk1-x741.google.com (mail-qk1-x741.google.com [IPv6:2607:f8b0:4864:20::741])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 86F20C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:37:04 -0700 (PDT)
-Received: by mail-qk1-x741.google.com with SMTP id r7so3131566qkf.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:37:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=BzRdHxhoEjnpcVyZTB9k2I2+fkzcE70kBpksBajHHPg=;
-        b=c06LmWtB/eBV/fSiYmdEtL9GPYUkBEwiw6eScZ5dk4Sur880r0RUDUdOasWQ2KsUGe
-         bZgM/0p8jMLFa+ikbb0dWN5Ow5CevA+xGmpM9sZNHVumRdO1Tl6lKH78eEdBiQO/7MSc
-         SyBxogrPHboOf7N/zRQinZbDgCQncGQf+B3tCHdeRI6jhJnIAAoc2n5M0i1ORD3y+prI
-         vtMVVV6QAXuny3nyioqppKj86tWO1HhufpTOjkK/v2RsEfqLugKDikZxGHBEJZrzkhBg
-         lGNMu1/vnxQxiUuVEAydazAgNl/YziHidKE+BchWShczAu98wiVxpsNR+uw83dVIq+/q
-         VdCA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=BzRdHxhoEjnpcVyZTB9k2I2+fkzcE70kBpksBajHHPg=;
-        b=Eyss8/sIwci8ef9zH0LzrdZNXhFoVfiUEWVhjpOmR+2Wfq0gBdPdvKGXK5MniZSQ22
-         7M/GbGSESAKuMwlxM3uWQxKN+6thZYqgfQn9g34Z+rvWhxrH9fH9DGNhRrx/BZDUr0by
-         XgJH4aR94qnjjv8y8ebaIIEyQrgVE9NbqidlqdDCqE7cesf9kJw/jtWnZSJGWvpes9tg
-         0eFj1D7Cf6xy2YEqGUpqKgWogkovm2+H6dKKkr/2gbhe6VhXi5Hfa+HYiCuNItsnaEz9
-         DJr4fFW20/1GgLRNxogNFWOv8saf9MmjYB91u3edomm8Ey7ls/PmEzYjEQFWk/MfID/+
-         l86w==
-X-Gm-Message-State: AOAM532Tq0/giMyMbqS45h7ZTpMtu4opOUIzVajRx/xcCMsVCu1hPdbp
-        gb7glhWymTJmSUxlKhsVeEyhvg==
-X-Google-Smtp-Source: ABdhPJzGADmR3Upv87Rf5RxP6nvmSwt5ZnM0S0wnKL/4oE2AOzzQDQjF/MbwQajcSGEwpbzdpDuubQ==
-X-Received: by 2002:a37:4244:: with SMTP id p65mr3998477qka.141.1603298223560;
-        Wed, 21 Oct 2020 09:37:03 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id r58sm1532749qte.94.2020.10.21.09.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 09:37:02 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kVH6k-003YkE-3P; Wed, 21 Oct 2020 13:37:02 -0300
-Date:   Wed, 21 Oct 2020 13:37:02 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.com>
-Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
-Message-ID: <20201021163702.GM36674@ziepe.ca>
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
- <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
- <20201021125030.GK36674@ziepe.ca>
- <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
- <20201021151352.GL36674@ziepe.ca>
- <CAKMK7uGq0=ks7Zj1Et44k7x9FwE9u_ua4zANSqrLRri0v01V+Q@mail.gmail.com>
+        id S2503004AbgJUQhw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:37:52 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:58104 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502958AbgJUQhv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:37:51 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CGbky6xswzB09Zk;
+        Wed, 21 Oct 2020 18:37:46 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id FJdjEE6iDHsr; Wed, 21 Oct 2020 18:37:46 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CGbky3PXhzB09Zc;
+        Wed, 21 Oct 2020 18:37:46 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 2972B8B7FA;
+        Wed, 21 Oct 2020 18:37:48 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id J1L1ZOHJTvWi; Wed, 21 Oct 2020 18:37:48 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 861B28B7EA;
+        Wed, 21 Oct 2020 18:37:47 +0200 (CEST)
+Subject: Re: [PATCH v2] powerpc/mm: Add mask of always present MMU features
+To:     "Aneesh Kumar K.V" <aneesh.kumar@linux.ibm.com>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Cc:     linuxppc-dev@lists.ozlabs.org, linux-kernel@vger.kernel.org
+References: <06bf0e094463533e7aec6900bddd435171e9f44f.1602517171.git.christophe.leroy@csgroup.eu>
+ <4bc99005-f3c0-045b-e0d5-f8b6f2b2e90d@csgroup.eu>
+ <871rhrejw8.fsf@linux.ibm.com>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <f6081e25-5525-e7e0-c540-0e340913e8fd@csgroup.eu>
+Date:   Wed, 21 Oct 2020 18:37:41 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uGq0=ks7Zj1Et44k7x9FwE9u_ua4zANSqrLRri0v01V+Q@mail.gmail.com>
+In-Reply-To: <871rhrejw8.fsf@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 05:54:54PM +0200, Daniel Vetter wrote:
 
-> The trouble is that io_remap_pfn adjust vma->pgoff, so we'd need to
-> split that. So ideally ->mmap would never set up any ptes.
 
-/dev/mem makes pgoff == pfn so it doesn't get changed by remap.
+Le 21/10/2020 à 16:25, Aneesh Kumar K.V a écrit :
+> Christophe Leroy <christophe.leroy@csgroup.eu> writes:
+> 
+>> Le 12/10/2020 à 17:39, Christophe Leroy a écrit :
+>>> On the same principle as commit 773edeadf672 ("powerpc/mm: Add mask
+>>> of possible MMU features"), add mask for MMU features that are
+>>> always there in order to optimise out dead branches.
+>>>
+>>> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
+>>> ---
+>>> v2: Features must be anded with MMU_FTRS_POSSIBLE instead of ~0, otherwise
+>>>       MMU_FTRS_ALWAYS is ~0 when no #ifdef matches.
+>>
+>> This is still not enough. For BOOK3S/32, MMU_FTRS_POSSIBLE is still too much.
+>> We need a #ifdef CONFIG_PPC_BOOK3S_32 with 0.
+>>
+>> Christophe
+>>
+>>> ---
+>>>    arch/powerpc/include/asm/mmu.h | 25 +++++++++++++++++++++++++
+>>>    1 file changed, 25 insertions(+)
+>>>
+>>> diff --git a/arch/powerpc/include/asm/mmu.h b/arch/powerpc/include/asm/mmu.h
+>>> index 255a1837e9f7..64e7e7f7cda9 100644
+>>> --- a/arch/powerpc/include/asm/mmu.h
+>>> +++ b/arch/powerpc/include/asm/mmu.h
+>>> @@ -201,8 +201,30 @@ enum {
+>>>    		0,
+>>>    };
+>>>    
+>>> +enum {
+>>> +	MMU_FTRS_ALWAYS =
+>>> +#ifdef CONFIG_PPC_8xx
+>>> +		MMU_FTR_TYPE_8xx &
+>>> +#endif
+>>> +#ifdef CONFIG_40x
+>>> +		MMU_FTR_TYPE_40x &
+>>> +#endif
+>>> +#ifdef CONFIG_PPC_47x
+>>> +		MMU_FTR_TYPE_47x &
+>>> +#elif defined(CONFIG_44x)
+>>> +		MMU_FTR_TYPE_44x &
+>>> +#endif
+>>> +#if defined(CONFIG_E200) || defined(CONFIG_E500)
+>>> +		MMU_FTR_TYPE_FSL_E &
+>>> +#endif
+>>> +		MMU_FTRS_POSSIBLE,
+>>> +};
+> 
+> Will it be simpler if we make it a #define like below?
+> 
+> #ifdef CONFIG_PPC_8XX
+> #define MMU_FTR_ALWAYS  MMU_FTR_TYPE_8XX & MMU_FTR_POSSIBLE
+> #endif
 
-pgoff doesn't get touched for MAP_SHARED either, so there are other
-users that could work like this - eg anyone mmaping IO memory is
-probably OK.
+Yes you are right, it will be simpler, and consistant with CPU_FTR_ALWAYS which is partly set with 
+defines after all.
 
-> I guess one option would be if remap_pfn_range would steal the
-> vma->vm_ops pointer for itself, then it could set up the correct
-> ->install_ptes hook. But there's tons of callers for that, so not sure
-> that's a bright idea.
+Christophe
 
-The caller has to check that the mapping is still live, and I think
-hold a lock across the remap? Auto-defering it doesn't seem feasible.
-
-Jason
+> 
+> 
+> 
+>>> +
+>>>    static inline bool early_mmu_has_feature(unsigned long feature)
+>>>    {
+>>> +	if (MMU_FTRS_ALWAYS & feature)
+>>> +		return true;
+>>> +
+>>>    	return !!(MMU_FTRS_POSSIBLE & cur_cpu_spec->mmu_features & feature);
+>>>    }
+>>>    
+>>> @@ -231,6 +253,9 @@ static __always_inline bool mmu_has_feature(unsigned long feature)
+>>>    	}
+>>>    #endif
+>>>    
+>>> +	if (MMU_FTRS_ALWAYS & feature)
+>>> +		return true;
+>>> +
+>>>    	if (!(MMU_FTRS_POSSIBLE & feature))
+>>>    		return false;
+>>>    
+>>>
