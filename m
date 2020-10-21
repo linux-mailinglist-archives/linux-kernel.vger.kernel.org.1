@@ -2,76 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A8BB294817
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:22:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3120429486C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:38:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408716AbgJUGWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:22:45 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:39113 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408696AbgJUGWo (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:22:44 -0400
-Received: by mail-ed1-f67.google.com with SMTP id t21so1353989eds.6;
-        Tue, 20 Oct 2020 23:22:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=KK0puVMylKVFsz5Ij2GE7BsLqagR7c/6Vy0xC2TGpG0=;
-        b=asJIKksmwn0jI5iEpl5/z3mvnPDC9BCC2S8YMU4ihFvBEi8eWBVDMqXxeYWnIQUzSU
-         akez2B2unHbkMH/bDcAzft/cHGkSZHr02nBpV9zCpkYdXt+WPqs8Vo6DbY2FXKdQ+gw5
-         R/m/cZ9RFW9GslwH8qkZoOxPLtP2fUch9vJFi+XL1N+ngKsFiEPsSuxT4PiWeORHJpPk
-         9hN/CpP3/X4tie3zMEn/s5/HPAbrFwC88abF/cETyGrw9qiGdx9WgJA1J2THmy35ZhDW
-         qADmCrEpRmA8oYS5Zi7BJ8xr6KKuGSIiUlR/1/KJG0LhoMBsEWb5QQ1NWOfImQ7dP7xd
-         SK4g==
-X-Gm-Message-State: AOAM5330NZ5lObOSTxNTEemR9s7fjvRcnzNGvu2LuXRSYuWX/ihXz0VI
-        5TWivphjXp7Ud72AcR5S25GP/1uQ0vU=
-X-Google-Smtp-Source: ABdhPJxlUnn8a6oyuaMRlV0coVtB13jakU2hgR+Y2a5ysNTvNh/6mbDi2LniGdEfPIOCUSxmH1lrYQ==
-X-Received: by 2002:a50:ef0e:: with SMTP id m14mr1537840eds.5.1603261362691;
-        Tue, 20 Oct 2020 23:22:42 -0700 (PDT)
-Received: from ?IPv6:2a0b:e7c0:0:107::70f? ([2a0b:e7c0:0:107::70f])
-        by smtp.gmail.com with ESMTPSA id t15sm1352835edr.27.2020.10.20.23.22.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 20 Oct 2020 23:22:41 -0700 (PDT)
-Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc:     =?UTF-8?Q?=c3=89rico_Rolim?= <erico.erc@gmail.com>,
-        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@redhat.com>,
-        Hao Luo <haoluo@google.com>, Andrii Nakryiko <andriin@fb.com>
-References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
- <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
- <20201020122015.GH2294271@kernel.org>
-From:   Jiri Slaby <jirislaby@kernel.org>
-Message-ID: <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
-Date:   Wed, 21 Oct 2020 08:22:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2394747AbgJUGiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:38:52 -0400
+Received: from mail-eopbgr20073.outbound.protection.outlook.com ([40.107.2.73]:64899
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2388999AbgJUGiv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:38:51 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UPl63EBIIRH1JqWei3lqkjLnV2c2IsxFbmM1/9kpELwG5yPeTUFMMuWDGmkQ1hnK55kclUARrGM3gqNQNNX4TR9zIijedbeJC0eqXEHGhzZlN4rdksmRwh94C+kYYkmyjZNToxB+i4FuHOMFH6jYC6+YCanj7uJ/itj/FBzGYZpHuODzwcesGti/eQyqdJecy5ToAbA7ZOA0CBXB1HtabN2UXKk+gU4H0nu1ISbmkq0bX6QanonIlIR8BvAcXRhKn9ouycigr10P2CgpQp73FFxAVIstNVEWiQunW1kpstaKFKlEW9H/wLwXPLuoxcwGRDZjPq0JRJSu734MGyssag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gb+JlaZNaRoh+ynZ8M3CcXhr72alIMWIQseHzv4BmuM=;
+ b=IcBnJ7RYUdHZTJlFJ6LDhPpleb2QmGR0+1FgKqnVJYYEHWI4K+WRQUNBMiP/muFiReHCLThIp4MgU/zRuEh5rvkEcpTctuXU/zBq2AnyCCaysRafnK57jdUsnnyXO6co/4z0TAOkiDJ5/0KUl1xaOfKwuRVqc3r+8B78mOt6KN7W+mezIQC6jRlXSZd2tvSGy1XlMFoYo5Uy1hwkai4dfKnlTMdS9ANQNJokkB0yGK/YENUrrVPS2pPNXTDiBVyDOEcEY7S4SxG9VSLwGFy3bOlhR8I5ivaslc7pnyfBZLcDsK6DKHVpTGvE/BHjan34E2A0uMM3z0q92t8oinYIvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Gb+JlaZNaRoh+ynZ8M3CcXhr72alIMWIQseHzv4BmuM=;
+ b=sTv5x/2uAAHbCQv+wajfzl7gFxBU6Qd2KF9lAmMpWF9/aPC68EX0XSy4HCkINefsT2qjWXJdS08FGwYtGOFBdxbDJZ9L28bzSMR2FcJrQFCFW8HEiDeiLlJTtViwRn6QASC+MA1oBpS7GZubzzTy39GtEm4FfIwjUrA2MOwA6h0=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB6PR0401MB2534.eurprd04.prod.outlook.com (2603:10a6:4:3c::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 21 Oct
+ 2020 06:38:48 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
+ 06:38:48 +0000
+From:   peng.fan@nxp.com
+To:     catalin.marinas@arm.com, will@kernel.org, shawnguo@kernel.org
+Cc:     michael@walle.cc, krzk@kernel.org, olof@lixom.net,
+        linux-kernel@vger.kernel.org, linux-imx@nxp.com,
+        festevam@gmail.com, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] arm64: defconfig: enable CONFIG_GPIO_MXC
+Date:   Wed, 21 Oct 2020 14:33:26 +0800
+Message-Id: <1603262006-28217-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR01CA0154.apcprd01.prod.exchangelabs.com
+ (2603:1096:4:8f::34) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-In-Reply-To: <20201020122015.GH2294271@kernel.org>
-Content-Type: text/plain; charset=iso-8859-2; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR01CA0154.apcprd01.prod.exchangelabs.com (2603:1096:4:8f::34) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3477.21 via Frontend Transport; Wed, 21 Oct 2020 06:38:44 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 52e3a4f2-02e7-4540-0d71-08d8758bf6fa
+X-MS-TrafficTypeDiagnostic: DB6PR0401MB2534:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB6PR0401MB25348CBFFD6586BEA0D8AA16881C0@DB6PR0401MB2534.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:3044;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 9yhUa7asnQrcE9unZM4fOk7kWQ+ADqo7bDu8Xwclc0ufP5pMR22qe5bq+dUAaEtUAn8l34SM6o4y7MyQ2q8Y4NLfUxn6Gck52OJT3om+S451cBJmgFwsDDjIogLNr+cMT99/bjDOboEkz69ocVp+yj3Q6L5ocgyc2mRIt3Lmf43CdR/AXNKd9e1umgT2oNDQhNYH4SVNqvXuuuwZBo9mc0MeORy4p4czeYSa/0+YmShernhAcbhbeNKQGRsxojck86dY9GcaPQbQ6yp4inQ+rEBcnhW9JWvIQ2ua4vkt+nAhdf0in9t9H9jDStBtriXbWXaH3z7xr60aNu9cbSYqCNwgL7thEhA4omPUXi9LJK25K/GKsTepTLe+nzWGIkFI
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(39860400002)(136003)(396003)(346002)(376002)(66556008)(8676002)(6666004)(6506007)(8936002)(2616005)(2906002)(956004)(5660300002)(316002)(478600001)(66946007)(4326008)(36756003)(66476007)(9686003)(186003)(16526019)(6512007)(86362001)(4744005)(6486002)(52116002)(69590400008)(26005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: akGZpA52L7W5Zjlwzveq5/V4B7sYdymVL1g7UiobrzVjuZxYB0Fcdo23Y3f3Vm3mRd7NhjFcLmsVnvp0A5Hr6dKE1TxSPSEdKv0Y4bp99lvuKC0pTp5Wde5jhGDr459ymlBY5xZ7WXK4WBqUuTRMjqgeHur6qOFBQl9Qx7DEwVA9a+PC/GgBzHLEPJAbvHkPJGA4n2cg1OdueSyubE1UTff0+iorwyKPfsCTmzalFVuWNZTwpiJ/gxYs/WxYvDzuxyrA+cmBqrXMRRkj7XZ/w5vRlY+lDICckWJW+FNKbByc2SXXwFk20Sed6FK6gTWcDaTlFsJ94S5C46AgFijyZurHN9a+P4AgtXDEwcET7YdJp3ouIvOjTbEmENwHfaGYRnALvZfqeSN5ALkFUGbQ3Y/PTjA5N1h+J6KHlI6G4AtT2L2xvWOQZ5xgkesjw/Ejp+o2SxifGvIyiNR3AW2oHgkFuRefPke8DgAOHRFl2UmSKFSu/O1zxzCG30PFfhN1kVVOATIDegNVTr8k5EAzZDePVFmy6mJiJQto6DZU1l8iYDJ1SmYeomqASuLb+ED+ZVE+HEWDWIdyFaQ9zatEK3KTduNRPWfAfWnUkNwffhzly4DqMgT5wOBxaxvycbtMtDxAPxJfeg67r5eACV9Ynw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 52e3a4f2-02e7-4540-0d71-08d8758bf6fa
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 06:38:48.1269
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: a7Zlrxt331Vv9nDHSZ8gLgEcrJ0sInO2c339R3UaAnTOmgYD6EJVySwtJPaVipNddSRV4AUfq8OHhEQaozfXGQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB6PR0401MB2534
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 20. 10. 20, 14:20, Arnaldo Carvalho de Melo wrote:
->> Yeah, I observe the very same. I reported it at:
->> https://bugzilla.suse.com/show_bug.cgi?id=1177921
-> 
-> Would it be possible to try with
-> https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.libbtf_encoder
-> ?
+From: Peng Fan <peng.fan@nxp.com>
 
-Yes, that branch fixes the crashes and the kernel build finishes. The 
-zero-sized symbol error remains.
+To i.MX8MP, always met "Waiting for root device /dev/mmcblk1p2...",
+it is because the gpio driver not enabled. So enable CONFIG_GPIO_MXC
+to make sure it could boot well.
 
-So what should distributions do now -- should we switch to a pahole 
-snapshot for a while?
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ arch/arm64/configs/defconfig | 1 +
+ 1 file changed, 1 insertion(+)
 
-thanks,
+diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+index 17a2df6a263e..5cfe3cf6f2ac 100644
+--- a/arch/arm64/configs/defconfig
++++ b/arch/arm64/configs/defconfig
+@@ -500,6 +500,7 @@ CONFIG_GPIO_ALTERA=m
+ CONFIG_GPIO_DWAPB=y
+ CONFIG_GPIO_MB86S7X=y
+ CONFIG_GPIO_MPC8XXX=y
++CONFIG_GPIO_MXC=y
+ CONFIG_GPIO_PL061=y
+ CONFIG_GPIO_RCAR=y
+ CONFIG_GPIO_UNIPHIER=y
 -- 
-js
+2.28.0
+
