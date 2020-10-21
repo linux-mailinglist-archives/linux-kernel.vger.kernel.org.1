@@ -2,96 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D0D2295110
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:46:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DA91295124
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503146AbgJUQqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:46:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58216 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404882AbgJUQqP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:46:15 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 732B4C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:46:13 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id dn5so3222420edb.10
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:46:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=8NUOfNpYzEL3LD+5zJArE8vgQr+8xwXTLaDNDtvbDwA=;
-        b=Wfq8T3EqHqQ8lWbnZHAcop1pwmrgYSGiQ8y+QBQzhgJvWkUVddeQVTARpQt+C6qHMN
-         5CtfwdzNoX4TezJ3KM0QNKJZr+VQgbetsV+XnfEDlSw+QeXvGl4lOITQBjJU6WSH+LhM
-         qFASZk18S1La+NfdRIrQ+wzrhK1Zy71XWZbv7KDb5bi9sHqiD97UjlSsB5wixNS/qxhj
-         B/IEMSp8o5UuBuKJQl/P2Myf4dtM2v9NQXi81OwJsba/BaHV6mbraD5k8uev40GziwWb
-         u/S6IxYevQLa41WHjF5FwPMjMZkg5le/zLXkRWoEHoHxeIIJntihdeN6k1sDu6ndFV1H
-         /nLw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=8NUOfNpYzEL3LD+5zJArE8vgQr+8xwXTLaDNDtvbDwA=;
-        b=KPV71UZV1zP45H48gwhVw6XXpyiZVqUPfp+OEFnr7U7yA795dLVlxDXjQAB82luFmd
-         MJupGRC2QGrFDcsNXGGvkdn6Mk+Qw1TLQXJ71i2KEqxnYe4HKQStVJ3IJOYr/vJoBqCj
-         0ZkxbORVlFNi9yPjPUgZ28m8eONcv9+x5wWmm/4DFZcq2vlircM0kmE8zB8UsI8h7ffJ
-         Cn32zGuLLlIG1e0Tc0S9nvHJ5JkDPicgRGejIjBbwiBLL+K/YEj63TwIqxeKcvdGI9Xo
-         JnUZ+7XTgBl77fT8z0uvCyyAKXmkUYw5hFbmjIBk1SbLPEmeJz2iBlHW3jNWE84D93A7
-         3kxg==
-X-Gm-Message-State: AOAM533YfueIdmp7lm3wqbc5ZGKx5YkCdWciy8pmAl+8DCqNf4NP+ewU
-        tCAvTeiVRNgYaIET+UAA1XGySLzZFVFUyJvj1wjxhA==
-X-Google-Smtp-Source: ABdhPJxFG7eP6jPrXMEObBNGYCEE//beJ2SGdl4GivAzZsysEUsSAlvo+98dcFhiemFVn4SHy/ry0C68roOSK/sZv+Q=
-X-Received: by 2002:a05:6402:1158:: with SMTP id g24mr3799631edw.323.1603298771874;
- Wed, 21 Oct 2020 09:46:11 -0700 (PDT)
+        id S2503187AbgJUQxe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:53:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40188 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502955AbgJUQxe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:53:34 -0400
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1B6022173E
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:53:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603299213;
+        bh=tysafz95EGrDRAd4koiebqQvSihPyKOlLcDwNX9+/pI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Nd2u+8mcPJFj67p+FKZqC9bf8zyoXyKNuleNaz2o3D31Mb+PFWuxazOaqZBcAmSKG
+         /lUrkLr5YixxzONPBEsAAduba0ND2P5zQy2SVOVui0KddeRU/uuJUzhgbapF6BUjkE
+         rGxxTL3kEyG1x8l0t+f7XznXMBvd3PvqxopdMV0g=
+Received: by mail-ej1-f46.google.com with SMTP id z5so4231308ejw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:53:33 -0700 (PDT)
+X-Gm-Message-State: AOAM530zO/JVhv0kv9gLAeSJYUMT9cQr5cNRCPT9J8KvNafiTIgr07ls
+        /nbXaannxQxx/Th7oeTFHIPC/GKqcN/3ueW0jA==
+X-Google-Smtp-Source: ABdhPJxYbs5q0DLX41jjFeTCIyysgme2FgAo9xaY3pF7NcxvbRkwTiWrHViLgF5ogY6yUTJoIVQ1f8qIeUuK06BO6Ek=
+X-Received: by 2002:a17:906:7fd7:: with SMTP id r23mr4284124ejs.310.1603299211543;
+ Wed, 21 Oct 2020 09:53:31 -0700 (PDT)
 MIME-Version: 1.0
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
- <20201021152714.GD3334@Mani-XPS-13-9360> <CAMZdPi8xcsrKx2eV5da98fsGt2zO3f6ARMz7WJsyDSb3CnM0FA@mail.gmail.com>
- <20201021162540.GG3334@Mani-XPS-13-9360>
-In-Reply-To: <20201021162540.GG3334@Mani-XPS-13-9360>
-From:   Loic Poulain <loic.poulain@linaro.org>
-Date:   Wed, 21 Oct 2020 18:51:36 +0200
-Message-ID: <CAMZdPi-SY-r2H7RBLKoNk9yfu5umrrwYMr0ckJoxSx-iqYXdQg@mail.gmail.com>
-Subject: Re: [PATCH v7 1/4] bus: mhi: core: Add helper API to return number of
- free TREs
-To:     Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Cc:     Hemant Kumar <hemantk@codeaurora.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        Jeffrey Hugo <jhugo@codeaurora.org>,
-        Bhaumik Bhatt <bbhatt@codeaurora.org>
+References: <20201020152639.21950-1-matthias.bgg@kernel.org>
+In-Reply-To: <20201020152639.21950-1-matthias.bgg@kernel.org>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 22 Oct 2020 00:53:20 +0800
+X-Gmail-Original-Message-ID: <CAAOTY__MegNwaUGphYNpnKrC_y8SX-_rDNXGxsaBJ6FDBKsQ_w@mail.gmail.com>
+Message-ID: <CAAOTY__MegNwaUGphYNpnKrC_y8SX-_rDNXGxsaBJ6FDBKsQ_w@mail.gmail.com>
+Subject: Re: [PATCH] MAINTAINERS: change mediatek wiki page
+To:     matthias.bgg@kernel.org
+Cc:     Matthias Brugger <matthias.bgg@gmail.com>,
+        kuohong.wang@mediatek.com, yh.chen@mediatek.com,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Miles.Chen@mediatek.com,
+        "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>, Yingjoe.Chen@mediatek.com,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 at 18:25, Manivannan Sadhasivam
-<manivannan.sadhasivam@linaro.org> wrote:
->
-> On Wed, Oct 21, 2020 at 05:43:14PM +0200, Loic Poulain wrote:
-> > On Wed, 21 Oct 2020 at 17:27, Manivannan Sadhasivam <
-> > manivannan.sadhasivam@linaro.org> wrote:
-> >
-> > > On Fri, Oct 16, 2020 at 09:04:14PM -0700, Hemant Kumar wrote:
-> > > > Introduce mhi_get_free_desc_count() API to return number
-> > >
-> >
-> > Would it not be a good idea to have naming aligned with other methods?
-> > Like mhi_queue_num_free() or mhi_queue_no_free_elem...
-> >
->
-> 'queue_num_free' doesn't sound like getting the number of available
-> descriptors...
+Hi, Matthias:
 
-Right, TBH, just wanted the function to start with mhi_queue since
-it's about getting info about remaining size of the DL or UL 'virtual
-queue'. But AFAIU, this is the number of available ring elements that
-is returned here, not the number of transfer descriptors (that can be
-composed of one or more ring elements), so maybe
-mhi_queue_num_free_elements or something similar, I don't want to be
-picky here.
+<matthias.bgg@kernel.org> =E6=96=BC 2020=E5=B9=B410=E6=9C=8820=E6=97=A5 =E9=
+=80=B1=E4=BA=8C =E4=B8=8B=E5=8D=8811:27=E5=AF=AB=E9=81=93=EF=BC=9A
+>
+> From: Matthias Brugger <matthias.bgg@gmail.com>
+>
+> The old wiki page unfortunately got lost by server crash.
+> The new wiki can be found on the kernel.org infrastructure
+>
 
-Regards,
-Loic
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+
+> Signed-off-by: Matthias Brugger <matthias.bgg@gmail.com>
+> ---
+>  MAINTAINERS | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/MAINTAINERS b/MAINTAINERS
+> index 14b8ec0bb58b..7d0088782a9f 100644
+> --- a/MAINTAINERS
+> +++ b/MAINTAINERS
+> @@ -2067,7 +2067,7 @@ M:        Matthias Brugger <matthias.bgg@gmail.com>
+>  L:     linux-arm-kernel@lists.infradead.org (moderated for non-subscribe=
+rs)
+>  L:     linux-mediatek@lists.infradead.org (moderated for non-subscribers=
+)
+>  S:     Maintained
+> -W:     https://mtk.bcnfs.org/
+> +W:     https://mtk.wiki.kernel.org/
+>  C:     irc://chat.freenode.net/linux-mediatek
+>  F:     arch/arm/boot/dts/mt6*
+>  F:     arch/arm/boot/dts/mt7*
+> --
+> 2.28.0
+>
+>
+> _______________________________________________
+> Linux-mediatek mailing list
+> Linux-mediatek@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-mediatek
