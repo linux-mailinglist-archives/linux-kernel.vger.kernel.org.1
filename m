@@ -2,167 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F02C0294ADB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:55:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E02C7294AE1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:56:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441598AbgJUJzw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:55:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51194 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441589AbgJUJzw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:55:52 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57EABC0613CE;
-        Wed, 21 Oct 2020 02:55:52 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id hk7so879946pjb.2;
-        Wed, 21 Oct 2020 02:55:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5xvsCC2mBKT4ppcZJ4GK5YKV7EITC8GNqyfDyTOioyI=;
-        b=pmfiT6oh2bHuSADiyOLDDks78cTk7QHi2EI5fq9k/Pe01OyezNU2yH33NoxKkinL+l
-         Zos1wo6pLDd9mr8H6g7fLo8R8AGkzqbOuWtdQAa9OXq3joEHn38Qzex61tB40oTsQcx/
-         kySSqgmDmtPDiLr6irnSNyGPjR3UJOwFFCgVmPsc+pD1HNKV86ZDHa0tGm/qiti5JYGk
-         Hy1gY6GncSsBL7gGIsQnpGKURipQLijX1uZnaoosHNR4shbKbGBYaqfqa3o/svaULUjf
-         Q5GrM3XaQAtUnMK6apIQJrRlUCG6jb3TO7GRJSsG6vffTDqp2RrjXoUvcPwS3ZQE0UED
-         DTbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=5xvsCC2mBKT4ppcZJ4GK5YKV7EITC8GNqyfDyTOioyI=;
-        b=jOGEl85ohhzUyYdeP0iHnBrFqXgiU0bjBPaeA0r93DPvhS3Os7Fyd0SbkUp5h6i5yP
-         kRvza9Sv5orian8n3dEIkx+spE7/kGp7UgYYgkeyu2i973vtPcCuX+ZOE0xlZNdjz5tn
-         5K4LHiUyv/uNMZ0n02C+1af57H3JCMErF6KzdwtwD3yYYVQtYPzk1u9mO/cxp0ZbIy5w
-         7DXp0IzWiftzoX2nDCwCLDCDSuoYZspnajoP+c43+WT6kFa6IBe/Dm4MHweOL32ypbhQ
-         d4imAyyQfw9p1NFihY22eMiYHgM9zPNE7NDVcgINT5u9Goi2xXKR3wA7fE9Joz/FuuYt
-         DXiw==
-X-Gm-Message-State: AOAM5309I0zZTdvwevmga4vdmvcYr8A598VwatMoFfbDKKNvWRX34o2L
-        Ym4DAZMUNrGMm0sgdAgVHY4=
-X-Google-Smtp-Source: ABdhPJyhYswSXJeohbalULZv+UeobqcRJjTOt+P7VKb7A5oTSmH9ZHqCbmMfjvXwdutBXLcVfaaM7Q==
-X-Received: by 2002:a17:90a:9d83:: with SMTP id k3mr2525977pjp.5.1603274151933;
-        Wed, 21 Oct 2020 02:55:51 -0700 (PDT)
-Received: from dc803.localdomain (FL1-133-208-230-116.hyg.mesh.ad.jp. [133.208.230.116])
-        by smtp.gmail.com with ESMTPSA id q81sm1901786pfc.36.2020.10.21.02.55.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 02:55:51 -0700 (PDT)
-From:   Tetsuhiro Kohada <kohada.t2@gmail.com>
-To:     kohada.t2@gmail.com
-Cc:     kohada.tetsuhiro@dc.mitsubishielectric.co.jp,
-        mori.takahiro@ab.mitsubishielectric.co.jp,
-        Namjae Jeon <namjae.jeon@samsung.com>,
-        Sungjong Seo <sj1557.seo@samsung.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH 2/2] exfat: simplify exfat_hint_femp structure
-Date:   Wed, 21 Oct 2020 18:55:44 +0900
-Message-Id: <20201021095545.9208-1-kohada.t2@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        id S2441619AbgJUJ4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:56:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59342 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2441601AbgJUJ4F (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:56:05 -0400
+Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9D4512227F;
+        Wed, 21 Oct 2020 09:56:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603274164;
+        bh=3XUhM3gn53XwSV8lX0RZcYImKqCOmEDaYHS2aoCH1oQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=F6b2/Hvplwp6gqHefWYscY7mRhzksXqmvGu+MoMsSTwcyFEnXPioDBJ80ntAPr2X+
+         NiX57Se5Q0YkxqHkENkBosWtDdTucBU7ddGRiVsuJW4w2HRkQYhI2CwpMoqUDdMJMn
+         3Lb7EFZcXAGa8VaqnNkVnMCZjNNA0kLAjhVWgJHY=
+Date:   Wed, 21 Oct 2020 11:55:57 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Andreas Gruenbacher <agruenba@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Guoqing Jiang <guoqing.jiang@cloud.ionos.com>,
+        Jens Axboe <axboe@kernel.dk>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        William Kucharski <william.kucharski@oracle.com>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 10/24] mm: pagemap.h: fix two kernel-doc markups
+Message-ID: <20201021115557.24c83c35@coco.lan>
+In-Reply-To: <20201013122654.GE20115@casper.infradead.org>
+References: <cover.1602590106.git.mchehab+huawei@kernel.org>
+        <54ea6dd0fc37c48aef3fc3ae454c54a80db313dc.1602590106.git.mchehab+huawei@kernel.org>
+        <20201013122654.GE20115@casper.infradead.org>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The hint provided by exfat_hint_femp is that the cluster number is enough,
-so replace exfat_chain with the cluster number.
+Hi Matthew,
 
-Signed-off-by: Tetsuhiro Kohada <kohada.t2@gmail.com>
----
- fs/exfat/dir.c      |  3 +--
- fs/exfat/exfat_fs.h |  2 +-
- fs/exfat/namei.c    | 19 ++++++-------------
- 3 files changed, 8 insertions(+), 16 deletions(-)
+Em Tue, 13 Oct 2020 13:26:54 +0100
+Matthew Wilcox <willy@infradead.org> escreveu:
 
-diff --git a/fs/exfat/dir.c b/fs/exfat/dir.c
-index ff809239a540..2e68796750b0 100644
---- a/fs/exfat/dir.c
-+++ b/fs/exfat/dir.c
-@@ -978,8 +978,7 @@ int exfat_find_dir_entry(struct super_block *sb, struct exfat_inode_info *ei,
- 				num_empty++;
- 				if (candi_empty.eidx == EXFAT_HINT_NONE &&
- 						num_empty == 1) {
--					exfat_chain_set(&candi_empty.cur,
--						clu.dir, clu.size, clu.flags);
-+					candi_empty.clu = clu.dir;
- 				}
- 
- 				if (candi_empty.eidx == EXFAT_HINT_NONE &&
-diff --git a/fs/exfat/exfat_fs.h b/fs/exfat/exfat_fs.h
-index f1402fed3302..28330804f9c9 100644
---- a/fs/exfat/exfat_fs.h
-+++ b/fs/exfat/exfat_fs.h
-@@ -153,7 +153,7 @@ struct exfat_hint_femp {
- 	/* count of continuous empty entry */
- 	int count;
- 	/* the cluster that first empty slot exists in */
--	struct exfat_chain cur;
-+	unsigned int clu;
- };
- 
- /* hint structure */
-diff --git a/fs/exfat/namei.c b/fs/exfat/namei.c
-index 54f54624d7e5..cfe11b368122 100644
---- a/fs/exfat/namei.c
-+++ b/fs/exfat/namei.c
-@@ -202,10 +202,10 @@ static int exfat_search_empty_slot(struct super_block *sb,
- 		struct exfat_hint_femp *hint_femp, struct exfat_chain *p_dir,
- 		int num_entries)
- {
--	int i, dentry, num_empty = 0;
-+	int i, dentry = 0, num_empty = 0;
- 	int dentries_per_clu;
- 	unsigned int type;
--	struct exfat_chain clu;
-+	struct exfat_chain clu = *p_dir;
- 	struct exfat_dentry *ep;
- 	struct exfat_sb_info *sbi = EXFAT_SB(sb);
- 	struct buffer_head *bh;
-@@ -218,11 +218,8 @@ static int exfat_search_empty_slot(struct super_block *sb,
- 			hint_femp->eidx = EXFAT_HINT_NONE;
- 			return dentry;
- 		}
--
--		exfat_chain_dup(&clu, &hint_femp->cur);
--	} else {
--		exfat_chain_dup(&clu, p_dir);
--		dentry = 0;
-+		clu.dir = hint_femp->clu;
-+		clu.size -= EXFAT_B_TO_CLU(dentry * DENTRY_SIZE, sbi);
- 	}
- 
- 	while (clu.dir != EXFAT_EOF_CLUSTER) {
-@@ -240,8 +237,7 @@ static int exfat_search_empty_slot(struct super_block *sb,
- 				if (hint_femp->eidx == EXFAT_HINT_NONE) {
- 					hint_femp->eidx = dentry;
- 					hint_femp->count = CNT_UNUSED_NOHIT;
--					exfat_chain_set(&hint_femp->cur,
--						clu.dir, clu.size, clu.flags);
-+					hint_femp->clu = clu.dir;
- 				}
- 
- 				if (type == TYPE_UNUSED &&
-@@ -354,7 +350,6 @@ static int exfat_find_empty_entry(struct inode *inode,
- 			 */
- 			exfat_chain_cont_cluster(sb, p_dir->dir, p_dir->size);
- 			p_dir->flags = ALLOC_FAT_CHAIN;
--			hint_femp.cur.flags = ALLOC_FAT_CHAIN;
- 		}
- 
- 		if (clu.flags == ALLOC_FAT_CHAIN)
-@@ -367,10 +362,8 @@ static int exfat_find_empty_entry(struct inode *inode,
- 			 */
- 			hint_femp.eidx = EXFAT_B_TO_DEN_IDX(p_dir->size, sbi);
- 			hint_femp.count = sbi->dentries_per_clu;
--
--			exfat_chain_set(&hint_femp.cur, clu.dir, 0, clu.flags);
-+			hint_femp.clu = clu.dir;
- 		}
--		hint_femp.cur.size++;
- 		p_dir->size++;
- 		size = EXFAT_CLU_TO_B(p_dir->size, sbi);
- 
--- 
-2.25.1
+> On Tue, Oct 13, 2020 at 02:14:37PM +0200, Mauro Carvalho Chehab wrote:
+> > Changeset 6c8adf8446a3 ("mm: add find_lock_head") renamed the
+> > index parameter, but forgot to update the kernel-doc markups
+> > accordingly.  
+> 
+> The patch is correct (thank you!), but the description here references
+> a git commit id that's only found in the -next tree and is unstable.
+> 
+> Andrew, can you fold this into the offending commit?
 
+Patch already reached upstream. So, it gained a stable reference.
+
+So, I'm changing its description to:
+
+  Author: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+  Date:   Thu Sep 10 08:38:07 2020 +0200
+
+    locking/refcount: move kernel-doc markups to the proper place
+    
+    Changeset a435b9a14356 ("locking/refcount: Provide __refcount API to obtain the old value")
+    added a set of functions starting with __ that have a new
+    parameter, adding a series of new warnings:
+    
+            $ ./scripts/kernel-doc -none include/linux/refcount.h
+            include/linux/refcount.h:169: warning: Function parameter or member 'oldp' not described in '__refcount_add_not_zero'
+            include/linux/refcount.h:208: warning: Function parameter or member 'oldp' not described in '__refcount_add'
+            include/linux/refcount.h:239: warning: Function parameter or member 'oldp' not described in '__refcount_inc_not_zero'
+            include/linux/refcount.h:261: warning: Function parameter or member 'oldp' not described in '__refcount_inc'
+            include/linux/refcount.h:291: warning: Function parameter or member 'oldp' not described in '__refcount_sub_and_test'
+            include/linux/refcount.h:327: warning: Function parameter or member 'oldp' not described in '__refcount_dec_and_test'
+            include/linux/refcount.h:347: warning: Function parameter or member 'oldp' not described in '__refcount_dec'
+    
+    The issue is that the kernel-doc markups are now misplaced,
+    as they should be added just before the functions.
+    
+    So, move the kernel-doc markups to the proper places,
+    in order to drop the warnings.
+    
+    It should be noticed that git show produces a crappy output,
+    for this patch without "--patience" flag.
+    
+    Fixes: a435b9a14356 ("locking/refcount: Provide __refcount API to obtain the old value")
+    Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+If ok for you, I should be sending it upstream on a next pull request
+for the documentation warning fix series.
+
+Regards,
+Mauro
+
+> 
+> > Fixes: 6c8adf8446a3 ("mm: add find_lock_head")
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  include/linux/pagemap.h | 8 ++++----
+> >  1 file changed, 4 insertions(+), 4 deletions(-)
+> > 
+> > diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
+> > index 7dd3523093db..932a260a29f2 100644
+> > --- a/include/linux/pagemap.h
+> > +++ b/include/linux/pagemap.h
+> > @@ -342,9 +342,9 @@ static inline struct page *find_get_page_flags(struct address_space *mapping,
+> >  /**
+> >   * find_lock_page - locate, pin and lock a pagecache page
+> >   * @mapping: the address_space to search
+> > - * @offset: the page index
+> > + * @index: the page index
+> >   *
+> > - * Looks up the page cache entry at @mapping & @offset.  If there is a
+> > + * Looks up the page cache entry at @mapping & @index.  If there is a
+> >   * page cache page, it is returned locked and with an increased
+> >   * refcount.
+> >   *
+> > @@ -361,9 +361,9 @@ static inline struct page *find_lock_page(struct address_space *mapping,
+> >  /**
+> >   * find_lock_head - Locate, pin and lock a pagecache page.
+> >   * @mapping: The address_space to search.
+> > - * @offset: The page index.
+> > + * @index: The page index.
+> >   *
+> > - * Looks up the page cache entry at @mapping & @offset.  If there is a
+> > + * Looks up the page cache entry at @mapping & @index.  If there is a
+> >   * page cache page, its head page is returned locked and with an increased
+> >   * refcount.
+> >   *
+> > -- 
+> > 2.26.2
+> >   
+
+
+
+Thanks,
+Mauro
