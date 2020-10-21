@@ -2,106 +2,266 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9DE54294D71
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:24:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBECC294D84
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:31:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441526AbgJUNYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:24:51 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50411 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409401AbgJUNYu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:24:50 -0400
-X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
-   d="scan'208";a="473688826"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 15:24:49 +0200
-Date:   Wed, 21 Oct 2020 15:24:48 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mel Gorman <mgorman@suse.de>
-cc:     Julia Lawall <julia.lawall@inria.fr>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>
-Subject: Re: [PATCH] sched/fair: check for idle core
-In-Reply-To: <20201021131827.GF32041@suse.de>
-Message-ID: <alpine.DEB.2.22.394.2010211522340.57356@hadrien>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book> <20201021124700.GE32041@suse.de> <alpine.DEB.2.22.394.2010211452100.8475@hadrien> <20201021131827.GF32041@suse.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        id S2441684AbgJUNbv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:31:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54310 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438814AbgJUNbu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:31:50 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 239A1AD12;
+        Wed, 21 Oct 2020 13:31:48 +0000 (UTC)
+Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>, axboe@kernel.dk,
+        viro@zeniv.linux.org.uk, hch@infradead.org,
+        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, rjw@rjwysocki.net,
+        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
+        johannes.thumshirn@wdc.com, ming.lei@redhat.com, jack@suse.cz,
+        tj@kernel.org, gustavo@embeddedor.com, bvanassche@acm.org,
+        osandov@fb.com, koct9i@gmail.com, damien.lemoal@wdc.com,
+        steve@sk2.org, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-mm@kvack.org
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+From:   Hannes Reinecke <hare@suse.de>
+Message-ID: <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
+Date:   Wed, 21 Oct 2020 15:31:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-389467810-1603286689=:57356"
+In-Reply-To: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
+On 10/21/20 11:04 AM, Sergei Shtepa wrote:
+> Hello everyone! Requesting for your comments and suggestions.
+> 
+> # blk-filter
+> 
+> Block layer filter allows to intercept BIO requests to a block device.
+> 
+> Interception is performed at the very beginning of the BIO request
+> processing, and therefore does not affect the operation of the request
+> processing queue. This also makes it possible to intercept requests from
+> a specific block device, rather than from the entire disk.
+> 
+> The logic of the submit_bio function has been changed - since the
+> function execution results are not processed anywhere (except for swap
+> and direct-io) the function won't return a value anymore.
+> 
+> Now the submit_bio_direct() function is called whenever the result of
+> the blk_qc_t function is required. submit_bio_direct() is not
+> intercepted by the block layer filter. This is logical for swap and
+> direct-io.
+> 
+> Block layer filter allows you to enable and disable the filter driver on
+> the fly. When a new block device is added, the filter driver can start
+> filtering this device. When you delete a device, the filter can remove
+> its own filter.
+> 
+> The idea of multiple altitudes had to be abandoned in order to simplify
+> implementation and make it more reliable. Different filter drivers can
+> work simultaneously, but each on its own block device.
+> 
+> # blk-snap
+> 
+> We propose a new kernel module - blk-snap. This module implements
+> snapshot and changed block tracking functionality. It is intended to
+> create backup copies of any block devices without usage of device mapper.
+> Snapshots are temporary and are destroyed after the backup process has
+> finished. Changed block tracking allows for incremental and differential
+> backup copies.
+> 
+> blk-snap uses block layer filter. Block layer filter provides a callback
+> to intercept bio-requests. If a block device disappears for whatever
+> reason, send a synchronous request to remove the device from filtering.
+> 
+> blk-snap kernel module is a product of a deep refactoring of the
+> out-of-tree kernel veeamsnap kernel module
+> (https://github.com/veeam/veeamsnap/):
+> * all conditional compilation branches that served for the purpose of
+>    compatibility with older kernels have been removed;
+> * linux kernel code style has been applied;
+> * blk-snap mostly takes advantage of the existing kernel code instead of
+>    reinventing the wheel;
+> * all redundant code (such as persistent cbt and snapstore collector)
+>    has been removed.
+> 
+> Several important things are still have to be done:
+> * refactor the module interface for interaction with a user-space code -
+>    it is already clear that the implementation of some calls can be
+>    improved.
+> 
+> Your feedback would be greatly appreciated!
+> 
+> Sergei Shtepa (2):
+>    Block layer filter - second version
+>    blk-snap - snapshots and change-tracking for block devices
+> 
+>   block/Kconfig                               |  11 +
+>   block/Makefile                              |   1 +
+>   block/blk-core.c                            |  52 +-
+>   block/blk-filter-internal.h                 |  29 +
+>   block/blk-filter.c                          | 286 ++++++
+>   block/partitions/core.c                     |  14 +-
+>   drivers/block/Kconfig                       |   2 +
+>   drivers/block/Makefile                      |   1 +
+>   drivers/block/blk-snap/Kconfig              |  24 +
+>   drivers/block/blk-snap/Makefile             |  28 +
+>   drivers/block/blk-snap/big_buffer.c         | 193 ++++
+>   drivers/block/blk-snap/big_buffer.h         |  24 +
+>   drivers/block/blk-snap/blk-snap-ctl.h       | 190 ++++
+>   drivers/block/blk-snap/blk_deferred.c       | 566 +++++++++++
+>   drivers/block/blk-snap/blk_deferred.h       |  67 ++
+>   drivers/block/blk-snap/blk_descr_file.c     |  82 ++
+>   drivers/block/blk-snap/blk_descr_file.h     |  26 +
+>   drivers/block/blk-snap/blk_descr_mem.c      |  66 ++
+>   drivers/block/blk-snap/blk_descr_mem.h      |  14 +
+>   drivers/block/blk-snap/blk_descr_multidev.c |  86 ++
+>   drivers/block/blk-snap/blk_descr_multidev.h |  25 +
+>   drivers/block/blk-snap/blk_descr_pool.c     | 190 ++++
+>   drivers/block/blk-snap/blk_descr_pool.h     |  38 +
+>   drivers/block/blk-snap/blk_redirect.c       | 507 ++++++++++
+>   drivers/block/blk-snap/blk_redirect.h       |  73 ++
+>   drivers/block/blk-snap/blk_util.c           |  33 +
+>   drivers/block/blk-snap/blk_util.h           |  33 +
+>   drivers/block/blk-snap/cbt_map.c            | 210 +++++
+>   drivers/block/blk-snap/cbt_map.h            |  62 ++
+>   drivers/block/blk-snap/common.h             |  31 +
+>   drivers/block/blk-snap/ctrl_fops.c          | 691 ++++++++++++++
+>   drivers/block/blk-snap/ctrl_fops.h          |  19 +
+>   drivers/block/blk-snap/ctrl_pipe.c          | 562 +++++++++++
+>   drivers/block/blk-snap/ctrl_pipe.h          |  34 +
+>   drivers/block/blk-snap/ctrl_sysfs.c         |  73 ++
+>   drivers/block/blk-snap/ctrl_sysfs.h         |   5 +
+>   drivers/block/blk-snap/defer_io.c           | 397 ++++++++
+>   drivers/block/blk-snap/defer_io.h           |  39 +
+>   drivers/block/blk-snap/main.c               |  82 ++
+>   drivers/block/blk-snap/params.c             |  58 ++
+>   drivers/block/blk-snap/params.h             |  29 +
+>   drivers/block/blk-snap/rangevector.c        |  85 ++
+>   drivers/block/blk-snap/rangevector.h        |  31 +
+>   drivers/block/blk-snap/snapimage.c          | 982 ++++++++++++++++++++
+>   drivers/block/blk-snap/snapimage.h          |  16 +
+>   drivers/block/blk-snap/snapshot.c           | 225 +++++
+>   drivers/block/blk-snap/snapshot.h           |  17 +
+>   drivers/block/blk-snap/snapstore.c          | 929 ++++++++++++++++++
+>   drivers/block/blk-snap/snapstore.h          |  68 ++
+>   drivers/block/blk-snap/snapstore_device.c   | 532 +++++++++++
+>   drivers/block/blk-snap/snapstore_device.h   |  63 ++
+>   drivers/block/blk-snap/snapstore_file.c     |  52 ++
+>   drivers/block/blk-snap/snapstore_file.h     |  15 +
+>   drivers/block/blk-snap/snapstore_mem.c      |  91 ++
+>   drivers/block/blk-snap/snapstore_mem.h      |  20 +
+>   drivers/block/blk-snap/snapstore_multidev.c | 118 +++
+>   drivers/block/blk-snap/snapstore_multidev.h |  22 +
+>   drivers/block/blk-snap/tracker.c            | 449 +++++++++
+>   drivers/block/blk-snap/tracker.h            |  38 +
+>   drivers/block/blk-snap/tracking.c           | 270 ++++++
+>   drivers/block/blk-snap/tracking.h           |  13 +
+>   drivers/block/blk-snap/version.h            |   7 +
+>   fs/block_dev.c                              |   6 +-
+>   fs/direct-io.c                              |   2 +-
+>   fs/iomap/direct-io.c                        |   2 +-
+>   include/linux/bio.h                         |   4 +-
+>   include/linux/blk-filter.h                  |  76 ++
+>   include/linux/genhd.h                       |   8 +-
+>   kernel/power/swap.c                         |   2 +-
+>   mm/page_io.c                                |   4 +-
+>   70 files changed, 9074 insertions(+), 26 deletions(-)
+>   create mode 100644 block/blk-filter-internal.h
+>   create mode 100644 block/blk-filter.c
+>   create mode 100644 drivers/block/blk-snap/Kconfig
+>   create mode 100644 drivers/block/blk-snap/Makefile
+>   create mode 100644 drivers/block/blk-snap/big_buffer.c
+>   create mode 100644 drivers/block/blk-snap/big_buffer.h
+>   create mode 100644 drivers/block/blk-snap/blk-snap-ctl.h
+>   create mode 100644 drivers/block/blk-snap/blk_deferred.c
+>   create mode 100644 drivers/block/blk-snap/blk_deferred.h
+>   create mode 100644 drivers/block/blk-snap/blk_descr_file.c
+>   create mode 100644 drivers/block/blk-snap/blk_descr_file.h
+>   create mode 100644 drivers/block/blk-snap/blk_descr_mem.c
+>   create mode 100644 drivers/block/blk-snap/blk_descr_mem.h
+>   create mode 100644 drivers/block/blk-snap/blk_descr_multidev.c
+>   create mode 100644 drivers/block/blk-snap/blk_descr_multidev.h
+>   create mode 100644 drivers/block/blk-snap/blk_descr_pool.c
+>   create mode 100644 drivers/block/blk-snap/blk_descr_pool.h
+>   create mode 100644 drivers/block/blk-snap/blk_redirect.c
+>   create mode 100644 drivers/block/blk-snap/blk_redirect.h
+>   create mode 100644 drivers/block/blk-snap/blk_util.c
+>   create mode 100644 drivers/block/blk-snap/blk_util.h
+>   create mode 100644 drivers/block/blk-snap/cbt_map.c
+>   create mode 100644 drivers/block/blk-snap/cbt_map.h
+>   create mode 100644 drivers/block/blk-snap/common.h
+>   create mode 100644 drivers/block/blk-snap/ctrl_fops.c
+>   create mode 100644 drivers/block/blk-snap/ctrl_fops.h
+>   create mode 100644 drivers/block/blk-snap/ctrl_pipe.c
+>   create mode 100644 drivers/block/blk-snap/ctrl_pipe.h
+>   create mode 100644 drivers/block/blk-snap/ctrl_sysfs.c
+>   create mode 100644 drivers/block/blk-snap/ctrl_sysfs.h
+>   create mode 100644 drivers/block/blk-snap/defer_io.c
+>   create mode 100644 drivers/block/blk-snap/defer_io.h
+>   create mode 100644 drivers/block/blk-snap/main.c
+>   create mode 100644 drivers/block/blk-snap/params.c
+>   create mode 100644 drivers/block/blk-snap/params.h
+>   create mode 100644 drivers/block/blk-snap/rangevector.c
+>   create mode 100644 drivers/block/blk-snap/rangevector.h
+>   create mode 100644 drivers/block/blk-snap/snapimage.c
+>   create mode 100644 drivers/block/blk-snap/snapimage.h
+>   create mode 100644 drivers/block/blk-snap/snapshot.c
+>   create mode 100644 drivers/block/blk-snap/snapshot.h
+>   create mode 100644 drivers/block/blk-snap/snapstore.c
+>   create mode 100644 drivers/block/blk-snap/snapstore.h
+>   create mode 100644 drivers/block/blk-snap/snapstore_device.c
+>   create mode 100644 drivers/block/blk-snap/snapstore_device.h
+>   create mode 100644 drivers/block/blk-snap/snapstore_file.c
+>   create mode 100644 drivers/block/blk-snap/snapstore_file.h
+>   create mode 100644 drivers/block/blk-snap/snapstore_mem.c
+>   create mode 100644 drivers/block/blk-snap/snapstore_mem.h
+>   create mode 100644 drivers/block/blk-snap/snapstore_multidev.c
+>   create mode 100644 drivers/block/blk-snap/snapstore_multidev.h
+>   create mode 100644 drivers/block/blk-snap/tracker.c
+>   create mode 100644 drivers/block/blk-snap/tracker.h
+>   create mode 100644 drivers/block/blk-snap/tracking.c
+>   create mode 100644 drivers/block/blk-snap/tracking.h
+>   create mode 100644 drivers/block/blk-snap/version.h
+>   create mode 100644 include/linux/blk-filter.h
+> 
+> --
+> 2.20.1
+> 
+I do understand where you are coming from, but then we already have a 
+dm-snap which does exactly what you want to achieve.
+Of course, that would require a reconfiguration of the storage stack on 
+the machine, which is not always possible (or desired).
 
---8323329-389467810-1603286689=:57356
-Content-Type: text/plain; charset=iso-8859-15
-Content-Transfer-Encoding: 8BIT
+What I _could_ imagine would be a 'dm-intercept' thingie, which 
+redirects the current submit_bio() function for any block device, and 
+re-routes that to a linear device-mapper device pointing back to the 
+original block device.
 
+That way you could attach it to basically any block device, _and_ can 
+use the existing device-mapper functionality to do fancy stuff once the 
+submit_io() callback has been re-routed.
 
+And it also would help in other scenarios, too; with such a 
+functionality we could seamlessly clone devices without having to move 
+the whole setup to device-mapper first.
 
-On Wed, 21 Oct 2020, Mel Gorman wrote:
+Cheers,
 
-> On Wed, Oct 21, 2020 at 02:56:06PM +0200, Julia Lawall wrote:
-> >
-> >
-> > On Wed, 21 Oct 2020, Mel Gorman wrote:
-> >
-> > > On Wed, Oct 21, 2020 at 02:25:32PM +0200, Vincent Guittot wrote:
-> > > > > I see Vincent already agreed with the patch so I could be wrong.  Vincent,
-> > > > > did I miss something stupid?
-> > > >
-> > > > This patch fixes the problem that we don't favor anymore the prev_cpu when it is idle since
-> > > > commit 11f10e5420f6ce because load is not null when cpu is idle whereas runnable_load was
-> > > > And this is important because this will�then decide in which LLC we will looks for a cpu
-> > > >
-> > >
-> > > Ok, that is understandable but I'm still concerned that the fix simply
-> > > trades one problem for another by leaving related tasks remote to each
-> > > other and increasing cache misses and remote data accesses.
-> > >
-> > > wake_affine_weight is a giant pain because really we don't care about the
-> > > load on the waker CPU or its available, we care about whether it has idle
-> > > siblings that can be found quickly. As tempting as ripping it out is,
-> > > it never happened because sometimes it makes the right decision.
-> >
-> > My goal was to restore the previous behavior, when runnable load was used.
-> > The patch removing the use of runnable load (11f10e5420f6) presented it
-> > basically as that load balancing was using it, so wakeup should use it
-> > too, and any way it didn't matter because idle CPUS were checked for
-> > anyway.
-> >
->
-> Which is fair.
->
-> > Is your point of view that the proposed change is overkill?  Or is it that
-> > the original behavior was not desirable?
-> >
->
-> I worry it's overkill because prev is always used if it is idle even
-> if it is on a node remote to the waker. It cuts off the option of a
-> wakee moving to a CPU local to the waker which is not equivalent to the
-> original behaviour.
-
-But it is equal to the original behavior in the idle prev case if you go
-back to the runnable load average days...
-
-The problem seems impossible to solve, because there is no way to know by
-looking only at prev and this whether the thread would prefer to stay
-where it was or go to the waker.
-
-julia
---8323329-389467810-1603286689=:57356--
+Hannes
+-- 
+Dr. Hannes Reinecke		           Kernel Storage Architect
+hare@suse.de			                  +49 911 74053 688
+SUSE Software Solutions Germany GmbH, Maxfeldstr. 5, 90409 Nürnberg
+HRB 36809 (AG Nürnberg), GF: Felix Imendörffer
