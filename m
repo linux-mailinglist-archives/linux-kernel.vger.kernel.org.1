@@ -2,117 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E49B294B90
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 12A5B294B93
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:59:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441839AbgJUK6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:58:07 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:34522 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410469AbgJUK6H (ORCPT
+        id S2441848AbgJUK66 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:58:58 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60866 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439214AbgJUK65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:58:07 -0400
-Received: by mail-wr1-f66.google.com with SMTP id i1so2633288wro.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:58:05 -0700 (PDT)
+        Wed, 21 Oct 2020 06:58:57 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61359C0613CE;
+        Wed, 21 Oct 2020 03:58:57 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z5so2690223iob.1;
+        Wed, 21 Oct 2020 03:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GICSwgN3sNFkPLzb9ZiuRIa+ZIKU5hbtJb9zZM8PdNs=;
+        b=ENzNLNVw380JSauwEXTsNIwfSS+Pfic6wIwk3mcDkx2ZI8vSJTG9T4To95nV5K++3S
+         wXrPtza7/nKOZyWO6GUYg/19vJCSiI3irHrOtUq4HfvmyEmN9+Er/0f8hl5JC3NY9rCU
+         4VXyirx16ZxcwPrFkWNc5+fdgPzJzwoqh23QZ4siuTOAmG7kAyniMqDNFkdjAyBLV9KU
+         6xUTE1fU2WS7Y2iHpg238szVhAOmVhcjtjhCua1z7pgont9fb1+CXR9apRekKvjEBXQ4
+         Mjsvsuixy9gpE8FbEhU64igpCUNBdcJC/8ogPwXvQvXYuRk8lqRCeWNgGrCpzH1AQQOC
+         Q+4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=PDU9OtKKx2cuis6ZYr3lGtMOcs2YpkAp530qhMluO7Q=;
-        b=YBkZyaot2gYd1NHgSGKKmNd1bcFdJTrVn002Cj9z9pEMXQHviAVLsdPc6sXgJ1nZuz
-         +h2/UkB1KM4Q8LzffkdcnO6AjtFIrYYozTdqILVdkRdqDUeTeXhaHJaHIzZoNRdfqYcY
-         S9edAaDbU5RcZOsi86XR4nHDlEy7l61jET1NIF74VAQHifJZmkWu2at99dzE1k7baxbi
-         WBSB1Cjr2NNHlu4I5ckIHg0xPAZMVLUfAyerguX4Zce5X6dC/o5Ayng1FeG/dKAtU40R
-         CcuYzyYxP/8+DY1VZ7MxLdOumhgEDQAzr50lEe2DgwSjV3892cu/iOppxZ/UVJrkOSIp
-         ssqA==
-X-Gm-Message-State: AOAM532VGTLqxl+vtU94d92e61ut0YFqb0udTggVQGtGiJFLLMprgGTn
-        YjPRSuXkE//VwZIB+Tmprqxor1XZeZr8FeXR0WM=
-X-Google-Smtp-Source: ABdhPJwZAOeEzOH5IRxGiajee4MGN6XXXrAjQChyGALO2OUjS+vCNOR6PqaIPiMEIdD8TYQNpTPtJIn+34Y+dAA2bH8=
-X-Received: by 2002:adf:94c6:: with SMTP id 64mr4000495wrr.8.1603277884771;
- Wed, 21 Oct 2020 03:58:04 -0700 (PDT)
+        bh=GICSwgN3sNFkPLzb9ZiuRIa+ZIKU5hbtJb9zZM8PdNs=;
+        b=rLdhoZC9O9WwK5sULKry9MxuKsBFwmj9Xvpx5eNnh0TUL52qhTWqIAmV5ktSsh8oX9
+         rTKg3aPda7RA41CbrrCPx38QuMVwRbNW1kWfTLycxfiPYLUpvr0JGq6KvpjJ3NynJiCF
+         D3tJuv5Q6fPtnZFAiss5pl7srYiW0q+jT3vrgsULvlGPPM5cZhdEJnlcaDGEl8JfA4GI
+         Q+IRS4qYqBc0fD2GVbIBxiCc6zuvRMMO0jObum7sjiHhi5edOoakqP4dg4/8JMBEmUv7
+         HnOixyI07cygGk2UPqYJDIpyzKa6bcfik13MSV+Fz1LedAsSAnGweJDLelGg4lTFy+lQ
+         hMWA==
+X-Gm-Message-State: AOAM533wbJ1uunInniEBCFniJfy+siDzOqLuS5EhnA3ojkMeUpBYVfTk
+        tM7HSmuxTz94tGpIZ9xwZboyOI73d8nBr0ZQvvY=
+X-Google-Smtp-Source: ABdhPJxVGoa8oGWf7NMjH5r135bL5msWqxriS77JIexiAMhTvnG4ddTh5FYX+VcY2vpk3tlFdrFb/MgirSrWDhsBaEo=
+X-Received: by 2002:a5d:87c7:: with SMTP id q7mr2174472ios.162.1603277936222;
+ Wed, 21 Oct 2020 03:58:56 -0700 (PDT)
 MIME-Version: 1.0
-References: <810f3a69-0004-9dff-a911-b7ff97220ae0@linux.intel.com>
- <39cf6164-f3be-ae34-292a-94faef32fdb9@linux.intel.com> <20201012160921.GD466880@tassilo.jf.intel.com>
- <8f90c785-8bdc-e7cd-a6d9-7eed0fb2c6b3@linux.intel.com> <7216a411-a635-4fcc-b10d-afe1f75509d3@linux.intel.com>
- <CAM9d7cjJzHr7BZ2LVFuG4dnk=i+LmP_TCb9J8FTO0w1w=KG1WQ@mail.gmail.com> <351d6f3a-7c2a-85d7-4b07-4b0468e6c887@linux.intel.com>
-In-Reply-To: <351d6f3a-7c2a-85d7-4b07-4b0468e6c887@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Wed, 21 Oct 2020 19:57:53 +0900
-Message-ID: <CAM9d7ciRu09bRNLbR19m2BjuM46vN6ubf7CUFELeR5-W61O3yA@mail.gmail.com>
-Subject: Re: [PATCH v1 06/15] perf session: load data directory into tool
- process memory
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Andi Kleen <ak@linux.intel.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201005121534.15649-1-david@redhat.com> <20201005121534.15649-6-david@redhat.com>
+In-Reply-To: <20201005121534.15649-6-david@redhat.com>
+From:   Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+Date:   Wed, 21 Oct 2020 12:58:45 +0200
+Message-ID: <CAM9Jb+jXR6iPvSxExaEJvm90mqRozh1wcJ6ukEmDy_pqc-37oQ@mail.gmail.com>
+Subject: Re: [PATCH v2 5/5] mm/memory_hotplug: update comment regarding zone shuffling
+To:     David Hildenbrand <david@redhat.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        linux-hyperv@vger.kernel.org, xen-devel@lists.xenproject.org,
+        linux-acpi@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Wilcox <willy@infradead.org>,
+        Wei Yang <richard.weiyang@linux.alibaba.com>,
+        Michal Hocko <mhocko@suse.com>,
+        Alexander Duyck <alexander.h.duyck@linux.intel.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Michal Hocko <mhocko@kernel.org>,
+        Dave Hansen <dave.hansen@intel.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Oscar Salvador <osalvador@suse.de>,
+        Mike Rapoport <rppt@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 7:25 PM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
+> As we no longer shuffle via generic_online_page() and when undoing
+> isolation, we can simplify the comment.
 >
+> We now effectively shuffle only once (properly) when onlining new
+> memory.
 >
-> On 21.10.2020 9:54, Namhyung Kim wrote:
-> > Hi,
-> >
-> > On Tue, Oct 13, 2020 at 8:30 PM Alexey Budankov
-> > <alexey.budankov@linux.intel.com> wrote:
-> >> On 12.10.2020 19:49, Alexey Budankov wrote:
-> >>> On 12.10.2020 19:09, Andi Kleen wrote:
-> >>>> On Mon, Oct 12, 2020 at 11:58:58AM +0300, Alexey Budankov wrote:
-> >>>>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> >>>>> index 6afc670fdf0c..0752eec19813 100644
-> >>>>> --- a/tools/perf/util/session.c
-> >>>>> +++ b/tools/perf/util/session.c
-> >>>>> @@ -2212,6 +2212,17 @@ reader__process_events(struct reader *rd, struct perf_session *session,
-> >>>>>             goto more;
-> >>>>>
-> >>>>>  out:
-> >>>>> +   if (rd->unmap_file) {
-> >>>>> +           int i;
-> >>>>> +
-> >>>>> +           for (i = 0; i < NUM_MMAPS; i++) {
-> >>>>> +                   if (mmaps[i]) {
-> >>>>> +                           munmap(mmaps[i], mmap_size);
-> >>>>> +                           mmaps[i] = NULL;
-> >>>>
-> >>>> Okay so where is the mmap? Would make more sense to put that
-> >>>> into the same patch as who adds the mmap. Or is the mmap
-> >>>> code already in the perf source? In that case it should
-> >>>> probably be some common helper with the existing users.
-> >>>
-> >>> That mmap is already in the code. Agree, this part of the patch
-> >>> can be applied prior the whole patch set.
-> >>
-> >> I take it back. Single trace file can't be unmapped yet since it also
-> >> contains not only compressed records but also other records backing
-> >> the data for aggregated analysis.
-> >
-> > Are you talking about the auxtrace?
-> >
-> > I thought everything will be compressed when it's enabled.
-> > But if it's only for the auxtrace, maybe we can unmap them
-> > with checking it as it's not the common case?
+> Reviewed-by: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: Alexander Duyck <alexander.h.duyck@linux.intel.com>
+> Cc: Mel Gorman <mgorman@techsingularity.net>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Dave Hansen <dave.hansen@intel.com>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Cc: Wei Yang <richard.weiyang@linux.alibaba.com>
+> Cc: Oscar Salvador <osalvador@suse.de>
+> Cc: Mike Rapoport <rppt@kernel.org>
+> Cc: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
+> Signed-off-by: David Hildenbrand <david@redhat.com>
+> ---
+>  mm/memory_hotplug.c | 11 ++++-------
+>  1 file changed, 4 insertions(+), 7 deletions(-)
 >
-> I am about primary trace file. Together with PERF_RECORD_COMPRESSED
-> records it contains the other records with uncompressed data (MMAP,
-> FORk, COMM etc.) so it is still unsafe to unmap the trace file after
-> loading.
+> diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+> index 03a00cb68bf7..b44d4c7ba73b 100644
+> --- a/mm/memory_hotplug.c
+> +++ b/mm/memory_hotplug.c
+> @@ -858,13 +858,10 @@ int __ref online_pages(unsigned long pfn, unsigned long nr_pages,
+>         undo_isolate_page_range(pfn, pfn + nr_pages, MIGRATE_MOVABLE);
+>
+>         /*
+> -        * When exposing larger, physically contiguous memory areas to the
+> -        * buddy, shuffling in the buddy (when freeing onlined pages, putting
+> -        * them either to the head or the tail of the freelist) is only helpful
+> -        * for maintaining the shuffle, but not for creating the initial
+> -        * shuffle. Shuffle the whole zone to make sure the just onlined pages
+> -        * are properly distributed across the whole freelist. Make sure to
+> -        * shuffle once pageblocks are no longer isolated.
+> +        * Freshly onlined pages aren't shuffled (e.g., all pages are placed to
+> +        * the tail of the freelist when undoing isolation). Shuffle the whole
+> +        * zone to make sure the just onlined pages are properly distributed
+> +        * across the whole freelist - to create an initial shuffle.
+>          */
+>         shuffle_zone(zone);
+>
 
-Oh, I think all the events coming from the kernel share the mmap
-buffer so they will be compressed with SAMPLEs.  Note that
-synthesized events have 0 timestamp which means that they
-are not queued in the ordered events and processed immediately.
-
-IIUC, here we unmap the original mmap buffer and the actual data
-in MMAP/FORK/... is kept in the decomp data buffer, no?
-
-Thanks
-Namhyung
+Acked-by: Pankaj Gupta <pankaj.gupta.linux@gmail.com>
