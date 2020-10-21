@@ -2,137 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5DF56294D58
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:16:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 239B1294D3D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:10:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442945AbgJUNQF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:16:05 -0400
-Received: from mail-vi1eur05on2059.outbound.protection.outlook.com ([40.107.21.59]:64352
-        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2442927AbgJUNQC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:16:02 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=T+5zvQR8AIZfHrJjGH/KFUJ9ki2sn+q1gXmd50esG8QXo2EYTS38wE5UuEhXQtWlqfXzetfJEunk4H/KPY/MZKBoCricJgtZIYc3/6LJvIC/ZXlKw+rU2giuIsst5cPLVIsk70K0BARwTRfwjMEXDxy34XSGdql3aWoyKNcy06uUcuIU0U0DAg3nJkSna16lAiFGlAm92NWQJXFt+02Z9cJ4ShiyqkcGWdIkvuNfgbueAuTCDuHeXRb5WIKCWOwLzmIVnYOkACEhCfddliqVNwPqVDKcf2eUlUDrjJusSfrpDu8fK1/RGLsAxz3eCKiIDJv0+qL3u4xVv2DSPjU1XA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XAmWjAC2ceW+A8L2k1i/ZBYrzgXodgnO6OQiYKr8I4A=;
- b=AApUwBG0Bdhg26tx3Zcrd5AtDSfcyjYdxh/pRBQbdcSKXqTgMxUyYud5KxWpuLLzTSn3amOrt1jJwfeUSYKaRX/rtHWLrI1cX4JobwKmwAFTSdoZXVatPqpg2U8opPINf1I2BMLhrSLGowH/RJfDJe02AZ8Z3YN8rMjsUzJLzEjSQiVXFdT/UrThH4DaoF6+VfqTVssO/xYBzPO6jBH+fIfcgjc8S7e3TIo7vEQQiFhxlce2YQqAdkjlnX6VGIW8JkqF02i+fDra0SzZh2vjPG3PUFc1Kegk3BUOzO4f+siw+2Atpjqd9kMGlXxg3PD5rgCd8letjTAwtFOoj7ri/Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=XAmWjAC2ceW+A8L2k1i/ZBYrzgXodgnO6OQiYKr8I4A=;
- b=ntlWMLKuJsRtX5iRA3XE1yqvGnDl2k+KeMoMOO/vWXxnsTibk8+wjn3Fw4cQcL5Hsre7RbwnLx0VM5XlnmrVhfk1nnPiznWzriCCQllQ8TikrFIr8fWU5FSjozErNyPQYMoiq6oADDkaxKR7xHBm7+MwmONbzu7B9dRloof0o1U=
-Authentication-Results: kernel.org; dkim=none (message not signed)
- header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
- by DB7PR04MB5995.eurprd04.prod.outlook.com (2603:10a6:10:8e::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.26; Wed, 21 Oct
- 2020 13:15:59 +0000
-Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
- ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 13:15:59 +0000
-From:   peng.fan@nxp.com
-To:     sboyd@kernel.org, shawnguo@kernel.org, s.hauer@pengutronix.de,
-        festevam@gmail.com, abel.vesa@nxp.com
-Cc:     kernel@pengutronix.de, linux-imx@nxp.com, Anson.Huang@nxp.com,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, aisheng.dong@nxp.com,
-        Peng Fan <peng.fan@nxp.com>
-Subject: [PATCH V2 5/5] clk: imx8mp: fix bus critical clk registration
-Date:   Wed, 21 Oct 2020 21:10:20 +0800
-Message-Id: <1603285820-30196-6-git-send-email-peng.fan@nxp.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603285820-30196-1-git-send-email-peng.fan@nxp.com>
-References: <1603285820-30196-1-git-send-email-peng.fan@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.66]
-X-ClientProxiedBy: SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6)
- To DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+        id S2442863AbgJUNKk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:10:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52944 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441234AbgJUNKk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:10:40 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B132C0613CE;
+        Wed, 21 Oct 2020 06:10:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=eMjOkbUQtyeR5+wl3KwNKG0mBA6u1w78Ht1qDvj8EUs=; b=XOXAe90uOp2gPvsCtG0tTg6Ao2
+        2XE+Ty8fPaU5r8eefEGKM/d/kBOGs3aUCs8LYwORcbVoW1b8Dtnl1HHo9PLGTCzQGXEBPMm3sCniL
+        muoYuTAyWDtqv2Pv5D7UYrlWZD1k2VbpR1OFJ5Y5k2lWPHbRXZeDfP5dhW/QNdF/PYdN+nSMLmSye
+        ftr45RvGKireghJ+iRVF86cYnqAxMot8bOw6e0wLmbdV/PwQTDgbSqYxFwAnhHNoB4JI1nTdVwiyl
+        oRNPumatQYa+h5FCA7LgQftkyJ1T5y7x+qK3hGFD+WKTQATkgXM2+yAaqkXz+SEqDv3vWQrDIeJyS
+        k4zHdhbw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVDsp-0008Nx-DF; Wed, 21 Oct 2020 13:10:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id B3F15304D2B;
+        Wed, 21 Oct 2020 15:10:26 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7F5E22140541A; Wed, 21 Oct 2020 15:10:26 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 15:10:26 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Julia Lawall <julia.lawall@inria.fr>
+Cc:     Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>, viresh.kumar@linaro.org,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201021131026.GY2651@hirez.programming.kicks-ass.net>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201021112038.GC32041@suse.de>
+ <alpine.DEB.2.22.394.2010211336410.8475@hadrien>
+ <20201021121950.GF2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0133.apcprd03.prod.outlook.com (2603:1096:4:c8::6) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3499.4 via Frontend Transport; Wed, 21 Oct 2020 13:15:54 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 51980df7-d314-45c3-a7df-08d875c3731d
-X-MS-TrafficTypeDiagnostic: DB7PR04MB5995:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <DB7PR04MB599501286E90DC215B6FCEF9881C0@DB7PR04MB5995.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:7691;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 2Zj3dUSGz8TQGeGVKO07HCIp7Y5G56urXmxj/+xQIaIhc+Sppbd4OfrLKe406cO94TuB4h/+MBXMlKJ5vkEPMeOaKcbFMGeJniPGAJ0UZwV3PlQG1tGPdoecXVhPPzJCjIvugsSLrh5irUCXHWV9uihqe5f49RWWNO1DVbysblVH1tmEm/r769ANyGRdR2IECWf08i78XU1c63WRyHvVcGUUaIk+3lg0ptfehdnFfH+pIVTmyPLnScDVhqIVGdhsFpPHwBZjIC3/MGjf+aDbteaWnJM2AsF9Ih/LZWgIRRoeEK78et3YdyQLSqKMumD4aKI9eKGCSAtHEtBshFZoCsEN1qo2SgaTqGfVfdbHY7pWRslFUVok/g9m8T3R5GEbnU9CwHEwYsjMSwKekiMcPpyFVna0/2e7W9PpXXWqVzs=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(376002)(396003)(346002)(136003)(39860400002)(366004)(8936002)(5660300002)(66946007)(4326008)(478600001)(316002)(8676002)(36756003)(66556008)(66476007)(52116002)(86362001)(6506007)(2906002)(2616005)(83380400001)(956004)(9686003)(6512007)(6666004)(186003)(16526019)(26005)(69590400008)(6486002)(32563001);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 8Lroq1MhGyTaHt9BsRIxBe7qv6ry3uVW3mpu+q1KHX0ovwalkNGCiwnbxoSRdAqWmpzV1otLALHQ0ctsyG2V9luEch0JMMlU+IP04U2LLwAu+m18ph15rOenVHOufVw6PfTbFxEMKkV/O7+dUVindJDK9oJhViwylR9QfYIwgVQ45eDT2CHAK32uTQ6/XYRqBKqxNhSIvPNgCwzjhaPoIU//1YIt8umhtB4K9wOteQidYE9SMciZWN4X0p0qRdasH5IPZl1Y15bdx7MvzMTeIQfZn6Z0eoyvtLC06VsoPmu5uPEZMXyC0kfoCZU9viS/5xxvddSquT05uAssg4e3cUwtV0J0uS/TtybqjGssy8bx16mWWufru7VHwBN6L/V8j0PaRGDxP2PUcSW8jCZ5aMXNpfde/SpKKwYeBk3hviWzkdMDPdkmcWCC4sYHV4zyFJ1HIqIMHurGFzZjRQSEy1aDEWUA0AV65aZa6wbGZc1jZsKMiB+33BgPjJvhMLgh+dg7AcCnAK8Kmv5zkvhsMc5HM7tnONlCMx/6tC/+o1RY5ZTek6QUOB3j+llyTAcFl1BFrfTWNE4ERGO+ponIrv1ZmqjWKqCvIzuYEDscDA9huI+ivRCU3NljY/5aTM3O2CAC76gKjbgGDXb9/Z/fFQ==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 51980df7-d314-45c3-a7df-08d875c3731d
-X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 13:15:58.9418
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: YSLSyP6Qve0nUYlIg5Jsm6CedyKB64UXGaiPX5LY+aZyQ6NlhHVhGdyL42wl88soGeNLEVO4QShfhqRAEoNqew==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5995
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021121950.GF2628@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peng Fan <peng.fan@nxp.com>
+On Wed, Oct 21, 2020 at 02:19:50PM +0200, Peter Zijlstra wrote:
+> On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
+> > Prior to 5.8, my machine was using intel_pstate and had few background
+> > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
+> > the kernel decided that intel_cpufreq would be more appropriate, which
+> > introduced kworkers every 0.004 seconds on all cores.
+> 
+> That still doesn't make any sense. Are you running the legacy on-demand
+> thing or something?
+> 
+> Rafael, Srinivas, Viresh, how come it defaults to that?
 
-noc/axi/ahb are bus clk, not peripheral clk.
-Since peripheral clk has a limitation that for peripheral clock slice,
-IP clock slices must be stopped to change the clock source.
-So we added CLK_SET_PARENT_GATE flag to avoid glitch.
+Does we want something like this?
 
-However if noc is marked as critical clk peripheral, the
-assigned clock parent operation will fail.
-
-Fix to register as composite bus critical.
-
-Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
- drivers/clk/imx/clk-imx8mp.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/x86/configs/i386_defconfig   | 3 +--
+ arch/x86/configs/x86_64_defconfig | 3 +--
+ drivers/cpufreq/Kconfig           | 7 +++++--
+ 3 files changed, 7 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/clk/imx/clk-imx8mp.c b/drivers/clk/imx/clk-imx8mp.c
-index 12ce4770f702..48e212477f52 100644
---- a/drivers/clk/imx/clk-imx8mp.c
-+++ b/drivers/clk/imx/clk-imx8mp.c
-@@ -557,9 +557,9 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	/* CORE SEL */
- 	hws[IMX8MP_CLK_A53_CORE] = imx_clk_hw_mux2("arm_a53_core", ccm_base + 0x9880, 24, 1, imx8mp_a53_core_sels, ARRAY_SIZE(imx8mp_a53_core_sels));
+diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+index 78210793d357..c343ad459737 100644
+--- a/arch/x86/configs/i386_defconfig
++++ b/arch/x86/configs/i386_defconfig
+@@ -41,8 +41,7 @@ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
+ CONFIG_ACPI_DOCK=y
+ CONFIG_ACPI_BGRT=y
+-CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+-CONFIG_CPU_FREQ_GOV_ONDEMAND=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
+ CONFIG_X86_ACPI_CPUFREQ=y
+ CONFIG_EFI_VARS=y
+ CONFIG_KPROBES=y
+diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+index 9936528e1939..23e1ea85c1ec 100644
+--- a/arch/x86/configs/x86_64_defconfig
++++ b/arch/x86/configs/x86_64_defconfig
+@@ -38,8 +38,7 @@ CONFIG_PM_DEBUG=y
+ CONFIG_PM_TRACE_RTC=y
+ CONFIG_ACPI_DOCK=y
+ CONFIG_ACPI_BGRT=y
+-CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+-CONFIG_CPU_FREQ_GOV_ONDEMAND=y
++CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
+ CONFIG_X86_ACPI_CPUFREQ=y
+ CONFIG_IA32_EMULATION=y
+ CONFIG_EFI_VARS=y
+diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+index 2c7171e0b001..8dfca6e9b836 100644
+--- a/drivers/cpufreq/Kconfig
++++ b/drivers/cpufreq/Kconfig
+@@ -37,8 +37,7 @@ config CPU_FREQ_STAT
+ choice
+ 	prompt "Default CPUFreq governor"
+ 	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
+-	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
+-	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
++	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if SMP
+ 	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
+ 	help
+ 	  This option sets which CPUFreq governor shall be loaded at
+@@ -71,6 +70,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
  
--	hws[IMX8MP_CLK_MAIN_AXI] = imx8m_clk_hw_composite_critical("main_axi", imx8mp_main_axi_sels, ccm_base + 0x8800);
-+	hws[IMX8MP_CLK_MAIN_AXI] = imx8m_clk_hw_composite_bus_critical("main_axi", imx8mp_main_axi_sels, ccm_base + 0x8800);
- 	hws[IMX8MP_CLK_ENET_AXI] = imx8m_clk_hw_composite_bus("enet_axi", imx8mp_enet_axi_sels, ccm_base + 0x8880);
--	hws[IMX8MP_CLK_NAND_USDHC_BUS] = imx8m_clk_hw_composite_critical("nand_usdhc_bus", imx8mp_nand_usdhc_sels, ccm_base + 0x8900);
-+	hws[IMX8MP_CLK_NAND_USDHC_BUS] = imx8m_clk_hw_composite_bus_critical("nand_usdhc_bus", imx8mp_nand_usdhc_sels, ccm_base + 0x8900);
- 	hws[IMX8MP_CLK_VPU_BUS] = imx8m_clk_hw_composite_bus("vpu_bus", imx8mp_vpu_bus_sels, ccm_base + 0x8980);
- 	hws[IMX8MP_CLK_MEDIA_AXI] = imx8m_clk_hw_composite_bus("media_axi", imx8mp_media_axi_sels, ccm_base + 0x8a00);
- 	hws[IMX8MP_CLK_MEDIA_APB] = imx8m_clk_hw_composite_bus("media_apb", imx8mp_media_apb_sels, ccm_base + 0x8a80);
-@@ -567,12 +567,12 @@ static int imx8mp_clocks_probe(struct platform_device *pdev)
- 	hws[IMX8MP_CLK_HDMI_AXI] = imx8m_clk_hw_composite_bus("hdmi_axi", imx8mp_media_axi_sels, ccm_base + 0x8b80);
- 	hws[IMX8MP_CLK_GPU_AXI] = imx8m_clk_hw_composite_bus("gpu_axi", imx8mp_gpu_axi_sels, ccm_base + 0x8c00);
- 	hws[IMX8MP_CLK_GPU_AHB] = imx8m_clk_hw_composite_bus("gpu_ahb", imx8mp_gpu_ahb_sels, ccm_base + 0x8c80);
--	hws[IMX8MP_CLK_NOC] = imx8m_clk_hw_composite_critical("noc", imx8mp_noc_sels, ccm_base + 0x8d00);
--	hws[IMX8MP_CLK_NOC_IO] = imx8m_clk_hw_composite_critical("noc_io", imx8mp_noc_io_sels, ccm_base + 0x8d80);
-+	hws[IMX8MP_CLK_NOC] = imx8m_clk_hw_composite_bus_critical("noc", imx8mp_noc_sels, ccm_base + 0x8d00);
-+	hws[IMX8MP_CLK_NOC_IO] = imx8m_clk_hw_composite_bus_critical("noc_io", imx8mp_noc_io_sels, ccm_base + 0x8d80);
- 	hws[IMX8MP_CLK_ML_AXI] = imx8m_clk_hw_composite_bus("ml_axi", imx8mp_ml_axi_sels, ccm_base + 0x8e00);
- 	hws[IMX8MP_CLK_ML_AHB] = imx8m_clk_hw_composite_bus("ml_ahb", imx8mp_ml_ahb_sels, ccm_base + 0x8e80);
+ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+ 	bool "ondemand"
++	depends on !SMP
+ 	select CPU_FREQ_GOV_ONDEMAND
+ 	select CPU_FREQ_GOV_PERFORMANCE
+ 	help
+@@ -83,6 +83,7 @@ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
  
--	hws[IMX8MP_CLK_AHB] = imx8m_clk_hw_composite_critical("ahb_root", imx8mp_ahb_sels, ccm_base + 0x9000);
-+	hws[IMX8MP_CLK_AHB] = imx8m_clk_hw_composite_bus_critical("ahb_root", imx8mp_ahb_sels, ccm_base + 0x9000);
- 	hws[IMX8MP_CLK_AUDIO_AHB] = imx8m_clk_hw_composite_bus("audio_ahb", imx8mp_audio_ahb_sels, ccm_base + 0x9100);
- 	hws[IMX8MP_CLK_MIPI_DSI_ESC_RX] = imx8m_clk_hw_composite_bus("mipi_dsi_esc_rx", imx8mp_mipi_dsi_esc_rx_sels, ccm_base + 0x9200);
+ config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
+ 	bool "conservative"
++	depends on !SMP
+ 	select CPU_FREQ_GOV_CONSERVATIVE
+ 	select CPU_FREQ_GOV_PERFORMANCE
+ 	help
+@@ -144,6 +145,7 @@ config CPU_FREQ_GOV_USERSPACE
  
--- 
-2.28.0
-
+ config CPU_FREQ_GOV_ONDEMAND
+ 	tristate "'ondemand' cpufreq policy governor"
++	depends on !SMP
+ 	select CPU_FREQ_GOV_COMMON
+ 	help
+ 	  'ondemand' - This driver adds a dynamic cpufreq policy governor.
+@@ -163,6 +165,7 @@ config CPU_FREQ_GOV_ONDEMAND
+ config CPU_FREQ_GOV_CONSERVATIVE
+ 	tristate "'conservative' cpufreq governor"
+ 	depends on CPU_FREQ
++	depends on !SMP
+ 	select CPU_FREQ_GOV_COMMON
+ 	help
+ 	  'conservative' - this driver is rather similar to the 'ondemand'
