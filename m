@@ -2,161 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8C26294C44
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B988F294C47
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:12:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440039AbgJUMMB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:12:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57192 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2411318AbgJUMMA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:12:00 -0400
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 10031223C6;
-        Wed, 21 Oct 2020 12:11:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603282319;
-        bh=QsMYkMa6PBVVYYZ7BTm9Ize/SeOd8e2vqy0LlM9MFOQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=cuU/fpuIroFdhhVAc7BKKuZeFmsO9VcqwQRKV60RYWHQaz0Sf4sr1L4MIXaZDnmZR
-         L+WBd++xvTvAtSFrmgPo3CLWxUrrufM1n03l+pI9Bnt9TH7IcjlNlYIQnUNSLg7S5n
-         kCCIwzQ0RAo6dFEx/7rYS1Vegyn7712A7XZvqkmI=
-Received: by mail-qk1-f178.google.com with SMTP id z6so2078991qkz.4;
-        Wed, 21 Oct 2020 05:11:59 -0700 (PDT)
-X-Gm-Message-State: AOAM530Sk/Zu2/Kmy/Yvjghi32Yn/Ewmr9t4ux99dgwvpfhqvZ21gbC2
-        GTJTv0u9i6BLDpzAlD6SEJ4gdFSX71Y8QYvJ5MI=
-X-Google-Smtp-Source: ABdhPJzuJ99P/Tgb6oBO1lZhiTXqGsC7ijBifM7xSa9Zqm87Br7mScbgBLmXTiOZUtDsedSZPfFOS3X0xvSz2ceCStI=
-X-Received: by 2002:a05:620a:215d:: with SMTP id m29mr2890521qkm.138.1603282317961;
- Wed, 21 Oct 2020 05:11:57 -0700 (PDT)
+        id S2442219AbgJUMMJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:12:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43886 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411318AbgJUMME (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:12:04 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15D87C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:12:04 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id d23so1117331pll.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:12:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=android.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=v3SI87Cjm2G5EpAaLb2jmxm1cSl4yPQOy4ANEWsTrbY=;
+        b=M4V61LUvbhMf9TxB7ZsMhAojSWcURHYOodt0VpLbFBCduE60mpTmsMn/HlJ4WbpTl8
+         eSzlEF+AUO14IRzNqIDrBsFRw97RKYf4cT8kP9CvImJHTX1WRY6IbCrNs5eEnUyK1QVu
+         nUxog3s9hiYCn/G1Z98v5NFH+WmDYCKIzlPp/vxaw9IR2U6MH3ydoThdBHZaOezABRMp
+         zxdIiNT8orSHd08/WdKbq3w2SUKuuayx9pGAV0ZrUCS62yGPc0qQYe8S9TdH5tWotrhn
+         intkCn1WB+g5+J9DOiQgCFvKjvegxlWpZxZ/TUb5hdRzC76NBXEPR25vUZHBeNF1aspc
+         AB0Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=v3SI87Cjm2G5EpAaLb2jmxm1cSl4yPQOy4ANEWsTrbY=;
+        b=K8Q8AxxzEX3aP5QNAF3MdSrfx4L+40kCZNbvkQeGzgycmEb6hPJ7c3Gc0dfKnOuk+A
+         BwA9jftqiB///5gdcEZ4bEKfiuzGA2N8RdHzA7i/X1vBo/LNPtRyILQMntWDVxCSxbl6
+         PtFL9a35pRxJCPIpBZo7lW2OWsTN4GKnUqkGZ950gWv7y69wjScwA3UiIeI17O3q1wy3
+         iCLzYm+lX0y3odaHw3Aet5zImb+6D6UbkSmYAFUVYxIZk6POByDFRmS4jw0/monSS+dG
+         CaVda0pmWsrp/MxTtVeG/SKpRSVPfWb/LvwiQM/KdqBSfDThb6BR/7AU/jJ64KwhHhCr
+         PM6w==
+X-Gm-Message-State: AOAM530kjNV+x9jNoKZ52QKqYlxnLRNCJ4GTPgNHwfSkEXKFZWPp4Q2l
+        7xoloYJ9WU3Ryam50GidIETWeA==
+X-Google-Smtp-Source: ABdhPJy89qDGbo2SbnJkqRTkpw+pYVVTnm/219KVxZgvjBtHEiGcERLGsE/GVeX3gTFCnhUwnOaJYg==
+X-Received: by 2002:a17:90a:c28a:: with SMTP id f10mr3138379pjt.30.1603282323585;
+        Wed, 21 Oct 2020 05:12:03 -0700 (PDT)
+Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
+        by smtp.googlemail.com with ESMTPSA id o134sm2213198pfg.134.2020.10.21.05.12.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 05:12:02 -0700 (PDT)
+Subject: Re: [PATCH v17 2/4] overlayfs: handle XATTR_NOSECURITY flag for get
+ xattr method
+To:     linux-kernel@vger.kernel.org
+Cc:     kernel-team@android.com, Stephen Smalley <sds@tycho.nsa.gov>,
+        linux-security-module@vger.kernel.org,
+        Miklos Szeredi <miklos@szeredi.hu>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Vivek Goyal <vgoyal@redhat.com>,
+        "Eric W . Biederman" <ebiederm@xmission.com>,
+        Amir Goldstein <amir73il@gmail.com>, linux-doc@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20201020191732.4049987-1-salyzyn@android.com>
+ <20201020191732.4049987-3-salyzyn@android.com>
+From:   Mark Salyzyn <salyzyn@android.com>
+Message-ID: <b4372a9a-a0df-fd9c-a2b8-a004e73cce01@android.com>
+Date:   Wed, 21 Oct 2020 05:12:01 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
- <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
- <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
- <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
- <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org> <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
-In-Reply-To: <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Oct 2020 14:11:41 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
-Message-ID: <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
-Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201020191732.4049987-3-salyzyn@android.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(replying to my own mail from a different address to deal with the
-regular one being blacklisted somewhere, sorry for any duplicates)
+On 10/20/20 12:17 PM, Mark Salyzyn wrote:
+> Because of the overlayfs getxattr recursion, the incoming inode fails
+> to update the selinux sid resulting in avc denials being reported
+> against a target context of u:object_r:unlabeled:s0.
+>
+> Solution is to respond to the XATTR_NOSECURITY flag in get xattr
+> method that calls the __vfs_getxattr handler instead so that the
+> context can be read in, rather than being denied with an -EACCES
+> when vfs_getxattr handler is called.
+>
+> For the use case where access is to be blocked by the security layer.
+>
+> The path then would be security(dentry) ->
+> __vfs_getxattr({dentry...XATTR_NOSECURITY}) ->
+> handler->get({dentry...XATTR_NOSECURITY}) ->
+> __vfs_getxattr({realdentry...XATTR_NOSECURITY}) ->
+> lower_handler->get({realdentry...XATTR_NOSECURITY}) which
+> would report back through the chain data and success as expected,
+> the logging security layer at the top would have the data to
+> determine the access permissions and report back to the logs and
+> the caller that the target context was blocked.
+>
+> For selinux this would solve the cosmetic issue of the selinux log
+> and allow audit2allow to correctly report the rule needed to address
+> the access problem.
+>
+> Check impure, opaque, origin & meta xattr with no sepolicy audit
+> (using __vfs_getxattr) since these operations are internal to
+> overlayfs operations and do not disclose any data.  This became
+> an issue for credential override off since sys_admin would have
+> been required by the caller; whereas would have been inherently
+> present for the creator since it performed the mount.
+>
+> This is a change in operations since we do not check in the new
+> ovl_do_getxattr function if the credential override is off or not.
+> Reasoning is that the sepolicy check is unnecessary overhead,
+> especially since the check can be expensive.
+>
+> Because for override credentials off, this affects _everyone_ that
+> underneath performs private xattr calls without the appropriate
+> sepolicy permissions and sys_admin capability.  Providing blanket
+> support for sys_admin would be bad for all possible callers.
+>
+> For the override credentials on, this will affect only the mounter,
+> should it lack sepolicy permissions. Not considered a security
+> problem since mounting by definition has sys_admin capabilities,
+> but sepolicy contexts would still need to be crafted.
+>
+> It should be noted that there is precedence, __vfs_getxattr is used
+> in other filesystems for their own internal trusted xattr management.
+>
+> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
+> To: linux-fsdevel@vger.kernel.org
+> To: linux-unionfs@vger.kernel.org
+> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+> Cc: linux-kernel@vger.kernel.org
+> Cc: linux-security-module@vger.kernel.org
+> Cc: kernel-team@android.com
+> Cc: Miklos Szeredi <miklos@szeredi.hu>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> Cc: Vivek Goyal <vgoyal@redhat.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Amir Goldstein <amir73il@gmail.com>
+> Cc: Stephen Smalley <sds@tycho.nsa.gov>
+> Cc: linux-doc@vger.kernel.org
+>
+> v17 - rebase and add inode argument to __Vfs_getxattr
+>
+> v16 - rebase and merge internal getxattr operations patch
+>
+> v15 - revert to v13 because xattr_gs_args rejected.
+>
+> v14 - rebase to use xattr_gs_args.
+>
+> v13 - rebase to use __vfs_getxattr flags option.
+>
+> v12 - Added back to patch series as get xattr with flag option.
+>
+> v11 - Squashed out of patch series and replaced with per-thread flag
+>        solution.
+>
+> v10 - Added to patch series as __get xattr method.
+> ---
+>   fs/overlayfs/inode.c     | 5 +++--
+>   fs/overlayfs/overlayfs.h | 6 ++++--
+>   fs/overlayfs/super.c     | 4 ++--
+>   3 files changed, 9 insertions(+), 6 deletions(-)
+>
+> diff --git a/fs/overlayfs/inode.c b/fs/overlayfs/inode.c
+> index b584dca845ba..2b14291beb86 100644
+> --- a/fs/overlayfs/inode.c
+> +++ b/fs/overlayfs/inode.c
+> @@ -378,7 +378,7 @@ int ovl_xattr_set(struct dentry *dentry, struct inode *inode, const char *name,
+>   }
+>   
+>   int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+> -		  void *value, size_t size)
+> +		  void *value, size_t size, int flags)
+>   {
+>   	ssize_t res;
+>   	const struct cred *old_cred;
+> @@ -386,7 +386,8 @@ int ovl_xattr_get(struct dentry *dentry, struct inode *inode, const char *name,
+>   		ovl_i_dentry_upper(inode) ?: ovl_dentry_lower(dentry);
+>   
+>   	old_cred = ovl_override_creds(dentry->d_sb);
+> -	res = vfs_getxattr(realdentry, name, value, size);
+> +	res = __vfs_getxattr(realdentry, d_inode(realdentry), name,
+> +			     value, size, flags);
+>   	revert_creds(old_cred);
+>   	return res;
+>   }
+> diff --git a/fs/overlayfs/overlayfs.h b/fs/overlayfs/overlayfs.h
+> index f8880aa2ba0e..d3bf21bd60ab 100644
+> --- a/fs/overlayfs/overlayfs.h
+> +++ b/fs/overlayfs/overlayfs.h
+> @@ -184,7 +184,9 @@ static inline ssize_t ovl_do_getxattr(struct ovl_fs *ofs, struct dentry *dentry,
+>   				      size_t size)
+>   {
+>   	const char *name = ovl_xattr(ofs, ox);
+> -	return vfs_getxattr(dentry, name, value, size);
+> +	struct ovl_inode *ip = d_inode(dentry);
 
-On Wed, Oct 21, 2020 at 9:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
->
-> On Wed, Oct 21, 2020 at 12:10 AM Benjamin Herrenschmidt
-> <benh@kernel.crashing.org> wrote:
-> > On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
-> > > On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung <dylan_hung@aspeedtech.com> wrote:
-> > > > > +1 @first is system memory from dma_alloc_coherent(), right?
-> > > > >
-> > > > > You shouldn't have to do this. Is coherent DMA memory broken on your
-> > > > > platform?
-> > > >
-> > > > It is about the arbitration on the DRAM controller.  There are two queues in the dram controller, one is for the CPU access and the other is for the HW engines.
-> > > > When CPU issues a store command, the dram controller just acknowledges cpu's request and pushes the request into the queue.  Then CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA memory.
-> > > > But since the cpu's request may still stay in the queue, the HW engine may fetch the wrong data.
-> >
-> > Actually, I take back what I said earlier, the above seems to imply
-> > this is more generic.
-> >
-> > Dylan, please confirm, does this affect *all* DMA capable devices ? If
-> > yes, then it's a really really bad design bug in your chips
-> > unfortunately and the proper fix is indeed to make dma_wmb() do a dummy
-> > read of some sort (what address though ? would any dummy non-cachable
-> > page do ?) to force the data out as *all* drivers will potentially be
-> > affected.
-> >
-> > I was under the impression that it was a specific timing issue in the
-> > vhub and ethernet parts, but if it's more generic then it needs to be
-> > fixed globally.
->
-> We have CONFIG_ARM_HEAVY_MB for SoCs with similar problems,
-> it turns mb() and wmb() into a platform specific function call, though it
-> doesn't do that for dma_wmb() and smp_wmb(), which should not
-> be affected if the problem is only missing serialization between DMA
-> and CPU writes.
->
-> > > If either of the two is the case, then the READ_ONCE() would just
-> > > introduce a long delay before the iowrite32() that makes it more likely
-> > > that the data is there, but the inconsistent state would still be observable
-> > > by the device if it is still working on previous frames.
-> >
-> > I think it just get stuck until we try another packet, ie, it doesn't
-> > see the new descriptor valid bit. But Dylan can elaborate.
->
-> Ok, that would point to an insufficient barrier in iowrite32() as well,
-> not in dma_wmb().
->
-> At the moment, the only chips that need the heavy barrier are
-> omap4 and mstar_v7, and early l2 cache controllers (not the one
-> on Cortex-A7) have another synchronization callback that IIRC
-> is used for streaming mappings.
->
-> These are the two implementations of soc_mb() we have:
->
-> /*
->  * This may need locking to deal with situations where an interrupt
->  * happens while we are in here and mb() gets called by the interrupt handler.
->  *
->  * The vendor code did have a spin lock but it doesn't seem to be needed and
->  * removing it hasn't caused any side effects so far.
-> *
->  * [writel|readl]_relaxed have to be used here because otherwise
->  * we'd end up right back in here.
->  */
-> static void mstarv7_mb(void)
-> {
->        /* toggle the flush miu pipe fire bit */
->        writel_relaxed(0, l3bridge + MSTARV7_L3BRIDGE_FLUSH);
->        writel_relaxed(MSTARV7_L3BRIDGE_FLUSH_TRIGGER, l3bridge
->                        + MSTARV7_L3BRIDGE_FLUSH);
->        while (!(readl_relaxed(l3bridge + MSTARV7_L3BRIDGE_STATUS)
->                        & MSTARV7_L3BRIDGE_STATUS_DONE)) {
->                /* wait for flush to complete */
->        }
-> }
-> /*
->  * OMAP4 interconnect barrier which is called for each mb() and wmb().
->  * This is to ensure that normal paths to DRAM (normal memory, cacheable
->  * accesses) are properly synchronised with writes to DMA coherent memory
->  * (normal memory, uncacheable) and device writes.
->  *
->  * The mb() and wmb() barriers only operate only on the MPU->MA->EMIF
->  * path, as we need to ensure that data is visible to other system
->  * masters prior to writes to those system masters being seen.
->  *
->  * Note: the SRAM path is not synchronised via mb() and wmb().
->  */
-> static void omap4_mb(void)
-> {
->        if (dram_sync)
->                writel_relaxed(0, dram_sync);
-> }
->
-> Obviously, adding one of these for ast2600 would slow down every
-> mb() and writel() a lot, but if it is a chip-wide problem rather than
-> one isolated to the network device, it would be the correct solution,
-> provided that a correct code sequence can be found.
->
->       Arnd
+      struct inode *ip = d_inode(dentry);
+
+<oops> copy and paste error from testing kernel to main
+
+
