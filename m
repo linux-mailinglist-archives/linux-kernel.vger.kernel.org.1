@@ -2,135 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BCA294FF6
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:27:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C887A294FF8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:28:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502499AbgJUP1Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:27:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45984 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502362AbgJUP1Y (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:27:24 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3ED46C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:27:24 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j7so1676082pgk.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:27:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=L0DyEDqEHeJR1moGuOVmLacKQmOwrn/cXuF3+kACtMg=;
-        b=m0wGNSiwupmw9UwVvZ+0B+ayFCqGEyq1r4XCx9hzNoBOf+6ZIMl9GdfVITZtXe5+FY
-         brYY2u6xK6d5fc7Psk/dfJoYwKEzi1z8SWg1qWeyHViOjti9AE7BZFQP89fGYJvRaSJ+
-         rZCiiBe9mqWn4RXOvZ1bjOs41GDTNTYM+nPFPlxflXdXnVxRoU6BVUUUGumhj1CrGVR7
-         lKDk3BSaqMCaUJNkpp9UH72R7LAqIMrCibR+UNgx79qjsj5iiaIHc/bEBDvVxbQJokMl
-         8JsiWAFI4PTl5HBzL07EJi2FnqBL/dGyKKYjBcBgtedEp8MrH8CbM729AzTHk/f0U7Ct
-         UuGg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=L0DyEDqEHeJR1moGuOVmLacKQmOwrn/cXuF3+kACtMg=;
-        b=nThrFIZVO8ZhnDMrDembN1bVIRfKRr+geGQtUNaZ5nRg1UVUZulmY0Y2Or53pQUpyE
-         pMcEpj60Laqvz9DJi7OL3xVdCN3CrtQwqo960Urcgf7ghw1BIboMGN4sQ/6E+q+ExB98
-         YtpB/uD6X7qqN99rEjYIEtGA17jdoZSwyJsDm4VrmKhOlzUcxkPGFhwyj6rUz1W8QDRB
-         4AuGMFAvqS1d2Nkhg0WIFCY+sO4TKLDVfQXShXo7Hn6llk3GxyfMvwQMcZelOIANdBeZ
-         EyIEUSfLZIhgI5cyjP/c1LfOFKaNfHUvbsTaqt9PmZ26kToxyVB9CeRYmr9TnEyUbNeX
-         PH1g==
-X-Gm-Message-State: AOAM5300bRu9bJaV8HH/7CMPXfASsxm+C6eA7arQxeR9EEeZz1R/6Exf
-        uCuxKkg8N7aZ9dewcFpWXZhM
-X-Google-Smtp-Source: ABdhPJwsQnmOXwRt8AFibJECYq7E1vSXfA76igMIGe3bl5LxN3HOlUN3z5+vhpEa7F/zNDoO5fC9eg==
-X-Received: by 2002:a62:7a0a:0:b029:152:192d:9231 with SMTP id v10-20020a627a0a0000b0290152192d9231mr4087432pfc.61.1603294043706;
-        Wed, 21 Oct 2020 08:27:23 -0700 (PDT)
-Received: from Mani-XPS-13-9360 ([2409:4072:70e:2a27:314a:6d22:ec47:a603])
-        by smtp.gmail.com with ESMTPSA id v24sm1092088pgi.91.2020.10.21.08.27.17
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Oct 2020 08:27:22 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 20:57:14 +0530
-From:   Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To:     Hemant Kumar <hemantk@codeaurora.org>
-Cc:     gregkh@linuxfoundation.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, jhugo@codeaurora.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org
-Subject: Re: [PATCH v7 1/4] bus: mhi: core: Add helper API to return number
- of free TREs
-Message-ID: <20201021152714.GD3334@Mani-XPS-13-9360>
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
+        id S2502510AbgJUP2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:28:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46614 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502503AbgJUP2A (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:28:00 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A87F12225F;
+        Wed, 21 Oct 2020 15:27:59 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 11:27:57 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>,
+        linux-kernel@vger.kernel.org, mingo@redhat.com,
+        syzkaller-bugs@googlegroups.com
+Subject: Re: BUG: using __this_cpu_read() in preemptible code in
+ trace_hardirqs_on
+Message-ID: <20201021112757.0945a922@gandalf.local.home>
+In-Reply-To: <20201021151237.GK2628@hirez.programming.kicks-ass.net>
+References: <000000000000e921b305b18ba0a7@google.com>
+        <20201013091743.12c371a8@gandalf.local.home>
+        <20201021131733.GH2628@hirez.programming.kicks-ass.net>
+        <20201021103433.38fed220@gandalf.local.home>
+        <20201021151237.GK2628@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1602907457-13680-2-git-send-email-hemantk@codeaurora.org>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 09:04:14PM -0700, Hemant Kumar wrote:
-> Introduce mhi_get_free_desc_count() API to return number
-> of TREs available to queue buffer. MHI clients can use this
-> API to know before hand if ring is full without calling queue
-> API.
-> 
-> Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
-> Reviewed-by: Jeffrey Hugo <jhugo@codeaurora.org>
+On Wed, 21 Oct 2020 17:12:37 +0200
+Peter Zijlstra <peterz@infradead.org> wrote:
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-
-Thanks,
-Mani
-
-> ---
->  drivers/bus/mhi/core/main.c | 12 ++++++++++++
->  include/linux/mhi.h         |  9 +++++++++
->  2 files changed, 21 insertions(+)
+> > > diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+> > > index 3e99dfef8408..9f818145ef7d 100644
+> > > --- a/kernel/locking/lockdep.c
+> > > +++ b/kernel/locking/lockdep.c
+> > > @@ -4057,9 +4057,6 @@ void lockdep_hardirqs_on_prepare(unsigned long ip)
+> > >  	if (unlikely(in_nmi()))
+> > >  		return;
+> > >  
+> > > -	if (unlikely(__this_cpu_read(lockdep_recursion)))
+> > > -		return;
+> > > -
+> > >  	if (unlikely(lockdep_hardirqs_enabled())) {  
+> > 
+> > Hmm, would moving the recursion check below the check of the
+> > lockdep_hardirqs_enable() cause a large skew in the spurious enable stats?
+> > May not be an issue, but something we should check to make sure that
+> > there's not a path that constantly hits this.  
 > 
-> diff --git a/drivers/bus/mhi/core/main.c b/drivers/bus/mhi/core/main.c
-> index 2cff5dd..3950792 100644
-> --- a/drivers/bus/mhi/core/main.c
-> +++ b/drivers/bus/mhi/core/main.c
-> @@ -258,6 +258,18 @@ int mhi_destroy_device(struct device *dev, void *data)
->  	return 0;
->  }
->  
-> +int mhi_get_free_desc_count(struct mhi_device *mhi_dev,
-> +				enum dma_data_direction dir)
-> +{
-> +	struct mhi_controller *mhi_cntrl = mhi_dev->mhi_cntrl;
-> +	struct mhi_chan *mhi_chan = (dir == DMA_TO_DEVICE) ?
-> +		mhi_dev->ul_chan : mhi_dev->dl_chan;
-> +	struct mhi_ring *tre_ring = &mhi_chan->tre_ring;
-> +
-> +	return get_nr_avail_ring_elements(mhi_cntrl, tre_ring);
-> +}
-> +EXPORT_SYMBOL_GPL(mhi_get_free_desc_count);
-> +
->  void mhi_notify(struct mhi_device *mhi_dev, enum mhi_callback cb_reason)
->  {
->  	struct mhi_driver *mhi_drv;
-> diff --git a/include/linux/mhi.h b/include/linux/mhi.h
-> index d4841e5..7829b1d 100644
-> --- a/include/linux/mhi.h
-> +++ b/include/linux/mhi.h
-> @@ -597,6 +597,15 @@ void mhi_set_mhi_state(struct mhi_controller *mhi_cntrl,
->  void mhi_notify(struct mhi_device *mhi_dev, enum mhi_callback cb_reason);
->  
->  /**
-> + * mhi_get_free_desc_count - Get transfer ring length
-> + * Get # of TD available to queue buffers
-> + * @mhi_dev: Device associated with the channels
-> + * @dir: Direction of the channel
-> + */
-> +int mhi_get_free_desc_count(struct mhi_device *mhi_dev,
-> +				enum dma_data_direction dir);
-> +
-> +/**
->   * mhi_prepare_for_power_up - Do pre-initialization before power up.
->   *                            This is optional, call this before power up if
->   *                            the controller does not want bus framework to
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
+> Anything that sets recursion will have interrupts disabled.
+
+It may have interrupts disabled, but does it have the hardirqs_enabled
+per_cpu variable set? The above check only looks at that, and doesn't check
+if interrupts are actually enabled.
+
+For example, if lockdep is processing a mutex, it would set the recursion
+variable, but does it ever set the hardirqs_enabled variable to off?
+
+-- Steve
