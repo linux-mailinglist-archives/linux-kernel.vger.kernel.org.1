@@ -2,162 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 316D5294BC9
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:29:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4737D294BCA
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 13:29:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441999AbgJUL26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 07:28:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37246 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2439472AbgJUL25 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 07:28:57 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8B6F1C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:28:57 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id l2so2716035lfk.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 04:28:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=knV9gjJnChMkbAAiapGos/nisqISwxGUwQ5ICUY9SUg=;
-        b=oMwjGu5d2QaBow29jk3uxXPBSRt8XIJ8K6FbgrAPZwob9UZo3Mpw0ulnFdejS93Gg8
-         cCd4dH3Mc6Z6EN+d8nXFPrQEptH2oGjL5KkqoMJRpsxsg6ljjPb8xFzLkGEGGbxFO+LY
-         dNXHTbYRQbZ8MndYi/CHz9l080sCjAf2OUsdXlXSbAH346wOhwGVGpEsd+OnHjw4fApn
-         jB5XYQKrxC31hBKBxiwTv4qMUOYTbOnPJm98bSiZP5nzXOaMLYjencOygWm/CKAB0pya
-         HF1jS/vqyWpbykdrfebjbUDh+4A9a337H237d8KTggS55sQgYhv6vC07RYS4WSZWBXg2
-         8YWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=knV9gjJnChMkbAAiapGos/nisqISwxGUwQ5ICUY9SUg=;
-        b=VY7E9hWzcC76Fg9xuhHBGiGyI1AqoaOTOX1GrH7i3FYZQobi8ZM7n2YbhiDqeXl1Wu
-         PXQQZjxhblVntIQjs2NkrJ9jRf9Z+bIQbXW1aEVVQufnKB/49kEJWALn6jqgfNOGK6U6
-         nq93TOiWBw08cu5qSnSiQSXhI0RmEg+cygE7xae0LY3DrV8TA9Ew6jkSa35wgpYhQ6Bm
-         /TXOT2mWV4ojPcZU4O+Uj+Wl4jBv5y4vukoBi8wWcWT8xCkNVyZuRvPZgUsxAoaDy8h3
-         FlIdZpydsR/Bgv+6wHTtQ2gw/BzCAFBgrL0I6rNYuIIeEjnvEWjf6cZyGJel6pqFy7Mu
-         mgAg==
-X-Gm-Message-State: AOAM530rlcTRF5QB91qCgD5u+3sQCC1dqjNcJ9K0oPAzaw/yxf77JfT4
-        Da/maW5/Ju1PkOz3hMyMwpzUUfbg9OU216TAG+50JA==
-X-Google-Smtp-Source: ABdhPJyuJ7hRS8+AqAbMw+ZkSx/THvGKLhyC9h+4LUxQMRvKxEKbRpYz9J3KZlQPEqYZpRLlvhNRtoVRvH+ZUeLc0CU=
-X-Received: by 2002:a19:5cb:: with SMTP id 194mr977000lff.205.1603279735968;
- Wed, 21 Oct 2020 04:28:55 -0700 (PDT)
+        id S2442009AbgJUL3E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 07:29:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42246 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442001AbgJUL3D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 07:29:03 -0400
+Received: from quaco.ghostprotocols.net (unknown [179.97.37.151])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7A7E121D43;
+        Wed, 21 Oct 2020 11:29:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603279742;
+        bh=mb6gxbYo4kXZH1EqgEcFGVGcbOdWMouSl83SoB7CbN8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=ouxnjBqFjS90eFacvshDol1iQ1mKPcm8mdUGtt6o6xjXnrAcxak7KD06xczu2vION
+         vKExABZsGdPkIqmLOJLOvkUuSAfhmn0JpL28txIpFix3TUO5QtoAkQu1eFUciRO90t
+         +VY19LKbI2pBbJFrC2a7dt8cbbeHg8oiQotKSaLo=
+Received: by quaco.ghostprotocols.net (Postfix, from userid 1000)
+        id 6F434403C2; Wed, 21 Oct 2020 08:29:00 -0300 (-03)
+Date:   Wed, 21 Oct 2020 08:29:00 -0300
+From:   Arnaldo Carvalho de Melo <acme@kernel.org>
+To:     Jiri Slaby <jirislaby@kernel.org>
+Cc:     =?iso-8859-1?Q?=C9rico?= Rolim <erico.erc@gmail.com>,
+        dwarves@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@redhat.com>,
+        Hao Luo <haoluo@google.com>, Andrii Nakryiko <andriin@fb.com>
+Subject: Re: Segfault in pahole 1.18 when building kernel 5.9.1 for arm64
+Message-ID: <20201021112900.GN2342001@kernel.org>
+References: <CAFDeuWM7D-Upi84-JovKa3g8Y_4fjv65jND3--e9u-tER3WmVA@mail.gmail.com>
+ <82b757bb-1f49-ab02-2f4b-89577d56fec9@kernel.org>
+ <20201020122015.GH2294271@kernel.org>
+ <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
 MIME-Version: 1.0
-References: <1602673931-28782-1-git-send-email-sumit.garg@linaro.org>
- <1602673931-28782-6-git-send-email-sumit.garg@linaro.org> <d4a4a37b93f34da79b87519181bffb97@kernel.org>
- <CAFA6WYMe02J6Laa0PWDW4849KGnw8Hu2H5d6UfppeaaE4-Z0vw@mail.gmail.com> <ebf30013b05e8d038a63fe189f250b4b@kernel.org>
-In-Reply-To: <ebf30013b05e8d038a63fe189f250b4b@kernel.org>
-From:   Sumit Garg <sumit.garg@linaro.org>
-Date:   Wed, 21 Oct 2020 16:58:44 +0530
-Message-ID: <CAFA6WYN1LgKt8vjh=y1SVrHbK795GyuEKeW8j63YDWDC5AZt6Q@mail.gmail.com>
-Subject: Re: [PATCH v5 5/5] arm64: ipi_nmi: Add support for NMI backtrace
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Mark Rutland <mark.rutland@arm.com>,
-        julien.thierry.kdev@gmail.com,
-        Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jason Wessel <jason.wessel@windriver.com>,
-        Masayoshi Mizuma <msys.mizuma@gmail.com>,
-        ito-yuichi@fujitsu.com, kgdb-bugreport@lists.sourceforge.net,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f7246cb6-901e-0bc3-eb18-194d1754da53@kernel.org>
+X-Url:  http://acmel.wordpress.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 at 16:02, Marc Zyngier <maz@kernel.org> wrote:
->
-> On 2020-10-20 10:13, Sumit Garg wrote:
-> > On Mon, 19 Oct 2020 at 17:50, Marc Zyngier <maz@kernel.org> wrote:
-> >>
-> >> On 2020-10-14 12:12, Sumit Garg wrote:
-> >> > Enable NMI backtrace support on arm64 using IPI turned as an NMI
-> >> > leveraging pseudo NMIs support. It is now possible for users to get a
-> >> > backtrace of a CPU stuck in hard-lockup using magic SYSRQ.
-> >> >
-> >> > Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >> > ---
-> >> >  arch/arm64/include/asm/irq.h |  6 ++++++
-> >> >  arch/arm64/kernel/ipi_nmi.c  | 12 +++++++++++-
-> >> >  2 files changed, 17 insertions(+), 1 deletion(-)
-> >> >
-> >> > diff --git a/arch/arm64/include/asm/irq.h
-> >> > b/arch/arm64/include/asm/irq.h
-> >> > index b2b0c64..e840bf1 100644
-> >> > --- a/arch/arm64/include/asm/irq.h
-> >> > +++ b/arch/arm64/include/asm/irq.h
-> >> > @@ -6,6 +6,12 @@
-> >> >
-> >> >  #include <asm-generic/irq.h>
-> >> >
-> >> > +#ifdef CONFIG_SMP
-> >> > +extern void arch_trigger_cpumask_backtrace(const cpumask_t *mask,
-> >> > +                                        bool exclude_self);
-> >> > +#define arch_trigger_cpumask_backtrace arch_trigger_cpumask_backtrace
-> >> > +#endif
-> >> > +
-> >> >  struct pt_regs;
-> >> >
-> >> >  static inline int nr_legacy_irqs(void)
-> >> > diff --git a/arch/arm64/kernel/ipi_nmi.c b/arch/arm64/kernel/ipi_nmi.c
-> >> > index e0a9e03..e1dc19d 100644
-> >> > --- a/arch/arm64/kernel/ipi_nmi.c
-> >> > +++ b/arch/arm64/kernel/ipi_nmi.c
-> >> > @@ -9,6 +9,7 @@
-> >> >  #include <linux/interrupt.h>
-> >> >  #include <linux/irq.h>
-> >> >  #include <linux/kgdb.h>
-> >> > +#include <linux/nmi.h>
-> >> >  #include <linux/smp.h>
-> >> >
-> >> >  #include <asm/nmi.h>
-> >> > @@ -25,12 +26,21 @@ void arch_send_call_nmi_func_ipi_mask(cpumask_t
-> >> > *mask)
-> >> >       __ipi_send_mask(ipi_desc, mask);
-> >> >  }
-> >> >
-> >> > +void arch_trigger_cpumask_backtrace(const cpumask_t *mask, bool
-> >> > exclude_self)
-> >> > +{
-> >> > +     nmi_trigger_cpumask_backtrace(mask, exclude_self,
-> >> > +                                   arch_send_call_nmi_func_ipi_mask);
-> >> > +}
-> >> > +
-> >> >  static irqreturn_t ipi_nmi_handler(int irq, void *data)
-> >> >  {
-> >> >       unsigned int cpu = smp_processor_id();
-> >> >
-> >> > -     ipi_kgdb_nmicallback(cpu, get_irq_regs());
-> >> > +     if (nmi_cpu_backtrace(get_irq_regs()))
-> >> > +             goto out;
-> >> >
-> >> > +     ipi_kgdb_nmicallback(cpu, get_irq_regs());
-> >> > +out:
-> >> >       return IRQ_HANDLED;
-> >> >  }
-> >>
-> >> Can't you have *both* a request for a backtrace and a KGDB call?
-> >> It really shouldn't be either/or. It also outlines how well shared
-> >> interrupts work with edge triggered signalling...
-> >
-> > Unfortunately, NMIs doesn't seem to support shared mode [1].
->
-> You are totally missing the point: shared interrupts *cannot* work
-> reliably with edge signalling. What I am saying here is that you need
-> implement the sharing yourself in this function.
+Em Wed, Oct 21, 2020 at 08:22:40AM +0200, Jiri Slaby escreveu:
+> On 20. 10. 20, 14:20, Arnaldo Carvalho de Melo wrote:
+> > > Yeah, I observe the very same. I reported it at:
+> > > https://bugzilla.suse.com/show_bug.cgi?id=1177921
 
-Ah, I see your point now. Will instead share this IPI among both handlers.
+> > Would it be possible to try with
+> > https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?h=tmp.libbtf_encoder
+> > ?
+ 
+> Yes, that branch fixes the crashes and the kernel build finishes. The
+> zero-sized symbol error remains.
+ 
+> So what should distributions do now -- should we switch to a pahole snapshot
+> for a while?
 
--Sumit
+That would do the trick, I just completed my testing and pushed to the
+master branch on kernel.org and github, tests detailed at:
 
->
->          M.
-> --
-> Jazz is not dead. It just smells funny...
+https://git.kernel.org/pub/scm/devel/pahole/pahole.git/commit/?id=040fd7f585c9b9fcf4475d294b3f5ddf78405297
+
+There are some minor bug reports I want to address but my ETA right now
+is the end of this week to release v1.19.
+
+- Arnaldo
