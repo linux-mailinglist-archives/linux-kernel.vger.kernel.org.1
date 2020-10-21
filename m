@@ -2,104 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0F0E294AAE
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17031294AB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:41:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441443AbgJUJjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 05:39:18 -0400
-Received: from mga09.intel.com ([134.134.136.24]:7764 "EHLO mga09.intel.com"
+        id S2438216AbgJUJlm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:41:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438223AbgJUJjR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 05:39:17 -0400
-IronPort-SDR: zQj6bhiLU2ROlVwhwGGHu8L0u+M09jpkCVmD2hZuGPohO2+r2ozJHDHGYlWPsvpFaJozTZdTEi
- 659PleEiwk5g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167460321"
-X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; 
-   d="scan'208";a="167460321"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 02:39:15 -0700
-IronPort-SDR: zGez5Kh8q4wHyOIXeiQvDw4ckKkpYx8lLshVMlr3unshRSLMhRPuAG4E+Vc4pJPjkA8vbXafKk
- Eu7Vpi/CQ/VA==
-X-IronPort-AV: E=Sophos;i="5.77,400,1596524400"; 
-   d="scan'208";a="348508345"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 02:39:07 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kVAbJ-00C9hk-AP; Wed, 21 Oct 2020 12:40:09 +0300
-Date:   Wed, 21 Oct 2020 12:40:09 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 1/9] software_node: Add helper function to
- unregister arrays of software_nodes ordered parent to child
-Message-ID: <20201021094009.GN4077@smile.fi.intel.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-2-djrscally@gmail.com>
- <20201020100510.GS13341@paasikivi.fi.intel.com>
- <b6909e37-cd8f-2c1a-126c-40e34ba2a560@gmail.com>
+        id S2403998AbgJUJll (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:41:41 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8287A21D6C;
+        Wed, 21 Oct 2020 09:41:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603273301;
+        bh=siJzHcRRa4KFW8mbtewNQ0VwcnQmGW8vm6PQQtUwqQQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=YgAbg2FieVVn/zLLhFc75BZ61Uhak3BDPQbyYk+p4SASrDumbeFaeRXG4PX2PzRGF
+         byq43QZBbBO6N3GetLDXYLPut8XG/0J65osDeZr8lJlnUrUn//2e+zQMfVPohlbPgw
+         KHz43NdCE339fNCA8XtfZJnTWSbIxBXAHgiotvqw=
+Date:   Wed, 21 Oct 2020 10:41:29 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Defang Bo <bodefang@126.com>
+Cc:     perex@perex.cz, tiwai@suse.com, lgirdwood@gmail.com,
+        Vishnuvardhanrao.Ravulapati@amd.com, akshu.agrawal@amd.com,
+        weiyongjun1@huawei.com, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] ASoC: amd: move the call to devm_kzalloc below
+ platform_get_resource()
+Message-ID: <20201021094129.GA4497@sirena.org.uk>
+References: <broonie@kernel.org>
+ <1603263867-8754-1-git-send-email-bodefang@126.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="SUOF0GtieIMvvwua"
 Content-Disposition: inline
-In-Reply-To: <b6909e37-cd8f-2c1a-126c-40e34ba2a560@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <1603263867-8754-1-git-send-email-bodefang@126.com>
+X-Cookie: That does not compute.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 11:52:56PM +0100, Dan Scally wrote:
-> On 20/10/2020 11:05, Sakari Ailus wrote:
-> > On Mon, Oct 19, 2020 at 11:58:55PM +0100, Daniel Scally wrote:
-> >> Software nodes that are children of another software node should be
-> >> unregistered before their parent. To allow easy unregistering of an array
-> >> of software_nodes ordered parent to child, add a helper function to loop
-> >> over and unregister nodes in such an array in reverse order.
 
-...
+--SUOF0GtieIMvvwua
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-> >> + * software_node_unregister_nodes_reverse - Unregister an array of software
-> >> + * nodes in reverse order.
-> >> + * @nodes: Array of software nodes to be unregistered.
-> >> + *
-> >> + * NOTE: The same warning applies as with software_node_unregister_nodes.
-> >> + * Unless you are _sure_ that the array of nodes is ordered parent to child
-> >> + * it is wiser to remove them individually in the correct order.
-> > Could the default order in software_node_unregister_nodes() be reversed
-> > instead? There are no users so this should be easy to change.
-> >
-> > Doing this only one way may require enforcing the registration order in
-> > software_node_register_nodes(), but the end result would be safer.
-> >
-> > What do you think?
-> 
-> Yeah fine by me. We can just use software_node_to_swnode(node->parent)
-> within software_node_unregister_nodes() to check that children come
-> after their parents have already been processed. I'll add a patch to do
-> that in the next version of this series, and another changing the
-> ordering of software_node_unregister_node_group() as Andy suggests for
-> consistency.
+On Wed, Oct 21, 2020 at 03:04:27PM +0800, Defang Bo wrote:
 
-I remember it was a big discussion between Rafael, Heikki and Greg KH about
-child-parent release in kobjects. That ended up with few patches to device
-object handling along with one that reversed the order of swnode unregistering
-in test_printf.c. So here is the question who is maintaining the order: a kref
-(via kobject) or a caller?
+> Just as the commit <4cb79ef9c6c4>("ASoC: amd: Fix potential NULL pointer dereference"),it makes no sense to allocate any resources if platform_get_resource fails,so move the call to devm_kzalloc() below the mentioned code.
 
--- 
-With Best Regards,
-Andy Shevchenko
+As I said on my previous mail:
 
+| Please keep your commit message wrapped at below 80 columns.
 
+Please don't ignore review comments, people are generally making them
+for a reason and are likely to have the same concerns if issues remain
+unaddressed.  Having to repeat the same comments can get repetitive and
+make people question the value of time spent reviewing.  If you disagree
+with the review comments that's fine but you need to reply and discuss
+your concerns so that the reviewer can understand your decisions.
+
+>  	}
+> +
+>  	adata = devm_kzalloc(&pdev->dev, sizeof(struct i2s_dev_data), GFP_KERNEL);
+>  	if (!adata)
+>  		return -ENOMEM;
+> +
+>  	adata->acp3x_base = devm_ioremap(&pdev->dev, res->start,
+
+This appears to add new whitespace, it doesn't seem to do what the
+commit log says?
+
+--SUOF0GtieIMvvwua
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QAkgACgkQJNaLcl1U
+h9BgQAf+JOwEXFuMzMDzjpL/SJstQqvXa6N4Sxd6iMSbuUka+npx/xEAcRW6OZYe
+/61Xayeulywoe7DyncM23aB77FTXZ6UgJXvfMxURFa1Q6a1PJzClKriGLlkFgNbN
+8/UkeUjsur/Lg1zckfGA0K7Nrhjj/BS+n5DF9cKDSdtsQEhRn+FQjPnZth/Vfjvv
+xClrvK9CNQ5Y5xCrMMeUwh9obKeRbN9Pi3eQG+MFfzci0kKul1SkBZUff+PFbgML
+KNYMkHnwcff23/VboGncsbyY6J0z9TWQjqKzPfD4ub1Kco0sPmBp20JCvIQtssoz
+vG6caxw+Hkp9U+vmK36Rex04RGQQUw==
+=ThGY
+-----END PGP SIGNATURE-----
+
+--SUOF0GtieIMvvwua--
