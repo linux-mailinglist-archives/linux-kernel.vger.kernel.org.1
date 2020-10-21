@@ -2,84 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 08227294CE4
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:40:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D8AC294CE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:40:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442507AbgJUMkY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:40:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39066 "EHLO mail.kernel.org"
+        id S2442517AbgJUMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:40:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39130 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394405AbgJUMkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:40:22 -0400
-Received: from mail-qk1-f174.google.com (mail-qk1-f174.google.com [209.85.222.174])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2394405AbgJUMkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:40:25 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5AEEF2242F;
-        Wed, 21 Oct 2020 12:40:21 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BD3F22275;
+        Wed, 21 Oct 2020 12:40:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603284021;
-        bh=D2u3+25VPgAQHY5Nn343gmMQCCel5dPS87ZHZwoyNjM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=SulhYNa9FDK7tCPx33fBxxU+9Yxu+f5QO9QlRPrywEn983DgQfusZOtcpYTDYgJtl
-         0jc9q7B7J7DkpABX85e7jROgeSzwaPxWLHB12B0gNmJLxAJCLZ35PWuBDL+WAGWqOK
-         LX9z2XZfy4yU4K1vKtZXacaRvI8yXZxvYo7JhGZQ=
-Received: by mail-qk1-f174.google.com with SMTP id 188so2106396qkk.12;
-        Wed, 21 Oct 2020 05:40:21 -0700 (PDT)
-X-Gm-Message-State: AOAM53068OFj3P5j1hpIYInsaU2EowYBR4PYKe3uHHBfrTMaI17I3tzv
-        e+9J1II58X0PQEQr+pAqp9XOVVLlwYc5rWgSex8=
-X-Google-Smtp-Source: ABdhPJxaYfqMELfS/UA0bXc2jA/eaagXcZCcnNsgAaV8d9zfQVqdARFwKphCh/C0TXvS9gdaX5eGQgOxG4PgPN+L8lc=
-X-Received: by 2002:a37:2dc6:: with SMTP id t189mr2894076qkh.394.1603284020397;
- Wed, 21 Oct 2020 05:40:20 -0700 (PDT)
+        s=default; t=1603284024;
+        bh=+CBaQPUx7XVyQiN7FAvvUJkjEx6kAbYTgy2PMnvM5FM=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=g8wMoLURdOKef+AtsPQ7CoPpez8dprtmRsVugQlwldMlQdx5TPz+Kfq8czpCONMZ4
+         iBpIBEiXSillx/F3z8d5scmYOwISdTLLg+xEmQD673nv0yjR5oZmFYH/+oVt3gUiaJ
+         Dbx4QByh88bnZZ9ZW/OfLCPedWIRNbRf4F0MTumI=
+Date:   Wed, 21 Oct 2020 13:40:13 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [PATCH v2 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
+ cadence-quadspi.yaml
+Message-ID: <20201021124013.GE4497@sirena.org.uk>
+References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021025507.51001-6-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-References: <20201020220639.130696-1-joel@jms.id.au>
-In-Reply-To: <20201020220639.130696-1-joel@jms.id.au>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Wed, 21 Oct 2020 14:40:04 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
-Message-ID: <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
-Subject: Re: [PATCH] net: ftgmac100: Ensure tx descriptor updates are visible
-To:     Joel Stanley <joel@jms.id.au>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Dylan Hung <dylan_hung@aspeedtech.com>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="uCPdOCrL+PnN2Vxy"
+Content-Disposition: inline
+In-Reply-To: <20201021025507.51001-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Cookie: That does not compute.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:39 PM Joel Stanley <joel@jms.id.au> wrote:
 
->
-> diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-> index 331d4bdd4a67..15cdfeb135b0 100644
-> --- a/drivers/net/ethernet/faraday/ftgmac100.c
-> +++ b/drivers/net/ethernet/faraday/ftgmac100.c
-> @@ -653,6 +653,11 @@ static bool ftgmac100_tx_complete_packet(struct ftgmac100 *priv)
->         ftgmac100_free_tx_packet(priv, pointer, skb, txdes, ctl_stat);
->         txdes->txdes0 = cpu_to_le32(ctl_stat & priv->txdes0_edotr_mask);
->
-> +       /* Ensure the descriptor config is visible before setting the tx
-> +        * pointer.
-> +        */
-> +       smp_wmb();
-> +
->         priv->tx_clean_pointer = ftgmac100_next_tx_pointer(priv, pointer);
->
->         return true;
-> @@ -806,6 +811,11 @@ static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
->         dma_wmb();
->         first->txdes0 = cpu_to_le32(f_ctl_stat);
->
-> +       /* Ensure the descriptor config is visible before setting the tx
-> +        * pointer.
-> +        */
-> +       smp_wmb();
-> +
+--uCPdOCrL+PnN2Vxy
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Shouldn't these be paired with smp_rmb() on the reader side?
+On Wed, Oct 21, 2020 at 10:55:06AM +0800, Ramuthevar,Vadivel MuruganX wrote:
+> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
+=2Ecom>
+>=20
+> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
+> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
 
-      Arnd
+This is patch 5/6, not patch 6/6 as I suggested :/
+
+--uCPdOCrL+PnN2Vxy
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QLCwACgkQJNaLcl1U
+h9BbAAf/YM0k2iVJQk3ZZTpt3a7VpEFh1nmu2nQljnukDeA+/Gnk4Z+7JGxrMALJ
+qJSvm+d9osWVrjn1a6gQHlGJJT2k/pQd/orYzmIi9pecL3FLj+Zl16pstQxjzpCS
+5F8yhLiwm8CuB2q7YNtBgejkeBZFpmUkHmzwqYV3VoBmfEHWj6V2peux1nQrk27X
+uw5BgnRFo+7yId3wCD+41ewPp3DO8/4FvfHMUn7cXy9ASM1EfWfjJDeIomxdA3GU
+TkGCvLjNqf1q7zNyvF0kayMofN44C2lYaMp9mceULPByJByN53roLfHlcQslbo85
+iKFs4JhaWtOjOZ7O7TbQiE9Q5qKapg==
+=NlDZ
+-----END PGP SIGNATURE-----
+
+--uCPdOCrL+PnN2Vxy--
