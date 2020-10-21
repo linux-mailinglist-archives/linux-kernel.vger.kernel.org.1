@@ -2,99 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF451295215
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DAD01295217
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:20:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503989AbgJUSTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 14:19:52 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:44880 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503839AbgJUSTw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 14:19:52 -0400
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id 9b286d2661666ff1; Wed, 21 Oct 2020 20:19:50 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Ulf Hansson <ulf.hansson@linaro.org>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>, Nishanth Menon <nm@ti.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Aaro Koskinen <aaro.koskinen@iki.fi>,
-        Tony Lindgren <tony@atomide.com>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Niklas Cassel <nks@flawful.org>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Kevin Hilman <khilman@kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/4] power: avs: Move drivers to the soc directories and drop avs
-Date:   Wed, 21 Oct 2020 20:19:49 +0200
-Message-ID: <4480050.lNUbsT5gvy@kreacher>
-In-Reply-To: <CAPDyKFq4sym1V7EjEE4RArrtpBtXi2w1iCVLhNYgPEo4guCqiA@mail.gmail.com>
-References: <20201006160516.319830-1-ulf.hansson@linaro.org> <CAJZ5v0i6CeUy4aQnyMmNyAHfdunWbbB2TsQwtX4QwNwYk+71jg@mail.gmail.com> <CAPDyKFq4sym1V7EjEE4RArrtpBtXi2w1iCVLhNYgPEo4guCqiA@mail.gmail.com>
+        id S2503999AbgJUSUB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 14:20:01 -0400
+Received: from foss.arm.com ([217.140.110.172]:38508 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503991AbgJUSUB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 14:20:01 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BBDCD6E;
+        Wed, 21 Oct 2020 11:19:55 -0700 (PDT)
+Received: from bogus (unknown [10.57.22.167])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D25C63F66B;
+        Wed, 21 Oct 2020 11:19:53 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 19:19:51 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
+ performance domains
+Message-ID: <20201021181951.xu2igea2qbca3alf@bogus>
+References: <20201020203710.10100-1-sudeep.holla@arm.com>
+ <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wednesday, October 21, 2020 12:41:50 PM CEST Ulf Hansson wrote:
-> On Fri, 16 Oct 2020 at 18:30, Rafael J. Wysocki <rafael@kernel.org> wrote:
+On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
+> On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
 > >
-> > On Wed, Oct 7, 2020 at 5:23 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > >
-> > > + Arnd
-> > >
-> > > On Wed, 7 Oct 2020 at 17:09, Rafael J. Wysocki <rafael@kernel.org> wrote:
-> > > >
-> > > > On Tue, Oct 6, 2020 at 6:05 PM Ulf Hansson <ulf.hansson@linaro.org> wrote:
-> > > > >
-> > > > > The avs drivers in drivers/power/avs/* are all SoC specific drivers that
-> > > > > doesn't share any code. Instead they are located in a directory, mostly to keep
-> > > > > similar functionality together. From a maintenance point of view, it makes
-> > > > > better sense to collect SoC specific drivers like these, into the SoC specific
-> > > > > directories.
-> > > > >
-> > > > > Therefore, this series moves the drivers, one by one - and in the end, it
-> > > > > deletes the empty avs directory.
-> > > > >
-> > > > > It seems best to me, if this can be funneled via Rafael's linux-pm tree. Then
-> > > > > when going forward, each driver should be managed through the SoC maintainer's
-> > > > > trees.
-> > > >
-> > > > That's fine by me.
-> > > >
-> > > > I'd like to get an ACK from the arm-soc side on this, though.
-> > >
-> > > I have looped in Arnd, to get his opinion on this.
-> > >
-> > > Although, I think the people on cc already send pull requests to the
-> > > arm-soc maintainers (or perhaps it was these people you were referring
-> > > to), so just awaiting their acks should be fine, I guess.
-> >
-> > OK
-> >
-> > For now, I've taken patches [2-3/4] that have been ACKed.
-> >
-> > When the [1/4] is ACKed, I'll take it too and apply the last one.
-> 
-> Patch 1/4 has been acked now as well, so I think the remaining part of
-> this series is ready to go.
 
-Agreed, I'm going to apply the remaining two patches from it tomorrow.
+[...]
 
-> However, I noticed that Stephen Rothwell reported some merge conflicts
-> for arm-soc in linux-next. Quite trivial to resolve, though. Perhaps
-> an option to consider is to send this as material for v5.10-rc1 (or
-> maybe rc2) to avoid further conflicts during this release cycle? Just
-> an idea..
+>
+> When is this not 1 (IOW, you only need this if variable)? How would it
+> be used outside SCMI (given it has a generic name)?
+>
+> > +
+> > +* Property arm,scmi-perf-domain
+>
+[...]
 
-Yes, I'm going to do that.
+> Really though, why can't you give SCMI a CPUs MPIDR and get its domain?
+>
 
-Thanks!
+Now I remembered why we can't use MPIDR. The spec talks about perf domains
+for devices in generic. CPU is just a special device. We will still need
+a mechanism to get device performance domain. So MPIDR idea was dropped to
+keep it uniform across all the devices.
 
-
-
+--
+Regards,
+Sudeep
