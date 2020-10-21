@@ -2,109 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C87D295061
+	by mail.lfdr.de (Postfix) with ESMTP id E884F295063
 	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:07:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502771AbgJUQGR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:06:17 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:52203 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2502762AbgJUQGR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:06:17 -0400
-Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
-        by mailout.nyi.internal (Postfix) with ESMTP id 1171A5C0227;
-        Wed, 21 Oct 2020 12:06:16 -0400 (EDT)
-Received: from imap10 ([10.202.2.60])
-  by compute4.internal (MEProxy); Wed, 21 Oct 2020 12:06:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=septs.pw; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=7iRL84+Ugv9Vl9dV9rOTDR1uJK/G0lb
-        YzOiNJlNesBs=; b=lMAYadK9oedM3ADQN3HgvxQupxAGq+sjvh8fTrQ+ErpWZTt
-        7N0Srt9VuD1HfNbu5zpmv525bgR6jVCmNqOBLksveuWa+VNyQP1T/8puMU4xk4XM
-        JRfjIGsdffiXnGpg/SGGQZYnDkoPiPktEzwPQUdf3boKmt3yjhN8B6cyHaZaBLBJ
-        x9e6bmy0bXy6b7l1uiHEXDv3wjxiGRRh24lovzCp7wju8SsauIFFSMKFw1MpSMIG
-        a6wwsovuopN2PTJkmfJU+7mHqLc4eP2aqq8cNHsHR3uxHJlVEIj9LG5QWidl8ipC
-        UbxOomOSdhfd3rVxTGKrhOwf0GEqPti/jvJ+LUQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=7iRL84
-        +Ugv9Vl9dV9rOTDR1uJK/G0lbYzOiNJlNesBs=; b=Vi2VixV6tcSH2dRgDgw2f6
-        hE6OzcweT9Wi3khf9uxE2/uS1c0wAB7LsUIp/35xX1gWPzCMduDk0LlLsEDAlinR
-        Y2ATQoqA7a69iYQZmHog7ds4GLcej7q66Arz2cZpxOEVneKp3Kc4eT7GfQvVoRfV
-        C+bBBoJp746W49SkWQq5rayNN2x5eeTsB9RgLeMgEQfTSpnNAbXuEWZQlTJ3xykL
-        t4dK/DG2NrXs3sTMsC4MBH3KD65JUepIpxbPhHPGsVboG4+mwUWaMbgDViNDhHUz
-        REp6MpIIWKnooYnOo6eBQjlNzXjExvX/RzIoseHeWXsi2N59xsyrGWpM/r1etmeA
-        ==
-X-ME-Sender: <xms:d1yQXyAeNmAQMErFfo3rbtIrJxDySO1GNY91082lEimpcobRoJOYQA>
-    <xme:d1yQX8ivkWOaXCb-K3MDRxHhfYsRjV0kuKtk9bHXRhqBsjra9QYjea9txxHuz2zBS
-    rdzhLt3Vd95Hqk3mw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeehgdeljecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenfg
-    hrlhcuvffnffculdduhedmnecujfgurhepofgfggfkjghffffhvffutgesthdtredtreer
-    jeenucfhrhhomhepfdgkihihihcuvegrohdfuceokhgvrhhnvghlsehsvghpthhsrdhpfi
-    eqnecuggftrfgrthhtvghrnhepkeeihefgjeefleetveefudeihffgkeejgfejkedttdej
-    feegkeduleekueegveelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepkhgvrhhnvghlsehsvghpthhsrdhpfi
-X-ME-Proxy: <xmx:d1yQX1ngtbz8nI3sxYTgnpo23ombql6sox5k2IBwxDw8JhtNcU5zIQ>
-    <xmx:d1yQXwzo7wXhqZ2prtmphbkpnW-Fq8JIG1XJf3f94XzTaYZBq_NP_g>
-    <xmx:d1yQX3RZ9KCkMaLArZIhCWvhfdQVFnragcBYIxn6Mz1AWuuVhL77sw>
-    <xmx:eFyQX-JoH96LZO9gOnnKOw6rtOk6o5ESMovi5hDS6_s0CgwA8V3WxQ>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id AF5D120075; Wed, 21 Oct 2020 12:06:15 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-502-gfef6c88-fm-20201019.001-gfef6c888
-Mime-Version: 1.0
-Message-Id: <209b0a93-ff0e-4e1a-b180-92e8f6214fb2@www.fastmail.com>
-In-Reply-To: <17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com>
-References: <17f8a2a3-ce0f-4be7-8544-8fdf286907d0@www.fastmail.com>
-Date:   Thu, 22 Oct 2020 00:05:55 +0800
-From:   "Ziyi Cao" <kernel@septs.pw>
-To:     "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>
-Cc:     "Johan Hovold" <johan@kernel.org>, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re:_[PATCH_1/1]_usb:_serial:_option:_add_Quectel_EC200T_module?=
- =?UTF-8?Q?_support?=
-Content-Type: text/plain
+        id S2502780AbgJUQGb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:06:31 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25455 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502773AbgJUQGa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:06:30 -0400
+IronPort-SDR: JwajuWQlKouG9fhEmcgokHkOEunDa4E3+q38CPvHzG5bYRzID9nL7qsPzJgfajSFw8zBrDbXon
+ 4/oO7Lub41/Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="185050954"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="185050954"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:06:29 -0700
+IronPort-SDR: Nmb44Xq+jTtTQTPzf1Wyt9QbnGoKKiUgUTZfIUI0hEM4XfjYm5yCsRun9cqeGU8ilqPnNcVSRu
+ pqUyfXkC5zxg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="321058244"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga006.jf.intel.com with ESMTP; 21 Oct 2020 09:06:29 -0700
+Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
+        by linux.intel.com (Postfix) with ESMTP id 3F9F5580107;
+        Wed, 21 Oct 2020 09:06:27 -0700 (PDT)
+Subject: [PATCH v2 11/15] perf evlist: introduce evlist__ctlfd_update() to
+ update ctl fd status
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <0081ef74-c3cf-1387-76e1-73d8396b6748@linux.intel.com>
+Date:   Wed, 21 Oct 2020 19:06:26 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+MIME-Version: 1.0
+In-Reply-To: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Request to accept this patch, thanks.
 
-On Tue, Oct 20, 2020, at 00:08, Ziyi Cao wrote:
-> Add usb product id of the Quectel EC200T module.
-> 
-> Signed-off-by: Ziyi Cao <kernel@septs.pw>
-> ---
->  drivers/usb/serial/option.c | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/drivers/usb/serial/option.c b/drivers/usb/serial/option.c
-> index 2a3bfd6f8..7e879233b 100644
-> --- a/drivers/usb/serial/option.c
-> +++ b/drivers/usb/serial/option.c
-> @@ -250,6 +250,7 @@ static void option_instat_callback(struct urb *urb);
->  #define QUECTEL_PRODUCT_EP06			0x0306
->  #define QUECTEL_PRODUCT_EM12			0x0512
->  #define QUECTEL_PRODUCT_RM500Q			0x0800
-> +#define QUECTEL_PRODUCT_EC200T			0x6026
->  
->  #define CMOTECH_VENDOR_ID			0x16d8
->  #define CMOTECH_PRODUCT_6001			0x6001
-> @@ -1117,6 +1118,7 @@ static const struct usb_device_id option_ids[] = {
->  	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 
-> QUECTEL_PRODUCT_RM500Q, 0xff, 0, 0) },
->  	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 
-> QUECTEL_PRODUCT_RM500Q, 0xff, 0xff, 0x10),
->  	  .driver_info = ZLP },
-> +	{ USB_DEVICE_AND_INTERFACE_INFO(QUECTEL_VENDOR_ID, 
-> QUECTEL_PRODUCT_EC200T, 0xff, 0, 0) },
->  
->  	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_6001) },
->  	{ USB_DEVICE(CMOTECH_VENDOR_ID, CMOTECH_PRODUCT_CMU_300) },
-> -- 
-> 2.25.1
->
+Introduce evlist__ctlfd_update() to update ctl fd poll status
+in evlist pollfd array using other pollfd object.
+
+Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+---
+ tools/perf/util/evlist.c | 16 ++++++++++++++++
+ tools/perf/util/evlist.h |  1 +
+ 2 files changed, 17 insertions(+)
+
+diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
+index 8bdf3d2c907c..758a4896fedd 100644
+--- a/tools/perf/util/evlist.c
++++ b/tools/perf/util/evlist.c
+@@ -1970,6 +1970,22 @@ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd)
+ 	return err;
+ }
+ 
++int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update)
++{
++	int ctlfd_pos = evlist->ctl_fd.pos;
++	struct pollfd *entries = evlist->core.pollfd.entries;
++
++	if (!evlist__ctlfd_initialized(evlist))
++		return 0;
++
++	if (entries[ctlfd_pos].fd != update->fd ||
++	    entries[ctlfd_pos].events != update->events)
++		return -1;
++
++	entries[ctlfd_pos].revents = update->revents;
++	return 0;
++}
++
+ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
+ {
+ 	struct evsel *evsel;
+diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
+index e1a450322bc5..9b73d6ccf066 100644
+--- a/tools/perf/util/evlist.h
++++ b/tools/perf/util/evlist.h
+@@ -380,6 +380,7 @@ void evlist__close_control(int ctl_fd, int ctl_fd_ack, bool *ctl_fd_close);
+ int evlist__initialize_ctlfd(struct evlist *evlist, int ctl_fd, int ctl_fd_ack);
+ int evlist__finalize_ctlfd(struct evlist *evlist);
+ bool evlist__ctlfd_initialized(struct evlist *evlist);
++int evlist__ctlfd_update(struct evlist *evlist, struct pollfd *update);
+ int evlist__ctlfd_process(struct evlist *evlist, enum evlist_ctl_cmd *cmd);
+ int evlist__ctlfd_ack(struct evlist *evlist);
+ 
+-- 
+2.24.1
+
+
