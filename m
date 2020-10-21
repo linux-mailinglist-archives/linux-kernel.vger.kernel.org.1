@@ -2,290 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A5FB2946F7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:30:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9DF82946EB
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 05:21:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440113AbgJUDaT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 23:30:19 -0400
-Received: from ozlabs.ru ([107.174.27.60]:41860 "EHLO ozlabs.ru"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440103AbgJUDaS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 23:30:18 -0400
-Received: from fstn1-p1.ozlabs.ibm.com (localhost [IPv6:::1])
-        by ozlabs.ru (Postfix) with ESMTP id AE9F0AE80252;
-        Tue, 20 Oct 2020 23:20:00 -0400 (EDT)
-From:   Alexey Kardashevskiy <aik@ozlabs.ru>
-To:     linuxppc-dev@lists.ozlabs.org
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        linux-kernel@vger.kernel.org, Alexey Kardashevskiy <aik@ozlabs.ru>
-Subject: [PATCH kernel 2/2] powerpc/dma: Fallback to dma_ops when persistent memory present
-Date:   Wed, 21 Oct 2020 14:20:26 +1100
-Message-Id: <20201021032026.45030-3-aik@ozlabs.ru>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201021032026.45030-1-aik@ozlabs.ru>
-References: <20201021032026.45030-1-aik@ozlabs.ru>
+        id S2411687AbgJUDV2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 23:21:28 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57188 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2411620AbgJUDV1 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 23:21:27 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09L3ESZd175301;
+        Tue, 20 Oct 2020 23:21:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=v0Dn4h05hZpuQ0XCNNxFqCgcMKbDdVCE+TRGnwiRQds=;
+ b=a0HC8Xj16Ify51dtoNWjH/uXUG33galGvhktg31bidLdpkJRh4AOBnZzTfJxFxvzoRZT
+ rm8LhEoDjQnG85EWTqxnQYumtB+v4AzEY4KIdA0oa3BL3x8joeJV9vNS1otRazCQrzbP
+ Qh8J82KSzeGLqn68vZXiCQnL0lyguQLFLSUSKpSnwiOBBVrE+SWqJfXsDA4q4I+4zWq4
+ zdFXFc/jSqsJ4b7880ayf5pCz5WEEjWifEMOJVZ3Rz8xFUbensrm7nWn0suH3iDUUgtg
+ o45Zf39hdcB9pR/RAK6x9XYKT0v/8zgHqBGX9eIAWnLjoQ0TZswbu0kr1UulgwbcIMJ2 2w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34acw986ds-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 23:21:11 -0400
+Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09L3Fa7R177307;
+        Tue, 20 Oct 2020 23:21:10 -0400
+Received: from ppma04ams.nl.ibm.com (63.31.33a9.ip4.static.sl-reverse.com [169.51.49.99])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34acw986cx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Tue, 20 Oct 2020 23:21:10 -0400
+Received: from pps.filterd (ppma04ams.nl.ibm.com [127.0.0.1])
+        by ppma04ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09L3CGmP031758;
+        Wed, 21 Oct 2020 03:21:08 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma04ams.nl.ibm.com with ESMTP id 347r88bv5k-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 03:21:08 +0000
+Received: from d06av24.portsmouth.uk.ibm.com (mk.ibm.com [9.149.105.60])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09L3L5tH33620310
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 03:21:05 GMT
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id CF6A642047;
+        Wed, 21 Oct 2020 03:21:05 +0000 (GMT)
+Received: from d06av24.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id B783D42045;
+        Wed, 21 Oct 2020 03:21:01 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.35.199])
+        by d06av24.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Oct 2020 03:21:01 +0000 (GMT)
+Message-ID: <8e07f9401c9f7e18fb1453b7b290472c0049c6e6.camel@linux.ibm.com>
+Subject: Re: [PATCH v7 1/4] KEYS: trusted: Add generic trusted keys framework
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>,
+        jarkko.sakkinen@linux.intel.com, jejb@linux.ibm.com
+Cc:     dhowells@redhat.com, jens.wiklander@linaro.org, corbet@lwn.net,
+        jmorris@namei.org, serge@hallyn.com, casey@schaufler-ca.com,
+        janne.karhunen@gmail.com, daniel.thompson@linaro.org,
+        Markus.Wamser@mixed-mode.de, lhinds@redhat.com,
+        keyrings@vger.kernel.org, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        op-tee@lists.trustedfirmware.org
+Date:   Tue, 20 Oct 2020 23:21:00 -0400
+In-Reply-To: <1602065268-26017-2-git-send-email-sumit.garg@linaro.org>
+References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+         <1602065268-26017-2-git-send-email-sumit.garg@linaro.org>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-21_02:2020-10-20,2020-10-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 impostorscore=0 suspectscore=2 clxscore=1011
+ malwarescore=0 bulkscore=0 adultscore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210025
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-So far we have been using huge DMA windows to map all the RAM available.
-The RAM is normally mapped to the VM address space contiguously, and
-there is always a reasonable upper limit for possible future hot plugged
-RAM which makes it easy to map all RAM via IOMMU.
+On Wed, 2020-10-07 at 15:37 +0530, Sumit Garg wrote:
 
-Now there is persistent memory ("ibm,pmemory" in the FDT) which (unlike
-normal RAM) can map anywhere in the VM space beyond the maximum RAM size
-and since it can be used for DMA, it requires extending the huge window
-up to MAX_PHYSMEM_BITS which requires hypervisor support for:
-1. huge TCE tables;
-2. multilevel TCE tables;
-3. huge IOMMU pages.
+> +/*
+> + * trusted_destroy - clear and free the key's payload
+> + */
+> +static void trusted_destroy(struct key *key)
+> +{
+> +	kfree_sensitive(key->payload.data[0]);
+> +}
+> +
+> +struct key_type key_type_trusted = {
+> +	.name = "trusted",
+> +	.instantiate = trusted_instantiate,
+> +	.update = trusted_update,
+> +	.destroy = trusted_destroy,
+> +	.describe = user_describe,
+> +	.read = trusted_read,
+> +};
+> +EXPORT_SYMBOL_GPL(key_type_trusted);
+> +
+> +static int __init init_trusted(void)
+> +{
+> +	int i, ret = 0;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(trusted_key_sources); i++) {
+> +		if (trusted_key_source &&
+> +		    strncmp(trusted_key_source, trusted_key_sources[i].name,
+> +			    strlen(trusted_key_sources[i].name)))
+> +			continue;
+> +
+> +		trusted_key_ops = trusted_key_sources[i].ops;
+> +
+> +		ret = trusted_key_ops->init();
+> +		if (!ret)
+> +			break;
+> +	}
 
-Certain hypervisors cannot do either so the only option left is
-restricting the huge DMA window to include only RAM and fallback to
-the default DMA window for persistent memory.
+In the case when the module paramater isn't specified and both TPM and
+TEE are enabled, trusted_key_ops is set to the last source initialized.
+After patch 2/4, the last trusted source initialized is TEE.  If the
+intention is to limit it to either TPM or TEE, then trusted_key_ops
+should have a default value, which could be overwritten at runtime. 
+That would address Luke Hind's concerns of making the decision at
+compile time.
 
-This checks if the system has persistent memory. If it does not,
-the DMA bypass mode is selected, i.e.
-* dev->bus_dma_limit = 0
-* dev->dma_ops_bypass = true <- this avoid calling dma_ops for mapping.
+trusted_key_ops should be defined as __ro_after_init, like is currently
+done for other LSM structures.
 
-If there is such memory, this creates identity mapping only for RAM and
-disables the DMA bypass mode which makes generic DMA code use indirect
-dma_ops which may have performance impact:
-* dev->bus_dma_limit = bus_offset + max_ram_size
-  for example 0x0800.0000.8000.0000 for a 2GB VM
-* dev->dma_ops_bypass = false <- this forces indirect calls to dma_ops for
-  every mapping which then directs these to small or huge window.
+> +
+> +	/*
+> +	 * encrypted_keys.ko depends on successful load of this module even if
+> +	 * trusted key implementation is not found.
+> +	 */
+> +	if (ret == -ENODEV)
+> +		return 0;
+> +
+> +	return ret;
+> +}
+> +
+> +static void __exit cleanup_trusted(void)
+> +{
+> +	trusted_key_ops->exit();
 
-This should not change the existing behaviour when no persistent memory.
+If the intention is really to support both TPM and TEE trusted keys at
+the same time, as James suggested, then the same "for" loop as in
+init_trusted() is needed here and probably elsewhere.
 
-Signed-off-by: Alexey Kardashevskiy <aik@ozlabs.ru>
----
+thanks,
 
-Without reverting 19c65c3d30bb5a97170, I could have added
-
-I can repost if this is preferrable. Thanks.
-
----
-Changelog:
-v2:
-* rebased on current upstream with the device::bypass added and DMA
-direct code movement reverted
----
- arch/powerpc/kernel/dma-iommu.c        | 68 +++++++++++++++++++++++++-
- arch/powerpc/platforms/pseries/iommu.c | 41 +++++++++++++---
- 2 files changed, 99 insertions(+), 10 deletions(-)
-
-diff --git a/arch/powerpc/kernel/dma-iommu.c b/arch/powerpc/kernel/dma-iommu.c
-index a1c744194018..9a2a3b95f72d 100644
---- a/arch/powerpc/kernel/dma-iommu.c
-+++ b/arch/powerpc/kernel/dma-iommu.c
-@@ -10,6 +10,16 @@
- #include <linux/pci.h>
- #include <asm/iommu.h>
- 
-+static inline bool can_map_direct(struct device *dev, phys_addr_t addr)
-+{
-+	return dev->bus_dma_limit >= phys_to_dma(dev, addr);
-+}
-+
-+static inline bool dma_handle_direct(struct device *dev, dma_addr_t dma_handle)
-+{
-+	return dma_handle >= dev->archdata.dma_offset;
-+}
-+
- /*
-  * Generic iommu implementation
-  */
-@@ -44,6 +54,12 @@ static dma_addr_t dma_iommu_map_page(struct device *dev, struct page *page,
- 				     enum dma_data_direction direction,
- 				     unsigned long attrs)
- {
-+	if (dev->bus_dma_limit &&
-+	    can_map_direct(dev, (phys_addr_t) page_to_phys(page) +
-+			   offset + size))
-+		return dma_direct_map_page(dev, page, offset, size, direction,
-+					   attrs);
-+
- 	return iommu_map_page(dev, get_iommu_table_base(dev), page, offset,
- 			      size, dma_get_mask(dev), direction, attrs);
- }
-@@ -53,6 +69,12 @@ static void dma_iommu_unmap_page(struct device *dev, dma_addr_t dma_handle,
- 				 size_t size, enum dma_data_direction direction,
- 				 unsigned long attrs)
- {
-+	if (dev->bus_dma_limit &&
-+	    dma_handle_direct(dev, dma_handle + size)) {
-+		dma_direct_unmap_page(dev, dma_handle, size, direction, attrs);
-+		return;
-+	}
-+
- 	iommu_unmap_page(get_iommu_table_base(dev), dma_handle, size, direction,
- 			 attrs);
- }
-@@ -62,6 +84,22 @@ static int dma_iommu_map_sg(struct device *dev, struct scatterlist *sglist,
- 			    int nelems, enum dma_data_direction direction,
- 			    unsigned long attrs)
- {
-+	if (dev->bus_dma_limit) {
-+		struct scatterlist *s;
-+		bool direct = true;
-+		int i;
-+
-+		for_each_sg(sglist, s, nelems, i) {
-+			direct = can_map_direct(dev,
-+					sg_phys(s) + s->offset + s->length);
-+			if (!direct)
-+				break;
-+		}
-+		if (direct)
-+			return dma_direct_map_sg(dev, sglist, nelems, direction,
-+						 attrs);
-+	}
-+
- 	return ppc_iommu_map_sg(dev, get_iommu_table_base(dev), sglist, nelems,
- 				dma_get_mask(dev), direction, attrs);
- }
-@@ -70,6 +108,24 @@ static void dma_iommu_unmap_sg(struct device *dev, struct scatterlist *sglist,
- 		int nelems, enum dma_data_direction direction,
- 		unsigned long attrs)
- {
-+	if (dev->bus_dma_limit) {
-+		struct scatterlist *s;
-+		bool direct = true;
-+		int i;
-+
-+		for_each_sg(sglist, s, nelems, i) {
-+			direct = dma_handle_direct(dev,
-+						   s->dma_address + s->length);
-+			if (!direct)
-+				break;
-+		}
-+		if (direct) {
-+			dma_direct_unmap_sg(dev, sglist, nelems, direction,
-+					    attrs);
-+			return;
-+		}
-+	}
-+
- 	ppc_iommu_unmap_sg(get_iommu_table_base(dev), sglist, nelems,
- 			   direction, attrs);
- }
-@@ -90,8 +146,16 @@ int dma_iommu_dma_supported(struct device *dev, u64 mask)
- 	struct iommu_table *tbl = get_iommu_table_base(dev);
- 
- 	if (dev_is_pci(dev) && dma_iommu_bypass_supported(dev, mask)) {
--		dev->dma_ops_bypass = true;
--		dev_dbg(dev, "iommu: 64-bit OK, using fixed ops\n");
-+		/*
-+		 * dma_iommu_bypass_supported() sets dma_max when there is
-+		 * 1:1 mapping but it is somehow limited.
-+		 * ibm,pmemory is one example.
-+		 */
-+		dev->dma_ops_bypass = dev->bus_dma_limit == 0;
-+		if (!dev->dma_ops_bypass)
-+			dev_warn(dev, "iommu: 64-bit OK but using default ops\n");
-+		else
-+			dev_dbg(dev, "iommu: 64-bit OK, using fixed ops\n");
- 		return 1;
- 	}
- 
-diff --git a/arch/powerpc/platforms/pseries/iommu.c b/arch/powerpc/platforms/pseries/iommu.c
-index e4198700ed1a..e6aa6c923666 100644
---- a/arch/powerpc/platforms/pseries/iommu.c
-+++ b/arch/powerpc/platforms/pseries/iommu.c
-@@ -839,7 +839,7 @@ static void remove_ddw(struct device_node *np, bool remove_prop)
- 			np, ret);
- }
- 
--static u64 find_existing_ddw(struct device_node *pdn)
-+static u64 find_existing_ddw(struct device_node *pdn, int *window_shift)
- {
- 	struct direct_window *window;
- 	const struct dynamic_dma_window_prop *direct64;
-@@ -851,6 +851,7 @@ static u64 find_existing_ddw(struct device_node *pdn)
- 		if (window->device == pdn) {
- 			direct64 = window->prop;
- 			dma_addr = be64_to_cpu(direct64->dma_base);
-+			*window_shift = be32_to_cpu(direct64->window_shift);
- 			break;
- 		}
- 	}
-@@ -1111,11 +1112,13 @@ static void reset_dma_window(struct pci_dev *dev, struct device_node *par_dn)
-  */
- static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- {
--	int len, ret;
-+	int len = 0, ret;
-+	bool pmem_present = of_find_node_by_type(NULL, "ibm,pmemory") != NULL;
-+	int max_ram_len = order_base_2(ddw_memory_hotplug_max());
- 	struct ddw_query_response query;
- 	struct ddw_create_response create;
- 	int page_shift;
--	u64 dma_addr, max_addr;
-+	u64 dma_addr;
- 	struct device_node *dn;
- 	u32 ddw_avail[DDW_APPLICABLE_SIZE];
- 	struct direct_window *window;
-@@ -1126,7 +1129,7 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- 	mutex_lock(&direct_window_init_mutex);
- 
--	dma_addr = find_existing_ddw(pdn);
-+	dma_addr = find_existing_ddw(pdn, &len);
- 	if (dma_addr != 0)
- 		goto out_unlock;
- 
-@@ -1212,14 +1215,27 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 	}
- 	/* verify the window * number of ptes will map the partition */
- 	/* check largest block * page size > max memory hotplug addr */
--	max_addr = ddw_memory_hotplug_max();
--	if (query.largest_available_block < (max_addr >> page_shift)) {
-+	/*
-+	 * The "ibm,pmemory" can appear anywhere in the address space.
-+	 * Assuming it is still backed by page structs, try MAX_PHYSMEM_BITS
-+	 * for the upper limit and fallback to max RAM otherwise but this
-+	 * disables device::dma_ops_bypass.
-+	 */
-+	len = max_ram_len;
-+	if (pmem_present) {
-+		if (query.largest_available_block >=
-+		    (1ULL << (MAX_PHYSMEM_BITS - page_shift)))
-+			len = MAX_PHYSMEM_BITS - page_shift;
-+		else
-+			dev_info(&dev->dev, "Skipping ibm,pmemory");
-+	}
-+
-+	if (query.largest_available_block < (1ULL << (len - page_shift))) {
- 		dev_dbg(&dev->dev, "can't map partition max 0x%llx with %llu "
--			  "%llu-sized pages\n", max_addr,  query.largest_available_block,
-+			  "%llu-sized pages\n", 1ULL << len, query.largest_available_block,
- 			  1ULL << page_shift);
- 		goto out_failed;
- 	}
--	len = order_base_2(max_addr);
- 	win64 = kzalloc(sizeof(struct property), GFP_KERNEL);
- 	if (!win64) {
- 		dev_info(&dev->dev,
-@@ -1299,6 +1315,15 @@ static u64 enable_ddw(struct pci_dev *dev, struct device_node *pdn)
- 
- out_unlock:
- 	mutex_unlock(&direct_window_init_mutex);
-+
-+	/*
-+	 * If we have persistent memory and the window size is only as big
-+	 * as RAM, then we failed to create a window to cover persistent
-+	 * memory and need to set the DMA limit.
-+	 */
-+	if (pmem_present && dma_addr && (len == max_ram_len))
-+		dev->dev.bus_dma_limit = dma_addr + (1ULL << len);
-+
- 	return dma_addr;
- }
- 
--- 
-2.17.1
+Mimi
 
