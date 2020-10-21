@@ -2,229 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B526E294F7E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:05:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A77F294F76
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:03:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443996AbgJUPFf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:05:35 -0400
-Received: from mga17.intel.com ([192.55.52.151]:45299 "EHLO mga17.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443989AbgJUPFf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:05:35 -0400
-IronPort-SDR: XCAilwaPFwAZxdDVbcBGxBphy1vZ/ZxHd07ve4O0Cjg2E5ju+SE8mlddjiqvH1o25xwlIb6B0I
- KAGE3uRG465Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="147238974"
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="147238974"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:05:34 -0700
-IronPort-SDR: IjVrZk8ineJ+I2LAr8MnftzoVsiMXF2mhBIdCHxQ64wCcuJqUFhZAF7U/E08fdQcBT8czfbLxU
- k5UrduFiByWA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="422833278"
-Received: from aubrey-work.sh.intel.com ([10.239.53.113])
-  by fmsmga001.fm.intel.com with ESMTP; 21 Oct 2020 08:05:30 -0700
-From:   Aubrey Li <aubrey.li@linux.intel.com>
-To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-        valentin.schneider@arm.com
-Cc:     tim.c.chen@linux.intel.com, linux-kernel@vger.kernel.org,
-        Aubrey Li <aubrey.li@intel.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Jiang Biao <benbjiang@gmail.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>
-Subject: [RFC PATCH v3] sched/fair: select idle cpu from idle cpumask for task wakeup
-Date:   Wed, 21 Oct 2020 23:03:35 +0800
-Message-Id: <20201021150335.1103231-1-aubrey.li@linux.intel.com>
-X-Mailer: git-send-email 2.25.1
+        id S2443932AbgJUPDx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:03:53 -0400
+Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:38715 "EHLO
+        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2443567AbgJUPDw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:03:52 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id D535EB56;
+        Wed, 21 Oct 2020 11:03:51 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Wed, 21 Oct 2020 11:03:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=qxb2dhapqEcV1wlUzpI50HpbL56
+        z//q+bmCX0zPuRWk=; b=iuWAIt2XcaEtAHn23qs5m92uT1vkZNTgIK12LRSyAqR
+        XoIF76zW0AhIBPocwKxxyGc6912NVKR1TUWLIqsdiGKxOSGW1DUawXkVXosY+UkO
+        sNqAhHBd8M/cOYU8UsGWbtT1QVUjNBGkKg2Gn7L2kVc/YbyFrmUFZ9RhW4gtTrBt
+        g1fyOIV5+1zHjEqdCDNqkyDwGaoUW7W6e/5K0p2AlMRbKpj1g9pBgr/qHOotCZRK
+        tuY74vNKth41EoVZj0VEWWe98Nt2rCJqcKDUaqXIxx2gxDu/elm6BuKSKk9u2xSO
+        F3EXmrOgtDGxXrt4jyB/63AED0uI5+r+bnHjjr1Ksrg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qxb2dh
+        apqEcV1wlUzpI50HpbL56z//q+bmCX0zPuRWk=; b=iU2dQe7Qx7Wu8kCpHOCyig
+        FGNSeeIWoVYLqRsDiq5p3rdSeWvD18xiV2gbm7SCoQHF5eBPp2tc62WgSsevE0pf
+        IKiK0DYdkQvZG4YyH2nUmmTLewIZUCrU1d223IFBwq9ZcvBjHpJy5cY7YHt5vN3w
+        DCYe9E4I/uvJLK+ptxuVxDH7rVFrrnv4OGJD85XEPH9/r65en9c+dcrZl+tmM7/w
+        2+HcbvCC4k/wL7UFJ9F/cGnpQKc4jiPCxcK6ypZm4eUx6E+CQ95tihIT3Dsa7kYP
+        YuGMmznmxatXIH3JbiObiR4YzaKKPm2o/siZuK3cIPehVUjfU9Og0lMx0EtKo0Pw
+        ==
+X-ME-Sender: <xms:1k2QX7P03KAusWuHx7Aw6TxTdtCRN4P-zA6TkawjfBmJ9Of-is_pSA>
+    <xme:1k2QX18e5xif-7xmDVXtF2BsGF4NKbw5i7aodd-6D0B3JDZi9Tg2l_gyqAQZcPgsZ
+    gVyyETTELbFo-z2pqg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeehgdekhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtjeenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelvefggfevhfdvueejkefguedtleeujeevjeevhfdvvdefgefgffdtgfelgfdt
+    hfenucffohhmrghinhepphhinhgvieegrdhorhhgnecukfhppeeltddrkeelrdeikedrje
+    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
+    gihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:1k2QX6SgpZiECmRQYw4XcbsZSp2f5IPaTU3OZ1ghF6hflwUsap5UoA>
+    <xmx:1k2QX_sp7GAO4HUqGSz3v_V1S7UPkPNDZiaNG5QCK23_c3oLrMk7XA>
+    <xmx:1k2QXzcm7Qs_B9MJa7LJSsJoUDtij6C8k1p4w3MXhxE2bUCMGacpWw>
+    <xmx:102QX_6LFvDtvFdjW8hy6H45ggFZX1VjddmyK_UUzrftSjX3ED7s4A>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 48FE13064610;
+        Wed, 21 Oct 2020 11:03:50 -0400 (EDT)
+Date:   Wed, 21 Oct 2020 17:03:48 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Chen-Yu Tsai <wens@csie.org>
+Cc:     Alexander Kochetkov <al.kochet@gmail.com>,
+        Mark Brown <broonie@kernel.org>, linux-spi@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
+Message-ID: <20201021150348.g2anzbqalhrmypdl@gilmour.lan>
+References: <20201015154740.20825-1-al.kochet@gmail.com>
+ <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
+ <4EC91DD5-5611-4B48-B6FC-00690B400584@gmail.com>
+ <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cswefexiyy5rohzg"
+Content-Disposition: inline
+In-Reply-To: <CAGb2v64ruUf7Lv-cHZTRPs-U-gOboGtTwOB3+qtxZTFyLVFLjg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aubrey Li <aubrey.li@intel.com>
 
-Added idle cpumask to track idle cpus in sched domain. When a CPU
-enters idle, its corresponding bit in the idle cpumask will be set,
-and when the CPU exits idle, its bit will be cleared.
+--cswefexiyy5rohzg
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-When a task wakes up to select an idle cpu, scanning idle cpumask
-has low cost than scanning all the cpus in last level cache domain,
-especially when the system is heavily loaded.
+On Tue, Oct 20, 2020 at 11:52:34AM +0800, Chen-Yu Tsai wrote:
+> On Tue, Oct 20, 2020 at 1:43 AM Alexander Kochetkov <al.kochet@gmail.com>=
+ wrote:
+> >
+> >
+> >
+> > > 19 =D0=BE=D0=BA=D1=82. 2020 =D0=B3., =D0=B2 11:21, Maxime Ripard <max=
+ime@cerno.tech> =D0=BD=D0=B0=D0=BF=D0=B8=D1=81=D0=B0=D0=BB(=D0=B0):
+> > >
+> > > Hi!
+> > >
+> > > On Thu, Oct 15, 2020 at 06:47:40PM +0300, Alexander Kochetkov wrote:
+> > >> DMA-based transfer will be enabled if data length is larger than FIF=
+O size
+> > >> (64 bytes for A64). This greatly reduce number of interrupts for
+> > >> transferring data.
+> > >>
+> > >> For smaller data size PIO mode will be used. In PIO mode whole buffe=
+r will
+> > >> be loaded into FIFO.
+> > >>
+> > >> If driver failed to request DMA channels then it fallback for PIO mo=
+de.
+> > >>
+> > >> Tested on SOPINE (https://www.pine64.org/sopine/)
+> > >>
+> > >> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
+> > >
+> > > Thanks for working on this, it's been a bit overdue
+> >
+> > Hi, Maxime!
+> >
+> > We did custom A64 based computation module for our product.
+> > Do you mean that A64 is obsolete or EOL product?
+> > If so, can you recommend active replacement for A64 from Allwinner same=
+ price?
+>=20
+> I believe what Maxime meant was that DMA transfer for SPI is a long
+> sought-after feature, but no one had finished it.
 
-v2->v3:
-- change setting idle cpumask to every idle entry, otherwise schbench
-  has a regression of 99th percentile latency.
-- change clearing idle cpumask to nohz_balancer_kick(), so updating
-  idle cpumask is ratelimited in the idle exiting path.
-- set SCHED_IDLE cpu in idle cpumask to allow it as a wakeup target.
+Yeah, that's what I meant :)
 
-v1->v2:
-- idle cpumask is updated in the nohz routines, by initializing idle
-  cpumask with sched_domain_span(sd), nohz=off case remains the original
-  behavior.
+Maxime
 
-Cc: Mel Gorman <mgorman@suse.de>
-Cc: Vincent Guittot <vincent.guittot@linaro.org>
-Cc: Qais Yousef <qais.yousef@arm.com>
-Cc: Valentin Schneider <valentin.schneider@arm.com>
-Cc: Jiang Biao <benbjiang@gmail.com>
-Cc: Tim Chen <tim.c.chen@linux.intel.com>
-Signed-off-by: Aubrey Li <aubrey.li@linux.intel.com>
----
- include/linux/sched/topology.h | 13 ++++++++++
- kernel/sched/fair.c            | 45 +++++++++++++++++++++++++++++++++-
- kernel/sched/idle.c            |  1 +
- kernel/sched/sched.h           |  1 +
- kernel/sched/topology.c        |  3 ++-
- 5 files changed, 61 insertions(+), 2 deletions(-)
+--cswefexiyy5rohzg
+Content-Type: application/pgp-signature; name="signature.asc"
 
-diff --git a/include/linux/sched/topology.h b/include/linux/sched/topology.h
-index fb11091129b3..43a641d26154 100644
---- a/include/linux/sched/topology.h
-+++ b/include/linux/sched/topology.h
-@@ -65,8 +65,21 @@ struct sched_domain_shared {
- 	atomic_t	ref;
- 	atomic_t	nr_busy_cpus;
- 	int		has_idle_cores;
-+	/*
-+	 * Span of all idle CPUs in this domain.
-+	 *
-+	 * NOTE: this field is variable length. (Allocated dynamically
-+	 * by attaching extra space to the end of the structure,
-+	 * depending on how many CPUs the kernel has booted up with)
-+	 */
-+	unsigned long	idle_cpus_span[];
- };
- 
-+static inline struct cpumask *sds_idle_cpus(struct sched_domain_shared *sds)
-+{
-+	return to_cpumask(sds->idle_cpus_span);
-+}
-+
- struct sched_domain {
- 	/* These fields must be setup */
- 	struct sched_domain __rcu *parent;	/* top domain must be null terminated */
-diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-index 6b3b59cc51d6..088d1995594f 100644
---- a/kernel/sched/fair.c
-+++ b/kernel/sched/fair.c
-@@ -6023,6 +6023,38 @@ void __update_idle_core(struct rq *rq)
- 	rcu_read_unlock();
- }
- 
-+static DEFINE_PER_CPU(bool, cpu_idle_state);
-+/*
-+ * Update cpu idle state and record this information
-+ * in sd_llc_shared->idle_cpus_span.
-+ */
-+void update_idle_cpumask(struct rq *rq, bool idle_state)
-+{
-+	struct sched_domain *sd;
-+	int cpu = cpu_of(rq);
-+
-+	/*
-+	 * No need to update idle cpumask if the state
-+	 * does not change.
-+	 */
-+	if (per_cpu(cpu_idle_state, cpu) == idle_state)
-+		return;
-+
-+	per_cpu(cpu_idle_state, cpu) = idle_state;
-+
-+	rcu_read_lock();
-+
-+	sd = rcu_dereference(per_cpu(sd_llc, cpu));
-+	if (!sd || !sd->shared)
-+		goto unlock;
-+	if (idle_state)
-+		cpumask_set_cpu(cpu, sds_idle_cpus(sd->shared));
-+	else
-+		cpumask_clear_cpu(cpu, sds_idle_cpus(sd->shared));
-+unlock:
-+	rcu_read_unlock();
-+}
-+
- /*
-  * Scan the entire LLC domain for idle cores; this dynamically switches off if
-  * there are no idle cores left in the system; tracked through
-@@ -6136,7 +6168,12 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
- 
- 	time = cpu_clock(this);
- 
--	cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-+	/*
-+	 * sched_domain_shared is set only at shared cache level,
-+	 * this works only because select_idle_cpu is called with
-+	 * sd_llc.
-+	 */
-+	cpumask_and(cpus, sds_idle_cpus(sd->shared), p->cpus_ptr);
- 
- 	for_each_cpu_wrap(cpu, cpus, target) {
- 		if (!--nr)
-@@ -10070,6 +10107,12 @@ static void nohz_balancer_kick(struct rq *rq)
- 	if (unlikely(rq->idle_balance))
- 		return;
- 
-+	/* The CPU is not in idle, update idle cpumask */
-+	if (unlikely(sched_idle_cpu(cpu))) {
-+		/* Allow SCHED_IDLE cpu as a wakeup target */
-+		update_idle_cpumask(rq, true);
-+	} else
-+		update_idle_cpumask(rq, false);
- 	/*
- 	 * We may be recently in ticked or tickless idle mode. At the first
- 	 * busy tick after returning from idle, we will update the busy stats.
-diff --git a/kernel/sched/idle.c b/kernel/sched/idle.c
-index 1ae95b9150d3..ce1f929d7fbb 100644
---- a/kernel/sched/idle.c
-+++ b/kernel/sched/idle.c
-@@ -405,6 +405,7 @@ static void put_prev_task_idle(struct rq *rq, struct task_struct *prev)
- static void set_next_task_idle(struct rq *rq, struct task_struct *next, bool first)
- {
- 	update_idle_core(rq);
-+	update_idle_cpumask(rq, true);
- 	schedstat_inc(rq->sched_goidle);
- }
- 
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index c82857e2e288..2d1655039ed5 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -1069,6 +1069,7 @@ static inline void update_idle_core(struct rq *rq)
- #else
- static inline void update_idle_core(struct rq *rq) { }
- #endif
-+void update_idle_cpumask(struct rq *rq, bool idle_state);
- 
- DECLARE_PER_CPU_SHARED_ALIGNED(struct rq, runqueues);
- 
-diff --git a/kernel/sched/topology.c b/kernel/sched/topology.c
-index 9079d865a935..f14a6ef4de57 100644
---- a/kernel/sched/topology.c
-+++ b/kernel/sched/topology.c
-@@ -1407,6 +1407,7 @@ sd_init(struct sched_domain_topology_level *tl,
- 		sd->shared = *per_cpu_ptr(sdd->sds, sd_id);
- 		atomic_inc(&sd->shared->ref);
- 		atomic_set(&sd->shared->nr_busy_cpus, sd_weight);
-+		cpumask_copy(sds_idle_cpus(sd->shared), sched_domain_span(sd));
- 	}
- 
- 	sd->private = sdd;
-@@ -1769,7 +1770,7 @@ static int __sdt_alloc(const struct cpumask *cpu_map)
- 
- 			*per_cpu_ptr(sdd->sd, j) = sd;
- 
--			sds = kzalloc_node(sizeof(struct sched_domain_shared),
-+			sds = kzalloc_node(sizeof(struct sched_domain_shared) + cpumask_size(),
- 					GFP_KERNEL, cpu_to_node(j));
- 			if (!sds)
- 				return -ENOMEM;
--- 
-2.25.1
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5BN1AAKCRDj7w1vZxhR
+xeajAQDDQfn/PTTmGCss/aqPhvUim5gLLSaV4p3P4gdxSpylWQEAkHNQa448LP1N
+bvAej+dehNCy7akUYd7zXzYe3O5QNwM=
+=CuAY
+-----END PGP SIGNATURE-----
+
+--cswefexiyy5rohzg--
