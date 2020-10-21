@@ -2,106 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A8286295545
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:40:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86C35295548
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:42:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507219AbgJUXki (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 19:40:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37464 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507212AbgJUXkh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:40:37 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D477CC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:40:36 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id b26so2436346pff.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:40:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=O9rYzRnSkF2UD97oO4EZ0NEFG4S2m4ydCre3ge1rKBo=;
-        b=YRDA3LM3mSoV+qVHj0WcfDRccqbiy+Vs53VdVmWN0gDDOWE6TRTrOq4P3bSYMsJL/M
-         LN90r/7t5oX/RYXLEIlYtQCjBeFpuifOz/VJKj8mxFU09fTHL+CdmKdb9Cbv/ziL8gH2
-         AUnMcPagIb2YvtdIKujUiCI5d4Jnei3Tvi53U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=O9rYzRnSkF2UD97oO4EZ0NEFG4S2m4ydCre3ge1rKBo=;
-        b=cby4Cd8sQT8DLsQR+cXnz4sUPToSrvLW/nhAZDKZwL+B6KLR+QwFA+3oYp6e87LDv5
-         YB4HdtPmYPVCrxOZcJCaP1kQreSKaeUNmU3V8dtqd07Tkg63P6QJ4OFrtVJ92Zu4fZ3t
-         +3BXhy/jY21qa3I/Q0roE70EuTqpy0E0aUTWLZw4c/aez6KmGUWOejC7VrOiJtQH//Gm
-         HgFmSLRpiHxG7dksvhp+bJBZgDgqMLJJRNeqSrQ/9ZRMpZpeFYJIFaae+90f1Vpjnac2
-         XId0i5sfcubbEBL0bAwtTxhK5c1R4Bl7Fx/4WthIdggjgw1+Fd/tHW556U+Im2t68WIh
-         hg8Q==
-X-Gm-Message-State: AOAM532R7nQKGCxmyurPPevm5oHGPVbdXZa+a9z9Fx84n+CezkJIvMZy
-        w8UcrHRvDuNOJRZR31Fx8+J4MQ==
-X-Google-Smtp-Source: ABdhPJzanjxc4NIOzF2s4oNQAJsI/jJirh6Lls2RWMsMFJPP35SrjVOC4hEaHo0pft8xghEOjUn6LQ==
-X-Received: by 2002:a63:c806:: with SMTP id z6mr21407pgg.430.1603323636408;
-        Wed, 21 Oct 2020 16:40:36 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id ne16sm12877pjb.11.2020.10.21.16.40.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 16:40:35 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 16:40:34 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Russell King <linux@armlinux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-Message-ID: <202010211637.7CFD8435@keescook>
-References: <20201021225737.739-1-digetx@gmail.com>
+        id S2442289AbgJUXm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 19:42:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56302 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404943AbgJUXm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 19:42:28 -0400
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AE08724197;
+        Wed, 21 Oct 2020 23:42:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603323748;
+        bh=BESI+542e7zfS3UEqo6HAOXoKEmppsFmRI/GraPxDPQ=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=1unrDcjabHeLDDqS/apsiljcFHGIO18AqDTOVKbU+vvALlFaGbNzUssIB6t1VFqK7
+         EGSjXx5bDIFwmnNpkGTQxnF1O7La4nHIbZXzKKHB6W+idmBfQytHpuwMZmrYXuRjy+
+         Z2GVPU9PeH5FzPjjkFzFe6tAI9Y2170ZsxaPz7zk=
+Received: by mail-ej1-f49.google.com with SMTP id k3so44101ejj.10;
+        Wed, 21 Oct 2020 16:42:27 -0700 (PDT)
+X-Gm-Message-State: AOAM530Ne4UZvd+Q0VlHEcOP/O4VSpn7T4sjI6Q/Lrx5p9mxt82duxBF
+        7QHNIavoqUVW4mjKyvG3yYrCcGVWCuRpLPbsvA==
+X-Google-Smtp-Source: ABdhPJwgMVbl3VYJeXaSvXiI9nwXO3E9FGk9CZ7wEou8onpN28BE+CNBywsvzb2a+LmZGUfNobLk6I2nGy6MQrV80nI=
+X-Received: by 2002:a17:906:3b8e:: with SMTP id u14mr5725503ejf.127.1603323746144;
+ Wed, 21 Oct 2020 16:42:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021225737.739-1-digetx@gmail.com>
+References: <20201020174253.3757771-1-fparent@baylibre.com> <20201020174253.3757771-4-fparent@baylibre.com>
+In-Reply-To: <20201020174253.3757771-4-fparent@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 22 Oct 2020 07:42:14 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_8vDopCaJ+=kZwhTPgM0ioTL=PdCdQLjgWMdyJHkyD=Pw@mail.gmail.com>
+Message-ID: <CAAOTY_8vDopCaJ+=kZwhTPgM0ioTL=PdCdQLjgWMdyJHkyD=Pw@mail.gmail.com>
+Subject: Re: [PATCH 3/8] drm/mediatek: add disp-color MT8167 support
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
-> The vfp_kmode_exception() function now is unreachable using relative
-> branching in THUMB2 kernel configuration, resulting in a "relocation
-> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
-> linker error. Let's use long jump in order to fix the issue.
+Hi, Fabien:
 
-Eek. Is this with gcc or clang?
+Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8821=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
+=9A
+>
+> Add support for disp-color on MT8167 SoC.
 
-> 
-> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
 
-Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
-That commit may have implicitly moved the location of .vfp11_veneer,
-though I thought I had chosen the correct position.
-
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  arch/arm/vfp/vfphw.S | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
-> index 4fcff9f59947..6e2b29f0c48d 100644
-> --- a/arch/arm/vfp/vfphw.S
-> +++ b/arch/arm/vfp/vfphw.S
-> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
->  	ldr	r3, [sp, #S_PSR]	@ Neither lazy restore nor FP exceptions
->  	and	r3, r3, #MODE_MASK	@ are supported in kernel mode
->  	teq	r3, #USR_MODE
-> -	bne	vfp_kmode_exception	@ Returns through lr
-> +	ldr	r1, =vfp_kmode_exception
-> +	bxne	r1			@ Returns through lr
->  
->  	VFPFMRX	r1, FPEXC		@ Is the VFP enabled?
->  	DBGSTR1	"fpexc %08x", r1
-
-This seems like a workaround though? I suspect the vfp11_veneer needs
-moving?
-
--- 
-Kees Cook
+>  drivers/gpu/drm/mediatek/mtk_disp_color.c | 7 +++++++
+>  1 file changed, 7 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_disp_color.c b/drivers/gpu/drm/=
+mediatek/mtk_disp_color.c
+> index 3ae9c810845b..a1227cefbf31 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_disp_color.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_disp_color.c
+> @@ -16,6 +16,7 @@
+>
+>  #define DISP_COLOR_CFG_MAIN                    0x0400
+>  #define DISP_COLOR_START_MT2701                        0x0f00
+> +#define DISP_COLOR_START_MT8167                        0x0400
+>  #define DISP_COLOR_START_MT8173                        0x0c00
+>  #define DISP_COLOR_START(comp)                 ((comp)->data->color_offs=
+et)
+>  #define DISP_COLOR_WIDTH(comp)                 (DISP_COLOR_START(comp) +=
+ 0x50)
+> @@ -148,6 +149,10 @@ static const struct mtk_disp_color_data mt2701_color=
+_driver_data =3D {
+>         .color_offset =3D DISP_COLOR_START_MT2701,
+>  };
+>
+> +static const struct mtk_disp_color_data mt8167_color_driver_data =3D {
+> +       .color_offset =3D DISP_COLOR_START_MT8167,
+> +};
+> +
+>  static const struct mtk_disp_color_data mt8173_color_driver_data =3D {
+>         .color_offset =3D DISP_COLOR_START_MT8173,
+>  };
+> @@ -155,6 +160,8 @@ static const struct mtk_disp_color_data mt8173_color_=
+driver_data =3D {
+>  static const struct of_device_id mtk_disp_color_driver_dt_match[] =3D {
+>         { .compatible =3D "mediatek,mt2701-disp-color",
+>           .data =3D &mt2701_color_driver_data},
+> +       { .compatible =3D "mediatek,mt8167-disp-color",
+> +         .data =3D &mt8167_color_driver_data},
+>         { .compatible =3D "mediatek,mt8173-disp-color",
+>           .data =3D &mt8173_color_driver_data},
+>         {},
+> --
+> 2.28.0
+>
