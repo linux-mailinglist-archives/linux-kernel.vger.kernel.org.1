@@ -2,133 +2,213 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BA53294C7B
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4B5B294C86
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:26:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411780AbgJUMXU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:23:20 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33118 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2406859AbgJUMXU (ORCPT
+        id S2442343AbgJUM0F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:26:05 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:8858 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1725791AbgJUM0E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:23:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603282998;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=WiRz+kFKIrNEgTelCpve6u1W10g3WBtsjsLl9b2ekkI=;
-        b=Q/S27Q9onqAyQ+ctufye3tg8iDHTtfRbW4Ud0RiAHNkumvNtsZviHZArl1ThN97JZ19EqV
-        xQORPsXp/p65fzrp+8zzhFin2Jn9U6hoqIzVOlfIlb4Se/g0OcP1VDCnykesiuD7dPdhpq
-        qULtsb/HR+mblcra/kfMlHXCmaAyvA8=
-Received: from mail-wm1-f69.google.com (mail-wm1-f69.google.com
- [209.85.128.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-103-dyYwuXQ0PYiSIfN6tdZqHA-1; Wed, 21 Oct 2020 08:23:16 -0400
-X-MC-Unique: dyYwuXQ0PYiSIfN6tdZqHA-1
-Received: by mail-wm1-f69.google.com with SMTP id f26so1279149wml.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:23:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=WiRz+kFKIrNEgTelCpve6u1W10g3WBtsjsLl9b2ekkI=;
-        b=crUOEGZ4pfZubo6hEIGSxrEhoUDSVHzrFgPkqArAWCcqHv1f7slLUZogx4R2HyqVff
-         2ZrR/0ANhHID84ZL+xzbBVsn9FZSMwx0HBFhX6EJIqxSeoYnLPMb/E0aEIIHv95uj9lU
-         UsiBHpMRJXOom6ba4HGWLkz6upmPadN5OH1Ea3UYoPfEZzKQEzKLrjrjxQaSQnciEf8w
-         Ud1sR85yuS1eflrzCe1sl6lTSS1lsCaR9xxGPYDTA2D/LNO6I5e1r+aOeKBSk/BFWLcy
-         5TflT1AEL8wq8ApZ0C7pFF+Q/+MZRmZ/544jNC1me5j6pgjTt9Fpz4PVgQyzr8mrpg+u
-         jQPw==
-X-Gm-Message-State: AOAM5316RT/Q/dvJ2oxHk0WML0KrdUV8Eb0ObkSRBibF1jSl9CqFQbxX
-        HszDtMKLbGPmrn9MjvEs5CPhmjjpfo9MpZvOhcOgTdanPanizXR7StLxNbmcX/U8kdWGUhFalaK
-        HISF0E7In4KTJ+cHwfnVFUP6k
-X-Received: by 2002:a5d:6551:: with SMTP id z17mr4525008wrv.266.1603282995109;
-        Wed, 21 Oct 2020 05:23:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxtwSLm6YZu+DcgrnZ/h86D1ViOpkbDmwdo17WdmpNLiHxArp0j2/UErpXqPjrdxUTG7Scd+A==
-X-Received: by 2002:a5d:6551:: with SMTP id z17mr4524981wrv.266.1603282994778;
-        Wed, 21 Oct 2020 05:23:14 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id t12sm3636565wrm.25.2020.10.21.05.23.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 05:23:14 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Sean Christopherson <sean.j.christopherson@intel.com>
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 04/10] KVM: VMX: Do Hyper-V TLB flush iff vCPU's EPTP hasn't been flushed
-In-Reply-To: <20201020215613.8972-5-sean.j.christopherson@intel.com>
-References: <20201020215613.8972-1-sean.j.christopherson@intel.com> <20201020215613.8972-5-sean.j.christopherson@intel.com>
-Date:   Wed, 21 Oct 2020 14:23:13 +0200
-Message-ID: <87zh4f4vke.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Wed, 21 Oct 2020 08:26:04 -0400
+Received: from pps.filterd (m0098396.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LC3ZMk115791;
+        Wed, 21 Oct 2020 08:25:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=bvSsPq3wOmmtOX1az4xCyTfWApYvcQkBAvmNyM4Gu/k=;
+ b=jDOgf0Qi/Sfe+6zHOdryNDHp6PEAoQIUv6TAVYN7AN285iFKam5UdOLQ1rLc2u59HXdO
+ qg8wMwH6KEvRao0u/p/Gn5/JnkCxOqU8bYpsMJib1LZPjfxzMgCH8UdqmvZI6mrDFZBJ
+ psJuJMBJVwMkuDPePGZnuPboeSizU2G648FNjJV/aUsVynXGY/J8gsWJB9rRtcnkOudB
+ NhUXSzPevHWifnim3vTckQy27ecypWvuQoaL11zQ2F7SyapPGwvu/L47c5PM2csZx65T
+ NtHUILzQEqxFqIa+MrnDnoOedaMn021bLHv2yhV4lH9haaHUK4iS0rdULyz4gv5i2PxX dA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34ak37krm8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 08:25:41 -0400
+Received: from m0098396.ppops.net (m0098396.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LC5592123886;
+        Wed, 21 Oct 2020 08:25:41 -0400
+Received: from ppma06ams.nl.ibm.com (66.31.33a9.ip4.static.sl-reverse.com [169.51.49.102])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34ak37krkj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 08:25:41 -0400
+Received: from pps.filterd (ppma06ams.nl.ibm.com [127.0.0.1])
+        by ppma06ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LCCH5h010636;
+        Wed, 21 Oct 2020 12:25:39 GMT
+Received: from b06cxnps4075.portsmouth.uk.ibm.com (d06relay12.portsmouth.uk.ibm.com [9.149.109.197])
+        by ppma06ams.nl.ibm.com with ESMTP id 347qvhca8x-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 12:25:38 +0000
+Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
+        by b06cxnps4075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LCPa9t28901750
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 12:25:36 GMT
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 883C04C050;
+        Wed, 21 Oct 2020 12:25:36 +0000 (GMT)
+Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 709A94C040;
+        Wed, 21 Oct 2020 12:25:32 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.92.86])
+        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Oct 2020 12:25:32 +0000 (GMT)
+Message-ID: <7b2ccd620a9de5c2fd57b8e8aeb41d5476f83b28.camel@linux.ibm.com>
+Subject: Re: [PATCH v7 1/4] KEYS: trusted: Add generic trusted keys framework
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Sumit Garg <sumit.garg@linaro.org>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        David Howells <dhowells@redhat.com>,
+        Jens Wiklander <jens.wiklander@linaro.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Janne Karhunen <janne.karhunen@gmail.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>,
+        Markus Wamser <Markus.Wamser@mixed-mode.de>,
+        Luke Hinds <lhinds@redhat.com>,
+        "open list:ASYMMETRIC KEYS" <keyrings@vger.kernel.org>,
+        linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        op-tee@lists.trustedfirmware.org
+Date:   Wed, 21 Oct 2020 08:25:31 -0400
+In-Reply-To: <CAFA6WYM7aJwP9j_ayGvbJPu-cyv87rsm9N4Wj2OCOMnmfDx+Rw@mail.gmail.com>
+References: <1602065268-26017-1-git-send-email-sumit.garg@linaro.org>
+         <1602065268-26017-2-git-send-email-sumit.garg@linaro.org>
+         <8e07f9401c9f7e18fb1453b7b290472c0049c6e6.camel@linux.ibm.com>
+         <CAFA6WYM7aJwP9j_ayGvbJPu-cyv87rsm9N4Wj2OCOMnmfDx+Rw@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-21_05:2020-10-20,2020-10-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999 mlxscore=0
+ phishscore=0 adultscore=0 suspectscore=2 bulkscore=0 impostorscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210096
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sean Christopherson <sean.j.christopherson@intel.com> writes:
+On Wed, 2020-10-21 at 11:16 +0530, Sumit Garg wrote:
+> Thanks Mimi for your comments.
+> 
+> On Wed, 21 Oct 2020 at 08:51, Mimi Zohar <zohar@linux.ibm.com> wrote:
+> >
+> > On Wed, 2020-10-07 at 15:37 +0530, Sumit Garg wrote:
+> >
+> > > +/*
+> > > + * trusted_destroy - clear and free the key's payload
+> > > + */
+> > > +static void trusted_destroy(struct key *key)
+> > > +{
+> > > +     kfree_sensitive(key->payload.data[0]);
+> > > +}
+> > > +
+> > > +struct key_type key_type_trusted = {
+> > > +     .name = "trusted",
+> > > +     .instantiate = trusted_instantiate,
+> > > +     .update = trusted_update,
+> > > +     .destroy = trusted_destroy,
+> > > +     .describe = user_describe,
+> > > +     .read = trusted_read,
+> > > +};
+> > > +EXPORT_SYMBOL_GPL(key_type_trusted);
+> > > +
+> > > +static int __init init_trusted(void)
+> > > +{
+> > > +     int i, ret = 0;
+> > > +
+> > > +     for (i = 0; i < ARRAY_SIZE(trusted_key_sources); i++) {
+> > > +             if (trusted_key_source &&
+> > > +                 strncmp(trusted_key_source, trusted_key_sources[i].name,
+> > > +                         strlen(trusted_key_sources[i].name)))
+> > > +                     continue;
+> > > +
+> > > +             trusted_key_ops = trusted_key_sources[i].ops;
+> > > +
+> > > +             ret = trusted_key_ops->init();
+> > > +             if (!ret)
+> > > +                     break;
+> > > +     }
+> >
+> > In the case when the module paramater isn't specified and both TPM and
+> > TEE are enabled, trusted_key_ops is set to the last source initialized.
+> 
+> I guess there is some misunderstanding. Here it's only a single trust
+> source (TPM *or* TEE) is initialized and only that trust source would
+> be active at runtime. And trusted_key_ops would be initialized to the
+> first trust source whose initialization is successful (see check: "if
+> (!ret)").
 
-> Combine the for-loops for Hyper-V TLB EPTP checking and flushing, and in
-> doing so skip flushes for vCPUs whose EPTP matches the target EPTP.
->
-> Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
-> ---
->  arch/x86/kvm/vmx/vmx.c | 20 ++++++--------------
->  1 file changed, 6 insertions(+), 14 deletions(-)
->
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index bba6d91f1fe1..52cb9eec1db3 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -502,31 +502,23 @@ static int hv_remote_flush_tlb_with_range(struct kvm *kvm,
->  
->  	spin_lock(&kvm_vmx->ept_pointer_lock);
->  
-> -	if (kvm_vmx->ept_pointers_match == EPT_POINTERS_CHECK) {
-> +	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
->  		kvm_vmx->ept_pointers_match = EPT_POINTERS_MATCH;
->  		kvm_vmx->hv_tlb_eptp = INVALID_PAGE;
->  
->  		kvm_for_each_vcpu(i, vcpu, kvm) {
->  			tmp_eptp = to_vmx(vcpu)->ept_pointer;
-> -			if (!VALID_PAGE(tmp_eptp))
-> +			if (!VALID_PAGE(tmp_eptp) ||
-> +			    tmp_eptp == kvm_vmx->hv_tlb_eptp)
->  				continue;
->  
-> -			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
-> +			if (!VALID_PAGE(kvm_vmx->hv_tlb_eptp))
->  				kvm_vmx->hv_tlb_eptp = tmp_eptp;
-> -			} else if (kvm_vmx->hv_tlb_eptp != tmp_eptp) {
-> +			else
->  				kvm_vmx->ept_pointers_match
->  					= EPT_POINTERS_MISMATCH;
-> -				break;
-> -			}
-> -		}
-> -	}
->  
-> -	if (kvm_vmx->ept_pointers_match != EPT_POINTERS_MATCH) {
-> -		kvm_for_each_vcpu(i, vcpu, kvm) {
-> -			/* If ept_pointer is invalid pointer, bypass flush request. */
-> -			if (VALID_PAGE(to_vmx(vcpu)->ept_pointer))
-> -				ret |= hv_remote_flush_eptp(to_vmx(vcpu)->ept_pointer,
-> -							    range);
-> +			ret |= hv_remote_flush_eptp(tmp_eptp, range);
->  		}
->  	} else if (VALID_PAGE(kvm_vmx->hv_tlb_eptp)) {
->  		ret = hv_remote_flush_eptp(kvm_vmx->hv_tlb_eptp, range);
+My mistake.
 
-Reviewed-by: Vitaly Kuznetsov <vkuznets@redhat.com>
+> 
+> > After patch 2/4, the last trusted source initialized is TEE.  If the
+> > intention is to limit it to either TPM or TEE, then trusted_key_ops
+> > should have a default value, which could be overwritten at runtime.
+> > That would address Luke Hind's concerns of making the decision at
+> > compile time.
+> 
+> I think traversing the trust source list with the initial value being
+> TPM would be default value.
 
-I have an unrelated question though. Does it make sense to call
-hv_remote_flush_eptp() in case all EPTPs matches with ept_pointer_lock
-spinlock held? Like if we had a match by the time of the call, does it
-make a difference if the situation will change before or right after we
-do the hypercall?
+Agreed
+> 
+> >
+> > trusted_key_ops should be defined as __ro_after_init, like is currently
+> > done for other LSM structures.
+> 
+> Sure, will do.
 
--- 
-Vitaly
+Thanks
+> 
+> >
+> > > +
+> > > +     /*
+> > > +      * encrypted_keys.ko depends on successful load of this module even if
+> > > +      * trusted key implementation is not found.
+> > > +      */
+> > > +     if (ret == -ENODEV)
+> > > +             return 0;
+> > > +
+> > > +     return ret;
+> > > +}
+> > > +
+> > > +static void __exit cleanup_trusted(void)
+> > > +{
+> > > +     trusted_key_ops->exit();
+> >
+> > If the intention is really to support both TPM and TEE trusted keys at
+> > the same time, as James suggested, then the same "for" loop as in
+> > init_trusted() is needed here and probably elsewhere.
+> 
+> Current intention is to only support a single trust source (TPM or
+> TEE) at runtime. But in future if there are use-cases then framework
+> can be extended to support multiple trust sources at runtime as well.
+
+Ok, the last sentence of the patch description, "Also, add a module
+parameter in order to select a particular trust source in case a
+platform support multiple trust sources.", needs to be expanded to:
+- indicate only one trust source at a time is supported
+- indicate the default, if the module_param is not specified
+
+I would also change the word from "add" to "define".   The new "source"
+module parameter needs to be added to the admin-guide/kernel-parameters 
+documentation.
+
+thanks,
+
+Mimi   
+
 
