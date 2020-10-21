@@ -2,214 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22549294B16
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:09:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F09F1294B1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:11:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441667AbgJUKJB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:09:01 -0400
-Received: from foss.arm.com ([217.140.110.172]:32974 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405124AbgJUKI7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:08:59 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 984181FB;
-        Wed, 21 Oct 2020 03:08:58 -0700 (PDT)
-Received: from e121166-lin.cambridge.arm.com (e121166-lin.cambridge.arm.com [10.1.196.255])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB3023F66E;
-        Wed, 21 Oct 2020 03:08:56 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 11:08:51 +0100
-From:   Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
-To:     Vidya Sagar <vidyas@nvidia.com>, jingoohan1@gmail.com,
-        gustavo.pimentel@synopsys.com
-Cc:     bhelgaas@google.com, amurray@thegoodpenguin.co.uk, robh@kernel.org,
-        treding@nvidia.com, jonathanh@nvidia.com,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kthota@nvidia.com, mmaddireddy@nvidia.com, sagar.tv@gmail.com
-Subject: Re: [PATCH V2] PCI: dwc: Add support to handle prefetchable memory
- mapping
-Message-ID: <20201021100850.GA7893@e121166-lin.cambridge.arm.com>
-References: <20201005121351.32516-1-vidyas@nvidia.com>
- <20201020195931.12470-1-vidyas@nvidia.com>
-MIME-Version: 1.0
+        id S2409644AbgJUKLP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:11:15 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:42131 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2409566AbgJUKLP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 06:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1603275071;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=89Yg6vbTn6BKVOpzF3QEaawYsgB85ymoJlzefQdDbKU=;
+        b=h12qQY397Ik1K3FAyfLvDPWbtYbj9WbR7KGEBy/gFzcj7MnKX+Sxv2JfpQTt7rGh3Tf+Nj
+        3bAL36dBkRfQxXnGuuKPRdRm2PmeGwFzXRzWwLUH+kIGEhd5THptoiLPdgomRA8/53Etr4
+        A2V4HBldB425se9m1yj+tz+sLH4S83I=
+Received: from EUR01-HE1-obe.outbound.protection.outlook.com
+ (mail-he1eur01lp2051.outbound.protection.outlook.com [104.47.0.51]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ de-mta-28-Okk6C-cOOFCGXM_rI6Qm3Q-1; Wed, 21 Oct 2020 12:11:09 +0200
+X-MC-Unique: Okk6C-cOOFCGXM_rI6Qm3Q-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fSs/nJ27RS0JitC60Ipi2Ll3zaiUIgqyOd/9nXOHP4XMrJ+s6nwRGq13Wqp5BJe5NxduxDvZUYKyvUj5nTeWHDnoZa4t1subz+GF0RjksM/tQkau4CFUFNibBaCXBaOnIJZLaSPRmS14uaIIWv2WqI8NY59lIj+2iF9Y5/wJ+q5USSh2A6tjoFPlm2AWjmGgowF7BlvbMOtWH7/rqH34IiUWirji6lXqZZPCxoXAkIjSFUJ/I3hLJ3oMnV8BIlHwifAwaVHSCWNs90y1LNUa93dIfrgBbofu15tE7SHteEr9opFKzvZ3MkTSMT+9gaJiA7kgV0h1tdUdNzgFGBwGng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=89Yg6vbTn6BKVOpzF3QEaawYsgB85ymoJlzefQdDbKU=;
+ b=MUlsMgwYaRqyZEmUjGMp73ldc47hFKsHsKCqjngf2IKvau78/oRvYk+Oc1+7Na83oZPX9iJjDFyvCXProRaAcvxsXZWrhpgqFVLQbt9dofWOZhP2oR2okvRHUXcZFKFUsOMA9ZOmR8GDpYvL41Vk9e7uOkIiZb+s8KdChun0G034w/xMa8XYWsWzx4Im+52SUq7YqeSnFCLbYiKofEkIP7fqHNVGqEtLcXLhs0NkhNGmgOTmwbwYelltHzjwTXkkT6vhEUOK8BwJ9OdWoa1JcGC701gRmjUYRwEnKsmhnNe1/V7KyhWz1hnoqdAt0+pfg7kBnhtRyxX2yg043jhOfw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: me.benboeckel.net; dkim=none (message not signed)
+ header.d=none;me.benboeckel.net; dmarc=none action=none header.from=suse.com;
+Received: from VI1PR04MB7102.eurprd04.prod.outlook.com (2603:10a6:800:124::12)
+ by VI1PR04MB4303.eurprd04.prod.outlook.com (2603:10a6:803:3d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Wed, 21 Oct
+ 2020 10:11:07 +0000
+Received: from VI1PR04MB7102.eurprd04.prod.outlook.com
+ ([fe80::4850:c5a:699b:e466]) by VI1PR04MB7102.eurprd04.prod.outlook.com
+ ([fe80::4850:c5a:699b:e466%9]) with mapi id 15.20.3499.018; Wed, 21 Oct 2020
+ 10:11:07 +0000
+Date:   Wed, 21 Oct 2020 18:10:57 +0800
+From:   joeyli <jlee@suse.com>
+To:     list.lkml.keyrings@me.benboeckel.net
+Cc:     "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
+        David Howells <dhowells@redhat.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 2/2] PKCS#7: Check codeSigning EKU for kernel module
+ and kexec pe verification
+Message-ID: <20201021101057.GA13854@linux-l9pv.suse>
+References: <20201020065001.13836-1-jlee@suse.com>
+ <20201020065001.13836-3-jlee@suse.com>
+ <20201020134208.GA297878@erythro.dev.benboeckel.internal>
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201020195931.12470-1-vidyas@nvidia.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201020134208.GA297878@erythro.dev.benboeckel.internal>
+User-Agent: Mutt/1.5.24 (2015-08-30)
+X-Originating-IP: [124.11.22.254]
+X-ClientProxiedBy: HK0PR01CA0069.apcprd01.prod.exchangelabs.com
+ (2603:1096:203:a6::33) To VI1PR04MB7102.eurprd04.prod.outlook.com
+ (2603:10a6:800:124::12)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from linux-l9pv.suse (124.11.22.254) by HK0PR01CA0069.apcprd01.prod.exchangelabs.com (2603:1096:203:a6::33) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21 via Frontend Transport; Wed, 21 Oct 2020 10:11:04 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 852619d2-99af-45a6-fe62-08d875a9a074
+X-MS-TrafficTypeDiagnostic: VI1PR04MB4303:
+X-Microsoft-Antispam-PRVS: <VI1PR04MB4303AA9F1663C87207DFFDB5A31C0@VI1PR04MB4303.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: e1VgN+iLUWjWUti4xN7ZxhAN6mje/zaxfjI075mCmeGtuDzshfXuUnkwbNHEugqcATYEkWBjfjTcCDvbbqVC8/yweNeStSAwZewI58wYinU/CFHSUT7cBMbu+N6P3HYdX48gyPLOiYuonvS89Po1wiJ9/Tq61nqI8NZlJhlfs3hkItL6SEYUfeSQ90JiOrBJWx+cjBAL2IxJzBB+yiQ6HRJKEA/SHR0UkU8Cn68/RpjO14pFPvx6gyRheYUq66V4nlsEAzJx0M2h6uT4GYw4m6y6bLEZ9zZNHP5bXON/EwHcCaQQjycVioUsbZOgwHiVMDOEic8iI61uKfo7ZQOZGPRluHdnwJsjuB6RgaiRiGgHl+roVrxdTQ9pyKZhx9iB
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7102.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(396003)(376002)(136003)(346002)(39860400002)(5660300002)(66946007)(8886007)(15650500001)(66476007)(6666004)(66556008)(1076003)(83380400001)(86362001)(16526019)(8936002)(478600001)(2906002)(6506007)(53546011)(4744005)(9686003)(54906003)(316002)(6916009)(36756003)(4326008)(956004)(7696005)(52116002)(8676002)(186003)(33656002)(26005)(55016002)(43062003);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 1pBy9MB4hyKQq/9pvf8tD/6WD/Mv/NSIfZxjP2w2Fb8Al6p0QN4NlIailQZrQhD070ANF1Rg/SdLOod/nqjnS7cOmhIRQAawCrMtQbgDO0vsuUVPYmWWcNm5wrwQ2nhGL6Vyc45oQatEgrE4lEYNzVLUlsA20Ue7ABVpJ+ZRs4xbcTuH6kiRmMQcQJAa6GIv3yu4lJIVHHhc6zzeblnYBb1pnrKI0FNjA5Dp0DQadDcWj7VtR2OXqS3skMo3mMytEWwMao1RKaenPiJ+50FiPcN1t3q6IeMZNey1TwFlCirw5PfSxN6/swHq7IURKNmyx3GYjr2QPXOBlGL0OEdccdkbE2D1+ywYKskPllLu1DalG63fmhJRuiR+ejlSH/asut7uPXX46pvgWuuM/kgglR9yyYlt9vLJX3GA3ZxShEJR0gVcU29pU73bAN3JUWzfN39i+hTeF8yOSEOdA7wR09x0XFGiUyGwhqVh+EzPQbNRxPFqJnqgZlS2Lj55/4fTSzU1hB9o6OoZ2l5islDaB7zculmmz8vUEwm5lf/ZmTCnmAEevnHe6AtCc81tZuSYZHpYL7LblUiph/q2L2JZN7pblwsW0wtDEXzevpb8Cb+YjJs0DbhMSd6QV60O4kXFYlmrBJBdUrUmVOlg1XnyXg==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 852619d2-99af-45a6-fe62-08d875a9a074
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7102.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 10:11:07.6064
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: twINEqPrG/G9LxcK9DAgJhUyeOgN88isJSpSq7pLkH30DVxGG7pcySDAIpI80DRN
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB4303
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Jingoo, Gustavo,
+Hi Ben,
 
-please review this patch, thanks.
+On Tue, Oct 20, 2020 at 09:42:08AM -0400, Ben Boeckel wrote:
+> On Tue, Oct 20, 2020 at 14:50:01 +0800, Lee, Chun-Yi wrote:
+> > +config CHECK_CODESIGN_EKU
+> > +	bool "Check codeSigning extended key usage"
+> > +	depends on PKCS7_MESSAGE_PARSER=y
+> > +	depends on SYSTEM_DATA_VERIFICATION
+> > +	help
+> > +	  This option provides support for checking the codeSigning extended
+> > +	  key usage extension when verifying the signature in PKCS#7. It
+> > +	  affects kernel module verification and kexec PE binary verification
+> > +	  now.
+> 
+> Is the "now" necessary? Isn't it implied by the option's existence?
 
-Lorenzo
+Thanks for your review. I will remove the "now" in next version.
 
-On Wed, Oct 21, 2020 at 01:29:31AM +0530, Vidya Sagar wrote:
-> DWC sub-system currently doesn't differentiate between prefetchable and
-> non-prefetchable memory aperture entries in the 'ranges' property and
-> provides ATU mapping only for the first memory aperture entry out of all
-> the entries present. This was introduced by the
-> commit 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources").
-> Mapping for a memory apreture is required if its CPU address and the bus
-> address are different and the current mechanism works only if the memory
-> aperture which needs mapping happens to be the first entry. It doesn't
-> work either if the memory aperture that needs mapping is not the first
-> entry or if both prefetchable and non-prefetchable apertures need mapping.
-> 
-> This patch fixes this issue by differentiating between prefetchable and
-> non-prefetchable apertures in the 'ranges' property there by removing the
-> dependency on the order in which they are specified and adds support for
-> mapping prefetchable aperture using ATU region-3 if required.
-> 
-> Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
-> Link: http://patchwork.ozlabs.org/project/linux-pci/patch/20200513190855.23318-1-vidyas@nvidia.com/
-> 
-> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
-> ---
-> V2:
-> * Rewrote commit subject and description
-> * Addressed review comments from Lorenzo
-> 
->  .../pci/controller/dwc/pcie-designware-host.c | 42 ++++++++++++++++---
->  drivers/pci/controller/dwc/pcie-designware.c  | 12 +++---
->  drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
->  3 files changed, 46 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
-> index db547ee6ff3a..dae6da39bb90 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
-> @@ -521,9 +521,42 @@ static struct pci_ops dw_pcie_ops = {
->  	.write = pci_generic_config_write,
->  };
->  
-> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
-> +				  struct resource_entry *win)
-> +{
-> +	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
-> +
-> +	/* Check for prefetchable memory aperture */
-> +	if (win->res->flags & IORESOURCE_PREFETCH && win->offset) {
-> +		/* Number of view ports must at least be 4 to enable mapping */
-> +		if (pci->num_viewport < 4) {
-> +			dev_warn(pci->dev,
-> +				 "Insufficient ATU regions to map Prefetchable memory\n");
-> +		} else {
-> +			dw_pcie_prog_outbound_atu(pci,
-> +						  PCIE_ATU_REGION_INDEX3,
-> +						  PCIE_ATU_TYPE_MEM,
-> +						  win->res->start,
-> +						  win->res->start - win->offset,
-> +						  resource_size(win->res));
-> +		}
-> +	} else if (win->offset) { /* Non-prefetchable memory aperture */
-> +		if (upper_32_bits(resource_size(win->res)))
-> +			dev_warn(pci->dev,
-> +				 "Memory resource size exceeds max for 32 bits\n");
-> +		dw_pcie_prog_outbound_atu(pci,
-> +					  PCIE_ATU_REGION_INDEX0,
-> +					  PCIE_ATU_TYPE_MEM,
-> +					  win->res->start,
-> +					  win->res->start - win->offset,
-> +					  resource_size(win->res));
-> +	}
-> +}
-> +
->  void dw_pcie_setup_rc(struct pcie_port *pp)
->  {
->  	u32 val, ctrl, num_ctrls;
-> +	struct resource_entry *win;
->  	struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
->  
->  	/*
-> @@ -578,13 +611,10 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
->  	 * ATU, so we should not program the ATU here.
->  	 */
->  	if (pp->bridge->child_ops == &dw_child_pcie_ops) {
-> -		struct resource_entry *entry =
-> -			resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
-> +		resource_list_for_each_entry(win, &pp->bridge->windows)
-> +			if (resource_type(win->res) == IORESOURCE_MEM)
-> +				dw_pcie_setup_mem_atu(pp, win);
->  
-> -		dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
-> -					  PCIE_ATU_TYPE_MEM, entry->res->start,
-> -					  entry->res->start - entry->offset,
-> -					  resource_size(entry->res));
->  		if (pci->num_viewport > 2)
->  			dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
->  						  PCIE_ATU_TYPE_IO, pp->io_base,
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> index c2dea8fc97c8..b5e438b70cd5 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.c
-> +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> @@ -228,7 +228,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
->  static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  					     int index, int type,
->  					     u64 cpu_addr, u64 pci_addr,
-> -					     u32 size)
-> +					     u64 size)
->  {
->  	u32 retries, val;
->  	u64 limit_addr = cpu_addr + size - 1;
-> @@ -245,8 +245,10 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  				 lower_32_bits(pci_addr));
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->  				 upper_32_bits(pci_addr));
-> -	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1,
-> -				 type | PCIE_ATU_FUNC_NUM(func_no));
-> +	val = type | PCIE_ATU_FUNC_NUM(func_no);
-> +	val = upper_32_bits(size - 1) ?
-> +		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
-> +	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL2,
->  				 PCIE_ATU_ENABLE);
->  
-> @@ -267,7 +269,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->  
->  static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->  					int index, int type, u64 cpu_addr,
-> -					u64 pci_addr, u32 size)
-> +					u64 pci_addr, u64 size)
->  {
->  	u32 retries, val;
->  
-> @@ -311,7 +313,7 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->  }
->  
->  void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index, int type,
-> -			       u64 cpu_addr, u64 pci_addr, u32 size)
-> +			       u64 cpu_addr, u64 pci_addr, u64 size)
->  {
->  	__dw_pcie_prog_outbound_atu(pci, 0, index, type,
->  				    cpu_addr, pci_addr, size);
-> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
-> index 9d2f511f13fa..21dd06831b50 100644
-> --- a/drivers/pci/controller/dwc/pcie-designware.h
-> +++ b/drivers/pci/controller/dwc/pcie-designware.h
-> @@ -80,10 +80,12 @@
->  #define PCIE_ATU_VIEWPORT		0x900
->  #define PCIE_ATU_REGION_INBOUND		BIT(31)
->  #define PCIE_ATU_REGION_OUTBOUND	0
-> +#define PCIE_ATU_REGION_INDEX3		0x3
->  #define PCIE_ATU_REGION_INDEX2		0x2
->  #define PCIE_ATU_REGION_INDEX1		0x1
->  #define PCIE_ATU_REGION_INDEX0		0x0
->  #define PCIE_ATU_CR1			0x904
-> +#define PCIE_ATU_INCREASE_REGION_SIZE	BIT(13)
->  #define PCIE_ATU_TYPE_MEM		0x0
->  #define PCIE_ATU_TYPE_IO		0x2
->  #define PCIE_ATU_TYPE_CFG0		0x4
-> @@ -295,7 +297,7 @@ void dw_pcie_upconfig_setup(struct dw_pcie *pci);
->  int dw_pcie_wait_for_link(struct dw_pcie *pci);
->  void dw_pcie_prog_outbound_atu(struct dw_pcie *pci, int index,
->  			       int type, u64 cpu_addr, u64 pci_addr,
-> -			       u32 size);
-> +			       u64 size);
->  void dw_pcie_prog_ep_outbound_atu(struct dw_pcie *pci, u8 func_no, int index,
->  				  int type, u64 cpu_addr, u64 pci_addr,
->  				  u32 size);
-> -- 
-> 2.17.1
-> 
+Joey Lee
+
