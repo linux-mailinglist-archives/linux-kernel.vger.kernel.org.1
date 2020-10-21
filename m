@@ -2,109 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81C2F2954A2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:06:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 805332954A5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 00:06:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506511AbgJUWF7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 18:05:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51170 "EHLO
+        id S2506550AbgJUWGk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 18:06:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51270 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506377AbgJUWF7 (ORCPT
+        with ESMTP id S2506539AbgJUWGj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 18:05:59 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE647C0613CE;
-        Wed, 21 Oct 2020 15:05:58 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id n6so4742686wrm.13;
-        Wed, 21 Oct 2020 15:05:58 -0700 (PDT)
+        Wed, 21 Oct 2020 18:06:39 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1B4A6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:06:38 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id o7so2317189pgv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 15:06:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=cIa7RepsUvg5hAaSeE1uSEC/ROabaaU87XY0sGpqcVs=;
-        b=SAc7eE8JJUXpM7dXrb31slIlUL3LMz3IRp0p0Scg8ZGs6ROGczqhwS8iwnVK8yxL44
-         lOLirDl77LjlfWAgKSuyO6LT7bNI6/zUEiBWob0nnHwrMImX0w+Narb8I/IOIbbtLbSS
-         pAWoNekaF1n9o/UONpHs0LmypVc4psGGOEmTPHwI0jFpMpn+csMnMFEn95LtZuxMUd8N
-         pkV6UqrG9XxiKVGNwQ0gmrNogQ5o3tKVEj93WB+/a7G3vRXa3WUq5W6i1w0WyV6PgeI7
-         wVgSgK/O1KvIMrJHQy82ym38V/9CYEAs9Nu8+grY818GBqxHW6+M4Rovn+KIPy+c6kFk
-         kPLw==
+        d=chromium.org; s=google;
+        h=mime-version:content-transfer-encoding:in-reply-to:references
+         :subject:from:cc:to:date:message-id:user-agent;
+        bh=IK+ZMP2az0RfPWcNkCMoV3EvgaO3Q2+DaxT88xfq70s=;
+        b=BHInRJZgPQYw3GolT2+P917F3CtK3B8WgMft9Alp2/I+WOKq9JqCMQKJK3RU0DDC5O
+         uNaO25XfQEfIKgjWpoDj7b4bKjpTZzqr8JT5Fy8/NTu1j610//2wrmIPrsuPjC/mNrpB
+         McmoPnHMSK4nrvJQAFXU+LbLYUmj1DeEMUm+0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=cIa7RepsUvg5hAaSeE1uSEC/ROabaaU87XY0sGpqcVs=;
-        b=ntMygvaN4SnrspB+xCKY58yFn6Ji+vNYMJVKIodbKJY4hLfoB+dAYkbnBDwe3HS+Hu
-         HpWCQNfXvdzae/oUu22dhOx+7wfui7I+Og9GZVi6JbtjKsU63OFgRJ7DauGW+tq+lzoY
-         ZAUg1pqwdjv8DcvuU8i3oIApePznsBrJ0JyyGF/Y2d/dToU1EwqGOYf7ygA/Y/9j1hYa
-         NYMroYWOeNjluP3H2FtgMW20WD8fhARd5eWPurYEr7dLneehn+kFcmBGazVTu0oo2DEn
-         GbcDA2tcwmorzKmyHHzLf7EicWs66n76yPWH6E8i/5rFHdiVukXYTt4U9xIL29HiUlvp
-         IrlQ==
-X-Gm-Message-State: AOAM5304QWbciGmDSh/o7jhguttWKc5LXfKVUhhqH8v8pWyU/aacBkfY
-        rsvJaieYGQvqNtF5fgjIQRM=
-X-Google-Smtp-Source: ABdhPJyc70sv1NhsR+6Lzr+4U2b4BJ4I8vciePFCOL1auG0T/70iVgQ03PNyy5K4XMqe5HJ0bLAbdw==
-X-Received: by 2002:a5d:4987:: with SMTP id r7mr6395724wrq.327.1603317957617;
-        Wed, 21 Oct 2020 15:05:57 -0700 (PDT)
-Received: from [192.168.1.158] ([2.26.187.29])
-        by smtp.gmail.com with ESMTPSA id v9sm5327160wmh.23.2020.10.21.15.05.55
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 15:05:56 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, sakari.ailus@linux.intel.com,
-        yong.zhi@intel.com, rafael@kernel.org, gregkh@linuxfoundation.org,
-        kitakar@gmail.com, dan.carpenter@oracle.org
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201020094113.GG4077@smile.fi.intel.com>
-From:   Daniel Scally <djrscally@gmail.com>
-Message-ID: <4ce5b55f-f492-2b52-5571-86ee346db795@gmail.com>
-Date:   Wed, 21 Oct 2020 23:05:54 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        h=x-gm-message-state:mime-version:content-transfer-encoding
+         :in-reply-to:references:subject:from:cc:to:date:message-id
+         :user-agent;
+        bh=IK+ZMP2az0RfPWcNkCMoV3EvgaO3Q2+DaxT88xfq70s=;
+        b=GPAqenpW05Gv5C4Qw7KNjop5IhSyfXRsPlcv+4830fRTiVb4sGxQfNPdwBaWifhLBe
+         Qm/DaOKweo6VjB/RTJ7N2Q3DnHbq4JJT4/YJyY1dvc2eR3GR2xcduhNYrkt5ZEokt99/
+         X+4OVHh1tpa8YgGnCwFyiP93vcjCBUCvhpxXvTLwq1sHP7+sKnS3yYJuHHmK3pR+gtZm
+         MvAqn3ILG5N76S3nUHP4h97xwE8ZVqObdVRt/zbUWfFIMMspK3YzTwbwzronf708G5Re
+         bPaK5LNE4dxrp6b/KxPrzQbLuUL9xyYK4EtDB6w0OVQGAM5NuwysKwpTcghULnwekZfk
+         d3zw==
+X-Gm-Message-State: AOAM532++E5b8FJozZAbncXEADZ061fmb2G6zZkvZfd/pygS028AnCT5
+        odvC4Us9oNRAhHZNJUXtQny25Q==
+X-Google-Smtp-Source: ABdhPJwfIN8B8/sBkUHsjFMnj0A33TfVS6lON7NRuGhEjueahqVrrlMGzM6dQm51TqTvvEkyU5p7OA==
+X-Received: by 2002:a63:1e0b:: with SMTP id e11mr5003372pge.72.1603317997512;
+        Wed, 21 Oct 2020 15:06:37 -0700 (PDT)
+Received: from chromium.org ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id b142sm3293301pfb.186.2020.10.21.15.06.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 15:06:36 -0700 (PDT)
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-In-Reply-To: <20201020094113.GG4077@smile.fi.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201021211326.GA18548@willie-the-truck>
+References: <20201020214544.3206838-1-swboyd@chromium.org> <20201020214544.3206838-2-swboyd@chromium.org> <20201021075722.GA17230@willie-the-truck> <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com> <20201021154909.GD18071@willie-the-truck> <160329672229.884498.3370140649393072677@swboyd.mtv.corp.google.com> <20201021211326.GA18548@willie-the-truck>
+Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
+From:   Stephen Boyd <swboyd@chromium.org>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+To:     Will Deacon <will@kernel.org>
+Date:   Wed, 21 Oct 2020 15:06:35 -0700
+Message-ID: <160331799505.884498.376133101315233761@swboyd.mtv.corp.google.com>
+User-Agent: alot/0.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy
+Quoting Will Deacon (2020-10-21 14:13:26)
+> On Wed, Oct 21, 2020 at 09:12:02AM -0700, Stephen Boyd wrote:
+>=20
+> > My read of the spec was that the intent is to remove the call at some
+> > point and have the removal of the call mean that it isn't vulnerable.
+>=20
+> No, the CSV2 field in whichever ID register is for that. We check that in
+> spectre_v2_get_cpu_hw_mitigation_state().
 
-On 20/10/2020 10:41, Andy Shevchenko wrote:
->> +	  	- Some Microsoft Surface models
-> Perhaps an example? Like '(e.g. Surface Book)'
->
->> +		- The Lenovo Miix line
-> Ditto.
-Sure - I'll list them.
->> +static const char * const port_names[] = {
->> +	"port0", "port1", "port2", "port3"
-> + comma.
-I think 4 ports is the maximum for CIO2 device, so this shouldn't ever
-get extended?
->> +	/* device fwnode properties */
->> +	memset(dev_properties, 0, sizeof(struct property_entry) * 3);
-> 3 -> sizeof(...) ?
-> Same Q to other similar cases.
-Whoops, of course, that was stupid in hindsight!
->> +	if (is_software_node(dev_fwnode(&pci_dev->dev)))
-> Can we use the same check as for _build call above?
+Alright, makes sense!
 
-And just set a flag in struct cio2? sure.
+>=20
+> > Because NOT_SUPPORTED per the spec means "not needed", "maybe needed",
+> > or "firmware doesn't know". Aha maybe they wanted us to make the call on
+> > each CPU (i.e. PE) and then if any of them return 0 we should consider
+> > it vulnerable and if they return NOT_SUPPORTED we should keep calling
+> > for each CPU until we are sure we don't see a 0 and only see a 1 or
+> > NOT_SUPPORTED? Looks like a saturating value sort of thing, across CPUs
+> > that we care/know about.
+>=20
+> The mitigation state is always per-cpu because of big/little systems, the=
+re
+> just isn't a short-cut for the firmware to say "all CPUs are unaffected"
+> like there is for SMCCC_ARCH_WORKAROUND_2 with its "NOT_REQUIRED" return
+> code.
+>=20
 
-
-For all the other comments; ack - I'll make those changes for the next
-version
-
+Ok. Can/should kvm be emulating the CSV2 bit that the guest sees? Just
+wondering why I'm falling into this (ghost) trap in the first place.
