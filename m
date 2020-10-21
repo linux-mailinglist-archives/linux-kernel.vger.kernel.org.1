@@ -2,156 +2,228 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 30E8B294F36
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:54:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D15B9294F3A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443497AbgJUOy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:54:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:36298 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443450AbgJUOy0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:54:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3BDFA31B;
-        Wed, 21 Oct 2020 07:54:25 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B23743F66B;
-        Wed, 21 Oct 2020 07:54:22 -0700 (PDT)
-Subject: Re: [PATCH v2 14/14] perf arm-spe: Add support for ARMv8.3-SPE
-To:     Leo Yan <leo.yan@linaro.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-15-leo.yan@linaro.org>
- <9c74082b-fccf-7713-b98d-50da76c5d7af@arm.com>
- <20201021051031.GE7226@leoy-ThinkPad-X240s>
- <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
- <20201021101748.GB3194@leoy-ThinkPad-X240s>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <bf23b7ff-9ecd-26ed-71fd-e3a840a687e1@arm.com>
-Date:   Wed, 21 Oct 2020 15:53:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2443782AbgJUOy7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:54:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40870 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443647AbgJUOy6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:54:58 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 614F0C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:54:58 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id z5so3659463ejw.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=BFCPvM2IrIxIbO/NAcdmKF4cshlij12nw9Eb0WJDBag=;
+        b=gtraypYYX1Ts6KvEYPbWTw38IGVzD3hSarSd3/Gs5PLsvUR0OJ0quvcAk1qwBnB4eV
+         E6qili6MZI8oOMOUenDUtlxhJb7rLtMhImtFofl3fq/Na6Udq4wr+05g5K2MG7pmP/Fk
+         RIHSA1rm2s1ZRNmzGRZNvWpdiQSwFlRvi6DermMxq3byJLg7xzP9CMBhShZCDU1o8M1T
+         GUWKNZwGtrolIY/ZUpP470LmDY13GXicW2Bv5diWJg+EykFuwV+jXR7apuP4VOJLEUAZ
+         hTJYD2Y4TV4wKdvro4O4firrBitP8OqhnYCK6S4JlxRC0w9Q1lfqmkNteDpRRdVtOu0M
+         xhBw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=BFCPvM2IrIxIbO/NAcdmKF4cshlij12nw9Eb0WJDBag=;
+        b=gLWDFQj6VTD/38or860HsQ22TJvMX7pZ+eYtqvl2Uh4ZEmJz0r40O2NSIdFHDA2CIR
+         j1st05U/jsrpCztb5QW3f2FA/0oEI00z2EYE9PCOqp+i0mUO4uF/g3wu964O5BAcdbz4
+         SxulFRG2khRk99frV5M6KQMxqVRcxKgtQi82wYTM33e5rETDgoQhUWA0y8MpHNHza9hB
+         lM1XRhG7YJEMaCfut2Kdz6kSkL95FCTAl0xVA8RFeB6bmGN0VKRYDzF8mAr98NsUZqkh
+         Zg1NB3l/6cESPo74PBnpyxrLk7/b62kRp9JeugFFsZ6T5YwOFOhG6frl7EpG6/7Ugyez
+         RSQw==
+X-Gm-Message-State: AOAM531KoPGv52vlFZyqLJjCaRHhWUNSZFKWOnoU3WXCVOliaBOnasbm
+        JUreV0WFrF1+1h37/6y1VY28Fg==
+X-Google-Smtp-Source: ABdhPJzhzTRYyOOgZYy1AMK6rSQ1NL+2tSuKTUBIqZvdQLncyfEHZsHZ7BDLcE7Yw9HNN5D2QgbCQg==
+X-Received: by 2002:a17:906:d292:: with SMTP id ay18mr4038597ejb.244.1603292097022;
+        Wed, 21 Oct 2020 07:54:57 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id y1sm2226896edj.76.2020.10.21.07.54.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 07:54:56 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 16:54:36 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     Jacob Pan <jacob.pan.linux@gmail.com>
+Cc:     iommu@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Joerg Roedel <joro@8bytes.org>,
+        Alex Williamson <alex.williamson@redhat.com>,
+        Lu Baolu <baolu.lu@linux.intel.com>,
+        David Woodhouse <dwmw2@infradead.org>,
+        Jonathan Corbet <corbet@lwn.net>, linux-api@vger.kernel.org,
+        Jean-Philippe Brucker <jean-philippe@linaro.com>,
+        Eric Auger <eric.auger@redhat.com>,
+        Jacob Pan <jacob.jun.pan@linux.intel.com>,
+        Yi Liu <yi.l.liu@intel.com>,
+        "Tian, Kevin" <kevin.tian@intel.com>,
+        Raj Ashok <ashok.raj@intel.com>, Wu Hao <hao.wu@intel.com>,
+        Yi Sun <yi.y.sun@intel.com>, Dave Jiang <dave.jiang@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+Subject: Re: [PATCH v3 03/14] iommu/ioasid: Add a separate function for
+ detach data
+Message-ID: <20201021145436.GA1653231@myrica>
+References: <1601329121-36979-1-git-send-email-jacob.jun.pan@linux.intel.com>
+ <1601329121-36979-4-git-send-email-jacob.jun.pan@linux.intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201021101748.GB3194@leoy-ThinkPad-X240s>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1601329121-36979-4-git-send-email-jacob.jun.pan@linux.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21/10/2020 11:17, Leo Yan wrote:
-
-Hi Leo,
-
-> On Wed, Oct 21, 2020 at 10:26:07AM +0100, Andrï¿½ Przywara wrote:
->> On 21/10/2020 06:10, Leo Yan wrote:
->>
->> Hi,
->>
->>> On Tue, Oct 20, 2020 at 10:54:44PM +0100, Andrï¿½ Przywara wrote:
->>>> On 29/09/2020 14:39, Leo Yan wrote:
->>>>
->>>> Hi,
->>>>
->>>>> From: Wei Li <liwei391@huawei.com>
->>>>>
->>>>> This patch is to support Armv8.3 extension for SPE, it adds alignment
->>>>> field in the Events packet and it supports the Scalable Vector Extension
->>>>> (SVE) for Operation packet and Events packet with two additions:
->>>>>
->>>>>   - The vector length for SVE operations in the Operation Type packet;
->>>>>   - The incomplete predicate and empty predicate fields in the Events
->>>>>     packet.
->>>>>
->>>>> Signed-off-by: Wei Li <liwei391@huawei.com>
->>>>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
->>>>> ---
->>>>>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 84 ++++++++++++++++++-
->>>>>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     |  6 ++
->>>>>  2 files changed, 87 insertions(+), 3 deletions(-)
->>>>>
->>>>> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->>>>> index 05a4c74399d7..3ec381fddfcb 100644
->>>>> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->>>>> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
->>>>> @@ -342,14 +342,73 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
->>>>>  					return ret;
->>>>>  			}
->>>>>  		}
->>>>> +		if (idx > 2) {
->>>>
->>>> As I mentioned in the other patch, I doubt this extra comparison is
->>>> useful. Does that protect us from anything?
->>>
->>> It's the same reason with Event packet which have explained for replying
->>> patch 10, the condition is to respect the SPE specifiction:
->>>
->>>   E[11], byte 1, bit [11], when SZ == 0b10 , or SZ == 0b11
->>>      Alignment.
->>>      ...
->>>      Otherwise this bit reads-as-zero.
->>>
->>> So we gives higher priority for checking payload size than the Event
->>> bit setting; if you have other thinking for this, please let me know.
->>
->> Ah, thanks for pointing this out. It looks like a bug in the manual
->> then, because I don't see why bit 11 should be any different from bits
->> [10:8] and bits [15:12] in this respect. And in the diagrams above you
->> clearly see bit 11 being shown even when SZ == 0b01.
->>
->> I will try to follow this up here.
+On Mon, Sep 28, 2020 at 02:38:30PM -0700, Jacob Pan wrote:
+> IOASID private data can be cleared by ioasid_attach_data() with a NULL
+> data pointer. A common use case is for a caller to free the data
+> afterward. ioasid_attach_data() calls synchronize_rcu() before return
+> such that free data can be sure without outstanding readers.
+> However, since synchronize_rcu() may sleep, ioasid_attach_data() cannot
+> be used under spinlocks.
 > 
-> Thanks for following up!
-
-Just got the confirmation that this is indeed a bug in the manual. It
-will be fixed, but since the ARM ARM isn't published on a daily base, it
-might take a while to trickle in.
-
-Cheers,
-Andre
-
-
+> This patch adds ioasid_detach_data() as a separate API where
+> synchronize_rcu() is called only in this case. ioasid_attach_data() can
+> then be used under spinlocks. In addition, this change makes the API
+> symmetrical.
 > 
->>>>> +			if (payload & SPE_EVT_PKT_ALIGNMENT) {
->>>>
->>>> Mmh, but this is bit 11, right?
->>>
->>> Yes.
->>>
->>>> So would need to go into the (idx > 1)
->>>> section (covering bits 8-15)? Another reason to ditch this comparison above.
->>>
->>> As has explained in patch 10, idx is not the same thing with "sz"
->>> field; "idx" stands for payload length in bytes, so:
->>>
->>>   idx = 1 << sz
->>>
->>> The spec defines the sz is 2 or 3, thus idx is 4 or 8; so this is why
->>> here use the condition "(idx > 2)".
->>>
->>> I think here need to refine code for more explict expression so can
->>> avoid confusion.  So I think it's better to condition such like:
->>>
->>>   if (payload_len >= 4) {
->>
->> Yes, that would be (or have been) more helpful, but as mentioned in the
->> other patch, I'd rather see those comparisons go entirely.
-> 
-> Agree.  Will remove comparisons in next version.
-> 
-> Thanks,
-> Leo
-> 
+> Signed-off-by: Jacob Pan <jacob.jun.pan@linux.intel.com>
 
+A typo below, but
+
+Reviewed-by: Jean-Philippe Brucker <jean-philippe@linaro.org>
+
+> ---
+>  drivers/iommu/intel/svm.c |  4 ++--
+>  drivers/iommu/ioasid.c    | 54 ++++++++++++++++++++++++++++++++++++++---------
+>  include/linux/ioasid.h    |  5 ++++-
+>  3 files changed, 50 insertions(+), 13 deletions(-)
+> 
+> diff --git a/drivers/iommu/intel/svm.c b/drivers/iommu/intel/svm.c
+> index 2c5645f0737a..06a16bee7b65 100644
+> --- a/drivers/iommu/intel/svm.c
+> +++ b/drivers/iommu/intel/svm.c
+> @@ -398,7 +398,7 @@ int intel_svm_bind_gpasid(struct iommu_domain *domain, struct device *dev,
+>  	list_add_rcu(&sdev->list, &svm->devs);
+>   out:
+>  	if (!IS_ERR_OR_NULL(svm) && list_empty(&svm->devs)) {
+> -		ioasid_attach_data(data->hpasid, NULL);
+> +		ioasid_detach_data(data->hpasid);
+>  		kfree(svm);
+>  	}
+>  
+> @@ -441,7 +441,7 @@ int intel_svm_unbind_gpasid(struct device *dev, int pasid)
+>  				 * the unbind, IOMMU driver will get notified
+>  				 * and perform cleanup.
+>  				 */
+> -				ioasid_attach_data(pasid, NULL);
+> +				ioasid_detach_data(pasid);
+>  				kfree(svm);
+>  			}
+>  		}
+> diff --git a/drivers/iommu/ioasid.c b/drivers/iommu/ioasid.c
+> index 5f63af07acd5..6cfbdfb492e0 100644
+> --- a/drivers/iommu/ioasid.c
+> +++ b/drivers/iommu/ioasid.c
+> @@ -272,24 +272,58 @@ int ioasid_attach_data(ioasid_t ioasid, void *data)
+>  
+>  	spin_lock(&ioasid_allocator_lock);
+>  	ioasid_data = xa_load(&active_allocator->xa, ioasid);
+> -	if (ioasid_data)
+> -		rcu_assign_pointer(ioasid_data->private, data);
+> -	else
+> +
+> +	if (!ioasid_data) {
+>  		ret = -ENOENT;
+> -	spin_unlock(&ioasid_allocator_lock);
+> +		goto done_unlock;
+> +	}
+>  
+> -	/*
+> -	 * Wait for readers to stop accessing the old private data, so the
+> -	 * caller can free it.
+> -	 */
+> -	if (!ret)
+> -		synchronize_rcu();
+> +	if (ioasid_data->private) {
+> +		ret = -EBUSY;
+> +		goto done_unlock;
+> +	}
+> +	rcu_assign_pointer(ioasid_data->private, data);
+> +
+> +done_unlock:
+> +	spin_unlock(&ioasid_allocator_lock);
+>  
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL_GPL(ioasid_attach_data);
+>  
+>  /**
+> + * ioasid_detach_data - Clear the private data of an ioasid
+> + *
+> + * @ioasid: the IOASIDD to clear private data
+
+IOASID
+
+> + */
+> +void ioasid_detach_data(ioasid_t ioasid)
+> +{
+> +	struct ioasid_data *ioasid_data;
+> +
+> +	spin_lock(&ioasid_allocator_lock);
+> +	ioasid_data = xa_load(&active_allocator->xa, ioasid);
+> +
+> +	if (!ioasid_data) {
+> +		pr_warn("IOASID %u not found to detach data from\n", ioasid);
+> +		goto done_unlock;
+> +	}
+> +
+> +	if (ioasid_data->private) {
+> +		rcu_assign_pointer(ioasid_data->private, NULL);
+> +		goto done_unlock;
+> +	}
+> +
+> +done_unlock:
+> +	spin_unlock(&ioasid_allocator_lock);
+> +	/*
+> +	 * Wait for readers to stop accessing the old private data,
+> +	 * so the caller can free it.
+> +	 */
+> +	synchronize_rcu();
+> +}
+> +EXPORT_SYMBOL_GPL(ioasid_detach_data);
+> +
+> +/**
+>   * ioasid_alloc - Allocate an IOASID
+>   * @set: the IOASID set
+>   * @min: the minimum ID (inclusive)
+> diff --git a/include/linux/ioasid.h b/include/linux/ioasid.h
+> index 9c44947a68c8..c7f649fa970a 100644
+> --- a/include/linux/ioasid.h
+> +++ b/include/linux/ioasid.h
+> @@ -40,7 +40,7 @@ void *ioasid_find(struct ioasid_set *set, ioasid_t ioasid,
+>  int ioasid_register_allocator(struct ioasid_allocator_ops *allocator);
+>  void ioasid_unregister_allocator(struct ioasid_allocator_ops *allocator);
+>  int ioasid_attach_data(ioasid_t ioasid, void *data);
+> -
+> +void ioasid_detach_data(ioasid_t ioasid);
+>  #else /* !CONFIG_IOASID */
+>  static inline ioasid_t ioasid_alloc(struct ioasid_set *set, ioasid_t min,
+>  				    ioasid_t max, void *private)
+> @@ -72,5 +72,8 @@ static inline int ioasid_attach_data(ioasid_t ioasid, void *data)
+>  	return -ENOTSUPP;
+>  }
+>  
+> +static inline void ioasid_detach_data(ioasid_t ioasid)
+> +{
+> +}
+>  #endif /* CONFIG_IOASID */
+>  #endif /* __LINUX_IOASID_H */
+> -- 
+> 2.7.4
+> 
