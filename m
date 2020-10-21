@@ -2,123 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E61532953EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:13:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 303172953EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:13:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505849AbgJUVNf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:13:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38710 "EHLO mail.kernel.org"
+        id S2505860AbgJUVNv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:13:51 -0400
+Received: from ms.lwn.net ([45.79.88.28]:37646 "EHLO ms.lwn.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505841AbgJUVNe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:13:34 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        id S2505852AbgJUVNu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 17:13:50 -0400
+Received: from lwn.net (localhost [127.0.0.1])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 69C0821D24;
-        Wed, 21 Oct 2020 21:13:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603314813;
-        bh=BtKiZxDK41Nclw/9t2jRmKjztnbi4BYxCL4GQBmJpk0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vPM+cNOTqKbsob17ev4ihDQyFzprwiBMsI1EwcD+zOaYEdm1uLOkrgma179cxNPHw
-         z+211X7JQvp8KLPRi4aCJ4zks6VSi0oE0iKZiIF+KX+h52yiMAQaweuyFFRWbkvlVF
-         ArCyRfSv6YLxbf12cfQF1QemFkfVVx5wN5EvG9gw=
-Date:   Wed, 21 Oct 2020 22:13:26 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Stephen Boyd <swboyd@chromium.org>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
-Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return
- SMCCC_RET_NOT_REQUIRED
-Message-ID: <20201021211326.GA18548@willie-the-truck>
-References: <20201020214544.3206838-1-swboyd@chromium.org>
- <20201020214544.3206838-2-swboyd@chromium.org>
- <20201021075722.GA17230@willie-the-truck>
- <160329383454.884498.3396883189907056188@swboyd.mtv.corp.google.com>
- <20201021154909.GD18071@willie-the-truck>
- <160329672229.884498.3370140649393072677@swboyd.mtv.corp.google.com>
+        by ms.lwn.net (Postfix) with ESMTPSA id DFD392C8;
+        Wed, 21 Oct 2020 21:13:47 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 15:13:44 -0600
+From:   Jonathan Corbet <corbet@lwn.net>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Jonathan =?UTF-8?B?TmV1c2Now6RmZXI=?= <j.neuschaefer@gmx.net>,
+        "rd.dunlab@gmail.com" <rd.dunlab@gmail.com>,
+        Corey Minyard <cminyard@mvista.com>,
+        Harald Seiler <hws@denx.de>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Jacob Keller <jacob.e.keller@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Michael Walle <michael@walle.cc>,
+        Pragat Pandya <pragat.pandya@gmail.com>,
+        Takashi Iwai <tiwai@suse.de>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] docs: driver-api: remove a duplicated index entry
+Message-ID: <20201021151344.4f471fbc@lwn.net>
+In-Reply-To: <623fb26a8409a7b002e45bdbb6f517ac08fd508a.1602753121.git.mchehab+huawei@kernel.org>
+References: <623fb26a8409a7b002e45bdbb6f517ac08fd508a.1602753121.git.mchehab+huawei@kernel.org>
+Organization: LWN.net
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <160329672229.884498.3370140649393072677@swboyd.mtv.corp.google.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 09:12:02AM -0700, Stephen Boyd wrote:
-> Quoting Will Deacon (2020-10-21 08:49:09)
-> > On Wed, Oct 21, 2020 at 08:23:54AM -0700, Stephen Boyd wrote:
-> > > 
-> > > If I'm reading the TF-A code correctly it looks like this will return
-> > > SMC_UNK if the platform decides that "This flag can be set to 0 by the
-> > > platform if none of the PEs in the system need the workaround." Where
-> > > the flag is WORKAROUND_CVE_2017_5715 and the call handler returns 1 if
-> > > the errata doesn't apply but the config is enabled, 0 if the errata
-> > > applies and the config is enabled, or SMC_UNK (I guess this is
-> > > NOT_SUPPORTED?) if the config is disabled[2].
-> > > 
-> > > So TF-A could disable this config and then the kernel would think it is
-> > > vulnerable when it actually isn't? The spec is a pile of ectoplasma
-> > > here.
-> > 
-> > Yes, but there's not a lot we can do in that case as we rely on the
-> > firmware to tell us whether or not we're affected. We do have the
-> > "safelist" as a last resort, but that's about it.
+On Thu, 15 Oct 2020 11:12:06 +0200
+Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+
+> The ipmb file was added twice at index.rst. That
+> sounds to be because the same patch was applied twice,
+> via different git trees:
 > 
-> There are quite a few platforms that set this config to 0. Should they
-> be setting it to 1?
+> 	commit f6ae22d64433fd8e08654adad7966299da931bb9
+> 	Author: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> 	Commit: Jonathan Corbet <corbet@lwn.net>
 > 
->  tf-a $ git grep WORKAROUND_CVE_2017_5715 -- **/platform.mk | wc -l
->  17
-
-A quick skim suggests that most (all?) of these are A53-based, so that's
-on the safelist and will be fine.
-
-> This looks like a disconnect between kernel and TF-A but I'm not aware
-> of all the details here.
-
-I think it's alright, as it's just a legacy problem (newer cores should
-have CSV2 set) and older cores are safelisted.
-
-> > > Does the kernel implement a workaround in the case that no guest PE is
-> > > affected? If so then returning 1 sounds OK to me, but otherwise
-> > > NOT_SUPPORTED should work per the spec.
-> > 
-> > I don't follow you here. The spec says that "SMCCC_RET_NOT_SUPPORTED" is
-> > valid return code in the case that "The system contains at least 1 PE
-> > affected by CVE-2017-5715 that has no firmware mitigation available."
-> > and do the guest would end up in the "vulnerable" state.
-> > 
+> 	    docs: ipmb: place it at driver-api and convert to ReST
 > 
-> Returning 1 says "SMCCC_ARCH_WORKAROUND_1 can be invoked safely on all
-> PEs in the system" so I am not sure that invoking it is from a guest is
-> safe on systems that don't require the workaround? If it is always safe
-> to invoke the call from guest to host then returning 1 should be fine
-> here.
+> 	commit ac499fba98c3c65078fd84fa0a62cd6f6d5837ed
+> 	Author: Mauro Carvalho Chehab <mchehab+samsung@kernel.org>
+> 	Commit: Corey Minyard <cminyard@mvista.com>
+> 
+> 	    docs: ipmb: place it at driver-api and convert to ReST
+> 
+> With Sphinx 4.0.0 development tree, a new warning is produced
+> due to that:
+> 
+> 	.../Documentation/driver-api/index.rst:14: WARNING: duplicated entry found in toctree: driver-api/ipmb
+> 
+> The fix is trivial: just drop the duplicated line.
+> 
+> Fixes: f6ae22d64433 ("docs: ipmb: place it at driver-api and convert to ReST")
+> Fixes: ac499fba98c3 ("docs: ipmb: place it at driver-api and convert to ReST")
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 
-I think it's fine, as KVM will pick that up.
+Interesting...I wonder how applying the patch twice could lead to the line
+being inserted in two completely different locations like that?  Anyway,
+I've applied this one, hopefully nobody else will do the same :)
 
-> My read of the spec was that the intent is to remove the call at some
-> point and have the removal of the call mean that it isn't vulnerable.
+Thanks,
 
-No, the CSV2 field in whichever ID register is for that. We check that in
-spectre_v2_get_cpu_hw_mitigation_state().
-
-> Because NOT_SUPPORTED per the spec means "not needed", "maybe needed",
-> or "firmware doesn't know". Aha maybe they wanted us to make the call on
-> each CPU (i.e. PE) and then if any of them return 0 we should consider
-> it vulnerable and if they return NOT_SUPPORTED we should keep calling
-> for each CPU until we are sure we don't see a 0 and only see a 1 or
-> NOT_SUPPORTED? Looks like a saturating value sort of thing, across CPUs
-> that we care/know about.
-
-The mitigation state is always per-cpu because of big/little systems, there
-just isn't a short-cut for the firmware to say "all CPUs are unaffected"
-like there is for SMCCC_ARCH_WORKAROUND_2 with its "NOT_REQUIRED" return
-code.
-
-Will
+jon
