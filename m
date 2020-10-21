@@ -2,120 +2,225 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2F4A294B28
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:20:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B0D0294B2D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438693AbgJUKUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:20:25 -0400
-Received: from de-smtp-delivery-102.mimecast.com ([51.163.158.102]:20212 "EHLO
-        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2409949AbgJUKUZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:20:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
-        t=1603275623;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=lvA6JH2s+U6ObZG8b4tCXCs08lgAevTFwjtqnmIE4ig=;
-        b=i04+RrcMM80s2/1iad+f0abiziMmIkne/DQV5tipoDa45pJg1TctXXE3+x9aILCf840jb0
-        TglfAvgBMr7hbitI40ji0Uj1S+kqUkdX3Gu+tE5of4qsSnRkOaCUogxTVPt3R2ENbm5Ab1
-        lBG1tbM0uB2K93ZZurGBFVnHE9WHAFs=
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com
- (mail-he1eur04lp2054.outbound.protection.outlook.com [104.47.13.54]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- de-mta-15-Zz5w17R4NpOzeD96Hjkj_Q-1; Wed, 21 Oct 2020 12:20:21 +0200
-X-MC-Unique: Zz5w17R4NpOzeD96Hjkj_Q-1
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=OwHqKIoGhw+9/ax4VP4g6Wvu6xIbwEkSP8rWCdeJCWma6/hbCyA4eOMqfRa6Vn5tyx/xxXQpQRQcat8+0UW0WCFXUXpFUtuj4ER+QAsJs+vD7InAOhWq5fsWusoUVtO73HCVcAWmcszOTGAvBeHJ2zzbym/H5lJK1fA9DzAC1U/hdZ3c8EVaJqYsmWVk3NawxRBIF+YQQssCQCLUTAyD05K5ORYP85ooZoYU2BlM6szL0k5Q7ltxyKf6jaabJ8jdtdwVqyiXMFjT+Eq0YovFIdFvz6vEvxD6wf76z0kFmiP/S66A71YvUqRl4xvcxSoXDmrfPQrGSGEKbud5ru6+kA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lvA6JH2s+U6ObZG8b4tCXCs08lgAevTFwjtqnmIE4ig=;
- b=adXdfJeE27HdLgUoLKCH2/JCDdvNaCTp3hb0vhIz4cx/GwnIlCoUvZTNtfq1LOy18dl5WGEiYwYA9+uJ+qfN2A0ln2i2d9RFId/h+iosMEog5frdpiXRG6Go8AdAjSdFB2siRuyRp2rGR+0ad8eNf82mINyr/d1eziJoLVUNzV6f7ZXrTA317VcyekwrlR3gxrtOKFbBTmhX4TnZDA96mWzQpek7j2+SRS5amBjlTI1MRuMPp/DlBTMNqWTwv6DZvyEmdco3De3k1hCCJY2jGbRzP6IsvFaEpoxAQj4ohiBW3aheDd19ZmRd0Q4rcNN8Bn+67eIexbconpOxkw/9jw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
- dkim=pass header.d=suse.com; arc=none
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=suse.com;
-Received: from VI1PR04MB7102.eurprd04.prod.outlook.com (2603:10a6:800:124::12)
- by VI1PR04MB5247.eurprd04.prod.outlook.com (2603:10a6:803:55::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Wed, 21 Oct
- 2020 10:20:19 +0000
-Received: from VI1PR04MB7102.eurprd04.prod.outlook.com
- ([fe80::4850:c5a:699b:e466]) by VI1PR04MB7102.eurprd04.prod.outlook.com
- ([fe80::4850:c5a:699b:e466%9]) with mapi id 15.20.3499.018; Wed, 21 Oct 2020
- 10:20:19 +0000
-Date:   Wed, 21 Oct 2020 18:20:07 +0800
-From:   joeyli <jlee@suse.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     list.lkml.keyrings@me.benboeckel.net,
-        "Lee, Chun-Yi" <joeyli.kernel@gmail.com>,
-        David Howells <dhowells@redhat.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>, keyrings@vger.kernel.org,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] PKCS#7: Check codeSigning EKU for kernel module
- and kexec pe verification
-Message-ID: <20201021102007.GB13854@linux-l9pv.suse>
-References: <20201020065001.13836-1-jlee@suse.com>
- <20201020065001.13836-3-jlee@suse.com>
- <20201020134208.GA297878@erythro.dev.benboeckel.internal>
- <885f1b81-6141-a3be-1dc0-92c1fc825e3c@infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <885f1b81-6141-a3be-1dc0-92c1fc825e3c@infradead.org>
-User-Agent: Mutt/1.5.24 (2015-08-30)
-X-Originating-IP: [124.11.22.254]
-X-ClientProxiedBy: HKAPR04CA0009.apcprd04.prod.outlook.com
- (2603:1096:203:d0::19) To VI1PR04MB7102.eurprd04.prod.outlook.com
- (2603:10a6:800:124::12)
+        id S2409812AbgJUKXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:23:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54844 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387407AbgJUKXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 06:23:38 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B23E1206DD;
+        Wed, 21 Oct 2020 10:23:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603275816;
+        bh=Xi9n4FXEU/qsx25IaluF10B+ojNvuTfU294ietdilFo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oZ8V1oAYwFvzEMStVJVQ15nJ44sX/CdWz28rphoLCe2SNQSY9Ad4K3ZgXJTVv/JjL
+         Bb69rLxpfkQaV7tG+X7+TrDnM3Y+zVOGSlVpLI/AuSnVbGAHj16LjtGy0l3yYspHUp
+         srSqprpVozGNX39DAUHrpgenuNlvQUIL9jGVMoRk=
+Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kVBHK-0030dg-Nj; Wed, 21 Oct 2020 11:23:34 +0100
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from linux-l9pv.suse (124.11.22.254) by HKAPR04CA0009.apcprd04.prod.outlook.com (2603:1096:203:d0::19) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Wed, 21 Oct 2020 10:20:15 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: a404e30a-304b-4c7a-0778-08d875aae989
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5247:
-X-Microsoft-Antispam-PRVS: <VI1PR04MB52478D6737E1F3C6BEC6962AA31C0@VI1PR04MB5247.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5516;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: +S7nLE7YfTHR2aoOgWFXiBH6p5hrOuA4M3DJ078FMiqbqIXniSL5EZOmW6S16u5REZKoQ0laHyokIuCRp/8ofkaCbqVR93ohQAomcoCbplwPl2GM2F4RPP15bh2j0CZPufaaHUsts1RIYZg8kdYbBBQIviqqYSXptPYPQzdMzBOYmcZONVEYn1CkIRBgcAfDNSt+FQMY8a5yyLp1IdNoiJn0STKlvNmp9WLCfOIJQpHc7xydenLKpU2QRvTWR56PLVSD0Tr3Qw2etr2o/Irlkl3rK3mYYVF2/pXArijSAIwAj/lGUEuikFDCJqpI17K6i/nvMlJtUjFtFaLEjWCp9lBnsQWYPJZAjJeB6EbvGdQ68T1zXQ0mPUR7EU821AKL
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB7102.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(366004)(376002)(39860400002)(396003)(346002)(136003)(316002)(66556008)(36756003)(8886007)(186003)(52116002)(956004)(26005)(8936002)(7696005)(66946007)(66476007)(33656002)(83380400001)(16526019)(9686003)(478600001)(1076003)(15650500001)(4744005)(54906003)(86362001)(55016002)(6916009)(2906002)(5660300002)(8676002)(53546011)(4326008)(6506007)(6666004)(43062003);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 4tS76mOfTlFjlg/1VDLIi/ukv/nzz/QfYLZS4rMRGfRz+pQzMN+WFzSFzXcq3PAGUz8FBtx82mX6kUNz7UwqR3NMA55Z8m9NYW1kQAJY+zs6OLQesc554PtFzyjurxfm64CB7oV4wehK37eJHJUAYWYtqX8SQ/C0aBqWbWF325138diND0F8joJEbqWd4TnRXGaf6NH5SUVz3ulQfoq3oeDStvYgn/AfTPVMk2nbin0KYvL+u3q30/hXW5KL+UE8Bc/1Mn4wJJdvS+82n3cqSV17DxoJpuNG5IhKi1WEeLNeZcyPiKqH/Am3NvUwPDQP+Yrr5PCkql0oQMLXDPR17xAfWWfGXlyjVA9GIj3E3YjIR8i7f474QOZuruKV3dhZYUEkgmMknK3bt8DMQAgghcFGjcq0i3E5elRK5D5M9C5hRPrVcNQ4biHCa+6UEdyz3sGeGHNbmCmhnF2wfCqAgAbf7zPVJpxrAAyc/f1omE92pNd6IDH1IjPs90/UZaPsyhOZOmlXkLaNZFAkr1eRP7yaOXwlWYzsmMtQl4zEOE4H1VEudBhu09VldkPoc1G3t8V86fJY/1CRMm8pDHx2Xb6eKncB1Fx/qdc0xSSCrDpyqQsQGwI0fEZmL2WzUQo7y1PTq5bLM9exXLX+Se72jQ==
-X-OriginatorOrg: suse.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a404e30a-304b-4c7a-0778-08d875aae989
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB7102.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 10:20:19.7022
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gsZsrSK9bowhHqamB3wjrbGRtg98iFIQLgUV8FflxjzOVflNwLYmaOyRA040DZe+
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5247
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Wed, 21 Oct 2020 11:23:34 +0100
+From:   Marc Zyngier <maz@kernel.org>
+To:     Will Deacon <will@kernel.org>
+Cc:     Stephen Boyd <swboyd@chromium.org>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>, stable@vger.kernel.org
+Subject: Re: [PATCH 1/2] arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return
+ SMCCC_RET_NOT_REQUIRED
+In-Reply-To: <20201021075722.GA17230@willie-the-truck>
+References: <20201020214544.3206838-1-swboyd@chromium.org>
+ <20201020214544.3206838-2-swboyd@chromium.org>
+ <20201021075722.GA17230@willie-the-truck>
+User-Agent: Roundcube Webmail/1.4.9
+Message-ID: <c0591bdc2983167f00d002a731cba82e@kernel.org>
+X-Sender: maz@kernel.org
+X-SA-Exim-Connect-IP: 51.254.78.96
+X-SA-Exim-Rcpt-To: will@kernel.org, swboyd@chromium.org, catalin.marinas@arm.com, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, andre.przywara@arm.com, steven.price@arm.com, stable@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Randy,
-
-On Tue, Oct 20, 2020 at 07:56:29AM -0700, Randy Dunlap wrote:
-> On 10/20/20 6:42 AM, Ben Boeckel wrote:
-> > On Tue, Oct 20, 2020 at 14:50:01 +0800, Lee, Chun-Yi wrote:
-> >> +config CHECK_CODESIGN_EKU
-> >> +	bool "Check codeSigning extended key usage"
-> >> +	depends on PKCS7_MESSAGE_PARSER=y
-> >> +	depends on SYSTEM_DATA_VERIFICATION
-> >> +	help
-> >> +	  This option provides support for checking the codeSigning extended
-> >> +	  key usage extension when verifying the signature in PKCS#7. It
+On 2020-10-21 08:57, Will Deacon wrote:
+> On Tue, Oct 20, 2020 at 02:45:43PM -0700, Stephen Boyd wrote:
+>> According to the SMCCC spec (7.5.2 Discovery) the
+>> ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+>> SMCCC_RET_NOT_SUPPORTED corresponding to "workaround required",
+>> "workaround not required but implemented", and "who knows, you're on
+>> your own" respectively. For kvm hypercalls (hvc), we've implemented 
+>> this
+>> function id to return SMCCC_RET_NOT_SUPPORTED, 1, and
+>> SMCCC_RET_NOT_REQUIRED. The SMCCC_RET_NOT_REQUIRED return value is not 
+>> a
+>> thing for this function id, and is probably copy/pasted from the
+>> SMCCC_ARCH_WORKAROUND_2 function id that does support it.
+>> 
+>> Clean this up by returning 0, 1, and SMCCC_RET_NOT_SUPPORTED
+>> appropriately. Changing this exposes the problem that
+>> spectre_v2_get_cpu_fw_mitigation_state() assumes a
+>> SMCCC_RET_NOT_SUPPORTED return value means we are vulnerable, but 
+>> really
+>> it means we have no idea and should assume we can't do anything about
+>> mitigation. Put another way, it better be unaffected because it can't 
+>> be
+>> mitigated in the firmware (in this case kvm) as the call isn't
+>> implemented!
+>> 
+>> Cc: Andre Przywara <andre.przywara@arm.com>
+>> Cc: Steven Price <steven.price@arm.com>
+>> Cc: Marc Zyngier <maz@kernel.org>
+>> Cc: stable@vger.kernel.org
+>> Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround 
+>> state to KVM guests")
+>> Fixes: 73f381660959 ("arm64: Advertise mitigation of Spectre-v2, or 
+>> lack thereof")
+>> Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+>> ---
+>> 
+>> This will require a slightly different backport to stable kernels, but
+>> at least it looks like this is a problem given that this return value
+>> isn't valid per the spec and we've been going around it by returning
+>> something invalid for some time.
+>> 
+>>  arch/arm64/kernel/proton-pack.c | 3 +--
+>>  arch/arm64/kvm/hypercalls.c     | 2 +-
+>>  2 files changed, 2 insertions(+), 3 deletions(-)
+>> 
+>> diff --git a/arch/arm64/kernel/proton-pack.c 
+>> b/arch/arm64/kernel/proton-pack.c
+>> index 68b710f1b43f..00bd54f63f4f 100644
+>> --- a/arch/arm64/kernel/proton-pack.c
+>> +++ b/arch/arm64/kernel/proton-pack.c
+>> @@ -149,10 +149,9 @@ static enum mitigation_state 
+>> spectre_v2_get_cpu_fw_mitigation_state(void)
+>>  	case SMCCC_RET_SUCCESS:
+>>  		return SPECTRE_MITIGATED;
+>>  	case SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED:
+>> +	case SMCCC_RET_NOT_SUPPORTED: /* Good luck w/ the Gatekeeper of 
+>> Gozer */
+>>  		return SPECTRE_UNAFFECTED;
 > 
-> 	  extended ... extension.
-> Can we drop one of those or reword it?
+> Hmm, I'm not sure this is correct. The SMCCC spec is terrifically
+> unhelpful:
+> 
+>   NOT_SUPPORTED:
+>   Either:
+>   * None of the PEs in the system require firmware mitigation for 
+> CVE-2017-5715.
+>   * The system contains at least 1 PE affected by CVE-2017-5715 that
+> has no firmware
+>     mitigation available.
+>   * The firmware does not provide any information about whether
+> firmware mitigation is
+>     required.
+> 
+> so we can't tell whether the thing is vulnerable or not in this case, 
+> and
+> have to assume that it is.
+> 
+>>  	default:
+>> -		fallthrough;
+>> -	case SMCCC_RET_NOT_SUPPORTED:
+>>  		return SPECTRE_VULNERABLE;
+>>  	}
+>>  }
+>> diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+>> index 9824025ccc5c..868486957808 100644
+>> --- a/arch/arm64/kvm/hypercalls.c
+>> +++ b/arch/arm64/kvm/hypercalls.c
+>> @@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+>>  				val = SMCCC_RET_SUCCESS;
+>>  				break;
+>>  			case SPECTRE_UNAFFECTED:
+>> -				val = SMCCC_RET_NOT_REQUIRED;
+>> +				val = SMCCC_RET_NOT_SUPPORTED;
+> 
+> Which means we need to return SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED 
+> here, I
+> suppose?
 
-I will remove the _extension_ word in next version. Thanks for your review!
+Gahh, I keep mixing Spectre-v2 and WA2. Not good. I *think* the patch
+below is enough, but I need to give it a go...
 
-Joey Lee
+         M.
 
+diff --git a/arch/arm64/kernel/proton-pack.c 
+b/arch/arm64/kernel/proton-pack.c
+index 68b710f1b43f..3f417d6305ef 100644
+--- a/arch/arm64/kernel/proton-pack.c
++++ b/arch/arm64/kernel/proton-pack.c
+@@ -134,8 +134,6 @@ static enum mitigation_state 
+spectre_v2_get_cpu_hw_mitigation_state(void)
+  	return SPECTRE_VULNERABLE;
+  }
+
+-#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	(1)
+-
+  static enum mitigation_state 
+spectre_v2_get_cpu_fw_mitigation_state(void)
+  {
+  	int ret;
+@@ -148,7 +146,7 @@ static enum mitigation_state 
+spectre_v2_get_cpu_fw_mitigation_state(void)
+  	switch (ret) {
+  	case SMCCC_RET_SUCCESS:
+  		return SPECTRE_MITIGATED;
+-	case SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED:
++	case SMCCC_RET_UNAFFECTED:
+  		return SPECTRE_UNAFFECTED;
+  	default:
+  		fallthrough;
+@@ -474,7 +472,7 @@ static enum mitigation_state 
+spectre_v4_get_cpu_fw_mitigation_state(void)
+  	switch (ret) {
+  	case SMCCC_RET_SUCCESS:
+  		return SPECTRE_MITIGATED;
+-	case SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED:
++	case SMCCC_RET_UNAFFECTED:
+  		fallthrough;
+  	case SMCCC_RET_NOT_REQUIRED:
+  		return SPECTRE_UNAFFECTED;
+diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+index 9824025ccc5c..792824de5d27 100644
+--- a/arch/arm64/kvm/hypercalls.c
++++ b/arch/arm64/kvm/hypercalls.c
+@@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+  				val = SMCCC_RET_SUCCESS;
+  				break;
+  			case SPECTRE_UNAFFECTED:
+-				val = SMCCC_RET_NOT_REQUIRED;
++				val = SMCCC_RET_UNAFFECTED;
+  				break;
+  			}
+  			break;
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 885c9ffc835c..6b4902dde822 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -104,6 +104,7 @@
+   * Return codes defined in ARM DEN 0070A
+   * ARM DEN 0070A is now merged/consolidated into ARM DEN 0028 C
+   */
++#define SMCCC_RET_UNAFFECTED			1
+  #define SMCCC_RET_SUCCESS			0
+  #define SMCCC_RET_NOT_SUPPORTED			-1
+  #define SMCCC_RET_NOT_REQUIRED			-2
+
+-- 
+Jazz is not dead. It just smells funny...
