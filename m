@@ -2,166 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6A6F929554F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:46:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E3686295552
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:48:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507279AbgJUXqS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 19:46:18 -0400
-Received: from ozlabs.org ([203.11.71.1]:51625 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442347AbgJUXqR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:46:17 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CGnFL1KcCz9sSn;
-        Thu, 22 Oct 2020 10:46:14 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603323974;
-        bh=kyztA3gDwEIjcE/H8P2RDcYyXZTsNoDKGn9tH3ysgxM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=qYTmN+kJBwi6KY9d9hXIbEaRg/nRNY+oEizRdR4LnMc7n4qEfRVoMB7P4LyB6UXp/
-         yvDq+yjhqWagv1U7qCR6SU8hG8LHBKEi/snxS8UtP4NCUFquLQ+U0rEK24NGLKTTT6
-         28O85iX9PAroCWlDYlLJBfTDy0JOVjSicgQVDTSaE1ChA42DMsSsF9tQQtZ4VmoBIZ
-         GITHPgI7rfe9tH4lr/2wZspN3L9FDgKi19Ilmwtslsosrjj2Q+ORMb8/JfernaUVbn
-         FVJR8AYt2mMFi5Dxs4noSzXF3PweU/A0V5rDhYG7WHV1lzuU4rGesAz42i9exuM1Iz
-         Y1AeTYfZgX9PQ==
-Date:   Thu, 22 Oct 2020 10:46:13 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Bjorn Helgaas <bhelgaas@google.com>
-Cc:     Jon Derrick <jonathan.derrick@intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: linux-next: manual merge of the pci tree with the origin tree
-Message-ID: <20201022104613.7ccfd540@canb.auug.org.au>
+        id S2507292AbgJUXsg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 19:48:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38690 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408091AbgJUXsf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 19:48:35 -0400
+Received: from mail-oo1-xc44.google.com (mail-oo1-xc44.google.com [IPv6:2607:f8b0:4864:20::c44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D134C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:48:35 -0700 (PDT)
+Received: by mail-oo1-xc44.google.com with SMTP id n2so977393ooo.8
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 16:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=EUWpT0xSzb04KdW+F3F/7B/sEhkE2FW0IA92LIadnb8=;
+        b=TzGB+PcZPJBYfA334G4mwAHms3nMJQgO5kBKCplD5ftTsIpzHst8Wc5qy2s4GmdU6y
+         cTD6tBkz9zWLHCR5djxMlXNbxXIKc4cjaKSKiL2GNLfbVEguNaX3DCqNuO47Bw2vDmai
+         YT1gMmrR2EQniWYS8Wurbon7JAUhBHTfxVx8tq+a3TFs4jqrl9maJUGKhlSOS9Uasxff
+         Wo5HjQ64IZeDrU29Vu7dtcNtYAD0nLtQ9FP9BixRBFn/ATtcjTE/d2THfDZRjkP71DRU
+         mX/Usmi4LdNK6g0+k/U9RUt0I3DXnB1Lz/FFSn1BI7mr4tgt2j2c1Yy2ophLt5R2ulcp
+         LqzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EUWpT0xSzb04KdW+F3F/7B/sEhkE2FW0IA92LIadnb8=;
+        b=HG1tlx3DFcREeyaz8Lh0pTWRxsV4NKoD4gIQChX69AvP41aXlbtOwgnhEDuNEcVSpx
+         LPcTPjIgtBhb0Riy5lub5etVqifRgwVH1XJiwu4cTCIBJA8LcSKe9PTVSbKKsay5GDT0
+         xU9rhvrhccxJCQ0wYp7ThXO+BKe1g1/rmAj071oN/kEpx2QqikV1mFQKGEXeIYJnPIXf
+         BkInATwXF6fCKvNvsphjZKoLgELKeQhVzk1MCcUwd9FFcFpd0XTOmGVB4zxy7lLK7pKr
+         u/D82agwnDqX3cscYomeBqVfVEpDHhhyPi9vx9FPHL/DjnUdRUURTd2XtgwYOt5KHLMo
+         C0tg==
+X-Gm-Message-State: AOAM531/Di6Iko6kM7ZyqK2XUx9mESYT21hhqVBptUjUO0Q6R9giTqCd
+        zu50Gs4JgDajqhxOGOiQd0WmTT0ntXRi2bsMA1KdOg==
+X-Google-Smtp-Source: ABdhPJyB2FC2rlEH1r9EaJUtkAHoI4Y4o5gBI6sfghZB+w+2PxHcuAUrRjnCcGgTMGQVK+lisMXcgkfNyAiId+kJ2TE=
+X-Received: by 2002:a4a:ce90:: with SMTP id f16mr22653oos.55.1603324114795;
+ Wed, 21 Oct 2020 16:48:34 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/9/Io6Y=Uly8TY0P2q2_59hc";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201020205704.1741543-1-xii@google.com> <20201020205704.1741543-2-xii@google.com>
+ <20201021101257.GC2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201021101257.GC2628@hirez.programming.kicks-ass.net>
+From:   Xi Wang <xii@google.com>
+Date:   Wed, 21 Oct 2020 16:48:38 -0700
+Message-ID: <CAOBoifg5wGYb_XvZiRysf0iH=binaiVZE2ds=cU=6Y+KhbQJAA@mail.gmail.com>
+Subject: Re: [PATCH v2 1/1] sched: watchdog: Touch kernel watchdog with sched count
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Don <joshdon@google.com>,
+        LKML <linux-kernel@vger.kernel.org>, Paul Turner <pjt@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/9/Io6Y=Uly8TY0P2q2_59hc
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+On Wed, Oct 21, 2020 at 3:13 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Oct 20, 2020 at 01:57:04PM -0700, Xi Wang wrote:
+>
+> > +     if (watchdog_touch_with_sched) {
+> > +             /* Trigger reschedule for the next round */
+> > +             set_tsk_need_resched(current);
+> > +             set_preempt_need_resched();
+>
+> Blergh.. that's gross. This relies on this being in IRQ context and
+> either: PREEMPT=y *OR* this always being from userspace. Otherwise
+> there's no guarantee the return-from-interrupt will actually schedule.
+>
 
-Hi all,
+Maybe I missed something but I think immediate rescheduling is not
+required? E.g. software watchdog should fire if there is a kernel busy
+loop and kernel preemption is not enabled. The current method ends up
+with a thread wakeup so there is no guaranteed reschedule either?
 
-FIXME: Add owner of second tree to To:
-       Add author(s)/SOB of conflicting commits.
-
-Today's linux-next merge of the pci tree got a conflict in:
-
-  drivers/pci/controller/vmd.c
-
-between commit:
-
-  585dfe8abc44 ("PCI: vmd: Dont abuse vector irqomain as parent")
-
-from the origin tree and commit:
-
-  1552b11ba15e ("PCI: vmd: Create IRQ Domain configuration helper")
-
-from the pci tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/pci/controller/vmd.c
-index aa1b12bac9a1,c8d46bd01e87..000000000000
---- a/drivers/pci/controller/vmd.c
-+++ b/drivers/pci/controller/vmd.c
-@@@ -298,6 -298,34 +298,34 @@@ static struct msi_domain_info vmd_msi_d
-  	.chip		=3D &vmd_msi_controller,
-  };
- =20
-+ static int vmd_create_irq_domain(struct vmd_dev *vmd)
-+ {
-+ 	struct fwnode_handle *fn;
-+=20
-+ 	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain);
-+ 	if (!fn)
-+ 		return -ENODEV;
-+=20
-+ 	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
- -						    x86_vector_domain);
-++						    NULL);
-+ 	if (!vmd->irq_domain) {
-+ 		irq_domain_free_fwnode(fn);
-+ 		return -ENODEV;
-+ 	}
-+=20
-+ 	return 0;
-+ }
-+=20
-+ static void vmd_remove_irq_domain(struct vmd_dev *vmd)
-+ {
-+ 	if (vmd->irq_domain) {
-+ 		struct fwnode_handle *fn =3D vmd->irq_domain->fwnode;
-+=20
-+ 		irq_domain_remove(vmd->irq_domain);
-+ 		irq_domain_free_fwnode(fn);
-+ 	}
-+ }
-+=20
-  static char __iomem *vmd_cfg_addr(struct vmd_dev *vmd, struct pci_bus *bu=
-s,
-  				  unsigned int devfn, int reg, int len)
-  {
-@@@ -568,24 -674,10 +674,16 @@@ static int vmd_enable_domain(struct vmd
- =20
-  	sd->node =3D pcibus_to_node(vmd->dev->bus);
- =20
-- 	fn =3D irq_domain_alloc_named_id_fwnode("VMD-MSI", vmd->sysdata.domain);
-- 	if (!fn)
-- 		return -ENODEV;
--=20
-- 	vmd->irq_domain =3D pci_msi_create_irq_domain(fn, &vmd_msi_domain_info,
-- 						    NULL);
--=20
-- 	if (!vmd->irq_domain) {
-- 		irq_domain_free_fwnode(fn);
-- 		return -ENODEV;
-- 	}
-+ 	ret =3D vmd_create_irq_domain(vmd);
-+ 	if (ret)
-+ 		return ret;
- =20
- +	/*
- +	 * Override the irq domain bus token so the domain can be distinguished
- +	 * from a regular PCI/MSI domain.
- +	 */
- +	irq_domain_update_bus_token(vmd->irq_domain, DOMAIN_BUS_VMD_MSI);
- +
-  	pci_add_resource(&resources, &vmd->resources[0]);
-  	pci_add_resource_offset(&resources, &vmd->resources[1], offset[0]);
-  	pci_add_resource_offset(&resources, &vmd->resources[2], offset[1]);
-
---Sig_/9/Io6Y=Uly8TY0P2q2_59hc
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+QyEUACgkQAVBC80lX
-0GwtDAgAmVUBAnX34862IaS8icR2n33zoKVrTtzdSLVyeurMYOJ1fE/h+T6SYMUq
-JR/30yaF89DSp0Ixf449KpArTry5O0EE3yWjATq5i8wrhp/35rUR+VSDfYEBnIcW
-1h4CFehSpEirrHWu/N1BhZW+XqgW0T46+IzV6buNWYzyOqvT/+Tqnx0kKOrEmPwI
-gWfP/OUGHQd/TTztBz1VLaJvRvK8R3qC40FVN8KNffVYxQ3lyd2EGDiOqw0MgLa6
-GKge+l/i5j06IQjfy4tkBtr2SV5E5j72oNTZgkDdxc92SK37kBj/kZXq/k+MkDyG
-U1WwePwRhor7IIfTqJxksUE5WgEJ8g==
-=1V/M
------END PGP SIGNATURE-----
-
---Sig_/9/Io6Y=Uly8TY0P2q2_59hc--
+-Xi
