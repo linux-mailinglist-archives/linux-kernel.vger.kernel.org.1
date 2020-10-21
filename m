@@ -2,159 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BDF54295358
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:12:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E124C29536C
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:24:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505169AbgJUUMC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:12:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33572 "EHLO
+        id S2505283AbgJUUXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:23:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35332 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505147AbgJUULx (ORCPT
+        with ESMTP id S2505274AbgJUUXV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:11:53 -0400
-Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A84A0C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:11:53 -0700 (PDT)
-Received: by mail-oi1-x243.google.com with SMTP id h10so3453684oie.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:11:53 -0700 (PDT)
+        Wed, 21 Oct 2020 16:23:21 -0400
+Received: from mail-pg1-x532.google.com (mail-pg1-x532.google.com [IPv6:2607:f8b0:4864:20::532])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C93AC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:23:21 -0700 (PDT)
+Received: by mail-pg1-x532.google.com with SMTP id o3so2156625pgr.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=h3IjEKBycl4AdV4pHmY8x7WaZ0Ptwe7SpKSP+5fA0v0=;
-        b=Bsil/4/VIe8KiAFM+fsJ3dsLu5fJ+LYGHFp8iH99zcx6Djp2uzo6FD2YjXSd82lkVg
-         piz/Xirt+WifCSz0l7gLClPZiP14tb0WYUyQ1zMTlVmshXF5Pz67/vDfyp2wt9XTPsFA
-         Fki4xWfLpSGf3CdTu/ToVli9ItQoWdBLKslbw39xMVutqkMO5lA39tyHb0vI3OtID41X
-         G7EuxKdKKEWeAa1c1hB4lNV0Et9TDTU7mqWIovKwHX1KCyWvWgOWqKJpPaMRWW8ursu2
-         CFBMyaLzPkkNQwauUzoy+G+anTLhUQY3fTNYAeSL6JKYR/OZo6RewIblcuW9ngtEzREg
-         XCLg==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=V+s7Ur1cmG5XqfTGOC/3u1pEc/MJLj9wk8CuInHNfl0=;
+        b=u9o+ks4LjBOspKLmy2nyynqoBHh72LwZahO4wvabcZIKXobljmI08z32I7gYeTjSv8
+         seryJm+J7Smc6ZmBzbscs/8VQb31DY3hgnDvlZ6xBx2A18Dol4MFV08Kme2W39g+Dgwi
+         y9uOlIGO/TPcPqXUT1ko2Q7XS0xkxCjKR9VTvFDXsN8rJXW7G39x4yt2IIGUrK2Gs4bM
+         I/55fD9Fw8DMf0CY2B0G8dXzK5RX5jiFDw6SpzeXeKLt2JX3SUNsLhS54aAApjuKmqIg
+         TT8CQGejVYOPEycZFFTyY6EIfivQw+cZ5G+izSNSd2xfXKlylHUnqhUj4pZaHJ9Gst/6
+         qtEQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=h3IjEKBycl4AdV4pHmY8x7WaZ0Ptwe7SpKSP+5fA0v0=;
-        b=HWRNCoYIPRNJaSGPt7aaJmT6CDdnZz8KfKn4hEN7aF4+OkbRXTDrLXOWej/bJcu6cT
-         g7eu1TpVWftDft4Fj0bT8lIXrYyZwN2SuBHOp1ulQCVy+1SBWcgGapeadQoj/B8J4SP/
-         JPtzUYUi4qlZNBhVpdJ3fl2ih3PhyhxNXSxVG6R2E6bZ2P/xMaUuYb/RdiIED/NMHDW0
-         h0oXndW+ytEwEULgWx+RTDxT/A2QUk96xGxrWr9Ujq043XfFeJoJfJUE0vbv3OsWllMF
-         8aS1K4WBwehCrrP/AMxVVIn9rPXAjZmgBS1rMJl3+pJPDGJUglRsIhD53bVRhBcNYio/
-         bqBg==
-X-Gm-Message-State: AOAM531YMqBxWLWu6eKKv/sPd+U+DrE4ZfMAUVXvQF0pEbxEjnVKCr7c
-        1UfW58sDdOI7qsGhMFr/rcHasA==
-X-Google-Smtp-Source: ABdhPJwpXwGpMMY0lOzWhIQyAznwBP9uD5c44odQWyNTc7tB26G8V2bFUSw/A6eCXg3EraLWJUhDoQ==
-X-Received: by 2002:aca:442:: with SMTP id 63mr3195841oie.111.1603311113085;
-        Wed, 21 Oct 2020 13:11:53 -0700 (PDT)
-Received: from localhost.localdomain (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id t5sm838166otl.22.2020.10.21.13.11.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 13:11:52 -0700 (PDT)
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Martin Botka <martin.botka1@gmail.com>
-Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-        linux-pwm@vger.kernel.org
-Subject: [PATCH v6 4/4] arm64: dts: qcom: Add user LEDs on db820c
-Date:   Wed, 21 Oct 2020 13:12:24 -0700
-Message-Id: <20201021201224.3430546-5-bjorn.andersson@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
-References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=V+s7Ur1cmG5XqfTGOC/3u1pEc/MJLj9wk8CuInHNfl0=;
+        b=VtTNrfZxdgfw0m53baarAfa5pyQcVHlBWeB+BqaIQy0dAg42OIJHCOPFmJof1lMnbG
+         YRZFyOmSsoLn+n67xiEXZuSNOZ2ssFiRimH/AoBv9NeMZ6pLHFL+NMCxAj0Y2SG4Q/y3
+         FIB3qEuHgR/rMZ9ZuCKWkOwq68SsPxZhWA3loUsVoLF/0aiETs4wS+eV+pUIK1GG4cgq
+         gI+84us7J12OvRsd5eAHGmv5+cB0hIore8qrWVYtc6h+conpvR50ianKENHp+qlwr/A0
+         kkfkQYXQ+U3jdaLbsTgv3QQJMjPNGByphxLzfMV5ocZL6KX7RbgvVJO1VrEvA1VmDwjY
+         nUAw==
+X-Gm-Message-State: AOAM532yTBp4CTvfwtNGSs6y66EucM/AolyS4h9Rx8aPFjWrEPopyHSh
+        jtLj4MCzvHjo0LCD+JSSLEHRhQvYJo1iM37PIYQNaw==
+X-Google-Smtp-Source: ABdhPJwZ8di/I0Rw8/MnM4OjvLQmXHmKCdAD3LHxy/vTzE3YpGKvn1cDuXqKM3tMdH0hFxN1YJlF5IeIucQDHuvlJbk=
+X-Received: by 2002:a62:1613:0:b029:152:743c:355c with SMTP id
+ 19-20020a6216130000b0290152743c355cmr5213068pfw.15.1603311800680; Wed, 21 Oct
+ 2020 13:23:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
+ <CAMj1kXHe0hEDiGNMM_fg3_RYjM6B6mbKJ+1R7tsnA66ZzsiBgw@mail.gmail.com> <1cecfbfc853b2e71a96ab58661037c28a2f9280e.camel@perches.com>
+In-Reply-To: <1cecfbfc853b2e71a96ab58661037c28a2f9280e.camel@perches.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Wed, 21 Oct 2020 13:23:08 -0700
+Message-ID: <CAKwvOd=y4joNkmpvRNTiyRZuqqk1NrXXhAoSsh3e=PmGMsoC6A@mail.gmail.com>
+Subject: Re: [PATCH -next] treewide: Remove stringification from __alias macro definition
+To:     Joe Perches <joe@perches.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, X86 ML <x86@kernel.org>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-efi <linux-efi@vger.kernel.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The db820c has 4 "user LEDs", all connected to the PMI8994. The first
-three are connected to the three current sinks provided by the TRILED
-and the fourth is connected to MPP2.
+On Wed, Oct 21, 2020 at 12:07 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Wed, 2020-10-21 at 21:02 +0200, Ard Biesheuvel wrote:
+> > On Wed, 21 Oct 2020 at 20:58, Joe Perches <joe@perches.com> wrote:
+> > > Like the __section macro, the __alias macro uses
+> > > macro # stringification to create quotes around
+> > > the section name used in the __attribute__.
+> > >
+> > > Remove the stringification and add quotes or a
+> > > stringification to the uses instead.
+> > >
+> >
+> > Why?
+>
+> Using quotes in __section caused/causes differences
+> between clang and gcc.
+>
+> https://lkml.org/lkml/2020/9/29/2187
+>
+> Using common styles for details like this is good.
 
-By utilizing the DTEST bus the MPP is fed the control signal from the
-fourth LPG block, providing a consistent interface to the user.
+Luckily, there's no difference/issue here with alias as there exist
+with section: https://godbolt.org/z/eWxc7P
+So it's just a stylistic cleanup, not a bugfix.
+Acked-by: Nick Desaulniers <ndesaulniers@google.com>
 
-Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
----
+$ grep -rn __attribute__ | grep alias
 
-Changes since v5:
-- None
-
- arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi | 49 ++++++++++++++++++++
- 1 file changed, 49 insertions(+)
-
-diff --git a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-index defcbd15edf9..7e51677d256e 100644
---- a/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-+++ b/arch/arm64/boot/dts/qcom/apq8096-db820c.dtsi
-@@ -8,6 +8,7 @@
- #include "pmi8994.dtsi"
- #include <dt-bindings/input/input.h>
- #include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
- #include <dt-bindings/pinctrl/qcom,pmic-gpio.h>
- #include <dt-bindings/sound/qcom,q6afe.h>
- #include <dt-bindings/sound/qcom,q6asm.h>
-@@ -682,6 +683,54 @@ pinconf {
- 	};
- };
- 
-+&pmi8994_mpps {
-+	pmi8994_mpp2_userled4: mpp2-userled4 {
-+		pins = "mpp2";
-+		function = "sink";
-+
-+		output-low;
-+		qcom,dtest = <4>;
-+	};
-+};
-+
-+&pmi8994_lpg {
-+	qcom,power-source = <1>;
-+
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&pmi8994_mpp2_userled4>;
-+
-+	status = "okay";
-+
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	led@1 {
-+		reg = <1>;
-+		label = "green:user1";
-+
-+		linux,default-trigger = "heartbeat";
-+		default-state = "on";
-+	};
-+
-+	led@2 {
-+		reg = <2>;
-+		label = "green:user0";
-+		default-state = "on";
-+	};
-+
-+	led@3 {
-+		reg = <3>;
-+		label = "green:user2";
-+	};
-+
-+	led@4 {
-+		reg = <4>;
-+		label = "green:user3";
-+
-+		qcom,dtest = <4 1>;
-+	};
-+};
-+
- &pmi8994_spmi_regulators {
- 	vdd_gfx: s2@1700 {
- 		reg = <0x1700 0x100>;
+didn't turn up any other cases that look like they don't use strings.
 -- 
-2.28.0
-
+Thanks,
+~Nick Desaulniers
