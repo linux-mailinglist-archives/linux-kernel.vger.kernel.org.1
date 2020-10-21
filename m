@@ -2,128 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24231294EC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:35:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46AD1294EE4
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:39:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443604AbgJUOfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:35:08 -0400
-Received: from mx4.veeam.com ([104.41.138.86]:46256 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443592AbgJUOfH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:35:07 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 29CA78A77D;
-        Wed, 21 Oct 2020 17:35:04 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1603290904; bh=gcs9fDGrugmEFnHD7BVk3TKsrIQsLRHT9hgdToOOQuI=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=W3XiTq17/EjMVJayE5rGdsC29XtujNHnsX7S2+TuMTBKQwGsHfaTM6Ahtdk/thl47
-         GskMaiU5eQDILnl6aTJnSfY8+VIAqFn1Qz+uuGKwU2w3NTGpxT1b8fiOfm5p451Ss8
-         RuKh+SJAXrlHpeoEUPjx6l6iyYBr/gc4MF2QujA4=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Wed, 21 Oct 2020
- 16:35:02 +0200
-Date:   Wed, 21 Oct 2020 17:35:53 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        id S2443046AbgJUOjh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:39:37 -0400
+Received: from smtprelay0032.hostedemail.com ([216.40.44.32]:37426 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2442066AbgJUOjh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:39:37 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id 0EF1887066B9;
+        Wed, 21 Oct 2020 14:39:36 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:967:968:973:988:989:1260:1263:1277:1311:1313:1314:1345:1359:1431:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2525:2553:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3770:3865:3866:3867:3868:3872:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7875:7903:8828:9025:9121:10004:10394:10400:10848:11232:11233:11257:11658:11914:12043:12048:12262:12297:12438:12555:12679:12740:12760:12783:12895:12986:13069:13311:13357:13439:13846:14096:14097:14180:14181:14659:14721:14849:21080:21324:21365:21451:21611:21627:21740:21789:21939:30054:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: joke73_430d3d127249
+X-Filterd-Recvd-Size: 2611
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf07.hostedemail.com (Postfix) with ESMTPA;
+        Wed, 21 Oct 2020 14:39:34 +0000 (UTC)
+Message-ID: <42c1d07d46655f622c081f45b68ccaffba7361a1.camel@perches.com>
+Subject: Re: [PATCH] gpio: bd70528: remove unneeded break
+From:   Joe Perches <joe@perches.com>
+To:     "Vaittinen, Matti" <Matti.Vaittinen@fi.rohmeurope.com>,
+        "bgolaszewski@baylibre.com" <bgolaszewski@baylibre.com>,
+        "trix@redhat.com" <trix@redhat.com>,
+        "linus.walleij@linaro.org" <linus.walleij@linaro.org>
+Cc:     linux-power <linux-power@fi.rohmeurope.com>,
+        "linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
         "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/2] Block layer filter - second version
-Message-ID: <20201021143553.GG20749@veeam.com>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <1603271049-20681-2-git-send-email-sergei.shtepa@veeam.com>
- <BL0PR04MB65141320C7BF75B7142CA30CE71C0@BL0PR04MB6514.namprd04.prod.outlook.com>
- <20201021114438.GK20115@casper.infradead.org>
- <20201021125555.GE20749@veeam.com>
- <20201021130753.GM20115@casper.infradead.org>
+        "apw@canonical.com" <apw@canonical.com>
+Date:   Wed, 21 Oct 2020 07:39:33 -0700
+In-Reply-To: <db6856d5431aac3ff56cd3817312d204c41cf7d0.camel@fi.rohmeurope.com>
+References: <20201019193353.13066-1-trix@redhat.com>
+         <5b13773306265f89366b86afba71d2b4a4130e2b.camel@fi.rohmeurope.com>
+         <0738b0cc482cfd07400cf8b0b0b2092e671cfb34.camel@fi.rohmeurope.com>
+         <b435953eed76b9247a4b1dab88f268afe76ff470.camel@perches.com>
+         <db6856d5431aac3ff56cd3817312d204c41cf7d0.camel@fi.rohmeurope.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201021130753.GM20115@casper.infradead.org>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A677566
-X-Veeam-MMEX: True
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/21/2020 16:07, Matthew Wilcox wrote:
-> On Wed, Oct 21, 2020 at 03:55:55PM +0300, Sergei Shtepa wrote:
-> > The 10/21/2020 14:44, Matthew Wilcox wrote:
-> > > I don't understand why O_DIRECT gets to bypass the block filter.  Nor do
-> > > I understand why anybody would place a block filter on the swap device.
-> > > But if somebody did place a filter on the swap device, why should swap
-> > > be able to bypass the filter?
+On Wed, 2020-10-21 at 07:25 +0000, Vaittinen, Matti wrote:
+> Hello Joe & All,
+> On Tue, 2020-10-20 at 11:36 -0700, Joe Perches wrote:
+> > On Tue, 2020-10-20 at 11:48 +0000, Vaittinen, Matti wrote:
+[]
+> > > And for peeps who have not been following - following function
+> > > triggers the checkpatch error above:
 > > 
-> > Yes, intercepting the swap partition is absurd. But we can't guarantee
-> > that the filter won't intercept swap.
-> > 
-> > Swap operation is related to the memory allocation logic. If a swap on
-> > the block device are accessed during memory allocation from filter,
-> > a deadlock occurs. We can allow filters to occasionally shoot off their
-> > feet, especially under high load. But I think it's better not to do it.
-> 
-> We already have logic to prevent this in Linux.  Filters need to
-> call memalloc_noio_save() while they might cause swap to happen and
-> memalloc_noio_restore() once it's safe for them to cause swap again.
+> > Huh?  what version of checkpatch are you using?
+> > Send it to me please.
+[]
+> Please find my version of checkpatch and the patch to trigger the
+> warning attached.
 
-Yes, I looked at this function, it can really be useful for the filter.
-Then I don't need to enter the submit_bio_direct() function and the wait
-loop associated with the queue polling function blk_mq_poll() will have
-to be rewritten.
+Thanks.  This test wasn't particularly useful
+(and had some false positives) and was removed by
 
-> 
-> > "directly access" - it is not O_DIRECT. This means (I think) direct
-> > reading from the device file, like "dd if=/dev/sda1".
-> > As for intercepting direct reading, I don't know how to do the right thing.
-> > 
-> > The problem here is that in fs/block_dev.c in function __blkdev_direct_IO()
-> > uses the qc - value returned by the submit_bio() function.
-> > This value is used below when calling 
-> > blk_poll(bdev_get_queue(dev), qc, true).
-> > The filter cannot return a meaningful value of the blk_qc_t type when
-> > intercepting a request, because at that time it does not know which queue
-> > the request will fall into.
-> > 
-> > If function submit_bio() will always return BLK_QC_T_NONE - I think the
-> > algorithm of the __blk dev_direct_IO() will not work correctly.
-> > If we need to intercept direct access to a block device, we need to at
-> > least redo the __blkdev_direct_IO function, getting rid of blk_pool.
-> > I'm not sure it's necessary yet.
-> 
-> This isn't part of the block layer that I'm familiar with, so I can't
-> help solve this problem, but allowing O_DIRECT to bypass the block filter
-> is a hole that needs to be fixed before these patches can be considered.
+commit ef3c005c0eb07a60949191bc6ee407d5f43cc502
+Author: Joe Perches <joe@perches.com>
+Date:   Tue Aug 11 18:35:19 2020 -0700
 
-I think there is no such problem, but I will check, of course.
+    checkpatch: remove missing switch/case break test
+    
+    This test doesn't work well and newer compilers are much better
+    at emitting this warning.
+    
+    Signed-off-by: Joe Perches <joe@perches.com>
+    Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
+    Cc: Cambda Zhu <cambda@linux.alibaba.com>
+    Link: http://lkml.kernel.org/r/7e25090c79f6a69d502ab8219863300790192fe2.camel@perches.com
+    Signed-off-by: Linus Torvalds <torvalds@linux-foundation.org>
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+
