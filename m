@@ -2,69 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7EFB294D42
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:11:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9DD9294D46
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:14:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442892AbgJUNLh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:11:37 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:52413 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442845AbgJUNLg (ORCPT
+        id S2441259AbgJUNOw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:14:52 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40646 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394984AbgJUNOw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:11:36 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kVDtt-00089p-Hz; Wed, 21 Oct 2020 13:11:33 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     David Howells <dhowells@redhat.com>, linux-afs@lists.infradead.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] afs: fix a dereference on pointer cell before cell is null checked
-Date:   Wed, 21 Oct 2020 14:11:33 +0100
-Message-Id: <20201021131133.128016-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 21 Oct 2020 09:14:52 -0400
+Date:   Wed, 21 Oct 2020 15:14:49 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603286090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Czg2HNrvkXECyRUyeO7gbFsTR+MJhHElUjxoU1+ut3g=;
+        b=XCJTJ8kl3vSGWBKRw89J9IPc5sUydM3Qt9zzkeDxXzSvxkesCH1oCEsdVoUknuf244WTtG
+        Hpxi05Tp50PNhtc4CaK8dsxkih1oxMTabgpUAcqB6xkDErxf+AVBdQOFYD7gwtP+qbovZL
+        tRYbHUgvzt+jX5Koc4T5xNT3zqH+GqVGH1XxAck3cUFs5aFbLQUWfPbF6CeYCpbSZDwmTc
+        3DdSu3Zg3w5JvyXexFgIt0e6JD+MhG95xiMGDtsmyfSiMdqImy24gHR8OOlbgqJifiSJfw
+        sPzPCQV2HiYn0iMSqXpePW4P/c1h2rE8pSEtt1zUkoe7nKFHIJFW/QXDqNGEhQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603286090;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=Czg2HNrvkXECyRUyeO7gbFsTR+MJhHElUjxoU1+ut3g=;
+        b=zLuIHnqobGPBluqPXpBrLRZFhf2WJLjh+AMC60mCKeriJ61i62TxuIrJuOJQ4X2JrtMdot
+        H7RvGGy/Lq8u/vDQ==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>
+Subject: Re: [ANNOUNCE] v5.9.1-rt18
+Message-ID: <20201021131449.qlwjiq2l6embaii3@linutronix.de>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 2020-10-21 14:53:27 [+0200], To Thomas Gleixner wrote:
+> Dear RT folks!
+> 
+> I'm pleased to announce the v5.9.1-rt18 patch set. 
+> 
+> Changes since v5.9.1-rt17:
+> 
+>   - Update the migrate-disable series by Peter Zijlstra to v3. Include
+>     also fixes discussed in the thread.
+> 
+>   - UP builds did not boot since the replace of the migrate-disable
+>     code. Reported by Christian Egger. Fixed as a part of v3 by Peter
+>     Zijlstra.
+> 
+>   - Rebase the printk code on top of the ringer buffer designed for
+>     printk which was merged in the v5.10 merge window. Patches by John
+>     Ogness.
+> 
+> Known issues
+>      - It has been pointed out that due to changes to the printk code the
+>        internal buffer representation changed. This is only an issue if tools
+>        like `crash' are used to extract the printk buffer from a kernel memory
+>        image.
+> 
+> The delta patch against v5.9.1-rt17 is appended below and can be found here:
+>  
+>      https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/incr/patch-5.9.1-rt17-rt18.patch.xz
+> 
+> You can get this release via the git tree at:
+> 
+>     git://git.kernel.org/pub/scm/linux/kernel/git/rt/linux-rt-devel.git v5.9.1-rt18
+> 
+> The RT patch against v5.9.1 can be found here:
+> 
+>     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/older/patch-5.9.1-rt18.patch.xz
+> 
+> The split quilt queue is available at:
+> 
+>     https://cdn.kernel.org/pub/linux/kernel/projects/rt/5.9/older/patches-5.9.1-rt18.tar.xz
+> 
 
-Currently the assignment of debug_id dereferences pointer cell before
-cell has been null checked.  Fix this by removing debug_id and use
-cell->debug_id after cell has been null checked.
+The attached diff was too large and the mail was dropped. It is
+available at
+	https://git.kernel.org/rt/linux-rt-devel/d/v5.9.1-rt18/v5.9.1-rt17
 
-Addresses-Coverity: ("Dereference before null check")
-Fixes: dca54a7bbb8c ("afs: Add tracing for cell refcount and active user count")
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- fs/afs/cell.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
-
-diff --git a/fs/afs/cell.c b/fs/afs/cell.c
-index 52233fa6195f..4449ff100a3c 100644
---- a/fs/afs/cell.c
-+++ b/fs/afs/cell.c
-@@ -589,7 +589,6 @@ struct afs_cell *afs_use_cell(struct afs_cell *cell, enum afs_cell_trace reason)
-  */
- void afs_unuse_cell(struct afs_net *net, struct afs_cell *cell, enum afs_cell_trace reason)
- {
--	unsigned int debug_id = cell->debug_id;
- 	time64_t now, expire_delay;
- 	int u, a;
- 
-@@ -606,7 +605,7 @@ void afs_unuse_cell(struct afs_net *net, struct afs_cell *cell, enum afs_cell_tr
- 
- 	u = atomic_read(&cell->ref);
- 	a = atomic_dec_return(&cell->active);
--	trace_afs_cell(debug_id, u, a, reason);
-+	trace_afs_cell(cell->debug_id, u, a, reason);
- 	WARN_ON(a == 0);
- 	if (a == 1)
- 		/* 'cell' may now be garbage collected. */
--- 
-2.27.0
-
+Sebastian
