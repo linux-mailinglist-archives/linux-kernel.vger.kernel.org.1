@@ -2,112 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C211294FB5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:15:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B49F294FB8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:16:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502104AbgJUPPY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:15:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44090 "EHLO
+        id S2502126AbgJUPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44210 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502062AbgJUPPX (ORCPT
+        with ESMTP id S2502113AbgJUPQH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:15:23 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 680D6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:15:22 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id t22so1359177plr.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:15:22 -0700 (PDT)
+        Wed, 21 Oct 2020 11:16:07 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8A79BC0613CE;
+        Wed, 21 Oct 2020 08:16:07 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id s14so2764821qkg.11;
+        Wed, 21 Oct 2020 08:16:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=zttj1zOgAeqHtbpowWFcTKsPI3yWy0/E6Ffy28P8rgY=;
-        b=cqRcwWSDCV94TH7wsbd/I3JRZP5thpF4OqYwCQbYH4w8hHYpGk2mtbyf+csTKB8PcF
-         C3KuSDSSBnfjBKQS205o3FYaelrym19tcJLpre4+ntQ2hHO+/eRZvQ8IqwkNhq0fd2wE
-         ILY0NuYIH985IlIDBEW11aPNVnFLj/W+REhui78sgPe0X9psm4kiUjaD595h5pzE53pq
-         SKHhRmXj+xpuB5yXYVEYsFUrP13gnusj6fiH+Wnf/0pMIWfpJLf1Z1NUzkV9oDkCzCdK
-         jngwPokG5VijdCl187JxGtwXlnywZoyk3CWPq7EUS3Ff85tRR1j99RPzbA8IwQOnndMC
-         dWmw==
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9MM2vEZBw6tjXUDyjGU6HmX8YCJo6rvFJY1GE/amDAw=;
+        b=AiMDdQAiKYq+RAmX5cSS6Cn/89NjZLdcc9W3Vo9eFLejakE/Iu8RDxTcaYOgQM53iw
+         dSl0L9KJMzvkoMY3V+veK9yAJRKMs9ZPfvzd2hljEutjRsVhL5lWWlaGAFqCIGdtyp4H
+         vUQ2Zdjor3oywHO1+4Nw7FJC1Zt5Xj8c0p7ecDXtKya5IObozbbkOSaG9aHz4oH1T3RC
+         dpIsojEilh3a4VfVoe35w0g2AbHlyrpzFpyiqXetUGM7kd79K1qGdWBMzcY4ikdXR41v
+         yVkE1Bd7qGwzS3L70aFhRZCuB0XPpL3nLHklmAj9ciceE8W2A9Xdn3jGGzYfZsJ5KWmq
+         CkOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=zttj1zOgAeqHtbpowWFcTKsPI3yWy0/E6Ffy28P8rgY=;
-        b=pzgOo+3a1bkaGLwQNk9XJebKiac0upiLbPhqOotqBVsKDfG/4ioZ8blekErvFKpwJ2
-         S8vNDDPPxUpESWCPKmoyqMHWWpYRX/MWJj1rf93GEFJvXi/DI3V+IyZIcvKVxmqLOsI0
-         pv1mQG7nBQbLIbycT9J1cc2cusaHJX8zWNshZ2gxL5ZyG8cjblMbBr5AIPXgiQjAqF+4
-         wkHdXcisktwSMYjODvAMnYa/Y2l1zi/xrMXpj+bcwZYU2LQzHY3C9ilO9yr/o7zdTNwe
-         SUIQBG+6iTBIElHW6qyvQE4ZXZOqGRb7YtiPHUzJKnXragtBQnwi0nikIZkQ3Nm49gHx
-         wN+Q==
-X-Gm-Message-State: AOAM5334SMgxg7X1WJjYyvWqspb6ob1nVBHXfaKXkVZHM41en0H/Fol3
-        17KU7/hGaenx1r6/fCji0j+IDw==
-X-Google-Smtp-Source: ABdhPJwmR/mHGuXuR8nUMxAsudxKjKgx1xONcweM/atqFJKzEp/H+FaQjRw2jwBq+oKd2WL2y34/Tg==
-X-Received: by 2002:a17:902:9347:b029:d3:7c08:86c6 with SMTP id g7-20020a1709029347b02900d37c0886c6mr4034273plp.84.1603293321958;
-        Wed, 21 Oct 2020 08:15:21 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
-        by smtp.googlemail.com with ESMTPSA id f15sm2714562pfk.21.2020.10.21.08.15.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 08:15:21 -0700 (PDT)
-Subject: Re: [PATCH v18 0/4] overlayfs override_creds=off & nested get xattr
- fix
-To:     "Eric W. Biederman" <ebiederm@xmission.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Vivek Goyal <vgoyal@redhat.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        John Stultz <john.stultz@linaro.org>,
-        linux-doc@vger.kernel.org, linux-security-module@vger.kernel.org,
-        selinux@vger.kernel.org
-References: <20201021143533.115895-1-salyzyn@android.com>
- <87wnzj6305.fsf@x220.int.ebiederm.org>
-From:   Mark Salyzyn <salyzyn@android.com>
-Message-ID: <c6ca6eea-2fb2-2278-bc4a-39c43e984657@android.com>
-Date:   Wed, 21 Oct 2020 08:15:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=9MM2vEZBw6tjXUDyjGU6HmX8YCJo6rvFJY1GE/amDAw=;
+        b=F1MN+QX1WarzBFJ8FBwKu6JDgBUJxHn8N0wTivLblvmUl3cDHk9lLVhWKcMKhBcMcN
+         2bbhJHLTZRoex9YM731SvOc8X7kLHnjB83ZeevbbChpmtswsrLJ9CohP9l3VqFH4dNWx
+         Thkd/Mduv7tNOStEmRcFcBnLeegfuhnZ9QA+mh6VDAxHopkzNm8UBnhGIKpP49gwydQh
+         oFJg6zPq2T3HH7jDWqNgSi4w5x+Ipb7n5FInaLCTe/MA/CAYSKMOaNpYw5ZY504XkJUc
+         974MVnD8Z0BwfR0MhcYLfLP47K0IdKpjPRfWwClBIbVnSLf51B8S+B/vuO3pzhd9jytR
+         PyIQ==
+X-Gm-Message-State: AOAM531DxpatJd5v0OiVvE/AL2kBb1I3QChsPfKt46lHoeIVvJoioNqz
+        BSlafAWaQaA30k6aWL/JFEQ=
+X-Google-Smtp-Source: ABdhPJx85NH8Q8Qnh3+FEQses7EhMqZQ1HiCXdrHQOBc0QBn+Wu6ZfGIFkGCdL7ZFZOFFM+co2Lycw==
+X-Received: by 2002:a37:9f0a:: with SMTP id i10mr3484421qke.61.1603293366700;
+        Wed, 21 Oct 2020 08:16:06 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id 67sm1472106qkd.14.2020.10.21.08.16.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 08:16:05 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Wed, 21 Oct 2020 11:16:04 -0400
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 6/6] crypto: lib/sha - Combine round constants and
+ message schedule
+Message-ID: <20201021151604.GA3750362@rani.riverdale.lan>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-7-nivedita@alum.mit.edu>
+ <d8c1750ffcef4236904919321b872cd2@AcuMS.aculab.com>
 MIME-Version: 1.0
-In-Reply-To: <87wnzj6305.fsf@x220.int.ebiederm.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <d8c1750ffcef4236904919321b872cd2@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/20 7:57 AM, Eric W. Biederman wrote:
-> Is there any reason why the cc list from the body of the email does not
-> match the people who have been cc'd on the email.  Skipping the
-> linux-unionfs list (which seems to be the mail list for overlayfs)
-> seems like a pretty big oversight.
->
->> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
->> Cc: Miklos Szeredi <miklos@szeredi.hu>
->> Cc: Jonathan Corbet <corbet@lwn.net>
->> Cc: Vivek Goyal <vgoyal@redhat.com>
->> Cc: Eric W. Biederman <ebiederm@xmission.com>
->> Cc: Amir Goldstein <amir73il@gmail.com>
->> Cc: Randy Dunlap <rdunlap@infradead.org>
->> Cc: Stephen Smalley <sds@tycho.nsa.gov>
->> Cc: John Stultz <john.stultz@linaro.org>
->> Cc: linux-doc@vger.kernel.org
->> Cc: linux-kernel@vger.kernel.org
->> To: linux-fsdevel@vger.kernel.org
->> To: linux-unionfs@vger.kernel.org
->> Cc: linux-security-module@vger.kernel.org
->> Cc: kernel-team@android.com
->> Cc: selinux@vger.kernel.org
-> Eric
->
-I used git send-email to do the heavy lifting of sending the submission, 
-minus the obligatory maintainers script because it adds 100s of 
-recipients and breaks entry into several of the lists. AFAICT send-email 
-appears to not add To: entries found in the body, only Cc: entries :-(.
+On Tue, Oct 20, 2020 at 09:36:00PM +0000, David Laight wrote:
+> From: Arvind Sankar
+> > Sent: 20 October 2020 21:40
+> > 
+> > Putting the round constants and the message schedule arrays together in
+> > one structure saves one register, which can be a significant benefit on
+> > register-constrained architectures. On x86-32 (tested on Broadwell
+> > Xeon), this gives a 10% performance benefit.
+> 
+> I'm actually stunned it makes that much difference.
+> The object code must be truly horrid (before and after).
+> 
+> There are probably other strange tweaks that give a similar
+> improvement.
+> 
+> 	David
+> 
 
-I will resend with everything as Cc: entries shortly.
+Hm yes, I took a closer look at the generated code, and gcc seems to be
+doing something completely braindead. Before this change, it actually
+copies 8 words at a time from SHA256_K onto the stack, and uses those
+stack temporaries for the calculation. So this patch is giving a benefit
+just because it only does the copy once instead of every time around the
+loop.
 
-Sincerely -- Mark Salyzyn
-
+It doesn't even really need a register to hold SHA256_K since this isn't
+PIC code, it could just access it directly as SHA256_K(%ecx) if it just
+multiplied the loop counter i by 4.
