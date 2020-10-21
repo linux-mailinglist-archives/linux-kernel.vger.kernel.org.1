@@ -2,151 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9C5F294D1C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:57:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E295A294D26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:01:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442743AbgJUM5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:57:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50968 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441113AbgJUM5s (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:57:48 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E4BCC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:57:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=2guoGSLtHOa0nTM7D1+lgjYVtsEuXac+T3GLacIF1mg=; b=y78jstFCx8mCbIM5K6v+eQ+mu
-        AhGm2FxHNI+92IzJArQE5oZS+WltS4w9ASWH5GSlSdMtfuuxObcpTXgWNZ1Or89k/RHL9YvGv0qlN
-        weODQgpXxgNWGzdaeU43FB0iVlCtBm8bZKLkycy6z5VXekcjqR0zRpOsfgL4y8CrEDn2u25mOBZGS
-        kTaJMrIVOnUHTCAuBPPhIcwwrhDgiCyrGur1DKPSCpQUqib6544KM37/LQkQ8Nkog2PPruNfNZU9K
-        kxVbl3nn8hCXN88zG27ISaAH6rG7tKRCKWhLvVbs30duo5SKv+Xd8NFWlK8yigyeDd80D/FLZretT
-        8e3o6JR4Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49106)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVDgT-0000ZV-OY; Wed, 21 Oct 2020 13:57:41 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVDgS-0006P1-7u; Wed, 21 Oct 2020 13:57:40 +0100
-Date:   Wed, 21 Oct 2020 13:57:40 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     v.narang@samsung.com, a.sahrawat@samsung.com,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Marc Zyngier <maz@kernel.org>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Vincent Whitchurch <vincent.whitchurch@axis.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        Maninder Singh <maninder1.s@samsung.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Nathan Huckleberry <nhuck@google.com>,
-        Will Deacon <will@kernel.org>, Jian Cai <caij2003@gmail.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 2/3] arm: introduce IRQ stacks
-Message-ID: <20201021125740.GM1551@shell.armlinux.org.uk>
-References: <CGME20201008071639epcas5p465f13d992a25936ba63436baf1fb6f83@epcas5p4.samsung.com>
- <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
- <1602141333-17822-3-git-send-email-maninder1.s@samsung.com>
- <CAK8P3a2RYeNiTy9QmwFVKtFifXxWc9XfAT6ThPoSH9wGYsKGpA@mail.gmail.com>
- <CAK8P3a3eZjBVSuhv=Cx4aYC+E9tex+BbJH1b6YyMMief-mO7kQ@mail.gmail.com>
- <20201021124542.GL1551@shell.armlinux.org.uk>
+        id S2442796AbgJUNBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:01:06 -0400
+Received: from mga05.intel.com ([192.55.52.43]:40832 "EHLO mga05.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442787AbgJUNBD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:01:03 -0400
+IronPort-SDR: G0ITZuDh7/4qMUtPPxX1v6WnUA1FZoOKyQ63+iBOdJbNZRgJVJ9zw0FLfFHgE9iRcuhyyI0k49
+ aoumwEy6z7Xg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="252057577"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="252057577"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 06:00:58 -0700
+IronPort-SDR: lM5wSd6+wT4tggVCLwdGbIPibdst4g5SbujPDO31XcaiYsSmH6OSi9IHSmujusMtC9jZyu4c8a
+ HvaYv53wmvcQ==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="522735609"
+Received: from paasikivi.fi.intel.com ([10.237.72.42])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 06:00:55 -0700
+Received: by paasikivi.fi.intel.com (Postfix, from userid 1000)
+        id 4CB9020815; Wed, 21 Oct 2020 16:00:33 +0300 (EEST)
+Date:   Wed, 21 Oct 2020 16:00:33 +0300
+From:   Sakari Ailus <sakari.ailus@linux.intel.com>
+To:     Hugues Fruchet <hugues.fruchet@st.com>
+Cc:     Alexandre Torgue <alexandre.torgue@st.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-media@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        Alain Volmat <alain.volmat@st.com>,
+        Yannick Fertre <yannick.fertre@st.com>,
+        Philippe CORNU <philippe.cornu@st.com>
+Subject: Re: [PATCH v4 2/2] media: dt-bindings: media: st,stm32-dcmi: Add
+ support of BT656
+Message-ID: <20201021130033.GI2703@paasikivi.fi.intel.com>
+References: <1603188889-23664-1-git-send-email-hugues.fruchet@st.com>
+ <1603188889-23664-3-git-send-email-hugues.fruchet@st.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021124542.GL1551@shell.armlinux.org.uk>
+In-Reply-To: <1603188889-23664-3-git-send-email-hugues.fruchet@st.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 01:45:42PM +0100, Russell King - ARM Linux admin wrote:
-> On Wed, Oct 21, 2020 at 02:42:48PM +0200, Arnd Bergmann wrote:
-> > (also resending this reply from @kernel.org)
-> > 
-> > On Fri, Oct 16, 2020 at 12:19 PM Arnd Bergmann <arnd@arndb.de> wrote:
-> > > On Thu, Oct 8, 2020 at 9:20 AM Maninder Singh <maninder1.s@samsung.com> wrote:
-> > > >
-> > > > This patch adds code for switching to IRQ stack.
-> > > > IRQ stack and Kernel SVC stack have below design.
-> > > >
-> > > > IRQ STACK:-
-> > > >                     ------------ IRQ stack top
-> > > >                     |          |
-> > > >                     ------------
-> > > >                     .          .
-> > > >                     .          .
-> > > >                     .          .
-> > > >                     ------------
-> > > >                     |    sp    | <- irq_stack_base + 0x8
-> > > >                     ------------
-> > > >                     |    fp    | <- irq_stack_base + 0x4
-> > > >                     ------------
-> > > >                     |tinfo_ptr | /* pointer to thread info */
-> > > > irq_stack_ptr -->   ------------ IRQ stack base
-> > > >
-> > > > Kernel SVC stack:-
-> > > >                     ------------  Kernel stack top
-> > > >                     |          |
-> > > >                     ------------
-> > > >                     .          .
-> > > >                     .          .
-> > > >                     .          .
-> > > >                     ------------
-> > > >                     |          |
-> > > >                     |          |
-> > > >                     ------------
-> > > >                     |tinfo_ptr |  /* pointer to thread info */
-> > > >                     ------------ Kernel stack base
-> > >
-> > > The extra indirection doesn't look great, and I don't see any of the
-> > > other architectures need that. Since we can access percpu data
-> > > without going through thread_info, maybe doing the same as
-> > > x86 would work here:
-> > >
-> > > - define 'current' as 'this_cpu_read_stable(current_task);'
-> > > - convert to CONFIG_THREAD_INFO_IN_TASK
+Hi Hugues,
+
+On Tue, Oct 20, 2020 at 12:14:49PM +0200, Hugues Fruchet wrote:
+> Add support of BT656 parallel bus mode in DCMI.
+> This mode is enabled when hsync-active & vsync-active
+> fields are not specified.
 > 
-> That means we need to also code that up in assembly - remember, we
-> need to access thread_info from assembly code.
+> Signed-off-by: Hugues Fruchet <hugues.fruchet@st.com>
+> ---
+>  .../devicetree/bindings/media/st,stm32-dcmi.yaml   | 30 ++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> index 3fe778c..1ee521a 100644
+> --- a/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> +++ b/Documentation/devicetree/bindings/media/st,stm32-dcmi.yaml
+> @@ -44,6 +44,36 @@ properties:
+>        bindings defined in
+>        Documentation/devicetree/bindings/media/video-interfaces.txt.
+>  
+> +    properties:
+> +      endpoint:
+> +        type: object
+> +
+> +        properties:
+> +          bus-width: true
+> +
+> +          hsync-active:
+> +            description:
+> +              If both HSYNC and VSYNC polarities are not specified, BT656
+> +              embedded synchronization is selected.
+> +            default: 0
+> +
+> +          vsync-active:
+> +            description:
+> +              If both HSYNC and VSYNC polarities are not specified, BT656
+> +              embedded synchronization is selected.
+> +            default: 0
 
-Note also that there is a circular dependency involved. If you make
-thread_info accessible via per-cpu, then:
+Should I understand this as if the polarities were not specified, BT.656
+will be used? The bindings previously documented BT.601 (parallel) only, so
+it was somewhat ambigious to begin with. Is there a risk of interpreting
+old BT.601 bindings as BT.656? With bus-type property, I believe you could
+avoid at least that risk.
 
-#ifndef __my_cpu_offset
-#define __my_cpu_offset per_cpu_offset(raw_smp_processor_id())
-#endif
-#ifdef CONFIG_DEBUG_PREEMPT
-#define my_cpu_offset per_cpu_offset(smp_processor_id())
-#else
-#define my_cpu_offset __my_cpu_offset
-#endif
+Also not specifying at least one of the default values leads to BT.656
+without bus-type. That could be addressed by removing the defaults.
 
-smp_processor_id() ultimately ends up as raw_smp_processor_id() which
-is:
-
-#define raw_smp_processor_id() (current_thread_info()->cpu)
-
-and if current_thread_info() itself involves reading from per-cpu data,
-we end up recursing... infinitely.
-
-This is why I said in the other thread:
-
-"We don't do it because we don't have a separate register to be able
-to store the thread_info pointer, and copying that lump between the
-SVC and IRQ stack will add massively to IRQ latency, especially for
-older machines."
+> +
+> +          pclk-sample: true
+> +
+> +          remote-endpoint: true
+> +
+> +        required:
+> +          - remote-endpoint
+> +
+> +        additionalProperties: false
+> +
+> +    additionalProperties: false
+> +
+>  required:
+>    - compatible
+>    - reg
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Regards,
+
+Sakari Ailus
