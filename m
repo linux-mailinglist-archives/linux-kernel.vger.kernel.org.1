@@ -2,139 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9619B2952D0
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:14:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CED612952C6
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504824AbgJUTOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:14:39 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:63870 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504797AbgJUTOg (ORCPT
+        id S2441509AbgJUTMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52722 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2408959AbgJUTMs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:14:36 -0400
-Received: from 89-77-60-66.dynamic.chello.pl (89.77.60.66) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id 030494657aca0941; Wed, 21 Oct 2020 21:14:32 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Saravana Kannan <saravanak@google.com>,
-        Xiang Chen <chenxiang66@hisilicon.com>
-Subject: [PATCH 1/3] PM: runtime: Drop runtime PM references to supplier on link removal
-Date:   Wed, 21 Oct 2020 21:12:15 +0200
-Message-ID: <1682736.0MbBAd5gSP@kreacher>
-In-Reply-To: <6543936.FbWAdBN1tG@kreacher>
-References: <6543936.FbWAdBN1tG@kreacher>
+        Wed, 21 Oct 2020 15:12:48 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BFEDC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:12:48 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id g7so3535631ilr.12
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:12:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cicLxiZ2pJxeNcrsla6aQZQxECgsVNk7QwFVKAmvVic=;
+        b=LtZOp7+bO31gS11qb7YgWyXytfCn3sfkOqfqT9tb7FTmqFPD+7SviB5IPlhX5CjdPp
+         BIxzNvUjC0L6/rX7xcHpV7ibCg5x76DkD9A7AsJkC1akhMdNR0ueq7aVCXKdq70hn2ng
+         8RQenoz1r3sdh74gyWsGdJupJ3SLYl7e6LP8yjflXQ1simfX3k+QkIVBi7XRmMsvFKO3
+         RwV2DWFhZ743dn/27g99rhm2uge71DRd/eKDNavflidLQUETvRuGhHOb5/yDfuY9zedD
+         /70afm/frJWXd2M5T8Qoq/AOgL1tSrIRE+kCAH+akg1xKshv/2yxsukItM+t17fXdp1C
+         bwew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cicLxiZ2pJxeNcrsla6aQZQxECgsVNk7QwFVKAmvVic=;
+        b=ViofdtBdDrEMuq7UKkJHb6LSV6baA36NJzYIm8cnOCYkmBnnC+wMiceQZ8dWF24//T
+         zTYZexDNbANwVpaNx+mxVpLqQEi0PijPRUwXG17ex6BFombfoSIKQC0/7qBVlW+iCYxm
+         R3gv3EVrtja3a8i1NmVhrMPiurninqLkCse3BzImvC1+ueeXM8osM7V1qmnTow/vRNgU
+         fXmkh8dFcy3722+JSXORznp+HnlGrgMuvm6RV9vY2dd0K36oYSfVlRLNJeng3as+almf
+         c+gzsDm+xlRfhdYPjx36/2Puhs8By/WpS5dHyL1Tc2mO0q38rej8uUPbdd8V072qguNZ
+         37yg==
+X-Gm-Message-State: AOAM533sfED8PS0kvSJw3DjjOLjlJZ1043u4gFJhqYpfLnoT915NVWj3
+        h0pmz09jCPuGmnU3GGYSkKiobFcaVGAIPaSJ8GM=
+X-Google-Smtp-Source: ABdhPJy2peqg3nBLiM2eNvvIgRbEE8Ctr9quk7enFj9RmgHgo5LIK+1wClgBM701B1VkH/bKmYvpI4Rj8hSjfWq58bE=
+X-Received: by 2002:a92:de43:: with SMTP id e3mr3291056ilr.62.1603307567874;
+ Wed, 21 Oct 2020 12:12:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201021150120.29920-1-yashsri421@gmail.com> <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
+ <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
+ <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
+ <c4f8aae0-d805-8d09-1a87-ba64bc01c29a@gmail.com> <d44e35ec1d923fd09ea6530ca5d1988cc8e59347.camel@perches.com>
+ <0871715a-e605-91c0-ffa5-389a313ec34d@gmail.com>
+In-Reply-To: <0871715a-e605-91c0-ffa5-389a313ec34d@gmail.com>
+From:   Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Wed, 21 Oct 2020 21:12:32 +0200
+Message-ID: <CAKXUXMzdjV8aPL=Paf2QJs1iWB5swxYXFJozyPi_JxJVXRArxQ@mail.gmail.com>
+Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
+To:     Aditya <yashsri421@gmail.com>
+Cc:     Joe Perches <joe@perches.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+On Wed, Oct 21, 2020 at 8:25 PM Aditya <yashsri421@gmail.com> wrote:
+>
+> On 21/10/20 11:35 pm, Joe Perches wrote:
+> > On Wed, 2020-10-21 at 23:25 +0530, Aditya wrote:
+> >> Thanks for your feedback. I ran a manual check using this approach
+> >> over v5.6..v5.8.
+> >> The negatives occurring with this approach are for the word 'be'
+> >> (Frequency 5) and 'add'(Frequency 1). For eg.
+> >>
+> >> WARNING:REPEATED_WORD: Possible repeated word: 'be'
+> >> #278: FILE: drivers/net/ethernet/intel/ice/ice_flow.c:388:
+> >> + * @seg: index of packet segment whose raw fields are to be be extracted
+> >>
+> >> WARNING:REPEATED_WORD: Possible repeated word: 'add'
+> >> #21:
+> >> Let's also add add a note about using only the l3 access without l4
+> >>
+> >> Apart from these, it works as expected. It also takes into account the
+> >> cases for multiple occurrences of hex, as you mentioned. For eg.
+> >>
+> >> WARNING:REPEATED_WORD: Possible repeated word: 'ffff'
+> >> #15:
+> > []
+> >> I'll try to combine both methods and come up with a better approach.
+> >
+> > Enjoy, but please consider:
+> >
+> > If for over 30K patches, there are just a few false positives and
+> > a few false negatives, it likely doesn't need much improvement...
+> >
+> > checkpatch works on patch contexts.
+> >
+> > It's not intended to be perfect.
+> >
+> > It's just a little tool that can help avoid some common defects.
+> >
+> >
+>
+> Alright Sir. Then, we can proceed with the method you suggested, as it
+> is more or less perfect.
+> I'll re-send the patch with modified reduced warning figure.
+>
 
-While removing a device link, drop the supplier device's runtime PM
-usage counter as many times as needed to drop all of the runtime PM
-references to it from the consumer in addition to dropping the
-consumer's link count.
+Aditya, you can also choose to implement your solution;
+yes, it is more work for you but it also seems to function better in
+the long run.
 
-Fixes: baa8809f6097 ("PM / runtime: Optimize the use of device links")
-Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-Cc: 5.1+ <stable@vger.kernel.org> # 5.1+
----
- drivers/base/core.c          |    6 ++----
- drivers/base/power/runtime.c |   21 ++++++++++++++++++++-
- include/linux/pm_runtime.h   |    4 ++--
- 3 files changed, 24 insertions(+), 7 deletions(-)
+Clearly, Joe would settle for a simpler solution, but his TODO list of
+topics to engage in and work on is also much longer...
 
-Index: linux-pm/drivers/base/power/runtime.c
-===================================================================
---- linux-pm.orig/drivers/base/power/runtime.c
-+++ linux-pm/drivers/base/power/runtime.c
-@@ -1729,7 +1729,7 @@ void pm_runtime_new_link(struct device *
- 	spin_unlock_irq(&dev->power.lock);
- }
- 
--void pm_runtime_drop_link(struct device *dev)
-+static void pm_runtime_drop_link_count(struct device *dev)
- {
- 	spin_lock_irq(&dev->power.lock);
- 	WARN_ON(dev->power.links_count == 0);
-@@ -1737,6 +1737,25 @@ void pm_runtime_drop_link(struct device
- 	spin_unlock_irq(&dev->power.lock);
- }
- 
-+/**
-+ * pm_runtime_drop_link - Prepare for device link removal.
-+ * @link: Device link going away.
-+ *
-+ * Drop the link count of the consumer end of @link and decrement the supplier
-+ * device's runtime PM usage counter as many times as needed to drop all of the
-+ * PM runtime reference to it from the consumer.
-+ */
-+void pm_runtime_drop_link(struct device_link *link)
-+{
-+	if (!(link->flags & DL_FLAG_PM_RUNTIME))
-+		return;
-+
-+	pm_runtime_drop_link_count(link->consumer);
-+
-+	while (refcount_dec_not_one(&link->rpm_active))
-+		pm_runtime_put(link->supplier);
-+}
-+
- static bool pm_runtime_need_not_resume(struct device *dev)
- {
- 	return atomic_read(&dev->power.usage_count) <= 1 &&
-Index: linux-pm/include/linux/pm_runtime.h
-===================================================================
---- linux-pm.orig/include/linux/pm_runtime.h
-+++ linux-pm/include/linux/pm_runtime.h
-@@ -58,7 +58,7 @@ extern void pm_runtime_clean_up_links(st
- extern void pm_runtime_get_suppliers(struct device *dev);
- extern void pm_runtime_put_suppliers(struct device *dev);
- extern void pm_runtime_new_link(struct device *dev);
--extern void pm_runtime_drop_link(struct device *dev);
-+extern void pm_runtime_drop_link(struct device_link *link);
- 
- /**
-  * pm_runtime_get_if_in_use - Conditionally bump up runtime PM usage counter.
-@@ -280,7 +280,7 @@ static inline void pm_runtime_clean_up_l
- static inline void pm_runtime_get_suppliers(struct device *dev) {}
- static inline void pm_runtime_put_suppliers(struct device *dev) {}
- static inline void pm_runtime_new_link(struct device *dev) {}
--static inline void pm_runtime_drop_link(struct device *dev) {}
-+static inline void pm_runtime_drop_link(struct device_link *link) {}
- 
- #endif /* !CONFIG_PM */
- 
-Index: linux-pm/drivers/base/core.c
-===================================================================
---- linux-pm.orig/drivers/base/core.c
-+++ linux-pm/drivers/base/core.c
-@@ -763,8 +763,7 @@ static void __device_link_del(struct kre
- 	dev_dbg(link->consumer, "Dropping the link to %s\n",
- 		dev_name(link->supplier));
- 
--	if (link->flags & DL_FLAG_PM_RUNTIME)
--		pm_runtime_drop_link(link->consumer);
-+	pm_runtime_drop_link(link);
- 
- 	list_del_rcu(&link->s_node);
- 	list_del_rcu(&link->c_node);
-@@ -778,8 +777,7 @@ static void __device_link_del(struct kre
- 	dev_info(link->consumer, "Dropping the link to %s\n",
- 		 dev_name(link->supplier));
- 
--	if (link->flags & DL_FLAG_PM_RUNTIME)
--		pm_runtime_drop_link(link->consumer);
-+	pm_runtime_drop_link(link);
- 
- 	list_del(&link->s_node);
- 	list_del(&link->c_node);
-
-
-
+Lukas
