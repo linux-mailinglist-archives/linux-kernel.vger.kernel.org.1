@@ -2,91 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3FD60295442
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:33:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D53B295444
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 23:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2506215AbgJUVdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 17:33:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46082 "EHLO
+        id S2506228AbgJUVdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 17:33:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46220 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408061AbgJUVdE (ORCPT
+        with ESMTP id S2506220AbgJUVdx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 17:33:04 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E455DC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:33:03 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id t14so2291974pgg.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:33:03 -0700 (PDT)
+        Wed, 21 Oct 2020 17:33:53 -0400
+Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6F44CC0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:33:53 -0700 (PDT)
+Received: by mail-ot1-x342.google.com with SMTP id t15so3268135otk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 14:33:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=WWdO/BEHPBVW0hCFPQ+JR5DZl5CQy5T+Kf+qXCSlmaY=;
-        b=vapsFGNt7qONFuQsa3KqFg9vFwXGyaSa+VKM9Od4OikxgZqrXxOJ92ntvxT70Jkvh6
-         zNnJqpV1YHNlRGVPjBP2Kdn9h6OM1tcTDkj+VdHJUd/kYop9wMlYOcxZyQnyIUkbzYCU
-         aC4DQ2nLP9d4TYOIGzCSdVACDSRYTfo0CyA4enSKwCQ6+qkhSj4X8PrVvOaSdtHPO8FQ
-         Luw3hPS1+myvLHe1K7iEMVl3SV21AD6sKF4X0W/qRFz18BlMEzVRh3wOHpFHz1y2DsZ7
-         19NR3KuWTORF4UXpLoiH7d5+YSExEwbta0L5pr1Vai1EIEaevKMPGltPzH7PGxAvRXn8
-         ihpA==
+        bh=XCjYvUCIgbQ3TCtD4YfecFPhaqfiZUwN7ivTobgZQY0=;
+        b=lx4WkpT2GzaDerBpdUAWiK7Fk5vr7DQ65sS1KJ5w9QzgSXXyi1BcdYVoDIaXXrWft2
+         yC4htW78VmVnZz6BIcXn5NCdHwKSfCMa2P2uw8B6RVUVzzpTYLAkcOgy0f4LhDikDhh4
+         O+fIkWJPhWeQac0XW7kwgXkButPH3W8HhOQujJC2+2w+GIMEFkmYYHWeYHQFLeiO3iyZ
+         ED/m5VEzlWFv5k7F3+aVCm3m4XX9wEK0lxjyR/0+e9IXmZ56qWY3SP3CJw3s6T5PoRWf
+         1E0u6XOCinCRV31hLekEZJjzyNArUBgyoR0GBWhujH6Nl5x7JGF1zMbK/GCMHbte2Ei7
+         mb9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=WWdO/BEHPBVW0hCFPQ+JR5DZl5CQy5T+Kf+qXCSlmaY=;
-        b=Sxa1EkjLRI8PSKYo3CTbq/rsUepwvFbcJVbv6vrhByD9FMLUG2xCgPTa6oUjeX3DMm
-         IIenkZiSsEKHdEkbZXQgTd2ahyYbS/BFzK8FpBnbodOHpL4sB3GP2PBbB3Myc0ygPoWH
-         XduI1U+cQTLbyzLxzh8ctom/FkZ0wRpbrz0CRODfwz6exPR+bD8mtSnMBhKRSHa1O8a+
-         pWEaPjT0/h2dFfHOQKMwliaHPN9aZgQzFqWHm1nK+BW71uuW4cY/wyB0KpCjRkDOkhdl
-         favF43u6jirjMiI9hDWiHl+Gaxr2L26vJzmYn8pZT9GAvvoD7YEPEGR1fUnunYjA2JNj
-         OTdg==
-X-Gm-Message-State: AOAM532XHy0uqjQUb1J6A37VU9GEYNuWBJnLeNbtHpAy5KwSoi3ULcfp
-        uSiAMnL+EMTtNoF3NPh0EjSWTheEhnw7zo244dPGLA==
-X-Google-Smtp-Source: ABdhPJxGlF369VBjuL9KPmdp7qYAXWO3zXA0g1TE1lxNpt0Mt5RIdjomUYCqWdJoC4dnsAgiBDqGBiamcgtX44xgtMk=
-X-Received: by 2002:a63:dc05:: with SMTP id s5mr4890090pgg.201.1603315983174;
- Wed, 21 Oct 2020 14:33:03 -0700 (PDT)
+        bh=XCjYvUCIgbQ3TCtD4YfecFPhaqfiZUwN7ivTobgZQY0=;
+        b=aO1QIz8wjRNJYpfUpW40QjIXfDkCrJguUcDyRqOFw/VPR4bYC81PGawAUmTthBjkXR
+         eLnmY/7IUuIoDYcZNvm7u0i+GM4eGdaHZobR4af7iXabU2GkKNk4ySZb47NomCiahbi6
+         l5nJSI0NkdpzC39wJobhNZtXqWHuG3kyNgYvMISjVh1dWk01d2rASxC2wK+yOowBffTO
+         3UelwXwywPkLDFxwsIrzYkKXELMblCyLyJKq1v2Jmr+iGINemVCQz7/PS/3YiuNarmCL
+         6BvkkEpmLDHBNeWJCxf9BfIBXuHkR4VNUX+v5YCn5AVeAWYG9YPAseNjSYtZacAjhmjy
+         8pNg==
+X-Gm-Message-State: AOAM532drQWZgcURoTwKZBnL5UBVraM+AmTY8iWGOPOEt/cCJH48iEUi
+        jPeNHf4EizIkBQGR2rnwL4Mt3JQd2Bt0RCf49YkZMA==
+X-Google-Smtp-Source: ABdhPJxQft8N8pQfRzj0OP/DL2xjFlTkw1NWDG+V/uw4WSqVGubKlth/Yii+jjfy9m4PYJyes8XdUPNOygcqb5fQfrI=
+X-Received: by 2002:a05:6830:1558:: with SMTP id l24mr2909744otp.352.1603316032781;
+ Wed, 21 Oct 2020 14:33:52 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201012102621.32226-1-sjpark@amazon.com> <20201012102621.32226-2-sjpark@amazon.com>
-In-Reply-To: <20201012102621.32226-2-sjpark@amazon.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 21 Oct 2020 14:32:52 -0700
-Message-ID: <CAFd5g44CxPuXbHund397PJSQPHGhWy1-7ij7JnJNzCO0NF6dCA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] kunit: tool: Mark 'kunittest_config' as constant again
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     SeongJae Park <sjpark@amazon.de>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20201021181803.79650-1-john.stultz@linaro.org> <77de4aaa-14a5-6078-bd0b-c4942e97ab36@synopsys.com>
+In-Reply-To: <77de4aaa-14a5-6078-bd0b-c4942e97ab36@synopsys.com>
+From:   John Stultz <john.stultz@linaro.org>
+Date:   Wed, 21 Oct 2020 14:33:41 -0700
+Message-ID: <CALAqxLVyszFbOnWAOMekQuWbGgmMZpEfFiY6gyAPYmGXPz5sHA@mail.gmail.com>
+Subject: Re: [RFC][PATCH] usb: dwc3: Add quirk to trigger a GCTL soft reset
+ for Hisilicon Kirin Soc Platform
+To:     Thinh Nguyen <Thinh.Nguyen@synopsys.com>
+Cc:     lkml <linux-kernel@vger.kernel.org>, Yu Chen <chenyu56@huawei.com>,
+        Felipe Balbi <balbi@kernel.org>,
+        Tejas Joglekar <Tejas.Joglekar@synopsys.com>,
+        Yang Fei <fei.yang@intel.com>,
+        YongQin Liu <yongqin.liu@linaro.org>,
+        Andrzej Pietrasiewicz <andrzej.p@collabora.com>,
+        Jun Li <lijun.kernel@gmail.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "linux-usb@vger.kernel.org" <linux-usb@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 12, 2020 at 3:27 AM SeongJae Park <sjpark@amazon.com> wrote:
+On Wed, Oct 21, 2020 at 12:14 PM Thinh Nguyen <Thinh.Nguyen@synopsys.com> wrote:
 >
-> From: SeongJae Park <sjpark@amazon.de>
+> John Stultz wrote:
+> > From: Yu Chen <chenyu56@huawei.com>
+> >
+> > With the current dwc3 code on the HiKey960 we often see the
+> > COREIDLE flag get stuck off in __dwc3_gadget_start(), which
+> > seems to prevent the reset irq and causes the USB gadget to
+> > fail to initialize.
+> >
+> > We had seen occasional initialization failures with older
+> > kernels but with recent 5.x era kernels it seemed to be becoming
+> > much more common, so I dug back through some older trees and
+> > realized I dropped this quirk from Yu Chen during upstreaming
+> > as I couldn't provide a proper rational for it and it didn't
+> > seem to be necessary. I now realize I was wrong.
+> >
+> > On the upside, I can now understand more why such a quirk is
+> > needed.
 >
-> 'kunit_kernel.kunittest_config' was constant at first, and therefore it
-> used UPPER_SNAKE_CASE naming convention that usually means it is
-> constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
-> default config in '--build_dir'") made it modifiable to fix a use case
-> of the tool and thus the naming also changed to lower_snake_case.
-> However, this resulted in a confusion.  As a result, some successing
-> changes made the tool unittest fail, and a fix[1] of it again incurred
-> the '--build_dir' use case failure.
->
-> As the previous commit fixed the '--build_dir' use case without
-> modifying the variable again, this commit marks the variable as constant
-> again with UPPER_SNAKE_CASE, to reduce future confusions.
->
-> [1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
->
-> Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> This shouldn't be a quirk. It's part of the programming guide when
+> switching mode in DRD. I don't know how we missed this.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Ah! That's great, as it should simplify the patch a bit and avoid
+introducing another dt bindings!
 
-Thanks for this! This is something I meant to fix a while ago and forgot about.
 
-One minor issue, this patch does not apply on torvalds/master right
-now. Could you please rebase this?
+> > diff --git a/drivers/usb/dwc3/core.c b/drivers/usb/dwc3/core.c
+> > index bdf0925da6b6..b138c67e3892 100644
+> > --- a/drivers/usb/dwc3/core.c
+> > +++ b/drivers/usb/dwc3/core.c
+> > @@ -114,6 +114,19 @@ void dwc3_set_prtcap(struct dwc3 *dwc, u32 mode)
+> >       dwc->current_dr_role = mode;
+> >  }
+> >
+> > +static void dwc3_gctl_core_soft_reset(struct dwc3 *dwc)
+> > +{
+> > +     int reg;
+> > +
+> > +     reg = dwc3_readl(dwc->regs, DWC3_GCTL);
+> > +     reg |= (DWC3_GCTL_CORESOFTRESET);
+> > +     dwc3_writel(dwc->regs, DWC3_GCTL, reg);
+> > +
+> > +     reg = dwc3_readl(dwc->regs, DWC3_GCTL);
+> > +     reg &= ~(DWC3_GCTL_CORESOFTRESET);
+> > +     dwc3_writel(dwc->regs, DWC3_GCTL, reg);
+> > +}
+> > +
+> >  static void __dwc3_set_mode(struct work_struct *work)
+> >  {
+> >       struct dwc3 *dwc = work_to_dwc(work);
+> > @@ -178,6 +191,10 @@ static void __dwc3_set_mode(struct work_struct *work)
+> >               }
+> >               break;
+> >       case DWC3_GCTL_PRTCAP_DEVICE:
+> > +             /* Execute a GCTL Core Soft Reset when switch mode */
+> > +             if (dwc->gctl_reset_quirk)
+> > +                     dwc3_gctl_core_soft_reset(dwc);
+> > +
+>
+> This should be done before dwc3_set_prtcap(), and this applies when
+> switching from device to host mode also. Make sure to check if the
+> controller is DRD before doing this.
+
+Sorry, by checking that the controller is DRD, I'm not sure exactly
+what you mean.
+Checking DWC3_GHWPARAMS0_MODE_DRD?  Or something else?
+
+Thanks so much for the review and feedback!
+-john
