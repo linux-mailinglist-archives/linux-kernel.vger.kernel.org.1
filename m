@@ -2,109 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D72FC294F66
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:01:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 43112294F6A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:01:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443883AbgJUPBo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:01:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41950 "EHLO
+        id S2443895AbgJUPBx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:01:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41972 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443593AbgJUPBo (ORCPT
+        with ESMTP id S2443887AbgJUPBw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:01:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ECFEC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:01:44 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t4so1328264plq.13
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:01:44 -0700 (PDT)
+        Wed, 21 Oct 2020 11:01:52 -0400
+Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B57A3C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:01:50 -0700 (PDT)
+Received: by mail-ed1-x544.google.com with SMTP id x1so2931447eds.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:01:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=pxAcdVZl/YIRZ+Db6rT1ciQ/orlo2DSt1cDHO2mvbz8=;
-        b=e0dSn7gNlfWmZ9NcZPlkwENydhaAtKyX+pH/ejlCnrg9uqUxmzzG6mcxcCQ6661BVU
-         nU9jMfImnZXM7l0YzUlT8wk71a6UwM9iwgaVQX3SPgFgBdNVYdi/ztBokj0OH3qyCpZq
-         c5/ZNRfpnvglJjcwoVWhelr+rnfN++WsmT2p188Su45BuK0uwPnoNLi/0tdxBWAyoWQL
-         pKy+F4+opiQ8Zy6IdJv9uPl2bLfqCx05+QB5Q3SQqd8B4VLoUMLQSfpcsiUxODAy0RYV
-         R8jDudapt/HHYG+NKGPcQoHfztq88x9IEPBjScVUxtKL0dGIb3D97dEYzjO7TE25wkjS
-         oswQ==
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ue8Kphmgd/J9kkCdXQ6cXg3jN2T1s1VI/S6KEmBFYtA=;
+        b=tyuzf6egZNg0bmL3iIxfmvVeRFhdDnfbewBqqrw7rPk8s9ezG7HKGJBYpz7qsa0C3r
+         S3ppY6TNQS3s3qJ+E8SkywVt7v3Zd2bQYG9iNKkQ5ry9p4dyQxrKaJYxT3chX6RHizyC
+         +GySRMRyhkvGqRuGv8ic4+o/rQfFyDhJwmYxpx2ibC7icYfN3L7KTnwPZmkGNg6waxt+
+         /v0DHK/ocGmaG3hiyKz3lBsjXZFDm/NNr/l8Dh1bRHfhbCLOJwWvukIO73RcCWW7x5gT
+         F/vLxIv6fFnSA+AZM/O1jatbKn8McCq487pE+2ewPegXQiEjjWXHbjNbBW5V5tKGcGQh
+         Pzag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=pxAcdVZl/YIRZ+Db6rT1ciQ/orlo2DSt1cDHO2mvbz8=;
-        b=GPWAQIdBgeMeVZvS9uTE8hxcQGnt6PdFhWfLRdPtjDfbbJBQE4ahmlG1NztjEixzRc
-         VL2BdeWALrzjJbv+eZGaKdZcoXz6n4nr207eslkrFmDiOhFeZwqtcct/DH8/bwyld6Zc
-         4R3YnWB+mvMYksU7uICxL4OzbhaJfmglfBYh9akkc5FkccT+XdWvWhxgg9Op0I70LjgV
-         TxwrDx29adcFzS3mKGXLp4le3rr6sIdAkLdfHdYsn3dbIMc16Yo4S8DJtx8Oulg8NTlT
-         U7w6zaL68oUWBaQZh9MV+JpSEiGM2Ac9G1tiByM0XOzRaiyIReMkWs3TfJfAzOyjSoz2
-         fXBw==
-X-Gm-Message-State: AOAM531mul81yOMFU46d5ItAsCB/iLPcmbdzLRW5dt9nvKZbgXCa6/23
-        uu6gykLrHrcpuX4+RnAfG2M=
-X-Google-Smtp-Source: ABdhPJxyTGlPAOtFsyfXgAseCi6vB1MeM10HqBS/vG88cAZG3ZrU3MsuVzH1rNxjQauAGm+xUa9GJQ==
-X-Received: by 2002:a17:90a:c28d:: with SMTP id f13mr3647088pjt.145.1603292503614;
-        Wed, 21 Oct 2020 08:01:43 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:41d:60ec:8cb2:c45f:197:35d9])
-        by smtp.googlemail.com with ESMTPSA id z6sm2776437pfg.12.2020.10.21.08.01.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:01:42 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, Aditya Srivastava <yashsri421@gmail.com>
-Subject: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
-Date:   Wed, 21 Oct 2020 20:31:20 +0530
-Message-Id: <20201021150120.29920-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ue8Kphmgd/J9kkCdXQ6cXg3jN2T1s1VI/S6KEmBFYtA=;
+        b=ZnRlsUKKzLln5Bc1UIEwFEPUhEht2nbEaWukaDPutslFumLwropvBOzckiDrmoZNy8
+         w6b1Dh5RfYzW1bgU8mTRmVTsdDnlMwrlUjIUtexsmX1tKxzaOBVpXbZDodeaTgwCQr8K
+         bP1LKgoba/RGxsDa5emwVlvoJEgHjbE5euCc0u5kTZ3Ak6A2DJBd3j7Ww+DWUoVFHQ5h
+         rtmdEBS7HC5sJ0etl1RMKreubeaaAwyKSYki4KxqSUtQtMelcRm3fKLL1J8MTkqDi/Hq
+         QG3oV+LIClQUkEIPyhKeYVAKzg87VHu/kPBELY9Y0NYmmhrG8hE94a+3rocXNg2O9pg8
+         9XsA==
+X-Gm-Message-State: AOAM532Maf6oTNZRObvLlTHYWQHTD0Rwbf9XT+G4DuXCocC5Ztg68vV7
+        lpwXc3JGQcPVb33H9a4/HRpzLDO/VPT/uQPg3FMByw==
+X-Google-Smtp-Source: ABdhPJxLbzy0h2+Icd7LIsy6zh10BR+u5qt0ykST0OUv8CPsJiNxNv60HEOhNh7tmnifd2hka1h/GcVQRH2ORVgJ1P0=
+X-Received: by 2002:a05:6402:135a:: with SMTP id y26mr1563112edw.114.1603292509011;
+ Wed, 21 Oct 2020 08:01:49 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201013003203.4168817-1-samitolvanen@google.com>
+ <20201013003203.4168817-23-samitolvanen@google.com> <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
+ <20201015102216.GB2611@hirez.programming.kicks-ass.net> <20201015203942.f3kwcohcwwa6lagd@treble>
+ <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
+ <20201020185217.ilg6w5l7ujau2246@treble> <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
+ <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
+From:   Sami Tolvanen <samitolvanen@google.com>
+Date:   Wed, 21 Oct 2020 08:01:38 -0700
+Message-ID: <CABCJKuewXazmBpXz5irWgy+W537x1Lws5YAsFqMgo+Yio8iyRg@mail.gmail.com>
+Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, Jann Horn <jannh@google.com>,
+        "the arch/x86 maintainers" <x86@kernel.org>,
+        Masahiro Yamada <masahiroy@kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Will Deacon <will@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Kernel Hardening <kernel-hardening@lists.openwall.com>,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kbuild <linux-kbuild@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        linux-pci@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presence of hexadecimal address or symbol results in false warning
-message by checkpatch.pl.
+On Wed, Oct 21, 2020 at 1:56 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Tue, Oct 20, 2020 at 12:24:37PM -0700, Sami Tolvanen wrote:
+> > > > Building allyesconfig with this series and LTO enabled, I still see
+> > > > the following objtool warnings for vmlinux.o, grouped by source file:
+> > > >
+> > > > arch/x86/entry/entry_64.S:
+> > > > __switch_to_asm()+0x0: undefined stack state
+> > > > .entry.text+0xffd: sibling call from callable instruction with
+> > > > modified stack frame
+> > > > .entry.text+0x48: stack state mismatch: cfa1=7-8 cfa2=-1+0
+> > >
+> > > Not sure what this one's about, there's no OBJECT_FILES_NON_STANDARD?
+> >
+> > Correct, because with LTO, we won't have an ELF binary to process
+> > until we compile everything into vmlinux.o, and at that point we can
+> > no longer skip individual object files.
+>
+> I think what Josh was trying to say is; this file is subject to objtool
+> on a normal build and does not generate warnings. So why would it
+> generate warnings when subject to objtool as result of a vmlinux run
+> (due to LTO or otherwise).
 
-For example, running checkpatch on commit b8ad540dd4e4 ("mptcp: fix
-memory leak in mptcp_subflow_create_socket()") results in warning:
+Ah, right. It also doesn't generate warnings when I build defconfig
+with LTO, so clearly something confuses objtool here.
 
-WARNING:REPEATED_WORD: Possible repeated word: 'ff'
-    00 00 00 00 00 00 00 00 00 2f 30 0a 81 88 ff ff  ........./0.....
-
-Here, it reports 'ff' to be repeated, but it is in fact part of some
-address or code, where it has to be repeated.
-In this case, the intent of the warning to find stylistic issues in
-commit messages is not met and the warning is just completely wrong in
-this case.
-
-To avoid all such reports, add an additional regex check for a repeating
-pattern of 4 or more 2-lettered words separated by space in a line.
-
-A quick evaluation on v5.6..v5.8 showed that this fix reduces
-REPEATED_WORD warnings from 2797 to 1043.
-
-A quick manual check found all cases are related to hex output in
-commit messages.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/checkpatch.pl | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 9b9ffd876e8a..78aeb7a3ca3d 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3050,8 +3050,10 @@ sub process {
- 			}
- 		}
- 
--# check for repeated words separated by a single space
--		if ($rawline =~ /^\+/ || $in_commit_log) {
-+# check for repeated words separated by a single space and
-+# avoid repeating hex occurrences like 'ff ff fe 09 ...'
-+		if (($rawline =~ /^\+/ || $in_commit_log) &&
-+		$rawline !~ /(\b[0-9a-f]{2}( )+){4,}/) {
- 			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
- 
- 				my $first = $1;
--- 
-2.17.1
-
+Sami
