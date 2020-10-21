@@ -2,55 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72741294B21
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4055E294B26
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:17:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438656AbgJUKNL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:13:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53840 "EHLO
+        id S2409895AbgJUKR5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:17:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54576 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438556AbgJUKNK (ORCPT
+        with ESMTP id S2409812AbgJUKR4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:13:10 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A7C6C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:13:09 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id p21so917213pju.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:13:09 -0700 (PDT)
+        Wed, 21 Oct 2020 06:17:56 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D4D6C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:17:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id o7so1210501pgv.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:17:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=date:from:to:cc:subject:message-id:references:mime-version
          :content-disposition:content-transfer-encoding:in-reply-to
          :user-agent;
-        bh=KKxkiwugSA8ovsQQk98B7vCBdUg6Ojx2CH1WvJsNVmw=;
-        b=DdLhmSYlX5OhZLKF7XkHmU4/G002c+ZjzwFjN2fY2v6PBT41QABXIh5jZLZ6vi347G
-         Wuag0pI3eMO9Y9IFum4irlu9o9QISAbGaftwzAfQGDdlEcmnxYrWxt+tzGDWZRAzODa7
-         OMCrqEqmtlYQH2ScbRXEmDbIakmSNys2Am38E9AK2VTOIrS+faCAo5vaVzHpmdA6BecA
-         ZEVTYNdbcCrrCTZEp+miDtm5Y6vhgehxHhUycAcW7ceBy/6hHrdiSqTyoAPWlkDgjR/j
-         eJnnlfioaBm8eQtlsmJpDZrtyKhzNYSZaBLmKMdL3v64oyMnvbrGo7w46aoFcio+PHvC
-         FwxQ==
+        bh=TOGN6/95XVOYasVET4TPHsdfeoSJXlss37vDWxfvwiE=;
+        b=Ude9OQLN5X+h7VdE1vy1/p8AF9higk3UfJCg+7iBv68ZmegidJwzpTFQ6v4cgdetMA
+         hQbJhYdknBqBJypJ5YBF/IK/a2d2Uqta9OKcU6SyAbjdFCa1gtRNsAzJH5HfNvR8D4cn
+         36AtX6gdTEHNEV3ygLSmRueyciqV09l9u3j+THo3AuglIiD4B83sR/RRx6yxjtAFrPxy
+         k4IA8BOwe4u9EZ1wm+aMOVD8oAHrfZyLnigQeH6oa9k5ka2PetaTHYDqHCEN1RNf+hgH
+         sxITHlvCFrMbIWVvUXsKpI9MCESLjLEdWVZMvvLnOdv0RQY0uO5GlK/tITQtwJ0gGMNd
+         QleQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:content-transfer-encoding
          :in-reply-to:user-agent;
-        bh=KKxkiwugSA8ovsQQk98B7vCBdUg6Ojx2CH1WvJsNVmw=;
-        b=fN7y8dCSDur12qbLh4UY4fMPT/agrztWWHfWUWs2yjjAUnwWa1wVCIHCy6Qtbsal6l
-         Eg8Hq32M49uUpWna2qbNyXgS0z6QKfSN7qxWRDeKYIhnbaGjQV/9XInIAtJq1yaKotAd
-         N5LyohQzUM9As1A2B2DRcLMpH4dEQdsZ9CIho4LzSqRuwi19lLChrPPHT1G1/V4tOW5u
-         cD3ivgb1vi921Vm5xXrlaGNORewc5i/4YdlM316vGEbr588CMqm+sDn3NefQN4xr1FOj
-         WfJ0qF6WvMSd2u5boqt61tE6uCkG/ATS++pRNNWveDXTwwNGYjiwNJNWR5gCdlw8NtOh
-         XjMw==
-X-Gm-Message-State: AOAM531xhbS9XvP7UJn8auyxiVxdInPMn89u2Lfh56x+fVgCQBpiizQz
-        H2MMmpPMtEQ9k1X/CxfiVeVhrQ==
-X-Google-Smtp-Source: ABdhPJxAoFsFgCyv35yICctEb7hyRn4/yVGmem8Whyqb3JRAw9wG/rHdbfNCa5PIEsprmUI4f4rKgg==
-X-Received: by 2002:a17:902:8a97:b029:d4:d3f4:d209 with SMTP id p23-20020a1709028a97b02900d4d3f4d209mr2623126plo.35.1603275188764;
-        Wed, 21 Oct 2020 03:13:08 -0700 (PDT)
+        bh=TOGN6/95XVOYasVET4TPHsdfeoSJXlss37vDWxfvwiE=;
+        b=R7otkunzDBTpP1JT3Gdd7bLycLp2km0eXztgI4FWal8a29Nbzft9gctyHRZwu2K3RH
+         BGYghnBHDZheibh+ljDSnDgx2J3FPiqfzsYN5Y5e9gkttoFTBNQq88+NiWouA4/KfDAu
+         vh9xZhdG0EKtBqxJ+5iT1E93dWYptlq3VAosdgBJzgbKiNdQiKHwePNp/kh8Sjmbe7SU
+         CJFXBqPXDg3zHBraN20+XvgNRGvLmm2cpQbhjAAosOre2UVkQw+biepoNM3rRNT0RcYp
+         nKFwlPdWLP9UWrKoqLyvjJAwaLyOAxtwGrUdZWbMI4I1qE7F3v+3GGA/2K0m8v+ho4Bj
+         7HHA==
+X-Gm-Message-State: AOAM531A5pq9JEVPOV8eP5ATOUAtecusXN7VpatV9K+75Fu/uQo09/NA
+        dcjzMU/+Gb4t5gKs4LaHPfoVM2q2IpRxB0Fb7XQ=
+X-Google-Smtp-Source: ABdhPJy0/1EEEjO9umjfWyHQ7y2iShiNHMnldyB9wXhCT0WMr2ycfeng98rQiA27sFfmo8O2EdjBHg==
+X-Received: by 2002:a65:68c6:: with SMTP id k6mr2731585pgt.231.1603275474575;
+        Wed, 21 Oct 2020 03:17:54 -0700 (PDT)
 Received: from leoy-ThinkPad-X240s ([14.192.49.12])
-        by smtp.gmail.com with ESMTPSA id l13sm2045417pgq.33.2020.10.21.03.13.05
+        by smtp.gmail.com with ESMTPSA id e11sm1967645pfm.160.2020.10.21.03.17.51
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 21 Oct 2020 03:13:08 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 18:13:02 +0800
+        Wed, 21 Oct 2020 03:17:53 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 18:17:48 +0800
 From:   Leo Yan <leo.yan@linaro.org>
 To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -64,158 +64,109 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         James Clark <james.clark@arm.com>,
         Dave Martin <Dave.Martin@arm.com>,
         linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
-Subject: Re: [PATCH v2 10/14] perf arm-spe: Refactor event type handling
-Message-ID: <20201021101302.GA3194@leoy-ThinkPad-X240s>
+Subject: Re: [PATCH v2 14/14] perf arm-spe: Add support for ARMv8.3-SPE
+Message-ID: <20201021101748.GB3194@leoy-ThinkPad-X240s>
 References: <20200929133917.9224-1-leo.yan@linaro.org>
- <20200929133917.9224-11-leo.yan@linaro.org>
- <2605044c-8172-00cf-e924-ece5a0b70e2c@arm.com>
- <20201021045452.GD7226@leoy-ThinkPad-X240s>
- <1406e767-e85a-e859-bfa2-221678e08392@arm.com>
+ <20200929133917.9224-15-leo.yan@linaro.org>
+ <9c74082b-fccf-7713-b98d-50da76c5d7af@arm.com>
+ <20201021051031.GE7226@leoy-ThinkPad-X240s>
+ <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <1406e767-e85a-e859-bfa2-221678e08392@arm.com>
+In-Reply-To: <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andre,
-
-On Wed, Oct 21, 2020 at 10:20:24AM +0100, André Przywara wrote:
-
-[...]
-
+On Wed, Oct 21, 2020 at 10:26:07AM +0100, André Przywara wrote:
+> On 21/10/2020 06:10, Leo Yan wrote:
+> 
+> Hi,
+> 
+> > On Tue, Oct 20, 2020 at 10:54:44PM +0100, Andrï¿½ Przywara wrote:
+> >> On 29/09/2020 14:39, Leo Yan wrote:
+> >>
+> >> Hi,
+> >>
+> >>> From: Wei Li <liwei391@huawei.com>
+> >>>
+> >>> This patch is to support Armv8.3 extension for SPE, it adds alignment
+> >>> field in the Events packet and it supports the Scalable Vector Extension
+> >>> (SVE) for Operation packet and Events packet with two additions:
+> >>>
+> >>>   - The vector length for SVE operations in the Operation Type packet;
+> >>>   - The incomplete predicate and empty predicate fields in the Events
+> >>>     packet.
+> >>>
+> >>> Signed-off-by: Wei Li <liwei391@huawei.com>
+> >>> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> >>> ---
+> >>>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 84 ++++++++++++++++++-
+> >>>  .../arm-spe-decoder/arm-spe-pkt-decoder.h     |  6 ++
+> >>>  2 files changed, 87 insertions(+), 3 deletions(-)
+> >>>
+> >>> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> >>> index 05a4c74399d7..3ec381fddfcb 100644
 > >>> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 > >>> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> >>> @@ -284,58 +284,58 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
-> >>>  		if (ret < 0)
-> >>>  			return ret;
-> >>>  
-> >>> -		if (payload & 0x1) {
-> >>> +		if (payload & SPE_EVT_PKT_GEN_EXCEPTION) {
+> >>> @@ -342,14 +342,73 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+> >>>  					return ret;
+> >>>  			}
+> >>>  		}
+> >>> +		if (idx > 2) {
 > >>
-> >> Having the bitmask here directly is indeed not very nice and error
-> >> prone. But I would rather see the above solution:
-> >> 		if (payload & BIT(EV_EXCEPTION_GEN)) {
+> >> As I mentioned in the other patch, I doubt this extra comparison is
+> >> useful. Does that protect us from anything?
 > > 
-> > Will do.
+> > It's the same reason with Event packet which have explained for replying
+> > patch 10, the condition is to respect the SPE specifiction:
 > > 
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCEPTION-GEN");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x2) {
-> >>> +		if (payload & SPE_EVT_PKT_ARCH_RETIRED) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " RETIRED");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x4) {
-> >>> +		if (payload & SPE_EVT_PKT_L1D_ACCESS) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-ACCESS");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x8) {
-> >>> +		if (payload & SPE_EVT_PKT_L1D_REFILL) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-REFILL");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x10) {
-> >>> +		if (payload & SPE_EVT_PKT_TLB_ACCESS) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-ACCESS");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x20) {
-> >>> +		if (payload & SPE_EVT_PKT_TLB_WALK) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-REFILL");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x40) {
-> >>> +		if (payload & SPE_EVT_PKT_NOT_TAKEN) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " NOT-TAKEN");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>> -		if (payload & 0x80) {
-> >>> +		if (payload & SPE_EVT_PKT_MISPREDICTED) {
-> >>>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " MISPRED");
-> >>>  			if (ret < 0)
-> >>>  				return ret;
-> >>>  		}
-> >>>  		if (idx > 1) {
+> >   E[11], byte 1, bit [11], when SZ == 0b10 , or SZ == 0b11
+> >      Alignment.
+> >      ...
+> >      Otherwise this bit reads-as-zero.
+> > 
+> > So we gives higher priority for checking payload size than the Event
+> > bit setting; if you have other thinking for this, please let me know.
+> 
+> Ah, thanks for pointing this out. It looks like a bug in the manual
+> then, because I don't see why bit 11 should be any different from bits
+> [10:8] and bits [15:12] in this respect. And in the diagrams above you
+> clearly see bit 11 being shown even when SZ == 0b01.
+> 
+> I will try to follow this up here.
+
+Thanks for following up!
+
+> >>> +			if (payload & SPE_EVT_PKT_ALIGNMENT) {
 > >>
-> >> Do you know what the purpose of this comparison is? Surely payload would
-> >> not contain more bits than would fit in "idx" bytes? So is this some
-> >> attempt of an optimisation?
+> >> Mmh, but this is bit 11, right?
 > > 
-> > Here "idx" is for payload size (in bytes); you could see function
-> > arm_spe_get_events() calculate the payload size:
+> > Yes.
 > > 
-> >   packet->index = PAYLOAD_LEN(buf[0]);
+> >> So would need to go into the (idx > 1)
+> >> section (covering bits 8-15)? Another reason to ditch this comparison above.
 > > 
-> > Please note, the raw payload size (field "sz" in header) value is:
+> > As has explained in patch 10, idx is not the same thing with "sz"
+> > field; "idx" stands for payload length in bytes, so:
 > > 
-> >   0b00 Byte.
-> >   0b01 Halfword.
-> >   0b10 Word.
-> >   0b11 Doubleword.
+> >   idx = 1 << sz
 > > 
-> > After using PAYLOAD_LEN(), the payload size is converted to value in
-> > byte, so:
+> > The spec defines the sz is 2 or 3, thus idx is 4 or 8; so this is why
+> > here use the condition "(idx > 2)".
 > > 
-> >   packet->index = 1 << "sz";
+> > I think here need to refine code for more explict expression so can
+> > avoid confusion.  So I think it's better to condition such like:
 > > 
-> >   1  Byte
-> >   2  Halfword
-> >   4  Word
-> >   8  Doubleword
-> > 
-> > In Armv8 ARM, chapter "D10.2.6 Events packet", we can see the events
-> > "Remote access", "Last Level cache miss" and "Last Level cache access"
-> > are only valid when "sz" is equal or longer than Halfword, thus idx is
-> > 2/4/8; this is why here checks the condition "if (idx > 1)".
+> >   if (payload_len >= 4) {
 > 
-> Right, thanks for the explanation. But in the end this is just a lot of
-> words for: "You can only fit n*8 bits in n bytes.", isn't it?
-> So if the payload size is 1 bytes, we can't have bits 8 or higher.
-> 
-> And in arm_spe_get_payload() we load payload with casts, so the upper
-> bits, beyond the payload size, must always be 0? Regardless of what was
-> in the buffer. Or am I looking at the wrong function?
+> Yes, that would be (or have been) more helpful, but as mentioned in the
+> other patch, I'd rather see those comparisons go entirely.
 
-You are right!  Sorry I didn't connect with the function
-arm_spe_get_payload(), so packet->payload has been been casted, so we
-don't need to do extra checking for payload size at here.
+Agree.  Will remove comparisons in next version.
 
-Will remove the condition checking in next spin.
-
-Thanks a lot!
-
+Thanks,
 Leo
-
-> Even if that wouldn't be the case, I'd rather mask it here again, so
-> that we can rely on this, and lose the extra check.
-> 
-> > 
-> >> If so, I doubt it's really useful, the
-> >> compiler might find a smarter solution to the problem. Just continuing
-> >> with the bit mask comparison would make it look nicer, I think.
-> > 
-> > ARMv8 ARM gives out "Otherwise this bit reads-as-zero.", IIUC this
-> > suggests to firstly check the size, if cannot meet the size requirement,
-> > then the Event bit should be reads-as-zero.
-> 
-> But as mentioned above, we take care of this already:
->         switch (payload_len) {
->         case 1: packet->payload = *(uint8_t *)buf; break;
->         case 2: packet->payload = le16_to_cpu(*(uint16_t *)buf); break;
-> 	...
-> 
-> Thanks,
-> Andre
