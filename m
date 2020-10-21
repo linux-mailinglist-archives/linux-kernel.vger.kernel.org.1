@@ -2,384 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A3CF2294954
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:26:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C92E7294957
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:27:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441014AbgJUI0N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 04:26:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36654 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436509AbgJUI0K (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 04:26:10 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19F19C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:26:09 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id t9so1922078wrq.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=date:from:to:cc:subject:message-id:mail-followup-to:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=iCpxFu2oC80ONdCzHwYtVA0fgaRFNNha5PqkLA/uKoY=;
-        b=Alm7FZbUTTEdF+CGAaHkBRO3a0j7XC2Z1N4d8CzNZgxkXCMVCNgg0w+I3HdyPHfldU
-         599xKZGErlEhEFODqUaD+KWVrYcMeHrXo8LQpccAbuGTT1SNoDPo2Jhkq0wDR67mfeGG
-         A6BW8ERE/SawjHH3UqLJ5pBpaoF9Awdf2UO08=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id
-         :mail-followup-to:references:mime-version:content-disposition
-         :in-reply-to;
-        bh=iCpxFu2oC80ONdCzHwYtVA0fgaRFNNha5PqkLA/uKoY=;
-        b=R2AcexF1eWIK74Oa8IxlgSTjAefCvydVzUou0wlTgSIMvBDpt28t4tylvgJ/fEIuEp
-         LTMFS1O3Quf6Qewd9RCsfE/rir2QH7KkHZ8dhtww1d6658vCLed12fvxdgydc/E4Xww5
-         6J1fAi4EcOPuA7ERQ6fYmWLiksYALj04ua9VMJ3sogS4moDnExn4u0YunvJu0h68F323
-         ZBC/x/OVZPkzuKCFQzf631XgcFV9Lsi9MMsPcwvXH6XOyaSiYCX089dpXcIbj3ArBAS0
-         6PyPGHthjQvX6LENX/cODZRXNyPFJE2tE5MDtS2WZExUKuTbMme56MSHzUhbI68AfiGy
-         SZfA==
-X-Gm-Message-State: AOAM532L8tcrVb9xrcuba7Dd6+6R6aaz+n0W3BwaZOw8mH2MVBA/Htyt
-        ok7H/hnec2Xk23MzJNv7bC3FcA==
-X-Google-Smtp-Source: ABdhPJyhnVU+rIBWqtnKl7DCyDwgukU6BhoV1u+nk7bO4p3PY9/qtWgdLez1kRy/C/VEmgsEvGHKnA==
-X-Received: by 2002:a5d:54c8:: with SMTP id x8mr3149961wrv.286.1603268767563;
-        Wed, 21 Oct 2020 01:26:07 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id y206sm2175124wmd.34.2020.10.21.01.26.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 01:26:06 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 10:26:04 +0200
-From:   Daniel Vetter <daniel@ffwll.ch>
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     Daniel Vetter <daniel@ffwll.ch>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Roy Spliet <nouveau@spliet.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>
-Subject: Re: [PATCH 0/3] drm/msm: kthread_worker conversion
-Message-ID: <20201021082604.GL401619@phenom.ffwll.local>
-Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
-        dri-devel <dri-devel@lists.freedesktop.org>,
-        Akhil P Oommen <akhilpo@codeaurora.org>,
-        Tanmay Shah <tanmay@codeaurora.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        AngeloGioacchino Del Regno <kholk11@gmail.com>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Emil Velikov <emil.velikov@collabora.com>,
-        Rob Clark <robdclark@chromium.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Qinglang Miao <miaoqinglang@huawei.com>,
-        Roy Spliet <nouveau@spliet.org>,
-        Wambui Karuga <wambui.karugax@gmail.com>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Sharat Masetty <smasetty@codeaurora.org>,
-        Kalyan Thota <kalyan_t@codeaurora.org>,
-        Rajendra Nayak <rnayak@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        tongtiangen <tongtiangen@huawei.com>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        Drew Davenport <ddavenport@chromium.org>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" <freedreno@lists.freedesktop.org>
-References: <20201019211101.143327-1-robdclark@gmail.com>
- <20201020082404.GJ401619@phenom.ffwll.local>
- <CAF6AEGuT6ZSpitNS0eBcjKhAVW1QBg+uPJQQkBLckOk=_GBx=A@mail.gmail.com>
- <CAKMK7uEg-iz2zK6E0RFA-JQ+GfjuUcnrdu+e_3FWq9E9_9WUZA@mail.gmail.com>
- <CAF6AEGuF_76hMHa-n7VYHY+sSKGTt=gTBh8r+2992Bhx-RE61A@mail.gmail.com>
- <CAKMK7uEHSsgVDsFnpedx2_w0B8ST3RKA1O62NXOtDr2bCrie+A@mail.gmail.com>
- <CAF6AEGtfLpueGUF_2oWzAt2KCHh0mmF4fDnNRHB3P5H_-Xn=6A@mail.gmail.com>
- <CAKMK7uEsv36Y3ZiKdtHFCSxv_Wywm6M2nZ1BxpjOCfF46UKZpw@mail.gmail.com>
- <CAF6AEGs+=pw=ufKQwwb2xCBzVjeQs_W9-4TT5BDWDucQUhmduA@mail.gmail.com>
+        id S2395244AbgJUI1R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 04:27:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40554 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394683AbgJUI1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 04:27:16 -0400
+Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 390A0222C8;
+        Wed, 21 Oct 2020 08:27:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603268835;
+        bh=nMmI8qRuAv1yyZjH2PDs0VpZ8HlNElzwHwOCPCUV/wM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=vbVMF2Ffjd0/ArQ/MNVOMx4NHX8jFUMBuyywm7cYqrUxbH/kJA8pM+ielLTVu5zAh
+         5Bhtxb1OHGBZwGIrgZYJkVw8sLvV8qSBTC5ubJBa/AmC9Dpay0EZBMCNd5bGiPSvI0
+         5CA520/c2cUrg41SNdPYnbDJlWmBJ9CuIkoIwVI0=
+Received: by mail-lf1-f50.google.com with SMTP id r127so1945575lff.12;
+        Wed, 21 Oct 2020 01:27:15 -0700 (PDT)
+X-Gm-Message-State: AOAM533O0nE/ui9/hEBfPFJR0wXyQq6KxpLITTKaBbtozzOogw+Xn4lj
+        CWHy3y+4uJ75duWz6Q65x+u6FY9wQRz17FEYKiE=
+X-Google-Smtp-Source: ABdhPJyVwP5SKU7CNKU3RSFKHT0y1pGyDfX2/XwsNk97u9k6um7/ZanN9MPhONY1QqNPV9ltPXGduJx8MkjDIi5j6zQ=
+X-Received: by 2002:ac2:5a4e:: with SMTP id r14mr737881lfn.451.1603268833344;
+ Wed, 21 Oct 2020 01:27:13 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAF6AEGs+=pw=ufKQwwb2xCBzVjeQs_W9-4TT5BDWDucQUhmduA@mail.gmail.com>
-X-Operating-System: Linux phenom 5.7.0-1-amd64 
+References: <1602918377-23573-1-git-send-email-guoren@kernel.org>
+ <1602918377-23573-10-git-send-email-guoren@kernel.org> <CAOnJCU+oTRcJ2p8WQDX5P-EsOHmkn3kP9s54VQa+iw2wXDvzkg@mail.gmail.com>
+ <CAJF2gTSU+M+b+bn5zH_EyE7Ksh=5+ZkO8LkAn=Tm-p45CgYW1w@mail.gmail.com> <20201020164121.32626e45@gandalf.local.home>
+In-Reply-To: <20201020164121.32626e45@gandalf.local.home>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Wed, 21 Oct 2020 16:27:02 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTSpcNAzhic9KTSygtjSbyTerA3VLFb2ziFu6uSGxgAhfg@mail.gmail.com>
+Message-ID: <CAJF2gTSpcNAzhic9KTSygtjSbyTerA3VLFb2ziFu6uSGxgAhfg@mail.gmail.com>
+Subject: Re: [PATCH v4 9/9] riscv: Fixup lockdep_assert_held(&text_mutex) in patch_insn_write
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Atish Patra <atishp@atishpatra.org>, Zong Li <zong.li@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Alan Kao <alankao@andestech.com>,
+        =?UTF-8?Q?Patrick_St=C3=A4hlin?= <me@packi.ch>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Anup Patel <anup@brainfault.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        linux-csky@vger.kernel.org, Greentime Hu <greentime.hu@sifive.com>,
+        linux-riscv <linux-riscv@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 01:26:29PM -0700, Rob Clark wrote:
-> On Tue, Oct 20, 2020 at 11:14 AM Daniel Vetter <daniel@ffwll.ch> wrote:
+Why?
+
+funca:
+nop                   addi  sp,sp, -8
+nop                   sd ra, 0(sp)
+nop, nop           auipc ra, 0x?
+nop, nop  ->      jalr -?(ra)
+nop                   ld ra,0(sp)
+nop                   addi sp,sp, 8
+
+When CPU0 has only changed half of them, CPU1 call funca then CPU1 broken.
+
+On Wed, Oct 21, 2020 at 4:41 AM Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> On Tue, 20 Oct 2020 19:18:01 +0800
+> Guo Ren <guoren@kernel.org> wrote:
+>
+> > > What platform are you testing ? We are seeing a crash while enabling
+> > > any of the tracers multiple times
+> > > on Qemu/HiFive Unleashed.
+> > I use qemu for testing. I've changed dynamic ftrace mechanism from
+> > mcount to -fpatchable-entry.
 > >
-> > On Tue, Oct 20, 2020 at 7:23 PM Rob Clark <robdclark@gmail.com> wrote:
-> > >
-> > > On Tue, Oct 20, 2020 at 10:02 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > >
-> > > > On Tue, Oct 20, 2020 at 5:08 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > >
-> > > > > On Tue, Oct 20, 2020 at 7:29 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > >
-> > > > > > On Tue, Oct 20, 2020 at 4:01 PM Rob Clark <robdclark@gmail.com> wrote:
-> > > > > > >
-> > > > > > > On Tue, Oct 20, 2020 at 1:24 AM Daniel Vetter <daniel@ffwll.ch> wrote:
-> > > > > > > >
-> > > > > > > > On Mon, Oct 19, 2020 at 02:10:50PM -0700, Rob Clark wrote:
-> > > > > > > > > From: Rob Clark <robdclark@chromium.org>
-> > > > > > > > >
-> > > > > > > > > In particular, converting the async atomic commit (for cursor updates,
-> > > > > > > > > etc) to SCHED_FIFO kthread_worker helps with some cases where we
-> > > > > > > > > wouldn't manage to flush the updates within the 1ms-before-vblank
-> > > > > > > > > deadline resulting in fps drops when there is cursor movement.
-> > > > > > > > >
-> > > > > > > > > Rob Clark (3):
-> > > > > > > > >   drm/msm/gpu: Convert retire/recover work to kthread_worker
-> > > > > > > > >   drm/msm/kms: Update msm_kms_init/destroy
-> > > > > > > > >   drm/msm/atomic: Convert to per-CRTC kthread_work
-> > > > > > > >
-> > > > > > > > So i915 has it's own commit worker already for $reasons, but I don't think
-> > > > > > > > that's a good path to go down with more drivers. And the problem seems
-> > > > > > > > entirely generic in nature ...
-> > > > > > >
-> > > > > > > I'm not *entirely* sure what your point is here?  This is just
-> > > > > > > migrating away from a shared ordered wq to per-crtc kthread so that we
-> > > > > > > don't miss vblank deadlines for silly reasons (and then stall on the
-> > > > > > > next frame's pageflip because we are still waiting for the cursor
-> > > > > > > update to latch).  Kind of like vblank-work but scheduled prior to,
-> > > > > > > rather than after, vblank.
-> > > > > > >
-> > > > > > > And you're right that the problem is partially generic.. hw that (a)
-> > > > > > > doesn't have true async (cursor and/or otherwise) updates, and (b) has
-> > > > > > > various flush bits that latch register updates on vblank, is not that
-> > > > > > > uncommon.  But the current atomic helper API would have to be a bit
-> > > > > > > redesigned to look more like the interface between msm_atomic and the
-> > > > > > > display backend.  That is a fair bit of churn for re-using a small bit
-> > > > > > > of code.
-> > > > > >
-> > > > > > I was making some assumptions about what you're doing, and I was
-> > > > > > wrong. So I went and tried to understand what's actually going on
-> > > > > > here.
-> > > > > >
-> > > > > > I'm trying to understand what exactly you've added with that async msm
-> > > > > > support 2d99ced787e3d. I think this breaks the state structure update
-> > > > > > model, you can't access any ->state pointers from the commit functions
-> > > > > > after you've called drm_atomic_helper_commit_hw_done, or you might
-> > > > > > have a use after free. And that seems to be happening from this commit
-> > > > > > work thing you added to your existing commit work that the atomic
-> > > > > > helpers provide already.
-> > > > > >
-> > > > > > The various commit functions seem to grab various state objects by
-> > > > > > just chasing pointers from the objects (instead of the
-> > > > > > drm_atomic_state stuff), so this all feels like it's yolo
-> > > > > > free-wheeling.
-> > > > > >
-> > > > > > You also seem to be using the async_commit stuff from the atomic
-> > > > > > helpers (which is actually synchronous (i.e. blocking) from the pov of
-> > > > > > how the code runs, but seems to be for mdp5 only and not others. Also
-> > > > > > your can_do_async still checks for legacy_cursor_update (maybe a
-> > > > > > leftover, or needed on !mdp5 platforms) and ->async_update.
-> > > > > >
-> > > > > > I'm thoroughly confused how this all works.
-> > > > >
-> > > > > The legacy_cursor_update is really the thing that motivated the async
-> > > > > commit support in the first place.  Sadly we still have userspace that
-> > > > > expects to be able to use legacy cursor API, and that it will be
-> > > > > nonblocking (and not cause fps drop).  (I'm not a fan of the legacy
-> > > > > cursor UAPI.. don't hate the player..)
-> > > >
-> > > > Yeah this is why we have these atomic_async_check/commit functions,
-> > > > and msm is even using them for mdp5. Not hating the player here at
-> > > > all.
-> > > >
-> > > > > The premise is to do everything in terms of crtc_mask, although yeah,
-> > > > > it looks like there are a few points that need to look at things like
-> > > > > crtc->state->active.  The only point in msm-atomic itself that does
-> > > > > this is vblank_get/put(), possibly we can fix drm_vblank instead and
-> > > > > drop that workaround (see 43906812eaab06423f56af5cca9a9fcdbb4ac454)
-> > > > >
-> > > > > The rest of the async part is really just supposed to be writing the
-> > > > > appropriate flush reg(s) and waiting until flush completes, although
-> > > > > dpu's excess layering makes this harder than it needs to be.
-> > > > >
-> > > > > In practice, the kms->wait_flush() at the top of
-> > > > > msm_atomic_commit_tail() will block until a pending async commit
-> > > > > completes (this is where we hit the fps drop if we miss vblank
-> > > > > deadline), so I don't *think* you can trigger a use-after-free.  But
-> > > > > the dpu code could be better cleaned up to have less obj->state
-> > > > > dereference in the kms->flush_commit(crtc_mask)/etc path.
-> > > >
-> > > > Hm this is more or less what the atomic_async_commit/check stuff was
-> > > > meant to help facilitate too, and now msm is using that for mdp5, but
-> > > > not for other pieces. That seems very confusing.
-> > > >
-> > > > Also I'm not sure how this works if you still end up flushing anyway,
-> > > > since then you'd be back to doing everything in-order. Or will an
-> > > > normal atomic flip push all the cursor updates to the next frame (in
-> > > > which case you really should be able to do this all with async helpers
-> > > > we have instead of hand-rolling a bunch of it in strange places).
-> > >
-> > > So, "flush" from the core-atomic part is writing all the various
-> > > registers (overlay scanout bo/format/position/etc).. this is all done
-> > > at the normal time (ie. whenever we get the cursor update).  The only
-> > > thing we defer until close-to-vblank is writing the hw flush registers
-> > > (ie. registers with bitmasks of the various hw blocks to latch on
-> > > vblank).
-> > >
-> > > So a cursor update applies the state normally, from the PoV of
-> > > sequence of atomic updates.  But tries to defer writing the flush regs
-> > > so we can merge in future cursor updates and/or pageflip into the same
-> > > frame.
-> > >
-> > > Modulo the stuff that derefs kmsobj->state but shouldn't, I think (at
-> > > least for hw that works this way with flush registers) this is a
-> > > better approach to handling cursor updates.  The mdp5 async cursor
-> > > stuff predates dpu, and I've just not had a chance to update mdp5 to
-> > > use the new async flush path yet.
-> >
-> > The trouble is that this is moving back to legacy_cursor_update hack
-> > instead of retiring it for good, so I'm not super thrilled about this.
-> 
-> state->async==true for cursor updates would work for me.. at the end
-> of the day, it doesn't really matter that it is a cursor plane, or
-> what the UAPI was, just that it is async.
+> > The problem is made by the lockdep checking of text_mutex.
+>
+> If you are switching to "patchable-entry" you shouldn't need to use
+> stop_machine for the updates. No?
+>
+> -- Steve
 
-Yeah I think that might be an option, if you cut your msm commit over to
-that, same way async_commit does it.
 
-> > Can't we do the register update from atomic_async_commit, and then
-> > latch the timed worker, so that it all fits into the bigger thing?
-> > Maybe also subsume the mdp5 stuff like that.
-> 
-> The current async update path replaced a previous async commit
-> implementation, which might have been using atomic_async_commit?  I'd
-> have to dig back thru git history.  The big problem with it was that
-> an async commit could race with a sync/nonblock commit, and one of the
-> paths could write flush regs while other is still updating regs.
-> 
-> The important thing about the current async approach is the separation
-> of commit and flush, and the kms->wait_flush() at the top of
-> commit_tail() which serializes hw updates and flush, so we don't have
-> problems with racing commits.  I'm not sure how that would fit in with
-> atomic_async_commit().
 
-It's all new code.
+--
+Best Regards
+ Guo Ren
 
-Async commit should have some amount of sync, i.e. if there's a pending
-noblocking commit and stuff like that. It might not be the right amount of
-sync for msm, but it would be good to know what's missing or what's wrong
-with the helpers.
-
-Also you'd still need your worker to latch the registers in the last
-moment ofc, since your hw doesn't do that automatically.
-
-> > And that commit worker then probably needs the minimal amount of state
-> > protected by a spinlock or similar, so they're not trampling over each
-> > other. At least I'm still not seeing how you both make stuff async and
-> > prevent havoc when an update races with the commit worker. Or can that
-> > only happen for cursor commits, where we don't care when the cursor is
-> > very rarely misplaced because the hw takes an inconsistent update.
-> 
-> preventing the race is a combination of the locking (which recently
-> slightly changed and switched to per-crtc locks) and the
-> kms->wait_flush() which ensures previous updates have flushed.
-
-Hm I think that's largely what the async helpers do too. Well the locking
-you'd need to keep in msm, since you also need that to sync with the
-worker. But the flush and all that should be there I thought ...
--Daniel
-
-> 
-> BR,
-> -R
-> 
-> > -Daniel
-> >
-> >
-> > > BR,
-> > > -R
-> > >
-> > > > You probably still need the worker to push out the update at the right
-> > > > time, and I'm not sure what some good locking for that is. At least
-> > > > I'm not really seeing how you sync that worker against a racing update
-> > > > for the next cursor move.
-> > > > -Daniel
-> > > >
-> > > >
-> > > > > BR,
-> > > > > -R
-> > > > >
-> > > > > > I do agree though that you probably want this to be a real time fifo
-> > > > > > kthread worker, like for the vblank worker. Except now that I looked,
-> > > > > > I'm not sure it's actually working intended and correct.
-> > > > > > -Daniel
-> > > > > >
-> > > > > > > BR,
-> > > > > > > -R
-> > > > > > >
-> > > > > > > > -Daniel
-> > > > > > > >
-> > > > > > > > >
-> > > > > > > > >  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |  3 +--
-> > > > > > > > >  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  6 ++---
-> > > > > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gmu.c     |  4 +--
-> > > > > > > > >  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |  4 +--
-> > > > > > > > >  drivers/gpu/drm/msm/disp/dpu1/dpu_kms.c   |  8 +++++-
-> > > > > > > > >  drivers/gpu/drm/msm/disp/mdp4/mdp4_kms.c  |  8 +++++-
-> > > > > > > > >  drivers/gpu/drm/msm/disp/mdp5/mdp5_kms.c  | 11 ++++++---
-> > > > > > > > >  drivers/gpu/drm/msm/disp/mdp_kms.h        |  9 +++++--
-> > > > > > > > >  drivers/gpu/drm/msm/msm_atomic.c          | 25 +++++++++++++++----
-> > > > > > > > >  drivers/gpu/drm/msm/msm_drv.h             |  3 ++-
-> > > > > > > > >  drivers/gpu/drm/msm/msm_gpu.c             | 30 +++++++++++++++--------
-> > > > > > > > >  drivers/gpu/drm/msm/msm_gpu.h             | 13 +++++++---
-> > > > > > > > >  drivers/gpu/drm/msm/msm_kms.h             | 23 ++++++++++++++---
-> > > > > > > > >  13 files changed, 104 insertions(+), 43 deletions(-)
-> > > > > > > > >
-> > > > > > > > > --
-> > > > > > > > > 2.26.2
-> > > > > > > > >
-> > > > > > > > > _______________________________________________
-> > > > > > > > > dri-devel mailing list
-> > > > > > > > > dri-devel@lists.freedesktop.org
-> > > > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > > > > > >
-> > > > > > > > --
-> > > > > > > > Daniel Vetter
-> > > > > > > > Software Engineer, Intel Corporation
-> > > > > > > > http://blog.ffwll.ch
-> > > > > > > _______________________________________________
-> > > > > > > dri-devel mailing list
-> > > > > > > dri-devel@lists.freedesktop.org
-> > > > > > > https://lists.freedesktop.org/mailman/listinfo/dri-devel
-> > > > > >
-> > > > > >
-> > > > > >
-> > > > > > --
-> > > > > > Daniel Vetter
-> > > > > > Software Engineer, Intel Corporation
-> > > > > > http://blog.ffwll.ch
-> > > >
-> > > >
-> > > >
-> > > > --
-> > > > Daniel Vetter
-> > > > Software Engineer, Intel Corporation
-> > > > http://blog.ffwll.ch
-> >
-> >
-> >
-> > --
-> > Daniel Vetter
-> > Software Engineer, Intel Corporation
-> > http://blog.ffwll.ch
-
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+ML: https://lore.kernel.org/linux-csky/
