@@ -2,97 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DFA89295172
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C324D295175
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:23:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503422AbgJURXL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:23:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443310AbgJURXK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:23:10 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DD0BAC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:23:07 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id q9so3995577iow.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:23:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=7535FUlfM8DZDchGw8aykWjhU0FVacKPwMt6VunyyW4=;
-        b=ub1i2qnqq5gc5yWa++WfJbKGLRDF3XgcjuF4SNEwsZorMl0qqBlkzzk65jDvd1rIp6
-         lsc7BJmCFH+/nkMbVQcVwn4bYWFUNTGPYV9LnCocI598fe1uL6/mDLuJIxfahYegMgmV
-         O6P5shfiwBpbj5CWne+FmGk5phLqk0nId5IETHoA04NJ3VI8BSq+2EJbyBFyDYvD9KOQ
-         SIXqL0Q6SqAfgMBeJW3/ZMjqQX2LwKMlStEFUHBOIC/HAkX92HVDxbei5SvC4AtBDDgM
-         BjeK/N4wHt0pTqvRnrqr83fx4BR3FWwhR0strhBEMc39uPq0fD7cDyRbXeouxt7OuCWl
-         kfYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=7535FUlfM8DZDchGw8aykWjhU0FVacKPwMt6VunyyW4=;
-        b=C77QnBMiou+3yTE3wn2ToxOqfKWqrEqO9cMCJ31Vw1aHdPSAtFeuB+nkTI4W83Nhqs
-         KCEc+UXviGMnw7J29H9WCu+DRWQhdWRjgSU2sqHDqX6YBoI5KboI3AqZQ25qcxU/0FN6
-         co1sSqpj6Cqn0dmLK6oJbX0owtMK841Xkwdq2tB32xl2Tj32BsyuNun1j1TAXvShLzW5
-         LVz9bqlbkutgYaKAlWSfJWNqqv2b9XkuzssR8qUjSM4uWQeJe7xt6xAVayVN7Ewmh4P+
-         Z3zJxCELEhK79opIKa2ZWpU70+B2HJmHjmHehCD596R7ONWbJxa1cVuLljLXXpLghsiC
-         kucA==
-X-Gm-Message-State: AOAM531benW8nJgFVO1VRtfDq9WeEJP4JYZFPYJKUmcthZXQe+F1eHn7
-        DjkVJ1mn0AUhamODPaIK7XxHV7/5tapwbPucDPFDFnKOniJ4Pw==
-X-Google-Smtp-Source: ABdhPJwAHwzHnXyK/Q61hpqVatVAWev4QhEe6lQZY+aucdSgk3iXPP53Fr7H1mN9nTWnRSkEsIkHirrQTjnUX0bFcLQ=
-X-Received: by 2002:a6b:5c06:: with SMTP id z6mr3661750ioh.49.1603300986883;
- Wed, 21 Oct 2020 10:23:06 -0700 (PDT)
+        id S2503437AbgJURXT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:23:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51662 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2503425AbgJURXS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:23:18 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 364B32224E;
+        Wed, 21 Oct 2020 17:23:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603300997;
+        bh=YA9jBkVMmo05R+aNQt5Q2EoT45SvEhPakf2Z3jA36TQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ospIKljzcpG0W2b/7kov9FOV5ZWUhI9200O1Rdf0GF1asl+1ZQ0KAhNTSmhMTzPAt
+         X3YtHg/vqtLkUs7xyAedboCcaYq4/kqcAUP9mUmBJecBri7KugXKFG/BNg0leNIoWT
+         r1Yty3Xh9Ucw6hVXiLH2hC5ZGCql+Pvv4BtH7Z1U=
+Date:   Wed, 21 Oct 2020 10:23:15 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Defang Bo <bodefang@126.com>
+Cc:     siva.kallam@broadcom.com, prashant@broadcom.com,
+        mchan@broadcom.com, davem@davemloft.net, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] tg3: Avoid NULL pointer dereference in
+ netif_device_attach()
+Message-ID: <20201021102315.3dab7bc9@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1603265889-8967-1-git-send-email-bodefang@126.com>
+References: <1603265889-8967-1-git-send-email-bodefang@126.com>
 MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-In-Reply-To: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Wed, 21 Oct 2020 22:52:55 +0530
-Message-ID: <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
-Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
- 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 at 22:35, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Wed, Oct 21, 2020 at 9:58 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
-> > x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
-> > This regression started happening from next-20201015 nowards
->
-> Is it repeatable enough to be bisectable?
+On Wed, 21 Oct 2020 15:38:09 +0800 Defang Bo wrote:
+> Similar to commit<1b0ff89852d7>("tg3: Avoid NULL pointer dereference in tg3_io_error_detected()")
+> This patch avoids NULL pointer dereference add a check for netdev being NULL on tg3_resume().
+> 
+> Signed-off-by: Defang Bo <bodefang@126.com>
 
-Yes. This is easily reproducible.
-I will bisect and report here.
+Are you actually hitting this error or can otherwise prove it may
+happen?
 
->
->              Linus
+PCIe error handlers could reasonably happen asynchronously during
+probe, but suspend/resume getting called on a device that wasn't fully
+probed sounds like something that should be prevented by the bus.
 
-- Naresh
+> diff --git a/drivers/net/ethernet/broadcom/tg3.c b/drivers/net/ethernet/broadcom/tg3.c
+> index ae756dd..345c6aa 100644
+> --- a/drivers/net/ethernet/broadcom/tg3.c
+> +++ b/drivers/net/ethernet/broadcom/tg3.c
+> @@ -18099,7 +18099,7 @@ static int tg3_resume(struct device *device)
+>  
+>  	rtnl_lock();
+>  
+> -	if (!netdev || !netif_running(dev))
+> +	if (!dev || !netif_running(dev))
+>  		goto unlock;
+>  
+>  	netif_device_attach(dev);
+
