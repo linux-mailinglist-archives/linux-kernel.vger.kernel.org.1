@@ -2,128 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B775B294D13
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:55:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FF12294D19
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:56:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442693AbgJUMzO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:55:14 -0400
-Received: from mx2.veeam.com ([64.129.123.6]:40766 "EHLO mx2.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408370AbgJUMzN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:55:13 -0400
-Received: from mail.veeam.com (spbmbx01.amust.local [172.17.17.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id 661E941522;
-        Wed, 21 Oct 2020 08:55:09 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1603284909; bh=2WNQUIxgOW2iFvaa4bExrsGr7EjcAQp8DYCCLGE7JMM=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=rf3ZDaAfuvv3l21JLrs05Gxqw/IPsjDjtfvmOoECBJKxS8ovF8zs+KV/k20jv8zWg
-         wkDyl1Ks62gC+mvsqU6YX+5DxgEpGF091/fNDJiffeYGVhRxlndv2f/kZgjpxnQ+Wc
-         6WxeXS+YlEVLntMnIl+A65OwqBihPpIlwH55KjG8=
-Received: from veeam.com (172.24.14.5) by spbmbx01.amust.local (172.17.17.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.595.3; Wed, 21 Oct 2020
- 15:55:06 +0300
-Date:   Wed, 21 Oct 2020 15:55:55 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/2] Block layer filter - second version
-Message-ID: <20201021125555.GE20749@veeam.com>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <1603271049-20681-2-git-send-email-sergei.shtepa@veeam.com>
- <BL0PR04MB65141320C7BF75B7142CA30CE71C0@BL0PR04MB6514.namprd04.prod.outlook.com>
- <20201021114438.GK20115@casper.infradead.org>
+        id S2442718AbgJUM4J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:56:09 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:47797 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2442709AbgJUM4J (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:56:09 -0400
+X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
+   d="scan'208";a="473682632"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 14:56:06 +0200
+Date:   Wed, 21 Oct 2020 14:56:06 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mel Gorman <mgorman@suse.de>
+cc:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Julia Lawall <Julia.Lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles.Muller@inria.fr
+Subject: Re: [PATCH] sched/fair: check for idle core
+In-Reply-To: <20201021124700.GE32041@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2010211452100.8475@hadrien>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book> <20201021124700.GE32041@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <20201021114438.GK20115@casper.infradead.org>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: spbmbx01.amust.local (172.17.17.171) To
- spbmbx01.amust.local (172.17.17.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A295605D26A677566
-X-Veeam-MMEX: True
+Content-Type: multipart/mixed; boundary="8323329-1257254928-1603284967=:8475"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/21/2020 14:44, Matthew Wilcox wrote:
-> On Wed, Oct 21, 2020 at 09:21:36AM +0000, Damien Le Moal wrote:
-> > > + * submit_bio_direct - submit a bio to the block device layer for I/O
-> > > + * bypass filter.
-> > > + * @bio:  The bio describing the location in memory and on the device.
-> > >   *
-> > > + * Description:
-> 
-> You don't need this line.
-> 
-> > > + *    This is a version of submit_bio() that shall only be used for I/O
-> > > + *    that cannot be intercepted by block layer filters.
-> > > + *    All file systems and other upper level users of the block layer
-> > > + *    should use submit_bio() instead.
-> > > + *    Use this function to access the swap partition and directly access
-> > > + *    the block device file.
-> 
-> I don't understand why O_DIRECT gets to bypass the block filter.  Nor do
-> I understand why anybody would place a block filter on the swap device.
-> But if somebody did place a filter on the swap device, why should swap
-> be able to bypass the filter?
-> 
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-I am very happy to hear such a question. You are really trying to
-understand the algorithm.
+--8323329-1257254928-1603284967=:8475
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8BIT
 
-Yes, intercepting the swap partition is absurd. But we can't guarantee
-that the filter won't intercept swap.
 
-Swap operation is related to the memory allocation logic. If a swap on
-the block device are accessed during memory allocation from filter,
-a deadlock occurs. We can allow filters to occasionally shoot off their
-feet, especially under high load. But I think it's better not to do it.
 
-"directly access" - it is not O_DIRECT. This means (I think) direct
-reading from the device file, like "dd if=/dev/sda1".
-As for intercepting direct reading, I don't know how to do the right thing.
+On Wed, 21 Oct 2020, Mel Gorman wrote:
 
-The problem here is that in fs/block_dev.c in function __blkdev_direct_IO()
-uses the qc - value returned by the submit_bio() function.
-This value is used below when calling 
-blk_poll(bdev_get_queue(dev), qc, true).
-The filter cannot return a meaningful value of the blk_qc_t type when
-intercepting a request, because at that time it does not know which queue
-the request will fall into.
+> On Wed, Oct 21, 2020 at 02:25:32PM +0200, Vincent Guittot wrote:
+> > > I see Vincent already agreed with the patch so I could be wrong.  Vincent,
+> > > did I miss something stupid?
+> >
+> > This patch fixes the problem that we don't favor anymore the prev_cpu when it is idle since
+> > commit 11f10e5420f6ce because load is not null when cpu is idle whereas runnable_load was
+> > And this is important because this will then decide in which LLC we will looks for a cpu
+> >
+>
+> Ok, that is understandable but I'm still concerned that the fix simply
+> trades one problem for another by leaving related tasks remote to each
+> other and increasing cache misses and remote data accesses.
+>
+> wake_affine_weight is a giant pain because really we don't care about the
+> load on the waker CPU or its available, we care about whether it has idle
+> siblings that can be found quickly. As tempting as ripping it out is,
+> it never happened because sometimes it makes the right decision.
 
-If function submit_bio() will always return BLK_QC_T_NONE - I think the
-algorithm of the __blk dev_direct_IO() will not work correctly.
-If we need to intercept direct access to a block device, we need to at
-least redo the __blkdev_direct_IO function, getting rid of blk_pool.
-I'm not sure it's necessary yet.
+My goal was to restore the previous behavior, when runnable load was used.
+The patch removing the use of runnable load (11f10e5420f6) presented it
+basically as that load balancing was using it, so wakeup should use it
+too, and any way it didn't matter because idle CPUS were checked for
+anyway.
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+Is your point of view that the proposed change is overkill?  Or is it that
+the original behavior was not desirable?
+
+thanks,
+julia
+--8323329-1257254928-1603284967=:8475--
