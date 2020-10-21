@@ -2,94 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61EA529501D
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:46:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52A73295024
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:47:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502667AbgJUPqc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:46:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48948 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502659AbgJUPqb (ORCPT
+        id S2502691AbgJUPq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:46:58 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:56706 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1731418AbgJUPq5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:46:31 -0400
-Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4069FC0613CE;
-        Wed, 21 Oct 2020 08:46:31 -0700 (PDT)
-Received: by mail-ej1-x643.google.com with SMTP id h24so3916879ejg.9;
-        Wed, 21 Oct 2020 08:46:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:references:date:in-reply-to:message-id
-         :user-agent:mime-version;
-        bh=7ehyNgQOK7CqueR6HFQ7GOu3HkZtQCthPvOvqzAFJr4=;
-        b=pa58BoU72nD8x9JfH451BnGeVPr1/EavTuLx1ixWLIIHKCOdAbi0TsleJ8QgwtYtdR
-         pVfbW+ZjFM0p/OfkmkmleB1vi02LILpQ39OUKcyFXwKvgEiqBNS79pKmHNjtXEiKBhSi
-         pohh7n4Yxke93I+gZCjIV5wCyHdFtGPwaZ4wZ3OHkEGNhYWNJdFwMYL6qfvb2VE+62oN
-         ZxXtfGDbfUDax+mMdUWG+5mkU9ttXSXnEs9ALgEismZxYFTCOI4w/fG+/FNNF15M4Sr/
-         lfgvbD48CWNKTykdVeGRjDX4rWs9to+6qq09zRudfEkVDGLqvuYuALoOCVMf+BrCl7on
-         +gbA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:references:date
-         :in-reply-to:message-id:user-agent:mime-version;
-        bh=7ehyNgQOK7CqueR6HFQ7GOu3HkZtQCthPvOvqzAFJr4=;
-        b=I+j7nSnpbmYpI8fmLKJ9T1R/dea6ydELSGtApdDGlCZb7eSD+53vM8yySkIzSMvqRa
-         aAzSl7VPyEENrHH0T4a43kX5wWJ+wzmEp/Krd0/Vzt9/HZF91RF2Eq0504VWiLlxsrSc
-         VuXocjznRY+wyeUABHi1/yhMsrrbld3jD/lwykmzAPKXgAysEKyHER60xYgR5O/1d1O6
-         KzjweF3PGPOtlgfbQBrRYKAcbwIt652c7TOxsYb2Y4eK9yl+ObWJJzM4XkcY+pM6kxKX
-         JpdKGSTUA3UAZlTk2kY5tZJjNU1A2bRfUhtE0FGnPsj4Wr2RKYb6kom5XGCdJX1ntpPj
-         bIag==
-X-Gm-Message-State: AOAM5316UGHd/X0Q5qKcCdHA0dDxxEsEvVi3jRr13fGJgbVS25L5Zznu
-        8k5RPGpEuqcUIAJblzC4OJ8=
-X-Google-Smtp-Source: ABdhPJwbEgmR444iU3kT5iZcp7WU4/X4Lu7XdAZleSkjQR6OG1NcykLs2li3WctaKTzJEciB0GzWfg==
-X-Received: by 2002:a17:906:3cd:: with SMTP id c13mr4062189eja.25.1603295189979;
-        Wed, 21 Oct 2020 08:46:29 -0700 (PDT)
-Received: from dell.be.48ers.dk (d51A5BC31.access.telenet.be. [81.165.188.49])
-        by smtp.gmail.com with ESMTPSA id ss7sm2445870ejb.28.2020.10.21.08.46.28
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:46:28 -0700 (PDT)
-Sender: Peter Korsgaard <jacmet@gmail.com>
-Received: from peko by dell.be.48ers.dk with local (Exim 4.92)
-        (envelope-from <peter@korsgaard.com>)
-        id 1kVGJn-0008Er-Pi; Wed, 21 Oct 2020 17:46:27 +0200
-From:   Peter Korsgaard <peter@korsgaard.com>
-To:     Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-Cc:     linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-i2c@vger.kernel.org, andrew@lunn.ch,
-        paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu
-Subject: Re: [PATCH v4 1/1] i2c: ocores: fix polling mode workaround on FU540-C000 SoC
-References: <1603291814-240377-1-git-send-email-sagar.kadam@sifive.com>
-        <1603291814-240377-2-git-send-email-sagar.kadam@sifive.com>
-Date:   Wed, 21 Oct 2020 17:46:27 +0200
-In-Reply-To: <1603291814-240377-2-git-send-email-sagar.kadam@sifive.com>
-        (Sagar Shrikant Kadam's message of "Wed, 21 Oct 2020 07:50:14 -0700")
-Message-ID: <87k0vjk2ek.fsf@dell.be.48ers.dk>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/26.1 (gnu/linux)
+        Wed, 21 Oct 2020 11:46:57 -0400
+Received: from pps.filterd (m0098414.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LFZYYf156719;
+        Wed, 21 Oct 2020 11:46:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=eSg8TA/oMOmSlb52iatw5KngnYQc5Vgzaw+Vw2aADeI=;
+ b=CUZzVTFoft7gpvSW9lNDiZR09SgQf0JXwpEWb5K9MpfWKLY7M2Md/BtB8dzc79ABqftr
+ 2q3gFmriJcSQrhGU1Xdf+6sFfwaBuKGQuxOQXxikWVPbyIrwwQbLui5togRtCYCAZpDK
+ 9VsYGGaTTkgyqvyL78VbyojX3jlyjKjqKvS8L2c5dKUjJe+kWsavlHN9s6EEvyztLkTi
+ ukPKkZUfqcfell1HGPwg7f1EuVw77XUC8RmuSmlHj1mnSFOGR2VzVHscnilJAHIhk5d9
+ US0x8RPTgobEuPjKlxKwu8AHgzJWRWIdxM2JXFhdznOFyQkC+GVunLzhPFUlUrBUOKJv xQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34aqft8tsu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 11:46:52 -0400
+Received: from m0098414.ppops.net (m0098414.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LFahPu161103;
+        Wed, 21 Oct 2020 11:46:52 -0400
+Received: from ppma03dal.us.ibm.com (b.bd.3ea9.ip4.static.sl-reverse.com [169.62.189.11])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34aqft8tsg-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 11:46:52 -0400
+Received: from pps.filterd (ppma03dal.us.ibm.com [127.0.0.1])
+        by ppma03dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09LFW7VT030031;
+        Wed, 21 Oct 2020 15:46:51 GMT
+Received: from b01cxnp23034.gho.pok.ibm.com (b01cxnp23034.gho.pok.ibm.com [9.57.198.29])
+        by ppma03dal.us.ibm.com with ESMTP id 347r89hc99-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 15:46:51 +0000
+Received: from b01ledav002.gho.pok.ibm.com (b01ledav002.gho.pok.ibm.com [9.57.199.107])
+        by b01cxnp23034.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09LFko9B49086876
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Wed, 21 Oct 2020 15:46:50 GMT
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id ADACF124058;
+        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
+Received: from b01ledav002.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2DFD6124053;
+        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.85.170.177])
+        by b01ledav002.gho.pok.ibm.com (Postfix) with ESMTP;
+        Wed, 21 Oct 2020 15:46:50 +0000 (GMT)
+Subject: Re: [PATCH] s390/vfio-ap: fix unregister GISC when KVM is already
+ gone results in OOPS
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     pmorel@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, cohuck@redhat.com,
+        kwankhede@nvidia.com, borntraeger@de.ibm.com
+References: <20200918170234.5807-1-akrowiak@linux.ibm.com>
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+Message-ID: <f3d21bbf-4d25-eac8-cc88-c654b8406316@linux.ibm.com>
+Date:   Wed, 21 Oct 2020 11:46:49 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <20200918170234.5807-1-akrowiak@linux.ibm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-21_06:2020-10-20,2020-10-21 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=2 clxscore=1015
+ adultscore=0 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ mlxlogscore=999 malwarescore=0 impostorscore=0 mlxscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010210113
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->>>>> "Sagar" == Sagar Shrikant Kadam <sagar.kadam@sifive.com> writes:
+In trying to recreate this problem in order to get a stack trace, I 
+discovered that
+it only occurs within a local repository that has several new patches 
+applied,
+so the problem is not part of the base code and will be fixed via this 
+new set
+of patches forthcoming.
 
- > The FU540-C000 has a broken IRQ and support was added earlier
- > so that it will operate in polling mode, but seems to work only
- > in case interrupts property is missing from the i2c0 dt-node.
- > This should not be the case and the driver should handle polling
- > mode with the interrupt property present in i2c0 node of the
- > device tree.
- > So check if it's the FU540-C000 soc and enable polling mode master
- > xfers, as the IRQ for this chip is broken.
+On 9/18/20 1:02 PM, Tony Krowiak wrote:
+> Attempting to unregister Guest Interruption Subclass (GISC) when the
+> link between the matrix mdev and KVM has been removed results in the
+> following:
+>
+>     "Kernel panic -not syncing: Fatal exception: panic_on_oops"
+>
+> This patch fixes this bug by verifying the matrix mdev and KVM are still
+> linked prior to unregistering the GISC.
+>
+> Signed-off-by: Tony Krowiak <akrowiak@linux.ibm.com>
+> ---
+>   drivers/s390/crypto/vfio_ap_ops.c | 14 +++++++++-----
+>   1 file changed, 9 insertions(+), 5 deletions(-)
+>
+> diff --git a/drivers/s390/crypto/vfio_ap_ops.c b/drivers/s390/crypto/vfio_ap_ops.c
+> index e0bde8518745..847a88642644 100644
+> --- a/drivers/s390/crypto/vfio_ap_ops.c
+> +++ b/drivers/s390/crypto/vfio_ap_ops.c
+> @@ -119,11 +119,15 @@ static void vfio_ap_wait_for_irqclear(int apqn)
+>    */
+>   static void vfio_ap_free_aqic_resources(struct vfio_ap_queue *q)
+>   {
+> -	if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev)
+> -		kvm_s390_gisc_unregister(q->matrix_mdev->kvm, q->saved_isc);
+> -	if (q->saved_pfn && q->matrix_mdev)
+> -		vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> -				 &q->saved_pfn, 1);
+> +	if (q->matrix_mdev) {
+> +		if (q->saved_isc != VFIO_AP_ISC_INVALID && q->matrix_mdev->kvm)
+> +			kvm_s390_gisc_unregister(q->matrix_mdev->kvm,
+> +						 q->saved_isc);
+> +		if (q->saved_pfn)
+> +			vfio_unpin_pages(mdev_dev(q->matrix_mdev->mdev),
+> +					 &q->saved_pfn, 1);
+> +	}
+> +
+>   	q->saved_pfn = 0;
+>   	q->saved_isc = VFIO_AP_ISC_INVALID;
+>   }
 
- > Fixes commit c45d4ba86731 ("i2c: ocores: add polling mode workaround
- > for Sifive FU540-C000 SoC")
-
- > Signed-off-by: Sagar Shrikant Kadam <sagar.kadam@sifive.com>
-
-LGTM, thanks.
-
-Acked-by: Peter Korsgaard <peter@korsgaard.com>
-
--- 
-Bye, Peter Korsgaard
