@@ -2,94 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54F2F294EFB
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:46:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D43E2294EFD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:47:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443717AbgJUOq4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:46:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39630 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442691AbgJUOqz (ORCPT
+        id S2443725AbgJUOq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:46:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28678 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2442791AbgJUOq4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:46:55 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39242C0613CE;
-        Wed, 21 Oct 2020 07:46:55 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id n15so2024289otl.8;
-        Wed, 21 Oct 2020 07:46:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1IUZ6I6V7LqNbiAO/jvNIl7pEQEeI/Zj04i8X71a+ms=;
-        b=qPbep5+ETyoX0YcK+v5CxNod1eUBDBEcuWhJswN9dejqu9VvO0uUrmTVi1doU/lJCF
-         SA+BYBbk5tJw7GdllVJGDW3MkaShKpbs2pJF0dzmTGhkBO76yBvZQyqBIx9zKTbgpFeL
-         XTgh8U1l67Hi3EThp2SBIbjXbG8AZat/3f8AaXGLK84g86+QLtiGqqO73NnIkiIPZkw7
-         Y8TN/sTyPcaK7fSSqxFl9psD0hZlQwcUrA0/G+3AoDqh/2A3UrhovjwqgtX05LitZx1+
-         Rl0JIq51di9V4w8WLzlBXdrWJSXqQho+GvDZ/KOdCY3d00avQ9l2QW4jcz8nkJ/Syt+/
-         JN7g==
+        Wed, 21 Oct 2020 10:46:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603291614;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=McsFIc3uuC39J5CjXN1eYmGbwChHomet0XT2rkjh0/Q=;
+        b=RBgAkl0efYBv4KWMToSdaYOchmD5Mn2nGgIgo0CPpzdtX3glVGYhH6MShNWTO4svb3PtkS
+        0HAkS63OJ9wZofqZ0alq0ujI+zIYstRD0dNyhvTb89i17w3ykwlKsmXiokt6Gfslh8G9x/
+        wt4mgpvdBWJv4pv59EfP1AuOfFWDTe8=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-302-RwIwWXuBN26Ozr05JlLolQ-1; Wed, 21 Oct 2020 10:46:52 -0400
+X-MC-Unique: RwIwWXuBN26Ozr05JlLolQ-1
+Received: by mail-wr1-f71.google.com with SMTP id x16so2808113wrg.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:46:52 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1IUZ6I6V7LqNbiAO/jvNIl7pEQEeI/Zj04i8X71a+ms=;
-        b=DYpf0Q4Jaj+goEK1OVB0K3ASDdTJKcIpQJFbjoeLXazrvd/jNgzMctTKTnN4/Psw6+
-         p9wBnnSdeUGCnaESE4+SI1MyokUxy+hmo2STGdJLCdNWNoL251b4rIajOGxzRp7+Yd4q
-         FjctWdr0/VNdRlaxqPqJV23G7LlZ/0xgD3+EEgvRjJI6j7rWWsny9cuML0GOjuHU1ngk
-         nqhwv1KAkIBBtlTL5MTmLWc3OcaGS4cHtFjegUvpnITEgdnmn/Yxlx/M/+QnfxlaiqVV
-         IfrQZ34bVkfQ7M9S6ubKPpuizmIYgdq35RDv0X3TxouLxambwwnJce8EPCbKXEkDcWTE
-         LfZg==
-X-Gm-Message-State: AOAM533Vw/rGlKTOrVt1j4wW1I+dKGYvhfvTFuiOoi/zLRFANtDImFJ9
-        e+EtRVMRimKxyMTZV4CaejS28PylYpn60NguarI=
-X-Google-Smtp-Source: ABdhPJz3cx2YSXE+eoT35+abgW4d4thuCG+e2MxOh8ZpjImNE4uQlVCgS76nyPsdvHovONXEhQe/VPTddrxyLPWcfsw=
-X-Received: by 2002:a05:6830:2153:: with SMTP id r19mr2758372otd.207.1603291614667;
- Wed, 21 Oct 2020 07:46:54 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version:content-transfer-encoding;
+        bh=McsFIc3uuC39J5CjXN1eYmGbwChHomet0XT2rkjh0/Q=;
+        b=X0a6/c3tmW8sFFDoTFBLME7aOjiGAOwvD6RHYkemFbp9l8pevowzcPWNY002yxdNmX
+         fGk4LMBlPYkrBZUmRJTqfswCiecRcHlCQMougVAvnmpFkm/vw31joVHlsVjpMYxT+IFq
+         LkWGByKZmCQC2rw6MpKw3FFII6xeRvHm+v4lH41v71ALTJzLKWqhF2sd2sq9KVSKzo22
+         fTzRfPmy6F3Q0G6C0jmB8vufkOo9yRipdeosvyL60dgSc11xj1YwzaT6iWiluZboko6N
+         cbvofnhGbaWHk/gAdbBjgiSyJYqxkglUSmBIFWq9oozJHmxyO+Haixnxr2sl5ExFp4I4
+         lhbg==
+X-Gm-Message-State: AOAM531xlRS5nfea3T0kb6UdxzP1BPS/XdrxVkdHuUvsmTMiVtNjJ6IV
+        quoQ760HFArgWfZDaLGD4/SqRAT7t/j9Yfi1b5vc6t080VBKHE3aWLDPmCTVey0JFG6PaH4Prjv
+        wcBE7d83YGsu01r7ZjNdHwnib
+X-Received: by 2002:adf:c3cd:: with SMTP id d13mr5175543wrg.15.1603291611222;
+        Wed, 21 Oct 2020 07:46:51 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyLuiHz/EA1MVlnS6k5vCNG0L0fXDex1R+1gOApxkZZ9bGeCuNXSExKywBkiIGO4shIJ4ZYZg==
+X-Received: by 2002:adf:c3cd:: with SMTP id d13mr5175499wrg.15.1603291610994;
+        Wed, 21 Oct 2020 07:46:50 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id j17sm3943426wrw.68.2020.10.21.07.46.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 07:46:50 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen\, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [RFCv2 00/16] KVM protected memory extension
+In-Reply-To: <20201020134924.2i4z4kp6bkiheqws@box>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com> <87ft6949x8.fsf@vitty.brq.redhat.com> <20201020134924.2i4z4kp6bkiheqws@box>
+Date:   Wed, 21 Oct 2020 16:46:48 +0200
+Message-ID: <87eelr4ox3.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-References: <20201021135140.51300-1-alexandru.ardelean@analog.com>
- <20201021135140.51300-2-alexandru.ardelean@analog.com> <20201021140852.GN139700@lunn.ch>
- <CA+U=DsrZM4gRpmez6KqT8XTEBYwA-gwHjHQWa3Pn+G1nsYD3CA@mail.gmail.com> <20201021142804.GP139700@lunn.ch>
-In-Reply-To: <20201021142804.GP139700@lunn.ch>
-From:   Alexandru Ardelean <ardeleanalex@gmail.com>
-Date:   Wed, 21 Oct 2020 17:46:43 +0300
-Message-ID: <CA+U=DsqFcLRVYfbsQ6y=98epaX0DYTbbh8PMiDkQS6bxkFRQAQ@mail.gmail.com>
-Subject: Re: [PATCH 2/2] net: phy: adin: implement cable-test support
-To:     Andrew Lunn <andrew@lunn.ch>
-Cc:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        netdev@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-        Heiner Kallweit <hkallweit1@gmail.com>, linux@armlinux.org.uk,
-        David Miller <davem@davemloft.net>, kuba@kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 5:28 PM Andrew Lunn <andrew@lunn.ch> wrote:
->
-> > Actually, I'd also be interested [for this PHY], to report a
-> > "significance impedance" detection, which is similar to the
-> > short-detection that is already done.
->
-> You can add that as just another element of the enum.
->
-> > At first, this report would sound like it could be interesting; but
-> > feel free to disagree with me.
-> >
-> > And there's also some "busy" indicator; as-in "unknown activity during
-> > diagnostics"; to-be-honest, I don't know what this is yet.
->
-> The link partner did not go quiet. You can only do cable tests if the
-> partner is not sending frames or pulses. You will find most PHYs have
-> some sort of error status for this. For the Marvell driver, this is
-> MII_VCT7_RESULTS_INVALID. In that case, the Marvell driver returns
-> ETHTOOL_A_CABLE_RESULT_CODE_UNSPEC.
+"Kirill A. Shutemov" <kirill@shutemov.name> writes:
 
-Good to know.
-So, then a quick question: would this patchset [well, a V2 of this] be
-ok in this form, for the initial cable-test support of this PHY?
-
-For other enhancements on the PHY's cable-test [that also require some
-new netlink attributes, I can do other patches, in the form of
-"new-netlink-attr, then driver change, and then ethtool update".
-
+> On Tue, Oct 20, 2020 at 09:46:11AM +0200, Vitaly Kuznetsov wrote:
+>> "Kirill A. Shutemov" <kirill@shutemov.name> writes:
+>> 
+>> > == Background / Problem ==
+>> >
+>> > There are a number of hardware features (MKTME, SEV) which protect guest
+>> > memory from some unauthorized host access. The patchset proposes a purely
+>> > software feature that mitigates some of the same host-side read-only
+>> > attacks.
+>> >
+>> >
+>> > == What does this set mitigate? ==
+>> >
+>> >  - Host kernel ”accidental” access to guest data (think speculation)
+>> >
+>> >  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
+>> >
+>> >  - Host userspace access to guest data (compromised qemu)
+>> >
+>> >  - Guest privilege escalation via compromised QEMU device emulation
+>> >
+>> > == What does this set NOT mitigate? ==
+>> >
+>> >  - Full host kernel compromise.  Kernel will just map the pages again.
+>> >
+>> >  - Hardware attacks
+>> >
+>> >
+>> > The second RFC revision addresses /most/ of the feedback.
+>> >
+>> > I still didn't found a good solution to reboot and kexec. Unprotect all
+>> > the memory on such operations defeat the goal of the feature. Clearing up
+>> > most of the memory before unprotecting what is required for reboot (or
+>> > kexec) is tedious and error-prone.
+>> > Maybe we should just declare them unsupported?
+>> 
+>> Making reboot unsupported is a hard sell. Could you please elaborate on
+>> why you think that "unprotect all" hypercall (or rather a single
+>> hypercall supporting both protecting/unprotecting) defeats the purpose
+>> of the feature?
 >
->         Andrew
+> If guest has some data that it prefers not to leak to the host and use the
+> feature for the purpose, share all the memory to get through reboot is a
+> very weak point.
+>
+
+My point that if it knows that there's something sensitive in its
+memory it should clean it up even today without your feature before
+rebooting to an unknown target.
+
+>> 
+>> clean up *all* its memory upon reboot, however:
+>> - It may only clean up the most sensitive parts. This should probably be
+>> done even without this new feature and even on bare metal (think about
+>> next boot target being malicious).
+>> - The attack window shrinks significantly. "Speculative" bugs require
+>> time to exploit and it will only remain open until it boots up again
+>> (few seconds).
+>
+> Maybe it would be cleaner to handle reboot in userspace? If we got the VM
+> rebooted, just reconstruct it from scratch as if it would be new boot.
+
+We are definitely not trying to protect against malicious KVM so maybe
+we can do the cleanup there (when protection was enabled) so we can
+unprotect everything without risk of a leak?
+
+-- 
+Vitaly
+
