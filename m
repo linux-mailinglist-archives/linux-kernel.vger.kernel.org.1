@@ -2,91 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6C0B2950A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:22:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E4B62950A8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:22:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444549AbgJUQV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:21:57 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54402 "EHLO
+        id S2444578AbgJUQWH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:22:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54410 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444530AbgJUQV4 (ORCPT
+        with ESMTP id S2444543AbgJUQV4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Oct 2020 12:21:56 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46481C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id ce10so4107409ejc.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD2AC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:56 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id w27so180865ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 09:21:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UI2P/yyao6EznjeZr1h9V5wwTm/lr2jsyR7CYvPpJn8=;
-        b=sGEe0ZSsBq2hxXtN4AppUO1Zi4qpE8rjaTwX9Wi5YMoUpfkKpWDeC8/ptxqAH7PVfT
-         W2Wm/iYiW8Gy1hphh3YxpoKfkJS4qpIFENQQtiX5j6O5Lu/vCGSyezztx/pWVwrbOR7y
-         FEsYm1MaFmx0ioASrEdPyTgGZ8i49rzkz3JDUnjItBHliozJJrO7da0ibDypAqBVKKik
-         fObm9XdOL1ZOsJRzednQvcOqJw1q34CsvIsayRX3amK+jvKt/S9StRra6V+I0s5WbUcj
-         9LJORutEbazY+hbuHPmEtbhKBdvVkBNksZgc9QFUMkpkc3O6XisHdQ3W0kl0fKWKi+4M
-         Wp/g==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=NbaOJdOhMnQWRBlP6WkK3ZzL8S9aIykVLGSDrM3lt1Y=;
+        b=atuMiwpUbK1Yyl/B+DN8Fvaeg7nklmy8ZUDhvZaHpqL3qGMMtDhAgYWiCLlPwGc7a0
+         UWcyK0DKuTDlS7j8AaLrgmldLACb/cy4kdThvmBt4G+mQ3GYNmxb3DxcuRmsFFB+kFfb
+         aKWAN5esyrKSvQ5jR0PboxYNxDKwD7TqTonHG+wftLNZSZsGNJyWk4ENFO3/50k/JVez
+         r5OB2AuadXu66MOzxx8U4SKqtWCa3dKWL7BD4m6+2IiUOBDcJ6NrVCR6atVzig7IKpP0
+         MMZGk97bygy33+2y61VJ0HLaLwl8bcqZvbmWWWPejek+4j5u8RWC6DMI6OURiV/HfyME
+         MFAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=UI2P/yyao6EznjeZr1h9V5wwTm/lr2jsyR7CYvPpJn8=;
-        b=pb76NKGXgiF8pUcZ0DYvCsrAwFJSSUCI4JxKsFfWCR4J2VthPMxAN2JKQ/VMZ0BAC4
-         FYiTWWX7u2EoUrgh4/n5WbG7Xh4923ubqwlWY619WsOAUBRSvdc3q5T6ZawrNOdf5pco
-         ckCruftyXHnDhrBGa+hUoVKwsPzYr//Q71bfPUvAzpygyXOr8Off3ymh0j0MhDs2Gili
-         gpUfzK8c8BVC9VvlPNPMjr62AYQ6A/vGJLTLfbAYLNn4c1dVdV+NzlxS6K3G3SD8NtYY
-         PCVWLZ3wHOWM7qknktJn/sav61xnnYvpYk1yMsDxK2uSuvfHDlbtqCN1FooBnPcHc1Lk
-         fUMA==
-X-Gm-Message-State: AOAM531UbLD76d3JUrNIVujwPWoyqOC3iDXMBPqL1/g2FOWbdTqMWivM
-        EmrvmkRzfLHn8g9rwEtcU4TjRg==
-X-Google-Smtp-Source: ABdhPJz01d9oIMCTPrSm5ZUKeD22XQbYSH9b+dNijavQFdQQWBxIif4CrZRFLBUmfLd4R+zYnk+Azg==
-X-Received: by 2002:a17:907:2089:: with SMTP id pv9mr4460227ejb.427.1603297312942;
-        Wed, 21 Oct 2020 09:21:52 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=NbaOJdOhMnQWRBlP6WkK3ZzL8S9aIykVLGSDrM3lt1Y=;
+        b=poyypiCA+IwRHZpFl+hi+R5riT6c9xYC8YIexeLpbO9GFIIN6KzS8oUgT6Y6OTYMRe
+         7LrYVWoLZ2wKDakXVecJwSwdRbw98Q51imWkc6t4JMytxx2PB5PEjMq6ALZI5meCYgTe
+         YvmZgbk4yIRRWEJzH7Nr0Kv0kzojKPCBOb07TkYL+VUo+wcBJiqlsJDmM5JYVvNSkaGJ
+         Jg59Jn0QPq/lvElNbcKWojY2W5o8IpWB7XcLAMZXMp1jsv7maEqPKsSUmlsTwG+y+Aja
+         AiIDPoLpWnqTjGm8EyFXNSzjk6ywm4b0sK8Mgx+AeMPRJ88fUott5X++CpFZGu2JrSFI
+         ZryQ==
+X-Gm-Message-State: AOAM5336yjCOezf/PBBf3MuxJHmU9EaucpCb/Nhs6Fw3engo99ZumGxY
+        F8OBP2riIS0ViArnD08TmyH7dg==
+X-Google-Smtp-Source: ABdhPJzgn7NLcmefXgPTla5nK9XVbWc6TU9L61aXbeTJFTr26tzoKCNwiKGKQ9Yo08mn74gsn+j8sg==
+X-Received: by 2002:a17:906:2b83:: with SMTP id m3mr4213435ejg.456.1603297314846;
+        Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
 Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id 11sm2566667ejy.19.2020.10.21.09.21.51
+        by smtp.googlemail.com with ESMTPSA id 11sm2566667ejy.19.2020.10.21.09.21.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 09:21:52 -0700 (PDT)
+        Wed, 21 Oct 2020 09:21:54 -0700 (PDT)
 From:   Jerome Brunet <jbrunet@baylibre.com>
 To:     Stephen Boyd <sboyd@kernel.org>,
         Martin Blumenstingl <martin.blumenstingl@googlemail.com>
 Cc:     Jerome Brunet <jbrunet@baylibre.com>,
         linux-amlogic@lists.infradead.org, linux-kernel@vger.kernel.org,
         linux-clk@vger.kernel.org, Kevin Hilman <khilman@baylibre.com>
-Subject: [PATCH v2 0/3] clk: add api to get clk consumer from clk_hw
-Date:   Wed, 21 Oct 2020 18:21:44 +0200
-Message-Id: <20201021162147.563655-1-jbrunet@baylibre.com>
+Subject: [PATCH v2 1/3] clk: avoid devm_clk_release name clash
+Date:   Wed, 21 Oct 2020 18:21:45 +0200
+Message-Id: <20201021162147.563655-2-jbrunet@baylibre.com>
 X-Mailer: git-send-email 2.25.4
+In-Reply-To: <20201021162147.563655-1-jbrunet@baylibre.com>
+References: <20201021162147.563655-1-jbrunet@baylibre.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patchset a call in CCF to get "struct clk*" from "struct clk_hw*"
+In clk-devres.c, devm_clk_release() is used to call clk_put() memory
+managed clock. In clk.c the same name, in a different scope is used to call
+clk_unregister().
 
-Changes since v1: [0]
-* Add a con_id string to help keep track of the consumer
-* Add devm variant:
- - Following our discussion on V1, I choose to have the dev as
-   argument as most devm function do. However, as Stephen pointed out
-   we don't expect this to differ from the one linked to clk_hw. In
-   this case a warning is thrown.
-* Add a first usage of this in the amlogic clock driver.
+As it stands, it is not really a problem but it does not readability,
+especially if we need to call clk_put() on managed clock in clk.c
 
-[0]: https://lore.kernel.org/r/20200519170440.294601-1-jbrunet@baylibre.com
+Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+---
+ drivers/clk/clk.c | 12 ++++++------
+ 1 file changed, 6 insertions(+), 6 deletions(-)
 
-Jerome Brunet (3):
-  clk: avoid devm_clk_release name clash
-  clk: add api to get clk consumer from clk_hw
-  clk: meson: g12: drop use of __clk_lookup()
-
- drivers/clk/clk.c            | 73 +++++++++++++++++++++++++++++++++---
- drivers/clk/meson/g12a.c     | 68 ++++++++++++++++-----------------
- include/linux/clk-provider.h |  5 +++
- 3 files changed, 104 insertions(+), 42 deletions(-)
-
+diff --git a/drivers/clk/clk.c b/drivers/clk/clk.c
+index 0a9261a099bd..88e5797bb6b4 100644
+--- a/drivers/clk/clk.c
++++ b/drivers/clk/clk.c
+@@ -4068,12 +4068,12 @@ void clk_hw_unregister(struct clk_hw *hw)
+ }
+ EXPORT_SYMBOL_GPL(clk_hw_unregister);
+ 
+-static void devm_clk_release(struct device *dev, void *res)
++static void devm_clk_unregister_cb(struct device *dev, void *res)
+ {
+ 	clk_unregister(*(struct clk **)res);
+ }
+ 
+-static void devm_clk_hw_release(struct device *dev, void *res)
++static void devm_clk_hw_unregister_cb(struct device *dev, void *res)
+ {
+ 	clk_hw_unregister(*(struct clk_hw **)res);
+ }
+@@ -4093,7 +4093,7 @@ struct clk *devm_clk_register(struct device *dev, struct clk_hw *hw)
+ 	struct clk *clk;
+ 	struct clk **clkp;
+ 
+-	clkp = devres_alloc(devm_clk_release, sizeof(*clkp), GFP_KERNEL);
++	clkp = devres_alloc(devm_clk_unregister_cb, sizeof(*clkp), GFP_KERNEL);
+ 	if (!clkp)
+ 		return ERR_PTR(-ENOMEM);
+ 
+@@ -4123,7 +4123,7 @@ int devm_clk_hw_register(struct device *dev, struct clk_hw *hw)
+ 	struct clk_hw **hwp;
+ 	int ret;
+ 
+-	hwp = devres_alloc(devm_clk_hw_release, sizeof(*hwp), GFP_KERNEL);
++	hwp = devres_alloc(devm_clk_hw_unregister_cb, sizeof(*hwp), GFP_KERNEL);
+ 	if (!hwp)
+ 		return -ENOMEM;
+ 
+@@ -4167,7 +4167,7 @@ static int devm_clk_hw_match(struct device *dev, void *res, void *data)
+  */
+ void devm_clk_unregister(struct device *dev, struct clk *clk)
+ {
+-	WARN_ON(devres_release(dev, devm_clk_release, devm_clk_match, clk));
++	WARN_ON(devres_release(dev, devm_clk_unregister_cb, devm_clk_match, clk));
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_unregister);
+ 
+@@ -4182,7 +4182,7 @@ EXPORT_SYMBOL_GPL(devm_clk_unregister);
+  */
+ void devm_clk_hw_unregister(struct device *dev, struct clk_hw *hw)
+ {
+-	WARN_ON(devres_release(dev, devm_clk_hw_release, devm_clk_hw_match,
++	WARN_ON(devres_release(dev, devm_clk_hw_unregister_cb, devm_clk_hw_match,
+ 				hw));
+ }
+ EXPORT_SYMBOL_GPL(devm_clk_hw_unregister);
 -- 
 2.25.4
 
