@@ -2,172 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCBD2945C8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:10:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB8FC2945CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:13:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410827AbgJUAKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 20:10:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410816AbgJUAKF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 20:10:05 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4787BC0613CE
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:10:05 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b23so356245pgb.3
-        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:10:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Es1dpFQTuiiNlYwTsEw7UkWuaTMZ5bRe2lb/esylIPk=;
-        b=DkFJtnGsN/NqjU4Gcguh6ZMWdPdaDDudzh7natzuoeZZ4rg0fq5jA9bG4zFJ2IOdLW
-         ToSA2nME8bIpGp7+6ihkt6m+ZXEf4Ib6Gk4e66/LDAjFX6Pq/i1d85MUnCjcAwvChbvf
-         awDWYlpBQ2GpuHOf8zIWuBgXpcCW8QScqj6aY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Es1dpFQTuiiNlYwTsEw7UkWuaTMZ5bRe2lb/esylIPk=;
-        b=S8KaWJVhwEGqWHN/LzJCFO1ZTAVx3EZwzQnveEwvri/l+sMq9QWodiGbc9te10yycs
-         qxsaz8zfdJm55A1IL4wjixNR4eEosGwBIXoG22p/t+gPb5PMYMp6JpO22RFN4G2djoV6
-         FDlKoqm94RgcmP4MVmcALusrYc3swQ+wl1sesZS8k20JinIQDoiQY6/wVb3ECYjnqxGq
-         F93VM3oTYrp4bskAXMgIrjEnYNw6FOft/FGqf5NXizFmbGjBDLqyqNs4jUcI6qobTXvF
-         y4+Bbxpudt3M5+dT0LMyzWL+h0eED0wTBv+alah18mzzcM7o8dHuZ4gCUvN8DtuAQGDm
-         b7YQ==
-X-Gm-Message-State: AOAM532thlU3SXyOKr6NLnzMTF6C9KHM0ty+Ndcszt5YKllv081yHvjH
-        xeFNAdL5l1TZbpvtirGW/5F4Yg==
-X-Google-Smtp-Source: ABdhPJyzdyQnQDaBVvvLa8T1uYFZW2KdVfbQNNLZFMJGba7udQ5FlFZqIT/v6eKvJ4PaGcCEI+GIZg==
-X-Received: by 2002:a62:6202:0:b029:15c:dac8:866 with SMTP id w2-20020a6262020000b029015cdac80866mr537873pfb.72.1603239004493;
-        Tue, 20 Oct 2020 17:10:04 -0700 (PDT)
-Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
-        by smtp.gmail.com with ESMTPSA id j15sm267368pgn.32.2020.10.20.17.10.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Oct 2020 17:10:03 -0700 (PDT)
-From:   Alexandre Courbot <acourbot@chromium.org>
-To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
-Cc:     Fritz Koenig <frkoenig@chromium.org>, linux-media@vger.kernel.org,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Courbot <acourbot@chromium.org>
-Subject: [PATCH v2] venus: vdec: return parsed crop information from stream
-Date:   Wed, 21 Oct 2020 09:09:43 +0900
-Message-Id: <20201021000943.656247-1-acourbot@chromium.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S2439420AbgJUAN2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 20:13:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46870 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410711AbgJUAN2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 20:13:28 -0400
+Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.5])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5AB6422242;
+        Wed, 21 Oct 2020 00:13:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603239207;
+        bh=S/pufml6Ni9xNVdl/QbGINdPsR9HTjj7F8KGcnTCoYs=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=Go6rlJzLrgrGbq6S9GFUoFHqPlO0wzAoNIF8LoWswV+l6oCixwE1RFuviAniIO0NG
+         SiEg44St3Ty0rPx/x2VzCzTt0sN4p5hZcxCyswE2lGUYS9uE1sfpssma/THahB0i8M
+         RmDZaV1Xcnus3bXsliSV8VOLkxGlXmAOUv8loJe4=
+Date:   Tue, 20 Oct 2020 17:13:25 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Defang Bo <bodefang@126.com>
+Cc:     davem@davemloft.net, johan@kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfc: Ensure presence of NFC_ATTR_FIRMWARE_NAME
+ attribute in nfc_genl_fw_download()
+Message-ID: <20201020171325.1a576d52@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+In-Reply-To: <1603107538-4744-1-git-send-email-bodefang@126.com>
+References: <1603107538-4744-1-git-send-email-bodefang@126.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Per the stateful codec specification, VIDIOC_G_SELECTION with a target
-of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
-buffers containing the decoded frame. Until now the driver did not get
-that information from the firmware and just returned the dimensions of
-CAPTURE buffers.
+On Mon, 19 Oct 2020 19:38:58 +0800 Defang Bo wrote:
+> check that the NFC_ATTR_FIRMWARE_NAME attributes are provided by the netlink client prior to accessing them.This prevents potential unhandled NULL pointer
+> dereference exceptions which can be triggered by malicious user-mode programs, if they omit one or both of these attributes. Just similar to commit <a0323b979f81>("nfc: Ensure presence of required attributes in the activate_target handler").
+> 
+> Signed-off-by: Defang Bo <bodefang@126.com>
 
-The firmware unfortunately does not always provide the crop information
-from the stream ; also make sure to detect when that happens and
-fallback to providing the coded size in these cases.
-
-Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
----
-Changes since v1:
-* Fall back to the previous behavior of returning the coded size if the
-  firmware does not report any crop information.
-
- drivers/media/platform/qcom/venus/core.h |  1 +
- drivers/media/platform/qcom/venus/vdec.c | 32 ++++++++++++++++++++----
- 2 files changed, 28 insertions(+), 5 deletions(-)
-
-diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
-index 7b79a33dc9d6..3bc129a4f817 100644
---- a/drivers/media/platform/qcom/venus/core.h
-+++ b/drivers/media/platform/qcom/venus/core.h
-@@ -361,6 +361,7 @@ struct venus_inst {
- 	unsigned int streamon_cap, streamon_out;
- 	u32 width;
- 	u32 height;
-+	struct v4l2_rect crop;
- 	u32 out_width;
- 	u32 out_height;
- 	u32 colorspace;
-diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
-index ea13170a6a2c..8488411204c3 100644
---- a/drivers/media/platform/qcom/venus/vdec.c
-+++ b/drivers/media/platform/qcom/venus/vdec.c
-@@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
- 
- 	inst->width = format.fmt.pix_mp.width;
- 	inst->height = format.fmt.pix_mp.height;
-+	inst->crop.top = 0;
-+	inst->crop.left = 0;
-+	inst->crop.width = inst->width;
-+	inst->crop.height = inst->height;
- 
- 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
- 		inst->fmt_out = fmt;
-@@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
- 	    s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
- 		return -EINVAL;
- 
-+	s->r.top = 0;
-+	s->r.left = 0;
-+
- 	switch (s->target) {
- 	case V4L2_SEL_TGT_CROP_BOUNDS:
- 	case V4L2_SEL_TGT_CROP_DEFAULT:
-@@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
- 	case V4L2_SEL_TGT_COMPOSE:
- 		if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
- 			return -EINVAL;
--		s->r.width = inst->out_width;
--		s->r.height = inst->out_height;
-+		s->r = inst->crop;
- 		break;
- 	default:
- 		return -EINVAL;
- 	}
- 
--	s->r.top = 0;
--	s->r.left = 0;
--
- 	return 0;
- }
- 
-@@ -1309,6 +1312,21 @@ static void vdec_event_change(struct venus_inst *inst,
- 
- 	inst->width = format.fmt.pix_mp.width;
- 	inst->height = format.fmt.pix_mp.height;
-+	/*
-+	 * Some versions of the firmware do not report crop information for
-+	 * all codecs. For these cases, set the crop to the coded resolution.
-+	 */
-+	if (ev_data->input_crop.width > 0 && ev_data->input_crop.height > 0) {
-+		inst->crop.left = ev_data->input_crop.left;
-+		inst->crop.top = ev_data->input_crop.top;
-+		inst->crop.width = ev_data->input_crop.width;
-+		inst->crop.height = ev_data->input_crop.height;
-+	} else {
-+		inst->crop.left = 0;
-+		inst->crop.top = 0;
-+		inst->crop.width = ev_data->width;
-+		inst->crop.height = ev_data->height;
-+	}
- 
- 	inst->out_width = ev_data->width;
- 	inst->out_height = ev_data->height;
-@@ -1412,6 +1430,10 @@ static void vdec_inst_init(struct venus_inst *inst)
- 	inst->fmt_cap = &vdec_formats[0];
- 	inst->width = frame_width_min(inst);
- 	inst->height = ALIGN(frame_height_min(inst), 32);
-+	inst->crop.left = 0;
-+	inst->crop.top = 0;
-+	inst->crop.width = inst->width;
-+	inst->crop.height = inst->height;
- 	inst->out_width = frame_width_min(inst);
- 	inst->out_height = frame_height_min(inst);
- 	inst->fps = 30;
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Applied, thanks.
