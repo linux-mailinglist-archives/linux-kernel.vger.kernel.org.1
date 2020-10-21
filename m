@@ -2,61 +2,59 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA2582953AD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:54:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE2812953AE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 22:54:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505595AbgJUUyF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 16:54:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40062 "EHLO
+        id S2505605AbgJUUyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 16:54:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40074 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505571AbgJUUyE (ORCPT
+        with ESMTP id S2505597AbgJUUyI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 16:54:04 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4D3B2C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:54:04 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id e15so2208336pfh.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:54:04 -0700 (PDT)
+        Wed, 21 Oct 2020 16:54:08 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93C7EC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:54:08 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id e15so2208426pfh.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 13:54:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=1WWqBcFdEAYNDJCu8wK+wgE+jcRsFqoWUZRxTL82Qqs=;
-        b=ayLVJ3rh5mFhbaUor8/Fhe+3rQxYRE+x7tAEXaVegyKaJmwvPbwiZAxatZyRC9RFVx
-         ZltmD7LrGsll6yhFB6Fq04pCtYGe4VrH9NPDUGyH/y006pdPR/7vPeLZKrywbH6bd7HA
-         1555uX9GsmCQrRKZYZhew0ukSJQKVBLKDloJQ=
+        bh=xHN2I79nfV0iUt35JEYrOchNYf3ShyCYP1914/Rerw8=;
+        b=ITwvOVs5ZD8pJnqyf6ZJiLy797EBa6ExtV96Tz9vEuywXrTyt1rJ7bVVsCiNHamjXO
+         GhknnZ119CDZlOSzQ09Wf5eaOkSwza2gcBM/T+hjPaDSLKkZLEw4dVq1eSnUC/yQuAOJ
+         A5ZTJOY685O919AIEXHc0w4xIcIXkfRaRbMFc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=1WWqBcFdEAYNDJCu8wK+wgE+jcRsFqoWUZRxTL82Qqs=;
-        b=sdfd1+96eFmr6OlAsJoKxo0Dk9V7NEFKrwdt72CIT6Z2Wv25gipXvkRxls1ag1P9tc
-         moCFaGUj5EiIL18uBLU5FbWYgUWi9Lsw8AEIIpE5nGqh5kwC/VzrQnLW4P6ctoK019z5
-         zRaoLwclUo+dlmN/sIu9PmYqRaghtpBxSvQZZLn+s0lMbUrSN4f1dCUk1SBQdo0z8KlU
-         tgek+UZ/fcjQWq2uhBioR4A/0uKE1bpWqknewUpoH3SGXsBryxFIV2/l/GsqELS9hFgr
-         R7/xVjNjc6W9T1RCOuuUFXuDozerMV0Pi5rYmJmHGbP+Ov9dsB3Uzwi4riLKaAo0Rp75
-         l5UQ==
-X-Gm-Message-State: AOAM531979L+hM+tbc4EF6d5QXnOYMqjNc4yihm2ZMAmuymCiN8d/4Ov
-        QitH/gU5MPziYTmQ/BH8N2sN7+6tIQZIAw==
-X-Google-Smtp-Source: ABdhPJyweJ9yn2rxzyzUjzyHvB3qaAJzaeM4HjSdLd3vojncPMFSQX/+N5gAKSzqqIx4Ur1lXEswoA==
-X-Received: by 2002:a63:2263:: with SMTP id t35mr3682181pgm.284.1603313643529;
-        Wed, 21 Oct 2020 13:54:03 -0700 (PDT)
+        bh=xHN2I79nfV0iUt35JEYrOchNYf3ShyCYP1914/Rerw8=;
+        b=q6/X4WPLxnuJUgna5Y1NY4mCvw9HoeYVh15Qb5q8XDX3V3lNMQb1NRdXl0BT54KetS
+         33zJlN3QkTroZ55adWItSHNrtRKgG2DoDgw/ifOzFJh1S3Ey1oAdPoWyX0/5dd2sgpKN
+         c7F+xFXvgyHLQ+oCOeevU99N2d8y3Etnpymt160dUrDpvna8nUmNvrqWzgp9prevMUo/
+         U7fCQF2JbuuKqJB+kwKTN33orDWenjyLdU6zOczvEvVx6R8mFDvKqgLVK3Yif4Vha0Ga
+         4nhJiwUn395ChFd3wLp4foC++T+KYQ0SA8jIMOOeEQVEPEx5hCgOMrNdkvF2pxCgOtXu
+         N/SQ==
+X-Gm-Message-State: AOAM532JZ6zRD1+vkiWG9LpC22tvjYWnz823g9ID6uPbOrtZsaA+4ozr
+        SEHUYmd3EPztZwzMsORiQ8mcxzaR/mX2zw==
+X-Google-Smtp-Source: ABdhPJz+8S+JxQsCf1tUHInuHtBAZwbVoVzJVSHLVtmvF+rr5qjBBg0wBhf8d3JkGc71wInh8fzlvA==
+X-Received: by 2002:a63:3d8c:: with SMTP id k134mr4835697pga.22.1603313647912;
+        Wed, 21 Oct 2020 13:54:07 -0700 (PDT)
 Received: from pmalani2.mtv.corp.google.com ([2620:15c:202:201:a28c:fdff:fef0:49dd])
-        by smtp.gmail.com with ESMTPSA id q8sm3178087pfg.118.2020.10.21.13.54.02
+        by smtp.gmail.com with ESMTPSA id q8sm3178087pfg.118.2020.10.21.13.54.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 13:54:03 -0700 (PDT)
+        Wed, 21 Oct 2020 13:54:07 -0700 (PDT)
 From:   Prashant Malani <pmalani@chromium.org>
 To:     linux-kernel@vger.kernel.org
 Cc:     heikki.krogerus@linux.intel.com,
         Prashant Malani <pmalani@chromium.org>,
         Benson Leung <bleung@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Guenter Roeck <groeck@chromium.org>,
-        Mark Brown <broonie@kernel.org>,
-        Pi-Hsun Shih <pihsun@chromium.org>
-Subject: [PATCH 4/7] platform/chrome: cros_ec: Import Type C host commands
-Date:   Wed, 21 Oct 2020 13:53:13 -0700
-Message-Id: <20201021205317.708008-5-pmalani@chromium.org>
+        Guenter Roeck <groeck@chromium.org>
+Subject: [PATCH 5/7] platform/chrome: cros_ec_typec: Introduce TYPEC_STATUS
+Date:   Wed, 21 Oct 2020 13:53:14 -0700
+Message-Id: <20201021205317.708008-6-pmalani@chromium.org>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201021205317.708008-1-pmalani@chromium.org>
 References: <20201021205317.708008-1-pmalani@chromium.org>
@@ -66,197 +64,126 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Import the EC_CMD_TYPEC_STATUS and EC_CMD_TYPEC_DISCOVERY Chrome OS EC
-host commands from the EC code base [1].
+Make a call to the newly introduced EC_CMD_TYPEC_STATUS command.
+Currently we just check to see if the SOP (port-partner) discovery was
+done and emit a debug level print for it.
 
-These commands can be used by the application processor to query Power
-Delivery (PD) discovery information concerning connected Type C
-peripherals.
+Subsequent patches will retrieve and parse the discovery data and fill
+out the Type C connector class data structures.
 
-Also add the EC_FEATURE_TYPEC_CMD feature flag, which is used to
-determine whether these commands are supported by the EC.
-
-[1]:
-https://chromium.googlesource.com/chromiumos/platform/ec/+/refs/heads/master/include/ec_commands.h
+Also check the EC_FEATURE_TYPEC_CMD feature flag at probe, and only call
+the new TYPEC_STATUS command if the feature flag is supported.
 
 Signed-off-by: Prashant Malani <pmalani@chromium.org>
 ---
- .../linux/platform_data/cros_ec_commands.h    | 155 ++++++++++++++++++
- 1 file changed, 155 insertions(+)
+ drivers/platform/chrome/cros_ec_typec.c | 52 +++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
 
-diff --git a/include/linux/platform_data/cros_ec_commands.h b/include/linux/platform_data/cros_ec_commands.h
-index 1fcfe9e63cb9..7f54fdcdd8cb 100644
---- a/include/linux/platform_data/cros_ec_commands.h
-+++ b/include/linux/platform_data/cros_ec_commands.h
-@@ -1284,6 +1284,8 @@ enum ec_feature_code {
- 	EC_FEATURE_SCP = 39,
- 	/* The MCU is an Integrated Sensor Hub */
- 	EC_FEATURE_ISH = 40,
-+	/* New TCPMv2 TYPEC_ prefaced commands supported */
-+	EC_FEATURE_TYPEC_CMD = 41,
+diff --git a/drivers/platform/chrome/cros_ec_typec.c b/drivers/platform/chrome/cros_ec_typec.c
+index faef56bcb9c5..98d22720b365 100644
+--- a/drivers/platform/chrome/cros_ec_typec.c
++++ b/drivers/platform/chrome/cros_ec_typec.c
+@@ -48,6 +48,9 @@ struct cros_typec_port {
+ 
+ 	/* Port alt modes. */
+ 	struct typec_altmode p_altmode[CROS_EC_ALTMODE_MAX];
++
++	/* Flag indicating that PD discovery data parsing is completed. */
++	bool disc_done;
  };
  
- #define EC_FEATURE_MASK_0(event_code) BIT(event_code % 32)
-@@ -5528,6 +5530,159 @@ struct ec_response_regulator_get_voltage {
- 	uint32_t voltage_mv;
- } __ec_align4;
+ /* Platform-specific data for the Chrome OS EC Type C controller. */
+@@ -60,6 +63,7 @@ struct cros_typec_data {
+ 	struct cros_typec_port *ports[EC_USB_PD_MAX_PORTS];
+ 	struct notifier_block nb;
+ 	struct work_struct port_work;
++	bool typec_cmd_supported;
+ };
  
-+/*
-+ * Gather all discovery information for the given port and partner type.
-+ *
-+ * Note that if discovery has not yet completed, only the currently completed
-+ * responses will be filled in.   If the discovery data structures are changed
-+ * in the process of the command running, BUSY will be returned.
-+ *
-+ * VDO field sizes are set to the maximum possible number of VDOs a VDM may
-+ * contain, while the number of SVIDs here is selected to fit within the PROTO2
-+ * maximum parameter size.
-+ */
-+#define EC_CMD_TYPEC_DISCOVERY 0x0131
-+
-+enum typec_partner_type {
-+	TYPEC_PARTNER_SOP = 0,
-+	TYPEC_PARTNER_SOP_PRIME = 1,
-+};
-+
-+struct ec_params_typec_discovery {
-+	uint8_t port;
-+	uint8_t partner_type; /* enum typec_partner_type */
-+} __ec_align1;
-+
-+struct svid_mode_info {
-+	uint16_t svid;
-+	uint16_t mode_count;  /* Number of modes partner sent */
-+	uint32_t mode_vdo[6]; /* Max VDOs allowed after VDM header is 6 */
-+};
-+
-+struct ec_response_typec_discovery {
-+	uint8_t identity_count;    /* Number of identity VDOs partner sent */
-+	uint8_t svid_count;	   /* Number of SVIDs partner sent */
-+	uint16_t reserved;
-+	uint32_t discovery_vdo[6]; /* Max VDOs allowed after VDM header is 6 */
-+	struct svid_mode_info svids[0];
-+} __ec_align1;
-+
-+/*
-+ * Gather all status information for a port.
-+ *
-+ * Note: this covers many of the return fields from the deprecated
-+ * EC_CMD_USB_PD_CONTROL command, except those that are redundant with the
-+ * discovery data.  The "enum pd_cc_states" is defined with the deprecated
-+ * EC_CMD_USB_PD_CONTROL command.
-+ *
-+ * This also combines in the EC_CMD_USB_PD_MUX_INFO flags.
-+ */
-+#define EC_CMD_TYPEC_STATUS 0x0133
-+
-+/*
-+ * Power role.
-+ *
-+ * Note this is also used for PD header creation, and values align to those in
-+ * the Power Delivery Specification Revision 3.0 (See
-+ * 6.2.1.1.4 Port Power Role).
-+ */
-+enum pd_power_role {
-+	PD_ROLE_SINK = 0,
-+	PD_ROLE_SOURCE = 1
-+};
-+
-+/*
-+ * Data role.
-+ *
-+ * Note this is also used for PD header creation, and the first two values
-+ * align to those in the Power Delivery Specification Revision 3.0 (See
-+ * 6.2.1.1.6 Port Data Role).
-+ */
-+enum pd_data_role {
-+	PD_ROLE_UFP = 0,
-+	PD_ROLE_DFP = 1,
-+	PD_ROLE_DISCONNECTED = 2,
-+};
-+
-+enum pd_vconn_role {
-+	PD_ROLE_VCONN_OFF = 0,
-+	PD_ROLE_VCONN_SRC = 1,
-+};
-+
-+/*
-+ * Note: BIT(0) may be used to determine whether the polarity is CC1 or CC2,
-+ * regardless of whether a debug accessory is connected.
-+ */
-+enum tcpc_cc_polarity {
-+	/*
-+	 * _CCx: is used to indicate the polarity while not connected to
-+	 * a Debug Accessory.  Only one CC line will assert a resistor and
-+	 * the other will be open.
-+	 */
-+	POLARITY_CC1 = 0,
-+	POLARITY_CC2 = 1,
-+
-+	/*
-+	 * _CCx_DTS is used to indicate the polarity while connected to a
-+	 * SRC Debug Accessory.  Assert resistors on both lines.
-+	 */
-+	POLARITY_CC1_DTS = 2,
-+	POLARITY_CC2_DTS = 3,
-+
-+	/*
-+	 * The current TCPC code relies on these specific POLARITY values.
-+	 * Adding in a check to verify if the list grows for any reason
-+	 * that this will give a hint that other places need to be
-+	 * adjusted.
-+	 */
-+	POLARITY_COUNT
-+};
-+
-+#define PD_STATUS_EVENT_SOP_DISC_DONE		BIT(0)
-+#define PD_STATUS_EVENT_SOP_PRIME_DISC_DONE	BIT(1)
-+
-+struct ec_params_typec_status {
-+	uint8_t port;
-+} __ec_align1;
-+
-+struct ec_response_typec_status {
-+	uint8_t pd_enabled;		/* PD communication enabled - bool */
-+	uint8_t dev_connected;		/* Device connected - bool */
-+	uint8_t sop_connected;		/* Device is SOP PD capable - bool */
-+	uint8_t source_cap_count;	/* Number of Source Cap PDOs */
-+
-+	uint8_t power_role;		/* enum pd_power_role */
-+	uint8_t data_role;		/* enum pd_data_role */
-+	uint8_t vconn_role;		/* enum pd_vconn_role */
-+	uint8_t sink_cap_count;		/* Number of Sink Cap PDOs */
-+
-+	uint8_t polarity;		/* enum tcpc_cc_polarity */
-+	uint8_t cc_state;		/* enum pd_cc_states */
-+	uint8_t dp_pin;			/* DP pin mode (MODE_DP_IN_[A-E]) */
-+	uint8_t mux_state;		/* USB_PD_MUX* - encoded mux state */
-+
-+	char tc_state[32];		/* TC state name */
-+
-+	uint32_t events;		/* PD_STATUS_EVENT bitmask */
-+
-+	/*
-+	 * BCD PD revisions for partners
-+	 *
-+	 * The format has the PD major reversion in the upper nibble, and PD
-+	 * minor version in the next nibble.  Following two nibbles are
-+	 * currently 0.
-+	 * ex. PD 3.2 would map to 0x3200
-+	 *
-+	 * PD major/minor will be 0 if no PD device is connected.
-+	 */
-+	uint16_t sop_revision;
-+	uint16_t sop_prime_revision;
-+
-+	uint32_t source_cap_pdos[7];	/* Max 7 PDOs can be present */
-+
-+	uint32_t sink_cap_pdos[7];	/* Max 7 PDOs can be present */
-+} __ec_align1;
-+
- /*****************************************************************************/
- /* The command range 0x200-0x2FF is reserved for Rotor. */
+ static int cros_typec_parse_port_props(struct typec_capability *cap,
+@@ -182,6 +186,7 @@ static void cros_typec_remove_partner(struct cros_typec_data *typec,
+ 	typec_unregister_partner(port->partner);
+ 	port->partner = NULL;
+ 	memset(&port->p_identity, 0, sizeof(port->p_identity));
++	port->disc_done = false;
+ }
  
+ static void cros_unregister_ports(struct cros_typec_data *typec)
+@@ -577,6 +582,31 @@ static int cros_typec_get_mux_info(struct cros_typec_data *typec, int port_num,
+ 				     sizeof(req), resp, sizeof(*resp));
+ }
+ 
++static void cros_typec_handle_status(struct cros_typec_data *typec, int port_num)
++{
++	struct ec_response_typec_status resp;
++	struct ec_params_typec_status req = {
++		.port = port_num,
++	};
++	int ret;
++
++	ret = cros_typec_ec_command(typec, 0, EC_CMD_TYPEC_STATUS, &req, sizeof(req),
++				    &resp, sizeof(resp));
++	if (ret < 0) {
++		dev_warn(typec->dev, "EC_CMD_TYPEC_STATUS failed for port: %d\n", port_num);
++		return;
++	}
++
++	if (typec->ports[port_num]->disc_done)
++		return;
++
++	/* Handle any events appropriately. */
++	if (resp.events & PD_STATUS_EVENT_SOP_DISC_DONE) {
++		dev_dbg(typec->dev, "SOP Discovery done for port: %d\n", port_num);
++		typec->ports[port_num]->disc_done = true;
++	}
++}
++
+ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
+ {
+ 	struct ec_params_usb_pd_control req;
+@@ -613,6 +643,9 @@ static int cros_typec_port_update(struct cros_typec_data *typec, int port_num)
+ 		cros_typec_set_port_params_v0(typec, port_num,
+ 			(struct ec_response_usb_pd_control *) &resp);
+ 
++	if (typec->typec_cmd_supported)
++		cros_typec_handle_status(typec, port_num);
++
+ 	/* Update the switches if they exist, according to requested state */
+ 	ret = cros_typec_get_mux_info(typec, port_num, &mux_resp);
+ 	if (ret < 0) {
+@@ -661,6 +694,23 @@ static int cros_typec_get_cmd_version(struct cros_typec_data *typec)
+ 	return 0;
+ }
+ 
++/* Check the EC feature flags to see if TYPEC_* commands are supported. */
++int cros_typec_cmds_supported(struct cros_typec_data *typec)
++{
++	struct ec_response_get_features resp = {};
++	int ret;
++
++	ret = cros_typec_ec_command(typec, 0, EC_CMD_GET_FEATURES, NULL, 0,
++				    &resp, sizeof(resp));
++	if (ret < 0) {
++		dev_warn(typec->dev,
++			 "Failed to get features, assuming typec commands unsupported.\n");
++		return 0;
++	}
++
++	return resp.flags[EC_FEATURE_TYPEC_CMD / 32] & EC_FEATURE_MASK_1(EC_FEATURE_TYPEC_CMD);
++}
++
+ static void cros_typec_port_work(struct work_struct *work)
+ {
+ 	struct cros_typec_data *typec = container_of(work, struct cros_typec_data, port_work);
+@@ -720,6 +770,8 @@ static int cros_typec_probe(struct platform_device *pdev)
+ 		return ret;
+ 	}
+ 
++	typec->typec_cmd_supported = !!cros_typec_cmds_supported(typec);
++
+ 	ret = cros_typec_ec_command(typec, 0, EC_CMD_USB_PD_PORTS, NULL, 0,
+ 				    &resp, sizeof(resp));
+ 	if (ret < 0)
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
