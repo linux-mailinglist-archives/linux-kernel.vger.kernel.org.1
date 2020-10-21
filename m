@@ -2,61 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F40B8295255
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:35:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D5A3295256
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504227AbgJUSfW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 14:35:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44372 "EHLO mail.kernel.org"
+        id S2504244AbgJUSfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 14:35:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44354 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410451AbgJUSfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2392431AbgJUSfP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Wed, 21 Oct 2020 14:35:15 -0400
-Subject: Re: [GIT PULL REQUEST] watchdog - v5.10 Merge window
+Subject: Re: [GIT PULL] dmi update for v5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603305314;
-        bh=WwdA8A+GA62TbjEC6GGhJ1bNaPeO2v7d03rwL41tSiw=;
+        bh=kG05pqs0XVSzyNZHRayzgPTQxR2ovqLnpoym+P0kBe4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=yYSONiK3Gw5YAGk00MSqNx1f/3qcav60QjHro6LR1k3/MdWvJmF6cdIewj+0J76f/
-         VnXp9YrtJUTVl5yNeihFf1qlZuDeWkkUbwI4FtbndsRUMFc4jsxWoRWf8Dabi4qlN+
-         jY557xqGOqsBhBf5xWq2Q6BzlBWqB6RZ45PVtk3w=
+        b=VURZni65fb7F8VX+0GnrpEMrV6YQfQzscEgBlg7fvT2vBrkTblXDTKfOLF4+mkoeA
+         faSsHxUgnA+Yg2O6/KPIvT2GP+5ABha4QVslS/uhh5k3fTAHRdYGQv8FA+fW6xY0Sb
+         y3ZjzyetbmJTeNH5ZslfFOtbfB1NNK+2eVRcFXuc=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201021125411.GA12717@www.linux-watchdog.org>
-References: <20201021125411.GA12717@www.linux-watchdog.org>
+In-Reply-To: <20201021101601.70393ac4@endymion>
+References: <20201021101601.70393ac4@endymion>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201021125411.GA12717@www.linux-watchdog.org>
-X-PR-Tracked-Remote: git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-5.10-rc1
-X-PR-Tracked-Commit-Id: c5b8e4644607b0319fd86a36fb0caad54ee2021e
+X-PR-Tracked-Message-Id: <20201021101601.70393ac4@endymion>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
+X-PR-Tracked-Commit-Id: a3d13a0a23ea20a83d7148279a0ab68cc9a5962c
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: f804b3159482eedbb4250b1e9248c308fb63b805
-Message-Id: <160330531489.16606.13638360771993162462.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: 68a3633694ab37b368edc30d59235e8348e2d00e
+Message-Id: <160330531463.16606.14046662211444611728.pr-tracker-bot@kernel.org>
 Date:   Wed, 21 Oct 2020 18:35:14 +0000
-To:     Wim Van Sebroeck <wim@linux-watchdog.org>
+To:     Jean Delvare <jdelvare@suse.de>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux Watchdog Mailing List <linux-watchdog@vger.kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Anson Huang <Anson.Huang@nxp.com>,
-        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
-        Dinghao Liu <dinghao.liu@zju.edu.cn>,
-        Hanspeter Portner <dev@open-music-kontrollers.ch>,
-        Hanspeter Portner <hanspeter.portner@livesystems.ch>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Nobuhiro Iwamatsu <nobuhiro1.iwamatsu@toshiba.co.jp>,
-        Wolfram Sang <wsa+renesas@sang-engineering.com>,
-        Zhen Lei <thunder.leizhen@huawei.com>
+        LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 21 Oct 2020 14:54:11 +0200:
+The pull request you sent on Wed, 21 Oct 2020 10:16:01 +0200:
 
-> git://www.linux-watchdog.org/linux-watchdog.git tags/linux-watchdog-5.10-rc1
+> git://git.kernel.org/pub/scm/linux/kernel/git/jdelvare/staging.git dmi-for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/f804b3159482eedbb4250b1e9248c308fb63b805
+https://git.kernel.org/torvalds/c/68a3633694ab37b368edc30d59235e8348e2d00e
 
 Thank you!
 
