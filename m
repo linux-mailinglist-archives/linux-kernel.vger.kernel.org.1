@@ -2,102 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 60340294B1E
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:11:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F18A1294B20
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 12:13:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441673AbgJUKLT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 06:11:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48584 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2405320AbgJUKLP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 06:11:15 -0400
-Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        id S2409763AbgJUKNK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 06:13:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53844 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409686AbgJUKNK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 06:13:10 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FCBEC0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 03:13:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=tFpjcc9cdWKp1cBRbTamz/gcMJfKJyza4tq2Ct5YEII=; b=ZAHP+jPYWdLqMCmcoTSmmpHMlk
+        69ebxKBv4qSbYUsqtdedLadBjL3syv31k5rpsCExXEAXEbi0iG82v+U+U3749CM8CxoVUHXboZ+Jj
+        ETes5SvzgLpCryYWrX+JEpCJOmgdxCQ7qgZSooOexiPbvjT5l+Vw0wb9Ho4HT+PTfjZpsvcus8AUz
+        V5I2rQsIOKj5XzLGrHKpWIfgc0Na7fvsl2Tidlrbulf2e17VG3FxaYwpiA+/oTl3MM3Tnt83XDCqk
+        pcI4Vp7z15qZtvdC/bplE0zjcF3WyPE3ZffE4j94TaqyAeALiXpx3OmLwSzDPz8LOl2Kha5LQ0o8I
+        BwfYRdMw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVB77-0004EZ-C5; Wed, 21 Oct 2020 10:13:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9994F221FC;
-        Wed, 21 Oct 2020 10:11:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603275074;
-        bh=0YoH9Rt5LN3yhFZ9E/sW8Awr/TJIiPrp0Hndf57OxeQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GxvzkVb88rfqI6o5XMTbs8V7sRLU3+68wpcIkJuaPnmiDp+R5CF6Lp3rb2D3pKdyU
-         0eirdfRB/lnaXQVLI6DlL3a/CG+XkF7+qeJRcuo1uyssC6wCJLduWTWRduWHe/YYHz
-         XUruXt0Uq1AXCPQdaRxJQri1Q3AJ+Sm/lsEybh3s=
-Date:   Wed, 21 Oct 2020 12:11:08 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Lyude Paul <lyude@redhat.com>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Ville =?UTF-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/24] drm/dp: fix a kernel-doc issue at drm_edid.c
-Message-ID: <20201021121108.51972144@coco.lan>
-In-Reply-To: <b7c9b5ddc2bdd5d1a0bb5a000d88681ad0b6fabe.camel@redhat.com>
-References: <cover.1602590106.git.mchehab+huawei@kernel.org>
-        <96d648f86024535e5f7d5b0caf8ebf93c7f8eaab.1602590106.git.mchehab+huawei@kernel.org>
-        <b7c9b5ddc2bdd5d1a0bb5a000d88681ad0b6fabe.camel@redhat.com>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id C7A593035D4;
+        Wed, 21 Oct 2020 12:12:57 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B4535203CC49B; Wed, 21 Oct 2020 12:12:57 +0200 (CEST)
+Date:   Wed, 21 Oct 2020 12:12:57 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Xi Wang <xii@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Josh Don <joshdon@google.com>, linux-kernel@vger.kernel.org,
+        Paul Turner <pjt@google.com>
+Subject: Re: [PATCH v2 1/1] sched: watchdog: Touch kernel watchdog with sched
+ count
+Message-ID: <20201021101257.GC2628@hirez.programming.kicks-ass.net>
+References: <20201020205704.1741543-1-xii@google.com>
+ <20201020205704.1741543-2-xii@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020205704.1741543-2-xii@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lyude,
+On Tue, Oct 20, 2020 at 01:57:04PM -0700, Xi Wang wrote:
 
-Em Tue, 13 Oct 2020 15:49:11 -0400
-Lyude Paul <lyude@redhat.com> escreveu:
+> +	if (watchdog_touch_with_sched) {
+> +		/* Trigger reschedule for the next round */
+> +		set_tsk_need_resched(current);
+> +		set_preempt_need_resched();
 
-> wait, I think there's some confusion here. these patches have already been
-> pushed
+Blergh.. that's gross. This relies on this being in IRQ context and
+either: PREEMPT=y *OR* this always being from userspace. Otherwise
+there's no guarantee the return-from-interrupt will actually schedule.
 
-As the patch adding the warning was merged upstream at the 5.10 merge
-window, the fixup one should also be added there, instead of waiting
-until 5.11 ;-)
-
-So, if OK for you, I'll send this upstream via my tree by the end of
-the merge window, as our goal is that 5.10 won't have doc warnings.
-
-Regards,
-Mauro
+> +		/* sched_count increase in __schedule is taken as watchdog touched */
+> +		if (sched_get_count(smp_processor_id()) -
+> +		    __this_cpu_read(watchdog_sched_prev)) {
+> +			__touch_watchdog();
+> +			__this_cpu_write(soft_watchdog_warn, false);
+> +			return HRTIMER_RESTART;
+> +		}
+> +	}
+> +
+>  	/* check for a softlockup
+>  	 * This is done by making sure a high priority task is
+>  	 * being scheduled.  The task touches the watchdog to
+> -- 
+> 2.29.0.rc1.297.gfa9743e501-goog
 > 
-> 
-> On Tue, 2020-10-13 at 14:14 +0200, Mauro Carvalho Chehab wrote:
-> > The name of the argument is different, causing those warnings:
-> > 
-> > 	./drivers/gpu/drm/drm_edid.c:3754: warning: Function parameter or member
-> > 'video_code' not described in 'drm_display_mode_from_cea_vic'
-> > 	./drivers/gpu/drm/drm_edid.c:3754: warning: Excess function parameter
-> > 'vic' description in 'drm_display_mode_from_cea_vic'
-> > 
-> > Fixes: 7af655bce275 ("drm/dp: Add drm_dp_downstream_mode()")
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> > ---
-> >  drivers/gpu/drm/drm_edid.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
-> > index a82f37d44258..631125b46e04 100644
-> > --- a/drivers/gpu/drm/drm_edid.c
-> > +++ b/drivers/gpu/drm/drm_edid.c
-> > @@ -3741,7 +3741,7 @@ drm_add_cmdb_modes(struct drm_connector *connector, u8
-> > svd)
-> >  /**
-> >   * drm_display_mode_from_cea_vic() - return a mode for CEA VIC
-> >   * @dev: DRM device
-> > - * @vic: CEA VIC of the mode
-> > + * @video_code: CEA VIC of the mode
-> >   *
-> >   * Creates a new mode matching the specified CEA VIC.
-> >   *  
-
-
-
-Thanks,
-Mauro
