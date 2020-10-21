@@ -2,183 +2,251 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA0B22949C2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 10:57:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 97BF0294A1A
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 11:04:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441194AbgJUI5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 04:57:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41468 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502419AbgJUI5a (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 04:57:30 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4E173C0613DE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:27 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id s9so2075911wro.8
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 01:57:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=ylZkHmK3aE1VlYRsGRUx3nUrnQWYBOnVeS+ToU4JUCI=;
-        b=D88rd5JfQWap5HZksMfg9cXMMl3QwJVhjS6+VSQvUjjDd24gp69dQjtY144venALwF
-         VsrNY/8fJu7KcREUK2gdnkvUKz4v4CFfNVYD7BE7l4swdssS9MrlGthSCyyUQikNqz1t
-         3VSJEkLS9OteyMKDcMhL8pGN2qtRl9K89wcCU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=ylZkHmK3aE1VlYRsGRUx3nUrnQWYBOnVeS+ToU4JUCI=;
-        b=m8BBVW9FJJ/y1TYvbZjfuxpLmRPUntFtVCCjZgYJqkxgHjUyPIFskstcCvgM+DH9hY
-         XExm9VYsPJkon3qIbGQqm5ENbGoEvOI6/1GC8z3nfv0qfF7UIIAZ/m69be/pAG5oq/XR
-         7jSpWTnpCIRJuC4lUAJLSLRBwAZJLutpE6mkcQkvE5EW+EDHhUcEAOof4J3iNOyk1K4l
-         L9jnO0fePJCOnmhoON6Cw/hqmQIOY5xS6+O7JgxutCDJgHidMzaWKVzp/OANzZuK2iNE
-         ZdUGcu52TzT4EUq7xjifVeXh6q3YVuBVsLWCyG6jvXwPHGLQJOUgDlhT35oT8FX9k7y9
-         Xf/w==
-X-Gm-Message-State: AOAM532/E5TvXKbd5XAYoEd58SRdhHFgUSthIWt0Hbg6N0tVJRuadEq8
-        f2up9Wq8yBa8k/uCGHGex9SqUQ==
-X-Google-Smtp-Source: ABdhPJyRYpgvahsTCZYVhKWO7YaUqSYEiS71WxybX5MQOWBTVSJxRg21hOuSPVSQTJs5khc2TIcK9w==
-X-Received: by 2002:adf:f810:: with SMTP id s16mr3280019wrp.424.1603270646012;
-        Wed, 21 Oct 2020 01:57:26 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id q8sm2675939wro.32.2020.10.21.01.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 01:57:25 -0700 (PDT)
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-To:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
-        linux-s390@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-        Daniel Vetter <daniel.vetter@ffwll.com>
-Subject: [PATCH v3 16/16] PCI: Revoke mappings like devmem
-Date:   Wed, 21 Oct 2020 10:56:55 +0200
-Message-Id: <20201021085655.1192025-17-daniel.vetter@ffwll.ch>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
+        id S2395542AbgJUJEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 05:04:32 -0400
+Received: from mx4.veeam.com ([104.41.138.86]:49886 "EHLO mx4.veeam.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387791AbgJUJEb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 05:04:31 -0400
+Received: from mail.veeam.com (spbmbx01.amust.local [172.17.17.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mx4.veeam.com (Postfix) with ESMTPS id 8A0905C60C;
+        Wed, 21 Oct 2020 12:04:26 +0300 (MSK)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
+        t=1603271066; bh=7pCinxh9CDdZ18baGj9Agc/InVPsneMyQj+wVyVjQ3I=;
+        h=From:To:Subject:Date:From;
+        b=D1RQaq6u5Gf6SP2mNiIVrCRlPSmaF6XvLmflwyZ7o4C8ia3u2i76fRSrT4beQCO05
+         yBr95+z13pJlPECDmYUR+W1eG8IdFt5fuPpnyP0aknKPqEapJX7GFwzvbP1K4dY+5J
+         IGFPiinN/RxRhRuxEA2BpzaqYdBybPJt1hCyn/4M=
+Received: from prgdevlinuxpatch01.amust.local (172.24.14.5) by
+ spbmbx01.amust.local (172.17.17.171) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.595.3;
+ Wed, 21 Oct 2020 12:04:24 +0300
+From:   Sergei Shtepa <sergei.shtepa@veeam.com>
+To:     <axboe@kernel.dk>, <viro@zeniv.linux.org.uk>, <hch@infradead.org>,
+        <darrick.wong@oracle.com>, <linux-xfs@vger.kernel.org>,
+        <linux-fsdevel@vger.kernel.org>, <rjw@rjwysocki.net>,
+        <len.brown@intel.com>, <pavel@ucw.cz>, <akpm@linux-foundation.org>,
+        <johannes.thumshirn@wdc.com>, <ming.lei@redhat.com>,
+        <jack@suse.cz>, <tj@kernel.org>, <gustavo@embeddedor.com>,
+        <bvanassche@acm.org>, <osandov@fb.com>, <koct9i@gmail.com>,
+        <damien.lemoal@wdc.com>, <steve@sk2.org>,
+        <linux-block@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-pm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <sergei.shtepa@veeam.com>
+Subject: [PATCH 0/2] block layer filter and block device snapshot module
+Date:   Wed, 21 Oct 2020 12:04:07 +0300
+Message-ID: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+X-Mailer: git-send-email 1.8.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [172.24.14.5]
+X-ClientProxiedBy: spbmbx01.amust.local (172.17.17.171) To
+ spbmbx01.amust.local (172.17.17.171)
+X-EsetResult: clean, is OK
+X-EsetId: 37303A295605D26A677562
+X-Veeam-MMEX: True
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since 3234ac664a87 ("/dev/mem: Revoke mappings when a driver claims
-the region") /dev/kmem zaps ptes when the kernel requests exclusive
-acccess to an iomem region. And with CONFIG_IO_STRICT_DEVMEM, this is
-the default for all driver uses.
+Hello everyone! Requesting for your comments and suggestions.
 
-Except there's two more ways to access PCI BARs: sysfs and proc mmap
-support. Let's plug that hole.
+# blk-filter
 
-For revoke_devmem() to work we need to link our vma into the same
-address_space, with consistent vma->vm_pgoff. ->pgoff is already
-adjusted, because that's how (io_)remap_pfn_range works, but for the
-mapping we need to adjust vma->vm_file->f_mapping. The cleanest way is
-to adjust this at at ->open time:
+Block layer filter allows to intercept BIO requests to a block device.
 
-- for sysfs this is easy, now that binary attributes support this. We
-  just set bin_attr->mapping when mmap is supported
-- for procfs it's a bit more tricky, since procfs pci access has only
-  one file per device, and access to a specific resources first needs
-  to be set up with some ioctl calls. But mmap is only supported for
-  the same resources as sysfs exposes with mmap support, and otherwise
-  rejected, so we can set the mapping unconditionally at open time
-  without harm.
+Interception is performed at the very beginning of the BIO request
+processing, and therefore does not affect the operation of the request
+processing queue. This also makes it possible to intercept requests from
+a specific block device, rather than from the entire disk.
 
-A special consideration is for arch_can_pci_mmap_io() - we need to
-make sure that the ->f_mapping doesn't alias between ioport and iomem
-space. There's only 2 ways in-tree to support mmap of ioports: generic
-pci mmap (ARCH_GENERIC_PCI_MMAP_RESOURCE), and sparc as the single
-architecture hand-rolling. Both approach support ioport mmap through a
-special pfn range and not through magic pte attributes. Aliasing is
-therefore not a problem.
+The logic of the submit_bio function has been changed - since the
+function execution results are not processed anywhere (except for swap
+and direct-io) the function won't return a value anymore.
 
-The only difference in access checks left is that sysfs PCI mmap does
-not check for CAP_RAWIO. I'm not really sure whether that should be
-added or not.
+Now the submit_bio_direct() function is called whenever the result of
+the blk_qc_t function is required. submit_bio_direct() is not
+intercepted by the block layer filter. This is logical for swap and
+direct-io.
 
-Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-Cc: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Kees Cook <keescook@chromium.org>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: John Hubbard <jhubbard@nvidia.com>
-Cc: Jérôme Glisse <jglisse@redhat.com>
-Cc: Jan Kara <jack@suse.cz>
-Cc: Dan Williams <dan.j.williams@intel.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-mm@kvack.org
-Cc: linux-arm-kernel@lists.infradead.org
-Cc: linux-samsung-soc@vger.kernel.org
-Cc: linux-media@vger.kernel.org
-Cc: Bjorn Helgaas <bhelgaas@google.com>
-Cc: linux-pci@vger.kernel.org
-Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
+Block layer filter allows you to enable and disable the filter driver on
+the fly. When a new block device is added, the filter driver can start
+filtering this device. When you delete a device, the filter can remove
+its own filter.
+
+The idea of multiple altitudes had to be abandoned in order to simplify
+implementation and make it more reliable. Different filter drivers can
+work simultaneously, but each on its own block device.
+
+# blk-snap
+
+We propose a new kernel module - blk-snap. This module implements
+snapshot and changed block tracking functionality. It is intended to
+create backup copies of any block devices without usage of device mapper.
+Snapshots are temporary and are destroyed after the backup process has
+finished. Changed block tracking allows for incremental and differential
+backup copies.
+
+blk-snap uses block layer filter. Block layer filter provides a callback
+to intercept bio-requests. If a block device disappears for whatever
+reason, send a synchronous request to remove the device from filtering.
+
+blk-snap kernel module is a product of a deep refactoring of the
+out-of-tree kernel veeamsnap kernel module
+(https://github.com/veeam/veeamsnap/):
+* all conditional compilation branches that served for the purpose of
+  compatibility with older kernels have been removed;
+* linux kernel code style has been applied;
+* blk-snap mostly takes advantage of the existing kernel code instead of
+  reinventing the wheel;
+* all redundant code (such as persistent cbt and snapstore collector)
+  has been removed.
+
+Several important things are still have to be done:
+* refactor the module interface for interaction with a user-space code -
+  it is already clear that the implementation of some calls can be
+  improved.
+
+Your feedback would be greatly appreciated!
+
+Sergei Shtepa (2):
+  Block layer filter - second version
+  blk-snap - snapshots and change-tracking for block devices
+
+ block/Kconfig                               |  11 +
+ block/Makefile                              |   1 +
+ block/blk-core.c                            |  52 +-
+ block/blk-filter-internal.h                 |  29 +
+ block/blk-filter.c                          | 286 ++++++
+ block/partitions/core.c                     |  14 +-
+ drivers/block/Kconfig                       |   2 +
+ drivers/block/Makefile                      |   1 +
+ drivers/block/blk-snap/Kconfig              |  24 +
+ drivers/block/blk-snap/Makefile             |  28 +
+ drivers/block/blk-snap/big_buffer.c         | 193 ++++
+ drivers/block/blk-snap/big_buffer.h         |  24 +
+ drivers/block/blk-snap/blk-snap-ctl.h       | 190 ++++
+ drivers/block/blk-snap/blk_deferred.c       | 566 +++++++++++
+ drivers/block/blk-snap/blk_deferred.h       |  67 ++
+ drivers/block/blk-snap/blk_descr_file.c     |  82 ++
+ drivers/block/blk-snap/blk_descr_file.h     |  26 +
+ drivers/block/blk-snap/blk_descr_mem.c      |  66 ++
+ drivers/block/blk-snap/blk_descr_mem.h      |  14 +
+ drivers/block/blk-snap/blk_descr_multidev.c |  86 ++
+ drivers/block/blk-snap/blk_descr_multidev.h |  25 +
+ drivers/block/blk-snap/blk_descr_pool.c     | 190 ++++
+ drivers/block/blk-snap/blk_descr_pool.h     |  38 +
+ drivers/block/blk-snap/blk_redirect.c       | 507 ++++++++++
+ drivers/block/blk-snap/blk_redirect.h       |  73 ++
+ drivers/block/blk-snap/blk_util.c           |  33 +
+ drivers/block/blk-snap/blk_util.h           |  33 +
+ drivers/block/blk-snap/cbt_map.c            | 210 +++++
+ drivers/block/blk-snap/cbt_map.h            |  62 ++
+ drivers/block/blk-snap/common.h             |  31 +
+ drivers/block/blk-snap/ctrl_fops.c          | 691 ++++++++++++++
+ drivers/block/blk-snap/ctrl_fops.h          |  19 +
+ drivers/block/blk-snap/ctrl_pipe.c          | 562 +++++++++++
+ drivers/block/blk-snap/ctrl_pipe.h          |  34 +
+ drivers/block/blk-snap/ctrl_sysfs.c         |  73 ++
+ drivers/block/blk-snap/ctrl_sysfs.h         |   5 +
+ drivers/block/blk-snap/defer_io.c           | 397 ++++++++
+ drivers/block/blk-snap/defer_io.h           |  39 +
+ drivers/block/blk-snap/main.c               |  82 ++
+ drivers/block/blk-snap/params.c             |  58 ++
+ drivers/block/blk-snap/params.h             |  29 +
+ drivers/block/blk-snap/rangevector.c        |  85 ++
+ drivers/block/blk-snap/rangevector.h        |  31 +
+ drivers/block/blk-snap/snapimage.c          | 982 ++++++++++++++++++++
+ drivers/block/blk-snap/snapimage.h          |  16 +
+ drivers/block/blk-snap/snapshot.c           | 225 +++++
+ drivers/block/blk-snap/snapshot.h           |  17 +
+ drivers/block/blk-snap/snapstore.c          | 929 ++++++++++++++++++
+ drivers/block/blk-snap/snapstore.h          |  68 ++
+ drivers/block/blk-snap/snapstore_device.c   | 532 +++++++++++
+ drivers/block/blk-snap/snapstore_device.h   |  63 ++
+ drivers/block/blk-snap/snapstore_file.c     |  52 ++
+ drivers/block/blk-snap/snapstore_file.h     |  15 +
+ drivers/block/blk-snap/snapstore_mem.c      |  91 ++
+ drivers/block/blk-snap/snapstore_mem.h      |  20 +
+ drivers/block/blk-snap/snapstore_multidev.c | 118 +++
+ drivers/block/blk-snap/snapstore_multidev.h |  22 +
+ drivers/block/blk-snap/tracker.c            | 449 +++++++++
+ drivers/block/blk-snap/tracker.h            |  38 +
+ drivers/block/blk-snap/tracking.c           | 270 ++++++
+ drivers/block/blk-snap/tracking.h           |  13 +
+ drivers/block/blk-snap/version.h            |   7 +
+ fs/block_dev.c                              |   6 +-
+ fs/direct-io.c                              |   2 +-
+ fs/iomap/direct-io.c                        |   2 +-
+ include/linux/bio.h                         |   4 +-
+ include/linux/blk-filter.h                  |  76 ++
+ include/linux/genhd.h                       |   8 +-
+ kernel/power/swap.c                         |   2 +-
+ mm/page_io.c                                |   4 +-
+ 70 files changed, 9074 insertions(+), 26 deletions(-)
+ create mode 100644 block/blk-filter-internal.h
+ create mode 100644 block/blk-filter.c
+ create mode 100644 drivers/block/blk-snap/Kconfig
+ create mode 100644 drivers/block/blk-snap/Makefile
+ create mode 100644 drivers/block/blk-snap/big_buffer.c
+ create mode 100644 drivers/block/blk-snap/big_buffer.h
+ create mode 100644 drivers/block/blk-snap/blk-snap-ctl.h
+ create mode 100644 drivers/block/blk-snap/blk_deferred.c
+ create mode 100644 drivers/block/blk-snap/blk_deferred.h
+ create mode 100644 drivers/block/blk-snap/blk_descr_file.c
+ create mode 100644 drivers/block/blk-snap/blk_descr_file.h
+ create mode 100644 drivers/block/blk-snap/blk_descr_mem.c
+ create mode 100644 drivers/block/blk-snap/blk_descr_mem.h
+ create mode 100644 drivers/block/blk-snap/blk_descr_multidev.c
+ create mode 100644 drivers/block/blk-snap/blk_descr_multidev.h
+ create mode 100644 drivers/block/blk-snap/blk_descr_pool.c
+ create mode 100644 drivers/block/blk-snap/blk_descr_pool.h
+ create mode 100644 drivers/block/blk-snap/blk_redirect.c
+ create mode 100644 drivers/block/blk-snap/blk_redirect.h
+ create mode 100644 drivers/block/blk-snap/blk_util.c
+ create mode 100644 drivers/block/blk-snap/blk_util.h
+ create mode 100644 drivers/block/blk-snap/cbt_map.c
+ create mode 100644 drivers/block/blk-snap/cbt_map.h
+ create mode 100644 drivers/block/blk-snap/common.h
+ create mode 100644 drivers/block/blk-snap/ctrl_fops.c
+ create mode 100644 drivers/block/blk-snap/ctrl_fops.h
+ create mode 100644 drivers/block/blk-snap/ctrl_pipe.c
+ create mode 100644 drivers/block/blk-snap/ctrl_pipe.h
+ create mode 100644 drivers/block/blk-snap/ctrl_sysfs.c
+ create mode 100644 drivers/block/blk-snap/ctrl_sysfs.h
+ create mode 100644 drivers/block/blk-snap/defer_io.c
+ create mode 100644 drivers/block/blk-snap/defer_io.h
+ create mode 100644 drivers/block/blk-snap/main.c
+ create mode 100644 drivers/block/blk-snap/params.c
+ create mode 100644 drivers/block/blk-snap/params.h
+ create mode 100644 drivers/block/blk-snap/rangevector.c
+ create mode 100644 drivers/block/blk-snap/rangevector.h
+ create mode 100644 drivers/block/blk-snap/snapimage.c
+ create mode 100644 drivers/block/blk-snap/snapimage.h
+ create mode 100644 drivers/block/blk-snap/snapshot.c
+ create mode 100644 drivers/block/blk-snap/snapshot.h
+ create mode 100644 drivers/block/blk-snap/snapstore.c
+ create mode 100644 drivers/block/blk-snap/snapstore.h
+ create mode 100644 drivers/block/blk-snap/snapstore_device.c
+ create mode 100644 drivers/block/blk-snap/snapstore_device.h
+ create mode 100644 drivers/block/blk-snap/snapstore_file.c
+ create mode 100644 drivers/block/blk-snap/snapstore_file.h
+ create mode 100644 drivers/block/blk-snap/snapstore_mem.c
+ create mode 100644 drivers/block/blk-snap/snapstore_mem.h
+ create mode 100644 drivers/block/blk-snap/snapstore_multidev.c
+ create mode 100644 drivers/block/blk-snap/snapstore_multidev.h
+ create mode 100644 drivers/block/blk-snap/tracker.c
+ create mode 100644 drivers/block/blk-snap/tracker.h
+ create mode 100644 drivers/block/blk-snap/tracking.c
+ create mode 100644 drivers/block/blk-snap/tracking.h
+ create mode 100644 drivers/block/blk-snap/version.h
+ create mode 100644 include/linux/blk-filter.h
+
 --
-v2:
-- Totally new approach: Adjust filp->f_mapping at open time. Note that
-  this now works on all architectures, not just those support
-  ARCH_GENERIC_PCI_MMAP_RESOURCE
----
- drivers/pci/pci-sysfs.c | 4 ++++
- drivers/pci/proc.c      | 1 +
- 2 files changed, 5 insertions(+)
-
-diff --git a/drivers/pci/pci-sysfs.c b/drivers/pci/pci-sysfs.c
-index 6d78df981d41..cee38fcb4a86 100644
---- a/drivers/pci/pci-sysfs.c
-+++ b/drivers/pci/pci-sysfs.c
-@@ -928,6 +928,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_io->read = pci_read_legacy_io;
- 	b->legacy_io->write = pci_write_legacy_io;
- 	b->legacy_io->mmap = pci_mmap_legacy_io;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_io);
- 	error = device_create_bin_file(&b->dev, b->legacy_io);
- 	if (error)
-@@ -940,6 +941,7 @@ void pci_create_legacy_files(struct pci_bus *b)
- 	b->legacy_mem->size = 1024*1024;
- 	b->legacy_mem->attr.mode = 0600;
- 	b->legacy_mem->mmap = pci_mmap_legacy_mem;
-+	b->legacy_io->mapping = iomem_get_mapping();
- 	pci_adjust_legacy_attr(b, pci_mmap_mem);
- 	error = device_create_bin_file(&b->dev, b->legacy_mem);
- 	if (error)
-@@ -1155,6 +1157,8 @@ static int pci_create_attr(struct pci_dev *pdev, int num, int write_combine)
- 			res_attr->mmap = pci_mmap_resource_uc;
- 		}
- 	}
-+	if (res_attr->mmap)
-+		res_attr->mapping = iomem_get_mapping();
- 	res_attr->attr.name = res_attr_name;
- 	res_attr->attr.mode = 0600;
- 	res_attr->size = pci_resource_len(pdev, num);
-diff --git a/drivers/pci/proc.c b/drivers/pci/proc.c
-index 3a2f90beb4cb..9bab07302bbf 100644
---- a/drivers/pci/proc.c
-+++ b/drivers/pci/proc.c
-@@ -298,6 +298,7 @@ static int proc_bus_pci_open(struct inode *inode, struct file *file)
- 	fpriv->write_combine = 0;
- 
- 	file->private_data = fpriv;
-+	file->f_mapping = iomem_get_mapping();
- 
- 	return 0;
- }
--- 
-2.28.0
+2.20.1
 
