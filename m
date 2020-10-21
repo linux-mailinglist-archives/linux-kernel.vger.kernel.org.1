@@ -2,243 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCD87294DA8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3B2294DB1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:37:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441764AbgJUNeZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:34:25 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47382 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2410028AbgJUNeZ (ORCPT
+        id S2438861AbgJUNhn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 09:37:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57072 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410096AbgJUNhn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 09:34:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603287263;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rLTpemrkuRfa4jL3PNt6EQsWInIqT24aPjXRkrxi9pg=;
-        b=FQ/qonSly5EIOa4X4rnunYPLifppCEx3W8iHin0s/TX9gCQKMAqmTajCpgZUw6suhJ8l/t
-        eBUm8lF6PI2b9FA3fRsugn6rrW3KQDH2M6cw2d6NmXZsTZBKa+xq6xfroVAoDDybrWEX8o
-        fepslFVlC0SV+K0yiZlVUKtiCEwGj+4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-196--sEWxGffPDyLQ-zzSqsXtg-1; Wed, 21 Oct 2020 09:34:19 -0400
-X-MC-Unique: -sEWxGffPDyLQ-zzSqsXtg-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3E44AEDBC9;
-        Wed, 21 Oct 2020 13:34:17 +0000 (UTC)
-Received: from [10.36.114.138] (ovpn-114-138.ams2.redhat.com [10.36.114.138])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id EEC215D9CA;
-        Wed, 21 Oct 2020 13:34:11 +0000 (UTC)
-Subject: Re: cgroup and FALLOC_FL_PUNCH_HOLE: WARNING: CPU: 13 PID: 2438 at
- mm/page_counter.c:57 page_counter_uncharge+0x4b/0x5
-From:   David Hildenbrand <david@redhat.com>
-To:     Michal Privoznik <mprivozn@redhat.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Mina Almasry <almasrymina@google.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "Michael S. Tsirkin" <mst@redhat.com>,
-        Michal Hocko <mhocko@kernel.org>,
-        Muchun Song <songmuchun@bytedance.com>,
-        "Aneesh Kumar K.V" <aneesh.kumar@linux.vnet.ibm.com>,
-        Tejun Heo <tj@kernel.org>
-References: <c1ea7548-622c-eda7-66f4-e4ae5b6ee8fc@redhat.com>
- <563d1eef-b780-835a-ebf0-88ae111b20c2@redhat.com>
- <CAHS8izPEHZunoeXYS5ONfRoSRMpC7DQwtpjJ8g4nXiddTfNoaA@mail.gmail.com>
- <65a1946f-dbf9-5767-5b51-9c1b786051d1@redhat.com>
- <5f196069-8b98-0ad3-55e8-19af03d715cd@oracle.com>
- <c78634ee-0d6f-c98c-3c2a-8cb500c0ae47@oracle.com>
- <b24380ad-b87c-a3a1-d25e-ee30c10ed0d2@redhat.com>
- <312246f4-4e5f-1425-1bc2-1b356db0fbad@oracle.com>
- <df406c04-b0f4-367f-d675-87e0231500d0@redhat.com>
- <9ad697d7-ed64-24f3-17cf-fa8dbbdcf86a@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <bcbe71c9-f6a4-be19-329c-2fb0b675ae89@redhat.com>
-Date:   Wed, 21 Oct 2020 15:34:10 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Wed, 21 Oct 2020 09:37:43 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4AEFC0613CE;
+        Wed, 21 Oct 2020 06:37:42 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id x1so2638545eds.1;
+        Wed, 21 Oct 2020 06:37:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=45aC3rTsEhmk30k5J9dX/iwdZ2Yvj9W2pU9MupQKvp8=;
+        b=FSL/MunJ9oduMmUQw7nsehTphMC6L1EzRqhTrQAx9FX92S5VdYp1hsLJqPr08yScC8
+         RNdFZyrT/+BAtxdS0efL5hBHx69rX7Nh4FsysO8BE+00PBZpAvazYnrUSIZxIGiXqXlN
+         s5QA0dFWuBW67p7MOYwHgcqbt43tibLPjZQi3VHHfjxEZR1cxNL/GpiyJ6JqgOKUEwvt
+         vV7r7LTk6CABrHRVOsO+VeI+ZsFzb17J+/Fn+L0JJen2OPRQfJuRwCwgmMEKpVNLo/VY
+         TNzilSzUcFK+ntcPSW0PwhTnDfIbEO+PYaS+aEOSda28gCgsLQ2yPjvO7fAaF/VnkBJF
+         3++A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=45aC3rTsEhmk30k5J9dX/iwdZ2Yvj9W2pU9MupQKvp8=;
+        b=VRNKJBkw4Yfy5A8GpZP85/1Z9qez+VH6SPxwWT3+fHBJrYfbemrXvqlKTNDkROV62V
+         5Vd8jy7EIVA3qlRGP/zfODH36vu8wKU4mAPzcvnUQIalRfNuGpBKD0rXtrTPLxdr6M2Q
+         I4x4n5PMOHtwIm5Vd+FmVARHIH/8L/rT9lTUpNeAmYnMYsOt+KMGxEsHuVtHZTI+UuP3
+         XiDKXG/MhEJeGNnMR7YTbOU/UBnkMnu5pGIjAqTeQEcs7vok7qoRR2XIto7S9cFyxPNR
+         ifli+Bj7IgFHvJq/g7xrsiJYkIvEXOTG6QzEFE+aVgEMFOrmNoaNLZ497hkJjjqUKlOx
+         UcQg==
+X-Gm-Message-State: AOAM530cHI1bDMf9hEWWzze2MN/KKwwwGZSVvCLsCs1BuoytU3SfY7Iz
+        5+/SkjDn0w1MOMxhU2OvII1Uy30MQm0=
+X-Google-Smtp-Source: ABdhPJyp6OU6dRJi4afEq5K94EJocXXl69vjZ+cqkdTDtZaTBf33Dk3hYo5kuoVobUn/ujx/Sdl3uA==
+X-Received: by 2002:aa7:c305:: with SMTP id l5mr3022875edq.364.1603287461558;
+        Wed, 21 Oct 2020 06:37:41 -0700 (PDT)
+Received: from kwango.local (ip-94-112-132-16.net.upcbroadband.cz. [94.112.132.16])
+        by smtp.gmail.com with ESMTPSA id p24sm2078761edq.35.2020.10.21.06.37.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 06:37:40 -0700 (PDT)
+From:   Ilya Dryomov <idryomov@gmail.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Ceph updates for 5.10-rc1
+Date:   Wed, 21 Oct 2020 15:37:33 +0200
+Message-Id: <20201021133733.22298-1-idryomov@gmail.com>
+X-Mailer: git-send-email 2.19.2
 MIME-Version: 1.0
-In-Reply-To: <9ad697d7-ed64-24f3-17cf-fa8dbbdcf86a@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21.10.20 15:11, David Hildenbrand wrote:
-> On 21.10.20 14:57, Michal Privoznik wrote:
->> On 10/21/20 5:35 AM, Mike Kravetz wrote:
->>> On 10/20/20 6:38 AM, David Hildenbrand wrote:
->>>>
->>>> I'm bisecting the warning right now. Looks like it was introduced in v5.7.
->>>
->>> I found the following bugs in the cgroup reservation accounting.  The ones
->>> in region_del are pretty obvious as the number of pages to uncharge would
->>> always be zero.  The one on alloc_huge_page needs racing code to expose.
->>>
->>> With these fixes, my testing is showing consistent/correct results for
->>> hugetlb reservation cgroup accounting.
->>>
->>> It would be good if Mina (at least) would look these over.  Would also
->>> be interesting to know if these fixes address the bug seen with the qemu
->>> use case.
->>>
->>> I'm still doing more testing and code inspection to look for other issues.
->>>
->>>  From 861bcd7d0443f18a5fed3c3ddc5f1c71e78c4ef4 Mon Sep 17 00:00:00 2001
->>> From: Mike Kravetz <mike.kravetz@oracle.com>
->>> Date: Tue, 20 Oct 2020 20:21:42 -0700
->>> Subject: [PATCH] hugetlb_cgroup: fix reservation accounting
->>>
->>> Signed-off-by: Mike Kravetz <mike.kravetz@oracle.com>
->>> ---
->>>   mm/hugetlb.c | 15 +++++++++------
->>>   1 file changed, 9 insertions(+), 6 deletions(-)
->>>
->>> diff --git a/mm/hugetlb.c b/mm/hugetlb.c
->>> index 67fc6383995b..c92366313780 100644
->>> --- a/mm/hugetlb.c
->>> +++ b/mm/hugetlb.c
->>> @@ -685,17 +685,17 @@ static long region_del(struct resv_map *resv, long f, long t)
->>>   		}
->>>   
->>>   		if (f <= rg->from) {	/* Trim beginning of region */
->>> -			del += t - rg->from;
->>> -			rg->from = t;
->>> -
->>>   			hugetlb_cgroup_uncharge_file_region(resv, rg,
->>>   							    t - rg->from);
->>> -		} else {		/* Trim end of region */
->>> -			del += rg->to - f;
->>> -			rg->to = f;
->>>   
->>> +			del += t - rg->from;
->>> +			rg->from = t;
->>> +		} else {		/* Trim end of region */
->>>   			hugetlb_cgroup_uncharge_file_region(resv, rg,
->>>   							    rg->to - f);
->>> +
->>> +			del += rg->to - f;
->>> +			rg->to = f;
->>>   		}
->>>   	}
->>>   
->>> @@ -2454,6 +2454,9 @@ struct page *alloc_huge_page(struct vm_area_struct *vma,
->>>   
->>>   		rsv_adjust = hugepage_subpool_put_pages(spool, 1);
->>>   		hugetlb_acct_memory(h, -rsv_adjust);
->>> +		if (deferred_reserve)
->>> +			hugetlb_cgroup_uncharge_page_rsvd(hstate_index(h),
->>> +					pages_per_huge_page(h), page);
->>>   	}
->>>   	return page;
->>>   
->>>
->>
->> I've applied, rebuilt and tested, but unfortunately I still hit the problem:
->> [ 6472.719047] ------------[ cut here ]------------
->> [ 6472.719052] WARNING: CPU: 6 PID: 11773 at mm/page_counter.c:57 
->> page_counter_uncharge+0x33/0x40
->> [ 6472.719052] Modules linked in: kvm_amd amdgpu kvm btusb sp5100_tco 
->> btrtl watchdog k10temp btbcm btintel mfd_core gpu_sched ttm
->> [ 6472.719057] CPU: 6 PID: 11773 Comm: CPU 3/KVM Not tainted 
->> 5.9.1-gentoo-x86_64 #1
->> [ 6472.719057] Hardware name: System manufacturer System Product 
->> Name/PRIME X570-PRO, BIOS 1005 08/01/2019
->> [ 6472.719059] RIP: 0010:page_counter_uncharge+0x33/0x40
->> [ 6472.719060] Code: 48 85 ff 74 24 4c 89 c8 f0 48 0f c1 07 4c 29 c0 48 
->> 89 c1 48 89 c6 e8 7c fe ff ff 48 85 c9 78 0a 48 8b 7f 28 48 85 ff 75 dc 
->> c3 <0f> 0b eb f2 66 0f 1f 84 00 00 00 00 00 48 8b 17 48 39 d6 72 41 41
->> [ 6472.719061] RSP: 0018:ffffc90000b77b40 EFLAGS: 00010286
->> [ 6472.719061] RAX: fffffffffffe9200 RBX: ffff888fb3b97b40 RCX: 
->> fffffffffffe9200
->> [ 6472.719062] RDX: 0000000000000221 RSI: fffffffffffe9200 RDI: 
->> ffff888fd8451dd0
->> [ 6472.719062] RBP: ffff888fb6990420 R08: 0000000000044200 R09: 
->> fffffffffffbbe00
->> [ 6472.719062] R10: ffff888fb3b97b40 R11: 000000000000000a R12: 
->> 0000000000000001
->> [ 6472.719063] R13: 00000000000005df R14: 00000000000005de R15: 
->> ffff888fb3b97b40
->> [ 6472.719063] FS:  00007fbd175fe700(0000) GS:ffff888fde980000(0000) 
->> knlGS:0000000000000000
->> [ 6472.719064] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->> [ 6472.719064] CR2: 00007fbd825101f0 CR3: 0000000fb5e41000 CR4: 
->> 0000000000350ee0
->> [ 6472.719065] Call Trace:
->> [ 6472.719067]  hugetlb_cgroup_uncharge_file_region+0x46/0x70
->> [ 6472.719069]  region_del+0x1ae/0x270
->> [ 6472.719070]  hugetlb_unreserve_pages+0x32/0xa0
->> [ 6472.719072]  remove_inode_hugepages+0x19d/0x3a0
->> [ 6472.719079]  ? writeback_registers+0x45/0x60 [kvm]
->> [ 6472.719080]  hugetlbfs_fallocate+0x3f2/0x4a0
->> [ 6472.719081]  ? __mod_lruvec_state+0x1d/0x40
->> [ 6472.719081]  ? __mod_memcg_lruvec_state+0x1b/0xe0
->> [ 6472.719083]  ? __seccomp_filter+0x75/0x6a0
->> [ 6472.719084]  vfs_fallocate+0x122/0x260
->> [ 6472.719085]  __x64_sys_fallocate+0x39/0x60
->> [ 6472.719086]  do_syscall_64+0x2d/0x40
->> [ 6472.719088]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
->> [ 6472.719089] RIP: 0033:0x7fbe3cefcde7
->> [ 6472.719089] Code: 89 7c 24 08 48 89 4c 24 18 e8 45 fc f8 ff 41 89 c0 
->> 4c 8b 54 24 18 48 8b 54 24 10 b8 1d 01 00 00 8b 74 24 0c 8b 7c 24 08 0f 
->> 05 <48> 3d 00 f0 ff ff 77 41 44 89 c7 89 44 24 08 e8 75 fc f8 ff 8b 44
->> [ 6472.719090] RSP: 002b:00007fbd175fc7a0 EFLAGS: 00000293 ORIG_RAX: 
->> 000000000000011d
->> [ 6472.719090] RAX: ffffffffffffffda RBX: 00000000bbe00000 RCX: 
->> 00007fbe3cefcde7
->> [ 6472.719091] RDX: 00000000bbc00000 RSI: 0000000000000003 RDI: 
->> 000000000000001d
->> [ 6472.719091] RBP: 00007fbd175fc800 R08: 0000000000000000 R09: 
->> 0000000000000000
->> [ 6472.719091] R10: 0000000000200000 R11: 0000000000000293 R12: 
->> 00007ffeea066d2e
->> [ 6472.719092] R13: 00007ffeea066d2f R14: 00007fbd175fe700 R15: 
->> 00007fbd175fcdc0
->> [ 6472.719092] ---[ end trace c97dc6281a861980 ]---
-> 
-> Agreed, same over here. :(
-> 
+Hi Linus,
 
-I *think* the following on top makes it fly
+The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 67fc6383995b..5cf7f6a6c1a6 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -656,6 +656,9 @@ static long region_del(struct resv_map *resv, long
-f, long t)
+  Linux 5.9 (2020-10-11 14:15:50 -0700)
 
-                        del += t - f;
+are available in the Git repository at:
 
-+                       hugetlb_cgroup_uncharge_file_region(
-+                               resv, rg, t - f);
-+
-                        /* New entry for end of split region */
-                        nrg->from = t;
-                        nrg->to = rg->to;
-@@ -667,9 +670,6 @@ static long region_del(struct resv_map *resv, long
-f, long t)
-                        /* Original entry is trimmed */
-                        rg->to = f;
+  https://github.com/ceph/ceph-client.git tags/ceph-for-5.10-rc1
 
--                       hugetlb_cgroup_uncharge_file_region(
--                               resv, rg, nrg->to - nrg->from);
--
-                        list_add(&nrg->link, &rg->link);
-                        nrg = NULL;
-                        break;
+for you to fetch changes up to 28e1581c3b4ea5f98530064a103c6217bedeea73:
 
+  libceph: clear con->out_msg on Policy::stateful_server faults (2020-10-12 15:29:27 +0200)
 
--- 
-Thanks,
+----------------------------------------------------------------
+We have:
 
-David / dhildenb
+- a patch that removes crush_workspace_mutex (myself).  CRUSH
+  computations are no longer serialized and can run in parallel.
 
+- a couple new filesystem client metrics for "ceph fs top" command
+  (Xiubo Li)
+
+- a fix for a very old messenger bug that affected the filesystem,
+  marked for stable (myself)
+
+- assorted fixups and cleanups throughout the codebase from Jeff
+  and others.
+
+----------------------------------------------------------------
+Ilya Dryomov (9):
+      libceph: multiple workspaces for CRUSH computations
+      libceph, rbd, ceph: "blacklist" -> "blocklist"
+      libceph: switch to the new "osd blocklist add" command
+      ceph: add a note explaining session reject error string
+      ceph: mark ceph_fmt_xattr() as printf-like for better type checking
+      libceph: move a dout in queue_con_delay()
+      libceph: fix ENTITY_NAME format suggestion
+      libceph: format ceph_entity_addr nonces as unsigned
+      libceph: clear con->out_msg on Policy::stateful_server faults
+
+Jeff Layton (12):
+      ceph: drop special-casing for ITER_PIPE in ceph_sync_read
+      ceph: use kill_anon_super helper
+      ceph: have ceph_writepages_start call pagevec_lookup_range_tag
+      ceph: break out writeback of incompatible snap context to separate function
+      ceph: don't call ceph_update_writeable_page from page_mkwrite
+      ceph: fold ceph_sync_readpages into ceph_readpage
+      ceph: fold ceph_sync_writepages into writepage_nounlock
+      ceph: fold ceph_update_writeable_page into ceph_write_begin
+      ceph: don't SetPageError on readpage errors
+      ceph: drop separate mdsc argument from __send_cap
+      ceph: break up send_cap_msg
+      ceph: comment cleanups and clarifications
+
+Luis Henriques (1):
+      ceph: remove unnecessary return in switch statement
+
+Matthew Wilcox (Oracle) (1):
+      ceph: promote to unsigned long long before shifting
+
+Xiubo Li (2):
+      ceph: add ceph_sb_to_mdsc helper support to parse the mdsc
+      ceph: metrics for opened files, pinned caps and opened inodes
+
+Yan, Zheng (1):
+      ceph: encode inodes' parent/d_name in cap reconnect message
+
+Yanhu Cao (1):
+      ceph: add column 'mds' to show caps in more user friendly
+
+ Documentation/filesystems/ceph.rst |   6 +-
+ drivers/block/rbd.c                |   8 +-
+ fs/ceph/addr.c                     | 416 +++++++++++++++++--------------------
+ fs/ceph/caps.c                     | 128 ++++++++----
+ fs/ceph/debugfs.c                  |  18 +-
+ fs/ceph/dir.c                      |  20 +-
+ fs/ceph/file.c                     |  85 +++-----
+ fs/ceph/inode.c                    |  10 +-
+ fs/ceph/locks.c                    |   2 +-
+ fs/ceph/mds_client.c               | 109 ++++++----
+ fs/ceph/mds_client.h               |   2 +-
+ fs/ceph/metric.c                   |  14 ++
+ fs/ceph/metric.h                   |   7 +
+ fs/ceph/quota.c                    |  10 +-
+ fs/ceph/snap.c                     |   2 +-
+ fs/ceph/super.c                    |   8 +-
+ fs/ceph/super.h                    |  13 +-
+ fs/ceph/xattr.c                    |   3 +-
+ include/linux/ceph/messenger.h     |   2 +-
+ include/linux/ceph/mon_client.h    |   2 +-
+ include/linux/ceph/osdmap.h        |  14 +-
+ include/linux/ceph/rados.h         |   2 +-
+ include/linux/crush/crush.h        |   3 +
+ net/ceph/messenger.c               |  13 +-
+ net/ceph/mon_client.c              |  69 ++++--
+ net/ceph/osdmap.c                  | 166 +++++++++++++--
+ 26 files changed, 689 insertions(+), 443 deletions(-)
