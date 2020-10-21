@@ -2,95 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68DAD2948E2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:27:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D53692948E3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 09:27:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2501874AbgJUH1J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 03:27:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55830 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440932AbgJUH1D (ORCPT
+        id S2501886AbgJUH13 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 03:27:29 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38928 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440901AbgJUH1Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 03:27:03 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 94413C0613CE;
-        Wed, 21 Oct 2020 00:27:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=LfLKDr228zeIZDnUVRJzSctBjN1bRXJI0iFBMRj3SFM=; b=O1vbu6Y8L2ik3RVQZ6Iwl/WUE+
-        gTS6+IGAhOkPC0mBg9IJjOUCB9mt0HZSHNtmweq0DCSUiCWu+8G+7RZ/sW+tYYuidPQebo30jWcO3
-        7drIqDR7L9R2JjSxYWRN/g3TwM5GtgaNL7kNz++9/wdG3UOWH5reuEXNfUU6MaGaNEqlnGuz4sGkW
-        TcsnIlm4zFv1wX4Gjsbm1hQ/ZNpsJGqxXrrSsDHwhIEn9mkgT39ObZwPG0TNDMsf20qA2Be26gcZI
-        LeIKg5j0J6Rmq28p/e82QgNjbGG0att1k9ZfnW4ujKVdV1/FzewpLyXJoUzQYuCrIEf/83j4UlvaS
-        n9b6lJyQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kV8Vm-0000uV-0X; Wed, 21 Oct 2020 07:26:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 40E39304D28;
-        Wed, 21 Oct 2020 09:26:12 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 247B6203CC499; Wed, 21 Oct 2020 09:26:12 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 09:26:12 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Redha Gouicem <redha.gouicem@gmail.com>
-Cc:     julien.sopena@lip6.fr, julia.lawall@inria.fr,
-        gilles.muller@inria.fr, carverdamien@gmail.com,
-        jean-pierre.lozi@oracle.com, baptiste.lepers@sydney.edu.au,
-        nicolas.palix@univ-grenoble-alpes.fr,
-        willy.zwaenepoel@sydney.edu.au,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
+        Wed, 21 Oct 2020 03:27:25 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603265242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9JhoxiSkl//TRpg6H0wTEK9OO42PSxN3Z9C2PUIcrs=;
+        b=FWZ3j6icl+AUwgJ4utKAmAy8jgbWhXNgF0vYdTVSNQVRPzTRB06XNlrmFvD4MJpfmtMdQ4
+        R06PRzo/YeuEG+P/nnBhs9wwS2qkVl1DqUThb36UpNDSjAiJY8yM9ywypSiyXd/amQCE9G
+        3Oqc+7RIVvj1SO49CeSucWmu/opjadZBag7+Z0roAExCz28c1lcHQrapFDMPXamIm/qcN1
+        +I6m3Es7rf8Z7eyC8EWOSiq3+bLml43s8jV3nZnBP0rjo4cnSyvZG35Ujw3b6VWrs/4Z8D
+        0s0xNRLxpP5/vAxQ+aPd/GbgnYTbPd3Nbb2oko2RkeKHywmk3Qp0+VUmIjq6ow==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603265242;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=d9JhoxiSkl//TRpg6H0wTEK9OO42PSxN3Z9C2PUIcrs=;
+        b=gjsHXiflWNLQr2vc4+ld1RCRfwAGDI2iigskzNe5o0LtNk25Xqof4qbFU5W4CHkD/Ve32L
+        19mkCJa5IIHMt4CQ==
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
         Juri Lelli <juri.lelli@redhat.com>,
         Vincent Guittot <vincent.guittot@linaro.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Qais Yousef <qais.yousef@arm.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrey Ignatov <rdna@fb.com>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC PATCH 0/3] sched: delayed thread migration
-Message-ID: <20201021072612.GV2628@hirez.programming.kicks-ass.net>
-References: <20201020154445.119701-1-redha.gouicem@gmail.com>
+        Daniel Bristot de Oliveira <bristot@redhat.com>
+Subject: Re: sched: Reenable interrupts in do sched_yield()
+In-Reply-To: <20201020160732.5f8fc24e@oasis.local.home>
+References: <87r1pt7y5c.fsf@nanos.tec.linutronix.de> <20201020113830.378b4a4c@gandalf.local.home> <87o8kw93n4.fsf@nanos.tec.linutronix.de> <20201020160732.5f8fc24e@oasis.local.home>
+Date:   Wed, 21 Oct 2020 09:27:22 +0200
+Message-ID: <87h7qo6ntx.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020154445.119701-1-redha.gouicem@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 05:44:38PM +0200, Redha Gouicem wrote:
-> 
-> The first patch of the series is not specific to scheduling. It allows us
-> (or anyone else) to use the cpufreq infrastructure at a different sampling
-> rate without compromising the cpufreq subsystem and applications that
-> depend on it.
+On Tue, Oct 20 2020 at 16:07, Steven Rostedt wrote:
+> On Tue, 20 Oct 2020 20:02:55 +0200
+> Thomas Gleixner <tglx@linutronix.de> wrote:
+> What I wrote wasn't exactly what I meant. What I meant to have:
+>
+> 	/*
+> 	 * Since we are going to call schedule() anyways, there's
+> 	 * no need to do the preemption check when the rq_lock is released.
+> 	 */
+>
+> That is, to document why we have the preempt_disable() before the unlock:
 
-It's also completely redudant as the scheduler already reads aperf/mperf
-on every tick. Clearly you didn't do your homework ;-)
-
-> The main idea behind this patch series is to bring to light the frequency
-> inversion problem that will become more and more prominent with new CPUs
-> that feature per-core DVFS. The solution proposed is a first idea for
-> solving this problem that still needs to be tested across more CPUs and
-> with more applications.
-
-Which is why schedutil (the only cpufreq gov anybody should be using) is
-integrated with the scheduler and closes the loop and tells the CPU
-about the expected load.
-
+which is pretty obvious, but I let Peter decide on that.
