@@ -2,71 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2ECBE2947BC
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:19:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C80682947C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 07:22:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440418AbgJUFTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 01:19:43 -0400
-Received: from mail.parknet.co.jp ([210.171.160.6]:40974 "EHLO
-        mail.parknet.co.jp" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2440408AbgJUFTm (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 01:19:42 -0400
-Received: from ibmpc.myhome.or.jp (server.parknet.ne.jp [210.171.168.39])
-        by mail.parknet.co.jp (Postfix) with ESMTPSA id 35AE91B3B65;
-        Wed, 21 Oct 2020 14:19:41 +0900 (JST)
-Received: from devron.myhome.or.jp (foobar@devron.myhome.or.jp [192.168.0.3])
-        by ibmpc.myhome.or.jp (8.15.2/8.15.2/Debian-20) with ESMTPS id 09L5Jd3r1600172
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 14:19:40 +0900
-Received: from devron.myhome.or.jp (foobar@localhost [127.0.0.1])
-        by devron.myhome.or.jp (8.15.2/8.15.2/Debian-20) with ESMTPS id 09L5Jd2X1996638
-        (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384 bits=256 verify=NOT);
-        Wed, 21 Oct 2020 14:19:39 +0900
-Received: (from hirofumi@localhost)
-        by devron.myhome.or.jp (8.15.2/8.15.2/Submit) id 09L5JdPs1996637;
-        Wed, 21 Oct 2020 14:19:39 +0900
-From:   OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
-To:     David Gow <davidgow@google.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Shuah Khan <shuah@kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] fat: Add KUnit tests for checksums and timestamps
-References: <20201020055856.1270482-1-davidgow@google.com>
-        <87d01die4o.fsf@mail.parknet.co.jp>
-        <CABVgOSkQRvRSr-c1FKG+GDr5ewV+FJ-unZbtNvQLayoT6FmBtQ@mail.gmail.com>
-Date:   Wed, 21 Oct 2020 14:19:39 +0900
-In-Reply-To: <CABVgOSkQRvRSr-c1FKG+GDr5ewV+FJ-unZbtNvQLayoT6FmBtQ@mail.gmail.com>
-        (David Gow's message of "Wed, 21 Oct 2020 11:50:02 +0800")
-Message-ID: <878sc0i2ac.fsf@mail.parknet.co.jp>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.0.50 (gnu/linux)
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2440439AbgJUFWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 01:22:25 -0400
+Received: from mail.zju.edu.cn ([61.164.42.155]:56912 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2440422AbgJUFWY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 01:22:24 -0400
+Received: from localhost.localdomain (unknown [210.32.148.79])
+        by mail-app4 (Coremail) with SMTP id cS_KCgCXXrBuxY9f5hM1AA--.62537S4;
+        Wed, 21 Oct 2020 13:21:54 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] can: vxcan: Fix memleak in vxcan_newlink
+Date:   Wed, 21 Oct 2020 13:21:49 +0800
+Message-Id: <20201021052150.25914-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: cS_KCgCXXrBuxY9f5hM1AA--.62537S4
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+        VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYx7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+        6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GrWl
+        42xK82IYc2Ij64vIr41l42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4
+        AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+        17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+        IF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+        3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIda
+        VFxhVjvjDU0xZFpf9x0JUP5rcUUUUU=
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgATBlZdtQf4pwADsy
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-David Gow <davidgow@google.com> writes:
+When rtnl_configure_link() fails, peer needs to be
+freed just like when register_netdevice() fails.
 
->> Hm, can this export only if FAT_KUNIT_TEST is builtin or module (maybe
->> #if IS_ENABLED(...))? And #if will also be worked as the comment too.
->>
->
-> That's possible, but I'd prefer to export it unconditionally for two reasons:
-> 1. It'd make it possible to build the fat_test module without having
-> to rebuild the whole kernel/fat.
-> 2. It'd be consistent with fat_time_unix2fat(), which is exported for
-> use in vfat/msdos anyway.
->
-> Neither of those are dealbreakers, though, so if you'd still prefer
-> this to be behind an ifdef, I'll change it.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/can/vxcan.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-OK. If nobody complain, let's export. However, then, can you add the
-comment instead of ifdef to mark for kunit?
-
-Thanks.
+diff --git a/drivers/net/can/vxcan.c b/drivers/net/can/vxcan.c
+index d6ba9426be4d..aefc5a61d239 100644
+--- a/drivers/net/can/vxcan.c
++++ b/drivers/net/can/vxcan.c
+@@ -244,6 +244,7 @@ static int vxcan_newlink(struct net *net, struct net_device *dev,
+ 
+ unregister_network_device:
+ 	unregister_netdevice(peer);
++	free_netdev(peer);
+ 	return err;
+ }
+ 
 -- 
-OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+2.17.1
+
