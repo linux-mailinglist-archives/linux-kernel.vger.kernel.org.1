@@ -2,133 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 528A6294C94
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:28:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA885294CAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:34:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442350AbgJUM2Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:28:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43920 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2440204AbgJUM2Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:28:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D94ADAC82;
-        Wed, 21 Oct 2020 12:28:13 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 13:28:11 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Julia Lawall <julia.lawall@inria.fr>
-Cc:     Ingo Molnar <mingo@redhat.com>, kernel-janitors@vger.kernel.org,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
+        id S2440400AbgJUMeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:34:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440367AbgJUMeO (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:34:14 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75AC1C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 05:34:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=KjDZj7jv/QmeVv/HyadGtxH0b8QpjjCHYbS7ZTPmBWE=; b=0MSJvLoarof91KiLDHrbNudem
+        nNnus0fI426ZesZDBv96ZksSlXAwGCKZtZBDlAl1dywPBwTK36wSJ8RYOFBv+kEK5GyyNDfUTnixg
+        Jw0hd6H4JHE0+rfFGZkEZCroz4bncPTVKk7epp/ewjYrX+gIqc+sOO8c2wAiZJT6YMxCB6dqlyGZj
+        QvC03krJ7bDzDPoGDzv8UrT993jHzISm4B+Mdg2LQ17A1+EgW3H+H4Va7Y+nvmPPyUH9OMXz6JBdW
+        nnNix9L1WSJbwfCryjP6JOowtx9AK9WOU0epyikDdMLbMrPm5mYvg/++vz9P5X1k/v8y+CWm4bwgP
+        oc0PPSzIw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49092)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVDJc-0000W6-Ji; Wed, 21 Oct 2020 13:34:04 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVDJY-0006Ng-MV; Wed, 21 Oct 2020 13:34:00 +0100
+Date:   Wed, 21 Oct 2020 13:34:00 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Maninder Singh <maninder1.s@samsung.com>, v.narang@samsung.com,
+        a.sahrawat@samsung.com, Andrew Morton <akpm@linux-foundation.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Vincent Whitchurch <vincent.whitchurch@axis.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
         Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>
-Subject: Re: [PATCH] sched/fair: check for idle core
-Message-ID: <20201021122811.GD32041@suse.de>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <20201021112038.GC32041@suse.de>
- <alpine.DEB.2.22.394.2010211336410.8475@hadrien>
+        Dmitry Safonov <0x7f454c46@gmail.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nathan Huckleberry <nhuck@google.com>,
+        Will Deacon <will@kernel.org>, Jian Cai <caij2003@gmail.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>
+Subject: Re: [PATCH 0/3] IRQ stack support for ARM
+Message-ID: <20201021123400.GK1551@shell.armlinux.org.uk>
+References: <CGME20201008071628epcas5p24d196a6023a47a3b0bfa7b7f231ec811@epcas5p2.samsung.com>
+ <1602141333-17822-1-git-send-email-maninder1.s@samsung.com>
+ <20201008083015.GK1551@shell.armlinux.org.uk>
+ <CAK8P3a0h=D8_Kn_fpHbsik_jf4to2jayxj7K7B7=HaNFzKqNnw@mail.gmail.com>
+ <CAK8P3a2tmRo0voZJLqYbNQGG9FZCGuKzMj8Zo8f+WL+dvOourw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <alpine.DEB.2.22.394.2010211336410.8475@hadrien>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAK8P3a2tmRo0voZJLqYbNQGG9FZCGuKzMj8Zo8f+WL+dvOourw@mail.gmail.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
-> > I suspect that the benefit of this patch is due to avoiding the overhead
-> > of wake_affine_weight() check because the following check exists in
-> > select_idle_sibling
+On Wed, Oct 21, 2020 at 01:58:21PM +0200, Arnd Bergmann wrote:
+> (replying to my own mail, apparently my normal outgoing email server is
+> blacklisted, so resending from @kernel.org)
 > 
-> I'm running 160 threads on 160 cores (80 physical cores).  All of the
-> threads are thus best off to just stay where they are.  If one thread
-> moves to the socket of prev, then they will be displacing other threads
-> that also expect to return to where they were previously located.
-> 
-> You can see this in the traces shown here:
-> 
-> https://pages.lip6.fr/Julia.Lawall/uas.pdf
-> 
-
-This is an important point -- almost all CPUs are commonly active and the
-search for an idle CPU is going to be difficult given that it is inherently
-race-prone. In this case, you're right, it may indeed be better off to just
-leave the task where it is if the prev CPU is idle. Not only does it avoid
-the wake_affine_weight cost, it avoids a useless search of idle siblings.
-
-However, there is alsoo the important case where a machine is only
-partially or lightly utilised. In that case, a cross-node migration
-may be beneficial as the wakee may need to access data in the wakers
-cache or memory local to the waker (no guarantee, the waker/wakee could
-be completely independent but the scheduler cannot tell). In the low
-utilisation case, select_idle_sibling is also likely to be less expensive.
-
-Leaving a task on a remote node because the prev CPU was idle is an
-important semantic change in the behaviour of the scheduler when there is
-spare idle capacity in either domain. It's non-obvious from the changelog
-and the patch itself that this change of behaviour happens.
-
-> Prior to 5.8, my machine was using intel_pstate and had few background
-> tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
-> the kernel decided that intel_cpufreq would be more appropriate, which
-> introduced kworkers every 0.004 seconds on all cores.  In the graphs for
-> early versions, sometimes the whole benchmark runs with the threads just
-> staying on their cores, or a few migrations.  Starting with 5.8, after 5
-> seconds where there are a number of synchronizations, all of the threads
-> move around between all of the cores.  Typically, one bad placement leads
-> to 10-15 threads moving around, until one ends up on the idle core where
-> the original thread was intended to be.
-> 
-
-And this is an issue but I don't think the fix is avoiding cross-node
-migrations entirely if the prev CPU happened to be idle because cache
-lines will have to be bounced and/or remote data be accessed.  At minimum,
-the low utilisation case should be considered and the changelog justify
-why avoiding cross-node wakeups is still appropriate when the waker CPU
-has plenty of idle CPUs.
-
+> On Fri, Oct 16, 2020 at 12:09 PM Arnd Bergmann <arnd@arndb.de> wrote:
 > >
-> >         /*
-> >          * If the previous CPU is cache affine and idle, don't be stupid:
-> >          */
-> >         if (prev != target && cpus_share_cache(prev, target) &&
-> >             (available_idle_cpu(prev) || sched_idle_cpu(prev)))
-> >                 return prev;
-> 
-> This isn't triggered in the problematic case, because the problematic case
-> is where the prev core and the waker core are on different sockets.
-> 
+> > On Thu, Oct 8, 2020 at 10:32 AM Russell King - ARM Linux admin
+> > <linux@armlinux.org.uk> wrote:
+> > > On Thu, Oct 08, 2020 at 12:45:30PM +0530, Maninder Singh wrote:
+> > > > Observed Stack Overflow on 8KB kernel stack on ARM specially
+> > > > incase on network interrupts, which results in undeterministic behaviour.
+> > > > So there is need for per cpu dedicated IRQ stack for ARM.
+> > > >
+> > > > As ARm does not have extra co-processor register
+> > > > to save thread info pointer, IRQ stack will be at some
+> > > > performance cost, so code is under CONFIG_IRQ_STACK.
+> > > >
+> > > > and we don't have much knowledge and set up for CLANG
+> > > > and ARM_UNWIND, so dependency added for both cases.
+> > > >
+> > > > Tested patch set with QEMU for latest kernel
+> > > > and 4.1 kernel for ARM target with same patch set.
+> > >
+> > > You need to investigate and show where and why this is happening. My
+> > > guess is you have a network driver that uses a lot of kernel stack
+> > > space, which itself would be a bug.
+> >
+> > Agreed.
+> >
+> > > Note that there are compiler versions out there that mis-optimise and
+> > > eat stack space - the kernel build should be warning if a function
+> > > uses a large amount of stack.
+> >
+> > Some more ideas for figuring it out:
+> >
+> > CONFIG_DEBUG_STACK_USAGE may also be helpful in identifying
+> > code paths that are deeply nested with multiple functions taking a
+> > lot of stack space, but each one staying under the limit.
+> >
+> > CONFIG_DEBUG_STACKOVERFLOW would also help here but
+> > is not supported on Arm at the moment. There was a patch[1] from
+> > Uwe Kleine-König to add this, and I suppose we should still add
+> > that, in particular if it helps debug this problem.
+> >
+> > CONFIG_VMAP_STACK is probably the best way to debug
+> > random runtime stack overflows because using a guard page
+> > turns random memory corruption into an immediate oops,
+> > but I don't think there is an implementation for Arm yet and
+> > using a lot of vmalloc space means we might not be able to
+> > default to this.
+> >
+> > Regardless of identifying and fixing the bug Maninder found, I
+> > also think that supporting separate async stacks on Arm is useful
+> > for determinism. Most of the popular architectures use irqstack
+> > for this reason, and I was actually surprised that we don't do it
+> > on arch/arm/.
+> >
+> >      Arnd
+> >
+> > [1] https://lore.kernel.org/linux-arm-kernel/20200108082913.29710-1-u.kleine-koenig@pengutronix.de/
 
-I simply wanted to highlight the fact it checks whether caches are shared
-or not as that is also taken into account in select_idle_sibling for
-example.
-
-> To my understanding, when the runnable load was used and prev was idle,
-> wake_affine_weight would fail, and then wake_affine would return prev.
-> With the load average, in the case where there is a thread on the waker
-> core and there has recently been a daemon on the prev core, the comparison
-> between the cores is a bit random.  The patch thus tries to restore the
-> previous behavior.
-> 
-
-I think wake_affine_weight() is a bit random anyway simply because it picks
-a CPU that select_idle_sibling ignores in a lot of cases and in others
-simply stacks the wakee on top of the waker. Every so often I think that
-it should simply be ripped out because the scheduler avoids stacking on
-the wakeup paths unless there is no other choice in which case the task
-might as well remain on prev anyway. Maybe it made more sense when there
-was an effort to detect when task stacking is appropriate but right now,
-wake_affine_weight() is basically a random migration generator -- leave
-it to the load balancer to figure out placement decisions based on load.
+We don't do it because we don't have a separate register to be able
+to store the thread_info pointer, and copying that lump between the
+SVC and IRQ stack will add massively to IRQ latency, especially for
+older machines.
 
 -- 
-Mel Gorman
-SUSE Labs
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
