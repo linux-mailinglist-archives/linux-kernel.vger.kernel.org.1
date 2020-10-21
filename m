@@ -2,81 +2,60 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D8AC294CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:40:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C446D294CEE
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 14:42:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2442517AbgJUMk2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 08:40:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39130 "EHLO mail.kernel.org"
+        id S2442528AbgJUMk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 08:40:58 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:54020 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394405AbgJUMkZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 08:40:25 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2BD3F22275;
-        Wed, 21 Oct 2020 12:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603284024;
-        bh=+CBaQPUx7XVyQiN7FAvvUJkjEx6kAbYTgy2PMnvM5FM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=g8wMoLURdOKef+AtsPQ7CoPpez8dprtmRsVugQlwldMlQdx5TPz+Kfq8czpCONMZ4
-         iBpIBEiXSillx/F3z8d5scmYOwISdTLLg+xEmQD673nv0yjR5oZmFYH/+oVt3gUiaJ
-         Dbx4QByh88bnZZ9ZW/OfLCPedWIRNbRf4F0MTumI=
-Date:   Wed, 21 Oct 2020 13:40:13 +0100
-From:   Mark Brown <broonie@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-Subject: Re: [PATCH v2 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-Message-ID: <20201021124013.GE4497@sirena.org.uk>
-References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201021025507.51001-6-vadivel.muruganx.ramuthevar@linux.intel.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="uCPdOCrL+PnN2Vxy"
-Content-Disposition: inline
-In-Reply-To: <20201021025507.51001-6-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Cookie: That does not compute.
-User-Agent: Mutt/1.10.1 (2018-07-13)
+        id S1731126AbgJUMk4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 08:40:56 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 997A5200AB3;
+        Wed, 21 Oct 2020 14:40:53 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 8D08920194A;
+        Wed, 21 Oct 2020 14:40:53 +0200 (CEST)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 1D9BF2033F;
+        Wed, 21 Oct 2020 14:40:53 +0200 (CEST)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Shawn Guo <shawnguo@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
+        Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH 0/2] clk: imx: Make the dram_apb and dram_alt as read-only
+Date:   Wed, 21 Oct 2020 15:40:41 +0300
+Message-Id: <1603284043-27059-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On i.MX8M platforms the dram_apb and dram_alt are controlled from EL3.
+So in order to keep track of the actual clock tree in kernel, we need
+to actually declare the clocks but never actually change their parents
+or divider settings. We do that by marking the mux and the div as read-only
+with CLK_DIVIDER_READ_ONLY and CLK_MUX_READ_ONLY flags.
 
---uCPdOCrL+PnN2Vxy
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Abel Vesa (2):
+  clk: imx: composite-8m: Add DRAM clock registration variant
+  clk: imx8m: Use dram variant registration for dram clocks
 
-On Wed, Oct 21, 2020 at 10:55:06AM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel=
-=2Ecom>
->=20
-> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
-> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
+ drivers/clk/imx/clk-composite-8m.c | 7 +++++++
+ drivers/clk/imx/clk-imx8mm.c       | 4 ++--
+ drivers/clk/imx/clk-imx8mn.c       | 4 ++--
+ drivers/clk/imx/clk-imx8mp.c       | 4 ++--
+ drivers/clk/imx/clk-imx8mq.c       | 4 ++--
+ drivers/clk/imx/clk.h              | 6 ++++++
+ 6 files changed, 21 insertions(+), 8 deletions(-)
 
-This is patch 5/6, not patch 6/6 as I suggested :/
+-- 
+2.7.4
 
---uCPdOCrL+PnN2Vxy
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QLCwACgkQJNaLcl1U
-h9BbAAf/YM0k2iVJQk3ZZTpt3a7VpEFh1nmu2nQljnukDeA+/Gnk4Z+7JGxrMALJ
-qJSvm+d9osWVrjn1a6gQHlGJJT2k/pQd/orYzmIi9pecL3FLj+Zl16pstQxjzpCS
-5F8yhLiwm8CuB2q7YNtBgejkeBZFpmUkHmzwqYV3VoBmfEHWj6V2peux1nQrk27X
-uw5BgnRFo+7yId3wCD+41ewPp3DO8/4FvfHMUn7cXy9ASM1EfWfjJDeIomxdA3GU
-TkGCvLjNqf1q7zNyvF0kayMofN44C2lYaMp9mceULPByJByN53roLfHlcQslbo85
-iKFs4JhaWtOjOZ7O7TbQiE9Q5qKapg==
-=NlDZ
------END PGP SIGNATURE-----
-
---uCPdOCrL+PnN2Vxy--
