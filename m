@@ -2,169 +2,209 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D868C2950F5
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:39:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55AB72950F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:40:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503056AbgJUQjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:39:31 -0400
-Received: from wout1-smtp.messagingengine.com ([64.147.123.24]:45543 "EHLO
-        wout1-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2444312AbgJUQjb (ORCPT
+        id S2503104AbgJUQjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:39:47 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31276 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1731154AbgJUQjr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:39:31 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.west.internal (Postfix) with ESMTP id E7FC1E22;
-        Wed, 21 Oct 2020 12:39:29 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Wed, 21 Oct 2020 12:39:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=uOd/menMgG7CqlQhLT/5eeW1Y+R
-        wDDwjyjNIgHo/ZfE=; b=KbDLEH9UMLSn40a0reKdhkx4PvWAMmKG702it+k4Gsm
-        NgcGQV0izqcSh/VIRl8YvL+rXaXKnfXyIkdj8eN/VHrctD42nX7goUyyLfBxRl7X
-        OFvpdf7Llg0kR+S0j5UfVparymqJImt3gMMD35CDcIqzcNo4LkE/cWQC1lQq89Ry
-        A0qXFqh8mANZxFWj9X6iNUTxwWydT+zfltkGMcJLmkogwipAVoMjNaMqs7Lj0/WY
-        HmLDdG2kMQUavAPolTnoEDCe16fvLphQMgzddW8x5Qum5S/0h2YkbarrrAGq4wcb
-        0HTqKCBbWBar5VjR73ZTIM09azUw2FTla8h9+5cmJKQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=uOd/me
-        nMgG7CqlQhLT/5eeW1Y+RwDDwjyjNIgHo/ZfE=; b=IWgAFdg0pfG/Je2DkTJBFu
-        xGFVuxq70GW66ZW3NdtkFCkYs1p4kf4olN5lXj0gNk8S2quYUDvkoPNtMaE2eCvo
-        Qj8aIIIOWWeYgwHH7FiGhBDiTMfmKrok40+/9/XlN6E2c19yakG38x6+YrVMd6BK
-        xmHE+Ia6JujNKDjHg4ioiM4Rxw43fi2E4yKKx4VgG+nFixzyy+7lC2pMSdfQarqN
-        HO3AjZrrZJqdTuA9gcfg0+oQatKXcS9/qTe82Y9oGDhvXeAn3IczisutlHDrUs9y
-        TTe40/oe4tCzTQm13QJfQBVvCGi/3rUpEPZZIGJPR+sAv/llhw7y9QVGdeMGREFA
-        ==
-X-ME-Sender: <xms:QGSQXxNVMUEGXygGB8VvVmOtLgeAAWwc8dB8bz1kZdCB-HqdFPY7yg>
-    <xme:QGSQXz9n6kNWmdBnKHkn43NupNvAO2p8KggMvbBDHma6zJc5iGjpU0hcRKFVJo4mK
-    VpYdby9UbOnj1bO_V4>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeehgddutdegucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepuedtgfejueduheevgfevvdettdduleffgfffkeeltdffkeegudekjeeuveei
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:QGSQXwToBEvkz00hNB47Byj1PAcIv0H1JIYp-mb36nCKqYBmXl6wjg>
-    <xmx:QGSQX9vNHfpeVOH8OWdx5fmyDuxc28knnE8sK0YCNIY7Bj-Y72SoOQ>
-    <xmx:QGSQX5csyzGCrbHygo2z7ld3xj3hHJbTp-8Oxxqk-ibIB9LzPpa8AA>
-    <xmx:QWSQX95-7cfLywNrCJGRBjGWeTe75QZYd4EKz3m-yJX2H2oVCEKFDA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 392813280065;
-        Wed, 21 Oct 2020 12:39:28 -0400 (EDT)
-Date:   Wed, 21 Oct 2020 18:39:26 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Alexander Kochetkov <al.kochet@gmail.com>
-Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] spi: spi-sun6i: implement DMA-based transfer mode
-Message-ID: <20201021163926.mjmup6zlx453brg2@gilmour.lan>
-References: <20201015154740.20825-1-al.kochet@gmail.com>
- <20201019082129.myxpxla5xwoqwldo@gilmour.lan>
- <4B0B0459-DFCF-4307-8CAE-A2B579B0AF5E@gmail.com>
+        Wed, 21 Oct 2020 12:39:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603298385;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=YklPv8/0OmCyptwlWRuggJNTmVWGoVbcydh3UqMAmHw=;
+        b=A6bmnaZK0jLqAmalqOE8iGn7M+mlstCSubuc65Q3GfctfTaPiYk5V3+GKDlR7v6A54Vovm
+        JmiBSKcofi4Irmdiu14IgB3TLH8q+ymn1mvatexWKGHjXVdZ90QE1X5zwKA14ePFKk68HY
+        O2WRMxn9/a2M8wiz8o5+k6tOVZhxWt8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-359-jJiRbKeWMNqcOmXwf7GJ-g-1; Wed, 21 Oct 2020 12:39:43 -0400
+X-MC-Unique: jJiRbKeWMNqcOmXwf7GJ-g-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 969AB5F9C1;
+        Wed, 21 Oct 2020 16:39:41 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2BC5E27CC1;
+        Wed, 21 Oct 2020 16:39:28 +0000 (UTC)
+Date:   Wed, 21 Oct 2020 12:39:26 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
+Message-ID: <20201021163926.GA3929765@madcap2.tricolour.ca>
+References: <cover.1593198710.git.rgb@redhat.com>
+ <6e2e10432e1400f747918eeb93bf45029de2aa6c.1593198710.git.rgb@redhat.com>
+ <CAHC9VhSCm5eeBcyY8bBsnxr-hK4rkso9_NJHJec2OXLu4m5QTA@mail.gmail.com>
+ <20200729194058.kcbsqjhzunjpipgm@madcap2.tricolour.ca>
+ <CAHC9VhRUwCKBjffA_XNSjUwvUn8e6zfmy8WD203dK7R2KD0__g@mail.gmail.com>
+ <20201002195231.GH2882171@madcap2.tricolour.ca>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ehka34q2jomdseze"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4B0B0459-DFCF-4307-8CAE-A2B579B0AF5E@gmail.com>
+In-Reply-To: <20201002195231.GH2882171@madcap2.tricolour.ca>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-02 15:52, Richard Guy Briggs wrote:
+> On 2020-08-21 15:15, Paul Moore wrote:
+> > On Wed, Jul 29, 2020 at 3:41 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > > On 2020-07-05 11:10, Paul Moore wrote:
+> > > > On Sat, Jun 27, 2020 at 9:22 AM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > 
+> > ...
+> > 
+> > > > > diff --git a/kernel/auditsc.c b/kernel/auditsc.c
+> > > > > index f03d3eb0752c..9e79645e5c0e 100644
+> > > > > --- a/kernel/auditsc.c
+> > > > > +++ b/kernel/auditsc.c
+> > > > > @@ -1458,6 +1466,7 @@ static void audit_log_exit(void)
+> > > > >         struct audit_buffer *ab;
+> > > > >         struct audit_aux_data *aux;
+> > > > >         struct audit_names *n;
+> > > > > +       struct audit_contobj *cont;
+> > > > >
+> > > > >         context->personality = current->personality;
+> > > > >
+> > > > > @@ -1541,7 +1550,7 @@ static void audit_log_exit(void)
+> > > > >         for (aux = context->aux_pids; aux; aux = aux->next) {
+> > > > >                 struct audit_aux_data_pids *axs = (void *)aux;
+> > > > >
+> > > > > -               for (i = 0; i < axs->pid_count; i++)
+> > > > > +               for (i = 0; i < axs->pid_count; i++) {
+> > > > >                         if (audit_log_pid_context(context, axs->target_pid[i],
+> > > > >                                                   axs->target_auid[i],
+> > > > >                                                   axs->target_uid[i],
+> > > > > @@ -1549,14 +1558,20 @@ static void audit_log_exit(void)
+> > > > >                                                   axs->target_sid[i],
+> > > > >                                                   axs->target_comm[i]))
+> > > > >                                 call_panic = 1;
+> > > > > +                       audit_log_container_id(context, axs->target_cid[i]);
+> > > > > +               }
+> > > >
+> > > > It might be nice to see an audit event example including the
+> > > > ptrace/signal information.  I'm concerned there may be some confusion
+> > > > about associating the different audit container IDs with the correct
+> > > > information in the event.
+> > >
+> > > This is the subject of ghat81, which is a test for ptrace and signal
+> > > records.
+> > >
+> > > This was the reason I had advocated for an op= field since there is a
+> > > possibility of multiple contid records per event.
+> > 
+> > I think an "op=" field is the wrong way to link audit container ID to
+> > a particular record.  It may be convenient, but I fear that it would
+> > be overloading the field too much.
+> 
+> Ok, after looking at the field dictionary how about item, rel, ref or rec?
+> Item perhaps could be added to the OBJ_PID records, but that might be
+> overloading a field that is already used in PATH records.  "rel" for
+> relates-to, "ref" for reference to, "rec" for record...  Perhaps pid=
+> would be enough to tie this record to the OBJ_PID record or the SYSCALL
+> record, but in the case of network events, the pid may refer to a kernel
+> thread.
+> 
+> > Like I said above, I think it would be good to see an audit event
+> > example including the ptrace/signal information.  This way we can talk
+> > about it on-list and hash out the various solutions if it proves to be
+> > a problem.
+> 
+> See the list posting from 2020-09-29 "auditing signals" pointing to
+> ghat81 test case about testing ptrace and signals from 18 months ago.
+> 
+> I think I have a way to generate a signal to multiple targets in one
+> syscall...  The added challenge is to also give those targets different
+> audit container identifiers.
 
---ehka34q2jomdseze
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Here is an exmple I was able to generate after updating the testsuite
+script to include a signalling example of a nested audit container
+identifier:
 
-Hi,
+----
+type=PROCTITLE msg=audit(2020-10-21 10:31:16.655:6731) : proctitle=/usr/bin/perl -w containerid/test
+type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=7129731255799087104^3333941723245477888
+type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115583 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=3333941723245477888
+type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115580 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=8098399240850112512^3333941723245477888
+type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115582 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+type=SYSCALL msg=audit(2020-10-21 10:31:16.655:6731) : arch=x86_64 syscall=kill success=yes exit=0 a0=0xfffe3c84 a1=SIGTERM a2=0x4d524554 a3=0x0 items=0 ppid=115564 pid=115567 auid=root uid=root gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root tty=ttyS0 ses=1 comm=perl exe=/usr/bin/perl subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=testsuite-1603290671-AcLtUulY                     
+----
 
-On Mon, Oct 19, 2020 at 04:17:18PM +0300, Alexander Kochetkov wrote:
-> >> +static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
-> >> +				 struct spi_transfer *tfr)
-> >> +{
-> >> +	struct dma_async_tx_descriptor *rxdesc, *txdesc;
-> >> +	struct spi_master *master =3D sspi->master;
-> >> +
-> >> +	rxdesc =3D NULL;
-> >> +	if (tfr->rx_buf) {
-> >> +		struct dma_slave_config rxconf =3D {
-> >> +			.direction =3D DMA_DEV_TO_MEM,
-> >> +			.src_addr =3D sspi->dma_addr_rx,
-> >> +			.src_addr_width =3D 1,
-> >> +			.src_maxburst =3D 1,
-> >> +		};
-> >=20
-> > That doesn't really look optimal, the controller seems to be able to
-> > read / write 32 bits at a time from its FIFO and we probably can
-> > increase the burst length too?
->=20
->=20
-> I had doubts if it would work. I didn=E2=80=99t know will DMA work for
-> transfers with lengths not aligned to 32 bits. For example, if we init
-> DMA with src_addr_width =3D 1 and .src_maxburst =3D 8 will DMA work for
-> transfer with length 11?
+There are three CONTAINER_ID records which need some way of associating with OBJ_PID records.  An additional CONTAINER_ID record would be present if the killing process itself had an audit container identifier.  I think the most obvious way to connect them is with a pid= field in the CONTAINER_ID record.
 
-Bursts are usually defined by how many transfers the controller is
-allowed to do at once, so it shouldn't cause any harm if the length
-isn't aligned, it will just do less than the maximum number allowed.
+> > > > > @@ -1575,6 +1590,14 @@ static void audit_log_exit(void)
+> > > > >
+> > > > >         audit_log_proctitle();
+> > > > >
+> > > > > +       rcu_read_lock();
+> > > > > +       cont = _audit_contobj_get(current);
+> > > > > +       rcu_read_unlock();
+> > > > > +       audit_log_container_id(context, cont);
+> > > > > +       rcu_read_lock();
+> > > > > +       _audit_contobj_put(cont);
+> > > > > +       rcu_read_unlock();
+> > > >
+> > > > Do we need to grab an additional reference for the audit container
+> > > > object here?  We don't create any additional references here that
+> > > > persist beyond the lifetime of this function, right?
+> > >
+> > > Why do we need another reference?  There's one for each pointer pointing
+> > > to it and so far we have just one from this task.  Or are you thinking
+> > > of the contid hash list, which is only added to when a task points to it
+> > > and gets removed from that list when the last task stops pointing to it.
+> > > Later that gets more complicated with network namespaces and nested
+> > > container objects.  For now we just needed it while generating the
+> > > record, then it gets freed.
+> > 
+> > I don't think we need to grab an additional reference here, that is
+> > why I asked the question.  The code above grabs a reference for the
+> > audit container ID object associated with the current task and then
+> > drops it before returning; if the current task, and it's associated
+> > audit container ID object, disappears in the middle of the function
+> > we've got much bigger worries :)
+> 
+> I misunderstood your question previously thinking you wanted yet another
+> reference taken in this case, when in fact it was the opposite and you
+> thought the one taken here was superfluous.
+> 
+> I don't *need* to grab the additional references here, but those are the
+> accessor functions that exist, so I either create sub-accessor functions
+> without the refcount manipulations that called from the primary accessor
+> functions or open code a reduncancy...  The locking has been updated to
+> protect the _put by a spin-lock.  Now that I look at it, the 4th to 7th
+> lines could be bypassed by a cont == NULL check.
+> 
+> It is somewhat hidden now since this sequence of 7 commands has been
+> abstracted into another function that is called from a second location.
+> 
+> > paul moore
+> 
+> - RGB
 
-Whether or not the hardware agrees to that definition is something else
-though, but from experience it should
+- RGB
 
-> I expect that DMA fill FIFO with 16 bytes and
-> SPI transfer only 11 bytes and 5 bytes will leave in TX fifo. I did
-> the test and there is no additional data left in the fifo buffer. Also
-> at reception the is no memory overwrites.
->=20
-> I made test with src_addr_width =3D 4, src_maxburst =3D 1 and transfer
-> length 3. Looks like in that case DMA doesn=E2=80=99t issue 4 bytes trans=
-fer.
->=20
-> For test with src_addr_width =3D 4, src_maxburst =3D 8 I had to adjust
-> RF_RDY_TRIG_LEVEL_BITS and TF_ERQ_TRIG_LEVEL_BITS of FIFO_CTL_REG to
-> half of FIFO (32 bytes). With the config DMA will transfer burst of
-> half of FIFO length during transfer and remaining bytes at the end of
-> transfer.
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
-Yeah, that might need some tuning. With the width, I guess we should pay
-attention to the order the bytes are sent in, but it can be done later.
-
-> >>=20
-> >> @@ -343,7 +436,8 @@ static irqreturn_t sun6i_spi_handler(int irq, void=
- *dev_id)
-> >> 	/* Transfer complete */
-> >> 	if (status & SUN6I_INT_CTL_TC) {
-> >> 		sun6i_spi_write(sspi, SUN6I_INT_STA_REG, SUN6I_INT_CTL_TC);
-> >> -		sun6i_spi_drain_fifo(sspi);
-> >> +		if (!sspi->use_dma)
-> >> +			sun6i_spi_drain_fifo(sspi);
-> >=20
-> > Is it causing any issue? The FIFO will be drained only if there's
-> > something remaining in the FIFO, which shouldn't happen with DMA?
-> >=20
->=20
-> No. It=E2=80=99s for make code patch explicit.
-> Remove the change?
-
-Yes, that also simplifies the driver since we don't have to rely on the
-boolean in the main structure anymore
-
-Maxime
-
---ehka34q2jomdseze
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5BkPgAKCRDj7w1vZxhR
-xcvzAQCTjn4Sk9vsA5WgKOIbFeV4pVd8yjgm+DYwTGVqHANt7gEApcXjt4GR66NI
-er1nTKiTM2HDSQiO1nRg+fdP32fuBQE=
-=3XQu
------END PGP SIGNATURE-----
-
---ehka34q2jomdseze--
