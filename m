@@ -2,88 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 183C0294D72
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:24:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9DE54294D71
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 15:24:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441546AbgJUNYx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 09:24:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55120 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2441531AbgJUNYv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S2441526AbgJUNYv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Wed, 21 Oct 2020 09:24:51 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8997AC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 06:24:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=KNjLuE+NLkfGPbq1lu/To3yOPZPN2B2pNyqLHOolRRE=; b=jpm9Ut78bP+z8IZy7hhv9lPDjj
-        +u0TZX6ynhTZ16ryDXa1eFRPeAol5c/2piLqoi+vttL524MzbavLgv3i+FlQvJR5wrjuql+F73Xu6
-        MAerW0fo93osvxcJJlAiBbF7s06tu0Gshtflz3ng+CccXSZwweBj3+95dYsRGh/kj+/UWfwtNNJZs
-        yPcTDBsQqdwjA/LHNKucLTO382Kr+8lYD1TjzhseoXHJqlRt9+SSAzeZvugPP2qnlYTJ+gWdD9ugP
-        F7lpmsKf5KgpU+UZrYONND+w4v+7WSwwJhwTrKMGr/bEFiRYCpBxFlq81yu1N3pleurFCUXWHoMfW
-        aC7aEK2w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVE6X-0000xK-MF; Wed, 21 Oct 2020 13:24:38 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id EDD5930377D;
-        Wed, 21 Oct 2020 15:24:33 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3450F203CC4BF; Wed, 21 Oct 2020 15:24:33 +0200 (CEST)
-Date:   Wed, 21 Oct 2020 15:24:33 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
-Cc:     Borislav Petkov <bp@alien8.de>,
-        Sultan Alsawaf <sultan@kerneltoast.com>,
-        "Jason A. Donenfeld" <Jason@zx2c4.com>,
-        kitsunyan <kitsunyan@airmail.cc>,
-        "Brown, Len" <len.brown@intel.com>, X86 ML <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] x86/msr: do not warn on writes to OC_MAILBOX
-Message-ID: <20201021132433.GI2628@hirez.programming.kicks-ass.net>
-References: <20200908172558.GG25236@zn.tnic>
- <CAHmME9pKfvPGf97BM1=VdUL1uU_8aOoc4+QOu6b51XnPz3SkRA@mail.gmail.com>
- <20200908173656.GI25236@zn.tnic>
- <CAHmME9pVO01mj8vgKPEX7a6pZDRSfX62e2Ow8R=L79hLSJoaMA@mail.gmail.com>
- <20200908180112.GK25236@zn.tnic>
- <20200908191838.GA2014@sultan-box.localdomain>
- <20200908193029.GM25236@zn.tnic>
- <fa447f6b7c7f03cc0c55573d5736889cee81a1e6.camel@linux.intel.com>
- <20201019171539.GF24325@zn.tnic>
- <ae3367ab7d4eb4778b51f798436ab975d7f8a303.camel@linux.intel.com>
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:50411 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2409401AbgJUNYu (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 09:24:50 -0400
+X-IronPort-AV: E=Sophos;i="5.77,401,1596492000"; 
+   d="scan'208";a="473688826"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 15:24:49 +0200
+Date:   Wed, 21 Oct 2020 15:24:48 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mel Gorman <mgorman@suse.de>
+cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Subject: Re: [PATCH] sched/fair: check for idle core
+In-Reply-To: <20201021131827.GF32041@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2010211522340.57356@hadrien>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book> <20201021124700.GE32041@suse.de> <alpine.DEB.2.22.394.2010211452100.8475@hadrien> <20201021131827.GF32041@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae3367ab7d4eb4778b51f798436ab975d7f8a303.camel@linux.intel.com>
+Content-Type: multipart/mixed; boundary="8323329-389467810-1603286689=:57356"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 10:21:48AM -0700, Srinivas Pandruvada wrote:
-> On Mon, 2020-10-19 at 19:15 +0200, Borislav Petkov wrote:
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-> These command id are model specific. There is no guarantee that even
-> meaning changes. So I don't think we should write any code in kernel
-> which can't stick.
-> 
-> 
-> > In any case, my point is that we could have a sysfs interface for
-> > those userspace-suppliable values like the undervolt value at
-> > [31:21],
-> > dunno if the index can be inferred by the kernel automatically or
-> > enumerated and the commands we should issue ourselves depending on
-> > the
-> > functionality, etc.
+--8323329-389467810-1603286689=:57356
+Content-Type: text/plain; charset=iso-8859-15
+Content-Transfer-Encoding: 8BIT
 
-Why not have a full undervolt driver. That is, don't expose OC_MAILBOX
-_at_all_, but have a model specific driver that provides undervolt
-capabilities.
 
-Someone is now maintaining this thing in userspace, might as well do it
-as a kernel driver and keep all the icky bits inside.
+
+On Wed, 21 Oct 2020, Mel Gorman wrote:
+
+> On Wed, Oct 21, 2020 at 02:56:06PM +0200, Julia Lawall wrote:
+> >
+> >
+> > On Wed, 21 Oct 2020, Mel Gorman wrote:
+> >
+> > > On Wed, Oct 21, 2020 at 02:25:32PM +0200, Vincent Guittot wrote:
+> > > > > I see Vincent already agreed with the patch so I could be wrong.  Vincent,
+> > > > > did I miss something stupid?
+> > > >
+> > > > This patch fixes the problem that we don't favor anymore the prev_cpu when it is idle since
+> > > > commit 11f10e5420f6ce because load is not null when cpu is idle whereas runnable_load was
+> > > > And this is important because this will then decide in which LLC we will looks for a cpu
+> > > >
+> > >
+> > > Ok, that is understandable but I'm still concerned that the fix simply
+> > > trades one problem for another by leaving related tasks remote to each
+> > > other and increasing cache misses and remote data accesses.
+> > >
+> > > wake_affine_weight is a giant pain because really we don't care about the
+> > > load on the waker CPU or its available, we care about whether it has idle
+> > > siblings that can be found quickly. As tempting as ripping it out is,
+> > > it never happened because sometimes it makes the right decision.
+> >
+> > My goal was to restore the previous behavior, when runnable load was used.
+> > The patch removing the use of runnable load (11f10e5420f6) presented it
+> > basically as that load balancing was using it, so wakeup should use it
+> > too, and any way it didn't matter because idle CPUS were checked for
+> > anyway.
+> >
+>
+> Which is fair.
+>
+> > Is your point of view that the proposed change is overkill?  Or is it that
+> > the original behavior was not desirable?
+> >
+>
+> I worry it's overkill because prev is always used if it is idle even
+> if it is on a node remote to the waker. It cuts off the option of a
+> wakee moving to a CPU local to the waker which is not equivalent to the
+> original behaviour.
+
+But it is equal to the original behavior in the idle prev case if you go
+back to the runnable load average days...
+
+The problem seems impossible to solve, because there is no way to know by
+looking only at prev and this whether the thread would prefer to stay
+where it was or go to the waker.
+
+julia
+--8323329-389467810-1603286689=:57356--
