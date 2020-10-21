@@ -2,122 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 725D62951D2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:53:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EF9D2951D8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:54:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503761AbgJURxa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:53:30 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:47398 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2503752AbgJURx3 (ORCPT
+        id S2503779AbgJURyY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:54:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40508 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503770AbgJURyX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:53:29 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603302808;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0aM6MG+N6GRh+zh31VWFPduo2rgWm3emASszSAw8inM=;
-        b=U0/4Mb5fklpftAKcRTvs5J4QNyh7WJkxazNleIkTfYT1ojDcgU7Jvza3xqN/pUyfJ++Gg3
-        VxJwwOKPwWsrsCfYPvvQTy6meaHtKMW/EqJbY8XdPfn6FCzGtlXFpufKx/DrFkiK7v6Oyg
-        uG7HZNcykkT32tt4lzdMm6ffBifyrGA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-582-0BAAGVqzMda2Ab5lMPFbVA-1; Wed, 21 Oct 2020 13:53:23 -0400
-X-MC-Unique: 0BAAGVqzMda2Ab5lMPFbVA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 57DDD804B66;
-        Wed, 21 Oct 2020 17:53:20 +0000 (UTC)
-Received: from madcap2.tricolour.ca (unknown [10.10.110.2])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id E934B5D9EF;
-        Wed, 21 Oct 2020 17:53:06 +0000 (UTC)
-Date:   Wed, 21 Oct 2020 13:53:03 -0400
-From:   Richard Guy Briggs <rgb@redhat.com>
-To:     Steve Grubb <sgrubb@redhat.com>
-Cc:     Paul Moore <paul@paul-moore.com>, linux-audit@redhat.com,
-        nhorman@tuxdriver.com, linux-api@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
-        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
-        simo@redhat.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
-Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
-Message-ID: <20201021175303.GH2882171@madcap2.tricolour.ca>
-References: <cover.1593198710.git.rgb@redhat.com>
- <20201002195231.GH2882171@madcap2.tricolour.ca>
- <20201021163926.GA3929765@madcap2.tricolour.ca>
- <2174083.ElGaqSPkdT@x2>
+        Wed, 21 Oct 2020 13:54:23 -0400
+Received: from mail-yb1-xb43.google.com (mail-yb1-xb43.google.com [IPv6:2607:f8b0:4864:20::b43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A5735C0613CE;
+        Wed, 21 Oct 2020 10:54:23 -0700 (PDT)
+Received: by mail-yb1-xb43.google.com with SMTP id l15so2529859ybp.2;
+        Wed, 21 Oct 2020 10:54:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mG0a9rqNQYUWVfRTJS/8XhFObf4suQPa1m0uqfzYDHk=;
+        b=D5rkEL0Xk9KXntswbHPrbo0xH/XY7nNcxp8mSGe/fs6A9y4GvHFcGaaj0wHRM8Vo3N
+         LZxyWpWwUFpGCpIbdr4IgfV0wfknp8iWfM6rFlEqA4jAHgvL6RHwpM+yyps/TXDOirFw
+         bdv6nkl3GEPFgyT13Fx1BNh0Ao7HmVnJbcPVb1M3mibaIUkK3RcEJz7wyjM9rKFZfo4B
+         ABUSTySNa7MjDyQkxNT9doa/SNnan+UEECdyoqfzVLIMgiVM+WoQSHnsXZ9OU1RPUTNb
+         nlD4EtX5T6NLvZcdp2ZZrVSxX85yTmRYaC+aJlIkjm3UDFHT+VJhJowe4z4KvTClZFV0
+         OlUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mG0a9rqNQYUWVfRTJS/8XhFObf4suQPa1m0uqfzYDHk=;
+        b=aoxErhsn3exlCZgwX7J19EaxJ7Sg34GKwSBbehZ6viAj6qIbz3YiUHlxlYZFNbvQW2
+         C9Q9eBq/neDqrfa91GI28/G0vttz2VeIS6U2tsHYjAHgjhlhpD6ieuTj+LA670X+UkcT
+         pvhbt6W5afFqHdsu0DB+sP0ToUL8aFmAX9/yu0zCpfOlSjwVdNpmb3zX7o/Foicgic/9
+         7wjFQRWFz5kz2LXgROpPbFz5m3Xxt6+k1P/idT6Fo/IR42iex9eXiYCPKw7AmHn/TaeN
+         oDiwxjiT2MgJq76FzK93VlRo33q7YLGQyVJmXZfmAMgs5PSqk7351hhpIvawFJW0hANr
+         FVQg==
+X-Gm-Message-State: AOAM532Q+SKSez26OqcxF0S00wrbRIP73L3mHDaGXZh+xWFBR4qMjAzd
+        BG0l/wZj+gT7/JLH4iYOHGQyhvy30iwLOPwbdL4=
+X-Google-Smtp-Source: ABdhPJxImcYRm96sCxuR4y9HIlyeIhKSlywovGvIPGiHgw8VJ+Bte+uBv+K/DT7Bw3gMkJEXNYjyeORkA/1qQuUzGJU=
+X-Received: by 2002:a25:ae97:: with SMTP id b23mr4316777ybj.26.1603302862474;
+ Wed, 21 Oct 2020 10:54:22 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <2174083.ElGaqSPkdT@x2>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20200629003127.GB5535@shao2-debian> <20200630124628.GV4817@hirez.programming.kicks-ass.net>
+ <20200630144905.GX4817@hirez.programming.kicks-ass.net> <58ff47cc-dc55-e383-7a5b-37008d145aba@gmail.com>
+ <20201021080031.GY2628@hirez.programming.kicks-ass.net> <20201021131806.GA2176@tucnak>
+ <20201021134436.GJ2628@hirez.programming.kicks-ass.net> <CAKwvOd=qi63We=6rLapb565giCVe-8a6d=-=3VZL6RWzhwAeZg@mail.gmail.com>
+In-Reply-To: <CAKwvOd=qi63We=6rLapb565giCVe-8a6d=-=3VZL6RWzhwAeZg@mail.gmail.com>
+From:   Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+Date:   Wed, 21 Oct 2020 19:54:11 +0200
+Message-ID: <CANiq72m+_QYtn_1gyrjXFs6yeDdiMoS4DVcWqYcTgyCFnSFXbw@mail.gmail.com>
+Subject: Re: GCC section alignment, and GCC-4.9 being a weird one
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Jakub Jelinek <jakub@redhat.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        kernel test robot <lkp@intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        LKP <lkp@lists.01.org>, Kees Cook <keescook@chromium.org>,
+        "H.J. Lu" <hjl.tools@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        linux-toolchains@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-21 12:49, Steve Grubb wrote:
-> On Wednesday, October 21, 2020 12:39:26 PM EDT Richard Guy Briggs wrote:
-> > > I think I have a way to generate a signal to multiple targets in one
-> > > syscall...  The added challenge is to also give those targets different
-> > > audit container identifiers.
-> > 
-> > Here is an exmple I was able to generate after updating the testsuite
-> > script to include a signalling example of a nested audit container
-> > identifier:
-> > 
-> > ----
-> > type=PROCTITLE msg=audit(2020-10-21 10:31:16.655:6731) :
-> > proctitle=/usr/bin/perl -w containerid/test type=CONTAINER_ID
-> > msg=audit(2020-10-21 10:31:16.655:6731) :
-> > contid=7129731255799087104^3333941723245477888 type=OBJ_PID
-> > msg=audit(2020-10-21 10:31:16.655:6731) : opid=115583 oauid=root ouid=root
-> > oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> > ocomm=perl type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
-> > contid=3333941723245477888 type=OBJ_PID msg=audit(2020-10-21
-> > 10:31:16.655:6731) : opid=115580 oauid=root ouid=root oses=1
-> > obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
-> > type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) :
-> > contid=8098399240850112512^3333941723245477888 type=OBJ_PID
-> > msg=audit(2020-10-21 10:31:16.655:6731) : opid=115582 oauid=root ouid=root
-> > oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> > ocomm=perl type=SYSCALL msg=audit(2020-10-21 10:31:16.655:6731) :
-> > arch=x86_64 syscall=kill success=yes exit=0 a0=0xfffe3c84 a1=SIGTERM
-> > a2=0x4d524554 a3=0x0 items=0 ppid=115564 pid=115567 auid=root uid=root
-> > gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root
-> > tty=ttyS0 ses=1 comm=perl exe=/usr/bin/perl
-> > subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
-> > key=testsuite-1603290671-AcLtUulY ----
-> > 
-> > There are three CONTAINER_ID records which need some way of associating
-> > with OBJ_PID records.  An additional CONTAINER_ID record would be present
-> > if the killing process itself had an audit container identifier.  I think
-> > the most obvious way to connect them is with a pid= field in the
-> > CONTAINER_ID record.
-> 
-> pid is the process sending the signal, opid is the process receiving the 
-> signal. I think you mean opid?
+On Wed, Oct 21, 2020 at 7:42 PM Nick Desaulniers
+<ndesaulniers@google.com> wrote:
+>
+> If you used some of the macros from
+> include/linux/compiler_attributes.h like __section and __aligned, I
+> would prefer it.  Please consider spelling out __attribute__(()) an
+> antipattern.
 
-If the process sending the signal (it has a pid= field) has an audit
-container identifier, it will generate a CONTAINER_ID record.  Each
-process being signalled (each has an opid= field) that has an audit
-container identifier will also generate a CONTAINER_ID record.  The
-former will be much more common.  Which do we use in the CONTAINER_ID
-record?  Having swinging fields, pid vs opid does not seem like a
-reasonable solution.  Do we go back to "ref=pid=..." vs "ref=opid=..."?
++1, the shorthands should be used unless there is a reason not to (and
+please write the reason in a comment in that case).
 
-> -Steve
-
-- RGB
-
---
-Richard Guy Briggs <rgb@redhat.com>
-Sr. S/W Engineer, Kernel Security, Base Operating Systems
-Remote, Ottawa, Red Hat Canada
-IRC: rgb, SunRaycer
-Voice: +1.647.777.2635, Internal: (81) 32635
-
+Cheers,
+Miguel
