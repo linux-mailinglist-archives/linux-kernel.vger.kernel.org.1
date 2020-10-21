@@ -2,137 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90BDB294619
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:49:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0595D29461B
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:50:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2439767AbgJUAts (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 20:49:48 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:52660 "EHLO z5.mailgun.us"
+        id S2439776AbgJUAuS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 20:50:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41642 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2439760AbgJUAts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 20:49:48 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603241388; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3XFNLBbM72ThQINa/MBg5gJYLpGf8UCxBG+6itIFgOM=;
- b=qP/wzNaFqYJKtDdVDYP8xQB0aoGZlcwrZMyaRMVb3mxPiAg30j7hGYv5WjDpDsWO6DIkvrxL
- va3shwkqof/V3lvg6J1Xdgq4KhzrnKJjdVddPNAq+09r4WSBaATjrX6EyTxb/eWnFfTBa9ua
- p4M7lviKI7ITIKavNdsfNaMMTU0=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
- 5f8f855b588858a3047e8bd8 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Wed, 21 Oct 2020 00:48:27
- GMT
-Sender: abhinavk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8AD8FC433F1; Wed, 21 Oct 2020 00:48:26 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S2439768AbgJUAuS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Tue, 20 Oct 2020 20:50:18 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: abhinavk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 69F87C433C9;
-        Wed, 21 Oct 2020 00:48:24 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+        by mail.kernel.org (Postfix) with ESMTPSA id 1C42822251;
+        Wed, 21 Oct 2020 00:50:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603241417;
+        bh=78hBHfbHX9Dr+4BC7F/fPvXdyozvyE0CdvpMQRY51q0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=hXdZcIPsC6TJdY5qBUVp6ZNx+wcnt7qUAwP/YkuvwtT2mMSMKsHRquW/KWDx7xSV2
+         t4sMlXbpVTgcyU6BNy6w9ZG/XPKWP7IxZITf3piNAR9GaoHPRiRxRScFdHvK5NsCA0
+         eyWOCebYkJZS36zRVVXTBNcqX8YSvB9Ab0C58+RE=
+Date:   Wed, 21 Oct 2020 09:50:13 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-Id: <20201021095013.d82637f84af564ae4363189d@kernel.org>
+In-Reply-To: <20201020143746.GG11583@zn.tnic>
+References: <20201020120232.GD11583@zn.tnic>
+        <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
+        <20201020143746.GG11583@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date:   Tue, 20 Oct 2020 17:48:24 -0700
-From:   abhinavk@codeaurora.org
-To:     Rob Clark <robdclark@gmail.com>
-Cc:     dri-devel@lists.freedesktop.org,
-        Rob Clark <robdclark@chromium.org>,
-        Krishna Manikandan <mkrishn@codeaurora.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@linux.ie>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <linux-arm-msm@vger.kernel.org>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        open list <linux-kernel@vger.kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
-        <freedreno@lists.freedesktop.org>, Sean Paul <sean@poorly.run>
-Subject: Re: [Freedreno] [PATCH] drm/msm/atomic: Drop per-CRTC locks in
- reverse order
-In-Reply-To: <20201020222600.264876-1-robdclark@gmail.com>
-References: <20201020222600.264876-1-robdclark@gmail.com>
-Message-ID: <185473dc6ac6abc9a343db07a1031170@codeaurora.org>
-X-Sender: abhinavk@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-20 15:26, Rob Clark wrote:
-> From: Rob Clark <robdclark@chromium.org>
+On Tue, 20 Oct 2020 16:37:46 +0200
+Borislav Petkov <bp@alien8.de> wrote:
+
+> On Tue, Oct 20, 2020 at 11:27:00PM +0900, Masami Hiramatsu wrote:
+> > So, if this return value is optional, it is OK to me. But the success
+> > return value does NOT mean it a correctly encoded instruction.
 > 
-> lockdep dislikes seeing locks unwound in a non-nested fashion.
+> Ok, so what is the correct way to find out whether the decoding was
+> successful?
 > 
-> Fixes: 37c2016e3608 ("drm/msm: Fix race condition in msm driver with
-> async layer updates")
-> Signed-off-by: Rob Clark <robdclark@chromium.org>
-Reviewed-by: Abhinav Kumar <abhinavk@codeaurora.org>
-> ---
->  drivers/gpu/drm/msm/msm_atomic.c |  2 +-
->  drivers/gpu/drm/msm/msm_kms.h    |  4 ++++
->  include/drm/drm_crtc.h           | 10 ++++++++++
->  3 files changed, 15 insertions(+), 1 deletion(-)
+> Because as it is now, it is confusing:
 > 
-> diff --git a/drivers/gpu/drm/msm/msm_atomic.c 
-> b/drivers/gpu/drm/msm/msm_atomic.c
-> index b03d6ab6b19b..6a326761dc4a 100644
-> --- a/drivers/gpu/drm/msm/msm_atomic.c
-> +++ b/drivers/gpu/drm/msm/msm_atomic.c
-> @@ -67,7 +67,7 @@ static void unlock_crtcs(struct msm_kms *kms,
-> unsigned int crtc_mask)
->  {
->  	struct drm_crtc *crtc;
+> - Which ->got field do you check?
 > 
-> -	for_each_crtc_mask(kms->dev, crtc, crtc_mask)
-> +	for_each_crtc_mask_reverse(kms->dev, crtc, crtc_mask)
->  		mutex_unlock(&kms->commit_lock[drm_crtc_index(crtc)]);
->  }
+> - Do you check all got fields like insn_complete() does?
 > 
-> diff --git a/drivers/gpu/drm/msm/msm_kms.h 
-> b/drivers/gpu/drm/msm/msm_kms.h
-> index 8d3e626c9fee..d8151a89e163 100644
-> --- a/drivers/gpu/drm/msm/msm_kms.h
-> +++ b/drivers/gpu/drm/msm/msm_kms.h
-> @@ -211,4 +211,8 @@ int dpu_mdss_init(struct drm_device *dev);
->  	drm_for_each_crtc(crtc, dev) \
->  		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
+> And the return value can be made non-optional to denote that the
+> *function* that was called, was successful or not. The thing is, one
+> needs to designate one function to call and say, if this function
+> returns successfully, then the decode was ok.
+
+Agreed. So I'm OK for returning the result of "decoding".
+But we also need to note that the returning success doesn't
+mean the instruction is valid. That needs another validator.
+
+> If we want to look at only some aspects of some insn bytes, we can
+> definitely make the functions which do, like insn_get_length(),
+> insn_get_immediate() and all those return a value to denote that *they*
+> were successful or not.
+
+OK.
+
 > 
-> +#define for_each_crtc_mask_reverse(dev, crtc, crtc_mask) \
-> +	drm_for_each_crtc_reverse(crtc, dev) \
-> +		for_each_if (drm_crtc_mask(crtc) & (crtc_mask))
-> +
->  #endif /* __MSM_KMS_H__ */
-> diff --git a/include/drm/drm_crtc.h b/include/drm/drm_crtc.h
-> index dfdb04619b0d..25f5958f2882 100644
-> --- a/include/drm/drm_crtc.h
-> +++ b/include/drm/drm_crtc.h
-> @@ -1274,4 +1274,14 @@ static inline struct drm_crtc
-> *drm_crtc_find(struct drm_device *dev,
->  #define drm_for_each_crtc(crtc, dev) \
->  	list_for_each_entry(crtc, &(dev)->mode_config.crtc_list, head)
+> All I'm trying to say is, *how* this insn decoder *should* be used,
+> is not really entirely clear, at least to me it isn't, and we need to
+> define that so that callers know what to expect.
 > 
-> +/**
-> + * drm_for_each_crtc_reverse - iterate over all CRTCs in reverse order
-> + * @crtc: a &struct drm_crtc as the loop cursor
-> + * @dev: the &struct drm_device
-> + *
-> + * Iterate over all CRTCs of @dev.
-> + */
-> +#define drm_for_each_crtc_reverse(crtc, dev) \
-> +	list_for_each_entry_reverse(crtc, &(dev)->mode_config.crtc_list, 
-> head)
-> +
->  #endif /* __DRM_CRTC_H__ */
+> Does that make more sense?
+
+Yes, so let's add the return value (with a note, so that someone
+does not try to use it for validation).
+
+Thank you,
+
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
