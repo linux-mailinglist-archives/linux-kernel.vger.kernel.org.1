@@ -2,486 +2,556 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF782952FF
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:33:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E39F8295305
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 21:35:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504997AbgJUTdy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 15:33:54 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:30518 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504781AbgJUTdx (ORCPT
+        id S2505019AbgJUTfZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 15:35:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56206 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505012AbgJUTfY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 15:33:53 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09LJOx5L018484;
-        Wed, 21 Oct 2020 12:33:33 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=4hLLvQV9rYghnASbRR5Tcrfq2Td7XiYda4vsSeNbCP8=;
- b=fPJ5Gi4Hza50Rt1SLSU1sUmaQ8x1/VNS+ki2nP2E0EhnmpBj8ggO076sOG0MueOXg1bB
- u6VYgoh7OA35Qs9SgW0PxIzMIrlc9apim+StGoGAUKCtkajkhAvFV9jfE+lB9lwantf6
- KIh2LewuWbWLihkTS73DwMSvO6XLQ2djsdg= 
-Received: from mail.thefacebook.com ([163.114.132.120])
-        by mx0a-00082601.pphosted.com with ESMTP id 34a1tt7rpj-5
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 21 Oct 2020 12:33:32 -0700
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (100.104.98.9) by
- o365-in.thefacebook.com (100.104.94.198) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 21 Oct 2020 12:33:29 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Xs/iWmuX9V9aCUQOh1UnW0R/hCBfr/tmU1IeRKDUV7fBY4ZscWMS30P/Qx2FQBPNc3hQIn+4GlDsdPCEeTcTh5ndvUKgDE8zSG3mCpY/FrgoeXLEAPsY/skAu/+xjAXaf3L7tRVK0p1JaXo+DjL2HdkoXvX55fJkf+W56DZ75Bqrexi5Ho0N7JEjsPvJkCGTUVizoRUDjzKBv8zjgGgFdU/dFwo20bW7fAmNHY276cyUSrr0sHLCdreUE618MVl0xxRiwuRiQFVH29Spfs9w9sJwXx1iiTg7uKBar7Da9ZCPdRPTsmxlMj7X9vIWt/nSV7Hg9tGQELcRavGR3Wx99w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4hLLvQV9rYghnASbRR5Tcrfq2Td7XiYda4vsSeNbCP8=;
- b=U04/DktwgiCCuzszMjQKxuWYjf3s6K5kRVn2iOA9jVBp7N7Jz2OnragPdOOwjT70ilczGP73qRkEUHT59084jaVrVGk0ri4bBcMI7J3OGZGG4TOgFq2GcBrIDifdt0sKkjfDGGSiYmKgTSqCDUn7PX8ccALPrZngvks+92mx+HIP/cQhMC6tzxODorliUL1jSZaV6kskEtLfxiro3yrJh7zOMHHMjfLthoFGcccTG7zSqr/GhpGV903/aITMGeCtBquQpjVgMA3Np70K9psoKZAb5R6eU7xDGe8RdCZ8q3TU/pvz+ptOODtoFcyigQ6Usw00xVzF4COjGdhDHd3Z9A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=4hLLvQV9rYghnASbRR5Tcrfq2Td7XiYda4vsSeNbCP8=;
- b=HPXdcVIcd9JD2JP06xJT5y/Ue8lZh9RnKlkbZ47nx+4F7vXvtpTT1PRnlEAFFe7x4GOhSieItZc3siMEhDZXgHg+Vaadi2Q+dBi78s0O1R0k6i2JjkNAdjK5wtKejo5lYEFCh1oQQreQtTG+V1nVLEnlLtcgHn/DpOOL+waXedQ=
-Authentication-Results: cmpxchg.org; dkim=none (message not signed)
- header.d=none;cmpxchg.org; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB3158.namprd15.prod.outlook.com (2603:10b6:a03:104::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Wed, 21 Oct
- 2020 19:33:28 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Wed, 21 Oct 2020
- 19:33:28 +0000
-Date:   Wed, 21 Oct 2020 12:33:22 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-CC:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-        Richard Palethorpe <rpalethorpe@suse.com>,
-        <ltp@lists.linux.it>, Andrew Morton <akpm@linux-foundation.org>,
-        Shakeel Butt <shakeelb@google.com>,
-        Christoph Lameter <cl@linux.com>,
-        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
-        Vlastimil Babka <vbabka@suse.cz>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>, Michal Hocko <mhocko@suse.com>
-Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
- charging root
-Message-ID: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
-References: <20201014190749.24607-1-rpalethorpe@suse.com>
- <20201016094702.GA95052@blackbook>
- <20201016145308.GA312010@cmpxchg.org>
- <20201016171502.GA102311@blackbook>
- <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
- <20201020162714.GC46039@blackbook>
- <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
- <20201020181822.GA397401@cmpxchg.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020181822.GA397401@cmpxchg.org>
-X-Originating-IP: [2620:10d:c090:400::5:5b8e]
-X-ClientProxiedBy: CO2PR05CA0097.namprd05.prod.outlook.com
- (2603:10b6:104:1::23) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Wed, 21 Oct 2020 15:35:24 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CE3A5C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:35:23 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id k6so4456746ior.2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 12:35:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kkbAjmJHNFHo0Bd/wQdgL2iVkRqLf7aOjPPtWeFqaMA=;
+        b=r985UUv8DwP7eHUYbGR+PzAGvLz4KJWWdTOHwbLSseKkwy3Zq0DFFzNI36T5nWaAZ+
+         0zr6ZvSxGy8sXegDgc8MZtGcb1XMB9jzg+JRPvZa2AZ6i3+CBupItmBcJwzy87vF/M00
+         GVAmyo7xjeiR/TwIHr+ePRFV3T8np1+UeZw5sPsM0W1MgpHN31xckh5wg6y6S66UTkcf
+         FeeBImvso8q/ErqCAcx2DmSkChnDJuf4b7AA+URmjaPyk1ozw0XvJr5+CiZAS2Y0gWQE
+         TzToVeJvC8EXecYKHYtM1YANK8IlpU8lU27Km5SQRa6Zrcxktpns/+bzFlQrJg+/ETeb
+         DipQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kkbAjmJHNFHo0Bd/wQdgL2iVkRqLf7aOjPPtWeFqaMA=;
+        b=MpNwUfS6db3+ptzCvVuyeK1g0yTBFYawRlVoqTOe/oA2Kp0C7wSK0IWDcVfc/MKAaY
+         1Kxtot6tX3ODfytfZwRlUMDQkA26mZfjRISryUOc7dvkhtHLkdvQWG2Vwo8PLgNXR12B
+         mmEQOcnN9rK1A51HtOU6Q9BfnuWQI4i2mQI0E0sWv7mIlhHA0YkunjoqYkYEyi6iBWIG
+         H7AHkjV6qMYM3ebxolRLXkOMBBV4MLBAHXZkYqSsIqOvwqr1OnjPdEagPSwDGrP70JzR
+         CBmA9HLok/raPPH0n9d09Cw+clBtQvYwiorNPiJvQ3XJoRMYqZPN/6EeKu0k2I9OtdQu
+         TRMw==
+X-Gm-Message-State: AOAM532B7f4P8kR/5hcIJeQ7+aECG0PqkkVHYrd/LXn6/sAvEmQrBawu
+        Dy779+DE+TfyMrurnTHR7GyuMj9pwv8sNpHtdNGavg==
+X-Google-Smtp-Source: ABdhPJxNENjP7UGcBNTtBEbokQTS77g7SrioLYaDYf+Tgnfx9W8+vtmxgZJclXLN8Vp8iEiS1qTdIPo1rKRnPduFoiM=
+X-Received: by 2002:a05:6602:1352:: with SMTP id i18mr4022778iov.148.1603308922925;
+ Wed, 21 Oct 2020 12:35:22 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::5:5b8e) by CO2PR05CA0097.namprd05.prod.outlook.com (2603:10b6:104:1::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.13 via Frontend Transport; Wed, 21 Oct 2020 19:33:26 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 00b83e78-0c32-4900-9f32-08d875f82f3b
-X-MS-TrafficTypeDiagnostic: BYAPR15MB3158:
-X-Microsoft-Antispam-PRVS: <BYAPR15MB315811C352F8D9ACBB7A72C4BE1C0@BYAPR15MB3158.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: cjpqc5pEC3ubFon7eg19b2dmJ0yW+ZnkmW9CHSls0sOLZnUphSiXH6WbhzAtRLO3vS0vCUufn6FuHoHWGrqVGI3QbsIarblRw438zL/90eVTZgOYAwUHW5wYfCxgMRQ9wJBcAIUIy8wRilPL8+L1Cn3DST9vGNb12vY9iMKuDDP5qLHGcMqhdqA3O1DR17PcuwEfXkUY7z5ZZS7Vf5IdaCDJkctpGJla5cvP6IBFUTMO0QS00V0H7Xb31mSMRrF2gI4+JGTMZZc3iVkqHx2XSF81gSJ909AYZkEqr+KSTYEtL/i8AlHPyL9j/9PY2t5IHwATxDtC+TNMHqX97KCN9w==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(39860400002)(366004)(376002)(346002)(396003)(136003)(8676002)(86362001)(9686003)(478600001)(7416002)(5660300002)(33656002)(4326008)(6916009)(2906002)(1076003)(52116002)(8936002)(30864003)(6506007)(16526019)(7696005)(66946007)(55016002)(53546011)(6666004)(186003)(54906003)(66556008)(83380400001)(316002)(66476007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: hSHaWWrjOqDR0D2XW4AWYvqCGiHc7cZio5jXCnimpi2+DGFF7H0R8Y98SlvObGQmK6BUkWI5qHd4sAcsgbEzm0kpkhDl3DacCuD3MmXLYUJWSwr9oZHy+u8ujAjHpzSy/qLboxpPHdltPEL9UTYtgaqiiDusm8ZEFuzWbb3NLkcLPY/fHPmtWbMvqnVPqw+yxxud0ByyXkCfs0q7ZC0YGIp1ckpKAqysiz5h3oZNEtVnRSdJ+Gy1apAl+seDSixWrVy79PYvi/UxGl3r34AHxxdgA9LkAYM/ad6mJej0jaxJ6Ra60EgkHx+H0yS2tvKmt0Qm8acd2Rp+cqacihcVFRCpWs5MT/EA1HnLo2WRWV36E6lsyv4DNaGocajn0Vp2Yppqmvmax/U2hoEZW5SPGKC+u8qvuEoldhcEH44CgU7youQ9cXpc5cwJKckYvJL+my+Lz2Ni+it8hK6Sw1lfMnHLzw6FKUvR2t9DU7C0H8DRou3YcvKjgvo5OQ7/EH4TyGh6K6QWxrlrPa3wwLjUtz+dFr2ubJS3AKTxZiYQGAXB7YZ81RFyDws3eqAWB/Z0z12SQITJ3eFCQbVX2ijClHes8kp+zkmQEQlrW5cAQ0GLT9rlVT1WtIN8G8tFMZN8YksfjQncg/cTuWNbzGnYSww0aTAAc6UQ372JCb+znPc=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00b83e78-0c32-4900-9f32-08d875f82f3b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 21 Oct 2020 19:33:28.0289
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: pF+n1/BRH1WJlF2xaWasWiPHfUAwmj7lG9+bvSEhhM85UUiDF1yNh+cF6hW4HuCw
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB3158
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-21_12:2020-10-20,2020-10-21 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=7
- adultscore=0 clxscore=1015 mlxlogscore=999 mlxscore=0 bulkscore=0
- priorityscore=1501 lowpriorityscore=0 spamscore=0 impostorscore=0
- phishscore=0 malwarescore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010210138
-X-FB-Internal: deliver
+References: <20201015053520.2432062-1-pihsun@chromium.org>
+In-Reply-To: <20201015053520.2432062-1-pihsun@chromium.org>
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+Date:   Wed, 21 Oct 2020 13:35:11 -0600
+Message-ID: <CANLsYkwotwc6B61bemJGG8PL78kJ2zZ6xOO5nPe67d0_sCd9fw@mail.gmail.com>
+Subject: Re: [PATCH v4] remoteproc/mediatek: Add support for mt8192 SCP
+To:     Pi-Hsun Shih <pihsun@chromium.org>
+Cc:     Tzung-Bi Shih <tzungbi@chromium.org>,
+        Tzung-Bi Shih <tzungbi@google.com>,
+        Ohad Ben-Cohen <ohad@wizery.com>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        linux-remoteproc <linux-remoteproc@vger.kernel.org>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 02:18:22PM -0400, Johannes Weiner wrote:
-> On Tue, Oct 20, 2020 at 10:07:17AM -0700, Roman Gushchin wrote:
-> > If we want these counter to function properly, then we should go into the opposite
-> > direction and remove the special handling of the root memory cgroup in many places.
-> 
-> I suspect this is also by far the most robust solution from a code and
-> maintenance POV.
-> 
-> I don't recall the page counter at the root level having been a
-> concern in recent years, even though it's widely used in production
-> environments. It's lockless and cache compact. It's also per-cpu
-> batched, which means it isn't actually part of the memcg hotpath.
+Hi Shih,
 
+On Wed, 14 Oct 2020 at 23:35, Pi-Hsun Shih <pihsun@chromium.org> wrote:
+>
+> Add support for mt8192 SCP.
+>
 
-I agree.
+This is a very thin changelog.  I wouldn't be surprised if you get asked to beef
+it up.
 
-Here is my first attempt. Comments are welcome!
+> Signed-off-by: Pi-Hsun Shih <pihsun@chromium.org>
+> Reviewed-by: Tzung-Bi Shih <tzungbi@google.com>
+>
+> ---
+>
+> Change since v3:
+> * Remove unnecessary barrier and readl in mt8192_scp_before_load, which
+>   also fixes build failure on linux-next because of COMPILE_TEST trying
+>   to compile this on other platforms.
+>
+> Change since v2:
+> * Inline scp_reset_assert / scp_reset_deassert.
+>
+> Change since v1:
+> * Remove unused register definitions.
+>
+> ---
+>  drivers/remoteproc/mtk_common.h  |  32 +++++
+>  drivers/remoteproc/mtk_scp.c     | 200 +++++++++++++++++++++++++------
+>  drivers/remoteproc/mtk_scp_ipi.c |   6 +-
+>  3 files changed, 200 insertions(+), 38 deletions(-)
+>
+> diff --git a/drivers/remoteproc/mtk_common.h b/drivers/remoteproc/mtk_common.h
+> index 0066c83636d0..47b4561443a9 100644
+> --- a/drivers/remoteproc/mtk_common.h
+> +++ b/drivers/remoteproc/mtk_common.h
+> @@ -32,6 +32,23 @@
+>  #define MT8183_SCP_CACHESIZE_8KB       BIT(8)
+>  #define MT8183_SCP_CACHE_CON_WAYEN     BIT(10)
+>
+> +#define MT8192_L2TCM_SRAM_PD_0         0x210C0
+> +#define MT8192_L2TCM_SRAM_PD_1         0x210C4
+> +#define MT8192_L2TCM_SRAM_PD_2         0x210C8
+> +#define MT8192_L1TCM_SRAM_PDN          0x2102C
+> +#define MT8192_CPU0_SRAM_PD            0x21080
+> +
+> +#define MT8192_SCP2APMCU_IPC_SET       0x24080
+> +#define MT8192_SCP2APMCU_IPC_CLR       0x24084
+> +#define MT8192_SCP_IPC_INT_BIT         BIT(0)
+> +#define MT8192_SCP2SPM_IPC_CLR         0x24094
+> +#define MT8192_GIPC_IN_SET             0x24098
+> +#define MT8192_HOST_IPC_INT_BIT                BIT(0)
+> +
+> +#define MT8192_CORE0_SW_RSTN_CLR       0x30000
+> +#define MT8192_CORE0_SW_RSTN_SET       0x30004
+> +#define MT8192_CORE0_WDT_CFG           0x30034
+> +
+>  #define SCP_FW_VER_LEN                 32
+>  #define SCP_SHARE_BUFFER_SIZE          288
+>
+> @@ -50,6 +67,19 @@ struct scp_ipi_desc {
+>         void *priv;
+>  };
+>
+> +struct mtk_scp;
+> +
+> +struct mtk_scp_of_data {
+> +       int (*scp_before_load)(struct mtk_scp *scp);
+> +       void (*scp_irq_handler)(struct mtk_scp *scp);
+> +       void (*scp_reset_assert)(struct mtk_scp *scp);
+> +       void (*scp_reset_deassert)(struct mtk_scp *scp);
+> +       void (*scp_stop)(struct mtk_scp *scp);
+> +
+> +       u32 host_to_scp_reg;
+> +       u32 host_to_scp_int_bit;
+> +};
+> +
+>  struct mtk_scp {
+>         struct device *dev;
+>         struct rproc *rproc;
+> @@ -58,6 +88,8 @@ struct mtk_scp {
+>         void __iomem *sram_base;
+>         size_t sram_size;
+>
+> +       const struct mtk_scp_of_data *data;
+> +
+>         struct mtk_share_obj __iomem *recv_buf;
+>         struct mtk_share_obj __iomem *send_buf;
+>         struct scp_run run;
+> diff --git a/drivers/remoteproc/mtk_scp.c b/drivers/remoteproc/mtk_scp.c
+> index ac13e7b046a6..f8c54a0b33fc 100644
+> --- a/drivers/remoteproc/mtk_scp.c
+> +++ b/drivers/remoteproc/mtk_scp.c
+> @@ -2,7 +2,6 @@
+>  //
+>  // Copyright (c) 2019 MediaTek Inc.
+>
+> -#include <asm/barrier.h>
+>  #include <linux/clk.h>
+>  #include <linux/dma-mapping.h>
+>  #include <linux/err.h>
+> @@ -124,9 +123,6 @@ static int scp_ipi_init(struct mtk_scp *scp)
+>         size_t send_offset = SCP_FW_END - sizeof(struct mtk_share_obj);
+>         size_t recv_offset = send_offset - sizeof(struct mtk_share_obj);
+>
+> -       /* Disable SCP to host interrupt */
+> -       writel(MT8183_SCP_IPC_INT_BIT, scp->reg_base + MT8183_SCP_TO_HOST);
+> -
 
-It doesn't solve the original problem though (use_hierarchy == false and
-objcg reparenting), I'll send a separate patch for that.
+This needs to be in a patch on its own.
 
-Thanks!
+>         /* shared buffer initialization */
+>         scp->recv_buf =
+>                 (struct mtk_share_obj __iomem *)(scp->sram_base + recv_offset);
+> @@ -138,7 +134,7 @@ static int scp_ipi_init(struct mtk_scp *scp)
+>         return 0;
+>  }
+>
+> -static void scp_reset_assert(const struct mtk_scp *scp)
+> +static void mt8183_scp_reset_assert(struct mtk_scp *scp)
 
---
+Rebranding of functions in preparation for mt8192 needs to be in a separate
+patch (in the same patchset).  When that is done you can add support for mt8192.
 
-From 9c7d94a3f999447417b02a7100527ce1922bc252 Mon Sep 17 00:00:00 2001
-From: Roman Gushchin <guro@fb.com>
-Date: Tue, 20 Oct 2020 18:05:43 -0700
-Subject: [PATCH RFC] mm: memcontrol: do not treat the root memory cgroup
- specially
+>  {
+>         u32 val;
+>
+> @@ -147,7 +143,7 @@ static void scp_reset_assert(const struct mtk_scp *scp)
+>         writel(val, scp->reg_base + MT8183_SW_RSTN);
+>  }
+>
+> -static void scp_reset_deassert(const struct mtk_scp *scp)
+> +static void mt8183_scp_reset_deassert(struct mtk_scp *scp)
+>  {
+>         u32 val;
+>
+> @@ -156,17 +152,19 @@ static void scp_reset_deassert(const struct mtk_scp *scp)
+>         writel(val, scp->reg_base + MT8183_SW_RSTN);
+>  }
+>
+> -static irqreturn_t scp_irq_handler(int irq, void *priv)
+> +static void mt8192_scp_reset_assert(struct mtk_scp *scp)
+>  {
+> -       struct mtk_scp *scp = priv;
+> -       u32 scp_to_host;
+> -       int ret;
+> +       writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
+> +}
+>
+> -       ret = clk_prepare_enable(scp->clk);
+> -       if (ret) {
+> -               dev_err(scp->dev, "failed to enable clocks\n");
+> -               return IRQ_NONE;
+> -       }
+> +static void mt8192_scp_reset_deassert(struct mtk_scp *scp)
+> +{
+> +       writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_CLR);
+> +}
+> +
+> +static void mt8183_scp_irq_handler(struct mtk_scp *scp)
+> +{
+> +       u32 scp_to_host;
+>
+>         scp_to_host = readl(scp->reg_base + MT8183_SCP_TO_HOST);
+>         if (scp_to_host & MT8183_SCP_IPC_INT_BIT)
+> @@ -177,6 +175,40 @@ static irqreturn_t scp_irq_handler(int irq, void *priv)
+>         /* SCP won't send another interrupt until we set SCP_TO_HOST to 0. */
+>         writel(MT8183_SCP_IPC_INT_BIT | MT8183_SCP_WDT_INT_BIT,
+>                scp->reg_base + MT8183_SCP_TO_HOST);
+> +}
+> +
+> +static void mt8192_scp_irq_handler(struct mtk_scp *scp)
+> +{
+> +       u32 scp_to_host;
+> +
+> +       scp_to_host = readl(scp->reg_base + MT8192_SCP2APMCU_IPC_SET);
+> +
+> +       if (scp_to_host & MT8192_SCP_IPC_INT_BIT)
+> +               scp_ipi_handler(scp);
+> +       else
+> +               scp_wdt_handler(scp, scp_to_host);
+> +
+> +       /*
+> +        * SCP won't send another interrupt until we clear
+> +        * MT8192_SCP2APMCU_IPC.
+> +        */
+> +       writel(MT8192_SCP_IPC_INT_BIT,
+> +              scp->reg_base + MT8192_SCP2APMCU_IPC_CLR);
+> +}
+> +
+> +static irqreturn_t scp_irq_handler(int irq, void *priv)
+> +{
+> +       struct mtk_scp *scp = priv;
+> +       int ret;
+> +
+> +       ret = clk_prepare_enable(scp->clk);
+> +       if (ret) {
+> +               dev_err(scp->dev, "failed to enable clocks\n");
+> +               return IRQ_NONE;
+> +       }
+> +
+> +       scp->data->scp_irq_handler(scp);
+> +
+>         clk_disable_unprepare(scp->clk);
+>
+>         return IRQ_HANDLED;
+> @@ -238,20 +270,10 @@ static int scp_elf_load_segments(struct rproc *rproc, const struct firmware *fw)
+>         return ret;
+>  }
+>
+> -static int scp_load(struct rproc *rproc, const struct firmware *fw)
+> +static int mt8183_scp_before_load(struct mtk_scp *scp)
+>  {
+> -       const struct mtk_scp *scp = rproc->priv;
+> -       struct device *dev = scp->dev;
+> -       int ret;
+> -
+> -       ret = clk_prepare_enable(scp->clk);
+> -       if (ret) {
+> -               dev_err(dev, "failed to enable clocks\n");
+> -               return ret;
+> -       }
+> -
+> -       /* Hold SCP in reset while loading FW. */
+> -       scp_reset_assert(scp);
+> +       /* Clear SCP to host interrupt */
+> +       writel(MT8183_SCP_IPC_INT_BIT, scp->reg_base + MT8183_SCP_TO_HOST);
+>
+>         /* Reset clocks before loading FW */
+>         writel(0x0, scp->reg_base + MT8183_SCP_CLK_SW_SEL);
+> @@ -272,6 +294,63 @@ static int scp_load(struct rproc *rproc, const struct firmware *fw)
+>                scp->reg_base + MT8183_SCP_CACHE_CON);
+>         writel(MT8183_SCP_CACHESIZE_8KB, scp->reg_base + MT8183_SCP_DCACHE_CON);
+>
+> +       return 0;
+> +}
+> +
+> +static void mt8192_power_on_sram(void *addr)
+> +{
+> +       int i;
+> +
+> +       for (i = 31; i >= 0; i--)
+> +               writel(GENMASK(i, 0), addr);
+> +       writel(0, addr);
+> +}
 
-Currently the root memory cgroup is treated in a special way:
-it's not charged and uncharged directly (only indirectly with their
-descendants), processes belonging to the root memory cgroup are exempt
-from the kernel- and the socket memory accounting.
+How am I supposed to understand what is doing on here?  Please add a comment
+that clearly explains what is happening.
 
-At the same time some of root level statistics and data are available
-to a user:
-  - cgroup v2: memory.stat
-  - cgroup v1: memory.stat, memory.usage_in_bytes, memory.memsw.usage_in_bytes,
-               memory.kmem.usage_in_bytes and memory.kmem.tcp.usage_in_bytes
+> +
+> +static void mt8192_power_off_sram(void *addr)
+> +{
+> +       int i;
+> +
+> +       writel(0, addr);
+> +       for (i = 0; i < 32; i++)
+> +               writel(GENMASK(i, 0), addr);
 
-Historically the reason for a special treatment was an avoidance
-of extra performance cost, however now it's unlikely a good reason:
-over years there was a significant improvement in the performance
-of the memory cgroup code. Also on a modern system actively using
-cgroups (e.g. managed by systemd) there are usually no (significant)
-processes in the root memory cgroup.
+Same here.
 
-The special treatment of the root memory cgroups creates a number of
-issues visible to a user:
-1) slab stats on the root level do not include the slab memory
-   consumed by processes in the root memory cgroup
-2) non-slab kernel memory consumed by processes in the root memory cgroup
-   is not included into memory.kmem.usage_in_bytes
-3) socket memory consumed by processes in the root memory cgroup
-   is not included into memory.kmem.tcp.usage_in_bytes
+> +}
+> +
+> +static int mt8192_scp_before_load(struct mtk_scp *scp)
+> +{
+> +       /* clear SPM interrupt, SCP2SPM_IPC_CLR */
+> +       writel(0xff, scp->reg_base + MT8192_SCP2SPM_IPC_CLR);
+> +
+> +       writel(1, scp->reg_base + MT8192_CORE0_SW_RSTN_SET);
+> +
+> +       /* enable SRAM clock */
+> +       mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_0);
+> +       mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_1);
+> +       mt8192_power_on_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_2);
+> +       mt8192_power_on_sram(scp->reg_base + MT8192_L1TCM_SRAM_PDN);
+> +       mt8192_power_on_sram(scp->reg_base + MT8192_CPU0_SRAM_PD);
+> +
+> +       return 0;
+> +}
+> +
+> +static int scp_load(struct rproc *rproc, const struct firmware *fw)
+> +{
+> +       struct mtk_scp *scp = rproc->priv;
+> +       struct device *dev = scp->dev;
+> +       int ret;
+> +
+> +       ret = clk_prepare_enable(scp->clk);
+> +       if (ret) {
+> +               dev_err(dev, "failed to enable clocks\n");
+> +               return ret;
+> +       }
+> +
+> +       /* Hold SCP in reset while loading FW. */
+> +       scp->data->scp_reset_assert(scp);
+> +
+> +       ret = scp->data->scp_before_load(scp);
+> +       if (ret < 0)
+> +               return ret;
+> +
 
-It complicates the code and increases a risk of new bugs.
+The core has gained support for prepare/unprepare() functions that do exactly
+what is done above.  Instead of using a custom operation to prepare firmware
+loading please use the core's.  That should lead to code that is easier to
+maintain and in line with what is happening in other drivers.  Please see
+ingenic_proc.c for an example.
 
-This patch removes a number of exceptions related to the handling of
-the root memory cgroup. With this patch applied the root memory cgroup
-is treated uniformly to other cgroups in the following cases:
-1) root memory cgroup is charged and uncharged directly, try_charge()
-   and cancel_charge() do not return immediately if the root memory
-   cgroups is passed. uncharge_batch() and __mem_cgroup_clear_mc()
-   do not handle the root memory cgroup specially.
-2) per-memcg slab statistics is gathered for the root memory cgroup
-3) shrinkers infra treats the root memory cgroup as any other memory
-   cgroup
-4) non-slab kernel memory accounting doesn't exclude pages allocated
-   by processes belonging to the root memory cgroup
-5) if a socket is opened by a process in the root memory cgroup,
-   the socket memory is accounted
-6) root cgroup is charged for the used swap memory.
+>         ret = scp_elf_load_segments(rproc, fw);
+>         clk_disable_unprepare(scp->clk);
+>
+> @@ -293,7 +372,7 @@ static int scp_start(struct rproc *rproc)
+>
+>         run->signaled = false;
+>
+> -       scp_reset_deassert(scp);
+> +       scp->data->scp_reset_deassert(scp);
+>
+>         ret = wait_event_interruptible_timeout(
+>                                         run->wq,
+> @@ -309,13 +388,14 @@ static int scp_start(struct rproc *rproc)
+>                 dev_err(dev, "wait SCP interrupted by a signal!\n");
+>                 goto stop;
+>         }
+> +
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
----
- include/linux/memcontrol.h |  3 +-
- mm/memcontrol.c            | 82 ++++++++++++++------------------------
- mm/vmscan.c                |  9 +----
- 3 files changed, 31 insertions(+), 63 deletions(-)
+Unneeded modification.
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index e391e3c56de5..d3653eb5d1b2 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -416,8 +416,7 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- static inline bool mem_cgroup_supports_protection(struct mem_cgroup *memcg)
- {
- 	/*
--	 * The root memcg doesn't account charges, and doesn't support
--	 * protection.
-+	 * The root memcg doesn't support memory protection.
- 	 */
- 	return !mem_cgroup_disabled() && !mem_cgroup_is_root(memcg);
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2636f8bad908..a8bdca0f58f4 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -438,9 +438,6 @@ static void memcg_free_shrinker_maps(struct mem_cgroup *memcg)
- 	struct memcg_shrinker_map *map;
- 	int nid;
- 
--	if (mem_cgroup_is_root(memcg))
--		return;
--
- 	for_each_node(nid) {
- 		pn = mem_cgroup_nodeinfo(memcg, nid);
- 		map = rcu_dereference_protected(pn->shrinker_map, true);
-@@ -455,9 +452,6 @@ static int memcg_alloc_shrinker_maps(struct mem_cgroup *memcg)
- 	struct memcg_shrinker_map *map;
- 	int nid, size, ret = 0;
- 
--	if (mem_cgroup_is_root(memcg))
--		return 0;
--
- 	mutex_lock(&memcg_shrinker_map_mutex);
- 	size = memcg_shrinker_map_size;
- 	for_each_node(nid) {
-@@ -489,8 +483,6 @@ int memcg_expand_shrinker_maps(int new_id)
- 		goto unlock;
- 
- 	for_each_mem_cgroup(memcg) {
--		if (mem_cgroup_is_root(memcg))
--			continue;
- 		ret = memcg_expand_one_shrinker_map(memcg, size, old_size);
- 		if (ret) {
- 			mem_cgroup_iter_break(NULL, memcg);
-@@ -506,7 +498,7 @@ int memcg_expand_shrinker_maps(int new_id)
- 
- void memcg_set_shrinker_bit(struct mem_cgroup *memcg, int nid, int shrinker_id)
- {
--	if (shrinker_id >= 0 && memcg && !mem_cgroup_is_root(memcg)) {
-+	if (shrinker_id >= 0 && memcg) {
- 		struct memcg_shrinker_map *map;
- 
- 		rcu_read_lock();
-@@ -868,7 +860,7 @@ void __mod_lruvec_slab_state(void *p, enum node_stat_item idx, int val)
- 	memcg = mem_cgroup_from_obj(p);
- 
- 	/* Untracked pages have no memcg, no lruvec. Update only the node */
--	if (!memcg || memcg == root_mem_cgroup) {
-+	if (!memcg) {
- 		__mod_node_page_state(pgdat, idx, val);
- 	} else {
- 		lruvec = mem_cgroup_lruvec(memcg, pgdat);
-@@ -2439,8 +2431,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							     gfp_mask, true);
- 		psi_memstall_leave(&pflags);
--	} while ((memcg = parent_mem_cgroup(memcg)) &&
--		 !mem_cgroup_is_root(memcg));
-+	} while ((memcg = parent_mem_cgroup(memcg)));
- 
- 	return nr_reclaimed;
- }
-@@ -2532,8 +2523,7 @@ static u64 mem_find_max_overage(struct mem_cgroup *memcg)
- 		overage = calculate_overage(page_counter_read(&memcg->memory),
- 					    READ_ONCE(memcg->memory.high));
- 		max_overage = max(overage, max_overage);
--	} while ((memcg = parent_mem_cgroup(memcg)) &&
--		 !mem_cgroup_is_root(memcg));
-+	} while ((memcg = parent_mem_cgroup(memcg)));
- 
- 	return max_overage;
- }
-@@ -2548,8 +2538,7 @@ static u64 swap_find_max_overage(struct mem_cgroup *memcg)
- 		if (overage)
- 			memcg_memory_event(memcg, MEMCG_SWAP_HIGH);
- 		max_overage = max(overage, max_overage);
--	} while ((memcg = parent_mem_cgroup(memcg)) &&
--		 !mem_cgroup_is_root(memcg));
-+	} while ((memcg = parent_mem_cgroup(memcg)));
- 
- 	return max_overage;
- }
-@@ -2686,8 +2675,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	bool drained = false;
- 	unsigned long pflags;
- 
--	if (mem_cgroup_is_root(memcg))
--		return 0;
- retry:
- 	if (consume_stock(memcg, nr_pages))
- 		return 0;
-@@ -2873,9 +2860,6 @@ static int try_charge(struct mem_cgroup *memcg, gfp_t gfp_mask,
- #if defined(CONFIG_MEMCG_KMEM) || defined(CONFIG_MMU)
- static void cancel_charge(struct mem_cgroup *memcg, unsigned int nr_pages)
- {
--	if (mem_cgroup_is_root(memcg))
--		return;
--
- 	page_counter_uncharge(&memcg->memory, nr_pages);
- 	if (do_memsw_account())
- 		page_counter_uncharge(&memcg->memsw, nr_pages);
-@@ -2978,7 +2962,7 @@ __always_inline struct obj_cgroup *get_obj_cgroup_from_current(void)
- 	else
- 		memcg = mem_cgroup_from_task(current);
- 
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-+	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
- 		objcg = rcu_dereference(memcg->objcg);
- 		if (objcg && obj_cgroup_tryget(objcg))
- 			break;
-@@ -3096,15 +3080,16 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
- 	int ret = 0;
- 
- 	memcg = get_mem_cgroup_from_current();
--	if (memcg && !mem_cgroup_is_root(memcg)) {
--		ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
--		if (!ret) {
--			page->mem_cgroup = memcg;
--			__SetPageKmemcg(page);
--			return 0;
--		}
--		css_put(&memcg->css);
-+	if (!memcg)
-+		return 0;
-+
-+	ret = __memcg_kmem_charge(memcg, gfp, 1 << order);
-+	if (!ret) {
-+		page->mem_cgroup = memcg;
-+		__SetPageKmemcg(page);
-+		return 0;
- 	}
-+	css_put(&memcg->css);
- 	return ret;
- }
- 
-@@ -3121,7 +3106,6 @@ void __memcg_kmem_uncharge_page(struct page *page, int order)
- 	if (!memcg)
- 		return;
- 
--	VM_BUG_ON_PAGE(mem_cgroup_is_root(memcg), page);
- 	__memcg_kmem_uncharge(memcg, nr_pages);
- 	page->mem_cgroup = NULL;
- 	css_put(&memcg->css);
-@@ -5913,8 +5897,7 @@ static void __mem_cgroup_clear_mc(void)
- 	/* we must fixup refcnts and charges */
- 	if (mc.moved_swap) {
- 		/* uncharge swap account from the old cgroup */
--		if (!mem_cgroup_is_root(mc.from))
--			page_counter_uncharge(&mc.from->memsw, mc.moved_swap);
-+		page_counter_uncharge(&mc.from->memsw, mc.moved_swap);
- 
- 		mem_cgroup_id_put_many(mc.from, mc.moved_swap);
- 
-@@ -5922,8 +5905,7 @@ static void __mem_cgroup_clear_mc(void)
- 		 * we charged both to->memory and to->memsw, so we
- 		 * should uncharge to->memory.
- 		 */
--		if (!mem_cgroup_is_root(mc.to))
--			page_counter_uncharge(&mc.to->memory, mc.moved_swap);
-+		page_counter_uncharge(&mc.to->memory, mc.moved_swap);
- 
- 		mc.moved_swap = 0;
- 	}
-@@ -6824,14 +6806,12 @@ static void uncharge_batch(const struct uncharge_gather *ug)
- {
- 	unsigned long flags;
- 
--	if (!mem_cgroup_is_root(ug->memcg)) {
--		page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
--		if (do_memsw_account())
--			page_counter_uncharge(&ug->memcg->memsw, ug->nr_pages);
--		if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && ug->nr_kmem)
--			page_counter_uncharge(&ug->memcg->kmem, ug->nr_kmem);
--		memcg_oom_recover(ug->memcg);
--	}
-+	page_counter_uncharge(&ug->memcg->memory, ug->nr_pages);
-+	if (do_memsw_account())
-+		page_counter_uncharge(&ug->memcg->memsw, ug->nr_pages);
-+	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && ug->nr_kmem)
-+		page_counter_uncharge(&ug->memcg->kmem, ug->nr_kmem);
-+	memcg_oom_recover(ug->memcg);
- 
- 	local_irq_save(flags);
- 	__count_memcg_events(ug->memcg, PGPGOUT, ug->pgpgout);
-@@ -7013,8 +6993,6 @@ void mem_cgroup_sk_alloc(struct sock *sk)
- 
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_task(current);
--	if (memcg == root_mem_cgroup)
--		goto out;
- 	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys) && !memcg->tcpmem_active)
- 		goto out;
- 	if (css_tryget(&memcg->css))
-@@ -7195,12 +7173,10 @@ void mem_cgroup_swapout(struct page *page, swp_entry_t entry)
- 
- 	page->mem_cgroup = NULL;
- 
--	if (!mem_cgroup_is_root(memcg))
--		page_counter_uncharge(&memcg->memory, nr_entries);
-+	page_counter_uncharge(&memcg->memory, nr_entries);
- 
- 	if (!cgroup_memory_noswap && memcg != swap_memcg) {
--		if (!mem_cgroup_is_root(swap_memcg))
--			page_counter_charge(&swap_memcg->memsw, nr_entries);
-+		page_counter_charge(&swap_memcg->memsw, nr_entries);
- 		page_counter_uncharge(&memcg->memsw, nr_entries);
- 	}
- 
-@@ -7249,7 +7225,7 @@ int mem_cgroup_try_charge_swap(struct page *page, swp_entry_t entry)
- 
- 	memcg = mem_cgroup_id_get_online(memcg);
- 
--	if (!cgroup_memory_noswap && !mem_cgroup_is_root(memcg) &&
-+	if (!cgroup_memory_noswap &&
- 	    !page_counter_try_charge(&memcg->swap, nr_pages, &counter)) {
- 		memcg_memory_event(memcg, MEMCG_SWAP_MAX);
- 		memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
-@@ -7281,7 +7257,7 @@ void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
- 	rcu_read_lock();
- 	memcg = mem_cgroup_from_id(id);
- 	if (memcg) {
--		if (!cgroup_memory_noswap && !mem_cgroup_is_root(memcg)) {
-+		if (!cgroup_memory_noswap) {
- 			if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 				page_counter_uncharge(&memcg->swap, nr_pages);
- 			else
-@@ -7299,7 +7275,7 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- 
- 	if (cgroup_memory_noswap || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
- 		return nr_swap_pages;
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg))
-+	for (; memcg; memcg = parent_mem_cgroup(memcg))
- 		nr_swap_pages = min_t(long, nr_swap_pages,
- 				      READ_ONCE(memcg->swap.max) -
- 				      page_counter_read(&memcg->swap));
-@@ -7321,7 +7297,7 @@ bool mem_cgroup_swap_full(struct page *page)
- 	if (!memcg)
- 		return false;
- 
--	for (; memcg != root_mem_cgroup; memcg = parent_mem_cgroup(memcg)) {
-+	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
- 		unsigned long usage = page_counter_read(&memcg->swap);
- 
- 		if (usage * 2 >= READ_ONCE(memcg->swap.high) ||
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index d848c76e035a..fb6b3cbe0764 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -651,14 +651,7 @@ static unsigned long shrink_slab(gfp_t gfp_mask, int nid,
- 	unsigned long ret, freed = 0;
- 	struct shrinker *shrinker;
- 
--	/*
--	 * The root memcg might be allocated even though memcg is disabled
--	 * via "cgroup_disable=memory" boot parameter.  This could make
--	 * mem_cgroup_is_root() return false, then just run memcg slab
--	 * shrink, but skip global shrink.  This may result in premature
--	 * oom.
--	 */
--	if (!mem_cgroup_disabled() && !mem_cgroup_is_root(memcg))
-+	if (!mem_cgroup_disabled())
- 		return shrink_slab_memcg(gfp_mask, nid, memcg, priority);
- 
- 	if (!down_read_trylock(&shrinker_rwsem))
--- 
-2.26.2
+>         clk_disable_unprepare(scp->clk);
+>         dev_info(dev, "SCP is ready. FW version %s\n", run->fw_ver);
+>
+>         return 0;
+>
+>  stop:
+> -       scp_reset_assert(scp);
+> +       scp->data->scp_reset_assert(scp);
+>         clk_disable_unprepare(scp->clk);
+>         return ret;
+>  }
+> @@ -329,7 +409,7 @@ static void *scp_da_to_va(struct rproc *rproc, u64 da, size_t len)
+>                 offset = da;
+>                 if (offset >= 0 && (offset + len) < scp->sram_size)
+>                         return (void __force *)scp->sram_base + offset;
+> -       } else {
+> +       } else if (scp->dram_size) {
+>                 offset = da - scp->dma_addr;
+>                 if (offset >= 0 && (offset + len) < scp->dram_size)
+>                         return (void __force *)scp->cpu_addr + offset;
+> @@ -338,6 +418,25 @@ static void *scp_da_to_va(struct rproc *rproc, u64 da, size_t len)
+>         return NULL;
+>  }
+>
+> +static void mt8183_scp_stop(struct mtk_scp *scp)
+> +{
+> +       /* Disable SCP watchdog */
+> +       writel(0, scp->reg_base + MT8183_WDT_CFG);
+> +}
+> +
+> +static void mt8192_scp_stop(struct mtk_scp *scp)
+> +{
+> +       /* Disable SRAM clock */
+> +       mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_0);
+> +       mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_1);
+> +       mt8192_power_off_sram(scp->reg_base + MT8192_L2TCM_SRAM_PD_2);
+> +       mt8192_power_off_sram(scp->reg_base + MT8192_L1TCM_SRAM_PDN);
+> +       mt8192_power_off_sram(scp->reg_base + MT8192_CPU0_SRAM_PD);
+> +
+> +       /* Disable SCP watchdog */
+> +       writel(0, scp->reg_base + MT8192_CORE0_WDT_CFG);
+> +}
+> +
+>  static int scp_stop(struct rproc *rproc)
+>  {
+>         struct mtk_scp *scp = (struct mtk_scp *)rproc->priv;
+> @@ -349,9 +448,8 @@ static int scp_stop(struct rproc *rproc)
+>                 return ret;
+>         }
+>
+> -       scp_reset_assert(scp);
+> -       /* Disable SCP watchdog */
+> -       writel(0, scp->reg_base + MT8183_WDT_CFG);
+> +       scp->data->scp_reset_assert(scp);
+> +       scp->data->scp_stop(scp);
+>         clk_disable_unprepare(scp->clk);
+>
+>         return 0;
+> @@ -443,6 +541,13 @@ static int scp_map_memory_region(struct mtk_scp *scp)
+>         int ret;
+>
+>         ret = of_reserved_mem_device_init(scp->dev);
+> +
+> +       /* reserved memory is optional. */
+> +       if (ret == -ENODEV) {
+> +               dev_info(scp->dev, "skipping reserved memory initialization.");
+> +               return 0;
+> +       }
+> +
 
+This needs to be on a patch on its own, together with the ->dram_size checks in
+scp_da_to_va() and scp_unmap_memory_region().
+
+Thanks,
+Mathieu
+
+>         if (ret) {
+>                 dev_err(scp->dev, "failed to assign memory-region: %d\n", ret);
+>                 return -ENOMEM;
+> @@ -460,6 +565,9 @@ static int scp_map_memory_region(struct mtk_scp *scp)
+>
+>  static void scp_unmap_memory_region(struct mtk_scp *scp)
+>  {
+> +       if (scp->dram_size == 0)
+> +               return;
+> +
+>         dma_free_coherent(scp->dev, scp->dram_size, scp->cpu_addr,
+>                           scp->dma_addr);
+>         of_reserved_mem_device_release(scp->dev);
+> @@ -536,6 +644,7 @@ static int scp_probe(struct platform_device *pdev)
+>         scp = (struct mtk_scp *)rproc->priv;
+>         scp->rproc = rproc;
+>         scp->dev = dev;
+> +       scp->data = of_device_get_match_data(dev);
+>         platform_set_drvdata(pdev, scp);
+>
+>         res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "sram");
+> @@ -642,8 +751,29 @@ static int scp_remove(struct platform_device *pdev)
+>         return 0;
+>  }
+>
+> +static const struct mtk_scp_of_data mt8183_of_data = {
+> +       .scp_before_load = mt8183_scp_before_load,
+> +       .scp_irq_handler = mt8183_scp_irq_handler,
+> +       .scp_reset_assert = mt8183_scp_reset_assert,
+> +       .scp_reset_deassert = mt8183_scp_reset_deassert,
+> +       .scp_stop = mt8183_scp_stop,
+> +       .host_to_scp_reg = MT8183_HOST_TO_SCP,
+> +       .host_to_scp_int_bit = MT8183_HOST_IPC_INT_BIT,
+> +};
+> +
+> +static const struct mtk_scp_of_data mt8192_of_data = {
+> +       .scp_before_load = mt8192_scp_before_load,
+> +       .scp_irq_handler = mt8192_scp_irq_handler,
+> +       .scp_reset_assert = mt8192_scp_reset_assert,
+> +       .scp_reset_deassert = mt8192_scp_reset_deassert,
+> +       .scp_stop = mt8192_scp_stop,
+> +       .host_to_scp_reg = MT8192_GIPC_IN_SET,
+> +       .host_to_scp_int_bit = MT8192_HOST_IPC_INT_BIT,
+> +};
+> +
+>  static const struct of_device_id mtk_scp_of_match[] = {
+> -       { .compatible = "mediatek,mt8183-scp"},
+> +       { .compatible = "mediatek,mt8183-scp", .data = &mt8183_of_data },
+> +       { .compatible = "mediatek,mt8192-scp", .data = &mt8192_of_data },
+>         {},
+>  };
+>  MODULE_DEVICE_TABLE(of, mtk_scp_of_match);
+> diff --git a/drivers/remoteproc/mtk_scp_ipi.c b/drivers/remoteproc/mtk_scp_ipi.c
+> index 3d3d87210ef2..f645d8bc9f7c 100644
+> --- a/drivers/remoteproc/mtk_scp_ipi.c
+> +++ b/drivers/remoteproc/mtk_scp_ipi.c
+> @@ -2,7 +2,6 @@
+>  //
+>  // Copyright (c) 2019 MediaTek Inc.
+>
+> -#include <asm/barrier.h>
+>  #include <linux/clk.h>
+>  #include <linux/err.h>
+>  #include <linux/io.h>
+> @@ -182,7 +181,7 @@ int scp_ipi_send(struct mtk_scp *scp, u32 id, void *buf, unsigned int len,
+>                         ret = -ETIMEDOUT;
+>                         goto clock_disable;
+>                 }
+> -       } while (readl(scp->reg_base + MT8183_HOST_TO_SCP));
+> +       } while (readl(scp->reg_base + scp->data->host_to_scp_reg));
+>
+>         scp_memcpy_aligned(send_obj->share_buf, buf, len);
+>
+> @@ -191,7 +190,8 @@ int scp_ipi_send(struct mtk_scp *scp, u32 id, void *buf, unsigned int len,
+>
+>         scp->ipi_id_ack[id] = false;
+>         /* send the command to SCP */
+> -       writel(MT8183_HOST_IPC_INT_BIT, scp->reg_base + MT8183_HOST_TO_SCP);
+> +       writel(scp->data->host_to_scp_int_bit,
+> +              scp->reg_base + scp->data->host_to_scp_reg);
+>
+>         if (wait) {
+>                 /* wait for SCP's ACK */
+>
+> base-commit: 3e4fb4346c781068610d03c12b16c0cfb0fd24a3
+> --
+> 2.28.0.1011.ga647a8990f-goog
+>
