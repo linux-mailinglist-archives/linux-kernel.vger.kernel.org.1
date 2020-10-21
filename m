@@ -2,259 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 604EA295293
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85BE9295294
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 20:59:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504568AbgJUS6b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 14:58:31 -0400
-Received: from smtprelay0071.hostedemail.com ([216.40.44.71]:58716 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2441035AbgJUS6b (ORCPT
+        id S2504580AbgJUS65 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 14:58:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50546 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504573AbgJUS65 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 14:58:31 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id A8D79182251B0;
-        Wed, 21 Oct 2020 18:58:29 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:1:2:41:334:355:368:369:379:800:960:967:968:973:982:988:989:1260:1277:1311:1313:1314:1345:1437:1515:1516:1518:1593:1594:1605:1730:1747:1777:1792:1801:1981:2194:2199:2393:2525:2566:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3865:3866:3867:3868:3870:3871:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4052:4250:4321:4419:4605:5007:6737:7904:8603:8985:9025:9149:10004:11026:11232:11473:11657:11658:11914:12043:12048:12296:12297:12438:12555:12760:12986:13018:13019:13161:13229:13439:13972:14394:14659:21080:21433:21451:21627:21811:30029:30054:30089,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: iron27_5f08f7c2724a
-X-Filterd-Recvd-Size: 10914
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf07.hostedemail.com (Postfix) with ESMTPA;
-        Wed, 21 Oct 2020 18:58:26 +0000 (UTC)
-Message-ID: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
-Subject: [PATCH -next] treewide: Remove stringification from __alias macro
- definition
-From:   Joe Perches <joe@perches.com>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>
-Date:   Wed, 21 Oct 2020 11:58:25 -0700
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Wed, 21 Oct 2020 14:58:57 -0400
+Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 15A62C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:58:57 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id w27so857930ejb.3
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 11:58:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=amarulasolutions.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/W2pC67xhRkKWu1crwi3WnEWmuFybiuMyc4IE8ybA3Y=;
+        b=XTONy7T4k5Gzl6HjRqKQFsj2KbsjHrbmaEhX9T6ZjtoTGm9BYZXs76FMtxy81qcZ7D
+         vcOqaD85bifWyUNkHP01hHhKfS8iWZT5m4rueE18sAC49IKJvZp8gm92D+65agyM68yd
+         gxdiArHr9YB3wNQiqrJYVK++xAO/6t4/2NoaA=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/W2pC67xhRkKWu1crwi3WnEWmuFybiuMyc4IE8ybA3Y=;
+        b=V7rLFNVDTF7KDi6eQPVaeSlQHY+LAfbzA1xdZ/RTGmFYfePdLN0VFI/cH6v4Q1/rvJ
+         PXb3Z8iI6nRjuX5Tvea8ifRtqm6ACSne/Ioskjj+RJN4LIWbpy3CDrMqMuLFHeQ2DNbt
+         jdH49BSE19vlD2I2p2EvsTb2iHxDAd2YI17MRTCRFWtarin/afs4oMKtyeQ8hWWDUUjo
+         Cs/KMS9PzjbTrz3/3B24a/t41QcnGDd2RlZJy1lj/nTnWyk5l3QmP2h24U525ySGKjDS
+         XS3Vlii1hfgcAu+4fATsE1GIOZglAQ8EYVco/GjDVOvp4vReSYA2CBKCt4EbTAst3hxN
+         eeTA==
+X-Gm-Message-State: AOAM531t6le0i+3MUoKAEkZ78XuwQ8Pbk24dqRC5HdR3M/YYQo9kGqJQ
+        YyNfRn32xPRL26xddGr9vGmX0hagiOYKlpjSEIFJvNMuloWpVA==
+X-Google-Smtp-Source: ABdhPJxh39xHToKhZgOxl+9J4lgKjHHbK/0jjNl2/Cu8xEHEIqkN9JHHNMnqFAvKEn2ZvOp+Z9DIbCgEDAZaQTqnsis=
+X-Received: by 2002:a17:906:284f:: with SMTP id s15mr5013892ejc.336.1603306735812;
+ Wed, 21 Oct 2020 11:58:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20200731160324.142097-1-jagan@amarulasolutions.com> <CAMty3ZCO5iY6g4uRp7xuCquQNEMiwbeiy=sN9y0dR1TX+0AGzw@mail.gmail.com>
+In-Reply-To: <CAMty3ZCO5iY6g4uRp7xuCquQNEMiwbeiy=sN9y0dR1TX+0AGzw@mail.gmail.com>
+From:   Jagan Teki <jagan@amarulasolutions.com>
+Date:   Thu, 22 Oct 2020 00:28:44 +0530
+Message-ID: <CAMty3ZASgCOUyq0w13iGCnZ-V4e5Wcc9=9kmW3R3h+G81T6A0g@mail.gmail.com>
+Subject: Re: [PATCH v2] arm64: defconfig: Enable REGULATOR_MP8859
+To:     Heiko Stuebner <heiko@sntech.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Markus Reichl <m.reichl@fivetechno.de>,
+        Suniel Mahesh <sunil@amarulasolutions.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Like the __section macro, the __alias macro uses
-macro # stringification to create quotes around
-the section name used in the __attribute__.
+On Thu, Sep 10, 2020 at 8:33 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
+>
+> Hi Heiko,
+>
+> On Fri, Jul 31, 2020 at 9:33 PM Jagan Teki <jagan@amarulasolutions.com> wrote:
+> >
+> > RK3399 boards like ROC-RK3399-PC is using MP8859 DC/DC converter
+> > for 12V supply.
+> >
+> > roc-rk3399-pc initially used 12V fixed regulator for this supply,
+> > but the below commit has switched to use MP8859.
+> >
+> > commit <1fc61ed04d309b0b8b3562acf701ab988eee12de> "arm64: dts: rockchip:
+> > Enable mp8859 regulator on rk3399-roc-pc"
+> >
+> > So, enable bydefault on the defconfig.
+> >
+> > Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
+> > Tested-by: Suniel Mahesh <sunil@amarulasolutions.com>
+> > ---
+> > Changes for v2:
+> > - none
+> >
+> >  arch/arm64/configs/defconfig | 1 +
+> >  1 file changed, 1 insertion(+)
+> >
+> > diff --git a/arch/arm64/configs/defconfig b/arch/arm64/configs/defconfig
+> > index 883e8bace3ed..62bcbf987a70 100644
+> > --- a/arch/arm64/configs/defconfig
+> > +++ b/arch/arm64/configs/defconfig
+> > @@ -556,6 +556,7 @@ CONFIG_REGULATOR_HI6421V530=y
+> >  CONFIG_REGULATOR_HI655X=y
+> >  CONFIG_REGULATOR_MAX77620=y
+> >  CONFIG_REGULATOR_MAX8973=y
+> > +CONFIG_REGULATOR_MP8859=y
+> >  CONFIG_REGULATOR_PFUZE100=y
+> >  CONFIG_REGULATOR_PWM=y
+> >  CONFIG_REGULATOR_QCOM_RPMH=y
+>
+> Can you apply this patch? w/o this regulator the default defconfig is
+> unable to boot the Linux.
 
-Remove the stringification and add quotes or a
-stringification to the uses instead.
+Gentle reminder.
 
-Signed-off-by: Joe Perches <joe@perches.com>
----
-
-There is a script that might eventually be applied
-to convert the __section macro definition and uses
-to remove stringification
-
-https://lore.kernel.org/lkml/46f69161e60b802488ba8c8f3f8bbf922aa3b49b.camel@perches.com/
-https://lore.kernel.org/lkml/75393e5ddc272dc7403de74d645e6c6e0f4e70eb.camel@perches.com/
-
-This patch is intended to create commonality
-between the uses of __section and __alias.
-
- arch/x86/boot/compressed/string.c       |  6 +++---
- arch/x86/include/asm/syscall_wrapper.h  |  2 +-
- drivers/firmware/efi/runtime-wrappers.c |  2 +-
- include/linux/compiler_attributes.h     |  2 +-
- kernel/kcsan/core.c                     | 10 +++++-----
- lib/crc32.c                             |  4 ++--
- lib/crypto/aes.c                        |  4 ++--
- mm/kasan/generic.c                      |  8 ++++----
- 8 files changed, 19 insertions(+), 19 deletions(-)
-
-diff --git a/arch/x86/boot/compressed/string.c b/arch/x86/boot/compressed/string.c
-index 81fc1eaa3229..d38b122f51ef 100644
---- a/arch/x86/boot/compressed/string.c
-+++ b/arch/x86/boot/compressed/string.c
-@@ -75,7 +75,7 @@ void *memcpy(void *dest, const void *src, size_t n)
- }
- 
- #ifdef CONFIG_KASAN
--extern void *__memset(void *s, int c, size_t n) __alias(memset);
--extern void *__memmove(void *dest, const void *src, size_t n) __alias(memmove);
--extern void *__memcpy(void *dest, const void *src, size_t n) __alias(memcpy);
-+extern void *__memset(void *s, int c, size_t n) __alias("memset");
-+extern void *__memmove(void *dest, const void *src, size_t n) __alias("memmove");
-+extern void *__memcpy(void *dest, const void *src, size_t n) __alias("memcpy");
- #endif
-diff --git a/arch/x86/include/asm/syscall_wrapper.h b/arch/x86/include/asm/syscall_wrapper.h
-index a84333adeef2..f19d1bbbff3d 100644
---- a/arch/x86/include/asm/syscall_wrapper.h
-+++ b/arch/x86/include/asm/syscall_wrapper.h
-@@ -69,7 +69,7 @@ extern long __ia32_sys_ni_syscall(const struct pt_regs *regs);
- 	long __##abi##_##name(const struct pt_regs *regs);		\
- 	ALLOW_ERROR_INJECTION(__##abi##_##name, ERRNO);			\
- 	long __##abi##_##name(const struct pt_regs *regs)		\
--		__alias(__do_##name);
-+		__alias("__do_" #name);
- 
- #define __SYS_STUBx(abi, name, ...)					\
- 	long __##abi##_##name(const struct pt_regs *regs);		\
-diff --git a/drivers/firmware/efi/runtime-wrappers.c b/drivers/firmware/efi/runtime-wrappers.c
-index 1410beaef5c3..14e380ac65d4 100644
---- a/drivers/firmware/efi/runtime-wrappers.c
-+++ b/drivers/firmware/efi/runtime-wrappers.c
-@@ -162,7 +162,7 @@ static DEFINE_SEMAPHORE(efi_runtime_lock);
-  * Expose the EFI runtime lock to the UV platform
-  */
- #ifdef CONFIG_X86_UV
--extern struct semaphore __efi_uv_runtime_lock __alias(efi_runtime_lock);
-+extern struct semaphore __efi_uv_runtime_lock __alias("efi_runtime_lock");
- #endif
- 
- /*
-diff --git a/include/linux/compiler_attributes.h b/include/linux/compiler_attributes.h
-index ea7b756b1c8f..4819512c9abd 100644
---- a/include/linux/compiler_attributes.h
-+++ b/include/linux/compiler_attributes.h
-@@ -42,7 +42,7 @@
- /*
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-alias-function-attribute
-  */
--#define __alias(symbol)                 __attribute__((__alias__(#symbol)))
-+#define __alias(symbol)                 __attribute__((__alias__(symbol)))
- 
- /*
-  *   gcc: https://gcc.gnu.org/onlinedocs/gcc/Common-Function-Attributes.html#index-aligned-function-attribute
-diff --git a/kernel/kcsan/core.c b/kernel/kcsan/core.c
-index 3994a217bde7..465f6cfc317c 100644
---- a/kernel/kcsan/core.c
-+++ b/kernel/kcsan/core.c
-@@ -814,7 +814,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_read##size);                                      \
- 	void __tsan_unaligned_read##size(void *ptr)                            \
--		__alias(__tsan_read##size);                                    \
-+		__alias("__tsan_read" #size);                                  \
- 	EXPORT_SYMBOL(__tsan_unaligned_read##size);                            \
- 	void __tsan_write##size(void *ptr);                                    \
- 	void __tsan_write##size(void *ptr)                                     \
-@@ -823,7 +823,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_write##size);                                     \
- 	void __tsan_unaligned_write##size(void *ptr)                           \
--		__alias(__tsan_write##size);                                   \
-+		__alias("__tsan_write" #size);                                 \
- 	EXPORT_SYMBOL(__tsan_unaligned_write##size);                           \
- 	void __tsan_read_write##size(void *ptr);                               \
- 	void __tsan_read_write##size(void *ptr)                                \
-@@ -833,7 +833,7 @@ EXPORT_SYMBOL(__kcsan_check_access);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_read_write##size);                                \
- 	void __tsan_unaligned_read_write##size(void *ptr)                      \
--		__alias(__tsan_read_write##size);                              \
-+		__alias("__tsan_read_write" #size);                            \
- 	EXPORT_SYMBOL(__tsan_unaligned_read_write##size)
- 
- DEFINE_TSAN_READ_WRITE(1);
-@@ -877,7 +877,7 @@ EXPORT_SYMBOL(__tsan_write_range);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_volatile_read##size);                             \
- 	void __tsan_unaligned_volatile_read##size(void *ptr)                   \
--		__alias(__tsan_volatile_read##size);                           \
-+		__alias("__tsan_volatile_read" #size);                         \
- 	EXPORT_SYMBOL(__tsan_unaligned_volatile_read##size);                   \
- 	void __tsan_volatile_write##size(void *ptr);                           \
- 	void __tsan_volatile_write##size(void *ptr)                            \
-@@ -892,7 +892,7 @@ EXPORT_SYMBOL(__tsan_write_range);
- 	}                                                                      \
- 	EXPORT_SYMBOL(__tsan_volatile_write##size);                            \
- 	void __tsan_unaligned_volatile_write##size(void *ptr)                  \
--		__alias(__tsan_volatile_write##size);                          \
-+		__alias("__tsan_volatile_write" #size);                        \
- 	EXPORT_SYMBOL(__tsan_unaligned_volatile_write##size)
- 
- DEFINE_TSAN_VOLATILE_READ_WRITE(1);
-diff --git a/lib/crc32.c b/lib/crc32.c
-index 2a68dfd3b96c..373a17aaa432 100644
---- a/lib/crc32.c
-+++ b/lib/crc32.c
-@@ -206,8 +206,8 @@ u32 __pure __weak __crc32c_le(u32 crc, unsigned char const *p, size_t len)
- EXPORT_SYMBOL(crc32_le);
- EXPORT_SYMBOL(__crc32c_le);
- 
--u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias(crc32_le);
--u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias(__crc32c_le);
-+u32 __pure crc32_le_base(u32, unsigned char const *, size_t) __alias("crc32_le");
-+u32 __pure __crc32c_le_base(u32, unsigned char const *, size_t) __alias("__crc32c_le");
- 
- /*
-  * This multiplies the polynomials x and y modulo the given modulus.
-diff --git a/lib/crypto/aes.c b/lib/crypto/aes.c
-index 827fe89922ff..5b80514595c2 100644
---- a/lib/crypto/aes.c
-+++ b/lib/crypto/aes.c
-@@ -82,8 +82,8 @@ static volatile const u8 __cacheline_aligned aes_inv_sbox[] = {
- 	0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d,
- };
- 
--extern const u8 crypto_aes_sbox[256] __alias(aes_sbox);
--extern const u8 crypto_aes_inv_sbox[256] __alias(aes_inv_sbox);
-+extern const u8 crypto_aes_sbox[256] __alias("aes_sbox");
-+extern const u8 crypto_aes_inv_sbox[256] __alias("aes_inv_sbox");
- 
- EXPORT_SYMBOL(crypto_aes_sbox);
- EXPORT_SYMBOL(crypto_aes_inv_sbox);
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index 248264b9cb76..4496f897e4f5 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -234,7 +234,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
- 		check_memory_region_inline(addr, size, false, _RET_IP_);\
- 	}								\
- 	EXPORT_SYMBOL(__asan_load##size);				\
--	__alias(__asan_load##size)					\
-+	__alias("__asan_load" #size)					\
- 	void __asan_load##size##_noabort(unsigned long);		\
- 	EXPORT_SYMBOL(__asan_load##size##_noabort);			\
- 	void __asan_store##size(unsigned long addr)			\
-@@ -242,7 +242,7 @@ EXPORT_SYMBOL(__asan_unregister_globals);
- 		check_memory_region_inline(addr, size, true, _RET_IP_);	\
- 	}								\
- 	EXPORT_SYMBOL(__asan_store##size);				\
--	__alias(__asan_store##size)					\
-+	__alias("__asan_store" #size)					\
- 	void __asan_store##size##_noabort(unsigned long);		\
- 	EXPORT_SYMBOL(__asan_store##size##_noabort)
- 
-@@ -258,7 +258,7 @@ void __asan_loadN(unsigned long addr, size_t size)
- }
- EXPORT_SYMBOL(__asan_loadN);
- 
--__alias(__asan_loadN)
-+__alias("__asan_loadN")
- void __asan_loadN_noabort(unsigned long, size_t);
- EXPORT_SYMBOL(__asan_loadN_noabort);
- 
-@@ -268,7 +268,7 @@ void __asan_storeN(unsigned long addr, size_t size)
- }
- EXPORT_SYMBOL(__asan_storeN);
- 
--__alias(__asan_storeN)
-+__alias("__asan_storeN")
- void __asan_storeN_noabort(unsigned long, size_t);
- EXPORT_SYMBOL(__asan_storeN_noabort);
- 
-
-
-
-
+Jagan.
