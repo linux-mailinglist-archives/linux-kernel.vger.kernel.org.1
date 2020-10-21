@@ -2,99 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79B82294FC2
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:19:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8CC49294FD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:20:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502181AbgJUPTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:19:11 -0400
-Received: from mga12.intel.com ([192.55.52.136]:27780 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2444129AbgJUPTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:19:11 -0400
-IronPort-SDR: Dsv9fzCpTdSu/zuyG0cKpBl8XUhwMIf+lqe929/bGSdO6vmYVNgYZu2YVYcN6Vb//wWxxgR5F4
- 851fZ3yGA/EA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="146676561"
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="146676561"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:19:11 -0700
-IronPort-SDR: bW3FtZeKWbb+KCu97eSveio7j+/wg5Sh5KQSkieGI6d7MkfR7k/BwBrXSopZJ2cwvjyDkoAyAU
- Qc78W3KVSKVw==
-X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="358919527"
-Received: from ipadilla-mobl.amr.corp.intel.com (HELO [10.212.163.201]) ([10.212.163.201])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:19:10 -0700
-Subject: Re: [PATCH v5 00/17] HSM driver for ACRN hypervisor
-To:     shuo.a.liu@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "H . Peter Anvin" <hpa@zytor.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Yu Wang <yu1.wang@intel.com>,
-        Reinette Chatre <reinette.chatre@intel.com>
-References: <20201019061803.13298-1-shuo.a.liu@intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <3caf45a7-29f8-09cb-035b-44d453262f97@intel.com>
-Date:   Wed, 21 Oct 2020 08:19:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2502416AbgJUPUJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:20:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502394AbgJUPUH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:20:07 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E82FEC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:20:05 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id b1so3535307lfp.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:20:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cLcG8lvZq4hgK/VaoRnkMULOJQjO5EInk9g+zvCqUnE=;
+        b=MAl/r4jqE+KR+6HrB1QvElLmxWwwM0yeVDZmh9oL+39m6yRG4uAWO4X987YERTSAEz
+         DXHAHUB/vqvig4pg86f5KMONuMrmAJHRqiAWA+i5ROD/Wskva+HM3Z1wuYKyF8EjZPLe
+         nGu8JDvSKQRU/5I6kzv9LGVKkG5z0lYl8Ored5bfoQdh2QVWZaDVhD5KMVDqIP2WZNMD
+         Gj+vj8rkYilmwuzbB3mT3x/SfQO/zG2pmiISKdzTq1wZ7Mek8YBgInt3ITLhz5tYT1I7
+         Rc8Cr/J7e28upXDXhRqLDSOaohbtS/zs7MPDhkOd9kQL/EFGT4fLwPG537iuMY1aiGr3
+         R8QA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cLcG8lvZq4hgK/VaoRnkMULOJQjO5EInk9g+zvCqUnE=;
+        b=X6nyGvefk9E7F/bOAoB5ths1F1lpa4C8+HhdSil6jGXCU8Dlxd99O5uZxJCCUHJVk+
+         1kGL2qenp225yOPDnuj0DPdU4qIQNWo6I3ARuEML0WwPe4Zb54U1SMqNEAxkMgV0aSkF
+         Dsxd3M06r2zgIQCV0GmjXXgRtVkafyPAgklsqnKffA6ZKn2vv+hAQLLSd3R3axerDhla
+         QG6J4blS7PHOstBX6HXUbIcxWw1aZ2Yph06boVEDp/ytMvCvkcibsCNEu9oRh6mjpJRr
+         ODZdqUC80GkobAkjhVkLsZJWzVLzY2dGIJMCKphMOXtRJime/AB+cthsmCCo16g3ilps
+         MUpw==
+X-Gm-Message-State: AOAM531IUvktGLxda6W5tiO6JMjMomV0yWu98PfS/8pxqwks/L7uHcnt
+        kIHRRkZLuOEsERGJpWi1NQK40Oj9oq7Y/ker90q7cg==
+X-Google-Smtp-Source: ABdhPJxh45xMUoIAO1fqQeMLB7+/MFKy1enZ2D42K2i4BqZ+QN2XbRGLVllTzusQVEaBm3qaw/c//PjEv9Sc9wiFOuI=
+X-Received: by 2002:a19:d10:: with SMTP id 16mr1375520lfn.385.1603293604386;
+ Wed, 21 Oct 2020 08:20:04 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201021112038.GC32041@suse.de> <20201021122532.GA30733@vingu-book>
+ <20201021124700.GE32041@suse.de> <alpine.DEB.2.22.394.2010211452100.8475@hadrien>
+ <20201021131827.GF32041@suse.de> <alpine.DEB.2.22.394.2010211522340.57356@hadrien>
+ <20201021150800.GG32041@suse.de>
+In-Reply-To: <20201021150800.GG32041@suse.de>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Wed, 21 Oct 2020 17:19:53 +0200
+Message-ID: <CAKfTPtDs1t6mt7fPgoGg+fT-JKmaqWybNVBN3kZhag6M4+8RUg@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: check for idle core
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-How widely is ACRN used?  It is some little Intel toy hypervisor, or is
-it already seeing broad use in the world?  This, for instance, seems to
-have a backport:
+On Wed, 21 Oct 2020 at 17:08, Mel Gorman <mgorman@suse.de> wrote:
+>
+> On Wed, Oct 21, 2020 at 03:24:48PM +0200, Julia Lawall wrote:
+> > > I worry it's overkill because prev is always used if it is idle even
+> > > if it is on a node remote to the waker. It cuts off the option of a
+> > > wakee moving to a CPU local to the waker which is not equivalent to the
+> > > original behaviour.
+> >
+> > But it is equal to the original behavior in the idle prev case if you go
+> > back to the runnable load average days...
+> >
+>
+> It is similar but it misses the sync treatment and sd->imbalance_pct part of
+> wake_affine_weight which has unpredictable consequences. The data
+> available is only on the fully utilised case.
 
-	https://github.com/teslamotors/linux/tree/intel-4.14
+In fact It's the same because runnable_load_avg was null when cpu is idle, so
+if prev_cpu was idle, we were selecting prev_idle
+
+>
+> > The problem seems impossible to solve, because there is no way to know by
+> > looking only at prev and this whether the thread would prefer to stay
+> > where it was or go to the waker.
+> >
+>
+> Yes, this is definitely true. Looking at prev_cpu and this_cpu is a
+> crude approximation and the path is heavily limited in terms of how
+> clever it can be.
+>
+> --
+> Mel Gorman
+> SUSE Labs
