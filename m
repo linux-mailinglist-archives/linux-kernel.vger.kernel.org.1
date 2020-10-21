@@ -2,110 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E03B8294FD8
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:20:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B82294FC2
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 17:19:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502445AbgJUPUQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 11:20:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44844 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502351AbgJUPT7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 11:19:59 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A8313C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:19:58 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id m3so215596pjf.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 08:19:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5hmO+mhbzoYH/GVwbytgH/sAwdgqzz47G17aTAhhRQ8=;
-        b=Lg4SyFJrAGKmMg6tKEON5sq5UQvRWRT9njDtU86HrhpkL0D0RdFN95O/iD+u7kC/4r
-         ahEy6DJB22RvhcXOWtpd4G1oxyqNVqToJqGqqUs1YqCpH2pXiY1c5d/0pzhbzSnYT69M
-         nqknNaLQF80VCLDCS9BeJ3heSe/9QtMbQljDx+DCvH0VNLMd/6p9Qqsw79r2qTLa69LX
-         R/bAIsTRcvhLiUbCjOhNRPhWsBrblxRy6nLLJDIlIAzaR7RQCmbvWYcaM06CO7pnHIQI
-         4XcufkDp9mMo7ZlREAiInwPH2LB+50E15mLIPFIh/Q71X2Y7y1PHShJVIl54u4zodyis
-         BSGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5hmO+mhbzoYH/GVwbytgH/sAwdgqzz47G17aTAhhRQ8=;
-        b=feoYF444HkdQqVuMSlqV4Vr63J6nc3UBqw21XkB5/MN6Q5bdyh4aIYwl1B0KaDyKjD
-         +DM5j3aEN9JEpjh9yGitwJp4qr28q/U33gO1zhOYBcDo9bPHrUCvNQ4hzS0wBB2Lw7tu
-         Y8fZJDJCfvounNNihr/ld6A6x+aJUx5MTEMYJ03vdJwXfi2v+HgpIGMBAfpfrfvIBYSa
-         xBzlOoqIFSQp1280/UgzLd5CvRx0XP3jD/TQr1Sf1aY+z2zs41vOtuVuPvCQkPvkOB2b
-         jmHQ6Sii87Z5YeDH8TA9mH/a0thad6Sq4oIDTI3crEw2OtObInSW1tdCmOwxCWusoCPs
-         KFPg==
-X-Gm-Message-State: AOAM533CwofA3HRlnLMk1jz7ttmjmRy1s6Cfzgeug4v5tjmVmp2Mknc8
-        +If0+ibzqRyLQ/AbcQY0BZ1Eoa9Pf+WHTw==
-X-Google-Smtp-Source: ABdhPJz/qcBUTmMYFz604l9m4rFbwcPGK6tFrbID3W5xqQgE0s1q2+B4QDvOzg5odG59Fj+FHRoowg==
-X-Received: by 2002:a17:902:c24b:b029:d3:f3e6:1915 with SMTP id 11-20020a170902c24bb02900d3f3e61915mr4132119plg.56.1603293598087;
-        Wed, 21 Oct 2020 08:19:58 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
-        by smtp.gmail.com with ESMTPSA id s10sm2409646pji.7.2020.10.21.08.19.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 08:19:57 -0700 (PDT)
-From:   Mark Salyzyn <salyzyn@android.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, John Stultz <john.stultz@linaro.org>,
-        Mark Salyzyn <salyzyn@android.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: [RESEND PATCH v18 4/4] overlayfs: inode_owner_or_capable called during execv
-Date:   Wed, 21 Oct 2020 08:19:03 -0700
-Message-Id: <20201021151903.652827-5-salyzyn@android.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201021151903.652827-1-salyzyn@android.com>
-References: <20201021151903.652827-1-salyzyn@android.com>
+        id S2502181AbgJUPTL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 11:19:11 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27780 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2444129AbgJUPTL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 11:19:11 -0400
+IronPort-SDR: Dsv9fzCpTdSu/zuyG0cKpBl8XUhwMIf+lqe929/bGSdO6vmYVNgYZu2YVYcN6Vb//wWxxgR5F4
+ 851fZ3yGA/EA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="146676561"
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="146676561"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga003.fm.intel.com ([10.253.24.29])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:19:11 -0700
+IronPort-SDR: bW3FtZeKWbb+KCu97eSveio7j+/wg5Sh5KQSkieGI6d7MkfR7k/BwBrXSopZJ2cwvjyDkoAyAU
+ Qc78W3KVSKVw==
+X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
+   d="scan'208";a="358919527"
+Received: from ipadilla-mobl.amr.corp.intel.com (HELO [10.212.163.201]) ([10.212.163.201])
+  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 08:19:10 -0700
+Subject: Re: [PATCH v5 00/17] HSM driver for ACRN hypervisor
+To:     shuo.a.liu@intel.com, linux-kernel@vger.kernel.org, x86@kernel.org
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Yu Wang <yu1.wang@intel.com>,
+        Reinette Chatre <reinette.chatre@intel.com>
+References: <20201019061803.13298-1-shuo.a.liu@intel.com>
+From:   Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+ z5cecg==
+Message-ID: <3caf45a7-29f8-09cb-035b-44d453262f97@intel.com>
+Date:   Wed, 21 Oct 2020 08:19:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201019061803.13298-1-shuo.a.liu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+How widely is ACRN used?  It is some little Intel toy hypervisor, or is
+it already seeing broad use in the world?  This, for instance, seems to
+have a backport:
 
-Using old_creds as an indication that we are not overriding the
-credentials, bypass call to inode_owner_or_capable.  This solves
-a problem with all execv calls being blocked when using the caller's
-credentials.
-
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-Fixes: 05acefb4872da ("ovl: check permission to open real file")
-C: linux-fsdevel@vger.kernel.org
-C: linux-unionfs@vger.kernel.org
-Cc: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: kernel-team@android.com
-Cc: selinux@vger.kernel.org
-
-v18 - rebase
-
-v17 - rebase
-
-v16 - introduced fix over rebased series
----
- fs/overlayfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index b1357bb067d9..9ab9663b02d8 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -53,7 +53,7 @@ static struct file *ovl_open_realfile(const struct file *file,
- 	err = inode_permission(realinode, MAY_OPEN | acc_mode);
- 	if (err) {
- 		realfile = ERR_PTR(err);
--	} else if (!inode_owner_or_capable(realinode)) {
-+	} else if (old_cred && !inode_owner_or_capable(realinode)) {
- 		realfile = ERR_PTR(-EPERM);
- 	} else {
- 		realfile = open_with_fake_path(&file->f_path, flags, realinode,
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+	https://github.com/teslamotors/linux/tree/intel-4.14
