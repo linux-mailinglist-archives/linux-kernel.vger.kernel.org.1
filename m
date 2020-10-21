@@ -2,156 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D43E2294EFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:47:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 08C53294F01
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 16:47:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443725AbgJUOq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 10:46:58 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:28678 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2442791AbgJUOq4 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 10:46:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603291614;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=McsFIc3uuC39J5CjXN1eYmGbwChHomet0XT2rkjh0/Q=;
-        b=RBgAkl0efYBv4KWMToSdaYOchmD5Mn2nGgIgo0CPpzdtX3glVGYhH6MShNWTO4svb3PtkS
-        0HAkS63OJ9wZofqZ0alq0ujI+zIYstRD0dNyhvTb89i17w3ykwlKsmXiokt6Gfslh8G9x/
-        wt4mgpvdBWJv4pv59EfP1AuOfFWDTe8=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-302-RwIwWXuBN26Ozr05JlLolQ-1; Wed, 21 Oct 2020 10:46:52 -0400
-X-MC-Unique: RwIwWXuBN26Ozr05JlLolQ-1
-Received: by mail-wr1-f71.google.com with SMTP id x16so2808113wrg.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 07:46:52 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version:content-transfer-encoding;
-        bh=McsFIc3uuC39J5CjXN1eYmGbwChHomet0XT2rkjh0/Q=;
-        b=X0a6/c3tmW8sFFDoTFBLME7aOjiGAOwvD6RHYkemFbp9l8pevowzcPWNY002yxdNmX
-         fGk4LMBlPYkrBZUmRJTqfswCiecRcHlCQMougVAvnmpFkm/vw31joVHlsVjpMYxT+IFq
-         LkWGByKZmCQC2rw6MpKw3FFII6xeRvHm+v4lH41v71ALTJzLKWqhF2sd2sq9KVSKzo22
-         fTzRfPmy6F3Q0G6C0jmB8vufkOo9yRipdeosvyL60dgSc11xj1YwzaT6iWiluZboko6N
-         cbvofnhGbaWHk/gAdbBjgiSyJYqxkglUSmBIFWq9oozJHmxyO+Haixnxr2sl5ExFp4I4
-         lhbg==
-X-Gm-Message-State: AOAM531xlRS5nfea3T0kb6UdxzP1BPS/XdrxVkdHuUvsmTMiVtNjJ6IV
-        quoQ760HFArgWfZDaLGD4/SqRAT7t/j9Yfi1b5vc6t080VBKHE3aWLDPmCTVey0JFG6PaH4Prjv
-        wcBE7d83YGsu01r7ZjNdHwnib
-X-Received: by 2002:adf:c3cd:: with SMTP id d13mr5175543wrg.15.1603291611222;
-        Wed, 21 Oct 2020 07:46:51 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyLuiHz/EA1MVlnS6k5vCNG0L0fXDex1R+1gOApxkZZ9bGeCuNXSExKywBkiIGO4shIJ4ZYZg==
-X-Received: by 2002:adf:c3cd:: with SMTP id d13mr5175499wrg.15.1603291610994;
-        Wed, 21 Oct 2020 07:46:50 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id j17sm3943426wrw.68.2020.10.21.07.46.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 07:46:50 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc:     David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe\, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen\, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [RFCv2 00/16] KVM protected memory extension
-In-Reply-To: <20201020134924.2i4z4kp6bkiheqws@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com> <87ft6949x8.fsf@vitty.brq.redhat.com> <20201020134924.2i4z4kp6bkiheqws@box>
-Date:   Wed, 21 Oct 2020 16:46:48 +0200
-Message-ID: <87eelr4ox3.fsf@vitty.brq.redhat.com>
+        id S2443738AbgJUOrF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 10:47:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54422 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443730AbgJUOrD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 10:47:03 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E0EE1222C8;
+        Wed, 21 Oct 2020 14:47:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603291622;
+        bh=0NLUXsL5nZSTu+tt4TPTX6Sh3M6zxBuxgNfiiDG7Fpo=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=Bfvo/x5A8xKQQpTGJw8BZgjqA4Ld52q97GDNBC4BKcfuqnVOPbW2H0ZWQx+qbPYIY
+         tc6PtJ4QA6KnRX5ASSliuqK10I1I/kQ4Uah+LNxYrcrE04zoAvHjx6agj6PhA24ZVX
+         l6OJo54sJI5gSwQOM46j1vUX7Np2h3VU0ZifM3Rc=
+Date:   Wed, 21 Oct 2020 15:46:50 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+        robh+dt@kernel.org, devicetree@vger.kernel.org,
+        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com
+Subject: Re: [PATCH v2 3/6] spi: cadence-quadspi: Add multi-chipselect
+ support for Intel LGM SoC
+Message-ID: <20201021144650.GG4497@sirena.org.uk>
+References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="xjyYRNSh/RebjC6o"
+Content-Disposition: inline
+In-Reply-To: <20201021025507.51001-4-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Cookie: That does not compute.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-"Kirill A. Shutemov" <kirill@shutemov.name> writes:
 
-> On Tue, Oct 20, 2020 at 09:46:11AM +0200, Vitaly Kuznetsov wrote:
->> "Kirill A. Shutemov" <kirill@shutemov.name> writes:
->> 
->> > == Background / Problem ==
->> >
->> > There are a number of hardware features (MKTME, SEV) which protect guest
->> > memory from some unauthorized host access. The patchset proposes a purely
->> > software feature that mitigates some of the same host-side read-only
->> > attacks.
->> >
->> >
->> > == What does this set mitigate? ==
->> >
->> >  - Host kernel ”accidental” access to guest data (think speculation)
->> >
->> >  - Host kernel induced access to guest data (write(fd, &guest_data_ptr, len))
->> >
->> >  - Host userspace access to guest data (compromised qemu)
->> >
->> >  - Guest privilege escalation via compromised QEMU device emulation
->> >
->> > == What does this set NOT mitigate? ==
->> >
->> >  - Full host kernel compromise.  Kernel will just map the pages again.
->> >
->> >  - Hardware attacks
->> >
->> >
->> > The second RFC revision addresses /most/ of the feedback.
->> >
->> > I still didn't found a good solution to reboot and kexec. Unprotect all
->> > the memory on such operations defeat the goal of the feature. Clearing up
->> > most of the memory before unprotecting what is required for reboot (or
->> > kexec) is tedious and error-prone.
->> > Maybe we should just declare them unsupported?
->> 
->> Making reboot unsupported is a hard sell. Could you please elaborate on
->> why you think that "unprotect all" hypercall (or rather a single
->> hypercall supporting both protecting/unprotecting) defeats the purpose
->> of the feature?
->
-> If guest has some data that it prefers not to leak to the host and use the
-> feature for the purpose, share all the memory to get through reboot is a
-> very weak point.
->
+--xjyYRNSh/RebjC6o
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My point that if it knows that there's something sensitive in its
-memory it should clean it up even today without your feature before
-rebooting to an unknown target.
+On Wed, Oct 21, 2020 at 10:55:04AM +0800, Ramuthevar,Vadivel MuruganX wrote:
 
->> 
->> clean up *all* its memory upon reboot, however:
->> - It may only clean up the most sensitive parts. This should probably be
->> done even without this new feature and even on bare metal (think about
->> next boot target being malicious).
->> - The attack window shrinks significantly. "Speculative" bugs require
->> time to exploit and it will only remain open until it boots up again
->> (few seconds).
->
-> Maybe it would be cleaner to handle reboot in userspace? If we got the VM
-> rebooted, just reconstruct it from scratch as if it would be new boot.
+> Add multiple chipselect support for Intel LGM SoCs,
+> currently QSPI-NOR and QSPI-NAND supported.
 
-We are definitely not trying to protect against malicious KVM so maybe
-we can do the cleanup there (when protection was enabled) so we can
-unprotect everything without risk of a leak?
+> +	if (ddata->hwcaps_mask & CQSPI_SUPPORTS_MULTI_CHIPSELECT)
+> +		master->num_chipselect = cqspi->num_chipselect;
 
--- 
-Vitaly
+I'm not seeing anywhere else where we reference num_chipselect in this
+patch - we parse the value, set it in the SPI controller and then never
+otherwise use it?  This makes me wonder if the property is really
+mandatory.  If it is then there should be something in the binding
+document saying that it's required when the compatible is your new
+compatible string, that way the validation can verify that the property
+is present in DTs including this controller.
 
+--xjyYRNSh/RebjC6o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+QSdoACgkQJNaLcl1U
+h9BCUAf9HN/1ZjEGsiutV1X75aof27IiVliID+mogMUMJjQFl3XjdW3Aw87evS9v
+WHiFPZ97HYyVjogF7gHKUA26LPqa3k7RL816DcD2F4yMIMizhiaCcMBtfpdBE73E
+rkPpiv+/coyx4Z4OxEN2BeVAHxWorDwUXylWEHV9QBWGVyborj+Ltcr2+0iAfKuy
+8uiKsr/tK8N1RJ4Yk7FqSjUSZPslq3sOjBnWs4tzgfLnLszmbzI6id7E/hg3+4YH
+dqCe7aFU/MV0v91lO37TxoXQzwaEpzl2NyPUFzuHXPVy5sfUq/ldKSt5z/zfHxV0
+yge74zz8U4bkVoDwq1R4+6vJxYqRgg==
+=ABDR
+-----END PGP SIGNATURE-----
+
+--xjyYRNSh/RebjC6o--
