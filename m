@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10140295066
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:08:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6C592295068
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:09:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502790AbgJUQHG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:07:06 -0400
-Received: from mga09.intel.com ([134.134.136.24]:46901 "EHLO mga09.intel.com"
+        id S2502806AbgJUQIw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:08:52 -0400
+Received: from mga14.intel.com ([192.55.52.115]:8295 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502783AbgJUQHF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:07:05 -0400
-IronPort-SDR: cNkhhOg0PI1hdL7pDGBLCXP0VpKuMPDJWFys+modvLifjxDbuH+l/a/QUMN2Q6HGBq5RO8Gt3U
- YwA1oOZcnpLw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="167512730"
+        id S2502799AbgJUQIv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 12:08:51 -0400
+IronPort-SDR: Rv74zu4G7mmjRrv9AZr9sklUqbXYeBMCxuxvyvfWW8sofUiS9cz6QYXK/UEFlBN+srnU4iucOO
+ vzVXTKjD0gew==
+X-IronPort-AV: E=McAfee;i="6000,8403,9780"; a="166615350"
 X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="167512730"
+   d="scan'208";a="166615350"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:07:04 -0700
-IronPort-SDR: hpb48Ym4Pd3xQVFU+hnvXyjcfHnPslRg8KpxIC770yDUYX5hOHt09P49jbg7YxcO291bMLxkzZ
- +KVQokKSOyyA==
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 09:08:50 -0700
+IronPort-SDR: 5FcaEDjs9+1cG767U5gSLlizsH8fyLquw9xuXG+POVFcZnjuTFasFEpl5AmO1Tw7QKGEh0QnwL
+ ZheqI+NfCQlg==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="5.77,401,1596524400"; 
-   d="scan'208";a="358934190"
+   d="scan'208";a="359545450"
 Received: from linux.intel.com ([10.54.29.200])
-  by FMSMGA003.fm.intel.com with ESMTP; 21 Oct 2020 09:07:04 -0700
+  by orsmga007.jf.intel.com with ESMTP; 21 Oct 2020 09:08:50 -0700
 Received: from [10.249.231.46] (abudanko-mobl.ccr.corp.intel.com [10.249.231.46])
-        by linux.intel.com (Postfix) with ESMTP id F0B89580720;
-        Wed, 21 Oct 2020 09:07:01 -0700 (PDT)
-Subject: [PATCH v2 12/15] perf record: introduce thread local variable for
- trace streaming
+        by linux.intel.com (Postfix) with ESMTP id 602B5580720;
+        Wed, 21 Oct 2020 09:08:48 -0700 (PDT)
+Subject: [PATCH v2 13/15] perf record: stop threads in the end of trace
+ streaming
 From:   Alexey Budankov <alexey.budankov@linux.intel.com>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Jiri Olsa <jolsa@redhat.com>
@@ -44,8 +44,8 @@ Cc:     Namhyung Kim <namhyung@kernel.org>,
         linux-kernel <linux-kernel@vger.kernel.org>
 References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
 Organization: Intel Corp.
-Message-ID: <b1a2fc8c-1106-63d6-40f1-376165490a59@linux.intel.com>
-Date:   Wed, 21 Oct 2020 19:07:00 +0300
+Message-ID: <76431e0e-a758-a262-61ea-97e05f433f44@linux.intel.com>
+Date:   Wed, 21 Oct 2020 19:08:47 +0300
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.1
 MIME-Version: 1.0
@@ -58,160 +58,121 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
-Introduce thread local variable and use it for threaded trace streaming.
+Close write fd of comm.msg pipe to signal thread to terminate
+and receive THREAD_MSG__READY confirmation on termination.
+Accumulate thread stats into global stats to be correctly
+calculated and displayed in perf tool output.
 
 Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
 ---
- tools/perf/builtin-record.c | 71 ++++++++++++++++++++++++++++++++-----
- 1 file changed, 62 insertions(+), 9 deletions(-)
+ tools/perf/builtin-record.c | 64 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 60 insertions(+), 4 deletions(-)
 
 diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index 89cb8e913fb3..3b7e9026f25b 100644
+index 3b7e9026f25b..a15642656066 100644
 --- a/tools/perf/builtin-record.c
 +++ b/tools/perf/builtin-record.c
-@@ -101,6 +101,8 @@ struct thread_data {
- 	u64		   bytes_written;
+@@ -85,6 +85,16 @@ struct switch_output {
+ 	int		 cur_file;
  };
  
-+static __thread struct thread_data *thread;
++enum thread_msg {
++	THREAD_MSG__UNSUPPORTED = 0,
++	THREAD_MSG__READY,
++	THREAD_MSG__MAX,
++};
 +
- struct record {
- 	struct perf_tool	tool;
- 	struct record_opts	opts;
-@@ -587,7 +589,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
- 		}
++static const char *thread_msg_tags[THREAD_MSG__MAX] = {
++	"UNSUPPORTED", "READY"
++};
++
+ struct thread_data {
+ 	pid_t		   tid;
+ 	struct {
+@@ -1796,6 +1806,50 @@ static void hit_auxtrace_snapshot_trigger(struct record *rec)
  	}
- 
--	rec->samples++;
-+	if (thread)
-+		thread->samples++;
-+	else
-+		rec->samples++;
-+
- 	return record__write(rec, map, bf, compressed);
  }
  
-@@ -1258,6 +1264,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	int i;
- 	int rc = 0;
- 	struct mmap *maps;
-+	int nr_mmaps;
- 	int trace_fd = rec->data.file.fd;
- 	off_t off = 0;
- 
-@@ -1265,6 +1272,14 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 		return 0;
- 
- 	maps = overwrite ? evlist->overwrite_mmap : evlist->mmap;
-+	nr_mmaps = evlist->core.nr_mmaps;
-+
-+	if (thread) {
-+		bytes_written = thread->bytes_written;
-+		maps = thread->maps;
-+		nr_mmaps = thread->nr_mmaps;
-+	}
-+
- 	if (!maps)
- 		return 0;
- 
-@@ -1274,7 +1289,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	if (record__aio_enabled(rec))
- 		off = record__aio_get_pos(trace_fd);
- 
--	for (i = 0; i < evlist->core.nr_mmaps; i++) {
-+	for (i = 0; i < nr_mmaps; i++) {
- 		u64 flush = 0;
- 		struct mmap *map = &maps[i];
- 
-@@ -1323,7 +1338,7 @@ static int record__mmap_read_evlist(struct record *rec, struct evlist *evlist,
- 	 * because per-cpu maps and files have data
- 	 * sorted by kernel.
- 	 */
--	if (!record__threads_enabled(rec) && bytes_written != rec->bytes_written)
-+	if (!thread && bytes_written != rec->bytes_written)
- 		rc = record__write(rec, NULL, &finished_round_event, sizeof(finished_round_event));
- 
- 	if (overwrite)
-@@ -1343,6 +1358,15 @@ static int record__mmap_read_all(struct record *rec, bool synch)
- 	return record__mmap_read_evlist(rec, rec->evlist, true, synch);
- }
- 
-+static void record__thread_munmap_filtered(struct fdarray *fda, int fd,
-+					   void *arg __maybe_unused)
++static int record__terminate_thread(struct thread_data *thread_data)
 +{
-+	struct perf_mmap *map = fda->priv[fd].ptr;
++	int res;
++	enum thread_msg ack = THREAD_MSG__UNSUPPORTED;
++	pid_t tid = thread_data->tid;
 +
-+	if (map)
-+		perf_mmap__put(map);
++	close(thread_data->comm.msg[1]);
++	res = read(thread_data->comm.ack[0], &ack, sizeof(ack));
++	if (res != -1)
++		pr_debug("threads: %d -> %s\n", tid, thread_msg_tags[ack]);
++	else
++		pr_err("threads: failed to recv msg=%s from %d\n",
++		       thread_msg_tags[ack], tid);
++
++	return 0;
 +}
 +
- static void record__init_features(struct record *rec)
++static int record__stop_threads(struct record *rec, unsigned long *waking)
++{
++	int i, j, nr_thread_data = rec->nr_thread_data;
++	struct thread_data *thread_data = rec->thread_data;
++
++	if (!record__threads_enabled(rec))
++		return 0;
++
++	for (i = 1; i < nr_thread_data; i++)
++		record__terminate_thread(&thread_data[i]);
++
++	for (i = 0; i < nr_thread_data; i++) {
++		pr_debug("threads: %d : samples %lld, wakes %ld\n",
++			 thread_data[i].tid, thread_data[i].samples,
++			 thread_data[i].waking);
++
++		rec->samples += thread_data[i].samples;
++		*waking      += thread_data[i].waking;
++		for (j = 0; j < thread_data[i].nr_mmaps; j++) {
++			rec->session->bytes_transferred += thread_data[i].maps[j].bytes_transferred;
++			rec->session->bytes_compressed  += thread_data[i].maps[j].bytes_compressed;
++		}
++	}
++
++	return 0;
++}
++
+ static int __cmd_record(struct record *rec, int argc, const char **argv)
  {
- 	struct perf_session *session = rec->session;
-@@ -2020,7 +2044,12 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 	trigger_ready(&switch_output_trigger);
- 	perf_hooks__invoke_record_start();
- 	for (;;) {
--		unsigned long long hits = rec->samples;
-+		unsigned long long hits0, hits1;
-+
-+		if (thread)
-+			hits0 = thread->samples;
-+		else
-+			hits0 = rec->samples;
+ 	int err;
+@@ -1903,7 +1957,7 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
  
- 		/*
- 		 * rec->evlist->bkw_mmap_state is possible to be
-@@ -2089,20 +2118,44 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
- 				alarm(rec->switch_output.time);
- 		}
+ 	if (record__open(rec) != 0) {
+ 		err = -1;
+-		goto out_child;
++		goto out_free_threads;
+ 	}
+ 	session->header.env.comp_mmap_len = session->evlist->core.mmap_len;
  
--		if (hits == rec->samples) {
-+		if (thread)
-+			hits1 = thread->samples;
-+		else
-+			hits1 = rec->samples;
-+
-+		if (hits0 == hits1) {
- 			if (done || draining)
- 				break;
--			err = evlist__poll(rec->evlist, -1);
-+
-+			if (thread)
-+				err = fdarray__poll(&thread->pollfd, -1);
-+			else
-+				err = evlist__poll(rec->evlist, -1);
- 			/*
- 			 * Propagate error, only if there's any. Ignore positive
- 			 * number of returned events and interrupt error.
- 			 */
- 			if (err > 0 || (err < 0 && errno == EINTR))
- 				err = 0;
--			waking++;
+@@ -2203,18 +2257,20 @@ static int __cmd_record(struct record *rec, int argc, const char **argv)
+ 		goto out_child;
+ 	}
  
--			if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
--				draining = true;
-+			if (thread) {
-+				thread->waking++;
-+				if (thread->ctlfd_pos != -1) {
-+					evlist__ctlfd_update(rec->evlist,
-+						&(thread->pollfd.entries[thread->ctlfd_pos]));
-+				}
-+			} else {
-+				waking++;
-+			}
-+
-+			if (thread) {
-+				if (fdarray__filter(&thread->pollfd, POLLERR | POLLHUP,
-+						    record__thread_munmap_filtered, NULL) == 0)
-+					draining = true;
-+			} else {
-+				if (evlist__filter_pollfd(rec->evlist, POLLERR | POLLHUP) == 0)
-+					draining = true;
-+			}
- 		}
+-	if (!quiet)
+-		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
+-
+ 	if (target__none(&rec->opts.target))
+ 		record__synthesize_workload(rec, true);
  
- 		if (evlist__ctlfd_process(rec->evlist, &cmd) > 0) {
+ out_child:
++	record__stop_threads(rec, &waking);
++out_free_threads:
+ 	record__free_thread_data(rec);
+ 	evlist__finalize_ctlfd(rec->evlist);
+ 	record__mmap_read_all(rec, true);
+ 	record__aio_mmap_read_sync(rec);
+ 
++	if (!quiet)
++		fprintf(stderr, "[ perf record: Woken up %ld times to write data ]\n", waking);
++
+ 	if (rec->session->bytes_transferred && rec->session->bytes_compressed) {
+ 		ratio = (float)rec->session->bytes_transferred/(float)rec->session->bytes_compressed;
+ 		session->header.env.comp_ratio = ratio + 0.5;
 -- 
 2.24.1
 
