@@ -2,94 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5266129514C
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:05:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6077B29514F
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 19:07:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503360AbgJURFa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 13:05:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:32942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503353AbgJURF3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 13:05:29 -0400
-Received: from mail-lj1-x22c.google.com (mail-lj1-x22c.google.com [IPv6:2a00:1450:4864:20::22c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40619C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:29 -0700 (PDT)
-Received: by mail-lj1-x22c.google.com with SMTP id a5so3368577ljj.11
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=jZ8rX4nMXu9yVxF6VhEpyRT/HJL/yeSOHN33lmmqE3Q=;
-        b=d6nJua3ZU/+MbORwAQIhOyj2afUAGnde4GMpRV2HxlMNrYs0QlTInEU5dTEigbF5Df
-         dmv41P9p05B6BQtvCcM2OmGGKAdgaTWy1b42EvZb4/P124a6kJRtmA9iy0DRhNfGxKOc
-         95gwtWQc4/Bu6Cew4ZrJmy92LVxyerHew+FaU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=jZ8rX4nMXu9yVxF6VhEpyRT/HJL/yeSOHN33lmmqE3Q=;
-        b=V4SHsdm/scpguZGjqslY7CNaspLtNbltXzeJsZurSI0vU8kp7ii+RqcANz3kFWlZbC
-         VO+OiOvOTkjrShCF2DGrziNyxsWW8ngGtBxcbbRUHTzO7yRpIRcj9ppARQKbm9o3R/Ax
-         CxL9SZgms4IAzlq2srdUrgRACu8HvT7+raJoOE/iYfQQFipz4jy1RIV29/QWLttegK3E
-         8MLJdHOMBhqNDRJmy+dAR8u/DGvcN7hu1YWLEf0y57OGXimEPLvnLeCtC2Ukh3tSS4+6
-         8kDf4fBWl/r8QDEnDZ64/MWrxJN7rZ9fJXS6re5OOfughu+EVys+1xgUfNMSHzI4SjBr
-         gUKw==
-X-Gm-Message-State: AOAM533/ppDeNAEWAQtbbhhwIRo4lodtAwQTJEORRfhSyqVQLsRNzVI6
-        k07/yKUuCdYmZM+0c3+nStI1t0GsZVa6rQ==
-X-Google-Smtp-Source: ABdhPJyBrRy0khjijyZ4dBqfVOwxwDHhHGrSaZJekBmG9auxprxx8EmxfZhIJ+QXOZAqVm9svYOqqg==
-X-Received: by 2002:a2e:9689:: with SMTP id q9mr1727715lji.434.1603299927424;
-        Wed, 21 Oct 2020 10:05:27 -0700 (PDT)
-Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com. [209.85.167.42])
-        by smtp.gmail.com with ESMTPSA id o21sm478410lff.265.2020.10.21.10.05.22
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 10:05:24 -0700 (PDT)
-Received: by mail-lf1-f42.google.com with SMTP id j30so4053956lfp.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 10:05:22 -0700 (PDT)
-X-Received: by 2002:a19:c703:: with SMTP id x3mr1474665lff.105.1603299922233;
- Wed, 21 Oct 2020 10:05:22 -0700 (PDT)
+        id S2503363AbgJURHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 13:07:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43190 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2390995AbgJURHS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 13:07:18 -0400
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 19852223C6;
+        Wed, 21 Oct 2020 17:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603300037;
+        bh=cmX/YO3xz5pAF8CH4Yv2e+wNRl4pkQd8JHkdyLyXh1A=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uul/3MRW1yCz1Mj6OHpN7L03VExvPsGkMsRM10hBPxslr6UgE2cIwbYwiJ6/srP9X
+         eIJ0xDyWl5glw48AD5rG8IcPylxHA8AD7VQGdMeYPeEsPhfUYA6gLMq2yle8ZFkl1F
+         +ZxctGWTnlfLf3f94y4EC0kzdcu+cJao5JZ8m0r0=
+Received: by mail-ej1-f45.google.com with SMTP id w27so385962ejb.3;
+        Wed, 21 Oct 2020 10:07:17 -0700 (PDT)
+X-Gm-Message-State: AOAM530U2VPHVxEFvZGOH9fuSmaia6Ra+NhUL4CeTAs/hHS2Y+Nn0jO8
+        9sYzNQ6JSCKiB30A52rRL9jdhK8Mi4YSRjofHg==
+X-Google-Smtp-Source: ABdhPJzkI1tdwAjD8c04bQdTDw9wZakzcNHkiciym4rO8nnPUMoynFasWgKThhVCIRKLRPIRtHqBKCELzLsq4X0lGu8=
+X-Received: by 2002:a17:906:95d1:: with SMTP id n17mr4668586ejy.75.1603300035519;
+ Wed, 21 Oct 2020 10:07:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
-In-Reply-To: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Wed, 21 Oct 2020 10:05:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-Message-ID: <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
-Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
- 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Naresh Kamboju <naresh.kamboju@linaro.org>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
-        lkft-triage@lists.linaro.org,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        linux-mm <linux-mm@kvack.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        Dmitry Vyukov <dvyukov@google.com>
+References: <20201020174253.3757771-1-fparent@baylibre.com> <20201020174253.3757771-5-fparent@baylibre.com>
+In-Reply-To: <20201020174253.3757771-5-fparent@baylibre.com>
+From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Date:   Thu, 22 Oct 2020 01:07:04 +0800
+X-Gmail-Original-Message-ID: <CAAOTY_9Y98yHq7GcypUMryG4jMEdrDJeCeRXEKX3mb5g39y+sg@mail.gmail.com>
+Message-ID: <CAAOTY_9Y98yHq7GcypUMryG4jMEdrDJeCeRXEKX3mb5g39y+sg@mail.gmail.com>
+Subject: Re: [PATCH 4/8] drm/mediatek: dsi: add pdata variable to start clk in
+ HS mode
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     "moderated list:ARM/Mediatek SoC support" 
+        <linux-mediatek@lists.infradead.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        DRI Development <dri-devel@lists.freedesktop.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        David Airlie <airlied@linux.ie>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Chun-Kuang Hu <chunkuang.hu@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 9:58 AM Naresh Kamboju
-<naresh.kamboju@linaro.org> wrote:
+Hi, Fabien:
+
+Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8821=
+=E6=97=A5 =E9=80=B1=E4=B8=89 =E4=B8=8A=E5=8D=881:43=E5=AF=AB=E9=81=93=EF=BC=
+=9A
 >
-> LTP mm mtest05 (mmstress), mtest06_3 and mallocstress01 (mallocstress) tested on
-> x86 KASAN enabled build. But tests are getting PASS on Non KASAN builds.
-> This regression started happening from next-20201015 nowards
+> On MT8167, DSI seems to work fine only if we start the clk in HS mode.
+> If we don't start the clk in HS but try to switch later to HS, the
+> display does not work.
+>
+> This commit adds a platform data variable to be used to start the
+> DSI clk in HS mode at power on.
 
-Is it repeatable enough to be bisectable?
+This patch looks like a hack patch. If you cowork with Mediatek,
+please find out the correct solution or give a reasonable explanation.
+If you could not get help from Mediatek, I would wait for comment on
+this patch.
 
-             Linus
+Regards,
+Chun-Kuang.
+
+>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
+> ---
+>  drivers/gpu/drm/mediatek/mtk_dsi.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediate=
+k/mtk_dsi.c
+> index 4a188a942c38..461643c05689 100644
+> --- a/drivers/gpu/drm/mediatek/mtk_dsi.c
+> +++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
+> @@ -175,6 +175,7 @@ struct mtk_dsi_driver_data {
+>         const u32 reg_cmdq_off;
+>         bool has_shadow_ctl;
+>         bool has_size_ctl;
+> +       bool use_hs_on_power_on;
+>  };
+>
+>  struct mtk_dsi {
+> @@ -671,7 +672,7 @@ static int mtk_dsi_poweron(struct mtk_dsi *dsi)
+>
+>         mtk_dsi_clk_ulp_mode_leave(dsi);
+>         mtk_dsi_lane0_ulp_mode_leave(dsi);
+> -       mtk_dsi_clk_hs_mode(dsi, 0);
+> +       mtk_dsi_clk_hs_mode(dsi, !!dsi->driver_data->use_hs_on_power_on);
+>
+>         return 0;
+>  err_disable_engine_clk:
+> --
+> 2.28.0
+>
