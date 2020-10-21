@@ -2,155 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A01D2295136
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:58:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8B629513D
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 18:59:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503276AbgJUQ6m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 12:58:42 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:46182 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503261AbgJUQ6j (ORCPT
+        id S2503299AbgJUQ7M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 12:59:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60198 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503290AbgJUQ7K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 12:58:39 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 7B37A20B36E7;
-        Wed, 21 Oct 2020 09:58:37 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 7B37A20B36E7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603299518;
-        bh=qoqMKd5rAYtWlHiexAS7FoltBw1ojl7Q05nqi0UaII0=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=KQYB+nroVu5+8g+mMq346b1h7y7Hxbx8qhI5tHgIoSJsNUmrGW4zrHe3DeP9vpcww
-         Tz5R3inhBIPKsv/sQ9y3ny8H83LXZX7nciVyLITU4AwR4GuLR20MbfV6ULEaiobc5K
-         XhzAyjHQAjh6ypqjTRe8UjFw4Cvy7DqFr38K30rY=
-Subject: Re: [PATCH v7 1/4] powerpc: Refactor kexec functions to move arch
- independent code to kernel
-To:     Mimi Zohar <zohar@linux.ibm.com>, bauerman@linux.ibm.com,
-        robh@kernel.org, gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr
-Cc:     linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, prsriva@linux.microsoft.com,
-        balajib@linux.microsoft.com
-References: <20200930205941.1576-1-nramas@linux.microsoft.com>
- <20200930205941.1576-2-nramas@linux.microsoft.com>
- <bfaadaffafa3b8c12fce7e8491ea77e22a5821a8.camel@linux.ibm.com>
- <81c4a9ce-c363-a87a-06de-4a8729702b97@linux.microsoft.com>
- <a6c3e3ecb5c1c6f35b747f1ea4d8261667f9a376.camel@linux.ibm.com>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <af13db86-09c1-db12-330e-57e24bd07b9a@linux.microsoft.com>
-Date:   Wed, 21 Oct 2020 09:58:36 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Wed, 21 Oct 2020 12:59:10 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69187C0613CE;
+        Wed, 21 Oct 2020 09:59:10 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id d3so3362566wma.4;
+        Wed, 21 Oct 2020 09:59:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZOAwZaaZ/beDzvPjh4DfLLmuqS+BF1EdS0841cgpzLs=;
+        b=KrcsCvPHQglJCf7oeEF5m7FV7XdFHt9x7F3gW8Rhm9Z1S0QRti2sdPhJRUd8nmCeIQ
+         3nz8sdNk6BgUkY8f1F5JlMV1K0uL8nFfwxgu05ZF+h8mNRaCen+I8fHu2qwMEhXuoHxQ
+         JTFVDgrFTd80wy7wECZ8QX6wcnuGl9kt13IUQGXxcIPJSeOsOY5kwp/AW1iyvLdjBvlE
+         jfDbRMYRgpFMEECXiY7u070ca2FPFZbUC3+HpA7VTRRHbRF3eJzCfaBym6LyQzle5fXa
+         WaSBCbwTh+MoUYuuOsfK7FkiK03/r7t6PaZbFWgBBPbVE14yW1uU1GbLQtr2syg0vJUc
+         CNHg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZOAwZaaZ/beDzvPjh4DfLLmuqS+BF1EdS0841cgpzLs=;
+        b=iB2R1K7JXYlyT2k9TSrEiHIWv31cg2SFk9Fplt7alzw4/P8ChSTbzQA75brvk9ErSn
+         PnOv6TtX5z4NhY93SfeEYo55a7ly55Ls4HVQV0xW1ZG2goEVnOZv15sllXJ4g7vo6/QL
+         C9XNBTN0hXzjFiKPlMSI6RC4UdMEr4juLhAw2/Gq2aL1Q25KFULuWXIHmVtPYRAQMcn5
+         7q0dPJ2mhcI9lcnG8uKa/9JrC4nfEx9v+t3Xg1S71F+cVWuL9DLzUQMGTG5yGEQ1Oi64
+         0PjFlVI3ST5Sw5uYphgkLBHf0L4oXXX1By3SzF8Yya+niz8OBtjnLyCumzvkWRnUezGk
+         2Rpw==
+X-Gm-Message-State: AOAM530AO6RkDHjpSdp4iBjwlqTp6kM/Umw0TprW4tM0qn/Dvie65xdK
+        Kq1FqsO+IzgUTzneUiPxHMLCtrW9bYcNrqtoa0Y=
+X-Google-Smtp-Source: ABdhPJwu3PAB+EK3ul320vHDvWKoXxQTAQwJyBX44XCUJZtWcWL6PCNBwIxZExqEpwyJy/GoRVJba0GldZXaq6LR/GQ=
+X-Received: by 2002:a05:600c:2241:: with SMTP id a1mr4787948wmm.49.1603299549106;
+ Wed, 21 Oct 2020 09:59:09 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <a6c3e3ecb5c1c6f35b747f1ea4d8261667f9a376.camel@linux.ibm.com>
-Content-Type: text/plain; charset=iso-8859-15; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <cover.1598594714.git.viresh.kumar@linaro.org> <6e4110032f8711e8bb0acbeccfe66dec3b09d5c1.1598594714.git.viresh.kumar@linaro.org>
+ <20201005062633.ejpehkpeuwksrx3e@vireshk-i7> <20201021072404.y43tjzd2ehclrejp@vireshk-i7>
+In-Reply-To: <20201021072404.y43tjzd2ehclrejp@vireshk-i7>
+From:   Rob Clark <robdclark@gmail.com>
+Date:   Wed, 21 Oct 2020 09:58:57 -0700
+Message-ID: <CAF6AEGvAK_mAxJB32vvPOD3jumpYprRtUBPT8GRBV8gty7fxFQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/8] drm/msm: Unconditionally call dev_pm_opp_of_remove_table()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Rajendra Nayak <rnayak@codeaurora.org>,
+        Sean Paul <sean@poorly.run>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Stephen Boyd <sboyd@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Douglas Anderson <dianders@chromium.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 8:17 PM, Mimi Zohar wrote:
-> On Tue, 2020-10-20 at 19:25 -0700, Lakshmi Ramasubramanian wrote:
->> On 10/20/20 1:00 PM, Mimi Zohar wrote:
->>> Hi Lakshmi,
->>>
->>> On Wed, 2020-09-30 at 13:59 -0700, Lakshmi Ramasubramanian wrote:
->>>> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
->>>> carrying forward the IMA measurement logs on kexec for powerpc do not
->>>> have architecture specific code, but they are currently defined for
->>>> powerpc only.
->>>>
->>>> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
->>>> the IMA log entry from the device tree and free the memory reserved
->>>> for the log. These functions need to be defined even if the current
->>>> kernel does not support carrying forward IMA log across kexec since
->>>> the previous kernel could have supported that and therefore the current
->>>> kernel needs to free the allocation.
->>>>
->>>> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
->>>> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in kernel.
->>>> A later patch in this series will use these functions to free
->>>> the allocation, if any, made by the previous kernel for ARM64.
->>>>
->>>> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
->>>> "linux,ima-kexec-buffer", that is added to the DTB to hold
->>>> the address and the size of the memory reserved to carry
->>>> the IMA measurement log.
->>>
->>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>> Reported-by: kernel test robot <lkp@intel.com> error: implicit declaration of function 'delete_fdt_mem_rsv' [-Werror,-Wimplicit-function-declaration]
->>>
->>> Much better!  This version limits unnecessarily changing the existing
->>> code to adding a couple of debugging statements, but that looks to be
->>> about it.
->> Yes Mimi - that's correct.
->>
->>>
->>> Based on Chester Lin's "ima_arch" support for arm64 discussion, the IMA generic
->>> EFI support will be defined in ima/ima-efi.c.  Similarly, I think it would make sense to put the generic device tree support in ima/ima_kexec_fdt.c or ima/ima_fdt.c, as opposed to kernel/.  (Refer to my comments on 2/4 about the new file named ima_kexec_fdt.c.)
->>
->> The functions remove_ima_kexec_buffer() and delete_fdt_mem_rsv(), which
->> are defined in kernel/ima_kexec.c and kernel/kexec_file_fdt.c
->> respectively, are needed even when CONFIG_IMA is not defined. These
->> functions need to be called by the current kernel to free the ima kexec
->> buffer resources allocated by the previous kernel. This is the reason,
->> these functions are defined under "kernel" instead of
->> "security/integrity/ima".
->>
->> If there is a better location to move the above C files, please let me
->> know. I'll move them.
-> 
-> Freeing the previous kernel measurement list is currently called from
-> ima_load_kexec_buffer(), only after the measurement list has been
-> restored.  The only other time the memory is freed is when the
-> allocated memory size isn't sufficient to hold the measurement list,
-> which could happen if there is a delay between loading and executing
-> the kexec.
-> 
+On Wed, Oct 21, 2020 at 12:24 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 05-10-20, 11:56, Viresh Kumar wrote:
+> > On 28-08-20, 11:37, Viresh Kumar wrote:
+> > > dev_pm_opp_of_remove_table() doesn't report any errors when it fails to
+> > > find the OPP table with error -ENODEV (i.e. OPP table not present for
+> > > the device). And we can call dev_pm_opp_of_remove_table()
+> > > unconditionally here.
+> > >
+> > > While at it, also create a label to put clkname.
+> > >
+> > > Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+> >
+> > Can someone please apply this and the other drm patch (2/8) ?
+>
+> Rob/Rajendra, can someone please have a look at these patches ?
 
-There are two "free" operations we need to perform with respect to ima 
-buffer on kexec:
+Oh, sorry I missed that, could someone re-send it and CC
+freedreno@lists.freedesktop.org so it shows up in patchworks.. that is
+more reliable counting on me to not overlook something in my mail
 
-1, The ima_free_kexec_buffer() called from ima_load_kexec_buffer() - the 
-one you have stated above.
-
-Here we remove the "ima buffer" node from the "OF" tree and free the 
-memory pages that were allocated for the measurement list.
-
-This one is already present in ima and there's no change in that in my 
-patches.
-
-2, The other one is remove_ima_kexec_buffer() called from 
-setup_ima_buffer() defined in "arch/powerpc/kexec/ima.c"
-
-  This function removes the "ima buffer" node from the "FDT" and also 
-frees the physical memory reserved for the "ima measurement list" by the 
-previous kernel.
-
-  This "free" operation needs to be performed even if the current kernel 
-does not support IMA kexec since the previous kernel could have passed 
-the IMA measurement list (in FDT and reserved physical memory).
-
-For this reason, remove_ima_kexec_buffer() cannot be defined in "ima" 
-but some other place which will be built even if ima is not enabled. I 
-chose to define this function in "kernel" since that is guaranteed to be 
-always built.
-
-thanks,
-  -lakshmi
-
-
-
-
+BR,
+-R
