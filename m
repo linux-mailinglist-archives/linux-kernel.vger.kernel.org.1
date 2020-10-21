@@ -2,76 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D4F69294883
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:56:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C518F294872
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 08:45:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395142AbgJUG4M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 02:56:12 -0400
-Received: from smtp.h3c.com ([60.191.123.50]:10849 "EHLO h3cspam02-ex.h3c.com"
+        id S2394968AbgJUGp2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 02:45:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38434 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730565AbgJUG4M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 02:56:12 -0400
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([10.8.0.66])
-        by h3cspam02-ex.h3c.com with ESMTPS id 09L6t8vc026263
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Oct 2020 14:55:08 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from localhost.localdomain (10.99.212.201) by
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Wed, 21 Oct 2020 14:55:10 +0800
-From:   Xianting Tian <tian.xianting@h3c.com>
-To:     <kashyap.desai@broadcom.com>, <sumit.saxena@broadcom.com>,
-        <shivasharan.srikanteshwara@broadcom.com>, <jejb@linux.ibm.com>,
-        <martin.petersen@oracle.com>
-CC:     <megaraidlinux.pdl@broadcom.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Subject: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
-Date:   Wed, 21 Oct 2020 14:45:02 +0800
-Message-ID: <20201021064502.35469-1-tian.xianting@h3c.com>
-X-Mailer: git-send-email 2.17.1
+        id S2394966AbgJUGp1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 02:45:27 -0400
+Received: from coco.lan (ip5f5ad5a8.dynamic.kabel-deutschland.de [95.90.213.168])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8B8222075B;
+        Wed, 21 Oct 2020 06:45:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603262726;
+        bh=Wyw5We1ji398r6jEKsyOv1d233CBQmez+NyANTjly/w=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=yIfZmq8tDOVAVBY0McNrJzGl5Swv/H/EpWWIBkmQCxhCiH+eVKyXKJITzMWcvTRlt
+         SmbXzzl3/YB4iZjdBJJj4+VO6ZOmzpbh1EfiQSS6N4VjPgEog4Pf0qQpWpKGc0NLA4
+         OJsKcl8Z86Ihu0x+0Kjf/jw7WNL/2KnPTV0d5f9Y=
+Date:   Wed, 21 Oct 2020 08:45:18 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Frank Rowand <frowand.list@gmail.com>,
+        Geert Uytterhoeven <geert+renesas@glider.be>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Paul Mackerras <paulus@samba.org>,
+        Yoshinori Sato <ysato@users.sourceforge.jp>,
+        Rich Felker <dalias@libc.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, x86@kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-mips@vger.kernel.org,
+        linux-doc@vger.kernel.org, linux-sh@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+Subject: Re: [PATCH 2/2] dt: Remove booting-without-of.rst
+Message-ID: <20201021084518.1eab6481@coco.lan>
+In-Reply-To: <20201008142420.2083861-2-robh@kernel.org>
+References: <20201008142420.2083861-1-robh@kernel.org>
+        <20201008142420.2083861-2-robh@kernel.org>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.99.212.201]
-X-ClientProxiedBy: BJSMTP01-EX.srv.huawei-3com.com (10.63.20.132) To
- DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66)
-X-DNSRBL: 
-X-MAIL: h3cspam02-ex.h3c.com 09L6t8vc026263
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since we already in hard IRQ context when running megasas_isr(), so use
-spin_lock() is enough, which is faster than spin_lock_irqsave().
+Hi Rob,
 
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- drivers/scsi/megaraid/megaraid_sas_base.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+Em Thu,  8 Oct 2020 09:24:20 -0500
+Rob Herring <robh@kernel.org> escreveu:
 
-diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
-index 2b7e7b5f3..bd186254d 100644
---- a/drivers/scsi/megaraid/megaraid_sas_base.c
-+++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-@@ -3977,15 +3977,14 @@ static irqreturn_t megasas_isr(int irq, void *devp)
- {
- 	struct megasas_irq_context *irq_context = devp;
- 	struct megasas_instance *instance = irq_context->instance;
--	unsigned long flags;
- 	irqreturn_t rc;
- 
- 	if (atomic_read(&instance->fw_reset_no_pci_access))
- 		return IRQ_HANDLED;
- 
--	spin_lock_irqsave(&instance->hba_lock, flags);
-+	spin_lock(&instance->hba_lock);
- 	rc = megasas_deplete_reply_queue(instance, DID_OK);
--	spin_unlock_irqrestore(&instance->hba_lock, flags);
-+	spin_unlock(&instance->hba_lock);
- 
- 	return rc;
- }
--- 
-2.17.1
+> booting-without-of.rstt is an ancient document that first outlined
+> Flattened DeviceTree on PowerPC initially. The DT world has evolved a
+> lot in the 15 years since and booting-without-of.rst is pretty stale.
+> The name of the document itself is confusing if you don't understand the
+> evolution from real 'OpenFirmware'. Most of what booting-without-of.rst
+> contains is now in the DT specification (which evolved out of the
+> ePAPR). The few things that weren't documented in the DT specification
+> are now.
+> 
+> All that remains is the boot entry details, so let's move these to arch
+> specific documents. The exception is arm which already has the same
+> details documented.
 
+Removing this document caused a warning at Documentation/arm/booting.rst:
+
+	$ ./scripts/documentation-file-ref-check 
+	Documentation/arm/booting.rst: Documentation/devicetree/booting-without-of.rst
+
+as it mentions that the DTB format is described on booting-without-of.rst:
+
+	4b. Setup the device tree
+	-------------------------
+
+	The boot loader must load a device tree image (dtb) into system ram
+	at a 64bit aligned address and initialize it with the boot data.  The
+	dtb format is documented in Documentation/devicetree/booting-without-of.rst.
+	The kernel will look for the dtb magic value of 0xd00dfeed at the dtb
+	physical address to determine if a dtb has been passed instead of a
+	tagged list.
+
+So, I guess that such part of the document needs to be moved to booting.rst.
+
+Thanks,
+Mauro
