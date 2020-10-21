@@ -2,114 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 862782945C7
-	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:01:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFCBD2945C8
+	for <lists+linux-kernel@lfdr.de>; Wed, 21 Oct 2020 02:10:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410788AbgJUAA7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Tue, 20 Oct 2020 20:00:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43936 "EHLO
+        id S2410827AbgJUAKF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Tue, 20 Oct 2020 20:10:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2410778AbgJUAA6 (ORCPT
+        with ESMTP id S2410816AbgJUAKF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Tue, 20 Oct 2020 20:00:58 -0400
-Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1225CC0613CE;
-        Tue, 20 Oct 2020 17:00:58 -0700 (PDT)
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CG9cf4SdNz9sSG;
-        Wed, 21 Oct 2020 11:00:50 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603238452;
-        bh=0DXK4NIMtfSfXVyJsOvho9PCtSfMjF5Wwslj97gXnwM=;
-        h=Date:From:To:Cc:Subject:From;
-        b=NfD5Puig5wOEsyd45kbJmaRIJyr5NVLCi7Wo1x794wVQZiqaSUmXToxdeGYXtanHR
-         MRIAp3bIoV85/3/Ou9k3Dg77/sV1l41y3N9mFExcS3Zbo8tubB9LkQBofhLmN6k3sd
-         d+83Iv0bkppaXQ/L4u3l6vgfVVJMktd8Eo7kq2MQ31lo6y5yMf8h5L3F/6MqdArfzX
-         yNR8nCB+dnDKv9Y3x5g9YMm5A+4ZYe9v3Z+apt5+utoXB8JYwX0DrxDNFNwdIhqiGs
-         CdeMU1A/EZUYFVUsv/+hAggwOp5hbXclJxhi3rH/4vCCu/LP41ccufg9PnjLy95DHt
-         xrlW+5ZQfdfng==
-Date:   Wed, 21 Oct 2020 11:00:49 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Olof Johansson <olof@lixom.net>, Arnd Bergmann <arnd@arndb.de>,
-        ARM <linux-arm-kernel@lists.infradead.org>
-Cc:     "Andrew F. Davis" <afd@ti.com>,
-        Grzegorz Jaszczyk <grzegorz.jaszczyk@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>,
-        "Rafael J. Wysocki" <rafael.j.wysocki@intel.com>,
-        Santosh Shilimkar <santosh.shilimkar@oracle.com>,
-        Suman Anna <s-anna@ti.com>, Tero Kristo <t-kristo@ti.com>,
-        Ulf Hansson <ulf.hansson@linaro.org>
-Subject: linux-next: manual merge of the pm tree with the arm-soc tree
-Message-ID: <20201021110049.61cc4f61@canb.auug.org.au>
+        Tue, 20 Oct 2020 20:10:05 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4787BC0613CE
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:10:05 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b23so356245pgb.3
+        for <linux-kernel@vger.kernel.org>; Tue, 20 Oct 2020 17:10:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Es1dpFQTuiiNlYwTsEw7UkWuaTMZ5bRe2lb/esylIPk=;
+        b=DkFJtnGsN/NqjU4Gcguh6ZMWdPdaDDudzh7natzuoeZZ4rg0fq5jA9bG4zFJ2IOdLW
+         ToSA2nME8bIpGp7+6ihkt6m+ZXEf4Ib6Gk4e66/LDAjFX6Pq/i1d85MUnCjcAwvChbvf
+         awDWYlpBQ2GpuHOf8zIWuBgXpcCW8QScqj6aY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Es1dpFQTuiiNlYwTsEw7UkWuaTMZ5bRe2lb/esylIPk=;
+        b=S8KaWJVhwEGqWHN/LzJCFO1ZTAVx3EZwzQnveEwvri/l+sMq9QWodiGbc9te10yycs
+         qxsaz8zfdJm55A1IL4wjixNR4eEosGwBIXoG22p/t+gPb5PMYMp6JpO22RFN4G2djoV6
+         FDlKoqm94RgcmP4MVmcALusrYc3swQ+wl1sesZS8k20JinIQDoiQY6/wVb3ECYjnqxGq
+         F93VM3oTYrp4bskAXMgIrjEnYNw6FOft/FGqf5NXizFmbGjBDLqyqNs4jUcI6qobTXvF
+         y4+Bbxpudt3M5+dT0LMyzWL+h0eED0wTBv+alah18mzzcM7o8dHuZ4gCUvN8DtuAQGDm
+         b7YQ==
+X-Gm-Message-State: AOAM532thlU3SXyOKr6NLnzMTF6C9KHM0ty+Ndcszt5YKllv081yHvjH
+        xeFNAdL5l1TZbpvtirGW/5F4Yg==
+X-Google-Smtp-Source: ABdhPJyzdyQnQDaBVvvLa8T1uYFZW2KdVfbQNNLZFMJGba7udQ5FlFZqIT/v6eKvJ4PaGcCEI+GIZg==
+X-Received: by 2002:a62:6202:0:b029:15c:dac8:866 with SMTP id w2-20020a6262020000b029015cdac80866mr537873pfb.72.1603239004493;
+        Tue, 20 Oct 2020 17:10:04 -0700 (PDT)
+Received: from acourbot.tok.corp.google.com ([2401:fa00:8f:203:eeb1:d7ff:fe57:b7e5])
+        by smtp.gmail.com with ESMTPSA id j15sm267368pgn.32.2020.10.20.17.10.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 20 Oct 2020 17:10:03 -0700 (PDT)
+From:   Alexandre Courbot <acourbot@chromium.org>
+To:     Stanimir Varbanov <stanimir.varbanov@linaro.org>
+Cc:     Fritz Koenig <frkoenig@chromium.org>, linux-media@vger.kernel.org,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Alexandre Courbot <acourbot@chromium.org>
+Subject: [PATCH v2] venus: vdec: return parsed crop information from stream
+Date:   Wed, 21 Oct 2020 09:09:43 +0900
+Message-Id: <20201021000943.656247-1-acourbot@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/4fvmsBMoFqyWKMalBHR6dtr";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/4fvmsBMoFqyWKMalBHR6dtr
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Per the stateful codec specification, VIDIOC_G_SELECTION with a target
+of V4L2_SEL_TGT_COMPOSE is supposed to return the crop area of capture
+buffers containing the decoded frame. Until now the driver did not get
+that information from the firmware and just returned the dimensions of
+CAPTURE buffers.
 
-Hi all,
+The firmware unfortunately does not always provide the crop information
+from the stream ; also make sure to detect when that happens and
+fallback to providing the coded size in these cases.
 
-Today's linux-next merge of the pm tree got a conflict in:
+Signed-off-by: Alexandre Courbot <acourbot@chromium.org>
+---
+Changes since v1:
+* Fall back to the previous behavior of returning the coded size if the
+  firmware does not report any crop information.
 
-  drivers/soc/ti/Makefile
+ drivers/media/platform/qcom/venus/core.h |  1 +
+ drivers/media/platform/qcom/venus/vdec.c | 32 ++++++++++++++++++++----
+ 2 files changed, 28 insertions(+), 5 deletions(-)
 
-between commit:
+diff --git a/drivers/media/platform/qcom/venus/core.h b/drivers/media/platform/qcom/venus/core.h
+index 7b79a33dc9d6..3bc129a4f817 100644
+--- a/drivers/media/platform/qcom/venus/core.h
++++ b/drivers/media/platform/qcom/venus/core.h
+@@ -361,6 +361,7 @@ struct venus_inst {
+ 	unsigned int streamon_cap, streamon_out;
+ 	u32 width;
+ 	u32 height;
++	struct v4l2_rect crop;
+ 	u32 out_width;
+ 	u32 out_height;
+ 	u32 colorspace;
+diff --git a/drivers/media/platform/qcom/venus/vdec.c b/drivers/media/platform/qcom/venus/vdec.c
+index ea13170a6a2c..8488411204c3 100644
+--- a/drivers/media/platform/qcom/venus/vdec.c
++++ b/drivers/media/platform/qcom/venus/vdec.c
+@@ -325,6 +325,10 @@ static int vdec_s_fmt(struct file *file, void *fh, struct v4l2_format *f)
+ 
+ 	inst->width = format.fmt.pix_mp.width;
+ 	inst->height = format.fmt.pix_mp.height;
++	inst->crop.top = 0;
++	inst->crop.left = 0;
++	inst->crop.width = inst->width;
++	inst->crop.height = inst->height;
+ 
+ 	if (f->type == V4L2_BUF_TYPE_VIDEO_OUTPUT_MPLANE)
+ 		inst->fmt_out = fmt;
+@@ -343,6 +347,9 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
+ 	    s->type != V4L2_BUF_TYPE_VIDEO_OUTPUT)
+ 		return -EINVAL;
+ 
++	s->r.top = 0;
++	s->r.left = 0;
++
+ 	switch (s->target) {
+ 	case V4L2_SEL_TGT_CROP_BOUNDS:
+ 	case V4L2_SEL_TGT_CROP_DEFAULT:
+@@ -363,16 +370,12 @@ vdec_g_selection(struct file *file, void *fh, struct v4l2_selection *s)
+ 	case V4L2_SEL_TGT_COMPOSE:
+ 		if (s->type != V4L2_BUF_TYPE_VIDEO_CAPTURE)
+ 			return -EINVAL;
+-		s->r.width = inst->out_width;
+-		s->r.height = inst->out_height;
++		s->r = inst->crop;
+ 		break;
+ 	default:
+ 		return -EINVAL;
+ 	}
+ 
+-	s->r.top = 0;
+-	s->r.left = 0;
+-
+ 	return 0;
+ }
+ 
+@@ -1309,6 +1312,21 @@ static void vdec_event_change(struct venus_inst *inst,
+ 
+ 	inst->width = format.fmt.pix_mp.width;
+ 	inst->height = format.fmt.pix_mp.height;
++	/*
++	 * Some versions of the firmware do not report crop information for
++	 * all codecs. For these cases, set the crop to the coded resolution.
++	 */
++	if (ev_data->input_crop.width > 0 && ev_data->input_crop.height > 0) {
++		inst->crop.left = ev_data->input_crop.left;
++		inst->crop.top = ev_data->input_crop.top;
++		inst->crop.width = ev_data->input_crop.width;
++		inst->crop.height = ev_data->input_crop.height;
++	} else {
++		inst->crop.left = 0;
++		inst->crop.top = 0;
++		inst->crop.width = ev_data->width;
++		inst->crop.height = ev_data->height;
++	}
+ 
+ 	inst->out_width = ev_data->width;
+ 	inst->out_height = ev_data->height;
+@@ -1412,6 +1430,10 @@ static void vdec_inst_init(struct venus_inst *inst)
+ 	inst->fmt_cap = &vdec_formats[0];
+ 	inst->width = frame_width_min(inst);
+ 	inst->height = ALIGN(frame_height_min(inst), 32);
++	inst->crop.left = 0;
++	inst->crop.top = 0;
++	inst->crop.width = inst->width;
++	inst->crop.height = inst->height;
+ 	inst->out_width = frame_width_min(inst);
+ 	inst->out_height = frame_height_min(inst);
+ 	inst->fps = 30;
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-  dc1129564a01 ("soc: ti: pruss: Add a platform driver for PRUSS in TI SoCs=
-")
-
-from the arm-soc tree and commit:
-
-  bca815d62054 ("PM: AVS: smartreflex Move driver to soc specific drivers")
-
-from the pm tree.
-
-I fixed it up (see below) and can carry the fix as necessary. This
-is now fixed as far as linux-next is concerned, but any non trivial
-conflicts should be mentioned to your upstream maintainer when your tree
-is submitted for merging.  You may also want to consider cooperating
-with the maintainer of the conflicting tree to minimise any particularly
-complex conflicts.
-
---=20
-Cheers,
-Stephen Rothwell
-
-diff --cc drivers/soc/ti/Makefile
-index 18129aa557df,5463431ec96c..000000000000
---- a/drivers/soc/ti/Makefile
-+++ b/drivers/soc/ti/Makefile
-@@@ -12,4 -12,4 +12,5 @@@ obj-$(CONFIG_TI_SCI_PM_DOMAINS)		+=3D ti_
-  obj-$(CONFIG_TI_SCI_INTA_MSI_DOMAIN)	+=3D ti_sci_inta_msi.o
-  obj-$(CONFIG_TI_K3_RINGACC)		+=3D k3-ringacc.o
-  obj-$(CONFIG_TI_K3_SOCINFO)		+=3D k3-socinfo.o
- +obj-$(CONFIG_TI_PRUSS)			+=3D pruss.o
-+ obj-$(CONFIG_POWER_AVS_OMAP)		+=3D smartreflex.o
-
---Sig_/4fvmsBMoFqyWKMalBHR6dtr
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+PejEACgkQAVBC80lX
-0Gy+Nwf/YJruL9M6D5Gf7WFHb2v3NHsMN1zx0c0bq1YNGyvXkRUvZ/0FiAkxDFEW
-l6Ha7Slcv7vVyCMi/hSoNP9gu8BMpoJLbGZMlBSD2+Cx2lmvkTVc1sew9eyDN2t+
-LZLMiyOIH1S6nMdEtVIPGBrDTeBKYTN97jbFB8O3Ik5ykfLoSKKAFmJ/sLb1O2v3
-VayeXgSa9S46gEozjazmwKLAajz4q5r6FSQufLpAhgNRXDlb1/C6D4F6olwpsVsU
-G0odS1bNCmagSYQRTq36AL/e3/D7J5Q1cqqLpuKpaLecmSOszNi5JLeJqy9bRTRO
-Zp6MhGTzRq4VQAcvwDIRxiotJ94KXw==
-=T9hv
------END PGP SIGNATURE-----
-
---Sig_/4fvmsBMoFqyWKMalBHR6dtr--
