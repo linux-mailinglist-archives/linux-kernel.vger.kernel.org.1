@@ -2,119 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 735D92960DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:23:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 11F6B2960E7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:27:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368124AbgJVOXf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:23:35 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:42283 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368111AbgJVOXf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:23:35 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603376614; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=5qB5Dccn15buC2KJI/Udo57VxjYkbuR0df0+slTqVyE=;
- b=vKTg0ugxv9zJwsfyyOcKLIdR5c1zM8vLqm85vChV7UMDHL7BMjYA+TD7z32jo/pMZCrReTzU
- jMklwdcJknIQS3LQvvdRFWlmJXH+GJ7cxyset/zdC9kP9A2nq0/k+IGVQ2EiId1T+a48TPJu
- wbR+AyRbJym6SCDVzxfoLP+IO9k=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-east-1.postgun.com with SMTP id
- 5f9195e53711fec7b136efd5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 14:23:33
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C0ABC43395; Thu, 22 Oct 2020 14:23:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 40BC8C433CB;
-        Thu, 22 Oct 2020 14:23:32 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Oct 2020 19:53:32 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <20201022133414.GH2611@hirez.programming.kicks-ass.net>
-References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <20201022113214.GD2611@hirez.programming.kicks-ass.net>
- <a6eadc723ae52396a655c61b9f8d4eef@codeaurora.org>
- <20201022133414.GH2611@hirez.programming.kicks-ass.net>
-Message-ID: <8ecb29f116a78855ca59928c1e0e1eb7@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S2900857AbgJVO1D (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:27:03 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:33209 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507932AbgJVO1C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:27:02 -0400
+Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kVbYK-0002oC-UO; Thu, 22 Oct 2020 14:26:53 +0000
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+To:     marcel@holtmann.org, johan.hedberg@gmail.com
+Cc:     max.chou@realtek.com, alex_lu@realsil.com.cn,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-bluetooth@vger.kernel.org (open list:BLUETOOTH DRIVERS),
+        linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH] Bluetooth: btrtl: Ask 8821C to drop old firmware after shutdown
+Date:   Thu, 22 Oct 2020 22:26:48 +0800
+Message-Id: <20201022142648.446-1-kai.heng.feng@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-22 19:04, Peter Zijlstra wrote:
-> On Thu, Oct 22, 2020 at 06:19:37PM +0530, Sai Prakash Ranjan wrote:
->> On 2020-10-22 17:02, Peter Zijlstra wrote:
->> > On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
->> >
->> > > Looking at the ETR and other places in the kernel, ETF and the
->> > > ETB are the only places trying to dereference the task(owner)
->> > > in tmc_enable_etf_sink_perf() which is also called from the
->> > > sched_in path as in the call trace.
->> >
->> > > @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct
->> > > coresight_device *csdev,
->> > >  {
->> > >  	int node;
->> > >  	struct cs_buffers *buf;
->> > > +	struct task_struct *task = READ_ONCE(event->owner);
->> > > +
->> > > +	if (!task || is_kernel_event(event))
->> > > +		return NULL;
->> >
->> >
->> > This is *wrong*... why do you care about who owns the events?
->> >
->> 
->> The original issue was the owner being NULL and causing
->> a NULL pointer dereference. I did ask some time back
->> if it is valid for the owner to be NULL [1] and should
->> probably be handled in events core?
-> 
-> No, what I asked is why do you care about ->owner to begin with? That
-> seems wrong. A driver should not touch ->owner _at_all_.
-> 
+Some platforms keep USB power even when they are powered off and in S5,
+this makes Realtek 8821C keep its firmware even after a cold boot, and
+make 8821C never load new firmware.
 
-Ah ok, so Suzuki explained that in other reply and if there is
-some other better way?
+So use vendor specific HCI command to ask 8821C drop its firmware after
+system shutdown.
 
-Thanks,
-Sai
+Newer firmware doesn't have this issue so we only use this trick for old
+8821C firmware version.
 
+Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
+---
+ drivers/bluetooth/btrtl.c | 25 +++++++++++++++++++++++++
+ 1 file changed, 25 insertions(+)
+
+diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
+index 3a9afc905f24..2f3843fb2b95 100644
+--- a/drivers/bluetooth/btrtl.c
++++ b/drivers/bluetooth/btrtl.c
+@@ -55,6 +55,7 @@ struct btrtl_device_info {
+ 	int fw_len;
+ 	u8 *cfg_data;
+ 	int cfg_len;
++	bool drop_fw;
+ };
+ 
+ static const struct id_table ic_id_table[] = {
+@@ -584,6 +585,11 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
+ 	hci_ver = resp->hci_ver;
+ 	hci_rev = le16_to_cpu(resp->hci_rev);
+ 	lmp_subver = le16_to_cpu(resp->lmp_subver);
++
++	if (resp->hci_ver == 0x8 && le16_to_cpu(resp->hci_rev == 0x826c) &&
++	    resp->lmp_ver == 0x8 && le16_to_cpu(resp->lmp_subver == 0xa99e))
++		btrtl_dev->drop_fw = true;
++
+ 	kfree_skb(skb);
+ 
+ 	btrtl_dev->ic_info = btrtl_match_ic(lmp_subver, hci_rev, hci_ver,
+@@ -671,6 +677,9 @@ EXPORT_SYMBOL_GPL(btrtl_download_firmware);
+ int btrtl_setup_realtek(struct hci_dev *hdev)
+ {
+ 	struct btrtl_device_info *btrtl_dev;
++	struct sk_buff *skb;
++	u16 opcode;
++	u8 cmd[2];
+ 	int ret;
+ 
+ 	btrtl_dev = btrtl_initialize(hdev, NULL);
+@@ -679,6 +688,22 @@ int btrtl_setup_realtek(struct hci_dev *hdev)
+ 
+ 	ret = btrtl_download_firmware(hdev, btrtl_dev);
+ 
++	if (btrtl_dev->drop_fw) {
++		opcode = hci_opcode_pack(0x3f, 0x66);
++		cmd[0] = opcode & 0xff;
++		cmd[1] = opcode >> 8;
++
++		skb = bt_skb_alloc(sizeof(cmd), GFP_KERNEL);
++		if (IS_ERR(skb))
++			goto out_free;
++
++		skb_put_data(skb, cmd, sizeof(cmd));
++		hci_skb_pkt_type(skb) = HCI_COMMAND_PKT;
++
++		hdev->send(hdev, skb);
++	}
++
++out_free:
+ 	btrtl_free(btrtl_dev);
+ 
+ 	/* Enable controller to do both LE scan and BR/EDR inquiry
 -- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+2.17.1
+
