@@ -2,81 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 85F942958A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:55:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123402958AA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:56:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504607AbgJVGzs convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 02:55:48 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:33012 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2411545AbgJVGzr (ORCPT
+        id S2504672AbgJVGz4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 02:55:56 -0400
+Received: from smtp-fw-4101.amazon.com ([72.21.198.25]:40010 "EHLO
+        smtp-fw-4101.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2439096AbgJVGzz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 02:55:47 -0400
-Received: by mail-ed1-f67.google.com with SMTP id w23so673889edl.0;
-        Wed, 21 Oct 2020 23:55:46 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wMeB1zJzZMK8x7XA1QSAy+WdSIpZ6mUMkpBppzeyvnw=;
-        b=YUB39IHhYcaI2qkgIOOKfF/XmPoHGFfS0TeVQ5CYM8KIr46Hlm6BYTmEPtnTVBBOrf
-         469ysRGQNWLHxg8rIUW1IeGJqTlAjNz2HvPvi2IR5C3t9/YhO9/h5Hx/1ylKO159eTCr
-         4b4fBYw8GzF8SZdauEty6jU6JheOV7S910v2N/jowVaI98dguhBd1Ash0Abm6wMhgQ4P
-         SHmy01vlio0jOOpGVpmsS1JNZki5Nwdp2YJDo335mquEmwCe2XmAwaQ+B04yMylEJdo2
-         ujecThgzXFV2/GJWkDRou9vq6DBDohQwgz+KF6whTYG7lvNpdBT3GegKCCRFhRbJCxEd
-         N4eg==
-X-Gm-Message-State: AOAM530Y8/lwqUkAA/eOTLhjrtNVz5a8k8EG5d8szMXRFyChO+5z/4OE
-        8FtrIPF1v22yHJQaH1YQBvM=
-X-Google-Smtp-Source: ABdhPJygfj7Hlq2E4HbV0n7CfCdPnc4i/J7eKS1StJBSG5I6GXjoEvLuS0tOu+gGxnqqzYGmz4+Zqg==
-X-Received: by 2002:aa7:c98f:: with SMTP id c15mr973061edt.200.1603349746176;
-        Wed, 21 Oct 2020 23:55:46 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id e7sm303568ejm.4.2020.10.21.23.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 23:55:45 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 08:55:42 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v3 2/5] dt-bindings: net: Add bindings for AX88796C SPI
- Ethernet Adapter
-Message-ID: <20201022065542.GB3829@kozik-lap>
-References: <20201021214910.20001-1-l.stelmach@samsung.com>
- <CGME20201021214933eucas1p152c8fc594793aca56a1cbf008f8415a4@eucas1p1.samsung.com>
- <20201021214910.20001-3-l.stelmach@samsung.com>
+        Thu, 22 Oct 2020 02:55:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1603349755; x=1634885755;
+  h=from:to:cc:date:message-id:references:in-reply-to:
+   content-id:content-transfer-encoding:mime-version:subject;
+  bh=ZIW2hE594XwZjy1ZzYN4UgXXIpzsdA43Espcpx8qWbg=;
+  b=uOrREnLTpSqTnYFpUH1fOMFotFyofbAwsbXftPovLy9xxZhHL+QZrg3Q
+   gJXOcMlvpg4t/Ob8rOcE+zS1yrnKGawEC6gM3NvvfI1ZZLaQwG37ZQmJG
+   tPIMwHjo0X3QaxDGF+NcUByuLeQU7j/aqsW6Ae1gl/q3dbXzGbxgODW+W
+   M=;
+X-IronPort-AV: E=Sophos;i="5.77,403,1596499200"; 
+   d="scan'208";a="60741992"
+Subject: Re: linux-next: Signed-off-by missing for commit in the jc_docs tree
+Thread-Topic: linux-next: Signed-off-by missing for commit in the jc_docs tree
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-4101.iad4.amazon.com with ESMTP; 22 Oct 2020 06:55:46 +0000
+Received: from EX13D38EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1d-37fd6b3d.us-east-1.amazon.com (Postfix) with ESMTPS id CF0E228405C;
+        Thu, 22 Oct 2020 06:55:45 +0000 (UTC)
+Received: from EX13D38EUB001.ant.amazon.com (10.43.166.110) by
+ EX13D38EUB001.ant.amazon.com (10.43.166.110) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 22 Oct 2020 06:55:44 +0000
+Received: from EX13D38EUB001.ant.amazon.com ([10.43.166.110]) by
+ EX13D38EUB001.ant.amazon.com ([10.43.166.110]) with mapi id 15.00.1497.006;
+ Thu, 22 Oct 2020 06:55:44 +0000
+From:   "Zheng, Fam" <famzheng@amazon.com>
+To:     "sfr@canb.auug.org.au" <sfr@canb.auug.org.au>,
+        "corbet@lwn.net" <corbet@lwn.net>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-next@vger.kernel.org" <linux-next@vger.kernel.org>
+Thread-Index: AQHWp/USOxUvfKGOsEqqp9uXnw+NmKmioKMAgACQLAA=
+Date:   Thu, 22 Oct 2020 06:55:44 +0000
+Message-ID: <4b2a547e58b700455f6732f13cac32cb74568e96.camel@amazon.com>
+References: <20201022085542.0abc028d@canb.auug.org.au>
+         <20201021161944.14fb7d9f@lwn.net>
+In-Reply-To: <20201021161944.14fb7d9f@lwn.net>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-messagesentrepresentingtype: 1
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.43.164.68]
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <3EB8FE3A902BC34AA202D30E43491A0F@amazon.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201021214910.20001-3-l.stelmach@samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:49:07PM +0200, Łukasz Stelmach wrote:
-> Add bindings for AX88796C SPI Ethernet Adapter.
-> 
-> Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
-> ---
->  .../bindings/net/asix,ax88796c.yaml           | 69 +++++++++++++++++++
->  1 file changed, 69 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/net/asix,ax88796c.yaml
-> 
-
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
-
-Best regards,
-Krzysztof
+T24gV2VkLCAyMDIwLTEwLTIxIGF0IDE2OjE5IC0wNjAwLCBKb25hdGhhbiBDb3JiZXQgd3JvdGU6
+DQo+IENBVVRJT046IFRoaXMgZW1haWwgb3JpZ2luYXRlZCBmcm9tIG91dHNpZGUgb2YgdGhlIG9y
+Z2FuaXphdGlvbi4gRG8NCj4gbm90IGNsaWNrIGxpbmtzIG9yIG9wZW4gYXR0YWNobWVudHMgdW5s
+ZXNzIHlvdSBjYW4gY29uZmlybSB0aGUgc2VuZGVyDQo+IGFuZCBrbm93IHRoZSBjb250ZW50IGlz
+IHNhZmUuDQo+IA0KPiANCj4gDQo+IE9uIFRodSwgMjIgT2N0IDIwMjAgMDg6NTU6NDIgKzExMDAN
+Cj4gU3RlcGhlbiBSb3Rod2VsbCA8c2ZyQGNhbmIuYXV1Zy5vcmcuYXU+IHdyb3RlOg0KPiANCj4g
+PiBDb21taXQNCj4gPiANCj4gPiAgIDk0Njc3MzljMjM5ZCAoImRvY3M6IEFkZCB0d28gbWlzc2lu
+ZyBlbnRyaWVzIGluIHZtIHN5c2N0bCBpbmRleCIpDQo+ID4gDQo+ID4gaXMgbWlzc2luZyBhIFNp
+Z25lZC1vZmYtYnkgZnJvbSBpdHMgYXV0aG9yLg0KPiANCj4gQXJnaCwgSSBzaG91bGQgaGF2ZSBj
+YXVnaHQgdGhhdC4gIEknZCBibGFtZSB3aWxkZmlyZXMsIGJ1dCB0aGF0IHdvdWxkDQo+IGJlDQo+
+IGxhbWUuDQo+IA0KPiBPZmZlbmRpbmcgY29tbWl0IHJlbW92ZWQ7IEZhbSwgY2FuIHlvdSBzZW5k
+IGEgcHJvcGVybHkgc2lnbmVkLW9mZg0KPiByZXBsYWNlbWVudD8gIE1lYW53aGlsZSBJJ20gZ29p
+bmcgdG8gZ28gbG9vayBhdCBteSB0b29saW5nIHNvIHRoaXMNCj4gZG9lc24ndA0KPiBoYXBwZW4g
+YWdhaW4uLi4NCg0KTXkgYmFkLCBJJ2xsIGZpeCBteSBzZXR1cC4NCg0KVjIgc2VudC4NCg0KRmFt
+DQoNCj4gDQo+IFRoYW5rcyBmb3IgdGhlIGhlYWRzLXVwLA0KPiANCj4gam9uDQo=
