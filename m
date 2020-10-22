@@ -2,96 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E60C72962E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:40:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 989F52962EC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:41:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901920AbgJVQkx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:40:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53756 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897502AbgJVQkw (ORCPT
+        id S2901932AbgJVQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:41:00 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:34856 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897708AbgJVQk7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:40:52 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B5A0BC0613CE;
-        Thu, 22 Oct 2020 09:40:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=IreJsWAehwwc9BigrWTsj0+t0+yJCwyFYLOnBdIPcSg=; b=MtK1TZXciwmKvAXJnEsSoBMqrf
-        72WiHkjyyFo9h6lPVsS32dBYqPHdi5iojV1xKAx6YuDdk1affu1pbBrT2k20OPlS+2gByBZEcvd9j
-        MlFH0jBbmth/M/2D+92OFAiZfPEHzOaHPspxeiSjK15e6TDFdxwEjlSFuOSJj6rfmS8IzOOXphXvG
-        Ht7qrXEw/cFXbdw4rjjzM4xSPRXX4g6iUWHMpU3Njtfxtxy5DA+zObVJbcYkefXEH4g9KJq62LzKN
-        0WCqRhPDlo3ZK7DTgaDVgnHVzVD3U2hWPPP4hFxd8Z8Po1erHVxohPm9W28iiZl9eK3OjpBjKRk8a
-        +67cBPOg==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVddo-0002sM-QL; Thu, 22 Oct 2020 16:40:40 +0000
-Date:   Thu, 22 Oct 2020 17:40:40 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'Christoph Hellwig' <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022164040.GV20115@casper.infradead.org>
-References: <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022132342.GB8781@lst.de>
- <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+        Thu, 22 Oct 2020 12:40:59 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kVde2-0001c1-45; Thu, 22 Oct 2020 12:40:54 -0400
+Message-ID: <62fc8d07474acaccb65a9e20a4ebc0127e417f05.camel@surriel.com>
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+From:   Rik van Riel <riel@surriel.com>
+To:     Yu Xu <xuyu@linux.alibaba.com>, Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Date:   Thu, 22 Oct 2020 12:40:53 -0400
+In-Reply-To: <f0b4a9de-1f2f-4147-e188-c946207fb29e@linux.alibaba.com>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+         <f0b4a9de-1f2f-4147-e188-c946207fb29e@linux.alibaba.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-292l4+Z5viPK7NhuvnQt"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:35:17PM +0000, David Laight wrote:
-> Wait...
-> readv(2) defines:
-> 	ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
 
-It doesn't really matter what the manpage says.  What does the AOSP
-libc header say?
+--=-292l4+Z5viPK7NhuvnQt
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> But the syscall is defined as:
-> 
-> SYSCALL_DEFINE3(readv, unsigned long, fd, const struct iovec __user *, vec,
->                 unsigned long, vlen)
-> {
->         return do_readv(fd, vec, vlen, 0);
-> }
+On Fri, 2020-10-23 at 00:00 +0800, Yu Xu wrote:
+> On 10/22/20 11:48 AM, Rik van Riel wrote:
+> > The allocation flags of anonymous transparent huge pages can be
+> > controlled
+> > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
+> > which can
+> > help the system from getting bogged down in the page reclaim and
+> > compaction
+> > code when many THPs are getting allocated simultaneously.
+> >=20
+> > However, the gfp_mask for shmem THP allocations were not limited by
+> > those
+> > configuration settings, and some workloads ended up with all CPUs
+> > stuck
+> > on the LRU lock in the page reclaim code, trying to allocate dozens
+> > of
+> > THPs simultaneously.
+> >=20
+> > This patch applies the same configurated limitation of THPs to
+> > shmem
+> > hugepage allocations, to prevent that from happening.
+> >=20
+> > This way a THP defrag setting of "never" or "defer+madvise" will
+> > result
+> > in quick allocation failures without direct reclaim when no 2MB
+> > free
+> > pages are available.
+> >=20
+> > Signed-off-by: Rik van Riel <riel@surriel.com>
+> > ---
+> >=20
+> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> > index c603237e006c..0a5b164a26d9 100644
+> > --- a/include/linux/gfp.h
+> > +++ b/include/linux/gfp.h
+> > @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+> >   extern void pm_restrict_gfp_mask(void);
+> >   extern void pm_restore_gfp_mask(void);
+> >  =20
+> > +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct
+> > *vma);
+> > +
+> >   #ifdef CONFIG_PM_SLEEP
+> >   extern bool pm_suspended_storage(void);
+> >   #else
+> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> > index 9474dbc150ed..9b08ce5cc387 100644
+> > --- a/mm/huge_memory.c
+> > +++ b/mm/huge_memory.c
+> > @@ -649,7 +649,7 @@ static vm_fault_t
+> > __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+> >    *	    available
+> >    * never: never stall for any thp allocation
+> >    */
+> > -static inline gfp_t alloc_hugepage_direct_gfpmask(struct
+> > vm_area_struct *vma)
+> > +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+> >   {
+> >   	const bool vma_madvised =3D !!(vma->vm_flags & VM_HUGEPAGE);
+> >  =20
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index 537c137698f8..d1290eb508e5 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -1545,8 +1545,11 @@ static struct page
+> > *shmem_alloc_hugepage(gfp_t gfp,
+> >   		return NULL;
+> >  =20
+> >   	shmem_pseudo_vma_init(&pvma, info, hindex);
+> > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY |
+> > __GFP_NOWARN,
+> > -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+> > true);
+> > +	/* Limit the gfp mask according to THP configuration. */
+> > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+> > +	gfp &=3D alloc_hugepage_direct_gfpmask(&pvma);
+>=20
+> It is fine to reuse `alloc_hugepage_direct_gfpmask`, but
+> `pvma.vm_flags & VM_HUGEPAGE` is always false here, thus,
+> `vma_madvised` in `alloc_hugepage_direct_gfpmask` will always
+> be false.
+>=20
+> That is why I chose to do the gfp_mask fixup in `shmem_getpage_gfp`,
+> using `sgp_huge` to indicate `vma_madvised`, although with some silly
+> mistakes pointed out by you, in another mail thread.
+>=20
+> It will be better if vma_madvised is well handled in your solution.
+
+OK, let me send a v2 that does that!
+
+By just passing a correct gfp_mask to shmem_alloc_and_acct_page
+we can also avoid the gfp gymnastics in shmem_alloc_hugepage
+that Michal rightfully objected to.
+
+--=20
+All Rights Reversed.
+
+--=-292l4+Z5viPK7NhuvnQt
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RthUACgkQznnekoTE
+3oNW0Af/ZErgA5cOrDiHMkRlcH76fPdw8whz+iN9/tqmguNEPBLntOEkULl+gH8n
+aHiI0F8OIt8oZTWoA4JowhOx1VCadr30XVaiNFym/3audu+Hsh9i8kf4FKGwxxb6
+9khP8JubPidppIIBnt8q3TQvnFH/I5J6op2W2DKTs9lNFjxHkVzMpJDVyOm7i0Iq
+b+7yWS5RtJ2pszvI7T8BDT+UkWdB8Sl6mEC11SWaSGXm6X38viZVixG23PY/ZIl6
+G9xoM2YYKcwqmb9aupwJuw2Xwei1q6aCnpTEEZ8eDdu8KLg5czCBjd9pyKZmqqSi
+gQs/ORiXvPLraSX2sZaLksh1PenTLw==
+=6hGB
+-----END PGP SIGNATURE-----
+
+--=-292l4+Z5viPK7NhuvnQt--
 
