@@ -2,77 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E820296767
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:38:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F136F29676A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:39:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372979AbgJVWit (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:38:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52636 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372972AbgJVWis (ORCPT
+        id S372996AbgJVWjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:39:31 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:50106 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372971AbgJVWj3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:38:48 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8343EC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:38:48 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f38so1630751pgm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:38:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=sM7T5skUjFddu7eojter1UkXlJtl9na/jTfvt1eFjX4=;
-        b=ShZntCW6z+yuAjiKM489Xf4bVq4gZd/uIr6PBtb5oCN0fAX0jHAoObwg327SZDHjOG
-         QEub7P91eoFYGtPLI8y59rU+L131ItpM/Dk1n+qan1tw7v1rCcm8YIlnLhZM9o2vcpg3
-         Ek730Y16mUiORVzJ9dGGPZUBroU7w4PGMt8oM=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=sM7T5skUjFddu7eojter1UkXlJtl9na/jTfvt1eFjX4=;
-        b=DSDUOM1P58DZfjSmTR1tZkkPIVDCTnsNPSQkNoN8ugImhsb1+g6C0o5YUCnxSX4mr6
-         BCPSPo9TpUK05QikDn1h0j3Hw9V6coOIhH3N7o1DmGUIncxc3rbq7kAhw+oAK3El0ko6
-         Trj4W8rhtSHN3Nvwd4tAzBw9XSf4Fydy5f4VrGbDSad6ZQzMn74oH6AvHAs4n/vRMr6Y
-         ROvx8E07vSjdQY8EP/MoAPeXZnMaEkdWjAMYyoGSqpcTEmIlXKwuIym7ibCqSfEhT+JX
-         Sh7PALl0hkCmQcc+RTKPuIUea2NRzoBR+uuZlZeGPxui45VMpsu/OcHjymcLPxouv9kO
-         NTZg==
-X-Gm-Message-State: AOAM531iFOUp3D7ryvD1lKul9iknOdKqpDsCDVC+VSgHPzsXybx6NPnU
-        +8kqK6VHQKVLtxpzzgHaBsYB/w==
-X-Google-Smtp-Source: ABdhPJwRP0IOyYmm6D74/zs+c9wVZx6GWt+/ixSaQyDtwiP5gp72p1nNZjB7fXxPG6ccqpGwt9KjKg==
-X-Received: by 2002:a63:190e:: with SMTP id z14mr3892459pgl.272.1603406328086;
-        Thu, 22 Oct 2020 15:38:48 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id q24sm3125113pgb.12.2020.10.22.15.38.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 15:38:47 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:38:46 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Sami Tolvanen <samitolvanen@google.com>
-Cc:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        James Morse <james.morse@arm.com>,
-        Ard Biesheuvel <ard.biesheuvel@linaro.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] arm64: scs: use vmapped IRQ and SDEI shadow stacks
-Message-ID: <202010221538.92E6C83@keescook>
-References: <20201022202355.3529836-1-samitolvanen@google.com>
- <20201022202355.3529836-3-samitolvanen@google.com>
+        Thu, 22 Oct 2020 18:39:29 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603406366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SrnDQ4pBHMGHEMhYZ0N79a51WfK6iJHdrjE3kDgVDiI=;
+        b=iy4bIK/ZpYUnzYJlhG1X4xFIb08cTGDBQ+HlR6v5IxdhK7umkvHwCM+mPE40K9vypjbHfE
+        io4BMQy2A5SBBcVjsI76MvcSWRoHDgIWZpVprt99G0b31BAZFCe/eZc03927hcTrVhy2zj
+        ka0HpBxBsB3+1Ctwmx4ULj3/xBVV3wVakTbKJdu8z7y12AMtI30/PTVK71CE6RIrfI9zgM
+        yoK17mBSmBj6XQHXYYO9QBqtuHVlXg5CRwNXh/MbYPuEbZn2oMPyK5ihBSBLpGARixsoBQ
+        04jNkCIjrFrEr9bGMYI6+7ZmQ7G9zSkUr3ghrmkeXOxZ0L34xwJz3qETxpIQhw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603406366;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SrnDQ4pBHMGHEMhYZ0N79a51WfK6iJHdrjE3kDgVDiI=;
+        b=4oNDdQ0Jz1ulYn3D+b0WK6DPec8o3QKBDso61BYhMIyNImFm1hDcbSdyP0ulQOGdcTp7p7
+        1WzNdwrla364OSDw==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        lgoncalv@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        Dave Miller <davem@davemloft.net>
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
+In-Reply-To: <20201022122849.GA148426@fuller.cnet>
+References: <20200928183529.471328-1-nitesh@redhat.com> <20200928183529.471328-5-nitesh@redhat.com> <87v9f57zjf.fsf@nanos.tec.linutronix.de> <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com> <87lfg093fo.fsf@nanos.tec.linutronix.de> <877drj72cz.fsf@nanos.tec.linutronix.de> <20201022122849.GA148426@fuller.cnet>
+Date:   Fri, 23 Oct 2020 00:39:25 +0200
+Message-ID: <87pn596g2q.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022202355.3529836-3-samitolvanen@google.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 01:23:55PM -0700, Sami Tolvanen wrote:
-> Use scs_alloc() to allocate also IRQ and SDEI shadow stacks instead of
-> using statically allocated stacks.
-> 
-> Signed-off-by: Sami Tolvanen <samitolvanen@google.com>
+On Thu, Oct 22 2020 at 09:28, Marcelo Tosatti wrote:
+> On Wed, Oct 21, 2020 at 10:25:48PM +0200, Thomas Gleixner wrote:
+>> The right answer to this is to utilize managed interrupts and have
+>> according logic in your network driver to handle CPU hotplug. When a CPU
+>> goes down, then the queue which is associated to that CPU is quiesced
+>> and the interrupt core shuts down the relevant interrupt instead of
+>> moving it to an online CPU (which causes the whole vector exhaustion
+>> problem on x86). When the CPU comes online again, then the interrupt is
+>> reenabled in the core and the driver reactivates the queue.
+>
+> Aha... But it would be necessary to do that from userspace (for runtime
+> isolate/unisolate).
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+For anything which uses managed interrupts this is a non-problem and
+userspace has absolutely no business with it.
 
--- 
-Kees Cook
+Isolation does not shut down queues, at least not the block multi-queue
+ones which are only active when I/O is issued from that isolated CPU.
+
+So transitioning out of isolation requires no action at all.
+
+Transitioning in or changing the housekeeping mask needs some trivial
+tweak to handle the case where there is an overlap in the cpuset of a
+queue (housekeeping and isolated). This is handled already for setup and
+affinity changes, but of course not for runtime isolation mask changes,
+but that's a trivial thing to do.
+
+What's more interesting is how to deal with the network problem where
+there is no guarantee that the "response" ends up on the same queue as
+the "request" which is what the block people rely on. And that problem
+is not really an interrupt affinity problem in the first place.
+
+Thanks,
+
+        tglx
