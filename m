@@ -2,518 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7E6372964D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:50:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 597F72964DC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:51:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369602AbgJVSuk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:50:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45686 "EHLO
+        id S369731AbgJVSvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:51:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45776 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900104AbgJVSuj (ORCPT
+        with ESMTP id S369603AbgJVSvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:50:39 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DEC7C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:50:39 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id m128so2838575oig.7
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:50:39 -0700 (PDT)
+        Thu, 22 Oct 2020 14:51:13 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CA1D4C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:51:13 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id r10so1469058pgb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:51:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=nGFs8jKx1+okGk/sPcUAndnGVmWSXbPG3hh1KHn+qbA=;
-        b=g2EE9NlyUYLAAvZAomXJDxVE4I2Xs04KrcwuxK+oKzHFYXpIDZIgBmhHLQNC0p50NZ
-         5alKzvlkjS/pCeJC+jwPYPL2CTzJrCbhaRvhXkUUP0zGF1n6gpzq75IEPwclhPL73SJo
-         0+IGG99us/rNhfYO8lUr/lRX3Qe9NeQGElUYzkgTHuydaoXi9sPkFvuP6upQ5K1hktb7
-         X+Am33WIEzCw+xbr8XI76Duxu7zMuAqIlrRjEaiD9Pl0q9yiueQgAfCGThpKAFHa7K+f
-         taBy+VXaepkv9mnGUsBMYNwjlbXE6MuuPAgJkPYuJ5oc2JcUE1Au6eS3HOA2vHV2B4zt
-         Dy+g==
+        bh=JK95h1Bz6+JkKSL1J/k5X9Qfj1Cu3gdnHRpEmCdWMtM=;
+        b=gMKlu+toLxgxSilhSxYek3K/UIfDPbIjZEHWZPsUSj6bRomfbjZ6L7slD8DEMbY6qX
+         EghuDwI2t4lzc5VJUx8gXV7nixUZptPVx/tj0TFRyncIKuYcSrFPO8eS6UXXsJxd8LzC
+         Wr8DPMCBGawepMI+IsFiMi5ti1nnXhmQyNVXRBLyRZrX3eFVAD6kSiMjKCyqQqvYc3PJ
+         lAk97Q1VgVdZIDB3hvddGBV+TTvPhnqm/bkQpXhWSyoF0mZEosje+/c4o8Mt6x3pN21R
+         GRpFVM3dEk29yCq9K1fl+ZEiE/Nz+CLGS2jRp8su58g5c2taVy0XtDrRrPfwMzsXAzV8
+         UNKg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=nGFs8jKx1+okGk/sPcUAndnGVmWSXbPG3hh1KHn+qbA=;
-        b=dc8rbFpuxD5tNdifeMrmOM9aH3BWtntj/4ENk1sZ7IygQxq9wDvB9Ca3inw8hk7cj7
-         JKXJAlvVKAzWZq1xWkzudzGuWraXh63Msyy8/F7X128VQhDV0q7WC8shlSlNpxoXtjtL
-         RonUWEyZ9aikbQxFhALDqUjIBvgfFUccKJzPBH/FmpUJVph+OSMPU3Ytk7K/5Cah0+AA
-         ApgpZ8NqnQRdRd6YYWtr9F2XHU30OSvK2YmFZS+vtI7Qe8TDUvIqGnWvF1mt0EMIDK41
-         IyAapCDVwfqMlJ6nIISIyb1pbTca3HKybsQ2MW5twSetODGFmrFiVv708enR7ThkgQY4
-         iZvA==
-X-Gm-Message-State: AOAM533ERnyqcqGpboWsCJtVCMzJwPINiiQyeG50KTiPSyg0hV9rXry9
-        15rPSZkdtHJ9Q9MHZ7mzFkU2xEk6QU/ZM9iLH+yE0Q==
-X-Google-Smtp-Source: ABdhPJw1U9M9i00oFW6Hcy/aPgJsiSf1KnvIv7KgWhfzwFu5bV9y/83BGglWnXeziJll9hc0ol/WLoifrVDAv9tuE9U=
-X-Received: by 2002:a54:4812:: with SMTP id j18mr2624235oij.70.1603392638417;
- Thu, 22 Oct 2020 11:50:38 -0700 (PDT)
+        bh=JK95h1Bz6+JkKSL1J/k5X9Qfj1Cu3gdnHRpEmCdWMtM=;
+        b=guBLcU7LUE+un/SP1kCb2SPq0goP5qzV8GkoRsRujELYjKpdzLpkQtLxvNsIV2JjxN
+         KiXbz7q4wEKleae54aTm+nUEKHDECbCwmuavVEM90frvCURujJ810WeecctA6/R0ikn+
+         aXNbLXyZtzSlNbmhu9c9O6oejUyV1dmm9TjBP7C4aZLpiMLNamn17JN+s6Tia4Ntgqq3
+         JqEma2VhyYK5dvsCxCat6H+o3hJ0yCY4WQXUHkZsWfJDI996g0hlXMn3kgrImuQ75F2J
+         Z8oCV17XkMKaBjvbmyPdJubCMNr+XFWeoE/2ltvjyKvPm5hYmOoYyZFVyuU6nNpzz61r
+         EMPg==
+X-Gm-Message-State: AOAM533vn40rXnQCMzY1zEGj5AR37IUgsIXR++xeLuGrXmCSfCMObo5u
+        VEjVudOMN5b0HwxgR1EPpdYA51t45/ndQ+KsB1WTkg==
+X-Google-Smtp-Source: ABdhPJxzylxcvLsdO5wye2keV0/RW2IJbgAG0fWwVUNv2a0EM8i9p5Bg12aAnJpFb3B0/T8JYhNlydHZkFoFkMeAb2U=
+X-Received: by 2002:a63:b0e:: with SMTP id 14mr3215269pgl.384.1603392672965;
+ Thu, 22 Oct 2020 11:51:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com> <6a4a7626bf280871518656f4fa89cb064740baf7.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <6a4a7626bf280871518656f4fa89cb064740baf7.1603372719.git.andreyknvl@google.com>
-From:   Marco Elver <elver@google.com>
-Date:   Thu, 22 Oct 2020 20:50:27 +0200
-Message-ID: <CANpmjNMcPb9dzynnxDGp0QNMB2oJQmbqxRnbsu8hds=SVx9-9g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 14/21] kasan: add and integrate kasan boot parameters
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Alexander Potapenko <glider@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Memory Management List <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
+References: <20201019224556.3536790-1-dlatypov@google.com> <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
+ <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
+ <20201022150648.GH4077@smile.fi.intel.com> <CAGS_qxogKfYBr=5jPsON60NTAoqqSK2y+dQodnZ5r0Uo0ecJ3Q@mail.gmail.com>
+In-Reply-To: <CAGS_qxogKfYBr=5jPsON60NTAoqqSK2y+dQodnZ5r0Uo0ecJ3Q@mail.gmail.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Thu, 22 Oct 2020 11:51:01 -0700
+Message-ID: <CAFd5g44aNYTKwadaGD74MEn-xr_fPnPPRL9dfn9eY8ogyYm11g@mail.gmail.com>
+Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
+To:     Daniel Latypov <dlatypov@google.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        David Gow <davidgow@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Shuah Khan <skhan@linuxfoundation.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 at 15:19, Andrey Konovalov <andreyknvl@google.com> wrote:
+On Thu, Oct 22, 2020 at 9:26 AM Daniel Latypov <dlatypov@google.com> wrote:
 >
-> TODO: no meaningful description here yet, please see the cover letter
->       for this RFC series.
+> On Thu, Oct 22, 2020 at 8:06 AM Andy Shevchenko
+> <andriy.shevchenko@linux.intel.com> wrote:
+> >
+> > On Wed, Oct 21, 2020 at 10:47:50AM -0700, Daniel Latypov wrote:
+> > > On Tue, Oct 20, 2020 at 8:40 PM David Gow <davidgow@google.com> wrote:
+> > > > On Tue, Oct 20, 2020 at 6:46 AM Daniel Latypov <dlatypov@google.com> wrote:
+> > > > >
+> > > > > Add basic test coverage for files that don't require any config options:
+> > > > > * gcd.c
+> > > > > * lcm.c
+> > > > > * int_sqrt.c
+> > > > > * reciprocal_div.c
+> > > > > (Ignored int_pow.c since it's a simple textbook algorithm.)
+> > > > >
+> > > > I don't see a particular reason why int_pow.c being a simple algorithm
+> > > > means it shouldn't be tested. I'm not saying it has to be tested by
+> > > > this particular change -- and I doubt the test would be
+> > > > earth-shatteringly interesting -- but there's no real reason against
+> > > > testing it.
+> > >
+> > > Agreed on principle, but int_pow() feels like a special case.
+> > > I've written it the exact same way (modulo variable names+types)
+> > > several times in personal projects.
+> > > Even the spacing matched exactly in a few of those...
+> >
+> > But if you would like to *teach* somebody by this exemplary piece of code, you
+> > better do it close to ideal.
+> >
+> > > > > These tests aren't particularly interesting, but
+> > > > > * they're chosen as easy to understand examples of how to write tests
+> > > > > * provides a place to add tests for any new files in this dir
+> > > > > * written so adding new test cases to cover edge cases should be easy
+> > > >
+> > > > I think these tests can stand on their own merits, rather than just as
+> > > > examples (though I do think they do make good additional examples for
+> > > > how to test these sorts of functions).
+> > > > So, I'd treat this as an actual test of the maths functions (and
+> > > > you've got what seems to me a decent set of test cases for that,
+> > > > though there are a couple of comments below) first, and any use it
+> > > > gains as an example is sort-of secondary to that (anything that makes
+> > > > it a better example is likely to make it a better test anyway).
+> > > >
+> > > > In any case, modulo the comments below, this seems good to me.
+> > >
+> > > Ack.
+> > > I'll wait on Andy's input before deciding whether or not to push out a
+> > > v2 with the changes.
+> >
+> > You need to put detailed comments in the code to have it as real example how to
+> > create the KUnit test. But hey, it will mean that documentation sucks. So,
 >
-> Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-> Link: https://linux-review.googlesource.com/id/If7d37003875b2ed3e0935702c8015c223d6416a4
-> ---
->  mm/kasan/common.c  |  92 +++++++++++++-----------
->  mm/kasan/generic.c |   5 ++
->  mm/kasan/hw_tags.c | 169 ++++++++++++++++++++++++++++++++++++++++++++-
->  mm/kasan/kasan.h   |   9 +++
->  mm/kasan/report.c  |  14 +++-
->  mm/kasan/sw_tags.c |   5 ++
->  6 files changed, 250 insertions(+), 44 deletions(-)
+> Out of curiosity
+> * By "it will mean that documentation sucks," do you mean that the
+> documentation will rot faster if people are using the existing in-tree
+> tests as their entrypoint?
+> * What level of detailed comments? On the level of kunit-example-test.c?
+>   * More concretely, then we'd have a comment block linking to the
+> example and then describing table driven unit testing?
+>   * And then maybe another block about invariants instead of the
+> perhaps too-terse /* gcd(a,b) == gcd(b,a) */ ?
 >
-> diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-> index 1a5e6c279a72..cc129ef62ab1 100644
-> --- a/mm/kasan/common.c
-> +++ b/mm/kasan/common.c
-> @@ -129,35 +129,37 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->         unsigned int redzone_size;
->         int redzone_adjust;
+> > please update documentation to cover issues that you found and which motivated
+> > you to create these test cases.
+> >
+> > Summarize this, please create usable documentation first.
 >
-> -       /* Add alloc meta. */
-> -       cache->kasan_info.alloc_meta_offset = *size;
-> -       *size += sizeof(struct kasan_alloc_meta);
-> -
-> -       /* Add free meta. */
-> -       if (IS_ENABLED(CONFIG_KASAN_GENERIC) &&
-> -           (cache->flags & SLAB_TYPESAFE_BY_RCU || cache->ctor ||
-> -            cache->object_size < sizeof(struct kasan_free_meta))) {
-> -               cache->kasan_info.free_meta_offset = *size;
-> -               *size += sizeof(struct kasan_free_meta);
-> -       }
-> -
-> -       redzone_size = optimal_redzone(cache->object_size);
-> -       redzone_adjust = redzone_size - (*size - cache->object_size);
-> -       if (redzone_adjust > 0)
-> -               *size += redzone_adjust;
-> -
-> -       *size = min_t(unsigned int, KMALLOC_MAX_SIZE,
-> -                       max(*size, cache->object_size + redzone_size));
-> +       if (static_branch_unlikely(&kasan_stack)) {
-> +               /* Add alloc meta. */
-> +               cache->kasan_info.alloc_meta_offset = *size;
-> +               *size += sizeof(struct kasan_alloc_meta);
-> +
-> +               /* Add free meta. */
-> +               if (IS_ENABLED(CONFIG_KASAN_GENERIC) &&
-> +                   (cache->flags & SLAB_TYPESAFE_BY_RCU || cache->ctor ||
-> +                    cache->object_size < sizeof(struct kasan_free_meta))) {
-> +                       cache->kasan_info.free_meta_offset = *size;
-> +                       *size += sizeof(struct kasan_free_meta);
-> +               }
+> Sounds good.
+> I'm generally wary people not reading the docs, and of documentation
+> examples becoming bitrotted faster than actual code.
+> But so far KUnit seems to be doing relatively well on both fronts.
 >
-> -       /*
-> -        * If the metadata doesn't fit, don't enable KASAN at all.
-> -        */
-> -       if (*size <= cache->kasan_info.alloc_meta_offset ||
-> -                       *size <= cache->kasan_info.free_meta_offset) {
-> -               cache->kasan_info.alloc_meta_offset = 0;
-> -               cache->kasan_info.free_meta_offset = 0;
-> -               *size = orig_size;
-> -               return;
-> +               redzone_size = optimal_redzone(cache->object_size);
-> +               redzone_adjust = redzone_size - (*size - cache->object_size);
-> +               if (redzone_adjust > 0)
-> +                       *size += redzone_adjust;
-> +
-> +               *size = min_t(unsigned int, KMALLOC_MAX_SIZE,
-> +                               max(*size, cache->object_size + redzone_size));
-> +
-> +               /*
-> +                * If the metadata doesn't fit, don't enable KASAN at all.
-> +                */
-> +               if (*size <= cache->kasan_info.alloc_meta_offset ||
-> +                               *size <= cache->kasan_info.free_meta_offset) {
-> +                       cache->kasan_info.alloc_meta_offset = 0;
-> +                       cache->kasan_info.free_meta_offset = 0;
-> +                       *size = orig_size;
-> +                       return;
-> +               }
->         }
->
->         *flags |= SLAB_KASAN;
-> @@ -165,10 +167,12 @@ void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
->
->  size_t kasan_metadata_size(struct kmem_cache *cache)
->  {
-> -       return (cache->kasan_info.alloc_meta_offset ?
-> -               sizeof(struct kasan_alloc_meta) : 0) +
-> -               (cache->kasan_info.free_meta_offset ?
-> -               sizeof(struct kasan_free_meta) : 0);
-> +       if (static_branch_unlikely(&kasan_stack))
-> +               return (cache->kasan_info.alloc_meta_offset ?
-> +                       sizeof(struct kasan_alloc_meta) : 0) +
-> +                       (cache->kasan_info.free_meta_offset ?
-> +                       sizeof(struct kasan_free_meta) : 0);
-> +       return 0;
->  }
->
->  struct kasan_alloc_meta *kasan_get_alloc_meta(struct kmem_cache *cache,
-> @@ -270,8 +274,10 @@ void * __must_check kasan_init_slab_obj(struct kmem_cache *cache,
->         if (!(cache->flags & SLAB_KASAN))
->                 return (void *)object;
->
-> -       alloc_meta = kasan_get_alloc_meta(cache, object);
-> -       __memset(alloc_meta, 0, sizeof(*alloc_meta));
-> +       if (static_branch_unlikely(&kasan_stack)) {
-> +               alloc_meta = kasan_get_alloc_meta(cache, object);
-> +               __memset(alloc_meta, 0, sizeof(*alloc_meta));
-> +       }
->
->         if (IS_ENABLED(CONFIG_KASAN_SW_TAGS) || IS_ENABLED(CONFIG_KASAN_HW_TAGS))
->                 object = set_tag(object, assign_tag(cache, object, true, false));
-> @@ -308,15 +314,19 @@ static bool __kasan_slab_free(struct kmem_cache *cache, void *object,
->         rounded_up_size = round_up(cache->object_size, KASAN_GRANULE_SIZE);
->         kasan_poison_memory(object, rounded_up_size, KASAN_KMALLOC_FREE);
->
-> -       if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
-> -                       unlikely(!(cache->flags & SLAB_KASAN)))
-> -               return false;
-> +       if (static_branch_unlikely(&kasan_stack)) {
-> +               if ((IS_ENABLED(CONFIG_KASAN_GENERIC) && !quarantine) ||
-> +                               unlikely(!(cache->flags & SLAB_KASAN)))
-> +                       return false;
-> +
-> +               kasan_set_free_info(cache, object, tag);
->
-> -       kasan_set_free_info(cache, object, tag);
-> +               quarantine_put(cache, object);
->
-> -       quarantine_put(cache, object);
-> +               return IS_ENABLED(CONFIG_KASAN_GENERIC);
-> +       }
->
-> -       return IS_ENABLED(CONFIG_KASAN_GENERIC);
-> +       return false;
->  }
->
->  bool kasan_slab_free(struct kmem_cache *cache, void *object, unsigned long ip)
-> @@ -355,7 +365,7 @@ static void *__kasan_kmalloc(struct kmem_cache *cache, const void *object,
->         kasan_poison_memory((void *)redzone_start, redzone_end - redzone_start,
->                 KASAN_KMALLOC_REDZONE);
->
-> -       if (cache->flags & SLAB_KASAN)
-> +       if (static_branch_unlikely(&kasan_stack) && (cache->flags & SLAB_KASAN))
->                 set_alloc_info(cache, (void *)object, flags);
->
->         return set_tag(object, tag);
-> diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-> index d259e4c3aefd..20a1e753e0c5 100644
-> --- a/mm/kasan/generic.c
-> +++ b/mm/kasan/generic.c
-> @@ -33,6 +33,11 @@
->  #include "kasan.h"
->  #include "../slab.h"
->
-> +/* See the comments in hw_tags.c */
-> +DEFINE_STATIC_KEY_TRUE_RO(kasan_enabled);
-> +EXPORT_SYMBOL(kasan_enabled);
-> +DEFINE_STATIC_KEY_TRUE_RO(kasan_stack);
-> +
->  /*
->   * All functions below always inlined so compiler could
->   * perform better optimizations in each of __asan_loadX/__assn_storeX
-> diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-> index 915142da6b57..bccd781011ad 100644
-> --- a/mm/kasan/hw_tags.c
-> +++ b/mm/kasan/hw_tags.c
-> @@ -8,6 +8,8 @@
->
->  #define pr_fmt(fmt) "kasan: " fmt
->
-> +#include <linux/init.h>
-> +#include <linux/jump_label.h>
->  #include <linux/kasan.h>
->  #include <linux/kernel.h>
->  #include <linux/memory.h>
-> @@ -17,10 +19,175 @@
->
->  #include "kasan.h"
->
-> +enum kasan_arg_mode {
-> +       KASAN_ARG_MODE_OFF,
-> +       KASAN_ARG_MODE_PROD,
-> +       KASAN_ARG_MODE_FULL,
-> +};
-> +
-> +enum kasan_arg_stack {
-> +       KASAN_ARG_STACK_DEFAULT,
-> +       KASAN_ARG_STACK_OFF,
-> +       KASAN_ARG_STACK_ON,
-> +};
-> +
-> +enum kasan_arg_trap {
-> +       KASAN_ARG_TRAP_DEFAULT,
-> +       KASAN_ARG_TRAP_ASYNC,
-> +       KASAN_ARG_TRAP_SYNC,
-> +};
-> +
-> +enum kasan_arg_fault {
-> +       KASAN_ARG_FAULT_DEFAULT,
-> +       KASAN_ARG_FAULT_REPORT,
-> +       KASAN_ARG_FAULT_PANIC,
-> +};
-> +
-> +static enum kasan_arg_mode kasan_arg_mode __ro_after_init;
-> +static enum kasan_arg_stack kasan_arg_stack __ro_after_init;
-> +static enum kasan_arg_fault kasan_arg_fault __ro_after_init;
-> +static enum kasan_arg_trap kasan_arg_trap __ro_after_init;
-> +
-> +/* Whether KASAN is enabled at all. */
-> +DEFINE_STATIC_KEY_FALSE_RO(kasan_enabled);
-> +EXPORT_SYMBOL(kasan_enabled);
-> +
-> +/* Whether to collect alloc/free stack traces. */
-> +DEFINE_STATIC_KEY_FALSE_RO(kasan_stack);
-> +
-> +/* Whether to use synchronous or asynchronous tag checking. */
-> +static bool kasan_sync __ro_after_init;
-> +
-> +/* Whether panic or disable tag checking on fault. */
-> +bool kasan_panic __ro_after_init;
-> +
-> +/* kasan.mode=off/prod/full */
-> +static int __init early_kasan_mode(char *arg)
-> +{
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(arg, "off"))
-> +               kasan_arg_mode = KASAN_ARG_MODE_OFF;
-> +       else if (!strcmp(arg, "prod"))
-> +               kasan_arg_mode = KASAN_ARG_MODE_PROD;
-> +       else if (!strcmp(arg, "full"))
-> +               kasan_arg_mode = KASAN_ARG_MODE_FULL;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("kasan.mode", early_kasan_mode);
-> +
-> +/* kasan.stack=off/on */
-> +static int __init early_kasan_stack(char *arg)
-> +{
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(arg, "off"))
-> +               kasan_arg_stack = KASAN_ARG_STACK_OFF;
-> +       else if (!strcmp(arg, "on"))
-> +               kasan_arg_stack = KASAN_ARG_STACK_ON;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("kasan.stack", early_kasan_stack);
-> +
-> +/* kasan.trap=sync/async */
-> +static int __init early_kasan_trap(char *arg)
-> +{
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(arg, "ASYNC"))
+> usage.rst is currently the best place for this, but it felt like it
+> would quickly become a dumping ground for miscellaneous tips and
+> tricks.
 
-Why is this "ASYNC" and not "async"?
+Yeah, I think it has already started to become a dumping ground for
+everything; it already has everything except: getting started, FAQ,
+API reference, and some minor details about the command line tool.
 
-> +               kasan_arg_trap = KASAN_ARG_TRAP_ASYNC;
-> +       else if (!strcmp(arg, "sync"))
-> +               kasan_arg_trap = KASAN_ARG_TRAP_SYNC;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("kasan.trap", early_kasan_trap);
-> +
-> +/* kasan.fault=report/panic */
-> +static int __init early_kasan_fault(char *arg)
-> +{
-> +       if (!arg)
-> +               return -EINVAL;
-> +
-> +       if (!strcmp(arg, "report"))
-> +               kasan_arg_fault = KASAN_ARG_FAULT_REPORT;
-> +       else if (!strcmp(arg, "panic"))
-> +               kasan_arg_fault = KASAN_ARG_FAULT_PANIC;
-> +       else
-> +               return -EINVAL;
-> +
-> +       return 0;
-> +}
-> +early_param("kasan.fault", early_kasan_fault);
-> +
->  void __init kasan_init_tags(void)
->  {
-> -       init_tags(KASAN_TAG_MAX);
-> +       if (!cpu_supports_tags())
-> +               return;
-> +
-> +       /* First, preset values based on the mode. */
-> +
-> +       switch (kasan_arg_mode) {
-> +       case KASAN_ARG_MODE_OFF:
-> +               return;
-> +       case KASAN_ARG_MODE_PROD:
-> +               static_branch_enable(&kasan_enabled);
-> +               break;
-> +       case KASAN_ARG_MODE_FULL:
-> +               static_branch_enable(&kasan_enabled);
-> +               static_branch_enable(&kasan_stack);
-> +               kasan_sync = true;
-> +               break;
-> +       }
-> +
-> +       /* Now, optionally override the presets. */
+> I'll spend some time thinking if we want a new file or not, based on
+> how much I want to write about the things this test demonstrated
+> (EXPECT_*MSG, table driven tests, testing invariants, etc).
 >
-> +       switch (kasan_arg_stack) {
-> +       case KASAN_ARG_STACK_OFF:
-> +               static_branch_disable(&kasan_stack);
-> +               break;
-> +       case KASAN_ARG_STACK_ON:
-> +               static_branch_enable(&kasan_stack);
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       switch (kasan_arg_trap) {
-> +       case KASAN_ARG_TRAP_ASYNC:
-> +               kasan_sync = false;
-> +               break;
-> +       case KASAN_ARG_TRAP_SYNC:
-> +               kasan_sync = true;
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       switch (kasan_arg_fault) {
-> +       case KASAN_ARG_FAULT_REPORT:
-> +               kasan_panic = false;
-> +               break;
-> +       case KASAN_ARG_FAULT_PANIC:
-> +               kasan_panic = true;
-> +               break;
-> +       default:
-> +               break;
-> +       }
-> +
-> +       /* TODO: choose between sync and async based on kasan_sync. */
-> +       init_tags(KASAN_TAG_MAX);
->         pr_info("KernelAddressSanitizer initialized\n");
->  }
->
-> diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-> index f7ae0c23f023..00b47bc753aa 100644
-> --- a/mm/kasan/kasan.h
-> +++ b/mm/kasan/kasan.h
-> @@ -2,9 +2,18 @@
->  #ifndef __MM_KASAN_KASAN_H
->  #define __MM_KASAN_KASAN_H
->
-> +#include <linux/jump_label.h>
->  #include <linux/kasan.h>
->  #include <linux/stackdepot.h>
->
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +DECLARE_STATIC_KEY_FALSE(kasan_stack);
-> +#else
-> +DECLARE_STATIC_KEY_TRUE(kasan_stack);
-> +#endif
-> +
-> +extern bool kasan_panic __ro_after_init;
-> +
->  #if defined(CONFIG_KASAN_GENERIC) || defined(CONFIG_KASAN_SW_TAGS)
->  #define KASAN_GRANULE_SIZE     (1UL << KASAN_SHADOW_SCALE_SHIFT)
->  #else
-> diff --git a/mm/kasan/report.c b/mm/kasan/report.c
-> index dee5350b459c..426dd1962d3c 100644
-> --- a/mm/kasan/report.c
-> +++ b/mm/kasan/report.c
-> @@ -97,6 +97,10 @@ static void end_report(unsigned long *flags)
->                 panic_on_warn = 0;
->                 panic("panic_on_warn set ...\n");
->         }
-> +#ifdef CONFIG_KASAN_HW_TAGS
-> +       if (kasan_panic)
-> +               panic("kasan.fault=panic set ...\n");
-> +#endif
->         kasan_enable_current();
->  }
->
-> @@ -159,8 +163,8 @@ static void describe_object_addr(struct kmem_cache *cache, void *object,
->                 (void *)(object_addr + cache->object_size));
->  }
->
-> -static void describe_object(struct kmem_cache *cache, void *object,
-> -                               const void *addr, u8 tag)
-> +static void describe_object_stacks(struct kmem_cache *cache, void *object,
-> +                                       const void *addr, u8 tag)
->  {
->         struct kasan_alloc_meta *alloc_meta = kasan_get_alloc_meta(cache, object);
->
-> @@ -188,7 +192,13 @@ static void describe_object(struct kmem_cache *cache, void *object,
->                 }
->  #endif
->         }
-> +}
->
-> +static void describe_object(struct kmem_cache *cache, void *object,
-> +                               const void *addr, u8 tag)
-> +{
-> +       if (static_branch_unlikely(&kasan_stack))
-> +               describe_object_stacks(cache, object, addr, tag);
->         describe_object_addr(cache, object, addr);
->  }
->
-> diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-> index 4db41f274702..b6d185adf2c5 100644
-> --- a/mm/kasan/sw_tags.c
-> +++ b/mm/kasan/sw_tags.c
-> @@ -33,6 +33,11 @@
->  #include "kasan.h"
->  #include "../slab.h"
->
-> +/* See the comments in hw_tags.c */
-> +DEFINE_STATIC_KEY_TRUE_RO(kasan_enabled);
-> +EXPORT_SYMBOL(kasan_enabled);
-> +DEFINE_STATIC_KEY_TRUE_RO(kasan_stack);
-> +
->  static DEFINE_PER_CPU(u32, prng_state);
->
->  void __init kasan_init_tags(void)
-> --
-> 2.29.0.rc1.297.gfa9743e501-goog
->
+> In offline discussions with David, the idea had come up with having a
+> set of (relatively) simple tests in tree that the documentation could
+> point to as examples of these things. That would keep the line count
+> in usage.rst down a bit.
+> (But then it would necessitate more tests like this math_test.c)
+
+I do like the idea of having as much example code as possible in a
+place where it actually gets compiled occasionally. One of the biggest
+bitrot issues we have had in KUnit documentation so far is example
+code falling out of date; that's less likely to happen if the examples
+get compiled.
+
+It would be super cool if there was some way to have example code in
+the documentation that also gets compiled and run, but I don't believe
+that that would be a feasible thing to do right now.
+
+In any case, not to sound hypocritical or lazy, but when I use other
+people's code I tend to trust the code a lot more than I trust the
+docs. Even if we do an absolutely stellar job with our docs, I suspect
+other devs will feel the same.
