@@ -2,210 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB034295F25
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:57:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F1E8295F31
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:59:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899142AbgJVM5c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:57:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36914 "EHLO mail.kernel.org"
+        id S2505493AbgJVM6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:58:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60016 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2899151AbgJVM5Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:57:24 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AF99D22267;
-        Thu, 22 Oct 2020 12:57:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603371442;
-        bh=aP+99Nh+BRAsFdknehVump7Dnbp6eN+zcx5V+4BbA0E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fIaSxf2OzfuRDt9HRSB5jx2WnD0dkshqSo4UeqIgPYa45rKrwXIs58U7+v7UmIDq8
-         VdeDtFYZh+q+x5LOfVH9Dz5S9VDIzgq1Hssopq/iGP5ZHij+g9xcwMhP49CvYuc+R0
-         wthjzWEP+gGv+cNtg3iSfdCzPHliU+Onc93YvIyE=
-Date:   Thu, 22 Oct 2020 14:57:59 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022125759.GA1685526@kroah.com>
-References: <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022104805.GA1503673@kroah.com>
- <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
+        id S2395265AbgJVM6n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:58:43 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id E49D9ACD0;
+        Thu, 22 Oct 2020 12:58:41 +0000 (UTC)
+From:   Oscar Salvador <osalvador@suse.de>
+To:     david@redhat.com
+Cc:     mhocko@kernel.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, vbabka@suse.cz, pasha.tatashin@soleen.com,
+        Oscar Salvador <osalvador@suse.de>
+Subject: [RFC PATCH 0/3] Allocate memmap from hotadded memory (per device)
+Date:   Thu, 22 Oct 2020 14:58:32 +0200
+Message-Id: <20201022125835.26396-1-osalvador@suse.de>
+X-Mailer: git-send-email 2.13.7
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:42:24PM +0200, David Hildenbrand wrote:
-> On 22.10.20 14:18, Greg KH wrote:
-> > On Thu, Oct 22, 2020 at 12:48:05PM +0200, Greg KH wrote:
-> >> On Thu, Oct 22, 2020 at 11:36:40AM +0200, David Hildenbrand wrote:
-> >>> On 22.10.20 11:32, David Laight wrote:
-> >>>> From: David Hildenbrand
-> >>>>> Sent: 22 October 2020 10:25
-> >>>> ...
-> >>>>> ... especially because I recall that clang and gcc behave slightly
-> >>>>> differently:
-> >>>>>
-> >>>>> https://github.com/hjl-tools/x86-psABI/issues/2
-> >>>>>
-> >>>>> "Function args are different: narrow types are sign or zero extended to
-> >>>>> 32 bits, depending on their type. clang depends on this for incoming
-> >>>>> args, but gcc doesn't make that assumption. But both compilers do it
-> >>>>> when calling, so gcc code can call clang code.
-> >>>>
-> >>>> It really is best to use 'int' (or even 'long') for all numeric
-> >>>> arguments (and results) regardless of the domain of the value.
-> >>>>
-> >>>> Related, I've always worried about 'bool'....
-> >>>>
-> >>>>> The upper 32 bits of registers are always undefined garbage for types
-> >>>>> smaller than 64 bits."
-> >>>>
-> >>>> On x86-64 the high bits are zeroed by all 32bit loads.
-> >>>
-> >>> Yeah, but does not help here.
-> >>>
-> >>>
-> >>> My thinking: if the compiler that calls import_iovec() has garbage in
-> >>> the upper 32 bit
-> >>>
-> >>> a) gcc will zero it out and not rely on it being zero.
-> >>> b) clang will not zero it out, assuming it is zero.
-> >>>
-> >>> But
-> >>>
-> >>> a) will zero it out when calling the !inlined variant
-> >>> b) clang will zero it out when calling the !inlined variant
-> >>>
-> >>> When inlining, b) strikes. We access garbage. That would mean that we
-> >>> have calling code that's not generated by clang/gcc IIUC.
-> >>>
-> >>> We can test easily by changing the parameters instead of adding an "inline".
-> >>
-> >> Let me try that as well, as I seem to have a good reproducer, but it
-> >> takes a while to run...
-> > 
-> > Ok, that didn't work.
-> > 
-> > And I can't seem to "fix" this by adding noinline to patches further
-> > along in the patch series (because this commit's function is no longer
-> > present due to later patches.)
-> 
-> We might have the same issues with iovec_from_user() and friends now.
-> 
-> > 
-> > Will keep digging...
-> > 
-> > greg k-h
-> > 
-> 
-> 
-> Might be worth to give this a try, just to see if it's related to
-> garbage in upper 32 bit and the way clang is handling it (might be a BUG
-> in clang, though):
-> 
-> 
-> diff --git a/include/linux/uio.h b/include/linux/uio.h
-> index 72d88566694e..7527298c6b56 100644
-> --- a/include/linux/uio.h
-> +++ b/include/linux/uio.h
-> @@ -267,7 +267,7 @@ size_t hash_and_copy_to_iter(const void *addr,
-> size_t bytes, void *hashp,
->                 struct iov_iter *i);
-> 
->  struct iovec *iovec_from_user(const struct iovec __user *uvector,
-> -               unsigned long nr_segs, unsigned long fast_segs,
-> +               unsigned nr_segs, unsigned fast_segs,
->                 struct iovec *fast_iov, bool compat);
->  ssize_t import_iovec(int type, const struct iovec __user *uvec,
->                  unsigned nr_segs, unsigned fast_segs, struct iovec **iovp,
-> diff --git a/lib/iov_iter.c b/lib/iov_iter.c
-> index 1635111c5bd2..58417f1916dc 100644
-> --- a/lib/iov_iter.c
-> +++ b/lib/iov_iter.c
-> @@ -1652,7 +1652,7 @@ const void *dup_iter(struct iov_iter *new, struct
-> iov_iter *old, gfp_t flags)
->  EXPORT_SYMBOL(dup_iter);
-> 
->  static int copy_compat_iovec_from_user(struct iovec *iov,
-> -               const struct iovec __user *uvec, unsigned long nr_segs)
-> +               const struct iovec __user *uvec, unsigned nr_segs)
->  {
->         const struct compat_iovec __user *uiov =
->                 (const struct compat_iovec __user *)uvec;
-> @@ -1684,7 +1684,7 @@ static int copy_compat_iovec_from_user(struct
-> iovec *iov,
->  }
-> 
->  static int copy_iovec_from_user(struct iovec *iov,
-> -               const struct iovec __user *uvec, unsigned long nr_segs)
-> +               const struct iovec __user *uvec, unsigned nr_segs)
->  {
->         unsigned long seg;
-> 
-> @@ -1699,7 +1699,7 @@ static int copy_iovec_from_user(struct iovec *iov,
->  }
-> 
->  struct iovec *iovec_from_user(const struct iovec __user *uvec,
-> -               unsigned long nr_segs, unsigned long fast_segs,
-> +               unsigned nr_segs, unsigned fast_segs,
->                 struct iovec *fast_iov, bool compat)
->  {
->         struct iovec *iov = fast_iov;
-> @@ -1738,7 +1738,7 @@ ssize_t __import_iovec(int type, const struct
-> iovec __user *uvec,
->                  struct iov_iter *i, bool compat)
->  {
->         ssize_t total_len = 0;
-> -       unsigned long seg;
-> +       unsigned seg;
->         struct iovec *iov;
-> 
->         iov = iovec_from_user(uvec, nr_segs, fast_segs, *iovp, compat);
-> 
+This patchset would be the next version of [1], but a lot has changed
+in the meantime, so I figured I would just make another RFC.
 
-Ah, I tested the other way around, making everything "unsigned long"
-instead.  Will go try this too, as other tests are still running...
+After some discussions with David off the list, we agreed that it would be
+easier as a starter to only support memmap from hotadded memory if the hotadded range
+spans a single memory device.
 
-thanks,
+The reason behind is that at any given time, a memory_block is either online or 
+offline, and so the pages within it.
+That means that operations like pfn_to_online_page always returns always the
+right thing.
 
-greg k-h
+But that would not be the case if we support spanning multiple devices with
+the infrastructure we have at the moment.
+
+We have two options to support spanning multiple memory devices (which is the
+final goal of this work):
+
+ 1) We play with sub-section bitmap, so although a section might be offline
+    a pfn_to_online_page made on a vmemmap page will give us the right value.
+    I was tempted to explore this, I am leaning more towards #2.
+
+ 2) Do some work towards flexible-sized memory devices.
+    The way I see it, a memory_block device would be as big as the hot-added range
+    so we could have memory_blocks of 1GB, 512MB, 64GB, all depending on the size
+    of the device to be added to the system.
+
+I am addind some David's notes in here:
+
+"  Case 1: add_memory() spans a single memory device
+
+          The memory can be either online/offline, and thereby, all sections
+          online/offline. Nobody should be touching the vmemmap (even during
+          add_memory() - except when poisoning vmemmap, which should most probably
+          work as well, if not we can work around that).
+
+
+  Case 2: add_memory() spans multiple memory devices
+
+          Option 1: As we discussed, only cover full sections with the vmemmap. "Bad" thing
+          is that the memory devices holding the vemmap might be offline to user space,
+          but still contain relevant data ... bad for kexec-tools when creating memory to
+          dump via kdump. Won't properly work.
+
+  Option 2: Later extend option 1 to use sub-section online bitmap.
+
+  Option 3: Convert to case 1. Michal proposed allowing flexible-sized memory devices.
+            Will require some work, but would be the cleanest IMHO.
+
+
+          So maybe starting with case 1 is best for now, and later extending it via Case2.3 -
+          which would simply be reworking memory devices."
+"
+
+" 1. It can happen that pfn_online() for a vmemmap page returns either
+    true or false, depending on the state of the section. It could be that
+    the memory block holding the vmemmap is offline while another memory
+    block making use of it is online.
+
+    I guess this isn't bad (I assume it is similar for the altmap), however
+    it could be that makedumpfile will exclude the vmemmap from dumps (as it
+    will usually only dump pages in sections marked online if I am not wrong
+    - maybe it special cases vmemmaps already). Also, could be that it is
+    not saved/restored during hibernation. We'll have to verify."
+
+
+This does not go without saying that the patchset is not 100% complete.
+It is missing:
+
+ - a way to disable memmap_on_memory (either sysfs or boot_time cmd)
+ - atm, arch_add_memory for s390 screams if an altmap is passed.
+   I am still thinking of a way to nicely drop handle that.
+   Maybe a function in s390 that sets memmap_on_memory false and
+   stuff that check in support_memmap_on_memory function.
+
+
+Original cover letter:
+
+----
+The primary goal of this patchset is to reduce memory overhead of the
+hot-added memory (at least for SPARSEMEM_VMEMMAP memory model).
+The current way we use to populate memmap (struct page array) has two main drawbacks:
+
+a) it consumes an additional memory until the hotadded memory itself is
+   onlined and
+b) memmap might end up on a different numa node which is especially true
+   for movable_node configuration.
+c) due to fragmentation we might end up populating memmap with base
+   pages
+
+One way to mitigate all these issues is to simply allocate memmap array
+(which is the largest memory footprint of the physical memory hotplug)
+from the hot-added memory itself. SPARSEMEM_VMEMMAP memory model allows
+us to map any pfn range so the memory doesn't need to be online to be
+usable for the array. See patch 3 for more details.
+This feature is only usable when CONFIG_SPARSEMEM_VMEMMAP is set.
+
+[Overall design]:
+
+Implementation wise we reuse vmem_altmap infrastructure to override
+the default allocator used by vmemap_populate. Once the memmap is
+allocated we need a way to mark altmap pfns used for the allocation.
+If MHP_MEMMAP_ON_MEMORY flag was passed, we set up the layout of the
+altmap structure in add_memory_resource), and then we call
+mark_vmemmap_pages() to mark vmemmap pages.
+
+memory_block gained a new field called nr_vmemmap_pages.
+This plays well for two reasons:
+
+ 1) {offline/online}_pages know the differente between start_pfn and
+    valid_start_pfn, which is start_pfn + nr_vmemmap_pages.
+    In this way all isolation/migration/initialization operations are
+    done to the right range of memory without vmemmap pages to get involved.
+    This allows us for a much cleaner handling.
+
+ 2) In try_remove_memory, we construct a new vmemap_altmap struct with the
+    right info, so we end up calling vmem_altmap_free instead of free_pagetable
+    when removing the memory.
+
+Oscar Salvador (3):
+  mm,memory_hotplug: Introduce MHP_MEMMAP_ON_MEMORY
+  mm: Introduce a new Vmemmap page-type
+  mm,memory_hotplug: Allocate memmap from the added memory range
+
+ drivers/acpi/acpi_memhotplug.c |   2 +-
+ drivers/base/memory.c          |  21 +++--
+ include/linux/memory.h         |   3 +-
+ include/linux/memory_hotplug.h |  27 ++++++-
+ include/linux/memremap.h       |   2 +-
+ include/linux/mm.h             |   6 ++
+ include/linux/mm_types.h       |   5 ++
+ include/linux/page-flags.h     |   6 ++
+ mm/memory_hotplug.c            | 139 +++++++++++++++++++++++++++------
+ mm/memremap.c                  |   5 +-
+ mm/page_alloc.c                |   7 ++
+ mm/sparse.c                    |  25 ++++++
+ 12 files changed, 205 insertions(+), 43 deletions(-)
+
+-- 
+2.26.2
+
