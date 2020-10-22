@@ -2,110 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7DD295C82
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:14:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A731A295C93
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:19:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896403AbgJVKO2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:14:28 -0400
-Received: from mga14.intel.com ([192.55.52.115]:24749 "EHLO mga14.intel.com"
+        id S2896456AbgJVKTI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:19:08 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:55927 "EHLO mailout08.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896354AbgJVKO1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:14:27 -0400
-IronPort-SDR: IqdiAm+OA4g2+CGyoGtxPzMMmDI6j7uI/o4sgrQRnjGS4fp5jF4CewsVRV5IBn+Xe8l4kYLqQ4
- s9GYw9ZNkDPA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="166722908"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="166722908"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga008.jf.intel.com ([10.7.209.65])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 03:14:27 -0700
-IronPort-SDR: caeVgLpgaw+1iULmWLBKXvrucZJa7vfINHxPW0I+EOBg1n2CVk1VuYBq0Y2+B1MMCar3Tywvj4
- hb3qOHIoaTTg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="348842846"
-Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
-  by orsmga008.jf.intel.com with SMTP; 22 Oct 2020 03:14:24 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Thu, 22 Oct 2020 13:14:23 +0300
-Date:   Thu, 22 Oct 2020 13:14:23 +0300
-From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To:     Randy Dunlap <rdunlap@infradead.org>
-Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx <intel-gfx@lists.freedesktop.org>
-Subject: Re: [Intel-gfx] drm_modes: signed integer overflow
-Message-ID: <20201022101423.GI6112@intel.com>
-References: <47527cdb-2eda-b5a3-d77c-3855b91a0b61@infradead.org>
+        id S2896433AbgJVKTH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:19:07 -0400
+Received: from kdin02.retarus.com (kdin02.dmz1.retloc [172.19.17.49])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4CH3HW1WpQzMsy6;
+        Thu, 22 Oct 2020 12:19:03 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin02.retarus.com (Postfix) with ESMTPS id 4CH3HG3XSJz2TTM3;
+        Thu, 22 Oct 2020 12:18:50 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.85) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 22 Oct
+ 2020 12:17:49 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
+Date:   Thu, 22 Oct 2020 12:17:48 +0200
+Message-ID: <1680734.pGj3N1mgWS@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <2975985.V79r5fVmzq@n95hx1g2>
+References: <20201019172435.4416-1-ceggers@arri.de> <20201022023233.GA904@hoboy.vegasvil.org> <2975985.V79r5fVmzq@n95hx1g2>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <47527cdb-2eda-b5a3-d77c-3855b91a0b61@infradead.org>
-X-Patchwork-Hint: comment
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.85]
+X-RMX-ID: 20201022-121850-4CH3HG3XSJz2TTM3-0@kdin02
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 08:13:43PM -0700, Randy Dunlap wrote:
-> Hi,
+On Thursday, 22 October 2020, 09:30:57 CEST, Christian Eggers wrote:
+> On Thursday, 22 October 2020, 04:42:01 CEST, Richard Cochran wrote:
+> > On Thu, Oct 22, 2020 at 02:39:35AM +0300, Vladimir Oltean wrote:
+> > > On Mon, Oct 19, 2020 at 07:24:33PM +0200, Christian Eggers wrote:
+> > > > The PTP hardware performs internal detection of PTP frames (likely
+> > > > similar as ptp_classify_raw() and ptp_parse_header()). As these
+> > > > filters
+> > > > cannot be disabled, the current delay mode (E2E/P2P) and the clock
+> > > > mode
+> > > > (master/slave) must be configured via sysfs attributes.
+> > 
+> > This is a complete no-go.  NAK.
 > 
-> With linux-next 20201021, when booting up, I am seeing this:
-> 
-> [    0.560896] UBSAN: signed-integer-overflow in ../drivers/gpu/drm/drm_modes.c:765:20
-> [    0.560903] 2376000 * 1000 cannot be represented in type 'int'
+> I didn't design the hardware nor do I have access to adequate documentation.
+> I will try to figure out what functionality is concretely affected by these
+> two settings.
+I tried to study the effect of setting the ocmode bit on the KSZ either to
+master or to slave. The main visible change is, that some PTP message types
+are be filtered out on RX:
+- in "master" mode, "Sync" messages from other nodes will not be received
+(but everything else like "Announce" seem to work)
+- in "slave" mode, "Delay_Req" messages from other nodes will not be received
 
-Dang. Didn't realize these new crazy >8k modes have dotclocks reaching
-almost 6 GHz, which would overflow even u32. I guess we'll switch to
-64bit maths. Now I wonder how many other places can hit this overflow
-in practice...
+I am not an expert for PTP, so the following is only the idea of a beginner how
+this could probably be handled:
 
-> [    0.560909] CPU: 3 PID: 7 Comm: kworker/u16:0 Not tainted 5.9.0-next-20201021 #2
-> [    0.560914] Hardware name: TOSHIBA PORTEGE R835/Portable PC, BIOS Version 4.10   01/08/2013
-> [    0.560924] Workqueue: events_unbound async_run_entry_fn
-> 
-> [    0.560930] Call Trace:
-> [    0.560938]  dump_stack+0x5e/0x74
-> [    0.560943]  ubsan_epilogue+0x9/0x45
-> [    0.560948]  handle_overflow+0x8b/0x98
-> [    0.560953]  ? set_track+0x3f/0xad
-> [    0.560958]  __ubsan_handle_mul_overflow+0xe/0x10
-> [    0.560964]  drm_mode_vrefresh+0x4a/0xbc
-> [    0.560970] initcall i915_init+0x0/0x6a returned 0 after 116076 usecs
-> [    0.560974] calling  cn_proc_init+0x0/0x36 @ 1
-> [    0.560978]  cea_mode_alternate_clock+0x11/0x62
-> [    0.560985]  drm_match_cea_mode+0xc7/0x1e7
-> [    0.560987] initcall cn_proc_init+0x0/0x36 returned 0 after 3 usecs
-> [    0.560990] calling  topology_sysfs_init+0x0/0x2d @ 1
-> [    0.561000]  drm_mode_validate_ycbcr420+0xd/0x48
-> [    0.561005]  drm_helper_probe_single_connector_modes+0x6db/0x7da
-> [    0.561012]  drm_client_modeset_probe+0x225/0x143f
-> [    0.561018]  ? bitmap_fold+0x8a/0x8a
-> [    0.561023]  ? update_cfs_rq_load_avg+0x192/0x1a2
-> [    0.561029]  __drm_fb_helper_initial_config_and_unlock+0x3f/0x5b7
-> [    0.561035]  ? get_sd_balance_interval+0x1c/0x40
-> [    0.561040]  drm_fb_helper_initial_config+0x48/0x4f
-> [    0.561047]  intel_fbdev_initial_config+0x13/0x23
-> [    0.561052]  async_run_entry_fn+0x89/0x15c
-> [    0.561058]  process_one_work+0x15c/0x1f3
-> [    0.561064]  worker_thread+0x1ac/0x25d
-> [    0.561069]  ? process_scheduled_works+0x2e/0x2e
-> [    0.561074]  kthread+0x10e/0x116
-> [    0.561078]  ? kthread_parkme+0x1c/0x1c
-> [    0.561083]  ret_from_fork+0x22/0x30
-> [    0.561087] ================================================================================
-> 
-> -- 
-> ~Randy
-> Reported-by: Randy Dunlap <rdunlap@infradead.org>
-> _______________________________________________
-> Intel-gfx mailing list
-> Intel-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/intel-gfx
+As PTP announce messages are received all the time, the BMCA should always
+be able to work. The KSZ hardware needs to be set to "master" when a node
+is becoming master (in order to be able to receive (and answer) Delay_Req
+messages). The setting "slave" is equired when the BCMA decides not being
+master anymore (in order to receive Sync messages).
 
--- 
-Ville Syrjälä
-Intel
+Handling the transition to "master" mode could probably be done easily in the 
+driver (when a Sync message is seen in TX direction by the time stamping code).
+But transition to slave seems to be difficult, because the tagging driver cannot
+see when the node stops being master. For user space (ptp4l), the decision for
+master/slave mode could probably be done easier.
+
+If Richard (or somebody else) decides that "mode switching" of the KSZ device
+would not be appropriate, I suspect the functionality of the KSZ has to be
+limited to "Slave Only Clock".
+
+regards
+Christian
+
+
+
