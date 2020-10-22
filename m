@@ -2,177 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 091DC29639E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:17:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C2572963A0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:17:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899059AbgJVRQw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:16:52 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:20328 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2899036AbgJVRQv (ORCPT
+        id S2899100AbgJVRRE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:17:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59436 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2899081AbgJVRRE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:16:51 -0400
-Received: from pps.filterd (m0109334.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MHDapR027945;
-        Thu, 22 Oct 2020 10:16:44 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=kLyuz1xrAyviEDF1HOHo/TiqTDsjfU5+ATOBaxGLjNw=;
- b=i51y0cYgrQEQos/1UqOmDoUffOtzLJCJEXCF1oiX5K92/FijeK+w1LvjcHAV70Lk32jb
- sgEFA1IPu7WBiozGt/W3DaIE75l+dWfAVVj2mtXQP+AG+84Xo/+DXsrcAQ4dnTjA920U
- XurrpXAUjgsSAsX/5/wDg7oIdHoL4/Emrm0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34aspde70q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 22 Oct 2020 10:16:44 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.36.101) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 22 Oct 2020 10:16:42 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=grg6wd2f7are7WbfDGkF1jpUUQSBgVaaKT64jVwqEFqHnj1blCx9+NyZ5b0ADFblsqu5dvHXSOpGTs3E3AIwKeUCTgOIG6gwtso82+apnSSzUQ0Rvs5wbJ5rBIdHFARVod06dnh3+m7qApJJWiZpTE/NMBd4R+si5Yo5HK9rrospCEA+2LugNnDBSwLs8aaqg5E2+QoXs3jBiJ65EHFlolTyst/sncqUde34OBymssxYnkQEY6cSucSZoIi/WPOljo/6JJkt+Qfz9a1y5Ql+yvN7NqvSHNnjWbMYKuyL3o8wEx2OCyqpeYbs0Ig+K3OuTlZKOYbJXseq/SlVeJt8xQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kLyuz1xrAyviEDF1HOHo/TiqTDsjfU5+ATOBaxGLjNw=;
- b=eV082r/IYHVWNRpGSzC/HY+toEZBB/orJ7sUVbvOfvF8TGsbLyHjxNHtE92sILRIg6ZqK0UxcY+S6bYuAoXqBf3nzdimwr7on+4oXIe1F/4yoUU2HHbO1DGRfmS4Y8ANCw8F3NdJeMRa0VdgSgHRe/Rdd8RkfZCnhLxyVInSIkAlPOGbsV6IJYKhCU7VVa/dKheShzy+88RtbPJ9kPbLqqkC3WkPJ/s+LkahTNDTxKgHEUBR34+0rI9fHEWKe4kgeCZUx15Q+Mfj/jpuFubz9hxyC+9QghRyWk88nWmAKApEoXMgiJW+4rejie+AHmW6e3wRCQH7oMHOvAMVjLmQzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kLyuz1xrAyviEDF1HOHo/TiqTDsjfU5+ATOBaxGLjNw=;
- b=QigWRAy90eu4HWpgTAnaY78tZXvA8uOfRuMplX0+WL1YRrauc26Bo20daU4wrbku0U0Zg44cPxVZUcLlRnGSVw5bieLHFrHAWXwzfb+OU0hdzWluka7LcGgL4ueCDYrPQxQaL/FEiedCRS5Y7LJW5abt6wCdV/YM8GixVE1Bs24=
-Authentication-Results: oracle.com; dkim=none (message not signed)
- header.d=none;oracle.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3601.namprd15.prod.outlook.com (2603:10b6:a03:1fb::30) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Thu, 22 Oct
- 2020 17:16:38 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
- 17:16:38 +0000
-Date:   Thu, 22 Oct 2020 10:16:28 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Mike Kravetz <mike.kravetz@oracle.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH rfc 0/2] mm: cma: make cma_release() non-blocking
-Message-ID: <20201022171628.GE300658@carbon.dhcp.thefacebook.com>
-References: <20201016225254.3853109-1-guro@fb.com>
- <3f455d27-6d99-972f-b77f-b5b473b7614d@oracle.com>
- <20201022023352.GC300658@carbon.dhcp.thefacebook.com>
- <91779b4c-378d-66ee-2df0-edb270dd4d04@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91779b4c-378d-66ee-2df0-edb270dd4d04@oracle.com>
-X-Originating-IP: [2620:10d:c090:400::4:a3a2]
-X-ClientProxiedBy: MWHPR14CA0061.namprd14.prod.outlook.com
- (2603:10b6:300:81::23) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::4:a3a2) by MWHPR14CA0061.namprd14.prod.outlook.com (2603:10b6:300:81::23) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 22 Oct 2020 17:16:37 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: f3439b24-8ff8-47f3-7eb3-08d876ae3c1d
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3601:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3601D4EB466238FBF21CA33CBE1D0@BY5PR15MB3601.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:10000;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: jx5xfdKcDmOdaCle5nuSFeP1jKgx6rp75PDqu+D+2+1t6oYjmtMUEyXJ9FF36XD1L7SfcPoyxNnAVDDfMtMJETanXcDvJ+grqqdjqvAxBD+CKTJKGoB7oO9paGu6tra+y7wIcjPR6YXh7nF1n3OJ0IB4AcPiGLge93YC8d0fk4QG9k+cSYSUj2mOCekUpBNbwPl1ltQ80BP7ukVb/FKg3drYFudTc2czqmB6FXOjqX6rb1XztQ0S0dbeG5gkypHXBK1Mz0vfAPy+6I2MjSOt0t4Y8en8JjB5gUx7J/n/gUsq23VV4cEoohre81VbuaiPcWyR6wie9ebRq1JzO+SAPVuPRXaQKTfAxkx+TpCq4x7xYF3rEltRuTt5nzoy+gqOm20wtxKEGjpJ8JVvWnZwMA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(396003)(366004)(136003)(8676002)(83380400001)(7696005)(16526019)(53546011)(6506007)(6916009)(86362001)(52116002)(9686003)(2906002)(316002)(478600001)(8936002)(55016002)(4326008)(186003)(33656002)(5660300002)(66556008)(1076003)(966005)(66946007)(66476007)(54906003)(6666004);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: UTvSuogj26a/SQmPTP1WMTUPqfILkKVq5hfw8uyhn9KAA0Yl+gkIh+1IzkO7OK5oiFCeOOGDHnpD+upu4dvM37KuQHKTrkLd9U7TctD1i4rYp/Ua4h1Fu34+jdM3HuRk5c1gjRTaA8aA3a4Vsik76ba50hnUrlowadyGX63c+wUM6LaDWMLBcYdlAaG0tDvCYDdDHqYvMUXHK16o55U2SdIRc79axGnzRNKd74e1n7gwlfKdwHDj48Y70jgCQxJb8+A6mJFY5dfTYTou/0nkBPCADQoy4+quA5jyWnpFrYfzmAL3NckoYb3qVml1R53fwMOesV4FUk8LOgekSTWaIpgI+a+kYrHlL2swgXF+NAP0rU1yrL952OoyfALsSiCmhARk/KI3YShjFaZGUOuCSd5Fspn5ANg7z37UffiAA/pyJiOB0C0p7BrnDtOnAGoG1CAsBGAfSiEs1KtXwgUgJhW02Jen+tdly66xAEAjnJSud+qLGLLk4VRxWRTrSY7wVF5CanUsot+2UqhsVPglZsylz+b5fFnU+0shvuFMkHCfLajkX+zziJBk4QNXXv3g0tRaLDQGldY3MBx6DmzIF5g+HUmhpkjbF2SuhplHnnD0TVuCAWRhy+MN6+ME6AEYipAA0gGsSgiLWuqp0YLyG52YD3KTuWeDWBTqETD6YtHRbkgCpvYyzvCG5ZKwFMcl
-X-MS-Exchange-CrossTenant-Network-Message-Id: f3439b24-8ff8-47f3-7eb3-08d876ae3c1d
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 17:16:37.9936
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 611coTQ4CX6aWZvRYT650uBGNtVqpeWoJRWxaeyLHIl82bNN+lyVkTNfJjSYUH1l
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3601
-X-OriginatorOrg: fb.com
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+        Thu, 22 Oct 2020 13:17:04 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 23FD7C0613CE;
+        Thu, 22 Oct 2020 10:17:03 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id j8so2433919ilk.0;
+        Thu, 22 Oct 2020 10:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LxH0WW4eyFGtlK7B0mhAHSxy5284D+Fh4ydA0CHiSrs=;
+        b=SwKfMo+3aCiKGJpe/ik55uXuzdhMQsDmXUsqy8J+1mcFtiAWqdryRmeq1NW3lYPWFY
+         odjDZxsxMdL8wKxh6fDgIgadnx5SYV6K+HlDl5Xer0lwcSaW/8TlljvfoBZjqz1/1Ima
+         7ZtAwRiyazx6FwDnwa+M8KLlBIycLZ8DxBOSOfdGDyPdFCQkzD5r/EbI/wTlAaGJs1i7
+         5cN/q4Vpof3y5/ZQYj+AaSMSwXrDBCkBDEDFlt/rjV3LDehfICorrhPsMpJdt8PeV0JJ
+         zvwgmN5yBIA68kfKr5ckMshsZ/mwbJPJSIB1E6migDZ7b4PSqF9rw3bXvQJ9s5pqiyf2
+         phzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=LxH0WW4eyFGtlK7B0mhAHSxy5284D+Fh4ydA0CHiSrs=;
+        b=UD4BZ55nKclccjj0eIbl7pxBuUfI0yI+WIwl8CGq6hOy+treoHfyFJ6rkrIR92fmP/
+         VrXp1r5kMkMn3N2R5vQxkffLjSZT8yV6m+nrn34sQWoqytLtwUekklnNQjI8AaEc9kKh
+         wz1uxcdGWmU6qjz+uTWUd9K3BKmRm8yPYSjVj0Q04ngx0iStJxmhiG5r1fsWem7av95z
+         7GKTQg5YpgIPr6O5JJsiTw/Bk+odz0h+rQsCSoeF5MIOq3WF/XOOOH7EHyB74tUHgwzl
+         86NpbDbUjoivvLQ6TKODW5Xs5AnFIaHFUUjhnebMDVAZsKlBOihgfLIGSa4aLXN2l78U
+         pcRw==
+X-Gm-Message-State: AOAM532VC6hI3lCofzEdaj/LcmMqbvdAggiGvLiIVZWBRgAcD9N+9Eq/
+        iqzIy0bFzCkdM4+aVhg641k=
+X-Google-Smtp-Source: ABdhPJx21wl1klJ0oPPI02CyzLp67JbB4DNt5zAmZ4miMdBQYL+Jf5xVnwQkNAR4URG4bW1L+EohiQ==
+X-Received: by 2002:a92:d84a:: with SMTP id h10mr2812597ilq.39.1603387022310;
+        Thu, 22 Oct 2020 10:17:02 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:527:767:b750:2d3c])
+        by smtp.gmail.com with ESMTPSA id v1sm1287636ioe.0.2020.10.22.10.17.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 10:17:01 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     marex@denx.de, aford@beaconembedded.com, l.stach@pengutronix.de,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] arm64: dts: imx8mm: Add GPU node
+Date:   Thu, 22 Oct 2020 12:16:39 -0500
+Message-Id: <20201022171639.773702-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_12:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 clxscore=1015
- lowpriorityscore=0 bulkscore=0 spamscore=0 mlxscore=0 malwarescore=0
- phishscore=0 priorityscore=1501 mlxlogscore=999 adultscore=0
- impostorscore=0 suspectscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010220112
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 09:42:11AM -0700, Mike Kravetz wrote:
-> On 10/21/20 7:33 PM, Roman Gushchin wrote:
-> > On Wed, Oct 21, 2020 at 05:15:53PM -0700, Mike Kravetz wrote:
-> >> On 10/16/20 3:52 PM, Roman Gushchin wrote:
-> >>> This small patchset makes cma_release() non-blocking and simplifies
-> >>> the code in hugetlbfs, where previously we had to temporarily drop
-> >>> hugetlb_lock around the cma_release() call.
-> >>>
-> >>> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
-> >>> THP under a memory pressure requires a cma_release() call. If it's
-> >>> a blocking function, it complicates the already complicated code.
-> >>> Because there are at least two use cases like this (hugetlbfs is
-> >>> another example), I believe it's just better to make cma_release()
-> >>> non-blocking.
-> >>>
-> >>> It also makes it more consistent with other memory releasing functions
-> >>> in the kernel: most of them are non-blocking.
-> >>
-> >> Thanks for looking into this Roman.
-> > 
-> > Hi Mike,
-> > 
-> >>
-> >> I may be missing something, but why does cma_release have to be blocking
-> >> today?  Certainly, it takes the bitmap in cma_clear_bitmap and could
-> >> block.  However, I do not see why cma->lock has to be a mutex.  I may be
-> >> missing something, but I do not see any code protected by the mutex doing
-> >> anything that could sleep?
-> >>
-> >> Could we simply change that mutex to a spinlock?
-> > 
-> > I actually have suggested it few months ago, but the idea was
-> > opposed by Joonsoo: https://lkml.org/lkml/2020/4/3/12 .
-> > 
-> > The time of a bitmap operation is definitely not an issue in my context,
-> > but I can't speak for something like an embedded/rt case.
-> > 
-> 
-> I wonder if it may be time to look into replacing the cma area bitmap
-> with some other data structure?  Joonsoo was concerned about the time
-> required to traverse the bitmap for an 8GB area.  With new support for
-> allocating 1GB hugetlb pages from cma, I can imagine someone setting
-> up a cma area that is hundreds of GB if not TB in size.  It is going
-> take some time to traverse a bitmap describing such a huge area.
+According to the documentation from NXP, the i.MX8M Nano has a
+Vivante GC7000 Ultra Lite as its GPU core.
 
-If the cma area is used exclusively for 1 GB allocations, the bitmap can
-have only 1 bit per GB, so it shouldn't be a big problem.
+With this patch, the Etnaviv driver presents the GPU as:
+   etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
 
-Long-term I have some hopes to be able to allocate 1 GB pages without
-a need to reserve a cma area: we can try to group pages based on their mobility
-on a 1 GB scale, so that all non-movable pages will reside in few 1 GB blocks.
-I'm looking into that direction, but don't have any results yet.
+It uses the GPCV2 controller to enable the power domain for the GPU.
 
-If this idea fails and we'll end up allocating a large cma area unconditionally
-and shrink it on demand (I think Rik suggested something like this),
-replacing the bitmap with something else sounds like a good idea to me.
+Signed-off-by: Adam Ford <aford173@gmail.com>
+---
+This patch depends on a series located:
+https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=368903
+and
 
-As now, I want to unblock Zi Yan on his work on 1 GB THPs, so maybe
-we can go with introducing cma_release_nowait(), as I suggested in
-the other e-mail in this thread? Do you have any objections?
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 605e6dbd2c6f..62c8cd3dea7c 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -4,6 +4,8 @@
+  */
+ 
+ #include <dt-bindings/clock/imx8mn-clock.h>
++#include <dt-bindings/power/imx8mn-power.h>
++#include <dt-bindings/reset/imx8mq-reset.h>
+ #include <dt-bindings/gpio/gpio.h>
+ #include <dt-bindings/input/input.h>
+ #include <dt-bindings/interrupt-controller/arm-gic.h>
+@@ -1019,6 +1021,31 @@ gpmi: nand-controller@33002000 {
+ 			status = "disabled";
+ 		};
+ 
++		gpu: gpu@38000000 {
++			compatible = "vivante,gc";
++			reg = <0x38000000 0x8000>;
++			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
++			clocks = <&clk IMX8MN_CLK_GPU_AHB>,
++				<&clk IMX8MN_CLK_GPU_BUS_ROOT>,
++				<&clk IMX8MN_CLK_GPU_CORE_ROOT>,
++				<&clk IMX8MN_CLK_GPU_SHADER_DIV>;
++			clock-names = "reg", "bus", "core", "shader";
++			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE_SRC>,
++					  <&clk IMX8MN_CLK_GPU_SHADER_SRC>,
++					  <&clk IMX8MN_CLK_GPU_AXI>,
++					  <&clk IMX8MN_CLK_GPU_AHB>,
++					  <&clk IMX8MN_GPU_PLL>,
++					  <&clk IMX8MN_CLK_GPU_CORE_DIV>,
++					  <&clk IMX8MN_CLK_GPU_SHADER_DIV>;
++			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
++						  <&clk IMX8MN_GPU_PLL_OUT>,
++						  <&clk IMX8MN_SYS_PLL1_800M>,
++						  <&clk IMX8MN_SYS_PLL1_800M>;
++			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
++				<400000000>, <400000000>;
++			power-domains = <&pgc_gpumix>;
++		};
++
+ 		gic: interrupt-controller@38800000 {
+ 			compatible = "arm,gic-v3";
+ 			reg = <0x38800000 0x10000>,
+-- 
+2.25.1
 
-Thanks!
