@@ -2,115 +2,517 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0CEA295585
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:30:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EECAD2955AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507518AbgJVAa2 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Wed, 21 Oct 2020 20:30:28 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([205.139.111.44]:34467 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2507510AbgJVAa2 (ORCPT
+        id S2894410AbgJVAfy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 20:35:54 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:51370 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894365AbgJVAfx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 20:30:28 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-356-oIN6swO4Mbe1CG0iD4HOOw-1; Wed, 21 Oct 2020 20:30:21 -0400
-X-MC-Unique: oIN6swO4Mbe1CG0iD4HOOw-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 46CC91074659;
-        Thu, 22 Oct 2020 00:30:20 +0000 (UTC)
-Received: from ovpn-66-201.rdu2.redhat.com (ovpn-66-201.rdu2.redhat.com [10.10.66.201])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 1DAB219C4F;
-        Thu, 22 Oct 2020 00:30:18 +0000 (UTC)
-Message-ID: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
-Subject: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-From:   Qian Cai <cai@lca.pw>
-To:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-Date:   Wed, 21 Oct 2020 20:30:18 -0400
-Mime-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=cai@lca.pw
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: lca.pw
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        Wed, 21 Oct 2020 20:35:53 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M0UF3B175000;
+        Thu, 22 Oct 2020 00:35:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : message-id :
+ content-type : mime-version : subject : date : in-reply-to : cc : to :
+ references; s=corp-2020-01-29;
+ bh=X6p05Nrg280hs5dJAZraSn2yDB6RJhwnQiWvWeyXle8=;
+ b=JjtuOl3kNCyQI+kSglYNhaWv0StWwSx8WGuVWm86KVUyZwOXirHr6LeQKxbzgL5kU2eD
+ dS1SVV18fcqxxX3S4cyS1KFnG6o5V8/ABpZ+d/HoGZlJ6p1Wk7ers3T1jkpDLucqCGFx
+ MQpOEB+euXyFXdzH3vwxaHCAL/6JK5sqqEdfLPFfEEfnEcD/9bLcadHGmnR7d5fdesve
+ B8uLDuKJxpsOerBZzJ2lFgyJq4CkFm2M5SOoLJAkGKGw3eoo3iRgphBVCrR/88SyTLi9
+ 84skuQQiKCNFvNFKxMo8yVa8FneXg6M8kaI87Yfgxo6PUZZaQFkHyIWtbIRPEHBkR9js 7A== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by userp2120.oracle.com with ESMTP id 34ak16kp4c-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Oct 2020 00:35:42 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M0U8i6177306;
+        Thu, 22 Oct 2020 00:33:41 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3030.oracle.com with ESMTP id 348a6q14tx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 00:33:41 +0000
+Received: from abhmp0019.oracle.com (abhmp0019.oracle.com [141.146.116.25])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09M0XXIs025094;
+        Thu, 22 Oct 2020 00:33:33 GMT
+Received: from dhcp-10-159-149-46.vpn.oracle.com (/10.159.149.46)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Oct 2020 17:33:33 -0700
+From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+Message-Id: <8D07D0F4-30AD-454E-93A2-97446821AB4B@oracle.com>
+Content-Type: multipart/mixed;
+        boundary="Apple-Mail=_7EAC6426-4344-4B10-AFC9-72304A5EF163"
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
+Date:   Wed, 21 Oct 2020 17:33:31 -0700
+In-Reply-To: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
+Cc:     b.zolnierkie@samsung.com, akpm@linux-foundation.org,
+        rppt@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
+        gustavoars@kernel.org, dri-devel@lists.freedesktop.org,
+        linux-fbdev@vger.kernel.org
+To:     linux-kernel@vger.kernel.org
+References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 adultscore=0 suspectscore=5 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220001
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1015 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=5 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220001
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Today's linux-next starts to trigger this wondering if anyone has any clue.
 
-[ 9765.086947][T48578] LTP: starting iogen01 (export LTPROOT; rwtest -N iogen01 -i 120s -s read,write -Da -Dv -n 2 500b:$TMPDIR/doio.f1.$$ 1000b:$TMPDIR/doio.f2.$$)
-[ 9839.423703][T97227] ------------[ cut here ]------------
-[ 9839.429819][T97227] kernel BUG at mm/page-writeback.c:2241!
-[ 9839.435459][T97227] invalid opcode: 0000 [#1] SMP KASAN PTI
-[ 9839.441066][T97227] CPU: 56 PID: 97227 Comm: doio Tainted: G          IO      5.9.0-next-20201021 #1
-[ 9839.450251][T97227] Hardware name: HPE ProLiant DL560 Gen10/ProLiant DL560 Gen10, BIOS U34 11/13/2019
-[ 9839.459532][T97227] RIP: 0010:write_cache_pages+0x95f/0xeb0
-[ 9839.465137][T97227] Code: 03 80 3c 02 00 0f 85 e5 04 00 00 49 8b 46 08 48 c7 c6 40 fb ca 9c 48 8d 50 ff a8 01 4c 0f 45 f2 4c 89 f7 e8 33 e3 08 00 0f 0b <0f> 0b 3d 00 00 08 00 0f 84 c3 00 00 00 48 8b 54 24 30 48 c1 ea 03
-[ 9839.484715][T97227] RSP: 0018:ffffc9003063f610 EFLAGS: 00010282
-[ 9839.490672][T97227] RAX: 01bfffc00000803f RBX: ffffea0024e68500 RCX: ffffffff9b8d232e
-[ 9839.498547][T97227] RDX: 0000000000000000 RSI: 0000000000000008 RDI: ffffea0024e68500
-[ 9839.506422][T97227] RBP: ffffc9003063f708 R08: fffff940049cd0a1 R09: fffff940049cd0a1
-[ 9839.514297][T97227] R10: ffffea0024e68507 R11: fffff940049cd0a0 R12: ffffc9003063fa20
-[ 9839.522171][T97227] R13: ffffea0024e68500 R14: ffffea0024e68500 R15: dffffc0000000000
-[ 9839.530044][T97227] FS:  00007f23ef12a740(0000) GS:ffff88a01f280000(0000) knlGS:0000000000000000
-[ 9839.538878][T97227] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[ 9839.545355][T97227] CR2: 0000000001c79000 CR3: 0000000c15786004 CR4: 00000000007706e0
-[ 9839.553229][T97227] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-[ 9839.561104][T97227] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-[ 9839.568976][T97227] PKRU: 55555554
-[ 9839.572395][T97227] Call Trace:
-[ 9839.575559][T97227]  ? iomap_writepage_map+0x23a0/0x23a0
-[ 9839.580900][T97227]  ? clear_page_dirty_for_io+0x990/0x990
-[ 9839.586420][T97227]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[ 9839.591850][T97227]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[ 9839.597021][T97227]  ? find_held_lock+0x33/0x1c0
-[ 9839.601670][T97227]  ? xfs_vm_writepages+0xc2/0x130
-[ 9839.606575][T97227]  ? lock_downgrade+0x700/0x700
-[ 9839.611305][T97227]  ? rcu_read_unlock+0x40/0x40
-[ 9839.615949][T97227]  ? do_raw_spin_lock+0x121/0x290
-[ 9839.620854][T97227]  ? rwlock_bug.part.1+0x90/0x90
-[ 9839.625669][T97227]  iomap_writepages+0x3f/0xb0
-iomap_writepages at fs/iomap/buffered-io.c:1576
-[ 9839.630225][T97227]  xfs_vm_writepages+0xd7/0x130
-[ 9839.634955][T97227]  ? xfs_vm_readahead+0x10/0x10
-[ 9839.639686][T97227]  ? find_held_lock+0x33/0x1c0
-[ 9839.644327][T97227]  do_writepages+0xcd/0x250
-do_writepages at mm/page-writeback.c:2355
-[ 9839.648707][T97227]  ? page_writeback_cpu_online+0x10/0x10
-[ 9839.654224][T97227]  ? do_raw_spin_lock+0x121/0x290
-[ 9839.659129][T97227]  ? rwlock_bug.part.1+0x90/0x90
-[ 9839.663945][T97227]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[ 9839.669113][T97227]  __filemap_fdatawrite_range+0x250/0x310
-__filemap_fdatawrite_range at mm/filemap.c:423
-[ 9839.674717][T97227]  ? delete_from_page_cache_batch+0xaa0/0xaa0
-[ 9839.680669][T97227]  ? rcu_read_lock_bh_held+0xb0/0xb0
-[ 9839.685836][T97227]  ? rcu_read_lock_sched_held+0x9c/0xd0
-[ 9839.691265][T97227]  file_write_and_wait_range+0x85/0xe0
-file_write_and_wait_range at mm/filemap.c:761
-[ 9839.696607][T97227]  xfs_file_fsync+0x192/0x710
-fs_file_fsync at fs/xfs/xfs_file.c:105
-[ 9839.701163][T97227]  ? xfs_file_read_iter+0x490/0x490
-[ 9839.706242][T97227]  ? up_write+0x148/0x460
-[ 9839.710446][T97227]  ? iomap_write_begin+0xde0/0xde0
-[ 9839.715438][T97227]  xfs_file_buffered_aio_write+0x82a/0xa30
-generic_write_sync at include/linux/fs.h:2727
-(inlined by) xfs_file_buffered_aio_write at fs/xfs/xfs_file.c:684
-[ 9839.721129][T97227]  ? xfs_file_aio_write_checks+0x620/0x620
-[ 9839.726820][T97227]  ? lockdep_hardirqs_on_prepare+0x3d0/0x3d0
-[ 9839.732691][T97227]  new_sync_write+0x3aa/0x610
-[ 9839.737247][T97227]  ? new_sync_read+0x600/0x600
-[ 9839.741888][T97227]  ? vfs_write+0x36c/0x5b0
-[ 9839.746181][T97227]  ? rcu_read_lock_any_held+0xcd/0xf0
-[ 9839.751433][T97227]  vfs_write+0x3e9/0x5b0
+--Apple-Mail=_7EAC6426-4344-4B10-AFC9-72304A5EF163
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
+Attached the Syzkaller C reproducer.
+
+
+--Apple-Mail=_7EAC6426-4344-4B10-AFC9-72304A5EF163
+Content-Disposition: attachment;
+	filename=repro.c
+Content-Type: application/octet-stream;
+	x-unix-mode=0644;
+	name="repro.c"
+Content-Transfer-Encoding: 7bit
+
+#define _GNU_SOURCE
+
+#include <dirent.h>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <pthread.h>
+#include <signal.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/prctl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <time.h>
+#include <unistd.h>
+
+#include <linux/futex.h>
+
+static void sleep_ms(uint64_t ms)
+{
+    usleep(ms * 1000);
+}
+
+static uint64_t current_time_ms(void)
+{
+    struct timespec ts;
+    if (clock_gettime(CLOCK_MONOTONIC, &ts))
+    exit(1);
+    return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
+}
+
+static void thread_start(void* (*fn)(void*), void* arg)
+{
+    pthread_t th;
+    pthread_attr_t attr;
+    pthread_attr_init(&attr);
+    pthread_attr_setstacksize(&attr, 128 << 10);
+    int i;
+    for (i = 0; i < 100; i++) {
+        if (pthread_create(&th, &attr, fn, arg) == 0) {
+            pthread_attr_destroy(&attr);
+            return;
+        }
+        if (errno == EAGAIN) {
+            usleep(50);
+            continue;
+        }
+        break;
+    }
+    exit(1);
+}
+
+typedef struct {
+    int state;
+} event_t;
+
+static void event_init(event_t* ev)
+{
+    ev->state = 0;
+}
+
+static void event_reset(event_t* ev)
+{
+    ev->state = 0;
+}
+
+static void event_set(event_t* ev)
+{
+    if (ev->state)
+    exit(1);
+    __atomic_store_n(&ev->state, 1, __ATOMIC_RELEASE);
+    syscall(SYS_futex, &ev->state, FUTEX_WAKE | FUTEX_PRIVATE_FLAG, 1000000);
+}
+
+static void event_wait(event_t* ev)
+{
+    while (!__atomic_load_n(&ev->state, __ATOMIC_ACQUIRE))
+        syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0,
+0);
+}
+
+static int event_isset(event_t* ev)
+{
+    return __atomic_load_n(&ev->state, __ATOMIC_ACQUIRE);
+}
+
+static int event_timedwait(event_t* ev, uint64_t timeout)
+{
+    uint64_t start = current_time_ms();
+    uint64_t now = start;
+    for (;;) {
+        uint64_t remain = timeout - (now - start);
+        struct timespec ts;
+        ts.tv_sec = remain / 1000;
+        ts.tv_nsec = (remain % 1000) * 1000 * 1000;
+        syscall(SYS_futex, &ev->state, FUTEX_WAIT | FUTEX_PRIVATE_FLAG, 0,
+&ts);
+        if (__atomic_load_n(&ev->state, __ATOMIC_RELAXED))
+            return 1;
+        now = current_time_ms();
+        if (now - start > timeout)
+            return 0;
+    }
+}
+
+static bool write_file(const char* file, const char* what, ...)
+{
+    char buf[1024];
+    va_list args;
+    va_start(args, what);
+    vsnprintf(buf, sizeof(buf), what, args);
+    va_end(args);
+    buf[sizeof(buf) - 1] = 0;
+    int len = strlen(buf);
+    int fd = open(file, O_WRONLY | O_CLOEXEC);
+    if (fd == -1)
+        return false;
+    if (write(fd, buf, len) != len) {
+        int err = errno;
+        close(fd);
+        errno = err;
+        return false;
+    }
+    close(fd);
+    return true;
+}
+
+static long syz_open_dev(volatile long a0, volatile long a1, volatile long
+a2)
+{
+    if (a0 == 0xc || a0 == 0xb) {
+        char buf[128];
+        sprintf(buf, "/dev/%s/%d:%d", a0 == 0xc ? "char" : "block",
+(uint8_t)a1, (uint8_t)a2);
+        return open(buf, O_RDWR, 0);
+    } else {
+        char buf[1024];
+        char* hash;
+strncpy(buf, (char*)a0, sizeof(buf) - 1);
+        buf[sizeof(buf) - 1] = 0;
+        while ((hash = strchr(buf, '#'))) {
+            *hash = '0' + (char)(a1 % 10);
+            a1 /= 10;
+        }
+        return open(buf, a2, 0);
+    }
+}
+
+static void kill_and_wait(int pid, int* status)
+{
+    kill(-pid, SIGKILL);
+    kill(pid, SIGKILL);
+    int i;
+    for (i = 0; i < 100; i++) {
+        if (waitpid(-1, status, WNOHANG | __WALL) == pid)
+            return;
+        usleep(1000);
+    }
+    DIR* dir = opendir("/sys/fs/fuse/connections");
+    if (dir) {
+        for (;;) {
+            struct dirent* ent = readdir(dir);
+            if (!ent)
+                break;
+            if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") ==
+0)
+                continue;
+            char abort[300];
+            snprintf(abort, sizeof(abort),
+"/sys/fs/fuse/connections/%s/abort", ent->d_name);
+            int fd = open(abort, O_WRONLY);
+            if (fd == -1) {
+                continue;
+            }
+            if (write(fd, abort, 1) < 0) {
+            }
+            close(fd);
+        }
+        closedir(dir);
+    } else {
+    }
+    while (waitpid(-1, status, __WALL) != pid) {
+    }
+}
+
+static void setup_test()
+{
+    prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
+    setpgrp();
+    write_file("/proc/self/oom_score_adj", "1000");
+}
+
+struct thread_t {
+    int created, call;
+    event_t ready, done;
+};
+
+static struct thread_t threads[16];
+static void execute_call(int call);
+static int running;
+
+static void* thr(void* arg)
+{
+    struct thread_t* th = (struct thread_t*)arg;
+    for (;;) {
+        event_wait(&th->ready);
+        event_reset(&th->ready);
+        execute_call(th->call);
+        __atomic_fetch_sub(&running, 1, __ATOMIC_RELAXED);
+        event_set(&th->done);
+    }
+    return 0;
+}
+
+static void execute_one(void)
+{
+    int i, call, thread;
+    int collide = 0;
+again:
+    for (call = 0; call < 6; call++) {
+        for (thread = 0; thread < (int)(sizeof(threads) /
+sizeof(threads[0])); thread++) {
+            struct thread_t* th = &threads[thread];
+            if (!th->created) {
+                th->created = 1;
+                event_init(&th->ready);
+                event_init(&th->done);
+                event_set(&th->done);
+                thread_start(thr, th);
+            }
+            if (!event_isset(&th->done))
+                continue;
+            event_reset(&th->done);
+            th->call = call;
+            __atomic_fetch_add(&running, 1, __ATOMIC_RELAXED);
+            event_set(&th->ready);
+            if (collide && (call % 2) == 0)
+                break;
+            event_timedwait(&th->done, 45);
+            break;
+        }
+    }
+    for (i = 0; i < 100 && __atomic_load_n(&running, __ATOMIC_RELAXED); i++)
+        sleep_ms(1);
+    if (!collide) {
+        collide = 1;
+        goto again;
+    }
+}
+
+static void execute_one(void);
+
+#define WAIT_FLAGS __WALL
+
+static void loop(void)
+{
+    int iter;
+    for (iter = 0;; iter++) {
+        int pid = fork();
+        if (pid < 0)
+    exit(1);
+        if (pid == 0) {
+            setup_test();
+            execute_one();
+            exit(0);
+        }
+        int status = 0;
+        uint64_t start = current_time_ms();
+        for (;;) {
+            if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid)
+                break;
+            sleep_ms(1);
+            if (current_time_ms() - start < 5 * 1000)
+                continue;
+            kill_and_wait(pid, &status);
+            break;
+        }
+    }
+}
+
+uint64_t r[2] = {0xffffffffffffffff, 0xffffffffffffffff};
+
+void execute_call(int call)
+{
+        intptr_t res;    switch (call) {
+    case 0:
+memcpy((void*)0x20000000, "/dev/fb0\000", 9);
+        res = syscall(__NR_openat, 0xffffffffffffff9cul, 0x20000000ul, 0ul,
+0ul);
+        if (res != -1)
+                r[0] = res;
+        break;
+    case 1:
+*(uint32_t*)0x20000100 = 0;
+*(uint32_t*)0x20000104 = 0x10;
+*(uint32_t*)0x20000108 = 0;
+*(uint32_t*)0x2000010c = 0;
+*(uint32_t*)0x20000110 = 0;
+*(uint32_t*)0x20000114 = 0;
+*(uint32_t*)0x20000118 = 0;
+*(uint32_t*)0x2000011c = 0;
+*(uint32_t*)0x20000120 = 0;
+*(uint32_t*)0x20000124 = 0;
+*(uint32_t*)0x20000128 = 0;
+*(uint32_t*)0x2000012c = 0;
+*(uint32_t*)0x20000130 = 0;
+*(uint32_t*)0x20000134 = 0;
+*(uint32_t*)0x20000138 = 0;
+*(uint32_t*)0x2000013c = 0;
+*(uint32_t*)0x20000140 = 0;
+*(uint32_t*)0x20000144 = 0;
+*(uint32_t*)0x20000148 = 0;
+*(uint32_t*)0x2000014c = 0;
+*(uint32_t*)0x20000150 = 0;
+*(uint32_t*)0x20000154 = 0;
+*(uint32_t*)0x20000158 = 0;
+*(uint32_t*)0x2000015c = 0;
+*(uint32_t*)0x20000160 = 0;
+*(uint32_t*)0x20000164 = 0;
+*(uint32_t*)0x20000168 = 0;
+*(uint32_t*)0x2000016c = 0;
+*(uint32_t*)0x20000170 = 0;
+*(uint32_t*)0x20000174 = 0;
+*(uint32_t*)0x20000178 = 0;
+*(uint32_t*)0x2000017c = 0;
+*(uint32_t*)0x20000180 = 0;
+*(uint32_t*)0x20000184 = 0;
+*(uint32_t*)0x20000188 = 0;
+*(uint32_t*)0x2000018c = 0;
+*(uint32_t*)0x20000190 = 0;
+*(uint32_t*)0x20000194 = 0;
+*(uint32_t*)0x20000198 = 0;
+*(uint32_t*)0x2000019c = 0;
+        syscall(__NR_ioctl, r[0], 0x4601ul, 0x20000100ul);
+        break;
+    case 2:
+        syscall(__NR_socket, 0xaul, 3ul, 0x3aul);
+        break;
+    case 3:
+        res = syz_open_dev(0xc, 4, 0x14);
+        if (res != -1)
+                r[1] = res;
+        break;
+    case 4:
+        syscall(__NR_ioctl, r[1], 0x5437ul, 0ul);
+        break;
+    case 5:
+        syscall(__NR_ioctl, r[1], 0x5606ul, 8ul);
+        break;
+    }
+
+}
+int main(void)
+{
+        syscall(__NR_mmap, 0x20000000ul, 0x1000000ul, 3ul, 0x32ul, -1, 0);
+            loop();
+    return 0;
+}
+
+
+--Apple-Mail=_7EAC6426-4344-4B10-AFC9-72304A5EF163
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+
+
+> On Oct 21, 2020, at 4:57 PM, saeed.mirzamohammadi@oracle.com wrote:
+>=20
+> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+>=20
+> This patch fixes the issue due to:
+>=20
+> [   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
+> [   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted =
+5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
+> [   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
+BIOS 0.5.1 01/01/2011
+> [   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
+>=20
+> The error happens when the pixels value is calculated before =
+performing the sanity checks on bits_per_pixel.
+> A bits_per_pixel set to zero causes divide by zero error.
+>=20
+> This patch moves the calculation after the sanity check.
+>=20
+> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> ---
+> drivers/video/fbdev/cirrusfb.c | 3 ++-
+> 1 file changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/video/fbdev/cirrusfb.c =
+b/drivers/video/fbdev/cirrusfb.c
+> index 15a9ee7cd734..a7749101b094 100644
+> --- a/drivers/video/fbdev/cirrusfb.c
+> +++ b/drivers/video/fbdev/cirrusfb.c
+> @@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct =
+fb_var_screeninfo *var,
+> {
+> 	int yres;
+> 	/* memory size in pixels */
+> -	unsigned pixels =3D info->screen_size * 8 / var->bits_per_pixel;
+> +	unsigned int pixels;
+> 	struct cirrusfb_info *cinfo =3D info->par;
+>=20
+> 	switch (var->bits_per_pixel) {
+> @@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct =
+fb_var_screeninfo *var,
+> 		return -EINVAL;
+> 	}
+>=20
+> +	pixels =3D info->screen_size * 8 / var->bits_per_pixel;
+> 	if (var->xres_virtual < var->xres)
+> 		var->xres_virtual =3D var->xres;
+> 	/* use highest possible virtual resolution */
+> --=20
+> 2.27.0
+>=20
+
+
+--Apple-Mail=_7EAC6426-4344-4B10-AFC9-72304A5EF163--
