@@ -2,82 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BBD5F296490
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:20:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 447D5296499
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:21:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902462AbgJVSUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:20:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
+        id S2900422AbgJVSVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:21:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41288 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899050AbgJVSUE (ORCPT
+        with ESMTP id S2899684AbgJVSVw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:20:04 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FCC0613CE;
-        Thu, 22 Oct 2020 11:20:03 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVfBg-006PPz-Ar; Thu, 22 Oct 2020 18:19:44 +0000
-Date:   Thu, 22 Oct 2020 19:19:44 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        'Christoph Hellwig' <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022181944.GU3576660@ZenIV.linux.org.uk>
-References: <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022132342.GB8781@lst.de>
- <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
- <20201022164040.GV20115@casper.infradead.org>
+        Thu, 22 Oct 2020 14:21:52 -0400
+Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D330CC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:21:50 -0700 (PDT)
+Received: by mail-io1-xd41.google.com with SMTP id z5so2672588iob.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:21:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:sender:from:date:message-id:subject:to;
+        bh=YKbQ/y9y0btMArK6xXQOz3dqV1gWgYv05Hyq906MAGk=;
+        b=Xog+bYJ8LSlGLIzpwGzZlduqiyF+Vx52jFyztNxJynIuwfndFhhyRyJJZmdMZ7Bq8p
+         /Tvg/nHYnabQMCjH3eOEiCRpQU8g/X/O0aWEQF+i2ICgF79pDerGQdfboCATmOA+LFAp
+         DcuvPLVpK4mNkSWkvh5PPqCzJdYOUXcw0rcZ53w5T8toDXz8avJLQs6Ire34BUQmpUzV
+         BHB6y7xDAitnA4Gh5VI0NgVyGphwmPwYPdrWBPlAbCFR3FO2zcjtLIwEfZ2g0QFVojst
+         pNWVnYWby4RlMESIqpbBXrpoON0f0RaELaKRYEBMPiDTJW1+cJS777CltrP9EjGjFr92
+         Yz8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:sender:from:date
+         :message-id:subject:to;
+        bh=YKbQ/y9y0btMArK6xXQOz3dqV1gWgYv05Hyq906MAGk=;
+        b=XWXoLtEOxPxR3czvnk91IKRoJwPThLj34/gnORCBHGGzK+QzD/HoC87siCwuvE4SeO
+         jnAqiH9kn4/jMpCw1nWavyx26HgDD4XZIvVJqrkB3XEHHOxDiGv1OQM/33Gam9dTg+EQ
+         3oDTCci2mZxjU2bwQ2ucssu0F0ecjhtCYFCazPkZ10j7x71sUzxiYFYYgM8kZYNHgWq9
+         xlQ5T5C7McyPiIdFo1sod5MYj7WbitH1iHpsm7CRlSraBTH4tHuwTCERFDx50LVSLpN9
+         FYPWhzEhigMdmGjukB60zqPEsLe8oZWKVeMvOrbDO9sYjaUZ26PfPEzWLmd/cbYGyA30
+         k7Xg==
+X-Gm-Message-State: AOAM533tEBHdDcsQBAbiP9sJ76yOKE5OcZxr4pNZAOKtKdkTItITYllw
+        7pnNsq+8Y+hSUFx1gpw26AeKE/bkkUQcCP0nrxI=
+X-Google-Smtp-Source: ABdhPJzn2uQ7Gs7BQrDV99H3bMlV9mCz+d1n/HE7axWpEx6vGXeu6JgYjk38ATu/MiDkHg/0GdneC1BOcjKcVfgXOZ8=
+X-Received: by 2002:a02:b388:: with SMTP id p8mr2720824jan.129.1603390910185;
+ Thu, 22 Oct 2020 11:21:50 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022164040.GV20115@casper.infradead.org>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Reply-To: dennismattu01@gmail.com
+Sender: jomoozzy01@gmail.com
+Received: by 2002:a92:b50d:0:0:0:0:0 with HTTP; Thu, 22 Oct 2020 11:21:49
+ -0700 (PDT)
+From:   Dennis Mattu <dennismattu01@gmail.com>
+Date:   Thu, 22 Oct 2020 18:21:49 +0000
+X-Google-Sender-Auth: pJeAtkia39LRlMi_H4xmAgxvHmI
+Message-ID: <CAB54pugz-7uwD1xRfiaqGzOdrpADF4iJ4SRx1CPoTHsFO16NMw@mail.gmail.com>
+Subject: Greetings
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 05:40:40PM +0100, Matthew Wilcox wrote:
-> On Thu, Oct 22, 2020 at 04:35:17PM +0000, David Laight wrote:
-> > Wait...
-> > readv(2) defines:
-> > 	ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
-> 
-> It doesn't really matter what the manpage says.  What does the AOSP
-> libc header say?
+I am Mr.Dennis, i work as an accountant in a bank, i am contacting you
+in regards to a business transfer of a huge sum of money from a
+deceased account. I need your urgent assistance in transferring the
+sum of $11.6million dollars to your private bank  account,the fund
+belongs to one of our foreign customer who died along with his entire
+family since July 22, 2003.The money has been here in our Bank lying
+dormant for years now without anybody coming for the claim of it.
 
-FWIW, see https://www.spinics.net/lists/linux-scsi/msg147836.html and
-subthread from there on...
+I now seek your permission to have you stand in as the deceased
+relative to enable the funds be released in your favor as the
+beneficiary and the next of kin to our deceased customer,the Banking
+laws here does not allow such money to stay more than 19years,because
+the money will be recalled to the Bank treasury account as unclaimed
+fund.I am ready to share with you 40% for you and 60% will be kept for
+me, by indicating your interest i will send you the full details on
+how the business will be executed.
