@@ -2,180 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E629B29567F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB9D329566A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:32:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895190AbgJVCpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 22:45:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895183AbgJVCpk (ORCPT
+        id S2895083AbgJVCcX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 22:32:23 -0400
+Received: from mailout2.samsung.com ([203.254.224.25]:21862 "EHLO
+        mailout2.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411875AbgJVCcW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 22:45:40 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69E6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id b6so179899pju.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=kONrq/lRtklL1Qqq4SPUIkJR3qq5A1gBIILz2gGUwb4=;
-        b=tbsBipmQmIUWj3rztkdcEygRjAbt9YQF+z+XR87qeJFHpK5vQgX/LOdCtB9wbwRXDr
-         kBEQLiiE6Zn/i/ui8CDv77vasMVSdl2QJYPku87wMhWhmXGsYVG/DuGccEugsNRXdRlz
-         7QteN6yuPG2Y5KMSiznapWkXP7Nrna9dSi0bVQEpLg9VYTQ2WXDIObfeXs0BfUx/JciZ
-         E2zWzBU+RJ1wNg8fiya2a7ENBa3n5rW3zvYmNRwDoio1aC3gFiB9dFy22eNo60tRrqb2
-         S2Ugnlqu5yNCnRi+fXnEdrjD9LJ7yBJZQGJxQeaVT0SLQF13ya8wyJQLl2sciVgNFpB5
-         xK5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=kONrq/lRtklL1Qqq4SPUIkJR3qq5A1gBIILz2gGUwb4=;
-        b=FE4I9a/NzcgLuQYzNw02DjIdFbj0Rn5CQFTBU6/oVUR+gTjZbCW7AJOSR78bvNZJ1I
-         3E/YckFgbkQazGSvJv3H9mmsfFuKq4ojdo1MuHuyxxL7yZUrkIZYw96c+eQWfCF7jw7r
-         AgOnWsAgQ8L7QJ9zCSJwjzhmJ2ZMhHRoydPeQpzx3C7//LnzsByNaVfsaNKu5q2j8LRc
-         BlHFPdU5WBujxr+dNgmryNYwcNYCiEZhrmEoSdHUaQ/0TgrBHsazKMypSw6MXNvqrLIw
-         N6hFCaU7MMS1o6EE0hXkRkEJHO5ny7MxO4LtDOSDGVr8MbQUMYBgfBua0zKigN1gh9+0
-         ot7w==
-X-Gm-Message-State: AOAM531W/NpngSl/pFGlISXKRGOWqIH+lehRyXT7fR8xYL1er2x4bKyP
-        yv3XWGcrZ13h/cDGEqwQ5zwONREj6kYCSw==
-X-Google-Smtp-Source: ABdhPJzzmGkjj1kW8pPUT7PDWhaDs8EkgTx32Mkx04ju06cTsVG33FQ5AgUOn0BN0hgBAvDTa3KcAA==
-X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr357993pjb.13.1603334738261;
-        Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
-Received: from [10.2.24.220] ([61.120.150.77])
-        by smtp.gmail.com with ESMTPSA id v16sm212387pgk.26.2020.10.21.19.45.35
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 19:45:37 -0700 (PDT)
-Subject: PING: [PATCH] block: add io_error stat for block device
-To:     axboe@kernel.dk
-Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20200910022026.632617-1-pizhenwei@bytedance.com>
-From:   zhenwei pi <pizhenwei@bytedance.com>
-Message-ID: <e6dfc767-a54e-d14e-c6c4-fcb68f43180a@bytedance.com>
-Date:   Thu, 22 Oct 2020 10:45:33 +0800
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.6.1
+        Wed, 21 Oct 2020 22:32:22 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout2.samsung.com (KnoxPortal) with ESMTP id 20201022023220epoutp02101846f227cc68ecfa2d2ce9b405ddf6~AL7lzeyjY3081630816epoutp02v
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 02:32:20 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20201022023220epoutp02101846f227cc68ecfa2d2ce9b405ddf6~AL7lzeyjY3081630816epoutp02v
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603333940;
+        bh=SqBzh37QiR1i4Cy2nyt9C03pMst8sC3TvDU3I/4gOD0=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=oKhw357fqcCkm8x0hxGaDM2DqjxogXbAh50+ssz5fxu6+myi0KvJGQHIYY7Ws4ZYx
+         2Rpnwr5tLTsOnlSShqLEco9Awonvbiefzu90F1ysm02nqtSoTeOQy7h49EzHEUdT8l
+         gzG5qZOATbSqc0hdMXYuSQSYMX8Rl5DdiCepSF9g=
+Received: from epsnrtp4.localdomain (unknown [182.195.42.165]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201022023220epcas1p2cfd5b39afb14de4ec020806a08015abf~AL7lAw_DJ0996709967epcas1p2U;
+        Thu, 22 Oct 2020 02:32:20 +0000 (GMT)
+Received: from epsmges1p2.samsung.com (unknown [182.195.40.157]) by
+        epsnrtp4.localdomain (Postfix) with ESMTP id 4CGrwx4BB2zMqYkZ; Thu, 22 Oct
+        2020 02:32:17 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B4.50.09918.13FE09F5; Thu, 22 Oct 2020 11:32:17 +0900 (KST)
+Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201022023216epcas1p3d05f4780732aee6454a1b29131742f20~AL7iH4MIB2113321133epcas1p3H;
+        Thu, 22 Oct 2020 02:32:16 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201022023216epsmtrp11cb95ebdb731f7891fc68609882a619e~AL7iG6r9Y2255122551epsmtrp1O;
+        Thu, 22 Oct 2020 02:32:16 +0000 (GMT)
+X-AuditID: b6c32a36-713ff700000026be-65-5f90ef3133ca
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        05.76.08745.03FE09F5; Thu, 22 Oct 2020 11:32:16 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201022023216epsmtip28eaea78d354bd553299549f3daab5f44~AL7hze6Q52436824368epsmtip2j;
+        Thu, 22 Oct 2020 02:32:16 +0000 (GMT)
+Subject: Re: [PATCH v4 2/2] PM / devfreq: Add governor attribute flag for
+ specifc sysfs nodes
+To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
+Cc:     lukasz.luba@arm.com, enric.balletbo@collabora.com,
+        hl@rock-chips.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
+        abel.vesa@nxp.com, k.konieczny@samsung.com,
+        b.zolnierkie@samsung.com, chanwoo@kernel.org,
+        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <7ee9dcd8-f326-0bc4-25ba-8f58f22d692c@samsung.com>
+Date:   Thu, 22 Oct 2020 11:45:55 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-In-Reply-To: <20200910022026.632617-1-pizhenwei@bytedance.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <b94b5c9d-6bfc-0535-baaf-d0809f74de42@gmail.com>
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrCJsWRmVeSWpSXmKPExsWy7bCmvq7h+wnxBp93S1ssu3SU0WLjjPWs
+        FhNvXGGxWP3xMaPFmtuHGC1+bDjFbNEyaxGLxYJPM1gtzja9Ybe4vGsOm8Xn3iOMFp1fZrFZ
+        LGxqYbe43biCzeLnrnksDvwea+atYfTYcXcJo8fOWXfZPTat6mTz6G1+x+ax8d0OJo+/s/az
+        ePRtWcXo8XmTXABnVLZNRmpiSmqRQmpecn5KZl66rZJ3cLxzvKmZgaGuoaWFuZJCXmJuqq2S
+        i0+ArltmDtALSgpliTmlQKGAxOJiJX07m6L80pJUhYz84hJbpdSClJwCywK94sTc4tK8dL3k
+        /FwrQwMDI1OgwoTsjGeNb5gKJrJV7Lh4gb2B8Q5LFyMnh4SAiUTDipfMXYxcHEICOxglWmZv
+        YYdwPjFK/G5axgxSJSTwmVHi+FsOmI77Rw5BdexilJgwdysThPOeUWLF23VsIFXCAvESTycd
+        ZwSxRQRqJY5cfMAGUsQs0MskMW3PUiaQBJuAlsT+FzfAGvgFFCWu/ngM1sArYCex8vIRsDiL
+        gKrEnp+NYMeKCoRJnNzWAlUjKHFy5hOgOAcHp4CtRE+3BEiYWUBc4taT+UwQtrxE89bZYJdK
+        CHzhkHh97AMTxAsuEs/XfGWDsIUlXh0H+RnElpJ42d8GZVdLrDx5hA2iuYNRYsv+C6wQCWOJ
+        /UsnM4EsZhbQlFi/Sx8irCix8/dcRojFfBLvvvawgpRICPBKdLQJQZQoS1x+cBfqBEmJxe2d
+        bBMYlWYh+WYWkhdmIXlhFsKyBYwsqxjFUguKc9NTiw0LjJBjexMjOHlrme1gnPT2g94hRiYO
+        xkOMEhzMSiK8eaIT4oV4UxIrq1KL8uOLSnNSiw8xmgLDdyKzlGhyPjB/5JXEG5oaGRsbW5gY
+        mpkaGiqJ8/7R7ogXEkhPLEnNTk0tSC2C6WPi4JRqYMpcGO50sEPp4vw7vkGNzXcDnqdKrYvx
+        WzDhls0u9o2ipz6u1nQv1DDwXrT8SXFe2aR5dm1+3xNv/NDPeWkTmLnb+8+vpfkXfpxO/2HS
+        eynI7Vq1NbuGzv3JHCo/t0a1sq0rdXy97suKR8+f/Bc8bHHhe8iEyw0mkbnXL9sl1PV8OLS8
+        4GLzOcfmW/NiJ5XPatjk4uldtVSGz3f1e7c9fCs7TwjvYbSQ7lEXesJw9XXsafH/QgFHmU9m
+        /BQMk+nzmcivnuamKqBfH8dTdPTK/xj2TVH+N/P2TknUNRRV006OsXh04sKurwkWHlN/TP3k
+        fC3q7iw/S6u3F0JNYxj/qlZtXaNxYYnGr6/s2XwxykosxRmJhlrMRcWJABUmVRVnBAAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrHIsWRmVeSWpSXmKPExsWy7bCSvK7B+wnxBuf6jCyWXTrKaLFxxnpW
+        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFtc3jWHzeJz7xFGi84vs9gs
+        Fja1sFvcblzBZvFz1zwWB36PNfPWMHrsuLuE0WPnrLvsHptWdbJ59Da/Y/PY+G4Hk8ffWftZ
+        PPq2rGL0+LxJLoAzissmJTUnsyy1SN8ugSvjWeMbpoKJbBU7Ll5gb2C8w9LFyMkhIWAicf/I
+        IeYuRi4OIYEdjBItb0+wQiQkJaZdPAqU4ACyhSUOHy6GqHnLKLHq9GImkBphgXiJp5OOM4LY
+        IgK1Eq9WT2cFKWIW6GWS6Nq1F2yQkMAnRon97aEgNpuAlsT+FzfYQGx+AUWJqz8egzXzCthJ
+        rLx8BCzOIqAqsednI9h1ogJhEjuXPGaCqBGUODnzCQvIQZwCthI93RIgYWYBdYk/8y4xQ9ji
+        EreezGeCsOUlmrfOZp7AKDwLSfcsJC2zkLTMQtKygJFlFaNkakFxbnpusWGBUV5quV5xYm5x
+        aV66XnJ+7iZGcBRrae1g3LPqg94hRiYOxkOMEhzMSiK8eaIT4oV4UxIrq1KL8uOLSnNSiw8x
+        SnOwKInzfp21ME5IID2xJDU7NbUgtQgmy8TBKdXA5Bb481fmq3vO0t75FvWnWn6zCi2t2t+3
+        +aqCPNORCbmO1R7X057wujKq905cEzn/nG2gQV7N4QXBmleePMiJjU+YrXR/Zm78kvS1SiIi
+        ip2mCuaMiQuXND3i3RetU/pem3+fr+AT1kbj8Ihek90yZpKFLC++KfHw+i+UXNg78dZEtx3l
+        W5XC3ONLmRV02K/ym91eWfN+n8VzpikuU17/eDX97JGd1lsn1jQ/iOmvFQh+WpYtrFaU9XPB
+        rejq9/ZrOh2FC6a3LdK/+HvXlVeJk5hNg4PTN948aTLRv/yOgU7d7Y5qxTr3+7t2V4dXvFoz
+        286rn3XiLMdTRwOFV2aoTFsTLc06g+3xo+uHA9iVWIozEg21mIuKEwHRJADKUQMAAA==
+X-CMS-MailID: 20201022023216epcas1p3d05f4780732aee6454a1b29131742f20
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201020025045epcas1p4b26b6f23e2896c2d661b2cfa93505e21
+References: <20201020030407.21047-1-cw00.choi@samsung.com>
+        <CGME20201020025045epcas1p4b26b6f23e2896c2d661b2cfa93505e21@epcas1p4.samsung.com>
+        <20201020030407.21047-3-cw00.choi@samsung.com>
+        <b94b5c9d-6bfc-0535-baaf-d0809f74de42@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Jens
+On 10/22/20 11:30 AM, Dmitry Osipenko wrote:
+> 20.10.2020 06:04, Chanwoo Choi пишет:
+>>  /**
+>>   * struct devfreq_governor - Devfreq policy governor
+>>   * @node:		list node - contains registered devfreq governors
+>>   * @name:		Governor's name
+>> + * @attr:		Governor's sysfs attribute flag
+>>   * @flags:		Governor's feature flags
+>>   * @get_target_freq:	Returns desired operating frequency for the device.
+>>   *			Basically, get_target_freq will run
+>> @@ -57,6 +68,7 @@ struct devfreq_governor {
+>>  	struct list_head node;
+>>  
+>>  	const char name[DEVFREQ_NAME_LEN];
+>> +	const u64 attr;
+>>  	const u64 flags;
+> 
+> What about to use plural for the "attrs" as well?
+> 
+> 
 
-What do you think about this, adding io error stat for block devices is 
-reasonable?
+OK. I'll edit it.
 
-On 9/10/20 10:20 AM, zhenwei pi wrote:
-> Currently if hitting block req error, block layer only prints error
-> log with a rate limitation. Then agent has to parse kernel log to
-> record what happens.
-> 
-> In this patch, add read/write/discard/flush stat counter to record
-> io errors.
-> 
-> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
-> ---
->   block/blk-core.c          | 14 +++++++++++---
->   block/genhd.c             | 19 +++++++++++++++++++
->   include/linux/part_stat.h |  1 +
->   3 files changed, 31 insertions(+), 3 deletions(-)
-> 
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 10c08ac50697..8f1424835700 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -1558,9 +1558,17 @@ bool blk_update_request(struct request *req, blk_status_t error,
->   		req->q->integrity.profile->complete_fn(req, nr_bytes);
->   #endif
->   
-> -	if (unlikely(error && !blk_rq_is_passthrough(req) &&
-> -		     !(req->rq_flags & RQF_QUIET)))
-> -		print_req_error(req, error, __func__);
-> +	if (unlikely(error && !blk_rq_is_passthrough(req))) {
-> +		if (op_is_flush(req_op(req)))
-> +			part_stat_inc(&req->rq_disk->part0,
-> +				io_errors[STAT_FLUSH]);
-> +		else
-> +			part_stat_inc(&req->rq_disk->part0,
-> +				io_errors[op_stat_group(req_op(req))]);
-> +
-> +		if (!(req->rq_flags & RQF_QUIET))
-> +			print_req_error(req, error, __func__);
-> +	}
->   
->   	blk_account_io_completion(req, nr_bytes);
->   
-> diff --git a/block/genhd.c b/block/genhd.c
-> index 99c64641c314..852035095485 100644
-> --- a/block/genhd.c
-> +++ b/block/genhd.c
-> @@ -104,6 +104,7 @@ static void part_stat_read_all(struct hd_struct *part, struct disk_stats *stat)
->   			stat->sectors[group] += ptr->sectors[group];
->   			stat->ios[group] += ptr->ios[group];
->   			stat->merges[group] += ptr->merges[group];
-> +			stat->io_errors[group] += ptr->io_errors[group];
->   		}
->   
->   		stat->io_ticks += ptr->io_ticks;
-> @@ -1374,6 +1375,22 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
->   	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
->   }
->   
-> +static ssize_t io_error_show(struct device *dev,
-> +		      struct device_attribute *attr, char *buf)
-> +{
-> +	struct hd_struct *p = dev_to_part(dev);
-> +	struct disk_stats stat;
-> +
-> +	part_stat_read_all(p, &stat);
-> +
-> +	return sprintf(buf,
-> +		"%8lu %8lu %8lu %8lu\n",
-> +		stat.io_errors[STAT_READ],
-> +		stat.io_errors[STAT_WRITE],
-> +		stat.io_errors[STAT_DISCARD],
-> +		stat.io_errors[STAT_FLUSH]);
-> +}
-> +
->   static DEVICE_ATTR(range, 0444, disk_range_show, NULL);
->   static DEVICE_ATTR(ext_range, 0444, disk_ext_range_show, NULL);
->   static DEVICE_ATTR(removable, 0444, disk_removable_show, NULL);
-> @@ -1386,6 +1403,7 @@ static DEVICE_ATTR(capability, 0444, disk_capability_show, NULL);
->   static DEVICE_ATTR(stat, 0444, part_stat_show, NULL);
->   static DEVICE_ATTR(inflight, 0444, part_inflight_show, NULL);
->   static DEVICE_ATTR(badblocks, 0644, disk_badblocks_show, disk_badblocks_store);
-> +static DEVICE_ATTR(io_error, 0444, io_error_show, NULL);
->   
->   #ifdef CONFIG_FAIL_MAKE_REQUEST
->   ssize_t part_fail_show(struct device *dev,
-> @@ -1437,6 +1455,7 @@ static struct attribute *disk_attrs[] = {
->   #ifdef CONFIG_FAIL_IO_TIMEOUT
->   	&dev_attr_fail_timeout.attr,
->   #endif
-> +	&dev_attr_io_error.attr,
->   	NULL
->   };
->   
-> diff --git a/include/linux/part_stat.h b/include/linux/part_stat.h
-> index 24125778ef3e..4fe3836d2308 100644
-> --- a/include/linux/part_stat.h
-> +++ b/include/linux/part_stat.h
-> @@ -9,6 +9,7 @@ struct disk_stats {
->   	unsigned long sectors[NR_STAT_GROUPS];
->   	unsigned long ios[NR_STAT_GROUPS];
->   	unsigned long merges[NR_STAT_GROUPS];
-> +	unsigned long io_errors[NR_STAT_GROUPS];
->   	unsigned long io_ticks;
->   	local_t in_flight[2];
->   };
-> 
 
 -- 
-zhenwei pi
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
