@@ -2,117 +2,182 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEE1F295D2B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:07:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 773BC295D2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:07:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896983AbgJVLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:07:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896808AbgJVLG7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:06:59 -0400
-Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AEEC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
-Received: by mail-pf1-x441.google.com with SMTP id y14so905494pfp.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5F1P3cDyZZfB+5wQAJZN/bSRRcbsJk9yH9Mp8FnRfG0=;
-        b=KtCmAvWUglFJkVFnOpbKc+tedHFB8GWLzyy5Pf2YNN/ltIPGpeE8VV3Ezrjnf6MtIV
-         Iw4YsvNEjCjJ/OfyB5p3R99DTyqL8uYJRhtq4+teGl6/7a0rL1YIDTb5zMHpu9uUcipF
-         6JdheIPbQRh2Bw6KUfUrHXrpyZaFQYVP5LvGejO9lqEsy/eRPGt0KsURP9/q+NolQXTi
-         diBLTSbgB+kw+mgQ9Pfi6wRP7eec4Lce/cOInisWYBqnWovam16o1mQTRtwPTVxY3t03
-         amLoYsvpP5RAv7CpiC3bYM8aSUIQOIAjof7yIO8+Rx+9hduyEbCUSfk9rskNrfQyrgr1
-         OLxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5F1P3cDyZZfB+5wQAJZN/bSRRcbsJk9yH9Mp8FnRfG0=;
-        b=RDu4ynQxXBQAR2G2vcYABijgEngurCmQRs8tzSyyb/ZbMfNY188ygcPiFtD3wSpJOQ
-         +m5WV9I9w2mLslJH6vRRE6lsfMwbAIKWfgatmEvbljulZN8SE2n8vS5BjnbgsUBPwiw8
-         egm1LV4FTOw4LUWx9+tT4nqDo4TYZV9WWLdj+w+Njo8RniVHsZ/k5T0fCEAisvFVf/+U
-         4jvM4qH6PiOyrBVs9dKn5L7apGwsOGmIVPiN0IddWguHUX5+mLo8D7kD6uaabJg7JiOZ
-         d3TJdBcU4TBIS4IQ+izIZEkY2fk1Lm412W3UXN0aENsno69TN4us5IkDj7dBFNQk6xFx
-         n0lA==
-X-Gm-Message-State: AOAM531F0fjO39kFDHgaV01CQ3wjbDi54aZPgpWTpWuwLdudV3iBzO1+
-        qFV4G8nRGaI+zSC/MCqQ/Fbjkw==
-X-Google-Smtp-Source: ABdhPJwe/yxHcXuREOavhKWa2LijXwU7OHCva5pj9T8tlFVE8ZZKFk9++TWqYSyj+47QdqGv+rSW8w==
-X-Received: by 2002:a62:7609:0:b029:152:b31e:6aed with SMTP id r9-20020a6276090000b0290152b31e6aedmr2031340pfc.10.1603364819189;
-        Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id u2sm1944980pgf.63.2020.10.22.04.06.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Oct 2020 04:06:58 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 16:36:56 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Message-ID: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
- <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
- <20200716115605.GR10769@hirez.programming.kicks-ass.net>
- <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
- <20201022090523.GV2628@hirez.programming.kicks-ass.net>
+        id S2896991AbgJVLHX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:07:23 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:63637 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896958AbgJVLHW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:07:22 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603364842; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=GmbTCs/Bj7Lt6RmMVXf+/T1CFwyQqgoojpNo39+EWuQ=;
+ b=AlFpdsi15BvW45CkGcK5aikZ+1jF9OWUvXDnHTCyH5LCKkVEftvEp+M7DndZQNfMU/UqNlVA
+ bkl+MhZjK7EoEMP7kOQj9x0IIxjWaxJc2A+zESEnpqldI2mjs2LDadxfIja7zKQ9wsjXKKGp
+ Fny9iU4MH9Dp4lKJY6mJcPuFPAM=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-west-2.postgun.com with SMTP id
+ 5f9167dd57b88ccb564cca96 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 11:07:09
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C0130C433C9; Thu, 22 Oct 2020 11:07:09 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id AE53DC433F0;
+        Thu, 22 Oct 2020 11:07:08 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022090523.GV2628@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 22 Oct 2020 16:37:08 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        mike.leach@linaro.org, coresight@lists.linaro.org,
+        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+In-Reply-To: <fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com>
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+ <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+ <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
+ <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
+ <8affc09d4045812e2f5a065695b375de@codeaurora.org>
+ <0ee3566e50143bac5b662b2edf551b89@codeaurora.org>
+ <fdee606e-a045-e252-0823-14bdbef779c0@arm.com>
+ <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
+ <fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com>
+Message-ID: <d05559ad020b46b55eb5b8ec305d946b@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-20, 11:05, Peter Zijlstra wrote:
-> On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
-> > One of the issues I see with this is that schedutil may not be
-> > available in all configurations and it is still absolutely fine to
-> > using the suggested helper to get the energy numbers in such cases, so
-> > we shouldn't really make it scheutil dependent.
+On 2020-10-22 14:57, Suzuki Poulose wrote:
+> On 10/22/20 9:02 AM, Sai Prakash Ranjan wrote:
+>> On 2020-10-21 15:38, Suzuki Poulose wrote:
+>>> On 10/21/20 8:29 AM, Sai Prakash Ranjan wrote:
+>>>> On 2020-10-20 21:40, Sai Prakash Ranjan wrote:
+>>>>> On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
+>>>>>> On 2020-10-14 18:46, Suzuki K Poulose wrote:
+>>>>>>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
+>>>>>>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
+>>>>>>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>>>>>>>>>> There was a report of NULL pointer dereference in ETF enable
+>>>>>>>>>> path for perf CS mode with PID monitoring. It is almost 100%
+>>>>>>>>>> reproducible when the process to monitor is something very
+>>>>>>>>>> active such as chrome and with ETF as the sink and not ETR.
+>>>>>>>>>> Currently in a bid to find the pid, the owner is dereferenced
+>>>>>>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>>>>>>>>>> owner being NULL, we get a NULL pointer dereference.
+>>>>>>>>>> 
+>>>>>>>>>> Looking at the ETR and other places in the kernel, ETF and the
+>>>>>>>>>> ETB are the only places trying to dereference the task(owner)
+>>>>>>>>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>>>>>>>>> sched_in path as in the call trace. Owner(task) is NULL even
+>>>>>>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>>>>>>>>>> cache the PID in alloc_buffer() callback and it is done as 
+>>>>>>>>>> part
+>>>>>>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we 
+>>>>>>>>>> never
+>>>>>>>>>> dereference this NULL pointer and we are safe. So lets do the
+>>>>>>>>> 
+>>>>>>>>> The patch is necessary to fix some of the issues. But I feel it 
+>>>>>>>>> is
+>>>>>>>>> not complete. Why is it safe earlier and not later ? I believe 
+>>>>>>>>> we are
+>>>>>>>>> simply reducing the chances of hitting the issue, by doing this 
+>>>>>>>>> earlier than
+>>>>>>>>> later. I would say we better fix all instances to make sure 
+>>>>>>>>> that the
+>>>>>>>>> event->owner is valid. (e.g, I can see that the for kernel 
+>>>>>>>>> events
+>>>>>>>>> event->owner == -1 ?)
+>>>>>>>>> 
+>>>>>>>>> struct task_struct *tsk = READ_ONCE(event->owner);
+>>>>>>>>> 
+>>>>>>>>> if (!tsk || is_kernel_event(event))
+>>>>>>>>>    /* skip ? */
+>>>>>>>>> 
+>>>>>>>> 
+>>>>>>>> Looking at it some more, is_kernel_event() is not exposed
+>>>>>>>> outside events core and probably for good reason. Why do
+>>>>>>>> we need to check for this and not just tsk?
+>>>>>>> 
+>>>>>>> Because the event->owner could be :
+>>>>>>> 
+>>>>>>>  = NULL
+>>>>>>>  = -1UL  // kernel event
+>>>>>>>  = valid.
+>>>>>>> 
+>>>>>> 
+>>>>>> Yes I understood that part, but here we were trying to
+>>>>>> fix the NULL pointer dereference right and hence the
+>>>>>> question as to why we need to check for kernel events?
+>>>>>> I am no expert in perf but I don't see anywhere in the
+>>>>>> kernel checking for is_kernel_event(), so I am a bit
+>>>>>> skeptical if exporting that is actually right or not.
+>>>>>> 
+>>>>> 
+>>>>> I have stress tested with the original patch many times
+>>>>> now, i.e., without a check for event->owner and is_kernel_event()
+>>>>> and didn't observe any crash. Plus on ETR where this was already
+>>>>> done, no crashes were reported till date and with ETF, the issue
+>>>>> was quickly reproducible, so I am fairly confident that this
+>>>>> doesn't just delay the original issue but actually fixes
+>>>>> it. I will run an overnight test again to confirm this.
+>>>>> 
+>>>> 
+>>>> I ran the overnight test which collected aroung 4G data(see below),
+>>>> with the following small change to see if the two cases
+>>>> (event->owner=NULL and is_kernel_event()) are triggered
+>>>> with suggested changes and it didn't trigger at all.
+>>>> Do we still need those additional checks?
+>>>> 
+>>> 
+>>> Yes. Please see perf_event_create_kernel_event(), which is
+>>> an exported function allowing any kernel code (including modules)
+>>> to use the PMU (just like the userspace perf tool would do).
+>>> Just because your use case doesn't trigger this (because
+>>> you don't run something that can trigger this) doesn't mean
+>>> this can't be triggered.
+>>> 
+>> 
+>> Thanks for that pointer, I will add them in the next version.
+>> 
 > 
-> The only constraint on schedutil is SMP I think; aside from that it
-> should/could always be available.
+> And instead of redefining TASK_TOMBSTONE in the driver, you
+> may simply use IS_ERR_OR_NULL(tsk) to cover both NULL case
+> and kernel event.
 > 
-> Given the trainwreck here:
-> 
->   20201022071145.GM2628@hirez.programming.kicks-ass.net
-> 
-> (you're on Cc), I'm starting to lean more and more towards making it
-> unconditionally available (when SMP).
-> 
-> Anybody forcing it off either sets performance (in which case we don't
-> care about energy usage anyway)
 
-I agree.
+Ugh sorry, sent out v2 exporting is_kernel_event() before seeing
+this comment, I will resend.
 
-> or they select one of the old (broken)
-> ondemand/conservative things and I don't give a crap.
-
-The other kernel layers, for example cpufreq-cooling in question here,
-don't really need to bother with the governor in use and should be
-able to get the energy numbers anyway. So for me, the energy number
-that the cpufreq-cooling stuff gets should be same irrespective of the
-governor in use, schedutil or ondemand.
-
-Having said that, schedutil really doesn't need to install the
-fallback (which you suggested earlier), rather the scheduler core can
-do that directly with cpufreq core and schedutil can also use the same
-fallback mechanism maybe ? And so we can avoid the exporting of stuff
-that way.
+Thanks,
+Sai
 
 -- 
-viresh
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
