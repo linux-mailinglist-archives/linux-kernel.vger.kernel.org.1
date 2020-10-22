@@ -2,179 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74B9F295EF5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:48:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67AE3295EFB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:49:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898785AbgJVMrw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:47:52 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:46612 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2505276AbgJVMrr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:47:47 -0400
-X-UUID: 5d9ff4dfdb2d4c6ab99b6305470df061-20201022
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=zep8uRbT1L/oiPe6922B3UtXjZQyXXFtOLpv/9MLMQw=;
-        b=b0YleGtt8DFfgDkysxrkYr5FAKfXqAUE6y/+4Nragc7/9VOmKoDrli+aarty4ufR0gNrH9fazhtvPTuIx2KtCY7+R+OxS7oWuHUyJdOIQRzOvHIBNN3kZw7srTip5wFzBqRyNwVi+UGcQtIU6EqqMUqabBcOT2sCpJmScOkUkEI=;
-X-UUID: 5d9ff4dfdb2d4c6ab99b6305470df061-20201022
-Received: from mtkexhb02.mediatek.inc [(172.21.101.103)] by mailgw01.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 770322446; Thu, 22 Oct 2020 20:47:41 +0800
-Received: from MTKCAS06.mediatek.inc (172.21.101.30) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 22 Oct 2020 20:47:39 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by MTKCAS06.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Oct 2020 20:47:39 +0800
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Enric Balletbo Serra <eballetbo@gmail.com>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Nicolas Boichat <drinkcat@chromium.org>,
-        Rob Herring <robh@kernel.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>,
-        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
-Subject: [PATCH v2 4/4] arm64: dts: mediatek: Add mt8192 power domains controller
-Date:   Thu, 22 Oct 2020 20:47:37 +0800
-Message-ID: <1603370857-30646-5-git-send-email-weiyi.lu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1603370857-30646-1-git-send-email-weiyi.lu@mediatek.com>
-References: <1603370857-30646-1-git-send-email-weiyi.lu@mediatek.com>
+        id S2898974AbgJVMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:49:55 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:17260 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2898949AbgJVMty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:49:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603370994; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=RCK7B2J1TXHqhKnVahkoy/BJVO0J46HHa0PpEK+JktM=;
+ b=NRkfpHlgUX1HKbrA/8S3zYnM/HkOK5pgvTLGt+KtYzjdP97MEh3IgvYtpdcEAzO1P86JN5ZB
+ OP6DD0eY5kH4yLvdvTQg0wU6/waGeAOAWXZxhIPTeDlVqqacYFe3fl2OFO+6ihbzuk27VzZg
+ jM1zlxzNZx6lJLtwDXZZE44ciuE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f917fe206d81bc48d5bec07 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 12:49:38
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id C8870C433C9; Thu, 22 Oct 2020 12:49:38 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EFD4CC43387;
+        Thu, 22 Oct 2020 12:49:37 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Oct 2020 18:19:37 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+In-Reply-To: <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+Message-ID: <a6eadc723ae52396a655c61b9f8d4eef@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QWRkIHBvd2VyIGRvbWFpbnMgY29udHJvbGxlciBub2RlIGZvciBTb0MgbXQ4MTkyDQoNClNpZ25l
-ZC1vZmYtYnk6IFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+DQotLS0NCiBhcmNoL2Fy
-bTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpIHwgMjAxICsrKysrKysrKysrKysrKysr
-KysrKysrKysrKysrKysNCiAxIGZpbGUgY2hhbmdlZCwgMjAxIGluc2VydGlvbnMoKykNCg0KZGlm
-ZiAtLWdpdCBhL2FyY2gvYXJtNjQvYm9vdC9kdHMvbWVkaWF0ZWsvbXQ4MTkyLmR0c2kgYi9hcmNo
-L2FybTY0L2Jvb3QvZHRzL21lZGlhdGVrL210ODE5Mi5kdHNpDQppbmRleCBiM2ZhYjRmLi45Mjc0
-MjkxIDEwMDY0NA0KLS0tIGEvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRz
-aQ0KKysrIGIvYXJjaC9hcm02NC9ib290L2R0cy9tZWRpYXRlay9tdDgxOTIuZHRzaQ0KQEAgLTks
-NiArOSw3IEBADQogI2luY2x1ZGUgPGR0LWJpbmRpbmdzL2ludGVycnVwdC1jb250cm9sbGVyL2Fy
-bS1naWMuaD4NCiAjaW5jbHVkZSA8ZHQtYmluZGluZ3MvaW50ZXJydXB0LWNvbnRyb2xsZXIvaXJx
-Lmg+DQogI2luY2x1ZGUgPGR0LWJpbmRpbmdzL3BpbmN0cmwvbXQ4MTkyLXBpbmZ1bmMuaD4NCisj
-aW5jbHVkZSA8ZHQtYmluZGluZ3MvcG93ZXIvbXQ4MTkyLXBvd2VyLmg+DQogDQogLyB7DQogCWNv
-bXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyIjsNCkBAIC0yNTcsNiArMjU4LDIwNiBAQA0KIAkJ
-CSNpbnRlcnJ1cHQtY2VsbHMgPSA8Mj47DQogCQl9Ow0KIA0KKwkJc2Nwc3lzOiBzeXNjb25AMTAw
-MDYwMDAgew0KKwkJCWNvbXBhdGlibGUgPSAic3lzY29uIiwgInNpbXBsZS1tZmQiOw0KKwkJCXJl
-ZyA9IDwwIDB4MTAwMDYwMDAgMCAweDEwMDA+Ow0KKwkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8
-MT47DQorDQorCQkJLyogU3lzdGVtIFBvd2VyIE1hbmFnZXIgKi8NCisJCQlzcG06IHBvd2VyLWNv
-bnRyb2xsZXIgew0KKwkJCQljb21wYXRpYmxlID0gIm1lZGlhdGVrLG10ODE5Mi1wb3dlci1jb250
-cm9sbGVyIjsNCisJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJCSNzaXplLWNlbGxzID0g
-PDA+Ow0KKwkJCQkjcG93ZXItZG9tYWluLWNlbGxzID0gPDE+Ow0KKw0KKwkJCQkvKiBwb3dlciBk
-b21haW4gb2YgdGhlIFNvQyAqLw0KKwkJCQlhdWRpb0BNVDgxOTJfUE9XRVJfRE9NQUlOX0FVRElP
-IHsNCisJCQkJCXJlZyA9IDxNVDgxOTJfUE9XRVJfRE9NQUlOX0FVRElPPjsNCisJCQkJCWNsb2Nr
-cyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9BVURfSU5UQlVTX1NFTD4sDQorCQkJCQkJIDwmaW5mcmFj
-ZmcgQ0xLX0lORlJBX0FVRElPXzI2TV9CPiwNCisJCQkJCQkgPCZpbmZyYWNmZyBDTEtfSU5GUkFf
-QVVESU8+Ow0KKwkJCQkJY2xvY2stbmFtZXMgPSAiYXVkaW8iLCAiYXVkaW8xIiwgImF1ZGlvMiI7
-DQorCQkJCQltZWRpYXRlayxpbmZyYWNmZyA9IDwmaW5mcmFjZmc+Ow0KKwkJCQkJI3Bvd2VyLWRv
-bWFpbi1jZWxscyA9IDwwPjsNCisJCQkJfTsNCisNCisJCQkJY29ubkBNVDgxOTJfUE9XRVJfRE9N
-QUlOX0NPTk4gew0KKwkJCQkJcmVnID0gPE1UODE5Ml9QT1dFUl9ET01BSU5fQ09OTj47DQorCQkJ
-CQljbG9ja3MgPSA8JmluZnJhY2ZnIENMS19JTkZSQV9QTUlDX0NPTk4+Ow0KKwkJCQkJY2xvY2st
-bmFtZXMgPSAiY29ubiI7DQorCQkJCQltZWRpYXRlayxpbmZyYWNmZyA9IDwmaW5mcmFjZmc+Ow0K
-KwkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJfTsNCisNCisJCQkJbWZnQE1U
-ODE5Ml9QT1dFUl9ET01BSU5fTUZHMCB7DQorCQkJCQlyZWcgPSA8TVQ4MTkyX1BPV0VSX0RPTUFJ
-Tl9NRkcwPjsNCisJCQkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9NRkdfUExMX1NFTD47
-DQorCQkJCQljbG9jay1uYW1lcyA9ICJtZmciOw0KKwkJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47
-DQorCQkJCQkjc2l6ZS1jZWxscyA9IDwwPjsNCisJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8
-MT47DQorDQorCQkJCQltZmcxQE1UODE5Ml9QT1dFUl9ET01BSU5fTUZHMSB7DQorCQkJCQkJcmVn
-ID0gPE1UODE5Ml9QT1dFUl9ET01BSU5fTUZHMT47DQorCQkJCQkJbWVkaWF0ZWssaW5mcmFjZmcg
-PSA8JmluZnJhY2ZnPjsNCisJCQkJCQkjYWRkcmVzcy1jZWxscyA9IDwxPjsNCisJCQkJCQkjc2l6
-ZS1jZWxscyA9IDwwPjsNCisJCQkJCQkjcG93ZXItZG9tYWluLWNlbGxzID0gPDE+Ow0KKw0KKwkJ
-CQkJCW1mZzJATVQ4MTkyX1BPV0VSX0RPTUFJTl9NRkcyIHsNCisJCQkJCQkJcmVnID0gPE1UODE5
-Ml9QT1dFUl9ET01BSU5fTUZHMj47DQorCQkJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8MD47
-DQorCQkJCQkJfTsNCisNCisJCQkJCQltZmczQE1UODE5Ml9QT1dFUl9ET01BSU5fTUZHMyB7DQor
-CQkJCQkJCXJlZyA9IDxNVDgxOTJfUE9XRVJfRE9NQUlOX01GRzM+Ow0KKwkJCQkJCQkjcG93ZXIt
-ZG9tYWluLWNlbGxzID0gPDA+Ow0KKwkJCQkJCX07DQorDQorCQkJCQkJbWZnNEBNVDgxOTJfUE9X
-RVJfRE9NQUlOX01GRzQgew0KKwkJCQkJCQlyZWcgPSA8TVQ4MTkyX1BPV0VSX0RPTUFJTl9NRkc0
-PjsNCisJCQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJCQl9Ow0KKw0KKwkJ
-CQkJCW1mZzVATVQ4MTkyX1BPV0VSX0RPTUFJTl9NRkc1IHsNCisJCQkJCQkJcmVnID0gPE1UODE5
-Ml9QT1dFUl9ET01BSU5fTUZHNT47DQorCQkJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8MD47
-DQorCQkJCQkJfTsNCisNCisJCQkJCQltZmc2QE1UODE5Ml9QT1dFUl9ET01BSU5fTUZHNiB7DQor
-CQkJCQkJCXJlZyA9IDxNVDgxOTJfUE9XRVJfRE9NQUlOX01GRzY+Ow0KKwkJCQkJCQkjcG93ZXIt
-ZG9tYWluLWNlbGxzID0gPDA+Ow0KKwkJCQkJCX07DQorCQkJCQl9Ow0KKwkJCQl9Ow0KKw0KKwkJ
-CQlkaXNwQE1UODE5Ml9QT1dFUl9ET01BSU5fRElTUCB7DQorCQkJCQlyZWcgPSA8TVQ4MTkyX1BP
-V0VSX0RPTUFJTl9ESVNQPjsNCisJCQkJCWNsb2NrcyA9IDwmdG9wY2tnZW4gQ0xLX1RPUF9ESVNQ
-X1NFTD4sDQorCQkJCQkJIDwmbW1zeXMgQ0xLX01NX1NNSV9JTkZSQT4sDQorCQkJCQkJIDwmbW1z
-eXMgQ0xLX01NX1NNSV9DT01NT04+LA0KKwkJCQkJCSA8Jm1tc3lzIENMS19NTV9TTUlfR0FMUz4s
-DQorCQkJCQkJIDwmbW1zeXMgQ0xLX01NX1NNSV9JT01NVT47DQorCQkJCQljbG9jay1uYW1lcyA9
-ICJkaXNwIiwgImRpc3AtMCIsICJkaXNwLTEiLCAiZGlzcC0yIiwNCisJCQkJCQkgICAgICAiZGlz
-cC0zIjsNCisJCQkJCW1lZGlhdGVrLGluZnJhY2ZnID0gPCZpbmZyYWNmZz47DQorCQkJCQkjYWRk
-cmVzcy1jZWxscyA9IDwxPjsNCisJCQkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCQkJI3Bvd2Vy
-LWRvbWFpbi1jZWxscyA9IDwxPjsNCisNCisJCQkJCWlwZUBNVDgxOTJfUE9XRVJfRE9NQUlOX0lQ
-RSB7DQorCQkJCQkJcmVnID0gPE1UODE5Ml9QT1dFUl9ET01BSU5fSVBFPjsNCisJCQkJCQljbG9j
-a3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfSVBFX1NFTD4sDQorCQkJCQkJCSA8JmlwZXN5cyBDTEtf
-SVBFX0xBUkIxOT4sDQorCQkJCQkJCSA8JmlwZXN5cyBDTEtfSVBFX0xBUkIyMD4sDQorCQkJCQkJ
-CSA8JmlwZXN5cyBDTEtfSVBFX1NNSV9TVUJDT00+LA0KKwkJCQkJCQkgPCZpcGVzeXMgQ0xLX0lQ
-RV9HQUxTPjsNCisJCQkJCQljbG9jay1uYW1lcyA9ICJpcGUiLCAiaXBlLTAiLCAiaXBlLTEiLCAi
-aXBlLTIiLA0KKwkJCQkJCQkgICAgICAiaXBlLTMiOw0KKwkJCQkJCW1lZGlhdGVrLGluZnJhY2Zn
-ID0gPCZpbmZyYWNmZz47DQorCQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJ
-CX07DQorDQorCQkJCQlpc3BATVQ4MTkyX1BPV0VSX0RPTUFJTl9JU1Agew0KKwkJCQkJCXJlZyA9
-IDxNVDgxOTJfUE9XRVJfRE9NQUlOX0lTUD47DQorCQkJCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBD
-TEtfVE9QX0lNRzFfU0VMPiwNCisJCQkJCQkJIDwmaW1nc3lzIENMS19JTUdfTEFSQjk+LA0KKwkJ
-CQkJCQkgPCZpbWdzeXMgQ0xLX0lNR19HQUxTPjsNCisJCQkJCQljbG9jay1uYW1lcyA9ICJpc3Ai
-LCAiaXNwLTAiLCAiaXNwLTEiOw0KKwkJCQkJCW1lZGlhdGVrLGluZnJhY2ZnID0gPCZpbmZyYWNm
-Zz47DQorCQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJCX07DQorDQorCQkJ
-CQlpc3AyQE1UODE5Ml9QT1dFUl9ET01BSU5fSVNQMiB7DQorCQkJCQkJcmVnID0gPE1UODE5Ml9Q
-T1dFUl9ET01BSU5fSVNQMj47DQorCQkJCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9QX0lN
-RzJfU0VMPiwNCisJCQkJCQkJIDwmaW1nc3lzMiBDTEtfSU1HMl9MQVJCMTE+LA0KKwkJCQkJCQkg
-PCZpbWdzeXMyIENMS19JTUcyX0dBTFM+Ow0KKwkJCQkJCWNsb2NrLW5hbWVzID0gImlzcDIiLCAi
-aXNwMi0wIiwgImlzcDItMSI7DQorCQkJCQkJbWVkaWF0ZWssaW5mcmFjZmcgPSA8JmluZnJhY2Zn
-PjsNCisJCQkJCQkjcG93ZXItZG9tYWluLWNlbGxzID0gPDA+Ow0KKwkJCQkJfTsNCisNCisJCQkJ
-CW1kcEBNVDgxOTJfUE9XRVJfRE9NQUlOX01EUCB7DQorCQkJCQkJcmVnID0gPE1UODE5Ml9QT1dF
-Ul9ET01BSU5fTURQPjsNCisJCQkJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfTURQX1NF
-TD4sDQorCQkJCQkJCSA8Jm1kcHN5cyBDTEtfTURQX1NNSTA+Ow0KKwkJCQkJCWNsb2NrLW5hbWVz
-ID0gIm1kcCIsICJtZHAtMCI7DQorCQkJCQkJbWVkaWF0ZWssaW5mcmFjZmcgPSA8JmluZnJhY2Zn
-PjsNCisJCQkJCQkjcG93ZXItZG9tYWluLWNlbGxzID0gPDA+Ow0KKwkJCQkJfTsNCisNCisJCQkJ
-CXZlbmNATVQ4MTkyX1BPV0VSX0RPTUFJTl9WRU5DIHsNCisJCQkJCQlyZWcgPSA8TVQ4MTkyX1BP
-V0VSX0RPTUFJTl9WRU5DPjsNCisJCQkJCQljbG9ja3MgPSA8JnRvcGNrZ2VuIENMS19UT1BfVkVO
-Q19TRUw+LA0KKwkJCQkJCQkgPCZ2ZW5jc3lzIENMS19WRU5DX1NFVDFfVkVOQz47DQorCQkJCQkJ
-Y2xvY2stbmFtZXMgPSAidmVuYyIsICJ2ZW5jLTAiOw0KKwkJCQkJCW1lZGlhdGVrLGluZnJhY2Zn
-ID0gPCZpbmZyYWNmZz47DQorCQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJ
-CX07DQorDQorCQkJCQl2ZGVjQE1UODE5Ml9QT1dFUl9ET01BSU5fVkRFQyB7DQorCQkJCQkJcmVn
-ID0gPE1UODE5Ml9QT1dFUl9ET01BSU5fVkRFQz47DQorCQkJCQkJY2xvY2tzID0gPCZ0b3Bja2dl
-biBDTEtfVE9QX1ZERUNfU0VMPiwNCisJCQkJCQkJIDwmdmRlY3N5c19zb2MgQ0xLX1ZERUNfU09D
-X1ZERUM+LA0KKwkJCQkJCQkgPCZ2ZGVjc3lzX3NvYyBDTEtfVkRFQ19TT0NfTEFUPiwNCisJCQkJ
-CQkJIDwmdmRlY3N5c19zb2MgQ0xLX1ZERUNfU09DX0xBUkIxPjsNCisJCQkJCQljbG9jay1uYW1l
-cyA9ICJ2ZGVjIiwgInZkZWMtMCIsICJ2ZGVjLTEiLCAidmRlYy0yIjsNCisJCQkJCQltZWRpYXRl
-ayxpbmZyYWNmZyA9IDwmaW5mcmFjZmc+Ow0KKwkJCQkJCSNhZGRyZXNzLWNlbGxzID0gPDE+Ow0K
-KwkJCQkJCSNzaXplLWNlbGxzID0gPDA+Ow0KKwkJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8
-MT47DQorDQorCQkJCQkJdmRlYzJATVQ4MTkyX1BPV0VSX0RPTUFJTl9WREVDMiB7DQorCQkJCQkJ
-CXJlZyA9IDxNVDgxOTJfUE9XRVJfRE9NQUlOX1ZERUMyPjsNCisJCQkJCQkJY2xvY2tzID0gPCZ2
-ZGVjc3lzIENMS19WREVDX1ZERUM+LA0KKwkJCQkJCQkJIDwmdmRlY3N5cyBDTEtfVkRFQ19MQVQ+
-LA0KKwkJCQkJCQkJIDwmdmRlY3N5cyBDTEtfVkRFQ19MQVJCMT47DQorCQkJCQkJCWNsb2NrLW5h
-bWVzID0gInZkZWMyLTAiLCAidmRlYzItMSIsDQorCQkJCQkJCQkgICAgICAidmRlYzItMiI7DQor
-CQkJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8MD47DQorCQkJCQkJfTsNCisJCQkJCX07DQor
-DQorCQkJCQljYW1ATVQ4MTkyX1BPV0VSX0RPTUFJTl9DQU0gew0KKwkJCQkJCXJlZyA9IDxNVDgx
-OTJfUE9XRVJfRE9NQUlOX0NBTT47DQorCQkJCQkJY2xvY2tzID0gPCZ0b3Bja2dlbiBDTEtfVE9Q
-X0NBTV9TRUw+LA0KKwkJCQkJCQkgPCZjYW1zeXMgQ0xLX0NBTV9MQVJCMTM+LA0KKwkJCQkJCQkg
-PCZjYW1zeXMgQ0xLX0NBTV9MQVJCMTQ+LA0KKwkJCQkJCQkgPCZjYW1zeXMgQ0xLX0NBTV9DQ1Vf
-R0FMUz4sDQorCQkJCQkJCSA8JmNhbXN5cyBDTEtfQ0FNX0NBTTJNTV9HQUxTPjsNCisJCQkJCQlj
-bG9jay1uYW1lcyA9ICJjYW0iLCAiY2FtLTAiLCAiY2FtLTEiLCAiY2FtLTIiLA0KKwkJCQkJCQkg
-ICAgICAiY2FtLTMiOw0KKwkJCQkJCW1lZGlhdGVrLGluZnJhY2ZnID0gPCZpbmZyYWNmZz47DQor
-CQkJCQkJI2FkZHJlc3MtY2VsbHMgPSA8MT47DQorCQkJCQkJI3NpemUtY2VsbHMgPSA8MD47DQor
-CQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwxPjsNCisNCisJCQkJCQljYW1fcmF3YUBNVDgx
-OTJfUE9XRVJfRE9NQUlOX0NBTV9SQVdBIHsNCisJCQkJCQkJcmVnID0gPE1UODE5Ml9QT1dFUl9E
-T01BSU5fQ0FNX1JBV0E+Ow0KKwkJCQkJCQljbG9ja3MgPSA8JmNhbXN5c19yYXdhIENMS19DQU1f
-UkFXQV9MQVJCWD47DQorCQkJCQkJCWNsb2NrLW5hbWVzID0gImNhbV9yYXdhLTAiOw0KKwkJCQkJ
-CQkjcG93ZXItZG9tYWluLWNlbGxzID0gPDA+Ow0KKwkJCQkJCX07DQorDQorCQkJCQkJY2FtX3Jh
-d2JATVQ4MTkyX1BPV0VSX0RPTUFJTl9DQU1fUkFXQiB7DQorCQkJCQkJCXJlZyA9IDxNVDgxOTJf
-UE9XRVJfRE9NQUlOX0NBTV9SQVdCPjsNCisJCQkJCQkJY2xvY2tzID0gPCZjYW1zeXNfcmF3YiBD
-TEtfQ0FNX1JBV0JfTEFSQlg+Ow0KKwkJCQkJCQljbG9jay1uYW1lcyA9ICJjYW1fcmF3Yi0wIjsN
-CisJCQkJCQkJI3Bvd2VyLWRvbWFpbi1jZWxscyA9IDwwPjsNCisJCQkJCQl9Ow0KKw0KKwkJCQkJ
-CWNhbV9yYXdjQE1UODE5Ml9QT1dFUl9ET01BSU5fQ0FNX1JBV0Mgew0KKwkJCQkJCQlyZWcgPSA8
-TVQ4MTkyX1BPV0VSX0RPTUFJTl9DQU1fUkFXQz47DQorCQkJCQkJCWNsb2NrcyA9IDwmY2Ftc3lz
-X3Jhd2MgQ0xLX0NBTV9SQVdDX0xBUkJYPjsNCisJCQkJCQkJY2xvY2stbmFtZXMgPSAiY2FtX3Jh
-d2MtMCI7DQorCQkJCQkJCSNwb3dlci1kb21haW4tY2VsbHMgPSA8MD47DQorCQkJCQkJfTsNCisJ
-CQkJCX07DQorCQkJCX07DQorCQkJfTsNCisJCX07DQorDQogCQl3YXRjaGRvZzogd2F0Y2hkb2dA
-MTAwMDcwMDAgew0KIAkJCWNvbXBhdGlibGUgPSAibWVkaWF0ZWssbXQ4MTkyLXdkdCI7DQogCQkJ
-cmVnID0gPDAgMHgxMDAwNzAwMCAwIDB4MTAwPjsNCi0tIA0KMS44LjEuMS5kaXJ0eQ0K
+On 2020-10-22 17:02, Peter Zijlstra wrote:
+> On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
+> 
+>> Looking at the ETR and other places in the kernel, ETF and the
+>> ETB are the only places trying to dereference the task(owner)
+>> in tmc_enable_etf_sink_perf() which is also called from the
+>> sched_in path as in the call trace.
+> 
+>> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct 
+>> coresight_device *csdev,
+>>  {
+>>  	int node;
+>>  	struct cs_buffers *buf;
+>> +	struct task_struct *task = READ_ONCE(event->owner);
+>> +
+>> +	if (!task || is_kernel_event(event))
+>> +		return NULL;
+> 
+> 
+> This is *wrong*... why do you care about who owns the events?
+> 
 
+The original issue was the owner being NULL and causing
+a NULL pointer dereference. I did ask some time back
+if it is valid for the owner to be NULL [1] and should
+probably be handled in events core?
+
+[1] 
+https://lore.kernel.org/lkml/c0e1f99a0a2480dfc8d788bb424d3f08@codeaurora.org/
+
+Unable to handle kernel NULL pointer dereference at virtual address 
+0000000000000548
+Mem abort info:
+   ESR = 0x96000006
+   EC = 0x25: DABT (current EL), IL = 32 bits
+   SET = 0, FnV = 0
+   EA = 0, S1PTW = 0
+Data abort info:
+   ISV = 0, ISS = 0x00000006
+   CM = 0, WnR = 0
+<snip>...
+Call trace:
+  tmc_enable_etf_sink+0xe4/0x280
+  coresight_enable_path+0x168/0x1fc
+  etm_event_start+0x8c/0xf8
+  etm_event_add+0x38/0x54
+  event_sched_in+0x194/0x2ac
+  group_sched_in+0x54/0x12c
+  flexible_sched_in+0xd8/0x120
+  visit_groups_merge+0x100/0x16c
+  ctx_flexible_sched_in+0x50/0x74
+  ctx_sched_in+0xa4/0xa8
+  perf_event_sched_in+0x60/0x6c
+  perf_event_context_sched_in+0x98/0xe0
+  __perf_event_task_sched_in+0x5c/0xd8
+  finish_task_switch+0x184/0x1cc
+  schedule_tail+0x20/0xec
+  ret_from_fork+0x4/0x18
+
+
+Thanks,
+Sai
+
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
