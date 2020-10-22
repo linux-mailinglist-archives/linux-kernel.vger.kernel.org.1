@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0B29295792
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173A3295796
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:05:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444026AbgJVFFT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:05:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59176 "EHLO
+        id S2507747AbgJVFFX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:05:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59188 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502123AbgJVFFR (ORCPT
+        with ESMTP id S2443993AbgJVFFV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:05:17 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 93BB8C0613D4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:17 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id d23so319737pll.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:17 -0700 (PDT)
+        Thu, 22 Oct 2020 01:05:21 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41036C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:21 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id bh6so322964plb.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=chromium.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=K2s/WABeigsA7Mtk0S1o9sQLZAsD6w8Z+WN9DH8FOQc=;
-        b=nlxR/fPH/lcxICagndJXRM49tb//f/NoqPZcOrpnte9T+UHf5tUQMXKMOW48/Ie8yy
-         uAdP6rToRhWnhNHnghik3iVL4daQCvLzujuFNaAHnpAEvhPJ3foQdFeAvs+UzXYCSWkV
-         vVE9SUk5KveUwC9mN14Z5Cvwk7ObaDWOF5WXg=
+        bh=wpLYvGhuKyxRXzfVKDpynuN2d2Rj3ki47jaONctjv2M=;
+        b=RBhmk4Yoxh9jge/imYHKNgrjYeOVihPb1YzvKBi30BYoocMGuVr03u2v8Yh5x9HBY+
+         9x+ZgOAWZy+tADrZRVw85qC71V6vjSqpprPTk7GaRbCkW9+/42aAwkMrHLTfeneklWye
+         ZtEXbdQU53ltimT+Ktri5sDHtWTTQNfASUZ58=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=K2s/WABeigsA7Mtk0S1o9sQLZAsD6w8Z+WN9DH8FOQc=;
-        b=MSW9BtjKxR+3BqERo75gPO+oOhHUDUFSXsBl/Pxu7BUVk9ILOKwTn3fAm6TScuuuFd
-         9YhCgERWr4uvLN8ANf+RQuLyWYBMHFoBmKNPYTBIsTbyldBIjJdhuRrQ8CbVnzc/w60D
-         Ha9Z6HepON31h/8ib6myFAPsLfeMh6ytpcYC245zBlTR4vZDXNkYlidEtTAKQhfAHIFm
-         2KEvxDKl4USf7k7Yh9JGb3oBCjGZ4sR004QADMLz0gfAzOAR3OxJy3o0ez8kTpLlUaov
-         Qxt795cJ4ErTAMb+BzwBAM6vmE5bPSWn/CNHQgraSGuUDY0m2FOdGurm1plee5Z/N/9c
-         mahA==
-X-Gm-Message-State: AOAM530WLGdRP3In9NoJ0t6ehitE4VCjbQlXzPG018DXgZSfJItmE0Fv
-        0e9XpswaHAqrzN3IQuhFMru8KQ==
-X-Google-Smtp-Source: ABdhPJy1S3Qg0UXAo7NAUpXG3IP9he1/d4XCGb8CAjHReHbkbKr6Op7VKpnwFVAXlxRcrXq41UUX2w==
-X-Received: by 2002:a17:902:bb8c:b029:d2:2503:e458 with SMTP id m12-20020a170902bb8cb02900d22503e458mr1016068pls.18.1603343117155;
-        Wed, 21 Oct 2020 22:05:17 -0700 (PDT)
+        bh=wpLYvGhuKyxRXzfVKDpynuN2d2Rj3ki47jaONctjv2M=;
+        b=dRGmsXCQbxuNOjPVP/rS7qzkO17WLlk5ha7eM7stADOte5UG05CSmC/g5ui9Ew8Ok3
+         bJmzonW7WrDzXRZWrzvvbbmgRC0BEL/jepJA0D/0iLikImzgzoQtj36qIsy39Bm8qV0V
+         OilkApzu5GzVzfPhG6kIk+/WZvz1lpGsuiXvyqNBOnLVtlCgS2O1LIVuAPBCzfkJiH1k
+         iNXuT6y4kHbut+Mt9adP4/idEpHSjnDd6Dfa9PfajRq/9dOd2ZwonrKH86n30Yys+wWS
+         SDXuR5V8KL4EhxxmVSYofhkXKuxh8EBCocvM3xT9pyhudPAyPTTfmcrmtvQasQftY1Zu
+         0ojA==
+X-Gm-Message-State: AOAM533IOxbuA9XaZNH/X/+j84UTbhYY1C2oY8Nv2e8FxNKva0VVjdYr
+        TPHNp95KEVov5OOVjffwxoBF7g==
+X-Google-Smtp-Source: ABdhPJwE6Djg9sy5FUg+MODQPTa7yCYtbMqMJOwWukFS48qoFn6DL7xRd79dt+BffZ+JvAe/dWMiIg==
+X-Received: by 2002:a17:90a:788a:: with SMTP id x10mr86917pjk.236.1603343120839;
+        Wed, 21 Oct 2020 22:05:20 -0700 (PDT)
 Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
-        by smtp.gmail.com with ESMTPSA id q16sm394954pfu.206.2020.10.21.22.05.13
+        by smtp.gmail.com with ESMTPSA id q16sm394954pfu.206.2020.10.21.22.05.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 22:05:16 -0700 (PDT)
+        Wed, 21 Oct 2020 22:05:20 -0700 (PDT)
 From:   Alexandru Stan <amstan@chromium.org>
 To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
         Andy Gross <agross@kernel.org>,
@@ -59,11 +59,11 @@ Cc:     Douglas Anderson <dianders@chromium.org>,
         Matthias Kaehlcke <mka@chromium.org>,
         Enric Balletbo i Serra <enric.balletbo@collabora.com>,
         Alexandru Stan <amstan@chromium.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-rockchip@lists.infradead.org
-Subject: [PATCH v3 1/3] ARM: dts: rockchip: veyron: Remove 0 point from brightness-levels
-Date:   Wed, 21 Oct 2020 22:04:43 -0700
-Message-Id: <20201021220404.v3.1.I96b8d872ec51171f19274e43e96cadc092881271@changeid>
+        devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 2/3] arm64: dts: qcom: trogdor: Add brightness-levels
+Date:   Wed, 21 Oct 2020 22:04:44 -0700
+Message-Id: <20201021220404.v3.2.Ie4d84af5a85e8dcb8f575845518fa39f324a827d@changeid>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201022050445.930403-1-amstan@chromium.org>
 References: <20201022050445.930403-1-amstan@chromium.org>
@@ -73,66 +73,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The extra 0 only adds one point in the userspace visible range,
-so this change is almost a noop with the current driver behavior.
+We want userspace to represent the human perceived brightness.
+Since the led drivers and the leds themselves don't have a
+linear response to the value we give them in terms of perceived
+brightness, we'll bake the curve into the dts.
 
-We don't need the 0% point, userspace seems to handle this just fine
-because it uses the bl_power property to turn off the display.
+The panel also doesn't have a good response under 5%, so we'll avoid
+sending it anything lower than that.
 
-Furthermore after adding "backlight: pwm_bl: Fix interpolation" patch,
-the backlight interpolation will work a little differently. So we need
-to preemptively remove the 0-3 segment since otherwise we would have a
-252 long interpolation that would slowly go between 0 and 3, looking
-really bad in userspace. So it's almost a noop/cleanup now, but it will
-be required in the future.
+Note: Ideally this patch should be coupled with the driver change from
+"backlight: pwm_bl: Fix interpolation", but it can work without it,
+without looking too ugly.
 
 Signed-off-by: Alexandru Stan <amstan@chromium.org>
 ---
 
- arch/arm/boot/dts/rk3288-veyron-jaq.dts    | 2 +-
- arch/arm/boot/dts/rk3288-veyron-minnie.dts | 2 +-
- arch/arm/boot/dts/rk3288-veyron-tiger.dts  | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
-diff --git a/arch/arm/boot/dts/rk3288-veyron-jaq.dts b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
-index af77ab20586d..4a148cf1defc 100644
---- a/arch/arm/boot/dts/rk3288-veyron-jaq.dts
-+++ b/arch/arm/boot/dts/rk3288-veyron-jaq.dts
-@@ -20,7 +20,7 @@ / {
+diff --git a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+index bf875589d364..ccdabc6c4994 100644
+--- a/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
++++ b/arch/arm64/boot/dts/qcom/sc7180-trogdor.dtsi
+@@ -179,6 +179,15 @@ pp3300_fp_tp: pp3300-fp-tp-regulator {
+ 	backlight: backlight {
+ 		compatible = "pwm-backlight";
  
- &backlight {
- 	/* Jaq panel PWM must be >= 3%, so start non-zero brightness at 8 */
--	brightness-levels = <0 8 255>;
-+	brightness-levels = <8 255>;
- 	num-interpolated-steps = <247>;
- };
- 
-diff --git a/arch/arm/boot/dts/rk3288-veyron-minnie.dts b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-index f8b69e0a16a0..82fc6fba9999 100644
---- a/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-+++ b/arch/arm/boot/dts/rk3288-veyron-minnie.dts
-@@ -39,7 +39,7 @@ volum_up {
- 
- &backlight {
- 	/* Minnie panel PWM must be >= 1%, so start non-zero brightness at 3 */
--	brightness-levels = <0 3 255>;
-+	brightness-levels = <3 255>;
- 	num-interpolated-steps = <252>;
- };
- 
-diff --git a/arch/arm/boot/dts/rk3288-veyron-tiger.dts b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
-index 069f0c2c1fdf..52a84cbe7a90 100644
---- a/arch/arm/boot/dts/rk3288-veyron-tiger.dts
-+++ b/arch/arm/boot/dts/rk3288-veyron-tiger.dts
-@@ -23,7 +23,7 @@ / {
- 
- &backlight {
- 	/* Tiger panel PWM must be >= 1%, so start non-zero brightness at 3 */
--	brightness-levels = <0 3 255>;
-+	brightness-levels = <3 255>;
- 	num-interpolated-steps = <252>;
- };
- 
++		/* The panels don't seem to like anything below ~ 5% */
++		brightness-levels = <
++			196 256 324 400 484 576 676 784 900 1024 1156 1296
++			1444 1600 1764 1936 2116 2304 2500 2704 2916 3136
++			3364 3600 3844 4096
++		>;
++		num-interpolated-steps = <64>;
++		default-brightness-level = <951>;
++
+ 		pwms = <&cros_ec_pwm 1>;
+ 		enable-gpios = <&tlmm 12 GPIO_ACTIVE_HIGH>;
+ 		power-supply = <&ppvar_sys>;
 -- 
 2.28.0
 
