@@ -2,102 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67880295FF8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:25:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A35AC295FFC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:27:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899802AbgJVNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:25:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38154 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2894908AbgJVNZx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:25:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603373152;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=BxPfxPSNfbnVjf34ePIHdZQgNiJCJyxLs4IXArAnJmw=;
-        b=ChZloRpmYo1wsevYhGItQmJK3iulJyb1NkdWOlsHsGeewypAYeSCCjlpgM30F3uCLN3xSc
-        BoE8vS9sIGkj3oIDQsCk/DT5o4gS1CG53dV3X1phaLzrNGKNkhZlK6ZjLpj54+TjKgjxVS
-        /yUgblaLhANLMhm6lK33a3SL3GKLLeE=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-226-rL5qCXgQN1Woc0F3bz3eqg-1; Thu, 22 Oct 2020 09:25:50 -0400
-X-MC-Unique: rL5qCXgQN1Woc0F3bz3eqg-1
-Received: by mail-wr1-f71.google.com with SMTP id p6so612340wrm.23
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:25:50 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=BxPfxPSNfbnVjf34ePIHdZQgNiJCJyxLs4IXArAnJmw=;
-        b=eeA0M1l/SEn6dB86NgsmdrgPUbiJwOMvNB+pfXk6hgfv3owyX9pgpoxfGgrytO0M5Z
-         GU+x4HU+qD4J0bOllsqobhsYeMYwJP602OelPrL2jIvA7PzfpntgfmoPtHou3d1Spp+0
-         jO57gzg7JRS5UPA5iElvnat19K5mMVNnPjzN5H4rbIj8neh92Zuc9MGXzcVHEDbMRb93
-         73ponfhkAhLVo72Kw552l4y8uQRaSG1a8D4XOFFRne3HNllioNpjMDaIfWda0Sj11A9T
-         FrGZAfNsVioSa3OlIV69xsrQJ9gYSL6Al8cxtowudSgYjcj8Do1RGJgKqEux0+Bv+W3A
-         vZpQ==
-X-Gm-Message-State: AOAM531Dx30aB+xJmUFW953ENSEEDc9KjvZx0NHFWpYpaC8OhaPoTLb3
-        1nWGFTEKzGttkmRYz1XZcobeh93KgIuQ1YvDVvBL7pPaOo+/R4Jou4UR6ABxCaq1xtXfYgoVwXh
-        2SoUE04nCkGcLDupGDplofJEF
-X-Received: by 2002:a7b:cb10:: with SMTP id u16mr2568582wmj.20.1603373149087;
-        Thu, 22 Oct 2020 06:25:49 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2n8WajVbZY49NzRz8HTVBT9A01wzfAhU1/YFTB2zSdisHBFJ3+FJItC+mxqL674ywS9q03Q==
-X-Received: by 2002:a7b:cb10:: with SMTP id u16mr2568565wmj.20.1603373148910;
-        Thu, 22 Oct 2020 06:25:48 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id k6sm3778509wmk.16.2020.10.22.06.25.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 06:25:47 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
-In-Reply-To: <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
-References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com> <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
-Date:   Thu, 22 Oct 2020 15:25:46 +0200
-Message-ID: <871rhq4ckl.fsf@vitty.brq.redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain
+        id S2895161AbgJVN1V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:27:21 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:46550 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442854AbgJVN1U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:27:20 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603373240; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=zyk+rmaPFWFn8X4EommTKBeeayYl4rYBD+sOjpF0y08=; b=AYhZBCq17ZagmUa0mFz0Y/RDcInMQ7dKYF7AEdlDSjIys8isMpYBk3QzlxibDpslTOEb1kNJ
+ jJiTbP4u50lWWYp4N5Zze3hofkbAD62taZRJuV6/Ei5RY3bPEcOJgRt3rqn0avkZgDU1O4Bb
+ xbqxghlLRUy+G3Djgr1KmPx80Gg=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n01.prod.us-east-1.postgun.com with SMTP id
+ 5f9188b4ef891f1ee2621208 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 13:27:16
+ GMT
+Sender: srivasam=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id AE909C433FF; Thu, 22 Oct 2020 13:27:15 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from hyd-lnxbld210.qualcomm.com (unknown [202.46.22.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: srivasam)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 03427C433C9;
+        Thu, 22 Oct 2020 13:27:09 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 03427C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
+From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+To:     agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
+        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
+        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
+        srinivas.kandagatla@linaro.org, rohitkr@codeaurora.org,
+        linux-arm-msm@vger.kernel.org, alsa-devel@alsa-project.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>,
+        Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+Subject: [PATCH] Asoc: qcom: lpass-sc7180: Fix MI2S bitwidth field bit positions
+Date:   Thu, 22 Oct 2020 18:56:59 +0530
+Message-Id: <1603373219-19374-1-git-send-email-srivasam@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Paolo Bonzini <pbonzini@redhat.com> writes:
+From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
 
-> On 22/10/20 03:34, Wanpeng Li wrote:
->> From: Wanpeng Li <wanpengli@tencent.com>
->> 
->> Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
->> 
->> This ioctl returns x86 cpuid features which are supported by both the 
->> hardware and kvm in its default configuration.
->> 
->> A well-behaved userspace should not set the bit if it is not supported.
->> 
->> Suggested-by: Jim Mattson <jmattson@google.com>
->> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
->
-> It's common for userspace to copy all supported CPUID bits to
-> KVM_SET_CPUID2, I don't think this is the right behavior for
-> KVM_HINTS_REALTIME.
->
-> (But maybe this was discussed already; if so, please point me to the
-> previous discussion).
->
+Update SC7180 lpass_variant structure with proper I2S bitwidth
+field bit positions, as bitwidth denotes 0 to 1 bits,
+but previously used only 0 bit.
 
-Not for KVM_GET_SUPPORTED_CPUID but for KVM_GET_SUPPORTED_HV_CPUID: just
-copying all the bits blindly is incorrect as e.g. SYNIC needs to be
-enabled with KVM_CAP_HYPERV_SYNIC[2]. KVM PV features also have
-pre-requisites, e.g. KVM_ASYNC_PF_DELIVERY_AS_INT requires an irqchip so
-again copy/paste may not work.
+Fixes: commit cba62c8b49bead ("Merge series "ASoC: qcom: Add support for SC7180 lpass variant" from Rohit kumar <rohitkr@codeaurora.org>:")
 
+Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
+Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
+---
+ sound/soc/qcom/lpass-sc7180.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/sound/soc/qcom/lpass-sc7180.c b/sound/soc/qcom/lpass-sc7180.c
+index c6292f9e..bc998d5 100644
+--- a/sound/soc/qcom/lpass-sc7180.c
++++ b/sound/soc/qcom/lpass-sc7180.c
+@@ -188,7 +188,7 @@ static struct lpass_variant sc7180_data = {
+ 	.micmode		= REG_FIELD_ID(0x1000, 4, 8, 3, 0x1000),
+ 	.micmono		= REG_FIELD_ID(0x1000, 3, 3, 3, 0x1000),
+ 	.wssrc			= REG_FIELD_ID(0x1000, 2, 2, 3, 0x1000),
+-	.bitwidth		= REG_FIELD_ID(0x1000, 0, 0, 3, 0x1000),
++	.bitwidth		= REG_FIELD_ID(0x1000, 0, 1, 3, 0x1000),
+ 
+ 	.rdma_dyncclk		= REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
+ 	.rdma_bursten		= REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
 -- 
-Vitaly
+Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
+is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
 
