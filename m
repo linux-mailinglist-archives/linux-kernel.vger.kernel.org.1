@@ -2,125 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C2CB2962B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:35:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1DC3A2962BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901815AbgJVQfO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:35:14 -0400
-Received: from mx2.suse.de ([195.135.220.15]:54042 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2901805AbgJVQfO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:35:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C4E63AC23;
-        Thu, 22 Oct 2020 16:35:12 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 17:35:10 +0100
-From:   Mel Gorman <mgorman@suse.de>
-To:     Phil Auld <pauld@redhat.com>
-Cc:     Colin Ian King <colin.king@canonical.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
-Message-ID: <20201022163509.GM32041@suse.de>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <34115486.YmRjPRKJaA@kreacher>
- <20201022120213.GG2611@hirez.programming.kicks-ass.net>
- <1790766.jaFeG3T87Z@kreacher>
- <20201022122949.GW2628@hirez.programming.kicks-ass.net>
- <20201022145250.GK32041@suse.de>
- <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
- <20201022151200.GC92942@lorien.usersys.redhat.com>
+        id S2901851AbgJVQfY convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 12:35:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:35683 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2901817AbgJVQfW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:35:22 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-276-A1zb3avLNamAEPsIomTLEw-1; Thu, 22 Oct 2020 17:35:18 +0100
+X-MC-Unique: A1zb3avLNamAEPsIomTLEw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 17:35:17 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 22 Oct 2020 17:35:17 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Christoph Hellwig' <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Jens Axboe" <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAAQY5tgAAwVkA=
+Date:   Thu, 22 Oct 2020 16:35:17 +0000
+Message-ID: <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+References: <20201021233914.GR3576660@ZenIV.linux.org.uk>
+ <20201022082654.GA1477657@kroah.com>
+ <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
+ <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de>
+In-Reply-To: <20201022132342.GB8781@lst.de>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-15
-Content-Disposition: inline
-In-Reply-To: <20201022151200.GC92942@lorien.usersys.redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:12:00AM -0400, Phil Auld wrote:
-> > > AFAIK, not quite (added Giovanni as he has been paying more attention).
-> > > Schedutil has improved since it was merged but not to the extent where
-> > > it is a drop-in replacement. The standard it needs to meet is that
-> > > it is at least equivalent to powersave (in intel_pstate language)
-> > > or ondemand (acpi_cpufreq) and within a reasonable percentage of the
-> > > performance governor. Defaulting to performance is a) giving up and b)
-> > > the performance governor is not a universal win. There are some questions
-> > > currently on whether schedutil is good enough when HWP is not available.
-> > > There was some evidence (I don't have the data, Giovanni was looking into
-> > > it) that HWP was a requirement to make schedutil work well. That is a
-> > > hazard in itself because someone could test on the latest gen Intel CPU
-> > > and conclude everything is fine and miss that Intel-specific technology
-> > > is needed to make it work well while throwing everyone else under a bus.
-> > > Giovanni knows a lot more than I do about this, I could be wrong or
-> > > forgetting things.
-> > > 
-> > > For distros, switching to schedutil by default would be nice because
-> > > frequency selection state would follow the task instead of being per-cpu
-> > > and we could stop worrying about different HWP implementations but it's
-> > > not at the point where the switch is advisable. I would expect hard data
-> > > before switching the default and still would strongly advise having a
-> > > period of time where we can fall back when someone inevitably finds a
-> > > new corner case or exception.
-> > 
-> > ..and it would be really useful for distros to know when the hard data
-> > is available so that they can make an informed decision when to move to
-> > schedutil.
+From: Christoph Hellwig
+> Sent: 22 October 2020 14:24
+> 
+> On Thu, Oct 22, 2020 at 11:36:40AM +0200, David Hildenbrand wrote:
+> > My thinking: if the compiler that calls import_iovec() has garbage in
+> > the upper 32 bit
 > >
+> > a) gcc will zero it out and not rely on it being zero.
+> > b) clang will not zero it out, assuming it is zero.
+> >
+> > But
+> >
+> > a) will zero it out when calling the !inlined variant
+> > b) clang will zero it out when calling the !inlined variant
+> >
+> > When inlining, b) strikes. We access garbage. That would mean that we
+> > have calling code that's not generated by clang/gcc IIUC.
 > 
-> I think distros are on the hook to generate that hard data themselves
-> with which to make such a decision.  I don't expect it to be done by
-> someone else. 
-> 
+> Most callchains of import_iovec start with the assembly syscall wrappers.
 
-Yep, distros are on the hook. When I said "I would expect hard data",
-it was in the knowledge that for openSUSE/SLE, we (as in SUSE) would be
-generating said data and making a call based on it. I'd be surprised if
-Phil was not thinking along the same lines.
+Wait...
+readv(2) defines:
+	ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
 
-> > > For reference, SLUB had the same problem for years. It was switched
-> > > on by default in the kernel config but it was a long time before
-> > > SLUB was generally equivalent to SLAB in terms of performance. Block
-> > > multiqueue also had vaguely similar issues before the default changes
-> > > and a period of time before it was removed removed (example whinging mail
-> > > https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
-> > > It's schedutil's turn :P
-> > > 
-> > 
-> 
-> Agreed. I'd like the option to switch back if we make the default change.
-> It's on the table and I'd like to be able to go that way. 
-> 
+But the syscall is defined as:
 
-Yep. It sounds chicken, but it's a useful safety net and a reasonable
-way to deprecate a feature. It's also useful for bug creation -- User X
-running whatever found that schedutil is worse than the old governor and
-had to temporarily switch back. Repeat until complaining stops and then
-tear out the old stuff.
+SYSCALL_DEFINE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+                unsigned long, vlen)
+{
+        return do_readv(fd, vec, vlen, 0);
+}
 
-When/if there is a patch setting schedutil as the default, cc suitable
-distro people (Giovanni and myself for openSUSE). Other distros assuming
-they're watching can nominate their own victim.
+I'm guessing that nothing actually masks the high bits that come
+from an application that is compiled with clang?
 
--- 
-Mel Gorman
-SUSE Labs
+The vlen is 'unsigned long' through the first few calls.
+So unless there is a non-inlined function than takes vlen
+as 'int' the high garbage bits from userspace are kept.
+
+Which makes it a bug in the kernel C syscall wrappers.
+They need to explicitly mask the high bits of 32bit
+arguments on arm64 but not x86-64.
+
+What does the ARM EABI say about register parameters?
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
