@@ -2,182 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6CEE52955BC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 02E692955BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:44:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894385AbgJVAne (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 20:43:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47130 "EHLO
+        id S2894425AbgJVAoe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 20:44:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47286 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442509AbgJVAnd (ORCPT
+        with ESMTP id S2442436AbgJVAoe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 20:43:33 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C4EADC0613CE;
-        Wed, 21 Oct 2020 17:43:33 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id x13so2519708pgp.7;
-        Wed, 21 Oct 2020 17:43:33 -0700 (PDT)
+        Wed, 21 Oct 2020 20:44:34 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8DD91C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:44:32 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id y1so33984plp.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:44:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:from:to:cc:references:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=tLeTUxO+mrgYM9OsvoYtUI/ekoBjh7HczbMpyd1oOkw=;
-        b=qwZ3fCb7+lvSYhEaYUnf4XM7dEJbykyKEytf1rHleTatc5vmZ9aa4wbOnuDolqcwVQ
-         IxDyVbQL2HsRWHYcOsx2rB4C5TS7bGSbFmTQLKa/fsSnMn1uubgj7dRKQujpWh3qQczn
-         ClAVKtqFe7Nfa8eT40FcuNh/1EDTzxqh4bu/IMFgmyYE7+PzjvokyoPgdLZjPUwFjbry
-         8Ovjd1o5cpW3D4YSjJLFSWmveQzKOSct703mMaa5GZlBj3+KihcdkxmZBCjKS4iAQZrt
-         9xPbXrzTu9q9AVXXA65ydlbDjaKw15UBLayYou5HHq6C3/Rap6ENJEquuNwOCQwLZpyt
-         MI4w==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=JQj/F1WGtmfl96nLYTyRRps4j7+rYPw7b7qMltLSutE=;
+        b=JuPqckNek8jwh0li33locD2FsyoxA98In2CWC4qb4IMXieei2HUhZFn3n55ZA8ZIFg
+         KNotVqzwZSdDZnwey72PE4d59iorz9iBqfX8QSMnoVI7LBF8Zv2LUBec80oyPlIPCpFD
+         WB+ZsNbKEfADH8xinJhmVHx0A6myoT+qROo9468kw2JAEmbuJrXl5GKS6z+vk5jXV6py
+         z9/hLweXuLTfUsSidP9hWblrpPMnxGToGsimYzqY1wcBXlqBSYsaUo5KDG1Rxh7XW+oh
+         kAd6DyEYmIvMPdZbnu/QP0Fl0Mall7VRuwRPUcr2k0rlsfb8/3JKnP/l0qfYilN9bg6G
+         1Bqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=tLeTUxO+mrgYM9OsvoYtUI/ekoBjh7HczbMpyd1oOkw=;
-        b=L+nZ7CCs6ocZhTcp8nW4rQw9Y6EH+wnp/EYJNTzwcoYJozLoXi1Yp26A6YzG3R9xpX
-         OlhiXlZRopy5dRd4AZWnoOjK0CEaCrRYJ03aKApdnRB+v7O/ITXh4EcJ/rmiiTDaxA8U
-         /hQNuCL3vMsUAFYEbYM0fb0wQeu7pOsS/cOKtfxLVTPC+mLHCYifTnBYz42TruYvpCO/
-         zg2F0Kz30jEjwM9aiAZbW11u4vQzbI9GXLpk/susDEzQ4fh21LaaJBbJb4P6X3PsbI/6
-         pJsgaNDextZI4u7dgdiAp2Y2GUIno7xb5oeKqBkaYEuEh2mkaukbICnfdptqyIoT9ddP
-         PGWQ==
-X-Gm-Message-State: AOAM533E32T2yTnOAIC0HAaoFs8XW83unA6EfAb1DyXvsMRIPOS695xO
-        TSnApYm9PrH1V6jnCDEg/A==
-X-Google-Smtp-Source: ABdhPJx9gN1dUT8nsuVXtw9xnIo7L73cIFVbbBWfg+8wHoc8UkI62HgS4CnIAzL2G7zCnwgAHvI0Gg==
-X-Received: by 2002:aa7:87d9:0:b029:155:6486:ac68 with SMTP id i25-20020aa787d90000b02901556486ac68mr232669pfo.30.1603327413317;
-        Wed, 21 Oct 2020 17:43:33 -0700 (PDT)
-Received: from [127.0.0.1] ([203.205.141.40])
-        by smtp.gmail.com with ESMTPSA id q5sm9660pjg.0.2020.10.21.17.43.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 21 Oct 2020 17:43:32 -0700 (PDT)
-Subject: Re: [PATCH v2] KVM: x86: Add tracepoint for dr_write/dr_read
-From:   Haiwei Li <lihaiwei.kernel@gmail.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     pbonzini@redhat.com, sean.j.christopherson@intel.com,
-        vkuznets@redhat.com, wanpengli@tencent.com, jmattson@google.com,
-        joro@8bytes.org, Haiwei Li <lihaiwei@tencent.com>
-References: <20201009032130.6774-1-lihaiwei.kernel@gmail.com>
-Message-ID: <5439f177-0bd0-084d-b7b0-450ceab475b8@gmail.com>
-Date:   Thu, 22 Oct 2020 08:43:26 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.3
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=JQj/F1WGtmfl96nLYTyRRps4j7+rYPw7b7qMltLSutE=;
+        b=A6c1OLfhciF6ZRKvnA6IB4F2DDj7q8SGn+8typvs355k7rAS6YN8kYt5whg7uAHc8x
+         NWgnEIC9rl0J61f69CNXO7Wn8wYYAEHRdPlXAM3Xeq0JSeFWlvR3p3q5X6r62dkdCHce
+         V9GFMQ6d3vTpha2slEanebDk4EIvIWOREPQCjt5b+0JvHnH5UA6g4hVtIx/oS84DrljN
+         RoMJzB6tnwqXjHBQSYfHAh2lT1ixzkN08f6YTevK551Suu8e+6Z/ooUagT0edeFnXn5F
+         SQFiPWA/LgRgybgkCvd5LGLZluBNtZE85CLIDU884S0jL95k+1gITmPtRNvcTdI17wb6
+         Bt6A==
+X-Gm-Message-State: AOAM533ztVUYZHhnosGUjo30lf9L+rxiv2NzxjNohQzJt9vLPdlk9CpE
+        8M0eU1LZpX/P7Tr6CD90kfBMfQ==
+X-Google-Smtp-Source: ABdhPJxF+AJ2bDcGr/lyHDxOp0KSMSY2rdnGD1fjSIH47YTGtT69n6Dy9w2XBi9rV7wTX8qA9t5bnQ==
+X-Received: by 2002:a17:90a:de98:: with SMTP id n24mr21643pjv.100.1603327472020;
+        Wed, 21 Oct 2020 17:44:32 -0700 (PDT)
+Received: from leoy-ThinkPad-X240s ([14.192.49.12])
+        by smtp.gmail.com with ESMTPSA id y65sm3424517pfy.57.2020.10.21.17.44.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 21 Oct 2020 17:44:31 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 08:44:13 +0800
+From:   Leo Yan <leo.yan@linaro.org>
+To:     =?iso-8859-1?Q?Andr=E9?= Przywara <andre.przywara@arm.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org, Al Grant <Al.Grant@arm.com>
+Subject: Re: [PATCH v2 14/14] perf arm-spe: Add support for ARMv8.3-SPE
+Message-ID: <20201022004413.GC3194@leoy-ThinkPad-X240s>
+References: <20200929133917.9224-1-leo.yan@linaro.org>
+ <20200929133917.9224-15-leo.yan@linaro.org>
+ <9c74082b-fccf-7713-b98d-50da76c5d7af@arm.com>
+ <20201021051031.GE7226@leoy-ThinkPad-X240s>
+ <df1faa9b-d8cb-ebcf-b70f-3672a6d8db1f@arm.com>
+ <20201021101748.GB3194@leoy-ThinkPad-X240s>
+ <bf23b7ff-9ecd-26ed-71fd-e3a840a687e1@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <20201009032130.6774-1-lihaiwei.kernel@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <bf23b7ff-9ecd-26ed-71fd-e3a840a687e1@arm.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kindly ping. :)
+Hi Andre,
 
-On 20/10/9 11:21, lihaiwei.kernel@gmail.com wrote:
-> From: Haiwei Li <lihaiwei@tencent.com>
+On Wed, Oct 21, 2020 at 03:53:31PM +0100, André Przywara wrote:
+
+[...]
+
+> >>>>> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> >>>>> index 05a4c74399d7..3ec381fddfcb 100644
+> >>>>> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> >>>>> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> >>>>> @@ -342,14 +342,73 @@ int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
+> >>>>>  					return ret;
+> >>>>>  			}
+> >>>>>  		}
+> >>>>> +		if (idx > 2) {
+> >>>>
+> >>>> As I mentioned in the other patch, I doubt this extra comparison is
+> >>>> useful. Does that protect us from anything?
+> >>>
+> >>> It's the same reason with Event packet which have explained for replying
+> >>> patch 10, the condition is to respect the SPE specifiction:
+> >>>
+> >>>   E[11], byte 1, bit [11], when SZ == 0b10 , or SZ == 0b11
+> >>>      Alignment.
+> >>>      ...
+> >>>      Otherwise this bit reads-as-zero.
+> >>>
+> >>> So we gives higher priority for checking payload size than the Event
+> >>> bit setting; if you have other thinking for this, please let me know.
+> >>
+> >> Ah, thanks for pointing this out. It looks like a bug in the manual
+> >> then, because I don't see why bit 11 should be any different from bits
+> >> [10:8] and bits [15:12] in this respect. And in the diagrams above you
+> >> clearly see bit 11 being shown even when SZ == 0b01.
+> >>
+> >> I will try to follow this up here.
+> > 
+> > Thanks for following up!
 > 
-> When vmexit occurs caused by accessing dr, there is no tracepoint to track
-> this action. Add tracepoint for this on x86 kvm.
-> 
-> Signed-off-by: Haiwei Li <lihaiwei@tencent.com>
-> ---
-> v1 -> v2:
->   * Improve the changelog
-> 
->   arch/x86/kvm/svm/svm.c |  2 ++
->   arch/x86/kvm/trace.h   | 27 +++++++++++++++++++++++++++
->   arch/x86/kvm/vmx/vmx.c | 10 ++++++++--
->   arch/x86/kvm/x86.c     |  1 +
->   4 files changed, 38 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
-> index 4f401fc6a05d..52c69551aea4 100644
-> --- a/arch/x86/kvm/svm/svm.c
-> +++ b/arch/x86/kvm/svm/svm.c
-> @@ -2423,12 +2423,14 @@ static int dr_interception(struct vcpu_svm *svm)
->   		if (!kvm_require_dr(&svm->vcpu, dr - 16))
->   			return 1;
->   		val = kvm_register_read(&svm->vcpu, reg);
-> +		trace_kvm_dr_write(dr - 16, val);
->   		kvm_set_dr(&svm->vcpu, dr - 16, val);
->   	} else {
->   		if (!kvm_require_dr(&svm->vcpu, dr))
->   			return 1;
->   		kvm_get_dr(&svm->vcpu, dr, &val);
->   		kvm_register_write(&svm->vcpu, reg, val);
-> +		trace_kvm_dr_read(dr, val);
->   	}
->   
->   	return kvm_skip_emulated_instruction(&svm->vcpu);
-> diff --git a/arch/x86/kvm/trace.h b/arch/x86/kvm/trace.h
-> index aef960f90f26..b3bf54405862 100644
-> --- a/arch/x86/kvm/trace.h
-> +++ b/arch/x86/kvm/trace.h
-> @@ -405,6 +405,33 @@ TRACE_EVENT(kvm_cr,
->   #define trace_kvm_cr_read(cr, val)		trace_kvm_cr(0, cr, val)
->   #define trace_kvm_cr_write(cr, val)		trace_kvm_cr(1, cr, val)
->   
-> +/*
-> + * Tracepoint for guest DR access.
-> + */
-> +TRACE_EVENT(kvm_dr,
-> +	TP_PROTO(unsigned int rw, unsigned int dr, unsigned long val),
-> +	TP_ARGS(rw, dr, val),
-> +
-> +	TP_STRUCT__entry(
-> +		__field(	unsigned int,	rw		)
-> +		__field(	unsigned int,	dr		)
-> +		__field(	unsigned long,	val		)
-> +	),
-> +
-> +	TP_fast_assign(
-> +		__entry->rw		= rw;
-> +		__entry->dr		= dr;
-> +		__entry->val		= val;
-> +	),
-> +
-> +	TP_printk("dr_%s %x = 0x%lx",
-> +		  __entry->rw ? "write" : "read",
-> +		  __entry->dr, __entry->val)
-> +);
-> +
-> +#define trace_kvm_dr_read(dr, val)		trace_kvm_dr(0, dr, val)
-> +#define trace_kvm_dr_write(dr, val)		trace_kvm_dr(1, dr, val)
-> +
->   TRACE_EVENT(kvm_pic_set_irq,
->   	    TP_PROTO(__u8 chip, __u8 pin, __u8 elcr, __u8 imr, bool coalesced),
->   	    TP_ARGS(chip, pin, elcr, imr, coalesced),
-> diff --git a/arch/x86/kvm/vmx/vmx.c b/arch/x86/kvm/vmx/vmx.c
-> index 4551a7e80ebc..f78fd297d51e 100644
-> --- a/arch/x86/kvm/vmx/vmx.c
-> +++ b/arch/x86/kvm/vmx/vmx.c
-> @@ -5091,10 +5091,16 @@ static int handle_dr(struct kvm_vcpu *vcpu)
->   
->   		if (kvm_get_dr(vcpu, dr, &val))
->   			return 1;
-> +		trace_kvm_dr_read(dr, val);
->   		kvm_register_write(vcpu, reg, val);
-> -	} else
-> -		if (kvm_set_dr(vcpu, dr, kvm_register_readl(vcpu, reg)))
-> +	} else {
-> +		unsigned long val;
-> +
-> +		val = kvm_register_readl(vcpu, reg);
-> +		trace_kvm_dr_write(dr, val);
-> +		if (kvm_set_dr(vcpu, dr, val))
->   			return 1;
-> +	}
->   
->   	return kvm_skip_emulated_instruction(vcpu);
->   }
-> diff --git a/arch/x86/kvm/x86.c b/arch/x86/kvm/x86.c
-> index c4015a43cc8a..68cb7b331324 100644
-> --- a/arch/x86/kvm/x86.c
-> +++ b/arch/x86/kvm/x86.c
-> @@ -11153,6 +11153,7 @@ EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_inj_virq);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_page_fault);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_msr);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_cr);
-> +EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_dr);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmrun);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit);
->   EXPORT_TRACEPOINT_SYMBOL_GPL(kvm_nested_vmexit_inject);
-> 
+> Just got the confirmation that this is indeed a bug in the manual. It
+> will be fixed, but since the ARM ARM isn't published on a daily base, it
+> might take a while to trickle in.
+
+Thanks for confirmation and sharing the info!
+
+Leo
