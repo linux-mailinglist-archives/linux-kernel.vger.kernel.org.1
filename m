@@ -2,299 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD421296609
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:38:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A45029660D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:39:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371798AbgJVUiR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:38:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2901452AbgJVUiR (ORCPT
+        id S371811AbgJVUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:39:14 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58962 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S371802AbgJVUjN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:38:17 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F9DC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 13:38:17 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id h21so3084650iob.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 13:38:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=2lVYOAl4LUMPDIC2IfXTNVJroC0jCdJ6IOEdTXgTOGs=;
-        b=f9PGL1+NkSHd+AFHE+639GCDeC7tOeUR1cE+6VlTblAJTBO7/7+Ox0+o16ekUqAoKZ
-         HkvAmgLUhF4qY6L8EUdQ0OxdY8CVw3z4sWpWDiYYfbgn3M589b9GnNkaFwU/LQbaQLSX
-         b0O3n7LGHzNITycz/eOa4CJx/FZtq6uGt1KbRM/FWCzJHwjL8M4ZijqQqYTG/Hq75gLV
-         dzqje8TCdvn3UAAJsHbhfOhabZNXlBgHv/5jkJHBbh+DyrOS6PsM91AeOCCMy6hCsROP
-         u3f2pMCtArm8bIfr/wu5Q/aPvDP/nUG8SOcyd+XS8xwv7u86filPnDnGSafMqJTRJKTQ
-         4TlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=2lVYOAl4LUMPDIC2IfXTNVJroC0jCdJ6IOEdTXgTOGs=;
-        b=Z0bfcDLmbmCNsIX7W3ZAzIeO/MHjPPebKGQrwCcZSqzgQ/5PdW8CoJVmkOLQn011Bg
-         cSPsEuZNBl906h6v0hN+s6E/Y6fbE6CknV6G+Cx92O1uDMit3ctJPIcNYEYsVpSJauGP
-         hNazEDnZ8B/KptV1Lqvx4gcHKJdYrwbUBvWKfvrmhEbNXo5oUE2lhhMILvzZsqNtKvdU
-         HhU2OZA/m6X7y5gbBTviKccFWPDWTfAD0CpL8v+eW7cBfZi1ZkxO6U3+bNc6/KXjw2mO
-         ykA9mwbcYVBFciL46DZnGQTLVRl6ybtLeEl+3ckXmxBu9r8kbiF8M0a/HyMkTV12rEaK
-         RnrA==
-X-Gm-Message-State: AOAM530dOssi/yyBnwueID33TEzYDoQ0+9oPPzvsuGojKIOVyPUxonNl
-        rBUqXq/y1DXW9tuzd9gSVHmWy9tGngr8mBkhZ5OKyw==
-X-Google-Smtp-Source: ABdhPJwJNS0+iusvAHju9jlBTHAxqUSDKhTmXCvYMVnb88kenlna21YkXLyX3vo5qQPRD8jKxuINRNHK/h7r9wdvBKo=
-X-Received: by 2002:a6b:fa0e:: with SMTP id p14mr3151425ioh.208.1603399096068;
- Thu, 22 Oct 2020 13:38:16 -0700 (PDT)
-MIME-Version: 1.0
-References: <20200924065606.3351177-1-lokeshgidra@google.com>
- <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
- <20201008040141.GA17076@redhat.com> <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
-In-Reply-To: <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
-From:   Lokesh Gidra <lokeshgidra@google.com>
-Date:   Thu, 22 Oct 2020 13:38:04 -0700
-Message-ID: <CA+EESO56aj-N6drn3s4=F9wZmaZ_Vc0Jv7P1s+xPwLRJh-jtvg@mail.gmail.com>
-Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
-To:     Andrea Arcangeli <aarcange@redhat.com>
-Cc:     Nick Kralevich <nnk@google.com>, Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        Thu, 22 Oct 2020 16:39:13 -0400
+Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MKW2Cm111815;
+        Thu, 22 Oct 2020 16:39:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=IFuZQiHZ5zXbarGP2kD9hqxg+2/2m9MRsUj82P5IF+o=;
+ b=TjRSM/KCvMWOk4tPQl5BBK77cOPKCTwTm8VHXO55enbCUNuxNZAM6+hMueFsxH/LEQiO
+ 6NgzU+I5tHykIvsRK2k7C5YFBNxUBIJFhbiZeO7POyo1Zk3ChKOlZ8iBF+yobkDMm/cN
+ zXFFkvM5M/79F/HoVRD79Yjs5P0bUlYr7MibUBHub2RQn0j+qeL8vDgTkxkGG+WpmnbW
+ N0zpGGNXY89pnnSMajLQVMZjVfRjpja45RiIMXnlIT71aM523+JytmPeDyWLuDq9I79z
+ VUeMT7BicNxKknQ9pHnPGnDi5Appq94f3pc5glNR1mc0Fxik11zpGVQe0nf+vj/bquB3 NA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34bh7085au-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 16:39:07 -0400
+Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09MKW5Cv111907;
+        Thu, 22 Oct 2020 16:39:06 -0400
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34bh7085a5-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 16:39:06 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09MK7Dla011995;
+        Thu, 22 Oct 2020 20:39:04 GMT
+Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 348d5qw1d8-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 20:39:04 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09MKd2oa18874790
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 20:39:02 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 87ECAA405F;
+        Thu, 22 Oct 2020 20:39:02 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 75903A4060;
+        Thu, 22 Oct 2020 20:38:59 +0000 (GMT)
+Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.44])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Oct 2020 20:38:59 +0000 (GMT)
+Message-ID: <7d9822da396a92645482e37a8c8590902323c5ef.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 2/6] IMA: conditionally allow empty rule data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Thu, 22 Oct 2020 16:38:58 -0400
+In-Reply-To: <20200923192011.5293-3-tusharsu@linux.microsoft.com>
+References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
+         <20200923192011.5293-3-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-22_15:2020-10-20,2020-10-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ mlxlogscore=999 spamscore=0 malwarescore=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0
+ adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220130
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 8, 2020 at 4:22 PM Nick Kralevich <nnk@google.com> wrote:
->
-> On Wed, Oct 7, 2020 at 9:01 PM Andrea Arcangeli <aarcange@redhat.com> wro=
-te:
-> >
-> > Hello Lokesh,
-> >
-> > On Wed, Oct 07, 2020 at 01:26:55PM -0700, Lokesh Gidra wrote:
-> > > On Wed, Sep 23, 2020 at 11:56 PM Lokesh Gidra <lokeshgidra@google.com=
-> wrote:
-> > > >
-> > > > This patch series is split from [1]. The other series enables SELin=
-ux
-> > > > support for userfaultfd file descriptors so that its creation and
-> > > > movement can be controlled.
-> > > >
-> > > > It has been demonstrated on various occasions that suspending kerne=
-l
-> > > > code execution for an arbitrary amount of time at any access to
-> > > > userspace memory (copy_from_user()/copy_to_user()/...) can be explo=
-ited
-> > > > to change the intended behavior of the kernel. For instance, handli=
-ng
-> > > > page faults in kernel-mode using userfaultfd has been exploited in =
-[2, 3].
-> > > > Likewise, FUSE, which is similar to userfaultfd in this respect, ha=
-s been
-> > > > exploited in [4, 5] for similar outcome.
-> > > >
-> > > > This small patch series adds a new flag to userfaultfd(2) that allo=
-ws
-> > > > callers to give up the ability to handle kernel-mode faults with th=
-e
-> > > > resulting UFFD file object. It then adds a 'user-mode only' option =
-to
-> > > > the unprivileged_userfaultfd sysctl knob to require unprivileged
-> > > > callers to use this new flag.
-> > > >
-> > > > The purpose of this new interface is to decrease the chance of an
-> > > > unprivileged userfaultfd user taking advantage of userfaultfd to
-> > > > enhance security vulnerabilities by lengthening the race window in
-> > > > kernel code.
-> > > >
-> > > > [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@goo=
-gle.com/
-> > > > [2] https://duasynt.com/blog/linux-kernel-heap-spray
-> > > > [3] https://duasynt.com/blog/cve-2016-6187-heap-off-by-one-exploit
-> >
-> > I've looking at those links and I've been trying to verify the link
-> > [3] is relevant.
-> >
-> > Specifically I've been trying to verify if 1) current state of the art
-> > modern SLUB randomization techniques already enabled in production and
-> > rightfully wasting some CPU in all enterprise kernels to prevent
-> > things like above to become an issue in practice 2) combined with the
-> > fact different memcg need to share the same kmemcaches (which was
-> > incidentally fixed a few months ago upstream) and 3) further
-> > robustness enhancements against exploits in the slub metadata, may
-> > already render the exploit [3] from 2016 irrelevant in practice.
->
-> It's quite possible that some other mitigation was helpful against the
-> technique used by this particular exploit. It's the nature of exploits
-> that they are fragile and will change as new soft mitigations are
-> introduced. The effectiveness of a particular exploit mitigation
-> change is orthogonal to the change presented here.
->
-> The purpose of this change is to prevent an attacker from suspending
-> kernel code execution and having kernel data structures in a
-> predictable state. This makes it harder for an attacker to "win" race
-> conditions against various kernel data structures. This change
-> compliments other kernel hardening changes such as the changes you've
-> referenced above. Focusing on one particular exploit somewhat misses
-> the point of this change.
->
-> >
-> > So I started by trying to reproduce [3] by building 4.5.1 with a
-> > .config with no robustness features and I booted it on fedora-32 or
-> > gentoo userland and I cannot even invoke call_usermodehelper. Calling
-> > socket(22, AF_INET, 0) won't invoke such function. Can you reproduce
-> > on 4.5.1? Which kernel .config should I use to build 4.5.1 in order
-> > for call_usermodehelper to be invoked by the exploit? Could you help
-> > to verify it?
->
-> I haven't tried to verify this myself. I wonder if the usermode
-> hardening changes also impacted this exploit? See
-> https://lkml.org/lkml/2017/1/16/468
->
-> But again, focusing on an exploit, which is inherently fragile in
-> nature and dependent on the state of the kernel tree at a particular
-> time, is unlikely to be useful to analyze this patch.
->
-> >
-> > It even has uninitialized variable spawning random perrors so it
-> > doesn't give a warm fuzzy feeling:
-> >
-> > =3D=3D=3D=3D
-> > int main(int argc, char **argv) {
-> >         void *region, *map;
-> >                       ^^^^^
-> >         pthread_t uffd_thread;
-> >         int uffd, msqid, i;
-> >
-> >         region =3D (void *)mmap((void *)0x40000000, 0x2000, PROT_READ|P=
-ROT_WRITE,
-> >                                MAP_FIXED|MAP_PRIVATE|MAP_ANON, -1, 0);
-> >
-> >         if (!region) {
-> >                 perror("mmap");
-> >                 exit(2);
-> >         }
-> >
-> >         setup_pagefault(region + 0x1000, 0x1000, 1);
-> >
-> >         printf("my pid =3D %d\n", getpid());
-> >
-> >         if (!map) {
-> >         ^^^^^^^^
-> >                 perror("mmap");
-> > =3D=3D=3D=3D
-> >
-> > The whole point of being able to reproduce on 4.5.1 is then to
-> > simulate if the same exploit would also reproduce on current kernels
-> > with all enterprise default robustness features enabled. Or did
-> > anybody already verify it?
-> >
-> > Anyway the links I was playing with are all in the cover letter, the
-> > cover letter is not as important as the actual patches. The actual
-> > patches looks fine to me.
->
-> That's great to hear.
->
-> >
-> > The only improvement I can think of is, what about to add a
-> > printk_once to suggest to toggle the sysctl if userfaultfd bails out
-> > because the process lacks the CAP_SYS_PTRACE capability? That would
-> > facilitate the /etc/sysctl.conf or tuned tweaking in case the apps
-> > aren't verbose enough.
-> >
-> > It's not relevant anymore with this latest patchset, but about the
-> > previous argument that seccomp couldn't be used in all Android
-> > processes because of performance concern, I'm slightly confused.
->
-> Seccomp causes more problems than just performance. Seccomp is not
-> designed for whole-of-system protections. Please see my other writeup
-> at https://lore.kernel.org/lkml/CAFJ0LnEo-7YUvgOhb4pHteuiUW+wPfzqbwXUCGAA=
-35ZMx11A-w@mail.gmail.com/
->
-> >
-> > https://android-developers.googleblog.com/2017/07/seccomp-filter-in-and=
-roid-o.html
-> >
-> > "Android O includes a single seccomp filter installed into zygote, the
-> > process from which all the Android applications are derived. Because
-> > the filter is installed into zygote=E2=80=94and therefore all apps=E2=
-=80=94the Android
-> > security team took extra caution to not break existing apps"
-> >
-> > Example:
-> >
-> > $ uname -mo
-> > aarch64 Android
-> > $ cat swapoff.c
-> > #include <sys/swap.h>
-> >
-> > int main()
-> > {
-> >         swapoff("");
-> > }
-> > $ gcc swapoff.c -o swapoff -O2
-> > $ ./swapoff
-> > Bad system call
-> > $
-> >
-> > It's hard to imagine what is more performance critical than the zygote
-> > process and the actual apps as above?
-> >
-> > It's also hard to imagine what kind of performance concern can arise
-> > by adding seccomp filters also to background system apps that
-> > generally should consume ~0% of CPU.
-> >
-> > If performance is really a concern, the BPF JIT representation with
-> > the bitmap to be able to run the filter in O(1) sounds a better
-> > solution than not adding ad-hoc filters and it's being worked on for
-> > x86-64 and can be ported to aarch64 too. Many of the standalone
-> > background processes likely wouldn't even use uffd at all so you could
-> > block the user initiated faults too that way.
-> >
-> > Ultimately because of issues as [3] (be them still relevant or not, to
-> > be double checked), no matter if through selinux, seccomp or a
-> > different sysctl value, without this patchset applied the default
-> > behavior of the userfaultfd syscall for all Linux binaries running on
-> > Android kernels, would deviate from the upstream kernel. So even if we
-> > would make the pipe mutex logic more complex the deviation would
-> > remain. Your patchset adds much less risk of breakage than adding a
-> > timeout to kernel initiated userfaults and it resolves all concerns as
-> > well as a timeout. We'll also make better use of the "0" value this
-> > way. So while I'm not certain this is the best for the long term, this
-> > looks the sweet spot for the short term to resolve many issues at
-> > once.
-> >
-> > Thanks!
-> > Andrea
-> >
->
->
-> --
-> Nick Kralevich | nnk@google.com
+Hi Tushar,
 
-Hi Andrea,
+On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
+> ima_match_rule_data() permits the func to pass empty func_data.
+> For instance, for the following func, the func_data keyrings= is
+> optional.
+>     measure func=KEY_CHECK keyrings=.ima
+> 
+> But a new func in future may want to constrain the func_data to
+> be non-empty.  ima_match_rule_data() should support this constraint
+> and it shouldn't be hard-coded in ima_match_rule_data().
+> 
+> Update ima_match_rule_data() to conditionally allow empty func_data
+> for the func that needs it.
+> 
+> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
 
-Did you get a chance to go through Nick's reply to your questions?
-Also, I sent another revision of this patch series which takes care of
-the printk that you suggested. Please take a look.
+Policy rules may constrain what is measured, but that decision should
+be left to the system owner or admin.
+
+Mimi
+
