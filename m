@@ -2,205 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4B1295759
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:38:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0023929575D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:41:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507584AbgJVEiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:38:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55082 "EHLO
+        id S2507598AbgJVElx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:41:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444118AbgJVEiv (ORCPT
+        with ESMTP id S2502378AbgJVElw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:38:51 -0400
-Received: from mail-yb1-xb4a.google.com (mail-yb1-xb4a.google.com [IPv6:2607:f8b0:4864:20::b4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BD23C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:38:51 -0700 (PDT)
-Received: by mail-yb1-xb4a.google.com with SMTP id a12so455559ybc.20
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:38:51 -0700 (PDT)
+        Thu, 22 Oct 2020 00:41:52 -0400
+Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA394C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
+Received: by mail-pj1-x1044.google.com with SMTP id b6so278069pju.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=3UykBvsQ09dE5s+oiOG4eNmRYLZ38L3j98qXIP/unS4=;
-        b=uLYVEaKQNGAqWRlKq8Dk8YFTT0JFmMdelpifOaQfFW60zfqH01R8RBCgZ7UOz/idmv
-         5owh98r7v0rHMUzZ+1581jsLytkJ6vYu9l0BAImoPDgOYcs+vNHeb5aty9UhBa7vsvJq
-         zJDcprbJ573cCBDG7J2BjiBLbJ8nO4Hl40a9smUfNgfWv3ZHB6JRXxEu/PZF8SQGnzhq
-         bNVanQ0jQAvo7yWcOotQJoyK3o9S1XHj5uPkIAkiJ0V+84dJoKF8WSDFphv9aOxEjjkE
-         OeJSSVCYjrdk7OwISuqQRh1XFv2KVebUAwB4HV2n6tEkHBy5a5G6e9b/ysucC+MozLeT
-         o5UA==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=7cJzNVPTTZFNbgG47IvnfLgtVfjxwapjyKuc8PcpjN4=;
+        b=xZGB1UcW7HN6Va9qQ5hUDPjWcLDkfHdquLwX9mzPkfbp7sqA4ieXHrOO8Xv9UExSlB
+         kg54dI+rO/lxFGuS9tynSpcn88hn/CKZxYcKENgSuoM0rrmCBM2frmv+DgxMi8+fX2/S
+         50ck3oFdYYFz0Yw4EriYJFi417ikDO8yXpiNUQbkAopYoQlQONi5TuBI/9qK/o1/zXfW
+         xVKNG9Cuwuhjtwf9h6a5WNbA6m+Y1a82X5gh93CgF/i7KGlbOiwtYBApGm43fS3rKZWe
+         GcEHDp1lYOGf9mt2CelCqCo2wspbHTiuWjk1i+4mxGpOX0WWtx5tKZMT0m+qpHWnti8k
+         TwKA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=3UykBvsQ09dE5s+oiOG4eNmRYLZ38L3j98qXIP/unS4=;
-        b=dFJF6KKg4LUl++UDim4oSD4R0ZeCLRIBmpbJEv4AkESGFqtHpwkWj9bj7hSe+zUDwZ
-         gEW4JqQT1oBblobTsVJATL4yMykvlBiIzzPg5aYN/sHgv4n0Q6myCwrOnOoS+wyTYhMU
-         CciNIRZ4D8CMwTktqEFY0+GE7vpCcvXoCIOSm6Jlm7upTK9FJJ82mCJfyQROP+SmXz62
-         qXn5sng5wao0zbU3DoHtJBewAPu93xdZpikzqrLCwej4A0PFHX1AFI91eCt+ES7EXZoA
-         wBUnvcc0G+UFzHm3uBpIfsBue+5kLcJThubH0OgFyD7sZbe0mywy/CCtbJzqUTfte5LW
-         sr1Q==
-X-Gm-Message-State: AOAM530vAWDJg0aWpMb45Pn46OYwbXCGkNUZcWh+nAyRAozMBAJ2hMVu
-        o/hAvDCXXFuFv9B9BBioCM4TpLfJk08KUG7zWFSRI1y6h/a5nrHM3MdImukBxbMltt2xIpMhEd0
-        TIZu9zO05Ck61gV6msJs0MT8hXuLs1aC8oQ36ac3CApntFu+ahfeS8B5dR3TgrYbnshb9dtTx
-X-Google-Smtp-Source: ABdhPJyAQkCoWPKqbYXld7YyQSbTiqQNSTcmFSw+vZxAjk0IQh255RJzIgPxppNvL032BvQKFSZpuEziDZn/
-Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
-X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
- (user=furquan job=sendgmr) by 2002:a25:4c1:: with SMTP id 184mr833541ybe.318.1603341530642;
- Wed, 21 Oct 2020 21:38:50 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 21:38:36 -0700
-In-Reply-To: <CAEGmHFGDLvySk83Y8n_NdPEqAvNSVCnjt++eWQ5sMFRuzJ19dA@mail.gmail.com>
-Message-Id: <20201022043836.1120024-1-furquan@google.com>
-Mime-Version: 1.0
-References: <CAEGmHFGDLvySk83Y8n_NdPEqAvNSVCnjt++eWQ5sMFRuzJ19dA@mail.gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v2] firmware: gsmi: Drop the use of dma_pool_* API functions
-From:   Furquan Shaikh <furquan@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Ard Biesheuvel <ardb@kernel.org>, dlaurie@google.com,
-        Furquan Shaikh <furquan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=7cJzNVPTTZFNbgG47IvnfLgtVfjxwapjyKuc8PcpjN4=;
+        b=WeFMLGjG7Rth3WPox4PKIiy3/OzTEN3frmtuCZTeYVUw48Fn7scmZw5CfDuj+O35Lh
+         0Y4+/iv9jq3kEIhY5U1G9FpO82UT+frpOakwyzyubEEujdxTgADyFpl5iKsy4MDL125y
+         mxnfhv6xjjdltn7ZkFt+sctfts51YwIhPl9/wFpLBikie8vZvCe1PuPeBLZ8LKwIL3vW
+         IX3/FcS5AwNxGkHLYFfDmTjqONsEuZGZq3+a7RYrlW6AhLfKcYI4nMxBaqWp8s/n8Ggx
+         JGQ5VaeL/cMMRAFUIph473iEmoome84XuVCXZkgvhzqnYTCWR7hrnBaKTsH5DIbXX+p5
+         qGRg==
+X-Gm-Message-State: AOAM533Y5o1Oq0QV/PySYDcpH7k3JD3siRPxbkGVon6xFq9wHbcCs7Si
+        waa3pyNXYMyWpbLdW/v5r7Dx+g==
+X-Google-Smtp-Source: ABdhPJy7Kz2kXU/0CPE+lAJ2lEmZJm3/kX8MrWizdVmhljhiSlm0s7h+wYVIwi15OCd/hOgvbZMRKA==
+X-Received: by 2002:a17:902:b111:b029:d4:cf7c:2ff1 with SMTP id q17-20020a170902b111b02900d4cf7c2ff1mr736017plr.59.1603341712084;
+        Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id w6sm478127pgw.28.2020.10.21.21.41.49
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Oct 2020 21:41:51 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 10:11:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022044146.4n2jl6jzyycfhfzg@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201021121950.GF2628@hirez.programming.kicks-ass.net>
+ <20201021131026.GY2651@hirez.programming.kicks-ass.net>
+ <6145907.dAfbsivgMF@kreacher>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6145907.dAfbsivgMF@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GSMI driver uses dma_pool_* API functions for buffer allocation
-because it requires that the SMI buffers are allocated within 32-bit
-physical address space. However, this does not work well with IOMMU
-since there is no real device and hence no domain associated with the
-device.
+On 21-10-20, 20:11, Rafael J. Wysocki wrote:
+> On Wednesday, October 21, 2020 3:10:26 PM CEST Peter Zijlstra wrote:
+> > On Wed, Oct 21, 2020 at 02:19:50PM +0200, Peter Zijlstra wrote:
+> > > On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
+> > > > Prior to 5.8, my machine was using intel_pstate and had few background
+> > > > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
+> > > > the kernel decided that intel_cpufreq would be more appropriate, which
+> > > > introduced kworkers every 0.004 seconds on all cores.
+> > > 
+> > > That still doesn't make any sense. Are you running the legacy on-demand
+> > > thing or something?
+> > > 
+> > > Rafael, Srinivas, Viresh, how come it defaults to that?
+> > 
+> > Does we want something like this?
+> > 
+> > ---
+> >  arch/x86/configs/i386_defconfig   | 3 +--
+> >  arch/x86/configs/x86_64_defconfig | 3 +--
+> >  drivers/cpufreq/Kconfig           | 7 +++++--
+> >  3 files changed, 7 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
+> > index 78210793d357..c343ad459737 100644
+> > --- a/arch/x86/configs/i386_defconfig
+> > +++ b/arch/x86/configs/i386_defconfig
+> > @@ -41,8 +41,7 @@ CONFIG_PM_DEBUG=y
+> >  CONFIG_PM_TRACE_RTC=y
+> >  CONFIG_ACPI_DOCK=y
+> >  CONFIG_ACPI_BGRT=y
+> > -CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+> > -CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+> > +CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
+> >  CONFIG_X86_ACPI_CPUFREQ=y
+> >  CONFIG_EFI_VARS=y
+> >  CONFIG_KPROBES=y
+> > diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
+> > index 9936528e1939..23e1ea85c1ec 100644
+> > --- a/arch/x86/configs/x86_64_defconfig
+> > +++ b/arch/x86/configs/x86_64_defconfig
+> > @@ -38,8 +38,7 @@ CONFIG_PM_DEBUG=y
+> >  CONFIG_PM_TRACE_RTC=y
+> >  CONFIG_ACPI_DOCK=y
+> >  CONFIG_ACPI_BGRT=y
+> > -CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
+> > -CONFIG_CPU_FREQ_GOV_ONDEMAND=y
+> > +CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
+> >  CONFIG_X86_ACPI_CPUFREQ=y
+> >  CONFIG_IA32_EMULATION=y
+> >  CONFIG_EFI_VARS=y
+> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+> > index 2c7171e0b001..8dfca6e9b836 100644
+> > --- a/drivers/cpufreq/Kconfig
+> > +++ b/drivers/cpufreq/Kconfig
+> > @@ -37,8 +37,7 @@ config CPU_FREQ_STAT
+> >  choice
+> >  	prompt "Default CPUFreq governor"
+> >  	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
+> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
+> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
+> > +	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if SMP
+> >  	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
+> >  	help
+> >  	  This option sets which CPUFreq governor shall be loaded at
+> > @@ -71,6 +70,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
+> >  
+> >  config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+> >  	bool "ondemand"
+> > +	depends on !SMP
+> >  	select CPU_FREQ_GOV_ONDEMAND
+> >  	select CPU_FREQ_GOV_PERFORMANCE
+> >  	help
+> > @@ -83,6 +83,7 @@ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+> >  
+> >  config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
+> >  	bool "conservative"
+> > +	depends on !SMP
+> >  	select CPU_FREQ_GOV_CONSERVATIVE
+> >  	select CPU_FREQ_GOV_PERFORMANCE
+> >  	help
+> 
+> The changes above should work.
+> 
+> > @@ -144,6 +145,7 @@ config CPU_FREQ_GOV_USERSPACE
+> >  
+> >  config CPU_FREQ_GOV_ONDEMAND
+> >  	tristate "'ondemand' cpufreq policy governor"
+> > +	depends on !SMP
+> 
+> But I don't think that we can do this and the one below.
 
-Since this is not a real device, it does not require any device
-address(IOVA) for the buffer allocations. The only requirement is to
-ensure that the physical address allocated to the buffer is within
-32-bit physical address space. This is because the buffers have
-nothing to do with DMA at all. It is required for communication with
-firmware executing in SMI mode which has access only to the bottom
-4GiB of memory. Hence, this change switches to using a SLAB cache
-created with SLAB_CACHE_DMA32 that guarantees that the allocation
-happens from the DMA32 memory zone. All calls to dma_pool_* are
-replaced with kmem_cache_*.
+I have exactly the same comments.
 
-In addition to that, all the code for managing the dma_pool for GSMI
-platform device is dropped.
+> >  	select CPU_FREQ_GOV_COMMON
+> >  	help
+> >  	  'ondemand' - This driver adds a dynamic cpufreq policy governor.
+> > @@ -163,6 +165,7 @@ config CPU_FREQ_GOV_ONDEMAND
+> >  config CPU_FREQ_GOV_CONSERVATIVE
+> >  	tristate "'conservative' cpufreq governor"
+> >  	depends on CPU_FREQ
+> > +	depends on !SMP
+> >  	select CPU_FREQ_GOV_COMMON
+> >  	help
+> >  	  'conservative' - this driver is rather similar to the 'ondemand'
+> > 
+> 
+> 
+> 
 
-Signed-off-by: Furquan Shaikh <furquan@google.com>
----
-Changelog since v1:
-- Switched to using SLAB cache with SLAB_CACHE_DMA32.
-- Added comment to code and commit message explaining the reason for
-using DMA32 memory zone.
-
- drivers/firmware/google/gsmi.c | 38 +++++++++++++++++++++++-----------
- 1 file changed, 26 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-index 7d9367b22010..092d8cb209a3 100644
---- a/drivers/firmware/google/gsmi.c
-+++ b/drivers/firmware/google/gsmi.c
-@@ -17,7 +17,6 @@
- #include <linux/string.h>
- #include <linux/spinlock.h>
- #include <linux/dma-mapping.h>
--#include <linux/dmapool.h>
- #include <linux/fs.h>
- #include <linux/slab.h>
- #include <linux/ioctl.h>
-@@ -85,7 +84,6 @@
- struct gsmi_buf {
- 	u8 *start;			/* start of buffer */
- 	size_t length;			/* length of buffer */
--	dma_addr_t handle;		/* dma allocation handle */
- 	u32 address;			/* physical address of buffer */
- };
- 
-@@ -97,7 +95,7 @@ static struct gsmi_device {
- 	spinlock_t lock;		/* serialize access to SMIs */
- 	u16 smi_cmd;			/* SMI command port */
- 	int handshake_type;		/* firmware handler interlock type */
--	struct dma_pool *dma_pool;	/* DMA buffer pool */
-+	struct kmem_cache *mem_pool;	/* kmem cache for gsmi_buf allocations */
- } gsmi_dev;
- 
- /* Packed structures for communicating with the firmware */
-@@ -157,14 +155,20 @@ static struct gsmi_buf *gsmi_buf_alloc(void)
- 	}
- 
- 	/* allocate buffer in 32bit address space */
--	smibuf->start = dma_pool_alloc(gsmi_dev.dma_pool, GFP_KERNEL,
--				       &smibuf->handle);
-+	smibuf->start = kmem_cache_alloc(gsmi_dev.mem_pool, GFP_KERNEL);
- 	if (!smibuf->start) {
- 		printk(KERN_ERR "gsmi: failed to allocate name buffer\n");
- 		kfree(smibuf);
- 		return NULL;
- 	}
- 
-+	if ((u64)virt_to_phys(smibuf->start) >> 32) {
-+		printk(KERN_ERR "gsmi: allocation not within 32-bit physical address space\n");
-+		kfree(smibuf->start);
-+		kfree(smibuf);
-+		return NULL;
-+	}
-+
- 	/* fill in the buffer handle */
- 	smibuf->length = GSMI_BUF_SIZE;
- 	smibuf->address = (u32)virt_to_phys(smibuf->start);
-@@ -176,8 +180,7 @@ static void gsmi_buf_free(struct gsmi_buf *smibuf)
- {
- 	if (smibuf) {
- 		if (smibuf->start)
--			dma_pool_free(gsmi_dev.dma_pool, smibuf->start,
--				      smibuf->handle);
-+			kmem_cache_free(gsmi_dev.mem_pool, smibuf->start);
- 		kfree(smibuf);
- 	}
- }
-@@ -914,9 +917,20 @@ static __init int gsmi_init(void)
- 	spin_lock_init(&gsmi_dev.lock);
- 
- 	ret = -ENOMEM;
--	gsmi_dev.dma_pool = dma_pool_create("gsmi", &gsmi_dev.pdev->dev,
--					     GSMI_BUF_SIZE, GSMI_BUF_ALIGN, 0);
--	if (!gsmi_dev.dma_pool)
-+
-+	/*
-+	 * SLAB cache is created using SLAB_CACHE_DMA32 to ensure that the
-+	 * allocations for gsmi_buf come from the DMA32 memory zone. These
-+	 * buffers have nothing to do with DMA. They are required for
-+	 * communication with firmware executing in SMI mode which can only
-+	 * access the bottom 4GiB of physical memory. Since DMA32 memory zone
-+	 * guarantees allocation under the 4GiB boundary, this driver creates
-+	 * a SLAB cache with SLAB_CACHE_DMA32 flag.
-+	 */
-+	gsmi_dev.mem_pool = kmem_cache_create("gsmi", GSMI_BUF_SIZE,
-+					      GSMI_BUF_ALIGN,
-+					      SLAB_CACHE_DMA32, NULL);
-+	if (!gsmi_dev.mem_pool)
- 		goto out_err;
- 
- 	/*
-@@ -1032,7 +1046,7 @@ static __init int gsmi_init(void)
- 	gsmi_buf_free(gsmi_dev.param_buf);
- 	gsmi_buf_free(gsmi_dev.data_buf);
- 	gsmi_buf_free(gsmi_dev.name_buf);
--	dma_pool_destroy(gsmi_dev.dma_pool);
-+	kmem_cache_destroy(gsmi_dev.mem_pool);
- 	platform_device_unregister(gsmi_dev.pdev);
- 	pr_info("gsmi: failed to load: %d\n", ret);
- #ifdef CONFIG_PM
-@@ -1057,7 +1071,7 @@ static void __exit gsmi_exit(void)
- 	gsmi_buf_free(gsmi_dev.param_buf);
- 	gsmi_buf_free(gsmi_dev.data_buf);
- 	gsmi_buf_free(gsmi_dev.name_buf);
--	dma_pool_destroy(gsmi_dev.dma_pool);
-+	kmem_cache_destroy(gsmi_dev.mem_pool);
- 	platform_device_unregister(gsmi_dev.pdev);
- #ifdef CONFIG_PM
- 	platform_driver_unregister(&gsmi_driver_info);
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+viresh
