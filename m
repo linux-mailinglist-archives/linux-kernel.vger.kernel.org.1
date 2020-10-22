@@ -2,184 +2,864 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D5E092965E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CDF7B2965E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:22:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371527AbgJVUVP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:21:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59750 "EHLO
+        id S371542AbgJVUWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:22:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60010 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900684AbgJVUVO (ORCPT
+        with ESMTP id S2895520AbgJVUWz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:21:14 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7B740C0613CE;
-        Thu, 22 Oct 2020 13:21:14 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id h6so1670682pgk.4;
-        Thu, 22 Oct 2020 13:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:references:from:autocrypt:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=MUABHTo8c9uOImxn+y4JV6VMKdZ2jeMar1DhJ+I4AnA=;
-        b=FHKajqHCjw/EmG3UHJokeMbeA5ISmpqkwyYGWIpa0n5hz4OgdtzE9M1igNvWzIGWYI
-         pTIjDNIWcTO3cAjAcR6cjSAArP0FutPRZFyU2Fazn845CAzhPkX9kn2s9YtG1TbkDBPp
-         1I2LelUfxTpfS5IvSuCc3/nEbM0VAZemPvkXo1ViWcUUafAQcX+H4+o/B0DZCQEdGrC7
-         +r/fJF+lZtwXatQQjvmnhfTn6ELxRJ3XuQoD8lB4OtNUrWpyvWEBK3Fdp2zsry++lj94
-         2HVrftD/2pfbRL900Y4JX3UNc2uOrbYmDCYhL/vxo53Zu9UZwJH/XNIK9lU8BtuCXc7d
-         VIbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:references:from:autocrypt:message-id
-         :date:user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=MUABHTo8c9uOImxn+y4JV6VMKdZ2jeMar1DhJ+I4AnA=;
-        b=st3svtG1d0hJp9OHB/zoeotWn964vZmiETCMWEpXhy800jTZKcq6/YvMvuQ1OJLDy8
-         L99GxfEDgzgOK5qbsTxZQeJEsH077iLql0NAbvbIkbrNhWwYiw9kPp+lgbjgP4eQazE9
-         pAP5DXxCyQAKXdgighGSnpo12TBGKgcRR5HuntbD5ZkGpJQJpStZ3rGtfjG0sqlU7Mb/
-         Tgz3KBT3ed1QBwC3gH90lqt5PMlzKRIklOK96KkxXfeECUGITZzdF7THe2QBr9IV5fus
-         +bT3C+4i8M3AWRnZEmNSyqGxw6Ao4B0lrbWHjL3N/yDHmg8IqYQYKwKI82NwnkIgetYe
-         oA9w==
-X-Gm-Message-State: AOAM532RFZz8IQCf8lapNynI/Fh6i2wjsjOhn/eS5GthqeuuOk/bfpUC
-        ERFHeYQctDQe3T6ELjBsDAwJUh/S2w8=
-X-Google-Smtp-Source: ABdhPJyoT9nr8O23nSGQnYqJsgKs8krRC7tKFiJAIKegTjuY7+RX1Io/uEVa01kjCXL6Ki1PhIWxOw==
-X-Received: by 2002:a17:90a:109:: with SMTP id b9mr4093128pjb.35.1603398073442;
-        Thu, 22 Oct 2020 13:21:13 -0700 (PDT)
-Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id lf11sm2825337pjb.57.2020.10.22.13.21.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 13:21:12 -0700 (PDT)
-Subject: Re: [PATCH] ARM: dts: BCM5301X: Linksys EA9500 add port 5 and port 7
-To:     Vivek Unune <npcomplete13@gmail.com>,
-        florian.fainelli@broadcom.com, Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <cover.1602701516.git.npcomplete13@gmail.com>
- <c51b1d53c9411a4321ddcb1dbcdb0a42945b23c4.1602701516.git.npcomplete13@gmail.com>
- <20201022201656.GA240761@ubuntu>
-From:   Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
- 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
- M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <fc925a63-2caf-92d6-8e60-1cdb6f0d4c6d@gmail.com>
-Date:   Thu, 22 Oct 2020 13:21:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Oct 2020 16:22:55 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5EE90C0613CE;
+        Thu, 22 Oct 2020 13:22:54 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 09MKLXoF092159;
+        Thu, 22 Oct 2020 22:21:33 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 09MKLWN6002728;
+        Thu, 22 Oct 2020 22:21:33 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 09MKLWmY002725;
+        Thu, 22 Oct 2020 22:21:32 +0200
+X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Pavel Machek <pavel@ucw.cz>,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>
+Subject: Re: [PATCH v6 3/6] can: ctucanfd: add support for CTU CAN FD open-source IP core - bus independent part.
+Date:   Thu, 22 Oct 2020 22:21:31 +0200
+User-Agent: KMail/1.9.10
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Petr Porazil <porazil@pikron.com>,
+        Drew Fustini <pdp7pdp7@gmail.com>
+References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz> <886a8e0749e0521bf83a88313008a3f38031590b.1603354744.git.pisa@cmp.felk.cvut.cz> <20201022110213.GC26350@duo.ucw.cz>
+In-Reply-To: <20201022110213.GC26350@duo.ucw.cz>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-In-Reply-To: <20201022201656.GA240761@ubuntu>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Type: Text/Plain;
+  charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202010222221.31952.pisa@cmp.felk.cvut.cz>
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 09MKLXoF092159
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-0.099, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
+        NICE_REPLY_A -0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00,
+        URIBL_BLOCKED 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1604002896.0371@YIrqIaPFEAgKEUsQ68uedw
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 1:16 PM, Vivek Unune wrote:
-> On Wed, Oct 14, 2020 at 03:27:27PM -0400, Vivek Unune wrote:
->> Add ports 5 and 7 which are connected to gmac cores 1 & 2.
->> These will be disabled for now.
->>
->> Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
->> ---
->>  .../boot/dts/bcm47094-linksys-panamera.dts    | 24 +++++++++++++++++++
->>  1 file changed, 24 insertions(+)
->>
->> diff --git a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
->> index 9fcd215177d7..0ff502d5aa0c 100644
->> --- a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
->> +++ b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
->> @@ -242,6 +242,30 @@ port@4 {
->>  			label = "wan";
->>  		};
->>  
->> +		port@5 {
->> +			reg = <5>;
->> +			ethernet = <&gmac0>;
->> +			label = "cpu";
->> +			status = "disabled";
->> +
->> +			fixed-link {
->> +				speed = <1000>;
->> +				full-duplex;
->> +			};
->> +		};
->> +
->> +		port@7 {
->> +			reg = <7>;
->> +			ethernet = <&gmac1>;
->> +			label = "cpu";
->> +			status = "disabled";
->> +
->> +			fixed-link {
->> +				speed = <1000>;
->> +				full-duplex;
->> +			};
->> +		};
->> +
->>  		port@8 {
->>  			reg = <8>;
->>  			ethernet = <&gmac2>;
->> -- 
->> 2.25.1
->>
-> 
-> Any feedback? 
+Hello Pavel,
 
-Going through my queue of patches, I should be able to apply this patch
-soon.
--- 
-Florian
+thanks for review.
+
+For everybody: the amount of code, analyses etc. is really huge.
+If you do not have time and consider this discussion as lost of your
+time and or badwidth send me a note. I will remove your from the
+recipients list and if you think that some lists should be omitted
+as well, please give me notice too. Same if you want to receive
+only final resolutions, patches when they pass through some
+of the lists.
+
+On Thursday 22 of October 2020 13:02:13 Pavel Machek wrote:
+> Hi!
+>
+> > From: Martin Jerabek <martin.jerabek01@gmail.com>
+> >
+> > This driver adds support for the CTU CAN FD open-source IP core.
+> > More documentation and core sources at project page
+> > (https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core).
+> > The core integration to Xilinx Zynq system as platform driver
+> > is available
+> > (https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top).
+> > Implementation on Intel FGA based PCI Express board is available from
+> > project (https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd).
+>
+> Is "FGA" a typo? Yes, it is.
+
+Done, thanks for catching.
+
+I really need to force some of other people from the project
+and follow up project to read all original Matin Jerabek's
+and mine texts. I am blind to many of these typos as I see
+same text many times.
+
+> Anyway, following link tells me:
+>
+> Project 'canbus/pcie-ctu_can_fd' was moved to
+> 'canbus/pcie-ctucanfd'. Please update any links and bookmarks that may
+> still have the old path. Fixing it in Kconfig is more important.
+
+Done, move is result of some more steps to name unification.
+
+> > +++ b/drivers/net/can/ctucanfd/Kconfig
+> > @@ -0,0 +1,15 @@
+> >
+> > +if CAN_CTUCANFD
+> > +
+> > +endif
+>
+> Empty -> drop?
+
+Considering as appropriate after other patches comments read.
+If you have other idea for patches series build give me a hint.
+
+> > +++ b/drivers/net/can/ctucanfd/Makefile
+> > @@ -0,0 +1,7 @@
+> > +# SPDX-License-Identifier: GPL-2.0-only
+> >
+> > +++ b/drivers/net/can/ctucanfd/ctu_can_fd.c
+> > @@ -0,0 +1,1105 @@
+> > +// SPDX-License-Identifier: GPL-2.0-or-later
+>
+> Having Makefile and sources with different licenses is rather unusual.
+
+Makefile changed to GPL-2.0-or-later.
+I do not consider use of Linux specific Makefile outside
+GPL 2 only Linux kernel tree. But C sources are important
+for us even in userspace tests and possible future projects. 
+
+> > +static const char * const ctucan_state_strings[] = {
+> > +	"CAN_STATE_ERROR_ACTIVE",
+> > +	"CAN_STATE_ERROR_WARNING",
+> > +	"CAN_STATE_ERROR_PASSIVE",
+> > +	"CAN_STATE_BUS_OFF",
+> > +	"CAN_STATE_STOPPED",
+> > +	"CAN_STATE_SLEEPING"
+> > +};
+>
+> Put this near function that uses this?
+
+I prefer defines at start of the file, but I agree that in this
+case it is different case and used only in ctucan_state_to_str .
+I would prefer to move function up after array.
+
+> > +/**
+> > + * ctucan_set_bittiming - CAN set bit timing routine
+> > + * @ndev:	Pointer to net_device structure
+> > + *
+> > + * This is the driver set bittiming routine.
+> > + * Return: 0 on success and failure value on error
+> > + */
+> >
+> > +/**
+> > + * ctucan_chip_start - This routine starts the driver
+> > + * @ndev:	Pointer to net_device structure
+> > + *
+> > + * This is the drivers start routine.
+> > + *
+> > + * Return: 0 on success and failure value on error
+> > + */
+>
+> Good documentation is nice, but repeating "This routine starts the
+> driver" in "This is the drivers start routine." is not too helpful.
+
+OK, initially probably more or less placeholder to add more infomation.
+I will remove it.
+
+> > +/**
+> > + * ctucan_start_xmit - Starts the transmission
+> > + * @skb:	sk_buff pointer that contains data to be Txed
+> > + * @ndev:	Pointer to net_device structure
+> > + *
+> > + * This function is invoked from upper layers to initiate transmission.
+> > This + * function uses the next available free txbuf and populates their
+> > fields to + * start the transmission.
+> > + *
+> > + * Return: %NETDEV_TX_OK on success and failure value on error
+> > + */
+>
+> Based on other documentation, I'd expect this to return -ESOMETHING on
+> error, but it returns NETDEV_TX_BUSY.
+
+I add information about explicit error/need for postpone type.
+
+> > +	/* Check if the TX buffer is full */
+> > +	if (unlikely(!CTU_CAN_FD_TXTNF(ctu_can_get_status(&priv->p)))) {
+> > +		netif_stop_queue(ndev);
+> > +		netdev_err(ndev, "BUG!, no TXB free when queue awake!\n");
+> > +		return NETDEV_TX_BUSY;
+> > +	}
+>
+> You call stop_queue() without spinlock...
+>
+> > +	spin_lock_irqsave(&priv->tx_lock, flags);
+> > +
+> > +	ctucan_hw_txt_set_rdy(&priv->p, txb_id);
+> > +
+> > +	priv->txb_head++;
+> > +
+> > +	/* Check if all TX buffers are full */
+> > +	if (!CTU_CAN_FD_TXTNF(ctu_can_get_status(&priv->p)))
+> > +		netif_stop_queue(ndev);
+> > +
+> > +	spin_unlock_irqrestore(&priv->tx_lock, flags);
+>
+> ...and then with spinlock held. One of them is buggy.
+
+I did not feel it that way initially. But may it be there is a problem.
+
+I expect that NET core does not invoke net_device_ops::ndo_start_xmit
+aka ctucan_start_xmit when previous invocation is in progress still.
+I think I have even checked it in the sources.
+So we can do check for free message buffer in hardware without
+locking. If there is no space we stop further transmit
+but then there is something wrong anyway, because when
+there was xmit started then there was already free space
+in hardware. So generally this is some fatal error in logic
+or hardware or driver. I hope that concurrent run of netif_wake_queue
+internal functions to ctucan_start_xmit is prevented by NET
+core logic and locking. So even if some buffer becomes free
+in meanwhile and invokes netif_wake_queue, it waits with
+next ctucan_start_xmit invocation till previous one
+finishes.
+
+Incorrect concurrence can happen if ctucan_hw_txt_set_rdy
+and frame transmission finishes before ctucan_start_xmit
+finishes. In such case there appear incorrect sequence
+of manipulation with hardware and counting occupied
+and free buffers. So buffer counting is protected
+by spinlock....
+
+If this is the last empty TX buffer filled by xmit then
+further xmit has to be stopped. So we call
+netif_stop_queue(ndev); In the theory, it can
+be called after spin lock release (if netif_wake_queue
+is synchronized). So if mine analysis is right then
+I can check HW for empty buffer under spinlock,
+keep result and call netif_stop_queue later.
+It seems that netif_stop_queue is called in other
+drivers with irq locks held. So there should not be
+a problem, netif_stop_queue locking is orthogonal
+to &priv->tx_lock which protects HW and slots
+counting.
+
+But if somebody can check and clarify that my idea
+is wrong or confirm, that moving out of spinlock
+section is correct way to go, I would be happy.
+Many CAN controllers use only single buffer for TX
+so they do not solve these conditions. These
+which solve more parallel Tx buffers seems to
+not prove me wrong according to my reading.
+
+> > +/**
+> > + * xcan_rx -  Is called from CAN isr to complete the received
+> > + *		frame processing
+> > + * @ndev:	Pointer to net_device structure
+> > + *
+> > + * This function is invoked from the CAN isr(poll) to process the Rx
+> > frames. It + * does minimal processing and invokes "netif_receive_skb" to
+> > complete further + * processing.
+> > + * Return: 1 on success and 0 on failure.
+> > + */
+>
+> Adapt to usual 0 / -EFOO?
+
+OK
+
+> > +	/* Check for Arbitration Lost interrupt */
+> > +	if (isr.s.ali) {
+> > +		if (dologerr)
+> > +			netdev_info(ndev, "  arbitration lost");
+> > +		priv->can.can_stats.arbitration_lost++;
+> > +		if (skb) {
+> > +			cf->can_id |= CAN_ERR_LOSTARB;
+> > +			cf->data[0] = CAN_ERR_LOSTARB_UNSPEC;
+> > +		}
+> > +	}
+> > +
+> > +	/* Check for Bus Error interrupt */
+> > +	if (isr.s.bei) {
+> > +		netdev_info(ndev, "  bus error");
+>
+> Missing "if (dologerr)" here?
+
+Intention was to left this one to appear without rate limit, it is really
+indication of bigger problem. But on the other hand without dologerr
+would be quite short/unclear, but does not overflow the log buffers...
+We would discuss what to do with my colleagues, suggestions welcomed.
+
+> > +static int ctucan_rx_poll(struct napi_struct *napi, int quota)
+> > +{
+> > +	struct net_device *ndev = napi->dev;
+> > +	struct ctucan_priv *priv = netdev_priv(ndev);
+> > +	int work_done = 0;
+> > +	union ctu_can_fd_status status;
+> > +	u32 framecnt;
+> > +
+> > +	framecnt = ctucan_hw_get_rx_frame_count(&priv->p);
+> > +	netdev_dbg(ndev, "rx_poll: %d frames in RX FIFO", framecnt);
+>
+> This will be rather noisy, right?
+
+It has use to debug during development but may be it should be removed
+or controlled by other option.
+
+> > +	/* Check for RX FIFO Overflow */
+> > +	status = ctu_can_get_status(&priv->p);
+> > +	if (status.s.dor) {
+> > +		struct net_device_stats *stats = &ndev->stats;
+> > +		struct can_frame *cf;
+> > +		struct sk_buff *skb;
+> > +
+> > +		netdev_info(ndev, "  rx fifo overflow");
+>
+> And this goes at different loglevel, which will be confusing?
+
+I add prefix there, this condition is more important to be noticed.
+
+> > +/**
+> > + * xcan_tx_interrupt - Tx Done Isr
+> > + * @ndev:	net_device pointer
+> > + */
+> > +static void ctucan_tx_interrupt(struct net_device *ndev)
+>
+> Mismatch between code and docs.
+
+Corrected.
+
+> > +	netdev_dbg(ndev, "%s", __func__);
+>
+> This is inconsistent with other debugging.... and perhaps it is time
+> to remove this kind of debugging for merge.
+
+OK
+
+> > +/**
+> > + * xcan_interrupt - CAN Isr
+> > + */
+> > +static irqreturn_t ctucan_interrupt(int irq, void *dev_id)
+>
+> Inconsistent.
+
+Corrected
+
+> > +		/* Error interrupts */
+> > +		if (isr.s.ewli || isr.s.fcsi || isr.s.ali) {
+> > +			union ctu_can_fd_int_stat ierrmask = { .s = {
+> > +				  .ewli = 1, .fcsi = 1, .ali = 1, .bei = 1 } };
+> > +			icr.u32 = isr.u32 & ierrmask.u32;
+>
+> We normally do bit arithmetics instead of this.
+
+This is attempt to use only HW definitions generated from registers definition 
+in IPXACT format
+
+https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core/-/blob/master/spec/CTU/ip/CAN_FD_IP_Core/2.1/CAN_FD_IP_Core.2.1.xml
+
+Which I consider as good option which should be preserved.
+I prefer to have only singe source of infomation
+which is kept with rest in automatic sync.
+
+> > +	{
+> > +		union ctu_can_fd_int_stat imask;
+> > +
+> > +		imask.u32 = 0xffffffff;
+> > +		ctucan_hw_int_ena_clr(&priv->p, imask);
+> > +		ctucan_hw_int_mask_set(&priv->p, imask);
+> > +	}
+>
+> More like this. Plus avoid block here...?
+
+Blocks is to document that imask is really local for these
+two lines, no need to look for it elsewhere in the function.
+But I can move declaration to start of the function.
+
+> > +/**
+> > + * ctucan_close - Driver close routine
+> > + * @ndev:	Pointer to net_device structure
+> > + *
+> > + * Return: 0 always
+> > + */
+>
+> You see, this is better. No need to say "Driver close routine"
+> twice. Now, make the rest consistent :-).
+>
+> > +EXPORT_SYMBOL(ctucan_suspend);
+> > +EXPORT_SYMBOL(ctucan_resume);
+>
+> _GPL?
+
+Should we be so strict??? Ondrej Ille can provide his opinion there.
+
+> And what kind of multi-module stuff are you doing that you need
+> symbols exported?
+>
+> > +int ctucan_probe_common(struct device *dev, void __iomem *addr, int irq,
+> > unsigned int ntxbufs, +			unsigned long can_clk_rate, int pm_enable_call,
+> > +			void (*set_drvdata_fnc)(struct device *dev, struct net_device *ndev))
+> > +{
+>
+> Splitting/simplifying this somehow would be good.
+
+This is attempt to hide the most of all other functions from bus integration
+modules. Prototype is not nice, but it is only one of a few function exported.
+The arguments can be passed through structure. May it be better???
+
+> > +/* Register descriptions: */
+> > +union ctu_can_fd_frame_form_w {
+> > +	uint32_t u32;
+>
+> u32, as you write elsewhere.
+
+I would be happy, if we can keep uint32_t there.
+The header files are generated from IPXACT and are intended to be used
+even outside of Linux kernel. I.e. QEMU
+
+https://git.qemu.org/?p=qemu.git;a=blob;f=hw/net/can/ctu_can_fd_regs.h
+
+Easy way to compare these together is great to keep consistency.
+Adaptation of generation tools to run in multiple modes would
+be overhead. So if the uint32_t type in HW definition
+is acceptable for Linux kernel it would save us lot of
+headaches and possible errors in the future.
+
+Enforce u32 in all other projects in form visible
+from this and other header files is problematic. 
+
+> > +	struct ctu_can_fd_frame_form_w_s {
+> > +#ifdef __LITTLE_ENDIAN_BITFIELD
+> > +  /* FRAME_FORM_W */
+> > +		uint32_t dlc                     : 4;
+> > +		uint32_t reserved_4              : 1;
+> > +		uint32_t rtr                     : 1;
+> > +		uint32_t ide                     : 1;
+> > +		uint32_t fdf                     : 1;
+> > +		uint32_t reserved_8              : 1;
+> > +		uint32_t brs                     : 1;
+> > +		uint32_t esi_rsv                 : 1;
+> > +		uint32_t rwcnt                   : 5;
+> > +		uint32_t reserved_31_16         : 16;
+> > +#else
+>
+> I believe you should simply avoid using bitfields.
+
+I would prefer style I have negotiated with my students for generated
+HW description for RTEMS TI TMS570 support
+
+  https://git.rtems.org/rtems/tree/bsps/arm/tms570/include/bsp/ti_herc/reg_dcan.h
+
+but Ondrej Ille argued that the macro names are long and you need more of them
+or ?: hack to encode filed position and its length. Which is correct arguments.
+There are more Linux kernel files using this style
+
+  grep -r  __LITTLE_ENDIAN_BITFIELD include
+
+so we agreed that it should be acceptable. Big and little endian part
+match is guaranteed because files are autogenerated.
+Actual access and move to bitfiled typed variable is done
+through right IO access functions and offsets are given by defines.
+So there are no registers HW access overlay structures used.
+
+> > +union ctu_can_fd_timestamp_l_w {
+> > +	uint32_t u32;
+> > +	struct ctu_can_fd_timestamp_l_w_s {
+> > +  /* TIMESTAMP_L_W */
+> > +		uint32_t time_stamp_31_0        : 32;
+> > +	} s;
+> > +};
+>
+> This is crazy.
+
+Hmmm, we can add special rules to tools to skip some special cases
+but actual files exactly math what is in documentation and VHDL
+sources and registers implementation. See page 61 / PDF 67 of
+
+  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
+
+Yes there is still space for improvements but we need to have
+acceptable base for already running applications.
+
+> > +union ctu_can_fd_data_5_8_w {
+> > +	uint32_t u32;
+> > +	struct ctu_can_fd_data_5_8_w_s {
+> > +#ifdef __LITTLE_ENDIAN_BITFIELD
+> > +  /* DATA_5_8_W */
+> > +		uint32_t data_5                  : 8;
+> > +		uint32_t data_6                  : 8;
+> > +		uint32_t data_7                  : 8;
+> > +		uint32_t data_8                  : 8;
+> > +#else
+> > +		uint32_t data_8                  : 8;
+> > +		uint32_t data_7                  : 8;
+> > +		uint32_t data_6                  : 8;
+> > +		uint32_t data_5                  : 8;
+> > +#endif
+> > +	} s;
+> > +};
+>
+> even more crazy.
+
+Data part other then DATA_1_4_W is not referenced from the driver.
+And yes, I would like more DATA_0_3_W etc... But question is indexing
+in the standards. I have tried to help the project to move into direction
+to be sustainable in our small team and enhance consistency.
+But we have not resources to start whole
+work from scratch again and due to effort into testing, analyses
+etc. it would be extremely hard to get into same state again.
+And I hope that there are not many really painfull limits for future
+enhancements.
+
+The design can be extended for 8 TX frames for examle. Above that there
+would be problem with atomic priority management. But this should be
+enough for most applications and if sequential stream at some priority
+is required then we can combine core with DMA. The same for RX.
+I plan DMA there. Actual design with SW controllable priorities
+allows us to maintain single TX FIFO but even more dynamic multiqueue
+FIFOs. I want to have time to experiment in these directions,
+but until the code is mainlined it would be really headache
+to keep additional features above base changing according to reviewer
+requests. So when there is this really simple minimal base for CAN/CAN FD
+functionality agreed upon then we want to develop extensions in more
+directions interresting for us and our applications.
+
+> > +#ifdef __KERNEL__
+> > +# include <linux/can/dev.h>
+> > +#else
+> > +/* The hardware registers mapping and low level layer should build
+> > + * in userspace to allow development and verification of CTU CAN IP
+> > + * core VHDL design when loaded into hardware. Debugging hardware
+> > + * from kernel driver is really difficult, leads to system stucks
+> > + * by error reporting etc. Testing of exactly the same code
+> > + * in userspace together with headers generated automatically
+> > + * generated from from IP-XACT/cactus helps to driver to hardware
+> > + * and QEMU emulation model consistency keeping.
+> > + */
+> > +# include "ctu_can_fd_linux_defs.h"
+> > +#endif
+>
+> Please remove non-kernel code for merge.
+
+This is only one line which allows us to run code test in userspace
+which is of big help to keep code consistent. This part of kernel
+driver sources is used during userspace test of hardware registers
+implemented right in each FPGA build run so it checks that SW
+and HW matches
+
+  https://gitlab.fel.cvut.cz/canbus/zynq/zynq-can-sja1000-top/-/jobs/73445
+
+See the line cantest/test_regtest.py::test_regtest PASSED
+
+If you confirm that it is really required to remove this single
+include ifdef then we remove it. But it would break our tooling
+and we have to patching during tests or keep in sync two versions
+of this C file which has to be prepared manually, it cannot be autogenerated,
+because it holds algorithmic description how to access structures
+defined by hardware.
+
+> > +void ctucan_hw_write32(struct ctucan_hw_priv *priv,
+> > +		       enum ctu_can_fd_can_registers reg, u32 val)
+> > +{
+> > +	iowrite32(val, priv->mem_base + reg);
+> > +}
+>
+> And get rid of this kind of abstraction layer.
+
+We need big and little endian support. This works and is tiny.
+I can try to switch to linux/regmap.h, but it seems to me as a monster
+and I do not understand it fully yet.
+
+MCAN uses similar approach, common part
+
+static inline u32 m_can_read(struct m_can_classdev *cdev, enum m_can_reg reg)
+{
+        return cdev->ops->read_reg(cdev, reg);
+}
+
+platform bus specific one
+
+static u32 iomap_read_reg(struct m_can_classdev *cdev, int reg)
+{
+        struct m_can_plat_priv *priv = cdev->device_data;
+
+        return readl(priv->base + reg);
+}
+
+So I think that it is not against actual conventions.
+
+When the CTU CAN FD IP core driver runs on big endian systems
+then PCI bus is usually still mapped little endian way but platform
+IP mapping is native big endian. Actual driver automatically decides
+according to CTU_CAN_FD_DEVICE_ID register read.
+
+> > +// TODO: rename or do not depend on previous value of id
+>
+> TODO: grep for TODO and C++ comments before attempting merge.
+
+That is my mistake, but some of these are really there for future
+development or cleanups, some only remarks. As I have said
+I do not consider projects as perfect or finished but as in
+state usable for broader community and when format is really
+agreed/accepted then we can continue. But I do not want waste
+my time to work above code base which has to be changed again
+and again. So there are much more TODOs in my head.
+
+> > +static bool ctucan_hw_len_to_dlc(u8 len, u8 *dlc)
+> > +{
+> > +	*dlc = can_len2dlc(len);
+> > +	return true;
+> > +}
+>
+> Compared to how well other code is documented... This one is voodoo.
+
+OK, I have invested lot of time after Marin Jerabek's submission of diploma
+theses to make code really documented etc.. I add there something
+even that it is really simple use of can_len2dlc. May it be, we can
+use that directly. It is Linux specific, but clean.
+
+> > +bool ctucan_hw_set_ret_limit(struct ctucan_hw_priv *priv, bool enable,
+> > u8 limit) +{
+> > +	union ctu_can_fd_mode_settings reg;
+> > +
+> > +	if (limit > CTU_CAN_FD_RETR_MAX)
+> > +		return false;
+> > +
+> > +	reg.u32 = priv->read_reg(priv, CTU_CAN_FD_MODE);
+> > +	reg.s.rtrle = enable ? RTRLE_ENABLED : RTRLE_DISABLED;
+> > +	reg.s.rtrth = limit & 0xF;
+> > +	priv->write_reg(priv, CTU_CAN_FD_MODE, reg.u32);
+> > +	return true;
+> > +}
+>
+> As elsewhere, I'd suggest 0/-ERRNO.
+
+Hmm, generally there is attempt to keep ctu_can_fd_hw.c dependant
+only on generated hardware description and independent of OS
+specific constructs. It helps its testing in other environments.
+Yes, there exists even Windows drier for other SkodaAuto
+project and CTU CAN FD integration which runs same ctu_can_fd_hw.c
+And it is the only part which directly depends on HW registers
+placement. We do not go typical direction of Windows code and then
+adaptation for Linux. We try to be OS agnostic in lowest level HW
+adaptation and provide minimal well matching driver which does
+not take care of generated sources.
+
+> > +void ctucan_hw_set_mode_reg(struct ctucan_hw_priv *priv,
+> > +			    const struct can_ctrlmode *mode)
+> > +{
+> > +	u32 flags = mode->flags;
+> > +	union ctu_can_fd_mode_settings reg;
+> > +
+> > +	reg.u32 = priv->read_reg(priv, CTU_CAN_FD_MODE);
+> >
+> > +	if (mode->mask & CAN_CTRLMODE_LOOPBACK)
+> > +		reg.s.ilbp = flags & CAN_CTRLMODE_LOOPBACK ?
+> > +					INT_LOOP_ENABLED : INT_LOOP_DISABLED;
+> Not sure what is going on here, but having mode->flags in same format
+> as hardware register would help...?
+>
+
+In this case we prefer to use defines which match Linux SocketCAN
+defines (CAN_CTRLMODE_LOOPBACK,...) and translate them to HW specific
+bits only inside ctu_can_fd_hw.c to not pollute driver by hardware
+specific details. As you can see, we use Linux specific define
+and adapt other builds to match Linux convention.
+
+> > +	switch (fnum) {
+> > +	case CTU_CAN_FD_FILTER_A:
+> > +		if (reg.s.sfa)
+> > +			return true;
+> > +	break;
+> > +	case CTU_CAN_FD_FILTER_B:
+> > +		if (reg.s.sfb)
+> > +			return true;
+> > +	break;
+> > +	case CTU_CAN_FD_FILTER_C:
+> > +		if (reg.s.sfc)
+> > +			return true;
+> > +	break;
+> > +	}
+>
+> Check indentation of break statemnts, also elsewhere in this file
+
+OK, I look at examples, I am not sure if I have overlooked checkpatch.pl warnings...
+I think that not. So it seems to be acceptabe for some case at least in 4.19 RT.
+
+> > +bool ctucan_hw_get_range_filter_support(struct ctucan_hw_priv *priv)
+> > +{
+> > +	union ctu_can_fd_filter_control_filter_status reg;
+> > +
+> > +	reg.u32 = priv->read_reg(priv, CTU_CAN_FD_FILTER_CONTROL);
+> > +
+> > +	if (reg.s.sfr)
+> > +		return true;
+>
+> return !!reg.s.sfr; ?
+
+OK.
+
+> > +enum ctu_can_fd_tx_status_tx1s ctucan_hw_get_tx_status(struct
+> > ctucan_hw_priv +							*priv, u8 buf)
+>
+> ...
+>
+> > +	default:
+> > +		status = ~0;
+> > +	}
+> > +	return (enum ctu_can_fd_tx_status_tx1s)status;
+> > +}
+>
+> Is ~0 in the enum?
+
+This can happen only when there is fundamental internal error
+in the code logic, but good catch, I add something to enum. 
+
+> > +	// TODO: use named constants for the command
+>
+> TODO...
+
+It is intenal mechanism between ctu_can_fd_hw.c and ctu_can_fd_hw.h
+with fully documented external API in ctu_can_fd_hw.h .
+So it is questionable if to polute user visible header
+there by another definitions. May it be we should switch to
+type ctu_can_fd_tx_command for command or do other optimization
+which I can imagine.
+
+This TODO is Ondrej Ille and Marin Jerabek leftover, so they
+should provide their suggestion and intention there as well
+as consequences of change for other projects which are
+not mine busyness.
+   
+
+> > +// TODO: AL_CAPTURE and ERROR_CAPTURE
+>
+
+Again colleagues remark for future work. For me, it is important
+basic function under GNU/Linux.
+
+>
+> > +#if defined(__LITTLE_ENDIAN_BITFIELD) == defined(__BIG_ENDIAN_BITFIELD)
+> > +# error __BIG_ENDIAN_BITFIELD or __LITTLE_ENDIAN_BITFIELD must be
+> > defined. +#endif
+> >
+> :-).
+
+To catch problems in another more undermined environments which I am
+happy not to take care at all.
+
+
+> > +// True if Core is transceiver of current frame
+> > +#define CTU_CAN_FD_IS_TRANSMITTER(stat) (!!(stat).ts)
+> > +
+> > +// True if Core is receiver of current frame
+> > +#define CTU_CAN_FD_IS_RECEIVER(stat) (!!(stat).s.rxs)
+>
+> Why not, documentation is nice. But it is in big contrast to other
+> parts of code where there's no docs at all.
+
+This is to document things outside of ctu_can_fd_hw.c.
+On the other hand actual HW is documented in referenced generated
+PDF file so there is not so big need to documents each bit
+of ctu_can_fd_hw.c . There is even internal HW docuemntation
+
+  http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/ctu_can_fd_architecture.pdf
+
+so in the fact these parts are documented for those who poke with them
+quite well and for regular driver developer the functions of ctu_can_fd_hw.h
+should provide all what is needed. And yes you can use referenced documentation
+and go deeper
+
+  https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core/-/blob/master/src/memory_registers/memory_registers.vhd
+
+so basically ctu_can_fd_hw.c is interface between those who wants to go deeper,
+try to modify HW, do verification etc. and these who do not care about these
+HW specific bits and ctu_can_fd_hw.h should be sufficient for driver developers.
+
+All this division to abstraction layers is result of more iterations thoughts and experiments.
+There are not many open-source/open-hardware projects of this scale where to learn from
+and we are really limited team. Chips Alliance aims this direction now
+but CTU CAN FD project predates its founding by many years.
+
+> > +struct ctucan_hw_priv;
+> > +#ifndef ctucan_hw_priv
+> > +struct ctucan_hw_priv {
+> > +	void __iomem *mem_base;
+> > +	u32 (*read_reg)(struct ctucan_hw_priv *priv,
+> > +			enum ctu_can_fd_can_registers reg);
+> > +	void (*write_reg)(struct ctucan_hw_priv *priv,
+> > +			  enum ctu_can_fd_can_registers reg, u32 val);
+> > +};
+> > +#endif
+>
+> Should not be needed in kernel.
+
+I am really not sure if this is required for some userpace tests or other CTU CAN FD
+based projects. It is to colleagues participating in other projects to defend this
+ifndef. I think that it is remnant of hacks before I have separated
+ctucan_priv and ctucan_hw_priv structures for proper layering.
+
+
+> > +/**
+> > + * ctucan_hw_read_rx_word - Reads one word of CAN Frame from RX FIFO
+> > Buffer. + *
+> > + * @priv: Private info
+> > + *
+> > + * Return: One wword of received frame
+>
+> Typo 'word'.
+
+Thanks.
+
+> > +++ b/drivers/net/can/ctucanfd/ctu_can_fd_regs.h
+> > @@ -0,0 +1,971 @@
+> > +
+> > +/* This file is autogenerated, DO NOT EDIT! */
+> > +
+>
+> Yay. How is that supposed to work after merge?
+
+I think that it is really better to not edit this file directly.
+It has to match exactly hardware. So we provide compatible
+license which allows you edit, but you have been warned
+to not shoot into your own leg.
+
+And for sure you can clone CTU CAN FD repo and experiment and generate
+your own core derivative. You can even include tools into Linux
+kernel tree or reference them
+
+  https://github.com/Blebowski/Reg_Map_Gen
+  https://github.com/Blebowski/ipyxact
+
+same as use complete Kactus2 IP cores editor to manage specification file.
+
+But if somebody wants to do such massive changes without coordination
+with us it would be polite to copy driver do different directory under
+another name and change "ctu,ctucanfd" in device tree to something
+different.
+
+Again thanks for review, I try to follow most of your suggestions
+for some I would be really happy if you and other reviewers
+try to look at the project as the whole. Linux driver is really
+small (but very important) part and some relatively small
+and I think not so important changes can result in significant
+problems in another parts of the quite large project
+and its automatic testing and inject errors without our notice.
+Actual setup allows us to run full synthetic and real hardware
+tests for each changed line in driver or HDL sources. This is simple
+test and each night complex test including simulated jitter on CAN lines etc.
+is run. In sum, it takes servers about three hours to do all testing
+on multiple projects to provide next day results for the previous
+day development step.
+
+Best wishes,
+
+                Pavel
