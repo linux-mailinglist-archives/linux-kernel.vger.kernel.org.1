@@ -2,140 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8EFC9296612
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:39:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25B53296618
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:41:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371823AbgJVUjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:39:31 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24698 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2901257AbgJVUja (ORCPT
+        id S371840AbgJVUlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:41:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371812AbgJVUlO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:39:30 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603399168;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=6Es6PtacViKqb4jQqg5gw1aMx5VJx45xwSoGJuNjLWg=;
-        b=bECzi+LRzpRzYEsgb0XKNlwPBluOmiv7QGCxHAZrtk7by0YtXk/F5ZfFiqRKGqLyIhsAqL
-        G4v50S6pRe8RwwqUIXbf5xfZiiLTNFNVLos3QxubIhqbdxqsleuyuVOUcdOsvkY/RovsLV
-        y9M0x5cMdy48p8U+bnSxPAmr9U9N+9I=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-569-ryZ9fepCPgylb0QODfouhA-1; Thu, 22 Oct 2020 16:39:27 -0400
-X-MC-Unique: ryZ9fepCPgylb0QODfouhA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A6FA1006CA9;
-        Thu, 22 Oct 2020 20:39:24 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-70.phx2.redhat.com [10.3.113.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 24C9660BFA;
-        Thu, 22 Oct 2020 20:39:15 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 16:39:13 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Mel Gorman <mgorman@suse.de>
-Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
-        Colin Ian King <colin.king@canonical.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
-Message-ID: <20201022203913.GJ92942@lorien.usersys.redhat.com>
-References: <34115486.YmRjPRKJaA@kreacher>
- <20201022120213.GG2611@hirez.programming.kicks-ass.net>
- <1790766.jaFeG3T87Z@kreacher>
- <20201022122949.GW2628@hirez.programming.kicks-ass.net>
- <20201022145250.GK32041@suse.de>
- <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
- <20201022151200.GC92942@lorien.usersys.redhat.com>
- <20201022163509.GM32041@suse.de>
- <CAJZ5v0he839sJNh0xjmvLqzuE7X27PgJKxtSV8giZh004E7pXw@mail.gmail.com>
- <20201022203255.GN32041@suse.de>
+        Thu, 22 Oct 2020 16:41:14 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7FB0BC0613CE;
+        Thu, 22 Oct 2020 13:41:14 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id o7so1709623pgv.6;
+        Thu, 22 Oct 2020 13:41:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=BWdJyFnxLJJv7g1dniL95LZkF1RGu1MUOYGhv0a1qrY=;
+        b=Xth8Ri59OD4xNWnhRaQ8huBfX9e0INd+t10Hk4cOkjoe7ZPfAouha82Je6YxfJmk9A
+         lnCPA1u0R/k0lzf1IM1J05pwg6CNVmJDG3Yu6tVJFQQpjH8V4xwKiw59eOy78GrXp28E
+         YpSue4JONOiqboy4wvVARGJPmWMXjILdIGknhSCMuHvKwMHktZMvVr1yXz3aXAZQN3HB
+         Rfdk2G8NSaoUB4jcDlAcM4sqiyvaeEZsIqh5P3uoS0hcEVOtAWJbUa0XE7KJveeHzBij
+         QlUEPZzEAD4+LIq4hTwDtVtVB35TOPyWEnoh0a4FDvz1RWh880g2ZazmbgqAzrghxW/P
+         39Sg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=BWdJyFnxLJJv7g1dniL95LZkF1RGu1MUOYGhv0a1qrY=;
+        b=Go1s1CMt2tCZkXAfXwAoiu9XH/Od6+liz5HOOpCSEDTt22VPFy2lBjrPFEet+l93tV
+         ki1sylrQMjYprJ9QzIFjsGoAQ7k+AAECp683OBmeoQLhoHpUDIzYu5kkzes9cC9t5Qoe
+         shqJbaisD6o3ZaE/8AT7SrQPyFG0THWO6bg6eBxx/MJlkMO3Xn6wuHZBrN3DMeXAl4OB
+         S3WY0nkGIVLKZigclVugD22T0G1/PW8JgJ933sKe4OgOBkA8n8MTurCsmsdfxiV5TeA5
+         nD6l9y1L7jrgfzDZdbJX5wOL0spYaTfZI4IX4wTgkWeBGVDp6H5tH9HylYFXmrXKnQ02
+         oBPQ==
+X-Gm-Message-State: AOAM533HMAzuosX/wGPP3vP6IVShEh1gRgB1wGQynK0uS5pgbfM5gp39
+        hPYv1S258N5qbzDzZrSIuOE=
+X-Google-Smtp-Source: ABdhPJzOS3xr49mUCU/M/8BNegOeBgXDfW8pPhVUUsCYT5jo/4wLlIdv1sqhdN+N9qtbz4u2AuAgIg==
+X-Received: by 2002:a17:90a:e698:: with SMTP id s24mr3952526pjy.72.1603399274094;
+        Thu, 22 Oct 2020 13:41:14 -0700 (PDT)
+Received: from fainelli-desktop.igp.broadcom.net ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id i25sm3309578pgi.9.2020.10.22.13.41.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 13:41:13 -0700 (PDT)
+From:   Florian Fainelli <f.fainelli@gmail.com>
+To:     bcm-kernel-feedback-list@broadcom.com,
+        Vivek Unune <npcomplete13@gmail.com>
+Cc:     devicetree@vger.kernel.org, florian.fainelli@broadcom.com,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        =?iso-8859-2?q?Rafa=B3_Mi=B3ecki?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: BCM5301X: Linksys EA9500 add port 5 and port 7
+Date:   Thu, 22 Oct 2020 13:41:12 -0700
+Message-Id: <20201022204112.232338-1-f.fainelli@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <c51b1d53c9411a4321ddcb1dbcdb0a42945b23c4.1602701516.git.npcomplete13@gmail.com>
+References: <cover.1602701516.git.npcomplete13@gmail.com> <c51b1d53c9411a4321ddcb1dbcdb0a42945b23c4.1602701516.git.npcomplete13@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022203255.GN32041@suse.de>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 09:32:55PM +0100 Mel Gorman wrote:
-> On Thu, Oct 22, 2020 at 07:59:43PM +0200, Rafael J. Wysocki wrote:
-> > > > Agreed. I'd like the option to switch back if we make the default change.
-> > > > It's on the table and I'd like to be able to go that way.
-> > > >
-> > >
-> > > Yep. It sounds chicken, but it's a useful safety net and a reasonable
-> > > way to deprecate a feature. It's also useful for bug creation -- User X
-> > > running whatever found that schedutil is worse than the old governor and
-> > > had to temporarily switch back. Repeat until complaining stops and then
-> > > tear out the old stuff.
-> > >
-> > > When/if there is a patch setting schedutil as the default, cc suitable
-> > > distro people (Giovanni and myself for openSUSE).
-> > 
-> > So for the record, Giovanni was on the CC list of the "cpufreq:
-> > intel_pstate: Use passive mode by default without HWP" patch that this
-> > discussion resulted from (and which kind of belongs to the above
-> > category).
-> > 
+On Wed, 14 Oct 2020 15:27:27 -0400, Vivek Unune <npcomplete13@gmail.com> wrote:
+> Add ports 5 and 7 which are connected to gmac cores 1 & 2.
+> These will be disabled for now.
 > 
-> Oh I know, I did not mean to suggest that you did not. He made people
-> aware that this was going to be coming down the line and has been looking
-> into the "what if schedutil was the default" question.  AFAIK, it's still
-> a work-in-progress and I don't know all the specifics but he knows more
-> than I do on the topic. I only know enough that if we flipped the switch
-> tomorrow that we could be plagued with google searches suggesting it be
-> turned off again just like there is still broken advice out there about
-> disabling intel_pstate for usually the wrong reasons.
-> 
-> The passive patch was a clear flag that the intent is that schedutil will
-> be the default at some unknown point in the future. That point is now a
-> bit closer and this thread could have encouraged a premature change of
-> the default resulting in unfair finger pointing at one company's test
-> team. If at least two distos check it out and it still goes wrong, at
-> least there will be shared blame :/
-> 
-> > > Other distros assuming they're watching can nominate their own victim.
-> > 
-> > But no other victims had been nominated at that time.
-> 
-> We have one, possibly two if Phil agrees. That's better than zero or
-> unfairly placing the full responsibility on the Intel guys that have been
-> testing it out.
->
+> Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
+> ---
 
-Yes. I agree and we (RHEL) are planning to test this soon. I'll try to get
-to it.  You can certainly CC me, please, athough I also try to watch for this
-sort of thing on list. 
-
-
-Cheers,
-Phil
-
-> -- 
-> Mel Gorman
-> SUSE Labs
-> 
-
--- 
-
+Applied to devicetree/next, thanks!
+--
+Florian
