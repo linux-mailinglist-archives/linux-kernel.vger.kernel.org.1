@@ -2,62 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1563A296091
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:59:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31650296094
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:00:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900551AbgJVN7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:59:44 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:65392 "EHLO pegase1.c-s.fr"
+        id S2900571AbgJVOAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:00:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37346 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900532AbgJVN7n (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:59:43 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CH8B33krkz9vBJc;
-        Thu, 22 Oct 2020 15:59:39 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id cMVhWiMuAegN; Thu, 22 Oct 2020 15:59:39 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CH8B32wBVz9vBJZ;
-        Thu, 22 Oct 2020 15:59:39 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id C8E1F8B805;
-        Thu, 22 Oct 2020 15:59:40 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 8Fb2X8RVxBJY; Thu, 22 Oct 2020 15:59:40 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 769218B816;
-        Thu, 22 Oct 2020 15:59:40 +0200 (CEST)
-To:     Joe Perches <joe@perches.com>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Andrew Morton <akpm@linux-foundation.org>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: Problem with checkpatch.pl (commit f5f613259f3f ("checkpatch: allow
- not using -f with files that are in git"))
-Message-ID: <82054b17-292d-3b3d-e95c-9abe7fa0c444@csgroup.eu>
-Date:   Thu, 22 Oct 2020 15:59:27 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2900552AbgJVOAL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:00:11 -0400
+Received: from pali.im (pali.im [31.31.79.79])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2063C22249;
+        Thu, 22 Oct 2020 14:00:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603375210;
+        bh=EpjEzi0uZt4us4Z9uIJpLLGSJQH1YL4LSnNVXHbFZ+Q=;
+        h=Date:From:To:Subject:From;
+        b=n2tpdzIQt3hOSt4sAx5CzmcY6Xm9ktgu4q1NNcCRoJ/JCvzQ3cTPneB0DRyBkkf8W
+         aK/q0vtD1XwFoxRxBLT7SXvOBNfvM9SQPtLPzE9+eJ7jfRxqmloVPBjcxkLy8RzMcE
+         37QAUEl3TxC84npB0ZE3n/9my5cZK/V60iRORTlA=
+Received: by pali.im (Postfix)
+        id 4E07BBFC; Thu, 22 Oct 2020 16:00:07 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 16:00:07 +0200
+From:   Pali =?utf-8?B?Um9ow6Fy?= <pali@kernel.org>
+To:     Gregory CLEMENT <gregory.clement@bootlin.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Andre Heider <a.heider@gmail.com>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Reducing number of Espressobin DTS files
+Message-ID: <20201022140007.hppmeyt34lubotbc@pali>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+Hello!
 
-Runnning ./scripts/checkpatch.pl -g HEAD, I get the following error:
+For Espressobin A3720 board there are currently 4 DTS files:
 
-Global symbol "$gitroot" requires explicit package name at ./scripts/checkpatch.pl line 980.
-Execution of ./scripts/checkpatch.pl aborted due to compilation errors.
+https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tree/arch/arm64/boot/dts/marvell/armada-3720-espressobin.dts?h=for-next
+https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tree/arch/arm64/boot/dts/marvell/armada-3720-espressobin-emmc.dts?h=for-next
+https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tree/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7-emmc.dts?h=for-next
+https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tree/arch/arm64/boot/dts/marvell/armada-3720-espressobin-v7.dts?h=for-next
 
-Reverting commit f5f613259f3f ("checkpatch: allow not using -f with files that are in git") clears 
-the problem.
+There are two board revisions (V5 and V7) and each has variant with and
+without eMMC.
 
-Christophe
+V5 and V7 DTS files differs order of ethernet switch ports and presence
+of led2 (not in next branch yet).
+
+I would like to ask, do we need two DTS files for eMMC and non-eMMC
+variants? Is there any issue if we enable sdhci0 globally for all
+Espressobin board and therefore reduce number of DTS variants?
+
+For example, Turris MOX board which is also A3720 based has optional
+SDIO module which can be plugged / unplugged, standard variant is sold
+without it and in DTS file is this node always enabled:
+
+https://git.kernel.org/pub/scm/linux/kernel/git/gclement/mvebu.git/tree/arch/arm64/boot/dts/marvell/armada-3720-turris-mox.dts?h=for-next#n178
+
+Could not we enable by default this node also on Espressobin? It is a
+problem if node for eMMC is enabled also on board without eMMC? As it
+would simplify configuration, compilation and setup of system for
+Espressobin boards.
