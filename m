@@ -2,77 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0551296137
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:57:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4379296145
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:58:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505378AbgJVO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:57:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        id S368327AbgJVO6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:58:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504821AbgJVO5q (ORCPT
+        with ESMTP id S368318AbgJVO6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:57:46 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DA3C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:57:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=EI7SUHNGo9RIx0dNIUmbKVTRaF3ifnJ7HykDmE4g0kA=; b=GFfjiu0pPasi/OTB9R4P4Xoei
-        YzMLcZbLe4gEsd8KmuTaYF6gh8hETygpFkKLT+Bsbune1Wbdu6kQ9McFVQiXzkZOU0QRdeGHCVz3y
-        61Eu/CkXANq4VZCe71o6H5RBmympCmjkA0hC5QVzWmhEiGenFHJGYY5Edcm4Vnqj0V+8WkQRrYGsY
-        9oo+aGAZMcMVQ6iqe+zRxzXlbQbgECiw+b/mQFarK/Ca9JyWdR+MbHQGXtnJKFFV1eW2KtdBoBtC6
-        D4l+0rlgvHtazJfKlan4ZanxQFUjhx+RQ0EB5oP1TJmaDtkYSc9c3fmJhGilLDDt0piB8MKxuiAjk
-        VSZYWFq2w==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49556)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVc23-0002AJ-O3; Thu, 22 Oct 2020 15:57:35 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVc23-0007UR-1g; Thu, 22 Oct 2020 15:57:35 +0100
-Date:   Thu, 22 Oct 2020 15:57:35 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-Message-ID: <20201022145734.GO1551@shell.armlinux.org.uk>
-References: <20201021225737.739-1-digetx@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021225737.739-1-digetx@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+        Thu, 22 Oct 2020 10:58:31 -0400
+Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50E22C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:31 -0700 (PDT)
+Received: by mail-wm1-x341.google.com with SMTP id c16so2624372wmd.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id;
+        bh=Cx7XGX9nMoWXAs2kXG6zDVAKiXDNvSG1xe4HtFWw++s=;
+        b=yJDLbQ6pbJk8VkT/jpMBwSJ4Ra+IOijDC0ripwsMSBbUf4TRphgWmlou+Ylw68M4oS
+         lJhl3lVb+wnGpQPXVvIL5EwvJsct/7A9uAMzFr8AtMfdlpvJyAhfhYF4T6AR+60m0Nki
+         H4DOCD/TbaZA77DXw5wufpfRi/YQDzkAwhFvSwoU388l/FOjVVubT7skPU6IPzOwnixo
+         Si4X6yWAmz2dFcFI+69hp7nrzN6RqggCletd4hJBe2ZeW/nQ+LhIouFd3JR6G6lusqV6
+         pgbYLKsiwHOFxtVUgbXa8cnb4L5Q6CBpfZrQ3lFiabSkMvFOfDrXLVC7xNVKiq+pG/w2
+         Qozw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Cx7XGX9nMoWXAs2kXG6zDVAKiXDNvSG1xe4HtFWw++s=;
+        b=sJ56uf7T35vgk+bwaGhLTUg7yvEkDSdkczLtmGzV6TZxzGMqajeFRWZLXg2ZW+jGVk
+         zvhCWoGNVcc5nhOppNngdDpUertXBX0Lb/QzeFI5CZXC5avsznIGm66oiYYqV+lWrvaL
+         7p8vt5Yja7DnmO0rJ9TazgJF/THVip9HT6Sjdxf2QSXWNKPPohDLVM+2DspDoVnNWbmM
+         LBhD/ekkUF4FTHzyUQNwgc7vJGxVm1oEw9v2XVA8Znrg9RfgUxSBqG0/ORU8mHorudqy
+         M2sWSmhjziI4Wl94xVl3yuKRNlKFFz+7ru7OjJsf1K8U2+sIrtyL3uTEDR6GgirAtY+Z
+         EXRQ==
+X-Gm-Message-State: AOAM533w0K85Dx160M6JU1HMmN+X2138UoouR/qmUxnHddERHO7Ys8u7
+        +wFbbi49sjd7kZsA4FwK2hsUhQ==
+X-Google-Smtp-Source: ABdhPJzLQW0m3qPPWdpowXXYqnWnluUmH1A3uddX+Sx3PWPhpmQxo+nYmV/itEJroSottWhKtyFMGQ==
+X-Received: by 2002:a1c:2b05:: with SMTP id r5mr2902447wmr.179.1603378709939;
+        Thu, 22 Oct 2020 07:58:29 -0700 (PDT)
+Received: from hackbox2.linaro.org ([81.128.185.34])
+        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 07:58:29 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Al Grant <Al.Grant@arm.com>, Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 00/20] perf arm-spe: Refactor decoding & dumping flow
+Date:   Thu, 22 Oct 2020 15:57:56 +0100
+Message-Id: <20201022145816.14069-1-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
-> The vfp_kmode_exception() function now is unreachable using relative
-> branching in THUMB2 kernel configuration, resulting in a "relocation
-> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
-> linker error. Let's use long jump in order to fix the issue.
-> 
-> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+This is patch set v3 for refactoring Arm SPE trace decoding and dumping.
+In this version, it mainly addressed the comments and suggestions from
+mailing list (mainly from Andre Przywara, thanks!).
 
-I guess the problem is that vfp_support_entry is in .text which tends
-to be at the beginning of the text section, but vfp_kmode_exception
-is in something like .text.vfp_kmode_exception ?
+This patch set is to refactor the Arm SPE decoding with:
 
-Would it be an idea just to change the section name that stuff like
-vfp_support_entry ends up in, rather than making the code less
-efficient?
+- Patches 01, 02 are minor cleans up for header, typos;
+- Patches 03, 04 and 05 are used to fix and polish the packet and
+  payload length calculation;
+- Patch 06 is to add a helper to wrap up printing strings, this can
+  avoid bunch of duplicate code lines;
+- Patches 07 ~ 18 are used to refactor decoding for different types
+  packet one by one (address packet, context packet, counter packet,
+  event packet, operation packet); it also introduces separate functions
+  for parsing specific packet, this can allow the code more readable and
+  easier to manage and extend code;
+- Patch 19 comes from Andre to dump memory tagging;
+- Patch 20 comes from Wei Li to add decoding for ARMv8.3 SVE extension.
+
+This patch set is cleanly applied on the top of perf/core branch
+with commit 7cf726a59435 ("Merge tag 'linux-kselftest-kunit-5.10-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/shuah/linux-kselftest"),
+And I tested this patch set on Hisilicon D06 platform with commands
+"perf script" and "perf script -D".
+
+Changes from v2:
+- Tried best to address Andre's comments and refined patches;
+- Added new patches 08, 11, 13, 16 for introducing new functions for
+  packets parsing (Andre);
+- Removed size condition checking for event packet (Andre);
+- Used PKT_XXX_GET() form to replace PKT_XXX_MASK()/PKT_XXX_SHIFT()
+  (Andre).
+
+Changes from v1:
+- Heavily rewrote the patch 05 for refactoring printing strings; this
+  is fundamental change, so adjusted the sequence for patches and moved
+  the printing string patch ahead from patch 10 (v1) to patch 05;
+- Changed to use GENMASK_ULL() for bits mask;
+- Added Andre's patch 13 for dumping memory tagging;
+- Refined patch 12 for adding sub classes for Operation packet, merged
+  some commit log from Andre's patch, which allows commit log and code
+  to be more clear; Added "Co-developed-by: Andre Przywara" tag to
+  reflect this.
+
+
+Andre Przywara (1):
+  perf arm_spe: Decode memory tagging properties
+
+Leo Yan (18):
+  perf arm-spe: Include bitops.h for BIT() macro
+  perf arm-spe: Fix a typo in comment
+  perf arm-spe: Refactor payload size calculation
+  perf arm-spe: Refactor arm_spe_get_events()
+  perf arm-spe: Fix packet length handling
+  perf arm-spe: Refactor printing string to buffer
+  perf arm-spe: Refactor packet header parsing
+  perf arm-spe: Add new function arm_spe_pkt_desc_addr()
+  perf arm-spe: Refactor address packet handling
+  perf arm-spe: Refactor context packet handling
+  perf arm-spe: Add new function arm_spe_pkt_desc_counter()
+  perf arm-spe: Refactor counter packet handling
+  perf arm-spe: Add new function arm_spe_pkt_desc_event()
+  perf arm-spe: Refactor event type handling
+  perf arm-spe: Remove size condition checking for events
+  perf arm-spe: Add new function arm_spe_pkt_desc_op_type()
+  perf arm-spe: Refactor operation packet handling
+  perf arm-spe: Add more sub classes for operation packet
+
+Wei Li (1):
+  perf arm-spe: Add support for ARMv8.3-SPE
+
+ .../util/arm-spe-decoder/arm-spe-decoder.c    |  43 +-
+ .../util/arm-spe-decoder/arm-spe-decoder.h    |  17 -
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 658 +++++++++++-------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 132 +++-
+ 4 files changed, 536 insertions(+), 314 deletions(-)
 
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.17.1
+
