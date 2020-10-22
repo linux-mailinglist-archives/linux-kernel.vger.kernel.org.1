@@ -2,77 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D71E9295A8C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:38:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3C4FC295A8E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:39:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509379AbgJVIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:38:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        id S2509374AbgJVIi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35596 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508194AbgJVIiZ (ORCPT
+        with ESMTP id S2508182AbgJVIi6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:38:25 -0400
-Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33221C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:38:25 -0700 (PDT)
-Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id 935E6E8080C;
-        Thu, 22 Oct 2020 10:38:23 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id 1C0A5160834; Thu, 22 Oct 2020 10:38:23 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 10:38:23 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     Topi Miettinen <toiwoton@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Dave Martin <dave.martin@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
- systemd and glibc mprotect calls, causing service failures
-Message-ID: <20201022083823.GA324825@gardel-login>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022071812.GA324655@gardel-login>
- <87sga6snjn.fsf@oldenburg2.str.redhat.com>
- <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
- <20201022082912.GQ3819@arm.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022082912.GQ3819@arm.com>
+        Thu, 22 Oct 2020 04:38:58 -0400
+Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 74D5EC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:38:58 -0700 (PDT)
+Received: by mail-pl1-x643.google.com with SMTP id 1so588074ple.2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:38:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=WRjTSaJ7aRlukBrkL+M/gdXKqvUBRft0vm/xDGjNJRU=;
+        b=R6oYUPcjBuASTz2/24ysShG+PREqfrEHx2kkOrsiSsB2c4Hl72f9rRMkwW0/OCL7oL
+         vUcf7EWmn76UAHpNtVQDkAAO1KAPJsuRLDkkW+bbeTbAx0Nlh5m5/CZlHe1Lp9+44EaG
+         0Diy/i+6xHgJK/78XvZ20MOoXn3uCM5ttumJvqusoqhh4D5PRETOv126c9G2E2XRSZ7S
+         6dJ6842Z6eVOpeNkoJn7TzW5JmKJTPz4s1LwkVM8Jl+vQ0RKE1nzLIEYwBGJeArSFYjm
+         ZidFXsPwwULRTFVyhQJzS35e74qU1QPgNOtkZ5ERgt6gAwOXAZVCXVno+aVg6rh0cvPD
+         YlIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=WRjTSaJ7aRlukBrkL+M/gdXKqvUBRft0vm/xDGjNJRU=;
+        b=qPqj0d05MftKVZpWxt487K9QhCd3lRExWfPonymhNyXHUPIOhJw6Ll9Ka0PaIO6y4L
+         ILjS6usgIIzWMVH3Duujs5qvvxhGB1f5dzzH/i2VRJwPyV1DaY5BviP6HHRi/GxR6TNq
+         wXzz/oPqgAuNFcbPeLlTdVAtfD9muXsVcMds3+bt9v5XTQPlv5vcextDhOHCwZuPeBdB
+         DQ0BxuHxDD5xtp5y5shv6W+tVpJX2qIcaRPl+6GpSjhhibr+WoLDYEt+4YkGJoKQQ7zE
+         hRQlapFzNcF+1EmR9dy0iptXZfNcf0pJ0Wjp3pqYAbbpaLfvqAGINitzudQr4IUrR9UX
+         b7Dw==
+X-Gm-Message-State: AOAM531jYxerKCAI9hy0NK9qyVvLvPntvh30r76A6AO4ihf8mAjAQtZM
+        EjDdCOal/+SG5JqheESTsHAdwg==
+X-Google-Smtp-Source: ABdhPJym+5wrTVQPViwggX5vf9tIWTbsFDSKvohjwsGtuvWbA/bPDX3JjQgol2fAv6lpf1QnNPo/hg==
+X-Received: by 2002:a17:902:8c88:b029:d5:ffe1:6653 with SMTP id t8-20020a1709028c88b02900d5ffe16653mr1556061plo.22.1603355938037;
+        Thu, 22 Oct 2020 01:38:58 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id v7sm1436396pfi.0.2020.10.22.01.38.54
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 22 Oct 2020 01:38:57 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, axboe@fb.com
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        pizhenwei@bytedance.com
+Subject: [PATCH] nvme-rdma: handle nvme completion data length
+Date:   Thu, 22 Oct 2020 16:38:50 +0800
+Message-Id: <20201022083850.1334880-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Do, 22.10.20 09:29, Szabolcs Nagy (szabolcs.nagy@arm.com) wrote:
+Hit a kernel warning:
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
 
-> > > The dynamic loader has to process the LOAD segments to get to the ELF
-> > > note that says to enable BTI.  Maybe we could do a first pass and load
-> > > only the segments that cover notes.  But that requires lots of changes
-> > > to generic code in the loader.
-> >
-> > What if the loader always enabled BTI for PROT_EXEC pages, but then when
-> > discovering that this was a mistake, mprotect() the pages without BTI? Then
-> > both BTI and MDWX would work and the penalty of not getting MDWX would fall
-> > to non-BTI programs. What's the expected proportion of BTI enabled code vs.
-> > disabled in the future, is it perhaps expected that a distro would enable
-> > the flag globally so eventually only a few legacy programs might be
-> > unprotected?
->
-> i thought mprotect(PROT_EXEC) would get filtered
-> with or without bti, is that not the case?
+RIP: 0010:refcount_warn_saturate+0xd9/0xe0
+Call Trace:
+ <IRQ>
+ nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
+ __ib_process_cq+0x76/0x150 [ib_core]
+ ...
 
-We can adjust the filter in systemd to match any combination of
-flags to allow and to deny.
+The reason is that a zero bytes message received from target, and the
+host side continues to process without length checking, then the
+previous CQE is processed twice.
 
-Lennart
+Handle data length, ignore zero bytes message, and try to recovery for
+corrupted CQE case.
 
---
-Lennart Poettering, Berlin
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+---
+ drivers/nvme/host/rdma.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
+
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 9e378d0a0c01..9f5112040d43 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -1767,6 +1767,17 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
+ 		return;
+ 	}
+ 
++	if (unlikely(!wc->byte_len)) {
++		/* zero bytes message could be ignored */
++		return;
++	} else if (unlikely(wc->byte_len < len)) {
++		/* Corrupted completion, try to recovry */
++		dev_err(queue->ctrl->ctrl.device,
++			"Unexpected nvme completion length(%d)\n", wc->byte_len);
++		nvme_rdma_error_recovery(queue->ctrl);
++		return;
++	}
++
+ 	ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
+ 	/*
+ 	 * AEN requests are special as they don't time out and can
+-- 
+2.11.0
+
