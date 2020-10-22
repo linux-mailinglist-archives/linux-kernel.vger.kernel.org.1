@@ -2,77 +2,55 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E1D729570C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:12:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98422295714
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:23:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726050AbgJVEMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:12:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1726020AbgJVEMG (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:12:06 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CC6C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id x13so166593pgp.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=lQhpluPH5qHzdGU1m9lM1IM2rcQRF5f75ETwpEdF6uY=;
-        b=f1BMc+bjjOYUfqER0mjy5LXht/UnuAA1w76etaCKD1D1S+RlWaoTkCu5aSYgZ8DLYo
-         AuJdWqOwD8FAkHM9/GP8kaHilwaBJNre5byK5Ftq0KWPKaHcoc9DtbI0RnCZK3uhjshA
-         1L9jbshbzkiiiwSrkFt2biJbQmAISYfoBdfIKKB8BcSkgh2M9TbKhL1RyD92QoUyoUkG
-         rghwJmNU10hNOL3xeMiPjxiu0tXWm/7G71T62hBLmNo2oGZMSci4Ul1/JAyfMn3xk9Ab
-         abBamVgTUwSf3BiCtkOu/Rj9/+r74mVIp1OpPXaKkbTC9IeUGDSX1xYBnhoc0oQ7aGdH
-         xsYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=lQhpluPH5qHzdGU1m9lM1IM2rcQRF5f75ETwpEdF6uY=;
-        b=OrRh2Y1H7KzncqhAw/mWdAdhLon7MvVP/g0j+NccovlsMbkv82Z52x7X2BoZkBN7LA
-         tuKWHyYLWkBv0t+jK8sh/Eh5gPNK1QAlTKkfuNhnKth5X9s+SFnGwTPxH9fEkuVEbcwY
-         SodCDDLBq37uXcry2tNeC7MpqmYRmEGJuPQrXEe5iikJC+DsR5s7xKjiQYWawz8Cr8BD
-         okaKNDM4+OxlmiPZF5gmTufZPuRPsWUuX534xT+BLYpyCcHnTiaudpRMVVDR/GLLZMY4
-         AqVGyg8uBMzH9IjOgMxyMc4t+jqNOhWgFrw0mqZqoYDa/KgkZ1OmsJK6flOpzO7ZNyJ3
-         rOkA==
-X-Gm-Message-State: AOAM531yacDS7x1gXURsH+Oq7ai/O2KizqBy97jOGZYX93f/QiflnHPL
-        YswWe7VOlpG6Rh3laxaVK/Ss0LXpQXXREdSPTmp2bA==
-X-Google-Smtp-Source: ABdhPJzSJ6KtTk5GozpZmod5MQ1LR1Oaxxto6Ruzf4ywJ3/iOB2Prv8JciiCvZBnC2k6EbbYjgoxBopq2v9dgFX6ACk=
-X-Received: by 2002:a63:1e5e:: with SMTP id p30mr701573pgm.159.1603339925261;
- Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
+        id S1726223AbgJVEW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:22:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726188AbgJVEW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:22:59 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 97F58223C7;
+        Thu, 22 Oct 2020 04:22:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603340578;
+        bh=abK6GnFdkR0gb+0CmFFSKSBybEXxiaGX7kjbc9XN674=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=vp/iU+WQQk/3dF0vOi29eutcyfki6Gh3RadGlE+BrR4V8jSmn7zOw0T5ovw6+w4IR
+         Vb1D8MuHqywZqN7Q+cNJ5x0jVoFx0Xbwe80fUMNUpEObV4AXiJQTxPBuJcqeBfA4yg
+         m21uPK4QSjDz99Z6xksAMK4f1hBpamMHmLSEXEqA=
+Date:   Wed, 21 Oct 2020 21:22:57 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Daeho Jeong <daeho43@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION
+ ioctl
+Message-ID: <20201022042257.GA857@sol.localdomain>
+References: <20201022035848.976286-1-daeho43@gmail.com>
 MIME-Version: 1.0
-References: <20201022030455.1871987-1-davidgow@google.com>
-In-Reply-To: <20201022030455.1871987-1-davidgow@google.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Wed, 21 Oct 2020 21:11:54 -0700
-Message-ID: <CAFd5g46D69b1GgGhL4jvCLUCDG3NDja2ZDXYxx2a1Rv=DQtEmA@mail.gmail.com>
-Subject: Re: [PATCH] kunit: Fix kunit.py --raw_output option
-To:     David Gow <davidgow@google.com>
-Cc:     Shuah Khan <skhan@linuxfoundation.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022035848.976286-1-daeho43@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 8:05 PM David Gow <davidgow@google.com> wrote:
->
-> Due to the raw_output() function on kunit_parser.py actually being a
-> generator, it only runs if something reads the lines it returns. Since
-> we no-longer do that (parsing doesn't actually happen if raw_output is
-> enabled), it was not printing anything.
->
-> Fixes:  45ba7a893ad89114e773b3dc32f6431354c465d6 ("kunit: kunit_tool: Separate out config/build/exec/parse")
-> Signed-off-by: David Gow <davidgow@google.com>
+On Thu, Oct 22, 2020 at 12:58:47PM +0900, Daeho Jeong wrote:
+> +	if (!f2fs_compressed_file(inode)) {
+> +		inode_unlock(inode);
+> +		return -EINVAL;
+> +	}
 
-Thanks for fixing this!
+How about using ENODATA here?  EINVAL tends to be used for lots of different
+reasons, and it's not always clear what it means.
 
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-Tested-by: Brendan Higgins <brendanhiggins@google.com>
+Note that FS_IOC_GET_ENCRYPTION_POLICY fails with ENODATA when called on an
+unencrypted file, which is a similar case.
+
+- Eric
