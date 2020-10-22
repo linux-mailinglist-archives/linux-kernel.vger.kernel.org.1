@@ -2,107 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFCF129555E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 01:59:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34709295561
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:00:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507362AbgJUX7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 19:59:11 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:56196 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507354AbgJUX7L (ORCPT
+        id S2507374AbgJVAAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 20:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40488 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507367AbgJVAAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 19:59:11 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LNsmm4104771;
-        Wed, 21 Oct 2020 23:59:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=ia1bvcLIGRlULe3HUUv1lS8YCwcY+Jyv65hKmvu1yYo=;
- b=T+mPkrULepGxEyQ+/ozMIxARHfBx1kgMxaNvSMGMmxaAPv19uO3pCsUhIFHIdaPQlJua
- Dz+efSUQ3HiZ2ExKj7c9rRko9VWVnYFu/UFUwqN23SoVSIFwyjCzciO5Qhql8VHhzFEU
- ol9ZFqhXQkokyJQ2D716Vbq6G+1u6bJmtHLDrWru8wBpL/ZYM1kIQR+eIN5SykFiP8//
- k1qNNQM9FY5hvRjy0Y8jZAozeRV7my956gX9Lei4ENt/zsPh5bxSqycZlMr51CIdHsPL
- jBrwZ0K2dgPYwqIW1ICC30GImMIO1EraDqQmBZga87GkOnmQpFrsFY0i5R0HYphniJKm hA== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by userp2120.oracle.com with ESMTP id 34ak16kky0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Oct 2020 23:58:59 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09LNtheh114258;
-        Wed, 21 Oct 2020 23:58:59 GMT
-Received: from pps.reinject (localhost [127.0.0.1])
-        by aserp3020.oracle.com with ESMTP id 348ah086yt-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Wed, 21 Oct 2020 23:58:59 +0000
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09LNwwIj119041;
-        Wed, 21 Oct 2020 23:58:58 GMT
-Received: from ca-dev112.us.oracle.com (ca-dev112.us.oracle.com [10.147.25.63])
-        by aserp3020.oracle.com with ESMTP id 348ah086yg-1;
-        Wed, 21 Oct 2020 23:58:58 +0000
-From:   saeed.mirzamohammadi@oracle.com
-To:     linux-kernel@vger.kernel.org
-Cc:     b.zolnierkie@samsung.com, akpm@linux-foundation.org,
-        rppt@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
-        gustavoars@kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-Subject: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
-Date:   Wed, 21 Oct 2020 16:57:58 -0700
-Message-Id: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
-X-Mailer: git-send-email 2.27.0
+        Wed, 21 Oct 2020 20:00:10 -0400
+Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F0DC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:00:09 -0700 (PDT)
+Received: by mail-lf1-x142.google.com with SMTP id l2so5409289lfk.0
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:00:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=VIh3TuwJJ9Jaaqf99SgJSQYuun5wyPpxsSyTdnHSMRY=;
+        b=lT/X0ZYCbsPdE0xWou7nupQ41GqXTCw4JhNJTVayGWINpPJ+sDCRcEJaNIAW0c/P9T
+         fjxDI1ziNsqr7/t5WIfdz7kNkqDnMaMAUuT3OIKyOmNEQzlg2z19skPHoTlwmsxblwK8
+         Yj68sBKuFly0OzC+dV8jayBesEOPmnoVXx0SLTWpbDmHamJg+PEFUZHGhNX66dFkaBDp
+         eG4mHt+lNrg+HHCLY3IFs5ww8wLnvJyhzXXWTGWxuDgKttzwD22qD+vAn+40c8Ce3BIh
+         ZRJBhTQrK93ulDhrn0mSH+FnnbtxtSIsuwTuco2/fkykPv3SqLP+/3Qv4XfZzF6jTI5S
+         UF+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=VIh3TuwJJ9Jaaqf99SgJSQYuun5wyPpxsSyTdnHSMRY=;
+        b=pVVjHqJlSavaOdoHftXhMjYjYDlRzakroAuYLJU39zAv/0bv94QibjpX5mqBaw+jVx
+         Y375NDGqaJ6kLxlRsrTaKDka4PIsNnvJzX9jbVr2dnkwE24PwNkkV9jhq7JjTihVRxY0
+         R5FKetf4TQLgVlXXlCB638ORXnSG3lop9KhgjeVeHmUHYLh1LRs+/qjnuwBnbX60luFH
+         5YOTuBT65DM7YtG+UXt724gJxkmf5DJ4QpIKNBYjhM2T9dx9jwENwyzMkAHf0+FBIXf5
+         kKnceRnCL2RoRECNO7+DcbXZSG1Fm4zxlM4lxVLuIbyvvo7YTqLWgq+zz0w09F3C88P/
+         J2Ew==
+X-Gm-Message-State: AOAM533wKM0cw3DoKXn84ScB8Qy1ydK2C/Rg+au8L0N545Zd93rdlL5b
+        0d9GjwTvktKqCXtCNc9CFLc=
+X-Google-Smtp-Source: ABdhPJwHdEi/h41lXu2wOXoV4gWJKF+/ISwRSHTQjaNwuQPebHM5TiSkmm+m+Ob+qMYpO6TCRkPWcw==
+X-Received: by 2002:a19:60f:: with SMTP id 15mr2104046lfg.163.1603324808081;
+        Wed, 21 Oct 2020 17:00:08 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id b12sm633663lfo.177.2020.10.21.17.00.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 21 Oct 2020 17:00:07 -0700 (PDT)
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Russell King <linux@armlinux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+References: <20201021225737.739-1-digetx@gmail.com>
+ <202010211637.7CFD8435@keescook>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+Date:   Thu, 22 Oct 2020 03:00:06 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
+In-Reply-To: <202010211637.7CFD8435@keescook>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010210166
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+22.10.2020 02:40, Kees Cook пишет:
+> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
+>> The vfp_kmode_exception() function now is unreachable using relative
+>> branching in THUMB2 kernel configuration, resulting in a "relocation
+>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
+>> linker error. Let's use long jump in order to fix the issue.
+> 
+> Eek. Is this with gcc or clang?
 
-This patch fixes the issue due to:
+GCC 9.3.0
 
-[   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
-[   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted 5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
-[   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.5.1 01/01/2011
-[   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
+>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+> 
+> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
+> That commit may have implicitly moved the location of .vfp11_veneer,
+> though I thought I had chosen the correct position.
 
-The error happens when the pixels value is calculated before performing the sanity checks on bits_per_pixel.
-A bits_per_pixel set to zero causes divide by zero error.
+I re-checked that the fixes tag is correct.
 
-This patch moves the calculation after the sanity check.
+>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+>> ---
+>>  arch/arm/vfp/vfphw.S | 3 ++-
+>>  1 file changed, 2 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+>> index 4fcff9f59947..6e2b29f0c48d 100644
+>> --- a/arch/arm/vfp/vfphw.S
+>> +++ b/arch/arm/vfp/vfphw.S
+>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+>>  	ldr	r3, [sp, #S_PSR]	@ Neither lazy restore nor FP exceptions
+>>  	and	r3, r3, #MODE_MASK	@ are supported in kernel mode
+>>  	teq	r3, #USR_MODE
+>> -	bne	vfp_kmode_exception	@ Returns through lr
+>> +	ldr	r1, =vfp_kmode_exception
+>> +	bxne	r1			@ Returns through lr
+>>  
+>>  	VFPFMRX	r1, FPEXC		@ Is the VFP enabled?
+>>  	DBGSTR1	"fpexc %08x", r1
+> 
+> This seems like a workaround though? I suspect the vfp11_veneer needs
+> moving?
+> 
 
-Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
----
- drivers/video/fbdev/cirrusfb.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
-index 15a9ee7cd734..a7749101b094 100644
---- a/drivers/video/fbdev/cirrusfb.c
-+++ b/drivers/video/fbdev/cirrusfb.c
-@@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
- {
- 	int yres;
- 	/* memory size in pixels */
--	unsigned pixels = info->screen_size * 8 / var->bits_per_pixel;
-+	unsigned int pixels;
- 	struct cirrusfb_info *cinfo = info->par;
- 
- 	switch (var->bits_per_pixel) {
-@@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
- 		return -EINVAL;
- 	}
- 
-+	pixels = info->screen_size * 8 / var->bits_per_pixel;
- 	if (var->xres_virtual < var->xres)
- 		var->xres_virtual = var->xres;
- 	/* use highest possible virtual resolution */
--- 
-2.27.0
-
+I don't know where it needs to be moved. Please feel free to make a
+patch if you have a better idea, I'll be glad to test it.
