@@ -2,85 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A4FB295E69
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:30:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46006295E6C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:34:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898255AbgJVMaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:30:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43146 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898170AbgJVMaw (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:30:52 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 761E5C0613CE;
-        Thu, 22 Oct 2020 05:30:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=/zZlgQ49hzZ8Igx9Ir7W2mtc3LsLICFZToYlcVG4c3s=; b=OikXOIKqeP/evXisZbUfxoO7ss
-        9Dav6ZcY9P8OqgqxY4sLrkbOHmB9l3SZD3uv1jCLDEDErpBzAC5erMGuI+5O0DGezfBKibLDX3ru+
-        m8VvOusREx8QQzArsXRNJ3ox/CcGoxXaqFhKiARe8m27ooSpjxs4ybMW7RwChbdJo4ftX3QyWjfhc
-        lN4JR485EjemVRi/YmIN3+O8ws3InRcIK5PL5fxHpLPMPEXoMuMSJ5Fc2cAb2ad5BQHa+4duz47/I
-        BtsLZfGkXj6t9xJMTcaQPUJrT9OfAizMm8cwq+v366BoP9CDSQfroB28nCXVwEC+nW7MxzRw1MzGy
-        w2AaiC8w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVZjx-0004Dy-TM; Thu, 22 Oct 2020 12:30:46 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 7A662304D28;
-        Thu, 22 Oct 2020 14:30:44 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 700A32B90AF8C; Thu, 22 Oct 2020 14:30:44 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 14:30:44 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Giovanni Gherdovich <ggherdovich@suse.cz>
-Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
-Subject: Re: [PATCH v2 1/3] x86, sched: check for counters overflow in
- frequency invariant accounting
-Message-ID: <20201022123044.GX2628@hirez.programming.kicks-ass.net>
-References: <20200531182453.15254-1-ggherdovich@suse.cz>
- <20200531182453.15254-2-ggherdovich@suse.cz>
- <20201022084618.GU2628@hirez.programming.kicks-ass.net>
- <1603369318.3162.21.camel@suse.cz>
+        id S2504070AbgJVMeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:34:10 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60718 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2438625AbgJVMeJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:34:09 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id C14A0AD2F;
+        Thu, 22 Oct 2020 12:34:08 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 14:34:06 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>
+Subject: Re: [PATCH v2 3/7] mm, page_alloc: remove setup_pageset()
+Message-ID: <20201022123355.GA26121@linux>
+References: <20201008114201.18824-1-vbabka@suse.cz>
+ <20201008114201.18824-4-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1603369318.3162.21.camel@suse.cz>
+In-Reply-To: <20201008114201.18824-4-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:21:58PM +0200, Giovanni Gherdovich wrote:
-> On Thu, 2020-10-22 at 10:46 +0200, Peter Zijlstra wrote:
-> > On Sun, May 31, 2020 at 08:24:51PM +0200, Giovanni Gherdovich wrote:
-> > 
-> > Hi Giovanni!
-> > 
-> > > +error:
-> > > +	pr_warn("Scheduler frequency invariance went wobbly, disabling!\n");
-> > > +	schedule_work(&disable_freq_invariance_work);
-> > > +}
-> > 
-> > I'm getting reports that we trigger this on resume. Would it make sense
-> > to hook into tsc_{save,restore}_sched_clock_state() (or somewhere near
-> > there) to reset the state (basically call init_counter_refs() again to
-> > ensure we're not having to deal with crazy ?
+On Thu, Oct 08, 2020 at 01:41:57PM +0200, Vlastimil Babka wrote:
+> We initialize boot-time pagesets with setup_pageset(), which sets high and
+> batch values that effectively disable pcplists.
 > 
-> Hello,
+> We can remove this wrapper if we just set these values for all pagesets in
+> pageset_init(). Non-boot pagesets then subsequently update them to the proper
+> values.
 > 
-> right, if the counters keep running while the machine is suspended then the
-> current code thinks it's a runtime overflow. I'll prepare a patch to fix that,
-> thanks for the heads-up and the hint.
+> No functional change.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Reviewed-by: David Hildenbrand <david@redhat.com>
 
-Either keep running, get reset, get scrambled, everything is possible.
+I think I already reviewed this one, but:
 
-Thanks!
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+-- 
+Oscar Salvador
+SUSE L3
