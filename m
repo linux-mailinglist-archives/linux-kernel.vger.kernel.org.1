@@ -2,171 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFB46295A64
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:33:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9BEA7295A73
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:35:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507884AbgJVIdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:33:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34644 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444301AbgJVIdB (ORCPT
+        id S2508050AbgJVIfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:35:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:58428 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2503375AbgJVIfg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:33:01 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE142C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:32:59 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id e7so681184pfn.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:32:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=dOSJpkMx7Vw1Efdt5qcFIg0wz4UulTvGF8jI2wMMWMk=;
-        b=xqyUfHEdK+PqMP8MpGk5GNlDkOqIanfh3I2GsopRdIVCseztUdJaFtjittYnBkPR93
-         iwRG/feJHGsBlx+Jy9xPCifuK/KDkRDNZ5/YxwISk7j/F/1EhxhiQHI7CdU8dLMo5Smi
-         udLVzjCYV4TiOJgzotOug3nwkx4ttXLA/z+KvGPCKeSrEolrsbnvKlFfyGfZs9IgTUOJ
-         AeRY20c7cRmIXKa+bijTZbyiQUxYmmhjpw8KMLgJb7qP1mAuJ/F6VH4vHmSHbwObf03S
-         +CoQYSHfe6zEgaN7pMIrUYbx+oXSpyYC+C+swWewstmbECkrLKiEooAXQYT1gJCHbWr3
-         SM2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=dOSJpkMx7Vw1Efdt5qcFIg0wz4UulTvGF8jI2wMMWMk=;
-        b=rwVIMlJmoS1EfHcj3EOefo7J1UFv7xvnHsgO98NVrC5Nt7VfjEme6QO4xh3YVdzKmN
-         Eow4ieKPCkrskFBZUT3a0ePD7+Me4WRvqm/iWasu/wETK9uaoUp3BbApjpjcxgm7kTCG
-         eAlIbIYD4KYUxdg749CB5bKHVm7IGIHdfdtd0wJbVVi8TeBNEoir+hjVK+mY4Wket0jy
-         t0+1Pu9B+xtVlkB2oo70kB8/WNiXWQmue6F5w7pIT3UZxg8p/JXF0OKz6x8D7z/UVslT
-         7qtweXyiTi62G0o2NNYo+fEOPEjuuoNcTY7eoM/QSKNqwkUQR3mcajqe71NW0RhtKaQv
-         vYwg==
-X-Gm-Message-State: AOAM530tPm/jW0s3/kUh7xSlHLUmMb7RYbKQ5IrMxB4zs5t4umIfj+Lm
-        E5W5yRMoV0jxjXmbCzanWJQ3ig==
-X-Google-Smtp-Source: ABdhPJw1WVNKgcuj67uqzrau1OuYobFRotv4PJBRcrBtTXkJs7oR1qbWVklWmxif4Drv6Z6FPc6SXQ==
-X-Received: by 2002:a63:c55:: with SMTP id 21mr1273631pgm.392.1603355579060;
-        Thu, 22 Oct 2020 01:32:59 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id x12sm1237329pfr.156.2020.10.22.01.32.57
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Oct 2020 01:32:58 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 14:02:55 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Message-ID: <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
- <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
- <20200716115605.GR10769@hirez.programming.kicks-ass.net>
+        Thu, 22 Oct 2020 04:35:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603355735;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=AfHzVZ9ARVJM/ygIfC1QZ398dtBlt7YNWVKjnVzurTM=;
+        b=VokcFf2i8L4P7N6p6g1GPzIk6C4eSFVTb5tlnAVTBilTNWxUevfM8DpMbIfkJQpn94AG+0
+        cpaCgF7ODsxCEnwLzJ5x8Xkc7EEGBQ7ul0WujEaTBeLefiHXLKbUtZUFAiRK1kAbtq4m6h
+        JJ4B7smwjoegfbDrrShW+ZC1AM3+10w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-548-2Rope0bHNb6JPkcxydWrHA-1; Thu, 22 Oct 2020 04:35:30 -0400
+X-MC-Unique: 2Rope0bHNb6JPkcxydWrHA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 28CE7879517;
+        Thu, 22 Oct 2020 08:35:27 +0000 (UTC)
+Received: from [10.36.113.152] (ovpn-113-152.ams2.redhat.com [10.36.113.152])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 5EA8D5D9DD;
+        Thu, 22 Oct 2020 08:35:21 +0000 (UTC)
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+To:     Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Christoph Hellwig <hch@lst.de>, kernel-team@android.com,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        David Laight <David.Laight@aculab.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-aio@kvack.org, io-uring@vger.kernel.org,
+        linux-arch@vger.kernel.org, linux-mm@kvack.org,
+        netdev@vger.kernel.org, keyrings@vger.kernel.org,
+        linux-security-module@vger.kernel.org
+References: <20200925045146.1283714-1-hch@lst.de>
+ <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
+ <20201021233914.GR3576660@ZenIV.linux.org.uk>
+ <20201022082654.GA1477657@kroah.com>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
+Date:   Thu, 22 Oct 2020 10:35:20 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20200716115605.GR10769@hirez.programming.kicks-ass.net>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <20201022082654.GA1477657@kroah.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Peter,
+On 22.10.20 10:26, Greg KH wrote:
+> On Thu, Oct 22, 2020 at 12:39:14AM +0100, Al Viro wrote:
+>> On Wed, Oct 21, 2020 at 06:13:01PM +0200, Greg KH wrote:
+>>> On Fri, Sep 25, 2020 at 06:51:39AM +0200, Christoph Hellwig wrote:
+>>>> From: David Laight <David.Laight@ACULAB.COM>
+>>>>
+>>>> This lets the compiler inline it into import_iovec() generating
+>>>> much better code.
+>>>>
+>>>> Signed-off-by: David Laight <david.laight@aculab.com>
+>>>> Signed-off-by: Christoph Hellwig <hch@lst.de>
+>>>> ---
+>>>>  fs/read_write.c | 179 ------------------------------------------------
+>>>>  lib/iov_iter.c  | 176 +++++++++++++++++++++++++++++++++++++++++++++++
+>>>>  2 files changed, 176 insertions(+), 179 deletions(-)
+>>>
+>>> Strangely, this commit causes a regression in Linus's tree right now.
+>>>
+>>> I can't really figure out what the regression is, only that this commit
+>>> triggers a "large Android system binary" from working properly.  There's
+>>> no kernel log messages anywhere, and I don't have any way to strace the
+>>> thing in the testing framework, so any hints that people can provide
+>>> would be most appreciated.
+>>
+>> It's a pure move - modulo changed line breaks in the argument lists
+>> the functions involved are identical before and after that (just checked
+>> that directly, by checking out the trees before and after, extracting two
+>> functions in question from fs/read_write.c and lib/iov_iter.c (before and
+>> after, resp.) and checking the diff between those.
+>>
+>> How certain is your bisection?
+> 
+> The bisection is very reproducable.
+> 
+> But, this looks now to be a compiler bug.  I'm using the latest version
+> of clang and if I put "noinline" at the front of the function,
+> everything works.
 
-Since Lukasz asked me to hold on to this stuff so he can propose
-something in its place, I stayed away from discussing this patchset
-for sometime. But now that he agrees [1] that we may take this forward
-and he can work on top of it as and when he can, I am looking to find
-the way out to get this stuff merged in some form.
-
-On 16-07-20, 13:56, Peter Zijlstra wrote:
-> So there's a number of things... let me recap a bunch of things that
-> got mentioned on IRC earlier this week and then continue from there..
-> 
-> So IPA* (or any other thermal governor) needs energy estimates for the
-> various managed devices, cpufreq_cooling, being the driver for the CPU
-> device, needs to provide that and in return receives feedback on how
-> much energy it is allowed to consume, cpufreq_cooling then dynamically
-> enables/disables OPP states.
-> 
-> There are actually two methods the thermal governor will use:
-> get_real_power() and get_requested_power().
-> 
-> The first isn't used anywhere in mainline, but could be implemented on
-> hardware that has energy counters (like say x86 RAPL).
-> 
-> The second attempts to guesstimate power, and is the subject of this
-> patch.
-> 
-> Currently cpufreq_cooling appears to estimate the CPU energy usage by
-> calculating the percentage of idle time using the per-cpu cpustat stuff,
-> which is pretty horrific.
-> 
-> This patch then attempts to improve upon that by using the scheduler's
-> cpu_util(ENERGY_UTIL) estimate, which is also used to select OPP state
-> and improves upon avg idle. This should be a big improvement as higher
-> frequency consumes more energy
-
-Exactly and that's the motivation behind this change.
-
-> , but should we not also consider that:
-> 
-> 	E = C V^2 f
-> 
-> The EAS energy model has tables for the OPPs that contain this, but in
-> this case we seem to be assuming a linear enery/frequency curve, which
-> is just not the case.
-> 
-> I suppose we could do something like **:
-> 
-> 	100 * util^3 / max^3
-> 
-> which assumes V~f.
-> 
-> Another point is that cpu_util() vs turbo is a bit iffy, and to that,
-> things like x86-APERF/MPERF and ARM-AMU got mentioned. Those might also
-> have the benefit of giving you values that match your own sampling
-> interval (100ms), where the sched stuff is PELT (64,32.. based).
-
-I believe the above stuff is more around additional improvements that
-we can do over this change, and probably Lukasz was looking to do
-that.
-
-> So what I've been thinking is that cpufreq drivers ought to be able to
-> supply this method, and only when they lack, can the cpufreq-governor
-> (schedutil) install a fallback.
-
-One of the issues I see with this is that schedutil may not be
-available in all configurations and it is still absolutely fine to
-using the suggested helper to get the energy numbers in such cases, so
-we shouldn't really make it scheutil dependent.
-
-> And then cpufreq-cooling can use
-> whatever is provided (through the cpufreq interfaces).
-> 
-> That way, we:
-> 
->  1) don't have to export anything
-
-Yeah, I understand that the exports are annoying and specially this
-line :)
-
-+#include "../../kernel/sched/sched.h"
-
-But this is the best I could think of then as we don't want to export
-them for anyone else to use sched specific stuff. And there was other
-core kernel stuff that was already doing it :)
-
->  2) get arch drivers to provide something 'better'
-> 
-> 
-> Does that sounds like something sensible?
+Well, the compiler can do more invasive optimizations when inlining. If
+you have buggy code that relies on some unspecified behavior, inlining
+can change the behavior ... but going over that code, there isn't too
+much action going on. At least nothing screamed at me.
 
 -- 
-viresh
+Thanks,
 
-[1] http://lore.kernel.org/lkml/d2a75b18-1eae-f396-4dc5-af41b539e581@arm.com
+David / dhildenb
+
