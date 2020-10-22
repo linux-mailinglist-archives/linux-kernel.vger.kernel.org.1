@@ -2,277 +2,334 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AA329635C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:09:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B6BFF296387
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:13:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902231AbgJVRJN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:09:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58128 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506307AbgJVRJM (ORCPT
+        id S369107AbgJVRN3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:13:29 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:48854 "EHLO
+        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S369099AbgJVRN1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:09:12 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D37C0613CE;
-        Thu, 22 Oct 2020 10:09:10 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id d78so2963084wmd.3;
-        Thu, 22 Oct 2020 10:09:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RQKnUzJXc7xO6ebK8GDO7+QlfO2qKCjrrriFCYvIvWU=;
-        b=uZrAsZeoP1x9wvIqnpZA03Z5PW0qciwH860sY9m2bvbZQBma3oVYqFgRaPqhhWSsGs
-         YU49ik+FjfkFBn/6H9D/R07Cu4Hj2irEG+qRlz+7r3coKB8KCvk6P7XwJ0HlaygglVol
-         GuGpMvrbnOpM9sLsKHJOd6Fq4eedySN8JfQrjet6juC0VTNV3J9Uj85nBe89DpLhMSS2
-         ulTG/NmNH//i5IQ2O/rLu0i/XYU2FsXTaLfNiW63DmA+6Ch3c+xptthFus5oSwP9no4E
-         vOa8rGBwCiW5FGB4uW6eNrBriM4I4i880tZvP9GAK3PofCQ+m8gHz9YSBaynJ87gizT7
-         58AA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RQKnUzJXc7xO6ebK8GDO7+QlfO2qKCjrrriFCYvIvWU=;
-        b=buKONf9Uo+K+cfV7Puq1K3veuZUnIIOCMLw3jqtDSS6S/XaU6nPptuzMUUnHJzX5jb
-         6LPE3a9w0MxxhYggonPoxX+U6IeTyvzqNZNjBIGcLGYvu1oJBv9SLjs69SlDESRA2S65
-         DRzY7CW/c+JgFjtwlQ3fjpAqVNqRla801EU0684TCorIC6vV9yt5H3Wv7uuP8DC06z/c
-         JvztoTH8qNTJNsM5iiAbvT/E/aENHm0JcOgOiEsu1SGDeVnMqdqkv45LdRtVPkhi6aMV
-         s4SmUXjundTx/sRV/aat3TG+lcgR9hKp4qTYtoRhhlXn4bH8+MXEROA0KsUQufCqymEu
-         TPAw==
-X-Gm-Message-State: AOAM530P6qX2jYrTO2h533JPdE37tbXkpIPlk9XMeNz1pHwGW00VSDu6
-        3WrDqBfNGkfDr38LviGXIwEbmECHtEYcrWkX/fE=
-X-Google-Smtp-Source: ABdhPJzbsY0m+CyLX72PLRam30SzyzsbKOi2+o71S8ttMkcznbkEZl45y/vpEa2OY+mCqS1yzDAnCJYaWq2SvZiQnFA=
-X-Received: by 2002:a1c:98d2:: with SMTP id a201mr3374691wme.166.1603386549017;
- Thu, 22 Oct 2020 10:09:09 -0700 (PDT)
+        Thu, 22 Oct 2020 13:13:27 -0400
+Received: from pps.filterd (m0098417.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MH3OOh105287;
+        Thu, 22 Oct 2020 13:13:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=7An+sb76aM3Rj+JXI7qC8JVMSKfhI3765YRh6owIzpo=;
+ b=rfraJZq9yUHf8Dyus6rIun31g1g5Ho1XSzwy7723q0d163DOultzAlajP33myeKbQjjd
+ Vxnpt/y5z1IWoyM70CswzkYiHh3eD8wcuXBgD2dvLtGBq4a0ZpdfoHRFFzbOhTUqJi0L
+ Tl9e9g9CFDru8Fy1dU6vGCJpgqhj+b/xzB0gTvnav8Vr3nxF9f29d5DBCxVIb1/bjUYm
+ bPnFVLg66oJeH4Lz3LwqZ0PKzVze3rE+axLcsbjqDIEuGeRyMTE2+W6zp64Vi5ZPDLHi
+ YtcQLhhX8zwpem3j0PQbl3Oth7pNfHoYABVAPasSMj6T0DJYlqfJPb3inMP8KvXfeCmh +g== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34bcanvhus-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 13:13:23 -0400
+Received: from m0098417.ppops.net (m0098417.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09MH8n8X144067;
+        Thu, 22 Oct 2020 13:13:23 -0400
+Received: from ppma03wdc.us.ibm.com (ba.79.3fa9.ip4.static.sl-reverse.com [169.63.121.186])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34bcanvhtu-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 13:13:23 -0400
+Received: from pps.filterd (ppma03wdc.us.ibm.com [127.0.0.1])
+        by ppma03wdc.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09MHD2Ng014962;
+        Thu, 22 Oct 2020 17:13:22 GMT
+Received: from b03cxnp08027.gho.boulder.ibm.com (b03cxnp08027.gho.boulder.ibm.com [9.17.130.19])
+        by ppma03wdc.us.ibm.com with ESMTP id 347r89hymb-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 17:13:22 +0000
+Received: from b03ledav004.gho.boulder.ibm.com (b03ledav004.gho.boulder.ibm.com [9.17.130.235])
+        by b03cxnp08027.gho.boulder.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09MHCDUw27918990
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 17:12:14 GMT
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 0107A7805C;
+        Thu, 22 Oct 2020 17:12:19 +0000 (GMT)
+Received: from b03ledav004.gho.boulder.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 5A4F37805F;
+        Thu, 22 Oct 2020 17:12:17 +0000 (GMT)
+Received: from localhost.localdomain.com (unknown [9.85.170.177])
+        by b03ledav004.gho.boulder.ibm.com (Postfix) with ESMTP;
+        Thu, 22 Oct 2020 17:12:17 +0000 (GMT)
+From:   Tony Krowiak <akrowiak@linux.ibm.com>
+To:     linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     freude@linux.ibm.com, borntraeger@de.ibm.com, cohuck@redhat.com,
+        mjrosato@linux.ibm.com, pasic@linux.ibm.com,
+        alex.williamson@redhat.com, kwankhede@nvidia.com,
+        fiuczy@linux.ibm.com, frankja@linux.ibm.com, david@redhat.com,
+        hca@linux.ibm.com, gor@linux.ibm.com,
+        Tony Krowiak <akrowiak@linux.ibm.com>
+Subject: [PATCH v11 00/14] s390/vfio-ap: dynamic configuration support
+Date:   Thu, 22 Oct 2020 13:11:55 -0400
+Message-Id: <20201022171209.19494-1-akrowiak@linux.ibm.com>
+X-Mailer: git-send-email 2.21.1
 MIME-Version: 1.0
-References: <20201018125237.16717-1-kholk11@gmail.com> <20201018125237.16717-3-kholk11@gmail.com>
- <CAG3jFysokz0+NCHLp9-nhxG3wGVzk1TAFBwZmhMgViUr-sk-BA@mail.gmail.com> <CAG3jFysUQJXdy0ogK1shbgW1Tmk6DJbS26EaeRPMDEnObQ2_zg@mail.gmail.com>
-In-Reply-To: <CAG3jFysUQJXdy0ogK1shbgW1Tmk6DJbS26EaeRPMDEnObQ2_zg@mail.gmail.com>
-From:   AngeloGioacchino Del Regno <kholk11@gmail.com>
-Date:   Thu, 22 Oct 2020 19:08:57 +0200
-Message-ID: <CAK7fi1ZUE+C+Q7V-j=xR1V2OvUwmk=ZRcBwNLBDrjUr+rOW0Cw@mail.gmail.com>
-Subject: Re: [PATCH 2/6] media: camss: ispif: Correctly reset based on the VFE ID
-To:     Robert Foss <robert.foss@linaro.org>
-Cc:     Todor Tomov <todor.too@gmail.com>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        MSM <linux-arm-msm@vger.kernel.org>,
-        linux-media <linux-media@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-22_12:2020-10-20,2020-10-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 suspectscore=0
+ mlxlogscore=999 adultscore=0 mlxscore=0 priorityscore=1501 clxscore=1015
+ bulkscore=0 impostorscore=0 malwarescore=0 lowpriorityscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220111
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Il giorno mar 20 ott 2020 alle ore 11:03 Robert Foss
-<robert.foss@linaro.org> ha scritto:
->
-> I found a build issue in this commit.
->
->
-> On Tue, 20 Oct 2020 at 10:59, Robert Foss <robert.foss@linaro.org> wrote:
-> >
-> > Nice catch! This patch looks good to me.
-> >
-Thank you! :)))
+The current design for AP pass-through does not support making dynamic
+changes to the AP matrix of a running guest resulting in a few 
+deficiencies this patch series is intended to mitigate:
 
-> > Signed-off-by: Robert Foss <robert.foss@linaro.org>
-> >
-> > On Sun, 18 Oct 2020 at 14:54, <kholk11@gmail.com> wrote:
-> > >
-> > > From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > >
-> > > Resetting the ISPIF VFE0 context is wrong if we are using the VFE1
-> > > for dual-camera or simply because a secondary camera is connected
-> > > to it: in this case the reset will always happen on the VFE0 ctx
-> > > of the ISPIF, which is .. useless.
-> > >
-> > > Fix this usecase by adding the ISPIF_RST_CMD_1 address and choose
-> > > where to do the (or what to) reset based on the VFE line id.
-> > >
-> > > Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> > > ---
-> > >  .../media/platform/qcom/camss/camss-ispif.c   | 87 ++++++++++++-------
-> > >  .../media/platform/qcom/camss/camss-ispif.h   |  2 +-
-> > >  2 files changed, 57 insertions(+), 32 deletions(-)
-> > >
-> > > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.c b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > > index db94cfd6c508..252db6b33dab 100644
-> > > --- a/drivers/media/platform/qcom/camss/camss-ispif.c
-> > > +++ b/drivers/media/platform/qcom/camss/camss-ispif.c
-> > > @@ -26,6 +26,7 @@
-> > >  #define MSM_ISPIF_NAME "msm_ispif"
-> > >
-> > >  #define ISPIF_RST_CMD_0                        0x008
-> > > +#define ISPIF_RST_CMD_1                        0x00c
-> > >  #define ISPIF_RST_CMD_0_STROBED_RST_EN         (1 << 0)
-> > >  #define ISPIF_RST_CMD_0_MISC_LOGIC_RST         (1 << 1)
-> > >  #define ISPIF_RST_CMD_0_SW_REG_RST             (1 << 2)
-> > > @@ -179,7 +180,10 @@ static irqreturn_t ispif_isr_8x96(int irq, void *dev)
-> > >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
-> > >
-> > >         if ((value0 >> 27) & 0x1)
-> > > -               complete(&ispif->reset_complete);
-> > > +               complete(&ispif->reset_complete[0]);
-> > > +
-> > > +       if ((value3 >> 27) & 0x1)
-> > > +               complete(&ispif->reset_complete[1]);
-> > >
-> > >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> > >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > > @@ -237,7 +241,7 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> > >         writel(0x1, ispif->base + ISPIF_IRQ_GLOBAL_CLEAR_CMD);
-> > >
-> > >         if ((value0 >> 27) & 0x1)
-> > > -               complete(&ispif->reset_complete);
-> > > +               complete(&ispif->reset_complete[0]);
-> > >
-> > >         if (unlikely(value0 & ISPIF_VFE_m_IRQ_STATUS_0_PIX0_OVERFLOW))
-> > >                 dev_err_ratelimited(to_device(ispif), "VFE0 pix0 overflow\n");
-> > > @@ -257,33 +261,17 @@ static irqreturn_t ispif_isr_8x16(int irq, void *dev)
-> > >         return IRQ_HANDLED;
-> > >  }
-> > >
-> > > -/*
-> > > - * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> > > - * @ispif: ISPIF device
-> > > - *
-> > > - * Return 0 on success or a negative error code otherwise
-> > > - */
-> > > -static int ispif_reset(struct ispif_device *ispif)
-> > > +static int ispif_vfe_reset(struct ispif_device *ispif, u8 vfe_id)
-> > >  {
-> > > -       unsigned long time;
-> > >         u32 val;
-> > > -       int ret;
-> > > -
-> > > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> > > -       if (ret < 0)
-> > > -               return ret;
-> > >
-> > > -       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> > > -       if (ret < 0)
-> > > -               return ret;
-> > > -
-> > > -       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> > > -                                 ispif->clock_for_reset,
-> > > -                                 to_device(ispif));
-> > > -       if (ret < 0)
-> > > -               return ret;
-> > > +       if (vfe_id > (to_camss(ispif)->vfe_num - 1)) {
-> > > +               dev_err(to_device(ispif),
-> > > +                       "Error: asked reset for invalid VFE%d\n", vfe_id);
-> > > +               return -ENOENT;
-> > > +       }
-> > >
-> > > -       reinit_completion(&ispif->reset_complete);
-> > > +       reinit_completion(&ispif->reset_complete[vfe_id]);
-> > >
-> > >         val = ISPIF_RST_CMD_0_STROBED_RST_EN |
-> > >                 ISPIF_RST_CMD_0_MISC_LOGIC_RST |
-> > > @@ -303,15 +291,51 @@ static int ispif_reset(struct ispif_device *ispif)
-> > >                 ISPIF_RST_CMD_0_RDI_OUTPUT_1_MISR_RST |
-> > >                 ISPIF_RST_CMD_0_RDI_OUTPUT_2_MISR_RST;
-> > >
-> > > -       writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
-> > > +       if (vfe_id == 1)
-> > > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_1);
-> > > +       else
-> > > +               writel_relaxed(val, ispif->base + ISPIF_RST_CMD_0);
-> > >
-> > > -       time = wait_for_completion_timeout(&ispif->reset_complete,
-> > > +       time = wait_for_completion_timeout(&ispif->reset_complete[vfe_id],
->
-> 'time' is not a variable that exists in this scope, so the build fails.
->
-Sorry about that, it looks like I've messed up a fix for that and it
-went into another
-unrelated commit instead of this one.
-In V2 it's definitely going to be moved here.
+1. Adapters, domains and control domains can not be added to or removed
+   from a running guest. In order to modify a guest's AP configuration,
+   the guest must be terminated; only then can AP resources be assigned
+   to or unassigned from the guest's matrix mdev. The new AP 
+   configuration becomes available to the guest when it is subsequently
+   restarted.
 
-> > >                 msecs_to_jiffies(ISPIF_RESET_TIMEOUT_MS));
-> > >         if (!time) {
-> > > -               dev_err(to_device(ispif), "ISPIF reset timeout\n");
-> > > -               ret = -EIO;
-> > > +               dev_err(to_device(ispif),
-> > > +                       "ISPIF for VFE%d reset timeout\n", vfe_id);
-> > > +               return -EIO;
-> > >         }
-> > >
-> > > +       return 0;
-> > > +}
-> > > +
-> > > +/*
-> > > + * ispif_reset - Trigger reset on ISPIF module and wait to complete
-> > > + * @ispif: ISPIF device
-> > > + *
-> > > + * Return 0 on success or a negative error code otherwise
-> > > + */
-> > > +static int ispif_reset(struct ispif_device *ispif, u8 vfe_id)
-> > > +{
-> > > +       unsigned long time;
-> > > +       int ret;
-> > > +
-> > > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE0);
-> > > +       if (ret < 0)
-> > > +               return ret;
-> > > +
-> > > +       ret = camss_pm_domain_on(to_camss(ispif), PM_DOMAIN_VFE1);
-> > > +       if (ret < 0)
-> > > +               return ret;
-> > > +
-> > > +       ret = camss_enable_clocks(ispif->nclocks_for_reset,
-> > > +                                 ispif->clock_for_reset,
-> > > +                                 to_device(ispif));
-> > > +       if (ret < 0)
-> > > +               return ret;
-> > > +
-> > > +       ret = ispif_vfe_reset(ispif, vfe_id);
-> > > +       if (ret)
-> > > +               dev_dbg(to_device(ispif), "ISPIF Reset failed\n");
-> > > +
-> > >         camss_disable_clocks(ispif->nclocks_for_reset, ispif->clock_for_reset);
-> > >
-> > >         camss_pm_domain_off(to_camss(ispif), PM_DOMAIN_VFE0);
-> > > @@ -355,7 +379,7 @@ static int ispif_set_power(struct v4l2_subdev *sd, int on)
-> > >                         goto exit;
-> > >                 }
-> > >
-> > > -               ret = ispif_reset(ispif);
-> > > +               ret = ispif_reset(ispif, line->vfe_id);
-> > >                 if (ret < 0) {
-> > >                         pm_runtime_put_sync(dev);
-> > >                         camss_disable_clocks(ispif->nclocks, ispif->clock);
-> > > @@ -1192,7 +1216,8 @@ int msm_ispif_subdev_init(struct ispif_device *ispif,
-> > >
-> > >         mutex_init(&ispif->config_lock);
-> > >
-> > > -       init_completion(&ispif->reset_complete);
-> > > +       for (i = 0; i < MSM_ISPIF_VFE_NUM; i++)
-> > > +               init_completion(&ispif->reset_complete[i]);
-> > >
-> > >         return 0;
-> > >  }
-> > > diff --git a/drivers/media/platform/qcom/camss/camss-ispif.h b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > > index 1a5ba2425a42..4132174f7ea1 100644
-> > > --- a/drivers/media/platform/qcom/camss/camss-ispif.h
-> > > +++ b/drivers/media/platform/qcom/camss/camss-ispif.h
-> > > @@ -56,7 +56,7 @@ struct ispif_device {
-> > >         int nclocks;
-> > >         struct camss_clock  *clock_for_reset;
-> > >         int nclocks_for_reset;
-> > > -       struct completion reset_complete;
-> > > +       struct completion reset_complete[MSM_ISPIF_VFE_NUM];
-> > >         int power_count;
-> > >         struct mutex power_lock;
-> > >         struct ispif_intf_cmd_reg intf_cmd[MSM_ISPIF_VFE_NUM];
-> > > --
-> > > 2.28.0
-> > >
+2. The AP bus's /sys/bus/ap/apmask and /sys/bus/ap/aqmask interfaces can
+   be modified by a root user without any restrictions. A change to
+   either mask can result in AP queue devices being unbound from the
+   vfio_ap device driver and bound to a zcrypt device driver even if a
+   guest is using the queues, thus giving the host access to the guest's
+   private crypto data and vice versa.
 
-Regards,
-Angelo
+3. The APQNs derived from the Cartesian product of the APIDs of the
+   adapters and APQIs of the domains assigned to a matrix mdev must
+   reference an AP queue device bound to the vfio_ap device driver. The
+   AP architecture allows assignment of AP resources that are not
+   available to the system, so this artificial restriction is not 
+   compliant with the architecture.
+
+4. The AP configuration profile can be dynamically changed for the linux
+   host after a KVM guest is started. For example, a new domain can be
+   dynamically added to the configuration profile via the SE or an HMC
+   connected to a DPM enabled lpar. Likewise, AP adapters can be 
+   dynamically configured (online state) and deconfigured (standby state)
+   using the SE, an SCLP command or an HMC connected to a DPM enabled
+   lpar. This can result in inadvertent sharing of AP queues between the
+   guest and host.
+
+5. A root user can manually unbind an AP queue device representing a 
+   queue in use by a KVM guest via the vfio_ap device driver's sysfs 
+   unbind attribute. In this case, the guest will be using a queue that
+   is not bound to the driver which violates the device model.
+
+This patch series introduces the following changes to the current design
+to alleviate the shortcomings described above as well as to implement
+more of the AP architecture:
+
+1. A root user will be prevented from making edits to the AP bus's
+   /sys/bus/ap/apmask or /sys/bus/ap/aqmask if the change would transfer
+   ownership of an APQN from the vfio_ap device driver to a zcrypt driver
+   while the APQN is assigned to a matrix mdev.
+
+2. Allow a root user to hot plug/unplug AP adapters, domains and control
+   domains for a KVM guest using the matrix mdev via its sysfs
+   assign/unassign attributes.
+
+4. Allow assignment of an AP adapter or domain to a matrix mdev even if
+   it results in assignment of an APQN that does not reference an AP
+   queue device bound to the vfio_ap device driver, as long as the APQN
+   is not reserved for use by the default zcrypt drivers (also known as
+   over-provisioning of AP resources). Allowing over-provisioning of AP
+   resources better models the architecture which does not preclude
+   assigning AP resources that are not yet available in the system. Such
+   APQNs, however, will not be assigned to the guest using the matrix
+   mdev; only APQNs referencing AP queue devices bound to the vfio_ap
+   device driver will actually get assigned to the guest.
+
+5. Handle dynamic changes to the AP device model. 
+
+1. Rationale for changes to AP bus's apmask/aqmask interfaces:
+----------------------------------------------------------
+Due to the extremely sensitive nature of cryptographic data, it is
+imperative that great care be taken to ensure that such data is secured.
+Allowing a root user, either inadvertently or maliciously, to configure
+these masks such that a queue is shared between the host and a guest is
+not only avoidable, it is advisable. It was suggested that this scenario
+is better handled in user space with management software, but that does
+not preclude a malicious administrator from using the sysfs interfaces
+to gain access to a guest's crypto data. It was also suggested that this
+scenario could be avoided by taking access to the adapter away from the
+guest and zeroing out the queues prior to the vfio_ap driver releasing the
+device; however, stealing an adapter in use from a guest as a by-product
+of an operation is bad and will likely cause problems for the guest
+unnecessarily. It was decided that the most effective solution with the
+least number of negative side effects is to prevent the situation at the
+source.
+
+2. Rationale for hot plug/unplug using matrix mdev sysfs interfaces:
+----------------------------------------------------------------
+Allowing a user to hot plug/unplug AP resources using the matrix mdev
+sysfs interfaces circumvents the need to terminate the guest in order to
+modify its AP configuration. Allowing dynamic configuration makes 
+reconfiguring a guest's AP matrix much less disruptive.
+
+3. Rationale for allowing over-provisioning of AP resources:
+----------------------------------------------------------- 
+Allowing assignment of AP resources to a matrix mdev and ultimately to a
+guest better models the AP architecture. The architecture does not
+preclude assignment of unavailable AP resources. If a queue subsequently
+becomes available while a guest using the matrix mdev to which its APQN
+is assigned, the guest will be given access to it. If an APQN
+is dynamically unassigned from the underlying host system, it will 
+automatically become unavailable to the guest.
+
+Change log v10-v11:
+------------------
+* The matrix mdev's configuration is not filtered by APID so that if any
+  APQN assigned to the mdev is not bound to the vfio_ap device driver,
+  the adapter will not get plugged into the KVM guest on startup, or when
+  a new adapter is assigned to the mdev.
+
+* Replaced patch 8 by squashing patches 8 (filtering patch) and 15 (handle 
+  probe/remove).
+
+* Added a patch 1 to remove disable IRQ after a reset because the reset
+  already disables a queue.
+
+* Now using filtering code to update the KVM guest's matrix when
+  notified that AP bus scan has completed.
+
+* Fixed issue with probe/remove not inititiated by a configuration change
+  occurring within a config change.
+
+
+Change log v9-v10:
+-----------------
+* Updated the documentation in vfio-ap.rst to include information about the
+  AP dynamic configuration support
+
+Change log v8-v9:
+----------------
+* Fixed errors flagged by the kernel test robot
+
+* Fixed issue with guest losing queues when a new queue is probed due to
+  manual bind operation.
+
+Change log v7-v8:
+----------------
+* Now logging a message when an attempt to reserve APQNs for the zcrypt
+  drivers will result in taking a queue away from a KVM guest to provide
+  the sysadmin a way to ascertain why the sysfs operation failed.
+
+* Created locked and unlocked versions of the ap_parse_mask_str() function.
+
+* Now using new interface provided by an AP bus patch -
+  s390/ap: introduce new ap function ap_get_qdev() - to retrieve
+  struct ap_queue representing an AP queue device. This patch is not a
+  part of this series but is a prerequisite for this series. 
+
+Change log v6-v7:
+----------------
+* Added callbacks to AP bus:
+  - on_config_changed: Notifies implementing drivers that
+    the AP configuration has changed since last AP device scan.
+  - on_scan_complete: Notifies implementing drivers that the device scan
+    has completed.
+  - implemented on_config_changed and on_scan_complete callbacks for
+    vfio_ap device driver.
+  - updated vfio_ap device driver's probe and remove callbacks to handle
+    dynamic changes to the AP device model. 
+* Added code to filter APQNs when assigning AP resources to a KVM guest's
+  CRYCB
+
+Change log v5-v6:
+----------------
+* Fixed a bug in ap_bus.c introduced with patch 2/7 of the v5 
+  series. Harald Freudenberer pointed out that the mutex lock
+  for ap_perms_mutex in the apmask_store and aqmask_store functions
+  was not being freed. 
+
+* Removed patch 6/7 which added logging to the vfio_ap driver
+  to expedite acceptance of this series. The logging will be introduced
+  with a separate patch series to allow more time to explore options
+  such as DBF logging vs. tracepoints.
+
+* Added 3 patches related to ensuring that APQNs that do not reference
+  AP queue devices bound to the vfio_ap device driver are not assigned
+  to the guest CRYCB:
+
+  Patch 4: Filter CRYCB bits for unavailable queue devices
+  Patch 5: sysfs attribute to display the guest CRYCB
+  Patch 6: update guest CRYCB in vfio_ap probe and remove callbacks
+
+* Added a patch (Patch 9) to version the vfio_ap module.
+
+* Reshuffled patches to allow the in_use callback implementation to
+  invoke the vfio_ap_mdev_verify_no_sharing() function introduced in
+  patch 2. 
+
+Change log v4-v5:
+----------------
+* Added a patch to provide kernel s390dbf debug logs for VFIO AP
+
+Change log v3->v4:
+-----------------
+* Restored patches preventing root user from changing ownership of
+  APQNs from zcrypt drivers to the vfio_ap driver if the APQN is
+  assigned to an mdev.
+
+* No longer enforcing requirement restricting guest access to
+  queues represented by a queue device bound to the vfio_ap
+  device driver.
+
+* Removed shadow CRYCB and now directly updating the guest CRYCB
+  from the matrix mdev's matrix.
+
+* Rebased the patch series on top of 'vfio: ap: AP Queue Interrupt
+  Control' patches.
+
+* Disabled bind/unbind sysfs interfaces for vfio_ap driver
+
+Change log v2->v3:
+-----------------
+* Allow guest access to an AP queue only if the queue is bound to
+  the vfio_ap device driver.
+
+* Removed the patch to test CRYCB masks before taking the vCPUs
+  out of SIE. Now checking the shadow CRYCB in the vfio_ap driver.
+
+Change log v1->v2:
+-----------------
+* Removed patches preventing root user from unbinding AP queues from 
+  the vfio_ap device driver
+* Introduced a shadow CRYCB in the vfio_ap driver to manage dynamic 
+  changes to the AP guest configuration due to root user interventions
+  or hardware anomalies.
+
+
+Tony Krowiak (14):
+  s390/vfio-ap: No need to disable IRQ after queue reset
+  390/vfio-ap: use new AP bus interface to search for queue devices
+  s390/vfio-ap: manage link between queue struct and matrix mdev
+  s390/zcrypt: driver callback to indicate resource in use
+  s390/vfio-ap: implement in-use callback for vfio_ap driver
+  s390/vfio-ap: introduce shadow APCB
+  s390/vfio-ap: sysfs attribute to display the guest's matrix
+  s390/vfio-ap: hot plug/unplug queues on bind/unbind of queue device
+  s390/vfio-ap: allow assignment of unavailable AP queues to mdev device
+  s390/vfio-ap: allow hot plug/unplug of AP resources using mdev device
+  s390/zcrypt: Notify driver on config changed and scan complete
+    callbacks
+  s390/vfio-ap: handle host AP config change notification
+  s390/vfio-ap: handle AP bus scan completed notification
+  s390/vfio-ap: update docs to include dynamic config support
+
+ Documentation/s390/vfio-ap.rst        |  362 ++++++--
+ drivers/s390/crypto/ap_bus.c          |  236 +++++-
+ drivers/s390/crypto/ap_bus.h          |   16 +
+ drivers/s390/crypto/vfio_ap_drv.c     |   52 +-
+ drivers/s390/crypto/vfio_ap_ops.c     | 1091 +++++++++++++++++++------
+ drivers/s390/crypto/vfio_ap_private.h |   29 +-
+ 6 files changed, 1384 insertions(+), 402 deletions(-)
+
+-- 
+2.21.1
+
