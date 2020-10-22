@@ -2,83 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 166F4295F11
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:56:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF3C2295F2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:58:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899095AbgJVM4b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:56:31 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:44034 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2899056AbgJVM4U (ORCPT
+        id S2899183AbgJVM5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:57:46 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:42075 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2899176AbgJVM5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:56:20 -0400
-X-UUID: 2f0e1791af684884892d04781f050fdb-20201022
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=xh4EuY2RcMtqZ5iWsGVDnw7AsLhcg0mrhQQvuCBZqTk=;
-        b=MzV/8vk3RkhRLsBMggthw+rlWF72y16T/DBtsiF7Uv8BvoWbdnL08+vj7HNxsiJ5zIJ8SxN/AMTtWxa3vZx5ZnIjDbNaoWy1vGE52UUM3RwYP5YcyD7thmSyENSH4dI8Oh4tV4uKQLx6TDZ7r6xFMdX4hoc64/6JQyxTN3nYqMM=;
-X-UUID: 2f0e1791af684884892d04781f050fdb-20201022
-Received: from mtkcas07.mediatek.inc [(172.21.101.84)] by mailgw02.mediatek.com
-        (envelope-from <weiyi.lu@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 513383610; Thu, 22 Oct 2020 20:56:13 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 22 Oct 2020 20:56:08 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Oct 2020 20:56:08 +0800
-From:   Weiyi Lu <weiyi.lu@mediatek.com>
-To:     Matthias Brugger <matthias.bgg@gmail.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Nicolas Boichat <drinkcat@chromium.org>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>,
-        <linux-mediatek@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-        <srv_heupstream@mediatek.com>, Weiyi Lu <weiyi.lu@mediatek.com>
-Subject: [PATCH 12/12] clk: mediatek: limit en_mask to a pure div_en_mask
-Date:   Thu, 22 Oct 2020 20:56:05 +0800
-Message-ID: <1603371365-30863-13-git-send-email-weiyi.lu@mediatek.com>
-X-Mailer: git-send-email 1.8.1.1.dirty
-In-Reply-To: <1603371365-30863-1-git-send-email-weiyi.lu@mediatek.com>
-References: <1603371365-30863-1-git-send-email-weiyi.lu@mediatek.com>
+        Thu, 22 Oct 2020 08:57:46 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 107B35C00FB;
+        Thu, 22 Oct 2020 08:57:45 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Oct 2020 08:57:45 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=SqzxoiikPEBmlhJn06ROlaXzpWO
+        L5Lkl7lMHaqJvppE=; b=CbWjch9q0xVMBCbOg/vBu3PnZRWmUXHzcCL5Cxi029s
+        dQxIB63ezQK6YObcSgpikUp4UqTSX2QwKjna3YA7EPMnEDo7VCgKgO9Eb2qsfigH
+        fCn8n5aexnV8JXUBmwUVJP7Auyl2GMFzT+szw1AoHsHGkV/Oh/Yils8SFLxmhroB
+        FRvTK14CjtbSvj1qJT4D/Rwx4pxZkZLehXruAWc9tOw/Ty9xjyWhiJG0mPk4yBwk
+        MJ+eu12hle/zwJdhSv8TIdf3zhbAtDYF3uIHWzuG7ff5cjEhGn7UaNFPocdpCm3E
+        LLXY7sVoXzja8LecH+1s5yn7+wS40q15/4Jd27T92mA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Sqzxoi
+        ikPEBmlhJn06ROlaXzpWOL5Lkl7lMHaqJvppE=; b=ln2fTzohCK4peFmqfU2ffw
+        GiYvCL2MzD7VGRLS6Tf1Q+RM/axS2/d4k7RZFE+H95zxX3QYNy0NcRbI2k89ClYH
+        1x+OlJoYGcGdg8OOocX3ba8eItHudpcrTFvKiK17AsXBPMh6GIOh1iaWni1nO7cT
+        VvFpGdQteKAM92jM7g8V1CYa6H6HzgcMMCWMvFJYd8Ff79gGwylJc6s4ODzI/VdH
+        qgpdDm3HNfYBEM4xDIUxzzB/+tiwdo5LWGPJ6Dc4E6ZkagClyjYZrKK/DL8qJgjT
+        LbfATHUfzXlFLgu+i7PxGzN/gS4fgkZPi+jPEtIb02K58AyXXnXSfGMCOGZrMNKw
+        ==
+X-ME-Sender: <xms:x4GRX7X12awgdHJAq9zUCnGn7DBgRiSy37GJ5yso81Mn2xdvmRKnow>
+    <xme:x4GRXzlYYCxiICPBBGLK_jhkWM3fjyToocLGbDDshN95hFlv2maXUuqW4LxMAv9yl
+    mjE5ro3zNuVpEtFBbE>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeejgdehjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:yIGRX3YeNS45xGORDNekM6BycridAu1Sdj7TCSuVLoWxu4VMIVqhNw>
+    <xmx:yIGRX2VopxPa2EUADf9XezxtaPMv57T2WX6AFLAMIF1xozpw5VZtEQ>
+    <xmx:yIGRX1n1cdXaB6aY0rIihs79T4OZMuEmvKI8faRI_7jApZtoKZNKhA>
+    <xmx:yYGRXzYytHhEgelO4kJV7_fWGkhhaCUq5pV8nqllDthDhaLojGj2LQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id AEC50328005D;
+        Thu, 22 Oct 2020 08:57:43 -0400 (EDT)
+Date:   Thu, 22 Oct 2020 14:57:41 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jaroslav Kysela <perex@perex.cz>
+Cc:     Takashi Iwai <tiwai@suse.com>, Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Dom Cobley <dom@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: Re: Context expectations in ALSA
+Message-ID: <20201022125741.xxibhwgcr2mhxehe@gilmour.lan>
+References: <20201022095041.44jytaelnlako54w@gilmour.lan>
+ <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="d62deidd5dansznh"
+Content-Disposition: inline
+In-Reply-To: <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-QmVjYXVzZSBhbGwgcGxsIGRhdGEgaGFzIGJlZW4gdXBkYXRlZC4gV2Ugbm8gbG9uZ2VyIGFsbG93
-DQplbl9tYXNrIGlzIGEgY29tYmluYXRpb24gb2YgcGxsX2VuX2JpdCBhbmQgZGl2X2VuX21hc2su
-DQoNClNpZ25lZC1vZmYtYnk6IFdlaXlpIEx1IDx3ZWl5aS5sdUBtZWRpYXRlay5jb20+DQotLS0N
-CiBkcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstcGxsLmMgfCAxMiArKysrLS0tLS0tLS0NCiAxIGZp
-bGUgY2hhbmdlZCwgNCBpbnNlcnRpb25zKCspLCA4IGRlbGV0aW9ucygtKQ0KDQpkaWZmIC0tZ2l0
-IGEvZHJpdmVycy9jbGsvbWVkaWF0ZWsvY2xrLXBsbC5jIGIvZHJpdmVycy9jbGsvbWVkaWF0ZWsv
-Y2xrLXBsbC5jDQppbmRleCAxMWVkNWQxLi5lMGIwMGJjIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9j
-bGsvbWVkaWF0ZWsvY2xrLXBsbC5jDQorKysgYi9kcml2ZXJzL2Nsay9tZWRpYXRlay9jbGstcGxs
-LmMNCkBAIC0yMzgsNyArMjM4LDYgQEAgc3RhdGljIGludCBtdGtfcGxsX3ByZXBhcmUoc3RydWN0
-IGNsa19odyAqaHcpDQogew0KIAlzdHJ1Y3QgbXRrX2Nsa19wbGwgKnBsbCA9IHRvX210a19jbGtf
-cGxsKGh3KTsNCiAJdTMyIHI7DQotCXUzMiBkaXZfZW5fbWFzazsNCiANCiAJciA9IHJlYWRsKHBs
-bC0+cHdyX2FkZHIpIHwgQ09OMF9QV1JfT047DQogCXdyaXRlbChyLCBwbGwtPnB3cl9hZGRyKTsN
-CkBAIC0yNTEsOSArMjUwLDggQEAgc3RhdGljIGludCBtdGtfcGxsX3ByZXBhcmUoc3RydWN0IGNs
-a19odyAqaHcpDQogCXIgPSByZWFkbChwbGwtPmJhc2VfYWRkciArIFJFR19DT04wKSB8IENPTjBf
-QkFTRV9FTjsNCiAJd3JpdGVsKHIsIHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KIA0KLQlk
-aXZfZW5fbWFzayA9IHBsbC0+ZGF0YS0+ZW5fbWFzayAmIH5DT04wX0JBU0VfRU47DQotCWlmIChk
-aXZfZW5fbWFzaykgew0KLQkJciA9IHJlYWRsKHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApIHwg
-ZGl2X2VuX21hc2s7DQorCWlmIChwbGwtPmRhdGEtPmVuX21hc2spIHsNCisJCXIgPSByZWFkbChw
-bGwtPmJhc2VfYWRkciArIFJFR19DT04wKSB8IHBsbC0+ZGF0YS0+ZW5fbWFzazsNCiAJCXdyaXRl
-bChyLCBwbGwtPmJhc2VfYWRkciArIFJFR19DT04wKTsNCiAJfQ0KIA0KQEAgLTI3NCw3ICsyNzIs
-NiBAQCBzdGF0aWMgdm9pZCBtdGtfcGxsX3VucHJlcGFyZShzdHJ1Y3QgY2xrX2h3ICpodykNCiB7
-DQogCXN0cnVjdCBtdGtfY2xrX3BsbCAqcGxsID0gdG9fbXRrX2Nsa19wbGwoaHcpOw0KIAl1MzIg
-cjsNCi0JdTMyIGRpdl9lbl9tYXNrOw0KIA0KIAlpZiAocGxsLT5kYXRhLT5mbGFncyAmIEhBVkVf
-UlNUX0JBUikgew0KIAkJciA9IHJlYWRsKHBsbC0+YmFzZV9hZGRyICsgUkVHX0NPTjApOw0KQEAg
-LTI4NCw5ICsyODEsOCBAQCBzdGF0aWMgdm9pZCBtdGtfcGxsX3VucHJlcGFyZShzdHJ1Y3QgY2xr
-X2h3ICpodykNCiANCiAJX19tdGtfcGxsX3R1bmVyX2Rpc2FibGUocGxsKTsNCiANCi0JZGl2X2Vu
-X21hc2sgPSBwbGwtPmRhdGEtPmVuX21hc2sgJiB+Q09OMF9CQVNFX0VOOw0KLQlpZiAoZGl2X2Vu
-X21hc2spIHsNCi0JCXIgPSByZWFkbChwbGwtPmJhc2VfYWRkciArIFJFR19DT04wKSAmIH5kaXZf
-ZW5fbWFzazsNCisJaWYgKHBsbC0+ZGF0YS0+ZW5fbWFzaykgew0KKwkJciA9IHJlYWRsKHBsbC0+
-YmFzZV9hZGRyICsgUkVHX0NPTjApICYgfnBsbC0+ZGF0YS0+ZW5fbWFzazsNCiAJCXdyaXRlbChy
-LCBwbGwtPmJhc2VfYWRkciArIFJFR19DT04wKTsNCiAJfQ0KIA0KLS0gDQoxLjguMS4xLmRpcnR5
-DQo=
 
+--d62deidd5dansznh
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Thu, Oct 22, 2020 at 12:03:19PM +0200, Jaroslav Kysela wrote:
+> Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
+>=20
+> > So, I'm not really sure what I'm supposed to do here. The drivers
+> > involved don't appear to be doing anything extraordinary, but the issues
+> > lockdep report are definitely valid too. What are the expectations in
+> > terms of context from ALSA when running the callbacks, and how can we
+> > fix it?
+>=20
+> I think that you should set the non-atomic flag and wake up the workqueue=
+ or
+> so from interrupt handler in this case. Call snd_pcm_period_elapsed() fro=
+m the
+> workqueue not the interrupt handler context.
+
+Yeah, that was my first guess too. However, the DMA driver uses some
+kind of generic helpers using a tasklet, so getting rid of it would take
+some work and would very likely not be eligible for stable.
+
+Maxime
+
+--d62deidd5dansznh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GBwQAKCRDj7w1vZxhR
+xTCUAQDTmZkZWcff1PLx6AGpuQLAYMsZuMdLn9JoU1UyOhjCaAEAgN02qADXy1D7
+SVTe4zN+/PYjg8cdc9fRz8yI1Udj8ws=
+=n3lj
+-----END PGP SIGNATURE-----
+
+--d62deidd5dansznh--
