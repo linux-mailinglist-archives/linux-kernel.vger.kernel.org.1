@@ -2,75 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4842F2966BA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:37:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B43632966AE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:35:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372404AbgJVVha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:37:30 -0400
-Received: from mx2.suse.de ([195.135.220.15]:39088 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S372395AbgJVVha (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:37:30 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 141DBABDE;
-        Thu, 22 Oct 2020 21:37:28 +0000 (UTC)
-From:   Davidlohr Bueso <dave@stgolabs.net>
-To:     viro@zeniv.linux.org.uk
-Cc:     akpm@linux-foundation.org, peterz@infradead.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Davidlohr Bueso <dave@stgolabs.net>,
-        Davidlohr Bueso <dbueso@suse.de>
-Subject: [PATCH] fs/dcache: optimize start_dir_add()
-Date:   Thu, 22 Oct 2020 14:16:50 -0700
-Message-Id: <20201022211650.25045-1-dave@stgolabs.net>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        id S372360AbgJVVfr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:35:47 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:55827 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S372340AbgJVVfq (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 17:35:46 -0400
+Received: from unknown (HELO ironmsg01-sd.qualcomm.com) ([10.53.140.141])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 22 Oct 2020 14:35:45 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg01-sd.qualcomm.com with ESMTP; 22 Oct 2020 14:35:45 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id 4D541193C; Thu, 22 Oct 2020 14:35:45 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Mark Brown <broonie@kernel.org>,
+        Markus Elfring <Markus.Elfring@web.de>,
+        Lee Jones <lee.jones@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>
+Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Joe Perches <joe@perches.com>,
+        Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        Anirudh Ghayal <aghayal@codeaurora.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v2 0/3] Add support for Qualcomm MFD PMIC register layout
+Date:   Thu, 22 Oct 2020 14:35:39 -0700
+Message-Id: <cover.1603402280.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Considering both end_dir_add() and d_alloc_parallel(), the
-dir->i_dir_seq wants acquire/release semantics, therefore
-micro-optimize for ll/sc archs and use finer grained barriers
-to provide (load)-ACQUIRE ordering (L->S + L->L). This comes
-at no additional cost for most of x86, as sane tso models will
-have a nop for smp_rmb/smp_acquire__after_ctrl_dep.
+Changes from v1:
+- Fixed YAML errors in dt binding document.
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
----
-Alternatively I guess we could just use cmpxchg_acquire().
+This is a follow-up as promised [1] to the earlier attempts [2] [3] to upstream
+the driver that has been hitherto used to handle IRQs for Qualcomm's PMICs that
+have multiple on-board peripherals when they are interfaced over the I2C
+interface.
 
- fs/dcache.c | 11 ++++++++---
- 1 file changed, 8 insertions(+), 3 deletions(-)
+This series is a rewrite of that driver while making use of the regmap-irq
+framework, which needs some modifications to handle the register layout of
+Qualcomm's PMICs. This is an RFC because I would like to get feedback on my
+general approach before submitting as a patch per se.
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..22738daccb9c 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -2502,13 +2502,18 @@ EXPORT_SYMBOL(d_rehash);
- 
- static inline unsigned start_dir_add(struct inode *dir)
- {
-+	unsigned n;
- 
- 	for (;;) {
--		unsigned n = dir->i_dir_seq;
--		if (!(n & 1) && cmpxchg(&dir->i_dir_seq, n, n + 1) == n)
--			return n;
-+		n = READ_ONCE(dir->i_dir_seq);
-+		if (!(n & 1) && cmpxchg_relaxed(&dir->i_dir_seq, n, n + 1) == n)
-+			break;
- 		cpu_relax();
- 	}
-+
-+	/* create (load)-ACQUIRE ordering */
-+	smp_acquire__after_ctrl_dep();
-+	return n;
- }
- 
- static inline void end_dir_add(struct inode *dir, unsigned n)
+Upon inspection of the regmap-irq framework, it was observed that the
+downstream driver was essentially replicating the framework's IRQ handling
+logic (such as adding an IRQ domain, and the interrupt handler thread that
+reads sub-irqs from a main status register). It was also observed that the
+framework could not be used as-is because:
+- Qualcomm's PMIC peripheral register layout does not follow a fixed
+  irq_reg_stride, and
+- The "IRQ TYPE" configuration register takes one bit per interrupt, which when
+  set configures that interrupt as Edge triggered, and when cleared sets it to
+  Level triggered.
+- There are two IRQ configuration registers in addition to "IRQ TYPE" that
+  further configure the IRQ type as triggered by rising-edge/level high or
+  alternatively, falling-edge/level low that have no support in the regmap-irq
+  framework currently.
+
+This patch series has been tested on an internal platform using PM8008 as a
+test MFD PMIC chip. PM8008 is a PMIC that contains 7 LDOs, 2 GPIOs, temperature
+monitoring, and can be interfaced over I2C.
+
+Both the framework modifications as well as the chip driver
+have been submitted here for review. Some details about the specific
+differences between the framework and QCOM PMICs' register layout are provided
+below using PM8008 as an example.
+
+[PM8008 peripheral register layout]
+
+Of all the peripherals in PM8008, only a few need IRQ support. They are laid
+out at the following base addresses (only four are added at the moment for
+simplicity):
+
+	0x0900, 0x2400, 0xC000, 0xC100
+
+Each peripheral is allocated a uniform size of 0x100 bytes and its IRQs are
+configured through a set of registers that are located at fixed offsets from
+the above base addresses, uniformly:
+
+	Register name	       Addr	regmap-irq equivalent	Comment
+	-----------------------------------------------------------------------
+	INT_RT_STS_OFFSET      0x10	(no equivalent)		See #1 below
+	INT_SET_TYPE_OFFSET    0x11	type_base 		See #2 below
+	INT_POL_HIGH_OFFSET    0x12	(no equivalent)		See #3 below
+	INT_POL_LOW_OFFSET     0x13	(no equivalent)		See #3 below
+	INT_LATCHED_CLR_OFFSET 0x14	ack_base
+	INT_EN_SET_OFFSET      0x15	unmask_base		See #4 below
+	INT_EN_CLR_OFFSET      0x16	mask_base		See #4 below
+	INT_LATCHED_STS_OFFSET 0x18	status_base
+
+Comments (all registers are one bit per interrupt):
+1. INT_RT_STS_OFFSET is not used by the regmap-irq, so it may be ignored.
+2. INT_SET_TYPE_OFFSET: 1 for edge trigger, 0 for level trigger.
+3. Support needs to be added for writing to INT_POL_HIGH_OFFSET and
+   INT_POL_LOW_OFFSET correctly in the framework. Set to 1 or 0 to enable or
+   disable rising-edge/level high or falling-edge/level low.
+4. Even though INT_EN_SET_OFFSET and INT_EN_CLR_OFFSET map to unmask_base and
+   mask_base in the regmap-irq framework conceptually, they are swapped in the
+   chip driver because `unmask_offset` in the framework expects unmask_base to
+   be larger than mask_base numerically. This has to be kept in mind while
+   reviewing the "mfd: Add PM8008 driver" patch below.
+
+[Summary of framework changes]
+
+The main thrust of the changes is to introduce an array of peripheral offset
+values, which are to be added to the *_base addresses in order to arrive at the
+correct register addresses per peripheral. In order to get at the first
+peripheral's addresses, the first element of this array must be zero.
+
+Since there are two new registers (INT_POL_HIGH_OFFSET and INT_POL_LOW_OFFSET),
+add support for storing the per-peripheral values and also writing to them.
+These will be used only if peripheral offsets are specified.
+
+[1] https://lore.kernel.org/lkml/20200519185757.GA13992@codeaurora.org/
+[2] https://lore.kernel.org/lkml/cover.1588037638.git.gurus@codeaurora.org/
+[3] https://lore.kernel.org/lkml/cover.1588115326.git.gurus@codeaurora.org/
+
+
+Guru Das Srinagesh (3):
+  regmap-irq: Add support for peripheral offsets
+  dt-bindings: mfd: Add QCOM PM8008 MFD bindings
+  mfd: Add PM8008 driver
+
+ .../bindings/mfd/qcom,pm8008-irqchip.yaml          | 102 +++++++++++
+ drivers/base/regmap/regmap-irq.c                   | 191 ++++++++++++++++----
+ drivers/mfd/Kconfig                                |  14 ++
+ drivers/mfd/Makefile                               |   1 +
+ drivers/mfd/qcom-pm8008.c                          | 197 +++++++++++++++++++++
+ include/linux/regmap.h                             |   6 +
+ 6 files changed, 477 insertions(+), 34 deletions(-)
+ create mode 100644 Documentation/devicetree/bindings/mfd/qcom,pm8008-irqchip.yaml
+ create mode 100644 drivers/mfd/qcom-pm8008.c
+
 -- 
-2.26.2
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
