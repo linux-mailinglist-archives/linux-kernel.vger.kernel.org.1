@@ -2,110 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 09796296487
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:19:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BBD5F296490
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:20:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902390AbgJVSTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:19:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40854 "EHLO
+        id S2902462AbgJVSUG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:20:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506933AbgJVSTB (ORCPT
+        with ESMTP id S2899050AbgJVSUE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:19:01 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AACDFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:19:01 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id 188so2569942qkk.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:19:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=DH64Jki2b0cRGtwK2eLq82tqva3V/YIIJDOJFec/tqg=;
-        b=kx4xqwnj6h5/3l+RNf43SX2STa83rjQXy3KG/a57ZTQkXBDa9URlcOtQNuoZxZ+9j8
-         VH5+uCDuYnjNMzJPkQWVKMHY8/xJeN9Xrnwzflr2X5OaBEVrNldjMTOgKYeyqSYOhhaq
-         wa6Spyb+lqtHxPLCUC5GqK82Fa2BOmDT2WLOA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=DH64Jki2b0cRGtwK2eLq82tqva3V/YIIJDOJFec/tqg=;
-        b=q+Cx4IoIsdfpHI9Se1edTG0ZUFVxSsDOMJq4BAmz9pdG7W2glKckg6nARKMxF2YjK4
-         iL9ukjQJ8ViJA2HYvUw9BXRSLJ59/Eiz3CvpQ8qi3BJLmbj/9iZepPwB/y7hscb4HZH8
-         fjX1y1RdXMrmK/RlftYZJ1cYkYo/55wgE2rinvgVFywd54ju5QH/UIb4SM7/qCsqTTez
-         kPmBun5XhCiKKtMpvStFEx+byCUFuZVV8QxdHLOCdPuSnt8yfwhIBznz4RoTt5Hec3u4
-         snpKMPkDvFrdkmsKCHl6fH/+pgn4lThItjp0j8+M06vc9zZNjIjcAiWt5pacsml++dbx
-         UG7Q==
-X-Gm-Message-State: AOAM531Y7adIEppXC1zxaJQCjemUer8bI5VpG568qVYE17LmE7Lf6EVo
-        u4PfQ9+9utBbB1Xdl9JdnMR9h9eBCeykcJwN+l4uUg==
-X-Google-Smtp-Source: ABdhPJw5W1L6+mWM55SD0J8J4cwzi+kKAcsvzkV/zqpOXBZzOpkXGXfNRiyR/JmB2qgrw0akBx4ZT225n3JmCsanr70=
-X-Received: by 2002:a37:a9c9:: with SMTP id s192mr2183416qke.128.1603390740776;
- Thu, 22 Oct 2020 11:19:00 -0700 (PDT)
+        Thu, 22 Oct 2020 14:20:04 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73FCC0613CE;
+        Thu, 22 Oct 2020 11:20:03 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVfBg-006PPz-Ar; Thu, 22 Oct 2020 18:19:44 +0000
+Date:   Thu, 22 Oct 2020 19:19:44 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     David Laight <David.Laight@aculab.com>,
+        'Christoph Hellwig' <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Message-ID: <20201022181944.GU3576660@ZenIV.linux.org.uk>
+References: <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de>
+ <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+ <20201022164040.GV20115@casper.infradead.org>
 MIME-Version: 1.0
-References: <20201022061554.3418060-1-pmalani@chromium.org>
- <20201022065719.GA1440360@kroah.com> <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
- <20201022071753.GA1470296@kroah.com> <CACeCKafjm-T5WnQNRbpKm3OwxqYH+_MxLMg60-=RrpJFBzcKyA@mail.gmail.com>
- <20201022124248.GQ1667571@kuha.fi.intel.com>
-In-Reply-To: <20201022124248.GQ1667571@kuha.fi.intel.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Thu, 22 Oct 2020 11:18:49 -0700
-Message-ID: <CACeCKadwa4-xOrihjv-6mkxxFtR5VeFuExP48hTrmteXw=fr9w@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022164040.GV20115@casper.infradead.org>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Heikki,
+On Thu, Oct 22, 2020 at 05:40:40PM +0100, Matthew Wilcox wrote:
+> On Thu, Oct 22, 2020 at 04:35:17PM +0000, David Laight wrote:
+> > Wait...
+> > readv(2) defines:
+> > 	ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
+> 
+> It doesn't really matter what the manpage says.  What does the AOSP
+> libc header say?
 
-Thanks for your feedback.
-
-On Thu, Oct 22, 2020 at 5:43 AM Heikki Krogerus
-<heikki.krogerus@linux.intel.com> wrote:
->
-> On Thu, Oct 22, 2020 at 12:25:07AM -0700, Prashant Malani wrote:
-> > Hi Greg,
-> >
-> > On Thu, Oct 22, 2020 at 12:17 AM Greg KH <gregkh@linuxfoundation.org> wrote:
-> > >
-> > > Given that your current implementation is not acceptable, something has
-> > > to change :)
-> >
-> > Got it. I'd like to see if Heikki has any suggestions on naming these
-> > entries better.
->
-> Why not have product type specific attribute files?
->
-> So if the partner is UFP, then we expose ufp1 and ufp2 files that
-> return the UFP1 and UFP2 VDO values and hide the other files:
->
->         % ls /sys/class/typec/port0-partner/identity/
->         id_header cert_stat product ufp1 ufp2
->
-> If the partner is DFP, then you expose the dfp file and hide
-> everything else:
->
->         % ls /sys/class/typec/port0-partner/identity/
->         id_header cert_stat product dfp
->
-> And so on.
->
-
-Makes sense, thanks! The only query I have here is , does the kernel
-*need* to implement this logic? Userspace can read id_header VDO and
-figure this on its own (parse the Product Type specific VDOs
-accordingly).
-
-Apart from that, I can work on implementing this if there are no concerns.
-
-Best regards,
-
-> thanks,
->
-> --
-> heikki
+FWIW, see https://www.spinics.net/lists/linux-scsi/msg147836.html and
+subthread from there on...
