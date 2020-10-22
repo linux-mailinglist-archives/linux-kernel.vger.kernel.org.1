@@ -2,106 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56894295602
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:21:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4FAE8295607
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:25:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894675AbgJVBVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:21:31 -0400
-Received: from smtp1.kaist.ac.kr ([143.248.5.228]:45478 "EHLO
-        smtp1.kaist.ac.kr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894667AbgJVBVb (ORCPT
+        id S2442670AbgJVBZY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:25:24 -0400
+Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:37168 "EHLO
+        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442704AbgJVBZY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:21:31 -0400
-Received: from unknown (HELO mail1.kaist.ac.kr) (143.248.5.69)
-        by 143.248.5.228 with ESMTP; 22 Oct 2020 10:21:29 +0900
-X-Original-SENDERIP: 143.248.5.69
-X-Original-MAILFROM: dae.r.jeong@kaist.ac.kr
-X-Original-RCPTTO: linux-kernel@vger.kernel.org
-Received: from kaist.ac.kr (143.248.133.220)
-        by kaist.ac.kr with ESMTP imoxion SensMail SmtpServer 7.0
-        id <7224713023a9492a84dd6477d3f89134> from <dae.r.jeong@kaist.ac.kr>;
-        Thu, 22 Oct 2020 10:21:28 +0900
-Date:   Thu, 22 Oct 2020 10:21:28 +0900
-From:   "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
-To:     song@kernel.org
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        yjkwon@kaist.ac.kr
-Subject: [PATCH] md: fix a warning caused by a race between concurrent
- md_ioctl()s
-Message-ID: <20201022012128.GA2103465@dragonet>
+        Wed, 21 Oct 2020 21:25:24 -0400
+Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 88301806B5;
+        Thu, 22 Oct 2020 14:25:18 +1300 (NZDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
+        s=mail181024; t=1603329918;
+        bh=7+o/Mhzem1dqhNkq7ef4LoO81PgES70KV6LfFH996z0=;
+        h=From:To:Cc:Subject:Date;
+        b=LuVK2dQ3So9SFdGGVen4/7Kb6C2oO5V+N1/uNEVsbKwAdaXVZY/GMdb/jAX2mgCEJ
+         2YmgipG8BreBY67vS7SPEFcvWD1WzVGZnsDXT1GPYnexOLctGroHuNJz+ugtmYLhcy
+         F1TSqHRBWHWNBjX39n41tDtyQ4xDjbDbYjRAZMND1SOylPWc0gTjLuoLj8LzHR/Vqe
+         8cUtyQ60CMoK3cxm20oYN+9U5WgDSiK5yPgmJgFV2j6Qnws248LdFiO7o3S1FfQxxF
+         TSHgKPxO4wsAQklsffqVAsck21m3JPVXmvvY8eIz6871d7EKflcwcWsEH0soGBj3UY
+         6Ag40/zjoyYHQ==
+Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
+        id <B5f90df7f0000>; Thu, 22 Oct 2020 14:25:19 +1300
+Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
+        by smtp (Postfix) with ESMTP id 25C3C13EEBB;
+        Thu, 22 Oct 2020 14:25:17 +1300 (NZDT)
+Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
+        id 5460A283AAA; Thu, 22 Oct 2020 14:25:18 +1300 (NZDT)
+From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
+To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
+        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
+        linux@armlinux.org.uk
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Chris Packham <chris.packham@alliedtelesis.co.nz>
+Subject: [PATCH 0/4] net: dsa: mv88e6xxx: serdes link without phy
+Date:   Thu, 22 Oct 2020 14:25:11 +1300
+Message-Id: <20201022012516.18720-1-chris.packham@alliedtelesis.co.nz>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+x-atlnz-ls: pat
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Syzkaller reports a warning as belows.
-WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
-...
-Call Trace:
-...
-RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
-RSP: 0018:ffff888096027950 EFLAGS: 00010293
-RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
-RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
-RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
-R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
-R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
- __blkdev_driver_ioctl block/ioctl.c:304 [inline]
- blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
- block_ioctl+0xee/0x130 fs/block_dev.c:1930
- vfs_ioctl fs/ioctl.c:46 [inline]
- file_ioctl fs/ioctl.c:509 [inline]
- do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
- ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
- __do_sys_ioctl fs/ioctl.c:720 [inline]
- __se_sys_ioctl fs/ioctl.c:718 [inline]
- __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
- do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
- entry_SYSCALL_64_after_hwframe+0x49/0xbe
+This small series gets my hardware into a working state. The key points a=
+re to
+make sure we don't force the link and that we ask the MAC for the link st=
+atus.
+I also have updated my dts to say `phy-mode =3D "1000base-x";` and `manag=
+ed =3D
+"in-band-status";`
 
-This is caused by a race between two concurrenct md_ioctl()s closing
-the array.
-CPU1 (md_ioctl())                   CPU2 (md_ioctl())
-------                              ------
-set_bit(MD_CLOSING, &mddev->flags);
-did_set_md_closing = true;
-                                    WARN_ON_ONCE(test_bit(MD_CLOSING,
-                                            &mddev->flags));
-if(did_set_md_closing)
-    clear_bit(MD_CLOSING, &mddev->flags);
+I've included patch #4 in this series but I don't have anything to test i=
+t on.
+It's just a guess based on the datasheets. I'd suggest applying patch 1, =
+2 & 3
+and leaving 4 for the mailing list archives.
 
-Fix the warning by returning immediately if the MD_CLOSING bit is set
-in &mddev->flags which indicates that the array is being closed.
+Chris Packham (4):
+  net: dsa: mv88e6xxx: Don't force link when using in-band-status
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6097/6095/6185
+  net: dsa: mv88e6xxx: Handle error in serdes_get_regs
+  net: dsa: mv88e6xxx: Support serdes ports on MV88E6123/6131
 
-Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
-Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
-Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
----
- drivers/md/md.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/dsa/mv88e6xxx/chip.c   |  50 +++++++++++-
+ drivers/net/dsa/mv88e6xxx/chip.h   |   4 +
+ drivers/net/dsa/mv88e6xxx/port.c   |  36 +++++++++
+ drivers/net/dsa/mv88e6xxx/port.h   |   3 +
+ drivers/net/dsa/mv88e6xxx/serdes.c | 122 +++++++++++++++++++++++++++--
+ drivers/net/dsa/mv88e6xxx/serdes.h |   9 +++
+ 6 files changed, 217 insertions(+), 7 deletions(-)
 
-diff --git a/drivers/md/md.c b/drivers/md/md.c
-index 98bac4f304ae..643f7f5be49b 100644
---- a/drivers/md/md.c
-+++ b/drivers/md/md.c
-@@ -7590,8 +7590,11 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
- 			err = -EBUSY;
- 			goto out;
- 		}
--		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
--		set_bit(MD_CLOSING, &mddev->flags);
-+		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
-+			mutex_unlock(&mddev->open_mutex);
-+			err = -EBUSY;
-+			goto out;
-+		}
- 		did_set_md_closing = true;
- 		mutex_unlock(&mddev->open_mutex);
- 		sync_blockdev(bdev);
--- 
-2.25.1
-
-
+--=20
+2.28.0
 
