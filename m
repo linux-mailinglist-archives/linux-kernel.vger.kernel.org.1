@@ -2,70 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0517C295EBB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:42:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F05F1295EC9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:42:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505301AbgJVMmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:42:35 -0400
-Received: from mx2.suse.de ([195.135.220.15]:40420 "EHLO mx2.suse.de"
+        id S2505854AbgJVMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:42:52 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505137AbgJVMmf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:42:35 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 17F58AD07;
-        Thu, 22 Oct 2020 12:42:34 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 14:42:32 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>
-Subject: Re: [PATCH v2 5/7] mm, page_alloc: cache pageset high and batch in
- struct zone
-Message-ID: <20201022124231.GC26121@linux>
-References: <20201008114201.18824-1-vbabka@suse.cz>
- <20201008114201.18824-6-vbabka@suse.cz>
- <20201008123129.GC4967@dhcp22.suse.cz>
- <fb44322e-c1b1-83e1-de94-e3837c363b95@suse.cz>
+        id S2505404AbgJVMmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:42:51 -0400
+Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 923602245F;
+        Thu, 22 Oct 2020 12:42:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603370571;
+        bh=9zCZ6VIW3zrQtBABsEVJDX3+3/llT4jKQ3QazEIpIKQ=;
+        h=Date:From:To:Cc:Subject:From;
+        b=u4061ed25z7nkj++DVBgSanbvHKSd9bvERQ6byVlLpUbCJa03UKUJq8RDovoTyaLz
+         uIsSbYLdA14muNhDMLlm8RcG7lhWpjAtGUIabJHEIjld3eRUyEM+J9PehbsEAgx1jC
+         Ea4y6E9rUlgukk8D2MmW2GP+8adnLS7th1cKA4YE=
+Date:   Thu, 22 Oct 2020 14:42:47 +0200
+From:   Jessica Yu <jeyu@kernel.org>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [GIT PULL] Modules updates for v5.10
+Message-ID: <20201022124246.GA8608@linux-8ccs>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <fb44322e-c1b1-83e1-de94-e3837c363b95@suse.cz>
+X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
 User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 07:55:02PM +0200, Vlastimil Babka wrote:
-> Right, here's updated patch:
-> 
-> ----8<----
-> From 6ab0f03762d122a896349d5e568f75c20875eb42 Mon Sep 17 00:00:00 2001
-> From: Vlastimil Babka <vbabka@suse.cz>
-> Date: Mon, 7 Sep 2020 14:20:08 +0200
-> Subject: [PATCH v2 5/7] mm, page_alloc: cache pageset high and batch in struct
->  zone
-> 
-> All per-cpu pagesets for a zone use the same high and batch values, that are
-> duplicated there just for performance (locality) reasons. This patch adds the
-> same variables also to struct zone as a shared copy.
-> 
-> This will be useful later for making possible to disable pcplists temporarily
-> by setting high value to 0, while remembering the values for restoring them
-> later. But we can also immediately benefit from not updating pagesets of all
-> possible cpus in case the newly recalculated values (after sysctl change or
-> memory online/offline) are actually unchanged from the previous ones.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Acked-by: Michal Hocko <mhocko@suse.com>
+Hi Linus,
 
-LGTM,
+Please pull below to receive modules updates for the v5.10 merge window.
+Details can be found in the signed tag.
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+Thank you,
 
--- 
-Oscar Salvador
-SUSE L3
+Jessica
+
+--
+
+The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+
+  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.10
+
+for you to fetch changes up to fdf09ab887829cd1b671e45d9549f8ec1ffda0fa:
+
+  module: statically initialize init section freeing data (2020-10-12 18:27:00 +0200)
+
+----------------------------------------------------------------
+Modules updates for v5.10
+
+Summary of modules changes for the 5.10 merge window:
+
+- Code cleanups. More informative error messages and statically
+  initialize init_free_wq to avoid a workqueue warning.
+
+Signed-off-by: Jessica Yu <jeyu@kernel.org>
+
+----------------------------------------------------------------
+Daniel Jordan (1):
+      module: statically initialize init section freeing data
+
+Qu Wenruo (1):
+      module: Add more error message for failed kernel module loading
+
+ kernel/module.c | 23 +++++++++++------------
+ 1 file changed, 11 insertions(+), 12 deletions(-)
