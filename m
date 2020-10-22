@@ -2,111 +2,245 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 19805296122
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:51:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD1FB296124
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:52:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368211AbgJVOvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:51:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55654 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368201AbgJVOvr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:51:47 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A1B4EAC6C;
-        Thu, 22 Oct 2020 14:51:45 +0000 (UTC)
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-To:     Rik van Riel <riel@surriel.com>, Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Message-ID: <06c1e573-cddd-c17c-9f18-3af2d9d09f80@suse.cz>
-Date:   Thu, 22 Oct 2020 16:51:44 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S368223AbgJVOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:52:09 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:15245 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S368214AbgJVOwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:52:09 -0400
+Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id 30F26FF6DDC4680DAA83;
+        Thu, 22 Oct 2020 22:52:04 +0800 (CST)
+Received: from [127.0.0.1] (10.174.176.238) by DGGEMS404-HUB.china.huawei.com
+ (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 22 Oct 2020
+ 22:51:54 +0800
+To:     <miklos@szeredi.hu>, <mszeredi@redhat.com>
+CC:     linfeilong <linfeilong@huawei.com>,
+        <linux-fsdevel@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        lihaotian <lihaotian9@huawei.com>, <liuzhiqiang26@huawei.com>
+From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Subject: [PATCH] fuse: fix potential accessing NULL pointer problem in
+ fuse_send_init()
+Message-ID: <5e1bf70a-0c6b-89b6-dc9f-474ccfcfe597@huawei.com>
+Date:   Thu, 22 Oct 2020 22:51:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.2
 MIME-Version: 1.0
-In-Reply-To: <20201021234846.5cc97e62@imladris.surriel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.174.176.238]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 5:48 AM, Rik van Riel wrote:
-> The allocation flags of anonymous transparent huge pages can be controlled
-> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-> help the system from getting bogged down in the page reclaim and compaction
-> code when many THPs are getting allocated simultaneously.
-> 
-> However, the gfp_mask for shmem THP allocations were not limited by those
-> configuration settings, and some workloads ended up with all CPUs stuck
-> on the LRU lock in the page reclaim code, trying to allocate dozens of
-> THPs simultaneously.
-> 
-> This patch applies the same configurated limitation of THPs to shmem
-> hugepage allocations, to prevent that from happening.
-> 
-> This way a THP defrag setting of "never" or "defer+madvise" will result
-> in quick allocation failures without direct reclaim when no 2MB free
-> pages are available.
-> 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-FTR, a patch to the same effect was sent by Xu Yu:
+In fuse_send_init func, ia is allocated by calling kzalloc func, and
+we donot check whether ia is NULL before using it. Thus, if allocating
+ia fails, accessing NULL pointer problem will occur.
 
-https://lore.kernel.org/r/11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com
+Here, we will call process_init_reply func if ia is NULL.
 
-> ---
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..0a5b164a26d9 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
->   extern void pm_restrict_gfp_mask(void);
->   extern void pm_restore_gfp_mask(void);
->   
-> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
-> +
->   #ifdef CONFIG_PM_SLEEP
->   extern bool pm_suspended_storage(void);
->   #else
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9474dbc150ed..9b08ce5cc387 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->    *	    available
->    * never: never stall for any thp allocation
->    */
-> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-> +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
->   {
->   	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
->   
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..d1290eb508e5 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1545,8 +1545,11 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
->   		return NULL;
->   
->   	shmem_pseudo_vma_init(&pvma, info, hindex);
-> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
-> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
-> +	/* Limit the gfp mask according to THP configuration. */
-> +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
-> +	gfp &= alloc_hugepage_direct_gfpmask(&pvma);
-> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> +			       true);
->   	shmem_pseudo_vma_destroy(&pvma);
->   	if (page)
->   		prep_transhuge_page(page);
-> 
+Fixes: 615047eff108 ("fuse: convert init to simple api")
+Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
+Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+---
+ fs/fuse/inode.c | 161 ++++++++++++++++++++++++++----------------------
+ 1 file changed, 87 insertions(+), 74 deletions(-)
+
+diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
+index 581329203d68..bb526d8cf5b0 100644
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@ -898,88 +898,97 @@ struct fuse_init_args {
+ static void process_init_reply(struct fuse_conn *fc, struct fuse_args *args,
+ 			       int error)
+ {
+-	struct fuse_init_args *ia = container_of(args, typeof(*ia), args);
+-	struct fuse_init_out *arg = &ia->out;
++	struct fuse_init_args *ia;
++	struct fuse_init_out *arg;
++	unsigned long ra_pages;
+
+-	if (error || arg->major != FUSE_KERNEL_VERSION)
++	if (!args) {
+ 		fc->conn_error = 1;
+-	else {
+-		unsigned long ra_pages;
++		goto out;
++	}
+
+-		process_init_limits(fc, arg);
++	ia = container_of(args, typeof(*ia), args);
++	arg = &ia->out;
++	if (error || arg->major != FUSE_KERNEL_VERSION) {
++		fc->conn_error = 1;
++		goto out_free_ia;
++	}
+
+-		if (arg->minor >= 6) {
+-			ra_pages = arg->max_readahead / PAGE_SIZE;
+-			if (arg->flags & FUSE_ASYNC_READ)
+-				fc->async_read = 1;
+-			if (!(arg->flags & FUSE_POSIX_LOCKS))
+-				fc->no_lock = 1;
+-			if (arg->minor >= 17) {
+-				if (!(arg->flags & FUSE_FLOCK_LOCKS))
+-					fc->no_flock = 1;
+-			} else {
+-				if (!(arg->flags & FUSE_POSIX_LOCKS))
+-					fc->no_flock = 1;
+-			}
+-			if (arg->flags & FUSE_ATOMIC_O_TRUNC)
+-				fc->atomic_o_trunc = 1;
+-			if (arg->minor >= 9) {
+-				/* LOOKUP has dependency on proto version */
+-				if (arg->flags & FUSE_EXPORT_SUPPORT)
+-					fc->export_support = 1;
+-			}
+-			if (arg->flags & FUSE_BIG_WRITES)
+-				fc->big_writes = 1;
+-			if (arg->flags & FUSE_DONT_MASK)
+-				fc->dont_mask = 1;
+-			if (arg->flags & FUSE_AUTO_INVAL_DATA)
+-				fc->auto_inval_data = 1;
+-			else if (arg->flags & FUSE_EXPLICIT_INVAL_DATA)
+-				fc->explicit_inval_data = 1;
+-			if (arg->flags & FUSE_DO_READDIRPLUS) {
+-				fc->do_readdirplus = 1;
+-				if (arg->flags & FUSE_READDIRPLUS_AUTO)
+-					fc->readdirplus_auto = 1;
+-			}
+-			if (arg->flags & FUSE_ASYNC_DIO)
+-				fc->async_dio = 1;
+-			if (arg->flags & FUSE_WRITEBACK_CACHE)
+-				fc->writeback_cache = 1;
+-			if (arg->flags & FUSE_PARALLEL_DIROPS)
+-				fc->parallel_dirops = 1;
+-			if (arg->flags & FUSE_HANDLE_KILLPRIV)
+-				fc->handle_killpriv = 1;
+-			if (arg->time_gran && arg->time_gran <= 1000000000)
+-				fc->sb->s_time_gran = arg->time_gran;
+-			if ((arg->flags & FUSE_POSIX_ACL)) {
+-				fc->default_permissions = 1;
+-				fc->posix_acl = 1;
+-				fc->sb->s_xattr = fuse_acl_xattr_handlers;
+-			}
+-			if (arg->flags & FUSE_CACHE_SYMLINKS)
+-				fc->cache_symlinks = 1;
+-			if (arg->flags & FUSE_ABORT_ERROR)
+-				fc->abort_err = 1;
+-			if (arg->flags & FUSE_MAX_PAGES) {
+-				fc->max_pages =
+-					min_t(unsigned int, FUSE_MAX_MAX_PAGES,
+-					max_t(unsigned int, arg->max_pages, 1));
+-			}
+-		} else {
+-			ra_pages = fc->max_read / PAGE_SIZE;
++	process_init_limits(fc, arg);
++
++	if (arg->minor >= 6) {
++		ra_pages = arg->max_readahead / PAGE_SIZE;
++		if (arg->flags & FUSE_ASYNC_READ)
++			fc->async_read = 1;
++		if (!(arg->flags & FUSE_POSIX_LOCKS))
+ 			fc->no_lock = 1;
+-			fc->no_flock = 1;
++		if (arg->minor >= 17) {
++			if (!(arg->flags & FUSE_FLOCK_LOCKS))
++				fc->no_flock = 1;
++		} else {
++			if (!(arg->flags & FUSE_POSIX_LOCKS))
++				fc->no_flock = 1;
+ 		}
+-
+-		fc->sb->s_bdi->ra_pages =
+-				min(fc->sb->s_bdi->ra_pages, ra_pages);
+-		fc->minor = arg->minor;
+-		fc->max_write = arg->minor < 5 ? 4096 : arg->max_write;
+-		fc->max_write = max_t(unsigned, 4096, fc->max_write);
+-		fc->conn_init = 1;
++		if (arg->flags & FUSE_ATOMIC_O_TRUNC)
++			fc->atomic_o_trunc = 1;
++		if (arg->minor >= 9) {
++			/* LOOKUP has dependency on proto version */
++			if (arg->flags & FUSE_EXPORT_SUPPORT)
++				fc->export_support = 1;
++		}
++		if (arg->flags & FUSE_BIG_WRITES)
++			fc->big_writes = 1;
++		if (arg->flags & FUSE_DONT_MASK)
++			fc->dont_mask = 1;
++		if (arg->flags & FUSE_AUTO_INVAL_DATA)
++			fc->auto_inval_data = 1;
++		else if (arg->flags & FUSE_EXPLICIT_INVAL_DATA)
++			fc->explicit_inval_data = 1;
++		if (arg->flags & FUSE_DO_READDIRPLUS) {
++			fc->do_readdirplus = 1;
++			if (arg->flags & FUSE_READDIRPLUS_AUTO)
++				fc->readdirplus_auto = 1;
++		}
++		if (arg->flags & FUSE_ASYNC_DIO)
++			fc->async_dio = 1;
++		if (arg->flags & FUSE_WRITEBACK_CACHE)
++			fc->writeback_cache = 1;
++		if (arg->flags & FUSE_PARALLEL_DIROPS)
++			fc->parallel_dirops = 1;
++		if (arg->flags & FUSE_HANDLE_KILLPRIV)
++			fc->handle_killpriv = 1;
++		if (arg->time_gran && arg->time_gran <= 1000000000)
++			fc->sb->s_time_gran = arg->time_gran;
++		if ((arg->flags & FUSE_POSIX_ACL)) {
++			fc->default_permissions = 1;
++			fc->posix_acl = 1;
++			fc->sb->s_xattr = fuse_acl_xattr_handlers;
++		}
++		if (arg->flags & FUSE_CACHE_SYMLINKS)
++			fc->cache_symlinks = 1;
++		if (arg->flags & FUSE_ABORT_ERROR)
++			fc->abort_err = 1;
++		if (arg->flags & FUSE_MAX_PAGES) {
++			fc->max_pages =
++				min_t(unsigned int, FUSE_MAX_MAX_PAGES,
++				max_t(unsigned int, arg->max_pages, 1));
++		}
++	} else {
++		ra_pages = fc->max_read / PAGE_SIZE;
++		fc->no_lock = 1;
++		fc->no_flock = 1;
+ 	}
+-	kfree(ia);
+
++	fc->sb->s_bdi->ra_pages =
++			min(fc->sb->s_bdi->ra_pages, ra_pages);
++	fc->minor = arg->minor;
++	fc->max_write = arg->minor < 5 ? 4096 : arg->max_write;
++	fc->max_write = max_t(unsigned int, 4096, fc->max_write);
++	fc->conn_init = 1;
++
++out_free_ia:
++	kfree(ia);
++out:
+ 	fuse_set_initialized(fc);
+ 	wake_up_all(&fc->blocked_waitq);
+ }
+@@ -989,6 +998,10 @@ void fuse_send_init(struct fuse_conn *fc)
+ 	struct fuse_init_args *ia;
+
+ 	ia = kzalloc(sizeof(*ia), GFP_KERNEL | __GFP_NOFAIL);
++	if (!ia) {
++		process_init_reply(fc, NULL, -ENOTCONN);
++		return;
++	}
+
+ 	ia->in.major = FUSE_KERNEL_VERSION;
+ 	ia->in.minor = FUSE_KERNEL_MINOR_VERSION;
+-- 
+2.19.1
+
 
