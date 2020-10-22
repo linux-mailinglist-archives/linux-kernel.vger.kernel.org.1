@@ -2,201 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B5E82966D2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:55:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 616D22966EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372568AbgJVVzq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:55:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372561AbgJVVzp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:55:45 -0400
-Received: from mail-pl1-x643.google.com (mail-pl1-x643.google.com [IPv6:2607:f8b0:4864:20::643])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ADACFC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:55:45 -0700 (PDT)
-Received: by mail-pl1-x643.google.com with SMTP id y1so1684494plp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:55:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=bSdK3k1TBbRvuC/WhxV3YJ28gX0IxP9ViGk2wq1xS2Q=;
-        b=AbITCrNKTuknwF6qrZRzkc5DHZUMX5UOeoGS7JSCmxWMjVjjaFuA2EkrusTrpW6Cki
-         w36yMHpzn0BqMRBSO2vtIUvJ9xNHj4u4+bw5CeuAXv4PtpdCHTnnW4tF9Du/kHvEljhC
-         ERdCYtO7Kr4Xm3FDXcCsvmNc2YPpL+xJtUTfD6CVTZoBl+KL7qCeeI/yeTEuRP+gzgJM
-         eAQpPmIN95lREuppjw0SV3XlI+nsLil5vcDZAFdiXKfrPWb99VsSlXC9OPQGLytg2PIK
-         A9i+3fM4m14mH2wUeHRgcj6NvNN58JEAnTUfCgKRYKlvvqqF2akKaGQhy4IP+lpNmnuk
-         lX6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=bSdK3k1TBbRvuC/WhxV3YJ28gX0IxP9ViGk2wq1xS2Q=;
-        b=cV1fzd3SmTQwneR3ag5dNGlZxp+3tRuOVfZda2hBDFvEyb8ojqWuOKOD4Puwd4TlO9
-         px20gNUTHQWCZlretCC3PTyWoBNrq+32HrYfPjEnGNm7FQgLzHSw3we9vBeSyWKjrUvu
-         a3xT5bDk8l/qisg0pg7g2XXMQbhge0ZW4sJp+pRthwKVNvATC9zgR2X4s//P9dKsA1IN
-         Xa80YzoNx9FAD1uE1BtnQABp5DpdN7KHXhsZAtnkzJWJOfsZbtuakHQddY8bO5fogAcD
-         BDF749bXb569Ecrks4IUIsWdmwo2dpJF0lx4qWbpHBskNxsy2MdwMltPbe1gVyazdu+T
-         vLoQ==
-X-Gm-Message-State: AOAM532xMhkjF5892iW66KHpVNkk5KAJVjCosPalAlFAybMoZFhB+a/0
-        ZNbuE+DdfL1O78ECqj0TBavPJbs8jyYgIg==
-X-Google-Smtp-Source: ABdhPJze/0ucwSlNo6Sj0+n/Xq7z65wxa9rP9ler9euuaWpxzyVGkOkTCgwTXXn12EkWiN6Jp4euxA==
-X-Received: by 2002:a17:902:5989:b029:d5:f682:ceac with SMTP id p9-20020a1709025989b02900d5f682ceacmr4133559pli.64.1603403745000;
-        Thu, 22 Oct 2020 14:55:45 -0700 (PDT)
-Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
-        by smtp.gmail.com with ESMTPSA id t15sm3005436pjy.33.2020.10.22.14.55.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 14:55:44 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:55:42 -0600
-From:   Mathieu Poirier <mathieu.poirier@linaro.org>
-To:     Peng Fan <peng.fan@nxp.com>
-Cc:     "bjorn.andersson@linaro.org" <bjorn.andersson@linaro.org>,
-        "ohad@wizery.com" <ohad@wizery.com>,
-        "linux-remoteproc@vger.kernel.org" <linux-remoteproc@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 07/13] remoteproc: Introduce function rproc_detach()
-Message-ID: <20201022215542.GB729430@xps15>
-References: <20200826164529.224476-1-mathieu.poirier@linaro.org>
- <20200826164529.224476-8-mathieu.poirier@linaro.org>
- <DB6PR0402MB2760F33EF3C3BF69D737899688020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <DB6PR0402MB2760F33EF3C3BF69D737899688020@DB6PR0402MB2760.eurprd04.prod.outlook.com>
+        id S372674AbgJVWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:05:02 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:36989 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S372666AbgJVWFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 18:05:01 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603404300; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=nKH7VLBQhE3Mu51emIZ9NIquRcR56rtwk5fWzTGhkoo=; b=hwwAnd6HANRKd8sL1YgTd4do4fFrDzbv2pFycqGbb9jlAqflsxxX9rUsq3MWWMM+7KImXmGk
+ 6xXLPaKhd28R1VEBHkWompyVi4vtVTxjjCWq+HC7M62DGUKfcSgsJsafauw1UIT8Q68O2YJ2
+ nD6k5yE0NjoCe3jErKkEMdTeKKk=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f9201dbbfed2afaa6864793 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 22:04:11
+ GMT
+Sender: eberman=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3FE7EC433FF; Thu, 22 Oct 2020 22:04:10 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
+        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
+Received: from eberman-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: eberman)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA3F4C433C9;
+        Thu, 22 Oct 2020 22:04:08 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA3F4C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
+From:   Elliot Berman <eberman@codeaurora.org>
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>
+Cc:     Elliot Berman <eberman@codeaurora.org>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+Date:   Thu, 22 Oct 2020 15:04:03 -0700
+Message-Id: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 15, 2020 at 01:52:16AM +0000, Peng Fan wrote:
-> > Subject: [PATCH 07/13] remoteproc: Introduce function rproc_detach()
-> > 
-> > Introduce function rproc_detach() to enable the remoteproc core to release
-> > the resources associated with a remote processor without stopping its
-> > operation.
-> > 
-> > Signed-off-by: Mathieu Poirier <mathieu.poirier@linaro.org>
-> > ---
-> >  drivers/remoteproc/remoteproc_core.c | 65
-> > +++++++++++++++++++++++++++-
-> >  include/linux/remoteproc.h           |  1 +
-> >  2 files changed, 65 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/drivers/remoteproc/remoteproc_core.c
-> > b/drivers/remoteproc/remoteproc_core.c
-> > index 7a1fc7e0620f..f3943a1e2754 100644
-> > --- a/drivers/remoteproc/remoteproc_core.c
-> > +++ b/drivers/remoteproc/remoteproc_core.c
-> > @@ -1644,7 +1644,7 @@ static int rproc_stop(struct rproc *rproc, bool
-> > crashed)
-> >  /*
-> >   * __rproc_detach(): Does the opposite of rproc_attach()
-> >   */
-> > -static int __maybe_unused __rproc_detach(struct rproc *rproc)
-> > +static int __rproc_detach(struct rproc *rproc)
-> >  {
-> >  	struct device *dev = &rproc->dev;
-> >  	int ret;
-> > @@ -1887,6 +1887,69 @@ void rproc_shutdown(struct rproc *rproc)  }
-> > EXPORT_SYMBOL(rproc_shutdown);
-> > 
-> > +/**
-> > + * rproc_detach() - Detach the remote processor from the
-> > + * remoteproc core
-> > + *
-> > + * @rproc: the remote processor
-> > + *
-> > + * Detach a remote processor (previously attached to with rproc_actuate()).
-> > + *
-> > + * In case @rproc is still being used by an additional user(s), then
-> > + * this function will just decrement the power refcount and exit,
-> > + * without disconnecting the device.
-> > + *
-> > + * Function rproc_detach() calls __rproc_detach() in order to let a
-> > +remote
-> > + * processor know that services provided by the application processor
-> > +are
-> > + * no longer available.  From there it should be possible to remove the
-> > + * platform driver and even power cycle the application processor (if
-> > +the HW
-> > + * supports it) without needing to switch off the remote processor.
-> > + */
-> > +int rproc_detach(struct rproc *rproc)
-> > +{
-> > +	struct device *dev = &rproc->dev;
-> > +	int ret;
-> > +
-> > +	ret = mutex_lock_interruptible(&rproc->lock);
-> > +	if (ret) {
-> > +		dev_err(dev, "can't lock rproc %s: %d\n", rproc->name, ret);
-> > +		return ret;
-> > +	}
-> > +
-> > +	if (rproc->state != RPROC_RUNNING && rproc->state !=
-> > RPROC_ATTACHED) {
-> > +		ret = -EPERM;
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* if the remote proc is still needed, bail out */
-> > +	if (!atomic_dec_and_test(&rproc->power)) {
-> > +		ret = -EBUSY;
-> > +		goto out;
-> > +	}
-> > +
-> > +	ret = __rproc_detach(rproc);
-> > +	if (ret) {
-> > +		atomic_inc(&rproc->power);
-> > +		goto out;
-> > +	}
-> > +
-> > +	/* clean up all acquired resources */
-> > +	rproc_resource_cleanup(rproc);
-> > +
-> > +	rproc_disable_iommu(rproc);
-> > +
-> > +	/*
-> > +	 * Set the remote processor's table pointer to NULL.  Since mapping
-> > +	 * of the resource table to a virtual address is done in the platform
-> > +	 * driver, unmapping should also be done there.
-> > +	 */
-> > +	rproc->table_ptr = NULL;
-> > +out:
-> > +	mutex_unlock(&rproc->lock);
-> > +	return ret;
-> > +}
-> > +EXPORT_SYMBOL(rproc_detach);
-> > +
-> >  /**
-> >   * rproc_get_by_phandle() - find a remote processor by phandle
-> >   * @phandle: phandle to the rproc
-> > diff --git a/include/linux/remoteproc.h b/include/linux/remoteproc.h index
-> > 1a57e165da2c..6250491ee851 100644
-> > --- a/include/linux/remoteproc.h
-> > +++ b/include/linux/remoteproc.h
-> > @@ -656,6 +656,7 @@ rproc_of_resm_mem_entry_init(struct device *dev,
-> > u32 of_resm_idx, size_t len,
-> > 
-> >  int rproc_boot(struct rproc *rproc);
-> >  void rproc_shutdown(struct rproc *rproc);
-> > +int rproc_detach(struct rproc *rproc);
-> >  void rproc_report_crash(struct rproc *rproc, enum rproc_crash_type type);
-> > int rproc_coredump_add_segment(struct rproc *rproc, dma_addr_t da, size_t
-> > size);  int rproc_coredump_add_custom_segment(struct rproc *rproc,
-> > --
-> 
-> 
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> 
-> Not relevant to your patch, just see unregister_virtio_device not set device
-> status when reading code, should that add device status setting in
-> unregister_virtio_device?
+In a heterogeneous multiprocessor system, specifying the 'maxcpus'
+parameter on kernel command line does not provide sufficient control
+over which CPUs are brought online at kernel boot time, since CPUs may
+have nonuniform performance characteristics. Thus, add bootcpus kernel
+parameter to control which CPUs should be brought online during kernel
+boot. When both maxcpus and bootcpus is set, the more restrictive of the
+two are booted.
 
-I must admit that I don't understand the question - would you mind rephrasing or
-expanding?
+Signed-off-by: Elliot Berman <eberman@codeaurora.org>
+---
+ Documentation/admin-guide/kernel-parameters.txt |  8 +++++++
+ include/linux/cpu.h                             |  2 +-
+ kernel/cpu.c                                    |  4 ++--
+ kernel/smp.c                                    | 28 +++++++++++++++++++++++--
+ 4 files changed, 37 insertions(+), 5 deletions(-)
 
-Thanks,
-Mathieu
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 65d047f..ea31af3 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -449,6 +449,14 @@
+ 
+ 			See Documentation/admin-guide/bootconfig.rst
+ 
++	bootcpus=	[SMP]  List of processors that an SMP kernel
++			will bring up during bootup. Similar to maxcpus, except
++			as a cpu list as described above. The more restrictive
++			of maxcpus and bootcpus applies. If bootcpus=1-3 and
++			maxcpus=2, only processors 1 and 2 are booted. As with
++			maxcpus, you can bring up other plugged cpu by executing
++			"echo 1 > /sys/devices/system/cpu/cpuX/online"
++
+ 	bert_disable	[ACPI]
+ 			Disable BERT OS support on buggy BIOSes.
+ 
+diff --git a/include/linux/cpu.h b/include/linux/cpu.h
+index 8aa84c0..4146f71 100644
+--- a/include/linux/cpu.h
++++ b/include/linux/cpu.h
+@@ -95,7 +95,7 @@ void notify_cpu_starting(unsigned int cpu);
+ extern void cpu_maps_update_begin(void);
+ extern void cpu_maps_update_done(void);
+ int bringup_hibernate_cpu(unsigned int sleep_cpu);
+-void bringup_nonboot_cpus(unsigned int setup_max_cpus);
++void bringup_nonboot_cpus(unsigned int setup_max_cpus, cpumask_var_t boot_cpus);
+ 
+ #else	/* CONFIG_SMP */
+ #define cpuhp_tasks_frozen	0
+diff --git a/kernel/cpu.c b/kernel/cpu.c
+index 6ff2578..71f626b 100644
+--- a/kernel/cpu.c
++++ b/kernel/cpu.c
+@@ -1328,14 +1328,14 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
+ 	return 0;
+ }
+ 
+-void bringup_nonboot_cpus(unsigned int setup_max_cpus)
++void bringup_nonboot_cpus(unsigned int setup_max_cpus, cpumask_var_t boot_cpus)
+ {
+ 	unsigned int cpu;
+ 
+ 	for_each_present_cpu(cpu) {
+ 		if (num_online_cpus() >= setup_max_cpus)
+ 			break;
+-		if (!cpu_online(cpu))
++		if (!cpu_online(cpu) && cpumask_test_cpu(cpu, boot_cpus))
+ 			cpu_up(cpu, CPUHP_ONLINE);
+ 	}
+ }
+diff --git a/kernel/smp.c b/kernel/smp.c
+index 4d17501..727e003 100644
+--- a/kernel/smp.c
++++ b/kernel/smp.c
+@@ -738,7 +738,7 @@ EXPORT_SYMBOL(smp_call_function);
+ /* Setup configured maximum number of CPUs to activate */
+ unsigned int setup_max_cpus = NR_CPUS;
+ EXPORT_SYMBOL(setup_max_cpus);
+-
++static cpumask_var_t boot_cpus;
+ 
+ /*
+  * Setup routine for controlling SMP activation
+@@ -787,6 +787,27 @@ static int __init maxcpus(char *str)
+ 
+ early_param("maxcpus", maxcpus);
+ 
++static int __init bootcpus(char *str)
++{
++	alloc_bootmem_cpumask_var(&boot_cpus);
++	if (cpulist_parse(str, boot_cpus) < 0) {
++		pr_warn("incorrect bootcpus mask\n");
++		return -EINVAL;
++	}
++	cpumask_set_cpu(smp_processor_id(), boot_cpus);
++	return 0;
++}
++
++early_param("bootcpus", bootcpus);
++
++static void __init boot_cpus_init(void)
++{
++	if (!cpumask_available(boot_cpus))
++		zalloc_cpumask_var(&boot_cpus, GFP_NOWAIT);
++	if (cpumask_empty(boot_cpus))
++		cpumask_setall(boot_cpus);
++}
++
+ /* Setup number of possible processor ids */
+ unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
+ EXPORT_SYMBOL(nr_cpu_ids);
+@@ -804,10 +825,13 @@ void __init smp_init(void)
+ 
+ 	idle_threads_init();
+ 	cpuhp_threads_init();
++	boot_cpus_init();
+ 
+ 	pr_info("Bringing up secondary CPUs ...\n");
+ 
+-	bringup_nonboot_cpus(setup_max_cpus);
++	bringup_nonboot_cpus(setup_max_cpus, boot_cpus);
++
++	free_bootmem_cpumask_var(boot_cpus);
+ 
+ 	num_nodes = num_online_nodes();
+ 	num_cpus  = num_online_cpus();
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> 
-> 
