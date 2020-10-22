@@ -2,140 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0E6929617E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0226296181
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:13:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368491AbgJVPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:12:19 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36292 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S368432AbgJVPMR (ORCPT
+        id S2901259AbgJVPNC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:13:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40132 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2901246AbgJVPNB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:12:17 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603379536;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=uDlJvVtWMlPWw+lQx90tQ7kEfUNHvkpfYYWbomFbvhA=;
-        b=QacrUXZGTFkmWMLriwhtv9Xp3reNIXmA+Mip6T76HeNKWBRbZfG+SGSKdSp6nrNda1wAkk
-        O3XDu4ag9sqoxBgaXo1dtn70S20a5IvDLdGfJDEDit+Yk88ODhMbcWkDz5btxz0dOU0EYN
-        /D2eyG0Hf158yRdDwRGW2Y4IsV7awHM=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-584-nYS15yLeNbO5z0Blf0cGTA-1; Thu, 22 Oct 2020 11:12:13 -0400
-X-MC-Unique: nYS15yLeNbO5z0Blf0cGTA-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 108C41882FA1;
-        Thu, 22 Oct 2020 15:12:11 +0000 (UTC)
-Received: from lorien.usersys.redhat.com (ovpn-113-70.phx2.redhat.com [10.3.113.70])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4253C55776;
-        Thu, 22 Oct 2020 15:12:02 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 11:12:00 -0400
-From:   Phil Auld <pauld@redhat.com>
-To:     Colin Ian King <colin.king@canonical.com>
-Cc:     Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Giovanni Gherdovich <ggherdovich@suse.com>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
-Message-ID: <20201022151200.GC92942@lorien.usersys.redhat.com>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <34115486.YmRjPRKJaA@kreacher>
- <20201022120213.GG2611@hirez.programming.kicks-ass.net>
- <1790766.jaFeG3T87Z@kreacher>
- <20201022122949.GW2628@hirez.programming.kicks-ass.net>
- <20201022145250.GK32041@suse.de>
- <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
+        Thu, 22 Oct 2020 11:13:01 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 19BA1C0613CE;
+        Thu, 22 Oct 2020 08:13:01 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id t20so2123707edr.11;
+        Thu, 22 Oct 2020 08:13:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IX8WMs6zObG98t/kvu3EHvgAGHpB35Q/1BzZxNjptvA=;
+        b=cN2STobb+g8vomJU+/Zok0/CD1WW4nOwEoj1+sO8DTcXP/Z8K1QmGvUX2Yz82RTf4W
+         AWfEADgSaMcmCXj9lmJGzrPv5LIQJEyj4jvJrcoTkJ7MLDbhvPWWHHo5QXVr3anqBQs4
+         rhdeIvgEqCYAHubSolkTIzOn78MdzkfvoACwiSavcwIPX+4eJzJCMj926E4fioCgoT+s
+         PZgO/hQNpmfhvyB0JPqdycqgDYUWslurOlIXZWXi4kBWBX8kHQUwK+jtKjq6F2ZYtpm3
+         e+UvUS/cyVQHAc9DknUyhWelyly/xg4WFkTMfyy6/k2M0V9ZirwnwE066G3+fddSsdCq
+         biBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=IX8WMs6zObG98t/kvu3EHvgAGHpB35Q/1BzZxNjptvA=;
+        b=AZVkFfs25hMGlfEk4kweW2FiYMbf4NI5CHPTclSQJ8EEXLEh1bQiHUfLYK8rmeCux0
+         9Ma/s4GEGKiKTJRTXE9QPZ3IJQCR6fphTz+jrhBfRS8u/WHiplB/GLTlMNc+vufKqTGK
+         tHlNGuPVSbPlZb3D+uW6xsqYK9IwRepjghNETZXsYBk5ByrkRI07Gqs5XICLUr9eRr5B
+         RP2FTrN4wOJTYG1KAwvXupMfzeBmM8KswaJGsxDrG0IM4HjMhafeDdBbkFDJxwSrpyx3
+         Oz0Vkgl+0lck5YB4IXYt1L0tbEZ6XetX0k+4esivk9j3JUZYaRm3ZMgvJrIbuPDHmxoi
+         2Pqw==
+X-Gm-Message-State: AOAM532bXnknMFhCQ6r+uAQ0T8VE3pCvTmXKzFufh1j7VWssl0NnqYvo
+        VEZoSWS1iG9isautLZpfrzk=
+X-Google-Smtp-Source: ABdhPJw9/aMqMC7fYLyOBUBkykwqzjH6SnS0XQyjjxX3YH+JC9O0iyKuWh17qZSDt/NBIsieSYpjAg==
+X-Received: by 2002:aa7:c351:: with SMTP id j17mr275834edr.70.1603379579797;
+        Thu, 22 Oct 2020 08:12:59 -0700 (PDT)
+Received: from localhost.localdomain ([188.26.174.215])
+        by smtp.gmail.com with ESMTPSA id k25sm1049252ejz.93.2020.10.22.08.12.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 08:12:59 -0700 (PDT)
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Walle <michael@walle.cc>
+Subject: [PATCH] tty: serial: fsl_lpuart: LS1021A has a FIFO size of 32 datawords
+Date:   Thu, 22 Oct 2020 18:12:50 +0300
+Message-Id: <20201022151250.3236335-1-olteanv@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 03:58:13PM +0100 Colin Ian King wrote:
-> On 22/10/2020 15:52, Mel Gorman wrote:
-> > On Thu, Oct 22, 2020 at 02:29:49PM +0200, Peter Zijlstra wrote:
-> >> On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
-> >>>> However I do want to retire ondemand, conservative and also very much
-> >>>> intel_pstate/active mode.
-> >>>
-> >>> I agree in general, but IMO it would not be prudent to do that without making
-> >>> schedutil provide the same level of performance in all of the relevant use
-> >>> cases.
-> >>
-> >> Agreed; I though to have understood we were there already.
-> > 
-> > AFAIK, not quite (added Giovanni as he has been paying more attention).
-> > Schedutil has improved since it was merged but not to the extent where
-> > it is a drop-in replacement. The standard it needs to meet is that
-> > it is at least equivalent to powersave (in intel_pstate language)
-> > or ondemand (acpi_cpufreq) and within a reasonable percentage of the
-> > performance governor. Defaulting to performance is a) giving up and b)
-> > the performance governor is not a universal win. There are some questions
-> > currently on whether schedutil is good enough when HWP is not available.
-> > There was some evidence (I don't have the data, Giovanni was looking into
-> > it) that HWP was a requirement to make schedutil work well. That is a
-> > hazard in itself because someone could test on the latest gen Intel CPU
-> > and conclude everything is fine and miss that Intel-specific technology
-> > is needed to make it work well while throwing everyone else under a bus.
-> > Giovanni knows a lot more than I do about this, I could be wrong or
-> > forgetting things.
-> > 
-> > For distros, switching to schedutil by default would be nice because
-> > frequency selection state would follow the task instead of being per-cpu
-> > and we could stop worrying about different HWP implementations but it's
-> > not at the point where the switch is advisable. I would expect hard data
-> > before switching the default and still would strongly advise having a
-> > period of time where we can fall back when someone inevitably finds a
-> > new corner case or exception.
-> 
-> ..and it would be really useful for distros to know when the hard data
-> is available so that they can make an informed decision when to move to
-> schedutil.
->
+From: Vladimir Oltean <vladimir.oltean@nxp.com>
 
-I think distros are on the hook to generate that hard data themselves
-with which to make such a decision.  I don't expect it to be done by
-someone else. 
+Similar to the workaround applied by Michael Walle in commit
+c2f448cff22a ("tty: serial: fsl_lpuart: add LS1028A support"), it turns
+out that the LPUARTx_FIFO encoding for fields TXFIFOSIZE and RXFIFOSIZE
+is the same for LS1028A as for LS1021A.
 
-> > 
-> > For reference, SLUB had the same problem for years. It was switched
-> > on by default in the kernel config but it was a long time before
-> > SLUB was generally equivalent to SLAB in terms of performance. Block
-> > multiqueue also had vaguely similar issues before the default changes
-> > and a period of time before it was removed removed (example whinging mail
-> > https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
-> > It's schedutil's turn :P
-> > 
-> 
+The RXFIFOSIZE in the Layerscape SoCs is fixed at this value:
+101 Receive FIFO/Buffer depth = 32 datawords.
 
-Agreed. I'd like the option to switch back if we make the default change.
-It's on the table and I'd like to be able to go that way. 
+When Andy Duan wrote the commit in Fixes: below, he assumed that the 101
+encoding means 64 datawords. But this is not true for Layerscape. So
+that commit broke LS1021A, and this patch is extending the workaround
+for LS1028A which appeared in the meantime, to fix that breakage.
 
-Cheers,
-Phil
+When the driver thinks that it has a deeper FIFO than it really has,
+getty (user space) output gets truncated.
 
+Many thanks to Michael for suggesting this!
+
+Fixes: f77ebb241ce0 ("tty: serial: fsl_lpuart: correct the FIFO depth size")
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+ drivers/tty/serial/fsl_lpuart.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index ff4b88c637d0..bd047e1f9bea 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -314,9 +314,10 @@ MODULE_DEVICE_TABLE(of, lpuart_dt_ids);
+ /* Forward declare this for the dma callbacks*/
+ static void lpuart_dma_tx_complete(void *arg);
+ 
+-static inline bool is_ls1028a_lpuart(struct lpuart_port *sport)
++static inline bool is_layerscape_lpuart(struct lpuart_port *sport)
+ {
+-	return sport->devtype == LS1028A_LPUART;
++	return (sport->devtype == LS1021A_LPUART ||
++		sport->devtype == LS1028A_LPUART);
+ }
+ 
+ static inline bool is_imx8qxp_lpuart(struct lpuart_port *sport)
+@@ -1701,11 +1702,11 @@ static int lpuart32_startup(struct uart_port *port)
+ 					    UARTFIFO_FIFOSIZE_MASK);
+ 
+ 	/*
+-	 * The LS1028A has a fixed length of 16 words. Although it supports the
+-	 * RX/TXSIZE fields their encoding is different. Eg the reference manual
+-	 * states 0b101 is 16 words.
++	 * The LS1021A and LS1028A have a fixed FIFO depth of 16 words.
++	 * Although they support the RX/TXSIZE fields, their encoding is
++	 * different. Eg the reference manual states 0b101 is 16 words.
+ 	 */
+-	if (is_ls1028a_lpuart(sport)) {
++	if (is_layerscape_lpuart(sport)) {
+ 		sport->rxfifo_size = 16;
+ 		sport->txfifo_size = 16;
+ 		sport->port.fifosize = sport->txfifo_size;
 -- 
+2.25.1
 
