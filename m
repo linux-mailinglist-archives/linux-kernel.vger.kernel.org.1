@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA88296150
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:59:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A7C6296151
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:59:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368422AbgJVO7C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:59:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37960 "EHLO
+        id S368431AbgJVO7E (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:59:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368408AbgJVO64 (ORCPT
+        with ESMTP id S368377AbgJVO64 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Oct 2020 10:58:56 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4534C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:54 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id h7so2844386wre.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:54 -0700 (PDT)
+Received: from mail-wr1-x442.google.com (mail-wr1-x442.google.com [IPv6:2a00:1450:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 308CFC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:56 -0700 (PDT)
+Received: by mail-wr1-x442.google.com with SMTP id h7so2844496wre.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=4+Qb9Q/ZmcbIp8Pe27lI1Rpv+0UAMYpN4sqqu2GMj+k=;
-        b=XLHUg9R1nN9rHkLqfa6ExhrmV0lfr9kNDVfWsJeHPzIKPnss8VkhZBL+2ylERrsInp
-         Fa8wJ6U8ybfMIcMXVewT7pcGVthzgp0QagmBq2x+vIgBl79xU5bQa2ZIqmJ5Y5lPqYGG
-         +FkRhznWhtbso3B+m4+Dn7aii/d2fSbTn89fRyu4C6qbnSaYmV9zOM0+0mL4ODaKwBHq
-         +b0cfkMwyE15h+WpaYvMnq6MC7uw4/YUKNgvd1pfwsRmE23VLA9ZCCLlUaYsb4a0l2SS
-         ncMtk5PLFkV5pn9FAb4ZoNvYp5SbDJDPUBjKFCEfcgsw/rB66nXPLKknr6iccBtBX/V1
-         jV8w==
+        bh=rdtE/CTKuG22fgltDA/K3/fg/7WELrz8s5eFlNU3ExU=;
+        b=EW1ldS7JdAsUl2FFSZeP38Zlr0dODHqayRa/WvgK82XrW7aMaNdhJJOq0YUgSuKKgC
+         TXMsYylpp+pY3FSry1ZsvV5J2ud6syJL28fDD0fxrEJwy1zWdZgx7Yn+xvarTMmwmFRH
+         GU/Qw7GPiKgwpDlfgQbSFKh6Q16nGW7vFTTvA/shXp0CUMsmkqfQ9mvPovziq/DVAPLP
+         fAqlA5pWK9ApAUE+fYRikb4OQANI30yo+TUneE1CeiLw9+jiUGhKBYXO56t1biNtE8nc
+         BsIAGxbhowNzsZaYuLzERblmf4MLB3W57BJENmOCSGheqHk1iN90NOzWh054pmGDc08k
+         BHAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=4+Qb9Q/ZmcbIp8Pe27lI1Rpv+0UAMYpN4sqqu2GMj+k=;
-        b=nVtzrlAASXmkrUPPUrVEyW3XAqNjZIYvNp4E7l/Y/6deabIjoM5RTk8k5Artm9IJDh
-         vcoPzPrmVh9TYOpYTR/qHCr8NAEuRuEfe9Gi8dMETRTWBFe+YXbTqD2VlOAs2k4KVMy/
-         iRoYGDYOh76qqD+G+s0svJdy1UY3fccickIczAk6MSJTKm5WCLM0eesrRy9CQ0PChHSm
-         tRkdusVujX1yl9i9hJ4hNkIRFBMn7neJ+1Q0VoaBh6XApuqN7UT5bBfm3swkmoUu9xge
-         VFA/mhM7W9ZD9lL81T36huK4pDoJOH45q+kOqJh5eE77CPUYyPmCQymTQi9h6n1OJqVD
-         rYNA==
-X-Gm-Message-State: AOAM531p4GZGOiqEPz7oEo2ggEmithg9IsTdFNRDPaYpC+yVOmewEK9V
-        8R3DT3+tsfJ2rj/u6qFKgPx6eg==
-X-Google-Smtp-Source: ABdhPJxjuCM0sDoRAj0+ZqMdEKCQGHHOODjltB24ip04cRgyPfPfP/5ccsqKJWExOKKAFo1aAWeHYA==
-X-Received: by 2002:a5d:4451:: with SMTP id x17mr3096996wrr.176.1603378733669;
-        Thu, 22 Oct 2020 07:58:53 -0700 (PDT)
+        bh=rdtE/CTKuG22fgltDA/K3/fg/7WELrz8s5eFlNU3ExU=;
+        b=gyVSwIouzxmiMIFkhK2DS5JR0r0f49j93I7BtO/GLmzZpitGPwv3FhhcIk4BQWUvL4
+         LqMqFgcVDDOnpuiYL2XCCX/mPfIf/+aVZNuzHuaZGDg8+KSOzTY8r97wKXUvItbotLz3
+         LUMU//aK0yueZhqU5LXLmpKMf0rTxLilKYdQx1jsbzOFHJSVGbds1aua3eGZExDclmAj
+         SNVuPp9OxNTh9ANxehXxSjMKpPc9OYemfnmeYi7Vjumhkz6hC4CGdYKjZUa2c9HwSk+X
+         Cw+Uq6ms/aXgCZUyCAnmJync6ewYVhVJYT44aH0u+WiHSXF04e0tP/Eo48yfWmGZNpl7
+         s2Dg==
+X-Gm-Message-State: AOAM532UiWwtpqF+qYJarkZPHtzcSg6EFMFGCrN+M//j0E5McQHIaJgT
+        Ffc/m5av/SsFGC3bzixBErNUww==
+X-Google-Smtp-Source: ABdhPJz5IHOIpvegF1ePbRIeTlNQL0jQjt4t/1vAg4vQAOx/j1apGiymOCAZDVVtCNCTTbcnnnTr/Q==
+X-Received: by 2002:adf:f104:: with SMTP id r4mr3208315wro.202.1603378734868;
+        Thu, 22 Oct 2020 07:58:54 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.52
+        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 07:58:53 -0700 (PDT)
+        Thu, 22 Oct 2020 07:58:54 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>, Dave Martin <Dave.Martin@arm.com>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 19/20] perf arm_spe: Decode memory tagging properties
-Date:   Thu, 22 Oct 2020 15:58:15 +0100
-Message-Id: <20201022145816.14069-20-leo.yan@linaro.org>
+Subject: [PATCH v3 20/20] perf arm-spe: Add support for ARMv8.3-SPE
+Date:   Thu, 22 Oct 2020 15:58:16 +0100
+Message-Id: <20201022145816.14069-21-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201022145816.14069-1-leo.yan@linaro.org>
 References: <20201022145816.14069-1-leo.yan@linaro.org>
@@ -71,61 +71,158 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Andre Przywara <andre.przywara@arm.com>
+From: Wei Li <liwei391@huawei.com>
 
-When SPE records a physical address, it can additionally tag the event
-with information from the Memory Tagging architecture extension.
+This patch is to support Armv8.3 extension for SPE, it adds alignment
+field in the Events packet and it supports the Scalable Vector Extension
+(SVE) for Operation packet and Events packet with two additions:
 
-Decode the two additional fields in the SPE event payload.
+  - The vector length for SVE operations in the Operation Type packet;
+  - The incomplete predicate and empty predicate fields in the Events
+    packet.
 
-[leoy: Refined patch to use predefined macros]
-
-Signed-off-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Wei Li <liwei391@huawei.com>
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
 ---
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 +++++-
- tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 2 ++
- 2 files changed, 7 insertions(+), 1 deletion(-)
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 74 ++++++++++++++++++-
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 18 +++++
+ 2 files changed, 90 insertions(+), 2 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index c1a3b0afd1de..74ac12cbec69 100644
+index 74ac12cbec69..6da4cfbc9914 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -432,6 +432,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
- 				 char *buf, size_t buf_len)
- {
- 	int ns, el, idx = packet->index;
-+	int ch, pat;
- 	u64 payload = packet->payload;
- 
- 	switch (idx) {
-@@ -448,9 +449,12 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
- 					    "VA 0x%llx", payload);
- 	case SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS:
- 		ns = !!SPE_ADDR_PKT_GET_NS(payload);
-+		ch = !!SPE_ADDR_PKT_GET_CH(payload);
-+		pat = SPE_ADDR_PKT_GET_PAT(payload);
- 		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
- 		return arm_spe_pkt_snprintf(&buf, &buf_len,
--					    "PA 0x%llx ns=%d", payload, ns);
-+					    "PA 0x%llx ns=%d ch=%d, pat=%x",
-+					    payload, ns, ch, pat);
- 	default:
- 		return 0;
+@@ -332,6 +332,21 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
+ 		if (ret < 0)
+ 			return ret;
  	}
++	if (payload & BIT(EV_ALIGNMENT)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " ALIGNMENT");
++		if (ret < 0)
++			return ret;
++	}
++	if (payload & BIT(EV_PARTIAL_PREDICATE)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-PARTIAL-PRED");
++		if (ret < 0)
++			return ret;
++	}
++	if (payload & BIT(EV_EMPTY_PREDICATE)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " SVE-EMPTY-PRED");
++		if (ret < 0)
++			return ret;
++	}
+ 
+ 	return buf_len - blen;
+ }
+@@ -345,8 +360,43 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+ 
+ 	switch (class) {
+ 	case SPE_OP_PKT_HDR_CLASS_OTHER:
+-		return arm_spe_pkt_snprintf(&buf, &blen,
+-			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
++		if (SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP_GET(payload) ==
++				SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP) {
++
++			ret = arm_spe_pkt_snprintf(&buf, &blen, "SVE-OTHER");
++			if (ret < 0)
++				return ret;
++
++			/* SVE effective vector length */
++			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
++						   SPE_OP_PKG_SVE_EVL(payload));
++			if (ret < 0)
++				return ret;
++
++			if (payload & SPE_OP_PKT_SVE_FP) {
++				ret = arm_spe_pkt_snprintf(&buf, &blen, " FP");
++				if (ret < 0)
++					return ret;
++			}
++			if (payload & SPE_OP_PKT_SVE_PRED) {
++				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
++				if (ret < 0)
++					return ret;
++			}
++		} else {
++			ret = arm_spe_pkt_snprintf(&buf, &blen, "OTHER");
++			if (ret < 0)
++				return ret;
++
++			ret = arm_spe_pkt_snprintf(&buf, &blen, " %s",
++					payload & SPE_OP_PKT_COND ?
++					"COND-SELECT" : "INSN-OTHER");
++			if (ret < 0)
++				return ret;
++		}
++
++		return buf_len - blen;
++
+ 	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
+ 		ret = arm_spe_pkt_snprintf(&buf, &blen,
+ 					   payload & SPE_OP_PKT_ST ? "ST" : "LD");
+@@ -401,6 +451,26 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+ 			break;
+ 		}
+ 
++		if (SPE_OP_PKT_LDST_SUBCLASS_SVE_GET(payload) ==
++				SPE_OP_PKT_LDST_SUBCLASS_SVE) {
++			/* SVE effective vector length */
++			ret = arm_spe_pkt_snprintf(&buf, &blen, " EVLEN %d",
++						   SPE_OP_PKG_SVE_EVL(payload));
++			if (ret < 0)
++				return ret;
++
++			if (payload & SPE_OP_PKT_SVE_PRED) {
++				ret = arm_spe_pkt_snprintf(&buf, &blen, " PRED");
++				if (ret < 0)
++					return ret;
++			}
++			if (payload & SPE_OP_PKT_SVE_SG) {
++				ret = arm_spe_pkt_snprintf(&buf, &blen, " SG");
++				if (ret < 0)
++					return ret;
++			}
++		}
++
+ 		return buf_len - blen;
+ 
+ 	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 31dbb8c0fde3..d69af0d618ea 100644
+index d69af0d618ea..04bc09f3ea17 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -75,6 +75,8 @@ struct arm_spe_pkt {
+@@ -118,6 +118,9 @@ enum arm_spe_events {
+ #define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
+ #define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
  
- #define SPE_ADDR_PKT_GET_NS(v)			(((v) & BIT(63)) >> 63)
- #define SPE_ADDR_PKT_GET_EL(v)			(((v) & GENMASK_ULL(62, 61)) >> 61)
-+#define SPE_ADDR_PKT_GET_CH(v)			(((v) & BIT(62)) >> 62)
-+#define SPE_ADDR_PKT_GET_PAT(v)			(((v) & GENMASK_ULL(59, 56)) >> 56)
++#define SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP_GET(v)	((v) & (BIT(7) | BIT(3) | BIT(0)))
++#define SPE_OP_PKT_OTHER_SUBCLASS_SVE_OP	0x8
++
+ #define SPE_OP_PKT_COND				BIT(0)
  
- #define SPE_ADDR_PKT_EL0			0
- #define SPE_ADDR_PKT_EL1			1
+ #define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
+@@ -134,6 +137,21 @@ enum arm_spe_events {
+ #define SPE_OP_PKT_AT				BIT(2)
+ #define SPE_OP_PKT_ST				BIT(0)
+ 
++#define SPE_OP_PKT_LDST_SUBCLASS_SVE_GET(v)	((v) & (GENMASK_ULL(3, 3) | GENMASK_ULL(1, 1)))
++#define SPE_OP_PKT_LDST_SUBCLASS_SVE		0x8
++
++#define SPE_OP_PKT_SVE_SG			BIT(7)
++/*
++ * SVE effective vector length (EVL) is stored in byte 0 bits [6:4];
++ * the length is rounded up to a power of two and use 32 as one step,
++ * so EVL calculation is:
++ *
++ *   32 * (2 ^ bits [6:4]) = 32 << (bits [6:4])
++ */
++#define SPE_OP_PKG_SVE_EVL(v)			(32 << (((v) & GENMASK_ULL(6, 4)) >> 4))
++#define SPE_OP_PKT_SVE_PRED			BIT(2)
++#define SPE_OP_PKT_SVE_FP			BIT(1)
++
+ #define SPE_OP_PKT_BRANCH_SUBCLASS_GET(v)	((v) & GENMASK_ULL(7, 1))
+ #define SPE_OP_PKT_BRANCH_SUBCLASS_DIRECT	0x0
+ #define SPE_OP_PKT_BRANCH_SUBCLASS_INDIRECT	0x2
 -- 
 2.17.1
 
