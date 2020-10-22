@@ -2,119 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF954295DA2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 44CBA295DAA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:45:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897509AbgJVLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:43:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897499AbgJVLns (ORCPT
+        id S2502785AbgJVLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:45:29 -0400
+Received: from cloudserver094114.home.pl ([79.96.170.134]:42370 "EHLO
+        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438840AbgJVLp3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:43:48 -0400
-Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE53C0613D6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:43:47 -0700 (PDT)
-Received: by mail-qv1-xf42.google.com with SMTP id f5so654294qvx.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:43:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Tn5VStmyr19eg0AHWkg65WyZIMHvKO6plAVuAqOgPDQ=;
-        b=W2W63+Km46WNPYtkSR3igfnV7TEUq5madmsiNOsLljJ4hXhwY+tNpYNU0U98RMc/Ra
-         N/OqT1bclh4ytLL1rVRfHDNQXuCClycUHEstVDTB13O2SeX7rcenP16ZDtQZwB1W1jcc
-         qY+V9dfylqzLN5PiDQabSjcYMeIPMV8H3MvDBIvqP9uVDzx0l3+DGSbt51z70fKAGBps
-         MOgHN8p+THySDXKSzKDRAxFER+JAglmr7hGRyvf9N5t7jpnIarxCymOKiSFfwhwoQKR+
-         3E88SiMtx1h9HdY+LUkd3T5LmcI1LTVNdrFdFYFYlKXO0Wntp7OMh6vxttQFR1tsYI0Q
-         kJBg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Tn5VStmyr19eg0AHWkg65WyZIMHvKO6plAVuAqOgPDQ=;
-        b=boQZ/HoheI2gE4q57im5H61agM0hy3lwR60z0STrIY4sd5lyKY3IN2vcvPF2JNb3jj
-         OsNTIkQ49AqgaXUTN5XiGE3rELsEab5prfYJQ1Ieds5UOUGiHGUoLAd46oCYU8mgL1SW
-         bXoI+fmDF6THomkRJuq8214YBLrdfcBO54swcs0ZrIy/2Du89A64mFmnflYM623LLron
-         WFIabQ2jAwy5/6Cfdb9e2CftVwQ28n4NtaIG2p9K6dq54qXLtQ+vi/HTexkieRdgaH6E
-         BlNzUPIPfjDMLBce4Qco3elCQshFx04lL6aFYnqlmVp3JEQUmjSAl4R9k7l9xF8S24f2
-         c8XA==
-X-Gm-Message-State: AOAM533dZDNs72MnFEjpuwrRIur8aRKSWe9NZtLiJj3pGZLG9lzuuWZh
-        y1s6blezczj89XhtCzGLQz1Thw==
-X-Google-Smtp-Source: ABdhPJw6OYYGIWsKIpwZGlvXqWx4K8ij3H0LBJb/eEFtxBXIO8uo2emBiN1PSKDxC0xVD0g026FmxA==
-X-Received: by 2002:ad4:45a5:: with SMTP id y5mr1935405qvu.40.1603367026713;
-        Thu, 22 Oct 2020 04:43:46 -0700 (PDT)
-Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
-        by smtp.gmail.com with ESMTPSA id l25sm820821qtf.18.2020.10.22.04.43.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 04:43:45 -0700 (PDT)
-Received: from jgg by mlx with local (Exim 4.94)
-        (envelope-from <jgg@ziepe.ca>)
-        id 1kVZ0T-0040bW-1W; Thu, 22 Oct 2020 08:43:45 -0300
-Date:   Thu, 22 Oct 2020 08:43:45 -0300
-From:   Jason Gunthorpe <jgg@ziepe.ca>
-To:     Daniel Vetter <daniel.vetter@ffwll.ch>
-Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
-        Linux PCI <linux-pci@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@ffwll.com>
-Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
-Message-ID: <20201022114345.GO36674@ziepe.ca>
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
- <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
- <20201021125030.GK36674@ziepe.ca>
- <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
- <20201021151352.GL36674@ziepe.ca>
- <CAKMK7uGq0=ks7Zj1Et44k7x9FwE9u_ua4zANSqrLRri0v01V+Q@mail.gmail.com>
- <20201021163702.GM36674@ziepe.ca>
- <CAKMK7uEjE5sHUq0hV_bnYjPKRxYyBnty0sLre+owANGZjLJg9Q@mail.gmail.com>
- <20201021232022.GN36674@ziepe.ca>
- <CAKMK7uEkAK42+19KRo06XzJFuMCVriEEg0jxqXq8oAdt2ExLsQ@mail.gmail.com>
+        Thu, 22 Oct 2020 07:45:29 -0400
+Received: from 89-64-87-167.dynamic.chello.pl (89.64.87.167) (HELO kreacher.localnet)
+ by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
+ id 49394ccb93dbf3dd; Thu, 22 Oct 2020 13:45:26 +0200
+From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Date:   Thu, 22 Oct 2020 13:45:25 +0200
+Message-ID: <34115486.YmRjPRKJaA@kreacher>
+In-Reply-To: <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201022071145.GM2628@hirez.programming.kicks-ass.net> <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKMK7uEkAK42+19KRo06XzJFuMCVriEEg0jxqXq8oAdt2ExLsQ@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 09:00:44AM +0200, Daniel Vetter wrote:
-> On Thu, Oct 22, 2020 at 1:20 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 09:24:08PM +0200, Daniel Vetter wrote:
-> > > On Wed, Oct 21, 2020 at 6:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
-> > > >
-> > > > On Wed, Oct 21, 2020 at 05:54:54PM +0200, Daniel Vetter wrote:
-> > > >
-> > > > > The trouble is that io_remap_pfn adjust vma->pgoff, so we'd need to
-> > > > > split that. So ideally ->mmap would never set up any ptes.
-> > > >
-> > > > /dev/mem makes pgoff == pfn so it doesn't get changed by remap.
-> > > >
-> > > > pgoff doesn't get touched for MAP_SHARED either, so there are other
-> > > > users that could work like this - eg anyone mmaping IO memory is
-> > > > probably OK.
-> > >
-> > > I was more generally thinking for io_remap_pfn_users because of the
-> > > mkwrite use-case we might have in fbdev emulation in drm.
-> >
-> > You have a use case for MAP_PRIVATE and io_remap_pfn_range()??
+On Thursday, October 22, 2020 12:47:03 PM CEST Viresh Kumar wrote:
+> On 22-10-20, 09:11, Peter Zijlstra wrote:
+> > Well, but we need to do something to force people onto schedutil,
+> > otherwise we'll get more crap like this thread.
+> > 
+> > Can we take the choice away? Only let Kconfig select which governors are
+> > available and then set the default ourselves? I mean, the end goal being
+> > to not have selectable governors at all, this seems like a good step
+> > anyway.
 > 
-> Uh no :-)
+> Just to clarify and complete the point a bit here, the users can still
+> pass the default governor from cmdline using
+> cpufreq.default_governor=, which will take precedence over the one the
+> below code is playing with. And later once the kernel is up, they can
+> still choose a different governor from userspace.
 
-So it is fine, the pgoff mangling only happens for MAP_PRIVATE
+Right.
 
-Jason
+Also some people simply set "performance" as the default governor and then
+don't touch cpufreq otherwise (the idea is to get everything to the max
+freq right away and stay in that mode forever).  This still needs to be
+possible IMO.
+
+> > ---
+> > 
+> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
+> > index 2c7171e0b001..3a9f54b382c0 100644
+> > --- a/drivers/cpufreq/Kconfig
+> > +++ b/drivers/cpufreq/Kconfig
+> > @@ -34,77 +34,6 @@ config CPU_FREQ_STAT
+> >  
+> >  	  If in doubt, say N.
+> >  
+> > -choice
+> > -	prompt "Default CPUFreq governor"
+> > -	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
+> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
+> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
+> > -	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
+> > -	help
+> > -	  This option sets which CPUFreq governor shall be loaded at
+> > -	  startup. If in doubt, use the default setting.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_PERFORMANCE
+> > -	bool "performance"
+> > -	select CPU_FREQ_GOV_PERFORMANCE
+> > -	help
+> > -	  Use the CPUFreq governor 'performance' as default. This sets
+> > -	  the frequency statically to the highest frequency supported by
+> > -	  the CPU.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_POWERSAVE
+> > -	bool "powersave"
+> > -	select CPU_FREQ_GOV_POWERSAVE
+> > -	help
+> > -	  Use the CPUFreq governor 'powersave' as default. This sets
+> > -	  the frequency statically to the lowest frequency supported by
+> > -	  the CPU.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_USERSPACE
+> > -	bool "userspace"
+> > -	select CPU_FREQ_GOV_USERSPACE
+> > -	help
+> > -	  Use the CPUFreq governor 'userspace' as default. This allows
+> > -	  you to set the CPU frequency manually or when a userspace 
+> > -	  program shall be able to set the CPU dynamically without having
+> > -	  to enable the userspace governor manually.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+> > -	bool "ondemand"
+> > -	select CPU_FREQ_GOV_ONDEMAND
+> > -	select CPU_FREQ_GOV_PERFORMANCE
+> > -	help
+> > -	  Use the CPUFreq governor 'ondemand' as default. This allows
+> > -	  you to get a full dynamic frequency capable system by simply
+> > -	  loading your cpufreq low-level hardware driver.
+> > -	  Be aware that not all cpufreq drivers support the ondemand
+> > -	  governor. If unsure have a look at the help section of the
+> > -	  driver. Fallback governor will be the performance governor.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
+> > -	bool "conservative"
+> > -	select CPU_FREQ_GOV_CONSERVATIVE
+> > -	select CPU_FREQ_GOV_PERFORMANCE
+> > -	help
+> > -	  Use the CPUFreq governor 'conservative' as default. This allows
+> > -	  you to get a full dynamic frequency capable system by simply
+> > -	  loading your cpufreq low-level hardware driver.
+> > -	  Be aware that not all cpufreq drivers support the conservative
+> > -	  governor. If unsure have a look at the help section of the
+> > -	  driver. Fallback governor will be the performance governor.
+> > -
+> > -config CPU_FREQ_DEFAULT_GOV_SCHEDUTIL
+> > -	bool "schedutil"
+> > -	depends on SMP
+> > -	select CPU_FREQ_GOV_SCHEDUTIL
+> > -	select CPU_FREQ_GOV_PERFORMANCE
+> > -	help
+> > -	  Use the 'schedutil' CPUFreq governor by default. If unsure,
+> > -	  have a look at the help section of that governor. The fallback
+> > -	  governor will be 'performance'.
+> > -
+> > -endchoice
+> > -
+> >  config CPU_FREQ_GOV_PERFORMANCE
+> >  	tristate "'performance' governor"
+> >  	help
+> > @@ -145,6 +74,7 @@ config CPU_FREQ_GOV_USERSPACE
+> >  config CPU_FREQ_GOV_ONDEMAND
+> >  	tristate "'ondemand' cpufreq policy governor"
+> >  	select CPU_FREQ_GOV_COMMON
+> > +	select CPU_FREQ_GOV_PERFORMANCE
+> >  	help
+> >  	  'ondemand' - This driver adds a dynamic cpufreq policy governor.
+> >  	  The governor does a periodic polling and 
+> > @@ -164,6 +94,7 @@ config CPU_FREQ_GOV_CONSERVATIVE
+> >  	tristate "'conservative' cpufreq governor"
+> >  	depends on CPU_FREQ
+> >  	select CPU_FREQ_GOV_COMMON
+> > +	select CPU_FREQ_GOV_PERFORMANCE
+> >  	help
+> >  	  'conservative' - this driver is rather similar to the 'ondemand'
+> >  	  governor both in its source code and its purpose, the difference is
+> > @@ -188,6 +119,7 @@ config CPU_FREQ_GOV_SCHEDUTIL
+> >  	bool "'schedutil' cpufreq policy governor"
+> >  	depends on CPU_FREQ && SMP
+> >  	select CPU_FREQ_GOV_ATTR_SET
+> > +	select CPU_FREQ_GOV_PERFORMANCE
+> 
+> And I am not really sure why we always wanted this backup performance
+> governor to be there unless the said governors are built as module.
+
+Apparently, some old drivers had problems with switching frequencies fast enough
+for ondemand to be used with them and the fallback was for those cases.  AFAICS.
+
+> >  	select IRQ_WORK
+> >  	help
+> >  	  This governor makes decisions based on the utilization data provided
+> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+> > index 1877f5e2e5b0..6848e3337b65 100644
+> > --- a/drivers/cpufreq/cpufreq.c
+> > +++ b/drivers/cpufreq/cpufreq.c
+> > @@ -626,6 +626,49 @@ static struct cpufreq_governor *find_governor(const char *str_governor)
+> >  	return NULL;
+> >  }
+> >  
+> > +static struct cpufreq_governor *cpufreq_default_governor(void)
+> > +{
+> > +	struct cpufreq_governor *gov = NULL;
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
+> > +	gov = find_governor("schedutil");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND
+> > +	gov = find_governor("ondemand");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_CONSERVATIVE
+> > +	gov = find_governor("conservative");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_USERSPACE
+> > +	gov = find_governor("userspace");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_POWERSAVE
+> > +	gov = find_governor("powersave");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +#ifdef CONFIG_CPU_FREQ_GOV_PERFORMANCE
+> > +	gov = find_governor("performance");
+> > +	if (gov)
+> > +		return gov;
+> > +#endif
+> > +
+> > +	return gov;
+> > +}
+> 
+> I think that would be fine with me. Though we would be required to
+> update couple of defconfigs here to make sure they keep working the
+> way they wanted to.
+
+Generally agreed, but see the point about the "performance" governor above.
+
+
+
