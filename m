@@ -2,207 +2,204 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C10BA295608
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1050295616
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:31:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894717AbgJVBZZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:25:25 -0400
-Received: from gate2.alliedtelesis.co.nz ([202.36.163.20]:37184 "EHLO
-        gate2.alliedtelesis.co.nz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442624AbgJVBZY (ORCPT
+        id S2441512AbgJVBbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:31:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437965AbgJVBbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:25:24 -0400
-Received: from mmarshal3.atlnz.lc (mmarshal3.atlnz.lc [10.32.18.43])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by gate2.alliedtelesis.co.nz (Postfix) with ESMTPS id 5E7A3891B1;
-        Thu, 22 Oct 2020 14:25:19 +1300 (NZDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alliedtelesis.co.nz;
-        s=mail181024; t=1603329919;
-        bh=MfJt0rJ0799sDaipIQ4wgBS64UUty7YEQai2i/sCsv0=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=uwZzuxjKK0AReGXUUIelgS6AchBWRF4HJ1xzGpW+D1p2FdMFeUkdIlFQHm3RcFTYW
-         bqO4qO8SkEYaE1fz5Wu7As83Jl0nYNt5NhmeKs2Tr5anES1jy369RKJSEcIq7HIgYI
-         yQyyIrs4S0nhUUWUeuHObAoWzmfdzh/sDNruGbZ+/upimYfxAxZEAA0MrVEVfM+LwK
-         s+PY9md0vdv42bCvYr8CDXEuc5/EdT1sdn2Wp9IblyJnaMi2kJAeyfSDdO1Er1zT6G
-         VK/H2mV+KbDmDVl+1MnhwLrch9+QOWdRVfUfoTCgqa/AzKsQv4+OemwKuaTyxiQiQs
-         IfVit43unDJ6g==
-Received: from smtp (Not Verified[10.32.16.33]) by mmarshal3.atlnz.lc with Trustwave SEG (v7,5,8,10121)
-        id <B5f90df800001>; Thu, 22 Oct 2020 14:25:20 +1300
-Received: from chrisp-dl.ws.atlnz.lc (chrisp-dl.ws.atlnz.lc [10.33.22.20])
-        by smtp (Postfix) with ESMTP id F121E13EEBB;
-        Thu, 22 Oct 2020 14:25:17 +1300 (NZDT)
-Received: by chrisp-dl.ws.atlnz.lc (Postfix, from userid 1030)
-        id 2D961283AAA; Thu, 22 Oct 2020 14:25:19 +1300 (NZDT)
-From:   Chris Packham <chris.packham@alliedtelesis.co.nz>
-To:     andrew@lunn.ch, vivien.didelot@gmail.com, f.fainelli@gmail.com,
-        olteanv@gmail.com, davem@davemloft.net, kuba@kernel.org,
-        linux@armlinux.org.uk
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Chris Packham <chris.packham@alliedtelesis.co.nz>
-Subject: [PATCH 4/4] net: dsa: mv88e6xxx: Support serdes ports on MV88E6123/6131
-Date:   Thu, 22 Oct 2020 14:25:15 +1300
-Message-Id: <20201022012516.18720-5-chris.packham@alliedtelesis.co.nz>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201022012516.18720-1-chris.packham@alliedtelesis.co.nz>
-References: <20201022012516.18720-1-chris.packham@alliedtelesis.co.nz>
+        Wed, 21 Oct 2020 21:31:41 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F47C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:31:41 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id p16so205678ilq.5
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:31:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=atishpatra.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=cUv8I/XRO+U+HHTaUt0aBZGhFRXLniat8xgSZPLd8Sc=;
+        b=suW1elwFVTeP/bz1cLEbs+wOACpmp85uPDIRNbxd4da4Dv0BDQRG7+12AiYwJoidl5
+         2Mm5FridlZamEMSApEzi7Njp8i7bYAaUKrCf7HiCi/YZPdEeYsmcm1XLf3hHZ/5MdW5i
+         Bmj/SbO74N+Mf+kTT3F5CE69vMxGaDl95NL0Q=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=cUv8I/XRO+U+HHTaUt0aBZGhFRXLniat8xgSZPLd8Sc=;
+        b=GD0kt6kvPOzguBjNyibX8OEH/MrPngxsiT0XYeJZyEBpSWLNumaTWVkTpm1VoBO1RK
+         oLx6thzHpZre9jEXewbr/R+M1hcT5bw4LLjD+lLQn4BOXPBF5LExv9zI+aXACPWZ7zgZ
+         KCeW5B0HCDwy1PpE9u56vL4MsmP4L0OPzIev79k5j8eAeLZvSXcitKGYg8kQfSYgbJRx
+         jv+w/UmGMGEPe48knJYObM5iz09HJ+O5QrdyYqfQBGITx/FoTwmznjBIhhrQNwRIduxE
+         b1dXkwaj6EsMV+MV8ey13gF2y2ku/Tl/U46VAw9WIn5ke+IvzYILE8eylTKC8+6tP9yz
+         Wi+g==
+X-Gm-Message-State: AOAM532Xn8RrgJJBJY6p5pl0+LC5KjYi2SynjfQcNP+bJEyJrv91oZZx
+        7uFzxY2tcDq5IyVn8FRYrUT1V1eik2WVplud8er1Sh2L1njm6o4=
+X-Google-Smtp-Source: ABdhPJxmEUEakSdO89gCsS438pEQs1y9nl1V2+yxcLcbjiTFe5jmrL5Rq7PmxWgFGvGiKMxd4GgEr83RWh9abtof5k8=
+X-Received: by 2002:a92:6410:: with SMTP id y16mr232132ilb.126.1603330300837;
+ Wed, 21 Oct 2020 18:31:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-x-atlnz-ls: pat
+References: <20201009211344.2358688-1-atish.patra@wdc.com> <20201009211344.2358688-5-atish.patra@wdc.com>
+ <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com>
+ <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
+ <CAOnJCULZMRu+sHmnjoBwtvaB3BjmCiZLzYxNOeWZmoYLKG+wTw@mail.gmail.com>
+ <CAHCEehJJmLQ6W5AdH+hEZSJxpDC8HG0UN=EGt9M0Tp5NTfQnaw@mail.gmail.com>
+ <CAOnJCUJN-XMZ+N5w+RbVhJag9D_dey7DAopb0Q35GDfXptyMjA@mail.gmail.com>
+ <CAFyWVaYORWYZTXyXOWiY6xK-SFTvsUxDNDqKQnhVUwzc5N045Q@mail.gmail.com>
+ <CAOnJCU+3xFyFW4ATCdYAv5zVyBSLE0mTevrJLCXW7HDgy4D4EQ@mail.gmail.com> <CAOnJCUJWf9Hu4frFOJGQLUZ2BQ8qHBd7mvspgvfM1k6e4z5CcA@mail.gmail.com>
+In-Reply-To: <CAOnJCUJWf9Hu4frFOJGQLUZ2BQ8qHBd7mvspgvfM1k6e4z5CcA@mail.gmail.com>
+From:   Atish Patra <atishp@atishpatra.org>
+Date:   Wed, 21 Oct 2020 18:31:30 -0700
+Message-ID: <CAOnJCUJLKz8gUc7VPnUG4mULQhGD0g_ztxPGYYD7BO6HJBCqcg@mail.gmail.com>
+Subject: Re: [PATCH 4/5] RISC-V: Protect .init.text & .init.data
+To:     Jim Wilson <jimw@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
+Cc:     Greentime Hu <greentime.hu@sifive.com>,
+        Kito Cheng <kito.cheng@gmail.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Kees Cook <keescook@chromium.org>,
+        Anup Patel <anup@brainfault.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Guo Ren <guoren@linux.alibaba.com>,
+        Zong Li <zong.li@sifive.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Borislav Petkov <bp@suse.de>,
+        Michel Lespinasse <walken@google.com>,
+        Ard Biesheuvel <ardb@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Implement serdes_power, serdes_get_lane and serdes_pcs_get_state ops for
-the MV88E6123 so that the ports without a built-in PHY supported as
-serdes ports and directly connected to other network interfaces or to
-SFPs. Also implement serdes_get_regs_len and serdes_get_regs to aid
-future debugging.
+On Fri, Oct 16, 2020 at 11:24 AM Atish Patra <atishp@atishpatra.org> wrote:
+>
+> On Tue, Oct 13, 2020 at 10:24 PM Atish Patra <atishp@atishpatra.org> wrote:
+> >
+> > On Tue, Oct 13, 2020 at 6:21 PM Jim Wilson <jimw@sifive.com> wrote:
+> > >
+> > > On Tue, Oct 13, 2020 at 3:25 PM Atish Patra <atishp@atishpatra.org> wrote:
+> > > > This happens only when copy_from_user is called from function that is
+> > > > annotated with __init.
+> > > > Adding Kito & Jim for their input
+> > > >
+> > > > @kito, @Jim: Please let me know if I should create a issue in
+> > > > riscv-gnu-toolchain repo or somewhere else.
+> > >
+> > > I can't do anything useful without a testcase that I can use to
+> > > reproduce the problem.  The interactions here are complex, so pointing
+> > > at lines of code or kernel config options doesn't give me any useful
+> > > info.
+> > >
+> > > Relaxation can convert calls to a jal.  I don't know of any open bugs
+> > > in this area that can generate relocation errors.  if it is a
+> > > relaxation error then turning off relaxation should work around the
+> > > problem as you suggested.
+> > >
+> > > A kernel build problem is serious.  I think this is worth a bug
+> > > report.  FSF binutils or riscv-gnu-toolchain is fine.
+> > >
+> >
+> > I have created an issue with detailed descriptions and reproduction steps.
+> > Please let me know if you need anything else.
+> >
+>
+> It may be a toolchain issue. Here is the ongoing discussion in case
+> anybody else is interested.
+>
+> https://github.com/riscv/riscv-gnu-toolchain/issues/738
+>
+> > > Jim
+> >
+> >
+> >
+> > --
+> > Regards,
+> > Atish
+>
+>
+>
+> --
+> Regards,
+> Atish
 
-Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
----
-This is untested (apart from compilation) it assumes the SERDES "phy"
-address corresponds to the port number but I'm not confident that is a
-valid assumption.
+Thanks to Jim, we know the cause now. Jim has provided an excellent
+analysis of the issue in the github issue report.
+https://github.com/riscv/riscv-gnu-toolchain/issues/738
 
-Changes in v4:
-- Error handling in mv88e6123_serdes_get_regs
-Changes in v3:
-- None
-Changes in v2:
-- new
+To summarize, the linker relaxation code is not aware of the
+alignments between sections.
+That's why it relaxes the calls from .text to .init.text and  converts
+a auipc+jalr pair to jal even if the address can't be fit +/- 1MB.
 
- drivers/net/dsa/mv88e6xxx/chip.c   | 10 +++++++
- drivers/net/dsa/mv88e6xxx/serdes.c | 46 ++++++++++++++++++++++++++++++
- drivers/net/dsa/mv88e6xxx/serdes.h |  4 +++
- 3 files changed, 60 insertions(+)
+There are few ways we can solve this problem.
 
-diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx=
-/chip.c
-index b582d98ca437..737416c666c1 100644
---- a/drivers/net/dsa/mv88e6xxx/chip.c
-+++ b/drivers/net/dsa/mv88e6xxx/chip.c
-@@ -3575,6 +3575,11 @@ static const struct mv88e6xxx_ops mv88e6123_ops =3D=
- {
- 	.set_egress_port =3D mv88e6095_g1_set_egress_port,
- 	.watchdog_ops =3D &mv88e6097_watchdog_ops,
- 	.mgmt_rsvd2cpu =3D mv88e6352_g2_mgmt_rsvd2cpu,
-+	.serdes_power =3D mv88e6123_serdes_power,
-+	.serdes_get_lane =3D mv88e6185_serdes_get_lane,
-+	.serdes_pcs_get_state =3D mv88e6185_serdes_pcs_get_state,
-+	.serdes_get_regs_len =3D mv88e6123_serdes_get_regs_len,
-+	.serdes_get_regs =3D mv88e6123_serdes_get_regs,
- 	.pot_clear =3D mv88e6xxx_g2_pot_clear,
- 	.reset =3D mv88e6352_g1_reset,
- 	.atu_get_hash =3D mv88e6165_g1_atu_get_hash,
-@@ -3615,6 +3620,11 @@ static const struct mv88e6xxx_ops mv88e6131_ops =3D=
- {
- 	.set_egress_port =3D mv88e6095_g1_set_egress_port,
- 	.watchdog_ops =3D &mv88e6097_watchdog_ops,
- 	.mgmt_rsvd2cpu =3D mv88e6185_g2_mgmt_rsvd2cpu,
-+	.serdes_power =3D mv88e6123_serdes_power,
-+	.serdes_get_lane =3D mv88e6185_serdes_get_lane,
-+	.serdes_pcs_get_state =3D mv88e6185_serdes_pcs_get_state,
-+	.serdes_get_regs_len =3D mv88e6123_serdes_get_regs_len,
-+	.serdes_get_regs =3D mv88e6123_serdes_get_regs,
- 	.ppu_enable =3D mv88e6185_g1_ppu_enable,
- 	.set_cascade_port =3D mv88e6185_g1_set_cascade_port,
- 	.ppu_disable =3D mv88e6185_g1_ppu_disable,
-diff --git a/drivers/net/dsa/mv88e6xxx/serdes.c b/drivers/net/dsa/mv88e6x=
-xx/serdes.c
-index ec9ca7210bb0..0e84d5c7be61 100644
---- a/drivers/net/dsa/mv88e6xxx/serdes.c
-+++ b/drivers/net/dsa/mv88e6xxx/serdes.c
-@@ -430,6 +430,52 @@ u8 mv88e6341_serdes_get_lane(struct mv88e6xxx_chip *=
-chip, int port)
- 	return lane;
- }
-=20
-+int mv88e6123_serdes_power(struct mv88e6xxx_chip *chip, int port, u8 lan=
-e,
-+			   bool up)
-+{
-+	u16 val, new_val;
-+	int err;
-+
-+	err =3D mv88e6xxx_phy_read(chip, port, MII_BMCR, &val);
-+	if (err)
-+		return err;
-+
-+	if (up)
-+		new_val =3D val & ~BMCR_PDOWN;
-+	else
-+		new_val =3D val | BMCR_PDOWN;
-+
-+	if (val !=3D new_val)
-+		err =3D mv88e6xxx_phy_write(chip, port, MII_BMCR, val);
-+
-+	return err;
-+}
-+
-+int mv88e6123_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)
-+{
-+	if (mv88e6xxx_serdes_get_lane(chip, port) =3D=3D 0)
-+		return 0;
-+
-+	return 26 * sizeof(u16);
-+}
-+
-+void mv88e6123_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, vo=
-id *_p)
-+{
-+	u16 *p =3D _p;
-+	u16 reg;
-+	int err;
-+	int i;
-+
-+	if (mv88e6xxx_serdes_get_lane(chip, port) =3D=3D 0)
-+		return;
-+
-+	for (i =3D 0; i < 26; i++) {
-+		err =3D mv88e6xxx_phy_read(chip, port, i, &reg);
-+		if (!err)
-+			p[i] =3D reg;
-+	}
-+}
-+
- int mv88e6185_serdes_power(struct mv88e6xxx_chip *chip, int port, u8 lan=
-e,
- 			   bool up)
- {
-diff --git a/drivers/net/dsa/mv88e6xxx/serdes.h b/drivers/net/dsa/mv88e6x=
-xx/serdes.h
-index c24ec4122c9e..b573139928c4 100644
---- a/drivers/net/dsa/mv88e6xxx/serdes.h
-+++ b/drivers/net/dsa/mv88e6xxx/serdes.h
-@@ -104,6 +104,8 @@ unsigned int mv88e6352_serdes_irq_mapping(struct mv88=
-e6xxx_chip *chip,
- 					  int port);
- unsigned int mv88e6390_serdes_irq_mapping(struct mv88e6xxx_chip *chip,
- 					  int port);
-+int mv88e6123_serdes_power(struct mv88e6xxx_chip *chip, int port, u8 lan=
-e,
-+			   bool up);
- int mv88e6185_serdes_power(struct mv88e6xxx_chip *chip, int port, u8 lan=
-e,
- 			   bool up);
- int mv88e6352_serdes_power(struct mv88e6xxx_chip *chip, int port, u8 lan=
-e,
-@@ -129,6 +131,8 @@ int mv88e6390_serdes_get_strings(struct mv88e6xxx_chi=
-p *chip,
- int mv88e6390_serdes_get_stats(struct mv88e6xxx_chip *chip, int port,
- 			       uint64_t *data);
-=20
-+int mv88e6123_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)=
-;
-+void mv88e6123_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, vo=
-id *_p);
- int mv88e6352_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)=
-;
- void mv88e6352_serdes_get_regs(struct mv88e6xxx_chip *chip, int port, vo=
-id *_p);
- int mv88e6390_serdes_get_regs_len(struct mv88e6xxx_chip *chip, int port)=
-;
---=20
-2.28.0
+1. As per Jim's suggestion, linker relaxation code is aware of the
+section alignments. We can mark .init.text as a 2MB aligned section.
+   For calls within a section, section's alignment will be used in the
+calculation. For calls across sections, e.g. from .init.text to .text,
+the maximum
+   section alignment of every section will be used. Thus, all
+relaxation within .init.text and between any sections will be
+impacted.
+   Thus, it avoids the error but results in the following increase in
+size of various sections.
+     section           change in size (in bytes)
+     .head.text      +4
+     .text               +40
+     .init.text.        +6530
+     .exit.text        +84
 
+The only significant increase is .init.text but it is freed after
+boot. Thus, I don't see any significant performance degradation due to
+that.
+
+Here is the diff
+--- a/arch/riscv/kernel/vmlinux.lds.S
++++ b/arch/riscv/kernel/vmlinux.lds.S
+@@ -51,7 +51,13 @@ SECTIONS
+        . = ALIGN(SECTION_ALIGN);
+        __init_begin = .;
+        __init_text_begin = .;
+-       INIT_TEXT_SECTION(PAGE_SIZE)
++       . = ALIGN(PAGE_SIZE);                                   \
++       .init.text : AT(ADDR(.init.text) - LOAD_OFFSET)
+ALIGN(SECTION_ALIGN) {  \
++               _sinittext = .;                                         \
++               INIT_TEXT                                               \
++               _einittext = .;                                         \
++       }
++
+        . = ALIGN(8);
+        __soc_early_init_table : {
+                __soc_early_init_table_start = .;
+
+2. We will continue to keep head.txt & .init.text together before
+.text. However, we will map the pages that contain head & init.text at
+page
+    granularity so that .head.text and init.text can have different
+permissions. I have not measured the performance impact of this but it
+won't
+    too bad given that the combined size of sections .head.txt &
+.init.text is 200K. So we are talking about page level permission only
+for
+    ~50 pages during boot.
+
+3. Keep head.text in a separate 2MB aligned section. .init.text will
+follow .head.text in its own section as well. This increases the
+kernel
+    size by 2MB for MMU kernels. For nommu case, it will only increase
+by 64 bytes due to smaller section alignment for nommu kernels.
+
+Both solutions 1 & 2 come at minimal performance on boot time while
+solution 3 comes at increased kernel size.
+
+Any preference ?
+
+-- 
+Regards,
+Atish
