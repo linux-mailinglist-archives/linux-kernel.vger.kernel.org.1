@@ -2,72 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BB852957F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:31:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 784262957FB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:37:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502904AbgJVFbs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:31:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38544 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2392324AbgJVFbs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:31:48 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 328532225F;
-        Thu, 22 Oct 2020 05:31:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603344708;
-        bh=c8Wft23L/OeRjPmbwqMGKdGIjZWj83EhGedVahVaRLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=sVEOe1U5r69NdS5pKv8pG1MpgKVIaf89W85IcxtsFc6v1wBrj38tClG2oFO3JWn0d
-         HVBlbAiD2mtyxLFgf42d+euq52651Mcg+/SH5tTRwM46z1FhaNYO9PxE/IqE1HU+F2
-         OykJOtA/FeRw7ftwBHav4t/Fg4Y0gyQLh/xNsMTg=
-Date:   Thu, 22 Oct 2020 07:31:43 +0200
-From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To:     Chen Yu <yu.c.chen@intel.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] PM / sysfs: Expose suspend resume driver flags in sysfs
-Message-ID: <20201022053143.GB6523@kroah.com>
-References: <20201022032324.25308-1-yu.c.chen@intel.com>
+        id S2444504AbgJVFhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:37:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2444402AbgJVFg7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 01:36:59 -0400
+Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57085C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:36:58 -0700 (PDT)
+Received: by mail-qk1-x742.google.com with SMTP id h140so437934qke.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ZY++dB0QY4h0w6GNfNiJM1CAihdWz5g1QdtsKpKfXiA=;
+        b=batcfBvQ8Yzq+JplHIjrrkkuuM5S5utEGjVQdmtosqdEaSM+/SPT3ZzWZyVNH3TJRp
+         V8QpMLYUW/B9SjmWpxRoj/mNhEeb0l+SUbsWKXNox5v3juLATuuCAxHieqjy4VXEpeDz
+         YXKQ+OlTqjgKXcYmGIW1rPkNnm2oUUKjbqdzk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ZY++dB0QY4h0w6GNfNiJM1CAihdWz5g1QdtsKpKfXiA=;
+        b=Hg7Vqz7bG3TmcBFgLgdpz0aImiCkk1bcd7faXnTeUa/qrtdF4oWoIOI6wgALjVELS5
+         JfdhOd5qFl3RzfvTjn61h5g4mUy59jQwDU74lEgWspU3YPB5USJEdVY5qd6fB6IaLTmb
+         moTa9AjGiJI/VqUw4WUkJX6cedCsf8Vp9+phtnAhiPVG/o+GcuEIFvdXlFxTVBMQ1asw
+         lwbhxINSr59cAwjwxYGhcY4KQwVdDqwOPRcvtqOc6CmbH7sOr3OgaQpU96oqOWkNZdGX
+         hzic/6LKx2+kAKg33bpeuNbgyrFyB4VScw+1WCBlrt4ebIJ5yvh3dkcVJNrt8sBiDYBj
+         fd4g==
+X-Gm-Message-State: AOAM530dD8vxjGEB1mYsoqPybz3I/jP7Hb0hHnJSfrMkV96t2cg5ljTO
+        TWAyZnNNOIVaKafwSvWqlwsO7ZLI2MipUr+vi9mm2A==
+X-Google-Smtp-Source: ABdhPJzKqgM6zt/DmQMQ0cYtDDTuSdknzZT7HUdk4PJeZ4jGXsHtxfTO2/4L4DuDNPYPvCSrftOFTATjkViLsIoJkmI=
+X-Received: by 2002:a37:a9c9:: with SMTP id s192mr851858qke.128.1603345017428;
+ Wed, 21 Oct 2020 22:36:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022032324.25308-1-yu.c.chen@intel.com>
+References: <20201021211802.774854-1-pmalani@chromium.org> <20201022053041.GA6523@kroah.com>
+In-Reply-To: <20201022053041.GA6523@kroah.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Wed, 21 Oct 2020 22:36:46 -0700
+Message-ID: <CACeCKaepecD8JUo_ie_KcWd8mgYZR-3y0dGwaYNs5G5ErMuDqg@mail.gmail.com>
+Subject: Re: [PATCH] usb: typec: Expose Product Type VDOs via sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:23:24AM +0800, Chen Yu wrote:
-> Currently there are 4 driver flags to control system suspend/resume
-> behavior: DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
-> DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME. Make these flags
-> visible in sysfs as read-only to get a brief understanding of the
-> expected behavior of each device during suspend/resume, so as to
-> facilitate suspend/resume debugging/tuning.
-> 
-> For example:
-> /sys/devices/pci0000:00/0000:00:15.1/power/driver_flags:4
-> (DPM_FLAG_SMART_SUSPEND)
-> 
-> /sys/devices/pci0000:00/0000:00:07.3/power/driver_flags:5
-> (DPM_FLAG_NO_DIRECT_COMPLETE | DPM_FLAG_SMART_SUSPEND)
-> 
-> Acked-by: Len Brown <len.brown@intel.com>
-> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> ---
->  drivers/base/power/sysfs.c | 29 ++++++++++++++++++++++++++++-
->  1 file changed, 28 insertions(+), 1 deletion(-)
+Hi Greg,
 
-There is no Documentataion/ABI/ entry for your new file, which makes
-this patch impossible to properly review by anyone, and prevents it from
-being able to be accepted.
+Thanks for taking a look.
 
-Please fix.
+On Wed, Oct 21, 2020 at 10:30 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+>
+> On Wed, Oct 21, 2020 at 02:18:02PM -0700, Prashant Malani wrote:
+> > A PD-capable device can return up to 3 Product Type VDOs as part of its
+> > DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
+> > 6.4.4.3.1). Add a sysfs attribute to expose these to userspace.
+>
+> You forgot to add the proper Documentation/ABI/ file at the same time,
+> which makes this patch impossible to review properly and able to be
+> applied :(
+>
+Sorry about that, will fix and resend.
 
-thanks,
+Best regards,
 
-greg k-h
+-Prashant
+> Please fix.
+>
+> thanks,
+>
+> greg k-h
