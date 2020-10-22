@@ -2,100 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5148F2960F6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:34:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 272DC2960F8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:35:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900881AbgJVOee (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:34:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34126 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2390764AbgJVOee (ORCPT
+        id S2900941AbgJVOfE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:35:04 -0400
+Received: from smtprelay0031.hostedemail.com ([216.40.44.31]:41504 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2900934AbgJVOfE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:34:34 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E892BC0613CE;
-        Thu, 22 Oct 2020 07:34:33 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id o9so1047987plx.10;
-        Thu, 22 Oct 2020 07:34:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=Sosi2JPyi8kkDE2zAI3zuo0tpS/CAdUgJvIdNLZZJD4=;
-        b=nPkATG0i9oqy7I6qI49vX3iIOwJ9rokwX8Vc5trOi5MqOuzQwiLV/WKWfP24TqUpIZ
-         KHiL9OyTrTdNAt0aLQj7k+iWQ0Af2W6xFhuxvtEhDBS35t1LeNEIvJD1y/YJqPi80hxi
-         Z18C0rbJcApQf/elUSham3vE8MveihB0WxvWijBBDDITR+52TuPobJF4wEiYYkzhmE3S
-         zH8kYOr/u1jAIMw+ASZlPfLS22eatJ4bK0zrHsM/iSG8Iff+/MnkvLSnAOXU2kDHzIxj
-         /mut4ZSrDVrXwGtVOUCQJBl6Bqy7SPR9ViPtirlZw9nqQ9COE/QI0JsMXxzBEBHDJ3s6
-         YDlA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=Sosi2JPyi8kkDE2zAI3zuo0tpS/CAdUgJvIdNLZZJD4=;
-        b=pXYLxbJca79shSwQIiBElumsPykel8GcFrhcjl2xq6drn0KPKeGYDkUETw+tOa+wsm
-         YDNPE9vy39f9TBBZMq+2dSZFK7UvQ2SnyV6uw/uNgHuZNmCQ0srMZza4nDd5avjlciKX
-         TXlynZNKR3VC7EKuNgORmp6nECOT6KCIQUL1QnWTDCXVEXdF/AlKwbGhfbRiTbQjOFcy
-         jKMkzp4v4NrPoQLicYZbtX5M2bbEKrXRTcMetZDuymkuQGbEKEYyWXLLiVPtOZGC78aD
-         0grvlzIL5XvGCDVYITcsNYr2MsF+JqaMbKq2Rb/0G+E+SroegAY+e8eUfBiI/aRSFsS8
-         XPrw==
-X-Gm-Message-State: AOAM533wsa1yK0l3LZI8OD2v81Kw/eCKu+lk4+dYC/T/9bbOwy01g/Gi
-        zCZ81BrM1JrPMCWRb78ITGk=
-X-Google-Smtp-Source: ABdhPJwuJk0G398FX/FO0OTxt/Uia8/PlH9Rmf2+TzNfBl2LEUYnfO92o2YyW1sJy7wKlCzUSC+Yaw==
-X-Received: by 2002:a17:90a:4b84:: with SMTP id i4mr2441433pjh.132.1603377273489;
-        Thu, 22 Oct 2020 07:34:33 -0700 (PDT)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id ca5sm2540864pjb.27.2020.10.22.07.34.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 07:34:32 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 07:34:29 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
- hardware time stamping support
-Message-ID: <20201022143429.GA9743@hoboy.vegasvil.org>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <20201022090126.h64hfnlajqelveku@skbuf>
- <20201022105014.gflswfpie4qvbw3h@skbuf>
- <2541271.Km786uMvHt@n95hx1g2>
- <20201022113243.4shddtywgvpcqq6c@skbuf>
+        Thu, 22 Oct 2020 10:35:04 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 53E8218029125;
+        Thu, 22 Oct 2020 14:35:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1567:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3866:3867:3870:3871:3872:4321:4470:5007:6248:7903:9010:10004:10400:10848:11232:11658:11914:12297:12740:12760:12895:13069:13311:13357:13439:14180:14659:14777:21060:21080:21433:21627:21660:21740:30026:30054:30060:30083:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: deer96_500855227251
+X-Filterd-Recvd-Size: 1759
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 22 Oct 2020 14:35:02 +0000 (UTC)
+Message-ID: <41a6764bf25b75a16167a95dbe1faa192e227aff.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: fix false positive for REPEATED_WORD warning
+From:   Joe Perches <joe@perches.com>
+To:     Aditya <yashsri421@gmail.com>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Thu, 22 Oct 2020 07:35:01 -0700
+In-Reply-To: <cfa48542-4654-fe62-e7fa-c7d99c6ab4f5@gmail.com>
+References: <20201021150120.29920-1-yashsri421@gmail.com>
+         <f073750511750336de5f82600600ba6cb3ddbec0.camel@perches.com>
+         <26647abf8cf14595a0dd22f10ec1c32e3dc2a8c0.camel@perches.com>
+         <40ca3f0f9a960799ad0e534b77d778c90119e468.camel@perches.com>
+         <c4f8aae0-d805-8d09-1a87-ba64bc01c29a@gmail.com>
+         <d44e35ec1d923fd09ea6530ca5d1988cc8e59347.camel@perches.com>
+         <0871715a-e605-91c0-ffa5-389a313ec34d@gmail.com>
+         <CAKXUXMzdjV8aPL=Paf2QJs1iWB5swxYXFJozyPi_JxJVXRArxQ@mail.gmail.com>
+         <cfa48542-4654-fe62-e7fa-c7d99c6ab4f5@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022113243.4shddtywgvpcqq6c@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:32:43PM +0300, Vladimir Oltean wrote:
-> On Thu, Oct 22, 2020 at 01:11:40PM +0200, Christian Eggers wrote:
-> 
-> > it seems that "moving" the timestamp back to the tail tag on TX is not
-> > required anymore. Keeping the RX timestamp simply in the correction
-> > field (negative value), works fine now. So this halves the effort in
-> > the tag_ksz driver.
-> 
-> Ok, this makes sense.
-> Depending on what Richard responds, it now looks like the cleanest
-> approach would be to move your implementation that is currently in
-> ksz9477_update_ptp_correction_field() into a generic function called
+On Thu, 2020-10-22 at 19:51 +0530, Aditya wrote:
+> > > Alright Sir.
 
-+1
+Joe is fine, sir isn't necessary.
+> Hi Sir
+> I have implemented my solution. Should I send the patch in reply to
+> this mail or as a different mail? Also should I label it as v2? I have
+> also addressed the warnings out of list command output in it. for eg.
+
+Either way works.
+
+
