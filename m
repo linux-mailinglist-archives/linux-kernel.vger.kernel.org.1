@@ -2,104 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F64D296373
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:12:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29817296394
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:14:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902452AbgJVRMw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:12:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58704 "EHLO
+        id S2898792AbgJVRN7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:13:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58912 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2902445AbgJVRMu (ORCPT
+        with ESMTP id S369090AbgJVRNw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:12:50 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 582E4C0613CE;
-        Thu, 22 Oct 2020 10:12:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HuLFfKCiL+7vaRCur/wWQWK6xvpLJsr5bSM5cuDLJto=; b=N1wmpof0oY1B9VcE0NiPkP5PYs
-        Vb+1DJXwCpWZpQxrWFmlc702rqpjKzM0+ch1HuJPkoiVTgLZyMDmf5I7JtHTDzkuSyoeCICE6joMN
-        9RRuOD1i43hu5o8/xsUlzjF8GKWxUqWuL6/LXkRZCuc5yyz/dYS+OX2+lgtCjD11WPdfaNINad527
-        P5ztfx35J7IjGogchCHa5nu89JrCvZdw707IJT6qfw8O/bKw0ENmCQcB5Uanbp0C3aNg/0gfoFv3w
-        mCA+ndHQPNmpHNdZtX7y40hCKMmspJYObnpDGgFSvQ+AxDLsFIMLmRPDclj51Nrt+ny8J+yv1L+fo
-        mTciSItw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVe8p-0005GB-Ip; Thu, 22 Oct 2020 17:12:43 +0000
-Date:   Thu, 22 Oct 2020 18:12:43 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Qian Cai <cai@lca.pw>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-Message-ID: <20201022171243.GX20115@casper.infradead.org>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
- <20201022004906.GQ20115@casper.infradead.org>
- <7ec15e2710db02be81a6c47afc57abed4bf8016c.camel@lca.pw>
+        Thu, 22 Oct 2020 13:13:52 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF8F6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:13:52 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id c5so1760462otr.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=kQQlSF/0lUzBXugc4fEPyjtlzyb7/jQQu7GyIK58eNM=;
+        b=D5Hb6sVoyFHbSWGhGKpzNat9YJJsBpV9GEOlfoxFl4d9eZnnYrGZ1lLOLuXiDsBuh1
+         d0cHrv1ykacVV2mVWES1MnNFc0LTOveQwXy3BJJ+JdVyy0XwnS35zjDAqjVEFbtRHfMg
+         GGvSNBZbrhY2OE1YzQVsUx5NB5UXR5VevcBGBo+O/8uyW8SvFBzU2+SMfSSbaZpkLpir
+         9OxFFdIWZU5m86vjW//qS+QC2GACQjySY5OkJJesvuexmypKrPTS24mesvCc/LBPysHJ
+         uYT/r6dtAYtVPFO0mpGDe3MVIasJZxXRPh7q73s/ydSermTfaGVefT6OLVRX7njVYDVy
+         dPKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=kQQlSF/0lUzBXugc4fEPyjtlzyb7/jQQu7GyIK58eNM=;
+        b=R0vEvSG36X3D6bUSSQw/PC+CJiIBprqUBGfsfk+vEKV9br7HwIKUFmuUr/cbPucW7B
+         hVBrkd3x1ZbUDEnhN/6eowgviY3T2ZHZ+suQJssX+Txq3iN7IE+6eI1dq9LnrC/tpQCo
+         jVmX/zUIRgMPc70k44j6ox/npstIqJm5mpNEvm2fPvljoztvd7t0gU0tdRTKRmzQD9qK
+         ksBfmf23uvVCUva9PvO6IrTr0GOATZzrB99ahKpj9raK326rpoJWYfkGdJmrEdRCANJ+
+         76LUvLrRNfMgoqJaRHiTx3gzcuhCKzgoQv6EVMZDSjyf8Foh0+B0v5Nx2SxpdLOujphJ
+         a8kg==
+X-Gm-Message-State: AOAM530m2rd02S25lZp0J1Ym/0liFWCgfK+2RuVu92AAAPIetv/uVugi
+        0fNZLFGDkguUfLhVqt/2WGEnVt8zW2KoA9F9Q24h9Q==
+X-Google-Smtp-Source: ABdhPJx2w3YUlN/3PB1QFTGlbY/e6pEIoW08rIDoq2LlMVKf4jXtyet0dE+as4/GxxhMd5fC11yDQpdzkMicsNPvLWE=
+X-Received: by 2002:a05:6830:10d3:: with SMTP id z19mr2731575oto.295.1603386831866;
+ Thu, 22 Oct 2020 10:13:51 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7ec15e2710db02be81a6c47afc57abed4bf8016c.camel@lca.pw>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+ <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com> <CALMp9eR3Ng-WBrumXaJAecLWZECf-1NfzW+eTA0VxWuAcKAjAA@mail.gmail.com>
+ <281bca2d-d534-1032-eed3-7ee7705cb12c@redhat.com>
+In-Reply-To: <281bca2d-d534-1032-eed3-7ee7705cb12c@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Thu, 22 Oct 2020 10:13:40 -0700
+Message-ID: <CALMp9eQyJXko_CKPgg4xRDCsvOmA8zJvrg_kmU6weu=MwKBv0w@mail.gmail.com>
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:35:26AM -0400, Qian Cai wrote:
-> On Thu, 2020-10-22 at 01:49 +0100, Matthew Wilcox wrote:
-> > On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
-> > > Today's linux-next starts to trigger this wondering if anyone has any clue.
-> > 
-> > I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
-> > to try to get a clue about it.  Good to know it's not the THP patches
-> > since they aren't in linux-next.
-> > 
-> > I don't understand how it can happen.  We have the page locked, and then we
-> > do:
-> > 
-> >                         if (PageWriteback(page)) {
-> >                                 if (wbc->sync_mode != WB_SYNC_NONE)
-> >                                         wait_on_page_writeback(page);
-> >                                 else
-> >                                         goto continue_unlock;
-> >                         }
-> > 
-> >                         VM_BUG_ON_PAGE(PageWriteback(page), page);
-> > 
-> > Nobody should be able to put this page under writeback while we have it
-> > locked ... right?  The page can be redirtied by the code that's supposed
-> > to be writing it back, but I don't see how anyone can make PageWriteback
-> > true while we're holding the page lock.
-> 
-> It happened again on today's linux-next:
-> 
-> [ 7613.579890][T55770] page:00000000a4b35e02 refcount:3 mapcount:0 mapping:00000000457ceb87 index:0x3e pfn:0x1cef4e
-> [ 7613.590594][T55770] aops:xfs_address_space_operations ino:805d85a dentry name:"doio.f1.55762"
-> [ 7613.599192][T55770] flags: 0xbfffc0000000bf(locked|waiters|referenced|uptodate|dirty|lru|active)
-> [ 7613.608596][T55770] raw: 00bfffc0000000bf ffffea0005027d48 ffff88810eaec030 ffff888231f3a6a8
-> [ 7613.617101][T55770] raw: 000000000000003e 0000000000000000 00000003ffffffff ffff888143724000
-> [ 7613.625590][T55770] page dumped because: VM_BUG_ON_PAGE(PageWriteback(page))
-> [ 7613.632695][T55770] page->mem_cgroup:ffff888143724000
-
-Seems like it reproduces for you pretty quickly.  I have no luck ;-(
-
-Can you add this?
-
-+++ b/mm/page-writeback.c
-@@ -2774,6 +2774,7 @@ int __test_set_page_writeback(struct page *page, bool keep_write)
-        struct address_space *mapping = page_mapping(page);
-        int ret, access_ret;
- 
-+       VM_BUG_ON_PAGE(!PageLocked(page), page);
-        lock_page_memcg(page);
-        if (mapping && mapping_use_writeback_tags(mapping)) {
-                XA_STATE(xas, &mapping->i_pages, page_index(page));
-
-This is the only place (afaict) that sets PageWriteback, so that will
-tell us whether someone is setting Writeback without holding the lock,
-or whether we're suffering from a spurious wakeup.
-
+On Thu, Oct 22, 2020 at 9:37 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 22/10/20 18:35, Jim Mattson wrote:
+> > On Thu, Oct 22, 2020 at 6:02 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+> >>
+> >> On 22/10/20 03:34, Wanpeng Li wrote:
+> >>> From: Wanpeng Li <wanpengli@tencent.com>
+> >>>
+> >>> Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
+> >>>
+> >>> This ioctl returns x86 cpuid features which are supported by both the
+> >>> hardware and kvm in its default configuration.
+> >>>
+> >>> A well-behaved userspace should not set the bit if it is not supported.
+> >>>
+> >>> Suggested-by: Jim Mattson <jmattson@google.com>
+> >>> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> >>
+> >> It's common for userspace to copy all supported CPUID bits to
+> >> KVM_SET_CPUID2, I don't think this is the right behavior for
+> >> KVM_HINTS_REALTIME.
+> >
+> > That is not how the API is defined, but I'm sure you know that. :-)
+>
+> Yes, though in my defense :) KVM_HINTS_REALTIME is not a property of the
+> kernel, it's a property of the environment that the guest runs in.  This
+> was the original reason to separate it from other feature bits in the
+> same leaf.
+>
+> Paolo
+>
+We don't actually use KVM_GET_SUPPORTED_CPUID at all today. If it's
+commonly being misinterpreted as you say, perhaps we should add a
+KVM_GET_TRUE_SUPPORTED_CPUID ioctl. Or, perhaps we can just fix this
+in the documentation?
