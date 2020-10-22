@@ -2,76 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FCD295AFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:53:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 077E3295AD0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:46:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509830AbgJVIxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:53:46 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:34476 "EHLO inva020.nxp.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509816AbgJVIxn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:53:43 -0400
-Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id F24F21A0F01;
-        Thu, 22 Oct 2020 10:53:41 +0200 (CEST)
-Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 704DE1A0E9C;
-        Thu, 22 Oct 2020 10:53:36 +0200 (CEST)
-Received: from localhost.localdomain (mega.ap.freescale.net [10.192.208.232])
-        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id C4446402F7;
-        Thu, 22 Oct 2020 10:53:28 +0200 (CEST)
-From:   Biwen Li <biwen.li@oss.nxp.com>
-To:     shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
-        leoyang.li@nxp.com, zhiqiang.hou@nxp.com, tglx@linutronix.de,
-        jason@lakedaemon.net, maz@kernel.org
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jiafei.pan@nxp.com, xiaobo.xie@nxp.com,
-        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-Subject: [PATCH 11/11] dt-bindings: interrupt-controller: update bindings for supporting more SoCs
-Date:   Thu, 22 Oct 2020 16:44:10 +0800
-Message-Id: <20201022084410.28249-11-biwen.li@oss.nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201022084410.28249-1-biwen.li@oss.nxp.com>
-References: <20201022084410.28249-1-biwen.li@oss.nxp.com>
-X-Virus-Scanned: ClamAV using ClamSMTP
+        id S2509585AbgJVIqa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:46:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506224AbgJVIqa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 04:46:30 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4478C0613CE;
+        Thu, 22 Oct 2020 01:46:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uBCdrEFF9TsGphpledx/KbcInbWr+mZ9pT6EU7jIkE0=; b=eyaRgsYa7arPPaGxNWa00kV0Th
+        okVDAs8qc2hp2I5An6w9oB6MPH/sZmEWYkSnIC8uo+d1M5VTJfXENhNAiUCEY+tOvMfK3KYlKqWeF
+        xBXTO97OKSrdt2vkoPxUAJT8zpsR2I78obWlJYmNdKOnWNqk8yvk8c5QlBtzwhYTM4tbD3BfZ12ys
+        CI1YSoSMebUHEVnpl2uXBGFuPPTtVhemk7mKx1AZqSlLgFgIjwSz3UtjD2uRP3AjHiyg3b5b3lPFi
+        Yimg1DzAixSD2emJZNg6HNe1wZ8yaYySakD8yOBrw6l7Gz7GeYNZCxUNtu8DIo/yD2c9sELHCwNFy
+        CeX/iahg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVWEo-0005d7-6g; Thu, 22 Oct 2020 08:46:22 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8B6573011C6;
+        Thu, 22 Oct 2020 10:46:18 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7908A2B7802F0; Thu, 22 Oct 2020 10:46:18 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 10:46:18 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Giovanni Gherdovich <ggherdovich@suse.cz>
+Cc:     Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@suse.de>,
+        "Rafael J . Wysocki" <rjw@rjwysocki.net>, x86@kernel.org,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Ricardo Neri <ricardo.neri-calderon@linux.intel.com>
+Subject: Re: [PATCH v2 1/3] x86, sched: check for counters overflow in
+ frequency invariant accounting
+Message-ID: <20201022084618.GU2628@hirez.programming.kicks-ass.net>
+References: <20200531182453.15254-1-ggherdovich@suse.cz>
+ <20200531182453.15254-2-ggherdovich@suse.cz>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20200531182453.15254-2-ggherdovich@suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Biwen Li <biwen.li@nxp.com>
+On Sun, May 31, 2020 at 08:24:51PM +0200, Giovanni Gherdovich wrote:
 
-Update bindings for Layerscape external irqs,
-support more SoCs(LS1043A, LS1046A, LS1088A,
-LS208xA, LX216xA)
+Hi Giovanni!
 
-Signed-off-by: Biwen Li <biwen.li@nxp.com>
----
- .../bindings/interrupt-controller/fsl,ls-extirq.txt         | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+> +error:
+> +	pr_warn("Scheduler frequency invariance went wobbly, disabling!\n");
+> +	schedule_work(&disable_freq_invariance_work);
+> +}
 
-diff --git a/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt b/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-index f0ad7801e8cf..6c55eb25cf93 100644
---- a/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-+++ b/Documentation/devicetree/bindings/interrupt-controller/fsl,ls-extirq.txt
-@@ -1,6 +1,7 @@
- * Freescale Layerscape external IRQs
- 
--Some Layerscape SOCs (LS1021A, LS1043A, LS1046A) support inverting
-+Some Layerscape SOCs (LS1021A, LS1043A, LS1046A
-+LS1088A, LS208xA, LX216xA) support inverting
- the polarity of certain external interrupt lines.
- 
- The device node must be a child of the node representing the
-@@ -8,6 +9,9 @@ Supplemental Configuration Unit (SCFG).
- 
- Required properties:
- - compatible: should be "fsl,<soc-name>-extirq", e.g. "fsl,ls1021a-extirq".
-+  "fsl,ls1043a-extirq": for LS1043A, LS1046A.
-+  "fsl,ls1088a-extirq": for LS1088A, LS208xA, LX216xA.
-+
- - #interrupt-cells: Must be 2. The first element is the index of the
-   external interrupt line. The second element is the trigger type.
- - #address-cells: Must be 0.
--- 
-2.17.1
-
+I'm getting reports that we trigger this on resume. Would it make sense
+to hook into tsc_{save,restore}_sched_clock_state() (or somewhere near
+there) to reset the state (basically call init_counter_refs() again to
+ensure we're not having to deal with crazy ?
