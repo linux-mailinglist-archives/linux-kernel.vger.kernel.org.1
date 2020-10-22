@@ -2,113 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3428E295751
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:36:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E5E25295753
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2443990AbgJVEgO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:36:14 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:36475 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443812AbgJVEgN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:36:13 -0400
-Received: by mail-wr1-f65.google.com with SMTP id x7so402191wrl.3
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:36:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=hc/tVgY/tw8iRj/ePwmccLYyEyi2uJxxtFlcvBAdZdM=;
-        b=gZxHqyek3qmjjYDY6oedNftdNwfURAy+08ck8gvdXbdbZUTAU0TY2t1i4zgnQqNdfy
-         on4invOMnjoc69lr5qfoMKkTPeEJHHQstiMwU7AzhrmhFbhA/bqyWmrT0JhE/3CiQMNI
-         C/0aMd7DoZRgCnoD7r3hihchdpLctaszAz981383hbKY84MAraiL7d8rat5kySx5q3GO
-         PKjxsTfipBz6j/jOuHzKG85ws+mHa4qQQAWWQBuTeYBpGAnCCfYSEugWpyTex+UXO8pQ
-         Cbh+P3YzCQj7hL9hPY4jOU29lrItQXtGGs68veISHGYtEmlX99Mt/mm9ZsdDG2PZDW/X
-         HV8g==
-X-Gm-Message-State: AOAM531OKjObmFNeU0aVg3Vvd5UTfeCOYjpdF3G5Y7D01254JY73kEZQ
-        FL3izenmYxKREMn06mMtPL1XFVa48JCMRAWqdoI=
-X-Google-Smtp-Source: ABdhPJziEekR2fPhRBerNtqricUmPS/et+OY8uzsvpXbmmsSesXPpQsZ9CIewWzE7WhbAjIkCzirFDmVoPeN7OAxBQ4=
-X-Received: by 2002:adf:a553:: with SMTP id j19mr505099wrb.349.1603341372011;
- Wed, 21 Oct 2020 21:36:12 -0700 (PDT)
+        id S2444080AbgJVEgf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:36:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2444005AbgJVEgf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:36:35 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9188E223C7;
+        Thu, 22 Oct 2020 04:36:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603341394;
+        bh=d9mmkSauBF7Ry50v5+cDqD5/qihN8tfYjtw/3j9I1Sk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=TStTqs8LBFQPLZlP/h1dDEGo7q7oLfgrzsmG1FoP+F98JrnxL5mYngrx1RUkSkPsY
+         qyeb7/D+ORehS20/LN+tXCWLGR1UeybgtySDI95yxtKzBitUaYhCiTtxHJvsx52IvG
+         Wfu56bk3mxbsXmRMrXVu/AHqa38FZBIpoW7revz8=
+Date:   Wed, 21 Oct 2020 21:36:33 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] crypto: Use memzero_explicit() for clearing state
+Message-ID: <20201022043633.GD857@sol.localdomain>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-2-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com> <b3c73389-7b4c-89cd-423c-68b00fcc61c9@linux.intel.com>
-In-Reply-To: <b3c73389-7b4c-89cd-423c-68b00fcc61c9@linux.intel.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-Date:   Thu, 22 Oct 2020 13:36:01 +0900
-Message-ID: <CAM9d7cgr11TD-cACYbsxa=sUyStH_TGUDbdw9dsBuKAH43uQow@mail.gmail.com>
-Subject: Re: [PATCH v2 05/15] perf session: introduce decompressor into trace
- reader object
-To:     Alexey Budankov <alexey.budankov@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Adrian Hunter <adrian.hunter@intel.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020203957.3512851-2-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 1:00 AM Alexey Budankov
-<alexey.budankov@linux.intel.com> wrote:
->
->
-> Introduce decompressor to trace reader object so that decompression
-> could be executed on per trace file basis separately for every
-> trace file located in trace directory.
+On Tue, Oct 20, 2020 at 04:39:52PM -0400, Arvind Sankar wrote:
+> Without the barrier_data() inside memzero_explicit(), the compiler may
+> optimize away the state-clearing if it can tell that the state is not
+> used afterwards. At least in lib/crypto/sha256.c:__sha256_final(), the
+> function can get inlined into sha256(), in which case the memset is
+> optimized away.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-I'm slightly uncomfortable with the word 'trace' here as it's
-used for other cases like perf trace and ftrace.  Maybe we can
-change it to 'profile' and/or 'data file'?
+Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-Thanks
-Namhyung
+Maybe get the one in arch/arm64/crypto/sha3-ce-glue.c too?
 
->
-> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
-> ---
->  tools/perf/util/session.c | 4 +++-
->  tools/perf/util/session.h | 1 +
->  2 files changed, 4 insertions(+), 1 deletion(-)
->
-> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
-> index 911b2dbcd0ac..6afc670fdf0c 100644
-> --- a/tools/perf/util/session.c
-> +++ b/tools/perf/util/session.c
-> @@ -44,6 +44,8 @@ static int perf_session__process_compressed_event(struct perf_session *session,
->         u64 decomp_last_rem = 0;
->         size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
->         struct decomp *decomp, *decomp_last = session->decomp_last;
-> +       struct zstd_data *zstd_data = session->reader ?
-> +               &(session->reader->zstd_data) : &(session->zstd_data);
->
->         if (decomp_last) {
->                 decomp_last_rem = decomp_last->size - decomp_last->head;
-> @@ -71,7 +73,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
->         src = (void *)event + sizeof(struct perf_record_compressed);
->         src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
->
-> -       decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
-> +       decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
->                                 &(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
->         if (!decomp_size) {
->                 munmap(decomp, mmap_len);
-> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
-> index abdb8518a81f..4fc9ccdf7970 100644
-> --- a/tools/perf/util/session.h
-> +++ b/tools/perf/util/session.h
-> @@ -42,6 +42,7 @@ struct reader {
->         u64              data_size;
->         u64              data_offset;
->         reader_cb_t      process;
-> +       struct zstd_data zstd_data;
->  };
->
->  struct perf_session {
-> --
-> 2.24.1
->
->
+- Eric
