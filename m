@@ -2,162 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9D73C2958F9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:21:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1589C29590E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:26:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508404AbgJVHVM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:21:12 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:41814 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506202AbgJVHVL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:21:11 -0400
-Received: by mail-oi1-f195.google.com with SMTP id q136so726083oic.8;
-        Thu, 22 Oct 2020 00:21:10 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/52oDG9QeL4C2Vex7JQFOahpk7n/lU/SANjLOmaHdQg=;
-        b=lkYlnfnz+FuiUt0xzy85qzySBW66Y3NKMOeffAQp3AQW1cdXpLe0TuuaIaHNBZw79o
-         A0It/AnIOit1DUx3Sn6As+DQasoMCE7swf3CSICi/c/ZUlMqSPQSkXne00iWEvjUWmZ6
-         eH2Dd1XJ7ntdnGwijqedntNVKhse08r9ed1gCyVW2drERmoC10/IM3E/UkZyjLQ3ARDT
-         G3LsKe2qAXZDugh7LhabC82G8WQy0MKeyGMw+wvvDsuohF7ZeO1uLpAkAFED7GqgV7/d
-         W6Ws2u/aBYj0nqEvcsPMd+GVEh7rvlj3SfzL6wyg4igKDJCkd26Z2iGk2yYRMl54jNwh
-         wj1g==
-X-Gm-Message-State: AOAM5334orXiH/9GhtOfRqKCPPFqkG4+zM1qFVYFZZFEFDg1zod3FprI
-        P+PFj87mMt2b7tLe4F7e7TIgRlzaus42gWmS8JE=
-X-Google-Smtp-Source: ABdhPJzV+AwHffHagpsRwFah+uC67Zw1o6BP2luFWfYcxXO4sECKRbSAMN78l4/A/WO8flXhjlxDSJFdngj0mRGrNkE=
-X-Received: by 2002:a05:6808:8f5:: with SMTP id d21mr589989oic.153.1603351270141;
- Thu, 22 Oct 2020 00:21:10 -0700 (PDT)
+        id S2508511AbgJVH0m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:26:42 -0400
+Received: from mail-eopbgr70075.outbound.protection.outlook.com ([40.107.7.75]:8942
+        "EHLO EUR04-HE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2440718AbgJVH0m (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:26:42 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nQARjHFKYUBJoOUGt8N2BgEiM9VyBLfciMSpL9JIrsH/BBOCgMDneU+w5DmCEqSZcgLqn0Y3Cj3a5J9qQFRebB5ciKiclq/sGaQtHqQQM1mhohqgdlaQOtr6dYwppTJlnk2sqdKgnJrpActv2dJfrW5Rrtw07+mBpfTSnc8BxU21+wVXX2g7/9teqnGMvLurQuP9Rr7jeV5bOA/DlBIOfk/4BJqFArIISiivGDindjtiVEWii/B5FKTxejon5KjAliWUjF2JS/AkQNVxPdboAlVIqJwJRSG0YYMWFRM1o3/gYCsL+FfIbMjTQiFusW4HMvuq36NEwjDsXq3PUEHtZg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uDADGvNFDY9YbL/CsO/Hbgsaa13hkyPu1S2ieHQ9TSc=;
+ b=YOAGHONmibgfvPu+Stw7Z1VbkSpzy0KCUBFXB6alhiZsKPO0pA6E2DWXcrv7eH8xaM0vmAeqXkL0hgeKbAAKeFibXUnh8FOvMy+4h5vekPOAedaabaxRW/WfFj195S4jkAbreMmNC59u2UiekudzjCaInTFciUYp7VelpoRUJQ1BNDZvBiz2UrPVba/Q/vQXQfx980r5pMbhtMpzysY/Dvdl/xSAv/62TMNNK0e8MkxgGrb6LlkjqQj1Wwfx0kdPspMs8l6895NiG9IWdZWWCfx44pV2GRVaMti++LidZIhJBTW8RBWvtL0m0UV3d/sUiGY5XubCawEdfiHYgzkOzQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uDADGvNFDY9YbL/CsO/Hbgsaa13hkyPu1S2ieHQ9TSc=;
+ b=LR6er9U34f984OoMOloHZVEmugdW7M4KpLjIpOrt+S8nlxfviFNrjfqqER6VsiifHyed5kWDkZ55KUSr8BsBKqexQ9euBf+Ag5bBPX+K3FpIrjc2VFTmG06QlwhyiB9YiP/oZSI0y0mCYLLj8l+CsG7S24n07zjA0d6qX75/btU=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB8PR04MB7177.eurprd04.prod.outlook.com (2603:10a6:10:127::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3455.21; Thu, 22 Oct
+ 2020 07:26:36 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
+ 07:26:36 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        robh+dt@kernel.org
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, marex@denx.de,
+        Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH] arm64: dts: imx8m: use generic name for tmu
+Date:   Thu, 22 Oct 2020 15:21:18 +0800
+Message-Id: <1603351278-8198-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR02CA0062.apcprd02.prod.outlook.com
+ (2603:1096:4:54::26) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
 MIME-Version: 1.0
-References: <20201020073740.29081-1-geert@linux-m68k.org> <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org> <20201021223649.GP181507@mit.edu>
- <b51d57fd-061a-26f3-5ecc-8efecbc95a49@infradead.org> <20201022034343.GQ181507@mit.edu>
-In-Reply-To: <20201022034343.GQ181507@mit.edu>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Oct 2020 09:20:58 +0200
-Message-ID: <CAMuHMdXxM-AM_zYGuPo0Ti2wQOK-2FEr4jrQ7KXHUxK8aGre+Q@mail.gmail.com>
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
- selecting it
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR02CA0062.apcprd02.prod.outlook.com (2603:1096:4:54::26) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3499.18 via Frontend Transport; Thu, 22 Oct 2020 07:26:32 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b2eb0d56-a073-4650-29e4-08d8765bcf32
+X-MS-TrafficTypeDiagnostic: DB8PR04MB7177:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB8PR04MB71777E4D9C65895BF41F9EBE881D0@DB8PR04MB7177.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:374;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: +VafNKcKX+w4FBUGQu+EXvZhfFikkWeS2rEC+VX7mX5Q7AULgqcPXszrdfMulot5w787mC559e8FdMnPZ3s6EaNqmKoIjNX3iVyss68gt9kNyl9BcqeODKNG0dGi2jSSQVtvb9hlMIRorg2MEzF4x0UDChRhQv3SeMi+JcXar5wy4JfN7zSFGanqePV90QVn4xU0D7I/CL4YJjTZvPCufoXeteiheHIhpRHC39hjjTd1bDQtqUAFCnaPGXGVyIdsGtV+NOfi0MKwV8nJN6mJspoDpWKg5jy3xlNeRZKPNkUjhJpzIpsfgMgetpfcSwAaQLQ2ZbmgsNuebenMI10XWVh7NjgaZ3EsC+m5qBpv5DmrOLgWAfLgBgjvRpziVXXSmbznU6ibOD+MBno/wSfSExXz54WPwcmQ8LQHSUDBtA8eQ6e34NDRi0QQP8EnN2Lo
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(366004)(136003)(376002)(396003)(346002)(478600001)(4326008)(36756003)(83380400001)(8936002)(8676002)(69590400008)(86362001)(186003)(26005)(52116002)(9686003)(6506007)(316002)(5660300002)(16526019)(6666004)(6512007)(66946007)(2616005)(6486002)(956004)(66476007)(66556008)(2906002)(41533002)(32563001);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: lTSOqsEGu5VyU/irRyLOzlMjyBVG9ne1Oiel2AcAgWdlT+HxC3rWG1xXkb8QWD+0hsF6n547gt7427W6RDH14WoAUDKrku672fnqE0g3zXRr1QWBRv3uMnjc780cbf5KARZZCEwnIMANPTDKmOsy2wbP9oKZaumR9MLhMqhaWsKzAGua3gMAs41Yd0Moj+9RzbHwaMW881vlMqhjDFik5fFJgFJP4BZdblJksiwMrCRUcneWbXqTMedD7WTrzUEoMypAW+OhwaaUkN1hEiNIcNJLDbFqeFl99EgC00iTD6ltDIvXBD8on/ohIZLEcPVT0sYB1bdF2KMYq878QPLVjCy24kVOF8oAhKfjixtvXRNnFXayVysrsVmC1/1/EyHS6VujeARVq4897pe4ROhfjtWD5gaWmbN6oSD2RQ1r88okI371FLbCEOh9VClEfa6jJL/reJVHWLJ2TbutN9j+23kFVHdhSzQ6+p4N2gFiwN7XDF0IWzAiGF4uZaud3h7UsvY+b9bKCtZgexVwFDRezau+iuN45AsgRRfrC4JNG+bH4lzFJhPt9qyN10BaUcgFtNE2DmCNTH2pvIwNCycPsEeiIX7RxcmcxTAqzr2RJcqyEpq8Y7TDO0LjpNWTZ+af0W5X9L6CySTsO64DYW096A==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b2eb0d56-a073-4650-29e4-08d8765bcf32
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 07:26:36.6166
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BdzycdRCt9cu1SoNRLQmMgVAw+ZdCurhHNBUnVvyrVc0KD6M1hWCWw9JmexHtEB3F6PJ18pIkkfmLGDuVnSHWA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB8PR04MB7177
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Ted,
+From: Peng Fan <peng.fan@nxp.com>
 
-On Thu, Oct 22, 2020 at 5:43 AM Theodore Y. Ts'o <tytso@mit.edu> wrote:
-> On Wed, Oct 21, 2020 at 04:07:15PM -0700, Randy Dunlap wrote:
-> > > I'm don't particularly care how this gets achieved, but please think
-> > > about how to make it easy for a kernel developer to run a specific set
-> > > of subsystem unit tests.  (In fact, being able to do something like
-> > > "kunit.py run fs/ext4 fs/jbd2" or maybe "kunit.py run fs/..." would be
-> > > *great*.  No need to fuss with hand editing the .kunitconfig file at
-> > > all would be **wonderful**.
-> >
-> > I understand the wish for ease of use, but this is still the tail
-> > wagging the dog.
-> >
-> > The primary documentation for 'select' is
-> > Documentation/kbuild/kconfig-language.rst, which says:
-> >
-> >   Note:
-> >       select should be used with care. select will force
-> >       a symbol to a value without visiting the dependencies.
-> >       By abusing select you are able to select a symbol FOO even
-> >       if FOO depends on BAR that is not set.
-> >       In general use select only for non-visible symbols
-> >       (no prompts anywhere) and for symbols with no dependencies.
-> >       That will limit the usefulness but on the other hand avoid
-> >       the illegal configurations all over.
-> >
->
-> Well, the KUNIT configs are kinda of a special case, since normally
+Per devicetree specification, generic names are recommended
+to be used, such as temperature-sensor.
 
-Please read "Why my CONFIG symbol is (not) special?"...
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
+---
+ arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
+ arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
 
-> they don't have a lot of huge number of dependencies, since unit tests
-
-They still depend on the feature under test, which may not be enabled.
-
-> in general are not integration tests.  So ideally, dependencies will
-> mostly be replaced with mocking functions.  And if there are *real*
-> dependencies that the Kunit Unit tests need, they can be explicitly
-> pulled in with selects.
-
-While I'm a strong supporter of testing, this select is what I object
-to, as it forces the enablement of features that were not enabled in
-your kernel in the first place.
-
-> That being said, as I said, I'm not picky about *how* this gets
-> achieved.  But ease of use is a key part of making people more likely
-> to run the unit tests.  So another way of solving the problem might be
-> to put some kind of automated dependency solver into kunit.py, or some
-> way of manually adding the necessary dependencies in some kind of
-> Kunitconfig file that are in directories where their are Unit tests,
-> or maybe some kind of extenstion to the Kconfig file.  My main
-> requirement is that the only thing that should be necessary for
-> enabling the ext4 Kunit tests should be adding a single line to the
-> .kunitconfig file.  It's not fair to make the human developer manually
-> have to figure out the dependency chains.
-
-If you want to test e.g. EXT4, sure you know you should enable EXT4?
-If you don't enable feature FOO in your kernel. why would you be
-interested in testing feature FOO? Unless you want to test everything,
-and you might as well run an allmodconfig kernel.
-
-> As far as I'm concerned, ease of use is important enough to justfy
-> special casing and/or bending the rules as far as "select" is concered
-> for Kunit-related CONFIG items.  But if someone else want to suggest a
-> better approach, I'm all ears.
-
-Providing .config snippets containing both the CONFIG_FOO_KUNIT_TESTS
-and CONFIG_FOO symbols set (and other dependencies, if needed) could
-provide this, and would also be useful in documenting CONFIG_FOO has a
-corresponding tests.
-
-As kunit can be modular, and most tests can be modular too, I can build
-all tests relevant for my system as modules.  Hence they are available
-when the need to run them ever arises, while there is no further impact
-on my system. This use case also seems to be supported by
-CONFIG_KUNIT_ALL_TESTS:
-
-    config KUNIT_ALL_TESTS
-            tristate "All KUnit tests with satisfied dependencies"
-            help
-              Enables all KUnit tests, if they can be enabled.
-
-However, this no longer works if this suddenly starts enabling random
-features in my kernel, which was the case for EXT4_KUNIT_TESTS
-and MPTCP_KUNIT_TESTS (enables MPTCP, and IPV6!).
-
-While ext4 is ubiquitous (I did have it enabled ;-) and may be
-considered common on all systems (it is not: e.g. embedded systems with
-JFFS do not need EXT4 enabled), this is surely not the case for other
-features with tests, and won't be the case for all features that will
-receive kunit tests in the future.
-
-Thanks for your understanding!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
+diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+index b83f400def8b..327f1d44ced9 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+@@ -404,7 +404,7 @@ gpio5: gpio@30240000 {
+ 				gpio-ranges = <&iomuxc 0 119 30>;
+ 			};
+ 
+-			tmu: tmu@30260000 {
++			tmu: temperature-sensor@30260000 {
+ 				compatible = "fsl,imx8mm-tmu";
+ 				reg = <0x30260000 0x10000>;
+ 				clocks = <&clk IMX8MM_CLK_TMU_ROOT>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+index 746faf1cf2fb..994fcb021b8f 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
+@@ -311,7 +311,7 @@ gpio5: gpio@30240000 {
+ 				gpio-ranges = <&iomuxc 0 119 30>;
+ 			};
+ 
+-			tmu: tmu@30260000 {
++			tmu: temperature-sensor@30260000 {
+ 				compatible = "fsl,imx8mn-tmu", "fsl,imx8mm-tmu";
+ 				reg = <0x30260000 0x10000>;
+ 				clocks = <&clk IMX8MN_CLK_TMU_ROOT>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mp.dtsi b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+index 6038f66aefc1..2a16016b1cf4 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mp.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mp.dtsi
+@@ -288,7 +288,7 @@ gpio5: gpio@30240000 {
+ 				gpio-ranges = <&iomuxc 0 114 30>;
+ 			};
+ 
+-			tmu: tmu@30260000 {
++			tmu: temperature-sensor@30260000 {
+ 				compatible = "fsl,imx8mp-tmu";
+ 				reg = <0x30260000 0x10000>;
+ 				clocks = <&clk IMX8MP_CLK_TSENSOR_ROOT>;
+diff --git a/arch/arm64/boot/dts/freescale/imx8mq.dtsi b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+index 5e0e7d0f1bc4..ab57839a3de1 100644
+--- a/arch/arm64/boot/dts/freescale/imx8mq.dtsi
++++ b/arch/arm64/boot/dts/freescale/imx8mq.dtsi
+@@ -420,7 +420,7 @@ gpio5: gpio@30240000 {
+ 				gpio-ranges = <&iomuxc 0 119 30>;
+ 			};
+ 
+-			tmu: tmu@30260000 {
++			tmu: temperature-sensor@30260000 {
+ 				compatible = "fsl,imx8mq-tmu";
+ 				reg = <0x30260000 0x10000>;
+ 				interrupts = <GIC_SPI 49 IRQ_TYPE_LEVEL_HIGH>;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.28.0
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
