@@ -2,144 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F479295BBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E8EE2295BCA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:28:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895901AbgJVJ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:27:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:52266 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507371AbgJVJ1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:27:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4C11D6E;
-        Thu, 22 Oct 2020 02:27:13 -0700 (PDT)
-Received: from [10.57.13.45] (unknown [10.57.13.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 817E23F66E;
-        Thu, 22 Oct 2020 02:27:11 -0700 (PDT)
-Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        mike.leach@linaro.org, coresight@lists.linaro.org,
-        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
-References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
- <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
- <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
- <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
- <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
- <8affc09d4045812e2f5a065695b375de@codeaurora.org>
- <0ee3566e50143bac5b662b2edf551b89@codeaurora.org>
- <fdee606e-a045-e252-0823-14bdbef779c0@arm.com>
- <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
-From:   Suzuki Poulose <suzuki.poulose@arm.com>
-Message-ID: <fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com>
-Date:   Thu, 22 Oct 2020 10:27:10 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2895921AbgJVJ2Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:28:24 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:54419 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2509819AbgJVJ2T (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:28:19 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-274-znM0PVqyMcS7eXta51waCQ-1; Thu, 22 Oct 2020 10:28:14 +0100
+X-MC-Unique: znM0PVqyMcS7eXta51waCQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 10:28:13 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 22 Oct 2020 10:28:13 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Hildenbrand' <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAMKYSAAABcMA==
+Date:   Thu, 22 Oct 2020 09:28:13 +0000
+Message-ID: <d9fda4834bbf4e708e7d55e7dd09f6c9@AcuMS.aculab.com>
+References: <20200925045146.1283714-1-hch@lst.de>
+ <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
+ <20201021233914.GR3576660@ZenIV.linux.org.uk>
+ <20201022082654.GA1477657@kroah.com>
+ <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
+ <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+In-Reply-To: <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 9:02 AM, Sai Prakash Ranjan wrote:
-> On 2020-10-21 15:38, Suzuki Poulose wrote:
->> On 10/21/20 8:29 AM, Sai Prakash Ranjan wrote:
->>> On 2020-10-20 21:40, Sai Prakash Ranjan wrote:
->>>> On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
->>>>> On 2020-10-14 18:46, Suzuki K Poulose wrote:
->>>>>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
->>>>>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
->>>>>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
->>>>>>>>> There was a report of NULL pointer dereference in ETF enable
->>>>>>>>> path for perf CS mode with PID monitoring. It is almost 100%
->>>>>>>>> reproducible when the process to monitor is something very
->>>>>>>>> active such as chrome and with ETF as the sink and not ETR.
->>>>>>>>> Currently in a bid to find the pid, the owner is dereferenced
->>>>>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
->>>>>>>>> owner being NULL, we get a NULL pointer dereference.
->>>>>>>>>
->>>>>>>>> Looking at the ETR and other places in the kernel, ETF and the
->>>>>>>>> ETB are the only places trying to dereference the task(owner)
->>>>>>>>> in tmc_enable_etf_sink_perf() which is also called from the
->>>>>>>>> sched_in path as in the call trace. Owner(task) is NULL even
->>>>>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
->>>>>>>>> cache the PID in alloc_buffer() callback and it is done as part
->>>>>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
->>>>>>>>> dereference this NULL pointer and we are safe. So lets do the
->>>>>>>>
->>>>>>>> The patch is necessary to fix some of the issues. But I feel it is
->>>>>>>> not complete. Why is it safe earlier and not later ? I believe 
->>>>>>>> we are
->>>>>>>> simply reducing the chances of hitting the issue, by doing this 
->>>>>>>> earlier than
->>>>>>>> later. I would say we better fix all instances to make sure that 
->>>>>>>> the
->>>>>>>> event->owner is valid. (e.g, I can see that the for kernel events
->>>>>>>> event->owner == -1 ?)
->>>>>>>>
->>>>>>>> struct task_struct *tsk = READ_ONCE(event->owner);
->>>>>>>>
->>>>>>>> if (!tsk || is_kernel_event(event))
->>>>>>>>    /* skip ? */
->>>>>>>>
->>>>>>>
->>>>>>> Looking at it some more, is_kernel_event() is not exposed
->>>>>>> outside events core and probably for good reason. Why do
->>>>>>> we need to check for this and not just tsk?
->>>>>>
->>>>>> Because the event->owner could be :
->>>>>>
->>>>>>  = NULL
->>>>>>  = -1UL  // kernel event
->>>>>>  = valid.
->>>>>>
->>>>>
->>>>> Yes I understood that part, but here we were trying to
->>>>> fix the NULL pointer dereference right and hence the
->>>>> question as to why we need to check for kernel events?
->>>>> I am no expert in perf but I don't see anywhere in the
->>>>> kernel checking for is_kernel_event(), so I am a bit
->>>>> skeptical if exporting that is actually right or not.
->>>>>
->>>>
->>>> I have stress tested with the original patch many times
->>>> now, i.e., without a check for event->owner and is_kernel_event()
->>>> and didn't observe any crash. Plus on ETR where this was already
->>>> done, no crashes were reported till date and with ETF, the issue
->>>> was quickly reproducible, so I am fairly confident that this
->>>> doesn't just delay the original issue but actually fixes
->>>> it. I will run an overnight test again to confirm this.
->>>>
->>>
->>> I ran the overnight test which collected aroung 4G data(see below),
->>> with the following small change to see if the two cases
->>> (event->owner=NULL and is_kernel_event()) are triggered
->>> with suggested changes and it didn't trigger at all.
->>> Do we still need those additional checks?
->>>
->>
->> Yes. Please see perf_event_create_kernel_event(), which is
->> an exported function allowing any kernel code (including modules)
->> to use the PMU (just like the userspace perf tool would do).
->> Just because your use case doesn't trigger this (because
->> you don't run something that can trigger this) doesn't mean
->> this can't be triggered.
->>
-> 
-> Thanks for that pointer, I will add them in the next version.
-> 
+RnJvbTogRGF2aWQgSGlsZGVuYnJhbmQNCj4gU2VudDogMjIgT2N0b2JlciAyMDIwIDEwOjE5DQo+
+IA0KPiBPbiAyMi4xMC4yMCAxMTowMSwgR3JlZyBLSCB3cm90ZToNCj4gPiBPbiBUaHUsIE9jdCAy
+MiwgMjAyMCBhdCAxMDo0ODo1OUFNICswMjAwLCBEYXZpZCBIaWxkZW5icmFuZCB3cm90ZToNCj4g
+Pj4gT24gMjIuMTAuMjAgMTA6NDAsIERhdmlkIExhaWdodCB3cm90ZToNCj4gPj4+IEZyb206IERh
+dmlkIEhpbGRlbmJyYW5kDQo+ID4+Pj4gU2VudDogMjIgT2N0b2JlciAyMDIwIDA5OjM1DQo+ID4+
+Pj4NCj4gPj4+PiBPbiAyMi4xMC4yMCAxMDoyNiwgR3JlZyBLSCB3cm90ZToNCj4gPj4+Pj4gT24g
+VGh1LCBPY3QgMjIsIDIwMjAgYXQgMTI6Mzk6MTRBTSArMDEwMCwgQWwgVmlybyB3cm90ZToNCj4g
+Pj4+Pj4+IE9uIFdlZCwgT2N0IDIxLCAyMDIwIGF0IDA2OjEzOjAxUE0gKzAyMDAsIEdyZWcgS0gg
+d3JvdGU6DQo+ID4+Pj4+Pj4gT24gRnJpLCBTZXAgMjUsIDIwMjAgYXQgMDY6NTE6MzlBTSArMDIw
+MCwgQ2hyaXN0b3BoIEhlbGx3aWcgd3JvdGU6DQo+ID4+Pj4+Pj4+IEZyb206IERhdmlkIExhaWdo
+dCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+DQo+ID4+Pj4+Pj4+DQo+ID4+Pj4+Pj4+IFRoaXMg
+bGV0cyB0aGUgY29tcGlsZXIgaW5saW5lIGl0IGludG8gaW1wb3J0X2lvdmVjKCkgZ2VuZXJhdGlu
+Zw0KPiA+Pj4+Pj4+PiBtdWNoIGJldHRlciBjb2RlLg0KPiA+Pj4+Pj4+Pg0KPiA+Pj4+Pj4+PiBT
+aWduZWQtb2ZmLWJ5OiBEYXZpZCBMYWlnaHQgPGRhdmlkLmxhaWdodEBhY3VsYWIuY29tPg0KPiA+
+Pj4+Pj4+PiBTaWduZWQtb2ZmLWJ5OiBDaHJpc3RvcGggSGVsbHdpZyA8aGNoQGxzdC5kZT4NCj4g
+Pj4+Pj4+Pj4gLS0tDQo+ID4+Pj4+Pj4+ICBmcy9yZWFkX3dyaXRlLmMgfCAxNzkgLS0tLS0tLS0t
+LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tDQo+ID4+Pj4+Pj4+ICBsaWIv
+aW92X2l0ZXIuYyAgfCAxNzYgKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysrKysr
+KysrKysrKysNCj4gPj4+Pj4+Pj4gIDIgZmlsZXMgY2hhbmdlZCwgMTc2IGluc2VydGlvbnMoKyks
+IDE3OSBkZWxldGlvbnMoLSkNCj4gPj4+Pj4+Pg0KPiA+Pj4+Pj4+IFN0cmFuZ2VseSwgdGhpcyBj
+b21taXQgY2F1c2VzIGEgcmVncmVzc2lvbiBpbiBMaW51cydzIHRyZWUgcmlnaHQgbm93Lg0KPiA+
+Pj4+Pj4+DQo+ID4+Pj4+Pj4gSSBjYW4ndCByZWFsbHkgZmlndXJlIG91dCB3aGF0IHRoZSByZWdy
+ZXNzaW9uIGlzLCBvbmx5IHRoYXQgdGhpcyBjb21taXQNCj4gPj4+Pj4+PiB0cmlnZ2VycyBhICJs
+YXJnZSBBbmRyb2lkIHN5c3RlbSBiaW5hcnkiIGZyb20gd29ya2luZyBwcm9wZXJseS4gIFRoZXJl
+J3MNCj4gPj4+Pj4+PiBubyBrZXJuZWwgbG9nIG1lc3NhZ2VzIGFueXdoZXJlLCBhbmQgSSBkb24n
+dCBoYXZlIGFueSB3YXkgdG8gc3RyYWNlIHRoZQ0KPiA+Pj4+Pj4+IHRoaW5nIGluIHRoZSB0ZXN0
+aW5nIGZyYW1ld29yaywgc28gYW55IGhpbnRzIHRoYXQgcGVvcGxlIGNhbiBwcm92aWRlDQo+ID4+
+Pj4+Pj4gd291bGQgYmUgbW9zdCBhcHByZWNpYXRlZC4NCj4gPj4+Pj4+DQo+ID4+Pj4+PiBJdCdz
+IGEgcHVyZSBtb3ZlIC0gbW9kdWxvIGNoYW5nZWQgbGluZSBicmVha3MgaW4gdGhlIGFyZ3VtZW50
+IGxpc3RzDQo+ID4+Pj4+PiB0aGUgZnVuY3Rpb25zIGludm9sdmVkIGFyZSBpZGVudGljYWwgYmVm
+b3JlIGFuZCBhZnRlciB0aGF0IChqdXN0IGNoZWNrZWQNCj4gPj4+Pj4+IHRoYXQgZGlyZWN0bHks
+IGJ5IGNoZWNraW5nIG91dCB0aGUgdHJlZXMgYmVmb3JlIGFuZCBhZnRlciwgZXh0cmFjdGluZyB0
+d28NCj4gPj4+Pj4+IGZ1bmN0aW9ucyBpbiBxdWVzdGlvbiBmcm9tIGZzL3JlYWRfd3JpdGUuYyBh
+bmQgbGliL2lvdl9pdGVyLmMgKGJlZm9yZSBhbmQNCj4gPj4+Pj4+IGFmdGVyLCByZXNwLikgYW5k
+IGNoZWNraW5nIHRoZSBkaWZmIGJldHdlZW4gdGhvc2UuDQo+ID4+Pj4+Pg0KPiA+Pj4+Pj4gSG93
+IGNlcnRhaW4gaXMgeW91ciBiaXNlY3Rpb24/DQo+ID4+Pj4+DQo+ID4+Pj4+IFRoZSBiaXNlY3Rp
+b24gaXMgdmVyeSByZXByb2R1Y2FibGUuDQo+ID4+Pj4+DQo+ID4+Pj4+IEJ1dCwgdGhpcyBsb29r
+cyBub3cgdG8gYmUgYSBjb21waWxlciBidWcuICBJJ20gdXNpbmcgdGhlIGxhdGVzdCB2ZXJzaW9u
+DQo+ID4+Pj4+IG9mIGNsYW5nIGFuZCBpZiBJIHB1dCAibm9pbmxpbmUiIGF0IHRoZSBmcm9udCBv
+ZiB0aGUgZnVuY3Rpb24sDQo+ID4+Pj4+IGV2ZXJ5dGhpbmcgd29ya3MuDQo+ID4+Pj4NCj4gPj4+
+PiBXZWxsLCB0aGUgY29tcGlsZXIgY2FuIGRvIG1vcmUgaW52YXNpdmUgb3B0aW1pemF0aW9ucyB3
+aGVuIGlubGluaW5nLiBJZg0KPiA+Pj4+IHlvdSBoYXZlIGJ1Z2d5IGNvZGUgdGhhdCByZWxpZXMg
+b24gc29tZSB1bnNwZWNpZmllZCBiZWhhdmlvciwgaW5saW5pbmcNCj4gPj4+PiBjYW4gY2hhbmdl
+IHRoZSBiZWhhdmlvciAuLi4gYnV0IGdvaW5nIG92ZXIgdGhhdCBjb2RlLCB0aGVyZSBpc24ndCB0
+b28NCj4gPj4+PiBtdWNoIGFjdGlvbiBnb2luZyBvbi4gQXQgbGVhc3Qgbm90aGluZyBzY3JlYW1l
+ZCBhdCBtZS4NCj4gPj4+DQo+ID4+PiBBcGFydCBmcm9tIGFsbCB0aGUgb3B0aW1pc2F0aW9ucyB0
+aGF0IGdldCByaWQgb2ZmIHRoZSAncGFzcyBiZSByZWZlcmVuY2UnDQo+ID4+PiBwYXJhbWV0ZXJz
+IGFuZCBzdHJhbmdlIGNvbmRpdGlvbmFsIHRlc3RzLg0KPiA+Pj4gUGxlbnR5IG9mIHNjb3BlIGZv
+ciB0aGUgY29tcGlsZXIgZ2V0dGluZyBpdCB3cm9uZy4NCj4gPj4+IEJ1dCBub3RoaW5nIGV2ZW4g
+dmFndWVseSBpbGxlZ2FsLg0KPiA+Pg0KPiA+PiBOb3QgdGhlIGZpcnN0IHRpbWUgdGhhdCBwZW9w
+bGUgYmxhbWUgdGhlIGNvbXBpbGVyIHRvIHRoZW4gZmlndXJlIG91dA0KPiA+PiB0aGF0IHNvbWV0
+aGluZyBlbHNlIGlzIHdyb25nIC4uLiBidXQgbWF5YmUgdGhpcyB0aW1lIGlzIGRpZmZlcmVudCA6
+KQ0KPiA+DQo+ID4gSSBhZ3JlZSwgSSBoYXRlIHRvIGJsYW1lIHRoZSBjb21waWxlciwgdGhhdCdz
+IGFsbW9zdCBuZXZlciB0aGUgcmVhbA0KPiA+IHByb2JsZW0sIGJ1dCB0aGlzIG9uZSBzdXJlICJm
+ZWVscyIgbGlrZSBpdC4NCj4gPg0KPiA+IEknbSBydW5uaW5nIHNvbWUgbW9yZSB0ZXN0cywgdHJ5
+aW5nIHRvIG5hcnJvdyB0aGluZ3MgZG93biBhcyBqdXN0IGFkZGluZw0KPiA+IGEgIm5vaW5saW5l
+IiB0byB0aGUgZnVuY3Rpb24gdGhhdCBnb3QgbW92ZWQgaGVyZSBkb2Vzbid0IHdvcmsgb24gTGlu
+dXMncw0KPiA+IHRyZWUgYXQgdGhlIG1vbWVudCBiZWNhdXNlIHRoZSBmdW5jdGlvbiB3YXMgc3Bs
+aXQgaW50byBtdWx0aXBsZQ0KPiA+IGZ1bmN0aW9ucy4NCj4gPg0KPiA+IEdpdmUgbWUgYSBmZXcg
+aG91cnMuLi4NCj4gDQo+IEkgbWlnaHQgYmUgd3JvbmcgYnV0DQo+IA0KPiBhKSBpbXBvcnRfaW92
+ZWMoKSB1c2VzOg0KPiAtIHVuc2lnbmVkIG5yX3NlZ3MgLT4gaW50DQo+IC0gdW5zaWduZWQgZmFz
+dF9zZWdzIC0+IGludA0KPiBiKSByd19jb3B5X2NoZWNrX3V2ZWN0b3IoKSB1c2VzOg0KPiAtIHVu
+c2lnbmVkIGxvbmcgbnJfc2VncyAtPiBsb25nDQo+IC0gdW5zaWduZWQgbG9uZyBmYXN0X3NlZyAt
+PiBsb25nDQo+IA0KPiBTbyB3aGVuIGNhbGxpbmcgcndfY29weV9jaGVja191dmVjdG9yKCksIHdl
+IGhhdmUgdG8gemVyby1leHRlbmQgdGhlDQo+IHJlZ2lzdGVycyB1c2VkIGZvciBwYXNzaW5nIHRo
+ZSBhcmd1bWVudHMuIFRoYXQncyBkZWZpbml0ZWx5IGRvbmUgd2hlbg0KPiBjYWxsaW5nIHRoZSBm
+dW5jdGlvbiBleHBsaWNpdGx5LiBNYXliZSB3aGVuIGlubGluaW5nIHNvbWV0aGluZyBpcyBtZXNz
+ZWQgdXA/DQoNClRoYXQncyBhbHNvIG5vdCBuZWVkZWQgb24geDg2LTY0IC0gdGhlIGhpZ2ggYml0
+cyBnZXQgY2xlYXJlZCBieSAzMmJpdCB3cml0ZXMuDQpCdXQsIElJUkMsIGFybTY0IGxlYXZlcyB0
+aGVtIHVuY2hhbmdlZCBvciB1bmRlZmluZWQuDQoNCkkgZ3Vlc3NpbmcgdGhhdCBldmVyeSBhcnJh
+eSBhY2Nlc3MgdXNlcyBhICooUnggKyBSeSkgYWRkcmVzc2luZw0KbW9kZS4gU28gaW5kZXhpbmcg
+YW4gYXJyYXkgZXZlbiB3aXRoICd1bnNpZ25lZCBpbnQnIHJlcXVpcmVzDQphbiBleHBsaWNpdCB6
+ZXJvLWV4dGVuZCBvbiBhcm02ND8NCih4ODYtNjQgZW5kcyB1cCB3aXRoIGFuIGV4cGxpY2l0IHNp
+Z24gZXh0ZW5kIHdoZW4gaW5kZXhpbmcgYW4NCmFycmF5IHdpdGggJ3NpZ25lZCBpbnQnLikNCg0K
+CURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBN
+b3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAx
+Mzk3Mzg2IChXYWxlcykNCg==
 
-And instead of redefining TASK_TOMBSTONE in the driver, you
-may simply use IS_ERR_OR_NULL(tsk) to cover both NULL case
-and kernel event.
-
-Cheers
-Suzuki
