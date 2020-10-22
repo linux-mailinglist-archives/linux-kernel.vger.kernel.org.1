@@ -2,124 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9651295D03
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:55:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79B14295D05
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:55:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896807AbgJVKy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:54:57 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46776 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444354AbgJVKy5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:54:57 -0400
-From:   Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603364094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M/fC5Y7y3IxeDmxl+3w+jc+KFBzOSk//96ieJ/UONk0=;
-        b=viQtrCkKSe30Qieil1Gu5eZpDPKTS8n4OBk34mB3YNQe02Dp7rchwDv09VV2ywHi952kLI
-        BG64szPZnlLvxpDXRwBgDApGkdg6BYyNOmumdMivLSc7+5hzmDmGsm8XcMbe49RpWpv49D
-        PBHnMOHxEbhCAs4d9zwgKist/vgI6r9C0lYh3YepYxcbAX1XcyxwkIvT6cZstwS1SqT6ca
-        XRM1A6/vsKo7VSKelcAHMvFOL9AvVsDHkFSMmbaPtwq0Z1HqhtIoeZm+eozl31zVa34dOu
-        HsYWEiQP6c255ydM1+7t7HFPkQi4/pLCZOW/dPpBrPaoZWZ0TI5fjK+6wWa+Tw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603364094;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=M/fC5Y7y3IxeDmxl+3w+jc+KFBzOSk//96ieJ/UONk0=;
-        b=NLUz3CmcxqLBMNZvyJBu++JD+0bv79htNvwhfhBi4+dWJgUZ/Tfw9yX3Wt26nvZey4k6Q4
-        U/8kjN4l2Quxh0AQ==
-To:     Florian Fainelli <f.fainelli@gmail.com>,
-        Vladimir Oltean <olteanv@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>, Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 1/9] dt-bindings: net: dsa: convert ksz bindings document to yaml
-In-Reply-To: <3cf2e7f8-7dc8-323f-0cee-5a025f748426@gmail.com>
-References: <20201019172435.4416-1-ceggers@arri.de> <20201019172435.4416-2-ceggers@arri.de> <87lfg0rrzi.fsf@kurt> <20201022001639.ozbfnyc4j2zlysff@skbuf> <3cf2e7f8-7dc8-323f-0cee-5a025f748426@gmail.com>
-Date:   Thu, 22 Oct 2020 12:54:52 +0200
-Message-ID: <87h7qmil8j.fsf@kurt>
+        id S2896810AbgJVKze (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:55:34 -0400
+Received: from foss.arm.com ([217.140.110.172]:54176 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2444254AbgJVKzd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:55:33 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B81C4D6E;
+        Thu, 22 Oct 2020 03:55:32 -0700 (PDT)
+Received: from [10.57.20.67] (unknown [10.57.20.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5BF123F66B;
+        Thu, 22 Oct 2020 03:55:30 -0700 (PDT)
+Subject: Re: [PATCH 2/5] thermal: devfreq_cooling: get a copy of device status
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-3-lukasz.luba@arm.com> <20201007161120.GC15063@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <76e0ef49-5898-adbb-0c54-23d5999f4907@arm.com>
+Date:   Thu, 22 Oct 2020 11:55:28 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="=-=-=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
+In-Reply-To: <20201007161120.GC15063@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=-=-=
-Content-Type: text/plain
-Content-Transfer-Encoding: quoted-printable
+Hi Ionela,
 
-On Wed Oct 21 2020, Florian Fainelli wrote:
-> On 10/21/2020 5:16 PM, Vladimir Oltean wrote:
->> On Wed, Oct 21, 2020 at 08:52:01AM +0200, Kurt Kanzenbach wrote:
->>> On Mon Oct 19 2020, Christian Eggers wrote:
->>> The node names should be switch. See dsa.yaml.
->>>
->>>> +            compatible =3D "microchip,ksz9477";
->>>> +            reg =3D <0>;
->>>> +            reset-gpios =3D <&gpio5 0 GPIO_ACTIVE_LOW>;
->>>> +
->>>> +            spi-max-frequency =3D <44000000>;
->>>> +            spi-cpha;
->>>> +            spi-cpol;
->>>> +
->>>> +            ports {
->>>
->>> ethernet-ports are preferred.
->>=20
->> This is backwards to me, instead of an 'ethernet-switch' with 'ports',
->> we have a 'switch' with 'ethernet-ports'. Whatever.
->
-> The rationale AFAIR was that dual Ethernet port controllers like TI's=20
-> CPSW needed to describe each port as a pseudo Ethernet MAC and using=20
-> 'ethernet-ports' as a contained allowed to disambiguate with the 'ports'=
-=20
-> container used in display subsystem descriptions.
 
-Yes, that was the outcome of previous discussions.
+On 10/7/20 5:11 PM, Ionela Voinescu wrote:
+> On Monday 21 Sep 2020 at 13:20:04 (+0100), Lukasz Luba wrote:
+>> Devfreq cooling needs to now the correct status of the device in order
+>> to operate. Do not rely on Devfreq last_status which might be a stale data
+>> and get more up-to-date values of the load.
+>>
+>> Devfreq framework can change the device status in the background. To
+>> mitigate this situation make a copy of the status structure and use it
+>> for internal calculations.
+>>
+>> In addition this patch adds normalization function, which also makes sure
+>> that whatever data comes from the device, it is in a sane range.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
+>>   1 file changed, 43 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+>> index 7063ccb7b86d..cf045bd4d16b 100644
+>> --- a/drivers/thermal/devfreq_cooling.c
+>> +++ b/drivers/thermal/devfreq_cooling.c
+>> @@ -227,6 +227,24 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
+>>   							       voltage);
+>>   }
+>>   
+>> +static void _normalize_load(struct devfreq_dev_status *status)
+> 
+> Is there a reason for the leading "_" ?
+> AFAIK, "__name()" is meant to suggest a "worker" function for another
+> "name()" function, but that would not apply here.
 
-> We should probably enforce or recommend 'ethernet-switch' to be used
-> as the node name for Ethernet switch devices though.
+It is just a local name. Check e.g. ./drivers/opp/core.c there is a few:
+_generic_set_opp_regulator(), _generic_set_opp_clk_only(),
+_get_opp_count(), _find_opp_table(), _set_opp_bw(), etc.
 
-After using grep, it seems like 'ethernet-switch' as well as simply
-'switch' are being used today. Yes, maybe both should be allowed.
+It is just a shorter name for me, '_' means here locality.
+Instead of calling it devfreq_cooling_normalize_load().
 
-Thanks,
-Kurt
+> 
+>> +{
+>> +	/* Make some space if needed */
+>> +	if (status->busy_time > 0xffff) {
+>> +		status->busy_time >>= 10;
+>> +		status->total_time >>= 10;
+>> +	}
+> 
+> How about removing the above code and adding here:
+> 
+> status->busy_time = status->busy_time ? : 1;
 
---=-=-=
-Content-Type: application/pgp-signature; name="signature.asc"
+It's not equivalent. The code operates on raw device values, which
+might be big (e.g. read from counters). If it's lager than the 0xffff,
+it is going to be shifted to get smaller.
 
------BEGIN PGP SIGNATURE-----
+> 
+>> +
+>> +	if (status->busy_time > status->total_time)
+> 
+> This check would then cover the possibility that total_time is 0.
+> 
+>> +		status->busy_time = status->total_time;
+> 
+> But a reversal is needed here:
+> 		status->total_time = status->busy_time;
 
-iQIzBAEBCgAdFiEEooWgvezyxHPhdEojeSpbgcuY8KYFAl+RZPwACgkQeSpbgcuY
-8KZ1Zg/+O1K8qE24ikz3QxBFBaUfbiSIbx8FLtvGbeYwH+KwOgx2Qi6KZQaGBKjP
-MHIoWH2k8SrxY9JdMTanf7YK8b7/vrQ0GuGjl1D0gTrvoU3sT1FgTP8gcnN/aoxh
-mPwZpj2QWiYbcr25tmPHW757+eo8TQ9GR8A2Jh+Sb/wucV+vdpToV3fMTuIGL55r
-WFJ/Es5/ZoSqa52i/YHXgD6e/zlChqDh6/MPJhvvznjbg3ehHSw3OTB8fane82+r
-/8MlavfklKX7mPawBYPZPZxXerElc9lQ1GUoYC7w6M6nF6HWhPhDIM1Q2LjCGRFa
-YUhtB6mcP+oIMSQc6RjcBX2pVGzs/K+uvhZZ3LxUTeseUbX4teoKp1cz3M//e6Yt
-hwsIb1EbfIzm2DMatNzE+kjmq7uBdNHtuiDpja5gaoEx+/JjnpwBcEubVfT9YBaH
-J6kBRwueamWEVDMoJmojar/rG7yBURS/BZaUouXl+J+EYY3kIrknNnwjh78qF+cM
-FURCf/EgSSuxfiIf+t3CorDWpbr0+2eYIkWFACU1OWeszFsFTGEpJCIaO6bHxoAy
-vYkzzYSxwWjyoV4nonErHaYId4ixojSiE3cad5w2UQxvI8tvYPuFcFbHtwUnPSJ4
-fOmcXPjSzzG5iieus7POa6n7+Mf6xJl/uPdtbnwDupu1UoAutBc=
-=Ks1w
------END PGP SIGNATURE-----
---=-=-=--
+No, I want to clamp the busy_time, which should not be bigger that
+total time. It could happen when we deal with 'raw' values from device
+counters.
+
+> 
+>> +
+>> +	status->busy_time *= 100;
+>> +	status->busy_time /= status->total_time ? : 1;
+>> +
+>> +	/* Avoid division by 0 */
+>> +	status->busy_time = status->busy_time ? : 1;
+>> +	status->total_time = 100;
+> 
+> Then all of this code can be replaced by:
+> 
+> status->busy_time = (unsigned long)div64_u64((u64)status->busy_time << 10,
+> 					     status->total_time);
+> status->total_time = 1 << 10;
+
+No, the total_time closed to 'unsigned long' would overflow.
+
+> 
+> This way you gain some resolution to busy_time and the divisions in the
+> callers would just become shifts by 10.
+
+
+I don't want to gain more resolution here. I want to be prepare for raw
+(not processed yet) big values coming from driver.
+
+Regards,
+Lukasz
+
+> 
+> Hope it helps,
+> Ionela.
+> 
