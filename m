@@ -2,235 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82C05295C5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:04:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 924C2295C5F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:04:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896281AbgJVKEA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:04:00 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:40546 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2896273AbgJVKD7 (ORCPT
+        id S2896289AbgJVKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:04:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896273AbgJVKEU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:03:59 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09M9XrWe156161;
-        Thu, 22 Oct 2020 06:03:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
- references : from : message-id : date : mime-version : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=EQmL9vEU86N9RH351Iqo1iK8M30WIr3+tjXBP01jbjY=;
- b=G4b3Yu3tCjw7IdHWzBN6mGT5s+/LcO7BYJ6TGHaIXWLMO3mOLfgWh1/0u8VdeMcNPbKY
- 7r0GVZhvyA/h2otWfwbFgnUuqFk4tolEWVmE2CLfiBWumLnhmlhIgfAliYCePf6eiEAn
- ELk3lRWoE+qmkTxhswkMRvrzbMvoV4OFZ2T1LF8+GOC32oypNjrRF4zP/P77sEMLbmjs
- 7xe7D4S7c/Sshwc4Xu2sMJCQTyix+PKZD1Lyv1BG+4nbpZNQVR/WyUf5xWWPsN0Z6eSj
- LE57BwhZXAuSyI3DiXQ8jmlCzYN79ijvm/VSvQPr8rNZrbHnddizNdxK/wGUeg+tqiLn aw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34b00jvs63-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 06:03:51 -0400
-Received: from m0098409.ppops.net (m0098409.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09M9uhBL025085;
-        Thu, 22 Oct 2020 06:03:50 -0400
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34b00jvs3w-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 06:03:50 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09MA2SVu019467;
-        Thu, 22 Oct 2020 10:03:46 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 347r882rbb-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 10:03:45 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09MA3hos23003642
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Oct 2020 10:03:43 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 1CC69A4054;
-        Thu, 22 Oct 2020 10:03:43 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id B92E1A405F;
-        Thu, 22 Oct 2020 10:03:42 +0000 (GMT)
-Received: from [9.145.63.24] (unknown [9.145.63.24])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Oct 2020 10:03:42 +0000 (GMT)
-Subject: Re: [PATCH V7] GCOV: Add config to check the preqequisites situation
-To:     Cixi Geng <gengcixi@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>, jslaby@suse.com,
-        linux-serial@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc:     Orson Zhai <orsonzhai@gmail.com>, zhang.lyra@gmail.com,
-        Cixi Geng <cixi.geng1@unisoc.com>
-References: <20200727085132.29754-1-gengcixi@gmail.com>
- <CAF12kFuss4AQZSBX+A2G_fWjka3C4kpf4iDWU9QJY=AWigoxqg@mail.gmail.com>
- <CAF12kFtPQ0bUKrr4X8MjLCTfFYkRVk6BRaLb30W59GwtWQd6xA@mail.gmail.com>
-From:   Peter Oberparleiter <oberpar@linux.ibm.com>
-Message-ID: <46289a56-3f85-fedb-53f2-6328c342f6ce@linux.ibm.com>
-Date:   Thu, 22 Oct 2020 12:03:42 +0200
+        Thu, 22 Oct 2020 06:04:20 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD4BC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:04:20 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id d24so1505356lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:04:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=v+g60jSFAWmJk25t84LrgkacnZZF5EGyn0T0qZYVJPQ=;
+        b=denJkyKo92QmJssuyfNHfRh0bkOUOm5JqGz3HF1V9AggK73d8uBn1SVUc6JwVPJT3t
+         CZZH2hDr8ZvCnvN5OuDbmntXCPNXzvk9S9X0CIc0r3jl31ctji8I/Jnzw+Cjgombxodf
+         pJ+LcpOpCw+4LSzfK7fIJbztKe2RblaEqbo6uG6Qil0PDVeAIo2/vyKdke/9/hOHob2R
+         zdikt4Q9Rxzuw+JOmRY1Wvj//l5kpKiNlCk/sDoUMLkG+J2OSKzstDfkBdYN9xoiAxI8
+         9j6/5ywhVoesc97aCeT5ocNG+WPTaZmjOxHhy0+4XEMwne8jJ7X6KQUlwHe0d4/R8uz8
+         vBlg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=v+g60jSFAWmJk25t84LrgkacnZZF5EGyn0T0qZYVJPQ=;
+        b=IVRFpd9KE8yCrnEVfKA7LFOm7A1EKfySfeCCs+C5djW1esNsHTGaVvmsw0bNNFQ4hO
+         L/Lp0UdAzuYwMh3oC0iRjc72GLOtG6Quy7qk4VcjVJyveqMn9gYnRoSnDEmPG5n41LB1
+         fFlwl4hz+pP/qJhSer1u1zONYv8IR0krbjDS//PxWnu4OUXPhjxqPclbZZsSr3WQauJe
+         odE4v19uBfJSDk2tlDS40yYA/kDfWlKIAYI+ymNGAzQyQFBFrsYDtQkEuWafSBrVsUcm
+         3xfY5R3PuFCzxTdrBsEzLYr4klH60ehYjQzhOVcf0FhjWr8cKvZcgKNfhvktwp3QByBH
+         Gx2A==
+X-Gm-Message-State: AOAM531fW6WnNh8WxMIB5Mowp+UlebIzoBua+Kngp8Qgq7yP4/UhHta8
+        9ICOj4Zxahg0Ch6GMSGXi/g=
+X-Google-Smtp-Source: ABdhPJwH9XOdDe0YlZMRGx22HEpQlzpQeIUZpjxkbSUK3SepOq2QRD5zb2keQbFEDVMtjNYwhkZhhw==
+X-Received: by 2002:a19:434f:: with SMTP id m15mr528494lfj.601.1603361058694;
+        Thu, 22 Oct 2020 03:04:18 -0700 (PDT)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id m4sm227110ljg.137.2020.10.22.03.04.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 03:04:18 -0700 (PDT)
+Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
+ systemd and glibc mprotect calls, causing service failures
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     Florian Weimer <fweimer@redhat.com>,
+        Lennart Poettering <mzxreary@0pointer.de>,
+        Mark Rutland <mark.rutland@arm.com>,
+        systemd-devel@lists.freedesktop.org,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
+        Dave Martin <dave.martin@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022071812.GA324655@gardel-login>
+ <87sga6snjn.fsf@oldenburg2.str.redhat.com>
+ <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
+ <20201022082912.GQ3819@arm.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <55b44a39-ab19-363e-3703-9bf4e7d75f68@gmail.com>
+Date:   Thu, 22 Oct 2020 13:03:59 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <CAF12kFtPQ0bUKrr4X8MjLCTfFYkRVk6BRaLb30W59GwtWQd6xA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20201022082912.GQ3819@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_03:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- mlxscore=0 suspectscore=1 bulkscore=0 adultscore=0 priorityscore=1501
- lowpriorityscore=0 clxscore=1011 malwarescore=0 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220063
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 16.09.2020 14:55, Cixi Geng wrote:
-> Hi ALL：
-> Not recieve more advise for a long time ,
-> Can this submission be merged recently?
-
-First off, sorry for not replying earlier.
-
-I tried out your latest version of this patch and I don't see that my
-previous comments have been addressed.
-
-To re-iterate my point: I only see value in introducing a new
-GCOV-related config symbol that is automatically selected, depending on
-whether (as the name implies) all prerequisites for enabling GCOV-based
-kernel profiling have been met. Such a symbol can take away the burden
-of duplicating the prerequisite check as has been implemented for
-GCOV_PROFILE_ALL.
-
-I see no value in introducing a new config symbol that prompts the user
-for a choice.
-
-As it is, your patch introduces a new config symbol that prompts the
-user for a choice:
-
-$ make oldconfig
-scripts/kconfig/conf  --oldconfig Kconfig
-*
-* Restart config...
-*
-*
-* GCOV-based kernel profiling
-*
-Enable gcov-based kernel profiling (GCOV_KERNEL) [Y/n/?] y
-Profile entire Kernel (GCOV_PROFILE_ALL) [N/y/?] n
-Profile Kernel for prereqs (GCOV_PROFILE_PREREQS) [Y/n/?] (NEW)
-
-We do not need this prompt. Users specify that they want GCOV-profiling
-by selecting GCOV_KERNEL. They specify that they want area-specific
-profiling in symbols like your proposed SERIAL_GCOV. There is no need
-for a user to manually confirm that the prerequisites for enabling
-are-specific profiling are met.
-
-I have detailed the required changes that would remove the prompt in my
-previous reply. I'll add it here again for your convenience:
-
->>> +++ b/kernel/gcov/Kconfig
->>> @@ -51,6 +51,16 @@ config GCOV_PROFILE_ALL
->>>         larger and run slower. Also be sure to exclude files from profiling
->>>         which are not linked to the kernel image to prevent linker errors.
+On 22.10.2020 11.29, Szabolcs Nagy wrote:
+> The 10/22/2020 11:17, Topi Miettinen via Libc-alpha wrote:
+>> On 22.10.2020 10.54, Florian Weimer wrote:
+>>> * Lennart Poettering:
+>>>> Did you see Topi's comments on the systemd issue?
+>>>>
+>>>> https://github.com/systemd/systemd/issues/17368#issuecomment-710485532
+>>>>
+>>>> I think I agree with this: it's a bit weird to alter the bits after
+>>>> the fact. Can't glibc set up everything right from the begining? That
+>>>> would keep both concepts working.
 >>>
->>> +config GCOV_PROFILE_PREREQS
->>> +       bool "Profile Kernel for prereqs"
->>> +       default y if GCOV_KERNEL && !COMPILE_TEST
->>> +       help
->>> +         This options activates profiling for the specified kernel modules.
->>> +
->>> +         When some modules need Gcov data, enable this config, then configure
->>> +         with gcov on the corresponding modules,The directories or files of
->>> +         these modules will be added profiling flags after kernel compile.
->>> +
-> 
-> Replace the portion above with these lines:
-> 
-> config GCOV_PROFILE_PREREQS
->         def_bool y if GCOV_KERNEL && !COMPILE_TEST
-
-And to clarify: by "the portion above" I was referring to all quoted
-lines prefixed with a '+' sign.
-
-
-> 
-> Cixi Geng <gengcixi@gmail.com> 于2020年8月20日周四 下午8:40写道：
+>>> The dynamic loader has to process the LOAD segments to get to the ELF
+>>> note that says to enable BTI.  Maybe we could do a first pass and load
+>>> only the segments that cover notes.  But that requires lots of changes
+>>> to generic code in the loader.
 >>
->> Hi All:
->>
->> Does this patch need more modification?
->>
->> <gengcixi@gmail.com> 于2020年7月27日周一 下午4:51写道：
->>>
->>> From: Cixi Geng <cixi.geng1@unisoc.com>
->>>
->>> Introduce new configuration option GCOV_PROFILE_PREREQS that can be
->>> used to check whether the prerequisites for enabling gcov profiling
->>> for specific files and directories are met.
->>>
->>> Only add SERIAL_GCOV for an example.
->>>
->>> Signed-off-by: Cixi Geng <cixi.geng1@unisoc.com>
->>> ---
->>>  drivers/tty/serial/Kconfig  |  7 +++++++
->>>  drivers/tty/serial/Makefile |  1 +
->>>  kernel/gcov/Kconfig         | 12 ++++++++++++
->>>  3 files changed, 20 insertions(+)
->>>
->>> diff --git a/drivers/tty/serial/Kconfig b/drivers/tty/serial/Kconfig
->>> index 780908d43557..55b128b6b31d 100644
->>> --- a/drivers/tty/serial/Kconfig
->>> +++ b/drivers/tty/serial/Kconfig
->>> @@ -1576,3 +1576,10 @@ endmenu
->>>
->>>  config SERIAL_MCTRL_GPIO
->>>         tristate
->>> +
->>> +config SERIAL_GCOV
->>> +       bool "Enable profile gcov for serial directory"
->>> +       depends on GCOV_PROFILE_PREREQS
->>> +       help
->>> +         The SERIAL_GCOV will add Gcov profiling flags when kernel compiles.
->>> +         Say 'Y' here if you want the gcov data for the serial directory,
->>> diff --git a/drivers/tty/serial/Makefile b/drivers/tty/serial/Makefile
->>> index d056ee6cca33..17272733db95 100644
->>> --- a/drivers/tty/serial/Makefile
->>> +++ b/drivers/tty/serial/Makefile
->>> @@ -3,6 +3,7 @@
->>>  # Makefile for the kernel serial device drivers.
->>>  #
->>>
->>> +GCOV_PROFILE := $(CONFIG_SERIAL_GCOV)
->>>  obj-$(CONFIG_SERIAL_CORE) += serial_core.o
->>>
->>>  obj-$(CONFIG_SERIAL_EARLYCON) += earlycon.o
->>> diff --git a/kernel/gcov/Kconfig b/kernel/gcov/Kconfig
->>> index 3110c77230c7..bb2e1fb85743 100644
->>> --- a/kernel/gcov/Kconfig
->>> +++ b/kernel/gcov/Kconfig
->>> @@ -51,4 +51,16 @@ config GCOV_PROFILE_ALL
->>>         larger and run slower. Also be sure to exclude files from profiling
->>>         which are not linked to the kernel image to prevent linker errors.
->>>
->>> +config GCOV_PROFILE_PREREQS
->>> +       bool "Profile Kernel for prereqs"
->>> +       depends on GCOV_KERNEL
->>> +       depends on  !COMPILE_TEST
->>> +       def_bool y if GCOV_KERNEL && !COMPILE_TEST
->>> +       help
->>> +         This options activates profiling for the specified kernel modules.
->>> +
->>> +         When some modules need Gcov data, enable this config, then configure
->>> +         with gcov on the corresponding modules,The directories or files of
->>> +         these modules will be added profiling flags after kernel compile.
->>> +
->>>  endmenu
->>> --
->>> 2.17.1
->>>
+>> What if the loader always enabled BTI for PROT_EXEC pages, but then when
+>> discovering that this was a mistake, mprotect() the pages without BTI? Then
+>> both BTI and MDWX would work and the penalty of not getting MDWX would fall
+>> to non-BTI programs. What's the expected proportion of BTI enabled code vs.
+>> disabled in the future, is it perhaps expected that a distro would enable
+>> the flag globally so eventually only a few legacy programs might be
+>> unprotected?
+> 
+> i thought mprotect(PROT_EXEC) would get filtered
+> with or without bti, is that not the case?
 
+It would be filtered, but the idea is that with modern binaries this 
+would not happen since the pages would be mapped with mmap(,, PROT_EXEC 
+| PROT_BTI,,) which is OK for purposes MDWX. The loader would have to 
+use mprotect(PROT_EXEC) to get rid of PROT_BTI only for the legacy binaries.
 
--- 
-Peter Oberparleiter
-Linux on Z Development - IBM Germany
+-Topi
