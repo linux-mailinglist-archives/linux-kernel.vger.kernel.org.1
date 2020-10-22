@@ -2,94 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B15A2964B5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:35:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA83C2964BC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369724AbgJVSfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:35:16 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:42208 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368258AbgJVSfQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:35:16 -0400
-Received: by mail-pf1-f193.google.com with SMTP id x13so1675919pfa.9;
-        Thu, 22 Oct 2020 11:35:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XI2Q+0LJ+MrF6PTdb/vTI0hg1qM7/BgdBxfc/cQLFU=;
-        b=KfvJzwfxn7jq43862MSUDXsjHVLQiDL2XxoZJGmoXONgP4vY3GlCA5FN+8DrSsW8wB
-         9SmbJi6W4JdS5zP5MzYogQw2PEMOlYdeKT6+WY0h01gtWfYbQhRjLOx0oc5r/8kiEOLp
-         4eIQiBAyv4wvJfpI6+JS713/r5xD54+18A2io2LjdPOKLQCw3Xa5BGWDUkjlj5m5F1SR
-         raWFqZtJq/rlWV3AqoLz7KXLZypGdBl3h/vciJMketksAu0hImF/F4e3OxebTToubG+f
-         1/VAmkFB1GxeNxg75NKaDKeoIUGinxz/SKDwgRSkrGuq/Xq3oIYt2o+5il5uSpTq1j7G
-         cmcQ==
-X-Gm-Message-State: AOAM53173u/AwlX54c+Hsy6e5BJ0qGFyF8+wWy5WJICweLZmcvJ93i1Y
-        hO+KLdQJP5Q3SwhAmQL9TxmqQ9iFEr7O+8FtCOE=
-X-Google-Smtp-Source: ABdhPJz36fkFyGr3qzw17+AgK9oYpIzBshcfChZVSHFTISPy8X4z6IdPGqE/7nwcLSyFF6/1DoPxCQ5X7a4DVfLIwnM=
-X-Received: by 2002:a63:a546:: with SMTP id r6mr3310324pgu.160.1603391713825;
- Thu, 22 Oct 2020 11:35:13 -0700 (PDT)
+        id S369730AbgJVSlG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:41:06 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27682 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2508547AbgJVSlF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 14:41:05 -0400
+IronPort-SDR: d5beLKTj8r6NGfBCzDUJhXFWmxB0g+veuvIvl2A4rKIu+poV+yPfZIP/SGL/Ony3EZ+FQK9M41
+ sBiQyWxZPkDw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="146868811"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="146868811"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 11:41:04 -0700
+IronPort-SDR: NCBHGHbo+kfepfXk4T6LK4GcCSAFHyc6OtB5xm31DPHZOES2k00d5BlkCU0ygBQjmNl9CrAQk3
+ loZRUJI2o2SA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="302516299"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by fmsmga007.fm.intel.com with ESMTP; 22 Oct 2020 11:41:03 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+        id 44DA811E; Thu, 22 Oct 2020 21:41:02 +0300 (EEST)
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>,
+        linux-acpi@vger.kernel.org,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Ferry Toth <fntoth@gmail.com>
+Subject: [PATCH v1 1/2] device property: Keep secondary firmware node secondary by type
+Date:   Thu, 22 Oct 2020 21:40:59 +0300
+Message-Id: <20201022184100.71659-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
-In-Reply-To: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
-From:   Mike Snitzer <snitzer@redhat.com>
-Date:   Thu, 22 Oct 2020 14:35:02 -0400
-Message-ID: <CAMM=eLfTf2f2Me7f5tpL5DEGgKsqaFaAS0qTDVpLAYrwR5Jf5g@mail.gmail.com>
-Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Jens Axboe <axboe@kernel.dk>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org,
-        linux-fsdevel <linux-fsdevel@vger.kernel.org>, rjw@rjwysocki.net,
-        len.brown@intel.com, Pavel Machek <pavel@ucw.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        johannes.thumshirn@wdc.com, Ming Lei <ming.lei@redhat.com>,
-        Jan Kara <jack@suse.cz>, Tejun Heo <tj@kernel.org>,
-        gustavo@embeddedor.com, Bart Van Assche <bvanassche@acm.org>,
-        osandov@fb.com, koct9i@gmail.com,
-        Damien Le Moal <damien.lemoal@wdc.com>, steve@sk2.org,
-        linux-block <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-pm@vger.kernel.org, linux-mm@kvack.org,
-        device-mapper development <dm-devel@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 5:04 AM Sergei Shtepa <sergei.shtepa@veeam.com> wrote:
->
-> Hello everyone! Requesting for your comments and suggestions.
->
-> # blk-filter
->
-> Block layer filter allows to intercept BIO requests to a block device.
->
-> Interception is performed at the very beginning of the BIO request
-> processing, and therefore does not affect the operation of the request
-> processing queue. This also makes it possible to intercept requests from
-> a specific block device, rather than from the entire disk.
->
-> The logic of the submit_bio function has been changed - since the
-> function execution results are not processed anywhere (except for swap
-> and direct-io) the function won't return a value anymore.
+Behind primary and secondary we understand the type of the nodes
+which might define their ordering. However, if primary node gone,
+we can't maintain the ordering by definition of the linked list.
+Thus, by ordering secondary node becomes first in the list.
+But in this case the meaning of it is still secondary (or auxiliary).
+The type of the node is maintained by the secondary pointer in it:
 
-Your desire to switch to a void return comes exactly when I've noticed
-we need it.
+	secondary pointer		Meaning
+	NULL or valid			primary node
+	ERR_PTR(-ENODEV)		secondary node
 
-->submit_bio's blk_qc_t return is the cookie assigned by blk-mq.  Up
-to this point we haven't actually used it for bio-based devices but it
-seems clear we'll soon need for bio-based IO polling support.
+So, if by some reason we do the following sequence of calls
 
-Just today, I've been auditing drivers/md/dm.c with an eye toward
-properly handling the blk_qc_t return (or lack thereof) from various
-DM methods.
+	set_primary_fwnode(dev, NULL);
+	set_primary_fwnode(dev, primary);
 
-It could easily be that __submit_bio_noacct and __submit_bio_noacct_mq
-will be updated to do something meaningful with the returned cookie
-(or that DM will) to facilitate proper IO polling.
+we should preserve secondary node.
 
-Mike
+This concept is supported by the description of set_primary_fwnode()
+along with implementation of set_secondary_fwnode(). Hence, fix
+the commit c15e1bdda436 to follow this as well.
+
+Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
+Cc: Ferry Toth <fntoth@gmail.com>
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ drivers/base/core.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/base/core.c b/drivers/base/core.c
+index c852f16c111b..41feab679fa1 100644
+--- a/drivers/base/core.c
++++ b/drivers/base/core.c
+@@ -4278,7 +4278,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+ 	} else {
+ 		if (fwnode_is_primary(fn)) {
+ 			dev->fwnode = fn->secondary;
+-			fn->secondary = NULL;
++			fn->secondary = ERR_PTR(-ENODEV);
+ 		} else {
+ 			dev->fwnode = NULL;
+ 		}
+-- 
+2.28.0
+
