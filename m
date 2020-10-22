@@ -2,129 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAC3D295815
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:47:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 93F9C295817
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:47:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508037AbgJVFq5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:46:57 -0400
-Received: from mail.vivotek.com ([60.248.39.150]:52604 "EHLO mail.vivotek.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437894AbgJVFq4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:46:56 -0400
-Received: from pps.filterd (vivotekpps.vivotek.com [127.0.0.1])
-        by vivotekpps.vivotek.com (8.16.0.42/8.16.0.42) with SMTP id 09M5htXo024418;
-        Thu, 22 Oct 2020 13:46:47 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=vivotek.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=dkim;
- bh=oOgrz0HgmWBeqpv4rY3w80E7FVAsnGYQsurlzGO9be0=;
- b=HRuvoIsKKekf5mzOjFWktI+qb1oUgnlRzYjiaC5NJKCcMMRzJQjgPXrkTD5fK08lAQMK
- din+SO7LLtFNJbi9CLjg9K/nFZRTFebI38ylJV8yfOAuZivWMY7LF0S+eRLIyVUdMztr
- uVQO04MuA2hYDrCJ+G8aUIE5TVPA5/yzNbM= 
-Received: from cas01.vivotek.tw ([192.168.0.58])
-        by vivotekpps.vivotek.com with ESMTP id 349m9fhm6r-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 13:46:46 +0800
-Received: from localhost.localdomain (192.168.17.134) by CAS01.vivotek.tw
- (192.168.0.58) with Microsoft SMTP Server (TLS) id 14.3.487.0; Thu, 22 Oct
- 2020 13:46:45 +0800
-From:   Michael Wu <michael.wu@vatics.com>
-To:     Jarkko Nikula <jarkko.nikula@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC:     Morgan Chang <morgan.chang@vatics.com>,
-        Michael Wu <michael.wu@vatics.com>
-Subject: [PATCH v2] i2c: designware: call i2c_dw_read_clear_intrbits_slave() once
-Date:   Thu, 22 Oct 2020 13:46:25 +0800
-Message-ID: <20201022054625.21969-1-michael.wu@vatics.com>
-X-Mailer: git-send-email 2.17.1
+        id S2508047AbgJVFrk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:47:40 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54329 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2508040AbgJVFrk (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 01:47:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603345659;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g4B//qnaxTvyagU4Ta4XmHD0G1WDTvcCQn1ISIno4ag=;
+        b=Kc5O2xUjpMbgtyLygBwmqGXIYejZDoWjy8uQWLfUVnn22URh5zE7JB7RNmeum1/ewFa7/t
+        zui+KRLiqqrEQIkCowTx3HT0vciq5iARY6teVfaudiq/ZndceSgsfWmXWaNmBYzfS9tuNh
+        TvtcHj+nMaaC1NEXgGo5nHVLw9mGyO8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-55-24ki4_b3MOywOgsTgU-wwA-1; Thu, 22 Oct 2020 01:47:37 -0400
+X-MC-Unique: 24ki4_b3MOywOgsTgU-wwA-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A3F98797F6;
+        Thu, 22 Oct 2020 05:47:34 +0000 (UTC)
+Received: from [10.72.13.119] (ovpn-13-119.pek2.redhat.com [10.72.13.119])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id DA8CD5C1C7;
+        Thu, 22 Oct 2020 05:47:25 +0000 (UTC)
+Subject: Re: [PATCH 0/4] vDPA: API for reporting IOVA range
+To:     "Michael S. Tsirkin" <mst@redhat.com>
+Cc:     virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, rob.miller@broadcom.com,
+        lingshan.zhu@intel.com, eperezma@redhat.com, lulu@redhat.com,
+        shahafs@mellanox.com, hanand@xilinx.com, mhabets@solarflare.com,
+        gdawar@xilinx.com, saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com
+References: <20200617032947.6371-1-jasowang@redhat.com>
+ <20201021104508-mutt-send-email-mst@kernel.org>
+From:   Jason Wang <jasowang@redhat.com>
+Message-ID: <09525e8b-2c7a-de5d-128a-79b5b0725224@redhat.com>
+Date:   Thu, 22 Oct 2020 13:47:19 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [192.168.17.134]
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_02:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Reason: safe
+In-Reply-To: <20201021104508-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-If some bits were cleared by i2c_dw_read_clear_intrbits_slave() in
-i2c_dw_isr_slave() and not handled immediately, those cleared bits would
-not be shown again by later i2c_dw_read_clear_intrbits_slave(). They
-therefore were forgotten to be handled.
 
-i2c_dw_read_clear_intrbits_slave() should be called once in an ISR and take
-its returned state for all later handlings.
+On 2020/10/21 下午10:45, Michael S. Tsirkin wrote:
+> On Wed, Jun 17, 2020 at 11:29:43AM +0800, Jason Wang wrote:
+>> Hi All:
+>>
+>> This series introduces API for reporing IOVA range. This is a must for
+>> userspace to work correclty:
+>>
+>> - for the process that uses vhost-vDPA directly to properly allocate
+>>    IOVA
+>> - for VM(qemu), when vIOMMU is not enabled, fail early if GPA is out
+>>    of range
+>> - for VM(qemu), when vIOMMU is enabled, determine a valid guest
+>>    address width
+>>
+>> Please review.
+>>
+>> Thanks
+> OK so what is the plan here? Change begin-end->first-last and repost?
 
-Signed-off-by: Michael Wu <michael.wu@vatics.com>
----
 
-Changes in v2:
- - revert moving I2C_SLAVE_WRITE_REQUESTED reporting
+I've posted V2 with this change, but it get some warning for buildbot.
 
- drivers/i2c/busses/i2c-designware-slave.c | 10 ++--------
- 1 file changed, 2 insertions(+), 8 deletions(-)
+Will post a V3.
 
-diff --git a/drivers/i2c/busses/i2c-designware-slave.c b/drivers/i2c/busses/i2c-designware-slave.c
-index 44974b53a626..8eced99b7aeb 100644
---- a/drivers/i2c/busses/i2c-designware-slave.c
-+++ b/drivers/i2c/busses/i2c-designware-slave.c
-@@ -159,7 +159,6 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
- 	u32 raw_stat, stat, enabled, tmp;
- 	u8 val = 0, slave_activity;
- 
--	regmap_read(dev->map, DW_IC_INTR_STAT, &stat);
- 	regmap_read(dev->map, DW_IC_ENABLE, &enabled);
- 	regmap_read(dev->map, DW_IC_RAW_INTR_STAT, &raw_stat);
- 	regmap_read(dev->map, DW_IC_STATUS, &tmp);
-@@ -168,6 +167,7 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
- 	if (!enabled || !(raw_stat & ~DW_IC_INTR_ACTIVITY) || !dev->slave)
- 		return 0;
- 
-+	stat = i2c_dw_read_clear_intrbits_slave(dev);
- 	dev_dbg(dev->dev,
- 		"%#x STATUS SLAVE_ACTIVITY=%#x : RAW_INTR_STAT=%#x : INTR_STAT=%#x\n",
- 		enabled, slave_activity, raw_stat, stat);
-@@ -188,11 +188,9 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
- 						 val);
- 				}
- 				regmap_read(dev->map, DW_IC_CLR_RD_REQ, &tmp);
--				stat = i2c_dw_read_clear_intrbits_slave(dev);
- 			} else {
- 				regmap_read(dev->map, DW_IC_CLR_RD_REQ, &tmp);
- 				regmap_read(dev->map, DW_IC_CLR_RX_UNDER, &tmp);
--				stat = i2c_dw_read_clear_intrbits_slave(dev);
- 			}
- 			if (!i2c_slave_event(dev->slave,
- 					     I2C_SLAVE_READ_REQUESTED,
-@@ -207,7 +205,6 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
- 			regmap_read(dev->map, DW_IC_CLR_RX_DONE, &tmp);
- 
- 		i2c_slave_event(dev->slave, I2C_SLAVE_STOP, &val);
--		stat = i2c_dw_read_clear_intrbits_slave(dev);
- 		return 1;
- 	}
- 
-@@ -217,10 +214,8 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
- 		if (!i2c_slave_event(dev->slave, I2C_SLAVE_WRITE_RECEIVED,
- 				     &val))
- 			dev_vdbg(dev->dev, "Byte %X acked!", val);
--	} else {
-+	} else
- 		i2c_slave_event(dev->slave, I2C_SLAVE_STOP, &val);
--		stat = i2c_dw_read_clear_intrbits_slave(dev);
--	}
- 
- 	return 1;
- }
-@@ -230,7 +225,6 @@ static irqreturn_t i2c_dw_isr_slave(int this_irq, void *dev_id)
- 	struct dw_i2c_dev *dev = dev_id;
- 	int ret;
- 
--	i2c_dw_read_clear_intrbits_slave(dev);
- 	ret = i2c_dw_irq_handler_slave(dev);
- 	if (ret > 0)
- 		complete(&dev->cmd_complete);
--- 
-2.17.1
+Thanks
+
+
+>
+>> Jason Wang (4):
+>>    vdpa: introduce config op to get valid iova range
+>>    vdpa_sim: implement get_iova_range bus operation
+>>    vdpa: get_iova_range() is mandatory for device specific DMA
+>>      translation
+>>    vhost: vdpa: report iova range
+>>
+>>   drivers/vdpa/vdpa.c              |  4 ++++
+>>   drivers/vdpa/vdpa_sim/vdpa_sim.c | 11 +++++++++++
+>>   drivers/vhost/vdpa.c             | 27 +++++++++++++++++++++++++++
+>>   include/linux/vdpa.h             | 14 ++++++++++++++
+>>   include/uapi/linux/vhost.h       |  4 ++++
+>>   include/uapi/linux/vhost_types.h |  5 +++++
+>>   6 files changed, 65 insertions(+)
+>>
+>> -- 
+>> 2.20.1
 
