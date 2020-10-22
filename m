@@ -2,91 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 065C2295D5E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:30:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D3CA295D60
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:30:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897276AbgJVLaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:30:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33704 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897270AbgJVLaD (ORCPT
+        id S2897288AbgJVLaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:30:15 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:46170 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897279AbgJVLaO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:30:03 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 43F4EC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:30:03 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id b12so806048qte.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:30:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=g50aig4WnJQhcCcuXsue/eYMQH3ofUeze+geEk++93U=;
-        b=EmL8KR1EYemTfE+yaMAAqD9uhsf7c1TN18IfB+hDqP2t/xR4xVtNJIpEgh0vvRSB7H
-         yIFZ5RmJFTACKp5ALHzjuLgtciX1z2PM+QuELDtnDBNKIx3oPQuqi+z98+YelxwXVOwN
-         3Adv9SPIir+HlZ/hEszX86FdC7CZzeHUkMMsIBR5EFWNVe9dsUR1Ycq9lFhBSy58ObbZ
-         nkdFo5Zx+uKCON+EH1uyw/M72H55uOxgKtdxJNvG5P+tiFs74vDVld2Jx2vREImRDj7+
-         1ulKgioLCrEXWmbm7tHvcZxX5GipekTwxXUU81sdbWQf3kOXU7tP2XRwnJeHXGN+Vnty
-         FrSQ==
+        Thu, 22 Oct 2020 07:30:14 -0400
+Received: by mail-oi1-f194.google.com with SMTP id l4so1317449oii.13;
+        Thu, 22 Oct 2020 04:30:12 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=g50aig4WnJQhcCcuXsue/eYMQH3ofUeze+geEk++93U=;
-        b=YpPV2rGy3rsB3qdWSJ9BACfCfpRsXxy3YDv2QXdsKuiSej9028cSRvyPrV+vFyDw8n
-         w+6DllfHrEI5phX0fA7VbClOO+mlqWpq+so+7W3nhLrYtgw2IvtJfUn9JZnFKP4MI6s5
-         J3BU9R2wjwKN3n/60Omh/VeYKIM2+BNTQMyFvofzsrb3k1yI3a72FWa8n1hOdqxWkuy7
-         0tQxkygeejU2i/190qwS+LhxXy2Bpq8cIQGrUJYXvQdbcaOQf5BnIaZSwUvPdDp6JLw7
-         ph1qUVcAqFYEOkQVZ2uVu3djvauocBPWr5wSAr8BKVn6Xa3oMcI0qUTDNkZ4gbqQ4FPQ
-         po1g==
-X-Gm-Message-State: AOAM533gXLt+p99tq39oU/N/7bebiIBi/d9IhGAHiJO75BV6Rvto8Lq7
-        DwSSaJhKLmTMdb+WOBMysGmtF0IfBw==
-X-Google-Smtp-Source: ABdhPJzd73qVhZXwIggR9qvJoBBzmyzsli46XkHq7VLUrjNqzdJ5OEjlbs/bNURfA85jFTyNvLZKiCP0Wg==
-Sender: "elver via sendgmr" <elver@elver.muc.corp.google.com>
-X-Received: from elver.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:2449])
- (user=elver job=sendgmr) by 2002:ad4:4e0a:: with SMTP id dl10mr1790315qvb.41.1603366202277;
- Thu, 22 Oct 2020 04:30:02 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 13:29:56 +0200
-Message-Id: <20201022112956.2356757-1-elver@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] kcsan: Never set up watchpoints on NULL pointers
-From:   Marco Elver <elver@google.com>
-To:     elver@google.com, paulmck@kernel.org
-Cc:     mark.rutland@arm.com, dvyukov@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=bSTQnfiSle/G+ffgc8i4ByrbO0fkKL6UxU71VpX5YJ8=;
+        b=ds+qGKtgrCbAWUTqNkl2Gxc8OsausYHphOjmhzpDY8Q9MMWhqa69+KM6Pu4pUJVx4q
+         GirBOoKqM/nQ6jLLnPAnfrkcD+9H5Df+4AWkAp7xTdykiXEk9vQO2RZazNW4RoFaGCMT
+         2RRLqjL7cyAVjns7RAZervrdAaDhPgfktqDS/pPR3vsGZva1zYwp81uvKZ9PnPnV0ZBx
+         GtXTsgzh1rxjNNZh9TMIi5LsGEoc+LZLZ1P9YAYE1HFTf4DZsqMVkqNx5e4p4hFH8VsU
+         AFunl/qDS8Tq14tIm1NNqZD4mmS8W2fercJYOAwJ+Tzt+54+ubOvWA+fmWjKYoH9Lano
+         v7Zg==
+X-Gm-Message-State: AOAM533i0erLywOzULRFhlI6zpArRbc7IFCBVyZyfDmTp8XLFpkQ5sBi
+        CqgqFwlHu/3LXutorjEcdYawWDurog7vlYargfY=
+X-Google-Smtp-Source: ABdhPJxRmGkFBRfkGyPi/jnbKKfFCsIXYN1lA9uQTdfPAdka3Duz9P7XiYzkQubpycT4mdAZWsjvWfmKydeMXgb56YM=
+X-Received: by 2002:aca:fd52:: with SMTP id b79mr1227163oii.69.1603366212247;
+ Thu, 22 Oct 2020 04:30:12 -0700 (PDT)
+MIME-Version: 1.0
+References: <cover.1594707424.git.viresh.kumar@linaro.org> <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200716115605.GR10769@hirez.programming.kicks-ass.net> <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
+ <20201022090523.GV2628@hirez.programming.kicks-ass.net> <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+In-Reply-To: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 22 Oct 2020 13:30:01 +0200
+Message-ID: <CAJZ5v0jZC=UwW9L+KB3pugsTL9P1tZmvQ-sVMV-udn7+L_gEeA@mail.gmail.com>
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Avoid setting up watchpoints on NULL pointers, as otherwise we would
-crash inside the KCSAN runtime (when checking for value changes) instead
-of the instrumented code.
+On Thu, Oct 22, 2020 at 1:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 22-10-20, 11:05, Peter Zijlstra wrote:
+> > On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
+> > > One of the issues I see with this is that schedutil may not be
+> > > available in all configurations and it is still absolutely fine to
+> > > using the suggested helper to get the energy numbers in such cases, so
+> > > we shouldn't really make it scheutil dependent.
+> >
+> > The only constraint on schedutil is SMP I think; aside from that it
+> > should/could always be available.
+> >
+> > Given the trainwreck here:
+> >
+> >   20201022071145.GM2628@hirez.programming.kicks-ass.net
+> >
+> > (you're on Cc), I'm starting to lean more and more towards making it
+> > unconditionally available (when SMP).
+> >
+> > Anybody forcing it off either sets performance (in which case we don't
+> > care about energy usage anyway)
+>
+> I agree.
 
-Because that may be confusing, skip any address less than PAGE_SIZE.
+That's not really the case, though.
 
-Signed-off-by: Marco Elver <elver@google.com>
----
- kernel/kcsan/encoding.h | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+Many people use intel_pstate in the active mode with HWP enabled too.
 
-diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
-index f03562aaf2eb..64b3c0f2a685 100644
---- a/kernel/kcsan/encoding.h
-+++ b/kernel/kcsan/encoding.h
-@@ -48,7 +48,11 @@
- 
- static inline bool check_encodable(unsigned long addr, size_t size)
- {
--	return size <= MAX_ENCODABLE_SIZE;
-+	/*
-+	 * While we can encode addrs<PAGE_SIZE, avoid crashing with a NULL
-+	 * pointer deref inside KCSAN.
-+	 */
-+	return addr >= PAGE_SIZE && size <= MAX_ENCODABLE_SIZE;
- }
- 
- static inline long
--- 
-2.29.0.rc1.297.gfa9743e501-goog
+Arguably, that doesn't need to compute the effective utilization, so I
+guess it is not relevant for the discussion here, but it is not
+negligible in general.
 
+> > or they select one of the old (broken)
+> > ondemand/conservative things and I don't give a crap.
+>
+> The other kernel layers, for example cpufreq-cooling in question here,
+> don't really need to bother with the governor in use and should be
+> able to get the energy numbers anyway. So for me, the energy number
+> that the cpufreq-cooling stuff gets should be same irrespective of the
+> governor in use, schedutil or ondemand.
+>
+> Having said that, schedutil really doesn't need to install the
+> fallback (which you suggested earlier), rather the scheduler core can
+> do that directly with cpufreq core and schedutil can also use the same
+> fallback mechanism maybe ? And so we can avoid the exporting of stuff
+> that way.
+
+I like this better than the fallback idea TBH.
