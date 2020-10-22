@@ -2,128 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DEB6296253
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:06:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A8B296257
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:07:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509803AbgJVQGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:06:07 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34810 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509103AbgJVQGG (ORCPT
+        id S2510008AbgJVQHz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:07:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48630 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509545AbgJVQHy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:06:06 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kVd6I-0001B5-5w; Thu, 22 Oct 2020 12:06:02 -0400
-Message-ID: <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-From:   Rik van Riel <riel@surriel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Date:   Thu, 22 Oct 2020 12:06:01 -0400
-In-Reply-To: <20201022155022.GO23790@dhcp22.suse.cz>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
-         <20201022081532.GJ23790@dhcp22.suse.cz>
-         <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
-         <20201022155022.GO23790@dhcp22.suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-wvz+2MOzMn/WApU4E/BN"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 22 Oct 2020 12:07:54 -0400
+Received: from relay.felk.cvut.cz (relay.felk.cvut.cz [IPv6:2001:718:2:1611:0:1:0:70])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTP id 5A33DC0613CE;
+        Thu, 22 Oct 2020 09:07:54 -0700 (PDT)
+Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
+        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 09MG6Kbr083350;
+        Thu, 22 Oct 2020 18:06:20 +0200 (CEST)
+        (envelope-from pisa@cmp.felk.cvut.cz)
+Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
+        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 09MG6Kbh004044;
+        Thu, 22 Oct 2020 18:06:20 +0200
+Received: (from pisa@localhost)
+        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 09MG6K7J004041;
+        Thu, 22 Oct 2020 18:06:20 +0200
+X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
+From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
+To:     Pavel Machek <pavel@ucw.cz>
+Subject: Re: [PATCH v6 5/6] can: ctucanfd: CTU CAN FD open-source IP core - platform/SoC support.
+Date:   Thu, 22 Oct 2020 18:06:19 +0200
+User-Agent: KMail/1.9.10
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        "Marc Kleine-Budde" <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>,
+        Drew Fustini <pdp7pdp7@gmail.com>,
+        Randy Dunlap <rdunlap@infradead.org>
+References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz> <2a90e1a7d57f0fec42604cd399acf25af5689148.1603354744.git.pisa@cmp.felk.cvut.cz> <20201022114306.GA31933@duo.ucw.cz>
+In-Reply-To: <20201022114306.GA31933@duo.ucw.cz>
+X-KMail-QuotePrefix: > 
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: Text/Plain;
+  charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+Message-Id: <202010221806.19253.pisa@cmp.felk.cvut.cz>
+X-FELK-MailScanner-Information: 
+X-MailScanner-ID: 09MG6Kbr083350
+X-FELK-MailScanner: Found to be clean
+X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached,
+        score=-0.099, required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
+        NICE_REPLY_A -0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00,
+        URIBL_BLOCKED 0.00)
+X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
+X-FELK-MailScanner-Watermark: 1603987585.63094@DauQioNUM05pHvR5CIXLhA
+X-Spam-Status: No
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello Pavel,
 
---=-wvz+2MOzMn/WApU4E/BN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+thanks for review.
 
-On Thu, 2020-10-22 at 17:50 +0200, Michal Hocko wrote:
-> On Thu 22-10-20 09:25:21, Rik van Riel wrote:
-> > On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
-> > > On Wed 21-10-20 23:48:46, Rik van Riel wrote:
-> > > >=20
-> > > > diff --git a/mm/shmem.c b/mm/shmem.c
-> > > > index 537c137698f8..d1290eb508e5 100644
-> > > > --- a/mm/shmem.c
-> > > > +++ b/mm/shmem.c
-> > > > @@ -1545,8 +1545,11 @@ static struct page
-> > > > *shmem_alloc_hugepage(gfp_t gfp,
-> > > >  		return NULL;
-> > > > =20
-> > > >  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> > > > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY
-> > > > |
-> > > > __GFP_NOWARN,
-> > > > -			HPAGE_PMD_ORDER, &pvma, 0,
-> > > > numa_node_id(),
-> > > > true);
-> > > > +	/* Limit the gfp mask according to THP configuration.
-> > > > */
-> > > > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
-> > >=20
-> > > What is the reason for these when alloc_hugepage_direct_gfpmask
-> > > provides
-> > > the full mask?
-> >=20
-> > The mapping_gfp_mask for the shmem file might have additional
-> > restrictions above and beyond the gfp mask returned by
-> > alloc_hugepage_direct_gfpmask, and I am not sure we should just
-> > ignore the mapping_gfp_mask.
->=20
-> No, we shouldn't. But I do not see why you should be adding the above
-> set of flags on top.
+On Thursday 22 of October 2020 13:43:06 Pavel Machek wrote:
+> Hi!
+>
+> > +++ b/drivers/net/can/ctucanfd/Kconfig
+> > @@ -21,4 +21,15 @@ config CAN_CTUCANFD_PCI
+> >  	  PCIe board with PiKRON.com designed transceiver riser shield is
+> > available at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
+> >
+> > +config CAN_CTUCANFD_PLATFORM
+> > +	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
+> > +	depends on OF || COMPILE_TEST
+> > +	help
+>
+> This is likely wrong, as it can enable config of CAN_CTUCANFD=M,
+> CAN_CTUCANFD_PLATFORM=y, right?
 
-Because THP allocations are higher order and optimistic,
-and we want them to:
-1) be annotated as compound allocations
-2) fail (and fall back to 4kB allocations) when they cannot
-   be easily satisfied, and
-3) not create a spew of allocation failure backtraces on
-   the (serial) console when these THP allocations fail
+My original code has not || COMPILE_TEST alternative.
 
-> > That is why this patch takes the union of both gfp masks.
-> >=20
-> > However, digging into things more, it looks like shmem inodes
-> > always have the mapping gfp mask set to GFP_HIGHUSER_MOVABLE,
-> > and it is never changed, so simply using the output from
-> > alloc_hugepage_direct_gfpmask should be fine.
-> >=20
-> > I can do the patch either way. Just let me know what you prefer.
->=20
-> I would just and the given gfp with alloc_hugepage_direct_gfpmask
+But I have been asked to add it
 
-That would miss the three things we definitely want
-from above.
+On Sunday 16 of August 2020 01:28:13 Randy Dunlap wrote:
+> Can this be
+>         depends on OF || COMPILE_TEST
+> ?
 
---=20
-All Rights Reversed.
+I have send discussion later that I am not sure if it is right
+but followed suggestion. If there is no other reply now,
+I would drop || COMPILE_TEST. I believe that then it is correct
+for regular use. I ma not sure about all consequences of COMPILE_TEST
+missing.
 
---=-wvz+2MOzMn/WApU4E/BN
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
+> > @@ -8,3 +8,6 @@ ctucanfd-y := ctu_can_fd.o ctu_can_fd_hw.o
+> >
+> >  obj-$(CONFIG_CAN_CTUCANFD_PCI) += ctucanfd_pci.o
+> >  ctucanfd_pci-y := ctu_can_fd_pci.o
+> > +
+> > +obj-$(CONFIG_CAN_CTUCANFD_PLATFORM) += ctucanfd_platform.o
+> > +ctucanfd_platform-y += ctu_can_fd_platform.o
+>
+> Can you simply add right object files directly?
 
------BEGIN PGP SIGNATURE-----
+This is more tough question. We have kept sources
+as ctu_can_fd.c, ctu_can_fd_hw.c etc. to produce
+final ctucanfd.ko which matches device tree entry etc.
+after name simplification now...
+So we move from underscores to ctucanfd on more places.
+So yes, we can rename ctu_can_fd.c to ctucanfd_drv.c + others
+keep final ctucanfd.ko and change to single file based objects
+ctucanfd_platform.c and ctucanfd_pci.c
 
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RrekACgkQznnekoTE
-3oNChQf/UY8pCMckiHFSU+R6OCOYkOQNWfU+qtKY18MVaPiqBOKsZ7F6rdDmyeUg
-ZlJxLSo8R0lz6Fnk2RRU4A0L8zQCaVVQjXw/XQTeb6e+6SP7uWczXiCuezzxnpxO
-S49OLYoK47qVbp/FI6yEesOFHE3dh0k4WQXvbRwI+Z63p7HB99Yw/hFo9VD0BCzx
-Ja+S3E0nakrTsobwTtAVBfi3xRabUN901EaL9C0khrW2hQcf1f2tV85d9oQTvrT8
-WDjBgeoxIRhpbFdv2X9+xymGhcwYk43DEL3RGBOYKhov0uovA50dVW5WnjtiXfhy
-NsZ4nffWqm4LmVUZFTBKfm/IxAsJZw==
-=S5Ks
------END PGP SIGNATURE-----
+If you think that it worth to be redone, I would do that.
+It would disrupt sources history, may it be blames, merging
+etc... but I would invest effort into it if asked for. 
 
---=-wvz+2MOzMn/WApU4E/BN--
+Best wishes,
 
+                Pavel
