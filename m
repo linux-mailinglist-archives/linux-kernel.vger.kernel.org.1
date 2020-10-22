@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84E2A295FC3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D6A9295FC6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899689AbgJVNUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50810 "EHLO
+        id S2899489AbgJVNUN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:20:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50814 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899669AbgJVNTz (ORCPT
+        with ESMTP id S2899672AbgJVNT4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:19:55 -0400
-Received: from mail-lf1-x149.google.com (mail-lf1-x149.google.com [IPv6:2a00:1450:4864:20::149])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161EFC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:55 -0700 (PDT)
-Received: by mail-lf1-x149.google.com with SMTP id i21so294762lfo.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:55 -0700 (PDT)
+        Thu, 22 Oct 2020 09:19:56 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 84D05C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:56 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id g184so1010952qke.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=IcAE4Jyu1jclhjsbbav79rrFgX1+75/awDcEqCY54u8=;
-        b=JUPSUQCugXbpMvU+5lWMoq1Q7csjmAxp/+xs9wlbLHvL0gEIeeRyX74Xq81EkalwMD
-         CDbEUkHaZHb5wWaHbmZXBc6CkAs7EVeetyNeWUZ9+k0pputrmvxW17UUEOPok9ia51HV
-         qHRwNWCHdqavnqYSJqpxB4/B3n1/4UCmgUqrkESq3/QnSeMUMTYp1wZioTJYAIzjnY5j
-         8amHP91XRSNR62vonB2SS+JDQUOL8qO8VtRl1V3Si0NljR3vu7YEKBpAt+m7plkEaSwu
-         Fvbo8vCqd8yRnFojZjnyO0ppYrMqgTvWf1y0IwK5mkN/B0xmqTNyqUVY0CcSnQEfYBex
-         CMqQ==
+        bh=ZoFNxYTX2w5xrKhT+4kOLYASUdfUPOoAnADKxtZ91BU=;
+        b=hyg/yHWHvwShqvDVWk+p9jRaj1k1vbYvbMkQiwt/KYz+fgLWUl5RZZxkLQGBjmXyTg
+         4Mpc350rxmj8NEmdVWFhN7K3IA0gBvxNU4krBGMa40Pe5tYLMpxQp9rTdZcI2IVNAq8X
+         X6BGbZ198yO5M4c9WFkFQB1vRxo/zQKgMMnJ71TSXhFNz3csA5eIcnR7mgxlYqKdbvfO
+         F6V3nrozw4kqQp8r3Mhim3FV/62Y22qIA0J/BOk+a8s/8mqn9yOWPdIKUBViFZUM5jRy
+         Z4a7ho525wIUCVayqHieRmS5aR43zx68e2mZ9l/J1sD2671q8FvP0uYhAMnEpSGEGE0q
+         iIbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=IcAE4Jyu1jclhjsbbav79rrFgX1+75/awDcEqCY54u8=;
-        b=S5mQm6j9xjXc8HYTJVmJgDeWKHmwuldkJMwWvq1EXRa48dbJxANlZjUJcaby2JTVxy
-         UwXaoF9n2X8FvcrSC3P/kfRaeGII6ErrDm0/Y9OmP83YyxELVDqMnsXYUQlBumAwBxes
-         pVzs4apLQoLDRU3AyWfkKPyT8DG5KYGdLQfWKnYDaQJ91LQLoEwdsMVCYgBNSPH7a8wk
-         AbqxkWjMHcS6q8NfbOe/0zp0UvVOLncJDGGVRBff6UkVGHRXcx8mqvqLZdKUkAoK0Eh/
-         OZZWlOValV0nJRN5Fa+GB/vsuCf64xTWOBiFgFR9in/wPOExzMt2ADeKoGPs5lk8xyqf
-         65yg==
-X-Gm-Message-State: AOAM530s7R192W/4gfl6Mkx1N9m9g71g/d+jsORcOhDOt7b8Zem1DQOC
-        rb9CsGYa6eRQWzAkqyaO3CZ3Saq3Iz3AyZZf
-X-Google-Smtp-Source: ABdhPJwZGwfk0XCwSQapv30wLa6jrBk0HnDt0f1kgNHrVf7DZPKxRI4cNcY1vAmAYLTPAeB8Q8a2l9IHoun2wT9B
+        bh=ZoFNxYTX2w5xrKhT+4kOLYASUdfUPOoAnADKxtZ91BU=;
+        b=sZ43204hqpGnfn7Yv/jEEweTrneWP6tLO3Qpl0j6529UJdTJusl5mUxhz4zcFC5Nxc
+         NM5WwxZwak2Pvw/1LFrr2puafC112c15XwKxlEIjbAzHTpNiJJ6h4xoKlALzxvJqWfky
+         ObBbeo7bySke3GhydFc0lscdetIJbWjEp7hlqGQR2CLw+U3h1qpEwsWZ8AA3jb+n8T5U
+         6si/ovMPgU4Xqss4T7qwkeEXLpiPSBQY7wXx1mb0IH8e60V8OdVOZ9r3ZTQKXywxs/DW
+         8th1sIHeEssFe958NQbj+lw06JyZmy/a4Dczl41U+0k1Uilki+QMtwrHgmp6xnMhhFB6
+         c9Yg==
+X-Gm-Message-State: AOAM531Sm+zBCmZ7X98N4QvrK7Mb4poPIIDwyoKnlUZLhShcoADiiXAc
+        6/tV+N5diBqCpamioeNbGwwHvzFAJzgZnYJO
+X-Google-Smtp-Source: ABdhPJz/upwD11o6KftRnmUWcVjQhuj/aMMh5idv43GrvZzPuF9FjjUI7+5zI2FNbmCB5582zV2P7+i0EuR2ktv5
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a19:8a88:: with SMTP id
- m130mr896681lfd.503.1603372793217; Thu, 22 Oct 2020 06:19:53 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:19:04 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a05:6214:1267:: with SMTP id
+ r7mr2283039qvv.50.1603372795643; Thu, 22 Oct 2020 06:19:55 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:19:05 +0200
 In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-Message-Id: <6f87cb86aeeca9f4148d435ff01ad7d21af4bdfc.1603372719.git.andreyknvl@google.com>
+Message-Id: <ae2caac58051ea4182c0278a1c1e4a945c3a1529.1603372719.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603372719.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH RFC v2 12/21] kasan: inline and rename kasan_unpoison_memory
+Subject: [PATCH RFC v2 13/21] arm64: kasan: Add cpu_supports_tags helper
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -77,178 +77,118 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently kasan_unpoison_memory() is used as both an external annotation
-and as internal memory poisoning helper. Rename external annotation to
-kasan_unpoison_data() and inline the internal helper for for hardware
-tag-based mode to avoid undeeded function calls.
+Add an arm64 helper called cpu_supports_mte() that exposes information
+about whether the CPU supports memory tagging and that can be called
+during early boot (unlike system_supports_mte()).
 
-There's the external annotation kasan_unpoison_slab() that is currently
-defined as static inline and uses kasan_unpoison_memory(). With this
-change it's turned into a function call. Overall, this results in the
-same number of calls for hardware tag-based mode as
-kasan_unpoison_memory() is now inlined.
+Use that helper to implement a generic cpu_supports_tags() helper, that
+will be used by hardware tag-based KASAN.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/Ia7c8b659f79209935cbaab3913bf7f082cc43a0e
+Link: https://linux-review.googlesource.com/id/Ib4b56a42c57c6293df29a0cdfee334c3ca7bdab4
 ---
- include/linux/kasan.h | 16 ++++++----------
- kernel/fork.c         |  2 +-
- mm/kasan/common.c     | 10 ++++++++++
- mm/kasan/hw_tags.c    |  6 ------
- mm/kasan/kasan.h      |  7 +++++++
- mm/slab_common.c      |  2 +-
- 6 files changed, 25 insertions(+), 18 deletions(-)
+ arch/arm64/include/asm/memory.h    |  1 +
+ arch/arm64/include/asm/mte-kasan.h |  6 ++++++
+ arch/arm64/kernel/mte.c            | 20 ++++++++++++++++++++
+ mm/kasan/kasan.h                   |  4 ++++
+ 4 files changed, 31 insertions(+)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 6377d7d3a951..2b9023224474 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -66,14 +66,15 @@ static inline void kasan_disable_current(void) {}
- 
- #ifdef CONFIG_KASAN
- 
--void kasan_unpoison_memory(const void *address, size_t size);
--
- void kasan_alloc_pages(struct page *page, unsigned int order);
- void kasan_free_pages(struct page *page, unsigned int order);
- 
- void kasan_cache_create(struct kmem_cache *cache, unsigned int *size,
- 			slab_flags_t *flags);
- 
-+void kasan_unpoison_data(const void *address, size_t size);
-+void kasan_unpoison_slab(const void *ptr);
-+
- void kasan_poison_slab(struct page *page);
- void kasan_unpoison_object_data(struct kmem_cache *cache, void *object);
- void kasan_poison_object_data(struct kmem_cache *cache, void *object);
-@@ -98,11 +99,6 @@ struct kasan_cache {
- 	int free_meta_offset;
- };
- 
--size_t __ksize(const void *);
--static inline void kasan_unpoison_slab(const void *ptr)
--{
--	kasan_unpoison_memory(ptr, __ksize(ptr));
--}
- size_t kasan_metadata_size(struct kmem_cache *cache);
- 
- bool kasan_save_enable_multi_shot(void);
-@@ -110,8 +106,6 @@ void kasan_restore_multi_shot(bool enabled);
- 
- #else /* CONFIG_KASAN */
- 
--static inline void kasan_unpoison_memory(const void *address, size_t size) {}
--
- static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
- static inline void kasan_free_pages(struct page *page, unsigned int order) {}
- 
-@@ -119,6 +113,9 @@ static inline void kasan_cache_create(struct kmem_cache *cache,
- 				      unsigned int *size,
- 				      slab_flags_t *flags) {}
- 
-+static inline void kasan_unpoison_data(const void *address, size_t size) { }
-+static inline void kasan_unpoison_slab(const void *ptr) { }
-+
- static inline void kasan_poison_slab(struct page *page) {}
- static inline void kasan_unpoison_object_data(struct kmem_cache *cache,
- 					void *object) {}
-@@ -158,7 +155,6 @@ static inline bool kasan_slab_free(struct kmem_cache *s, void *object,
- 	return false;
+diff --git a/arch/arm64/include/asm/memory.h b/arch/arm64/include/asm/memory.h
+index b5d6b824c21c..f496abfcf7f5 100644
+--- a/arch/arm64/include/asm/memory.h
++++ b/arch/arm64/include/asm/memory.h
+@@ -232,6 +232,7 @@ static inline const void *__tag_set(const void *addr, u8 tag)
  }
  
--static inline void kasan_unpoison_slab(const void *ptr) { }
- static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
+ #ifdef CONFIG_KASAN_HW_TAGS
++#define arch_cpu_supports_tags()		cpu_supports_mte()
+ #define arch_init_tags(max_tag)			mte_init_tags(max_tag)
+ #define arch_get_random_tag()			mte_get_random_tag()
+ #define arch_get_mem_tag(addr)			mte_get_mem_tag(addr)
+diff --git a/arch/arm64/include/asm/mte-kasan.h b/arch/arm64/include/asm/mte-kasan.h
+index a4c61b926d4a..4c3f2c6b4fe6 100644
+--- a/arch/arm64/include/asm/mte-kasan.h
++++ b/arch/arm64/include/asm/mte-kasan.h
+@@ -9,6 +9,7 @@
  
- #endif /* CONFIG_KASAN */
-diff --git a/kernel/fork.c b/kernel/fork.c
-index b41fecca59d7..858d78eee6ec 100644
---- a/kernel/fork.c
-+++ b/kernel/fork.c
-@@ -225,7 +225,7 @@ static unsigned long *alloc_thread_stack_node(struct task_struct *tsk, int node)
- 			continue;
+ #ifndef __ASSEMBLY__
  
- 		/* Mark stack accessible for KASAN. */
--		kasan_unpoison_memory(s->addr, THREAD_SIZE);
-+		kasan_unpoison_data(s->addr, THREAD_SIZE);
++#include <linux/init.h>
+ #include <linux/types.h>
  
- 		/* Clear stale pointers from reused stack. */
- 		memset(s->addr, 0, THREAD_SIZE);
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index 9008fc6b0810..1a5e6c279a72 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -184,6 +184,16 @@ struct kasan_free_meta *kasan_get_free_meta(struct kmem_cache *cache,
- 	return (void *)reset_tag(object) + cache->kasan_info.free_meta_offset;
+ /*
+@@ -30,6 +31,7 @@ u8 mte_get_random_tag(void);
+ void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag);
+ 
+ void mte_init_tags(u64 max_tag);
++bool __init cpu_supports_mte(void);
+ 
+ #else /* CONFIG_ARM64_MTE */
+ 
+@@ -54,6 +56,10 @@ static inline void *mte_set_mem_tag_range(void *addr, size_t size, u8 tag)
+ static inline void mte_init_tags(u64 max_tag)
+ {
  }
- 
-+void kasan_unpoison_data(const void *address, size_t size)
++static inline bool cpu_supports_mte(void)
 +{
-+	kasan_unpoison_memory(address, size);
++	return false;
++}
+ 
+ #endif /* CONFIG_ARM64_MTE */
+ 
+diff --git a/arch/arm64/kernel/mte.c b/arch/arm64/kernel/mte.c
+index ca8206b7f9a6..8fcd17408515 100644
+--- a/arch/arm64/kernel/mte.c
++++ b/arch/arm64/kernel/mte.c
+@@ -134,6 +134,26 @@ void mte_init_tags(u64 max_tag)
+ 	gcr_kernel_excl = ~incl & SYS_GCR_EL1_EXCL_MASK;
+ }
+ 
++/*
++ * This function can be used during early boot to determine whether the CPU
++ * supports MTE. The alternative that must be used after boot is completed is
++ * system_supports_mte(), but it only works after the cpufeature framework
++ * learns about MTE.
++ */
++bool __init cpu_supports_mte(void)
++{
++	u64 pfr1;
++	u32 val;
++
++	if (!IS_ENABLED(CONFIG_ARM64_MTE))
++		return false;
++
++	pfr1 = read_cpuid(ID_AA64PFR1_EL1);
++	val = cpuid_feature_extract_unsigned_field(pfr1, ID_AA64PFR1_MTE_SHIFT);
++
++	return val >= ID_AA64PFR1_MTE;
 +}
 +
-+void kasan_unpoison_slab(const void *ptr)
-+{
-+	kasan_unpoison_memory(ptr, __ksize(ptr));
-+}
-+
- void kasan_poison_slab(struct page *page)
+ static void update_sctlr_el1_tcf0(u64 tcf0)
  {
- 	unsigned long i;
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index f03161f3da19..915142da6b57 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -24,12 +24,6 @@ void __init kasan_init_tags(void)
- 	pr_info("KernelAddressSanitizer initialized\n");
- }
- 
--void kasan_unpoison_memory(const void *address, size_t size)
--{
--	set_mem_tag_range(reset_tag(address),
--			  round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
--}
--
- void kasan_set_free_info(struct kmem_cache *cache,
- 				void *object, u8 tag)
- {
+ 	/* ISB required for the kernel uaccess routines */
 diff --git a/mm/kasan/kasan.h b/mm/kasan/kasan.h
-index 8d84ae6f58f1..da08b2533d73 100644
+index da08b2533d73..f7ae0c23f023 100644
 --- a/mm/kasan/kasan.h
 +++ b/mm/kasan/kasan.h
-@@ -280,6 +280,12 @@ static inline void kasan_poison_memory(const void *address, size_t size, u8 valu
- 			  round_up(size, KASAN_GRANULE_SIZE), value);
- }
+@@ -240,6 +240,9 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ #define set_tag(addr, tag)	((void *)arch_kasan_set_tag((addr), (tag)))
+ #define get_tag(addr)		arch_kasan_get_tag(addr)
  
-+static inline void kasan_unpoison_memory(const void *address, size_t size)
-+{
-+	set_mem_tag_range(reset_tag(address),
-+			  round_up(size, KASAN_GRANULE_SIZE), get_tag(address));
-+}
-+
- static inline bool check_invalid_free(void *addr)
- {
- 	u8 ptr_tag = get_tag(addr);
-@@ -292,6 +298,7 @@ static inline bool check_invalid_free(void *addr)
- #else /* CONFIG_KASAN_HW_TAGS */
++#ifndef arch_cpu_supports_tags
++#define arch_cpu_supports_tags() (false)
++#endif
+ #ifndef arch_init_tags
+ #define arch_init_tags(max_tag)
+ #endif
+@@ -253,6 +256,7 @@ static inline const void *arch_kasan_set_tag(const void *addr, u8 tag)
+ #define arch_set_mem_tag_range(addr, size, tag) ((void *)(addr))
+ #endif
  
- void kasan_poison_memory(const void *address, size_t size, u8 value);
-+void kasan_unpoison_memory(const void *address, size_t size);
- bool check_invalid_free(void *addr);
- 
- #endif /* CONFIG_KASAN_HW_TAGS */
-diff --git a/mm/slab_common.c b/mm/slab_common.c
-index 53d0f8bb57ea..f1b0c4a22f08 100644
---- a/mm/slab_common.c
-+++ b/mm/slab_common.c
-@@ -1176,7 +1176,7 @@ size_t ksize(const void *objp)
- 	 * We assume that ksize callers could use whole allocated area,
- 	 * so we need to unpoison this area.
- 	 */
--	kasan_unpoison_memory(objp, size);
-+	kasan_unpoison_data(objp, size);
- 	return size;
- }
- EXPORT_SYMBOL(ksize);
++#define cpu_supports_tags()			arch_cpu_supports_tags()
+ #define init_tags(max_tag)			arch_init_tags(max_tag)
+ #define get_random_tag()			arch_get_random_tag()
+ #define get_mem_tag(addr)			arch_get_mem_tag(addr)
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
