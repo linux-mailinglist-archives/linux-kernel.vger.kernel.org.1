@@ -2,124 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67957295E52
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CEEB9295E61
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:29:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898103AbgJVMY2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:24:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42156 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898094AbgJVMY1 (ORCPT
+        id S2898189AbgJVM3b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:29:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42485 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2898194AbgJVM30 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:24:27 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3873DC0613CE;
-        Thu, 22 Oct 2020 05:24:27 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id c20so1032181pfr.8;
-        Thu, 22 Oct 2020 05:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mU3eh4Lg22I3mBOuJIBbGT5xYfezVnGHYrxPpP/Dozs=;
-        b=QbGzbjxlT72axsH1qC0qivAZ2Gbr+68FTgArAwE8Vdgp/HLrXroD5yoYhoEj9F7jXp
-         DFnDOelbRQKAYm3jJpPWCiIPvg7RMB2LJFU89a+9IfUUG4lRWBhjgNJvXNpSDWwKDPPX
-         NAUqNoQDwSyY0lyzU9FXqYIh1EB56QfbWHXWxlkogILc3ajA45KP4OsvgnBr5t0JcoBZ
-         InKpKZRDKfn4rCHTuHQD99E3dls/ZrUo93uBFbdoN07v7Ty2LBWIt4YbAy8uj94kv5Hc
-         3Hi3IfbpI1BcYJomhojmLsCvvo/sa1i9jjc4kPpKqWT/stwZAw9Oef0Lv0dM4Avnfbk2
-         Cm/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=mU3eh4Lg22I3mBOuJIBbGT5xYfezVnGHYrxPpP/Dozs=;
-        b=VTyAcZ3Prgzj/h9qy4s6yviCVbSJXKEtIlM4z0ft2l5vaQTe6JQsghs+ZXMTb2zFkq
-         iKrIFMA/ypa5JrGpbQiAOf00HG3g5OTogMmFRd6j7qkSUBZjZUhBCfUxPDdeJ2+Wez60
-         T9k8s5v/LwOX1Fg1uzwasyLjGqOQxB/hAXG2JZ0JfNgca6YabNaNzzIm340px4yRzVqD
-         hjoMdRbLskYtnEyCkA38ibOmQwNjwrpWPanmDkvZAqG3ggRQqgH6Xul/5OsW/14bGTW0
-         DMSbCjp7Lm/usLiGuHXAHvUpVG3QEYo8D9ipbIbpSTC41n5IX1zaYSNS3qPtjAakIcSf
-         34uA==
-X-Gm-Message-State: AOAM5318M6ieAClacgTLMKBJCSvntqiyWycwziKzad6UAUxUDM/wcjCU
-        WfkMenr1UObowwH9EbRLlCU=
-X-Google-Smtp-Source: ABdhPJxJ8dx7pupAUvCFFxYmob0+Rspz7lUxS7uOgRkpDhGiBNPy+5Vr+5o7l5ERw9a5begnl+xRIw==
-X-Received: by 2002:a05:6a00:2d5:b029:13c:1611:653b with SMTP id b21-20020a056a0002d5b029013c1611653bmr2291991pft.13.1603369466581;
-        Thu, 22 Oct 2020 05:24:26 -0700 (PDT)
-Received: from localhost.localdomain ([240d:1a:8f0:6c00:89cb:88d1:b6b2:3345])
-        by smtp.gmail.com with ESMTPSA id e196sm2211922pfh.128.2020.10.22.05.24.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 05:24:25 -0700 (PDT)
-From:   Alexandre Courbot <gnurou@gmail.com>
-To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Hans Verkuil <hverkuil-cisco@xs4all.nl>
-Cc:     linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Alexandre Courbot <gnurou@gmail.com>
-Subject: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
-Date:   Thu, 22 Oct 2020 21:24:21 +0900
-Message-Id: <20201022122421.133976-1-gnurou@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        Thu, 22 Oct 2020 08:29:26 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603369765;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=LckgkZ6IVJMsEiwSkmcuHngu8LJFXLEySIsMLY2OYag=;
+        b=hyGE9EM2jx/8czZ/Irwu+5lirmt1NgXAxSwcNkpzFRZVj9scw+zFcxHUo1I1EOzilPNF2J
+        uI13Zysg0M/EpmO0HHwdRBtZPqCDMg5RhxCTU8WBDkoiqUhSUUx6ASeJFvXKag/x0MfFjr
+        ycYcAkaireR18Uvl5thqFve1SV/I6RQ=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-131--71cejwHNtG7emFfUNsmQQ-1; Thu, 22 Oct 2020 08:29:21 -0400
+X-MC-Unique: -71cejwHNtG7emFfUNsmQQ-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 708DE186DD3D;
+        Thu, 22 Oct 2020 12:29:18 +0000 (UTC)
+Received: from fuller.cnet (ovpn-112-2.gru2.redhat.com [10.97.112.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 2A4A05C1C7;
+        Thu, 22 Oct 2020 12:29:12 +0000 (UTC)
+Received: by fuller.cnet (Postfix, from userid 1000)
+        id 7F7BB41853FB; Thu, 22 Oct 2020 09:28:49 -0300 (-03)
+Date:   Thu, 22 Oct 2020 09:28:49 -0300
+From:   Marcelo Tosatti <mtosatti@redhat.com>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
+        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        lgoncalv@redhat.com, Jakub Kicinski <kuba@kernel.org>,
+        Dave Miller <davem@davemloft.net>
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
+ housekeeping CPUs
+Message-ID: <20201022122849.GA148426@fuller.cnet>
+References: <20200928183529.471328-1-nitesh@redhat.com>
+ <20200928183529.471328-5-nitesh@redhat.com>
+ <87v9f57zjf.fsf@nanos.tec.linutronix.de>
+ <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com>
+ <87lfg093fo.fsf@nanos.tec.linutronix.de>
+ <877drj72cz.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <877drj72cz.fsf@nanos.tec.linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-do_poll()/do_select() seem to set the _qproc member of poll_table to
-NULL the first time they are called on a given table, making subsequent
-calls of poll_wait() on that table no-ops. This is a problem for mem2mem
-which calls poll_wait() on the V4L2 queues' waitqueues only when a
-queue-related event is requested, which may not necessarily be the case
-during the first poll.
+On Wed, Oct 21, 2020 at 10:25:48PM +0200, Thomas Gleixner wrote:
+> On Tue, Oct 20 2020 at 20:07, Thomas Gleixner wrote:
+> > On Tue, Oct 20 2020 at 12:18, Nitesh Narayan Lal wrote:
+> >> However, IMHO we would still need a logic to prevent the devices from
+> >> creating excess vectors.
+> >
+> > Managed interrupts are preventing exactly that by pinning the interrupts
+> > and queues to one or a set of CPUs, which prevents vector exhaustion on
+> > CPU hotplug.
+> >
+> > Non-managed, yes that is and always was a problem. One of the reasons
+> > why managed interrupts exist.
+> 
+> But why is this only a problem for isolation? The very same problem
+> exists vs. CPU hotplug and therefore hibernation.
+> 
+> On x86 we have at max. 204 vectors available for device interrupts per
+> CPU. So assumed the only device interrupt in use is networking then any
+> machine which has more than 204 network interrupts (queues, aux ...)
+> active will prevent the machine from hibernation.
+> 
+> Aside of that it's silly to have multiple queues targeted at a single
+> CPU in case of hotplug. And that's not a theoretical problem.  Some
+> power management schemes shut down sockets when the utilization of a
+> system is low enough, e.g. outside of working hours.
 
-For instance, a stateful decoder is typically only interested in
-EPOLLPRI events when it starts, and will switch to listening to both
-EPOLLPRI and EPOLLIN after receiving the initial resolution change event
-and configuring the CAPTURE queue. However by the time that switch
-happens and v4l2_m2m_poll_for_data() is called for the first time,
-poll_wait() has become a no-op and the V4L2 queues waitqueues thus
-cannot be registered.
+Exactly. It seems the proper way to do handle this is to disable
+individual vectors rather than moving them. And that is needed for 
+dynamic isolate / unisolate anyway...
 
-Fix this by moving the registration to v4l2_m2m_poll() and do it whether
-or not one of the queue-related events are requested.
+> The whole point of multi-queue is to have locality so that traffic from
+> a CPU goes through the CPU local queue. What's the point of having two
+> or more queues on a CPU in case of hotplug?
+> 
+> The right answer to this is to utilize managed interrupts and have
+> according logic in your network driver to handle CPU hotplug. When a CPU
+> goes down, then the queue which is associated to that CPU is quiesced
+> and the interrupt core shuts down the relevant interrupt instead of
+> moving it to an online CPU (which causes the whole vector exhaustion
+> problem on x86). When the CPU comes online again, then the interrupt is
+> reenabled in the core and the driver reactivates the queue.
 
-Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
----
-I seem to be hitting all the polling corner cases recently! ^_^; This
-time I was wondering why epoll_wait() never returned after I received
-the first resolution change event from the vicodec stateful decoder.
-This is why - please take a look!
-
- drivers/media/v4l2-core/v4l2-mem2mem.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
-index b221b4e438a1..65476ef2879f 100644
---- a/drivers/media/v4l2-core/v4l2-mem2mem.c
-+++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
-@@ -887,9 +887,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
- 	src_q = v4l2_m2m_get_src_vq(m2m_ctx);
- 	dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
- 
--	poll_wait(file, &src_q->done_wq, wait);
--	poll_wait(file, &dst_q->done_wq, wait);
--
- 	/*
- 	 * There has to be at least one buffer queued on each queued_list, which
- 	 * means either in driver already or waiting for driver to claim it
-@@ -922,9 +919,14 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
- 		       struct poll_table_struct *wait)
- {
- 	struct video_device *vfd = video_devdata(file);
-+	struct vb2_queue *src_q = v4l2_m2m_get_src_vq(m2m_ctx);
-+	struct vb2_queue *dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
- 	__poll_t req_events = poll_requested_events(wait);
- 	__poll_t rc = 0;
- 
-+	poll_wait(file, &src_q->done_wq, wait);
-+	poll_wait(file, &dst_q->done_wq, wait);
-+
- 	if (req_events & (EPOLLOUT | EPOLLWRNORM | EPOLLIN | EPOLLRDNORM))
- 		rc = v4l2_m2m_poll_for_data(file, m2m_ctx, wait);
- 
--- 
-2.29.0
+Aha... But it would be necessary to do that from userspace (for runtime
+isolate/unisolate).
 
