@@ -2,82 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03FD295910
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:27:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94ABA2958F6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:20:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508529AbgJVH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:26:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508514AbgJVH0x (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:26:53 -0400
-X-Greylist: delayed 513 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 22 Oct 2020 00:26:52 PDT
-Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD677C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:26:52 -0700 (PDT)
-Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
-        by gardel.0pointer.net (Postfix) with ESMTP id AC041E8080C;
-        Thu, 22 Oct 2020 09:18:14 +0200 (CEST)
-Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
-        id 20608160834; Thu, 22 Oct 2020 09:18:12 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 09:18:12 +0200
-From:   Lennart Poettering <mzxreary@0pointer.de>
-To:     Jeremy Linton <jeremy.linton@arm.com>
-Cc:     "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
-        systemd-devel@lists.freedesktop.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Kees Cook <keescook@chromium.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dave Martin <dave.martin@arm.com>
-Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
- systemd and glibc mprotect calls, causing service failures
-Message-ID: <20201022071812.GA324655@gardel-login>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+        id S2508396AbgJVHUS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:20:18 -0400
+Received: from mga04.intel.com ([192.55.52.120]:17996 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506110AbgJVHUS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:20:18 -0400
+IronPort-SDR: y+oTQj4MGj2zZ2du1t81kDe1Ze2tA2ngSTvW1jNKT7W/jlOM53bjz/+FHdWVXeE7shPMGQkGJh
+ C3SHx3irjbvA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="164891588"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="164891588"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 00:20:18 -0700
+IronPort-SDR: HKPUXsdiojHBq+Kxn/wWaHAytaZKtSQLPWdo/PK45+s6KBAv2H1kNLcXEygAC5XTkZp47LviMT
+ MGMzIKOkyE3g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="533839360"
+Received: from linux.intel.com ([10.54.29.200])
+  by orsmga005.jf.intel.com with ESMTP; 22 Oct 2020 00:20:17 -0700
+Received: from [10.249.225.194] (abudanko-mobl.ccr.corp.intel.com [10.249.225.194])
+        by linux.intel.com (Postfix) with ESMTP id 97C7758058B;
+        Thu, 22 Oct 2020 00:20:15 -0700 (PDT)
+Subject: Re: [PATCH v2 05/15] perf session: introduce decompressor into trace
+ reader object
+To:     Namhyung Kim <namhyung@kernel.org>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <b3c73389-7b4c-89cd-423c-68b00fcc61c9@linux.intel.com>
+ <CAM9d7cgr11TD-cACYbsxa=sUyStH_TGUDbdw9dsBuKAH43uQow@mail.gmail.com>
+From:   Alexey Budankov <alexey.budankov@linux.intel.com>
+Organization: Intel Corp.
+Message-ID: <f9647ad1-1c3d-f9f3-bfa9-a924c9beef49@linux.intel.com>
+Date:   Thu, 22 Oct 2020 10:20:14 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+In-Reply-To: <CAM9d7cgr11TD-cACYbsxa=sUyStH_TGUDbdw9dsBuKAH43uQow@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mi, 21.10.20 22:44, Jeremy Linton (jeremy.linton@arm.com) wrote:
 
-> Hi,
->
-> There is a problem with glibc+systemd on BTI enabled systems. Systemd
-> has a service flag "MemoryDenyWriteExecute" which uses seccomp to deny
-> PROT_EXEC changes. Glibc enables BTI only on segments which are marked as
-> being BTI compatible by calling mprotect PROT_EXEC|PROT_BTI. That call is
-> caught by the seccomp filter, resulting in service failures.
->
-> So, at the moment one has to pick either denying PROT_EXEC changes, or BTI.
-> This is obviously not desirable.
->
-> Various changes have been suggested, replacing the mprotect with mmap calls
-> having PROT_BTI set on the original mapping, re-mmapping the segments,
-> implying PROT_EXEC on mprotect PROT_BTI calls when VM_EXEC is already set,
-> and various modification to seccomp to allow particular mprotect cases to
-> bypass the filters. In each case there seems to be an undesirable attribute
-> to the solution.
->
-> So, whats the best solution?
+On 22.10.2020 7:36, Namhyung Kim wrote:
+> On Thu, Oct 22, 2020 at 1:00 AM Alexey Budankov
+> <alexey.budankov@linux.intel.com> wrote:
+>>
+>>
+>> Introduce decompressor to trace reader object so that decompression
+>> could be executed on per trace file basis separately for every
+>> trace file located in trace directory.
+> 
+> I'm slightly uncomfortable with the word 'trace' here as it's
+> used for other cases like perf trace and ftrace.  Maybe we can
+> change it to 'profile' and/or 'data file'?
 
-Did you see Topi's comments on the systemd issue?
+Let's use "data file" and "data directory" terms then.
 
-https://github.com/systemd/systemd/issues/17368#issuecomment-710485532
-
-I think I agree with this: it's a bit weird to alter the bits after
-the fact. Can't glibc set up everything right from the begining? That
-would keep both concepts working.
-
-Lennart
-
---
-Lennart Poettering, Berlin
+Thanks,
+Alexei
