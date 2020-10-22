@@ -2,107 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D88582958B0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:57:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86AF02958AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504693AbgJVG4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 02:56:52 -0400
-Received: from out2-smtp.messagingengine.com ([66.111.4.26]:47123 "EHLO
-        out2-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504609AbgJVG4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 02:56:50 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id EF65F5C00CB;
-        Thu, 22 Oct 2020 02:56:48 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 22 Oct 2020 02:56:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=PNqJSiLFvYPB2J9r+0yH7DHREwS
-        OjzwcypCGVmkzdqI=; b=mPKVnE1aQzXYRWl+CVqd+opRTlc/eQhSv+M4rnoX2g7
-        XjpzlsEHZlz2PYXnjjtmj4jYoB1l+BL2iyK8iADEXasN4QQ1UicT5uU5OYh2jcS2
-        OwzDXBcxAifPWAQ8Is/ScBJ4JEZ1x+4nGU3z/skJkPHHdK91pLV5l31S/dWUvOjf
-        FNRa8yolLFuDyJNKLdsY8yZY7EUkiDFwVlzZ9paE1IiBuFqtx8chN9uGZa4GZZMk
-        2pbuJRdhXGndVLCB6JUwhzeXFVjIvyfvhEU1IdJK+Pk79kq/FbGL33T8N8LEXoiY
-        P/FcD2vlC28NRV7CGAtq5809O+9sbgWzXFtvc6+v6oQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=PNqJSi
-        LFvYPB2J9r+0yH7DHREwSOjzwcypCGVmkzdqI=; b=HrnE3W9OG76YL5alhpMBHf
-        kWsmR9zC1WNQDYlrCJYI4xA1uCkleZs7ry9RpFS2bSn/C+4K1V5gTKYu/4Or2C3M
-        kVlx4zbnrLNGWajAmwgI2D1XTarn1+5rfIAFOBSUtlS5+QK4xjU22H4eoZDHqp5Q
-        uLNuR+OY5gY0/1Xk9+B0aSMprxG8EKTsla8ZEb4P1X3/b+YkAVkHBG41h5cZt2dY
-        1PNEb79JowcRYMVC6JFlucV+wbrLw0EJMg8gw4XrtSSat4StegL17u1l6aX7p8Rj
-        xJfHqIgvweXLkAydYMHR+n/wjeaYvrR0qxDOaWY3tetFr8+rYkePrt9wlrwfuOsA
-        ==
-X-ME-Sender: <xms:Ly2RX8lTT687s_8p7TFbRliFXqj1bzyWQxiIbwh6o4bdKuYyvBI6CQ>
-    <xme:Ly2RX71eT718tye3QV2WdwF7EgVanDyTsK16adUxs-FwFxnnXIL56A6ou5mupfUP8
-    XbNPXwWtZAn30J2_7o>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdduuddvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
-    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
-    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
-    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
-    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
-X-ME-Proxy: <xmx:Ly2RX6p8hR0lmuaFBQCs5pHCnZx04FT3VjnAW8tq7RjcXvOTdL-joQ>
-    <xmx:Ly2RX4k8ch1Da2XdVyHv0uC8iBbN_-mrri0XEBAK1E1dbJNyY10M9Q>
-    <xmx:Ly2RX62glgQ6BAs4MkoBJ0B_rOUdkoYCA9FFj1MDCr8Kz3uDQoi6tw>
-    <xmx:MC2RXzkS8m9Y3gGLIn1_px4xeFlRs2qHdAkRzRDAxJErWhPfumslTQ>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 8137C328005D;
-        Thu, 22 Oct 2020 02:56:47 -0400 (EDT)
-Date:   Thu, 22 Oct 2020 08:56:45 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     paul.kocialkowski@bootlin.com, mchehab@kernel.org, wens@csie.org,
-        ezequiel@collabora.com, hverkuil-cisco@xs4all.nl,
-        linux-media@vger.kernel.org, devel@driverdev.osuosl.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] media: cedrus: h264: Fix check for presence of scaling
- matrix
-Message-ID: <20201022065645.qlveci5f3nywxha7@gilmour.lan>
-References: <20201021203325.543189-1-jernej.skrabec@siol.net>
+        id S2504679AbgJVG4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 02:56:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56544 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2409801AbgJVG4t (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 02:56:49 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id EDA86223FB;
+        Thu, 22 Oct 2020 06:56:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603349806;
+        bh=oQrX9JONzoZLZpeWwQAFwiY9lPCmvEjjgBYcdIQ4GSA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=VjngR2jFlBi8Y3GpV6WZYd5EI1nLEnttm85MYqh6OTB4rsA5pDt91qVjZ9/O4oYTe
+         Qmo5Lt8xiXoqVg1mycAREaKe+zfvG6t7cD2V2IiAGGAm+yt0WyDQ8IN5XZVLYVoPyt
+         xSJEU+So5I/nyDw8zAae32xDLWlAnm9ME0/K43Ys=
+Date:   Thu, 22 Oct 2020 08:57:19 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org,
+        Benson Leung <bleung@chromium.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201022065719.GA1440360@kroah.com>
+References: <20201022061554.3418060-1-pmalani@chromium.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="5mrqutjgwcuzyi5g"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021203325.543189-1-jernej.skrabec@siol.net>
+In-Reply-To: <20201022061554.3418060-1-pmalani@chromium.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Wed, Oct 21, 2020 at 11:15:54PM -0700, Prashant Malani wrote:
+> A PD-capable device can return up to 3 Product Type VDOs as part of its
+> DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
+> 6.4.4.3.1). Add a sysfs attribute to expose these to userspace.
+> 
+> Cc: Benson Leung <bleung@chromium.org>
+> Cc: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> Signed-off-by: Prashant Malani <pmalani@chromium.org>
+> ---
+> 
+> NOTE: I didn't include Benson's Reviewed-by from v1, since this version
+> introduced the sysfs_notify() call.
+> 
+> Changes in v2:
+> - Added sysfs_notify() call for the attribute.
+> - Added description for the attribute in
+>   Documentation/ABI/testing/sysfs-class-typec.
+> 
+>  Documentation/ABI/testing/sysfs-class-typec | 17 +++++++++++++++++
+>  drivers/usb/typec/class.c                   | 11 +++++++++++
+>  2 files changed, 28 insertions(+)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
+> index b834671522d6..16440a236b66 100644
+> --- a/Documentation/ABI/testing/sysfs-class-typec
+> +++ b/Documentation/ABI/testing/sysfs-class-typec
+> @@ -170,6 +170,14 @@ Description:
+>  		will show 0 until Discover Identity command result becomes
+>  		available. The value can be polled.
+>  
+> +What:		/sys/class/typec/<port>-partner/identity/product_type_vdo
+> +Date:		October 2020
+> +Contact:	Prashant Malani <pmalani@chromium.org>
+> +Description:
+> +		Product Type VDOs part of Discover Identity command result. 3 values
+> +		are displayed (for the 3 possible Product Type VDOs), one per line.
 
---5mrqutjgwcuzyi5g
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+sysfs is "one value per file", not "one value per line".  This is not
+ok.
 
-On Wed, Oct 21, 2020 at 10:33:25PM +0200, Jernej Skrabec wrote:
-> If scaling matrix control is present, VPU should not use default matrix.
-> Fix that.
->=20
-> Fixes: b3a23db0e2f8 ("media: cedrus: Use H264_SCALING_MATRIX only when re=
-quired")
-> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+> +		The values will show 0s until Discover Identity command result becomes
+> +		available. The values can be polled.
 
-Acked-by: Maxime Ripard <mripard@kernel.org>
+It can be polled?  Did you try that?  I don't see the logic for that in
+your patch.
 
-Thanks!
-Maxime
 
---5mrqutjgwcuzyi5g
-Content-Type: application/pgp-signature; name="signature.asc"
+>  
+>  USB Type-C cable devices (eg. /sys/class/typec/port0-cable/)
+>  
+> @@ -230,6 +238,15 @@ Description:
+>  		will show 0 until Discover Identity command result becomes
+>  		available. The value can be polled.
+>  
+> +What:		/sys/class/typec/<port>-cable/identity/product_type_vdo
+> +Date:		October 2020
+> +Contact:	Prashant Malani <pmalani@chromium.org>
+> +Description:
+> +		Product Type VDOs part of Discover Identity command result. 3 values
+> +		are displayed (for the 3 possible Product Type VDOs), one per line.
+> +		The values will show 0s until Discover Identity command result becomes
+> +		available. The values can be polled.
 
------BEGIN PGP SIGNATURE-----
+Why are you describing the same value in two different locations?
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5EtLQAKCRDj7w1vZxhR
-xccJAQCC3HCMwcTjw8ZfEDoRQ5Uqjqs8jc4UM2rG8IqFxxZ4FwEAtKqu+HD414Eh
-2lB5Qp9uLH6IGrGdDlU4Z6Z14gjTUwE=
-=vcWn
------END PGP SIGNATURE-----
+> +
+>  
+>  USB Type-C port alternate mode devices.
+>  
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 35eec707cb51..37fa4501e75f 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -122,10 +122,20 @@ static ssize_t product_show(struct device *dev, struct device_attribute *attr,
+>  }
+>  static DEVICE_ATTR_RO(product);
+>  
+> +static ssize_t product_type_vdo_show(struct device *dev, struct device_attribute *attr,
+> +				     char *buf)
+> +{
+> +	struct usb_pd_identity *id = get_pd_identity(dev);
+> +
+> +	return sprintf(buf, "0x%08x\n0x%08x\n0x%08x\n", id->vdo[0], id->vdo[1], id->vdo[2]);
 
---5mrqutjgwcuzyi5g--
+Note, for future sysfs stuff, always use sysfs_emit().
+
+But again, this is not allowed as you have multiple values per a single
+file.
+
+thanks,
+
+greg k-h
