@@ -2,84 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5249E296458
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:00:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7D5329645C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:04:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369492AbgJVSAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38022 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2901462AbgJVSAe (ORCPT
+        id S368825AbgJVSE5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:04:57 -0400
+Received: from mail-vs1-f68.google.com ([209.85.217.68]:45671 "EHLO
+        mail-vs1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508483AbgJVSE5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:00:34 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98635C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:00:34 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id f38so1087509pgm.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:00:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:in-reply-to:message-id:references
-         :user-agent:mime-version;
-        bh=+Jm50fe41wfDpU30qvqkj0sqMT/OM8dCaofZzxuvBXc=;
-        b=Ked+h/0SpWqtiUKSQ+9P+ieLMEYOUTVO+Qm1xZegAoXCKTnpLFKnApIRgEQNuVl+xY
-         23Ki0jXwUy5jxqKjbS2p6j57kwY3nhDmCf37yAxUZIDdarrFWzYtYwszarW8AmN7W1tK
-         QaLA/Ut1Q91UzjmR8M+CJmabUDT+4GAGKWWZS3k2oqfzBELUTGLx66J0bAP5qIk5i6tN
-         Vs7wLG8jgWwCSeX8OCz+Zk0H6cEsdJR9buSyEVvsBbfH6HCvq04fuHMoF5qKL3KXNRtP
-         LOqXn+Ehbt1GJq1WgSjRK/9M7jcRx4qYct5wkhxVGQiCFzuQpUmPwAr76h/VN6Cd6ywY
-         QO2A==
+        Thu, 22 Oct 2020 14:04:57 -0400
+Received: by mail-vs1-f68.google.com with SMTP id r1so1390878vsi.12;
+        Thu, 22 Oct 2020 11:04:56 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:in-reply-to:message-id
-         :references:user-agent:mime-version;
-        bh=+Jm50fe41wfDpU30qvqkj0sqMT/OM8dCaofZzxuvBXc=;
-        b=jpaWQN1vIi8524FVeLGd6P22DyhAPe0xWuJpj/D2TV7xveBBPiWvIvXcmrA05FCsXO
-         aAdUonPNM6vFDYtbmRYgmau0TbMGzLH7cV9JmO+UKXaMdqMfeY2GpDlQ5HlJt3qH3f+A
-         2ZPxo68fV3gPdWx+S7xiKMGfaNggMWmqTmSN0eSVfe9ZJR3cGVQqYRg8DWGNho6ly8/4
-         76Ko/lA5iCyPZDfzfDcpv4FagbFFVTLfLLq/wPtPwdsLx+cSGoDbEWiVfgK2GHcMcvGE
-         sfT/0Dz9Rp5srMtopLdsyJe7QFk/BBEfs8gjn6ilsq4FTUyHYg+dEh2IwnxzylWKyDhy
-         Agig==
-X-Gm-Message-State: AOAM533WnAVKybj6vN9L41wtYrcjxiw3Yy84J4f2eZHtBhRq1eET9ypP
-        EjZC0GE8SXmpM56t3i3fGJYm5w==
-X-Google-Smtp-Source: ABdhPJxn4taYlIWRahvkIvssJLMcCUQ84+ML8jbNY9JiGAhKblgzms/4vt1AYrhAFZgNDcVQ+MsviA==
-X-Received: by 2002:a65:5a0d:: with SMTP id y13mr3202032pgs.436.1603389633998;
-        Thu, 22 Oct 2020 11:00:33 -0700 (PDT)
-Received: from [2620:15c:17:3:4a0f:cfff:fe51:6667] ([2620:15c:17:3:4a0f:cfff:fe51:6667])
-        by smtp.gmail.com with ESMTPSA id u12sm2512347pji.30.2020.10.22.11.00.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 11:00:32 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 11:00:32 -0700 (PDT)
-From:   David Rientjes <rientjes@google.com>
-X-X-Sender: rientjes@chino.kir.corp.google.com
-To:     Johannes Weiner <hannes@cmpxchg.org>
-cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
-In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
-Message-ID: <alpine.DEB.2.23.453.2010221100150.1331349@chino.kir.corp.google.com>
-References: <20201022151844.489337-1-hannes@cmpxchg.org>
-User-Agent: Alpine 2.23 (DEB 453 2020-06-18)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=F2WaCG/dYdFJ11nkOsm0t4JOBwXNWT6cncqbDXaSdgI=;
+        b=tLzPA6zAzAbCaU3e+VV/LqzDvLfhVgb+Lru781OjLVLVTeBwr9TmTrtxCn9n8P4551
+         2KgR5enYJV1wcHRnUGrHHKEeCc8PdfJNKBpbipNjqH7J06l3z6dK/hc4UYaoonSgzHUB
+         yrzOixHbPfPDqnn9xxjLDNNjMlxmqfkY49RSEAtovev1xdaDS0uCBlV7MimSqm5SvzLo
+         uFPzTlxODqeVMrfoEWTvfNeAnvPJC9QK2Uc6qJ5bWdYuiDjwqkeHjNX1bUc1bIotFnl0
+         oBSeveftk7QLNhcPR3UiJYH4kZkxqQONb5SVDIL22aL9qEmD7LA4cds0ymbE2UKcSvsq
+         G4iw==
+X-Gm-Message-State: AOAM533/3ZeHlHH9Ea0JiiNjwnU/dwgfd5DqHQIMBsH1BUG7ktEuLEoL
+        Sd94LlaiEr0csf0OkTFRsZwSDWhp4ZYW9b5lPOk=
+X-Google-Smtp-Source: ABdhPJz/FfN9kqeD9Yru3eUPJX0l1B8dOWo9/182fA56Mbh5zE4f9yy6Wa4Th9GlE+1q8+8c9jkPhsldcPjshjYo1kI=
+X-Received: by 2002:a67:f3c3:: with SMTP id j3mr2962798vsn.52.1603389896042;
+ Thu, 22 Oct 2020 11:04:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+References: <20201022165450.682571-1-lyude@redhat.com>
+In-Reply-To: <20201022165450.682571-1-lyude@redhat.com>
+From:   Ilia Mirkin <imirkin@alum.mit.edu>
+Date:   Thu, 22 Oct 2020 14:04:45 -0400
+Message-ID: <CAKb7UvhfWA6ijoQnq2Mvrx8jfn57EC-P5KBkYR3HmrBUrntJhg@mail.gmail.com>
+Subject: Re: [PATCH] drm/edid: Fix uninitialized variable in drm_cvt_modes()
+To:     Lyude Paul <lyude@redhat.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Leon Romanovsky <leon@kernel.org>,
+        David Airlie <airlied@linux.ie>, Chao Yu <chao@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        "# 3.9+" <stable@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Kees Cook <keescook@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020, Johannes Weiner wrote:
+On Thu, Oct 22, 2020 at 12:55 PM Lyude Paul <lyude@redhat.com> wrote:
+>
+> Noticed this when trying to compile with -Wall on a kernel fork. We potentially
+> don't set width here, which causes the compiler to complain about width
+> potentially being uninitialized in drm_cvt_modes(). So, let's fix that.
+>
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+>
+> Cc: <stable@vger.kernel.org> # v5.9+
+> Fixes: 3f649ab728cd ("treewide: Remove uninitialized_var() usage")
+> Signed-off-by: Lyude Paul <lyude@redhat.com>
+> ---
+>  drivers/gpu/drm/drm_edid.c | 8 +++++++-
+>  1 file changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/drm_edid.c b/drivers/gpu/drm/drm_edid.c
+> index 631125b46e04..2da158ffed8e 100644
+> --- a/drivers/gpu/drm/drm_edid.c
+> +++ b/drivers/gpu/drm/drm_edid.c
+> @@ -3094,6 +3094,7 @@ static int drm_cvt_modes(struct drm_connector *connector,
+>
+>         for (i = 0; i < 4; i++) {
+>                 int width, height;
+> +               u8 cvt_aspect_ratio;
+>
+>                 cvt = &(timing->data.other_data.data.cvt[i]);
+>
+> @@ -3101,7 +3102,8 @@ static int drm_cvt_modes(struct drm_connector *connector,
+>                         continue;
+>
+>                 height = (cvt->code[0] + ((cvt->code[1] & 0xf0) << 4) + 1) * 2;
+> -               switch (cvt->code[1] & 0x0c) {
+> +               cvt_aspect_ratio = cvt->code[1] & 0x0c;
+> +               switch (cvt_aspect_ratio) {
+>                 case 0x00:
+>                         width = height * 4 / 3;
+>                         break;
+> @@ -3114,6 +3116,10 @@ static int drm_cvt_modes(struct drm_connector *connector,
+>                 case 0x0c:
+>                         width = height * 15 / 9;
+>                         break;
+> +               default:
 
-> As huge page usage in the page cache and for shmem files proliferates
-> in our production environment, the performance monitoring team has
-> asked for per-cgroup stats on those pages.
-> 
-> We already track and export anon_thp per cgroup. We already track file
-> THP and shmem THP per node, so making them per-cgroup is only a matter
-> of switching from node to lruvec counters. All callsites are in places
-> where the pages are charged and locked, so page->memcg is stable.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+What value would cvt->code[1] have such that this gets hit?
 
-Acked-by: David Rientjes <rientjes@google.com>
+Or is this a "compiler is broken, so let's add more code" situation?
+If so, perhaps the code added could just be enough to silence the
+compiler (unreachable, etc)?
 
-Nice!
+  -ilia
