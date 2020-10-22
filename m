@@ -2,90 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C4D5295765
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:58:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C30929576D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:59:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507655AbgJVE6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:58:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507647AbgJVE6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:58:53 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C333223C7;
-        Thu, 22 Oct 2020 04:58:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603342732;
-        bh=hN7GiMRaOq0FOXfdA6xo4EAlbLaq+CosLc5jqhzgnvA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=AWbhcZ7C04iuVaR0/RhfNSWB1YYayIzQXbZCg5sitAbKcayPqtKCY1r2NJ22CrSDT
-         OXgIY04zLiM+FPK97mEZqMffcqp1HlmacPN3md38OuFuKxz8u8JAJIk5JZWcr2br+U
-         wKXqRjMxAiQ3QDb7roMwfmQXuexgpgIfqucEeVRg=
-Date:   Wed, 21 Oct 2020 21:58:50 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/6] crypto: lib/sha256 - Don't clear temporary
- variables
-Message-ID: <20201022045850.GE857@sol.localdomain>
-References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
- <20201020203957.3512851-3-nivedita@alum.mit.edu>
+        id S2507668AbgJVE71 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:59:27 -0400
+Received: from mailout4.samsung.com ([203.254.224.34]:41031 "EHLO
+        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507660AbgJVE70 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:59:26 -0400
+Received: from epcas2p4.samsung.com (unknown [182.195.41.56])
+        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201022045923epoutp04f04b4f1c9fc25e501c99be106b87cb7c~AN7_gNZ7O1773217732epoutp047
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:59:23 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201022045923epoutp04f04b4f1c9fc25e501c99be106b87cb7c~AN7_gNZ7O1773217732epoutp047
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603342763;
+        bh=muG60whWZBs/6Uyti1Bh7sClEVmMd1x+Xw2mM+LqJ7A=;
+        h=From:To:Cc:In-Reply-To:Subject:Date:References:From;
+        b=bFo2olMsRGpf2OHlUqj84XsbGUdfkmX6SIAXfxKCUSsq7WLiEnRcLlw7JfDuwMi4e
+         HXcB9cKXEuFHRvxGXF/ig1useUnch1ybplb8l/aWtR3mFiaXAY1qJwuWOOPBIV0hFG
+         B/OXm3FYI7vvGlic7alkR+/DzAKHpLF1tNTpP590=
+Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
+        epcas2p1.samsung.com (KnoxPortal) with ESMTP id
+        20201022045923epcas2p1131a31caece21ea14b7117e6e4c3b417~AN7_PNk5T0402904029epcas2p1r;
+        Thu, 22 Oct 2020 04:59:23 +0000 (GMT)
+Received: from epsmges2p3.samsung.com (unknown [182.195.40.188]) by
+        epsnrtp1.localdomain (Postfix) with ESMTP id 4CGwBd65mczMqYlr; Thu, 22 Oct
+        2020 04:59:21 +0000 (GMT)
+Received: from epcas2p3.samsung.com ( [182.195.41.55]) by
+        epsmges2p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        9A.F3.09580.8A1119F5; Thu, 22 Oct 2020 13:59:20 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas2p4.samsung.com (KnoxPortal) with ESMTPA id
+        20201022045920epcas2p43fd9b42fc8effa8c93460a0cd2195e37~AN77rDbW70458904589epcas2p4L;
+        Thu, 22 Oct 2020 04:59:20 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201022045920epsmtrp2c9206b0ad8dd4688356b84f1b5a4601c~AN77qQNpf2508725087epsmtrp2L;
+        Thu, 22 Oct 2020 04:59:20 +0000 (GMT)
+X-AuditID: b6c32a47-149ff7000000256c-00-5f9111a8604f
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        70.26.08745.8A1119F5; Thu, 22 Oct 2020 13:59:20 +0900 (KST)
+Received: from KORCO039056 (unknown [10.229.8.156]) by epsmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201022045920epsmtip10a9e145ee43d437496fb90edb3042fb6~AN77fxCL-2415024150epsmtip1d;
+        Thu, 22 Oct 2020 04:59:20 +0000 (GMT)
+From:   "Chanho Park" <chanho61.park@samsung.com>
+To:     "'Bart Van Assche'" <bvanassche@acm.org>, <jejb@linux.ibm.com>,
+        <martin.petersen@oracle.com>
+Cc:     <alim.akhtar@samsung.com>, <avri.altman@wdc.com>,
+        <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+In-Reply-To: <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
+Subject: RE: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Date:   Thu, 22 Oct 2020 13:59:20 +0900
+Message-ID: <008a01d6a830$1a109800$4e31c800$@samsung.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020203957.3512851-3-nivedita@alum.mit.edu>
+Content-Transfer-Encoding: quoted-printable
+X-Mailer: Microsoft Outlook 16.0
+Content-Language: ko
+Thread-Index: AQE8rU9GG02+1hbAo1p5qXUnN9CPVgF+Wj0dAilh/bkB8/KS2gLgSNF8qpLsV7A=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprFJsWRmVeSWpSXmKPExsWy7bCmue4KwYnxBnM7LSwezNvGZvHy51U2
+        i2kffjJbLLqxjcni8q45bBbd13ewWSw//o/Jgd3j8hVvjwmLDjB6fHx6i8Wjb8sqRo/Pm+Q8
+        2g90MwWwReXYZKQmpqQWKaTmJeenZOal2yp5B8c7x5uaGRjqGlpamCsp5CXmptoqufgE6Lpl
+        5gCdoqRQlphTChQKSCwuVtK3synKLy1JVcjILy6xVUotSMkpMDQs0CtOzC0uzUvXS87PtTI0
+        MDAyBapMyMk4e2AiU8Ej9opJnQcZGxgnsHUxcnJICJhIXJnaytjFyMUhJLCDUWLD6YnMEM4n
+        Rok9E2+wQzifGSWmtd9kh2m59/wUVGIXUNX6bhaQhJDAC0aJxdPAitgE9CVedmxjBbFFBJIk
+        pj6/wQhiMwuUSOzYN4EZxOYUsJZ4e349UxcjB4ewgJdEw1NHkDCLgKpE/9XXYCN5BSwlDmzq
+        YYewBSVOznzCAjFGW2LZwtfMEPcoSPx8uowVIi4iMbuzjRlirZ/EzAs7od6cySGxYpUAhO0i
+        sWdBHyuELSzx6vgWqL+kJD6/2wtVXy+x4lETOCQkBHoYJV5O+we1zF5i5tOlYDczC2hKrN+l
+        D2JKCChLHLkFdRqfRMfhv+wQYV6JjjYhiEZ1iQPbp7NA2LIS3XM+s05gVJqF5LFZSB6bheSZ
+        WQi7FjCyrGIUSy0ozk1PLTYqMEaO6k2M4ESq5b6DccbbD3qHGJk4GA8xSnAwK4nw5olOiBfi
+        TUmsrEotyo8vKs1JLT7EaAoM6onMUqLJ+cBUnlcSb2hqZGZmYGlqYWpmZKEkzhu6si9eSCA9
+        sSQ1OzW1ILUIpo+Jg1OqgSkjyjW/dYPmR10DJhmfPBn2pyJXnjP/O9Trs+lud9r12mnFDEtv
+        i+7r2yPr8unVp8yFy74+epXksC/R3vJo2PncsyUzWLU28x/J0txkuN7WUG+dW1fTJvtAfQ2V
+        vHr3SfvTdlWEzzOd3spndttryS3vlLM/j9ncDIu2jjX+NClK89O1DFPXQ+127eueael4mG+w
+        bnwvO+VBaPpeptLdORwCTWx7Jhl1zhC+3FBoEXv7wfsDd9oUNQ6cfyjTeOl9mMBhDvUUSe7z
+        i6rrTZa7Ch7gkbtxQyPiQoBXvaTtl5krTzUsk5jf/Im9R/q4uU56fuRtQY8Ih+PZBam3mRSD
+        UvPcL9WyH4qZ9/Dn9YuPlViKMxINtZiLihMB0gdT5S0EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpjkeLIzCtJLcpLzFFi42LZdlhJTneF4MR4gydXxS0ezNvGZvHy51U2
+        i2kffjJbLLqxjcni8q45bBbd13ewWSw//o/Jgd3j8hVvjwmLDjB6fHx6i8Wjb8sqRo/Pm+Q8
+        2g90MwWwRXHZpKTmZJalFunbJXBlPJ98jrXgAXtFz+4LbA2MXWxdjJwcEgImEveen2LvYuTi
+        EBLYwShxaP1CqISsxLN3O9ghbGGJ+y1HWCGKnjFKHJhykREkwSagL/GyYxtQgoNDRCBFoueR
+        F0iYWaBC4lDnU0aI+rlMEjNmHGECSXAKWEu8Pb+eCaReWMBLouGpI0iYRUBVov/qaxYQm1fA
+        UuLAph52CFtQ4uTMJywQM7Uleh+2MsLYyxa+Zoa4TUHi59NlrBBxEYnZnW1gcREBP4mZF3ay
+        TWAUnoVk1Cwko2YhGTULSfsCRpZVjJKpBcW56bnFhgVGeanlesWJucWleel6yfm5mxjBUaWl
+        tYNxz6oPeocYmTgYDzFKcDArifDmiU6IF+JNSaysSi3Kjy8qzUktPsQozcGiJM77ddbCOCGB
+        9MSS1OzU1ILUIpgsEwenVAMTQ+AWydqDHUuEi8IOvE9aclQly0S4LCf+0Vyz/FeXbEWCu74v
+        silpzpHh7+2YPnPrzN4GddZIg/Bd3+f+brHkmb3o+Cf1DLHza63kIg9K/1t7qHOF8vUlb/Wn
+        N+yR1751UrnS0elp+lfmr3MK2fcG9SvtC3mcXffgS5tE6ZItrftOxOxMWP19XvOcTOE2t6fh
+        uzy9s0KdDtxlqCpbNG168Qoph9OSHQasK8p9U4tFTu0wTuS0ON/69ijLoh6V41+udSgU7LSo
+        6gkOKr369bmeYevS+eumMbX/VFu14b/VtSix6+5zP6689mbzskOxq6ZGv6gM2H5e/87zZ+cX
+        bqlz+rzVu6uFY35P+SfB0+qNSizFGYmGWsxFxYkASRhY2RkDAAA=
+X-CMS-MailID: 20201022045920epcas2p43fd9b42fc8effa8c93460a0cd2195e37
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: AUTO_CONFIDENTIAL
+CMS-TYPE: 102P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
+        <20201020070516.129273-1-chanho61.park@samsung.com>
+        <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
+        <000a01d6a761$efafcaf0$cf0f60d0$@samsung.com>
+        <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 04:39:53PM -0400, Arvind Sankar wrote:
-> The assignments to clear a through h and t1/t2 are optimized out by the
-> compiler because they are unused after the assignments.
-> 
-> These variables shouldn't be very sensitive: t1/t2 can be calculated
-> from a through h, so they don't reveal any additional information.
-> Knowing a through h is equivalent to knowing one 64-byte block's SHA256
-> hash (with non-standard initial value) which, assuming SHA256 is secure,
-> doesn't reveal any information about the input.
-> 
-> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> > Did you mean /dev/disk/by-=5Bpart=5Dlabel/ symlink? It's quite reasonab=
+le to
+> > use them by udev in userspace such as initramfs but some cases does not
+> use
+> > initramfs or initrd. In that case, we need to load the root
+> > device(/dev/sda=5BN=5D) directly from kernel.
+>=20
+> Please use udev or systemd instead of adding code in the UFS driver that
+> is
+> not necessary when udev or systemd is used.
+>
 
-I don't entirely buy the second paragraph.  It could be the case that the input
-is less than or equal to one SHA-256 block (64 bytes), in which case leaking
-'a' through 'h' would reveal the final SHA-256 hash if the input length is
-known.  And note that callers might consider either the input, the resulting
-hash, or both to be sensitive information -- it depends.
+What I mentioned was how it can be handled when we mount rootfs directly fr=
+om kernel.
 
-> ---
->  lib/crypto/sha256.c | 1 -
->  1 file changed, 1 deletion(-)
-> 
-> diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
-> index d43bc39ab05e..099cd11f83c1 100644
-> --- a/lib/crypto/sha256.c
-> +++ b/lib/crypto/sha256.c
-> @@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
->  	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
->  
->  	/* clear any sensitive info... */
-> -	a = b = c = d = e = f = g = h = t1 = t2 = 0;
->  	memzero_explicit(W, 64 * sizeof(u32));
->  }
+1) kernel -> initramfs (mount root) -> systemd
+2) kernel (mount root) -> systemd
+ -> In this case, we normally use root=3D/dev/sda1 from kernel commandline =
+to mount the rootfs.
 
-Your change itself is fine, though.  As you mentioned, these assignments get
-optimized out, so they weren't accomplishing anything.
+Like fstab can support legacy node mount, ufs driver also needs to provide =
+an option for using the permanent legacy node. If you're really worry about=
+ adding a new codes for all UFS driver, we can put this as controller speci=
+fic or optional feature.
 
-The fact is, there just isn't any way to guarantee in C code that all sensitive
-variables get cleared.
+Best Regards,
+Chanho Park
 
-So we shouldn't (and generally don't) bother trying to clear individual u32's,
-ints, etc. like this, but rather only structs and arrays, as clearing those is
-more likely to work as intended.
-
-- Eric
