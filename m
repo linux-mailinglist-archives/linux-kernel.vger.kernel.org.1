@@ -2,112 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3342C29575C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:40:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A8A9629574B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:30:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507592AbgJVEk1 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 00:40:27 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:53825 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502339AbgJVEk1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:40:27 -0400
-Received: from h3cspam01-ex.h3c.com (localhost [127.0.0.2] (may be forged))
-        by h3cspam01-ex.h3c.com with ESMTP id 09M30dsO089186
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:00:39 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX05-BASE.srv.huawei-3com.com ([10.8.0.68])
-        by h3cspam01-ex.h3c.com with ESMTPS id 09M2xguF086266
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 22 Oct 2020 10:59:42 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX05-BASE.srv.huawei-3com.com (10.8.0.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Thu, 22 Oct 2020 10:59:43 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Thu, 22 Oct 2020 10:59:43 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     Finn Thain <fthain@telegraphics.com.au>
-CC:     "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
-        "sumit.saxena@broadcom.com" <sumit.saxena@broadcom.com>,
-        "shivasharan.srikanteshwara@broadcom.com" 
-        <shivasharan.srikanteshwara@broadcom.com>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "megaraidlinux.pdl@broadcom.com" <megaraidlinux.pdl@broadcom.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
-Thread-Topic: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
-Thread-Index: AQHWp3ceROYVx1Vy20ukToM9T7xND6miYAoAgACPazA=
-Date:   Thu, 22 Oct 2020 02:59:43 +0000
-Message-ID: <9923f28dd2b34499a17c53e8fa33f1ca@h3c.com>
-References: <20201021064502.35469-1-tian.xianting@h3c.com>
- <alpine.LNX.2.23.453.2010221312460.6@nippy.intranet>
-In-Reply-To: <alpine.LNX.2.23.453.2010221312460.6@nippy.intranet>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S2394460AbgJVEau (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:30:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726056AbgJVEat (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:30:49 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 50DBCC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:30:49 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id 184so510540lfd.6
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:30:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=WccrU7y9GtXvSS4lHjkn9vtmXExwGt9W1J4camOQdZw=;
+        b=So3a2V6gq3lJWJhOM+LAuRfLWCpK6nhciW4kGooc7P6f9limLQxWvk5X8r0mDoGEFp
+         +9y2jIx3fMrVMTayBLUZscbEVP4uUJqDWEkK7qAeDeSLtUSplo5aTSnleSLeuAwkMM2c
+         BDQgTRnLR/jW0POXmKgiidJHDvpeYylWUlDnUdYtdXN8SVYRI6wNNMlYGOUpqzUa1uxs
+         /KnawegpAYi4KgrK19P6at5Bz3WJ8kvExt27vsb6UbLs2w4WOLJ2/LlfKijTavBAe6mu
+         AeYXf3w0jCijzsVHGcdoY5GXsqaWhoA6wZishO4DOiAWX4vIGxKgEONjuIdliOO49/FD
+         c3ng==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=WccrU7y9GtXvSS4lHjkn9vtmXExwGt9W1J4camOQdZw=;
+        b=s8WYEFuGMlc39PPVbaO40aBJedFsPjk381dVofMyoYS7POv+t3xLcMmcgDd/gwXFLY
+         5quJ+Gsw4N5iJxhGLtRmUi5E3rEncdD6MQ8yYIAgvWdJLnj4bX3FcydsHMdp2Ddcixr0
+         IvVOvolHrjm/5nh3jW0raaUyZgGyul6gqXLSYyZVW2270nAd0w6yFsjqGxfUjEFNY8d4
+         NaJoOY5IrTeGGx/7iBM/NmRoTlbak8fPxiWIAzq2wIbJlEZ8J/a80vzxb1gdRtyaUkp7
+         xQnJxqfM9bEf8/sH5HHmaOKM37gGwnSpcUvqmGGXnFHNaepI6rJH4Pp5n0efrk1SB7e/
+         E7AQ==
+X-Gm-Message-State: AOAM533O0Z18aKxdZd3gmzcEkoLrbFstBHmW2uWqiMoU9fx3tnfO+23C
+        7lx9aYo5SWN/7UTAeDuknivC71Y9mHXVr1r3T3U=
+X-Google-Smtp-Source: ABdhPJzWoE1r/k/Mo5NARBTN141/Zm8LV2karpbwBQM8VCimIVy7qXrt0UR551kH15zk86yawR1h6CeDg+EZGfgrqYk=
+X-Received: by 2002:a05:6512:34cc:: with SMTP id w12mr183250lfr.326.1603341047728;
+ Wed, 21 Oct 2020 21:30:47 -0700 (PDT)
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 09M2xguF086266
+References: <20201022035848.976286-1-daeho43@gmail.com> <20201022042257.GA857@sol.localdomain>
+In-Reply-To: <20201022042257.GA857@sol.localdomain>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Thu, 22 Oct 2020 13:30:36 +0900
+Message-ID: <CACOAw_zVO8FugS_UAXCYyg99-6GWCm4aGi4xEtrhxeBofa2=cA@mail.gmail.com>
+Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks,
-Do you mean Megasas raid can be used in m68k arch?
+Yep, it sounds more clear~
 
------Original Message-----
-From: Finn Thain [mailto:fthain@telegraphics.com.au] 
-Sent: Thursday, October 22, 2020 10:25 AM
-To: tianxianting (RD) <tian.xianting@h3c.com>
-Cc: kashyap.desai@broadcom.com; sumit.saxena@broadcom.com; shivasharan.srikanteshwara@broadcom.com; jejb@linux.ibm.com; martin.petersen@oracle.com; megaraidlinux.pdl@broadcom.com; linux-scsi@vger.kernel.org; linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
-
-On Wed, 21 Oct 2020, Xianting Tian wrote:
-
-> Since we already in hard IRQ context when running megasas_isr(),
-
-On m68k, hard irq context does not mean interrupts are disabled. Are there no other architectures in that category?
-
-> so use spin_lock() is enough, which is faster than spin_lock_irqsave().
-> 
-
-Is that measurable?
-
-> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
-> ---
->  drivers/scsi/megaraid/megaraid_sas_base.c | 5 ++---
->  1 file changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c 
-> b/drivers/scsi/megaraid/megaraid_sas_base.c
-> index 2b7e7b5f3..bd186254d 100644
-> --- a/drivers/scsi/megaraid/megaraid_sas_base.c
-> +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
-> @@ -3977,15 +3977,14 @@ static irqreturn_t megasas_isr(int irq, void 
-> *devp)  {
->  	struct megasas_irq_context *irq_context = devp;
->  	struct megasas_instance *instance = irq_context->instance;
-> -	unsigned long flags;
->  	irqreturn_t rc;
->  
->  	if (atomic_read(&instance->fw_reset_no_pci_access))
->  		return IRQ_HANDLED;
->  
-> -	spin_lock_irqsave(&instance->hba_lock, flags);
-> +	spin_lock(&instance->hba_lock);
->  	rc = megasas_deplete_reply_queue(instance, DID_OK);
-> -	spin_unlock_irqrestore(&instance->hba_lock, flags);
-> +	spin_unlock(&instance->hba_lock);
->  
->  	return rc;
->  }
-> 
+2020=EB=85=84 10=EC=9B=94 22=EC=9D=BC (=EB=AA=A9) =EC=98=A4=ED=9B=84 1:22, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Thu, Oct 22, 2020 at 12:58:47PM +0900, Daeho Jeong wrote:
+> > +     if (!f2fs_compressed_file(inode)) {
+> > +             inode_unlock(inode);
+> > +             return -EINVAL;
+> > +     }
+>
+> How about using ENODATA here?  EINVAL tends to be used for lots of differ=
+ent
+> reasons, and it's not always clear what it means.
+>
+> Note that FS_IOC_GET_ENCRYPTION_POLICY fails with ENODATA when called on =
+an
+> unencrypted file, which is a similar case.
+>
+> - Eric
