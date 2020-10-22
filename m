@@ -2,141 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67AE3295EFB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:49:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 357E1295F00
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:52:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898974AbgJVMtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:49:55 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:17260 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898949AbgJVMty (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:49:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603370994; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=RCK7B2J1TXHqhKnVahkoy/BJVO0J46HHa0PpEK+JktM=;
- b=NRkfpHlgUX1HKbrA/8S3zYnM/HkOK5pgvTLGt+KtYzjdP97MEh3IgvYtpdcEAzO1P86JN5ZB
- OP6DD0eY5kH4yLvdvTQg0wU6/waGeAOAWXZxhIPTeDlVqqacYFe3fl2OFO+6ihbzuk27VzZg
- jM1zlxzNZx6lJLtwDXZZE44ciuE=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
- 5f917fe206d81bc48d5bec07 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 12:49:38
- GMT
-Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id C8870C433C9; Thu, 22 Oct 2020 12:49:38 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
-        autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: saiprakash.ranjan)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EFD4CC43387;
-        Thu, 22 Oct 2020 12:49:37 +0000 (UTC)
+        id S2898982AbgJVMwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:52:11 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:44731 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2442856AbgJVMwK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:52:10 -0400
+Received: by mail-oi1-f194.google.com with SMTP id k27so1555740oij.11;
+        Thu, 22 Oct 2020 05:52:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZvF70TonM5MSbQF+AKqyJMMY9TXMCxpwYzE0jaz0hE=;
+        b=hJWsDN4EsTOFrX+1Z6P8g6QugvVSgW2is9phjdsFK3Vva2e5O5rAYd5c0zFYz0w/F1
+         8jOD9lI5mQ/l1kDZ3EJe+S2ELMl0euZjgZt5/kMgGYdNcGt+2dznlELxrT2e+VBsKX32
+         6IOhvAgWQE8XXNs8UDdEqhAzJHct2t1A2KanCEXJP34RwS4g1aM1yr32BkCgfz10bXoZ
+         jrwt/yrimd44awlh32uP1SPvz2jpzfIxi4IDmlf+p5wdzyLFcNNeENk/Mu1V3uIwpTSo
+         n3uWguLg5B1vDUcOgInXL6Kz3sNfaIV0AU2Jr1R1CeZshDjDJkEomzqcalP8VDNj0Iqa
+         0n4g==
+X-Gm-Message-State: AOAM5312zj/qg3w/DvGirEm/FT3lw7VuAM1bFYrCf1BUjBhs1MA0QRQI
+        q/r1QwT/26G9lBx28zLdpGOOZDmzlWty1UC+0pIbJ97vCTk=
+X-Google-Smtp-Source: ABdhPJzb4l+7pc9bnH+KW7qzDrOK3lOdWt9/5Ab6RxF4OeByO0SdXkaLEVEPxB9NevYbwbFbanVopUH79lMopHLTROM=
+X-Received: by 2002:aca:c490:: with SMTP id u138mr1505068oif.54.1603371127905;
+ Thu, 22 Oct 2020 05:52:07 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Oct 2020 18:19:37 +0530
-From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
-        linux-kernel@vger.kernel.org,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        linux-arm-kernel@lists.infradead.org,
-        Mike Leach <mike.leach@linaro.org>
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-In-Reply-To: <20201022113214.GD2611@hirez.programming.kicks-ass.net>
-References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <20201022113214.GD2611@hirez.programming.kicks-ass.net>
-Message-ID: <a6eadc723ae52396a655c61b9f8d4eef@codeaurora.org>
-X-Sender: saiprakash.ranjan@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+References: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
+In-Reply-To: <1603249530-25218-1-git-send-email-tiantao6@hisilicon.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 22 Oct 2020 14:51:56 +0200
+Message-ID: <CAMuHMdVcraVpetQwdj7hW5bCum1SUXz14X6NhcVtq3BH3Csyzw@mail.gmail.com>
+Subject: Re: [PATCH] thermal: replace spin_lock_irqsave by spin_lock in hard IRQ
+To:     Tian Tao <tiantao6@hisilicon.com>
+Cc:     =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>, amitk@kernel.org,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        Linux PM list <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-22 17:02, Peter Zijlstra wrote:
-> On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
-> 
->> Looking at the ETR and other places in the kernel, ETF and the
->> ETB are the only places trying to dereference the task(owner)
->> in tmc_enable_etf_sink_perf() which is also called from the
->> sched_in path as in the call trace.
-> 
->> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct 
->> coresight_device *csdev,
->>  {
->>  	int node;
->>  	struct cs_buffers *buf;
->> +	struct task_struct *task = READ_ONCE(event->owner);
->> +
->> +	if (!task || is_kernel_event(event))
->> +		return NULL;
-> 
-> 
-> This is *wrong*... why do you care about who owns the events?
-> 
+Hi Tian,
 
-The original issue was the owner being NULL and causing
-a NULL pointer dereference. I did ask some time back
-if it is valid for the owner to be NULL [1] and should
-probably be handled in events core?
+CC tglx
 
-[1] 
-https://lore.kernel.org/lkml/c0e1f99a0a2480dfc8d788bb424d3f08@codeaurora.org/
+On Wed, Oct 21, 2020 at 2:15 PM Tian Tao <tiantao6@hisilicon.com> wrote:
+> The code has been in a irq-disabled context since it is hard IRQ. There
+> is no necessity to do it again.
+>
+> Signed-off-by: Tian Tao <tiantao6@hisilicon.com>
 
-Unable to handle kernel NULL pointer dereference at virtual address 
-0000000000000548
-Mem abort info:
-   ESR = 0x96000006
-   EC = 0x25: DABT (current EL), IL = 32 bits
-   SET = 0, FnV = 0
-   EA = 0, S1PTW = 0
-Data abort info:
-   ISV = 0, ISS = 0x00000006
-   CM = 0, WnR = 0
-<snip>...
-Call trace:
-  tmc_enable_etf_sink+0xe4/0x280
-  coresight_enable_path+0x168/0x1fc
-  etm_event_start+0x8c/0xf8
-  etm_event_add+0x38/0x54
-  event_sched_in+0x194/0x2ac
-  group_sched_in+0x54/0x12c
-  flexible_sched_in+0xd8/0x120
-  visit_groups_merge+0x100/0x16c
-  ctx_flexible_sched_in+0x50/0x74
-  ctx_sched_in+0xa4/0xa8
-  perf_event_sched_in+0x60/0x6c
-  perf_event_context_sched_in+0x98/0xe0
-  __perf_event_task_sched_in+0x5c/0xd8
-  finish_task_switch+0x184/0x1cc
-  schedule_tail+0x20/0xec
-  ret_from_fork+0x4/0x18
+Thanks for your patch!
 
+Is this also true if CONFIG_PREEMPT_RT=y, and all irq handlers execute
+in the context of special tasks?
 
-Thanks,
-Sai
+> --- a/drivers/thermal/rcar_thermal.c
+> +++ b/drivers/thermal/rcar_thermal.c
+> @@ -409,16 +409,15 @@ static irqreturn_t rcar_thermal_irq(int irq, void *data)
+>  {
+>         struct rcar_thermal_common *common = data;
+>         struct rcar_thermal_priv *priv;
+> -       unsigned long flags;
+>         u32 status, mask;
+>
+> -       spin_lock_irqsave(&common->lock, flags);
+> +       spin_lock(&common->lock);
+>
+>         mask    = rcar_thermal_common_read(common, INTMSK);
+>         status  = rcar_thermal_common_read(common, STR);
+>         rcar_thermal_common_write(common, STR, 0x000F0F0F & mask);
+>
+> -       spin_unlock_irqrestore(&common->lock, flags);
+> +       spin_unlock(&common->lock);
+>
+>         status = status & ~mask;
 
--- 
-QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
-member
-of Code Aurora Forum, hosted by The Linux Foundation
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
