@@ -2,97 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C62A29663E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:56:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 22A40296653
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:59:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372054AbgJVU4O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:56:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36828 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372046AbgJVUze (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:55:34 -0400
-Received: from mail-ed1-x541.google.com (mail-ed1-x541.google.com [IPv6:2a00:1450:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A27BC0613CE;
-        Thu, 22 Oct 2020 13:55:34 -0700 (PDT)
-Received: by mail-ed1-x541.google.com with SMTP id o18so3156982edq.4;
-        Thu, 22 Oct 2020 13:55:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=m+YUmu0XSELNiYyqU33MOteA9uI8G07MKxivq1uSP6k=;
-        b=U7kxTO8JyuAyBYYkLInHMXXWPa+YbTjJx/k9WhajqjRhCqpZy/6hFDngruWeWFXRK8
-         M2HHRW6tmo8jDISOME/OoHmDP6rGQGaGcFgAlkGZcFyfIUXcUNKGvTqmXsdgfenjnslw
-         wj2Eah+BrLt4E3rYIZro/EgzdqX4PbbQ0ThGxJRfmjhXPIOZkNg1V6m4frt0A+/OGTK1
-         0NemO+aymffE0npO0ihgi/f4ylcsW6N8tAb+UN48uqj2BeRZQ8qgl09mo6lJ5+Wv2zC3
-         pCMDM49LBO+2DmY+53XGAORuJEcdEld29ZK7cPTO/7wjozHHrVF+rfn9FI3bx8lPwgiH
-         aHdw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=m+YUmu0XSELNiYyqU33MOteA9uI8G07MKxivq1uSP6k=;
-        b=MUdGkxzNjFLGJYffo09VJv1ZgddtbQBQjSIKjeQkaxjy6fdCWpCnV+AXqpwqTVhhkO
-         yGLErAndS15K3BQxZm1yjqg7wQ5bbUctv1HLjIfadN5tgZN4fAFKSWnvX0/nei4DcsdC
-         rSSU3ozXneTLzKr3Q830u//hpz+TD3ACoP4BcXEK9cMOAa9y60Lg1Qhnpeb93N11tW2Q
-         QbHLjGLoufKzMIkjug6icXCmmZj6T3bTHqla2xOYOUDYnNBHpNcDrK6HocY3oR8JlNrb
-         9X93y6GWavN+anQUmVL0jt+mmMRqWHd6o62c9MyM2t8gjXVGP1O6ZyrmCS0/QPeicSy2
-         gb9Q==
-X-Gm-Message-State: AOAM533utV1+mnnLWc/TRFm8tE5m0LRDN6NWQjK2/2iAcnOqj1hyhnH3
-        +3CPW+a0OGZ5MFIo456VvJs=
-X-Google-Smtp-Source: ABdhPJx9zp72BGL6TcQ++4R1pnLJTEnLDpe7EIsHupS5Iyi/2UMnsLR2o3jRAnBobrPBut1vK/1wTQ==
-X-Received: by 2002:aa7:d349:: with SMTP id m9mr4008742edr.51.1603400132849;
-        Thu, 22 Oct 2020 13:55:32 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id i18sm1468651ejr.59.2020.10.22.13.55.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 13:55:32 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 23:55:31 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jiri Slaby <jirislaby@kernel.org>,
-        Fugang Duan <fugang.duan@nxp.com>,
-        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Michael Walle <michael@walle.cc>
-Subject: Re: [PATCH] tty: serial: fsl_lpuart: LS1021A has a FIFO size of 32
- datawords
-Message-ID: <20201022205531.5264ncmfuibp3vmj@skbuf>
-References: <20201022151250.3236335-1-olteanv@gmail.com>
+        id S372097AbgJVU7j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:59:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47852 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2897292AbgJVU7h (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 16:59:37 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D47120874;
+        Thu, 22 Oct 2020 20:59:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603400375;
+        bh=Xexx6LzGU5CEQ5pUb/Rnl3sbc1IKJSCv776XJ3IiUZY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=zdUyA37A1L47KHgoyE+FT2EuXbQ76eLgYxDhD0pRsQ/vZP9VSxvex63p/S7m2wh2S
+         LPo1qkQ3neXSHmpGEcAArmow8IRVH9ABGEBSoWdWkIGldhGddb2MyLlCZgza1+BxJr
+         XSVfJ1lZvRBFbHtiVn91WdB+7mhw78zhWJSY/86E=
+Date:   Thu, 22 Oct 2020 13:59:32 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Message-ID: <20201022205932.GB3613750@gmail.com>
+References: <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de>
+ <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+ <20201022164040.GV20115@casper.infradead.org>
+ <CAKwvOdnq-yYLcF_coo=jMV-RH-SkuNp_kMB+KCBF5cz3PwiB8g@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022151250.3236335-1-olteanv@gmail.com>
+In-Reply-To: <CAKwvOdnq-yYLcF_coo=jMV-RH-SkuNp_kMB+KCBF5cz3PwiB8g@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 06:12:50PM +0300, Vladimir Oltean wrote:
-> From: Vladimir Oltean <vladimir.oltean@nxp.com>
+On Thu, Oct 22, 2020 at 10:00:44AM -0700, Nick Desaulniers wrote:
+> On Thu, Oct 22, 2020 at 9:40 AM Matthew Wilcox <willy@infradead.org> wrote:
+> >
+> > On Thu, Oct 22, 2020 at 04:35:17PM +0000, David Laight wrote:
+> > > Wait...
+> > > readv(2) defines:
+> > >       ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
+> >
+> > It doesn't really matter what the manpage says.  What does the AOSP
+> > libc header say?
 > 
-> Similar to the workaround applied by Michael Walle in commit
-> c2f448cff22a ("tty: serial: fsl_lpuart: add LS1028A support"), it turns
-> out that the LPUARTx_FIFO encoding for fields TXFIFOSIZE and RXFIFOSIZE
-> is the same for LS1028A as for LS1021A.
+> Same: https://android.googlesource.com/platform/bionic/+/refs/heads/master/libc/include/sys/uio.h#38
 > 
-> The RXFIFOSIZE in the Layerscape SoCs is fixed at this value:
-> 101 Receive FIFO/Buffer depth = 32 datawords.
+> Theoretically someone could bypass libc to make a system call, right?
 > 
-> When Andy Duan wrote the commit in Fixes: below, he assumed that the 101
-> encoding means 64 datawords. But this is not true for Layerscape. So
-> that commit broke LS1021A, and this patch is extending the workaround
-> for LS1028A which appeared in the meantime, to fix that breakage.
+> >
+> > > But the syscall is defined as:
+> > >
+> > > SYSCALL_DEFINE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+> > >                 unsigned long, vlen)
+> > > {
+> > >         return do_readv(fd, vec, vlen, 0);
+> > > }
+> >
 > 
-> When the driver thinks that it has a deeper FIFO than it really has,
-> getty (user space) output gets truncated.
-> 
-> Many thanks to Michael for suggesting this!
-> 
-> Fixes: f77ebb241ce0 ("tty: serial: fsl_lpuart: correct the FIFO depth size")
-> Suggested-by: Michael Walle <michael@walle.cc>
-> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
-> ---
 
-Please don't merge this yet. The patch works, but the commit message is
-a mess. Right now I suspect there might be some issues in the documentation.
-I'll return with a v2 when I get that clarified.
+FWIW, glibc makes the readv() syscall assuming that fd and vlen are 'int' as
+well.  So this problem isn't specific to Android's libc.
+
+From objdump -d /lib/x86_64-linux-gnu/libc.so.6:
+
+	00000000000f4db0 <readv@@GLIBC_2.2.5>:
+	   f4db0:       64 8b 04 25 18 00 00    mov    %fs:0x18,%eax
+	   f4db7:       00
+	   f4db8:       85 c0                   test   %eax,%eax
+	   f4dba:       75 14                   jne    f4dd0 <readv@@GLIBC_2.2.5+0x20>
+	   f4dbc:       b8 13 00 00 00          mov    $0x13,%eax
+	   f4dc1:       0f 05                   syscall
+	   ...
+
+There's some code for pthread cancellation, but no zeroing of the upper half of
+the fd and vlen arguments, which are in %edi and %edx respectively.  But the
+glibc function prototype uses 'int' for them, not 'unsigned long'
+'ssize_t readv(int fd, const struct iovec *iov, int iovcnt);'.
+
+So the high halves of the fd and iovcnt registers can contain garbage.  Or at
+least that's what gcc (9.3.0) and clang (9.0.1) assume; they both compile the
+following
+
+void g(unsigned int x);
+
+void f(unsigned long x)
+{
+        g(x);
+}
+
+into f() making a tail call to g(), without zeroing the top half of %rdi.
+
+Also note the following program succeeds on Linux 5.9 on x86_64.  On kernels
+that have this bug, it should fail.  (I couldn't get it to actually fail, so it
+must depend on the compiler and/or the kernel config...)
+
+	#include <fcntl.h>
+	#include <stdio.h>
+	#include <sys/syscall.h>
+	#include <sys/uio.h>
+	#include <unistd.h>
+
+	int main()
+	{
+		int fd = open("/dev/zero", O_RDONLY);
+		char buf[1000];
+		struct iovec iov = { .iov_base = buf, .iov_len = sizeof(buf) };
+		long ret;
+
+		ret = syscall(__NR_readv, fd, &iov, 0x100000001);
+		if (ret < 0)
+			perror("readv failed");
+		else
+			printf("read %ld bytes\n", ret);
+	}
+
+I think the right fix is to change the readv() (and writev(), etc.) syscalls to
+take 'unsigned int' rather than 'unsigned long', as that is what the users are
+assuming...
+
+- Eric
