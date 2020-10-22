@@ -2,123 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE57529623C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 910DB29624A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508769AbgJVP75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:59:57 -0400
-Received: from mx08-00178001.pphosted.com ([91.207.212.93]:59630 "EHLO
-        mx07-00178001.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S369043AbgJVP7y (ORCPT
+        id S2508759AbgJVQAa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:00:30 -0400
+Received: from out30-42.freemail.mail.aliyun.com ([115.124.30.42]:48939 "EHLO
+        out30-42.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2439112AbgJVQAa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:59:54 -0400
-Received: from pps.filterd (m0046661.ppops.net [127.0.0.1])
-        by mx07-00178001.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MFg0v0023899;
-        Thu, 22 Oct 2020 17:59:35 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=st.com; h=from : to : cc : subject
- : date : message-id : references : in-reply-to : content-type : content-id
- : content-transfer-encoding : mime-version; s=STMicroelectronics;
- bh=+540XUhYrrYVMFG6d2P41z+dQDAtAwvWzMbZT4dmoXI=;
- b=GEAtKF1FEOvdzWRWYA8lC77dfa5tP+QJFixNLDxhOh2GgpIyfaQFzJj2XtZKpdBJNc/x
- RUtgTWWDPplRQmw5UklKRxNnyB2xJYscfJQBwBTr9S91IlEwLdW3nSu8rNXujgVHTc+u
- 6kQ099StVYZzScUAneY+4wGTO/pTkTh6lIH9U/qzOxdXyCAWy/17faVOaxccYmAR4/65
- ohUYKgqW0NmgK53fTJj+UUhK3qXFTI8tQAexRJdU9GYJk4E0w9vfAJ0CJGnFHZSQBvEz
- HRqWCLpzzM6Ht0Vdh+2zyftjoQ9RTzYva9scTG4nAphBLHUVd/KwigtrPmlWG69sTLqA 8g== 
-Received: from beta.dmz-eu.st.com (beta.dmz-eu.st.com [164.129.1.35])
-        by mx07-00178001.pphosted.com with ESMTP id 34apedfrnn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 17:59:35 +0200
-Received: from euls16034.sgp.st.com (euls16034.sgp.st.com [10.75.44.20])
-        by beta.dmz-eu.st.com (STMicroelectronics) with ESMTP id E5FB310002A;
-        Thu, 22 Oct 2020 17:59:34 +0200 (CEST)
-Received: from Webmail-eu.st.com (sfhdag3node2.st.com [10.75.127.8])
-        by euls16034.sgp.st.com (STMicroelectronics) with ESMTP id D09582C7133;
-        Thu, 22 Oct 2020 17:59:34 +0200 (CEST)
-Received: from SFHDAG2NODE1.st.com (10.75.127.4) by SFHDAG3NODE2.st.com
- (10.75.127.8) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 22 Oct
- 2020 17:59:34 +0200
-Received: from SFHDAG2NODE1.st.com ([fe80::4413:c8c:992b:bb90]) by
- SFHDAG2NODE1.st.com ([fe80::4413:c8c:992b:bb90%20]) with mapi id
- 15.00.1473.003; Thu, 22 Oct 2020 17:59:34 +0200
-From:   Yann GAUTIER <yann.gautier@st.com>
-To:     Ahmad Fatoum <a.fatoum@pengutronix.de>,
-        Rob Herring <robh+dt@kernel.org>,
-        Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre TORGUE <alexandre.torgue@st.com>
-CC:     "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Ludovic BARRE <ludovic.barre@st.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-stm32@st-md-mailman.stormreply.com" 
-        <linux-stm32@st-md-mailman.stormreply.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] ARM: dts: stm32: update sdmmc IP version for STM32MP157
- SOC
-Thread-Topic: [PATCH] ARM: dts: stm32: update sdmmc IP version for STM32MP157
- SOC
-Thread-Index: AQHWpuoj4CwDOfZXe066JGuHRV4x1KmjqU6A
-Date:   Thu, 22 Oct 2020 15:59:34 +0000
-Message-ID: <493a8b1b-02e5-f7f4-4cdf-a091ce1d1387@st.com>
-References: <20201020140450.29158-1-a.fatoum@pengutronix.de>
-In-Reply-To: <20201020140450.29158-1-a.fatoum@pengutronix.de>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-user-agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-x-ms-exchange-messagesentrepresentingtype: 1
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.75.127.44]
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <4F314D055A26BB41B82427788603D068@st.com>
-Content-Transfer-Encoding: base64
+        Thu, 22 Oct 2020 12:00:30 -0400
+X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R141e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=alimailimapcm10staff010182156082;MF=xuyu@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0UCrLpdS_1603382424;
+Received: from xuyu-mbp15.local(mailfrom:xuyu@linux.alibaba.com fp:SMTPD_---0UCrLpdS_1603382424)
+          by smtp.aliyun-inc.com(127.0.0.1);
+          Fri, 23 Oct 2020 00:00:25 +0800
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+To:     Rik van Riel <riel@surriel.com>, Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+From:   Yu Xu <xuyu@linux.alibaba.com>
+Message-ID: <f0b4a9de-1f2f-4147-e188-c946207fb29e@linux.alibaba.com>
+Date:   Fri, 23 Oct 2020 00:00:22 +0800
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:68.0)
+ Gecko/20100101 Thunderbird/68.12.1
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_11:2020-10-20,2020-10-22 signatures=0
+In-Reply-To: <20201021234846.5cc97e62@imladris.surriel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gMTAvMjAvMjAgNDowNCBQTSwgQWhtYWQgRmF0b3VtIHdyb3RlOg0KPiBGcm9tOiBZYW5uIEdh
-dXRpZXIgPHlhbm4uZ2F1dGllckBzdC5jb20+DQo+IA0KPiBVcGRhdGUgdGhlIElQIHZlcnNpb24g
-dG8gdjIuMCwgd2hpY2ggc3VwcG9ydHMgbGlua2VkIGxpc3RzIGluIGludGVybmFsIERNQSwNCj4g
-YW5kIGlzIHByZXNlbnQgaW4gU1RNMzJNUDEgU29Dcy4NCj4gDQo+IFRoZSBtbWNpIGRyaXZlciBz
-dXBwb3J0cyB0aGUgdjIuMCBwZXJpcGggaWQgc2luY2UgN2EyYTk4YmU2NzJiICgibW1jOiBtbWNp
-Og0KPiBBZGQgc3VwcG9ydCBmb3Igc2RtbWMgdmFyaWFudCByZXZpc2lvbiAyLjAiKSwgc28gaXQn
-cyBub3cgT2sgdG8gYWRkIGl0IGludG8NCj4gdGhlIFNvQyBkZXZpY2UgdHJlZSB0byBiZW5lZml0
-IGZyb20gdGhlIGltcHJvdmVkIERNQSBzdXBwb3J0Lg0KPiANCj4gU2lnbmVkLW9mZi1ieTogTHVk
-b3ZpYyBCYXJyZSA8bHVkb3ZpYy5iYXJyZUBzdC5jb20+DQo+IFNpZ25lZC1vZmYtYnk6IFlhbm4g
-R2F1dGllciA8eWFubi5nYXV0aWVyQHN0LmNvbT4NCj4gW2FmYTogY2hlcnJ5LXBpY2tlZCBmcm9t
-IGh0dHBzOi8vZ2l0aHViLmNvbS9TVE1pY3JvZWxlY3Ryb25pY3MvbGludXgvY29tbWl0LzMxZTJh
-NmJjOF0NCj4gW2FmYTogZXh0ZW5kZWQgY29tbWl0IG1lc3NhZ2Ugd2l0aCByZWZlcmVuY2UgdG8g
-ZHJpdmVyIHBhdGNoXQ0KPiBTaWduZWQtb2ZmLWJ5OiBBaG1hZCBGYXRvdW0gPGEuZmF0b3VtQHBl
-bmd1dHJvbml4LmRlPg0KDQpIaSBBaG1hZCwNCg0KQWNrZWQtYnk6IFlhbm4gR2F1dGllciA8eWFu
-bi5nYXV0aWVyQHN0LmNvbT4NCg0KDQpSZWdhcmRzLA0KWWFubg0KDQo+IC0tLQ0KPiBDYzogTHVk
-b3ZpYyBCYXJyZSA8bHVkb3ZpYy5iYXJyZUBzdC5jb20+DQo+IC0tLQ0KPiAgIGFyY2gvYXJtL2Jv
-b3QvZHRzL3N0bTMybXAxNTEuZHRzaSB8IDYgKysrLS0tDQo+ICAgMSBmaWxlIGNoYW5nZWQsIDMg
-aW5zZXJ0aW9ucygrKSwgMyBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9hcmNoL2Fy
-bS9ib290L2R0cy9zdG0zMm1wMTUxLmR0c2kgYi9hcmNoL2FybS9ib290L2R0cy9zdG0zMm1wMTUx
-LmR0c2kNCj4gaW5kZXggYmZlMjkwMjNmYmQ1Li5iOGQ5OTZkMzJkYzAgMTAwNjQ0DQo+IC0tLSBh
-L2FyY2gvYXJtL2Jvb3QvZHRzL3N0bTMybXAxNTEuZHRzaQ0KPiArKysgYi9hcmNoL2FybS9ib290
-L2R0cy9zdG0zMm1wMTUxLmR0c2kNCj4gQEAgLTEwNDAsNyArMTA0MCw3IEBAIGFkYzI6IGFkY0Ax
-MDAgew0KPiAgIA0KPiAgIAkJc2RtbWMzOiBzZG1tY0A0ODAwNDAwMCB7DQo+ICAgCQkJY29tcGF0
-aWJsZSA9ICJhcm0scGwxOHgiLCAiYXJtLHByaW1lY2VsbCI7DQo+IC0JCQlhcm0scHJpbWVjZWxs
-LXBlcmlwaGlkID0gPDB4MTAxNTMxODA+Ow0KPiArCQkJYXJtLHByaW1lY2VsbC1wZXJpcGhpZCA9
-IDwweDAwMjUzMTgwPjsNCj4gICAJCQlyZWcgPSA8MHg0ODAwNDAwMCAweDQwMD47DQo+ICAgCQkJ
-aW50ZXJydXB0cyA9IDxHSUNfU1BJIDEzNyBJUlFfVFlQRV9MRVZFTF9ISUdIPjsNCj4gICAJCQlp
-bnRlcnJ1cHQtbmFtZXMgPSAiY21kX2lycSI7DQo+IEBAIC0xMzM4LDcgKzEzMzgsNyBAQCBxc3Bp
-OiBzcGlANTgwMDMwMDAgew0KPiAgIA0KPiAgIAkJc2RtbWMxOiBzZG1tY0A1ODAwNTAwMCB7DQo+
-ICAgCQkJY29tcGF0aWJsZSA9ICJhcm0scGwxOHgiLCAiYXJtLHByaW1lY2VsbCI7DQo+IC0JCQlh
-cm0scHJpbWVjZWxsLXBlcmlwaGlkID0gPDB4MTAxNTMxODA+Ow0KPiArCQkJYXJtLHByaW1lY2Vs
-bC1wZXJpcGhpZCA9IDwweDAwMjUzMTgwPjsNCj4gICAJCQlyZWcgPSA8MHg1ODAwNTAwMCAweDEw
-MDA+Ow0KPiAgIAkJCWludGVycnVwdHMgPSA8R0lDX1NQSSA0OSBJUlFfVFlQRV9MRVZFTF9ISUdI
-PjsNCj4gICAJCQlpbnRlcnJ1cHQtbmFtZXMgPSAiY21kX2lycSI7DQo+IEBAIC0xMzUzLDcgKzEz
-NTMsNyBAQCBzZG1tYzE6IHNkbW1jQDU4MDA1MDAwIHsNCj4gICANCj4gICAJCXNkbW1jMjogc2Rt
-bWNANTgwMDcwMDAgew0KPiAgIAkJCWNvbXBhdGlibGUgPSAiYXJtLHBsMTh4IiwgImFybSxwcmlt
-ZWNlbGwiOw0KPiAtCQkJYXJtLHByaW1lY2VsbC1wZXJpcGhpZCA9IDwweDEwMTUzMTgwPjsNCj4g
-KwkJCWFybSxwcmltZWNlbGwtcGVyaXBoaWQgPSA8MHgwMDI1MzE4MD47DQo+ICAgCQkJcmVnID0g
-PDB4NTgwMDcwMDAgMHgxMDAwPjsNCj4gICAJCQlpbnRlcnJ1cHRzID0gPEdJQ19TUEkgMTI0IElS
-UV9UWVBFX0xFVkVMX0hJR0g+Ow0KPiAgIAkJCWludGVycnVwdC1uYW1lcyA9ICJjbWRfaXJxIjsN
-Cj4g
+On 10/22/20 11:48 AM, Rik van Riel wrote:
+> The allocation flags of anonymous transparent huge pages can be controlled
+> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+> help the system from getting bogged down in the page reclaim and compaction
+> code when many THPs are getting allocated simultaneously.
+> 
+> However, the gfp_mask for shmem THP allocations were not limited by those
+> configuration settings, and some workloads ended up with all CPUs stuck
+> on the LRU lock in the page reclaim code, trying to allocate dozens of
+> THPs simultaneously.
+> 
+> This patch applies the same configurated limitation of THPs to shmem
+> hugepage allocations, to prevent that from happening.
+> 
+> This way a THP defrag setting of "never" or "defer+madvise" will result
+> in quick allocation failures without direct reclaim when no 2MB free
+> pages are available.
+> 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
+> ---
+> 
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index c603237e006c..0a5b164a26d9 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+>   extern void pm_restrict_gfp_mask(void);
+>   extern void pm_restore_gfp_mask(void);
+>   
+> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
+> +
+>   #ifdef CONFIG_PM_SLEEP
+>   extern bool pm_suspended_storage(void);
+>   #else
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 9474dbc150ed..9b08ce5cc387 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>    *	    available
+>    * never: never stall for any thp allocation
+>    */
+> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+> +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+>   {
+>   	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
+>   
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 537c137698f8..d1290eb508e5 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1545,8 +1545,11 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>   		return NULL;
+>   
+>   	shmem_pseudo_vma_init(&pvma, info, hindex);
+> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
+> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
+> +	/* Limit the gfp mask according to THP configuration. */
+> +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+> +	gfp &= alloc_hugepage_direct_gfpmask(&pvma);
+
+It is fine to reuse `alloc_hugepage_direct_gfpmask`, but
+`pvma.vm_flags & VM_HUGEPAGE` is always false here, thus,
+`vma_madvised` in `alloc_hugepage_direct_gfpmask` will always
+be false.
+
+That is why I chose to do the gfp_mask fixup in `shmem_getpage_gfp`,
+using `sgp_huge` to indicate `vma_madvised`, although with some silly
+mistakes pointed out by you, in another mail thread.
+
+It will be better if vma_madvised is well handled in your solution.
+
+> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+> +			       true);
+>   	shmem_pseudo_vma_destroy(&pvma);
+>   	if (page)
+>   		prep_transhuge_page(page);
+> 
+
+-- 
+Thanks,
+Yu
