@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C58029604B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:48:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52E1B296048
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:48:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S367967AbgJVNs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:48:28 -0400
-Received: from conssluserg-06.nifty.com ([210.131.2.91]:44076 "EHLO
-        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S367958AbgJVNs1 (ORCPT
+        id S2900457AbgJVNsD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:48:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55172 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900448AbgJVNsC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:48:27 -0400
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
-        by conssluserg-06.nifty.com with ESMTP id 09MDm0cV019454;
-        Thu, 22 Oct 2020 22:48:00 +0900
-DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 09MDm0cV019454
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
-        s=dec2015msa; t=1603374480;
-        bh=bdgKUKGTFLj1NxEcDBwbJI28YF7AsYkR/nJVPefrafs=;
-        h=From:Date:Subject:To:Cc:From;
-        b=Kl3FBP/s/zTrnwsES99Nj2JESbqBSaZ7OF9J89a7UL2YUsM5/SbRIuGqV55314U8s
-         G2rN9aleMbKU0tJ3bbsx2RiDGYbDmdJgl9Tmxf28H7zK8YOTtgbSDjMDfB4VvmANWq
-         uZrqmNOyWujUSJjTzCziih3MCFBmdFFMOXf5U01UUMq2qSQCR50V2Eg4mRpzRbDukB
-         J/dGbCU2UlPdvm1CiZ1nKsfkvYwNfdaN3A1TZio3LBMWScwoKsn1atsgSvgthUw4tK
-         /wnPp8D5slXGIIxCzvyoM6wyFYDOnvgbXBchFXUAM0lkPkT545btGNawWOqj5V1/H/
-         DaDHaMAfo5Yxg==
-X-Nifty-SrcIP: [209.85.214.180]
-Received: by mail-pl1-f180.google.com with SMTP id j5so603172plk.7;
-        Thu, 22 Oct 2020 06:48:00 -0700 (PDT)
-X-Gm-Message-State: AOAM533oAb1+1PNdZzEjhrH/Bcnwe5vo6v9v3IXVbt2nOgB+qi/d+5KO
-        BgjxOhYvi8tfXiI0W0Tk9pfx3iOxxq6Njdp0Bjk=
-X-Google-Smtp-Source: ABdhPJwkf8PZY8BfwjFnkzGLsXvs5wQ9ve6vJYhavJe8pPQq8VtgrDgyHa69wJY3EdU3uxLXgPj+TdOW4Lo8RHg8Ygs=
-X-Received: by 2002:a17:90b:1b12:: with SMTP id nu18mr2479488pjb.153.1603374479383;
- Thu, 22 Oct 2020 06:47:59 -0700 (PDT)
+        Thu, 22 Oct 2020 09:48:02 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 75501C0613CE;
+        Thu, 22 Oct 2020 06:48:02 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id l2so1000157pjt.5;
+        Thu, 22 Oct 2020 06:48:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=U432S97cU+kXrslvGgog8CihEs2p/DakYW0kgHJLU04=;
+        b=rYwjb2xkkh0hxJWaPtOnGa4hSe5DuH6RLUZsZBwxA6M+Z3ZP+laaYWty/n+xFUh7CT
+         x62XiY4/BFnQkTugiegwK2EiFTnJxllQ/XJKCth8g5mxJ93KuTm6ClHqTZ8sBEI+L1hq
+         C/X1pxD7EjWrJ4/3qk4xaMAAEFtZKDHCo7Sjpb7ezoHZNY5/k26tuFpTDDtl4JTmW4v0
+         3+QVKvhFHvha8uUUEE7iCJl2d90+KRDbgRLvBeKbJ2RylZwbMd1l+gVJSnmaRTiDjFb1
+         N/sk7fU/JL99mAX5kVZbQ+JYnhO6HLzCtiGv1N1tQoIOymoGU077WXHGYycWfasE6u12
+         yQnw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=U432S97cU+kXrslvGgog8CihEs2p/DakYW0kgHJLU04=;
+        b=scdaVRKj04/9RKKn9LHS9nZqbgokIAbbV5MG3HV/FySLRyEP+KtMgiS2XJHZ+Gh4S9
+         b4/L2RcBUtkinrpI36SQM5mGnaq7bv9BWtRCxDuVhG3UNIasJYZnMx0Qca2pHuj3iyNv
+         hWdi5oIYe5IFjwZvMRkFjmB+KoIyFuXMyXpd4AhzFqqNygvxHf5lqzJWATYmqAj77Xzs
+         0/fuSHmZHCAJkKGX1XHrjNOj+ryCrJdEuUHa73lTcVct/622l54Lw/N2nw7E5ITEInNo
+         0tVyQL6JGJOvc2EnwP1wTG+TyS/cEa+RHEMdFpEYrlc4V4B7FjqzHXRU8TNqVkN3iEyT
+         O8Yg==
+X-Gm-Message-State: AOAM530vhCT4Eb70JuBVPUhvpk7ZW5H954U0bOz1awTtTt1p/ytbZPgA
+        NjC/xrwNE1NplAFDUtAlj+Vfi1bGnCM2Rw==
+X-Google-Smtp-Source: ABdhPJwM3YcRS24T5SIMczPQMewNzH1W31xII0vjX1FFvHeMteycQ8Cm7A31YkVKAcu0jmw+NBB7Tg==
+X-Received: by 2002:a17:902:e983:b029:d5:f469:60c0 with SMTP id f3-20020a170902e983b02900d5f46960c0mr2536227plb.61.1603374481995;
+        Thu, 22 Oct 2020 06:48:01 -0700 (PDT)
+Received: from adolin ([49.207.204.75])
+        by smtp.gmail.com with ESMTPSA id g17sm2357979pfu.130.2020.10.22.06.47.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 06:48:01 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 19:17:56 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     outreachy-kernel@googlegroups.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        melissa.srw@gmail.com, linux-media@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 4/5] gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+Message-ID: <f6107f3e467f1906abdcc33d35f13cf54f7e5a96.1603371258.git.sylphrenadin@gmail.com>
+References: <cover.1603371258.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-From:   Masahiro Yamada <masahiroy@kernel.org>
-Date:   Thu, 22 Oct 2020 22:47:22 +0900
-X-Gmail-Original-Message-ID: <CAK7LNATCRZ_dfrsSY9Kf-=JTBNsnkLyyqAbq_TXtXrkW5GsRBw@mail.gmail.com>
-Message-ID: <CAK7LNATCRZ_dfrsSY9Kf-=JTBNsnkLyyqAbq_TXtXrkW5GsRBw@mail.gmail.com>
-Subject: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1603371258.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+Using snprintf() for show() methods holds the risk of buffer overrun
+as snprintf() does not know the PAGE_SIZE maximum of the temporary
+buffer used to output sysfs content.
 
-Please pull Kconfig updates for v5.10
-Thanks.
+Modify amdgpu_psp.c to use sysfs_emit() instead which knows the
+size of the temporary buffer.
 
+Issue found with Coccinelle.
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
-tags/kconfig-v5.10
-
-for you to fetch changes up to f9a825a7f65a1c94858667934c4ed59bc548dd1f:
-
-  kconfig: qconf: create QApplication after option checks (2020-09-25
-00:37:13 +0900)
-
-----------------------------------------------------------------
-Kconfig updates for v5.10
-
- - Remove unused for useless code from qconf
-
- - Allow to edit "int", "hex", "string" options in place, and remove the
-   separate edit box from qconf
-
-----------------------------------------------------------------
-Masahiro Yamada (11):
-      kconfig: qconf: reformat the intro message
-      kconfig: qconf: update the intro message to match to the current code
-      kconfig: qconf: remove unused ConfigItem::okRename()
-      kconfig: qconf: move ConfigView::updateList(All) to ConfigList class
-      kconfig: qconf: show data column all the time
-      kconfig: qconf: allow to edit "int", "hex", "string" menus in-place
-      kconfig: qconf: remove ConfigLineEdit class
-      kconfig: qconf: move setShowName/Range() to ConfigList from ConfigView
-      kconfig: qconf: remove ConfigView class
-      kconfig: qconf: remove Y, M, N columns
-      kconfig: qconf: create QApplication after option checks
-
- scripts/kconfig/qconf.cc | 368
-+++++++++++++++++++++++++--------------------------------------
- scripts/kconfig/qconf.h  |  77 ++++---------
- 2 files changed, 170 insertions(+), 275 deletions(-)
-
-
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+index d6c38e24f130..4d1d1e1b005d 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+@@ -2621,7 +2621,7 @@ static ssize_t psp_usbc_pd_fw_sysfs_read(struct device *dev,
+ 		return ret;
+ 	}
+ 
+-	return snprintf(buf, PAGE_SIZE, "%x\n", fw_ver);
++	return sysfs_emit(buf, PAGE_SIZE, "%x\n", fw_ver);
+ }
+ 
+ static ssize_t psp_usbc_pd_fw_sysfs_write(struct device *dev,
 -- 
-Best Regards
-Masahiro Yamada
+2.25.1
+
