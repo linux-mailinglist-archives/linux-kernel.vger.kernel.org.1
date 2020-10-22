@@ -2,130 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BDBD295E06
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:07:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0B4B295E08
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:08:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897870AbgJVMHx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:07:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39606 "EHLO
+        id S2897889AbgJVMI1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:08:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39714 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897854AbgJVMHs (ORCPT
+        with ESMTP id S2897878AbgJVMIZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:07:48 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 37075C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:07:47 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id z2so1964482lfr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:07:47 -0700 (PDT)
+        Thu, 22 Oct 2020 08:08:25 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 77ED9C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:08:25 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id m65so784136qte.11
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:08:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZA39m5B4lfhB7qi65Cq382t5m8SNmLhvXePaPr7AO4w=;
-        b=ag1A3+hDk6wBaHU7tVEqAGouGpo8ukJV++f6+bRpXuby9BfbKDoEexFJBA/cf+y2qp
-         /IS9F7M0Iyubb8pI64mgjCbtpwWeprftcbIWFdchDE0IKQxzVnZt3TN7lBO9FNBZF23A
-         /BqNhvrshCX6I/s4oatmngPWfTHgnKjatSCAHF6bloJOdoTi2TqyOrGZVjiTk2s0XJIB
-         g9LK6pwxhhNyHuVF7kGYgniPzaV6lrBuEWp6CaEata+zn0ZB2rWyow7wfe693xA7l2Yo
-         Q1vAxB6k4HKhq/cmLdhyvFVG6dgL9i6crSL8SQtHCNdTr6kuTg2rFzeB5/O6QpqO+Y+s
-         GTiQ==
+        d=eclypsium.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=oS6+CP1ltilZOm3pmrV9A+jmYbWMo1I1JmCFycZs1zk=;
+        b=SeMf5i/aS2x9E5JTzW3LT5KVl9x8FyRNR1mSVpUsz3xKT5ADHkCb0oEd7k7DUAdW7c
+         yIeeS22Q7HZ1yISUQzxNrBG+F/7rXFXUB2clr8+fhVX1Y0ceTHVqJmNpift8KynZzVXI
+         8ryJEoTDOWhZUq4VoGhtkw33YprrTupX4SfroqeYAMTeY6D8s5ODDW8as1yI9+OqxDNy
+         BIILIT0mXBMO3YhyZHjdGSSeU4GmsrK+JVscmJSF/4MZTx3vOmTZ6dqdY9NfBkX80aBv
+         8V0W2dRQmX6g1KswyVmkSUU5hA5lH42JMGvDHwwaYskUZ0y0+F1XS8JKG0+VMmQU/zxv
+         zd1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ZA39m5B4lfhB7qi65Cq382t5m8SNmLhvXePaPr7AO4w=;
-        b=fsYDIBqJohbG5OAHs6zfCWs3DP960Zmlru1NgJ5HIzSVVRKiAwqiG5mnxf1M5skvwQ
-         JzPEg7QuGp/Sj9YAjjoVMzdN3JQN2auUZh6TxiVOq8KL+JIz4G8nEpkd9hM3cQecjEal
-         0hFmYgmTaoTtUZ0D4XwfRYC5h1pDZDxF7DQguph6drM5bV+MqnALbXvfVulWhlMzQBgQ
-         8TErq2cv5F5g8kiJgm1Vf1I4bUFu/8rPfNG4PeHrZlIYDgEZF3/l3r9+0rtebJ7XKhT1
-         zKGk9unt03+cIGYbMQdB8LBT9+QRZpBdYh1/SBOTfnzBOdcD6FdwQWGI7PeVhdkaRgJn
-         vjMw==
-X-Gm-Message-State: AOAM531qzTdI7QTYUe/htAcSlaA9WXtYt07YtzeaODPLrm2JR2lJHoJX
-        olydQaqzFLFr2CrGvois904Mpw==
-X-Google-Smtp-Source: ABdhPJzv4cMC9f5whc1/8PrlqdKus3Ypn6OTbtFMlq/llXt/prAe3CBMuvyqIY+7JRXyBV1qXMs+hw==
-X-Received: by 2002:a05:6512:2098:: with SMTP id t24mr809068lfr.116.1603368465669;
-        Thu, 22 Oct 2020 05:07:45 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id f129sm238766lfd.201.2020.10.22.05.07.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 05:07:44 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 70D33102F6D; Thu, 22 Oct 2020 15:07:44 +0300 (+03)
-Date:   Thu, 22 Oct 2020 15:07:44 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Halil Pasic <pasic@linux.ibm.com>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
-        kvm@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv2 14/16] KVM: Handle protected memory in
- __kvm_map_gfn()/__kvm_unmap_gfn()
-Message-ID: <20201022120744.t5ap3f6maeuspkd3@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-15-kirill.shutemov@linux.intel.com>
- <20201022052647.6a4d7e0b.pasic@linux.ibm.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=oS6+CP1ltilZOm3pmrV9A+jmYbWMo1I1JmCFycZs1zk=;
+        b=p009il7bOy0p6IHo0EduwI9NNwsOzNNrbXFuhOM2hEGAw0RXGNVx5e11/S4mxCYwfb
+         gf5Zp2Etpmf+jRlMdV9yWL4tHk3lHDUvwuymCO8NKiD0KsjrueUqnQOi5oZPpzQ0Hgor
+         LXzyItZIQVstc8TqHdDB+Xfpe50fTIOhjZ+duCzmSm8yPqWkDINnl7ah1k50zpUz5nZo
+         MJlq/oWr1EyOYdvRj96F/b3SK8a3wFxMy20suEicinQCte4gVnSZ17ivs6QOUqOp+1wY
+         7RPGFusqQTz7HHBTJ4KDb7QIrboA8eIkpA9yc1lsiHYxrxJ2quiZDJlxOt1aIiXObIN7
+         dJEA==
+X-Gm-Message-State: AOAM533zJqFrN5G0we+vNq4eCMMa7vhsVRCeYp2MaaLE7n39rYm+fcz2
+        iCGaYcOfKihchKY6CqGrapPNAvD+gmT2LT09t/44xQ==
+X-Google-Smtp-Source: ABdhPJwae4PbdaLza2pUQScdJt3BcKYNVW6EIEDp6C+VH8PT5g6A2k1eYi21e5cMTqW0LbvJxRs0X1kQkhPUYyTRLLg=
+X-Received: by 2002:ac8:6982:: with SMTP id o2mr1571445qtq.193.1603368504565;
+ Thu, 22 Oct 2020 05:08:24 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022052647.6a4d7e0b.pasic@linux.ibm.com>
+References: <20200930163714.12879-1-daniel.gutson@eclypsium.com>
+ <20200930163714.12879-3-daniel.gutson@eclypsium.com> <82bb95bd-988f-3cc2-40f7-8ebfd20b09d9@infradead.org>
+In-Reply-To: <82bb95bd-988f-3cc2-40f7-8ebfd20b09d9@infradead.org>
+From:   Daniel Gutson <daniel@eclypsium.com>
+Date:   Thu, 22 Oct 2020 09:08:13 -0300
+Message-ID: <CAFmMkTFs-eOhyofpzEUusbx01HCbNmke6nct3HDqD3dsAmT_Nw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] Platform integrity information in sysfs (version 9)
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Derek Kiernan <derek.kiernan@xilinx.com>,
+        Tudor Ambarus <tudor.ambarus@microchip.com>,
+        Miquel Raynal <miquel.raynal@bootlin.com>,
+        Richard Weinberger <richard@nod.at>,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Mika Westerberg <mika.westerberg@linux.intel.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Richard Hughes <hughsient@gmail.com>,
+        Alex Bazhaniuk <alex@eclypsium.com>,
+        linux-mtd <linux-mtd@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 05:26:47AM +0200, Halil Pasic wrote:
-> On Tue, 20 Oct 2020 09:18:57 +0300
-> "Kirill A. Shutemov" <kirill@shutemov.name> wrote:
-> 
-> > We cannot access protected pages directly. Use ioremap() to
-> > create a temporary mapping of the page. The mapping is destroyed
-> > on __kvm_unmap_gfn().
-> > 
-> > The new interface gfn_to_pfn_memslot_protected() is used to detect if
-> > the page is protected.
-> > 
-> > ioremap_cache_force() is a hack to bypass IORES_MAP_SYSTEM_RAM check in
-> > the x86 ioremap code. We need a better solution.
-> > 
-> > Signed-off-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
-> > ---
-> >  arch/powerpc/kvm/book3s_64_mmu_hv.c    |  2 +-
-> >  arch/powerpc/kvm/book3s_64_mmu_radix.c |  2 +-
-> >  arch/x86/include/asm/io.h              |  2 +
-> >  arch/x86/include/asm/pgtable_types.h   |  1 +
-> >  arch/x86/kvm/mmu/mmu.c                 |  6 ++-
-> >  arch/x86/mm/ioremap.c                  | 16 ++++++--
-> >  include/linux/kvm_host.h               |  3 +-
-> >  include/linux/kvm_types.h              |  1 +
-> >  virt/kvm/kvm_main.c                    | 52 +++++++++++++++++++-------
-> >  9 files changed, 63 insertions(+), 22 deletions(-)
-> > 
-> 
-> You declare ioremap_cache_force() arch/x86/include/asm/io.h  in and
-> define it in arch/x86/mm/ioremap.c which is architecture specific code,
-> but use it in __kvm_map_gfn() in virt/kvm/kvm_main.c which is common
-> code.
-> 
-> Thus your series breaks the build for the s390 architecture. Have you
-> tried to (cross) compile for s390?
+On Sun, Oct 4, 2020 at 1:01 AM Randy Dunlap <rdunlap@infradead.org> wrote:
+>
+> On 9/30/20 9:37 AM, Daniel Gutson wrote:
+> > diff --git a/drivers/mtd/spi-nor/controllers/Kconfig b/drivers/mtd/spi-nor/controllers/Kconfig
+> > index 5c0e0ec2e6d1..e7eaef506fc2 100644
+> > --- a/drivers/mtd/spi-nor/controllers/Kconfig
+> > +++ b/drivers/mtd/spi-nor/controllers/Kconfig
+> > @@ -29,6 +29,7 @@ config SPI_NXP_SPIFI
+> >
+> >  config SPI_INTEL_SPI
+> >       tristate
+> > +     depends on PLATFORM_INTEGRITY_DATA
+>
+> So SPI_INTEL_SPI_PCI selects SPI_INTEL_SPI:
+>
+> config SPI_INTEL_SPI_PCI
+>         tristate "Intel PCH/PCU SPI flash PCI driver (DANGEROUS)"
+>         depends on X86 && PCI
+>         select SPI_INTEL_SPI
+>
+> without checking that PLATFORM_INTEGRITY_DATA is set/enabled.
+>
+> "select" does not follow any kconfig dependency chains, so when
+> PLATFORM_INTEGRITY_DATA is not enabled, this should be causing
+> a kconfig warning, which is not OK.
 
-Obviously not. I've got reports already from 0day and going to fix it.
+Since now SPI_INTEL_SPI_PCI can be enabled without PLATFORM_INTEGRITY_DATA
+(thanks to the #ifdefs), I think I'll just remove the 'depends' and
+will leave this as it was.
 
-Thanks.
+>
+>
+> --
+> ~Randy
+>
+
 
 -- 
- Kirill A. Shutemov
+
+
+Daniel Gutson
+Engineering Director
+Eclypsium, Inc.
+
+
+Below The Surface: Get the latest threat research and insights on
+firmware and supply chain threats from the research team at Eclypsium.
+https://eclypsium.com/research/#threatreport
