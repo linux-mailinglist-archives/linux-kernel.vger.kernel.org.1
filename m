@@ -2,78 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B5B112958EB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:17:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F03FD295910
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:27:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508370AbgJVHRT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:17:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36274 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508360AbgJVHRR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:17:17 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4CE84222E9;
-        Thu, 22 Oct 2020 07:17:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603351037;
-        bh=0uMgQw2LPxfnHIBnVz7lKSL+gAoez7EziK1x5BoBC2E=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=eIz+70xNJT0q0I78fc15yUpeXGHDyFknyRq3BoVSk4HgtkQDpUligIwGJi/tIHUXt
-         ExX/ahCjYOym4iqjG5xqzJfluXxQWOpNHp0FHOkMFF3QhkIplGw0gNL90I39GVeEwu
-         LXbhpbuBMgGxBXw2gK6aYQl8DbzViJ8hvUU7zJmY=
-Date:   Thu, 22 Oct 2020 09:17:53 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Prashant Malani <pmalani@chromium.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
-Message-ID: <20201022071753.GA1470296@kroah.com>
-References: <20201022061554.3418060-1-pmalani@chromium.org>
- <20201022065719.GA1440360@kroah.com>
- <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
+        id S2508529AbgJVH0z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:26:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52668 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508514AbgJVH0x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:26:53 -0400
+X-Greylist: delayed 513 seconds by postgrey-1.37 at lindbergh.monkeyblade.net; Thu, 22 Oct 2020 00:26:52 PDT
+Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD677C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:26:52 -0700 (PDT)
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id AC041E8080C;
+        Thu, 22 Oct 2020 09:18:14 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 20608160834; Thu, 22 Oct 2020 09:18:12 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 09:18:12 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Jeremy Linton <jeremy.linton@arm.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
+        systemd-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <dave.martin@arm.com>
+Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
+ systemd and glibc mprotect calls, causing service failures
+Message-ID: <20201022071812.GA324655@gardel-login>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
+In-Reply-To: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:13:54AM -0700, Prashant Malani wrote:
-> Thanks for reviewing the patch, Greg.
-> 
-> On Wed, Oct 21, 2020 at 11:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 11:15:54PM -0700, Prashant Malani wrote:
-> > >
-> > > diff --git a/Documentation/ABI/testing/sysfs-class-typec b/Documentation/ABI/testing/sysfs-class-typec
-> > > index b834671522d6..16440a236b66 100644
-> > > --- a/Documentation/ABI/testing/sysfs-class-typec
-> > > +++ b/Documentation/ABI/testing/sysfs-class-typec
-> > > @@ -170,6 +170,14 @@ Description:
-> > >               will show 0 until Discover Identity command result becomes
-> > >               available. The value can be polled.
-> > >
-> > > +What:                /sys/class/typec/<port>-partner/identity/product_type_vdo
-> > > +Date:                October 2020
-> > > +Contact:     Prashant Malani <pmalani@chromium.org>
-> > > +Description:
-> > > +             Product Type VDOs part of Discover Identity command result. 3 values
-> > > +             are displayed (for the 3 possible Product Type VDOs), one per line.
-> >
-> > sysfs is "one value per file", not "one value per line".  This is not
-> > ok.
-> 
-> I see. Would listing these out as three separate vdos (i.e vdo0, vdo1,
-> vdo2) be better?
+On Mi, 21.10.20 22:44, Jeremy Linton (jeremy.linton@arm.com) wrote:
 
-Given that your current implementation is not acceptable, something has
-to change :)
+> Hi,
+>
+> There is a problem with glibc+systemd on BTI enabled systems. Systemd
+> has a service flag "MemoryDenyWriteExecute" which uses seccomp to deny
+> PROT_EXEC changes. Glibc enables BTI only on segments which are marked as
+> being BTI compatible by calling mprotect PROT_EXEC|PROT_BTI. That call is
+> caught by the seccomp filter, resulting in service failures.
+>
+> So, at the moment one has to pick either denying PROT_EXEC changes, or BTI.
+> This is obviously not desirable.
+>
+> Various changes have been suggested, replacing the mprotect with mmap calls
+> having PROT_BTI set on the original mapping, re-mmapping the segments,
+> implying PROT_EXEC on mprotect PROT_BTI calls when VM_EXEC is already set,
+> and various modification to seccomp to allow particular mprotect cases to
+> bypass the filters. In each case there seems to be an undesirable attribute
+> to the solution.
+>
+> So, whats the best solution?
 
-thanks,
+Did you see Topi's comments on the systemd issue?
 
-greg k-h
+https://github.com/systemd/systemd/issues/17368#issuecomment-710485532
+
+I think I agree with this: it's a bit weird to alter the bits after
+the fact. Can't glibc set up everything right from the begining? That
+would keep both concepts working.
+
+Lennart
+
+--
+Lennart Poettering, Berlin
