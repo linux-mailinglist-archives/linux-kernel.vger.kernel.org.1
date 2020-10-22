@@ -2,15 +2,15 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCE25295978
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:42:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5DFE029597D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:42:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508783AbgJVHm2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:42:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:35428 "EHLO mx2.suse.de"
+        id S2508812AbgJVHmk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:42:40 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35472 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506726AbgJVHm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:42:27 -0400
+        id S2507019AbgJVHm2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:42:28 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1603352545;
@@ -18,22 +18,21 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=8+gXPSZ4YK0mj6VX7zgMh/c3+7HoLEk5WluQT9Z0yeU=;
-        b=WUkn4x9r0qlY9xTRnQ8DIhORZkjrTb516b1OQh3oXGCkHDoEK3O35H4KKsTIbKvF0ysIp7
-        8PWXisHXPbb1IzERtCyrFPHmdmq7qQs5zbXO6stE4UHq13ZKspWu1Okwvlc+eT5RG12i72
-        XabaRzfVA7Um6FUlRe41BIpTyRf6tvY=
+        bh=DCzo2x6WDAiWUVSQYeZls1IwPXkUYifyjGiWBjsTIGM=;
+        b=oiuUMXtYSXgfUTl4bVKUWtF4DsZNuvZ3duK18sq6/l9VT5fhpTpl6ASGluJI/tBMZHobi/
+        Pz7McQGoBilKn39mXstaaFIepoPGKEEDROJh/SL12oAihjb/La/1Y/gCa2bmj5dHgN7WYB
+        aJs6uuf3rgKaOy2StoJI3MMrkEiZwmk=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AC1DCB19E;
+        by mx2.suse.de (Postfix) with ESMTP id CDC47B1A1;
         Thu, 22 Oct 2020 07:42:25 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
 To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Stefano Stabellini <sstabellini@kernel.org>,
-        Jan Beulich <jbeulich@suse.com>
-Subject: [PATCH 1/5] xen: remove no longer used functions
-Date:   Thu, 22 Oct 2020 09:42:10 +0200
-Message-Id: <20201022074214.21693-2-jgross@suse.com>
+        Stefano Stabellini <sstabellini@kernel.org>
+Subject: [PATCH 2/5] xen/events: make struct irq_info private to events_base.c
+Date:   Thu, 22 Oct 2020 09:42:11 +0200
+Message-Id: <20201022074214.21693-3-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <20201022074214.21693-1-jgross@suse.com>
 References: <20201022074214.21693-1-jgross@suse.com>
@@ -43,76 +42,291 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With the switch to the lateeoi model for interdomain event channels
-some functions are no longer in use. Remove them.
+The struct irq_info of Xen's event handling is used only for two
+evtchn_ops functions outside of events_base.c. Those two functions
+can easily be switched to avoid that usage.
 
-Suggested-by: Jan Beulich <jbeulich@suse.com>
+This allows to make struct irq_info and its related access functions
+private to events_base.c.
+
 Signed-off-by: Juergen Gross <jgross@suse.com>
 ---
- drivers/xen/events/events_base.c | 21 ---------------------
- include/xen/events.h             |  8 --------
- 2 files changed, 29 deletions(-)
+ drivers/xen/events/events_2l.c       |  7 +--
+ drivers/xen/events/events_base.c     | 63 ++++++++++++++++++++++---
+ drivers/xen/events/events_fifo.c     |  6 +--
+ drivers/xen/events/events_internal.h | 70 ++++------------------------
+ 4 files changed, 73 insertions(+), 73 deletions(-)
 
+diff --git a/drivers/xen/events/events_2l.c b/drivers/xen/events/events_2l.c
+index fe5ad0e89cd8..da87f3a1e351 100644
+--- a/drivers/xen/events/events_2l.c
++++ b/drivers/xen/events/events_2l.c
+@@ -47,10 +47,11 @@ static unsigned evtchn_2l_max_channels(void)
+ 	return EVTCHN_2L_NR_CHANNELS;
+ }
+ 
+-static void evtchn_2l_bind_to_cpu(struct irq_info *info, unsigned cpu)
++static void evtchn_2l_bind_to_cpu(evtchn_port_t evtchn, unsigned int cpu,
++				  unsigned int old_cpu)
+ {
+-	clear_bit(info->evtchn, BM(per_cpu(cpu_evtchn_mask, info->cpu)));
+-	set_bit(info->evtchn, BM(per_cpu(cpu_evtchn_mask, cpu)));
++	clear_bit(evtchn, BM(per_cpu(cpu_evtchn_mask, old_cpu)));
++	set_bit(evtchn, BM(per_cpu(cpu_evtchn_mask, cpu)));
+ }
+ 
+ static void evtchn_2l_clear_pending(evtchn_port_t port)
 diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
-index cc317739e786..436682db41c5 100644
+index 436682db41c5..1c25580c7691 100644
 --- a/drivers/xen/events/events_base.c
 +++ b/drivers/xen/events/events_base.c
-@@ -1145,14 +1145,6 @@ static int bind_interdomain_evtchn_to_irq_chip(unsigned int remote_domain,
- 					       chip);
+@@ -70,6 +70,57 @@
+ #undef MODULE_PARAM_PREFIX
+ #define MODULE_PARAM_PREFIX "xen."
+ 
++/* Interrupt types. */
++enum xen_irq_type {
++	IRQT_UNBOUND = 0,
++	IRQT_PIRQ,
++	IRQT_VIRQ,
++	IRQT_IPI,
++	IRQT_EVTCHN
++};
++
++/*
++ * Packed IRQ information:
++ * type - enum xen_irq_type
++ * event channel - irq->event channel mapping
++ * cpu - cpu this event channel is bound to
++ * index - type-specific information:
++ *    PIRQ - vector, with MSB being "needs EIO", or physical IRQ of the HVM
++ *           guest, or GSI (real passthrough IRQ) of the device.
++ *    VIRQ - virq number
++ *    IPI - IPI vector
++ *    EVTCHN -
++ */
++struct irq_info {
++	struct list_head list;
++	struct list_head eoi_list;
++	short refcnt;
++	short spurious_cnt;
++	enum xen_irq_type type; /* type */
++	unsigned irq;
++	evtchn_port_t evtchn;   /* event channel */
++	unsigned short cpu;     /* cpu bound */
++	unsigned short eoi_cpu; /* EOI must happen on this cpu-1 */
++	unsigned int irq_epoch; /* If eoi_cpu valid: irq_epoch of event */
++	u64 eoi_time;           /* Time in jiffies when to EOI. */
++
++	union {
++		unsigned short virq;
++		enum ipi_vector ipi;
++		struct {
++			unsigned short pirq;
++			unsigned short gsi;
++			unsigned char vector;
++			unsigned char flags;
++			uint16_t domid;
++		} pirq;
++	} u;
++};
++
++#define PIRQ_NEEDS_EOI	(1 << 0)
++#define PIRQ_SHAREABLE	(1 << 1)
++#define PIRQ_MSI_GROUP	(1 << 2)
++
+ static uint __read_mostly event_loop_timeout = 2;
+ module_param(event_loop_timeout, uint, 0644);
+ 
+@@ -110,7 +161,7 @@ static DEFINE_PER_CPU(int [NR_VIRQS], virq_to_irq) = {[0 ... NR_VIRQS-1] = -1};
+ /* IRQ <-> IPI mapping */
+ static DEFINE_PER_CPU(int [XEN_NR_IPIS], ipi_to_irq) = {[0 ... XEN_NR_IPIS-1] = -1};
+ 
+-int **evtchn_to_irq;
++static int **evtchn_to_irq;
+ #ifdef CONFIG_X86
+ static unsigned long *pirq_eoi_map;
+ #endif
+@@ -190,7 +241,7 @@ int get_evtchn_to_irq(evtchn_port_t evtchn)
  }
  
--int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
--				   evtchn_port_t remote_port)
--{
--	return bind_interdomain_evtchn_to_irq_chip(remote_domain, remote_port,
--						   &xen_dynamic_chip);
--}
--EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq);
--
- int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
- 					   evtchn_port_t remote_port)
+ /* Get info for IRQ */
+-struct irq_info *info_for_irq(unsigned irq)
++static struct irq_info *info_for_irq(unsigned irq)
  {
-@@ -1320,19 +1312,6 @@ static int bind_interdomain_evtchn_to_irqhandler_chip(
- 	return irq;
+ 	if (irq < nr_legacy_irqs())
+ 		return legacy_info_ptrs[irq];
+@@ -228,7 +279,7 @@ static int xen_irq_info_common_setup(struct irq_info *info,
+ 
+ 	irq_clear_status_flags(irq, IRQ_NOREQUEST|IRQ_NOAUTOEN);
+ 
+-	return xen_evtchn_port_setup(info);
++	return xen_evtchn_port_setup(evtchn);
  }
  
--int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
--					  evtchn_port_t remote_port,
--					  irq_handler_t handler,
--					  unsigned long irqflags,
--					  const char *devname,
--					  void *dev_id)
--{
--	return bind_interdomain_evtchn_to_irqhandler_chip(remote_domain,
--				remote_port, handler, irqflags, devname,
--				dev_id, &xen_dynamic_chip);
--}
--EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irqhandler);
+ static int xen_irq_info_evtchn_setup(unsigned irq,
+@@ -351,7 +402,7 @@ static enum xen_irq_type type_from_irq(unsigned irq)
+ 	return info_for_irq(irq)->type;
+ }
+ 
+-unsigned cpu_from_irq(unsigned irq)
++static unsigned cpu_from_irq(unsigned irq)
+ {
+ 	return info_for_irq(irq)->cpu;
+ }
+@@ -391,7 +442,7 @@ static void bind_evtchn_to_cpu(evtchn_port_t evtchn, unsigned int cpu)
+ #ifdef CONFIG_SMP
+ 	cpumask_copy(irq_get_affinity_mask(irq), cpumask_of(cpu));
+ #endif
+-	xen_evtchn_port_bind_to_cpu(info, cpu);
++	xen_evtchn_port_bind_to_cpu(evtchn, cpu, info->cpu);
+ 
+ 	info->cpu = cpu;
+ }
+@@ -745,7 +796,7 @@ static unsigned int __startup_pirq(unsigned int irq)
+ 	info->evtchn = evtchn;
+ 	bind_evtchn_to_cpu(evtchn, 0);
+ 
+-	rc = xen_evtchn_port_setup(info);
++	rc = xen_evtchn_port_setup(evtchn);
+ 	if (rc)
+ 		goto err;
+ 
+diff --git a/drivers/xen/events/events_fifo.c b/drivers/xen/events/events_fifo.c
+index 6085a808da95..243e7b6d7b96 100644
+--- a/drivers/xen/events/events_fifo.c
++++ b/drivers/xen/events/events_fifo.c
+@@ -138,9 +138,8 @@ static void init_array_page(event_word_t *array_page)
+ 		array_page[i] = 1 << EVTCHN_FIFO_MASKED;
+ }
+ 
+-static int evtchn_fifo_setup(struct irq_info *info)
++static int evtchn_fifo_setup(evtchn_port_t port)
+ {
+-	evtchn_port_t port = info->evtchn;
+ 	unsigned new_array_pages;
+ 	int ret;
+ 
+@@ -186,7 +185,8 @@ static int evtchn_fifo_setup(struct irq_info *info)
+ 	return ret;
+ }
+ 
+-static void evtchn_fifo_bind_to_cpu(struct irq_info *info, unsigned cpu)
++static void evtchn_fifo_bind_to_cpu(evtchn_port_t evtchn, unsigned int cpu, 
++				    unsigned int old_cpu)
+ {
+ 	/* no-op */
+ }
+diff --git a/drivers/xen/events/events_internal.h b/drivers/xen/events/events_internal.h
+index 82937d90d7d7..0a97c0549db7 100644
+--- a/drivers/xen/events/events_internal.h
++++ b/drivers/xen/events/events_internal.h
+@@ -7,65 +7,15 @@
+ #ifndef __EVENTS_INTERNAL_H__
+ #define __EVENTS_INTERNAL_H__
+ 
+-/* Interrupt types. */
+-enum xen_irq_type {
+-	IRQT_UNBOUND = 0,
+-	IRQT_PIRQ,
+-	IRQT_VIRQ,
+-	IRQT_IPI,
+-	IRQT_EVTCHN
+-};
 -
- int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
- 						  evtchn_port_t remote_port,
- 						  irq_handler_t handler,
-diff --git a/include/xen/events.h b/include/xen/events.h
-index 3b8155c2ea03..8ec418e30c7f 100644
---- a/include/xen/events.h
-+++ b/include/xen/events.h
-@@ -35,16 +35,8 @@ int bind_ipi_to_irqhandler(enum ipi_vector ipi,
- 			   unsigned long irqflags,
- 			   const char *devname,
- 			   void *dev_id);
--int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
--				   evtchn_port_t remote_port);
- int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
- 					   evtchn_port_t remote_port);
--int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
--					  evtchn_port_t remote_port,
--					  irq_handler_t handler,
--					  unsigned long irqflags,
--					  const char *devname,
--					  void *dev_id);
- int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
- 						  evtchn_port_t remote_port,
- 						  irq_handler_t handler,
+-/*
+- * Packed IRQ information:
+- * type - enum xen_irq_type
+- * event channel - irq->event channel mapping
+- * cpu - cpu this event channel is bound to
+- * index - type-specific information:
+- *    PIRQ - vector, with MSB being "needs EIO", or physical IRQ of the HVM
+- *           guest, or GSI (real passthrough IRQ) of the device.
+- *    VIRQ - virq number
+- *    IPI - IPI vector
+- *    EVTCHN -
+- */
+-struct irq_info {
+-	struct list_head list;
+-	struct list_head eoi_list;
+-	short refcnt;
+-	short spurious_cnt;
+-	enum xen_irq_type type;	/* type */
+-	unsigned irq;
+-	evtchn_port_t evtchn;	/* event channel */
+-	unsigned short cpu;	/* cpu bound */
+-	unsigned short eoi_cpu;	/* EOI must happen on this cpu */
+-	unsigned int irq_epoch;	/* If eoi_cpu valid: irq_epoch of event */
+-	u64 eoi_time;		/* Time in jiffies when to EOI. */
+-
+-	union {
+-		unsigned short virq;
+-		enum ipi_vector ipi;
+-		struct {
+-			unsigned short pirq;
+-			unsigned short gsi;
+-			unsigned char vector;
+-			unsigned char flags;
+-			uint16_t domid;
+-		} pirq;
+-	} u;
+-};
+-
+-#define PIRQ_NEEDS_EOI	(1 << 0)
+-#define PIRQ_SHAREABLE	(1 << 1)
+-#define PIRQ_MSI_GROUP	(1 << 2)
+-
+ struct evtchn_loop_ctrl;
+ 
+ struct evtchn_ops {
+ 	unsigned (*max_channels)(void);
+ 	unsigned (*nr_channels)(void);
+ 
+-	int (*setup)(struct irq_info *info);
+-	void (*bind_to_cpu)(struct irq_info *info, unsigned cpu);
++	int (*setup)(evtchn_port_t port);
++	void (*bind_to_cpu)(evtchn_port_t evtchn, unsigned int cpu,
++			    unsigned int old_cpu);
+ 
+ 	void (*clear_pending)(evtchn_port_t port);
+ 	void (*set_pending)(evtchn_port_t port);
+@@ -83,12 +33,9 @@ struct evtchn_ops {
+ 
+ extern const struct evtchn_ops *evtchn_ops;
+ 
+-extern int **evtchn_to_irq;
+ int get_evtchn_to_irq(evtchn_port_t evtchn);
+ void handle_irq_for_port(evtchn_port_t port, struct evtchn_loop_ctrl *ctrl);
+ 
+-struct irq_info *info_for_irq(unsigned irq);
+-unsigned cpu_from_irq(unsigned irq);
+ unsigned int cpu_from_evtchn(evtchn_port_t evtchn);
+ 
+ static inline unsigned xen_evtchn_max_channels(void)
+@@ -100,17 +47,18 @@ static inline unsigned xen_evtchn_max_channels(void)
+  * Do any ABI specific setup for a bound event channel before it can
+  * be unmasked and used.
+  */
+-static inline int xen_evtchn_port_setup(struct irq_info *info)
++static inline int xen_evtchn_port_setup(evtchn_port_t evtchn)
+ {
+ 	if (evtchn_ops->setup)
+-		return evtchn_ops->setup(info);
++		return evtchn_ops->setup(evtchn);
+ 	return 0;
+ }
+ 
+-static inline void xen_evtchn_port_bind_to_cpu(struct irq_info *info,
+-					       unsigned cpu)
++static inline void xen_evtchn_port_bind_to_cpu(evtchn_port_t evtchn,
++					       unsigned int cpu,
++					       unsigned int old_cpu)
+ {
+-	evtchn_ops->bind_to_cpu(info, cpu);
++	evtchn_ops->bind_to_cpu(evtchn, cpu, old_cpu);
+ }
+ 
+ static inline void clear_evtchn(evtchn_port_t port)
 -- 
 2.26.2
 
