@@ -2,109 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74F6629590C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:26:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 96C5E295907
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:26:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508503AbgJVH0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:26:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52590 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508492AbgJVH0W (ORCPT
+        id S2508490AbgJVH0S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:26:18 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:35600 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395130AbgJVH0S (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:26:22 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 161C3C0613CE;
-        Thu, 22 Oct 2020 00:26:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=h+rKHFkcR5k6QSt8CeK8lSdFFr+MaETwBr6Mxg4PDmU=; b=aUN68SfzWTPeVbTNit8fy/ZXb0
-        rRAYaTV5InvSpscM+g5V5UNuxxMIOSNNjdTrr9zBJwTDnIr7HB4kAtF5eelSvpZSzfzi0XB65k49y
-        fMhVyhLkrBDvMABUemD6zpOEa+Q8IzTJx4IZksVwvVIaYHLDJx476sb1mRX2HLMmaKAybchSbXO5G
-        h2Y+yNlzpY2780AC98N7ePm2EJ79MCEo33CoAfryNdBPReXIr4iTyNLwA3Ag8rPF1QkdzEXKCnmAv
-        01B8rB6S0TBGhXUXekjoFY4MHksCyJY7O4ahmGFdB9hvjhmJ+hNdIUNrUYqknMjnfiTaSOjgjEbDG
-        qxHU9c4w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVUyy-0002dT-Ax; Thu, 22 Oct 2020 07:25:56 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 8E3203010D2;
-        Thu, 22 Oct 2020 09:25:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 7DE3B21463180; Thu, 22 Oct 2020 09:25:53 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 09:25:53 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Josh Poimboeuf <jpoimboe@redhat.com>
-Cc:     Sami Tolvanen <samitolvanen@google.com>,
-        Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201022072553.GN2628@hirez.programming.kicks-ass.net>
-References: <20201013003203.4168817-23-samitolvanen@google.com>
- <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net>
- <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble>
- <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
- <20201021093213.GV2651@hirez.programming.kicks-ass.net>
- <20201021212747.ofk74lugt4hhjdzg@treble>
+        Thu, 22 Oct 2020 03:26:18 -0400
+Received: by mail-ot1-f66.google.com with SMTP id n11so659044ota.2;
+        Thu, 22 Oct 2020 00:26:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=3Wxh2epYIQKmtNhH8kprT0IWQ1xSVOnzFhZ8V7tLn1Q=;
+        b=QO5ER0wAdw0PIHBn9lJNqxppo2VNIasQwOTkuZ/Imcqt8kjjJYMGOlaY448DdERmqX
+         cIUgR/zQdAeIjMrmvbovgSdFQD5LzxFJyvghee7honB31QLxp6hEp0WrdNEzzpM9E69R
+         Nj5VXemQY0FRLMKyRKW4M70p46sImUUCyYlYfxvNnA9oN+VcSIRXrBaVF15MFb2j6Udc
+         TJRv/W2tU6pvNpn78lflEkxBLW/tSv5j95504sb7bZ/cC3kGfKNEAiODQ6VB8HnhVXJW
+         ner8l6dU8eV25/NHkEFcRonR9tUDcKOAXXNbEtixGmJYDV7wuofmoZS1joxx47tktR82
+         PxMg==
+X-Gm-Message-State: AOAM532IYACtVdtNIolKfreiBJBYi47aZ2NrOgNYCkCCUbNKE9rVCFfW
+        34EX2FMvJwNpZL4m6pEbkim/ZficxInMZmG9nL4XFF/wNWk=
+X-Google-Smtp-Source: ABdhPJxGwfErK94xEQ3A0uDcFKrh7oRH1svDTCHCvVb/UVtVDzV0FiL4WgSrbdWmiHb1vwP4iHuXwNlKlysGBU3e9MY=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr1009002otb.250.1603351576916;
+ Thu, 22 Oct 2020 00:26:16 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021212747.ofk74lugt4hhjdzg@treble>
+References: <20201020162303.1730562-1-laurent@vivier.eu> <20201020162844.GA865546@kroah.com>
+ <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu> <20201020173745.GA882703@kroah.com>
+ <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu> <20201020183246.GA912431@kroah.com>
+ <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu> <20201020224446.GA15066@allandria.com>
+ <alpine.LNX.2.23.453.2010211038390.6@nippy.intranet> <311d17ed-75fa-a7fe-6c70-177a6eec4519@vivier.eu>
+ <alpine.LNX.2.23.453.2010221347000.6@nippy.intranet>
+In-Reply-To: <alpine.LNX.2.23.453.2010221347000.6@nippy.intranet>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 22 Oct 2020 09:26:05 +0200
+Message-ID: <CAMuHMdVbo2C1yZ5E_A3L8J1zZigO8i8m5AFUTn9SjbY1sx16kA@mail.gmail.com>
+Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Laurent Vivier <laurent@vivier.eu>,
+        Brad Boyer <brad@allandria.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        "open list:SERIAL DRIVERS" <linux-serial@vger.kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        Michael Ellerman <mpe@ellerman.id.au>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 04:27:47PM -0500, Josh Poimboeuf wrote:
-> On Wed, Oct 21, 2020 at 11:32:13AM +0200, Peter Zijlstra wrote:
-> > On Wed, Oct 21, 2020 at 10:56:06AM +0200, Peter Zijlstra wrote:
-> > 
-> > > I do not see these in particular, although I do see a lot of:
-> > > 
-> > >   "sibling call from callable instruction with modified stack frame"
-> > 
-> > defconfig-build/vmlinux.o: warning: objtool: msr_write()+0x10a: sibling call from callable instruction with modified stack frame
-> > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x99: (branch)
-> > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x3e: (branch)
-> > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x0: <=== (sym)
-> > 
-> > $ nm defconfig-build/vmlinux.o | grep msr_write
-> > 0000000000043250 t msr_write
-> > 00000000004289c0 T msr_write
-> > 0000000000003056 t msr_write.cold
-> > 
-> > Below 'fixes' it. So this is also caused by duplicate symbols.
-> 
-> There's a new linker flag for renaming duplicates:
-> 
->   https://sourceware.org/bugzilla/show_bug.cgi?id=26391
-> 
-> But I guess that doesn't help us now.
+Hi Finn,
 
-Well, depends a bit if clang can do it; we only need this for LTO builds
-for now.
+On Thu, Oct 22, 2020 at 5:23 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> The patch below seems to fix the problem for me. Does it work on your
+> system(s)?
 
-> I don't have access to GCC 10 at the moment so I can't recreate it.
-> Does this fix it?
+Thanks for your patch!
 
-Doesn't seem to do the trick :/ I'll try and have a poke later.
+> --- a/arch/m68k/mac/config.c
+> +++ b/arch/m68k/mac/config.c
+> @@ -776,16 +776,12 @@ static struct resource scc_b_rsrcs[] = {
+>  struct platform_device scc_a_pdev = {
+>         .name           = "scc",
+>         .id             = 0,
+> -       .num_resources  = ARRAY_SIZE(scc_a_rsrcs),
+> -       .resource       = scc_a_rsrcs,
+>  };
+>  EXPORT_SYMBOL(scc_a_pdev);
+>
+>  struct platform_device scc_b_pdev = {
+>         .name           = "scc",
+>         .id             = 1,
+> -       .num_resources  = ARRAY_SIZE(scc_b_rsrcs),
+> -       .resource       = scc_b_rsrcs,
+>  };
+>  EXPORT_SYMBOL(scc_b_pdev);
+>
+> @@ -812,10 +808,15 @@ static void __init mac_identify(void)
+>
+>         /* Set up serial port resources for the console initcall. */
+>
+> -       scc_a_rsrcs[0].start = (resource_size_t) mac_bi_data.sccbase + 2;
+> -       scc_a_rsrcs[0].end   = scc_a_rsrcs[0].start;
+> -       scc_b_rsrcs[0].start = (resource_size_t) mac_bi_data.sccbase;
+> -       scc_b_rsrcs[0].end   = scc_b_rsrcs[0].start;
+> +       scc_a_rsrcs[0].start     = (resource_size_t)mac_bi_data.sccbase + 2;
+> +       scc_a_rsrcs[0].end       = scc_a_rsrcs[0].start;
+> +       scc_a_pdev.num_resources = ARRAY_SIZE(scc_a_rsrcs);
+> +       scc_a_pdev.resource      = scc_a_rsrcs;
+> +
+> +       scc_b_rsrcs[0].start     = (resource_size_t)mac_bi_data.sccbase;
+> +       scc_b_rsrcs[0].end       = scc_b_rsrcs[0].start;
+> +       scc_b_pdev.num_resources = ARRAY_SIZE(scc_b_rsrcs);
+> +       scc_b_pdev.resource      = scc_b_rsrcs;
+
+I can't say I'm a fan of this...
+
+>
+>         switch (macintosh_config->scc_type) {
+>         case MAC_SCC_PSC:
+> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+> index 96e7aa479961..95abdb305d67 100644
+> --- a/drivers/tty/serial/pmac_zilog.c
+> +++ b/drivers/tty/serial/pmac_zilog.c
+> @@ -1697,18 +1697,17 @@ extern struct platform_device scc_a_pdev, scc_b_pdev;
+
+The real issue is this "extern struct platform_device scc_a_pdev, scc_b_pdev",
+circumventing the driver framework.
+
+Can we get rid of that?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
