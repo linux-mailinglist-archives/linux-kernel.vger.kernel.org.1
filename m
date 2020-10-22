@@ -2,110 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A86296169
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:05:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A243D29616D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:08:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894810AbgJVPFy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:05:54 -0400
-Received: from mga18.intel.com ([134.134.136.126]:16215 "EHLO mga18.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507864AbgJVPFy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:05:54 -0400
-IronPort-SDR: jGLKn9jVCYCzuc714i2A5p3okMZKclyjAdgRsw1Efo0gcl5SI2WE1Y5cIiK6IsA74vIYg3Fdhj
- EQzxFQYt5Upw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="155326398"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="155326398"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 08:05:47 -0700
-IronPort-SDR: DnmKSl2doFkSe4e5/aQAyrAEi/WAuS5/1ZSXNRx0fGbgtOg5YM2+9nD5dFXl0cs9pP3wWNgJBB
- D0w/4/ruMU8w==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="524308747"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 08:05:45 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kVcAy-00DMeS-90; Thu, 22 Oct 2020 18:06:48 +0300
-Date:   Thu, 22 Oct 2020 18:06:48 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Daniel Latypov <dlatypov@google.com>
-Cc:     David Gow <davidgow@google.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
-Message-ID: <20201022150648.GH4077@smile.fi.intel.com>
-References: <20201019224556.3536790-1-dlatypov@google.com>
- <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
- <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
+        id S2901111AbgJVPIX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:08:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39414 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508330AbgJVPIW (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:08:22 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58485C0613CE;
+        Thu, 22 Oct 2020 08:08:22 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id w17so2020867ilg.8;
+        Thu, 22 Oct 2020 08:08:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x1P/P7OYVc1vkdk4dgqEcyL97NN75T6pSH0KYhZ5mPA=;
+        b=u0AOheS1+aug9A376TkAUPh8wozMhpzzXIy9MDjCC3DuZKkDHCryJwp9tb8XcxBalu
+         9acGBPtU+eGF6iGFsGbiEkmxJupE6nwxoqBXw2bKrL6r2JxXc844QNyCt6JoSxXb8ZVm
+         Wq6RdC/WspdxLGbEpbD+uwHKqF4W8T2+O2ytQ7KoJtb02sxvrPPtlab8aOrsT4Ae+PE+
+         gweNvsrT9VXzz1PziokMyTUTJajc7dKDy3yjxCiJf8JP2nceKdceZ7ZG0BJp9tpT2JhJ
+         Mj7GvBALpWJtyNreSfISqUKPtLXeBH8tUbNiUuOxJfopNVLeti97XMqHFDRQu1hHiV6Y
+         Q9hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x1P/P7OYVc1vkdk4dgqEcyL97NN75T6pSH0KYhZ5mPA=;
+        b=pZPmnnQpX8nJOO9TbYrURaqOkFk2t/uz7MfhALdtXSERcSxMiHWaw/diakF4plnBH0
+         74xlgwrOgtjxlfa/wqK8VVZ6SLYVNVLoQVWwsqymfCj7OdULb9k6H2dJ/JREqME5iCfk
+         OjjWlo0DAj4o4FFeUN0Lv/0CF7Npy9SNyru5fos80uB1ESwrhCbtgdHcwk3wbB8eEexe
+         TNsvrl6u2TRDKx0X0GV9Mu+FVJbSusP0MVjf9rWR7P3XGSqHDg8ep2kZgXCZEAdmI0UH
+         P9Mr4pUONUH5w56dyifu0UjlV+Ea+/N+kIh3Cz0/bmwnYKPQ2w6MgjvPUQH0zEDNiVcX
+         N3UQ==
+X-Gm-Message-State: AOAM533247NwPpR/MyOovCblMf8QEfxDkXZfcJ7k49GR1OUrD9Wm9/R6
+        ecqxxe1glftSNuQH75oQxlI=
+X-Google-Smtp-Source: ABdhPJyMpvVa/Siz4TorxHsCKTJAh/W4kPFXgCmb+oBBJQmcSGJ3mjL99tNcnjetJx17+gg6WfYBXA==
+X-Received: by 2002:a92:98c5:: with SMTP id a66mr2304853ill.50.1603379301453;
+        Thu, 22 Oct 2020 08:08:21 -0700 (PDT)
+Received: from aford-IdeaCentre-A730.lan ([2601:448:8400:9e8:527:767:b750:2d3c])
+        by smtp.gmail.com with ESMTPSA id y6sm1233816ilj.59.2020.10.22.08.08.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 08:08:20 -0700 (PDT)
+From:   Adam Ford <aford173@gmail.com>
+To:     linux-arm-kernel@lists.infradead.org
+Cc:     marex@denx.de, l.stach@pengutronix.de, aford@beaconembedded.com,
+        Adam Ford <aford173@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Andrey Smirnov <andrew.smirnov@gmail.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 0/4] Add i.MX8MN power domain and fix USB
+Date:   Thu, 22 Oct 2020 10:08:03 -0500
+Message-Id: <20201022150808.763082-1-aford173@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 10:47:50AM -0700, Daniel Latypov wrote:
-> On Tue, Oct 20, 2020 at 8:40 PM David Gow <davidgow@google.com> wrote:
-> > On Tue, Oct 20, 2020 at 6:46 AM Daniel Latypov <dlatypov@google.com> wrote:
-> > >
-> > > Add basic test coverage for files that don't require any config options:
-> > > * gcd.c
-> > > * lcm.c
-> > > * int_sqrt.c
-> > > * reciprocal_div.c
-> > > (Ignored int_pow.c since it's a simple textbook algorithm.)
-> > >
-> > I don't see a particular reason why int_pow.c being a simple algorithm
-> > means it shouldn't be tested. I'm not saying it has to be tested by
-> > this particular change -- and I doubt the test would be
-> > earth-shatteringly interesting -- but there's no real reason against
-> > testing it.
-> 
-> Agreed on principle, but int_pow() feels like a special case.
-> I've written it the exact same way (modulo variable names+types)
-> several times in personal projects.
-> Even the spacing matched exactly in a few of those...
+The OTG on the Nano does not work unless the USB was started in 
+the bootloader, because was lacking the power-domain control. 
 
-But if you would like to *teach* somebody by this exemplary piece of code, you
-better do it close to ideal.
+This series is based on patches from [1] and an additional, pending 
+patch [2] which removed a USB node which does not exist according to
+documentation for the SoC.
 
-> > > These tests aren't particularly interesting, but
-> > > * they're chosen as easy to understand examples of how to write tests
-> > > * provides a place to add tests for any new files in this dir
-> > > * written so adding new test cases to cover edge cases should be easy
-> >
-> > I think these tests can stand on their own merits, rather than just as
-> > examples (though I do think they do make good additional examples for
-> > how to test these sorts of functions).
-> > So, I'd treat this as an actual test of the maths functions (and
-> > you've got what seems to me a decent set of test cases for that,
-> > though there are a couple of comments below) first, and any use it
-> > gains as an example is sort-of secondary to that (anything that makes
-> > it a better example is likely to make it a better test anyway).
-> >
-> > In any case, modulo the comments below, this seems good to me.
-> 
-> Ack.
-> I'll wait on Andy's input before deciding whether or not to push out a
-> v2 with the changes.
+[1] - https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=357903
+[2] - https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201008183300.726756-1-aford173@gmail.com/
 
-You need to put detailed comments in the code to have it as real example how to
-create the KUnit test. But hey, it will mean that documentation sucks. So,
-please update documentation to cover issues that you found and which motivated
-you to create these test cases.
+Adam Ford (4):
+  dt-bindings: add defines for i.MX8MN power domains
+  soc: imx: gpcv2: add support for i.MX8MN power domains
+  arm64: dts: imx8mn: add GPC node and power domains
+  arm64: dts: imx8mn: Add power-domain reference in USB controller
 
-Summarize this, please create usable documentation first.
+ .../bindings/power/fsl,imx-gpcv2.yaml         |   1 +
+ arch/arm64/boot/dts/freescale/imx8mn.dtsi     |  50 ++++++++
+ drivers/soc/imx/gpcv2.c                       | 117 ++++++++++++++++++
+ include/dt-bindings/power/imx8mn-power.h      |  15 +++
+ 4 files changed, 183 insertions(+)
+ create mode 100644 include/dt-bindings/power/imx8mn-power.h
 
 -- 
-With Best Regards,
-Andy Shevchenko
-
+2.25.1
 
