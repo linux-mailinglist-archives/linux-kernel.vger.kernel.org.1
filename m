@@ -2,144 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74E34296287
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:17:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAE2E29628A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:19:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896709AbgJVQRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:17:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50196 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896698AbgJVQRt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:17:49 -0400
-Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69823C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:17:49 -0700 (PDT)
-Received: by mail-wm1-x343.google.com with SMTP id c77so2743221wmd.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:17:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=an4HM7viF76dg/BBOcet2kiSOHM3LCjyzxKusN4Cnjw=;
-        b=iCpyZf3v2xE9KHsfzUXVGtoriEuj7sXoIkHaAXOraSZIN2rY9cfiHSmSg7CoZtrn+P
-         9nFFLzFZlRx81Z6UnMlmBMyZyaqgsY34PthTnZYTWfuoZSOGZ0GQ6ulipbK4JDi/hfZr
-         REAHdX0+4+sPPh3iZRFpEm6RETOAqGop2Gq1aqAd2/5Q8KBsp2iyTgf1D7U44s0jaZwQ
-         zAWHVvyW9U+UW/58Uosnlt1mnxWM8CTBdo+s8M4lA3zwJvd/6+eyMWcpqRstUT2++IVP
-         DIdJQUg1tUkOIiDaY0ztAr/vt5j2k5UFsFTNmigIB3IbSFm+2JoYp2W1SLuoqJ4WNHjR
-         GlSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=an4HM7viF76dg/BBOcet2kiSOHM3LCjyzxKusN4Cnjw=;
-        b=aHxr5YUyiWtZxT+Z2F37Y4IqbL+IXRMjgwqTsyODlBgwgzDGva6EQv4GRAq9qu65pv
-         UWZBFEwW3wLJhaF5rqJTVhBUWyUNdHkjF0XBHMMVuWLJDB7HuVoHrt/Yxb6IVEqVIPHx
-         RhyLAKwaNIfRTKsWqC8J/K3FKXkwwajV/vDzdPt6xZuj5sOgBRWQYViAxtsShBWXOnK4
-         bEfXhaFYgWXZ844M8QYS2R6u0JJnyePvlaXg5wBggwg3m7LjAzcvjqFEZCnws/J0wZWV
-         khpbrvQ+WQcJb3NB0lWXhJIOI16baYWYCHQecePHRCdArUlN+2GPThYsrWbaaH2I0Rze
-         2Tjg==
-X-Gm-Message-State: AOAM532iJpR50ZQcSmFGnz5WePc0J4bpMcz1FzLDDCqoffukb/nDTTNj
-        2Ydl6QZO9h/YpoUFDmJcWHp8Pw==
-X-Google-Smtp-Source: ABdhPJw8L1B7TdR0f5aXqfG0EAiugB4+Afdb5e50ZlRsr4MLvNkoFdhvzOvRCWDKNky9BAc37nuSIQ==
-X-Received: by 2002:a7b:c143:: with SMTP id z3mr3456794wmi.17.1603383468056;
-        Thu, 22 Oct 2020 09:17:48 -0700 (PDT)
-Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id s5sm4243186wmc.3.2020.10.22.09.17.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 09:17:47 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 17:17:45 +0100
-From:   Alessio Balsini <balsini@android.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Alessio Balsini <balsini@android.com>,
-        Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <stefanoduo@google.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel <fuse-devel@lists.sourceforge.net>,
-        kernel-team <kernel-team@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH V9 3/4] fuse: Introduce synchronous read and write for
- passthrough
-Message-ID: <20201022161745.GC36774@google.com>
-References: <20200924131318.2654747-1-balsini@android.com>
- <20200924131318.2654747-4-balsini@android.com>
- <CAJfpegu=0QtzqSOGi_yd48eL3hgG1Hqf_YO2prWeiHBwwMHZyA@mail.gmail.com>
+        id S2896818AbgJVQTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36120 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502777AbgJVQTy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:19:54 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87C63208B6;
+        Thu, 22 Oct 2020 16:19:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603383593;
+        bh=qIrOo2z31/taIsn/ACV6wfNDT0g2pckjugQNsIbulKw=;
+        h=Date:From:To:Cc:Subject:From;
+        b=088K+Ib28sFxX2tt63cpzdWUQhNtVVcgdX0Huit0Siy3D59z9sh7T+x76X3+toICl
+         wr2mKX/okEfIr15DErTqbJ96KZErdVFy8Q/UWH61PyqJsj4FGEgPdnmHT8kEbv20eY
+         AFCS2ajTvtP+IHgfQQTmWuez9vcGrImusIKjj5eo=
+Date:   Thu, 22 Oct 2020 17:19:48 +0100
+From:   Will Deacon <will@kernel.org>
+To:     torvalds@linux-foundation.org
+Cc:     catalin.marinas@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, kernel-team@android.com
+Subject: [GIT PULL] More arm64 updates for -rc1
+Message-ID: <20201022161948.GA19780@willie-the-truck>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAJfpegu=0QtzqSOGi_yd48eL3hgG1Hqf_YO2prWeiHBwwMHZyA@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Sep 30, 2020 at 08:50:46PM +0200, Miklos Szeredi wrote:
-> > [...]
-> > +ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
-> > +                                  struct iov_iter *iter)
-> > +{
-> > +       ssize_t ret;
-> > +       const struct cred *old_cred;
-> > +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> > +       struct fuse_file *ff = fuse_filp->private_data;
-> > +       struct file *passthrough_filp = ff->passthrough_filp;
-> > +
-> > +       if (!iov_iter_count(iter))
-> > +               return 0;
-> > +
-> > +       old_cred = fuse_passthrough_override_creds(fuse_filp);
-> > +       if (is_sync_kiocb(iocb_fuse)) {
-> > +               ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> > +                                   iocbflags_to_rwf(iocb_fuse->ki_flags));
-> > +       } else {
-> > +               ret = -EIO;
-> > +       }
-> 
-> Just do vfs_iter_read() unconditionally, instead of returning EIO.
-> It will work fine, except it won't be async.
-> 
-> Yeah, I know next patch is going to fix this, but still, lets not make
-> this patch return silly errors.
-> 
-> > [...]
-> > +ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
-> > +                                   struct iov_iter *iter)
-> > +{
-> > +       ssize_t ret;
-> > +       const struct cred *old_cred;
-> > +       struct file *fuse_filp = iocb_fuse->ki_filp;
-> > +       struct fuse_file *ff = fuse_filp->private_data;
-> > +       struct inode *fuse_inode = file_inode(fuse_filp);
-> > +       struct file *passthrough_filp = ff->passthrough_filp;
-> > +
-> > +       if (!iov_iter_count(iter))
-> > +               return 0;
-> > +
-> > +       inode_lock(fuse_inode);
-> > +
-> > +       old_cred = fuse_passthrough_override_creds(fuse_filp);
-> > +       if (is_sync_kiocb(iocb_fuse)) {
-> > +               file_start_write(passthrough_filp);
-> > +               ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
-> > +                                   iocbflags_to_rwf(iocb_fuse->ki_flags));
-> > +               file_end_write(passthrough_filp);
-> > +               if (ret > 0)
-> > +                       fuse_copyattr(fuse_filp, passthrough_filp);
-> > +       } else {
-> > +               ret = -EIO;
-> > +       }
-> 
-> And the same here.
-> 
+Hi Linus,
 
-Ack, adding both to the upcoming patch set.
+Please pull this small selection of arm64 fixes and updates for -rc1. Most
+of these are fixes that came in during the merge window, with the exception
+of the HAVE_MOVE_PMD mremap() speed-up which we discussed back in 2018 and
+somehow forgot to enable upstream [1]. Anyway, usual summary in the tag.
+
+Marc Zyngier managed to get his paws on a Falkor system and offered a
+Tested-by on the Spectre-v2 mitigation patch, but it came in after I'd
+applied the thing.
+
+Please pull.
 
 Thanks,
-Alessio
+
+Will
+
+[1] https://lore.kernel.org/kvmarm/20181108181201.88826-3-joelaf@google.com/
+
+--->8
+
+The following changes since commit d13027bb35e089bc1bb9f19c4976decf32a09b97:
+
+  Revert "arm64: initialize per-cpu offsets earlier" (2020-10-09 11:24:17 +0100)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
+
+for you to fetch changes up to 66dd3474702aa98d5844367e1577cdad78ef7c65:
+
+  arm64: proton-pack: Update comment to reflect new function name (2020-10-21 11:07:27 +0100)
+
+----------------------------------------------------------------
+More arm64 updates for 5.10
+
+- Improve performance of Spectre-v2 mitigation on Falkor CPUs (if you're lucky
+  enough to have one)
+
+- Select HAVE_MOVE_PMD. This has been shown to improve mremap() performance,
+  which is used heavily by the Android runtime GC, and it seems we forgot to
+  enable this upstream back in 2018.
+
+- Ensure linker flags are consistent between LLVM and BFD
+
+- Fix stale comment in Spectre mitigation rework
+
+- Fix broken copyright header
+
+- Fix KASLR randomisation of the linear map
+
+- Prevent arm64-specific prctl()s from compat tasks (return -EINVAL)
+
+----------------------------------------------------------------
+Ard Biesheuvel (1):
+      arm64: mm: use single quantity to represent the PA to VA translation
+
+Kalesh Singh (1):
+      arm64: mremap speedup - Enable HAVE_MOVE_PMD
+
+Nick Desaulniers (1):
+      arm64: link with -z norelro regardless of CONFIG_RELOCATABLE
+
+Palmer Dabbelt (1):
+      arm64: Fix a broken copyright header in gen_vdso_offsets.sh
+
+Peter Collingbourne (1):
+      arm64: reject prctl(PR_PAC_RESET_KEYS) on compat tasks
+
+Stephen Boyd (1):
+      arm64: proton-pack: Update comment to reflect new function name
+
+Will Deacon (1):
+      arm64: spectre-v2: Favour CPU-specific mitigation at EL2
+
+ arch/arm64/Kconfig                         |  1 +
+ arch/arm64/Makefile                        |  4 +--
+ arch/arm64/include/asm/memory.h            |  5 ++--
+ arch/arm64/include/asm/pgtable.h           |  4 +--
+ arch/arm64/kernel/fpsimd.c                 |  4 +--
+ arch/arm64/kernel/pointer_auth.c           |  4 +++
+ arch/arm64/kernel/proton-pack.c            | 40 ++++++++++++++----------------
+ arch/arm64/kernel/vdso/gen_vdso_offsets.sh |  2 +-
+ arch/arm64/mm/init.c                       | 30 ++++++++--------------
+ 9 files changed, 43 insertions(+), 51 deletions(-)
