@@ -2,157 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F34E82967BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:53:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9B102967CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:00:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373568AbgJVXxE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 19:53:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35766 "EHLO
+        id S373649AbgJWAAK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:00:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36862 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373561AbgJVXxE (ORCPT
+        with ESMTP id S2901294AbgJWAAK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 19:53:04 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56F01C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:53:04 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t18so1831512plo.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:53:04 -0700 (PDT)
+        Thu, 22 Oct 2020 20:00:10 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1A601C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:00:10 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id v6so4399889lfa.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:00:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=7aU9wHCu7G4+f6A1fcf7nrfjI4yO9Dnpm8noDBlvAP8=;
-        b=ObTGTl0usd4KWyPHhbCtIUsxxD+52KyEVvUdadiEbvpogTrOQ1ugaMrE02b8gxFTHo
-         7zulkYe+dvgKTeyNKSsTzzqpUoDOlI6HhaG6zZ9wXt9KkLmy+HHXYJKtbUdhI1umbf5E
-         dBhq1/wBpKCco8poTethD0hxl8i9EOf7BQzGFuzKv9jcjxIOg+NAwedcp6f+Nagdv6Lp
-         N53ZDhyhSUN9Mn57B0Za8aKhrfznC87vRYRt8pzfa2pXywLOoo6TmZe2Y0SoG+z+PRcT
-         mfdQwnEOtX2So3/m6j1DSHlNgigx0GA6+zgSnCEJdKBxbidW9zYXA3i1IotIYu9FMhCp
-         2bAA==
+        bh=iDXB6MzIAjPa6Z+bYdtdThdhAzUe/hH836F46Z6tXhw=;
+        b=guRkvILP5wkBF+Y8oh3Zj7febDKb+DRU+Ww1jYwe0hatSbkoSvbf2KK84bXYRPYpEc
+         UcIAxUjcnJZrINp5BGV6sKtKGNlAG6k3n3FkO8x4H/85YVV7SR/705oDXmT5x3d0yhVZ
+         mG6PuVtvKHPX8zk3WDn7PAnWbJx9bjuy7E08MCpKuK2f7ke3p5BXY9C2tUa6TY/xPrMM
+         8qsv+MYRUGERFLfHpupKVI1x3jOXVV9VUezVFFIPeMf+nK0oIbHJevGLpn5M5RnUCXqI
+         FgiXurXdocx0CUIqiFWILkvklKd3RHDh47dcC4y37Yo+GN5Ns+yckbpjeJjxnoSZ8MRo
+         pzpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=7aU9wHCu7G4+f6A1fcf7nrfjI4yO9Dnpm8noDBlvAP8=;
-        b=rnN0pd6fEwn3EqKzmSj+rYA0ukP3YoYpf1gOLtQZMxMh6ZUnxsWOjp+JvlgySCEsEq
-         pOAJwyJdcbIsQXW1HHYnXNzTTuXUlyc89PuMlUHNDbCqRBTXxoUQM+vpRdz1ACGcUaEO
-         gW5tJhMPZcy6jGXtUoCJ3OIHcB/st7bH6hLH6qxkhYxWfDNJUwjPPW5P9GJqezG02OQr
-         +LvrSbJZQLsiFi1Pbx38VecomtD94ZYBgrJHU256xEYfHsjAH4JMsRfVbbsPJcfDgWw+
-         PzBTDVgqnXsHW/KdJkVVIhgK5Nl/rsQZUYTGosoM7hsytQkYBYLSoMI7TfEBgDU0g73d
-         5/6w==
-X-Gm-Message-State: AOAM532hR/h7GHNpeuV/xwBQhaxj+LLu8bifLbkELu8LzyzGeSE3WIFE
-        0wuVdg6qLB2OxqKw1KqcQOMxsZPfgUhPbZg/gyN5fw==
-X-Google-Smtp-Source: ABdhPJwQyZ4JQpQbwOCnSqrio2PiDC7Y8/MvjPDf019NOIatx0G7/TdIxKXBkTKlCOs8ORLbKWDAwaHI1lCsOIy8dnI=
-X-Received: by 2002:a17:902:ba96:b029:d5:f36b:44af with SMTP id
- k22-20020a170902ba96b02900d5f36b44afmr4711316pls.51.1603410783671; Thu, 22
- Oct 2020 16:53:03 -0700 (PDT)
+        bh=iDXB6MzIAjPa6Z+bYdtdThdhAzUe/hH836F46Z6tXhw=;
+        b=AMeifQC047/HLi9rbVnbZ8YbM2aoyc3rmq9ofY6XDkyuMblyHdGd/n2DVAjU4nyNAk
+         BtXBj5bbLkN23oXljvGl7eFOy0HosvD6zz0dWpH7bK/hO86ZMo81TrbaDHKZGhWN5WVh
+         H2hCO1ZiQQgm38K9QnoN8sO/Y+3zLUBXb3F5e/UE6QodDNZ54KESxpoxR2lJzc9t0joV
+         9BVfRcsjO9i149ASPk+2VUePFVkctu444y58U1Hee3+SPXmMYFgmgPdM38TNBPxjlwjI
+         WU2WR7tb8Chy+HVhC8V+XBzhdIKkkTojXtIYuuSCopiVF6jNtFCTUuYVQ2kvQ3mA01dT
+         uYhg==
+X-Gm-Message-State: AOAM531VcCXr4cIyvdlLcaDTrPbWPMd2eKfs99QPQ7Y8eCsUTpMc94Xh
+        LVioSxlEHXpfOHofm+iEhX5G3Iv/I8aUz69ziZX8yQ==
+X-Google-Smtp-Source: ABdhPJzuULwrnVGAGtEgdR0cHZymQzvgHmTA54WaDGuHfGCXTVu1rVTxbqmOoQxfxggqrA9eJa1zXMFPgmAY7VgAR18=
+X-Received: by 2002:a19:7ed8:: with SMTP id z207mr577866lfc.54.1603411208087;
+ Thu, 22 Oct 2020 17:00:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201020073740.29081-1-geert@linux-m68k.org> <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org> <20201021223649.GP181507@mit.edu>
-In-Reply-To: <20201021223649.GP181507@mit.edu>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 22 Oct 2020 16:52:52 -0700
-Message-ID: <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com>
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
- selecting it
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        David Gow <davidgow@google.com>
+References: <87sga6vizp.fsf@suse.de> <20201022122858.8638-1-rpalethorpe@suse.com>
+ <CALvZod4u79DSwyM=Kg8g5tR1L5eomHgUkaJmp6s9D3jC7OnN0A@mail.gmail.com> <20201022172508.GF300658@carbon.dhcp.thefacebook.com>
+In-Reply-To: <20201022172508.GF300658@carbon.dhcp.thefacebook.com>
+From:   Shakeel Butt <shakeelb@google.com>
+Date:   Thu, 22 Oct 2020 16:59:56 -0700
+Message-ID: <CALvZod5p-O72gCY-R+oLcDZjEkPRioz7e7p5Jg=nXxhmtiwKWw@mail.gmail.com>
+Subject: Re: [PATCH v4] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Richard Palethorpe <rpalethorpe@suse.com>,
+        Linux MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        LTP List <ltp@lists.linux.it>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 3:36 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+On Thu, Oct 22, 2020 at 10:25 AM Roman Gushchin <guro@fb.com> wrote:
 >
-> On Wed, Oct 21, 2020 at 02:16:56PM -0700, Randy Dunlap wrote:
-> > On 10/21/20 2:15 PM, Brendan Higgins wrote:
-> > > On Tue, Oct 20, 2020 at 12:37 AM Geert Uytterhoeven
-> > > <geert@linux-m68k.org> wrote:
-> > >>
-> > >> EXT4_KUNIT_TESTS selects EXT4_FS, thus enabling an optional feature the
-> > >> user may not want to enable.  Fix this by making the test depend on
-> > >> EXT4_FS instead.
-> > >>
-> > >> Fixes: 1cbeab1b242d16fd ("ext4: add kunit test for decoding extended timestamps")
-> > >> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> > >
-> > > If I remember correctly, having EXT4_KUNIT_TESTS select EXT4_FS was
-> > > something that Ted specifically requested, but I don't have any strong
-> > > feelings on it either way.
+[snip]
 > >
-> > omg, please No. depends on is the right fix here.
+> > Since bf4f059954dc ("mm: memcg/slab: obj_cgroup API") is in 5.9, I
+> > think we can take this patch for 5.9 and 5.10 but keep Roman's cleanup
+> > for 5.11.
+> >
+> > What does everyone think?
 >
-> So my requirement which led to that particular request is to keep what
-> needs to be placed in .kunitconfig to a small and reasonable set.
+> I think we should use the link to the root approach both for stable backports
+> and for 5.11+, to keep them in sync. The cleanup (always charging the root cgroup)
+> is not directly related to this problem, and we can keep it for 5.11+ only.
 >
-> Per Documentation/dev-tools/kunit, we start by:
->
->     cd $PATH_TO_LINUX_REPO
->     cp arch/um/configs/kunit_defconfig .kunitconfig
->
-> we're then supposed to add whatever Kunit tests we want to enable, to wit:
->
-> CONFIG_EXT4_KUNIT_TESTS=y
->
-> so that .kunitconfig would look like this:
->
-> CONFIG_KUNIT=y
-> CONFIG_KUNIT_TEST=y
-> CONFIG_KUNIT_EXAMPLE_TEST=y
-> CONFIG_EXT4_KUNIT_TESTS=y
->
-> ... and then you should be able to run:
->
-> ./tools/testing/kunit/kunit.py run
->
-> ... and have the kunit tests run.  I would *not* like to have to put a
-> huge long list of CONFIG_* dependencies into the .kunitconfig file.
->
-> I'm don't particularly care how this gets achieved, but please think
-> about how to make it easy for a kernel developer to run a specific set
-> of subsystem unit tests.  (In fact, being able to do something like
-> "kunit.py run fs/ext4 fs/jbd2" or maybe "kunit.py run fs/..." would be
-> *great*.  No need to fuss with hand editing the .kunitconfig file at
-> all would be **wonderful**.
+> Thanks!
 
-So you, me, Luis, David, and a whole bunch of other people have been
-thinking about this problem for a while. What if we just put
-kunitconfig fragments in directories along side the test files they
-enable?
-
-For example, we could add a file to fs/ext4/kunitconfig which contains:
-
-CONFIG_EXT4_FS=y
-CONFIG_EXT4_KUNIT_TESTS=y
-
-We could do something similar in fs/jdb2, etc.
-
-Obviously some logically separate KUnit tests (different maintainers,
-different Kconfig symbols, etc) reside in the same directory, for
-these we could name the kunitconfig file something like
-lib/list-test.kunitconfig (not a great example because lists are
-always built into Linux), but you get the idea.
-
-Then like Ted suggested, if you call kunit.py run foo/bar, then
-
-if bar is a directory, then kunit.py will look for foo/bar/kunitconfig
-
-if bar is a file ending with .kunitconfig like foo/bar.kunitconfig,
-then it will use that kunitconfig
-
-if bar is '...' (foo/...) then kunit.py will look for all kunitconfigs
-underneath foo.
-
-Once all the kunitconfigs have been resolved, they will be merged into
-the .kunitconfig. If they can be successfully merged together, the new
-.kunitconfig will then continue to function as it currently does.
-
-What do people think about this?
+Roman, can you send the signed-off patch for the root linking for
+use_hierarchy=0?
