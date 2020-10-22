@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C9FB295562
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:02:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EC2A329556A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:16:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507392AbgJVAC2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 20:02:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34470 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2507379AbgJVAC2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 20:02:28 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EA8C42068E;
-        Thu, 22 Oct 2020 00:02:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603324947;
-        bh=3UPSINPAND/lqccE62eGQN/0o8y3xZbQAeiWy+GF/To=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=Xi7ym5utmWSTIoAwg6r9dGp4x6QleovpXhk6RRUPw8uIK2epUTOTLeZqLsOBoTZ19
-         ELd7dNL9gY8j3J05Mxzer4ue+0NTsCSAEGuGanmBsKvABq5hoi8LfnAGOujo9faeNV
-         noUD3Q1gU/QxClDHx7T+3JvxvIM24UHqI5n5p3vc=
-Date:   Wed, 21 Oct 2020 17:02:24 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com, Dave Miller <davem@davemloft.net>,
-        Magnus Karlsson <magnus.karlsson@intel.com>,
-        Saeed Mahameed <saeedm@nvidia.com>
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to
- housekeeping CPUs
-Message-ID: <20201021170224.55aea948@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <877drj72cz.fsf@nanos.tec.linutronix.de>
-References: <20200928183529.471328-1-nitesh@redhat.com>
-        <20200928183529.471328-5-nitesh@redhat.com>
-        <87v9f57zjf.fsf@nanos.tec.linutronix.de>
-        <3bca9eb1-a318-1fc6-9eee-aacc0293a193@redhat.com>
-        <87lfg093fo.fsf@nanos.tec.linutronix.de>
-        <877drj72cz.fsf@nanos.tec.linutronix.de>
+        id S2507406AbgJVAQR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 20:16:17 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:59728 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507399AbgJVAQR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 20:16:17 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M0F6Gs066888;
+        Thu, 22 Oct 2020 00:16:06 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=qton4V8YMssGlbqndgLCxMLgvps5qQDKbjPPPF+Lq4w=;
+ b=SbjI6inLQvPQlpE04tCLH9aNYclxHYLTA7v1a5jRhXEkzE7k+HywiZRvTY8cyAtyF2Cq
+ KnMVQwSbHoEyTh4j7TD8QCipVDa94dCZellWfa5cea0pxMsrZVOSU9lcnkbAgsv8QS6Q
+ MDDktK/K7LLAJdkzkRXBoxvGHVHsi5YSxPCLHH5aK1Eh7Kv6WNvqoAfcMYh58P7Q75tH
+ r2f7GoFe+sDPT8IIvtZG8ndJ9v3QGv7C3qDfuO3FSiZ53ii4zyWUx3AhJ1CqBGzKAeBm
+ YeTUm/SUTVYAvkhCl0jjzI3VPufLrJdynJbfGoHCKwKCgJ0PL5qkCWKOtWcZPACwcDRp Ag== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 349jrpueuf-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Oct 2020 00:16:06 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09M0G6LN151197;
+        Thu, 22 Oct 2020 00:16:06 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by aserp3030.oracle.com with ESMTP id 348a6q0t8w-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 00:16:06 +0000
+Received: from abhmp0014.oracle.com (abhmp0014.oracle.com [141.146.116.20])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09M0FsFh020722;
+        Thu, 22 Oct 2020 00:15:55 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Wed, 21 Oct 2020 17:15:54 -0700
+Subject: Re: [PATCH rfc 0/2] mm: cma: make cma_release() non-blocking
+To:     Roman Gushchin <guro@fb.com>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Zi Yan <ziy@nvidia.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@fb.com
+References: <20201016225254.3853109-1-guro@fb.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <3f455d27-6d99-972f-b77f-b5b473b7614d@oracle.com>
+Date:   Wed, 21 Oct 2020 17:15:53 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201016225254.3853109-1-guro@fb.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220000
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1011
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220000
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 22:25:48 +0200 Thomas Gleixner wrote:
-> On Tue, Oct 20 2020 at 20:07, Thomas Gleixner wrote:
-> > On Tue, Oct 20 2020 at 12:18, Nitesh Narayan Lal wrote:  
-> >> However, IMHO we would still need a logic to prevent the devices from
-> >> creating excess vectors.  
-> >
-> > Managed interrupts are preventing exactly that by pinning the interrupts
-> > and queues to one or a set of CPUs, which prevents vector exhaustion on
-> > CPU hotplug.
-> >
-> > Non-managed, yes that is and always was a problem. One of the reasons
-> > why managed interrupts exist.  
+On 10/16/20 3:52 PM, Roman Gushchin wrote:
+> This small patchset makes cma_release() non-blocking and simplifies
+> the code in hugetlbfs, where previously we had to temporarily drop
+> hugetlb_lock around the cma_release() call.
 > 
-> But why is this only a problem for isolation? The very same problem
-> exists vs. CPU hotplug and therefore hibernation.
+> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
+> THP under a memory pressure requires a cma_release() call. If it's
+> a blocking function, it complicates the already complicated code.
+> Because there are at least two use cases like this (hugetlbfs is
+> another example), I believe it's just better to make cma_release()
+> non-blocking.
 > 
-> On x86 we have at max. 204 vectors available for device interrupts per
-> CPU. So assumed the only device interrupt in use is networking then any
-> machine which has more than 204 network interrupts (queues, aux ...)
-> active will prevent the machine from hibernation.
-> 
-> Aside of that it's silly to have multiple queues targeted at a single
-> CPU in case of hotplug. And that's not a theoretical problem.  Some
-> power management schemes shut down sockets when the utilization of a
-> system is low enough, e.g. outside of working hours.
-> 
-> The whole point of multi-queue is to have locality so that traffic from
-> a CPU goes through the CPU local queue. What's the point of having two
-> or more queues on a CPU in case of hotplug?
-> 
-> The right answer to this is to utilize managed interrupts and have
-> according logic in your network driver to handle CPU hotplug. When a CPU
-> goes down, then the queue which is associated to that CPU is quiesced
-> and the interrupt core shuts down the relevant interrupt instead of
-> moving it to an online CPU (which causes the whole vector exhaustion
-> problem on x86). When the CPU comes online again, then the interrupt is
-> reenabled in the core and the driver reactivates the queue.
+> It also makes it more consistent with other memory releasing functions
+> in the kernel: most of them are non-blocking.
 
-I think Mellanox folks made some forays into managed irqs, but I don't
-remember/can't find the details now.
+Thanks for looking into this Roman.
 
-For networking the locality / queue per core does not always work,
-since the incoming traffic is usually spread based on a hash. Many
-applications perform better when network processing is done on a small
-subset of CPUs, and application doesn't get interrupted every 100us. 
-So we do need extra user control here.
+I may be missing something, but why does cma_release have to be blocking
+today?  Certainly, it takes the bitmap in cma_clear_bitmap and could
+block.  However, I do not see why cma->lock has to be a mutex.  I may be
+missing something, but I do not see any code protected by the mutex doing
+anything that could sleep?
 
-We have a bit of a uAPI problem since people had grown to depend on
-IRQ == queue == NAPI to configure their systems. "The right way" out
-would be a proper API which allows associating queues with CPUs rather
-than IRQs, then we can use managed IRQs and solve many other problems.
-
-Such new API has been in the works / discussions for a while now.
-
-(Magnus keep me honest here, if you disagree the queue API solves this.)
+Could we simply change that mutex to a spinlock?
+-- 
+Mike Kravetz
