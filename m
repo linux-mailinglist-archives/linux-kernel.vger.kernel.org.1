@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E644295FC0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F21A295FCE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899542AbgJVNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:19:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
+        id S2899774AbgJVNVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:21:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899491AbgJVNTi (ORCPT
+        with ESMTP id S2899534AbgJVNTl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:19:38 -0400
-Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53438C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:38 -0700 (PDT)
-Received: by mail-wr1-x449.google.com with SMTP id f11so611393wro.15
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:38 -0700 (PDT)
+        Thu, 22 Oct 2020 09:19:41 -0400
+Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA05C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:40 -0700 (PDT)
+Received: by mail-wr1-x44a.google.com with SMTP id 31so613255wrg.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=hz6KTz5FwSVcKdBcrWKk1T0dlNcGWPgygtgKcp7KEb8=;
-        b=FFBTC951UmrhzpM9y+uLT8ZyOJj5GaA4k7AAgHlI5bzWx5afJoz6OzMm5XOyKBSXEM
-         33gEVoauyorNsYP0Q+ECaBpvPq/DZsJ5GgUIr7AP8JaxkCXd6/ck44zNbrnvejRmGtPt
-         EHfugNeWva1kLDKx2Qx1nxAVs6bGYzf2jmT6eIkENmOIa53fxT0rEq/NEicFsH/oNwGr
-         kyZxIJNVaHioOKRiM7oaMAGLtWsmEWjRiP1xlZvhqFVIvyiM18wlBZsZyxxnH1h+QpZD
-         MTSh30CAWNtQXA81JdLugm9ci6jQbTia/3CdNk9dj5LNdLvS1N9838gPFioY0FC54Psv
-         Ekjw==
+        bh=zMvzayRKcZjOHIZsW9PV/RuW73K9oxGh1X5zaP2bEOg=;
+        b=Jl7LpW955l/dwj9TojILe9Xb+TqqDX/Xo2Z/09O4WWqaxkbtLts1gm1bh/P5/lU/R4
+         /ycVct2F2bwDjYPI+eyvKUKV+LEV3NlyfJzuTxqZuRg8CW2mEZqiN+ThOhaggbGMHmO/
+         sQJib58QVON48b/5W4KD1EI6ix/er4/oUXHUGbxu4uHV9VaDmgAiS5oCsen24e2vLtjB
+         wQwvKboWNK27s1haqBmsswhp7Ve+OrOUAsUGRXyKvH4nqQ9/zui7lslB38o8dYqjHUg8
+         rqnoSAKjre5bfzDPuq+b8RQelN16LiZyNKuHA3FSOoXz8aIsol9skZjbmx46l1Qd0EfU
+         abQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=hz6KTz5FwSVcKdBcrWKk1T0dlNcGWPgygtgKcp7KEb8=;
-        b=RGAsjX/oPCxczP9QcVm2cnBv5xHKROQK98GvtSlS7lOiRmeJ5AfWguA0zEwQ2wgIhd
-         cOr3alXFKrkWVVPNGgVtmN6OZtNH6tmIBQaWzV2MKp/V1ZS+FjiTUKW8b9Lx6CKXxZ9L
-         W6nHvfFnI/GB7Kb4kyy0S3riDS8uWxztFLyjkSW2ULCXKlBQ2KqOjYbLCAkeWV0jO+2L
-         bsikLyMGjh5uvFxnvnsVvJA9ERDpb9LxP3K7mWJNh72eCnji+TMRMhS7n9H3rKi1o3Pv
-         FYhBE1gev9S32JY+kQS2BDlGFIPxVXKQSOC1mVU+iZSQx/ZFlcnrkPgLNDlQaLQAufu5
-         sc7w==
-X-Gm-Message-State: AOAM533g/H/pO/8ebR2/5TITQ7a6tVywNmwNM6DOYNMVoIFq2MKPjaJW
-        jwLew5IFqwQGVQkkxXqLdvTO4KsPNuwDvynf
-X-Google-Smtp-Source: ABdhPJx5O4kSUaBGwRtLvKusVioF7tY95svs/rFufga7Cd+WWBIpFFtwb4jM57egcfFrxBGA7vCl5k+pvkZDaTLZ
+        bh=zMvzayRKcZjOHIZsW9PV/RuW73K9oxGh1X5zaP2bEOg=;
+        b=jQ4A9alyWNxOL8FhtpmV1L7oUhOuKnN+e0F/TmR3D0PhyoCl46VUXh+CC2j3ETPaP6
+         mMupK99Kr/UxkUMtfh7eUJRTTkxc/VpMB0Svd0svzM8oeX8TOma8t/MjcF3xtQfJiDaj
+         etXT+nk4QZJBXAyZ6i6BDpdHnd0/lItQtGtaQxtI0rF5+If2ARYfCIQHV76tskcuGHOR
+         rJITQaJe472UkVjgcnKI8t9Nzas8/c3W+W7bDNf/8GORj4zbR97j6aeFH37HAv0pbC06
+         n++p6iczqBVqcV5C1x8Q/ixq+lbHFoYc5QZA4KCPYr3V6uCpahljeli1v4ZzXesEenEZ
+         6oEg==
+X-Gm-Message-State: AOAM532h71DKmuiZazpougCPpHntH9cvoVQIU6QG7QMc+zznSxqKA/Sh
+        eStVanLEqYHLz3sAPmbdvH/4/p+yXezjvufV
+X-Google-Smtp-Source: ABdhPJy1zF0M4ifiMercLiyrFr+TTZ2TNMz/uq3oy1C9MnNbR57Fur3hTUw7Pnk/ecaOdgtH3sUdKnL7XFwrPF8M
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a05:6000:108:: with SMTP id
- o8mr2676067wrx.256.1603372776882; Thu, 22 Oct 2020 06:19:36 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:18:57 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a7b:c7c9:: with SMTP id
+ z9mr2640989wmk.91.1603372779361; Thu, 22 Oct 2020 06:19:39 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:18:58 +0200
 In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-Message-Id: <1049f02fb4132390a6a314eb21dccfe5500e69d6.1603372719.git.andreyknvl@google.com>
+Message-Id: <155123c77b1a068089421022c4c5b1ccb75defd8.1603372719.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603372719.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH RFC v2 05/21] kasan: allow VMAP_STACK for HW_TAGS mode
+Subject: [PATCH RFC v2 06/21] kasan: mark kasan_init_tags as __init
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -77,29 +77,55 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Even though hardware tag-based mode currently doesn't support checking
-vmalloc allocations, it doesn't use shadow memory and works with
-VMAP_STACK as is.
+Similarly to kasan_init() mark kasan_init_tags() as __init.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
+Link: https://linux-review.googlesource.com/id/I8792e22f1ca5a703c5e979969147968a99312558
 ---
- arch/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ include/linux/kasan.h | 2 +-
+ mm/kasan/hw_tags.c    | 2 +-
+ mm/kasan/sw_tags.c    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index af14a567b493..3caf7bcdcf93 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -868,7 +868,7 @@ config VMAP_STACK
- 	default y
- 	bool "Use a virtually-mapped stack"
- 	depends on HAVE_ARCH_VMAP_STACK
--	depends on !KASAN || KASAN_VMALLOC
-+	depends on !(KASAN_GENERIC || KASAN_SW_TAGS) || KASAN_VMALLOC
- 	help
- 	  Enable this if you want the use virtually-mapped kernel stacks
- 	  with guard pages.  This causes kernel stack overflows to be
+diff --git a/include/linux/kasan.h b/include/linux/kasan.h
+index 7be9fb9146ac..93d9834b7122 100644
+--- a/include/linux/kasan.h
++++ b/include/linux/kasan.h
+@@ -185,7 +185,7 @@ static inline void kasan_record_aux_stack(void *ptr) {}
+ 
+ #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
+ 
+-void kasan_init_tags(void);
++void __init kasan_init_tags(void);
+ 
+ void *kasan_reset_tag(const void *addr);
+ 
+diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
+index 2a38885014e3..0128062320d5 100644
+--- a/mm/kasan/hw_tags.c
++++ b/mm/kasan/hw_tags.c
+@@ -15,7 +15,7 @@
+ 
+ #include "kasan.h"
+ 
+-void kasan_init_tags(void)
++void __init kasan_init_tags(void)
+ {
+ 	init_tags(KASAN_TAG_MAX);
+ }
+diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
+index c10863a45775..bf1422282bb5 100644
+--- a/mm/kasan/sw_tags.c
++++ b/mm/kasan/sw_tags.c
+@@ -35,7 +35,7 @@
+ 
+ static DEFINE_PER_CPU(u32, prng_state);
+ 
+-void kasan_init_tags(void)
++void __init kasan_init_tags(void)
+ {
+ 	int cpu;
+ 
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
