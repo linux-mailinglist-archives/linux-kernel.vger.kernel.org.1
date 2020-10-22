@@ -2,88 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5C30D2964F3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:04:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AFE7296502
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:05:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369850AbgJVTE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:04:27 -0400
-Received: from mga12.intel.com ([192.55.52.136]:29681 "EHLO mga12.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369842AbgJVTE0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:04:26 -0400
-IronPort-SDR: 1ZPztXO1pg7WeFbQWvdnR19QN/3scV/MyT3n823RD+ZwjE1U7JI8+2RJ/RVZrmdv25ZNcSSp3x
- C1rlyn2cAdTQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="146872723"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="146872723"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 12:04:26 -0700
-IronPort-SDR: W9JF7A0t9YQMmFylVi0vver7sM5vwAcgBCSLRzHzTL7+3/fTF4zJZfcMvgmajOvTrzElQc4bBx
- rWzsHkck5mng==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="534085151"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 12:04:24 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kVftu-00DVSp-Lj; Thu, 22 Oct 2020 22:05:26 +0300
-Date:   Thu, 22 Oct 2020 22:05:26 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Brendan Higgins <brendanhiggins@google.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
+        id S369885AbgJVTFe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 15:05:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48084 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S369878AbgJVTFd (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 15:05:33 -0400
+Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95895C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 12:05:32 -0700 (PDT)
+Received: by mail-lf1-x143.google.com with SMTP id d24so3586884lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 12:05:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=RHdOKnSFcmE4zwfEi1VqTCH5ZuvXulyjgMDpnhPLB6Y=;
+        b=hUGyXHYYdtlbJJf+AU9knmsUsbMZbJtOiuqwErtwfvkLAGzUD75NIEedu5oUU4iJlp
+         Nykl4MK8Usl27VeBe2TuHD3i+xBlrFaW6kOhV5jNl/J01q2SsiKWljIlT4bd4x53w1VR
+         oDVw3Ia/afusI99eUOeWITdwYmYUYQ8z3F5ZMnelmIyL16ZWSY83QG04oy9LNE8/KUwk
+         CVS/L59iiY/De0tuSvzFGqcTCk4ujA4KJlLyjwddFOXj3K//vHy4+BWqPdBwEaENjOco
+         z+c2Jffc7fsKQnDDHc0IxUPtd0c3gB7j2VLmdwwsHC7JAqIKmJoYfdggM6a1qWjKRKyV
+         vCqw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=RHdOKnSFcmE4zwfEi1VqTCH5ZuvXulyjgMDpnhPLB6Y=;
+        b=OrruXDUtobNBS0tk4TY6SMxlOCQfL0hIRAzShnUucyYjLdxkHgejHSccBpD9J28U2Y
+         9rCArdbktAxL/I0u/ILCdKZqYvJPYnGOERTcmebqMJUGzgYy7WnxZx2Y/WP6khSZEnN2
+         WMehF0G2XaxAHHtmbxxloLpP/tU4d6YM/La21frYx3fWVPjo3K+uAa85qtxpGImP+t6x
+         bfk1HJTa+QLYP60dgc9OMpodYwm6M6fTsN/ylX1NjgCcYDNf0u2z1IIJqjKlq9C/iSCj
+         Vqih9Pw712Z680/cv+Z8sFUGMUXX99GMNb8yGcfNO4yQUL9WrfsKEgsM5ZvkDkmIXRY5
+         Tqyg==
+X-Gm-Message-State: AOAM530bq5XPBRwOFO89i8afGVAY+Uf+kBJRKuhMPhUMFtFASeKEfsSG
+        OmxGr0fc08ney+XjOJwRihQ=
+X-Google-Smtp-Source: ABdhPJwE3Rf805Tcxe1SMLKFhVVAMBJ7vl3UVYbTu4Ay+w7npZtb17qOI9rTGL9WOCjXCI6Jg7vhAQ==
+X-Received: by 2002:a19:ccc2:: with SMTP id c185mr1448443lfg.322.1603393531147;
+        Thu, 22 Oct 2020 12:05:31 -0700 (PDT)
+Received: from [192.168.2.145] (109-252-193-186.dynamic.spd-mgts.ru. [109.252.193.186])
+        by smtp.googlemail.com with ESMTPSA id 18sm425054ljq.0.2020.10.22.12.05.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 12:05:30 -0700 (PDT)
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
         Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
-Message-ID: <20201022190526.GN4077@smile.fi.intel.com>
-References: <20201019224556.3536790-1-dlatypov@google.com>
- <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
- <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
- <20201022150648.GH4077@smile.fi.intel.com>
- <CAFd5g45o2G-bUvHNk2ehNuCsK6zVjN+rp88TyNmuJpfLbQi07g@mail.gmail.com>
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+References: <202010211637.7CFD8435@keescook>
+ <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook>
+ <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
+ <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk>
+ <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+ <20201022162334.GQ1551@shell.armlinux.org.uk>
+ <53e78602-6370-aeb1-398b-5c065dd562f8@gmail.com>
+ <20201022173843.GR1551@shell.armlinux.org.uk>
+From:   Dmitry Osipenko <digetx@gmail.com>
+Message-ID: <39e453c8-fc4c-6c78-3f07-8f74690b1ef0@gmail.com>
+Date:   Thu, 22 Oct 2020 22:05:28 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFd5g45o2G-bUvHNk2ehNuCsK6zVjN+rp88TyNmuJpfLbQi07g@mail.gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201022173843.GR1551@shell.armlinux.org.uk>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:53:50AM -0700, Brendan Higgins wrote:
-> On Thu, Oct 22, 2020 at 8:06 AM Andy Shevchenko
-> <andriy.shevchenko@linux.intel.com> wrote:
-> > On Wed, Oct 21, 2020 at 10:47:50AM -0700, Daniel Latypov wrote:
-
+22.10.2020 20:38, Russell King - ARM Linux admin пишет:
 ...
-
-> > You need to put detailed comments in the code to have it as real example how to
-> > create the KUnit test. But hey, it will mean that documentation sucks. So,
-> > please update documentation to cover issues that you found and which motivated
-> > you to create these test cases.
+>> But the two line change isn't portable to stable kernels as-is, isn't it?
 > 
-> I don't entirely disagree; leaning too heavily on code examples can be
-> detrimental to docs. That being said, when I use other people's code,
-> I often don't even look at the docs. So, I think the ideal is to have
-> both.
+> Why not?
+> 
 
-Why do we have docs in the first place?
-For test cases I think it's a crucial part, because tests many time are written
-by newbies, who would like to understand all under-the-hood stuff. You imply
-that they need to drop themselves into the code directly. It's very harsh to
-begin with Linux kernel development, really.
-
-> > Summarize this, please create usable documentation first.
-
-So, no go for this w/o documentation being up-to-date. Or be honest to
-everybody, it's sucks it needs to be removed. Then I will get your point.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+I assume we will need to define a new section, no?
