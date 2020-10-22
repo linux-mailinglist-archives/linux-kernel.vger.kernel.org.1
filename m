@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3911295FC5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BD261295FCF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:21:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899559AbgJVNTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:19:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
+        id S2899782AbgJVNVG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:21:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50774 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899491AbgJVNTo (ORCPT
+        with ESMTP id S2899548AbgJVNTq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:19:44 -0400
-Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73E7C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:42 -0700 (PDT)
-Received: by mail-qt1-x849.google.com with SMTP id z22so1015883qtn.15
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:42 -0700 (PDT)
+        Thu, 22 Oct 2020 09:19:46 -0400
+Received: from mail-qk1-x74a.google.com (mail-qk1-x74a.google.com [IPv6:2607:f8b0:4864:20::74a])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1441EC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:45 -0700 (PDT)
+Received: by mail-qk1-x74a.google.com with SMTP id f126so987894qke.17
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=S3zpKFgl6lOQ4xschlXI9IBqFZJcfplQNQgfAvCSd9c=;
-        b=A/DzVj6NJxiFJ1FGJ6LmU2ByOvdQoNTbI0xyZCf/l69mGnF7H5keOh0cFSh6PSKDDW
-         UHgRUgb4ay+Bz2HtzVeITURs24/VAJzkUUMrbBSiRqCemaRmiituhtSDAnGPjpzUAV7G
-         Ei3KV9+HsVFPHC28hTUw4gJGHTaodYigbcSOTvK2AWvQufR2FcbEhGoUMuKdYfzt1MPd
-         8nIHmu9UMA1TypVVK3IeFONWs9DUwaoRRERr7So3y4edr6JN5LQblz7M5V0PmuvctKPC
-         UoVTtgZE67tor/jqK0uHNZ6etDCPZk14fm7juz+4hjSvuI0gvPWbT+aULiOTmcNYUsdV
-         KJng==
+        bh=9DI5u3KafPzj5V3i+niAdO1uhXW2it0RjumucIpkaOw=;
+        b=KYdK90La20UFPuJ0fER+IgQyEcsxZKP6b9b4wzo9FrNthDqnAFuD/5RyVeAhzGtgFD
+         1rxDr3Tc3DpMi3VJMulxGYNmOXPyCZ44TXQZaLrnagTdrvXkZGmK0uz5CxJO/kcl5io3
+         867JSelEDG2IXELgOzI1dAaZAG7MmtKcjNEZw8rVk16HYclXkCIp562h7Clu9cWh/Wg5
+         5sMDUaz9GmxLB9D5wgH9F8tliUrf553LG/ujqa+Aw8uNtunaPRVtcHU0XXldn0KPABn4
+         67TodbIEgPzRL7xJwdjXnRZry1RJYdBDnHwRP6RxpKrDAAvx5/BmRHoHIKiIx5Jn7T5Q
+         Z85g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=S3zpKFgl6lOQ4xschlXI9IBqFZJcfplQNQgfAvCSd9c=;
-        b=VJ5Qr/a2SntfRg2AAq3gMSCYfuXHp/jEbSPJ5eTWw3oT2nYZ9ubnJ1CmU2H1nqJO/S
-         oFfCHi1ujbWaJVjMcvHz7ypMGYLET2hc6zezWppzjn3L98BeWcMNppC6w57xSsWxLcJf
-         Qc8ETn44d2hMJ/0S6o/RS9spK2TEOYuI5qFyLlpasgGKbSN7NCKQCCMuO/Y6FbeMzUuI
-         ys3uCBQgfVq3RsW2GhXQo8VaEy8aeydUlUnUY4HEYGavFhkSzKHBI/Yq+bjB9592UB1W
-         jgf8CDQg6FYR4VGKJr8qqzEvAtKDOmlC98aJvT+O/WJ0MqAL4x7lcvsPrkvqJG+x8bG+
-         t8oQ==
-X-Gm-Message-State: AOAM532UgCHfbobAfgVBAaOjremJMin1O22fEYYH4qMYPLnNsiDonz6L
-        IkV1TtD3+YNeRxLsBiixGWI+Ghv3y51YzLYP
-X-Google-Smtp-Source: ABdhPJye0iIWFtk9uCN4G57gAraBO0b8dguucuYN00Tzqt7FUHcOAlZwClbYPWiparjNpI11i9pTLLg1NFTsf+gO
+        bh=9DI5u3KafPzj5V3i+niAdO1uhXW2it0RjumucIpkaOw=;
+        b=jBqeji616w8/cRYGD/0uyyHHpYlVZWId159RtjW2YEXkz8WMIss3oaRg0BYlki4XYC
+         PyHbBmXBK0ycABaPdn+eIBAlWIENvA+FxDwIU49lqiYQhpdaDsdi5N+jO6mb+JAhkyGE
+         qQRSt4RxmhxShRs1Xd4K/jX15kJS4AG4+qi5r1jq3gAMP7gIDZLbfRVOKFPKcWBZrNyK
+         Wg/hWP7lAnnlrFUuQabiXgQs2rKWEZcL6i2Tz1iigc5gkIAlrDhUvs913IjM1qxyEh13
+         2rQkab00eiKDrSGw6uaX+uUaDhHyfMYerWUZzPwXkasnYKIDpLVblzeM5TsPOvnULLUd
+         9H8Q==
+X-Gm-Message-State: AOAM533yLzjK6OpnPNswuYAQ4C786weyw+fEmNSFfXkodrW2UFNghKF0
+        Iq6E62uES6VmZmPhCTJv4iDTPZDPm4NW2xsW
+X-Google-Smtp-Source: ABdhPJzpu4qsDmsSwhmtsakN67Db1oW3vqlMK/6JoYcULaWh7/ua/BL0cxNVhiDmj+hapXuFvoOwNe42CSDioYtU
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:52c6:: with SMTP id
- p6mr2361291qvs.38.1603372781851; Thu, 22 Oct 2020 06:19:41 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:18:59 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a0c:b5e1:: with SMTP id
+ o33mr516199qvf.17.1603372784151; Thu, 22 Oct 2020 06:19:44 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:19:00 +0200
 In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-Message-Id: <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
+Message-Id: <84dc684519c5de460c58b85f0351c4f9ab57e897.1603372719.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603372719.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
+Subject: [PATCH RFC v2 08/21] kasan: remove __kasan_unpoison_stack
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -77,92 +77,44 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Tag-based KASAN modes are fully initialized with kasan_init_tags(),
-while the generic mode only requireds kasan_init(). Move the
-initialization message for tag-based modes into kasan_init_tags().
+There's no need for __kasan_unpoison_stack() helper, as it's only
+currently used in a single place. Removing it also removes undeed
+arithmetic.
 
-Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
-tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
+No functional changes.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
+Link: https://linux-review.googlesource.com/id/Ie5ba549d445292fe629b4a96735e4034957bcc50
 ---
- arch/arm64/mm/kasan_init.c | 3 +++
- mm/kasan/generic.c         | 2 --
- mm/kasan/hw_tags.c         | 4 ++++
- mm/kasan/sw_tags.c         | 4 +++-
- 4 files changed, 10 insertions(+), 3 deletions(-)
+ mm/kasan/common.c | 12 +++---------
+ 1 file changed, 3 insertions(+), 9 deletions(-)
 
-diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
-index b6b9d55bb72e..8f17fa834b62 100644
---- a/arch/arm64/mm/kasan_init.c
-+++ b/arch/arm64/mm/kasan_init.c
-@@ -290,5 +290,8 @@ void __init kasan_init(void)
- {
- 	kasan_init_shadow();
- 	kasan_init_depth();
-+#if defined(CONFIG_KASAN_GENERIC)
-+	/* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
- 	pr_info("KernelAddressSanitizer initialized\n");
-+#endif
- }
-diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
-index de6b3f03a023..d259e4c3aefd 100644
---- a/mm/kasan/generic.c
-+++ b/mm/kasan/generic.c
-@@ -9,8 +9,6 @@
-  *        Andrey Konovalov <andreyknvl@gmail.com>
-  */
+diff --git a/mm/kasan/common.c b/mm/kasan/common.c
+index a3e67d49b893..9008fc6b0810 100644
+--- a/mm/kasan/common.c
++++ b/mm/kasan/common.c
+@@ -59,18 +59,12 @@ void kasan_disable_current(void)
+ #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
  
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+ #if CONFIG_KASAN_STACK
+-static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
+-{
+-	void *base = task_stack_page(task);
+-	size_t size = sp - base;
 -
- #include <linux/export.h>
- #include <linux/interrupt.h>
- #include <linux/init.h>
-diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index 0128062320d5..b372421258c8 100644
---- a/mm/kasan/hw_tags.c
-+++ b/mm/kasan/hw_tags.c
-@@ -6,6 +6,8 @@
-  * Author: Andrey Konovalov <andreyknvl@google.com>
-  */
- 
-+#define pr_fmt(fmt) "kasan: " fmt
-+
- #include <linux/kasan.h>
- #include <linux/kernel.h>
- #include <linux/memory.h>
-@@ -18,6 +20,8 @@
- void __init kasan_init_tags(void)
+-	kasan_unpoison_memory(base, size);
+-}
+-
+ /* Unpoison the entire stack for a task. */
+ void kasan_unpoison_task_stack(struct task_struct *task)
  {
- 	init_tags(KASAN_TAG_MAX);
+-	__kasan_unpoison_stack(task, task_stack_page(task) + THREAD_SIZE);
++	void *base = task_stack_page(task);
 +
-+	pr_info("KernelAddressSanitizer initialized\n");
++	kasan_unpoison_memory(base, THREAD_SIZE);
  }
  
- void *kasan_reset_tag(const void *addr)
-diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index bf1422282bb5..099af6dc8f7e 100644
---- a/mm/kasan/sw_tags.c
-+++ b/mm/kasan/sw_tags.c
-@@ -6,7 +6,7 @@
-  * Author: Andrey Konovalov <andreyknvl@google.com>
-  */
- 
--#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
-+#define pr_fmt(fmt) "kasan: " fmt
- 
- #include <linux/export.h>
- #include <linux/interrupt.h>
-@@ -41,6 +41,8 @@ void __init kasan_init_tags(void)
- 
- 	for_each_possible_cpu(cpu)
- 		per_cpu(prng_state, cpu) = (u32)get_cycles();
-+
-+	pr_info("KernelAddressSanitizer initialized\n");
- }
- 
- /*
+ /* Unpoison the stack for the current task beyond a watermark sp value. */
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
