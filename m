@@ -2,85 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B91929605C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:50:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D37C296063
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:50:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368036AbgJVNuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:50:17 -0400
-Received: from mga05.intel.com ([192.55.52.43]:30260 "EHLO mga05.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368021AbgJVNuK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S368043AbgJVNuX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:50:23 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:41860 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S367998AbgJVNuK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Oct 2020 09:50:10 -0400
-IronPort-SDR: J/3rNtxkYhJTxLu2+PUhEJ/QDABaI8Kd6Pp+BXPl4EfFPUDR6e7g0klBrEYc0vz3ANToopeBdm
- 3Zqjh7OI+Z9g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="252226602"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="252226602"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 06:50:06 -0700
-IronPort-SDR: UmvmZgYrQJluVawmVk0ysP1kYPZEoyDPFdcl8i1Z/Kkio6aApOwta6WI7pybKS4m49t2vq7e3a
- /GHcBHk4xaVg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="359865513"
-Received: from mylly.fi.intel.com (HELO [10.237.72.187]) ([10.237.72.187])
-  by orsmga007.jf.intel.com with ESMTP; 22 Oct 2020 06:50:04 -0700
-Subject: Re: [PATCH v2] i2c: designware: call
- i2c_dw_read_clear_intrbits_slave() once
-To:     Michael Wu <michael.wu@vatics.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Morgan Chang <morgan.chang@vatics.com>
-References: <20201022054625.21969-1-michael.wu@vatics.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <c96a6a99-5638-76c6-358e-e355f0f6b114@linux.intel.com>
-Date:   Thu, 22 Oct 2020 16:50:04 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+X-IronPort-AV: E=Sophos;i="5.77,404,1596492000"; 
+   d="scan'208";a="473874968"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 15:50:08 +0200
+Date:   Thu, 22 Oct 2020 15:50:08 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Izabela Bakollari <izabela.bakollari@gmail.com>
+cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
+        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
+Subject: Re: [Outreachy kernel] [PATCH] staging/wlan-ng: Fix line alignment
+In-Reply-To: <20201022132218.235744-1-izabela.bakollari@gmail.com>
+Message-ID: <alpine.DEB.2.22.394.2010221547500.5113@hadrien>
+References: <20201022132218.235744-1-izabela.bakollari@gmail.com>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-In-Reply-To: <20201022054625.21969-1-michael.wu@vatics.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
 
-On 10/22/20 8:46 AM, Michael Wu wrote:
-> @@ -217,10 +214,8 @@ static int i2c_dw_irq_handler_slave(struct dw_i2c_dev *dev)
->   		if (!i2c_slave_event(dev->slave, I2C_SLAVE_WRITE_RECEIVED,
->   				     &val))
->   			dev_vdbg(dev->dev, "Byte %X acked!", val);
-> -	} else {
-> +	} else
->   		i2c_slave_event(dev->slave, I2C_SLAVE_STOP, &val);
-> -		stat = i2c_dw_read_clear_intrbits_slave(dev);
-> -	}
->   
-Minor nit.  Please don't remove braces here since the upper part of if 
-statement has them.
 
- From Documentation/process/coding-style.rst:
-"
-This does not apply if only one branch of a conditional statement is a 
-single
-statement; in the latter case use braces in both branches:
+On Thu, 22 Oct 2020, izabela.bakollari@gmail.com wrote:
 
-.. code-block:: c
+> From: Izabela Bakollari <izabela.bakollari@gmail.com>
+>
+> Fix code alignment. Issue reported by checkpatch.pl
 
-         if (condition) {
-                 do_this();
-                 do_that();
-         } else {
-                 otherwise();
-         }
-"
+Try to find something other than "Fix" to describe what you have done.
+What kind of change have you made and why is it a good idea?
+>
+> Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
+> ---
+>  drivers/staging/wlan-ng/prism2mgmt.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/staging/wlan-ng/prism2mgmt.c b/drivers/staging/wlan-ng/prism2mgmt.c
+> index a908ff301707..1bd36dc2b7ff 100644
+> --- a/drivers/staging/wlan-ng/prism2mgmt.c
+> +++ b/drivers/staging/wlan-ng/prism2mgmt.c
+> @@ -1198,8 +1198,8 @@ int prism2mgmt_wlansniff(struct wlandevice *wlandev, void *msgp)
+>  			if (wlandev->netdev->type == ARPHRD_ETHER) {
+>  				/* Save macport 0 state */
+>  				result = hfa384x_drvr_getconfig16(hw,
+> -						  HFA384x_RID_CNFPORTTYPE,
+> -						  &hw->presniff_port_type);
+> +								  HFA384x_RID_CNFPORTTYPE,
+> +								  &hw->presniff_port_type);
 
-Otherwise looks good to me.
+I think that the code was nicer before.  Staying inside 80 characters is
+worth something, and having the arguments lined up with the ( seems lees
+important in this case.  It could be a concern if the arguments eg ended
+up right under the function name, because that would be easy to misread,
+but that is not the case here.
 
-Jarkko
+julia
+
+>  				if (result) {
+>  					netdev_dbg
+>  					(wlandev->netdev,
+> --
+> 2.18.4
+>
+> --
+> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
+> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
+> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20201022132218.235744-1-izabela.bakollari%40gmail.com.
+>
