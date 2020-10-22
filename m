@@ -2,268 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 133D829617B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:10:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F0E6929617E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368349AbgJVPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:10:54 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:11852 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508707AbgJVPKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:10:53 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603379452; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=3C3F2lmQbp8gch9c0PmjXhNxmlr9JRn/7qUaP8Vq+pk=;
- b=QUjUO6gVZNzPutMs1j5YIqU4hC+mkNeXTOM5s/rnsJpR1JA9MHUYbZhBKnAdCVcl0sXEsTNu
- lMmI7GvF0x5ppYnvU2sZ2bafPRlVUE0JNfcguaUbW2R3q0C9KFDhrcC4pXbcCVWSrrLQa0Jd
- CRgSLTJr7o/ENPEO+s2pAQPeOes=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
- 5f91a0f2319d4e9cb5653c6e (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 15:10:42
- GMT
-Sender: dikshita=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 2C691C433C9; Thu, 22 Oct 2020 15:10:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        id S368491AbgJVPMT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:12:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36292 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S368432AbgJVPMR (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:12:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603379536;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=uDlJvVtWMlPWw+lQx90tQ7kEfUNHvkpfYYWbomFbvhA=;
+        b=QacrUXZGTFkmWMLriwhtv9Xp3reNIXmA+Mip6T76HeNKWBRbZfG+SGSKdSp6nrNda1wAkk
+        O3XDu4ag9sqoxBgaXo1dtn70S20a5IvDLdGfJDEDit+Yk88ODhMbcWkDz5btxz0dOU0EYN
+        /D2eyG0Hf158yRdDwRGW2Y4IsV7awHM=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-584-nYS15yLeNbO5z0Blf0cGTA-1; Thu, 22 Oct 2020 11:12:13 -0400
+X-MC-Unique: nYS15yLeNbO5z0Blf0cGTA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: dikshita)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6BF63C433CB;
-        Thu, 22 Oct 2020 15:10:40 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 108C41882FA1;
+        Thu, 22 Oct 2020 15:12:11 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-70.phx2.redhat.com [10.3.113.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 4253C55776;
+        Thu, 22 Oct 2020 15:12:02 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 11:12:00 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Colin Ian King <colin.king@canonical.com>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022151200.GC92942@lorien.usersys.redhat.com>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <20201022145250.GK32041@suse.de>
+ <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Thu, 22 Oct 2020 20:40:40 +0530
-From:   dikshita@codeaurora.org
-To:     Alexandre Courbot <acourbot@chromium.org>
-Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
-        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org,
-        Vikash Garodia <vgarodia@codeaurora.org>
-Subject: Re: [PATCH] venus: venc: add handling for VIDIOC_ENCODER_CMD
-In-Reply-To: <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
-References: <1603117737-16965-1-git-send-email-dikshita@codeaurora.org>
- <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
-Message-ID: <c6a5c4b7c4ae8cb4e653cf98ec8a9750@codeaurora.org>
-X-Sender: dikshita@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Alex,
+On Thu, Oct 22, 2020 at 03:58:13PM +0100 Colin Ian King wrote:
+> On 22/10/2020 15:52, Mel Gorman wrote:
+> > On Thu, Oct 22, 2020 at 02:29:49PM +0200, Peter Zijlstra wrote:
+> >> On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
+> >>>> However I do want to retire ondemand, conservative and also very much
+> >>>> intel_pstate/active mode.
+> >>>
+> >>> I agree in general, but IMO it would not be prudent to do that without making
+> >>> schedutil provide the same level of performance in all of the relevant use
+> >>> cases.
+> >>
+> >> Agreed; I though to have understood we were there already.
+> > 
+> > AFAIK, not quite (added Giovanni as he has been paying more attention).
+> > Schedutil has improved since it was merged but not to the extent where
+> > it is a drop-in replacement. The standard it needs to meet is that
+> > it is at least equivalent to powersave (in intel_pstate language)
+> > or ondemand (acpi_cpufreq) and within a reasonable percentage of the
+> > performance governor. Defaulting to performance is a) giving up and b)
+> > the performance governor is not a universal win. There are some questions
+> > currently on whether schedutil is good enough when HWP is not available.
+> > There was some evidence (I don't have the data, Giovanni was looking into
+> > it) that HWP was a requirement to make schedutil work well. That is a
+> > hazard in itself because someone could test on the latest gen Intel CPU
+> > and conclude everything is fine and miss that Intel-specific technology
+> > is needed to make it work well while throwing everyone else under a bus.
+> > Giovanni knows a lot more than I do about this, I could be wrong or
+> > forgetting things.
+> > 
+> > For distros, switching to schedutil by default would be nice because
+> > frequency selection state would follow the task instead of being per-cpu
+> > and we could stop worrying about different HWP implementations but it's
+> > not at the point where the switch is advisable. I would expect hard data
+> > before switching the default and still would strongly advise having a
+> > period of time where we can fall back when someone inevitably finds a
+> > new corner case or exception.
+> 
+> ..and it would be really useful for distros to know when the hard data
+> is available so that they can make an informed decision when to move to
+> schedutil.
+>
 
-Thanks for your suggestion, the helpers are good
-but it is complicated to use them in video deriver
-as video driver needs to deal with FW interface and
-wait for buffer processing from FW.
-So these helpers can't be used directly.
+I think distros are on the hook to generate that hard data themselves
+with which to make such a decision.  I don't expect it to be done by
+someone else. 
 
-For example in case of B frames,
-to encode such frame FW expect one more buffer to be queued
-on src queue which needs to be handled by queueing an empty buffer
-with EOS flag. Without EOS, we can't handle B frames.
+> > 
+> > For reference, SLUB had the same problem for years. It was switched
+> > on by default in the kernel config but it was a long time before
+> > SLUB was generally equivalent to SLAB in terms of performance. Block
+> > multiqueue also had vaguely similar issues before the default changes
+> > and a period of time before it was removed removed (example whinging mail
+> > https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
+> > It's schedutil's turn :P
+> > 
+> 
 
-Thanks,
-Dikshita
+Agreed. I'd like the option to switch back if we make the default change.
+It's on the table and I'd like to be able to go that way. 
 
-On 2020-10-20 14:27, Alexandre Courbot wrote:
-> Hi Dikshita,
-> 
-> On Mon, Oct 19, 2020 at 11:29 PM Dikshita Agarwal
-> <dikshita@codeaurora.org> wrote:
->> 
->> Add handling for below commands in encoder:
->> 1. V4L2_ENC_CMD_STOP
->> 2. V4L2_ENC_CMD_START
-> 
-> I suspect this can be implemented more easily (and more safely) using
-> the m2m encoder helpers introduced recently. Please see this commit
-> for details:
-> 
-> https://github.com/torvalds/linux/commit/2b48e113866a6735de3a99531183afb6217c2a60
-> 
-> By making use of this you can probably get rid of venus_enc_state
-> entirely. Also this generic implementation should take care of corner
-> cases that this patch does not address (like streaming off while a
-> drain is in progress).
-> 
->> 
->> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
->> ---
->>  drivers/media/platform/qcom/venus/core.h |  9 +++++
->>  drivers/media/platform/qcom/venus/venc.c | 64 
->> +++++++++++++++++++++++++++++++-
->>  2 files changed, 72 insertions(+), 1 deletion(-)
->> 
->> diff --git a/drivers/media/platform/qcom/venus/core.h 
->> b/drivers/media/platform/qcom/venus/core.h
->> index e30eeaf..5c46936 100644
->> --- a/drivers/media/platform/qcom/venus/core.h
->> +++ b/drivers/media/platform/qcom/venus/core.h
->> @@ -276,6 +276,14 @@ enum venus_dec_state {
->>         VENUS_DEC_STATE_DRC             = 7,
->>  };
->> 
->> +enum venus_enc_state {
->> +       VENUS_ENC_STATE_DEINIT          = 0,
->> +       VENUS_ENC_STATE_INIT            = 1,
->> +       VENUS_ENC_STATE_ENCODING        = 2,
->> +       VENUS_ENC_STATE_STOPPED         = 3,
->> +       VENUS_ENC_STATE_DRAIN           = 4,
->> +};
->> +
->>  struct venus_ts_metadata {
->>         bool used;
->>         u64 ts_ns;
->> @@ -367,6 +375,7 @@ struct venus_inst {
->>         u8 quantization;
->>         u8 xfer_func;
->>         enum venus_dec_state codec_state;
->> +       enum venus_enc_state enc_state;
->>         wait_queue_head_t reconf_wait;
->>         unsigned int subscriptions;
->>         int buf_count;
->> diff --git a/drivers/media/platform/qcom/venus/venc.c 
->> b/drivers/media/platform/qcom/venus/venc.c
->> index f7fb6e3..c6143b0 100644
->> --- a/drivers/media/platform/qcom/venus/venc.c
->> +++ b/drivers/media/platform/qcom/venus/venc.c
->> @@ -498,6 +498,46 @@ static int venc_enum_frameintervals(struct file 
->> *file, void *fh,
->>         return 0;
->>  }
->> 
->> +static int
->> +venc_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd 
->> *cmd)
->> +{
->> +       struct venus_inst *inst = to_inst(file);
->> +       struct hfi_frame_data fdata = {0};
->> +       int ret = 0;
->> +
->> +       ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, cmd);
->> +       if (ret)
->> +               return ret;
->> +
->> +       mutex_lock(&inst->lock);
->> +
->> +       if (cmd->cmd == V4L2_ENC_CMD_STOP &&
->> +           inst->enc_state == VENUS_ENC_STATE_ENCODING) {
->> +               /*
->> +                * Implement V4L2_ENC_CMD_STOP by enqueue an empty 
->> buffer on
->> +                * encoder input to signal EOS.
->> +                */
->> +               if (!(inst->streamon_out && inst->streamon_cap))
->> +                       goto unlock;
->> +
->> +               fdata.buffer_type = HFI_BUFFER_INPUT;
->> +               fdata.flags |= HFI_BUFFERFLAG_EOS;
->> +               fdata.device_addr = 0xdeadb000;
->> +
->> +               ret = hfi_session_process_buf(inst, &fdata);
->> +
->> +               inst->enc_state = VENUS_ENC_STATE_DRAIN;
->> +       } else if (cmd->cmd == V4L2_ENC_CMD_START &&
->> +               inst->enc_state == VENUS_ENC_STATE_STOPPED) {
->> +               
->> vb2_clear_last_buffer_dequeued(&inst->fh.m2m_ctx->cap_q_ctx.q);
->> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
->> +       }
->> +
->> +unlock:
->> +       mutex_unlock(&inst->lock);
->> +       return ret;
->> +}
->> +
->>  static const struct v4l2_ioctl_ops venc_ioctl_ops = {
->>         .vidioc_querycap = venc_querycap,
->>         .vidioc_enum_fmt_vid_cap = venc_enum_fmt,
->> @@ -525,6 +565,7 @@ static int venc_enum_frameintervals(struct file 
->> *file, void *fh,
->>         .vidioc_enum_frameintervals = venc_enum_frameintervals,
->>         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
->>         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
->> +       .vidioc_encoder_cmd = venc_encoder_cmd,
->>  };
->> 
->>  static int venc_set_properties(struct venus_inst *inst)
->> @@ -884,6 +925,8 @@ static int venc_start_streaming(struct vb2_queue 
->> *q, unsigned int count)
->>         if (ret)
->>                 goto deinit_sess;
->> 
->> +       inst->enc_state = VENUS_ENC_STATE_ENCODING;
->> +
->>         mutex_unlock(&inst->lock);
->> 
->>         return 0;
->> @@ -903,8 +946,19 @@ static int venc_start_streaming(struct vb2_queue 
->> *q, unsigned int count)
->>  static void venc_vb2_buf_queue(struct vb2_buffer *vb)
->>  {
->>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
->> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
->> 
->>         mutex_lock(&inst->lock);
->> +
->> +       if (inst->enc_state == VENUS_ENC_STATE_STOPPED) {
->> +               vbuf->sequence = inst->sequence_cap++;
->> +               vbuf->field = V4L2_FIELD_NONE;
->> +               vb2_set_plane_payload(vb, 0, 0);
->> +               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
->> +               mutex_unlock(&inst->lock);
->> +               return;
->> +       }
->> +
->>         venus_helper_vb2_buf_queue(vb);
->>         mutex_unlock(&inst->lock);
->>  }
->> @@ -943,6 +997,11 @@ static void venc_buf_done(struct venus_inst 
->> *inst, unsigned int buf_type,
->>                 vb->planes[0].data_offset = data_offset;
->>                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
->>                 vbuf->sequence = inst->sequence_cap++;
->> +
->> +               if ((vbuf->flags & V4L2_BUF_FLAG_LAST) &&
->> +                   inst->enc_state == VENUS_ENC_STATE_DRAIN) {
->> +                       inst->enc_state = VENUS_ENC_STATE_STOPPED;
->> +               }
->>         } else {
->>                 vbuf->sequence = inst->sequence_out++;
->>         }
->> @@ -1041,6 +1100,9 @@ static int venc_open(struct file *file)
->>         inst->clk_data.core_id = VIDC_CORE_ID_DEFAULT;
->>         inst->core_acquired = false;
->> 
->> +       if (inst->enc_state == VENUS_ENC_STATE_DEINIT)
->> +               inst->enc_state = VENUS_ENC_STATE_INIT;
->> +
->>         venus_helper_init_instance(inst);
->> 
->>         ret = pm_runtime_get_sync(core->dev_enc);
->> @@ -1105,7 +1167,7 @@ static int venc_close(struct file *file)
->>         mutex_destroy(&inst->lock);
->>         v4l2_fh_del(&inst->fh);
->>         v4l2_fh_exit(&inst->fh);
->> -
->> +       inst->enc_state = VENUS_ENC_STATE_DEINIT;
->>         pm_runtime_put_sync(inst->core->dev_enc);
->> 
->>         kfree(inst);
->> --
->> 1.9.1
->> 
+Cheers,
+Phil
+
+-- 
+
