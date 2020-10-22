@@ -2,120 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0C0D296713
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:24:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1096729671A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372748AbgJVWYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:24:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372504AbgJVWYi (ORCPT
+        id S372774AbgJVWZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:25:35 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:50444 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372761AbgJVWZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:24:38 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A92C0613CE;
-        Thu, 22 Oct 2020 15:24:37 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id a28so3667136ljn.3;
-        Thu, 22 Oct 2020 15:24:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UkMo9YSByP/9a+a4AdI+yi1vCaJEUjkdx9AvlbGG/VA=;
-        b=ng91Tdl3pBDoUkFKc2xVpnTG6o2MSBkFORHCAoFWFxOTuXcSSix3p48H5kxjR3nEWa
-         AdVvc0c2ziFBrWsswAVwD1yD+S5SzTPqtfzqXo0aodkq+OiTrgVdN1/4GuKOdUqyUmQr
-         +GRE7KLCrzhSUdATfpPd+h+gOp/E8oy30yyrWHiuTytbDUgoEFIP3XRcYPkG88+etdbU
-         vNLQHlrvXgYoqwCfudllzcoqxrgW33i8LHTj89uBQjW5chudCu5CNynRRKRbBl+MZoXV
-         TTOkrpS3bZ2Y3zJ3QgwHg33LdIYo3UBPzNPWNwaAlw1p/NaVd2Wp5fg6n9fJ4micW7KS
-         /PYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UkMo9YSByP/9a+a4AdI+yi1vCaJEUjkdx9AvlbGG/VA=;
-        b=BpSRUWKdCGLkJCNTsDZKv1JJqkesaWec2YtArKT/NupVBGphuXkQYv5bQ+CISbNuK+
-         3FYdodeoah37/ZIz2mlGRbTI/ia/C/4s7mGOIkN3Vwpd0yNHbq0sPFzFbFG7q41fiHad
-         6oN5L0IiTU2Jn9GbpnXWZ/asmxDNl2zJv3g2vIZGhwRU9BsdE8S2QQSgdOP89zGVoS5U
-         8skL7T2Txtneelw/0eAcnl9hJCFYU2fhuWMOI1OmgYHteZSM6jyj0h5ti720eS4a3dpo
-         2mMCZS1QSco8dWNLTsuc3GnWTVq4eAue6AQgow5xdBgt60bR3louCcXd+2c6jW7e/fry
-         BMDw==
-X-Gm-Message-State: AOAM533BgG8nAbbosyg3I9IPa67r1l6QaVRO3Kaehx9SFCWQv8TB773w
-        1fGF2qMvMzJwYZm5ze0p3GpOL5GZ+fxqlQ==
-X-Google-Smtp-Source: ABdhPJx5YviZO9AmLfC4zO4HDKLBOEanXPu68ZVGSRTNYTaA44O+Q72epSPqVvZXgnaj8XxH5i8bEw==
-X-Received: by 2002:a05:651c:1194:: with SMTP id w20mr1737072ljo.174.1603405475827;
-        Thu, 22 Oct 2020 15:24:35 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id i22sm396520lfl.52.2020.10.22.15.24.31
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 15:24:34 -0700 (PDT)
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
-        systemd-devel@lists.freedesktop.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
-        kernel-hardening@lists.openwall.com,
-        linux-hardening@vger.kernel.org
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022075447.GO3819@arm.com>
- <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
- <202010221256.A4F95FD11@keescook>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <180cd894-d42d-2bdb-093c-b5360b0ecb1e@gmail.com>
-Date:   Fri, 23 Oct 2020 01:24:14 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 22 Oct 2020 18:25:34 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=9KIyS8u6oc8AJBGGp4mSeBUZ13SZ6CgKdsvjS5de0m0=; b=jPpvxa5eG3kzWlYlXtiz1X4dc/
+        Adl1lVrJTuKBGIugrXCImIFLT9quV6T+xOIPTOvfmCPOAMwaGODftAnwqJpEpNnBxZj6Kr08CZPhS
+        bvmvAk9EnawxMM+C/xPOI01S1cWelqbPIzonpIJJcviO5TydPxKW3d/OjsK91/Vd38/As+w0TcA18
+        SY7WMtKiV/SZGG+YU/U9JYHap1LzYCCB0O7/4ytWBhUzBNddhqe4XDGFH8qkK2babve7fXMT/rBW9
+        sj4IIqJIgysrBZ/JFCfJD9kid8dGJeNvE+2r2YT3Cz1QGgInYzkUxVmUHUybPrl8JgZLJxoAiGiYE
+        mXryL6dQ==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kVj1T-0005dE-Gc; Thu, 22 Oct 2020 16:25:28 -0600
+To:     Omar Sandoval <osandov@osandov.com>
+Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20201008164024.12546-1-logang@deltatee.com>
+ <29f3dc94-50c3-1548-034e-09c5394ef781@deltatee.com>
+ <20201022220412.GB1006674@relinquished.localdomain>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <088efbf6-efb4-5a0f-2295-cedba2c150ea@deltatee.com>
+Date:   Thu, 22 Oct 2020 16:25:24 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-In-Reply-To: <202010221256.A4F95FD11@keescook>
-Content-Type: text/plain; charset=utf-8; format=flowed
+In-Reply-To: <20201022220412.GB1006674@relinquished.localdomain>
+Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, Chaitanya.Kulkarni@wdc.com, sagi@grimberg.me, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, osandov@osandov.com
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH blktests v3 00/11] NVMe Target Passthru Block Tests
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.2020 23.02, Kees Cook wrote:
-> On Thu, Oct 22, 2020 at 01:39:07PM +0300, Topi Miettinen wrote:
->> But I think SELinux has a more complete solution (execmem) which can track
->> the pages better than is possible with seccomp solution which has a very
->> narrow field of view. Maybe this facility could be made available to
->> non-SELinux systems, for example with prctl()? Then the in-kernel MDWX could
->> allow mprotect(PROT_EXEC | PROT_BTI) in case the backing file hasn't been
->> modified, the source filesystem isn't writable for the calling process and
->> the file descriptor isn't created with memfd_create().
+
+
+On 2020-10-22 4:04 p.m., Omar Sandoval wrote:
+> On Thu, Oct 22, 2020 at 12:45:25PM -0600, Logan Gunthorpe wrote:
+>>
+>> On 2020-10-08 10:40 a.m., Logan Gunthorpe wrote:
+>>> Hi,
+>>>
+>>> This series adds blktests for the nvmet passthru feature that was merged
+>>> for 5.9. It's been reconciled with Sagi's blktest series that Omar
+>>> recently merged.
+>>
+>> Bump. This has been around for a while now. Omar, can you please
+>> consider picking this up?
 > 
-> Right. The problem here is that systemd is attempting to mediate a
-> state change using only syscall details (i.e. with seccomp) instead of
-> a stateful analysis. Using a MAC is likely the only sane way to do that.
-> SELinux is a bit difficult to adjust "on the fly" the way systemd would
-> like to do things, and the more dynamic approach seen with SARA[1] isn't
-> yet in the kernel.
+> There were a couple of shellcheck errors:
+> 
+> tests/nvme/rc:77:8: warning: Declare and assign separately to avoid masking return values. [SC2155]
+> tests/nvme/rc:278:7: note: Useless echo? Instead of 'echo $(cmd)', just use 'cmd'. [SC2005]
+> 
+> I fixed those up and applied, thanks.
 
-SARA looks interesting. What is missing is a prctl() to enable all W^X 
-protections irrevocably for the current process, then systemd could 
-enable it for services with MemoryDenyWriteExecute=yes.
+Oh, oops. I must have introduced those very recently.
 
-I didn't also see specific measures against memfd_create() or file 
-system W&X, but perhaps those can be added later. Maybe pkey_mprotect() 
-is not handled either unless it uses the same LSM hook as mprotect().
+Thanks for fixing it up and merging!
 
-> Trying to enforce memory W^X protection correctly
-> via seccomp isn't really going to work well, as far as I can see.
-
-Not in general, but I think it can work well in context of system 
-services. Then you can ensure that for a specific service, 
-memfd_create() is blocked by seccomp and the file systems are W^X 
-because of mount namespaces etc., so there should not be any means to 
-construct arbitrary executable pages.
-
--Topi
+Logan
