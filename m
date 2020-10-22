@@ -2,192 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6858E2963CF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:34:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 120C22963D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:38:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900568AbgJVRem (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:34:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33960 "EHLO
+        id S2900756AbgJVRis (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:38:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34588 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900539AbgJVRem (ORCPT
+        with ESMTP id S2900669AbgJVRir (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:34:42 -0400
-Received: from mail-pg1-x549.google.com (mail-pg1-x549.google.com [IPv6:2607:f8b0:4864:20::549])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B4D8C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:34:40 -0700 (PDT)
-Received: by mail-pg1-x549.google.com with SMTP id z4so1271579pgv.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:34:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=wxOHue2BkzYY1LLb53+foSFWS+cuHJ2IStm1xjmkKr8=;
-        b=iiwjPK9CFBKzwxj+yijsRhqmNhIuROH2A3N4gt2PTU++/FcbBJzQvSXs8boXJHVbfe
-         EV2zaRzDg6sh8d6+b9D4bgMdvCsW6rRj6N9rlwi3zw9kb0lFbMhlIsRtbELNKCLiSxAE
-         V8MrDapqFmGnAneZuUYpdAhvPI1NVJ0L+CXJda+66WkG3oY00ui4ifytjpKhf4zCyfm1
-         rRjwwibtRYekvdQiAX/zXcEhhhamY9BOUG4vZfT24t+H1+oF1g+AlDHFvv/tD/P21+O0
-         26rCT2ZVAb2cQlxkfjkLMLx7b3b1vFyjMivt4cDfo5RbaIG5Bevu7pJ/xJ5VQXZuHi/1
-         V5/A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=wxOHue2BkzYY1LLb53+foSFWS+cuHJ2IStm1xjmkKr8=;
-        b=QcP1Ezeq2iuxu0m58XxYMLCi5kz24oPplnGinkFPEjfUBZVyLvnGa4BvTWCgOnOyKH
-         X1670B4Tefum6OYxg+OT84/t3+9KjTwDNPvs4aaL8in5dpMlKnladpj+yVTlp4moyYrf
-         tCAZ0DtjL/WPZWD/K/NjI3NC1AVyXYTG3A8X2Tc+IL3bRVyx/wfVDfS/qzCBr/Jdyhoy
-         6ZIgdE7/pGeqmhMStK/tpvccBfm3ZRt7BUtzMIa7YrxKJ1WF0pyoPSlCgeSy/j+vu/9H
-         2vkumipVv0wD4NtozM2S/53ylmHPgDK0FF/ZoMfkacoPf5t1zM/JD+gHIcw2j9L23H4Q
-         QWrw==
-X-Gm-Message-State: AOAM53219fjgFbXg30KewFtXYWRHy6lH+jZZ5TrUWFVIYne931uMCbQ/
-        vP4KI8Yp3t46bUBxa7rvYfiulCU=
-X-Google-Smtp-Source: ABdhPJwYk+gu7nHxO+NNCUZ7VqcykMlh7sFIESuh/sQA71tW9veKtos/cueQQlAt6ss3u/8OgvyI49U=
-Sender: "lpy via sendgmr" <lpy@lpy-goobuntu.mtv.corp.google.com>
-X-Received: from lpy-goobuntu.mtv.corp.google.com ([2620:15c:211:2:5265:f3ff:fe23:c8be])
- (user=lpy job=sendgmr) by 2002:a17:90a:8684:: with SMTP id
- p4mr3209296pjn.232.1603388080013; Thu, 22 Oct 2020 10:34:40 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 10:34:34 -0700
-In-Reply-To: <20200820162738.33053904@oasis.local.home>
-Message-Id: <20201022173434.910879-1-lpy@google.com>
-Mime-Version: 1.0
-References: <20200820162738.33053904@oasis.local.home>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v4] Add power/gpu_frequency tracepoint.
-From:   Peiyong Lin <lpy@google.com>
-To:     rostedt@goodmis.org
-Cc:     amit.kucheria@linaro.org, android-kernel@google.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        lpy@google.com, mingo@redhat.com, paul.walmsley@sifive.com,
-        pavel@ucw.cz, prahladk@google.com, rafael.j.wysocki@intel.com,
-        ulf.hansson@linaro.org, yamada.masahiro@socionext.com,
-        zzyiwei@android.com, sidaths@google.com
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 22 Oct 2020 13:38:47 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BEE9C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:38:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=Av8z1OAoWP6TUwqZe/u8+x2MuYIFI5KUabnqBXID5Xo=; b=An6mTWAuety6iZzqc+5ehXGP7
+        0XP8sSiKGO1z5HwHdKl44Ry028aD+ffGe/745zeOfRPsn0T5iSURWz7rKTHTjKYTrhNxk/UgmZc5s
+        jjgofGVYh6WrjNVkNpP2FiICCZMNFqIAxcmflc1IMC1spp3NXEb+xhqQRoyQwMQTWGIC38J2WDSnF
+        9GGKZvDgJMxq89xHf3KAuv6dTmvkf2I/rpSHRKUkwo3oiU9n5ZIaM0uT6OnUnKgGFFhcXepUoXOmK
+        5nA8+UHvJKJSJdskhDR3x4nr5T1S/GHN3cxdGEu+ylx/C0dgAqU1E4SIJ59QWNZwQ+IaKt6jriHZv
+        N+ZGZNMTQ==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49602)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVeY0-0002Mj-Tf; Thu, 22 Oct 2020 18:38:44 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVeY0-0007aF-2A; Thu, 22 Oct 2020 18:38:44 +0100
+Date:   Thu, 22 Oct 2020 18:38:44 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Ard Biesheuvel <ardb@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+Message-ID: <20201022173843.GR1551@shell.armlinux.org.uk>
+References: <202010211637.7CFD8435@keescook>
+ <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook>
+ <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
+ <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk>
+ <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+ <20201022162334.GQ1551@shell.armlinux.org.uk>
+ <53e78602-6370-aeb1-398b-5c065dd562f8@gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <53e78602-6370-aeb1-398b-5c065dd562f8@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Historically there is no common trace event for GPU frequency, in
-downstream Android each different hardware vendor implements their own
-way to expose GPU frequency, for example as a debugfs node.  This patch
-standardize it as a common trace event in upstream linux kernel to help
-the ecosystem have a common implementation across hardware vendors.
-Toolings in the Linux ecosystem will benefit from this especially in the
-downstream Android, where this information is critical to graphics
-developers.
+On Thu, Oct 22, 2020 at 07:34:38PM +0300, Dmitry Osipenko wrote:
+> 22.10.2020 19:23, Russell King - ARM Linux admin пишет:
+> > On Thu, Oct 22, 2020 at 06:20:40PM +0200, Ard Biesheuvel wrote:
+> >> On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
+> >> <linux@armlinux.org.uk> wrote:
+> >>>
+> >>> On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
+> >>>> On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >>>>>
+> >>>>> 22.10.2020 10:06, Ard Biesheuvel пишет:
+> >>>>>> On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wrote:
+> >>>>>>>
+> >>>>>>> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
+> >>>>>>>> 22.10.2020 02:40, Kees Cook пишет:
+> >>>>>>>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
+> >>>>>>>>>> The vfp_kmode_exception() function now is unreachable using relative
+> >>>>>>>>>> branching in THUMB2 kernel configuration, resulting in a "relocation
+> >>>>>>>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
+> >>>>>>>>>> linker error. Let's use long jump in order to fix the issue.
+> >>>>>>>>>
+> >>>>>>>>> Eek. Is this with gcc or clang?
+> >>>>>>>>
+> >>>>>>>> GCC 9.3.0
+> >>>>>>>>
+> >>>>>>>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+> >>>>>>>>>
+> >>>>>>>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
+> >>>>>>>>> That commit may have implicitly moved the location of .vfp11_veneer,
+> >>>>>>>>> though I thought I had chosen the correct position.
+> >>>>>>>>
+> >>>>>>>> I re-checked that the fixes tag is correct.
+> >>>>>>>>
+> >>>>>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> >>>>>>>>>> ---
+> >>>>>>>>>>  arch/arm/vfp/vfphw.S | 3 ++-
+> >>>>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >>>>>>>>>>
+> >>>>>>>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+> >>>>>>>>>> index 4fcff9f59947..6e2b29f0c48d 100644
+> >>>>>>>>>> --- a/arch/arm/vfp/vfphw.S
+> >>>>>>>>>> +++ b/arch/arm/vfp/vfphw.S
+> >>>>>>>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+> >>>>>>>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor FP exceptions
+> >>>>>>>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mode
+> >>>>>>>>>>    teq     r3, #USR_MODE
+> >>>>>>>>>> -  bne     vfp_kmode_exception     @ Returns through lr
+> >>>>>>>>>> +  ldr     r1, =vfp_kmode_exception
+> >>>>>>>>>> +  bxne    r1                      @ Returns through lr
+> >>>>>>>>>>
+> >>>>>>>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
+> >>>>>>>>>>    DBGSTR1 "fpexc %08x", r1
+> >>>>>>>>>
+> >>>>>>>>> This seems like a workaround though? I suspect the vfp11_veneer needs
+> >>>>>>>>> moving?
+> >>>>>>>>>
+> >>>>>>>>
+> >>>>>>>> I don't know where it needs to be moved. Please feel free to make a
+> >>>>>>>> patch if you have a better idea, I'll be glad to test it.
+> >>>>>>>
+> >>>>>>> I might have just been distracted by the common "vfp" prefix. It's
+> >>>>>>> possible that the text section shuffling just ended up being very large,
+> >>>>>>> so probably this patch is right then!
+> >>>>>>>
+> >>>>>>
+> >>>>>> I already sent a fix for this issue:
+> >>>>>>
+> >>>>>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/1
+> >>>>>>
+> >>>>>
+> >>>>> The offending commit contains stable tag, so I assume that fixes tag is
+> >>>>> mandatory. Yours patch misses the fixes tag.
+> >>>>
+> >>>> Russell, mind adding that? Or would you like me to update the patch in
+> >>>> the patch system?
+> >>>
+> >>> Rather than adding the IT, I'm suggesting that we solve it a different
+> >>> way - ensuring that the two bits of code are co-located. There's no
+> >>> reason for them to be separated, and the assembly code entry point is
+> >>> already called indirectly.
+> >>>
+> >>> The problem is the assembly ends up in the .text section which ends up
+> >>> at the start of the binary, but depending on the compiler, functions
+> >>> in .c files end up in their own sections. It would be good if, as
+> >>> Dmitry has shown that it is indeed possible, to have them co-located.
+> >>
+> >> Why is that better? I provided a minimal fix which has zero impact on
+> >> ARM builds, and minimal impact on Thumb2 builds, given that it retains
+> >> the exact same semantics as before, but using a different opcode.
+> > 
+> > I think you just described the reason there. Why should we force
+> > everything to use a different opcode when a short jump _should_
+> > suffice?
+> > 
+> > Your patch may be a single line, but it has a slightly greater
+> > impact than the alternative two line solution.
+> > 
+> 
+> But the two line change isn't portable to stable kernels as-is, isn't it?
 
-Signed-off-by: Peiyong Lin <lpy@google.com>
----
+Why not?
 
-Changelog since v3:
- - Correct copyright title.
-
-Changelog since v2:
- - Add more comments to indicate when the event should be emitted.
- - Change state to frequency.
-
-Changelog since v1:
- - Use %u in TP_printk
-
- drivers/gpu/Makefile                    |  1 +
- drivers/gpu/trace/Kconfig               |  3 +++
- drivers/gpu/trace/Makefile              |  1 +
- drivers/gpu/trace/trace_gpu_frequency.c | 13 ++++++++++
- include/trace/events/power.h            | 33 +++++++++++++++++++++++++
- 5 files changed, 51 insertions(+)
- create mode 100644 drivers/gpu/trace/trace_gpu_frequency.c
-
-diff --git a/drivers/gpu/Makefile b/drivers/gpu/Makefile
-index 835c88318cec..f289a47eb031 100644
---- a/drivers/gpu/Makefile
-+++ b/drivers/gpu/Makefile
-@@ -6,3 +6,4 @@ obj-$(CONFIG_TEGRA_HOST1X)	+= host1x/
- obj-y			+= drm/ vga/
- obj-$(CONFIG_IMX_IPUV3_CORE)	+= ipu-v3/
- obj-$(CONFIG_TRACE_GPU_MEM)		+= trace/
-+obj-$(CONFIG_TRACE_GPU_FREQUENCY)		+= trace/
-diff --git a/drivers/gpu/trace/Kconfig b/drivers/gpu/trace/Kconfig
-index c24e9edd022e..ac4aec8d5845 100644
---- a/drivers/gpu/trace/Kconfig
-+++ b/drivers/gpu/trace/Kconfig
-@@ -2,3 +2,6 @@
- 
- config TRACE_GPU_MEM
- 	bool
-+
-+config TRACE_GPU_FREQUENCY
-+	bool
-diff --git a/drivers/gpu/trace/Makefile b/drivers/gpu/trace/Makefile
-index b70fbdc5847f..2b7ae69327d6 100644
---- a/drivers/gpu/trace/Makefile
-+++ b/drivers/gpu/trace/Makefile
-@@ -1,3 +1,4 @@
- # SPDX-License-Identifier: GPL-2.0
- 
- obj-$(CONFIG_TRACE_GPU_MEM) += trace_gpu_mem.o
-+obj-$(CONFIG_TRACE_GPU_FREQUENCY) += trace_gpu_frequency.o
-diff --git a/drivers/gpu/trace/trace_gpu_frequency.c b/drivers/gpu/trace/trace_gpu_frequency.c
-new file mode 100644
-index 000000000000..668fabd6b77a
---- /dev/null
-+++ b/drivers/gpu/trace/trace_gpu_frequency.c
-@@ -0,0 +1,13 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * GPU frequency trace points
-+ *
-+ * Copyright (C) 2020 Google LLC
-+ */
-+
-+#include <linux/module.h>
-+
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/power.h>
-+
-+EXPORT_TRACEPOINT_SYMBOL(gpu_frequency);
-diff --git a/include/trace/events/power.h b/include/trace/events/power.h
-index af5018aa9517..343825a76953 100644
---- a/include/trace/events/power.h
-+++ b/include/trace/events/power.h
-@@ -500,6 +500,39 @@ DEFINE_EVENT(dev_pm_qos_request, dev_pm_qos_remove_request,
- 
- 	TP_ARGS(name, type, new_value)
- );
-+
-+/**
-+ * gpu_frequency - Reports the GPU frequency in GPU clock domains.
-+ *
-+ * This event should be emitted whenever there's a GPU frequency change happens,
-+ * or a GPU goes from idle state to active state, or vice versa.
-+ *
-+ * When the GPU goes from idle state to active state, this event should report
-+ * the GPU frequency of the active state. When the GPU goes from active state to
-+ * idle state, this event should report a zero frequency value.
-+ *
-+ * @frequency:  New frequency (in KHz)
-+ * @gpu_id: Id for each GPU clock domain
-+ */
-+TRACE_EVENT(gpu_frequency,
-+
-+	TP_PROTO(unsigned int frequency, unsigned int gpu_id),
-+
-+	TP_ARGS(frequency, gpu_id),
-+
-+	TP_STRUCT__entry(
-+		__field(unsigned int, frequency)
-+		__field(unsigned int, gpu_id)
-+	),
-+
-+	TP_fast_assign(
-+		__entry->frequency = frequency;
-+		__entry->gpu_id = gpu_id;
-+	),
-+
-+	TP_printk("frequency=%u gpu_id=%u",
-+		__entry->frequency, __entry->gpu_id)
-+);
- #endif /* _TRACE_POWER_H */
- 
- /* This part must be outside protection */
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
