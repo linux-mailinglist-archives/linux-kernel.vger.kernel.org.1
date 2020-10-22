@@ -2,219 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDC50295601
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56894295602
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:21:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894663AbgJVBVQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:21:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52942 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894656AbgJVBVQ (ORCPT
+        id S2894675AbgJVBVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:21:31 -0400
+Received: from smtp1.kaist.ac.kr ([143.248.5.228]:45478 "EHLO
+        smtp1.kaist.ac.kr" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2894667AbgJVBVb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:21:16 -0400
-Received: from mail-qk1-x749.google.com (mail-qk1-x749.google.com [IPv6:2607:f8b0:4864:20::749])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 957F3C0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:21:14 -0700 (PDT)
-Received: by mail-qk1-x749.google.com with SMTP id d5so2947259qkg.16
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:21:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=Js6xKSsQarFSzAqlLNbqSKDvsIAL2Ulu7vmD2P/qCQ0=;
-        b=G2Rk3NTNeizVUXrrKW3VThtrUg6KYQV+3OC3BDc+RG+hwSeMAw8v4iHA2xRdRG9n5I
-         MD65Qj5qKfMSrhANDPNJF3GBlcvoYBnrhpGQqNMm+n/F3/oERzkjI6iRTeWU+5OrRokI
-         UvzX33T3DP4Zitx8mfsPIsnmVidmUlKBXa1HPdwo9NSCFwJeUV8cdNintLOB44QUXA4G
-         26FUiN7HUU1+CVQxQ70Chvu9Kdv1qGw3+KNfjBGzQfoPeWKH+S/2OwFfW4D2+5u64FUk
-         WTLmfT58xbVKnedhfOCVmvItSXlFylKG+mPPD1nniNaEqU8jshaZECJJQ/QtY1h6+GnH
-         3C7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=Js6xKSsQarFSzAqlLNbqSKDvsIAL2Ulu7vmD2P/qCQ0=;
-        b=AqWjlMqfQfwhh4lNZ89LGg255/poJMhx1ifYX3KhaBeNo+FKM+UMCP9XddlAybn+FY
-         RVy5Rrx1ztvD0UiwPyoA3cCw+d/pIYdgTFpW6DlG9abH2sjLEIGVUN4jslkNTx/9JabW
-         lIGxNV0v9EXGKWuhri7Kui7s3lXUIJCFXcLZ+k/yYD80NWuTMQmgqqxOjACz7QvuX+QV
-         6s6hCaiDdTjTwcenA5Q59A2vXOjjk/emh4bzD1yWtIPiphlybNI7JYgArOJ2ecIUcWAa
-         7kUQdoNnJxYPnS5uuyoQCtQGFKISoduK5nsWDP4793TuhbPUpx4ZArwZYPuNrYLRi/Lg
-         jBJA==
-X-Gm-Message-State: AOAM531K/TgKRHEZlMbepR/t8pXoWlD52JyqU8wfmCZeehCNEunZMLby
-        3IfjlTQyKVTzgs+/ymzMUyehgT0EIZBc5t+Drkw=
-X-Google-Smtp-Source: ABdhPJz0SSMBINA49bRVpz0emfxWblgj2Vtj9m0koC11+YrVkgaDJTH+v+wseUqhJOu6t+1FbwDXI1SZZzHQ0rtA2h0=
-Sender: "ndesaulniers via sendgmr" 
-        <ndesaulniers@ndesaulniers1.mtv.corp.google.com>
-X-Received: from ndesaulniers1.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:4d25])
- (user=ndesaulniers job=sendgmr) by 2002:ad4:46a8:: with SMTP id
- br8mr234132qvb.24.1603329673641; Wed, 21 Oct 2020 18:21:13 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 18:21:06 -0700
-Message-Id: <20201022012106.1875129-1-ndesaulniers@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH] Kbuild: implement support for DWARF5
-From:   Nick Desaulniers <ndesaulniers@google.com>
-To:     Masahiro Yamada <masahiroy@kernel.org>
-Cc:     linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
-        clang-built-linux@googlegroups.com,
-        linux-toolchains@vger.kernel.org,
-        Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Wed, 21 Oct 2020 21:21:31 -0400
+Received: from unknown (HELO mail1.kaist.ac.kr) (143.248.5.69)
+        by 143.248.5.228 with ESMTP; 22 Oct 2020 10:21:29 +0900
+X-Original-SENDERIP: 143.248.5.69
+X-Original-MAILFROM: dae.r.jeong@kaist.ac.kr
+X-Original-RCPTTO: linux-kernel@vger.kernel.org
+Received: from kaist.ac.kr (143.248.133.220)
+        by kaist.ac.kr with ESMTP imoxion SensMail SmtpServer 7.0
+        id <7224713023a9492a84dd6477d3f89134> from <dae.r.jeong@kaist.ac.kr>;
+        Thu, 22 Oct 2020 10:21:28 +0900
+Date:   Thu, 22 Oct 2020 10:21:28 +0900
+From:   "Dae R. Jeong" <dae.r.jeong@kaist.ac.kr>
+To:     song@kernel.org
+Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
+        yjkwon@kaist.ac.kr
+Subject: [PATCH] md: fix a warning caused by a race between concurrent
+ md_ioctl()s
+Message-ID: <20201022012128.GA2103465@dragonet>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-DWARF5 is the latest standard of the DWARF debug info format.
+Syzkaller reports a warning as belows.
+WARNING: CPU: 0 PID: 9647 at drivers/md/md.c:7169
+...
+Call Trace:
+...
+RIP: 0010:md_ioctl+0x4017/0x5980 drivers/md/md.c:7169
+RSP: 0018:ffff888096027950 EFLAGS: 00010293
+RAX: ffff88809322c380 RBX: 0000000000000932 RCX: ffffffff84e266f2
+RDX: 0000000000000000 RSI: ffffffff84e299f7 RDI: 0000000000000007
+RBP: ffff888096027bc0 R08: ffff88809322c380 R09: ffffed101341a482
+R10: ffff888096027940 R11: ffff88809a0d240f R12: 0000000000000932
+R13: ffff8880a2c14100 R14: ffff88809a0d2268 R15: ffff88809a0d2408
+ __blkdev_driver_ioctl block/ioctl.c:304 [inline]
+ blkdev_ioctl+0xece/0x1c10 block/ioctl.c:606
+ block_ioctl+0xee/0x130 fs/block_dev.c:1930
+ vfs_ioctl fs/ioctl.c:46 [inline]
+ file_ioctl fs/ioctl.c:509 [inline]
+ do_vfs_ioctl+0xd5f/0x1380 fs/ioctl.c:696
+ ksys_ioctl+0xab/0xd0 fs/ioctl.c:713
+ __do_sys_ioctl fs/ioctl.c:720 [inline]
+ __se_sys_ioctl fs/ioctl.c:718 [inline]
+ __x64_sys_ioctl+0x73/0xb0 fs/ioctl.c:718
+ do_syscall_64+0xfd/0x680 arch/x86/entry/common.c:301
+ entry_SYSCALL_64_after_hwframe+0x49/0xbe
 
-Feature detection of DWARF5 is onerous, especially given that we've
-removed $(AS), so we must query $(CC) for DWARF5 assembler directive
-support. Further -gdwarf-X where X is an unsupported value doesn't
-produce an error in $(CC). GNU `as` only recently gained support for
-specifying -gdwarf-5.
+This is caused by a race between two concurrenct md_ioctl()s closing
+the array.
+CPU1 (md_ioctl())                   CPU2 (md_ioctl())
+------                              ------
+set_bit(MD_CLOSING, &mddev->flags);
+did_set_md_closing = true;
+                                    WARN_ON_ONCE(test_bit(MD_CLOSING,
+                                            &mddev->flags));
+if(did_set_md_closing)
+    clear_bit(MD_CLOSING, &mddev->flags);
 
-The DWARF version of a binary can be validated with:
-$ llvm-dwarfdump vmlinux | head -n 5 | grep version
-or
-$ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+Fix the warning by returning immediately if the MD_CLOSING bit is set
+in &mddev->flags which indicates that the array is being closed.
 
-DWARF5 wins significantly in terms of size when mixed with compression
-(CONFIG_DEBUG_INFO_COMPRESSED).
-
-363M    vmlinux.clang12.dwarf5.compressed
-434M    vmlinux.clang12.dwarf4.compressed
-439M    vmlinux.clang12.dwarf2.compressed
-457M    vmlinux.clang12.dwarf5
-536M    vmlinux.clang12.dwarf4
-548M    vmlinux.clang12.dwarf2
-
-Make CONFIG_DEBUG_INFO_DWARF4 part of a Kconfig choice to preserve
-forward compatibility.
-
-Link: http://www.dwarfstd.org/doc/DWARF5.pdf
-Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+Fixes: 065e519e71b2 ("md: MD_CLOSING needs to be cleared after called md_set_readonly or do_md_stop")
+Reported-by: syzbot+1e46a0864c1a6e9bd3d8@syzkaller.appspotmail.com
+Signed-off-by: Dae R. Jeong <dae.r.jeong@kaist.ac.kr>
 ---
-RFC because this patch is super half baked, but I'm looking for
-feedback.
+ drivers/md/md.c | 7 +++++--
+ 1 file changed, 5 insertions(+), 2 deletions(-)
 
-I would logically split this into a series of patches;
-1. disable -Wa,gdwarf-2 for LLVM_IAS=1, see also
-  https://github.com/ClangBuiltLinux/linux/issues/716
-  https://github.com/ClangBuiltLinux/continuous-integration/blob/master/patches/llvm-all/linux-next/arm64/silence-dwarf2-warnings.patch
-  that way we can backport for improved LLVM_IAS support.
-2. move CONFIG_DEBUG_INFO_DWARF4 to choice.
-3. implement the rest on top.
-
-I'm pretty sure GNU `as` only recently gained the ability to specify
--gdwarf-4 without erroring in binutils 2.35, so that part likely needs
-to be fixed.
-
- Makefile                          | 19 ++++++++++++++++---
- include/asm-generic/vmlinux.lds.h |  6 +++++-
- lib/Kconfig.debug                 | 29 +++++++++++++++++++++++++----
- scripts/test_dwarf5_support.sh    |  4 ++++
- 4 files changed, 50 insertions(+), 8 deletions(-)
- create mode 100755 scripts/test_dwarf5_support.sh
-
-diff --git a/Makefile b/Makefile
-index e71979882e4f..0862df5b1a24 100644
---- a/Makefile
-+++ b/Makefile
-@@ -828,10 +828,23 @@ else
- DEBUG_CFLAGS	+= -g
- endif
- 
--KBUILD_AFLAGS	+= -Wa,-gdwarf-2
--
-+DWARF_VERSION=2
- ifdef CONFIG_DEBUG_INFO_DWARF4
--DEBUG_CFLAGS	+= -gdwarf-4
-+DWARF_VERSION=4
-+endif
-+ifdef CONFIG_DEBUG_INFO_DWARF5
-+DWARF_VERSION=5
-+endif
-+DEBUG_CFLAGS	+= -gdwarf-$(DWARF_VERSION)
-+
-+ifneq ($(DWARF_VERSION)$(LLVM_IAS),21)
-+KBUILD_AFLAGS	+= -Wa,-gdwarf-$(DWARF_VERSION)
-+endif
-+
-+ifdef CONFIG_CC_IS_CLANG
-+ifneq ($(LLVM_IAS),1)
-+KBUILD_CFLAGS	+= -Wa,-gdwarf-$(DWARF_VERSION)
-+endif
- endif
- 
- ifdef CONFIG_DEBUG_INFO_REDUCED
-diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
-index cd14444bf600..0382808ef9fe 100644
---- a/include/asm-generic/vmlinux.lds.h
-+++ b/include/asm-generic/vmlinux.lds.h
-@@ -828,7 +828,11 @@
- 		.debug_types	0 : { *(.debug_types) }			\
- 		/* DWARF 5 */						\
- 		.debug_macro	0 : { *(.debug_macro) }			\
--		.debug_addr	0 : { *(.debug_addr) }
-+		.debug_addr	0 : { *(.debug_addr) }			\
-+		.debug_line_str	0 : { *(.debug_line_str) }		\
-+		.debug_loclists	0 : { *(.debug_loclists) }		\
-+		.debug_rnglists	0 : { *(.debug_rnglists) }		\
-+		.debug_str_offsets 0 : { *(.debug_str_offsets) }
- 
- /* Stabs debugging sections. */
- #define STABS_DEBUG							\
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 537cf3c2937d..6b01f0e2dad8 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -256,14 +256,35 @@ config DEBUG_INFO_SPLIT
- 	  to know about the .dwo files and include them.
- 	  Incompatible with older versions of ccache.
- 
-+choice
-+prompt "DWARF version"
-+	depends on DEBUG_INFO
-+	default DEBUG_INFO_DWARF2
-+	help
-+	  Which version of DWARF debug info to emit.
-+
-+config DEBUG_INFO_DWARF2
-+	bool "Generate dwarf2 debuginfo"
-+	help
-+	  Generate dwarf2 debug info.
-+
- config DEBUG_INFO_DWARF4
- 	bool "Generate dwarf4 debuginfo"
- 	depends on $(cc-option,-gdwarf-4)
- 	help
--	  Generate dwarf4 debug info. This requires recent versions
--	  of gcc and gdb. It makes the debug information larger.
--	  But it significantly improves the success of resolving
--	  variables in gdb on optimized code.
-+	  Generate dwarf4 debug info. This requires gcc 4.5+ and gdb 7.0+.
-+	  It makes the debug information larger, but it significantly
-+	  improves the success of resolving variables in gdb on optimized code.
-+
-+config DEBUG_INFO_DWARF5
-+	bool "Generate dwarf5 debuginfo"
-+	depends on DEBUG_INFO
-+	depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
-+	help
-+	  Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
-+	  gdb 8.0+.
-+
-+endchoice # "DWARF version"
- 
- config DEBUG_INFO_BTF
- 	bool "Generate BTF typeinfo"
-diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
-new file mode 100755
-index 000000000000..82c0eea45845
---- /dev/null
-+++ b/scripts/test_dwarf5_support.sh
-@@ -0,0 +1,4 @@
-+#!/bin/sh
-+# SPDX-License-Identifier: GPL-2.0
-+set -eu
-+echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+diff --git a/drivers/md/md.c b/drivers/md/md.c
+index 98bac4f304ae..643f7f5be49b 100644
+--- a/drivers/md/md.c
++++ b/drivers/md/md.c
+@@ -7590,8 +7590,11 @@ static int md_ioctl(struct block_device *bdev, fmode_t mode,
+ 			err = -EBUSY;
+ 			goto out;
+ 		}
+-		WARN_ON_ONCE(test_bit(MD_CLOSING, &mddev->flags));
+-		set_bit(MD_CLOSING, &mddev->flags);
++		if (test_and_set_bit(MD_CLOSING, &mddev->flags)) {
++			mutex_unlock(&mddev->open_mutex);
++			err = -EBUSY;
++			goto out;
++		}
+ 		did_set_md_closing = true;
+ 		mutex_unlock(&mddev->open_mutex);
+ 		sync_blockdev(bdev);
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+2.25.1
+
+
 
