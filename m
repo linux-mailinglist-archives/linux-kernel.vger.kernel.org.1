@@ -2,247 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D3CE296565
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:31:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 59F9C296568
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:33:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370315AbgJVTa6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:30:58 -0400
-Received: from mout.kundenserver.de ([212.227.126.131]:44035 "EHLO
-        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370205AbgJVTa5 (ORCPT
+        id S370326AbgJVTdI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 15:33:08 -0400
+Received: from smtprelay0036.hostedemail.com ([216.40.44.36]:48060 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S370319AbgJVTdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:30:57 -0400
-Received: from [192.168.1.155] ([95.115.71.8]) by mrelayeu.kundenserver.de
- (mreue012 [212.227.15.167]) with ESMTPSA (Nemesis) id
- 1N6bHC-1kM8C01Uty-0183kL; Thu, 22 Oct 2020 21:30:46 +0200
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     Ed W <lists@wildgooses.com>, Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
- <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
- <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
- <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
- <e953f3ee-2db1-1523-cd84-6acb26751a15@wildgooses.com>
- <d0d91191-cad2-94a1-6373-0f3ff4e38376@redhat.com>
- <795ae78b-26cf-f58d-6981-f68d7599ccdf@wildgooses.com>
- <6a603bd6-63ff-52e8-8fa2-4442b06e493b@metux.net>
- <cb7a0dcd-7b4f-9baa-788d-c42db72afeb2@wildgooses.com>
-From:   "Enrico Weigelt, metux IT consult" <lkml@metux.net>
-Message-ID: <e21d6e89-9ae9-6b14-ff30-ae208d86a594@metux.net>
-Date:   Thu, 22 Oct 2020 21:30:41 +0200
-User-Agent: Mozilla/5.0 (X11; Linux i686 on x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 22 Oct 2020 15:33:08 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id DE7C2100E7B43;
+        Thu, 22 Oct 2020 19:33:06 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2553:2559:2562:2828:2910:3138:3139:3140:3141:3142:3353:3622:3865:3866:3868:3870:3871:3872:3873:3874:4321:4605:5007:6119:7903:8957:9010:10004:10400:11026:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13095:13311:13357:13439:14181:14659:14721:21080:21221:21433:21451:21627:21660:30003:30012:30054:30070:30089:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: lake06_0c0514e27253
+X-Filterd-Recvd-Size: 2520
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 22 Oct 2020 19:33:05 +0000 (UTC)
+Message-ID: <67247b2d51aa8b2da7377e400e9191733144ed0f.camel@perches.com>
+Subject: Re: [PATCH v2] checkpatch: fix false positives in REPEATED_WORD
+ warning
+From:   Joe Perches <joe@perches.com>
+To:     Aditya <yashsri421@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com
+Date:   Thu, 22 Oct 2020 12:33:04 -0700
+In-Reply-To: <5121bf7c-a126-6178-62ff-e54f0bb4cb6e@gmail.com>
+References: <20201022145021.28211-1-yashsri421@gmail.com>
+         <4cbbd8d8b6c4d686f71648af8bc970baa4b0ee9b.camel@perches.com>
+         <5121bf7c-a126-6178-62ff-e54f0bb4cb6e@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-In-Reply-To: <cb7a0dcd-7b4f-9baa-788d-c42db72afeb2@wildgooses.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: tl
-Content-Transfer-Encoding: 8bit
-X-Provags-ID: V03:K1:TTFU7oUGRD8cTfLnwpwJyB/LjcWwqmbhHzfHYEMVI9t/sX4eFFX
- nYjRRfqK+9Qms55sjaqNR38850ODaOXxl/bi4+oexOl3TyXwfV76okwXlorfLetGet/fwg1
- qFsK2nV8SaO9DUhs3clixQOvn59r6CMVfb3zK8WIE27mLozAoZ2slaK2L7KEEv8hjuKdKIz
- IXYtZaNWLdj/hDRjSqUEA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:ruM0cY5oiJc=:Mp4fKbl125Fi8dSBnWTHmL
- x4FuhX0UvVXLRuO4LnhtL99V5ZOinRvM/vM4FkwGe0cR4o9x82XGLobCCmqu1yXuL3npFDrnM
- mwI+LM6dD6cW+DNCaiCgU/3m3JDAtQ5q592HuHkcc1apCB6x18mzmx6shEoqPLd4JbSuG3Sva
- KKL7390k07nNAUjliDaNw7cvjAdXsVvbvAeUGZHPXTsNgWtlhlVorxhCmMVAflT+Ns9YJF9n5
- pYpkYRp73yQRkkTqSwYyh4kKJ5Eu2meTK0fNfqYvxWRD11VV5+urmk7zr3wUbXg0xja9XkYed
- QeChTflpc0QOxG/myLIfCXkFH0pefd0f6hOC2uvN20ZxuXqeJyznbJyCkvM18HXe+HcGeit1A
- cdr7EJV6uK8oVSUkpv3hz0+VoPqcbdkWBjFFLaKVwPf5vtnd2zist0rd8ckZW
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 17:10, Ed W wrote:
-
-Hi,
-
-> You are reaching the wrong conclusion I feel?
+On Fri, 2020-10-23 at 00:44 +0530, Aditya wrote:
+> On 22/10/20 9:40 pm, Joe Perches wrote:
+> > On Thu, 2020-10-22 at 20:20 +0530, Aditya Srivastava wrote:
+> > > Presence of hexadecimal address or symbol results in false warning
+> > > message by checkpatch.pl.
+> > []
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > []
+> > > @@ -3051,7 +3051,10 @@ sub process {
+> > >  		}
+> > >  
+> > >  # check for repeated words separated by a single space
+> > > -		if ($rawline =~ /^\+/ || $in_commit_log) {
+> > > +# avoid false positive from list command eg, '-rw-r--r-- 1 root root'
+> > > +		if (($rawline =~ /^\+/ || $in_commit_log) &&
+> > > +		$rawline !~ /[bcCdDlMnpPs\?-][rwxsStT-]{9}/) {
+> > 
+> > Alignment and use \b before and after the regex please.
 > 
-> a) your proposal doesn't address that ACPI and the upstream board configure all this stuff already.
+> If we use \b either before or after or both it does not match patterns
+> such as:
+> +   -rw-r--r--. 1 root root 112K Mar 20 12:16'
+selinux-policy-3.14.4-48.fc31.noarch.rpm
 
-Only for those with recent enough firmware. As already mentioned, we
-can't expect users to do BIOS upgrade in the *field* or have an
-dependencies between BIOS and kernel versions.
+OK, thanks, it's good you checked.
 
-> We are creating duplicate devices right now. 
+> > []
 
-Does that cause any actual failures ?
-
-> b) there is no reason for naming to be different between APU2-4 and 5. Lets standardise. I use the
-> boards somewhat interchangeably
-
-I'm fine with (actually prefer) having the same naming also on apu5.
-Actually, your argument is exactly why I did it this way for apu[234].
-
-> c) If you check my patch, there is already a DMI match for APU5, so this can do whatever you want it
-> to, however, since it's green fields, I've set it up to match the way APU2-4 is working (in my patch)
-
-Feel free to repost the patch for adding apu5 only.
-(too much traffic @lkml to keep everything)
-
-> d) Your driver already broke my userspace a year back when you changed these names. I've just
-> supported all/both versions of the LED naming conventions since then (it isn't hard). I do believe
-> we are overthinking this? It's really trivial to incorporate?
-
-Might be trivial for your case, lucky for you. My cases (and those I
-just got distant reports from) aren't so trivial, most of this hasn't
-much to do with actual coding (unfortunately, embedded world isn't as
-agile as some might want it to be)
-
-> Knock yourself out. However, make sure that you read Pascal's email to you where he states that
-> these lines aren't actually wired up on many of the board revisions?
-
-I know, but on some they are. The final implementation will take care
-of that (at least if we can gather that information somewhere).
-
-> The APU2-4 have
+> > What does all this code actually avoid?
 > 
-> - 3x mpcie *shaped* slots
-> 
-> - On some boards there are two of these wired with the pcie signals
-> - On some boards there are two or three of these wired with USB signals
-> - On some boards there are mSATA signals to one of these slots
-> - On some boards there are either 1x or 2x SIM cards wired to some of the slots
+> Sir, there are multiple variations of hex for which this warning is
+> occurring, for eg:
+> 1) 00 c0 06 16 00 00 ff ff 00 93 1c 18 00 00 ff ff  ................
+> 2) ffffffff ffffffff 00000000 c070058c
+> 3)     f5a:       48 c7 44 24 78 ff ff    movq
+> $0xffffffffffffffff,0x78(%rsp)
+> 4) +    fe fe
+> 5) +    fe fe   - ? end marker ?
+> 6) Code: ff ff 48 (...)
 
-ACK, that's pretty much my information - just don't recall the exact
-details for each one. (would have to dig into schematics again). I can
-confirm that each one (of those I have/had) has at least one msata,
-one pcie, one usb+sim - some have multiple functions.
+So why not just match first with /^[0-9a-f]+$/i ?
 
-But I still wonder what exactly you mean w/ "LTE-Port". Just an alias
-for those having USB+SIM ? (sorry if I'm too nitpicking, but I've
-learned that exact terminology often is very important - perhaps I've
-been a lawyer in some former life ;-))
-
-> What is common is that the reset lines (and rfkill) go to the same slots as the SIM lines.
-
-Let's rephrase it: those w/ USB+SIM also have a reset line.
-
-> So my suggestion is to name these lines based on "purpose", ie modem1 and modem2, which is 100%
-> consistent, rather than slot number, since that varies based on which board you pickup off the pile
-
-NAK. They still can serve several kinds of purpose, eg. those w/ USB or
-PCIE *and* SIM are by far not limited for modem's (and I'm really glad
-about that).
-
-Does it make any sense having WLAN, SSD, DAC, etc in an "modem port" ?
-I don't believe so.
-
-> I'm confused about what you mean by M2 slot? There are no m.2 slots on the board? only mpcie, some
-> with USB signals, some with SIM?
-
-Sorry, I've just been confused, believing that NGFF (in its different
-types) was an superset of mpcie - both can carry different signal types,
-You're right, I've been mistaken on that.
-
-I've just been looking for some adequate name for those kinds of ports
-which may have pcie, usb, sata, etc, all on one connector. Suggestions
-welcomed.
-
-Now we have at least two types of such things now on the table:
-mpcie/msata/usb (like apu*) and M.2. From embedded world, I know of
-several (propritary) port types fitting into similar category.
-PDMI and similar stuff (apple connectors, ...) probably, too
-
-I'll have to rethink what's the optimal approach with that, probably
-by a new subsystem (even though there's a little bit of overlap with
-extconn). Yes, that's a whole topic on it's own - we went quite
-offtopic.
-
-> We just need the GPIOs exposing in some way. Nothing else. Everything else is done in userspace
-
-Might be fine for you, but not for me. Exposing raw gpios isn't an
-entirely good idea (except for rare cases where kernel really cannot
-know what's the actual function of those IOs might be)
-
-> Not disagreeing, but it seems about as reliable as doing a software upgrade. If you do those then
-> you are likely safe doing this
-
-Already mentioned, BIOS is very different from OS. We've got several
-techniques for rescuing a machine from failed kernel (even remotely),
-but no such thing for broken BIOS - that requires physical replacement
-in the field.
-
-> Hint: use netboot for simplest setup
-
-Assuming there is another server in the LAN. We don't have this luxury.
-We're already happy with an dialup land line or some serial link routed
-out of some PLC. Remember: this is embedded, not office PC.
-
->> Let's try summarize the current state of knowledge:
->>
->> * apu2..4:
->>   * BIOS support highly depends on BIOS version, we need to
->>     support older versions.
->>   * Field depends on on driver's naming, keycodes, ...
-> 
-> 
-> Realistically that's only partially true:
-> 
-> - older kernels and older bios has "old names"
-> 
-> - kernels from a year back with your driver have a mix of "new" or "new + old" names depending on
-> whether the bios is newer than 4.10.
-
-Yes, and you suggested was removing the LEDs entirely. This means more
-radical changes, including loosing it all on older bios (which still is
-heavily used in the field).
-
-It certainly would be much simpler, if we could just run BIOS upgrades
-everywhere,
-but then the question would be: who's gonna pay the bill for that ? And
-who's responsible if anything goes wrong ?
-
-> - After the patch I proposed: newer bios and newer kernel use ACPI, older bios match your driver,
-> people upgrading from kernels more than about a year old don't notice since they move from "old"
-> names to "acpi names" which are identical.
-
-Very most of those people will only notice something completely new
-appearing - already mentioned: haven't found a single distro that had
-that enabled, nobody in the apu community seem to even know about it.
-
-Congratulations, you're the first person I've ever known who was
-actually using it :p
-
->> * simsw:
->>   * similar to mpcie-reset (still experimental, ...) ...
->>   * seems to be really bound to M2 ports
-> 
-> Not experimental. Works reliably. 
-
-I (maintainer) considered it experimental due to lack of testing
-and being a bit unreliable.
-
-> Just don't toggle them during bootup (as your driver was doing in
-> the past - current driver doesn't do this anymore - problem resolved)
-
-And thanks for that report.
-
-> The GPIO lines are wired to a SIM swap chip which does all the work. 
-> The LTE cards don't know or see what is happening
-
-On which boards did you see that ?
-
-For my boards (don't recall which combinations I've actually tested),
-it seemed to work sometimes, but not very reliable. (probably because
-of the bug you've mentioned).
+Doesn't that match all the cases listed above?
 
 
---mtx
-
--- 
----
-Hinweis: unverschlüsselte E-Mails können leicht abgehört und manipuliert
-werden ! Für eine vertrauliche Kommunikation senden Sie bitte ihren
-GPG/PGP-Schlüssel zu.
----
-Enrico Weigelt, metux IT consult
-Free software and Linux embedded engineering
-info@metux.net -- +49-151-27565287
