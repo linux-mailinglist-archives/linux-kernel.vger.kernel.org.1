@@ -2,94 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70EAB29670F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:24:02 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D0C0D296713
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:24:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369630AbgJVWYB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:24:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50166 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369610AbgJVWYA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:24:00 -0400
-Received: from localhost (c-67-169-218-210.hsd1.or.comcast.net [67.169.218.210])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 96C8F24631;
-        Thu, 22 Oct 2020 22:23:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603405439;
-        bh=GEmg9HIaeQ5bKfcJYYGD6ds4B2O3J6S3lkr6Gq69238=;
-        h=Date:From:To:Cc:Subject:From;
-        b=lAefka8i/isTAxOCCGr+hmtfTRZDgtMeSX0JEE3RLqrEsPURrRh4ZCPwzb6T6HHkD
-         n9K/SKWgckh+MEZQJEzsJRK51uLxc1baC56YPLobDDt0ujf2n66GoWwX3E4xFpPYXg
-         ZELdMIwwVEwa2fkYGMbaPR9EIJ4wRnmcnnc1k+eg=
-Date:   Thu, 22 Oct 2020 15:23:58 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] vfs: move the clone/dedupe/remap helpers to a single file
-Message-ID: <20201022222358.GD9825@magnolia>
+        id S372748AbgJVWYj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:24:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50460 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372504AbgJVWYi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 18:24:38 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3A92C0613CE;
+        Thu, 22 Oct 2020 15:24:37 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id a28so3667136ljn.3;
+        Thu, 22 Oct 2020 15:24:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=UkMo9YSByP/9a+a4AdI+yi1vCaJEUjkdx9AvlbGG/VA=;
+        b=ng91Tdl3pBDoUkFKc2xVpnTG6o2MSBkFORHCAoFWFxOTuXcSSix3p48H5kxjR3nEWa
+         AdVvc0c2ziFBrWsswAVwD1yD+S5SzTPqtfzqXo0aodkq+OiTrgVdN1/4GuKOdUqyUmQr
+         +GRE7KLCrzhSUdATfpPd+h+gOp/E8oy30yyrWHiuTytbDUgoEFIP3XRcYPkG88+etdbU
+         vNLQHlrvXgYoqwCfudllzcoqxrgW33i8LHTj89uBQjW5chudCu5CNynRRKRbBl+MZoXV
+         TTOkrpS3bZ2Y3zJ3QgwHg33LdIYo3UBPzNPWNwaAlw1p/NaVd2Wp5fg6n9fJ4micW7KS
+         /PYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=UkMo9YSByP/9a+a4AdI+yi1vCaJEUjkdx9AvlbGG/VA=;
+        b=BpSRUWKdCGLkJCNTsDZKv1JJqkesaWec2YtArKT/NupVBGphuXkQYv5bQ+CISbNuK+
+         3FYdodeoah37/ZIz2mlGRbTI/ia/C/4s7mGOIkN3Vwpd0yNHbq0sPFzFbFG7q41fiHad
+         6oN5L0IiTU2Jn9GbpnXWZ/asmxDNl2zJv3g2vIZGhwRU9BsdE8S2QQSgdOP89zGVoS5U
+         8skL7T2Txtneelw/0eAcnl9hJCFYU2fhuWMOI1OmgYHteZSM6jyj0h5ti720eS4a3dpo
+         2mMCZS1QSco8dWNLTsuc3GnWTVq4eAue6AQgow5xdBgt60bR3louCcXd+2c6jW7e/fry
+         BMDw==
+X-Gm-Message-State: AOAM533BgG8nAbbosyg3I9IPa67r1l6QaVRO3Kaehx9SFCWQv8TB773w
+        1fGF2qMvMzJwYZm5ze0p3GpOL5GZ+fxqlQ==
+X-Google-Smtp-Source: ABdhPJx5YviZO9AmLfC4zO4HDKLBOEanXPu68ZVGSRTNYTaA44O+Q72epSPqVvZXgnaj8XxH5i8bEw==
+X-Received: by 2002:a05:651c:1194:: with SMTP id w20mr1737072ljo.174.1603405475827;
+        Thu, 22 Oct 2020 15:24:35 -0700 (PDT)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id i22sm396520lfl.52.2020.10.22.15.24.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 15:24:34 -0700 (PDT)
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
+        systemd-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <dave.martin@arm.com>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022075447.GO3819@arm.com>
+ <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
+ <202010221256.A4F95FD11@keescook>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <180cd894-d42d-2bdb-093c-b5360b0ecb1e@gmail.com>
+Date:   Fri, 23 Oct 2020 01:24:14 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <202010221256.A4F95FD11@keescook>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 22.10.2020 23.02, Kees Cook wrote:
+> On Thu, Oct 22, 2020 at 01:39:07PM +0300, Topi Miettinen wrote:
+>> But I think SELinux has a more complete solution (execmem) which can track
+>> the pages better than is possible with seccomp solution which has a very
+>> narrow field of view. Maybe this facility could be made available to
+>> non-SELinux systems, for example with prctl()? Then the in-kernel MDWX could
+>> allow mprotect(PROT_EXEC | PROT_BTI) in case the backing file hasn't been
+>> modified, the source filesystem isn't writable for the calling process and
+>> the file descriptor isn't created with memfd_create().
+> 
+> Right. The problem here is that systemd is attempting to mediate a
+> state change using only syscall details (i.e. with seccomp) instead of
+> a stateful analysis. Using a MAC is likely the only sane way to do that.
+> SELinux is a bit difficult to adjust "on the fly" the way systemd would
+> like to do things, and the more dynamic approach seen with SARA[1] isn't
+> yet in the kernel.
 
-Please pull this small refactoring series that moves all the support
-functions for file range remapping (aka reflink and dedupe) out of
-mm/filemap.c and fs/read_write.c and into fs/remap_range.c.
+SARA looks interesting. What is missing is a prctl() to enable all W^X 
+protections irrevocably for the current process, then systemd could 
+enable it for services with MemoryDenyWriteExecute=yes.
 
-It's been a full week since the initial discussion[1] on fsdevel, and in
-that time, nobody has complained about breakage in for-next, and the
-relevant parts of the codebase haven't changed significantly.  I was
-expecting to have to rebase this branch, but aside from the trivial
-merge conflict in fs/Makefile this actually still applies cleanly atop
-master as of a couple hours ago.
+I didn't also see specific measures against memfd_create() or file 
+system W&X, but perhaps those can be added later. Maybe pkey_mprotect() 
+is not handled either unless it uses the same LSM hook as mprotect().
 
-(FWIW I took your suggestion about license headers and didn't drag the
-copyright notices along from the other two files.)
+> Trying to enforce memory W^X protection correctly
+> via seccomp isn't really going to work well, as far as I can see.
 
-So, I tagged my work branch from last week a little while ago and am now
-sending this for consideration.  Please let me know if you have any
-complaints about pulling this, since I can rework the branch.
+Not in general, but I think it can work well in context of system 
+services. Then you can ensure that for a specific service, 
+memfd_create() is blocked by seccomp and the file systems are W^X 
+because of mount namespaces etc., so there should not be any means to 
+construct arbitrary executable pages.
 
---D
-
-[1] https://lore.kernel.org/linux-fsdevel/160272187483.913987.4254237066433242737.stgit@magnolia/
-
-The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
-
-  Linux 5.9 (2020-10-11 14:15:50 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.10-merge-1
-
-for you to fetch changes up to 407e9c63ee571f44a2dfb0828fc30daa02abb6dc:
-
-  vfs: move the generic write and copy checks out of mm (2020-10-15 09:50:01 -0700)
-
-----------------------------------------------------------------
-Refactored code for 5.10:
-- Move the file range remap generic functions out of mm/filemap.c and
-fs/read_write.c and into fs/remap_range.c to reduce clutter in the first
-two files.
-
-----------------------------------------------------------------
-Darrick J. Wong (3):
-      vfs: move generic_remap_checks out of mm
-      vfs: move the remap range helpers to remap_range.c
-      vfs: move the generic write and copy checks out of mm
-
- fs/Makefile        |   3 +-
- fs/read_write.c    | 562 +++++++++++-----------------------------------------
- fs/remap_range.c   | 571 +++++++++++++++++++++++++++++++++++++++++++++++++++++
- include/linux/fs.h |   8 +-
- mm/filemap.c       | 222 ---------------------
- 5 files changed, 691 insertions(+), 675 deletions(-)
- create mode 100644 fs/remap_range.c
+-Topi
