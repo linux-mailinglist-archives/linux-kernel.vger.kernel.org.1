@@ -2,245 +2,324 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD1FB296124
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:52:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2245296130
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368223AbgJVOwJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:52:09 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15245 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S368214AbgJVOwJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:52:09 -0400
-Received: from DGGEMS404-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 30F26FF6DDC4680DAA83;
-        Thu, 22 Oct 2020 22:52:04 +0800 (CST)
-Received: from [127.0.0.1] (10.174.176.238) by DGGEMS404-HUB.china.huawei.com
- (10.3.19.204) with Microsoft SMTP Server id 14.3.487.0; Thu, 22 Oct 2020
- 22:51:54 +0800
-To:     <miklos@szeredi.hu>, <mszeredi@redhat.com>
-CC:     linfeilong <linfeilong@huawei.com>,
-        <linux-fsdevel@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        lihaotian <lihaotian9@huawei.com>, <liuzhiqiang26@huawei.com>
-From:   Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Subject: [PATCH] fuse: fix potential accessing NULL pointer problem in
- fuse_send_init()
-Message-ID: <5e1bf70a-0c6b-89b6-dc9f-474ccfcfe597@huawei.com>
-Date:   Thu, 22 Oct 2020 22:51:53 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.2.2
+        id S368272AbgJVOxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:53:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36998 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368253AbgJVOw5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:52:57 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 972ACC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:52:53 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id c17so1159625pjo.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:52:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bv5yiDNe8/8CyNfAZjm0BoVVo9NTx85vrS2GwtAOsP0=;
+        b=bcENCs9kiCqMTKu2G/991hVrtjxhGjLR6BLQp7YoRGN5bUkAqtx/h+Csc2vRsuIukM
+         gMsp7e5Sspc6K19DTy8dA7jicZlDVaq+rbX7nAuxgPlFC2IXYgpk8SbImxPoTqDGOCeD
+         BOPTgGDp0Kb55q2MqoKPcO13DnL0sdZmcOMkyUCSG0ouFnLZvVC0sQi2v+wCykPIt5IJ
+         wRlGg6X75M6gIvTVZqDwSJy1EarnJ32ydrgrDBoR4abRArVkDM1GUZjj0Uwf/TW5XxD8
+         l9gSP4y6piivOEWHh69h+CSrCSkQz3nSceCwWd9PYCjMweYmHt07o8Vm/dZlyshmGP+i
+         nZuA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Bv5yiDNe8/8CyNfAZjm0BoVVo9NTx85vrS2GwtAOsP0=;
+        b=rVsfarihUpC0BZvOTvvUGNt1Nu9D575LRiPK0glUxRH61QIbiFU/rm76DDUcbaknM2
+         lEB97JRi7+vCCyDvQBLpvmAUQtNHbjL9PIFJFomXglfomRaP4rZB1R59ljKeK7YGxqUV
+         /4SVk332bgEglztv/VOYLZ+TOuDb8OmZ9PxRVSYDPaRnMmkY7v2CWFj8Gb6zp1+SBAbw
+         9OW+iYj0PPfdz4KF4JnTbBfK25eMARqLLSTko1NlhWqTE42OuXuVx65olRQ3w9e3MtH0
+         V7eDZ8AkjS7sswWNQVeolDH+o8gZ2UWmJn4HrID6Fgk3fal4bWjPOAf/GFckkNtkjS8s
+         LHXQ==
+X-Gm-Message-State: AOAM533Sk6kullrno308qABBUnDzP/ZDzmvH4glzu/3SQH9aLyfZMiPT
+        1Z6ccV6bvzaFWahFy5hsxS4=
+X-Google-Smtp-Source: ABdhPJzAf0p4Y2HpuCRbfFFtcnktlznnmN4Aj2NPZMFStCMTm8+DybA3NFf7+Fkqsb5oD2vfUrAEuA==
+X-Received: by 2002:a17:90a:1f45:: with SMTP id y5mr2502810pjy.16.1603378372960;
+        Thu, 22 Oct 2020 07:52:52 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:68cc:70a3:ea5f:217b:100f])
+        by smtp.gmail.com with ESMTPSA id b15sm2211571pju.16.2020.10.22.07.52.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 07:52:52 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH RFC] checkpatch: extend attributes check to handle more patterns
+Date:   Thu, 22 Oct 2020 20:22:23 +0530
+Message-Id: <20201022145224.645538-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.174.176.238]
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+It is generally preferred that the macros from
+include/linux/compiler_attributes.h are used, unless there
+is a reason not to.
 
-In fuse_send_init func, ia is allocated by calling kzalloc func, and
-we donot check whether ia is NULL before using it. Thus, if allocating
-ia fails, accessing NULL pointer problem will occur.
+Checkpatch currently checks __attribute__ for each of
+packed, aligned, printf, scanf, and weak. Other declarations
+in compiler_attributes.h are not handled.
 
-Here, we will call process_init_reply func if ia is NULL.
+Add more definitions to the attribute check.
+The following patterns are added:
 
-Fixes: 615047eff108 ("fuse: convert init to simple api")
-Signed-off-by: Zhiqiang Liu <liuzhiqiang26@huawei.com>
-Signed-off-by: Haotian Li <lihaotian9@huawei.com>
+__alias__(#symbol)
+__always_inline__
+__assume_aligned__(a, ## __VA_ARGS__)
+__cold__
+__const__
+__copy__(symbol)
+__designated_init__
+__externally_visible__
+__gnu_inline__
+__malloc__
+__mode__(x)
+__no_caller_saved_registers__
+__noclone__
+__fallthrough__
+__noinline__
+__nonstring__
+__noreturn__
+__pure__
+__unused__
+__used__
+
+Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- fs/fuse/inode.c | 161 ++++++++++++++++++++++++++----------------------
- 1 file changed, 87 insertions(+), 74 deletions(-)
+ scripts/checkpatch.pl | 199 ++++++++++++++++++++++++++++++++++--------
+ 1 file changed, 163 insertions(+), 36 deletions(-)
 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 581329203d68..bb526d8cf5b0 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -898,88 +898,97 @@ struct fuse_init_args {
- static void process_init_reply(struct fuse_conn *fc, struct fuse_args *args,
- 			       int error)
- {
--	struct fuse_init_args *ia = container_of(args, typeof(*ia), args);
--	struct fuse_init_out *arg = &ia->out;
-+	struct fuse_init_args *ia;
-+	struct fuse_init_out *arg;
-+	unsigned long ra_pages;
-
--	if (error || arg->major != FUSE_KERNEL_VERSION)
-+	if (!args) {
- 		fc->conn_error = 1;
--	else {
--		unsigned long ra_pages;
-+		goto out;
-+	}
-
--		process_init_limits(fc, arg);
-+	ia = container_of(args, typeof(*ia), args);
-+	arg = &ia->out;
-+	if (error || arg->major != FUSE_KERNEL_VERSION) {
-+		fc->conn_error = 1;
-+		goto out_free_ia;
-+	}
-
--		if (arg->minor >= 6) {
--			ra_pages = arg->max_readahead / PAGE_SIZE;
--			if (arg->flags & FUSE_ASYNC_READ)
--				fc->async_read = 1;
--			if (!(arg->flags & FUSE_POSIX_LOCKS))
--				fc->no_lock = 1;
--			if (arg->minor >= 17) {
--				if (!(arg->flags & FUSE_FLOCK_LOCKS))
--					fc->no_flock = 1;
--			} else {
--				if (!(arg->flags & FUSE_POSIX_LOCKS))
--					fc->no_flock = 1;
--			}
--			if (arg->flags & FUSE_ATOMIC_O_TRUNC)
--				fc->atomic_o_trunc = 1;
--			if (arg->minor >= 9) {
--				/* LOOKUP has dependency on proto version */
--				if (arg->flags & FUSE_EXPORT_SUPPORT)
--					fc->export_support = 1;
--			}
--			if (arg->flags & FUSE_BIG_WRITES)
--				fc->big_writes = 1;
--			if (arg->flags & FUSE_DONT_MASK)
--				fc->dont_mask = 1;
--			if (arg->flags & FUSE_AUTO_INVAL_DATA)
--				fc->auto_inval_data = 1;
--			else if (arg->flags & FUSE_EXPLICIT_INVAL_DATA)
--				fc->explicit_inval_data = 1;
--			if (arg->flags & FUSE_DO_READDIRPLUS) {
--				fc->do_readdirplus = 1;
--				if (arg->flags & FUSE_READDIRPLUS_AUTO)
--					fc->readdirplus_auto = 1;
--			}
--			if (arg->flags & FUSE_ASYNC_DIO)
--				fc->async_dio = 1;
--			if (arg->flags & FUSE_WRITEBACK_CACHE)
--				fc->writeback_cache = 1;
--			if (arg->flags & FUSE_PARALLEL_DIROPS)
--				fc->parallel_dirops = 1;
--			if (arg->flags & FUSE_HANDLE_KILLPRIV)
--				fc->handle_killpriv = 1;
--			if (arg->time_gran && arg->time_gran <= 1000000000)
--				fc->sb->s_time_gran = arg->time_gran;
--			if ((arg->flags & FUSE_POSIX_ACL)) {
--				fc->default_permissions = 1;
--				fc->posix_acl = 1;
--				fc->sb->s_xattr = fuse_acl_xattr_handlers;
--			}
--			if (arg->flags & FUSE_CACHE_SYMLINKS)
--				fc->cache_symlinks = 1;
--			if (arg->flags & FUSE_ABORT_ERROR)
--				fc->abort_err = 1;
--			if (arg->flags & FUSE_MAX_PAGES) {
--				fc->max_pages =
--					min_t(unsigned int, FUSE_MAX_MAX_PAGES,
--					max_t(unsigned int, arg->max_pages, 1));
--			}
--		} else {
--			ra_pages = fc->max_read / PAGE_SIZE;
-+	process_init_limits(fc, arg);
-+
-+	if (arg->minor >= 6) {
-+		ra_pages = arg->max_readahead / PAGE_SIZE;
-+		if (arg->flags & FUSE_ASYNC_READ)
-+			fc->async_read = 1;
-+		if (!(arg->flags & FUSE_POSIX_LOCKS))
- 			fc->no_lock = 1;
--			fc->no_flock = 1;
-+		if (arg->minor >= 17) {
-+			if (!(arg->flags & FUSE_FLOCK_LOCKS))
-+				fc->no_flock = 1;
-+		} else {
-+			if (!(arg->flags & FUSE_POSIX_LOCKS))
-+				fc->no_flock = 1;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7e505688257a..968adcb15793 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6155,50 +6155,177 @@ sub process {
+ 			}
  		}
--
--		fc->sb->s_bdi->ra_pages =
--				min(fc->sb->s_bdi->ra_pages, ra_pages);
--		fc->minor = arg->minor;
--		fc->max_write = arg->minor < 5 ? 4096 : arg->max_write;
--		fc->max_write = max_t(unsigned, 4096, fc->max_write);
--		fc->conn_init = 1;
-+		if (arg->flags & FUSE_ATOMIC_O_TRUNC)
-+			fc->atomic_o_trunc = 1;
-+		if (arg->minor >= 9) {
-+			/* LOOKUP has dependency on proto version */
-+			if (arg->flags & FUSE_EXPORT_SUPPORT)
-+				fc->export_support = 1;
-+		}
-+		if (arg->flags & FUSE_BIG_WRITES)
-+			fc->big_writes = 1;
-+		if (arg->flags & FUSE_DONT_MASK)
-+			fc->dont_mask = 1;
-+		if (arg->flags & FUSE_AUTO_INVAL_DATA)
-+			fc->auto_inval_data = 1;
-+		else if (arg->flags & FUSE_EXPLICIT_INVAL_DATA)
-+			fc->explicit_inval_data = 1;
-+		if (arg->flags & FUSE_DO_READDIRPLUS) {
-+			fc->do_readdirplus = 1;
-+			if (arg->flags & FUSE_READDIRPLUS_AUTO)
-+				fc->readdirplus_auto = 1;
-+		}
-+		if (arg->flags & FUSE_ASYNC_DIO)
-+			fc->async_dio = 1;
-+		if (arg->flags & FUSE_WRITEBACK_CACHE)
-+			fc->writeback_cache = 1;
-+		if (arg->flags & FUSE_PARALLEL_DIROPS)
-+			fc->parallel_dirops = 1;
-+		if (arg->flags & FUSE_HANDLE_KILLPRIV)
-+			fc->handle_killpriv = 1;
-+		if (arg->time_gran && arg->time_gran <= 1000000000)
-+			fc->sb->s_time_gran = arg->time_gran;
-+		if ((arg->flags & FUSE_POSIX_ACL)) {
-+			fc->default_permissions = 1;
-+			fc->posix_acl = 1;
-+			fc->sb->s_xattr = fuse_acl_xattr_handlers;
-+		}
-+		if (arg->flags & FUSE_CACHE_SYMLINKS)
-+			fc->cache_symlinks = 1;
-+		if (arg->flags & FUSE_ABORT_ERROR)
-+			fc->abort_err = 1;
-+		if (arg->flags & FUSE_MAX_PAGES) {
-+			fc->max_pages =
-+				min_t(unsigned int, FUSE_MAX_MAX_PAGES,
-+				max_t(unsigned int, arg->max_pages, 1));
-+		}
-+	} else {
-+		ra_pages = fc->max_read / PAGE_SIZE;
-+		fc->no_lock = 1;
-+		fc->no_flock = 1;
- 	}
--	kfree(ia);
-
-+	fc->sb->s_bdi->ra_pages =
-+			min(fc->sb->s_bdi->ra_pages, ra_pages);
-+	fc->minor = arg->minor;
-+	fc->max_write = arg->minor < 5 ? 4096 : arg->max_write;
-+	fc->max_write = max_t(unsigned int, 4096, fc->max_write);
-+	fc->conn_init = 1;
+ 
+-# Check for __attribute__ packed, prefer __packed
++# Check for compiler attributes
+ 		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
+-			WARN("PREFER_PACKED",
+-			     "__packed is preferred over __attribute__((packed))\n" . $herecurr);
+-		}
++		    $line =~ /\b__attribute__\s*\(\s*\((.*)\)\s*\)/) {
++			my $attr = trim($1);
+ 
+-# Check for __attribute__ aligned, prefer __aligned
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
+-			WARN("PREFER_ALIGNED",
+-			     "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
+-		}
++			# Check for __attribute__ alias, prefer __alias
++			if ($attr =~/^_*alias_*/) {
++				WARN("PREFER_ALIAS",
++				     "__alias(symbol) is preferred over __attribute__((alias(#symbol)))\n" . $herecurr);
++			}
+ 
+-# Check for __attribute__ section, prefer __section
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
+-			my $old = substr($rawline, $-[1], $+[1] - $-[1]);
+-			my $new = substr($old, 1, -1);
+-			if (WARN("PREFER_SECTION",
+-				 "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++			# Check for __attribute__ aligned(size), prefer __aligned(size)
++			if ($attr =~/^_*aligned_*\(/) {
++				WARN("PREFER_ALIGNED",
++				     "__aligned(size) is preferred over __attribute__((__aligned__(size)))\n" . $herecurr);
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(printf, prefer __printf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
+-			if (WARN("PREFER_PRINTF",
+-				 "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
++			# Check for __attribute__ aligned, prefer __aligned_largest
++			if ($attr =~/^_*aligned_*$/) {
++				WARN("PREFER_ALIGNED_LARGEST",
++				     "__aligned_largest is preferred over __attribute__((__aligned__))\n" . $herecurr);
++			}
+ 
++			# Check for __attribute__ always_inline, prefer __always_inline
++			if ($attr =~/^_*always_inline_*/) {
++				WARN("PREFER_ALWAYS_INLINE",
++				     "__always_inline is preferred over __attribute__((__always_inline__))\n" . $herecurr);
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(scanf, prefer __scanf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
+-			if (WARN("PREFER_SCANF",
+-				 "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
++			# Check for __attribute__ assume_aligned, prefer __assume_aligned
++			if ($attr =~/^_*assume_aligned_*/) {
++				WARN("PREFER_ASSUME_ALIGNED",
++				     "__asume_aligned(a, ...) is preferred over __attribute__((__assume_aligned__(a, ## __VA_ARGS__)))\n" . $herecurr);
++			}
 +
-+out_free_ia:
-+	kfree(ia);
-+out:
- 	fuse_set_initialized(fc);
- 	wake_up_all(&fc->blocked_waitq);
- }
-@@ -989,6 +998,10 @@ void fuse_send_init(struct fuse_conn *fc)
- 	struct fuse_init_args *ia;
-
- 	ia = kzalloc(sizeof(*ia), GFP_KERNEL | __GFP_NOFAIL);
-+	if (!ia) {
-+		process_init_reply(fc, NULL, -ENOTCONN);
-+		return;
-+	}
-
- 	ia->in.major = FUSE_KERNEL_VERSION;
- 	ia->in.minor = FUSE_KERNEL_MINOR_VERSION;
++			# Check for __attribute__ cold, prefer __cold
++			if ($attr =~ /^_*cold_*/) {
++				WARN("PREFER_COLD",
++				     "__cold is preferred over __attribute__((__cold__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ const, prefer __attribute_const
++			if ($attr =~ /^_*const_*/) {
++				WARN("PREFER_CONST",
++				     "__attribute_const is preferred over __attribute__((__const__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ copy, prefer __copy
++			if ($attr =~ /^_*copy_*/) {
++				WARN("PREFER_COPY",
++				     "__copy(symbol) is preferred over __attribute__((__copy__(symbol)))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ desginated_init, prefer __designated_init
++			if ($attr =~ /^_*designated_init_*/) {
++				WARN("PREFER_DESIGNATED_INIT",
++				     "__designated_init is preferred over __attribute__((__designated_init__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ externally_visible, prefer __visible
++			if ($attr =~ /^_*externally_visible_*/) {
++				WARN("PREFER_VISIBLE",
++				     "__visible is preferred over __attribute__((__externally_visible__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ format(printf, prefer __printf
++			if ($attr =~ /^_*format_*\s*\(\s*printf/) {
++				if (WARN("PREFER_PRINTF",
++				         "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
++
++				}
++			}
++
++			# Check for __attribute__ format(scanf, prefer __scanf
++			if ($attr =~ /^_*format_*\s*\(\s*scanf\b/) {
++				if (WARN("PREFER_SCANF",
++				         "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
++				}
++			}
++
++			# Check for __attribute__ gnu_inline, prefer __gnu_inline
++			if ($attr =~ /^_*gnu_inline_*/) {
++				WARN("PREFER_GNU_INLINE",
++				     "__gnu_inline is preferred over __attribute__((__gnu_inline__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ malloc, prefer __malloc
++			if ($attr =~ /^_*malloc_*/) {
++				WARN("PREFER_MALLOC",
++				     "__malloc is preferred over __attribute__((__malloc__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ mode, prefer __mode
++			if ($attr =~ /^_*mode_*/) {
++				WARN("PREFER_MODE",
++				     "__mode(x) is preferred over __attribute__((__mode__(x)))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ no_caller_saved_registers, prefer __no_caller_saved_registers
++			if ($attr =~ /^_*no_caller_saved_registers_*/) {
++				WARN("PREFER_NO_CALLER_SAVED_REGISTERS",
++				     "__no_caller_saved_registers is preferred over __attribute__((__no_caller_saved_registers__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ noclone, prefer __noclone
++			if ($attr =~ /^_*noclone_*/) {
++				WARN("PREFER_NOCLONE",
++				     "__noclone is preferred over __attribute__((__noclone__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ fallthrough, prefer fallthrough
++			if ($attr =~ /^_*fallthrough_*/) {
++				WARN("PREFER_FALLTHROUGH",
++				     "fallthrough is preferred over __attribute__((__fallthrough__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ noinline, prefer noinline
++			if ($attr =~ /^_*noinline_*/) {
++				WARN("PREFER_NOINLINE",
++				     "noinline is preferred over __attribute__((__noinline__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ nonstring, prefer __nonstring
++			if ($attr =~ /^_*nonstring_*/) {
++				WARN("PREFER_NONSTRING",
++				     "__nonstring is preferred over __attribute__((__nonstring__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ noreturn, prefer __noreturn
++			if ($attr =~ /^_*noreturn_*/) {
++				WARN("PREFER_NORETURN",
++				     "__noreturn is preferred over __attribute__((__noreturn__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ packed, prefer __packed
++			if ($attr =~ /^_*packed_*/) {
++				WARN("PREFER_PACKED",
++				     "__packed is preferred over __attribute__((__packed__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ pure, prefer __pure
++			if ($attr =~ /^_*pure_*/) {
++				WARN("PREFER_PURE",
++				     "__pure is preferred over __attribute__((__pure__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ section, prefer __section
++			if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
++				my $old = substr($rawline, $-[1], $+[1] - $-[1]);
++				my $new = substr($old, 1, -1);
++				if (WARN("PREFER_SECTION",
++				         "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++				}
++			}
++
++			# Check for __attribute__ unused, prefer __always_unused or __maybe_unused
++			if ($attr =~ /^_*unused_*/) {
++				WARN("PREFER_UNUSED",
++				     "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
++			}
++
++			# Check for __attribute__ used, prefer __used
++			if ($attr =~ /^_*used_*/) {
++				WARN("PREFER_USED",
++				     "__used is preferred over __attribute__((__used__))\n" . $herecurr);
+ 			}
+ 		}
+ 
 -- 
-2.19.1
-
+2.27.0
 
