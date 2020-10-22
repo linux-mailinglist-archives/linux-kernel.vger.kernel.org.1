@@ -2,317 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2491729668C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:22:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD728296695
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372324AbgJVVWy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:22:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40978 "EHLO
+        id S2898217AbgJVVY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372257AbgJVVWd (ORCPT
+        with ESMTP id S2505826AbgJVVY2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:22:33 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D8637C0613D7;
-        Thu, 22 Oct 2020 14:22:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=XEu2EmGV2J3O+NGwABsLcV4fD3cQ9sI5rt1XPNbqumg=; b=PzyBls8es8bXMK2hYFm3qT6hv3
-        fMYeGYuuoZVO8DXIjkDUkZYHLUV93wdu1djgLmokABmSEIffsY4F9oM7jMaCnVzSZXQ518dVnq1zS
-        Iq4gSMFV3CykSEt1BAdBEpfIfZARVsma0q05RNNbIS45oJ4perCAzz4sARFopkYMo/kEiuQLr7VKD
-        zD6T9NDo/398s026g3B4hUaX96u12XaxuVhrJWCj5uP3oY1bCHXGcLZAZdoLoTU8Xl3UaIC+BUhFe
-        7xcJTXHp8G5UFxsFz7iy98ASHRF00xsozx+hfpImkVLIM66wx7Y03NHSRY7nIecytZt1gcrgxFbLf
-        z/N3brCw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVi2Z-00046j-Di; Thu, 22 Oct 2020 21:22:31 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Subject: [PATCH 6/6] fs: Convert block_read_full_page to be synchronous with fscrypt enabled
-Date:   Thu, 22 Oct 2020 22:22:28 +0100
-Message-Id: <20201022212228.15703-7-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201022212228.15703-1-willy@infradead.org>
-References: <20201022212228.15703-1-willy@infradead.org>
+        Thu, 22 Oct 2020 17:24:28 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CCEC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:24:27 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id j7so1795194pgk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:24:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=m548N/pUewjuO1woINgGJ0CoX/HtQ1+ByYsCYcMLVKE=;
+        b=LQoeTVJ4ze4ERYkUhHEVrpI8frOH/KnCH5FKMM16B83R5skUGI9qt2F6Mxf1lev5w2
+         9bLNVPj8Yt7IiRNm4LeqFI37SYNaOLfyYMkhdxUI0EutKjjVIx2hi5ToCVrOX7A/dzYU
+         bgXE64yG/qhIpeWT80V3liAXjf2ahD/rkwbYJOl+xCzmk7cgABRAgKCATg2vMJFUplym
+         N/xJ8vrq0RvT+0eu+Sr6ssgBc31/T9nEXQkZj0pwAG3fcNWX5f49ulTHi5mocBbl1Rxp
+         rq08GhLXx98JL/UoK8Sg2LcoGc3zpdrQRjwEJfNEKM0YvfKEa6rXzzaCeRk1HmTT67mn
+         9DGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=m548N/pUewjuO1woINgGJ0CoX/HtQ1+ByYsCYcMLVKE=;
+        b=o5LHWn6ewRpmQaHYijkPzt2eIgiRm2zyEdtooYqddFmGzIFtzWS75RiDENFaAMciEp
+         M4ggIevwFgpKcD827zMBZ488grzriBeaGjmSmmkVQFJY2zAGhIWlJwOqeH95BVyzStPy
+         bo7hUbZEUMtM2yp8X3aYGhQTKdJpYZAgo6TKRb3Fznql5C/mQW468L1YXLRAv/AWe518
+         w8v26ZuQZhrnsA+rpd9Y3Zjn8Mkaq0nvslzpY4qQmRrfRIljka9yCdPhOR0ZQzyBgQVR
+         Odt5qKAf7E+H4ppEmTbReG1He4PtehQVfK7H8b8/YHPl3tTcviqYEl0CKKKgEurkIrlM
+         6jDw==
+X-Gm-Message-State: AOAM532vigiZMOqxzn/3ohyn3qeQerLO5EK8OP6ly2kBXOfsICFK297c
+        k/IT2SIDXNqT5+E+jwOVo2TBIg==
+X-Google-Smtp-Source: ABdhPJyhfBSC+52siau400RnxIzNfvIKY+gDyAevHbRM4Sbhr0RXoco4dCXwCXtmXfP+ggIs7yz0jA==
+X-Received: by 2002:a17:90b:205:: with SMTP id fy5mr3416354pjb.34.1603401866628;
+        Thu, 22 Oct 2020 14:24:26 -0700 (PDT)
+Received: from google.com ([2620:15c:202:201:4a0f:cfff:fe66:e92e])
+        by smtp.gmail.com with ESMTPSA id c203sm3188638pfb.96.2020.10.22.14.24.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 14:24:25 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 14:24:20 -0700
+From:   Benson Leung <bleung@google.com>
+To:     torvalds@linux-foundation.org
+Cc:     bleung@chromium.org, bleung@google.com, bleung@kernel.org,
+        linux-kernel@vger.kernel.org, enric.balletbo@collabora.com
+Subject: [GIT PULL] chrome-platform changes for v5.10
+Message-ID: <20201022212420.GA3714143@google.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use the new decrypt_end_bio() instead of readpage_end_bio() if
-fscrypt needs to be used.  Remove the old end_buffer_async_read()
-now that all BHs go through readpage_end_bio().
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
----
- fs/buffer.c | 198 ++++++++++++++++------------------------------------
- 1 file changed, 59 insertions(+), 139 deletions(-)
+--envbJBWh7q8WU6mo
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index f859e0929b7e..62c74f0102d4 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -241,84 +241,6 @@ __find_get_block_slow(struct block_device *bdev, sector_t block)
- 	return ret;
- }
- 
--/*
-- * I/O completion handler for block_read_full_page() - pages
-- * which come unlocked at the end of I/O.
-- */
--static void end_buffer_async_read(struct buffer_head *bh, int uptodate)
--{
--	unsigned long flags;
--	struct buffer_head *first;
--	struct buffer_head *tmp;
--	struct page *page;
--	int page_uptodate = 1;
--
--	BUG_ON(!buffer_async_read(bh));
--
--	page = bh->b_page;
--	if (uptodate) {
--		set_buffer_uptodate(bh);
--	} else {
--		clear_buffer_uptodate(bh);
--		buffer_io_error(bh, ", async page read");
--		SetPageError(page);
--	}
--
--	/*
--	 * Be _very_ careful from here on. Bad things can happen if
--	 * two buffer heads end IO at almost the same time and both
--	 * decide that the page is now completely done.
--	 */
--	first = page_buffers(page);
--	spin_lock_irqsave(&first->b_uptodate_lock, flags);
--	clear_buffer_async_read(bh);
--	unlock_buffer(bh);
--	tmp = bh;
--	do {
--		if (!buffer_uptodate(tmp))
--			page_uptodate = 0;
--		if (buffer_async_read(tmp)) {
--			BUG_ON(!buffer_locked(tmp));
--			goto still_busy;
--		}
--		tmp = tmp->b_this_page;
--	} while (tmp != bh);
--	spin_unlock_irqrestore(&first->b_uptodate_lock, flags);
--
--	/*
--	 * If none of the buffers had errors and they are all
--	 * uptodate then we can set the page uptodate.
--	 */
--	if (page_uptodate && !PageError(page))
--		SetPageUptodate(page);
--	unlock_page(page);
--	return;
--
--still_busy:
--	spin_unlock_irqrestore(&first->b_uptodate_lock, flags);
--	return;
--}
--
--struct decrypt_bio_ctx {
--	struct work_struct work;
--	struct bio *bio;
--};
--
--static void decrypt_bio(struct work_struct *work)
--{
--	struct decrypt_bio_ctx *ctx =
--		container_of(work, struct decrypt_bio_ctx, work);
--	struct bio *bio = ctx->bio;
--	struct buffer_head *bh = bio->bi_private;
--	int err;
--
--	err = fscrypt_decrypt_pagecache_blocks(bh->b_page, bh->b_size,
--					       bh_offset(bh));
--	end_buffer_async_read(bh, err == 0);
--	kfree(ctx);
--	bio_put(bio);
--}
--
- /*
-  * Completion handler for block_write_full_page() - pages which are unlocked
-  * during I/O, and which have PageWriteback cleared upon I/O completion.
-@@ -365,33 +287,6 @@ void end_buffer_async_write(struct buffer_head *bh, int uptodate)
- }
- EXPORT_SYMBOL(end_buffer_async_write);
- 
--/*
-- * If a page's buffers are under async readin (end_buffer_async_read
-- * completion) then there is a possibility that another thread of
-- * control could lock one of the buffers after it has completed
-- * but while some of the other buffers have not completed.  This
-- * locked buffer would confuse end_buffer_async_read() into not unlocking
-- * the page.  So the absence of BH_Async_Read tells end_buffer_async_read()
-- * that this buffer is not under async I/O.
-- *
-- * The page comes unlocked when it has no locked buffer_async buffers
-- * left.
-- *
-- * PageLocked prevents anyone starting new async I/O reads any of
-- * the buffers.
-- *
-- * PageWriteback is used to prevent simultaneous writeout of the same
-- * page.
-- *
-- * PageLocked prevents anyone from starting writeback of a page which is
-- * under read I/O (PageWriteback is only ever set against a locked page).
-- */
--static void mark_buffer_async_read(struct buffer_head *bh)
--{
--	bh->b_end_io = end_buffer_async_read;
--	set_buffer_async_read(bh);
--}
--
- static void mark_buffer_async_write_endio(struct buffer_head *bh,
- 					  bh_end_io_t *handler)
- {
-@@ -2268,8 +2163,54 @@ static void readpage_end_bio(struct bio *bio)
- 	bio_put(bio);
- }
- 
-+struct decrypt_bio_ctx {
-+	struct work_struct work;
-+	struct bio *bio;
-+};
-+
-+static void decrypt_bio(struct work_struct *work)
-+{
-+	struct decrypt_bio_ctx *ctx =
-+		container_of(work, struct decrypt_bio_ctx, work);
-+	struct bio *bio = ctx->bio;
-+	struct bio_vec *bvec;
-+	int i, err = 0;
-+
-+	kfree(ctx);
-+	bio_for_each_bvec_all(bvec, bio, i) {
-+		err = fscrypt_decrypt_pagecache_blocks(bvec->bv_page,
-+				bvec->bv_len, bvec->bv_offset);
-+		if (err)
-+			break;
-+	}
-+
-+	/* XXX: Should report a better error here */
-+	if (err)
-+		bio->bi_status = BLK_STS_IOERR;
-+	readpage_end_bio(bio);
-+}
-+
-+static void decrypt_end_bio(struct bio *bio)
-+{
-+	struct decrypt_bio_ctx *ctx = NULL;
-+
-+	if (bio->bi_status == BLK_STS_OK) {
-+		ctx = kmalloc(sizeof(*ctx), GFP_ATOMIC);
-+		if (!ctx)
-+			bio->bi_status = BLK_STS_RESOURCE;
-+	}
-+
-+	if (ctx) {
-+		INIT_WORK(&ctx->work, decrypt_bio);
-+		ctx->bio = bio;
-+		fscrypt_enqueue_decrypt_work(&ctx->work);
-+	} else {
-+		readpage_end_bio(bio);
-+	}
-+}
-+
- static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
--		unsigned int nr, struct buffer_head **bhs)
-+		unsigned int nr, struct buffer_head **bhs, bio_end_io_t end_bio)
- {
- 	struct bio *bio = NULL;
- 	unsigned int i;
-@@ -2283,7 +2224,8 @@ static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
- 		bool same_page;
- 
- 		if (buffer_uptodate(bh)) {
--			end_buffer_async_read(bh, 1);
-+			clear_buffer_async_read(bh);
-+			unlock_buffer(bh);
- 			blk_completion_sub(cmpl, BLK_STS_OK, 1);
- 			continue;
- 		}
-@@ -2298,7 +2240,7 @@ static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
- 		bio_set_dev(bio, bh->b_bdev);
- 		bio->bi_iter.bi_sector = sector;
- 		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
--		bio->bi_end_io = readpage_end_bio;
-+		bio->bi_end_io = end_bio;
- 		bio->bi_private = cmpl;
- 		/* Take care of bh's that straddle the end of the device */
- 		guard_bio_eod(bio);
-@@ -2314,6 +2256,13 @@ static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
- 	return err;
- }
- 
-+static bio_end_io_t *fscrypt_end_io(struct inode *inode)
-+{
-+	if (fscrypt_inode_uses_fs_layer_crypto(inode))
-+		return decrypt_end_bio;
-+	return readpage_end_bio;
-+}
-+
- /*
-  * Generic "read page" function for block devices that have the normal
-  * get_block functionality. This is most of the block device filesystems.
-@@ -2389,26 +2338,10 @@ int block_read_full_page(struct page *page, get_block_t *get_block)
- 	for (i = 0; i < nr; i++) {
- 		bh = arr[i];
- 		lock_buffer(bh);
--		mark_buffer_async_read(bh);
-+		set_buffer_async_read(bh);
- 	}
- 
--	if (!fscrypt_inode_uses_fs_layer_crypto(inode))
--		return readpage_submit_bhs(page, cmpl, nr, arr);
--	kfree(cmpl);
--
--	/*
--	 * Stage 3: start the IO.  Check for uptodateness
--	 * inside the buffer lock in case another process reading
--	 * the underlying blockdev brought it uptodate (the sct fix).
--	 */
--	for (i = 0; i < nr; i++) {
--		bh = arr[i];
--		if (buffer_uptodate(bh))
--			end_buffer_async_read(bh, 1);
--		else
--			submit_bh(REQ_OP_READ, 0, bh);
--	}
--	return 0;
-+	return readpage_submit_bhs(page, cmpl, nr, arr, fscrypt_end_io(inode));
- }
- EXPORT_SYMBOL(block_read_full_page);
- 
-@@ -3092,19 +3025,6 @@ static void end_bio_bh_io_sync(struct bio *bio)
- 	if (unlikely(bio_flagged(bio, BIO_QUIET)))
- 		set_bit(BH_Quiet, &bh->b_state);
- 
--	/* Decrypt if needed */
--	if ((bio_data_dir(bio) == READ) && uptodate &&
--	    fscrypt_inode_uses_fs_layer_crypto(bh->b_page->mapping->host)) {
--		struct decrypt_bio_ctx *ctx = kmalloc(sizeof(*ctx), GFP_ATOMIC);
--
--		if (ctx) {
--			INIT_WORK(&ctx->work, decrypt_bio);
--			ctx->bio = bio;
--			fscrypt_enqueue_decrypt_work(&ctx->work);
--			return;
--		}
--		uptodate = 0;
--	}
- 	bh->b_end_io(bh, uptodate);
- 	bio_put(bio);
- }
--- 
-2.28.0
+Hello Linus,
 
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git t=
+ags/tag-chrome-platform-for-v5.10
+
+for you to fetch changes up to 3e98fd6d816cd82f529345870efd435f06e02803:
+
+  ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA (2020-1=
+0-01 18:33:01 +0200)
+
+----------------------------------------------------------------
+chrome platform changes for 5.10
+
+cros-ec:
+* Error code cleanup across cros-ec by Guenter.
+* Remove cros_ec_cmd_xfer in favor of cros_ec_cmd_xfer_status.
+
+cros_ec_typec:
+* Landed initial USB4 support in typec connector class driver for cros_ec.
+* Role switch bugfix on disconnect, and reordering configuration steps.
+
+cros_ec_lightbar:
+* Fix buffer outsize and result for get_lightbar_version.
+
+misc:
+* Remove config MFD_CROS_EC, now that transition from MFD is complete.
+* Enable KEY_LEFTMETA in new location on arm based cros-ec-keyboard keymap.
+
+----------------------------------------------------------------
+Azhar Shaikh (3):
+      platform/chrome: cros_ec_typec: Send enum values to usb_role_switch_s=
+et_role()
+      platform/chrome: cros_ec_typec: Avoid setting usb role twice during d=
+isconnect
+      platform/chrome: cros_ec_typec: Re-order connector configuration steps
+
+Enric Balletbo i Serra (1):
+      platform/chrome: Kconfig: Remove the transitional MFD_CROS_EC config
+
+Guenter Roeck (7):
+      iio: cros_ec: Accept -EOPNOTSUPP as 'not supported' error code
+      cros_ec_lightbar: Accept more error codes from cros_ec_cmd_xfer_status
+      platform/chrome: cros_ec_sysfs: Report range of error codes from EC
+      pwm: cros-ec: Accept more error codes from cros_ec_cmd_xfer_status
+      platform/input: cros_ec: Replace -ENOTSUPP with -ENOPROTOOPT
+      platform/chrome: cros_ec_proto: Convert EC error codes to Linux error=
+ codes
+      pwm: cros-ec: Simplify EC error handling
+
+Gwendal Grignou (2):
+      platform/chrome: cros_ec_trace: Add fields to command traces
+      platform/chrome: cros_ec_lightbar: Reduce ligthbar get version command
+
+Heikki Krogerus (1):
+      platform/chrome: cros_ec_typec: USB4 support
+
+Prashant Malani (2):
+      platform/chrome: cros_ec_proto: Update cros_ec_cmd_xfer() call-sites
+      platform/chrome: cros_ec_proto: Drop cros_ec_cmd_xfer()
+
+Stephen Boyd (1):
+      ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA
+
+Wang Qing (1):
+      platform/chrome: Use kobj_to_dev() instead of container_of()
+
+ arch/arm/boot/dts/cros-ec-keyboard.dtsi            |   1 +
+ .../iio/common/cros_ec_sensors/cros_ec_sensors.c   |   2 +-
+ drivers/input/keyboard/cros_ec_keyb.c              |   2 +-
+ drivers/platform/chrome/Kconfig                    |  10 --
+ drivers/platform/chrome/cros_ec_lightbar.c         |  12 +--
+ drivers/platform/chrome/cros_ec_proto.c            | 106 +++++++++++------=
+----
+ drivers/platform/chrome/cros_ec_sysfs.c            |  26 ++---
+ drivers/platform/chrome/cros_ec_trace.h            |  27 ++++--
+ drivers/platform/chrome/cros_ec_typec.c            |  42 +++++++-
+ drivers/platform/chrome/cros_ec_vbc.c              |   4 +-
+ drivers/pwm/pwm-cros-ec.c                          |  37 ++++---
+ 11 files changed, 154 insertions(+), 115 deletions(-)
+
+--=20
+Benson Leung
+Staff Software Engineer
+Chrome OS Kernel
+Google Inc.
+bleung@google.com
+Chromium OS Project
+bleung@chromium.org
+
+--envbJBWh7q8WU6mo
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCX5H4hAAKCRBzbaomhzOw
+wiM0AP9Tu4HVIlp3UzG15gZYTyPUV16Jeq32ccfd9PVYczf7pgEA1k+M8yH3QJp2
+wyhhRBgn9yMl8ap051EyqELLKJyEpAQ=
+=tHBB
+-----END PGP SIGNATURE-----
+
+--envbJBWh7q8WU6mo--
