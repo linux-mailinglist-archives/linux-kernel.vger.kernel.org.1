@@ -2,101 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EE34D295690
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:02:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61F44295699
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:04:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895269AbgJVDCX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 23:02:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40234 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895253AbgJVDCW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 23:02:22 -0400
-Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 68C60C0613CE;
-        Wed, 21 Oct 2020 20:02:21 -0700 (PDT)
-Received: by mail-pf1-x442.google.com with SMTP id a200so235624pfa.10;
-        Wed, 21 Oct 2020 20:02:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ts8pOOblpYnY0bOhm+5e9A57wwcNdyc/jhqQYESpses=;
-        b=h4Vbm4QxQ76pizoWaBUzmuBGyJo8Roa9+IxGJpoKaoZMINgwBo4asgXbMdzxvrm/Y9
-         GULFAxAjAj6qzWsl0hTfMmI4K2eAgZLZHyzhUVLdTSTdlEm09fJ1l3il+q0qO/YCmq8L
-         qY5DyK4kogWcy7MkdKJJ5CiyHjbY5Zoom0uCCG2MnvSNv74ToqNyGaeHzX8ilC52Knp1
-         FE2lnvNru9cl96f3i0Oc7RynH+I6ZJapQrxKnbl4yeAn8T+ypL1sN/bYx5UWYa3sBU0s
-         rUXk5w/XcTHZYQIVvsw9AXPNv/jE7HoNQvpNZ/HLaKlB+aA4wiKxmE6pCKARE/t5/zTg
-         ACNQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ts8pOOblpYnY0bOhm+5e9A57wwcNdyc/jhqQYESpses=;
-        b=Frj5qj9FIqKpqRbHriJ3Fn2cT/qAjWFPGE4skpVueuhdP7o3ncm+XDjqMHHUvWxoUx
-         YyjaURt8zurfvd1atKxawfWSOW1CyuhdwRJ6GTJRzVq/TwnNknsRXPY+33zzKNfAb3Se
-         ms/leywyTRR9xvMpKl0PvNVL639a+fw9QxHTf3ycjU/ymZdffEt1TApYcn0MwIk4at7a
-         /Fn+yBNmyM1Yh8m15Y7jgYmeg2jRRNL0N3XJ/6cl3/g774eLrcOoaiPwHpmIYv4a15jV
-         ibWJxPl29DrDjILS0n8WCM9OHLpMS211jO//zI0Vb+IbrTKWY+/ivwSq6ZOue3hcyUC0
-         /Dwg==
-X-Gm-Message-State: AOAM532TGFUYCbI4928OhBiGJNs7rDKbxES7pwal48JfMH2isowPR+Oc
-        u7sKEpWVW3lkjKo1VYl0Pg8=
-X-Google-Smtp-Source: ABdhPJztk6MH9/EJ3t+rws0K8jsWAzPEIgqDVH/kuW/U8w7R6xI9z5kkhR9bO2/bVNvi75UNztBnrA==
-X-Received: by 2002:a05:6a00:150a:b029:159:53cd:86db with SMTP id q10-20020a056a00150ab029015953cd86dbmr435588pfu.11.1603335740973;
-        Wed, 21 Oct 2020 20:02:20 -0700 (PDT)
-Received: from hoboy.vegasvil.org (c-73-241-114-122.hsd1.ca.comcast.net. [73.241.114.122])
-        by smtp.gmail.com with ESMTPSA id j37sm242414pgi.20.2020.10.21.20.02.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 20:02:20 -0700 (PDT)
-Date:   Wed, 21 Oct 2020 20:02:17 -0700
-From:   Richard Cochran <richardcochran@gmail.com>
-To:     Vladimir Oltean <olteanv@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
- hardware time stamping support
-Message-ID: <20201022030217.GA2105@hoboy.vegasvil.org>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <20201019172435.4416-8-ceggers@arri.de>
- <20201021233935.ocj5dnbdz7t7hleu@skbuf>
+        id S2895291AbgJVDEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 23:04:55 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:13455 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895283AbgJVDEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 23:04:54 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603335893; h=Content-Transfer-Encoding: Content-Type:
+ In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
+ Subject: Sender; bh=+nQ5ZSBmVVyAWKnZjaUdFuEquc1+aCE/YrO2L81++rQ=; b=WKvT4hO4aXkuFvqNNh7HWvReQF+FICNiUgPloB1IovvP4vZXgS5hiXRLQthK/sIy1s6uPs9E
+ Ynq9r7RJTtw0SWNiHeDRLb1BSNaOU6u4MA+tsZ/sWKJEB0IIJRHcUDmn5Hi93lhrM2T93wpI
+ +E9hL+WCdW1p1U4oa+pEjX6kIpw=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f90f6d44f8cc67c313300a5 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 03:04:52
+ GMT
+Sender: jhugo=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id BD1E3C433FE; Thu, 22 Oct 2020 03:04:51 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
+Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: jhugo)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0472C433C9;
+        Thu, 22 Oct 2020 03:04:50 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0472C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
+Subject: Re: [PATCH v7 3/4] docs: Add documentation for userspace client
+ interface
+To:     Hemant Kumar <hemantk@codeaurora.org>,
+        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        bbhatt@codeaurora.org, loic.poulain@linaro.org
+References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
+ <1602907457-13680-4-git-send-email-hemantk@codeaurora.org>
+ <c5dd8ec9-f4bf-dee4-98e1-9fba171b1f1d@codeaurora.org>
+ <b0209674-8dcb-c994-c0ef-0d2caefd28ff@codeaurora.org>
+From:   Jeffrey Hugo <jhugo@codeaurora.org>
+Message-ID: <198e5431-756c-38b1-2426-eb4ab8074b60@codeaurora.org>
+Date:   Wed, 21 Oct 2020 21:04:50 -0600
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021233935.ocj5dnbdz7t7hleu@skbuf>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <b0209674-8dcb-c994-c0ef-0d2caefd28ff@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:39:35AM +0300, Vladimir Oltean wrote:
-> So how _does_ that work for TI PHYTER?
+On 10/21/2020 11:46 AM, Hemant Kumar wrote:
+> Hi Jeff,
 > 
-> As far as we understand, the PHYTER appears to autonomously mangle PTP packets
-> in the following way:
-> - subtracting t2 on RX from the correctionField of the Pdelay_Req
-> - adding t3 on TX to the correctionField of the Pdelay_Resp
+> On 10/21/20 8:28 AM, Jeffrey Hugo wrote:
+>> On 10/16/2020 10:04 PM, Hemant Kumar wrote:
+>>> +release
+>>
+>> Should this be "close" since close() is the actual function userspace 
+>> would call?
+> I was keeping kernel driver in mind while writing this, i can change it 
+> to close() if release() is confusing here.
 
-The Phyter does not support peer-to-peer one step.
+I guess I was considering the client perspective, but this is kernel 
+documentation so I can see your perspective.  I don't have a strong 
+preference.  I suppose keep it as is.
 
-The only driver that implements it is ptp_ines.c.
+>>
+>>> +-------
+>>> +
+>>> +Decrements UCI device reference count and UCI channel reference 
+>>> count upon last
+>>> +release(). UCI channel clean up is performed. MHI channel moves to 
+>>> disabled
+>>> +state and inbound buffers are freed.
+>>> +
+>>
+>>
+> Thanks,
+> Hemant
 
-And *that* driver/HW implements it correctly.
 
-Thanks,
-Richard
-
+-- 
+Jeffrey Hugo
+Qualcomm Technologies, Inc. is a member of the
+Code Aurora Forum, a Linux Foundation Collaborative Project.
