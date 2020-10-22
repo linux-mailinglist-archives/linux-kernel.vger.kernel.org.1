@@ -2,249 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5683C29579B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D107329579F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:07:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507759AbgJVFF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:05:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59208 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507745AbgJVFFZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:05:25 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A990BC0613D2
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:25 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id l2so347193pjt.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:05:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=C5BT7RMAs0/3eZgZYHYOxHc0EDbBzG7anVqARFZyeFU=;
-        b=XvKUfgUyd0NYeIZvTa6xCzLGIitiKOVTaHiXd1A5cdyCbdS3RCSwPmT14tINVj7p58
-         ZjoILcgKrUbr6CoGWbGZF9RCNbMTFPuO/zhUjpIFQfkzBxxzAdtsXrLiUAHoV0m4gqxo
-         dz2gHjjHe7+PfcAiXLawFvftyX/rYLCXQBpzQ=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=C5BT7RMAs0/3eZgZYHYOxHc0EDbBzG7anVqARFZyeFU=;
-        b=NmysmFeNHunwLv/eU3n60NxNXddTt2aidTJ9+1iMF3eOTYv3o8aFJhRWyE+KkAyxBH
-         0UCve06FryK6N84owAhKnDy+K4fHoNFjRnqnc0JQF5fMmnkrxgzett36TPisuRduPQjx
-         JVE03VPWUmA/SiyocBfeV8hVZMndeutf7o6q9+dzZGk2MTbI27ZWcY4znfXvzSVYnDU9
-         sznzCAWulf5mMOqjf/jDkA8KkbR5TPuHyzXl9cTTQ2Zo74EQ0EIgxfKZ9lpkiGhTa7rG
-         DoeNHvUitL54/wgPd2piomrE+loAe8HYLHlbxDD86qchSUm5hpiNzvxDZUYejVD/bRaq
-         RTEQ==
-X-Gm-Message-State: AOAM533IYWqsA7YxkZts6ecxRrQaLZD56EawmWvoqSbJqgUYFn5Mtxs/
-        DRAKspEiNiSD8yLUteq3eWmI8g==
-X-Google-Smtp-Source: ABdhPJyF93+jSyPOMyLP8D6FYrIUtIyWICWGBG+huvjxyS7+ozDTFec/xOcF8Xh72SHjeUSPsWehQw==
-X-Received: by 2002:a17:90a:840d:: with SMTP id j13mr772927pjn.31.1603343125231;
-        Wed, 21 Oct 2020 22:05:25 -0700 (PDT)
-Received: from alex-desktop.lan (c-73-63-253-164.hsd1.ca.comcast.net. [73.63.253.164])
-        by smtp.gmail.com with ESMTPSA id q16sm394954pfu.206.2020.10.21.22.05.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 22:05:24 -0700 (PDT)
-From:   Alexandru Stan <amstan@chromium.org>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Matthias Kaehlcke <mka@chromium.org>,
-        Enric Balletbo i Serra <enric.balletbo@collabora.com>,
-        Alexandru Stan <amstan@chromium.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: [PATCH v3 3/3] backlight: pwm_bl: Fix interpolation
-Date:   Wed, 21 Oct 2020 22:04:45 -0700
-Message-Id: <20201021220404.v3.3.I4dcea1c90e9da3902d466033aa73351e19e49c49@changeid>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201022050445.930403-1-amstan@chromium.org>
-References: <20201022050445.930403-1-amstan@chromium.org>
+        id S2502524AbgJVFH5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:07:57 -0400
+Received: from mail-eopbgr60087.outbound.protection.outlook.com ([40.107.6.87]:51428
+        "EHLO EUR04-DB3-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2502363AbgJVFH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 01:07:57 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=GMHPYLwQ3QvpWxnTQK1a2vuIU21EkOxUBqQR6EeLBDJ9wD7LGgeh4sMYZIt5peocx+14myupAPSpWSFO1h5PB+4OttT93cTkrkdjnl/7+eCUw8p7ZCMRbQyvntIUe2aGeD98mByNluxpekbcSr+VtpwMI/s6V5I/onXmnoaVP3RwoCfqRWQB/Y2HZuKEnIVavWK67D1FHnr63VnD58B7VWwkYevTGIcSfyHBbEwukPdrufGeIGAwWMk+YaRc9rF5PnKD2fcGoutCfxfPPQRwwhNJccpfaR5z/pqHjMDoQieZa6O8gydLyNo8eKUOEFFjQ0pzlWVVhOjT+n2smQkiCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zhWzavHzUUf3Etfa6AUfZO/+ec8HBmp6Hu9AkAXnGAY=;
+ b=TPEr8pR6pjYaTJcyWTRTi9KNUkRGhoyBU74IrCiH6iCB6cNCq3xa4Zpyw6ViVzze+CecDzelHnILiuWQFx/k0r6VQZtbbQiuhY7X3cle+kSAhI7LojSPMV70UMVoLBVZP+vuCOkPMXX0waq7lH14hM7gkDGTE224/wp0Lfs+CigP66z6AKmsrZUICGbqxon8XC9aXmEBn9OEGyHNFkRnzilth7mPDUfPsS4Y9Pz1X+3Th6PNsCcC9y2Xk9PK4gj5TMhg1h02buEap1QxskC9KYrtkEGs6aVn2ZT7eUJyGJdiiefdHJud63P116jAIahfFILauWZil3/uaAMzNcrsOg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=zhWzavHzUUf3Etfa6AUfZO/+ec8HBmp6Hu9AkAXnGAY=;
+ b=bV+cgipDyki9UCtgjIysvgWERRjxmsvGZ429DaGU4Xh3KQs33yzFJe7F8gUeJ17t4d67j4EMmF/7MruGUeGtps32yHLhaMPA9z+noyzSHAXU7WuS5AyqlSA9ERZZ9zSg/4eOuztJlGiQMVOOP3UCjSHb/lPc21wMamuvsFsYxoo=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR0402MB3358.eurprd04.prod.outlook.com (2603:10a6:803:11::32) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Thu, 22 Oct
+ 2020 05:07:52 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
+ 05:07:52 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     hch@infradead.org, sudeep.dutt@intel.com, ashutosh.dixit@intel.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org, kishon@ti.com,
+        lorenzo.pieralisi@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com
+Subject: [PATCH V3 0/4]  Change vring space from nomal memory to dma coherent memory
+Date:   Thu, 22 Oct 2020 13:06:34 +0800
+Message-Id: <20201022050638.29641-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR0601CA0012.apcprd06.prod.outlook.com (2603:1096:3::22)
+ To VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxp.ap.freescale.net (119.31.174.71) by SG2PR0601CA0012.apcprd06.prod.outlook.com (2603:1096:3::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 22 Oct 2020 05:07:49 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: b13e4230-2286-4b58-d1d9-08d876486d7f
+X-MS-TrafficTypeDiagnostic: VI1PR0402MB3358:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR0402MB33586D665A44BCE7CCB79A98921D0@VI1PR0402MB3358.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: s2vhPI0p4S/15UGCU7XBAi6D+Tean7vHKTS5RE3SvPDOcbi/JHs3R19fis45KjuBA6rhLM7aelMHyvm34avGZd46g0jU9iC0rr6vfmrua5sqCaJZXM4j2QF7LH9quBgaA4180I+GC8ZUAOkIi9A19pkM94gwM8kDBSoXIl6n6jZFXgSYcvnWScQcWIx7UwCeZbGeVDcFY7h7X3HQ7dctMRC2xwAWF6DMD3hGH7N6904gQ5a+vT7uUjWWShpdj9nWcRy4a/IW/fxBsSbBfjG04od7m6ozj6RfztrvYp3YeVbDUYXbLMfOLjGOxk9KIt1ubPoKb3G42l8LJyWX9t27KuC7xfwzSyF9/o5kjl84dG7yOaJdhl4M3h8bM7fxXHgrqYqx14PRNrsfbuie675t8w==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(376002)(396003)(136003)(346002)(39860400002)(6486002)(6506007)(966005)(44832011)(2906002)(66476007)(66946007)(4326008)(83380400001)(86362001)(6512007)(316002)(2616005)(66556008)(956004)(1076003)(186003)(26005)(16526019)(478600001)(6666004)(8676002)(36756003)(52116002)(5660300002)(8936002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 9BwRR5WBCx8bFuH7lbTdDdKJqKaCakGi4XWsGuPWfHxuPOfx/D688ERMaGVVlmS3m+8/dxZBETjh37yyVbeOcrSUYsx30l81r3h3PiInC5TsoBzNH4Mday6dLRIBxy3M/pu26fyrWNSfSgCLFfIuGE2cQsP3tMXSrNxxnPvjstnzOfw0a0o5nQkafkSg63NstcLQVRvw8S66FDOe/40xyNnj0+VyPeJfZRW4uvXidY9V87p4400zjinS/35qIbHZFK4Wz0oZvh4Iz53wCs1aNbRKG1q8wjr7x3p5wWGYVDei58UjkksrhV+/ImmSLqAgO6J4FmWjv6rt7+nsoFvwziHI1VPvUyDtczFgfxLbzMDu9Zw7VyCIOp+yR9Z0H/m7ja/cF7ZrDMDjxe6AZHv2AinEVhFGFjHjyvUQeyIfM3JAvR3p74GCX/V9JUrlGSDDuqxlXePDjERWvcGDmUocGk0VKZBItpI1op5h4XoatmmkPjzANIVrXXQqJDk7n7PmU/YG/SPPcFh7IDLv1EWwzSl8WSbIKBMLj+4x/VxPuzniFFfa8R6jxqs5MjdK+Noc010FbhGI/RAKHl9gg2ekO2nj1qJeA28hVTWtpSAmjsLN6OaxpFm0dY1CwTJxem9u//iC8OD4RbIp1BtgoXJWzw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b13e4230-2286-4b58-d1d9-08d876486d7f
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 05:07:52.2639
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 91kQnHyhFRE7x/NavKuU0TAUE5caZUuyoZosSL5VjMmGIKamOnhtlfGFaE+r0BrVu/4TRNFAg3x+N8VWWvub2g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR0402MB3358
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The previous behavior was a little unexpected, its properties/problems:
-1. It was designed to generate strictly increasing values (no repeats)
-2. It had quantization errors when calculating step size. Resulting in
-unexpected jumps near the end of some segments.
+Changes in V3:
+1. Change the device page allocation method of the Intel mic layer in Patch 1 to
+align with the vring allocation. 
+2. Move the vring physical address changes in mmap callback from Prach 3 to 1.
+3. Use must_be_zero instead of directly deleting used_address_updated in
+Patch 2 to avoid the influence of ABI change.
+(I tried to use dma_mmap_coherent api in Patch 4 as Christoph suggested, but
+ met some issues explained here https://lore.kernel.org/patchwork/patch/1313327/,
+ so there is no change to Patch 4, and still can't find a better way than
+ patch 3)
 
-Example settings:
-	brightness-levels = <0 1 2 4 8 16 32 64 128 256>;
-	num-interpolated-steps = <16>;
+The original vop driver only supports dma coherent device, as it allocates and
+maps vring by _get_free_pages and dma_map_single, but not use 
+dma_sync_single_for_cpu/device to sync the updates of device_page/vring between
+EP and RC, which will cause memory synchronization problem for device don't
+support hardware dma coherent.
 
-Whenever num-interpolated-steps was larger than the distance
-between 2 consecutive brightness levels the table would get really
-discontinuous. The slope of the interpolation would stick with
-integers only and if it was 0 the whole line segment would get skipped.
+And allocate vrings use dma_alloc_coherent is a common way in kernel, as the
+memory interacted between two systems should use consistent memory to avoid
+caching effects. So here add noncoherent platform support for vop driver.
+Also add some related dma changes to make sure noncoherent platform works
+well.
 
-The distances between 1 2 4 and 8 would be 1 (property #1 fighting us),
-and only starting with 16 it would start to interpolate properly.
+Sherry Sun (4):
+  misc: vop: change the way of allocating vring and device page
+  misc: vop: do not allocate and reassign the used ring
+  misc: vop: simply return the saved dma address instead of virt_to_phys
+  misc: vop: mapping kernel memory to user space as noncached
 
-Property #1 is not enough. The goal here is more than just monotonically
-increasing. We should still care about the shape of the curve. Repeated
-points might be desired if we're in the part of the curve where we want
-to go slow (aka slope near 0).
+ drivers/misc/mic/bus/vop_bus.h     |  2 +
+ drivers/misc/mic/host/mic_boot.c   |  8 +++
+ drivers/misc/mic/host/mic_main.c   | 15 ++----
+ drivers/misc/mic/vop/vop_debugfs.c |  2 -
+ drivers/misc/mic/vop/vop_main.c    | 48 +++--------------
+ drivers/misc/mic/vop/vop_vringh.c  | 84 +++++++-----------------------
+ include/uapi/linux/mic_common.h    |  5 +-
+ 7 files changed, 42 insertions(+), 122 deletions(-)
 
-Problem #2 is plainly a bug. Imagine if the 64 entry was 63 instead,
-the calculated slope on the 32-63 segment will be almost half as it
-should be.
-
-The most expected and simplest algorithm for interpolation is linear
-interpolation, which would handle both problems.
-Let's just implement that!
-
-Take pairs of points from the brightness-levels array and linearly
-interpolate between them. On the X axis (what userspace sees) we'll
-now have equally sized intervals (num-interpolated-steps sized,
-as opposed to before where we were at the mercy of quantization).
-
-END
-
-Signed-off-by: Alexandru Stan <amstan@chromium.org>
----
-
- drivers/video/backlight/pwm_bl.c | 70 ++++++++++++++------------------
- 1 file changed, 31 insertions(+), 39 deletions(-)
-
-diff --git a/drivers/video/backlight/pwm_bl.c b/drivers/video/backlight/pwm_bl.c
-index dfc760830eb9..e48fded3e414 100644
---- a/drivers/video/backlight/pwm_bl.c
-+++ b/drivers/video/backlight/pwm_bl.c
-@@ -230,8 +230,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 				  struct platform_pwm_backlight_data *data)
- {
- 	struct device_node *node = dev->of_node;
--	unsigned int num_levels = 0;
--	unsigned int levels_count;
-+	unsigned int num_levels;
- 	unsigned int num_steps = 0;
- 	struct property *prop;
- 	unsigned int *table;
-@@ -260,12 +259,11 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 	if (!prop)
- 		return 0;
- 
--	data->max_brightness = length / sizeof(u32);
-+	num_levels = length / sizeof(u32);
- 
- 	/* read brightness levels from DT property */
--	if (data->max_brightness > 0) {
--		size_t size = sizeof(*data->levels) * data->max_brightness;
--		unsigned int i, j, n = 0;
-+	if (num_levels > 0) {
-+		size_t size = sizeof(*data->levels) * num_levels;
- 
- 		data->levels = devm_kzalloc(dev, size, GFP_KERNEL);
- 		if (!data->levels)
-@@ -273,7 +271,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 
- 		ret = of_property_read_u32_array(node, "brightness-levels",
- 						 data->levels,
--						 data->max_brightness);
-+						 num_levels);
- 		if (ret < 0)
- 			return ret;
- 
-@@ -298,7 +296,13 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 		 * between two points.
- 		 */
- 		if (num_steps) {
--			if (data->max_brightness < 2) {
-+			unsigned int num_input_levels = num_levels;
-+			unsigned int i;
-+			u32 x1, x2, x, dx;
-+			u32 y1, y2;
-+			s64 dy;
-+
-+			if (num_input_levels < 2) {
- 				dev_err(dev, "can't interpolate\n");
- 				return -EINVAL;
- 			}
-@@ -308,14 +312,7 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			 * taking in consideration the number of interpolated
- 			 * steps between two levels.
- 			 */
--			for (i = 0; i < data->max_brightness - 1; i++) {
--				if ((data->levels[i + 1] - data->levels[i]) /
--				   num_steps)
--					num_levels += num_steps;
--				else
--					num_levels++;
--			}
--			num_levels++;
-+			num_levels = (num_input_levels - 1) * num_steps + 1;
- 			dev_dbg(dev, "new number of brightness levels: %d\n",
- 				num_levels);
- 
-@@ -327,24 +324,25 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			table = devm_kzalloc(dev, size, GFP_KERNEL);
- 			if (!table)
- 				return -ENOMEM;
--
--			/* Fill the interpolated table. */
--			levels_count = 0;
--			for (i = 0; i < data->max_brightness - 1; i++) {
--				value = data->levels[i];
--				n = (data->levels[i + 1] - value) / num_steps;
--				if (n > 0) {
--					for (j = 0; j < num_steps; j++) {
--						table[levels_count] = value;
--						value += n;
--						levels_count++;
--					}
--				} else {
--					table[levels_count] = data->levels[i];
--					levels_count++;
-+			/*
-+			 * Fill the interpolated table[x] = y
-+			 * by draw lines between each (x1, y1) to (x2, y2).
-+			 */
-+			dx = num_steps;
-+			for (i = 0; i < num_input_levels - 1; i++) {
-+				x1 = i * dx;
-+				x2 = x1 + dx;
-+				y1 = data->levels[i];
-+				y2 = data->levels[i + 1];
-+				dy = (s64)y2 - y1;
-+
-+				for (x = x1; x < x2; x++) {
-+					table[x] = y1 +
-+						div_s64(dy * (x - x1), dx);
- 				}
- 			}
--			table[levels_count] = data->levels[i];
-+			/* Fill in the last point, since no line starts here. */
-+			table[x2] = y2;
- 
- 			/*
- 			 * As we use interpolation lets remove current
-@@ -353,15 +351,9 @@ static int pwm_backlight_parse_dt(struct device *dev,
- 			 */
- 			devm_kfree(dev, data->levels);
- 			data->levels = table;
--
--			/*
--			 * Reassign max_brightness value to the new total number
--			 * of brightness levels.
--			 */
--			data->max_brightness = num_levels;
- 		}
- 
--		data->max_brightness--;
-+		data->max_brightness = num_levels - 1;
- 	}
- 
- 	return 0;
 -- 
-2.28.0
+2.17.1
 
