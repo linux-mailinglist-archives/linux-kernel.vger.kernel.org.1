@@ -2,188 +2,252 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 190DA296414
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:52:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81CFB29641D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:54:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368341AbgJVRwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:52:04 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:41271 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S368307AbgJVRwE (ORCPT
+        id S368387AbgJVRyV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:54:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37050 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368246AbgJVRyU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:52:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603389122;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=Snym3up3V+Jaq0VoNL6Bf+mG/o9VEWmu15l14qW0Ezk=;
-        b=HsazYTo14z6lwcl7LUJ3FQ7pG7jDOug5XxgjlKpej0aMZWNVfrvKuZk6qdWOpUMA2MvS7x
-        eKV1hBv4VDzvIYbmp7XAiCN/aJadQY3pqa+256+thxwrRJzoEYzN1SqR/XFBch1Ky/GGvp
-        D2MMiWGHPygPQ2EPnMXuTMnenDNnTRE=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-477-hOLuj33oMqSIV1a9CNuMAw-1; Thu, 22 Oct 2020 13:52:00 -0400
-X-MC-Unique: hOLuj33oMqSIV1a9CNuMAw-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B36AA107ACF8;
-        Thu, 22 Oct 2020 17:51:58 +0000 (UTC)
-Received: from w520.home (ovpn-112-213.phx2.redhat.com [10.3.112.213])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 510515D9CC;
-        Thu, 22 Oct 2020 17:51:58 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 11:51:57 -0600
-From:   Alex Williamson <alex.williamson@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     <linux-kernel@vger.kernel.org>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        Diana Craciun <diana.craciun@oss.nxp.com>,
-        Matthew Rosato <mjrosato@linux.ibm.com>
-Subject: [GIT PULL] VFIO updates for v5.10-rc1
-Message-ID: <20201022115157.597fa544@w520.home>
+        Thu, 22 Oct 2020 13:54:20 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05DB7C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:54:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id g16so1447691pjv.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:54:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fN98WKFQMgEXMlp8i3NGUVnGVw+6y+e2V0ke9rhUWSA=;
+        b=BKV40KcFYv/RT7WI/LzYvQYye/7QuyEZeVOFKBpWDRGSNerYyXtKTvLxKg7AQQyR6a
+         B6ov6UgSF+CT0yFZ5Kpm//JhG6JX+erMmrvxUD0nM2EPok7DJ1dyb0csZXVH+J57G76o
+         JEKNKLPukNE3mXje8tahLR4x5JyOobyLEq7zPqSmgsU53Cxt6nYjuHUBVcdVMcbrcilK
+         K/V95Mavbng7Vx66laYlk4QUwTrTI6xWi8qckIoCQ5E2cwAi2ki1g0yQJTA0k1YggZ8N
+         +hx8KG1AyjINmebjC8dKCAdqeNm9iI1l37J/7olC9z6B/lTJyWVJjteE9X9SnKXuuDmh
+         S8ew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fN98WKFQMgEXMlp8i3NGUVnGVw+6y+e2V0ke9rhUWSA=;
+        b=UFqAhR5RToEjbzLzUykW6Ks2oVcKHTYFUQojNVVmwxqtoY0rE78A6MyGvXX1DFrvFn
+         UO6auPFGJ3kZUmOSzE6Wu10DyqPdyCXTO31pOvqw3iDwjAs4ItXmDrx6ZT+zw9SK2niB
+         9vwOHHd9H+AhcPfT3kO1x1VhZdgdD1cEHxAaknAsnR+4eCAAG1d48xSOjdE5tSClq3bQ
+         3wEX5qDchRu9eF5pI/mu4HdKe+odvNwdzeYxrCb71o1hVL5o1Kqfk5B89KCDiMmb0/ZC
+         LPxGO3obj1w28O04F9sTFOlNRM5V2cnGwsxYrecpcqDNyS3rVjkPtHp7g4o3curA8X9D
+         jsqA==
+X-Gm-Message-State: AOAM5310ID8UHC5Rtbt6LxGmJ6dCFnZq6Mk+tewp9ZzcKN9vqbhfNFgj
+        pOVyF8VNczHRoaUiCHUglQznsM//ZOuLy8uZVvw6vw==
+X-Google-Smtp-Source: ABdhPJwKMlfWHWIfBAFNm3K11R3iXcLN/39e27pMOK/669Q9lQtbTX5Z9LF4v87HnqXK2It7QLj5rkKD4/EUsxOxOjE=
+X-Received: by 2002:a17:902:c40b:b029:d3:def2:d90f with SMTP id
+ k11-20020a170902c40bb02900d3def2d90fmr3352248plk.29.1603389258899; Thu, 22
+ Oct 2020 10:54:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201021233914.GR3576660@ZenIV.linux.org.uk> <20201022082654.GA1477657@kroah.com>
+ <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com> <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com> <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com> <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com> <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de> <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+In-Reply-To: <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+From:   Nick Desaulniers <ndesaulniers@google.com>
+Date:   Thu, 22 Oct 2020 10:54:06 -0700
+Message-ID: <CAKwvOdnix6YGFhsmT_mY8ORNPTOsN3HwS33Dr0Ykn-pyJ6e-Bw@mail.gmail.com>
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+To:     David Laight <David.Laight@aculab.com>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Content-Type: multipart/mixed; boundary="0000000000003743e505b2462753"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+--0000000000003743e505b2462753
+Content-Type: text/plain; charset="UTF-8"
 
-The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
+On Thu, Oct 22, 2020 at 9:35 AM David Laight <David.Laight@aculab.com> wrote:
+>
+> From: Christoph Hellwig
+> > Sent: 22 October 2020 14:24
+> >
+> > On Thu, Oct 22, 2020 at 11:36:40AM +0200, David Hildenbrand wrote:
+> > > My thinking: if the compiler that calls import_iovec() has garbage in
+> > > the upper 32 bit
+> > >
+> > > a) gcc will zero it out and not rely on it being zero.
+> > > b) clang will not zero it out, assuming it is zero.
+> > >
+> > > But
+> > >
+> > > a) will zero it out when calling the !inlined variant
+> > > b) clang will zero it out when calling the !inlined variant
+> > >
+> > > When inlining, b) strikes. We access garbage. That would mean that we
+> > > have calling code that's not generated by clang/gcc IIUC.
+> >
+> > Most callchains of import_iovec start with the assembly syscall wrappers.
+>
+> Wait...
+> readv(2) defines:
+>         ssize_t readv(int fd, const struct iovec *iov, int iovcnt);
+>
+> But the syscall is defined as:
+>
+> SYSCALL_DEFINE3(readv, unsigned long, fd, const struct iovec __user *, vec,
+>                 unsigned long, vlen)
+> {
+>         return do_readv(fd, vec, vlen, 0);
+> }
+>
+> I'm guessing that nothing actually masks the high bits that come
+> from an application that is compiled with clang?
+>
+> The vlen is 'unsigned long' through the first few calls.
+> So unless there is a non-inlined function than takes vlen
+> as 'int' the high garbage bits from userspace are kept.
 
-  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
+Yeah, that's likely a bug: https://godbolt.org/z/KfsPKs
 
-are available in the Git repository at:
+>
+> Which makes it a bug in the kernel C syscall wrappers.
+> They need to explicitly mask the high bits of 32bit
+> arguments on arm64 but not x86-64.
 
-  git://github.com/awilliam/linux-vfio.git tags/vfio-v5.10-rc1
+Why not x86-64? Wouldn't it be *any* LP64 ISA?
 
-for you to fetch changes up to 2e6cfd496f5b57034cf2aec738799571b5a52124:
+Attaching a patch that uses the proper width, but I'm pretty sure
+there's still a signedness issue .  Greg, would you mind running this
+through the wringer?
 
-  vfio iommu type1: Fix memory leak in vfio_iommu_type1_pin_pages (2020-10-20 10:12:17 -0600)
+>
+> What does the ARM EABI say about register parameters?
 
+AAPCS is the ABI for 64b ARM, IIUC, which is the ISA GKH is reporting
+the problem against. IIUC, EABI is one of the 32b ABIs.  aarch64 is
+LP64 just like x86_64.
 
-Please note, this tag has a minor merge conflict with the s390
-tree as Vasily noted in his pull request[1] and originally found
-by Stephen[2] in linux-next.  The resolution is:
+--
+Thanks,
+~Nick Desaulniers
 
-diff --cc arch/s390/pci/pci_bus.c
-index 0c0db7c3a404,c93486a9989b..755b46f4c595
---- a/arch/s390/pci/pci_bus.c
-+++ b/arch/s390/pci/pci_bus.c
-@@@ -135,9 -197,10 +135,10 @@@ void pcibios_bus_add_device(struct pci_
-  	 * With pdev->no_vf_scan the common PCI probing code does not
-  	 * perform PF/VF linking.
-  	 */
-- 	if (zdev->vfn)
-+ 	if (zdev->vfn) {
- -		zpci_bus_setup_virtfn(zdev->zbus, pdev, zdev->vfn);
- +		zpci_iov_setup_virtfn(zdev->zbus, pdev, zdev->vfn);
-- 
-+ 		pdev->no_command_memory = 1;
-+ 	}
-  }
-  
-  static int zpci_bus_add_device(struct zpci_bus *zbus, struct zpci_dev *zdev)
+--0000000000003743e505b2462753
+Content-Type: application/octet-stream; 
+	name="0001-fs-fix-up-type-confusion-in-readv-writev.patch"
+Content-Disposition: attachment; 
+	filename="0001-fs-fix-up-type-confusion-in-readv-writev.patch"
+Content-Transfer-Encoding: base64
+Content-ID: <f_kgl4e4rn0>
+X-Attachment-Id: f_kgl4e4rn0
 
-[1]https://lore.kernel.org/lkml/your-ad-here.call-01602846038-ext-6012@work.hours/
-[2]https://lore.kernel.org/lkml/20200924142651.28382ed7@canb.auug.org.au/
-
-----------------------------------------------------------------
-VFIO updates for v5.10-rc1
-
- - New fsl-mc vfio bus driver supporting userspace drivers of objects
-   within NXP's DPAA2 architecture (Diana Craciun)
-
- - Support for exposing zPCI information on s390 (Matthew Rosato)
-
- - Fixes for "detached" VFs on s390 (Matthew Rosato)
-
- - Fixes for pin-pages and dma-rw accesses (Yan Zhao)
-
- - Cleanups and optimize vconfig regen (Zenghui Yu)
-
- - Fix duplicate irq-bypass token registration (Alex Williamson)
-
-----------------------------------------------------------------
-Alex Williamson (3):
-      Merge branches 'v5.10/vfio/bardirty', 'v5.10/vfio/dma_avail', 'v5.10/vfio/misc', 'v5.10/vfio/no-cmd-mem' and 'v5.10/vfio/yan_zhao_fixes' into v5.10/vfio/next
-      Merge branches 'v5.10/vfio/fsl-mc-v6' and 'v5.10/vfio/zpci-info-v3' into v5.10/vfio/next
-      vfio/pci: Clear token on bypass registration failure
-
-Bharat Bhushan (1):
-      vfio/fsl-mc: Add VFIO framework skeleton for fsl-mc devices
-
-Diana Craciun (12):
-      vfio/fsl-mc: Scan DPRC objects on vfio-fsl-mc driver bind
-      vfio/fsl-mc: Implement VFIO_DEVICE_GET_INFO ioctl
-      vfio/fsl-mc: Implement VFIO_DEVICE_GET_REGION_INFO ioctl call
-      vfio/fsl-mc: Allow userspace to MMAP fsl-mc device MMIO regions
-      vfio/fsl-mc: Added lock support in preparation for interrupt handling
-      vfio/fsl-mc: Add irq infrastructure for fsl-mc devices
-      vfio/fsl-mc: trigger an interrupt via eventfd
-      vfio/fsl-mc: Add read/write support for fsl-mc devices
-      vfio/fsl-mc: Add support for device reset
-      vfio/fsl-mc: Fixed vfio-fsl-mc driver compilation on 32 bit
-      vfio/fsl-mc: Fix the dead code in vfio_fsl_mc_set_irq_trigger
-      vfio/fsl-mc: fix the return of the uninitialized variable ret
-
-Matthew Rosato (9):
-      PCI/IOV: Mark VFs as not implementing PCI_COMMAND_MEMORY
-      vfio iommu: Add dma available capability
-      s390/pci: Mark all VFs as not implementing PCI_COMMAND_MEMORY
-      vfio/pci: Decouple PCI_COMMAND_MEMORY bit checks from is_virtfn
-      s390/pci: stash version in the zpci_dev
-      s390/pci: track whether util_str is valid in the zpci_dev
-      vfio: Introduce capability definitions for VFIO_DEVICE_GET_INFO
-      vfio-pci/zdev: Add zPCI capabilities to VFIO_DEVICE_GET_INFO
-      MAINTAINERS: Add entry for s390 vfio-pci
-
-Xiaoyang Xu (1):
-      vfio iommu type1: Fix memory leak in vfio_iommu_type1_pin_pages
-
-Yan Zhao (3):
-      vfio: add a singleton check for vfio_group_pin_pages
-      vfio: fix a missed vfio group put in vfio_pin_pages
-      vfio/type1: fix dirty bitmap calculation in vfio_dma_rw
-
-Zenghui Yu (3):
-      vfio: Fix typo of the device_state
-      vfio/pci: Remove redundant declaration of vfio_pci_driver
-      vfio/pci: Don't regenerate vconfig for all BARs if !bardirty
-
- MAINTAINERS                               |  14 +
- arch/s390/include/asm/pci.h               |   4 +-
- arch/s390/pci/pci_bus.c                   |   5 +-
- arch/s390/pci/pci_clp.c                   |   2 +
- drivers/pci/iov.c                         |   1 +
- drivers/vfio/Kconfig                      |   1 +
- drivers/vfio/Makefile                     |   1 +
- drivers/vfio/fsl-mc/Kconfig               |   9 +
- drivers/vfio/fsl-mc/Makefile              |   4 +
- drivers/vfio/fsl-mc/vfio_fsl_mc.c         | 683 ++++++++++++++++++++++++++++++
- drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c    | 194 +++++++++
- drivers/vfio/fsl-mc/vfio_fsl_mc_private.h |  55 +++
- drivers/vfio/pci/Kconfig                  |  12 +
- drivers/vfio/pci/Makefile                 |   1 +
- drivers/vfio/pci/vfio_pci.c               |  38 +-
- drivers/vfio/pci/vfio_pci_config.c        |  27 +-
- drivers/vfio/pci/vfio_pci_intrs.c         |   4 +-
- drivers/vfio/pci/vfio_pci_private.h       |  12 +
- drivers/vfio/pci/vfio_pci_zdev.c          | 143 +++++++
- drivers/vfio/vfio.c                       |   9 +-
- drivers/vfio/vfio_iommu_type1.c           |  23 +-
- include/linux/pci.h                       |   1 +
- include/uapi/linux/vfio.h                 |  29 +-
- include/uapi/linux/vfio_zdev.h            |  78 ++++
- 24 files changed, 1330 insertions(+), 20 deletions(-)
- create mode 100644 drivers/vfio/fsl-mc/Kconfig
- create mode 100644 drivers/vfio/fsl-mc/Makefile
- create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc.c
- create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_intr.c
- create mode 100644 drivers/vfio/fsl-mc/vfio_fsl_mc_private.h
- create mode 100644 drivers/vfio/pci/vfio_pci_zdev.c
- create mode 100644 include/uapi/linux/vfio_zdev.h
-
+RnJvbSBhYWUyNmIxM2ZmYjllMzhiYjQ2YjhjODU5ODU3NjFiNWYxOTZiNmY2IE1vbiBTZXAgMTcg
+MDA6MDA6MDAgMjAwMQpGcm9tOiBOaWNrIERlc2F1bG5pZXJzIDxuZGVzYXVsbmllcnNAZ29vZ2xl
+LmNvbT4KRGF0ZTogVGh1LCAyMiBPY3QgMjAyMCAxMDoyMzo0NyAtMDcwMApTdWJqZWN0OiBbUEFU
+Q0hdIGZzOiBmaXggdXAgdHlwZSBjb25mdXNpb24gaW4gcmVhZHYvd3JpdGV2CgpUaGUgc3lzY2Fs
+bCBpbnRlcmZhY2UgZG9lc24ndCBtYXRjaCB1cCB3aXRoIHRoZSBpbnRlcmZhY2UgbGliYyBpcyB1
+c2luZwpvciB0aGF0J3MgZGVmaW5lZCBpbiB0aGUgbWFudWFsIHBhZ2VzLgoKc3NpemVfdCByZWFk
+dihpbnQgZmQsIGNvbnN0IHN0cnVjdCBpb3ZlYyAqaW92LCBpbnQgaW92Y250KTsKc3NpemVfdCB3
+cml0ZXYoaW50IGZkLCBjb25zdCBzdHJ1Y3QgaW92ZWMgKmlvdiwgaW50IGlvdmNudCk7CgpUaGUg
+a2VybmVsIHdhcyBkZWZpbmluZyBgaW92Y250YCBhcyBgdW5zaWduZWQgbG9uZ2Agd2hpY2ggaXMg
+YSBwcm9ibGVtCndoZW4gdXNlcnNwYWNlIHVuZGVyc3RhbmRzIHRoaXMgdG8gYmUgYGludGAuCgoo
+VGhlcmUncyBzdGlsbCBsaWtlbHkgYSBzaWduZWRuZXNzIGJ1ZyBoZXJlLCBidXQgdXNlIHRoZSBw
+cm9wZXIgd2lkdGhzCnRoYXQgaW1wb3J0X2lvdmVjKCkgZXhwZWN0cy4pCgpTaWduZWQtb2ZmLWJ5
+OiBOaWNrIERlc2F1bG5pZXJzIDxuZGVzYXVsbmllcnNAZ29vZ2xlLmNvbT4KLS0tCiBmcy9yZWFk
+X3dyaXRlLmMgICAgfCAxMCArKysrKy0tLS0tCiBmcy9zcGxpY2UuYyAgICAgICAgfCAgMiArLQog
+aW5jbHVkZS9saW51eC9mcy5oIHwgIDIgKy0KIGxpYi9pb3ZfaXRlci5jICAgICB8ICA0ICsrLS0K
+IDQgZmlsZXMgY2hhbmdlZCwgOSBpbnNlcnRpb25zKCspLCA5IGRlbGV0aW9ucygtKQoKZGlmZiAt
+LWdpdCBhL2ZzL3JlYWRfd3JpdGUuYyBiL2ZzL3JlYWRfd3JpdGUuYwppbmRleCAxOWY1YzRiZjc1
+YWEuLmI4NThmMzlhNDQ3NSAxMDA2NDQKLS0tIGEvZnMvcmVhZF93cml0ZS5jCisrKyBiL2ZzL3Jl
+YWRfd3JpdGUuYwpAQCAtODkwLDcgKzg5MCw3IEBAIHNzaXplX3QgdmZzX2l0ZXJfd3JpdGUoc3Ry
+dWN0IGZpbGUgKmZpbGUsIHN0cnVjdCBpb3ZfaXRlciAqaXRlciwgbG9mZl90ICpwcG9zLAogRVhQ
+T1JUX1NZTUJPTCh2ZnNfaXRlcl93cml0ZSk7CiAKIHNzaXplX3QgdmZzX3JlYWR2KHN0cnVjdCBm
+aWxlICpmaWxlLCBjb25zdCBzdHJ1Y3QgaW92ZWMgX191c2VyICp2ZWMsCi0JCSAgdW5zaWduZWQg
+bG9uZyB2bGVuLCBsb2ZmX3QgKnBvcywgcndmX3QgZmxhZ3MpCisJCSAgdW5zaWduZWQgaW50IHZs
+ZW4sIGxvZmZfdCAqcG9zLCByd2ZfdCBmbGFncykKIHsKIAlzdHJ1Y3QgaW92ZWMgaW92c3RhY2tb
+VUlPX0ZBU1RJT1ZdOwogCXN0cnVjdCBpb3ZlYyAqaW92ID0gaW92c3RhY2s7CkBAIC05MDcsNyAr
+OTA3LDcgQEAgc3NpemVfdCB2ZnNfcmVhZHYoc3RydWN0IGZpbGUgKmZpbGUsIGNvbnN0IHN0cnVj
+dCBpb3ZlYyBfX3VzZXIgKnZlYywKIH0KIAogc3RhdGljIHNzaXplX3QgdmZzX3dyaXRldihzdHJ1
+Y3QgZmlsZSAqZmlsZSwgY29uc3Qgc3RydWN0IGlvdmVjIF9fdXNlciAqdmVjLAotCQkgICB1bnNp
+Z25lZCBsb25nIHZsZW4sIGxvZmZfdCAqcG9zLCByd2ZfdCBmbGFncykKKwkJICAgdW5zaWduZWQg
+aW50IHZsZW4sIGxvZmZfdCAqcG9zLCByd2ZfdCBmbGFncykKIHsKIAlzdHJ1Y3QgaW92ZWMgaW92
+c3RhY2tbVUlPX0ZBU1RJT1ZdOwogCXN0cnVjdCBpb3ZlYyAqaW92ID0gaW92c3RhY2s7CkBAIC05
+MjUsNyArOTI1LDcgQEAgc3RhdGljIHNzaXplX3QgdmZzX3dyaXRldihzdHJ1Y3QgZmlsZSAqZmls
+ZSwgY29uc3Qgc3RydWN0IGlvdmVjIF9fdXNlciAqdmVjLAogfQogCiBzdGF0aWMgc3NpemVfdCBk
+b19yZWFkdih1bnNpZ25lZCBsb25nIGZkLCBjb25zdCBzdHJ1Y3QgaW92ZWMgX191c2VyICp2ZWMs
+Ci0JCQl1bnNpZ25lZCBsb25nIHZsZW4sIHJ3Zl90IGZsYWdzKQorCQkJdW5zaWduZWQgaW50IHZs
+ZW4sIHJ3Zl90IGZsYWdzKQogewogCXN0cnVjdCBmZCBmID0gZmRnZXRfcG9zKGZkKTsKIAlzc2l6
+ZV90IHJldCA9IC1FQkFERjsKQEAgLTEwMjUsMTMgKzEwMjUsMTMgQEAgc3RhdGljIHNzaXplX3Qg
+ZG9fcHdyaXRldih1bnNpZ25lZCBsb25nIGZkLCBjb25zdCBzdHJ1Y3QgaW92ZWMgX191c2VyICp2
+ZWMsCiB9CiAKIFNZU0NBTExfREVGSU5FMyhyZWFkdiwgdW5zaWduZWQgbG9uZywgZmQsIGNvbnN0
+IHN0cnVjdCBpb3ZlYyBfX3VzZXIgKiwgdmVjLAotCQl1bnNpZ25lZCBsb25nLCB2bGVuKQorCQl1
+bnNpZ25lZCBpbnQsIHZsZW4pCiB7CiAJcmV0dXJuIGRvX3JlYWR2KGZkLCB2ZWMsIHZsZW4sIDAp
+OwogfQogCiBTWVNDQUxMX0RFRklORTMod3JpdGV2LCB1bnNpZ25lZCBsb25nLCBmZCwgY29uc3Qg
+c3RydWN0IGlvdmVjIF9fdXNlciAqLCB2ZWMsCi0JCXVuc2lnbmVkIGxvbmcsIHZsZW4pCisJCXVu
+c2lnbmVkIGludCwgdmxlbikKIHsKIAlyZXR1cm4gZG9fd3JpdGV2KGZkLCB2ZWMsIHZsZW4sIDAp
+OwogfQpkaWZmIC0tZ2l0IGEvZnMvc3BsaWNlLmMgYi9mcy9zcGxpY2UuYwppbmRleCA3MGNjNTJh
+Zjc4MGIuLjc1MDhlY2NmYTE0MyAxMDA2NDQKLS0tIGEvZnMvc3BsaWNlLmMKKysrIGIvZnMvc3Bs
+aWNlLmMKQEAgLTM0Miw3ICszNDIsNyBAQCBjb25zdCBzdHJ1Y3QgcGlwZV9idWZfb3BlcmF0aW9u
+cyBub3N0ZWFsX3BpcGVfYnVmX29wcyA9IHsKIEVYUE9SVF9TWU1CT0wobm9zdGVhbF9waXBlX2J1
+Zl9vcHMpOwogCiBzdGF0aWMgc3NpemVfdCBrZXJuZWxfcmVhZHYoc3RydWN0IGZpbGUgKmZpbGUs
+IGNvbnN0IHN0cnVjdCBrdmVjICp2ZWMsCi0JCQkgICAgdW5zaWduZWQgbG9uZyB2bGVuLCBsb2Zm
+X3Qgb2Zmc2V0KQorCQkJICAgIHVuc2lnbmVkIGludCB2bGVuLCBsb2ZmX3Qgb2Zmc2V0KQogewog
+CW1tX3NlZ21lbnRfdCBvbGRfZnM7CiAJbG9mZl90IHBvcyA9IG9mZnNldDsKZGlmZiAtLWdpdCBh
+L2luY2x1ZGUvbGludXgvZnMuaCBiL2luY2x1ZGUvbGludXgvZnMuaAppbmRleCBjNGFlOWNhZmJi
+YmEuLjIxMWJjZTVlNmU2MCAxMDA2NDQKLS0tIGEvaW5jbHVkZS9saW51eC9mcy5oCisrKyBiL2lu
+Y2x1ZGUvbGludXgvZnMuaApAQCAtMTg5NSw3ICsxODk1LDcgQEAgc3RhdGljIGlubGluZSBpbnQg
+Y2FsbF9tbWFwKHN0cnVjdCBmaWxlICpmaWxlLCBzdHJ1Y3Qgdm1fYXJlYV9zdHJ1Y3QgKnZtYSkK
+IGV4dGVybiBzc2l6ZV90IHZmc19yZWFkKHN0cnVjdCBmaWxlICosIGNoYXIgX191c2VyICosIHNp
+emVfdCwgbG9mZl90ICopOwogZXh0ZXJuIHNzaXplX3QgdmZzX3dyaXRlKHN0cnVjdCBmaWxlICos
+IGNvbnN0IGNoYXIgX191c2VyICosIHNpemVfdCwgbG9mZl90ICopOwogZXh0ZXJuIHNzaXplX3Qg
+dmZzX3JlYWR2KHN0cnVjdCBmaWxlICosIGNvbnN0IHN0cnVjdCBpb3ZlYyBfX3VzZXIgKiwKLQkJ
+dW5zaWduZWQgbG9uZywgbG9mZl90ICosIHJ3Zl90KTsKKwkJdW5zaWduZWQgaW50LCBsb2ZmX3Qg
+KiwgcndmX3QpOwogZXh0ZXJuIHNzaXplX3QgdmZzX2NvcHlfZmlsZV9yYW5nZShzdHJ1Y3QgZmls
+ZSAqLCBsb2ZmX3QgLCBzdHJ1Y3QgZmlsZSAqLAogCQkJCSAgIGxvZmZfdCwgc2l6ZV90LCB1bnNp
+Z25lZCBpbnQpOwogZXh0ZXJuIHNzaXplX3QgZ2VuZXJpY19jb3B5X2ZpbGVfcmFuZ2Uoc3RydWN0
+IGZpbGUgKmZpbGVfaW4sIGxvZmZfdCBwb3NfaW4sCmRpZmYgLS1naXQgYS9saWIvaW92X2l0ZXIu
+YyBiL2xpYi9pb3ZfaXRlci5jCmluZGV4IDE2MzUxMTFjNWJkMi4uZGVkOWQ5YzRlYjI4IDEwMDY0
+NAotLS0gYS9saWIvaW92X2l0ZXIuYworKysgYi9saWIvaW92X2l0ZXIuYwpAQCAtMTczNCw3ICsx
+NzM0LDcgQEAgc3RydWN0IGlvdmVjICppb3ZlY19mcm9tX3VzZXIoY29uc3Qgc3RydWN0IGlvdmVj
+IF9fdXNlciAqdXZlYywKIH0KIAogc3NpemVfdCBfX2ltcG9ydF9pb3ZlYyhpbnQgdHlwZSwgY29u
+c3Qgc3RydWN0IGlvdmVjIF9fdXNlciAqdXZlYywKLQkJIHVuc2lnbmVkIG5yX3NlZ3MsIHVuc2ln
+bmVkIGZhc3Rfc2Vncywgc3RydWN0IGlvdmVjICoqaW92cCwKKwkJIHVuc2lnbmVkIGludCBucl9z
+ZWdzLCB1bnNpZ25lZCBpbnQgZmFzdF9zZWdzLCBzdHJ1Y3QgaW92ZWMgKippb3ZwLAogCQkgc3Ry
+dWN0IGlvdl9pdGVyICppLCBib29sIGNvbXBhdCkKIHsKIAlzc2l6ZV90IHRvdGFsX2xlbiA9IDA7
+CkBAIC0xODAzLDcgKzE4MDMsNyBAQCBzc2l6ZV90IF9faW1wb3J0X2lvdmVjKGludCB0eXBlLCBj
+b25zdCBzdHJ1Y3QgaW92ZWMgX191c2VyICp1dmVjLAogICogUmV0dXJuOiBOZWdhdGl2ZSBlcnJv
+ciBjb2RlIG9uIGVycm9yLCBieXRlcyBpbXBvcnRlZCBvbiBzdWNjZXNzCiAgKi8KIHNzaXplX3Qg
+aW1wb3J0X2lvdmVjKGludCB0eXBlLCBjb25zdCBzdHJ1Y3QgaW92ZWMgX191c2VyICp1dmVjLAot
+CQkgdW5zaWduZWQgbnJfc2VncywgdW5zaWduZWQgZmFzdF9zZWdzLAorCQkgdW5zaWduZWQgaW50
+IG5yX3NlZ3MsIHVuc2lnbmVkIGludCBmYXN0X3NlZ3MsCiAJCSBzdHJ1Y3QgaW92ZWMgKippb3Zw
+LCBzdHJ1Y3QgaW92X2l0ZXIgKmkpCiB7CiAJcmV0dXJuIF9faW1wb3J0X2lvdmVjKHR5cGUsIHV2
+ZWMsIG5yX3NlZ3MsIGZhc3Rfc2VncywgaW92cCwgaSwKLS0gCjIuMjkuMC5yYzEuMjk3LmdmYTk3
+NDNlNTAxLWdvb2cKCg==
+--0000000000003743e505b2462753--
