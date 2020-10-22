@@ -2,124 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C20DA29582E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:59:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F65295833
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:01:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508129AbgJVF7p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:59:45 -0400
-Received: from labrats.qualcomm.com ([199.106.110.90]:8866 "EHLO
-        labrats.qualcomm.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503108AbgJVF7p (ORCPT
+        id S2503167AbgJVGBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 02:01:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39570 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438274AbgJVGBd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:59:45 -0400
-IronPort-SDR: HYB9Gc8zPVPKv26CPESz9gL9FavoMbNCtojlpvoKKWL0n4ihfr9reMtZ2HnB5cDuMU2GD3flH4
- 2nXaxDEmpQtuqaAD6aN4r8r8RlCLi2In7AKKvsQk7bN2vP8Ag2nW821NOt1RDmT5zERPFOTfw6
- pZ7VmwgxaIh1+zLuv6wVeKqHiEpk+Bym3/kkeAd8ZzOV+Vnj7ZKTSYNqLrDO2I5g3aZGDEZuNp
- bqVty32muENdyFqlcid8JtXrTaPgwAn8Ykdtqmz030vpifxXevRPtPeFPNq+XE7HBT62GnNRS1
- 4eU=
-X-IronPort-AV: E=Sophos;i="5.77,403,1596524400"; 
-   d="scan'208";a="29224131"
-Received: from unknown (HELO ironmsg05-sd.qualcomm.com) ([10.53.140.145])
-  by labrats.qualcomm.com with ESMTP; 21 Oct 2020 22:59:11 -0700
-X-QCInternal: smtphost
-Received: from stor-presley.qualcomm.com ([192.168.140.85])
-  by ironmsg05-sd.qualcomm.com with ESMTP; 21 Oct 2020 22:59:10 -0700
-Received: by stor-presley.qualcomm.com (Postfix, from userid 359480)
-        id 60C5E21718; Wed, 21 Oct 2020 22:59:10 -0700 (PDT)
-From:   Can Guo <cang@codeaurora.org>
-To:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
-        hongwus@codeaurora.org, rnayak@codeaurora.org,
-        linux-scsi@vger.kernel.org, kernel-team@android.com,
-        saravanak@google.com, salyzyn@google.com, cang@codeaurora.org
-Cc:     Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from ufshcd_read_desc_param()
-Date:   Wed, 21 Oct 2020 22:59:00 -0700
-Message-Id: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        Thu, 22 Oct 2020 02:01:33 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D91EC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 23:01:31 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVTfE-005zm1-V8; Thu, 22 Oct 2020 06:01:29 +0000
+Date:   Thu, 22 Oct 2020 07:01:28 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>, linux-kernel@vger.kernel.org
+Subject: [git pull] vfs.git set_fs pile
+Message-ID: <20201022060128.GS3576660@ZenIV.linux.org.uk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Since WB feature has been added, WB related sysfs entries can be accessed
-even when an UFS device does not support WB feature. In that case, the
-descriptors which are not supported by the UFS device may be wrongly
-reported when they are accessed from their corrsponding sysfs entries.
-Fix it by adding a sanity check of parameter offset against the actual
-decriptor length.
+	Christoph's set_fs base series + fixups.  A few trivial conflicts
+(arch/{ia64,m68k/s390}/Kconfig and arch/x86/lib/getuser.S); proposed
+resolution in #merge-candidate, same as in -next.
 
-Signed-off-by: Can Guo <cang@codeaurora.org>
----
- drivers/scsi/ufs/ufshcd.c | 24 +++++++++++++++---------
- 1 file changed, 15 insertions(+), 9 deletions(-)
+The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
 
-diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-index a2ebcc8..aeec10d 100644
---- a/drivers/scsi/ufs/ufshcd.c
-+++ b/drivers/scsi/ufs/ufshcd.c
-@@ -3184,13 +3184,19 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
- 	/* Get the length of descriptor */
- 	ufshcd_map_desc_id_to_length(hba, desc_id, &buff_len);
- 	if (!buff_len) {
--		dev_err(hba->dev, "%s: Failed to get desc length", __func__);
-+		dev_err(hba->dev, "%s: Failed to get desc length\n", __func__);
-+		return -EINVAL;
-+	}
-+
-+	if (param_offset >= buff_len) {
-+		dev_err(hba->dev, "%s: Invalid offset 0x%x in descriptor IDN 0x%x, length 0x%x\n",
-+			__func__, param_offset, desc_id, buff_len);
- 		return -EINVAL;
- 	}
- 
- 	/* Check whether we need temp memory */
- 	if (param_offset != 0 || param_size < buff_len) {
--		desc_buf = kmalloc(buff_len, GFP_KERNEL);
-+		desc_buf = kzalloc(buff_len, GFP_KERNEL);
- 		if (!desc_buf)
- 			return -ENOMEM;
- 	} else {
-@@ -3204,14 +3210,14 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
- 					desc_buf, &buff_len);
- 
- 	if (ret) {
--		dev_err(hba->dev, "%s: Failed reading descriptor. desc_id %d, desc_index %d, param_offset %d, ret %d",
-+		dev_err(hba->dev, "%s: Failed reading descriptor. desc_id %d, desc_index %d, param_offset %d, ret %d\n",
- 			__func__, desc_id, desc_index, param_offset, ret);
- 		goto out;
- 	}
- 
- 	/* Sanity check */
- 	if (desc_buf[QUERY_DESC_DESC_TYPE_OFFSET] != desc_id) {
--		dev_err(hba->dev, "%s: invalid desc_id %d in descriptor header",
-+		dev_err(hba->dev, "%s: invalid desc_id %d in descriptor header\n",
- 			__func__, desc_buf[QUERY_DESC_DESC_TYPE_OFFSET]);
- 		ret = -EINVAL;
- 		goto out;
-@@ -3221,12 +3227,12 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
- 	buff_len = desc_buf[QUERY_DESC_LENGTH_OFFSET];
- 	ufshcd_update_desc_length(hba, desc_id, desc_index, buff_len);
- 
--	/* Check wherher we will not copy more data, than available */
--	if (is_kmalloc && (param_offset + param_size) > buff_len)
--		param_size = buff_len - param_offset;
--
--	if (is_kmalloc)
-+	if (is_kmalloc) {
-+		/* Make sure we don't copy more data than available */
-+		if (param_offset + param_size > buff_len)
-+			param_size = buff_len - param_offset;
- 		memcpy(param_read_buf, &desc_buf[param_offset], param_size);
-+	}
- out:
- 	if (is_kmalloc)
- 		kfree(desc_buf);
--- 
-Qualcomm Innovation Center, Inc. is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
 
+are available in the git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.set_fs
+
+for you to fetch changes up to 7b84b665c874f60d84547635341e418f20cbbab2:
+
+  fs: Allow a NULL pos pointer to __kernel_read (2020-10-15 14:20:42 -0400)
+
+----------------------------------------------------------------
+Christoph Hellwig (13):
+      proc: remove a level of indentation in proc_get_inode
+      proc: cleanup the compat vs no compat file ops
+      proc: add a read_iter method to proc proc_ops
+      fs: don't allow kernel reads and writes without iter ops
+      fs: don't allow splice read/write without explicit ops
+      uaccess: add infrastructure for kernel builds with set_fs()
+      test_bitmap: remove user bitmap tests
+      lkdtm: remove set_fs-based tests
+      x86: move PAGE_OFFSET, TASK_SIZE & friends to page_{32,64}_types.h
+      x86: make TASK_SIZE_MAX usable from assembly code
+      x86: remove address space overrides using set_fs()
+      powerpc: use non-set_fs based maccess routines
+      powerpc: remove address space overrides using set_fs()
+
+Matthew Wilcox (Oracle) (3):
+      sysctl: Convert to iter interfaces
+      fs: Allow a NULL pos pointer to __kernel_write
+      fs: Allow a NULL pos pointer to __kernel_read
+
+ arch/Kconfig                            |   3 +
+ arch/alpha/Kconfig                      |   1 +
+ arch/arc/Kconfig                        |   1 +
+ arch/arm/Kconfig                        |   1 +
+ arch/arm64/Kconfig                      |   1 +
+ arch/c6x/Kconfig                        |   1 +
+ arch/csky/Kconfig                       |   1 +
+ arch/h8300/Kconfig                      |   1 +
+ arch/hexagon/Kconfig                    |   1 +
+ arch/ia64/Kconfig                       |   1 +
+ arch/m68k/Kconfig                       |   1 +
+ arch/microblaze/Kconfig                 |   1 +
+ arch/mips/Kconfig                       |   1 +
+ arch/nds32/Kconfig                      |   1 +
+ arch/nios2/Kconfig                      |   1 +
+ arch/openrisc/Kconfig                   |   1 +
+ arch/parisc/Kconfig                     |   1 +
+ arch/powerpc/include/asm/processor.h    |   7 --
+ arch/powerpc/include/asm/thread_info.h  |   5 +-
+ arch/powerpc/include/asm/uaccess.h      |  67 ++++++----------
+ arch/powerpc/kernel/signal.c            |   3 -
+ arch/powerpc/lib/sstep.c                |   6 +-
+ arch/riscv/Kconfig                      |   1 +
+ arch/s390/Kconfig                       |   1 +
+ arch/sh/Kconfig                         |   1 +
+ arch/sparc/Kconfig                      |   1 +
+ arch/um/Kconfig                         |   1 +
+ arch/x86/ia32/ia32_aout.c               |   1 -
+ arch/x86/include/asm/page_32_types.h    |  11 +++
+ arch/x86/include/asm/page_64_types.h    |  38 ++++++++++
+ arch/x86/include/asm/processor.h        |  60 +--------------
+ arch/x86/include/asm/thread_info.h      |   2 -
+ arch/x86/include/asm/uaccess.h          |  26 +------
+ arch/x86/kernel/asm-offsets.c           |   3 -
+ arch/x86/lib/getuser.S                  |  47 ++++++------
+ arch/x86/lib/putuser.S                  |  25 +++---
+ arch/xtensa/Kconfig                     |   1 +
+ drivers/misc/lkdtm/bugs.c               |  10 ---
+ drivers/misc/lkdtm/core.c               |   2 -
+ drivers/misc/lkdtm/lkdtm.h              |   2 -
+ drivers/misc/lkdtm/usercopy.c           |  15 ----
+ fs/proc/inode.c                         | 119 ++++++++++++++++++++---------
+ fs/proc/proc_sysctl.c                   |  48 ++++++------
+ fs/read_write.c                         |  71 ++++++++++-------
+ fs/splice.c                             | 130 ++++----------------------------
+ include/linux/bpf-cgroup.h              |   2 +-
+ include/linux/fs.h                      |   2 -
+ include/linux/proc_fs.h                 |   1 +
+ include/linux/uaccess.h                 |  18 +++++
+ kernel/bpf/cgroup.c                     |   2 +-
+ lib/test_bitmap.c                       |  91 ++++++----------------
+ tools/testing/selftests/lkdtm/tests.txt |   2 -
+ 52 files changed, 346 insertions(+), 495 deletions(-)
