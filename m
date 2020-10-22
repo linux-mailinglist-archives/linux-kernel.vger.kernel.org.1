@@ -2,149 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72F89296260
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:11:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0170296263
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:11:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895924AbgJVQLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:11:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        id S2895996AbgJVQL4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:11:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49248 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895886AbgJVQLW (ORCPT
+        with ESMTP id S2895930AbgJVQL4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:11:22 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3B4C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:11:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=7dbaiXNZz6VyWN3TkEKY5ylA2arGx7rJcc1WOH9NF+w=; b=hA7vjpw/LgKjasSODeHPA1I6W
-        NEr3qPwZbwPLcZyEVmzSQpeB+RPlkD1rM0/lXkMarHftmK7MIKSAyHiget4QxRp3WgSh3akNAlnmx
-        qyBEWLgCPnr2pegsppXwoEEbf8QukqFlPWEGVMGAiIK2kYgfqFQA91q3PQOMKkfLzMnXjRH4WD3TH
-        xuk0OL/YW2Caf3CDCdxjWsp33ASp6658mSe70GC4o8ZdH0XZnj9bGymal85K7HODY+N7jSCz92GtH
-        0Q2OIi6Z6pt+OGtUVLSNBtKZzQFtcHOnHIrP1OggI9/vqlh+rHI64fa6+znaWvpUh3xb/pLD+wUFK
-        M96pClZhw==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49574)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVdBO-0002H0-UV; Thu, 22 Oct 2020 17:11:19 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVdBO-0007Xh-8L; Thu, 22 Oct 2020 17:11:18 +0100
-Date:   Thu, 22 Oct 2020 17:11:18 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-Message-ID: <20201022161118.GP1551@shell.armlinux.org.uk>
-References: <20201021225737.739-1-digetx@gmail.com>
- <202010211637.7CFD8435@keescook>
- <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
- <202010212028.32E8A5EF9B@keescook>
- <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
- <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
- <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+        Thu, 22 Oct 2020 12:11:56 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CB39BC0613CE;
+        Thu, 22 Oct 2020 09:11:55 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id 188so1992129qkk.12;
+        Thu, 22 Oct 2020 09:11:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VUEOW9CHp/deOH81JRtiOJPAOKkJUb1n+cEO+W0skrI=;
+        b=czEwsvzDLL9JQQ6KoahV8nHWd/xlhJZxwM9sfK+JVoR52s79ywU+GifieRjOrbO6us
+         rLzd9+DgGUIU9llOXX0ErTqoKhJ7Wkm7Zh63MloPRtyDn0lPgMcf2OsiRZ9cwE1mQ+B1
+         mW0AmVI8jlxTuXwbjiQrrtBGNLpFbepp8w5k9nOahFPTjl5WpUmoEoz+XrJZCKAzm0AX
+         MH20/10P9ptj6aS/4tbXjn7NV1KFF8jnJO5C1rlpkaa/BXyRwuZgFnof746WQoj87GSl
+         LmnuPwpdDCHoCEHRe1s5Bu8BH+gyNZYTE6fVTc4E8c6kyCkLN5+p9MDevjhpXzDuDt+Q
+         vKQg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VUEOW9CHp/deOH81JRtiOJPAOKkJUb1n+cEO+W0skrI=;
+        b=qRxIkXZFo4JrVENEGKcQuwmbCMTOTrSAj/UoyB3eoAvYf/4wm+CIcIvVfkErMDU32e
+         h4tDamQYifMNOtpDHZ7pVg2KJ3iE8uxC2uX/ypU1IqHDqRn2JB9pWRpcJ/YLcVT2NSFt
+         SauogkDLpQFK8XD86HMKOdicFTQE+6EiAbOvL3S9xBZZ5pB4ROWqBzT/DlinXgYOeG/+
+         6fmpPrt3LOZVPviErtnFZt2R3E9R70JLp543bb9D9JD+eeUHdIL6eQPhP/BkFqgKtW3w
+         885owZPpfJNV2JerfoKtf/hi7cUu0mNU5FYsNKWB3WOzLeHlkymVqwufhtBH8HCDQYWp
+         ZkGw==
+X-Gm-Message-State: AOAM533xjEwDdVEFKXMOGjY8yPi+MegEkDRvJiTGXfx3StCb7Igi6+rY
+        U/eCtZfEF/Y8PHJN3/qtyg==
+X-Google-Smtp-Source: ABdhPJwgIrpu/BfYe75NhyjTLrrEM95HxEVBcWn9d1YWIRoeshtLB4TIH2jYH5PbbgiOfjKTInbrFQ==
+X-Received: by 2002:a37:6688:: with SMTP id a130mr1549507qkc.219.1603383114941;
+        Thu, 22 Oct 2020 09:11:54 -0700 (PDT)
+Received: from presler.lan (a95-94-69-32.cpe.netcabo.pt. [95.94.69.32])
+        by smtp.gmail.com with ESMTPSA id g24sm1228192qka.111.2020.10.22.09.11.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 09:11:54 -0700 (PDT)
+From:   Rui Salvaterra <rsalvaterra@gmail.com>
+To:     minchan@kernel.org, ngupta@vflare.org,
+        sergey.senozhatsky.work@gmail.com
+Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org,
+        Rui Salvaterra <rsalvaterra@gmail.com>
+Subject: [PATCH] zram: break the strict dependency from lzo
+Date:   Thu, 22 Oct 2020 17:11:34 +0100
+Message-Id: <20201022161134.2115-1-rsalvaterra@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
-> On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
-> >
-> > 22.10.2020 10:06, Ard Biesheuvel пишет:
-> > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wrote:
-> > >>
-> > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
-> > >>> 22.10.2020 02:40, Kees Cook пишет:
-> > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
-> > >>>>> The vfp_kmode_exception() function now is unreachable using relative
-> > >>>>> branching in THUMB2 kernel configuration, resulting in a "relocation
-> > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
-> > >>>>> linker error. Let's use long jump in order to fix the issue.
-> > >>>>
-> > >>>> Eek. Is this with gcc or clang?
-> > >>>
-> > >>> GCC 9.3.0
-> > >>>
-> > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
-> > >>>>
-> > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
-> > >>>> That commit may have implicitly moved the location of .vfp11_veneer,
-> > >>>> though I thought I had chosen the correct position.
-> > >>>
-> > >>> I re-checked that the fixes tag is correct.
-> > >>>
-> > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > >>>>> ---
-> > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
-> > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> > >>>>>
-> > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
-> > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
-> > >>>>> --- a/arch/arm/vfp/vfphw.S
-> > >>>>> +++ b/arch/arm/vfp/vfphw.S
-> > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
-> > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor FP exceptions
-> > >>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mode
-> > >>>>>    teq     r3, #USR_MODE
-> > >>>>> -  bne     vfp_kmode_exception     @ Returns through lr
-> > >>>>> +  ldr     r1, =vfp_kmode_exception
-> > >>>>> +  bxne    r1                      @ Returns through lr
-> > >>>>>
-> > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
-> > >>>>>    DBGSTR1 "fpexc %08x", r1
-> > >>>>
-> > >>>> This seems like a workaround though? I suspect the vfp11_veneer needs
-> > >>>> moving?
-> > >>>>
-> > >>>
-> > >>> I don't know where it needs to be moved. Please feel free to make a
-> > >>> patch if you have a better idea, I'll be glad to test it.
-> > >>
-> > >> I might have just been distracted by the common "vfp" prefix. It's
-> > >> possible that the text section shuffling just ended up being very large,
-> > >> so probably this patch is right then!
-> > >>
-> > >
-> > > I already sent a fix for this issue:
-> > >
-> > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/1
-> > >
-> >
-> > The offending commit contains stable tag, so I assume that fixes tag is
-> > mandatory. Yours patch misses the fixes tag.
-> 
-> Russell, mind adding that? Or would you like me to update the patch in
-> the patch system?
+There's nothing special about zram and lzo. It works just fine without it, so
+as long as at least one of the other supported compression algorithms is
+selected.
 
-Rather than adding the IT, I'm suggesting that we solve it a different
-way - ensuring that the two bits of code are co-located. There's no
-reason for them to be separated, and the assembly code entry point is
-already called indirectly.
+Additionally, drop the explicit dependency from CRYPTO, as it's implied by the
+selection of the algorithms themselves.
 
-The problem is the assembly ends up in the .text section which ends up
-at the start of the binary, but depending on the compiler, functions
-in .c files end up in their own sections. It would be good if, as
-Dmitry has shown that it is indeed possible, to have them co-located.
+Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+---
+ drivers/block/zram/Kconfig | 8 ++++++--
+ drivers/block/zram/zcomp.c | 2 ++
+ 2 files changed, 8 insertions(+), 2 deletions(-)
 
+diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
+index fe7a4b7d30cf..2641b86f8677 100644
+--- a/drivers/block/zram/Kconfig
++++ b/drivers/block/zram/Kconfig
+@@ -1,8 +1,7 @@
+ # SPDX-License-Identifier: GPL-2.0
+ config ZRAM
+ 	tristate "Compressed RAM block device support"
+-	depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
+-	select CRYPTO_LZO
++	depends on BLOCK && SYSFS && ZSMALLOC
+ 	help
+ 	  Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
+ 	  Pages written to these disks are compressed and stored in memory
+@@ -37,3 +36,8 @@ config ZRAM_MEMORY_TRACKING
+ 	  /sys/kernel/debug/zram/zramX/block_state.
+ 
+ 	  See Documentation/admin-guide/blockdev/zram.rst for more information.
++
++config ZRAM_AUTOSEL_ALGO
++	def_bool y
++	depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
++	select CRYPTO_LZO
+diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
+index 33e3b76c4fa9..052aa3f65514 100644
+--- a/drivers/block/zram/zcomp.c
++++ b/drivers/block/zram/zcomp.c
+@@ -15,8 +15,10 @@
+ #include "zcomp.h"
+ 
+ static const char * const backends[] = {
++#if IS_ENABLED(CONFIG_CRYPTO_LZO)
+ 	"lzo",
+ 	"lzo-rle",
++#endif
+ #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
+ 	"lz4",
+ #endif
 -- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+2.28.0
+
