@@ -2,120 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1938929600E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:32:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70AE0296011
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:34:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900144AbgJVNcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:32:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52766 "EHLO
+        id S2900149AbgJVNe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53054 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443424AbgJVNcc (ORCPT
+        with ESMTP id S1725971AbgJVNe0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:32:32 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 78DA7C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:32:32 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id v22so945778ply.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:32:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=gnF1P3sA4Hd6GneuxlfbrmwcHsIi+cF2IGQfZ4BK0Cg=;
-        b=GSwwHYXTNViLl47wUHv3Jt/BWD+3bdbyi3N2T+spIY6omvMAP98KM+Pj833+RyX3Sg
-         NeABqGnEMht0y9cLy38uzI+zm8aD1wy2o+O8pTB2kbgRkpKJfQO4EixnlqrFC/W+x6X2
-         xo5UccvZok/YPlYqfhDKVg9IwSbh4dXCLHjQ/ugVArdoEL0rj96VPiaerF7zCTO/ZVAf
-         +dFJQfzpukqltGitPVaDZQQtL9+8DMVbq4XiRYTkKeNCbMdUbn20u7C+Iva6rVX7U0zD
-         R6+fcKuvc2ACbECIP1qZVSbTQmkcUzzDdqoUtFKsBdzEIzmdKXyl5Axzcyyv6W2VTPc2
-         vrtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=gnF1P3sA4Hd6GneuxlfbrmwcHsIi+cF2IGQfZ4BK0Cg=;
-        b=nxDnm0T7QMM4SW45I8KNfaOwqYuoTY5dMVag5SD+ZXyf+m1KTxs8ToAEIhLW035bzS
-         PpKjZWy9OYacsv/3W771zVHcCyFzLi5QLwOLw8pB9/axCK2oIflmpA8vLE9DvrX2GqAH
-         hocz2AOJSPN6BiyuiEoqzw0H9mEmzbEqV7M1a/dYV+APOiqyOBCPBt59sW5nbcMK9xVp
-         QNjAZKyeXNz2n6CET/KzZq625DdvvRUZR1HZCQ4x9G4NrU3pCf3sgZKQ5w6rflebUeCJ
-         YDn+7lSyvtoOcsIvBGYFutIhP9WyjoF+6Jzl90v86Q4KW/R4bNF/BOTxKMjDFxw97BXU
-         8nWQ==
-X-Gm-Message-State: AOAM531OvEvXsGnA38pZ5uAeoZW1KuIT8VaHSPuviIVM7Qjl54/85Xxb
-        ZlRCTeGL2luMHhkA+8ieGBc=
-X-Google-Smtp-Source: ABdhPJw0UZ19K2AGYwQr5z8syawKUp/HbazlyzLpAtnxOPMyiKFvJHgbiGSeTSk0MoTrm7XKJ4GrTg==
-X-Received: by 2002:a17:90b:1c0d:: with SMTP id oc13mr2511335pjb.192.1603373551847;
-        Thu, 22 Oct 2020 06:32:31 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id k9sm2491028pgt.72.2020.10.22.06.32.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 06:32:30 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 22:32:28 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201022133228.GA160085@jagdpanzerIV.localdomain>
-References: <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
- <20201006134328.GD32369@alley>
- <20201006163514.GE32369@alley>
- <20201006171504.GA64770@jagdpanzerIV.localdomain>
- <20201007072853.GF32369@alley>
- <20201007123044.GA509@jagdpanzerIV.localdomain>
- <be66237b-e7b2-0321-c00c-cd6fba6e3b58@roeck-us.net>
- <20201007162942.GA440@jagdpanzerIV.localdomain>
- <20201008055238.GA554@jagdpanzerIV.localdomain>
- <20201022113805.GA32486@alley>
+        Thu, 22 Oct 2020 09:34:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6130AC0613CE;
+        Thu, 22 Oct 2020 06:34:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Qxyx+8WuGLMGwiLrpDGgc0hdt6eMPydpMviwqwPoqUg=; b=Fl0AdssbEzOpX7eS1DBwN93QE8
+        p64WFhpy6pR2iDC/1zS2vumFyDI6RIdwMJQjVXA+shrhJxMMnWhUOl6wIsCwXIaRjW+9RJs4xJMyr
+        G+8PV/UJmCWoYpGpSv9PuIzwKE4CWHeoJRKcuKa0OrrPz9yUUYS1z+G683m7XJIwyATTWg45KDnt6
+        aZyHcDhdA+2gBMfsU4Fz3kBZrguUBPzEAKmO7F79i7c8JdPu2lmk3ZzYaRehdq6OMkr3Cr5PK0zDD
+        KqsA00IE1Yayi3Wu5VbzZxVKf690ofgUJgrdVXefr60yxRrvn0xSmxqekMx2x7kogGQsfY865vvb6
+        i3Q6YTpw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVajS-000189-2G; Thu, 22 Oct 2020 13:34:18 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 699363011C6;
+        Thu, 22 Oct 2020 15:34:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 60603203CC499; Thu, 22 Oct 2020 15:34:14 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 15:34:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Mike Leach <mike.leach@linaro.org>
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201022133414.GH2611@hirez.programming.kicks-ass.net>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+ <a6eadc723ae52396a655c61b9f8d4eef@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022113805.GA32486@alley>
+In-Reply-To: <a6eadc723ae52396a655c61b9f8d4eef@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/22 13:38), Petr Mladek wrote:
-> > Hmm. How about this. console= is undocumented and unspecified - it
-> > may work sometimes or it may kill the system (and theoretically even
-> > corrupt some files, depending on what fd 1 and fd 2 point to). So
-> > maybe we can document console= and handle it in printk, rather than
-> > somewhere deep in init/main.c
+On Thu, Oct 22, 2020 at 06:19:37PM +0530, Sai Prakash Ranjan wrote:
+> On 2020-10-22 17:02, Peter Zijlstra wrote:
+> > On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
+> > 
+> > > Looking at the ETR and other places in the kernel, ETF and the
+> > > ETB are the only places trying to dereference the task(owner)
+> > > in tmc_enable_etf_sink_perf() which is also called from the
+> > > sched_in path as in the call trace.
+> > 
+> > > @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct
+> > > coresight_device *csdev,
+> > >  {
+> > >  	int node;
+> > >  	struct cs_buffers *buf;
+> > > +	struct task_struct *task = READ_ONCE(event->owner);
+> > > +
+> > > +	if (!task || is_kernel_event(event))
+> > > +		return NULL;
+> > 
+> > 
+> > This is *wrong*... why do you care about who owns the events?
+> > 
 > 
-> I have dig more into it. If I get it correctly, /dev/console is really
-> used as stdin, stdout, and stderr for the init process. It has been
-> like this from the very beginning.
-> 
-> In theory, it might be possible to fallback into /dev/null. But it
-> would not solve the problem when anyone tries to use /dev/console
-> later.
-> 
-> IMHO, creating /dev/console really _should not_ fail. It means
-> that we should register some console.
+> The original issue was the owner being NULL and causing
+> a NULL pointer dereference. I did ask some time back
+> if it is valid for the owner to be NULL [1] and should
+> probably be handled in events core?
 
-Yes, I didn't find out exactly why the kernel panics yet. Got
-interrupted. What I did notice (when we don't have stdin/out/err)
-was init process installing "/" as fd 0, and then doing things
-like fprintf(stderr, "running early hook"), perhaps some of those
-fprintf()-s end up in the wrong place.
-
-> > IOW add one more flag (yeah, I know) and set it when console_setup()
-> > sees console= boot param. The idea is allow console registration,
-> > but all consoles should be disabled (cleared CON_ENABLED bit). This
-> > would be easier to document, at least.
-> 
-> It seems that introducing a new option/flag is the best solution
-> after all. All other flags are manipulated on different situations
-> and it would not be easy to define a sane behavior.
-> 
-> I like the proposed "mute_consoles". Well, I have it associated rather
-> with CONSOLE_LOGLEVEL_SILENT than with disabled console.
-> 
-> I have played with it and am going to send two patches as RFC.
-
-Cool, thanks. I'll reply to that RFC patch set; there are some
-more ideas, that we can discuss.
-
-	-ss
+No, what I asked is why do you care about ->owner to begin with? That
+seems wrong. A driver should not touch ->owner _at_all_.
