@@ -2,354 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E5D296520
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:15:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0AC0229652B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:17:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370020AbgJVTPO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:15:14 -0400
-Received: from mga06.intel.com ([134.134.136.31]:30131 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S370000AbgJVTPK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:15:10 -0400
-IronPort-SDR: f1H3hf6YHCo1EcHhyx1IVDfMwb9ZoxPxXAh6G7abiiKH0gFz05mOsZ7uyQLerC75ndNM7y+n4N
- 4gXX27t3hAXg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="229215773"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="229215773"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga003.fm.intel.com ([10.253.24.29])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 12:15:08 -0700
-IronPort-SDR: ikuR3ejjhRqsf9EID/IMJ0obREYf/JtrZzlUpYE5mee0KjLJQvZVSG0edSKvbt5S1vtBNjdJFZ
- ZBzyAhpHco0A==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="359362854"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 12:15:04 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kVg4E-00DVpH-VO; Thu, 22 Oct 2020 22:16:06 +0300
-Date:   Thu, 22 Oct 2020 22:16:06 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
-        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, idryomov@gmail.com,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
-Message-ID: <20201022191606.GQ4077@smile.fi.intel.com>
-References: <20201022151349.47436-1-98.arpi@gmail.com>
+        id S370040AbgJVTRc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 15:17:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49918 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508694AbgJVTRa (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 15:17:30 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 11DB2C0613CE;
+        Thu, 22 Oct 2020 12:17:30 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id j7so1535485pgk.5;
+        Thu, 22 Oct 2020 12:17:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=NDPM7NZ6MV4kcALtEwBlsiFfbljBTJgcXOF1wjhIdoU=;
+        b=elhu2Ozt0d+4q8KMV5Z4WLf2GNipXNorkOjJ9y7/jmjkBeXM8k1DSHeLdMILPe474t
+         X2658LbxakIyKCFH8X6bPjyyy2EBx83g82kMTkGR+FqPg8IuUk2aAGJIWB9UV1PKqgH0
+         eDx6eyt8brp2iDBtaL0QNeRMmQWZFeAl9pv8W0rktcbwIt9Yk/HX6iEPRY55sMAy+gXn
+         QtxO4PSL4MbzdCCQkJ6J8hLOSbmaTeGD7xKFf/aTVWCidNNd3e3RMPp338TWuvrk4SnR
+         B70tS1bE5mgeTofeCisL9rUUnttzTjC1S6OvuMttV9ixOyTvGDjjy7mzg5Td8D+pwsvy
+         0VuQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:autocrypt
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=NDPM7NZ6MV4kcALtEwBlsiFfbljBTJgcXOF1wjhIdoU=;
+        b=a9wkp9GlejvtIKlnXBpRMNyfrDt4C00rSy6aLzYc7BLWDIshMpqfHzuVTjs+fKkr5N
+         SA2Q6yZhQk+RH5yYOiNzjCbnXzb71ISqyfesFruucZENlKB5Npl1iOFSfphmAqDAD7Xx
+         vMG6a2JkPefgcsc5tSsu40Tt2n/Zy+K6RqrchRP1HMH4e0dBnvKzvU0V58V1l6Z+/YXi
+         Ogk8ukJdxeIyDwSci3nHw2q8IKiyq5UzEDR32Sq1k4Dt1TBndjSWbPw8CqlFR3Xsggz4
+         pTJhc/ug2QmAbT2S3/e2JRL9428vvR/f/5f4fibOumGn+KZfA075ihobSUYUQaX7pU8u
+         WZgQ==
+X-Gm-Message-State: AOAM533+QJb7mvUZcK4d2D6japtFVulQjtNTuyTxfw2DNf5BfdN/PQfq
+        lvM1NMwocbHYZt0RiYwBxYLbR4khLwk=
+X-Google-Smtp-Source: ABdhPJyQ9xxErCXLiEJyPJ4HNbj0HFMx+GbRb189V68MFbnYH9RGr21LdqsjRC9UNXRsPATOuLhdfg==
+X-Received: by 2002:a65:5a0d:: with SMTP id y13mr3449640pgs.436.1603394249151;
+        Thu, 22 Oct 2020 12:17:29 -0700 (PDT)
+Received: from [10.67.48.230] ([192.19.223.252])
+        by smtp.googlemail.com with ESMTPSA id g14sm3014290pfo.17.2020.10.22.12.17.27
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 12:17:28 -0700 (PDT)
+Subject: Re: [RFC PATCH net-next 1/9] dt-bindings: net: dsa: convert ksz
+ bindings document to yaml
+To:     Vladimir Oltean <olteanv@gmail.com>,
+        Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
+Cc:     Christian Eggers <ceggers@arri.de>, Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <20201019172435.4416-1-ceggers@arri.de>
+ <20201019172435.4416-2-ceggers@arri.de> <87lfg0rrzi.fsf@kurt>
+ <20201022001639.ozbfnyc4j2zlysff@skbuf>
+ <3cf2e7f8-7dc8-323f-0cee-5a025f748426@gmail.com> <87h7qmil8j.fsf@kurt>
+ <20201022123735.3mnlzkfmqqrho6n5@skbuf>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
+ mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
+ xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
+ X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
+ AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
+ ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
+ SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
+ nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
+ qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz7QnRmxvcmlhbiBG
+ YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+iGYEExECACYCGyMGCwkIBwMCBBUCCAME
+ FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
+ 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSC5BA0ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
+ WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
+ pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
+ hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
+ OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
+ Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
+ oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
+ 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
+ BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
+ +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
+ FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
+ 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
+ vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
+ WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
+ HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
+ HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
+ Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
+ kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
+ aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
+ y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU4hPBBgRAgAPAhsMBQJU
+ X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
+ HGuUuzv+GKZ6nsysJ7kCDQRXG8fwARAA6q/pqBi5PjHcOAUgk2/2LR5LjjesK50bCaD4JuNc
+ YDhFR7Vs108diBtsho3w8WRd9viOqDrhLJTroVckkk74OY8r+3t1E0Dd4wHWHQZsAeUvOwDM
+ PQMqTUBFuMi6ydzTZpFA2wBR9x6ofl8Ax+zaGBcFrRlQnhsuXLnM1uuvS39+pmzIjasZBP2H
+ UPk5ifigXcpelKmj6iskP3c8QN6x6GjUSmYx+xUfs/GNVSU1XOZn61wgPDbgINJd/THGdqiO
+ iJxCLuTMqlSsmh1+E1dSdfYkCb93R/0ZHvMKWlAx7MnaFgBfsG8FqNtZu3PCLfizyVYYjXbV
+ WO1A23riZKqwrSJAATo5iTS65BuYxrFsFNPrf7TitM8E76BEBZk0OZBvZxMuOs6Z1qI8YKVK
+ UrHVGFq3NbuPWCdRul9SX3VfOunr9Gv0GABnJ0ET+K7nspax0xqq7zgnM71QEaiaH17IFYGS
+ sG34V7Wo3vyQzsk7qLf9Ajno0DhJ+VX43g8+AjxOMNVrGCt9RNXSBVpyv2AMTlWCdJ5KI6V4
+ KEzWM4HJm7QlNKE6RPoBxJVbSQLPd9St3h7mxLcne4l7NK9eNgNnneT7QZL8fL//s9K8Ns1W
+ t60uQNYvbhKDG7+/yLcmJgjF74XkGvxCmTA1rW2bsUriM533nG9gAOUFQjURkwI8jvMAEQEA
+ AYkCaAQYEQIACQUCVxvH8AIbAgIpCRBhV5kVtWN2DsFdIAQZAQIABgUCVxvH8AAKCRCH0Jac
+ RAcHBIkHD/9nmfog7X2ZXMzL9ktT++7x+W/QBrSTCTmq8PK+69+INN1ZDOrY8uz6htfTLV9+
+ e2W6G8/7zIvODuHk7r+yQ585XbplgP0V5Xc8iBHdBgXbqnY5zBrcH+Q/oQ2STalEvaGHqNoD
+ UGyLQ/fiKoLZTPMur57Fy1c9rTuKiSdMgnT0FPfWVDfpR2Ds0gpqWePlRuRGOoCln5GnREA/
+ 2MW2rWf+CO9kbIR+66j8b4RUJqIK3dWn9xbENh/aqxfonGTCZQ2zC4sLd25DQA4w1itPo+f5
+ V/SQxuhnlQkTOCdJ7b/mby/pNRz1lsLkjnXueLILj7gNjwTabZXYtL16z24qkDTI1x3g98R/
+ xunb3/fQwR8FY5/zRvXJq5us/nLvIvOmVwZFkwXc+AF+LSIajqQz9XbXeIP/BDjlBNXRZNdo
+ dVuSU51ENcMcilPr2EUnqEAqeczsCGpnvRCLfVQeSZr2L9N4svNhhfPOEscYhhpHTh0VPyxI
+ pPBNKq+byuYPMyk3nj814NKhImK0O4gTyCK9b+gZAVvQcYAXvSouCnTZeJRrNHJFTgTgu6E0
+ caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
+ 6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
+ M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
+Message-ID: <63bc70fe-30b3-43f1-a54c-b8c82bbdc048@gmail.com>
+Date:   Thu, 22 Oct 2020 12:17:26 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022151349.47436-1-98.arpi@gmail.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <20201022123735.3mnlzkfmqqrho6n5@skbuf>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 08:43:49PM +0530, Arpitha Raghunandan wrote:
-> Convert test lib/test_printf.c to KUnit. More information about
-> KUnit can be found at:
-> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-> KUnit provides a common framework for unit tests in the kernel.
-> KUnit and kselftest are standardizing around KTAP, converting this
-> test to KUnit makes this test output in KTAP which we are trying to
-> make the standard test result format for the kernel. More about
-> the KTAP format can be found at:
-> https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
-> I ran both the original and converted tests as is to produce the
-> output for success of the test in the two cases. I also ran these
-> tests with a small modification to show the difference in the output
-> for failure of the test in both cases. The modification I made is:
-> - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
-> + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+On 10/22/20 5:37 AM, Vladimir Oltean wrote:
+> On Thu, Oct 22, 2020 at 12:54:52PM +0200, Kurt Kanzenbach wrote:
+>> On Wed Oct 21 2020, Florian Fainelli wrote:
+>>> On 10/21/2020 5:16 PM, Vladimir Oltean wrote:
+>>>> On Wed, Oct 21, 2020 at 08:52:01AM +0200, Kurt Kanzenbach wrote:
+>>>>> On Mon Oct 19 2020, Christian Eggers wrote:
+>>>>> The node names should be switch. See dsa.yaml.
+>>>>>
+>>>>>> +            compatible = "microchip,ksz9477";
+>>>>>> +            reg = <0>;
+>>>>>> +            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
+>>>>>> +
+>>>>>> +            spi-max-frequency = <44000000>;
+>>>>>> +            spi-cpha;
+>>>>>> +            spi-cpol;
+>>>>>> +
+>>>>>> +            ports {
+>>>>>
+>>>>> ethernet-ports are preferred.
+>>>>
+>>>> This is backwards to me, instead of an 'ethernet-switch' with 'ports',
+>>>> we have a 'switch' with 'ethernet-ports'. Whatever.
+>>>
+>>> The rationale AFAIR was that dual Ethernet port controllers like TI's 
+>>> CPSW needed to describe each port as a pseudo Ethernet MAC and using 
+>>> 'ethernet-ports' as a contained allowed to disambiguate with the 'ports' 
+>>> container used in display subsystem descriptions.
+>>
+>> Yes, that was the outcome of previous discussions.
 > 
-> Original test success:
-> [    0.591262] test_printf: loaded.
-> [    0.591409] test_printf: all 388 tests passed
-> 
-> Original test failure:
-> [    0.619345] test_printf: loaded.
-> [    0.619394] test_printf: vsnprintf(buf, 256, "%piS|%pIS", ...)
-> wrote '127.000.000.001|127.0.0.1', expected
-> '127-000.000.001|127.0.0.1'
-> [    0.619395] test_printf: vsnprintf(buf, 25, "%piS|%pIS", ...) wrote
-> '127.000.000.001|127.0.0.', expected '127-000.000.001|127.0.0.'
-> [    0.619396] test_printf: kvasprintf(..., "%piS|%pIS", ...) returned
-> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> [    0.619495] test_printf: failed 3 out of 388 tests
-> 
-> Converted test success:
->     # Subtest: printf-kunit-test
->     1..1
->     ok 1 - selftest
-> ok 1 - printf-kunit-test
-> 
-> Converted test failure:
->     # Subtest: printf-kunit-test
->     1..1
->     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
-> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
->     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
-> kvasprintf(..., "%pi4|%pI4", ...) returned
-> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->     not ok 1 - selftest
-> not ok 1 - printf-kunit-test
+> And why would that disambiguation be necessary in the first place? My
+> understanding is that the whole node path provides the necessary
+> namespacing to avoid the confusion. For example, the 'reg' property
+> means 100 things to 100 buses, and no one has an issue with that. I am
+> not expecting an Ethernet switch to have an HDMI port, I might be wrong
+> though.
 
-Not bad. Rasmus, what do you think?
-
-> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
-> ---
-> Changes v1->v2:
-> - Retain the control flow (early returns) in do_test()
-> - Display less irrelevant information on test failure
-> - A more detailed commit message
-> 
->  lib/Kconfig.debug                     |  7 +--
->  lib/Makefile                          |  2 +-
->  lib/{test_printf.c => printf_kunit.c} | 76 +++++++++++++--------------
->  3 files changed, 43 insertions(+), 42 deletions(-)
->  rename lib/{test_printf.c => printf_kunit.c} (91%)
-
-I would based this on top of my series that renames existing KUnit based tests
-in lib/.
-
-> diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-> index 66d44d35cc97..e82ca893ed5b 100644
-> --- a/lib/Kconfig.debug
-> +++ b/lib/Kconfig.debug
-> @@ -2053,9 +2053,6 @@ config TEST_STRSCPY
->  config TEST_KSTRTOX
->  	tristate "Test kstrto*() family of functions at runtime"
->  
-> -config TEST_PRINTF
-> -	tristate "Test printf() family of functions at runtime"
-> -
->  config TEST_BITMAP
->  	tristate "Test bitmap_*() family of functions at runtime"
->  	help
-> @@ -2282,6 +2279,10 @@ config BITS_TEST
->  
->  	  If unsure, say N.
->  
-> +config PRINTF_KUNIT_TEST
-> +	tristate "KUnit test for printf() family of functions at runtime"
-> +	depends on KUNIT
-> +
->  config TEST_UDELAY
->  	tristate "udelay test driver"
->  	help
-> diff --git a/lib/Makefile b/lib/Makefile
-> index ce45af50983a..c323447022b7 100644
-> --- a/lib/Makefile
-> +++ b/lib/Makefile
-> @@ -84,7 +84,6 @@ obj-$(CONFIG_TEST_SORT) += test_sort.o
->  obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
->  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
->  obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
-> -obj-$(CONFIG_TEST_PRINTF) += test_printf.o
->  obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
->  obj-$(CONFIG_TEST_STRSCPY) += test_strscpy.o
->  obj-$(CONFIG_TEST_UUID) += test_uuid.o
-> @@ -352,3 +351,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
->  obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
->  obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
->  obj-$(CONFIG_BITS_TEST) += test_bits.o
-> +obj-$(CONFIG_PRINTF_KUNIT_TEST) += printf_kunit.o
-> diff --git a/lib/test_printf.c b/lib/printf_kunit.c
-> similarity index 91%
-> rename from lib/test_printf.c
-> rename to lib/printf_kunit.c
-> index 7ac87f18a10f..e4dc1b1c8972 100644
-> --- a/lib/test_printf.c
-> +++ b/lib/printf_kunit.c
-> @@ -5,6 +5,7 @@
->  
->  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
->  
-> +#include <kunit/test.h>
->  #include <linux/init.h>
->  #include <linux/kernel.h>
->  #include <linux/module.h>
-> @@ -30,64 +31,57 @@
->  #define PAD_SIZE 16
->  #define FILL_CHAR '$'
->  
-> -static unsigned total_tests __initdata;
-> -static unsigned failed_tests __initdata;
->  static char *test_buffer __initdata;
->  static char *alloced_buffer __initdata;
-> +struct kunit *kunittest;
->  
-> -static int __printf(4, 0) __init
-> +static void __printf(4, 0) __init
->  do_test(int bufsize, const char *expect, int elen,
->  	const char *fmt, va_list ap)
->  {
->  	va_list aq;
->  	int ret, written;
->  
-> -	total_tests++;
-> -
->  	memset(alloced_buffer, FILL_CHAR, BUF_SIZE + 2*PAD_SIZE);
->  	va_copy(aq, ap);
->  	ret = vsnprintf(test_buffer, bufsize, fmt, aq);
->  	va_end(aq);
->  
->  	if (ret != elen) {
-> -		pr_warn("vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d\n",
-> +		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d\n",
->  			bufsize, fmt, ret, elen);
-> -		return 1;
-> +		return;
->  	}
->  
->  	if (memchr_inv(alloced_buffer, FILL_CHAR, PAD_SIZE)) {
-> -		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote before buffer\n", bufsize, fmt);
-> -		return 1;
-> +		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote before buffer\n", bufsize, fmt);
-> +		return;
->  	}
->  
->  	if (!bufsize) {
-> -		if (memchr_inv(test_buffer, FILL_CHAR, BUF_SIZE + PAD_SIZE)) {
-> -			pr_warn("vsnprintf(buf, 0, \"%s\", ...) wrote to buffer\n",
-> -				fmt);
-> -			return 1;
-> -		}
-> -		return 0;
-> +		if (memchr_inv(test_buffer, FILL_CHAR, BUF_SIZE + PAD_SIZE))
-> +			KUNIT_FAIL(kunittest, "vsnprintf(buf, 0, \"%s\", ...) wrote to buffer\n", fmt);
-> +		return;
->  	}
->  
->  	written = min(bufsize-1, elen);
->  	if (test_buffer[written]) {
-> -		pr_warn("vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer\n",
-> +		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer\n",
->  			bufsize, fmt);
-> -		return 1;
-> +		return;
->  	}
->  
->  	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, BUF_SIZE + PAD_SIZE - (written + 1))) {
-> -		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
-> +		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
->  			bufsize, fmt);
-> -		return 1;
-> +		return;
->  	}
->  
->  	if (memcmp(test_buffer, expect, written)) {
-> -		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'\n",
-> +		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'\n",
->  			bufsize, fmt, test_buffer, written, expect);
-> -		return 1;
-> +		return;
->  	}
-> -	return 0;
->  }
->  
->  static void __printf(3, 4) __init
-> @@ -98,9 +92,8 @@ __test(const char *expect, int elen, const char *fmt, ...)
->  	char *p;
->  
->  	if (elen >= BUF_SIZE) {
-> -		pr_err("error in test suite: expected output length %d too long. Format was '%s'.\n",
-> +		KUNIT_FAIL(kunittest, "error in test suite: expected output length %d too long. Format was '%s'.\n",
->  		       elen, fmt);
-> -		failed_tests++;
->  		return;
->  	}
->  
-> @@ -112,19 +105,17 @@ __test(const char *expect, int elen, const char *fmt, ...)
->  	 * enough and 0), and then we also test that kvasprintf would
->  	 * be able to print it as expected.
->  	 */
-> -	failed_tests += do_test(BUF_SIZE, expect, elen, fmt, ap);
-> +	do_test(BUF_SIZE, expect, elen, fmt, ap);
->  	rand = 1 + prandom_u32_max(elen+1);
->  	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
-> -	failed_tests += do_test(rand, expect, elen, fmt, ap);
-> -	failed_tests += do_test(0, expect, elen, fmt, ap);
-> +	do_test(rand, expect, elen, fmt, ap);
-> +	do_test(0, expect, elen, fmt, ap);
->  
->  	p = kvasprintf(GFP_KERNEL, fmt, ap);
->  	if (p) {
-> -		total_tests++;
->  		if (memcmp(p, expect, elen+1)) {
-> -			pr_warn("kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'\n",
-> +			KUNIT_FAIL(kunittest, "kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'\n",
->  				fmt, p, expect);
-> -			failed_tests++;
->  		}
->  		kfree(p);
->  	}
-> @@ -303,16 +294,13 @@ plain(void)
->  
->  	err = plain_hash();
->  	if (err) {
-> -		pr_warn("plain 'p' does not appear to be hashed\n");
-> -		failed_tests++;
-> +		KUNIT_FAIL(kunittest, "plain 'p' does not appear to be hashed\n");
->  		return;
->  	}
->  
->  	err = plain_format();
-> -	if (err) {
-> -		pr_warn("hashing plain 'p' has unexpected format\n");
-> -		failed_tests++;
-> -	}
-> +	if (err)
-> +		KUNIT_FAIL(kunittest, "hashing plain 'p' has unexpected format\n");
->  }
->  
->  static void __init
-> @@ -696,8 +684,9 @@ test_pointer(void)
->  	fwnode_pointer();
->  }
->  
-> -static void __init selftest(void)
-> +static void __init selftest(struct kunit *ktest)
->  {
-> +	kunittest = ktest;
->  	alloced_buffer = kmalloc(BUF_SIZE + 2*PAD_SIZE, GFP_KERNEL);
->  	if (!alloced_buffer)
->  		return;
-> @@ -711,6 +700,17 @@ static void __init selftest(void)
->  	kfree(alloced_buffer);
->  }
->  
-> -KSTM_MODULE_LOADERS(test_printf);
-> +static struct kunit_case printf_test_cases[] = {
-> +	KUNIT_CASE(selftest),
-> +	{}
-> +};
-> +
-> +static struct kunit_suite printf_test_suite = {
-> +	.name = "printf-kunit-test",
-> +	.test_cases = printf_test_cases,
-> +};
-> +
-> +kunit_test_suite(printf_test_suite);
-> +
->  MODULE_AUTHOR("Rasmus Villemoes <linux@rasmusvillemoes.dk>");
->  MODULE_LICENSE("GPL");
-> -- 
-> 2.25.1
-> 
-
+The disambiguation is more of a hint given to DT analysis tools to
+validate a given node with little to no knowledge of the containing
+node. I don't really have a dog in the fight here.
 -- 
-With Best Regards,
-Andy Shevchenko
-
-
+Florian
