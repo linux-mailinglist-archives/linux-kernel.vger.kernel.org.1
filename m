@@ -2,94 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80B292959CC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:04:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 017762959CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:04:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509226AbgJVIEM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:04:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58440 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509219AbgJVIEL (ORCPT
+        id S2509239AbgJVIEc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:04:32 -0400
+Received: from rtits2.realtek.com ([211.75.126.72]:48323 "EHLO
+        rtits2.realtek.com.tw" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509231AbgJVIEc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:04:11 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 00DE2C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:04:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=DRwURuIBlVcNh1Xd/0SVQ6zdBWlHXMl/FyFsUAu3tcw=; b=XFIsD1PnTAy1Xr9PoUrK5+XzqA
-        4aVum3GudJAIvd4GFhXNmWpSGUEa67WL2ZYVELX0e7U0vFmT+2PYvZiFAHoPvgxeOCnJBfmF/8o+B
-        sEyesE5NGTFXeyEwrKjuUe+eEH2H7qf7+bY9/l7SRXA1/gRp3t/9gp5Ooss5A8mN3T3YJN+y4Mny3
-        n1hQk78VIBOf8mwIZ3XvDMAHDILyCnUCwOrQ2mQqqrXbq3e+88gZd0eGCJFQT9abCkk+RpQfQ4UfX
-        y9R1wzkaizAFA8tIgsRzZV5Dy+AEwZxa04GnIpzv6oYbaGdCXCO7yXmO3do8KjKo/eY/19hzMP14k
-        zRAZhDDw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVVZu-0008Pa-Lj; Thu, 22 Oct 2020 08:04:07 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 6712130377D;
-        Thu, 22 Oct 2020 10:04:05 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 5621C2B7802F0; Thu, 22 Oct 2020 10:04:05 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 10:04:05 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     Masami Hiramatsu <mhiramat@kernel.org>, x86-ml <x86@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Have insn decoder functions return success/failure
-Message-ID: <20201022080405.GS2628@hirez.programming.kicks-ass.net>
-References: <20201020120232.GD11583@zn.tnic>
- <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
- <20201020143746.GG11583@zn.tnic>
- <20201021095013.d82637f84af564ae4363189d@kernel.org>
- <20201021092750.GA4050@zn.tnic>
- <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
- <20201021164558.GB4050@zn.tnic>
+        Thu, 22 Oct 2020 04:04:32 -0400
+Authenticated-By: 
+X-SpamFilter-By: ArmorX SpamTrap 5.69 with qID 09M84MEJ0021931, This message is accepted by code: ctloc85258
+Received: from RSEXMBS01.realsil.com.cn ([172.29.17.195])
+        by rtits2.realtek.com.tw (8.15.2/2.66/5.86) with ESMTPS id 09M84MEJ0021931
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 22 Oct 2020 16:04:22 +0800
+Received: from localhost (172.29.40.150) by RSEXMBS01.realsil.com.cn
+ (172.29.17.195) with Microsoft SMTP Server id 15.1.2044.4; Thu, 22 Oct 2020
+ 16:04:21 +0800
+From:   <rui_feng@realsil.com.cn>
+To:     <arnd@arndb.de>, <gregkh@linuxfoundation.org>,
+        <ulf.hansson@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>,
+        Rui Feng <rui_feng@realsil.com.cn>
+Subject: [PATCH v2 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
+Date:   Thu, 22 Oct 2020 16:04:18 +0800
+Message-ID: <1603353858-3389-1-git-send-email-rui_feng@realsil.com.cn>
+X-Mailer: git-send-email 1.9.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021164558.GB4050@zn.tnic>
+Content-Type: text/plain
+X-Originating-IP: [172.29.40.150]
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 06:45:58PM +0200, Borislav Petkov wrote:
-> On Wed, Oct 21, 2020 at 11:26:13PM +0900, Masami Hiramatsu wrote:
-> > Hmm, I meant someone might think it can be used for filtering the
-> > instruction something like,
-> > 
-> > insn_init(insn, buf, buflen, 1);
-> > ret = insn_get_length(insn);
-> > if (!ret) {
-> > 	/* OK, this is safe */
-> > 	patch_text(buf, trampoline);
-> > }
-> > 
-> > No, we need another validator for such usage.
-> 
-> Well, I think calling insn_get_length() should give you only the
-> *length* of the insn and nothing else - I mean that is what the function
-> is called. And I believe current use is wrong.
-> 
-> Examples:
-> 
-> arch/x86/kernel/kprobes/core.c:
->                 insn_get_length(&insn);
-> 
->                 /*
->                  * Another debugging subsystem might insert this breakpoint.
->                  * In that case, we can't recover it.
->                  */
->                 if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
-> 
-> So this has called get_length but it is far from clear that after that
-> call, the opcode bytes in insn.opcode.bytes are there.
+From: Rui Feng <rui_feng@realsil.com.cn>
 
-Given the trainwreck called x86-instruction-encoding, it's impossible to
-not have decoded the opcode and still know the length. Therefore, if you
-know the length, you also have the opcode. Hm?
+RTS5261 support SD mode and PCIe/NVMe mode. The workflow is as follows.
+1.RTS5261 work in SD mode and set MMC_CAPS2_SD_EXP flag.
+2.If card is plugged in, Host send CMD8 to ask card's PCIe availability.
+3.If the card has PCIe availability and WP is not set, init_sd_express() will be invoked,
+RTS5261 switch to PCIe/NVMe mode.
+4.Mmc driver handover it to NVMe driver.
+5.If card is unplugged, RTS5261 will switch to SD mode.
+
+Signed-off-by: Rui Feng <rui_feng@realsil.com.cn>
+---
+v2:
+1.re-enable mmc caps in sd_power_on()
+2.don't check write protect bit in init_sd_express()
+---
+ drivers/mmc/host/rtsx_pci_sdmmc.c | 52 +++++++++++++++++++++++++++++++
+ 1 file changed, 52 insertions(+)
+
+diff --git a/drivers/mmc/host/rtsx_pci_sdmmc.c b/drivers/mmc/host/rtsx_pci_sdmmc.c
+index 2763a376b054..a6c89f739035 100644
+--- a/drivers/mmc/host/rtsx_pci_sdmmc.c
++++ b/drivers/mmc/host/rtsx_pci_sdmmc.c
+@@ -895,7 +895,9 @@ static int sd_set_bus_width(struct realtek_pci_sdmmc *host,
+ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ {
+ 	struct rtsx_pcr *pcr = host->pcr;
++	struct mmc_host *mmc = host->mmc;
+ 	int err;
++	u32 val;
+ 
+ 	if (host->power_state == SDMMC_POWER_ON)
+ 		return 0;
+@@ -922,6 +924,16 @@ static int sd_power_on(struct realtek_pci_sdmmc *host)
+ 	if (err < 0)
+ 		return err;
+ 
++	if (PCI_PID(pcr) == PID_5261) {
++		if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
++			mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
++		val = rtsx_pci_readl(pcr, RTSX_BIPR);
++		if (val & SD_WRITE_PROTECT) {
++			pcr->extra_caps &= ~EXTRA_CAPS_SD_EXPRESS;
++			mmc->caps2 &= ~(MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V);
++		}
++	}
++
+ 	host->power_state = SDMMC_POWER_ON;
+ 	return 0;
+ }
+@@ -1308,6 +1320,43 @@ static int sdmmc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+ 	return err;
+ }
+ 
++static int sdmmc_init_sd_express(struct mmc_host *mmc, struct mmc_ios *ios)
++{
++	u32 relink_time;
++	struct realtek_pci_sdmmc *host = mmc_priv(mmc);
++	struct rtsx_pcr *pcr = host->pcr;
++
++	/* Set relink_time for changing to PCIe card */
++	relink_time = 0x8FFF;
++
++	rtsx_pci_write_register(pcr, 0xFF01, 0xFF, relink_time);
++	rtsx_pci_write_register(pcr, 0xFF02, 0xFF, relink_time >> 8);
++	rtsx_pci_write_register(pcr, 0xFF03, 0x01, relink_time >> 16);
++
++	rtsx_pci_write_register(pcr, PETXCFG, 0x80, 0x80);
++	rtsx_pci_write_register(pcr, LDO_VCC_CFG0,
++		RTS5261_LDO1_OCP_THD_MASK,
++		pcr->option.sd_800mA_ocp_thd);
++
++	if (pcr->ops->disable_auto_blink)
++		pcr->ops->disable_auto_blink(pcr);
++
++	/* For PCIe/NVMe mode can't enter delink issue */
++	pcr->hw_param.interrupt_en &= ~(SD_INT_EN);
++	rtsx_pci_writel(pcr, RTSX_BIER, pcr->hw_param.interrupt_en);
++
++	rtsx_pci_write_register(pcr, RTS5260_AUTOLOAD_CFG4,
++		RTS5261_AUX_CLK_16M_EN, RTS5261_AUX_CLK_16M_EN);
++	rtsx_pci_write_register(pcr, RTS5261_FW_CFG0,
++		RTS5261_FW_ENTER_EXPRESS, RTS5261_FW_ENTER_EXPRESS);
++	rtsx_pci_write_register(pcr, RTS5261_FW_CFG1,
++		RTS5261_MCU_BUS_SEL_MASK | RTS5261_MCU_CLOCK_SEL_MASK
++		| RTS5261_MCU_CLOCK_GATING | RTS5261_DRIVER_ENABLE_FW,
++		RTS5261_MCU_CLOCK_SEL_16M | RTS5261_MCU_CLOCK_GATING
++		| RTS5261_DRIVER_ENABLE_FW);
++	return 0;
++}
++
+ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
+ 	.pre_req = sdmmc_pre_req,
+ 	.post_req = sdmmc_post_req,
+@@ -1317,6 +1366,7 @@ static const struct mmc_host_ops realtek_pci_sdmmc_ops = {
+ 	.get_cd = sdmmc_get_cd,
+ 	.start_signal_voltage_switch = sdmmc_switch_voltage,
+ 	.execute_tuning = sdmmc_execute_tuning,
++	.init_sd_express = sdmmc_init_sd_express,
+ };
+ 
+ static void init_extra_caps(struct realtek_pci_sdmmc *host)
+@@ -1338,6 +1388,8 @@ static void init_extra_caps(struct realtek_pci_sdmmc *host)
+ 		mmc->caps |= MMC_CAP_8_BIT_DATA;
+ 	if (pcr->extra_caps & EXTRA_CAPS_NO_MMC)
+ 		mmc->caps2 |= MMC_CAP2_NO_MMC;
++	if (pcr->extra_caps & EXTRA_CAPS_SD_EXPRESS)
++		mmc->caps2 |= MMC_CAP2_SD_EXP | MMC_CAP2_SD_EXP_1_2V;
+ }
+ 
+ static void realtek_init_host(struct realtek_pci_sdmmc *host)
+-- 
+2.17.1
+
