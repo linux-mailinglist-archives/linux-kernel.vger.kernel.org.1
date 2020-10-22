@@ -2,147 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D61ED295FF3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:24:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A93295FF4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:25:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894906AbgJVNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:24:16 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44745 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2894375AbgJVNYP (ORCPT
+        id S2894954AbgJVNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:25:28 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:34480 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2507061AbgJVNZ2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:24:15 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id CD7C85C008D;
-        Thu, 22 Oct 2020 09:24:14 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 22 Oct 2020 09:24:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=WpxzM5T2oXZM9uNlrwwMMJYM97B
-        01sisUMLV0IHjh+4=; b=HtZWIK/fLwEU3KnyBhFBfIhUhQ4LHqKu5DWhaZwuXHl
-        +9XGi6p9jxOTbkz6BvsuCH1oiu8BdCKAl0aLc7aRmLgcfZTb28KbC4vZ0MpstX+Q
-        9pmC4QUHFpNvcsjINx0s1R0GwCIEOAZlEgNneyunX+rjCc+BhSnbaGohSqU/+MVD
-        ookqZ7AaAYTxZuEpKXHAaeg/tcXH7l5grhKxdeWQfnOyNNI3HITpnI8DBByloWv5
-        v/sVYjy+2Qs/G5b/Ig7Y3Oino/NO4r3C8D7Bl9oWn/E+dSrZUiudch7Y//FPM7Bm
-        +OjBUPDeC6deak9oVI3l4ed0E9WVpXo+QRNRCzvAPew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WpxzM5
-        T2oXZM9uNlrwwMMJYM97B01sisUMLV0IHjh+4=; b=Gm57Q85Hwi4xddGi9Qavhj
-        CT/IfjHXHVayE5b+BdSwv3OaI8Xl1QNVUouXZb50qiNbMkD62CUFU1iguDqcejqz
-        kBi60h+B+qjb7GMW2+IGRvsiaVUAe6Tt1Zvlci2bestIoZE/4wGA4dj2KVtr8ZJE
-        lpb6B9AyyVABSdDE8VexUiE1U0VviuivCWzlWoAKDk2sdwSQRmwCklKvCpS9//GI
-        L6yCIE1bCTjuyV58NgF74/LaCXL5gsdPXXmvHjV8beU0j2rxJJJ/WPlrGbeeciCL
-        WFz9MEQNSAOAu3A8vKWkFfFXyrVl3wE6FJXnGw6O6FlhPAaYsLlE7FbbjOE9YaAg
-        ==
-X-ME-Sender: <xms:_YeRXy6ZMaXfp82xdOLIZwt4-d8FV_bWXd7IOsNiLPyMsM_2r3viKw>
-    <xme:_YeRX76oG0gcXVW68kXo4JfWFspgUOo3ctRttg5l9lf2v1kAU4Q6oqQGJgcHtSkDV
-    f4WvEQpfh-7v7BvcQs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeejgdeivdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:_YeRXxfl6dfPi6dF8Gk0iK9K_dTuK8DdPDCr_XnSRBiL68JqgacKlw>
-    <xmx:_YeRX_KggHoq606HXTB_6IdLDqaLw31dFfE_ufzcbCZDfWIFrlSjQg>
-    <xmx:_YeRX2K3uTAUg8ENlwirn7SR-yD3xsQ7heaZIe771OHyvnESYgnRBw>
-    <xmx:_oeRX3re2C6qpImTePz1qNECntzKXWXMvLv29TatVriOn8L0hgIlxA>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 7C1C23280060;
-        Thu, 22 Oct 2020 09:24:13 -0400 (EDT)
-Date:   Thu, 22 Oct 2020 15:24:12 +0200
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, Dom Cobley <dom@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: Re: Context expectations in ALSA
-Message-ID: <20201022132412.vntap4kfb2aj24qy@gilmour.lan>
-References: <20201022095041.44jytaelnlako54w@gilmour.lan>
- <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
- <20201022125741.xxibhwgcr2mhxehe@gilmour.lan>
- <s5ha6webdn2.wl-tiwai@suse.de>
+        Thu, 22 Oct 2020 09:25:28 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kVaan-0007zP-Jb; Thu, 22 Oct 2020 09:25:21 -0400
+Message-ID: <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+From:   Rik van Riel <riel@surriel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Date:   Thu, 22 Oct 2020 09:25:21 -0400
+In-Reply-To: <20201022081532.GJ23790@dhcp22.suse.cz>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+         <20201022081532.GJ23790@dhcp22.suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-S6o55Dk7sGpm11/Uyo3G"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="rwqqljnlxayusdb4"
-Content-Disposition: inline
-In-Reply-To: <s5ha6webdn2.wl-tiwai@suse.de>
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---rwqqljnlxayusdb4
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+--=-S6o55Dk7sGpm11/Uyo3G
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Hi Takashi,
-
-On Thu, Oct 22, 2020 at 03:20:49PM +0200, Takashi Iwai wrote:
-> On Thu, 22 Oct 2020 14:57:41 +0200,
-> Maxime Ripard wrote:
+On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
+> On Wed 21-10-20 23:48:46, Rik van Riel wrote:
+> > The allocation flags of anonymous transparent huge pages can be
+> > controlled
+> > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
+> > which can
+> > help the system from getting bogged down in the page reclaim and
+> > compaction
+> > code when many THPs are getting allocated simultaneously.
 > >=20
-> > On Thu, Oct 22, 2020 at 12:03:19PM +0200, Jaroslav Kysela wrote:
-> > > Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
-> > >=20
-> > > > So, I'm not really sure what I'm supposed to do here. The drivers
-> > > > involved don't appear to be doing anything extraordinary, but the i=
-ssues
-> > > > lockdep report are definitely valid too. What are the expectations =
-in
-> > > > terms of context from ALSA when running the callbacks, and how can =
-we
-> > > > fix it?
-> > >=20
-> > > I think that you should set the non-atomic flag and wake up the workq=
-ueue or
-> > > so from interrupt handler in this case. Call snd_pcm_period_elapsed()=
- from the
-> > > workqueue not the interrupt handler context.
+> > However, the gfp_mask for shmem THP allocations were not limited by
+> > those
+> > configuration settings, and some workloads ended up with all CPUs
+> > stuck
+> > on the LRU lock in the page reclaim code, trying to allocate dozens
+> > of
+> > THPs simultaneously.
 > >=20
-> > Yeah, that was my first guess too. However, the DMA driver uses some
-> > kind of generic helpers using a tasklet, so getting rid of it would take
-> > some work and would very likely not be eligible for stable.
+> > This patch applies the same configurated limitation of THPs to
+> > shmem
+> > hugepage allocations, to prevent that from happening.
+> >=20
+> > This way a THP defrag setting of "never" or "defer+madvise" will
+> > result
+> > in quick allocation failures without direct reclaim when no 2MB
+> > free
+> > pages are available.
 >=20
-> Who sets the nonatomic flag for vc4?  I couldn't find the relevant
-> code in the latest upstream.
+> I remmeber I wanted to unify this in the past as well. The patch got
+> reverted in the end. It was a long story and I do not have time to
+> read
+> through lengthy discussions again. I do remember though that there
+> were
+> some objections pointing out that shmem has its own behavior which is
+> controlled by the mount option - at least for the explicitly mounted
+> shmems. I might misremember.
 
-Sorry if this wasn't clear enough, it's not there at the moment, ALSA
-takes a spinlock and lockdep complains that we're sleeping in an atomic
-context.
+That is not entirely true, though.
 
-I tried to add the nonatomic flag in my tree to see if it was fixing the
-issue, but ran into another lockdep complain now with ALSA taking a
-mutex in a tasklet.
+THP has two main sysfs knobs: "enabled" and "defrag"
 
-> Ideally dmaengine PCM helper should support the nonatomic mode, but
-> until then, the other side needs to drop the nonatomic flag, I
-> suppose.
+The mount options
+control the shmem equivalent options
+for "enabled", but they do not do anything for the "defrag"
+equivalent options.
 
-In this case, I'm not sure the blame is in the PCM helper but if there's
-any blame, I guess it's the virt-chan layer inside dmaengine (so for
-providers) that use a tasklet instead of something that allows sleeping
+This patch applies the "defrag" THP options to
+shmem.
 
-Maxime
+> [...]
+>=20
+> > diff --git a/mm/shmem.c b/mm/shmem.c
+> > index 537c137698f8..d1290eb508e5 100644
+> > --- a/mm/shmem.c
+> > +++ b/mm/shmem.c
+> > @@ -1545,8 +1545,11 @@ static struct page
+> > *shmem_alloc_hugepage(gfp_t gfp,
+> >  		return NULL;
+> > =20
+> >  	shmem_pseudo_vma_init(&pvma, info, hindex);
+> > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY |
+> > __GFP_NOWARN,
+> > -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+> > true);
+> > +	/* Limit the gfp mask according to THP configuration. */
+> > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+>=20
+> What is the reason for these when alloc_hugepage_direct_gfpmask
+> provides
+> the full mask?
 
---rwqqljnlxayusdb4
+The mapping_gfp_mask for the shmem file might have additional
+restrictions above and beyond the gfp mask returned by
+alloc_hugepage_direct_gfpmask, and I am not sure we should just
+ignore the mapping_gfp_mask.
+
+That is why this patch takes the union of both gfp masks.
+
+However, digging into things more, it looks like shmem inodes
+always have the mapping gfp mask set to GFP_HIGHUSER_MOVABLE,
+and it is never changed, so simply using the output from
+alloc_hugepage_direct_gfpmask should be fine.
+
+I can do the patch either way. Just let me know what you prefer.
+
+> > +	gfp &=3D alloc_hugepage_direct_gfpmask(&pvma);
+> > +	page =3D alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0,
+> > numa_node_id(),
+> > +			       true);
+> >  	shmem_pseudo_vma_destroy(&pvma);
+> >  	if (page)
+> >  		prep_transhuge_page(page);
+> >=20
+> > --=20
+> > All rights reversed.
+--=20
+All Rights Reversed.
+
+--=-S6o55Dk7sGpm11/Uyo3G
 Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GH/AAKCRDj7w1vZxhR
-xepDAP96aJ4MTdcE8LJZ10+kDyzH1UtQlV//DYZWfptlugY+vgEA2+KK5p2ApO4B
-kDALlv1Yd5PHZH7QHStcrelNXI69ygs=
-=e2G2
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RiEEACgkQznnekoTE
+3oNyPQf8DJWaHRulqI0zU7h6A5fMQC9csTAy5hwygvjAL5MDI3WbuVIqhOYxJJmZ
+8m89mr7foiLfsSiyAGXvF3cQ1ysyxjp4ddg/YJFmSS2aQ4j7DQ+pu5mr/CQFvcje
+fRmNgXKnh4LJkRW6wX/5RX7U13xNL3Qi0C5K5Vg1Nn0pr9ujq6Aq5qPoyICtYl3K
+ENbI6QZMdXZPglqwB/cUxIsFtqOr9WLfPls0ytHm6dspB7JGzQyXRiYi5G8afzmz
+6qhBECGY9EPQWZ6kOJwb0efKz+FlhI6owJ7S4oeCyv4pt4byihxEbfVqC2+4BrVm
+p3V23yuYKliuaOXexp5PhhWgMjQwaw==
+=IxrV
 -----END PGP SIGNATURE-----
 
---rwqqljnlxayusdb4--
+--=-S6o55Dk7sGpm11/Uyo3G--
+
