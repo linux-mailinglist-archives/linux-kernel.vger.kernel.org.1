@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B56C7295FBE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E644295FC0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899533AbgJVNTl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:19:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50744 "EHLO
+        id S2899542AbgJVNTn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:19:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50754 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899517AbgJVNTf (ORCPT
+        with ESMTP id S2899491AbgJVNTi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:19:35 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 450B9C0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:35 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id s8so987573qvv.18
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:35 -0700 (PDT)
+        Thu, 22 Oct 2020 09:19:38 -0400
+Received: from mail-wr1-x449.google.com (mail-wr1-x449.google.com [IPv6:2a00:1450:4864:20::449])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53438C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:38 -0700 (PDT)
+Received: by mail-wr1-x449.google.com with SMTP id f11so611393wro.15
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=cQVLrwUdxN7VB2XZ42Engk9gK33XrCOfDjGCi6TbRVk=;
-        b=nyVZvbQwJKil209qrPnO1RCGT8S27NaIYZ+peNzRSTQdYpzmUd0ad8fLlhrZa50gj4
-         gdPyukkf/2bC3V42Nncw/TB2lVLlGPZUIC+cxatTMcyLZabxnDwUt+X/Si61f992QEeq
-         YZQBzLESYkrhPi1KwM0Vgtn48uzxCHcFz9p1euPx9/0q76h5gy/QkRzdVgRfzyhwvDmU
-         1WxQSmIYXBlzSGw9Tq9CZqbkXLjaJcYB2SLWAUOGTswZt0RId0kVTIk2achigNnTltJr
-         OcpVpY6ya0cbCiVJN/73hIRgW1YHoBYcRZ8MV/y8Dg8Q5N6vzjMI/KWadh5Z+kyvbt+k
-         7lcA==
+        bh=hz6KTz5FwSVcKdBcrWKk1T0dlNcGWPgygtgKcp7KEb8=;
+        b=FFBTC951UmrhzpM9y+uLT8ZyOJj5GaA4k7AAgHlI5bzWx5afJoz6OzMm5XOyKBSXEM
+         33gEVoauyorNsYP0Q+ECaBpvPq/DZsJ5GgUIr7AP8JaxkCXd6/ck44zNbrnvejRmGtPt
+         EHfugNeWva1kLDKx2Qx1nxAVs6bGYzf2jmT6eIkENmOIa53fxT0rEq/NEicFsH/oNwGr
+         kyZxIJNVaHioOKRiM7oaMAGLtWsmEWjRiP1xlZvhqFVIvyiM18wlBZsZyxxnH1h+QpZD
+         MTSh30CAWNtQXA81JdLugm9ci6jQbTia/3CdNk9dj5LNdLvS1N9838gPFioY0FC54Psv
+         Ekjw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=cQVLrwUdxN7VB2XZ42Engk9gK33XrCOfDjGCi6TbRVk=;
-        b=uYPWuPgMdPjLA6di3cSWNg7r1nbA6g2PeewJnKOl2mlbRmUob/pXlxyj5WHhNAkqMs
-         gQ1i0UpgiHpmq0uefqRjvHuuAoQXShRcMSBDDbajBAJICOOMn+f8YJ72Wtmo4OPFsGxV
-         JTfoUDkccmOMBd2tyrIQbFIQc8lpGDyh226hkc9C3KZFv0egfnxmi8/WhUYMNn2+8iAk
-         56lSMXbzonq48Gce7fRQ+yrFuxym9aVeyoiHJnLWrkIxLvSf0FeTcYg53cvhU/Igskt0
-         uz8Dg7IJiNnWDu3/5PVAOsI/uAMP3hv5t2NfwiLS1Jijwj2bFqph7eTy2oUmq0BXZFKu
-         GMEA==
-X-Gm-Message-State: AOAM532a6DzRWO8PH0NPBXRitDr5IZRAnmMsfMID86TRHEl6IrgSbwFh
-        dS0gF4S/0wqMA6lSINi+Kcj1HyFiALJ8nR2J
-X-Google-Smtp-Source: ABdhPJxC+cHl3A6vxbAhEsJcstIa/YPUKLBxMm0Gygy5clgGTysFnJWscf3YLAf5go7mTyNLfj4cOUScq3LNKTs9
+        bh=hz6KTz5FwSVcKdBcrWKk1T0dlNcGWPgygtgKcp7KEb8=;
+        b=RGAsjX/oPCxczP9QcVm2cnBv5xHKROQK98GvtSlS7lOiRmeJ5AfWguA0zEwQ2wgIhd
+         cOr3alXFKrkWVVPNGgVtmN6OZtNH6tmIBQaWzV2MKp/V1ZS+FjiTUKW8b9Lx6CKXxZ9L
+         W6nHvfFnI/GB7Kb4kyy0S3riDS8uWxztFLyjkSW2ULCXKlBQ2KqOjYbLCAkeWV0jO+2L
+         bsikLyMGjh5uvFxnvnsVvJA9ERDpb9LxP3K7mWJNh72eCnji+TMRMhS7n9H3rKi1o3Pv
+         FYhBE1gev9S32JY+kQS2BDlGFIPxVXKQSOC1mVU+iZSQx/ZFlcnrkPgLNDlQaLQAufu5
+         sc7w==
+X-Gm-Message-State: AOAM533g/H/pO/8ebR2/5TITQ7a6tVywNmwNM6DOYNMVoIFq2MKPjaJW
+        jwLew5IFqwQGVQkkxXqLdvTO4KsPNuwDvynf
+X-Google-Smtp-Source: ABdhPJx5O4kSUaBGwRtLvKusVioF7tY95svs/rFufga7Cd+WWBIpFFtwb4jM57egcfFrxBGA7vCl5k+pvkZDaTLZ
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:ad4:4ba8:: with SMTP id
- i8mr2332119qvw.59.1603372774241; Thu, 22 Oct 2020 06:19:34 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:18:56 +0200
+ (user=andreyknvl job=sendgmr) by 2002:a05:6000:108:: with SMTP id
+ o8mr2676067wrx.256.1603372776882; Thu, 22 Oct 2020 06:19:36 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:18:57 +0200
 In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-Message-Id: <ded454eeff88f631dc08eef76f0ad9f2daff0085.1603372719.git.andreyknvl@google.com>
+Message-Id: <1049f02fb4132390a6a314eb21dccfe5500e69d6.1603372719.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603372719.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH RFC v2 04/21] kasan: unpoison stack only with CONFIG_KASAN_STACK
+Subject: [PATCH RFC v2 05/21] kasan: allow VMAP_STACK for HW_TAGS mode
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -77,104 +77,29 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a config option CONFIG_KASAN_STACK that has to be enabled for
-KASAN to use stack instrumentation and perform validity checks for
-stack variables.
-
-There's no need to unpoison stack when CONFIG_KASAN_STACK is not enabled.
-Only call kasan_unpoison_task_stack[_below]() when CONFIG_KASAN_STACK is
-enabled.
+Even though hardware tag-based mode currently doesn't support checking
+vmalloc allocations, it doesn't use shadow memory and works with
+VMAP_STACK as is.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/If8a891e9fe01ea543e00b576852685afec0887e3
+Link: https://linux-review.googlesource.com/id/I3552cbc12321dec82cd7372676e9372a2eb452ac
 ---
- arch/arm64/kernel/sleep.S        |  2 +-
- arch/x86/kernel/acpi/wakeup_64.S |  2 +-
- include/linux/kasan.h            | 10 ++++++----
- mm/kasan/common.c                |  2 ++
- 4 files changed, 10 insertions(+), 6 deletions(-)
+ arch/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/kernel/sleep.S b/arch/arm64/kernel/sleep.S
-index ba40d57757d6..bdadfa56b40e 100644
---- a/arch/arm64/kernel/sleep.S
-+++ b/arch/arm64/kernel/sleep.S
-@@ -133,7 +133,7 @@ SYM_FUNC_START(_cpu_resume)
- 	 */
- 	bl	cpu_do_resume
- 
--#ifdef CONFIG_KASAN
-+#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
- 	mov	x0, sp
- 	bl	kasan_unpoison_task_stack_below
- #endif
-diff --git a/arch/x86/kernel/acpi/wakeup_64.S b/arch/x86/kernel/acpi/wakeup_64.S
-index c8daa92f38dc..5d3a0b8fd379 100644
---- a/arch/x86/kernel/acpi/wakeup_64.S
-+++ b/arch/x86/kernel/acpi/wakeup_64.S
-@@ -112,7 +112,7 @@ SYM_FUNC_START(do_suspend_lowlevel)
- 	movq	pt_regs_r14(%rax), %r14
- 	movq	pt_regs_r15(%rax), %r15
- 
--#ifdef CONFIG_KASAN
-+#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
- 	/*
- 	 * The suspend path may have poisoned some areas deeper in the stack,
- 	 * which we now need to unpoison.
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 3f3f541e5d5f..7be9fb9146ac 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -68,8 +68,6 @@ static inline void kasan_disable_current(void) {}
- 
- void kasan_unpoison_memory(const void *address, size_t size);
- 
--void kasan_unpoison_task_stack(struct task_struct *task);
--
- void kasan_alloc_pages(struct page *page, unsigned int order);
- void kasan_free_pages(struct page *page, unsigned int order);
- 
-@@ -114,8 +112,6 @@ void kasan_restore_multi_shot(bool enabled);
- 
- static inline void kasan_unpoison_memory(const void *address, size_t size) {}
- 
--static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
--
- static inline void kasan_alloc_pages(struct page *page, unsigned int order) {}
- static inline void kasan_free_pages(struct page *page, unsigned int order) {}
- 
-@@ -167,6 +163,12 @@ static inline size_t kasan_metadata_size(struct kmem_cache *cache) { return 0; }
- 
- #endif /* CONFIG_KASAN */
- 
-+#if defined(CONFIG_KASAN) && CONFIG_KASAN_STACK
-+void kasan_unpoison_task_stack(struct task_struct *task);
-+#else
-+static inline void kasan_unpoison_task_stack(struct task_struct *task) {}
-+#endif
-+
- #ifdef CONFIG_KASAN_GENERIC
- 
- void kasan_cache_shrink(struct kmem_cache *cache);
-diff --git a/mm/kasan/common.c b/mm/kasan/common.c
-index a880e5a547ed..a3e67d49b893 100644
---- a/mm/kasan/common.c
-+++ b/mm/kasan/common.c
-@@ -58,6 +58,7 @@ void kasan_disable_current(void)
- }
- #endif /* CONFIG_KASAN_GENERIC || CONFIG_KASAN_SW_TAGS */
- 
-+#if CONFIG_KASAN_STACK
- static void __kasan_unpoison_stack(struct task_struct *task, const void *sp)
- {
- 	void *base = task_stack_page(task);
-@@ -84,6 +85,7 @@ asmlinkage void kasan_unpoison_task_stack_below(const void *watermark)
- 
- 	kasan_unpoison_memory(base, watermark - base);
- }
-+#endif /* CONFIG_KASAN_STACK */
- 
- void kasan_alloc_pages(struct page *page, unsigned int order)
- {
+diff --git a/arch/Kconfig b/arch/Kconfig
+index af14a567b493..3caf7bcdcf93 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -868,7 +868,7 @@ config VMAP_STACK
+ 	default y
+ 	bool "Use a virtually-mapped stack"
+ 	depends on HAVE_ARCH_VMAP_STACK
+-	depends on !KASAN || KASAN_VMALLOC
++	depends on !(KASAN_GENERIC || KASAN_SW_TAGS) || KASAN_VMALLOC
+ 	help
+ 	  Enable this if you want the use virtually-mapped kernel stacks
+ 	  with guard pages.  This causes kernel stack overflows to be
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
