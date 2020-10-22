@@ -2,68 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4F92965FF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:32:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5237F296600
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:33:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371730AbgJVUcv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:32:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38506 "EHLO mail.kernel.org"
+        id S371740AbgJVUdB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:33:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:56600 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368680AbgJVUcv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:32:51 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3AF0B21534;
-        Thu, 22 Oct 2020 20:32:50 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 16:32:47 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     syzbot <syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com>,
-        linux-kernel@vger.kernel.org, mingo@redhat.com,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: BUG: using __this_cpu_read() in preemptible code in
- trace_hardirqs_on
-Message-ID: <20201022163247.5bb93ab3@gandalf.local.home>
-In-Reply-To: <20201022103028.GC2611@hirez.programming.kicks-ass.net>
-References: <000000000000e921b305b18ba0a7@google.com>
-        <20201013091743.12c371a8@gandalf.local.home>
-        <20201021131733.GH2628@hirez.programming.kicks-ass.net>
-        <20201021103433.38fed220@gandalf.local.home>
-        <20201021151237.GK2628@hirez.programming.kicks-ass.net>
-        <20201021112757.0945a922@gandalf.local.home>
-        <20201022103028.GC2611@hirez.programming.kicks-ass.net>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S368681AbgJVUdB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 16:33:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 60F36AE39;
+        Thu, 22 Oct 2020 20:32:58 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 21:32:55 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022203255.GN32041@suse.de>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <20201022145250.GK32041@suse.de>
+ <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
+ <20201022151200.GC92942@lorien.usersys.redhat.com>
+ <20201022163509.GM32041@suse.de>
+ <CAJZ5v0he839sJNh0xjmvLqzuE7X27PgJKxtSV8giZh004E7pXw@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <CAJZ5v0he839sJNh0xjmvLqzuE7X27PgJKxtSV8giZh004E7pXw@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 12:30:28 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
-
-> Subject: lockdep: Fix preemption WARN for spurious IRQ-enable
-> From: Peter Zijlstra <peterz@infradead.org>
-> Date: Thu Oct 22 12:23:02 CEST 2020
+On Thu, Oct 22, 2020 at 07:59:43PM +0200, Rafael J. Wysocki wrote:
+> > > Agreed. I'd like the option to switch back if we make the default change.
+> > > It's on the table and I'd like to be able to go that way.
+> > >
+> >
+> > Yep. It sounds chicken, but it's a useful safety net and a reasonable
+> > way to deprecate a feature. It's also useful for bug creation -- User X
+> > running whatever found that schedutil is worse than the old governor and
+> > had to temporarily switch back. Repeat until complaining stops and then
+> > tear out the old stuff.
+> >
+> > When/if there is a patch setting schedutil as the default, cc suitable
+> > distro people (Giovanni and myself for openSUSE).
 > 
-> It is valid (albeit uncommon) to call local_irq_enable() without first
-> having called local_irq_disable(). In this case we enter
-> lockdep_hardirqs_on*() with IRQs enabled and trip a preemption warning
-> for using __this_cpu_read().
+> So for the record, Giovanni was on the CC list of the "cpufreq:
+> intel_pstate: Use passive mode by default without HWP" patch that this
+> discussion resulted from (and which kind of belongs to the above
+> category).
 > 
-> Use this_cpu_read() instead to avoid the warning.
 
-I was wondering why you were using __this_cpu_read() in the first place.
+Oh I know, I did not mean to suggest that you did not. He made people
+aware that this was going to be coming down the line and has been looking
+into the "what if schedutil was the default" question.  AFAIK, it's still
+a work-in-progress and I don't know all the specifics but he knows more
+than I do on the topic. I only know enough that if we flipped the switch
+tomorrow that we could be plagued with google searches suggesting it be
+turned off again just like there is still broken advice out there about
+disabling intel_pstate for usually the wrong reasons.
 
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+The passive patch was a clear flag that the intent is that schedutil will
+be the default at some unknown point in the future. That point is now a
+bit closer and this thread could have encouraged a premature change of
+the default resulting in unfair finger pointing at one company's test
+team. If at least two distos check it out and it still goes wrong, at
+least there will be shared blame :/
 
--- Steve
-
-
+> > Other distros assuming they're watching can nominate their own victim.
 > 
-> Fixes: 4d004099a6 ("lockdep: Fix lockdep recursion")
-> Reported-by: syzbot+53f8ce8bbc07924b6417@syzkaller.appspotmail.com
-> Reported-by: kernel test robot <lkp@intel.com>
-> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+> But no other victims had been nominated at that time.
+
+We have one, possibly two if Phil agrees. That's better than zero or
+unfairly placing the full responsibility on the Intel guys that have been
+testing it out.
+
+-- 
+Mel Gorman
+SUSE Labs
