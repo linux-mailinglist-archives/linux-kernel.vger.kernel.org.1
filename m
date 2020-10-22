@@ -2,91 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEA3E29625E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:11:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72F89296260
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:11:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895862AbgJVQLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:11:03 -0400
-Received: from smtprelay0200.hostedemail.com ([216.40.44.200]:32866 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2509975AbgJVQLC (ORCPT
+        id S2895924AbgJVQLW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:11:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49160 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895886AbgJVQLW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:11:02 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id C8C0E180A7FFC;
-        Thu, 22 Oct 2020 16:11:01 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:4321:5007:7903:8957:9010:10004:10400:10848:11026:11232:11658:11914:12043:12297:12740:12760:12895:13069:13095:13311:13357:13439:14181:14659:14721:21080:21433:21451:21627:21660:30003:30012:30054:30070:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: ink14_5a132ed27252
-X-Filterd-Recvd-Size: 2675
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf09.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 22 Oct 2020 16:11:00 +0000 (UTC)
-Message-ID: <4cbbd8d8b6c4d686f71648af8bc970baa4b0ee9b.camel@perches.com>
-Subject: Re: [PATCH v2] checkpatch: fix false positives in REPEATED_WORD
- warning
-From:   Joe Perches <joe@perches.com>
-To:     Aditya Srivastava <yashsri421@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com
-Date:   Thu, 22 Oct 2020 09:10:59 -0700
-In-Reply-To: <20201022145021.28211-1-yashsri421@gmail.com>
-References: <20201022145021.28211-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        Thu, 22 Oct 2020 12:11:22 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EB3B4C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:11:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
+        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=7dbaiXNZz6VyWN3TkEKY5ylA2arGx7rJcc1WOH9NF+w=; b=hA7vjpw/LgKjasSODeHPA1I6W
+        NEr3qPwZbwPLcZyEVmzSQpeB+RPlkD1rM0/lXkMarHftmK7MIKSAyHiget4QxRp3WgSh3akNAlnmx
+        qyBEWLgCPnr2pegsppXwoEEbf8QukqFlPWEGVMGAiIK2kYgfqFQA91q3PQOMKkfLzMnXjRH4WD3TH
+        xuk0OL/YW2Caf3CDCdxjWsp33ASp6658mSe70GC4o8ZdH0XZnj9bGymal85K7HODY+N7jSCz92GtH
+        0Q2OIi6Z6pt+OGtUVLSNBtKZzQFtcHOnHIrP1OggI9/vqlh+rHI64fa6+znaWvpUh3xb/pLD+wUFK
+        M96pClZhw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49574)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVdBO-0002H0-UV; Thu, 22 Oct 2020 17:11:19 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVdBO-0007Xh-8L; Thu, 22 Oct 2020 17:11:18 +0100
+Date:   Thu, 22 Oct 2020 17:11:18 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Ard Biesheuvel <ardb@kernel.org>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+Message-ID: <20201022161118.GP1551@shell.armlinux.org.uk>
+References: <20201021225737.739-1-digetx@gmail.com>
+ <202010211637.7CFD8435@keescook>
+ <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook>
+ <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
+ <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-22 at 20:20 +0530, Aditya Srivastava wrote:
-> Presence of hexadecimal address or symbol results in false warning
-> message by checkpatch.pl.
-[]
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-[]
-> @@ -3051,7 +3051,10 @@ sub process {
->  		}
->  
->  # check for repeated words separated by a single space
-> -		if ($rawline =~ /^\+/ || $in_commit_log) {
-> +# avoid false positive from list command eg, '-rw-r--r-- 1 root root'
-> +		if (($rawline =~ /^\+/ || $in_commit_log) &&
-> +		$rawline !~ /[bcCdDlMnpPs\?-][rwxsStT-]{9}/) {
+On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
+> On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
+> >
+> > 22.10.2020 10:06, Ard Biesheuvel пишет:
+> > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wrote:
+> > >>
+> > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
+> > >>> 22.10.2020 02:40, Kees Cook пишет:
+> > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
+> > >>>>> The vfp_kmode_exception() function now is unreachable using relative
+> > >>>>> branching in THUMB2 kernel configuration, resulting in a "relocation
+> > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
+> > >>>>> linker error. Let's use long jump in order to fix the issue.
+> > >>>>
+> > >>>> Eek. Is this with gcc or clang?
+> > >>>
+> > >>> GCC 9.3.0
+> > >>>
+> > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+> > >>>>
+> > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
+> > >>>> That commit may have implicitly moved the location of .vfp11_veneer,
+> > >>>> though I thought I had chosen the correct position.
+> > >>>
+> > >>> I re-checked that the fixes tag is correct.
+> > >>>
+> > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > >>>>> ---
+> > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
+> > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >>>>>
+> > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+> > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
+> > >>>>> --- a/arch/arm/vfp/vfphw.S
+> > >>>>> +++ b/arch/arm/vfp/vfphw.S
+> > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+> > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor FP exceptions
+> > >>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mode
+> > >>>>>    teq     r3, #USR_MODE
+> > >>>>> -  bne     vfp_kmode_exception     @ Returns through lr
+> > >>>>> +  ldr     r1, =vfp_kmode_exception
+> > >>>>> +  bxne    r1                      @ Returns through lr
+> > >>>>>
+> > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
+> > >>>>>    DBGSTR1 "fpexc %08x", r1
+> > >>>>
+> > >>>> This seems like a workaround though? I suspect the vfp11_veneer needs
+> > >>>> moving?
+> > >>>>
+> > >>>
+> > >>> I don't know where it needs to be moved. Please feel free to make a
+> > >>> patch if you have a better idea, I'll be glad to test it.
+> > >>
+> > >> I might have just been distracted by the common "vfp" prefix. It's
+> > >> possible that the text section shuffling just ended up being very large,
+> > >> so probably this patch is right then!
+> > >>
+> > >
+> > > I already sent a fix for this issue:
+> > >
+> > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/1
+> > >
+> >
+> > The offending commit contains stable tag, so I assume that fixes tag is
+> > mandatory. Yours patch misses the fixes tag.
+> 
+> Russell, mind adding that? Or would you like me to update the patch in
+> the patch system?
 
-Alignment and use \b before and after the regex please.
+Rather than adding the IT, I'm suggesting that we solve it a different
+way - ensuring that the two bits of code are co-located. There's no
+reason for them to be separated, and the assembly code entry point is
+already called indirectly.
 
-		if (($rawline =~ /^\+/ || $in_commit_log) &&
-		    $rawline !~ /\b[bcCdDlMnpPs\?-][rwxsStT-]{9}\b/) {
-> @@ -3065,6 +3068,34 @@ sub process {
->  				next if ($first ne $second);
->  				next if ($first eq 'long');
->  
-> +				# avoid repeating hex occurrences like 'ff ff fe 09 ...'
-> +				if ($first =~ /\b[0-9a-f]{2,}/) {
-> +					# if such sequence occurs more than 4, it is most probably part of some of code
-> +					next if ((scalar @hex_seq)>4);
-> +					# for hex occurrences which are less than 4
-> +					# get first hex word in the line
-> +					if ($rawline =~ /\b[0-9a-f]{2,} /) {
-> +						my $post_hex_seq = $';
-> +
-> +						# set suffieciently high default values to avoid ignoring or counting in absence of another
-> +						my $non_hex_char_pos = 1000;
-> +						my $special_chars_pos = 500;
-> +
-> +						if ($post_hex_seq =~ /[g-z]+/) {
-> +							# first non hex character in post_hex_seq
-> +							$non_hex_char_pos = $-[0];
-> +						}
-> +						if($post_hex_seq =~ /[^a-zA-Z0-9]{2,}/) {
-> +							# first occurrence of 2 or more special chars
-> +							$special_chars_pos = $-[0];
-> +						}
+The problem is the assembly ends up in the .text section which ends up
+at the start of the binary, but depending on the compiler, functions
+in .c files end up in their own sections. It would be good if, as
+Dmitry has shown that it is indeed possible, to have them co-located.
 
-What does all this code actually avoid?
-
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
