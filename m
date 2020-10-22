@@ -2,63 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DE092961AE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:29:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B024E2961B4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:32:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504399AbgJVP3H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:29:07 -0400
-Received: from mxout04.lancloud.ru ([89.108.124.63]:53132 "EHLO
-        mxout04.lancloud.ru" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438961AbgJVP3G (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:29:06 -0400
-Received: from LanCloud
-DKIM-Filter: OpenDKIM Filter v2.11.0 mxout04.lancloud.ru E57F0206FFE5
-Received: from LanCloud
-Received: from LanCloud
-Received: from LanCloud
-Subject: Re: [PATCH 0/2] module: some refactoring in module_sig_check()
-To:     Jessica Yu <jeyu@kernel.org>
-CC:     <linux-kernel@vger.kernel.org>
-References: <789a4e5c-8efd-bb1c-86e2-eed8b2b7b0af@omprussia.ru>
- <20201022150916.GB8608@linux-8ccs>
-From:   Sergey Shtylyov <s.shtylyov@omprussia.ru>
-Organization: Open Mobile Platform, LLC
-Message-ID: <ca670986-77d1-98b8-c0ed-d270fc111774@omprussia.ru>
-Date:   Thu, 22 Oct 2020 18:29:02 +0300
+        id S2901449AbgJVPcm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:32:42 -0400
+Received: from foss.arm.com ([217.140.110.172]:59854 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2508506AbgJVPcl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:32:41 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA788D6E;
+        Thu, 22 Oct 2020 08:32:40 -0700 (PDT)
+Received: from [10.57.13.45] (unknown [10.57.13.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C11773F66E;
+        Thu, 22 Oct 2020 08:32:37 -0700 (PDT)
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+ <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
+ <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+From:   Suzuki Poulose <suzuki.poulose@arm.com>
+Message-ID: <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
+Date:   Thu, 22 Oct 2020 16:32:36 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201022150916.GB8608@linux-8ccs>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
+In-Reply-To: <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [213.87.145.115]
-X-ClientProxiedBy: LFEXT01.lancloud.ru (fd00:f066::141) To
- LFEX1908.lancloud.ru (fd00:f066::208)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello!
-
-On 10/22/20 6:09 PM, Jessica Yu wrote:
-
->> Here are 2 patches against the 'modules-next' branch of Jessica Yu's 'linux.git' repo.
->> I'm doing some little refactoring in module_sig_check()...
+On 10/22/20 4:06 PM, Peter Zijlstra wrote:
+> On Thu, Oct 22, 2020 at 02:30:21PM +0100, Suzuki Poulose wrote:
+>> On 10/22/20 12:32 PM, Peter Zijlstra wrote:
+>>> On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
+>>>
+>>>> Looking at the ETR and other places in the kernel, ETF and the
+>>>> ETB are the only places trying to dereference the task(owner)
+>>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>>> sched_in path as in the call trace.
+>>>
+>>>> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
+>>>>    {
+>>>>    	int node;
+>>>>    	struct cs_buffers *buf;
+>>>> +	struct task_struct *task = READ_ONCE(event->owner);
+>>>> +
+>>>> +	if (!task || is_kernel_event(event))
+>>>> +		return NULL;
+>>>
+>>>
+>>> This is *wrong*... why do you care about who owns the events?
+>>>
 >>
->> [1/2] module: merge repetitive strings in module_sig_check()
->> [2/2] module: unindent comments in module_sig_check()
+>> This is due to the special case of the CoreSight configuration, where
+>> a "sink" (where the trace data is captured) is shared by multiple Trace
+>> units. So, we could share the "sink" for multiple trace units if they
+>> are tracing the events that belong to the same "perf" session. (The
+>> userspace tool could decode the trace data based on the TraceID
+>> in the trace packets). Is there a better way to do this ?
 > 
-> Hi Sergey,
+> I thought we added sink identification through perf_event_attr::config2
+> ?
 > 
-> I'm fine with these patches, but are you still planning on sending a
-> v2 based on Joe Perches' suggestions?
 
-   Yes, I'm going to address his feedback, as soon as I have a time.
+Correct. attr:config2 identifies the "sink" for the collection. But,
+that doesn't solve the problem we have here. If two separate perf
+sessions use the "same sink", we don't want to mix the
+trace data into the same sink for events from different sessions.
 
-> Thanks!
-> 
-> Jessica
+Thus, we need a way to check if a new event starting the tracing on
+an ETM belongs to the same session as the one already pumping the trace
+into the sink.
 
-MBR, Sergei
+We use event->owner pid for this check and thats where we encountered
+a NULL event->owner. Looking at the code further, we identified that
+kernel events could also trigger this issue.
+
+Suzuki
