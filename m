@@ -2,110 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A380429624E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6DEB6296253
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:06:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509110AbgJVQBX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:01:23 -0400
-Received: from mailrelay4-3.pub.mailoutpod1-cph3.one.com ([46.30.212.13]:19403
-        "EHLO mailrelay4-3.pub.mailoutpod1-cph3.one.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2505808AbgJVQBX (ORCPT
+        id S2509803AbgJVQGH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:06:07 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:34810 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509103AbgJVQGG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:01:23 -0400
-X-Greylist: delayed 963 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Oct 2020 12:01:22 EDT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=lechevalier.se; s=20191106;
-        h=content-transfer-encoding:content-type:mime-version:subject:references:
-         in-reply-to:message-id:cc:to:from:date:from;
-        bh=XRec2U5eYGvILEmLb+y88PRCaN5teKnHukURga4/B+k=;
-        b=Ao5/OEbE7FDGb3RZCsiPIywHCoKzQuXvOsrjtf+kvGRB/VGJE7DuLjORhMGHnzCGIsPka3kvB7VLo
-         kCTV1DkCXdNcH6y3M41jFA018P94ybVlpfHXkV047ShinzMGBKdBd2v8gmKBbCDenTIWuWArWIHevS
-         3pv+DjvhH4MO8H+iz3hJUipXYM7N6WaOVsi1rTOc77/+JTELtCpHeFdRd6XKQQCfokpp01iKkLgz5G
-         ddiCqJ5TtFmscdACO7HZgY70It3M+Mu6UNbtKNw5ppGVOjCJkuGRyJ/1vMlgt7AaBFCGY6rvZ8PJb/
-         eDT75u4i4JAXDibrdjxTfnEBVPesOBw==
-X-HalOne-Cookie: 2816d18605ed82bcd4258802d7e8eb9d56193e05
-X-HalOne-ID: 92fca5d1-147d-11eb-bb75-d0431ea8bb10
-Received: from [192.168.0.126] (h-131-138.a357.priv.bahnhof.se [81.170.131.138])
-        by mailrelay4.pub.mailoutpod1-cph3.one.com (Halon) with ESMTPSA
-        id 92fca5d1-147d-11eb-bb75-d0431ea8bb10;
-        Thu, 22 Oct 2020 15:45:16 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 17:45:11 +0200 (GMT+02:00)
-From:   A L <mail@lechevalier.se>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Message-ID: <c232b2.c086afce.17550fc4644@lechevalier.se>
-In-Reply-To: <20201022122949.GW2628@hirez.programming.kicks-ass.net>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <34115486.YmRjPRKJaA@kreacher> <20201022120213.GG2611@hirez.programming.kicks-ass.net> <1790766.jaFeG3T87Z@kreacher> <20201022122949.GW2628@hirez.programming.kicks-ass.net>
-Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle
- core
+        Thu, 22 Oct 2020 12:06:06 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kVd6I-0001B5-5w; Thu, 22 Oct 2020 12:06:02 -0400
+Message-ID: <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+From:   Rik van Riel <riel@surriel.com>
+To:     Michal Hocko <mhocko@suse.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Date:   Thu, 22 Oct 2020 12:06:01 -0400
+In-Reply-To: <20201022155022.GO23790@dhcp22.suse.cz>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+         <20201022081532.GJ23790@dhcp22.suse.cz>
+         <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
+         <20201022155022.GO23790@dhcp22.suse.cz>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-wvz+2MOzMn/WApU4E/BN"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: quoted-printable
-X-Mailer: R2Mail2
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--=-wvz+2MOzMn/WApU4E/BN
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
----- From: Peter Zijlstra <peterz@infradead.org> -- Sent: 2020-10-22 - 14:2=
-9 ----
-
-> On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
->> > However I do want to retire ondemand, conservative and also very much
->> > intel_pstate/active mode.
->>=20
->> I agree in general, but IMO it would not be prudent to do that without m=
-aking
->> schedutil provide the same level of performance in all of the relevant u=
-se
->> cases.
+On Thu, 2020-10-22 at 17:50 +0200, Michal Hocko wrote:
+> On Thu 22-10-20 09:25:21, Rik van Riel wrote:
+> > On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
+> > > On Wed 21-10-20 23:48:46, Rik van Riel wrote:
+> > > >=20
+> > > > diff --git a/mm/shmem.c b/mm/shmem.c
+> > > > index 537c137698f8..d1290eb508e5 100644
+> > > > --- a/mm/shmem.c
+> > > > +++ b/mm/shmem.c
+> > > > @@ -1545,8 +1545,11 @@ static struct page
+> > > > *shmem_alloc_hugepage(gfp_t gfp,
+> > > >  		return NULL;
+> > > > =20
+> > > >  	shmem_pseudo_vma_init(&pvma, info, hindex);
+> > > > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY
+> > > > |
+> > > > __GFP_NOWARN,
+> > > > -			HPAGE_PMD_ORDER, &pvma, 0,
+> > > > numa_node_id(),
+> > > > true);
+> > > > +	/* Limit the gfp mask according to THP configuration.
+> > > > */
+> > > > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+> > >=20
+> > > What is the reason for these when alloc_hugepage_direct_gfpmask
+> > > provides
+> > > the full mask?
+> >=20
+> > The mapping_gfp_mask for the shmem file might have additional
+> > restrictions above and beyond the gfp mask returned by
+> > alloc_hugepage_direct_gfpmask, and I am not sure we should just
+> > ignore the mapping_gfp_mask.
 >=20
-> Agreed; I though to have understood we were there already.
+> No, we shouldn't. But I do not see why you should be adding the above
+> set of flags on top.
 
-Hi,=20
+Because THP allocations are higher order and optimistic,
+and we want them to:
+1) be annotated as compound allocations
+2) fail (and fall back to 4kB allocations) when they cannot
+   be easily satisfied, and
+3) not create a spew of allocation failure backtraces on
+   the (serial) console when these THP allocations fail
 
+> > That is why this patch takes the union of both gfp masks.
+> >=20
+> > However, digging into things more, it looks like shmem inodes
+> > always have the mapping gfp mask set to GFP_HIGHUSER_MOVABLE,
+> > and it is never changed, so simply using the output from
+> > alloc_hugepage_direct_gfpmask should be fine.
+> >=20
+> > I can do the patch either way. Just let me know what you prefer.
+>=20
+> I would just and the given gfp with alloc_hugepage_direct_gfpmask
 
-Currently schedutil does not populate all stats like ondemand does, which c=
-an be a problem for some monitoring software.=20
+That would miss the three things we definitely want
+from above.
 
-On my AMD 3000G CPU with kernel-5.9.1:
+--=20
+All Rights Reversed.
 
+--=-wvz+2MOzMn/WApU4E/BN
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
 
-grep. /sys/devices/system/cpu/cpufreq/policy0/stats/*
+-----BEGIN PGP SIGNATURE-----
 
-With ondemand:
-time_in_state:3900000 145179
-time_in_state:1600000 9588482
-total_trans:177565
-trans_table:   From  :    To
-trans_table:         :   3900000   1600000
-trans_table:  3900000:         0     88783
-trans_table:  1600000:     88782         0
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RrekACgkQznnekoTE
+3oNChQf/UY8pCMckiHFSU+R6OCOYkOQNWfU+qtKY18MVaPiqBOKsZ7F6rdDmyeUg
+ZlJxLSo8R0lz6Fnk2RRU4A0L8zQCaVVQjXw/XQTeb6e+6SP7uWczXiCuezzxnpxO
+S49OLYoK47qVbp/FI6yEesOFHE3dh0k4WQXvbRwI+Z63p7HB99Yw/hFo9VD0BCzx
+Ja+S3E0nakrTsobwTtAVBfi3xRabUN901EaL9C0khrW2hQcf1f2tV85d9oQTvrT8
+WDjBgeoxIRhpbFdv2X9+xymGhcwYk43DEL3RGBOYKhov0uovA50dVW5WnjtiXfhy
+NsZ4nffWqm4LmVUZFTBKfm/IxAsJZw==
+=S5Ks
+-----END PGP SIGNATURE-----
 
-With schedutil only two file exists:
-reset:<empty>
-total_trans:216609=20
-
-
-I'd really like to have these stats populated with schedutil, if that's pos=
-sible.
-
-Thanks.=20
+--=-wvz+2MOzMn/WApU4E/BN--
 
