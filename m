@@ -2,107 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 34F082967B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:43:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 662512967BA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:49:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373456AbgJVXnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 19:43:05 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11057 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373448AbgJVXmt (ORCPT
+        id S373529AbgJVXti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 19:49:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35202 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373518AbgJVXth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 19:42:49 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9218c90001>; Thu, 22 Oct 2020 16:42:01 -0700
-Received: from [10.2.173.3] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 22 Oct
- 2020 23:42:48 +0000
-From:   Zi Yan <ziy@nvidia.com>
-To:     Roman Gushchin <guro@fb.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH v1 0/2] mm: cma: introduce a non-blocking version of
- cma_release()
-Date:   Thu, 22 Oct 2020 19:42:45 -0400
-X-Mailer: MailMate (1.13.2r5673)
-Message-ID: <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
-In-Reply-To: <20201022225308.2927890-1-guro@fb.com>
-References: <20201022225308.2927890-1-guro@fb.com>
+        Thu, 22 Oct 2020 19:49:37 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EEEC4C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:49:36 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id c15so4927091ejs.0
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:49:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lZlkuWdQsWCC+a50v77gxrEMTeODSOjQWFOP4UJJDnk=;
+        b=cUh4yK+PBHMfvd0jB2OsQ/bbtVKzuZXCL7HCSyczFYL0WDzRBvZVm9aGeWWIrYr1bV
+         eQsOXOM/9NK6ZpiQfmHlPRe4enJaYE4/D8F89jSu64rneyt74YTf/zmuRNDcncLY9PbV
+         vox7spklRgKMSQvRa+Z12H1g1wjSNh7DosrlU=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lZlkuWdQsWCC+a50v77gxrEMTeODSOjQWFOP4UJJDnk=;
+        b=FlZkSJo6/H4XHuqA7pF+xb+49qhpuU6zaqFMxB513nGhwgDZQAp9SmYtMXevkpQByn
+         Cw4kmd20sSxCO4YonBFLgB8lzsQCNqO7EaB9i6b9trtQIVutXIGrJF9apCwt281zNT1r
+         qn/K4jOvigu6gxHblNfMKywjjtPzBdp5gcgUf/sxB3CzDLAEOkU8Y8i0lnNaKFTqMt5l
+         YASxLsQQLisyJUxVSqTMX6j0viiqYwHeWTzE68pdnEWDHsR5zfSxs2T8Oj2GJCaJriln
+         6HO1twMvmo9DZ0oimkSY83HqkBPsqVpqCn3rTL/OCzxSo6jr4he2UdTyXZPTxgCWkEyZ
+         A30A==
+X-Gm-Message-State: AOAM531KtPz1sUd9AtMu2Nhy53ORfVLhCONt4wBwi8a/CE2aI5CVQer8
+        MBq4UHy6T0VWx8TTE2NIrUVm9sWHWNCWuA==
+X-Google-Smtp-Source: ABdhPJxMT80Y0WTA493Xo+np+W/lA3IQHSBMMJ3l82AWz9rwf+WNG4p4JBzeEBZCXuOcUQOOOCS77Q==
+X-Received: by 2002:a17:906:1f08:: with SMTP id w8mr4638746ejj.181.1603410575432;
+        Thu, 22 Oct 2020 16:49:35 -0700 (PDT)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id i4sm56729edq.12.2020.10.22.16.49.35
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 16:49:35 -0700 (PDT)
+Received: by mail-ej1-f54.google.com with SMTP id a3so4878369ejy.11
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:49:35 -0700 (PDT)
+X-Received: by 2002:a2e:8815:: with SMTP id x21mr2045832ljh.312.1603410225256;
+ Thu, 22 Oct 2020 16:43:45 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed;
-        boundary="=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=";
-        micalg=pgp-sha512; protocol="application/pgp-signature"
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603410121; bh=BQ1JtoBLX9iPDNRiHWm88Fv3CTmOF38m/ARKNeF1qhc=;
-        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
-         References:MIME-Version:Content-Type:X-Originating-IP:
-         X-ClientProxiedBy;
-        b=SZeICWpuZP8ssL95rNG0RAfL+IvAfU1lU+TXYjhwBvCkxJGXY2jLvBk+QzlAeFVpL
-         rehN7YSvM0IUIVCtUITidllzkSMuZJeMZwo/ucDfquOGPrxKTatvCW9Tg+UYGEYMFS
-         KqBVZPscUfQWjxifxmGA52v/EUK40sNI/uagmU2VukFY4l5jiqk4j+g2hku4yM6wAm
-         7dZRCeSmBv96fctLa6XXDmRhwOTf8lcacE7VWRDpFQad1R7vWtpNKEd940w7qzbGa9
-         p09dgH4X8E4Qj57Oup1uAu/drt9NWDic5m2VS9MqAwLgHhjDhEyIpZjULCqmw7TBW7
-         scRMl28O82Eug==
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com> <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+In-Reply-To: <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 22 Oct 2020 16:43:29 -0700
+X-Gmail-Original-Message-ID: <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+Message-ID: <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
+ 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Dmitry Vyukov <dvyukov@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On 22 Oct 2020, at 18:53, Roman Gushchin wrote:
-
-> This small patchset introduces a non-blocking version of cma_release()
-> and simplifies the code in hugetlbfs, where previously we had to
-> temporarily drop hugetlb_lock around the cma_release() call.
+On Thu, Oct 22, 2020 at 1:55 PM Naresh Kamboju
+<naresh.kamboju@linaro.org> wrote:
 >
-> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
-> THP under a memory pressure requires a cma_release() call. If it's
+> The bad commit points to,
+>
+> commit d55564cfc222326e944893eff0c4118353e349ec
+> x86: Make __put_user() generate an out-of-line call
+>
+> I have reverted this single patch and confirmed the reported
+> problem is not seen anymore.
 
-Thanks for the patch. But during 1GB THP split, we only clear
-the bitmaps without releasing the pages. Also in cma_release_nowait(),
-the first page in the allocated CMA region is reused to store
-struct cma_clear_bitmap_work, but the same method cannot be used
-during THP split, since the first page is still in-use. We might
-need to allocate some new memory for struct cma_clear_bitmap_work,
-which might not be successful under memory pressure. Any suggestion
-on where to store struct cma_clear_bitmap_work when I only want to
-clear bitmap without releasing the pages?
+Thanks. Very funky, but thanks. I've been running that commit on my
+machine for over half a year, and it still looks "trivially correct"
+to me, but let me go look at it one more time. Can't argue with a
+reliable bisect and revert..
 
-Thanks.
-
-=E2=80=94
-Best Regards,
-Yan Zi
-
---=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+SGPUPHHppeUBudmlk
-aWEuY29tAAoJEJ2yUfNrYfqKKwwP/3PFE+jf79qDZDHPvFsnYevRicOlgcouKKF/
-EEoMbvdcy9pL+zjLeb0Bd61SpwHumiX4kimgQmkY5ZU2VybJODexj1YJtNeM45oR
-eJ9iyzRhEczyPYhk0IBX8/tu/0wRLCoBtCMEmRuXPPQ5EptZEo9//s/kee1T6R9C
-2YlVd3e1znXjnUtTjgE4lo/jj0dlos4Uf4j9HuiGyjB6z0HekIKgpGoKp3TJXgdW
-H3dRu9bG/mkfk1/AeXl3JKV6BFXZTkE+pM9Qyz2MpATphcXoJ/84ZkA9CJWNVrsE
-ktc9TnuntzSvml8sePdzsFdVoNq7mxuGJCrjoXgyyimRbUkrr2EFWBYDw0OQJyR6
-oowEhXYpLYI1wiftdLUW+EyfUFyTTuEIE9/J0neb3qXzln3lYgsNYi08kCgM7Tha
-p4JJKqOK05HhDxmnpdingU8p/BHNGKPW8c17dm2e+Ec7pVfc2dnXx4cJ1zpkUQTh
-fXRMbZic8VeUslb+OyZ0aFsm6uvUHvApBoH58l36mmmtZb+0518xwb1EtUXy4Tlf
-ZGGLscqkvBtgZALS3XaO/UHiQoe97kQ23QY+2QRFJWpDs4xDIXG/tTHqDkBu1QCY
-PSm708gUgSftlhkErVNhHMBIRTe/uI94w+wUX+8u0HrrnlXn2NogbV5IEk76vQfA
-OrGx4Qtt
-=91mg
------END PGP SIGNATURE-----
-
---=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=--
+            Linus
