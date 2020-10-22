@@ -2,118 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924C2295C5F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:04:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 671A6295C65
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:05:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896289AbgJVKEV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:04:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48710 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896273AbgJVKEU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:04:20 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2DD4BC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:04:20 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d24so1505356lfa.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:04:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v+g60jSFAWmJk25t84LrgkacnZZF5EGyn0T0qZYVJPQ=;
-        b=denJkyKo92QmJssuyfNHfRh0bkOUOm5JqGz3HF1V9AggK73d8uBn1SVUc6JwVPJT3t
-         CZZH2hDr8ZvCnvN5OuDbmntXCPNXzvk9S9X0CIc0r3jl31ctji8I/Jnzw+Cjgombxodf
-         pJ+LcpOpCw+4LSzfK7fIJbztKe2RblaEqbo6uG6Qil0PDVeAIo2/vyKdke/9/hOHob2R
-         zdikt4Q9Rxzuw+JOmRY1Wvj//l5kpKiNlCk/sDoUMLkG+J2OSKzstDfkBdYN9xoiAxI8
-         9j6/5ywhVoesc97aCeT5ocNG+WPTaZmjOxHhy0+4XEMwne8jJ7X6KQUlwHe0d4/R8uz8
-         vBlg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=v+g60jSFAWmJk25t84LrgkacnZZF5EGyn0T0qZYVJPQ=;
-        b=IVRFpd9KE8yCrnEVfKA7LFOm7A1EKfySfeCCs+C5djW1esNsHTGaVvmsw0bNNFQ4hO
-         L/Lp0UdAzuYwMh3oC0iRjc72GLOtG6Quy7qk4VcjVJyveqMn9gYnRoSnDEmPG5n41LB1
-         fFlwl4hz+pP/qJhSer1u1zONYv8IR0krbjDS//PxWnu4OUXPhjxqPclbZZsSr3WQauJe
-         odE4v19uBfJSDk2tlDS40yYA/kDfWlKIAYI+ymNGAzQyQFBFrsYDtQkEuWafSBrVsUcm
-         3xfY5R3PuFCzxTdrBsEzLYr4klH60ehYjQzhOVcf0FhjWr8cKvZcgKNfhvktwp3QByBH
-         Gx2A==
-X-Gm-Message-State: AOAM531fW6WnNh8WxMIB5Mowp+UlebIzoBua+Kngp8Qgq7yP4/UhHta8
-        9ICOj4Zxahg0Ch6GMSGXi/g=
-X-Google-Smtp-Source: ABdhPJwH9XOdDe0YlZMRGx22HEpQlzpQeIUZpjxkbSUK3SepOq2QRD5zb2keQbFEDVMtjNYwhkZhhw==
-X-Received: by 2002:a19:434f:: with SMTP id m15mr528494lfj.601.1603361058694;
-        Thu, 22 Oct 2020 03:04:18 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id m4sm227110ljg.137.2020.10.22.03.04.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 03:04:18 -0700 (PDT)
-Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
- systemd and glibc mprotect calls, causing service failures
-To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
-Cc:     Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>,
-        Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Dave Martin <dave.martin@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022071812.GA324655@gardel-login>
- <87sga6snjn.fsf@oldenburg2.str.redhat.com>
- <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
- <20201022082912.GQ3819@arm.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <55b44a39-ab19-363e-3703-9bf4e7d75f68@gmail.com>
-Date:   Thu, 22 Oct 2020 13:03:59 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2896305AbgJVKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:05:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896255AbgJVKFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:05:47 -0400
+Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B240F223BF;
+        Thu, 22 Oct 2020 10:05:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603361146;
+        bh=RdXIhAzgvdf9lHDSgJdqMCuGQDCw4QI27Nnn5KK2Imc=;
+        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
+        b=0XQMNgUwwyxLxH1zOkfveBbzM4nT9psGhxJ4v6GJes0/S8AKLHtj1RG2Y0wGMVbz/
+         o35PmcaIlFln9qZyLP8opXKrJFQFn0SOEWwMHzlZocxpQNC3h3ze8GKEsNEuAnbCBK
+         gYSfqKiAOjMZwVfNYyjeu0F/sSTG3JxfyGgCHH+U=
+Date:   Thu, 22 Oct 2020 12:05:41 +0200 (CEST)
+From:   Jiri Kosina <jikos@kernel.org>
+To:     Sandeep Singh <Sandeep.Singh@amd.com>
+cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
+        linux-input@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
+        jic23@kernel.org, linux-iio@vger.kernel.org, hdegoede@redhat.com,
+        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
+        mail@richard-neumann.de, m.felsch@pengutronix.de,
+        rdunlap@infradead.org, Shyam-sundar.S-k@amd.com
+Subject: Re: [PATCH v8 0/4] SFH: Add Support for AMD Sensor Fusion Hub
+In-Reply-To: <20201009200138.1847317-1-Sandeep.Singh@amd.com>
+Message-ID: <nycvar.YFH.7.76.2010221205110.18859@cbobk.fhfr.pm>
+References: <20201009200138.1847317-1-Sandeep.Singh@amd.com>
+User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
 MIME-Version: 1.0
-In-Reply-To: <20201022082912.GQ3819@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.2020 11.29, Szabolcs Nagy wrote:
-> The 10/22/2020 11:17, Topi Miettinen via Libc-alpha wrote:
->> On 22.10.2020 10.54, Florian Weimer wrote:
->>> * Lennart Poettering:
->>>> Did you see Topi's comments on the systemd issue?
->>>>
->>>> https://github.com/systemd/systemd/issues/17368#issuecomment-710485532
->>>>
->>>> I think I agree with this: it's a bit weird to alter the bits after
->>>> the fact. Can't glibc set up everything right from the begining? That
->>>> would keep both concepts working.
->>>
->>> The dynamic loader has to process the LOAD segments to get to the ELF
->>> note that says to enable BTI.  Maybe we could do a first pass and load
->>> only the segments that cover notes.  But that requires lots of changes
->>> to generic code in the loader.
->>
->> What if the loader always enabled BTI for PROT_EXEC pages, but then when
->> discovering that this was a mistake, mprotect() the pages without BTI? Then
->> both BTI and MDWX would work and the penalty of not getting MDWX would fall
->> to non-BTI programs. What's the expected proportion of BTI enabled code vs.
->> disabled in the future, is it perhaps expected that a distro would enable
->> the flag globally so eventually only a few legacy programs might be
->> unprotected?
+On Sat, 10 Oct 2020, Sandeep Singh wrote:
+
+> From: Sandeep Singh <sandeep.singh@amd.com>
 > 
-> i thought mprotect(PROT_EXEC) would get filtered
-> with or without bti, is that not the case?
+> AMD SFH(Sensor Fusion Hub) is HID based driver.SFH FW is part of MP2
+> processor (MP2 which is an ARM core connected to x86 for processing 
+> sensor data) and it runs on MP2 where in the driver resides on X86.
+> The driver functionalities are divided into three parts:-
+> 
+> 1: amd-mp2-pcie:- This part of the module will communicate with MP2
+> 		  firmware. MP2 which is exposed as a PCI device to the 
+> 		  X86, uses mailboxes to talk to MP2 firmware to 
+> 		  send/receive commands.
+> 2: Client Layer:- This part of the driver will use DRAM  data and convert
+>                   the  data into HID format based on HID reports.
+> 3: Transport layer :- This part of the driver the will communicate with HID
+>                   core.Communication between devices and HID core is
+>                   mostly done via HID reports
+> 
+> In terms of architecture, it resembles like ISH (Intel Integrated Sensor
+> Hub). However the major difference is all the hid reports are generated
+> as part of the kernel driver.
+> 
+> AMD SFH is integrated as a part of SoC, starting from 17h family of
+> processors. The solution is working well on several OEM products.
+> AMD SFH uses HID over PCIe bus.
+> 
+> Changes since v1:
+>         -> Fix auto build test warnings
+>         -> Fix smatch warnings "possible memory leak" -Reported by Dan
+> carpenter
+> 
+> Links of the review comments for v1:
+>         [1] https://patchwork.kernel.org/patch/11325163/
+>         [2] https://patchwork.kernel.org/patch/11325167/
+>         [3] https://patchwork.kernel.org/patch/11325171/
+>         [4] https://patchwork.kernel.org/patch/11325187/
+> 
+> Changes since v2:
+> 	-> Debugfs divided into another patch
+>         -> Fix some cosmetic changes
+>         -> Fix for review comments
+>            Reported and Suggested by:-  Srinivas Pandruvada
+> 
+> Links of the review comments for v2:
+>         [1] https://patchwork.kernel.org/patch/11355491/
+>         [2] https://patchwork.kernel.org/patch/11355495/
+>         [3] https://patchwork.kernel.org/patch/11355499/
+>         [4] https://patchwork.kernel.org/patch/11355503/
+> 
+> Changes since v3:
+>         -> Removed debugfs suggested by - Benjamin Tissoires
+> 
+> Links of the review comments for v3:
+>         [1] https://lkml.org/lkml/2020/2/11/1256
+>         [2] https://lkml.org/lkml/2020/2/11/1257
+>         [3] https://lkml.org/lkml/2020/2/11/1258
+>         [4] https://lkml.org/lkml/2020/2/11/1259
+>         [5] https://lkml.org/lkml/2020/2/11/1260
+> 
+> Changes since v4:
+>         -> use PCI managed calls.
+>         -> use kernel APIs
+> 
+> Links of the review comments for v4:
+>         [1] https://lkml.org/lkml/2020/2/26/1360
+>         [2] https://lkml.org/lkml/2020/2/26/1361
+>         [3] https://lkml.org/lkml/2020/2/26/1362
+>         [4] https://lkml.org/lkml/2020/2/26/1363
+>         [5] https://lkml.org/lkml/2020/2/27/1
+> Changes since v5
+>         -> Fix for review comments by: Andy Shevchenko
+>         -> Fix for indentations erros, NULL pointer,Redundant assignment
+>         -> Drop LOCs in many location
+>         -> Create as a single driver module instead of two modules.
+> 
+> Links of the review comments for v5:
+>         [1] https://lkml.org/lkml/2020/5/29/589
+>         [2] https://lkml.org/lkml/2020/5/29/590
+>         [3] https://lkml.org/lkml/2020/5/29/606
+>         [4] https://lkml.org/lkml/2020/5/29/632
+>         [5] https://lkml.org/lkml/2020/5/29/633
+> 
+> Changes since v6
+>         -> fix Kbuild warning "warning: ignoring return value of
+> 	   'pcim_enable_device',
+>         -> Removed select HID and add depends on HID
+> 
+> Links of the review comments for v6:
+>         [1] https://lkml.org/lkml/2020/8/9/58
+>         [2] https://lkml.org/lkml/2020/8/9/59
+>         [3] https://lkml.org/lkml/2020/8/9/125
+>         [4] https://lkml.org/lkml/2020/8/9/61
+>         [5] https://lkml.org/lkml/2020/8/9/91
+> 
+> Changes since v7
+>         -> Add Co-deveploed-by
+>         -> Build the Documentation
+>         -> Fix cosmatic changes
+>         -> Add init function inside probe function
+>         -> Use devm_add_action_or_reset() to avoids the remove()
+> 	   callback.
+> 
+> Links of the review comments for v7:
+>         [1] https://lkml.org/lkml/2020/8/10/1221
+>         [2] https://lkml.org/lkml/2020/8/10/1222
+>         [3] https://lkml.org/lkml/2020/8/10/1223
+>         [4] https://lkml.org/lkml/2020/8/10/1224
+>         [5] https://lkml.org/lkml/2020/8/10/1225
+> 
+> Sandeep Singh (4):
+>   SFH: Add maintainers and documentation for AMD SFH based on HID
+>     framework
+>   SFH: PCIe driver to add support of AMD sensor fusion hub
+>   SFH:Transport Driver to add support of AMD Sensor Fusion Hub (SFH)
+>   SFH: Create HID report to Enable support of AMD sensor fusion Hub
+>     (SFH)
 
-It would be filtered, but the idea is that with modern binaries this 
-would not happen since the pages would be mapped with mmap(,, PROT_EXEC 
-| PROT_BTI,,) which is OK for purposes MDWX. The loader would have to 
-use mprotect(PROT_EXEC) to get rid of PROT_BTI only for the legacy binaries.
+I have now applied the series to hid.git#for-5.11/amd-sfh-hid. Thanks for 
+all the efforts in tidying this up,
 
--Topi
+-- 
+Jiri Kosina
+SUSE Labs
+
