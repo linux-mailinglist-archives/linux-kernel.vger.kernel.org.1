@@ -2,102 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 62127295948
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:34:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 604A629594F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:36:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508587AbgJVHeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:34:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:59490 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506555AbgJVHeO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:34:14 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id B6DC5B195;
-        Thu, 22 Oct 2020 07:34:12 +0000 (UTC)
-Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
-To:     saeed.mirzamohammadi@oracle.com, linux-kernel@vger.kernel.org
-Cc:     linux-fbdev@vger.kernel.org, b.zolnierkie@samsung.com,
-        jani.nikula@intel.com, daniel.vetter@ffwll.ch,
-        gustavoars@kernel.org, dri-devel@lists.freedesktop.org,
-        akpm@linux-foundation.org, rppt@kernel.org
-References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
-Date:   Thu, 22 Oct 2020 09:34:11 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2508669AbgJVHgJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:36:09 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54092 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506548AbgJVHgJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:36:09 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7C73CC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:36:09 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVV8W-00067l-1a; Thu, 22 Oct 2020 09:35:48 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVV8V-0007nV-B2; Thu, 22 Oct 2020 09:35:47 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: [PATCH v3 0/3] mainline LANMCU board
+Date:   Thu, 22 Oct 2020 09:35:42 +0200
+Message-Id: <20201022073545.29919-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-In-Reply-To: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+changes v3:
+- rename led-debug to led-0
+- rename bcrmf to wifi 
 
-On 22.10.20 01:57, saeed.mirzamohammadi@oracle.com wrote:
-> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> 
-> This patch fixes the issue due to:
-> 
-> [   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
-> [   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted 5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
-> [   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.5.1 01/01/2011
-> [   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
+changes v2:
+- add phy-handle
+- rename node to touchscreen@38
+- reorder reg and status properties
 
-BTW, if you run qemu with cirrus, there's also a DRM driver named
-cirrus.ko. Might be a better choice than the old fbdev driver. If you
-just care about qemu, but not the actual graphics device, take a look at
+Oleksij Rempel (3):
+  dt-bindings: vendor-prefixes: Add an entry for Van der Laan b.v.
+  dt-bindings: arm: fsl: add Van der Laan LANMCU board
+  ARM: dts: add Van der Laan LANMCU board
 
-  https://www.kraxel.org/blog/2014/10/qemu-using-cirrus-considered-harmful/
-
-Anyway, thanks for your patch.
-
-Best regards
-Thomas
-
-> 
-> The error happens when the pixels value is calculated before performing the sanity checks on bits_per_pixel.
-> A bits_per_pixel set to zero causes divide by zero error.
-> 
-> This patch moves the calculation after the sanity check.
-> 
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> ---
->  drivers/video/fbdev/cirrusfb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
-> index 15a9ee7cd734..a7749101b094 100644
-> --- a/drivers/video/fbdev/cirrusfb.c
-> +++ b/drivers/video/fbdev/cirrusfb.c
-> @@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
->  {
->  	int yres;
->  	/* memory size in pixels */
-> -	unsigned pixels = info->screen_size * 8 / var->bits_per_pixel;
-> +	unsigned int pixels;
->  	struct cirrusfb_info *cinfo = info->par;
->  
->  	switch (var->bits_per_pixel) {
-> @@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
->  		return -EINVAL;
->  	}
->  
-> +	pixels = info->screen_size * 8 / var->bits_per_pixel;
->  	if (var->xres_virtual < var->xres)
->  		var->xres_virtual = var->xres;
->  	/* use highest possible virtual resolution */
-> 
+ .../devicetree/bindings/arm/fsl.yaml          |   1 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm/boot/dts/Makefile                    |   1 +
+ arch/arm/boot/dts/imx6dl-lanmcu.dts           | 469 ++++++++++++++++++
+ 4 files changed, 473 insertions(+)
+ create mode 100644 arch/arm/boot/dts/imx6dl-lanmcu.dts
 
 -- 
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
+2.28.0
+
