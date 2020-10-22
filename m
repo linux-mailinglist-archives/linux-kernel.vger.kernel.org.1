@@ -2,104 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74C83295A7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:37:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3AFFB295A83
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:37:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509354AbgJVIhL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:37:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35314 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508190AbgJVIhK (ORCPT
+        id S2509368AbgJVIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:37:49 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46070 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508247AbgJVIhs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:37:10 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8319C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:37:10 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id h4so616677pjk.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:37:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=5RWcwuVAEJ6m7aRhJ9AG30CGxLsrprrPwDup3rzWGEA=;
-        b=R5+7/eYo6t4BYEgtqFWHviOWXF88X66wSpFfKf930qhzVPUQ8Uqp06pa2Fncrdjvmh
-         OE51QHUeLuQ/5cOZ51pDZSqil6TFWeJ1Eb7eFB0IK0/EjPzOEJ/HsSMPdzW0pViTJ+8D
-         MbLF6CHQ7Y9FEJU3KI8pH0JnBjU7iBQNRq2GETi7TWIqey73j/oG/sbAmQo6I9cKpGpj
-         DcsOt8NmpEbm+K/3ZvZJjABoUE3lIGFrvTn2ogiTSNm11Aw4w3BCrxiyme8Hzb5zEsGX
-         E/1zgm/RYrDCXx8tEXDhn2/rtXVsUOKLKG7+houhAnMaKHHb7pnGMF15CjG9sYwjJAG9
-         eKDw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=5RWcwuVAEJ6m7aRhJ9AG30CGxLsrprrPwDup3rzWGEA=;
-        b=OgV0NaEdkV9bKWVXK4zITJmcM/QbX7qIZTATsjg+ePWJr3NAlEY2fKNTPXiw10+V3I
-         bQ7MKFlgC6E0uq6cfhKcF6WvFjJyfJ0ObJ72AYGTuvrnlmxTYmHxlRGx1ntIkk4oankX
-         ApRqkYomai6vZbrYyCoobcyS1RO8h7kFdk54kpfBaOgD1/RJ9BzTFaCxbyMGMfZ6dVM7
-         jzPQ7TQ4cBtQNIsLW34zyCNhMO18gZjqcxLIS+z+KO0lXp751ohsaIjRcpTbsD9MalI5
-         wQfuSI9fXxczMnkgDLC4OeSRprbtp7jOqcgTKoFUrKmA8mjPQmPB6o0ZQ9sPVIKTKfze
-         NIww==
-X-Gm-Message-State: AOAM530n6ugsZW8K4+yH7XzCiYFBkNzxXf/rgvxDuMvvT9J9wGPa3QRX
-        6+6N/pDlbJqKhke606KtPQc=
-X-Google-Smtp-Source: ABdhPJwjqqcfqI8wb0f1tjMk3NV/mR4epXUFMXRNn5E+8rBWtuE9PO/O6wwTyWyOyYU7DA4Kzou4Ng==
-X-Received: by 2002:a17:902:7fcd:b029:d3:f037:d9dc with SMTP id t13-20020a1709027fcdb02900d3f037d9dcmr1407010plb.79.1603355830008;
-        Thu, 22 Oct 2020 01:37:10 -0700 (PDT)
-Received: from gmail.com ([2601:600:9b7f:872e:a655:30fb:7373:c762])
-        by smtp.gmail.com with ESMTPSA id q10sm1193525pjd.6.2020.10.22.01.37.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 01:37:09 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 01:36:44 -0700
-From:   Andrei Vagin <avagin@gmail.com>
-To:     Michael =?utf-8?B?V2Vpw58=?= <michael.weiss@aisec.fraunhofer.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>
-Subject: Re: [PATCH v4 0/3] time namespace aware system boot time
-Message-ID: <20201022083644.GA344600@gmail.com>
-References: <20201019195257.10728-1-michael.weiss@aisec.fraunhofer.de>
+        Thu, 22 Oct 2020 04:37:48 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603355866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QyrQSQmCRoE8e/yyUqmfECgKX4VgXOUeiqXGpq3mP/o=;
+        b=B99Knje7mrFwyx04a4DftGWbzUOcUu5Q2wD49824cq5FfoSS6yVttHCESYzlP4uy+Io29N
+        FF8KMUsdetdGVgt+iYV0r6eLMNEiVnt1fOXzX8h6Uxkx0tl1iC2TRQB+vR7UkmV+wXjUJ/
+        Hut1ewDzhQSVJNcC+6FNZdOrARtyNeBDoXLf2KnvpkZBm62uzIFHXgzZm6PPvHvLmXescC
+        Hp8SN2W0SYT0Wgwe1T+vtvWjPZ/DpOzsmzlju1PPdqrYbvsB72+wPQt/mz78FjPnQMGeoP
+        HmC9ZcYTWOd8nzEPIPAy/3GUV7d0AV2N0c5LGYr6+zI2oTObq79jpFnSYkGwKw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603355866;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=QyrQSQmCRoE8e/yyUqmfECgKX4VgXOUeiqXGpq3mP/o=;
+        b=SBL2SbiGQs74m8lQq8dx4auN2wtwVZkTfiXi6gnjnezfm5dpJdZhHv7gzNIyeeuhl0yb11
+        JAtMRK9rJNxqB+Cw==
+To:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org
+Cc:     Pingfan Liu <kernelfans@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
+        kexec@lists.infradead.org
+Subject: Re: [PATCH 0/3] warn and suppress irqflood
+In-Reply-To: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
+Date:   Thu, 22 Oct 2020 10:37:46 +0200
+Message-ID: <871rhq7j1h.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20201019195257.10728-1-michael.weiss@aisec.fraunhofer.de>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 09:52:54PM +0200, Michael Weiß wrote:
-> Time namespaces make it possible to virtualize time inside of
-> containers, e.g., it is feasible to reset the uptime of a container
-> to zero by setting the time namespace offset for boottime to the
-> negated current value of the CLOCK_BOOTTIME.
-> 
-> However, the boot time stamp provided by getboottime64() does not
-> take care of time namespaces. The resulting boot time stamp 'btime'
-> provided by /proc/stat does not show a plausible time stamp inside
-> the time namespace of a container.
-> 
-> We address this by shifting the value returned by getboottime64()
-> by subtracting the boottime offset of the time namespace.
-> (A selftest to check the expected /proc/stat 'btime' inside the
-> namespace is provided.)
-> 
-> Further, to avoid to show processes as time travelers inside of the
-> time namespace the boottime offset then needs to be added to the
-> start_boottime provided by the task_struct.
-> 
-> v4 Changes:
-> Avoid type conversions back and forth between timespec64 and ktime_t
-> in 'proc/stat.c' as suggested by Andrei.
-> Introduced timens_sub_boottime() in 'time_namespace.h' to provide
-> better coder readability/consistency.
-> 
+On Thu, Oct 22 2020 at 13:56, Pingfan Liu wrote:
+> I hit a irqflood bug on powerpc platform, and two years ago, on a x86 platform.
+> When the bug happens, the kernel is totally occupies by irq.  Currently, there
+> may be nothing or just soft lockup warning showed in console. It is better
+> to warn users with irq flood info.
+>
+> In the kdump case, the kernel can move on by suppressing the irq flood.
 
-Reviewed-by: Andrei Vagin <avagin@gmail.com>
+You're curing the symptom not the cause and the cure is just magic and
+can't work reliably.
+
+Where is that irq flood originated from and why is none of the
+mechanisms we have in place to shut it up working?
 
 Thanks,
-Andrei
+
+        tglx
+
+
+
+
