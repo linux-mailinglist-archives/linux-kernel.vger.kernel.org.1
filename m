@@ -2,129 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A87DC29658F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:58:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D405F296593
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370494AbgJVT6R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:58:17 -0400
-Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:9576 "EHLO
-        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370434AbgJVT6R (ORCPT
+        id S370505AbgJVUAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:00:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56444 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895997AbgJVT76 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:58:17 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f91e3fa0001>; Thu, 22 Oct 2020 12:56:42 -0700
-Received: from [10.2.54.36] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 22 Oct
- 2020 19:58:14 +0000
-Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
- access guest memory
-To:     Matthew Wilcox <willy@infradead.org>
-CC:     "Kirill A. Shutemov" <kirill@shutemov.name>,
-        Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        "Peter Zijlstra" <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        "Liran Alon" <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, <x86@kernel.org>,
-        <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
-        <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
- <c8b0405f-14ed-a1bb-3a91-586a30bdf39b@nvidia.com>
- <20201022114946.GR20115@casper.infradead.org>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <30ce6691-fd70-76a2-8b61-86d207c88713@nvidia.com>
-Date:   Thu, 22 Oct 2020 12:58:14 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Thu, 22 Oct 2020 15:59:58 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 58148C0613CE;
+        Thu, 22 Oct 2020 12:59:57 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id n9so1613543pgt.8;
+        Thu, 22 Oct 2020 12:59:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=NVYq2lxM8Jy8MOdpSgTfvMFC8iKFhaG2uSMStbk3rOM=;
+        b=Ho5+J2YZQpzQybBSezYK/SjOO6x0QGV1hrD0ATojFVVP8FF2ZpnaaEM2CF6sbePY0w
+         0d0Nu8qt2rAWEp80HKBqaBlRcUoCh6wRDuUh2UMX08txKc6a1xNTozKKBwMLgMCjHXy7
+         C4QzhWngh7dcMyJ0xJ2dhwieq5jZrAh5gnDpqpRZwqQUBJdsJOA4JJ2Xp3UpVeX0deAg
+         8wRZSAQHCaF+ryPr6tf9HRtcKNXS4RAQJhY8sD6S3W74NuPiol7IBykqNC7xIzFwNtDG
+         LjgjcabC0q6Yy2M5jeo0Cixw14T9lvi7cjBTs57q8vZ615i2lcQ7UjRlEjaKSkPpuAeK
+         mBiw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NVYq2lxM8Jy8MOdpSgTfvMFC8iKFhaG2uSMStbk3rOM=;
+        b=Rbc9m2CmOYpX23HyIJE2//G0cDni8ncPYRFtZ8NTa0//C3o+hZ2iq6QLzqQ1j/MgyQ
+         VVlbWqwpP36yLicZIAIw10EPShyOthgeeqYe/qbfDSPOxUNMzuXp99qKlNONCQHxs76c
+         oCO1M4gLpdyzjy9e4BRrTWY18PClu3euGndl9DHwS+NlTwezR2zEsYR/5Nl15iyerfHY
+         WnCy9CAPty6mfpFNAd0foNQae2PunVH1nWvrMrHsyGmsqI3xHLl4t0fdqJq1MVO+t9mf
+         J0cebeqL3mtj9W1+MCZR+NjsZNuouFL0WiHbgdgjwjhOi/vxDHERuXWqzy0wud3f02e5
+         9OcA==
+X-Gm-Message-State: AOAM530HbB5pezrQtVWLRPFdqa0lBmU68y8dQIwW4FdCM/+3YfIr01H1
+        3XQVqYk5fBpxwwrVgogLKArS+tw0/6q7eEhIHMM=
+X-Google-Smtp-Source: ABdhPJw8piBAPYmytYLQl19g1SSKv9sWzxuXax0G0rGPBeTLjPLOyTseYwLxr00lL4FORkf+Hc1/B6LSYS3kC1Efdmg=
+X-Received: by 2002:a17:90a:17ad:: with SMTP id q42mr4015604pja.36.1603396796881;
+ Thu, 22 Oct 2020 12:59:56 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201022114946.GR20115@casper.infradead.org>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603396602; bh=SDDfdPapwaAGPN6G5NGvPgR723v4Q3ngUYge890SCck=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=bs3xt+dzMIEc1iPoqfF/PiRE0RAm4lrjLAAOpczF8TnctMMyV4Q6U4C16Gw/BxU00
-         7D0s51rhGaNO1lWwWg1UNN5wmXuNlG2QNHfTbbZxkpe8Yd8/FwKxpdss1g1AZ4bReG
-         /Lg5LHvimXwF5n3bsNikgJ8lN6fbTTyz4NqL2mcGXn41IoQ2lmRaqx1bp+/171WoDZ
-         b+F+ihCsmrVAtPDqwRPIj0cNvYeQ1uMbGVK00N+kUXU/mdTBBViG6uWtt+N5kwf53P
-         xVAASH+PC4G9wiuXgn3Rf/c0FTJFfb0x1cK1SXN38pgZeEQwQth9jFXkRQj3NJUxOR
-         nMrdMYnlmyBbg==
+References: <20201022072814.91560-1-xie.he.0141@gmail.com> <CAJht_ENMQ3nZb1BOCyyVzJjBK87yk+E1p+Jv5UQuZ1+g1jK1cg@mail.gmail.com>
+ <20201022082239.2ae23264@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201022082239.2ae23264@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Xie He <xie.he.0141@gmail.com>
+Date:   Thu, 22 Oct 2020 12:59:45 -0700
+Message-ID: <CAJht_EM638CQDb5opnVxfQ81Z2U9hGZbnE581RFZrAQvenn+qQ@mail.gmail.com>
+Subject: Re: [PATCH net RFC] net: Clear IFF_TX_SKB_SHARING for all Ethernet
+ devices using skb_padto
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Linux Kernel Network Developers <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Neil Horman <nhorman@tuxdriver.com>,
+        John Fastabend <john.fastabend@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 4:49 AM, Matthew Wilcox wrote:
-> On Tue, Oct 20, 2020 at 01:25:59AM -0700, John Hubbard wrote:
->> Should copy_to_guest() use pin_user_pages_unlocked() instead of gup_unlocked?
->> We wrote a  "Case 5" in Documentation/core-api/pin_user_pages.rst, just for this
->> situation, I think:
->>
->>
->> CASE 5: Pinning in order to write to the data within the page
->> -------------------------------------------------------------
->> Even though neither DMA nor Direct IO is involved, just a simple case of "pin,
->> write to a page's data, unpin" can cause a problem. Case 5 may be considered a
->> superset of Case 1, plus Case 2, plus anything that invokes that pattern. In
->> other words, if the code is neither Case 1 nor Case 2, it may still require
->> FOLL_PIN, for patterns like this:
->>
->> Correct (uses FOLL_PIN calls):
->>      pin_user_pages()
->>      write to the data within the pages
->>      unpin_user_pages()
-> 
-> Case 5 is crap though.  That bug should have been fixed by getting
-> the locking right.  ie:
-> 
-> 	get_user_pages_fast();
-> 	lock_page();
-> 	kmap();
-> 	set_bit();
-> 	kunmap();
-> 	set_page_dirty()
-> 	unlock_page();
-> 
-> I should have vetoed that patch at the time, but I was busy with other things.
-> 
+On Thu, Oct 22, 2020 at 8:22 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> Are most of these drivers using skb_padto()? Is that the reason they
+> can't be sharing the SKB?
 
-It does seem like lock_page() is better, for now at least, because it
-forces the kind of synchronization with file system writeback that is
-still yet to be implemented for pin_user_pages().
+Yes, I think if a driver calls skb_pad / skb_padto / skb_put_padto /
+eth_skb_pad, the driver can't accept shared skbs because it may modify
+the skbs.
 
-Long term though, Case 5 provides an alternative way to do this
-pattern--without using lock_page(). Also, note that Case 5, *in
-general*, need not be done page-at-a-time, unlike the lock_page()
-approach. Therefore, Case 5 might potentially help at some call sites,
-either for deadlock avoidance or performance improvements.
+> I think the IFF_TX_SKB_SHARING flag is only used by pktgen, so perhaps
+> we can make sure pktgen doesn't generate skbs < dev->min_mtu, and then
+> the drivers won't pad?
 
-In other words, once the other half of the pin_user_pages() plan is
-implemented, either of these approaches should work.
+Yes, I see a lot of drivers just want to pad the skb to ETH_ZLEN, or
+just call eth_skb_pad. In this case, requiring the shared skb to be at
+least dev->min_mtu long can solve the problem for these drivers.
 
-Or, are you thinking that there is never a situation in which Case 5 is
-valid?
+But I also see some drivers that want to pad the skb to a strange
+length, and don't set their special min_mtu to match this length. For
+example:
 
+drivers/net/ethernet/packetengines/yellowfin.c wants to pad the skb to
+a dynamically calculated value.
 
-thanks,
--- 
-John Hubbard
-NVIDIA
+drivers/net/ethernet/ti/cpsw.c, cpsw_new.c and tlan.c want to pad the
+skb to macro defined values.
+
+drivers/net/ethernet/intel/iavf/iavf_txrx.c wants to pad the skb to
+IAVF_MIN_TX_LEN (17).
+
+drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c wants to pad the skb to 17.
+
+Another solution I can think of is to add a "skb_shared" check to
+"__skb_pad", so that if __skb_pad encounters a shared skb, it just
+returns an error. The driver would think this is a memory allocation
+failure. This way we can ensure shared skbs are not modified.
