@@ -2,128 +2,231 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE09F2959FD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:17:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 70BA6295A03
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:19:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894809AbgJVIRk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:17:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894673AbgJVIRj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:17:39 -0400
-Received: from mail-lf1-x130.google.com (mail-lf1-x130.google.com [IPv6:2a00:1450:4864:20::130])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5402AC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:17:39 -0700 (PDT)
-Received: by mail-lf1-x130.google.com with SMTP id b1so1125678lfp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:17:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=8HYVfJFH+cmeus6VJeMKUXXnaDsK6MzsFkED7ZSnMuM=;
-        b=lo1gjkqPQq/3i6U4FJ0Ro4myZDcbR+atFTQwMG5g8ALJulSqy0fO4Z+1pIH0jHVGL4
-         Ql/X1AJpnZs6z1fTSn6a5qgG0nNMxOV6MzXR/EEolZmLZa1NoBOTeh/0kiuD9YoEa4Vv
-         hmk7io9opZfIapHfa8wlfROEIqpr6qwwjJNx0qtTeITK8kDg2ixjuZJ+vpQ5oKgpfyNR
-         94ss/pu34Pvn+rHzaERpFpUp86NeswuianA34kcK+0/34JVyzKmw8oVIFCpS8Mb/yHEn
-         Tnzdjb7I0l8m9wehOU5U1Vfe3peSgeUOOxEarCoovs9N0kh+YkL6iI2N5h5AdFpoo88O
-         VwOQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=8HYVfJFH+cmeus6VJeMKUXXnaDsK6MzsFkED7ZSnMuM=;
-        b=YWyaxaNal6fyrWpTnwpkdkkWp15mES3UkbEHgXxRFGIZ3t2ckix3mtItxHwLYma/w7
-         P6KnYZkO0kVni6dSfixy9ExIB0M8i2J+LIBsAVNISJhETPguUeD/ydUeXWqXr2WBUeUY
-         SQ7eaqq8d79S4sHjAbaBhFxA0QAP+sprqCVSgN/57u85Qycs1FiA0AfmIDq2awIBcw9H
-         g5hbYze83eevQex9kRTWIf1HdW+Fykc72+F4ytkQ6apj4UTAhkWTaexVwm7BR9jmXCW9
-         F2lWeuNDQ9+87qiMa1gj2s+VlmrU1iBYRdRcMUVIY92cQt+KzmnepyscAEMFMcCpzCse
-         2avA==
-X-Gm-Message-State: AOAM532+igoIMq3G8caCe3ep6l0+M5k/juSjSkRoELM6F0C3NrzdeLiT
-        pWseIJB8Yn5uJFoog9HK5Ec=
-X-Google-Smtp-Source: ABdhPJwWZL3I0YCdmzYXRbsvsREOh3P1rTMxFf9qvQvDcdbABeRyQT7+/UgfusPG41cJSHDVowERSQ==
-X-Received: by 2002:ac2:521a:: with SMTP id a26mr422161lfl.10.1603354657804;
-        Thu, 22 Oct 2020 01:17:37 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id r5sm182350ljm.77.2020.10.22.01.17.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 01:17:37 -0700 (PDT)
-Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
- systemd and glibc mprotect calls, causing service failures
-To:     Florian Weimer <fweimer@redhat.com>,
-        Lennart Poettering <mzxreary@0pointer.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Dave Martin <dave.martin@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022071812.GA324655@gardel-login>
- <87sga6snjn.fsf@oldenburg2.str.redhat.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
-Date:   Thu, 22 Oct 2020 11:17:19 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2894867AbgJVITd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:19:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53814 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2894839AbgJVITc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 04:19:32 -0400
+Received: from coco.lan (ip5f5ad5dd.dynamic.kabel-deutschland.de [95.90.213.221])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 68BD221481;
+        Thu, 22 Oct 2020 08:19:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603354771;
+        bh=8wUI/nVanrbqAQdr5Ja9X8qzvPrNhabfUxp65ZfsmIM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=birRuSq4ZE5pThNYmPqQ/63D1FneC/X/R49X+xROkRiJxvb/3WNAk7f/Jyjk/NE3X
+         KW5JGL7Q6bJsQ0HzZ5d4YAc/uGhFRuSfZeLvlvLIB+hsfT/QOfRtP5/G/fKw67S0Qi
+         b3tL6BApb9/qMrV8THB9VdbgHjqx6VfzeErBsDlM=
+Date:   Thu, 22 Oct 2020 10:19:24 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc:     Ivan Zaentsev <ivan.zaentsev@wirenboard.ru>,
+        Evgeniy Polyakov <zbr@ioremap.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Akira Shimahara <akira215corp@gmail.com>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Evgeny Boger <boger@wirenboard.com>
+Subject: Re: Adding ABI to htmldocs - Was: Re: [PATCH 2/2] w1: w1_therm: Add
+ support for GXCAS GX20MH01 device.
+Message-ID: <20201022101924.3378345f@coco.lan>
+In-Reply-To: <20201021165819.GA1361645@kroah.com>
+References: <20200904160004.87710-1-ivan.zaentsev@wirenboard.ru>
+        <20200904160004.87710-2-ivan.zaentsev@wirenboard.ru>
+        <20201006151915.77d044a4@coco.lan>
+        <1561045277.20201007103227@wirenboard.ru>
+        <20201007105702.67988846@coco.lan>
+        <20201007090619.GA613204@kroah.com>
+        <20201007130549.6ca57af0@coco.lan>
+        <20201007114359.GA2167293@kroah.com>
+        <20201007135934.4b6e598e@coco.lan>
+        <20201021182843.522dd7e7@coco.lan>
+        <20201021165819.GA1361645@kroah.com>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <87sga6snjn.fsf@oldenburg2.str.redhat.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.2020 10.54, Florian Weimer wrote:
-> * Lennart Poettering:
-> 
->> On Mi, 21.10.20 22:44, Jeremy Linton (jeremy.linton@arm.com) wrote:
->>
->>> Hi,
->>>
->>> There is a problem with glibc+systemd on BTI enabled systems. Systemd
->>> has a service flag "MemoryDenyWriteExecute" which uses seccomp to deny
->>> PROT_EXEC changes. Glibc enables BTI only on segments which are marked as
->>> being BTI compatible by calling mprotect PROT_EXEC|PROT_BTI. That call is
->>> caught by the seccomp filter, resulting in service failures.
->>>
->>> So, at the moment one has to pick either denying PROT_EXEC changes, or BTI.
->>> This is obviously not desirable.
->>>
->>> Various changes have been suggested, replacing the mprotect with mmap calls
->>> having PROT_BTI set on the original mapping, re-mmapping the segments,
->>> implying PROT_EXEC on mprotect PROT_BTI calls when VM_EXEC is already set,
->>> and various modification to seccomp to allow particular mprotect cases to
->>> bypass the filters. In each case there seems to be an undesirable attribute
->>> to the solution.
->>>
->>> So, whats the best solution?
->>
->> Did you see Topi's comments on the systemd issue?
->>
->> https://github.com/systemd/systemd/issues/17368#issuecomment-710485532
->>
->> I think I agree with this: it's a bit weird to alter the bits after
->> the fact. Can't glibc set up everything right from the begining? That
->> would keep both concepts working.
-> 
-> The dynamic loader has to process the LOAD segments to get to the ELF
-> note that says to enable BTI.  Maybe we could do a first pass and load
-> only the segments that cover notes.  But that requires lots of changes
-> to generic code in the loader.
+Em Wed, 21 Oct 2020 18:58:19 +0200
+Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
 
-What if the loader always enabled BTI for PROT_EXEC pages, but then when 
-discovering that this was a mistake, mprotect() the pages without BTI? 
-Then both BTI and MDWX would work and the penalty of not getting MDWX 
-would fall to non-BTI programs. What's the expected proportion of BTI 
-enabled code vs. disabled in the future, is it perhaps expected that a 
-distro would enable the flag globally so eventually only a few legacy 
-programs might be unprotected?
+> On Wed, Oct 21, 2020 at 06:28:43PM +0200, Mauro Carvalho Chehab wrote:
+> > Hi greg,
+> > 
+> > Em Wed, 7 Oct 2020 13:59:34 +0200
+> > Mauro Carvalho Chehab <mchehab+huawei@kernel.org> escreveu:
+> > 
+> > > Em Wed, 7 Oct 2020 13:43:59 +0200
+> > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > 
+> > > > On Wed, Oct 07, 2020 at 01:05:49PM +0200, Mauro Carvalho Chehab wrote:  
+> > > > > Em Wed, 7 Oct 2020 11:06:19 +0200
+> > > > > Greg Kroah-Hartman <gregkh@linuxfoundation.org> escreveu:
+> > > > >     
+> > > > > > On Wed, Oct 07, 2020 at 10:57:02AM +0200, Mauro Carvalho Chehab wrote:    
+> > > > > > > Em Wed, 7 Oct 2020 10:32:27 +0300
+> > > > > > > Ivan Zaentsev <ivan.zaentsev@wirenboard.ru> escreveu:
+> > > > > > >       
+> > > > > > > > Tuesday, October 6, 2020, 4:19:15 PM, Mauro Carvalho Chehab wrote:
+> > > > > > > >       
+> > > > > > > > >> diff --git a/Documentation/w1/slaves/w1_therm.rst b/Documentation/w1/slaves/w1_therm.rst
+> > > > > > > > >> index f1148181f53e..00376501a5ef 100644
+> > > > > > > > >> --- a/Documentation/w1/slaves/w1_therm.rst
+> > > > > > > > >> +++ b/Documentation/w1/slaves/w1_therm.rst        
+> > > > > > > >       
+> > > > > > > > >>  
+> > > > > > > > >> @@ -130,4 +131,12 @@ conversion and temperature reads 85.00 (powerup value) or 127.94 (insufficient
+> > > > > > > > >>  power), the driver returns a conversion error. Bit mask ``2`` enables poll for
+> > > > > > > > >>  conversion completion (normal power only) by generating read cycles on the bus
+> > > > > > > > >>  after conversion starts. In parasite power mode this feature is not available.
+> > > > > > > > >> -Feature bit masks may be combined (OR).
+> > > > > > > > >> +Feature bit masks may be combined (OR). See accompanying sysfs documentation:
+> > > > > > > > >> +:ref:`Documentation/w1/slaves/w1_therm.rst <w1_therm>`
+> > > > > > > > >> +        
+> > > > > > > >       
+> > > > > > > > > As warned by Sphinx, this cross-reference is broken:        
+> > > > > > > >       
+> > > > > > > > >         .../Documentation/w1/slaves/w1_therm.rst:125: WARNING:
+> > > > > > > > > undefined label: w1_therm (if the link has no caption the label must precede a section header)        
+> > > > > > > > 
+> > > > > > > > Would this be ok?      
+> > > > > > > 
+> > > > > > > Yeah, sure!
+> > > > > > >       
+> > > > > > > > 
+> > > > > > > > "More details in Documentation/ABI/testing/sysfs-driver-w1_therm"
+> > > > > > > >       
+> > > > > > > > > Not sure what you wanted to point here.        
+> > > > > > > > 
+> > > > > > > > A link to a driver's sysfs interface, but sysfs docs are text
+> > > > > > > > files and seem to not be included in Sphynx Docs.      
+> > > > > > > 
+> > > > > > > I sent upstream sometime ago a patch series adding ABI to Sphinx, but I 
+> > > > > > > was not merged, not sure why:
+> > > > > > > 
+> > > > > > > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v5.6      
+> > > > > > 
+> > > > > > I think the raft of different patches floating around at the time made
+> > > > > > me totally confused as to what was, and was not, the latest versions.    
+> > > > > 
+> > > > > Yeah, there were lots of patches floating around that time.
+> > > > > 
+> > > > > I also recall that someone (Jeni?) asked if the best wouldn't be to
+> > > > > just convert the ABI files to ReST directly.
+> > > > >     
+> > > > > > I'll be glad to look at them again, if you want to rebase after 5.10-rc1
+> > > > > > is out and resend them, as I think this should be showing up in the
+> > > > > > documentation.    
+> > > > > 
+> > > > > Surely. I'll rebase them after 5.10-rc1 and re-submit. 
+> > > > > 
+> > > > > What strategy do you prefer? Keep the files with the same format as
+> > > > > today (allowing them to optionally have ReST markups) or to convert
+> > > > > them to .rst directly?
+> > > > > 
+> > > > > In the latter case, the best would be to apply it as early as possible
+> > > > > after 5.10-rc1, as it may cause conflicts with other patches being
+> > > > > submitted for 5.11.    
+> > > > 
+> > > > The existing format if at all possible, doing wholesale changes is a
+> > > > mess and wouldn't be recommended.  
+> > > 
+> > > Yeah, merging it would indeed be a mess. At long term, though, it could 
+> > > be easier to maintain.
+> > > 
+> > > > I think you already fixed up the entries that had problems being parsed
+> > > > in the past, if not, we can resolve those as well.  
+> > > 
+> > > Yes. The series start with fixes. I suspect several of them
+> > > (if not all) were already merged, but if anything is missing, I can fix 
+> > > at the upcoming rebased series.
+> > 
+> > Rebasing the patch series was easier than what I expected:
+> > 
+> > 	https://git.linuxtv.org/mchehab/experimental.git/log/?h=abi_patches_v6
+> > 
+> > Yet, while fixing one build issue, I noticed that there are multiple
+> > files defining the same ABI, with different contents.
+> > 
+> > Right now, scripts/get_abi.pl assumes that "what" is unique. Well, sorts
+> > of. When it finds a duplicated entry, it merges the description, 
+> > preserving the fields from the last parsed entry.
+> > 
+> > I ended adding a patch to detect those ABI duplication:
+> > 
+> > 	https://git.linuxtv.org/mchehab/experimental.git/commit/?h=abi_patches_v6&id=6868914605cb0ebffe3fd07d344c246e1e4cd94e
+> > 
+> > I'm enclosing the results.
+> > 
+> > One such example is this one:
+> > 
+> > 	3 duplicated entries for /sys/class/leds/<led>/hw_pattern: on file(s) sysfs-class-led-trigger-pattern sysfs-class-led-driver-sc27xx sysfs-class-led-driver-el15203000
+> > 
+> > It sounds that different drivers define and use this ABI, but
+> > each one with different meanings. 
+> > 
+> > There are even some cases where the same file define the same ABI twice:
+> > 
+> > 	2 duplicated entries for /sys/class/power_supply/<supply_name>/temp_alert_min: on file(s) sysfs-class-power
+> > 
+> > Not sure what's the best way to document things like that, or if
+> > the fix would be to drop/merge those.
+> > 
+> > Any ideas?
+> 
+> We should merge them to be the correct representation. 
 
--Topi
+Ok, makes sense to me.
+
+I improved the script to better report such issues:
+
+	$ ./scripts/get_abi.pl --dir Documentation/ABI/testing validate
+	Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_preset is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:101 Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:1
+	Warning: /sys/bus/iio/devices/iio:deviceX/in_count0_quadrature_mode is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:118 Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:15
+	Warning: /sys/bus/iio/devices/iio:deviceX/in_count_quadrature_mode_available is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-timer-stm32:112 Documentation/ABI/testing/sysfs-bus-iio-lptimer-stm32:9
+	Warning: /sys/bus/iio/devices/iio:deviceX/out_altvoltageY_frequency is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-frequency-adf4371:1 Documentation/ABI/testing/sysfs-bus-iio:599
+	Warning: /sys/bus/iio/devices/iio:deviceX/out_currentY_raw is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-light-lm3533-als:44 Documentation/ABI/testing/sysfs-bus-iio-health-afe440x:35
+	Warning: /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw, /sys/bus/iio/devices/iio:deviceX/out_current_heater_raw_available is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc2010:2 Documentation/ABI/testing/sysfs-bus-iio-humidity-hdc100x:2
+	Warning: /sys/bus/iio/devices/iio:deviceX/sensor_sensitivity is defined 2 times: Documentation/ABI/testing/sysfs-bus-iio-distance-srf08:1 Documentation/ABI/testing/sysfs-bus-iio-proximity-as3935:9
+	Warning: /sys/class/backlight/<backlight>/ambient_light_level is defined 2 times: Documentation/ABI/testing/sysfs-class-backlight-adp8860:9 Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870:31
+	Warning: /sys/class/backlight/<backlight>/ambient_light_zone is defined 2 times: Documentation/ABI/testing/sysfs-class-backlight-adp8860:19 Documentation/ABI/testing/sysfs-class-backlight-driver-adp8870:41
+	Warning: /sys/class/c2port/c2portX/flash_erase is defined 2 times: Documentation/ABI/testing/sysfs-c2port:61 Documentation/ABI/testing/sysfs-c2port:69
+	Warning: /sys/class/leds/<led>/brightness is defined 2 times: Documentation/ABI/testing/sysfs-class-led:1 Documentation/ABI/testing/sysfs-class-led-multicolor:1
+	Warning: /sys/class/leds/<led>/hw_pattern is defined 3 times: Documentation/ABI/testing/sysfs-class-led-trigger-pattern:15 Documentation/ABI/testing/sysfs-class-led-driver-sc27xx:1 Documentation/ABI/testing/sysfs-class-led-driver-el15203000:1
+	Warning: /sys/class/leds/<led>/repeat is defined 2 times: Documentation/ABI/testing/sysfs-class-led-trigger-pattern:29 Documentation/ABI/testing/sysfs-class-led-driver-el15203000:136
+	Warning: /sys/class/power_supply/<supply_name>/current_avg is defined 2 times: Documentation/ABI/testing/sysfs-class-power:105 Documentation/ABI/testing/sysfs-class-power:386
+	Warning: /sys/class/power_supply/<supply_name>/current_max is defined 2 times: Documentation/ABI/testing/sysfs-class-power:117 Documentation/ABI/testing/sysfs-class-power:399
+	Warning: /sys/class/power_supply/<supply_name>/current_now is defined 2 times: Documentation/ABI/testing/sysfs-class-power:126 Documentation/ABI/testing/sysfs-class-power:409
+	Warning: /sys/class/power_supply/<supply_name>/temp is defined 2 times: Documentation/ABI/testing/sysfs-class-power:276 Documentation/ABI/testing/sysfs-class-power:486
+	Warning: /sys/class/power_supply/<supply_name>/temp_alert_max is defined 2 times: Documentation/ABI/testing/sysfs-class-power:286 Documentation/ABI/testing/sysfs-class-power:498
+	Warning: /sys/class/power_supply/<supply_name>/temp_alert_min is defined 2 times: Documentation/ABI/testing/sysfs-class-power:301 Documentation/ABI/testing/sysfs-class-power:514
+	Warning: /sys/class/power_supply/<supply_name>/temp_max is defined 2 times: Documentation/ABI/testing/sysfs-class-power:317 Documentation/ABI/testing/sysfs-class-power:530
+	Warning: /sys/class/power_supply/<supply_name>/temp_min is defined 2 times: Documentation/ABI/testing/sysfs-class-power:328 Documentation/ABI/testing/sysfs-class-power:540
+	Warning: /sys/kernel/iommu_groups/reserved_regions is defined 2 times: Documentation/ABI/testing/sysfs-kernel-iommu_groups:16 Documentation/ABI/testing/sysfs-kernel-iommu_groups:28
+
+With the line numbers where each occurrence happens, it should be
+easier to solve such warnings.
+
+> The driver-specific ones for LED should just be dropped to use the
+> class-generic one.
+
+I suspect that, instead of just dropping them, it could make sense to
+move driver-specific ones to the ReST file for that driver,
+like the ones inside Documentation/leds/.
+
+> I guess just take them one at a time :)
+
+Makes sense to me. Btw, right now there are 60 warnings like that.
+
+Thanks,
+Mauro
