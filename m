@@ -2,186 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7469E2960AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDCA02960B1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:09:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900665AbgJVOIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:08:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58294 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900657AbgJVOIL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:08:11 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 153A9C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:08:11 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id p9so1849442ilr.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=qyB9VGcnwRmV7uWQxOItmIqBY22BS8lzGEFNJoBC4fs=;
-        b=2B+nN1yWXOA54E7/hBm7W9SYoldYFseQrJHvdXwS41REnvpYiPVk9brmmk1XUdpqDK
-         O8XIOiiucGc8TycgCWRZVpOIJ0s5blu8/7Dl9S+x87uUdCEB6HYfi1avPRtDNrryQC/i
-         rw4Fxw++/9fgFynWmNNt46Td1omSCPVjfV1r0ilqU4crUK+EdfL40XmgH6y3SDQSHtKu
-         DwkVyciFPAJVW+RkFZYZbpvn1aC7nSApyeakpKqvjDuXO13pcVic2nSJmeBqgvfDSuB1
-         BB4d9UrNmbw4KWa8mL01xNEcK3iEyxNAQk+/w9Z/zb3QWpRmYcuZgVSPmMF8mE2diT5w
-         E4+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=qyB9VGcnwRmV7uWQxOItmIqBY22BS8lzGEFNJoBC4fs=;
-        b=UK3obxr5vI3sBX5BHR0btCa4ljdcreRHlLFUvK9Fyp8ZHa+mnZcTFvf8VvZRacRTl+
-         yMAtMMyDklYNJ/FvdW6sRAA0PMxY+FsW7hOOK8kWRQHSm1yEQB4z+h0+mgjcn33x4baz
-         5FclQe82jLMZG4r/Y2fklg/A/zu81DDWAmnph8v0jqSoJ8Zi6Wub6UCBbhdYJ3W60x+V
-         nx7ePceOCDCL4QtB7WMb+W229GwMeDiWV02IE4tYjXoGYeU/muERNcY2bCEqJBRL0+0c
-         onTyXvewOfgrraytrEecway3WBnG0VBtzbsIJVI2/1sch6CqC0wVOAbwLrt0472jyRz2
-         LibQ==
-X-Gm-Message-State: AOAM5324oMNtvPeeF22d+7/97XXKMQSKYRqxdyO7ZRkJ2bDtb96Y8d8c
-        5YlAvq8IvyJe4VbIacpX5/gf31eGpQz0+w==
-X-Google-Smtp-Source: ABdhPJyUzut/930LmZRIerniuf18HLXCdmG+LHK2wxfJtRs+DGdaFwPAudgE6vofbFxH9MO/SsCTbA==
-X-Received: by 2002:a92:c784:: with SMTP id c4mr1863552ilk.157.1603375690293;
-        Thu, 22 Oct 2020 07:08:10 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id e17sm1225926ile.60.2020.10.22.07.08.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 07:08:09 -0700 (PDT)
-Subject: Re: Question on io-wq
-To:     "Zhang,Qiang" <qiang.zhang@windriver.com>
-Cc:     viro@zeniv.linux.org.uk, io-uring@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <98c41fba-87fe-b08d-2c8c-da404f91ef31@windriver.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <8dd4bc4c-9d8e-fb5a-6931-3e861ad9b4bf@kernel.dk>
-Date:   Thu, 22 Oct 2020 08:08:09 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2900674AbgJVOJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:09:25 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40910 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2507948AbgJVOJX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:09:23 -0400
+Received: from localhost (170.sub-72-107-125.myvzw.com [72.107.125.170])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E594D2225F;
+        Thu, 22 Oct 2020 14:09:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603375762;
+        bh=qYpoGjmLjHs8B87IlV7CrnIiTeCXwexAWSBZI6pKcKg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:From;
+        b=Io6DQhzWlVadsaFt5i3DHrpQut5RSeMfIqXLLnMND5pGqMrVEeMc1aFtv2Tu2agEx
+         pzefDnymo17MQXisCbU4gaGZHrmk+EZaV/HTOqZDTDWL4ov8OTICa7iLmAoThQR2Kn
+         Vu27D42OArSNFVm4jn5tDDmQoPibiturgysfBCZI=
+Date:   Thu, 22 Oct 2020 09:09:20 -0500
+From:   Bjorn Helgaas <helgaas@kernel.org>
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     kernel test robot <lkp@intel.com>,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
+        Mark Brown <broonie@kernel.org>
+Subject: Re: sound/soc/intel/catpt/dsp.c:359:9: sparse: sparse: restricted
+ pci_power_t degrades to integer
+Message-ID: <20201022140920.GA501158@bjorn-Precision-5520>
 MIME-Version: 1.0
-In-Reply-To: <98c41fba-87fe-b08d-2c8c-da404f91ef31@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022135229.GB4077@smile.fi.intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 3:02 AM, Zhang,Qiang wrote:
+On Thu, Oct 22, 2020 at 04:52:29PM +0300, Andy Shevchenko wrote:
+> +Cc: Bjorn
 > 
-> Hi Jens Axboe
+> On Thu, Oct 22, 2020 at 03:25:49PM +0800, kernel test robot wrote:
+> > tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+> > head:   f804b3159482eedbb4250b1e9248c308fb63b805
+> > commit: 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1 ASoC: Intel: Select catpt and deprecate haswell
+> > date:   3 weeks ago
+> > config: i386-randconfig-s002-20201022 (attached as .config)
+> > compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
+> > reproduce:
+> >         # apt-get install sparse
+> >         # sparse version: v0.6.3-dirty
+> >         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1
+> >         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+> >         git fetch --no-tags linus master
+> >         git checkout 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1
+> >         # save the attached .config to linux build tree
+> >         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
+> > 
+> > If you fix the issue, kindly add following tag as appropriate
+> > Reported-by: kernel test robot <lkp@intel.com>
+> > 
+> > 
+> > "sparse warnings: (new ones prefixed by >>)"
+> > >> sound/soc/intel/catpt/dsp.c:359:9: sparse: sparse: restricted pci_power_t degrades to integer
+> >    sound/soc/intel/catpt/dsp.c:372:9: sparse: sparse: restricted pci_power_t degrades to integer
+> >    sound/soc/intel/catpt/dsp.c:423:9: sparse: sparse: restricted pci_power_t degrades to integer
+> >    sound/soc/intel/catpt/dsp.c:447:9: sparse: sparse: restricted pci_power_t degrades to integer
 > 
-> There are some problem in 'io_wqe_worker' thread, when the 
-> 'io_wqe_worker' be create and  Setting the affinity of CPUs in NUMA 
-> nodes, due to CPU hotplug, When the last CPU going down, the 
-> 'io_wqe_worker' thread will run anywhere. when the CPU in the node goes 
-> online again, we should restore their cpu bindings?
+> I dunno who and why created that specific bitwise type. I met not the first
+> time the same Sparse complain.
 
-Something like the below should help in ensuring affinities are
-always correct - trigger an affinity set for an online CPU event. We
-should not need to do it for offlining. Can you test it?
-
-
-diff --git a/fs/io-wq.c b/fs/io-wq.c
-index 4012ff541b7b..3bf029d1170e 100644
---- a/fs/io-wq.c
-+++ b/fs/io-wq.c
-@@ -19,6 +19,7 @@
- #include <linux/task_work.h>
- #include <linux/blk-cgroup.h>
- #include <linux/audit.h>
-+#include <linux/cpu.h>
- 
- #include "io-wq.h"
- 
-@@ -123,9 +124,13 @@ struct io_wq {
- 	refcount_t refs;
- 	struct completion done;
- 
-+	struct hlist_node cpuhp_node;
-+
- 	refcount_t use_refs;
- };
- 
-+static enum cpuhp_state io_wq_online;
-+
- static bool io_worker_get(struct io_worker *worker)
- {
- 	return refcount_inc_not_zero(&worker->ref);
-@@ -1096,6 +1101,13 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 		return ERR_PTR(-ENOMEM);
- 	}
- 
-+	ret = cpuhp_state_add_instance_nocalls(io_wq_online, &wq->cpuhp_node);
-+	if (ret) {
-+		kfree(wq->wqes);
-+		kfree(wq);
-+		return ERR_PTR(ret);
-+	}
-+
- 	wq->free_work = data->free_work;
- 	wq->do_work = data->do_work;
- 
-@@ -1145,6 +1157,7 @@ struct io_wq *io_wq_create(unsigned bounded, struct io_wq_data *data)
- 	ret = PTR_ERR(wq->manager);
- 	complete(&wq->done);
- err:
-+	cpuhp_state_remove_instance_nocalls(io_wq_online, &wq->cpuhp_node);
- 	for_each_node(node)
- 		kfree(wq->wqes[node]);
- 	kfree(wq->wqes);
-@@ -1164,6 +1177,8 @@ static void __io_wq_destroy(struct io_wq *wq)
- {
- 	int node;
- 
-+	cpuhp_state_remove_instance_nocalls(io_wq_online, &wq->cpuhp_node);
-+
- 	set_bit(IO_WQ_BIT_EXIT, &wq->state);
- 	if (wq->manager)
- 		kthread_stop(wq->manager);
-@@ -1191,3 +1206,40 @@ struct task_struct *io_wq_get_task(struct io_wq *wq)
- {
- 	return wq->manager;
- }
-+
-+static bool io_wq_worker_affinity(struct io_worker *worker, void *data)
-+{
-+	struct task_struct *task = worker->task;
-+	unsigned long flags;
-+
-+	raw_spin_lock_irqsave(&task->pi_lock, flags);
-+	do_set_cpus_allowed(task, cpumask_of_node(worker->wqe->node));
-+	task->flags |= PF_NO_SETAFFINITY;
-+	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
-+	return false;
-+}
-+
-+static int io_wq_cpu_online(unsigned int cpu, struct hlist_node *node)
-+{
-+	struct io_wq *wq = hlist_entry_safe(node, struct io_wq, cpuhp_node);
-+	int i;
-+
-+	rcu_read_lock();
-+	for_each_node(i)
-+		io_wq_for_each_worker(wq->wqes[i], io_wq_worker_affinity, NULL);
-+	rcu_read_unlock();
-+	return 0;
-+}
-+
-+static __init int io_wq_init(void)
-+{
-+	int ret;
-+
-+	ret = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN, "io-wq/online",
-+					io_wq_cpu_online, NULL);
-+	if (ret < 0)
-+		return ret;
-+	io_wq_online = ret;
-+	return 0;
-+}
-+subsys_initcall(io_wq_init);
-
--- 
-Jens Axboe
-
+Thanks for the cc.  Yeah, I hate that too.  It's one of the few
+remaining warnings in drivers/pci/.  It's my goal to eradicate it for
+v5.11.
