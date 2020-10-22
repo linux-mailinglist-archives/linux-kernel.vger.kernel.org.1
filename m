@@ -2,109 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 18C9D296580
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:46:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F195296587
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:52:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370413AbgJVTq2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:46:28 -0400
-Received: from mx0a-0016f401.pphosted.com ([67.231.148.174]:20832 "EHLO
-        mx0b-0016f401.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2508766AbgJVTq1 (ORCPT
+        id S370433AbgJVTwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 15:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55292 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509834AbgJVTw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:46:27 -0400
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-        by mx0a-0016f401.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MJiuLX027962;
-        Thu, 22 Oct 2020 12:46:24 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=date : from : to :
- cc : subject : in-reply-to : message-id : references : mime-version :
- content-type; s=pfpt0220; bh=syTatktNJj218s4w8i0vH5DjvlhLYwwOkkKzR/GTeIM=;
- b=GETOLZlOfC7FJYoQalB4Oc1pmpKNgMAW81Qpyl52VAj5sc4rYrmlp0CLnlWrASLv7SGv
- YX1U/95TqIwF7gnYKMoUBLtm4ex6GhwmSLZ6dDLfoRF/MNM7eXYk5knNvI8ZXzXE7cdi
- J1c9qIMs4v8nR9hgd1z6EucR/AD62UNylwTLUWqLptTygHBlzGEChPKXppY9D5r5amKW
- rYza0pRw3EWfi1BTopQqM/ArAj7g68e5+TnbTnqVotpBeyl/NGTqEWYFGPd5nE2iMMHD
- +0qzUgN9whSbSMd0j+V3OgzV3xHWLbnS5DTMwRTmmU0WnlMv5iT77o3i85fhfB8cVjEQ Tg== 
-Received: from sc-exch01.marvell.com ([199.233.58.181])
-        by mx0a-0016f401.pphosted.com with ESMTP id 34asbe5451-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 12:46:24 -0700
-Received: from DC5-EXCH01.marvell.com (10.69.176.38) by SC-EXCH01.marvell.com
- (10.93.176.81) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Thu, 22 Oct
- 2020 12:46:23 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH01.marvell.com
- (10.69.176.38) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Oct 2020 12:46:23 -0700
-Received: from irv1user01.caveonetworks.com (unknown [10.104.116.179])
-        by maili.marvell.com (Postfix) with ESMTP id 210803F7041;
-        Thu, 22 Oct 2020 12:46:23 -0700 (PDT)
-Received: from localhost (aeasi@localhost)
-        by irv1user01.caveonetworks.com (8.14.4/8.14.4/Submit) with ESMTP id 09MJkL4L026377;
-        Thu, 22 Oct 2020 12:46:22 -0700
-X-Authentication-Warning: irv1user01.caveonetworks.com: aeasi owned process doing -bs
-Date:   Thu, 22 Oct 2020 12:46:21 -0700
-From:   Arun Easi <aeasi@marvell.com>
-X-X-Sender: aeasi@irv1user01.caveonetworks.com
-To:     Daniel Wagner <dwagner@suse.de>
-CC:     Nilesh Javali <njavali@marvell.com>, <linux-scsi@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        Finn Thain <fthain@telegraphics.com.au>
-Subject: Re: [EXT] [PATCH v4] qla2xxx: Return EBUSY on fcport deletion
-In-Reply-To: <20201014073048.36219-1-dwagner@suse.de>
-Message-ID: <alpine.LRH.2.21.9999.2010221245090.28578@irv1user01.caveonetworks.com>
-References: <20201014073048.36219-1-dwagner@suse.de>
-User-Agent: Alpine 2.21.9999 (LRH 334 2019-03-29)
+        Thu, 22 Oct 2020 15:52:29 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3311C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 12:52:29 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j5so1147995plk.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 12:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=networkplumber-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=3dm/6UU7gzYtewq70pBYmJhrFBt9p+uK9v/LY5XBQe8=;
+        b=WdHQm9X1Ao2rROrM/DL9Ob5ETV5dcmcxbbi05C5ioxMtbjEFPu3amCoERC6BHS5ppC
+         jUCpJ54iUYioZDSSbRWoRxCclHJU2JtZBbuzhQKlaoGfRi2P3C3aoYELYkdM3Ek82NIg
+         /ql2TOC/FiXWF3ne/NQAZ463k3oht0RbEiVAsKFptqY+29o7VcNwnZHW3zobc8msa2X1
+         zO5gOJQMcdg6oEVFJShVA7kglwRFhbHPbFKzO/ozeQPE39n/MLVVx9kgdzBxWcAPTbDC
+         +1ZEfeuMQ8ZS2WXFxUtATlwTjKv7PedQHfi0mdzi0cs+G6RgmmJ67hNItyrWmZIM4FVf
+         /Txw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=3dm/6UU7gzYtewq70pBYmJhrFBt9p+uK9v/LY5XBQe8=;
+        b=mSDtHe2HT/TDwul4uwfg8nq/JTb70uTnyKITn06hapdmp4mD9cu31GSNT0lP694x4O
+         USqWE7wmTeAtFW2Ucl8NQCQPpE9NUg12Wl0Rbk2DijajnKAjEzBvw/QGqZi2lyVBQ723
+         QGAkV7F1YnJDOJ4p1UqTKW07wigw5wZdi0q2Uv6M+zdaCoBd1tb6zfVDaXZmwbqs0mko
+         osp+ZtM9yzm/0Dnu0O6RkpCaD30lOeTckq9GKgp2UnWvi03W7ixxd15SRD6CeF81R0go
+         WRmx0EiyJcVAf7MdDxG+O3loFHd201hc5MLyXDi3Qz7jFeHwyN/4MpU/1oOXHn8NX0MS
+         uoCg==
+X-Gm-Message-State: AOAM531yVmLU5FY4FemQ8jVXiAGYm1/uzzre5jkk41MRcs+K/CYEKWvw
+        3qD4Fn9I/Pvz+t/91zF0z0IGPw==
+X-Google-Smtp-Source: ABdhPJzjyClw+3ELYGBsJotUZeOWmDVypimCCUAzTRMpJKmazRpYQ3aDqmDvNYm9l9y12zeiB5Whew==
+X-Received: by 2002:a17:902:d697:b029:d6:48f:2974 with SMTP id v23-20020a170902d697b02900d6048f2974mr3724561ply.30.1603396349196;
+        Thu, 22 Oct 2020 12:52:29 -0700 (PDT)
+Received: from hermes.local (204-195-22-127.wavecable.com. [204.195.22.127])
+        by smtp.gmail.com with ESMTPSA id b6sm2981568pjq.42.2020.10.22.12.52.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 12:52:28 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 12:52:20 -0700
+From:   Stephen Hemminger <stephen@networkplumber.org>
+To:     Vladimir Oltean <vladimir.oltean@nxp.com>
+Cc:     David Ahern <dsahern@gmail.com>, Roopa Prabhu <roopa@nvidia.com>,
+        Nikolay Aleksandrov <nikolay@nvidia.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        bridge@lists.linux-foundation.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, andrew@lunn.ch, f.fainelli@gmail.com,
+        vivien.didelot@gmail.com, jiri@mellanox.com, idosch@idosch.org
+Subject: Re: [RFC PATCH iproute2] bridge: add support for L2 multicast
+ groups
+Message-ID: <20201022125220.45c24b30@hermes.local>
+In-Reply-To: <20201017184526.2333840-1-vladimir.oltean@nxp.com>
+References: <20201017184526.2333840-1-vladimir.oltean@nxp.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="US-ASCII"
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_15:2020-10-20,2020-10-22 signatures=0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 14 Oct 2020, 12:30am, Daniel Wagner wrote:
+On Sat, 17 Oct 2020 21:45:26 +0300
+Vladimir Oltean <vladimir.oltean@nxp.com> wrote:
 
-> External Email
+> Extend the 'bridge mdb' command for the following syntax:
+> bridge mdb add dev br0 port swp0 grp 01:02:03:04:05:06 permanent
 > 
-> ----------------------------------------------------------------------
-> When the fcport is about to be deleted we should return EBUSY instead
-> of ENODEV. Only for EBUSY the request will be requeued in a multipath
-> setup.
-> 
-> Also when the firmware has not yet started return EBUSY to avoid
-> dropping the request.
-> 
-> Signed-off-by: Daniel Wagner <dwagner@suse.de>
-> Reviewed-by: Arun Easi <aeasi@marvell.com>
+> Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
 > ---
+>  bridge/mdb.c                   | 54 ++++++++++++++++++++++++++--------
+>  include/uapi/linux/if_bridge.h |  2 ++
+>  2 files changed, 43 insertions(+), 13 deletions(-)
 > 
-> v4: updated commit message as suggested by Finn
-> v3: simplify and changed test logic as suggested by Arun
-> v2: rebased on mkp/staging
-> 
->  drivers/scsi/qla2xxx/qla_nvme.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/qla2xxx/qla_nvme.c b/drivers/scsi/qla2xxx/qla_nvme.c
-> index 2cd9bd288910..1fa457a5736e 100644
-> --- a/drivers/scsi/qla2xxx/qla_nvme.c
-> +++ b/drivers/scsi/qla2xxx/qla_nvme.c
-> @@ -555,10 +555,12 @@ static int qla_nvme_post_cmd(struct nvme_fc_local_port *lport,
+> diff --git a/bridge/mdb.c b/bridge/mdb.c
+> index 4cd7ca762b78..af160250928e 100644
+> --- a/bridge/mdb.c
+> +++ b/bridge/mdb.c
+> @@ -149,6 +149,7 @@ static void print_mdb_entry(FILE *f, int ifindex, const struct br_mdb_entry *e,
+>  			    struct nlmsghdr *n, struct rtattr **tb)
+>  {
+>  	const void *grp, *src;
+> +	const char *addr;
+>  	SPRINT_BUF(abuf);
+>  	const char *dev;
+>  	int af;
+> @@ -156,9 +157,16 @@ static void print_mdb_entry(FILE *f, int ifindex, const struct br_mdb_entry *e,
+>  	if (filter_vlan && e->vid != filter_vlan)
+>  		return;
 >  
->  	fcport = qla_rport->fcport;
+> -	af = e->addr.proto == htons(ETH_P_IP) ? AF_INET : AF_INET6;
+> -	grp = af == AF_INET ? (const void *)&e->addr.u.ip4 :
+> -			      (const void *)&e->addr.u.ip6;
+> +	if (!e->addr.proto) {
+> +		af = AF_PACKET;
+> +		grp = (const void *)&e->addr.u.mac_addr;
+> +	} else if (e->addr.proto == htons(ETH_P_IP)) {
+> +		af = AF_INET;
+> +		grp = (const void *)&e->addr.u.ip4;
+> +	} else {
+> +		af = AF_INET6;
+> +		grp = (const void *)&e->addr.u.ip6;
+> +	}
+>  	dev = ll_index_to_name(ifindex);
 >  
-> -	if (!qpair || !fcport || (qpair && !qpair->fw_started) ||
-> -	    (fcport && fcport->deleted))
-> +	if (!qpair || !fcport)
->  		return -ENODEV;
->  
-> +	if (!qpair->fw_started || fcport->deleted)
-> +		return -EBUSY;
-> +
->  	vha = fcport->vha;
->  
->  	if (!(fcport->nvme_flag & NVME_FLAG_REGISTERED))
-> 
 
-Looks good to me.
-
-Regards,
--Arun
+In C casts of pointer to void are not necessary.
