@@ -2,75 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D3E629589B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:54:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 190F729589E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:54:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2504407AbgJVGyF convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 02:54:05 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:38129 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2504386AbgJVGyF (ORCPT
+        id S2504417AbgJVGyI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 02:54:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47614 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504386AbgJVGyH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 02:54:05 -0400
-Received: by mail-wr1-f68.google.com with SMTP id n18so731527wrs.5;
-        Wed, 21 Oct 2020 23:54:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=wPazIwGxWZXLW6RoMakBTpiJ6QIbqx5NJ2Au3s+esQE=;
-        b=sojHn4W2OANVImZz5nQuPhhncC91a2aBMykroN5sQbl5s2VlJnRXtInbdihD3/sMAr
-         zwu7Tqj6t8ng3bGQB2KaOrUCqMO3Mh5wZVJB8lbCtMoZczhuYQmgZZEuRAQMKuBK1kul
-         lFheECk1UgXeFfEDWEDvJS//yhBLXrly47Dgy5FKplW5OfABF/spnc2hmd1DEZd0b5DR
-         ywb9QhWEhEdhEW1TibywCkmZY5GHr3gZVxz5n+lhUUOywGa7vDjE9gWg9nzOUVmv8uuR
-         frPLOisEPai8JMfnu772dgOJ4U9F9SX2Ul0wFfNol4kiaBZnwdIwaL0MODrc9I6VXEe7
-         UDlA==
-X-Gm-Message-State: AOAM5321bUi9BXxnThNKU5p6vW1Axz1vqHsxolHKsky5rncrVIRmRirB
-        4zh3Rb9gJ/U1mMM1d6Lp+jA=
-X-Google-Smtp-Source: ABdhPJzGbTTMEabPD/ovZyiwJ3eCr6uvy/ZtoLno4XMnWH0VbF/1tP44xnbU3HxS0ABcYBB5P1QdGg==
-X-Received: by 2002:a5d:4ed2:: with SMTP id s18mr1034136wrv.36.1603349642999;
-        Wed, 21 Oct 2020 23:54:02 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id d30sm1804762wrc.19.2020.10.21.23.54.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 21 Oct 2020 23:54:01 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 08:53:59 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?Q?=C5=81ukasz?= Stelmach <l.stelmach@samsung.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jim.cromie@gmail.com,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Kukjin Kim <kgene@kernel.org>,
-        Russell King <linux@armlinux.org.uk>, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org,
-        =?utf-8?Q?Bart=C5=82omiej_=C5=BBolnierkiewicz?= 
-        <b.zolnierkie@samsung.com>,
-        Marek Szyprowski <m.szyprowski@samsung.com>
-Subject: Re: [PATCH v3 1/5] dt-bindings: vendor-prefixes: Add asix prefix
-Message-ID: <20201022065359.GA3829@kozik-lap>
-References: <20201021214910.20001-1-l.stelmach@samsung.com>
- <CGME20201021214933eucas1p26e8ee82f237e977e8b3324145a929a1a@eucas1p2.samsung.com>
- <20201021214910.20001-2-l.stelmach@samsung.com>
+        Thu, 22 Oct 2020 02:54:07 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9DF7BC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 23:54:06 -0700 (PDT)
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVUU7-0001Cq-2W; Thu, 22 Oct 2020 08:54:03 +0200
+Received: from ore by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVUU6-00068g-8g; Thu, 22 Oct 2020 08:54:02 +0200
+Date:   Thu, 22 Oct 2020 08:54:02 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     "Ardelean, Alexandru" <alexandru.Ardelean@analog.com>,
+        David Jander <david@protonic.nl>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        "linux-input@vger.kernel.org" <linux-input@vger.kernel.org>
+Subject: Re: [PATCH v1] Input: ads7846: do not overwrite spi->mode flags set
+ by spi framework
+Message-ID: <20201022065402.x7hlp2zncmnjyum7@pengutronix.de>
+References: <20201021090434.16387-1-o.rempel@pengutronix.de>
+ <DM6PR03MB44110236C07B05C243009E4CF91C0@DM6PR03MB4411.namprd03.prod.outlook.com>
+ <20201021105614.tc3jnv5g62hvl5vg@pengutronix.de>
+ <20201021182757.GA444962@dtor-ws>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201021214910.20001-2-l.stelmach@samsung.com>
+In-Reply-To: <20201021182757.GA444962@dtor-ws>
+X-Sent-From: Pengutronix Hildesheim
+X-URL:  http://www.pengutronix.de/
+X-IRC:  #ptxdist @freenode
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-Uptime: 08:49:54 up 341 days, 22:08, 380 users,  load average: 0.07, 0.07,
+ 0.01
+User-Agent: NeoMutt/20170113 (1.7.2)
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:49:06PM +0200, Łukasz Stelmach wrote:
-> Add the prefix for ASIX Electronics Corporation
+On Wed, Oct 21, 2020 at 11:27:57AM -0700, Dmitry Torokhov wrote:
+> On Wed, Oct 21, 2020 at 12:56:14PM +0200, Oleksij Rempel wrote:
+> > 
+> > As you can see, I would need to configure my dts with spi-cs-high flag,
+> > even if the hardware is actually ACTIVE_LOW. If I will go this way, I
+> > would risk a regression as soon as this issue is fixed.
+> > 
+> > Since the spi framework is already parsing devicetree and set all needed
+> > flags, I assume it is wrong to blindly drop all this flags in the
+> > driver.
+> 
+> Yes, but I wonder if the devices can only work in mode 0 we should be
+> doing:
+> 
+> 	spi->mode &= ~SPI_MODE_MASK; // to be defined as 0x03 in spi.h
+> 	spi->mode |= SPI_MODE_0;
+> 
+> as we can't simply "or" mode value as is
 
-End the sentence with a full stop.
+Why not? This values are taken from device tree. If some developer
+decided to add them, then driver should take it over. Even if this
+values will break the functionality.
 
-Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+Other properties of this driver will break the functionality too of this
+driver too, so why should we silently filter only set of this bits?
 
-Best regards,
-Krzysztof
+> (well, mode 0 is kind of working, but just on accident).
+
+Good question, will be probably a good reason to measure it.
+
+> Thanks.
+> 
+> -- 
+> Dmitry
+> 
+> 
+
+Regards,
+Oleksij
+
+-- 
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
