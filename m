@@ -2,155 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52C32295D54
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:25:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6A5BF295D58
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:26:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897227AbgJVLZq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:25:46 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:44806 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897214AbgJVLZp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:25:45 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 1C1561C0B78; Thu, 22 Oct 2020 13:25:41 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:25:40 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
-        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>,
-        Drew Fustini <pdp7pdp7@gmail.com>
-Subject: Re: [PATCH v6 6/6] docs: ctucanfd: CTU CAN FD open-source IP core
- documentation.
-Message-ID: <20201022112540.GB30566@duo.ucw.cz>
-References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz>
- <213155c64da5a97c574cd15de1cb06f8d0acef6a.1603354744.git.pisa@cmp.felk.cvut.cz>
+        id S2897237AbgJVL0q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:26:46 -0400
+Received: from foss.arm.com ([217.140.110.172]:54892 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2444501AbgJVL0q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:26:46 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 96FBED6E;
+        Thu, 22 Oct 2020 04:26:45 -0700 (PDT)
+Received: from [10.57.20.67] (unknown [10.57.20.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 4262F3F66B;
+        Thu, 22 Oct 2020 04:26:43 -0700 (PDT)
+Subject: Re: [PATCH 4/5] thermal: devfreq_cooling: remove old power model and
+ use EM
+To:     Ionela Voinescu <ionela.voinescu@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
+        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
+        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
+        orjan.eide@arm.com
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-5-lukasz.luba@arm.com> <20201007151225.GB15063@arm.com>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <4929dcfa-9ab0-52fa-8426-50cda52eb8dc@arm.com>
+Date:   Thu, 22 Oct 2020 12:26:40 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="f2QGlHpHGjS2mn6Y"
-Content-Disposition: inline
-In-Reply-To: <213155c64da5a97c574cd15de1cb06f8d0acef6a.1603354744.git.pisa@cmp.felk.cvut.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201007151225.GB15063@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---f2QGlHpHGjS2mn6Y
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Thu 2020-10-22 10:36:21, Pavel Pisa wrote:
-> CTU CAN FD IP core documentation based on Martin Je=C5=99=C3=A1bek's dipl=
-oma theses
-> Open-source and Open-hardware CAN FD Protocol Support
-> https://dspace.cvut.cz/handle/10467/80366
-> .
+On 10/7/20 4:12 PM, Ionela Voinescu wrote:
+> Hi Lukasz,
+> 
+> On Monday 21 Sep 2020 at 13:20:06 (+0100), Lukasz Luba wrote:
+> [..]
+>>   /**
+>> - * freq_get_state() - get the cooling state corresponding to a frequency
+>> + * freq_get_state() - get the performance index corresponding to a frequency
+> 
+> If we change the meaning of the return value, I think the function needs
+> a name change as well.
+> 
+> Also, we do treat this as a cooling state when we do validation and
+> compare it to THERMAL_CSTATE_INVALID,  but it's not actually a cooling
+> state (it's max_state - state). It does create confusion if we name
+> "state" both a performance index and a cooling state.
+> 
+> Given that the only user is devfreq_cooling_get_requested_power(),
+> might be good to collapse freq_get_state() in that function and rename
+> the "state" variable in there to "em_perf_idx".
 
-> ---
->  .../ctu/FSM_TXT_Buffer_user.png               | Bin 0 -> 174807 bytes
+I will have a look into this.
 
-Maybe picture should stay on website, somewhere. It is rather big for
-kernel sources.
+> 
+>>    * @dfc:	Pointer to devfreq cooling device
+>> - * @freq:	frequency in Hz
+>> + * @freq:	frequency in kHz
+>>    *
+>> - * Return: the cooling state associated with the @freq, or
+>> + * Return: the performance index associated with the @freq, or
+>>    * THERMAL_CSTATE_INVALID if it wasn't found.
+>>    */
+>>   static unsigned long
+>> @@ -128,8 +130,8 @@ freq_get_state(struct devfreq_cooling_device *dfc, unsigned long freq)
+>>   {
+>>   	int i;
+>>   
+>> -	for (i = 0; i < dfc->freq_table_size; i++) {
+>> -		if (dfc->freq_table[i] == freq)
+>> +	for (i = 0; i <= dfc->max_state; i++) {
+>> +		if (dfc->em->table[i].frequency == freq)
+>>   			return i;
+>>   	}
+>>   
+>> @@ -164,71 +166,15 @@ static unsigned long get_voltage(struct devfreq *df, unsigned long freq)
+>>   	return voltage;
+>>   }
+>>   
+>> -/**
+>> - * get_static_power() - calculate the static power
+>> - * @dfc:	Pointer to devfreq cooling device
+>> - * @freq:	Frequency in Hz
+>> - *
+>> - * Calculate the static power in milliwatts using the supplied
+>> - * get_static_power().  The current voltage is calculated using the
+>> - * OPP library.  If no get_static_power() was supplied, assume the
+>> - * static power is negligible.
+>> - */
+>> -static unsigned long
+>> -get_static_power(struct devfreq_cooling_device *dfc, unsigned long freq)
+>> +static void dfc_em_get_requested_power(struct em_perf_domain *em,
+>> +				       struct devfreq_dev_status *status,
+>> +				       u32 *power, int em_perf_idx)
+> 
+> Is there a reason for not directly returning the power value in this
+> function? Also, this only does a few arithmetic operations and it's only
+> called in one place. Is it worth to have this in a separate function?
 
-> +About SocketCAN
-> +---------------
-> +
-> +SocketCAN is a standard common interface for CAN devices in the Linux
-> +kernel. As the name suggests, the bus is accessed via sockets, similarly
-> +to common network devices. The reasoning behind this is in depth
-> +described in `Linux SocketCAN <https://git.kernel.org/cgit/linux/kernel/=
-git/torvalds/linux.git/tree/Documentation/networking/can.rst>`_.
-> +In short, it offers a
-> +natural way to implement and work with higher layer protocols over CAN,
-> +in the same way as, e.g., UDP/IP over Ethernet.
+Good question, maybe I will just put this code where it's called.
 
-Drop? Or at least link directly to the file in kernel tree?
+> 
+> [..]
+>> @@ -345,11 +279,8 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
+>>   	struct devfreq_cooling_device *dfc = cdev->devdata;
+>>   	struct devfreq *df = dfc->devfreq;
+>>   	struct devfreq_dev_status status;
+>> -	unsigned long busy_time;
+>> +	u32 est_power = power;
+> 
+> Nit: You could use power directly and remove est_power as well.
+> 
+>>   	unsigned long freq;
+>> -	s32 dyn_power;
+>> -	u32 static_power;
+>> -	s32 est_power;
+>>   	int i;
+>>   
+>>   	mutex_lock(&df->lock);
+>> @@ -358,31 +289,26 @@ static int devfreq_cooling_power2state(struct thermal_cooling_device *cdev,
+>>   
+>>   	freq = status.current_frequency;
+>>   
+>> -	if (dfc->power_ops->get_real_power) {
+>> +	if (dfc->power_ops && dfc->power_ops->get_real_power) {
+>>   		/* Scale for resource utilization */
+>>   		est_power = power * dfc->res_util;
+>>   		est_power /= SCALE_ERROR_MITIGATION;
+>>   	} else {
+>> -		static_power = get_static_power(dfc, freq);
+>> -
+>> -		dyn_power = power - static_power;
+>> -		dyn_power = dyn_power > 0 ? dyn_power : 0;
+>> -
+>> -		/* Scale dynamic power for utilization */
+>> -		busy_time = status.busy_time ?: 1;
+>> -		est_power = (dyn_power * status.total_time) / busy_time;
+>> +		_normalize_load(&status);
+>> +		est_power *= status.total_time;
+>> +		est_power /= status.busy_time;
+>>   	}
+>>   
+>>   	/*
+>>   	 * Find the first cooling state that is within the power
+>> -	 * budget for dynamic power.
+>> +	 * budget. The EM power table is sorted ascending.
+>>   	 */
+>> -	for (i = 0; i < dfc->freq_table_size - 1; i++)
+>> -		if (est_power >= dfc->power_table[i])
+>> +	for (i = dfc->max_state; i > 0; i--)
+>> +		if (est_power >= dfc->em->table[i].power)
+>>   			break;
+>>   
+>> -	*state = i;
+>> -	dfc->capped_state = i;
+>> +	*state = dfc->max_state - i;
+>> +	dfc->capped_state = *state;
+>>   	trace_thermal_power_devfreq_limit(cdev, freq, *state, power);
+>>   	return 0;
+>>   }
+> [..]
+>>   /**
+>> @@ -503,7 +381,7 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+>>   	struct thermal_cooling_device *cdev;
+>>   	struct devfreq_cooling_device *dfc;
+>>   	char dev_name[THERMAL_NAME_LENGTH];
+>> -	int err;
+>> +	int err, num_opps;
+>>   
+>>   	dfc = kzalloc(sizeof(*dfc), GFP_KERNEL);
+>>   	if (!dfc)
+>> @@ -511,28 +389,45 @@ of_devfreq_cooling_register_power(struct device_node *np, struct devfreq *df,
+>>   
+>>   	dfc->devfreq = df;
+>>   
+>> -	if (dfc_power) {
+>> -		dfc->power_ops = dfc_power;
+>> -
+>> +	dfc->em = em_pd_get(df->dev.parent);
+>> +	if (dfc->em) {
+>>   		devfreq_cooling_ops.get_requested_power =
+>>   			devfreq_cooling_get_requested_power;
+>>   		devfreq_cooling_ops.state2power = devfreq_cooling_state2power;
+>>   		devfreq_cooling_ops.power2state = devfreq_cooling_power2state;
+>> +
+>> +		dfc->power_ops = dfc_power;
+>> +
+>> +		num_opps = em_pd_nr_perf_states(dfc->em);
+>> +	} else {
+>> +		/* Backward compatibility for drivers which do not use IPA */
+>> +		dev_dbg(df->dev.parent, "missing EM for cooling device\n");
+>> +
+>> +		num_opps = dev_pm_opp_get_opp_count(df->dev.parent);
+>> +
+>> +		err = devfreq_cooling_gen_tables(dfc, num_opps);
+>> +		if (err)
+>> +			goto free_dfc;
+>>   	}
+>>   
+>> -	err = devfreq_cooling_gen_tables(dfc);
+>> -	if (err)
+>> +	if (num_opps <= 0) {
+>> +		err = -EINVAL;
+>>   		goto free_dfc;
+>> +	}
+>> +
+>> +	/* max_state is an index, not a counter */
+> 
+> Nit: Might be more clear to replace "index" with cooling state. Then
+> knowledge about cooling states would make this more clear.
 
-> +Device probe
-> +~~~~~~~~~~~~
-> +
-> +Before going into detail about the structure of a CAN bus device driver,
-> +let's reiterate how the kernel gets to know about the device at all.
-> +Some buses, like PCI or PCIe, support device enumeration. That is, when
-> +the system boots, it discovers all the devices on the bus and reads
-> +their configuration. The kernel identifies the device via its vendor ID
-> +and device ID, and if there is a driver registered for this identifier
-> +combination, its probe method is invoked to populate the driver's
-> +instance for the given hardware. A similar situation goes with USB, only
-> +it allows for device hot-plug.
-> +
-> +The situation is different for peripherals which are directly embedded
-> +in the SoC and connected to an internal system bus (AXI, APB, Avalon,
-> +and others). These buses do not support enumeration, and thus the kernel
-> +has to learn about the devices from elsewhere. This is exactly what the
-> +Device Tree was made for.
+Similar comment is in cpufreq_cooling.c. The 'index' here means the last
+valid index in the array.
 
-Dunno. Is it suitable? This is supposed to be ctu-can documentation,
-not "how hardware works" docs.
+Thank you for the review comments for all patches.
 
-> +Platform device driver
-> +^^^^^^^^^^^^^^^^^^^^^^
-> +
-> +In the case of Zynq, the core is connected via the AXI system bus, which
-> +does not have enumeration support, and the device must be specified in
-> +Device Tree. This kind of devices is called *platform device* in the
-> +kernel and is handled by a *platform device driver*\  [1]_.
-> +
-> +A platform device driver provides the following things:
-> +
-> +-  A *probe* function
-> +
-> +-  A *remove* function
-> +
-> +-  A table of *compatible* devices that the driver can handle
-> +
-> +The *probe* function is called exactly once when the device appears (or
-> +the driver is loaded, whichever happens later). If there are more
-> +devices handled by the same driver, the *probe* function is called for
-> +each one of them. Its role is to allocate and initialize resources
-> +required for handling the device, as well as set up low-level functions
-> +for the platform-independent layer, e.g., *read_reg* and *write_reg*.
-> +After that, the driver registers the device to a higher layer, in our
-> +case as a *network device*.
-> +
-> +The *remove* function is called when the device disappears, or the
-> +driver is about to be unloaded. It serves to free the resources
-> +allocated in *probe* and to unregister the device from higher layers.
-> +
-> +Finally, the table of *compatible* devices states which devices the
-> +driver can handle. The Device Tree entry ``compatible`` is matched
-> +against the tables of all *platform drivers*.
+Regards,
+Lukasz
 
-And this is "how to write a kernel driver" documentation. Like, why
-not, but maybe it does not need to be in kernel tree, and certainly
-should be separate from real "what is ctucan and how to use it" docs.
-
-Best regards,
-								Pavel
---=20
-http://www.livejournal.com/~pavelmachek
-
---f2QGlHpHGjS2mn6Y
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5FsNAAKCRAw5/Bqldv6
-8jKBAKCmizHIJCj3VPyqOohSfi3GtrmUCACfcxb6hpq3N7kbuJ2u8CONZ1K74u4=
-=+fFG
------END PGP SIGNATURE-----
-
---f2QGlHpHGjS2mn6Y--
+> 
+> Regards,
+> Ionela.
+> 
