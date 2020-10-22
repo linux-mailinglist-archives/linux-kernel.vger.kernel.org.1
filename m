@@ -2,73 +2,232 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1787E296040
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:45:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 98162296046
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:47:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900427AbgJVNpQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:45:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59920 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508274AbgJVNpQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:45:16 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 620CE20BED;
-        Thu, 22 Oct 2020 13:45:14 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 09:45:12 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] printk: Add kernel parameter: mute_console
-Message-ID: <20201022094512.37c9bf5d@gandalf.local.home>
-In-Reply-To: <20201022114228.9098-2-pmladek@suse.com>
-References: <20201022114228.9098-1-pmladek@suse.com>
-        <20201022114228.9098-2-pmladek@suse.com>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S2900445AbgJVNrr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:47:47 -0400
+Received: from conssluserg-04.nifty.com ([210.131.2.83]:38339 "EHLO
+        conssluserg-04.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2900429AbgJVNrr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:47:47 -0400
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44]) (authenticated)
+        by conssluserg-04.nifty.com with ESMTP id 09MDlSdD028005;
+        Thu, 22 Oct 2020 22:47:28 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-04.nifty.com 09MDlSdD028005
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1603374448;
+        bh=X8WuaJKmZT0L77l4ewuKWgQIfvhlzBlVo7ZUARb1Eoo=;
+        h=From:Date:Subject:To:Cc:From;
+        b=ZzCIPcp5S+HuNmYH0hdI4cI693C8bUBIMuQbpS9fialpPZAh3Wjdxs0ztbPuZbvhW
+         Ku6U5s8DwzpOpNAFcHmvWEnH1fygKjzn+vR+A2I5onFkjbPYQRP9IMT1HVRJ2EpTID
+         lqoHwGS0d2iNIly1xNC7NofhrGw4nxvMu3O3bTrGR//e9L3KKGGSjKuPmyHikGvrE2
+         sR1TYDaqra46xri+pyTZ6kWkEZzl/hKiZiOaZhbGAyxuVGB+3gwVPttaPobA8bWvPk
+         CME4KdPwjzzCvypPeaaVDCpTdVTeEEU6AgwdOE+VgH8Y7kCDaJaBGWNqevaIUaqpu2
+         6BjC8SAPX92Ag==
+X-Nifty-SrcIP: [209.85.216.44]
+Received: by mail-pj1-f44.google.com with SMTP id p21so1065659pju.0;
+        Thu, 22 Oct 2020 06:47:28 -0700 (PDT)
+X-Gm-Message-State: AOAM530bENYsW1EpIoHfn5RRiionHynbBpVungYWE2EUotwm/YP+J0QO
+        5whW+2rkVE6B5TOSRmAt0gjGBAkNDNI/+1fEEdc=
+X-Google-Smtp-Source: ABdhPJzB+oE/pPl49qtu21+dq3CLro6htEv4l7AzKaDU7anDphKBTjP8r9cojNQWdvyP98udBy6luzUdGt/RBiUDfDo=
+X-Received: by 2002:a17:90a:7023:: with SMTP id f32mr2525806pjk.87.1603374447536;
+ Thu, 22 Oct 2020 06:47:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 22 Oct 2020 22:46:51 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATH0zXhw+2-XJ2DcUkmJaC6=gW-67zqAtx1dnXn+hDhEw@mail.gmail.com>
+Message-ID: <CAK7LNATH0zXhw+2-XJ2DcUkmJaC6=gW-67zqAtx1dnXn+hDhEw@mail.gmail.com>
+Subject: [GIT PULL 1/2] Kbuild updates for v5.10-rc1
+To:     Linus Torvalds <torvalds@linuxfoundation.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 13:42:27 +0200
-Petr Mladek <pmladek@suse.com> wrote:
+Hi Linus,
 
-> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-> index fe64a49344bf..63fb96630767 100644
-> --- a/kernel/printk/printk.c
-> +++ b/kernel/printk/printk.c
-> @@ -1207,6 +1207,19 @@ void __init setup_log_buf(int early)
->  	memblock_free(__pa(new_log_buf), new_log_buf_len);
->  }
->  
-> +static bool mute_console;
-> +
-> +static int __init mute_console_setup(char *str)
-> +{
-> +	mute_console = true;
-> +	pr_info("All consoles muted.\n");
-> +
-> +	return 0;
-> +}
-> +
-> +early_param("mute_console", mute_console_setup);
-> +module_param(mute_console, bool, 0644);
-> +
+Please pull Kbuild updates for v5.10
 
-Why have both early_param and module_param? What's the purpose of
-module_param? Usually that's there to just set a variable, without a need
-for another interface. But if you have early_param() that sets
-mute_console, isn't that redundant?
+You will see a merge conflict in arch/arm/Makefile.
+The fix-up is easy, and also available in linux-next.
 
--- Steve
+Thanks.
+
+
+The following changes since commit d012a7190fc1fd72ed48911e77ca97ba4521bccd:
+
+  Linux 5.9-rc2 (2020-08-23 14:08:43 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kbuild-v5.10
+
+for you to fetch changes up to 1e66d50ad3a1dbf0169b14d502be59a4b1213149:
+
+  kbuild: Use uname for LINUX_COMPILE_HOST detection (2020-10-21 00:46:04 +0900)
+
+----------------------------------------------------------------
+Kbuild updates for v5.10
+
+ - Support 'make compile_commands.json' to generate the compilation
+   database more easily, avoiding stale entries
+
+ - Support 'make clang-analyzer' and 'make clang-tidy' for static checks
+   using clang-tidy
+
+ - Preprocess scripts/modules.lds.S to allow CONFIG options in the module
+   linker script
+
+ - Drop cc-option tests from compiler flags supported by our minimal
+   GCC/Clang versions
+
+ - Use always 12-digits commit hash for CONFIG_LOCALVERSION_AUTO=y
+
+ - Use sha1 build id for both BFD linker and LLD
+
+ - Improve deb-pkg for reproducible builds and rootless builds
+
+ - Remove stale, useless scripts/namespace.pl
+
+ - Turn -Wreturn-type warning into error
+
+ - Fix build error of deb-pkg when CONFIG_MODULES=n
+
+ - Replace 'hostname' command with more portable 'uname -n'
+
+ - Various Makefile cleanups
+
+----------------------------------------------------------------
+Bill Wendling (1):
+      kbuild: explicitly specify the build id style
+
+Chris Down (1):
+      kbuild: Use uname for LINUX_COMPILE_HOST detection
+
+Guillem Jover (3):
+      builddeb: Pass -n to gzip for reproducible packages
+      builddeb: Enable rootless builds
+      builddeb: Add support for all required debian/rules targets
+
+Jacob Keller (1):
+      scripts: remove namespace.pl
+
+Mark Wielaard (1):
+      kbuild: Only add -fno-var-tracking-assignments for old GCC versions
+
+Masahiro Yamada (21):
+      kbuild: hide commands to run Kconfig, and show short log for syncconfig
+      gen_compile_commands: parse only the first line of .*.cmd files
+      gen_compile_commands: use choices for --log_levels option
+      gen_compile_commands: do not support .cmd files under tools/ directory
+      gen_compile_commands: reword the help message of -d option
+      gen_compile_commands: make -o option independent of -d option
+      gen_compile_commands: move directory walk to a generator function
+      gen_compile_commands: support *.o, *.a, modules.order in
+positional argument
+      kbuild: wire up the build rule of compile_commands.json to Makefile
+      gen_compile_commands: remove the warning about too few .cmd files
+      arch: vdso: add vdso linker script to 'targets' instead of extra-y
+      kbuild: preprocess module linker script
+      kbuild: do not create built-in objects for external module builds
+      kbuild: remove redundant CONFIG_KASAN check from scripts/Makefile.kasan
+      kbuild: move CFLAGS_{KASAN,UBSAN,KCSAN} exports to relevant Makefiles
+      kbuild: remove cc-option test of -fno-strict-overflow
+      kbuild: remove cc-option test of -fno-stack-check
+      kbuild: remove cc-option test of -Werror=date-time
+      kbuild: split the build log of kallsyms
+      kbuild: deb-pkg: do not build linux-headers package if CONFIG_MODULES=n
+      kbuild: deb-pkg: clean up package name variables
+
+Nathan Huckleberry (1):
+      Makefile: Add clang-tidy and static analyzer support to makefile
+
+Olaf Hering (1):
+      kbuild: enforce -Werror=return-type
+
+Rasmus Villemoes (2):
+      scripts/setlocalversion: make git describe output more reliable
+      kbuild: remove leftover comment for filechk utility
+
+Sami Tolvanen (1):
+      treewide: remove DISABLE_LTO
+
+Sedat Dilek (1):
+      kbuild: Simplify DEBUG_INFO Kconfig handling
+
+ Documentation/process/submit-checklist.rst                   |   3 +-
+ MAINTAINERS                                                  |   1 +
+ Makefile                                                     |  94 ++++--
+ arch/arm/Makefile                                            |   4 -
+ arch/arm/{kernel/module.lds => include/asm/module.lds.h}     |   2 +
+ arch/arm/vdso/Makefile                                       |   2 +-
+ arch/arm64/Makefile                                          |   4 -
+ arch/arm64/{kernel/module.lds => include/asm/module.lds.h}   |   2 +
+ arch/arm64/kernel/vdso/Makefile                              |   5 +-
+ arch/arm64/kernel/vdso32/Makefile                            |   8 +-
+ arch/ia64/Makefile                                           |   1 -
+ arch/ia64/{module.lds => include/asm/module.lds.h}           |   0
+ arch/m68k/Makefile                                           |   1 -
+ arch/m68k/{kernel/module.lds => include/asm/module.lds.h}    |   0
+ arch/mips/vdso/Makefile                                      |   2 +-
+ arch/nds32/kernel/vdso/Makefile                              |   2 +-
+ arch/powerpc/Makefile                                        |   1 -
+ arch/powerpc/{kernel/module.lds => include/asm/module.lds.h} |   0
+ arch/powerpc/kernel/vdso32/Makefile                          |   2 +-
+ arch/powerpc/kernel/vdso64/Makefile                          |   2 +-
+ arch/riscv/Makefile                                          |   3 -
+ arch/riscv/{kernel/module.lds => include/asm/module.lds.h}   |   3 +-
+ arch/riscv/kernel/vdso/Makefile                              |   2 +-
+ arch/s390/kernel/vdso64/Makefile                             |   4 +-
+ arch/sparc/vdso/Makefile                                     |   4 +-
+ arch/um/include/asm/Kbuild                                   |   1 +
+ arch/x86/entry/vdso/Makefile                                 |   4 +-
+ include/asm-generic/Kbuild                                   |   1 +
+ include/asm-generic/module.lds.h                             |  10 +
+ kernel/Makefile                                              |   3 -
+ lib/Kconfig.debug                                            |  10 +-
+ scripts/.gitignore                                           |   1 +
+ scripts/Kbuild.include                                       |   2 -
+ scripts/Makefile                                             |   3 +
+ scripts/Makefile.build                                       |   2 +-
+ scripts/Makefile.kasan                                       |   4 +-
+ scripts/Makefile.kcsan                                       |   2 +-
+ scripts/Makefile.modfinal                                    |   5 +-
+ scripts/Makefile.ubsan                                       |   3 +
+ scripts/clang-tools/gen_compile_commands.py                  | 236
++++++++++++++
+ scripts/clang-tools/run-clang-tools.py                       |  74 +++++
+ scripts/gen_compile_commands.py                              | 151 ---------
+ scripts/kconfig/Makefile                                     |  16 +-
+ scripts/link-vmlinux.sh                                      |  20 +-
+ scripts/mkcompile_h                                          |   2 +-
+ scripts/{module-common.lds => module.lds.S}                  |   3 +
+ scripts/namespace.pl                                         | 473
+---------------------------
+ scripts/package/builddeb                                     |  19 +-
+ scripts/package/mkdebian                                     |  44 ++-
+ scripts/setlocalversion                                      |  21 +-
+ tools/testing/selftests/bpf/Makefile                         |   2 +-
+ 51 files changed, 512 insertions(+), 752 deletions(-)
+ rename arch/arm/{kernel/module.lds => include/asm/module.lds.h} (72%)
+ rename arch/arm64/{kernel/module.lds => include/asm/module.lds.h} (76%)
+ rename arch/ia64/{module.lds => include/asm/module.lds.h} (100%)
+ rename arch/m68k/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/powerpc/{kernel/module.lds => include/asm/module.lds.h} (100%)
+ rename arch/riscv/{kernel/module.lds => include/asm/module.lds.h} (84%)
+ create mode 100644 include/asm-generic/module.lds.h
+ create mode 100755 scripts/clang-tools/gen_compile_commands.py
+ create mode 100755 scripts/clang-tools/run-clang-tools.py
+ delete mode 100755 scripts/gen_compile_commands.py
+ rename scripts/{module-common.lds => module.lds.S} (93%)
+ delete mode 100755 scripts/namespace.pl
+
+
+-- 
+Best Regards
+Masahiro Yamada
