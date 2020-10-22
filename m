@@ -2,359 +2,217 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB53D296183
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46CC9296187
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:15:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901264AbgJVPOb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:14:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509793AbgJVPOa (ORCPT
+        id S2901288AbgJVPPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:15:22 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:59410 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509904AbgJVPPW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:14:30 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A7ADC0613CE;
-        Thu, 22 Oct 2020 08:14:30 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o7so1110294pgv.6;
-        Thu, 22 Oct 2020 08:14:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KZ/U65zjA9u6hMXsaiRL/mSlzHa3ohaGcy+QrWOeCZs=;
-        b=Fj/9Ua9LZjX1ogWCvx6x9V2T3WspUdgEnxPcTOgA2S+i5pocpE8RAAnELpu5+bER3C
-         se0syPVx3FXHuq+mshitx3zk2P13r8qcy2yqhf5/i+fH0051tDH0jk9ShCe4gnR6cz2V
-         v+IXGlMEs5eLfSFG/yyg8XDl//WjYjTqD4NL63BgjrIkZmuhvAymQKvhGEXPVcrcPft+
-         fGS4symGSQnkdwJoeU5qViq82MXoKEvRChiagBubdfKa/MLGZNEVqUDdZWXOrH+2rud1
-         GbmXj4adph1BIDxERtowli3aP9b8i+PMX0fVDTn1w/T0IvR3qKLhi6AYPWKKFXmCPrJ9
-         26sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=KZ/U65zjA9u6hMXsaiRL/mSlzHa3ohaGcy+QrWOeCZs=;
-        b=Zl1pxPay0I40GlfMeaee11d5TL/wdRZmghYxAv+WEobGcQJEZn3n+pET3iXQa2+xZc
-         JEnt7g02wllwgdsDsejZx0CEZzh0uLEnNF/rCpsdPnWjF2nYZk9GK9OzOaTdki0CqLle
-         TW5sJFT4HVEQ6O34hmpG6tD/qD/JFoTZ3ZFD6/Jfy9+/oI+mvLMAg6VfAwmo8vS2vYHA
-         G7j2G+A1Hitbvi96K/FztmeZMXWn+H6Z7SBt8xpEK6I51pK0OacqLB5iLp6x9mvqxLep
-         e5X1tugS2nxMxvVqPa1hsCOsVHS0OiFK1OG0KnnTWGVTyu6lKfn8Ug6Az8q+BQ10VRgl
-         CA+w==
-X-Gm-Message-State: AOAM533kASofgTAgxBimybLEx3Pjd7gSfh1NP91M3wVWp5HvRHnxyRhu
-        A7H5i/Godd5AmrEWca0lZLk=
-X-Google-Smtp-Source: ABdhPJy42DS6N7bC4UmjQLH4ThqM/A7jF0kkk3sDqAO6LScCP14YJLihJnQogZ5D64Vm6haSY84+tQ==
-X-Received: by 2002:a65:5a4d:: with SMTP id z13mr1379207pgs.297.1603379669614;
-        Thu, 22 Oct 2020 08:14:29 -0700 (PDT)
-Received: from arpitha-Inspiron-7570.lan ([106.51.242.32])
-        by smtp.gmail.com with ESMTPSA id b16sm2704489pfp.195.2020.10.22.08.14.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 08:14:28 -0700 (PDT)
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        andriy.shevchenko@linux.intel.com, pmladek@suse.com,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        linux@rasmusvillemoes.dk, alexandre.belloni@bootlin.com,
-        gregkh@linuxfoundation.org, rdunlap@infradead.org,
-        idryomov@gmail.com
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: [PATCH v2] lib: Convert test_printf.c to KUnit
-Date:   Thu, 22 Oct 2020 20:43:49 +0530
-Message-Id: <20201022151349.47436-1-98.arpi@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Thu, 22 Oct 2020 11:15:22 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MF4mnk016525;
+        Thu, 22 Oct 2020 15:14:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=nLO8sRXFYpUQiwJEfuTU4CZ+g0g8h2RhbpdmgN5Y+ZI=;
+ b=Lgfj/QcigNg8QFu6Y2BR/yBjN7jQxSJ+R2uX2FPIQz5G7kTbNftMK0zuZfQ5p5Bg3H8t
+ mZpBMAT8LRgmn3uOpk2x5f3U+PWoHuEd7bebPEaTTEVE4s+E4fQ11S4g0aIAJ7srVV9T
+ eZ3LRQQSlcH8L6kpvZHCjbHTsT1bPW6wIaqM7jicrDu+xi5T0gMQ9DC/iXmMry+Xrc+s
+ vAQhfbIkQ61tzxH/hI9+1FpldlF9IYounWQZeiWzRLgK3KjH206xJvmZKWziWFQQq0zB
+ JlOe8hbBK1SevVExweNF5I9lXsiFkUgF78RjdIZnR4/wFxcDiaD9garniIo0Ko8cISeu Tg== 
+Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
+        by userp2120.oracle.com with ESMTP id 34ak16psv6-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Oct 2020 15:14:30 +0000
+Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
+        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MF1HY3176840;
+        Thu, 22 Oct 2020 15:14:29 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by userp3030.oracle.com with ESMTP id 348ahyvxma-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 15:14:29 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09MFELTb031437;
+        Thu, 22 Oct 2020 15:14:21 GMT
+Received: from localhost (/67.169.218.210)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 22 Oct 2020 08:14:20 -0700
+Date:   Thu, 22 Oct 2020 08:14:18 -0700
+From:   "Darrick J. Wong" <darrick.wong@oracle.com>
+To:     Sergei Shtepa <sergei.shtepa@veeam.com>
+Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
+        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "osandov@fb.com" <osandov@fb.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>
+Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
+Message-ID: <20201022151418.GR9832@magnolia>
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+ <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
+ <20201021141044.GF20749@veeam.com>
+ <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
+ <20201022094402.GA21466@veeam.com>
+ <BL0PR04MB6514AC1B1FF313E6A14D122CE71D0@BL0PR04MB6514.namprd04.prod.outlook.com>
+ <20201022135213.GB21466@veeam.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022135213.GB21466@veeam.com>
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
+ malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=1
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220103
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220103
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Convert test lib/test_printf.c to KUnit. More information about
-KUnit can be found at:
-https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
-KUnit provides a common framework for unit tests in the kernel.
-KUnit and kselftest are standardizing around KTAP, converting this
-test to KUnit makes this test output in KTAP which we are trying to
-make the standard test result format for the kernel. More about
-the KTAP format can be found at:
-https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
-I ran both the original and converted tests as is to produce the
-output for success of the test in the two cases. I also ran these
-tests with a small modification to show the difference in the output
-for failure of the test in both cases. The modification I made is:
-- test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
-+ test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+On Thu, Oct 22, 2020 at 04:52:13PM +0300, Sergei Shtepa wrote:
+> The 10/22/2020 13:28, Damien Le Moal wrote:
+> > On 2020/10/22 18:43, Sergei Shtepa wrote:
+> > > 
+> > > Maybe, but the problem is that I can't imagine how to implement
+> > > dm-intercept yet. 
+> > > How to use dm to implement interception without changing the stack
+> > > of block devices. We'll have to make a hook somewhere, isn`t it?
+> > 
+> > Once your dm-intercept target driver is inserted with "dmsetup" or any user land
+> > tool you implement using libdevicemapper, the "hooks" will naturally be in place
+> > since the dm infrastructure already does that: all submitted BIOs will be passed
+> > to dm-intercept through the "map" operation defined in the target_type
+> > descriptor. It is then that driver job to execute the BIOs as it sees fit.
+> > 
+> > Look at simple device mappers like dm-linear or dm-flakey for hints of how
+> > things work (driver/md/dm-linear.c). More complex dm drivers like dm-crypt,
+> > dm-writecache or dm-thin can give you hints about more features of device mapper.
+> > Functions such as __map_bio() in drivers/md/dm.c are the core of DM and show
+> > what happens to BIOs depending on the the return value of the map operation.
+> > dm_submit_bio() and __split_and_process_bio() is the entry points for BIO
+> > processing in DM.
+> > 
+> 
+> Is there something I don't understand? Please correct me.
+> 
+> Let me remind that by the condition of the problem, we can't change
+> the configuration of the block device stack.
+> 
+> Let's imagine this configuration: /root mount point on ext filesystem
+> on /dev/sda1.
+> +---------------+
+> |               |
+> |  /root        |
+> |               |
+> +---------------+
+> |               |
+> | EXT FS        |
+> |               |
+> +---------------+
+> |               |
+> | block layer   |
+> |               |
+> | sda queue     |
+> |               |
+> +---------------+
+> |               |
+> | scsi driver   |
+> |               |
+> +---------------+
+> 
+> We need to add change block tracking (CBT) and snapshot functionality for
+> incremental backup.
+> 
+> With the DM we need to change the block device stack. Add device /dev/sda1
+> to LVM Volume group, create logical volume, change /etc/fstab and reboot.
+> 
+> The new scheme will look like this:
+> +---------------+
+> |               |
+> |  /root        |
+> |               |
+> +---------------+
+> |               |
+> | EXT FS        |
+> |               |
+> +---------------+
+> |               |
+> | LV-root       |
+> |               |
+> +------------------+
+> |                  |
+> | dm-cbt & dm-snap |
+> |                  |
+> +------------------+
+> |               |
+> | sda queue     |
+> |               |
+> +---------------+
+> |               |
+> | scsi driver   |
+> |               |
+> +---------------+
+> 
+> But I cannot change block device stack. And so I propose a scheme with
+> interception.
+> +---------------+
+> |               |
+> |  /root        |
+> |               |
+> +---------------+
+> |               |
+> | EXT FS        |
+> |               |
+> +---------------+   +-----------------+
+> |  |            |   |                 |
+> |  | blk-filter |-> | cbt & snapshot  |
+> |  |            |<- |                 |
+> |  +------------+   +-----------------+
+> |               |
+> | sda blk queue |
+> |               |
+> +---------------+
+> |               |
+> | scsi driver   |
+> |               |
+> +---------------+
+> 
+> Perhaps I can make "cbt & snapshot" inside the DM, but without interception
+> in any case, it will not work. Isn't that right?
 
-Original test success:
-[    0.591262] test_printf: loaded.
-[    0.591409] test_printf: all 388 tests passed
+Stupid question: Why don't you change the block layer to make it
+possible to insert device mapper devices after the blockdev has been set
+up?
 
-Original test failure:
-[    0.619345] test_printf: loaded.
-[    0.619394] test_printf: vsnprintf(buf, 256, "%piS|%pIS", ...)
-wrote '127.000.000.001|127.0.0.1', expected
-'127-000.000.001|127.0.0.1'
-[    0.619395] test_printf: vsnprintf(buf, 25, "%piS|%pIS", ...) wrote
-'127.000.000.001|127.0.0.', expected '127-000.000.001|127.0.0.'
-[    0.619396] test_printf: kvasprintf(..., "%piS|%pIS", ...) returned
-'127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-[    0.619495] test_printf: failed 3 out of 388 tests
+--D
 
-Converted test success:
-    # Subtest: printf-kunit-test
-    1..1
-    ok 1 - selftest
-ok 1 - printf-kunit-test
-
-Converted test failure:
-    # Subtest: printf-kunit-test
-    1..1
-    # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
-'127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-    # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
-    # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
-kvasprintf(..., "%pi4|%pI4", ...) returned
-'127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-    not ok 1 - selftest
-not ok 1 - printf-kunit-test
-
-Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
----
-Changes v1->v2:
-- Retain the control flow (early returns) in do_test()
-- Display less irrelevant information on test failure
-- A more detailed commit message
-
- lib/Kconfig.debug                     |  7 +--
- lib/Makefile                          |  2 +-
- lib/{test_printf.c => printf_kunit.c} | 76 +++++++++++++--------------
- 3 files changed, 43 insertions(+), 42 deletions(-)
- rename lib/{test_printf.c => printf_kunit.c} (91%)
-
-diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
-index 66d44d35cc97..e82ca893ed5b 100644
---- a/lib/Kconfig.debug
-+++ b/lib/Kconfig.debug
-@@ -2053,9 +2053,6 @@ config TEST_STRSCPY
- config TEST_KSTRTOX
- 	tristate "Test kstrto*() family of functions at runtime"
- 
--config TEST_PRINTF
--	tristate "Test printf() family of functions at runtime"
--
- config TEST_BITMAP
- 	tristate "Test bitmap_*() family of functions at runtime"
- 	help
-@@ -2282,6 +2279,10 @@ config BITS_TEST
- 
- 	  If unsure, say N.
- 
-+config PRINTF_KUNIT_TEST
-+	tristate "KUnit test for printf() family of functions at runtime"
-+	depends on KUNIT
-+
- config TEST_UDELAY
- 	tristate "udelay test driver"
- 	help
-diff --git a/lib/Makefile b/lib/Makefile
-index ce45af50983a..c323447022b7 100644
---- a/lib/Makefile
-+++ b/lib/Makefile
-@@ -84,7 +84,6 @@ obj-$(CONFIG_TEST_SORT) += test_sort.o
- obj-$(CONFIG_TEST_USER_COPY) += test_user_copy.o
- obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_keys.o
- obj-$(CONFIG_TEST_STATIC_KEYS) += test_static_key_base.o
--obj-$(CONFIG_TEST_PRINTF) += test_printf.o
- obj-$(CONFIG_TEST_BITMAP) += test_bitmap.o
- obj-$(CONFIG_TEST_STRSCPY) += test_strscpy.o
- obj-$(CONFIG_TEST_UUID) += test_uuid.o
-@@ -352,3 +351,4 @@ obj-$(CONFIG_BITFIELD_KUNIT) += bitfield_kunit.o
- obj-$(CONFIG_LIST_KUNIT_TEST) += list-test.o
- obj-$(CONFIG_LINEAR_RANGES_TEST) += test_linear_ranges.o
- obj-$(CONFIG_BITS_TEST) += test_bits.o
-+obj-$(CONFIG_PRINTF_KUNIT_TEST) += printf_kunit.o
-diff --git a/lib/test_printf.c b/lib/printf_kunit.c
-similarity index 91%
-rename from lib/test_printf.c
-rename to lib/printf_kunit.c
-index 7ac87f18a10f..e4dc1b1c8972 100644
---- a/lib/test_printf.c
-+++ b/lib/printf_kunit.c
-@@ -5,6 +5,7 @@
- 
- #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
- 
-+#include <kunit/test.h>
- #include <linux/init.h>
- #include <linux/kernel.h>
- #include <linux/module.h>
-@@ -30,64 +31,57 @@
- #define PAD_SIZE 16
- #define FILL_CHAR '$'
- 
--static unsigned total_tests __initdata;
--static unsigned failed_tests __initdata;
- static char *test_buffer __initdata;
- static char *alloced_buffer __initdata;
-+struct kunit *kunittest;
- 
--static int __printf(4, 0) __init
-+static void __printf(4, 0) __init
- do_test(int bufsize, const char *expect, int elen,
- 	const char *fmt, va_list ap)
- {
- 	va_list aq;
- 	int ret, written;
- 
--	total_tests++;
--
- 	memset(alloced_buffer, FILL_CHAR, BUF_SIZE + 2*PAD_SIZE);
- 	va_copy(aq, ap);
- 	ret = vsnprintf(test_buffer, bufsize, fmt, aq);
- 	va_end(aq);
- 
- 	if (ret != elen) {
--		pr_warn("vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d\n",
-+		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) returned %d, expected %d\n",
- 			bufsize, fmt, ret, elen);
--		return 1;
-+		return;
- 	}
- 
- 	if (memchr_inv(alloced_buffer, FILL_CHAR, PAD_SIZE)) {
--		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote before buffer\n", bufsize, fmt);
--		return 1;
-+		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote before buffer\n", bufsize, fmt);
-+		return;
- 	}
- 
- 	if (!bufsize) {
--		if (memchr_inv(test_buffer, FILL_CHAR, BUF_SIZE + PAD_SIZE)) {
--			pr_warn("vsnprintf(buf, 0, \"%s\", ...) wrote to buffer\n",
--				fmt);
--			return 1;
--		}
--		return 0;
-+		if (memchr_inv(test_buffer, FILL_CHAR, BUF_SIZE + PAD_SIZE))
-+			KUNIT_FAIL(kunittest, "vsnprintf(buf, 0, \"%s\", ...) wrote to buffer\n", fmt);
-+		return;
- 	}
- 
- 	written = min(bufsize-1, elen);
- 	if (test_buffer[written]) {
--		pr_warn("vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer\n",
-+		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) did not nul-terminate buffer\n",
- 			bufsize, fmt);
--		return 1;
-+		return;
- 	}
- 
- 	if (memchr_inv(test_buffer + written + 1, FILL_CHAR, BUF_SIZE + PAD_SIZE - (written + 1))) {
--		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
-+		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote beyond the nul-terminator\n",
- 			bufsize, fmt);
--		return 1;
-+		return;
- 	}
- 
- 	if (memcmp(test_buffer, expect, written)) {
--		pr_warn("vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'\n",
-+		KUNIT_FAIL(kunittest, "vsnprintf(buf, %d, \"%s\", ...) wrote '%s', expected '%.*s'\n",
- 			bufsize, fmt, test_buffer, written, expect);
--		return 1;
-+		return;
- 	}
--	return 0;
- }
- 
- static void __printf(3, 4) __init
-@@ -98,9 +92,8 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	char *p;
- 
- 	if (elen >= BUF_SIZE) {
--		pr_err("error in test suite: expected output length %d too long. Format was '%s'.\n",
-+		KUNIT_FAIL(kunittest, "error in test suite: expected output length %d too long. Format was '%s'.\n",
- 		       elen, fmt);
--		failed_tests++;
- 		return;
- 	}
- 
-@@ -112,19 +105,17 @@ __test(const char *expect, int elen, const char *fmt, ...)
- 	 * enough and 0), and then we also test that kvasprintf would
- 	 * be able to print it as expected.
- 	 */
--	failed_tests += do_test(BUF_SIZE, expect, elen, fmt, ap);
-+	do_test(BUF_SIZE, expect, elen, fmt, ap);
- 	rand = 1 + prandom_u32_max(elen+1);
- 	/* Since elen < BUF_SIZE, we have 1 <= rand <= BUF_SIZE. */
--	failed_tests += do_test(rand, expect, elen, fmt, ap);
--	failed_tests += do_test(0, expect, elen, fmt, ap);
-+	do_test(rand, expect, elen, fmt, ap);
-+	do_test(0, expect, elen, fmt, ap);
- 
- 	p = kvasprintf(GFP_KERNEL, fmt, ap);
- 	if (p) {
--		total_tests++;
- 		if (memcmp(p, expect, elen+1)) {
--			pr_warn("kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'\n",
-+			KUNIT_FAIL(kunittest, "kvasprintf(..., \"%s\", ...) returned '%s', expected '%s'\n",
- 				fmt, p, expect);
--			failed_tests++;
- 		}
- 		kfree(p);
- 	}
-@@ -303,16 +294,13 @@ plain(void)
- 
- 	err = plain_hash();
- 	if (err) {
--		pr_warn("plain 'p' does not appear to be hashed\n");
--		failed_tests++;
-+		KUNIT_FAIL(kunittest, "plain 'p' does not appear to be hashed\n");
- 		return;
- 	}
- 
- 	err = plain_format();
--	if (err) {
--		pr_warn("hashing plain 'p' has unexpected format\n");
--		failed_tests++;
--	}
-+	if (err)
-+		KUNIT_FAIL(kunittest, "hashing plain 'p' has unexpected format\n");
- }
- 
- static void __init
-@@ -696,8 +684,9 @@ test_pointer(void)
- 	fwnode_pointer();
- }
- 
--static void __init selftest(void)
-+static void __init selftest(struct kunit *ktest)
- {
-+	kunittest = ktest;
- 	alloced_buffer = kmalloc(BUF_SIZE + 2*PAD_SIZE, GFP_KERNEL);
- 	if (!alloced_buffer)
- 		return;
-@@ -711,6 +700,17 @@ static void __init selftest(void)
- 	kfree(alloced_buffer);
- }
- 
--KSTM_MODULE_LOADERS(test_printf);
-+static struct kunit_case printf_test_cases[] = {
-+	KUNIT_CASE(selftest),
-+	{}
-+};
-+
-+static struct kunit_suite printf_test_suite = {
-+	.name = "printf-kunit-test",
-+	.test_cases = printf_test_cases,
-+};
-+
-+kunit_test_suite(printf_test_suite);
-+
- MODULE_AUTHOR("Rasmus Villemoes <linux@rasmusvillemoes.dk>");
- MODULE_LICENSE("GPL");
--- 
-2.25.1
-
+> 
+> -- 
+> Sergei Shtepa
+> Veeam Software developer.
