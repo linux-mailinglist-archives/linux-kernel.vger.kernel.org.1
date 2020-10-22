@@ -2,111 +2,167 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 367812964D9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:51:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7C942964DF
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369611AbgJVSvB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:51:01 -0400
-Received: from mga14.intel.com ([192.55.52.115]:4042 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900104AbgJVSvA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:51:00 -0400
-IronPort-SDR: DxJGAI4pPgtfL92gkoEkNTj9FEMrk2A+LUrrOd85pVmMH5qg6B/WtIfldq8rCGQcS1iva0TXH+
- 5R9ngU/RuCGA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="166794624"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="166794624"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 11:50:59 -0700
-IronPort-SDR: SsIR/EaZs7+GXJcbJhLWhCvU/2vnQODdSIAq5PLynYjpFI+R/HD7pjtT4S55ceI7LJewXCrmY1
- hM25LrCqvqZg==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="302426113"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 11:50:58 -0700
-Date:   Fri, 23 Oct 2020 02:53:20 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH][v2] PM / sysfs: Expose suspend resume driver flags in
- sysfs
-Message-ID: <20201022185320.GA8811@chenyu-office.sh.intel.com>
-References: <20201022085244.1860-1-yu.c.chen@intel.com>
- <CAHp75Vf52m78FNKgTQ8c_y6UNaR91ANZh296tg6nz+reEv0DEg@mail.gmail.com>
+        id S369770AbgJVSwr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:52:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46014 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S369695AbgJVSwr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 14:52:47 -0400
+Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12E27C0613CE;
+        Thu, 22 Oct 2020 11:52:47 -0700 (PDT)
+Received: by mail-pf1-x444.google.com with SMTP id 144so1732850pfb.4;
+        Thu, 22 Oct 2020 11:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=UPboJfWy2G3Fl7hwjyzYX4I9qIst4Uk/OLfG5LU/e2E=;
+        b=VtKxX3880Ktn0xTFSYzIwEDHPTS945FNbgy5Gr9ePYlOcjKHowJfessighc9v6F0en
+         LuknoiQUlSBxsAQPLJLt/drziu0AAwrOEzyhUcwmwHsfzlAgokLQ53YfZOV0mJ1FzJeD
+         V/RcTixiSCbFKJCyLRQHl4yc2COxVriX0ZwYQmav4pYgvvT+EjnkpaVicrejbnDloVIk
+         X69NaHzfPbEZYDyIKTszJJWoesjJRt/Mfyo263Y91yBXzQopSm8wFrQjL6KANAn1UNJ9
+         np8MAbILaQqiWKg9w2R6c4aSkw1MLko9EBT4X7A/ELdcmFYyNndVmSZdwaD+9LAAHuWE
+         zOiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=UPboJfWy2G3Fl7hwjyzYX4I9qIst4Uk/OLfG5LU/e2E=;
+        b=QCHyybLgWy+uSZjDMOQfwQ9xYEzADSD75z5wEMBomOjtmm9r/b+C26EwGLXP/wI7nO
+         xDgwK7OGpq9vOQlQr7+S5GEadS33taigGK9huM7HEN7ELvm+TH3kgMYhD+kfticC++I5
+         H9qN9tUCez4zfgZH1cuMQVrwRXsKbwlm883NMfJ9CjHG1FKmpW9qKzt88dreAFF1jVBd
+         YgNxDgUFGH8X0GvhsuQpDR1hui0XVKSir8rUuGIhl64hS6nhrm1HJwge+W+43yCZ6YuK
+         PlPT/KX+4/xzbChG4PWUHjxzpDfagGME5JoVbrvO5ubE+BdQ48DB5jd0K82jTtXcv5fV
+         SRyw==
+X-Gm-Message-State: AOAM533Ej2/Bk1d6zWrsO7HFpPnOcNpULMFogtjhxHSP6Vv39xp/8IEU
+        FOXukWDUmZQgpiyVz2ML4wJqXmPvMOF8ibruUUM=
+X-Google-Smtp-Source: ABdhPJxuxwguwZIz0oJ2B/3sUWcXzpnVtRm/MOSafV+Mdym/oG+j6niWLg7KAllKTq7L+Rkez2tw5MM5pbQzsafKqk0=
+X-Received: by 2002:a05:6a00:22c2:b029:156:543:7c1d with SMTP id
+ f2-20020a056a0022c2b029015605437c1dmr3771716pfj.40.1603392766581; Thu, 22 Oct
+ 2020 11:52:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAHp75Vf52m78FNKgTQ8c_y6UNaR91ANZh296tg6nz+reEv0DEg@mail.gmail.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+References: <20201022155858.20867-1-nsaenzjulienne@suse.de> <20201022155858.20867-11-nsaenzjulienne@suse.de>
+In-Reply-To: <20201022155858.20867-11-nsaenzjulienne@suse.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 22 Oct 2020 21:53:35 +0300
+Message-ID: <CAHp75VcB5oxXs38UH5taVGj21wUi3sHYdRPOj3wxa3yXg0vmUA@mail.gmail.com>
+Subject: Re: [PATCH v2 10/10] pwm: Add Raspberry Pi Firmware based PWM bus
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-pwm@vger.kernel.org,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        linux-input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
-On Thu, Oct 22, 2020 at 04:36:25PM +0300, Andy Shevchenko wrote:
-> On Thu, Oct 22, 2020 at 12:24 PM Chen Yu <yu.c.chen@intel.com> wrote:
-> >
-> > Currently there are 4 driver flags to control system suspend/resume
-> > behavior: DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
-> > DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME. Make these flags
-> > visible in sysfs as read-only to get a brief understanding of the
-> > expected behavior of each device during suspend/resume, so as to
-> > facilitate suspend/resume debugging/tuning.
-> >
-> > For example:
-> > /sys/devices/pci0000:00/0000:00:15.1/power/driver_flags:4
-> > (DPM_FLAG_SMART_SUSPEND)
-> >
-> > /sys/devices/pci0000:00/0000:00:07.3/power/driver_flags:5
-> > (DPM_FLAG_NO_DIRECT_COMPLETE | DPM_FLAG_SMART_SUSPEND)
-> 
-> ...
-> 
-> > +What:          /sys/devices/.../power/driver_flags
-> > +Date:          October 2020
-> > +Contact:       Chen Yu <yu.c.chen@intel.com>
-> > +Description:
-> > +               The /sys/devices/.../driver_flags attribute contains the driver
-> > +               flags to control system suspend/resume. The flag is a combination
-> > +               of DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
-> > +               DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME, or 0 if the
-> > +               driver has not set any flag.
-> 
-> > This attribute is read-only. If
-> > +               CONFIG_PM_ADVANCED_DEBUG is not set this attribute is empty.
-> 
-> Which makes me wonder why we even expose this if the above is not set.
-> 
-> ...
-> 
-It will not be exposed if the config is disabled. 'empty' means
-'not present' I think.
-> > +static struct attribute *pm_driver_flags_attrs[] = {
-> > +#ifdef CONFIG_PM_ADVANCED_DEBUG
-> > +#ifdef CONFIG_PM_SLEEP
-> > +       &dev_attr_driver_flags.attr,
-> > +#endif
-> > +#endif
-> 
-> > +       NULL,
-> 
-> No comma here, please. I think I commented on this internally.
-> 
-Sorry I misunderstood your point previously, I can change in next
-version. But might need to wait for Greg to decide if this item
-should be exposed or not first.
+On Thu, Oct 22, 2020 at 9:05 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Adds support to control the PWM bus available in official Raspberry Pi
+> PoE HAT. Only RPi's co-processor has access to it, so commands have to
+> be sent through RPi's firmware mailbox interface.
 
-Thanks,
-Chenyu
-> > +};
-> 
-> -- 
-> With Best Regards,
-> Andy Shevchenko
+>  drivers/pwm/pwm-raspberrypi.c | 221 ++++++++++++++++++++++++++++++++++
+
+Name is completely confusing.
+Please, make it unique enough to understand that this is exactly the
+device it serves for.
+
+For example, pwm-rpi-poe is better.
+
+...
+
+> + *  - Only normal polarity
+
+Can't it be emulated? Isn't it 100% - duty cycle % ?
+
+
+> +#include <linux/module.h>
+> +#include <linux/of.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/pwm.h>
+
+...
+
+> +       ret = rpi_firmware_property(firmware, RPI_FIRMWARE_SET_POE_HAT_VAL,
+> +                                   &msg, sizeof(msg));
+> +       if (ret)
+> +               return ret;
+
+> +       else if (msg.ret)
+
+Redundant 'else'
+
+> +               return -EIO;
+
+...
+
+> +       ret = rpi_firmware_property(firmware, RPI_FIRMWARE_GET_POE_HAT_VAL,
+> +                                   &msg, sizeof(msg));
+> +       if (ret)
+> +               return ret;
+
+> +       else if (msg.ret)
+
+Ditto.
+
+> +               return -EIO;
+
+...
+
+> +       firmware_node = of_get_parent(dev->of_node);
+> +       if (!firmware_node) {
+> +               dev_err(dev, "Missing firmware node\n");
+> +               return -ENOENT;
+> +       }
+> +
+> +       firmware = rpi_firmware_get(firmware_node);
+> +       of_node_put(firmware_node);
+> +       if (!firmware)
+> +               return -EPROBE_DEFER;
+
+Looks like a hack.
+
+...
+
+> +       ret = pwmchip_remove(&rpipwm->chip);
+> +       if (!ret)
+> +               rpi_firmware_put(rpipwm->firmware);
+> +
+> +       return ret;
+
+Can't you use the usual pattern?
+
+  ret = ...
+  if (ret)
+    return ret;
+  ...
+  return 0;
+
+-- 
+With Best Regards,
+Andy Shevchenko
