@@ -2,98 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9489295932
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:28:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DFB529593C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508550AbgJVH2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:28:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55882 "EHLO mx2.suse.de"
+        id S2508571AbgJVHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:32:18 -0400
+Received: from mailout08.rmx.de ([94.199.90.85]:34111 "EHLO mailout08.rmx.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2506488AbgJVH2j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:28:39 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4EEC6ABB2;
-        Thu, 22 Oct 2020 07:28:37 +0000 (UTC)
-Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
-To:     saeed.mirzamohammadi@oracle.com, linux-kernel@vger.kernel.org
-Cc:     b.zolnierkie@samsung.com, akpm@linux-foundation.org,
-        rppt@kernel.org, daniel.vetter@ffwll.ch, jani.nikula@intel.com,
-        gustavoars@kernel.org, dri-devel@lists.freedesktop.org,
-        linux-fbdev@vger.kernel.org
-References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
-From:   Thomas Zimmermann <tzimmermann@suse.de>
-Message-ID: <59d0aaeb-f3d0-b386-a3a1-4f5f71fb68aa@suse.de>
-Date:   Thu, 22 Oct 2020 09:28:36 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S2508538AbgJVHcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:32:17 -0400
+Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mailout08.rmx.de (Postfix) with ESMTPS id 4CGzb05T30zMtN6;
+        Thu, 22 Oct 2020 09:32:12 +0200 (CEST)
+Received: from mta.arri.de (unknown [217.111.95.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by kdin01.retarus.com (Postfix) with ESMTPS id 4CGzZm0HM5z2xKF;
+        Thu, 22 Oct 2020 09:32:00 +0200 (CEST)
+Received: from n95hx1g2.localnet (192.168.54.141) by mta.arri.de
+ (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 22 Oct
+ 2020 09:30:58 +0200
+From:   Christian Eggers <ceggers@arri.de>
+To:     Richard Cochran <richardcochran@gmail.com>
+CC:     Vladimir Oltean <olteanv@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
+        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
+Date:   Thu, 22 Oct 2020 09:30:57 +0200
+Message-ID: <2975985.V79r5fVmzq@n95hx1g2>
+Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
+In-Reply-To: <20201022023233.GA904@hoboy.vegasvil.org>
+References: <20201019172435.4416-1-ceggers@arri.de> <20201021233935.ocj5dnbdz7t7hleu@skbuf> <20201022023233.GA904@hoboy.vegasvil.org>
 MIME-Version: 1.0
-In-Reply-To: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+X-Originating-IP: [192.168.54.141]
+X-RMX-ID: 20201022-093200-4CGzZm0HM5z2xKF-0@kdin01
+X-RMX-SOURCE: 217.111.95.66
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Hi Richard,
 
-On 22.10.20 01:57, saeed.mirzamohammadi@oracle.com wrote:
-> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+On Thursday, 22 October 2020, 04:42:01 CEST, Richard Cochran wrote:
+> I'm just catching up with this.
 > 
-> This patch fixes the issue due to:
-> 
-> [   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
-> [   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted 5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
-> [   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 0.5.1 01/01/2011
-> [   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
-> 
-> The error happens when the pixels value is calculated before performing the sanity checks on bits_per_pixel.
-> A bits_per_pixel set to zero causes divide by zero error.
-> 
-> This patch moves the calculation after the sanity check.
-> 
-> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+> Really. Truly. Please -- Include the maintainer on CC for such patches!
+sorry for missing you on the recipients list. I blindly trusted the output of
+get_maintainer.pl.
 
-Looks good, thanks a lot. I'll add the patch to drm-misc-next
+I recently sent two other patches which may also be of interest for you. They
+related to handling of SO_TIMESTAMPING on 32 bit platforms with newer C 
+libraries:
 
-Reviewed-by: Thomas Zimemrmann <tzimmermann@suse.de>
+https://patchwork.ozlabs.org/project/netdev/patch/20201012093542.15504-1-ceggers@arri.de/
+https://patchwork.ozlabs.org/project/netdev/patch/20201012093542.15504-2-ceggers@arri.de/
 
-Best regards
-Thomas
-
-> ---
->  drivers/video/fbdev/cirrusfb.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+> On Thu, Oct 22, 2020 at 02:39:35AM +0300, Vladimir Oltean wrote:
+> > On Mon, Oct 19, 2020 at 07:24:33PM +0200, Christian Eggers wrote:
+> > > The PTP hardware performs internal detection of PTP frames (likely
+> > > similar as ptp_classify_raw() and ptp_parse_header()). As these filters
+> > > cannot be disabled, the current delay mode (E2E/P2P) and the clock mode
+> > > (master/slave) must be configured via sysfs attributes.
 > 
-> diff --git a/drivers/video/fbdev/cirrusfb.c b/drivers/video/fbdev/cirrusfb.c
-> index 15a9ee7cd734..a7749101b094 100644
-> --- a/drivers/video/fbdev/cirrusfb.c
-> +++ b/drivers/video/fbdev/cirrusfb.c
-> @@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
->  {
->  	int yres;
->  	/* memory size in pixels */
-> -	unsigned pixels = info->screen_size * 8 / var->bits_per_pixel;
-> +	unsigned int pixels;
->  	struct cirrusfb_info *cinfo = info->par;
->  
->  	switch (var->bits_per_pixel) {
-> @@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct fb_var_screeninfo *var,
->  		return -EINVAL;
->  	}
->  
-> +	pixels = info->screen_size * 8 / var->bits_per_pixel;
->  	if (var->xres_virtual < var->xres)
->  		var->xres_virtual = var->xres;
->  	/* use highest possible virtual resolution */
-> 
+> This is a complete no-go.  NAK.
+I didn't design the hardware nor do I have access to adequate documentation.
+I will try to figure out what functionality is concretely affected by these
+two settings.
 
--- 
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Maxfeldstr. 5, 90409 Nürnberg, Germany
-(HRB 36809, AG Nürnberg)
-Geschäftsführer: Felix Imendörffer
+If I am correct, the KSZ hardware consists of two main building blocks:
+1. A TC on the switch path.
+2. An OC on the DSA host port.
+
+From the data sheet, page 109, chapter 5.1.6.11
+("Global PTP Message Config 1 Register"), bit 2:
+
+> *Selection of P2P or E2E*
+> 1 = Peer-to-peer (P2P) transparent clock mode
+> 0 = End-to-end (E2E) transparent clock mode
+So this "tcmode" sysfs entry controls the behavior of the switch' transparent
+clock. Is this related in any way to the PTP API?
+
+For the master/slave setting, the data sheet writes the following:
+*Selection of Master or Slave*
+1 = Host port is PTP master ordinary clock
+0 = Host port is PTP slave ordinary clock
+
+So this is really related to the OC and so to the PTP API. Setting this
+manually would interfere with the BMCA. I'll check whether delay measurement
+and clock synchronization can also work for all conditions (E2E/P2P, 
+master/slave) without altering this value. Otherwise we might consider
+the KSZ as a "Slave Only Clock (SO)".
+
+Christian
+
+
+
