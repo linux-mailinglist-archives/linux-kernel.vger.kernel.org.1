@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE0FB295C1B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:38:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82EEF295C29
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:44:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896034AbgJVJil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:38:41 -0400
-Received: from mail1.nippynetworks.com ([91.220.24.129]:35566 "EHLO
-        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505549AbgJVJik (ORCPT
+        id S2896073AbgJVJoo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:44:44 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:38689 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2895918AbgJVJoo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:38:40 -0400
-Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
-        (No client certificate requested)
-        (Authenticated sender: ed@wildgooses.com)
-        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4CH2Ns0M4vzTgZ7;
-        Thu, 22 Oct 2020 10:38:36 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
-        s=dkim; t=1603359518;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=pTOJClBcVAFpfY4OoxPdAHYjx+AR4QSvVJde4Nim/Kk=;
-        b=MIH6KtO+RetV+W1FHpOQbEUR+TSZNwZXAlEjIEjtiEJniSVXr1jYZHV+4bVkmlKo1nvlf8
-        KMzmpzb7g0zmoosNs4cjxJlLtfwqdP0Xk+JYLKAkx4xU8BVGJoxyNyv8V+Vp7E2sevOsxt
-        38iHMMrsPFB1UNBsLmdVlzsHBFpFRRI=
-Subject: Re: [PATCH 1/2] x86: Conditional init of pcengines leds/keys gpios
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
-Cc:     fe@dev.tdt.de, hdegoede@redhat.com,
-        "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <2ba7fc12-a3a7-2783-54e6-27e9eb60ec9c@redhat.com>
- <20201021214151.32229-1-lists@wildgooses.com>
- <0720575c-88c3-4f88-caa7-4707139702a1@metux.net>
-From:   Ed W <lists@wildgooses.com>
-Message-ID: <5684534f-1280-4c37-af94-1e1bc7484585@wildgooses.com>
-Date:   Thu, 22 Oct 2020 10:38:36 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.3
+        Thu, 22 Oct 2020 05:44:44 -0400
+X-UUID: 646a30c67f8045b6831346530bdd4d8d-20201022
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=4h6hAq7l0V4rS9t709EExfcDsTlXaMuAC530Tl9I3lE=;
+        b=aHofETMCPK01JrxMeZoldwr40Y5X+PCDLPMw/laQrLcXcZ6OlVKBFs/gi/y7vZtRxhEuIY+8c8Vjhp5cxY/Jo4ncD9Jzxc4Rhmr3nx2hmD0xVAH5xF6gyy64QR1/i1s3G5iyJKL+3/iI5oEhUbxCXFcZs8BDVP8Og+rqmCzRabE=;
+X-UUID: 646a30c67f8045b6831346530bdd4d8d-20201022
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <houlong.wei@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 1232868719; Thu, 22 Oct 2020 17:44:22 +0800
+Received: from mtkcas10.mediatek.inc (172.21.101.39) by
+ mtkmbs02n1.mediatek.inc (172.21.101.77) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Thu, 22 Oct 2020 17:44:21 +0800
+Received: from localhost.localdomain (10.17.3.153) by mtkcas10.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Thu, 22 Oct 2020 17:44:20 +0800
+From:   Houlong Wei <houlong.wei@mediatek.com>
+To:     Matthias Brugger <matthias.bgg@gmail.com>,
+        Jassi Brar <jassisinghbrar@gmail.com>
+CC:     Daniel Kurtz <djkurtz@chromium.org>,
+        <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-mediatek@lists.infradead.org>,
+        <srv_heupstream@mediatek.com>,
+        Nicolas Boichat <drinkcat@chromium.org>,
+        CK HU <ck.hu@mediatek.com>,
+        Bibby Hsieh <bibby.hsieh@mediatek.com>,
+        Daoyuan Huang <daoyuan.huang@mediatek.com>,
+        Dennis-YC Hsieh <dennis-yc.hsieh@mediatek.com>,
+        Houlong Wei <houlong.wei@mediatek.com>,
+        <ginny.chen@mediatek.com>, <yongqiang.niu@mediatek.com>
+Subject: [PATCH] soc: mediatek: cmdq: fixup possible timeout issue
+Date:   Thu, 22 Oct 2020 17:41:53 +0800
+Message-ID: <20201022094152.17662-1-houlong.wei@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 MIME-Version: 1.0
-In-Reply-To: <0720575c-88c3-4f88-caa7-4707139702a1@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
+Content-Type: text/plain
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2020 10:22, Enrico Weigelt, metux IT consult wrote:
-> On 21.10.20 23:41, Ed Wildgoose wrote:
->
-> Hi,
->
->> The pcengines bios/firmware includes ACPI tables (since 4.10.0.1) which
->> will cause the kernel to automatically create led + gpio_key devices for
->> the platform. This means that the platform setup now creates duplicates
->> of all these led/key devices.
->>
->> Driver conditionally initialises leds/keys only for older bios.
-> still breaks existing userlands as device names change - LEDs as well as
-> keys, and keycodes also change.
->
-> IOW: userland needs to be depending on specific BIOS versions.
->
->
-> --mtx
-
-
-As a compromise can you change your userland to cope with dynamic names? I see two simple ways:
-
-1) udev rule to set name as you wish
-
-2) I uploaded a little script which uses simple globs to just figure out the base name depending on
-the board (also handles different board types entirely as well)
-
-
-I realise you have some stuff running with this, I don't know your situation specifically, but this
-feels like a really, really, small change to work around? Can you elaborate a little on why your
-users will be updating kernels without updating user code? Is there really no way to stick a
-compatibility udev rule in for your situation?
-
-To recap though, the situation for many years was that the naming convention was board specific.
-There is then just a small window (less than a year I think?) where users saw the name change to be
-non board specific (ie your new module). I would hazard a guess that given the speed of mainstream
-releases, few end users actually saw this change yet, or would notice? Those who did already
-accommodated the name change, so I would hazard a guess they can cope with the revert? (or not even
-notice?)
-
-
-Look, just propose a solution, I don't really mind. To me this is SUCH a TRIVIAL rename that I've
-already incorporated support for both naming conventions into my apps. I just want to get APU5/6
-support in, which is affecting some real boards I want to use in volume. I don't feel the current
-situation of duplicate devices should stay though.
-
-My opinion is that we punt "this breaks userland" to being the board vendors problem now. The board
-is configured largely through ACPI, so if the upstream changes the ACPI, then it's on them, not us.
-This seems to be the direction the kernel is heading, with ACPI and device trees being used to
-configure the boards, in preference to heavy platform drivers?
-
-
-Hans, can you arbitrate here please? Your previous suggestion was to implement a compatibility shim
-for older BIOS, that's done here. Happy to implement something else, just need a guide?
-
-Thanks all
-
-Ed W
+Rml4ZXM6IDU3NmYxYjRiYzgwMiAoInNvYzogbWVkaWF0ZWs6IEFkZCBNZWRpYXRlayBDTURRIGhl
+bHBlciIpDQoNClRoZXJlIG1heSBiZSBwb3NzaWJsZSB0aW1lb3V0IGlzc3VlIHdoZW4gbG90cyBv
+ZiBjbWRxIHBhY2tldHMgYXJlDQpmbHVzaGVkIHRvIHRoZSBzYW1lIGNtZHEgY2xpZW50LiBUaGUg
+bmVjZXNzYXJ5IG1vZGlmaWNhdGlvbnMgYXJlIGFzDQpiZWxvdy4NCjEuQWRqdXN0IHRoZSB0aW1l
+ciB0aW1lb3V0IHBlcmlvZCBhcyBjbGllbnQtPnRpbWVvdXRfbXMgKiBjbGllbnQtPnBrdF9jbnQu
+DQoyLk9wdGltaXplIHRoZSB0aW1lIHRvIHN0YXJ0IHRoZSB0aW1lci4NCg0KU2lnbmVkLW9mZi1i
+eTogSG91bG9uZyBXZWkgPGhvdWxvbmcud2VpQG1lZGlhdGVrLmNvbT4NCi0tLQ0KIGRyaXZlcnMv
+c29jL21lZGlhdGVrL210ay1jbWRxLWhlbHBlci5jIHwgMjIgKysrKysrKysrKysrKysrKysrLS0t
+LQ0KIDEgZmlsZSBjaGFuZ2VkLCAxOCBpbnNlcnRpb25zKCspLCA0IGRlbGV0aW9ucygtKQ0KDQpk
+aWZmIC0tZ2l0IGEvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEtaGVscGVyLmMgYi9kcml2
+ZXJzL3NvYy9tZWRpYXRlay9tdGstY21kcS1oZWxwZXIuYw0KaW5kZXggZGM2NDRjZmI2NDE5Li4z
+MTE0MmMxOTM1MjcgMTAwNjQ0DQotLS0gYS9kcml2ZXJzL3NvYy9tZWRpYXRlay9tdGstY21kcS1o
+ZWxwZXIuYw0KKysrIGIvZHJpdmVycy9zb2MvbWVkaWF0ZWsvbXRrLWNtZHEtaGVscGVyLmMNCkBA
+IC0zNTAsNyArMzUwLDggQEAgc3RhdGljIHZvaWQgY21kcV9wa3RfZmx1c2hfYXN5bmNfY2Ioc3Ry
+dWN0IGNtZHFfY2JfZGF0YSBkYXRhKQ0KIAkJCWRlbF90aW1lcigmY2xpZW50LT50aW1lcik7DQog
+CQllbHNlDQogCQkJbW9kX3RpbWVyKCZjbGllbnQtPnRpbWVyLCBqaWZmaWVzICsNCi0JCQkJICBt
+c2Vjc190b19qaWZmaWVzKGNsaWVudC0+dGltZW91dF9tcykpOw0KKwkJCQkgIG1zZWNzX3RvX2pp
+ZmZpZXMoY2xpZW50LT50aW1lb3V0X21zICoNCisJCQkJCQkgICBjbGllbnQtPnBrdF9jbnQpKTsN
+CiAJCXNwaW5fdW5sb2NrX2lycXJlc3RvcmUoJmNsaWVudC0+bG9jaywgZmxhZ3MpOw0KIAl9DQog
+DQpAQCAtMzc5LDkgKzM4MCw3IEBAIGludCBjbWRxX3BrdF9mbHVzaF9hc3luYyhzdHJ1Y3QgY21k
+cV9wa3QgKnBrdCwgY21kcV9hc3luY19mbHVzaF9jYiBjYiwNCiANCiAJaWYgKGNsaWVudC0+dGlt
+ZW91dF9tcyAhPSBDTURRX05PX1RJTUVPVVQpIHsNCiAJCXNwaW5fbG9ja19pcnFzYXZlKCZjbGll
+bnQtPmxvY2ssIGZsYWdzKTsNCi0JCWlmIChjbGllbnQtPnBrdF9jbnQrKyA9PSAwKQ0KLQkJCW1v
+ZF90aW1lcigmY2xpZW50LT50aW1lciwgamlmZmllcyArDQotCQkJCSAgbXNlY3NfdG9famlmZmll
+cyhjbGllbnQtPnRpbWVvdXRfbXMpKTsNCisJCWNsaWVudC0+cGt0X2NudCsrOw0KIAkJc3Bpbl91
+bmxvY2tfaXJxcmVzdG9yZSgmY2xpZW50LT5sb2NrLCBmbGFncyk7DQogCX0NCiANCkBAIC0zOTEs
+NiArMzkwLDIxIEBAIGludCBjbWRxX3BrdF9mbHVzaF9hc3luYyhzdHJ1Y3QgY21kcV9wa3QgKnBr
+dCwgY21kcV9hc3luY19mbHVzaF9jYiBjYiwNCiAJLyogV2UgY2FuIHNlbmQgbmV4dCBwYWNrZXQg
+aW1tZWRpYXRlbHksIHNvIGp1c3QgY2FsbCB0eGRvbmUuICovDQogCW1ib3hfY2xpZW50X3R4ZG9u
+ZShjbGllbnQtPmNoYW4sIDApOw0KIA0KKwlpZiAoY2xpZW50LT50aW1lb3V0X21zICE9IENNRFFf
+Tk9fVElNRU9VVCkgew0KKwkJc3Bpbl9sb2NrX2lycXNhdmUoJmNsaWVudC0+bG9jaywgZmxhZ3Mp
+Ow0KKwkJLyoNCisJCSAqIEdDRSBIVyBtYXliZSBleGVjdXRlIHRvbyBxdWlja2x5IGFuZCB0aGUg
+Y2FsbGJhY2sgZnVuY3Rpb24NCisJCSAqIG1heSBiZSBpbnZva2VkIGVhcmxpZXIuIElmIHRoaXMg
+aGFwcGVucywgcGt0X2NudCBpcyByZWR1Y2VkDQorCQkgKiBieSAxIGluIGNtZHFfcGt0X2ZsdXNo
+X2FzeW5jX2NiKCkuIFRoZSB0aW1lciBpcyBzZXQgb25seSBpZg0KKwkJICogcGt0X2NudCBpcyBn
+cmVhdGVyIHRoYW4gMC4NCisJCSAqLw0KKwkJaWYgKGNsaWVudC0+cGt0X2NudCA+IDApDQorCQkJ
+bW9kX3RpbWVyKCZjbGllbnQtPnRpbWVyLCBqaWZmaWVzICsNCisJCQkJICBtc2Vjc190b19qaWZm
+aWVzKGNsaWVudC0+dGltZW91dF9tcyAqDQorCQkJCQkJICAgY2xpZW50LT5wa3RfY250KSk7DQor
+CQlzcGluX3VubG9ja19pcnFyZXN0b3JlKCZjbGllbnQtPmxvY2ssIGZsYWdzKTsNCisJfQ0KKw0K
+IAlyZXR1cm4gMDsNCiB9DQogRVhQT1JUX1NZTUJPTChjbWRxX3BrdF9mbHVzaF9hc3luYyk7DQot
+LSANCjIuMTguMA0K
 
