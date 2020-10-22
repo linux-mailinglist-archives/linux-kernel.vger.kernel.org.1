@@ -2,112 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33B38295BD3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:31:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81AAF295BDB
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:33:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895985AbgJVJbN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:31:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:53288 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509974AbgJVJbN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:31:13 -0400
-Received: from gaia (unknown [95.145.162.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F1281222E9;
-        Thu, 22 Oct 2020 09:31:07 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 10:31:05 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Lennart Poettering <mzxreary@0pointer.de>
-Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Topi Miettinen <toiwoton@gmail.com>,
-        Florian Weimer <fweimer@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        systemd-devel@lists.freedesktop.org,
-        Kees Cook <keescook@chromium.org>,
-        Will Deacon <will.deacon@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
-        Dave Martin <dave.martin@arm.com>,
+        id S2895987AbgJVJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:33:14 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:58921 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895986AbgJVJdL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:33:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-305-8XvjHwJ8MYOWawC799xGnw-1; Thu, 22 Oct 2020 10:32:05 +0100
+X-MC-Unique: 8XvjHwJ8MYOWawC799xGnw-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 10:32:04 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 22 Oct 2020 10:32:04 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'David Hildenbrand' <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
         "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
- systemd and glibc mprotect calls, causing service failures
-Message-ID: <20201022093104.GB1229@gaia>
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022071812.GA324655@gardel-login>
- <87sga6snjn.fsf@oldenburg2.str.redhat.com>
- <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
- <20201022082912.GQ3819@arm.com>
- <20201022083823.GA324825@gardel-login>
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IA==
+Date:   Thu, 22 Oct 2020 09:32:04 +0000
+Message-ID: <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+References: <20200925045146.1283714-1-hch@lst.de>
+ <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
+ <20201021233914.GR3576660@ZenIV.linux.org.uk>
+ <20201022082654.GA1477657@kroah.com>
+ <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
+ <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+In-Reply-To: <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022083823.GA324825@gardel-login>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:38:23AM +0200, Lennart Poettering wrote:
-> On Do, 22.10.20 09:29, Szabolcs Nagy (szabolcs.nagy@arm.com) wrote:
-> > > > The dynamic loader has to process the LOAD segments to get to the ELF
-> > > > note that says to enable BTI.  Maybe we could do a first pass and load
-> > > > only the segments that cover notes.  But that requires lots of changes
-> > > > to generic code in the loader.
-> > >
-> > > What if the loader always enabled BTI for PROT_EXEC pages, but then when
-> > > discovering that this was a mistake, mprotect() the pages without BTI? Then
-> > > both BTI and MDWX would work and the penalty of not getting MDWX would fall
-> > > to non-BTI programs. What's the expected proportion of BTI enabled code vs.
-> > > disabled in the future, is it perhaps expected that a distro would enable
-> > > the flag globally so eventually only a few legacy programs might be
-> > > unprotected?
-> >
-> > i thought mprotect(PROT_EXEC) would get filtered
-> > with or without bti, is that not the case?
-> 
-> We can adjust the filter in systemd to match any combination of
-> flags to allow and to deny.
+RnJvbTogRGF2aWQgSGlsZGVuYnJhbmQNCj4gU2VudDogMjIgT2N0b2JlciAyMDIwIDEwOjI1DQou
+Li4NCj4gLi4uIGVzcGVjaWFsbHkgYmVjYXVzZSBJIHJlY2FsbCB0aGF0IGNsYW5nIGFuZCBnY2Mg
+YmVoYXZlIHNsaWdodGx5DQo+IGRpZmZlcmVudGx5Og0KPiANCj4gaHR0cHM6Ly9naXRodWIuY29t
+L2hqbC10b29scy94ODYtcHNBQkkvaXNzdWVzLzINCj4gDQo+ICJGdW5jdGlvbiBhcmdzIGFyZSBk
+aWZmZXJlbnQ6IG5hcnJvdyB0eXBlcyBhcmUgc2lnbiBvciB6ZXJvIGV4dGVuZGVkIHRvDQo+IDMy
+IGJpdHMsIGRlcGVuZGluZyBvbiB0aGVpciB0eXBlLiBjbGFuZyBkZXBlbmRzIG9uIHRoaXMgZm9y
+IGluY29taW5nDQo+IGFyZ3MsIGJ1dCBnY2MgZG9lc24ndCBtYWtlIHRoYXQgYXNzdW1wdGlvbi4g
+QnV0IGJvdGggY29tcGlsZXJzIGRvIGl0DQo+IHdoZW4gY2FsbGluZywgc28gZ2NjIGNvZGUgY2Fu
+IGNhbGwgY2xhbmcgY29kZS4NCg0KSXQgcmVhbGx5IGlzIGJlc3QgdG8gdXNlICdpbnQnIChvciBl
+dmVuICdsb25nJykgZm9yIGFsbCBudW1lcmljDQphcmd1bWVudHMgKGFuZCByZXN1bHRzKSByZWdh
+cmRsZXNzIG9mIHRoZSBkb21haW4gb2YgdGhlIHZhbHVlLg0KDQpSZWxhdGVkLCBJJ3ZlIGFsd2F5
+cyB3b3JyaWVkIGFib3V0ICdib29sJy4uLi4NCg0KPiBUaGUgdXBwZXIgMzIgYml0cyBvZiByZWdp
+c3RlcnMgYXJlIGFsd2F5cyB1bmRlZmluZWQgZ2FyYmFnZSBmb3IgdHlwZXMNCj4gc21hbGxlciB0
+aGFuIDY0IGJpdHMuIg0KDQpPbiB4ODYtNjQgdGhlIGhpZ2ggYml0cyBhcmUgemVyb2VkIGJ5IGFs
+bCAzMmJpdCBsb2Fkcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
+ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
+UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-Yes but Szabolcs' point to Topi was that if we can adjust the filters to
-allow mprotect(PROT_EXEC), why not allow mprotect(PROT_EXEC|PROT_BTI)
-instead? Anyway, I see the MDWX and BTI as complementary policies so
-ideally we shouldn't have to choose between one or the other. If we
-allow mprotect(PROT_EXEC), that would override MDWX and also disable
-BTI.
-
-IIUC, the problem is with the main executable which is mapped by the
-kernel without PROT_BTI. The dynamic loader wants to set PROT_BTI but
-does not have the original file descriptor to be able to remap. Its only
-choice is mprotect() and this fails because of the MDWX policy.
-
-Not sure whether the kernel has the right information but could it map
-the main executable with PROT_BTI if the corresponding PT_GNU_PROPERTY
-is found? The current ABI states it only sets PROT_BTI for the
-interpreter who'd be responsible for setting the PROT_BTI on the main
-executable. I can't tell whether it would break anything but it's worth
-a try:
-
-diff --git a/arch/arm64/kernel/process.c b/arch/arm64/kernel/process.c
-index 4784011cecac..0a08fb9133e8 100644
---- a/arch/arm64/kernel/process.c
-+++ b/arch/arm64/kernel/process.c
-@@ -730,14 +730,6 @@ asmlinkage void __sched arm64_preempt_schedule_irq(void)
- int arch_elf_adjust_prot(int prot, const struct arch_elf_state *state,
- 			 bool has_interp, bool is_interp)
- {
--	/*
--	 * For dynamically linked executables the interpreter is
--	 * responsible for setting PROT_BTI on everything except
--	 * itself.
--	 */
--	if (is_interp != has_interp)
--		return prot;
--
- 	if (!(state->flags & ARM64_ELF_BTI))
- 		return prot;
- 
-
--- 
-Catalin
