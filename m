@@ -2,107 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EC5D9295D7B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:38:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8D39295D83
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:39:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897379AbgJVLiI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:38:08 -0400
-Received: from mx2.suse.de ([195.135.220.15]:41084 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897372AbgJVLiI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:38:08 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603366686;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=pV9zZjS0Im2RddjJnNHoMXX7Dj5mJr2Ovyhf1Xa2aOY=;
-        b=d9CzVFfdqEEYZML/AX+ye/WomeqdjGoplxko7pSp3OADCEnlV5Tfwkt+iZARLrPY5mmKsi
-        uL0LokZt41s8yaevhd1oSjYqpjwC3sDN8R+sgH8CAceSiCs3I2vgrTMks9K+zuh5vCti7p
-        0IJqDIr3JXb+bf2k6IQph+QTtBOPe6A=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 60A7CABBE;
-        Thu, 22 Oct 2020 11:38:06 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 13:38:05 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>, rostedt@goodmis.org,
-        shreyasjoshi15@gmail.com, linux-kernel@vger.kernel.org,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Subject: Re: [PATCH] printk: handle blank console arguments passed in.
-Message-ID: <20201022113805.GA32486@alley>
-References: <20201006095226.GB32369@alley>
- <24f7a6bc-c917-2bb7-0e86-9d729c18e812@roeck-us.net>
- <20201006134328.GD32369@alley>
- <20201006163514.GE32369@alley>
- <20201006171504.GA64770@jagdpanzerIV.localdomain>
- <20201007072853.GF32369@alley>
- <20201007123044.GA509@jagdpanzerIV.localdomain>
- <be66237b-e7b2-0321-c00c-cd6fba6e3b58@roeck-us.net>
- <20201007162942.GA440@jagdpanzerIV.localdomain>
- <20201008055238.GA554@jagdpanzerIV.localdomain>
+        id S2897389AbgJVLj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:39:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2438250AbgJVLjY (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:39:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BF5C0613CE;
+        Thu, 22 Oct 2020 04:39:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=2E3kMNYpFQGPJuJs5up4gmdkpzSi7nO8NUmiDPeWiQQ=; b=CW73PwlR38lmWk+q+2+HFhgQuz
+        +yjEknYiNUpUp3NUKo0e64Urvvc2QZgBrozVyCHtXYFuJzT4hVRy5iJ0OFpwM7/03CP1JSH3/3iYP
+        wRGy00lrmbp8eG6Mw1e66eJxxR6ghHhHCOzksHvRMXiRf2LxS9wmLx/P+eOvQW/AyMmDQjQa+R+tW
+        LVpurff96NnOsac7Wi/ijogF4zymdv9CeU0d1ATNDA4CeB4j1C4QV1DJ8I9W1sjFxcGFQBrYkgBEQ
+        82W6koSkl6OZFyMSdxkjzHjcBMBIT/RMv5fXEcP29Dw1LW8u3j+Modv+PO1cls1vGR3BF+vE/vyAX
+        MMbEjYiQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVYw3-0006KQ-UF; Thu, 22 Oct 2020 11:39:12 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 404F730377D;
+        Thu, 22 Oct 2020 13:39:09 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 28F02203CC4B2; Thu, 22 Oct 2020 13:39:09 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 13:39:09 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+Message-ID: <20201022113909.GE2611@hirez.programming.kicks-ass.net>
+References: <cover.1594707424.git.viresh.kumar@linaro.org>
+ <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200716115605.GR10769@hirez.programming.kicks-ass.net>
+ <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
+ <20201022090523.GV2628@hirez.programming.kicks-ass.net>
+ <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008055238.GA554@jagdpanzerIV.localdomain>
+In-Reply-To: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-10-08 14:52:38, Sergey Senozhatsky wrote:
-> On (20/10/08 01:29), Sergey Senozhatsky wrote:
-> > On (20/10/07 08:57), Guenter Roeck wrote:
-> > > On 10/7/20 5:30 AM, Sergey Senozhatsky wrote:
+On Thu, Oct 22, 2020 at 04:36:56PM +0530, Viresh Kumar wrote:
+> On 22-10-20, 11:05, Peter Zijlstra wrote:
+> > On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
+> > > One of the issues I see with this is that schedutil may not be
+> > > available in all configurations and it is still absolutely fine to
+> > > using the suggested helper to get the energy numbers in such cases, so
+> > > we shouldn't really make it scheutil dependent.
 > > 
-> > [..]
+> > The only constraint on schedutil is SMP I think; aside from that it
+> > should/could always be available.
 > > 
-> > > I can see to options: Link /dev/console to /dev/null if there is no console,
-> > > or do something like
-> > > 
-> > > 	if (IS_ERR(file)) {
-> > >                 pr_warn("Warning: unable to open an initial console.\n");
-> > >                 file = filp_open("/dev/null", O_RDWR, 0);
-> > > 		if (IS_ERR(file))
-> > >                 	return;
-> > >         }
+> > Given the trainwreck here:
 > > 
-> > As far as I can tell, /dev/null does not exist yet on this stage
-> > (at least not in my system). But generally the idea looks interesting.
+> >   20201022071145.GM2628@hirez.programming.kicks-ass.net
+> > 
+> > (you're on Cc), I'm starting to lean more and more towards making it
+> > unconditionally available (when SMP).
+> > 
+> > Anybody forcing it off either sets performance (in which case we don't
+> > care about energy usage anyway)
 > 
-> Hmm. How about this. console= is undocumented and unspecified - it
-> may work sometimes or it may kill the system (and theoretically even
-> corrupt some files, depending on what fd 1 and fd 2 point to). So
-> maybe we can document console= and handle it in printk, rather than
-> somewhere deep in init/main.c
+> I agree.
+> 
+> > or they select one of the old (broken)
+> > ondemand/conservative things and I don't give a crap.
+> 
+> The other kernel layers, for example cpufreq-cooling in question here,
+> don't really need to bother with the governor in use and should be
+> able to get the energy numbers anyway. So for me, the energy number
+> that the cpufreq-cooling stuff gets should be same irrespective of the
+> governor in use, schedutil or ondemand.
+> 
+> Having said that, schedutil really doesn't need to install the
+> fallback (which you suggested earlier), rather the scheduler core can
+> do that directly with cpufreq core and schedutil can also use the same
+> fallback mechanism maybe ? And so we can avoid the exporting of stuff
+> that way.
 
-I have dig more into it. If I get it correctly, /dev/console is really
-used as stdin, stdout, and stderr for the init process. It has been
-like this from the very beginning.
-
-In theory, it might be possible to fallback into /dev/null. But it
-would not solve the problem when anyone tries to use /dev/console
-later.
-
-IMHO, creating /dev/console really _should not_ fail. It means
-that we should register some console.
-
-
-> IOW add one more flag (yeah, I know) and set it when console_setup()
-> sees console= boot param. The idea is allow console registration,
-> but all consoles should be disabled (cleared CON_ENABLED bit). This
-> would be easier to document, at least.
-
-It seems that introducing a new option/flag is the best solution
-after all. All other flags are manipulated on different situations
-and it would not be easy to define a sane behavior.
-
-I like the proposed "mute_consoles". Well, I have it associated rather
-with CONSOLE_LOGLEVEL_SILENT than with disabled console.
-
-I have played with it and am going to send two patches as RFC.
-
-Best Regards,
-Petr
+I suppose that could work, yes. It's a bit weird to have two
+interactions with cpufreq, once through a governor and once outside it,
+but I suppose I can live with that.
