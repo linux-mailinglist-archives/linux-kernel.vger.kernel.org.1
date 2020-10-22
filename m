@@ -2,107 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D3CA295D60
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:30:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFA33295D65
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:32:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897288AbgJVLaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:30:15 -0400
-Received: from mail-oi1-f194.google.com ([209.85.167.194]:46170 "EHLO
-        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897279AbgJVLaO (ORCPT
+        id S2897298AbgJVLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:32:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897289AbgJVLcZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:30:14 -0400
-Received: by mail-oi1-f194.google.com with SMTP id l4so1317449oii.13;
-        Thu, 22 Oct 2020 04:30:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bSTQnfiSle/G+ffgc8i4ByrbO0fkKL6UxU71VpX5YJ8=;
-        b=ds+qGKtgrCbAWUTqNkl2Gxc8OsausYHphOjmhzpDY8Q9MMWhqa69+KM6Pu4pUJVx4q
-         GirBOoKqM/nQ6jLLnPAnfrkcD+9H5Df+4AWkAp7xTdykiXEk9vQO2RZazNW4RoFaGCMT
-         2RRLqjL7cyAVjns7RAZervrdAaDhPgfktqDS/pPR3vsGZva1zYwp81uvKZ9PnPnV0ZBx
-         GtXTsgzh1rxjNNZh9TMIi5LsGEoc+LZLZ1P9YAYE1HFTf4DZsqMVkqNx5e4p4hFH8VsU
-         AFunl/qDS8Tq14tIm1NNqZD4mmS8W2fercJYOAwJ+Tzt+54+ubOvWA+fmWjKYoH9Lano
-         v7Zg==
-X-Gm-Message-State: AOAM533i0erLywOzULRFhlI6zpArRbc7IFCBVyZyfDmTp8XLFpkQ5sBi
-        CqgqFwlHu/3LXutorjEcdYawWDurog7vlYargfY=
-X-Google-Smtp-Source: ABdhPJxRmGkFBRfkGyPi/jnbKKfFCsIXYN1lA9uQTdfPAdka3Duz9P7XiYzkQubpycT4mdAZWsjvWfmKydeMXgb56YM=
-X-Received: by 2002:aca:fd52:: with SMTP id b79mr1227163oii.69.1603366212247;
- Thu, 22 Oct 2020 04:30:12 -0700 (PDT)
-MIME-Version: 1.0
-References: <cover.1594707424.git.viresh.kumar@linaro.org> <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
- <20200716115605.GR10769@hirez.programming.kicks-ass.net> <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
- <20201022090523.GV2628@hirez.programming.kicks-ass.net> <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
-In-Reply-To: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Thu, 22 Oct 2020 13:30:01 +0200
-Message-ID: <CAJZ5v0jZC=UwW9L+KB3pugsTL9P1tZmvQ-sVMV-udn7+L_gEeA@mail.gmail.com>
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Thu, 22 Oct 2020 07:32:25 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D3C0613CE;
+        Thu, 22 Oct 2020 04:32:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=H93ZL99+6WZCe8jHCr+h/wqqN11hUYMAzdxBzDI+Dbw=; b=bk7Yp65UlUI6KKE0OKLKl4eUea
+        J5lLLVZmo57VrWKstXTbgO3+ReDHxzFw6F/uSiQTAumbww9DnzUNDsogqYdvLO9LPZmhf00HQwCcM
+        4BeSujd9Vhb+PUGgl6nj3/r/AvvsqOtqlJMA2AtbvZfQ9z3jAfsRzjyWcuxT7q9lD0VfN/89uMwuC
+        nD9iCpV+q5eBlrIFXppZ1OYAlYU0X+ecw5OrEG7/FhIZPk93hrZu1C2QnSG61/OKwT6yyUECuguo9
+        1xU4CgacwiUKd3Fu5WFbnJshLkQvzlrUerSWBDkomAwF52yjnGv85rL1w3R9lqBXgJdxl1SdRY2IA
+        VPxzjaXA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVYpL-0006Fc-Nt; Thu, 22 Oct 2020 11:32:15 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26722302753;
+        Thu, 22 Oct 2020 13:32:14 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 15E6B203D0810; Thu, 22 Oct 2020 13:32:14 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 13:32:14 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
         Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 1:07 PM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 22-10-20, 11:05, Peter Zijlstra wrote:
-> > On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
-> > > One of the issues I see with this is that schedutil may not be
-> > > available in all configurations and it is still absolutely fine to
-> > > using the suggested helper to get the energy numbers in such cases, so
-> > > we shouldn't really make it scheutil dependent.
-> >
-> > The only constraint on schedutil is SMP I think; aside from that it
-> > should/could always be available.
-> >
-> > Given the trainwreck here:
-> >
-> >   20201022071145.GM2628@hirez.programming.kicks-ass.net
-> >
-> > (you're on Cc), I'm starting to lean more and more towards making it
-> > unconditionally available (when SMP).
-> >
-> > Anybody forcing it off either sets performance (in which case we don't
-> > care about energy usage anyway)
->
-> I agree.
+On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
 
-That's not really the case, though.
+> Looking at the ETR and other places in the kernel, ETF and the
+> ETB are the only places trying to dereference the task(owner)
+> in tmc_enable_etf_sink_perf() which is also called from the
+> sched_in path as in the call trace.
 
-Many people use intel_pstate in the active mode with HWP enabled too.
+> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
+>  {
+>  	int node;
+>  	struct cs_buffers *buf;
+> +	struct task_struct *task = READ_ONCE(event->owner);
+> +
+> +	if (!task || is_kernel_event(event))
+> +		return NULL;
 
-Arguably, that doesn't need to compute the effective utilization, so I
-guess it is not relevant for the discussion here, but it is not
-negligible in general.
 
-> > or they select one of the old (broken)
-> > ondemand/conservative things and I don't give a crap.
->
-> The other kernel layers, for example cpufreq-cooling in question here,
-> don't really need to bother with the governor in use and should be
-> able to get the energy numbers anyway. So for me, the energy number
-> that the cpufreq-cooling stuff gets should be same irrespective of the
-> governor in use, schedutil or ondemand.
->
-> Having said that, schedutil really doesn't need to install the
-> fallback (which you suggested earlier), rather the scheduler core can
-> do that directly with cpufreq core and schedutil can also use the same
-> fallback mechanism maybe ? And so we can avoid the exporting of stuff
-> that way.
+This is *wrong*... why do you care about who owns the events?
 
-I like this better than the fallback idea TBH.
