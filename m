@@ -2,192 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FF92295B7D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:14:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D1F23295B82
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:16:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509546AbgJVJOc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:14:32 -0400
-Received: from mga11.intel.com ([192.55.52.93]:34304 "EHLO mga11.intel.com"
+        id S2509579AbgJVJQa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:16:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46698 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508281AbgJVJOc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:14:32 -0400
-IronPort-SDR: xC+LWgQ59J7DmlsKA1pICCKA18sKhpxbw97jXKckllOe8jJyKt2JVvXLqNiEuBQ1CjLDTRjJb/
- MWVfF0TMFnYw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="164005336"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="164005336"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 02:14:31 -0700
-IronPort-SDR: oyD1QRGbc/YYHydWWAjFxpY9aEQYJ9mLI6yoH85k2vUgijv8/hC0Rq8wS7y3691eqlj923MXsR
- ST2/YjlWGCJA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="423063617"
-Received: from linux.intel.com ([10.54.29.200])
-  by fmsmga001.fm.intel.com with ESMTP; 22 Oct 2020 02:14:31 -0700
-Received: from [10.226.38.26] (vramuthx-mobl1.gar.corp.intel.com [10.226.38.26])
-        by linux.intel.com (Postfix) with ESMTP id 3773058080F;
-        Thu, 22 Oct 2020 02:14:27 -0700 (PDT)
-Reply-To: vadivel.muruganx.ramuthevar@linux.intel.com
-Subject: Re: [PATCH v2 2/6] spi: cadence-quadspi: Disable the DAC for Intel
- LGM SoC
-To:     Pratyush Yadav <p.yadav@ti.com>
-Cc:     vigneshr@ti.com, tudor.ambarus@microchip.com, broonie@kernel.org,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org, devicetree@vger.kernel.org,
-        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
-        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
-        qi-ming.wu@intel.com
-References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201021025507.51001-3-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201021140015.3ldwk4az5nlzhnvr@ti.com>
- <a36fbe94-0cf2-eb42-3000-be4c055802b6@linux.intel.com>
- <20201022090146.2uj5gfx73dsfumjl@ti.com>
-From:   "Ramuthevar, Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Message-ID: <7f3e4c9c-6d6d-eb02-d999-0758c1a3d638@linux.intel.com>
-Date:   Thu, 22 Oct 2020 17:14:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S2439287AbgJVJQa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:16:30 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 815DF222E9;
+        Thu, 22 Oct 2020 09:16:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603358189;
+        bh=X7YWORMLc3boOQq34ADkP+iYUcQE1Vh/uDhPZqf73qQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=CrM04kOaVq8sTalX12dV9GaiVMgkvOmX3B/t8dotno/NSgRFKLaBQy+nL/oghZ4Ew
+         QI3+S8SHJFQFFS306CczTQKDtJK761qJo3K8bEel8L5vmPggy+EiMTNwQtQwvpwUzw
+         U6l5B8tde9Muu7CBJ+L1SteLRNUQBjZo4KlVTBQ4=
+Date:   Thu, 22 Oct 2020 11:17:07 +0200
+From:   Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To:     Chen Yu <yu.c.chen@intel.com>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Len Brown <len.brown@intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH][v2] PM / sysfs: Expose suspend resume driver flags in
+ sysfs
+Message-ID: <20201022091707.GA1485535@kroah.com>
+References: <20201022085244.1860-1-yu.c.chen@intel.com>
 MIME-Version: 1.0
-In-Reply-To: <20201022090146.2uj5gfx73dsfumjl@ti.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022085244.1860-1-yu.c.chen@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+On Thu, Oct 22, 2020 at 04:52:44PM +0800, Chen Yu wrote:
+> Currently there are 4 driver flags to control system suspend/resume
+> behavior: DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
+> DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME. Make these flags
+> visible in sysfs as read-only to get a brief understanding of the
+> expected behavior of each device during suspend/resume, so as to
+> facilitate suspend/resume debugging/tuning.
+> 
+> For example:
+> /sys/devices/pci0000:00/0000:00:15.1/power/driver_flags:4
+> (DPM_FLAG_SMART_SUSPEND)
+> 
+> /sys/devices/pci0000:00/0000:00:07.3/power/driver_flags:5
+> (DPM_FLAG_NO_DIRECT_COMPLETE | DPM_FLAG_SMART_SUSPEND)
+> 
+> Acked-by: Len Brown <len.brown@intel.com>
+> Signed-off-by: Chen Yu <yu.c.chen@intel.com>
+> ---
+> v2: Adding description in Documentation/ABI/testing/sysfs-devices-power
+>     according to Greg's suggestion.
+> --
+>  Documentation/ABI/testing/sysfs-devices-power | 11 +++++++
+>  drivers/base/power/sysfs.c                    | 29 ++++++++++++++++++-
+>  2 files changed, 39 insertions(+), 1 deletion(-)
+> 
+> diff --git a/Documentation/ABI/testing/sysfs-devices-power b/Documentation/ABI/testing/sysfs-devices-power
+> index 1763e64dd152..8ea68639ab3a 100644
+> --- a/Documentation/ABI/testing/sysfs-devices-power
+> +++ b/Documentation/ABI/testing/sysfs-devices-power
+> @@ -269,3 +269,14 @@ Description:
+>  		the current runtime PM status of the device, which may be
+>  		"suspended", "suspending", "resuming", "active", "error" (fatal
+>  		error), or "unsupported" (runtime PM is disabled).
+> +
+> +What:		/sys/devices/.../power/driver_flags
+> +Date:		October 2020
+> +Contact:	Chen Yu <yu.c.chen@intel.com>
+> +Description:
+> +		The /sys/devices/.../driver_flags attribute contains the driver
+> +		flags to control system suspend/resume. The flag is a combination
+> +		of DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
+> +		DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME, or 0 if the
+> +		driver has not set any flag. This attribute is read-only. If
+> +		CONFIG_PM_ADVANCED_DEBUG is not set this attribute is empty.
 
-On 22/10/2020 5:01 pm, Pratyush Yadav wrote:
-> On 22/10/20 10:17AM, Ramuthevar, Vadivel MuruganX wrote:
->> Hi Pratyush,
->>
->> On 21/10/2020 11:17 pm, Pratyush Yadav wrote:
->>> Hi,
->>>
->>> On 21/10/20 10:55AM, Ramuthevar,Vadivel MuruganX wrote:
->>>> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>>>
->>>> On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
->>>> Direct Access Controller(DAC).
->>>>
->>>> This patch adds a quirk to disable the Direct Access Controller
->>>> for data transfer instead it uses indirect data transfer.
->>>>
->>>> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
->>>> ---
->>>>    drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
->>>>    1 file changed, 12 insertions(+)
->>>>
->>>> diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
->>>> index d7b10c46fa70..3d017b484114 100644
->>>> --- a/drivers/spi/spi-cadence-quadspi.c
->>>> +++ b/drivers/spi/spi-cadence-quadspi.c
->>>> @@ -1106,6 +1106,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
->>>>    	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
->>>>    	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
->>>> +	/* Disable direct access controller */
->>>> +	if (!cqspi->use_direct_mode) {
->>>> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
->>>> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
->>>> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
->>>> +	}
->>>> +
->>>
->>> Do you really need to disable the DAC controller? cqspi_read() and
->>> cqspi_write() already check for cqspi->use_direct_mode and avoid using
->>> direct mode if it is false. While I don't think it would do any harm I'm
->>> curious what prompted you to do this instead of just setting the quirk
->>> like cdns_qspi does.
->>>
->>> Anyway, if you do insist on doing it, it does not make any sense to set
->>> a bit and then unset it immediately after. The datasheet I have says
->>> this bit resets to 1 so the block above the code you added should be
->>> removed.
->> Thank you for your review comments..
->> yes, we need this patch to disable DAC for our SoC to avoid any conflicts in
->> future as well since Intel LGM SoC doesn't support DAC at all.
-> 
-> I'm not sure you got my point here.
-Got your point, thanks!
-  I understand that LGM SoCs don't
-> support DAC. I'm not arguing if this _patch_ is needed. I'm arguing if
-> this _hunk_ is needed.
-Needed, my previous patches added DAC disabled in cqspi_read() and 
-cqspi_write() function then Vignesh suggested me to move 
-cqspi_controller_init() function part so I have add it now.
+You are now exporting random internal kernel values to userspace, so
+they are now going to become a userspace API value that you must ensure
+works for the next 20+ years.
 
-you are saying that add hunk at the end of cqspi_controller_init().
-that's also okay for me, anyhow DAC should be disabled at any case.
+Are you _SURE_ you want to do this?  What is this velue being exported
+going to show you?  Who is going to use it?  For what?
 
-Regards
-Vadivel
-  Does DAC mode need to be explicitly disabled
-> here? Why will the check in cqspi_read() and cqspi_write() not be
-> enough?
-> 
-> My other point is that if you absolutely need to disable DAC mode, then
-> instead of the code you have added, it would make more sense to do
-> something like below in cqspi_controller_init(). Because the bit resets
-> to 1 so the block of code to enable it is useless [0].
-> 
-> --- 8< ---
-> diff --git a/drivers/spi/spi-cadence-quadspi.c
-> b/drivers/spi/spi-cadence-quadspi.c
-> index d7ad8b198a11..d2c5d448a944 100644
-> --- a/drivers/spi/spi-cadence-quadspi.c
-> +++ b/drivers/spi/spi-cadence-quadspi.c
-> @@ -2156,10 +2156,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
->   	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
->   	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
->   
-> -	/* Enable Direct Access Controller */
-> -	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> -	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> -	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-> +	/* Disable Direct Access Controller */
-> +	if (!cqspi->use_dac_mode) {
-> +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
-> +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
-> +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
-> +	}
->   
->   	cqspi_controller_enable(cqspi, 1);
->   }
-> --- >8 ---
-> 
-> Disclaimer: not tested at all.
-> 
-> [0] Git blames Vignesh for that block of code added in a27f2eaf2b27.
-> Vignesh, was this simply an oversight or was there any real reason to
-> set the bit?
->   
->> Regards
->> Vadivel
->>>
->>>>    	cqspi_controller_enable(cqspi, 1);
->>>>    }
->>>> @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
->>>>    	.quirks = CQSPI_NEEDS_WR_DELAY,
->>>>    };
->>>> +static const struct cqspi_driver_platdata intel_lgm_qspi = {
->>>> +	.quirks = CQSPI_DISABLE_DAC_MODE,
->>>> +};
->>>> +
->>>>    static const struct of_device_id cqspi_dt_ids[] = {
->>>>    	{
->>>>    		.compatible = "cdns,qspi-nor",
->>>> @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
->>>>    	},
->>>>    	{
->>>>    		.compatible = "intel,lgm-qspi",
->>>> +		.data = &intel_lgm_qspi,
->>>>    	},
->>>>    	{ /* end of table */ }
->>>>    };
->>>
-> 
+And if you are going to export it to userspace, you need to actually
+give userspace the values so that it knows what they are, by moving them
+to a uapi file.
+
+And if you do that, you need to name them a lot better...
+
+> diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
+> index a1474fb67db9..48313a1040a5 100644
+> --- a/drivers/base/power/sysfs.c
+> +++ b/drivers/base/power/sysfs.c
+> @@ -607,6 +607,13 @@ static ssize_t async_store(struct device *dev, struct device_attribute *attr,
+>  
+>  static DEVICE_ATTR_RW(async);
+>  
+> +static ssize_t driver_flags_show(struct device *dev,
+> +				 struct device_attribute *attr, char *buf)
+> +{
+> +	return sysfs_emit(buf, "%x\n", dev->power.driver_flags);
+> +}
+> +static DEVICE_ATTR_RO(driver_flags);
+> +
+>  #endif /* CONFIG_PM_SLEEP */
+>  #endif /* CONFIG_PM_ADVANCED_DEBUG */
+>  
+> @@ -691,6 +698,20 @@ static const struct attribute_group pm_qos_flags_attr_group = {
+>  	.attrs	= pm_qos_flags_attrs,
+>  };
+>  
+> +static struct attribute *pm_driver_flags_attrs[] = {
+> +#ifdef CONFIG_PM_ADVANCED_DEBUG
+> +#ifdef CONFIG_PM_SLEEP
+> +	&dev_attr_driver_flags.attr,
+> +#endif
+> +#endif
+
+As this is for debugging only, why is it in sysfs and not debugfs?
+
+
+> +	NULL,
+> +};
+> +
+> +static const struct attribute_group pm_driver_flags_attr_group = {
+> +	.name	= power_group_name,
+> +	.attrs	= pm_driver_flags_attrs,
+> +};
+> +
+>  int dpm_sysfs_add(struct device *dev)
+>  {
+>  	int rc;
+> @@ -719,11 +740,17 @@ int dpm_sysfs_add(struct device *dev)
+>  		if (rc)
+>  			goto err_wakeup;
+>  	}
+> -	rc = pm_wakeup_source_sysfs_add(dev);
+> +	rc = sysfs_merge_group(&dev->kobj, &pm_driver_flags_attr_group);
+
+Ick, really?  Why not make it part of the other attribute group?  Why
+make it a stand-alone one?  This feels like extra uneeded work if you
+really are going to do this.
+
+thanks,
+
+greg k-h
