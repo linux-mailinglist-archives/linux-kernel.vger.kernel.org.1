@@ -2,83 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFA33295D65
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:32:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29E86295D66
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:32:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897298AbgJVLc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:32:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34062 "EHLO
+        id S2897312AbgJVLcs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:32:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34120 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897289AbgJVLcZ (ORCPT
+        with ESMTP id S2897299AbgJVLcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:32:25 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A27D3C0613CE;
-        Thu, 22 Oct 2020 04:32:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=H93ZL99+6WZCe8jHCr+h/wqqN11hUYMAzdxBzDI+Dbw=; b=bk7Yp65UlUI6KKE0OKLKl4eUea
-        J5lLLVZmo57VrWKstXTbgO3+ReDHxzFw6F/uSiQTAumbww9DnzUNDsogqYdvLO9LPZmhf00HQwCcM
-        4BeSujd9Vhb+PUGgl6nj3/r/AvvsqOtqlJMA2AtbvZfQ9z3jAfsRzjyWcuxT7q9lD0VfN/89uMwuC
-        nD9iCpV+q5eBlrIFXppZ1OYAlYU0X+ecw5OrEG7/FhIZPk93hrZu1C2QnSG61/OKwT6yyUECuguo9
-        1xU4CgacwiUKd3Fu5WFbnJshLkQvzlrUerSWBDkomAwF52yjnGv85rL1w3R9lqBXgJdxl1SdRY2IA
-        VPxzjaXA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVYpL-0006Fc-Nt; Thu, 22 Oct 2020 11:32:15 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 26722302753;
-        Thu, 22 Oct 2020 13:32:14 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 15E6B203D0810; Thu, 22 Oct 2020 13:32:14 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:32:14 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Suzuki K Poulose <suzuki.poulose@arm.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201022113214.GD2611@hirez.programming.kicks-ass.net>
-References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+        Thu, 22 Oct 2020 07:32:47 -0400
+Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F24EC0613CE;
+        Thu, 22 Oct 2020 04:32:47 -0700 (PDT)
+Received: by mail-ed1-x543.google.com with SMTP id t20so1391986edr.11;
+        Thu, 22 Oct 2020 04:32:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=jIaIAx6jS/4uqnHJUBuWWcGf2+UjzZ+gZdm819hN/VU=;
+        b=ThtOsYEM5zerzLpBETqFjB3YKpeIJRvrmxJZEf3w4Kz9TeYMus9fkxqZomDOjrPcYl
+         IRCDlFO5p8JDQHy/VyN3aDs8OMHv2Wwg/jkcPE+UDEx8jSV6kGPWZlCihR+1me/mVfwe
+         1beaL4nlFZ48dotOLhiSl03EchBgg+kfFcMdyzY82YyEI4FHOfvKBvhFaU1viBQG8JaS
+         hn/STTq4JcywsW2SUbtbfIAnz1gMWTAboVM8+1ahVW0S3ElzI2rsSFxKD6EAsbSa4NGf
+         KCvvjO+9p8XX9w8Je31XyrVwsxQ7bwV1GbDHSqQX8D2+oisv55xDvdT8H161tNFSshC+
+         SvWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=jIaIAx6jS/4uqnHJUBuWWcGf2+UjzZ+gZdm819hN/VU=;
+        b=fKZHZygcI8qImIoOsHY/hwHDCTQCHdlL2r2+irDBLZN2TuUfgOGEibqOrvTNCm+e24
+         X38WK2FGusaIyt+6qvcuMJQLlW5ARSr9UscXZODJ4jvFNZxf/Qfz5KZYCmWPBTex7+dS
+         KGXll4WTUFiJFGu3+kKTvmu/JEgNNU9XuUqjJqTlKigJAM6sHUP/Tbd4hPNX7cNI+nen
+         11ET+j/5AyWV0qHyIE6BqPTiJbwSqMu+kduuz+TGSzh8Zecy+8y928ObswASWxaEaKT8
+         /HXc2twogAUucSBSrWgiBkpULylEYD24XT+DPA6luN6XVcdmmmoGi5Me3gyUp2ewqhv8
+         +mUA==
+X-Gm-Message-State: AOAM531lIOw9N5d2TDLgjRadlcv3fUe0CMr0HZ5TlTrmDnWhTLtUlgtA
+        bDYUGOOGMvW5Wc4obSF7N4M=
+X-Google-Smtp-Source: ABdhPJwkhqe63VnyxqwGSnytPajTDBSuPz6CsHi5+yS9NQpJLA8jC8m4X3b+pysB2hGKfZ+pmlegxA==
+X-Received: by 2002:a50:f389:: with SMTP id g9mr1834189edm.367.1603366365840;
+        Thu, 22 Oct 2020 04:32:45 -0700 (PDT)
+Received: from skbuf ([188.26.174.215])
+        by smtp.gmail.com with ESMTPSA id d6sm601729edr.26.2020.10.22.04.32.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 04:32:45 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 14:32:43 +0300
+From:   Vladimir Oltean <olteanv@gmail.com>
+To:     Christian Eggers <ceggers@arri.de>
+Cc:     Richard Cochran <richardcochran@gmail.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Andrew Lunn <andrew@lunn.ch>,
+        Vivien Didelot <vivien.didelot@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Helmut Grohne <helmut.grohne@intenta.de>,
+        Paul Barker <pbarker@konsulko.com>,
+        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
+        George McCollister <george.mccollister@gmail.com>,
+        Marek Vasut <marex@denx.de>,
+        Tristram Ha <Tristram.Ha@microchip.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Woojung Huh <woojung.huh@microchip.com>,
+        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
+        netdev@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
+ hardware time stamping support
+Message-ID: <20201022113243.4shddtywgvpcqq6c@skbuf>
+References: <20201019172435.4416-1-ceggers@arri.de>
+ <20201022090126.h64hfnlajqelveku@skbuf>
+ <20201022105014.gflswfpie4qvbw3h@skbuf>
+ <2541271.Km786uMvHt@n95hx1g2>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+In-Reply-To: <2541271.Km786uMvHt@n95hx1g2>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
+On Thu, Oct 22, 2020 at 01:11:40PM +0200, Christian Eggers wrote:
+> Hi Vladimir,
+> 
+> On Thursday, 22 October 2020, 12:50:14 CEST, Vladimir Oltean wrote:
+> after applying the RX timestamp correctly to the correction field (shifting
+> the nanoseconds by 16),
 
-> Looking at the ETR and other places in the kernel, ETF and the
-> ETB are the only places trying to dereference the task(owner)
-> in tmc_enable_etf_sink_perf() which is also called from the
-> sched_in path as in the call trace.
+That modification should have been done anyway, since the unit of
+measurement for correctionField is scaled ppb (48 bits nanoseconds, 16
+bits scaled nanoseconds), and not nanoseconds.
 
-> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
->  {
->  	int node;
->  	struct cs_buffers *buf;
-> +	struct task_struct *task = READ_ONCE(event->owner);
-> +
-> +	if (!task || is_kernel_event(event))
-> +		return NULL;
+> it seems that "moving" the timestamp back to the tail tag on TX is not
+> required anymore. Keeping the RX timestamp simply in the correction
+> field (negative value), works fine now. So this halves the effort in
+> the tag_ksz driver.
 
+Ok, this makes sense.
+Depending on what Richard responds, it now looks like the cleanest
+approach would be to move your implementation that is currently in
+ksz9477_update_ptp_correction_field() into a generic function called
 
-This is *wrong*... why do you care about who owns the events?
+static inline void ptp_onestep_p2p_move_t2_to_correction(struct sk_buff *skb,
+							 unsigned int ptp_type,
+							 struct ptp_header *ptp_header,
+							 ktime_t t2)
 
+You should then clearly document that this function is needed for
+hardware capable of one-step P2P that does not already modify the
+correctionField of Pdelay_Req event messages on ingress.
