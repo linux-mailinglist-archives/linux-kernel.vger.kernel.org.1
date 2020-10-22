@@ -2,87 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD298295655
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:24:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AFAD4295656
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:24:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894987AbgJVCYd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 22:24:33 -0400
-Received: from mga11.intel.com ([192.55.52.93]:5735 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442924AbgJVCYd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 22:24:33 -0400
-IronPort-SDR: lRR36phq5QOdo+daLaDDYkHgYaXIRRRWBKBZ7QZIVDkFAoMVjhE6OPgVv5x55CiQ1Can/CZtcs
- TCQfWer5uR6g==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="163969517"
-X-IronPort-AV: E=Sophos;i="5.77,403,1596524400"; 
-   d="scan'208";a="163969517"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 19:24:32 -0700
-IronPort-SDR: 1X/SyVqtilx5M/h3hrw0oZxUb5K9t0aVhwnCBdrK0OiyDCv10YwwfU7KTcqDfsEpnJr5hh9PUA
- 6huGueAZCR/w==
-X-IronPort-AV: E=Sophos;i="5.77,403,1596524400"; 
-   d="scan'208";a="533767364"
-Received: from jwan147-mobl2.ccr.corp.intel.com (HELO localhost) ([10.254.211.184])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 19:24:26 -0700
-Date:   Thu, 22 Oct 2020 10:24:23 +0800
-From:   Yu Zhang <yu.c.zhang@linux.intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Ben Gardon <bgardon@google.com>, linux-kernel@vger.kernel.org,
-        kvm@vger.kernel.org, Cannon Matthews <cannonmatthews@google.com>,
-        Peter Xu <peterx@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Peter Shier <pshier@google.com>,
-        Peter Feiner <pfeiner@google.com>,
-        Junaid Shahid <junaids@google.com>,
-        Jim Mattson <jmattson@google.com>,
-        Yulei Zhang <yulei.kernel@gmail.com>,
-        Wanpeng Li <kernellwp@gmail.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Xiao Guangrong <xiaoguangrong.eric@gmail.com>
-Subject: Re: [PATCH v2 07/20] kvm: x86/mmu: Support zapping SPTEs in the TDP
- MMU
-Message-ID: <20201022022423.yqyvgpagymxz6ok5@linux.intel.com>
-References: <20201014182700.2888246-1-bgardon@google.com>
- <20201014182700.2888246-8-bgardon@google.com>
- <20201021150225.2eeriqlffqnsm4b3@linux.intel.com>
- <6985f630-3b2a-75f5-5b55-bd76cf32f20b@redhat.com>
- <20201021172409.aids3y2mlyx776lx@linux.intel.com>
- <0f2e00fe-4f30-88d3-e345-089f1afc4fb9@redhat.com>
+        id S2895036AbgJVCYz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 22:24:55 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:46046 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895026AbgJVCYz (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 22:24:55 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id C397122444;
+        Wed, 21 Oct 2020 22:24:51 -0400 (EDT)
+Date:   Thu, 22 Oct 2020 13:25:00 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Xianting Tian <tian.xianting@h3c.com>
+cc:     kashyap.desai@broadcom.com, sumit.saxena@broadcom.com,
+        shivasharan.srikanteshwara@broadcom.com, jejb@linux.ibm.com,
+        martin.petersen@oracle.com, megaraidlinux.pdl@broadcom.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
+In-Reply-To: <20201021064502.35469-1-tian.xianting@h3c.com>
+Message-ID: <alpine.LNX.2.23.453.2010221312460.6@nippy.intranet>
+References: <20201021064502.35469-1-tian.xianting@h3c.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0f2e00fe-4f30-88d3-e345-089f1afc4fb9@redhat.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 08:00:47PM +0200, Paolo Bonzini wrote:
-> On 21/10/20 19:24, Yu Zhang wrote:
-> > On Wed, Oct 21, 2020 at 07:20:15PM +0200, Paolo Bonzini wrote:
-> >> On 21/10/20 17:02, Yu Zhang wrote:
-> >>>>  void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
-> >>>>  {
-> >>>> +	gfn_t max_gfn = 1ULL << (boot_cpu_data.x86_phys_bits - PAGE_SHIFT);
-> >>>> +
-> >>> boot_cpu_data.x86_phys_bits is the host address width. Value of the guest's
-> >>> may vary. So maybe we should just traverse the memslots and zap the gfn ranges
-> >>> in each of them?
-> >>>
-> >>
-> >> It must be smaller than the host value for two-dimensional paging, though.
-> > 
-> > Yes. And using boot_cpu_data.x86_phys_bits works, but won't it be somewhat
-> > overkilling? E.g. for a host with 46 bits and a guest with 39 bits width?
-> 
-> It would go quickly through extra memory space because the PML4E entries
-> above the first would be empty.  So it's just 511 comparisons.
+On Wed, 21 Oct 2020, Xianting Tian wrote:
+
+> Since we already in hard IRQ context when running megasas_isr(),
+
+On m68k, hard irq context does not mean interrupts are disabled. Are there 
+no other architectures in that category?
+
+> so use spin_lock() is enough, which is faster than spin_lock_irqsave().
 > 
 
-Oh, yes. The overhead seems not as big as I assumed. :)
+Is that measurable?
 
-Yu
-> Paolo
+> Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
+> ---
+>  drivers/scsi/megaraid/megaraid_sas_base.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+> index 2b7e7b5f3..bd186254d 100644
+> --- a/drivers/scsi/megaraid/megaraid_sas_base.c
+> +++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+> @@ -3977,15 +3977,14 @@ static irqreturn_t megasas_isr(int irq, void *devp)
+>  {
+>  	struct megasas_irq_context *irq_context = devp;
+>  	struct megasas_instance *instance = irq_context->instance;
+> -	unsigned long flags;
+>  	irqreturn_t rc;
+>  
+>  	if (atomic_read(&instance->fw_reset_no_pci_access))
+>  		return IRQ_HANDLED;
+>  
+> -	spin_lock_irqsave(&instance->hba_lock, flags);
+> +	spin_lock(&instance->hba_lock);
+>  	rc = megasas_deplete_reply_queue(instance, DID_OK);
+> -	spin_unlock_irqrestore(&instance->hba_lock, flags);
+> +	spin_unlock(&instance->hba_lock);
+>  
+>  	return rc;
+>  }
 > 
