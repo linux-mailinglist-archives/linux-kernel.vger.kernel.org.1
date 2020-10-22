@@ -2,129 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3E0B7296756
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:30:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 16C6C29675B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:35:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372928AbgJVWaW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:30:22 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895402AbgJVWaW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:30:22 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7BCF324650;
-        Thu, 22 Oct 2020 22:30:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603405821;
-        bh=2l/2DIlPvrjqJrQ+UNcy3DRW1gC0lc/g2G6XmkpWkJY=;
-        h=Date:From:To:Cc:Subject:Reply-To:From;
-        b=X8HrrBExuEWOSn3D3EztYgh1T7uXA1Vn6m2p+56VAAk5Z+9dafSSL8LE/SRqEnUcV
-         CkPrFfVHhmSZkUMrz+nVTVfP8p+3RURzSWkmtAs8IlgF6alqlXmQs83P743dUEh3Cv
-         Uoczc3vQsM0EUhOLQr8VnMsjmIOWo93IFliazaXA=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 26F2F3522AB9; Thu, 22 Oct 2020 15:30:21 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:30:21 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     mathieu.desnoyers@efficios.com
-Cc:     stephen@networkplumber.org, stern@rowland.harvard.edu,
-        jiangshanlai@gmail.com, lttng-dev@lists.lttng.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] call_rcu: Fix race between rcu_barrier() and
- call_rcu_data_free()
-Message-ID: <20201022223021.GA8535@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
+        id S372814AbgJVWce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51688 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895132AbgJVWce (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 18:32:34 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 232E2C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:32:34 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id bf6so1730001plb.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:32:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=WP7MQH1ssAvDqFVXPY7V60qwcY9Im9dBsz5m4rL+ry8=;
+        b=bIdceANej9lvuMPIaaLVFAdg2WqmqLlyNevfjw/ZimJhZx7nxKRHwJNp8tRnvP/ZX5
+         C7E2p+hF/bFjvlQn97TfVSBWGRz53q2S8l2zRujVs8nBmbydDrs0P99KtLU2wmGowHSg
+         8zkarDzOOeyc/ekBsYRaTSB22cjwUsXuLoCWo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=WP7MQH1ssAvDqFVXPY7V60qwcY9Im9dBsz5m4rL+ry8=;
+        b=A0sp6dz9x0wKydyaZKQu1e8CqTKnRjkn+lpvURI23Gx7bicwX7YtzzpOeSJT9XtUOh
+         mbNNR+4MhyoAfwAh2uhE9I6hwb9xB+1dISR3ZsxNhkDuHvPDRWTbMqlHYJ7rsvsdwJAH
+         94fJqWJ/YMq+doX1uvlL1j2q3qnQRtwgiwlIs6egggxqG122FgbkQodoOrxblRvGN4DL
+         X/Yk36FsxkUmtuXZBywmNmF1LjmZTsRxzM8qKaFQ6cejlqo7GskuDBj7iyIZNsKk8Dl8
+         VJNRll6QnqCS3Y/30AhiZSDr2n9lBqRlsqD4EyL7ZLHv/+u9rWko0zENWjRDJyS8L4Hh
+         pNCg==
+X-Gm-Message-State: AOAM53218NiTb810Cp+P2hOlU19n+kMabeTIp94gr8dpVb0+RtJh8qji
+        LvTZINtz6CZQFZrC8DJOHXT5vg==
+X-Google-Smtp-Source: ABdhPJx9pRKL66H6CiwdaLL0xcN1gIQVhntB/+tpFfDzpc1b3GAd8xuM23vsryV1EPMtKne4pmJn8A==
+X-Received: by 2002:a17:902:ee52:b029:d5:dd2d:df92 with SMTP id 18-20020a170902ee52b02900d5dd2ddf92mr4667294plo.37.1603405953445;
+        Thu, 22 Oct 2020 15:32:33 -0700 (PDT)
+Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
+        by smtp.gmail.com with ESMTPSA id u65sm3394821pfc.11.2020.10.22.15.32.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 15:32:32 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:32:31 -0700
+From:   Kees Cook <keescook@chromium.org>
+To:     YiFei Zhu <zhuyifei1999@gmail.com>
+Cc:     Linux Containers <containers@lists.linux-foundation.org>,
+        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
+        kernel list <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Andy Lutomirski <luto@amacapital.net>,
+        David Laight <David.Laight@aculab.com>,
+        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Hubertus Franke <frankeh@us.ibm.com>,
+        Jack Chen <jianyan2@illinois.edu>,
+        Jann Horn <jannh@google.com>,
+        Josep Torrellas <torrella@illinois.edu>,
+        Tianyin Xu <tyxu@illinois.edu>,
+        Tobin Feldman-Fitzthum <tobin@ibm.com>,
+        Tycho Andersen <tycho@tycho.pizza>,
+        Valentin Rothberg <vrothber@redhat.com>,
+        Will Drewry <wad@chromium.org>
+Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
+ /proc/pid/seccomp_cache
+Message-ID: <202010221520.44C5A7833E@keescook>
+References: <cover.1602263422.git.yifeifz2@illinois.edu>
+ <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
+ <202010091613.B671C86@keescook>
+ <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
+ <202010121556.1110776B83@keescook>
+ <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
+ <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The current code can lose RCU callbacks at shutdown time, which can
-result in hangs.  This lossage can happen as follows:
+On Thu, Oct 22, 2020 at 03:52:20PM -0500, YiFei Zhu wrote:
+> On Mon, Oct 12, 2020 at 7:31 PM YiFei Zhu <zhuyifei1999@gmail.com> wrote:
+> >
+> > On Mon, Oct 12, 2020 at 5:57 PM Kees Cook <keescook@chromium.org> wrote:
+> > > I think it's fine to just have this "dangle" with a help text update of
+> > > "if seccomp action caching is supported by the architecture, provide the
+> > > /proc/$pid ..."
+> >
+> > I think it would be weird if someone sees this help text and wonder...
+> > "hmm does my architecture support seccomp action caching" and without
+> > a clear pointer to how seccomp action cache works, goes and compiles
+> > the kernel with this config option on for the purpose of knowing if
+> > their arch supports it... Or, is it a common practice in the kernel to
+> > leave dangling configs?
+> 
+> Bump, in case this question was missed.
 
-o       A thread invokes call_rcu_data_free(), which executes up through
-        the wake_call_rcu_thread().  At this point, the call_rcu_data
-        structure has been drained of callbacks, but is still on the
-        call_rcu_data_list.  Note that this thread does not hold the
-        call_rcu_mutex.
+I've been going back and forth on this, and I think what I've settled
+on is I'd like to avoid new CONFIG dependencies just for this feature.
+Instead, how about we just fill in SECCOMP_NATIVE and SECCOMP_COMPAT
+for all the HAVE_ARCH_SECCOMP_FILTER architectures, and then the
+cache reporting can be cleanly tied to CONFIG_SECCOMP_FILTER? It
+should be relatively simple to extract those details and make
+SECCOMP_ARCH_{NATIVE,COMPAT}_NAME part of the per-arch enabling patches?
 
-o       Another thread invokes rcu_barrier(), which traverses the
-        call_rcu_data_list under the protection of call_rcu_mutex,
-        a list which still includes the above newly drained structure.
-        This thread therefore adds a callback to the newly drained
-        call_rcu_data structure.  It then releases call_rcu_mutex and
-        enters a mystifying loop that does futex stuff.
+> I don't really want to miss the 5.10 merge window...
 
-o       The first thread finishes executing call_rcu_data_free(),
-        which acquires call_rcu_mutex just long enough to remove the
-        newly drained call_rcu_data structure from call_rcu_data_list.
-        Which causes one of the rcu_barrier() invocation's callbacks to
-        be leaked.
+Sorry, the 5.10 merge window is already closed for stuff that hasn't
+already been in -next. Most subsystem maintainers (myself included)
+don't take new features into their trees between roughly N-rc6 and
+(N+1)-rc1. My plan is to put this in my -next tree after -rc1 is released
+(expected to be Oct 25th).
 
-o       The second thread's rcu_barrier() invocation never returns
-        resulting in a hang.
+I'd still like to get more specific workload performance numbers too.
+The microbenchmark is nice, but getting things like build times under
+docker's default seccomp filter, etc would be lovely. I've almost gotten
+there, but my benchmarks are still really noisy and CPU isolation
+continues to frustrate me. :)
 
-This commit therefore changes call_rcu_data_free() to acquire
-call_rcu_mutex before checking the call_rcu_data structure for callbacks.
-In the case where there are no callbacks, call_rcu_mutex is held across
-both the check and the removal from call_rcu_data_list, thus preventing
-rcu_barrier() from adding a callback in the meantime.  In the case where
-there are callbacks, call_rcu_mutex must be momentarily dropped across
-the call to get_default_call_rcu_data(), which can itself acquire
-call_rcu_mutex.  This momentary drop is not a problem because any
-callbacks that rcu_barrier() might queue during that period of time will
-be moved to the default call_rcu_data structure, and the lock will be
-held across the full time including moving those callbacks and removing
-the call_rcu_data structure that was passed into call_rcu_data_free()
-from call_rcu_data_list.
-
-With this fix, a several-hundred-CPU test successfully completes more
-than 5,000 executions.  Without this fix, it fails within a few tens
-of executions.  Although the failures happen more quickly on larger
-systems, in theory this could happen on a single-CPU system, courtesy
-of preemption.
-
-Signed-off-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Stephen Hemminger <stephen@networkplumber.org>
-Cc: Alan Stern <stern@rowland.harvard.edu>
-Cc: Lai Jiangshan <jiangshanlai@gmail.com>
-Cc: <lttng-dev@lists.lttng.org>
-Cc: <linux-kernel@vger.kernel.org>
-
----
-
- urcu-call-rcu-impl.h |    7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
-
-diff --git a/src/urcu-call-rcu-impl.h b/src/urcu-call-rcu-impl.h
-index b6ec6ba..18fd65a 100644
---- a/src/urcu-call-rcu-impl.h
-+++ b/src/urcu-call-rcu-impl.h
-@@ -772,9 +772,13 @@ void call_rcu_data_free(struct call_rcu_data *crdp)
- 		while ((uatomic_read(&crdp->flags) & URCU_CALL_RCU_STOPPED) == 0)
- 			(void) poll(NULL, 0, 1);
- 	}
-+	call_rcu_lock(&call_rcu_mutex);
- 	if (!cds_wfcq_empty(&crdp->cbs_head, &crdp->cbs_tail)) {
--		/* Create default call rcu data if need be */
-+		call_rcu_unlock(&call_rcu_mutex);
-+		/* Create default call rcu data if need be. */
-+		/* CBs queued here will be handed to the default list. */
- 		(void) get_default_call_rcu_data();
-+		call_rcu_lock(&call_rcu_mutex);
- 		__cds_wfcq_splice_blocking(&default_call_rcu_data->cbs_head,
- 			&default_call_rcu_data->cbs_tail,
- 			&crdp->cbs_head, &crdp->cbs_tail);
-@@ -783,7 +787,6 @@ void call_rcu_data_free(struct call_rcu_data *crdp)
- 		wake_call_rcu_thread(default_call_rcu_data);
- 	}
- 
--	call_rcu_lock(&call_rcu_mutex);
- 	cds_list_del(&crdp->list);
- 	call_rcu_unlock(&call_rcu_mutex);
- 
+-- 
+Kees Cook
