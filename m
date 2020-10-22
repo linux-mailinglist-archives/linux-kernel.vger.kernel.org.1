@@ -2,217 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46CC9296187
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:15:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E306929618B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:16:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901288AbgJVPPW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:15:22 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:59410 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509904AbgJVPPW (ORCPT
+        id S2901295AbgJVPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:16:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509933AbgJVPQI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:15:22 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MF4mnk016525;
-        Thu, 22 Oct 2020 15:14:30 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=nLO8sRXFYpUQiwJEfuTU4CZ+g0g8h2RhbpdmgN5Y+ZI=;
- b=Lgfj/QcigNg8QFu6Y2BR/yBjN7jQxSJ+R2uX2FPIQz5G7kTbNftMK0zuZfQ5p5Bg3H8t
- mZpBMAT8LRgmn3uOpk2x5f3U+PWoHuEd7bebPEaTTEVE4s+E4fQ11S4g0aIAJ7srVV9T
- eZ3LRQQSlcH8L6kpvZHCjbHTsT1bPW6wIaqM7jicrDu+xi5T0gMQ9DC/iXmMry+Xrc+s
- vAQhfbIkQ61tzxH/hI9+1FpldlF9IYounWQZeiWzRLgK3KjH206xJvmZKWziWFQQq0zB
- JlOe8hbBK1SevVExweNF5I9lXsiFkUgF78RjdIZnR4/wFxcDiaD9garniIo0Ko8cISeu Tg== 
-Received: from userp3030.oracle.com (userp3030.oracle.com [156.151.31.80])
-        by userp2120.oracle.com with ESMTP id 34ak16psv6-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Thu, 22 Oct 2020 15:14:30 +0000
-Received: from pps.filterd (userp3030.oracle.com [127.0.0.1])
-        by userp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MF1HY3176840;
-        Thu, 22 Oct 2020 15:14:29 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3030.oracle.com with ESMTP id 348ahyvxma-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Oct 2020 15:14:29 +0000
-Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09MFELTb031437;
-        Thu, 22 Oct 2020 15:14:21 GMT
-Received: from localhost (/67.169.218.210)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Thu, 22 Oct 2020 08:14:20 -0700
-Date:   Thu, 22 Oct 2020 08:14:18 -0700
-From:   "Darrick J. Wong" <darrick.wong@oracle.com>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     Damien Le Moal <Damien.LeMoal@wdc.com>,
-        Hannes Reinecke <hare@suse.de>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
-Message-ID: <20201022151418.GR9832@magnolia>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
- <20201021141044.GF20749@veeam.com>
- <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
- <20201022094402.GA21466@veeam.com>
- <BL0PR04MB6514AC1B1FF313E6A14D122CE71D0@BL0PR04MB6514.namprd04.prod.outlook.com>
- <20201022135213.GB21466@veeam.com>
+        Thu, 22 Oct 2020 11:16:08 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01961C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:16:08 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id e6so1268856qtw.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:16:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Z3vmtV0NaowwAl/bkuJPmHs13M06Kmq+h1vxwA4hLas=;
+        b=pu4/oIE96b9WepM1KyYgDHEbBJpHXDkiB0Rc3gA4iHoiWv7uqBRDM2rNU71uBrXzIK
+         z/RSgcF+IqGFQwlvjRUdhEAi1RWf6YDVM2IS/E22uZQAnB4ixbJjgZMkedtOl9JV6QHM
+         TbuewAXGqlRIvn12XGaxHRRYFBQNSPA9wEY+VGn83227qfjQQMX9uycQ5HrEHdHoddCu
+         Pvfdyy11QRd6fWp8M5j38eFs7rcdyALz4fKr1GPWpePcfi0+LDOIbA3IGOuOF40dNCMo
+         3T+HGTAiLSB8NNiB7TVtY9OrtlNyWvZGktJ2QlqtrNTMh1DxJjjyIRUSj7xlracCmUOo
+         y40g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Z3vmtV0NaowwAl/bkuJPmHs13M06Kmq+h1vxwA4hLas=;
+        b=s0N4VFA/A6RN8m1fG+ecBM5YPa/gquz4YShUH5rs37YTYoG41JXvqglaHoaotgabLb
+         LEeVVvdLbOUGynp68+1KdQvq9BEQOGTRIZ3akf0uDplX+AjqG4hLl2/NMJntEbt+CNpz
+         oM+7gd5AuAbh5AHyz81Y0pF2dy5QfUZ1T8mG6RI1u4opMSPB4pJ77yuZ6dcd2qbXO5Cf
+         +V/sT7pN7B7fuwQJuu4bwEPe5x9TAG4Zay6etzRk7OYWX8tTNP2Vz8S7naCL6WCFee9w
+         zalTuoUrjBvwWlNFNuQpAx+DmPzqQaPduOaseHHxJhNVy7AlzPXq+Yy6R/KnABZWa+Hd
+         6cKg==
+X-Gm-Message-State: AOAM531S2iBV4SCfxiA40IlgtVOI8h66aB9X5jkHH4uSjJQCXBR/c8Jy
+        Q45CuqGa8TIJGgUpclhRkF62Lqo9yfnIlurkboZVNQ==
+X-Google-Smtp-Source: ABdhPJxuQ/BA6vpJQzxhrqMGyXaPlsQefVCsoiVd55h1woFQfeiMP0sUtRl8Gzy2ahMruP98DbRdMsq8wSMVueYCGQ8=
+X-Received: by 2002:ac8:928:: with SMTP id t37mr2588192qth.67.1603379766837;
+ Thu, 22 Oct 2020 08:16:06 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022135213.GB21466@veeam.com>
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 phishscore=0 bulkscore=0
- malwarescore=0 spamscore=0 mlxlogscore=999 mlxscore=0 suspectscore=1
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010220103
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
- priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
- lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
- suspectscore=1 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220103
+References: <cover.1603372719.git.andreyknvl@google.com>
+In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
+From:   Dmitry Vyukov <dvyukov@google.com>
+Date:   Thu, 22 Oct 2020 17:15:55 +0200
+Message-ID: <CACT4Y+bVCADgzweb_gmC9f7m_uc5r73scLPy+D3=Tbf2DFqb6g@mail.gmail.com>
+Subject: Re: [PATCH RFC v2 00/21] kasan: hardware tag-based mode for
+ production use on arm64
+To:     Andrey Konovalov <andreyknvl@google.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Alexander Potapenko <glider@google.com>,
+        Marco Elver <elver@google.com>,
+        Evgenii Stepanov <eugenis@google.com>,
+        Kostya Serebryany <kcc@google.com>,
+        Peter Collingbourne <pcc@google.com>,
+        Serban Constantinescu <serbanc@google.com>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Elena Petrova <lenaptr@google.com>,
+        Branislav Rankov <Branislav.Rankov@arm.com>,
+        Kevin Brodsky <kevin.brodsky@arm.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:52:13PM +0300, Sergei Shtepa wrote:
-> The 10/22/2020 13:28, Damien Le Moal wrote:
-> > On 2020/10/22 18:43, Sergei Shtepa wrote:
-> > > 
-> > > Maybe, but the problem is that I can't imagine how to implement
-> > > dm-intercept yet. 
-> > > How to use dm to implement interception without changing the stack
-> > > of block devices. We'll have to make a hook somewhere, isn`t it?
-> > 
-> > Once your dm-intercept target driver is inserted with "dmsetup" or any user land
-> > tool you implement using libdevicemapper, the "hooks" will naturally be in place
-> > since the dm infrastructure already does that: all submitted BIOs will be passed
-> > to dm-intercept through the "map" operation defined in the target_type
-> > descriptor. It is then that driver job to execute the BIOs as it sees fit.
-> > 
-> > Look at simple device mappers like dm-linear or dm-flakey for hints of how
-> > things work (driver/md/dm-linear.c). More complex dm drivers like dm-crypt,
-> > dm-writecache or dm-thin can give you hints about more features of device mapper.
-> > Functions such as __map_bio() in drivers/md/dm.c are the core of DM and show
-> > what happens to BIOs depending on the the return value of the map operation.
-> > dm_submit_bio() and __split_and_process_bio() is the entry points for BIO
-> > processing in DM.
-> > 
-> 
-> Is there something I don't understand? Please correct me.
-> 
-> Let me remind that by the condition of the problem, we can't change
-> the configuration of the block device stack.
-> 
-> Let's imagine this configuration: /root mount point on ext filesystem
-> on /dev/sda1.
-> +---------------+
-> |               |
-> |  /root        |
-> |               |
-> +---------------+
-> |               |
-> | EXT FS        |
-> |               |
-> +---------------+
-> |               |
-> | block layer   |
-> |               |
-> | sda queue     |
-> |               |
-> +---------------+
-> |               |
-> | scsi driver   |
-> |               |
-> +---------------+
-> 
-> We need to add change block tracking (CBT) and snapshot functionality for
-> incremental backup.
-> 
-> With the DM we need to change the block device stack. Add device /dev/sda1
-> to LVM Volume group, create logical volume, change /etc/fstab and reboot.
-> 
-> The new scheme will look like this:
-> +---------------+
-> |               |
-> |  /root        |
-> |               |
-> +---------------+
-> |               |
-> | EXT FS        |
-> |               |
-> +---------------+
-> |               |
-> | LV-root       |
-> |               |
-> +------------------+
-> |                  |
-> | dm-cbt & dm-snap |
-> |                  |
-> +------------------+
-> |               |
-> | sda queue     |
-> |               |
-> +---------------+
-> |               |
-> | scsi driver   |
-> |               |
-> +---------------+
-> 
-> But I cannot change block device stack. And so I propose a scheme with
-> interception.
-> +---------------+
-> |               |
-> |  /root        |
-> |               |
-> +---------------+
-> |               |
-> | EXT FS        |
-> |               |
-> +---------------+   +-----------------+
-> |  |            |   |                 |
-> |  | blk-filter |-> | cbt & snapshot  |
-> |  |            |<- |                 |
-> |  +------------+   +-----------------+
-> |               |
-> | sda blk queue |
-> |               |
-> +---------------+
-> |               |
-> | scsi driver   |
-> |               |
-> +---------------+
-> 
-> Perhaps I can make "cbt & snapshot" inside the DM, but without interception
-> in any case, it will not work. Isn't that right?
+On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
+>
+> This patchset is not complete (hence sending as RFC), but I would like to
+> start the discussion now and hear people's opinions regarding the
+> questions mentioned below.
+>
+> === Overview
+>
+> This patchset adopts the existing hardware tag-based KASAN mode [1] for
+> use in production as a memory corruption mitigation. Hardware tag-based
+> KASAN relies on arm64 Memory Tagging Extension (MTE) [2] to perform memory
+> and pointer tagging. Please see [3] and [4] for detailed analysis of how
+> MTE helps to fight memory safety problems.
+>
+> The current plan is reuse CONFIG_KASAN_HW_TAGS for production, but add a
+> boot time switch, that allows to choose between a debugging mode, that
+> includes all KASAN features as they are, and a production mode, that only
+> includes the essentials like tag checking.
+>
+> It is essential that switching between these modes doesn't require
+> rebuilding the kernel with different configs, as this is required by the
+> Android GKI initiative [5].
+>
+> The patch titled "kasan: add and integrate kasan boot parameters" of this
+> series adds a few new boot parameters:
+>
+> kasan.mode allows choosing one of main three modes:
+>
+> - kasan.mode=off - no checks at all
+> - kasan.mode=prod - only essential production features
+> - kasan.mode=full - all features
+>
+> Those mode configs provide default values for three more internal configs
+> listed below. However it's also possible to override the default values
+> by providing:
+>
+> - kasan.stack=off/on - enable stacks collection
+>                        (default: on for mode=full, otherwise off)
+> - kasan.trap=async/sync - use async or sync MTE mode
+>                           (default: sync for mode=full, otherwise async)
+> - kasan.fault=report/panic - only report MTE fault or also panic
+>                              (default: report)
+>
+> === Benchmarks
+>
+> For now I've only performed a few simple benchmarks such as measuring
+> kernel boot time and slab memory usage after boot. The benchmarks were
+> performed in QEMU and the results below exclude the slowdown caused by
+> QEMU memory tagging emulation (as it's different from the slowdown that
+> will be introduced by hardware and therefore irrelevant).
+>
+> KASAN_HW_TAGS=y + kasan.mode=off introduces no performance or memory
+> impact compared to KASAN_HW_TAGS=n.
+>
+> kasan.mode=prod (without executing the tagging instructions) introduces
+> 7% of both performace and memory impact compared to kasan.mode=off.
+> Note, that 4% of performance and all 7% of memory impact are caused by the
+> fact that enabling KASAN essentially results in CONFIG_SLAB_MERGE_DEFAULT
+> being disabled.
+>
+> Recommended Android config has CONFIG_SLAB_MERGE_DEFAULT disabled (I assume
+> for security reasons), but Pixel 4 has it enabled. It's arguable, whether
+> "disabling" CONFIG_SLAB_MERGE_DEFAULT introduces any security benefit on
+> top of MTE. Without MTE it makes exploiting some heap corruption harder.
+> With MTE it will only make it harder provided that the attacker is able to
+> predict allocation tags.
+>
+> kasan.mode=full has 40% performance and 30% memory impact over
+> kasan.mode=prod. Both come from alloc/free stack collection.
+>
+> === Questions
+>
+> Any concerns about the boot parameters?
 
-Stupid question: Why don't you change the block layer to make it
-possible to insert device mapper devices after the blockdev has been set
-up?
+For boot parameters I think we are now "safe" in the sense that we
+provide maximum possible flexibility and can defer any actual
+decisions.
 
---D
+> Should we try to deal with CONFIG_SLAB_MERGE_DEFAULT-like behavor mentioned
+> above?
 
-> 
-> -- 
-> Sergei Shtepa
-> Veeam Software developer.
+How hard it is to allow KASAN with CONFIG_SLAB_MERGE_DEFAULT? Are
+there any principal conflicts?
+The numbers you provided look quite substantial (on a par of what MTE
+itself may introduce). So I would assume if a vendor does not have
+CONFIG_SLAB_MERGE_DEFAULT disabled, it may not want to disable it
+because of MTE (effectively doubles overhead).
