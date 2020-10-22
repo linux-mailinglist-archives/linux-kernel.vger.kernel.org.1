@@ -2,204 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1050295616
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:31:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FE19295618
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2441512AbgJVBbn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:31:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54556 "EHLO
+        id S2894756AbgJVBes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:34:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437965AbgJVBbl (ORCPT
+        with ESMTP id S2894703AbgJVBes (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:31:41 -0400
-Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 98F47C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:31:41 -0700 (PDT)
-Received: by mail-il1-x144.google.com with SMTP id p16so205678ilq.5
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:31:41 -0700 (PDT)
+        Wed, 21 Oct 2020 21:34:48 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADBAC0613CE;
+        Wed, 21 Oct 2020 18:34:46 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s22so2590333pga.9;
+        Wed, 21 Oct 2020 18:34:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=cUv8I/XRO+U+HHTaUt0aBZGhFRXLniat8xgSZPLd8Sc=;
-        b=suW1elwFVTeP/bz1cLEbs+wOACpmp85uPDIRNbxd4da4Dv0BDQRG7+12AiYwJoidl5
-         2Mm5FridlZamEMSApEzi7Njp8i7bYAaUKrCf7HiCi/YZPdEeYsmcm1XLf3hHZ/5MdW5i
-         Bmj/SbO74N+Mf+kTT3F5CE69vMxGaDl95NL0Q=
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=zNKVQRtl8vfQItkTAR2QKWDzX8AbVsj4JXt+RK8do8I=;
+        b=DaIryzOAJGOyqZoPSszwqFZw9oUE0zc7MM3We7s/DAGw3+ioDMCj6M+fREQyVZjz+n
+         +z/LEH2o48uBxXmKstLKdm5vsN2howD3wceHBxYwlGasykhTmgpi23T4upBG28pbUyE+
+         GCJJ6FfztGioPLkhyq2IGpZqPOdY4eUe6rnU1fWoouUjnEqgkPsmCh64qTeOKqQuvqOF
+         wYXVJ8q7+IYvM9IJ9+x2C8wzn/pBX+HfE2Z0dXuZCC5dDwT2IDTkpY0hxcoah+roQgrk
+         NXJoK+y9Ty0Trguq6yJBTiwvewzKt+GL2LEY+dl/4+0fS6kjrzj09iCgzFP0rvga3eAr
+         kvVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=cUv8I/XRO+U+HHTaUt0aBZGhFRXLniat8xgSZPLd8Sc=;
-        b=GD0kt6kvPOzguBjNyibX8OEH/MrPngxsiT0XYeJZyEBpSWLNumaTWVkTpm1VoBO1RK
-         oLx6thzHpZre9jEXewbr/R+M1hcT5bw4LLjD+lLQn4BOXPBF5LExv9zI+aXACPWZ7zgZ
-         KCeW5B0HCDwy1PpE9u56vL4MsmP4L0OPzIev79k5j8eAeLZvSXcitKGYg8kQfSYgbJRx
-         jv+w/UmGMGEPe48knJYObM5iz09HJ+O5QrdyYqfQBGITx/FoTwmznjBIhhrQNwRIduxE
-         b1dXkwaj6EsMV+MV8ey13gF2y2ku/Tl/U46VAw9WIn5ke+IvzYILE8eylTKC8+6tP9yz
-         Wi+g==
-X-Gm-Message-State: AOAM532Xn8RrgJJBJY6p5pl0+LC5KjYi2SynjfQcNP+bJEyJrv91oZZx
-        7uFzxY2tcDq5IyVn8FRYrUT1V1eik2WVplud8er1Sh2L1njm6o4=
-X-Google-Smtp-Source: ABdhPJxmEUEakSdO89gCsS438pEQs1y9nl1V2+yxcLcbjiTFe5jmrL5Rq7PmxWgFGvGiKMxd4GgEr83RWh9abtof5k8=
-X-Received: by 2002:a92:6410:: with SMTP id y16mr232132ilb.126.1603330300837;
- Wed, 21 Oct 2020 18:31:40 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201009211344.2358688-1-atish.patra@wdc.com> <20201009211344.2358688-5-atish.patra@wdc.com>
- <CAHCEehJvMv=CYD1+QXb0uB36Hv4pvO36BAKSLOcxTXvmADZFbA@mail.gmail.com>
- <CAOnJCUKPjkm_=5eHn6=GjVGr67okZkVzqP7-ciphn986BQoc9w@mail.gmail.com>
- <CAOnJCULZMRu+sHmnjoBwtvaB3BjmCiZLzYxNOeWZmoYLKG+wTw@mail.gmail.com>
- <CAHCEehJJmLQ6W5AdH+hEZSJxpDC8HG0UN=EGt9M0Tp5NTfQnaw@mail.gmail.com>
- <CAOnJCUJN-XMZ+N5w+RbVhJag9D_dey7DAopb0Q35GDfXptyMjA@mail.gmail.com>
- <CAFyWVaYORWYZTXyXOWiY6xK-SFTvsUxDNDqKQnhVUwzc5N045Q@mail.gmail.com>
- <CAOnJCU+3xFyFW4ATCdYAv5zVyBSLE0mTevrJLCXW7HDgy4D4EQ@mail.gmail.com> <CAOnJCUJWf9Hu4frFOJGQLUZ2BQ8qHBd7mvspgvfM1k6e4z5CcA@mail.gmail.com>
-In-Reply-To: <CAOnJCUJWf9Hu4frFOJGQLUZ2BQ8qHBd7mvspgvfM1k6e4z5CcA@mail.gmail.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 21 Oct 2020 18:31:30 -0700
-Message-ID: <CAOnJCUJLKz8gUc7VPnUG4mULQhGD0g_ztxPGYYD7BO6HJBCqcg@mail.gmail.com>
-Subject: Re: [PATCH 4/5] RISC-V: Protect .init.text & .init.data
-To:     Jim Wilson <jimw@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>
-Cc:     Greentime Hu <greentime.hu@sifive.com>,
-        Kito Cheng <kito.cheng@gmail.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Kees Cook <keescook@chromium.org>,
-        Anup Patel <anup@brainfault.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Guo Ren <guoren@linux.alibaba.com>,
-        Zong Li <zong.li@sifive.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@suse.de>,
-        Michel Lespinasse <walken@google.com>,
-        Ard Biesheuvel <ardb@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=zNKVQRtl8vfQItkTAR2QKWDzX8AbVsj4JXt+RK8do8I=;
+        b=fOU6dclQDrx25lBvZV1vFckW1U+m8vmpcMCTxYpMRECBF8l2JR8qBR7kZ3XHn1Ih56
+         Ftl9DJdh8F2Hq2OX5kfa3jEBFK8rKbPpHdU4VfuTfFbQk2ZoVnnJIZ5AawEzPE+zashw
+         6oKFihmPahqMvaMbjRhu1GV/ldLpkIRC5gi0aMvZpmQg+c/VHkewRAl1yLA0Htq5b398
+         pI8MLF4PUoBuWpY8BD+e7vqyUBmmbmdskHOwJZTuFNkEO/4l+UIglusBPHEpbYyKzxuO
+         jM9ZEyQ2TjmE87pQBLvT1hXUzVuKU4ZJT34usy4Cq2xtd0oo+cp6nFkL3UNIiCO7/vr7
+         Txkw==
+X-Gm-Message-State: AOAM533P4Qu6PdoDD87f1INwwmHt9AjKNNajV9iea8y275UDmP4TdZLK
+        RP0Nkufc0QwYN9shkra8Gt9WlXZ0Bp0=
+X-Google-Smtp-Source: ABdhPJxBMPAYu5DIsToLDmpp11MFkGT4FM098nbniWPHUQa5FCz7+iPgcrVfY+L+rwbJ7eJbQ0nHNQ==
+X-Received: by 2002:a63:4702:: with SMTP id u2mr302963pga.111.1603330485678;
+        Wed, 21 Oct 2020 18:34:45 -0700 (PDT)
+Received: from localhost.localdomain ([103.7.29.6])
+        by smtp.googlemail.com with ESMTPSA id kc21sm55289pjb.36.2020.10.21.18.34.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Oct 2020 18:34:44 -0700 (PDT)
+From:   Wanpeng Li <kernellwp@gmail.com>
+X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
+Date:   Thu, 22 Oct 2020 09:34:35 +0800
+Message-Id: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 11:24 AM Atish Patra <atishp@atishpatra.org> wrote:
->
-> On Tue, Oct 13, 2020 at 10:24 PM Atish Patra <atishp@atishpatra.org> wrote:
-> >
-> > On Tue, Oct 13, 2020 at 6:21 PM Jim Wilson <jimw@sifive.com> wrote:
-> > >
-> > > On Tue, Oct 13, 2020 at 3:25 PM Atish Patra <atishp@atishpatra.org> wrote:
-> > > > This happens only when copy_from_user is called from function that is
-> > > > annotated with __init.
-> > > > Adding Kito & Jim for their input
-> > > >
-> > > > @kito, @Jim: Please let me know if I should create a issue in
-> > > > riscv-gnu-toolchain repo or somewhere else.
-> > >
-> > > I can't do anything useful without a testcase that I can use to
-> > > reproduce the problem.  The interactions here are complex, so pointing
-> > > at lines of code or kernel config options doesn't give me any useful
-> > > info.
-> > >
-> > > Relaxation can convert calls to a jal.  I don't know of any open bugs
-> > > in this area that can generate relocation errors.  if it is a
-> > > relaxation error then turning off relaxation should work around the
-> > > problem as you suggested.
-> > >
-> > > A kernel build problem is serious.  I think this is worth a bug
-> > > report.  FSF binutils or riscv-gnu-toolchain is fine.
-> > >
-> >
-> > I have created an issue with detailed descriptions and reproduction steps.
-> > Please let me know if you need anything else.
-> >
->
-> It may be a toolchain issue. Here is the ongoing discussion in case
-> anybody else is interested.
->
-> https://github.com/riscv/riscv-gnu-toolchain/issues/738
->
-> > > Jim
-> >
-> >
-> >
-> > --
-> > Regards,
-> > Atish
->
->
->
-> --
-> Regards,
-> Atish
+From: Wanpeng Li <wanpengli@tencent.com>
 
-Thanks to Jim, we know the cause now. Jim has provided an excellent
-analysis of the issue in the github issue report.
-https://github.com/riscv/riscv-gnu-toolchain/issues/738
+Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
 
-To summarize, the linker relaxation code is not aware of the
-alignments between sections.
-That's why it relaxes the calls from .text to .init.text and  converts
-a auipc+jalr pair to jal even if the address can't be fit +/- 1MB.
+This ioctl returns x86 cpuid features which are supported by both the 
+hardware and kvm in its default configuration.
 
-There are few ways we can solve this problem.
+A well-behaved userspace should not set the bit if it is not supported.
 
-1. As per Jim's suggestion, linker relaxation code is aware of the
-section alignments. We can mark .init.text as a 2MB aligned section.
-   For calls within a section, section's alignment will be used in the
-calculation. For calls across sections, e.g. from .init.text to .text,
-the maximum
-   section alignment of every section will be used. Thus, all
-relaxation within .init.text and between any sections will be
-impacted.
-   Thus, it avoids the error but results in the following increase in
-size of various sections.
-     section           change in size (in bytes)
-     .head.text      +4
-     .text               +40
-     .init.text.        +6530
-     .exit.text        +84
+Suggested-by: Jim Mattson <jmattson@google.com>
+Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+---
+ arch/x86/kvm/cpuid.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-The only significant increase is .init.text but it is freed after
-boot. Thus, I don't see any significant performance degradation due to
-that.
-
-Here is the diff
---- a/arch/riscv/kernel/vmlinux.lds.S
-+++ b/arch/riscv/kernel/vmlinux.lds.S
-@@ -51,7 +51,13 @@ SECTIONS
-        . = ALIGN(SECTION_ALIGN);
-        __init_begin = .;
-        __init_text_begin = .;
--       INIT_TEXT_SECTION(PAGE_SIZE)
-+       . = ALIGN(PAGE_SIZE);                                   \
-+       .init.text : AT(ADDR(.init.text) - LOAD_OFFSET)
-ALIGN(SECTION_ALIGN) {  \
-+               _sinittext = .;                                         \
-+               INIT_TEXT                                               \
-+               _einittext = .;                                         \
-+       }
-+
-        . = ALIGN(8);
-        __soc_early_init_table : {
-                __soc_early_init_table_start = .;
-
-2. We will continue to keep head.txt & .init.text together before
-.text. However, we will map the pages that contain head & init.text at
-page
-    granularity so that .head.text and init.text can have different
-permissions. I have not measured the performance impact of this but it
-won't
-    too bad given that the combined size of sections .head.txt &
-.init.text is 200K. So we are talking about page level permission only
-for
-    ~50 pages during boot.
-
-3. Keep head.text in a separate 2MB aligned section. .init.text will
-follow .head.text in its own section as well. This increases the
-kernel
-    size by 2MB for MMU kernels. For nommu case, it will only increase
-by 64 bytes due to smaller section alignment for nommu kernels.
-
-Both solutions 1 & 2 come at minimal performance on boot time while
-solution 3 comes at increased kernel size.
-
-Any preference ?
-
+diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
+index 06a278b..225d251 100644
+--- a/arch/x86/kvm/cpuid.c
++++ b/arch/x86/kvm/cpuid.c
+@@ -789,7 +789,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
+ 
+ 		entry->ebx = 0;
+ 		entry->ecx = 0;
+-		entry->edx = 0;
++		entry->edx = (1 << KVM_HINTS_REALTIME);
+ 		break;
+ 	case 0x80000000:
+ 		entry->eax = min(entry->eax, 0x8000001f);
 -- 
-Regards,
-Atish
+2.7.4
+
