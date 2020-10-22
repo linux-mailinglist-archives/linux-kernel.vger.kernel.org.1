@@ -2,54 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133E29661D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:43:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C464E29661F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:44:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371857AbgJVUnm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:43:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34998 "EHLO
+        id S371871AbgJVUoO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:44:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35080 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896382AbgJVUnl (ORCPT
+        with ESMTP id S2896738AbgJVUoN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:43:41 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6C395C0613CE;
-        Thu, 22 Oct 2020 13:43:41 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id e15so1960548pfh.6;
-        Thu, 22 Oct 2020 13:43:41 -0700 (PDT)
+        Thu, 22 Oct 2020 16:44:13 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C57AFC0613CE;
+        Thu, 22 Oct 2020 13:44:13 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id w21so1960832pfc.7;
+        Thu, 22 Oct 2020 13:44:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=subject:to:cc:references:from:autocrypt:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=Dbw06TzDWaiQ6Bf5zSAwmy2a5chdIopZ2YOPHS7pIdc=;
-        b=sCPDTsJyXdNtKs0ufW3AFVQhn9i4irDG6EL3yqJSQcoLgQt2RrQ6P3XnCdMRxnrgtr
-         8Q6Yv/ETu0us+6eHFHUnq+Hlbpn/DhKLukxiy4kwaLMO6Y8uOsj9nWLIRYFC79+rZXrc
-         5ZQ0VH0aO6NNKUoNp/XIfClvlRh9oVlv3jjrkaIGQFuJ4CYtWX+gMRp1EdKPfGr41ejS
-         fOUMLQhBV376rNUQIzHA85bwcJh6qCb6U18Dgv0QmIGs7lh0cG0rMNxS8Usfkx8S1u/u
-         gV+wnfxJ3uFWahMrLVfYYKNKL8ADu14SVkx3Bs0CPFm5I6mYZbAVke80vhhx4kY1xzpy
-         CkdQ==
+        bh=hOeIemLs8BUiD24oDebm/qxlfty86qWT+/cvtvEwtF8=;
+        b=jBaCOfff8ZwJiGIz6C/3aaAF5gh/VVunPIRUBdUYUxGZBCUCRybzKjCk1Y/H8LTqXM
+         5boA6GtV45Y8aymdNwSxNqsgdxsun8oT5u+pSDnml3IBP0Jc+N+Ndd30nSZwJv0nNjp2
+         VKKOA/mW98F4AdZedUUeWBSnB0D+UuFlmbe5fKXnjJdO4lDp3aR781bVpJvDZjw8XcA5
+         SscQ5Qobxj6oH9IQmw//aCBdhwR04YvSb4fjIuJebYRisHBBRxnS928lHhaWlNeiJe5d
+         Pp5HvGVJMU3npTy7b+tagNnC4CRtwT5moI7Z5Ys77+K1FldvrQe3RC5dnUswNPBCw6BN
+         ZPaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:subject:to:cc:references:from:autocrypt
          :message-id:date:user-agent:mime-version:in-reply-to
          :content-language:content-transfer-encoding;
-        bh=Dbw06TzDWaiQ6Bf5zSAwmy2a5chdIopZ2YOPHS7pIdc=;
-        b=EiU27hEUCYsHNgnmwKCFB6AmiSY+kK8EKP4Nmn7M96yce9h7a1m3DON4poAsLnUEUL
-         t+Bq3g6dm2ZY8tpEguQFeHPsZQyTlEVlnsomJDazs/OErgcO/0m7eNs9jWIJs3I4socb
-         lQfZZemP0SSafpFaqNoBmZeyX9OW1T4EuP/g+LEWEXgMiogG/rh1WG2mgVXD9Xy/sUzL
-         cm5V+1K3Oo9SxlhxLXfKJLJiOg4+mdEPCghHigGPfjGER8gdyQsRmbdigvZaN29hIGKP
-         i9RLxbhjCwsirpYkJ+3ty+PdG7+3vRHN3eh1x7c2V1gnug6wRYO985lkROFLzMMqJKIw
-         b+Cw==
-X-Gm-Message-State: AOAM530bMDlH88p91YJz7k2qm6ac4cqBrcx+0J+43vJ8iu623oSMqeQ6
-        3mb9kkb1fAnhgAcSsA1zyLumdet5MSo=
-X-Google-Smtp-Source: ABdhPJzhFkeKZG74ivR/VwV9yqcrGKaKuwmAE4VFl8gYo6XNBk6/GTcemd3z36x14vTma3sZvewwTA==
-X-Received: by 2002:a63:ed01:: with SMTP id d1mr3646035pgi.58.1603399420657;
-        Thu, 22 Oct 2020 13:43:40 -0700 (PDT)
+        bh=hOeIemLs8BUiD24oDebm/qxlfty86qWT+/cvtvEwtF8=;
+        b=A2PL6JtoYPaDi4AlGmFek45sIzFSdvC5pLmY8xITlXTAa8NsYPUafFDZoSbY7rZrPx
+         6vN8IziagMKij3pWHg54nrC0hCIQSbOtsv1+n2lkENBNYrJj77KXQ7f5Zc5Aq9I/9O2C
+         /tSGtCBYoVR60HCzGYffMViEIQTGlK21HNNK3Ec8/Cm7BYL3iMJ9nQxa3vezY42oV55Q
+         VFkAXNkipEKmyeftYlSIwI1bhIXCd3ZHAJRO7ThHXN9fP5ZsRFTv2+v06iSH/VKwxHqM
+         TRgqZF6YTDeY6NIC1Az+RW775WF71T/VInpN7OCbOdM7+YBCIZHIe4QVFTQROtG+5FI1
+         es7Q==
+X-Gm-Message-State: AOAM532heQ6BRQddtleehhC8BHBHiSkUkzbw5mvKhVhY5CZCEPGH9VoK
+        ZIjW3o8Z1vlDT9c0TcVujgcSjuA41vk=
+X-Google-Smtp-Source: ABdhPJxEH5IwquzN/tB8LJ6Bf2RS1VhQfONhL2k33Soja1cOu2gZkFjZnIbIsx0NaeCaG6sPsbvCfg==
+X-Received: by 2002:a17:90b:4d05:: with SMTP id mw5mr4183196pjb.9.1603399453018;
+        Thu, 22 Oct 2020 13:44:13 -0700 (PDT)
 Received: from [10.67.48.230] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id d8sm2849089pjr.46.2020.10.22.13.43.38
+        by smtp.googlemail.com with ESMTPSA id j15sm3269857pgn.32.2020.10.22.13.44.10
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 13:43:39 -0700 (PDT)
-Subject: Re: [PATCH 07/29] arm: dts: bcm53x: Harmonize EHCI/OHCI DT nodes name
+        Thu, 22 Oct 2020 13:44:12 -0700 (PDT)
+Subject: Re: [PATCH 16/29] arm: dts: bcm5301x: Harmonize xHCI DT nodes name
 To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>,
         Felipe Balbi <balbi@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -63,7 +63,7 @@ Cc:     Serge Semin <fancer.lancer@gmail.com>,
         linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
         devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
- <20201020115959.2658-8-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-17-Sergey.Semin@baikalelectronics.ru>
 From:   Florian Fainelli <f.fainelli@gmail.com>
 Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  mQGiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
@@ -119,12 +119,12 @@ Autocrypt: addr=f.fainelli@gmail.com; prefer-encrypt=mutual; keydata=
  caxTGgc5zzQHeX67eMzrGomG3ZnIxmd1sAbgvJUDaD2GrYlulfwGWwWyTNbWRvMighVdPkSF
  6XFgQaosWxkV0OELLy2N485YrTr2Uq64VKyxpncLh50e2RnyAJ9Za0Dx0yyp44iD1OvHtkEI
  M5kY0ACeNhCZJvZ5g4C2Lc9fcTHu8jxmEkI=
-Message-ID: <50e8e626-662f-36c0-1047-9fffc1566ff3@gmail.com>
-Date:   Thu, 22 Oct 2020 13:43:38 -0700
+Message-ID: <900d3322-b524-1eca-3b67-a7514e7a4cc7@gmail.com>
+Date:   Thu, 22 Oct 2020 13:44:09 -0700
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201020115959.2658-8-Sergey.Semin@baikalelectronics.ru>
+In-Reply-To: <20201020115959.2658-17-Sergey.Semin@baikalelectronics.ru>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -133,17 +133,15 @@ List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 On 10/20/20 4:59 AM, Serge Semin wrote:
-> In accordance with the Generic EHCI/OHCI bindings the corresponding node
+> In accordance with the Generic xHCI bindings the corresponding node
 > name is suppose to comply with the Generic USB HCD DT schema, which
 > requires the USB nodes to have the name acceptable by the regexp:
-> "^usb(@.*)?" . Make sure the "generic-ehci" and "generic-ohci"-compatible
-> nodes are correctly named.
+> "^usb(@.*)?" . Make sure the "generic-xhci"-compatible nodes are
+> correctly named.
 > 
 > Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
-> Acked-by: Florian Fainelli <f.fainelli@gmail.com>
 
-Applied to devicetree/next after fixing up the subject to be: ARM: dts:
-BCM5310X: Harmonize EHCI/OHCI DT nodes name to match prior commits to
-the same files. Thanks!
+Applied to devicetree/next with the same type of subject fixup mentioned
+in patch 7, thanks!
 -- 
 Florian
