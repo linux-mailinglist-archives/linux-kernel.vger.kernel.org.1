@@ -2,115 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBCD3296020
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:38:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE17729601C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:38:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900230AbgJVNiE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:38:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53612 "EHLO
+        id S2900189AbgJVNh5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:37:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53594 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900202AbgJVNh7 (ORCPT
+        with ESMTP id S1726277AbgJVNh4 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:37:59 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EA8EC0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:37:59 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id c16so2287903wmd.2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:37:59 -0700 (PDT)
+        Thu, 22 Oct 2020 09:37:56 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 839A8C0613CE;
+        Thu, 22 Oct 2020 06:37:56 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id t14so963823pgg.1;
+        Thu, 22 Oct 2020 06:37:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=zZZV4ffF4t+t01RKSJGPFAOGdVaSv3k/nLSd6l7lD08=;
-        b=D0Ao1njOzjQ6IdZQAHxd1A84huIlTvUCJTXCAQhNoKuSjqoOsQF2f/oIMP2oHwGuUA
-         aDTklkY3ju3qD/eM011me8bMYM2usafIifdwMqnqMbq5DcL/M8wKA++WpkYmJW87nuY6
-         eADppQQcJCeX+tzLYzbtrQ05sjeTG2S4SBWKs=
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
+        bh=IuqDlc/9sVmn6w8y6S9W6kIXAO5b3CW/ksiq6MJe4cw=;
+        b=IN5ulN/lhVpkv0cSxQVYeQmL8e6XC9Ui0ongH71NZy+wDEtGl/7jnitdi0qhAAyIZY
+         fC7g6ckIDcNipQDDU/l95Zz5SIw5WgFDHGPbZsnqwhcPDWDUeYQ+K0+pZ4exBAq4gbcw
+         rqJ6yYA5w6lq9ZOLdFbpsKUwr7R6EDI8UsYT73x2NUL9/nh4In959E24DYHQiR4z5JBY
+         3PhmcpvnBuuDiLX7PaDg4d9j17853UB9O1sXkM4XGUKK+pIkSbJwNUlF7Kq7ZfYzjjTA
+         UDpUqi4GQ2QwwzVjXoCBSJUnNgaE17+WjxzlHjS3QXF8s9sEEYtv9MqLfP/Xm8h49QZ4
+         R9WA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=zZZV4ffF4t+t01RKSJGPFAOGdVaSv3k/nLSd6l7lD08=;
-        b=pYCM5224EkI59+96lwbGKOYCJu7T2O4PNHRK8+hLJmT8vMmPAMxMFOWVFIxtIpgDul
-         t1nZVc+F8k+EFy8U9Y/BvD6rOTETY6Th5ND8SmYri6N2d8sChvYOvgko2oYYCR+pdHZC
-         zv21+hPAaK3so0y062OyvJsq4DX9ItzDzY/6d2LAWSkWCnH2nk0cO0Aq8US0CM65guCX
-         kfH4EkmOgMOOzpDTMrKTSzcebcwv2IxZGh3s+WbQ/lUrFL2/PQIt3GjTJRJwfg0mGUPL
-         X6wHCKhoFGGLVJviKSIoFWQQySUKAJ0XdbnYI/eXwkoOnivXmzr7X2vER+35ImUpmVZc
-         7nsQ==
-X-Gm-Message-State: AOAM531gX17+KjbQx0EW1TVrpBExxpGO8RmidcR+8SAnGwRu3Zskqs1d
-        5QI2igXV/PhpIN8Nqxte7W0COg==
-X-Google-Smtp-Source: ABdhPJyj3CtaDwRNr3rjY7qm50rCEtFan9QRCWUmj128pucNzLwWUz5ZYLrfXEI1xi+6UeaA+I7HJQ==
-X-Received: by 2002:a1c:b657:: with SMTP id g84mr2589725wmf.0.1603373878059;
-        Thu, 22 Oct 2020 06:37:58 -0700 (PDT)
-Received: from alco.lan ([80.71.134.83])
-        by smtp.gmail.com with ESMTPSA id q10sm4094031wrp.83.2020.10.22.06.37.57
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition;
+        bh=IuqDlc/9sVmn6w8y6S9W6kIXAO5b3CW/ksiq6MJe4cw=;
+        b=VJwqjDXoNBq9BNhc7XL0N07Ds9zE5iCn8vf63eWa5xjFMp6bLNrmwpUqiMr+hNToFP
+         JXFdICoYU0QFNA8zoVzoXPsLjnOuGoLudY+Hdx0ETK9m3cKoxvN26L3Xc6Bx08EKpywW
+         1dUNrJ+T641Pl62M7XR5Z5v6gOPSLHyPE2maAGE7O/YnAsYqTyZLWOMEaC5I4N/RvsNf
+         9Wh0qgWhtvgK2f9yNHyaz7hQV63Oas0DRRjtl059L9pmJqWGR/WYor2oK59myfs57zx7
+         NiHix+l5LVQXzoIiI9JtlIfTRrd8ZFRYZtdZ8adtl3k+jlSoF5TqKEqwf9DRpNOeq3bA
+         dVjw==
+X-Gm-Message-State: AOAM5315b9zha/lpLSWzXjuRgZQhK1gfZCblNSH/UEa1UM3n5Rdpj4AH
+        jcPmSAUAlsfPKghoDrD2Jrw=
+X-Google-Smtp-Source: ABdhPJxzYwjbdLDADhpa8w757osNj5Hty2iFA+tEbvr3E1nQBdPpkX6BpAdeBon6QKBNbFuEjHUUvw==
+X-Received: by 2002:aa7:9e9d:0:b029:152:5ebd:42a with SMTP id p29-20020aa79e9d0000b02901525ebd042amr2500221pfq.4.1603373875970;
+        Thu, 22 Oct 2020 06:37:55 -0700 (PDT)
+Received: from adolin ([49.207.204.75])
+        by smtp.gmail.com with ESMTPSA id a22sm2538214pfk.29.2020.10.22.06.37.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 06:37:57 -0700 (PDT)
-From:   Ricardo Ribalda <ribalda@chromium.org>
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        linux-media@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     tfiga@chromium.org, Ricardo Ribalda <ribalda@chromium.org>
-Subject: [PATCH 2/6] media: uvcvideo: Add UVC_CTRL_FLAG_ENTITY_GET_CUR
-Date:   Thu, 22 Oct 2020 15:37:49 +0200
-Message-Id: <20201022133753.310506-3-ribalda@chromium.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201022133753.310506-1-ribalda@chromium.org>
-References: <20201022133753.310506-1-ribalda@chromium.org>
+        Thu, 22 Oct 2020 06:37:55 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 19:07:50 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     outreachy-kernel@googlegroups.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        melissa.srw@gmail.com, linux-media@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [Outreachy kernel][PATCH 0/5] drm/amdgpu: Replace snprintf() with
+ sysfs_emit
+Message-ID: <cover.1603371258.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This flag allows controls to get their current value from an entity
-defined function instead of via a query to the USB device.
+Using snprintf() for show() methods holds the risk of buffer overrun
+as snprintf() does not know the PAGE_SIZE maximum of the temporary
+buffer used to output sysfs content.
 
-Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
----
- drivers/media/usb/uvc/uvc_ctrl.c | 17 +++++++++++++----
- include/uapi/linux/uvcvideo.h    |  1 +
- 2 files changed, 14 insertions(+), 4 deletions(-)
+This patchset is a series of Coccinelle cleanups across the staging
+directory to convert snprintf with scnprintf in the relevant files.
 
-diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
-index 7acdc055613b..0a8835742d49 100644
---- a/drivers/media/usb/uvc/uvc_ctrl.c
-+++ b/drivers/media/usb/uvc/uvc_ctrl.c
-@@ -1001,10 +1001,19 @@ static int __uvc_ctrl_get(struct uvc_video_chain *chain,
- 		return -EACCES;
- 
- 	if (!ctrl->loaded) {
--		ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, ctrl->entity->id,
--				chain->dev->intfnum, ctrl->info.selector,
--				uvc_ctrl_data(ctrl, UVC_CTRL_DATA_CURRENT),
--				ctrl->info.size);
-+		if (ctrl->info.flags & UVC_CTRL_FLAG_ENTITY_GET_CUR) {
-+			if (!ctrl->entity->get_cur)
-+				return -EINVAL;
-+			ret = ctrl->entity->get_cur(ctrl->entity,
-+					ctrl->info.selector,
-+					uvc_ctrl_data(ctrl, UVC_CTRL_DATA_CURRENT),
-+					ctrl->info.size);
-+		} else {
-+			ret = uvc_query_ctrl(chain->dev, UVC_GET_CUR, ctrl->entity->id,
-+					     chain->dev->intfnum, ctrl->info.selector,
-+					     uvc_ctrl_data(ctrl, UVC_CTRL_DATA_CURRENT),
-+					     ctrl->info.size);
-+		}
- 		if (ret < 0)
- 			return ret;
- 
-diff --git a/include/uapi/linux/uvcvideo.h b/include/uapi/linux/uvcvideo.h
-index 69b636290c31..cb91797d2a09 100644
---- a/include/uapi/linux/uvcvideo.h
-+++ b/include/uapi/linux/uvcvideo.h
-@@ -32,6 +32,7 @@
- #define UVC_CTRL_FLAG_ASYNCHRONOUS	(1 << 8)
- /* Entity queries */
- #define UVC_CTRL_FLAG_ENTITY_GET_INFO	(1 << 9)
-+#define UVC_CTRL_FLAG_ENTITY_GET_CUR	(1 << 10)
- 
- #define UVC_CTRL_FLAG_GET_RANGE \
- 	(UVC_CTRL_FLAG_GET_CUR | UVC_CTRL_FLAG_GET_MIN | \
+Sumera Priyadarsini (5):
+  gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+  gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+  gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+  gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+  gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+
+ drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   | 8 ++++----
+ drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  | 4 ++--
+ drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c      | 2 +-
+ drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c      | 4 ++--
+ 5 files changed, 10 insertions(+), 10 deletions(-)
+
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+2.25.1
 
