@@ -2,100 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E361C296033
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:40:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4DC94296035
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:41:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507779AbgJVNkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:40:41 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:53746 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2437595AbgJVNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:40:40 -0400
-Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 9CE98CCD67AE021F82B3;
-        Thu, 22 Oct 2020 21:40:37 +0800 (CST)
-Received: from [127.0.0.1] (10.74.219.194) by DGGEMS406-HUB.china.huawei.com
- (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 22 Oct 2020
- 21:40:35 +0800
-Subject: Re: [PATCH 3/3] PM: runtime: Resume the device earlier in
- __device_release_driver()
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <6543936.FbWAdBN1tG@kreacher> <1708806.S9fAqql2gf@kreacher>
-CC:     Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Lukas Wunner <lukas@wunner.de>,
-        Saravana Kannan <saravanak@google.com>
-From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
-Message-ID: <e9466a28-5c6a-f88a-51ab-547ecc21e5d0@hisilicon.com>
-Date:   Thu, 22 Oct 2020 21:40:34 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
- Thunderbird/45.2.0
+        id S2508128AbgJVNk5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:40:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54066 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503436AbgJVNk4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:40:56 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D2A6C0613CE;
+        Thu, 22 Oct 2020 06:40:53 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id j5so592780plk.7;
+        Thu, 22 Oct 2020 06:40:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=6ARfb7CCtAyGQWozbpcu69TiW9MOgZYC7V52jr9EMdI=;
+        b=cPArrMKj7xSwULJAYitN0m6vC7G/wTwv5trn8fq+nwf0A+2hp5LU49pAbuMhjjeNRv
+         fccwBKY40gL96fMEFCrheOhs7geOIGvy7bVVSiZb4TMh4d4+F5geRTxSuZJZ70PQlJbl
+         jsiGe1Txe6jSe3uD8rQo5YbSLjz9pGZZWV6R8BiMnBJXhF7UUdTOm46R+31AxuvTjs8f
+         4vG70Oj+1gjW8V8CgysBCTnZOVSLzF1KzDbUBCBO/FFxF/jhtqBUeM7IYE1nzUP+YPj1
+         KYWxc2DLWI7L4c9F3cvB8q3/pRjebyP3rk0NZq4DzfnO71JrJupHUchu1cnsxLwnxa3y
+         INBQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=6ARfb7CCtAyGQWozbpcu69TiW9MOgZYC7V52jr9EMdI=;
+        b=uiw5gO+c1W1f1lG0ljp5OGHvdvP5n6Eyc8bBeN1LWaMpO4079VYQZPLooxZhEosnZF
+         eV9RWPbZllz58UVTnyOGViHvuDSs/RIHT3C/1tJSZ5jaL+G7SlM59oOMFU3u2mzXxQpe
+         RQkG0w/UZz7FVWSGUq1U5u6bYTWijbWl6/MfTdsyH+wtOQbSmP4yWNeXsuRwx/1IV2PD
+         f1FdIpI4fgrO5JqF44PWu5FtSsn/vOwpXgQUjThQQCYdKNzvthtXpfQFpsCrlCbUfDQL
+         vAgCPgRH4+ABYgohh+GuaKcH0Kb0dPJE3FkT9NwneA9hv8Z+IFZYQrlV58gzxiIIfNLC
+         kGmg==
+X-Gm-Message-State: AOAM531gTSNPytr20GeezB+9HvUSTEO+w/17hHROV39bR9E9cWjrBDAN
+        WwiOVJWEILruYtaaEf0Uj4g=
+X-Google-Smtp-Source: ABdhPJzyGexTbAbgzpbd2h8qNCbpH2i7VtqXeR1WWd3CGgsd3u1tqGNz/XhtoLwDvWQSXW1MYy0t5w==
+X-Received: by 2002:a17:90a:7d12:: with SMTP id g18mr2448814pjl.89.1603374053035;
+        Thu, 22 Oct 2020 06:40:53 -0700 (PDT)
+Received: from adolin ([49.207.204.75])
+        by smtp.gmail.com with ESMTPSA id j20sm2384100pgl.40.2020.10.22.06.40.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 06:40:52 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 19:10:47 +0530
+From:   Sumera Priyadarsini <sylphrenadin@gmail.com>
+To:     dri-devel@lists.freedesktop.org
+Cc:     outreachy-kernel@googlegroups.com, alexander.deucher@amd.com,
+        christian.koenig@amd.com, airlied@linux.ie, daniel@ffwll.ch,
+        melissa.srw@gmail.com, linux-media@vger.kernel.org,
+        amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/5] gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+Message-ID: <c9fbe2e2c31fae2fea867940a888c68becc993bd.1603371258.git.sylphrenadin@gmail.com>
+References: <cover.1603371258.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <1708806.S9fAqql2gf@kreacher>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.74.219.194]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1603371258.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rafael,
+Using snprintf() for show() methods holds the risk of buffer overrun
+as snprintf() does not know the PAGE_SIZE maximum of the temporary
+buffer used to output sysfs content.
 
-在 2020/10/22 3:14, Rafael J. Wysocki 写道:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
->
-> Since the device is resumed from runtime-suspend in
-> __device_release_driver() anyway, it is better to do that before
-> looking for busy managed device links from it to consumers, because
-> if there are any, device_links_unbind_consumers() will be called
-> and it will cause the consumer devices' drivers to unbind, so the
-> consumer devices will be runtime-resumed.  In turn, resuming each
-> consumer device will cause the supplier to be resumed and when the
-> runtime PM references from the given consumer to it are dropped, it
-> may be suspended.  Then, the runtime-resume of the next consumer
-> will cause the supplier to resume again and so on.
->
-> Update the code accordingly.
->
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
-> Cc: All applicable <stable@vger.kernel.org> # All applicable
-> ---
->   drivers/base/dd.c |    4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> Index: linux-pm/drivers/base/dd.c
-> ===================================================================
-> --- linux-pm.orig/drivers/base/dd.c
-> +++ linux-pm/drivers/base/dd.c
-> @@ -1117,6 +1117,8 @@ static void __device_release_driver(stru
->   
->   	drv = dev->driver;
->   	if (drv) {
-> +		pm_runtime_get_sync(dev);
-> +
->   		while (device_links_busy(dev)) {
->   			__device_driver_unlock(dev, parent);
->   
-> @@ -1132,8 +1134,6 @@ static void __device_release_driver(stru
+Modify amdgpu_atombios.c to use sysfs_emit() instead which knows the
+size of the temporary buffer.
 
-pm_runtime_put_sync() is required to be called if existed from here.
+Issue found with Coccinelle.
 
->   				return;
->   		}
->   
-> -		pm_runtime_get_sync(dev);
-> -
->   		driver_sysfs_remove(dev);
->   
->   		if (dev->bus)
->
->
->
->
-> .
->
+Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
+index 469352e2d6ec..3c19862c94c7 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c
+@@ -1947,7 +1947,7 @@ static ssize_t amdgpu_atombios_get_vbios_version(struct device *dev,
+ 	struct amdgpu_device *adev = drm_to_adev(ddev);
+ 	struct atom_context *ctx = adev->mode_info.atom_context;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%s\n", ctx->vbios_version);
++	return sysfs_emit(buf, PAGE_SIZE, "%s\n", ctx->vbios_version);
+ }
+ 
+ static DEVICE_ATTR(vbios_version, 0444, amdgpu_atombios_get_vbios_version,
+-- 
+2.25.1
 
