@@ -2,116 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8DFB529593C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6ED59295939
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:31:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508571AbgJVHcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:32:18 -0400
-Received: from mailout08.rmx.de ([94.199.90.85]:34111 "EHLO mailout08.rmx.de"
+        id S2508558AbgJVHbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:31:07 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2508538AbgJVHcR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:32:17 -0400
-Received: from kdin01.retarus.com (kdin01.dmz1.retloc [172.19.17.48])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S2437532AbgJVHbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:31:06 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mailout08.rmx.de (Postfix) with ESMTPS id 4CGzb05T30zMtN6;
-        Thu, 22 Oct 2020 09:32:12 +0200 (CEST)
-Received: from mta.arri.de (unknown [217.111.95.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by kdin01.retarus.com (Postfix) with ESMTPS id 4CGzZm0HM5z2xKF;
-        Thu, 22 Oct 2020 09:32:00 +0200 (CEST)
-Received: from n95hx1g2.localnet (192.168.54.141) by mta.arri.de
- (192.168.100.104) with Microsoft SMTP Server (TLS) id 14.3.408.0; Thu, 22 Oct
- 2020 09:30:58 +0200
-From:   Christian Eggers <ceggers@arri.de>
-To:     Richard Cochran <richardcochran@gmail.com>
-CC:     Vladimir Oltean <olteanv@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        "Microchip Linux Driver Support" <UNGLinuxDriver@microchip.com>,
-        <netdev@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add hardware time stamping support
-Date:   Thu, 22 Oct 2020 09:30:57 +0200
-Message-ID: <2975985.V79r5fVmzq@n95hx1g2>
-Organization: Arnold & Richter Cine Technik GmbH & Co. Betriebs KG
-In-Reply-To: <20201022023233.GA904@hoboy.vegasvil.org>
-References: <20201019172435.4416-1-ceggers@arri.de> <20201021233935.ocj5dnbdz7t7hleu@skbuf> <20201022023233.GA904@hoboy.vegasvil.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
-X-Originating-IP: [192.168.54.141]
-X-RMX-ID: 20201022-093200-4CGzZm0HM5z2xKF-0@kdin01
-X-RMX-SOURCE: 217.111.95.66
+        by mail.kernel.org (Postfix) with ESMTPSA id 40F8E20848;
+        Thu, 22 Oct 2020 07:31:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603351865;
+        bh=7I+PcjTKEQcGGYCICKHT2LTWj9pWa7Y/4OLDorb9ZbU=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=BRnVw0rtBqN4j0r3C7UfFHA7le9H0oE5px9aGx5xdpfJ0eMqDzErD5w53h3IqPh2i
+         /1Rpkpz0GqlkemygICFGE8JgxKdpr0uCCsbkbat/RqKEA5HwnfIA7TZnlY2hbFXpit
+         joigz02cSH62FxuNBgAKJnz5mxunkyNdJcUhmR+4=
+Date:   Thu, 22 Oct 2020 16:31:00 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-Id: <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
+In-Reply-To: <20201021164558.GB4050@zn.tnic>
+References: <20201020120232.GD11583@zn.tnic>
+        <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
+        <20201020143746.GG11583@zn.tnic>
+        <20201021095013.d82637f84af564ae4363189d@kernel.org>
+        <20201021092750.GA4050@zn.tnic>
+        <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
+        <20201021164558.GB4050@zn.tnic>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Richard,
+On Wed, 21 Oct 2020 18:45:58 +0200
+Borislav Petkov <bp@alien8.de> wrote:
 
-On Thursday, 22 October 2020, 04:42:01 CEST, Richard Cochran wrote:
-> I'm just catching up with this.
+> On Wed, Oct 21, 2020 at 11:26:13PM +0900, Masami Hiramatsu wrote:
+> > Hmm, I meant someone might think it can be used for filtering the
+> > instruction something like,
+> > 
+> > insn_init(insn, buf, buflen, 1);
+> > ret = insn_get_length(insn);
+> > if (!ret) {
+> > 	/* OK, this is safe */
+> > 	patch_text(buf, trampoline);
+> > }
+> > 
+> > No, we need another validator for such usage.
 > 
-> Really. Truly. Please -- Include the maintainer on CC for such patches!
-sorry for missing you on the recipients list. I blindly trusted the output of
-get_maintainer.pl.
-
-I recently sent two other patches which may also be of interest for you. They
-related to handling of SO_TIMESTAMPING on 32 bit platforms with newer C 
-libraries:
-
-https://patchwork.ozlabs.org/project/netdev/patch/20201012093542.15504-1-ceggers@arri.de/
-https://patchwork.ozlabs.org/project/netdev/patch/20201012093542.15504-2-ceggers@arri.de/
-
-> On Thu, Oct 22, 2020 at 02:39:35AM +0300, Vladimir Oltean wrote:
-> > On Mon, Oct 19, 2020 at 07:24:33PM +0200, Christian Eggers wrote:
-> > > The PTP hardware performs internal detection of PTP frames (likely
-> > > similar as ptp_classify_raw() and ptp_parse_header()). As these filters
-> > > cannot be disabled, the current delay mode (E2E/P2P) and the clock mode
-> > > (master/slave) must be configured via sysfs attributes.
+> Well, I think calling insn_get_length() should give you only the
+> *length* of the insn and nothing else - I mean that is what the function
+> is called. And I believe current use is wrong.
 > 
-> This is a complete no-go.  NAK.
-I didn't design the hardware nor do I have access to adequate documentation.
-I will try to figure out what functionality is concretely affected by these
-two settings.
+> Examples:
+> 
+> arch/x86/kernel/kprobes/core.c:
+>                 insn_get_length(&insn);
+> 
+>                 /*
+>                  * Another debugging subsystem might insert this breakpoint.
+>                  * In that case, we can't recover it.
+>                  */
+>                 if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+> 
+> So this has called get_length but it is far from clear that after that
+> call, the opcode bytes in insn.opcode.bytes are there.
 
-If I am correct, the KSZ hardware consists of two main building blocks:
-1. A TC on the switch path.
-2. An OC on the DSA host port.
+No, insn_get_length() implies it decodes whole of the instruction.
+(yeah, we need an alias of that, something like insn_get_complete())
 
-From the data sheet, page 109, chapter 5.1.6.11
-("Global PTP Message Config 1 Register"), bit 2:
+> 
+> What that should do instead IMO is this:
+> 
+> 	insn_get_opcode(&insn);
+> 
 
-> *Selection of P2P or E2E*
-> 1 = Peer-to-peer (P2P) transparent clock mode
-> 0 = End-to-end (E2E) transparent clock mode
-So this "tcmode" sysfs entry controls the behavior of the switch' transparent
-clock. Is this related in any way to the PTP API?
+No, you've cut the last lines of that loop.
 
-For the master/slave setting, the data sheet writes the following:
-*Selection of Master or Slave*
-1 = Host port is PTP master ordinary clock
-0 = Host port is PTP slave ordinary clock
+                /*
+                 * Another debugging subsystem might insert this breakpoint.
+                 * In that case, we can't recover it.
+                 */
+                if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
+                        return 0;
+                addr += insn.length;
+        }
 
-So this is really related to the OC and so to the PTP API. Setting this
-manually would interfere with the BMCA. I'll check whether delay measurement
-and clock synchronization can also work for all conditions (E2E/P2P, 
-master/slave) without altering this value. Otherwise we might consider
-the KSZ as a "Slave Only Clock (SO)".
+I need insn.length too. Of course we can split it into 2 calls. But
+as I said, since the insn_get_length() implies it decodes all other
+parts, I just called it once.
 
-Christian
+> and *then* the return value can tell you whether the opcode bytes were
+> parsed properly or not. See what I mean?
+
+I agreed to check the return value of insn_get_length() at that point
+only for checking whether the instruction parsing was failed or not.
+
+> 
+> That's even documented that way:
+> 
+> /**
+>  * insn_get_opcode - collect opcode(s)
+>  * @insn:       &struct insn containing instruction
+>  *
+>  * Populates @insn->opcode, updates @insn->next_byte to point past the
+>  * opcode byte(s), and set @insn->attr (except for groups).
+> 
+> 
+> Similarly here:
+> 
+> static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
+> 
+> 	...
+> 
+>         insn_get_length(&ctxt->insn);
+> 
+>         ret = ctxt->insn.immediate.got ? ES_OK : ES_DECODE_FAILED;
+> 
+> that thing wants to decode the insn but it is looking whether it parsed
+> an *immediate*?!
+
+Hm, it is better to call insn_get_immediate() if it doesn't use length later.
+
+> 
+> I'm not saying this is necessarily wrong - just the naming nomenclature
+> and the API should be properly defined when you call a function of the
+> insn decoder, what you are guaranteed to get and what a caller can
+> assume after that. And then the proper functions be called.
+
+Would you mean we'd better have something like insn_get_until_immediate() ? 
+
+Since the x86 instruction is CISC, we can not decode intermediate
+parts. The APIs follows that. If you are confused, I'm sorry about that.
+
+> 
+> In the kprobes/core.c example above, it does a little further:
+> 
+> 	ddr += insn.length;	
+> 
+> which, IMO, it should be either preceeded by a call to insn_get_length()
+> - yes, this time we want the insn length or, the code should call a
+> decoding function which gives you *both* length* and opcode bytes.
+> insn_decode_insn() or whatever. And *that* should be documented in that
+> function's kernel-doc section. And so on...
+
+Actually, there is a historical reason too. INT3 check was added afterwards.
+At first, I just calculated the instruction length in the loop...
+
+Thank you,
+
+> 
+> Does that make more sense?
+> 
+> Thx.
+> 
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
 
 
-
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
