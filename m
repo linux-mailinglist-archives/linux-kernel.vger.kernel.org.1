@@ -2,99 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A07542960E3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:27:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82B192960E9
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:28:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900846AbgJVO04 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:26:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33201 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507932AbgJVO04 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:26:56 -0400
-Received: from 1.general.cking.uk.vpn ([10.172.193.212] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <colin.king@canonical.com>)
-        id 1kVbYL-0002oL-Hu; Thu, 22 Oct 2020 14:26:53 +0000
-From:   Colin King <colin.king@canonical.com>
-To:     Jonathan Corbet <corbet@lwn.net>, linux-doc@vger.kernel.org
-Cc:     kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH][next] docs/vm: trivial fixes to several spelling mistakes
-Date:   Thu, 22 Oct 2020 15:26:53 +0100
-Message-Id: <20201022142653.254429-1-colin.king@canonical.com>
-X-Mailer: git-send-email 2.27.0
+        id S368133AbgJVO2H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:28:07 -0400
+Received: from mga11.intel.com ([192.55.52.93]:58132 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2444386AbgJVO2H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:28:07 -0400
+IronPort-SDR: cabjaFh+MSpP+fDOSMP9JWjkN4Zo/EAPx77fa+B8RwLhdXtYgf+hs45jNEDqoEhUpntORO3rn7
+ 2nhy+HgTMkrQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="164041662"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="164041662"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 07:28:06 -0700
+IronPort-SDR: L+dFQT6cHBy65R4Ul9GHwhWOpLgNkoEKrejKSppdTaOe1P95kFBg18MbCJp34PbbvCvvZ4LMCr
+ Lm+NFs0PyrMA==
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="533985541"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.254.213.210]) ([10.254.213.210])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 07:28:04 -0700
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in
+ KVM_GET_SUPPORTED_CPUID
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+ <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+ <6ad94df6-9ecd-e364-296a-34ba41e938b1@intel.com>
+ <31b189e0-503f-157d-7af0-329744ed5369@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <18e7a0c6-faff-8c4c-0830-a0bc02627a36@intel.com>
+Date:   Thu, 22 Oct 2020 22:28:01 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <31b189e0-503f-157d-7af0-329744ed5369@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Colin Ian King <colin.king@canonical.com>
+On 10/22/2020 10:06 PM, Paolo Bonzini wrote:
+> On 22/10/20 15:31, Xiaoyao Li wrote:
+>>>
+>>> It's common for userspace to copy all supported CPUID bits to
+>>> KVM_SET_CPUID2, I don't think this is the right behavior for
+>>> KVM_HINTS_REALTIME.
+>>
+>> It reminds of X86_FEATURE_WAITPKG, which is added to supported CPUID
+>> recently as a fix but QEMU exposes it to guest only when "-overcommit
+>> cpu-pm"
+> 
+> WAITPKG is not included in KVM_GET_SUPPORTED_CPUID either.  QEMU detects
+> it through the MSR_IA32_UMWAIT register.
 
-Fix several spelling mistakes in vm documentation.
+Doesn't 0abcc8f65cc2 ("KVM: VMX: enable X86_FEATURE_WAITPKG in KVM 
+capabilities") add WAITPKG to KVM_GET_SUPPORTED_CPUID?
 
-Signed-off-by: Colin Ian King <colin.king@canonical.com>
----
- Documentation/vm/mmu_notifier.rst   | 2 +-
- Documentation/vm/page_migration.rst | 2 +-
- Documentation/vm/page_owner.rst     | 2 +-
- Documentation/vm/slub.rst           | 2 +-
- 4 files changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/Documentation/vm/mmu_notifier.rst b/Documentation/vm/mmu_notifier.rst
-index 47baa1cf28c5..df5d7777fc6b 100644
---- a/Documentation/vm/mmu_notifier.rst
-+++ b/Documentation/vm/mmu_notifier.rst
-@@ -89,7 +89,7 @@ they are write protected for COW (other case of B apply too).
- 
- So here because at time N+2 the clear page table entry was not pair with a
- notification to invalidate the secondary TLB, the device see the new value for
--addrB before seing the new value for addrA. This break total memory ordering
-+addrB before seeing the new value for addrA. This break total memory ordering
- for the device.
- 
- When changing a pte to write protect or to point to a new write protected page
-diff --git a/Documentation/vm/page_migration.rst b/Documentation/vm/page_migration.rst
-index 91a98a6b43bb..db9d7e5539cb 100644
---- a/Documentation/vm/page_migration.rst
-+++ b/Documentation/vm/page_migration.rst
-@@ -99,7 +99,7 @@ Steps:
- 2. Ensure that writeback is complete.
- 
- 3. Lock the new page that we want to move to. It is locked so that accesses to
--   this (not yet uptodate) page immediately block while the move is in progress.
-+   this (not yet up-to-date) page immediately block while the move is in progress.
- 
- 4. All the page table references to the page are converted to migration
-    entries. This decreases the mapcount of a page. If the resulting
-diff --git a/Documentation/vm/page_owner.rst b/Documentation/vm/page_owner.rst
-index 079f3f8c4784..02deac76673f 100644
---- a/Documentation/vm/page_owner.rst
-+++ b/Documentation/vm/page_owner.rst
-@@ -18,7 +18,7 @@ Although we already have tracepoint for tracing page allocation/free,
- using it for analyzing who allocate each page is rather complex. We need
- to enlarge the trace buffer for preventing overlapping until userspace
- program launched. And, launched program continually dump out the trace
--buffer for later analysis and it would change system behviour with more
-+buffer for later analysis and it would change system behaviour with more
- possibility rather than just keeping it in memory, so bad for debugging.
- 
- page owner can also be used for various purposes. For example, accurate
-diff --git a/Documentation/vm/slub.rst b/Documentation/vm/slub.rst
-index 289d231cee97..03f294a638bd 100644
---- a/Documentation/vm/slub.rst
-+++ b/Documentation/vm/slub.rst
-@@ -378,7 +378,7 @@ c) Execute ``slabinfo-gnuplot.sh`` in '-t' mode, passing all of the
-    can go unnoticed. To deal with that, ``slabinfo-gnuplot.sh`` has two
-    options to 'zoom-in'/'zoom-out':
- 
--   a) ``-s %d,%d`` -- overwrites the default image width and heigh
-+   a) ``-s %d,%d`` -- overwrites the default image width and height
-    b) ``-r %d,%d`` -- specifies a range of samples to use (for example,
-       in ``slabinfo -X >> FOO_STATS; sleep 1;`` case, using a ``-r
-       40,60`` range will plot only samples collected between 40th and
--- 
-2.27.0
+> Paolo
+> 
 
