@@ -2,80 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D97429596D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:41:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A3BD929597A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:42:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508770AbgJVHlk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:41:40 -0400
-Received: from kernel.crashing.org ([76.164.61.194]:45166 "EHLO
-        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506935AbgJVHlj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:41:39 -0400
-Received: from localhost (gate.crashing.org [63.228.1.57])
-        (authenticated bits=0)
-        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 09M7fDFQ027629
-        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
-        Thu, 22 Oct 2020 02:41:18 -0500
-Message-ID: <428dc31828795ce0b010509c8c30bf0049ad9190.camel@kernel.crashing.org>
-Subject: Re: [PATCH] net: ftgmac100: Ensure tx descriptor updates are visible
-From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
-To:     Arnd Bergmann <arnd@kernel.org>, Joel Stanley <joel@jms.id.au>
-Cc:     Jakub Kicinski <kuba@kernel.org>,
-        "David S . Miller" <davem@davemloft.net>,
-        Dylan Hung <dylan_hung@aspeedtech.com>,
-        Networking <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>
-Date:   Thu, 22 Oct 2020 18:41:13 +1100
-In-Reply-To: <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
-References: <20201020220639.130696-1-joel@jms.id.au>
-         <CAK8P3a3gz4rMSkvZZ+TPaBx3B1yHXcUVFDdMFQMGUtEi4xXzyg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
+        id S2508790AbgJVHm3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:42:29 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35458 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506906AbgJVHm1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:42:27 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603352545;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=FBBqK8HW3BIG0quz5o+GZ5G2pN19linyD06f3Ehf/3E=;
+        b=Ku/7Poc7X6u54p4uLBdhgxlQmb+7ztGf4Y5XEcudfV9uDHBPLfP+yYzYjwltr+6HoxAx00
+        U8V2bJtnD3lNNDInjMXYmr+eYx10+JmswutopyP/xpQsysO6ymER2ClLDV3NEERFMUEHlX
+        yGSnKxIue8rBtuqwUSMoyv8L2q/GI+g=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BDAE6B1A0;
+        Thu, 22 Oct 2020 07:42:25 +0000 (UTC)
+From:   Juergen Gross <jgross@suse.com>
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
+        x86@kernel.org, linux-doc@vger.kernel.org
+Cc:     Juergen Gross <jgross@suse.com>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH 0/5] xen: event handling cleanup
+Date:   Thu, 22 Oct 2020 09:42:09 +0200
+Message-Id: <20201022074214.21693-1-jgross@suse.com>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 2020-10-21 at 14:40 +0200, Arnd Bergmann wrote:
-> On Wed, Oct 21, 2020 at 12:39 PM Joel Stanley <joel@jms.id.au> wrote:
-> 
-> > 
-> > diff --git a/drivers/net/ethernet/faraday/ftgmac100.c b/drivers/net/ethernet/faraday/ftgmac100.c
-> > index 331d4bdd4a67..15cdfeb135b0 100644
-> > --- a/drivers/net/ethernet/faraday/ftgmac100.c
-> > +++ b/drivers/net/ethernet/faraday/ftgmac100.c
-> > @@ -653,6 +653,11 @@ static bool ftgmac100_tx_complete_packet(struct ftgmac100 *priv)
-> >         ftgmac100_free_tx_packet(priv, pointer, skb, txdes, ctl_stat);
-> >         txdes->txdes0 = cpu_to_le32(ctl_stat & priv->txdes0_edotr_mask);
-> > 
-> > +       /* Ensure the descriptor config is visible before setting the tx
-> > +        * pointer.
-> > +        */
-> > +       smp_wmb();
-> > +
-> >         priv->tx_clean_pointer = ftgmac100_next_tx_pointer(priv, pointer);
-> > 
-> >         return true;
-> > @@ -806,6 +811,11 @@ static netdev_tx_t ftgmac100_hard_start_xmit(struct sk_buff *skb,
-> >         dma_wmb();
-> >         first->txdes0 = cpu_to_le32(f_ctl_stat);
-> > 
-> > +       /* Ensure the descriptor config is visible before setting the tx
-> > +        * pointer.
-> > +        */
-> > +       smp_wmb();
-> > +
-> 
-> Shouldn't these be paired with smp_rmb() on the reader side?
+Do some cleanups in Xen event handling code.
 
-(Not near the code right now) I *think* the reader already has them
-where it matters but I might have overlooked something when I quickly
-checked the other day.
+Juergen Gross (5):
+  xen: remove no longer used functions
+  xen/events: make struct irq_info private to events_base.c
+  xen/events: only register debug interrupt for 2-level events
+  xen/events: unmask a fifo event channel only if it was masked
+  Documentation: add xen.fifo_events kernel parameter description
 
-Cheers,
-Ben.
+ .../admin-guide/kernel-parameters.txt         |  7 ++
+ arch/x86/xen/smp.c                            | 19 ++--
+ arch/x86/xen/xen-ops.h                        |  2 +
+ drivers/xen/events/events_2l.c                |  7 +-
+ drivers/xen/events/events_base.c              | 90 +++++++++++++------
+ drivers/xen/events/events_fifo.c              |  9 +-
+ drivers/xen/events/events_internal.h          | 70 ++-------------
+ include/xen/events.h                          |  8 --
+ 8 files changed, 100 insertions(+), 112 deletions(-)
 
+-- 
+2.26.2
 
