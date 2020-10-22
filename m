@@ -2,81 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F05F1295EC9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:42:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65C1C295ED1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:43:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505854AbgJVMmw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:42:52 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59806 "EHLO mail.kernel.org"
+        id S2898642AbgJVMnV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:43:21 -0400
+Received: from mga03.intel.com ([134.134.136.65]:50686 "EHLO mga03.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505404AbgJVMmv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:42:51 -0400
-Received: from linux-8ccs (p57a236d4.dip0.t-ipconnect.de [87.162.54.212])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 923602245F;
-        Thu, 22 Oct 2020 12:42:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603370571;
-        bh=9zCZ6VIW3zrQtBABsEVJDX3+3/llT4jKQ3QazEIpIKQ=;
-        h=Date:From:To:Cc:Subject:From;
-        b=u4061ed25z7nkj++DVBgSanbvHKSd9bvERQ6byVlLpUbCJa03UKUJq8RDovoTyaLz
-         uIsSbYLdA14muNhDMLlm8RcG7lhWpjAtGUIabJHEIjld3eRUyEM+J9PehbsEAgx1jC
-         Ea4y6E9rUlgukk8D2MmW2GP+8adnLS7th1cKA4YE=
-Date:   Thu, 22 Oct 2020 14:42:47 +0200
-From:   Jessica Yu <jeyu@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [GIT PULL] Modules updates for v5.10
-Message-ID: <20201022124246.GA8608@linux-8ccs>
+        id S2505168AbgJVMnQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:43:16 -0400
+IronPort-SDR: dBV59pkk61YVJ3y97vqIqLpxmYmtooHRVUpyQumrf1P+/4bVF1de16lHs/KGgTcev7SGM+oDxu
+ wKRCNnE5sX9w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="167615571"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="167615571"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 05:43:12 -0700
+IronPort-SDR: HBghbPpVJubVf1gjnx8GQuAv69Q98ioZov+K7O0q3NvV33slZ9hU/m9z0b/1MnZXsRTmMi8TWQ
+ KTZh6/twUyZA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="423109076"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 22 Oct 2020 05:43:09 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Thu, 22 Oct 2020 15:42:48 +0300
+Date:   Thu, 22 Oct 2020 15:42:48 +0300
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Prashant Malani <pmalani@chromium.org>
+Cc:     Greg KH <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>
+Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
+Message-ID: <20201022124248.GQ1667571@kuha.fi.intel.com>
+References: <20201022061554.3418060-1-pmalani@chromium.org>
+ <20201022065719.GA1440360@kroah.com>
+ <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
+ <20201022071753.GA1470296@kroah.com>
+ <CACeCKafjm-T5WnQNRbpKm3OwxqYH+_MxLMg60-=RrpJFBzcKyA@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-X-OS:   Linux linux-8ccs 4.12.14-lp150.12.61-default x86_64
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CACeCKafjm-T5WnQNRbpKm3OwxqYH+_MxLMg60-=RrpJFBzcKyA@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Oct 22, 2020 at 12:25:07AM -0700, Prashant Malani wrote:
+> Hi Greg,
+> 
+> On Thu, Oct 22, 2020 at 12:17 AM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > > > > +What:                /sys/class/typec/<port>-partner/identity/product_type_vdo
+> > > > > +Date:                October 2020
+> > > > > +Contact:     Prashant Malani <pmalani@chromium.org>
+> > > > > +Description:
+> > > > > +             Product Type VDOs part of Discover Identity command result. 3 values
+> > > > > +             are displayed (for the 3 possible Product Type VDOs), one per line.
+> > > >
+> > > > sysfs is "one value per file", not "one value per line".  This is not
+> > > > ok.
+> > >
+> > > I see. Would listing these out as three separate vdos (i.e vdo0, vdo1,
+> > > vdo2) be better?
+> >
+> > Given that your current implementation is not acceptable, something has
+> > to change :)
+> 
+> Got it. I'd like to see if Heikki has any suggestions on naming these
+> entries better.
 
-Please pull below to receive modules updates for the v5.10 merge window.
-Details can be found in the signed tag.
+Why not have product type specific attribute files?
 
-Thank you,
+So if the partner is UFP, then we expose ufp1 and ufp2 files that
+return the UFP1 and UFP2 VDO values and hide the other files:
 
-Jessica
+        % ls /sys/class/typec/port0-partner/identity/
+        id_header cert_stat product ufp1 ufp2
 
---
+If the partner is DFP, then you expose the dfp file and hide
+everything else:
 
-The following changes since commit f75aef392f869018f78cfedf3c320a6b3fcfda6b:
+        % ls /sys/class/typec/port0-partner/identity/
+        id_header cert_stat product dfp
 
-  Linux 5.9-rc3 (2020-08-30 16:01:54 -0700)
+And so on.
 
-are available in the Git repository at:
+thanks,
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jeyu/linux.git tags/modules-for-v5.10
-
-for you to fetch changes up to fdf09ab887829cd1b671e45d9549f8ec1ffda0fa:
-
-  module: statically initialize init section freeing data (2020-10-12 18:27:00 +0200)
-
-----------------------------------------------------------------
-Modules updates for v5.10
-
-Summary of modules changes for the 5.10 merge window:
-
-- Code cleanups. More informative error messages and statically
-  initialize init_free_wq to avoid a workqueue warning.
-
-Signed-off-by: Jessica Yu <jeyu@kernel.org>
-
-----------------------------------------------------------------
-Daniel Jordan (1):
-      module: statically initialize init section freeing data
-
-Qu Wenruo (1):
-      module: Add more error message for failed kernel module loading
-
- kernel/module.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+-- 
+heikki
