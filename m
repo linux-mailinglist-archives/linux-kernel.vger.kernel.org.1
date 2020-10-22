@@ -2,83 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AFFB295A83
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:37:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D71E9295A8C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 10:38:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509368AbgJVIht (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 04:37:49 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:46070 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508247AbgJVIhs (ORCPT
+        id S2509379AbgJVIi0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 04:38:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35512 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508194AbgJVIiZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 04:37:48 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603355866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QyrQSQmCRoE8e/yyUqmfECgKX4VgXOUeiqXGpq3mP/o=;
-        b=B99Knje7mrFwyx04a4DftGWbzUOcUu5Q2wD49824cq5FfoSS6yVttHCESYzlP4uy+Io29N
-        FF8KMUsdetdGVgt+iYV0r6eLMNEiVnt1fOXzX8h6Uxkx0tl1iC2TRQB+vR7UkmV+wXjUJ/
-        Hut1ewDzhQSVJNcC+6FNZdOrARtyNeBDoXLf2KnvpkZBm62uzIFHXgzZm6PPvHvLmXescC
-        Hp8SN2W0SYT0Wgwe1T+vtvWjPZ/DpOzsmzlju1PPdqrYbvsB72+wPQt/mz78FjPnQMGeoP
-        HmC9ZcYTWOd8nzEPIPAy/3GUV7d0AV2N0c5LGYr6+zI2oTObq79jpFnSYkGwKw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603355866;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QyrQSQmCRoE8e/yyUqmfECgKX4VgXOUeiqXGpq3mP/o=;
-        b=SBL2SbiGQs74m8lQq8dx4auN2wtwVZkTfiXi6gnjnezfm5dpJdZhHv7gzNIyeeuhl0yb11
-        JAtMRK9rJNxqB+Cw==
-To:     Pingfan Liu <kernelfans@gmail.com>, linux-kernel@vger.kernel.org
-Cc:     Pingfan Liu <kernelfans@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
-        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        afzal mohammed <afzal.mohd.ma@gmail.com>,
-        Lina Iyer <ilina@codeaurora.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        Maulik Shah <mkshah@codeaurora.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
-        kexec@lists.infradead.org
-Subject: Re: [PATCH 0/3] warn and suppress irqflood
-In-Reply-To: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
-References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
-Date:   Thu, 22 Oct 2020 10:37:46 +0200
-Message-ID: <871rhq7j1h.fsf@nanos.tec.linutronix.de>
+        Thu, 22 Oct 2020 04:38:25 -0400
+Received: from gardel.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 33221C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 01:38:25 -0700 (PDT)
+Received: from gardel-login.0pointer.net (gardel.0pointer.net [IPv6:2a01:238:43ed:c300:10c3:bcf3:3266:da74])
+        by gardel.0pointer.net (Postfix) with ESMTP id 935E6E8080C;
+        Thu, 22 Oct 2020 10:38:23 +0200 (CEST)
+Received: by gardel-login.0pointer.net (Postfix, from userid 1000)
+        id 1C0A5160834; Thu, 22 Oct 2020 10:38:23 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 10:38:23 +0200
+From:   Lennart Poettering <mzxreary@0pointer.de>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     Topi Miettinen <toiwoton@gmail.com>,
+        Florian Weimer <fweimer@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        systemd-devel@lists.freedesktop.org,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, libc-alpha@sourceware.org,
+        Dave Martin <dave.martin@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: [systemd-devel] BTI interaction between seccomp filters in
+ systemd and glibc mprotect calls, causing service failures
+Message-ID: <20201022083823.GA324825@gardel-login>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022071812.GA324655@gardel-login>
+ <87sga6snjn.fsf@oldenburg2.str.redhat.com>
+ <511318fd-efde-f2fc-9159-9d16ac8d33a7@gmail.com>
+ <20201022082912.GQ3819@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022082912.GQ3819@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22 2020 at 13:56, Pingfan Liu wrote:
-> I hit a irqflood bug on powerpc platform, and two years ago, on a x86 platform.
-> When the bug happens, the kernel is totally occupies by irq.  Currently, there
-> may be nothing or just soft lockup warning showed in console. It is better
-> to warn users with irq flood info.
+On Do, 22.10.20 09:29, Szabolcs Nagy (szabolcs.nagy@arm.com) wrote:
+
+> > > The dynamic loader has to process the LOAD segments to get to the ELF
+> > > note that says to enable BTI.  Maybe we could do a first pass and load
+> > > only the segments that cover notes.  But that requires lots of changes
+> > > to generic code in the loader.
+> >
+> > What if the loader always enabled BTI for PROT_EXEC pages, but then when
+> > discovering that this was a mistake, mprotect() the pages without BTI? Then
+> > both BTI and MDWX would work and the penalty of not getting MDWX would fall
+> > to non-BTI programs. What's the expected proportion of BTI enabled code vs.
+> > disabled in the future, is it perhaps expected that a distro would enable
+> > the flag globally so eventually only a few legacy programs might be
+> > unprotected?
 >
-> In the kdump case, the kernel can move on by suppressing the irq flood.
+> i thought mprotect(PROT_EXEC) would get filtered
+> with or without bti, is that not the case?
 
-You're curing the symptom not the cause and the cure is just magic and
-can't work reliably.
+We can adjust the filter in systemd to match any combination of
+flags to allow and to deny.
 
-Where is that irq flood originated from and why is none of the
-mechanisms we have in place to shut it up working?
+Lennart
 
-Thanks,
-
-        tglx
-
-
-
-
+--
+Lennart Poettering, Berlin
