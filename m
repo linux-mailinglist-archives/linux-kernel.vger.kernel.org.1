@@ -2,158 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D404295864
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:30:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 61493295874
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:35:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895682AbgJVGaP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 02:30:15 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:40555 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895623AbgJVG3s (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 02:29:48 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CGyBx5JtXzB09ZW;
-        Thu, 22 Oct 2020 08:29:45 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id y4mHO_G7RDT5; Thu, 22 Oct 2020 08:29:45 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CGyBx4L43zB09ZT;
-        Thu, 22 Oct 2020 08:29:45 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 7BBE18B805;
-        Thu, 22 Oct 2020 08:29:46 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id cV23mr_T0r57; Thu, 22 Oct 2020 08:29:46 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 1CD9A8B769;
-        Thu, 22 Oct 2020 08:29:46 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id F04E8667EF; Thu, 22 Oct 2020 06:29:45 +0000 (UTC)
-Message-Id: <3495f7277589a5d96c06a789e61570de0a2b153c.1603348103.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <648e2448e938d52d0b5887445e018ca584edc06d.1603348103.git.christophe.leroy@csgroup.eu>
-References: <648e2448e938d52d0b5887445e018ca584edc06d.1603348103.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v1 20/20] powerpc/32s: Only build hash code when
- CONFIG_PPC_BOOK3S_604 is selected
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 22 Oct 2020 06:29:45 +0000 (UTC)
+        id S2504060AbgJVGfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 02:35:55 -0400
+Received: from smtp-fw-6001.amazon.com ([52.95.48.154]:45059 "EHLO
+        smtp-fw-6001.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2410587AbgJVGfy (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 02:35:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
+  t=1603348554; x=1634884554;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   mime-version;
+  bh=kKiOca2316EJ9vxPoAwD2unEw6cWiSMyllmPhS2/EUI=;
+  b=Ay8Kpd7xAAnaoCfBeqpNCdqpGq9mbC5zigvuCdQ91nDNLb3N12+KOoDj
+   SBWfPt/ZJj7oWbMMF157aJfQ53Y5JyE/wtFue03MKs8gSaZtC9wC0iTbU
+   /9W0zZ7ABQ6hhzkO2MMHvnNKhLU9ADD+n+lg8EecIuLjS8gpBm2e7k2+L
+   I=;
+X-IronPort-AV: E=Sophos;i="5.77,403,1596499200"; 
+   d="scan'208";a="62625133"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO email-inbound-relay-1a-715bee71.us-east-1.amazon.com) ([10.43.8.6])
+  by smtp-border-fw-out-6001.iad6.amazon.com with ESMTP; 22 Oct 2020 06:35:48 +0000
+Received: from EX13D31EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
+        by email-inbound-relay-1a-715bee71.us-east-1.amazon.com (Postfix) with ESMTPS id 20EFEA1D36;
+        Thu, 22 Oct 2020 06:35:45 +0000 (UTC)
+Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.64) by
+ EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
+ id 15.0.1497.2; Thu, 22 Oct 2020 06:35:41 +0000
+From:   SeongJae Park <sjpark@amazon.com>
+To:     Brendan Higgins <brendanhiggins@google.com>
+CC:     SeongJae Park <sjpark@amazon.com>,
+        SeongJae Park <sjpark@amazon.de>,
+        "Shuah Khan" <skhan@linuxfoundation.org>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 2/2] kunit: tool: Mark 'kunittest_config' as constant again
+Date:   Thu, 22 Oct 2020 08:35:26 +0200
+Message-ID: <20201022063526.12554-1-sjpark@amazon.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <CAFd5g44CxPuXbHund397PJSQPHGhWy1-7ij7JnJNzCO0NF6dCA@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: text/plain
+X-Originating-IP: [10.43.161.64]
+X-ClientProxiedBy: EX13D07UWB003.ant.amazon.com (10.43.161.66) To
+ EX13D31EUB001.ant.amazon.com (10.43.166.210)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is now possible to only build book3s/32 kernel for
-CPUs without hash table.
+On Wed, 21 Oct 2020 14:32:52 -0700 Brendan Higgins <brendanhiggins@google.com> wrote:
 
-Opt out hash related code when CONFIG_PPC_BOOK3S_604 is not selected.
+> On Mon, Oct 12, 2020 at 3:27 AM SeongJae Park <sjpark@amazon.com> wrote:
+> >
+> > From: SeongJae Park <sjpark@amazon.de>
+> >
+> > 'kunit_kernel.kunittest_config' was constant at first, and therefore it
+> > used UPPER_SNAKE_CASE naming convention that usually means it is
+> > constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
+> > default config in '--build_dir'") made it modifiable to fix a use case
+> > of the tool and thus the naming also changed to lower_snake_case.
+> > However, this resulted in a confusion.  As a result, some successing
+> > changes made the tool unittest fail, and a fix[1] of it again incurred
+> > the '--build_dir' use case failure.
+> >
+> > As the previous commit fixed the '--build_dir' use case without
+> > modifying the variable again, this commit marks the variable as constant
+> > again with UPPER_SNAKE_CASE, to reduce future confusions.
+> >
+> > [1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
+> >
+> > Signed-off-by: SeongJae Park <sjpark@amazon.de>
+> 
+> Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
----
- arch/powerpc/kernel/head_book3s_32.S | 12 ++++++++++++
- arch/powerpc/mm/book3s32/Makefile    |  4 +++-
- 2 files changed, 15 insertions(+), 1 deletion(-)
+Thanks :)
 
-diff --git a/arch/powerpc/kernel/head_book3s_32.S b/arch/powerpc/kernel/head_book3s_32.S
-index 620af1dda70c..4fc4091aaade 100644
---- a/arch/powerpc/kernel/head_book3s_32.S
-+++ b/arch/powerpc/kernel/head_book3s_32.S
-@@ -287,6 +287,7 @@ DataAccess:
- #ifdef CONFIG_VMAP_STACK
- 	mtspr	SPRN_SPRG_SCRATCH0,r10
- 	mfspr	r10, SPRN_SPRG_THREAD
-+#ifdef CONFIG_PPC_BOOK3S_604
- BEGIN_MMU_FTR_SECTION
- 	stw	r11, THR11(r10)
- 	mfspr	r10, SPRN_DSISR
-@@ -302,6 +303,7 @@ BEGIN_MMU_FTR_SECTION
- 	mtcr	r11
- 	lwz	r11, THR11(r10)
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
-+#endif
- 	mtspr	SPRN_SPRG_SCRATCH1,r11
- 	mfspr	r11, SPRN_DAR
- 	stw	r11, DAR(r10)
-@@ -319,6 +321,7 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
- #else	/* CONFIG_VMAP_STACK */
- 	EXCEPTION_PROLOG handle_dar_dsisr=1
- 	get_and_save_dar_dsisr_on_stack	r4, r5, r11
-+#ifdef CONFIG_PPC_BOOK3S_604
- BEGIN_MMU_FTR_SECTION
- #ifdef CONFIG_PPC_KUAP
- 	andis.	r0, r5, (DSISR_BAD_FAULT_32S | DSISR_DABRMATCH | DSISR_PROTFAULT)@h
-@@ -330,8 +333,11 @@ BEGIN_MMU_FTR_SECTION
- 	bl	hash_page
- 	b	handle_page_fault_tramp_1
- FTR_SECTION_ELSE
-+#endif
- 	b	handle_page_fault_tramp_2
-+#ifdef CONFIG_PPC_BOOK3S_604
- ALT_MMU_FTR_SECTION_END_IFSET(MMU_FTR_HPTE_TABLE)
-+#endif
- #endif	/* CONFIG_VMAP_STACK */
- 
- /* Instruction access exception. */
-@@ -347,12 +353,14 @@ InstructionAccess:
- 	mfspr	r11, SPRN_SRR1		/* check whether user or kernel */
- 	stw	r11, SRR1(r10)
- 	mfcr	r10
-+#ifdef CONFIG_PPC_BOOK3S_604
- BEGIN_MMU_FTR_SECTION
- 	andis.	r11, r11, SRR1_ISI_NOPT@h	/* no pte found? */
- 	bne	hash_page_isi
- .Lhash_page_isi_cont:
- 	mfspr	r11, SPRN_SRR1		/* check whether user or kernel */
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
-+#endif
- 	andi.	r11, r11, MSR_PR
- 
- 	EXCEPTION_PROLOG_1
-@@ -363,9 +371,11 @@ END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
- 	beq	1f			/* if so, try to put a PTE */
- 	li	r3,0			/* into the hash table */
- 	mr	r4,r12			/* SRR0 is fault address */
-+#ifdef CONFIG_PPC_BOOK3S_604
- BEGIN_MMU_FTR_SECTION
- 	bl	hash_page
- END_MMU_FTR_SECTION_IFSET(MMU_FTR_HPTE_TABLE)
-+#endif
- #endif	/* CONFIG_VMAP_STACK */
- 1:	mr	r4,r12
- 	andis.	r5,r9,DSISR_SRR1_MATCH_32S@h /* Filter relevant SRR1 bits */
-@@ -703,6 +713,7 @@ handle_page_fault_tramp_2:
- 	EXC_XFER_LITE(0x300, handle_page_fault)
- 
- #ifdef CONFIG_VMAP_STACK
-+#ifdef CONFIG_PPC_BOOK3S_604
- .macro save_regs_thread		thread
- 	stw	r0, THR0(\thread)
- 	stw	r3, THR3(\thread)
-@@ -774,6 +785,7 @@ fast_hash_page_return:
- 	mfspr	r11, SPRN_SPRG_SCRATCH1
- 	mfspr	r10, SPRN_SPRG_SCRATCH0
- 	RFI
-+#endif /* CONFIG_PPC_BOOK3S_604 */
- 
- stack_overflow:
- 	vmap_stack_overflow_exception
-diff --git a/arch/powerpc/mm/book3s32/Makefile b/arch/powerpc/mm/book3s32/Makefile
-index 3f972db17761..446d9de88ce4 100644
---- a/arch/powerpc/mm/book3s32/Makefile
-+++ b/arch/powerpc/mm/book3s32/Makefile
-@@ -6,4 +6,6 @@ ifdef CONFIG_KASAN
- CFLAGS_mmu.o  		+= -DDISABLE_BRANCH_PROFILING
- endif
- 
--obj-y += mmu.o hash_low.o mmu_context.o tlb.o nohash_low.o
-+obj-y += mmu.o mmu_context.o
-+obj-$(CONFIG_PPC_BOOK3S_603) += nohash_low.o
-+obj-$(CONFIG_PPC_BOOK3S_604) += hash_low.o tlb.o
--- 
-2.25.0
+> 
+> Thanks for this! This is something I meant to fix a while ago and forgot about.
+> 
+> One minor issue, this patch does not apply on torvalds/master right
+> now. Could you please rebase this?
 
+Surely of course, I will send next version soon.
+
+
+Thanks,
+SeongJae Park
