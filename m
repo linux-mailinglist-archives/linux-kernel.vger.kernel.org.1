@@ -2,216 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4369829566E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:33:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3728295685
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:53:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895091AbgJVCd3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 22:33:29 -0400
-Received: from mailout3.samsung.com ([203.254.224.33]:28756 "EHLO
-        mailout3.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443282AbgJVCd3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 22:33:29 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout3.samsung.com (KnoxPortal) with ESMTP id 20201022023326epoutp03a3c25baa7b20677c418b327098693642~AL8jKU4FE0836308363epoutp03f
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 02:33:26 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout3.samsung.com 20201022023326epoutp03a3c25baa7b20677c418b327098693642~AL8jKU4FE0836308363epoutp03f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603334006;
-        bh=kDAYexLUL1fIzAZL+IINMuwVpdSM8IRXCDveo7dhFUY=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=YLw8Bz2HvkH40y1S0a89QuW37A1ZIQEaapLOAorBuC4C6I4HHI+aaf6wDMUx2qEiq
-         rfapHcpvzjBJaxpTMAou/BjQDLHzxWS8MMZ7fP+yfvxO7kqEtxadxlblvixdM7tRtd
-         2Pts87mjHtJoBkyMwM70VaArJq0e8lsnghVeShYo=
-Received: from epsnrtp1.localdomain (unknown [182.195.42.162]) by
-        epcas1p3.samsung.com (KnoxPortal) with ESMTP id
-        20201022023326epcas1p3b9bdd8fb412cd443e0c0b9d43fe7561e~AL8ijoQwv0726607266epcas1p3U;
-        Thu, 22 Oct 2020 02:33:26 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.157]) by
-        epsnrtp1.localdomain (Postfix) with ESMTP id 4CGryC4Xc0zMqYm6; Thu, 22 Oct
-        2020 02:33:23 +0000 (GMT)
-Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        DE.7B.09543.37FE09F5; Thu, 22 Oct 2020 11:33:23 +0900 (KST)
-Received: from epsmtrp1.samsung.com (unknown [182.195.40.13]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTPA id
-        20201022023323epcas1p4ea552e1162038d835a07738768d00b01~AL8fv2UJ51068810688epcas1p4s;
-        Thu, 22 Oct 2020 02:33:23 +0000 (GMT)
-Received: from epsmgms1p1new.samsung.com (unknown [182.195.42.41]) by
-        epsmtrp1.samsung.com (KnoxPortal) with ESMTP id
-        20201022023323epsmtrp1dcb1f281dd861d046cab21ccbc6b5235~AL8fu4gmy2300923009epsmtrp1d;
-        Thu, 22 Oct 2020 02:33:23 +0000 (GMT)
-X-AuditID: b6c32a35-347ff70000002547-b0-5f90ef732b0b
-Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
-        epsmgms1p1new.samsung.com (Symantec Messaging Gateway) with SMTP id
-        CC.04.08604.27FE09F5; Thu, 22 Oct 2020 11:33:22 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
-        20201022023322epsmtip1bdc086dee72f2aaaec3bd4e62a5ab4b9~AL8fbDqUS2126221262epsmtip1F;
-        Thu, 22 Oct 2020 02:33:22 +0000 (GMT)
-Subject: Re: [PATCH v4 2/2] PM / devfreq: Add governor attribute flag for
- specifc sysfs nodes
-To:     Dmitry Osipenko <digetx@gmail.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-tegra@vger.kernel.org
-Cc:     lukasz.luba@arm.com, enric.balletbo@collabora.com,
-        hl@rock-chips.com, thierry.reding@gmail.com, jonathanh@nvidia.com,
-        abel.vesa@nxp.com, k.konieczny@samsung.com,
-        b.zolnierkie@samsung.com, chanwoo@kernel.org,
-        myungjoo.ham@samsung.com, kyungmin.park@samsung.com
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <5802dfbd-22d2-0efb-cc98-2dbb1d420367@samsung.com>
-Date:   Thu, 22 Oct 2020 11:47:02 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        id S2443421AbgJVCxQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 22:53:16 -0400
+Received: from ozlabs.org ([203.11.71.1]:49667 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442728AbgJVCxQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 22:53:16 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CGsP14c7Vz9sSn;
+        Thu, 22 Oct 2020 13:53:08 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603335192;
+        bh=fW5FipmXYxyEiBCHMu/Sd0mLJUNgkUEv7kKEvoc29V0=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=DeS/8oEhEaeq235MxQgaLDc0dL8ank/k+UdrfESwGHS+oQacrPHsm2SnK/uhn8UJ0
+         SuOqEbOVVsdXOCtnLZsRAzOvMwTx/miCuRrzfqM29KieQ6ERBMklEkPOk1fPpXCvIX
+         pg2UCUi0cpL4cC0PNw2Uz/B/HrQa6QxqIq+6+BSUGucoZNa6wl5iieZrtXAP99+w34
+         up9Kr9xMjz4IPptPv893Cq3n0BXmLyhXE8WHX3sbImziGehjfTczl87VVjyYH0qEz0
+         RL26T9lFD1uA77TzLX9k6uEsxkPOjSAlVToeVm34D3ucgM7DK0qB3ugaXLSpV5nBwp
+         h8Vn7kiDKIogw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Laurent Vivier <laurent@vivier.eu>,
+        Greg KH <gregkh@linuxfoundation.org>
+Cc:     linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
+        linux-serial@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org
+Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+In-Reply-To: <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
+References: <20201020162303.1730562-1-laurent@vivier.eu> <20201020162844.GA865546@kroah.com> <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu> <20201020173745.GA882703@kroah.com> <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu> <20201020183246.GA912431@kroah.com> <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
+Date:   Thu, 22 Oct 2020 13:52:56 +1100
+Message-ID: <87o8kvx987.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <bee3ef10-ddec-5ad4-9daa-79d9b01651d9@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFrrGJsWRmVeSWpSXmKPExsWy7bCmgW7x+wnxBs2TZC2WXTrKaLFxxnpW
-        i4k3rrBYrP74mNFize1DjBY/NpxitmiZtYjFYsGnGawWZ5vesFtc3jWHzeJz7xFGi84vs9gs
-        Fja1sFvcblzBZvFz1zwWB36PNfPWMHrsuLuE0WPnrLvsHptWdbJ59Da/Y/PY+G4Hk8ffWftZ
-        PPq2rGL0+LxJLoAzKtsmIzUxJbVIITUvOT8lMy/dVsk7ON453tTMwFDX0NLCXEkhLzE31VbJ
-        xSdA1y0zB+gFJYWyxJxSoFBAYnGxkr6dTVF+aUmqQkZ+cYmtUmpBSk6BZYFecWJucWleul5y
-        fq6VoYGBkSlQYUJ2xvPHp5gK/kpWdKxcw9rA2CjaxcjJISFgIrF/83LWLkYuDiGBHYwSq3sa
-        2SCcT4wSTWf+MUE43xgllq6dzw7TsutpLzNEYi+jxK5tc6Cc94wSfa9b2ECqhAXiJZ5OOs4I
-        YosI1EocufgAbC6zQC+TxLQ9S5lAEmwCWhL7X9wAa+AXUJS4+uMxWAOvgJ3E5GXzmUFsFgFV
-        iW+fH4PViwqESZzc1gJVIyhxcuYTFhCbU8BW4s7fZ2A2s4C4xK0n85kgbHmJ5q2zwa6TEPjB
-        IXH1w06oH1wkbk7+BGULS7w6vgXKlpJ42d8GZVdLrDx5hA2iuYNRYsv+C6wQCWOJ/UsnA23g
-        ANqgKbF+lz5EWFFi5++5jBCL+STefe1hBSmREOCV6GgTgihRlrj84C4ThC0psbi9k20Co9Is
-        JO/MQvLCLCQvzEJYtoCRZRWjWGpBcW56arFhgSFyfG9iBCdwLdMdjBPfftA7xMjEwXiIUYKD
-        WUmEN090QrwQb0piZVVqUX58UWlOavEhRlNgAE9klhJNzgfmkLySeENTI2NjYwsTQzNTQ0Ml
-        cd4/2h3xQgLpiSWp2ampBalFMH1MHJxSDUwLGqezBH+eNNFQ691t5wPnGd9s2j5r1XezU6sW
-        b5G8ZJ3AV3mZIThx9b6pZ4/xK3dlLDvOu2l2H4vX1fvmq1O+ng19wM42++IP9qlz9f03OvI+
-        /7LRJnc9s+Ue/ggpya55u8ROC+gp9XEURW1jL9Z8Y//8+rGZe7f92Pf0is7JM7pXPsv9eBdy
-        YvadF7nFCq0h7zfmPdh355bq9u4DD2IZnqy8/2XSvKPvPZyvzpNoeNv24+tms1tCrmnrmeL+
-        +OZXCJRHxU5pUnCKLg65JN/2RGPuN6tOu4VrpM5t2Cbm5/rMJKr9cvUMLm6152Hn/tXavF6i
-        JCj8OHemy635c1YVBYkGXGE+2uAefkxf56XyfCWW4oxEQy3mouJEAOUGUHVpBAAA
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrPIsWRmVeSWpSXmKPExsWy7bCSnG7R+wnxBj9eWlksu3SU0WLjjPWs
-        FhNvXGGxWP3xMaPFmtuHGC1+bDjFbNEyaxGLxYJPM1gtzja9Ybe4vGsOm8Xn3iOMFp1fZrFZ
-        LGxqYbe43biCzeLnrnksDvwea+atYfTYcXcJo8fOWXfZPTat6mTz6G1+x+ax8d0OJo+/s/az
-        ePRtWcXo8XmTXABnFJdNSmpOZllqkb5dAlfG88enmAr+SlZ0rFzD2sDYKNrFyMkhIWAisetp
-        L3MXIxeHkMBuRokVK58xQSQkJaZdPAqU4ACyhSUOHy6GqHnLKDFj0SNGkBphgXiJp5OOg9ki
-        ArUSr1ZPZwUpYhboZZLo2rWXFSQhJPCJUeL5fm4Qm01AS2L/ixtsIDa/gKLE1R+PwZp5Bewk
-        Ji+bzwxiswioSnz7/BjsCFGBMImdSyBsXgFBiZMzn7CA2JwCthJ3/j4Ds5kF1CX+zLvEDGGL
-        S9x6Mp8JwpaXaN46m3kCo/AsJO2zkLTMQtIyC0nLAkaWVYySqQXFuem5xYYFhnmp5XrFibnF
-        pXnpesn5uZsYwXGspbmDcfuqD3qHGJk4GA8xSnAwK4nw5olOiBfiTUmsrEotyo8vKs1JLT7E
-        KM3BoiTOe6NwYZyQQHpiSWp2ampBahFMlomDU6qBybPg37cqt3vtM5ZeXM0/X23DD3ans7vf
-        uIjGrzZMKF679J+lWfwSPSHWd2lCecJFdZFpG3w21VrPnZl5/NAVpc9r5t+672Q6J+V0Vcyn
-        u757z63c9LnmiWKM0/UpbQxbt/yZd1Oo1+r3rNoNU6/+27WAn/cZ94vrNi+Zok4fetdjEi4Y
-        +yrYbd0hzy13ZPm+BFkcP19jn1DuPntBYePiVa+P3WPgY3iS6xr54r+B8Fdug3cyaSuPbcs9
-        u8XqeGtUxTbeTatMdXP6d3yozaj4LMv11PPpwqxll21n/mGaeZ2H4VBioRnDlP0bLildOLPs
-        +bO8N+cfPv5nfpmByXUp79OcF49OGLUG+81ecWG5zUxhJZbijERDLeai4kQA1mNDNlIDAAA=
-X-CMS-MailID: 20201022023323epcas1p4ea552e1162038d835a07738768d00b01
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201020025045epcas1p4b26b6f23e2896c2d661b2cfa93505e21
-References: <20201020030407.21047-1-cw00.choi@samsung.com>
-        <CGME20201020025045epcas1p4b26b6f23e2896c2d661b2cfa93505e21@epcas1p4.samsung.com>
-        <20201020030407.21047-3-cw00.choi@samsung.com>
-        <bee3ef10-ddec-5ad4-9daa-79d9b01651d9@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 11:30 AM, Dmitry Osipenko wrote:
-> Hello Chanwoo,
-> 
-> 20.10.2020 06:04, Chanwoo Choi пишет:
->> @@ -1354,55 +1365,71 @@ static ssize_t governor_store(struct device *dev, struct device_attribute *attr,
->>  	struct devfreq *df = to_devfreq(dev);
->>  	int ret;
->>  	char str_governor[DEVFREQ_NAME_LEN + 1];
->> -	const struct devfreq_governor *governor, *prev_governor;
->> +	const struct devfreq_governor *new_governor, *prev_governor;
->>  
->>  	if (!df->governor)
->>  		return -EINVAL;
->> +	prev_governor = df->governor;
->>  
->>  	ret = sscanf(buf, "%" __stringify(DEVFREQ_NAME_LEN) "s", str_governor);
->>  	if (ret != 1)
->>  		return -EINVAL;
->>  
->>  	mutex_lock(&devfreq_list_lock);
->> -	governor = try_then_request_governor(str_governor);
->> -	if (IS_ERR(governor)) {
->> -		ret = PTR_ERR(governor);
->> +	new_governor = try_then_request_governor(str_governor);
->> +	if (IS_ERR(new_governor)) {
->> +		ret = PTR_ERR(new_governor);
->>  		goto out;
->>  	}
->> -	if (df->governor == governor) {
->> +	if (prev_governor == new_governor) {
->>  		ret = 0;
->>  		goto out;
->> -	} else if (IS_SUPPORTED_FLAG(df->governor->flags, IMMUTABLE)
->> -		|| IS_SUPPORTED_FLAG(governor->flags, IMMUTABLE)) {
->> +	} else if (IS_SUPPORTED_FLAG(prev_governor->flags, IMMUTABLE)
->> +		|| IS_SUPPORTED_FLAG(new_governor->flags, IMMUTABLE)) {
->>  		ret = -EINVAL;
->>  		goto out;
->>  	}
->>  
->> -	ret = df->governor->event_handler(df, DEVFREQ_GOV_STOP, NULL);
->> +	/*
->> +	 * Stop the previous governor and remove the specific sysfs files
->> +	 * which depend on previous governor.
->> +	 */
->> +	ret = prev_governor->event_handler(df, DEVFREQ_GOV_STOP, NULL);
->>  	if (ret) {
->>  		dev_warn(dev, "%s: Governor %s not stopped(%d)\n",
->> -			 __func__, df->governor->name, ret);
->> +			 __func__, prev_governor->name, ret);
->>  		goto out;
->>  	}
->>  
->> -	prev_governor = df->governor;
->> -	df->governor = governor;
->> -	strncpy(df->governor_name, governor->name, DEVFREQ_NAME_LEN);
->> -	ret = df->governor->event_handler(df, DEVFREQ_GOV_START, NULL);
->> +	remove_sysfs_files(df, prev_governor);
->> +
->> +	/*
->> +	 * Start the new governor and create the specific sysfs files
->> +	 * which depend on new governor.
->> +	 */
->> +	strncpy(df->governor_name, new_governor->name, DEVFREQ_NAME_LEN);
->> +	ret = new_governor->event_handler(df, DEVFREQ_GOV_START, NULL);
-> 
-> The "df->governor = new_governor" needs to be set before invocation of
-> the event_handler(GOV_START) because governors like a
-> performance-governor need to have the df->governor being set before the
-> GOV_START callback, otherwise performance governor will use
-> devfreq->prev_governor->get_target_freq() in devfreq_update_target(),
-> thus setting a wrong (non-max) freq.
+Laurent Vivier <laurent@vivier.eu> writes:
+> Le 20/10/2020 =C3=A0 20:32, Greg KH a =C3=A9crit=C2=A0:
+>> On Tue, Oct 20, 2020 at 08:19:26PM +0200, Laurent Vivier wrote:
+>>> Le 20/10/2020 =C3=A0 19:37, Greg KH a =C3=A9crit=C2=A0:
+>>>> On Tue, Oct 20, 2020 at 06:37:41PM +0200, Laurent Vivier wrote:
+>>>>> Le 20/10/2020 =C3=A0 18:28, Greg KH a =C3=A9crit=C2=A0:
+>>>>>> On Tue, Oct 20, 2020 at 06:23:03PM +0200, Laurent Vivier wrote:
+>>>>>>> We can avoid to probe for the Zilog device (and generate ugly kerne=
+l warning)
+>>>>>>> if kernel is built for Mac but not on a Mac.
+>>>>>>>
+>>>>>>> Signed-off-by: Laurent Vivier <laurent@vivier.eu>
+>>>>>>> ---
+>>>>>>>  drivers/tty/serial/pmac_zilog.c | 11 +++++++++++
+>>>>>>>  1 file changed, 11 insertions(+)
+>>>>>>>
+>>>>>>> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/p=
+mac_zilog.c
+>>>>>>> index 063484b22523..d1d2e55983c3 100644
+>>>>>>> --- a/drivers/tty/serial/pmac_zilog.c
+>>>>>>> +++ b/drivers/tty/serial/pmac_zilog.c
+>>>>>>> @@ -1867,6 +1867,12 @@ static struct platform_driver pmz_driver =3D=
+ {
+>>>>>>>  static int __init init_pmz(void)
+>>>>>>>  {
+>>>>>>>  	int rc, i;
+>>>>>>> +
+>>>>>>> +#ifdef CONFIG_MAC
+>>>>>>> +	if (!MACH_IS_MAC)
+>>>>>>> +		return -ENODEV;
+>>>>>>> +#endif
+>>>>>>
+>>>>>> Why is the #ifdef needed?
+>>>>>>
+>>>>>> We don't like putting #ifdef in .c files for good reasons.  Can you =
+make
+>>>>>> the api check for this work with and without that #ifdef needed?
+>>>>>
+>>>>> The #ifdef is needed because this file can be compiled for PowerMac a=
+nd
+>>>>> m68k Mac. For PowerMac, the MACH_IS_MAC is not defined, so we need the
+>>>>> #ifdef.
+>>>>>
+>>>>> We need the MAC_IS_MAC because the same kernel can be used with sever=
+al
+>>>>> m68k machines, so the init_pmz can be called on a m68k machine without
+>>>>> the zilog device (it's a multi-targets kernel).
+>>>>>
+>>>>> You can check it's the good way to do by looking inside:
+>>>>>
+>>>>>     drivers/video/fbdev/valkyriefb.c +317
+>>>>>     drivers/macintosh/adb.c +316
+>>>>>
+>>>>> That are two files used by both, mac and pmac.
+>>>>
+>>>> Why not fix it to work properly like other arch checks are done
+>>> I would be happy to do the same.
+>>>
+>>>> Put it in a .h file and do the #ifdef there.  Why is this "special"?
+>>>
+>>> I don't know.
+>>>
+>>> Do you mean something like:
+>>>
+>>> drivers/tty/serial/pmac_zilog.h
+>>> ...
+>>> #ifndef MACH_IS_MAC
+>>> #define MACH_IS_MAC (0)
+>>> #endif
+>>> ...
+>>>
+>>> drivers/tty/serial/pmac_zilog.c
+>>> ...
+>>> static int __init pmz_console_init(void)
+>>> {
+>>>         if (!MACH_IS_MAC)
+>>>                 return -ENODEV;
+>>> ...
+>>=20
+>> Yup, that would be a good start, but why is the pmac_zilog.h file
+>> responsible for this?  Shouldn't this be in some arch-specific file
+>> somewhere?
+>
+> For m68k, MACH_IS_MAC is defined in arch/m68k/include/asm/setup.h
+>
+> If I want to define it for any other archs I don't know in which file we
+> can put it.
+>
+> But as m68k mac is only sharing drivers with pmac perhaps we can put
+> this in arch/powerpc/include/asm/setup.h?
 
-You're right. It is my mistake. Thanks for your detailed review.
+It doesn't really belong in there.
 
-> 
->>  	if (ret) {
->>  		dev_warn(dev, "%s: Governor %s not started(%d)\n",
->> -			 __func__, df->governor->name, ret);
->> -		df->governor = prev_governor;
->> +			 __func__, new_governor->name, ret);
->>  		strncpy(df->governor_name, prev_governor->name,
->>  			DEVFREQ_NAME_LEN);
->> -		ret = df->governor->event_handler(df, DEVFREQ_GOV_START, NULL);
-> 
-> Same here.
+I'd accept a patch to create arch/powerpc/include/asm/macintosh.h, with
+MACH_IS_MAC defined in there.
 
-OK.
-
-> 
-> 
-
-
--- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+cheers
