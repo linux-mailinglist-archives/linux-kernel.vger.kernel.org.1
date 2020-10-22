@@ -2,83 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AE22295D23
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:03:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EABA295D1A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:01:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896940AbgJVLDr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:03:47 -0400
-Received: from mx2.suse.de ([195.135.220.15]:33976 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2443221AbgJVLDp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:03:45 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603363721;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=0b+aO4geVivMxoOImVN5TC2oxRBqcdDWLWc9IG6Dja4=;
-        b=eNZuxA34i5wiLPoll7WkPXL2PX8QR7fJehNfp3WFLosE56YkjFThkSySoANZJSUtVORyjn
-        vTuaFa64zaqVevu+h3k5ObPjj9MuRVNO4EeA082UC/Yf2AJPz+zCqLSmoAHttaXSq3E31/
-        HZtKCZJjbqa6RE6eAcjPoSNlWdpRUa8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id D57D8ACA3;
-        Thu, 22 Oct 2020 10:48:40 +0000 (UTC)
-Subject: Re: [PATCH] x86/alternative: don't call text_poke() in lazy TLB mode
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
-        linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Andy Lutomirski <luto@kernel.org>
-References: <20201009144225.12019-1-jgross@suse.com>
- <28ccccfe-b95b-5c4d-af27-5004e9f02c40@suse.com>
- <20201022104527.GI2594@hirez.programming.kicks-ass.net>
-From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
-Message-ID: <61d30267-733f-49b5-8ca1-3246485e8151@suse.com>
-Date:   Thu, 22 Oct 2020 12:48:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2896913AbgJVLBf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:01:35 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:60920 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2437981AbgJVLBf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:01:35 -0400
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201022110116euoutp016289c968e40edfda74ffaea1d489db2c~AS38FaLuw0664506645euoutp01e
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:01:16 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201022110116euoutp016289c968e40edfda74ffaea1d489db2c~AS38FaLuw0664506645euoutp01e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603364476;
+        bh=WXh6KSLjfsIWCxvXkGPP8zikiSknYc4DH8BQj+F9+Fc=;
+        h=From:To:Cc:Subject:Date:References:From;
+        b=UXg1spMnO6ebSYbOnHa9jAhGgbfVTjd5yP4+f5E+CeBMIk0Tmkp/FuBwD/j4xlnzA
+         sFaGpT0d5Ko/RIGoFYVO5xh5dKMJ/d2+vbKGu+rgl8KmpCoRaet1GtwzOwUYGufK3E
+         ztq5TD04B1mmP8yL/zh5atZgjDNYJkP4dWvby5O0=
+Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201022110115eucas1p293d71c950bb5f0f6f031634f2924d569~AS37meoTo0082000820eucas1p20;
+        Thu, 22 Oct 2020 11:01:15 +0000 (GMT)
+Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
+        eusmges2new.samsung.com (EUCPMTA) with SMTP id 3E.DE.05997.B76619F5; Thu, 22
+        Oct 2020 12:01:15 +0100 (BST)
+Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
+        eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201022110115eucas1p216072f5c30091771421c8c595242d3b9~AS37U-3tp3058030580eucas1p25;
+        Thu, 22 Oct 2020 11:01:15 +0000 (GMT)
+Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
+        eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201022110115eusmtrp296978df2ae6977f739916c9585dd5e4d~AS37UUYJn1928219282eusmtrp2p;
+        Thu, 22 Oct 2020 11:01:15 +0000 (GMT)
+X-AuditID: cbfec7f4-677ff7000000176d-9c-5f91667ba817
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms2.samsung.com (EUCPMTA) with SMTP id B3.E2.06017.B76619F5; Thu, 22
+        Oct 2020 12:01:15 +0100 (BST)
+Received: from localhost (unknown [106.120.51.46]) by eusmtip1.samsung.com
+        (KnoxPortal) with ESMTPA id
+        20201022110115eusmtip15ff1dbf2b7b27ff46f8b621d457d3c14~AS37LH7Xv1088410884eusmtip1S;
+        Thu, 22 Oct 2020 11:01:15 +0000 (GMT)
+From:   =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+To:     Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org
+Cc:     =?UTF-8?q?Bart=C5=82omiej=20=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>,
+        =?UTF-8?q?=C5=81ukasz=20Stelmach?= <l.stelmach@samsung.com>
+Subject: [PATCH] checkpatch: ignore ethtool CamelCase constants
+Date:   Thu, 22 Oct 2020 13:01:13 +0200
+Message-Id: <20201022110113.3505-1-l.stelmach@samsung.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-In-Reply-To: <20201022104527.GI2594@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Organization: Samsung R&D Institute Poland
 Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprIKsWRmVeSWpSXmKPExsWy7djPc7rVaRPjDU5v17H4sFbDYuOM9awW
+        s+8/ZrG4eWgFo8XlXXPYLNYeucvuwOYxq6GXzePLqmvMHn1bVjF6fN4kF8ASxWWTkpqTWZZa
+        pG+XwJVxeUlwwX+2ijUTp7I1MN5l7WLk5JAQMJGY/PwDcxcjF4eQwApGiYlTmtlBEkICXxgl
+        DjTJQyQ+M0p8uHmfGabjwYFrTBCJ5YwS0090sUA4zxkl9vSuYwOpYhNwlOhfegJoBweHiECq
+        xO+HhiA1zAL7GCV23psCNklYwF5ixe+9jCA2i4CqxK51d8BW8wpYSeyduBBqm7xE+/LtbBBx
+        QYmTM5+wgNj8AloSa5qug9nMQDXNW2eD/SAh0M4ucXPLDyaIZheJm8d/skDYwhKvjm9hh7Bl
+        JP7vnM8EcpyEQL3E5ElmEL09jBLb5vyAqreWuHPuFxtIDbOApsT6XfoQYUeJH4eeQLXySdx4
+        KwhxAp/EpG3TmSHCvBIdbUIQ1SoS6/r3QA2Ukuh9tYIRwvaQ+PPyA/sERsVZSB6bheSZWQh7
+        FzAyr2IUTy0tzk1PLTbKSy3XK07MLS7NS9dLzs/dxAhMKKf/Hf+yg3HXn6RDjAIcjEo8vB98
+        JsQLsSaWFVfmHmKU4GBWEuF1Ons6Tog3JbGyKrUoP76oNCe1+BCjNAeLkjiv8aKXsUIC6Ykl
+        qdmpqQWpRTBZJg5OqQbGcKk2kxP7LoW+XHxh/VHX5Z9mBryfsPLCj46qXKen+9wkz0m02uxt
+        tp/IEHF9vn/5pM0NN1nNcsNuWczeVuOnftt75u+DXavYzOfHT0swK9E5eZFncvIumZOsWRfz
+        X25Y/i914swfM1Wk+UttmiK48px/fncz6bHYUmvWtW5/3xvHT395fNm3K7EUZyQaajEXFScC
+        AMSxs1okAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFupmkeLIzCtJLcpLzFFi42I5/e/4Xd3qtInxBvd/Slh8WKthsXHGelaL
+        2fcfs1jcPLSC0eLyrjlsFmuP3GV3YPOY1dDL5vFl1TVmj74tqxg9Pm+SC2CJ0rMpyi8tSVXI
+        yC8usVWKNrQw0jO0tNAzMrHUMzQ2j7UyMlXSt7NJSc3JLEst0rdL0Mu4vCS44D9bxZqJU9ka
+        GO+ydjFyckgImEg8OHCNqYuRi0NIYCmjxLk9bxi7GDmAElISK+emQ9QIS/y51sUGUfOUUeLM
+        x+fsIAk2AUeJ/qUnwAaJCKRLbF10DqyIWWAfo8T+o4vBioQF7CVW/N7LCGKzCKhK7Fp3ByzO
+        K2AlsXfiQmaIDfIS7cu3s0HEBSVOznzCAnIEs4C6xPp5QiBhfgEtiTVN11lAbGag8uats5kn
+        MArMQtIxC6FjFpKqBYzMqxhFUkuLc9Nzi430ihNzi0vz0vWS83M3MQIjYtuxn1t2MHa9Cz7E
+        KMDBqMTD+8FnQrwQa2JZcWXuIUYJDmYlEV6ns6fjhHhTEiurUovy44tKc1KLDzGaAr0zkVlK
+        NDkfGK15JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNTUwtSi2D6mDg4pRoYYyMap5v9
+        6Lxy3fxgfY9XFr+WgxjDpS+i/1fELmVzc6q4uJJ92QyBt1mr1nm92C9w1C2zPI/rLjM/bym3
+        LAub+QyH+RzaV8sUP3etDyqKs5s1MYWlRfuQSOzpyO8rhVPMd/1gCD31436obr4jZ8I2z83b
+        Ig4+36N/+N6jslX/g+QXbV48pahbiaU4I9FQi7moOBEAlic+D54CAAA=
+X-CMS-MailID: 20201022110115eucas1p216072f5c30091771421c8c595242d3b9
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201022110115eucas1p216072f5c30091771421c8c595242d3b9
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201022110115eucas1p216072f5c30091771421c8c595242d3b9
+References: <CGME20201022110115eucas1p216072f5c30091771421c8c595242d3b9@eucas1p2.samsung.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 12:45, Peter Zijlstra wrote:
-> On Thu, Oct 22, 2020 at 11:24:39AM +0200, Jürgen Groß wrote:
->> On 09.10.20 16:42, Juergen Gross wrote:
->>> When running in lazy TLB mode the currently active page tables might
->>> be the ones of a previous process, e.g. when running a kernel thread.
->>>
->>> This can be problematic in case kernel code is being modified via
->>> text_poke() in a kernel thread, and on another processor exit_mmap()
->>> is active for the process which was running on the first cpu before
->>> the kernel thread.
->>>
->>> As text_poke() is using a temporary address space and the former
->>> address space (obtained via cpu_tlbstate.loaded_mm) is restored
->>> afterwards, there is a race possible in case the cpu on which
->>> exit_mmap() is running wants to make sure there are no stale
->>> references to that address space on any cpu active (this e.g. is
->>> required when running as a Xen PV guest, where this problem has been
->>> observed and analyzed).
->>>
->>> In order to avoid that, drop off TLB lazy mode before switching to the
->>> temporary address space.
->>>
->>> Fixes: cefa929c034eb5d ("x86/mm: Introduce temporary mm structs")
->>> Signed-off-by: Juergen Gross <jgross@suse.com>
->>
->> Can anyone look at this, please? It is fixing a real problem which has
->> been seen several times.
-> 
-> As it happens I picked it up yesterday, just pushed it out for you.
+Ignore CamelCase constants describing Ethernet link parameters defined
+in include/uapi/linux/ethtool.h.
 
-Thank you very much!
+Signed-off-by: Łukasz Stelmach <l.stelmach@samsung.com>
+---
+ scripts/checkpatch.pl | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index fab38b493cef..31789c090140 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -5295,6 +5295,10 @@ sub process {
+ #CamelCase
+ 			if ($var !~ /^$Constant$/ &&
+ 			    $var =~ /[A-Z][a-z]|[a-z][A-Z]/ &&
++#Ignore constants from include/uapi/linux/ethtool.h
++			    $var !~ /^ETHTOOL_LINK_MODE_[0-9A-Za-z_]+_BIT$/ &&
++			    $var !~ /^ADVERTISED_[0-9A-Za-z_]+$/ &&
++			    $var !~ /^SUPPORTED_[0-9A-Za-z_]+$/ &&
+ #Ignore Page<foo> variants
+ 			    $var !~ /^(?:Clear|Set|TestClear|TestSet|)Page[A-Z]/ &&
+ #Ignore SI style variants like nS, mV and dB
+-- 
+2.26.2
 
-Juergen
