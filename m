@@ -2,96 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 411F8295D99
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:43:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF954295DA2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:43:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897453AbgJVLnK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:43:10 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:46798 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897425AbgJVLnJ (ORCPT
+        id S2897509AbgJVLnu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:43:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35884 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897499AbgJVLns (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:43:09 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id D62BA1C0B7D; Thu, 22 Oct 2020 13:43:06 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:43:06 +0200
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>
-Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
-        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Ondrej Ille <ondrej.ille@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        Petr Porazil <porazil@pikron.com>,
-        Drew Fustini <pdp7pdp7@gmail.com>
-Subject: Re: [PATCH v6 5/6] can: ctucanfd: CTU CAN FD open-source IP core -
- platform/SoC support.
-Message-ID: <20201022114306.GA31933@duo.ucw.cz>
-References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz>
- <2a90e1a7d57f0fec42604cd399acf25af5689148.1603354744.git.pisa@cmp.felk.cvut.cz>
+        Thu, 22 Oct 2020 07:43:48 -0400
+Received: from mail-qv1-xf42.google.com (mail-qv1-xf42.google.com [IPv6:2607:f8b0:4864:20::f42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9AE53C0613D6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:43:47 -0700 (PDT)
+Received: by mail-qv1-xf42.google.com with SMTP id f5so654294qvx.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:43:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=Tn5VStmyr19eg0AHWkg65WyZIMHvKO6plAVuAqOgPDQ=;
+        b=W2W63+Km46WNPYtkSR3igfnV7TEUq5madmsiNOsLljJ4hXhwY+tNpYNU0U98RMc/Ra
+         N/OqT1bclh4ytLL1rVRfHDNQXuCClycUHEstVDTB13O2SeX7rcenP16ZDtQZwB1W1jcc
+         qY+V9dfylqzLN5PiDQabSjcYMeIPMV8H3MvDBIvqP9uVDzx0l3+DGSbt51z70fKAGBps
+         MOgHN8p+THySDXKSzKDRAxFER+JAglmr7hGRyvf9N5t7jpnIarxCymOKiSFfwhwoQKR+
+         3E88SiMtx1h9HdY+LUkd3T5LmcI1LTVNdrFdFYFYlKXO0Wntp7OMh6vxttQFR1tsYI0Q
+         kJBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=Tn5VStmyr19eg0AHWkg65WyZIMHvKO6plAVuAqOgPDQ=;
+        b=boQZ/HoheI2gE4q57im5H61agM0hy3lwR60z0STrIY4sd5lyKY3IN2vcvPF2JNb3jj
+         OsNTIkQ49AqgaXUTN5XiGE3rELsEab5prfYJQ1Ieds5UOUGiHGUoLAd46oCYU8mgL1SW
+         bXoI+fmDF6THomkRJuq8214YBLrdfcBO54swcs0ZrIy/2Du89A64mFmnflYM623LLron
+         WFIabQ2jAwy5/6Cfdb9e2CftVwQ28n4NtaIG2p9K6dq54qXLtQ+vi/HTexkieRdgaH6E
+         BlNzUPIPfjDMLBce4Qco3elCQshFx04lL6aFYnqlmVp3JEQUmjSAl4R9k7l9xF8S24f2
+         c8XA==
+X-Gm-Message-State: AOAM533dZDNs72MnFEjpuwrRIur8aRKSWe9NZtLiJj3pGZLG9lzuuWZh
+        y1s6blezczj89XhtCzGLQz1Thw==
+X-Google-Smtp-Source: ABdhPJw6OYYGIWsKIpwZGlvXqWx4K8ij3H0LBJb/eEFtxBXIO8uo2emBiN1PSKDxC0xVD0g026FmxA==
+X-Received: by 2002:ad4:45a5:: with SMTP id y5mr1935405qvu.40.1603367026713;
+        Thu, 22 Oct 2020 04:43:46 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id l25sm820821qtf.18.2020.10.22.04.43.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 04:43:45 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kVZ0T-0040bW-1W; Thu, 22 Oct 2020 08:43:45 -0300
+Date:   Thu, 22 Oct 2020 08:43:45 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Daniel Vetter <daniel.vetter@ffwll.ch>
+Cc:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Kees Cook <keescook@chromium.org>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>, Bjorn Helgaas <bhelgaas@google.com>,
+        Linux PCI <linux-pci@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@ffwll.com>
+Subject: Re: [PATCH v3 12/16] PCI: Obey iomem restrictions for procfs mmap
+Message-ID: <20201022114345.GO36674@ziepe.ca>
+References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch>
+ <20201021085655.1192025-13-daniel.vetter@ffwll.ch>
+ <20201021125030.GK36674@ziepe.ca>
+ <CAKMK7uEWe8CaT7zjcZ6dJAKHxtxtqzjVB35fCFviwhcnqksDfw@mail.gmail.com>
+ <20201021151352.GL36674@ziepe.ca>
+ <CAKMK7uGq0=ks7Zj1Et44k7x9FwE9u_ua4zANSqrLRri0v01V+Q@mail.gmail.com>
+ <20201021163702.GM36674@ziepe.ca>
+ <CAKMK7uEjE5sHUq0hV_bnYjPKRxYyBnty0sLre+owANGZjLJg9Q@mail.gmail.com>
+ <20201021232022.GN36674@ziepe.ca>
+ <CAKMK7uEkAK42+19KRo06XzJFuMCVriEEg0jxqXq8oAdt2ExLsQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="yrj/dFKFPuw6o+aM"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2a90e1a7d57f0fec42604cd399acf25af5689148.1603354744.git.pisa@cmp.felk.cvut.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <CAKMK7uEkAK42+19KRo06XzJFuMCVriEEg0jxqXq8oAdt2ExLsQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 22, 2020 at 09:00:44AM +0200, Daniel Vetter wrote:
+> On Thu, Oct 22, 2020 at 1:20 AM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> >
+> > On Wed, Oct 21, 2020 at 09:24:08PM +0200, Daniel Vetter wrote:
+> > > On Wed, Oct 21, 2020 at 6:37 PM Jason Gunthorpe <jgg@ziepe.ca> wrote:
+> > > >
+> > > > On Wed, Oct 21, 2020 at 05:54:54PM +0200, Daniel Vetter wrote:
+> > > >
+> > > > > The trouble is that io_remap_pfn adjust vma->pgoff, so we'd need to
+> > > > > split that. So ideally ->mmap would never set up any ptes.
+> > > >
+> > > > /dev/mem makes pgoff == pfn so it doesn't get changed by remap.
+> > > >
+> > > > pgoff doesn't get touched for MAP_SHARED either, so there are other
+> > > > users that could work like this - eg anyone mmaping IO memory is
+> > > > probably OK.
+> > >
+> > > I was more generally thinking for io_remap_pfn_users because of the
+> > > mkwrite use-case we might have in fbdev emulation in drm.
+> >
+> > You have a use case for MAP_PRIVATE and io_remap_pfn_range()??
+> 
+> Uh no :-)
 
---yrj/dFKFPuw6o+aM
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+So it is fine, the pgoff mangling only happens for MAP_PRIVATE
 
-Hi!
-
-> +++ b/drivers/net/can/ctucanfd/Kconfig
-> @@ -21,4 +21,15 @@ config CAN_CTUCANFD_PCI
->  	  PCIe board with PiKRON.com designed transceiver riser shield is avail=
-able
->  	  at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
-> =20
-> +config CAN_CTUCANFD_PLATFORM
-> +	tristate "CTU CAN-FD IP core platform (FPGA, SoC) driver"
-> +	depends on OF || COMPILE_TEST
-> +	help
-
-This is likely wrong, as it can enable config of CAN_CTUCANFD=3DM,
-CAN_CTUCANFD_PLATFORM=3Dy, right?
-
-> @@ -8,3 +8,6 @@ ctucanfd-y :=3D ctu_can_fd.o ctu_can_fd_hw.o
-> =20
->  obj-$(CONFIG_CAN_CTUCANFD_PCI) +=3D ctucanfd_pci.o
->  ctucanfd_pci-y :=3D ctu_can_fd_pci.o
-> +
-> +obj-$(CONFIG_CAN_CTUCANFD_PLATFORM) +=3D ctucanfd_platform.o
-> +ctucanfd_platform-y +=3D ctu_can_fd_platform.o
-
-Can you simply add right object files directly?
-
-Best regards,
-							Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---yrj/dFKFPuw6o+aM
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5FwSgAKCRAw5/Bqldv6
-8mBXAJ9Yxu3KDocmwXzDJ/UqfZEfhPYP5gCgl2ZrvqWyvIfc1oyXbUGzvVfe5YM=
-=ILp2
------END PGP SIGNATURE-----
-
---yrj/dFKFPuw6o+aM--
+Jason
