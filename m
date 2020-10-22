@@ -2,187 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 97C6C2964BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:41:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C40702964C6
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369747AbgJVSlT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:41:19 -0400
-Received: from mga06.intel.com ([134.134.136.31]:27153 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368421AbgJVSlS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:41:18 -0400
-IronPort-SDR: 9J9GskZZlJ07GIkXQvy1Ty13mvoRA6FYYKtPHktb3jOAOWZHEihf8TJgmOrCNSH06zksk2gpP2
- lponmlX5eVgQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="229209236"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="229209236"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga005.jf.intel.com ([10.7.209.41])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 11:41:17 -0700
-IronPort-SDR: 5N6qHqRd0Srw8wxTI9l3Qzjln4fXmAM8MqhQCD6g+lQYMIGAwxrpF9OhdnFblXa1f4Eo1TFilT
- tCjFbbNd6Ufw==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="534078453"
-Received: from chenyu-office.sh.intel.com ([10.239.158.173])
-  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 11:41:15 -0700
-Date:   Fri, 23 Oct 2020 02:43:37 +0800
-From:   Chen Yu <yu.c.chen@intel.com>
-To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][v2] PM / sysfs: Expose suspend resume driver flags in
- sysfs
-Message-ID: <20201022184336.GA8593@chenyu-office.sh.intel.com>
-References: <20201022085244.1860-1-yu.c.chen@intel.com>
- <20201022091707.GA1485535@kroah.com>
+        id S369513AbgJVSpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:45:39 -0400
+Received: from ale.deltatee.com ([204.191.154.188]:48334 "EHLO
+        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368848AbgJVSpi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 14:45:38 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
+        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
+        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
+        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+        List-Subscribe:List-Post:List-Owner:List-Archive;
+        bh=uf6C3j/ocrBTm97iqgRtQoheYZQH4nzs9ZR+u0LyQS0=; b=lq05AoxRq5ysREPtYrPSKtt+zZ
+        IiorJvq1mo/HpX8T89V7Nb7wfbLJ9rBkb/cKdr0iPL3Jn+727NrDZeVoUxsYiiz0dVZjydHb4q+/w
+        ZtVALKjISZkAdX0RdP4UNqc0tVK/iPwPzNSDv7LwCrL6ANRr05UISlOl3WWm+w+Tlzxx0Gj1j2Sty
+        T+/3ZsL7GHq4Bm6o/XdDcgXK+SpoGXvPiKkAEjfI7cvh3u4LyuNDrYfCF5CrYSm7HtMbtjLbvPhGe
+        CCZ/nsQ4kzykeOcvlWPsPUj0JAslOxvgXdTVNPJHkpeotI5iLuu2xXy+XuCG5r6BblFAsV1FdrEXv
+        6KitHdtQ==;
+Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
+        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <logang@deltatee.com>)
+        id 1kVfaa-0002PY-K8; Thu, 22 Oct 2020 12:45:29 -0600
+To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        linux-block@vger.kernel.org, Omar Sandoval <osandov@osandov.com>
+Cc:     Sagi Grimberg <sagi@grimberg.me>,
+        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
+        Stephen Bates <sbates@raithlin.com>
+References: <20201008164024.12546-1-logang@deltatee.com>
+From:   Logan Gunthorpe <logang@deltatee.com>
+Message-ID: <29f3dc94-50c3-1548-034e-09c5394ef781@deltatee.com>
+Date:   Thu, 22 Oct 2020 12:45:25 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022091707.GA1485535@kroah.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201008164024.12546-1-logang@deltatee.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 24.64.145.4
+X-SA-Exim-Rcpt-To: sbates@raithlin.com, Chaitanya.Kulkarni@wdc.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: logang@deltatee.com
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
+X-Spam-Level: 
+X-Spam-Status: No, score=-9.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
+        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH blktests v3 00/11] NVMe Target Passthru Block Tests
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
-On Thu, Oct 22, 2020 at 11:17:07AM +0200, Greg Kroah-Hartman wrote:
-> On Thu, Oct 22, 2020 at 04:52:44PM +0800, Chen Yu wrote:
-> > Currently there are 4 driver flags to control system suspend/resume
-> > behavior: DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
-> > DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME. Make these flags
-> > visible in sysfs as read-only to get a brief understanding of the
-> > expected behavior of each device during suspend/resume, so as to
-> > facilitate suspend/resume debugging/tuning.
-> > 
-> > For example:
-> > /sys/devices/pci0000:00/0000:00:15.1/power/driver_flags:4
-> > (DPM_FLAG_SMART_SUSPEND)
-> > 
-> > /sys/devices/pci0000:00/0000:00:07.3/power/driver_flags:5
-> > (DPM_FLAG_NO_DIRECT_COMPLETE | DPM_FLAG_SMART_SUSPEND)
-> > 
-> > Acked-by: Len Brown <len.brown@intel.com>
-> > Signed-off-by: Chen Yu <yu.c.chen@intel.com>
-> > ---
-> > v2: Adding description in Documentation/ABI/testing/sysfs-devices-power
-> >     according to Greg's suggestion.
-> > --
-> >  Documentation/ABI/testing/sysfs-devices-power | 11 +++++++
-> >  drivers/base/power/sysfs.c                    | 29 ++++++++++++++++++-
-> >  2 files changed, 39 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/Documentation/ABI/testing/sysfs-devices-power b/Documentation/ABI/testing/sysfs-devices-power
-> > index 1763e64dd152..8ea68639ab3a 100644
-> > --- a/Documentation/ABI/testing/sysfs-devices-power
-> > +++ b/Documentation/ABI/testing/sysfs-devices-power
-> > @@ -269,3 +269,14 @@ Description:
-> >  		the current runtime PM status of the device, which may be
-> >  		"suspended", "suspending", "resuming", "active", "error" (fatal
-> >  		error), or "unsupported" (runtime PM is disabled).
-> > +
-> > +What:		/sys/devices/.../power/driver_flags
-> > +Date:		October 2020
-> > +Contact:	Chen Yu <yu.c.chen@intel.com>
-> > +Description:
-> > +		The /sys/devices/.../driver_flags attribute contains the driver
-> > +		flags to control system suspend/resume. The flag is a combination
-> > +		of DPM_FLAG_NO_DIRECT_COMPLETE, DPM_FLAG_SMART_PREPARE,
-> > +		DPM_FLAG_SMART_SUSPEND and DPM_FLAG_MAY_SKIP_RESUME, or 0 if the
-> > +		driver has not set any flag. This attribute is read-only. If
-> > +		CONFIG_PM_ADVANCED_DEBUG is not set this attribute is empty.
-> 
-> You are now exporting random internal kernel values to userspace, so
-> they are now going to become a userspace API value that you must ensure
-> works for the next 20+ years.
-> 
-> Are you _SURE_ you want to do this?  What is this velue being exported
-> going to show you?  Who is going to use it?  For what?
-> 
-The value exposed can give the user(usually the developer who wants to
-speed up the suspend/resume process on this platform) a brief overview
-on each device. The 4 flags are actually suspend/resume speed up strategy.
-By checking what the current suspend/resume speed up strategy of each device
-is, we can infer if there any room to be improved in case some devices have
-not enabled any suspend/resume speed up strategy yet.
-> And if you are going to export it to userspace, you need to actually
-> give userspace the values so that it knows what they are, by moving them
-> to a uapi file.
-> 
-> And if you do that, you need to name them a lot better...
-> 
-If exposing them in sysfs is inappropriate as the cost of maintaining this
-item is considerable, maybe we can print this flag in power debug message during
-suspend/resume, via dynamic debug.
-> > diff --git a/drivers/base/power/sysfs.c b/drivers/base/power/sysfs.c
-> > index a1474fb67db9..48313a1040a5 100644
-> > --- a/drivers/base/power/sysfs.c
-> > +++ b/drivers/base/power/sysfs.c
-> > @@ -607,6 +607,13 @@ static ssize_t async_store(struct device *dev, struct device_attribute *attr,
-> >  
-> >  static DEVICE_ATTR_RW(async);
-> >  
-> > +static ssize_t driver_flags_show(struct device *dev,
-> > +				 struct device_attribute *attr, char *buf)
-> > +{
-> > +	return sysfs_emit(buf, "%x\n", dev->power.driver_flags);
-> > +}
-> > +static DEVICE_ATTR_RO(driver_flags);
-> > +
-> >  #endif /* CONFIG_PM_SLEEP */
-> >  #endif /* CONFIG_PM_ADVANCED_DEBUG */
-> >  
-> > @@ -691,6 +698,20 @@ static const struct attribute_group pm_qos_flags_attr_group = {
-> >  	.attrs	= pm_qos_flags_attrs,
-> >  };
-> >  
-> > +static struct attribute *pm_driver_flags_attrs[] = {
-> > +#ifdef CONFIG_PM_ADVANCED_DEBUG
-> > +#ifdef CONFIG_PM_SLEEP
-> > +	&dev_attr_driver_flags.attr,
-> > +#endif
-> > +#endif
-> 
-> As this is for debugging only, why is it in sysfs and not debugfs?
-> 
-> 
-Because
-1. There seems to be no proper directory for per-device item in debugfs.
-2. There seems to be other power related debug items in this directory.
-> > +	NULL,
-> > +};
-> > +
-> > +static const struct attribute_group pm_driver_flags_attr_group = {
-> > +	.name	= power_group_name,
-> > +	.attrs	= pm_driver_flags_attrs,
-> > +};
-> > +
-> >  int dpm_sysfs_add(struct device *dev)
-> >  {
-> >  	int rc;
-> > @@ -719,11 +740,17 @@ int dpm_sysfs_add(struct device *dev)
-> >  		if (rc)
-> >  			goto err_wakeup;
-> >  	}
-> > -	rc = pm_wakeup_source_sysfs_add(dev);
-> > +	rc = sysfs_merge_group(&dev->kobj, &pm_driver_flags_attr_group);
-> 
-> Ick, really?  Why not make it part of the other attribute group?  Why
-> make it a stand-alone one?  This feels like extra uneeded work if you
-> really are going to do this.
-Ah, yes, it should be put into existing attribute group which makes it
-much simpler.
 
-But since you mentioned that maintaining this item in sysfs looks overkill,
-we can put this flags information in dynamic debug log, which only includes
-one line of code change, although the disadvantage is that we will need to
-do a real suspend/resume cycle to get driver_flags to be printed.
-thanks,
-Chenyu
+On 2020-10-08 10:40 a.m., Logan Gunthorpe wrote:
+> Hi,
 > 
-> thanks,
-> 
-> greg k-h
+> This series adds blktests for the nvmet passthru feature that was merged
+> for 5.9. It's been reconciled with Sagi's blktest series that Omar
+> recently merged.
+
+Bump. This has been around for a while now. Omar, can you please
+consider picking this up?
+
+Thanks,
+
+Logan
