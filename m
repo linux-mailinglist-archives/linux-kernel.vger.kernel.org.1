@@ -2,106 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2A2312964AD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:31:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1A1372964B0
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:31:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369696AbgJVSbP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:31:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42716 "EHLO
+        id S369704AbgJVSbm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:31:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42788 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2902394AbgJVSbO (ORCPT
+        with ESMTP id S369326AbgJVSbl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:31:14 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 61F27C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:31:14 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id b11so1435853qvr.9
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 11:31:14 -0700 (PDT)
+        Thu, 22 Oct 2020 14:31:41 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 850A9C0613CE;
+        Thu, 22 Oct 2020 11:31:41 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id j8so2645617ilk.0;
+        Thu, 22 Oct 2020 11:31:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=aYlAeZhqKaRNyS3SekTyRKmiadvhR+J+xxu+zks2yzM=;
-        b=SGBkvSKMMmJQMrZ01OSTFiEhpJ02DhOZA+Ue6BRyeAU09VrB/HGHe2qWivLDSvMnKf
-         dpwvedVTZ8ugXE+Sxk+vXxXvpKgzliUd80cAArsrOhvQ/6GSTxG+sgnWD2rZkCq7iIoU
-         LrihMPSo1xbc5+uZTVnJW+1Q+t4BXRyudrCuXtJSwxZpOKgNiPisU2lmU0R4YeLtsNvd
-         bbX+c4K3VaqR/UkS8VW4xEmz1S1or0Nh50wv4Jwzpp8QLrWZwna/rO0KXRNQZOG44SfH
-         LL+mNNZu3YUsMmHWQEUBSHXIs6tsId+QRKjF1U3qfgOMe/LfTc8NdjV5muvaqO9ovvZJ
-         DaFA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=tclO6iWsKMS0iQgtui86k6EcK3JiEJEq+CF6ReqqBP0=;
+        b=f0ed5Wsn6FuyNQPVhMCZAk+NxRiU/Dp+c+mjzUxc9yHQDfaFF0hOOzjsjrTtiCXA8V
+         lWvrTuBfnEjdC4QvAnQAeNfEjiIPijv1fTzIsfd+QOPUvZEGGJW78jvse8KbfEkbNcFi
+         Udn5os+30NfWu29ukdpqqJZA9oq3aLyKckQZukCrD9xDi5hH4fAhi3NjvrmEoQKShjpu
+         h4X6oLArPw4QA7XVBagUfiqD7JBJFOQ8nopuizjaaZeO467qM1yZeSoP3zwrq1VdpVH4
+         pDSJMagOCVGEZquKaETKXSF5Vm3xlwFZ39GF7WMRtFnXjLo9OfLVolM246Ixg7z92uQA
+         jGYw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=aYlAeZhqKaRNyS3SekTyRKmiadvhR+J+xxu+zks2yzM=;
-        b=YdqaRBSM2qfPXOih3ZjH26os52XP437n2/Ctc+uDdtxzwOlpfm7IlJKqzD/pPFNQwx
-         u8R3zDYzDo8mYVLx9O2YyN5JUgSqq/AyJuh2KJuxf3FpIfwph3bUXhl6leZrI47Hf8nH
-         0jyV/lfvV9DU0cg6q68MURruvSZMz0LXYjbuNlraWhBhIz9010Yv1pG3MwRVTQymskg9
-         1xJJKIfD76ym5jcEVoK0cxhggjxa3oxxdngaj/6TDTr/581Zfb7qxgmwN7rYwZh73AcS
-         IvIAa6uLWHqXjicGVZXaU+P3ETop72pvi3Ujvb6Rey1xIHIel2QxSrUk78GtgkdwokSS
-         r3bg==
-X-Gm-Message-State: AOAM531xSLTYsYNz8bJhNrRcjkh6TM4SAGkXzFE6BZfITnOKmvAToQCZ
-        wY9JrcLc8WfsPrF/EoB9qruvEA==
-X-Google-Smtp-Source: ABdhPJwU15HFbWZCdIdGyTOTI+H1tkJwZxga47ZMAwkEINW6Gi3wbOMcLkfkG4RdF3tZTnaieC4C5Q==
-X-Received: by 2002:ad4:4eaf:: with SMTP id ed15mr3680745qvb.40.1603391473647;
-        Thu, 22 Oct 2020 11:31:13 -0700 (PDT)
-Received: from localhost ([2620:10d:c091:480::1:c400])
-        by smtp.gmail.com with ESMTPSA id r17sm1728530qtc.22.2020.10.22.11.31.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 11:31:12 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 14:29:34 -0400
-From:   Johannes Weiner <hannes@cmpxchg.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
-Message-ID: <20201022182934.GA494712@cmpxchg.org>
-References: <20201022151844.489337-1-hannes@cmpxchg.org>
- <db4f86f30726a1a33c868155b4c681ac25569179.camel@fb.com>
- <004fe66ee1d111ec006dd065b9bed5fdcfdaad01.camel@surriel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=tclO6iWsKMS0iQgtui86k6EcK3JiEJEq+CF6ReqqBP0=;
+        b=g8v6ehWe/NvZKrqtw0+cQ+CwJBlsbppfG3MPaz1PyA6kNWsLW0madxxNDFqyUv8Hsp
+         AMLnDwYBUlS6cPqBSiF+VFszhWoUK2olfTBNUTQfCQQWoGdkiPCfR2vgz6EbPO+U7uwe
+         dfhmOdZ2wXJd+fEcuC/TfUvYY1j0qFRRd+tkHzdCfx+K0OgC9SIDEtBfqlwoTLwFT5un
+         JAcddFva70IKYYj5GtaeCQeZotMyMu3qrUrHNyNpjRHuidCV474r7yonH7MqmWebL1Kc
+         2c5JNRxOs/FBLgTt5gdT1qz6uIHqvQfp/3/xhTdZ+bE5UpX+8mmwHO8DUkD6/YYQttQt
+         r7PQ==
+X-Gm-Message-State: AOAM5330Aghi8z1UG9q+nSybYb9htVUK3EfdS93YJZcwyS9tCKYbikQA
+        +wtRF0AGxE34mAa8fk7PdnBOJQ0tpE0iYDY+mfI=
+X-Google-Smtp-Source: ABdhPJzKNFfW+WWsjG+rfN4KqSYnV2UsIOV1hbgv5WbaPwUV1x3VYG7uISprBk2hKa+t11V47HWYVCPscWVboqS7e3I=
+X-Received: by 2002:a05:6e02:52c:: with SMTP id h12mr2817480ils.196.1603391500640;
+ Thu, 22 Oct 2020 11:31:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <004fe66ee1d111ec006dd065b9bed5fdcfdaad01.camel@surriel.com>
+References: <20201022171639.773702-1-aford173@gmail.com> <5d17f3de-6864-c8fb-6413-24de943df1fd@denx.de>
+In-Reply-To: <5d17f3de-6864-c8fb-6413-24de943df1fd@denx.de>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Thu, 22 Oct 2020 13:31:29 -0500
+Message-ID: <CAHCN7x+66Ziza0G2Q6iho9z3RKsiw9=PyqoCayXCXyAONcDLow@mail.gmail.com>
+Subject: Re: [PATCH] arm64: dts: imx8mm: Add GPU node
+To:     Marek Vasut <marex@denx.de>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Herring <robh+dt@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:57:55PM -0400, Rik van Riel wrote:
-> On Thu, 2020-10-22 at 12:49 -0400, Rik van Riel wrote:
-> > On Thu, 2020-10-22 at 11:18 -0400, Johannes Weiner wrote:
-> > 
-> > > index e80aa9d2db68..334ce608735c 100644
-> > > --- a/mm/filemap.c
-> > > +++ b/mm/filemap.c
-> > > @@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct
-> > > address_space *mapping,
-> > >  	if (PageSwapBacked(page)) {
-> > >  		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
-> > >  		if (PageTransHuge(page))
-> > > -			__dec_node_page_state(page, NR_SHMEM_THPS);
-> > > +			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
-> > >  	} else if (PageTransHuge(page)) {
-> > > -		__dec_node_page_state(page, NR_FILE_THPS);
-> > > +		__dec_lruvec_page_state(page, NR_FILE_THPS);
-> > >  		filemap_nr_thps_dec(mapping);
-> > >  	}
-> > 
-> > This may be a dumb question, but does that mean the
-> > NR_FILE_THPS number will no longer be visible in
-> > /proc/vmstat or is there some magic I overlooked in
-> > a cursory look of the code?
-> 
-> Never mind, I found it a few levels deep in
-> __dec_lruvec_page_state.
+On Thu, Oct 22, 2020 at 1:17 PM Marek Vasut <marex@denx.de> wrote:
+>
+> On 10/22/20 7:16 PM, Adam Ford wrote:
+> > According to the documentation from NXP, the i.MX8M Nano has a
+> > Vivante GC7000 Ultra Lite as its GPU core.
+> >
+> > With this patch, the Etnaviv driver presents the GPU as:
+> >    etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+> >
+> > It uses the GPCV2 controller to enable the power domain for the GPU.
+>
+> Subject should say 8mn , not 8mm .
 
-No worries, it's a legit question.
+ugh.. My mistake.  I'll submit a V2 once other have had a chance to
+give some feedback.
 
-lruvec is at the intersection of node and memcg, so I'm just moving
-the accounting to a higher-granularity function that updates all
-layers, including the node.
+Maybe NXP can comment on the dialog below.
 
-> Reviewed-by: Rik van Riel <riel@surriel.com>
+>
+> Are the assigned-clock-rates correct ?
 
-Thanks!
+I used the assigned clock rates from the vendor kernel, with the
+exception of running at 400MHz instead of 600MHz.  According to the
+datasheet, the GPU clock needs to be 400MHZ to run at 0.85V. The
+600MHz operating point for the GPU requires a 0.95V operating point.
+Since the default operating point for the Nano shows 0.85V, I left the
+GPU clock lower to match the normal operating speed.  This varies a
+bit from the vendor kernel, but their kernel is also showing a 0.95V
+operating point, so I think that's why they are specifying a 600MHz
+operating point.
+
+On the Beacon embedded board, we're driving the LPDDR to 800MHz which
+requires the ARM to run at .95V.   I was able to override the
+assigned-clock rates for my board to run at 600MHz, and change the ARM
+operating point to .95V to meet the spec.
+
+My intent was to use the defaults and let the board files override
+them.   If you want, I can try to look through the board files to see
+what operating point their using and propose updates to those
+respective device trees to address the clocks on those boards.
+
+adam
