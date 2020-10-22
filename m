@@ -2,169 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 671A6295C65
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:05:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8A59B295C67
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:05:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896305AbgJVKFs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:05:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47086 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896255AbgJVKFr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:05:47 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B240F223BF;
-        Thu, 22 Oct 2020 10:05:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603361146;
-        bh=RdXIhAzgvdf9lHDSgJdqMCuGQDCw4QI27Nnn5KK2Imc=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=0XQMNgUwwyxLxH1zOkfveBbzM4nT9psGhxJ4v6GJes0/S8AKLHtj1RG2Y0wGMVbz/
-         o35PmcaIlFln9qZyLP8opXKrJFQFn0SOEWwMHzlZocxpQNC3h3ze8GKEsNEuAnbCBK
-         gYSfqKiAOjMZwVfNYyjeu0F/sSTG3JxfyGgCHH+U=
-Date:   Thu, 22 Oct 2020 12:05:41 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Sandeep Singh <Sandeep.Singh@amd.com>
-cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, srinivas.pandruvada@linux.intel.com,
-        jic23@kernel.org, linux-iio@vger.kernel.org, hdegoede@redhat.com,
-        Nehal-bakulchandra.Shah@amd.com, andy.shevchenko@gmail.com,
-        mail@richard-neumann.de, m.felsch@pengutronix.de,
-        rdunlap@infradead.org, Shyam-sundar.S-k@amd.com
-Subject: Re: [PATCH v8 0/4] SFH: Add Support for AMD Sensor Fusion Hub
-In-Reply-To: <20201009200138.1847317-1-Sandeep.Singh@amd.com>
-Message-ID: <nycvar.YFH.7.76.2010221205110.18859@cbobk.fhfr.pm>
-References: <20201009200138.1847317-1-Sandeep.Singh@amd.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S2896311AbgJVKFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:05:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48942 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896255AbgJVKFv (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:05:51 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB3BBC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:05:50 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id j7so645793pgk.5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 03:05:50 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=9SsBXZDSBj98gvytWEkQs58O58kWQRuE5OR0cysVKT0=;
+        b=nb58Ogkumh/AWmt0Eft/7kqaafJ5Nn0Z2Chfc/EMjB37sp2/kmu3f+0LWvZdByzpvq
+         GjggOSLsJZfnMczsPb9JvNQBWhL0YlsQjBUwCfCCh2iKGlODFhGESK4PoUXZ++1TWjm2
+         Y4GJ78oYUDsW7nR4IeYgbpVzep5aTnjXCKt0Oa6MSo+vjXR+xxdga7bunLNoXQI3yM7L
+         lnqP4Xdgi+udE6dm1PIKmwocnTaxNEBQiwxWRW+p9F13vucfQ5WEYFEjTB5Jfyq5OLnu
+         fSmIgNSBeHgihvnBt82yYYoX066iqtj5GNs1t7gRDD5ax//Y73JD7dUhXUkd2nZ0BPrg
+         ZqPA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=9SsBXZDSBj98gvytWEkQs58O58kWQRuE5OR0cysVKT0=;
+        b=ngTwW3FDk2bt1RGpFWeiIAbbvnow0/9S3B/v6ElfoFIiTz6rUqy1c4GvRkvOU7UrIF
+         UFwGMj24v5EJdEbUGvnQHk5DZeOUBU4SE9dKVYFsPsc36DZGBv5KepCpWc1Mz6SmZgvA
+         hGbApPbUqZHvqtrMGAw4KPbYCpSiVPjlmXszl9ui2daXkBb++eYBldBy+znZYZzlj4KY
+         0KKrZAiggtj0bDfD+5hBxVGbcfOgdW4xbl2IuB1jklLF8bbsXRE8VU58+9o5iAH9gmsU
+         Nfcf41FK/t6X0Mls6w8+duY1+MGSmnwphy71nmsvjSrwiR4la/9WyE4mfrlLRJmeA+hn
+         7J7g==
+X-Gm-Message-State: AOAM530qGw63HBbdBD24PXAZ+NuH6nUflbxfwMZ1q4V4T22AQBuI9V8m
+        pXE+72LJ/Qbt9W6A637beMzU0Q==
+X-Google-Smtp-Source: ABdhPJwRlAi2VPOFTRdwX0uwoS4bE4j+P41/Sc7/DDSmnv5tg2me6pfLreH3Gkh3MIukMQQZI9G05w==
+X-Received: by 2002:a63:ed15:: with SMTP id d21mr1669802pgi.348.1603361150372;
+        Thu, 22 Oct 2020 03:05:50 -0700 (PDT)
+Received: from [10.2.24.220] ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id f7sm1672861pfd.111.2020.10.22.03.05.46
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 22 Oct 2020 03:05:49 -0700 (PDT)
+Subject: Re: [External] Re: [PATCH] nvme-rdma: handle nvme completion data
+ length
+To:     Chao Leng <lengchao@huawei.com>
+Cc:     kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, axboe@fb.com,
+        linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
+        Yibo Zhu <zhuyibo@bytedance.com>
+References: <20201022083850.1334880-1-pizhenwei@bytedance.com>
+ <04a97f73-ba13-a4b5-3ea4-fc438391507e@huawei.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <1c78dbe5-47a4-1590-e064-681cba5fb01d@bytedance.com>
+Date:   Thu, 22 Oct 2020 18:05:45 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <04a97f73-ba13-a4b5-3ea4-fc438391507e@huawei.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 10 Oct 2020, Sandeep Singh wrote:
+On 10/22/20 5:55 PM, Chao Leng wrote:
+> 
+> 
+> On 2020/10/22 16:38, zhenwei pi wrote:
+>> Hit a kernel warning:
+>> refcount_t: underflow; use-after-free.
+>> WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
+>>
+>> RIP: 0010:refcount_warn_saturate+0xd9/0xe0
+>> Call Trace:
+>>   <IRQ>
+>>   nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
+>>   __ib_process_cq+0x76/0x150 [ib_core]
+>>   ...
+>>
+>> The reason is that a zero bytes message received from target, and the
+>> host side continues to process without length checking, then the
+>> previous CQE is processed twice.
+>>
+>> Handle data length, ignore zero bytes message, and try to recovery for
+>> corrupted CQE case.
+>>
+>> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+>> ---
+>>   drivers/nvme/host/rdma.c | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+>> index 9e378d0a0c01..9f5112040d43 100644
+>> --- a/drivers/nvme/host/rdma.c
+>> +++ b/drivers/nvme/host/rdma.c
+>> @@ -1767,6 +1767,17 @@ static void nvme_rdma_recv_done(struct ib_cq 
+>> *cq, struct ib_wc *wc)
+>>           return;
+>>       }
+>> +    if (unlikely(!wc->byte_len)) {
+>> +        /* zero bytes message could be ignored */
+>> +        return;
+>> +    } else if (unlikely(wc->byte_len < len)) {
+>> +        /* Corrupted completion, try to recovry */
+>> +        dev_err(queue->ctrl->ctrl.device,
+>> +            "Unexpected nvme completion length(%d)\n", wc->byte_len);
+>> +        nvme_rdma_error_recovery(queue->ctrl);
+>> +        return;
+>> +    }
+> !wc->byte_len and wc->byte_len < len may be the same type of anomaly.
+> Why do different error handling?
+> In which scenario zero bytes message received from target? fault inject 
+> test or normal test/run?
 
-> From: Sandeep Singh <sandeep.singh@amd.com>
-> 
-> AMD SFH(Sensor Fusion Hub) is HID based driver.SFH FW is part of MP2
-> processor (MP2 which is an ARM core connected to x86 for processing 
-> sensor data) and it runs on MP2 where in the driver resides on X86.
-> The driver functionalities are divided into three parts:-
-> 
-> 1: amd-mp2-pcie:- This part of the module will communicate with MP2
-> 		  firmware. MP2 which is exposed as a PCI device to the 
-> 		  X86, uses mailboxes to talk to MP2 firmware to 
-> 		  send/receive commands.
-> 2: Client Layer:- This part of the driver will use DRAM  data and convert
->                   the  data into HID format based on HID reports.
-> 3: Transport layer :- This part of the driver the will communicate with HID
->                   core.Communication between devices and HID core is
->                   mostly done via HID reports
-> 
-> In terms of architecture, it resembles like ISH (Intel Integrated Sensor
-> Hub). However the major difference is all the hid reports are generated
-> as part of the kernel driver.
-> 
-> AMD SFH is integrated as a part of SoC, starting from 17h family of
-> processors. The solution is working well on several OEM products.
-> AMD SFH uses HID over PCIe bus.
-> 
-> Changes since v1:
->         -> Fix auto build test warnings
->         -> Fix smatch warnings "possible memory leak" -Reported by Dan
-> carpenter
-> 
-> Links of the review comments for v1:
->         [1] https://patchwork.kernel.org/patch/11325163/
->         [2] https://patchwork.kernel.org/patch/11325167/
->         [3] https://patchwork.kernel.org/patch/11325171/
->         [4] https://patchwork.kernel.org/patch/11325187/
-> 
-> Changes since v2:
-> 	-> Debugfs divided into another patch
->         -> Fix some cosmetic changes
->         -> Fix for review comments
->            Reported and Suggested by:-  Srinivas Pandruvada
-> 
-> Links of the review comments for v2:
->         [1] https://patchwork.kernel.org/patch/11355491/
->         [2] https://patchwork.kernel.org/patch/11355495/
->         [3] https://patchwork.kernel.org/patch/11355499/
->         [4] https://patchwork.kernel.org/patch/11355503/
-> 
-> Changes since v3:
->         -> Removed debugfs suggested by - Benjamin Tissoires
-> 
-> Links of the review comments for v3:
->         [1] https://lkml.org/lkml/2020/2/11/1256
->         [2] https://lkml.org/lkml/2020/2/11/1257
->         [3] https://lkml.org/lkml/2020/2/11/1258
->         [4] https://lkml.org/lkml/2020/2/11/1259
->         [5] https://lkml.org/lkml/2020/2/11/1260
-> 
-> Changes since v4:
->         -> use PCI managed calls.
->         -> use kernel APIs
-> 
-> Links of the review comments for v4:
->         [1] https://lkml.org/lkml/2020/2/26/1360
->         [2] https://lkml.org/lkml/2020/2/26/1361
->         [3] https://lkml.org/lkml/2020/2/26/1362
->         [4] https://lkml.org/lkml/2020/2/26/1363
->         [5] https://lkml.org/lkml/2020/2/27/1
-> Changes since v5
->         -> Fix for review comments by: Andy Shevchenko
->         -> Fix for indentations erros, NULL pointer,Redundant assignment
->         -> Drop LOCs in many location
->         -> Create as a single driver module instead of two modules.
-> 
-> Links of the review comments for v5:
->         [1] https://lkml.org/lkml/2020/5/29/589
->         [2] https://lkml.org/lkml/2020/5/29/590
->         [3] https://lkml.org/lkml/2020/5/29/606
->         [4] https://lkml.org/lkml/2020/5/29/632
->         [5] https://lkml.org/lkml/2020/5/29/633
-> 
-> Changes since v6
->         -> fix Kbuild warning "warning: ignoring return value of
-> 	   'pcim_enable_device',
->         -> Removed select HID and add depends on HID
-> 
-> Links of the review comments for v6:
->         [1] https://lkml.org/lkml/2020/8/9/58
->         [2] https://lkml.org/lkml/2020/8/9/59
->         [3] https://lkml.org/lkml/2020/8/9/125
->         [4] https://lkml.org/lkml/2020/8/9/61
->         [5] https://lkml.org/lkml/2020/8/9/91
-> 
-> Changes since v7
->         -> Add Co-deveploed-by
->         -> Build the Documentation
->         -> Fix cosmatic changes
->         -> Add init function inside probe function
->         -> Use devm_add_action_or_reset() to avoids the remove()
-> 	   callback.
-> 
-> Links of the review comments for v7:
->         [1] https://lkml.org/lkml/2020/8/10/1221
->         [2] https://lkml.org/lkml/2020/8/10/1222
->         [3] https://lkml.org/lkml/2020/8/10/1223
->         [4] https://lkml.org/lkml/2020/8/10/1224
->         [5] https://lkml.org/lkml/2020/8/10/1225
-> 
-> Sandeep Singh (4):
->   SFH: Add maintainers and documentation for AMD SFH based on HID
->     framework
->   SFH: PCIe driver to add support of AMD sensor fusion hub
->   SFH:Transport Driver to add support of AMD Sensor Fusion Hub (SFH)
->   SFH: Create HID report to Enable support of AMD sensor fusion Hub
->     (SFH)
+Zero bytes message could be used as transport layer keep alive mechanism 
+(I's also developing target side transport layer keep alive now. To 
+reclaim resource, target side needs to close dead connections even kato 
+is set as 0).
 
-I have now applied the series to hid.git#for-5.11/amd-sfh-hid. Thanks for 
-all the efforts in tidying this up,
+>> +
+>>       ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
+>>       /*
+>>        * AEN requests are special as they don't time out and can
+>>
 
 -- 
-Jiri Kosina
-SUSE Labs
-
+zhenwei pi
