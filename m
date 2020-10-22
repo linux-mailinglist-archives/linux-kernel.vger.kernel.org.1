@@ -2,87 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 02BB1295C21
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:42:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EC8295C2A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:47:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895909AbgJVJmf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:42:35 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:10582 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895869AbgJVJme (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:42:34 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603359754; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=8aaAMdYqs+upyudwyIYgvScBv6SYP1Mn3fkUIX2rz98=; b=KTJDVHfNjGAXFp5WCQMQx9KhEmS7NAjxWRY8Y4DBl42Z4OrY4Lqynwfao2OB2EQ2l1bJODv2
- ClKr55NmZfj98OFGWktfDdTAQHynwb8EN7k5ICAtxJQ8Myd6ye8sUsWaUD8PRGk8f7QvByw/
- xZJChCdwsq4LoHQSg2p+eZirRnQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f915409a03b63d6736f809c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 09:42:33
- GMT
-Sender: sallenki=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id A132EC433CB; Thu, 22 Oct 2020 09:42:33 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from sallenki-linux.qualcomm.com (unknown [202.46.22.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: sallenki)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 9AE8EC433CB;
-        Thu, 22 Oct 2020 09:42:30 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 9AE8EC433CB
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=sallenki@codeaurora.org
-From:   Sriharsha Allenki <sallenki@codeaurora.org>
-To:     heikki.krogerus@linux.intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jackp@codeaurora.org, mgautam@codeaurora.org,
-        Sriharsha Allenki <sallenki@codeaurora.org>,
-        stable@vger.kernel.org
-Subject: [PATCH] usb: typec: Prevent setting invalid opmode value
-Date:   Thu, 22 Oct 2020 15:12:14 +0530
-Message-Id: <1603359734-2931-1-git-send-email-sallenki@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S2896123AbgJVJrH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:47:07 -0400
+Received: from lhrrgout.huawei.com ([185.176.76.210]:2998 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2509987AbgJVJrG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:47:06 -0400
+Received: from lhreml724-chm.china.huawei.com (unknown [172.18.7.107])
+        by Forcepoint Email with ESMTP id 5C76F6BEFE8400EDCBF0;
+        Thu, 22 Oct 2020 10:47:05 +0100 (IST)
+Received: from [10.47.5.196] (10.47.5.196) by lhreml724-chm.china.huawei.com
+ (10.201.108.75) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.1.1913.5; Thu, 22 Oct
+ 2020 10:47:03 +0100
+Subject: Re: [PATCH 1/2] perf jevents: Tidy error handling
+To:     kajoljain <kjain@linux.ibm.com>, Namhyung Kim <namhyung@kernel.org>
+CC:     Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>, Ian Rogers <irogers@google.com>,
+        Yao Jin <yao.jin@linux.intel.com>, <yeyunfeng@huawei.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Linuxarm <linuxarm@huawei.com>
+References: <1603121908-53543-1-git-send-email-john.garry@huawei.com>
+ <1603121908-53543-2-git-send-email-john.garry@huawei.com>
+ <CAM9d7cg0j3j-EXY2MULYWpyMri5_GxBnHVNvrHN4UG0pwsa=mw@mail.gmail.com>
+ <eb3073cd-7184-58f3-f03f-b094abaff007@linux.ibm.com>
+ <3fda581b-3f2b-5dce-b388-916117d20e7c@huawei.com>
+ <7e7c5aeb-5c9b-727a-d605-e871007af34a@linux.ibm.com>
+From:   John Garry <john.garry@huawei.com>
+Message-ID: <348855b5-d109-3e30-a669-d4e2c766ad30@huawei.com>
+Date:   Thu, 22 Oct 2020 10:43:48 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.1.2
+MIME-Version: 1.0
+In-Reply-To: <7e7c5aeb-5c9b-727a-d605-e871007af34a@linux.ibm.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.47.5.196]
+X-ClientProxiedBy: lhreml706-chm.china.huawei.com (10.201.108.55) To
+ lhreml724-chm.china.huawei.com (10.201.108.75)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Setting opmode to invalid values would lead to a
-paging fault failure when there is an access to the
-power_operation_mode.
+On 21/10/2020 14:37, kajoljain wrote:
+>>> May be we can use similar checks:
+>>>
+>>> if( verbose)
+>>>     pr_info("%s: Error walking file tree %s%s\n", prog, ldirname,err_string_ext);
+>>> if(rc > 0)
+>>>      empty_map = 1;
+>>> else
+>>>     ret = 1;
+>>>
+>> Not that it matters much, this logic is slightly different for verbose set and rc < 0. I don't mind going with that, so let me know.
+> Yes right. Sure if required we can made changes on these checks and include appropriate condition for verbose set and rc < 0. Seems fine to me.
 
-Prevent this by checking the validity of the value
-that the opmode is being set.
+I will just revert to the original logic for now. Someone can try to 
+change later if they want.
 
-Cc: <stable@vger.kernel.org>
-Fixes: fab9288428ec ("usb: USB Type-C connector class")
-Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
----
- drivers/usb/typec/class.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
-index 35eec70..63efe16 100644
---- a/drivers/usb/typec/class.c
-+++ b/drivers/usb/typec/class.c
-@@ -1427,7 +1427,8 @@ void typec_set_pwr_opmode(struct typec_port *port,
- {
- 	struct device *partner_dev;
- 
--	if (port->pwr_opmode == opmode)
-+	if ((port->pwr_opmode == opmode) || (opmode < TYPEC_PWR_MODE_USB) ||
-+						(opmode > TYPEC_PWR_MODE_PD))
- 		return;
- 
- 	port->pwr_opmode = opmode;
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum, a Linux Foundation Collaborative Project
-
+Thanks
