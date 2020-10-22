@@ -2,194 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C99A295BB2
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:25:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F479295BBE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:27:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895888AbgJVJZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:25:43 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:20603 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2509389AbgJVJZk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:25:40 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603358738;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=V4iDiOcDlfxoeiFCe52LA34QHP6qFIj9VPFt7sZ2z60=;
-        b=FzG3xyvV5sEuMIvBqLfR0aLiX/bg5OXRbORAsMjGuGscXZ8Epr1kxoUlKiWOn9y6tcxIhJ
-        PpFPcdKcj4YhExbiH8ybCGWwMCD+4Vbp9Yy08/DP3WD+6WBsSumLkJZqQFNC0Xtm12DW+e
-        x19S0MGX8WEC3GHjXeyWmvrt+XxG1qo=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-530-7idT9gG9OaKZttwlpdSKTg-1; Thu, 22 Oct 2020 05:25:34 -0400
-X-MC-Unique: 7idT9gG9OaKZttwlpdSKTg-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3BDEB804B60;
-        Thu, 22 Oct 2020 09:25:31 +0000 (UTC)
-Received: from [10.36.113.152] (ovpn-113-152.ams2.redhat.com [10.36.113.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 3EFBD60BFA;
-        Thu, 22 Oct 2020 09:25:26 +0000 (UTC)
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-From:   David Hildenbrand <david@redhat.com>
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <20200925045146.1283714-1-hch@lst.de>
- <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
- <20201021233914.GR3576660@ZenIV.linux.org.uk>
- <20201022082654.GA1477657@kroah.com>
- <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
-Date:   Thu, 22 Oct 2020 11:25:25 +0200
+        id S2895901AbgJVJ1P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:27:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:52266 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2507371AbgJVJ1O (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:27:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C4C11D6E;
+        Thu, 22 Oct 2020 02:27:13 -0700 (PDT)
+Received: from [10.57.13.45] (unknown [10.57.13.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 817E23F66E;
+        Thu, 22 Oct 2020 02:27:11 -0700 (PDT)
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+To:     Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        mike.leach@linaro.org, coresight@lists.linaro.org,
+        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+ <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+ <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
+ <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
+ <8affc09d4045812e2f5a065695b375de@codeaurora.org>
+ <0ee3566e50143bac5b662b2edf551b89@codeaurora.org>
+ <fdee606e-a045-e252-0823-14bdbef779c0@arm.com>
+ <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
+From:   Suzuki Poulose <suzuki.poulose@arm.com>
+Message-ID: <fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com>
+Date:   Thu, 22 Oct 2020 10:27:10 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 11:19, David Hildenbrand wrote:
-> On 22.10.20 11:01, Greg KH wrote:
->> On Thu, Oct 22, 2020 at 10:48:59AM +0200, David Hildenbrand wrote:
->>> On 22.10.20 10:40, David Laight wrote:
->>>> From: David Hildenbrand
->>>>> Sent: 22 October 2020 09:35
->>>>>
->>>>> On 22.10.20 10:26, Greg KH wrote:
->>>>>> On Thu, Oct 22, 2020 at 12:39:14AM +0100, Al Viro wrote:
->>>>>>> On Wed, Oct 21, 2020 at 06:13:01PM +0200, Greg KH wrote:
->>>>>>>> On Fri, Sep 25, 2020 at 06:51:39AM +0200, Christoph Hellwig wrote:
->>>>>>>>> From: David Laight <David.Laight@ACULAB.COM>
+On 10/22/20 9:02 AM, Sai Prakash Ranjan wrote:
+> On 2020-10-21 15:38, Suzuki Poulose wrote:
+>> On 10/21/20 8:29 AM, Sai Prakash Ranjan wrote:
+>>> On 2020-10-20 21:40, Sai Prakash Ranjan wrote:
+>>>> On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
+>>>>> On 2020-10-14 18:46, Suzuki K Poulose wrote:
+>>>>>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
+>>>>>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
+>>>>>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>>>>>>>>> There was a report of NULL pointer dereference in ETF enable
+>>>>>>>>> path for perf CS mode with PID monitoring. It is almost 100%
+>>>>>>>>> reproducible when the process to monitor is something very
+>>>>>>>>> active such as chrome and with ETF as the sink and not ETR.
+>>>>>>>>> Currently in a bid to find the pid, the owner is dereferenced
+>>>>>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>>>>>>>>> owner being NULL, we get a NULL pointer dereference.
 >>>>>>>>>
->>>>>>>>> This lets the compiler inline it into import_iovec() generating
->>>>>>>>> much better code.
->>>>>>>>>
->>>>>>>>> Signed-off-by: David Laight <david.laight@aculab.com>
->>>>>>>>> Signed-off-by: Christoph Hellwig <hch@lst.de>
->>>>>>>>> ---
->>>>>>>>>  fs/read_write.c | 179 ------------------------------------------------
->>>>>>>>>  lib/iov_iter.c  | 176 +++++++++++++++++++++++++++++++++++++++++++++++
->>>>>>>>>  2 files changed, 176 insertions(+), 179 deletions(-)
+>>>>>>>>> Looking at the ETR and other places in the kernel, ETF and the
+>>>>>>>>> ETB are the only places trying to dereference the task(owner)
+>>>>>>>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>>>>>>>> sched_in path as in the call trace. Owner(task) is NULL even
+>>>>>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>>>>>>>>> cache the PID in alloc_buffer() callback and it is done as part
+>>>>>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we never
+>>>>>>>>> dereference this NULL pointer and we are safe. So lets do the
 >>>>>>>>
->>>>>>>> Strangely, this commit causes a regression in Linus's tree right now.
+>>>>>>>> The patch is necessary to fix some of the issues. But I feel it is
+>>>>>>>> not complete. Why is it safe earlier and not later ? I believe 
+>>>>>>>> we are
+>>>>>>>> simply reducing the chances of hitting the issue, by doing this 
+>>>>>>>> earlier than
+>>>>>>>> later. I would say we better fix all instances to make sure that 
+>>>>>>>> the
+>>>>>>>> event->owner is valid. (e.g, I can see that the for kernel events
+>>>>>>>> event->owner == -1 ?)
 >>>>>>>>
->>>>>>>> I can't really figure out what the regression is, only that this commit
->>>>>>>> triggers a "large Android system binary" from working properly.  There's
->>>>>>>> no kernel log messages anywhere, and I don't have any way to strace the
->>>>>>>> thing in the testing framework, so any hints that people can provide
->>>>>>>> would be most appreciated.
+>>>>>>>> struct task_struct *tsk = READ_ONCE(event->owner);
+>>>>>>>>
+>>>>>>>> if (!tsk || is_kernel_event(event))
+>>>>>>>>    /* skip ? */
+>>>>>>>>
 >>>>>>>
->>>>>>> It's a pure move - modulo changed line breaks in the argument lists
->>>>>>> the functions involved are identical before and after that (just checked
->>>>>>> that directly, by checking out the trees before and after, extracting two
->>>>>>> functions in question from fs/read_write.c and lib/iov_iter.c (before and
->>>>>>> after, resp.) and checking the diff between those.
->>>>>>>
->>>>>>> How certain is your bisection?
+>>>>>>> Looking at it some more, is_kernel_event() is not exposed
+>>>>>>> outside events core and probably for good reason. Why do
+>>>>>>> we need to check for this and not just tsk?
 >>>>>>
->>>>>> The bisection is very reproducable.
+>>>>>> Because the event->owner could be :
 >>>>>>
->>>>>> But, this looks now to be a compiler bug.  I'm using the latest version
->>>>>> of clang and if I put "noinline" at the front of the function,
->>>>>> everything works.
+>>>>>>  = NULL
+>>>>>>  = -1UL  // kernel event
+>>>>>>  = valid.
+>>>>>>
 >>>>>
->>>>> Well, the compiler can do more invasive optimizations when inlining. If
->>>>> you have buggy code that relies on some unspecified behavior, inlining
->>>>> can change the behavior ... but going over that code, there isn't too
->>>>> much action going on. At least nothing screamed at me.
+>>>>> Yes I understood that part, but here we were trying to
+>>>>> fix the NULL pointer dereference right and hence the
+>>>>> question as to why we need to check for kernel events?
+>>>>> I am no expert in perf but I don't see anywhere in the
+>>>>> kernel checking for is_kernel_event(), so I am a bit
+>>>>> skeptical if exporting that is actually right or not.
+>>>>>
 >>>>
->>>> Apart from all the optimisations that get rid off the 'pass be reference'
->>>> parameters and strange conditional tests.
->>>> Plenty of scope for the compiler getting it wrong.
->>>> But nothing even vaguely illegal.
+>>>> I have stress tested with the original patch many times
+>>>> now, i.e., without a check for event->owner and is_kernel_event()
+>>>> and didn't observe any crash. Plus on ETR where this was already
+>>>> done, no crashes were reported till date and with ETF, the issue
+>>>> was quickly reproducible, so I am fairly confident that this
+>>>> doesn't just delay the original issue but actually fixes
+>>>> it. I will run an overnight test again to confirm this.
+>>>>
 >>>
->>> Not the first time that people blame the compiler to then figure out
->>> that something else is wrong ... but maybe this time is different :)
+>>> I ran the overnight test which collected aroung 4G data(see below),
+>>> with the following small change to see if the two cases
+>>> (event->owner=NULL and is_kernel_event()) are triggered
+>>> with suggested changes and it didn't trigger at all.
+>>> Do we still need those additional checks?
+>>>
 >>
->> I agree, I hate to blame the compiler, that's almost never the real
->> problem, but this one sure "feels" like it.
+>> Yes. Please see perf_event_create_kernel_event(), which is
+>> an exported function allowing any kernel code (including modules)
+>> to use the PMU (just like the userspace perf tool would do).
+>> Just because your use case doesn't trigger this (because
+>> you don't run something that can trigger this) doesn't mean
+>> this can't be triggered.
 >>
->> I'm running some more tests, trying to narrow things down as just adding
->> a "noinline" to the function that got moved here doesn't work on Linus's
->> tree at the moment because the function was split into multiple
->> functions.
->>
->> Give me a few hours...
 > 
-> I might be wrong but
-> 
-> a) import_iovec() uses:
-> - unsigned nr_segs -> int
-> - unsigned fast_segs -> int
-> b) rw_copy_check_uvector() uses:
-> - unsigned long nr_segs -> long
-> - unsigned long fast_seg -> long
-> 
-> So when calling rw_copy_check_uvector(), we have to zero-extend the
-> registers used for passing the arguments. That's definitely done when
-> calling the function explicitly. Maybe when inlining something is messed up?
-> 
-> Just a thought ...
+> Thanks for that pointer, I will add them in the next version.
 > 
 
-... especially because I recall that clang and gcc behave slightly
-differently:
+And instead of redefining TASK_TOMBSTONE in the driver, you
+may simply use IS_ERR_OR_NULL(tsk) to cover both NULL case
+and kernel event.
 
-https://github.com/hjl-tools/x86-psABI/issues/2
-
-"Function args are different: narrow types are sign or zero extended to
-32 bits, depending on their type. clang depends on this for incoming
-args, but gcc doesn't make that assumption. But both compilers do it
-when calling, so gcc code can call clang code.
-
-The upper 32 bits of registers are always undefined garbage for types
-smaller than 64 bits."
-
-Again, just a thought.
-
--- 
-Thanks,
-
-David / dhildenb
-
+Cheers
+Suzuki
