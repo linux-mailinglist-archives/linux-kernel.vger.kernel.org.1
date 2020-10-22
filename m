@@ -2,217 +2,229 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1A9A2963F0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:47:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A473C296404
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369322AbgJVRrf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:47:35 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:42211 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S369281AbgJVRrc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:47:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603388848;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-        bh=sO3K7G3TcZ1QGTP9K/3Db+WgquFQFE5buToK1oUkzNk=;
-        b=aE2OnRsq69Nha0Eemps3W1WaA3MkC2ZngBPvOD79XYuu4XmTZiMvomIwcibc0QU+NlcaXj
-        lakrmL6eTV6PCIa2cxBIwyWe3/SY1XgPunzyTsb2pr49rHjNyIBwFbcMZFE9DXtB8vRDHu
-        ONkp/mK4MbwpricThPmsDcdBSYXVcn0=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-243-MfaNNBH1MVSY6IGIRMVOvQ-1; Thu, 22 Oct 2020 13:47:24 -0400
-X-MC-Unique: MfaNNBH1MVSY6IGIRMVOvQ-1
-Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        id S369366AbgJVRsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:48:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52058 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S369261AbgJVRsK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 13:48:10 -0400
+Received: from mail-oi1-f171.google.com (mail-oi1-f171.google.com [209.85.167.171])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5CA81186DD28;
-        Thu, 22 Oct 2020 17:47:21 +0000 (UTC)
-Received: from [10.10.115.73] (ovpn-115-73.rdu2.redhat.com [10.10.115.73])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 7FDC755776;
-        Thu, 22 Oct 2020 17:47:15 +0000 (UTC)
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
- CPUs
-From:   Nitesh Narayan Lal <nitesh@redhat.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Marcelo Tosatti <mtosatti@redhat.com>, helgaas@kernel.org,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
-        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
-        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
-        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        lgoncalv@redhat.com, Christoph Hellwig <hch@infradead.org>
-References: <20200928183529.471328-1-nitesh@redhat.com>
- <20200928183529.471328-5-nitesh@redhat.com>
- <20201016122046.GP2611@hirez.programming.kicks-ass.net>
- <79f382a7-883d-ff42-394d-ec4ce81fed6a@redhat.com>
- <20201019111137.GL2628@hirez.programming.kicks-ass.net>
- <20201019140005.GB17287@fuller.cnet>
- <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
-Autocrypt: addr=nitesh@redhat.com; prefer-encrypt=mutual; keydata=
- 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
- VujM7c/b4pps
-Organization: Red Hat Inc,
-Message-ID: <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
-Date:   Thu, 22 Oct 2020 13:47:14 -0400
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.11.0
+        by mail.kernel.org (Postfix) with ESMTPSA id 89238205CA
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:48:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603388889;
+        bh=VAm56CTOl0xcs/lcnD7w/i+eq+IA2JPQXF7xmAB/6vA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rQcvKP5A8DtAvg+1nA1lNxv8VinvqWHgJTyjy7P8kNFgKAiWueYYlQUpIOmD6Pb8D
+         bC4f5pu4zDELbCArz+1PGH0A914P4RPRETa/LBNcX2fTxWhPpwHu1XP3xZwL/dC/DX
+         RPhF+KIXcHLCpnxnNpjY4qgY1BMZqQn9uZhDYFH8=
+Received: by mail-oi1-f171.google.com with SMTP id m128so2623232oig.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:48:09 -0700 (PDT)
+X-Gm-Message-State: AOAM531w9l/rGb4IspT0U8kT/t8P6shNbmeDFogp1WIni+oKAC3aNvc4
+        c73NLdX8+IDCyWyiPu/wzH02wjOwMST9oWbjSgs=
+X-Google-Smtp-Source: ABdhPJz58h+LcN7MCClzz+jWJyDqnRjakIgflxKhOKEsTVmTU4NBtDd4Mtg5Dku9iDFDdCQyMg+JGFoDMcNPlDgHn2s=
+X-Received: by 2002:aca:5a56:: with SMTP id o83mr2194769oib.47.1603388888675;
+ Thu, 22 Oct 2020 10:48:08 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=nitesh@redhat.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: redhat.com
-Content-Type: multipart/signed; micalg=pgp-sha256;
- protocol="application/pgp-signature";
- boundary="tC6UfFI6WR38l3rBBuK2i1yKi1B8XUAC0"
+References: <202010211637.7CFD8435@keescook> <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
+ <202010212028.32E8A5EF9B@keescook> <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com> <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk> <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+ <20201022162334.GQ1551@shell.armlinux.org.uk> <53e78602-6370-aeb1-398b-5c065dd562f8@gmail.com>
+ <20201022173843.GR1551@shell.armlinux.org.uk>
+In-Reply-To: <20201022173843.GR1551@shell.armlinux.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 22 Oct 2020 19:47:57 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXHFVH=_bp1GAae3tfEnyYyVJz7UfZv=+n=F+355ePWS+g@mail.gmail.com>
+Message-ID: <CAMj1kXHFVH=_bp1GAae3tfEnyYyVJz7UfZv=+n=F+355ePWS+g@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---tC6UfFI6WR38l3rBBuK2i1yKi1B8XUAC0
-Content-Type: multipart/mixed; boundary="sRo9W6wjK2Pxf6wnRqz6v6VFsZXu5meo6"
-
---sRo9W6wjK2Pxf6wnRqz6v6VFsZXu5meo6
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-US
-
-
-On 10/20/20 10:39 AM, Nitesh Narayan Lal wrote:
-> On 10/20/20 9:41 AM, Peter Zijlstra wrote:
->> On Tue, Oct 20, 2020 at 09:00:01AM -0400, Nitesh Narayan Lal wrote:
->>> On 10/20/20 3:30 AM, Peter Zijlstra wrote:
->>>> On Mon, Oct 19, 2020 at 11:00:05AM -0300, Marcelo Tosatti wrote:
->>>>>> So I think it is important to figure out what that driver really wan=
-ts
->>>>>> in the nohz_full case. If it wants to retain N interrupts per CPU, a=
-nd
->>>>>> only reduce the number of CPUs, the proposed interface is wrong.
->>>>> It wants N interrupts per non-isolated (AKA housekeeping) CPU.
->>>> Then the patch is wrong and the interface needs changing from @min_vec=
-s,
->>>> @max_vecs to something that expresses the N*nr_cpus relation.
->>> Reading Marcelo's comment again I think what is really expected is 1
->>> interrupt per non-isolated (housekeeping) CPU (not N interrupts).
->> Then what is the point of them asking for N*nr_cpus when there is no
->> isolation?
->>
->> Either everybody wants 1 interrupts per CPU and we can do the clamp
->> unconditionally, in which case we should go fix this user, or they want
->> multiple per cpu and we should go fix the interface.
->>
->> It cannot be both.
-> Based on my understanding I don't think this is consistent, the number
-> of interrupts any driver can request varies to an extent that some
-> consumer of this API even request just one interrupt for its use.
+On Thu, 22 Oct 2020 at 19:38, Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
 >
-> This was one of the reasons why I thought of having a conditional
-> restriction.
+> On Thu, Oct 22, 2020 at 07:34:38PM +0300, Dmitry Osipenko wrote:
+> > 22.10.2020 19:23, Russell King - ARM Linux admin =D0=BF=D0=B8=D1=88=D0=
+=B5=D1=82:
+> > > On Thu, Oct 22, 2020 at 06:20:40PM +0200, Ard Biesheuvel wrote:
+> > >> On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
+> > >> <linux@armlinux.org.uk> wrote:
+> > >>>
+> > >>> On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
+> > >>>> On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> w=
+rote:
+> > >>>>>
+> > >>>>> 22.10.2020 10:06, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > >>>>>> On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> =
+wrote:
+> > >>>>>>>
+> > >>>>>>> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote=
+:
+> > >>>>>>>> 22.10.2020 02:40, Kees Cook =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > >>>>>>>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wro=
+te:
+> > >>>>>>>>>> The vfp_kmode_exception() function now is unreachable using =
+relative
+> > >>>>>>>>>> branching in THUMB2 kernel configuration, resulting in a "re=
+location
+> > >>>>>>>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode=
+_exception'"
+> > >>>>>>>>>> linker error. Let's use long jump in order to fix the issue.
+> > >>>>>>>>>
+> > >>>>>>>>> Eek. Is this with gcc or clang?
+> > >>>>>>>>
+> > >>>>>>>> GCC 9.3.0
+> > >>>>>>>>
+> > >>>>>>>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO inp=
+ut sections")
+> > >>>>>>>>>
+> > >>>>>>>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing =
+sections") ?
+> > >>>>>>>>> That commit may have implicitly moved the location of .vfp11_=
+veneer,
+> > >>>>>>>>> though I thought I had chosen the correct position.
+> > >>>>>>>>
+> > >>>>>>>> I re-checked that the fixes tag is correct.
+> > >>>>>>>>
+> > >>>>>>>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > >>>>>>>>>> ---
+> > >>>>>>>>>>  arch/arm/vfp/vfphw.S | 3 ++-
+> > >>>>>>>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >>>>>>>>>>
+> > >>>>>>>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+> > >>>>>>>>>> index 4fcff9f59947..6e2b29f0c48d 100644
+> > >>>>>>>>>> --- a/arch/arm/vfp/vfphw.S
+> > >>>>>>>>>> +++ b/arch/arm/vfp/vfphw.S
+> > >>>>>>>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+> > >>>>>>>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore no=
+r FP exceptions
+> > >>>>>>>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel=
+ mode
+> > >>>>>>>>>>    teq     r3, #USR_MODE
+> > >>>>>>>>>> -  bne     vfp_kmode_exception     @ Returns through lr
+> > >>>>>>>>>> +  ldr     r1, =3Dvfp_kmode_exception
+> > >>>>>>>>>> +  bxne    r1                      @ Returns through lr
+> > >>>>>>>>>>
+> > >>>>>>>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
+> > >>>>>>>>>>    DBGSTR1 "fpexc %08x", r1
+> > >>>>>>>>>
+> > >>>>>>>>> This seems like a workaround though? I suspect the vfp11_vene=
+er needs
+> > >>>>>>>>> moving?
+> > >>>>>>>>>
+> > >>>>>>>>
+> > >>>>>>>> I don't know where it needs to be moved. Please feel free to m=
+ake a
+> > >>>>>>>> patch if you have a better idea, I'll be glad to test it.
+> > >>>>>>>
+> > >>>>>>> I might have just been distracted by the common "vfp" prefix. I=
+t's
+> > >>>>>>> possible that the text section shuffling just ended up being ve=
+ry large,
+> > >>>>>>> so probably this patch is right then!
+> > >>>>>>>
+> > >>>>>>
+> > >>>>>> I already sent a fix for this issue:
+> > >>>>>>
+> > >>>>>> https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=
+=3D9018/1
+> > >>>>>>
+> > >>>>>
+> > >>>>> The offending commit contains stable tag, so I assume that fixes =
+tag is
+> > >>>>> mandatory. Yours patch misses the fixes tag.
+> > >>>>
+> > >>>> Russell, mind adding that? Or would you like me to update the patc=
+h in
+> > >>>> the patch system?
+> > >>>
+> > >>> Rather than adding the IT, I'm suggesting that we solve it a differ=
+ent
+> > >>> way - ensuring that the two bits of code are co-located. There's no
+> > >>> reason for them to be separated, and the assembly code entry point =
+is
+> > >>> already called indirectly.
+> > >>>
+> > >>> The problem is the assembly ends up in the .text section which ends=
+ up
+> > >>> at the start of the binary, but depending on the compiler, function=
+s
+> > >>> in .c files end up in their own sections. It would be good if, as
+> > >>> Dmitry has shown that it is indeed possible, to have them co-locate=
+d.
+> > >>
+> > >> Why is that better? I provided a minimal fix which has zero impact o=
+n
+> > >> ARM builds, and minimal impact on Thumb2 builds, given that it retai=
+ns
+> > >> the exact same semantics as before, but using a different opcode.
+> > >
+> > > I think you just described the reason there. Why should we force
+> > > everything to use a different opcode when a short jump _should_
+> > > suffice?
+> > >
+> > > Your patch may be a single line, but it has a slightly greater
+> > > impact than the alternative two line solution.
+> > >
+> >
+> > But the two line change isn't portable to stable kernels as-is, isn't i=
+t?
 >
-> But I agree there is a lack of consistency.
+> Why not?
 >
 
-Hi Peter,
-
-So based on the suggestions from you and Thomas, I think something like the
-following should do the job within pci_alloc_irq_vectors_affinity():
-
-+ =C2=A0 =C2=A0 =C2=A0 if (!pci_is_managed(dev) && (hk_cpus < num_online_cp=
-us()))
-+ =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 =C2=A0 max_vecs =3D clamp(hk_cp=
-us, min_vecs, max_vecs);
-
-I do know that you didn't like the usage of "hk_cpus < num_online_cpus()"
-and to an extent I agree that it does degrade the code clarity.
-
-However, since there is a certain inconsistency in the number of vectors
-that drivers request through this API IMHO we will need this, otherwise
-we could cause an impact on the drivers even in setups that doesn't
-have any isolated CPUs.
-
-If you agree, I can send the next version of the patch-set.
-
---=20
-Thanks
-Nitesh
+In any case, I'd prefer not to dump VFP exception handling code into
+the .vfp11_veneer section, which is documented as below, and typically
+empty in our case, given that the only FP code we have in the kernel
+is NEON code.
 
 
---sRo9W6wjK2Pxf6wnRqz6v6VFsZXu5meo6--
 
---tC6UfFI6WR38l3rBBuK2i1yKi1B8XUAC0
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
+"""
+   The '--vfp11-denorm-fix' switch enables a link-time workaround for a
+bug in certain VFP11 coprocessor hardware, which sometimes allows
+instructions with denorm operands (which must be handled by support
+code) to have those operands overwritten by subsequent instructions
+before the support code can read the intended values.
 
------BEGIN PGP SIGNATURE-----
+   The bug may be avoided in scalar mode if you allow at least one
+intervening instruction between a VFP11 instruction which uses a
+register and another instruction which writes to the same register, or
+at least two intervening instructions if vector mode is in use.  The bug
+only affects full-compliance floating-point mode: you do not need this
+workaround if you are using "runfast" mode.  Please contact ARM for
+further details.
 
-iQIzBAEBCAAdFiEEkXcoRVGaqvbHPuAGo4ZA3AYyozkFAl+RxaIACgkQo4ZA3AYy
-oznkXQ//ZwbbYkVeFlswGVh5f/xWufaxBmeANtowGcNvn79iTwnDMCh0DpDV0Mpa
-AHJF062Mx2LPmWJ7HN3UWUNEoHdk0ghCDKf9teYeesviFlx3PCy7L0HKiP7HSEl6
-txEhBMVZhAeZRcOfzD6AjIK1wBSX76JNn5YzznnRCnBUXu2uDlMmM9E1+aC9xETu
-PQreGPgkKkIQDFUzcwT6IBYOuZJ3ZMlBULThaRWADwJf1vvFyEmQy/u3rsu7FHoC
-gwAOaA67PJSqyT48rA0NUTeya/hpbYoLvPS3Qp/3vHLXtLEhUyo3R9oky3CTusts
-Z9wjtgTHF77EZTaXBe3J0KLGVJmaFtKgYJ48fHvsoZCrWi/nVX2agHBH/DEGr41a
-rv/v28LWYhLkYC9tWDyoANPHHO4B9SaowEBgOnZ99MwdGfU77Qm9QpAsL4sQQG1a
-lFf3x2wswe/c0HzmzNDWgft0H6o24pkTFDRYJ0fMqqbMB2wC9u0kYd96zPub1zXP
-xbXrCqavfYQ4RfkD/JZOhv2Nm+oZ4cNZ6sSImFMy5F7sJpkCeJ+VCGxcKUlYFkPh
-z/peOr5xiJ3AEivqbVpHY6ZiOeK+9FIb9A6fKGe4oWrGKDuZy3cksOsUOkjTVIN6
-Vd2FGwALc26C5mAnCXi66TPWJv4Ix/aubaWAvx5TPWA4qVYCEB8=
-=Qdiy
------END PGP SIGNATURE-----
+   If you know you are using buggy VFP11 hardware, you can enable this
+workaround by specifying the linker option '--vfp-denorm-fix=3Dscalar' if
+you are using the VFP11 scalar mode only, or '--vfp-denorm-fix=3Dvector'
+if you are using vector mode (the latter also works for scalar code).
+The default is '--vfp-denorm-fix=3Dnone'.
 
---tC6UfFI6WR38l3rBBuK2i1yKi1B8XUAC0--
-
+   If the workaround is enabled, instructions are scanned for
+potentially-troublesome sequences, and a veneer is created for each such
+sequence which may trigger the erratum.  The veneer consists of the
+first instruction of the sequence and a branch back to the subsequent
+instruction.  The original instruction is then replaced with a branch to
+the veneer.  The extra cycles required to call and return from the
+veneer are sufficient to avoid the erratum in both the scalar and vector
+cases.
+"""
