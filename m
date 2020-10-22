@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CCFFB29562C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:48:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46A7E29562D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:48:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894830AbgJVBsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:48:10 -0400
-Received: from out5-smtp.messagingengine.com ([66.111.4.29]:50119 "EHLO
+        id S2894840AbgJVBsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:48:13 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:33707 "EHLO
         out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2441518AbgJVBsI (ORCPT
+        by vger.kernel.org with ESMTP id S2894828AbgJVBsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:48:08 -0400
+        Wed, 21 Oct 2020 21:48:11 -0400
 Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailout.nyi.internal (Postfix) with ESMTP id BC7975C0251;
-        Wed, 21 Oct 2020 21:48:07 -0400 (EDT)
+        by mailout.nyi.internal (Postfix) with ESMTP id 4B4ED5C015E;
+        Wed, 21 Oct 2020 21:48:10 -0400 (EDT)
 Received: from mailfrontend1 ([10.202.2.162])
-  by compute3.internal (MEProxy); Wed, 21 Oct 2020 21:48:07 -0400
+  by compute3.internal (MEProxy); Wed, 21 Oct 2020 21:48:10 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=from
         :to:cc:subject:date:message-id:in-reply-to:references
-        :mime-version:content-transfer-encoding; s=fm1; bh=KWRqHBkl62qlU
-        Qq1D9fLvZ7qk2gwM4TwtKPcrOT/zxQ=; b=AO4gLScK1mz+Uai1e01hQs+Z4coKj
-        NTTmV8txh/sfPa/MS2UqBs2jPiW8phqg2IwppupC3A0CZVHL9VOdjp82c4y7IURX
-        SZxkpB8YpMZ8u5InVqlsLAhC2XxHJu9nPSID7u5vx/OXifZf9T8Nh/xaSnnoYlN8
-        BvUshtJ7flarT3qunroQL0vrcvW2NQ0ntTuHpmXoO49vTOSYddRLT4YD/imKojI9
-        ByBnfFN5KbPM4nRzuRcn0WW+twuhjmviBTVN4xyro5n5sY87ZrY114ehgq7zfsoL
-        dCyNji9VMoj1/0RaAd8vYo2qWoNMGeDVlHlY0okPc3BkE3RirgWGr5xRA==
+        :mime-version:content-transfer-encoding; s=fm1; bh=tUHYwtIxaM6ck
+        HbC9dCkhEpa/U/JJI5HJTKQyDZ8vu4=; b=po0V6KL+rctLeAnabW1bGG9wZiqUB
+        +Son43Jzhs0nU02smfLGWR9G8KJYyhPL64Kc0f7YEHcU9HH+5ZkH0JTYf7Kse5qC
+        3K/yKPgFjv4pJtBmB8gP10DxdwKNYy9ynXGXgAbtiMsHZ1Z+reDnKLQcHePcphWd
+        ILI83zAVwiEGIkdmA4hJfWIVgEEn78+2Kz9k8w8mKONnvvPkTe6tCM3DKaUlxgmF
+        FNMTxPtcM3rMu3zrGvplfGdBj96eLBphPKEudUzAb4ZvsyY3UQRHoGmO+/hYhuR/
+        Ogjm64drLjJmwKlBdL+Lyc7s6bACGaySrJWeu3vpMy5dDeq4Mc7KwHdeA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-transfer-encoding:date:from
         :in-reply-to:message-id:mime-version:references:subject:to
         :x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-        fm1; bh=KWRqHBkl62qlUQq1D9fLvZ7qk2gwM4TwtKPcrOT/zxQ=; b=eLSMa+RN
-        6KqO2ZIR8z+iIH1YxRNS7FjaUOkTflEAXJE6zGw5RZnA/ryeYjr5uD/omWNxtE6s
-        pVCqz9V71FHe2kPMTgHkHO4CkkE/ebDAur79J6Z4uKyC1AWdO8j78aBV0L5Mji+3
-        nmd3P5RbNVuvZF5XisIcymqSDzrl2XFJe7TTuSdPeg42qUEDza1OUxg8osqLOC9/
-        EtOVi5pH+4sAhxra7nR5VvvllrVIBcOzXGwd3jUNplrg4exzYeDl+zheaqHyeSUf
-        2pKsAEr3LfYPk/MFf4mhwVj2ocS+2dXr5Gccm04y3WkGje4CXpAGRQF/vsM7z+JP
-        3wRXJpkpJov7IQ==
-X-ME-Sender: <xms:1-SQX4UmVRtJ3qi_MOH-MYs81wMduWnqHZroA-vlmPSRvwTCqEQ8Bw>
-    <xme:1-SQX8kAb0RKmi9MUS92gGRMLptMSdKPgAXEJS2tdOIZb91Kt2imeSke8SdfyqzyO
-    30mu_9DPpXi5NktTQ>
+        fm1; bh=tUHYwtIxaM6ckHbC9dCkhEpa/U/JJI5HJTKQyDZ8vu4=; b=kBOv+hQY
+        OoTHIKqzFyT5zF6OIj94OX5OGILIFrqdu68lYoLVDwQq68BdgLgKtAQ32Vs0AzZG
+        wFAjRyzm0KVOcD+XnqB1IkHvtQEV6cKwzBOdnsdrAiPhNhSZEpoGec4nOPAh+Fqm
+        5GzmcB2povaGhPtlnnSFgFkVyrACgYOh6GzyLz7rUTBnd+9o//lqaXWiqN+U9aMZ
+        OG0JK7bmdr37lRTxbABb9O7PYBEcsJLH0zRgDW6O6Btb5s9WbUd0s4mphJllFyyp
+        kaLzmv+0ASx72ep+lKJPoME7MzADCB9g5dBvTiVaw2/ewNGGtLHhE4Tr+6b8KBOd
+        l+TTLX5xJLL6eA==
+X-ME-Sender: <xms:2uSQX50lFhxl-REYddiZ2ZauiXO7lftmRYeo71v8csLooNSSmb6avQ>
+    <xme:2uSQXwEu6_VATN0UnFPWRtIjkQcLbATfEGVhYqnTthXxBf2gznDIv_0uMojMtOYZ2
+    Usl8NfYf0yshN5Cuw>
 X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdegkecutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecunecujfgurhephffvufffkffojghfggfgsedtkeertd
@@ -48,21 +48,21 @@ X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdegkecutefuodetggdote
     ejffelffdvudduveeiffegteelvefhteenucfkphepuddukedrvddutddrjedrudektden
     ucevlhhushhtvghrufhiiigvpedunecurfgrrhgrmhepmhgrihhlfhhrohhmpegrnhgurh
     gvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:1-SQX8ZDpNxcVPEuAduVdYboO_INE-pV37ZUFxrS8pnHntFrobynSg>
-    <xmx:1-SQX3UrQPr9Vhmq1B-H_ETxHYypJwfM7DptT1OP-NOqjpO9pJ1BGg>
-    <xmx:1-SQXyljffZu2jJTyWS5yUc78P2MN2fcojG1kLW1l50LorzTEVw6ug>
-    <xmx:1-SQX0gCP2RhTr2SOckYBPuueapZc22ECkzTnu7PcYCQOBi84OxfzA>
+X-ME-Proxy: <xmx:2uSQX57Uwz4y66tfkDLfu6NMcqfcihec1iyKf_G-I-aHp9_NGn92-w>
+    <xmx:2uSQX23n8vTBokcFTjUfsFzphsybiwQ496uyykt72rv2NXEu1EvQLw>
+    <xmx:2uSQX8E7GKL26WGd_uhtcxBfx1zkBDp_ry5UrQkYn4H7zC02j3kPcA>
+    <xmx:2uSQXwAqAWayPqjMzvy-zIvbkdi0InPVI2uBIkb5GGRqVfv-gQVOCg>
 Received: from localhost.localdomain (ppp118-210-7-180.adl-adc-lon-bras31.tpg.internode.on.net [118.210.7.180])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 95EE03280068;
-        Wed, 21 Oct 2020 21:48:05 -0400 (EDT)
+        by mail.messagingengine.com (Postfix) with ESMTPA id 15AB3328005E;
+        Wed, 21 Oct 2020 21:48:07 -0400 (EDT)
 From:   Andrew Jeffery <andrew@aj.id.au>
 To:     joel@jms.id.au
 Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org,
         linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v2 3/6] ARM: dts: rainier,tacoma: Fix size comment whitespace
-Date:   Thu, 22 Oct 2020 12:17:28 +1030
-Message-Id: <20201022014731.2035438-4-andrew@aj.id.au>
+Subject: [PATCH v2 4/6] ARM: dts: rainier,tacoma: Comment reserved memory regions
+Date:   Thu, 22 Oct 2020 12:17:29 +1030
+Message-Id: <20201022014731.2035438-5-andrew@aj.id.au>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201022014731.2035438-1-andrew@aj.id.au>
 References: <20201022014731.2035438-1-andrew@aj.id.au>
@@ -72,41 +72,56 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rainier had multiple spaces, Tacoma used a tab. Let's go with a single
-space.
+There are some nuances to their address and size, so lets try document
+that a bit better to reveal the hole between the reserved memory for the
+LPC FW cycle bridge and the reserved memory for the VGA device.
 
 Signed-off-by: Andrew Jeffery <andrew@aj.id.au>
 ---
- arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 2 +-
- arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+ arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts | 4 ++++
+ arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts  | 4 ++++
+ 2 files changed, 8 insertions(+)
 
 diff --git a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-index 21ae880c7530..136ff156a512 100644
+index 136ff156a512..802027a3c43c 100644
 --- a/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-ibm-rainier.dts
-@@ -55,7 +55,7 @@ flash_memory: region@B8000000 {
+@@ -47,11 +47,15 @@ reserved-memory {
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		/* LPC FW cycle bridge region requires natural alignment */
+ 		flash_memory: region@B8000000 {
+ 			no-map;
+ 			reg = <0xB8000000 0x04000000>; /* 64M */
+ 		};
+ 
++		/* 48MB region from the end of flash to start of vga memory */
++
++		/* VGA region is dictated by hardware strapping */
  		vga_memory: region@bf000000 {
  			no-map;
  			compatible = "shared-dma-pool";
--			reg = <0xbf000000 0x01000000>;  /* 16M */
-+			reg = <0xbf000000 0x01000000>; /* 16M */
- 		};
- 	};
- 
 diff --git a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-index 67ab57ad4d8d..52f5876c08cf 100644
+index 52f5876c08cf..09b561429579 100644
 --- a/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
 +++ b/arch/arm/boot/dts/aspeed-bmc-opp-tacoma.dts
-@@ -34,7 +34,7 @@ flash_memory: region@b8000000 {
+@@ -26,11 +26,15 @@ reserved-memory {
+ 		#size-cells = <1>;
+ 		ranges;
+ 
++		/* LPC FW cycle bridge region requires natural alignment */
+ 		flash_memory: region@b8000000 {
+ 			no-map;
+ 			reg = <0xb8000000 0x04000000>; /* 64M */
+ 		};
+ 
++		/* 48MB region from the end of flash to start of vga memory */
++
++		/* VGA region is dictated by hardware strapping */
  		vga_memory: region@bf000000 {
  			no-map;
  			compatible = "shared-dma-pool";
--			reg = <0xbf000000 0x01000000>;	/* 16M */
-+			reg = <0xbf000000 0x01000000>; /* 16M */
- 		};
- 	};
- 
 -- 
 2.25.1
 
