@@ -2,314 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DDAE1295763
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:58:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C4D5295765
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:58:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507645AbgJVE4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:56:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507638AbgJVE4t (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:56:49 -0400
-Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F5BC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:56:47 -0700 (PDT)
-Received: by mail-wm1-x335.google.com with SMTP id v5so444575wmh.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:56:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=y5P/hyU4ScvAx/EuzAVzabXFsXcQii1dHFcND32fY44=;
-        b=QG4642Xxh4SfN4OSOAOu9x60OncbquO6Ht7WBZcZXSdYNGDKlyL7jqNBEeS3vVbyZW
-         4/m6kprv7jgurEUAMc1UILxnn2x1UgJyViNlYqzPDiBrQIOhI0qi/WBWNmkF+1fEmKHK
-         1RqeQeDRrwlIvSfuFai9e6dA+j2PitHcSCZmXi4lr88o/84wjARxXQeSRYZ4Qzn4yImP
-         g9g9gRfMm6afAzJLHsWFWtKoWjQBeJVHeMnSr/JKsZlHGr4FYqxJWMkLzyFxF5cIzKN7
-         0AoRHReAyGvdoqTkNajnXL5vxMPO1nrMHDZv+6mjRrQfVKettuATAsh+gOLxailVpV1Q
-         oH7g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=y5P/hyU4ScvAx/EuzAVzabXFsXcQii1dHFcND32fY44=;
-        b=tbAMfq6n8b7xF0uGRBwH2wQYJ9oqQr11dNFfn2hhMkDPG4RecThzG8bB3tE/bE9689
-         DiJfcTJ4Qq5XR6TcdgEkP84prM55xH9chykUDTrvNw7z9gtsQig0o880tk1virqCVnPJ
-         vyMbIwQaxzJp5NXqrsmjdGqu67qa4QBlBZa7ed0t9chaI19zJneJWv1LSudTWUO4bVWp
-         sqxoXyAQTc6qmvtnkcpZnp6dXTz6dn4zLusTNAJJ8OPgXGYiKE/JMUGlYacDtwWp8xvO
-         nYqEGHt2VaO+Qbpf60iBN8tm3223UHjL+b1ARLcN0fSyE2aOGj2Pze/hEJxLiVZvlEY3
-         JwOA==
-X-Gm-Message-State: AOAM531e2Ny1cBhzZR/73qEelX39V7eZGpS/zB1aShKIbFftjznllMhq
-        KNeQPhZ7I7Vr8irydv311LaYQFfxTjIs+p+CI4w=
-X-Google-Smtp-Source: ABdhPJzDSZHkXyivAg1JC/UinLS//1E7fm00gygHDmWVOvMP2nVYANSGY3iwZPGaPnBVnJuW/hUgPjMU2IOJhamzao8=
-X-Received: by 2002:a1c:49c2:: with SMTP id w185mr658734wma.70.1603342603598;
- Wed, 21 Oct 2020 21:56:43 -0700 (PDT)
+        id S2507655AbgJVE6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57320 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2507647AbgJVE6x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:58:53 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C333223C7;
+        Thu, 22 Oct 2020 04:58:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603342732;
+        bh=hN7GiMRaOq0FOXfdA6xo4EAlbLaq+CosLc5jqhzgnvA=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=AWbhcZ7C04iuVaR0/RhfNSWB1YYayIzQXbZCg5sitAbKcayPqtKCY1r2NJ22CrSDT
+         OXgIY04zLiM+FPK97mEZqMffcqp1HlmacPN3md38OuFuKxz8u8JAJIk5JZWcr2br+U
+         wKXqRjMxAiQ3QDb7roMwfmQXuexgpgIfqucEeVRg=
+Date:   Wed, 21 Oct 2020 21:58:50 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 2/6] crypto: lib/sha256 - Don't clear temporary
+ variables
+Message-ID: <20201022045850.GE857@sol.localdomain>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-3-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-References: <20201019144311.18260-1-trix@redhat.com> <2f951197-b93e-d0c9-153f-2ddd1b195b3f@amd.com>
- <7179e50d-f29b-811d-030b-f2cfe3a1a502@amd.com>
-In-Reply-To: <7179e50d-f29b-811d-030b-f2cfe3a1a502@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Thu, 22 Oct 2020 00:56:31 -0400
-Message-ID: <CADnq5_NdJ36NZbWwL4QT5ZNKX4wEbyJNB2NOaoxpMyrs8RBjHQ@mail.gmail.com>
-Subject: Re: [PATCH] drm/amdgpu: remove unneeded break
-To:     Harry Wentland <harry.wentland@amd.com>
-Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
-        trix@redhat.com, "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
-        "Deucher, Alexander" <alexander.deucher@amd.com>,
-        Dave Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Mauro Rossi <issor.oruam@gmail.com>,
-        Anthony Koo <Anthony.Koo@amd.com>,
-        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
-        "Cheng, Tony" <Tony.Cheng@amd.com>,
-        Charlene Liu <Charlene.Liu@amd.com>,
-        yogesh.mohanmarimuthu@amd.com, "Cyr, Aric" <Aric.Cyr@amd.com>,
-        Igor.Kravchenko@amd.com, Colin Ian King <colin.king@canonical.com>,
-        Tao Zhou <tao.zhou1@amd.com>, Dennis Li <Dennis.Li@amd.com>,
-        Mario Kleiner <mario.kleiner.de@gmail.com>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020203957.3512851-3-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Applied.  Thanks!
+On Tue, Oct 20, 2020 at 04:39:53PM -0400, Arvind Sankar wrote:
+> The assignments to clear a through h and t1/t2 are optimized out by the
+> compiler because they are unused after the assignments.
+> 
+> These variables shouldn't be very sensitive: t1/t2 can be calculated
+> from a through h, so they don't reveal any additional information.
+> Knowing a through h is equivalent to knowing one 64-byte block's SHA256
+> hash (with non-standard initial value) which, assuming SHA256 is secure,
+> doesn't reveal any information about the input.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
 
-Alex
+I don't entirely buy the second paragraph.  It could be the case that the input
+is less than or equal to one SHA-256 block (64 bytes), in which case leaking
+'a' through 'h' would reveal the final SHA-256 hash if the input length is
+known.  And note that callers might consider either the input, the resulting
+hash, or both to be sensitive information -- it depends.
 
-On Mon, Oct 19, 2020 at 11:08 AM Harry Wentland <harry.wentland@amd.com> wr=
-ote:
->
-> On 2020-10-19 10:55 a.m., Christian K=C3=B6nig wrote:
-> > Am 19.10.20 um 16:43 schrieb trix@redhat.com:
-> >> From: Tom Rix <trix@redhat.com>
-> >>
-> >> A break is not needed if it is preceded by a return or break
-> >>
-> >> Signed-off-by: Tom Rix <trix@redhat.com>
-> >
-> > Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
->
-> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
->
-> Harry
->
-> >
-> >> ---
-> >>   drivers/gpu/drm/amd/display/dc/dce/dce_transform.c      | 1 -
-> >>   drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 7 -------
-> >>   drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c | 7 -------
-> >>   drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 7 -------
-> >>   drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c | 7 -------
-> >>   drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c   | 7 -------
-> >>   drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c   | 7 -------
-> >>   7 files changed, 43 deletions(-)
-> >>
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-> >> index 2a32b66959ba..130a0a0c8332 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
-> >> @@ -1330,7 +1330,6 @@ static bool configure_graphics_mode(
-> >>               REG_SET(OUTPUT_CSC_CONTROL, 0,
-> >>                   OUTPUT_CSC_GRPH_MODE, 0);
-> >>               break;
-> >> -            break;
-> >>           case COLOR_SPACE_SRGB_LIMITED:
-> >>               /* TV RGB */
-> >>               REG_SET(OUTPUT_CSC_CONTROL, 0,
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-> >> index d741787f75dc..42c7d157da32 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
-> >> @@ -418,25 +418,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-> >> index 2bbfa2e176a9..382581c4a674 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
-> >> @@ -471,25 +471,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> >> index b622b4b1dac3..7b4b2304bbff 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
-> >> @@ -446,25 +446,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-> >> index 16fe7344702f..3d782b7c86cb 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
-> >> @@ -383,25 +383,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-> >> index 5a5a9cb77acb..e9dd78c484d6 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
-> >> @@ -453,25 +453,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> >> b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> >> index 0eae8cd35f9a..9dbf658162cd 100644
-> >> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> >> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
-> >> @@ -458,25 +458,18 @@ static int map_transmitter_id_to_phy_instance(
-> >>       switch (transmitter) {
-> >>       case TRANSMITTER_UNIPHY_A:
-> >>           return 0;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_B:
-> >>           return 1;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_C:
-> >>           return 2;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_D:
-> >>           return 3;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_E:
-> >>           return 4;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_F:
-> >>           return 5;
-> >> -    break;
-> >>       case TRANSMITTER_UNIPHY_G:
-> >>           return 6;
-> >> -    break;
-> >>       default:
-> >>           ASSERT(0);
-> >>           return 0;
-> >
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+> ---
+>  lib/crypto/sha256.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+> index d43bc39ab05e..099cd11f83c1 100644
+> --- a/lib/crypto/sha256.c
+> +++ b/lib/crypto/sha256.c
+> @@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
+>  	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
+>  
+>  	/* clear any sensitive info... */
+> -	a = b = c = d = e = f = g = h = t1 = t2 = 0;
+>  	memzero_explicit(W, 64 * sizeof(u32));
+>  }
+
+Your change itself is fine, though.  As you mentioned, these assignments get
+optimized out, so they weren't accomplishing anything.
+
+The fact is, there just isn't any way to guarantee in C code that all sensitive
+variables get cleared.
+
+So we shouldn't (and generally don't) bother trying to clear individual u32's,
+ints, etc. like this, but rather only structs and arrays, as clearing those is
+more likely to work as intended.
+
+- Eric
