@@ -2,93 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8914F2967AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:40:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34F082967B3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:43:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373437AbgJVXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 19:40:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58290 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373402AbgJVXkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 19:40:14 -0400
-Received: from gmail.com (unknown [104.132.1.76])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5EB9924631;
-        Thu, 22 Oct 2020 23:40:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603410013;
-        bh=lH4bMrjkVAVlYOh5q1ONShh5MSaDk59ICohHCc0M7t0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=2uz+8OYcd/BhE2Xo8yZZb5GVG3dmq9yIEXUV95/lMVIXyrBDAsZ8EZ6r4LUxd43z1
-         LL19rB6JEGjdc5fwe4Yz2Vx36ZxPpbBP0m55+VA9OTa1R2TiR+zZ9RQhiorf5EalzB
-         0sPs7S2Uhpz7JXGIA/O3k2lWUzZa5uG89oAJwlKs=
-Date:   Thu, 22 Oct 2020 16:40:11 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 3/6] fs: Convert block_read_full_page to be synchronous
-Message-ID: <20201022234011.GD3613750@gmail.com>
-References: <20201022212228.15703-1-willy@infradead.org>
- <20201022212228.15703-4-willy@infradead.org>
+        id S373456AbgJVXnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 19:43:05 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:11057 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373448AbgJVXmt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 19:42:49 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9218c90001>; Thu, 22 Oct 2020 16:42:01 -0700
+Received: from [10.2.173.3] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Thu, 22 Oct
+ 2020 23:42:48 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Roman Gushchin <guro@fb.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH v1 0/2] mm: cma: introduce a non-blocking version of
+ cma_release()
+Date:   Thu, 22 Oct 2020 19:42:45 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
+In-Reply-To: <20201022225308.2927890-1-guro@fb.com>
+References: <20201022225308.2927890-1-guro@fb.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022212228.15703-4-willy@infradead.org>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603410121; bh=BQ1JtoBLX9iPDNRiHWm88Fv3CTmOF38m/ARKNeF1qhc=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=SZeICWpuZP8ssL95rNG0RAfL+IvAfU1lU+TXYjhwBvCkxJGXY2jLvBk+QzlAeFVpL
+         rehN7YSvM0IUIVCtUITidllzkSMuZJeMZwo/ucDfquOGPrxKTatvCW9Tg+UYGEYMFS
+         KqBVZPscUfQWjxifxmGA52v/EUK40sNI/uagmU2VukFY4l5jiqk4j+g2hku4yM6wAm
+         7dZRCeSmBv96fctLa6XXDmRhwOTf8lcacE7VWRDpFQad1R7vWtpNKEd940w7qzbGa9
+         p09dgH4X8E4Qj57Oup1uAu/drt9NWDic5m2VS9MqAwLgHhjDhEyIpZjULCqmw7TBW7
+         scRMl28O82Eug==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:22:25PM +0100, Matthew Wilcox (Oracle) wrote:
-> +static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
-> +		unsigned int nr, struct buffer_head **bhs)
-> +{
-> +	struct bio *bio = NULL;
-> +	unsigned int i;
-> +	int err;
-> +
-> +	blk_completion_init(cmpl, nr);
-> +
-> +	for (i = 0; i < nr; i++) {
-> +		struct buffer_head *bh = bhs[i];
-> +		sector_t sector = bh->b_blocknr * (bh->b_size >> 9);
-> +		bool same_page;
-> +
-> +		if (buffer_uptodate(bh)) {
-> +			end_buffer_async_read(bh, 1);
-> +			blk_completion_sub(cmpl, BLK_STS_OK, 1);
-> +			continue;
-> +		}
-> +		if (bio) {
-> +			if (bio_end_sector(bio) == sector &&
-> +			    __bio_try_merge_page(bio, bh->b_page, bh->b_size,
-> +					bh_offset(bh), &same_page))
-> +				continue;
-> +			submit_bio(bio);
-> +		}
-> +		bio = bio_alloc(GFP_NOIO, 1);
-> +		bio_set_dev(bio, bh->b_bdev);
-> +		bio->bi_iter.bi_sector = sector;
-> +		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
-> +		bio->bi_end_io = readpage_end_bio;
-> +		bio->bi_private = cmpl;
-> +		/* Take care of bh's that straddle the end of the device */
-> +		guard_bio_eod(bio);
-> +	}
+--=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The following is needed to set the bio encryption context for the
-'-o inlinecrypt' case on ext4:
+On 22 Oct 2020, at 18:53, Roman Gushchin wrote:
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 95c338e2b99c..546a08c5003b 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2237,6 +2237,7 @@ static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
- 			submit_bio(bio);
- 		}
- 		bio = bio_alloc(GFP_NOIO, 1);
-+		fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
- 		bio_set_dev(bio, bh->b_bdev);
- 		bio->bi_iter.bi_sector = sector;
- 		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
+> This small patchset introduces a non-blocking version of cma_release()
+> and simplifies the code in hugetlbfs, where previously we had to
+> temporarily drop hugetlb_lock around the cma_release() call.
+>
+> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
+> THP under a memory pressure requires a cma_release() call. If it's
+
+Thanks for the patch. But during 1GB THP split, we only clear
+the bitmaps without releasing the pages. Also in cma_release_nowait(),
+the first page in the allocated CMA region is reused to store
+struct cma_clear_bitmap_work, but the same method cannot be used
+during THP split, since the first page is still in-use. We might
+need to allocate some new memory for struct cma_clear_bitmap_work,
+which might not be successful under memory pressure. Any suggestion
+on where to store struct cma_clear_bitmap_work when I only want to
+clear bitmap without releasing the pages?
+
+Thanks.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+SGPUPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKKwwP/3PFE+jf79qDZDHPvFsnYevRicOlgcouKKF/
+EEoMbvdcy9pL+zjLeb0Bd61SpwHumiX4kimgQmkY5ZU2VybJODexj1YJtNeM45oR
+eJ9iyzRhEczyPYhk0IBX8/tu/0wRLCoBtCMEmRuXPPQ5EptZEo9//s/kee1T6R9C
+2YlVd3e1znXjnUtTjgE4lo/jj0dlos4Uf4j9HuiGyjB6z0HekIKgpGoKp3TJXgdW
+H3dRu9bG/mkfk1/AeXl3JKV6BFXZTkE+pM9Qyz2MpATphcXoJ/84ZkA9CJWNVrsE
+ktc9TnuntzSvml8sePdzsFdVoNq7mxuGJCrjoXgyyimRbUkrr2EFWBYDw0OQJyR6
+oowEhXYpLYI1wiftdLUW+EyfUFyTTuEIE9/J0neb3qXzln3lYgsNYi08kCgM7Tha
+p4JJKqOK05HhDxmnpdingU8p/BHNGKPW8c17dm2e+Ec7pVfc2dnXx4cJ1zpkUQTh
+fXRMbZic8VeUslb+OyZ0aFsm6uvUHvApBoH58l36mmmtZb+0518xwb1EtUXy4Tlf
+ZGGLscqkvBtgZALS3XaO/UHiQoe97kQ23QY+2QRFJWpDs4xDIXG/tTHqDkBu1QCY
+PSm708gUgSftlhkErVNhHMBIRTe/uI94w+wUX+8u0HrrnlXn2NogbV5IEk76vQfA
+OrGx4Qtt
+=91mg
+-----END PGP SIGNATURE-----
+
+--=_MailMate_60AFCD9D-6CCF-4FC6-8444-6B791A110E49_=--
