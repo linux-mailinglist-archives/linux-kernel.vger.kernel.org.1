@@ -2,178 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6ED59295939
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:31:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51197295943
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:33:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508558AbgJVHbH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:31:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2437532AbgJVHbG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:31:06 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
+        id S2508579AbgJVHdb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:33:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53680 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2441599AbgJVHda (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 03:33:30 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 30FC2C0613CE;
+        Thu, 22 Oct 2020 00:33:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=JbI0bflC8HQp7NYmkplX8khPFM4YNdFK0FBEU2KovRA=; b=lMsJhYJGc3BhDxJe68Hgu906om
+        8Qon8SVUIOhCVFuRh77uHlceHn4dW4RO1HFDbxJpb/Sk9mzOY+XWXyTgrQqS2EoDdglvOg8WVe9MJ
+        0N8c+ERqyETP4BuQ2qpnicSgJF4qro87FMpPt4G8VWiqvBj9nXYRhLIbKNNyxSVJRJBtcMoDTxKC1
+        Uyu1v2J+K/vCxRtKmxxi6Hl4iirCl7pCaSOWmLIAezfrHRAS2pAtWZ9xKLDUgBZ9xclunQAUFM6bI
+        PPWvYBw+4GGlfLjNCyByVldTQ/emii876kndho+qdxv0hvvZHqveaESL6Y3+55wsXV2XLq7zJn4Xb
+        b/00Gw6g==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVV5w-00028b-Mt; Thu, 22 Oct 2020 07:33:08 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 40F8E20848;
-        Thu, 22 Oct 2020 07:31:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603351865;
-        bh=7I+PcjTKEQcGGYCICKHT2LTWj9pWa7Y/4OLDorb9ZbU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=BRnVw0rtBqN4j0r3C7UfFHA7le9H0oE5px9aGx5xdpfJ0eMqDzErD5w53h3IqPh2i
-         /1Rpkpz0GqlkemygICFGE8JgxKdpr0uCCsbkbat/RqKEA5HwnfIA7TZnlY2hbFXpit
-         joigz02cSH62FxuNBgAKJnz5mxunkyNdJcUhmR+4=
-Date:   Thu, 22 Oct 2020 16:31:00 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Borislav Petkov <bp@alien8.de>
-Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
-        lkml <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC] Have insn decoder functions return success/failure
-Message-Id: <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
-In-Reply-To: <20201021164558.GB4050@zn.tnic>
-References: <20201020120232.GD11583@zn.tnic>
-        <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
-        <20201020143746.GG11583@zn.tnic>
-        <20201021095013.d82637f84af564ae4363189d@kernel.org>
-        <20201021092750.GA4050@zn.tnic>
-        <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
-        <20201021164558.GB4050@zn.tnic>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A8B873011C6;
+        Thu, 22 Oct 2020 09:33:07 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 94AE72BB9BA76; Thu, 22 Oct 2020 09:33:07 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 09:33:07 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Joe Perches <joe@perches.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
+        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
+        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andrey Ryabinin <aryabinin@virtuozzo.com>,
+        Alexander Potapenko <glider@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
+        kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
+        linux-mm <linux-mm@kvack.org>
+Subject: Re: [PATCH -next] treewide: Remove stringification from __alias
+ macro definition
+Message-ID: <20201022073307.GP2628@hirez.programming.kicks-ass.net>
+References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 18:45:58 +0200
-Borislav Petkov <bp@alien8.de> wrote:
+On Wed, Oct 21, 2020 at 11:58:25AM -0700, Joe Perches wrote:
+> Like the __section macro, the __alias macro uses
+> macro # stringification to create quotes around
+> the section name used in the __attribute__.
+> 
+> Remove the stringification and add quotes or a
+> stringification to the uses instead.
 
-> On Wed, Oct 21, 2020 at 11:26:13PM +0900, Masami Hiramatsu wrote:
-> > Hmm, I meant someone might think it can be used for filtering the
-> > instruction something like,
-> > 
-> > insn_init(insn, buf, buflen, 1);
-> > ret = insn_get_length(insn);
-> > if (!ret) {
-> > 	/* OK, this is safe */
-> > 	patch_text(buf, trampoline);
-> > }
-> > 
-> > No, we need another validator for such usage.
-> 
-> Well, I think calling insn_get_length() should give you only the
-> *length* of the insn and nothing else - I mean that is what the function
-> is called. And I believe current use is wrong.
-> 
-> Examples:
-> 
-> arch/x86/kernel/kprobes/core.c:
->                 insn_get_length(&insn);
-> 
->                 /*
->                  * Another debugging subsystem might insert this breakpoint.
->                  * In that case, we can't recover it.
->                  */
->                 if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
-> 
-> So this has called get_length but it is far from clear that after that
-> call, the opcode bytes in insn.opcode.bytes are there.
-
-No, insn_get_length() implies it decodes whole of the instruction.
-(yeah, we need an alias of that, something like insn_get_complete())
-
-> 
-> What that should do instead IMO is this:
-> 
-> 	insn_get_opcode(&insn);
-> 
-
-No, you've cut the last lines of that loop.
-
-                /*
-                 * Another debugging subsystem might insert this breakpoint.
-                 * In that case, we can't recover it.
-                 */
-                if (insn.opcode.bytes[0] == INT3_INSN_OPCODE)
-                        return 0;
-                addr += insn.length;
-        }
-
-I need insn.length too. Of course we can split it into 2 calls. But
-as I said, since the insn_get_length() implies it decodes all other
-parts, I just called it once.
-
-> and *then* the return value can tell you whether the opcode bytes were
-> parsed properly or not. See what I mean?
-
-I agreed to check the return value of insn_get_length() at that point
-only for checking whether the instruction parsing was failed or not.
-
-> 
-> That's even documented that way:
-> 
-> /**
->  * insn_get_opcode - collect opcode(s)
->  * @insn:       &struct insn containing instruction
->  *
->  * Populates @insn->opcode, updates @insn->next_byte to point past the
->  * opcode byte(s), and set @insn->attr (except for groups).
-> 
-> 
-> Similarly here:
-> 
-> static enum es_result vc_decode_insn(struct es_em_ctxt *ctxt)
-> 
-> 	...
-> 
->         insn_get_length(&ctxt->insn);
-> 
->         ret = ctxt->insn.immediate.got ? ES_OK : ES_DECODE_FAILED;
-> 
-> that thing wants to decode the insn but it is looking whether it parsed
-> an *immediate*?!
-
-Hm, it is better to call insn_get_immediate() if it doesn't use length later.
-
-> 
-> I'm not saying this is necessarily wrong - just the naming nomenclature
-> and the API should be properly defined when you call a function of the
-> insn decoder, what you are guaranteed to get and what a caller can
-> assume after that. And then the proper functions be called.
-
-Would you mean we'd better have something like insn_get_until_immediate() ? 
-
-Since the x86 instruction is CISC, we can not decode intermediate
-parts. The APIs follows that. If you are confused, I'm sorry about that.
-
-> 
-> In the kprobes/core.c example above, it does a little further:
-> 
-> 	ddr += insn.length;	
-> 
-> which, IMO, it should be either preceeded by a call to insn_get_length()
-> - yes, this time we want the insn length or, the code should call a
-> decoding function which gives you *both* length* and opcode bytes.
-> insn_decode_insn() or whatever. And *that* should be documented in that
-> function's kernel-doc section. And so on...
-
-Actually, there is a historical reason too. INT3 check was added afterwards.
-At first, I just calculated the instruction length in the loop...
-
-Thank you,
-
-> 
-> Does that make more sense?
-> 
-> Thx.
-> 
-> -- 
-> Regards/Gruss,
->     Boris.
-> 
-> https://people.kernel.org/tglx/notes-about-netiquette
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
+There's a complete lack of rationale for this change.
