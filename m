@@ -2,104 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F01642956F1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:47:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CD752956F3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:48:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895516AbgJVDr6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 23:47:58 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33328 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2443108AbgJVDr5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 23:47:57 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.59])
-        by Forcepoint Email with ESMTP id 4B21E86542CC63C75B47;
-        Thu, 22 Oct 2020 11:47:52 +0800 (CST)
-Received: from [127.0.0.1] (10.143.60.252) by DGGEMS401-HUB.china.huawei.com
- (10.3.19.201) with Microsoft SMTP Server id 14.3.487.0; Thu, 22 Oct 2020
- 11:47:46 +0800
-Subject: Re: [PATCH rfc 0/2] mm: cma: make cma_release() non-blocking
-To:     Roman Gushchin <guro@fb.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>
-References: <20201016225254.3853109-1-guro@fb.com>
- <a94644b5-5867-0518-34e9-30fa6c510f81@hisilicon.com>
- <20201022024526.GD300658@carbon.dhcp.thefacebook.com>
-From:   "Xiaqing (A)" <saberlily.xia@hisilicon.com>
-Message-ID: <c4f951c3-acef-a666-0e80-2aa820432ccc@hisilicon.com>
-Date:   Thu, 22 Oct 2020 11:47:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:52.0) Gecko/20100101
- Thunderbird/52.3.0
+        id S2895544AbgJVDs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 23:48:56 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:33498 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2443824AbgJVDs4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 23:48:56 -0400
+Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kVRaq-0000iQ-SX; Wed, 21 Oct 2020 23:48:48 -0400
+Date:   Wed, 21 Oct 2020 23:48:46 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Hugh Dickins <hughd@google.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+Message-ID: <20201021234846.5cc97e62@imladris.surriel.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <20201022024526.GD300658@carbon.dhcp.thefacebook.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.143.60.252]
-X-CFilter-Loop: Reflected
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+The allocation flags of anonymous transparent huge pages can be controlled
+through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+help the system from getting bogged down in the page reclaim and compaction
+code when many THPs are getting allocated simultaneously.
 
+However, the gfp_mask for shmem THP allocations were not limited by those
+configuration settings, and some workloads ended up with all CPUs stuck
+on the LRU lock in the page reclaim code, trying to allocate dozens of
+THPs simultaneously.
 
-On 2020/10/22 10:45, Roman Gushchin wrote:
+This patch applies the same configurated limitation of THPs to shmem
+hugepage allocations, to prevent that from happening.
 
-> On Thu, Oct 22, 2020 at 09:54:53AM +0800, Xiaqing (A) wrote:
->>
->> On 2020/10/17 6:52, Roman Gushchin wrote:
->>
->>> This small patchset makes cma_release() non-blocking and simplifies
->>> the code in hugetlbfs, where previously we had to temporarily drop
->>> hugetlb_lock around the cma_release() call.
->>>
->>> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
->>> THP under a memory pressure requires a cma_release() call. If it's
->>> a blocking function, it complicates the already complicated code.
->>> Because there are at least two use cases like this (hugetlbfs is
->>> another example), I believe it's just better to make cma_release()
->>> non-blocking.
->>>
->>> It also makes it more consistent with other memory releasing functions
->>> in the kernel: most of them are non-blocking.
->>>
->>>
->>> Roman Gushchin (2):
->>>     mm: cma: make cma_release() non-blocking
->>>     mm: hugetlb: don't drop hugetlb_lock around cma_release() call
->>>
->>>    mm/cma.c     | 51 +++++++++++++++++++++++++++++++++++++++++++++++++--
->>>    mm/hugetlb.c |  6 ------
->>>    2 files changed, 49 insertions(+), 8 deletions(-)
->>>
->> I don't think this patch is a good idea.It transfers part or even all of the time of
->> cma_release to cma_alloc, which is more concerned by performance indicators.
-> I'm not quite sure: if cma_alloc() is racing with cma_release(), cma_alloc() will
-> wait for the cma_lock mutex anyway. So we don't really transfer anything to cma_alloc().
->
->> On Android phones, CPU resource competition is intense in many scenarios,
->> As a result, kernel threads and workers can be scheduled only after some ticks or more.
->> In this case, the performance of cma_alloc will deteriorate significantly,
->> which is not good news for many services on Android.
-> Ok, I agree, if the cpu is heavily loaded, it might affect the total execution time.
->
-> If we aren't going into the mutex->spinlock conversion direction (as Mike suggested),
-> we can address the performance concerns by introducing a cma_release_nowait() function,
-> so that the default cma_release() would work in the old way.
-> cma_release_nowait() can set an atomic flag on a cma area, which will cause following
-> cma_alloc()'s to flush the release queue. In this case there will be no performance
-> penalty unless somebody is using cma_release_nowait().
-> Will it work for you?
+This way a THP defrag setting of "never" or "defer+madvise" will result
+in quick allocation failures without direct reclaim when no 2MB free
+pages are available.
 
-That looks good to me.
+Signed-off-by: Rik van Riel <riel@surriel.com>
+---
 
-Thanks!
+diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+index c603237e006c..0a5b164a26d9 100644
+--- a/include/linux/gfp.h
++++ b/include/linux/gfp.h
+@@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+ extern void pm_restrict_gfp_mask(void);
+ extern void pm_restore_gfp_mask(void);
+ 
++extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
++
+ #ifdef CONFIG_PM_SLEEP
+ extern bool pm_suspended_storage(void);
+ #else
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 9474dbc150ed..9b08ce5cc387 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+  *	    available
+  * never: never stall for any thp allocation
+  */
+-static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
++gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+ {
+ 	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
+ 
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 537c137698f8..d1290eb508e5 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -1545,8 +1545,11 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
+ 		return NULL;
+ 
+ 	shmem_pseudo_vma_init(&pvma, info, hindex);
+-	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
+-			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
++	/* Limit the gfp mask according to THP configuration. */
++	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
++	gfp &= alloc_hugepage_direct_gfpmask(&pvma);
++	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
++			       true);
+ 	shmem_pseudo_vma_destroy(&pvma);
+ 	if (page)
+ 		prep_transhuge_page(page);
 
->
-> Thank you!
->
->
-
-
+-- 
+All rights reversed.
