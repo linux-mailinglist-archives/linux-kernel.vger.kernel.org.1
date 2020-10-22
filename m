@@ -2,109 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E04A295F99
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:17:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DC90295F9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:17:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899457AbgJVNRe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:17:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50400 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899445AbgJVNRb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:17:31 -0400
-Received: from mail-pf1-x444.google.com (mail-pf1-x444.google.com [IPv6:2607:f8b0:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B26B6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:17:29 -0700 (PDT)
-Received: by mail-pf1-x444.google.com with SMTP id j18so1127249pfa.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:17:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=95EtoPtq6IhF7jVfCLm2ubW0zmAlnuViyd/yfLI6I2Q=;
-        b=JLICfTM8wkAkoeu/9wJXsAVQVwcIq/0L2dvY2w5FMuiWxtn/7vLcfJGTDShfA/20bI
-         HqHj4WAUsBH6VEzGO2V/cXYVgMk8OYYYJw/fsqivUasRB9On2wnATVnNPC4enZQc0vcx
-         56l3i0xS7vzwIjdVptJkXjzGRpPJRU2bWXOUbhVUmXx/3rhaEeGFmyGuNdQZwsHU45LI
-         yYNh8DHBYn29Iy07IOgOfSb1j9JEGjBM9RlqNRmt/tp8/Fze+shK8j+6Fq5D6VbfVZyX
-         JoZaXMFo5GhVxRg6/yC3wEbfB5MkMMYioHv2WfCLSgzd1kHCZdLrZIsoe7uBgj3BLsYG
-         5ZNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=95EtoPtq6IhF7jVfCLm2ubW0zmAlnuViyd/yfLI6I2Q=;
-        b=HnXRXbgj19cwkQqHw0PzzOjNXPSAWiIIAZG0xxn22CYu+dKMFnnXeOGJQwvZKff2sT
-         0KrWgySJpoC+k/xKcrafvfIIVvA1klW4d83r3AbVXRRemaSElRSMNdFc7ZEZxppr2XJZ
-         qhhtCJjz2RcJ3EsNKmgikC+/ABpUl+TnkU8x2cCOwnXIZphgSmvPFD2MfrDIRkICJ0lj
-         wq9Je45kPw98/MS/sZKXyTzeURDbY7kACp99ZNW9reYjM/2o0JadMFBHGN7tPt94QjaO
-         y01JrXNzi0lOr7L8Chx7kPx+okvDFRF1jexmsz9/riNvkaiNttzKjoWrSlLn0hGfkM42
-         O90Q==
-X-Gm-Message-State: AOAM5310l4YuvnquTmQ4X/3f2LBsvJkgyydmOx/sbacMpgMY0/+2BTgw
-        OzuoEEsoXjhMSrMyMDLWXJWPdMTLPLoQEA==
-X-Google-Smtp-Source: ABdhPJyHdppZW0RFvvl0AaAOkc4OPMxfBBSE8nQVLbXo+W5/x+U7rzJWGVU+dyLXQv0nbYMASfK12A==
-X-Received: by 2002:a63:4d45:: with SMTP id n5mr2073942pgl.389.1603372648926;
-        Thu, 22 Oct 2020 06:17:28 -0700 (PDT)
-Received: from nebulus.mtv.corp.google.com ([2620:15c:211:200:4a0f:cfff:fe35:d61b])
-        by smtp.gmail.com with ESMTPSA id e2sm1400401pgd.27.2020.10.22.06.17.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 06:17:27 -0700 (PDT)
-From:   Mark Salyzyn <salyzyn@android.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     kernel-team@android.com, John Stultz <john.stultz@linaro.org>,
-        Mark Salyzyn <salyzyn@android.com>,
-        linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Subject: [RESEND PATCH v18 4/4] overlayfs: inode_owner_or_capable called during execv
-Date:   Thu, 22 Oct 2020 06:16:52 -0700
-Message-Id: <20201022131652.2784152-1-salyzyn@android.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S2899468AbgJVNRx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:17:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43654 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2899459AbgJVNRx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:17:53 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603372672;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=q3XLuJAiAJI40OqF2MlzN6uIGy9R9OJtoodmMnAlqVA=;
+        b=R/lMCrLLsJ9oxMG8VYEjoj5XbtqmyCxxnkVfZT529iQ9EyrPI8NQo9Ft0fvftXIwPN/QRw
+        WuR6R+i/DjPdKXhmnkCtsIeWGL+zxgLuHolPEnxjO0iiZcsdVvaHoZZg8tE+obiBqgPbb8
+        ioZMsgIylAxUhxAT7O3IyhVn5ER3N4w=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0FCABAE35;
+        Thu, 22 Oct 2020 13:17:52 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] xen/events: only register debug interrupt for
+ 2-level events
+To:     =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20201022094907.28560-1-jgross@suse.com>
+ <20201022094907.28560-4-jgross@suse.com>
+ <1de24e42-6cb7-4ecb-0eb2-c4a15dc8afc9@suse.com>
+ <98f76c98-00d5-3238-a54f-cce52419160f@suse.com>
+From:   Jan Beulich <jbeulich@suse.com>
+Message-ID: <b21d3544-2257-dee5-222d-f4dade94d167@suse.com>
+Date:   Thu, 22 Oct 2020 15:17:52 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
+In-Reply-To: <98f76c98-00d5-3238-a54f-cce52419160f@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: John Stultz <john.stultz@linaro.org>
+On 22.10.2020 15:09, Jürgen Groß wrote:
+> On 22.10.20 12:35, Jan Beulich wrote:
+>> On 22.10.2020 11:49, Juergen Gross wrote:
+>>> @@ -2080,10 +2080,12 @@ void __init xen_init_IRQ(void)
+>>>   	int ret = -EINVAL;
+>>>   	evtchn_port_t evtchn;
+>>>   
+>>> -	if (fifo_events)
+>>> +	if (xen_fifo_events)
+>>>   		ret = xen_evtchn_fifo_init();
+>>> -	if (ret < 0)
+>>> +	if (ret < 0) {
+>>>   		xen_evtchn_2l_init();
+>>> +		xen_fifo_events = false;
+>>> +	}
+>>
+>> Another note: While it may not matter right here, maybe better
+>> first set the variable and the call the function?
+> 
+> I don't think this is really important, TBH.
+> 
+> This code is executed before other cpus are up and we'd have major
+> other problems in case the sequence would really matter here.
 
-Using old_creds as an indication that we are not overriding the
-credentials, bypass call to inode_owner_or_capable.  This solves
-a problem with all execv calls being blocked when using the caller's
-credentials.
+Fair enough; I was thinking in particular that it ought to be
+legitimate for xen_evtchn_2l_init() to BUG_ON(xen_fifo_events).
 
-Signed-off-by: John Stultz <john.stultz@linaro.org>
-Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-Fixes: 05acefb4872da ("ovl: check permission to open real file")
-Cc: linux-fsdevel@vger.kernel.org
-Cc: linux-unionfs@vger.kernel.org
-Cc: Stephen Smalley <sds@tycho.nsa.gov>
-Cc: linux-kernel@vger.kernel.org
-Cc: linux-security-module@vger.kernel.org
-Cc: kernel-team@android.com
-Cc: selinux@vger.kernel.org
-
-v18 - rebase
-
-v17 - rebase
-
-v16 - introduced fix over rebased series
----
- fs/overlayfs/file.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/overlayfs/file.c b/fs/overlayfs/file.c
-index b1357bb067d9..9ab9663b02d8 100644
---- a/fs/overlayfs/file.c
-+++ b/fs/overlayfs/file.c
-@@ -53,7 +53,7 @@ static struct file *ovl_open_realfile(const struct file *file,
- 	err = inode_permission(realinode, MAY_OPEN | acc_mode);
- 	if (err) {
- 		realfile = ERR_PTR(err);
--	} else if (!inode_owner_or_capable(realinode)) {
-+	} else if (old_cred && !inode_owner_or_capable(realinode)) {
- 		realfile = ERR_PTR(-EPERM);
- 	} else {
- 		realfile = open_with_fake_path(&file->f_path, flags, realinode,
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Jan
