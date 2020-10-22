@@ -2,129 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2EC1295708
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E1D729570C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:12:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725986AbgJVEEv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:04:51 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:24013 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1725927AbgJVEEv (ORCPT
+        id S1726050AbgJVEMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:12:06 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50980 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726020AbgJVEMG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:04:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603339489;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=Ae2OaQqqHV4++U7pFL5husft7G1mWnlpANfXuyKi6ic=;
-        b=PdX+ADNBc0avWVAEtwwbP/2sMEPaBLJ2y1KQdQXEuAUB3Hd0T30RstkTQ/y/TJRuTpxxar
-        ZHME/B+Y82GmkghrY659gzP9zEIJJ3ysw15tfCbwKQ7JWHrT/2wqHnyRoLdys7oV94tALY
-        uLbjbQqg+XTawEryU7Lwq9EkctFXe3k=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-218-OMoJQYF3OS2l9Fx0Kh6lrw-1; Thu, 22 Oct 2020 00:04:45 -0400
-X-MC-Unique: OMoJQYF3OS2l9Fx0Kh6lrw-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id EC30686ABCE;
-        Thu, 22 Oct 2020 04:04:43 +0000 (UTC)
-Received: from localhost (ovpn-12-84.pek2.redhat.com [10.72.12.84])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id C036D60C04;
-        Thu, 22 Oct 2020 04:04:42 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 12:04:40 +0800
-From:   "bhe@redhat.com" <bhe@redhat.com>
-To:     Rahul Gopakumar <gopakumarr@vmware.com>
-Cc:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "natechancellor@gmail.com" <natechancellor@gmail.com>,
-        "ndesaulniers@google.com" <ndesaulniers@google.com>,
-        "clang-built-linux@googlegroups.com" 
-        <clang-built-linux@googlegroups.com>,
-        "rostedt@goodmis.org" <rostedt@goodmis.org>,
-        Rajender M <manir@vmware.com>,
-        Yiu Cho Lau <lauyiuch@vmware.com>,
-        Peter Jonasson <pjonasson@vmware.com>,
-        Venkatesh Rajaram <rajaramv@vmware.com>
-Subject: Re: Performance regressions in "boot_time" tests in Linux 5.8 Kernel
-Message-ID: <20201022040440.GX25604@MiWiFi-R3L-srv>
-References: <DM6PR05MB52921FF90FA01CC337DD23A1A4080@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201010061124.GE25604@MiWiFi-R3L-srv>
- <DM6PR05MB529281F914953691E0F52D1CA4070@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201013131735.GL25604@MiWiFi-R3L-srv>
- <DM6PR05MB52926FDAB0E58F5CFA2E892DA41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
- <20201020151814.GU25604@MiWiFi-R3L-srv>
- <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
+        Thu, 22 Oct 2020 00:12:06 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07CC6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id x13so166593pgp.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lQhpluPH5qHzdGU1m9lM1IM2rcQRF5f75ETwpEdF6uY=;
+        b=f1BMc+bjjOYUfqER0mjy5LXht/UnuAA1w76etaCKD1D1S+RlWaoTkCu5aSYgZ8DLYo
+         AuJdWqOwD8FAkHM9/GP8kaHilwaBJNre5byK5Ftq0KWPKaHcoc9DtbI0RnCZK3uhjshA
+         1L9jbshbzkiiiwSrkFt2biJbQmAISYfoBdfIKKB8BcSkgh2M9TbKhL1RyD92QoUyoUkG
+         rghwJmNU10hNOL3xeMiPjxiu0tXWm/7G71T62hBLmNo2oGZMSci4Ul1/JAyfMn3xk9Ab
+         abBamVgTUwSf3BiCtkOu/Rj9/+r74mVIp1OpPXaKkbTC9IeUGDSX1xYBnhoc0oQ7aGdH
+         xsYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lQhpluPH5qHzdGU1m9lM1IM2rcQRF5f75ETwpEdF6uY=;
+        b=OrRh2Y1H7KzncqhAw/mWdAdhLon7MvVP/g0j+NccovlsMbkv82Z52x7X2BoZkBN7LA
+         tuKWHyYLWkBv0t+jK8sh/Eh5gPNK1QAlTKkfuNhnKth5X9s+SFnGwTPxH9fEkuVEbcwY
+         SodCDDLBq37uXcry2tNeC7MpqmYRmEGJuPQrXEe5iikJC+DsR5s7xKjiQYWawz8Cr8BD
+         okaKNDM4+OxlmiPZF5gmTufZPuRPsWUuX534xT+BLYpyCcHnTiaudpRMVVDR/GLLZMY4
+         AqVGyg8uBMzH9IjOgMxyMc4t+jqNOhWgFrw0mqZqoYDa/KgkZ1OmsJK6flOpzO7ZNyJ3
+         rOkA==
+X-Gm-Message-State: AOAM531yacDS7x1gXURsH+Oq7ai/O2KizqBy97jOGZYX93f/QiflnHPL
+        YswWe7VOlpG6Rh3laxaVK/Ss0LXpQXXREdSPTmp2bA==
+X-Google-Smtp-Source: ABdhPJzSJ6KtTk5GozpZmod5MQ1LR1Oaxxto6Ruzf4ywJ3/iOB2Prv8JciiCvZBnC2k6EbbYjgoxBopq2v9dgFX6ACk=
+X-Received: by 2002:a63:1e5e:: with SMTP id p30mr701573pgm.159.1603339925261;
+ Wed, 21 Oct 2020 21:12:05 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <DM6PR05MB529293AC2B077B5170FFE625A41F0@DM6PR05MB5292.namprd05.prod.outlook.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+References: <20201022030455.1871987-1-davidgow@google.com>
+In-Reply-To: <20201022030455.1871987-1-davidgow@google.com>
+From:   Brendan Higgins <brendanhiggins@google.com>
+Date:   Wed, 21 Oct 2020 21:11:54 -0700
+Message-ID: <CAFd5g46D69b1GgGhL4jvCLUCDG3NDja2ZDXYxx2a1Rv=DQtEmA@mail.gmail.com>
+Subject: Re: [PATCH] kunit: Fix kunit.py --raw_output option
+To:     David Gow <davidgow@google.com>
+Cc:     Shuah Khan <skhan@linuxfoundation.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Rahul,
+On Wed, Oct 21, 2020 at 8:05 PM David Gow <davidgow@google.com> wrote:
+>
+> Due to the raw_output() function on kunit_parser.py actually being a
+> generator, it only runs if something reads the lines it returns. Since
+> we no-longer do that (parsing doesn't actually happen if raw_output is
+> enabled), it was not printing anything.
+>
+> Fixes:  45ba7a893ad89114e773b3dc32f6431354c465d6 ("kunit: kunit_tool: Separate out config/build/exec/parse")
+> Signed-off-by: David Gow <davidgow@google.com>
 
-On 10/20/20 at 03:26pm, Rahul Gopakumar wrote:
-> >> Here, do you mean it even cost more time with the patch applied?
-> 
-> Yes, we ran it multiple times and it looks like there is a 
-> very minor increase with the patch.
-> 
-...... 
-> On 10/20/20 at 01:45pm, Rahul Gopakumar wrote:
-> > Hi Baoquan,
-> > 
-> > We had some trouble applying the patch to problem commit and the latest upstream commit. Steven (CC'ed) helped us by providing the updated draft patch. We applied it on the latest commit (3e4fb4346c781068610d03c12b16c0cfb0fd24a3), and it doesn't look like improving the performance numbers.
-> 
-> Thanks for your feedback. From the code, I am sure what the problem is,
-> but I didn't test it on system with huge memory. Forget mentioning my
-> draft patch is based on akpm/master branch since it's a mm issue, it
-> might be a little different with linus's mainline kernel, sorry for the
-> inconvenience.
-> 
-> I will test and debug this on a server with 4T memory in our lab, and
-> update if any progress.
-> 
-> > 
-> > Patch on latest commit - 20.161 secs
-> > Vanilla latest commit - 19.50 secs
-> 
+Thanks for fixing this!
 
-Can you tell how you measure the boot time? I checked the boot logs you
-attached, E.g in below two logs, I saw patch_dmesg.log even has less
-time during memmap init. Now I have got a machine with 1T memory for
-testing, but didn't see obvious time cost increase. At above, you said
-"Patch on latest commit - 20.161 secs", could you tell where this 20.161
-secs comes from, so that I can investigate and reproduce on my system?
-
-patch_dmesg.log:
-[    0.023126] Initmem setup node 1 [mem 0x0000005600000000-0x000000aaffffffff]
-[    0.023128] On node 1 totalpages: 89128960
-[    0.023129]   Normal zone: 1392640 pages used for memmap
-[    0.023130]   Normal zone: 89128960 pages, LIFO batch:63
-[    0.023893] Initmem setup node 2 [mem 0x000000ab00000000-0x000001033fffffff]
-[    0.023895] On node 2 totalpages: 89391104
-[    0.023896]   Normal zone: 1445888 pages used for memmap
-[    0.023897]   Normal zone: 89391104 pages, LIFO batch:63
-[    0.026744] ACPI: PM-Timer IO Port: 0x448
-[    0.026747] ACPI: Local APIC address 0xfee00000
-
-vanilla_dmesg.log:
-[    0.024295] Initmem setup node 1 [mem 0x0000005600000000-0x000000aaffffffff]
-[    0.024298] On node 1 totalpages: 89128960
-[    0.024299]   Normal zone: 1392640 pages used for memmap
-[    0.024299]   Normal zone: 89128960 pages, LIFO batch:63
-[    0.025289] Initmem setup node 2 [mem 0x000000ab00000000-0x000001033fffffff]
-[    0.025291] On node 2 totalpages: 89391104
-[    0.025292]   Normal zone: 1445888 pages used for memmap
-[    0.025293]   Normal zone: 89391104 pages, LIFO batch:63
-[    2.096982] ACPI: PM-Timer IO Port: 0x448
-[    2.096987] ACPI: Local APIC address 0xfee00000
-
+Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
+Tested-by: Brendan Higgins <brendanhiggins@google.com>
