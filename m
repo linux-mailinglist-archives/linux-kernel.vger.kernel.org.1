@@ -2,147 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0CFE02965D1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:11:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EF8D2965DE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:16:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898020AbgJVULa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:11:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58236 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507113AbgJVUL2 (ORCPT
+        id S371401AbgJVUQL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:16:11 -0400
+Received: from de-smtp-delivery-102.mimecast.com ([62.140.7.102]:30633 "EHLO
+        de-smtp-delivery-102.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S367966AbgJVUQK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:11:28 -0400
-Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BBB21C0613DD
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 13:11:27 -0700 (PDT)
-Received: by mail-pg1-x542.google.com with SMTP id o7so1647004pgv.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 13:11:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GumHU2X+g85YksdsSI4rtK9zksU56rVy/CgxVuW0jEM=;
-        b=vObNVdN2VFhAojESuCXkrxhn1YIwWVv+1XhIW4tZBL+fxMiFOMf/wpbwdQdbTEuqzU
-         didUUL5vkJxiQnySAkNm5bA5dzi4HDPRY/b2q9PCHYr38o1QdWg4eoCCMy0LZ69odEBE
-         EeVL+yKYldv1+Aa2ZS3w6i1XFzR6cyTrr6WpyCHfwh/bI39Aml+4GPRR3PK53sN4m6b3
-         rUVDazS3OFa6481GJ9+htMab1H1YbLsr5SViapf30nhQCEj8D6AxmtXaycQnaAAFnPK+
-         ve/0E2puLZtKaH/rY1wRoNU3uLbs1Hp/JNHjorNUJ0gL9lCRxpciXdv4OO2qkM+X3ZVh
-         gy/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GumHU2X+g85YksdsSI4rtK9zksU56rVy/CgxVuW0jEM=;
-        b=BnKKPKmqOrS/RZoGdA5e8vKI/sqLmJ/3nyd959Yw+8P16GG0b5SX9V+lAQZ92YoKms
-         mPzpq2z0+3ZzVCXbMlZrk6hR1jYBOJiRWWEo8LjsDmiltMLObAyrDS1aYDqSWVTmMJr+
-         5HpXjZJaWk6cCzKpXkPNJm3aRCYPPW4BBjJ5MI+QSvLHJ0/n7xMKQnJFrbJZb83U+ehs
-         YUb9LNe2ve4QTTxHWvmj+qEFq/+ctAYFrfQzhzW4rXIhaCmFEzMlIFPjCyMpf3L8C2Qi
-         kxOuGA+RYi7djWqL58u91hz6GOxnJ9GsCpjJiJUBFu/OYKKhoBAPCJrNDHDOu5QO6zbt
-         cjyQ==
-X-Gm-Message-State: AOAM530ip5inGNqELVBsu6hIw3rKizoddbi9IBzQKWxJ2jMjfvu+u0C5
-        5/0D+CC0SNvIgCYs41I648W38hkZdGPjOboaRLdJYQ==
-X-Google-Smtp-Source: ABdhPJzJwPfOlPnqmI7/5P7ibjxaxjQ3K/49C5Uiz6yY7FpMEBFECdyjYA4Y8meqnBbTveKDbTZgpESx4RovmeoudXg=
-X-Received: by 2002:a17:90a:740a:: with SMTP id a10mr3865197pjg.32.1603397486718;
- Thu, 22 Oct 2020 13:11:26 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201022090155.GA1483166@kroah.com> <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com> <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com> <20201022132342.GB8781@lst.de>
- <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com> <CAKwvOdnix6YGFhsmT_mY8ORNPTOsN3HwS33Dr0Ykn-pyJ6e-Bw@mail.gmail.com>
- <CAK8P3a3LjG+ZvmQrkb9zpgov8xBkQQWrkHBPgjfYSqBKGrwT4w@mail.gmail.com>
- <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com> <20201022192458.GV3576660@ZenIV.linux.org.uk>
-In-Reply-To: <20201022192458.GV3576660@ZenIV.linux.org.uk>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Thu, 22 Oct 2020 13:11:14 -0700
-Message-ID: <CAKwvOdkLHozVUs85Wx-_qo2OfbdkKwtmaJfQFJfvxi_vpEYxWQ@mail.gmail.com>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
+        Thu, 22 Oct 2020 16:16:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=mimecast20200619;
+        t=1603397767;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=khqhyXkq9FqrDhR0zj2Ls/cxizFuEQpsBpag30NOVtc=;
+        b=eZdN77CL3kM3edHIc66La6vLYNtBSfB9Y7yRIVY2Kg1XEgS5r2pXsFsukeMkqn8Xh6vo43
+        /Xuf5/vCjPnScl9hA8AiNL/DRb+axLYR34d4Zl3A+NbHyv63Uc48BiOV/d4rdqlfaAEsad
+        W42Ey7fp7HH0rXOeH+zv35+xcW3+z28=
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com
+ (mail-vi1eur05lp2177.outbound.protection.outlook.com [104.47.17.177])
+ (Using TLS) by relay.mimecast.com with ESMTP id
+ de-mta-28-G_C3Rag-MzOlVVjC17dc9g-1; Thu, 22 Oct 2020 22:16:05 +0200
+X-MC-Unique: G_C3Rag-MzOlVVjC17dc9g-1
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Js9TlemXgJ93qHlFLw7Sc9BcBagHlO1rUGMGYft0gMKU2EEHVTWqRKNgHgmPPndx92+iVAu8Sl81Yn8Rj5BZCxpx+LXvo4+3qhT7RTHN35/2MXwAPEv3VDKBuRgB65ymMNN4qoFQFC75I0F/ltAql403aky9YI0fWGCoN6lMqzWnM3hvXbEVsJeD2bv9rmlWX+JRJkrkn11X1FR5whYs34dGag62jVu5C/OF/6QBkl3y/y918sWvDygU/u/cN8TcKnoSp8Cjr4AQz9dolEcXHuJkguyu+1sJF5agQkCESXIFnwFEzcZ/ssyivqcZDFOlLv+ZLFBjHS/Idyg4gXn55g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=khqhyXkq9FqrDhR0zj2Ls/cxizFuEQpsBpag30NOVtc=;
+ b=IalCLXzET8N6Fc3zBOH/Ibv2Ltu4omLPJv8APTddXy/HE0/6oypwfqg2XoFL48lllMrCuKSrcvOZYj8rKIULmpWaN0+3M8E4HC5qSuj73nXlilwW+WNvlBum0q0q8G5zyr37J0Fu7t6bQEB0PfIOuHnqY1/bJZ2bLphKDIxKkJSuRr7koglKKqR3un1ZnWmzBBGxkSiRtgY7WsEabz7Fkgdhy4wo57BKhhknsJj9N9vzfU5Xwrn48NkvgVHiL3BmxJV6M9jx4WkfN8zaYHl0HEKoJVxkEOea9C88OHSmSMSiKZssjlZz7wqvErii8RpaYlhhRCEef10JDtNgy+aEmQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=suse.com; dmarc=pass action=none header.from=suse.com;
+ dkim=pass header.d=suse.com; arc=none
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=suse.com;
+Received: from AM0PR04MB4530.eurprd04.prod.outlook.com (2603:10a6:208:70::28)
+ by AM9PR04MB7715.eurprd04.prod.outlook.com (2603:10a6:20b:285::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 22 Oct
+ 2020 20:16:03 +0000
+Received: from AM0PR04MB4530.eurprd04.prod.outlook.com
+ ([fe80::29a3:4b8b:de0:7f3c]) by AM0PR04MB4530.eurprd04.prod.outlook.com
+ ([fe80::29a3:4b8b:de0:7f3c%7]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
+ 20:16:03 +0000
+Message-ID: <1603397760.16275.49.camel@suse.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle
+ core
+From:   Giovanni Gherdovich <ggherdovich@suse.com>
+To:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Mel Gorman <mgorman@suse.de>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Date:   Thu, 22 Oct 2020 22:16:00 +0200
+In-Reply-To: <1603397435.16275.45.camel@suse.com>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+         <34115486.YmRjPRKJaA@kreacher>
+         <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+         <1790766.jaFeG3T87Z@kreacher>
+         <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+         <20201022145250.GK32041@suse.de>
+         <20201022152514.GJ2611@hirez.programming.kicks-ass.net>
+         <1603397435.16275.45.camel@suse.com>
 Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.26.6 
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [2a02:830a:b003:a100:70cf:f004:73cb:aa82]
+X-ClientProxiedBy: FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::10) To AM0PR04MB4530.eurprd04.prod.outlook.com
+ (2603:10a6:208:70::28)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [IPv6:2a02:830a:b003:a100:70cf:f004:73cb:aa82] (2a02:830a:b003:a100:70cf:f004:73cb:aa82) by FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:14::10) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.9 via Frontend Transport; Thu, 22 Oct 2020 20:16:02 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 0dc93f86-705b-4632-4853-08d876c74ce4
+X-MS-TrafficTypeDiagnostic: AM9PR04MB7715:
+X-Microsoft-Antispam-PRVS: <AM9PR04MB7715559EFE9F1042902AB141931D0@AM9PR04MB7715.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:6790;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 0Tgg31TVRApzqCqIQOpUmqaUO1zblvW9O3VMgMvQ4DykivcYRwLu6oL/zXRQ1Pn4pHT6a1xkBE10XHDPFdagH9zKHiPt6wEKeu6BJQY75xny8BeyNpxkRTNY2Nrq5KQRpggnqv1eiCwNAf5r13ix1sVMSmm+cDwd/nDZhIkFgldupTkESNP9muM99v5XwLYWZrhSR6l5TKqiLsW5aAQXn1JjSkFO22xIrIqqLXUvSmDD5cSKlBURYPntXdXt9Xnre5w6Yio7JPWzFW9Xp1E5Pnb1azrEhsTQmkP2FmWGZ8jwN3ThlUXSoJZpBg6nk1e0ETLOLxkQ7wcQaJ3OXMvOIrTJ6adY2KPQA4Awvb4YlsYo4jfyaISpBPAU6rXAhhbT
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:AM0PR04MB4530.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(396003)(346002)(366004)(376002)(136003)(39860400002)(66946007)(8936002)(54906003)(6486002)(16526019)(478600001)(316002)(110136005)(4744005)(66556008)(103116003)(186003)(7416002)(66476007)(52116002)(4001150100001)(83380400001)(2906002)(5660300002)(4326008)(36756003)(8676002)(2616005)(99106002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: HehTq9JYz/ctr75T/XlbC4yp83FRRcxfREKgcHm5ZQ8TOoV2JNUsRltgyJCyEyXbek0KYZzEIt67er2WiBheD6SA2unrzDgI47a2xTgOqfoXa5cKUmBN6rtU12mGpT6BbgPZk6dP+PrfueysnKnr4iwdKqdVQ2CTK606lNTxqRhWLStyDyFOkfpBwmwxLQk5st7urEZQ4j03e2BYZvH7l4HQ3bcPjPatPaMjlgC9AwCHRpAYqAZkF7XLAWYPtV2Npj0Q5xwJ4DuosLSe8lHAd48FXIRXRzu6Drkbvkp29E05aeU8sEWa/OOrn7HJ9t+4GAZhlWdv/oSXtVu3pcGqNixsUlxWSi4Px4sNN6xHk9bEPWyLxEyR8ESkUk3EjNygbZO42Wh5fK5LbFq3HPE0tzAwMUtxz8LOSwL0SqEPSFfqgcVaMTOGpn0LHg9Y7qoBtyT5YUD7DHa+iA598LIgwKgRkzEg4adyfDSHhwTqIYebQxKEVsf3ZE8l4TFSkQls+O6ruUJciPfBe05Wu2BrCez9nUFE7LxllXZWSTR0bKhCQUpyJRf3hVDLnHUQ8B1uX87deWYk2tlURZVxJn38eaMA8L648mAuzRzr4jQLzKRhFLrCTaYxPQPqqqZDMPRjT2xO1LuN/QpnfaMM0WH+OCbiGr07G7nsNsNNRGdbWJtR67kxdCdY8dr9HakbzQp4Kct/QFxlA0lgXedWv9nVUw==
+X-OriginatorOrg: suse.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0dc93f86-705b-4632-4853-08d876c74ce4
+X-MS-Exchange-CrossTenant-AuthSource: AM0PR04MB4530.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 20:16:03.5112
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: f7a17af6-1c5c-4a36-aa8b-f5be247aa4ba
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 2gUReJ0U3HcuitVWfgnFP/nC3EiuoaRcSGXkFfXAzMJRtmE/8oWOu2fdN6oxBX/aAjK1s5YWqFp4A8vhk4OpAcYwnoE0PC1vRDJuDh+e8ec=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB7715
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:25 PM Al Viro <viro@zeniv.linux.org.uk> wrote:
->
-> On Thu, Oct 22, 2020 at 12:04:52PM -0700, Nick Desaulniers wrote:
->
-> > Passing an `unsigned long` as an `unsigned int` does no such
-> > narrowing: https://godbolt.org/z/TvfMxe (same vice-versa, just tail
-> > calls, no masking instructions).
-> > So if rw_copy_check_uvector() is inlined into import_iovec() (looking
-> > at the mainline@1028ae406999), then children calls of
-> > `rw_copy_check_uvector()` will be interpreting the `nr_segs` register
-> > unmodified, ie. garbage in the upper 32b.
->
-> FWIW,
->
-> void f(unsinged long v)
-> {
->         if (v != 1)
->                 printf("failed\n");
-> }
->
-> void g(unsigned int v)
-> {
->         f(v);
-> }
->
-> void h(unsigned long v)
-> {
->         g(v);
-> }
->
-> main()
-> {
->         h(0x100000001);
-> }
+On Thu, 2020-10-22 at 22:10 +0200, Giovanni Gherdovich wrote:
+> [...]
+> To read the tables:
+> 
+> Tilde (~) means the result is the same as baseline (or, the ratio is close
+> to 1). The double asterisk (**) is a visual aid and means the result is
+> worse than baseline (higher or lower depending on the case).
 
-A good/analogous example, but things get weird when the leaf node in
-the call chain is inline asm: https://godbolt.org/z/s19TY5
-
-(I'm not sure that's precisely what's going on here; I'll need to dive
-more into the calls rw_copy_check_uvector() makes to see if there's
-inline asm somewhere, pretty sure calls to get_user with `nr_regs`
-exist).
-
->
-> must not produce any output on a host with 32bit int and 64bit long, regardless of
-> the inlining, having functions live in different compilation units, etc.
->
-> Depending upon the calling conventions, compiler might do truncation in caller or
-> in a callee, but it must be done _somewhere_.
+Ouch, the opposite. Double asterisk (**) is where the result is better
+than baseline, and schedutil needs improvement.
 
 
+Giovanni
 
--- 
-Thanks,
-~Nick Desaulniers
