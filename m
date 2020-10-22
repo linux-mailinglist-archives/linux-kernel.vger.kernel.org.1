@@ -2,113 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7310295DEA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:01:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 36F70295DEC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2503496AbgJVMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:01:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
+        id S2897771AbgJVMC3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:02:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503007AbgJVMBp (ORCPT
+        with ESMTP id S2503613AbgJVMC2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:01:45 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA99C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:01:45 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id l28so1903742lfp.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:01:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=9tdVLshVcb2kwPka4/LRhjHcSm9h075NEyjA4ZLCJYs=;
-        b=kT5yuwwiXiJF2DtrWExMlv8mrMLi4ANew/WS18n4lRB+EeAfz0t5d91A/PEXNSN86X
-         dK9ybkCXThawY/2h24j8xRthMDWaoShIJhFjaNypNhpMnE4cCtBhLRX2fLZtmMo6sAvB
-         o4S9LmZtXuiCcNLYTafAglVOzUDsoDqc+YLN6pCbYYKlp4retHnv9iGhzOgjD7Iu7VKO
-         Tvf6cabWLTTDKUZPlfuy1rQx3rjQY1DaQ8uu7kOHwEah5WjJJ5/cmDK0vdntQlyc4c8B
-         rP3amoie/cJpfOZwF9dGeqmrVI6mbRFhSumVxCogR6XQm3o73dTDtaXW25SXq/V+mImd
-         CpDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=9tdVLshVcb2kwPka4/LRhjHcSm9h075NEyjA4ZLCJYs=;
-        b=KP1lWs51b4dbV9ijT9UxKmzNMURQGGJSBV1SWjLSrxNf3VhtF4dHlnAi6fmwkQWWXH
-         aprbI9JjKMctXtQZXEK2vb1YcQ6jN3Y406e2SMblQGdy/nsddFFgs8r8w7rm75ksh2Bf
-         6GGvTVAwv6yS32+DtiZWcN8RTz7yuSxndqaCHTdlr7QJPMQSEEJMJsEKO+ElF+B5RPD9
-         190T2RLGuO48SCWWhNeTq75rrp8Lp4eId8MlclgFkaQ28/KMVQop73OnyE4cuepkStuR
-         dI5sZ67KF//N2CNkgYWZgqfpnzkyWoqiFYgHk1TTg1Xgp98VKR9oGmHxNK4bq09w1rOQ
-         UPfw==
-X-Gm-Message-State: AOAM533d76Ho7brf+Q70JBewsd+mw24sHEhrENAigLA8CzKmqW44CX2O
-        QnDaDduAFlQ7rY5wjV+FthKybQ==
-X-Google-Smtp-Source: ABdhPJylsP0EOfZL91sCKiPlZBvQTPHp1k3qJrpQ1C2jumtYhoAtSzGrCTDOaiPG8ukt2kTvSNZ+Ow==
-X-Received: by 2002:ac2:4545:: with SMTP id j5mr664027lfm.267.1603368103725;
-        Thu, 22 Oct 2020 05:01:43 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id s14sm272993ljp.92.2020.10.22.05.01.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 05:01:43 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id AEBFC102F6D; Thu, 22 Oct 2020 15:01:42 +0300 (+03)
-Date:   Thu, 22 Oct 2020 15:01:42 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "aarcange@redhat.com" <aarcange@redhat.com>,
-        "liran.alon@oracle.com" <liran.alon@oracle.com>,
-        "wad@chromium.org" <wad@chromium.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>
-Subject: Re: [RFCv2 09/16] KVM: mm: Introduce VM_KVM_PROTECTED
-Message-ID: <20201022120142.uzephkci7pfy3kwq@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-10-kirill.shutemov@linux.intel.com>
- <b13e29ea41e1961ea5cfea9e941320842c2d1695.camel@intel.com>
+        Thu, 22 Oct 2020 08:02:28 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D38DFC0613CE;
+        Thu, 22 Oct 2020 05:02:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=gTvwyP4W6lMb1iDzrz192ROjJ8CmrjSNmaU03xagOrU=; b=vglESL+rFHLeeSzkcYF+jhH4T+
+        JKZjPxQZO+Bbc9ELF+X2ImWPdgF5pnprHBVaQFmgK1WXteBPWt0iPnravt93FIRZiPeoi/Tm+NhDD
+        Royjc9fay9qrD5B5jiqpVgi9HijdZMTlhX7IXvq8KPqupJXroRQ5ObD9lvZJGyh6GEVUTuP26xwb8
+        RvpWGz2JX4shWecvEpiQv9IrlGT4PgGIwTlG3uO3wblAH2WtFgHh28FVvGocBX58yXbLf+P5C0Wbh
+        kPMgyoO2AtY3QJ4ghUcpChKq5knPIC7L94QPH5a8+UWL8NSGYflMr3QTJUBsWRqByDNcl1uoovLVs
+        tlaIGjzw==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVZIM-00085y-0A; Thu, 22 Oct 2020 12:02:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 46E06305CC3;
+        Thu, 22 Oct 2020 14:02:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 36CD0203CC4B2; Thu, 22 Oct 2020 14:02:13 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 14:02:13 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com
+Subject: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201022071145.GM2628@hirez.programming.kicks-ass.net>
+ <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
+ <34115486.YmRjPRKJaA@kreacher>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <b13e29ea41e1961ea5cfea9e941320842c2d1695.camel@intel.com>
+In-Reply-To: <34115486.YmRjPRKJaA@kreacher>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 06:47:32PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2020-10-20 at 09:18 +0300, Kirill A. Shutemov wrote:
-> >  include/linux/mm.h  |  8 ++++++++
-> >  mm/gup.c            | 20 ++++++++++++++++----
-> >  mm/huge_memory.c    | 20 ++++++++++++++++----
-> >  mm/memory.c         |  3 +++
-> >  mm/mmap.c           |  3 +++
-> >  virt/kvm/async_pf.c |  2 +-
-> >  virt/kvm/kvm_main.c |  9 +++++----
-> >  7 files changed, 52 insertions(+), 13 deletions(-)
+On Thu, Oct 22, 2020 at 01:45:25PM +0200, Rafael J. Wysocki wrote:
+> On Thursday, October 22, 2020 12:47:03 PM CEST Viresh Kumar wrote:
+> > On 22-10-20, 09:11, Peter Zijlstra wrote:
+> > > Well, but we need to do something to force people onto schedutil,
+> > > otherwise we'll get more crap like this thread.
+> > > 
+> > > Can we take the choice away? Only let Kconfig select which governors are
+> > > available and then set the default ourselves? I mean, the end goal being
+> > > to not have selectable governors at all, this seems like a good step
+> > > anyway.
+> > 
+> > Just to clarify and complete the point a bit here, the users can still
+> > pass the default governor from cmdline using
+> > cpufreq.default_governor=, which will take precedence over the one the
+> > below code is playing with. And later once the kernel is up, they can
+> > still choose a different governor from userspace.
 > 
-> There is another get_user_pages() in
-> paging_tmpl.h:FNAME(cmpxchg_gpte). 
+> Right.
+> 
+> Also some people simply set "performance" as the default governor and then
+> don't touch cpufreq otherwise (the idea is to get everything to the max
+> freq right away and stay in that mode forever).  This still needs to be
+> possible IMO.
 
-Right, I will look into it. I wounder why I don't step onto it.
+Performance/powersave make sense to keep.
 
-> Also, did you leave off FOLL_KVM in gfn_to_page_many_atomic() on
-> purpose? It looks like its only used for pte prefetch which I guess is
-> not required.
+However I do want to retire ondemand, conservative and also very much
+intel_pstate/active mode. I also have very little sympathy for
+userspace.
 
-FOLL_FAST_ONLY is going to fail anyway. The caller has to handle it
-gracefully.
+We should start by making it hard to use them and eventually just delete
+them outright.
 
--- 
- Kirill A. Shutemov
