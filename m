@@ -2,108 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BD58296777
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:54:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BDA129677E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:04:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373116AbgJVWyN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:54:13 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:28772 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S373109AbgJVWyN (ORCPT
+        id S373148AbgJVXET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 19:04:19 -0400
+Received: from bedivere.hansenpartnership.com ([96.44.175.130]:47630 "EHLO
+        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S373136AbgJVXES (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:54:13 -0400
-Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MMnBvj027752
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:54:12 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding : content-type; s=facebook;
- bh=jCwwODX7YwrK220gHIqPM0Cu0J/BfkukpANadFRweU0=;
- b=O6OT7p9iIl6c9a4dpB5r0W1paZTT9NnFX/MN2WnY0i9b9xwSSFtBeOGVdupFRJaiVCQA
- 0iWfRntwU9X2HyAeo6YfFUAKBJdTtVCb9m5O6G1OKc+bFohoO0nLgEB5gBSyCzgPi4vV
- 64/VQWj5r+gBn76OiYB8L2UKDgNhkQnPoF0= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34bk3wg1j0-18
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 15:54:12 -0700
-Received: from intmgw003.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:82::e) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 22 Oct 2020 15:53:18 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id ED8AD1A3AE4C; Thu, 22 Oct 2020 15:53:12 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Zi Yan <ziy@nvidia.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kernel-team@fb.com>,
-        Roman Gushchin <guro@fb.com>
-Subject: [PATCH v1 2/2] mm: hugetlb: don't drop hugetlb_lock around cma_release() call
-Date:   Thu, 22 Oct 2020 15:53:08 -0700
-Message-ID: <20201022225308.2927890-3-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
-In-Reply-To: <20201022225308.2927890-1-guro@fb.com>
-References: <20201022225308.2927890-1-guro@fb.com>
+        Thu, 22 Oct 2020 19:04:18 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 21AE51281E42;
+        Thu, 22 Oct 2020 16:04:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1603407858;
+        bh=YF9ZLRJ5Wmd29VMCSDUBdN9scxQBSKiZF6i1sPMZ4cs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=Rp43OBNeRff7l6xXQQprJM/m/WMbF15ErMCUULCrOGIpWCNqppgte+USb5NryvBJ5
+         War0Kohqc5idoDlXO+afQei1xfY//CINxzd3xmUM3zW/BrEbGtPgJCAUCtusJ41H2q
+         ZqwBd/RzMW6JiIiE1aUEqb3gsIRU2wNiUMyhtghs=
+Received: from bedivere.hansenpartnership.com ([127.0.0.1])
+        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id Q3sVWPD8CWVy; Thu, 22 Oct 2020 16:04:18 -0700 (PDT)
+Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 759B41281E39;
+        Thu, 22 Oct 2020 16:04:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
+        s=20151216; t=1603407857;
+        bh=YF9ZLRJ5Wmd29VMCSDUBdN9scxQBSKiZF6i1sPMZ4cs=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=mBMQkLZBj9y05L4DkBJ+6L7KVSJNkpwwj8Zle4lznjtwYUJu+0MqDsmQnbVz9vlA3
+         IyiV2YPkSZ5LVBnyRQUiwij5DmcUrmGCVSXXsnKtc5qZmFrqYM2+08vIYtr35rd1oP
+         aTqAKkb2akyYD7It4zMkcKI4NAiK2FUCp5LlcFdM=
+Message-ID: <f1ff32ec2970f1ee808e2da946e6514e71694e71.camel@HansenPartnership.com>
+Subject: Re: [PATCH/RFC net] net: dec: tulip: de2104x: Add shutdown handler
+ to stop NIC
+From:   James Bottomley <James.Bottomley@HansenPartnership.com>
+To:     Moritz Fischer <mdf@kernel.org>, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, linux-parisc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, lucyyan@google.com
+Date:   Thu, 22 Oct 2020 16:04:16 -0700
+In-Reply-To: <20201022220636.609956-1-mdf@kernel.org>
+References: <20201022220636.609956-1-mdf@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_17:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- phishscore=0 suspectscore=2 clxscore=1015 lowpriorityscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 spamscore=0 adultscore=0
- mlxlogscore=620 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220146
-X-FB-Internal: deliver
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace blocking cma_release() with a non-blocking cma_release_nowait()
-call, so there is no more need to temporarily drop hugetlb_lock.
+On Thu, 2020-10-22 at 15:06 -0700, Moritz Fischer wrote:
+> The driver does not implement a shutdown handler which leads to
+> issues
+> when using kexec in certain scenarios. The NIC keeps on fetching
+> descriptors which gets flagged by the IOMMU with errors like this:
+> 
+> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+> 
+> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> ---
+> 
+> Hi all,
+> 
+> I'm not sure if this is the proper way for a shutdown handler,
+> I've tried to look at a bunch of examples and couldn't find a
+> specific
+> solution, in my tests on hardware this works, though.
+> 
+> Open to suggestions.
+> 
+> Thanks,
+> Moritz
+> 
+> ---
+>  drivers/net/ethernet/dec/tulip/de2104x.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c
+> b/drivers/net/ethernet/dec/tulip/de2104x.c
+> index f1a2da15dd0a..372c62c7e60f 100644
+> --- a/drivers/net/ethernet/dec/tulip/de2104x.c
+> +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
+> @@ -2185,6 +2185,7 @@ static struct pci_driver de_driver = {
+>  	.id_table	= de_pci_tbl,
+>  	.probe		= de_init_one,
+>  	.remove		= de_remove_one,
+> +	.shutdown	= de_remove_one,
 
-Signed-off-by: Roman Gushchin <guro@fb.com>
----
- mm/hugetlb.c | 11 +++--------
- 1 file changed, 3 insertions(+), 8 deletions(-)
+This doesn't look right: shutdown is supposed to turn off the device
+without disturbing the tree or causing any knock on effects (I think
+that rule is mostly because you don't want anything in userspace
+triggering since it's likely to be nearly dead).  Remove removes the
+device from the tree and cleans up everything.  I think the function
+you want that's closest to what shutdown needs is de_close().  That
+basically just turns off the chip and frees the interrupt ... you'll
+have to wrapper it to call it from the pci_driver, though.
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index fe76f8fd5a73..230e9b6c9a2b 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -1224,10 +1224,11 @@ static void free_gigantic_page(struct page *page,=
- unsigned int order)
- {
- 	/*
- 	 * If the page isn't allocated using the cma allocator,
--	 * cma_release() returns false.
-+	 * cma_release_nowait() returns false.
- 	 */
- #ifdef CONFIG_CMA
--	if (cma_release(hugetlb_cma[page_to_nid(page)], page, 1 << order))
-+	if (cma_release_nowait(hugetlb_cma[page_to_nid(page)], page,
-+			       1 << order))
- 		return;
- #endif
-=20
-@@ -1312,14 +1313,8 @@ static void update_and_free_page(struct hstate *h,=
- struct page *page)
- 	set_compound_page_dtor(page, NULL_COMPOUND_DTOR);
- 	set_page_refcounted(page);
- 	if (hstate_is_gigantic(h)) {
--		/*
--		 * Temporarily drop the hugetlb_lock, because
--		 * we might block in free_gigantic_page().
--		 */
--		spin_unlock(&hugetlb_lock);
- 		destroy_compound_gigantic_page(page, huge_page_order(h));
- 		free_gigantic_page(page, huge_page_order(h));
--		spin_lock(&hugetlb_lock);
- 	} else {
- 		__free_pages(page, huge_page_order(h));
- 	}
---=20
-2.26.2
+James
+
 
