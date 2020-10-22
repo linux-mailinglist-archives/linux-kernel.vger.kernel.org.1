@@ -2,316 +2,201 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DC37D295D42
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:17:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 06547295D45
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:20:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897133AbgJVLRi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:17:38 -0400
-Received: from foss.arm.com ([217.140.110.172]:54654 "EHLO foss.arm.com"
+        id S2897170AbgJVLUd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:20:33 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:21760 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2502650AbgJVLRi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:17:38 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8EF76D6E;
-        Thu, 22 Oct 2020 04:17:36 -0700 (PDT)
-Received: from [10.57.20.67] (unknown [10.57.20.67])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 341953F66B;
-        Thu, 22 Oct 2020 04:17:34 -0700 (PDT)
-Subject: Re: [PATCH 3/5] thermal: devfreq_cooling: add new registration
- functions with Energy Model
-To:     Ionela Voinescu <ionela.voinescu@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        dri-devel@lists.freedesktop.org, amit.kucheria@verdurent.com,
-        airlied@linux.ie, daniel.lezcano@linaro.org, steven.price@arm.com,
-        alyssa.rosenzweig@collabora.com, rui.zhang@intel.com,
-        orjan.eide@arm.com
-References: <20200921122007.29610-1-lukasz.luba@arm.com>
- <20200921122007.29610-4-lukasz.luba@arm.com> <20201007120746.GA15063@arm.com>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <71cfae58-8ea5-c591-455b-d84420d8412a@arm.com>
-Date:   Thu, 22 Oct 2020 12:17:31 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S2897162AbgJVLUc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:20:32 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603365630; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3rXXaFZkkIyfS+1zc2JmqHY3kzow+A7nYlIfCK6k2uk=;
+ b=IA1l44QJWVzDbENjkHUicbEILGh7qWOK5VBg42eIe6AWAiOqtVE2EjfiGFIqbaR24L2BXTRS
+ g63enxViO1Il3rSJTg7sFU3vGtWCjA6+C5kFQqZx46xHNDARh1g9jkG9BWnsXe3/tssiTK7B
+ RdpXbZIt5ZJ6FG9T+v5ZCcwh/hg=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f916ae1319d4e9cb5be6320 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 11:20:01
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 53AA0C433F0; Thu, 22 Oct 2020 11:20:01 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 5DFFAC433CB;
+        Thu, 22 Oct 2020 11:20:00 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201007120746.GA15063@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date:   Thu, 22 Oct 2020 16:50:00 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        mike.leach@linaro.org, coresight@lists.linaro.org,
+        swboyd@chromium.org, linux-arm-msm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        denik@google.com, leo.yan@linaro.org, peterz@infradead.org
+Subject: Re: [PATCH 1/2] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+In-Reply-To: <1deec4c5-f963-5772-2a0d-826016dc0170@arm.com>
+References: <cover.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <d7a2dd53d88360b12e5a14933cb931198760dd63.1602074787.git.saiprakash.ranjan@codeaurora.org>
+ <5bbb2d35-3e56-56d7-4722-bf34c5efa2fb@arm.com>
+ <9fa4fcc25dac17b343d151a9d089b48c@codeaurora.org>
+ <707b7860-0daa-d3e3-1f0f-17e1b05feae2@arm.com>
+ <5ad6acdc69c1c2e1e17f5c701a09b7e1@codeaurora.org>
+ <8affc09d4045812e2f5a065695b375de@codeaurora.org>
+ <0ee3566e50143bac5b662b2edf551b89@codeaurora.org>
+ <fdee606e-a045-e252-0823-14bdbef779c0@arm.com>
+ <6db16b0547122ab8a53d56bdfbfb391e@codeaurora.org>
+ <fa6cdf34-88a0-1050-b9ea-556d0a9438cb@arm.com>
+ <d05559ad020b46b55eb5b8ec305d946b@codeaurora.org>
+ <1deec4c5-f963-5772-2a0d-826016dc0170@arm.com>
+Message-ID: <e4f85a46420240093b69c761d9a7797b@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 10/7/20 1:07 PM, Ionela Voinescu wrote:
-> Hi Lukasz,
+On 2020-10-22 16:44, Suzuki Poulose wrote:
+> On 10/22/20 12:07 PM, Sai Prakash Ranjan wrote:
+>> On 2020-10-22 14:57, Suzuki Poulose wrote:
+>>> On 10/22/20 9:02 AM, Sai Prakash Ranjan wrote:
+>>>> On 2020-10-21 15:38, Suzuki Poulose wrote:
+>>>>> On 10/21/20 8:29 AM, Sai Prakash Ranjan wrote:
+>>>>>> On 2020-10-20 21:40, Sai Prakash Ranjan wrote:
+>>>>>>> On 2020-10-14 21:29, Sai Prakash Ranjan wrote:
+>>>>>>>> On 2020-10-14 18:46, Suzuki K Poulose wrote:
+>>>>>>>>> On 10/14/2020 10:36 AM, Sai Prakash Ranjan wrote:
+>>>>>>>>>> On 2020-10-13 22:05, Suzuki K Poulose wrote:
+>>>>>>>>>>> On 10/07/2020 02:00 PM, Sai Prakash Ranjan wrote:
+>>>>>>>>>>>> There was a report of NULL pointer dereference in ETF enable
+>>>>>>>>>>>> path for perf CS mode with PID monitoring. It is almost 100%
+>>>>>>>>>>>> reproducible when the process to monitor is something very
+>>>>>>>>>>>> active such as chrome and with ETF as the sink and not ETR.
+>>>>>>>>>>>> Currently in a bid to find the pid, the owner is 
+>>>>>>>>>>>> dereferenced
+>>>>>>>>>>>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and 
+>>>>>>>>>>>> with
+>>>>>>>>>>>> owner being NULL, we get a NULL pointer dereference.
+>>>>>>>>>>>> 
+>>>>>>>>>>>> Looking at the ETR and other places in the kernel, ETF and 
+>>>>>>>>>>>> the
+>>>>>>>>>>>> ETB are the only places trying to dereference the 
+>>>>>>>>>>>> task(owner)
+>>>>>>>>>>>> in tmc_enable_etf_sink_perf() which is also called from the
+>>>>>>>>>>>> sched_in path as in the call trace. Owner(task) is NULL even
+>>>>>>>>>>>> in the case of ETR in tmc_enable_etr_sink_perf(), but since 
+>>>>>>>>>>>> we
+>>>>>>>>>>>> cache the PID in alloc_buffer() callback and it is done as 
+>>>>>>>>>>>> part
+>>>>>>>>>>>> of etm_setup_aux() when allocating buffer for ETR sink, we 
+>>>>>>>>>>>> never
+>>>>>>>>>>>> dereference this NULL pointer and we are safe. So lets do 
+>>>>>>>>>>>> the
+>>>>>>>>>>> 
+>>>>>>>>>>> The patch is necessary to fix some of the issues. But I feel 
+>>>>>>>>>>> it is
+>>>>>>>>>>> not complete. Why is it safe earlier and not later ? I 
+>>>>>>>>>>> believe we are
+>>>>>>>>>>> simply reducing the chances of hitting the issue, by doing 
+>>>>>>>>>>> this earlier than
+>>>>>>>>>>> later. I would say we better fix all instances to make sure 
+>>>>>>>>>>> that the
+>>>>>>>>>>> event->owner is valid. (e.g, I can see that the for kernel 
+>>>>>>>>>>> events
+>>>>>>>>>>> event->owner == -1 ?)
+>>>>>>>>>>> 
+>>>>>>>>>>> struct task_struct *tsk = READ_ONCE(event->owner);
+>>>>>>>>>>> 
+>>>>>>>>>>> if (!tsk || is_kernel_event(event))
+>>>>>>>>>>>    /* skip ? */
+>>>>>>>>>>> 
+>>>>>>>>>> 
+>>>>>>>>>> Looking at it some more, is_kernel_event() is not exposed
+>>>>>>>>>> outside events core and probably for good reason. Why do
+>>>>>>>>>> we need to check for this and not just tsk?
+>>>>>>>>> 
+>>>>>>>>> Because the event->owner could be :
+>>>>>>>>> 
+>>>>>>>>>  = NULL
+>>>>>>>>>  = -1UL  // kernel event
+>>>>>>>>>  = valid.
+>>>>>>>>> 
+>>>>>>>> 
+>>>>>>>> Yes I understood that part, but here we were trying to
+>>>>>>>> fix the NULL pointer dereference right and hence the
+>>>>>>>> question as to why we need to check for kernel events?
+>>>>>>>> I am no expert in perf but I don't see anywhere in the
+>>>>>>>> kernel checking for is_kernel_event(), so I am a bit
+>>>>>>>> skeptical if exporting that is actually right or not.
+>>>>>>>> 
+>>>>>>> 
+>>>>>>> I have stress tested with the original patch many times
+>>>>>>> now, i.e., without a check for event->owner and is_kernel_event()
+>>>>>>> and didn't observe any crash. Plus on ETR where this was already
+>>>>>>> done, no crashes were reported till date and with ETF, the issue
+>>>>>>> was quickly reproducible, so I am fairly confident that this
+>>>>>>> doesn't just delay the original issue but actually fixes
+>>>>>>> it. I will run an overnight test again to confirm this.
+>>>>>>> 
+>>>>>> 
+>>>>>> I ran the overnight test which collected aroung 4G data(see 
+>>>>>> below),
+>>>>>> with the following small change to see if the two cases
+>>>>>> (event->owner=NULL and is_kernel_event()) are triggered
+>>>>>> with suggested changes and it didn't trigger at all.
+>>>>>> Do we still need those additional checks?
+>>>>>> 
+>>>>> 
+>>>>> Yes. Please see perf_event_create_kernel_event(), which is
+>>>>> an exported function allowing any kernel code (including modules)
+>>>>> to use the PMU (just like the userspace perf tool would do).
+>>>>> Just because your use case doesn't trigger this (because
+>>>>> you don't run something that can trigger this) doesn't mean
+>>>>> this can't be triggered.
+>>>>> 
+>>>> 
+>>>> Thanks for that pointer, I will add them in the next version.
+>>>> 
+>>> 
+>>> And instead of redefining TASK_TOMBSTONE in the driver, you
+>>> may simply use IS_ERR_OR_NULL(tsk) to cover both NULL case
+>>> and kernel event.
+>>> 
+>> 
+>> Ugh sorry, sent out v2 exporting is_kernel_event() before seeing
+>> this comment, I will resend.
 > 
-> On Monday 21 Sep 2020 at 13:20:05 (+0100), Lukasz Luba wrote:
->> The Energy Model (EM) framework supports devices such as Devfreq. Create
->> new registration functions which automatically register EM for the thermal
->> devfreq_cooling devices. This patch prepares the code for coming changes
->> which are going to replace old power model with the new EM.
->>
->> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
->> ---
->>   drivers/thermal/devfreq_cooling.c | 99 ++++++++++++++++++++++++++++++-
->>   include/linux/devfreq_cooling.h   | 22 +++++++
->>   2 files changed, 120 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
->> index cf045bd4d16b..7e091e795284 100644
->> --- a/drivers/thermal/devfreq_cooling.c
->> +++ b/drivers/thermal/devfreq_cooling.c
->> @@ -50,6 +50,8 @@ static DEFINE_IDA(devfreq_ida);
->>    * @capped_state:	index to cooling state with in dynamic power budget
->>    * @req_max_freq:	PM QoS request for limiting the maximum frequency
->>    *			of the devfreq device.
->> + * @em:		Energy Model which represents the associated Devfreq device
->                                       ^^^^^^^^^^^^^^^^
-> 				     for
-
-I will change it.
-
->> + * @em_registered:	Devfreq cooling registered the EM and should free it.
->>    */
->>   struct devfreq_cooling_device {
->>   	int id;
->> @@ -63,6 +65,8 @@ struct devfreq_cooling_device {
->>   	u32 res_util;
->>   	int capped_state;
->>   	struct dev_pm_qos_request req_max_freq;
->> +	struct em_perf_domain *em;
->> +	bool em_registered;
->>   };
->>   
->>   static int devfreq_cooling_get_max_state(struct thermal_cooling_device *cdev,
->> @@ -586,22 +590,115 @@ struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df)
->>   }
->>   EXPORT_SYMBOL_GPL(devfreq_cooling_register);
->>   
->> +/**
->> + * devfreq_cooling_em_register_power() - Register devfreq cooling device with
->> + *		power information and attempt to register Energy Model (EM)
+> Saw that. I would say, wait until someone complains about that. If
+> people are Ok with exporting it, it is fine. I guess it will be useful.
+> You could fall back to this approach if there is resistance.
 > 
-> It took me a while to understand the differences between devfreq
-> register functions and it left me with a nagging feeling that we don't
-> need all of them. Also, looking over the cpufreq cooling devices, they
-> keep their registering interfaces quite simple.
 
-This was discussed in previous series, related to EM core changes.
-It was requested to have a helper registration function which would
-create EM automatically.
+Sure, I will wait for some comments although I hurried
+to tell them to ignore it :(
 
-> 
-> With the functions added by this patch, the devfreq cooling devices will have:
->   - old:
->         of_devfreq_cooling_register_power
->         of_devfreq_cooling_register
->         devfreq_cooling_register
->         devfreq_cooling_unregister
->   - new:
->         devfreq_cooling_em_register_power
->         devfreq_cooling_em_register
-> 
-> My question is whether we actually need the two new
-> devfreq_cooling_em_register_power() and devfreq_cooling_em_register()?
+Thanks,
+Sai
 
-It is just for consistency, with older scheme. It is only a wrapper, one
-line, with default NULL. This scheme is common in thermal and some other
-frameworks.
-
-> 
-> The power_ops and the em are dependent on one another, so could we
-> extend the of_devfreq_cooling_register_power() to do the additional em
-> registration. We only need a way to pass the em_cb and I think that
-> could fit nicely in devfreq_cooling_power.
-
-No, they aren't 'dependent on one another'. The EM usage doesn't depend
-on presence of power_ops. Drivers might not support power_ops, but want
-the framework still use EM and do power estimation.
-
-> 
-> To be noted that I've reviewed these interfaces in the context of the
-> final state of devfreq_cooling.c, after the changes in 4/5.
-> 
->> + * @df:		Pointer to devfreq device.
->> + * @dfc_power:	Pointer to devfreq_cooling_power.
->> + * @em_cb:	Callback functions providing the data of the EM
->> + *
->> + * Register a devfreq cooling device and attempt to register Energy Model. The
->> + * available OPPs must be registered for the device.
->> + *
->> + * If @dfc_power is provided, the cooling device is registered with the
->> + * power extensions. If @em_cb is provided it will be called for each OPP to
->> + * calculate power value and cost. If @em_cb is not provided then simple Energy
->> + * Model is going to be used, which requires "dynamic-power-coefficient" a
->> + * devicetree property.
->> + */
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register_power(struct devfreq *df,
->> +				  struct devfreq_cooling_power *dfc_power,
->> +				  struct em_data_callback *em_cb)
->> +{
->> +	struct thermal_cooling_device *cdev;
->> +	struct devfreq_cooling_device *dfc;
->> +	struct device_node *np = NULL;
->> +	struct device *dev;
->> +	int nr_opp, ret;
->> +
->> +	if (IS_ERR_OR_NULL(df))
->> +		return ERR_PTR(-EINVAL);
->> +
->> +	dev = df->dev.parent;
->> +
->> +	if (em_cb) {
->> +		nr_opp = dev_pm_opp_get_opp_count(dev);
->> +		if (nr_opp <= 0) {
->> +			dev_err(dev, "No valid OPPs found\n");
->> +			return ERR_PTR(-EINVAL);
->> +		}
->> +
->> +		ret = em_dev_register_perf_domain(dev, nr_opp, em_cb, NULL);
->> +	} else {
->> +		ret = dev_pm_opp_of_register_em(dev, NULL);
->> +	}
->> +
->> +	if (ret)
->> +		dev_warn(dev, "Unable to register EM for devfreq cooling device (%d)\n",
->> +			 ret);
->> +
->> +	if (dev->of_node)
->> +		np = of_node_get(dev->of_node);
->> +
->> +	cdev = of_devfreq_cooling_register_power(np, df, dfc_power);
->> +
->> +	if (np)
->> +		of_node_put(np);
->> +
->> +	if (IS_ERR_OR_NULL(cdev)) {
->> +		if (!ret)
->> +			em_dev_unregister_perf_domain(dev);
->> +	} else {
->> +		dfc = cdev->devdata;
->> +		dfc->em_registered = !ret;
->> +	}
->> +
->> +	return cdev;
->> +}
->> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register_power);
->> +
->> +/**
->> + * devfreq_cooling_em_register() - Register devfreq cooling device together
->> + *				with Energy Model.
->> + * @df:		Pointer to devfreq device.
->> + * @em_cb:	Callback functions providing the data of the Energy Model
->> + *
->> + * This function attempts to register Energy Model for devfreq device and then
->> + * register the devfreq cooling device.
->> + */
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register(struct devfreq *df, struct em_data_callback *em_cb)
->> +{
->> +	return devfreq_cooling_em_register_power(df, NULL, em_cb);
->> +}
->> +EXPORT_SYMBOL_GPL(devfreq_cooling_em_register);
->> +
->>   /**
->>    * devfreq_cooling_unregister() - Unregister devfreq cooling device.
->>    * @cdev: Pointer to devfreq cooling device to unregister.
->> + *
->> + * Unregisters devfreq cooling device and related Energy Model if it was
->> + * present.
->>    */
->>   void devfreq_cooling_unregister(struct thermal_cooling_device *cdev)
->>   {
->>   	struct devfreq_cooling_device *dfc;
->> +	struct device *dev;
->>   
->> -	if (!cdev)
->> +	if (IS_ERR_OR_NULL(cdev))
->>   		return;
->>   
->>   	dfc = cdev->devdata;
->> +	dev = dfc->devfreq->dev.parent;
->>   
->>   	thermal_cooling_device_unregister(dfc->cdev);
->>   	ida_simple_remove(&devfreq_ida, dfc->id);
->>   	dev_pm_qos_remove_request(&dfc->req_max_freq);
->> +
->> +	if (dfc->em_registered)
->> +		em_dev_unregister_perf_domain(dev);
-> 
-> Nit: Isn't it enough to check if dev->em_pd != NULL to be able to
-> unregister the perf_domain? That would remove the need for
-> dfc->em_registered.
-
-The devfreq cooling may only unregister the EM if it has registered it.
-If any other code did the registration, it should unregister when it
-finished using it.
-
-> 
-> I suppose one could say that's using implementation details on how the
-> EM is built and stored and we should not rely on it, so it's up to you
-> if you want to change it.
-> 
-> Kind regards,
-> Ionela.
-> 
->> +
->>   	kfree(dfc->power_table);
->>   	kfree(dfc->freq_table);
->>   
->> diff --git a/include/linux/devfreq_cooling.h b/include/linux/devfreq_cooling.h
->> index 9df2dfca68dd..19868fb922f1 100644
->> --- a/include/linux/devfreq_cooling.h
->> +++ b/include/linux/devfreq_cooling.h
->> @@ -11,6 +11,7 @@
->>   #define __DEVFREQ_COOLING_H__
->>   
->>   #include <linux/devfreq.h>
->> +#include <linux/energy_model.h>
->>   #include <linux/thermal.h>
->>   
->>   
->> @@ -65,6 +66,13 @@ struct thermal_cooling_device *
->>   of_devfreq_cooling_register(struct device_node *np, struct devfreq *df);
->>   struct thermal_cooling_device *devfreq_cooling_register(struct devfreq *df);
->>   void devfreq_cooling_unregister(struct thermal_cooling_device *dfc);
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register_power(struct devfreq *df,
->> +				  struct devfreq_cooling_power *dfc_power,
->> +				  struct em_data_callback *em_cb);
->> +struct thermal_cooling_device *
->> +devfreq_cooling_em_register(struct devfreq *df,
->> +			    struct em_data_callback *em_cb);
->>   
->>   #else /* !CONFIG_DEVFREQ_THERMAL */
->>   
->> @@ -87,6 +95,20 @@ devfreq_cooling_register(struct devfreq *df)
->>   	return ERR_PTR(-EINVAL);
->>   }
->>   
->> +static inline struct thermal_cooling_device *
->> +devfreq_cooling_em_register_power(struct devfreq *df,
->> +				  struct devfreq_cooling_power *dfc_power,
->> +				  struct em_data_callback *em_cb)
->> +{
->> +	return ERR_PTR(-EINVAL);
->> +}
->> +
->> +static inline struct thermal_cooling_device *
->> +devfreq_cooling_em_register(struct devfreq *df,	struct em_data_callback *em_cb)
->> +{
->> +	return ERR_PTR(-EINVAL);
->> +}
->> +
->>   static inline void
->>   devfreq_cooling_unregister(struct thermal_cooling_device *dfc)
->>   {
->> -- 
->> 2.17.1
->>
->> _______________________________________________
->> dri-devel mailing list
->> dri-devel@lists.freedesktop.org
->> https://lists.freedesktop.org/mailman/listinfo/dri-devel
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
