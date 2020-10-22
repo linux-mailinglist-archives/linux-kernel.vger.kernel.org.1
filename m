@@ -2,133 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AB6229613F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:58:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0551296137
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:57:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368298AbgJVO6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:58:10 -0400
-Received: from sonic308-54.consmr.mail.gq1.yahoo.com ([98.137.68.30]:32962
-        "EHLO sonic308-54.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S368245AbgJVO6K (ORCPT
+        id S2505378AbgJVO5q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:57:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37734 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504821AbgJVO5q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:58:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aol.com; s=a2048; t=1603378689; bh=m+KvnfBf8xuQNeIuRRe0vdHUkvX140+IsRUPrl0yksw=; h=From:To:Cc:Subject:Date:In-Reply-To:References:From:Subject; b=W2zSDzkS2yZELWeNGpxmBEQe8QOUf10AUcdWI4i8jlL/CAOLqigJUCb5wpKcfBnZLPnXUiRNDaQF3liCy02v+l5Sgh3CMv9DdRE4aRZs/a/M/bl8JtI1y6JlvbkiNvvtGM9aSDbBXujl8BKdnbjeNgt3xVjgX5j3IZftFGaTGb3wLGizz3Lz8L504KTskUErOdGhVSznqnRzBjzDLAE60GSH6ZlZjkYTf0WcglUbT0THJ1C4iOqH2LyIifABDQmWvQI0yAp91rRhk1qkqd2bUzAXDfr1rvscj/kgjK3q2Q+rdoSieHnY0HBf+V+s94oyRW4BnUjXxioCaWiX0+5g5g==
-X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603378689; bh=kosD+O5ufdoCVlRY26HZ7wF1pOalxn9VMwsyXn7yteB=; h=From:To:Subject:Date; b=BQoZqIOsmra4FjJxzJXd9udL+J1CLm/Fp6VURdNRVXck+FihISj2J8M+D/4Uh33r5izrh2qmJmnQvTXD5Bg1Uf0DwcXChhBOFTy4BEH6ImfVJek0gS/MECUwtlQrrXCX94ZMM5PP++tP5kcElDzwqvLVtwglqpeP8HilCzhOAZ1XPdyZgX2ZUjgCauE29LW0RJb10oik10/G6wN5eGJBcFWLN6h/vzA7hCTW3ZS+P0NWsu8XTwk2zXzYpntVQ63iLBOqwGOJuua8TK8gq0NOa6p5l8WrpMUFqexZpKctgdJFSSdZydePwIYrpJyCC/pGnOFa8b+hXfI1jE76H47Zvg==
-X-YMail-OSG: O0wFiQ4VM1leO0SpVBH547w9k6UpYj5UfSXwP9zdV7tAWZVe2QKVhdpse9Yfw8c
- DI.7.o1hrV8G5b0YVB.8_h4M5hCLcuOnax0yDF4xYlomc4SnJX06wDnH0mOcBX897VULzoidBSrb
- 2Nx4SYFz4xfChplPyM0GlNbChK_4S1_6HtSzfLTWEU_PQkm5CvCSBbDRH0ztm08.K3wz4otcGJMD
- 7Y2y75pE5iPaXYvzq7NW0CuQ.5vkgjXWOv7ngjf8QH.DwOFMJwIoKJTyb9WxYghxgkEA0HPB0mhB
- FeJ3Lqyoxop9Tj4v8GdXeEo3_fAvHsiZRL7ohYhCG0_eylegReeyetlqfkdSfVAkrjNJ4Sb1fm93
- 2p0T1504M1BL3xz_xQ6p9kcAEeUQpcjaYUI4lxrLeHOk5H4OIjgOtR4.mvZySLENZUqYgHH.HQiC
- sn01b7TGw2N7SMHk9XDJmdKoouHHbn0eYfiic2cqcV1J4LrGwhUwXF2z9PE9sF2jI8_NCJ_8M_FA
- R.e430wJrrCTmmt2UkcGYozULYWDI.Biit4fFqiv3kaOXXHJimmmE8wripbeXCIlT.2uU1ldJUXQ
- F6in9M2Is8fMclJyGIC2OtrvmoiGTv5ow8I_37MY6gh64zWTCu.bTFDovUnM19ETnD.bve42wUot
- dspiHcwK82X8D4lAPp5g5zmnmvpRdkCWQodJYAvHr9ndVYd8RaAPHrqFQPl3DUhNFZ75oR7zzAQz
- WtjPYqZbWUVB61vavK0peti82MVQUzbEq1KNJltVb40ABIuYiCxlWxTyecVta6ZlN0hYaiwCoX0l
- tJxafxNhmHKVD2eKJ0K1qj2KMnW1vOTsHvz71Li0x4tE2zERYd7fRH4Fly_F9viFbt8IggR9MAf5
- PwqOLXBL0U_KfHawXUOcxFncijfYFckK8m0zjAXRdKFyJ2IWvQdTHd8VLkwgNFeHqQtiiesdDKh4
- 7QTHIPtkp8X0MO9A7I41bAPi1Y.L.onKK28kGEy1qwB5dLRr.Vg4qDbs5pmH9BbdzbtaGxpFvPtT
- YoDuAp.QkZwFUY2oKrTBs_rAmTY34kqDraIUd5AaczKNViz8ZsUqP0OyWsCL6Wl7qxOxVOanyk5B
- qhvnwGXOjMOSbjnIxwR34IML5_RAbqH1wFFq29SCJ4UtWgtYg.UosH2utwvrR_ag9Y4_WwM.6XnX
- MNvvARHG_mPC1KA4mESB3FZZ09PTb_HwxszWculmEZfmHE3Kv6ECt8TDB79TjXj_c4AQWDxnDKHy
- ALA4MISnYxMxau4JaU5uL1gO_gd30ztYOOvoOO2josT1wHrKlBo__pkOUoU3x1olqKD37e0Wr570
- IAyR4KFAP0aST0GdFcS5DUV8sPWJm0Sy.Omrp6NA2nlOBeWo852gvIuFUobE8UjFsmmRdKjCFslS
- d3kAnqE1arF7N..1c3_w7GHvAJITPfwTBkzfKDoBHy7XC_qh2ziarjl2ky4FqFmKywurRR_5dY29
- VIzLaGjPdHylW548mKuvhDdWb_yXhz005IPfIMY6775uxvF3pIVOqMhaF0Jsjv9p6Zs.6J9XnKbP
- wlPVPM5YF.w--
-Received: from sonic.gate.mail.ne1.yahoo.com by sonic308.consmr.mail.gq1.yahoo.com with HTTP; Thu, 22 Oct 2020 14:58:09 +0000
-Received: by smtp401.mail.ir2.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 354b2034a70b817070abfec37b60849b;
-          Thu, 22 Oct 2020 14:58:03 +0000 (UTC)
-From:   Gao Xiang <hsiangkao@aol.com>
-To:     linux-erofs@lists.ozlabs.org
-Cc:     Chao Yu <yuchao0@huawei.com>, Chao Yu <chao@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Gao Xiang <hsiangkao@redhat.com>
-Subject: [PATCH 4/4] erofs: complete a missing case for inplace I/O
-Date:   Thu, 22 Oct 2020 22:57:24 +0800
-Message-Id: <20201022145724.27284-4-hsiangkao@aol.com>
-X-Mailer: git-send-email 2.24.0
-In-Reply-To: <20201022145724.27284-1-hsiangkao@aol.com>
-References: <20201022145724.27284-1-hsiangkao@aol.com>
+        Thu, 22 Oct 2020 10:57:46 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 28DA3C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:57:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=EI7SUHNGo9RIx0dNIUmbKVTRaF3ifnJ7HykDmE4g0kA=; b=GFfjiu0pPasi/OTB9R4P4Xoei
+        YzMLcZbLe4gEsd8KmuTaYF6gh8hETygpFkKLT+Bsbune1Wbdu6kQ9McFVQiXzkZOU0QRdeGHCVz3y
+        61Eu/CkXANq4VZCe71o6H5RBmympCmjkA0hC5QVzWmhEiGenFHJGYY5Edcm4Vnqj0V+8WkQRrYGsY
+        9oo+aGAZMcMVQ6iqe+zRxzXlbQbgECiw+b/mQFarK/Ca9JyWdR+MbHQGXtnJKFFV1eW2KtdBoBtC6
+        D4l+0rlgvHtazJfKlan4ZanxQFUjhx+RQ0EB5oP1TJmaDtkYSc9c3fmJhGilLDDt0piB8MKxuiAjk
+        VSZYWFq2w==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49556)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVc23-0002AJ-O3; Thu, 22 Oct 2020 15:57:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVc23-0007UR-1g; Thu, 22 Oct 2020 15:57:35 +0100
+Date:   Thu, 22 Oct 2020 15:57:35 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+Message-ID: <20201022145734.GO1551@shell.armlinux.org.uk>
+References: <20201021225737.739-1-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021225737.739-1-digetx@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
+> The vfp_kmode_exception() function now is unreachable using relative
+> branching in THUMB2 kernel configuration, resulting in a "relocation
+> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
+> linker error. Let's use long jump in order to fix the issue.
+> 
+> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 
-Add a missing case which could cause unnecessary page allocation
-but not directly use inplace I/O instead, which increases runtime
-extra memory footprint.
+I guess the problem is that vfp_support_entry is in .text which tends
+to be at the beginning of the text section, but vfp_kmode_exception
+is in something like .text.vfp_kmode_exception ?
 
-The detail is, considering a file-backed page, the right half of
-the page is chosen to be cached (e.g. the end page) and some of
-its data doesn't exist in managed cache, so the pcluster will be
-kept in the submission chain. (In other words, it cannot be
-decompressed in advance, for example, due to the bypass chain).
+Would it be an idea just to change the section name that stuff like
+vfp_support_entry ends up in, rather than making the code less
+efficient?
 
-Currently, the pcluster for this case is downgraded as NOINPLACE,
-and stop the left half of the page from doing inplace I/O (so an
-extra page allocation is needed then.)
-
-Let's avoid such unnecessary downgrade instead.
-
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
----
- fs/erofs/zdata.c | 22 +++++++++++++++++-----
- 1 file changed, 17 insertions(+), 5 deletions(-)
-
-diff --git a/fs/erofs/zdata.c b/fs/erofs/zdata.c
-index edd7325570e1..ef12275f7fcc 100644
---- a/fs/erofs/zdata.c
-+++ b/fs/erofs/zdata.c
-@@ -160,7 +160,8 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 	const unsigned int clusterpages = BIT(pcl->clusterbits);
- 	struct page **pages = clt->compressedpages;
- 	pgoff_t index = pcl->obj.index + (pages - pcl->compressed_pages);
--	bool standalone = true;
-+	bool io_cant_bypass = false;
-+	bool updated = false;
- 
- 	if (clt->mode < COLLECT_PRIMARY_FOLLOWED)
- 		return;
-@@ -180,20 +181,31 @@ static void preload_compressed_pages(struct z_erofs_collector *clt,
- 		} else if (type == DELAYEDALLOC) {
- 			t = tagptr_init(compressed_page_t, PAGE_UNALLOCATED);
- 		} else {	/* DONTALLOC */
--			if (standalone)
-+			/* update to first inplace I/O page */
-+			if (!updated) {
- 				clt->compressedpages = pages;
--			standalone = false;
-+				updated = true;
-+			}
-+			io_cant_bypass = true;
- 			continue;
- 		}
- 
--		if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t)))
-+		if (!cmpxchg_relaxed(pages, NULL, tagptr_cast_ptr(t))) {
-+			if (type == DELAYEDALLOC)
-+				io_cant_bypass = true;
- 			continue;
-+		}
- 
- 		if (page)
- 			put_page(page);
- 	}
- 
--	if (standalone)		/* downgrade to PRIMARY_FOLLOWED_NOINPLACE */
-+	/*
-+	 * for COLLECT_PRIMARY_FOLLOWED pcluster, if all managed pages have
-+	 * been found (which means it can be handled without submittng I/O)
-+	 * it's unsafe to do inplace I/O. let's downgrade to NOINPLACE instead.
-+	 */
-+	if (!io_cant_bypass)
- 		clt->mode = COLLECT_PRIMARY_FOLLOWED_NOINPLACE;
- }
- 
 -- 
-2.24.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
