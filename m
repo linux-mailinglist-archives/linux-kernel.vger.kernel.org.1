@@ -2,269 +2,418 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F3792959A6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:52:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5988B29599E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:52:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508926AbgJVHwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:52:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56646 "EHLO
+        id S2508895AbgJVHwa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:52:30 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56626 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508884AbgJVHwc (ORCPT
+        with ESMTP id S2508877AbgJVHw3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:52:32 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 366E2C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:52:32 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVVOZ-00085k-KL; Thu, 22 Oct 2020 09:52:23 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVVOU-00036o-Qv; Thu, 22 Oct 2020 09:52:18 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     mkl@pengutronix.de, Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>, kernel@pengutronix.de,
-        linux-can@vger.kernel.org, netdev@vger.kernel.org,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Joakim Zhang <qiangqing.zhang@nxp.com>
-Subject: [PATCH v3 2/2] dt-bindings: can: flexcan: convert fsl,*flexcan bindings to yaml
-Date:   Thu, 22 Oct 2020 09:52:18 +0200
-Message-Id: <20201022075218.11880-3-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201022075218.11880-1-o.rempel@pengutronix.de>
-References: <20201022075218.11880-1-o.rempel@pengutronix.de>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+        Thu, 22 Oct 2020 03:52:29 -0400
+Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 584CCC0613CE;
+        Thu, 22 Oct 2020 00:52:29 -0700 (PDT)
+Received: by mail-lj1-x242.google.com with SMTP id m20so911819ljj.5;
+        Thu, 22 Oct 2020 00:52:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=Lz3T0/wMSg0jK0Mv0DuUm0wgU204qfdehJM5VRwUP0c=;
+        b=mEtyK8gBczkQAsNMhRR+rVJ9TXDu3CUECutH3plCUVT/25LhIVAt623VnAUhEGetNe
+         D2Dznj4lFIqywdrM+QoLB5rIFEJkLX+CU3W/eGly1qYcRbUZqWkpgGr1Oj4iEExCcMui
+         d8gEEyn69bydfV1khqZK+iYynv7R0WKIVDIKVEc+yojYT5g1Qvb/m2/K7cmhuLKqWVvW
+         t4JC1phBv4uINR9hk0G0Z80rGLFoWmXYnY++4pkAzFLi3lgjjCXkQROJB0ZN3xgIpowW
+         XfIuVqPCbDF/mRwWTmZceEjQpLPk8F/lkiwwZgu+z3sH++/fLkITBzJRchvsJEg133kd
+         bGxQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=Lz3T0/wMSg0jK0Mv0DuUm0wgU204qfdehJM5VRwUP0c=;
+        b=UL8wnUVPyOO3qyMSL/yTpAS6XkN1kRgXqLLYeqyda9etFOb83bRkzPkUxO7C3dbDv5
+         h6k5wEEwXMcmINqcUoKglf1VK7Wndn3upj9KV6j6GECTpooZEukfvIgKKfX/wZJzEjdF
+         +FJHX4PnNVqrE5gl34sfDdGFBkNtUH5FBFlkFA18j1xwiKpIxCTNmVD5znUBJi6ixotE
+         kkRvOwQoplx9Y5AMTQseEbx2AgVtXVI5MnlgeRZ9c7dY6OfsD/TC+D2Ffxy3OsYNx76c
+         02kj9EKbHLunrDnFuSvOY3DKuaD6qeKuMnybAlo/HWBtmRdLM9WVTuhglibLzY/Ptwr0
+         XlIQ==
+X-Gm-Message-State: AOAM533RY9K9Z89uWJDJdMHgl311Gn5dw+1NV7HnEDNt27NBdBLSf2Vg
+        hXyhxxsMXW0RVgxDy2F6iRtu4dMLKMWDqQ==
+X-Google-Smtp-Source: ABdhPJxR6Qb/J9Z5dlbhKC3yqPKyuIWdZqYJaJx2Er5GAGO7fTntF2htF2DRIGp33eAIzRRM224dRw==
+X-Received: by 2002:a05:651c:1101:: with SMTP id d1mr465845ljo.150.1603353147714;
+        Thu, 22 Oct 2020 00:52:27 -0700 (PDT)
+Received: from ubuntu-18.lintech.local ([80.87.144.137])
+        by smtp.gmail.com with ESMTPSA id x16sm139426lfn.268.2020.10.22.00.52.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 00:52:26 -0700 (PDT)
+From:   Alexander Kochetkov <al.kochet@gmail.com>
+X-Google-Original-From: Alexander Kochetkov <akochetkov@lintech.ru>
+To:     Mark Brown <broonie@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org,
+        Alexander Kochetkov <al.kochet@gmail.com>
+Subject: [PATCH v3] spi: spi-sun6i: implement DMA-based transfer mode
+Date:   Thu, 22 Oct 2020 10:52:21 +0300
+Message-Id: <20201022075221.23332-1-akochetkov@lintech.ru>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to automate the verification of DT nodes convert
-fsl-flexcan.txt to fsl,flexcan.yaml
+From: Alexander Kochetkov <al.kochet@gmail.com>
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-Link: https://lore.kernel.org/r/20201016073315.16232-3-o.rempel@pengutronix.de
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+DMA-based transfer will be enabled if data length is larger than FIFO size
+(64 bytes for A64). This greatly reduce number of interrupts for
+transferring data.
+
+For smaller data size PIO mode will be used. In PIO mode whole buffer will
+be loaded into FIFO.
+
+If driver failed to request DMA channels then it fallback for PIO mode.
+
+Tested on SOPINE (https://www.pine64.org/sopine/)
+
+Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
 ---
- .../bindings/net/can/fsl,flexcan.yaml         | 135 ++++++++++++++++++
- .../bindings/net/can/fsl-flexcan.txt          |  57 --------
- 2 files changed, 135 insertions(+), 57 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
- delete mode 100644 Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
+Changes in v3:
+- Remove use_dma from struct sun6i_spi
 
-diff --git a/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-new file mode 100644
-index 000000000000..43df15ba8fa4
---- /dev/null
-+++ b/Documentation/devicetree/bindings/net/can/fsl,flexcan.yaml
-@@ -0,0 +1,135 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/net/can/fsl,flexcan.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
+Changes in v2:
+
+- Fix 'checkpatch.pl --strict' warnings
+- Optimezed DMA transfers. Fix burst size and address width for
+ DMA transfers. The code works for me an I did some tests with different
+ values and conditions. Empirically found that trigger level used for
+ PIO mode also can be used for DMA mode (TRM for A64 lacks that 
+ description)
+- Handling inside sun6i_spi_handler() leaved as is, it explicity states that
+ sun6i_spi_drain_fifo() is not used in DMA mode. Yes, if we call
+ sun6i_spi_drain_fifo() after DMA transfer, it will not drain anything
+ becase DMA already drain FIFO.
+ I can remove condition if it's better without it.
+
+ drivers/spi/spi-sun6i.c | 194 ++++++++++++++++++++++++++++++++++++----
+ 1 file changed, 176 insertions(+), 18 deletions(-)
+
+diff --git a/drivers/spi/spi-sun6i.c b/drivers/spi/spi-sun6i.c
+index 19238e1b76b4..5336c5e32694 100644
+--- a/drivers/spi/spi-sun6i.c
++++ b/drivers/spi/spi-sun6i.c
+@@ -18,6 +18,7 @@
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/reset.h>
++#include <linux/dmaengine.h>
+ 
+ #include <linux/spi/spi.h>
+ 
+@@ -52,10 +53,12 @@
+ 
+ #define SUN6I_FIFO_CTL_REG		0x18
+ #define SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_MASK	0xff
++#define SUN6I_FIFO_CTL_RF_DRQ_EN		BIT(8)
+ #define SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS	0
+ #define SUN6I_FIFO_CTL_RF_RST			BIT(15)
+ #define SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_MASK	0xff
+ #define SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS	16
++#define SUN6I_FIFO_CTL_TF_DRQ_EN		BIT(24)
+ #define SUN6I_FIFO_CTL_TF_RST			BIT(31)
+ 
+ #define SUN6I_FIFO_STA_REG		0x1c
+@@ -83,6 +86,8 @@
+ struct sun6i_spi {
+ 	struct spi_master	*master;
+ 	void __iomem		*base_addr;
++	dma_addr_t		dma_addr_rx;
++	dma_addr_t		dma_addr_tx;
+ 	struct clk		*hclk;
+ 	struct clk		*mclk;
+ 	struct reset_control	*rstc;
+@@ -182,6 +187,68 @@ static size_t sun6i_spi_max_transfer_size(struct spi_device *spi)
+ 	return SUN6I_MAX_XFER_SIZE - 1;
+ }
+ 
++static int sun6i_spi_prepare_dma(struct sun6i_spi *sspi,
++				 struct spi_transfer *tfr)
++{
++	struct dma_async_tx_descriptor *rxdesc, *txdesc;
++	struct spi_master *master = sspi->master;
 +
-+title:
-+  Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
++	rxdesc = NULL;
++	if (tfr->rx_buf) {
++		struct dma_slave_config rxconf = {
++			.direction = DMA_DEV_TO_MEM,
++			.src_addr = sspi->dma_addr_rx,
++			.src_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
++			.src_maxburst = 8,
++		};
 +
-+maintainers:
-+  - Marc Kleine-Budde <mkl@pengutronix.de>
++		dmaengine_slave_config(master->dma_rx, &rxconf);
 +
-+allOf:
-+  - $ref: can-controller.yaml#
++		rxdesc = dmaengine_prep_slave_sg(master->dma_rx,
++						 tfr->rx_sg.sgl,
++						 tfr->rx_sg.nents,
++						 DMA_DEV_TO_MEM,
++						 DMA_PREP_INTERRUPT);
++		if (!rxdesc)
++			return -EINVAL;
++	}
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - enum:
-+          - fsl,imx8qm-flexcan
-+          - fsl,imx8mp-flexcan
-+          - fsl,imx6q-flexcan
-+          - fsl,imx53-flexcan
-+          - fsl,imx35-flexcan
-+          - fsl,imx28-flexcan
-+          - fsl,imx25-flexcan
-+          - fsl,p1010-flexcan
-+          - fsl,vf610-flexcan
-+          - fsl,ls1021ar2-flexcan
-+          - fsl,lx2160ar1-flexcan
-+      - items:
-+          - enum:
-+              - fsl,imx7d-flexcan
-+              - fsl,imx6ul-flexcan
-+              - fsl,imx6sx-flexcan
-+          - const: fsl,imx6q-flexcan
-+      - items:
-+          - enum:
-+              - fsl,ls1028ar1-flexcan
-+          - const: fsl,lx2160ar1-flexcan
++	txdesc = NULL;
++	if (tfr->tx_buf) {
++		struct dma_slave_config txconf = {
++			.direction = DMA_MEM_TO_DEV,
++			.dst_addr = sspi->dma_addr_tx,
++			.dst_addr_width = DMA_SLAVE_BUSWIDTH_4_BYTES,
++			.dst_maxburst = 8,
++		};
 +
-+  reg:
-+    maxItems: 1
++		dmaengine_slave_config(master->dma_tx, &txconf);
 +
-+  interrupts:
-+    maxItems: 1
++		txdesc = dmaengine_prep_slave_sg(master->dma_tx,
++						 tfr->tx_sg.sgl,
++						 tfr->tx_sg.nents,
++						 DMA_MEM_TO_DEV,
++						 DMA_PREP_INTERRUPT);
++		if (!txdesc) {
++			if (rxdesc)
++				dmaengine_terminate_sync(master->dma_rx);
++			return -EINVAL;
++		}
++	}
 +
-+  clocks:
-+    maxItems: 2
++	if (tfr->rx_buf) {
++		dmaengine_submit(rxdesc);
++		dma_async_issue_pending(master->dma_rx);
++	}
 +
-+  clock-names:
-+    items:
-+      - const: ipg
-+      - const: per
++	if (tfr->tx_buf) {
++		dmaengine_submit(txdesc);
++		dma_async_issue_pending(master->dma_tx);
++	}
 +
-+  clock-frequency:
-+    description: |
-+      The oscillator frequency driving the flexcan device, filled in by the
-+      boot loader. This property should only be used the used operating system
-+      doesn't support the clocks and clock-names property.
++	return 0;
++}
 +
-+  xceiver-supply:
-+    description: Regulator that powers the CAN transceiver.
+ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 				  struct spi_device *spi,
+ 				  struct spi_transfer *tfr)
+@@ -191,6 +258,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	unsigned int start, end, tx_time;
+ 	unsigned int trig_level;
+ 	unsigned int tx_len = 0, rx_len = 0;
++	bool use_dma;
+ 	int ret = 0;
+ 	u32 reg;
+ 
+@@ -201,6 +269,7 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	sspi->tx_buf = tfr->tx_buf;
+ 	sspi->rx_buf = tfr->rx_buf;
+ 	sspi->len = tfr->len;
++	use_dma = master->can_dma ? master->can_dma(master, spi, tfr) : false;
+ 
+ 	/* Clear pending interrupts */
+ 	sun6i_spi_write(sspi, SUN6I_INT_STA_REG, ~0);
+@@ -209,16 +278,34 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG,
+ 			SUN6I_FIFO_CTL_RF_RST | SUN6I_FIFO_CTL_TF_RST);
+ 
+-	/*
+-	 * Setup FIFO interrupt trigger level
+-	 * Here we choose 3/4 of the full fifo depth, as it's the hardcoded
+-	 * value used in old generation of Allwinner SPI controller.
+-	 * (See spi-sun4i.c)
+-	 */
+-	trig_level = sspi->fifo_depth / 4 * 3;
+-	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG,
+-			(trig_level << SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS) |
+-			(trig_level << SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS));
++	reg = 0;
 +
-+  big-endian:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description: |
-+      This means the registers of FlexCAN controller are big endian. This is
-+      optional property.i.e. if this property is not present in device tree
-+      node then controller is assumed to be little endian. If this property is
-+      present then controller is assumed to be big endian.
++	if (!use_dma) {
++		/*
++		 * Setup FIFO interrupt trigger level
++		 * Here we choose 3/4 of the full fifo depth, as it's
++		 * the hardcoded value used in old generation of Allwinner
++		 * SPI controller. (See spi-sun4i.c)
++		 */
++		trig_level = sspi->fifo_depth / 4 * 3;
++	} else {
++		/*
++		 * Setup FIFO DMA request trigger level
++		 * We choose 1/2 of the full fifo depth, that value will
++		 * be used as DMA burst length.
++		 */
++		trig_level = sspi->fifo_depth / 2;
 +
-+  fsl,stop-mode:
-+    description: |
-+      Register bits of stop mode control.
++		if (tfr->tx_buf)
++			reg |= SUN6I_FIFO_CTL_TF_DRQ_EN;
++		if (tfr->rx_buf)
++			reg |= SUN6I_FIFO_CTL_RF_DRQ_EN;
++	}
 +
-+      The format should be as follows:
-+      <gpr req_gpr req_bit>
-+      gpr is the phandle to general purpose register node.
-+      req_gpr is the gpr register offset of CAN stop request.
-+      req_bit is the bit offset of CAN stop request.
-+    $ref: /schemas/types.yaml#/definitions/phandle-array
-+    items:
-+      - description: The 'gpr' is the phandle to general purpose register node.
-+      - description: The 'req_gpr' is the gpr register offset of CAN stop request.
-+        maximum: 0xff
-+      - description: The 'req_bit' is the bit offset of CAN stop request.
-+        maximum: 0x1f
++	reg |= (trig_level << SUN6I_FIFO_CTL_RF_RDY_TRIG_LEVEL_BITS) |
++	       (trig_level << SUN6I_FIFO_CTL_TF_ERQ_TRIG_LEVEL_BITS);
 +
-+  fsl,clk-source:
-+    description: |
-+      Select the clock source to the CAN Protocol Engine (PE). It's SoC
-+      implementation dependent. Refer to RM for detailed definition. If this
-+      property is not set in device tree node then driver selects clock source 1
-+      by default.
-+      0: clock source 0 (oscillator clock)
-+      1: clock source 1 (peripheral clock)
-+    $ref: /schemas/types.yaml#/definitions/uint32
-+    default: 1
-+    minimum: 0
-+    maximum: 1
++	sun6i_spi_write(sspi, SUN6I_FIFO_CTL_REG, reg);
+ 
+ 	/*
+ 	 * Setup the transfer control register: Chip Select,
+@@ -300,16 +387,28 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 	sun6i_spi_write(sspi, SUN6I_XMIT_CNT_REG, tx_len);
+ 	sun6i_spi_write(sspi, SUN6I_BURST_CTL_CNT_REG, tx_len);
+ 
+-	/* Fill the TX FIFO */
+-	sun6i_spi_fill_fifo(sspi);
++	if (!use_dma) {
++		/* Fill the TX FIFO */
++		sun6i_spi_fill_fifo(sspi);
++	} else {
++		ret = sun6i_spi_prepare_dma(sspi, tfr);
++		if (ret) {
++			dev_warn(&master->dev,
++				 "%s: prepare DMA failed, ret=%d",
++				 dev_name(&spi->dev), ret);
++			return ret;
++		}
++	}
+ 
+ 	/* Enable the interrupts */
+ 	reg = SUN6I_INT_CTL_TC;
+ 
+-	if (rx_len > sspi->fifo_depth)
+-		reg |= SUN6I_INT_CTL_RF_RDY;
+-	if (tx_len > sspi->fifo_depth)
+-		reg |= SUN6I_INT_CTL_TF_ERQ;
++	if (!use_dma) {
++		if (rx_len > sspi->fifo_depth)
++			reg |= SUN6I_INT_CTL_RF_RDY;
++		if (tx_len > sspi->fifo_depth)
++			reg |= SUN6I_INT_CTL_TF_ERQ;
++	}
+ 
+ 	sun6i_spi_write(sspi, SUN6I_INT_CTL_REG, reg);
+ 
+@@ -332,6 +431,11 @@ static int sun6i_spi_transfer_one(struct spi_master *master,
+ 
+ 	sun6i_spi_write(sspi, SUN6I_INT_CTL_REG, 0);
+ 
++	if (ret && use_dma) {
++		dmaengine_terminate_sync(master->dma_rx);
++		dmaengine_terminate_sync(master->dma_tx);
++	}
 +
-+  wakeup-source:
-+    $ref: /schemas/types.yaml#/definitions/flag
-+    description:
-+      Enable CAN remote wakeup.
+ 	return ret;
+ }
+ 
+@@ -422,10 +526,25 @@ static int sun6i_spi_runtime_suspend(struct device *dev)
+ 	return 0;
+ }
+ 
++static bool sun6i_spi_can_dma(struct spi_master *master,
++			      struct spi_device *spi,
++			      struct spi_transfer *xfer)
++{
++	struct sun6i_spi *sspi = spi_master_get_devdata(master);
 +
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
++	/*
++	 * If the number of spi words to transfer is less or equal than
++	 * the fifo length we can just fill the fifo and wait for a single
++	 * irq, so don't bother setting up dma
++	 */
++	return xfer->len > sspi->fifo_depth;
++}
 +
-+additionalProperties: false
+ static int sun6i_spi_probe(struct platform_device *pdev)
+ {
+ 	struct spi_master *master;
+ 	struct sun6i_spi *sspi;
++	struct resource *mem;
+ 	int ret = 0, irq;
+ 
+ 	master = spi_alloc_master(&pdev->dev, sizeof(struct sun6i_spi));
+@@ -437,7 +556,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 	platform_set_drvdata(pdev, master);
+ 	sspi = spi_master_get_devdata(master);
+ 
+-	sspi->base_addr = devm_platform_ioremap_resource(pdev, 0);
++	sspi->base_addr = devm_platform_get_and_ioremap_resource(pdev, 0, &mem);
+ 	if (IS_ERR(sspi->base_addr)) {
+ 		ret = PTR_ERR(sspi->base_addr);
+ 		goto err_free_master;
+@@ -494,6 +613,33 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 		goto err_free_master;
+ 	}
+ 
++	master->dma_tx = dma_request_chan(&pdev->dev, "tx");
++	if (IS_ERR(master->dma_tx)) {
++		/* Check tx to see if we need defer probing driver */
++		if (PTR_ERR(master->dma_tx) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++			goto err_free_master;
++		}
++		dev_warn(&pdev->dev, "Failed to request TX DMA channel\n");
++		master->dma_tx = NULL;
++	}
 +
-+examples:
-+  - |
-+    can@1c000 {
-+        compatible = "fsl,p1010-flexcan";
-+        reg = <0x1c000 0x1000>;
-+        interrupts = <48 0x2>;
-+        interrupt-parent = <&mpic>;
-+        clock-frequency = <200000000>;
-+        fsl,clk-source = <0>;
-+    };
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
++	master->dma_rx = dma_request_chan(&pdev->dev, "rx");
++	if (IS_ERR(master->dma_rx)) {
++		if (PTR_ERR(master->dma_rx) == -EPROBE_DEFER) {
++			ret = -EPROBE_DEFER;
++			goto err_free_dma_tx;
++		}
++		dev_warn(&pdev->dev, "Failed to request RX DMA channel\n");
++		master->dma_rx = NULL;
++	}
 +
-+    can@2090000 {
-+        compatible = "fsl,imx6q-flexcan";
-+        reg = <0x02090000 0x4000>;
-+        interrupts = <0 110 IRQ_TYPE_LEVEL_HIGH>;
-+        clocks = <&clks 1>, <&clks 2>;
-+        clock-names = "ipg", "per";
-+        fsl,stop-mode = <&gpr 0x34 28>;
-+    };
-diff --git a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt b/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-deleted file mode 100644
-index e10b6eb955e1..000000000000
---- a/Documentation/devicetree/bindings/net/can/fsl-flexcan.txt
-+++ /dev/null
-@@ -1,57 +0,0 @@
--Flexcan CAN controller on Freescale's ARM and PowerPC system-on-a-chip (SOC).
--
--Required properties:
--
--- compatible : Should be "fsl,<processor>-flexcan"
--
--  where <processor> is imx8qm, imx6q, imx28, imx53, imx35, imx25, p1010,
--  vf610, ls1021ar2, lx2160ar1, ls1028ar1.
--
--  The ls1028ar1 must be followed by lx2160ar1, e.g.
--   - "fsl,ls1028ar1-flexcan", "fsl,lx2160ar1-flexcan"
--
--  An implementation should also claim any of the following compatibles
--  that it is fully backwards compatible with:
--
--  - fsl,p1010-flexcan
--
--- reg : Offset and length of the register set for this device
--- interrupts : Interrupt tuple for this device
--
--Optional properties:
--
--- clock-frequency : The oscillator frequency driving the flexcan device
--
--- xceiver-supply: Regulator that powers the CAN transceiver
--
--- big-endian: This means the registers of FlexCAN controller are big endian.
--              This is optional property.i.e. if this property is not present in
--              device tree node then controller is assumed to be little endian.
--              if this property is present then controller is assumed to be big
--              endian.
--
--- fsl,stop-mode: register bits of stop mode control, the format is
--		 <&gpr req_gpr req_bit>.
--		 gpr is the phandle to general purpose register node.
--		 req_gpr is the gpr register offset of CAN stop request.
--		 req_bit is the bit offset of CAN stop request.
--
--- fsl,clk-source: Select the clock source to the CAN Protocol Engine (PE).
--		  It's SoC Implementation dependent. Refer to RM for detailed
--		  definition. If this property is not set in device tree node
--		  then driver selects clock source 1 by default.
--		  0: clock source 0 (oscillator clock)
--		  1: clock source 1 (peripheral clock)
--
--- wakeup-source: enable CAN remote wakeup
--
--Example:
--
--	can@1c000 {
--		compatible = "fsl,p1010-flexcan";
--		reg = <0x1c000 0x1000>;
--		interrupts = <48 0x2>;
--		interrupt-parent = <&mpic>;
--		clock-frequency = <200000000>; // filled in by bootloader
--		fsl,clk-source = <0>; // select clock source 0 for PE
--	};
++	if (master->dma_tx && master->dma_rx) {
++		sspi->dma_addr_tx = mem->start + SUN6I_TXDATA_REG;
++		sspi->dma_addr_rx = mem->start + SUN6I_RXDATA_REG;
++		master->can_dma = sun6i_spi_can_dma;
++	}
++
+ 	/*
+ 	 * This wake-up/shutdown pattern is to be able to have the
+ 	 * device woken up, even if runtime_pm is disabled
+@@ -501,7 +647,7 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 	ret = sun6i_spi_runtime_resume(&pdev->dev);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "Couldn't resume the device\n");
+-		goto err_free_master;
++		goto err_free_dma_rx;
+ 	}
+ 
+ 	pm_runtime_set_active(&pdev->dev);
+@@ -519,6 +665,12 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ err_pm_disable:
+ 	pm_runtime_disable(&pdev->dev);
+ 	sun6i_spi_runtime_suspend(&pdev->dev);
++err_free_dma_rx:
++	if (master->dma_rx)
++		dma_release_channel(master->dma_rx);
++err_free_dma_tx:
++	if (master->dma_tx)
++		dma_release_channel(master->dma_tx);
+ err_free_master:
+ 	spi_master_put(master);
+ 	return ret;
+@@ -526,8 +678,14 @@ static int sun6i_spi_probe(struct platform_device *pdev)
+ 
+ static int sun6i_spi_remove(struct platform_device *pdev)
+ {
++	struct spi_master *master = platform_get_drvdata(pdev);
++
+ 	pm_runtime_force_suspend(&pdev->dev);
+ 
++	if (master->dma_tx)
++		dma_release_channel(master->dma_tx);
++	if (master->dma_rx)
++		dma_release_channel(master->dma_rx);
+ 	return 0;
+ }
+ 
 -- 
-2.28.0
+2.17.1
 
