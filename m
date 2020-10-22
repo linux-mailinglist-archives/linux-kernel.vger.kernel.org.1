@@ -2,120 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 864DE295D94
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:43:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE0CB295D9A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:43:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897461AbgJVLm5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:42:57 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44282 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897445AbgJVLmz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:42:55 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603366973;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=EQRmKyKYT7uKEBtlml2OfUE8osE2xynkOxu/XpVBZcw=;
-        b=VD/CPHBOykstgJqYoQR/QeB4t5cV3T94fkyawb4D4HeWrtQ3+2Ec8EP4Qz+NPuRNmRuUCP
-        MlkfYkaGrWvf9RG5BRSDvfpLBJVAzOoM1sAHTupGsLzZHE3foSALODqcdQyynwp9k2Wzz1
-        /PL+4szUz0Blg2lOhTDELD0tIVs752c=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 437FBB80F;
-        Thu, 22 Oct 2020 11:42:53 +0000 (UTC)
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: RFC 2/2] printk: Restore and document obsolete ways to disable console output
-Date:   Thu, 22 Oct 2020 13:42:28 +0200
-Message-Id: <20201022114228.9098-3-pmladek@suse.com>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <20201022114228.9098-1-pmladek@suse.com>
-References: <20201022114228.9098-1-pmladek@suse.com>
+        id S2897462AbgJVLnO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:43:14 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:40782 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897466AbgJVLnK (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:43:10 -0400
+Received: by mail-oi1-f195.google.com with SMTP id m128so1376965oig.7;
+        Thu, 22 Oct 2020 04:43:10 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7LNL9SMZw9qpSCk8GZhm70132hDMn3rbfgSHkf94S/o=;
+        b=dzQ5usE9xENDDpj31Sqmb/Yt/vEzvbGSAgRGswtc3AiZAtSFyrqOZRs0dv1EjBkrY+
+         ajhetBnCc5Ye9htTcoIg1wYISr0JZZWpyCGwDIwnSFTl5u9gBbYl8yHbo6VXgTZPdWeH
+         QfMGvcjP8GGpVJujXoTIhucle7l7od+tujStENDd8ppyTaiWASJZNkMkrGOMyoAdfyIq
+         KZUw5mr10sUdtgqpRe8reJJ6RAZarw0Y+zxxyfL20h7h2GTKCnphOLUjXXcpiJ7F4u28
+         PtoJ4ULpOjlHOlx8E7v7HoLzq6PvxtnAoKEn8X258u4rGaiZQLWLZBBZZuezm95lGH6e
+         qwYQ==
+X-Gm-Message-State: AOAM5303di7elToOhlP8Vfvlao086wxeR7TA7rD74gCLXSQovzrby2NU
+        CVPecnE24RRBK5oleyYG1BY87BUs2C9zJ2I7nKQ=
+X-Google-Smtp-Source: ABdhPJyoWSe5gedUBlCvZliNqeh5RzoieS2KyldrSUtBmYEpnHMIT9ajIQ0m3aNgeH3Sex1CGgExiVeu86sgKxwdWjQ=
+X-Received: by 2002:a05:6808:8f5:: with SMTP id d21mr1124215oic.153.1603366989748;
+ Thu, 22 Oct 2020 04:43:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201014145558.12854-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201014145558.12854-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Thu, 22 Oct 2020 13:42:58 +0200
+Message-ID: <CAMuHMdX6g5dh2jU5DKUiOLbxXcwPodUcrYS6=mU53F=oLAw0PA@mail.gmail.com>
+Subject: Re: [PATCH] ARM: dts: r8a7742-iwg21d-q7-dbcm-ca: Enable VIN instances
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Biju Das <biju.das.jz@bp.renesas.com>,
+        Prabhakar <prabhakar.csengg@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The commit 48021f98130880dd7 ("printk: handle blank console arguments
-passed in.") prevented crash caused by empty console= parameter value.
+Hi Prabhakar,
 
-Unfortunately, this value is widely used on Chromebooks to disable
-the console output. The above commit caused performance regression
-because the messages were pushed on slow console even though nobody
-was watching it.
+On Wed, Oct 14, 2020 at 4:56 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Enable VIN instances along with OV5640 as endpoints on the adapter board.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-"mute_console" kernel parameter has been introduced as a proper and
-official was to disable console output. It avoids the performance
-problem by suppressing all kernel messages. Also avoids the crash
-by registering the default console.
+Thanks for your patch!
 
-Make console="" behave the same as "mute_console" to avoid
-the performance regression on existing Chromebooks.
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-Do the same also for console=null which seem to be another widely
-suggested and non-official way to disable the console output.
+I believe the "data-shift" patches for rcar-vin haven't been accepted yet,
+and this patch depends on it, logically?
 
-Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Signed-off-by: Petr Mladek <pmladek@suse.com>
----
- Documentation/admin-guide/kernel-parameters.txt | 5 +++++
- kernel/printk/printk.c                          | 9 ++++++++-
- 2 files changed, 13 insertions(+), 1 deletion(-)
+Gr{oetje,eeting}s,
 
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 52b9e7f5468d..14472f674a89 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -670,11 +670,16 @@
- 		hvc<n>	Use the hypervisor console device <n>. This is for
- 			both Xen and PowerPC hypervisors.
- 
-+		null
-+		""	Obsolete way to disable console output. Please,
-+			use "mute_console" instead.
-+
- 		If the device connected to the port is not a TTY but a braille
- 		device, prepend "brl," before the device type, for instance
- 			console=brl,ttyS0
- 		For now, only VisioBraille is supported.
- 
-+
- 	console_msg_format=
- 			[KNL] Change console messages format
- 		default
-diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
-index 63fb96630767..08c50d8ba110 100644
---- a/kernel/printk/printk.c
-+++ b/kernel/printk/printk.c
-@@ -2208,8 +2208,15 @@ static int __init console_setup(char *str)
- 	char *s, *options, *brl_options = NULL;
- 	int idx;
- 
--	if (str[0] == 0)
-+	/*
-+	 * console="" or console=null have been suggested as a way to
-+	 * disable console output. It worked just by chance and was not
-+	 * reliable. It has been obsoleted by "mute_console" parameter.
-+	 */
-+	if (str[0] == 0 || strcmp(str, "null") == 0) {
-+		mute_console = true;
- 		return 1;
-+	}
- 
- 	if (_braille_console_setup(&str, &brl_options))
- 		return 1;
+                        Geert
+
 -- 
-2.26.2
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
 
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
