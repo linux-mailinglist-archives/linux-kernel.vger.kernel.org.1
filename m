@@ -2,69 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F03B32956E7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:43:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB50D2956EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:44:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895519AbgJVDn3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 23:43:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46936 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2441714AbgJVDn3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 23:43:29 -0400
-Received: from kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com (c-67-180-217-166.hsd1.ca.comcast.net [67.180.217.166])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8299E21D6C;
-        Thu, 22 Oct 2020 03:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603338209;
-        bh=8f6HmpIcRJ3M7KpM+462DX4+WXzKS753bbrgorSvmFY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=1HbqfSZ/VzNi5dJt/Xa4HV+V5tek16Ggr3WD9/MoX7d1f9WaspcTZtLkwafmYWk96
-         CFwxmsYzph85J0NimgonAalLpEp4NXN8AReNo40h7A1H8n/zU7dq38MlaNvFCg0XGm
-         2JaLDgAptep24hhImvJ2/bAKjp1hsdvfKwTxzeq8=
-Date:   Wed, 21 Oct 2020 20:43:21 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Mat Martineau <mathew.j.martineau@linux.intel.com>
-Cc:     Matthieu Baerts <matthieu.baerts@tessares.net>,
-        "David S. Miller" <davem@davemloft.net>,
-        Shuah Khan <shuah@kernel.org>,
+        id S2895523AbgJVDoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 23:44:00 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:49335 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S2443118AbgJVDn7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 23:43:59 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09M3hhpx012820
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Wed, 21 Oct 2020 23:43:43 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 2C055420107; Wed, 21 Oct 2020 23:43:43 -0400 (EDT)
+Date:   Wed, 21 Oct 2020 23:43:43 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Randy Dunlap <rdunlap@infradead.org>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
         Geert Uytterhoeven <geert@linux-m68k.org>,
-        netdev@vger.kernel.org, mptcp@lists.01.org,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] selftests: mptcp: depends on built-in IPv6
-Message-ID: <20201021204321.144e6df4@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
-In-Reply-To: <1d28e7da-3fce-b064-a159-662f53e5a3b@linux.intel.com>
-References: <20201021155549.933731-1-matthieu.baerts@tessares.net>
-        <1d28e7da-3fce-b064-a159-662f53e5a3b@linux.intel.com>
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
+ of selecting it
+Message-ID: <20201022034343.GQ181507@mit.edu>
+References: <20201020073740.29081-1-geert@linux-m68k.org>
+ <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+ <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
+ <20201021223649.GP181507@mit.edu>
+ <b51d57fd-061a-26f3-5ecc-8efecbc95a49@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b51d57fd-061a-26f3-5ecc-8efecbc95a49@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 17:35:32 -0700 (PDT) Mat Martineau wrote:
-> > Recently, CONFIG_MPTCP_IPV6 no longer selects CONFIG_IPV6. As a
-> > consequence, if CONFIG_MPTCP_IPV6=y is added to the kconfig, it will no
-> > longer ensure CONFIG_IPV6=y. If it is not enabled, CONFIG_MPTCP_IPV6
-> > will stay disabled and selftests will fail.
-> >
-> > We also need CONFIG_IPV6 to be built-in. For more details, please see
-> > commit 0ed37ac586c0 ("mptcp: depends on IPV6 but not as a module").
-> >
-> > Note that 'make kselftest-merge' will take all 'config' files found in
-> > 'tools/testsing/selftests'. Because some of them already set
-> > CONFIG_IPV6=y, MPTCP selftests were still passing. But they will fail if
-> > MPTCP selftests are launched manually after having executed this command
-> > to prepare the kernel config:
-> >
-> >  ./scripts/kconfig/merge_config.sh -m .config \
-> >      ./tools/testing/selftests/net/mptcp/config
-> >
-> > Fixes: 010b430d5df5 ("mptcp: MPTCP_IPV6 should depend on IPV6 instead of selecting it")
-> > Signed-off-by: Matthieu Baerts <matthieu.baerts@tessares.net>
->
-> Reviewed-by: Mat Martineau <mathew.j.martineau@linux.intel.com>
+On Wed, Oct 21, 2020 at 04:07:15PM -0700, Randy Dunlap wrote:
+> > I'm don't particularly care how this gets achieved, but please think
+> > about how to make it easy for a kernel developer to run a specific set
+> > of subsystem unit tests.  (In fact, being able to do something like
+> > "kunit.py run fs/ext4 fs/jbd2" or maybe "kunit.py run fs/..." would be
+> > *great*.  No need to fuss with hand editing the .kunitconfig file at
+> > all would be **wonderful**.
+> 
+> I understand the wish for ease of use, but this is still the tail
+> wagging the dog.
+> 
+> The primary documentation for 'select' is
+> Documentation/kbuild/kconfig-language.rst, which says:
+> 
+>   Note:
+> 	select should be used with care. select will force
+> 	a symbol to a value without visiting the dependencies.
+> 	By abusing select you are able to select a symbol FOO even
+> 	if FOO depends on BAR that is not set.
+> 	In general use select only for non-visible symbols
+> 	(no prompts anywhere) and for symbols with no dependencies.
+> 	That will limit the usefulness but on the other hand avoid
+> 	the illegal configurations all over.
+> 
 
-Applied, thank you!
+Well, the KUNIT configs are kinda of a special case, since normally
+they don't have a lot of huge number of dependencies, since unit tests
+in general are not integration tests.  So ideally, dependencies will
+mostly be replaced with mocking functions.  And if there are *real*
+dependencies that the Kunit Unit tests need, they can be explicitly
+pulled in with selects.
+
+That being said, as I said, I'm not picky about *how* this gets
+achieved.  But ease of use is a key part of making people more likely
+to run the unit tests.  So another way of solving the problem might be
+to put some kind of automated dependency solver into kunit.py, or some
+way of manually adding the necessary dependencies in some kind of
+Kunitconfig file that are in directories where their are Unit tests,
+or maybe some kind of extenstion to the Kconfig file.  My main
+requirement is that the only thing that should be necessary for
+enabling the ext4 Kunit tests should be adding a single line to the
+.kunitconfig file.  It's not fair to make the human developer manually
+have to figure out the dependency chains.
+
+As far as I'm concerned, ease of use is important enough to justfy
+special casing and/or bending the rules as far as "select" is concered
+for Kunit-related CONFIG items.  But if someone else want to suggest a
+better approach, I'm all ears.
+
+Cheers,
+
+							- Ted
