@@ -2,118 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 344EA296671
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:19:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 20131296674
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:20:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369692AbgJVVTa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:19:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40490 "EHLO
+        id S372244AbgJVVUh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:20:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40664 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897428AbgJVVT3 (ORCPT
+        with ESMTP id S372233AbgJVVUg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:19:29 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 531B2C0613CE;
-        Thu, 22 Oct 2020 14:19:29 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id s22so1774160pga.9;
-        Thu, 22 Oct 2020 14:19:29 -0700 (PDT)
+        Thu, 22 Oct 2020 17:20:36 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 96571C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:20:36 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id 19so1769135pge.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:20:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=3W/IOmdOMUGlXlTzumA+5bE0zrAqv8UmjtWcnintli8=;
-        b=U9CbMxFwmbX0fhv+7Qcq0QxQoZfeBEaxscO+5CXSLFUuRYCe6TgHRMTagtmXBBXPEv
-         QGBGDqQdo7K+2zfpDLEuRecZqTDzDWVda4/VxjhpxD/s2tKgExJsxq5MqK+ZZBg2VVJP
-         jxP1y1tJZ3Z0i+014MaPrDOEFO2GJM49mkuR343t7tsjPGEIp0cIQH8bQ2lXZn3GKoye
-         A8RAEdRbkWGeR1hngtnV20p0aVk/aqmTfMjVQftZXMP48cmjEVld9qJyTTuq2Kj31bld
-         3Khpy3tVdqI1DRTK27XXx7uMiOLouMfglmdnsIjfsyaJpqsa9MrdAK6W4Lx8mrU6F7pq
-         Blzw==
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=YsUSHc5bYUNmuFMA3WRkMmx4GDjXmb6yOh7O9xZbDRc=;
+        b=N/0AvT8+Hmb3Rp8IZcUtW/xq7QBs+gg8I6Im+7uExqg6EoLb9sXgBZz51+CZ+qnUuh
+         SBx7rgrojGMMIHQoHOr/JSqOuFR35YDeN14XDliCDF1gmzKsxxor3D8TtwnO43MDPC3L
+         CitQN82Mgy21Xnf1OAs2eG/ca46bJrn/G+FZFpfdhEhmZeLLBGNYI7z77kJTWcUthBRO
+         Kk3lUArNhh5snSxjzXB2p10AvB+shf/2Uk2zAiCQDT+lB0BhYAX7x4T8RBuZ9X8Pse+3
+         VXgbuUmLljtDtL/KxQc23w1wka+dptL4JtJPQP4cXFKa2oImmbpxw01grfDWRrQXPkl8
+         0huw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=3W/IOmdOMUGlXlTzumA+5bE0zrAqv8UmjtWcnintli8=;
-        b=N2RJBhx4lFtokAekv6MoMIKyeIbQoupP2un1NxSxQb45xatEi6GnU6xuBlQ+UOy8V4
-         BfnrSKJPZccFgc/Gz1v2sZPsAjjY5E74kdokjHMA9vuPY1Fs8+UwQh7l0UbsPUsp5PUw
-         +n81zHITSHL00ylzUlZEQ5sKKcuIUZ0nfykLFXTRTOgSmi8/ICc37KPYyY3uaa49w42K
-         Ox/7VlbRQzoXBA/fMCiZzIijCCJIDbYKyG5ioKoQe8AFaTGPDKduF6232SsGDMZVd9Qn
-         GMURQMwNsWb09+Du/BTef/X0k78CzO4C6UxxKnddfJ0yNXNtVdI20KTetyC25kZoHDqc
-         CzoA==
-X-Gm-Message-State: AOAM532ppnc8EZhGP0JYi2WYiuPz2Sma1nm45zD31phPLboFDHa0rUT3
-        OXZhjT3iQFG7yMal+KyofPqqmJD1J8DORHgEzA==
-X-Google-Smtp-Source: ABdhPJwI2PlyNT/SIF/Rw95v2BBZOro346Q8rSD3bOyrMFNR7Fpob2djOzpAfN18RMuvRJJ4xWjtSgyJgz1CVe+MaDI=
-X-Received: by 2002:a17:90a:ce8c:: with SMTP id g12mr3853435pju.185.1603401568802;
- Thu, 22 Oct 2020 14:19:28 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=YsUSHc5bYUNmuFMA3WRkMmx4GDjXmb6yOh7O9xZbDRc=;
+        b=P5Psrx8SefqFzVpEg04qNL/tGj6wiIOVsAam1U6zWgY7826Sy8xbKxG3UNgi+imyur
+         kFYQ10ZNp2K+GizMIr/scT8jLoXbS5ofnDmmvOIMKJwPHuubX3b1UdTZ1BheIlb5KBB/
+         fTJVipBC9dDe1C4O2Y2/e4gNEhRJBDuZWyNEUaT6zIIU3RIK4POer9je/P/avCgoy58W
+         Q4aGM6ClYYwOIBzr34lUS3nyQ+CdqZSNZcKqaKYBM+JFOaIZn7RfWcZ1VIA7Iz8X8l5V
+         1JI6i9SEU4UPAA9H47NxaLZxgIr056hzux31KMy8qFjgr8OwVHnW13npA7TLy60W8RMK
+         20IA==
+X-Gm-Message-State: AOAM531D57jE5lzKsXP2q5liFbelaR1unIY1Go4iLkRJLqkRHchzij5f
+        Hc52BOB2+9bds3inxkSKLsYULA==
+X-Google-Smtp-Source: ABdhPJz+Cp9vygopwE/M6gjCd4Vr2adBC00b2KaBAjRV6HQipRCfUo6ON+X5DoToZl8Q4eAKTSdMMg==
+X-Received: by 2002:a17:90a:f504:: with SMTP id cs4mr3832476pjb.134.1603401636089;
+        Thu, 22 Oct 2020 14:20:36 -0700 (PDT)
+Received: from xps15 (S0106002369de4dac.cg.shawcable.net. [68.147.8.254])
+        by smtp.gmail.com with ESMTPSA id j23sm3154622pgm.76.2020.10.22.14.20.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 14:20:35 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:20:33 -0600
+From:   Mathieu Poirier <mathieu.poirier@linaro.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201022212033.GA646497@xps15>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+ <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
+ <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+ <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
 MIME-Version: 1.0
-References: <20201022161134.2115-1-rsalvaterra@gmail.com>
-In-Reply-To: <20201022161134.2115-1-rsalvaterra@gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Thu, 22 Oct 2020 22:19:17 +0100
-Message-ID: <CALjTZva495Lp39D=AKoRcdK2MbqwVRenaaMA+4KUPtLCXEeKJQ@mail.gmail.com>
-Subject: Re: [PATCH] zram: break the strict dependency from lzo
-To:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Oops, this is broken, I'll send a v2 soon.
+Hi Peter,
 
-On Thu, 22 Oct 2020 at 17:11, Rui Salvaterra <rsalvaterra@gmail.com> wrote:
->
-> There's nothing special about zram and lzo. It works just fine without it, so
-> as long as at least one of the other supported compression algorithms is
-> selected.
->
-> Additionally, drop the explicit dependency from CRYPTO, as it's implied by the
-> selection of the algorithms themselves.
->
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
-> ---
->  drivers/block/zram/Kconfig | 8 ++++++--
->  drivers/block/zram/zcomp.c | 2 ++
->  2 files changed, 8 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-> index fe7a4b7d30cf..2641b86f8677 100644
-> --- a/drivers/block/zram/Kconfig
-> +++ b/drivers/block/zram/Kconfig
-> @@ -1,8 +1,7 @@
->  # SPDX-License-Identifier: GPL-2.0
->  config ZRAM
->         tristate "Compressed RAM block device support"
-> -       depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
-> -       select CRYPTO_LZO
-> +       depends on BLOCK && SYSFS && ZSMALLOC
->         help
->           Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
->           Pages written to these disks are compressed and stored in memory
-> @@ -37,3 +36,8 @@ config ZRAM_MEMORY_TRACKING
->           /sys/kernel/debug/zram/zramX/block_state.
->
->           See Documentation/admin-guide/blockdev/zram.rst for more information.
-> +
-> +config ZRAM_AUTOSEL_ALGO
-> +       def_bool y
-> +       depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
-> +       select CRYPTO_LZO
-> diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-> index 33e3b76c4fa9..052aa3f65514 100644
-> --- a/drivers/block/zram/zcomp.c
-> +++ b/drivers/block/zram/zcomp.c
-> @@ -15,8 +15,10 @@
->  #include "zcomp.h"
->
->  static const char * const backends[] = {
-> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
->         "lzo",
->         "lzo-rle",
-> +#endif
->  #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
->         "lz4",
->  #endif
-> --
-> 2.28.0
->
+On Thu, Oct 22, 2020 at 04:32:36PM +0100, Suzuki Poulose wrote:
+> On 10/22/20 4:06 PM, Peter Zijlstra wrote:
+> > On Thu, Oct 22, 2020 at 02:30:21PM +0100, Suzuki Poulose wrote:
+> > > On 10/22/20 12:32 PM, Peter Zijlstra wrote:
+> > > > On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
+> > > > 
+> > > > > Looking at the ETR and other places in the kernel, ETF and the
+> > > > > ETB are the only places trying to dereference the task(owner)
+> > > > > in tmc_enable_etf_sink_perf() which is also called from the
+> > > > > sched_in path as in the call trace.
+> > > > 
+> > > > > @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
+> > > > >    {
+> > > > >    	int node;
+> > > > >    	struct cs_buffers *buf;
+> > > > > +	struct task_struct *task = READ_ONCE(event->owner);
+> > > > > +
+> > > > > +	if (!task || is_kernel_event(event))
+> > > > > +		return NULL;
+> > > > 
+> > > > 
+> > > > This is *wrong*... why do you care about who owns the events?
+> > > > 
+> > > 
+> > > This is due to the special case of the CoreSight configuration, where
+> > > a "sink" (where the trace data is captured) is shared by multiple Trace
+> > > units. So, we could share the "sink" for multiple trace units if they
+> > > are tracing the events that belong to the same "perf" session. (The
+> > > userspace tool could decode the trace data based on the TraceID
+> > > in the trace packets). Is there a better way to do this ?
+> > 
+> > I thought we added sink identification through perf_event_attr::config2
+> > ?
+> > 
+> 
+> Correct. attr:config2 identifies the "sink" for the collection. But,
+> that doesn't solve the problem we have here. If two separate perf
+> sessions use the "same sink", we don't want to mix the
+> trace data into the same sink for events from different sessions.
+> 
+> Thus, we need a way to check if a new event starting the tracing on
+> an ETM belongs to the same session as the one already pumping the trace
+> into the sink.
+
+Suzuki's depiction of the usecase is accurate.  Using the pid of the process
+that created the events comes out of a discussion you and I had in the common
+area by the Intel booth at ELC in Edinburgh in the fall of 2018.  At the time I
+exposed the problem of having multiple events sharing the same HW resources and
+you advised to proceed this way.
+
+That being said it is plausible that I did not expressed myself clearly enough
+for you to understand the full extend of the problem.  If that is the case we
+are more than willing to revisit that solution.  Do you see a better option than
+what has currently been implemented?
+
+Many thanks,
+Mathieu
+
+> 
+> We use event->owner pid for this check and thats where we encountered
+> a NULL event->owner. Looking at the code further, we identified that
+> kernel events could also trigger this issue.
+> 
+> Suzuki
