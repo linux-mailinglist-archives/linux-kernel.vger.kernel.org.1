@@ -2,107 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0BF296066
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:51:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BFF1296072
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:54:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368055AbgJVNv3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:51:29 -0400
-Received: from mga02.intel.com ([134.134.136.20]:52546 "EHLO mga02.intel.com"
+        id S2894471AbgJVNyU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:54:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35032 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900428AbgJVNv3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:51:29 -0400
-IronPort-SDR: pK4U8yA4NYe4vB7LLrRWi7vfGtMuXx52CFrwI1oeVGGUu2756tdn3DQXUW/ONQgtP1MyEv1529
- glAZKUWkyUSA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="154480916"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="154480916"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 06:51:28 -0700
-IronPort-SDR: 6LRQod91vgGyvr0sS5yqmwG7ITaPIqeOSQTZqH+iFI/bmpS2QdtL+xSvZRs1+geJa4o9ckjzj9
- GDCPyN97H9vw==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="524286105"
-Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 06:51:26 -0700
-Received: from andy by smile with local (Exim 4.94)
-        (envelope-from <andriy.shevchenko@linux.intel.com>)
-        id 1kVb13-00DJzC-6g; Thu, 22 Oct 2020 16:52:29 +0300
-Date:   Thu, 22 Oct 2020 16:52:29 +0300
-From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To:     kernel test robot <lkp@intel.com>,
-        Bjorn Helgaas <helgaas@kernel.org>
-Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
-        kbuild-all@lists.01.org, linux-kernel@vger.kernel.org,
-        Mark Brown <broonie@kernel.org>
-Subject: Re: sound/soc/intel/catpt/dsp.c:359:9: sparse: sparse: restricted
- pci_power_t degrades to integer
-Message-ID: <20201022135229.GB4077@smile.fi.intel.com>
-References: <202010221544.Gf4tzvvx-lkp@intel.com>
+        id S2443322AbgJVNyT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:54:19 -0400
+Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7D64E22275;
+        Thu, 22 Oct 2020 13:54:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603374859;
+        bh=k/96McXBUQrMgM4y/fJNrw43hXeNtSxVU6BUe2aasrQ=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JfhNMyMoeo79vFKGh2kPdEK6Z9KBVoCnHEiWkZoBbSOYVIyDiVjzohSe9tyINoAEu
+         oQ0dY0PKFot074Qy8U0+2w1ZtMNyp1HRdU4TTmBWVu4+9DC+f2dCt3amempuKh7ErT
+         xcK5tj42W5UNWipPg8217GvuzCo3QQf1TRVGoBfQ=
+Date:   Thu, 22 Oct 2020 15:54:55 +0200
+From:   Greg KH <gregkh@linuxfoundation.org>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, outreachy-kernel@googlegroups.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, melissa.srw@gmail.com,
+        linux-media@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel] [PATCH 4/5] gpu: drm: amdgpu: Replace
+ snprintf() with sysfs_emit()
+Message-ID: <20201022135455.GA1788090@kroah.com>
+References: <cover.1603371258.git.sylphrenadin@gmail.com>
+ <f6107f3e467f1906abdcc33d35f13cf54f7e5a96.1603371258.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <202010221544.Gf4tzvvx-lkp@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+In-Reply-To: <f6107f3e467f1906abdcc33d35f13cf54f7e5a96.1603371258.git.sylphrenadin@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-+Cc: Bjorn
-
-On Thu, Oct 22, 2020 at 03:25:49PM +0800, kernel test robot wrote:
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   f804b3159482eedbb4250b1e9248c308fb63b805
-> commit: 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1 ASoC: Intel: Select catpt and deprecate haswell
-> date:   3 weeks ago
-> config: i386-randconfig-s002-20201022 (attached as .config)
-> compiler: gcc-9 (Debian 9.3.0-15) 9.3.0
-> reproduce:
->         # apt-get install sparse
->         # sparse version: v0.6.3-dirty
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 6cbfa11d2694b8a1e46d6834fb9705d5589e3ef1
->         # save the attached .config to linux build tree
->         make W=1 C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=i386 
+On Thu, Oct 22, 2020 at 07:17:56PM +0530, Sumera Priyadarsini wrote:
+> Using snprintf() for show() methods holds the risk of buffer overrun
+> as snprintf() does not know the PAGE_SIZE maximum of the temporary
+> buffer used to output sysfs content.
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
+> Modify amdgpu_psp.c to use sysfs_emit() instead which knows the
+> size of the temporary buffer.
 > 
+> Issue found with Coccinelle.
 > 
-> "sparse warnings: (new ones prefixed by >>)"
-> >> sound/soc/intel/catpt/dsp.c:359:9: sparse: sparse: restricted pci_power_t degrades to integer
->    sound/soc/intel/catpt/dsp.c:372:9: sparse: sparse: restricted pci_power_t degrades to integer
->    sound/soc/intel/catpt/dsp.c:423:9: sparse: sparse: restricted pci_power_t degrades to integer
->    sound/soc/intel/catpt/dsp.c:447:9: sparse: sparse: restricted pci_power_t degrades to integer
+> Signed-off-by: Sumera Priyadarsini <sylphrenadin@gmail.com>
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> index d6c38e24f130..4d1d1e1b005d 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c
+> @@ -2621,7 +2621,7 @@ static ssize_t psp_usbc_pd_fw_sysfs_read(struct device *dev,
+>  		return ret;
+>  	}
+>  
+> -	return snprintf(buf, PAGE_SIZE, "%x\n", fw_ver);
+> +	return sysfs_emit(buf, PAGE_SIZE, "%x\n", fw_ver);
 
-I dunno who and why created that specific bitwise type. I met not the first
-time the same Sparse complain.
+Did you build this code?  I don't think it is correct...
 
-In some places I have fixed that by forcing the lvalue type, i.e.
+thanks,
 
-	(__force int)PCI_D3hot
-
-or so.
-
-Also there are two other approaches
-- leave as is (ignore this warning)
-- create a helper that will convert PCI power type to an integer, like
-
-	switch (pci_pwr) {
-	default:
-		return -EINVAL;
-	case PCI_D3hot:
-		return 3;
-	...
-	}
-
-But I consider the second one is a bit silly. Dunno if PCI core has this already.
-
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+greg k-h
