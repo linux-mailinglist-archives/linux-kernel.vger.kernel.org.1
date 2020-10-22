@@ -2,188 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 616D22966EB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:05:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EEEE2966E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:04:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372674AbgJVWFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:05:02 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:36989 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S372666AbgJVWFB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:05:01 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603404300; h=Message-Id: Date: Subject: Cc: To: From:
- Sender; bh=nKH7VLBQhE3Mu51emIZ9NIquRcR56rtwk5fWzTGhkoo=; b=hwwAnd6HANRKd8sL1YgTd4do4fFrDzbv2pFycqGbb9jlAqflsxxX9rUsq3MWWMM+7KImXmGk
- 6xXLPaKhd28R1VEBHkWompyVi4vtVTxjjCWq+HC7M62DGUKfcSgsJsafauw1UIT8Q68O2YJ2
- nD6k5yE0NjoCe3jErKkEMdTeKKk=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f9201dbbfed2afaa6864793 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 22:04:11
- GMT
-Sender: eberman=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 3FE7EC433FF; Thu, 22 Oct 2020 22:04:10 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from eberman-linux.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: eberman)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id EA3F4C433C9;
-        Thu, 22 Oct 2020 22:04:08 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org EA3F4C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=eberman@codeaurora.org
-From:   Elliot Berman <eberman@codeaurora.org>
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Elliot Berman <eberman@codeaurora.org>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-Date:   Thu, 22 Oct 2020 15:04:03 -0700
-Message-Id: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
+        id S372616AbgJVWEN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:04:13 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:48299 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S372599AbgJVWEL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 18:04:11 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-54-c4HvqyNFM-2aq9v5IErLvg-1; Thu, 22 Oct 2020 23:04:06 +0100
+X-MC-Unique: c4HvqyNFM-2aq9v5IErLvg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 23:04:04 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Thu, 22 Oct 2020 23:04:04 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Nick Desaulniers' <ndesaulniers@google.com>,
+        Arnd Bergmann <arnd@arndb.de>
+CC:     Christoph Hellwig <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>,
+        "Greg KH" <gregkh@linuxfoundation.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAAQY5tgAAwVkCAAC8KZoAAMCkw
+Date:   Thu, 22 Oct 2020 22:04:04 +0000
+Message-ID: <15c3f5926f9c4f67b53f1ed26c41a62e@AcuMS.aculab.com>
+References: <20201021233914.GR3576660@ZenIV.linux.org.uk>
+ <20201022082654.GA1477657@kroah.com>
+ <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
+ <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
+ <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de>
+ <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+ <CAKwvOdnix6YGFhsmT_mY8ORNPTOsN3HwS33Dr0Ykn-pyJ6e-Bw@mail.gmail.com>
+ <CAK8P3a3LjG+ZvmQrkb9zpgov8xBkQQWrkHBPgjfYSqBKGrwT4w@mail.gmail.com>
+ <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com>
+In-Reply-To: <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In a heterogeneous multiprocessor system, specifying the 'maxcpus'
-parameter on kernel command line does not provide sufficient control
-over which CPUs are brought online at kernel boot time, since CPUs may
-have nonuniform performance characteristics. Thus, add bootcpus kernel
-parameter to control which CPUs should be brought online during kernel
-boot. When both maxcpus and bootcpus is set, the more restrictive of the
-two are booted.
-
-Signed-off-by: Elliot Berman <eberman@codeaurora.org>
----
- Documentation/admin-guide/kernel-parameters.txt |  8 +++++++
- include/linux/cpu.h                             |  2 +-
- kernel/cpu.c                                    |  4 ++--
- kernel/smp.c                                    | 28 +++++++++++++++++++++++--
- 4 files changed, 37 insertions(+), 5 deletions(-)
-
-diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
-index 65d047f..ea31af3 100644
---- a/Documentation/admin-guide/kernel-parameters.txt
-+++ b/Documentation/admin-guide/kernel-parameters.txt
-@@ -449,6 +449,14 @@
- 
- 			See Documentation/admin-guide/bootconfig.rst
- 
-+	bootcpus=	[SMP]  List of processors that an SMP kernel
-+			will bring up during bootup. Similar to maxcpus, except
-+			as a cpu list as described above. The more restrictive
-+			of maxcpus and bootcpus applies. If bootcpus=1-3 and
-+			maxcpus=2, only processors 1 and 2 are booted. As with
-+			maxcpus, you can bring up other plugged cpu by executing
-+			"echo 1 > /sys/devices/system/cpu/cpuX/online"
-+
- 	bert_disable	[ACPI]
- 			Disable BERT OS support on buggy BIOSes.
- 
-diff --git a/include/linux/cpu.h b/include/linux/cpu.h
-index 8aa84c0..4146f71 100644
---- a/include/linux/cpu.h
-+++ b/include/linux/cpu.h
-@@ -95,7 +95,7 @@ void notify_cpu_starting(unsigned int cpu);
- extern void cpu_maps_update_begin(void);
- extern void cpu_maps_update_done(void);
- int bringup_hibernate_cpu(unsigned int sleep_cpu);
--void bringup_nonboot_cpus(unsigned int setup_max_cpus);
-+void bringup_nonboot_cpus(unsigned int setup_max_cpus, cpumask_var_t boot_cpus);
- 
- #else	/* CONFIG_SMP */
- #define cpuhp_tasks_frozen	0
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 6ff2578..71f626b 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1328,14 +1328,14 @@ int bringup_hibernate_cpu(unsigned int sleep_cpu)
- 	return 0;
- }
- 
--void bringup_nonboot_cpus(unsigned int setup_max_cpus)
-+void bringup_nonboot_cpus(unsigned int setup_max_cpus, cpumask_var_t boot_cpus)
- {
- 	unsigned int cpu;
- 
- 	for_each_present_cpu(cpu) {
- 		if (num_online_cpus() >= setup_max_cpus)
- 			break;
--		if (!cpu_online(cpu))
-+		if (!cpu_online(cpu) && cpumask_test_cpu(cpu, boot_cpus))
- 			cpu_up(cpu, CPUHP_ONLINE);
- 	}
- }
-diff --git a/kernel/smp.c b/kernel/smp.c
-index 4d17501..727e003 100644
---- a/kernel/smp.c
-+++ b/kernel/smp.c
-@@ -738,7 +738,7 @@ EXPORT_SYMBOL(smp_call_function);
- /* Setup configured maximum number of CPUs to activate */
- unsigned int setup_max_cpus = NR_CPUS;
- EXPORT_SYMBOL(setup_max_cpus);
--
-+static cpumask_var_t boot_cpus;
- 
- /*
-  * Setup routine for controlling SMP activation
-@@ -787,6 +787,27 @@ static int __init maxcpus(char *str)
- 
- early_param("maxcpus", maxcpus);
- 
-+static int __init bootcpus(char *str)
-+{
-+	alloc_bootmem_cpumask_var(&boot_cpus);
-+	if (cpulist_parse(str, boot_cpus) < 0) {
-+		pr_warn("incorrect bootcpus mask\n");
-+		return -EINVAL;
-+	}
-+	cpumask_set_cpu(smp_processor_id(), boot_cpus);
-+	return 0;
-+}
-+
-+early_param("bootcpus", bootcpus);
-+
-+static void __init boot_cpus_init(void)
-+{
-+	if (!cpumask_available(boot_cpus))
-+		zalloc_cpumask_var(&boot_cpus, GFP_NOWAIT);
-+	if (cpumask_empty(boot_cpus))
-+		cpumask_setall(boot_cpus);
-+}
-+
- /* Setup number of possible processor ids */
- unsigned int nr_cpu_ids __read_mostly = NR_CPUS;
- EXPORT_SYMBOL(nr_cpu_ids);
-@@ -804,10 +825,13 @@ void __init smp_init(void)
- 
- 	idle_threads_init();
- 	cpuhp_threads_init();
-+	boot_cpus_init();
- 
- 	pr_info("Bringing up secondary CPUs ...\n");
- 
--	bringup_nonboot_cpus(setup_max_cpus);
-+	bringup_nonboot_cpus(setup_max_cpus, boot_cpus);
-+
-+	free_bootmem_cpumask_var(boot_cpus);
- 
- 	num_nodes = num_online_nodes();
- 	num_cpus  = num_online_cpus();
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+RnJvbTogTmljayBEZXNhdWxuaWVycw0KPiBTZW50OiAyMiBPY3RvYmVyIDIwMjAgMjA6MDUNCj4g
+DQouLi4NCj4gUGFzc2luZyBhbiBgdW5zaWduZWQgbG9uZ2AgYXMgYW4gYHVuc2lnbmVkIGludGAg
+ZG9lcyBubyBzdWNoDQo+IG5hcnJvd2luZzogaHR0cHM6Ly9nb2Rib2x0Lm9yZy96L1R2Zk14ZSAo
+c2FtZSB2aWNlLXZlcnNhLCBqdXN0IHRhaWwNCj4gY2FsbHMsIG5vIG1hc2tpbmcgaW5zdHJ1Y3Rp
+b25zKS4NCg0KUmlnaHQgYnV0IGlzIHRoZSBjYWxsZWQgZnVuY3Rpb24gZ29pbmcgdG8gdXNlIDMy
+Yml0IG9wcw0KYW5kL29yIG1hc2sgdGhlIHJlZ2lzdGVyPw0KQ2VydGFpbmx5IHRoYXQgaXMgbGlr
+ZWx5IG9uIHg4Ni02NC4NCg0KSSd2ZSByYXRoZXIgbG9zdCB0cmFjayBvZiB3aGVyZSB0aGUgbWFz
+a2luZyBpcyBleHBlY3RlZA0KdG8gaGFwcGVuLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBB
+ZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMs
+IE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRpb24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
