@@ -2,180 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B9732963D7
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EAED52963DD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368038AbgJVRjX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:39:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34684 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900794AbgJVRjW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:39:22 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2AB6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:39:22 -0700 (PDT)
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=bjornoya.blackshift.org)
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <mkl@pengutronix.de>)
-        id 1kVeYU-00038v-CF; Thu, 22 Oct 2020 19:39:14 +0200
-Received: from [IPv6:2a03:f580:87bc:d400:be0e:f7b2:6607:58d4] (unknown [IPv6:2a03:f580:87bc:d400:be0e:f7b2:6607:58d4])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-384) server-signature RSA-PSS (4096 bits) server-digest SHA256
-         client-signature RSA-PSS (4096 bits) client-digest SHA256)
-        (Client CN "mkl@blackshift.org", Issuer "StartCom Class 1 Client CA" (not verified))
-        (Authenticated sender: mkl@blackshift.org)
-        by smtp.blackshift.org (Postfix) with ESMTPSA id 1963257FE3F;
-        Thu, 22 Oct 2020 17:39:01 +0000 (UTC)
-Subject: Re: [PATCH] can: vxcan: Fix memleak in vxcan_newlink
-To:     Oliver Hartkopp <socketcan@hartkopp.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201021052150.25914-1-dinghao.liu@zju.edu.cn>
- <986c27bf-29b4-a4f7-1dcd-4cb5a446334b@hartkopp.net>
- <20201022091435.2449cf41@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a7c5884d-2c7d-1868-8b93-414b43b3f7c1@hartkopp.net>
-From:   Marc Kleine-Budde <mkl@pengutronix.de>
-Autocrypt: addr=mkl@pengutronix.de; prefer-encrypt=mutual; keydata=
- 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
-Message-ID: <9d9b22bd-aa00-0ede-54f0-45a27496207f@pengutronix.de>
-Date:   Thu, 22 Oct 2020 19:38:56 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S369246AbgJVRqG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:46:06 -0400
+Received: from foss.arm.com ([217.140.110.172]:34016 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443926AbgJVRqG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 13:46:06 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1E363101E;
+        Thu, 22 Oct 2020 10:46:05 -0700 (PDT)
+Received: from e113632-lin (e113632-lin.cambridge.arm.com [10.1.194.46])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C2C003F719;
+        Thu, 22 Oct 2020 10:46:03 -0700 (PDT)
+References: <20201022134354.3485-1-vincent.guittot@linaro.org> <jhj1rhqqplq.mognet@arm.com> <CAKfTPtBP8GntXP40mkq6NeppeFU1vZfFN_u41Athwouw-BBAMA@mail.gmail.com>
+User-agent: mu4e 0.9.17; emacs 26.3
+From:   Valentin Schneider <valentin.schneider@arm.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Subject: Re: [PATCH] sched/fair: prefer prev cpu in asymmetric wakeup path
+In-reply-to: <CAKfTPtBP8GntXP40mkq6NeppeFU1vZfFN_u41Athwouw-BBAMA@mail.gmail.com>
+Date:   Thu, 22 Oct 2020 18:45:58 +0100
+Message-ID: <jhjzh4ep31l.mognet@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <a7c5884d-2c7d-1868-8b93-414b43b3f7c1@hartkopp.net>
-Content-Type: multipart/signed; micalg=pgp-sha512;
- protocol="application/pgp-signature";
- boundary="7JmMIPNAvLAq5PyfAMxkn52x3BFNzLigH"
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
---7JmMIPNAvLAq5PyfAMxkn52x3BFNzLigH
-Content-Type: multipart/mixed; boundary="mqGIpo6oJdLchMz6KapPzLeA4316XdTcG";
- protected-headers="v1"
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Oliver Hartkopp <socketcan@hartkopp.net>, Jakub Kicinski <kuba@kernel.org>
-Cc: Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
- Wolfgang Grandegger <wg@grandegger.com>,
- "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Message-ID: <9d9b22bd-aa00-0ede-54f0-45a27496207f@pengutronix.de>
-Subject: Re: [PATCH] can: vxcan: Fix memleak in vxcan_newlink
-References: <20201021052150.25914-1-dinghao.liu@zju.edu.cn>
- <986c27bf-29b4-a4f7-1dcd-4cb5a446334b@hartkopp.net>
- <20201022091435.2449cf41@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
- <a7c5884d-2c7d-1868-8b93-414b43b3f7c1@hartkopp.net>
-In-Reply-To: <a7c5884d-2c7d-1868-8b93-414b43b3f7c1@hartkopp.net>
 
---mqGIpo6oJdLchMz6KapPzLeA4316XdTcG
-Content-Type: text/plain; charset=utf-8
-Content-Language: de-DE
-Content-Transfer-Encoding: quoted-printable
+On 22/10/20 16:33, Vincent Guittot wrote:
+> On Thu, 22 Oct 2020 at 16:53, Valentin Schneider
+> <valentin.schneider@arm.com> wrote:
+>> > @@ -6170,7 +6170,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>> >   * maximize capacity.
+>> >   */
+>> >  static int
+>> > -select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
+>> > +select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int prev, int target)
+>> >  {
+>> >       unsigned long best_cap = 0;
+>> >       int cpu, best_cpu = -1;
+>> > @@ -6178,9 +6178,22 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
+>> >
+>> >       sync_entity_load_avg(&p->se);
+>> >
+>> > +     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+>> > +         task_fits_capacity(p, capacity_of(target)))
+>> > +             return target;
+>> > +
+>>
+>> I think we still need to check for CPU affinity here.
+>
+> yes good point
+>
+>>
+>> >       cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
+>> >       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
+>> >
+>> > +     /*
+>> > +      * If the previous CPU belongs to this asymmetric domain and is idle,
+>> > +      * check it 1st as it's the best candidate.
+>> > +      */
+>> > +     if (prev != target && cpumask_test_cpu(prev, cpus) &&
+>> > +         (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
+>> > +         task_fits_capacity(p, capacity_of(prev)))
+>> > +             return prev;
+>> > +
+>> >       for_each_cpu_wrap(cpu, cpus, target) {
+>>
+>> So we prioritize target over prev, like the rest of the
+>> select_idle_sibling() family. Here however we apply the same acceptability
+>> function to target, prev and the loop body, so perhaps we could simplify
+>> this to:
+>
+> My 1st implementation was similar to you proposal below but i finally
+> decided to strictly follow the same sequence as symmetric which:
+> - checks target
+> - then prev cpu
+> - and finally uses target as the starting point of the loop for
+> looking for another cpu
+>
+> Using prev as the starting point of the loop will change which cpu
+> will be selected but I don't have a strong opinion if this will make a
+> real difference at the end because bit position doesn't imply any
+> relation with others cpus.
+>
 
-On 10/22/20 7:34 PM, Oliver Hartkopp wrote:
-> @Marc: Can you please make sure that it doesn't get into upstream? Tnx!=
+Yep, also one difference with the symmetric path here is that the first
+checks against target & prev use exactly the same criteria as the loop
+body, so we shouldn't feel shy about doing this here.
 
+> So I'm fine to go with your proposal below
+>
+> Also I wonder if i should also add the test of p->recent_used_cpu and
+> the per cpu kthread optimization, which benefit XFS IIRC.
+>
 
-Ok, I've removed
+If we head down that route it would be nice to reuse the existing
+conditions (rather than copy and tweak them) and move the asymmetric loop
+further down. Maybe with something like (with a better name though):
 
-    can: vxcan: Fix memleak in vxcan_newlink  [Dinghao Liu]
+  static inline bool asym_task_fits_capacity(struct task_struct *p, int cpu)
+  {
+          if (!static_branch_unlikely(&sched_asym_cpucapacity))
+                  return true;
 
-from my linux-can/testing.
+          return task_fits_capacity(p, capacity_of(cpu));
+  }
 
-Marc
+and we could && that to the existing cases. Food for thought.
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde           |
-Embedded Linux                   | https://www.pengutronix.de  |
-Vertretung West/Dortmund         | Phone: +49-231-2826-924     |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-5555 |
-
-
---mqGIpo6oJdLchMz6KapPzLeA4316XdTcG--
-
---7JmMIPNAvLAq5PyfAMxkn52x3BFNzLigH
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: OpenPGP digital signature
-Content-Disposition: attachment; filename="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCgAdFiEEK3kIWJt9yTYMP3ehqclaivrt76kFAl+Rw7AACgkQqclaivrt
-76lgkwf/SRi5a43tp47rOvkh1tZp1vRDdzP6a89wccwYZiLRcHUUkv1gGPFp+CF0
-JlKPDHjhN1A6MxY2HaYZKaEZevLJGTF7MxZDMun1Z9bcLAm6921GByrvhI0Ox3xx
-ScH/9tpBL492iAOErMLHquC2pKGAsabF2JkKwcRxxB0KkKTMWpE1IzI2asaeMqUm
-Yh5bVHIHHrTItvicvXipCC3cgGUT5YNEK5WBJ111b17FipFy0y8ktm+mivkF1Hsy
-HLVdRQIacDtHze6IAGPZCR8a7/c/5e3FD+Od/RuUWAOb2EOImwb5WNgecVHQACxq
-A48f4p1+QV3SE8RMu+pC6+UPVHzu/w==
-=rVyx
------END PGP SIGNATURE-----
-
---7JmMIPNAvLAq5PyfAMxkn52x3BFNzLigH--
+>>
+>>   if (accept(target))
+>>       return target;
+>>
+>>   ...
+>>
+>>   for_each_cpu_wrap(cpu, cpus, prev) {
+>>       ...
+>>   }
+>>
+>> That way we evaluate target twice only if it isn't a direct candidate
+>> (but might be a fallback one).
+>>
+>> >               unsigned long cpu_cap = capacity_of(cpu);
+>> >
+>> > @@ -6223,7 +6236,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>> >               if (!sd)
+>> >                       goto symmetric;
+>> >
+>> > -             i = select_idle_capacity(p, sd, target);
+>> > +             i = select_idle_capacity(p, sd, prev, target);
+>> >               return ((unsigned)i < nr_cpumask_bits) ? i : target;
+>> >       }
