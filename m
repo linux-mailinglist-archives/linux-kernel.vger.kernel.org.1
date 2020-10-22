@@ -2,143 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D55292961C4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:39:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B82082961D4
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:43:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368682AbgJVPje (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:39:34 -0400
-Received: from out4-smtp.messagingengine.com ([66.111.4.28]:55587 "EHLO
-        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2504410AbgJVPjd (ORCPT
+        id S368701AbgJVPni (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:43:38 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:44415 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2508315AbgJVPni (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:39:33 -0400
+        Thu, 22 Oct 2020 11:43:38 -0400
 Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailout.nyi.internal (Postfix) with ESMTP id 418D75C010A;
-        Thu, 22 Oct 2020 11:39:32 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Thu, 22 Oct 2020 11:39:32 -0400
+        by mailout.nyi.internal (Postfix) with ESMTP id 2387D5C00C9;
+        Thu, 22 Oct 2020 11:43:37 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute6.internal (MEProxy); Thu, 22 Oct 2020 11:43:37 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
         date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=1zB38VSUKoWvgoR7ez4MM2+MlQl
-        kPY5uetQo112xVEg=; b=jtniElwVgYBxCenzh0Y0ijI9E94wYGg0mLyyCtYaDQy
-        81aPUGAE75UwYrLblrM6HKGN4qiSfxTU4Gm1MCdKQj85g7uHhSYPjqKJVS26IrPk
-        1VDLd3VDZog/v7UQT7I8O5wjzLwnaZw8adJMQ7XWuRPfe9zg3T0iXkfROmfz6Cod
-        5vdmLpsjEu6OU/mZfHSEIH6U9pvASlgPFJmk/PJhQ8yTvhyFZQlE8rIP20sGRvmQ
-        AtCZZEj8RkQsoASwJ/avyUWoymxhUuh38xhIYjMFm4NU5i+r22hlfm7e079AJgYx
-        0WhBPk2C7LEwQvikp/f438g3JvIODCUPETOGgKFfdOA==
+        :content-type:in-reply-to; s=fm1; bh=qQcssX4y6y38K9RgQ4janqr2ZQA
+        j8lZs3yvwrRKlDUo=; b=gjLvTVm3R2ZB47yKS5mM/X73sRUGmxyXVjcoUsZaas/
+        /qi2TrMEbOOYcG42P5qLYfTnlRMjMbm0ok9XrFl54XUzqoaQNJxGwHGEaGCgJdMS
+        ItWVqAhcQbWeOBdpF7YU9rPdjy1NWgUEt8PT2TxUeSKMa3jDWnFSIQgVH9Av/XpX
+        Y305HV64yMzbwL01mCwc0U/16+tNu175/O+totUYqBEPZjWPD7KW2IRTy8Ms30eh
+        caYccnKn0dihYPDufgEt9TvCCw4d4YbBMCweWEpZnhAsscP11bfEAELvpWhNthWq
+        GcN1BSoQP4Iys53bBPHotoWaKR49zp5iIs5rt+udb/Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
         messagingengine.com; h=cc:content-type:date:from:in-reply-to
         :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=1zB38V
-        SUKoWvgoR7ez4MM2+MlQlkPY5uetQo112xVEg=; b=bkoeoELQ49bxQf68PUkzll
-        ELIiuzcJR5Wq20oRWMx3T/nrF3REJdvTUbD6RRtIvreww3wuG2e9i4Arg5BX7SbW
-        T/BZFDltB+h9HWwhN4FxeYjqKBDRhBIGnxMoSeNMVNvb8sw5JZg5wglN/oRZ/Jkn
-        dnmOzjqJ8TxYBWXwdg8e7g5BVuO7/GN039dt8QjCpuN59qpG1MXzC8/H/ai6N61a
-        22DLuqTjlocuuVAta5fB+x3TfF9KfKSwGmiev5ZztRW3rm5hpovEE5hrnw/FHGcG
-        H4bfRspVoSXsGwFxnX5GueEciJq3RegC06VAgN1N77wVW+vTU+3ktbNq0y+f1kxA
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=qQcssX
+        4y6y38K9RgQ4janqr2ZQAj8lZs3yvwrRKlDUo=; b=XKQe4eaTOA6vq0wFrUOae1
+        9DHPqJT41PnPCZ9Tz9Cfkr7hJRhNG5MDa3ikpkR7OfNKXDNEZXx0NMoOGsqVwTbW
+        dn4uLC7zYb2HM9ggB8dDM8q+0voI/rkkum+chqr+82kNmoexxFYU3qAmEb55v+fz
+        d99pD0sHDaXH9rBv4YgoqXV4z9b86Ipyevpm6k1qpoPl32jN/DLBVydBIbu3mAAZ
+        TYh6mA5osD5tSJUE13PFtc2RU3iaAowLOrZS5ziQecxfK1LvTY1wccH/iO6wPVGd
+        uzn99IvvmcqnVWkmXO+tjTJIXDsQTdBclJeuj9lNP7ciMXNZsWyqR5hjWhFHBRWQ
         ==
-X-ME-Sender: <xms:sqeRXzOgUIKbPkqJqP2Tf3YABDd9A0ma6nX1Tj0JaW2ugtfs8fBXjA>
-    <xme:sqeRX98jPB0uZGvqnQNaOVx3rRAFlkf9JkuvaPhrfdtHf6dZcO3sU_7p7n76DBFNG
-    6YCYUORCm0b7nUaeWE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeekgddtlecutefuodetggdotefrodftvf
+X-ME-Sender: <xms:p6iRX-NiFx5u6px0KrD1oSKkY5_Mbvs2LRTDwQS0-VLUYuC1RFaPdg>
+    <xme:p6iRX88oBx4b1KQwwSh0TTwmG2CVZILt6WTA2_c3M-PgAU_ofZmmAhP-kkNVKYZG6
+    qpSHSGj05vJ3pxc63k>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeekgddutdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
     ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedunecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:s6eRXyT4yeWC8rH2L0Lm_qlUYXC3o0_4G2gFhznAooO8b2FqcZnFTQ>
-    <xmx:s6eRX3trAooMZg1c2r9ZxNc-2kABfygNN2SD_Fe1a3oonFDao5Xc1A>
-    <xmx:s6eRX7cJQOt9bSbKPqs8UIKVvwJWKphqe6dJFeDHL7cjiqU0g6I-MA>
-    <xmx:tKeRXzR4Qhr6OWc09tTmlgmEaPThKQ5c_gLiV9XHdpXljQhWiy_IwA>
+    gvrhhnpeffuedugfdvjeeihedvgefhieeikeelteehteekffetudeiueeggfduueevffet
+    geenucffohhmrghinhepphhinhgvieegrdhorhhgnecukfhppeeltddrkeelrdeikedrje
+    einecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgr
+    gihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:p6iRX1Sy6k89lk-6nqQl3srn-xIgTwpAa7U0ImOKCEYuw_keHKv9Dg>
+    <xmx:p6iRX-vReGUBiDFEq0w8I_nVY8CHROzX6Lq0dNA9_OsYIxS8aP9EVQ>
+    <xmx:p6iRX2dH8kss364liqw0h65dLz_isDPQ3WRv_xVLOAq22m-QV7mEuA>
+    <xmx:qaiRX26LM7xFWLdGjx9uMSkus5U0QC-l484zr3birAf5-pTmiH1BwA>
 Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id B20853280068;
-        Thu, 22 Oct 2020 11:39:30 -0400 (EDT)
-Date:   Thu, 22 Oct 2020 17:39:29 +0200
+        by mail.messagingengine.com (Postfix) with ESMTPA id 64ED53064684;
+        Thu, 22 Oct 2020 11:43:35 -0400 (EDT)
+Date:   Thu, 22 Oct 2020 17:43:34 +0200
 From:   Maxime Ripard <maxime@cerno.tech>
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
-        Dom Cobley <dom@raspberrypi.com>,
-        Dave Stevenson <dave.stevenson@raspberrypi.com>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Subject: Re: Context expectations in ALSA
-Message-ID: <20201022153929.g4q6eq5paom73t5h@gilmour.lan>
-References: <20201022095041.44jytaelnlako54w@gilmour.lan>
- <20201022135053.GB4826@sirena.org.uk>
+To:     Alexander Kochetkov <al.kochet@gmail.com>
+Cc:     Mark Brown <broonie@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] spi: spi-sun6i: implement DMA-based transfer mode
+Message-ID: <20201022154334.qqkoihzjxzdfhvce@gilmour.lan>
+References: <20201022075221.23332-1-akochetkov@lintech.ru>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qou4qb6o4ose32tc"
+        protocol="application/pgp-signature"; boundary="24oxrxwiyl7dicsw"
 Content-Disposition: inline
-In-Reply-To: <20201022135053.GB4826@sirena.org.uk>
+In-Reply-To: <20201022075221.23332-1-akochetkov@lintech.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
---qou4qb6o4ose32tc
+--24oxrxwiyl7dicsw
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-Hi Mark
+On Thu, Oct 22, 2020 at 10:52:21AM +0300, Alexander Kochetkov wrote:
+> From: Alexander Kochetkov <al.kochet@gmail.com>
+>=20
+> DMA-based transfer will be enabled if data length is larger than FIFO size
+> (64 bytes for A64). This greatly reduce number of interrupts for
+> transferring data.
+>=20
+> For smaller data size PIO mode will be used. In PIO mode whole buffer will
+> be loaded into FIFO.
+>=20
+> If driver failed to request DMA channels then it fallback for PIO mode.
+>=20
+> Tested on SOPINE (https://www.pine64.org/sopine/)
+>=20
+> Signed-off-by: Alexander Kochetkov <al.kochet@gmail.com>
 
-On Thu, Oct 22, 2020 at 02:50:53PM +0100, Mark Brown wrote:
-> On Thu, Oct 22, 2020 at 11:50:41AM +0200, Maxime Ripard wrote:
->=20
-> > This is caused by the HDMI driver polling some status bit that reports
-> > that the infoframes have been properly sent, and calling usleep_range
-> > between each iteration[1], and that is done in our trigger callback that
-> > seems to be run with a spinlock taken and the interrupt disabled
-> > (snd_pcm_action_lock_irq) as part of snd_pcm_start_lock_irq. This is the
-> > entire stack trace:
->=20
-> That doesn't sound like something I would expect you do be doing in the
-> trigger callback TBH - it feels like if this is something that could
-> block then the setup should have been done during parameter
-> configuration or something rather than in trigger.
->=20
-> > It looks like the snd_soc_dai_link structure has a nonatomic flag that
-> > seems to be made to address more or less that issue, taking a mutex
-> > instead of a spinlock. However setting that flag results in another
-> > lockdep issue, since the dmaengine controller doing the DMA transfer
-> > would call snd_pcm_period_elapsed on completion, in a tasklet, this time
-> > taking a mutex in an atomic context which is just as bad as the initial
-> > issue. This is the stacktrace this time:
->=20
-> Like Jaroslav says you could punt to a workqueue here.  I'd be more
-> inclined to move the sleeping stuff out of the trigger operations but
-> that'd avoid the issue too.  There are some drivers doing this already
-> IIRC.
->=20
-> > So, I'm not really sure what I'm supposed to do here. The drivers
-> > involved don't appear to be doing anything extraordinary, but the issues
-> > lockdep report are definitely valid too. What are the expectations in
-> > terms of context from ALSA when running the callbacks, and how can we
-> > fix it?
->=20
-> To me having something in the trigger that needs waiting for is the bit
-> that feels the most awkward fit here, trigger is supposed to run very
-> quickly.
+Acked-by: Maxime Ripard <mripard@kernel.org>
 
-Indeed, other DRM devices seem to send the infoframes as part of
-hw_params, and it solves our issue there too. I'll send a patch
-
-Thanks for the suggestion!
+Thanks!
 Maxime
 
-
---qou4qb6o4ose32tc
+--24oxrxwiyl7dicsw
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GnsQAKCRDj7w1vZxhR
-xblHAP0fQlf65iR1se3fsAarud6ONFK7jZeqjn8t60IqTfVxAAEA411CHkGg28vK
-ixPKLzGQtCpk5j/utVLuB/a45jkMCgY=
-=glSS
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GopgAKCRDj7w1vZxhR
+xR6mAP9cQRYGW5IK0TdSiOXRAXSI4XovnETyUkuY1fx/Re6dCAD8CkftTek57e84
+yyPrPE3Cy9Cn+zK4d2OnSjIZIfDv+QY=
+=6+uq
 -----END PGP SIGNATURE-----
 
---qou4qb6o4ose32tc--
+--24oxrxwiyl7dicsw--
