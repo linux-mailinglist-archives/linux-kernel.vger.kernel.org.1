@@ -2,113 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F85C29618C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:16:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 81E46296191
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:20:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901304AbgJVPQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:16:15 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34696 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2901297AbgJVPQP (ORCPT
+        id S2901361AbgJVPUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:20:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509976AbgJVPUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:16:15 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kVcK3-0000pJ-7H; Thu, 22 Oct 2020 11:16:11 -0400
-Message-ID: <f33747ae2787388ec89e587f5f14a767560b882e.camel@surriel.com>
-Subject: Re: [PATCH] mm/shmem: fix up gfpmask for shmem hugepage allocation
-From:   Rik van Riel <riel@surriel.com>
-To:     Xu Yu <xuyu@linux.alibaba.com>, linux-mm@kvack.org
-Cc:     hughd@google.com, akpm@linux-foundation.org,
-        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-        VlastimilBabka <vbabka@suse.cz>
-Date:   Thu, 22 Oct 2020 11:16:10 -0400
-In-Reply-To: <11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com>
-References: <11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-NO2+ukY9FXiPfB4rJuJV"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 22 Oct 2020 11:20:25 -0400
+Received: from mail-qk1-x735.google.com (mail-qk1-x735.google.com [IPv6:2607:f8b0:4864:20::735])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C65FAC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:20:24 -0700 (PDT)
+Received: by mail-qk1-x735.google.com with SMTP id q199so1763990qke.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:20:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBBH901rQGlVlFoCnkqyIlpkXIRSFljWv35x5+cQPf8=;
+        b=K/nRNa8p7sw9/iAQNZ79hyIJivwYVZRf9LPGMBQJkU3so+Aa7InLCzFOogauJpEnUP
+         THh4W4D8SUTdDnI5IyBtA0yfxnQ0kuRyqfRhiq2J97w7M2MWvUUioMHQwgfJX4QOgXQk
+         SfSOCGVauKWRDy5nuCZHUE4cCfiDJBcAHQC5pu7tKkWKoFq14twvjIZnpRK2qCSBxlfa
+         TwFORMEq4o4rW1W89fq/xydP/6xWg7usvTaAPeykPNGDW1gC5h0ryJ5ZmwEhKHIoXxNJ
+         SjW0v0m2NniwZpyuWU0FABhxibu13QkVx8a8rntRLjU1CbQZG5U5UMQF9lMvpsQ1vLmB
+         EExQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=zBBH901rQGlVlFoCnkqyIlpkXIRSFljWv35x5+cQPf8=;
+        b=XZ2Xh7gl+EELI8zWY/nEx5AbUzb6W8CI7X7DEfOM/NgdZ+6kfxcNKLo0hqWQENNSyc
+         7ddjT2esMliGkWdJr3zV+rOXjNeN0cd2jte5sPIDsDxfDlMOps+VJgcR6LhwyADxvw3g
+         HQZuQIZ0bRpq5/Z371hZKBCYps3X6h+WoDDQ7ylZ+IMzMj7uODujz9fee/7N2SPYItgW
+         dEh6/dv2RZ88WqGM9AUgccPbwHgzfC4gLcAMsUOn+Hz0U0l9LtG1iVSR4DPH1xdw0uii
+         P3HTOn0JyV+zG19yBTWIcoLpycun4fA+/ErZItX5qSX9OiAeEfuM/tyT23A5F6Bwxrew
+         YDog==
+X-Gm-Message-State: AOAM532st6kddx61JVunIlUgY8yGzKXMhJs6AQ2+fvIvhJ5iVtDDRJu3
+        e/+nwPLLH7kIv+6ybcu5lYeraA==
+X-Google-Smtp-Source: ABdhPJxlIHTHGOHGzLPZANXxHyN9jvKBN1ZfwQSQac4ihaDF7kJXLbxeD8vSdBsG3o5AQUe4eSgmOQ==
+X-Received: by 2002:a37:664f:: with SMTP id a76mr3041550qkc.370.1603380023909;
+        Thu, 22 Oct 2020 08:20:23 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:c400])
+        by smtp.gmail.com with ESMTPSA id 11sm1163614qkc.91.2020.10.22.08.20.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 08:20:22 -0700 (PDT)
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
+Date:   Thu, 22 Oct 2020 11:18:44 -0400
+Message-Id: <20201022151844.489337-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+As huge page usage in the page cache and for shmem files proliferates
+in our production environment, the performance monitoring team has
+asked for per-cgroup stats on those pages.
 
---=-NO2+ukY9FXiPfB4rJuJV
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+We already track and export anon_thp per cgroup. We already track file
+THP and shmem THP per node, so making them per-cgroup is only a matter
+of switching from node to lruvec counters. All callsites are in places
+where the pages are charged and locked, so page->memcg is stable.
 
-On Wed, 2020-10-21 at 16:09 +0800, Xu Yu wrote:
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ mm/filemap.c     | 4 ++--
+ mm/huge_memory.c | 4 ++--
+ mm/khugepaged.c  | 4 ++--
+ mm/memcontrol.c  | 6 +++++-
+ mm/shmem.c       | 2 +-
+ 5 files changed, 12 insertions(+), 8 deletions(-)
 
-> @@ -1887,6 +1930,7 @@ static int shmem_getpage_gfp(struct inode
-> *inode, pgoff_t index,
->  	}
-> =20
->  alloc_huge:
-> +	gfp =3D shmem_hugepage_gfpmask_fixup(gfp, sgp_huge);
->  	page =3D shmem_alloc_and_acct_page(gfp, inode, index, true);
->  	if (IS_ERR(page)) {
->  alloc_nohuge:
-
-This looks it could be a bug, because the changed
-gfp flags are also used for the non-huge allocation
-below the alloc_nohuge: label, when the huge allocation
-fails.
-
-Using a separate huge_gfp variable would solve that
-issue.
-
-However, your patch also changes the meaning of
-SHMEM_HUGE_FORCE from "override mount flags" to
-"aggressively try reclaim and compaction", which
-mixes up the equivalents of the anon THP sysctl
-"enabled" and "defrag" settings.
-
-I believe it makes sense to continue keeping the
-"what should khugepaged do with these pages?" and
-"how hard should we try at allocation time?" settings
-separately for shmem the same way they are kept
-separately for anonymous memory.
-
-I also suspect it is simplest if shmem uses the
-same "how hard should we try at allocation time?"
-settings from the "defrag" sysfs file, instead
-of giving system administrators two knobs that they
-will likely want to set to the same value anyway.
-
-Coincidentally, I have been looking at the same
-code on and off for the past month, and also sent
-a patch to the list to fix this issue yesterday.
-
-I suspect my patch can be simplified a little more
-by directly using alloc_hugepage_direct_gfpmask to
-create a huge_gfp flag in shmem_getpage_gfp.
-
-https://lore.kernel.org/linux-mm/20201021234846.5cc97e62@imladris.surriel.c=
-om/
-
---=20
-All Rights Reversed.
-
---=-NO2+ukY9FXiPfB4rJuJV
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RojoACgkQznnekoTE
-3oMtbAgApfrn8Wh8rXaZFyRMK7jp9ky7Ndr5yPFJhHrs4RVL7Je7En4oVt0Phy/i
-Rq5EWBARSLBngRvfvXm13N7SQZXk8aNWQLIwgyFjGLm+BTVAJBp9i2+2QzYZxRCf
-IbMBIM3M+awJNjOZ0iw/h82V4PjOv5l5e59poYF4T15G+qqP/HXwbVJFUuRX5pAH
-+a7q6olFIlBl17huVrakuYgi3AHWyYUs4zAoxvhlzIQ+bcR+v1tDmP8BWFv0/Pc/
-ELZ+yzlK9gxAKNZBUP8bjxNri7ZxXsR1+OyNG9aOwbnQioCvKFcglt9gn6CGGzZ8
-baU0hds485oQsDY374u6q9qFQ8VuFA==
-=Xew8
------END PGP SIGNATURE-----
-
---=-NO2+ukY9FXiPfB4rJuJV--
+diff --git a/mm/filemap.c b/mm/filemap.c
+index e80aa9d2db68..334ce608735c 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct address_space *mapping,
+ 	if (PageSwapBacked(page)) {
+ 		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
+ 		if (PageTransHuge(page))
+-			__dec_node_page_state(page, NR_SHMEM_THPS);
++			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
+ 	} else if (PageTransHuge(page)) {
+-		__dec_node_page_state(page, NR_FILE_THPS);
++		__dec_lruvec_page_state(page, NR_FILE_THPS);
+ 		filemap_nr_thps_dec(mapping);
+ 	}
+ 
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index cba3812a5c3e..5fe044e5dad5 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2707,9 +2707,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
+ 		spin_unlock(&ds_queue->split_queue_lock);
+ 		if (mapping) {
+ 			if (PageSwapBacked(head))
+-				__dec_node_page_state(head, NR_SHMEM_THPS);
++				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
+ 			else
+-				__dec_node_page_state(head, NR_FILE_THPS);
++				__dec_lruvec_page_state(head, NR_FILE_THPS);
+ 		}
+ 
+ 		__split_huge_page(page, list, end, flags);
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index f1d5f6dde47c..04828e21f434 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -1833,9 +1833,9 @@ static void collapse_file(struct mm_struct *mm,
+ 	}
+ 
+ 	if (is_shmem)
+-		__inc_node_page_state(new_page, NR_SHMEM_THPS);
++		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
+ 	else {
+-		__inc_node_page_state(new_page, NR_FILE_THPS);
++		__inc_lruvec_page_state(new_page, NR_FILE_THPS);
+ 		filemap_nr_thps_inc(mapping);
+ 	}
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 2636f8bad908..98177d5e8e03 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1507,6 +1507,8 @@ static struct memory_stat memory_stats[] = {
+ 	 * constant(e.g. powerpc).
+ 	 */
+ 	{ "anon_thp", 0, NR_ANON_THPS },
++	{ "file_thp", 0, NR_FILE_THPS },
++	{ "shmem_thp", 0, NR_SHMEM_THPS },
+ #endif
+ 	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
+ 	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
+@@ -1537,7 +1539,9 @@ static int __init memory_stats_init(void)
+ 
+ 	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
+ #ifdef CONFIG_TRANSPARENT_HUGEPAGE
+-		if (memory_stats[i].idx == NR_ANON_THPS)
++		if (memory_stats[i].idx == NR_ANON_THPS ||
++		    memory_stats[i].idx == NR_FILE_THPS ||
++		    memory_stats[i].idx == NR_SHMEM_THPS)
+ 			memory_stats[i].ratio = HPAGE_PMD_SIZE;
+ #endif
+ 		VM_BUG_ON(!memory_stats[i].ratio);
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 537c137698f8..5009d783d954 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -713,7 +713,7 @@ static int shmem_add_to_page_cache(struct page *page,
+ 		}
+ 		if (PageTransHuge(page)) {
+ 			count_vm_event(THP_FILE_ALLOC);
+-			__inc_node_page_state(page, NR_SHMEM_THPS);
++			__inc_lruvec_page_state(page, NR_SHMEM_THPS);
+ 		}
+ 		mapping->nrpages += nr;
+ 		__mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
+-- 
+2.29.0
 
