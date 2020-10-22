@@ -2,163 +2,102 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A93295FF4
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:25:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 67880295FF8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:25:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894954AbgJVNZ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:25:28 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34480 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507061AbgJVNZ2 (ORCPT
+        id S2899802AbgJVNZx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:25:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:38154 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2894908AbgJVNZx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:25:28 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kVaan-0007zP-Jb; Thu, 22 Oct 2020 09:25:21 -0400
-Message-ID: <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-From:   Rik van Riel <riel@surriel.com>
-To:     Michal Hocko <mhocko@suse.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Date:   Thu, 22 Oct 2020 09:25:21 -0400
-In-Reply-To: <20201022081532.GJ23790@dhcp22.suse.cz>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
-         <20201022081532.GJ23790@dhcp22.suse.cz>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-S6o55Dk7sGpm11/Uyo3G"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 22 Oct 2020 09:25:53 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603373152;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=BxPfxPSNfbnVjf34ePIHdZQgNiJCJyxLs4IXArAnJmw=;
+        b=ChZloRpmYo1wsevYhGItQmJK3iulJyb1NkdWOlsHsGeewypAYeSCCjlpgM30F3uCLN3xSc
+        BoE8vS9sIGkj3oIDQsCk/DT5o4gS1CG53dV3X1phaLzrNGKNkhZlK6ZjLpj54+TjKgjxVS
+        /yUgblaLhANLMhm6lK33a3SL3GKLLeE=
+Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
+ [209.85.221.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-226-rL5qCXgQN1Woc0F3bz3eqg-1; Thu, 22 Oct 2020 09:25:50 -0400
+X-MC-Unique: rL5qCXgQN1Woc0F3bz3eqg-1
+Received: by mail-wr1-f71.google.com with SMTP id p6so612340wrm.23
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:25:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=BxPfxPSNfbnVjf34ePIHdZQgNiJCJyxLs4IXArAnJmw=;
+        b=eeA0M1l/SEn6dB86NgsmdrgPUbiJwOMvNB+pfXk6hgfv3owyX9pgpoxfGgrytO0M5Z
+         GU+x4HU+qD4J0bOllsqobhsYeMYwJP602OelPrL2jIvA7PzfpntgfmoPtHou3d1Spp+0
+         jO57gzg7JRS5UPA5iElvnat19K5mMVNnPjzN5H4rbIj8neh92Zuc9MGXzcVHEDbMRb93
+         73ponfhkAhLVo72Kw552l4y8uQRaSG1a8D4XOFFRne3HNllioNpjMDaIfWda0Sj11A9T
+         FrGZAfNsVioSa3OlIV69xsrQJ9gYSL6Al8cxtowudSgYjcj8Do1RGJgKqEux0+Bv+W3A
+         vZpQ==
+X-Gm-Message-State: AOAM531Dx30aB+xJmUFW953ENSEEDc9KjvZx0NHFWpYpaC8OhaPoTLb3
+        1nWGFTEKzGttkmRYz1XZcobeh93KgIuQ1YvDVvBL7pPaOo+/R4Jou4UR6ABxCaq1xtXfYgoVwXh
+        2SoUE04nCkGcLDupGDplofJEF
+X-Received: by 2002:a7b:cb10:: with SMTP id u16mr2568582wmj.20.1603373149087;
+        Thu, 22 Oct 2020 06:25:49 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw2n8WajVbZY49NzRz8HTVBT9A01wzfAhU1/YFTB2zSdisHBFJ3+FJItC+mxqL674ywS9q03Q==
+X-Received: by 2002:a7b:cb10:: with SMTP id u16mr2568565wmj.20.1603373148910;
+        Thu, 22 Oct 2020 06:25:48 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id k6sm3778509wmk.16.2020.10.22.06.25.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 06:25:47 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
+In-Reply-To: <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com> <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+Date:   Thu, 22 Oct 2020 15:25:46 +0200
+Message-ID: <871rhq4ckl.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Paolo Bonzini <pbonzini@redhat.com> writes:
 
---=-S6o55Dk7sGpm11/Uyo3G
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+> On 22/10/20 03:34, Wanpeng Li wrote:
+>> From: Wanpeng Li <wanpengli@tencent.com>
+>> 
+>> Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
+>> 
+>> This ioctl returns x86 cpuid features which are supported by both the 
+>> hardware and kvm in its default configuration.
+>> 
+>> A well-behaved userspace should not set the bit if it is not supported.
+>> 
+>> Suggested-by: Jim Mattson <jmattson@google.com>
+>> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+>
+> It's common for userspace to copy all supported CPUID bits to
+> KVM_SET_CPUID2, I don't think this is the right behavior for
+> KVM_HINTS_REALTIME.
+>
+> (But maybe this was discussed already; if so, please point me to the
+> previous discussion).
+>
 
-On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
-> On Wed 21-10-20 23:48:46, Rik van Riel wrote:
-> > The allocation flags of anonymous transparent huge pages can be
-> > controlled
-> > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
-> > which can
-> > help the system from getting bogged down in the page reclaim and
-> > compaction
-> > code when many THPs are getting allocated simultaneously.
-> >=20
-> > However, the gfp_mask for shmem THP allocations were not limited by
-> > those
-> > configuration settings, and some workloads ended up with all CPUs
-> > stuck
-> > on the LRU lock in the page reclaim code, trying to allocate dozens
-> > of
-> > THPs simultaneously.
-> >=20
-> > This patch applies the same configurated limitation of THPs to
-> > shmem
-> > hugepage allocations, to prevent that from happening.
-> >=20
-> > This way a THP defrag setting of "never" or "defer+madvise" will
-> > result
-> > in quick allocation failures without direct reclaim when no 2MB
-> > free
-> > pages are available.
->=20
-> I remmeber I wanted to unify this in the past as well. The patch got
-> reverted in the end. It was a long story and I do not have time to
-> read
-> through lengthy discussions again. I do remember though that there
-> were
-> some objections pointing out that shmem has its own behavior which is
-> controlled by the mount option - at least for the explicitly mounted
-> shmems. I might misremember.
+Not for KVM_GET_SUPPORTED_CPUID but for KVM_GET_SUPPORTED_HV_CPUID: just
+copying all the bits blindly is incorrect as e.g. SYNIC needs to be
+enabled with KVM_CAP_HYPERV_SYNIC[2]. KVM PV features also have
+pre-requisites, e.g. KVM_ASYNC_PF_DELIVERY_AS_INT requires an irqchip so
+again copy/paste may not work.
 
-That is not entirely true, though.
-
-THP has two main sysfs knobs: "enabled" and "defrag"
-
-The mount options
-control the shmem equivalent options
-for "enabled", but they do not do anything for the "defrag"
-equivalent options.
-
-This patch applies the "defrag" THP options to
-shmem.
-
-> [...]
->=20
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 537c137698f8..d1290eb508e5 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -1545,8 +1545,11 @@ static struct page
-> > *shmem_alloc_hugepage(gfp_t gfp,
-> >  		return NULL;
-> > =20
-> >  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY |
-> > __GFP_NOWARN,
-> > -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> > true);
-> > +	/* Limit the gfp mask according to THP configuration. */
-> > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
->=20
-> What is the reason for these when alloc_hugepage_direct_gfpmask
-> provides
-> the full mask?
-
-The mapping_gfp_mask for the shmem file might have additional
-restrictions above and beyond the gfp mask returned by
-alloc_hugepage_direct_gfpmask, and I am not sure we should just
-ignore the mapping_gfp_mask.
-
-That is why this patch takes the union of both gfp masks.
-
-However, digging into things more, it looks like shmem inodes
-always have the mapping gfp mask set to GFP_HIGHUSER_MOVABLE,
-and it is never changed, so simply using the output from
-alloc_hugepage_direct_gfpmask should be fine.
-
-I can do the patch either way. Just let me know what you prefer.
-
-> > +	gfp &=3D alloc_hugepage_direct_gfpmask(&pvma);
-> > +	page =3D alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0,
-> > numa_node_id(),
-> > +			       true);
-> >  	shmem_pseudo_vma_destroy(&pvma);
-> >  	if (page)
-> >  		prep_transhuge_page(page);
-> >=20
-> > --=20
-> > All rights reversed.
---=20
-All Rights Reversed.
-
---=-S6o55Dk7sGpm11/Uyo3G
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RiEEACgkQznnekoTE
-3oNyPQf8DJWaHRulqI0zU7h6A5fMQC9csTAy5hwygvjAL5MDI3WbuVIqhOYxJJmZ
-8m89mr7foiLfsSiyAGXvF3cQ1ysyxjp4ddg/YJFmSS2aQ4j7DQ+pu5mr/CQFvcje
-fRmNgXKnh4LJkRW6wX/5RX7U13xNL3Qi0C5K5Vg1Nn0pr9ujq6Aq5qPoyICtYl3K
-ENbI6QZMdXZPglqwB/cUxIsFtqOr9WLfPls0ytHm6dspB7JGzQyXRiYi5G8afzmz
-6qhBECGY9EPQWZ6kOJwb0efKz+FlhI6owJ7S4oeCyv4pt4byihxEbfVqC2+4BrVm
-p3V23yuYKliuaOXexp5PhhWgMjQwaw==
-=IxrV
------END PGP SIGNATURE-----
-
---=-S6o55Dk7sGpm11/Uyo3G--
+-- 
+Vitaly
 
