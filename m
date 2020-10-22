@@ -2,181 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6C9B296140
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:58:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90EB2296154
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:59:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368305AbgJVO6T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:58:19 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37830 "EHLO
+        id S368451AbgJVO7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:59:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37940 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368201AbgJVO6S (ORCPT
+        with ESMTP id S2505086AbgJVO6u (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:58:18 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6A725C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:18 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id w11so1087322pll.8
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:18 -0700 (PDT)
+        Thu, 22 Oct 2020 10:58:50 -0400
+Received: from mail-wr1-x431.google.com (mail-wr1-x431.google.com [IPv6:2a00:1450:4864:20::431])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B9D1EC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:49 -0700 (PDT)
+Received: by mail-wr1-x431.google.com with SMTP id t9so2811236wrq.11
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=WD0jtBNTjlU9AN49fhz5jjiyP58Uz1jlaJhU9PAdtjM=;
-        b=dcCPde1CvGRMz3wM7wYha4dqt3k7ghjEmbmwUrBkqVEzqFi9K4UX/sszrLKlLCEdjt
-         OgVgu1x8IXbs6uqlDQzISq8JMv+PuwNHidl27bE/2C66q2NnEhBFdc7eBTcZnJTNeRMA
-         1PEgEwX+HGZqDxwypiyGUe+HoF5+41CAq4ZAFAvvDwKs3+kHsqMolsFCXFT+vq+tUyKx
-         6X93LSWyzHbcjHZWed9Ub5YRag+TodepPKSMDnE4R3sCfQEu+wsR7IqUiYiv+gnF+COE
-         ++F/v85PIHDcu9U3U6jPnHusikRmF+Xe51R1wO3BJdOUShqhNAARaoFT9VhnnRY9dATr
-         HY5w==
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=rSzLTxMVqlkO2IBi43EFiTi/owieV/XdOMfxVuezLa0=;
+        b=SKPbAl+XAWLUuDQgOY5vHR0sARr8gwKPKZFSwXtutK+LkNSqG+gyfuARWUnax7Iw8p
+         WdUftNsIBR6dqU3FbOw08s2FGygjQL9Z++AxAPMezuP4NSTOiPIdW7V0zQiT8Awx2lNY
+         vgj74hjwmjKsEBpmyzaOkffJ1p1sZ03iiGOdTI8Bm1MIp/Ce/EWtAjP5BKFj4x8HgnFl
+         GdMWMc/w3fbh+lbNLU/pbwxGRq95GsdwKY3qSxwN2Q4GusoP3gWDTtmXStY4Zkfy4M5D
+         xr2GyvTXOp2K3wz9mynp/ou3uIe5zYMSbFd4/AlKamBeKgfL9sEPmx7Owu1RThkvuovN
+         zBcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=WD0jtBNTjlU9AN49fhz5jjiyP58Uz1jlaJhU9PAdtjM=;
-        b=Vinq/gNGCzBLCbeD8+qSnnL+9/jwly5+Ux3Px+leQy2lllLo9wZZIqzTpXIur7yiQT
-         k+0qOTS8GWDkm4vSTx30ng0tMeQxFEALdaWU9q/i4tclqXkIbptD5ws9qglNsMdD8GJ6
-         h5+aB++lH1PNiX6y9v5yBJ2VxrqJd8ZzGLqPIJc3AsfqBEB5ti+r8aAIkH5NhaTvYsde
-         5YncteANtlYbtjtI1RS8GybG6wK4K8xOLcTC5JIB43LSOfOl/kvlFJ3azdLF1LPS3Tl1
-         BeqEW1CL1Iam7P4AIkg4+KWkFcmIqPlSijf7fTKgmzOZ33tKuOz+gs+Gngq1SB0JihDC
-         KQJg==
-X-Gm-Message-State: AOAM5325x97mSuZc8YVG51kmpqP70Roj3yizhQtA0aEPnnxjTy2KqFwG
-        2AMfvBuw3MnAXVBkjxEM0U8=
-X-Google-Smtp-Source: ABdhPJwy+XLpMOCBB3opoKCpHFBgZ75ggUWsKgHfEf9nERb3jpZYy8pk+k1tS8TI44/2yJaWLYfkrw==
-X-Received: by 2002:a17:902:708a:b029:d4:cf7c:6c59 with SMTP id z10-20020a170902708ab02900d4cf7c6c59mr3103971plk.52.1603378697733;
-        Thu, 22 Oct 2020 07:58:17 -0700 (PDT)
-Received: from ?IPv6:2402:3a80:41a:7419:e1bd:6bc1:d06a:efd1? ([2402:3a80:41a:7419:e1bd:6bc1:d06a:efd1])
-        by smtp.gmail.com with ESMTPSA id b5sm2607693pfo.64.2020.10.22.07.58.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 07:58:17 -0700 (PDT)
-Subject: Re: [PATCH v2] checkpatch: fix false positives in REPEATED_WORD
- warning
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com
-References: <20201022145021.28211-1-yashsri421@gmail.com>
-From:   Aditya <yashsri421@gmail.com>
-Message-ID: <1de93783-1faf-95b9-c8bd-2f2bb2f8a010@gmail.com>
-Date:   Thu, 22 Oct 2020 20:28:11 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201022145021.28211-1-yashsri421@gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=rSzLTxMVqlkO2IBi43EFiTi/owieV/XdOMfxVuezLa0=;
+        b=PwDAxWpduTsS77xeQm9lCMyQiG2jmTxJAvxQBj+2hs43W6MGPIk0umD5nhPmLLaFfe
+         vz3tH8J0b6DOX5Y/g8NUNhj+fR3dlD9KmoGAdeXSBNJuNQPnZhpcrWKZFMfD+0K6MTom
+         XtI4EU3cn0mxC26GCNav1q2QP3eVxopeJTET3UCEx+wsV1U/1cSJzbyyqjq9dTRid9Gp
+         anTzFGtU6vZMFQcOmhLRiebCf+bbh/E2DxPnt/nZsh1eXVP1DxmTnEddOZIuu+rKXEPQ
+         Y8M+cSrATXrcw/nV1jmIC29lphAwANPMd+hMdidu1ru/PJDzsFjITDEshwx0nClvjBbG
+         CtgQ==
+X-Gm-Message-State: AOAM53227N+eb8584l+u9DuMCh4vt2kMqol5XrESETs9sjbjx/Z2S8Yw
+        s/PN1vfOyvZ4uWDDRA6fzdT9wg==
+X-Google-Smtp-Source: ABdhPJwT4qquVvFPXRX/o1qpz+JlJLU/P+HLWE05YgY/tp/HHxUxoYZHg3afOhkXLKKctvXmZew0yw==
+X-Received: by 2002:adf:ec0e:: with SMTP id x14mr3473978wrn.204.1603378728412;
+        Thu, 22 Oct 2020 07:58:48 -0700 (PDT)
+Received: from hackbox2.linaro.org ([81.128.185.34])
+        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 07:58:47 -0700 (PDT)
+From:   Leo Yan <leo.yan@linaro.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>,
+        Andre Przywara <andre.przywara@arm.com>,
+        Al Grant <Al.Grant@arm.com>, Dave Martin <Dave.Martin@arm.com>,
+        linux-kernel@vger.kernel.org
+Cc:     Leo Yan <leo.yan@linaro.org>
+Subject: [PATCH v3 15/20] perf arm-spe: Remove size condition checking for events
+Date:   Thu, 22 Oct 2020 15:58:11 +0100
+Message-Id: <20201022145816.14069-16-leo.yan@linaro.org>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <20201022145816.14069-1-leo.yan@linaro.org>
+References: <20201022145816.14069-1-leo.yan@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/20 8:20 pm, Aditya Srivastava wrote:
-> Presence of hexadecimal address or symbol results in false warning
-> message by checkpatch.pl.
-> 
-> For example, running checkpatch on commit b8ad540dd4e4 ("mptcp: fix
-> memory leak in mptcp_subflow_create_socket()") results in warning:
-> 
-> WARNING:REPEATED_WORD: Possible repeated word: 'ff'
->     00 00 00 00 00 00 00 00 00 2f 30 0a 81 88 ff ff  ........./0.....
-> 
-> Similarly, the presence of list command output in commit results in
-> an unnecessary warning.
-> 
-> For example, running checkpatch on commit 899e5ffbf246 ("perf record:
-> Introduce --switch-output-event") gives:
-> 
-> WARNING:REPEATED_WORD: Possible repeated word: 'root'
->   dr-xr-x---. 12 root root    4096 Apr 27 17:46 ..
-> 
-> Here, it reports 'ff' and 'root to be repeated, but it is in fact part
-> of some address or code, where it has to be repeated.
-> 
-> In these cases, the intent of the warning to find stylistic issues in
-> commit messages is not met and the warning is just completely wrong in
-> this case.
-> 
-> To avoid these warnings, add additional regex check for the
-> directory permission pattern and avoid checking the line for this
-> class of warning. Similarly, to avoid hex pattern, check if the word
-> consists of hex symbols and skip this warning if, it forms a pattern
-> of repeating sequence or contains more special character after pattern
-> than non hex characters.
-> 
-> A quick evaluation on v5.6..v5.8 showed that this fix reduces
-> REPEATED_WORD warnings from 2797 to 907.
-> 
-> A quick manual check found all cases are related to hex output or
-> list command outputs in commit messages.
-> 
-> Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
-> ---
->  scripts/checkpatch.pl | 33 ++++++++++++++++++++++++++++++++-
->  1 file changed, 32 insertions(+), 1 deletion(-)
-> 
-> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-> index 9b9ffd876e8a..0f57e99ed670 100755
-> --- a/scripts/checkpatch.pl
-> +++ b/scripts/checkpatch.pl
-> @@ -3051,7 +3051,10 @@ sub process {
->  		}
->  
->  # check for repeated words separated by a single space
-> -		if ($rawline =~ /^\+/ || $in_commit_log) {
-> +# avoid false positive from list command eg, '-rw-r--r-- 1 root root'
-> +		if (($rawline =~ /^\+/ || $in_commit_log) &&
-> +		$rawline !~ /[bcCdDlMnpPs\?-][rwxsStT-]{9}/) {
-> +			my @hex_seq = $rawline =~ /\b[0-9a-f]{2,} \b/g;
->  			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
->  
->  				my $first = $1;
-> @@ -3065,6 +3068,34 @@ sub process {
->  				next if ($first ne $second);
->  				next if ($first eq 'long');
->  
-> +				# avoid repeating hex occurrences like 'ff ff fe 09 ...'
-> +				if ($first =~ /\b[0-9a-f]{2,}/) {
-> +					# if such sequence occurs more than 4, it is most probably part of some of code
-> +					next if ((scalar @hex_seq)>4);
-> +
-> +					# for hex occurrences which are less than 4
-> +					# get first hex word in the line
-> +					if ($rawline =~ /\b[0-9a-f]{2,} /) {
-> +						my $post_hex_seq = $';
-> +
-> +						# set suffieciently high default values to avoid ignoring or counting in absence of another
-> +						my $non_hex_char_pos = 1000;
-> +						my $special_chars_pos = 500;
-> +
-> +						if ($post_hex_seq =~ /[g-z]+/) {
-> +							# first non hex character in post_hex_seq
-> +							$non_hex_char_pos = $-[0];
-> +						}
-> +						if($post_hex_seq =~ /[^a-zA-Z0-9]{2,}/) {
-> +							# first occurrence of 2 or more special chars
-> +							$special_chars_pos = $-[0];
-> +						}
-> +
-> +						# as such occurrences are not common, it is more likely to be a part of some code
-> +						next if ($special_chars_pos<$non_hex_char_pos);
-> +					}
-> +				}
-> +
->  				if (WARN("REPEATED_WORD",
->  					 "Possible repeated word: '$first'\n" . $herecurr) &&
->  				    $fix) {
-> 
+In the Armv8 ARM (ARM DDI 0487F.c), chapter "D10.2.6 Events packet", it
+describes the event bit is valid with specific payload requirement.  For
+example, the Last Level cache access event, the bit is defined as:
 
-I have also generated some reports showing impact caused by the changes:
+  E[8], byte 1 bit [0], when SZ == 0b01 , when SZ == 0b10 ,
+  		     or when SZ == 0b11
 
-Hex variations causing warning previously:
-https://github.com/AdityaSrivast/kernel-tasks/blob/master/Task3/hex_variations.txt
+It requires the payload size is at least 2 bytes, when byte 1 (start
+counting from 0) is valid, E[8] (bit 0 in byte 1) can be used for LLC
+access event type.  For safety, the code checks the condition for
+payload size firstly, if meet the requirement for payload size, then
+continue to parse event type.
 
-Change in warnings and errors:
-https://github.com/AdityaSrivast/kernel-tasks/blob/master/Task3/relative_summary/summary_relative.txt
+If review function arm_spe_get_payload(), it has used cast, so any bytes
+beyond the valid size have been set to zeros.
 
-Warnings which are dropped:
-https://github.com/AdityaSrivast/kernel-tasks/blob/master/Task3/relative_summary/dropped_warnings/summary.txt
+For this reason, we don't need to check payload size anymore afterwards
+when parse events, thus this patch removes payload size conditions.
 
-Thanks
-Aditya
+Suggested-by: Andre Przywara <andre.przywara@arm.com>
+Signed-off-by: Leo Yan <leo.yan@linaro.org>
+---
+ .../util/arm-spe-decoder/arm-spe-decoder.c    |  9 ++----
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 30 +++++++++----------
+ 2 files changed, 17 insertions(+), 22 deletions(-)
+
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+index 776b3e6628bb..a5d7509d5daa 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.c
+@@ -178,16 +178,13 @@ static int arm_spe_read_record(struct arm_spe_decoder *decoder)
+ 			if (payload & BIT(EV_TLB_ACCESS))
+ 				decoder->record.type |= ARM_SPE_TLB_ACCESS;
+ 
+-			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_LLC_MISS)))
++			if (payload & BIT(EV_LLC_MISS))
+ 				decoder->record.type |= ARM_SPE_LLC_MISS;
+ 
+-			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_LLC_ACCESS)))
++			if (payload & BIT(EV_LLC_ACCESS))
+ 				decoder->record.type |= ARM_SPE_LLC_ACCESS;
+ 
+-			if ((idx == 2 || idx == 4 || idx == 8) &&
+-			    (payload & BIT(EV_REMOTE_ACCESS)))
++			if (payload & BIT(EV_REMOTE_ACCESS))
+ 				decoder->record.type |= ARM_SPE_REMOTE_ACCESS;
+ 
+ 			if (payload & BIT(EV_MISPRED))
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+index 58a1390b7a43..2cb019999016 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+@@ -317,22 +317,20 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
+ 		if (ret < 0)
+ 			return ret;
+ 	}
+-	if (packet->index > 1) {
+-		if (payload & BIT(EV_LLC_ACCESS)) {
+-			ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-ACCESS");
+-			if (ret < 0)
+-				return ret;
+-		}
+-		if (payload & BIT(EV_LLC_MISS)) {
+-			ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-REFILL");
+-			if (ret < 0)
+-				return ret;
+-		}
+-		if (payload & BIT(EV_REMOTE_ACCESS)) {
+-			ret = arm_spe_pkt_snprintf(&buf, &blen, " REMOTE-ACCESS");
+-			if (ret < 0)
+-				return ret;
+-		}
++	if (payload & BIT(EV_LLC_ACCESS)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-ACCESS");
++		if (ret < 0)
++			return ret;
++	}
++	if (payload & BIT(EV_LLC_MISS)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-REFILL");
++		if (ret < 0)
++			return ret;
++	}
++	if (payload & BIT(EV_REMOTE_ACCESS)) {
++		ret = arm_spe_pkt_snprintf(&buf, &blen, " REMOTE-ACCESS");
++		if (ret < 0)
++			return ret;
+ 	}
+ 
+ 	return buf_len - blen;
+-- 
+2.17.1
+
