@@ -2,110 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B9CA1295B29
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:01:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B142D295B2D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:02:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509938AbgJVJBd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:01:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39092 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509188AbgJVJBc (ORCPT
+        id S2509941AbgJVJCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:02:15 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:39778 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2509157AbgJVJCO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:01:32 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3AC3EC0613CE;
-        Thu, 22 Oct 2020 02:01:30 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id z5so1157994ejw.7;
-        Thu, 22 Oct 2020 02:01:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=biKYzJ6rw5v7zotuxQlwelGlaL61xs7Y0POZsNN6hQ0=;
-        b=G0lOaK/oWzaiYS1X4nfuWV2b9kpCSeHlywHLk4cWIaxwxW8oHkY4+VPazQDpqLbNHs
-         xKzSmZHqodXCuFS4okFcUq7clRYkdnp7pr/dzSTeuXm2kzveGdU9KqYURkWu3Wnkum0O
-         xJZntcnyb1wh6U4SHVkW2Px4ySD5TgNc7juOUxpprAcV4MvB1BYlpminey55jc9ehSWz
-         IchM2mQK4+MKYEC+GZ5g4VY5ohooABNX1mWtg+JLUPmaRpqDUnvf4qAF8ANZ7OeE0Ju1
-         JRsvKU9VG5AnzeAL3LCjlInbIv6/3LpaZqdhKce32p5ctplC7glIhz1/svnMWS3T+y3V
-         PpcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=biKYzJ6rw5v7zotuxQlwelGlaL61xs7Y0POZsNN6hQ0=;
-        b=XlqKZo2IkarFwFEhotu/Zvc6+7qiUylgCRo7xx83aaBnsnCG5IbXrjvlDjnd5Y0PJw
-         KoOahQYnQZwLtRjWId32XwfflwD+EKl+8T+q25YzhaxOrKGgonWSRlpctNGndHDfPh+S
-         GoKRQ4THSVk20QbjWX8cA1Z42cqbbgQVxSlhH/yg2Jr6hKQ4o5gLwzl1+BTkgoFGeKK9
-         8TUhRSOTuU/N8BqB40lMSMOYjpRVpV6MKiVWZ/F0N2T3axFuRx7kvnkWZag46D35aF2g
-         +UGTdelkze75R1vGE2lvFM1ExgiSIyuM+SZel6QRshOSQPCTWMCSBJyUpOFB0LSUDybG
-         PSRg==
-X-Gm-Message-State: AOAM532Ovhx+ty7R4q7uHzKou7uA6aaDYvGjzS4IVN53bSfRi6glpeL2
-        NW4dsTq8P618Tq06BYcxN7M=
-X-Google-Smtp-Source: ABdhPJzuUK4ka/iRomK+tIFIGOiAes2PQTeTEaI8Tr9CXPZvwjfYQxfMyqGn4bjP3MRbT+QVSs2Ihw==
-X-Received: by 2002:a17:906:444:: with SMTP id e4mr1409273eja.218.1603357288909;
-        Thu, 22 Oct 2020 02:01:28 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id j3sm388785edh.25.2020.10.22.02.01.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 02:01:28 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 12:01:26 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Richard Cochran <richardcochran@gmail.com>
-Cc:     Christian Eggers <ceggers@arri.de>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 7/9] net: dsa: microchip: ksz9477: add
- hardware time stamping support
-Message-ID: <20201022090126.h64hfnlajqelveku@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <20201019172435.4416-8-ceggers@arri.de>
- <20201021233935.ocj5dnbdz7t7hleu@skbuf>
- <20201022030217.GA2105@hoboy.vegasvil.org>
+        Thu, 22 Oct 2020 05:02:14 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09M91o5v015922;
+        Thu, 22 Oct 2020 04:01:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603357310;
+        bh=AiaxKpP/xKYU6KOewMI8V4ZT/uzcjjBXfNkCfmsjUXc=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=P2AiN0o4L3iGLwFgMZyGuEcx9Y+GEW/EaCNAToMH6Ng3h21tMOPZbajsimcIsV3Sx
+         949PR0OvCJU4OItd42P5phNDXzbSoBesAK6u+gcA57NCy7G8lGXbkpcx3g0hxr3aVu
+         WAebJSvbinlM8vPRJqOIqyI6Xo1HJFcRKMpWb0Ig=
+Received: from DFLE108.ent.ti.com (dfle108.ent.ti.com [10.64.6.29])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09M91oWp046196
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Oct 2020 04:01:50 -0500
+Received: from DFLE115.ent.ti.com (10.64.6.36) by DFLE108.ent.ti.com
+ (10.64.6.29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Thu, 22
+ Oct 2020 04:01:50 -0500
+Received: from fllv0039.itg.ti.com (10.64.41.19) by DFLE115.ent.ti.com
+ (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Thu, 22 Oct 2020 04:01:50 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0039.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09M91nLT058645;
+        Thu, 22 Oct 2020 04:01:50 -0500
+Date:   Thu, 22 Oct 2020 14:31:48 +0530
+From:   Pratyush Yadav <p.yadav@ti.com>
+To:     "Ramuthevar, Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+CC:     <vigneshr@ti.com>, <tudor.ambarus@microchip.com>,
+        <broonie@kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-spi@vger.kernel.org>, <robh+dt@kernel.org>,
+        <devicetree@vger.kernel.org>, <miquel.raynal@bootlin.com>,
+        <simon.k.r.goldschmidt@gmail.com>, <dinguyen@kernel.org>,
+        <richard@nod.at>, <cheol.yong.kim@intel.com>,
+        <qi-ming.wu@intel.com>
+Subject: Re: [PATCH v2 2/6] spi: cadence-quadspi: Disable the DAC for Intel
+ LGM SoC
+Message-ID: <20201022090146.2uj5gfx73dsfumjl@ti.com>
+References: <20201021025507.51001-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021025507.51001-3-vadivel.muruganx.ramuthevar@linux.intel.com>
+ <20201021140015.3ldwk4az5nlzhnvr@ti.com>
+ <a36fbe94-0cf2-eb42-3000-be4c055802b6@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset="us-ascii"
 Content-Disposition: inline
-In-Reply-To: <20201022030217.GA2105@hoboy.vegasvil.org>
+In-Reply-To: <a36fbe94-0cf2-eb42-3000-be4c055802b6@linux.intel.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 08:02:17PM -0700, Richard Cochran wrote:
-> On Thu, Oct 22, 2020 at 02:39:35AM +0300, Vladimir Oltean wrote:
-> > So how _does_ that work for TI PHYTER?
-> >
-> > As far as we understand, the PHYTER appears to autonomously mangle PTP packets
-> > in the following way:
-> > - subtracting t2 on RX from the correctionField of the Pdelay_Req
-> > - adding t3 on TX to the correctionField of the Pdelay_Resp
->
-> The Phyter does not support peer-to-peer one step.
+On 22/10/20 10:17AM, Ramuthevar, Vadivel MuruganX wrote:
+> Hi Pratyush,
+> 
+> On 21/10/2020 11:17 pm, Pratyush Yadav wrote:
+> > Hi,
+> > 
+> > On 21/10/20 10:55AM, Ramuthevar,Vadivel MuruganX wrote:
+> > > From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> > > 
+> > > On Intel Lightning Mountain(LGM) SoCs QSPI controller do not use
+> > > Direct Access Controller(DAC).
+> > > 
+> > > This patch adds a quirk to disable the Direct Access Controller
+> > > for data transfer instead it uses indirect data transfer.
+> > > 
+> > > Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+> > > ---
+> > >   drivers/spi/spi-cadence-quadspi.c | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/drivers/spi/spi-cadence-quadspi.c b/drivers/spi/spi-cadence-quadspi.c
+> > > index d7b10c46fa70..3d017b484114 100644
+> > > --- a/drivers/spi/spi-cadence-quadspi.c
+> > > +++ b/drivers/spi/spi-cadence-quadspi.c
+> > > @@ -1106,6 +1106,13 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+> > >   	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+> > >   	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+> > > +	/* Disable direct access controller */
+> > > +	if (!cqspi->use_direct_mode) {
+> > > +		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+> > > +		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+> > > +		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
+> > > +	}
+> > > +
+> > 
+> > Do you really need to disable the DAC controller? cqspi_read() and
+> > cqspi_write() already check for cqspi->use_direct_mode and avoid using
+> > direct mode if it is false. While I don't think it would do any harm I'm
+> > curious what prompted you to do this instead of just setting the quirk
+> > like cdns_qspi does.
+> > 
+> > Anyway, if you do insist on doing it, it does not make any sense to set
+> > a bit and then unset it immediately after. The datasheet I have says
+> > this bit resets to 1 so the block above the code you added should be
+> > removed.
+> Thank you for your review comments..
+> yes, we need this patch to disable DAC for our SoC to avoid any conflicts in
+> future as well since Intel LGM SoC doesn't support DAC at all.
 
-Ok, that's my mistake for not double-checking, sorry.
+I'm not sure you got my point here. I understand that LGM SoCs don't 
+support DAC. I'm not arguing if this _patch_ is needed. I'm arguing if 
+this _hunk_ is needed. Does DAC mode need to be explicitly disabled 
+here? Why will the check in cqspi_read() and cqspi_write() not be 
+enough?
 
-> The only driver that implements it is ptp_ines.c.
->
-> And *that* driver/HW implements it correctly.
+My other point is that if you absolutely need to disable DAC mode, then 
+instead of the code you have added, it would make more sense to do 
+something like below in cqspi_controller_init(). Because the bit resets 
+to 1 so the block of code to enable it is useless [0].
 
-Is there documentation available for this timestamping block? I might be
-missing some data, as the kernel driver is fairly pass-through for the
-TX timestamping of the Pdelay_Resp, so the hardware might just 'do the
-right thing'. I believe the answer lies within the timestamper's
-per-port RX FIFO. Just guessing here, but I suspect that the RX FIFO
-doesn't get cleared immediately after the host queries it, and the
-hardware caches the last 100 events from the pool and uses the RX
-timestamps of Pdelay_Req as t2 in the process of updating the
-correctionField of Pdelay_Resp on TX. Would that be correct?
+--- 8< ---
+diff --git a/drivers/spi/spi-cadence-quadspi.c 
+b/drivers/spi/spi-cadence-quadspi.c
+index d7ad8b198a11..d2c5d448a944 100644
+--- a/drivers/spi/spi-cadence-quadspi.c
++++ b/drivers/spi/spi-cadence-quadspi.c
+@@ -2156,10 +2156,12 @@ static void cqspi_controller_init(struct cqspi_st *cqspi)
+ 	writel(cqspi->fifo_depth * cqspi->fifo_width / 8,
+ 	       cqspi->iobase + CQSPI_REG_INDIRECTWRWATERMARK);
+ 
+-	/* Enable Direct Access Controller */
+-	reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
+-	reg |= CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
+-	writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	/* Disable Direct Access Controller */
++	if (!cqspi->use_dac_mode) {
++		reg = readl(cqspi->iobase + CQSPI_REG_CONFIG);
++		reg &= ~CQSPI_REG_CONFIG_ENB_DIR_ACC_CTRL;
++		writel(reg, cqspi->iobase + CQSPI_REG_CONFIG);
++	}
+ 
+ 	cqspi_controller_enable(cqspi, 1);
+ }
+--- >8 ---
+
+Disclaimer: not tested at all.
+
+[0] Git blames Vignesh for that block of code added in a27f2eaf2b27. 
+Vignesh, was this simply an oversight or was there any real reason to 
+set the bit?
+ 
+> Regards
+> Vadivel
+> > 
+> > >   	cqspi_controller_enable(cqspi, 1);
+> > >   }
+> > > @@ -1388,6 +1395,10 @@ static const struct cqspi_driver_platdata am654_ospi = {
+> > >   	.quirks = CQSPI_NEEDS_WR_DELAY,
+> > >   };
+> > > +static const struct cqspi_driver_platdata intel_lgm_qspi = {
+> > > +	.quirks = CQSPI_DISABLE_DAC_MODE,
+> > > +};
+> > > +
+> > >   static const struct of_device_id cqspi_dt_ids[] = {
+> > >   	{
+> > >   		.compatible = "cdns,qspi-nor",
+> > > @@ -1403,6 +1414,7 @@ static const struct of_device_id cqspi_dt_ids[] = {
+> > >   	},
+> > >   	{
+> > >   		.compatible = "intel,lgm-qspi",
+> > > +		.data = &intel_lgm_qspi,
+> > >   	},
+> > >   	{ /* end of table */ }
+> > >   };
+> > 
+
+-- 
+Regards,
+Pratyush Yadav
+Texas Instruments India
