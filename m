@@ -2,143 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0A80295D29
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:06:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BEE1F295D2B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:07:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896972AbgJVLGQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:06:16 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:15242 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S2896921AbgJVLGK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:06:10 -0400
-Received: from DGGEMS401-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id 2C2113F2C3E99FEF65CA;
-        Thu, 22 Oct 2020 19:06:05 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS401-HUB.china.huawei.com (10.3.19.201) with Microsoft SMTP Server id
- 14.3.487.0; Thu, 22 Oct 2020 19:05:54 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <peterz@infradead.org>, <mingo@redhat.com>, <acme@kernel.org>,
-        <mark.rutland@arm.com>, <alexander.shishkin@linux.intel.com>,
-        <jolsa@redhat.com>, <namhyung@kernel.org>, <kjain@linux.ibm.com>,
-        <irogers@google.com>, <yao.jin@linux.intel.com>,
-        <yeyunfeng@huawei.com>
-CC:     <linux-kernel@vger.kernel.org>, <linuxarm@huawei.com>
-Subject: [PATCH v2 2/2] perf jevents: Add test for arch std events
-Date:   Thu, 22 Oct 2020 19:02:27 +0800
-Message-ID: <1603364547-197086-3-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
-In-Reply-To: <1603364547-197086-1-git-send-email-john.garry@huawei.com>
-References: <1603364547-197086-1-git-send-email-john.garry@huawei.com>
+        id S2896983AbgJVLHA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:07:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58404 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896808AbgJVLG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:06:59 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4AEEC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id y14so905494pfp.13
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=5F1P3cDyZZfB+5wQAJZN/bSRRcbsJk9yH9Mp8FnRfG0=;
+        b=KtCmAvWUglFJkVFnOpbKc+tedHFB8GWLzyy5Pf2YNN/ltIPGpeE8VV3Ezrjnf6MtIV
+         Iw4YsvNEjCjJ/OfyB5p3R99DTyqL8uYJRhtq4+teGl6/7a0rL1YIDTb5zMHpu9uUcipF
+         6JdheIPbQRh2Bw6KUfUrHXrpyZaFQYVP5LvGejO9lqEsy/eRPGt0KsURP9/q+NolQXTi
+         diBLTSbgB+kw+mgQ9Pfi6wRP7eec4Lce/cOInisWYBqnWovam16o1mQTRtwPTVxY3t03
+         amLoYsvpP5RAv7CpiC3bYM8aSUIQOIAjof7yIO8+Rx+9hduyEbCUSfk9rskNrfQyrgr1
+         OLxg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=5F1P3cDyZZfB+5wQAJZN/bSRRcbsJk9yH9Mp8FnRfG0=;
+        b=RDu4ynQxXBQAR2G2vcYABijgEngurCmQRs8tzSyyb/ZbMfNY188ygcPiFtD3wSpJOQ
+         +m5WV9I9w2mLslJH6vRRE6lsfMwbAIKWfgatmEvbljulZN8SE2n8vS5BjnbgsUBPwiw8
+         egm1LV4FTOw4LUWx9+tT4nqDo4TYZV9WWLdj+w+Njo8RniVHsZ/k5T0fCEAisvFVf/+U
+         4jvM4qH6PiOyrBVs9dKn5L7apGwsOGmIVPiN0IddWguHUX5+mLo8D7kD6uaabJg7JiOZ
+         d3TJdBcU4TBIS4IQ+izIZEkY2fk1Lm412W3UXN0aENsno69TN4us5IkDj7dBFNQk6xFx
+         n0lA==
+X-Gm-Message-State: AOAM531F0fjO39kFDHgaV01CQ3wjbDi54aZPgpWTpWuwLdudV3iBzO1+
+        qFV4G8nRGaI+zSC/MCqQ/Fbjkw==
+X-Google-Smtp-Source: ABdhPJwe/yxHcXuREOavhKWa2LijXwU7OHCva5pj9T8tlFVE8ZZKFk9++TWqYSyj+47QdqGv+rSW8w==
+X-Received: by 2002:a62:7609:0:b029:152:b31e:6aed with SMTP id r9-20020a6276090000b0290152b31e6aedmr2031340pfc.10.1603364819189;
+        Thu, 22 Oct 2020 04:06:59 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id u2sm1944980pgf.63.2020.10.22.04.06.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 22 Oct 2020 04:06:58 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 16:36:56 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
+        lukasz.luba@arm.com
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+Message-ID: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+References: <cover.1594707424.git.viresh.kumar@linaro.org>
+ <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200716115605.GR10769@hirez.programming.kicks-ass.net>
+ <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
+ <20201022090523.GV2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022090523.GV2628@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Recently there was an undetected breakage for std arch event support.
+On 22-10-20, 11:05, Peter Zijlstra wrote:
+> On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
+> > One of the issues I see with this is that schedutil may not be
+> > available in all configurations and it is still absolutely fine to
+> > using the suggested helper to get the energy numbers in such cases, so
+> > we shouldn't really make it scheutil dependent.
+> 
+> The only constraint on schedutil is SMP I think; aside from that it
+> should/could always be available.
+> 
+> Given the trainwreck here:
+> 
+>   20201022071145.GM2628@hirez.programming.kicks-ass.net
+> 
+> (you're on Cc), I'm starting to lean more and more towards making it
+> unconditionally available (when SMP).
+> 
+> Anybody forcing it off either sets performance (in which case we don't
+> care about energy usage anyway)
 
-Add support in "PMU events" testcase to detect such breakages.
+I agree.
 
-For this, the "test" arch needs has support added to process std arch
-events. And a test event is added for the test, ifself.
+> or they select one of the old (broken)
+> ondemand/conservative things and I don't give a crap.
 
-Also add a few code comments to help understand the code a bit better.
+The other kernel layers, for example cpufreq-cooling in question here,
+don't really need to bother with the governor in use and should be
+able to get the energy numbers anyway. So for me, the energy number
+that the cpufreq-cooling stuff gets should be same irrespective of the
+governor in use, schedutil or ondemand.
 
-Signed-off-by: John Garry <john.garry@huawei.com>
----
- .../perf/pmu-events/arch/test/arch-std-events.json |  8 ++++++++
- .../perf/pmu-events/arch/test/test_cpu/cache.json  |  5 +++++
- tools/perf/pmu-events/jevents.c                    |  4 ++++
- tools/perf/tests/pmu-events.c                      | 14 ++++++++++++++
- 4 files changed, 31 insertions(+)
- create mode 100644 tools/perf/pmu-events/arch/test/arch-std-events.json
- create mode 100644 tools/perf/pmu-events/arch/test/test_cpu/cache.json
+Having said that, schedutil really doesn't need to install the
+fallback (which you suggested earlier), rather the scheduler core can
+do that directly with cpufreq core and schedutil can also use the same
+fallback mechanism maybe ? And so we can avoid the exporting of stuff
+that way.
 
-diff --git a/tools/perf/pmu-events/arch/test/arch-std-events.json b/tools/perf/pmu-events/arch/test/arch-std-events.json
-new file mode 100644
-index 000000000000..43f6f729d6ae
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/test/arch-std-events.json
-@@ -0,0 +1,8 @@
-+[
-+    {
-+        "PublicDescription": "Attributable Level 3 cache access, read",
-+        "EventCode": "0x40",
-+        "EventName": "L3_CACHE_RD",
-+        "BriefDescription": "L3 cache access, read"
-+    }
-+]
-diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
-new file mode 100644
-index 000000000000..036d0efdb2bb
---- /dev/null
-+++ b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
-@@ -0,0 +1,5 @@
-+[
-+    {
-+	 "ArchStdEvent": "L3_CACHE_RD"
-+    }
-+]
-\ No newline at end of file
-diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
-index 7326c14c4623..72cfa3b5046d 100644
---- a/tools/perf/pmu-events/jevents.c
-+++ b/tools/perf/pmu-events/jevents.c
-@@ -1162,6 +1162,10 @@ int main(int argc, char *argv[])
- 
- 	sprintf(ldirname, "%s/test", start_dirname);
- 
-+	rc = nftw(ldirname, preprocess_arch_std_files, maxfds, 0);
-+	if (rc)
-+		goto err_processing_std_arch_event_dir;
-+
- 	rc = nftw(ldirname, process_one_file, maxfds, 0);
- 	if (rc)
- 		goto err_processing_dir;
-diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
-index d3517a74d95e..ad2b21591275 100644
---- a/tools/perf/tests/pmu-events.c
-+++ b/tools/perf/tests/pmu-events.c
-@@ -14,8 +14,10 @@
- #include "util/parse-events.h"
- 
- struct perf_pmu_test_event {
-+	/* used for matching against events from generated pmu-events.c */
- 	struct pmu_event event;
- 
-+	/* used for matching against event aliases */
- 	/* extra events for aliases */
- 	const char *alias_str;
- 
-@@ -78,6 +80,17 @@ static struct perf_pmu_test_event test_cpu_events[] = {
- 		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
- 		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
- 	},
-+	{
-+		.event = {
-+			.name = "l3_cache_rd",
-+			.event = "event=0x40",
-+			.desc = "L3 cache access, read",
-+			.long_desc = "Attributable Level 3 cache access, read",
-+			.topic = "cache",
-+		},
-+		.alias_str = "event=0x40",
-+		.alias_long_desc = "Attributable Level 3 cache access, read",
-+	},
- 	{ /* sentinel */
- 		.event = {
- 			.name = NULL,
-@@ -357,6 +370,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
- }
- 
- 
-+/* Test that aliases generated are as expected */
- static int test_aliases(void)
- {
- 	struct perf_pmu *pmu = NULL;
 -- 
-2.26.2
-
+viresh
