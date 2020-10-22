@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84A6A295C6A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:08:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8D210295C5C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:03:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896323AbgJVKIg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:08:36 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:53942 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S2896274AbgJVKIf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:08:35 -0400
-X-UUID: cb0dbf63645c406b86f8dba0a854628f-20201022
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=cLAlegNOIrwzIY2JgBuXu/SNenTIIhJF/b/jv5R+48w=;
-        b=SJV3qyzS79qIEWY2s4RwAPrxHIidzYiCfVenbZOgEHSC/ELw4QXH+95X1EUV3dsYjD/jFb0yVL2KU+aMHkisbRd4TkIJw3l0Tmeirg7PuIu1VRvvwlbVy6U+wtOHOrwLOD80CHAbNQBwXlN676Y2lvGCv1mn4ifr0ROvhg04m6Q=;
-X-UUID: cb0dbf63645c406b86f8dba0a854628f-20201022
-Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw02.mediatek.com
-        (envelope-from <zhuoliang.zhang@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 2093845838; Thu, 22 Oct 2020 18:08:31 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Thu, 22 Oct 2020 18:08:23 +0800
-Received: from localhost.localdomain (10.15.20.246) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Thu, 22 Oct 2020 18:08:22 +0800
-From:   Zhuoliang Zhang <zhuoliang.zhang@mediatek.com>
-To:     Steffen Klassert <steffen.klassert@secunet.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>,
-        zhuoliang zhang <zhuoliang.zhang@mediatek.com>
-Subject: [PATCH v2] net: xfrm: fix a race condition during allocing spi
-Date:   Thu, 22 Oct 2020 18:01:27 +0800
-Message-ID: <20201022100126.19565-1-zhuoliang.zhang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
+        id S2896270AbgJVKDa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:03:30 -0400
+Received: from mail1.perex.cz ([77.48.224.245]:45458 "EHLO mail1.perex.cz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896242AbgJVKDa (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:03:30 -0400
+Received: from mail1.perex.cz (localhost [127.0.0.1])
+        by smtp1.perex.cz (Perex's E-mail Delivery System) with ESMTP id 3EB98A0040;
+        Thu, 22 Oct 2020 12:03:28 +0200 (CEST)
+DKIM-Filter: OpenDKIM Filter v2.11.0 smtp1.perex.cz 3EB98A0040
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=perex.cz; s=default;
+        t=1603361008; bh=lXoh+KKoCCjpmbseFyBsxIaO14Gfb2SvYAq3LoV3XpQ=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=NVNO0hPS0PB46y98mKoU43gSrfjrLeM+6k4x+areXIrgcSKhmUf6h0jkTiQz4K+/6
+         NUQAWQjI2K3wzlweVtoxyzDdSOXp8Rya+PwUwm6Lp1dgpuUmsMtXPFE6aseloANrDK
+         NKFQ9mksgdiOCNY1j8t4VQ95LNui0CuCI3oha6aw=
+Received: from p1gen2.perex-int.cz (unknown [192.168.100.98])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: perex)
+        by mail1.perex.cz (Perex's E-mail Delivery System) with ESMTPSA;
+        Thu, 22 Oct 2020 12:03:19 +0200 (CEST)
+Subject: Re: Context expectations in ALSA
+To:     Maxime Ripard <maxime@cerno.tech>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Dom Cobley <dom@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+References: <20201022095041.44jytaelnlako54w@gilmour.lan>
+From:   Jaroslav Kysela <perex@perex.cz>
+Message-ID: <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
+Date:   Thu, 22 Oct 2020 12:03:19 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+In-Reply-To: <20201022095041.44jytaelnlako54w@gilmour.lan>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogemh1b2xpYW5nIHpoYW5nIDx6aHVvbGlhbmcuemhhbmdAbWVkaWF0ZWsuY29tPg0KDQp3
-ZSBmb3VuZCB0aGF0IHRoZSBmb2xsb3dpbmcgcmFjZSBjb25kaXRpb24gZXhpc3RzIGluDQp4ZnJt
-X2FsbG9jX3VzZXJzcGkgZmxvdzoNCg0KdXNlciB0aHJlYWQgICAgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICBzdGF0ZV9oYXNoX3dvcmsgdGhyZWFkDQotLS0tICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgIC0tLS0NCnhmcm1fYWxsb2NfdXNlcnNwaSgpDQog
-X19maW5kX2FjcV9jb3JlKCkNCiAgIC8qYWxsb2MgbmV3IHhmcm1fc3RhdGU6eCovDQogICB4ZnJt
-X3N0YXRlX2FsbG9jKCkNCiAgIC8qc2NoZWR1bGUgc3RhdGVfaGFzaF93b3JrIHRocmVhZCovDQog
-ICB4ZnJtX2hhc2hfZ3Jvd19jaGVjaygpICAgCSAgICAgICAgICAgICAgIHhmcm1faGFzaF9yZXNp
-emUoKQ0KIHhmcm1fYWxsb2Nfc3BpICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC8q
-aG9sZCBsb2NrKi8NCiAgICAgIHgtPmlkLnNwaSA9IGh0b25sKHNwaSkgICAgICAgICAgICAgICAg
-ICAgICBzcGluX2xvY2tfYmgoJm5ldC0+eGZybS54ZnJtX3N0YXRlX2xvY2spDQogICAgICAvKndh
-aXRpbmcgbG9jayByZWxlYXNlKi8gICAgICAgICAgICAgICAgICAgICB4ZnJtX2hhc2hfdHJhbnNm
-ZXIoKQ0KICAgICAgc3Bpbl9sb2NrX2JoKCZuZXQtPnhmcm0ueGZybV9zdGF0ZV9sb2NrKSAgICAg
-IC8qYWRkIHggaW50byBobGlzdDpuZXQtPnhmcm0uc3RhdGVfYnlzcGkqLw0KCSAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGhsaXN0X2FkZF9oZWFkX3JjdSgm
-eC0+YnlzcGkpDQogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
-ICAgc3Bpbl91bmxvY2tfYmgoJm5ldC0+eGZybS54ZnJtX3N0YXRlX2xvY2spDQoNCiAgICAvKmFk
-ZCB4IGludG8gaGxpc3Q6bmV0LT54ZnJtLnN0YXRlX2J5c3BpIDIgdGltZXMqLw0KICAgIGhsaXN0
-X2FkZF9oZWFkX3JjdSgmeC0+YnlzcGkpDQoNCjEuIGEgbmV3IHN0YXRlIHggaXMgYWxsb2NlZCBp
-biB4ZnJtX3N0YXRlX2FsbG9jKCkgYW5kIGFkZGVkIGludG8gdGhlIGJ5ZHN0IGhsaXN0DQppbiAg
-X19maW5kX2FjcV9jb3JlKCkgb24gdGhlIExIUzsNCjIuIG9uIHRoZSBSSFMsIHN0YXRlX2hhc2hf
-d29yayB0aHJlYWQgdHJhdmVscyB0aGUgb2xkIGJ5ZHN0IGFuZCB0cmFuZmVycyBldmVyeSB4ZnJt
-X3N0YXRlDQooaW5jbHVkZSB4KSBpbnRvIHRoZSBuZXcgYnlkc3QgaGxpc3QgYW5kIG5ldyBieXNw
-aSBobGlzdDsNCjMuIHVzZXIgdGhyZWFkIG9uIHRoZSBMSFMgZ2V0cyB0aGUgbG9jayBhbmQgYWRk
-cyB4IGludG8gdGhlIG5ldyBieXNwaSBobGlzdCBhZ2Fpbi4NCg0KU28gdGhlIHNhbWUgeGZybV9z
-dGF0ZSAoeCkgaXMgYWRkZWQgaW50byB0aGUgc2FtZSBsaXN0X2hhc2gNCihuZXQtPnhmcm0uc3Rh
-dGVfYnlzcGkpIDIgdGltZXMgdGhhdCBtYWtlcyB0aGUgbGlzdF9oYXNoIGJlY29tZQ0KYW4gaW5p
-Zml0ZSBsb29wLg0KDQpUbyBmaXggdGhlIHJhY2UsIHgtPmlkLnNwaSA9IGh0b25sKHNwaSkgaW4g
-dGhlIHhmcm1fYWxsb2Nfc3BpKCkgaXMgbW92ZWQNCnRvIHRoZSBiYWNrIG9mIHNwaW5fbG9ja19i
-aCwgc290aGF0IHN0YXRlX2hhc2hfd29yayB0aHJlYWQgbm8gbG9uZ2VyIGFkZCB4DQp3aGljaCBp
-ZC5zcGkgaXMgemVybyBpbnRvIHRoZSBoYXNoX2xpc3QuDQoNCkZpeGVzOiBmMDM0YjVkNGVmZGYg
-KCJbWEZSTV06IER5bmFtaWMgeGZybV9zdGF0ZSBoYXNoIHRhYmxlIHNpemluZy4iKQ0KU2lnbmVk
-LW9mZi1ieTogemh1b2xpYW5nIHpoYW5nIDx6aHVvbGlhbmcuemhhbmdAbWVkaWF0ZWsuY29tPg0K
-LS0tDQogbmV0L3hmcm0veGZybV9zdGF0ZS5jIHwgOCArKysrKy0tLQ0KIDEgZmlsZSBjaGFuZ2Vk
-LCA1IGluc2VydGlvbnMoKyksIDMgZGVsZXRpb25zKC0pDQoNCmRpZmYgLS1naXQgYS9uZXQveGZy
-bS94ZnJtX3N0YXRlLmMgYi9uZXQveGZybS94ZnJtX3N0YXRlLmMNCmluZGV4IGJiZDQ2NDNkN2U4
-Mi4uYTc3ZGE3YWFlNmZlIDEwMDY0NA0KLS0tIGEvbmV0L3hmcm0veGZybV9zdGF0ZS5jDQorKysg
-Yi9uZXQveGZybS94ZnJtX3N0YXRlLmMNCkBAIC0yMDA0LDYgKzIwMDQsNyBAQCBpbnQgeGZybV9h
-bGxvY19zcGkoc3RydWN0IHhmcm1fc3RhdGUgKngsIHUzMiBsb3csIHUzMiBoaWdoKQ0KIAlpbnQg
-ZXJyID0gLUVOT0VOVDsNCiAJX19iZTMyIG1pbnNwaSA9IGh0b25sKGxvdyk7DQogCV9fYmUzMiBt
-YXhzcGkgPSBodG9ubChoaWdoKTsNCisJX19iZTMyIG5ld3NwaSA9IDA7DQogCXUzMiBtYXJrID0g
-eC0+bWFyay52ICYgeC0+bWFyay5tOw0KIA0KIAlzcGluX2xvY2tfYmgoJngtPmxvY2spOw0KQEAg
-LTIwMjIsMjEgKzIwMjMsMjIgQEAgaW50IHhmcm1fYWxsb2Nfc3BpKHN0cnVjdCB4ZnJtX3N0YXRl
-ICp4LCB1MzIgbG93LCB1MzIgaGlnaCkNCiAJCQl4ZnJtX3N0YXRlX3B1dCh4MCk7DQogCQkJZ290
-byB1bmxvY2s7DQogCQl9DQotCQl4LT5pZC5zcGkgPSBtaW5zcGk7DQorCQluZXdzcGkgPSBtaW5z
-cGk7DQogCX0gZWxzZSB7DQogCQl1MzIgc3BpID0gMDsNCiAJCWZvciAoaCA9IDA7IGggPCBoaWdo
-LWxvdysxOyBoKyspIHsNCiAJCQlzcGkgPSBsb3cgKyBwcmFuZG9tX3UzMigpJShoaWdoLWxvdysx
-KTsNCiAJCQl4MCA9IHhmcm1fc3RhdGVfbG9va3VwKG5ldCwgbWFyaywgJngtPmlkLmRhZGRyLCBo
-dG9ubChzcGkpLCB4LT5pZC5wcm90bywgeC0+cHJvcHMuZmFtaWx5KTsNCiAJCQlpZiAoeDAgPT0g
-TlVMTCkgew0KLQkJCQl4LT5pZC5zcGkgPSBodG9ubChzcGkpOw0KKwkJCQluZXdzcGkgPSBodG9u
-bChzcGkpOw0KIAkJCQlicmVhazsNCiAJCQl9DQogCQkJeGZybV9zdGF0ZV9wdXQoeDApOw0KIAkJ
-fQ0KIAl9DQotCWlmICh4LT5pZC5zcGkpIHsNCisJaWYgKG5ld3NwaSkgew0KIAkJc3Bpbl9sb2Nr
-X2JoKCZuZXQtPnhmcm0ueGZybV9zdGF0ZV9sb2NrKTsNCisJCXgtPmlkLnNwaSA9IG5ld3NwaTsN
-CiAJCWggPSB4ZnJtX3NwaV9oYXNoKG5ldCwgJngtPmlkLmRhZGRyLCB4LT5pZC5zcGksIHgtPmlk
-LnByb3RvLCB4LT5wcm9wcy5mYW1pbHkpOw0KIAkJaGxpc3RfYWRkX2hlYWRfcmN1KCZ4LT5ieXNw
-aSwgbmV0LT54ZnJtLnN0YXRlX2J5c3BpICsgaCk7DQogCQlzcGluX3VubG9ja19iaCgmbmV0LT54
-ZnJtLnhmcm1fc3RhdGVfbG9jayk7DQotLSANCjIuMTguMA0K
+Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
 
+> So, I'm not really sure what I'm supposed to do here. The drivers
+> involved don't appear to be doing anything extraordinary, but the issues
+> lockdep report are definitely valid too. What are the expectations in
+> terms of context from ALSA when running the callbacks, and how can we
+> fix it?
+
+I think that you should set the non-atomic flag and wake up the workqueue or
+so from interrupt handler in this case. Call snd_pcm_period_elapsed() from the
+workqueue not the interrupt handler context.
+
+						Jaroslav
+
+-- 
+Jaroslav Kysela <perex@perex.cz>
+Linux Sound Maintainer; ALSA Project; Red Hat, Inc.
