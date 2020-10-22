@@ -2,164 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E306929618B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:16:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F85C29618C
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:16:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901295AbgJVPQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:16:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40604 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2509933AbgJVPQI (ORCPT
+        id S2901304AbgJVPQP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:16:15 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:34696 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2901297AbgJVPQP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:16:08 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 01961C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:16:08 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id e6so1268856qtw.10
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:16:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Z3vmtV0NaowwAl/bkuJPmHs13M06Kmq+h1vxwA4hLas=;
-        b=pu4/oIE96b9WepM1KyYgDHEbBJpHXDkiB0Rc3gA4iHoiWv7uqBRDM2rNU71uBrXzIK
-         z/RSgcF+IqGFQwlvjRUdhEAi1RWf6YDVM2IS/E22uZQAnB4ixbJjgZMkedtOl9JV6QHM
-         TbuewAXGqlRIvn12XGaxHRRYFBQNSPA9wEY+VGn83227qfjQQMX9uycQ5HrEHdHoddCu
-         Pvfdyy11QRd6fWp8M5j38eFs7rcdyALz4fKr1GPWpePcfi0+LDOIbA3IGOuOF40dNCMo
-         3T+HGTAiLSB8NNiB7TVtY9OrtlNyWvZGktJ2QlqtrNTMh1DxJjjyIRUSj7xlracCmUOo
-         y40g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Z3vmtV0NaowwAl/bkuJPmHs13M06Kmq+h1vxwA4hLas=;
-        b=s0N4VFA/A6RN8m1fG+ecBM5YPa/gquz4YShUH5rs37YTYoG41JXvqglaHoaotgabLb
-         LEeVVvdLbOUGynp68+1KdQvq9BEQOGTRIZ3akf0uDplX+AjqG4hLl2/NMJntEbt+CNpz
-         oM+7gd5AuAbh5AHyz81Y0pF2dy5QfUZ1T8mG6RI1u4opMSPB4pJ77yuZ6dcd2qbXO5Cf
-         +V/sT7pN7B7fuwQJuu4bwEPe5x9TAG4Zay6etzRk7OYWX8tTNP2Vz8S7naCL6WCFee9w
-         zalTuoUrjBvwWlNFNuQpAx+DmPzqQaPduOaseHHxJhNVy7AlzPXq+Yy6R/KnABZWa+Hd
-         6cKg==
-X-Gm-Message-State: AOAM531S2iBV4SCfxiA40IlgtVOI8h66aB9X5jkHH4uSjJQCXBR/c8Jy
-        Q45CuqGa8TIJGgUpclhRkF62Lqo9yfnIlurkboZVNQ==
-X-Google-Smtp-Source: ABdhPJxuQ/BA6vpJQzxhrqMGyXaPlsQefVCsoiVd55h1woFQfeiMP0sUtRl8Gzy2ahMruP98DbRdMsq8wSMVueYCGQ8=
-X-Received: by 2002:ac8:928:: with SMTP id t37mr2588192qth.67.1603379766837;
- Thu, 22 Oct 2020 08:16:06 -0700 (PDT)
+        Thu, 22 Oct 2020 11:16:15 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kVcK3-0000pJ-7H; Thu, 22 Oct 2020 11:16:11 -0400
+Message-ID: <f33747ae2787388ec89e587f5f14a767560b882e.camel@surriel.com>
+Subject: Re: [PATCH] mm/shmem: fix up gfpmask for shmem hugepage allocation
+From:   Rik van Riel <riel@surriel.com>
+To:     Xu Yu <xuyu@linux.alibaba.com>, linux-mm@kvack.org
+Cc:     hughd@google.com, akpm@linux-foundation.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
+        VlastimilBabka <vbabka@suse.cz>
+Date:   Thu, 22 Oct 2020 11:16:10 -0400
+In-Reply-To: <11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com>
+References: <11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-NO2+ukY9FXiPfB4rJuJV"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-References: <cover.1603372719.git.andreyknvl@google.com>
-In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Thu, 22 Oct 2020 17:15:55 +0200
-Message-ID: <CACT4Y+bVCADgzweb_gmC9f7m_uc5r73scLPy+D3=Tbf2DFqb6g@mail.gmail.com>
-Subject: Re: [PATCH RFC v2 00/21] kasan: hardware tag-based mode for
- production use on arm64
-To:     Andrey Konovalov <andreyknvl@google.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        Alexander Potapenko <glider@google.com>,
-        Marco Elver <elver@google.com>,
-        Evgenii Stepanov <eugenis@google.com>,
-        Kostya Serebryany <kcc@google.com>,
-        Peter Collingbourne <pcc@google.com>,
-        Serban Constantinescu <serbanc@google.com>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Elena Petrova <lenaptr@google.com>,
-        Branislav Rankov <Branislav.Rankov@arm.com>,
-        Kevin Brodsky <kevin.brodsky@arm.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:19 PM Andrey Konovalov <andreyknvl@google.com> wrote:
->
-> This patchset is not complete (hence sending as RFC), but I would like to
-> start the discussion now and hear people's opinions regarding the
-> questions mentioned below.
->
-> === Overview
->
-> This patchset adopts the existing hardware tag-based KASAN mode [1] for
-> use in production as a memory corruption mitigation. Hardware tag-based
-> KASAN relies on arm64 Memory Tagging Extension (MTE) [2] to perform memory
-> and pointer tagging. Please see [3] and [4] for detailed analysis of how
-> MTE helps to fight memory safety problems.
->
-> The current plan is reuse CONFIG_KASAN_HW_TAGS for production, but add a
-> boot time switch, that allows to choose between a debugging mode, that
-> includes all KASAN features as they are, and a production mode, that only
-> includes the essentials like tag checking.
->
-> It is essential that switching between these modes doesn't require
-> rebuilding the kernel with different configs, as this is required by the
-> Android GKI initiative [5].
->
-> The patch titled "kasan: add and integrate kasan boot parameters" of this
-> series adds a few new boot parameters:
->
-> kasan.mode allows choosing one of main three modes:
->
-> - kasan.mode=off - no checks at all
-> - kasan.mode=prod - only essential production features
-> - kasan.mode=full - all features
->
-> Those mode configs provide default values for three more internal configs
-> listed below. However it's also possible to override the default values
-> by providing:
->
-> - kasan.stack=off/on - enable stacks collection
->                        (default: on for mode=full, otherwise off)
-> - kasan.trap=async/sync - use async or sync MTE mode
->                           (default: sync for mode=full, otherwise async)
-> - kasan.fault=report/panic - only report MTE fault or also panic
->                              (default: report)
->
-> === Benchmarks
->
-> For now I've only performed a few simple benchmarks such as measuring
-> kernel boot time and slab memory usage after boot. The benchmarks were
-> performed in QEMU and the results below exclude the slowdown caused by
-> QEMU memory tagging emulation (as it's different from the slowdown that
-> will be introduced by hardware and therefore irrelevant).
->
-> KASAN_HW_TAGS=y + kasan.mode=off introduces no performance or memory
-> impact compared to KASAN_HW_TAGS=n.
->
-> kasan.mode=prod (without executing the tagging instructions) introduces
-> 7% of both performace and memory impact compared to kasan.mode=off.
-> Note, that 4% of performance and all 7% of memory impact are caused by the
-> fact that enabling KASAN essentially results in CONFIG_SLAB_MERGE_DEFAULT
-> being disabled.
->
-> Recommended Android config has CONFIG_SLAB_MERGE_DEFAULT disabled (I assume
-> for security reasons), but Pixel 4 has it enabled. It's arguable, whether
-> "disabling" CONFIG_SLAB_MERGE_DEFAULT introduces any security benefit on
-> top of MTE. Without MTE it makes exploiting some heap corruption harder.
-> With MTE it will only make it harder provided that the attacker is able to
-> predict allocation tags.
->
-> kasan.mode=full has 40% performance and 30% memory impact over
-> kasan.mode=prod. Both come from alloc/free stack collection.
->
-> === Questions
->
-> Any concerns about the boot parameters?
 
-For boot parameters I think we are now "safe" in the sense that we
-provide maximum possible flexibility and can defer any actual
-decisions.
+--=-NO2+ukY9FXiPfB4rJuJV
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> Should we try to deal with CONFIG_SLAB_MERGE_DEFAULT-like behavor mentioned
-> above?
+On Wed, 2020-10-21 at 16:09 +0800, Xu Yu wrote:
 
-How hard it is to allow KASAN with CONFIG_SLAB_MERGE_DEFAULT? Are
-there any principal conflicts?
-The numbers you provided look quite substantial (on a par of what MTE
-itself may introduce). So I would assume if a vendor does not have
-CONFIG_SLAB_MERGE_DEFAULT disabled, it may not want to disable it
-because of MTE (effectively doubles overhead).
+> @@ -1887,6 +1930,7 @@ static int shmem_getpage_gfp(struct inode
+> *inode, pgoff_t index,
+>  	}
+> =20
+>  alloc_huge:
+> +	gfp =3D shmem_hugepage_gfpmask_fixup(gfp, sgp_huge);
+>  	page =3D shmem_alloc_and_acct_page(gfp, inode, index, true);
+>  	if (IS_ERR(page)) {
+>  alloc_nohuge:
+
+This looks it could be a bug, because the changed
+gfp flags are also used for the non-huge allocation
+below the alloc_nohuge: label, when the huge allocation
+fails.
+
+Using a separate huge_gfp variable would solve that
+issue.
+
+However, your patch also changes the meaning of
+SHMEM_HUGE_FORCE from "override mount flags" to
+"aggressively try reclaim and compaction", which
+mixes up the equivalents of the anon THP sysctl
+"enabled" and "defrag" settings.
+
+I believe it makes sense to continue keeping the
+"what should khugepaged do with these pages?" and
+"how hard should we try at allocation time?" settings
+separately for shmem the same way they are kept
+separately for anonymous memory.
+
+I also suspect it is simplest if shmem uses the
+same "how hard should we try at allocation time?"
+settings from the "defrag" sysfs file, instead
+of giving system administrators two knobs that they
+will likely want to set to the same value anyway.
+
+Coincidentally, I have been looking at the same
+code on and off for the past month, and also sent
+a patch to the list to fix this issue yesterday.
+
+I suspect my patch can be simplified a little more
+by directly using alloc_hugepage_direct_gfpmask to
+create a huge_gfp flag in shmem_getpage_gfp.
+
+https://lore.kernel.org/linux-mm/20201021234846.5cc97e62@imladris.surriel.c=
+om/
+
+--=20
+All Rights Reversed.
+
+--=-NO2+ukY9FXiPfB4rJuJV
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RojoACgkQznnekoTE
+3oMtbAgApfrn8Wh8rXaZFyRMK7jp9ky7Ndr5yPFJhHrs4RVL7Je7En4oVt0Phy/i
+Rq5EWBARSLBngRvfvXm13N7SQZXk8aNWQLIwgyFjGLm+BTVAJBp9i2+2QzYZxRCf
+IbMBIM3M+awJNjOZ0iw/h82V4PjOv5l5e59poYF4T15G+qqP/HXwbVJFUuRX5pAH
++a7q6olFIlBl17huVrakuYgi3AHWyYUs4zAoxvhlzIQ+bcR+v1tDmP8BWFv0/Pc/
+ELZ+yzlK9gxAKNZBUP8bjxNri7ZxXsR1+OyNG9aOwbnQioCvKFcglt9gn6CGGzZ8
+baU0hds485oQsDY374u6q9qFQ8VuFA==
+=Xew8
+-----END PGP SIGNATURE-----
+
+--=-NO2+ukY9FXiPfB4rJuJV--
+
