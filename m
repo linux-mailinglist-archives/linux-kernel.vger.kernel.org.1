@@ -2,77 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3284B296321
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:51:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C29E296323
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902088AbgJVQvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:51:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898064AbgJVQvP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:51:15 -0400
-Received: from mail-lf1-x142.google.com (mail-lf1-x142.google.com [IPv6:2a00:1450:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0DBD3C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:51:14 -0700 (PDT)
-Received: by mail-lf1-x142.google.com with SMTP id b1so3088111lfp.11
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:51:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xd+wFurjGt8mIia5D9RdI7kEY/qSyqqqpi8eDO7fd4U=;
-        b=LrjBvKpulM/XMhJARW83BKyF12g1Mqfl10AXRgIMcG9LM7S6kcl4R6MlFwlFkEA/1a
-         d/KzVeD+H36kd9k/4RiTQHrYtLgqMyf+qBYv/N8Ex//ESFw0YXOyN4StOv1ukEWWqeQr
-         hyGdvREaI2zbnlt9ny7p45Sad/Gd/FFkejzXvXodXkc/tufjFz7F4cjPQcROrIrimbjt
-         LDcWSPR2XQzbiqwiz3VAllqfZ39xfPGZTzfanQ2bJ2679ENBpGehMgtEagxaUfdusjuu
-         Lz0bsQ5wNKlvGwK2a5JbDUGAVjzXcEQHfzg7+ZdDyW2WOdOAoN5ovZXyr1aABAUXxX9U
-         T/Wg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xd+wFurjGt8mIia5D9RdI7kEY/qSyqqqpi8eDO7fd4U=;
-        b=KvNXRvtD+TQ3snmzleDoriEeRaMmPp5PCpjq6KobgJC4WS9SSzazJAPXdp0W+lhcNw
-         8muvofMIY/smT0fHyLH/rltTGcdLWITOAS0yY4rp2Uh3RxTugKOYjv3ih4eCPOeVCIw3
-         +qjuSi0Retm6QznYQls1H787dBb97r2KNXGaJaXcB0C3gKNotLPM1vluNgOd5MRympIG
-         SHdsLyPClW6MysDKuqX/dmybaGcGLwz9iPlRRxTlXadmwc7KRavP7oemt/OuYGK8Z6Rj
-         nXJRtgj7K0iQpf20ioDy1hMEGa2lyLPpMdVYaMRbNDNjj/Grvg3FLeEEh+YUbecWINiV
-         lufw==
-X-Gm-Message-State: AOAM530nnFXgjI35159SdytglnXB0+QiFEbIbkcKLg3AY0LSLoD6rw9o
-        FVEdQ8rwBtgg1tdWgFATv8bmlt+XIeK34BFW2bHJMBSaoaA=
-X-Google-Smtp-Source: ABdhPJzgbjVJ6Q48WyyWENn3/RiEAe7m2DvqcU64UZBUNM7R05PvMjOPYcsfbg596U8Of0MqHkurd7hguMBbdaqIN80=
-X-Received: by 2002:a19:84d3:: with SMTP id g202mr1289904lfd.346.1603385472165;
- Thu, 22 Oct 2020 09:51:12 -0700 (PDT)
+        id S2902089AbgJVQwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:52:20 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35334 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2898218AbgJVQwU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:52:20 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id B56BCADEC;
+        Thu, 22 Oct 2020 16:52:18 +0000 (UTC)
+Subject: Re: [PATCH v2] mm,thp,shmem: limit shmem THP alloc gfp_mask
+To:     Rik van Riel <riel@surriel.com>, Hugh Dickins <hughd@google.com>
+Cc:     Yu Xu <xuyu@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+References: <20201022124511.72448a5f@imladris.surriel.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Message-ID: <4f98ea59-a9df-de6d-1084-8a8867c20052@suse.cz>
+Date:   Thu, 22 Oct 2020 18:52:18 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-References: <20201022151844.489337-1-hannes@cmpxchg.org>
-In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
-From:   Shakeel Butt <shakeelb@google.com>
-Date:   Thu, 22 Oct 2020 09:51:01 -0700
-Message-ID: <CALvZod7SOpaVcmVZDTw-UeVo3Jx=VfojBzO5f7k5ATPXeN7K+A@mail.gmail.com>
-Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Michal Hocko <mhocko@suse.com>, Linux MM <linux-mm@kvack.org>,
-        Cgroups <cgroups@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Kernel Team <kernel-team@fb.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201022124511.72448a5f@imladris.surriel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 8:20 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
->
-> As huge page usage in the page cache and for shmem files proliferates
-> in our production environment, the performance monitoring team has
-> asked for per-cgroup stats on those pages.
->
-> We already track and export anon_thp per cgroup. We already track file
-> THP and shmem THP per node, so making them per-cgroup is only a matter
-> of switching from node to lruvec counters. All callsites are in places
-> where the pages are charged and locked, so page->memcg is stable.
->
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+On 10/22/20 6:45 PM, Rik van Riel wrote:
+> The allocation flags of anonymous transparent huge pages can be controlled
+> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+> help the system from getting bogged down in the page reclaim and compaction
+> code when many THPs are getting allocated simultaneously.
+> 
+> However, the gfp_mask for shmem THP allocations were not limited by those
+> configuration settings, and some workloads ended up with all CPUs stuck
+> on the LRU lock in the page reclaim code, trying to allocate dozens of
+> THPs simultaneously.
+> 
+> This patch applies the same configurated limitation of THPs to shmem
+> hugepage allocations, to prevent that from happening.
+> 
+> This way a THP defrag setting of "never" or "defer+madvise" will result
+> in quick allocation failures without direct reclaim when no 2MB free
+> pages are available.
+> 
+> Signed-off-by: Rik van Riel <riel@surriel.com>
 
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
+
+> ---
+> v2: move gfp calculation to shmem_getpage_gfp as suggested by Yu Xu
+> 
+> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+> index c603237e006c..0a5b164a26d9 100644
+> --- a/include/linux/gfp.h
+> +++ b/include/linux/gfp.h
+> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+>   extern void pm_restrict_gfp_mask(void);
+>   extern void pm_restore_gfp_mask(void);
+>   
+> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
+> +
+>   #ifdef CONFIG_PM_SLEEP
+>   extern bool pm_suspended_storage(void);
+>   #else
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 9474dbc150ed..9b08ce5cc387 100644
+> --- a/mm/huge_memory.c
+> +++ b/mm/huge_memory.c
+> @@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>    *	    available
+>    * never: never stall for any thp allocation
+>    */
+> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+> +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+>   {
+>   	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
+>   
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index 537c137698f8..9710b9df91e9 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>   		return NULL;
+>   
+>   	shmem_pseudo_vma_init(&pvma, info, hindex);
+> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
+> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
+> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+> +			       true);
+>   	shmem_pseudo_vma_destroy(&pvma);
+>   	if (page)
+>   		prep_transhuge_page(page);
+> @@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>   	struct page *page;
+>   	enum sgp_type sgp_huge = sgp;
+>   	pgoff_t hindex = index;
+> +	gfp_t huge_gfp;
+>   	int error;
+>   	int once = 0;
+>   	int alloced = 0;
+> @@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
+>   	}
+>   
+>   alloc_huge:
+> -	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
+> +	huge_gfp = alloc_hugepage_direct_gfpmask(vma);
+> +	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
+>   	if (IS_ERR(page)) {
+>   alloc_nohuge:
+>   		page = shmem_alloc_and_acct_page(gfp, inode,
+> 
+
