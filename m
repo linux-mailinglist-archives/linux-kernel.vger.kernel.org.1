@@ -2,163 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 07E94295680
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:46:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E629B29567F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:45:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895200AbgJVCqJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 22:46:09 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:27228 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2895194AbgJVCqI (ORCPT
+        id S2895190AbgJVCpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 22:45:40 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37682 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895183AbgJVCpk (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 22:46:08 -0400
-Received: from pps.filterd (m0001303.ppops.net [127.0.0.1])
-        by m0001303.ppops.net (8.16.0.42/8.16.0.42) with SMTP id 09M2R60C023944;
-        Wed, 21 Oct 2020 19:45:47 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=5ukFwDvFdXTj7aCZiCkktD4MDly04k2UAmKYLOnYoe0=;
- b=HmitFtan1M7WnzfboHLNootB3xJyzqeewolL+Uwj0N/RoXlfXyKyeq6TU68GasoN3/Zs
- iRYNj72c4UDK4C0j09Hj++i4IyN6u5iAxhEE2zB0SYpOeKVe3GbeUIsojMEYvuAMjRoE
- MwbLTJprEClbN9PKBT8uX1M8DUIwy4ZqN84= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by m0001303.ppops.net with ESMTP id 34a41mrv8q-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Wed, 21 Oct 2020 19:45:47 -0700
-Received: from NAM02-BL2-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Wed, 21 Oct 2020 19:45:46 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hQmIScivOSJa6TbgD7qH8d9HarHIs0sDJTgaqgei28BAYDBSiM4liGwSfxjIMUYf1uz28giPMNJu48zglUadBACQr1s6Ob0Se+Pp/JU0nR6ap29tBIIzo/CtAWA6bNcZmS/sW7DYi3VCCrDrrU1IHaxJoS7PPlO4TApWbwFepbdtwVTN841w0bLLXAAyKROkl6OnipKZcifqcwiukRyzBzcSDlSXLi0b64WQ7njgFYV3iOscSwWDLz463s3iL8YfDj28uDxBUOSqFbk+7lGf52rV3WHp32MqmnNfm4A4L2UmCHHyzEC4LSu4urcvvYDskKOtwuU6SLf3moOsaNRVBg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ukFwDvFdXTj7aCZiCkktD4MDly04k2UAmKYLOnYoe0=;
- b=huiRXNQ9b+3HrX/GMJyjLUmkw7t5/BZweRKhQZsArEAyOoiJNrDFUZ/rhBsfJbDKnfyQ+VQ9dgVS/bIWga1BLeXzZ/dKGQNjF08uQwyvTMuZndcAcUfNyCPQo+gOHZUPdEx3mmRTqnlpBD1Ztsjy/4dQ3O7YiTwKPEo9WdOPWkLx9sgBt+8HUCTucDu3EbU/B83IwH+GBIK93zgo5BQwe4HYLJX4t2lsymvikvQr2tSD223pAkPY468MrzunsXcndi0yhOAgr3WC17tn8CkD1fyC+4w3Z0/KQO2GcFt9q5UqM9ptZh43ZWi7Pri78IrW3E3alnJEJZVjDQ3LKd6F4Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=5ukFwDvFdXTj7aCZiCkktD4MDly04k2UAmKYLOnYoe0=;
- b=EaUWYUzh5LhHU77CYRSXol1XncJpol3a1+xvWTpfO1x3i8qYGi3zYaBC0MAPY4BblcQX/MuWshi5f32ZwMaR9jiQtExsbwjaInxVe5tOu+u2qCWfgp4/jyjRUjjf+fuBlvtsgOOA9BiAk/mxgITjrDpVfgeK2AzzIHkxSrzFuoM=
-Authentication-Results: hisilicon.com; dkim=none (message not signed)
- header.d=none;hisilicon.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BYAPR15MB2807.namprd15.prod.outlook.com (2603:10b6:a03:15a::33) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Thu, 22 Oct
- 2020 02:45:32 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
- 02:45:31 +0000
-Date:   Wed, 21 Oct 2020 19:45:26 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     "Xiaqing (A)" <saberlily.xia@hisilicon.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>
-Subject: Re: [PATCH rfc 0/2] mm: cma: make cma_release() non-blocking
-Message-ID: <20201022024526.GD300658@carbon.dhcp.thefacebook.com>
-References: <20201016225254.3853109-1-guro@fb.com>
- <a94644b5-5867-0518-34e9-30fa6c510f81@hisilicon.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a94644b5-5867-0518-34e9-30fa6c510f81@hisilicon.com>
-X-Originating-IP: [2620:10d:c090:400::4:4b52]
-X-ClientProxiedBy: MWHPR18CA0055.namprd18.prod.outlook.com
- (2603:10b6:300:39::17) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
+        Wed, 21 Oct 2020 22:45:40 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E69E6C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id b6so179899pju.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=kONrq/lRtklL1Qqq4SPUIkJR3qq5A1gBIILz2gGUwb4=;
+        b=tbsBipmQmIUWj3rztkdcEygRjAbt9YQF+z+XR87qeJFHpK5vQgX/LOdCtB9wbwRXDr
+         kBEQLiiE6Zn/i/ui8CDv77vasMVSdl2QJYPku87wMhWhmXGsYVG/DuGccEugsNRXdRlz
+         7QteN6yuPG2Y5KMSiznapWkXP7Nrna9dSi0bVQEpLg9VYTQ2WXDIObfeXs0BfUx/JciZ
+         E2zWzBU+RJ1wNg8fiya2a7ENBa3n5rW3zvYmNRwDoio1aC3gFiB9dFy22eNo60tRrqb2
+         S2Ugnlqu5yNCnRi+fXnEdrjD9LJ7yBJZQGJxQeaVT0SLQF13ya8wyJQLl2sciVgNFpB5
+         xK5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=kONrq/lRtklL1Qqq4SPUIkJR3qq5A1gBIILz2gGUwb4=;
+        b=FE4I9a/NzcgLuQYzNw02DjIdFbj0Rn5CQFTBU6/oVUR+gTjZbCW7AJOSR78bvNZJ1I
+         3E/YckFgbkQazGSvJv3H9mmsfFuKq4ojdo1MuHuyxxL7yZUrkIZYw96c+eQWfCF7jw7r
+         AgOnWsAgQ8L7QJ9zCSJwjzhmJ2ZMhHRoydPeQpzx3C7//LnzsByNaVfsaNKu5q2j8LRc
+         BlHFPdU5WBujxr+dNgmryNYwcNYCiEZhrmEoSdHUaQ/0TgrBHsazKMypSw6MXNvqrLIw
+         N6hFCaU7MMS1o6EE0hXkRkEJHO5ny7MxO4LtDOSDGVr8MbQUMYBgfBua0zKigN1gh9+0
+         ot7w==
+X-Gm-Message-State: AOAM531W/NpngSl/pFGlISXKRGOWqIH+lehRyXT7fR8xYL1er2x4bKyP
+        yv3XWGcrZ13h/cDGEqwQ5zwONREj6kYCSw==
+X-Google-Smtp-Source: ABdhPJzzmGkjj1kW8pPUT7PDWhaDs8EkgTx32Mkx04ju06cTsVG33FQ5AgUOn0BN0hgBAvDTa3KcAA==
+X-Received: by 2002:a17:90b:198d:: with SMTP id mv13mr357993pjb.13.1603334738261;
+        Wed, 21 Oct 2020 19:45:38 -0700 (PDT)
+Received: from [10.2.24.220] ([61.120.150.77])
+        by smtp.gmail.com with ESMTPSA id v16sm212387pgk.26.2020.10.21.19.45.35
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 21 Oct 2020 19:45:37 -0700 (PDT)
+Subject: PING: [PATCH] block: add io_error stat for block device
+To:     axboe@kernel.dk
+Cc:     linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20200910022026.632617-1-pizhenwei@bytedance.com>
+From:   zhenwei pi <pizhenwei@bytedance.com>
+Message-ID: <e6dfc767-a54e-d14e-c6c4-fcb68f43180a@bytedance.com>
+Date:   Thu, 22 Oct 2020 10:45:33 +0800
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.6.1
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::4:4b52) by MWHPR18CA0055.namprd18.prod.outlook.com (2603:10b6:300:39::17) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.24 via Frontend Transport; Thu, 22 Oct 2020 02:45:30 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: 17e325f6-dbfb-4051-8cff-08d876348aeb
-X-MS-TrafficTypeDiagnostic: BYAPR15MB2807:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR15MB2807C59938CAE36DDD75B250BE1D0@BYAPR15MB2807.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 7JJzNY1x7EyTljHPiKWpf6LHklq3ouFv15PchSUdQFn6pLWzdxmYDYsgLcYa7mmvwVQigW2Hri5uEvOWekOAZ3W9Pwo8O5u98T5E7xIqJvp8wF4wlPnJJiROsTNw9jOLzBz+2vVpfywwxhZoOcRDDk2xan2zy6pOTdW3RZGGNh/jAwoSh3zG+sn4aijX+MOFUjULw31+1wd06aNdYEvc83xB5dPOAkE7lN8PHDQ1dIZUja7ikhzpLG9WPHZzC3U9WAVo6gg8kQf8I6yRjUMD+xvDGMK/9LuuTBid2I5yNX5Mv9Zt3Vz7CfkAtRUP3fD7ofCXa19B4xrxlpwoy5XXiA==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(366004)(346002)(39860400002)(396003)(136003)(54906003)(316002)(186003)(6506007)(66556008)(66476007)(66946007)(53546011)(6916009)(86362001)(9686003)(4326008)(16526019)(7696005)(5660300002)(52116002)(55016002)(83380400001)(6666004)(2906002)(478600001)(8676002)(1076003)(8936002)(33656002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: Mbdgs+zsH2PSKRT/GLLAk9jC8cgkUkrRiEmllikJa3W/RhLgplZJZAo7n3hZmy00eFUz5iJOZX4M4IQ/679UZmHHwJMfla4jf6eHBwwbx6DZoUELfrvom7CCZ8ZQXQH8DeWEsnFJQFVuzMUmYmfj3zGBecpdP6vazRiTPBgy7+Vqk/0WO6aXzQT4vwPH63kqcZl72Dz21ojSN5H8Z9Uu4rXIDgmW2Sm0FVz9A21sWvOVn7+IVQFLGRlaRypL4CCdIm0lBuvsm6zUaMosrceykiE2bUEjYYveW73UXWeFwW9qADXro77X301LAUIrCBU4T1mFMtz37VxRdKaX10hQYDl+N8tP81S25/RH7HPiWTh3sXCZePNua7vSkYiVUPyXPkjgHrCJJA8ju48VrddsQQKkHEYOjX99gFqLXnAxr1Lq9yHjH8xy0mvh+Dvb5Gdav4rErbj0Fly4+xIo3oZquXZ0xh3PxEX2mRN+SIfNG+5DLJcKQtfuvNS/KdEpMCJxoRa42QYCOeJInb7FSqdV236PR0PVst2zhSryT7sDTdzFJzL3XHsmJtU3BcPJgcF1VE1v1Ja7GDHXtUSb9DPCogao0HVDcRjNV2V6fqNH/F6lu9UMEla5zUbRU/lkA1rsUyE0a8apIQln/yu6HwpvZ+/v/31/IGBhxo3pWoNL8Rw=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 17e325f6-dbfb-4051-8cff-08d876348aeb
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 02:45:31.7772
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: rR++40+zSvdy7kEeaQYyr8E2EPN5dofK9mGqKSOFQ2oT2xU5Lq2Eknn2nQHvJ9j8
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR15MB2807
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_01:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 malwarescore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 spamscore=0
- clxscore=1011 suspectscore=2 adultscore=0 mlxlogscore=999 impostorscore=0
- phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220015
-X-FB-Internal: deliver
+In-Reply-To: <20200910022026.632617-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 09:54:53AM +0800, Xiaqing (A) wrote:
+Hi, Jens
+
+What do you think about this, adding io error stat for block devices is 
+reasonable?
+
+On 9/10/20 10:20 AM, zhenwei pi wrote:
+> Currently if hitting block req error, block layer only prints error
+> log with a rate limitation. Then agent has to parse kernel log to
+> record what happens.
 > 
+> In this patch, add read/write/discard/flush stat counter to record
+> io errors.
 > 
-> On 2020/10/17 6:52, Roman Gushchin wrote:
+> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+> ---
+>   block/blk-core.c          | 14 +++++++++++---
+>   block/genhd.c             | 19 +++++++++++++++++++
+>   include/linux/part_stat.h |  1 +
+>   3 files changed, 31 insertions(+), 3 deletions(-)
 > 
-> > This small patchset makes cma_release() non-blocking and simplifies
-> > the code in hugetlbfs, where previously we had to temporarily drop
-> > hugetlb_lock around the cma_release() call.
-> > 
-> > It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
-> > THP under a memory pressure requires a cma_release() call. If it's
-> > a blocking function, it complicates the already complicated code.
-> > Because there are at least two use cases like this (hugetlbfs is
-> > another example), I believe it's just better to make cma_release()
-> > non-blocking.
-> > 
-> > It also makes it more consistent with other memory releasing functions
-> > in the kernel: most of them are non-blocking.
-> > 
-> > 
-> > Roman Gushchin (2):
-> >    mm: cma: make cma_release() non-blocking
-> >    mm: hugetlb: don't drop hugetlb_lock around cma_release() call
-> > 
-> >   mm/cma.c     | 51 +++++++++++++++++++++++++++++++++++++++++++++++++--
-> >   mm/hugetlb.c |  6 ------
-> >   2 files changed, 49 insertions(+), 8 deletions(-)
-> > 
-> I don't think this patch is a good idea.It transfers part or even all of the time of
-> cma_release to cma_alloc, which is more concerned by performance indicators.
+> diff --git a/block/blk-core.c b/block/blk-core.c
+> index 10c08ac50697..8f1424835700 100644
+> --- a/block/blk-core.c
+> +++ b/block/blk-core.c
+> @@ -1558,9 +1558,17 @@ bool blk_update_request(struct request *req, blk_status_t error,
+>   		req->q->integrity.profile->complete_fn(req, nr_bytes);
+>   #endif
+>   
+> -	if (unlikely(error && !blk_rq_is_passthrough(req) &&
+> -		     !(req->rq_flags & RQF_QUIET)))
+> -		print_req_error(req, error, __func__);
+> +	if (unlikely(error && !blk_rq_is_passthrough(req))) {
+> +		if (op_is_flush(req_op(req)))
+> +			part_stat_inc(&req->rq_disk->part0,
+> +				io_errors[STAT_FLUSH]);
+> +		else
+> +			part_stat_inc(&req->rq_disk->part0,
+> +				io_errors[op_stat_group(req_op(req))]);
+> +
+> +		if (!(req->rq_flags & RQF_QUIET))
+> +			print_req_error(req, error, __func__);
+> +	}
+>   
+>   	blk_account_io_completion(req, nr_bytes);
+>   
+> diff --git a/block/genhd.c b/block/genhd.c
+> index 99c64641c314..852035095485 100644
+> --- a/block/genhd.c
+> +++ b/block/genhd.c
+> @@ -104,6 +104,7 @@ static void part_stat_read_all(struct hd_struct *part, struct disk_stats *stat)
+>   			stat->sectors[group] += ptr->sectors[group];
+>   			stat->ios[group] += ptr->ios[group];
+>   			stat->merges[group] += ptr->merges[group];
+> +			stat->io_errors[group] += ptr->io_errors[group];
+>   		}
+>   
+>   		stat->io_ticks += ptr->io_ticks;
+> @@ -1374,6 +1375,22 @@ static ssize_t disk_discard_alignment_show(struct device *dev,
+>   	return sprintf(buf, "%d\n", queue_discard_alignment(disk->queue));
+>   }
+>   
+> +static ssize_t io_error_show(struct device *dev,
+> +		      struct device_attribute *attr, char *buf)
+> +{
+> +	struct hd_struct *p = dev_to_part(dev);
+> +	struct disk_stats stat;
+> +
+> +	part_stat_read_all(p, &stat);
+> +
+> +	return sprintf(buf,
+> +		"%8lu %8lu %8lu %8lu\n",
+> +		stat.io_errors[STAT_READ],
+> +		stat.io_errors[STAT_WRITE],
+> +		stat.io_errors[STAT_DISCARD],
+> +		stat.io_errors[STAT_FLUSH]);
+> +}
+> +
+>   static DEVICE_ATTR(range, 0444, disk_range_show, NULL);
+>   static DEVICE_ATTR(ext_range, 0444, disk_ext_range_show, NULL);
+>   static DEVICE_ATTR(removable, 0444, disk_removable_show, NULL);
+> @@ -1386,6 +1403,7 @@ static DEVICE_ATTR(capability, 0444, disk_capability_show, NULL);
+>   static DEVICE_ATTR(stat, 0444, part_stat_show, NULL);
+>   static DEVICE_ATTR(inflight, 0444, part_inflight_show, NULL);
+>   static DEVICE_ATTR(badblocks, 0644, disk_badblocks_show, disk_badblocks_store);
+> +static DEVICE_ATTR(io_error, 0444, io_error_show, NULL);
+>   
+>   #ifdef CONFIG_FAIL_MAKE_REQUEST
+>   ssize_t part_fail_show(struct device *dev,
+> @@ -1437,6 +1455,7 @@ static struct attribute *disk_attrs[] = {
+>   #ifdef CONFIG_FAIL_IO_TIMEOUT
+>   	&dev_attr_fail_timeout.attr,
+>   #endif
+> +	&dev_attr_io_error.attr,
+>   	NULL
+>   };
+>   
+> diff --git a/include/linux/part_stat.h b/include/linux/part_stat.h
+> index 24125778ef3e..4fe3836d2308 100644
+> --- a/include/linux/part_stat.h
+> +++ b/include/linux/part_stat.h
+> @@ -9,6 +9,7 @@ struct disk_stats {
+>   	unsigned long sectors[NR_STAT_GROUPS];
+>   	unsigned long ios[NR_STAT_GROUPS];
+>   	unsigned long merges[NR_STAT_GROUPS];
+> +	unsigned long io_errors[NR_STAT_GROUPS];
+>   	unsigned long io_ticks;
+>   	local_t in_flight[2];
+>   };
+> 
 
-I'm not quite sure: if cma_alloc() is racing with cma_release(), cma_alloc() will
-wait for the cma_lock mutex anyway. So we don't really transfer anything to cma_alloc().
-
-> On Android phones, CPU resource competition is intense in many scenarios,
-> As a result, kernel threads and workers can be scheduled only after some ticks or more.
-> In this case, the performance of cma_alloc will deteriorate significantly,
-> which is not good news for many services on Android.
-
-Ok, I agree, if the cpu is heavily loaded, it might affect the total execution time.
-
-If we aren't going into the mutex->spinlock conversion direction (as Mike suggested),
-we can address the performance concerns by introducing a cma_release_nowait() function,
-so that the default cma_release() would work in the old way.
-cma_release_nowait() can set an atomic flag on a cma area, which will cause following
-cma_alloc()'s to flush the release queue. In this case there will be no performance
-penalty unless somebody is using cma_release_nowait().
-Will it work for you?
-
-Thank you!
+-- 
+zhenwei pi
