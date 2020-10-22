@@ -2,209 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB8AB296152
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:59:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B294296143
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:58:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368438AbgJVO7L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:59:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37952 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368372AbgJVO6x (ORCPT
+        id S368314AbgJVO6V (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:58:21 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:34021 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505412AbgJVO6T (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:58:53 -0400
-Received: from mail-wr1-x432.google.com (mail-wr1-x432.google.com [IPv6:2a00:1450:4864:20::432])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 59541C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:52 -0700 (PDT)
-Received: by mail-wr1-x432.google.com with SMTP id y12so2836793wrp.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=HP0yem2/pbPxTraBnyEoAOVePxBRk4UaWg5TENDbElY=;
-        b=S/DWPV7j+tZt46pYIr9smmBRpxn2Rz3c4bRxGzjRjXjJe4B69Q4ScAOJacCBnU6wmh
-         ABpNlW8LArUuGcA0AzCdxXwaKEj/LDbnLlDP9hwTM8lOi/dlRoDXoDvvZWDOKCtkqK9/
-         QFYOUpEj9zxmM0+uPjQEQi8cq46KbwnD5E1aioGKJZ4x/JIBfEhorIJUh5F6KgFuDyqW
-         TC5nLO1xaQrqYOoBg7ZulOSBwVYSYDpexOVJtX48t4tWxD4l4JeKWL803f2M8hTpnuns
-         OI8cTGzBn9rX3/HPdel8F33HdWuEYuaAFspX+WzwO4Np9dbd4b/R+KgV64Uw+K0F7yKI
-         tlMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=HP0yem2/pbPxTraBnyEoAOVePxBRk4UaWg5TENDbElY=;
-        b=os6Kbvm827TOdyPobxIq9yH8L8Gu9/eJtmXeFKIScpXDQHeMip356ShUQZEk0HrJVo
-         1F0WzrOK2Fp4uPMGZXyw5W1WjFk9lwZxkzP8AKrd3Azsq2mJFI863tSdMJjEj+gp8F3Q
-         wnZ2O2fSyxcy8sGhHWTI2ix7aS7QxK4y9C63kzAhdv+n3iX9SKbO+e9al8EARgmG874E
-         s8KP8/Jg+B00mFAyJPF7XhBIDfe3dsVVeXFbfQhHwXzp7ifB0wDZ0Gwp5p/e4e0+cWvN
-         oPZT+wGZe6m2kjULxndDjtm1Jjgrh1FuB1oemAgqa6x5z78JXoUxKCkFpWVU48ozvEeJ
-         nkBA==
-X-Gm-Message-State: AOAM530J9nOTAfXm04C0+uNO6ENAu52eMsOoqGUgFawdc+qQRaD51HWL
-        4hUIKhoksesQYMEaGdGhNVnQlQ==
-X-Google-Smtp-Source: ABdhPJy4J7SVHb+8EJM1u710+pulCvV9421vAdKlI0xF0OENx1IJHLbgiTDwVrI9Y1Vr1RcArq9c7g==
-X-Received: by 2002:adf:e50b:: with SMTP id j11mr3219226wrm.263.1603378730993;
-        Thu, 22 Oct 2020 07:58:50 -0700 (PDT)
-Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 07:58:50 -0700 (PDT)
-From:   Leo Yan <leo.yan@linaro.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
+        Thu, 22 Oct 2020 10:58:19 -0400
+Received: from 1.general.cking.uk.vpn ([10.172.193.212])
+        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <colin.king@canonical.com>)
+        id 1kVc2g-00069c-VM; Thu, 22 Oct 2020 14:58:15 +0000
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+To:     Mel Gorman <mgorman@suse.de>, Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
         Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>,
-        Andre Przywara <andre.przywara@arm.com>,
-        Al Grant <Al.Grant@arm.com>, Dave Martin <Dave.Martin@arm.com>,
-        linux-kernel@vger.kernel.org
-Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 17/20] perf arm-spe: Refactor operation packet handling
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <20201022145250.GK32041@suse.de>
+From:   Colin Ian King <colin.king@canonical.com>
+Message-ID: <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
 Date:   Thu, 22 Oct 2020 15:58:13 +0100
-Message-Id: <20201022145816.14069-18-leo.yan@linaro.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201022145816.14069-1-leo.yan@linaro.org>
-References: <20201022145816.14069-1-leo.yan@linaro.org>
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
+MIME-Version: 1.0
+In-Reply-To: <20201022145250.GK32041@suse.de>
+Content-Type: text/plain; charset=iso-8859-15
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Defines macros for operation packet header and formats (support sub
-classes for 'other', 'branch', 'load and store', etc).  Uses these
-macros for operation packet decoding and dumping.
+On 22/10/2020 15:52, Mel Gorman wrote:
+> On Thu, Oct 22, 2020 at 02:29:49PM +0200, Peter Zijlstra wrote:
+>> On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
+>>>> However I do want to retire ondemand, conservative and also very much
+>>>> intel_pstate/active mode.
+>>>
+>>> I agree in general, but IMO it would not be prudent to do that without making
+>>> schedutil provide the same level of performance in all of the relevant use
+>>> cases.
+>>
+>> Agreed; I though to have understood we were there already.
+> 
+> AFAIK, not quite (added Giovanni as he has been paying more attention).
+> Schedutil has improved since it was merged but not to the extent where
+> it is a drop-in replacement. The standard it needs to meet is that
+> it is at least equivalent to powersave (in intel_pstate language)
+> or ondemand (acpi_cpufreq) and within a reasonable percentage of the
+> performance governor. Defaulting to performance is a) giving up and b)
+> the performance governor is not a universal win. There are some questions
+> currently on whether schedutil is good enough when HWP is not available.
+> There was some evidence (I don't have the data, Giovanni was looking into
+> it) that HWP was a requirement to make schedutil work well. That is a
+> hazard in itself because someone could test on the latest gen Intel CPU
+> and conclude everything is fine and miss that Intel-specific technology
+> is needed to make it work well while throwing everyone else under a bus.
+> Giovanni knows a lot more than I do about this, I could be wrong or
+> forgetting things.
+> 
+> For distros, switching to schedutil by default would be nice because
+> frequency selection state would follow the task instead of being per-cpu
+> and we could stop worrying about different HWP implementations but it's
+> not at the point where the switch is advisable. I would expect hard data
+> before switching the default and still would strongly advise having a
+> period of time where we can fall back when someone inevitably finds a
+> new corner case or exception.
 
-Signed-off-by: Leo Yan <leo.yan@linaro.org>
----
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 34 +++++++++++--------
- .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 26 ++++++++++++++
- 2 files changed, 45 insertions(+), 15 deletions(-)
+..and it would be really useful for distros to know when the hard data
+is available so that they can make an informed decision when to move to
+schedutil.
 
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index 19d05d9734ab..59b538563d31 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -144,7 +144,7 @@ static int arm_spe_get_op_type(const unsigned char *buf, size_t len,
- 			       struct arm_spe_pkt *packet)
- {
- 	packet->type = ARM_SPE_OP_TYPE;
--	packet->index = buf[0] & 0x3;
-+	packet->index = SPE_OP_PKT_HDR_CLASS(buf[0]);
- 	return arm_spe_get_payload(buf, len, 0, packet);
- }
- 
-@@ -339,37 +339,39 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
- static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 				    char *buf, size_t buf_len)
- {
--	int ret, idx = packet->index;
-+	int ret, class = packet->index;
- 	unsigned long long payload = packet->payload;
- 	size_t blen = buf_len;
- 
--	switch (idx) {
--	case 0:
-+	switch (class) {
-+	case SPE_OP_PKT_HDR_CLASS_OTHER:
- 		return arm_spe_pkt_snprintf(&buf, &blen,
--				payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
--	case 1:
-+			payload & SPE_OP_PKT_COND ? "COND-SELECT" : "INSN-OTHER");
-+	case SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC:
- 		ret = arm_spe_pkt_snprintf(&buf, &blen,
--					   payload & 0x1 ? "ST" : "LD");
-+					   payload & SPE_OP_PKT_ST ? "ST" : "LD");
- 		if (ret < 0)
- 			return ret;
- 
--		if (payload & 0x2) {
--			if (payload & 0x4) {
-+		if (SPE_OP_PKT_LDST_SUBCLASS_ATOMIC_GET(payload) ==
-+					SPE_OP_PKT_LDST_SUBCLASS_ATOMIC) {
-+			if (payload & SPE_OP_PKT_AT) {
- 				ret = arm_spe_pkt_snprintf(&buf, &blen, " AT");
- 				if (ret < 0)
- 					return ret;
- 			}
--			if (payload & 0x8) {
-+			if (payload & SPE_OP_PKT_EXCL) {
- 				ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCL");
- 				if (ret < 0)
- 					return ret;
- 			}
--			if (payload & 0x10) {
-+			if (payload & SPE_OP_PKT_AR) {
- 				ret = arm_spe_pkt_snprintf(&buf, &blen, " AR");
- 				if (ret < 0)
- 					return ret;
- 			}
--		} else if (payload & 0x4) {
-+		} else if (SPE_OP_PKT_LDST_SUBCLASS_GET(payload) ==
-+					SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP) {
- 			ret = arm_spe_pkt_snprintf(&buf, &blen, " SIMD-FP");
- 			if (ret < 0)
- 				return ret;
-@@ -377,17 +379,19 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
- 
- 		return buf_len - blen;
- 
--	case 2:
-+	case SPE_OP_PKT_HDR_CLASS_BR_ERET:
- 		ret = arm_spe_pkt_snprintf(&buf, &blen, "B");
- 		if (ret < 0)
- 			return ret;
- 
--		if (payload & 0x1) {
-+		if (payload & SPE_OP_PKT_COND) {
- 			ret = arm_spe_pkt_snprintf(&buf, &blen, " COND");
- 			if (ret < 0)
- 				return ret;
- 		}
--		if (payload & 0x2) {
-+
-+		if (SPE_OP_PKT_BRANCH_SUBCLASS_GET(payload) ==
-+				SPE_OP_PKT_BRANCH_SUBCLASS_INDIRECT) {
- 			ret = arm_spe_pkt_snprintf(&buf, &blen, " IND");
- 			if (ret < 0)
- 				return ret;
-diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-index 12c344454cf1..31dbb8c0fde3 100644
---- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-+++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-@@ -110,6 +110,32 @@ enum arm_spe_events {
- 	EV_EMPTY_PREDICATE	= 18,
- };
- 
-+/* Operation packet header */
-+#define SPE_OP_PKT_HDR_CLASS(h)			((h) & GENMASK_ULL(1, 0))
-+#define SPE_OP_PKT_HDR_CLASS_OTHER		0x0
-+#define SPE_OP_PKT_HDR_CLASS_LD_ST_ATOMIC	0x1
-+#define SPE_OP_PKT_HDR_CLASS_BR_ERET		0x2
-+
-+#define SPE_OP_PKT_COND				BIT(0)
-+
-+#define SPE_OP_PKT_LDST_SUBCLASS_GET(v)		((v) & GENMASK_ULL(7, 1))
-+#define SPE_OP_PKT_LDST_SUBCLASS_GP_REG		0x0
-+#define SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP	0x4
-+#define SPE_OP_PKT_LDST_SUBCLASS_UNSPEC_REG	0x10
-+#define SPE_OP_PKT_LDST_SUBCLASS_NV_SYSREG	0x30
-+
-+#define SPE_OP_PKT_LDST_SUBCLASS_ATOMIC_GET(v)	((v) & (GENMASK_ULL(7, 5) | GENMASK_ULL(1, 1)))
-+#define SPE_OP_PKT_LDST_SUBCLASS_ATOMIC		0x2
-+
-+#define SPE_OP_PKT_AR				BIT(4)
-+#define SPE_OP_PKT_EXCL				BIT(3)
-+#define SPE_OP_PKT_AT				BIT(2)
-+#define SPE_OP_PKT_ST				BIT(0)
-+
-+#define SPE_OP_PKT_BRANCH_SUBCLASS_GET(v)	((v) & GENMASK_ULL(7, 1))
-+#define SPE_OP_PKT_BRANCH_SUBCLASS_DIRECT	0x0
-+#define SPE_OP_PKT_BRANCH_SUBCLASS_INDIRECT	0x2
-+
- const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
- 
- int arm_spe_get_packet(const unsigned char *buf, size_t len,
--- 
-2.17.1
+> 
+> For reference, SLUB had the same problem for years. It was switched
+> on by default in the kernel config but it was a long time before
+> SLUB was generally equivalent to SLAB in terms of performance. Block
+> multiqueue also had vaguely similar issues before the default changes
+> and a period of time before it was removed removed (example whinging mail
+> https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
+> It's schedutil's turn :P
+> 
 
