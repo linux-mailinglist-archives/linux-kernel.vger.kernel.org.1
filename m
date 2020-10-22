@@ -2,146 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6FB1929644E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:58:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33130296453
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:00:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901382AbgJVR6r (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:58:47 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57628 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2438961AbgJVR6r (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:58:47 -0400
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0172A21531
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:58:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603389526;
-        bh=ywOGmxPuLS0e0wyJ5+K6QqU2bybNk5omgI2eYJyD/+A=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=nR8ollAQUWUkg8Rpm+sF/Koo66ZqTTaofITwrVXnohIxgfubnivJQfqeSV1+D1KOk
-         /7qDjHwDX9dZwxGSEoRrWtaaAKhIhLPtCiD8TcPOPUNEXZrNSgp7P85rY7PXGmR+Id
-         DlAq/zpE4e89e8DcG6tTX0OeP1D84FR24980xpGw=
-Received: by mail-wr1-f54.google.com with SMTP id n18so3649121wrs.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 10:58:45 -0700 (PDT)
-X-Gm-Message-State: AOAM533yfmxT7wqVtWUxl4FTcGlrdhWJ13RAs0YnyXnLGyJkylp4um8L
-        Xa3ov32lIGsRhGRf44HjOJ5b/2yy6ErMj3D1cYePxA==
-X-Google-Smtp-Source: ABdhPJzrCmXNZ2VDGmeuIoGfdTMaVVraAE9SnrV9Dl0ZS9+4UPixDgQaA98Afr0UjLZYZtlRHv1bCVvIA5V+3VAaxGA=
-X-Received: by 2002:adf:ff86:: with SMTP id j6mr3945145wrr.184.1603389524453;
- Thu, 22 Oct 2020 10:58:44 -0700 (PDT)
+        id S369483AbgJVR77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:59:59 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:41794 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2504374AbgJVR7z (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 13:59:55 -0400
+Received: by mail-oo1-f67.google.com with SMTP id n2so557571ooo.8;
+        Thu, 22 Oct 2020 10:59:54 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lBB6Akes8L8je/MlcV0jvER5QOo/7ixN2ULx0PgA70w=;
+        b=WL0GaNgwt7BDr9xWrqOy5ZMgZK391KEnoPV8gsLtG872frqofJDU1N2kMaDVOVw7iy
+         e4iTqKus3sJGDqjdYubHBlYac9/vvEMgpFqLnyOBJJoC+CviccRytNOTT3JK+PqwO/aj
+         yZJ4pKOFrjg540ychuysDhlejRRS0nEH7JcPY9XOaklFpf/8CcWuMrPolMsMuOQZgCRr
+         nSjnJ5LBAQGNgo1JiW3T7Te68pTgQuDVbF1kwCN5qwp8GRKxrO/t9fBTEMwx8ZSPDTbH
+         7wHlCM1nxa9nqwWdCtvYoVErv+jm+MfnJzHIhZ1/SZXrDIxFjD3iNhA5uLfF03kxG8Fw
+         hTWQ==
+X-Gm-Message-State: AOAM530vv6SI1iaLWWEfH38breZ1VShWr8ku2MAXswdvhAFf/0jYixrw
+        iHCkOOeOxXBME2YxWLCNAxFUJeXD9RFv2ZCRrZ4=
+X-Google-Smtp-Source: ABdhPJxNM+8Sd/29ieJXvaIiWFkJhcvV+ua3fK3Puj70TxMcR0d3dfyt6JAFV6a0/ihwwZ76iQA4OOwwq7BsBy+Iu8s=
+X-Received: by 2002:a4a:5d84:: with SMTP id w126mr2796476ooa.1.1603389594117;
+ Thu, 22 Oct 2020 10:59:54 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201020120232.GD11583@zn.tnic> <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
- <20201020143746.GG11583@zn.tnic> <20201021095013.d82637f84af564ae4363189d@kernel.org>
- <20201021092750.GA4050@zn.tnic> <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
- <20201021164558.GB4050@zn.tnic> <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
- <20201022093044.GA29222@zn.tnic> <20201022222140.f46e6db1243e05fdd049b504@kernel.org>
-In-Reply-To: <20201022222140.f46e6db1243e05fdd049b504@kernel.org>
-From:   Andy Lutomirski <luto@kernel.org>
-Date:   Thu, 22 Oct 2020 10:58:32 -0700
-X-Gmail-Original-Message-ID: <CALCETrWhzzZ=EAoKZ4=k3FjffvS_3R4o5N1Rkj9FkHQdiUag6A@mail.gmail.com>
-Message-ID: <CALCETrWhzzZ=EAoKZ4=k3FjffvS_3R4o5N1Rkj9FkHQdiUag6A@mail.gmail.com>
-Subject: Re: [RFC] Have insn decoder functions return success/failure
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Borislav Petkov <bp@alien8.de>, x86-ml <x86@kernel.org>,
-        Joerg Roedel <jroedel@suse.de>,
-        lkml <linux-kernel@vger.kernel.org>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher> <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher> <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <20201022145250.GK32041@suse.de> <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
+ <20201022151200.GC92942@lorien.usersys.redhat.com> <20201022163509.GM32041@suse.de>
+In-Reply-To: <20201022163509.GM32041@suse.de>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 22 Oct 2020 19:59:43 +0200
+Message-ID: <CAJZ5v0he839sJNh0xjmvLqzuE7X27PgJKxtSV8giZh004E7pXw@mail.gmail.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     Phil Auld <pauld@redhat.com>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 6:21 AM Masami Hiramatsu <mhiramat@kernel.org> wrote:
+On Thu, Oct 22, 2020 at 6:35 PM Mel Gorman <mgorman@suse.de> wrote:
 >
-> On Thu, 22 Oct 2020 11:30:44 +0200
-> Borislav Petkov <bp@alien8.de> wrote:
->
-> > On Thu, Oct 22, 2020 at 04:31:00PM +0900, Masami Hiramatsu wrote:
-> > > No, insn_get_length() implies it decodes whole of the instruction.
-> > > (yeah, we need an alias of that, something like insn_get_complete())
-> >
-> > That's exactly what I'm trying to point out: the whole API is not
-> > entirely wrong - it just needs a better naming and documentation. Now,
-> > the implication that getting the length of the insn will give you a full
-> > decode is a totally internal detail which users don't need and have to
-> > know.
->
-> Ok, what names would you like to suggest? insn_get_complete()?
->
-> > > I need insn.length too. Of course we can split it into 2 calls. But
-> > > as I said, since the insn_get_length() implies it decodes all other
-> > > parts, I just called it once.
-> >
-> > Yes, I have noticed that and wrote about it further on. The intent was
-> > to show that the API needs work.
-> >
-> > > Hm, it is better to call insn_get_immediate() if it doesn't use length later.
-> >
-> > Ok, so you see the problem. This thing wants to decode the whole insn -
-> > that's what the function is called. But it reads like it does something
-> > else.
-> >
-> > > Would you mean we'd better have something like insn_get_until_immediate() ?
+> On Thu, Oct 22, 2020 at 11:12:00AM -0400, Phil Auld wrote:
+> > > > AFAIK, not quite (added Giovanni as he has been paying more attention).
+> > > > Schedutil has improved since it was merged but not to the extent where
+> > > > it is a drop-in replacement. The standard it needs to meet is that
+> > > > it is at least equivalent to powersave (in intel_pstate language)
+> > > > or ondemand (acpi_cpufreq) and within a reasonable percentage of the
+> > > > performance governor. Defaulting to performance is a) giving up and b)
+> > > > the performance governor is not a universal win. There are some questions
+> > > > currently on whether schedutil is good enough when HWP is not available.
+> > > > There was some evidence (I don't have the data, Giovanni was looking into
+> > > > it) that HWP was a requirement to make schedutil work well. That is a
+> > > > hazard in itself because someone could test on the latest gen Intel CPU
+> > > > and conclude everything is fine and miss that Intel-specific technology
+> > > > is needed to make it work well while throwing everyone else under a bus.
+> > > > Giovanni knows a lot more than I do about this, I could be wrong or
+> > > > forgetting things.
+> > > >
+> > > > For distros, switching to schedutil by default would be nice because
+> > > > frequency selection state would follow the task instead of being per-cpu
+> > > > and we could stop worrying about different HWP implementations but it's
+> > > > not at the point where the switch is advisable. I would expect hard data
+> > > > before switching the default and still would strongly advise having a
+> > > > period of time where we can fall back when someone inevitably finds a
+> > > > new corner case or exception.
 > > >
-> > > Since the x86 instruction is CISC, we can not decode intermediate
-> > > parts. The APIs follows that. If you are confused, I'm sorry about that.
+> > > ..and it would be really useful for distros to know when the hard data
+> > > is available so that they can make an informed decision when to move to
+> > > schedutil.
+> > >
 > >
-> > No, I'm not confused - again, I'd like for the API to be properly
-> > defined and callers should not have to care which parts of the insn they
-> > need to decode in order to get something else they actually need.
+> > I think distros are on the hook to generate that hard data themselves
+> > with which to make such a decision.  I don't expect it to be done by
+> > someone else.
+> >
 >
-> Sorry, I can not get what you point. We already have those APIs,
+> Yep, distros are on the hook. When I said "I would expect hard data",
+> it was in the knowledge that for openSUSE/SLE, we (as in SUSE) would be
+> generating said data and making a call based on it. I'd be surprised if
+> Phil was not thinking along the same lines.
 >
-> extern void insn_init(struct insn *insn, const void *kaddr, int buf_len, int x86_64);
-> extern void insn_get_prefixes(struct insn *insn);
-> extern void insn_get_opcode(struct insn *insn);
-> extern void insn_get_modrm(struct insn *insn);
-> extern void insn_get_sib(struct insn *insn);
-> extern void insn_get_displacement(struct insn *insn);
-> extern void insn_get_immediate(struct insn *insn);
-> extern void insn_get_length(struct insn *insn);
+> > > > For reference, SLUB had the same problem for years. It was switched
+> > > > on by default in the kernel config but it was a long time before
+> > > > SLUB was generally equivalent to SLAB in terms of performance. Block
+> > > > multiqueue also had vaguely similar issues before the default changes
+> > > > and a period of time before it was removed removed (example whinging mail
+> > > > https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
+> > > > It's schedutil's turn :P
+> > > >
+> > >
+> >
+> > Agreed. I'd like the option to switch back if we make the default change.
+> > It's on the table and I'd like to be able to go that way.
+> >
 >
-> As I agreed, that we may need an alias of insn_get_length(). But it seems
-> clear to me, if you need insn.immediate, you must call insn_get_immediate().
+> Yep. It sounds chicken, but it's a useful safety net and a reasonable
+> way to deprecate a feature. It's also useful for bug creation -- User X
+> running whatever found that schedutil is worse than the old governor and
+> had to temporarily switch back. Repeat until complaining stops and then
+> tear out the old stuff.
+>
+> When/if there is a patch setting schedutil as the default, cc suitable
+> distro people (Giovanni and myself for openSUSE).
 
-I'm guessing that the confusion here is that the kernel instruction
-decoder was originally designed to be used to decode kernel
-instructions, which are generally trusted to be valid, but that it's
-starting to be used to decode user code and such as well.
+So for the record, Giovanni was on the CC list of the "cpufreq:
+intel_pstate: Use passive mode by default without HWP" patch that this
+discussion resulted from (and which kind of belongs to the above
+category).
 
-Masami, could we perhaps have an extra API like:
+> Other distros assuming they're watching can nominate their own victim.
 
-extern int insn_decode_fully(struct insn *insn);
-
-that decodes the *entire* instruction, returns success if the decoder
-thinks the instruction is valid, and returns an error if the decoder
-thinks it's invalid?  We would use this when decoding arbitrary bytes
-when we're not really sure that there's a valid instruction there.
-For user code emulation, we don't really care much about performance
--- the overhead of getting #GP in the first place is much, much higher
-than the overhead of decoding more of the instruction than needed.
-
-Ideally we would solve another little problem at the same time.  Right
-now, we are quite sloppy about how we fetch the instruction bytes, and
-it might be nice to fix this.  It would be nice if we could have a
-special error code saying "more bytes are needed".  So
-insn_decode_fully() would return 0 (or the length) on a successful
-decode, -EINVAL if the bytes are not a valid instruction, and -EAGAIN
-(or something more appropriate) if the bytes are a valid *prefix* of
-an instruction but more bytes are needed.  Then the caller would do:
-
-len = min(15, remaining bytes in page);
-fetch len bytes;
-insn_init();
-ret = insn_decode_fully();
-if (ret == -EAGAIN) {
-  fetch remaining 15 - len bytes;
-  insn_init();
-  ret = insn_decode_fully();
-}
-
-It's a bit impolite to potentially cause page faults on the page after
-a short instruction, but it's also not so good to fail to decode a
-long instruction that happens to cross a page boundary.
-
---Andy
+But no other victims had been nominated at that time.
