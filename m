@@ -2,109 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3852A295B66
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:06:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B6DD295B68
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:06:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895470AbgJVJGu convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 05:06:50 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:37377 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895189AbgJVJGo (ORCPT
+        id S2895624AbgJVJGy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:06:54 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:40664 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502494AbgJVJGx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:06:44 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-39-8GHPp09oP0SD-2EKgdt0nA-1; Thu, 22 Oct 2020 10:06:39 +0100
-X-MC-Unique: 8GHPp09oP0SD-2EKgdt0nA-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 10:06:38 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 22 Oct 2020 10:06:38 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Greg KH' <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAHFcaAAABxcA==
-Date:   Thu, 22 Oct 2020 09:06:38 +0000
-Message-ID: <96aa868fdee24fd5af8ca06a9bbc0933@AcuMS.aculab.com>
-References: <20200925045146.1283714-1-hch@lst.de>
- <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
- <20201021233914.GR3576660@ZenIV.linux.org.uk>
- <20201022082654.GA1477657@kroah.com>
- <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
-In-Reply-To: <20201022090155.GA1483166@kroah.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Thu, 22 Oct 2020 05:06:53 -0400
+Received: by mail-ed1-f67.google.com with SMTP id p13so994359edi.7;
+        Thu, 22 Oct 2020 02:06:52 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=fZGbnwkshp84ij+8oovQIfaXlT5PG5oa571s9jNq+hc=;
+        b=tMpmjtLRSEoJ1SFcmOmdXa5cGFSaFH3kwvdfueiCUS+TlSBfqgOt7JXcWDBzQ3pZGn
+         KXO1S5Zl7hmHCCkPulXh5Rl4rTYTB200Ar3ON5sTnHkRjVCx+zxpcKSg4/z0ildzRcnt
+         3gsAQLWIuHaDyMlQ/jQkoWrpBgUSM4xBK8zaQlw46l9uRbuBxHdBstpDCmH70PKI5t+u
+         yyjkAdchJbUhDC5/Yb8d/F2Wjut5Z22kW5UwCZzU5gPFmRYffyXoxFMoqMCAJoQ63+c6
+         P4lzDMoyGA1J9hsKxOjLJGurLT2uFXj431ILBDy/3pjTee425fE6sgqmgHY169QMLxBC
+         LV5g==
+X-Gm-Message-State: AOAM5325Mn8h7gcAnUHqnFEvCQyf8Ncmx09WV3b/9wZhqdQRT606Gqek
+        C8lW10Vo/hWTapuIpAvLQyA=
+X-Google-Smtp-Source: ABdhPJwkzrYN1/YM2CA/N54L1mckIQL98gnTZsx9ddMzgYootNQkfjZbP+blLlNQ3DjUFj+lCkAF6w==
+X-Received: by 2002:a05:6402:b72:: with SMTP id cb18mr1229049edb.129.1603357611891;
+        Thu, 22 Oct 2020 02:06:51 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id v14sm402047edy.68.2020.10.22.02.06.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 02:06:50 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 11:06:46 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     peng.fan@nxp.com
+Cc:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com,
+        robh+dt@kernel.org, kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, marex@denx.de
+Subject: Re: [PATCH] arm64: dts: imx8m: use generic name for tmu
+Message-ID: <20201022090646.GA90867@kozik-lap>
+References: <1603351278-8198-1-git-send-email-peng.fan@nxp.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1603351278-8198-1-git-send-email-peng.fan@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg KH
-> Sent: 22 October 2020 10:02
-...
-> I'm running some more tests, trying to narrow things down as just adding
-> a "noinline" to the function that got moved here doesn't work on Linus's
-> tree at the moment because the function was split into multiple
-> functions.
+On Thu, Oct 22, 2020 at 03:21:18PM +0800, peng.fan@nxp.com wrote:
+> From: Peng Fan <peng.fan@nxp.com>
+> 
+> Per devicetree specification, generic names are recommended
+> to be used, such as temperature-sensor.
+> 
+> Signed-off-by: Peng Fan <peng.fan@nxp.com>
+> ---
+>  arch/arm64/boot/dts/freescale/imx8mm.dtsi | 2 +-
+>  arch/arm64/boot/dts/freescale/imx8mn.dtsi | 2 +-
+>  arch/arm64/boot/dts/freescale/imx8mp.dtsi | 2 +-
+>  arch/arm64/boot/dts/freescale/imx8mq.dtsi | 2 +-
+>  4 files changed, 4 insertions(+), 4 deletions(-)
+> 
+> diff --git a/arch/arm64/boot/dts/freescale/imx8mm.dtsi b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> index b83f400def8b..327f1d44ced9 100644
+> --- a/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> +++ b/arch/arm64/boot/dts/freescale/imx8mm.dtsi
+> @@ -404,7 +404,7 @@ gpio5: gpio@30240000 {
+>  				gpio-ranges = <&iomuxc 0 119 30>;
+>  			};
+>  
+> -			tmu: tmu@30260000 {
+> +			tmu: temperature-sensor@30260000 {
 
-I was going to look at that once rc2 is in - and the kernel is
-likely to work.
+No, TMU is not a temperature-sensor. It does much more. TMU is quite
+generic name for this class of device.
 
-I suspect the split version doesn't get inlined the same way?
-Which leaves the horrid argument conversion the inline got
-rid of back there again.
-
-Which all rather begs the question of why the compiler doesn't
-generate the expected code.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+Best regards,
+Krzysztof
