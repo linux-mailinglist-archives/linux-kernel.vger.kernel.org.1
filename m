@@ -2,80 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22F05296042
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:47:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C58029604B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:48:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900437AbgJVNrK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:47:10 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:41634 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2900350AbgJVNrK (ORCPT
+        id S367967AbgJVNs2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:48:28 -0400
+Received: from conssluserg-06.nifty.com ([210.131.2.91]:44076 "EHLO
+        conssluserg-06.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S367958AbgJVNs1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:47:10 -0400
-X-IronPort-AV: E=Sophos;i="5.77,404,1596492000"; 
-   d="scan'208";a="473874482"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 15:47:08 +0200
-Date:   Thu, 22 Oct 2020 15:47:08 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Izabela Bakollari <izabela.bakollari@gmail.com>
-cc:     gregkh@linuxfoundation.org, devel@driverdev.osuosl.org,
-        linux-kernel@vger.kernel.org, outreachy-kernel@googlegroups.com
-Subject: Re: [Outreachy kernel] [PATCH] staging/wlan-ng: Fix line that exceeds
- 100 columns
-In-Reply-To: <20201022130807.212454-1-izabela.bakollari@gmail.com>
-Message-ID: <alpine.DEB.2.22.394.2010221545480.5113@hadrien>
-References: <20201022130807.212454-1-izabela.bakollari@gmail.com>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Thu, 22 Oct 2020 09:48:27 -0400
+Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180]) (authenticated)
+        by conssluserg-06.nifty.com with ESMTP id 09MDm0cV019454;
+        Thu, 22 Oct 2020 22:48:00 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conssluserg-06.nifty.com 09MDm0cV019454
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1603374480;
+        bh=bdgKUKGTFLj1NxEcDBwbJI28YF7AsYkR/nJVPefrafs=;
+        h=From:Date:Subject:To:Cc:From;
+        b=Kl3FBP/s/zTrnwsES99Nj2JESbqBSaZ7OF9J89a7UL2YUsM5/SbRIuGqV55314U8s
+         G2rN9aleMbKU0tJ3bbsx2RiDGYbDmdJgl9Tmxf28H7zK8YOTtgbSDjMDfB4VvmANWq
+         uZrqmNOyWujUSJjTzCziih3MCFBmdFFMOXf5U01UUMq2qSQCR50V2Eg4mRpzRbDukB
+         J/dGbCU2UlPdvm1CiZ1nKsfkvYwNfdaN3A1TZio3LBMWScwoKsn1atsgSvgthUw4tK
+         /wnPp8D5slXGIIxCzvyoM6wyFYDOnvgbXBchFXUAM0lkPkT545btGNawWOqj5V1/H/
+         DaDHaMAfo5Yxg==
+X-Nifty-SrcIP: [209.85.214.180]
+Received: by mail-pl1-f180.google.com with SMTP id j5so603172plk.7;
+        Thu, 22 Oct 2020 06:48:00 -0700 (PDT)
+X-Gm-Message-State: AOAM533oAb1+1PNdZzEjhrH/Bcnwe5vo6v9v3IXVbt2nOgB+qi/d+5KO
+        BgjxOhYvi8tfXiI0W0Tk9pfx3iOxxq6Njdp0Bjk=
+X-Google-Smtp-Source: ABdhPJwkf8PZY8BfwjFnkzGLsXvs5wQ9ve6vJYhavJe8pPQq8VtgrDgyHa69wJY3EdU3uxLXgPj+TdOW4Lo8RHg8Ygs=
+X-Received: by 2002:a17:90b:1b12:: with SMTP id nu18mr2479488pjb.153.1603374479383;
+ Thu, 22 Oct 2020 06:47:59 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+From:   Masahiro Yamada <masahiroy@kernel.org>
+Date:   Thu, 22 Oct 2020 22:47:22 +0900
+X-Gmail-Original-Message-ID: <CAK7LNATCRZ_dfrsSY9Kf-=JTBNsnkLyyqAbq_TXtXrkW5GsRBw@mail.gmail.com>
+Message-ID: <CAK7LNATCRZ_dfrsSY9Kf-=JTBNsnkLyyqAbq_TXtXrkW5GsRBw@mail.gmail.com>
+Subject: [GIT PULL 2/2] Kconfig updates for v5.10-rc1
+To:     Masahiro Yamada <masahiroy@kernel.org>
+Cc:     Linux Kbuild mailing list <linux-kbuild@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi Linus,
+
+Please pull Kconfig updates for v5.10
+Thanks.
 
 
-On Thu, 22 Oct 2020, izabela.bakollari@gmail.com wrote:
+The following changes since commit ba4f184e126b751d1bffad5897f263108befc780:
 
-> From: Izabela Bakollari <izabela.bakollari@gmail.com>
->
-> Rearrange comment that exceeds 100 columns length. Issue reported
-> by checkpatch.pl
->
-> Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
-> ---
->  drivers/staging/wlan-ng/cfg80211.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-> index 759e475e303c..5fad37a49aa5 100644
-> --- a/drivers/staging/wlan-ng/cfg80211.c
-> +++ b/drivers/staging/wlan-ng/cfg80211.c
-> @@ -366,7 +366,8 @@ static int prism2_scan(struct wiphy *wiphy,
->  					  msg2.beaconperiod.data,
->  					  ie_buf,
->  					  ie_len,
-> -					  (msg2.signal.data - 65536) * 100, /* Conversion to signed type */
-> +					  (msg2.signal.data - 65536) * 100,
-> +					  /* Conversion to signed type */
+  Linux 5.9-rc6 (2020-09-20 16:33:55 -0700)
 
-I think that the comment is in the wrong place.  GFP_KERNEL has to do with
-whether the allocation can wait in case of insufficient memory, and not
-with signed types.  The signed type thing must be the argument before.  Si
-it would be better to put the comment above that code.
+are available in the Git repository at:
 
-julia
+  git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild.git
+tags/kconfig-v5.10
+
+for you to fetch changes up to f9a825a7f65a1c94858667934c4ed59bc548dd1f:
+
+  kconfig: qconf: create QApplication after option checks (2020-09-25
+00:37:13 +0900)
+
+----------------------------------------------------------------
+Kconfig updates for v5.10
+
+ - Remove unused for useless code from qconf
+
+ - Allow to edit "int", "hex", "string" options in place, and remove the
+   separate edit box from qconf
+
+----------------------------------------------------------------
+Masahiro Yamada (11):
+      kconfig: qconf: reformat the intro message
+      kconfig: qconf: update the intro message to match to the current code
+      kconfig: qconf: remove unused ConfigItem::okRename()
+      kconfig: qconf: move ConfigView::updateList(All) to ConfigList class
+      kconfig: qconf: show data column all the time
+      kconfig: qconf: allow to edit "int", "hex", "string" menus in-place
+      kconfig: qconf: remove ConfigLineEdit class
+      kconfig: qconf: move setShowName/Range() to ConfigList from ConfigView
+      kconfig: qconf: remove ConfigView class
+      kconfig: qconf: remove Y, M, N columns
+      kconfig: qconf: create QApplication after option checks
+
+ scripts/kconfig/qconf.cc | 368
++++++++++++++++++++++++++--------------------------------------
+ scripts/kconfig/qconf.h  |  77 ++++---------
+ 2 files changed, 170 insertions(+), 275 deletions(-)
 
 
->  					  GFP_KERNEL);
->
->  		if (!bss) {
-> --
-> 2.18.4
->
-> --
-> You received this message because you are subscribed to the Google Groups "outreachy-kernel" group.
-> To unsubscribe from this group and stop receiving emails from it, send an email to outreachy-kernel+unsubscribe@googlegroups.com.
-> To view this discussion on the web visit https://groups.google.com/d/msgid/outreachy-kernel/20201022130807.212454-1-izabela.bakollari%40gmail.com.
->
+-- 
+Best Regards
+Masahiro Yamada
