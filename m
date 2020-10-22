@@ -2,104 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B6E62967B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:42:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8914F2967AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 01:40:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373447AbgJVXkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 19:40:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373402AbgJVXkT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 19:40:19 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B8C7CC0613CE;
-        Thu, 22 Oct 2020 16:40:19 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id t14so2031134pgg.1;
-        Thu, 22 Oct 2020 16:40:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=rfUKMVhWjeKZKSXLZk5xBVJ8e0dc1yuWDXn4EN8WMMU=;
-        b=ud7rmALAARbu3oqKs/0tzFST86D3Pnf0VohdjqbSUsNO3zlhE5AP/MrJ47b4kSvX2Y
-         xyngFQZLQtUAslg59RtfMY2ljTToPi+/zvwpwNgbZqE4O2YsEghEf/pkMxMevIvn3FLl
-         L4Uh8kmJyAXgM8cgqPGV6hDCgIpv9vqoDWV+7+xXJRSXWABMP2QdX32A+iNGZQtNMBIO
-         Zq/vZhwrllluWPBwA4TvP4dCjf9AShkcwFIEzO91Nm00LTrASqifV1h0VY+ltJOBhpId
-         prFvLAf7kc3bcq/cUG3ObocpG7NyplLaNZi+DrDYv4+lagdRedtMgntT3E6x5C1qGqCV
-         dHtQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=rfUKMVhWjeKZKSXLZk5xBVJ8e0dc1yuWDXn4EN8WMMU=;
-        b=Lhm7C2UGR5rN0/FclKwSyFS6rqoMIdRdkAqQcEqxdFSQL+55m8C3rw5ZSJQ19RYznx
-         M7Bstz050mCO3zX53KcOuuspwmJPJ9VIqC06ZD1CVfGNhGLc9ueSy63uvB/aZd7T44Mg
-         4jkOOrJXU7J7iFN+JrtdQQLlbdhlYxsiBTgM8cyQdMvFMswMYFWLcvVJ550ny9U/mx6V
-         nhy02sGupva7JMqGqf5FfNmSnxSc8+CvdMx1huXxdpavqeCgB4Ef6OaZBkZDDKNQxlH6
-         XnForeIlUasxE2hNVHYEj2w6qbe1YmFXI3Bku7oNcbMJeUzT9mhIj6+RbdVWQR88sfvE
-         NTbQ==
-X-Gm-Message-State: AOAM532pNILSD75qoNV4/QRYwdBxvgPxRvrt0Wxiengx37NXUa884WeJ
-        XI/5qTzYW8W/gVykQO+W7FwqOSgRzGQQOpBKzUY=
-X-Google-Smtp-Source: ABdhPJykfsSN5dzMGjSyvmeb7kY08iyuowCm7UjuXfZLsjz2nFbvRBAd/WNQYohVqj2bEWN0ASrE45/fY7d/UdH6dPY=
-X-Received: by 2002:a17:90a:4313:: with SMTP id q19mr4588300pjg.184.1603410019174;
- Thu, 22 Oct 2020 16:40:19 -0700 (PDT)
+        id S373437AbgJVXkO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 19:40:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58290 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S373402AbgJVXkO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 19:40:14 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5EB9924631;
+        Thu, 22 Oct 2020 23:40:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603410013;
+        bh=lH4bMrjkVAVlYOh5q1ONShh5MSaDk59ICohHCc0M7t0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=2uz+8OYcd/BhE2Xo8yZZb5GVG3dmq9yIEXUV95/lMVIXyrBDAsZ8EZ6r4LUxd43z1
+         LL19rB6JEGjdc5fwe4Yz2Vx36ZxPpbBP0m55+VA9OTa1R2TiR+zZ9RQhiorf5EalzB
+         0sPs7S2Uhpz7JXGIA/O3k2lWUzZa5uG89oAJwlKs=
+Date:   Thu, 22 Oct 2020 16:40:11 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Subject: Re: [PATCH 3/6] fs: Convert block_read_full_page to be synchronous
+Message-ID: <20201022234011.GD3613750@gmail.com>
+References: <20201022212228.15703-1-willy@infradead.org>
+ <20201022212228.15703-4-willy@infradead.org>
 MIME-Version: 1.0
-References: <cover.1602263422.git.yifeifz2@illinois.edu> <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
- <202010091613.B671C86@keescook> <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
- <202010121556.1110776B83@keescook> <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com> <202010221520.44C5A7833E@keescook>
-In-Reply-To: <202010221520.44C5A7833E@keescook>
-From:   YiFei Zhu <zhuyifei1999@gmail.com>
-Date:   Thu, 22 Oct 2020 18:40:08 -0500
-Message-ID: <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through /proc/pid/seccomp_cache
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022212228.15703-4-willy@infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 5:32 PM Kees Cook <keescook@chromium.org> wrote:
-> I've been going back and forth on this, and I think what I've settled
-> on is I'd like to avoid new CONFIG dependencies just for this feature.
-> Instead, how about we just fill in SECCOMP_NATIVE and SECCOMP_COMPAT
-> for all the HAVE_ARCH_SECCOMP_FILTER architectures, and then the
-> cache reporting can be cleanly tied to CONFIG_SECCOMP_FILTER? It
-> should be relatively simple to extract those details and make
-> SECCOMP_ARCH_{NATIVE,COMPAT}_NAME part of the per-arch enabling patches?
+On Thu, Oct 22, 2020 at 10:22:25PM +0100, Matthew Wilcox (Oracle) wrote:
+> +static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
+> +		unsigned int nr, struct buffer_head **bhs)
+> +{
+> +	struct bio *bio = NULL;
+> +	unsigned int i;
+> +	int err;
+> +
+> +	blk_completion_init(cmpl, nr);
+> +
+> +	for (i = 0; i < nr; i++) {
+> +		struct buffer_head *bh = bhs[i];
+> +		sector_t sector = bh->b_blocknr * (bh->b_size >> 9);
+> +		bool same_page;
+> +
+> +		if (buffer_uptodate(bh)) {
+> +			end_buffer_async_read(bh, 1);
+> +			blk_completion_sub(cmpl, BLK_STS_OK, 1);
+> +			continue;
+> +		}
+> +		if (bio) {
+> +			if (bio_end_sector(bio) == sector &&
+> +			    __bio_try_merge_page(bio, bh->b_page, bh->b_size,
+> +					bh_offset(bh), &same_page))
+> +				continue;
+> +			submit_bio(bio);
+> +		}
+> +		bio = bio_alloc(GFP_NOIO, 1);
+> +		bio_set_dev(bio, bh->b_bdev);
+> +		bio->bi_iter.bi_sector = sector;
+> +		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
+> +		bio->bi_end_io = readpage_end_bio;
+> +		bio->bi_private = cmpl;
+> +		/* Take care of bh's that straddle the end of the device */
+> +		guard_bio_eod(bio);
+> +	}
 
-Hmm. So I could enable the cache logic to every architecture (one
-patch per arch) that does not have the sparse syscall numbers, and
-then have the proc reporting after the arch patches? I could do that.
-I don't have test machines to run anything other than x86_64 or ia32,
-so they will need a closer look by people more familiar with those
-arches.
+The following is needed to set the bio encryption context for the
+'-o inlinecrypt' case on ext4:
 
-> I'd still like to get more specific workload performance numbers too.
-> The microbenchmark is nice, but getting things like build times under
-> docker's default seccomp filter, etc would be lovely. I've almost gotten
-> there, but my benchmarks are still really noisy and CPU isolation
-> continues to frustrate me. :)
-
-Ok, let me know if I can help.
-
-YiFei Zhu
+diff --git a/fs/buffer.c b/fs/buffer.c
+index 95c338e2b99c..546a08c5003b 100644
+--- a/fs/buffer.c
++++ b/fs/buffer.c
+@@ -2237,6 +2237,7 @@ static int readpage_submit_bhs(struct page *page, struct blk_completion *cmpl,
+ 			submit_bio(bio);
+ 		}
+ 		bio = bio_alloc(GFP_NOIO, 1);
++		fscrypt_set_bio_crypt_ctx_bh(bio, bh, GFP_NOIO);
+ 		bio_set_dev(bio, bh->b_bdev);
+ 		bio->bi_iter.bi_sector = sector;
+ 		bio_add_page(bio, bh->b_page, bh->b_size, bh_offset(bh));
