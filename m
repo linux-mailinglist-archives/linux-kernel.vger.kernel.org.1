@@ -2,95 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FE19295618
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A9C03295621
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:44:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894756AbgJVBes (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 21:34:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55022 "EHLO
+        id S2894787AbgJVBox (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:44:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56562 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894703AbgJVBes (ORCPT
+        with ESMTP id S2894780AbgJVBox (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 21:34:48 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9ADBAC0613CE;
-        Wed, 21 Oct 2020 18:34:46 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id s22so2590333pga.9;
-        Wed, 21 Oct 2020 18:34:46 -0700 (PDT)
+        Wed, 21 Oct 2020 21:44:53 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34BC3C0613D2
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:44:53 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id f19so129876pfj.11
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:44:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=zNKVQRtl8vfQItkTAR2QKWDzX8AbVsj4JXt+RK8do8I=;
-        b=DaIryzOAJGOyqZoPSszwqFZw9oUE0zc7MM3We7s/DAGw3+ioDMCj6M+fREQyVZjz+n
-         +z/LEH2o48uBxXmKstLKdm5vsN2howD3wceHBxYwlGasykhTmgpi23T4upBG28pbUyE+
-         GCJJ6FfztGioPLkhyq2IGpZqPOdY4eUe6rnU1fWoouUjnEqgkPsmCh64qTeOKqQuvqOF
-         wYXVJ8q7+IYvM9IJ9+x2C8wzn/pBX+HfE2Z0dXuZCC5dDwT2IDTkpY0hxcoah+roQgrk
-         NXJoK+y9Ty0Trguq6yJBTiwvewzKt+GL2LEY+dl/4+0fS6kjrzj09iCgzFP0rvga3eAr
-         kvVA==
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=8b52jnuI2BVnQsT5yuf1ZFjurcL3wRE0q6QKCs+W/ic=;
+        b=gM1BzOuYy1hNwnMDy57Fpgxq6UiFoiYlEhzGQcJkRtkmbEIhxr5RUnmjByY6Bq4qGY
+         9gzi3JMiGvaxtbwnWVCYuqjcXkMATr2D40mX4T1OJm36jfgKyGVGa+pv3XiUN0vdcPfA
+         ug6sqAa/kw/+zI5KkTFqRkaReZDArH33TFvsOlFVJhYuFK/nZSZS8NNYor5x5MH5i3zE
+         VrCl7trw7w+eIa5Ce43LGG30gsdm8Ab7HdtSGGz1kW1GGdq704opkXkhUiSQOUycs3Z5
+         XIC3NU6VoUTkwWPmep1ehKgTmo8Wua7DqjoQEveYdUBR9Q68FYn5nXbJEKBRf+hyy6qA
+         95Gg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=zNKVQRtl8vfQItkTAR2QKWDzX8AbVsj4JXt+RK8do8I=;
-        b=fOU6dclQDrx25lBvZV1vFckW1U+m8vmpcMCTxYpMRECBF8l2JR8qBR7kZ3XHn1Ih56
-         Ftl9DJdh8F2Hq2OX5kfa3jEBFK8rKbPpHdU4VfuTfFbQk2ZoVnnJIZ5AawEzPE+zashw
-         6oKFihmPahqMvaMbjRhu1GV/ldLpkIRC5gi0aMvZpmQg+c/VHkewRAl1yLA0Htq5b398
-         pI8MLF4PUoBuWpY8BD+e7vqyUBmmbmdskHOwJZTuFNkEO/4l+UIglusBPHEpbYyKzxuO
-         jM9ZEyQ2TjmE87pQBLvT1hXUzVuKU4ZJT34usy4Cq2xtd0oo+cp6nFkL3UNIiCO7/vr7
-         Txkw==
-X-Gm-Message-State: AOAM533P4Qu6PdoDD87f1INwwmHt9AjKNNajV9iea8y275UDmP4TdZLK
-        RP0Nkufc0QwYN9shkra8Gt9WlXZ0Bp0=
-X-Google-Smtp-Source: ABdhPJxBMPAYu5DIsToLDmpp11MFkGT4FM098nbniWPHUQa5FCz7+iPgcrVfY+L+rwbJ7eJbQ0nHNQ==
-X-Received: by 2002:a63:4702:: with SMTP id u2mr302963pga.111.1603330485678;
-        Wed, 21 Oct 2020 18:34:45 -0700 (PDT)
-Received: from localhost.localdomain ([103.7.29.6])
-        by smtp.googlemail.com with ESMTPSA id kc21sm55289pjb.36.2020.10.21.18.34.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 18:34:44 -0700 (PDT)
-From:   Wanpeng Li <kernellwp@gmail.com>
-X-Google-Original-From: Wanpeng Li <wanpengli@tencent.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
-Subject: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
-Date:   Thu, 22 Oct 2020 09:34:35 +0800
-Message-Id: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
-X-Mailer: git-send-email 2.7.4
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=8b52jnuI2BVnQsT5yuf1ZFjurcL3wRE0q6QKCs+W/ic=;
+        b=bmvBwBnPWKKiNxK5gD7nAGoEtw5EMUqStMphz9152JD+A02pV1BhgiGbN4bq+RAEx2
+         mP1kQPMMD72tIZuTJZasL/K0QlD0gMwm0zQnbj6fFBI/LWQdNd9uTW9s8xL0MtBg6s5r
+         2Y0KeIL/c96bKAch8J2VA66H+NiLskx+AjaWPrg3BdvbHPn6wG8TH9o9KbiLUM/EeuJS
+         Z+yUsjzRmbyRJwmjuNjvs+YYeMtLN323eyQy8U3bHeczGgQhnKwsXxvZoXqgk7iXmYpO
+         FzZ+5wn1hj7dSW/GA0Zz9uc0fiMAYMOF1EK3/CUQtETux+kGtfNkEU3GIgK6UJgI4CXb
+         WskA==
+X-Gm-Message-State: AOAM531SNRVTmJT1BpslinatXNRDQLxUsJXYIaJTEY0SyyC04MZqSyKk
+        gqa/9S9KcJxDcyzbHrAMn8tsvA==
+X-Google-Smtp-Source: ABdhPJww/9NSVQCb0oAEiW+gX1m9KlMH88Kcwt0ZzRoZFncIhbDGjbyXP7m8w6M9lqkoT4TjhB4PZw==
+X-Received: by 2002:a63:f84c:: with SMTP id v12mr324479pgj.125.1603331091866;
+        Wed, 21 Oct 2020 18:44:51 -0700 (PDT)
+Received: from google.com ([2620:15c:2ce:0:a6ae:11ff:fe11:4abb])
+        by smtp.gmail.com with ESMTPSA id v24sm118930pgi.91.2020.10.21.18.44.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 18:44:51 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 18:44:48 -0700
+From:   Fangrui Song <maskray@google.com>
+To:     Nick Desaulniers <ndesaulniers@google.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kbuild@vger.kernel.org, linux-kernel@vger.kernel.org,
+        clang-built-linux@googlegroups.com,
+        linux-toolchains@vger.kernel.org
+Subject: Re: [PATCH] Kbuild: implement support for DWARF5
+Message-ID: <20201022014448.mcx5n7unf7kkka3o@google.com>
+References: <20201022012106.1875129-1-ndesaulniers@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Disposition: inline
+In-Reply-To: <20201022012106.1875129-1-ndesaulniers@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Wanpeng Li <wanpengli@tencent.com>
+On 2020-10-21, 'Nick Desaulniers' via Clang Built Linux wrote:
+>DWARF5 is the latest standard of the DWARF debug info format.
+>
+>Feature detection of DWARF5 is onerous, especially given that we've
+>removed $(AS), so we must query $(CC) for DWARF5 assembler directive
+>support. Further -gdwarf-X where X is an unsupported value doesn't
+>produce an error in $(CC). GNU `as` only recently gained support for
+>specifying -gdwarf-5.
+>
+>The DWARF version of a binary can be validated with:
 
-Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
+To be more correct: this is just the version number of the .debug_info section.
+Other sections can use different version numbers.
+(For example, GNU as still does not support version 5 .debug_line)
 
-This ioctl returns x86 cpuid features which are supported by both the 
-hardware and kvm in its default configuration.
+>$ llvm-dwarfdump vmlinux | head -n 5 | grep version
+>or
+>$ readelf --debug-dump=info vmlinux 2>/dev/null | grep Version
+>
+>DWARF5 wins significantly in terms of size when mixed with compression
+>(CONFIG_DEBUG_INFO_COMPRESSED).
+>
+>363M    vmlinux.clang12.dwarf5.compressed
+>434M    vmlinux.clang12.dwarf4.compressed
+>439M    vmlinux.clang12.dwarf2.compressed
+>457M    vmlinux.clang12.dwarf5
+>536M    vmlinux.clang12.dwarf4
+>548M    vmlinux.clang12.dwarf2
+>
+>Make CONFIG_DEBUG_INFO_DWARF4 part of a Kconfig choice to preserve
+>forward compatibility.
+>
+>Link: http://www.dwarfstd.org/doc/DWARF5.pdf
+>Signed-off-by: Nick Desaulniers <ndesaulniers@google.com>
+>---
+>RFC because this patch is super half baked, but I'm looking for
+>feedback.
+>
+>I would logically split this into a series of patches;
+>1. disable -Wa,gdwarf-2 for LLVM_IAS=1, see also
+>  https://github.com/ClangBuiltLinux/linux/issues/716
+>  https://github.com/ClangBuiltLinux/continuous-integration/blob/master/patches/llvm-all/linux-next/arm64/silence-dwarf2-warnings.patch
+>  that way we can backport for improved LLVM_IAS support.
+>2. move CONFIG_DEBUG_INFO_DWARF4 to choice.
+>3. implement the rest on top.
+>
+>I'm pretty sure GNU `as` only recently gained the ability to specify
+>-gdwarf-4 without erroring in binutils 2.35, so that part likely needs
+>to be fixed.
+>
+> Makefile                          | 19 ++++++++++++++++---
+> include/asm-generic/vmlinux.lds.h |  6 +++++-
+> lib/Kconfig.debug                 | 29 +++++++++++++++++++++++++----
+> scripts/test_dwarf5_support.sh    |  4 ++++
+> 4 files changed, 50 insertions(+), 8 deletions(-)
+> create mode 100755 scripts/test_dwarf5_support.sh
+>
+>diff --git a/Makefile b/Makefile
+>index e71979882e4f..0862df5b1a24 100644
+>--- a/Makefile
+>+++ b/Makefile
+>@@ -828,10 +828,23 @@ else
+> DEBUG_CFLAGS	+= -g
+> endif
+>
+>-KBUILD_AFLAGS	+= -Wa,-gdwarf-2
+>-
+>+DWARF_VERSION=2
+> ifdef CONFIG_DEBUG_INFO_DWARF4
+>-DEBUG_CFLAGS	+= -gdwarf-4
+>+DWARF_VERSION=4
+>+endif
+>+ifdef CONFIG_DEBUG_INFO_DWARF5
+>+DWARF_VERSION=5
+>+endif
+>+DEBUG_CFLAGS	+= -gdwarf-$(DWARF_VERSION)
+>+
+>+ifneq ($(DWARF_VERSION)$(LLVM_IAS),21)
+>+KBUILD_AFLAGS	+= -Wa,-gdwarf-$(DWARF_VERSION)
+>+endif
+>+
+>+ifdef CONFIG_CC_IS_CLANG
+>+ifneq ($(LLVM_IAS),1)
+>+KBUILD_CFLAGS	+= -Wa,-gdwarf-$(DWARF_VERSION)
+>+endif
+> endif
+>
+> ifdef CONFIG_DEBUG_INFO_REDUCED
+>diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>index cd14444bf600..0382808ef9fe 100644
+>--- a/include/asm-generic/vmlinux.lds.h
+>+++ b/include/asm-generic/vmlinux.lds.h
+>@@ -828,7 +828,11 @@
+> 		.debug_types	0 : { *(.debug_types) }			\
+> 		/* DWARF 5 */						\
+> 		.debug_macro	0 : { *(.debug_macro) }			\
+>-		.debug_addr	0 : { *(.debug_addr) }
+>+		.debug_addr	0 : { *(.debug_addr) }			\
+>+		.debug_line_str	0 : { *(.debug_line_str) }		\
+>+		.debug_loclists	0 : { *(.debug_loclists) }		\
+>+		.debug_rnglists	0 : { *(.debug_rnglists) }		\
+>+		.debug_str_offsets 0 : { *(.debug_str_offsets) }
 
-A well-behaved userspace should not set the bit if it is not supported.
+Consider adding .debug_names for the accelerator table.
+It is the DWARF v5 version of .debug_pub{names,types} (which are mentioned
+a few lines above).
 
-Suggested-by: Jim Mattson <jmattson@google.com>
-Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
----
- arch/x86/kvm/cpuid.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> /* Stabs debugging sections. */
+> #define STABS_DEBUG							\
+>diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+>index 537cf3c2937d..6b01f0e2dad8 100644
+>--- a/lib/Kconfig.debug
+>+++ b/lib/Kconfig.debug
+>@@ -256,14 +256,35 @@ config DEBUG_INFO_SPLIT
+> 	  to know about the .dwo files and include them.
+> 	  Incompatible with older versions of ccache.
+>
+>+choice
+>+prompt "DWARF version"
+>+	depends on DEBUG_INFO
+>+	default DEBUG_INFO_DWARF2
+>+	help
+>+	  Which version of DWARF debug info to emit.
+>+
+>+config DEBUG_INFO_DWARF2
+>+	bool "Generate dwarf2 debuginfo"
+>+	help
+>+	  Generate dwarf2 debug info.
 
-diff --git a/arch/x86/kvm/cpuid.c b/arch/x86/kvm/cpuid.c
-index 06a278b..225d251 100644
---- a/arch/x86/kvm/cpuid.c
-+++ b/arch/x86/kvm/cpuid.c
-@@ -789,7 +789,7 @@ static inline int __do_cpuid_func(struct kvm_cpuid_array *array, u32 function)
- 
- 		entry->ebx = 0;
- 		entry->ecx = 0;
--		entry->edx = 0;
-+		entry->edx = (1 << KVM_HINTS_REALTIME);
- 		break;
- 	case 0x80000000:
- 		entry->eax = min(entry->eax, 0x8000001f);
--- 
-2.7.4
+In documentation, a more official way to refer to the format is: DWARF v2.
+(While "DWARF5" and "DWARF v5" are acceptable, the latter is preferred)
+Ditto below.
 
+> config DEBUG_INFO_DWARF4
+> 	bool "Generate dwarf4 debuginfo"
+> 	depends on $(cc-option,-gdwarf-4)
+> 	help
+>-	  Generate dwarf4 debug info. This requires recent versions
+>-	  of gcc and gdb. It makes the debug information larger.
+>-	  But it significantly improves the success of resolving
+>-	  variables in gdb on optimized code.
+>+	  Generate dwarf4 debug info. This requires gcc 4.5+ and gdb 7.0+.
+>+	  It makes the debug information larger, but it significantly
+>+	  improves the success of resolving variables in gdb on optimized code.
+>+
+>+config DEBUG_INFO_DWARF5
+>+	bool "Generate dwarf5 debuginfo"
+>+	depends on DEBUG_INFO
+>+	depends on $(success,$(srctree)/scripts/test_dwarf5_support.sh $(CC) $(CLANG_FLAGS))
+>+	help
+>+	  Genereate dwarf5 debug info. Requires binutils 2.35+, gcc 5.1+, and
+>+	  gdb 8.0+.
+>+
+>+endchoice # "DWARF version"
+>
+> config DEBUG_INFO_BTF
+> 	bool "Generate BTF typeinfo"
+>diff --git a/scripts/test_dwarf5_support.sh b/scripts/test_dwarf5_support.sh
+>new file mode 100755
+>index 000000000000..82c0eea45845
+>--- /dev/null
+>+++ b/scripts/test_dwarf5_support.sh
+>@@ -0,0 +1,4 @@
+>+#!/bin/sh
+>+# SPDX-License-Identifier: GPL-2.0
+>+set -eu
+>+echo ".file 0 \"asdf\"" | $* -Wa,-gdwarf-5 -c -x assembler -o /dev/null -
+>-- 
+>2.29.0.rc1.297.gfa9743e501-goog
+>
+>-- 
+>You received this message because you are subscribed to the Google Groups "Clang Built Linux" group.
+>To unsubscribe from this group and stop receiving emails from it, send an email to clang-built-linux+unsubscribe@googlegroups.com.
+>To view this discussion on the web visit https://groups.google.com/d/msgid/clang-built-linux/20201022012106.1875129-1-ndesaulniers%40google.com.
