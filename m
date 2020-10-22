@@ -2,75 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C40702964C6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:45:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8A362964CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:45:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369513AbgJVSpj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:45:39 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:48334 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368848AbgJVSpi (ORCPT
+        id S369536AbgJVSpz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:45:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44940 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368830AbgJVSpy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:45:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=uf6C3j/ocrBTm97iqgRtQoheYZQH4nzs9ZR+u0LyQS0=; b=lq05AoxRq5ysREPtYrPSKtt+zZ
-        IiorJvq1mo/HpX8T89V7Nb7wfbLJ9rBkb/cKdr0iPL3Jn+727NrDZeVoUxsYiiz0dVZjydHb4q+/w
-        ZtVALKjISZkAdX0RdP4UNqc0tVK/iPwPzNSDv7LwCrL6ANRr05UISlOl3WWm+w+Tlzxx0Gj1j2Sty
-        T+/3ZsL7GHq4Bm6o/XdDcgXK+SpoGXvPiKkAEjfI7cvh3u4LyuNDrYfCF5CrYSm7HtMbtjLbvPhGe
-        CCZ/nsQ4kzykeOcvlWPsPUj0JAslOxvgXdTVNPJHkpeotI5iLuu2xXy+XuCG5r6BblFAsV1FdrEXv
-        6KitHdtQ==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kVfaa-0002PY-K8; Thu, 22 Oct 2020 12:45:29 -0600
-To:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, Omar Sandoval <osandov@osandov.com>
-Cc:     Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20201008164024.12546-1-logang@deltatee.com>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <29f3dc94-50c3-1548-034e-09c5394ef781@deltatee.com>
-Date:   Thu, 22 Oct 2020 12:45:25 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Thu, 22 Oct 2020 14:45:54 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 661EEC0613CE;
+        Thu, 22 Oct 2020 11:45:53 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id y14so1696170pfp.13;
+        Thu, 22 Oct 2020 11:45:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=PJ+uKLoDbt4Kdg8ImByLjA8Njsk3WlOLgUgCbpkC9zk=;
+        b=A8jUhEN65PHD6v/QKxHHZH30h3Bes875e+6+YJN1oRjC7MZxpv05pacosmi/+65EBk
+         Dx8XXnOnRTnBVHVQ5JmYEycve17jrdZVst0f6IsgoRtTyydrVVoQEhhVNi4cbk+tod5A
+         MNLeNR+TUQSkY5iFpk/xW8fcCvmfbFIEIsWzj8l/+MZ2GaZLFfk/oasxZ10SVZDdetqd
+         m7cKjO1GDgNygAgXbqYg3qwViz8gUMo2l9iN/xTV7hcM7OzUJgHiVxn2xn1Ix11Xn3Mj
+         w5xyxZzMqJdXhyvSL/CCT5pFyt+G/Ry3aTxphw+1BfRgwJ6o1PZGhL3mLbVF7NEE1HQo
+         stlA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PJ+uKLoDbt4Kdg8ImByLjA8Njsk3WlOLgUgCbpkC9zk=;
+        b=Lffidh1m26Tpvc0fK79Div1yEN/p+2gdVsvah6YqlDfyZhZRXsi+QpY1G+HVpOOppz
+         H56NwCbB/viPVmrdC+9JqCmF4mTzVdpdMz1y0eS5PNMAASEkejo4dhvnM7EDePCxjRfQ
+         Fx0moZo2qkGjTfSFuo25ZpPE2w8xzTBHLNEDmVqJhIlIRWzdJ7JO4OIqXxdDd8h4e0oL
+         2cXwch18dfnTSWK+ZIDklGy5wc1slWQm1Mw4SKPA82RMQFiawtLtL51IzCzqbDAdqm4h
+         SzW9FEN6fbyYSRIjq2xCZS9WoARgqGLKj1zbsZBO9HZRHL4O43E73SsHkWpjd8alueqQ
+         oRMw==
+X-Gm-Message-State: AOAM530yFVlBowcW0UkuuWa4lhLNX3dM35yizMP29Ui2FnMfAuN7HRy8
+        Opi1yF75+HS780vfSL2EOJbcKHuaiiQ/HFVN39Q=
+X-Google-Smtp-Source: ABdhPJwNbfbJKg7L/+F+lSBYE2PF207sJKCE67fjAwiCaIsXfyZycJr3U4/+t0LHsJes+amoJNW5cfEG1vmDYyxED/U=
+X-Received: by 2002:a05:6a00:22c2:b029:156:543:7c1d with SMTP id
+ f2-20020a056a0022c2b029015605437c1dmr3749000pfj.40.1603392352903; Thu, 22 Oct
+ 2020 11:45:52 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201008164024.12546-1-logang@deltatee.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, Chaitanya.Kulkarni@wdc.com, sagi@grimberg.me, osandov@osandov.com, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH blktests v3 00/11] NVMe Target Passthru Block Tests
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+References: <20201022155858.20867-1-nsaenzjulienne@suse.de> <20201022155858.20867-2-nsaenzjulienne@suse.de>
+In-Reply-To: <20201022155858.20867-2-nsaenzjulienne@suse.de>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Thu, 22 Oct 2020 21:46:41 +0300
+Message-ID: <CAHp75Vej4UfsySRB6qXL7fFN7SjnTjy=p4Xkn1xBO0YOFy-kcQ@mail.gmail.com>
+Subject: Re: [PATCH v2 01/10] firmware: raspberrypi: Introduce rpi_firmware_put()
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Ray Jui <rjui@broadcom.com>,
+        Scott Branden <sbranden@broadcom.com>,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-pwm@vger.kernel.org,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        linux-input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 22, 2020 at 9:06 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> When unbinding the firmware device we need to make sure it has no
+> consumers left. Otherwise we'd leave them with a firmware handle
+> pointing at freed memory.
+>
+> Keep a reference count of all consumers and make sure they all finished
+> unbinding before we do.
 
-On 2020-10-08 10:40 a.m., Logan Gunthorpe wrote:
-> Hi,
-> 
-> This series adds blktests for the nvmet passthru feature that was merged
-> for 5.9. It's been reconciled with Sagi's blktest series that Omar
-> recently merged.
+Wait, if it's a device, why do we need all these?
+get_device() / put_device() along with module_get() / module_put()
+should be sufficient, no?
 
-Bump. This has been around for a while now. Omar, can you please
-consider picking this up?
-
-Thanks,
-
-Logan
+-- 
+With Best Regards,
+Andy Shevchenko
