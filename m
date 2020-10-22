@@ -2,90 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0A6D29612A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:52:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B3B6296127
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:52:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368251AbgJVOww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:52:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36988 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368214AbgJVOwu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:52:50 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 99CF6C0613CE;
-        Thu, 22 Oct 2020 07:52:50 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Subject:Sender
-        :Reply-To:Content-ID:Content-Description;
-        bh=oKEWyOVhaTMgm/+2u2GsofkNM4gFyJP7/a/xXAM9lSE=; b=WVBGiV4PEt7rg6l9yeRC27g4Y6
-        861wWhrpEdE4OpAbajPSo/h8yEG3Hkc8bUSCW6wZIhFrLlW+WEzhSb2w9l7Ev+j6brP3hoKBvnMHn
-        GfKjjnRsnCyeFwgeCWfzyylQLKW4Dv8QiD3tteTQJqqBuM+Y+JulqY6kn7UeaVEFSGXhn6cfwBMLf
-        PUIb1ILRHKNQabUSkHhnaJO6QF511GzoMv8Lu/ezdEZGmJl+sGOFxTcJ/01QVDlGviBgIRbgsOyXc
-        HAHno9XHZGBqNPEs5HwGW+SbSnch0EOb6Kls0xYUE0QkxBkdmS+Diw+chJFrXf7nprG+1NooWwjpj
-        KXuoImZw==;
-Received: from [2601:1c0:6280:3f0::507c]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVbxQ-0002rh-3X; Thu, 22 Oct 2020 14:52:48 +0000
-Subject: Re: linux-next: Tree for Oct 22 (mlx5)
-To:     Stephen Rothwell <sfr@canb.auug.org.au>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Saeed Mahameed <saeedm@nvidia.com>,
-        Boris Pismenny <borisp@nvidia.com>,
-        Leon Romanovsky <leonro@nvidia.com>,
-        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
-References: <20201022144126.67d0cad9@canb.auug.org.au>
-From:   Randy Dunlap <rdunlap@infradead.org>
-Message-ID: <646c66a0-f473-bbe6-960b-42736fcb0006@infradead.org>
-Date:   Thu, 22 Oct 2020 07:52:42 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S368235AbgJVOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:52:46 -0400
+Received: from mx2.suse.de ([195.135.220.15]:58732 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S368214AbgJVOwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:52:44 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id AD285AC6D;
+        Thu, 22 Oct 2020 14:52:42 +0000 (UTC)
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+From:   Vlastimil Babka <vbabka@suse.cz>
+To:     Rik van Riel <riel@surriel.com>, Hugh Dickins <hughd@google.com>,
+        Xu Yu <xuyu@linux.alibaba.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        Michal Hocko <mhocko@suse.com>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+ <06c1e573-cddd-c17c-9f18-3af2d9d09f80@suse.cz>
+Message-ID: <2b7f401d-8041-9d64-595d-f95109a52e3b@suse.cz>
+Date:   Thu, 22 Oct 2020 16:52:42 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-In-Reply-To: <20201022144126.67d0cad9@canb.auug.org.au>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <06c1e573-cddd-c17c-9f18-3af2d9d09f80@suse.cz>
+Content-Type: text/plain; charset=utf-8; format=flowed
 Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/20 8:41 PM, Stephen Rothwell wrote:
-> Hi all,
+On 10/22/20 4:51 PM, Vlastimil Babka wrote:
+> On 10/22/20 5:48 AM, Rik van Riel wrote:
+>> The allocation flags of anonymous transparent huge pages can be controlled
+>> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
+>> help the system from getting bogged down in the page reclaim and compaction
+>> code when many THPs are getting allocated simultaneously.
+>> 
+>> However, the gfp_mask for shmem THP allocations were not limited by those
+>> configuration settings, and some workloads ended up with all CPUs stuck
+>> on the LRU lock in the page reclaim code, trying to allocate dozens of
+>> THPs simultaneously.
+>> 
+>> This patch applies the same configurated limitation of THPs to shmem
+>> hugepage allocations, to prevent that from happening.
+>> 
+>> This way a THP defrag setting of "never" or "defer+madvise" will result
+>> in quick allocation failures without direct reclaim when no 2MB free
+>> pages are available.
+>> 
+>> Signed-off-by: Rik van Riel <riel@surriel.com>
 > 
-> Since the merge window is open, please do not add any v5.11 material to
-> your linux-next included branches until after v5.10-rc1 has been released.
+> FTR, a patch to the same effect was sent by Xu Yu:
+
+Hm thought I did CC, but TB ate it. sorry for the noise
+
+> https://lore.kernel.org/r/11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com
 > 
-> Changes since 20201021:
+>> ---
+>> 
+>> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
+>> index c603237e006c..0a5b164a26d9 100644
+>> --- a/include/linux/gfp.h
+>> +++ b/include/linux/gfp.h
+>> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+>>   extern void pm_restrict_gfp_mask(void);
+>>   extern void pm_restore_gfp_mask(void);
+>>   
+>> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
+>> +
+>>   #ifdef CONFIG_PM_SLEEP
+>>   extern bool pm_suspended_storage(void);
+>>   #else
+>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>> index 9474dbc150ed..9b08ce5cc387 100644
+>> --- a/mm/huge_memory.c
+>> +++ b/mm/huge_memory.c
+>> @@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
+>>    *	    available
+>>    * never: never stall for any thp allocation
+>>    */
+>> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+>> +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
+>>   {
+>>   	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
+>>   
+>> diff --git a/mm/shmem.c b/mm/shmem.c
+>> index 537c137698f8..d1290eb508e5 100644
+>> --- a/mm/shmem.c
+>> +++ b/mm/shmem.c
+>> @@ -1545,8 +1545,11 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
+>>   		return NULL;
+>>   
+>>   	shmem_pseudo_vma_init(&pvma, info, hindex);
+>> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
+>> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
+>> +	/* Limit the gfp mask according to THP configuration. */
+>> +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+>> +	gfp &= alloc_hugepage_direct_gfpmask(&pvma);
+>> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
+>> +			       true);
+>>   	shmem_pseudo_vma_destroy(&pvma);
+>>   	if (page)
+>>   		prep_transhuge_page(page);
+>> 
 > 
 
-on x86_64:
-when CONFIG_IPV6 is not set/enabled:
-
-In file included from ../include/linux/tcp.h:19:0,
-                 from ../include/linux/ipv6.h:88,
-                 from ../include/net/ipv6.h:12,
-                 from ../include/rdma/ib_verbs.h:24,
-                 from ../include/linux/mlx5/device.h:37,
-                 from ../include/linux/mlx5/driver.h:52,
-                 from ../drivers/net/ethernet/mellanox/mlx5/core/en.h:40,
-                 from ../drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.h:7,
-                 from ../drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c:5:
-../drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c: In function ‘accel_fs_tcp_set_ipv6_flow’:
-../include/net/sock.h:380:34: error: ‘struct sock_common’ has no member named ‘skc_v6_daddr’; did you mean ‘skc_daddr’?
- #define sk_v6_daddr  __sk_common.skc_v6_daddr
-                                  ^
-../drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c:55:14: note: in expansion of macro ‘sk_v6_daddr’
-         &sk->sk_v6_daddr, 16);
-
-At top level:
-../drivers/net/ethernet/mellanox/mlx5/core/en_accel/fs_tcp.c:47:13: warning: ‘accel_fs_tcp_set_ipv6_flow’ defined but not used [-Wunused-function]
- static void accel_fs_tcp_set_ipv6_flow(struct mlx5_flow_spec *spec, struct sock *sk)
-
-
-
--- 
-~Randy
-Reported-by: Randy Dunlap <rdunlap@infradead.org>
