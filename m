@@ -2,70 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 516BC29649C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:22:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8FB542964A8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 20:29:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2902472AbgJVSWm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 14:22:42 -0400
-Received: from foss.arm.com ([217.140.110.172]:34618 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900523AbgJVSWm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 14:22:42 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 76477D6E;
-        Thu, 22 Oct 2020 11:22:41 -0700 (PDT)
-Received: from bogus (unknown [10.57.22.167])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5246A3F719;
-        Thu, 22 Oct 2020 11:22:40 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 19:22:33 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>
-Cc:     linux-arm-kernel@lists.infradead.org,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
- performance domains
-Message-ID: <20201022182233.hklq6j5n5kkqg4yv@bogus>
-References: <20201021183104.27949-1-sudeep.holla@arm.com>
+        id S369685AbgJVS3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 14:29:54 -0400
+Received: from smtprelay0205.hostedemail.com ([216.40.44.205]:60310 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S369316AbgJVS3x (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 14:29:53 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id AA38A100E7B46;
+        Thu, 22 Oct 2020 18:29:52 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:152:355:379:599:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2902:3138:3139:3140:3141:3142:3353:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:5007:6119:7903:8957:9010:10004:10400:10450:10455:10848:11026:11232:11473:11658:11914:12043:12297:12663:12740:12895:13069:13161:13229:13311:13357:13894:14181:14659:19904:19999:21080:21324:21451:21627:21939:30054:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: month46_1a155b527253
+X-Filterd-Recvd-Size: 2674
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf12.hostedemail.com (Postfix) with ESMTPA;
+        Thu, 22 Oct 2020 18:29:51 +0000 (UTC)
+Message-ID: <e9c6c9356dcd8a924e4a81e9ebff3a9f7f86740d.camel@perches.com>
+Subject: Re: [PATCH] checkpatch: ignore ethtool CamelCase constants
+From:   Joe Perches <joe@perches.com>
+To:     Lukasz Stelmach <l.stelmach@samsung.com>
+Cc:     Andy Whitcroft <apw@canonical.com>, linux-kernel@vger.kernel.org,
+        =?UTF-8?Q?Bart=C5=82omiej_?= =?UTF-8?Q?=C5=BBolnierkiewicz?= 
+        <b.zolnierkie@samsung.com>,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+Date:   Thu, 22 Oct 2020 11:29:50 -0700
+In-Reply-To: <dleftjpn5ayvog.fsf%l.stelmach@samsung.com>
+References: <9f35c30071230d15b13c1670dda7743d6702e2b5.camel@perches.com>
+         <CGME20201022181506eucas1p22f41b2f48b6ef70e9db8d6cd5fc0b5a1@eucas1p2.samsung.com>
+         <dleftjpn5ayvog.fsf%l.stelmach@samsung.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.4-0ubuntu1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021183104.27949-1-sudeep.holla@arm.com>
-User-Agent: NeoMutt/20171215
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 07:31:03PM +0100, Sudeep Holla wrote:
-> Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
-> -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
-> _allocate_opp_table() which is called from dev_pm_opp_add and it
-> now propagates the error back to the caller.
-> 
-> SCMI performance domain re-used clock bindings to keep it simple. However
-> with the above mentioned change, if clock property is present in a device
-> node, opps can't be added until clk_get succeeds. So in order to fix the
-> issue, we can register dummy clocks which is completely ugly.
-> 
-> Since there are no upstream users for the SCMI performance domain clock
-> bindings, let us introduce separate performance domain bindings for the
-> same.
-> 
-> Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> ---
->  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
->  1 file changed, 16 insertions(+), 3 deletions(-)
-> 
-> v1[1]->v2:
-> 	- Changed the generic #perf-domain-cells to more SCMI specific
-> 	  property #arm,scmi-perf-domain-cells
->
+On Thu, 2020-10-22 at 20:14 +0200, Lukasz Stelmach wrote:
+> It was <2020-10-22 czw 04:57>, when Joe Perches wrote:
+> > On Thu, 2020-10-22 at 13:01 +0200, Łukasz Stelmach wrote:
+> > > Ignore CamelCase constants describing Ethernet link parameters defined
+> > > in include/uapi/linux/ethtool.h.
+> > []
+> > > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> > []
+> > > @@ -5295,6 +5295,10 @@ sub process {
+> > >  #CamelCase
+> > >  			if ($var !~ /^$Constant$/ &&
+> > >  			    $var =~ /[A-Z][a-z]|[a-z][A-Z]/ &&
+> > > +#Ignore constants from include/uapi/linux/ethtool.h
+> > > +			    $var !~ /^ETHTOOL_LINK_MODE_[0-9A-Za-z_]+_BIT$/ &&
+> > > +			    $var !~ /^ADVERTISED_[0-9A-Za-z_]+$/ &&
+> > > +			    $var !~ /^SUPPORTED_[0-9A-Za-z_]+$/ &&
+> > >  #Ignore Page<foo> variants
+> > >  			    $var !~ /^(?:Clear|Set|TestClear|TestSet|)Page[A-Z]/ &&
+> > >  #Ignore SI style variants like nS, mV and dB
+> > 
+> > How about changing this to be a bit broader?
+> > 
+> > $var !~ /^(?:[A-Z]+_){1,5}[A-Z]{1,3}[a-z]/
+[]
+> And we've got enums too.
 
-Is more specific #arm,scmi-perf-domain-cells acceptable ?
-Sorry for the rush, but this fixes SCMI cpufreq which is broken after
-commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
--EPROBE_DEFER")
+The regex finds the enums too.
+The added 'define' was just to show a simple list.
+[]
+> Oh, I had no idea there is so many of them. Your regex loooks
+> reasonable. However, I am afraid it may allow for some false negatives
+> (stuff that should be fixed, but won't be reported). I don't know.
 
--- 
-Regards,
-Sudeep
+Me neither, but I think it's simpler than the specific
+exclusions and I'm generally in favor of simpler.
+
+Most all of the matches it excludes are autogenerated
+and would never have been fixed so I think we should
+use the regex.
+
+
