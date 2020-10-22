@@ -2,130 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5799A2955DF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 02:58:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439EC2955E1
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 03:00:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894524AbgJVA62 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 20:58:28 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49418 "EHLO
+        id S2894542AbgJVBAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 21:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49752 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2894516AbgJVA62 (ORCPT
+        with ESMTP id S2894531AbgJVBAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 20:58:28 -0400
-Received: from mail-io1-xd42.google.com (mail-io1-xd42.google.com [IPv6:2607:f8b0:4864:20::d42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 139F1C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:58:28 -0700 (PDT)
-Received: by mail-io1-xd42.google.com with SMTP id q25so5179964ioh.4
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 17:58:28 -0700 (PDT)
+        Wed, 21 Oct 2020 21:00:34 -0400
+Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BF792C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:00:34 -0700 (PDT)
+Received: by mail-il1-x143.google.com with SMTP id k1so135962ilc.10
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 18:00:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=zeZvoKbrgIVhevjxOiOYNvRjeI72W6AtF3ciDXxGwJQ=;
-        b=G0PIvqJuZsR5epI8IijrEuUisk9liNNUla92pT/N31hyikKZ+t4bY1CC9QaLoVrNKV
-         I2bkIa/YgOY4oSKbtLqIZ3I8wRWgxiztUdjj5Ae9k6VyP6m5T2EaX7PLlBmdvc1AcOWw
-         NBcu552r8cjGCPUvGmgdc0AYNzP+r1R5vLQOk=
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EZ6q8pKR50F9MEnOUTdX/Eg51eSiLWJ2V+wMmENHTSo=;
+        b=fbyROQHeg6nZdM4OhBq/piSTcMlExLr0535xmYuxRK0dQn9BwtA9JbxCpVnOZIeB1O
+         UcWoo0yJKlmbm73Xb9eCSKg/lJ3FRXv2r8AzD1BOqwsSrC1mhD90OQUH67DDwbqQjoWe
+         qQ3siN1hzx+h98cqVJ/Wak8IAFMNOJQDG6cFFRWARHDJ5znAq+VogowTZMBKt3QtUD7q
+         lXQcwgiYTsYPcF5Ra6GR/TAYAyA4bZ//OpbuTkC1FDTqDFldVVDKnlLlqo4YtUVps6zf
+         L/cNewkD2oEtGWY9xuMulipqmHE/5QajbGhvaH13Up6pZEHRL1IB1Da3IJjhFjjeGY2+
+         3LxQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=zeZvoKbrgIVhevjxOiOYNvRjeI72W6AtF3ciDXxGwJQ=;
-        b=k8rn2aYVZz8p0xjEhuvtvIhqpmClqlTeZOurCSSWjPL733oiocSH+YS8g+MZHJtYWr
-         YDmL3yIG+gZqEHK3QuWQ0DoQNTSN3O5FWqW7BzdEmdUbxcogknqT8QSqON+XX4ZIZcLc
-         6QNUEY72d/d3ImOGZKzDxk7x+C0yvmCgaJ9QHTzIBBMsUFTv7OovWOAR+Os3f4cZtTiT
-         BgRsHj05fPdiTgEp9k1DDqcSW/rZJJwY5RYpc7ufnqySBTssAGo+HqwbwohJZ9Mud9RQ
-         ejj0TGP4Qt+nnD+ClxPpyV1B56QWeVKyQm6hBqIW2QyyYlWgWnDh975dawm+gqDnk1NT
-         6hMQ==
-X-Gm-Message-State: AOAM531/8nCXT6/xp7LmTN+fQSSFwbaJ1yMCHhF72q2cpDiqhbTTWNaw
-        V9fCLAoDZKt0/dpuNLWOqaFj3spOmKw0Va/pVsEV
-X-Google-Smtp-Source: ABdhPJyXh89UkF3m+LRLbYtN+p6n3th/chRNGXK1eOu+gpcJZ9EHvtP/n3gMnEqZ+TXNbuVZfSbgH/FiwoE0s53D6ws=
-X-Received: by 2002:a5d:84c6:: with SMTP id z6mr171793ior.0.1603328307250;
- Wed, 21 Oct 2020 17:58:27 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=EZ6q8pKR50F9MEnOUTdX/Eg51eSiLWJ2V+wMmENHTSo=;
+        b=Px9XlSscuxZEiH0z+5t9ALTpdUmf/1uU0eTAgfEie6ogaFJvTMeV0iz3Rv5wtezsef
+         Su4fcsCztMuaCCH3/8Bw2VDz17MQ58C30mYbfIINHK9VKOPypGXnDweYu4YpgLo0bQJo
+         6t20TjscP/+hYFPzQL6U3VFVXtqT6XHGC0FNfMEUdWybqNHRL0J+fo0xMxl2G09fqaF0
+         yUbOVYFww5eh4+hxu2ETlzQDFPUS+lBBhgCI+a5lbYzQbmnhw69TA4KbjHhiiwss312P
+         /WXwcTaQcE/XOCHpOAvRpWBFJ2rNnI269eDrkoDUUYgNw1ue49mu0IpCiKV9Nw5mP9v9
+         9CPQ==
+X-Gm-Message-State: AOAM531JWQmPDUX2QyCgdbfCOypyHEudNWA8KRfSE2WOb4A+Ctee6Hta
+        EpQXo2XgrR+C5mfK76OpaEDN1Q==
+X-Google-Smtp-Source: ABdhPJzE3IHz2+d8b4GC9jK+641bTL45WNCf6kcC/CQ1GqJZ5D40CX8AMVw3axAFUNv+9ugDYNVw4g==
+X-Received: by 2002:a05:6e02:df0:: with SMTP id m16mr146718ilj.220.1603328433864;
+        Wed, 21 Oct 2020 18:00:33 -0700 (PDT)
+Received: from beast.localdomain (c-73-185-129-58.hsd1.mn.comcast.net. [73.185.129.58])
+        by smtp.gmail.com with ESMTPSA id f5sm40801ioq.5.2020.10.21.18.00.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 18:00:33 -0700 (PDT)
+From:   Alex Elder <elder@linaro.org>
+To:     davem@davemloft.net, kuba@kernel.org
+Cc:     evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        swboyd@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net] net: ipa: command payloads already mapped
+Date:   Wed, 21 Oct 2020 20:00:29 -0500
+Message-Id: <20201022010029.11877-1-elder@linaro.org>
+X-Mailer: git-send-email 2.20.1
 MIME-Version: 1.0
-References: <20201021073839.43935-1-zong.li@sifive.com>
-In-Reply-To: <20201021073839.43935-1-zong.li@sifive.com>
-From:   Atish Patra <atishp@atishpatra.org>
-Date:   Wed, 21 Oct 2020 17:58:15 -0700
-Message-ID: <CAOnJCU+Qr-Avs7HnOfsPC6yKDNzTCEbm_ZhZ3b2V809iHfFSpQ@mail.gmail.com>
-Subject: Re: [PATCH] stop_machine: Mark functions as notrace
-To:     Zong Li <zong.li@sifive.com>
-Cc:     "Paul E. McKenney" <paulmck@kernel.org>, josh@joshtriplett.org,
-        rostedt@goodmis.org, mathieu.desnoyers@efficios.com,
-        jiangshanlai@gmail.com, joel@joelfernandes.org,
-        vincent.whitchurch@axis.com, Thomas Gleixner <tglx@linutronix.de>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Guo Ren <guoren@kernel.org>, mhiramat@kernel.org,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        rcu@vger.kernel.org,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        linux-riscv <linux-riscv@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:38 AM Zong Li <zong.li@sifive.com> wrote:
->
-> Like the commit cb9d7fd51d9f ("watchdog: Mark watchdog touch functions
-> as notrace"), some architectures assume that the stopped CPUs don't make
-> function calls to traceable functions when they are in the stopped
-> state. For example, it causes unexpected kernel crashed when switching
-> tracer on RISC-V.
->
-> The following patches added calls to these two functions, fix it by
-> adding the notrace annotations.
->
-> Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-> Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in
-> multi_cpu_stop()")
->
-> Signed-off-by: Zong Li <zong.li@sifive.com>
-> ---
->  kernel/rcu/tree.c     | 2 +-
->  kernel/stop_machine.c | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 06895ef85d69..2a52f42f64b6 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
->   *
->   * The caller must have disabled interrupts and must not be idle.
->   */
-> -void rcu_momentary_dyntick_idle(void)
-> +notrace void rcu_momentary_dyntick_idle(void)
->  {
->         int special;
->
-> diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-> index 865bb0228ab6..890b79cf0e7c 100644
-> --- a/kernel/stop_machine.c
-> +++ b/kernel/stop_machine.c
-> @@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
->                 set_state(msdata, msdata->state + 1);
->  }
->
-> -void __weak stop_machine_yield(const struct cpumask *cpumask)
-> +notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
->  {
->         cpu_relax();
->  }
-> --
-> 2.28.0
->
+IPA transactions describe actions to be performed by the IPA
+hardware.  Three cases use IPA transactions:  transmitting a socket
+buffer; providing a page to receive packet data; and issuing an IPA
+immediate command.  An IPA transaction contains a scatter/gather
+list (SGL) to hold the set of actions to be performed.
 
-Thanks for the fix. FWIW,
+We map buffers in the SGL for DMA at the time they are added to the
+transaction.  For skb TX transactions, we fill the SGL with a call
+to skb_to_sgvec().  Page RX transactions involve a single page
+pointer, and that is recorded in the SGL with sg_set_page().  In
+both of these cases we then map the SGL for DMA with a call to
+dma_map_sg().
 
-Tested-by: Atish Patra <atish.patra@wdc.com>
+Immediate commands are different.  The payload for an immediate
+command comes from a region of coherent DMA memory, which must
+*not* be mapped for DMA.  For that reason, gsi_trans_cmd_add()
+sort of hand-crafts each SGL entry added to a command transaction.
 
-Can you update the bugzilla as well ?
+This patch fixes a problem with the code that crafts the SGL entry
+for an immediate command.  Previously a portion of the SGL entry was
+updated using sg_set_buf().  However this is not valid because it
+includes a call to virt_to_page() on the buffer, but the command
+buffer pointer is not a linear address.
 
-https://bugzilla.kernel.org/show_bug.cgi?id=209317
+Since we never actually map the SGL for command transactions, there
+are very few fields in the SGL we need to fill.  Specifically, we
+only need to record the DMA address and the length, so they can be
+used by __gsi_trans_commit() to fill a TRE.  We additionally need to
+preserve the SGL flags so for_each_sg() still works.  For that we
+can simply assign a null page pointer for command SGL entries.
 
+Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
+Reported-by: Stephen Boyd <swboyd@chromium.org>
+Tested-by: Stephen Boyd <swboyd@chromium.org>
+Signed-off-by: Alex Elder <elder@linaro.org>
+---
+ drivers/net/ipa/gsi_trans.c | 21 +++++++++++++++------
+ 1 file changed, 15 insertions(+), 6 deletions(-)
 
---
-Regards,
-Atish
+diff --git a/drivers/net/ipa/gsi_trans.c b/drivers/net/ipa/gsi_trans.c
+index 43f5f5d93cb06..92642030e7356 100644
+--- a/drivers/net/ipa/gsi_trans.c
++++ b/drivers/net/ipa/gsi_trans.c
+@@ -397,15 +397,24 @@ void gsi_trans_cmd_add(struct gsi_trans *trans, void *buf, u32 size,
+ 
+ 	/* assert(which < trans->tre_count); */
+ 
+-	/* Set the page information for the buffer.  We also need to fill in
+-	 * the DMA address and length for the buffer (something dma_map_sg()
+-	 * normally does).
++	/* Commands are quite different from data transfer requests.
++	 * Their payloads come from a pool whose memory is allocated
++	 * using dma_alloc_coherent().  We therefore do *not* map them
++	 * for DMA (unlike what we do for pages and skbs).
++	 *
++	 * When a transaction completes, the SGL is normally unmapped.
++	 * A command transaction has direction DMA_NONE, which tells
++	 * gsi_trans_complete() to skip the unmapping step.
++	 *
++	 * The only things we use directly in a command scatter/gather
++	 * entry are the DMA address and length.  We still need the SG
++	 * table flags to be maintained though, so assign a NULL page
++	 * pointer for that purpose.
+ 	 */
+ 	sg = &trans->sgl[which];
+-
+-	sg_set_buf(sg, buf, size);
++	sg_assign_page(sg, NULL);
+ 	sg_dma_address(sg) = addr;
+-	sg_dma_len(sg) = sg->length;
++	sg_dma_len(sg) = size;
+ 
+ 	info = &trans->info[which];
+ 	info->opcode = opcode;
+-- 
+2.20.1
+
