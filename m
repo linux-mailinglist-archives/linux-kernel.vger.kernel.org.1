@@ -2,108 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A45029660D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:39:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8EFC9296612
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:39:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371811AbgJVUjO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:39:14 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:58962 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S371802AbgJVUjN (ORCPT
+        id S371823AbgJVUjb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:39:31 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24698 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2901257AbgJVUja (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:39:13 -0400
-Received: from pps.filterd (m0127361.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MKW2Cm111815;
-        Thu, 22 Oct 2020 16:39:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=IFuZQiHZ5zXbarGP2kD9hqxg+2/2m9MRsUj82P5IF+o=;
- b=TjRSM/KCvMWOk4tPQl5BBK77cOPKCTwTm8VHXO55enbCUNuxNZAM6+hMueFsxH/LEQiO
- 6NgzU+I5tHykIvsRK2k7C5YFBNxUBIJFhbiZeO7POyo1Zk3ChKOlZ8iBF+yobkDMm/cN
- zXFFkvM5M/79F/HoVRD79Yjs5P0bUlYr7MibUBHub2RQn0j+qeL8vDgTkxkGG+WpmnbW
- N0zpGGNXY89pnnSMajLQVMZjVfRjpja45RiIMXnlIT71aM523+JytmPeDyWLuDq9I79z
- VUeMT7BicNxKknQ9pHnPGnDi5Appq94f3pc5glNR1mc0Fxik11zpGVQe0nf+vj/bquB3 NA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34bh7085au-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 16:39:07 -0400
-Received: from m0127361.ppops.net (m0127361.ppops.net [127.0.0.1])
-        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09MKW5Cv111907;
-        Thu, 22 Oct 2020 16:39:06 -0400
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34bh7085a5-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 16:39:06 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09MK7Dla011995;
-        Thu, 22 Oct 2020 20:39:04 GMT
-Received: from b06avi18878370.portsmouth.uk.ibm.com (b06avi18878370.portsmouth.uk.ibm.com [9.149.26.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 348d5qw1d8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Thu, 22 Oct 2020 20:39:04 +0000
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
-        by b06avi18878370.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09MKd2oa18874790
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Thu, 22 Oct 2020 20:39:02 GMT
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 87ECAA405F;
-        Thu, 22 Oct 2020 20:39:02 +0000 (GMT)
-Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 75903A4060;
-        Thu, 22 Oct 2020 20:38:59 +0000 (GMT)
-Received: from li-f45666cc-3089-11b2-a85c-c57d1a57929f.ibm.com (unknown [9.160.54.44])
-        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Thu, 22 Oct 2020 20:38:59 +0000 (GMT)
-Message-ID: <7d9822da396a92645482e37a8c8590902323c5ef.camel@linux.ibm.com>
-Subject: Re: [PATCH v4 2/6] IMA: conditionally allow empty rule data
-From:   Mimi Zohar <zohar@linux.ibm.com>
-To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
-        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
-        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-Date:   Thu, 22 Oct 2020 16:38:58 -0400
-In-Reply-To: <20200923192011.5293-3-tusharsu@linux.microsoft.com>
-References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
-         <20200923192011.5293-3-tusharsu@linux.microsoft.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_15:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- mlxlogscore=999 spamscore=0 malwarescore=0 priorityscore=1501
- impostorscore=0 mlxscore=0 bulkscore=0 suspectscore=0 phishscore=0
- adultscore=0 clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010220130
+        Thu, 22 Oct 2020 16:39:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603399168;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=6Es6PtacViKqb4jQqg5gw1aMx5VJx45xwSoGJuNjLWg=;
+        b=bECzi+LRzpRzYEsgb0XKNlwPBluOmiv7QGCxHAZrtk7by0YtXk/F5ZfFiqRKGqLyIhsAqL
+        G4v50S6pRe8RwwqUIXbf5xfZiiLTNFNVLos3QxubIhqbdxqsleuyuVOUcdOsvkY/RovsLV
+        y9M0x5cMdy48p8U+bnSxPAmr9U9N+9I=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-569-ryZ9fepCPgylb0QODfouhA-1; Thu, 22 Oct 2020 16:39:27 -0400
+X-MC-Unique: ryZ9fepCPgylb0QODfouhA-1
+Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3A6FA1006CA9;
+        Thu, 22 Oct 2020 20:39:24 +0000 (UTC)
+Received: from lorien.usersys.redhat.com (ovpn-113-70.phx2.redhat.com [10.3.113.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 24C9660BFA;
+        Thu, 22 Oct 2020 20:39:15 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 16:39:13 -0400
+From:   Phil Auld <pauld@redhat.com>
+To:     Mel Gorman <mgorman@suse.de>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Colin Ian King <colin.king@canonical.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022203913.GJ92942@lorien.usersys.redhat.com>
+References: <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <20201022145250.GK32041@suse.de>
+ <6606e5f4-3f66-5844-da02-5b11e1464be6@canonical.com>
+ <20201022151200.GC92942@lorien.usersys.redhat.com>
+ <20201022163509.GM32041@suse.de>
+ <CAJZ5v0he839sJNh0xjmvLqzuE7X27PgJKxtSV8giZh004E7pXw@mail.gmail.com>
+ <20201022203255.GN32041@suse.de>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022203255.GN32041@suse.de>
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tushar,
-
-On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
-> ima_match_rule_data() permits the func to pass empty func_data.
-> For instance, for the following func, the func_data keyrings= is
-> optional.
->     measure func=KEY_CHECK keyrings=.ima
+On Thu, Oct 22, 2020 at 09:32:55PM +0100 Mel Gorman wrote:
+> On Thu, Oct 22, 2020 at 07:59:43PM +0200, Rafael J. Wysocki wrote:
+> > > > Agreed. I'd like the option to switch back if we make the default change.
+> > > > It's on the table and I'd like to be able to go that way.
+> > > >
+> > >
+> > > Yep. It sounds chicken, but it's a useful safety net and a reasonable
+> > > way to deprecate a feature. It's also useful for bug creation -- User X
+> > > running whatever found that schedutil is worse than the old governor and
+> > > had to temporarily switch back. Repeat until complaining stops and then
+> > > tear out the old stuff.
+> > >
+> > > When/if there is a patch setting schedutil as the default, cc suitable
+> > > distro people (Giovanni and myself for openSUSE).
+> > 
+> > So for the record, Giovanni was on the CC list of the "cpufreq:
+> > intel_pstate: Use passive mode by default without HWP" patch that this
+> > discussion resulted from (and which kind of belongs to the above
+> > category).
+> > 
 > 
-> But a new func in future may want to constrain the func_data to
-> be non-empty.  ima_match_rule_data() should support this constraint
-> and it shouldn't be hard-coded in ima_match_rule_data().
+> Oh I know, I did not mean to suggest that you did not. He made people
+> aware that this was going to be coming down the line and has been looking
+> into the "what if schedutil was the default" question.  AFAIK, it's still
+> a work-in-progress and I don't know all the specifics but he knows more
+> than I do on the topic. I only know enough that if we flipped the switch
+> tomorrow that we could be plagued with google searches suggesting it be
+> turned off again just like there is still broken advice out there about
+> disabling intel_pstate for usually the wrong reasons.
 > 
-> Update ima_match_rule_data() to conditionally allow empty func_data
-> for the func that needs it.
+> The passive patch was a clear flag that the intent is that schedutil will
+> be the default at some unknown point in the future. That point is now a
+> bit closer and this thread could have encouraged a premature change of
+> the default resulting in unfair finger pointing at one company's test
+> team. If at least two distos check it out and it still goes wrong, at
+> least there will be shared blame :/
 > 
-> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> > > Other distros assuming they're watching can nominate their own victim.
+> > 
+> > But no other victims had been nominated at that time.
+> 
+> We have one, possibly two if Phil agrees. That's better than zero or
+> unfairly placing the full responsibility on the Intel guys that have been
+> testing it out.
+>
 
-Policy rules may constrain what is measured, but that decision should
-be left to the system owner or admin.
+Yes. I agree and we (RHEL) are planning to test this soon. I'll try to get
+to it.  You can certainly CC me, please, athough I also try to watch for this
+sort of thing on list. 
 
-Mimi
+
+Cheers,
+Phil
+
+> -- 
+> Mel Gorman
+> SUSE Labs
+> 
+
+-- 
 
