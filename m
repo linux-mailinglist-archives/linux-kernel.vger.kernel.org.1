@@ -2,113 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 587E12960B3
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:09:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87B3B2960BD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:13:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900687AbgJVOJh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:09:37 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:46485 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900678AbgJVOJg (ORCPT
+        id S2895579AbgJVONz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:13:55 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59170 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895495AbgJVONy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:09:36 -0400
-Received: by mail-ot1-f66.google.com with SMTP id m11so1567329otk.13;
-        Thu, 22 Oct 2020 07:09:35 -0700 (PDT)
+        Thu, 22 Oct 2020 10:13:54 -0400
+Received: from mail-wm1-x343.google.com (mail-wm1-x343.google.com [IPv6:2a00:1450:4864:20::343])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AB0A6C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:13:52 -0700 (PDT)
+Received: by mail-wm1-x343.google.com with SMTP id l15so2438296wmi.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:13:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=enF/NQ78UlHZi0kpjlRMqO+lesxBNMFNnWEi966YlwU=;
+        b=lcgl8RehFALlBvKW+2WEqI6hL3DQCvnayUx386YFYdIACL6eZdDekWSge6wl0xau/P
+         OurS80PGFdE+uCz2ywydsXe1KEcW2OKxZnMZUyxNDMbbrQ0IMr0SI/JTRmyVAXaE9J1O
+         hmmezb9rcO1k/LRCAp+BJe5NUZwtKmz2hdtkk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=qWi7olx0i8jeUc5svHxbdLLoehMJAACFeJtvJPwksLs=;
-        b=TbKTaJNJyUE3xuyt9c+RFUDzi/fzDxpbvkg+Gd0HW4kDr+x/JtQEn1ATDy35BinY6I
-         OgQ7JHOTf1HShQmVWyQ3uQUbM9SKZWzUjhIdYy7PE5MPCLmVVSq4WByn7UhA/oRIELtI
-         z7lgGjdEg5IcDs7NGci8SYLzaFXawjNkVOISFfY7PwyVUUdp+ICIavHovIO/j3vO6BD/
-         H8aoEhGKH281K4TCvroGSi7VdLtfgWe4dGQ0DjCrOumnnZnGDMPcMZOLgEKe8m869m5F
-         9IKDCHb1UHeQ5Dvv2gqH9wxXyzD/9giJUvNN1p7PMxaciCQtDUzayA3pSTNC+pgkDOaN
-         rZHw==
-X-Gm-Message-State: AOAM533aBZYhgcy7dJau4Ii9f3Tg2BZ8vo2e+8I3jrm2BJiKjXRKJ3TE
-        gkEA9V0p8g+GQHADAEuiOdLe8BtTgy0kCr5kcvw=
-X-Google-Smtp-Source: ABdhPJyI/I2qD0HIY714dpAMocse+Wp7lpuhjH3pC+OK6EZ5BfvM4PxsL1QFGTV3yw9z+HQUyBUlrd1ttcwaiSXosyA=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr1979468otc.145.1603375775423;
- Thu, 22 Oct 2020 07:09:35 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=enF/NQ78UlHZi0kpjlRMqO+lesxBNMFNnWEi966YlwU=;
+        b=KZO+Hsb3Y2Sg4SLpmcSPVE39l39JX6dvzvB/i+jhrwjpJigVqKSvwAwHUWnAF/EHDe
+         4inHxBh9juNhFHnStEs21U8kikaXA7/gC68rZrg8CTqVUBdrPtYI58aQlA3hwOentCho
+         mhPFb1NnA1mDU5ZNIQbSTwujNrFnlgEtjVmuVpSPfAiuJmVanZU0QaOZegw+koPGcDqI
+         q2JplRoIDuelZxhiHVJzX5Ehn2BnENfkyM71YaHcGzTeNXj5A3OQpWil5cktQFai47mU
+         jJFmHTgtP2PYDUce9IrTAYqqtw1Lbpg37wWlgwPMvloDNsgtY6NUHlpm2LeCZBjalz/A
+         UY9w==
+X-Gm-Message-State: AOAM532Di/pRJ214yHvO88529U+6JzMjSr13NJ1ZJ2P8DOTd/Y5tdWNY
+        wiI0rUJiHeD4/Pq8xdJKm8wX8A==
+X-Google-Smtp-Source: ABdhPJwHYDGIRoRMV1tiPrqE+G8DvABiHKwtdx9svGn7vK4QZAvd1J5pyjsiQ/shrV+Vnd5qklpZ6Q==
+X-Received: by 2002:a1c:4604:: with SMTP id t4mr2863073wma.95.1603376030491;
+        Thu, 22 Oct 2020 07:13:50 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id y4sm3726390wmj.2.2020.10.22.07.13.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 07:13:49 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 16:13:47 +0200
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Sumera Priyadarsini <sylphrenadin@gmail.com>
+Cc:     dri-devel@lists.freedesktop.org, outreachy-kernel@googlegroups.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, daniel@ffwll.ch, melissa.srw@gmail.com,
+        linux-media@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [Outreachy kernel][PATCH 0/5] drm/amdgpu: Replace snprintf()
+ with sysfs_emit
+Message-ID: <20201022141347.GZ401619@phenom.ffwll.local>
+Mail-Followup-To: Sumera Priyadarsini <sylphrenadin@gmail.com>,
+        dri-devel@lists.freedesktop.org, outreachy-kernel@googlegroups.com,
+        alexander.deucher@amd.com, christian.koenig@amd.com,
+        airlied@linux.ie, melissa.srw@gmail.com,
+        linux-media@vger.kernel.org, amd-gfx@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+References: <cover.1603371258.git.sylphrenadin@gmail.com>
 MIME-Version: 1.0
-References: <20201016121709.8447-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201016121709.8447-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201016121709.8447-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Oct 2020 16:09:24 +0200
-Message-ID: <CAMuHMdVPfoU_X3A4ioy9TeJHmovE5P=fDYpShsWTzFYXmZoiww@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: renesas: r8a774c0: Add RPC clocks
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cover.1603371258.git.sylphrenadin@gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
+On Thu, Oct 22, 2020 at 07:07:50PM +0530, Sumera Priyadarsini wrote:
+> Using snprintf() for show() methods holds the risk of buffer overrun
+> as snprintf() does not know the PAGE_SIZE maximum of the temporary
+> buffer used to output sysfs content.
+> 
+> This patchset is a series of Coccinelle cleanups across the staging
+> directory to convert snprintf with scnprintf in the relevant files.
 
-On Fri, Oct 16, 2020 at 2:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-> as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
-> driver.
->
-> Inspired by commit 94e3935b5756 ("clk: renesas: r8a77980: Add RPC clocks").
->
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+I think you need to edit your template here since this is now drivers/gpu,
+not staging :-)
+-Daniel
 
-Thanks for your patch!
-
-> --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> @@ -73,6 +74,12 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
->         DEF_FIXED(".s2",       CLK_S2,             CLK_PLL1,       4, 1),
->         DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
->         DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
-> +       DEF_BASE(".rpcsrc",    CLK_RPCSRC, CLK_TYPE_GEN3_RPCSRC, CLK_PLL1),
-> +
-> +       DEF_BASE("rpc",        R8A774C0_CLK_RPC, CLK_TYPE_GEN3_RPC,
-> +                CLK_RPCSRC),
-> +       DEF_BASE("rpcd2",      R8A774C0_CLK_RPCD2, CLK_TYPE_GEN3_RPCD2,
-> +                R8A774C0_CLK_RPC),
->
->         DEF_DIV6_RO(".r",      CLK_RINT,           CLK_EXTAL, CPG_RCKCR, 32),
->
-
-> @@ -275,6 +283,10 @@ static int __init r8a774c0_cpg_mssr_init(struct device *dev)
->         return rcar_gen3_cpg_init(cpg_pll_config, 0, cpg_mode);
->  }
->
-> +static const struct clk_div_table cpg_rpcsrc_div_table[] = {
-> +       { 0, 5 }, { 1, 3 }, { 2, 8 }, {3, 2}, {0, 0},
-> +};
-
-The above models RPCSRC as a clock generated by dividing PLL1 by either
-5, 3, 8, or 2.  This does not match the hardware user's manual, which
-states that RPCSRC is either PLL1 divided by 5 or 3, or PLL0 divided by
-8 or 2.
-
-I think you need a new clock type (CLK_TYPE_GEN3E_RPCSRC, as it applies
-to RZ/G2E, and R-Car E3?), which registers a composite clock consisting
-of a mux and divider.  This is a bit similar to the RPC/RPCD2 clocks,
-which are composite clocks consisting of a divider and a gate.
-
-Note that R-Car D3 is similar, except that PLL0 is divided by 5 or 2, which
-means yet another clock type (and div_table).
-
-Gr{oetje,eeting}s,
-
-                        Geert
+> 
+> Sumera Priyadarsini (5):
+>   gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+>   gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+>   gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+>   gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+>   gpu: drm: amdgpu: Replace snprintf() with sysfs_emit()
+> 
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_atombios.c | 2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_device.c   | 8 ++++----
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_gtt_mgr.c  | 4 ++--
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_psp.c      | 2 +-
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_ras.c      | 4 ++--
+>  5 files changed, 10 insertions(+), 10 deletions(-)
+> 
+> -- 
+> 2.25.1
+> 
 
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
