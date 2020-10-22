@@ -2,204 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96490295891
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:51:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB918295895
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 08:52:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2440846AbgJVGv1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 02:51:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47210 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2405139AbgJVGv1 (ORCPT
+        id S2504391AbgJVGwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 02:52:11 -0400
+Received: from esa1.hgst.iphmx.com ([68.232.141.245]:30990 "EHLO
+        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409800AbgJVGwK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 02:51:27 -0400
-Received: from mail-ed1-x544.google.com (mail-ed1-x544.google.com [IPv6:2a00:1450:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1336C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 23:51:26 -0700 (PDT)
-Received: by mail-ed1-x544.google.com with SMTP id w23so664025edl.0
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 23:51:26 -0700 (PDT)
+        Thu, 22 Oct 2020 02:52:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
+  t=1603349530; x=1634885530;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=8r6C5eG90sGLmXXzqK2ip9oeh1aKanwiFax6n9RwSvk=;
+  b=kCaFk8guN/xSn6L5n4ONYyj1VJkDzjhXKh0eY06DmAjfnIaAy4WXeot5
+   Ge86fogJCB1s7IY7NEIllUR9t/YEmZJF4UPyX4KO8tZPlcVQD76lSsnFw
+   py7whFdtEmZdfVmBQYjLwMrsalc/uf4ll7lYFn6oOvqs2j1fycbUM+jZ8
+   rJI+DLsdHxC2BnD2+8ol2S0UT73vF/8twkT753zaF+gfx5veymjeYyOm+
+   jVksiL8AVZcvq6Cm396nfe+pFhF28+D50aJoKYKrwLK/AdsuMdUw5s3HO
+   xsrkJQwW1zhbKeFCVtkvfeAZ8Ku3AIMdZRkoq4tu8JO3hoFOLpSqAd0eG
+   A==;
+IronPort-SDR: MvZCOgLR5eFKL7Tye0DkqxmYhlmqc73zkh/Di1LSoFpwPVcO8T2mnT5tjTy/CSC5vKk2kuczvr
+ FAGvIQhfoRxWr8b5rO6XJSIpzUeW41iVwr2259uuyVqW5Ves74HtnfpqBBF0NO5e0KHzOrN42C
+ /jrGXi1ggyttFpbvgWNk7CrPJA69oxaENWrRfjjtHaLsKetwbcj6kptIJMAuxxjMyS4kChThTn
+ AvfT770NTy7Wx0CkTXDZrcMSlQpa8tQ6OkoC30Lk/9clbKvm2J+tD/n+1U6MyWNtRWWaKGNnO8
+ mvI=
+X-IronPort-AV: E=Sophos;i="5.77,403,1596470400"; 
+   d="scan'208";a="260487770"
+Received: from mail-co1nam11lp2168.outbound.protection.outlook.com (HELO NAM11-CO1-obe.outbound.protection.outlook.com) ([104.47.56.168])
+  by ob1.hgst.iphmx.com with ESMTP; 22 Oct 2020 14:52:09 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=O9oy6fKlAZt0PJ4yuIExEGyWGpyB0e16AVIerosm0GSmLEIjeGYMY2RdEuT8FjD7ZA3wHKk0F5CWRa9sjia7VjbuHH95JUc5+JXFVEXufT9siH6oqRP3XnL2jXYVgRy7u+VYUIVrRjP/43M80MJq5ToQjujqBY7wDMC8yEW1g2bYAp2dLZGSRx8OLc/mfYvqg90ArZ81YdsWTEI489wG8FF9uQ4vPcg0waPIRE3Wk2wpaoNNgPqyLqYc6HxLDbtpXAtRH8QCfhHCL8dmcJaTbUclK7BqRh2iyPIxEV1O1VryvxpjblnXyDR6mdJ5PiIXBmXAnO8SabRS2QTgeTpq1Q==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8r6C5eG90sGLmXXzqK2ip9oeh1aKanwiFax6n9RwSvk=;
+ b=I3uSEypfS8Qh/HGCZM+giltPiEr2VudicCg4PLd+ljRqeSDzcJNQLinbp+Ezxd19UFbBPSANnxKWwKCwDpTlp5HE7LkHC5OKrlxBmqUd+bjwMsmYEJga9tltnTX0qP4fyxVboCGjeR9VtN/jPr/h9i3QDINFTrWzakhwEIKeoHDUJh0yTBozr8uvfQ9iS/5rhHp1h8IYXfkxGXHsvs/VoLBLDJ9F9dahOnYr9GZn7xZ7KQ+uAtbW4p6WZnAQHGEmfmWQrmnlXF5lIhn4U4e41b2I+5NemsWWS7RtThRgAIgx90UTL2/ydyervaeKZOgQUHQg+YjBKTh//bURgLQObQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
+ header.d=wdc.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=83WaSwSjuw+5p/FwjUSXyrPazCj9QLrPDjKBSL0j68I=;
-        b=XW8VcTgNWSBX9ZRx6R0cOXlNGg07ZkU2zI/qkfhZD51+qIvk6yJMY/4ska7xYpkkPs
-         oJUFlge2Pwuv4dmUGr2CwCWLrC2zD6AhVUx19LOsjrn/mrteyyoceldP7qXhlTSdwQk8
-         QXBXDqVsEEIsCA2jpmZDYl2osBA0hGlO1i6xT1S9Jvgz6AwCoKOgiRlsaxbXgMHH2CQX
-         VKcJB5rugckficd1IZtz/E8S+1NOFAVo0NXtbQEhLGq8vaZphnsir+1nG1M6FonLbEX5
-         BV5XvDNizbyyuxbEDglljjC1vg1wPvUsfhjJpSOW97XgfW8W18GpgWwEvwmmCyWKkQmN
-         QtGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=83WaSwSjuw+5p/FwjUSXyrPazCj9QLrPDjKBSL0j68I=;
-        b=Cpg1jDWpJb6cniVlk6xZ5x2gnqdLdM+OpX8i5W6SOHWlf5gw4AS2BiyTfH1CDzIssO
-         BqYAWMSlK/wF7tEFL73IoVbRYwI4YQadxXmtSybSWWmOZ+C4zu/Z9MXj/CACwxZjzIia
-         LoXbFHZ5JFiUjo3i8TDljVyGC8rIeMyGKR2yhyFfH8vPBwEfmFjAqmnV+KM5LmjOD0hR
-         4PR4CTUz/ESM5SG6BPcqycfAANg9GoQp0qwu5KSn2U0pzkpqezP6XcQlxzxn3mRVo6ur
-         uRUvMQTfpFYfCTpwrpWVkPLOhSVaJihKBp6ksnCrNS+9165EyP3Cf+rLXsAdHx++Wo1e
-         yNNQ==
-X-Gm-Message-State: AOAM530zwhvUD8edswzsmki7k4wiWvf0fpS2a+cTRhkQ9LDfjjJ56oCH
-        lFoUXe8M71i5HrDL6u568/o=
-X-Google-Smtp-Source: ABdhPJwZBzBdphPetBP0IJSt6mlMSX0ojTkIOiLLlGN3oY0PLWU9ycw3CX8yZpK2pF16dZtCPBnLdw==
-X-Received: by 2002:a50:fe98:: with SMTP id d24mr905626edt.223.1603349485438;
-        Wed, 21 Oct 2020 23:51:25 -0700 (PDT)
-Received: from auth2-smtp.messagingengine.com (auth2-smtp.messagingengine.com. [66.111.4.228])
-        by smtp.gmail.com with ESMTPSA id q9sm276282ejd.66.2020.10.21.23.51.22
-        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 23:51:24 -0700 (PDT)
-Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
-        by mailauth.nyi.internal (Postfix) with ESMTP id 1D42E27C0054;
-        Thu, 22 Oct 2020 02:51:22 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute5.internal (MEProxy); Thu, 22 Oct 2020 02:51:22 -0400
-X-ME-Sender: <xms:6SuRX3UiIOxdZZi3knddG1LyQl204wbojrHbZA7Z9bikX1IgkDOOFQ>
-    <xme:6SuRX_nlder7mDYSFGJiR7nL0XMUws0G1M61k1-dBlVRSh0175PcnBJKuMe97tZuf
-    L9SVy0JWI4JvFgheA>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeeigdduudduucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvffukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepieevheevhfelgeejleehheeghffgvdejfeduieevtddutddtteefiefhffel
-    tddvnecuffhomhgrihhnpegvfhhfihgtihhoshdrtghomhenucfkphepudefuddruddtje
-    drudegjedruddvieenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
-    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
-    ohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:6SuRXzb5vKdzIpcV04IThPRVpeuKP9_9h8sfD82s2TmpNemzk7CjPQ>
-    <xmx:6SuRXyUMCApUPXLiVMZwzFaHN_8jliHq22zHUr_2bvRN2CmRkBfdag>
-    <xmx:6SuRXxkutgRI3y5KukO5xKawrtnpceUVNxtSJeiNBkAgLwf3RYrMwA>
-    <xmx:6iuRXyiA_BlA6skP5xib8GpezsjBhxCUd1DY7Xer6yshKJDD0Bk2kKfTASE>
-Received: from localhost (unknown [131.107.147.126])
-        by mail.messagingengine.com (Postfix) with ESMTPA id F29A93064610;
-        Thu, 22 Oct 2020 02:51:20 -0400 (EDT)
-Date:   Thu, 22 Oct 2020 14:51:00 +0800
-From:   Boqun Feng <boqun.feng@gmail.com>
-To:     Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Will Deacon <will@kernel.org>, paulmck <paulmck@kernel.org>,
-        Nicholas Piggin <npiggin@gmail.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-mm <linux-mm@kvack.org>
-Subject: Re: [PATCH 1/3] sched: fix exit_mm vs membarrier (v4)
-Message-ID: <20201022065100.GA855403@boqun-archlinux>
-References: <20201020134715.13909-1-mathieu.desnoyers@efficios.com>
- <20201020134715.13909-2-mathieu.desnoyers@efficios.com>
- <20201020143648.GU2628@hirez.programming.kicks-ass.net>
- <1123875792.30589.1603205998119.JavaMail.zimbra@efficios.com>
+ d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=8r6C5eG90sGLmXXzqK2ip9oeh1aKanwiFax6n9RwSvk=;
+ b=vmaMTUqz9tE8b8y6jMmWzD+7inDus/QuFRrqAeKS+XzjjHpdGvKpwIsE8TTFbds+j68OCu8B8lIRsstEIe5ZmmcpAPl9JVB279/SMs6PFA8FD7SMdpl2hs/bFAbcNtzn1vIdx+HqhRicYCerVkv5ymVGZH5bmy6ATJ25+lQzXRs=
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
+ by BY5PR04MB6536.namprd04.prod.outlook.com (2603:10b6:a03:1c6::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25; Thu, 22 Oct
+ 2020 06:52:06 +0000
+Received: from BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::709c:ec54:b10b:2d90]) by BY5PR04MB6705.namprd04.prod.outlook.com
+ ([fe80::709c:ec54:b10b:2d90%9]) with mapi id 15.20.3477.029; Thu, 22 Oct 2020
+ 06:52:06 +0000
+From:   Avri Altman <Avri.Altman@wdc.com>
+To:     Chanho Park <chanho61.park@samsung.com>,
+        'Bart Van Assche' <bvanassche@acm.org>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>
+CC:     "alim.akhtar@samsung.com" <alim.akhtar@samsung.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Thread-Topic: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+Thread-Index: AQHWpq9q7Lr7WY87fUG0cXv3FjTmmamix4tSgABLSQCAAB6KQA==
+Date:   Thu, 22 Oct 2020 06:52:06 +0000
+Message-ID: <BY5PR04MB6705B7357AFEDF3AB07E1560FC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
+        <20201020070516.129273-1-chanho61.park@samsung.com>
+        <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
+        <000a01d6a761$efafcaf0$cf0f60d0$@samsung.com>
+        <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
+ <008a01d6a830$1a109800$4e31c800$@samsung.com>
+In-Reply-To: <008a01d6a830$1a109800$4e31c800$@samsung.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: samsung.com; dkim=none (message not signed)
+ header.d=none;samsung.com; dmarc=none action=none header.from=wdc.com;
+x-originating-ip: [212.25.79.133]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: bb5904e6-e4e7-40b1-91f7-08d87656fda8
+x-ms-traffictypediagnostic: BY5PR04MB6536:
+x-microsoft-antispam-prvs: <BY5PR04MB653637E3821B04BB4265C771FC1D0@BY5PR04MB6536.namprd04.prod.outlook.com>
+wdcipoutbound: EOP-TRUE
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: RFkq9cklWiVp9SHFJcY2urJBrGNzR5KjoIx0iyOENyBZEQ9FodvofzHD5eiKalUNATras7hsBBsM9M7pm/Lopg0MKjzePjCy9zKxTCwzknXY0/B1v+ph5elOgvIfebeUvtbcer65BUqC2Cu2fyFA2f7ei1pgTbWM3h5rQ4cE7H4VQpsDrEanHaYnpREOMTQn1uiQE1J7SnfWMArVpITmYT2HPZTwOHgGQq6eBwTFv+BE19dEp12Wz/hOQYaamgiqORLFTz66rE08JS9q2LR2QTn4wGDClTQmhRDwmBHWgscc7cD8gcQWdbyF6vobWG37SnOtqaGKdXuNP64+XNHDTA==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(376002)(39860400002)(396003)(366004)(7696005)(6506007)(5660300002)(478600001)(8676002)(26005)(186003)(66446008)(66946007)(52536014)(2906002)(76116006)(64756008)(8936002)(55016002)(54906003)(86362001)(66476007)(9686003)(66556008)(316002)(33656002)(71200400001)(4326008)(110136005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: eTFqFnAFTFdpCoRBX9Ta4FPocYeMz/Sh2BzypY4Nc/Fx1aP70xnlffJedyffhMdlqF8CcCnokhDqL0SaZSMOrlYRNWXoXvC+fUu5OfNdcQFSQe+oI7rUAY7/WpFXtjdR3JhQtwZAHg6OswyORE/56blo/WV25c5at6Nm2zC6LfRMfV/EfZo8YAM6Ky8g+/g0Ixwgm1weotFXvNM4GxX5GBWO1I8C4m5e0ZAyeJsCfR7mtOJRL728KHLDJDTe7FyBkIZTvCy+ZvtMW50HaqaBPAOWNDwyfV9whjU94g+TwKAxDRYBDnIoB4Cvx9MJFg54S2tOdpDKqHif9qzNddW5lXU6yyOoKSKxHtOXMT4mrO4pPp3bC5M8rhN/rrQiw8B/OXcVMHDfzt923W0NAUPhOZbO3F/x3yT054dwsamTlmwkopNZbBuYbmwFSPizh5gQjcYfZns9/UpY/bDh/Qts+MDMd8qXPoRu/zUrLbjvs8/OKa7q3fF5sV1RfC+G7pFFRpUGiCM53xOsxbAGDuD0z08RxgoagT3V+4b5MQAIAqS/qvFyom4JiZ5fZ43ZYwudGSj0pkhBCIooueL2dJrpNJ0SnRz498on6vH/Ff13a5bJz2pRiSg2yWseNCt/kUUg4GmRYuVEUs4UjH4BJuBh/w==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1123875792.30589.1603205998119.JavaMail.zimbra@efficios.com>
+X-OriginatorOrg: wdc.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb5904e6-e4e7-40b1-91f7-08d87656fda8
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2020 06:52:06.6240
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: zhdkI13QrdIfXy/imzmiTrZt8IzcRDZCkwCdzmOouEJu33kl/jj0ucE9c8GIFQ9pZIhoiFFP1vXH9aO8XHxsnA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6536
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
-
-On Tue, Oct 20, 2020 at 10:59:58AM -0400, Mathieu Desnoyers wrote:
-> ----- On Oct 20, 2020, at 10:36 AM, Peter Zijlstra peterz@infradead.org wrote:
-> 
-> > On Tue, Oct 20, 2020 at 09:47:13AM -0400, Mathieu Desnoyers wrote:
-> >> +void membarrier_update_current_mm(struct mm_struct *next_mm)
-> >> +{
-> >> +	struct rq *rq = this_rq();
-> >> +	int membarrier_state = 0;
-> >> +
-> >> +	if (next_mm)
-> >> +		membarrier_state = atomic_read(&next_mm->membarrier_state);
-> >> +	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
-> >> +		return;
-> >> +	WRITE_ONCE(rq->membarrier_state, membarrier_state);
-> >> +}
-> > 
-> > This is suspisioucly similar to membarrier_switch_mm().
-> > 
-> > Would something like so make sense?
-> 
-> Very much yes. Do you want me to re-send the series, or you
-> want to fold this in as you merge it ?
-> 
-> Thanks,
-> 
-> Mathieu
-> 
-> > 
-> > ---
-> > --- a/kernel/sched/membarrier.c
-> > +++ b/kernel/sched/membarrier.c
-> > @@ -206,14 +206,7 @@ void membarrier_exec_mmap(struct mm_stru
-> > 
-> > void membarrier_update_current_mm(struct mm_struct *next_mm)
-> > {
-> > -	struct rq *rq = this_rq();
-> > -	int membarrier_state = 0;
-> > -
-> > -	if (next_mm)
-> > -		membarrier_state = atomic_read(&next_mm->membarrier_state);
-> > -	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
-> > -		return;
-> > -	WRITE_ONCE(rq->membarrier_state, membarrier_state);
-> > +	membarrier_switch_mm(this_rq(), NULL, next_mm);
-> > }
-> > 
-> > static int membarrier_global_expedited(void)
-> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> > index d2621155393c..3d589c2ffd28 100644
-> > --- a/kernel/sched/sched.h
-> > +++ b/kernel/sched/sched.h
-> > @@ -2645,12 +2645,14 @@ static inline void membarrier_switch_mm(struct rq *rq,
-> > 					struct mm_struct *prev_mm,
-> > 					struct mm_struct *next_mm)
-> > {
-> > -	int membarrier_state;
-> > +	int membarrier_state = 0;
-> > 
-> > 	if (prev_mm == next_mm)
-
-Unless I'm missing something subtle, in exit_mm(),
-membarrier_update_current_mm() is called with @next_mm == NULL, and
-inside membarrier_update_current_mm(), membarrier_switch_mm() is called
-wiht @prev_mm == NULL. As a result, the branch above is taken, so
-membarrier_update_current_mm() becomes a nop. I think we should use the
-previous value of current->mm as the @prev_mm, something like below
-maybe?
-
-void update_current_mm(struct mm_struct *next_mm)
-{
-	struct mm_struct *prev_mm;
-	unsigned long flags;
-
-	local_irq_save(flags);
-	prev_mm = current->mm;
-	current->mm = next_mm;
-	membarrier_switch_mm(this_rq(), prev_mm, next_mm);
-	local_irq_restore(flags);
-}
-
-, and replace all settings for "current->mm" in kernel with
-update_current_mm().
-
-Thoughts?
-
-Regards,
-Boqun
-
-> > 		return;
-> > 
-> > -	membarrier_state = atomic_read(&next_mm->membarrier_state);
-> > +	if (next_mm)
-> > +		membarrier_state = atomic_read(&next_mm->membarrier_state);
-> > +
-> > 	if (READ_ONCE(rq->membarrier_state) == membarrier_state)
-> >  		return;
-> 
-> -- 
-> Mathieu Desnoyers
-> EfficiOS Inc.
-> http://www.efficios.com
+PiANCj4gPiA+IERpZCB5b3UgbWVhbiAvZGV2L2Rpc2svYnktW3BhcnRdbGFiZWwvIHN5bWxpbms/
+IEl0J3MgcXVpdGUgcmVhc29uYWJsZSB0bw0KPiA+ID4gdXNlIHRoZW0gYnkgdWRldiBpbiB1c2Vy
+c3BhY2Ugc3VjaCBhcyBpbml0cmFtZnMgYnV0IHNvbWUgY2FzZXMgZG9lcyBub3QNCj4gPiB1c2UN
+Cj4gPiA+IGluaXRyYW1mcyBvciBpbml0cmQuIEluIHRoYXQgY2FzZSwgd2UgbmVlZCB0byBsb2Fk
+IHRoZSByb290DQo+ID4gPiBkZXZpY2UoL2Rldi9zZGFbTl0pIGRpcmVjdGx5IGZyb20ga2VybmVs
+Lg0KPiA+DQo+ID4gUGxlYXNlIHVzZSB1ZGV2IG9yIHN5c3RlbWQgaW5zdGVhZCBvZiBhZGRpbmcg
+Y29kZSBpbiB0aGUgVUZTIGRyaXZlciB0aGF0DQo+ID4gaXMNCj4gPiBub3QgbmVjZXNzYXJ5IHdo
+ZW4gdWRldiBvciBzeXN0ZW1kIGlzIHVzZWQuDQo+ID4NCj4gDQo+IFdoYXQgSSBtZW50aW9uZWQg
+d2FzIGhvdyBpdCBjYW4gYmUgaGFuZGxlZCB3aGVuIHdlIG1vdW50IHJvb3RmcyBkaXJlY3RseQ0K
+PiBmcm9tIGtlcm5lbC4NCj4gDQo+IDEpIGtlcm5lbCAtPiBpbml0cmFtZnMgKG1vdW50IHJvb3Qp
+IC0+IHN5c3RlbWQNCj4gMikga2VybmVsIChtb3VudCByb290KSAtPiBzeXN0ZW1kDQo+ICAtPiBJ
+biB0aGlzIGNhc2UsIHdlIG5vcm1hbGx5IHVzZSByb290PS9kZXYvc2RhMSBmcm9tIGtlcm5lbCBj
+b21tYW5kbGluZSB0bw0KPiBtb3VudCB0aGUgcm9vdGZzLg0KPiANCj4gTGlrZSBmc3RhYiBjYW4g
+c3VwcG9ydCBsZWdhY3kgbm9kZSBtb3VudCwgdWZzIGRyaXZlciBhbHNvIG5lZWRzIHRvIHByb3Zp
+ZGUgYW4NCj4gb3B0aW9uIGZvciB1c2luZyB0aGUgcGVybWFuZW50IGxlZ2FjeSBub2RlLiBJZiB5
+b3UncmUgcmVhbGx5IHdvcnJ5IGFib3V0IGFkZGluZw0KPiBhIG5ldyBjb2RlcyBmb3IgYWxsIFVG
+UyBkcml2ZXIsIHdlIGNhbiBwdXQgdGhpcyBhcyBjb250cm9sbGVyIHNwZWNpZmljIG9yIG9wdGlv
+bmFsDQo+IGZlYXR1cmUuDQpJbiBjYXNlIHlvdSdsbCBjb252aW5jZSBCYXJ0IHRoYXQgdGhpcyBj
+b2RlIGlzIG5lZWRlZCwgbWF5YmUgdXNlIGEgSURBIGhhbmRsZSBmb3IgdGhhdD8NCg0KVGhhbmtz
+LA0KQXZyaQ0K
