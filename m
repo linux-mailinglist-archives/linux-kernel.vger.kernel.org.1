@@ -2,176 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD728296695
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CA08829669D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:28:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898217AbgJVVY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:24:29 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41274 "EHLO
+        id S2898653AbgJVV2s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:28:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41926 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505826AbgJVVY2 (ORCPT
+        with ESMTP id S2507136AbgJVV2q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:24:28 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 73CCEC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:24:27 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id j7so1795194pgk.5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:24:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=m548N/pUewjuO1woINgGJ0CoX/HtQ1+ByYsCYcMLVKE=;
-        b=LQoeTVJ4ze4ERYkUhHEVrpI8frOH/KnCH5FKMM16B83R5skUGI9qt2F6Mxf1lev5w2
-         9bLNVPj8Yt7IiRNm4LeqFI37SYNaOLfyYMkhdxUI0EutKjjVIx2hi5ToCVrOX7A/dzYU
-         bgXE64yG/qhIpeWT80V3liAXjf2ahD/rkwbYJOl+xCzmk7cgABRAgKCATg2vMJFUplym
-         N/xJ8vrq0RvT+0eu+Sr6ssgBc31/T9nEXQkZj0pwAG3fcNWX5f49ulTHi5mocBbl1Rxp
-         rq08GhLXx98JL/UoK8Sg2LcoGc3zpdrQRjwEJfNEKM0YvfKEa6rXzzaCeRk1HmTT67mn
-         9DGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=m548N/pUewjuO1woINgGJ0CoX/HtQ1+ByYsCYcMLVKE=;
-        b=o5LHWn6ewRpmQaHYijkPzt2eIgiRm2zyEdtooYqddFmGzIFtzWS75RiDENFaAMciEp
-         M4ggIevwFgpKcD827zMBZ488grzriBeaGjmSmmkVQFJY2zAGhIWlJwOqeH95BVyzStPy
-         bo7hUbZEUMtM2yp8X3aYGhQTKdJpYZAgo6TKRb3Fznql5C/mQW468L1YXLRAv/AWe518
-         w8v26ZuQZhrnsA+rpd9Y3Zjn8Mkaq0nvslzpY4qQmRrfRIljka9yCdPhOR0ZQzyBgQVR
-         Odt5qKAf7E+H4ppEmTbReG1He4PtehQVfK7H8b8/YHPl3tTcviqYEl0CKKKgEurkIrlM
-         6jDw==
-X-Gm-Message-State: AOAM532vigiZMOqxzn/3ohyn3qeQerLO5EK8OP6ly2kBXOfsICFK297c
-        k/IT2SIDXNqT5+E+jwOVo2TBIg==
-X-Google-Smtp-Source: ABdhPJyhfBSC+52siau400RnxIzNfvIKY+gDyAevHbRM4Sbhr0RXoco4dCXwCXtmXfP+ggIs7yz0jA==
-X-Received: by 2002:a17:90b:205:: with SMTP id fy5mr3416354pjb.34.1603401866628;
-        Thu, 22 Oct 2020 14:24:26 -0700 (PDT)
-Received: from google.com ([2620:15c:202:201:4a0f:cfff:fe66:e92e])
-        by smtp.gmail.com with ESMTPSA id c203sm3188638pfb.96.2020.10.22.14.24.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 14:24:25 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 14:24:20 -0700
-From:   Benson Leung <bleung@google.com>
-To:     torvalds@linux-foundation.org
-Cc:     bleung@chromium.org, bleung@google.com, bleung@kernel.org,
-        linux-kernel@vger.kernel.org, enric.balletbo@collabora.com
-Subject: [GIT PULL] chrome-platform changes for v5.10
-Message-ID: <20201022212420.GA3714143@google.com>
+        Thu, 22 Oct 2020 17:28:46 -0400
+Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BB0E9C0613CE;
+        Thu, 22 Oct 2020 14:28:45 -0700 (PDT)
+Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVi8K-006V84-LA; Thu, 22 Oct 2020 21:28:28 +0000
+Date:   Thu, 22 Oct 2020 22:28:28 +0100
+From:   Al Viro <viro@zeniv.linux.org.uk>
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        David Laight <David.Laight@aculab.com>,
+        Christoph Hellwig <hch@lst.de>,
+        David Hildenbrand <david@redhat.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Message-ID: <20201022212828.GZ3576660@ZenIV.linux.org.uk>
+References: <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022132342.GB8781@lst.de>
+ <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
+ <20201022164040.GV20115@casper.infradead.org>
+ <CAKwvOdnq-yYLcF_coo=jMV-RH-SkuNp_kMB+KCBF5cz3PwiB8g@mail.gmail.com>
+ <20201022205932.GB3613750@gmail.com>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="envbJBWh7q8WU6mo"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201022205932.GB3613750@gmail.com>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 22, 2020 at 01:59:32PM -0700, Eric Biggers wrote:
 
---envbJBWh7q8WU6mo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+> Also note the following program succeeds on Linux 5.9 on x86_64.  On kernels
+> that have this bug, it should fail.  (I couldn't get it to actually fail, so it
+> must depend on the compiler and/or the kernel config...)
 
-Hello Linus,
+It doesn't.  See https://www.spinics.net/lists/linux-scsi/msg147836.html for
+discussion of that mess.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+ssize_t vfs_readv(struct file *file, const struct iovec __user *vec,
+                  unsigned long vlen, loff_t *pos, rwf_t flags)
+{
+        struct iovec iovstack[UIO_FASTIOV];
+        struct iovec *iov = iovstack;
+        struct iov_iter iter;
+        ssize_t ret;
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+        ret = import_iovec(READ, vec, vlen, ARRAY_SIZE(iovstack), &iov, &iter);
+        if (ret >= 0) {
+                ret = do_iter_read(file, &iter, pos, flags);
+                kfree(iov);
+        }
 
-are available in the Git repository at:
+        return ret;
+}
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/chrome-platform/linux.git t=
-ags/tag-chrome-platform-for-v5.10
+and import_iovec() takes unsigned int as the third argument, so it *will*
+truncate to 32 bits, no matter what.  Has done so since 0504c074b546
+"switch {compat_,}do_readv_writev() to {compat_,}import_iovec()" back in
+March 2015.  Yes, it was an incompatible userland ABI change, even though
+nothing that used glibc/uclibc/dietlibc would've noticed.
 
-for you to fetch changes up to 3e98fd6d816cd82f529345870efd435f06e02803:
+Better yet, up until 2.1.90pre1 passing a 64bit value as the _first_ argument
+of readv(2) used to fail with -EBADF if it was too large; at that point it
+started to get quietly truncated to 32bit first.  And again, no libc users
+would've noticed (neither would anything except deliberate regression test
+looking for that specific behaviour).
 
-  ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA (2020-1=
-0-01 18:33:01 +0200)
-
-----------------------------------------------------------------
-chrome platform changes for 5.10
-
-cros-ec:
-* Error code cleanup across cros-ec by Guenter.
-* Remove cros_ec_cmd_xfer in favor of cros_ec_cmd_xfer_status.
-
-cros_ec_typec:
-* Landed initial USB4 support in typec connector class driver for cros_ec.
-* Role switch bugfix on disconnect, and reordering configuration steps.
-
-cros_ec_lightbar:
-* Fix buffer outsize and result for get_lightbar_version.
-
-misc:
-* Remove config MFD_CROS_EC, now that transition from MFD is complete.
-* Enable KEY_LEFTMETA in new location on arm based cros-ec-keyboard keymap.
-
-----------------------------------------------------------------
-Azhar Shaikh (3):
-      platform/chrome: cros_ec_typec: Send enum values to usb_role_switch_s=
-et_role()
-      platform/chrome: cros_ec_typec: Avoid setting usb role twice during d=
-isconnect
-      platform/chrome: cros_ec_typec: Re-order connector configuration steps
-
-Enric Balletbo i Serra (1):
-      platform/chrome: Kconfig: Remove the transitional MFD_CROS_EC config
-
-Guenter Roeck (7):
-      iio: cros_ec: Accept -EOPNOTSUPP as 'not supported' error code
-      cros_ec_lightbar: Accept more error codes from cros_ec_cmd_xfer_status
-      platform/chrome: cros_ec_sysfs: Report range of error codes from EC
-      pwm: cros-ec: Accept more error codes from cros_ec_cmd_xfer_status
-      platform/input: cros_ec: Replace -ENOTSUPP with -ENOPROTOOPT
-      platform/chrome: cros_ec_proto: Convert EC error codes to Linux error=
- codes
-      pwm: cros-ec: Simplify EC error handling
-
-Gwendal Grignou (2):
-      platform/chrome: cros_ec_trace: Add fields to command traces
-      platform/chrome: cros_ec_lightbar: Reduce ligthbar get version command
-
-Heikki Krogerus (1):
-      platform/chrome: cros_ec_typec: USB4 support
-
-Prashant Malani (2):
-      platform/chrome: cros_ec_proto: Update cros_ec_cmd_xfer() call-sites
-      platform/chrome: cros_ec_proto: Drop cros_ec_cmd_xfer()
-
-Stephen Boyd (1):
-      ARM: dts: cros-ec-keyboard: Add alternate keymap for KEY_LEFTMETA
-
-Wang Qing (1):
-      platform/chrome: Use kobj_to_dev() instead of container_of()
-
- arch/arm/boot/dts/cros-ec-keyboard.dtsi            |   1 +
- .../iio/common/cros_ec_sensors/cros_ec_sensors.c   |   2 +-
- drivers/input/keyboard/cros_ec_keyb.c              |   2 +-
- drivers/platform/chrome/Kconfig                    |  10 --
- drivers/platform/chrome/cros_ec_lightbar.c         |  12 +--
- drivers/platform/chrome/cros_ec_proto.c            | 106 +++++++++++------=
-----
- drivers/platform/chrome/cros_ec_sysfs.c            |  26 ++---
- drivers/platform/chrome/cros_ec_trace.h            |  27 ++++--
- drivers/platform/chrome/cros_ec_typec.c            |  42 +++++++-
- drivers/platform/chrome/cros_ec_vbc.c              |   4 +-
- drivers/pwm/pwm-cros-ec.c                          |  37 ++++---
- 11 files changed, 154 insertions(+), 115 deletions(-)
-
---=20
-Benson Leung
-Staff Software Engineer
-Chrome OS Kernel
-Google Inc.
-bleung@google.com
-Chromium OS Project
-bleung@chromium.org
-
---envbJBWh7q8WU6mo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQQCtZK6p/AktxXfkOlzbaomhzOwwgUCX5H4hAAKCRBzbaomhzOw
-wiM0AP9Tu4HVIlp3UzG15gZYTyPUV16Jeq32ccfd9PVYczf7pgEA1k+M8yH3QJp2
-wyhhRBgn9yMl8ap051EyqELLKJyEpAQ=
-=tHBB
------END PGP SIGNATURE-----
-
---envbJBWh7q8WU6mo--
+Note that we also have process_madvise(2) with size_t for vlen (huh?  It's
+a number of array elements, not an object size) and process_vm_{read,write}v(2),
+that have unsigned long for the same thing.  And the last two *are* using
+the same unsigned long from glibc POV.
