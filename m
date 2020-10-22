@@ -2,79 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9B2FA296007
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:30:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9FAD8296089
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900106AbgJVNa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:30:26 -0400
-Received: from foss.arm.com ([217.140.110.172]:57780 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900098AbgJVNa0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:30:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B588F101E;
-        Thu, 22 Oct 2020 06:30:25 -0700 (PDT)
-Received: from [10.57.13.45] (unknown [10.57.13.45])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 49B6A3F66E;
-        Thu, 22 Oct 2020 06:30:23 -0700 (PDT)
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <20201022113214.GD2611@hirez.programming.kicks-ass.net>
-From:   Suzuki Poulose <suzuki.poulose@arm.com>
-Message-ID: <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
-Date:   Thu, 22 Oct 2020 14:30:21 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <20201022113214.GD2611@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+        id S2900544AbgJVN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:59:22 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:21787
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2900535AbgJVN7W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:59:22 -0400
+X-IronPort-AV: E=Sophos;i="5.77,404,1596492000"; 
+   d="scan'208";a="362506150"
+Received: from palace.lip6.fr ([132.227.105.202])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/AES256-SHA256; 22 Oct 2020 15:59:07 +0200
+From:   Julia Lawall <Julia.Lawall@inria.fr>
+To:     Ingo Molnar <mingo@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v2] sched/fair: check for idle core
+Date:   Thu, 22 Oct 2020 15:15:50 +0200
+Message-Id: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
+X-Mailer: git-send-email 1.9.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 12:32 PM, Peter Zijlstra wrote:
-> On Thu, Oct 22, 2020 at 04:27:52PM +0530, Sai Prakash Ranjan wrote:
-> 
->> Looking at the ETR and other places in the kernel, ETF and the
->> ETB are the only places trying to dereference the task(owner)
->> in tmc_enable_etf_sink_perf() which is also called from the
->> sched_in path as in the call trace.
-> 
->> @@ -391,6 +392,10 @@ static void *tmc_alloc_etf_buffer(struct coresight_device *csdev,
->>   {
->>   	int node;
->>   	struct cs_buffers *buf;
->> +	struct task_struct *task = READ_ONCE(event->owner);
->> +
->> +	if (!task || is_kernel_event(event))
->> +		return NULL;
-> 
-> 
-> This is *wrong*... why do you care about who owns the events?
-> 
+In the case of a thread wakeup, wake_affine determines whether a core
+will be chosen for the thread on the socket where the thread ran
+previously or on the socket of the waker.  This is done primarily by
+comparing the load of the core where th thread ran previously (prev)
+and the load of the waker (this).
 
-This is due to the special case of the CoreSight configuration, where
-a "sink" (where the trace data is captured) is shared by multiple Trace
-units. So, we could share the "sink" for multiple trace units if they
-are tracing the events that belong to the same "perf" session. (The
-userspace tool could decode the trace data based on the TraceID
-in the trace packets). Is there a better way to do this ?
+commit 11f10e5420f6 ("sched/fair: Use load instead of runnable load
+in wakeup path") changed the load computation from the runnable load
+to the load average, where the latter includes the load of threads
+that have already blocked on the core.
 
-Suzuki
+When a short-running daemon processes happens to run on prev, this
+change raised the situation that prev could appear to have a greater
+load than this, even when prev is actually idle.  When prev and this
+are on the same socket, the idle prev is detected later, in
+select_idle_sibling.  But if that does not hold, prev is completely
+ignored, causing the waking thread to move to the socket of the waker.
+In the case of N mostly active threads on N cores, this triggers other
+migrations and hurts performance.
+
+In contrast, before commit 11f10e5420f6, the load on an idle core
+was 0, and in the case of a non-idle waker core, the effect of
+wake_affine was to select prev as the target for searching for a core
+for the waking thread.
+
+To avoid unnecessary migrations, extend wake_affine_idle to check
+whether the core where the thread previously ran is currently idle,
+and if so simply return that core as the target.
+
+[1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+load in wakeup path")
+
+This particularly has an impact when using the ondemand power manager,
+where kworkers run every 0.004 seconds on all cores, increasing the
+likelihood that an idle core will be considered to have a load.
+
+The following numbers were obtained with the benchmarking tool
+hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+management were used.  Times are in seconds.  All experiments use all
+160 hardware threads.
+
+	v5.9/intel-pstate	v5.9+patch/intel-pstate
+bt.C.c	24.725724+-0.962340	23.349608+-1.607214
+lu.C.x	29.105952+-4.804203	25.249052+-5.561617
+sp.C.x	31.220696+-1.831335	30.227760+-2.429792
+ua.C.x	26.606118+-1.767384	25.778367+-1.263850
+
+	v5.9/ondemand		v5.9+patch/ondemand
+bt.C.c	25.330360+-1.028316	23.544036+-1.020189
+lu.C.x	35.872659+-4.872090	23.719295+-3.883848
+sp.C.x	32.141310+-2.289541	29.125363+-0.872300
+ua.C.x	29.024597+-1.667049	25.728888+-1.539772
+
+On the smaller data sets (A and B) and on the other NAS benchmarks
+there is no impact on performance.
+
+This also has a major impact on the splash2x.volrend benchmark of the
+parsec benchmark suite that goes from 1m25 without this patch to 0m45,
+in active (intel_pstate) mode.
+
+Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+
+---
+v2: rewrite the log message, add volrend information
+
+ kernel/sched/fair.c |    3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aa4c6227cd6d..9b23dad883ee 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -5804,6 +5804,9 @@ wake_affine_idle(int this_cpu, int prev_cpu, int sync)
+ 	if (sync && cpu_rq(this_cpu)->nr_running == 1)
+ 		return this_cpu;
+ 
++	if (available_idle_cpu(prev_cpu))
++		return prev_cpu;
++
+ 	return nr_cpumask_bits;
+ }
+ 
+
