@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB73F295EFF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:52:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF1B4295F04
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:54:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898989AbgJVMwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:52:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49606 "EHLO mx2.suse.de"
+        id S2898990AbgJVMx6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:53:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35810 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2504148AbgJVMwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:52:11 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A4F2CAECD;
-        Thu, 22 Oct 2020 12:52:08 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 14:52:00 +0200
-From:   Oscar Salvador <osalvador@suse.de>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 7/7] mm, page_alloc: disable pcplists during memory
- offline
-Message-ID: <20201022125159.GE26121@linux>
-References: <20201008114201.18824-1-vbabka@suse.cz>
- <20201008114201.18824-8-vbabka@suse.cz>
+        id S2441028AbgJVMx6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:53:58 -0400
+Received: from localhost (unknown [176.167.137.40])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6FDAB223BF;
+        Thu, 22 Oct 2020 12:53:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603371238;
+        bh=gETMYWufyBD1Uv05rJk3SYq+AkAoGUZBPHj1bDf1fK8=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pFqP+DPLiKSDJZoPnLxTjclvRZXZOL92qjscT7SezPAPjEXHmEzCzK7jzF53Gch1V
+         mM3kn7Bbg/WtCV/4wudfFPLQTr+bLs6d8pozibJ0BbLhqYF+paqbx4+qZ/8qmymGM7
+         3kpdRiFEq+RUERiKXgZQFfNP+Q05RrEQRJvUJLIQ=
+Date:   Thu, 22 Oct 2020 14:53:55 +0200
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        linux-kernel@vger.kernel.org,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201022125355.GA16049@lothringen>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008122256.GW2628@hirez.programming.kicks-ass.net>
+ <20201008175409.GB14207@fuller.cnet>
+ <20201008195444.GB86389@lothringen>
+ <20201013171328.GA19284@fuller.cnet>
+ <20201014083321.GA2628@hirez.programming.kicks-ass.net>
+ <20201014234053.GA86158@lothringen>
+ <20201020185245.GA3577@fuller.cnet>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201008114201.18824-8-vbabka@suse.cz>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201020185245.GA3577@fuller.cnet>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 01:42:01PM +0200, Vlastimil Babka wrote:
-> Memory offline relies on page isolation can race with process freeing pages to
-> pcplists in a way that a page from isolated pageblock can end up on pcplist.
-> This can be worked around by repeated draining of pcplists, as done by commit
-> 968318261221 ("mm/memory_hotplug: drain per-cpu pages again during memory
-> offline").
+On Tue, Oct 20, 2020 at 03:52:45PM -0300, Marcelo Tosatti wrote:
+> On Thu, Oct 15, 2020 at 01:40:53AM +0200, Frederic Weisbecker wrote:
+> > Alternatively, we could rely on p->on_rq which is set to TASK_ON_RQ_QUEUED
+> > at wake up time, prior to the schedule() full barrier. Of course that doesn't
+> > mean that the task is actually the one running on the CPU but it's a good sign,
+> > considering that we are running in nohz_full mode and it's usually optimized
+> > for single task mode.
 > 
-> David and Michal would prefer that this race was closed in a way that callers
-> of page isolation who need stronger guarantees don't need to repeatedly drain.
-> David suggested disabling pcplists usage completely during page isolation,
-> instead of repeatedly draining them.
+> Unfortunately that would require exporting p->on_rq which is internal to
+> the scheduler, locklessly.
 > 
-> To achieve this without adding special cases in alloc/free fastpath, we can use
-> the same approach as boot pagesets - when pcp->high is 0, any pcplist addition
-> will be immediately flushed.
-> 
-> The race can thus be closed by setting pcp->high to 0 and draining pcplists
-> once, before calling start_isolate_page_range(). The draining will serialize
-> after processes that already disabled interrupts and read the old value of
-> pcp->high in free_unref_page_commit(), and processes that have not yet disabled
-> interrupts, will observe pcp->high == 0 when they are rescheduled, and skip
-> pcplists. This guarantees no stray pages on pcplists in zones where isolation
-> happens.
-> 
-> This patch thus adds zone_pcp_disable() and zone_pcp_enable() functions that
-> page isolation users can call before start_isolate_page_range() and after
-> unisolating (or offlining) the isolated pages.
-> 
-> Also, drain_all_pages() is optimized to only execute on cpus where pcplists are
-> not empty. The check can however race with a free to pcplist that has not yet
-> increased the pcp->count from 0 to 1. Thus make the drain optionally skip the
-> racy check and drain on all cpus, and use this option in zone_pcp_disable().
-> 
-> As we have to avoid external updates to high and batch while pcplists are
-> disabled, we take pcp_batch_high_lock in zone_pcp_disable() and release it in
-> zone_pcp_enable(). This also synchronizes multiple users of
-> zone_pcp_disable()/enable().
-> 
-> Currently the only user of this functionality is offline_pages().
-> 
-> Suggested-by: David Hildenbrand <david@redhat.com>
-> Suggested-by: Michal Hocko <mhocko@suse.com>
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> (can surely do that if you prefer!)
 
-I definitely like this one, and the implemantion looks smoth.
-As Michal said in another thread, Hwposion code will also benefit from this,
-since now we have a drain_all_pages dance that might be suboptimal and not
-accurate.
-I will get back to that once this gets merged.
+May be:
 
-Reviewed-by: Oscar Salvador <osalvador@suse.de>
+    bool task_on_rq(struct task_struct *p) ?
 
-Thanks!
-
--- 
-Oscar Salvador
-SUSE L3
+Thanks.
