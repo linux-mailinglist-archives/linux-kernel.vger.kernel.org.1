@@ -2,109 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C87029653A
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2717B296545
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 21:25:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370183AbgJVTZS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 15:25:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51098 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370155AbgJVTZP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 15:25:15 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81851C0613CE;
-        Thu, 22 Oct 2020 12:25:14 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVgCo-006RRM-M6; Thu, 22 Oct 2020 19:24:58 +0000
-Date:   Thu, 22 Oct 2020 20:24:58 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@lst.de>,
-        David Hildenbrand <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022192458.GV3576660@ZenIV.linux.org.uk>
-References: <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022132342.GB8781@lst.de>
- <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
- <CAKwvOdnix6YGFhsmT_mY8ORNPTOsN3HwS33Dr0Ykn-pyJ6e-Bw@mail.gmail.com>
- <CAK8P3a3LjG+ZvmQrkb9zpgov8xBkQQWrkHBPgjfYSqBKGrwT4w@mail.gmail.com>
- <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com>
+        id S370202AbgJVTZj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 15:25:39 -0400
+Received: from mail.z3ntu.xyz ([128.199.32.197]:56162 "EHLO mail.z3ntu.xyz"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S370187AbgJVTZh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 15:25:37 -0400
+Received: by mail.z3ntu.xyz (Postfix, from userid 182)
+        id 7DD85C7218; Thu, 22 Oct 2020 19:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1603394734; bh=AFNcYWN73jXXlPkynUL1liT45MKc2/cfgOevOqrJe2E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=jFyZz9aLvJfIjb3HAGm7dQFw6S49OGVQwJGZm2EVINeXUKCAZXRXs3Ps79kPq8TWZ
+         kqwjhpOlg2fWiWJBDcQ1jkpskQHOCLv2d9b5p+fklGrR/uEjMYpyh1QEXbaqvPOF1x
+         vBDolVSKGVoKZtGSR8kD0xd2mfffLeLM3P62pldY=
+X-Spam-Checker-Version: SpamAssassin 3.4.4 (2020-01-24) on arch-vps
+X-Spam-Level: 
+X-Spam-Status: No, score=0.9 required=5.0 tests=ALL_TRUSTED,DKIM_SIGNED,
+        DKIM_VALID,DKIM_VALID_AU,DKIM_VALID_EF,FROM_SUSPICIOUS_NTLD,
+        PDS_OTHER_BAD_TLD,URIBL_BLOCKED autolearn=no autolearn_force=no
+        version=3.4.4
+Received: from g550jk.localnet (80-110-125-173.cgn.dynamic.surfer.at [80.110.125.173])
+        by mail.z3ntu.xyz (Postfix) with ESMTPSA id 45380C669B;
+        Thu, 22 Oct 2020 19:25:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=z3ntu.xyz; s=z3ntu;
+        t=1603394732; bh=AFNcYWN73jXXlPkynUL1liT45MKc2/cfgOevOqrJe2E=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=qOGdj963fPa7D28jT90vH01qDZdMKfXkWrKzTnfvFQKODGxLTncuwHeX0wintU3yz
+         5jbmpTgkEQJhtbJyiCYyQZ0L4sAWnena+v+J4EhSyQE124ZoItW4fBiPPu/AOgCRXD
+         6JvaCLuQ/lFecpHws0Bvk1g1cZ1toEy/N9A51lME=
+From:   Luca Weiss <luca@z3ntu.xyz>
+To:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?ISO-8859-1?Q?Kleine=2DK=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-arm-msm@vger.kernel.org
+Cc:     linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>
+Subject: Re: [PATCH v6 2/4] leds: Add driver for Qualcomm LPG
+Date:   Thu, 22 Oct 2020 21:25:31 +0200
+Message-ID: <7499087.fvuViRk2k7@g550jk>
+In-Reply-To: <20201021201224.3430546-3-bjorn.andersson@linaro.org>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org> <20201021201224.3430546-3-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:04:52PM -0700, Nick Desaulniers wrote:
+Hi Bjorn,
 
-> Passing an `unsigned long` as an `unsigned int` does no such
-> narrowing: https://godbolt.org/z/TvfMxe (same vice-versa, just tail
-> calls, no masking instructions).
-> So if rw_copy_check_uvector() is inlined into import_iovec() (looking
-> at the mainline@1028ae406999), then children calls of
-> `rw_copy_check_uvector()` will be interpreting the `nr_segs` register
-> unmodified, ie. garbage in the upper 32b.
+On Mittwoch, 21. Oktober 2020 22:12:22 CEST Bjorn Andersson wrote:
+> The Light Pulse Generator (LPG) is a PWM-block found in a wide range of
+> PMICs from Qualcomm. It can operate on fixed parameters or based on a
+> lookup-table, altering the duty cycle over time - which provides the
+> means for e.g. hardware assisted transitions of LED brightness.
+> 
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> ---
+> 
+> Changes since v5:
+> - Make sure to not used the state of the last channel in a group to
+> determine if the current sink should be active for all channels in the
+> group. - Replacement of unsigned -1 with UINT_MAX
+> - Work around potential overflow by using larger data types, instead of
+> separate code paths - Use cpu_to_l16() rather than hand rolling them
+> - Minor style cleanups
+> 
+>  drivers/leds/Kconfig         |    9 +
+>  drivers/leds/Makefile        |    1 +
+>  drivers/leds/leds-qcom-lpg.c | 1190 ++++++++++++++++++++++++++++++++++
+>  3 files changed, 1200 insertions(+)
+>  create mode 100644 drivers/leds/leds-qcom-lpg.c
 
-FWIW,
+Tested on msm8974 (pm8941) on the Fairphone 2, works great there!
 
-void f(unsinged long v)
-{
-	if (v != 1)
-		printf("failed\n");
-}
+Tested-by: Luca Weiss <luca@z3ntu.xyz>
 
-void g(unsigned int v)
-{
-	f(v);
-}
+Regards
+Luca
 
-void h(unsigned long v)
-{
-	g(v);
-}
 
-main()
-{
-	h(0x100000001);
-}
-
-must not produce any output on a host with 32bit int and 64bit long, regardless of
-the inlining, having functions live in different compilation units, etc.
-
-Depending upon the calling conventions, compiler might do truncation in caller or
-in a callee, but it must be done _somewhere_.
