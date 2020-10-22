@@ -2,81 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D2A329628F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:20:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E1AD8296292
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:20:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901596AbgJVQUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:20:39 -0400
-Received: from smtprelay0126.hostedemail.com ([216.40.44.126]:59308 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2896796AbgJVQUj (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:20:39 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay02.hostedemail.com (Postfix) with ESMTP id 5284912EE;
-        Thu, 22 Oct 2020 16:20:38 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 10,1,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1540:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2525:2553:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:5007:6248:6742:8985:9025:10004:10400:11232:11658:11914:12043:12219:12297:12438:12555:12663:12740:12760:12895:12986:13069:13255:13311:13357:13439:13845:14096:14097:14181:14659:14721:14777:21080:21324:21433:21451:21627:21788:21811:21889:30029:30054:30070:30074:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: juice98_4f032d527252
-X-Filterd-Recvd-Size: 2328
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf17.hostedemail.com (Postfix) with ESMTPA;
-        Thu, 22 Oct 2020 16:20:35 +0000 (UTC)
-Message-ID: <133aa0c8c5e2cbc862df109200b982e89046dbc0.camel@perches.com>
-Subject: Re: [PATCH -next] treewide: Remove stringification from __alias
- macro definition
-From:   Joe Perches <joe@perches.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        "H. Peter Anvin" <hpa@zytor.com>, Ard Biesheuvel <ardb@kernel.org>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Andrey Ryabinin <aryabinin@virtuozzo.com>,
-        Alexander Potapenko <glider@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linux-kernel@vger.kernel.org, linux-efi@vger.kernel.org,
-        kasan-dev@googlegroups.com, linux-crypto@vger.kernel.org,
-        linux-mm <linux-mm@kvack.org>
-Date:   Thu, 22 Oct 2020 09:20:34 -0700
-In-Reply-To: <20201022073307.GP2628@hirez.programming.kicks-ass.net>
-References: <e9b1ba517f06b81bd24e54c84f5e44d81c27c566.camel@perches.com>
-         <20201022073307.GP2628@hirez.programming.kicks-ass.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.36.4-0ubuntu1 
+        id S2901630AbgJVQUz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:20:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37298 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896713AbgJVQUy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:20:54 -0400
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id B4F2524656
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:20:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603383653;
+        bh=zLqPCnk51tZOSJUktaRPPsIPSiTVlLOBrvuROFwALEM=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=PpacB0q4l3++xJYxlDqYZ0g7N6Rp3n2/Td6NUXgQwAqKPW51LSJTIuVYtrPfbhMPm
+         tTelzlU+QrDXyGoHVNnvAoiKoA0CUajmk7kk03Rf75riK0k5Hz05vqwhT4scyMS7ze
+         aElTp4H0yhR+PjLyPw4fLHtNqoAnorNxXIs9NCT0=
+Received: by mail-oi1-f172.google.com with SMTP id u127so2321533oib.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:20:53 -0700 (PDT)
+X-Gm-Message-State: AOAM5304QJ28dxIlpmYR1HQvldA69GqsYiif1wPaBReX3kCpMOLVy1VV
+        qGbPEeRTNoM5FvHfOnLhPifO5P3UkdFGELkuTmM=
+X-Google-Smtp-Source: ABdhPJyJKWzQKMkBe++rhloUaXwWaemfXfUZLhD4OjX76YJPM98Y/eZmOvVODdnxLvscLE2BWGxbYOJqW6dDwbk49Gw=
+X-Received: by 2002:aca:4085:: with SMTP id n127mr2135345oia.33.1603383652814;
+ Thu, 22 Oct 2020 09:20:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+References: <20201021225737.739-1-digetx@gmail.com> <202010211637.7CFD8435@keescook>
+ <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com> <202010212028.32E8A5EF9B@keescook>
+ <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
+ <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com> <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
+ <20201022161118.GP1551@shell.armlinux.org.uk>
+In-Reply-To: <20201022161118.GP1551@shell.armlinux.org.uk>
+From:   Ard Biesheuvel <ardb@kernel.org>
+Date:   Thu, 22 Oct 2020 18:20:40 +0200
+X-Gmail-Original-Message-ID: <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+Message-ID: <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
+Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
+ compilation error
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+Cc:     Dmitry Osipenko <digetx@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        clang-built-linux <clang-built-linux@googlegroups.com>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-22 at 09:33 +0200, Peter Zijlstra wrote:
-> On Wed, Oct 21, 2020 at 11:58:25AM -0700, Joe Perches wrote:
-> > Like the __section macro, the __alias macro uses
-> > macro # stringification to create quotes around
-> > the section name used in the __attribute__.
-> > 
-> > Remove the stringification and add quotes or a
-> > stringification to the uses instead.
-> 
-> There's a complete lack of rationale for this change.
+On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
+<linux@armlinux.org.uk> wrote:
+>
+> On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
+> > On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
+> > >
+> > > 22.10.2020 10:06, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wro=
+te:
+> > > >>
+> > > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
+> > > >>> 22.10.2020 02:40, Kees Cook =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
+> > > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
+> > > >>>>> The vfp_kmode_exception() function now is unreachable using rel=
+ative
+> > > >>>>> branching in THUMB2 kernel configuration, resulting in a "reloc=
+ation
+> > > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_ex=
+ception'"
+> > > >>>>> linker error. Let's use long jump in order to fix the issue.
+> > > >>>>
+> > > >>>> Eek. Is this with gcc or clang?
+> > > >>>
+> > > >>> GCC 9.3.0
+> > > >>>
+> > > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input =
+sections")
+> > > >>>>
+> > > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sec=
+tions") ?
+> > > >>>> That commit may have implicitly moved the location of .vfp11_ven=
+eer,
+> > > >>>> though I thought I had chosen the correct position.
+> > > >>>
+> > > >>> I re-checked that the fixes tag is correct.
+> > > >>>
+> > > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> > > >>>>> ---
+> > > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
+> > > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > > >>>>>
+> > > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
+> > > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
+> > > >>>>> --- a/arch/arm/vfp/vfphw.S
+> > > >>>>> +++ b/arch/arm/vfp/vfphw.S
+> > > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
+> > > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor F=
+P exceptions
+> > > >>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mo=
+de
+> > > >>>>>    teq     r3, #USR_MODE
+> > > >>>>> -  bne     vfp_kmode_exception     @ Returns through lr
+> > > >>>>> +  ldr     r1, =3Dvfp_kmode_exception
+> > > >>>>> +  bxne    r1                      @ Returns through lr
+> > > >>>>>
+> > > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
+> > > >>>>>    DBGSTR1 "fpexc %08x", r1
+> > > >>>>
+> > > >>>> This seems like a workaround though? I suspect the vfp11_veneer =
+needs
+> > > >>>> moving?
+> > > >>>>
+> > > >>>
+> > > >>> I don't know where it needs to be moved. Please feel free to make=
+ a
+> > > >>> patch if you have a better idea, I'll be glad to test it.
+> > > >>
+> > > >> I might have just been distracted by the common "vfp" prefix. It's
+> > > >> possible that the text section shuffling just ended up being very =
+large,
+> > > >> so probably this patch is right then!
+> > > >>
+> > > >
+> > > > I already sent a fix for this issue:
+> > > >
+> > > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=3D90=
+18/1
+> > > >
+> > >
+> > > The offending commit contains stable tag, so I assume that fixes tag =
+is
+> > > mandatory. Yours patch misses the fixes tag.
+> >
+> > Russell, mind adding that? Or would you like me to update the patch in
+> > the patch system?
+>
+> Rather than adding the IT, I'm suggesting that we solve it a different
+> way - ensuring that the two bits of code are co-located. There's no
+> reason for them to be separated, and the assembly code entry point is
+> already called indirectly.
+>
+> The problem is the assembly ends up in the .text section which ends up
+> at the start of the binary, but depending on the compiler, functions
+> in .c files end up in their own sections. It would be good if, as
+> Dmitry has shown that it is indeed possible, to have them co-located.
+>
 
-I'll eventually post V2.
-I'm waiting to see if there are more comments.
+Why is that better? I provided a minimal fix which has zero impact on
+ARM builds, and minimal impact on Thumb2 builds, given that it retains
+the exact same semantics as before, but using a different opcode.
 
-As I wrote in reply to Ard:
-
-https://lore.kernel.org/lkml/1cecfbfc853b2e71a96ab58661037c28a2f9280e.camel@perches.com/
-
-Using quotes in __section caused/causes differences
-between clang and gcc.
-
-https://lkml.org/lkml/2020/9/29/2187
-
-Using common styles for details like this is good.
-
+R_ARM_THM_JUMP19 only has -/+ 1 MB range, i.e., smaller than the size
+of .text, and so using it for calls to external symbols is still going
+to be risky, unless we create a completely separate code section for
+VFP related routines. So we may need the IT instruction anyway, at
+which point we don't need anything more.
