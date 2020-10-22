@@ -2,166 +2,238 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2019B2962A1
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:23:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3D7632962A2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:25:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901669AbgJVQXi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:23:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51082 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2901662AbgJVQXi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:23:38 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A65CC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:23:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:Message-ID:
-        Subject:Cc:To:From:Date:Reply-To:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=qx//rllWCp4Aw9Y+j8oLuNI/zBX7cIb9yVaUMv2x7k0=; b=oBZuHDgw4DeXYQPGB8Q+Brmz9
-        RAEQbjI7+qzhoYXHsbPL6b4mjeKA71Sqa5q5eprKA04jF5Ay00ZHmkvDUTFnk96GhmUcYGwuOtzBp
-        /StxxSD4J8d6nqfLvglLXidTl9pdbbkdNbtlXKr4cfCdG5DIgSR0jnOklIzWbx9QCM2d+gxfYDcUx
-        nRNHN6siVg7Sx2YJLl6So1coJl5KNPsLHrfRWrXhN2A4iQx3A1ezC5uzt2hcIPt/N8PODBcd0BvGt
-        2KgHJskbg/AQkwyzwgqWCpHpsVMzE4vqMvataxXeG9i24GWPAbJf1JVffWSLMpMquWN4s8Kf+OYE1
-        4lux2JiMQ==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49576)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVdNH-0002I1-1q; Thu, 22 Oct 2020 17:23:35 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVdNG-0007Xt-Bf; Thu, 22 Oct 2020 17:23:34 +0100
-Date:   Thu, 22 Oct 2020 17:23:34 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Ard Biesheuvel <ardb@kernel.org>
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-Message-ID: <20201022162334.GQ1551@shell.armlinux.org.uk>
-References: <20201021225737.739-1-digetx@gmail.com>
- <202010211637.7CFD8435@keescook>
- <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com>
- <202010212028.32E8A5EF9B@keescook>
- <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com>
- <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
- <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
- <20201022161118.GP1551@shell.armlinux.org.uk>
- <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+        id S2901649AbgJVQZd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:25:33 -0400
+Received: from mail-bn7nam10on2115.outbound.protection.outlook.com ([40.107.92.115]:53320
+        "EHLO NAM10-BN7-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2896970AbgJVQZd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:25:33 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ntIQUQXwb1zGXEpuwRJTTx1//nCCAYfETZAL05rqKMYzt8jueQqiykmwpn20smtEcIyuhEK2KLDlyUZ5fh8KtiLF5M+5D6VCwhcjZFpJ9KOL52TZDD6TASUGlkqpC+1+VV46RiHV34/oOWitNQLU3miftmqFSJGU9XJpX0eVCzU/zL6PX83B3oCHtikGV6mV2swJL2nHQ9S96hqAu6sheEHwZPb0shTdfePCO5wQ79z2/gC/JTZ/rVvQ+/lOBgIHPifBjjTqCWdeGbRRb2g0h777vpTaa9FnNDW6kothAHhOIE3a9SKW+l7VB7jauGgieelIHgXL/wYnnqJShmYyEA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x1fqnPLi1b7bKZslhxT3WhpgQjMRm5x3YjlBWCfNRnE=;
+ b=TjxoTtCOBRpEke3nSLkkPK+5tkIITaQmlc5LwrRW2HNwcjg1xv+8TA9Qu0JJed9E4z5c0zwlQ/Y1vMnhx82yBABXgebGN0yr2iMFqMzy9kM7Xa2PahDYcDvAJvhcWNr4ASM6nZEwmq6EE9luYsFmRhqJggKWM8HLtf/73xmEXYI5as9A/FYiDqEfOBck+PXD9sbDju2xMyqpOj2zW5bS5+ftOOLgJuoatXKvUGdmHsi92U2t3467LIG40hlsbsVq9r+vybyEV9A2Ay5mcHOVe2HhVclnluF3Qr3DM6aDeiWVlzhUQUtWo45aU0umf/4jfhqHg3kiNoi/JqI20odayQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=x1fqnPLi1b7bKZslhxT3WhpgQjMRm5x3YjlBWCfNRnE=;
+ b=Y7VJjgjinLKt8XQlkEU6i23SKD8qq4nX14S6pJV29Oh9IurlCCOvN0YheTqSP8NfJqqjqEp71HkUwfp/xhezyrIYHmcSjMNW9JC6kaAe6z+gXx6ZiC+GhI/cIU6IASJijWAR2Ep9vHY5Z0K7pc2Etef3UkOV3HlAX5++c78WdUo=
+Authentication-Results: arm.com; dkim=none (message not signed)
+ header.d=none;arm.com; dmarc=none action=none
+ header.from=os.amperecomputing.com;
+Received: from BN6PR01MB2468.prod.exchangelabs.com (2603:10b6:404:53::8) by
+ BN8PR01MB5377.prod.exchangelabs.com (2603:10b6:408:be::12) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.23; Thu, 22 Oct 2020 16:25:28 +0000
+Received: from BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3]) by BN6PR01MB2468.prod.exchangelabs.com
+ ([fe80::4946:4492:370a:a3f3%9]) with mapi id 15.20.3477.028; Thu, 22 Oct 2020
+ 16:25:27 +0000
+Date:   Thu, 22 Oct 2020 09:25:24 -0700
+From:   Vanshi Konda <vanshikonda@os.amperecomputing.com>
+To:     Robin Murphy <robin.murphy@arm.com>
+Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
+Message-ID: <20201022162501.53ck5jl3zx6iywuv@con01sys-r111.scc-lab.amperecomputing.com>
+References: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
+ <jhj7drkrcpr.mognet@arm.com>
+ <9e14c0d3-9204-fb32-31db-5b3f98639cba@arm.com>
+ <20201021110201.00002092@Huawei.com>
+ <da1b140c-fdd9-5970-fe83-02f33c3d8251@arm.com>
+ <20201022010718.5jkrcyvoae56vdd5@con01sys-r111.scc-lab.amperecomputing.com>
+ <3d539f31-5fa9-b6c5-b25a-3e6bd3ae660e@arm.com>
+Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMj1kXGExnUrTuosMpX2NN3=j0HF-8_s1SzLaTyBvq4_LQNT-w@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <3d539f31-5fa9-b6c5-b25a-3e6bd3ae660e@arm.com>
+X-Originating-IP: [4.28.12.214]
+X-ClientProxiedBy: CY1PR07CA0041.namprd07.prod.outlook.com
+ (2a01:111:e400:c60a::51) To BN6PR01MB2468.prod.exchangelabs.com
+ (2603:10b6:404:53::8)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from amperecomputing.com (4.28.12.214) by CY1PR07CA0041.namprd07.prod.outlook.com (2a01:111:e400:c60a::51) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Thu, 22 Oct 2020 16:25:26 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 1ec4e619-6f2d-4e06-8dad-08d876a715ca
+X-MS-TrafficTypeDiagnostic: BN8PR01MB5377:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BN8PR01MB53774F8B9F0333C7BA8F951B9D1D0@BN8PR01MB5377.prod.exchangelabs.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WcQ63uU/N6VeEMDLW1NeRrAcg8lN9KHnaDYau77234IZLzKIeOV32qAMQOOjywTPm4HtDBuPg8jP4dcI4/Ansso0LpVO9nuCoSbVWqeRKVJrI+v9VSC+zN6kPUbWgwCDWKrk2f9r06ch+P7eAsaPTawqIzWaS4I0AY9eXlYdLGce5RKGK3RjqHpNxhbIesCDpnVJG/twumXhFQRkZpSIm7jYYNK2gD1M61h2dm4qS9OLXNLgUDUFmVtXdNn147drZ7fB459fhwavsWlIEHcCcqB45tSgC19SuUxuQYN55XoB1wHe+v2tFwKbz2vjSey8RGYwW1awvp7wJ1xTCN35llyiGSb42eJb3tM8rgN7ad+3fgWqmR3hygz1qKc0InWuYHJNlczyumpALagTy/wPTQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN6PR01MB2468.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(366004)(136003)(396003)(376002)(346002)(86362001)(54906003)(52116002)(83380400001)(66946007)(9686003)(186003)(8676002)(16526019)(26005)(6916009)(66556008)(66476007)(4001150100001)(478600001)(8936002)(2906002)(5660300002)(316002)(6486002)(1076003)(956004)(8886007)(4326008);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: yEDW5mhDRvJ5p8b0P9SNeUW+Hs+iXUknLAvhi8ArVa2lZOgosL3Nh32P3kuEPdlvBObwhYIHvxO1HHH3g6zoJKiBgHdVHtLo7XzNh25cvfnGOLu9c3eZ9bNF7HoLoaeGQswgaiBvDGek+nxtJmuZ7srr6umh1+vPeFrx5P2JOYHbiv+cPGIjlDGoupbPO0PAKALVNuIm2KqC/Sp/BCnMh7g+DlHlFZuTuuTvDLh/U4iF+REY4s+cwXvdhzyIvZGyZA5EolnVRiH2+pGh7+DiXBT07b801J/hBcxU+3JuqOMLuT/zEdmEel2L39Eeel5TCOv85eLOuWmjIUsLFQu4p1uI7ci9favhubZrRxf4yLJKgx7QJBi+RNsP4EvHy6CVb/VtdCuDqopvjICq/3p3gwy5Q8KUkfuP5rTpRb4ykD+yQlqbzGLDYuKFyK4KqcPQMdLxvv7nZlvisCjISTZsKMG2gYJ3sbY+Rr+Z/4+g6NMsyNASgE3mzagND/Ppp+I74dPJUr67TvKV7Pgrg/BJqSLihalGSz/4kWISFUbWWA/iUTvgkvsV0rArOT/ft7Ium7PZVg466uIfhrWqAxJwkL1xtmeXPTDVLeTXINvrZU0CtTe3NKYHan9beKTafwjco3EsE8TWVZfRDRQH/7uIUw==
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1ec4e619-6f2d-4e06-8dad-08d876a715ca
+X-MS-Exchange-CrossTenant-AuthSource: BN6PR01MB2468.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 22 Oct 2020 16:25:27.5265
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 4zGi+33HUVb9agsMj9PP+ZDeh9QkwxRCOie5pejUbQ95JbCe8SMLLOkxgN2WenyDCWB+Lwgq8IrDQ4mYge0TK8NCa+xgpyBDUmYZ9HoCdSuqRGAxPPz5OGwrMx4SI3EE
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN8PR01MB5377
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 06:20:40PM +0200, Ard Biesheuvel wrote:
-> On Thu, 22 Oct 2020 at 18:11, Russell King - ARM Linux admin
-> <linux@armlinux.org.uk> wrote:
-> >
-> > On Thu, Oct 22, 2020 at 06:06:32PM +0200, Ard Biesheuvel wrote:
-> > > On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
-> > > >
-> > > > 22.10.2020 10:06, Ard Biesheuvel пишет:
-> > > > > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wrote:
-> > > > >>
-> > > > >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
-> > > > >>> 22.10.2020 02:40, Kees Cook пишет:
-> > > > >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
-> > > > >>>>> The vfp_kmode_exception() function now is unreachable using relative
-> > > > >>>>> branching in THUMB2 kernel configuration, resulting in a "relocation
-> > > > >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_exception'"
-> > > > >>>>> linker error. Let's use long jump in order to fix the issue.
-> > > > >>>>
-> > > > >>>> Eek. Is this with gcc or clang?
-> > > > >>>
-> > > > >>> GCC 9.3.0
-> > > > >>>
-> > > > >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sections")
-> > > > >>>>
-> > > > >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing sections") ?
-> > > > >>>> That commit may have implicitly moved the location of .vfp11_veneer,
-> > > > >>>> though I thought I had chosen the correct position.
-> > > > >>>
-> > > > >>> I re-checked that the fixes tag is correct.
-> > > > >>>
-> > > > >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> > > > >>>>> ---
-> > > > >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
-> > > > >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> > > > >>>>>
-> > > > >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
-> > > > >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
-> > > > >>>>> --- a/arch/arm/vfp/vfphw.S
-> > > > >>>>> +++ b/arch/arm/vfp/vfphw.S
-> > > > >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
-> > > > >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor FP exceptions
-> > > > >>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mode
-> > > > >>>>>    teq     r3, #USR_MODE
-> > > > >>>>> -  bne     vfp_kmode_exception     @ Returns through lr
-> > > > >>>>> +  ldr     r1, =vfp_kmode_exception
-> > > > >>>>> +  bxne    r1                      @ Returns through lr
-> > > > >>>>>
-> > > > >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
-> > > > >>>>>    DBGSTR1 "fpexc %08x", r1
-> > > > >>>>
-> > > > >>>> This seems like a workaround though? I suspect the vfp11_veneer needs
-> > > > >>>> moving?
-> > > > >>>>
-> > > > >>>
-> > > > >>> I don't know where it needs to be moved. Please feel free to make a
-> > > > >>> patch if you have a better idea, I'll be glad to test it.
-> > > > >>
-> > > > >> I might have just been distracted by the common "vfp" prefix. It's
-> > > > >> possible that the text section shuffling just ended up being very large,
-> > > > >> so probably this patch is right then!
-> > > > >>
-> > > > >
-> > > > > I already sent a fix for this issue:
-> > > > >
-> > > > > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=9018/1
-> > > > >
-> > > >
-> > > > The offending commit contains stable tag, so I assume that fixes tag is
-> > > > mandatory. Yours patch misses the fixes tag.
-> > >
-> > > Russell, mind adding that? Or would you like me to update the patch in
-> > > the patch system?
-> >
-> > Rather than adding the IT, I'm suggesting that we solve it a different
-> > way - ensuring that the two bits of code are co-located. There's no
-> > reason for them to be separated, and the assembly code entry point is
-> > already called indirectly.
-> >
-> > The problem is the assembly ends up in the .text section which ends up
-> > at the start of the binary, but depending on the compiler, functions
-> > in .c files end up in their own sections. It would be good if, as
-> > Dmitry has shown that it is indeed possible, to have them co-located.
-> 
-> Why is that better? I provided a minimal fix which has zero impact on
-> ARM builds, and minimal impact on Thumb2 builds, given that it retains
-> the exact same semantics as before, but using a different opcode.
+On Thu, Oct 22, 2020 at 12:21:27PM +0100, Robin Murphy wrote:
+>On 2020-10-22 02:07, Vanshi Konda wrote:
+>>On Thu, Oct 22, 2020 at 12:44:15AM +0100, Robin Murphy wrote:
+>>>On 2020-10-21 12:02, Jonathan Cameron wrote:
+>>>>On Wed, 21 Oct 2020 09:43:21 +0530
+>>>>Anshuman Khandual <anshuman.khandual@arm.com> wrote:
+>>>>
+>>>>>On 10/20/2020 11:39 PM, Valentin Schneider wrote:
+>>>>>>
+>>>>>>Hi,
+>>>>>>
+>>>>>>Nit on the subject: this only increases the default, the max 
+>>>>>>is still 2?????.
+>>>>>
+>>>>>Agreed.
+>>>>>
+>>>>>>
+>>>>>>On 20/10/20 18:34, Vanshidhar Konda wrote:
+>>>>>>>The current arm64 max NUMA nodes default to 4. Today's 
+>>>>>>>arm64 systems can
+>>>>>>>reach or exceed 16. Increase the number to 64 (matching x86_64).
+>>>>>>>
+>>>>>>>Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
+>>>>>>>---
+>>>>>>>??arch/arm64/Kconfig | 2 +-
+>>>>>>>??1 file changed, 1 insertion(+), 1 deletion(-)
+>>>>>>>
+>>>>>>>diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
+>>>>>>>index 893130ce1626..3e69d3c981be 100644
+>>>>>>>--- a/arch/arm64/Kconfig
+>>>>>>>+++ b/arch/arm64/Kconfig
+>>>>>>>@@ -980,7 +980,7 @@ config NUMA
+>>>>>>>??config NODES_SHIFT
+>>>>>>>?????????? int "Maximum NUMA Nodes (as a power of 2)"
+>>>>>>>?????????? range 1 10
+>>>>>>>-?????? default "2"
+>>>>>>>+?????? default "6"
+>>>>>>
+>>>>>>This leads to more statically allocated memory for things 
+>>>>>>like node to CPU
+>>>>>>maps (see uses of MAX_NUMNODES), but that shouldn't be too much of an
+>>>>>>issue.
+>>>>>
+>>>>>The smaller systems should not be required to waste those memory in
+>>>>>a default case, unless there is a real and available larger system
+>>>>>with those increased nodes.
+>>>>>
+>>>>>>
+>>>>>>AIUI this also directly correlates to how many more 
+>>>>>>page->flags bits are
+>>>>>>required: are we sure the max 10 works on any aarch64 platform? I'm
+>>>>>
+>>>>>We will have to test that. Besides 256 (2 ^ 8) is the first threshold
+>>>>>to be crossed here.
+>>>>>
+>>>>>>genuinely asking here, given that I'm mostly a stranger to the mm
+>>>>>>world. The default should be something we're somewhat confident works
+>>>>>>everywhere.
+>>>>>
+>>>>>Agreed. Do we really need to match X86 right now ? Do we really have
+>>>>>systems that has 64 nodes ? We should not increase the default node
+>>>>>value and then try to solve some new problems, when there might not
+>>>>>be any system which could even use that. I would suggest increase
+>>>>>NODES_SHIFT value upto as required by a real and available system.
+>>>>
+>>>>I'm not going to give precise numbers on near future systems but 
+>>>>it is public
+>>>>that we ship 8 NUMA node ARM64 systems today.?? Things will get more
+>>>>interesting as CXL and CCIX enter the market on ARM systems,
+>>>>given chances are every CXL device will look like another NUMA
+>>>>node (CXL spec says they should be presented as such) and you
+>>>>may be able to rack up lots of them.
+>>>>
+>>>>So I'd argue minimum that makes sense today is 16 nodes, but 
+>>>>looking forward
+>>>>even a little and 64 is not a great stretch.
+>>>>I'd make the jump to 64 so we can forget about this again for a 
+>>>>year or two.
+>>>>People will want to run today's distros on these new machines and we'd
+>>>>rather not have to go around all the distros asking them to 
+>>>>carry a patch
+>>>>increasing this count (I assume they are already carrying such a patch
+>>>>due to those 8 node systems)
+>>
+>>To echo Jonathan's statement above we are looking at systems that will
+>>need approximately 64 NUMA nodes over the next 5-6 years - the time for
+>>which an LTS kernel would be maintained. Some of the reason's for
+>>increasing NUMA nodes during this time period include CXL, CCIX and
+>>NVDIMM (like Jonathan pointed out).
+>>
+>>The main argument against increasing the NODES_SHIFT seems to be a
+>>concern that it negatively impacts other ARM64 systems. Could anyone
+>>share what kind of systems we are talking about? For a system that has
+>>NEED_MULTIPLE_NODES set, would the impact be noticeable?
+>
+>Systems like the ESPRESSObin - sure, sane people aren't trying to run 
+>desktops or development environments in 1GB of RAM, but it's not 
+>uncommon for them to use a minimal headless install of their favourite 
+>generic arm64 distro rather than something more "embedded" like 
 
-I think you just described the reason there. Why should we force
-everything to use a different opcode when a short jump _should_
-suffice?
+If someone is running a generic arm64 distro, at least some of them are
+already paying the extra cost. NODES_SHIFT for Ubuntu and SuSE kernels
+is already 6. CentOS/Redhat and Oracle Linux set it to 3. I've only seen
+Debian set it to 2.
 
-Your patch may be a single line, but it has a slightly greater
-impact than the alternative two line solution.
+Vanshi
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+>OpenWrt or Armbian. Increasing a generic kernel's memory footprint 
+>(and perhaps more importantly, cache footprint) more than necessary is 
+>going to have *some* impact.
+>
+>Robin.
+>
+>>
+>>Vanshi
+>>
+>>>
+>>>Nit: I doubt any sane distro is going to carry a patch to adjust 
+>>>the *default* value of a Kconfig option. They might tune the 
+>>>actual value in their config, but, well, isn't that the whole 
+>>>point of configs? ;)
+>>>
+>>>Robin.
+>>>
+>>>>
+>>>>Jonathan
+>>>>
+>>>>>
+>>>>>>>?????????? depends on NEED_MULTIPLE_NODES
+>>>>>>>?????????? help
+>>>>>>>?????????????? Specify the maximum number of NUMA Nodes 
+>>>>>>>available on the target
+>>>>>
+>>>>>_______________________________________________
+>>>>>linux-arm-kernel mailing list
+>>>>>linux-arm-kernel@lists.infradead.org
+>>>>>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>>>
+>>>>
+>>>>
+>>>>_______________________________________________
+>>>>linux-arm-kernel mailing list
+>>>>linux-arm-kernel@lists.infradead.org
+>>>>http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
+>>>>
