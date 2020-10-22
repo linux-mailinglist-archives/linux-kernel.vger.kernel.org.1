@@ -2,84 +2,149 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 784262957FB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:37:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7CE832957FD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:38:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444504AbgJVFhA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:37:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35792 "EHLO
+        id S2507976AbgJVFiK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:38:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36000 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444402AbgJVFg7 (ORCPT
+        with ESMTP id S2444512AbgJVFiK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:36:59 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57085C0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:36:58 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id h140so437934qke.7
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:36:58 -0700 (PDT)
+        Thu, 22 Oct 2020 01:38:10 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0C5E9C0613CF
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:38:10 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id h5so540215wrv.7
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:38:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=ZY++dB0QY4h0w6GNfNiJM1CAihdWz5g1QdtsKpKfXiA=;
-        b=batcfBvQ8Yzq+JplHIjrrkkuuM5S5utEGjVQdmtosqdEaSM+/SPT3ZzWZyVNH3TJRp
-         V8QpMLYUW/B9SjmWpxRoj/mNhEeb0l+SUbsWKXNox5v3juLATuuCAxHieqjy4VXEpeDz
-         YXKQ+OlTqjgKXcYmGIW1rPkNnm2oUUKjbqdzk=
+        bh=2FJ6bgUzNaVY5TwTxhI5fSUYbPLg9JNdup4mEtOxeyg=;
+        b=Y9Bl1j6Yr57hSOSVPd/mu8/0LKB/sUaN+4OYq3aFF90Ul5QrtkCiVNH9L8jrUjSMo1
+         BOKxsr/7fKRiQpN4kVGgEBqVtWszTvShe7lZdbiv6L+NLtOizZUgujXoZvT2TROyZNLx
+         zJdukWtwTTaJzdJoCyxafO4cLJd0w6GUarS9y0hhBoEjh7EAz3ipVzS+BZeksfTcJ5aq
+         wnHp4uFAiQq8uwfU3SZkrdpi1ZRZavZERN4yLWk7B//b8QjJsPq+nwqJOB5qXVbbWAae
+         FQk9F0x2v9qjKeAsX4OYBfYNubscNVPxafc3jwllMwr2lKF5yAW2F+0L+RR0jcFJ2dTr
+         c3Ng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=ZY++dB0QY4h0w6GNfNiJM1CAihdWz5g1QdtsKpKfXiA=;
-        b=Hg7Vqz7bG3TmcBFgLgdpz0aImiCkk1bcd7faXnTeUa/qrtdF4oWoIOI6wgALjVELS5
-         JfdhOd5qFl3RzfvTjn61h5g4mUy59jQwDU74lEgWspU3YPB5USJEdVY5qd6fB6IaLTmb
-         moTa9AjGiJI/VqUw4WUkJX6cedCsf8Vp9+phtnAhiPVG/o+GcuEIFvdXlFxTVBMQ1asw
-         lwbhxINSr59cAwjwxYGhcY4KQwVdDqwOPRcvtqOc6CmbH7sOr3OgaQpU96oqOWkNZdGX
-         hzic/6LKx2+kAKg33bpeuNbgyrFyB4VScw+1WCBlrt4ebIJ5yvh3dkcVJNrt8sBiDYBj
-         fd4g==
-X-Gm-Message-State: AOAM530dD8vxjGEB1mYsoqPybz3I/jP7Hb0hHnJSfrMkV96t2cg5ljTO
-        TWAyZnNNOIVaKafwSvWqlwsO7ZLI2MipUr+vi9mm2A==
-X-Google-Smtp-Source: ABdhPJzKqgM6zt/DmQMQ0cYtDDTuSdknzZT7HUdk4PJeZ4jGXsHtxfTO2/4L4DuDNPYPvCSrftOFTATjkViLsIoJkmI=
-X-Received: by 2002:a37:a9c9:: with SMTP id s192mr851858qke.128.1603345017428;
- Wed, 21 Oct 2020 22:36:57 -0700 (PDT)
+        bh=2FJ6bgUzNaVY5TwTxhI5fSUYbPLg9JNdup4mEtOxeyg=;
+        b=MN2z14Xj8PRtYRSwi7TnNQ0s/294Vn+VC1w9Hp8rf5OTnzwQAdVbLPp6sGJy7tUx5T
+         K51E1JQgI+OQDXHt7vMnR9w43PCrBkMcAngr2Ur4fiG3A6QCyaEAcLEl8xD9/ja2lBbz
+         nl76ILa6Pn8fcA+xyYTZND89QOXOhjm1vp+fsrn7pJn9eE3/vhN0toKVEXvWVO68mzeE
+         SgjYe0+Hwr3cqhaNAUMZrLntSRB/mOj4d92CyLzh+i5u+NwXou4Qr01+nVzvk8yu+Bxm
+         3oxXjdTV8j5HCP/uheyrFiqf5mnrkm6pIR3Q2/fMo0G68FevJ+v1VK0204RR2V9WQmLQ
+         QkPw==
+X-Gm-Message-State: AOAM530S45Y/NekEcPRoE5/whz9Z9xI6sOP7RVYS3jJxB3GSGn/Kdz8a
+        tDSjoMtFtIS8nfuf+cbWFnPgHPBPodXLWO5oOPjQrw==
+X-Google-Smtp-Source: ABdhPJxk41O0FMwzCS0qOGAJ5pot2HsP0xEUlWx58Nz/Yw02Wcj0cAJSjVw5HNv+6enPy0INENlf+CnoqkGqrrxq84o=
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr731145wru.356.1603345088654;
+ Wed, 21 Oct 2020 22:38:08 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201021211802.774854-1-pmalani@chromium.org> <20201022053041.GA6523@kroah.com>
-In-Reply-To: <20201022053041.GA6523@kroah.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Wed, 21 Oct 2020 22:36:46 -0700
-Message-ID: <CACeCKaepecD8JUo_ie_KcWd8mgYZR-3y0dGwaYNs5G5ErMuDqg@mail.gmail.com>
-Subject: Re: [PATCH] usb: typec: Expose Product Type VDOs via sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+References: <20201006001752.248564-1-atish.patra@wdc.com> <20201006001752.248564-4-atish.patra@wdc.com>
+In-Reply-To: <20201006001752.248564-4-atish.patra@wdc.com>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Thu, 22 Oct 2020 11:07:57 +0530
+Message-ID: <CAAhSdy2z=ae1Z92p1zJeiY8tVK3Q5t739ktH3_m_k+hBWNt+sg@mail.gmail.com>
+Subject: Re: [PATCH v4 3/5] riscv: Separate memory init from paging init
+To:     Atish Patra <atish.patra@wdc.com>
+Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Albert Ou <aou@eecs.berkeley.edu>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        David Hildenbrand <david@redhat.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jia He <justin.he@arm.com>,
+        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        Kefeng Wang <wangkefeng.wang@huawei.com>,
+        linux-arch@vger.kernel.org,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        Mike Rapoport <rppt@kernel.org>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        "Rafael J. Wysocki" <rafael@kernel.org>,
+        Steven Price <steven.price@arm.com>,
+        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Greg,
+On Tue, Oct 6, 2020 at 5:48 AM Atish Patra <atish.patra@wdc.com> wrote:
+>
+> Currently, we perform some memory init functions in paging init. But,
+> that will be an issue for NUMA support where DT needs to be flattened
+> before numa initialization and memblock_present can only be called
+> after numa initialization.
+>
+> Move memory initialization related functions to a separate function.
+>
+> Signed-off-by: Atish Patra <atish.patra@wdc.com>
+> Reviewed-by: Greentime Hu <greentime.hu@sifive.com>
+> ---
+>  arch/riscv/include/asm/pgtable.h | 1 +
+>  arch/riscv/kernel/setup.c        | 1 +
+>  arch/riscv/mm/init.c             | 6 +++++-
+>  3 files changed, 7 insertions(+), 1 deletion(-)
+>
+> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+> index eaea1f717010..515b42f98d34 100644
+> --- a/arch/riscv/include/asm/pgtable.h
+> +++ b/arch/riscv/include/asm/pgtable.h
+> @@ -466,6 +466,7 @@ static inline void __kernel_map_pages(struct page *page, int numpages, int enabl
+>  extern void *dtb_early_va;
+>  void setup_bootmem(void);
+>  void paging_init(void);
+> +void misc_mem_init(void);
+>
+>  #define FIRST_USER_ADDRESS  0
+>
+> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
+> index 2c6dd329312b..07fa6d13367e 100644
+> --- a/arch/riscv/kernel/setup.c
+> +++ b/arch/riscv/kernel/setup.c
+> @@ -78,6 +78,7 @@ void __init setup_arch(char **cmdline_p)
+>  #else
+>         unflatten_device_tree();
+>  #endif
+> +       misc_mem_init();
+>
+>  #ifdef CONFIG_SWIOTLB
+>         swiotlb_init(1);
+> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
+> index ed6e83871112..114c3966aadb 100644
+> --- a/arch/riscv/mm/init.c
+> +++ b/arch/riscv/mm/init.c
+> @@ -565,8 +565,12 @@ static void __init resource_init(void)
+>  void __init paging_init(void)
+>  {
+>         setup_vm_final();
+> -       sparse_init();
+>         setup_zero_page();
+> +}
+> +
+> +void __init misc_mem_init(void)
+> +{
+> +       sparse_init();
+>         zone_sizes_init();
+>         resource_init();
+>  }
+> --
+> 2.25.1
+>
 
-Thanks for taking a look.
+Looks good to me.
 
-On Wed, Oct 21, 2020 at 10:30 PM Greg KH <gregkh@linuxfoundation.org> wrote:
->
-> On Wed, Oct 21, 2020 at 02:18:02PM -0700, Prashant Malani wrote:
-> > A PD-capable device can return up to 3 Product Type VDOs as part of its
-> > DiscoverIdentity Response (USB PD Spec, Rev 3.0, Version 2.0, Section
-> > 6.4.4.3.1). Add a sysfs attribute to expose these to userspace.
->
-> You forgot to add the proper Documentation/ABI/ file at the same time,
-> which makes this patch impossible to review properly and able to be
-> applied :(
->
-Sorry about that, will fix and resend.
+Reviewed-by: Anup Patel <anup@brainfault.org>
 
-Best regards,
-
--Prashant
-> Please fix.
->
-> thanks,
->
-> greg k-h
+Regards,
+Anup
