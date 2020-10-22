@@ -2,117 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B3B6296127
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:52:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35B2329612F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:53:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368235AbgJVOwq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:52:46 -0400
-Received: from mx2.suse.de ([195.135.220.15]:58732 "EHLO mx2.suse.de"
+        id S368265AbgJVOw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:52:59 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59006 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368214AbgJVOwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:52:44 -0400
+        id S368214AbgJVOwz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 10:52:55 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id AD285AC6D;
-        Thu, 22 Oct 2020 14:52:42 +0000 (UTC)
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-From:   Vlastimil Babka <vbabka@suse.cz>
-To:     Rik van Riel <riel@surriel.com>, Hugh Dickins <hughd@google.com>,
-        Xu Yu <xuyu@linux.alibaba.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        Michal Hocko <mhocko@suse.com>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
- <06c1e573-cddd-c17c-9f18-3af2d9d09f80@suse.cz>
-Message-ID: <2b7f401d-8041-9d64-595d-f95109a52e3b@suse.cz>
-Date:   Thu, 22 Oct 2020 16:52:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        by mx2.suse.de (Postfix) with ESMTP id 70227AE0D;
+        Thu, 22 Oct 2020 14:52:53 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 15:52:50 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Giovanni Gherdovich <ggherdovich@suse.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201022145250.GK32041@suse.de>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <06c1e573-cddd-c17c-9f18-3af2d9d09f80@suse.cz>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 4:51 PM, Vlastimil Babka wrote:
-> On 10/22/20 5:48 AM, Rik van Riel wrote:
->> The allocation flags of anonymous transparent huge pages can be controlled
->> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
->> help the system from getting bogged down in the page reclaim and compaction
->> code when many THPs are getting allocated simultaneously.
->> 
->> However, the gfp_mask for shmem THP allocations were not limited by those
->> configuration settings, and some workloads ended up with all CPUs stuck
->> on the LRU lock in the page reclaim code, trying to allocate dozens of
->> THPs simultaneously.
->> 
->> This patch applies the same configurated limitation of THPs to shmem
->> hugepage allocations, to prevent that from happening.
->> 
->> This way a THP defrag setting of "never" or "defer+madvise" will result
->> in quick allocation failures without direct reclaim when no 2MB free
->> pages are available.
->> 
->> Signed-off-by: Rik van Riel <riel@surriel.com>
+On Thu, Oct 22, 2020 at 02:29:49PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
+> > > However I do want to retire ondemand, conservative and also very much
+> > > intel_pstate/active mode.
+> > 
+> > I agree in general, but IMO it would not be prudent to do that without making
+> > schedutil provide the same level of performance in all of the relevant use
+> > cases.
 > 
-> FTR, a patch to the same effect was sent by Xu Yu:
+> Agreed; I though to have understood we were there already.
 
-Hm thought I did CC, but TB ate it. sorry for the noise
+AFAIK, not quite (added Giovanni as he has been paying more attention).
+Schedutil has improved since it was merged but not to the extent where
+it is a drop-in replacement. The standard it needs to meet is that
+it is at least equivalent to powersave (in intel_pstate language)
+or ondemand (acpi_cpufreq) and within a reasonable percentage of the
+performance governor. Defaulting to performance is a) giving up and b)
+the performance governor is not a universal win. There are some questions
+currently on whether schedutil is good enough when HWP is not available.
+There was some evidence (I don't have the data, Giovanni was looking into
+it) that HWP was a requirement to make schedutil work well. That is a
+hazard in itself because someone could test on the latest gen Intel CPU
+and conclude everything is fine and miss that Intel-specific technology
+is needed to make it work well while throwing everyone else under a bus.
+Giovanni knows a lot more than I do about this, I could be wrong or
+forgetting things.
 
-> https://lore.kernel.org/r/11e1ead211eb7d141efa0eb75a46ee2096ee63f8.1603267572.git.xuyu@linux.alibaba.com
-> 
->> ---
->> 
->> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
->> index c603237e006c..0a5b164a26d9 100644
->> --- a/include/linux/gfp.h
->> +++ b/include/linux/gfp.h
->> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
->>   extern void pm_restrict_gfp_mask(void);
->>   extern void pm_restore_gfp_mask(void);
->>   
->> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
->> +
->>   #ifdef CONFIG_PM_SLEEP
->>   extern bool pm_suspended_storage(void);
->>   #else
->> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->> index 9474dbc150ed..9b08ce5cc387 100644
->> --- a/mm/huge_memory.c
->> +++ b/mm/huge_memory.c
->> @@ -649,7 +649,7 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->>    *	    available
->>    * never: never stall for any thp allocation
->>    */
->> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
->> +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
->>   {
->>   	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
->>   
->> diff --git a/mm/shmem.c b/mm/shmem.c
->> index 537c137698f8..d1290eb508e5 100644
->> --- a/mm/shmem.c
->> +++ b/mm/shmem.c
->> @@ -1545,8 +1545,11 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
->>   		return NULL;
->>   
->>   	shmem_pseudo_vma_init(&pvma, info, hindex);
->> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
->> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
->> +	/* Limit the gfp mask according to THP configuration. */
->> +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
->> +	gfp &= alloc_hugepage_direct_gfpmask(&pvma);
->> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
->> +			       true);
->>   	shmem_pseudo_vma_destroy(&pvma);
->>   	if (page)
->>   		prep_transhuge_page(page);
->> 
-> 
+For distros, switching to schedutil by default would be nice because
+frequency selection state would follow the task instead of being per-cpu
+and we could stop worrying about different HWP implementations but it's
+not at the point where the switch is advisable. I would expect hard data
+before switching the default and still would strongly advise having a
+period of time where we can fall back when someone inevitably finds a
+new corner case or exception.
 
+For reference, SLUB had the same problem for years. It was switched
+on by default in the kernel config but it was a long time before
+SLUB was generally equivalent to SLAB in terms of performance. Block
+multiqueue also had vaguely similar issues before the default changes
+and a period of time before it was removed removed (example whinging mail
+https://lore.kernel.org/lkml/20170803085115.r2jfz2lofy5spfdb@techsingularity.net/)
+It's schedutil's turn :P
+
+-- 
+Mel Gorman
+SUSE Labs
