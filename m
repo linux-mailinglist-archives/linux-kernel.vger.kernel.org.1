@@ -2,102 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 61F44295699
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:04:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B57629569B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:05:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895291AbgJVDEz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 23:04:55 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:13455 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895283AbgJVDEy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 23:04:54 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603335893; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=+nQ5ZSBmVVyAWKnZjaUdFuEquc1+aCE/YrO2L81++rQ=; b=WKvT4hO4aXkuFvqNNh7HWvReQF+FICNiUgPloB1IovvP4vZXgS5hiXRLQthK/sIy1s6uPs9E
- Ynq9r7RJTtw0SWNiHeDRLb1BSNaOU6u4MA+tsZ/sWKJEB0IIJRHcUDmn5Hi93lhrM2T93wpI
- +E9hL+WCdW1p1U4oa+pEjX6kIpw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f90f6d44f8cc67c313300a5 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 03:04:52
- GMT
-Sender: jhugo=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id BD1E3C433FE; Thu, 22 Oct 2020 03:04:51 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL autolearn=no autolearn_force=no version=3.4.0
-Received: from [10.226.59.216] (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: jhugo)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id B0472C433C9;
-        Thu, 22 Oct 2020 03:04:50 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org B0472C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=jhugo@codeaurora.org
-Subject: Re: [PATCH v7 3/4] docs: Add documentation for userspace client
- interface
-To:     Hemant Kumar <hemantk@codeaurora.org>,
-        manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        bbhatt@codeaurora.org, loic.poulain@linaro.org
-References: <1602907457-13680-1-git-send-email-hemantk@codeaurora.org>
- <1602907457-13680-4-git-send-email-hemantk@codeaurora.org>
- <c5dd8ec9-f4bf-dee4-98e1-9fba171b1f1d@codeaurora.org>
- <b0209674-8dcb-c994-c0ef-0d2caefd28ff@codeaurora.org>
-From:   Jeffrey Hugo <jhugo@codeaurora.org>
-Message-ID: <198e5431-756c-38b1-2426-eb4ab8074b60@codeaurora.org>
-Date:   Wed, 21 Oct 2020 21:04:50 -0600
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
-MIME-Version: 1.0
-In-Reply-To: <b0209674-8dcb-c994-c0ef-0d2caefd28ff@codeaurora.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        id S2895300AbgJVDFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 23:05:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40632 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2895270AbgJVDFA (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 23:05:00 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CD209C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:04:59 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id j10so273137ybl.19
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:04:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=dNp0qCDPotSmkHaEoVXCuRq3Pqx4VZU0O1ZJ8Iq+U80=;
+        b=Ijvo5p1YtmQSPz42T/ZksxA7ocT/E8p6iqrCAQ25+XvYCvcyZOlnxuzDpyTFBTZqXu
+         9ZO9gqVDAQlDqddaCPd9AgqElnmfqRfqTuo2rxsp3IHYUyCMT19OHbr2tP4C8DmxVf4k
+         EFFZzUdlKz568Rlv1gLhbe8k5oaxCLyHh1UMD/r2mTo7ZBEt0pmp6eczfuqT09278dT+
+         BeKptrATUlcPdomiFbKIpiZxU8PCUaTZTjPPUOxUzFaEYAmdyTHzOZw27CgVj6e/U67M
+         aiUW4dBXseUUNHaxoCb0BFRjGPtnOyZpNRgf5tNwCmlGiUdfQ7AN9939Skj14nHIgwHp
+         /Vag==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=dNp0qCDPotSmkHaEoVXCuRq3Pqx4VZU0O1ZJ8Iq+U80=;
+        b=NRsZLPuQZ3GjscRvUZZbH0R5gwaE8URhqQMS6tpuYYMAS8ci0yfM/aajuJJJBuca3l
+         XrRsl/kf5URFDnporH+1OshlCueUMHoI1WQXf19RxmlRdw+Ww6FQyYLeE3/Wj9sy6zFe
+         AFJ+Wa45mk49cSk1abdeK/fW63d+ZRNNpOYPVS4W2qs1XWHlBg2lfxMRcLXGXuJ+ribF
+         3WfjTRAyHDg6xX0PQJOcWTWSsExl1QA+l4o2uq1RIX56FZef+pQ67hzJmNe6AoVIsreQ
+         oiQMuFgZMSQ5H21tkqv6su+MIg2u2hTaoYyZFAyTxkKiwu0yTFXueWXOOa2UPyLMRj7f
+         bFag==
+X-Gm-Message-State: AOAM531PUha+eiqceSQhasQ04A+ql68RzouP2Hv6nu1HiBVTL8P5RNMc
+        uQSX0VP5QEgOg0yrpC/SsNH/cgXnJyuJgQ==
+X-Google-Smtp-Source: ABdhPJwpfreY8SwQr8opOczLyndMTnkZ5lh/K8xXGCt6Q0pjej5LUqgfqXLk5aIpdYkTPTsno0Xl+V7ku1O9iA==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a25:324b:: with SMTP id
+ y72mr457861yby.451.1603335898937; Wed, 21 Oct 2020 20:04:58 -0700 (PDT)
+Date:   Wed, 21 Oct 2020 20:04:55 -0700
+Message-Id: <20201022030455.1871987-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH] kunit: Fix kunit.py --raw_output option
+From:   David Gow <davidgow@google.com>
+To:     Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/2020 11:46 AM, Hemant Kumar wrote:
-> Hi Jeff,
-> 
-> On 10/21/20 8:28 AM, Jeffrey Hugo wrote:
->> On 10/16/2020 10:04 PM, Hemant Kumar wrote:
->>> +release
->>
->> Should this be "close" since close() is the actual function userspace 
->> would call?
-> I was keeping kernel driver in mind while writing this, i can change it 
-> to close() if release() is confusing here.
+Due to the raw_output() function on kunit_parser.py actually being a
+generator, it only runs if something reads the lines it returns. Since
+we no-longer do that (parsing doesn't actually happen if raw_output is
+enabled), it was not printing anything.
 
-I guess I was considering the client perspective, but this is kernel 
-documentation so I can see your perspective.  I don't have a strong 
-preference.  I suppose keep it as is.
+Fixes:	45ba7a893ad89114e773b3dc32f6431354c465d6 ("kunit: kunit_tool: Separate out config/build/exec/parse")
+Signed-off-by: David Gow <davidgow@google.com>
+---
+ tools/testing/kunit/kunit_parser.py | 1 -
+ 1 file changed, 1 deletion(-)
 
->>
->>> +-------
->>> +
->>> +Decrements UCI device reference count and UCI channel reference 
->>> count upon last
->>> +release(). UCI channel clean up is performed. MHI channel moves to 
->>> disabled
->>> +state and inbound buffers are freed.
->>> +
->>
->>
-> Thanks,
-> Hemant
-
-
+diff --git a/tools/testing/kunit/kunit_parser.py b/tools/testing/kunit/kunit_parser.py
+index 8019e3dd4c32..744ee9cb0073 100644
+--- a/tools/testing/kunit/kunit_parser.py
++++ b/tools/testing/kunit/kunit_parser.py
+@@ -66,7 +66,6 @@ def isolate_kunit_output(kernel_output):
+ def raw_output(kernel_output):
+ 	for line in kernel_output:
+ 		print(line)
+-		yield line
+ 
+ DIVIDER = '=' * 60
+ 
 -- 
-Jeffrey Hugo
-Qualcomm Technologies, Inc. is a member of the
-Code Aurora Forum, a Linux Foundation Collaborative Project.
+2.29.0.rc1.297.gfa9743e501-goog
+
