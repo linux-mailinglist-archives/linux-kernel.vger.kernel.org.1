@@ -2,131 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6005295C26
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:43:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0B7E295C31
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:48:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896066AbgJVJn0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:43:26 -0400
-Received: from mx2.veeam.com ([64.129.123.6]:60718 "EHLO mx2.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895914AbgJVJn0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:43:26 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx2.veeam.com (Postfix) with ESMTPS id 2AB83413F2;
-        Thu, 22 Oct 2020 05:43:21 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx2;
-        t=1603359801; bh=URjUPvv4BF0KAk65rVnV3rB7ijtCMnz1I7O/6wLzuXQ=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=oQQKDYEmamFH8Ys0kCLf7ywAyZM/wz8lHMKZxHCl8WudkvvaT2RFL89vccmfn1BCh
-         BQIIafd7dyM1Xj67jFQVOk0/701HowZTS335k21tL80eefEELrNesD2rDmQIVVBM0H
-         VNfsPHYwKyMOGvUNgJCnpwjvMSeRh8DnllIA7/To=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Thu, 22 Oct 2020
- 11:43:19 +0200
-Date:   Thu, 22 Oct 2020 12:44:02 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Hannes Reinecke <hare@suse.de>
-CC:     "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "hch@infradead.org" <hch@infradead.org>,
-        "darrick.wong@oracle.com" <darrick.wong@oracle.com>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "johannes.thumshirn@wdc.com" <johannes.thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "damien.lemoal@wdc.com" <damien.lemoal@wdc.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>
-Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
-Message-ID: <20201022094402.GA21466@veeam.com>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
- <20201021141044.GF20749@veeam.com>
- <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
+        id S2896140AbgJVJsn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:48:43 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:40704 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896002AbgJVJsn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:48:43 -0400
+Received: by mail-wr1-f65.google.com with SMTP id h5so1411469wrv.7;
+        Thu, 22 Oct 2020 02:48:40 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=oGGYYimYo6kGDWG9p0hxJF/RWR4jWQFU1rqRCopJnao=;
+        b=GvuED4kPXS21NTL3M/A++jgUcPcftR90Xb6jIJ90Io4gQjn6qmFPpMAA/b530N/jZa
+         idzkN+ubPSVpyaOl6GsAY7W2OrTztPufl7jFP+OKlQYc3+89OJLvYYAS9o9H0XGeL81F
+         s93ninsE9qO+7gajVLGBI3Zbwwi/Rdfmxe/f4USGezGxcPF4DSXkkcXHi1US63a1pPkE
+         zNN1q4T2xnpgvlDUe5bpe2SKIIN2Aw8XZB5clgA9RkPqrgYtNOf7WxJG0SJoRNOInqfN
+         czuCwKPG1Z8duFJd3B+WDmU3yE2aGY0vudbB3sGwvRJPHJcvtpnqmEsm6/oNmVB+ojel
+         nDHw==
+X-Gm-Message-State: AOAM530DdbGuRi5Ayl8/mVCar9rG5wxr9sEwJZqF+EtosLOD419hwoqj
+        /yBjnALxSE92Ss/JPEWM0vM=
+X-Google-Smtp-Source: ABdhPJyRKjWFqTBCBg2Z37TF9Oqb7Q2FfTPR3AcTrKOEszK6r1mLavjHjCKR2jfZUmOvFpBFhug6sA==
+X-Received: by 2002:adf:f2c1:: with SMTP id d1mr1888271wrp.179.1603360119551;
+        Thu, 22 Oct 2020 02:48:39 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.171])
+        by smtp.googlemail.com with ESMTPSA id h3sm2791236wrw.78.2020.10.22.02.48.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 02:48:38 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 11:48:36 +0200
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Robin van der Gracht <robin@protonic.nl>,
+        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        David Jander <david@protonic.nl>
+Subject: Re: [PATCH v3 3/3] ARM: dts: add Van der Laan LANMCU board
+Message-ID: <20201022094836.GA93851@kozik-lap>
+References: <20201022073545.29919-1-o.rempel@pengutronix.de>
+ <20201022073545.29919-4-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx01.amust.local (172.24.0.171) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A677460
-X-Veeam-MMEX: True
+In-Reply-To: <20201022073545.29919-4-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/22/2020 08:58, Hannes Reinecke wrote:
-> On 10/21/20 4:10 PM, Sergei Shtepa wrote:
-> > The 10/21/2020 16:31, Hannes Reinecke wrote:
-> >> I do understand where you are coming from, but then we already have a
-> >> dm-snap which does exactly what you want to achieve.
-> >> Of course, that would require a reconfiguration of the storage stack on
-> >> the machine, which is not always possible (or desired).
-> > 
-> > Yes, reconfiguring the storage stack on a machine is almost impossible.
-> > 
-> >>
-> >> What I _could_ imagine would be a 'dm-intercept' thingie, which
-> >> redirects the current submit_bio() function for any block device, and
-> >> re-routes that to a linear device-mapper device pointing back to the
-> >> original block device.
-> >>
-> >> That way you could attach it to basically any block device, _and_ can
-> >> use the existing device-mapper functionality to do fancy stuff once the
-> >> submit_io() callback has been re-routed.
-> >>
-> >> And it also would help in other scenarios, too; with such a
-> >> functionality we could seamlessly clone devices without having to move
-> >> the whole setup to device-mapper first.
-> > 
-> > Hm...
-> > Did I understand correctly that the filter itself can be left approximately
-> > as it is, but the blk-snap module can be replaced with 'dm-intercept',
-> > which would use the re-route mechanism from the dm?
-> > I think I may be able to implement it, if you describe your idea in more
-> > detail.
-> > 
-> > 
-> Actually, once we have an dm-intercept, why do you need the block-layer 
-> filter at all?
->  From you initial description the block-layer filter was implemented 
-> such that blk-snap could work; but if we have dm-intercept (and with it 
-> the ability to use device-mapper functionality even for normal block 
-> devices) there wouldn't be any need for the block-layer filter, no?
-
-Maybe, but the problem is that I can't imagine how to implement
-dm-intercept yet. 
-How to use dm to implement interception without changing the stack
-of block devices. We'll have to make a hook somewhere, isn`t it?
-
+On Thu, Oct 22, 2020 at 09:35:45AM +0200, Oleksij Rempel wrote:
+> Van der Laan LANMCU is a module for the food storage rooms to control
+> proper gas composition.
 > 
-> Cheers,
+> Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
+> Signed-off-by: Robin van der Gracht <robin@protonic.nl>
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  arch/arm/boot/dts/Makefile          |   1 +
+>  arch/arm/boot/dts/imx6dl-lanmcu.dts | 469 ++++++++++++++++++++++++++++
+>  2 files changed, 470 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/imx6dl-lanmcu.dts
 > 
-> Hannes
-> -- 
-> Dr. Hannes Reinecke                Kernel Storage Architect
-> hare@suse.de                              +49 911 74053 688
-> SUSE Software Solutions GmbH, Maxfeldstr. 5, 90409 Nürnberg
-> HRB 36809 (AG Nürnberg), Geschäftsführer: Felix Imendörffer
+> diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+> index 2289a28c0ff6..dc2543a7b7e9 100644
+> --- a/arch/arm/boot/dts/Makefile
+> +++ b/arch/arm/boot/dts/Makefile
+> @@ -447,6 +447,7 @@ dtb-$(CONFIG_SOC_IMX6Q) += \
+>  	imx6dl-icore.dtb \
+>  	imx6dl-icore-mipi.dtb \
+>  	imx6dl-icore-rqs.dtb \
+> +	imx6dl-lanmcu.dtb \
+>  	imx6dl-mamoj.dtb \
+>  	imx6dl-nit6xlite.dtb \
+>  	imx6dl-nitrogen6x.dtb \
+> diff --git a/arch/arm/boot/dts/imx6dl-lanmcu.dts b/arch/arm/boot/dts/imx6dl-lanmcu.dts
+> new file mode 100644
+> index 000000000000..bda2c7a304ba
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/imx6dl-lanmcu.dts
+> @@ -0,0 +1,469 @@
+> +// SPDX-License-Identifier: GPL-2.0-or-later
+> +/*
+> + * Copyright (c) 2019 Protonic Holland
+> + * Copyright (c) 2020 Oleksij Rempel <kernel@pengutronix.de>, Pengutronix
+> + */
+> +
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+[...]
+
+> +	pinctrl_usdhc3: usdhc3grp {
+> +		fsl,pins = <
+> +			MX6QDL_PAD_SD3_CMD__SD3_CMD			0x17099
+> +			MX6QDL_PAD_SD3_CLK__SD3_CLK			0x10099
+> +			MX6QDL_PAD_SD3_DAT0__SD3_DATA0			0x17099
+> +			MX6QDL_PAD_SD3_DAT1__SD3_DATA1			0x17099
+> +			MX6QDL_PAD_SD3_DAT2__SD3_DATA2			0x17099
+> +			MX6QDL_PAD_SD3_DAT3__SD3_DATA3			0x17099
+> +			MX6QDL_PAD_SD3_DAT4__SD3_DATA4			0x17099
+> +			MX6QDL_PAD_SD3_DAT5__SD3_DATA5			0x17099
+> +			MX6QDL_PAD_SD3_DAT6__SD3_DATA6			0x17099
+> +			MX6QDL_PAD_SD3_DAT7__SD3_DATA7			0x17099
+> +			MX6QDL_PAD_SD3_RST__SD3_RESET			0x1b0b1
+> +		>;
+> +	};
+> +
+> +	pinctrl_wifi_npd: wifinpd {
+
+I missed this one last time, I am sorry. The dtschema for IMX requires
+pinctrl groups to end with "grp", so "wifinpdgrp" or just "wifigrp".
+
+Best regards,
+Krzysztof
+
