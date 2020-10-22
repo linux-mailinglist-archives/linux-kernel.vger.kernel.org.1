@@ -2,179 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 814F4295D4B
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:21:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AF19A295D4E
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:23:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897189AbgJVLVb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:21:31 -0400
-Received: from foss.arm.com ([217.140.110.172]:54768 "EHLO foss.arm.com"
+        id S2897199AbgJVLXW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:23:22 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:16105 "EHLO z5.mailgun.us"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2897181AbgJVLVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:21:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8E0FCD6E;
-        Thu, 22 Oct 2020 04:21:30 -0700 (PDT)
-Received: from [10.57.50.191] (unknown [10.57.50.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6E9ED3F66B;
-        Thu, 22 Oct 2020 04:21:29 -0700 (PDT)
-Subject: Re: [PATCH] arm64: NUMA: Kconfig: Increase max number of nodes
-To:     Vanshi Konda <vanshikonda@os.amperecomputing.com>
-Cc:     Jonathan Cameron <Jonathan.Cameron@Huawei.com>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        linux-kernel@vger.kernel.org, patches@amperecomputing.com,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        linux-arm-kernel@lists.infradead.org
-References: <20201020173409.1266576-1-vanshikonda@os.amperecomputing.com>
- <jhj7drkrcpr.mognet@arm.com> <9e14c0d3-9204-fb32-31db-5b3f98639cba@arm.com>
- <20201021110201.00002092@Huawei.com>
- <da1b140c-fdd9-5970-fe83-02f33c3d8251@arm.com>
- <20201022010718.5jkrcyvoae56vdd5@con01sys-r111.scc-lab.amperecomputing.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <3d539f31-5fa9-b6c5-b25a-3e6bd3ae660e@arm.com>
-Date:   Thu, 22 Oct 2020 12:21:27 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S2896994AbgJVLXV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:23:21 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603365800; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=CimVpEJ+4weEnCDOJsDLcR/+sGKTAsA9Sk0CsIKEO0I=;
+ b=UBQFZRqWySU+5bF2W0TiwJ0UJp2NGMXsDvCVhdOvlFL1NWUXBncJitXdXK4txJyvRiOGDzPW
+ kBw/5Iw/T1aGgW7n1jGkgLrx6OibBpC25kx7aKAxfnjBvprXmuQQ01uewBccm+sDZ7teOArY
+ l8TW66VeSFDfyHUENxHXc2YudWE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
+ 5f916ba783370fa1c10b6699 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 11:23:19
+ GMT
+Sender: saiprakash.ranjan=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 3E4D5C43395; Thu, 22 Oct 2020 11:23:19 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: saiprakash.ranjan)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 2E5FBC433C9;
+        Thu, 22 Oct 2020 11:23:18 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <20201022010718.5jkrcyvoae56vdd5@con01sys-r111.scc-lab.amperecomputing.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Oct 2020 16:53:18 +0530
+From:   Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>
+To:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        Mike Leach <mike.leach@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>
+Cc:     linux-arm-msm@vger.kernel.org, coresight@lists.linaro.org,
+        linux-kernel@vger.kernel.org, Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 0/4] coresight: etf/etb10/etr: Fix NULL pointer
+ dereference crashes
+In-Reply-To: <7c3e8fe0e506a04c305e710e8e83ca66@codeaurora.org>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <7c3e8fe0e506a04c305e710e8e83ca66@codeaurora.org>
+Message-ID: <873c5fe9259ae1edd7121a7379457e36@codeaurora.org>
+X-Sender: saiprakash.ranjan@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-22 02:07, Vanshi Konda wrote:
-> On Thu, Oct 22, 2020 at 12:44:15AM +0100, Robin Murphy wrote:
->> On 2020-10-21 12:02, Jonathan Cameron wrote:
->>> On Wed, 21 Oct 2020 09:43:21 +0530
->>> Anshuman Khandual <anshuman.khandual@arm.com> wrote:
->>>
->>>> On 10/20/2020 11:39 PM, Valentin Schneider wrote:
->>>>>
->>>>> Hi,
->>>>>
->>>>> Nit on the subject: this only increases the default, the max is 
->>>>> still 2?????.
->>>>
->>>> Agreed.
->>>>
->>>>>
->>>>> On 20/10/20 18:34, Vanshidhar Konda wrote:
->>>>>> The current arm64 max NUMA nodes default to 4. Today's arm64 
->>>>>> systems can
->>>>>> reach or exceed 16. Increase the number to 64 (matching x86_64).
->>>>>>
->>>>>> Signed-off-by: Vanshidhar Konda <vanshikonda@os.amperecomputing.com>
->>>>>> ---
->>>>>>  arch/arm64/Kconfig | 2 +-
->>>>>>  1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>>
->>>>>> diff --git a/arch/arm64/Kconfig b/arch/arm64/Kconfig
->>>>>> index 893130ce1626..3e69d3c981be 100644
->>>>>> --- a/arch/arm64/Kconfig
->>>>>> +++ b/arch/arm64/Kconfig
->>>>>> @@ -980,7 +980,7 @@ config NUMA
->>>>>>  config NODES_SHIFT
->>>>>>       int "Maximum NUMA Nodes (as a power of 2)"
->>>>>>       range 1 10
->>>>>> -    default "2"
->>>>>> +    default "6"
->>>>>
->>>>> This leads to more statically allocated memory for things like node 
->>>>> to CPU
->>>>> maps (see uses of MAX_NUMNODES), but that shouldn't be too much of an
->>>>> issue.
->>>>
->>>> The smaller systems should not be required to waste those memory in
->>>> a default case, unless there is a real and available larger system
->>>> with those increased nodes.
->>>>
->>>>>
->>>>> AIUI this also directly correlates to how many more page->flags 
->>>>> bits are
->>>>> required: are we sure the max 10 works on any aarch64 platform? I'm
->>>>
->>>> We will have to test that. Besides 256 (2 ^ 8) is the first threshold
->>>> to be crossed here.
->>>>
->>>>> genuinely asking here, given that I'm mostly a stranger to the mm
->>>>> world. The default should be something we're somewhat confident works
->>>>> everywhere.
->>>>
->>>> Agreed. Do we really need to match X86 right now ? Do we really have
->>>> systems that has 64 nodes ? We should not increase the default node
->>>> value and then try to solve some new problems, when there might not
->>>> be any system which could even use that. I would suggest increase
->>>> NODES_SHIFT value upto as required by a real and available system.
->>>
->>> I'm not going to give precise numbers on near future systems but it 
->>> is public
->>> that we ship 8 NUMA node ARM64 systems today.  Things will get more
->>> interesting as CXL and CCIX enter the market on ARM systems,
->>> given chances are every CXL device will look like another NUMA
->>> node (CXL spec says they should be presented as such) and you
->>> may be able to rack up lots of them.
->>>
->>> So I'd argue minimum that makes sense today is 16 nodes, but looking 
->>> forward
->>> even a little and 64 is not a great stretch.
->>> I'd make the jump to 64 so we can forget about this again for a year 
->>> or two.
->>> People will want to run today's distros on these new machines and we'd
->>> rather not have to go around all the distros asking them to carry a 
->>> patch
->>> increasing this count (I assume they are already carrying such a patch
->>> due to those 8 node systems)
+On 2020-10-22 16:40, Sai Prakash Ranjan wrote:
+> On 2020-10-22 16:27, Sai Prakash Ranjan wrote:
+>> There was a report of NULL pointer dereference in ETF enable
+>> path for perf CS mode with PID monitoring. It is almost 100%
+>> reproducible when the process to monitor is something very
+>> active such as chrome and with ETF as the sink and not ETR.
+>> Currently in a bid to find the pid, the owner is dereferenced
+>> via task_pid_nr() call in tmc_enable_etf_sink_perf() and with
+>> owner being NULL, we get a NULL pointer dereference.
+>> 
+>> Looking at the ETR and other places in the kernel, ETF and the
+>> ETB are the only places trying to dereference the task(owner)
+>> in tmc_enable_etf_sink_perf() which is also called from the
+>> sched_in path as in the call trace. Owner(task) is NULL even
+>> in the case of ETR in tmc_enable_etr_sink_perf(), but since we
+>> cache the PID in alloc_buffer() callback and it is done as part
+>> of etm_setup_aux() when allocating buffer for ETR sink, we never
+>> dereference this NULL pointer and we are safe. So lets do the
+>> same thing with ETF and ETB and cache the PID to which the
+>> cs_buffer belongs in alloc_buffer() callback for ETF and ETB as
+>> done for ETR. This will also remove the unnecessary function calls
+>> (task_pid_nr()) in tmc_enable_etr_sink_perf() and etb_enable_perf().
+>> 
+>> In addition to this, add a check to validate event->owner before
+>> dereferencing it in ETR, ETB and ETF to avoid any possible NULL
+>> pointer dereference crashes in their corresponding alloc_buffer
+>> callbacks and check for kernel events as well.
+>> 
+>> Easily reproducible running below:
+>> 
+>>  perf record -e cs_etm/@tmc_etf0/ -N -p <pid>
+>> 
+>> Unable to handle kernel NULL pointer dereference at virtual address
+>> 0000000000000548
+>> Mem abort info:
+>>   ESR = 0x96000006
+>>   EC = 0x25: DABT (current EL), IL = 32 bits
+>>   SET = 0, FnV = 0
+>>   EA = 0, S1PTW = 0
+>> Data abort info:
+>>   ISV = 0, ISS = 0x00000006
+>>   CM = 0, WnR = 0
+>> <snip>...
+>> Call trace:
+>>  tmc_enable_etf_sink+0xe4/0x280
+>>  coresight_enable_path+0x168/0x1fc
+>>  etm_event_start+0x8c/0xf8
+>>  etm_event_add+0x38/0x54
+>>  event_sched_in+0x194/0x2ac
+>>  group_sched_in+0x54/0x12c
+>>  flexible_sched_in+0xd8/0x120
+>>  visit_groups_merge+0x100/0x16c
+>>  ctx_flexible_sched_in+0x50/0x74
+>>  ctx_sched_in+0xa4/0xa8
+>>  perf_event_sched_in+0x60/0x6c
+>>  perf_event_context_sched_in+0x98/0xe0
+>>  __perf_event_task_sched_in+0x5c/0xd8
+>>  finish_task_switch+0x184/0x1cc
+>>  schedule_tail+0x20/0xec
+>>  ret_from_fork+0x4/0x18
+>> 
+>> Sai Prakash Ranjan (4):
+>>   perf/core: Export is_kernel_event()
+>>   coresight: tmc-etf: Fix NULL ptr dereference in
+>>     tmc_enable_etf_sink_perf()
+>>   coresight: etb10: Fix possible NULL ptr dereference in
+>>     etb_enable_perf()
+>>   coresight: tmc-etr: Fix possible NULL ptr dereference in
+>>     get_perf_etr_buf_cpu_wide()
+>> 
+>>  drivers/hwtracing/coresight/coresight-etb10.c   | 8 +++++++-
+>>  drivers/hwtracing/coresight/coresight-priv.h    | 2 ++
+>>  drivers/hwtracing/coresight/coresight-tmc-etf.c | 8 +++++++-
+>>  drivers/hwtracing/coresight/coresight-tmc-etr.c | 6 +++++-
+>>  include/linux/perf_event.h                      | 2 ++
+>>  kernel/events/core.c                            | 3 ++-
+>>  6 files changed, 25 insertions(+), 4 deletions(-)
+>> 
+>> 
+>> base-commit: f4cb5e9daedf56671badc93ac7f364043aa33886
 > 
-> To echo Jonathan's statement above we are looking at systems that will
-> need approximately 64 NUMA nodes over the next 5-6 years - the time for
-> which an LTS kernel would be maintained. Some of the reason's for
-> increasing NUMA nodes during this time period include CXL, CCIX and
-> NVDIMM (like Jonathan pointed out).
+> Please ignore this series, I will need to resend.
 > 
-> The main argument against increasing the NODES_SHIFT seems to be a
-> concern that it negatively impacts other ARM64 systems. Could anyone
-> share what kind of systems we are talking about? For a system that has
-> NEED_MULTIPLE_NODES set, would the impact be noticeable?
 
-Systems like the ESPRESSObin - sure, sane people aren't trying to run 
-desktops or development environments in 1GB of RAM, but it's not 
-uncommon for them to use a minimal headless install of their favourite 
-generic arm64 distro rather than something more "embedded" like OpenWrt 
-or Armbian. Increasing a generic kernel's memory footprint (and perhaps 
-more importantly, cache footprint) more than necessary is going to have 
-*some* impact.
+Please ignore my previous ignore request and let me
+know if exporting is_kernel_event() is ok.
 
-Robin.
+Thanks,
+Sai
 
-> 
-> Vanshi
-> 
->>
->> Nit: I doubt any sane distro is going to carry a patch to adjust the 
->> *default* value of a Kconfig option. They might tune the actual value 
->> in their config, but, well, isn't that the whole point of configs? ;)
->>
->> Robin.
->>
->>>
->>> Jonathan
->>>
->>>>
->>>>>>       depends on NEED_MULTIPLE_NODES
->>>>>>       help
->>>>>>         Specify the maximum number of NUMA Nodes available on the 
->>>>>> target
->>>>
->>>> _______________________________________________
->>>> linux-arm-kernel mailing list
->>>> linux-arm-kernel@lists.infradead.org
->>>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>>
->>>
->>>
->>> _______________________________________________
->>> linux-arm-kernel mailing list
->>> linux-arm-kernel@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-arm-kernel
->>>
+-- 
+QUALCOMM INDIA, on behalf of Qualcomm Innovation Center, Inc. is a 
+member
+of Code Aurora Forum, hosted by The Linux Foundation
