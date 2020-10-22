@@ -2,73 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75ABB295D3D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:16:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D04B295D40
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:17:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897119AbgJVLQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:16:37 -0400
-Received: from mail-ed1-f67.google.com ([209.85.208.67]:37679 "EHLO
-        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2436687AbgJVLQg (ORCPT
+        id S2897126AbgJVLRF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:17:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59954 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2502527AbgJVLRD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:16:36 -0400
-Received: by mail-ed1-f67.google.com with SMTP id o18so1364137edq.4;
-        Thu, 22 Oct 2020 04:16:35 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=M6LjlAqnltcowuKPFP7AlL+hzUKZELzInqRy8HOQGng=;
-        b=PmGQZKY+aRxdgnH+la8Wwr0pnRYjPaTe4xMow9rru+ej14uKOazdLGip0VC723YyZK
-         a4bttBWQxFz4h2TOmrGSXV1xspx5ncvZaqvZh2f1kX0H6WgODMrmDyBsJvzcGGqc8WZd
-         biapV5wLZjak3QEmJYcZcKYQ0tdzAiORgsKBJQrd1CA76yHJtRyJHnMf+QlHdf86ihNC
-         DpK2dw6qwxs7Fm3Rmslr0KsIo/K1biRSb/wuxeMsl3Ye395oLhFUz2qi3IVR/Pp6VtK0
-         GrBI1l92AqPJtmOBELw3nK7YDx54HTjxMSEiw39r3rD1u74OG6msFnZOjv4HwIpUGKae
-         oRlQ==
-X-Gm-Message-State: AOAM531r141JMtUPpwVk3JfoqEJo217GqPfaJxVjwOXND9sMlzwWkRUb
-        Km93A3n5477BthhrMPx5SHU=
-X-Google-Smtp-Source: ABdhPJxsyCEWvreTBWM+MyO41TZtpnZlLYxdisLH4mkQW2lEvOqS0aNZBg1ii6oGaUdR7I5pbVZDuQ==
-X-Received: by 2002:aa7:d384:: with SMTP id x4mr1748243edq.105.1603365395007;
-        Thu, 22 Oct 2020 04:16:35 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id z2sm586109edr.64.2020.10.22.04.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 04:16:33 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 13:16:31 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     Mark Rutland <mark.rutland@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Robin van der Gracht <robin@protonic.nl>,
-        devicetree@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        David Jander <david@protonic.nl>
-Subject: Re: [PATCH v4 3/3] ARM: dts: add Van der Laan LANMCU board
-Message-ID: <20201022111631.GA120389@kozik-lap>
-References: <20201022102733.3277-1-o.rempel@pengutronix.de>
- <20201022102733.3277-4-o.rempel@pengutronix.de>
+        Thu, 22 Oct 2020 07:17:03 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 27999C0613CE;
+        Thu, 22 Oct 2020 04:17:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=LtnWOsuhrFn7+oVdVMoCVndSGLt50TxPAs4a8rGonYE=; b=dM9SNk4zcle/PDQ1qASd5oGeZD
+        15OTWVsGJmAwDJbMWe3Ej6eMLj3ozlRrmd93px6u2Pf16reezDP0o7RNDLBS8s8TqfQoKipM1fRTu
+        ffh0hX+0SCxzP9gyK6AIjY1VOkKICSYPTNV006ltNaaqX2/xwl/W2oLqbKE6Q0owHKAUJXWT3w4Gu
+        sBkQuOW5J4AYILe2395k1EnRX+SLoGepwPACg24NVWITWhyG2l/2VoRSfI0j9wlgl3tmmQigEI4BD
+        RpmtCqDULdVvhePJvaPp5ciZXBUBqbzxWrIs4J2u/D6G1e1o2gqdORCIxbnC7YEFqibZU5sBXn7zF
+        T+Nk1Lbg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVYaa-0004im-SV; Thu, 22 Oct 2020 11:17:01 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 48B7F304D28;
+        Thu, 22 Oct 2020 13:17:00 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 32D6A203D0810; Thu, 22 Oct 2020 13:17:00 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 13:17:00 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Anatoly Pugachev <matorola@gmail.com>
+Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
+        Sparc kernel list <sparclinux@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>
+Subject: Re: [sparc64] lockdep: Fix lockdep recursion - call trace
+Message-ID: <20201022111700.GZ2651@hirez.programming.kicks-ass.net>
+References: <CADxRZqwQ_nvbGrzDzOjzt=R5x6yvsU4AujhpxXYs8cHFwoCjmA@mail.gmail.com>
+ <20201022110015.GJ2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022102733.3277-4-o.rempel@pengutronix.de>
+In-Reply-To: <20201022110015.GJ2594@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:27:33PM +0200, Oleksij Rempel wrote:
-> Van der Laan LANMCU is a module for the food storage rooms to control
-> proper gas composition.
+On Thu, Oct 22, 2020 at 01:00:16PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 22, 2020 at 12:21:55PM +0300, Anatoly Pugachev wrote:
+> > Hello!
+> > 
+> > Bisected the following linux calltrace after v5.9 :
+> > 
+> > [    8.650198] systemd[1]: Started Journal Service.
+> > [    9.028125] ------------[ cut here ]------------
+> > [    9.028171] WARNING: CPU: 11 PID: 499 at
+> > net/netfilter/nf_tables_api.c:622 nft_chain_parse_hook+0x7c/0x360
+> > [nf_tables]
+> > [    9.028185] Modules linked in: nf_tables nfnetlink sunrpc ip_tables
+> > x_tables ipv6 crc_ccitt autofs4 ext4 crc16 mbcache jbd2 raid10 raid456
+> > async_raid6_recov async_mem
+> > cpy async_pq async_xor xor async_tx raid6_pq raid1 raid0 multipath
+> > linear md_mod crc32c_sparc64
+> > [    9.028243] CPU: 11 PID: 499 Comm: nft Tainted: G        W
+> > 5.9.0-rc8-00209-gbaffd723e44d #111
+> > [    9.028255] Call Trace:
+> > [    9.028269] [<00000000004727e8>] __warn+0xa8/0x120
+> > [    9.028278] [<0000000000472c20>] warn_slowpath_fmt+0x34/0x74
+> > [    9.028291] [<00000000100c19fc>] nft_chain_parse_hook+0x7c/0x360 [nf_tables]
 > 
-> Co-Developed-by: Robin van der Gracht <robin@protonic.nl>
-> Signed-off-by: Robin van der Gracht <robin@protonic.nl>
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> Reviewed-by: Krzysztof Kozlowski <krzk@kernel.org>
+> > commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+> 
+> What's unexpected.. while I just queued a another fix for that commit:
+> 
+>   https://lkml.kernel.org/r/20201022103028.GC2611@hirez.programming.kicks-ass.net
+> 
+> I don't think that explains this WARN. Let me go prod at it.
 
-Looks good, thanks.
+This looks like lockdep_is_held() encounters an incremented recursion
+count and returns 1, which in this case will trigger the WARN.
 
-Best regards,
-Krzysztof
+But that would mean we're leaking a recursion count somewhere... do you
+have CONFIG_DEBUG_PREEMPT enabled?
