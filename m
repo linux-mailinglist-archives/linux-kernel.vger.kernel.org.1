@@ -2,192 +2,314 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0023929575D
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:41:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DDAE1295763
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:58:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507598AbgJVElx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:41:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55550 "EHLO
+        id S2507645AbgJVE4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2502378AbgJVElw (ORCPT
+        with ESMTP id S2507638AbgJVE4t (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:41:52 -0400
-Received: from mail-pj1-x1044.google.com (mail-pj1-x1044.google.com [IPv6:2607:f8b0:4864:20::1044])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA394C0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
-Received: by mail-pj1-x1044.google.com with SMTP id b6so278069pju.1
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
+        Thu, 22 Oct 2020 00:56:49 -0400
+Received: from mail-wm1-x335.google.com (mail-wm1-x335.google.com [IPv6:2a00:1450:4864:20::335])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 54F5BC0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:56:47 -0700 (PDT)
+Received: by mail-wm1-x335.google.com with SMTP id v5so444575wmh.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 21:56:47 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=7cJzNVPTTZFNbgG47IvnfLgtVfjxwapjyKuc8PcpjN4=;
-        b=xZGB1UcW7HN6Va9qQ5hUDPjWcLDkfHdquLwX9mzPkfbp7sqA4ieXHrOO8Xv9UExSlB
-         kg54dI+rO/lxFGuS9tynSpcn88hn/CKZxYcKENgSuoM0rrmCBM2frmv+DgxMi8+fX2/S
-         50ck3oFdYYFz0Yw4EriYJFi417ikDO8yXpiNUQbkAopYoQlQONi5TuBI/9qK/o1/zXfW
-         xVKNG9Cuwuhjtwf9h6a5WNbA6m+Y1a82X5gh93CgF/i7KGlbOiwtYBApGm43fS3rKZWe
-         GcEHDp1lYOGf9mt2CelCqCo2wspbHTiuWjk1i+4mxGpOX0WWtx5tKZMT0m+qpHWnti8k
-         TwKA==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=y5P/hyU4ScvAx/EuzAVzabXFsXcQii1dHFcND32fY44=;
+        b=QG4642Xxh4SfN4OSOAOu9x60OncbquO6Ht7WBZcZXSdYNGDKlyL7jqNBEeS3vVbyZW
+         4/m6kprv7jgurEUAMc1UILxnn2x1UgJyViNlYqzPDiBrQIOhI0qi/WBWNmkF+1fEmKHK
+         1RqeQeDRrwlIvSfuFai9e6dA+j2PitHcSCZmXi4lr88o/84wjARxXQeSRYZ4Qzn4yImP
+         g9g9gRfMm6afAzJLHsWFWtKoWjQBeJVHeMnSr/JKsZlHGr4FYqxJWMkLzyFxF5cIzKN7
+         0AoRHReAyGvdoqTkNajnXL5vxMPO1nrMHDZv+6mjRrQfVKettuATAsh+gOLxailVpV1Q
+         oH7g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=7cJzNVPTTZFNbgG47IvnfLgtVfjxwapjyKuc8PcpjN4=;
-        b=WeFMLGjG7Rth3WPox4PKIiy3/OzTEN3frmtuCZTeYVUw48Fn7scmZw5CfDuj+O35Lh
-         0Y4+/iv9jq3kEIhY5U1G9FpO82UT+frpOakwyzyubEEujdxTgADyFpl5iKsy4MDL125y
-         mxnfhv6xjjdltn7ZkFt+sctfts51YwIhPl9/wFpLBikie8vZvCe1PuPeBLZ8LKwIL3vW
-         IX3/FcS5AwNxGkHLYFfDmTjqONsEuZGZq3+a7RYrlW6AhLfKcYI4nMxBaqWp8s/n8Ggx
-         JGQ5VaeL/cMMRAFUIph473iEmoome84XuVCXZkgvhzqnYTCWR7hrnBaKTsH5DIbXX+p5
-         qGRg==
-X-Gm-Message-State: AOAM533Y5o1Oq0QV/PySYDcpH7k3JD3siRPxbkGVon6xFq9wHbcCs7Si
-        waa3pyNXYMyWpbLdW/v5r7Dx+g==
-X-Google-Smtp-Source: ABdhPJy7Kz2kXU/0CPE+lAJ2lEmZJm3/kX8MrWizdVmhljhiSlm0s7h+wYVIwi15OCd/hOgvbZMRKA==
-X-Received: by 2002:a17:902:b111:b029:d4:cf7c:2ff1 with SMTP id q17-20020a170902b111b02900d4cf7c2ff1mr736017plr.59.1603341712084;
-        Wed, 21 Oct 2020 21:41:52 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id w6sm478127pgw.28.2020.10.21.21.41.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 21:41:51 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 10:11:46 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com
-Subject: Re: [PATCH] sched/fair: check for idle core
-Message-ID: <20201022044146.4n2jl6jzyycfhfzg@vireshk-i7>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <20201021121950.GF2628@hirez.programming.kicks-ass.net>
- <20201021131026.GY2651@hirez.programming.kicks-ass.net>
- <6145907.dAfbsivgMF@kreacher>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=y5P/hyU4ScvAx/EuzAVzabXFsXcQii1dHFcND32fY44=;
+        b=tbAMfq6n8b7xF0uGRBwH2wQYJ9oqQr11dNFfn2hhMkDPG4RecThzG8bB3tE/bE9689
+         DiJfcTJ4Qq5XR6TcdgEkP84prM55xH9chykUDTrvNw7z9gtsQig0o880tk1virqCVnPJ
+         vyMbIwQaxzJp5NXqrsmjdGqu67qa4QBlBZa7ed0t9chaI19zJneJWv1LSudTWUO4bVWp
+         sqxoXyAQTc6qmvtnkcpZnp6dXTz6dn4zLusTNAJJ8OPgXGYiKE/JMUGlYacDtwWp8xvO
+         nYqEGHt2VaO+Qbpf60iBN8tm3223UHjL+b1ARLcN0fSyE2aOGj2Pze/hEJxLiVZvlEY3
+         JwOA==
+X-Gm-Message-State: AOAM531e2Ny1cBhzZR/73qEelX39V7eZGpS/zB1aShKIbFftjznllMhq
+        KNeQPhZ7I7Vr8irydv311LaYQFfxTjIs+p+CI4w=
+X-Google-Smtp-Source: ABdhPJzDSZHkXyivAg1JC/UinLS//1E7fm00gygHDmWVOvMP2nVYANSGY3iwZPGaPnBVnJuW/hUgPjMU2IOJhamzao8=
+X-Received: by 2002:a1c:49c2:: with SMTP id w185mr658734wma.70.1603342603598;
+ Wed, 21 Oct 2020 21:56:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6145907.dAfbsivgMF@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+References: <20201019144311.18260-1-trix@redhat.com> <2f951197-b93e-d0c9-153f-2ddd1b195b3f@amd.com>
+ <7179e50d-f29b-811d-030b-f2cfe3a1a502@amd.com>
+In-Reply-To: <7179e50d-f29b-811d-030b-f2cfe3a1a502@amd.com>
+From:   Alex Deucher <alexdeucher@gmail.com>
+Date:   Thu, 22 Oct 2020 00:56:31 -0400
+Message-ID: <CADnq5_NdJ36NZbWwL4QT5ZNKX4wEbyJNB2NOaoxpMyrs8RBjHQ@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: remove unneeded break
+To:     Harry Wentland <harry.wentland@amd.com>
+Cc:     =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+        trix@redhat.com, "Leo (Sunpeng) Li" <sunpeng.li@amd.com>,
+        "Deucher, Alexander" <alexander.deucher@amd.com>,
+        Dave Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Mauro Rossi <issor.oruam@gmail.com>,
+        Anthony Koo <Anthony.Koo@amd.com>,
+        "Siqueira, Rodrigo" <Rodrigo.Siqueira@amd.com>,
+        "Cheng, Tony" <Tony.Cheng@amd.com>,
+        Charlene Liu <Charlene.Liu@amd.com>,
+        yogesh.mohanmarimuthu@amd.com, "Cyr, Aric" <Aric.Cyr@amd.com>,
+        Igor.Kravchenko@amd.com, Colin Ian King <colin.king@canonical.com>,
+        Tao Zhou <tao.zhou1@amd.com>, Dennis Li <Dennis.Li@amd.com>,
+        Mario Kleiner <mario.kleiner.de@gmail.com>,
+        Maling list - DRI developers 
+        <dri-devel@lists.freedesktop.org>,
+        amd-gfx list <amd-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21-10-20, 20:11, Rafael J. Wysocki wrote:
-> On Wednesday, October 21, 2020 3:10:26 PM CEST Peter Zijlstra wrote:
-> > On Wed, Oct 21, 2020 at 02:19:50PM +0200, Peter Zijlstra wrote:
-> > > On Wed, Oct 21, 2020 at 01:56:55PM +0200, Julia Lawall wrote:
-> > > > Prior to 5.8, my machine was using intel_pstate and had few background
-> > > > tasks.  Thus the problem wasn't visible in practice.  Starting with 5.8
-> > > > the kernel decided that intel_cpufreq would be more appropriate, which
-> > > > introduced kworkers every 0.004 seconds on all cores.
-> > > 
-> > > That still doesn't make any sense. Are you running the legacy on-demand
-> > > thing or something?
-> > > 
-> > > Rafael, Srinivas, Viresh, how come it defaults to that?
-> > 
-> > Does we want something like this?
-> > 
-> > ---
-> >  arch/x86/configs/i386_defconfig   | 3 +--
-> >  arch/x86/configs/x86_64_defconfig | 3 +--
-> >  drivers/cpufreq/Kconfig           | 7 +++++--
-> >  3 files changed, 7 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/arch/x86/configs/i386_defconfig b/arch/x86/configs/i386_defconfig
-> > index 78210793d357..c343ad459737 100644
-> > --- a/arch/x86/configs/i386_defconfig
-> > +++ b/arch/x86/configs/i386_defconfig
-> > @@ -41,8 +41,7 @@ CONFIG_PM_DEBUG=y
-> >  CONFIG_PM_TRACE_RTC=y
-> >  CONFIG_ACPI_DOCK=y
-> >  CONFIG_ACPI_BGRT=y
-> > -CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
-> > -CONFIG_CPU_FREQ_GOV_ONDEMAND=y
-> > +CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
-> >  CONFIG_X86_ACPI_CPUFREQ=y
-> >  CONFIG_EFI_VARS=y
-> >  CONFIG_KPROBES=y
-> > diff --git a/arch/x86/configs/x86_64_defconfig b/arch/x86/configs/x86_64_defconfig
-> > index 9936528e1939..23e1ea85c1ec 100644
-> > --- a/arch/x86/configs/x86_64_defconfig
-> > +++ b/arch/x86/configs/x86_64_defconfig
-> > @@ -38,8 +38,7 @@ CONFIG_PM_DEBUG=y
-> >  CONFIG_PM_TRACE_RTC=y
-> >  CONFIG_ACPI_DOCK=y
-> >  CONFIG_ACPI_BGRT=y
-> > -CONFIG_CPU_FREQ_DEFAULT_GOV_USERSPACE=y
-> > -CONFIG_CPU_FREQ_GOV_ONDEMAND=y
-> > +CONFIG_CPU_FREQ_DEFAULT_GOV_SCHEDUTIL=y
-> >  CONFIG_X86_ACPI_CPUFREQ=y
-> >  CONFIG_IA32_EMULATION=y
-> >  CONFIG_EFI_VARS=y
-> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> > index 2c7171e0b001..8dfca6e9b836 100644
-> > --- a/drivers/cpufreq/Kconfig
-> > +++ b/drivers/cpufreq/Kconfig
-> > @@ -37,8 +37,7 @@ config CPU_FREQ_STAT
-> >  choice
-> >  	prompt "Default CPUFreq governor"
-> >  	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
-> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
-> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
-> > +	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if SMP
-> >  	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
-> >  	help
-> >  	  This option sets which CPUFreq governor shall be loaded at
-> > @@ -71,6 +70,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
-> >  
-> >  config CPU_FREQ_DEFAULT_GOV_ONDEMAND
-> >  	bool "ondemand"
-> > +	depends on !SMP
-> >  	select CPU_FREQ_GOV_ONDEMAND
-> >  	select CPU_FREQ_GOV_PERFORMANCE
-> >  	help
-> > @@ -83,6 +83,7 @@ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
-> >  
-> >  config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
-> >  	bool "conservative"
-> > +	depends on !SMP
-> >  	select CPU_FREQ_GOV_CONSERVATIVE
-> >  	select CPU_FREQ_GOV_PERFORMANCE
-> >  	help
-> 
-> The changes above should work.
-> 
-> > @@ -144,6 +145,7 @@ config CPU_FREQ_GOV_USERSPACE
-> >  
-> >  config CPU_FREQ_GOV_ONDEMAND
-> >  	tristate "'ondemand' cpufreq policy governor"
-> > +	depends on !SMP
-> 
-> But I don't think that we can do this and the one below.
+Applied.  Thanks!
 
-I have exactly the same comments.
+Alex
 
-> >  	select CPU_FREQ_GOV_COMMON
-> >  	help
-> >  	  'ondemand' - This driver adds a dynamic cpufreq policy governor.
-> > @@ -163,6 +165,7 @@ config CPU_FREQ_GOV_ONDEMAND
-> >  config CPU_FREQ_GOV_CONSERVATIVE
-> >  	tristate "'conservative' cpufreq governor"
-> >  	depends on CPU_FREQ
-> > +	depends on !SMP
-> >  	select CPU_FREQ_GOV_COMMON
-> >  	help
-> >  	  'conservative' - this driver is rather similar to the 'ondemand'
-> > 
-> 
-> 
-> 
-
--- 
-viresh
+On Mon, Oct 19, 2020 at 11:08 AM Harry Wentland <harry.wentland@amd.com> wr=
+ote:
+>
+> On 2020-10-19 10:55 a.m., Christian K=C3=B6nig wrote:
+> > Am 19.10.20 um 16:43 schrieb trix@redhat.com:
+> >> From: Tom Rix <trix@redhat.com>
+> >>
+> >> A break is not needed if it is preceded by a return or break
+> >>
+> >> Signed-off-by: Tom Rix <trix@redhat.com>
+> >
+> > Acked-by: Christian K=C3=B6nig <christian.koenig@amd.com>
+>
+> Reviewed-by: Harry Wentland <harry.wentland@amd.com>
+>
+> Harry
+>
+> >
+> >> ---
+> >>   drivers/gpu/drm/amd/display/dc/dce/dce_transform.c      | 1 -
+> >>   drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c | 7 -------
+> >>   drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c | 7 -------
+> >>   drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c | 7 -------
+> >>   drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c | 7 -------
+> >>   drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c   | 7 -------
+> >>   drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c   | 7 -------
+> >>   7 files changed, 43 deletions(-)
+> >>
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> >> index 2a32b66959ba..130a0a0c8332 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce/dce_transform.c
+> >> @@ -1330,7 +1330,6 @@ static bool configure_graphics_mode(
+> >>               REG_SET(OUTPUT_CSC_CONTROL, 0,
+> >>                   OUTPUT_CSC_GRPH_MODE, 0);
+> >>               break;
+> >> -            break;
+> >>           case COLOR_SPACE_SRGB_LIMITED:
+> >>               /* TV RGB */
+> >>               REG_SET(OUTPUT_CSC_CONTROL, 0,
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> >> index d741787f75dc..42c7d157da32 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce100/dce100_resource.c
+> >> @@ -418,25 +418,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> >> index 2bbfa2e176a9..382581c4a674 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce110/dce110_resource.c
+> >> @@ -471,25 +471,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> >> index b622b4b1dac3..7b4b2304bbff 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce112/dce112_resource.c
+> >> @@ -446,25 +446,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> >> index 16fe7344702f..3d782b7c86cb 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce120/dce120_resource.c
+> >> @@ -383,25 +383,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> >> index 5a5a9cb77acb..e9dd78c484d6 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce60/dce60_resource.c
+> >> @@ -453,25 +453,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >> diff --git a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> >> b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> >> index 0eae8cd35f9a..9dbf658162cd 100644
+> >> --- a/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> >> +++ b/drivers/gpu/drm/amd/display/dc/dce80/dce80_resource.c
+> >> @@ -458,25 +458,18 @@ static int map_transmitter_id_to_phy_instance(
+> >>       switch (transmitter) {
+> >>       case TRANSMITTER_UNIPHY_A:
+> >>           return 0;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_B:
+> >>           return 1;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_C:
+> >>           return 2;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_D:
+> >>           return 3;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_E:
+> >>           return 4;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_F:
+> >>           return 5;
+> >> -    break;
+> >>       case TRANSMITTER_UNIPHY_G:
+> >>           return 6;
+> >> -    break;
+> >>       default:
+> >>           ASSERT(0);
+> >>           return 0;
+> >
+> _______________________________________________
+> amd-gfx mailing list
+> amd-gfx@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
