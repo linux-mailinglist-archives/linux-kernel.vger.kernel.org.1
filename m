@@ -2,55 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98422295714
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:23:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D2A2829574A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 06:30:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726223AbgJVEW7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 00:22:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51668 "EHLO mail.kernel.org"
+        id S2392254AbgJVEaL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 00:30:11 -0400
+Received: from inva021.nxp.com ([92.121.34.21]:56256 "EHLO inva021.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726188AbgJVEW7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 00:22:59 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 97F58223C7;
-        Thu, 22 Oct 2020 04:22:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603340578;
-        bh=abK6GnFdkR0gb+0CmFFSKSBybEXxiaGX7kjbc9XN674=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=vp/iU+WQQk/3dF0vOi29eutcyfki6Gh3RadGlE+BrR4V8jSmn7zOw0T5ovw6+w4IR
-         Vb1D8MuHqywZqN7Q+cNJ5x0jVoFx0Xbwe80fUMNUpEObV4AXiJQTxPBuJcqeBfA4yg
-         m21uPK4QSjDz99Z6xksAMK4f1hBpamMHmLSEXEqA=
-Date:   Wed, 21 Oct 2020 21:22:57 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Daeho Jeong <daeho43@gmail.com>
-Cc:     linux-kernel@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Daeho Jeong <daehojeong@google.com>
-Subject: Re: [f2fs-dev] [PATCH v2 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION
- ioctl
-Message-ID: <20201022042257.GA857@sol.localdomain>
-References: <20201022035848.976286-1-daeho43@gmail.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022035848.976286-1-daeho43@gmail.com>
+        id S1730393AbgJVEaK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 00:30:10 -0400
+Received: from inva021.nxp.com (localhost [127.0.0.1])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id AE722201849;
+        Thu, 22 Oct 2020 06:30:08 +0200 (CEST)
+Received: from invc005.ap-rdc01.nxp.com (invc005.ap-rdc01.nxp.com [165.114.16.14])
+        by inva021.eu-rdc02.nxp.com (Postfix) with ESMTP id 4C12F200CA1;
+        Thu, 22 Oct 2020 06:30:04 +0200 (CEST)
+Received: from localhost.localdomain (shlinux2.ap.freescale.net [10.192.224.44])
+        by invc005.ap-rdc01.nxp.com (Postfix) with ESMTP id 9DFF4402DD;
+        Thu, 22 Oct 2020 06:29:58 +0200 (CEST)
+From:   Anson Huang <Anson.Huang@nxp.com>
+To:     rui.zhang@intel.com, daniel.lezcano@linaro.org, amitk@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-pm@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Cc:     Linux-imx@nxp.com
+Subject: [PATCH] thermal: imx: Do NOT return -EPROBE_DEFER when "#cooling-cells" is present
+Date:   Thu, 22 Oct 2020 12:24:54 +0800
+Message-Id: <1603340694-29826-1-git-send-email-Anson.Huang@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:58:47PM +0900, Daeho Jeong wrote:
-> +	if (!f2fs_compressed_file(inode)) {
-> +		inode_unlock(inode);
-> +		return -EINVAL;
-> +	}
+The legacy CPU cooling should ONLY be used when "#cooling-cells" is NOT
+present in cpu node, current implementation for registering legacy cooling
+always return -EPROBE_DEFER when cpufreq is NOT ready, that will cause
+thermal driver probe failed when cpufreq failed to probe with a non
+-EPROBE_DEFER reason. In such case, thermal driver should continue probe
+and provide temperature monitor and other cooling methods.
 
-How about using ENODATA here?  EINVAL tends to be used for lots of different
-reasons, and it's not always clear what it means.
+So, for the case of "#cooling-cells" present in cpu node, no need to
+return -EPROBE_DEFER even cpufreq is NOT ready, this is to make sure
+thermal driver can continue probe.
 
-Note that FS_IOC_GET_ENCRYPTION_POLICY fails with ENODATA when called on an
-unencrypted file, which is a similar case.
+Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+---
+ drivers/thermal/imx_thermal.c | 25 +++++++++++++++++++------
+ 1 file changed, 19 insertions(+), 6 deletions(-)
 
-- Eric
+diff --git a/drivers/thermal/imx_thermal.c b/drivers/thermal/imx_thermal.c
+index 9f00182..df60dcb 100644
+--- a/drivers/thermal/imx_thermal.c
++++ b/drivers/thermal/imx_thermal.c
+@@ -630,17 +630,29 @@ MODULE_DEVICE_TABLE(of, of_imx_thermal_match);
+ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+ {
+ 	struct device_node *np;
++	struct device *cpu_dev;
+ 	int ret = 0;
+ 
+-	data->policy = cpufreq_cpu_get(0);
+-	if (!data->policy) {
+-		pr_debug("%s: CPUFreq policy not found\n", __func__);
+-		return -EPROBE_DEFER;
++	cpu_dev = get_cpu_device(0);
++	if (!cpu_dev) {
++		pr_err("imx thermal: failed to get cpu0 device\n");
++		return -ENODEV;
++	}
++
++	np = of_node_get(cpu_dev->of_node);
++	if (!np) {
++		pr_err("imx thermal: failed to find cpu0 node\n");
++		return -ENOENT;
+ 	}
+ 
+-	np = of_get_cpu_node(data->policy->cpu, NULL);
++	if (!of_find_property(np, "#cooling-cells", NULL)) {
++		data->policy = cpufreq_cpu_get(0);
++		if (!data->policy) {
++			pr_debug("%s: CPUFreq policy not found\n", __func__);
++			ret = -EPROBE_DEFER;
++			goto put_node;
++		}
+ 
+-	if (!np || !of_find_property(np, "#cooling-cells", NULL)) {
+ 		data->cdev = cpufreq_cooling_register(data->policy);
+ 		if (IS_ERR(data->cdev)) {
+ 			ret = PTR_ERR(data->cdev);
+@@ -648,6 +660,7 @@ static int imx_thermal_register_legacy_cooling(struct imx_thermal_data *data)
+ 		}
+ 	}
+ 
++put_node:
+ 	of_node_put(np);
+ 
+ 	return ret;
+-- 
+2.7.4
+
