@@ -2,137 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8900C295DFD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:06:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2C8E7295E05
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:07:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897850AbgJVMGt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:06:49 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39446 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2503373AbgJVMGs (ORCPT
+        id S2897879AbgJVMHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:07:54 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:42088 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897863AbgJVMHu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:06:48 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 656E5C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:06:48 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id y16so1659978ljk.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:06:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VKJlaic7DNxFEvXPjwxg38aEC5FAN/PkBBIN9e6QrXw=;
-        b=FAoTPilUR+FAnKd0OhFEOG+djamc+uOm7EfZfnqCFzVg+HPqejkiPb77RR2pW4vfaK
-         PtywIAp2g4udgVl2lrkawa447f3LiDLO3tgViO8vWCLIc+GVhTBc5xJhTdqQqyQoN/WS
-         ZNQGKcnzy913BymaoHrONk2Cm3DUm/H+M66FbTE56pRWZAL1izkoswHnvDkO++9Dj3sY
-         p3okGbHS+8XafoOWQEv/M7uEbl0EGo+JpQAeI2lNrXXEAB6bNVN3FmVpIh8bkhr3muPR
-         R/Dr/Zqz6vgvGu9+MNe7d8BGRvUwnS08+882xuRwfP13nkINCHlZ+trFhMpJhPaJAxuG
-         i1RA==
+        Thu, 22 Oct 2020 08:07:50 -0400
+Received: by mail-oi1-f195.google.com with SMTP id 16so1432072oix.9;
+        Thu, 22 Oct 2020 05:07:49 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VKJlaic7DNxFEvXPjwxg38aEC5FAN/PkBBIN9e6QrXw=;
-        b=gMunDjtEcTaXd20jF9WjCVitsCFeknx9y49ndqwV4XcjLRzZ3US0BSApmB/GUF/WWI
-         T+rHpmpTWOINCs1lReOvUGUWTfR2btVy3jMmpT1WbMJWxK/N29GWvYCy+u4fFDcfV520
-         ViRSXj+MQsL7n0UDa6532qw6ufbMDnQqa8e3ozrkwH7Y9c0x+JQA9hAc3G3pxKZfWkMH
-         wB2t2tFoJW1+4KmPWMNBlYzAuf42lDFW39cs7DECiXWctbxX9LWDu1RUM0mziKDnKw4C
-         U2D+Jy6GcMV4qwElllC4GY9PyrDwXt9KbFpmP1hmDI+5mRGrziPK15duO59ESNolP4OX
-         Kpaw==
-X-Gm-Message-State: AOAM533JvRoTcrGOoTFujlrnJwSuO5B/7KtWy1TMIGdrKuMRnTx1F6eF
-        v5z8pXwd4kB+fz+d4ILICVNodi1jUbgBJw==
-X-Google-Smtp-Source: ABdhPJxa+yGQU8bmkk4mUNmRB457D2NmD4IUrHk4Zlb7inEaAmVoDkF6fw+Wmro9EuJKmKmMPbLCdg==
-X-Received: by 2002:a2e:9dd1:: with SMTP id x17mr778531ljj.219.1603368406779;
-        Thu, 22 Oct 2020 05:06:46 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id x18sm241582lfe.158.2020.10.22.05.06.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 05:06:45 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id 83BC7102F6D; Thu, 22 Oct 2020 15:06:45 +0300 (+03)
-Date:   Thu, 22 Oct 2020 15:06:45 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "peterz@infradead.org" <peterz@infradead.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "aarcange@redhat.com" <aarcange@redhat.com>,
-        "liran.alon@oracle.com" <liran.alon@oracle.com>,
-        "wad@chromium.org" <wad@chromium.org>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>
-Subject: Re: [RFCv2 14/16] KVM: Handle protected memory in
- __kvm_map_gfn()/__kvm_unmap_gfn()
-Message-ID: <20201022120645.vdmytvcmdoku73os@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-15-kirill.shutemov@linux.intel.com>
- <8404a8802dbdbf81c8f75249039580f9e6942095.camel@intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rsWpUgmKiK1iTffkYnIeKuIs/1+05Y0WxWiqciGePpU=;
+        b=q9uE8/FeCFyEpVUfe8sbIMZKDd72yw/qFdOzyBpPpkj5yrHHtOusGJXTY4nlXihPYH
+         2KIBlWkFP5QpeqN9hwuJb8QB1i5NqP6cHWlxTHhb/M/dZ2kc5swKln1ExlTSC/ZVT774
+         qhPGsQc3xJcaH0ev4N05cj+qnVjQiMPeqCzMzlbzbZ1HeF10LkmSSIb8yLi2Lc2wjsxr
+         1MQC87gsBQTckjW72FAkGiJX0o4n4kK/Sva+iAe4EIdyyGzLvQ8ECm/1UEmWglUvBjSB
+         OfAxfUDtJOHxIrLkwBcEEPM/3FxWvkX3MlmlirguTb/up4K1NsY7IwoUk6OZnr7Wlr4I
+         CyZg==
+X-Gm-Message-State: AOAM530Sw2H90iEtO7tibbND6PkmAikXw/leSviRx+caciI7GVXnTHze
+        q68AVhjw/4AavUUsTIW0o3NALq+xDOFBXaYtISg=
+X-Google-Smtp-Source: ABdhPJwYKUSR87064DuZyOBUHttXjyy/bJD6aPomrsK++Z1bvXnvv86RsKwSzLufomfAgxgNxXJ4r4Dla2wRN25orNs=
+X-Received: by 2002:aca:fd52:: with SMTP id b79mr1327660oii.69.1603368469292;
+ Thu, 22 Oct 2020 05:07:49 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8404a8802dbdbf81c8f75249039580f9e6942095.camel@intel.com>
+References: <cover.1594707424.git.viresh.kumar@linaro.org> <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
+ <20200716115605.GR10769@hirez.programming.kicks-ass.net> <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
+ <20201022090523.GV2628@hirez.programming.kicks-ass.net> <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+ <CAJZ5v0jZC=UwW9L+KB3pugsTL9P1tZmvQ-sVMV-udn7+L_gEeA@mail.gmail.com> <20201022115752.GF2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201022115752.GF2611@hirez.programming.kicks-ass.net>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Thu, 22 Oct 2020 14:07:38 +0200
+Message-ID: <CAJZ5v0hTCzQWV8NBNdQPcKbgKyU79yRyVb=sDBiDv87cab-YCw@mail.gmail.com>
+Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     "Rafael J. Wysocki" <rafael@kernel.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Javi Merino <javi.merino@kernel.org>,
+        Amit Kucheria <amit.kucheria@verdurent.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Quentin Perret <qperret@google.com>,
+        Rafael Wysocki <rjw@rjwysocki.net>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Lukasz Luba <lukasz.luba@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 06:50:28PM +0000, Edgecombe, Rick P wrote:
-> On Tue, 2020-10-20 at 09:18 +0300, Kirill A. Shutemov wrote:
-> > @@ -467,7 +477,7 @@ void iounmap(volatile void __iomem *addr)
-> >  	p = find_vm_area((void __force *)addr);
-> >  
-> >  	if (!p) {
-> > -		printk(KERN_ERR "iounmap: bad address %p\n", addr);
-> > +		printk(KERN_ERR "iounmap: bad address %px\n", addr);
-> 
-> Unintentional?
+On Thu, Oct 22, 2020 at 1:58 PM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Thu, Oct 22, 2020 at 01:30:01PM +0200, Rafael J. Wysocki wrote:
+>
+> > Many people use intel_pstate in the active mode with HWP enabled too.
+>
+> We now have HWP-passive supported, afaict. So we should discourage that.
 
-Yep. Will fix.
+Which is kind of hard, because plain HWP does better in some cases,
+especially performance-focused.
 
-> > @@ -2162,15 +2178,20 @@ static int __kvm_map_gfn(struct kvm_memslots
-> > *slots, gfn_t gfn,
-> >  			kvm_cache_gfn_to_pfn(slot, gfn, cache, gen);
-> >  		}
-> >  		pfn = cache->pfn;
-> > +		protected = cache->protected;
-> >  	} else {
-> >  		if (atomic)
-> >  			return -EAGAIN;
-> > -		pfn = gfn_to_pfn_memslot(slot, gfn);
-> > +		pfn = gfn_to_pfn_memslot_protected(slot, gfn,
-> > &protected);
-> >  	}
-> >  	if (is_error_noslot_pfn(pfn))
-> >  		return -EINVAL;
-> >  
-> > -	if (pfn_valid(pfn)) {
-> > +	if (protected) {
-> > +		if (atomic)
-> > +			return -EAGAIN;
-> > +		hva = ioremap_cache_force(pfn_to_hpa(pfn), PAGE_SIZE);
-> > +	} else if (pfn_valid(pfn)) {
-> >  		page = pfn_to_page(pfn);
-> >  		if (atomic)
-> >  			hva = kmap_atomic(page);
-> 
-> I think the page could have got unmapped since the gup via the
-> hypercall on another CPU. It could be an avenue for the guest to crash
-> the host.
+I am still not sure why this is the case given how the passive mode
+with HWP enabled is implemented, but that's what Srinivas sees in his
+tests.
 
-Hm.. I'm not sure I follow. Could you elaborate on what scenario you have
-in mind?
+> That is; I'll care less and less about people not using schedutil as
+> time goes on.
+>
+> > Arguably, that doesn't need to compute the effective utilization, so I
+> > guess it is not relevant for the discussion here, but it is not
+> > negligible in general.
+>
+> Why not? cpufreq-cooling should still be able to throttle the system by
+> setting HWP.Highest_Performance no?
 
--- 
- Kirill A. Shutemov
+Well, in theory, but it is not used on x86 AFAICS.
+
+> In which case it still needs an energy estimate.
