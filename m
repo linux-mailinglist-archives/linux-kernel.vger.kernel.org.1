@@ -2,162 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6BE9B295BCD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:29:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0D09295BD2
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:31:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895932AbgJVJ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:29:26 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:47788 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509070AbgJVJ3Y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:29:24 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CH2B84wX0z9tx15;
-        Thu, 22 Oct 2020 11:29:20 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id fzijWGiC-ME9; Thu, 22 Oct 2020 11:29:20 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CH2B843H0z9tx14;
-        Thu, 22 Oct 2020 11:29:20 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id A44F28B769;
-        Thu, 22 Oct 2020 11:29:21 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id MiwXcxZPlWL2; Thu, 22 Oct 2020 11:29:21 +0200 (CEST)
-Received: from po17688vm.idsi0.si.c-s.fr (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 41ABD8B805;
-        Thu, 22 Oct 2020 11:29:21 +0200 (CEST)
-Received: by po17688vm.idsi0.si.c-s.fr (Postfix, from userid 0)
-        id 262026680D; Thu, 22 Oct 2020 09:29:21 +0000 (UTC)
-Message-Id: <62eab5ca595485c192de1765bdac099f633a21d0.1603358942.git.christophe.leroy@csgroup.eu>
-In-Reply-To: <25e6fca46fda3e2a4298448edbf654f64756eee7.1603358942.git.christophe.leroy@csgroup.eu>
-References: <25e6fca46fda3e2a4298448edbf654f64756eee7.1603358942.git.christophe.leroy@csgroup.eu>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Subject: [PATCH v3 3/3] powerpc: Fix update form addressing in inline assembly
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        mathieu.desnoyers@efficios.com
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org
-Date:   Thu, 22 Oct 2020 09:29:21 +0000 (UTC)
+        id S2509952AbgJVJa5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:30:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43608 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508746AbgJVJa5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:30:57 -0400
+Received: from mail.skyhub.de (mail.skyhub.de [IPv6:2a01:4f8:190:11c2::b:1457])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D66BDC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 02:30:56 -0700 (PDT)
+Received: from zn.tnic (p200300ec2f123f00b577de4e643a255a.dip0.t-ipconnect.de [IPv6:2003:ec:2f12:3f00:b577:de4e:643a:255a])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.skyhub.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 3F8851EC04CB;
+        Thu, 22 Oct 2020 11:30:55 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=dkim;
+        t=1603359055;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:in-reply-to:in-reply-to:  references:references;
+        bh=aWS+duHM0ToR6CCOpBfRlV+qjymx1mLPjhOOSWuyyaQ=;
+        b=j+i4YyR0WHxOGCths9b/jZB86XjM56mbcpA0fj0EV3wWotLJXdIVsgqhDxjBsQOA//xozT
+        4LrsL8n1BrMnn/am50YGjuyaZa+7nslS5XSb6R5fFdihjGIPGkJmSHR8SX+2fVffnCkS+D
+        JQU4qfc7/v88LcIOhuFiOg0Cy/VhoDc=
+Date:   Thu, 22 Oct 2020 11:30:44 +0200
+From:   Borislav Petkov <bp@alien8.de>
+To:     Masami Hiramatsu <mhiramat@kernel.org>
+Cc:     x86-ml <x86@kernel.org>, Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+Message-ID: <20201022093044.GA29222@zn.tnic>
+References: <20201020120232.GD11583@zn.tnic>
+ <20201020232700.5510c236d810b7f8a66779e2@kernel.org>
+ <20201020143746.GG11583@zn.tnic>
+ <20201021095013.d82637f84af564ae4363189d@kernel.org>
+ <20201021092750.GA4050@zn.tnic>
+ <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
+ <20201021164558.GB4050@zn.tnic>
+ <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In several places, inline assembly uses the "%Un" modifier
-to enable the use of instruction with update form addressing,
-but the associated "<>" constraint is missing.
+On Thu, Oct 22, 2020 at 04:31:00PM +0900, Masami Hiramatsu wrote:
+> No, insn_get_length() implies it decodes whole of the instruction.
+> (yeah, we need an alias of that, something like insn_get_complete())
 
-As mentioned in previous patch, this fails with gcc 4.9, so
-"<>" can't be used directly.
+That's exactly what I'm trying to point out: the whole API is not
+entirely wrong - it just needs a better naming and documentation. Now,
+the implication that getting the length of the insn will give you a full
+decode is a totally internal detail which users don't need and have to
+know.
 
-Use UPD_CONSTR macro everywhere %Un modifier is used.
+> I need insn.length too. Of course we can split it into 2 calls. But
+> as I said, since the insn_get_length() implies it decodes all other
+> parts, I just called it once.
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Segher Boessenkool <segher@kernel.crashing.org>
----
-v3: __set_pte_at() not impacted anymore (%U0 removed in previous patch)
-v2: Build failure (circular inclusion) fixed by change in patch 1
----
- arch/powerpc/include/asm/atomic.h | 9 +++++----
- arch/powerpc/include/asm/io.h     | 4 ++--
- arch/powerpc/kvm/powerpc.c        | 4 ++--
- 3 files changed, 9 insertions(+), 8 deletions(-)
+Yes, I have noticed that and wrote about it further on. The intent was
+to show that the API needs work.
 
-diff --git a/arch/powerpc/include/asm/atomic.h b/arch/powerpc/include/asm/atomic.h
-index 8a55eb8cc97b..61c6e8b200e8 100644
---- a/arch/powerpc/include/asm/atomic.h
-+++ b/arch/powerpc/include/asm/atomic.h
-@@ -10,6 +10,7 @@
- #include <linux/types.h>
- #include <asm/cmpxchg.h>
- #include <asm/barrier.h>
-+#include <asm/asm-const.h>
- 
- /*
-  * Since *_return_relaxed and {cmp}xchg_relaxed are implemented with
-@@ -26,14 +27,14 @@ static __inline__ int atomic_read(const atomic_t *v)
- {
- 	int t;
- 
--	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"(v->counter));
-+	__asm__ __volatile__("lwz%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
- 
- 	return t;
- }
- 
- static __inline__ void atomic_set(atomic_t *v, int i)
- {
--	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m"(v->counter) : "r"(i));
-+	__asm__ __volatile__("stw%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
- }
- 
- #define ATOMIC_OP(op, asm_op)						\
-@@ -316,14 +317,14 @@ static __inline__ s64 atomic64_read(const atomic64_t *v)
- {
- 	s64 t;
- 
--	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m"(v->counter));
-+	__asm__ __volatile__("ld%U1%X1 %0,%1" : "=r"(t) : "m"UPD_CONSTR(v->counter));
- 
- 	return t;
- }
- 
- static __inline__ void atomic64_set(atomic64_t *v, s64 i)
- {
--	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m"(v->counter) : "r"(i));
-+	__asm__ __volatile__("std%U0%X0 %1,%0" : "=m"UPD_CONSTR(v->counter) : "r"(i));
- }
- 
- #define ATOMIC64_OP(op, asm_op)						\
-diff --git a/arch/powerpc/include/asm/io.h b/arch/powerpc/include/asm/io.h
-index 58635960403c..87964dfb838e 100644
---- a/arch/powerpc/include/asm/io.h
-+++ b/arch/powerpc/include/asm/io.h
-@@ -122,7 +122,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
- {									\
- 	u##size ret;							\
- 	__asm__ __volatile__("sync;"#insn"%U1%X1 %0,%1;twi 0,%0,0;isync"\
--		: "=r" (ret) : "m" (*addr) : "memory");			\
-+		: "=r" (ret) : "m"UPD_CONSTR (*addr) : "memory");	\
- 	return ret;							\
- }
- 
-@@ -130,7 +130,7 @@ static inline u##size name(const volatile u##size __iomem *addr)	\
- static inline void name(volatile u##size __iomem *addr, u##size val)	\
- {									\
- 	__asm__ __volatile__("sync;"#insn"%U0%X0 %1,%0"			\
--		: "=m" (*addr) : "r" (val) : "memory");			\
-+		: "=m"UPD_CONSTR (*addr) : "r" (val) : "memory");	\
- 	mmiowb_set_pending();						\
- }
- 
-diff --git a/arch/powerpc/kvm/powerpc.c b/arch/powerpc/kvm/powerpc.c
-index 13999123b735..cf52d26f49cd 100644
---- a/arch/powerpc/kvm/powerpc.c
-+++ b/arch/powerpc/kvm/powerpc.c
-@@ -1087,7 +1087,7 @@ static inline u64 sp_to_dp(u32 fprs)
- 
- 	preempt_disable();
- 	enable_kernel_fp();
--	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m" (fprd) : "m" (fprs)
-+	asm ("lfs%U1%X1 0,%1; stfd%U0%X0 0,%0" : "=m"UPD_CONSTR (fprd) : "m"UPD_CONSTR (fprs)
- 	     : "fr0");
- 	preempt_enable();
- 	return fprd;
-@@ -1099,7 +1099,7 @@ static inline u32 dp_to_sp(u64 fprd)
- 
- 	preempt_disable();
- 	enable_kernel_fp();
--	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m" (fprs) : "m" (fprd)
-+	asm ("lfd%U1%X1 0,%1; stfs%U0%X0 0,%0" : "=m"UPD_CONSTR (fprs) : "m"UPD_CONSTR (fprd)
- 	     : "fr0");
- 	preempt_enable();
- 	return fprs;
+> Hm, it is better to call insn_get_immediate() if it doesn't use length later.
+
+Ok, so you see the problem. This thing wants to decode the whole insn -
+that's what the function is called. But it reads like it does something
+else.
+
+> Would you mean we'd better have something like insn_get_until_immediate() ? 
+> 
+> Since the x86 instruction is CISC, we can not decode intermediate
+> parts. The APIs follows that. If you are confused, I'm sorry about that.
+
+No, I'm not confused - again, I'd like for the API to be properly
+defined and callers should not have to care which parts of the insn they
+need to decode in order to get something else they actually need.
+
+So the main API should be: insn_decode_insn() or so and it should give
+you everything you need.
+
+If this succeeds, you can go poke at insn.<field> and you know you have
+valid data there.
+
+If there are specialized uses, you can call some of the insn_get_*
+helpers if you're not interested in decoding the full insn.
+
+But if simply calling insn_decode_insn() would give you everything and
+that is not that expensive, we can do that - API simplicity.
+
+What I don't want to have is calling insn_get_length() or so and then
+inspecting the opcode bytes because that's totally non-transparent.
+
+Thx.
+
 -- 
-2.25.0
+Regards/Gruss,
+    Boris.
 
+https://people.kernel.org/tglx/notes-about-netiquette
