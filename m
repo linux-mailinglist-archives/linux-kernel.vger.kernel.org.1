@@ -2,74 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7FC94295FE8
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:23:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D61ED295FF3
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:24:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2894644AbgJVNXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:23:49 -0400
-Received: from verein.lst.de ([213.95.11.211]:52840 "EHLO verein.lst.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2442738AbgJVNXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:23:48 -0400
-Received: by verein.lst.de (Postfix, from userid 2407)
-        id D291467373; Thu, 22 Oct 2020 15:23:42 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 15:23:42 +0200
-From:   Christoph Hellwig <hch@lst.de>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     David Laight <David.Laight@ACULAB.COM>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022132342.GB8781@lst.de>
-References: <20201021233914.GR3576660@ZenIV.linux.org.uk> <20201022082654.GA1477657@kroah.com> <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com> <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com> <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com> <20201022090155.GA1483166@kroah.com> <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com> <a1533569-948a-1d5b-e231-5531aa988047@redhat.com> <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com> <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+        id S2894906AbgJVNYQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:24:16 -0400
+Received: from out4-smtp.messagingengine.com ([66.111.4.28]:44745 "EHLO
+        out4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2894375AbgJVNYP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:24:15 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id CD7C85C008D;
+        Thu, 22 Oct 2020 09:24:14 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Oct 2020 09:24:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=WpxzM5T2oXZM9uNlrwwMMJYM97B
+        01sisUMLV0IHjh+4=; b=HtZWIK/fLwEU3KnyBhFBfIhUhQ4LHqKu5DWhaZwuXHl
+        +9XGi6p9jxOTbkz6BvsuCH1oiu8BdCKAl0aLc7aRmLgcfZTb28KbC4vZ0MpstX+Q
+        9pmC4QUHFpNvcsjINx0s1R0GwCIEOAZlEgNneyunX+rjCc+BhSnbaGohSqU/+MVD
+        ookqZ7AaAYTxZuEpKXHAaeg/tcXH7l5grhKxdeWQfnOyNNI3HITpnI8DBByloWv5
+        v/sVYjy+2Qs/G5b/Ig7Y3Oino/NO4r3C8D7Bl9oWn/E+dSrZUiudch7Y//FPM7Bm
+        +OjBUPDeC6deak9oVI3l4ed0E9WVpXo+QRNRCzvAPew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=WpxzM5
+        T2oXZM9uNlrwwMMJYM97B01sisUMLV0IHjh+4=; b=Gm57Q85Hwi4xddGi9Qavhj
+        CT/IfjHXHVayE5b+BdSwv3OaI8Xl1QNVUouXZb50qiNbMkD62CUFU1iguDqcejqz
+        kBi60h+B+qjb7GMW2+IGRvsiaVUAe6Tt1Zvlci2bestIoZE/4wGA4dj2KVtr8ZJE
+        lpb6B9AyyVABSdDE8VexUiE1U0VviuivCWzlWoAKDk2sdwSQRmwCklKvCpS9//GI
+        L6yCIE1bCTjuyV58NgF74/LaCXL5gsdPXXmvHjV8beU0j2rxJJJ/WPlrGbeeciCL
+        WFz9MEQNSAOAu3A8vKWkFfFXyrVl3wE6FJXnGw6O6FlhPAaYsLlE7FbbjOE9YaAg
+        ==
+X-ME-Sender: <xms:_YeRXy6ZMaXfp82xdOLIZwt4-d8FV_bWXd7IOsNiLPyMsM_2r3viKw>
+    <xme:_YeRX76oG0gcXVW68kXo4JfWFspgUOo3ctRttg5l9lf2v1kAU4Q6oqQGJgcHtSkDV
+    f4WvEQpfh-7v7BvcQs>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeejgdeivdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:_YeRXxfl6dfPi6dF8Gk0iK9K_dTuK8DdPDCr_XnSRBiL68JqgacKlw>
+    <xmx:_YeRX_KggHoq606HXTB_6IdLDqaLw31dFfE_ufzcbCZDfWIFrlSjQg>
+    <xmx:_YeRX2K3uTAUg8ENlwirn7SR-yD3xsQ7heaZIe771OHyvnESYgnRBw>
+    <xmx:_oeRX3re2C6qpImTePz1qNECntzKXWXMvLv29TatVriOn8L0hgIlxA>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 7C1C23280060;
+        Thu, 22 Oct 2020 09:24:13 -0400 (EDT)
+Date:   Thu, 22 Oct 2020 15:24:12 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Takashi Iwai <tiwai@suse.de>
+Cc:     Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, Dom Cobley <dom@raspberrypi.com>,
+        Dave Stevenson <dave.stevenson@raspberrypi.com>,
+        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Subject: Re: Context expectations in ALSA
+Message-ID: <20201022132412.vntap4kfb2aj24qy@gilmour.lan>
+References: <20201022095041.44jytaelnlako54w@gilmour.lan>
+ <30226f94-72e9-34d2-17d0-11d2501053f0@perex.cz>
+ <20201022125741.xxibhwgcr2mhxehe@gilmour.lan>
+ <s5ha6webdn2.wl-tiwai@suse.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="rwqqljnlxayusdb4"
 Content-Disposition: inline
-In-Reply-To: <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+In-Reply-To: <s5ha6webdn2.wl-tiwai@suse.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:36:40AM +0200, David Hildenbrand wrote:
-> My thinking: if the compiler that calls import_iovec() has garbage in
-> the upper 32 bit
-> 
-> a) gcc will zero it out and not rely on it being zero.
-> b) clang will not zero it out, assuming it is zero.
-> 
-> But
-> 
-> a) will zero it out when calling the !inlined variant
-> b) clang will zero it out when calling the !inlined variant
-> 
-> When inlining, b) strikes. We access garbage. That would mean that we
-> have calling code that's not generated by clang/gcc IIUC.
 
-Most callchains of import_iovec start with the assembly syscall wrappers.
+--rwqqljnlxayusdb4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Takashi,
+
+On Thu, Oct 22, 2020 at 03:20:49PM +0200, Takashi Iwai wrote:
+> On Thu, 22 Oct 2020 14:57:41 +0200,
+> Maxime Ripard wrote:
+> >=20
+> > On Thu, Oct 22, 2020 at 12:03:19PM +0200, Jaroslav Kysela wrote:
+> > > Dne 22. 10. 20 v 11:50 Maxime Ripard napsal(a):
+> > >=20
+> > > > So, I'm not really sure what I'm supposed to do here. The drivers
+> > > > involved don't appear to be doing anything extraordinary, but the i=
+ssues
+> > > > lockdep report are definitely valid too. What are the expectations =
+in
+> > > > terms of context from ALSA when running the callbacks, and how can =
+we
+> > > > fix it?
+> > >=20
+> > > I think that you should set the non-atomic flag and wake up the workq=
+ueue or
+> > > so from interrupt handler in this case. Call snd_pcm_period_elapsed()=
+ from the
+> > > workqueue not the interrupt handler context.
+> >=20
+> > Yeah, that was my first guess too. However, the DMA driver uses some
+> > kind of generic helpers using a tasklet, so getting rid of it would take
+> > some work and would very likely not be eligible for stable.
+>=20
+> Who sets the nonatomic flag for vc4?  I couldn't find the relevant
+> code in the latest upstream.
+
+Sorry if this wasn't clear enough, it's not there at the moment, ALSA
+takes a spinlock and lockdep complains that we're sleeping in an atomic
+context.
+
+I tried to add the nonatomic flag in my tree to see if it was fixing the
+issue, but ran into another lockdep complain now with ALSA taking a
+mutex in a tasklet.
+
+> Ideally dmaengine PCM helper should support the nonatomic mode, but
+> until then, the other side needs to drop the nonatomic flag, I
+> suppose.
+
+In this case, I'm not sure the blame is in the PCM helper but if there's
+any blame, I guess it's the virt-chan layer inside dmaengine (so for
+providers) that use a tasklet instead of something that allows sleeping
+
+Maxime
+
+--rwqqljnlxayusdb4
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5GH/AAKCRDj7w1vZxhR
+xepDAP96aJ4MTdcE8LJZ10+kDyzH1UtQlV//DYZWfptlugY+vgEA2+KK5p2ApO4B
+kDALlv1Yd5PHZH7QHStcrelNXI69ygs=
+=e2G2
+-----END PGP SIGNATURE-----
+
+--rwqqljnlxayusdb4--
