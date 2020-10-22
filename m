@@ -2,90 +2,197 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1096729671A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:25:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B42E29672A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 00:27:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372774AbgJVWZf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 18:25:35 -0400
-Received: from ale.deltatee.com ([204.191.154.188]:50444 "EHLO
-        ale.deltatee.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372761AbgJVWZe (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 18:25:34 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=deltatee.com; s=20200525; h=Subject:Content-Transfer-Encoding:Content-Type:
-        In-Reply-To:MIME-Version:Date:Message-ID:From:References:Cc:To:Sender:
-        Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-        :Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-        List-Subscribe:List-Post:List-Owner:List-Archive;
-        bh=9KIyS8u6oc8AJBGGp4mSeBUZ13SZ6CgKdsvjS5de0m0=; b=jPpvxa5eG3kzWlYlXtiz1X4dc/
-        Adl1lVrJTuKBGIugrXCImIFLT9quV6T+xOIPTOvfmCPOAMwaGODftAnwqJpEpNnBxZj6Kr08CZPhS
-        bvmvAk9EnawxMM+C/xPOI01S1cWelqbPIzonpIJJcviO5TydPxKW3d/OjsK91/Vd38/As+w0TcA18
-        SY7WMtKiV/SZGG+YU/U9JYHap1LzYCCB0O7/4ytWBhUzBNddhqe4XDGFH8qkK2babve7fXMT/rBW9
-        sj4IIqJIgysrBZ/JFCfJD9kid8dGJeNvE+2r2YT3Cz1QGgInYzkUxVmUHUybPrl8JgZLJxoAiGiYE
-        mXryL6dQ==;
-Received: from s01060023bee90a7d.cg.shawcable.net ([24.64.145.4] helo=[192.168.0.10])
-        by ale.deltatee.com with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.92)
-        (envelope-from <logang@deltatee.com>)
-        id 1kVj1T-0005dE-Gc; Thu, 22 Oct 2020 16:25:28 -0600
-To:     Omar Sandoval <osandov@osandov.com>
-Cc:     linux-kernel@vger.kernel.org, linux-nvme@lists.infradead.org,
-        linux-block@vger.kernel.org, Sagi Grimberg <sagi@grimberg.me>,
-        Chaitanya Kulkarni <Chaitanya.Kulkarni@wdc.com>,
-        Stephen Bates <sbates@raithlin.com>
-References: <20201008164024.12546-1-logang@deltatee.com>
- <29f3dc94-50c3-1548-034e-09c5394ef781@deltatee.com>
- <20201022220412.GB1006674@relinquished.localdomain>
-From:   Logan Gunthorpe <logang@deltatee.com>
-Message-ID: <088efbf6-efb4-5a0f-2295-cedba2c150ea@deltatee.com>
-Date:   Thu, 22 Oct 2020 16:25:24 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S372789AbgJVW1M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 18:27:12 -0400
+Received: from mga07.intel.com ([134.134.136.100]:46660 "EHLO mga07.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2506456AbgJVW1L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 18:27:11 -0400
+IronPort-SDR: n2ied6eatsNx+OZQxEzyjaEJ4SfKl1hdMZgb19mtmfFD7PU7co1kP1G8doHkrvc8OoPPQAs/J5
+ fhiNmIYPKWeA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="231796588"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="231796588"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 15:27:10 -0700
+IronPort-SDR: ajFcb+gyyUgb/qN6sFCQOFqRRTyQjlYHaUH1S6vKLAzqcAflp0GMoD6tBlYClDXDVt+XH0LrFG
+ 0rtkUkmAg1FA==
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="534154343"
+Received: from iweiny-desk2.sc.intel.com (HELO localhost) ([10.3.52.147])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 15:27:09 -0700
+From:   ira.weiny@intel.com
+To:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: [PATCH 00/10] PKS: Add Protection Keys Supervisor (PKS) support
+Date:   Thu, 22 Oct 2020 15:26:51 -0700
+Message-Id: <20201022222701.887660-1-ira.weiny@intel.com>
+X-Mailer: git-send-email 2.28.0.rc0.12.gb6a658bd00c9
 MIME-Version: 1.0
-In-Reply-To: <20201022220412.GB1006674@relinquished.localdomain>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 24.64.145.4
-X-SA-Exim-Rcpt-To: sbates@raithlin.com, Chaitanya.Kulkarni@wdc.com, sagi@grimberg.me, linux-block@vger.kernel.org, linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org, osandov@osandov.com
-X-SA-Exim-Mail-From: logang@deltatee.com
-X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on ale.deltatee.com
-X-Spam-Level: 
-X-Spam-Status: No, score=-9.0 required=5.0 tests=ALL_TRUSTED,BAYES_00,
-        GREYLIST_ISWHITE,NICE_REPLY_A autolearn=ham autolearn_force=no
-        version=3.4.2
-Subject: Re: [PATCH blktests v3 00/11] NVMe Target Passthru Block Tests
-X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
-X-SA-Exim-Scanned: Yes (on ale.deltatee.com)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Ira Weiny <ira.weiny@intel.com>
+
+Changes from RFC V3[3]
+	Rebase to TIP master
+	Update test error output
+	Standardize on 'irq_state' for state variables
+	From Dave Hansen
+		Update commit messages
+		Add/clean up comments
+		Add X86_FEATURE_PKS to disabled-features.h and remove some
+			explicit CONFIG checks
+		Move saved_pkrs member of thread_struct
+		Remove superfluous preempt_disable()
+		s/irq_save_pks/irq_save_set_pks/
+		Ensure PKRS is not seen in faults if not configured or not
+			supported
+		s/pks_mknoaccess/pks_mk_noaccess/
+		s/pks_mkread/pks_mk_readonly/
+		s/pks_mkrdwr/pks_mk_readwrite/
+		Change pks_key_alloc return to -EOPNOTSUPP when not supported
+	From Peter Zijlstra
+		Clean up Attribution
+		Remove superfluous preempt_disable()
+		Add union to differentiate exit_rcu/lockdep use in
+			irqentry_state_t
+	From Thomas Gleixner
+		Add preliminary clean up patch and adjust series as needed
 
 
-On 2020-10-22 4:04 p.m., Omar Sandoval wrote:
-> On Thu, Oct 22, 2020 at 12:45:25PM -0600, Logan Gunthorpe wrote:
->>
->> On 2020-10-08 10:40 a.m., Logan Gunthorpe wrote:
->>> Hi,
->>>
->>> This series adds blktests for the nvmet passthru feature that was merged
->>> for 5.9. It's been reconciled with Sagi's blktest series that Omar
->>> recently merged.
->>
->> Bump. This has been around for a while now. Omar, can you please
->> consider picking this up?
-> 
-> There were a couple of shellcheck errors:
-> 
-> tests/nvme/rc:77:8: warning: Declare and assign separately to avoid masking return values. [SC2155]
-> tests/nvme/rc:278:7: note: Useless echo? Instead of 'echo $(cmd)', just use 'cmd'. [SC2005]
-> 
-> I fixed those up and applied, thanks.
+Introduce a new page protection mechanism for supervisor pages, Protection Key
+Supervisor (PKS).
 
-Oh, oops. I must have introduced those very recently.
+2 use cases for PKS are being developed, trusted keys and PMEM.  Trusted keys
+is a newer use case which is still being explored.  PMEM was submitted as part
+of the RFC (v2) series[1].  However, since then it was found that some callers
+of kmap() require a global implementation of PKS.  Specifically some users of
+kmap() expect mappings to be available to all kernel threads.  While global use
+of PKS is rare it needs to be included for correctness.  Unfortunately the
+kmap() updates required a large patch series to make the needed changes at the
+various kmap() call sites so that patch set has been split out.  Because the
+global PKS feature is only required for that use case it will be deferred to
+that set as well.[2]  This patch set is being submitted as a precursor to both
+of the use cases.
 
-Thanks for fixing it up and merging!
+For an overview of the entire PKS ecosystem, a git tree including this series
+and 2 proposed use cases can be found here:
 
-Logan
+	https://lore.kernel.org/lkml/20201009195033.3208459-1-ira.weiny@intel.com/
+	https://lore.kernel.org/lkml/20201009201410.3209180-1-ira.weiny@intel.com/
+
+
+PKS enables protections on 'domains' of supervisor pages to limit supervisor
+mode access to those pages beyond the normal paging protections.  PKS works in
+a similar fashion to user space pkeys, PKU.  As with PKU, supervisor pkeys are
+checked in addition to normal paging protections and Access or Writes can be
+disabled via a MSR update without TLB flushes when permissions change.  Also
+like PKU, a page mapping is assigned to a domain by setting pkey bits in the
+page table entry for that mapping.
+
+Access is controlled through a PKRS register which is updated via WRMSR/RDMSR.
+
+XSAVE is not supported for the PKRS MSR.  Therefore the implementation
+saves/restores the MSR across context switches and during exceptions.  Nested
+exceptions are supported by each exception getting a new PKS state.
+
+For consistent behavior with current paging protections, pkey 0 is reserved and
+configured to allow full access via the pkey mechanism, thus preserving the
+default paging protections on mappings with the default pkey value of 0.
+
+Other keys, (1-15) are allocated by an allocator which prepares us for key
+contention from day one.  Kernel users should be prepared for the allocator to
+fail either because of key exhaustion or due to PKS not being supported on the
+arch and/or CPU instance.
+
+The following are key attributes of PKS.
+
+   1) Fast switching of permissions
+	1a) Prevents access without page table manipulations
+	1b) No TLB flushes required
+   2) Works on a per thread basis
+
+PKS is available with 4 and 5 level paging.  Like PKRU it consumes 4 bits from
+the PTE to store the pkey within the entry.
+
+
+[1] https://lore.kernel.org/lkml/20200717072056.73134-1-ira.weiny@intel.com/
+[2] https://lore.kernel.org/lkml/20201009195033.3208459-2-ira.weiny@intel.com/
+[3] https://lore.kernel.org/lkml/20201009194258.3207172-1-ira.weiny@intel.com/
+
+
+Fenghua Yu (2):
+  x86/pks: Enable Protection Keys Supervisor (PKS)
+  x86/pks: Add PKS kernel API
+
+Ira Weiny (7):
+  x86/pkeys: Create pkeys_common.h
+  x86/fpu: Refactor arch_set_user_pkey_access() for PKS support
+  x86/pks: Preserve the PKRS MSR on context switch
+  x86/entry: Pass irqentry_state_t by reference
+  x86/entry: Preserve PKRS MSR across exceptions
+  x86/fault: Report the PKRS state on fault
+  x86/pks: Add PKS test code
+
+Thomas Gleixner (1):
+  x86/entry: Move nmi entry/exit into common code
+
+ Documentation/core-api/protection-keys.rst  | 102 ++-
+ arch/x86/Kconfig                            |   1 +
+ arch/x86/entry/common.c                     |  65 +-
+ arch/x86/include/asm/cpufeatures.h          |   1 +
+ arch/x86/include/asm/disabled-features.h    |   8 +-
+ arch/x86/include/asm/idtentry.h             |  28 +-
+ arch/x86/include/asm/msr-index.h            |   1 +
+ arch/x86/include/asm/pgtable.h              |  13 +-
+ arch/x86/include/asm/pgtable_types.h        |  12 +
+ arch/x86/include/asm/pkeys.h                |  15 +
+ arch/x86/include/asm/pkeys_common.h         |  40 ++
+ arch/x86/include/asm/processor.h            |  14 +
+ arch/x86/include/uapi/asm/processor-flags.h |   2 +
+ arch/x86/kernel/cpu/common.c                |  15 +
+ arch/x86/kernel/cpu/mce/core.c              |   6 +-
+ arch/x86/kernel/fpu/xstate.c                |  22 +-
+ arch/x86/kernel/kvm.c                       |   6 +-
+ arch/x86/kernel/nmi.c                       |   6 +-
+ arch/x86/kernel/process.c                   |  26 +
+ arch/x86/kernel/traps.c                     |  24 +-
+ arch/x86/mm/fault.c                         |  87 ++-
+ arch/x86/mm/pkeys.c                         | 191 +++++-
+ include/linux/entry-common.h                |  46 +-
+ include/linux/pgtable.h                     |   4 +
+ include/linux/pkeys.h                       |  22 +
+ kernel/entry/common.c                       |  62 +-
+ lib/Kconfig.debug                           |  12 +
+ lib/Makefile                                |   3 +
+ lib/pks/Makefile                            |   3 +
+ lib/pks/pks_test.c                          | 691 ++++++++++++++++++++
+ mm/Kconfig                                  |   2 +
+ tools/testing/selftests/x86/Makefile        |   3 +-
+ tools/testing/selftests/x86/test_pks.c      |  66 ++
+ 33 files changed, 1441 insertions(+), 158 deletions(-)
+ create mode 100644 arch/x86/include/asm/pkeys_common.h
+ create mode 100644 lib/pks/Makefile
+ create mode 100644 lib/pks/pks_test.c
+ create mode 100644 tools/testing/selftests/x86/test_pks.c
+
+-- 
+2.28.0.rc0.12.gb6a658bd00c9
+
