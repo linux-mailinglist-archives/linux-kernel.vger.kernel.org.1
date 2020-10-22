@@ -2,198 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97AF2958E5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B40F2958EA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:17:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2505951AbgJVHQX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:16:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51012 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2505859AbgJVHQT (ORCPT
+        id S2508358AbgJVHRP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:17:15 -0400
+Received: from mout.kundenserver.de ([212.227.126.131]:51285 "EHLO
+        mout.kundenserver.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395378AbgJVHRO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:16:19 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13F83C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:16:19 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id i39so501785qtb.1
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 00:16:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=ssrbKCfMPAjxzYbf9o/0gIkN7bnphajxsBoDslYwatw=;
-        b=sdof8g2kr+EAe1mBDbdOxyrVQ1kkkiHfmDFdtlaqj5e6rneUXVoBDD7nYgdHyq4d/d
-         QpOFbj9sD2MwQ23+xRIiwTFN+YDthS63cfI06LePsaW7l7u3n98mGz5SXaAtStxOGc8e
-         I4FQB3KbC6V6w9Ra+HH7s2hsDYPINoaU4dQa01XgcKrPU0NFRr81zuHHDo4NfvpxYaIu
-         nz+vTmjGzAw7Zz0vujb/GHisV15xHUvz4Qbe8XeU/Ys8HdsncvXi5B8X36xO7/vqaaOo
-         C6s/l1nGPAb0mGtCnqkbutOzrzd1sljFaV4uE39yiesFNNQEhOcsVsTAqShHouBQ2Hbx
-         simw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=ssrbKCfMPAjxzYbf9o/0gIkN7bnphajxsBoDslYwatw=;
-        b=hCwxSsDLdaWnWK5la2OFlDkNVyweWnDlAL5SC7g7yTDIQ/wfoCeqyST0Kd9zArotlf
-         FL2ZR+ss2//NaVjd8j9pGb5a6iluzQdkgwoweVAvQv6q56jeRaNareUFWVLrzjxXqBE7
-         LCfxP4zmjW41MfZ324dOBPsg7CmWfcQIUBhSSZ9OYbSFwLR/6s6/SFIZDY25rdBSS+dg
-         k5bJ2Brahpm72evpdoSEEXLyJzw1pl5AUlQelpbScU2TcsIONVpoTqN4+KzJxZlj60jf
-         0aKVW7Ke+bkluxV46Kf+MJbk2wQsxtUX5kprWtUcE/DsQOFFqLvRYfRYXs4vgWwmTbto
-         1WMg==
-X-Gm-Message-State: AOAM530G22QhhhOYAzjmor5EMzZJ0WlwgmyFIE7eofU+gPm7JOL6/96I
-        YM+BdI1UXmRUvtg93z1K6f0ykDCLRiSEbqpJgFZGuWKSqH62JT2qtxtWGoFnPQ429FOiIAfwXA1
-        TSVxDO3pzs8hysacFdbq8GyXPKNHG98AITCEWsx65YmNEgHtLe8fGs7RBAgKR4ZSEIXW87dTx
-X-Google-Smtp-Source: ABdhPJyg1OmKQzjfHWENt3Z02PhB1Ct/dkjs4xsb+f+8HABGuxcKWBBn+0y3/ChVHPlUit/EvglB1svA9lu3
-Sender: "furquan via sendgmr" <furquan@furquan.mtv.corp.google.com>
-X-Received: from furquan.mtv.corp.google.com ([2620:15c:202:1:7220:84ff:fe09:13a4])
- (user=furquan job=sendgmr) by 2002:ad4:4e47:: with SMTP id
- eb7mr1130118qvb.34.1603350978111; Thu, 22 Oct 2020 00:16:18 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 00:15:50 -0700
-In-Reply-To: <CAMj1kXFUEjs9UYjCe+LB7s=O_jwLaeYdr51rU6HS_q_Vd65yuw@mail.gmail.com>
-Message-Id: <20201022071550.1192947-1-furquan@google.com>
-Mime-Version: 1.0
-References: <CAMj1kXFUEjs9UYjCe+LB7s=O_jwLaeYdr51rU6HS_q_Vd65yuw@mail.gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v3] firmware: gsmi: Drop the use of dma_pool_* API functions
-From:   Furquan Shaikh <furquan@google.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     Prashant Malani <pmalani@chromium.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Arthur Heymans <arthur@aheymans.xyz>,
-        Patrick Rudolph <patrick.rudolph@9elements.com>,
-        Ard Biesheuvel <ardb@kernel.org>, dlaurie@google.com,
-        Furquan Shaikh <furquan@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        Thu, 22 Oct 2020 03:17:14 -0400
+Received: from [192.168.100.1] ([82.252.139.38]) by mrelayeu.kundenserver.de
+ (mreue011 [213.165.67.103]) with ESMTPSA (Nemesis) id
+ 1MofLl-1k2iSo3WcT-00p2qj; Thu, 22 Oct 2020 09:16:52 +0200
+Subject: Re: [PATCH] serial: pmac_zilog: don't init if zilog is not available
+To:     Finn Thain <fthain@telegraphics.com.au>
+Cc:     Brad Boyer <brad@allandria.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org, Joshua Thompson <funaho@jurai.org>,
+        linux-serial@vger.kernel.org,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        linux-m68k@lists.linux-m68k.org,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Paul Mackerras <paulus@samba.org>,
+        linuxppc-dev@lists.ozlabs.org,
+        Michael Ellerman <mpe@ellerman.id.au>
+References: <20201020162303.1730562-1-laurent@vivier.eu>
+ <20201020162844.GA865546@kroah.com>
+ <468bbbef-4745-3b16-b6f4-30b46ebcdc33@vivier.eu>
+ <20201020173745.GA882703@kroah.com>
+ <387fd2aa-b181-c41f-0581-0a7e79a44e41@vivier.eu>
+ <20201020183246.GA912431@kroah.com>
+ <b52e7fde-8874-3c53-ca13-7709656b69fb@vivier.eu>
+ <20201020224446.GA15066@allandria.com>
+ <alpine.LNX.2.23.453.2010211038390.6@nippy.intranet>
+ <311d17ed-75fa-a7fe-6c70-177a6eec4519@vivier.eu>
+ <alpine.LNX.2.23.453.2010221347000.6@nippy.intranet>
+From:   Laurent Vivier <laurent@vivier.eu>
+Autocrypt: addr=laurent@vivier.eu; prefer-encrypt=mutual; keydata=
+ mQINBFYFJhkBEAC2me7w2+RizYOKZM+vZCx69GTewOwqzHrrHSG07MUAxJ6AY29/+HYf6EY2
+ WoeuLWDmXE7A3oJoIsRecD6BXHTb0OYS20lS608anr3B0xn5g0BX7es9Mw+hV/pL+63EOCVm
+ SUVTEQwbGQN62guOKnJJJfphbbv82glIC/Ei4Ky8BwZkUuXd7d5NFJKC9/GDrbWdj75cDNQx
+ UZ9XXbXEKY9MHX83Uy7JFoiFDMOVHn55HnncflUncO0zDzY7CxFeQFwYRbsCXOUL9yBtqLer
+ Ky8/yjBskIlNrp0uQSt9LMoMsdSjYLYhvk1StsNPg74+s4u0Q6z45+l8RAsgLw5OLtTa+ePM
+ JyS7OIGNYxAX6eZk1+91a6tnqfyPcMbduxyBaYXn94HUG162BeuyBkbNoIDkB7pCByed1A7q
+ q9/FbuTDwgVGVLYthYSfTtN0Y60OgNkWCMtFwKxRaXt1WFA5ceqinN/XkgA+vf2Ch72zBkJL
+ RBIhfOPFv5f2Hkkj0MvsUXpOWaOjatiu0fpPo6Hw14UEpywke1zN4NKubApQOlNKZZC4hu6/
+ 8pv2t4HRi7s0K88jQYBRPObjrN5+owtI51xMaYzvPitHQ2053LmgsOdN9EKOqZeHAYG2SmRW
+ LOxYWKX14YkZI5j/TXfKlTpwSMvXho+efN4kgFvFmP6WT+tPnwARAQABtCJMYXVyZW50IFZp
+ dmllciA8bGF1cmVudEB2aXZpZXIuZXU+iQI4BBMBAgAiBQJWBTDeAhsDBgsJCAcDAgYVCAIJ
+ CgsEFgIDAQIeAQIXgAAKCRDzDDi9Py++PCEdD/oD8LD5UWxhQrMQCsUgLlXCSM7sxGLkwmmF
+ ozqSSljEGRhffxZvO35wMFcdX9Z0QOabVoFTKrT04YmvbjsErh/dP5zeM/4EhUByeOS7s6Yl
+ HubMXVQTkak9Wa9Eq6irYC6L41QNzz/oTwNEqL1weV1+XC3TNnht9B76lIaELyrJvRfgsp9M
+ rE+PzGPo5h7QHWdL/Cmu8yOtPLa8Y6l/ywEJ040IoiAUfzRoaJs2csMXf0eU6gVBhCJ4bs91
+ jtWTXhkzdl4tdV+NOwj3j0ukPy+RjqeL2Ej+bomnPTOW8nAZ32dapmu7Fj7VApuQO/BSIHyO
+ NkowMMjB46yohEepJaJZkcgseaus0x960c4ua/SUm/Nm6vioRsxyUmWd2nG0m089pp8LPopq
+ WfAk1l4GciiMepp1Cxn7cnn1kmG6fhzedXZ/8FzsKjvx/aVeZwoEmucA42uGJ3Vk9TiVdZes
+ lqMITkHqDIpHjC79xzlWkXOsDbA2UY/P18AtgJEZQPXbcrRBtdSifCuXdDfHvI+3exIdTpvj
+ BfbgZAar8x+lcsQBugvktlQWPfAXZu4Shobi3/mDYMEDOE92dnNRD2ChNXg2IuvAL4OW40wh
+ gXlkHC1ZgToNGoYVvGcZFug1NI+vCeCFchX+L3bXyLMg3rAfWMFPAZLzn42plIDMsBs+x2yP
+ +bkCDQRWBSYZARAAvFJBFuX9A6eayxUPFaEczlMbGXugs0mazbOYGlyaWsiyfyc3PStHLFPj
+ rSTaeJpPCjBJErwpZUN4BbpkBpaJiMuVO6egrC8Xy8/cnJakHPR2JPEvmj7Gm/L9DphTcE15
+ 92rxXLesWzGBbuYxKsj8LEnrrvLyi3kNW6B5LY3Id+ZmU8YTQ2zLuGV5tLiWKKxc6s3eMXNq
+ wrJTCzdVd6ThXrmUfAHbcFXOycUyf9vD+s+WKpcZzCXwKgm7x1LKsJx3UhuzT8ier1L363RW
+ ZaJBZ9CTPiu8R5NCSn9V+BnrP3wlFbtLqXp6imGhazT9nJF86b5BVKpF8Vl3F0/Y+UZ4gUwL
+ d9cmDKBcmQU/JaRUSWvvolNu1IewZZu3rFSVgcpdaj7F/1aC0t5vLdx9KQRyEAKvEOtCmP4m
+ 38kU/6r33t3JuTJnkigda4+Sfu5kYGsogeYG6dNyjX5wpK5GJIJikEhdkwcLM+BUOOTi+I9u
+ tX03BGSZo7FW/J7S9y0l5a8nooDs2gBRGmUgYKqQJHCDQyYut+hmcr+BGpUn9/pp2FTWijrP
+ inb/Pc96YDQLQA1q2AeAFv3Rx3XoBTGl0RCY4KZ02c0kX/dm3eKfMX40XMegzlXCrqtzUk+N
+ 8LeipEsnOoAQcEONAWWo1HcgUIgCjhJhBEF0AcELOQzitbJGG5UAEQEAAYkCHwQYAQIACQUC
+ VgUmGQIbDAAKCRDzDDi9Py++PCD3D/9VCtydWDdOyMTJvEMRQGbx0GacqpydMEWbE3kUW0ha
+ US5jz5gyJZHKR3wuf1En/3z+CEAEfP1M3xNGjZvpaKZXrgWaVWfXtGLoWAVTfE231NMQKGoB
+ w2Dzx5ivIqxikXB6AanBSVpRpoaHWb06tPNxDL6SVV9lZpUn03DSR6gZEZvyPheNWkvz7bE6
+ FcqszV/PNvwm0C5Ju7NlJA8PBAQjkIorGnvN/vonbVh5GsRbhYPOc/JVwNNr63P76rZL8Gk/
+ hb3xtcIEi5CCzab45+URG/lzc6OV2nTj9Lg0SNcRhFZ2ILE3txrmI+aXmAu26+EkxLLfqCVT
+ ohb2SffQha5KgGlOSBXustQSGH0yzzZVZb+HZPEvx6d/HjQ+t9sO1bCpEgPdZjyMuuMp9N1H
+ ctbwGdQM2Qb5zgXO+8ZSzwC+6rHHIdtcB8PH2j+Nd88dVGYlWFKZ36ELeZxD7iJflsE8E8yg
+ OpKgu3nD0ahBDqANU/ZmNNarBJEwvM2vfusmNnWm3QMIwxNuJghRyuFfx694Im1js0ZY3LEU
+ JGSHFG4ZynA+ZFUPA6Xf0wHeJOxGKCGIyeKORsteIqgnkINW9fnKJw2pgk8qHkwVc3Vu+wGS
+ ZiJK0xFusPQehjWTHn9WjMG1zvQ5TQQHxau/2FkP45+nRPco6vVFQe8JmgtRF8WFJA==
+Message-ID: <8407af95-09a0-bc94-68c6-60dc79756fec@vivier.eu>
+Date:   Thu, 22 Oct 2020 09:16:46 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
+MIME-Version: 1.0
+In-Reply-To: <alpine.LNX.2.23.453.2010221347000.6@nippy.intranet>
+Content-Type: text/plain; charset=utf-8
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
+X-Provags-ID: V03:K1:kR5ZXkM+otLzHr0F7yxO98XVjqzMmM9yrqfG0X7H/0I8db+z0Nf
+ nNo06sUMiGOpn58MeHxhrqVwkmVx6tcMYORxakhwqwxkRN5V/Rzrf0TJdMnUYW49rw9Evaa
+ oNRc4popjb+W3MHCV0NzjNtjGnBIWiJg/pLF0ji/hQnm2jbg+InWTDrOpR13PargkM0G8/+
+ GXwB/CH8YkrAGLt1jkRsA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:qJ9oo3n2EM0=:UPZcRJOj3+jD2O8p56GulX
+ MekodAzerhAkAXQyuH4u6lJEeyPGesc/YQkW0iDL2Qd42mWfY60dXAhrwzOKqBEwpK/EIMLOd
+ N4Wt8KMxVRKb6RScCbHPGrLvhZ7cd6+eoXp1HiVL/3Vf3tEqkQ5HwFh3DikpVD3gR3cP5QMrl
+ E4Yj4FMhlkbgdOee5uepXeMyQ3k5+4brpgQpqc7Jlb/JlUfq7XyKU/Amj8GFc4IohO70oddrp
+ /f2koVWAA3tqm+qr9oZf26mw98J5CjbzlEWSqK/qGm1uoDYec76kU3ilvdy9UBm6kcpGuwIdQ
+ Bx8w53+K6DDdq7SH478Ci/HZCWrKUt5G2i8GdagkecqA4mzDPRIq+29nKGzewGtps/cpaZJcg
+ 0L0n4L4I4zG+zPNEXeTQDNpL18SIfVU39LhlkY7DJZh49UHNvSFtlIzgX24qA
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-GSMI driver uses dma_pool_* API functions for buffer allocation
-because it requires that the SMI buffers are allocated within 32-bit
-physical address space. However, this does not work well with IOMMU
-since there is no real device and hence no domain associated with the
-device.
+Le 22/10/2020 à 05:23, Finn Thain a écrit :
+> On Wed, 21 Oct 2020, Laurent Vivier wrote:
+> 
+>> Le 21/10/2020 à 01:43, Finn Thain a écrit :
+>>
+>>> Laurent, can we avoid the irq == 0 warning splat like this?
+>>>
+>>> diff --git a/drivers/tty/serial/pmac_zilog.c b/drivers/tty/serial/pmac_zilog.c
+>>> index 96e7aa479961..7db600cd8cc7 100644
+>>> --- a/drivers/tty/serial/pmac_zilog.c
+>>> +++ b/drivers/tty/serial/pmac_zilog.c
+>>> @@ -1701,8 +1701,10 @@ static int __init pmz_init_port(struct uart_pmac_port *uap)
+>>>  	int irq;
+>>>  
+>>>  	r_ports = platform_get_resource(uap->pdev, IORESOURCE_MEM, 0);
+>>> +	if (!r_ports)
+>>> +		return -ENODEV;
+>>>  	irq = platform_get_irq(uap->pdev, 0);
+>>> -	if (!r_ports || irq <= 0)
+>>> +	if (irq <= 0)
+>>>  		return -ENODEV;
+>>>  
+>>>  	uap->port.mapbase  = r_ports->start;
+>>>
+>>
+>> No, this doesn't fix the problem.
+>>
+> 
+> Then I had better stop guessing and start up Aranym...
+> 
+> The patch below seems to fix the problem for me. Does it work on your 
+> system(s)?
 
-Since this is not a real device, it does not require any device
-address(IOVA) for the buffer allocations. The only requirement is to
-ensure that the physical address allocated to the buffer is within
-32-bit physical address space. This is because the buffers have
-nothing to do with DMA at all. It is required for communication with
-firmware executing in SMI mode which has access only to the bottom
-4GiB of memory. Hence, this change switches to using a SLAB cache
-created with SLAB_CACHE_DMA32 that guarantees that the allocation
-happens from the DMA32 memory zone. All calls to dma_pool_* are
-replaced with kmem_cache_*.
+It works like a charm.
 
-In addition to that, all the code for managing the dma_pool for GSMI
-platform device is dropped.
-
-Signed-off-by: Furquan Shaikh <furquan@google.com>
-Reviewed-by: Ard Biesheuvel <ardb@kernel.org>
----
-Changelog since v2:
-- Dropped the check to ensure allocation done by kmem_cache_alloc is
-below the 4GiB boundary since DMA32 memory zone guarantees that.
-- Added Reviewed-by based on response from Ard.
-
-Changelog since v1:
-- Switched to using SLAB cache with SLAB_CACHE_DMA32.
-- Added comment to code and commit message explaining the reason for
-using DMA32 memory zone.
-
- drivers/firmware/google/gsmi.c | 31 +++++++++++++++++++------------
- 1 file changed, 19 insertions(+), 12 deletions(-)
-
-diff --git a/drivers/firmware/google/gsmi.c b/drivers/firmware/google/gsmi.c
-index 7d9367b22010..3d77f26c1e8c 100644
---- a/drivers/firmware/google/gsmi.c
-+++ b/drivers/firmware/google/gsmi.c
-@@ -17,7 +17,6 @@
- #include <linux/string.h>
- #include <linux/spinlock.h>
- #include <linux/dma-mapping.h>
--#include <linux/dmapool.h>
- #include <linux/fs.h>
- #include <linux/slab.h>
- #include <linux/ioctl.h>
-@@ -85,7 +84,6 @@
- struct gsmi_buf {
- 	u8 *start;			/* start of buffer */
- 	size_t length;			/* length of buffer */
--	dma_addr_t handle;		/* dma allocation handle */
- 	u32 address;			/* physical address of buffer */
- };
- 
-@@ -97,7 +95,7 @@ static struct gsmi_device {
- 	spinlock_t lock;		/* serialize access to SMIs */
- 	u16 smi_cmd;			/* SMI command port */
- 	int handshake_type;		/* firmware handler interlock type */
--	struct dma_pool *dma_pool;	/* DMA buffer pool */
-+	struct kmem_cache *mem_pool;	/* kmem cache for gsmi_buf allocations */
- } gsmi_dev;
- 
- /* Packed structures for communicating with the firmware */
-@@ -157,8 +155,7 @@ static struct gsmi_buf *gsmi_buf_alloc(void)
- 	}
- 
- 	/* allocate buffer in 32bit address space */
--	smibuf->start = dma_pool_alloc(gsmi_dev.dma_pool, GFP_KERNEL,
--				       &smibuf->handle);
-+	smibuf->start = kmem_cache_alloc(gsmi_dev.mem_pool, GFP_KERNEL);
- 	if (!smibuf->start) {
- 		printk(KERN_ERR "gsmi: failed to allocate name buffer\n");
- 		kfree(smibuf);
-@@ -176,8 +173,7 @@ static void gsmi_buf_free(struct gsmi_buf *smibuf)
- {
- 	if (smibuf) {
- 		if (smibuf->start)
--			dma_pool_free(gsmi_dev.dma_pool, smibuf->start,
--				      smibuf->handle);
-+			kmem_cache_free(gsmi_dev.mem_pool, smibuf->start);
- 		kfree(smibuf);
- 	}
- }
-@@ -914,9 +910,20 @@ static __init int gsmi_init(void)
- 	spin_lock_init(&gsmi_dev.lock);
- 
- 	ret = -ENOMEM;
--	gsmi_dev.dma_pool = dma_pool_create("gsmi", &gsmi_dev.pdev->dev,
--					     GSMI_BUF_SIZE, GSMI_BUF_ALIGN, 0);
--	if (!gsmi_dev.dma_pool)
-+
-+	/*
-+	 * SLAB cache is created using SLAB_CACHE_DMA32 to ensure that the
-+	 * allocations for gsmi_buf come from the DMA32 memory zone. These
-+	 * buffers have nothing to do with DMA. They are required for
-+	 * communication with firmware executing in SMI mode which can only
-+	 * access the bottom 4GiB of physical memory. Since DMA32 memory zone
-+	 * guarantees allocation under the 4GiB boundary, this driver creates
-+	 * a SLAB cache with SLAB_CACHE_DMA32 flag.
-+	 */
-+	gsmi_dev.mem_pool = kmem_cache_create("gsmi", GSMI_BUF_SIZE,
-+					      GSMI_BUF_ALIGN,
-+					      SLAB_CACHE_DMA32, NULL);
-+	if (!gsmi_dev.mem_pool)
- 		goto out_err;
- 
- 	/*
-@@ -1032,7 +1039,7 @@ static __init int gsmi_init(void)
- 	gsmi_buf_free(gsmi_dev.param_buf);
- 	gsmi_buf_free(gsmi_dev.data_buf);
- 	gsmi_buf_free(gsmi_dev.name_buf);
--	dma_pool_destroy(gsmi_dev.dma_pool);
-+	kmem_cache_destroy(gsmi_dev.mem_pool);
- 	platform_device_unregister(gsmi_dev.pdev);
- 	pr_info("gsmi: failed to load: %d\n", ret);
- #ifdef CONFIG_PM
-@@ -1057,7 +1064,7 @@ static void __exit gsmi_exit(void)
- 	gsmi_buf_free(gsmi_dev.param_buf);
- 	gsmi_buf_free(gsmi_dev.data_buf);
- 	gsmi_buf_free(gsmi_dev.name_buf);
--	dma_pool_destroy(gsmi_dev.dma_pool);
-+	kmem_cache_destroy(gsmi_dev.mem_pool);
- 	platform_device_unregister(gsmi_dev.pdev);
- #ifdef CONFIG_PM
- 	platform_driver_unregister(&gsmi_driver_info);
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Thank you,
+Laurent
