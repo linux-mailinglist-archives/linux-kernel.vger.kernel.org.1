@@ -2,86 +2,177 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 66FA1295DDD
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:58:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8D3295DE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:00:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897740AbgJVL6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:58:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38072 "EHLO
+        id S2897749AbgJVMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:00:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897730AbgJVL6D (ORCPT
+        with ESMTP id S2897741AbgJVMAV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:58:03 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55BFEC0613CE;
-        Thu, 22 Oct 2020 04:58:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=I6klDVnQcrqiqkHEDRJqE0N4Ugd/ob+1NQ2ptWfMYdk=; b=Lfpzj/X0purmxvaViHT2xcRSq2
-        i8pKJrLPnsXE/XCPBnEE7X+4reJKp30RjIEvOLZ2K9O0/hiaQjSCQXjfN6WCyiYuGWIzpMY3FVzb8
-        SvqcAujgUefDduyLEpTdxR1IjA5i+sxu3abYYV4WH75S/oOo7NlOSVaSKg5MKVpFKONifJAhf+ppl
-        bb4P/Dt40ITxx6lgApona00JzQGEdqFZpqM54cq0KiyMni8aCnTROQVd9bJOtCbjMH/+a9Fd7xFrh
-        XZyvRXMcfmQWQbV3Wx2MQJp3vNvDHWDSwQUdYAPnvG40RbarjETHkPQTlXATVgUkcpvJ0ax5pK5ds
-        biBmVJ2w==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVZEA-0007kY-1h; Thu, 22 Oct 2020 11:57:54 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 2197030377D;
-        Thu, 22 Oct 2020 13:57:53 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 05AD2203CC4B2; Thu, 22 Oct 2020 13:57:53 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:57:52 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-Cc:     Viresh Kumar <viresh.kumar@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Lukasz Luba <lukasz.luba@arm.com>
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Message-ID: <20201022115752.GF2611@hirez.programming.kicks-ass.net>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
- <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
- <20200716115605.GR10769@hirez.programming.kicks-ass.net>
- <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
- <20201022090523.GV2628@hirez.programming.kicks-ass.net>
- <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
- <CAJZ5v0jZC=UwW9L+KB3pugsTL9P1tZmvQ-sVMV-udn7+L_gEeA@mail.gmail.com>
+        Thu, 22 Oct 2020 08:00:21 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B434BC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:00:20 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id i2so1631562ljg.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:00:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=n58NkZJzVjLKTzwsAFYxWlkrSZkVUrs3TijMJQaRZaw=;
+        b=tVs6v7AliIf5OqxudM1o6/t24E2fdeL3c/N6yildMXqE7ac4i2kitgODKkNxeoLDoy
+         wf/QOYJi9/gt2ye8kemMXJGC9v5qz6wwWdeMa3GmsABxI42n+ps0HYltOhRlBOj7GTcj
+         pZUEJuy2AQAAiOIGaXPNY6HExKWrKEI8SPO+zgED8skofiUZEd6teVIeApWxNztIpWvR
+         BVY+T+BrEjTD35I3oF4k+7S25aub8HPha4qsLKgnMwEzXQLSfD6XiELHt9CsAVZRtUlK
+         ohYU8Ygo1D3J6bbSqFMCbfHzn6ASG+6w6//kVXCzFtmq7BbbxitM+yDJloLPkNgP1V1P
+         Kziw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=n58NkZJzVjLKTzwsAFYxWlkrSZkVUrs3TijMJQaRZaw=;
+        b=qyNuNdW8lLLUehnCim79ma/Bbt1QDYnNQ0htSFXPVAobUKGxnLzW+vkNvHuAkMOy7y
+         Hlw0TDkpg6aGsH1ED8Gvrx+rE/M8H9Txh1jrv2a4eh+Q/5EaSoU4ViiAcdsf3u+yHBr9
+         hpGcqkBUT3VZQraukcZokGerfhg+sWDaPa/sMp9ROAs6rN1y0Kzohh+oaCJJSexnraEk
+         QfdqvnXioQrE39zxGq0SBvZARjh1vG/rZgX/o7jjQnxKwI+i85B94N9hxEp04+Ltf0vE
+         r+gQjZZkfgENnBgLh+QB8Ibie1L2ROzrywx5WYF/BmLy2deDLl6+ass/qq0EY42Q8+3S
+         tjOA==
+X-Gm-Message-State: AOAM530CV6WW2dkdbn8pdKRx94LmzJHwXa5PiimRK29UGqIjAwljltyw
+        RjypAmqqyN01mTmABpnUNIL+mH4ENCwjCDq+5p1I/PNVcR8VCA==
+X-Google-Smtp-Source: ABdhPJx/1Sdm5Xf6Slas9JKc+pC55zIgZlvcY3x67auMXV6X9l2ZdunX+0IIpBeZGXe19Ptaa5Fr8pFdq9OdXrLObdo=
+X-Received: by 2002:a2e:a41a:: with SMTP id p26mr801300ljn.126.1603368018683;
+ Thu, 22 Oct 2020 05:00:18 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAJZ5v0jZC=UwW9L+KB3pugsTL9P1tZmvQ-sVMV-udn7+L_gEeA@mail.gmail.com>
+From:   Charles Hsu <hsu.yuegteng@gmail.com>
+Date:   Thu, 22 Oct 2020 20:00:07 +0800
+Message-ID: <CAJArhDZ2nTc-wHLKRon8_Oqo8WG28m7ni08saHrW=HqbJAHoew@mail.gmail.com>
+Subject: [PATCH] hwmon: (pmbus) Add driver for STMicroelectronics PM6764TR
+ Voltage Regulator
+To:     linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 01:30:01PM +0200, Rafael J. Wysocki wrote:
+Add the pmbus driver for the STMicroelectronics pm6764tr voltage regulator.
 
-> Many people use intel_pstate in the active mode with HWP enabled too.
+Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
+---
+ drivers/hwmon/pmbus/Kconfig    |  8 ++++
+ drivers/hwmon/pmbus/Makefile   |  1 +
+ drivers/hwmon/pmbus/pm6764tr.c | 76 ++++++++++++++++++++++++++++++++++
+ 3 files changed, 85 insertions(+)
+ create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
 
-We now have HWP-passive supported, afaict. So we should discourage that.
+diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
+index a25faf69fce3..e976997ee163 100644
+--- a/drivers/hwmon/pmbus/Kconfig
++++ b/drivers/hwmon/pmbus/Kconfig
+@@ -287,4 +287,12 @@ config SENSORS_ZL6100
+   This driver can also be built as a module. If so, the module will
+   be called zl6100.
 
-That is; I'll care less and less about people not using schedutil as
-time goes on.
-
-> Arguably, that doesn't need to compute the effective utilization, so I
-> guess it is not relevant for the discussion here, but it is not
-> negligible in general.
-
-Why not? cpufreq-cooling should still be able to throttle the system by
-setting HWP.Highest_Performance no?
-
-In which case it still needs an energy estimate.
++config SENSORS_PM6764TR
++ tristate "PM6764TR"
++ help
++  If you say yes here you get hardware monitoring support for PM6764TR.
++
++  This driver can also be built as a module. If so, the module will
++  be called pm6764tr.
++
+ endif # PMBUS
+diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
+index 4c97ad0bd791..bb89fcf9544d 100644
+--- a/drivers/hwmon/pmbus/Makefile
++++ b/drivers/hwmon/pmbus/Makefile
+@@ -32,3 +32,4 @@ obj-$(CONFIG_SENSORS_UCD9000) += ucd9000.o
+ obj-$(CONFIG_SENSORS_UCD9200) += ucd9200.o
+ obj-$(CONFIG_SENSORS_XDPE122) += xdpe12284.o
+ obj-$(CONFIG_SENSORS_ZL6100) += zl6100.o
++obj-$(CONFIG_SENSORS_PM6764TR) += pm6764tr.o
+\ No newline at end of file
+diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
+new file mode 100644
+index 000000000000..e03b1441268e
+--- /dev/null
++++ b/drivers/hwmon/pmbus/pm6764tr.c
+@@ -0,0 +1,76 @@
++// SPDX-License-Identifier: GPL-2.0-or-later
++
++#include <linux/kernel.h>
++#include <linux/module.h>
++#include <linux/init.h>
++#include <linux/err.h>
++#include <linux/slab.h>
++#include <linux/mutex.h>
++#include <linux/i2c.h>
++#include <linux/pmbus.h>
++#include "pmbus.h"
++
++#define PM6764TR_PMBUS_READ_VOUT 0xD4
++
++static int pm6764tr_read_word_data(struct i2c_client *client, int
+page, int reg)
++{
++ int ret;
++
++ switch (reg) {
++ case PMBUS_VIRT_READ_VMON:
++ ret = pmbus_read_word_data(client, page,
++   PM6764TR_PMBUS_READ_VOUT);
++ break;
++ default:
++ ret = -ENODATA;
++ break;
++ }
++ return ret;
++}
++
++static struct pmbus_driver_info pm6764tr_info = {
++ .pages = 1,
++ .format[PSC_VOLTAGE_IN] = linear,
++ .format[PSC_VOLTAGE_OUT] = vid,
++ .format[PSC_TEMPERATURE] = linear,
++ .format[PSC_CURRENT_OUT] = linear,
++ .format[PSC_POWER] = linear,
++ .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
++    PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
++ PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
++ PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
++    .read_word_data = pm6764tr_read_word_data,
++};
++
++static int pm6764tr_probe(struct i2c_client *client,
++  const struct i2c_device_id *id)
++{
++ return pmbus_do_probe(client, id, &pm6764tr_info);
++}
++
++static const struct i2c_device_id pm6764tr_id[] = {
++ {"pm6764tr", 0},
++ {}
++};
++MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
++
++static const struct of_device_id pm6764tr_of_match[] = {
++ {.compatible = "pm6764tr"},
++ {}
++};
++
++static struct i2c_driver pm6764tr_driver = {
++ .driver = {
++   .name = "pm6764tr",
++   .of_match_table = of_match_ptr(pm6764tr_of_match),
++   },
++ .probe = pm6764tr_probe,
++ .remove = pmbus_do_remove,
++ .id_table = pm6764tr_id,
++};
++
++module_i2c_driver(pm6764tr_driver);
++
++MODULE_AUTHOR("Charles Hsu");
++MODULE_DESCRIPTION("PMBus driver for ST PM6764TR");
++MODULE_LICENSE("GPL");
+--
+2.25.1
