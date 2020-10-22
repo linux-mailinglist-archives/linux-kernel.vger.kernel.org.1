@@ -2,86 +2,145 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A1E0A2961B9
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:35:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A76C92961C7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:41:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368655AbgJVPfi convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Thu, 22 Oct 2020 11:35:38 -0400
-Received: from us-smtp-delivery-44.mimecast.com ([207.211.30.44]:38628 "EHLO
-        us-smtp-delivery-44.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2503603AbgJVPfh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:35:37 -0400
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-581-za5zEBnYOSqH-hBOoifJQA-1; Thu, 22 Oct 2020 11:35:29 -0400
-X-MC-Unique: za5zEBnYOSqH-hBOoifJQA-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 17FAA804B64;
-        Thu, 22 Oct 2020 15:35:28 +0000 (UTC)
-Received: from ovpn-66-200.rdu2.redhat.com (ovpn-66-200.rdu2.redhat.com [10.10.66.200])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C3D9319C4F;
-        Thu, 22 Oct 2020 15:35:26 +0000 (UTC)
-Message-ID: <7ec15e2710db02be81a6c47afc57abed4bf8016c.camel@lca.pw>
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-From:   Qian Cai <cai@lca.pw>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-Date:   Thu, 22 Oct 2020 11:35:26 -0400
-In-Reply-To: <20201022004906.GQ20115@casper.infradead.org>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
-         <20201022004906.GQ20115@casper.infradead.org>
-Mime-Version: 1.0
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=CUSA124A263 smtp.mailfrom=cai@lca.pw
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: lca.pw
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S368698AbgJVPlE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:41:04 -0400
+Received: from m12-12.163.com ([220.181.12.12]:57960 "EHLO m12-12.163.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895638AbgJVPlD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:41:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=FPoCB
+        9cCd894ZXCdpNcj1FG6JjnHljFZ2vYZHCNTRdU=; b=VIS5sr6NuYJXjEPtOQdD6
+        POTmhrqOvJNcbRuGQyVxutSOsGWflligyvEVTZN1A9hRuB6WqOwTaBhoPuL1vxuW
+        8R/A6kSupay+p6qEN/mtBxR51A81OM9jlV6HqGr/396dpRGHuq/sJ67qxM3jLWma
+        6d8L8/9MsUxRdUunGf6zjw=
+Received: from localhost (unknown [101.86.214.18])
+        by smtp8 (Coremail) with SMTP id DMCowABHJuNNp5FfwPIBTA--.34385S2;
+        Thu, 22 Oct 2020 23:37:49 +0800 (CST)
+Date:   Thu, 22 Oct 2020 23:37:49 +0800
+From:   Hui Su <sh_def@163.com>
+To:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+        rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+        bristot@redhat.com, linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/deadline: use rq_of_se intead of dl_rq_of_se and
+ rq_of_dl_rq
+Message-ID: <20201022153749.GA290282@rlk>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-CM-TRANSID: DMCowABHJuNNp5FfwPIBTA--.34385S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxZr1DGw13JFWUCFW7Ww4fAFb_yoW5Zw1DpF
+        4UZ3W5Gr4jyry2g3yjya1kJrWak3s3t34DuF93G393KF1UJryrJF1ayryjvFy3JrW5C3W2
+        yr4Yqrs3Ga9Yyr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+        9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07jaHq7UUUUU=
+X-Originating-IP: [101.86.214.18]
+X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiMQ7FX1UMWEUJIAAAsI
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 2020-10-22 at 01:49 +0100, Matthew Wilcox wrote:
-> On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
-> > Today's linux-next starts to trigger this wondering if anyone has any clue.
-> 
-> I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
-> to try to get a clue about it.  Good to know it's not the THP patches
-> since they aren't in linux-next.
-> 
-> I don't understand how it can happen.  We have the page locked, and then we
-> do:
-> 
->                         if (PageWriteback(page)) {
->                                 if (wbc->sync_mode != WB_SYNC_NONE)
->                                         wait_on_page_writeback(page);
->                                 else
->                                         goto continue_unlock;
->                         }
-> 
->                         VM_BUG_ON_PAGE(PageWriteback(page), page);
-> 
-> Nobody should be able to put this page under writeback while we have it
-> locked ... right?  The page can be redirtied by the code that's supposed
-> to be writing it back, but I don't see how anyone can make PageWriteback
-> true while we're holding the page lock.
+To get the rq from dl_se in the old way:
+first use dl_rq_of_se() get dl_rq, then use rq_of_dl_rq() get rq,
 
-It happened again on today's linux-next:
+dl_rq_of_se(): dl_se ==> p ==> rq ==> dl
 
-[ 7613.579890][T55770] page:00000000a4b35e02 refcount:3 mapcount:0 mapping:00000000457ceb87 index:0x3e pfn:0x1cef4e
-[ 7613.590594][T55770] aops:xfs_address_space_operations ino:805d85a dentry name:"doio.f1.55762"
-[ 7613.599192][T55770] flags: 0xbfffc0000000bf(locked|waiters|referenced|uptodate|dirty|lru|active)
-[ 7613.608596][T55770] raw: 00bfffc0000000bf ffffea0005027d48 ffff88810eaec030 ffff888231f3a6a8
-[ 7613.617101][T55770] raw: 000000000000003e 0000000000000000 00000003ffffffff ffff888143724000
-[ 7613.625590][T55770] page dumped because: VM_BUG_ON_PAGE(PageWriteback(page))
-[ 7613.632695][T55770] page->mem_cgroup:ffff888143724000
+rq_of_dl_rq():                        dl
+				      ||
+			       rq <==
+
+rq_of_dl_rq(dl_rq_of_se()):
+	       dl_se ==> p ==> rq ==> dl
+	       			      ||
+	      		       rq <==
+
+it looks a little redundant.
+
+So add rq_of_se(dl_se) to instead of rq_of_dl_rq(dl_rq_of_se(dl_se)).
+rq_of_se():    dl_se ==> p ==> rq
+
+Signed-off-by: Hui Su <sh_def@163.com>
+---
+ kernel/sched/deadline.c | 25 ++++++++++++++-----------
+ 1 file changed, 14 insertions(+), 11 deletions(-)
+
+diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+index 6d93f4518734..b242bbf61b21 100644
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -30,10 +30,16 @@ static inline struct rq *rq_of_dl_rq(struct dl_rq *dl_rq)
+ 	return container_of(dl_rq, struct rq, dl);
+ }
+ 
+-static inline struct dl_rq *dl_rq_of_se(struct sched_dl_entity *dl_se)
++static inline struct rq *rq_of_se(struct sched_dl_entity *dl_se)
+ {
+ 	struct task_struct *p = dl_task_of(dl_se);
+-	struct rq *rq = task_rq(p);
++
++	return task_rq(p);
++}
++
++static inline struct dl_rq *dl_rq_of_se(struct sched_dl_entity *dl_se)
++{
++	struct rq *rq = rq_of_se(dl_se);
+ 
+ 	return &rq->dl;
+ }
+@@ -695,8 +701,8 @@ static void check_preempt_curr_dl(struct rq *rq, struct task_struct *p, int flag
+  */
+ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+ {
+-	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+-	struct rq *rq = rq_of_dl_rq(dl_rq);
++	struct rq *rq = rq_of_se(dl_se);
++
+ 
+ 	WARN_ON(dl_se->dl_boosted);
+ 	WARN_ON(dl_time_before(rq_clock(rq), dl_se->deadline));
+@@ -739,8 +745,7 @@ static inline void setup_new_dl_entity(struct sched_dl_entity *dl_se)
+ static void replenish_dl_entity(struct sched_dl_entity *dl_se,
+ 				struct sched_dl_entity *pi_se)
+ {
+-	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+-	struct rq *rq = rq_of_dl_rq(dl_rq);
++	struct rq *rq = rq_of_se(dl_se);
+ 
+ 	BUG_ON(pi_se->dl_runtime <= 0);
+ 
+@@ -925,8 +930,7 @@ static inline bool dl_is_implicit(struct sched_dl_entity *dl_se)
+ static void update_dl_entity(struct sched_dl_entity *dl_se,
+ 			     struct sched_dl_entity *pi_se)
+ {
+-	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
+-	struct rq *rq = rq_of_dl_rq(dl_rq);
++	struct rq *rq = rq_of_se(dl_se);
+ 
+ 	if (dl_time_before(dl_se->deadline, rq_clock(rq)) ||
+ 	    dl_entity_overflow(dl_se, pi_se, rq_clock(rq))) {
+@@ -1152,7 +1156,7 @@ void init_dl_task_timer(struct sched_dl_entity *dl_se)
+ static inline void dl_check_constrained_dl(struct sched_dl_entity *dl_se)
+ {
+ 	struct task_struct *p = dl_task_of(dl_se);
+-	struct rq *rq = rq_of_dl_rq(dl_rq_of_se(dl_se));
++	struct rq *rq = rq_of_se(dl_se);
+ 
+ 	if (dl_time_before(dl_se->deadline, rq_clock(rq)) &&
+ 	    dl_time_before(rq_clock(rq), dl_next_period(dl_se))) {
+@@ -1497,8 +1501,7 @@ enqueue_dl_entity(struct sched_dl_entity *dl_se,
+ 	} else if (flags & ENQUEUE_REPLENISH) {
+ 		replenish_dl_entity(dl_se, pi_se);
+ 	} else if ((flags & ENQUEUE_RESTORE) &&
+-		  dl_time_before(dl_se->deadline,
+-				 rq_clock(rq_of_dl_rq(dl_rq_of_se(dl_se))))) {
++		dl_time_before(dl_se->deadline, rq_clock(rq_of_se(dl_se)))) {
+ 		setup_new_dl_entity(dl_se);
+ 	}
+ 
+-- 
+2.25.1
+
 
