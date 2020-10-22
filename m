@@ -2,110 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C7F029602F
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:39:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E361C296033
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:40:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502876AbgJVNji (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:39:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53874 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444217AbgJVNjh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:39:37 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D57DC0613CE;
-        Thu, 22 Oct 2020 06:39:37 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id o1so1045363pjt.2;
-        Thu, 22 Oct 2020 06:39:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=b3AVo2emPLkcZF8hW3nQ46IEFziYrCYUxWf0tqXrKb4=;
-        b=uuzbSiMIqbW4lrdsO5PXIzxsvCt/uxlqrBpaQ1b8FLTBQYLFDsNfYey2hRinJQp2FH
-         IoL4UG+O9do4Wr0hLc3LO3xAKMyEzONxuocxYYfGoMZ1xWUXGWSTegnUY0YOPaan4uyt
-         FhAMGAylucQbDRT+vZjrSspmz5lmG4FtSSXekAxd0KIXMXqeXp7js+g7EENQVpznCK99
-         P70k/RZvRkfm8FJu2+5g5N6xgOG8XY+r5ZCxDMljHLqSmKQhYpA6pgJXvtRloi6Z8Pqi
-         A9zS0CngtsnNoRz6X9FUoKIaYIameFxKlVxeX2XKrUJFxE2s41ffqVnqsN+v3tQelkKf
-         FX6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=b3AVo2emPLkcZF8hW3nQ46IEFziYrCYUxWf0tqXrKb4=;
-        b=QnI18eRM6QYSgiF2rt4P+TeBpyyj0XDWMv96cEWHYUJAQGkalvJz/GKBuG/uzIdp+K
-         YaYRbKbadxrI2GDjbu23l47ytyTvHm7mCPrIX6OqH9DXAfX0uhKu/9UjNxTsbbNJ0IPx
-         PEUOmluc+dhn66PlLNyzCz5SqKU0urILcqEdQQeYClU8vYfFBV3oSf9LqlBsILFjg/Pr
-         Y1Trh0/46Ae9zXaS6CtWjGrh3dpiaYnlPWgRc0uSGYYaizY6gnIIBz9FEtKpnQSfaqor
-         SbNLqBuLQudlC1wxyUCXanX5JAoOnewNQsxotGcoexOhpQ/ME4OoOwF2tDy0bswbaNOf
-         ucSw==
-X-Gm-Message-State: AOAM530/29b65hzgQvzpKxJHi7sxMZsvy8E2G1uByVT6GT6YwnqN3T3d
-        7f+IhvrRQx0W98tRY0dnLH4X5ufMyNtBSgC/308=
-X-Google-Smtp-Source: ABdhPJwUPybuMxgPq8dMoHqmmBjU6A75kvif4dG6aK5EaG1sAwDerRoIr5JrRgv4UmK8xFGVjML4nPKdLllGXgzu6Go=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr2468573pjb.129.1603373976635;
- Thu, 22 Oct 2020 06:39:36 -0700 (PDT)
+        id S2507779AbgJVNkl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:40:41 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:53746 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2437595AbgJVNkk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:40:40 -0400
+Received: from DGGEMS406-HUB.china.huawei.com (unknown [172.30.72.59])
+        by Forcepoint Email with ESMTP id 9CE98CCD67AE021F82B3;
+        Thu, 22 Oct 2020 21:40:37 +0800 (CST)
+Received: from [127.0.0.1] (10.74.219.194) by DGGEMS406-HUB.china.huawei.com
+ (10.3.19.206) with Microsoft SMTP Server id 14.3.487.0; Thu, 22 Oct 2020
+ 21:40:35 +0800
+Subject: Re: [PATCH 3/3] PM: runtime: Resume the device earlier in
+ __device_release_driver()
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <6543936.FbWAdBN1tG@kreacher> <1708806.S9fAqql2gf@kreacher>
+CC:     Linux PM <linux-pm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Lukas Wunner <lukas@wunner.de>,
+        Saravana Kannan <saravanak@google.com>
+From:   "chenxiang (M)" <chenxiang66@hisilicon.com>
+Message-ID: <e9466a28-5c6a-f88a-51ab-547ecc21e5d0@hisilicon.com>
+Date:   Thu, 22 Oct 2020 21:40:34 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:45.0) Gecko/20100101
+ Thunderbird/45.2.0
 MIME-Version: 1.0
-References: <20201019225903.14276-1-djrscally@gmail.com> <20201019225903.14276-10-djrscally@gmail.com>
- <20201020094113.GG4077@smile.fi.intel.com> <4ce5b55f-f492-2b52-5571-86ee346db795@gmail.com>
-In-Reply-To: <4ce5b55f-f492-2b52-5571-86ee346db795@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Thu, 22 Oct 2020 16:40:25 +0300
-Message-ID: <CAHp75VfhxL2iyp_sNwmDyCG6-6bE5QZYd3Ubp=egZhTCcB=jgg@mail.gmail.com>
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Media Mailing List <linux-media@vger.kernel.org>,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        "Krogerus, Heikki" <heikki.krogerus@linux.intel.com>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com,
-        Jacopo Mondi <jacopo+renesas@jmondi.org>,
-        Rob Herring <robh@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Tian Shu Qiu <tian.shu.qiu@intel.com>,
-        Bingbu Cao <bingbu.cao@intel.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Yong Zhi <yong.zhi@intel.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Tsuchiya Yuto <kitakar@gmail.com>, dan.carpenter@oracle.org
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1708806.S9fAqql2gf@kreacher>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.74.219.194]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 3:59 PM Daniel Scally <djrscally@gmail.com> wrote:
-> On 20/10/2020 10:41, Andy Shevchenko wrote:
+Hi Rafael,
 
-...
-
-> >> +static const char * const port_names[] = {
-> >> +    "port0", "port1", "port2", "port3"
-> > + comma.
-> I think 4 ports is the maximum for CIO2 device, so this shouldn't ever
-> get extended?
-
-It's better for at least teaching purposes (if anybody takes this
-driver as an example for anything) if you have really believe that no
-new generation will have more than that.
-
-...
-
-> >> +    if (is_software_node(dev_fwnode(&pci_dev->dev)))
-> > Can we use the same check as for _build call above?
+在 2020/10/22 3:14, Rafael J. Wysocki 写道:
+> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 >
-> And just set a flag in struct cio2? sure.
+> Since the device is resumed from runtime-suspend in
+> __device_release_driver() anyway, it is better to do that before
+> looking for busy managed device links from it to consumers, because
+> if there are any, device_links_unbind_consumers() will be called
+> and it will cause the consumer devices' drivers to unbind, so the
+> consumer devices will be runtime-resumed.  In turn, resuming each
+> consumer device will cause the supplier to be resumed and when the
+> runtime PM references from the given consumer to it are dropped, it
+> may be suspended.  Then, the runtime-resume of the next consumer
+> will cause the supplier to resume again and so on.
+>
+> Update the code accordingly.
+>
+> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> Fixes: 9ed9895370ae ("driver core: Functional dependencies tracking support")
+> Cc: All applicable <stable@vger.kernel.org> # All applicable
+> ---
+>   drivers/base/dd.c |    4 ++--
+>   1 file changed, 2 insertions(+), 2 deletions(-)
+>
+> Index: linux-pm/drivers/base/dd.c
+> ===================================================================
+> --- linux-pm.orig/drivers/base/dd.c
+> +++ linux-pm/drivers/base/dd.c
+> @@ -1117,6 +1117,8 @@ static void __device_release_driver(stru
+>   
+>   	drv = dev->driver;
+>   	if (drv) {
+> +		pm_runtime_get_sync(dev);
+> +
+>   		while (device_links_busy(dev)) {
+>   			__device_driver_unlock(dev, parent);
+>   
+> @@ -1132,8 +1134,6 @@ static void __device_release_driver(stru
 
-I meant can we use exact conditional w/o any additional flags added?
+pm_runtime_put_sync() is required to be called if existed from here.
 
--- 
-With Best Regards,
-Andy Shevchenko
+>   				return;
+>   		}
+>   
+> -		pm_runtime_get_sync(dev);
+> -
+>   		driver_sysfs_remove(dev);
+>   
+>   		if (dev->bus)
+>
+>
+>
+>
+> .
+>
+
+
