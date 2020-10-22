@@ -2,87 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D825295F62
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:08:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C8DF4295F65
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899347AbgJVNIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:08:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507469AbgJVNIO (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:08:14 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 681DDC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:08:12 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id t25so2162718ejd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:08:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=YnVSHPtkEDV80qgIOohyTUBh5oj/YizZewvliA8voeQ=;
-        b=ElU6qfg6v/wFR7SXZ6Er6eboZ3A5bx8GD5X9SAdsxJiJCfWp23+eyZMYpIedG3cN8r
-         x5sktzejMQgBoVHggchF2yC1AWyxMCSOwP1paYXrqVRyfuaHcH2V3ZBMODUFHdbuXawD
-         aQxNQQjlOeQtDUzS37KrK9YOA739hNydhJFmso8JoNXCkA+6Pm3ywynD0dO8VKEUjnnt
-         R7CfzStF0bnPCD9SMpXZT7ON0pnhxNz6er8DHAopQPh8/9ZBTfeEP7QAYyOPHUDFHO9Z
-         XqVfIdqYr0212gA5TOFUWjVPVyC59W7y0civxWmB00tGD/+HoiwzmRhBM08mQ7Mu+Dmj
-         eeJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=YnVSHPtkEDV80qgIOohyTUBh5oj/YizZewvliA8voeQ=;
-        b=ugJOT84qVNZjPVJ/lfocpRCTBQcvVMrcBNu2w0aPSREP3ZtzhLG8DMzN9nDKdi8oIT
-         nmx3H8bBV2rns4NuIJB2lMaTFZfzNPIOV/yAIwujDuqtwCtsacheOMOWHsOWyEjhs1Tc
-         TWDO1FJvgd7SEHMWVr0kN2Q+BkyBHXCj1cbJUAaRkL4nitkpEaqmHpO0tQNmnH3Ble8p
-         wdsZ1PWuqbmy6Sb3o/4/MIbbEns2OZCYp2k2JIhJOBPHNPlvHT0wDZO33mdZjYDbNFgY
-         DrepdZBBik+eU1aahqM9JADZY2ilP/5707mRFtlx0Ea0+STj3PAd6VNWNF0YtOyiki62
-         2ptw==
-X-Gm-Message-State: AOAM530IAFX/bhk2+wkgdxfNo2/0IAHkAIK2jHBQ0qOM04xlNNUWv/Mo
-        oNIk2vYatxRYHpJnrNfkgZE=
-X-Google-Smtp-Source: ABdhPJx4ECTfVg2+U5QqUepNwCaPX5HLFTV3Vg2vij5qajpYovM5nIpA4+ayTbkTSKXjPU1mSbE4Xw==
-X-Received: by 2002:a17:906:388d:: with SMTP id q13mr2101698ejd.92.1603372091196;
-        Thu, 22 Oct 2020 06:08:11 -0700 (PDT)
-Received: from localhost.localdomain ([185.200.214.168])
-        by smtp.gmail.com with ESMTPSA id e4sm732723eds.50.2020.10.22.06.08.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 06:08:10 -0700 (PDT)
-From:   izabela.bakollari@gmail.com
-To:     gregkh@linuxfoundation.org
-Cc:     devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
-        outreachy-kernel@googlegroups.com,
-        Izabela Bakollari <izabela.bakollari@gmail.com>
-Subject: [PATCH] staging/wlan-ng: Fix line that exceeds 100 columns
-Date:   Thu, 22 Oct 2020 15:08:07 +0200
-Message-Id: <20201022130807.212454-1-izabela.bakollari@gmail.com>
-X-Mailer: git-send-email 2.18.4
+        id S2899356AbgJVNJH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:09:07 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44886 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442464AbgJVNJG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:09:06 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603372145;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xnl30XZmbkdq+DrOW7dw1rQEfgCFIhyaC9tjnrTpvhk=;
+        b=G3EvcoqIsqGs4aDO2mpBJ1JGmOUd/OPq7oygh7b6FF+0GTcrKqbng6hgIBfCH3Os3t/dIS
+        uV/OIsKhlCM/Y5jWNUEQDJNFCgoh3+eFZBMSrsIC/BSdBaokhWtsWh9fyjw5n6pfIj+qVs
+        MIV16z6zFR4NJs+Ydt0K7f5fFIaSdI4=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id A540AAC3F;
+        Thu, 22 Oct 2020 13:09:05 +0000 (UTC)
+Subject: Re: [PATCH v2 3/5] xen/events: only register debug interrupt for
+ 2-level events
+To:     Jan Beulich <jbeulich@suse.com>
+Cc:     xen-devel@lists.xenproject.org, x86@kernel.org,
+        linux-kernel@vger.kernel.org,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>
+References: <20201022094907.28560-1-jgross@suse.com>
+ <20201022094907.28560-4-jgross@suse.com>
+ <1de24e42-6cb7-4ecb-0eb2-c4a15dc8afc9@suse.com>
+From:   =?UTF-8?B?SsO8cmdlbiBHcm/Dnw==?= <jgross@suse.com>
+Message-ID: <98f76c98-00d5-3238-a54f-cce52419160f@suse.com>
+Date:   Thu, 22 Oct 2020 15:09:04 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
+MIME-Version: 1.0
+In-Reply-To: <1de24e42-6cb7-4ecb-0eb2-c4a15dc8afc9@suse.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Izabela Bakollari <izabela.bakollari@gmail.com>
+On 22.10.20 12:35, Jan Beulich wrote:
+> On 22.10.2020 11:49, Juergen Gross wrote:
+>> @@ -2080,10 +2080,12 @@ void __init xen_init_IRQ(void)
+>>   	int ret = -EINVAL;
+>>   	evtchn_port_t evtchn;
+>>   
+>> -	if (fifo_events)
+>> +	if (xen_fifo_events)
+>>   		ret = xen_evtchn_fifo_init();
+>> -	if (ret < 0)
+>> +	if (ret < 0) {
+>>   		xen_evtchn_2l_init();
+>> +		xen_fifo_events = false;
+>> +	}
+> 
+> Another note: While it may not matter right here, maybe better
+> first set the variable and the call the function?
 
-Rearrange comment that exceeds 100 columns length. Issue reported
-by checkpatch.pl
+I don't think this is really important, TBH.
 
-Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
----
- drivers/staging/wlan-ng/cfg80211.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This code is executed before other cpus are up and we'd have major
+other problems in case the sequence would really matter here.
 
-diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
-index 759e475e303c..5fad37a49aa5 100644
---- a/drivers/staging/wlan-ng/cfg80211.c
-+++ b/drivers/staging/wlan-ng/cfg80211.c
-@@ -366,7 +366,8 @@ static int prism2_scan(struct wiphy *wiphy,
- 					  msg2.beaconperiod.data,
- 					  ie_buf,
- 					  ie_len,
--					  (msg2.signal.data - 65536) * 100, /* Conversion to signed type */
-+					  (msg2.signal.data - 65536) * 100,
-+					  /* Conversion to signed type */
- 					  GFP_KERNEL);
- 
- 		if (!bss) {
--- 
-2.18.4
 
+Juergen
