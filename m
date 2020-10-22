@@ -2,105 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81AAF295BDB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:33:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 76DD5295BE5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:34:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895987AbgJVJdO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:33:14 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:58921 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895986AbgJVJdL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:33:11 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-305-8XvjHwJ8MYOWawC799xGnw-1; Thu, 22 Oct 2020 10:32:05 +0100
-X-MC-Unique: 8XvjHwJ8MYOWawC799xGnw-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Thu, 22 Oct 2020 10:32:04 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Thu, 22 Oct 2020 10:32:04 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'David Hildenbrand' <david@redhat.com>,
-        Greg KH <gregkh@linuxfoundation.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IA==
-Date:   Thu, 22 Oct 2020 09:32:04 +0000
-Message-ID: <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
-References: <20200925045146.1283714-1-hch@lst.de>
- <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
- <20201021233914.GR3576660@ZenIV.linux.org.uk>
- <20201022082654.GA1477657@kroah.com>
- <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
-In-Reply-To: <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        id S2896018AbgJVJeu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:34:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56686 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2896011AbgJVJet (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 05:34:49 -0400
+Received: from gaia (unknown [95.145.162.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1E36F223BF;
+        Thu, 22 Oct 2020 09:34:47 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 10:34:45 +0100
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Chen Jun <chenjun102@huawei.com>
+Cc:     linux-kernel@vger.kernel.org, rui.xiang@huawei.com,
+        weiyongjun1@huawei.com, guohanjun@huawei.com
+Subject: Re: [PATCH] Kconfig: Move CONFIG_DEBUG_KMEMLEAK_TEST to
+ samples/Kconfig
+Message-ID: <20201022093445.GC1229@gaia>
+References: <20201022021234.6638-1-chenjun102@huawei.com>
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022021234.6638-1-chenjun102@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogRGF2aWQgSGlsZGVuYnJhbmQNCj4gU2VudDogMjIgT2N0b2JlciAyMDIwIDEwOjI1DQou
-Li4NCj4gLi4uIGVzcGVjaWFsbHkgYmVjYXVzZSBJIHJlY2FsbCB0aGF0IGNsYW5nIGFuZCBnY2Mg
-YmVoYXZlIHNsaWdodGx5DQo+IGRpZmZlcmVudGx5Og0KPiANCj4gaHR0cHM6Ly9naXRodWIuY29t
-L2hqbC10b29scy94ODYtcHNBQkkvaXNzdWVzLzINCj4gDQo+ICJGdW5jdGlvbiBhcmdzIGFyZSBk
-aWZmZXJlbnQ6IG5hcnJvdyB0eXBlcyBhcmUgc2lnbiBvciB6ZXJvIGV4dGVuZGVkIHRvDQo+IDMy
-IGJpdHMsIGRlcGVuZGluZyBvbiB0aGVpciB0eXBlLiBjbGFuZyBkZXBlbmRzIG9uIHRoaXMgZm9y
-IGluY29taW5nDQo+IGFyZ3MsIGJ1dCBnY2MgZG9lc24ndCBtYWtlIHRoYXQgYXNzdW1wdGlvbi4g
-QnV0IGJvdGggY29tcGlsZXJzIGRvIGl0DQo+IHdoZW4gY2FsbGluZywgc28gZ2NjIGNvZGUgY2Fu
-IGNhbGwgY2xhbmcgY29kZS4NCg0KSXQgcmVhbGx5IGlzIGJlc3QgdG8gdXNlICdpbnQnIChvciBl
-dmVuICdsb25nJykgZm9yIGFsbCBudW1lcmljDQphcmd1bWVudHMgKGFuZCByZXN1bHRzKSByZWdh
-cmRsZXNzIG9mIHRoZSBkb21haW4gb2YgdGhlIHZhbHVlLg0KDQpSZWxhdGVkLCBJJ3ZlIGFsd2F5
-cyB3b3JyaWVkIGFib3V0ICdib29sJy4uLi4NCg0KPiBUaGUgdXBwZXIgMzIgYml0cyBvZiByZWdp
-c3RlcnMgYXJlIGFsd2F5cyB1bmRlZmluZWQgZ2FyYmFnZSBmb3IgdHlwZXMNCj4gc21hbGxlciB0
-aGFuIDY0IGJpdHMuIg0KDQpPbiB4ODYtNjQgdGhlIGhpZ2ggYml0cyBhcmUgemVyb2VkIGJ5IGFs
-bCAzMmJpdCBsb2Fkcy4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lk
-ZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0K
-UmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
+On Thu, Oct 22, 2020 at 02:12:34AM +0000, Chen Jun wrote:
+> From: Chen Jun <c00424029@huawei.com>
+> 
+> commit 1abbef4f51724fb11f09adf0e75275f7cb422a8a
+> ("mm,kmemleak-test.c: move kmemleak-test.c to samples dir")
+> make CONFIG_DEBUG_KMEMLEAK_TEST depend on CONFIG_SAMPLES implicitly.
+> And the dependency cannot be guaranteed by Kconfig.
+> 
+> move the definition of CONFIG_DEBUG_KMEMLEAK_TEST from lib/Kconfig.debug
+> to samples/Kconfig.
+> 
+> Signed-off-by: Chen Jun <c00424029@huawei.com>
 
+Acked-by: Catalin Marinas <catalin.marinas@arm.com>
