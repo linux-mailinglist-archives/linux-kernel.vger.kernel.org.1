@@ -2,49 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4948C29659E
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:05:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 123292965AD
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 22:08:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370612AbgJVUEp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 16:04:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56958 "EHLO mail.kernel.org"
+        id S370558AbgJVUEa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 16:04:30 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S370522AbgJVUEP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 16:04:15 -0400
-Subject: Re: [GIT PULL] PCI changes for v5.10
+        id S370530AbgJVUET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 16:04:19 -0400
+Subject: Re: [GIT PULL] VFIO updates for v5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603397055;
-        bh=frl2OYMoZ3nwHpGZk4Vq8/JvdbcJnyUeiL/E3TFNt2Y=;
+        s=default; t=1603397056;
+        bh=/usABYf/Rlci7Bx6r2eKk/L+8XV9hQo32Wmk/fov9P4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=c9/etLzNHyjEi0z7qdaXosxqCpWoF7ezJNUmdj8bv1hr9ZOKNVy/IBX7CgsZhhjrs
-         TjzG41MGlCq3J8vhdkywDfM4PfU7/FT4yXxKJ+lftZa8M0j4ZsuHpPotJUojBX+6Tq
-         SVg2H89/wCb+MOb22KBSV0l+FwKs/gDDVJygChcc=
+        b=awrBl1bc9YYC+p1cBM08vh2UqAvDssGeI+KyTGfcCWhVR3RpHk4ULe8BkYigBHkOm
+         x9LTAMC3z4U0I5e417V/5BIr/gIfbsR+DhtWXlrCPzM4/3593A8FvkpJ2fsszPWOA2
+         mDfELBJecrBCxvbtgXal7nNz45/9EUj0Dtt+5WyA=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201021212443.GA466346@bjorn-Precision-5520>
-References: <20201021212443.GA466346@bjorn-Precision-5520>
-X-PR-Tracked-List-Id: <linux-pci.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201021212443.GA466346@bjorn-Precision-5520>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.10-changes
-X-PR-Tracked-Commit-Id: 28e34e751f6c50098d9bcecb30c97634b6126730
+In-Reply-To: <20201022115157.597fa544@w520.home>
+References: <20201022115157.597fa544@w520.home>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201022115157.597fa544@w520.home>
+X-PR-Tracked-Remote: git://github.com/awilliam/linux-vfio.git tags/vfio-v5.10-rc1
+X-PR-Tracked-Commit-Id: 2e6cfd496f5b57034cf2aec738799571b5a52124
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 00937f36b09e89c74e4a059dbb8acbf4b971d5eb
-Message-Id: <160339705537.15216.3349175696210702383.pr-tracker-bot@kernel.org>
-Date:   Thu, 22 Oct 2020 20:04:15 +0000
-To:     Bjorn Helgaas <helgaas@kernel.org>
+X-PR-Merge-Commit-Id: fc996db970a33c74d3db3ee63532b15187258027
+Message-Id: <160339705673.15216.180072999117409116.pr-tracker-bot@kernel.org>
+Date:   Thu, 22 Oct 2020 20:04:16 +0000
+To:     Alex Williamson <alex.williamson@redhat.com>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+        linux-kernel@vger.kernel.org,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        Diana Craciun <diana.craciun@oss.nxp.com>,
+        Matthew Rosato <mjrosato@linux.ibm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Wed, 21 Oct 2020 16:24:43 -0500:
+The pull request you sent on Thu, 22 Oct 2020 11:51:57 -0600:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/helgaas/pci.git tags/pci-v5.10-changes
+> git://github.com/awilliam/linux-vfio.git tags/vfio-v5.10-rc1
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/00937f36b09e89c74e4a059dbb8acbf4b971d5eb
+https://git.kernel.org/torvalds/c/fc996db970a33c74d3db3ee63532b15187258027
 
 Thank you!
 
