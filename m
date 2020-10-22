@@ -2,161 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 989F52962EC
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:41:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7DDE2962F7
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:44:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901932AbgJVQlA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:41:00 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:34856 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897708AbgJVQk7 (ORCPT
+        id S2897883AbgJVQoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:44:30 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:45062 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2897838AbgJVQo3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:40:59 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kVde2-0001c1-45; Thu, 22 Oct 2020 12:40:54 -0400
-Message-ID: <62fc8d07474acaccb65a9e20a4ebc0127e417f05.camel@surriel.com>
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-From:   Rik van Riel <riel@surriel.com>
-To:     Yu Xu <xuyu@linux.alibaba.com>, Hugh Dickins <hughd@google.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Date:   Thu, 22 Oct 2020 12:40:53 -0400
-In-Reply-To: <f0b4a9de-1f2f-4147-e188-c946207fb29e@linux.alibaba.com>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
-         <f0b4a9de-1f2f-4147-e188-c946207fb29e@linux.alibaba.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-292l4+Z5viPK7NhuvnQt"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Thu, 22 Oct 2020 12:44:29 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MGcjnu029838;
+        Thu, 22 Oct 2020 16:44:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=SPrO3yw9zpLsPknkEorGhq6tnr887sHRezfoKQoW/ko=;
+ b=VfIA65xEKFglL95tIES9YoJW5ygBhit6mYdS/rQmgwgMeaC1XwLpn0FWDK48h6xY1Vv0
+ /l1yz2kKOqGwULwDhszJcrSwKOr0FlXPbGP8k47vVIXlC+eFr8eAAGkMJ5nJtz5Lpsd2
+ FpxMTeLwj1dARfi7jGPNHG41xq4fOWykV8ILCzVuF4r/W83SIEs7nbpPFsNzaooTedRv
+ oJP8Hrx2bMPIvjK+f/+amHIdEquSnhxBtxLnVK30Z09EFoHlvQXHKgT+a/0fHS4o+ZQf
+ TDxYhs+q+yyTv/GmUNufYlXN3yyC2MgodLgN49ob636gLVdEwEOSv04HDiwudoxlkE8V vg== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 349jrpy59p-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Thu, 22 Oct 2020 16:44:15 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09MGdjZY067368;
+        Thu, 22 Oct 2020 16:42:15 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by aserp3020.oracle.com with ESMTP id 348ah11kch-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Thu, 22 Oct 2020 16:42:15 +0000
+Received: from abhmp0001.oracle.com (abhmp0001.oracle.com [141.146.116.7])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09MGgDru003199;
+        Thu, 22 Oct 2020 16:42:13 GMT
+Received: from [192.168.2.112] (/50.38.35.18)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Thu, 22 Oct 2020 09:42:13 -0700
+Subject: Re: [PATCH rfc 0/2] mm: cma: make cma_release() non-blocking
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>, Zi Yan <ziy@nvidia.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        kernel-team@fb.com
+References: <20201016225254.3853109-1-guro@fb.com>
+ <3f455d27-6d99-972f-b77f-b5b473b7614d@oracle.com>
+ <20201022023352.GC300658@carbon.dhcp.thefacebook.com>
+From:   Mike Kravetz <mike.kravetz@oracle.com>
+Message-ID: <91779b4c-378d-66ee-2df0-edb270dd4d04@oracle.com>
+Date:   Thu, 22 Oct 2020 09:42:11 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+In-Reply-To: <20201022023352.GC300658@carbon.dhcp.thefacebook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220109
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9781 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 lowpriorityscore=0
+ priorityscore=1501 impostorscore=0 adultscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 mlxscore=0 spamscore=0 suspectscore=0 clxscore=1015
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010220109
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 10/21/20 7:33 PM, Roman Gushchin wrote:
+> On Wed, Oct 21, 2020 at 05:15:53PM -0700, Mike Kravetz wrote:
+>> On 10/16/20 3:52 PM, Roman Gushchin wrote:
+>>> This small patchset makes cma_release() non-blocking and simplifies
+>>> the code in hugetlbfs, where previously we had to temporarily drop
+>>> hugetlb_lock around the cma_release() call.
+>>>
+>>> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
+>>> THP under a memory pressure requires a cma_release() call. If it's
+>>> a blocking function, it complicates the already complicated code.
+>>> Because there are at least two use cases like this (hugetlbfs is
+>>> another example), I believe it's just better to make cma_release()
+>>> non-blocking.
+>>>
+>>> It also makes it more consistent with other memory releasing functions
+>>> in the kernel: most of them are non-blocking.
+>>
+>> Thanks for looking into this Roman.
+> 
+> Hi Mike,
+> 
+>>
+>> I may be missing something, but why does cma_release have to be blocking
+>> today?  Certainly, it takes the bitmap in cma_clear_bitmap and could
+>> block.  However, I do not see why cma->lock has to be a mutex.  I may be
+>> missing something, but I do not see any code protected by the mutex doing
+>> anything that could sleep?
+>>
+>> Could we simply change that mutex to a spinlock?
+> 
+> I actually have suggested it few months ago, but the idea was
+> opposed by Joonsoo: https://lkml.org/lkml/2020/4/3/12 .
+> 
+> The time of a bitmap operation is definitely not an issue in my context,
+> but I can't speak for something like an embedded/rt case.
+> 
 
---=-292l4+Z5viPK7NhuvnQt
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+I wonder if it may be time to look into replacing the cma area bitmap
+with some other data structure?  Joonsoo was concerned about the time
+required to traverse the bitmap for an 8GB area.  With new support for
+allocating 1GB hugetlb pages from cma, I can imagine someone setting
+up a cma area that is hundreds of GB if not TB in size.  It is going
+take some time to traverse a bitmap describing such a huge area.
 
-On Fri, 2020-10-23 at 00:00 +0800, Yu Xu wrote:
-> On 10/22/20 11:48 AM, Rik van Riel wrote:
-> > The allocation flags of anonymous transparent huge pages can be
-> > controlled
-> > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
-> > which can
-> > help the system from getting bogged down in the page reclaim and
-> > compaction
-> > code when many THPs are getting allocated simultaneously.
-> >=20
-> > However, the gfp_mask for shmem THP allocations were not limited by
-> > those
-> > configuration settings, and some workloads ended up with all CPUs
-> > stuck
-> > on the LRU lock in the page reclaim code, trying to allocate dozens
-> > of
-> > THPs simultaneously.
-> >=20
-> > This patch applies the same configurated limitation of THPs to
-> > shmem
-> > hugepage allocations, to prevent that from happening.
-> >=20
-> > This way a THP defrag setting of "never" or "defer+madvise" will
-> > result
-> > in quick allocation failures without direct reclaim when no 2MB
-> > free
-> > pages are available.
-> >=20
-> > Signed-off-by: Rik van Riel <riel@surriel.com>
-> > ---
-> >=20
-> > diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> > index c603237e006c..0a5b164a26d9 100644
-> > --- a/include/linux/gfp.h
-> > +++ b/include/linux/gfp.h
-> > @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
-> >   extern void pm_restrict_gfp_mask(void);
-> >   extern void pm_restore_gfp_mask(void);
-> >  =20
-> > +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct
-> > *vma);
-> > +
-> >   #ifdef CONFIG_PM_SLEEP
-> >   extern bool pm_suspended_storage(void);
-> >   #else
-> > diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> > index 9474dbc150ed..9b08ce5cc387 100644
-> > --- a/mm/huge_memory.c
-> > +++ b/mm/huge_memory.c
-> > @@ -649,7 +649,7 @@ static vm_fault_t
-> > __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-> >    *	    available
-> >    * never: never stall for any thp allocation
-> >    */
-> > -static inline gfp_t alloc_hugepage_direct_gfpmask(struct
-> > vm_area_struct *vma)
-> > +gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-> >   {
-> >   	const bool vma_madvised =3D !!(vma->vm_flags & VM_HUGEPAGE);
-> >  =20
-> > diff --git a/mm/shmem.c b/mm/shmem.c
-> > index 537c137698f8..d1290eb508e5 100644
-> > --- a/mm/shmem.c
-> > +++ b/mm/shmem.c
-> > @@ -1545,8 +1545,11 @@ static struct page
-> > *shmem_alloc_hugepage(gfp_t gfp,
-> >   		return NULL;
-> >  =20
-> >   	shmem_pseudo_vma_init(&pvma, info, hindex);
-> > -	page =3D alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY |
-> > __GFP_NOWARN,
-> > -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> > true);
-> > +	/* Limit the gfp mask according to THP configuration. */
-> > +	gfp |=3D __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
-> > +	gfp &=3D alloc_hugepage_direct_gfpmask(&pvma);
->=20
-> It is fine to reuse `alloc_hugepage_direct_gfpmask`, but
-> `pvma.vm_flags & VM_HUGEPAGE` is always false here, thus,
-> `vma_madvised` in `alloc_hugepage_direct_gfpmask` will always
-> be false.
->=20
-> That is why I chose to do the gfp_mask fixup in `shmem_getpage_gfp`,
-> using `sgp_huge` to indicate `vma_madvised`, although with some silly
-> mistakes pointed out by you, in another mail thread.
->=20
-> It will be better if vma_madvised is well handled in your solution.
-
-OK, let me send a v2 that does that!
-
-By just passing a correct gfp_mask to shmem_alloc_and_acct_page
-we can also avoid the gfp gymnastics in shmem_alloc_hugepage
-that Michal rightfully objected to.
-
---=20
-All Rights Reversed.
-
---=-292l4+Z5viPK7NhuvnQt
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+RthUACgkQznnekoTE
-3oNW0Af/ZErgA5cOrDiHMkRlcH76fPdw8whz+iN9/tqmguNEPBLntOEkULl+gH8n
-aHiI0F8OIt8oZTWoA4JowhOx1VCadr30XVaiNFym/3audu+Hsh9i8kf4FKGwxxb6
-9khP8JubPidppIIBnt8q3TQvnFH/I5J6op2W2DKTs9lNFjxHkVzMpJDVyOm7i0Iq
-b+7yWS5RtJ2pszvI7T8BDT+UkWdB8Sl6mEC11SWaSGXm6X38viZVixG23PY/ZIl6
-G9xoM2YYKcwqmb9aupwJuw2Xwei1q6aCnpTEEZ8eDdu8KLg5czCBjd9pyKZmqqSi
-gQs/ORiXvPLraSX2sZaLksh1PenTLw==
-=6hGB
------END PGP SIGNATURE-----
-
---=-292l4+Z5viPK7NhuvnQt--
-
+-- 
+Mike Kravetz
