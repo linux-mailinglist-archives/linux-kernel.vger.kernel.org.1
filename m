@@ -2,472 +2,913 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32CD22957DA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:22:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 13AAB2957D8
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:21:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507896AbgJVFV7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:21:59 -0400
-Received: from mout.gmx.net ([212.227.15.18]:44317 "EHLO mout.gmx.net"
+        id S2507886AbgJVFVc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:21:32 -0400
+Received: from mga14.intel.com ([192.55.52.115]:2444 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394874AbgJVFV6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:21:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603344074;
-        bh=OUY2ImxDM9jpJgN4xrCrjhOFB9ieGb/A1sz8OncTSBk=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=em9K3RLAM4d9JMWRQhc2+P8mS4wD/OW08ZzUI29dxsIYEvYcmqgpyPGDh46P/3ttm
-         6HeNKpSE3W9p+9CwSjHuO9T2ruR7viwXnTWmlpFyRpZJy1wQOgSZJcLl4rzC9wcOHq
-         Z2MKciGdYxCDKixQ9D8pLSozKTb3GuRhcM1awTEw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.simpson.net ([185.221.150.153]) by mail.gmx.com (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MAOJV-1kgme12MrD-00BuQJ; Thu, 22
- Oct 2020 07:21:14 +0200
-Message-ID: <1236de05e704f0a0b28dc0ad75f9ad4d81b7a057.camel@gmx.de>
-Subject: ltp or kvm triggerable lockdep alloc_pid()  deadlock gripe
-From:   Mike Galbraith <efault@gmx.de>
-To:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Date:   Thu, 22 Oct 2020 07:21:13 +0200
-In-Reply-To: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
-Content-Type: multipart/mixed; boundary="=-jR9nJwzMMaK2NlaX8V5c"
-User-Agent: Evolution 3.34.4 
-MIME-Version: 1.0
-X-Provags-ID: V03:K1:wgwfm9AmkqfHfuivU4eiHxBBqHt8DPCQMybnOOG5UEJl1yuvxyS
- q82LpYd080cvcwODJWYb61h9AZOCtltg4Rd1swNMPtn91VaPtN/xbzDuHTd2syMe9kej+O9
- apDt2v+D4CSWqlt32F7AKH1CRycoht08Cc8rAHfZD/ow635OpvwCvzhWjNEwuD5Q9B7wOeL
- h4zQsAp2nKXuB31dwqtLA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:+N5itO8kSwQ=:uhojKN9nQUGbxHOfw46vUb
- oQMDjF+JF5mSSaBRJ7qhFuD+zGjeqPvH4IEceRTc5cjZdRxEwMQ4X1wzrkYj2Rx4qFa/76scT
- 8PzaoUKu4G+tQLPqh87dg8p9du15ywm06eVvOJ8MLWspgleQO3Jz/juMtBHCd1thYD6ZugYSc
- UIESVCPwe8QjyRMsfzA6XvriAsPpF1pVtz3SwqWC9sjkIlhPJ45LMIVzcGJfwJtm6rHWxy/jU
- zsJmprm/v7waBhXvROLdj38rTPPzlAeaHduZteraWc/cR0/CIpfq2LNZlBs6L9+7SHwIrzDEF
- 3yzGtEvfG/HHLoznTO9YJwoZET244X3A/s0D5H8kCpPkjl7gpYb4cGC72V996dHRlNyLHUi/E
- CqHl0UxIVqdYtmx3ftXXaqmBDobubWWSVog/Fac9EoZkG+ZRRc3h3V/eunUAO5NlII5fcIbnW
- tlcVakCBsmrJg0XvwyBS//BRUbL7D71VoBHmpzXJ2ISnmuYhk7PCKaCTfIij7KDcK0Mb0ciQ3
- Ck9K8FPgG5T5jARKFZvl3G+BVtj08XFwyTE8WnHjnDnwgqHsQ8HIGUgqLJKSeTr3tTzHRkHb+
- UTw9SVD2u2ZGXDNSTnitOaMdrd+DLMSWmA2lL2jOhq1PGX/Dop0ROkywIyaB6y9IbPdlUGpDI
- LI/oaKWWRFzM4KlJ2cWvN7X745Dodz9tuzeUDfwbbKc9+5AMzZKOrXE8o0eCF34X9P70Dn37A
- RGD3a2PgajQTaIHD4vf1osCX2g3cC9FNyg/7Al7P0h7AlpZIUK1QlCI9gpqM3NK8O3WnvpPfd
- PbZMCyU+kBCVw5h4v1z++9gGXI7UT9tu5WAa963mmghA+q17DKY7h4hisfBL2p0beuS+vvRV8
- eV4BmnfgubKZVCwKVkAQ==
+        id S2444362AbgJVFVb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 01:21:31 -0400
+IronPort-SDR: dYzLAc2PWau4DoWN3ihYYFJGh3uHl+sue7vxeGQw+i0dlXyOE816eD8tOPKjf4M0w/EzHyNfyc
+ 34vTKQI71MBw==
+X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="166693815"
+X-IronPort-AV: E=Sophos;i="5.77,403,1596524400"; 
+   d="scan'208";a="166693815"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 21 Oct 2020 22:21:30 -0700
+IronPort-SDR: mtv561QQmLZIbHgVMzlosDF18h65DZYUgKxmSjJIw7hsxXyzXYnwakoU6/NBr7RLCHma7tLk/X
+ vC+STh1rgHbQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,403,1596524400"; 
+   d="scan'208";a="523007593"
+Received: from shbuild999.sh.intel.com ([10.239.147.98])
+  by fmsmga006.fm.intel.com with ESMTP; 21 Oct 2020 22:21:25 -0700
+From:   Feng Tang <feng.tang@intel.com>
+To:     Borislav Petkov <bp@alien8.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>,
+        "H . Peter Anvin" <hpa@zytor.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-kernel@vger.kernel.org
+Cc:     nivedita@alum.mit.edu, thomas.lendacky@amd.com,
+        yazen.ghannam@amd.com, wei.huang2@amd.com,
+        Feng Tang <feng.tang@intel.com>
+Subject: [RFC PATCH v3] tools/x86: add kcpuid tool to show raw CPU features
+Date:   Thu, 22 Oct 2020 13:21:23 +0800
+Message-Id: <1603344083-100742-1-git-send-email-feng.tang@intel.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+End users frequently want to know what features their processor
+supports, independent of what the kernel supports.
 
---=-jR9nJwzMMaK2NlaX8V5c
-Content-Type: text/plain; charset="ISO-8859-15"
-Content-Transfer-Encoding: quoted-printable
+/proc/cpuinfo is great. It is omnipresent and since it is provided by
+the kernel it is always as up to date as the kernel. But, it could be
+ambiguous about processor features which can be disabled by the kernel
+at boot-time or compile-time.
 
-Greetings,
+There are some user space tools showing more raw features, but they are
+not bound with kernel, and go with distros. Many end users are still
+using old distros with new kernels (upgraded by themselves), and may
+not upgrade the distros only to get a newer tool.
 
-The gripe below is repeatable in two ways here, boot with nomodeset so
-nouveau doesn't steal the lockdep show when I then fire up one of my
-(oink) full distro VM's, or from an ltp directory ./runltp -f cpuset
-with the attached subset of controllers file placed in ./runtest dir.
+So here arise the need for a new tool, which
+  * Shows raw cpu features got from running cpuid
+  * Be easier to obtain updates for compared to existing userspace
+    tooling (perhaps distributed like perf)
+  * Inherits "modern" kernel development process, in contrast to some
+    of the existing userspace cpuid tools which are still being developed
+    without git and distributed in tarballs from non-https sites.
+  * Can produce output consistent with /proc/cpuinfo to make comparison
+    easier.
 
-Method2 may lead to a real deal deadlock, I've got a crashdump of one,
-stack traces of uninterruptible sleepers attached.
+This RFC is an early prototype, and would get community's opinion on
+whether it's the right thing to do, and what functions it should also
+support.
 
-[  154.927302] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-[  154.927303] WARNING: possible circular locking dependency detected
-[  154.927304] 5.9.1-rt18-rt #5 Tainted: G S          E
-[  154.927305] ------------------------------------------------------
-[  154.927306] cpuset_inherit_/4992 is trying to acquire lock:
-[  154.927307] ffff9d334c5e64d8 (&s->seqcount){+.+.}-{0:0}, at: __slab_all=
-oc.isra.87+0xad/0xc0
-[  154.927317]
-               but task is already holding lock:
-[  154.927317] ffffffffac4052d0 (pidmap_lock){+.+.}-{2:2}, at: alloc_pid+0=
-x1fb/0x510
-[  154.927324]
-               which lock already depends on the new lock.
+It contains one .c core file and one text file which shows the bits
+definition of all CPUID output data, while in v1, a specific data
+structure is defined for each eax/ebx/ecx/edx output of each leaf
+and subleaf, which is less expandable [1].
 
-[  154.927324]
-               the existing dependency chain (in reverse order) is:
-[  154.927325]
-               -> #1 (pidmap_lock){+.+.}-{2:2}:
-[  154.927328]        lock_acquire+0x92/0x410
-[  154.927331]        rt_spin_lock+0x2b/0xc0
-[  154.927335]        free_pid+0x27/0xc0
-[  154.927338]        release_task+0x34a/0x640
-[  154.927340]        do_exit+0x6e9/0xcf0
-[  154.927342]        kthread+0x11c/0x190
-[  154.927344]        ret_from_fork+0x1f/0x30
-[  154.927347]
-               -> #0 (&s->seqcount){+.+.}-{0:0}:
-[  154.927350]        validate_chain+0x981/0x1250
-[  154.927352]        __lock_acquire+0x86f/0xbd0
-[  154.927354]        lock_acquire+0x92/0x410
-[  154.927356]        ___slab_alloc+0x71b/0x820
-[  154.927358]        __slab_alloc.isra.87+0xad/0xc0
-[  154.927359]        kmem_cache_alloc+0x700/0x8c0
-[  154.927361]        radix_tree_node_alloc.constprop.22+0xa2/0xf0
-[  154.927365]        idr_get_free+0x207/0x2b0
-[  154.927367]        idr_alloc_u32+0x54/0xa0
-[  154.927369]        idr_alloc_cyclic+0x4f/0xa0
-[  154.927370]        alloc_pid+0x22b/0x510
-[  154.927372]        copy_process+0xeb5/0x1de0
-[  154.927375]        _do_fork+0x52/0x750
-[  154.927377]        __do_sys_clone+0x64/0x70
-[  154.927379]        do_syscall_64+0x33/0x40
-[  154.927382]        entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  154.927384]
-               other info that might help us debug this:
+This is based on the prototype code from Borislav Petkov [2].
 
-[  154.927384]  Possible unsafe locking scenario:
+The supported options are:
 
-[  154.927385]        CPU0                    CPU1
-[  154.927386]        ----                    ----
-[  154.927386]   lock(pidmap_lock);
-[  154.927388]                                lock(&s->seqcount);
-[  154.927389]                                lock(pidmap_lock);
-[  154.927391]   lock(&s->seqcount);
-[  154.927392]
-                *** DEADLOCK ***
+  Usage: kcpuid [-abdfhr] [-l leaf] [-s subleaf]
+	-a|--all             Show info of all CPUID leafs and subleafs(default on)
+	-b|--bitflags        Show boolean flags only
+	-d|--detail          Show details of the flag/fields
+	-f|--flags           Show boolean flags only
+	-h|--help            Show usage info
+	-l|--leaf=index      Specify the leaf you want to check
+	-r|--raw             Show raw cpuid data
+	-s|--subleaf=sub     Specify the subleaf you want to check
 
-[  154.927393] 4 locks held by cpuset_inherit_/4992:
-[  154.927394]  #0: ffff9d33decea5b0 ((lock).lock){+.+.}-{2:2}, at: __radi=
-x_tree_preload+0x52/0x3b0
-[  154.927399]  #1: ffffffffac598fa0 (rcu_read_lock){....}-{1:2}, at: rt_s=
-pin_lock+0x5/0xc0
-[  154.927405]  #2: ffffffffac4052d0 (pidmap_lock){+.+.}-{2:2}, at: alloc_=
-pid+0x1fb/0x510
-[  154.927409]  #3: ffffffffac598fa0 (rcu_read_lock){....}-{1:2}, at: rt_s=
-pin_lock+0x5/0xc0
-[  154.927414]
-               stack backtrace:
-[  154.927416] CPU: 3 PID: 4992 Comm: cpuset_inherit_ Kdump: loaded Tainte=
-d: G S          E     5.9.1-rt18-rt #5
-[  154.927418] Hardware name: MEDION MS-7848/MS-7848, BIOS M7848W08.20C 09=
-/23/2013
-[  154.927419] Call Trace:
-[  154.927422]  dump_stack+0x77/0x9b
-[  154.927425]  check_noncircular+0x148/0x160
-[  154.927432]  ? validate_chain+0x981/0x1250
-[  154.927435]  validate_chain+0x981/0x1250
-[  154.927441]  __lock_acquire+0x86f/0xbd0
-[  154.927446]  lock_acquire+0x92/0x410
-[  154.927449]  ? __slab_alloc.isra.87+0xad/0xc0
-[  154.927452]  ? kmem_cache_alloc+0x648/0x8c0
-[  154.927453]  ? lock_acquire+0x92/0x410
-[  154.927458]  ___slab_alloc+0x71b/0x820
-[  154.927460]  ? __slab_alloc.isra.87+0xad/0xc0
-[  154.927463]  ? radix_tree_node_alloc.constprop.22+0xa2/0xf0
-[  154.927468]  ? __slab_alloc.isra.87+0x83/0xc0
-[  154.927472]  ? radix_tree_node_alloc.constprop.22+0xa2/0xf0
-[  154.927474]  ? __slab_alloc.isra.87+0xad/0xc0
-[  154.927476]  __slab_alloc.isra.87+0xad/0xc0
-[  154.927480]  ? radix_tree_node_alloc.constprop.22+0xa2/0xf0
-[  154.927482]  kmem_cache_alloc+0x700/0x8c0
-[  154.927487]  radix_tree_node_alloc.constprop.22+0xa2/0xf0
-[  154.927491]  idr_get_free+0x207/0x2b0
-[  154.927495]  idr_alloc_u32+0x54/0xa0
-[  154.927500]  idr_alloc_cyclic+0x4f/0xa0
-[  154.927503]  alloc_pid+0x22b/0x510
-[  154.927506]  ? copy_thread+0x88/0x200
-[  154.927512]  copy_process+0xeb5/0x1de0
-[  154.927520]  _do_fork+0x52/0x750
-[  154.927523]  ? lock_acquire+0x92/0x410
-[  154.927525]  ? __might_fault+0x3e/0x90
-[  154.927530]  ? find_held_lock+0x2d/0x90
-[  154.927535]  __do_sys_clone+0x64/0x70
-[  154.927541]  do_syscall_64+0x33/0x40
-[  154.927544]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[  154.927546] RIP: 0033:0x7f0b357356e3
-[  154.927548] Code: db 45 85 ed 0f 85 ad 01 00 00 64 4c 8b 04 25 10 00 00=
- 00 31 d2 4d 8d 90 d0 02 00 00 31 f6 bf 11 00 20 01 b8 38 00 00 00 0f 05 <=
-48> 3d 00 f0 ff ff 0f 87 f1 00 00 00 85 c0 41 89 c4 0f 85 fe 00 00
-[  154.927550] RSP: 002b:00007ffdfd6d15f0 EFLAGS: 00000246 ORIG_RAX: 00000=
-00000000038
-[  154.927552] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f0b35=
-7356e3
-[  154.927554] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000001=
-200011
-[  154.927555] RBP: 00007ffdfd6d1620 R08: 00007f0b36052b80 R09: 0000000000=
-000072
-[  154.927556] R10: 00007f0b36052e50 R11: 0000000000000246 R12: 0000000000=
-000000
-[  154.927557] R13: 0000000000000000 R14: 0000000000000000 R15: 00005614ef=
-57ecf0
+Current RFC version only shows limited number of cpu features, and will
+be completed
 
---=-jR9nJwzMMaK2NlaX8V5c
-Content-Disposition: attachment; filename="cpuset"
-Content-Type: text/plain; name="cpuset"; charset="ISO-8859-15"
-Content-Transfer-Encoding: base64
+output of the tool (output cut version)
+---------------------------------------
 
-I0RFU0NSSVBUSU9OOlJlc291cmNlIE1hbmFnZW1lbnQgdGVzdGluZwoKY3B1c2V0X2Jhc2Vfb3Bz
-CWNwdXNldF9iYXNlX29wc190ZXN0c2V0LnNoCmNwdXNldF9pbmhlcml0CWNwdXNldF9pbmhlcml0
-X3Rlc3RzZXQuc2gKY3B1c2V0X2V4Y2x1c2l2ZQljcHVzZXRfZXhjbHVzaXZlX3Rlc3Quc2gKY3B1
-c2V0X2hpZXJhcmNoeQljcHVzZXRfaGllcmFyY2h5X3Rlc3Quc2gKY3B1c2V0X3N5c2NhbGwJY3B1
-c2V0X3N5c2NhbGxfdGVzdHNldC5zaApjcHVzZXRfc2NoZWRfZG9tYWlucwljcHVzZXRfc2NoZWRf
-ZG9tYWluc190ZXN0LnNoCmNwdXNldF9sb2FkX2JhbGFuY2UJY3B1c2V0X2xvYWRfYmFsYW5jZV90
-ZXN0LnNoCmNwdXNldF9ob3RwbHVnCWNwdXNldF9ob3RwbHVnX3Rlc3Quc2gKY3B1c2V0X21lbW9y
-eQljcHVzZXRfbWVtb3J5X3Rlc3RzZXQuc2gKY3B1c2V0X21lbW9yeV9wcmVzc3VyZQljcHVzZXRf
-bWVtb3J5X3ByZXNzdXJlX3Rlc3RzZXQuc2gKY3B1c2V0X21lbW9yeV9zcHJlYWQJY3B1c2V0X21l
-bW9yeV9zcHJlYWRfdGVzdHNldC5zaAoKY3B1c2V0X3JlZ3Jlc3Npb25fdGVzdCBjcHVzZXRfcmVn
-cmVzc2lvbl90ZXN0LnNoCgo=
+    #kcpuid -r
 
+    Basic Leafs :
+    ================
+    0x00000000: EAX=0x0000000d, EBX=0x756e6547, ECX=0x6c65746e, EDX=0x49656e69
+    0x00000001: EAX=0x000206d7, EBX=0x0d200800, ECX=0x1fbee3ff, EDX=0xbfebfbff
+    0x00000002: EAX=0x76035a01, EBX=0x00f0b2ff, ECX=0x00000000, EDX=0x00ca0000
+    0x00000004: subleafs:
+      0: EAX=0x3c004121, EBX=0x01c0003f, ECX=0x0000003f, EDX=0x00000000
+      1: EAX=0x3c004122, EBX=0x01c0003f, ECX=0x0000003f, EDX=0x00000000
+      2: EAX=0x3c004143, EBX=0x01c0003f, ECX=0x000001ff, EDX=0x00000000
+      3: EAX=0x3c07c163, EBX=0x04c0003f, ECX=0x00003fff, EDX=0x00000006
+    ...
 
---=-jR9nJwzMMaK2NlaX8V5c
-Content-Disposition: attachment; filename="deadlock-log"
-Content-Type: text/plain; name="deadlock-log"; charset="ISO-8859-15"
-Content-Transfer-Encoding: base64
+    Extended Leafs :
+    ================
+    0x80000000: EAX=0x80000008, EBX=0x00000000, ECX=0x00000000, EDX=0x00000000
+    0x80000001: EAX=0x00000000, EBX=0x00000000, ECX=0x00000001, EDX=0x2c100800
 
-ICAgICAgMSAgICAgIDAgICAyICBmZmZmYTA5Yzg3ZmQwMDAwICBVTiAgIDAuMSAgMjIxMDMyICAg
-OTM2OCAgc3lzdGVtZAogICAgNjI3ICAgICAgMSAgIDAgIGZmZmZhMDlmNzMzYzAwMDAgIFVOICAg
-MC4wICAgNjgzOTIgICA3MDA0ICBzeXN0ZW1kLXVkZXZkCiAgIDMzMjIgICAzMjQ3ICAgNyAgZmZm
-ZmEwOWY1MTIwNTFjMCAgVU4gICAwLjAgIDE2NzYyNCAgIDI3MzIgIGdwZy1hZ2VudAogICAzODQx
-ICAgMzQ2OCAgIDIgIGZmZmZhMDlmMzIyNTAwMDAgIFVOICAgMC4xICAgMTk5MTIgICA5ODI4ICBi
-YXNoCiAgIDQyMDkgICAzNDY4ICAgMiAgZmZmZmEwOWRkMDcwZDFjMCAgVU4gICAwLjEgICAxOTkx
-MiAgIDk3OTYgIGJhc2gKICAgNDg0NSAgIDMzMzUgICAzICBmZmZmYTA5ZjJmZmUxYjQwICBVTiAg
-IDAuMSAgMjY4MTcyICAyNDg4MCAgZmlsZS5zbwogICA0ODQ2ICAgMzMzNSAgIDUgIGZmZmZhMDlm
-MmQ0MTgwMDAgIFVOICAgMC4xICAyNjgxNzIgIDI0ODgwICBmaWxlLnNvCiAgIDU2NTcgICAgICAx
-ICAgMyAgZmZmZmEwOWYyMjJlMzY4MCAgVU4gICAxLjUgMjg4NDYwNCAyNjAyNDggIFRocmVhZCAo
-cG9vbGVkKQogICA2NzE2ICAgNTc5NyAgIDMgIGZmZmZhMDlmMzBkYTFiNDAgIFVOICAgMC4wICAg
-MTQxMjggICA0MTY4ICBjcHVzZXRfaG90cGx1Z18KICAgNjc0MyAgICAgIDEgICAzICBmZmZmYTA5
-ZjU0MTUxYjQwICBVTiAgIDAuMSAgNTc0ODY0ICAxODUzMiAgcG9vbC0vdXNyL2xpYi94CiAgIDY3
-NDQgICAgICAxICAgNCAgZmZmZmEwOWYzNTdmOWI0MCAgVU4gICAwLjAgIDQ4OTUxNiAgIDYwOTYg
-IHBvb2wtL3Vzci9saWIveApQSUQ6IDEgICAgICBUQVNLOiBmZmZmYTA5Yzg3ZmQwMDAwICBDUFU6
-IDIgICBDT01NQU5EOiAic3lzdGVtZCIKICMwIFtmZmZmYmZiYjAwMDMzYzUwXSBfX3NjaGVkdWxl
-KzgzNyBhdCBmZmZmZmZmZmE1OWIxNWY1CiAjMSBbZmZmZmJmYmIwMDAzM2NkOF0gc2NoZWR1bGUr
-ODYgYXQgZmZmZmZmZmZhNTliMWQ5NgogIzIgW2ZmZmZiZmJiMDAwMzNjZThdIF9fcnRfbXV0ZXhf
-c2xvd2xvY2srNTYgYXQgZmZmZmZmZmZhNTliMzg2OAogIzMgW2ZmZmZiZmJiMDAwMzNkMzBdIHJ0
-X211dGV4X3Nsb3dsb2NrX2xvY2tlZCsyMDcgYXQgZmZmZmZmZmZhNTliM2FiZgogIzQgW2ZmZmZi
-ZmJiMDAwMzNkODhdIHJ0X211dGV4X3Nsb3dsb2NrLmNvbnN0cHJvcC4zMCs5MCBhdCBmZmZmZmZm
-ZmE1OWIzZDNhCiAjNSBbZmZmZmJmYmIwMDAzM2UwMF0gcHJvY19jZ3JvdXBfc2hvdys3NCBhdCBm
-ZmZmZmZmZmE1MTg0YTdhCiAjNiBbZmZmZmJmYmIwMDAzM2U0OF0gcHJvY19zaW5nbGVfc2hvdys4
-NCBhdCBmZmZmZmZmZmE1M2NkNTI0CiAjNyBbZmZmZmJmYmIwMDAzM2U4MF0gc2VxX3JlYWQrMjA2
-IGF0IGZmZmZmZmZmYTUzNGMzMGUKICM4IFtmZmZmYmZiYjAwMDMzZWQ4XSB2ZnNfcmVhZCsyMDkg
-YXQgZmZmZmZmZmZhNTMxZDI4MQogIzkgW2ZmZmZiZmJiMDAwMzNmMDhdIGtzeXNfcmVhZCsxMzUg
-YXQgZmZmZmZmZmZhNTMxZDYzNwojMTAgW2ZmZmZiZmJiMDAwMzNmNDBdIGRvX3N5c2NhbGxfNjQr
-NTEgYXQgZmZmZmZmZmZhNTlhMzVjMwojMTEgW2ZmZmZiZmJiMDAwMzNmNTBdIGVudHJ5X1NZU0NB
-TExfNjRfYWZ0ZXJfaHdmcmFtZSs2OCBhdCBmZmZmZmZmZmE1YTAwMDhjCiAgICBSSVA6IDAwMDA3
-ZjFiYjk3ZGQxZDggIFJTUDogMDAwMDdmZmQ1ZjQyNGFjMCAgUkZMQUdTOiAwMDAwMDI0NgogICAg
-UkFYOiBmZmZmZmZmZmZmZmZmZmRhICBSQlg6IDAwMDA1NWUzYjEyMjRjYzAgIFJDWDogMDAwMDdm
-MWJiOTdkZDFkOAogICAgUkRYOiAwMDAwMDAwMDAwMDAwNDAwICBSU0k6IDAwMDA1NWUzYjEyMjRj
-YzAgIFJESTogMDAwMDAwMDAwMDAwMDA1NQogICAgUkJQOiAwMDAwMDAwMDAwMDAwNDAwICAgUjg6
-IDAwMDAwMDAwMDAwMDAwMDAgICBSOTogMDAwMDAwMDAwMDAwMDAwMAogICAgUjEwOiAwMDAwN2Yx
-YmJiMWY5OTQwICBSMTE6IDAwMDAwMDAwMDAwMDAyNDYgIFIxMjogMDAwMDdmMWJiOWFhNTdhMAog
-ICAgUjEzOiAwMDAwN2YxYmI5YWE2MmUwICBSMTQ6IDAwMDAwMDAwMDAwMDAwMDAgIFIxNTogMDAw
-MDU1ZTNiMTM3N2YyMAogICAgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAwMDAgIENTOiAwMDMzICBT
-UzogMDAyYgpQSUQ6IDYyNyAgICBUQVNLOiBmZmZmYTA5ZjczM2MwMDAwICBDUFU6IDAgICBDT01N
-QU5EOiAic3lzdGVtZC11ZGV2ZCIKICMwIFtmZmZmYmZiYjAwYjZmYzM4XSBfX3NjaGVkdWxlKzgz
-NyBhdCBmZmZmZmZmZmE1OWIxNWY1CiAjMSBbZmZmZmJmYmIwMGI2ZmNjMF0gc2NoZWR1bGUrODYg
-YXQgZmZmZmZmZmZhNTliMWQ5NgogIzIgW2ZmZmZiZmJiMDBiNmZjYzhdIHBlcmNwdV9yd3NlbV93
-YWl0KzE4MSBhdCBmZmZmZmZmZmE1MTAxYjc1CiAjMyBbZmZmZmJmYmIwMGI2ZmQyOF0gX19wZXJj
-cHVfZG93bl9yZWFkKzExNCBhdCBmZmZmZmZmZmE1MTAxZWMyCiAjNCBbZmZmZmJmYmIwMGI2ZmQ0
-MF0gY2dyb3VwX2Nhbl9mb3JrKzEzMjEgYXQgZmZmZmZmZmZhNTE4NWU2OQogIzUgW2ZmZmZiZmJi
-MDBiNmZkODhdIGNvcHlfcHJvY2Vzcys0NDU3IGF0IGZmZmZmZmZmYTUwOGFhYjkKICM2IFtmZmZm
-YmZiYjAwYjZmZTMwXSBfZG9fZm9yays4MiBhdCBmZmZmZmZmZmE1MDhiODgyCiAjNyBbZmZmZmJm
-YmIwMGI2ZmVkMF0gX19kb19zeXNfY2xvbmUrMTAwIGF0IGZmZmZmZmZmYTUwOGMwNTQKICM4IFtm
-ZmZmYmZiYjAwYjZmZjQwXSBkb19zeXNjYWxsXzY0KzUxIGF0IGZmZmZmZmZmYTU5YTM1YzMKICM5
-IFtmZmZmYmZiYjAwYjZmZjUwXSBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrNjggYXQg
-ZmZmZmZmZmZhNWEwMDA4YwogICAgUklQOiAwMDAwN2ZhNjI2MTI4NmUzICBSU1A6IDAwMDA3ZmZj
-MGExNmRhZjAgIFJGTEFHUzogMDAwMDAyNDYKICAgIFJBWDogZmZmZmZmZmZmZmZmZmZkYSAgUkJY
-OiAwMDAwN2ZmYzBhMTZkYWYwICBSQ1g6IDAwMDA3ZmE2MjYxMjg2ZTMKICAgIFJEWDogMDAwMDAw
-MDAwMDAwMDAwMCAgUlNJOiAwMDAwMDAwMDAwMDAwMDAwICBSREk6IDAwMDAwMDAwMDEyMDAwMTEK
-ICAgIFJCUDogMDAwMDdmZmMwYTE2ZGI0MCAgIFI4OiAwMDAwN2ZhNjI3MmNmZDQwICAgUjk6IDAw
-MDAwMDAwMDAwMDAwMDEKICAgIFIxMDogMDAwMDdmYTYyNzJkMDAxMCAgUjExOiAwMDAwMDAwMDAw
-MDAwMjQ2ICBSMTI6IDAwMDAwMDAwMDAwMDAwMDAKICAgIFIxMzogMDAwMDAwMDAwMDAwMDAwMCAg
-UjE0OiAwMDAwMDAwMDAwMDAwMDAwICBSMTU6IDAwMDA1NTdhM2Q0YTlhMTAKICAgIE9SSUdfUkFY
-OiAwMDAwMDAwMDAwMDAwMDM4ICBDUzogMDAzMyAgU1M6IDAwMmIKUElEOiAzMzIyICAgVEFTSzog
-ZmZmZmEwOWY1MTIwNTFjMCAgQ1BVOiA3ICAgQ09NTUFORDogImdwZy1hZ2VudCIKICMwIFtmZmZm
-YmZiYjAwZWY3YzM4XSBfX3NjaGVkdWxlKzgzNyBhdCBmZmZmZmZmZmE1OWIxNWY1CiAjMSBbZmZm
-ZmJmYmIwMGVmN2NjMF0gc2NoZWR1bGUrODYgYXQgZmZmZmZmZmZhNTliMWQ5NgogIzIgW2ZmZmZi
-ZmJiMDBlZjdjYzhdIHBlcmNwdV9yd3NlbV93YWl0KzE4MSBhdCBmZmZmZmZmZmE1MTAxYjc1CiAj
-MyBbZmZmZmJmYmIwMGVmN2QyOF0gX19wZXJjcHVfZG93bl9yZWFkKzExNCBhdCBmZmZmZmZmZmE1
-MTAxZWMyCiAjNCBbZmZmZmJmYmIwMGVmN2Q0MF0gY2dyb3VwX2Nhbl9mb3JrKzEzMjEgYXQgZmZm
-ZmZmZmZhNTE4NWU2OQogIzUgW2ZmZmZiZmJiMDBlZjdkODhdIGNvcHlfcHJvY2Vzcys0NDU3IGF0
-IGZmZmZmZmZmYTUwOGFhYjkKICM2IFtmZmZmYmZiYjAwZWY3ZTMwXSBfZG9fZm9yays4MiBhdCBm
-ZmZmZmZmZmE1MDhiODgyCiAjNyBbZmZmZmJmYmIwMGVmN2VkMF0gX19kb19zeXNfY2xvbmUrMTAw
-IGF0IGZmZmZmZmZmYTUwOGMwNTQKICM4IFtmZmZmYmZiYjAwZWY3ZjQwXSBkb19zeXNjYWxsXzY0
-KzUxIGF0IGZmZmZmZmZmYTU5YTM1YzMKICM5IFtmZmZmYmZiYjAwZWY3ZjUwXSBlbnRyeV9TWVND
-QUxMXzY0X2FmdGVyX2h3ZnJhbWUrNjggYXQgZmZmZmZmZmZhNWEwMDA4YwogICAgUklQOiAwMDAw
-N2Y0MzU1ZWU3ZmIxICBSU1A6IDAwMDA3ZmZkZjMxMzAzNTggIFJGTEFHUzogMDAwMDAyMDIKICAg
-IFJBWDogZmZmZmZmZmZmZmZmZmZkYSAgUkJYOiAwMDAwN2Y0MzU1YmU3NzAwICBSQ1g6IDAwMDA3
-ZjQzNTVlZTdmYjEKICAgIFJEWDogMDAwMDdmNDM1NWJlNzlkMCAgUlNJOiAwMDAwN2Y0MzU1YmU2
-ZmIwICBSREk6IDAwMDAwMDAwMDAzZDBmMDAKICAgIFJCUDogMDAwMDdmZmRmMzEzMDc2MCAgIFI4
-OiAwMDAwN2Y0MzU1YmU3NzAwICAgUjk6IDAwMDA3ZjQzNTViZTc3MDAKICAgIFIxMDogMDAwMDdm
-NDM1NWJlNzlkMCAgUjExOiAwMDAwMDAwMDAwMDAwMjAyICBSMTI6IDAwMDA3ZmZkZjMxMzAzZmUK
-ICAgIFIxMzogMDAwMDdmZmRmMzEzMDNmZiAgUjE0OiAwMDAwNTU2NjdkYTBmOWUwICBSMTU6IDAw
-MDA3ZmZkZjMxMzA3NjAKICAgIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDM4ICBDUzogMDAzMyAg
-U1M6IDAwMmIKUElEOiAzODQxICAgVEFTSzogZmZmZmEwOWYzMjI1MDAwMCAgQ1BVOiAyICAgQ09N
-TUFORDogImJhc2giCiAjMCBbZmZmZmJmYmIwMmQwZmMzOF0gX19zY2hlZHVsZSs4MzcgYXQgZmZm
-ZmZmZmZhNTliMTVmNQogIzEgW2ZmZmZiZmJiMDJkMGZjYzBdIHNjaGVkdWxlKzg2IGF0IGZmZmZm
-ZmZmYTU5YjFkOTYKICMyIFtmZmZmYmZiYjAyZDBmY2M4XSBwZXJjcHVfcndzZW1fd2FpdCsxODEg
-YXQgZmZmZmZmZmZhNTEwMWI3NQogIzMgW2ZmZmZiZmJiMDJkMGZkMjhdIF9fcGVyY3B1X2Rvd25f
-cmVhZCsxMTQgYXQgZmZmZmZmZmZhNTEwMWVjMgogIzQgW2ZmZmZiZmJiMDJkMGZkNDBdIGNncm91
-cF9jYW5fZm9yaysxMzIxIGF0IGZmZmZmZmZmYTUxODVlNjkKICM1IFtmZmZmYmZiYjAyZDBmZDg4
-XSBjb3B5X3Byb2Nlc3MrNDQ1NyBhdCBmZmZmZmZmZmE1MDhhYWI5CiAjNiBbZmZmZmJmYmIwMmQw
-ZmUzMF0gX2RvX2ZvcmsrODIgYXQgZmZmZmZmZmZhNTA4Yjg4MgogIzcgW2ZmZmZiZmJiMDJkMGZl
-ZDBdIF9fZG9fc3lzX2Nsb25lKzEwMCBhdCBmZmZmZmZmZmE1MDhjMDU0CiAjOCBbZmZmZmJmYmIw
-MmQwZmY0MF0gZG9fc3lzY2FsbF82NCs1MSBhdCBmZmZmZmZmZmE1OWEzNWMzCiAjOSBbZmZmZmJm
-YmIwMmQwZmY1MF0gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzY4IGF0IGZmZmZmZmZm
-YTVhMDAwOGMKICAgIFJJUDogMDAwMDdmMDIzZWFmMzZlMyAgUlNQOiAwMDAwN2ZmZTgwNjk4YTMw
-ICBSRkxBR1M6IDAwMDAwMjQ2CiAgICBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgIFJCWDogMDAwMDAw
-MDAwMDAwMDAwMCAgUkNYOiAwMDAwN2YwMjNlYWYzNmUzCiAgICBSRFg6IDAwMDAwMDAwMDAwMDAw
-MDAgIFJTSTogMDAwMDAwMDAwMDAwMDAwMCAgUkRJOiAwMDAwMDAwMDAxMjAwMDExCiAgICBSQlA6
-IDAwMDA3ZmZlODA2OThhNjAgICBSODogMDAwMDdmMDIzZjQxMGI4MCAgIFI5OiAwMDAwMDAwMDAw
-MDAwMDAwCiAgICBSMTA6IDAwMDA3ZjAyM2Y0MTBlNTAgIFIxMTogMDAwMDAwMDAwMDAwMDI0NiAg
-UjEyOiAwMDAwMDAwMDAwMDAwMDAwCiAgICBSMTM6IDAwMDAwMDAwMDAwMDAwMDAgIFIxNDogMDAw
-MDU2MmNkNGVlNmM5MCAgUjE1OiAwMDAwNTYyY2Q0ZWU2YzkwCiAgICBPUklHX1JBWDogMDAwMDAw
-MDAwMDAwMDAzOCAgQ1M6IDAwMzMgIFNTOiAwMDJiClBJRDogNDIwOSAgIFRBU0s6IGZmZmZhMDlk
-ZDA3MGQxYzAgIENQVTogMiAgIENPTU1BTkQ6ICJiYXNoIgogIzAgW2ZmZmZiZmJiMDM3NmZjMzhd
-IF9fc2NoZWR1bGUrODM3IGF0IGZmZmZmZmZmYTU5YjE1ZjUKICMxIFtmZmZmYmZiYjAzNzZmY2Mw
-XSBzY2hlZHVsZSs4NiBhdCBmZmZmZmZmZmE1OWIxZDk2CiAjMiBbZmZmZmJmYmIwMzc2ZmNjOF0g
-cGVyY3B1X3J3c2VtX3dhaXQrMTgxIGF0IGZmZmZmZmZmYTUxMDFiNzUKICMzIFtmZmZmYmZiYjAz
-NzZmZDI4XSBfX3BlcmNwdV9kb3duX3JlYWQrMTE0IGF0IGZmZmZmZmZmYTUxMDFlYzIKICM0IFtm
-ZmZmYmZiYjAzNzZmZDQwXSBjZ3JvdXBfY2FuX2ZvcmsrMTMyMSBhdCBmZmZmZmZmZmE1MTg1ZTY5
-CiAjNSBbZmZmZmJmYmIwMzc2ZmQ4OF0gY29weV9wcm9jZXNzKzQ0NTcgYXQgZmZmZmZmZmZhNTA4
-YWFiOQogIzYgW2ZmZmZiZmJiMDM3NmZlMzBdIF9kb19mb3JrKzgyIGF0IGZmZmZmZmZmYTUwOGI4
-ODIKICM3IFtmZmZmYmZiYjAzNzZmZWQwXSBfX2RvX3N5c19jbG9uZSsxMDAgYXQgZmZmZmZmZmZh
-NTA4YzA1NAogIzggW2ZmZmZiZmJiMDM3NmZmNDBdIGRvX3N5c2NhbGxfNjQrNTEgYXQgZmZmZmZm
-ZmZhNTlhMzVjMwogIzkgW2ZmZmZiZmJiMDM3NmZmNTBdIGVudHJ5X1NZU0NBTExfNjRfYWZ0ZXJf
-aHdmcmFtZSs2OCBhdCBmZmZmZmZmZmE1YTAwMDhjCiAgICBSSVA6IDAwMDA3ZjgxYTk2NDI2ZTMg
-IFJTUDogMDAwMDdmZmQ5N2U1ZWJjMCAgUkZMQUdTOiAwMDAwMDI0NgogICAgUkFYOiBmZmZmZmZm
-ZmZmZmZmZmRhICBSQlg6IDAwMDAwMDAwMDAwMDAwMDAgIFJDWDogMDAwMDdmODFhOTY0MjZlMwog
-ICAgUkRYOiAwMDAwMDAwMDAwMDAwMDAwICBSU0k6IDAwMDAwMDAwMDAwMDAwMDAgIFJESTogMDAw
-MDAwMDAwMTIwMDAxMQogICAgUkJQOiAwMDAwN2ZmZDk3ZTVlYmYwICAgUjg6IDAwMDA3ZjgxYTlm
-NWZiODAgICBSOTogMDAwMDAwMDAwMDAwMDAwMAogICAgUjEwOiAwMDAwN2Y4MWE5ZjVmZTUwICBS
-MTE6IDAwMDAwMDAwMDAwMDAyNDYgIFIxMjogMDAwMDAwMDAwMDAwMDAwMAogICAgUjEzOiAwMDAw
-MDAwMDAwMDAwMDAwICBSMTQ6IDAwMDA1NWE1NmZjYjljOTAgIFIxNTogMDAwMDU1YTU2ZmNiOWM5
-MAogICAgT1JJR19SQVg6IDAwMDAwMDAwMDAwMDAwMzggIENTOiAwMDMzICBTUzogMDAyYgpQSUQ6
-IDQ4NDUgICBUQVNLOiBmZmZmYTA5ZjJmZmUxYjQwICBDUFU6IDMgICBDT01NQU5EOiAiZmlsZS5z
-byIKICMwIFtmZmZmYmZiYjAzMjIzZDg4XSBfX3NjaGVkdWxlKzgzNyBhdCBmZmZmZmZmZmE1OWIx
-NWY1CiAjMSBbZmZmZmJmYmIwMzIyM2UxMF0gc2NoZWR1bGUrODYgYXQgZmZmZmZmZmZhNTliMWQ5
-NgogIzIgW2ZmZmZiZmJiMDMyMjNlMThdIHBlcmNwdV9yd3NlbV93YWl0KzE4MSBhdCBmZmZmZmZm
-ZmE1MTAxYjc1CiAjMyBbZmZmZmJmYmIwMzIyM2U3OF0gX19wZXJjcHVfZG93bl9yZWFkKzExNCBh
-dCBmZmZmZmZmZmE1MTAxZWMyCiAjNCBbZmZmZmJmYmIwMzIyM2U5MF0gZXhpdF9zaWduYWxzKzcx
-MSBhdCBmZmZmZmZmZmE1MGEyZjI3CiAjNSBbZmZmZmJmYmIwMzIyM2VhOF0gZG9fZXhpdCsyMTYg
-YXQgZmZmZmZmZmZhNTA5M2VmOAogIzYgW2ZmZmZiZmJiMDMyMjNmMTBdIGRvX2dyb3VwX2V4aXQr
-NzEgYXQgZmZmZmZmZmZhNTA5NGJiNwogIzcgW2ZmZmZiZmJiMDMyMjNmMzhdIF9feDY0X3N5c19l
-eGl0X2dyb3VwKzIwIGF0IGZmZmZmZmZmYTUwOTRjMzQKICM4IFtmZmZmYmZiYjAzMjIzZjQwXSBk
-b19zeXNjYWxsXzY0KzUxIGF0IGZmZmZmZmZmYTU5YTM1YzMKICM5IFtmZmZmYmZiYjAzMjIzZjUw
-XSBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrNjggYXQgZmZmZmZmZmZhNWEwMDA4Ywog
-ICAgUklQOiAwMDAwN2YwY2E2YjIwOTk4ICBSU1A6IDAwMDA3ZmZjNWUxZWVmNDggIFJGTEFHUzog
-MDAwMDAyNDYKICAgIFJBWDogZmZmZmZmZmZmZmZmZmZkYSAgUkJYOiAwMDAwMDAwMDAwMDAwMDAw
-ICBSQ1g6IDAwMDA3ZjBjYTZiMjA5OTgKICAgIFJEWDogMDAwMDAwMDAwMDAwMDAwMCAgUlNJOiAw
-MDAwMDAwMDAwMDAwMDNjICBSREk6IDAwMDAwMDAwMDAwMDAwMDAKICAgIFJCUDogMDAwMDdmMGNh
-NmUwZDUxMCAgIFI4OiAwMDAwMDAwMDAwMDAwMGU3ICAgUjk6IGZmZmZmZmZmZmZmZmZmNjAKICAg
-IFIxMDogMDAwMDdmMGNhNWZkMTBmOCAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2ICBSMTI6IDAwMDA3
-ZjBjYTZlMGQ1MTAKICAgIFIxMzogMDAwMDdmMGNhNmUwZDhjMCAgUjE0OiAwMDAwN2ZmYzVlMWVl
-ZmUwICBSMTU6IDAwMDAwMDAwMDAwMDAwMjAKICAgIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMGU3
-ICBDUzogMDAzMyAgU1M6IDAwMmIKUElEOiA0ODQ2ICAgVEFTSzogZmZmZmEwOWYyZDQxODAwMCAg
-Q1BVOiA1ICAgQ09NTUFORDogImZpbGUuc28iCiAjMCBbZmZmZmJmYmIwMzk2ZmQ4OF0gX19zY2hl
-ZHVsZSs4MzcgYXQgZmZmZmZmZmZhNTliMTVmNQogIzEgW2ZmZmZiZmJiMDM5NmZlMTBdIHNjaGVk
-dWxlKzg2IGF0IGZmZmZmZmZmYTU5YjFkOTYKICMyIFtmZmZmYmZiYjAzOTZmZTE4XSBwZXJjcHVf
-cndzZW1fd2FpdCsxODEgYXQgZmZmZmZmZmZhNTEwMWI3NQogIzMgW2ZmZmZiZmJiMDM5NmZlNzhd
-IF9fcGVyY3B1X2Rvd25fcmVhZCsxMTQgYXQgZmZmZmZmZmZhNTEwMWVjMgogIzQgW2ZmZmZiZmJi
-MDM5NmZlOTBdIGV4aXRfc2lnbmFscys3MTEgYXQgZmZmZmZmZmZhNTBhMmYyNwogIzUgW2ZmZmZi
-ZmJiMDM5NmZlYThdIGRvX2V4aXQrMjE2IGF0IGZmZmZmZmZmYTUwOTNlZjgKICM2IFtmZmZmYmZi
-YjAzOTZmZjEwXSBkb19ncm91cF9leGl0KzcxIGF0IGZmZmZmZmZmYTUwOTRiYjcKICM3IFtmZmZm
-YmZiYjAzOTZmZjM4XSBfX3g2NF9zeXNfZXhpdF9ncm91cCsyMCBhdCBmZmZmZmZmZmE1MDk0YzM0
-CiAjOCBbZmZmZmJmYmIwMzk2ZmY0MF0gZG9fc3lzY2FsbF82NCs1MSBhdCBmZmZmZmZmZmE1OWEz
-NWMzCiAjOSBbZmZmZmJmYmIwMzk2ZmY1MF0gZW50cnlfU1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1l
-KzY4IGF0IGZmZmZmZmZmYTVhMDAwOGMKICAgIFJJUDogMDAwMDdmMGNhNmIyMDk5OCAgUlNQOiAw
-MDAwN2ZmYzVlMWVlZjQ4ICBSRkxBR1M6IDAwMDAwMjQ2CiAgICBSQVg6IGZmZmZmZmZmZmZmZmZm
-ZGEgIFJCWDogMDAwMDAwMDAwMDAwMDAwMCAgUkNYOiAwMDAwN2YwY2E2YjIwOTk4CiAgICBSRFg6
-IDAwMDAwMDAwMDAwMDAwMDAgIFJTSTogMDAwMDAwMDAwMDAwMDAzYyAgUkRJOiAwMDAwMDAwMDAw
-MDAwMDAwCiAgICBSQlA6IDAwMDA3ZjBjYTZlMGQ1MTAgICBSODogMDAwMDAwMDAwMDAwMDBlNyAg
-IFI5OiBmZmZmZmZmZmZmZmZmZjYwCiAgICBSMTA6IDAwMDA3ZjBjYTVmZDEwZjggIFIxMTogMDAw
-MDAwMDAwMDAwMDI0NiAgUjEyOiAwMDAwN2YwY2E2ZTBkNTEwCiAgICBSMTM6IDAwMDA3ZjBjYTZl
-MGQ4YzAgIFIxNDogMDAwMDdmZmM1ZTFlZWZlMCAgUjE1OiAwMDAwMDAwMDAwMDAwMDIwCiAgICBP
-UklHX1JBWDogMDAwMDAwMDAwMDAwMDBlNyAgQ1M6IDAwMzMgIFNTOiAwMDJiClBJRDogNTY1NyAg
-IFRBU0s6IGZmZmZhMDlmMjIyZTM2ODAgIENQVTogMyAgIENPTU1BTkQ6ICJUaHJlYWQgKHBvb2xl
-ZCkiCiAjMCBbZmZmZmJmYmIwM2EwN2RiMF0gX19zY2hlZHVsZSs4MzcgYXQgZmZmZmZmZmZhNTli
-MTVmNQogIzEgW2ZmZmZiZmJiMDNhMDdlMzhdIHNjaGVkdWxlKzg2IGF0IGZmZmZmZmZmYTU5YjFk
-OTYKICMyIFtmZmZmYmZiYjAzYTA3ZTQwXSBwZXJjcHVfcndzZW1fd2FpdCsxODEgYXQgZmZmZmZm
-ZmZhNTEwMWI3NQogIzMgW2ZmZmZiZmJiMDNhMDdlYTBdIF9fcGVyY3B1X2Rvd25fcmVhZCsxMTQg
-YXQgZmZmZmZmZmZhNTEwMWVjMgogIzQgW2ZmZmZiZmJiMDNhMDdlYjhdIGV4aXRfc2lnbmFscys3
-MTEgYXQgZmZmZmZmZmZhNTBhMmYyNwogIzUgW2ZmZmZiZmJiMDNhMDdlZDBdIGRvX2V4aXQrMjE2
-IGF0IGZmZmZmZmZmYTUwOTNlZjgKICM2IFtmZmZmYmZiYjAzYTA3ZjM4XSBfX3g2NF9zeXNfZXhp
-dCsyMyBhdCBmZmZmZmZmZmE1MDk0YjY3CiAjNyBbZmZmZmJmYmIwM2EwN2Y0MF0gZG9fc3lzY2Fs
-bF82NCs1MSBhdCBmZmZmZmZmZmE1OWEzNWMzCiAjOCBbZmZmZmJmYmIwM2EwN2Y1MF0gZW50cnlf
-U1lTQ0FMTF82NF9hZnRlcl9od2ZyYW1lKzY4IGF0IGZmZmZmZmZmYTVhMDAwOGMKICAgIFJJUDog
-MDAwMDdmMWYyZjkyNjViNiAgUlNQOiAwMDAwN2YxZTk1MDU3ZDUwICBSRkxBR1M6IDAwMDAwMjQ2
-CiAgICBSQVg6IGZmZmZmZmZmZmZmZmZmZGEgIFJCWDogMDAwMDdmMWU5NTA1ODcwMCAgUkNYOiAw
-MDAwN2YxZjJmOTI2NWI2CiAgICBSRFg6IDAwMDAwMDAwMDAwMDAwM2MgIFJTSTogMDAwMDdmMWYy
-ZmIzODAxMCAgUkRJOiAwMDAwMDAwMDAwMDAwMDAwCiAgICBSQlA6IDAwMDAwMDAwMDAwMDAwMDAg
-ICBSODogMDAwMDdmMWU4ODAwMjljMCAgIFI5OiAwMDAwMDAwMDAwMDAwMDAwCiAgICBSMTA6IDAw
-MDAwMDAwMDAwMDAwMjAgIFIxMTogMDAwMDAwMDAwMDAwMDI0NiAgUjEyOiAwMDAwN2ZmZDc1ODJm
-MjdlCiAgICBSMTM6IDAwMDA3ZmZkNzU4MmYyN2YgIFIxNDogMDAwMDU1ZmNlMDgxODE4MCAgUjE1
-OiAwMDAwN2ZmZDc1ODJmMzUwCiAgICBPUklHX1JBWDogMDAwMDAwMDAwMDAwMDAzYyAgQ1M6IDAw
-MzMgIFNTOiAwMDJiClBJRDogNjcxNiAgIFRBU0s6IGZmZmZhMDlmMzBkYTFiNDAgIENQVTogMyAg
-IENPTU1BTkQ6ICJjcHVzZXRfaG90cGx1Z18iCiAjMCBbZmZmZmJmYmIwM2FjNzlkOF0gX19zY2hl
-ZHVsZSs4MzcgYXQgZmZmZmZmZmZhNTliMTVmNQogIzEgW2ZmZmZiZmJiMDNhYzdhNjBdIHNjaGVk
-dWxlKzg2IGF0IGZmZmZmZmZmYTU5YjFkOTYKICMyIFtmZmZmYmZiYjAzYWM3YTcwXSBzY2hlZHVs
-ZV90aW1lb3V0KzQ5NSBhdCBmZmZmZmZmZmE1OWI0Y2JmCiAjMyBbZmZmZmJmYmIwM2FjN2IwOF0g
-d2FpdF9mb3JfY29tcGxldGlvbisxNjUgYXQgZmZmZmZmZmZhNTliMmYyNQogIzQgW2ZmZmZiZmJi
-MDNhYzdiNDhdIGFmZmluZV9tb3ZlX3Rhc2srNzA1IGF0IGZmZmZmZmZmYTUwY2MyMzEKICM1IFtm
-ZmZmYmZiYjAzYWM3Yzg4XSBfX3NldF9jcHVzX2FsbG93ZWRfcHRyKzI3NCBhdCBmZmZmZmZmZmE1
-MGNjNTYyCiAjNiBbZmZmZmJmYmIwM2FjN2NjOF0gY3B1c2V0X2F0dGFjaCsxOTUgYXQgZmZmZmZm
-ZmZhNTE4ZGY3MwogIzcgW2ZmZmZiZmJiMDNhYzdkMDBdIGNncm91cF9taWdyYXRlX2V4ZWN1dGUr
-MTEzMyBhdCBmZmZmZmZmZmE1MTgwNzVkCiAjOCBbZmZmZmJmYmIwM2FjN2Q1OF0gY2dyb3VwX2F0
-dGFjaF90YXNrKzUyNCBhdCBmZmZmZmZmZmE1MTgwYWJjCiAjOSBbZmZmZmJmYmIwM2FjN2UyOF0g
-X19jZ3JvdXAxX3Byb2NzX3dyaXRlLmNvbnN0cHJvcC4yMSsyNDMgYXQgZmZmZmZmZmZhNTE4Nzg0
-MwojMTAgW2ZmZmZiZmJiMDNhYzdlNjhdIGNncm91cF9maWxlX3dyaXRlKzEyNiBhdCBmZmZmZmZm
-ZmE1MTdiMDdlCiMxMSBbZmZmZmJmYmIwM2FjN2VhMF0ga2VybmZzX2ZvcF93cml0ZSsyNzUgYXQg
-ZmZmZmZmZmZhNTNlMWMxMwojMTIgW2ZmZmZiZmJiMDNhYzdlZDhdIHZmc193cml0ZSsyNDAgYXQg
-ZmZmZmZmZmZhNTMxZDQ3MAojMTMgW2ZmZmZiZmJiMDNhYzdmMDhdIGtzeXNfd3JpdGUrMTM1IGF0
-IGZmZmZmZmZmYTUzMWQ3MzcKIzE0IFtmZmZmYmZiYjAzYWM3ZjQwXSBkb19zeXNjYWxsXzY0KzUx
-IGF0IGZmZmZmZmZmYTU5YTM1YzMKIzE1IFtmZmZmYmZiYjAzYWM3ZjUwXSBlbnRyeV9TWVNDQUxM
-XzY0X2FmdGVyX2h3ZnJhbWUrNjggYXQgZmZmZmZmZmZhNWEwMDA4YwogICAgUklQOiAwMDAwN2Yw
-MTc2Yjg0MjQ0ICBSU1A6IDAwMDA3ZmZmZmNmN2UyYjggIFJGTEFHUzogMDAwMDAyNDYKICAgIFJB
-WDogZmZmZmZmZmZmZmZmZmZkYSAgUkJYOiAwMDAwMDAwMDAwMDAwMDA1ICBSQ1g6IDAwMDA3ZjAx
-NzZiODQyNDQKICAgIFJEWDogMDAwMDAwMDAwMDAwMDAwNSAgUlNJOiAwMDAwNTViMTUyMDNkODkw
-ICBSREk6IDAwMDAwMDAwMDAwMDAwMDEKICAgIFJCUDogMDAwMDU1YjE1MjAzZDg5MCAgIFI4OiAw
-MDAwMDAwMDAwMDAwMDBhICAgUjk6IDAwMDAwMDAwMDAwMDAwMDAKICAgIFIxMDogMDAwMDAwMDAw
-MDAwMDAwYSAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2ICBSMTI6IDAwMDAwMDAwMDAwMDAwMDUKICAg
-IFIxMzogMDAwMDAwMDAwMDAwMDAwMSAgUjE0OiAwMDAwN2YwMTc2ZTRjNWEwICBSMTU6IDAwMDAw
-MDAwMDAwMDAwMDUKICAgIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDAxICBDUzogMDAzMyAgU1M6
-IDAwMmIKUElEOiA2NzQzICAgVEFTSzogZmZmZmEwOWY1NDE1MWI0MCAgQ1BVOiAzICAgQ09NTUFO
-RDogInBvb2wtL3Vzci9saWIveCIKICMwIFtmZmZmYmZiYjA4NjU3ZGIwXSBfX3NjaGVkdWxlKzgz
-NyBhdCBmZmZmZmZmZmE1OWIxNWY1CiAjMSBbZmZmZmJmYmIwODY1N2UzOF0gc2NoZWR1bGUrODYg
-YXQgZmZmZmZmZmZhNTliMWQ5NgogIzIgW2ZmZmZiZmJiMDg2NTdlNDBdIHBlcmNwdV9yd3NlbV93
-YWl0KzE4MSBhdCBmZmZmZmZmZmE1MTAxYjc1CiAjMyBbZmZmZmJmYmIwODY1N2VhMF0gX19wZXJj
-cHVfZG93bl9yZWFkKzExNCBhdCBmZmZmZmZmZmE1MTAxZWMyCiAjNCBbZmZmZmJmYmIwODY1N2Vi
-OF0gZXhpdF9zaWduYWxzKzcxMSBhdCBmZmZmZmZmZmE1MGEyZjI3CiAjNSBbZmZmZmJmYmIwODY1
-N2VkMF0gZG9fZXhpdCsyMTYgYXQgZmZmZmZmZmZhNTA5M2VmOAogIzYgW2ZmZmZiZmJiMDg2NTdm
-MzhdIF9feDY0X3N5c19leGl0KzIzIGF0IGZmZmZmZmZmYTUwOTRiNjcKICM3IFtmZmZmYmZiYjA4
-NjU3ZjQwXSBkb19zeXNjYWxsXzY0KzUxIGF0IGZmZmZmZmZmYTU5YTM1YzMKICM4IFtmZmZmYmZi
-YjA4NjU3ZjUwXSBlbnRyeV9TWVNDQUxMXzY0X2FmdGVyX2h3ZnJhbWUrNjggYXQgZmZmZmZmZmZh
-NWEwMDA4YwogICAgUklQOiAwMDAwN2YwMTc2ZDZiNWI2ICBSU1A6IDAwMDA3ZjAxNWQ1NDBkZDAg
-IFJGTEFHUzogMDAwMDAyNDYKICAgIFJBWDogZmZmZmZmZmZmZmZmZmZkYSAgUkJYOiAwMDAwN2Yw
-MTVkNTQxNzAwICBSQ1g6IDAwMDA3ZjAxNzZkNmI1YjYKICAgIFJEWDogMDAwMDAwMDAwMDAwMDAz
-YyAgUlNJOiAwMDAwN2YwMTc2ZjdkMDEwICBSREk6IDAwMDAwMDAwMDAwMDAwMDAKICAgIFJCUDog
-MDAwMDAwMDAwMDAwMDAwMCAgIFI4OiAwMDAwN2YwMTUwMDAwOGMwICAgUjk6IDAwMDAwMDAwMDAw
-MDAwMDQKICAgIFIxMDogMDAwMDU1ZWU2NWYxODVkMCAgUjExOiAwMDAwMDAwMDAwMDAwMjQ2ICBS
-MTI6IDAwMDA3ZmZjNzFlZWY1NmUKICAgIFIxMzogMDAwMDdmZmM3MWVlZjU2ZiAgUjE0OiAwMDAw
-N2YwMTY0MDAzOGYwICBSMTU6IDAwMDA3ZmZjNzFlZWY2MDAKICAgIE9SSUdfUkFYOiAwMDAwMDAw
-MDAwMDAwMDNjICBDUzogMDAzMyAgU1M6IDAwMmIKUElEOiA2NzQ0ICAgVEFTSzogZmZmZmEwOWYz
-NTdmOWI0MCAgQ1BVOiA0ICAgQ09NTUFORDogInBvb2wtL3Vzci9saWIveCIKICMwIFtmZmZmYmZi
-YjA4NjVmZGIwXSBfX3NjaGVkdWxlKzgzNyBhdCBmZmZmZmZmZmE1OWIxNWY1CiAjMSBbZmZmZmJm
-YmIwODY1ZmUzOF0gc2NoZWR1bGUrODYgYXQgZmZmZmZmZmZhNTliMWQ5NgogIzIgW2ZmZmZiZmJi
-MDg2NWZlNDBdIHBlcmNwdV9yd3NlbV93YWl0KzE4MSBhdCBmZmZmZmZmZmE1MTAxYjc1CiAjMyBb
-ZmZmZmJmYmIwODY1ZmVhMF0gX19wZXJjcHVfZG93bl9yZWFkKzExNCBhdCBmZmZmZmZmZmE1MTAx
-ZWMyCiAjNCBbZmZmZmJmYmIwODY1ZmViOF0gZXhpdF9zaWduYWxzKzcxMSBhdCBmZmZmZmZmZmE1
-MGEyZjI3CiAjNSBbZmZmZmJmYmIwODY1ZmVkMF0gZG9fZXhpdCsyMTYgYXQgZmZmZmZmZmZhNTA5
-M2VmOAogIzYgW2ZmZmZiZmJiMDg2NWZmMzhdIF9feDY0X3N5c19leGl0KzIzIGF0IGZmZmZmZmZm
-YTUwOTRiNjcKICM3IFtmZmZmYmZiYjA4NjVmZjQwXSBkb19zeXNjYWxsXzY0KzUxIGF0IGZmZmZm
-ZmZmYTU5YTM1YzMKICM4IFtmZmZmYmZiYjA4NjVmZjUwXSBlbnRyeV9TWVNDQUxMXzY0X2FmdGVy
-X2h3ZnJhbWUrNjggYXQgZmZmZmZmZmZhNWEwMDA4YwogICAgUklQOiAwMDAwN2ZmNDliMGM4NWI2
-ICBSU1A6IDAwMDA3ZmY0OTNmZmVkZDAgIFJGTEFHUzogMDAwMDAyNDYKICAgIFJBWDogZmZmZmZm
-ZmZmZmZmZmZkYSAgUkJYOiAwMDAwN2ZmNDkzZmZmNzAwICBSQ1g6IDAwMDA3ZmY0OWIwYzg1YjYK
-ICAgIFJEWDogMDAwMDAwMDAwMDAwMDAzYyAgUlNJOiAwMDAwN2ZmNDliMmRhMDEwICBSREk6IDAw
-MDAwMDAwMDAwMDAwMDAKICAgIFJCUDogMDAwMDAwMDAwMDAwMDAwMCAgIFI4OiAwMDAwN2ZmNDg4
-MDAxNjAwICAgUjk6IDAwMDAwMDAwMDAwMDAwMDAKICAgIFIxMDogMDAwMDAwMDAwMDAwMDA1MCAg
-UjExOiAwMDAwMDAwMDAwMDAwMjQ2ICBSMTI6IDAwMDA3ZmZkYzg4YzgxN2UKICAgIFIxMzogMDAw
-MDdmZmRjODhjODE3ZiAgUjE0OiAwMDAwN2ZmNDhjMDA2OWUwICBSMTU6IDAwMDA3ZmZkYzg4Yzgy
-MTAKICAgIE9SSUdfUkFYOiAwMDAwMDAwMDAwMDAwMDNjICBDUzogMDAzMyAgU1M6IDAwMmIK
+    #kcpuid -d
 
+    max_basic_leafs     	: 0xd       	- Max input value for supported subleafs
+    stepping            	: 0x7       	- Stepping ID
+    model               	: 0xd       	- Model
+    family              	: 0x6       	- Family ID
+    processor           	: 0x0       	- Processor Type
+    sse3                 - Streaming SIMD Extensions 3(SSE3)
+    pclmulqdq            - Support PCLMULQDQ instruction
+    dtes64               - DS area uses 64-bit layout
+    mwait                - MONITOR/MWAIT supported
+    ds_cpl               - CPL Qualified Debug Store, which allows for branch message storage qualified by CPL
+    vmx                  - Virtual Machine Extensions supported
+    smx                  - Safer Mode Extension supported
+    ...
 
---=-jR9nJwzMMaK2NlaX8V5c--
+    #kcpuid -b
+
+    sse3
+    pclmulqdq
+    dtes64
+    mwait
+    ds_cpl
+    vmx
+    smx
+    eist
+    tm2
+    ...
+
+    #kcpuid -l 0x1
+
+    stepping            	: 0x7
+    model               	: 0xd
+    family              	: 0x6
+    processor           	: 0x0
+    clflush_size        	: 0x8
+    max_cpu_id          	: 0x20
+    apic_id             	: 0xf
+    sse3
+    pclmulqdq
+    dtes64
+    mwait
+    ds_cpl
+    ...
+
+[1]. https://lore.kernel.org/lkml/1598514543-90152-1-git-send-email-feng.tang@intel.com/
+[2]. http://sr71.net/~dave/intel/stupid-cpuid.c
+
+Originally-from: Borislav Petkov <bp@alien8.de>
+Suggested-by: Dave Hansen <dave.hansen@intel.com>
+Suggested-by: Borislav Petkov <bp@alien8.de>
+Signed-off-by: Feng Tang <feng.tang@intel.com>
+---
+Changelog:
+
+  v3:
+  * use .csv file instead of plain text file which also uses
+    comma to separate fields (Borislav)
+  * add option to support a user specified .csv file (Dave)
+  * make install will put the csv file under /usr/share/hwdata/ (Dave)
+
+  v2:
+  * use a new text file to store all the bits definition of each
+    CPUID leaf/subleafs, which is easier for future expansion, as
+    the core .c file will be kept untouched, suggested by Borislav/Dave
+  * some code cleanup
+
+ tools/arch/x86/kcpuid/Makefile  |  24 ++
+ tools/arch/x86/kcpuid/cpuid.csv |  57 ++++
+ tools/arch/x86/kcpuid/kcpuid.c  | 618 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 699 insertions(+)
+ create mode 100644 tools/arch/x86/kcpuid/Makefile
+ create mode 100644 tools/arch/x86/kcpuid/cpuid.csv
+ create mode 100644 tools/arch/x86/kcpuid/kcpuid.c
+
+diff --git a/tools/arch/x86/kcpuid/Makefile b/tools/arch/x86/kcpuid/Makefile
+new file mode 100644
+index 0000000..13f4e51
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/Makefile
+@@ -0,0 +1,24 @@
++# SPDX-License-Identifier: GPL-2.0
++# Makefile for x86/kcpuid tool
++
++kcpuid : kcpuid.c
++
++CFLAGS =  -Wextra
++
++BINDIR ?= /usr/sbin
++
++HWDATADIR ?= /usr/share/hwdata
++
++override CFLAGS += -O2 -Wall -I../../../include
++
++%: %.c
++	$(CC) $(CFLAGS) -o $@ $< $(LDFLAGS)
++
++.PHONY : clean
++clean :
++	@rm -f kcpuid
++
++install : kcpuid
++	install -d  $(DESTDIR)$(BINDIR)
++	install -m 755 -p kcpuid $(DESTDIR)$(BINDIR)/kcpuid
++	install -m 444 -p cpuid.csv $(HWDATADIR)/cpuid.csv
+diff --git a/tools/arch/x86/kcpuid/cpuid.csv b/tools/arch/x86/kcpuid/cpuid.csv
+new file mode 100644
+index 0000000..a6bacd2
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/cpuid.csv
+@@ -0,0 +1,57 @@
++# The basic row format is:
++# LEAF,SUBLEAF,register_name,bits,short name,long description
++
++# Leaf 00H
++         0,    0,  EAX,   31:0, max_basic_leafs,  Max input value for supported subleafs
++# Leaf 01H
++         1,    0,  EAX,    3:0, stepping,  Stepping ID
++         1,    0,  EAX,    7:4, model,  Model
++         1,    0,  EAX,   11:8, family,  Family ID
++         1,    0,  EAX,  13:12, processor,  Processor Type
++         1,    0,  EAX,  19:16, model_ext,  Extended Model ID
++         1,    0,  EAX,  27:20, family_ext,  Extended Family ID
++
++         1,    0,  EBX,    7:0, brand,  Brand Index
++         1,    0,  EBX,   15:8, clflush_size,  CLFLUSH line size (value * 8) in bytes
++         1,    0,  EBX,  23:16, max_cpu_id,  Maxim number of addressable logic cpu in this package
++         1,    0,  EBX,  31:24, apic_id,  Initial APIC ID
++
++         1,    0,  ECX,      0, sse3,  Streaming SIMD Extensions 3(SSE3)
++         1,    0,  ECX,      1, pclmulqdq,  PCLMULQDQ instruction supported
++         1,    0,  ECX,      2, dtes64,  DS area uses 64-bit layout
++         1,    0,  ECX,      3, mwait,  MONITOR/MWAIT supported
++         1,    0,  ECX,      4, ds_cpl,  CPL Qualified Debug Store which allows for branch message storage qualified by CPL
++         1,    0,  ECX,      5, vmx,  Virtual Machine Extensions supported
++         1,    0,  ECX,      6, smx,  Safer Mode Extension supported
++         1,    0,  ECX,      7, eist,  Enhanced Intel SpeedStep Technology
++         1,    0,  ECX,      8, tm2,  Thermal Monitor 2
++         1,    0,  ECX,      9, ssse3,  Supplemental Streaming SIMD Extensions 3 (SSSE3)
++         1,    0,  ECX,     10, l1_ctx_id,  L1 data cache could be set to either adaptive mode or shared mode (check IA32_MISC_ENABLE bit 24 definition)
++         1,    0,  ECX,     11, sdbg,  IA32_DEBUG_INTERFACE MSR for silicon debug supported
++         1,    0,  ECX,     12, fma,  FMA extensions using YMM state supported
++         1,    0,  ECX,     13, cmpxchg16b,  'CMPXCHG16B - Compare and Exchange Bytes' supported
++         1,    0,  ECX,     14, xtpr_update,  xTPR Update Control supported
++         1,    0,  ECX,     15, pdcm,  Perfmon and Debug Capability present
++         1,    0,  ECX,     17, pcid,  Process-Context Identifiers feature present
++         1,    0,  ECX,     18, dca,  Prefetching data from a memory mapped device supported
++         1,    0,  ECX,     19, sss4_1,  SSE4.1 feature present
++         1,    0,  ECX,     20, sse4_2,  SSE4.2 feature present
++         1,    0,  ECX,     21, x2apic,  x2APIC supported
++         1,    0,  ECX,     22, movbe,  MOVBE instruction supported
++         1,    0,  ECX,     23, popcnt,  POPCNT instruction supported
++         1,    0,  ECX,     24, tsc_deadline_timer,  LAPIC supports one-shot operation using a TSC deadline value
++         1,    0,  ECX,     25, aesni,  AESNI instruction supported
++         1,    0,  ECX,     26, xsave,  XSAVE/XRSTOR processor extended states (XSETBV/XGETBV/XCR0)
++         1,    0,  ECX,     27, osxsave,  OS has set CR4.OSXSAVE bit to enable XSETBV/XGETBV/XCR0
++         1,    0,  ECX,     28, avx,  AVX instruction supported
++         1,    0,  ECX,     29, f16c,  16-bit floating-point conversion instruction supported
++         1,    0,  ECX,     30, rdrand,  RDRAND instruction supported
++
++#
++# !!! Test data for testing different options, will be updated in formal version
++#
++         4,    0,  ECX,      1, aaa,  AAA
++         4,    1,  ECX,      1, bbb,  BBB
++         4,    2,  ECX,      1, ccc,  CCC
++         4,    3,  ECX,      1, ddd,  DDD
++0x80000000,    0,  EAX,      3, eee,  EEE
+diff --git a/tools/arch/x86/kcpuid/kcpuid.c b/tools/arch/x86/kcpuid/kcpuid.c
+new file mode 100644
+index 0000000..9bd35b7
+--- /dev/null
++++ b/tools/arch/x86/kcpuid/kcpuid.c
+@@ -0,0 +1,618 @@
++// SPDX-License-Identifier: GPL-2.0
++
++#include <stdio.h>
++#include <stdbool.h>
++#include <stdlib.h>
++#include <string.h>
++#include <getopt.h>
++
++#define ARRAY_SIZE(x) (sizeof(x) / sizeof((x)[0]))
++
++typedef unsigned int u32;
++typedef unsigned long long u64;
++
++char *def_csv = "/usr/share/hwdata/cpuid.csv";
++char *user_csv;
++
++struct bits_desc {
++	int start, end;		/* start and end bits */
++	int value;		/* 0 or 1 for 1-bit flag */
++	char simp[32];
++	char detail[256];
++};
++
++/* Descriptor info for eax/ebx/ecx/edx */
++struct reg_desc {
++	int nr;		/* number of valid entries */
++	struct bits_desc descs[32];
++};
++
++enum {
++	R_EAX = 0,
++	R_EBX,
++	R_ECX,
++	R_EDX,
++	NR_REGS
++};
++
++struct subleaf {
++	u32 index;
++	u32 sub;
++	u32 eax, ebx, ecx, edx;
++	struct reg_desc info[NR_REGS];	/* eax, ebx, ecx, edx */
++};
++
++/* cpuid_func represents one leaf (basic or extended) */
++struct cpuid_func {
++	/*
++	 * Array of subleafs for this func, if there is no subleafs
++	 * then the leafs[0] is the main leaf
++	 */
++	struct subleaf *leafs;
++	int nr;
++};
++
++struct cpuid_range {
++	/* Array of leafs in this range */
++	struct cpuid_func *funcs;
++	/* Number of valid leafs */
++	int nr;
++	bool is_ext;
++};
++
++/*
++ * basic:  basic functions started from 0
++ * ext:    extended functions started from 0x80000000
++ */
++struct cpuid_range *leafs_basic, *leafs_ext;
++
++static int num_leafs;
++static bool is_amd;
++static bool show_details;
++static bool show_all = true;
++static bool show_raw;
++static bool show_flags_only;
++
++static u32 user_index = 0xFFFFFFFF;
++static u32 user_sub = 0xFFFFFFFF;
++static int flines;
++
++static inline void cpuid(u32 *eax, u32 *ebx, u32 *ecx, u32 *edx)
++{
++	/* ecx is often an input as well as an output. */
++	asm volatile("cpuid"
++	    : "=a" (*eax),
++	      "=b" (*ebx),
++	      "=c" (*ecx),
++	      "=d" (*edx)
++	    : "0" (*eax), "2" (*ecx));
++}
++
++static inline bool has_subleafs(u32 f)
++{
++	if (f == 0x7 || f == 0xd)
++		return true;
++
++	if (is_amd) {
++		if (f == 0x8000001d)
++			return true;
++		return false;
++	}
++
++	if (f == 0x4 || f == 0xf || f == 0x10 || f == 0x14)
++		return true;
++
++	return false;
++}
++
++static void leaf_print_raw(struct subleaf *leaf)
++{
++	if (has_subleafs(leaf->index)) {
++		if (leaf->sub == 0)
++			printf("0x%08x: subleafs:\n", leaf->index);
++
++		printf(" %2d: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->sub, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	} else {
++		printf("0x%08x: EAX=0x%08x, EBX=0x%08x, ECX=0x%08x, EDX=0x%08x\n",
++			leaf->index, leaf->eax, leaf->ebx, leaf->ecx, leaf->edx);
++	}
++}
++
++static void cpuid_store(struct cpuid_range *range, u32 f, int subleaf,
++			u32 a, u32 b, u32 c, u32 d)
++{
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	int s = 0;
++
++	if (a == 0 && b == 0 && c == 0 && d == 0)
++		return;
++
++	/*
++	 * Cut off vendor-prefix from CPUID function as we're using it as an
++	 * index into ->funcs.
++	 */
++	func = &range->funcs[f & 0xffff];
++
++	if (!func->leafs) {
++		func->leafs = malloc(sizeof(struct subleaf));
++		if (!func->leafs)
++			perror("malloc func leaf");
++
++		func->nr = 1;
++	} else {
++		s = func->nr;
++		func->leafs = realloc(func->leafs, (s + 1) * sizeof(struct subleaf));
++		if (!func->leafs)
++			perror("realloc f->leafs");
++
++		func->nr++;
++	}
++
++	leaf = &func->leafs[s];
++
++	leaf->index = f;
++	leaf->sub = subleaf;
++	leaf->eax = a;
++	leaf->ebx = b;
++	leaf->ecx = c;
++	leaf->edx = d;
++}
++
++static void raw_dump_range(struct cpuid_range *range)
++{
++	u32 f;
++	int i;
++
++	printf("\n%s Leafs :\n", range->is_ext ? "Extended" : "Basic");
++	printf("================\n");
++
++	for (f = 0; (int)f < range->nr; f++) {
++		struct cpuid_func *func = &range->funcs[f];
++		u32 index = f;
++
++		if (range->is_ext)
++			index += 0x80000000;
++
++		if (!func->nr) {
++			printf("0x%08x: ...\n", f);
++		} else {
++			for (i = 0; i < func->nr; i++)
++				leaf_print_raw(&func->leafs[i]);
++		}
++	}
++}
++
++struct cpuid_range *setup_cpuid_range(u32 input_eax)
++{
++	u32 max_func, idx_func;
++	int subleaf;
++	struct cpuid_range *range;
++	u32 eax, ebx, ecx, edx;
++	u32 f = input_eax;
++
++	eax = input_eax;
++	ebx = ecx = edx = 0;
++
++	cpuid(&eax, &ebx, &ecx, &edx);
++	max_func = eax;
++	idx_func = (max_func & 0xffff) + 1;
++
++	range = malloc(sizeof(struct cpuid_range));
++	if (!range)
++		perror("malloc range");
++
++	if (input_eax & 0x80000000)
++		range->is_ext = true;
++	else
++		range->is_ext = false;
++
++	range->funcs = malloc(sizeof(struct cpuid_func) * idx_func);
++	if (!range->funcs)
++		perror("malloc range->funcs");
++
++	range->nr = idx_func;
++	memset(range->funcs, 0, sizeof(struct cpuid_func) * idx_func);
++
++	for (; f <= max_func; f++) {
++		eax = f;
++		subleaf = ecx = 0;
++
++		cpuid(&eax, &ebx, &ecx, &edx);
++		cpuid_store(range, f, subleaf, eax, ebx, ecx, edx);
++		num_leafs++;
++
++		if (!has_subleafs(f))
++			continue;
++
++		for (subleaf = 1; subleaf < 64; subleaf++) {
++			eax = f;
++			ecx = subleaf;
++
++			cpuid(&eax, &ebx, &ecx, &edx);
++
++			/* is subleaf valid? */
++			if (eax == 0 && ebx == 0 && ecx == 0 && edx == 0)
++				continue;
++
++			cpuid_store(range, f, subleaf, eax, ebx, ecx, edx);
++			num_leafs++;
++		}
++	}
++
++	return range;
++}
++
++/*
++ * The basic row format for cpuid.csv  is
++ *	LEAF,SUBLEAF,register_name,bits,short name,long description
++ *
++ * like:
++ *	0,    0,  EAX,   31:0, max_basic_leafs,  Max input value for supported subleafs
++ *	1,    0,  ECX,      0, sse3,  Streaming SIMD Extensions 3(SSE3)
++ */
++static int parse_line(char *line)
++{
++	char *str;
++	int i;
++	struct cpuid_range *range;
++	struct cpuid_func *func;
++	struct subleaf *leaf;
++	u32 index;
++	u32 sub;
++	char buffer[512];
++	char *buf;
++	/*
++	 * Tokens:
++	 *  1. leaf
++	 *  2. subleaf
++	 *  3. register
++	 *  4. bits
++	 *  5. short name
++	 *  6. long detail
++	 */
++	char *tokens[6];
++	struct reg_desc *reg;
++	struct bits_desc *bdesc;
++	int reg_index;
++	char *start, *end;
++
++	/* Skip comments and NULL line */
++	if (line[0] == '#' || line[0] == '\n')
++		return 0;
++
++	strncpy(buffer, line, 511);
++	buffer[511] = 0;
++	str = buffer;
++	for (i = 0; i < 5; i++) {
++		tokens[i] = strtok(str, ",");
++		if (!tokens[i])
++			goto err_exit;
++		str = NULL;
++	}
++	tokens[5] = strtok(str, "\n");
++
++	/* index/main-leaf */
++	index = strtoull(tokens[0], NULL, 0);
++
++	if (index & 0x80000000)
++		range = leafs_ext;
++	else
++		range = leafs_basic;
++
++	index &= 0x7FFFFFFF;
++	if ((int)index > range->nr) {
++		printf("ERR: invalid index[0x%x] nr:%d\n",
++				index,
++				range->nr);
++		return -1;
++	}
++
++	func = &range->funcs[index];
++
++	/* subleaf */
++	sub = strtoul(tokens[1], NULL, 0);
++	if ((int)sub > func->nr)  {
++		printf("ERR: invalid subleaf[%d]\n", sub);
++		return -1;
++	}
++
++	leaf = &func->leafs[sub];
++	buf = tokens[2];
++
++	if (strcasestr(buf, "EAX"))
++		reg_index = R_EAX;
++	else if (strcasestr(buf, "EBX"))
++		reg_index = R_EBX;
++	else if (strcasestr(buf, "ECX"))
++		reg_index = R_ECX;
++	else if (strcasestr(buf, "EDX"))
++		reg_index = R_EDX;
++	else
++		goto err_exit;
++
++	reg = &leaf->info[reg_index];
++	bdesc = &reg->descs[reg->nr++];
++
++	/* bit flag or bits field */
++	buf = tokens[3];
++
++	end = strtok(buf, ":");
++	bdesc->end = strtoul(end, NULL, 0);
++	bdesc->start = bdesc->end;
++
++	/* start != NULL means it is bit fields */
++	start = strtok(NULL, ":");
++	if (start)
++		bdesc->start = strtoul(start, NULL, 0);
++
++	strcpy(bdesc->simp, tokens[4]);
++	strcpy(bdesc->detail, tokens[5]);
++	return 0;
++
++err_exit:
++	printf("Warning: wrong line format:\n");
++	printf("\tline[%d]: %s\n", flines, line);
++	return -1;
++}
++
++/*
++ * Parse text file, and construct the array of all CPUID leafs and subleafs
++ */
++static void parse_text(void)
++{
++	FILE *file;
++	char *filename, *line = NULL;
++	size_t len = 0;
++	int ret;
++
++	if (show_raw)
++		return;
++
++	filename = user_csv ? user_csv : def_csv;
++	file = fopen(filename, "r");
++	if (!file) {
++		printf("Fail to open '%s'\n", filename);
++		return;
++	}
++
++	while (1) {
++
++		ret = getline(&line, &len, file);
++		flines++;
++		if (ret > 0)
++			parse_line(line);
++
++		if (feof(file))
++			break;
++	}
++
++	fclose(file);
++}
++
++
++/* parse every eax/ebx/ecx/edx */
++static void decode_bits(u32 value, struct reg_desc *rdesc)
++{
++	struct bits_desc *bdesc;
++	int start, end, i;
++	u32 mask;
++
++	for (i = 0; i < rdesc->nr; i++) {
++		bdesc = &rdesc->descs[i];
++
++		start = bdesc->start;
++		end = bdesc->end;
++		if (start == end) {
++			/* single bit flag */
++			if (value & (1 << start)) {
++				printf("\t%-20s %s%s\n",
++					bdesc->simp,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++			}
++		} else {
++			/* bit fields */
++			if (show_flags_only)
++				continue;
++			mask = ((u64)1 << (end - start + 1)) - 1;
++			printf("\t%-20s\t: 0x%-8x\t%s%s\n",
++					bdesc->simp,
++					(value >> start) & mask,
++					show_details ? "-" : "",
++					show_details ? bdesc->detail : ""
++					);
++		}
++	}
++}
++
++static void show_leaf(struct subleaf *leaf)
++{
++	if (!leaf)
++		return;
++
++	decode_bits(leaf->eax, &leaf->info[R_EAX]);
++	decode_bits(leaf->ebx, &leaf->info[R_EBX]);
++	decode_bits(leaf->ecx, &leaf->info[R_ECX]);
++	decode_bits(leaf->edx, &leaf->info[R_EDX]);
++}
++
++static void show_func(struct cpuid_func *func)
++{
++	int i;
++
++	if (!func)
++		return;
++
++	for (i = 0; i < func->nr; i++)
++		show_leaf(&func->leafs[i]);
++}
++
++static void show_range(struct cpuid_range *range)
++{
++	int i;
++
++	for (i = 0; i < range->nr; i++)
++		show_func(&range->funcs[i]);
++}
++
++static inline struct cpuid_func *index_to_func(u32 index)
++{
++	struct cpuid_range *range;
++
++	range = (index & 0x80000000) ? leafs_ext : leafs_basic;
++	index &= 0x7FFFFFFF;
++
++	if (((index & 0xFFFF) + 1) > (u32)range->nr) {
++		printf("ERR: invalid input index (0x%x)\n", index);
++		return NULL;
++	}
++	return &range->funcs[index];
++}
++
++static void show_info(void)
++{
++	struct cpuid_func *func;
++
++	if (show_raw) {
++		/* Show all of the raw output data of running cpuid */
++		raw_dump_range(leafs_basic);
++		raw_dump_range(leafs_ext);
++		return;
++	}
++
++	if (show_all) {
++		show_range(leafs_basic);
++		show_range(leafs_ext);
++		return;
++	}
++
++	/* Show specific leaf/subleaf info */
++	func = index_to_func(user_index);
++	if (!func)
++		return;
++
++	if (user_sub != 0xFFFFFFFF) {
++		if (user_sub + 1 <= (u32)func->nr) {
++			show_leaf(&func->leafs[user_sub]);
++			return;
++		}
++
++		printf("ERR: invalid input index (0x%x)\n", user_sub);
++	}
++
++	show_func(func);
++}
++
++static void setup_platform_cpuid(void)
++{
++	 u32 eax, ebx, ecx, edx;
++
++	/* check vendor */
++	eax = ebx = ecx = edx = 0;
++	cpuid(&eax, &ebx, &ecx, &edx);
++
++	/* "htuA" */
++	if (ebx == 0x68747541)
++		is_amd = true;
++
++	/* setup leafs by getting the base and extended range */
++	leafs_basic = setup_cpuid_range(0x0);
++	leafs_ext = setup_cpuid_range(0x80000000);
++	printf("This platform has %d CPUID leafs and subleafs.\n\n",
++		num_leafs);
++}
++
++static void usage(void)
++{
++	printf("  usage: kcpuid [-abdfhr] [-l leaf] [-s subleaf]\n"
++		"\t-a|--all             Show info of all CPUID leafs and subleafs(default on)\n"
++		"\t-b|--bitflags        Show boolean flags only\n"
++		"\t-d|--detail          Show details of the flag/fields\n"
++		"\t-f|--flags           Show boolean flags only\n"
++		"\t-h|--help            Show usage info\n"
++		"\t-l|--leaf=index      Specify the leaf you want to check\n"
++		"\t-r|--raw             Show raw cpuid data\n"
++		"\t-s|--subleaf=sub     Specify the subleaf you want to check\n"
++		"\n"
++	);
++}
++
++struct option opts[] = {
++	{ "all", no_argument, NULL, 'a' },		/* show all leafs */
++	{ "bitflags", no_argument, NULL, 'b' },		/* only show bit flags */
++	{ "detail", no_argument, NULL, 'd' },		/* show detail descriptions, default no */
++	{ "file", required_argument, NULL, 'f' },	/* use user's cpuid file */
++	{ "help", no_argument, NULL, 'h'},		/* show usage */
++	{ "leaf", required_argument, NULL, 'l'},	/* only check a specific leaf */
++	{ "raw", no_argument, NULL, 'r'},		/* show raw CPUID leaf data */
++	{ "subleaf", required_argument, NULL, 's'},	/* check a specific subleaf */
++	{ NULL, 0, NULL, 0 }
++};
++
++static int parse_options(int argc, char *argv[])
++{
++	int c;
++
++	while ((c = getopt_long(argc, argv, "abdf:hl:rs:",
++					opts, NULL)) != -1)
++		switch (c) {
++		case 'a':
++			show_all = true;
++			break;
++		case 'b':
++			show_flags_only = true;
++			break;
++		case 'd':
++			show_details = true;
++			break;
++		case 'f':
++			user_csv = optarg;
++			break;
++		case 'h':
++			usage();
++			exit(1);
++			break;
++		case 'l':
++			user_index = strtoul(optarg, NULL, 0);
++			show_all = false;
++			break;
++		case 'r':
++			show_raw = true;
++			break;
++		case 's':
++			/* parse_subleaf */
++			user_sub = strtoul(optarg, NULL, 0);
++			break;
++		default:
++			printf("%s: Invalid option '%c'\n", argv[0], optopt);
++			return -1;
++	}
++
++	return 0;
++}
++
++/*
++ * Do 4 things in turn:
++ * 1. Parse user options
++ * 2. Parse and store all the CPUID leaf data supported on this platform
++ * 2. Parse the text file according, skip leafs which is not available
++ *    on this platform
++ * 3. Print leafs info based on uers options
++ */
++int main(int argc, char *argv[])
++{
++	if (parse_options(argc, argv))
++		return -1;
++
++	/* setup the cpuid leafs of current platform */
++	setup_platform_cpuid();
++
++	/* read and parse the 'cpuid.csv' */
++	parse_text();
++
++	show_info();
++	return 0;
++}
+-- 
+2.7.4
 
