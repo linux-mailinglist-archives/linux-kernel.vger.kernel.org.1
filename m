@@ -2,146 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7D1982961E6
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:50:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD8C12961ED
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:55:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368801AbgJVPu2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:50:28 -0400
-Received: from mx2.suse.de ([195.135.220.15]:37802 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S368790AbgJVPu2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:50:28 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603381826;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=anpArebmwIS/om0L4RIV1Dunrd+yvDw/T8+yAe/vk1A=;
-        b=o76rdIEDw74SbwxJ9nZ9ecoqf/hj9Uxz8v2Ia2L51b0gHHg/NMi8MrU9X2O7X0UZ6sq4uX
-        ec/BDbu6EH/gI6NftTaCU1Mwg6N8feAcbp9xYv1lKro65pcrgQG8f8dC0iLax20p395D81
-        mOdXsmR/zbcZo5D04EGdVkWWel17CS0=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4C78CAC48;
-        Thu, 22 Oct 2020 15:50:26 +0000 (UTC)
-Date:   Thu, 22 Oct 2020 17:50:22 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201022155022.GO23790@dhcp22.suse.cz>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
- <20201022081532.GJ23790@dhcp22.suse.cz>
- <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
+        id S368816AbgJVPzi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:55:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46712 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2508545AbgJVPzi (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:55:38 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2A7ABC0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:55:38 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a9so2884417lfc.7
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 08:55:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=B94icV4D08fxyuirqbKeFO0+DC+wlmdI2voSS4HfZkU=;
+        b=a2nKAl/sqxzLJINGxnAcG79JnKWGYCmMmuWi6RLsPwlt8nfkLwLdwSCvUnGbYmvpDc
+         MTtsMtfwNkk61IAUxdkGoxqSSE4mfXosqmIbjbqIXbhlJ64j8dtDUqPdL9MX5a9Ax0HD
+         Rv2e55ThnRf8lCBFvLT6PAhunCxPg1WKog1urbAK+HFv0/226fGSqAnLvRfPTBuXbjAq
+         6KpnS7uicUbF8HKROESoEfa8ju/MtMe9z/nflL8aJU3e58ZP34DX2DMtboHRKvD82NDP
+         PonzLbcWohXeAEbjL0MWPvuESfQxC7FQGhnM2wNnX1xndf1k+ASUEZQfYlDyMKoSRch2
+         rZQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=B94icV4D08fxyuirqbKeFO0+DC+wlmdI2voSS4HfZkU=;
+        b=MvZew2J/e0M2hWODbDQ/HieHUQKgQaADBlQnN+lvHpUWSjw5iFgs3H9TENvywWu4aB
+         RIQph7GA5Aoat8QWar/EVnK6YT8Ol8hcFh0RXlk1YCYVAKvUrX+DYcPtdG1UeZpjTfpG
+         M++64h8+BjkHiuHkKdjs+ClZPfZTzu6VqJEE30aKhM9PwwdQjQB7nUb9Siz3aHIKkN91
+         KmEbfmOlytBzw7wgJp/YVeTpwne7abs05B70apwkFH9njt/4VsaH4QLqEzJ5lIVWW+yN
+         oW238oZLf48R8eL5sm7U5k10/NaAsvlOdg3fVy6A4Why45vrnvU+WLm3r7lEVM3ROVEl
+         04JQ==
+X-Gm-Message-State: AOAM530hsSppeZObqyHeGNGQfVep5xUDISxd74+YvLl77YQOK2LEy5yH
+        remZPTZUMREKSYJU1VN1CAJ4Ff7r4YcF4JEUUYoSag==
+X-Google-Smtp-Source: ABdhPJxjTfQ97C9WLxpurCzxc+miwHEpL6de8vQZrEHqh3ZUhywXAETlIEZ+DuxXsY3QpVxYIRruL9ABkcGz1M0Z5RU=
+X-Received: by 2002:a05:6512:2090:: with SMTP id t16mr979176lfr.83.1603382136420;
+ Thu, 22 Oct 2020 08:55:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher> <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher> <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <c232b2.c086afce.17550fc4644@lechevalier.se>
+In-Reply-To: <c232b2.c086afce.17550fc4644@lechevalier.se>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Thu, 22 Oct 2020 17:55:24 +0200
+Message-ID: <CAKfTPtDUMdxWSKQgyjPCn+D-zYzpfgMEy0WYGAQzhcr1jnAX7w@mail.gmail.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+To:     A L <mail@lechevalier.se>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22-10-20 09:25:21, Rik van Riel wrote:
-> On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
-> > On Wed 21-10-20 23:48:46, Rik van Riel wrote:
-> > > The allocation flags of anonymous transparent huge pages can be
-> > > controlled
-> > > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
-> > > which can
-> > > help the system from getting bogged down in the page reclaim and
-> > > compaction
-> > > code when many THPs are getting allocated simultaneously.
-> > > 
-> > > However, the gfp_mask for shmem THP allocations were not limited by
-> > > those
-> > > configuration settings, and some workloads ended up with all CPUs
-> > > stuck
-> > > on the LRU lock in the page reclaim code, trying to allocate dozens
-> > > of
-> > > THPs simultaneously.
-> > > 
-> > > This patch applies the same configurated limitation of THPs to
-> > > shmem
-> > > hugepage allocations, to prevent that from happening.
-> > > 
-> > > This way a THP defrag setting of "never" or "defer+madvise" will
-> > > result
-> > > in quick allocation failures without direct reclaim when no 2MB
-> > > free
-> > > pages are available.
-> > 
-> > I remmeber I wanted to unify this in the past as well. The patch got
-> > reverted in the end. It was a long story and I do not have time to
-> > read
-> > through lengthy discussions again. I do remember though that there
-> > were
-> > some objections pointing out that shmem has its own behavior which is
-> > controlled by the mount option - at least for the explicitly mounted
-> > shmems. I might misremember.
-> 
-> That is not entirely true, though.
-> 
-> THP has two main sysfs knobs: "enabled" and "defrag"
-> 
-> The mount options
-> control the shmem equivalent options
-> for "enabled", but they do not do anything for the "defrag"
-> equivalent options.
+On Thu, 22 Oct 2020 at 17:45, A L <mail@lechevalier.se> wrote:
+>
+>
+>
+> ---- From: Peter Zijlstra <peterz@infradead.org> -- Sent: 2020-10-22 - 14:29 ----
+>
+> > On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
+> >> > However I do want to retire ondemand, conservative and also very much
+> >> > intel_pstate/active mode.
+> >>
+> >> I agree in general, but IMO it would not be prudent to do that without making
+> >> schedutil provide the same level of performance in all of the relevant use
+> >> cases.
+> >
+> > Agreed; I though to have understood we were there already.
+>
+> Hi,
+>
+>
+> Currently schedutil does not populate all stats like ondemand does, which can be a problem for some monitoring software.
+>
+> On my AMD 3000G CPU with kernel-5.9.1:
+>
+>
+> grep. /sys/devices/system/cpu/cpufreq/policy0/stats/*
+>
+> With ondemand:
+> time_in_state:3900000 145179
+> time_in_state:1600000 9588482
+> total_trans:177565
+> trans_table:   From  :    To
+> trans_table:         :   3900000   1600000
+> trans_table:  3900000:         0     88783
+> trans_table:  1600000:     88782         0
+>
+> With schedutil only two file exists:
+> reset:<empty>
+> total_trans:216609
+>
+>
+> I'd really like to have these stats populated with schedutil, if that's possible.
 
-Yeah, the situation is quite messy :/
+Your problem might have been fixed with
+commit 96f60cddf7a1 ("cpufreq: stats: Enable stats for fast-switch as well")
 
-> This patch applies the "defrag" THP options to
-> shmem.
 
-I am not really objecting I just do remember some pushback. My previous
-attempt was to unify everything inside alloc_pages_vma IIRC.
-
-> > [...]
-> > 
-> > > diff --git a/mm/shmem.c b/mm/shmem.c
-> > > index 537c137698f8..d1290eb508e5 100644
-> > > --- a/mm/shmem.c
-> > > +++ b/mm/shmem.c
-> > > @@ -1545,8 +1545,11 @@ static struct page
-> > > *shmem_alloc_hugepage(gfp_t gfp,
-> > >  		return NULL;
-> > >  
-> > >  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> > > -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY |
-> > > __GFP_NOWARN,
-> > > -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> > > true);
-> > > +	/* Limit the gfp mask according to THP configuration. */
-> > > +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
-> > 
-> > What is the reason for these when alloc_hugepage_direct_gfpmask
-> > provides
-> > the full mask?
-> 
-> The mapping_gfp_mask for the shmem file might have additional
-> restrictions above and beyond the gfp mask returned by
-> alloc_hugepage_direct_gfpmask, and I am not sure we should just
-> ignore the mapping_gfp_mask.
-
-No, we shouldn't. But I do not see why you should be adding the above
-set of flags on top.
-
-> That is why this patch takes the union of both gfp masks.
-> 
-> However, digging into things more, it looks like shmem inodes
-> always have the mapping gfp mask set to GFP_HIGHUSER_MOVABLE,
-> and it is never changed, so simply using the output from
-> alloc_hugepage_direct_gfpmask should be fine.
-> 
-> I can do the patch either way. Just let me know what you prefer.
-
-I would just and the given gfp with alloc_hugepage_direct_gfpmask
-
--- 
-Michal Hocko
-SUSE Labs
+>
+> Thanks.
+>
