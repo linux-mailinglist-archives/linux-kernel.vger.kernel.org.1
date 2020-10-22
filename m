@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83DE2295824
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:56:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 17E65295826
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:56:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508106AbgJVF4p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:56:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38828 "EHLO
+        id S2508117AbgJVF4w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:56:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38848 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508098AbgJVF4p (ORCPT
+        with ESMTP id S2508109AbgJVF4v (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:56:45 -0400
-Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA0E9C0613CE;
-        Wed, 21 Oct 2020 22:56:43 -0700 (PDT)
-Received: by mail-pj1-x1043.google.com with SMTP id a17so421589pju.1;
-        Wed, 21 Oct 2020 22:56:43 -0700 (PDT)
+        Thu, 22 Oct 2020 01:56:51 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706D4C0613CE;
+        Wed, 21 Oct 2020 22:56:51 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id f38so8890pgm.2;
+        Wed, 21 Oct 2020 22:56:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=ONnPqbEGpsHiC+7+xAJ566Uy7tk/a7WVPjlnbMKceyI=;
-        b=iounUrnoUrJZ/ErJbP/e7FMedE451AQknxPCSd6Kkk0QPcLgBtLBrckOmJPMOTl+E1
-         9JIbxrT/Cpw2dcmL8hULU/xBm72TaBolOMdCqlRwOxqC1r/JwoWDxYwp9Cxom6eGCKRa
-         ujZUCCR17ib4G7JDNUU6VwcZ20qHie25+HbEHJfZkLikVblDY4IbgK3L1nqIflhm7mcp
-         W6ZPOKroZKFUjGEoBqv+5jqhswg/U69FLGgs/yGY3OkX9KHHC5FdUa70QF15IogyJbQo
-         sLmM2B8ME/cGw1Es3VeByfQsFDMUMtjngoNKfHMs9g2UiL+6SRerGR0m7WOJI+efc3kL
-         SLfg==
+        bh=sWOuB16AvGHTkHw6KRpIhtSX/WjKIiIbZR5t/2RTblQ=;
+        b=tQUSUi8V5OE8/U5C0n/9jTHq7ebXMsPegcM+dRWzsnTYSn9FHHzirtrt1Plk0mulTc
+         ga5uUod0Si9tGY1wP49Psu62N1vCjeOkhfdujanU7KhgeppYE7b86Frqxpbqi7q69Ip/
+         X4k1wiMFVLLdEbxoLvbburGYZa9mDOsMb3SmhpsNK+hMtKgOwxoV8B73nPZfXEnti0XP
+         PgcWRR0qfbjm9DQheISTjJbQLKx3frinMh5vksKOy1yASvCtgZ8mowgFL43/ixyezAiA
+         Xp0jXDwros3LOz3rYtdAODDm/2kvngIy1sUgtjVKEkly/vHwK8jDbir6IrM1qRED4GJp
+         lWSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=ONnPqbEGpsHiC+7+xAJ566Uy7tk/a7WVPjlnbMKceyI=;
-        b=EEH7R8+eCymoi1EL27N/9LyIFM3kCl4KHbOk4ZWD3aDcPrZAuaky0H+eA+Wi+f496D
-         aDjMlXf+EKwwxPzG3DFJ87VYC3k/zYAawulnKlxHMu+ZImkNgHuWhEF3Ek4/IxK3nw7x
-         UUfuXF0WSKQLRGNmAfmdVMGWgPcAtCrRNaYk+lUopcdi6hvg0aynCHgz82oMXI6iKgdB
-         NfhAt9iWdMdoflote9hV7K7flXSFyN1yOfKr5bU/O5LD1+wNsr3uwys3/6k9bGXim06z
-         TJgn5retbuB8Vzi2b7SQD7SUOJYldAZgHQr0FmohYLmOnUMq+SIrqadpe2PR4bdPQZl0
-         /GiA==
-X-Gm-Message-State: AOAM530mx8r1V3Lp4f9XBlkDOPCawivuoQFPZhDkUSyns/FrvoALv4h4
-        ixKeBD8jJnUgcppPtt5rNHx26bMKDQ==
-X-Google-Smtp-Source: ABdhPJz/SRIaiTAz6Qjp3F3Y1C3ZIFiiMOAEZvfQr9sC+fWhw4V36jOOtxF9xYaIqrcVLRPepBj5BA==
-X-Received: by 2002:a17:90a:ca90:: with SMTP id y16mr21279pjt.113.1603346203179;
-        Wed, 21 Oct 2020 22:56:43 -0700 (PDT)
+        bh=sWOuB16AvGHTkHw6KRpIhtSX/WjKIiIbZR5t/2RTblQ=;
+        b=gvcdAkWagPKDRIgyhcCGzAww7XpGUy+Az25zYqDocvx1LLNI8NPFjmBbwr0bR1NUAy
+         uC2PH+6MOFcPZ+FVYgYdtYY/MyVcfc/12gmjKyZ3MyhaxEO1WzCiBkuUXKiuqMfN2KA1
+         36a10KbM2GZYmMa1mMZGjHxhfn1OdW9d2PG/B+xT1P56MvKsOmc8681O/rMJ/vq4Ks9C
+         zKX4PvjooGzK4PNVL43Xjy1qfc8PK3JPnnB+dtkDfE1ZomVP72LArYXxgVqG6d/KysuC
+         acTXAzIUQzsJ5zekBQklIPi0NaSdzbWKq0a7aTAFWGTUKodFDzXiXo3ZQzt0TtFR7gI/
+         Dk6w==
+X-Gm-Message-State: AOAM532MtOwuXsoB/roYwMEaCoEtc+Uq14zDKwOLJRn/j8oNVcbD4iLF
+        uYZsneMq2tV0FSQJr6QT4dLjdHRGKQ==
+X-Google-Smtp-Source: ABdhPJxZfFauT3BfGs3U+kT20nZ/roX+l+EaGF10Wt8pdIq0lYDnd+ybv8xfhMUczwOL7PWfnTaiAA==
+X-Received: by 2002:a63:d252:: with SMTP id t18mr860263pgi.300.1603346210883;
+        Wed, 21 Oct 2020 22:56:50 -0700 (PDT)
 Received: from mylaptop.redhat.com ([209.132.188.80])
-        by smtp.gmail.com with ESMTPSA id c12sm830995pgi.14.2020.10.21.22.56.35
+        by smtp.gmail.com with ESMTPSA id c12sm830995pgi.14.2020.10.21.22.56.43
         (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 21 Oct 2020 22:56:42 -0700 (PDT)
+        Wed, 21 Oct 2020 22:56:50 -0700 (PDT)
 From:   Pingfan Liu <kernelfans@gmail.com>
 To:     linux-kernel@vger.kernel.org
 Cc:     Pingfan Liu <kernelfans@gmail.com>,
@@ -67,9 +67,9 @@ Cc:     Pingfan Liu <kernelfans@gmail.com>,
         Mike Kravetz <mike.kravetz@oracle.com>,
         Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
         kexec@lists.infradead.org
-Subject: [PATCH 2/3] kernel/watchdog: suppress max irq when irq floods
-Date:   Thu, 22 Oct 2020 13:56:02 +0800
-Message-Id: <1603346163-21645-3-git-send-email-kernelfans@gmail.com>
+Subject: [PATCH 3/3] Documentation: introduce a param "irqflood_suppress"
+Date:   Thu, 22 Oct 2020 13:56:03 +0800
+Message-Id: <1603346163-21645-4-git-send-email-kernelfans@gmail.com>
 X-Mailer: git-send-email 2.7.5
 In-Reply-To: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
 References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
@@ -77,11 +77,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The capture kernel should try its best to save the crash info. Normally,
-irq flood is caused by some trivial devices, which has no impact on saving
-vmcore.
-
-Introducing a parameter "irqflood_suppress" to enable suppress irq flood.
+The param "irqflood_suppress" is helpful for capture kernel to survive irq
+flood.
 
 Signed-off-by: Pingfan Liu <kernelfans@gmail.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>
@@ -105,93 +102,23 @@ To: linux-kernel@vger.kernel.org
 Cc: linux-doc@vger.kernel.org
 Cc: kexec@lists.infradead.org
 ---
- include/linux/irq.h   |  2 ++
- kernel/irq/spurious.c | 32 ++++++++++++++++++++++++++++++++
- kernel/watchdog.c     |  9 ++++++++-
- 3 files changed, 42 insertions(+), 1 deletion(-)
+ Documentation/admin-guide/kernel-parameters.txt | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/include/linux/irq.h b/include/linux/irq.h
-index 1b7f4df..140cb61 100644
---- a/include/linux/irq.h
-+++ b/include/linux/irq.h
-@@ -684,6 +684,8 @@ extern void note_interrupt(struct irq_desc *desc, irqreturn_t action_ret);
- /* Enable/disable irq debugging output: */
- extern int noirqdebug_setup(char *str);
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index a106874..0a25a05 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2009,6 +2009,9 @@
+ 			for it. Also check all handlers each timer
+ 			interrupt. Intended to get systems with badly broken
+ 			firmware running.
++	irqflood_suppress	[HW]
++			When a irq fully occupies a cpu in a long time, suppressing
++			it to make kernel move on. It is useful in the capture kernel.
  
-+void suppress_max_irq(void);
-+
- /* Checks whether the interrupt can be requested by request_irq(): */
- extern int can_request_irq(unsigned int irq, unsigned long irqflags);
- 
-diff --git a/kernel/irq/spurious.c b/kernel/irq/spurious.c
-index f865e5f..d3d94d6 100644
---- a/kernel/irq/spurious.c
-+++ b/kernel/irq/spurious.c
-@@ -464,3 +464,35 @@ static int __init irqpoll_setup(char *str)
- }
- 
- __setup("irqpoll", irqpoll_setup);
-+
-+#ifdef CONFIG_IRQ_TIME_ACCOUNTING
-+
-+static bool irqflood_suppress;
-+
-+static int __init irqflood_suppress_setup(char *str)
-+{
-+	irqflood_suppress = true;
-+	pr_info("enable auto suppress irqflood\n");
-+	return 1;
-+}
-+__setup("irqflood_suppress", irqflood_suppress_setup);
-+
-+void suppress_max_irq(void)
-+{
-+	unsigned int tmp, maxirq = 0, max = 0;
-+	int irq;
-+
-+	if (!irqflood_suppress)
-+		return;
-+	for_each_active_irq(irq) {
-+		tmp = kstat_irqs_cpu(irq, smp_processor_id());
-+		if (max < tmp) {
-+			maxirq = irq;
-+			max = tmp;
-+		}
-+	}
-+	pr_warn("Suppress irq:%u, which is triggered %u times\n",
-+		maxirq, max);
-+	disable_irq_nosync(maxirq);
-+}
-+#endif
-diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-index 230ac38..28a74e5 100644
---- a/kernel/watchdog.c
-+++ b/kernel/watchdog.c
-@@ -24,6 +24,7 @@
- #include <linux/sched/isolation.h>
- #include <linux/stop_machine.h>
- #include <linux/kernel_stat.h>
-+#include <linux/irq.h>
- 
- #include <asm/irq_regs.h>
- #include <linux/kvm_para.h>
-@@ -364,9 +365,15 @@ static void check_irq_flood(void)
- 		percent = irqts * 100 / totalts;
- 		percent =  percent < 100 ? percent : 100;
- 		__this_cpu_write(check_hint, -1);
--		if (percent >= 98)
-+		if (percent >= 98) {
- 			pr_info("Irq flood occupies more than %lu%% of the past %lu seconds\n",
- 				percent, totalts >> 30);
-+			/*
-+			 * Suppress top irq when scheduler does not work for long time and irq
-+			 * occupies too much time.
-+			 */
-+			suppress_max_irq();
-+		}
- 	} else if (cnt == 0) {
- 		__this_cpu_write(last_total_ts, totalts);
- 		__this_cpu_write(last_irq_ts, irqts);
+ 	isapnp=		[ISAPNP]
+ 			Format: <RDP>,<reset>,<pci_scan>,<verbosity>
 -- 
 2.7.5
 
