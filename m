@@ -2,131 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9B0E296255
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:06:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 022FA29625D
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:10:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2509932AbgJVQGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:06:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55294 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2509835AbgJVQGs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:06:48 -0400
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B40E72464B
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 16:06:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603382806;
-        bh=Ls/MQbLtf0PDEzX6lAouIYKIJzqCegg9SbnTQc3KmPE=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=qeXu2VEWABudWPdRTNxnCefRi8ZA7m0w+GRR1bHc23gqCOpJssPsjExDSqOwc4Bco
-         TuP70VFjhmF+U8QPKWef+Y/EDmXEYkcJCffjHMT6IAs58J7Ur2OzxLJbg5CGP60kWg
-         gPvO2dRciznUYAWWJsf/mueDWqD0NjghPHu5MZLM=
-Received: by mail-oi1-f172.google.com with SMTP id u127so2270214oib.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:06:46 -0700 (PDT)
-X-Gm-Message-State: AOAM533lxRrBZugPXbAhIkbrNJ21BrjAjQqU92f18VGHmpUA+WxwgR0+
-        GOqaw4tFi2UVMw9Lw4Q/TP3gOpRFoV0+UleSzgs=
-X-Google-Smtp-Source: ABdhPJy/bosloqFElVvH/7AjbIudCNTYS3FmYtNlsv4g30JW15h2mG34rw2NX9DHlI0Ct+7MeuwOYy6eeUyHPdxwufg=
-X-Received: by 2002:aca:d64f:: with SMTP id n76mr2223077oig.174.1603382805853;
- Thu, 22 Oct 2020 09:06:45 -0700 (PDT)
+        id S2895792AbgJVQKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:10:04 -0400
+Received: from out5-smtp.messagingengine.com ([66.111.4.29]:45999 "EHLO
+        out5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2895440AbgJVQKE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 12:10:04 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.nyi.internal (Postfix) with ESMTP id 20FF75C0144;
+        Thu, 22 Oct 2020 12:10:03 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Thu, 22 Oct 2020 12:10:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=Dxs+IJPaOZW5RpEI46Ejy/9a5zm
+        xksy9228WToYAQKA=; b=pgGLOl7KmDKV6PWClPPromj3LoWpQRvj53mn2YuBcaP
+        oKH6pFfNkFv/DekcmuPGYOTQz6J7Z43H083Oorha3zo+rT4TtSbNHdScMAOVsVdM
+        xo+UHlB9eQY/d1I1VMYImZr6eyPDIfCqMhm2aPJw8ypb1ZVvBqqpaUmSDnmMqSWF
+        AG5HHNh0e2VBjdbyn/lHUnftLYJ+l4SsUXlQMFIf4zhZFS0dqYAEqzBCpfOa7l5C
+        0WQgJ4xtIxf8Ax9F2Mei+cl1AuGJAbLbEnSpeOh2xLiAkLjQySrZ5R4OCmeLVHQo
+        y4M8LJZhqc1XhdtEI9ps6C+aVJQ5jWx7RsTguDbp9aA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=Dxs+IJ
+        PaOZW5RpEI46Ejy/9a5zmxksy9228WToYAQKA=; b=gPYkfCaqMytcupmz+CvyXI
+        8/nYjm9LWb6d+vpMnXmlM5Z559E9PmmrKI9M4OBCwPGL6KPPwIGcpCb7vakoEOtg
+        c9dq0KkCOWyXmKmnzgpnpUE7HG5sq6Et/xS9NWgZslk3TWxTsCj7c+gonDOITMLk
+        /TJCC9PMuMKJWb39cp5fUKntA/Vz3aAdeszv+5oqyakFcGeNAIYQsHD+hR+XWpfw
+        Ttk5P+B4L/xnvp9VP8A5k/OMDG7pWOhvwgzTavZPlH+VaZaJBV/Pe15MUZja/DG7
+        cPzuCpO8lpEhc+ncfzgVkOCQ4rtWWZwMT1kGcxXeYM0THAGEqe0qN5CTUFbOwZTg
+        ==
+X-ME-Sender: <xms:2a6RX8S7VTKwqPH9dA-fhSJ7gqabKOArl5BYo8kNLbYKq-aXcm3NSw>
+    <xme:2a6RX5wm2c3ce4lCh4wMTd35qTFV3LKRSymcs0j2_K9u6ZfMsjTpg4Lx1ZEyzyaS6
+    ilqzwNAFXPJhyoQRdk>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrjeekgdduhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:2a6RX53wVZUZziVu3FEqEAabOh5OgAlAsvw7AmoAxjR4oYL_LEOoew>
+    <xmx:2a6RXwDtYwd4B0TBxX80lcSaNyNt4n42Wp7HIJRW3bp9Z9Yoe3-7pg>
+    <xmx:2a6RX1itvaSgxn7f0ysUoxHwIwcuKEYjkPPRqQ5fMgI6TwKxbxskpA>
+    <xmx:266RX4sNoH1myJYJcp7nB8yC8dPAf1d_PLLLCAWHfRk5Tc1pXvmnUQ>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id D509D3280069;
+        Thu, 22 Oct 2020 12:10:00 -0400 (EDT)
+Date:   Thu, 22 Oct 2020 18:09:59 +0200
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Corentin Labbe <clabbe@baylibre.com>
+Cc:     wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] arm64: dts: allwinner: Pine H64: Enable both RGMII RX/TX
+ delay
+Message-ID: <20201022160959.4gmu3r3pjwh7xtlq@gilmour.lan>
+References: <20201019063449.33316-1-clabbe@baylibre.com>
 MIME-Version: 1.0
-References: <20201021225737.739-1-digetx@gmail.com> <202010211637.7CFD8435@keescook>
- <773fbdb0-5fc4-ab39-e72d-89845faa4c6d@gmail.com> <202010212028.32E8A5EF9B@keescook>
- <CAMj1kXHXN56xmuwVG3P93Jjwd+NxXTYHtfibPWg5TUADucOdWg@mail.gmail.com> <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
-In-Reply-To: <1d2e2b5d-3035-238c-d2ca-14c0c209a6a1@gmail.com>
-From:   Ard Biesheuvel <ardb@kernel.org>
-Date:   Thu, 22 Oct 2020 18:06:32 +0200
-X-Gmail-Original-Message-ID: <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
-Message-ID: <CAMj1kXERX_Bv1MdfafOVmdmDXPio6Uj897ZZZ7qRERbCXYw_iQ@mail.gmail.com>
-Subject: Re: [PATCH v1] ARM: vfp: Use long jump to fix THUMB2 kernel
- compilation error
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Ingo Molnar <mingo@kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="n5nq2p7sw4cdfly3"
+Content-Disposition: inline
+In-Reply-To: <20201019063449.33316-1-clabbe@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 at 17:57, Dmitry Osipenko <digetx@gmail.com> wrote:
->
-> 22.10.2020 10:06, Ard Biesheuvel =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> > On Thu, 22 Oct 2020 at 05:30, Kees Cook <keescook@chromium.org> wrote:
-> >>
-> >> On Thu, Oct 22, 2020 at 03:00:06AM +0300, Dmitry Osipenko wrote:
-> >>> 22.10.2020 02:40, Kees Cook =D0=BF=D0=B8=D1=88=D0=B5=D1=82:
-> >>>> On Thu, Oct 22, 2020 at 01:57:37AM +0300, Dmitry Osipenko wrote:
-> >>>>> The vfp_kmode_exception() function now is unreachable using relativ=
-e
-> >>>>> branching in THUMB2 kernel configuration, resulting in a "relocatio=
-n
-> >>>>> truncated to fit: R_ARM_THM_JUMP19 against symbol `vfp_kmode_except=
-ion'"
-> >>>>> linker error. Let's use long jump in order to fix the issue.
-> >>>>
-> >>>> Eek. Is this with gcc or clang?
-> >>>
-> >>> GCC 9.3.0
-> >>>
-> >>>>> Fixes: eff8728fe698 ("vmlinux.lds.h: Add PGO and AutoFDO input sect=
-ions")
-> >>>>
-> >>>> Are you sure it wasn't 512dd2eebe55 ("arm/build: Add missing section=
-s") ?
-> >>>> That commit may have implicitly moved the location of .vfp11_veneer,
-> >>>> though I thought I had chosen the correct position.
-> >>>
-> >>> I re-checked that the fixes tag is correct.
-> >>>
-> >>>>> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> >>>>> ---
-> >>>>>  arch/arm/vfp/vfphw.S | 3 ++-
-> >>>>>  1 file changed, 2 insertions(+), 1 deletion(-)
-> >>>>>
-> >>>>> diff --git a/arch/arm/vfp/vfphw.S b/arch/arm/vfp/vfphw.S
-> >>>>> index 4fcff9f59947..6e2b29f0c48d 100644
-> >>>>> --- a/arch/arm/vfp/vfphw.S
-> >>>>> +++ b/arch/arm/vfp/vfphw.S
-> >>>>> @@ -82,7 +82,8 @@ ENTRY(vfp_support_entry)
-> >>>>>    ldr     r3, [sp, #S_PSR]        @ Neither lazy restore nor FP ex=
-ceptions
-> >>>>>    and     r3, r3, #MODE_MASK      @ are supported in kernel mode
-> >>>>>    teq     r3, #USR_MODE
-> >>>>> -  bne     vfp_kmode_exception     @ Returns through lr
-> >>>>> +  ldr     r1, =3Dvfp_kmode_exception
-> >>>>> +  bxne    r1                      @ Returns through lr
-> >>>>>
-> >>>>>    VFPFMRX r1, FPEXC               @ Is the VFP enabled?
-> >>>>>    DBGSTR1 "fpexc %08x", r1
-> >>>>
-> >>>> This seems like a workaround though? I suspect the vfp11_veneer need=
-s
-> >>>> moving?
-> >>>>
-> >>>
-> >>> I don't know where it needs to be moved. Please feel free to make a
-> >>> patch if you have a better idea, I'll be glad to test it.
-> >>
-> >> I might have just been distracted by the common "vfp" prefix. It's
-> >> possible that the text section shuffling just ended up being very larg=
-e,
-> >> so probably this patch is right then!
-> >>
-> >
-> > I already sent a fix for this issue:
-> >
-> > https://www.armlinux.org.uk/developer/patches/viewpatch.php?id=3D9018/1
-> >
->
-> The offending commit contains stable tag, so I assume that fixes tag is
-> mandatory. Yours patch misses the fixes tag.
 
-Russell, mind adding that? Or would you like me to update the patch in
-the patch system?
+--n5nq2p7sw4cdfly3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, Oct 19, 2020 at 06:34:49AM +0000, Corentin Labbe wrote:
+> Since commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e rx/tx delay c=
+onfig"),
+> the network is unusable on PineH64 model A.
+>=20
+> This is due to phy-mode incorrectly set to rgmii instead of rgmii-id.
+>=20
+> Fixes: 729e1ffcf47e ("arm64: allwinner: h6: add support for the Ethernet =
+on Pine H64")
+> Signed-off-by: Corentin Labbe <clabbe@baylibre.com>
+
+Queued as a fix for 5.10, thanks!
+Maxime
+
+--n5nq2p7sw4cdfly3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5Gu1wAKCRDj7w1vZxhR
+xZt4AQDpFTAOXmtkaBeFHDpMOZDvKZ83CBZBd1e5o8C8TbwLwwEAnA/YB8xKDp3n
+etOOzcaknTJmgBIMBFTM8y4N9Sl2lAM=
+=3juI
+-----END PGP SIGNATURE-----
+
+--n5nq2p7sw4cdfly3--
