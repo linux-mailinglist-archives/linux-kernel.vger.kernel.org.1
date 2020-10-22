@@ -2,133 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50C6E295967
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:40:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E76B7295968
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 09:41:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2508747AbgJVHky (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 03:40:54 -0400
-Received: from smtp-fw-9102.amazon.com ([207.171.184.29]:51047 "EHLO
-        smtp-fw-9102.amazon.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2506829AbgJVHkx (ORCPT
+        id S2508760AbgJVHlI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 03:41:08 -0400
+Received: from kernel.crashing.org ([76.164.61.194]:45150 "EHLO
+        kernel.crashing.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2506725AbgJVHlH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 03:40:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1603352454; x=1634888454;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version;
-  bh=jdm1g2KQwup+Vn0X8CptXTW5WmBvujuwa0Pm6SY2KNg=;
-  b=CsdXlhlvZp+H1e57XZWVK06wk4XonwUbmhJ64GYnsj1WEPU/0oxekdj2
-   zneGj7FW5EUIZF1I73K0S2dOIw+uBX8XmRcMj0j3foIAaKv/Y1lRsPF7B
-   tnBgvwBNSbZIMK86C8kgzXE3OJSvCCBZ9Et13Yxl+XlWcy90CHTEIYL8p
-   w=;
-X-IronPort-AV: E=Sophos;i="5.77,404,1596499200"; 
-   d="scan'208";a="87309345"
-Received: from sea32-co-svc-lb4-vlan3.sea.corp.amazon.com (HELO email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com) ([10.47.23.38])
-  by smtp-border-fw-out-9102.sea19.amazon.com with ESMTP; 22 Oct 2020 07:40:46 +0000
-Received: from EX13D31EUB001.ant.amazon.com (iad12-ws-svc-p26-lb9-vlan3.iad.amazon.com [10.40.163.38])
-        by email-inbound-relay-1d-74cf8b49.us-east-1.amazon.com (Postfix) with ESMTPS id B4282C07B0;
-        Thu, 22 Oct 2020 07:40:42 +0000 (UTC)
-Received: from u3f2cd687b01c55.ant.amazon.com (10.43.161.237) by
- EX13D31EUB001.ant.amazon.com (10.43.166.210) with Microsoft SMTP Server (TLS)
- id 15.0.1497.2; Thu, 22 Oct 2020 07:40:39 +0000
-From:   SeongJae Park <sjpark@amazon.com>
-To:     <brendanhiggins@google.com>
-CC:     SeongJae Park <sjpark@amazon.de>, <skhan@linuxfoundation.org>,
-        <linux-kselftest@vger.kernel.org>, <kunit-dev@googlegroups.com>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2 2/2] kunit: tool: Mark 'kunittest_config' as constant again
-Date:   Thu, 22 Oct 2020 09:40:11 +0200
-Message-ID: <20201022074011.1990-3-sjpark@amazon.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201022074011.1990-1-sjpark@amazon.com>
-References: <20201022074011.1990-1-sjpark@amazon.com>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.43.161.237]
-X-ClientProxiedBy: EX13D38UWB003.ant.amazon.com (10.43.161.178) To
- EX13D31EUB001.ant.amazon.com (10.43.166.210)
+        Thu, 22 Oct 2020 03:41:07 -0400
+Received: from localhost (gate.crashing.org [63.228.1.57])
+        (authenticated bits=0)
+        by kernel.crashing.org (8.14.7/8.14.7) with ESMTP id 09M7eafG027618
+        (version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NO);
+        Thu, 22 Oct 2020 02:40:40 -0500
+Message-ID: <f3f4243408afb4e31a72b8ccb8cef4ba539c67a3.camel@kernel.crashing.org>
+Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+From:   Benjamin Herrenschmidt <benh@kernel.crashing.org>
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Dylan Hung <dylan_hung@aspeedtech.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Joel Stanley <joel@jms.id.au>,
+        "David S . Miller" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        BMC-SW <BMC-SW@aspeedtech.com>
+Date:   Thu, 22 Oct 2020 18:40:35 +1100
+In-Reply-To: <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+         <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+         <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+         <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+         <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+         <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
+         <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
+         <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.2 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: SeongJae Park <sjpark@amazon.de>
+On Wed, 2020-10-21 at 14:11 +0200, Arnd Bergmann wrote:
+> (replying to my own mail from a different address to deal with the
+> regular one being blacklisted somewhere, sorry for any duplicates)
+> 
+> On Wed, Oct 21, 2020 at 9:16 AM Arnd Bergmann <arnd@arndb.de> wrote:
+> > 
+> > On Wed, Oct 21, 2020 at 12:10 AM Benjamin Herrenschmidt
+> > <benh@kernel.crashing.org> wrote:
+> > > On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
+> > > > On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung <dylan_hung@aspeedtech.com> wrote:
+> > > > > > +1 @first is system memory from dma_alloc_coherent(), right?
+> > > > > > 
+> > > > > > You shouldn't have to do this. Is coherent DMA memory broken on your
+> > > > > > platform?
+> > > > > 
+> > > > > It is about the arbitration on the DRAM controller.  There are two queues in the dram controller, one is for the CPU access and the other is for the HW engines.
+> > > > > When CPU issues a store command, the dram controller just acknowledges cpu's request and pushes the request into the queue.  Then CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA memory.
+> > > > > But since the cpu's request may still stay in the queue, the HW engine may fetch the wrong data.
+> > > 
+> > > Actually, I take back what I said earlier, the above seems to imply
+> > > this is more generic.
+> > > 
+> > > Dylan, please confirm, does this affect *all* DMA capable devices ? If
+> > > yes, then it's a really really bad design bug in your chips
+> > > unfortunately and the proper fix is indeed to make dma_wmb() do a dummy
+> > > read of some sort (what address though ? would any dummy non-cachable
+> > > page do ?) to force the data out as *all* drivers will potentially be
+> > > affected.
+> > > 
+> > > I was under the impression that it was a specific timing issue in the
+> > > vhub and ethernet parts, but if it's more generic then it needs to be
+> > > fixed globally.
+> > 
+> > We have CONFIG_ARM_HEAVY_MB for SoCs with similar problems,
+> > it turns mb() and wmb() into a platform specific function call, though it
+> > doesn't do that for dma_wmb() and smp_wmb(), which should not
+> > be affected if the problem is only missing serialization between DMA
+> > and CPU writes.
 
-'kunit_kernel.kunittest_config' was constant at first, and therefore it
-used UPPER_SNAKE_CASE naming convention that usually means it is
-constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
-default config in '--build_dir'") made it modifiable to fix a use case
-of the tool and thus the naming also changed to lower_snake_case.
-However, this resulted in a confusion.  As a result, some successing
-changes made the tool unittest fail, and a fix[1] of it again incurred
-the '--build_dir' use case failure.
+Right. I got mixed up by David mention of dma_wmb, it's not the issue
+here, it's indeed the ordering of writes to "coherent" memory vs
+iowrite.
 
-As the previous commit fixed the '--build_dir' use case without
-modifying the variable again, this commit marks the variable as constant
-again with UPPER_SNAKE_CASE, to reduce future confusions.
+> > > > If either of the two is the case, then the READ_ONCE() would just
+> > > > introduce a long delay before the iowrite32() that makes it more likely
+> > > > that the data is there, but the inconsistent state would still be observable
+> > > > by the device if it is still working on previous frames.
+> > > 
+> > > I think it just get stuck until we try another packet, ie, it doesn't
+> > > see the new descriptor valid bit. But Dylan can elaborate.
+> > 
+> > Ok, that would point to an insufficient barrier in iowrite32() as well,
+> > not in dma_wmb().
 
-[1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
+Correct.
 
-Signed-off-by: SeongJae Park <sjpark@amazon.de>
-Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
----
- tools/testing/kunit/kunit.py        | 6 +++---
- tools/testing/kunit/kunit_kernel.py | 4 ++--
- 2 files changed, 5 insertions(+), 5 deletions(-)
+> > At the moment, the only chips that need the heavy barrier are
+> > omap4 and mstar_v7, and early l2 cache controllers (not the one
+> > on Cortex-A7) have another synchronization callback that IIRC
+> > is used for streaming mappings.
 
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index 8bee2a5fee27..26046875adb2 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -45,7 +45,7 @@ class KunitStatus(Enum):
- 	TEST_FAILURE = auto()
- 
- def create_default_kunitconfig(build_dir=''):
--	kunitconfig = os.path.join(build_dir, kunit_kernel.kunitconfig_path)
-+	kunitconfig = os.path.join(build_dir, kunit_kernel.KUNITCONFIG_PATH)
- 	if not os.path.exists(kunitconfig):
- 		shutil.copyfile('arch/um/configs/kunit_defconfig', kunitconfig)
- 
-@@ -259,7 +259,7 @@ def main(argv, linux=None):
- 		os.chdir(get_kernel_root_path())
- 
- 	kunitconfig_path = os.path.join(cli_args.build_dir,
--			kunit_kernel.kunitconfig_path)
-+			kunit_kernel.KUNITCONFIG_PATH)
- 	if cli_args.subcommand == 'run':
- 		if not os.path.exists(cli_args.build_dir):
- 			os.mkdir(cli_args.build_dir)
-@@ -285,7 +285,7 @@ def main(argv, linux=None):
- 				not os.path.exists(cli_args.build_dir)):
- 			os.mkdir(cli_args.build_dir)
- 
--		if not os.path.exists(kunit_kernel.kunitconfig_path):
-+		if not os.path.exists(kunitconfig_path):
- 			create_default_kunitconfig(cli_args.build_dir)
- 
- 		if not linux:
-diff --git a/tools/testing/kunit/kunit_kernel.py b/tools/testing/kunit/kunit_kernel.py
-index 7dd4268665a8..f4bc9568bbce 100644
---- a/tools/testing/kunit/kunit_kernel.py
-+++ b/tools/testing/kunit/kunit_kernel.py
-@@ -18,7 +18,7 @@ import kunit_config
- import kunit_parser
- 
- KCONFIG_PATH = '.config'
--kunitconfig_path = '.kunitconfig'
-+KUNITCONFIG_PATH = '.kunitconfig'
- BROKEN_ALLCONFIG_PATH = 'tools/testing/kunit/configs/broken_on_uml.config'
- 
- class ConfigError(Exception):
-@@ -111,7 +111,7 @@ class LinuxSourceTree(object):
- 
- 	def __init__(self, build_dir):
- 		self._kconfig = kunit_config.Kconfig()
--		self._kconfig.read_from_file(os.path.join(build_dir, kunitconfig_path))
-+		self._kconfig.read_from_file(os.path.join(build_dir, KUNITCONFIG_PATH))
- 		self._ops = LinuxSourceTreeOperations()
- 		signal.signal(signal.SIGINT, self.signal_handler)
- 
--- 
-2.17.1
+ .../...
+
+> > Obviously, adding one of these for ast2600 would slow down every
+> > mb() and writel() a lot, but if it is a chip-wide problem rather than
+> > one isolated to the network device, it would be the correct solution,
+> > provided that a correct code sequence can be found.
+
+I'm surprised that problem doesn't already exist on the ast2400 and
+2500 and I thus worry about the performance impact of such a workaround
+applied generally to every MMIO writes....
+
+But we did kill mmiowb so ... ;-)
+
+Cheers,
+Ben.
+
 
