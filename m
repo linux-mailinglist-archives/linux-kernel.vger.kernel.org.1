@@ -2,69 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B636A295C34
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:49:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD5FF295C36
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:49:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896173AbgJVJtQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:49:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48866 "EHLO mx2.suse.de"
+        id S2896165AbgJVJtP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:49:15 -0400
+Received: from mx2.suse.de ([195.135.220.15]:48892 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2895994AbgJVJtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S2896002AbgJVJtM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Thu, 22 Oct 2020 05:49:12 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
         t=1603360150;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=h/u/r/R71NxCYcOyxSXeNfPtXwCtEz7D63O5chrEOVo=;
-        b=UMv6UT0andZFdqJzA9T57KO5xZgBpaxBp0MwYbcL2oqPEIKF4LBgN2CJGiUBElIEmMfytC
-        PIHXqXVWKV6fLLkXApYo0DHCHCb6ywsYd7UdSv0INLKi5dxaNWaF9pvD8e5FIpQL5rADuu
-        jw/AAb47AszHf01DLw5KDCaXH39KMdA=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=+fw6jToo0XyIGVFmL1AVSJxKibDPcDAXWlsALH4ZCRY=;
+        b=CLdksM9pz7V631JF9izi4td+aUTHbmuBiNNKiAlpgPZZOlD/X7PNWLhY9NFlnFx4v8V3BF
+        C5TkzCSt4gQOCwGWGFtzZolGoDTfA2/WPRlTd6FISBXFXMCVgkcsSp0XP1kwaYaBxlQwy+
+        jajaQ5HVad/0I+o7XEuXJhw2OYrYnro=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 4A394AD87;
+        by mx2.suse.de (Postfix) with ESMTP id 5E94AADBB;
         Thu, 22 Oct 2020 09:49:10 +0000 (UTC)
 From:   Juergen Gross <jgross@suse.com>
-To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org,
-        x86@kernel.org, linux-doc@vger.kernel.org
+To:     xen-devel@lists.xenproject.org, linux-kernel@vger.kernel.org
 Cc:     Juergen Gross <jgross@suse.com>,
         Boris Ostrovsky <boris.ostrovsky@oracle.com>,
         Stefano Stabellini <sstabellini@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 0/5] xen: event handling cleanup
-Date:   Thu, 22 Oct 2020 11:49:02 +0200
-Message-Id: <20201022094907.28560-1-jgross@suse.com>
+        Jan Beulich <jbeulich@suse.com>
+Subject: [PATCH v2 1/5] xen: remove no longer used functions
+Date:   Thu, 22 Oct 2020 11:49:03 +0200
+Message-Id: <20201022094907.28560-2-jgross@suse.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201022094907.28560-1-jgross@suse.com>
+References: <20201022094907.28560-1-jgross@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Do some cleanups in Xen event handling code.
+With the switch to the lateeoi model for interdomain event channels
+some functions are no longer in use. Remove them.
 
-Changes in V2:
-- addressed comments
+Suggested-by: Jan Beulich <jbeulich@suse.com>
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Reviewed-by: Jan Beulich <jbeulich@suse.com>
+---
+ drivers/xen/events/events_base.c | 21 ---------------------
+ include/xen/events.h             |  8 --------
+ 2 files changed, 29 deletions(-)
 
-Juergen Gross (5):
-  xen: remove no longer used functions
-  xen/events: make struct irq_info private to events_base.c
-  xen/events: only register debug interrupt for 2-level events
-  xen/events: unmask a fifo event channel only if it was masked
-  Documentation: add xen.fifo_events kernel parameter description
-
- .../admin-guide/kernel-parameters.txt         |  7 ++
- arch/x86/xen/smp.c                            | 19 ++--
- arch/x86/xen/xen-ops.h                        |  2 +
- drivers/xen/events/events_2l.c                |  7 +-
- drivers/xen/events/events_base.c              | 94 +++++++++++++------
- drivers/xen/events/events_fifo.c              |  9 +-
- drivers/xen/events/events_internal.h          | 70 ++------------
- include/xen/events.h                          |  8 --
- 8 files changed, 102 insertions(+), 114 deletions(-)
-
+diff --git a/drivers/xen/events/events_base.c b/drivers/xen/events/events_base.c
+index cc317739e786..436682db41c5 100644
+--- a/drivers/xen/events/events_base.c
++++ b/drivers/xen/events/events_base.c
+@@ -1145,14 +1145,6 @@ static int bind_interdomain_evtchn_to_irq_chip(unsigned int remote_domain,
+ 					       chip);
+ }
+ 
+-int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
+-				   evtchn_port_t remote_port)
+-{
+-	return bind_interdomain_evtchn_to_irq_chip(remote_domain, remote_port,
+-						   &xen_dynamic_chip);
+-}
+-EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irq);
+-
+ int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
+ 					   evtchn_port_t remote_port)
+ {
+@@ -1320,19 +1312,6 @@ static int bind_interdomain_evtchn_to_irqhandler_chip(
+ 	return irq;
+ }
+ 
+-int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
+-					  evtchn_port_t remote_port,
+-					  irq_handler_t handler,
+-					  unsigned long irqflags,
+-					  const char *devname,
+-					  void *dev_id)
+-{
+-	return bind_interdomain_evtchn_to_irqhandler_chip(remote_domain,
+-				remote_port, handler, irqflags, devname,
+-				dev_id, &xen_dynamic_chip);
+-}
+-EXPORT_SYMBOL_GPL(bind_interdomain_evtchn_to_irqhandler);
+-
+ int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
+ 						  evtchn_port_t remote_port,
+ 						  irq_handler_t handler,
+diff --git a/include/xen/events.h b/include/xen/events.h
+index 3b8155c2ea03..8ec418e30c7f 100644
+--- a/include/xen/events.h
++++ b/include/xen/events.h
+@@ -35,16 +35,8 @@ int bind_ipi_to_irqhandler(enum ipi_vector ipi,
+ 			   unsigned long irqflags,
+ 			   const char *devname,
+ 			   void *dev_id);
+-int bind_interdomain_evtchn_to_irq(unsigned int remote_domain,
+-				   evtchn_port_t remote_port);
+ int bind_interdomain_evtchn_to_irq_lateeoi(unsigned int remote_domain,
+ 					   evtchn_port_t remote_port);
+-int bind_interdomain_evtchn_to_irqhandler(unsigned int remote_domain,
+-					  evtchn_port_t remote_port,
+-					  irq_handler_t handler,
+-					  unsigned long irqflags,
+-					  const char *devname,
+-					  void *dev_id);
+ int bind_interdomain_evtchn_to_irqhandler_lateeoi(unsigned int remote_domain,
+ 						  evtchn_port_t remote_port,
+ 						  irq_handler_t handler,
 -- 
 2.26.2
 
