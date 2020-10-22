@@ -2,93 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 924C92966BF
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:44:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 476B92966C5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:47:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372443AbgJVVnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:43:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44228 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372432AbgJVVnz (ORCPT
+        id S372469AbgJVVrq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:47:46 -0400
+Received: from alexa-out-sd-02.qualcomm.com ([199.106.114.39]:49240 "EHLO
+        alexa-out-sd-02.qualcomm.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S372459AbgJVVrq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:43:55 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 244AFC0613CE;
-        Thu, 22 Oct 2020 14:43:55 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603403033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=c32SKqD2QPPmQRkKDG5IckFogmrBjrqnOlEPJ34GffQ=;
-        b=djSQMJvu88coa4ZnaK9g69LibWRWkd0bVkrazf5TGY3ku/NnliEgV5RIYQqddSS5O41bSB
-        8MVMUf50eEzJTpgoHepJz9F05yw/FfLg5J6YFUzWf0Px/R8Az29hFA6lo9qCJPMyNZdntF
-        rhlqunO69v/B/SaawC/2YQEiAW7qyQfxu5aG/cspUC8Vads5EXLlBP6Xlj/XwecshHQWzq
-        eIo4vfglKAsQyQO9nRvSyMrLHptLFF3Fxm2J5NIFHc9xKQlSWp8lEH5ew/t3TvmpI+rK5P
-        lT3kN4bVzZefwVb2oLeI4u2DytHlyA5FVxGxLMp1TAzuCE+tgzrs1ff5v2hwcw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603403033;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to; bh=c32SKqD2QPPmQRkKDG5IckFogmrBjrqnOlEPJ34GffQ=;
-        b=xlNKFG/FRxX90888QEwo+jxnoVhskeS5SmseJy0OSOtvwYdaHTEmVrfehSvAP8GHBdt9E9
-        1CouFj602bGhAPDg==
-To:     David Woodhouse <dwmw2@infradead.org>, x86@kernel.org
-Cc:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] x86/ioapic: Generate RTE directly from parent irqchip's MSI message
-In-Reply-To: <20201009104616.1314746-9-dwmw2@infradead.org>
-Date:   Thu, 22 Oct 2020 23:43:52 +0200
-Message-ID: <87y2jy542v.fsf@nanos.tec.linutronix.de>
-MIME-Version: 1.0
-Content-Type: text/plain
+        Thu, 22 Oct 2020 17:47:46 -0400
+Received: from unknown (HELO ironmsg-SD-alpha.qualcomm.com) ([10.53.140.30])
+  by alexa-out-sd-02.qualcomm.com with ESMTP; 22 Oct 2020 14:47:45 -0700
+X-QCInternal: smtphost
+Received: from gurus-linux.qualcomm.com ([10.46.162.81])
+  by ironmsg-SD-alpha.qualcomm.com with ESMTP; 22 Oct 2020 14:47:45 -0700
+Received: by gurus-linux.qualcomm.com (Postfix, from userid 383780)
+        id DA866193C; Thu, 22 Oct 2020 14:47:44 -0700 (PDT)
+From:   Guru Das Srinagesh <gurus@codeaurora.org>
+To:     Andy Gross <agross@kernel.org>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        linux-arm-msm@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Cc:     Subbaraman Narayanamurthy <subbaram@codeaurora.org>,
+        David Collins <collinsd@codeaurora.org>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Stephen Boyd <sboyd@kernel.org>,
+        Guru Das Srinagesh <gurus@codeaurora.org>
+Subject: [PATCH v3 0/2] Add support for VBUS detection
+Date:   Thu, 22 Oct 2020 14:47:42 -0700
+Message-Id: <cover.1603403020.git.gurus@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09 2020 at 11:46, David Woodhouse wrote:
+Add support to enable VBUS detection in the pm8941 extcon driver.
 
-@@ -45,12 +45,11 @@ enum irq_alloc_type {
- };
+Changes from v2:
+- Fix YAML errors in dt binding document.
 
-> +static void mp_swizzle_msi_dest_bits(struct irq_data *irq_data, void *_entry)
-> +{
-> +	struct msi_msg msg;
-> +	u32 *entry = _entry;
+Changes from v1:
+- Change bindings from txt to YAML.
 
-Why is this a void * argument and then converting it to a u32 *? Just to
-make that function completely unreadable?
+Anirudh Ghayal (2):
+  bindings: pm8941-misc: Convert to YAML and add support for VBUS
+    detection
+  extcon: qcom-spmi: Add support for VBUS detection
 
-> +
-> +	irq_chip_compose_msi_msg(irq_data, &msg);
+ .../bindings/extcon/qcom,pm8941-misc.txt           |  41 ---------
+ .../bindings/extcon/qcom,pm8941-misc.yaml          |  65 ++++++++++++++
+ drivers/extcon/extcon-qcom-spmi-misc.c             | 100 +++++++++++++++++----
+ 3 files changed, 146 insertions(+), 60 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.txt
+ create mode 100644 Documentation/devicetree/bindings/extcon/qcom,pm8941-misc.yaml
 
-Lacks a comment. Also mp_swizzle... is a misnomer as this invokes the
-msi compose function which is not what the function name suggests.
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
-> +	/*
-> +	 * They're in a bit of a random order for historical reasons, but
-> +	 * the IO/APIC is just a device for turning interrupt lines into
-> +	 * MSIs, and various bits of the MSI addr/data are just swizzled
-> +	 * into/from the bits of Redirection Table Entry.
-> +	 */
-> +	entry[0] &= 0xfffff000;
-> +	entry[0] |= (msg.data & (MSI_DATA_DELIVERY_MODE_MASK |
-> +				 MSI_DATA_VECTOR_MASK));
-> +	entry[0] |= (msg.address_lo & MSI_ADDR_DEST_MODE_MASK) << 9;
-> +
-> +	entry[1] &= 0xffff;
-> +	entry[1] |= (msg.address_lo & MSI_ADDR_DEST_ID_MASK) << 12;
-
-Sorry, but this is unreviewable gunk. The whole msi_msg setup sucks with
-this unholy macro maze. I have a half finished series which allows
-architectures to provide shadow members for data, address_* so this can
-be done proper with bitfields.
-
-Aside of that it works magically because polarity,trigger and mask bit
-have been set up before. But of course a comment about this is
-completely overrated.
-
-Thanks,
-
-        tglx
