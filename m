@@ -2,144 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA7D22956C5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:29:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FFE42956CA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 05:30:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2895410AbgJVD3g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 23:29:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44470 "EHLO
+        id S2895441AbgJVDaC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 23:30:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44540 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2443900AbgJVD3f (ORCPT
+        with ESMTP id S2443889AbgJVDaC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 23:29:35 -0400
-Received: from mail-io1-xd41.google.com (mail-io1-xd41.google.com [IPv6:2607:f8b0:4864:20::d41])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AB3CC0613CE
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:29:35 -0700 (PDT)
-Received: by mail-io1-xd41.google.com with SMTP id q9so71092iow.6
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:29:35 -0700 (PDT)
+        Wed, 21 Oct 2020 23:30:02 -0400
+Received: from mail-pj1-x1043.google.com (mail-pj1-x1043.google.com [IPv6:2607:f8b0:4864:20::1043])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6189C0613CE
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:30:00 -0700 (PDT)
+Received: by mail-pj1-x1043.google.com with SMTP id kk5so253509pjb.1
+        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 20:30:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=IMFKi57vTn4WORdntFjLONbVhz/S8EeuoMU/ru37Fjk=;
-        b=QmKzFiaHxS37kWhYqOevmJSha395OemOg2KLsjigL/6YgPyC0cWSkaDr+ffKa61vPU
-         GXX3dfuhinc3Qluqg/LcYmWn/uxtlNOgkwHIV8z5wVdWNaIK/qBYmvkfpKFr6uIPXDuS
-         AfhJpRPcSFHBisu+853OTgVeFr30qYIhwo146On5XcIrt6UvkDzAOUc8b9oPP4LHY+aP
-         mcF96p2cmiAaoW59NhLHswwH2t/U88kQXPZ09XztB41AQUXax5V0J3N4+8uTmW9J5nLp
-         gvtykGqSZeSnzrM85+VdZrTtv1zRS7Q7rVERJrrNJBtv0PRbYLmliKduECch9kebV8vo
-         8yGQ==
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X99NBuFPcGRj6GED0BSF89qjk1R8FD9RmNFHvFmVAAM=;
+        b=MBtjWhu/uEvJGpYxkDDTQOBmoROGsXbUNmcwmt8MoWvdIkPo+wTJfS/1VKS3AAHkXM
+         zYgNieX94PHSHqQVyJfyBjLmJY/5CjAMkXopFksV2F9KSbtJCyNMG5Z34eqe8UUHOYsc
+         g6iAwu1+ICX3xV/o5w9PlbZ0xp7agEAfh1fso=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=IMFKi57vTn4WORdntFjLONbVhz/S8EeuoMU/ru37Fjk=;
-        b=WLK/NMgQHflQtNYVf4Ojwg4cq8N/aEnVFlwa6aIqs9PQoMZfC7IEw1oXEdhrQSloXa
-         KGxtbu6oxB+qt1QQBjifH3v/5zp4e4UWzm6OSTKmiGiDnx80V/ug6VYL01Qzpw1O2j2h
-         CjwXTRvu6hB1w0TgxfYrZIiFWRgAuTJIy3iRsg88OdVyGTLrUi3trS0Se0fEsoZ3Fwh7
-         G/4HEYF15YA26xdGfUqJE5PaDpZfsGieFVZYDHhEEtnbp0nBzw0mWpbzs8U3LSfncaLS
-         YUTwlBNy5maANujGMz8CH/zseGjToWopLb1mJXys9ZnwHGxJbzI3Rcc/6m3zj94qRqby
-         ab/g==
-X-Gm-Message-State: AOAM531tWnzx89Gy+5Q23z8uewe18hupVhMjYcahnoku3IXkIw9BlgAU
-        4ASCBHnDF1kGHCkQnZipnoKcohWrSHX8h/Smt2Sv/7lTaAjisVwX
-X-Google-Smtp-Source: ABdhPJxMauPqYM6FB9F47HpfghenbvywgGSYzCRS3yrWm7U0RrqNphhFJ8ty4CuavT4aU+0YJFuGRFcGD/Y9+5aVe7A=
-X-Received: by 2002:a5d:9f0e:: with SMTP id q14mr438269iot.185.1603337374464;
- Wed, 21 Oct 2020 20:29:34 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=X99NBuFPcGRj6GED0BSF89qjk1R8FD9RmNFHvFmVAAM=;
+        b=FwH00dCbBY3a1//fnO6oPzs4d9iPKiS5vqkVo09C68RbuvqjyTk7Ut8UgQp6jqeoGs
+         SlNEm0wf100JuZVDQ3HrXNdnbTNaPIiWMr+YP2Y9xOcTj41AbWfcsXu0sYSpKC4C7c/l
+         ZCeAkNoNhm2a2rFQSGKdK+Sivbxja07RpHlMVD3BGo0DY68vaD2OUSvlVXylFol8wAkX
+         64+mxWUNmsh/Tw7fM+r8yGmUo609DdAvsvVJd4CvnPJBceL2nOlf7ywPh0WggEjFTr6T
+         20wlrGpS5I4rm7Rw821htc/MEsWA0EZF6s1oGBbsgSBAMn/dSSSXmnEMpY44GR1JI1y2
+         RNaA==
+X-Gm-Message-State: AOAM530dmUmZzLEG49bmrTie5Hn2uNIE7T4eP5gADX7FIzxQ5+4tv9ni
+        j8KYLKm1af1OyVycCg8e/HW+ww==
+X-Google-Smtp-Source: ABdhPJw9LVovsG5PU4F/tFdWHu2y/AM7zuSll093yvu/HSUAhQkfufbN+JT8sQKLlAPrXHHdZq9ikg==
+X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr450702pjs.181.1603337400445;
+        Wed, 21 Oct 2020 20:30:00 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id p12sm297782pgm.29.2020.10.21.20.29.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 21 Oct 2020 20:29:59 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH v2] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
+Date:   Wed, 21 Oct 2020 20:29:58 -0700
+Message-Id: <20201022032958.265621-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk> <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk> <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
- <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
- <e876421c-dfeb-e853-1b65-53a786e9bcf9@linaro.org> <20201021123913.GD4497@sirena.org.uk>
-In-Reply-To: <20201021123913.GD4497@sirena.org.uk>
-From:   Tzung-Bi Shih <tzungbi@google.com>
-Date:   Thu, 22 Oct 2020 11:29:23 +0800
-Message-ID: <CA+Px+wV-uoODRQTZqv7RuyOUoGBoh5GnT2h4iW9mJGRL=UFfgQ@mail.gmail.com>
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
-To:     Mark Brown <broonie@kernel.org>
-Cc:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        Cheng-yi Chiang <cychiang@chromium.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, sorry for jumping into your discussion but I am trying to
-summarize them to make sure we are on the same page.  Pardon me to
-manually copy-and-paste partial sentences to quote.
+According to the SMCCC spec[1](7.5.2 Discovery) the
+ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+SMCCC_RET_NOT_SUPPORTED.
 
-ACK:
-- Don't expose DAI connections in compatible strings.
-- Use "model" DT property to make the card more UCM2-friendly.
-- Expose new DT properties to distinguish different DMIC models.
+ 0 is "workaround required and safe to call this function"
+ 1 is "workaround not required but safe to call this function"
+ SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
 
-NACK:
-- All the board variations using exactly the same compatible string.
-=> This is less realistic.  Although the CODECS information can be
-retrieved from DT, it is inevitable to have some custom code for each
-CODEC.
+SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
+calling this function may not work because it isn't implemented in some
+cases". Wonderful. We map this SMC call to
 
-Per Mark's words:
-> a different CODEC is something that often justifies a separate compatible
-I think we should use different compatible strings for new CODECS
-combinations.  And we should try to reuse the machine driver if they
-share the most code.  In the worst case, introduce a new machine
-driver for the new CODECS combinations.
+ 0 is SPECTRE_MITIGATED
+ 1 is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-- Srinivas's suggestion to set driver_name.
-e.g. card->driver_name = "SM8250";
-=> This sounds like a new DT property should be parsed in
-sound/soc/qcom/common.c.  For example: "qcom,family"?  But as we do
-less care about UCM2 for now, I would prefer to just leave it as is.
+For KVM hypercalls (hvc), we've implemented this function id to return
+SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
+isn't supposed to be there. Per the code we call
+arm64_get_spectre_v2_state() to figure out what to return for this
+feature discovery call.
 
+ 0 is SPECTRE_MITIGATED
+ SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-I would expect the following variants in DTS (just for example):
+Let's clean this up so that KVM tells the guest this mapping:
 
-sound {
-  compatible = "qcom,sc7180-trogdor";
-  model = "sc7180-rt5682-max98357a-1mic";
-}
+ 0 is SPECTRE_MITIGATED
+ 1 is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-sound {
-  compatible = "qcom,sc7180-trogdor";
-  model = "sc7180-rt5682-max98357a-2mic";
-  dmic-gpio = ...
-}
+(Note: Moving SMCCC_RET_NOT_AFFECTED to a header is left out of this
+patch as it would need to move from proton-pack.c which isn't in stable
+trees and the name isn't actually part of the SMCCC spec)
 
-sound {
-  compatible = "qcom,sc7180-pompom";
-  model = "sc7180-adau7002-max98357a";
-}
+Cc: Andre Przywara <andre.przywara@arm.com>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://developer.arm.com/documentation/den0028/latest [1]
+Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
 
+I see that before commit c118bbb52743 ("arm64: KVM: Propagate full
+Spectre v2 workaround state to KVM guests") we had this mapping:
 
-Please correct me if there is any misunderstanding.
+ 0 is SPECTRE_MITIGATED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
+
+so the return value '1' wasn't there then. Once the commit was merged we
+introduced the notion of NOT_REQUIRED here when it shouldn't have been
+introduced.
+
+Changes from v1:
+ * Way longer commit text, more background (sorry)
+ * Dropped proton-pack part because it was wrong
+ * Rebased onto other patch accepted upstream
+
+ arch/arm64/kvm/hypercalls.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+index 9824025ccc5c..6a62312d7813 100644
+--- a/arch/arm64/kvm/hypercalls.c
++++ b/arch/arm64/kvm/hypercalls.c
+@@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+ 				val = SMCCC_RET_SUCCESS;
+ 				break;
+ 			case SPECTRE_UNAFFECTED:
+-				val = SMCCC_RET_NOT_REQUIRED;
++				val = 1;
+ 				break;
+ 			}
+ 			break;
+
+base-commit: 66dd3474702aa98d5844367e1577cdad78ef7c65
+-- 
+Sent by a computer, using git, on the internet
+
