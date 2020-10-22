@@ -2,342 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F770295802
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:40:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6D85A295811
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 07:42:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507996AbgJVFkn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 01:40:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36398 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507989AbgJVFkn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 01:40:43 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 407BEC0613CF
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:40:43 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id j7so538115wrt.9
-        for <linux-kernel@vger.kernel.org>; Wed, 21 Oct 2020 22:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=57MKFsdWHuxy2mud/f3sRav90H6vR3X3bXB+aK2zwsM=;
-        b=Cga0QxL4oWgJW16fKnIb/E1PxyhOqCbXnjgtfqpdhhj0ffgmcTsXVUkR6C9z5kxeWw
-         cORHo/iZkjn5wKo7FZbw87BDXvzo4CujaHumqXPD5TQKq3zFL6UUjBCxp0OjZGjNj8pB
-         relmLSTginw62ENyCwqLiy8SB6SM7TXnFOovgG/o3o0LK+DCxyI66SgWse6dhNkJ+C6v
-         H8YEUMxFHpLGbJe4p3psTyWebQjqF818unNVH6nAkyrt/2yG5hEn0vh1HPeFNFcxPD8Y
-         P7G76i6A2rjEddM0PzCnFa4ikDxm+E50S12XDGPPAq3VXqTFKsdUK4lkpLvYBgPGF1SU
-         T5tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=57MKFsdWHuxy2mud/f3sRav90H6vR3X3bXB+aK2zwsM=;
-        b=Wsmn6VOuiM54QMN8Iq+gz8SeheOWDf4pzwmBAgb/7rSo4Ur6dnJOzErYNmzU3neXtI
-         bRIoej7NTbHQyaK8qr5Fn0Ofdfjfy/t9txQIPTBu/99icZ6HPe/AV6+jtoUU+fHkoSer
-         Wg22ZFMHQe38rtyNlNM+LoZcULqIu5mryk9kPU6SjZG7o9WYtGhGAw8UyjACUg02Dv3m
-         8aR6oDae+gEKG9Zaq1LIx4AiFfqJ8Ih0QI9pB5VHqeGK4xYlciJEDQXvYj9umQ84fPQa
-         9BEmOqCpTNhBhSJd0UNVd6TC86ykaoB0VGeErGG/Hlmi3obizrwFSlss8Uu5solFnwqs
-         nbAA==
-X-Gm-Message-State: AOAM530g++3ewSHG/GKV/Fxqx4ddAxwyX0/WSGkh3g6SrbVbSLDbykGy
-        fapGYtqh+SDB/CEMihQA+lzWNQgKWVdK8GFTTMxq4A==
-X-Google-Smtp-Source: ABdhPJxYEqJskkiSHliaBgmXxUtWHmk6epcxfVz5x1u6SUxa3ULx/Oc+QHT5Ohu/ricNlRWAa5tFdiWartwo6vIGEC8=
-X-Received: by 2002:adf:e54b:: with SMTP id z11mr803140wrm.128.1603345241725;
- Wed, 21 Oct 2020 22:40:41 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201006001752.248564-1-atish.patra@wdc.com> <20201006001752.248564-6-atish.patra@wdc.com>
-In-Reply-To: <20201006001752.248564-6-atish.patra@wdc.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Thu, 22 Oct 2020 11:10:29 +0530
-Message-ID: <CAAhSdy3f7oxMBh=39gULRbd-7saMwmAm1-dikV7ijE5BK2dhsw@mail.gmail.com>
-Subject: Re: [PATCH v4 5/5] riscv: Add numa support for riscv64 platform
-To:     Atish Patra <atish.patra@wdc.com>
-Cc:     "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Albert Ou <aou@eecs.berkeley.edu>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Anshuman Khandual <anshuman.khandual@arm.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Jia He <justin.he@arm.com>,
-        Jonathan Cameron <Jonathan.Cameron@huawei.com>,
-        Kefeng Wang <wangkefeng.wang@huawei.com>,
-        linux-arch@vger.kernel.org,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        Mike Rapoport <rppt@kernel.org>,
-        Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Steven Price <steven.price@arm.com>,
-        Will Deacon <will@kernel.org>, Zong Li <zong.li@sifive.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S2508002AbgJVFmt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 01:42:49 -0400
+Received: from spam.zju.edu.cn ([61.164.42.155]:55330 "EHLO zju.edu.cn"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S2437582AbgJVFms (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 01:42:48 -0400
+Received: from localhost.localdomain (unknown [210.32.148.79])
+        by mail-app2 (Coremail) with SMTP id by_KCgBXX+vKG5FfEIM4AA--.38547S4;
+        Thu, 22 Oct 2020 13:42:37 +0800 (CST)
+From:   Dinghao Liu <dinghao.liu@zju.edu.cn>
+To:     dinghao.liu@zju.edu.cn, kjlu@umn.edu
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] net-veth: Fix memleak in veth_newlink
+Date:   Thu, 22 Oct 2020 13:42:33 +0800
+Message-Id: <20201022054233.17326-1-dinghao.liu@zju.edu.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: by_KCgBXX+vKG5FfEIM4AA--.38547S4
+X-Coremail-Antispam: 1UD129KBjvdXoW5Kry3XFy7WF1fCr4xurWxJFb_yoWxXFbEkr
+        18WFyxXr1YyFn0kw4j9r43Zryq93Z5XFykJFWvqrZ3CwsrZr9rWryfuF1UJrsxC3yxuFyD
+        AFZ7Xrn7A347GjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbIxFc2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AK
+        wVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20x
+        vE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4UJVW0owA2z4x0Y4vEx4A2
+        jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52
+        x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWU
+        XwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI4
+        8JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY02Avz4vE14v_GrWl42xK82IYc2Ij64vIr41l
+        42xK82IY6x8ErcxFaVAv8VW8uw4UJr1UMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+        8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWU
+        twCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+        0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAF
+        wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+        7VU1eT5JUUUUU==
+X-CM-SenderInfo: qrrzjiaqtzq6lmxovvfxof0/1tbiAgABBlZdtQiRQQABsi
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 6, 2020 at 5:48 AM Atish Patra <atish.patra@wdc.com> wrote:
->
-> Use the generic numa implementation to add NUMA support for RISC-V.
-> This is based on Greentime's patch[1] but modified to use generic NUMA
-> implementation and few more fixes.
->
-> [1] https://lkml.org/lkml/2020/1/10/233
->
-> Co-developed-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Greentime Hu <greentime.hu@sifive.com>
-> Signed-off-by: Atish Patra <atish.patra@wdc.com>
-> ---
->  arch/riscv/Kconfig              | 31 ++++++++++++++++++++++++++++++-
->  arch/riscv/include/asm/mmzone.h | 13 +++++++++++++
->  arch/riscv/include/asm/numa.h   |  8 ++++++++
->  arch/riscv/include/asm/pci.h    | 14 ++++++++++++++
->  arch/riscv/kernel/setup.c       | 10 ++++++++--
->  arch/riscv/kernel/smpboot.c     | 12 +++++++++++-
->  arch/riscv/mm/init.c            |  4 +++-
->  7 files changed, 87 insertions(+), 5 deletions(-)
->  create mode 100644 arch/riscv/include/asm/mmzone.h
->  create mode 100644 arch/riscv/include/asm/numa.h
->
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index df18372861d8..7beb6ddb6eb1 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -137,7 +137,7 @@ config PAGE_OFFSET
->         default 0xffffffe000000000 if 64BIT && MAXPHYSMEM_128GB
->
->  config ARCH_FLATMEM_ENABLE
-> -       def_bool y
-> +       def_bool !NUMA
->
->  config ARCH_SPARSEMEM_ENABLE
->         def_bool y
-> @@ -295,6 +295,35 @@ config TUNE_GENERIC
->
->  endchoice
->
-> +# Common NUMA Features
-> +config NUMA
-> +       bool "NUMA Memory Allocation and Scheduler Support"
-> +       select GENERIC_ARCH_NUMA
-> +       select OF_NUMA
-> +       select ARCH_SUPPORTS_NUMA_BALANCING
-> +       help
-> +         Enable NUMA (Non-Uniform Memory Access) support.
-> +
-> +         The kernel will try to allocate memory used by a CPU on the
-> +         local memory of the CPU and add some more NUMA awareness to the kernel.
-> +
-> +config NODES_SHIFT
-> +       int "Maximum NUMA Nodes (as a power of 2)"
-> +       range 1 10
-> +       default "2"
-> +       depends on NEED_MULTIPLE_NODES
-> +       help
-> +         Specify the maximum number of NUMA Nodes available on the target
-> +         system.  Increases memory reserved to accommodate various tables.
-> +
-> +config USE_PERCPU_NUMA_NODE_ID
-> +       def_bool y
-> +       depends on NUMA
-> +
-> +config NEED_PER_CPU_EMBED_FIRST_CHUNK
-> +       def_bool y
-> +       depends on NUMA
-> +
->  config RISCV_ISA_C
->         bool "Emit compressed instructions when building Linux"
->         default y
-> diff --git a/arch/riscv/include/asm/mmzone.h b/arch/riscv/include/asm/mmzone.h
-> new file mode 100644
-> index 000000000000..fa17e01d9ab2
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/mmzone.h
-> @@ -0,0 +1,13 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_MMZONE_H
-> +#define __ASM_MMZONE_H
-> +
-> +#ifdef CONFIG_NUMA
-> +
-> +#include <asm/numa.h>
-> +
-> +extern struct pglist_data *node_data[];
-> +#define NODE_DATA(nid)         (node_data[(nid)])
-> +
-> +#endif /* CONFIG_NUMA */
-> +#endif /* __ASM_MMZONE_H */
-> diff --git a/arch/riscv/include/asm/numa.h b/arch/riscv/include/asm/numa.h
-> new file mode 100644
-> index 000000000000..8c8cf4297cc3
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/numa.h
-> @@ -0,0 +1,8 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +#ifndef __ASM_NUMA_H
-> +#define __ASM_NUMA_H
-> +
-> +#include <asm/topology.h>
-> +#include <asm-generic/numa.h>
-> +
-> +#endif /* __ASM_NUMA_H */
-> diff --git a/arch/riscv/include/asm/pci.h b/arch/riscv/include/asm/pci.h
-> index 1c473a1bd986..658e112c3ce7 100644
-> --- a/arch/riscv/include/asm/pci.h
-> +++ b/arch/riscv/include/asm/pci.h
-> @@ -32,6 +32,20 @@ static inline int pci_proc_domain(struct pci_bus *bus)
->         /* always show the domain in /proc */
->         return 1;
->  }
-> +
-> +#ifdef CONFIG_NUMA
-> +
-> +static inline int pcibus_to_node(struct pci_bus *bus)
-> +{
-> +       return dev_to_node(&bus->dev);
-> +}
-> +#ifndef cpumask_of_pcibus
-> +#define cpumask_of_pcibus(bus) (pcibus_to_node(bus) == -1 ?            \
-> +                                cpu_all_mask :                         \
-> +                                cpumask_of_node(pcibus_to_node(bus)))
-> +#endif
-> +#endif /* CONFIG_NUMA */
-> +
->  #endif  /* CONFIG_PCI */
->
->  #endif  /* _ASM_RISCV_PCI_H */
-> diff --git a/arch/riscv/kernel/setup.c b/arch/riscv/kernel/setup.c
-> index 07fa6d13367e..53a806a9cbaf 100644
-> --- a/arch/riscv/kernel/setup.c
-> +++ b/arch/riscv/kernel/setup.c
-> @@ -101,13 +101,19 @@ void __init setup_arch(char **cmdline_p)
->
->  static int __init topology_init(void)
->  {
-> -       int i;
-> +       int i, ret;
-> +
-> +       for_each_online_node(i)
-> +               register_one_node(i);
->
->         for_each_possible_cpu(i) {
->                 struct cpu *cpu = &per_cpu(cpu_devices, i);
->
->                 cpu->hotpluggable = cpu_has_hotplug(i);
-> -               register_cpu(cpu, i);
-> +               ret = register_cpu(cpu, i);
-> +               if (unlikely(ret))
-> +                       pr_warn("Warning: %s: register_cpu %d failed (%d)\n",
-> +                              __func__, i, ret);
->         }
->
->         return 0;
-> diff --git a/arch/riscv/kernel/smpboot.c b/arch/riscv/kernel/smpboot.c
-> index 96167d55ed98..5e276c25646f 100644
-> --- a/arch/riscv/kernel/smpboot.c
-> +++ b/arch/riscv/kernel/smpboot.c
-> @@ -27,6 +27,7 @@
->  #include <asm/cpu_ops.h>
->  #include <asm/irq.h>
->  #include <asm/mmu_context.h>
-> +#include <asm/numa.h>
->  #include <asm/tlbflush.h>
->  #include <asm/sections.h>
->  #include <asm/sbi.h>
-> @@ -45,13 +46,18 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->  {
->         int cpuid;
->         int ret;
-> +       unsigned int curr_cpuid;
-> +
-> +       curr_cpuid = smp_processor_id();
-> +       numa_store_cpu_info(curr_cpuid);
-> +       numa_add_cpu(curr_cpuid);
->
->         /* This covers non-smp usecase mandated by "nosmp" option */
->         if (max_cpus == 0)
->                 return;
->
->         for_each_possible_cpu(cpuid) {
-> -               if (cpuid == smp_processor_id())
-> +               if (cpuid == curr_cpuid)
->                         continue;
->                 if (cpu_ops[cpuid]->cpu_prepare) {
->                         ret = cpu_ops[cpuid]->cpu_prepare(cpuid);
-> @@ -59,6 +65,7 @@ void __init smp_prepare_cpus(unsigned int max_cpus)
->                                 continue;
->                 }
->                 set_cpu_present(cpuid, true);
-> +               numa_store_cpu_info(cpuid);
->         }
->  }
->
-> @@ -79,6 +86,7 @@ void __init setup_smp(void)
->                 if (hart == cpuid_to_hartid_map(0)) {
->                         BUG_ON(found_boot_cpu);
->                         found_boot_cpu = 1;
-> +                       early_map_cpu_to_node(0, of_node_to_nid(dn));
->                         continue;
->                 }
->                 if (cpuid >= NR_CPUS) {
-> @@ -88,6 +96,7 @@ void __init setup_smp(void)
->                 }
->
->                 cpuid_to_hartid_map(cpuid) = hart;
-> +               early_map_cpu_to_node(cpuid, of_node_to_nid(dn));
->                 cpuid++;
->         }
->
-> @@ -153,6 +162,7 @@ asmlinkage __visible void smp_callin(void)
->         current->active_mm = mm;
->
->         notify_cpu_starting(curr_cpuid);
-> +       numa_add_cpu(curr_cpuid);
->         update_siblings_masks(curr_cpuid);
->         set_cpu_online(curr_cpuid, 1);
->
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index 114c3966aadb..c4046e11d264 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -20,6 +20,7 @@
->  #include <asm/soc.h>
->  #include <asm/io.h>
->  #include <asm/ptdump.h>
-> +#include <asm/numa.h>
->
->  #include "../kernel/head.h"
->
-> @@ -185,7 +186,6 @@ void __init setup_bootmem(void)
->
->         early_init_fdt_scan_reserved_mem();
->         memblock_allow_resize();
-> -       memblock_dump_all();
->
->         for_each_memblock(memory, reg) {
->                 unsigned long start_pfn = memblock_region_memory_base_pfn(reg);
-> @@ -570,9 +570,11 @@ void __init paging_init(void)
->
->  void __init misc_mem_init(void)
->  {
-> +       arch_numa_init();
->         sparse_init();
->         zone_sizes_init();
->         resource_init();
-> +       memblock_dump_all();
->  }
->
->  #ifdef CONFIG_SPARSEMEM_VMEMMAP
-> --
-> 2.25.1
->
+When rtnl_configure_link() fails, peer needs to be
+freed just like when register_netdevice() fails.
 
-Looks good to me.
+Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
+---
+ drivers/net/veth.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Reviewed-by: Anup Patel <anup@brainfault.org>
+diff --git a/drivers/net/veth.c b/drivers/net/veth.c
+index 8c737668008a..6c68094399cc 100644
+--- a/drivers/net/veth.c
++++ b/drivers/net/veth.c
+@@ -1405,8 +1405,6 @@ static int veth_newlink(struct net *src_net, struct net_device *dev,
+ 	/* nothing to do */
+ err_configure_peer:
+ 	unregister_netdevice(peer);
+-	return err;
+-
+ err_register_peer:
+ 	free_netdev(peer);
+ 	return err;
+-- 
+2.17.1
 
-Regards,
-Anup
