@@ -2,121 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ADC5D295E78
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:37:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9254295EB5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2898278AbgJVMhl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:37:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44180 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2898263AbgJVMhk (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:37:40 -0400
-Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41FDCC0613CE;
-        Thu, 22 Oct 2020 05:37:39 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id c15so2081137ejs.0;
-        Thu, 22 Oct 2020 05:37:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Of9gR7+alpUYr+QS/dPqMyV5JIcvv8ObtrAkaPg8ZQg=;
-        b=V4mejo6IOjWjLn+Wmkukq7fTAQSOFlVyGGbLV8CDdpxEuTM6PLqgmoUQo6zqLMyXQ6
-         PPszwvOze3p5bXON2FM+n6BAOr8OMXj6Air9zAnjoJavcb2N9uYKMPCDpLw5Uw1j0B6R
-         AQ8cZRny/9R0mmpSMs81jauyl+cyYh5wbOZ+2qshA2HEl68tXQYvZw/cq0XEPz90wGDm
-         UvQdSttqXgq+vw19ylBVEq0Slk26kqbLbm2Ok5A+RXDpyQEFdHSFAzC6lKwVWXhTCMqT
-         9xcZ9ijnPkCcLytsh2NkpJYdUCySlM+LwkmkP0yn5BAjMGEelzsizmKfbaT34frS0vVN
-         kLcQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Of9gR7+alpUYr+QS/dPqMyV5JIcvv8ObtrAkaPg8ZQg=;
-        b=umvcE0MnOcgIyfPOoIgD67SHiFhLyES55cXHnoZjMrqjWvu0frSobjf9zgRexSliXC
-         0uDY7QOu00iuh8Ijc4GaJBZbk80qH9JPjpKhbfDhbEi2mC5gCFC3kq+/sWJSuQoKSChA
-         pmfBKobUuRM2qMSVAzG0n0GEMETduNRZO8wB4UlnSyBjpK2i8gTPi0V3zCg/ULydC43I
-         sOdEzrQavFU2aAa7hJ8yk3oUObf/rVigzXysdfHZnJIpfy0tmOCG5QVGGGUsLrnmRvge
-         IkQT5uLfrV/8agoHe/x9y4vZAn+brj1kizX39oie6ZGrMCKPDbKdSeBKMK8T3KKZiYwL
-         9joA==
-X-Gm-Message-State: AOAM533GwnMLO/179GdPq7eF1j7ffyFng4MW+LvJ+TkS7+JFEcUDi32C
-        /KSQYXrrIP4BZXGgOLBLgzM=
-X-Google-Smtp-Source: ABdhPJwLPw6DYZxywEBJg8d1MKBLabehYnfyjvNlHAyAZ7OG3xfj5H67dR2zm8FCDNxKpmSOhbFjSA==
-X-Received: by 2002:a17:906:48b:: with SMTP id f11mr2108309eja.293.1603370257906;
-        Thu, 22 Oct 2020 05:37:37 -0700 (PDT)
-Received: from skbuf ([188.26.174.215])
-        by smtp.gmail.com with ESMTPSA id bx24sm799025ejb.51.2020.10.22.05.37.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 05:37:37 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:37:35 +0300
-From:   Vladimir Oltean <olteanv@gmail.com>
-To:     Kurt Kanzenbach <kurt.kanzenbach@linutronix.de>
-Cc:     Florian Fainelli <f.fainelli@gmail.com>,
-        Christian Eggers <ceggers@arri.de>,
-        Andrew Lunn <andrew@lunn.ch>,
-        Vivien Didelot <vivien.didelot@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Helmut Grohne <helmut.grohne@intenta.de>,
-        Paul Barker <pbarker@konsulko.com>,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        George McCollister <george.mccollister@gmail.com>,
-        Marek Vasut <marex@denx.de>,
-        Tristram Ha <Tristram.Ha@microchip.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        Woojung Huh <woojung.huh@microchip.com>,
-        Microchip Linux Driver Support <UNGLinuxDriver@microchip.com>,
-        netdev@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH net-next 1/9] dt-bindings: net: dsa: convert ksz
- bindings document to yaml
-Message-ID: <20201022123735.3mnlzkfmqqrho6n5@skbuf>
-References: <20201019172435.4416-1-ceggers@arri.de>
- <20201019172435.4416-2-ceggers@arri.de>
- <87lfg0rrzi.fsf@kurt>
- <20201022001639.ozbfnyc4j2zlysff@skbuf>
- <3cf2e7f8-7dc8-323f-0cee-5a025f748426@gmail.com>
- <87h7qmil8j.fsf@kurt>
+        id S2504545AbgJVMkE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:40:04 -0400
+Received: from mx2.suse.de ([195.135.220.15]:39384 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442034AbgJVMkE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 08:40:04 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 1548FB934;
+        Thu, 22 Oct 2020 12:40:03 +0000 (UTC)
+Date:   Thu, 22 Oct 2020 14:39:58 +0200
+From:   Oscar Salvador <osalvador@suse.de>
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+        Michal Hocko <mhocko@kernel.org>,
+        Pavel Tatashin <pasha.tatashin@soleen.com>,
+        David Hildenbrand <david@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Michal Hocko <mhocko@suse.com>
+Subject: Re: [PATCH v2 4/7] mm, page_alloc: simplify pageset_update()
+Message-ID: <20201022123958.GB26121@linux>
+References: <20201008114201.18824-1-vbabka@suse.cz>
+ <20201008114201.18824-5-vbabka@suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87h7qmil8j.fsf@kurt>
+In-Reply-To: <20201008114201.18824-5-vbabka@suse.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:54:52PM +0200, Kurt Kanzenbach wrote:
-> On Wed Oct 21 2020, Florian Fainelli wrote:
-> > On 10/21/2020 5:16 PM, Vladimir Oltean wrote:
-> >> On Wed, Oct 21, 2020 at 08:52:01AM +0200, Kurt Kanzenbach wrote:
-> >>> On Mon Oct 19 2020, Christian Eggers wrote:
-> >>> The node names should be switch. See dsa.yaml.
-> >>>
-> >>>> +            compatible = "microchip,ksz9477";
-> >>>> +            reg = <0>;
-> >>>> +            reset-gpios = <&gpio5 0 GPIO_ACTIVE_LOW>;
-> >>>> +
-> >>>> +            spi-max-frequency = <44000000>;
-> >>>> +            spi-cpha;
-> >>>> +            spi-cpol;
-> >>>> +
-> >>>> +            ports {
-> >>>
-> >>> ethernet-ports are preferred.
-> >> 
-> >> This is backwards to me, instead of an 'ethernet-switch' with 'ports',
-> >> we have a 'switch' with 'ethernet-ports'. Whatever.
-> >
-> > The rationale AFAIR was that dual Ethernet port controllers like TI's 
-> > CPSW needed to describe each port as a pseudo Ethernet MAC and using 
-> > 'ethernet-ports' as a contained allowed to disambiguate with the 'ports' 
-> > container used in display subsystem descriptions.
+On Thu, Oct 08, 2020 at 01:41:58PM +0200, Vlastimil Babka wrote:
+> pageset_update() attempts to update pcplist's high and batch values in a way
+> that readers don't observe batch > high. It uses smp_wmb() to order the updates
+> in a way to achieve this. However, without proper pairing read barriers in
+> readers this guarantee doesn't hold, and there are no such barriers in
+> e.g. free_unref_page_commit().
 > 
-> Yes, that was the outcome of previous discussions.
+> Commit 88e8ac11d2ea ("mm, page_alloc: fix core hung in free_pcppages_bulk()")
+> already showed this is problematic, and solved this by ultimately only trusing
+> pcp->count of the current cpu with interrupts disabled.
+> 
+> The update dance with unpaired write barriers thus makes no sense. Replace
+> them with plain WRITE_ONCE to prevent store tearing, and document that the
+> values can change asynchronously and should not be trusted for correctness.
+> 
+> All current readers appear to be OK after 88e8ac11d2ea. Convert them to
+> READ_ONCE to prevent unnecessary read tearing, but mainly to alert anybody
+> making future changes to the code that special care is needed.
+> 
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: David Hildenbrand <david@redhat.com>
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-And why would that disambiguation be necessary in the first place? My
-understanding is that the whole node path provides the necessary
-namespacing to avoid the confusion. For example, the 'reg' property
-means 100 things to 100 buses, and no one has an issue with that. I am
-not expecting an Ethernet switch to have an HDMI port, I might be wrong
-though.
+Yeah, I never got my head around those smp_wmb()
+
+Reviewed-by: Oscar Salvador <osalvador@suse.de>
+
+-- 
+Oscar Salvador
+SUSE L3
