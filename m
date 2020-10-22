@@ -2,57 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F21A295FCE
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:21:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3911295FC5
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:20:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2899774AbgJVNVE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:21:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50760 "EHLO
+        id S2899559AbgJVNTs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:19:48 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50768 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2899534AbgJVNTl (ORCPT
+        with ESMTP id S2899491AbgJVNTo (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:19:41 -0400
-Received: from mail-wr1-x44a.google.com (mail-wr1-x44a.google.com [IPv6:2a00:1450:4864:20::44a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CEA05C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:40 -0700 (PDT)
-Received: by mail-wr1-x44a.google.com with SMTP id 31so613255wrg.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:40 -0700 (PDT)
+        Thu, 22 Oct 2020 09:19:44 -0400
+Received: from mail-qt1-x849.google.com (mail-qt1-x849.google.com [IPv6:2607:f8b0:4864:20::849])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C73E7C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:42 -0700 (PDT)
+Received: by mail-qt1-x849.google.com with SMTP id z22so1015883qtn.15
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 06:19:42 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=google.com; s=20161025;
         h=sender:date:in-reply-to:message-id:mime-version:references:subject
          :from:to:cc;
-        bh=zMvzayRKcZjOHIZsW9PV/RuW73K9oxGh1X5zaP2bEOg=;
-        b=Jl7LpW955l/dwj9TojILe9Xb+TqqDX/Xo2Z/09O4WWqaxkbtLts1gm1bh/P5/lU/R4
-         /ycVct2F2bwDjYPI+eyvKUKV+LEV3NlyfJzuTxqZuRg8CW2mEZqiN+ThOhaggbGMHmO/
-         sQJib58QVON48b/5W4KD1EI6ix/er4/oUXHUGbxu4uHV9VaDmgAiS5oCsen24e2vLtjB
-         wQwvKboWNK27s1haqBmsswhp7Ve+OrOUAsUGRXyKvH4nqQ9/zui7lslB38o8dYqjHUg8
-         rqnoSAKjre5bfzDPuq+b8RQelN16LiZyNKuHA3FSOoXz8aIsol9skZjbmx46l1Qd0EfU
-         abQg==
+        bh=S3zpKFgl6lOQ4xschlXI9IBqFZJcfplQNQgfAvCSd9c=;
+        b=A/DzVj6NJxiFJ1FGJ6LmU2ByOvdQoNTbI0xyZCf/l69mGnF7H5keOh0cFSh6PSKDDW
+         UHgRUgb4ay+Bz2HtzVeITURs24/VAJzkUUMrbBSiRqCemaRmiituhtSDAnGPjpzUAV7G
+         Ei3KV9+HsVFPHC28hTUw4gJGHTaodYigbcSOTvK2AWvQufR2FcbEhGoUMuKdYfzt1MPd
+         8nIHmu9UMA1TypVVK3IeFONWs9DUwaoRRERr7So3y4edr6JN5LQblz7M5V0PmuvctKPC
+         UoVTtgZE67tor/jqK0uHNZ6etDCPZk14fm7juz+4hjSvuI0gvPWbT+aULiOTmcNYUsdV
+         KJng==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
          :references:subject:from:to:cc;
-        bh=zMvzayRKcZjOHIZsW9PV/RuW73K9oxGh1X5zaP2bEOg=;
-        b=jQ4A9alyWNxOL8FhtpmV1L7oUhOuKnN+e0F/TmR3D0PhyoCl46VUXh+CC2j3ETPaP6
-         mMupK99Kr/UxkUMtfh7eUJRTTkxc/VpMB0Svd0svzM8oeX8TOma8t/MjcF3xtQfJiDaj
-         etXT+nk4QZJBXAyZ6i6BDpdHnd0/lItQtGtaQxtI0rF5+If2ARYfCIQHV76tskcuGHOR
-         rJITQaJe472UkVjgcnKI8t9Nzas8/c3W+W7bDNf/8GORj4zbR97j6aeFH37HAv0pbC06
-         n++p6iczqBVqcV5C1x8Q/ixq+lbHFoYc5QZA4KCPYr3V6uCpahljeli1v4ZzXesEenEZ
-         6oEg==
-X-Gm-Message-State: AOAM532h71DKmuiZazpougCPpHntH9cvoVQIU6QG7QMc+zznSxqKA/Sh
-        eStVanLEqYHLz3sAPmbdvH/4/p+yXezjvufV
-X-Google-Smtp-Source: ABdhPJy1zF0M4ifiMercLiyrFr+TTZ2TNMz/uq3oy1C9MnNbR57Fur3hTUw7Pnk/ecaOdgtH3sUdKnL7XFwrPF8M
+        bh=S3zpKFgl6lOQ4xschlXI9IBqFZJcfplQNQgfAvCSd9c=;
+        b=VJ5Qr/a2SntfRg2AAq3gMSCYfuXHp/jEbSPJ5eTWw3oT2nYZ9ubnJ1CmU2H1nqJO/S
+         oFfCHi1ujbWaJVjMcvHz7ypMGYLET2hc6zezWppzjn3L98BeWcMNppC6w57xSsWxLcJf
+         Qc8ETn44d2hMJ/0S6o/RS9spK2TEOYuI5qFyLlpasgGKbSN7NCKQCCMuO/Y6FbeMzUuI
+         ys3uCBQgfVq3RsW2GhXQo8VaEy8aeydUlUnUY4HEYGavFhkSzKHBI/Yq+bjB9592UB1W
+         jgf8CDQg6FYR4VGKJr8qqzEvAtKDOmlC98aJvT+O/WJ0MqAL4x7lcvsPrkvqJG+x8bG+
+         t8oQ==
+X-Gm-Message-State: AOAM532UgCHfbobAfgVBAaOjremJMin1O22fEYYH4qMYPLnNsiDonz6L
+        IkV1TtD3+YNeRxLsBiixGWI+Ghv3y51YzLYP
+X-Google-Smtp-Source: ABdhPJye0iIWFtk9uCN4G57gAraBO0b8dguucuYN00Tzqt7FUHcOAlZwClbYPWiparjNpI11i9pTLLg1NFTsf+gO
 Sender: "andreyknvl via sendgmr" <andreyknvl@andreyknvl3.muc.corp.google.com>
 X-Received: from andreyknvl3.muc.corp.google.com ([2a00:79e0:15:13:7220:84ff:fe09:7e9d])
- (user=andreyknvl job=sendgmr) by 2002:a7b:c7c9:: with SMTP id
- z9mr2640989wmk.91.1603372779361; Thu, 22 Oct 2020 06:19:39 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 15:18:58 +0200
+ (user=andreyknvl job=sendgmr) by 2002:ad4:52c6:: with SMTP id
+ p6mr2361291qvs.38.1603372781851; Thu, 22 Oct 2020 06:19:41 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 15:18:59 +0200
 In-Reply-To: <cover.1603372719.git.andreyknvl@google.com>
-Message-Id: <155123c77b1a068089421022c4c5b1ccb75defd8.1603372719.git.andreyknvl@google.com>
+Message-Id: <1d87f0d5a282d9e8d14d408ac6d63462129f524c.1603372719.git.andreyknvl@google.com>
 Mime-Version: 1.0
 References: <cover.1603372719.git.andreyknvl@google.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH RFC v2 06/21] kasan: mark kasan_init_tags as __init
+Subject: [PATCH RFC v2 07/21] kasan, arm64: move initialization message
 From:   Andrey Konovalov <andreyknvl@google.com>
 To:     Catalin Marinas <catalin.marinas@arm.com>,
         Will Deacon <will.deacon@arm.com>,
@@ -77,55 +77,92 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Similarly to kasan_init() mark kasan_init_tags() as __init.
+Tag-based KASAN modes are fully initialized with kasan_init_tags(),
+while the generic mode only requireds kasan_init(). Move the
+initialization message for tag-based modes into kasan_init_tags().
+
+Also fix pr_fmt() usage for KASAN code: generic mode doesn't need it,
+tag-based modes should use "kasan:" instead of KBUILD_MODNAME.
 
 Signed-off-by: Andrey Konovalov <andreyknvl@google.com>
-Link: https://linux-review.googlesource.com/id/I8792e22f1ca5a703c5e979969147968a99312558
+Link: https://linux-review.googlesource.com/id/Idfd1e50625ffdf42dfc3dbf7455b11bd200a0a49
 ---
- include/linux/kasan.h | 2 +-
- mm/kasan/hw_tags.c    | 2 +-
- mm/kasan/sw_tags.c    | 2 +-
- 3 files changed, 3 insertions(+), 3 deletions(-)
+ arch/arm64/mm/kasan_init.c | 3 +++
+ mm/kasan/generic.c         | 2 --
+ mm/kasan/hw_tags.c         | 4 ++++
+ mm/kasan/sw_tags.c         | 4 +++-
+ 4 files changed, 10 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/kasan.h b/include/linux/kasan.h
-index 7be9fb9146ac..93d9834b7122 100644
---- a/include/linux/kasan.h
-+++ b/include/linux/kasan.h
-@@ -185,7 +185,7 @@ static inline void kasan_record_aux_stack(void *ptr) {}
+diff --git a/arch/arm64/mm/kasan_init.c b/arch/arm64/mm/kasan_init.c
+index b6b9d55bb72e..8f17fa834b62 100644
+--- a/arch/arm64/mm/kasan_init.c
++++ b/arch/arm64/mm/kasan_init.c
+@@ -290,5 +290,8 @@ void __init kasan_init(void)
+ {
+ 	kasan_init_shadow();
+ 	kasan_init_depth();
++#if defined(CONFIG_KASAN_GENERIC)
++	/* CONFIG_KASAN_SW/HW_TAGS also requires kasan_init_tags(). */
+ 	pr_info("KernelAddressSanitizer initialized\n");
++#endif
+ }
+diff --git a/mm/kasan/generic.c b/mm/kasan/generic.c
+index de6b3f03a023..d259e4c3aefd 100644
+--- a/mm/kasan/generic.c
++++ b/mm/kasan/generic.c
+@@ -9,8 +9,6 @@
+  *        Andrey Konovalov <andreyknvl@gmail.com>
+  */
  
- #if defined(CONFIG_KASAN_SW_TAGS) || defined(CONFIG_KASAN_HW_TAGS)
- 
--void kasan_init_tags(void);
-+void __init kasan_init_tags(void);
- 
- void *kasan_reset_tag(const void *addr);
- 
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+-
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
+ #include <linux/init.h>
 diff --git a/mm/kasan/hw_tags.c b/mm/kasan/hw_tags.c
-index 2a38885014e3..0128062320d5 100644
+index 0128062320d5..b372421258c8 100644
 --- a/mm/kasan/hw_tags.c
 +++ b/mm/kasan/hw_tags.c
-@@ -15,7 +15,7 @@
+@@ -6,6 +6,8 @@
+  * Author: Andrey Konovalov <andreyknvl@google.com>
+  */
  
- #include "kasan.h"
- 
--void kasan_init_tags(void)
-+void __init kasan_init_tags(void)
++#define pr_fmt(fmt) "kasan: " fmt
++
+ #include <linux/kasan.h>
+ #include <linux/kernel.h>
+ #include <linux/memory.h>
+@@ -18,6 +20,8 @@
+ void __init kasan_init_tags(void)
  {
  	init_tags(KASAN_TAG_MAX);
++
++	pr_info("KernelAddressSanitizer initialized\n");
  }
+ 
+ void *kasan_reset_tag(const void *addr)
 diff --git a/mm/kasan/sw_tags.c b/mm/kasan/sw_tags.c
-index c10863a45775..bf1422282bb5 100644
+index bf1422282bb5..099af6dc8f7e 100644
 --- a/mm/kasan/sw_tags.c
 +++ b/mm/kasan/sw_tags.c
-@@ -35,7 +35,7 @@
+@@ -6,7 +6,7 @@
+  * Author: Andrey Konovalov <andreyknvl@google.com>
+  */
  
- static DEFINE_PER_CPU(u32, prng_state);
+-#define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
++#define pr_fmt(fmt) "kasan: " fmt
  
--void kasan_init_tags(void)
-+void __init kasan_init_tags(void)
- {
- 	int cpu;
+ #include <linux/export.h>
+ #include <linux/interrupt.h>
+@@ -41,6 +41,8 @@ void __init kasan_init_tags(void)
  
+ 	for_each_possible_cpu(cpu)
+ 		per_cpu(prng_state, cpu) = (u32)get_cycles();
++
++	pr_info("KernelAddressSanitizer initialized\n");
+ }
+ 
+ /*
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
