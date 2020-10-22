@@ -2,51 +2,51 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0789729615C
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:00:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CCDC8296159
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 16:59:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368497AbgJVO7l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 10:59:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37894 "EHLO
+        id S368483AbgJVO7d (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 10:59:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37900 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368345AbgJVO6i (ORCPT
+        with ESMTP id S2505365AbgJVO6l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 10:58:38 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2BF62C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:38 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e17so2815484wru.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:38 -0700 (PDT)
+        Thu, 22 Oct 2020 10:58:41 -0400
+Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 978CDC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:39 -0700 (PDT)
+Received: by mail-wr1-x444.google.com with SMTP id s9so2823676wro.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 07:58:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=uJw+QvZk+5Nxh6IWX9trk6nmodR8xxZGb37xrxrasY8=;
-        b=sKjXdNx8c8jVPxEcNsHm0KE/XBx+bryk1uAFS5vlOpYxmqZ06eOsBk6pVJ2XX6iXyQ
-         6eV0XRZqehu5DLTGHex98/canLX6zi5nzUtoOk/vkep1BJ6sdYwOwiKcn5nH3o1jmLE0
-         2CKrm7trTp2ap4wpadfUBX0NY5IY1zfoYM7X7jieSe3lRq999X8TJZ1A6LCfodM7C2YO
-         JF5ye59WF4W1eYMVaVUZRm7NadRIm59qScij/HJCUCljgRFmE+BZEKKXjo6IPzEdycMU
-         g8m2GnoZyZIYL3zspbihiOh/pzMR2vUZVSvNsbWXEhm7tpdBretYpJwZh/oUqhH413wB
-         +6pg==
+        bh=IxPJGOtPserBcxrxxU1uJEQsiCEb1fv2sBSRPh+VFNY=;
+        b=mgMEJOdPgnXio7IV9RVOsL/yBEHAjD0AuKScybMXtqXDnC3Ai9wP/CS5fQhUr9qU0r
+         hXa4ZAUftnO+p77MYXqrfoMbsN+P+fFb5rVK8rk2uubgH2oZTaxVCepcymtDGy06m/a1
+         6/XR8gyjFVH9NG6B33+PxQGjLqlGW3ZTXbpVGMHjLcMZ86/XOwKM4E6Gi/i7W+5QaG/u
+         T6zcO70K0NjhMFMLUBMZuP+zp3OYi+Zm/LYJTCBMrmv5rnMzkaAvSYB4Ukin9QCqq+Ka
+         dfjs1jh3+84hsIDk98egA9PP5FudRpqLOE0kbQI1a7as0EHJJqxxvRxMZAqDLtEpQWp7
+         5BNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=uJw+QvZk+5Nxh6IWX9trk6nmodR8xxZGb37xrxrasY8=;
-        b=f8xUOoCoy5OoCifxRbT3kMFsz84gpZd9FDRxR+AovmL4g91fBtU+9M6X/iItIXBLOq
-         FDBAozlZGCBUyzr/aPl02+evrvdb5UAYNlIZn5mSGyYtH8EbRdx8MJ7EoBKOJuFC6NT9
-         HZQ2YE9Zx5ZTVJK9DUbNfWexQowHKaV5S6uPHpl1+nUtGjV0fCXHNqgZih6xbS7yAooA
-         6MT4eiCZzBUDhbZghyyinMjiieHMupIT6Ki9xCSNBPR6YRinIrkVtr00P5YyXPo4m4vo
-         WxrZOzkKu6xpNCRRPHFf5lPZMSP9gMvfvdjFMRwXEi1FQL2vp29NE7ELn82HAHd8Zmjh
-         digw==
-X-Gm-Message-State: AOAM530s4tn20nrYsKDfd4bCdPXTX+s9Lom+URLKAjOXHVTFcpDNpuUK
-        uo8kzAbmBi8hzZp6EnkX+k1VCQ==
-X-Google-Smtp-Source: ABdhPJzywqc6TWPvhjPbjSYvXq+6Z8ym9Y3KpI8xTj9v8d9XHZHRv7g/bFaYDlIiJpKQ/tKoeYzG2A==
-X-Received: by 2002:adf:e643:: with SMTP id b3mr3135001wrn.408.1603378716804;
-        Thu, 22 Oct 2020 07:58:36 -0700 (PDT)
+        bh=IxPJGOtPserBcxrxxU1uJEQsiCEb1fv2sBSRPh+VFNY=;
+        b=QszDUoNmCattQQ5cKqIQwjuEtiaTN2Vn+iPp4ZRNm4rWKH1KuAP8IMCsIGDqNVfT6G
+         N80T1KhaNKpN+doQMKI+dqcpASe9a3W1Z/H+k3uSKzlQkx/yPTVWL7raKajceZSaxtBD
+         AqiZmcAJc4nmFRY27EHqrdQswBoH7LzR2Oz1+cjRqfZxtPmGCMZykub+A+uASfCN1liu
+         KlcMk5gP5K/uf1R2w3hwuTPhedYOlY0XGIAx/cAbqeIfOPt/A8jiLX6PiYvpEd4rr3wD
+         7KeaAcVKofaEoKmvGLjGxb9c8sMmYv8Rc595N9WnIQ6M1l4r/AYcKt3F8rAq8Xvetl7P
+         oQXw==
+X-Gm-Message-State: AOAM533veOy/2EaYarPYG17lKCmAUEl0XUisat2SyS//sprT8DBxzVWC
+        jEvUU8dOOrYaOML5U5U4D19Mnw==
+X-Google-Smtp-Source: ABdhPJxK+UIokqHInPbkcQ6hEyCsxbpoLPfVw8MeEGfNIzU0yZex27WpQh4zeJRjmQUHYLTeeDFVkA==
+X-Received: by 2002:adf:f182:: with SMTP id h2mr3134375wro.199.1603378718228;
+        Thu, 22 Oct 2020 07:58:38 -0700 (PDT)
 Received: from hackbox2.linaro.org ([81.128.185.34])
-        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.35
+        by smtp.gmail.com with ESMTPSA id 130sm4348021wmd.18.2020.10.22.07.58.36
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 07:58:36 -0700 (PDT)
+        Thu, 22 Oct 2020 07:58:37 -0700 (PDT)
 From:   Leo Yan <leo.yan@linaro.org>
 To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -61,9 +61,9 @@ To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Al Grant <Al.Grant@arm.com>, Dave Martin <Dave.Martin@arm.com>,
         linux-kernel@vger.kernel.org
 Cc:     Leo Yan <leo.yan@linaro.org>
-Subject: [PATCH v3 06/20] perf arm-spe: Refactor printing string to buffer
-Date:   Thu, 22 Oct 2020 15:58:02 +0100
-Message-Id: <20201022145816.14069-7-leo.yan@linaro.org>
+Subject: [PATCH v3 07/20] perf arm-spe: Refactor packet header parsing
+Date:   Thu, 22 Oct 2020 15:58:03 +0100
+Message-Id: <20201022145816.14069-8-leo.yan@linaro.org>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201022145816.14069-1-leo.yan@linaro.org>
 References: <20201022145816.14069-1-leo.yan@linaro.org>
@@ -71,371 +71,175 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When outputs strings to the decoding buffer with function snprintf(),
-SPE decoder needs to detects if any error returns from snprintf() and if
-so needs to directly bail out.  If snprintf() returns success, it needs
-to update buffer pointer and reduce the buffer length so can continue to
-output the next string into the consequent memory space.
+The packet header parsing uses the hard coded values and it uses nested
+if-else statements.
 
-This complex logics are spreading in the function arm_spe_pkt_desc() so
-there has many duplicate codes for handling error detecting, increment
-buffer pointer and decrement buffer size.
+To improve the readability, this patch refactors the macros for packet
+header format so it removes the hard coded values.  Furthermore, based
+on the new mask macros it reduces the nested if-else statements and
+changes to use the flat conditions checking, this is directive and can
+easily map to the descriptions in ARMv8-a architecture reference manual
+(ARM DDI 0487E.a), chapter 'D10.1.5 Statistical Profiling Extension
+protocol packet headers'.
 
-To avoid the duplicate code, this patch introduces a new helper function
-arm_spe_pkt_snprintf() which is used to wrap up the complex logics, and
-the caller arm_spe_pkt_desc() will call it and simply check the returns
-value.
-
-This patch also moves the variable 'blen' as the function's local
-variable, this allows to remove the unnecessary braces and improve the
-readability.
-
-Suggested-by: Dave Martin <Dave.Martin@arm.com>
 Signed-off-by: Leo Yan <leo.yan@linaro.org>
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 ---
- .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 247 ++++++++++--------
- 1 file changed, 135 insertions(+), 112 deletions(-)
+ .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 92 +++++++++----------
+ .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 20 ++++
+ 2 files changed, 61 insertions(+), 51 deletions(-)
 
 diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-index e9ec7edb51a0..c7b6dc016f11 100644
+index c7b6dc016f11..6f2329990729 100644
 --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-@@ -9,6 +9,7 @@
- #include <endian.h>
- #include <byteswap.h>
- #include <linux/bitops.h>
-+#include <stdarg.h>
+@@ -16,28 +16,6 @@
+ #define NS_FLAG		BIT(63)
+ #define EL_FLAG		(BIT(62) | BIT(61))
  
- #include "arm-spe-pkt-decoder.h"
- 
-@@ -258,192 +259,214 @@ int arm_spe_get_packet(const unsigned char *buf, size_t len,
- 	return ret;
- }
- 
-+static int arm_spe_pkt_snprintf(char **buf_p, size_t *blen,
-+				const char *fmt, ...)
-+{
-+	va_list ap;
-+	int ret;
-+
-+	va_start(ap, fmt);
-+	ret = vsnprintf(*buf_p, *blen, fmt, ap);
-+	va_end(ap);
-+
-+	if (ret < 0)
-+		return ret;
-+
-+	*buf_p += ret;
-+	*blen -= ret;
-+	return ret;
-+}
-+
- int arm_spe_pkt_desc(const struct arm_spe_pkt *packet, char *buf,
- 		     size_t buf_len)
+-#define SPE_HEADER0_PAD			0x0
+-#define SPE_HEADER0_END			0x1
+-#define SPE_HEADER0_ADDRESS		0x30 /* address packet (short) */
+-#define SPE_HEADER0_ADDRESS_MASK	0x38
+-#define SPE_HEADER0_COUNTER		0x18 /* counter packet (short) */
+-#define SPE_HEADER0_COUNTER_MASK	0x38
+-#define SPE_HEADER0_TIMESTAMP		0x71
+-#define SPE_HEADER0_TIMESTAMP		0x71
+-#define SPE_HEADER0_EVENTS		0x2
+-#define SPE_HEADER0_EVENTS_MASK		0xf
+-#define SPE_HEADER0_SOURCE		0x3
+-#define SPE_HEADER0_SOURCE_MASK		0xf
+-#define SPE_HEADER0_CONTEXT		0x24
+-#define SPE_HEADER0_CONTEXT_MASK	0x3c
+-#define SPE_HEADER0_OP_TYPE		0x8
+-#define SPE_HEADER0_OP_TYPE_MASK	0x3c
+-#define SPE_HEADER1_ALIGNMENT		0x0
+-#define SPE_HEADER1_ADDRESS		0xb0 /* address packet (extended) */
+-#define SPE_HEADER1_ADDRESS_MASK	0xf8
+-#define SPE_HEADER1_COUNTER		0x98 /* counter packet (extended) */
+-#define SPE_HEADER1_COUNTER_MASK	0xf8
+-
+ #if __BYTE_ORDER == __BIG_ENDIAN
+ #define le16_to_cpu bswap_16
+ #define le32_to_cpu bswap_32
+@@ -200,46 +178,58 @@ static int arm_spe_get_addr(const unsigned char *buf, size_t len,
+ static int arm_spe_do_get_packet(const unsigned char *buf, size_t len,
+ 				 struct arm_spe_pkt *packet)
  {
- 	int ret, ns, el, idx = packet->index;
- 	unsigned long long payload = packet->payload;
- 	const char *name = arm_spe_pkt_name(packet->type);
-+	size_t blen = buf_len;
+-	unsigned int byte;
++	unsigned int hdr;
++	unsigned char ext_hdr = 0;
  
- 	switch (packet->type) {
- 	case ARM_SPE_BAD:
- 	case ARM_SPE_PAD:
- 	case ARM_SPE_END:
--		return snprintf(buf, buf_len, "%s", name);
--	case ARM_SPE_EVENTS: {
--		size_t blen = buf_len;
--
--		ret = 0;
--		ret = snprintf(buf, buf_len, "EV");
--		buf += ret;
--		blen -= ret;
-+		return arm_spe_pkt_snprintf(&buf, &blen, "%s", name);
-+	case ARM_SPE_EVENTS:
-+		ret = arm_spe_pkt_snprintf(&buf, &blen, "EV");
-+		if (ret < 0)
-+			return ret;
-+
- 		if (payload & 0x1) {
--			ret = snprintf(buf, buf_len, " EXCEPTION-GEN");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCEPTION-GEN");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x2) {
--			ret = snprintf(buf, buf_len, " RETIRED");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " RETIRED");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x4) {
--			ret = snprintf(buf, buf_len, " L1D-ACCESS");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-ACCESS");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x8) {
--			ret = snprintf(buf, buf_len, " L1D-REFILL");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-REFILL");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x10) {
--			ret = snprintf(buf, buf_len, " TLB-ACCESS");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-ACCESS");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x20) {
--			ret = snprintf(buf, buf_len, " TLB-REFILL");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-REFILL");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x40) {
--			ret = snprintf(buf, buf_len, " NOT-TAKEN");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " NOT-TAKEN");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (payload & 0x80) {
--			ret = snprintf(buf, buf_len, " MISPRED");
--			buf += ret;
--			blen -= ret;
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, " MISPRED");
-+			if (ret < 0)
-+				return ret;
- 		}
- 		if (idx > 1) {
- 			if (payload & 0x100) {
--				ret = snprintf(buf, buf_len, " LLC-ACCESS");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-ACCESS");
-+				if (ret < 0)
-+					return ret;
- 			}
- 			if (payload & 0x200) {
--				ret = snprintf(buf, buf_len, " LLC-REFILL");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-REFILL");
-+				if (ret < 0)
-+					return ret;
- 			}
- 			if (payload & 0x400) {
--				ret = snprintf(buf, buf_len, " REMOTE-ACCESS");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " REMOTE-ACCESS");
-+				if (ret < 0)
-+					return ret;
- 			}
- 		}
--		if (ret < 0)
--			return ret;
--		blen -= ret;
- 		return buf_len - blen;
--	}
-+
- 	case ARM_SPE_OP_TYPE:
- 		switch (idx) {
--		case 0:	return snprintf(buf, buf_len, "%s", payload & 0x1 ?
--					"COND-SELECT" : "INSN-OTHER");
--		case 1:	{
--			size_t blen = buf_len;
--
--			if (payload & 0x1)
--				ret = snprintf(buf, buf_len, "ST");
--			else
--				ret = snprintf(buf, buf_len, "LD");
--			buf += ret;
--			blen -= ret;
-+		case 0:
-+			return arm_spe_pkt_snprintf(&buf, &blen,
-+					payload & 0x1 ? "COND-SELECT" : "INSN-OTHER");
-+		case 1:
-+			ret = arm_spe_pkt_snprintf(&buf, &blen,
-+						   payload & 0x1 ? "ST" : "LD");
-+			if (ret < 0)
-+				return ret;
-+
- 			if (payload & 0x2) {
- 				if (payload & 0x4) {
--					ret = snprintf(buf, buf_len, " AT");
--					buf += ret;
--					blen -= ret;
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " AT");
-+					if (ret < 0)
-+						return ret;
- 				}
- 				if (payload & 0x8) {
--					ret = snprintf(buf, buf_len, " EXCL");
--					buf += ret;
--					blen -= ret;
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCL");
-+					if (ret < 0)
-+						return ret;
- 				}
- 				if (payload & 0x10) {
--					ret = snprintf(buf, buf_len, " AR");
--					buf += ret;
--					blen -= ret;
-+					ret = arm_spe_pkt_snprintf(&buf, &blen, " AR");
-+					if (ret < 0)
-+						return ret;
- 				}
- 			} else if (payload & 0x4) {
--				ret = snprintf(buf, buf_len, " SIMD-FP");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " SIMD-FP");
-+				if (ret < 0)
-+					return ret;
- 			}
-+
-+			return buf_len - blen;
-+
-+		case 2:
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "B");
- 			if (ret < 0)
- 				return ret;
--			blen -= ret;
--			return buf_len - blen;
--		}
--		case 2:	{
--			size_t blen = buf_len;
+ 	memset(packet, 0, sizeof(struct arm_spe_pkt));
  
--			ret = snprintf(buf, buf_len, "B");
--			buf += ret;
--			blen -= ret;
- 			if (payload & 0x1) {
--				ret = snprintf(buf, buf_len, " COND");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " COND");
-+				if (ret < 0)
-+					return ret;
- 			}
- 			if (payload & 0x2) {
--				ret = snprintf(buf, buf_len, " IND");
--				buf += ret;
--				blen -= ret;
-+				ret = arm_spe_pkt_snprintf(&buf, &blen, " IND");
-+				if (ret < 0)
-+					return ret;
- 			}
--			if (ret < 0)
--				return ret;
--			blen -= ret;
+ 	if (!len)
+ 		return ARM_SPE_NEED_MORE_BYTES;
+ 
+-	byte = buf[0];
+-	if (byte == SPE_HEADER0_PAD)
++	hdr = buf[0];
 +
- 			return buf_len - blen;
--			}
--		default: return 0;
++	if (hdr == SPE_HEADER0_PAD)
+ 		return arm_spe_get_pad(packet);
+-	else if (byte == SPE_HEADER0_END) /* no timestamp at end of record */
 +
-+		default:
-+			return 0;
- 		}
- 	case ARM_SPE_DATA_SOURCE:
- 	case ARM_SPE_TIMESTAMP:
--		return snprintf(buf, buf_len, "%s %lld", name, payload);
-+		return arm_spe_pkt_snprintf(&buf, &blen, "%s %lld", name, payload);
- 	case ARM_SPE_ADDRESS:
- 		switch (idx) {
- 		case 0:
- 		case 1: ns = !!(packet->payload & NS_FLAG);
- 			el = (packet->payload & EL_FLAG) >> 61;
- 			payload &= ~(0xffULL << 56);
--			return snprintf(buf, buf_len, "%s 0x%llx el%d ns=%d",
-+			return arm_spe_pkt_snprintf(&buf, &blen,
-+					"%s 0x%llx el%d ns=%d",
- 				        (idx == 1) ? "TGT" : "PC", payload, el, ns);
--		case 2:	return snprintf(buf, buf_len, "VA 0x%llx", payload);
-+		case 2:
-+			return arm_spe_pkt_snprintf(&buf, &blen,
-+						    "VA 0x%llx", payload);
- 		case 3:	ns = !!(packet->payload & NS_FLAG);
- 			payload &= ~(0xffULL << 56);
--			return snprintf(buf, buf_len, "PA 0x%llx ns=%d",
--					payload, ns);
--		default: return 0;
-+			return arm_spe_pkt_snprintf(&buf, &blen,
-+						    "PA 0x%llx ns=%d", payload, ns);
-+		default:
-+			return 0;
- 		}
- 	case ARM_SPE_CONTEXT:
--		return snprintf(buf, buf_len, "%s 0x%lx el%d", name,
--				(unsigned long)payload, idx + 1);
--	case ARM_SPE_COUNTER: {
--		size_t blen = buf_len;
--
--		ret = snprintf(buf, buf_len, "%s %d ", name,
--			       (unsigned short)payload);
--		buf += ret;
--		blen -= ret;
--		switch (idx) {
--		case 0:	ret = snprintf(buf, buf_len, "TOT"); break;
--		case 1:	ret = snprintf(buf, buf_len, "ISSUE"); break;
--		case 2:	ret = snprintf(buf, buf_len, "XLAT"); break;
--		default: ret = 0;
--		}
-+		return arm_spe_pkt_snprintf(&buf, &blen, "%s 0x%lx el%d",
-+					    name, (unsigned long)payload, idx + 1);
-+	case ARM_SPE_COUNTER:
-+		ret = arm_spe_pkt_snprintf(&buf, &blen, "%s %d ", name,
-+					   (unsigned short)payload);
- 		if (ret < 0)
- 			return ret;
--		blen -= ret;
++	if (hdr == SPE_HEADER0_END) /* no timestamp at end of record */
+ 		return arm_spe_get_end(packet);
+-	else if (byte & 0xc0 /* 0y11xxxxxx */) {
+-		if (byte & 0x80) {
+-			if ((byte & SPE_HEADER0_ADDRESS_MASK) == SPE_HEADER0_ADDRESS)
+-				return arm_spe_get_addr(buf, len, 0, packet);
+-			if ((byte & SPE_HEADER0_COUNTER_MASK) == SPE_HEADER0_COUNTER)
+-				return arm_spe_get_counter(buf, len, 0, packet);
+-		} else
+-			if (byte == SPE_HEADER0_TIMESTAMP)
+-				return arm_spe_get_timestamp(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_EVENTS_MASK) == SPE_HEADER0_EVENTS)
+-				return arm_spe_get_events(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_SOURCE_MASK) == SPE_HEADER0_SOURCE)
+-				return arm_spe_get_data_source(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_CONTEXT_MASK) == SPE_HEADER0_CONTEXT)
+-				return arm_spe_get_context(buf, len, packet);
+-			else if ((byte & SPE_HEADER0_OP_TYPE_MASK) == SPE_HEADER0_OP_TYPE)
+-				return arm_spe_get_op_type(buf, len, packet);
+-	} else if ((byte & 0xe0) == 0x20 /* 0y001xxxxx */) {
+-		/* 16-bit header */
+-		byte = buf[1];
+-		if (byte == SPE_HEADER1_ALIGNMENT)
 +
-+		switch (idx) {
-+		case 0:
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "TOT");
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		case 1:
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "ISSUE");
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		case 2:
-+			ret = arm_spe_pkt_snprintf(&buf, &blen, "XLAT");
-+			if (ret < 0)
-+				return ret;
-+			break;
-+		default:
-+			break;
-+		}
++	if (hdr == SPE_HEADER0_TIMESTAMP)
++		return arm_spe_get_timestamp(buf, len, packet);
 +
- 		return buf_len - blen;
--	}
++	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_EVENTS)
++		return arm_spe_get_events(buf, len, packet);
 +
- 	default:
- 		break;
++	if ((hdr & SPE_HEADER0_MASK1) == SPE_HEADER0_SOURCE)
++		return arm_spe_get_data_source(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_CONTEXT)
++		return arm_spe_get_context(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_OP_TYPE)
++		return arm_spe_get_op_type(buf, len, packet);
++
++	if ((hdr & SPE_HEADER0_MASK2) == SPE_HEADER0_EXTENDED) {
++		/* 16-bit extended format header */
++		ext_hdr = 1;
++
++		hdr = buf[1];
++		if (hdr == SPE_HEADER1_ALIGNMENT)
+ 			return arm_spe_get_alignment(buf, len, packet);
+-		else if ((byte & SPE_HEADER1_ADDRESS_MASK) == SPE_HEADER1_ADDRESS)
+-			return arm_spe_get_addr(buf, len, 1, packet);
+-		else if ((byte & SPE_HEADER1_COUNTER_MASK) == SPE_HEADER1_COUNTER)
+-			return arm_spe_get_counter(buf, len, 1, packet);
  	}
  
--	return snprintf(buf, buf_len, "%s 0x%llx (%d)",
--			name, payload, packet->index);
-+	return arm_spe_pkt_snprintf(&buf, &blen, "%s 0x%llx (%d)",
-+				    name, payload, packet->index);
++	/*
++	 * The short format header's byte 0 or the extended format header's
++	 * byte 1 has been assigned to 'hdr', which uses the same encoding for
++	 * address packet and counter packet, so don't need to distinguish if
++	 * it's short format or extended format and handle in once.
++	 */
++	if ((hdr & SPE_HEADER0_MASK3) == SPE_HEADER0_ADDRESS)
++		return arm_spe_get_addr(buf, len, ext_hdr, packet);
++
++	if ((hdr & SPE_HEADER0_MASK3) == SPE_HEADER0_COUNTER)
++		return arm_spe_get_counter(buf, len, ext_hdr, packet);
++
+ 	return ARM_SPE_BAD_PACKET;
  }
+ 
+diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+index e9ea8e3ead5d..68552ff8a8f7 100644
+--- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
++++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+@@ -37,6 +37,26 @@ struct arm_spe_pkt {
+ 	uint64_t		payload;
+ };
+ 
++/* Short header (HEADER0) and extended header (HEADER1) */
++#define SPE_HEADER0_PAD				0x0
++#define SPE_HEADER0_END				0x1
++#define SPE_HEADER0_TIMESTAMP			0x71
++/* Mask for event & data source */
++#define SPE_HEADER0_MASK1			(GENMASK_ULL(7, 6) | GENMASK_ULL(3, 0))
++#define SPE_HEADER0_EVENTS			0x42
++#define SPE_HEADER0_SOURCE			0x43
++/* Mask for context & operation */
++#define SPE_HEADER0_MASK2			GENMASK_ULL(7, 2)
++#define SPE_HEADER0_CONTEXT			0x64
++#define SPE_HEADER0_OP_TYPE			0x48
++/* Mask for extended format */
++#define SPE_HEADER0_EXTENDED			0x20
++/* Mask for address & counter */
++#define SPE_HEADER0_MASK3			GENMASK_ULL(7, 3)
++#define SPE_HEADER0_ADDRESS			0xb0
++#define SPE_HEADER0_COUNTER			0x98
++#define SPE_HEADER1_ALIGNMENT			0x0
++
+ #define SPE_HEADER_SZ(val)			((val & GENMASK_ULL(5, 4)) >> 4)
+ 
+ #define SPE_ADDR_PKT_HDR_INDEX_INS		(0x0)
 -- 
 2.17.1
 
