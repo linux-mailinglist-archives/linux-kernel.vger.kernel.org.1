@@ -2,123 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33F82295CED
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:49:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 37372295CFE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 12:51:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896708AbgJVKsE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 06:48:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56268 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2896574AbgJVKr3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 06:47:29 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8BA392177B;
-        Thu, 22 Oct 2020 10:47:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603363648;
-        bh=xBsbKD5SBQCcLeBR2tpUTrjFtW93i8KwvEiKlew6y/M=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=feiTNY176OhJVWL6CnkF4kiU6NigFm/VD3Ui4E+wpATVknPWx7I4BQqdiJv/sMgNJ
-         H4Eb2Bc9W6InfW+morvNSQUtX8ZVPuBvKSpQrb3i+BcForuB10ZbuKl1VEpEEP0vUn
-         prey8EZuMSul8lL3YVDZeBuHUKxl2I6g/LFzXfXQ=
-Date:   Thu, 22 Oct 2020 12:48:05 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201022104805.GA1503673@kroah.com>
-References: <20201021233914.GR3576660@ZenIV.linux.org.uk>
- <20201022082654.GA1477657@kroah.com>
- <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+        id S2896746AbgJVKvW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 06:51:22 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:46738 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896729AbgJVKuT (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 06:50:19 -0400
+Date:   Thu, 22 Oct 2020 10:49:57 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603363798;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EKE4tkuVx1iI+TMuSjokY4LRT13L/xCo/XlvF52HAFc=;
+        b=NDGSsM0HrAgfwGgrZbeXJPqXGP5Wg8U341eSxX/xi7KE++8oSijZfNQsqfYM8YAaedKcvw
+        1zA7NnwBH55wnXIHcMiSLytqG/g6ZH17ajSssCIfLWkatlzyqGqnwFn+08mb7Fb0vijmgV
+        /VW7N4gwvuOpkUV0gxO+t8g1YtrgM+QPgoRp2Wu6iCJB9qHjPchpzi8VvW9Yr/jE1ZHPUe
+        qrkWBidmx6QZr1qsYg4/54yVe22pCazaLeHfajBUvavAo3AGe+3u7gsFtXZsrLSCt5WO7L
+        TJI8sR6/xn+c+nFtWL1aVkFIaY95Msd6WaomAxClWxtlqPrDylie9FvYAmostQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603363798;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=EKE4tkuVx1iI+TMuSjokY4LRT13L/xCo/XlvF52HAFc=;
+        b=MhRdHG7MYuGCgtHEfoQG1xwR6ThiVZmkax2QP5iVLaSgXtO1iexDSr49IaZKUfaP5bcNYu
+        o2PxjEUw8Euka1Aw==
+From:   "tip-bot2 for Juergen Gross" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/urgent] x86/alternative: Don't call text_poke() in lazy TLB mode
+Cc:     Juergen Gross <jgross@suse.com>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201009144225.12019-1-jgross@suse.com>
+References: <20201009144225.12019-1-jgross@suse.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+Message-ID: <160336379724.7002.17024152211307266195.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 11:36:40AM +0200, David Hildenbrand wrote:
-> On 22.10.20 11:32, David Laight wrote:
-> > From: David Hildenbrand
-> >> Sent: 22 October 2020 10:25
-> > ...
-> >> ... especially because I recall that clang and gcc behave slightly
-> >> differently:
-> >>
-> >> https://github.com/hjl-tools/x86-psABI/issues/2
-> >>
-> >> "Function args are different: narrow types are sign or zero extended to
-> >> 32 bits, depending on their type. clang depends on this for incoming
-> >> args, but gcc doesn't make that assumption. But both compilers do it
-> >> when calling, so gcc code can call clang code.
-> > 
-> > It really is best to use 'int' (or even 'long') for all numeric
-> > arguments (and results) regardless of the domain of the value.
-> > 
-> > Related, I've always worried about 'bool'....
-> > 
-> >> The upper 32 bits of registers are always undefined garbage for types
-> >> smaller than 64 bits."
-> > 
-> > On x86-64 the high bits are zeroed by all 32bit loads.
-> 
-> Yeah, but does not help here.
-> 
-> 
-> My thinking: if the compiler that calls import_iovec() has garbage in
-> the upper 32 bit
-> 
-> a) gcc will zero it out and not rely on it being zero.
-> b) clang will not zero it out, assuming it is zero.
-> 
-> But
-> 
-> a) will zero it out when calling the !inlined variant
-> b) clang will zero it out when calling the !inlined variant
-> 
-> When inlining, b) strikes. We access garbage. That would mean that we
-> have calling code that's not generated by clang/gcc IIUC.
-> 
-> We can test easily by changing the parameters instead of adding an "inline".
+The following commit has been merged into the x86/urgent branch of tip:
 
-Let me try that as well, as I seem to have a good reproducer, but it
-takes a while to run...
+Commit-ID:     abee7c494d8c41bb388839bccc47e06247f0d7de
+Gitweb:        https://git.kernel.org/tip/abee7c494d8c41bb388839bccc47e06247f0d7de
+Author:        Juergen Gross <jgross@suse.com>
+AuthorDate:    Fri, 09 Oct 2020 16:42:25 +02:00
+Committer:     Peter Zijlstra <peterz@infradead.org>
+CommitterDate: Thu, 22 Oct 2020 12:37:23 +02:00
 
-greg k-h
+x86/alternative: Don't call text_poke() in lazy TLB mode
+
+When running in lazy TLB mode the currently active page tables might
+be the ones of a previous process, e.g. when running a kernel thread.
+
+This can be problematic in case kernel code is being modified via
+text_poke() in a kernel thread, and on another processor exit_mmap()
+is active for the process which was running on the first cpu before
+the kernel thread.
+
+As text_poke() is using a temporary address space and the former
+address space (obtained via cpu_tlbstate.loaded_mm) is restored
+afterwards, there is a race possible in case the cpu on which
+exit_mmap() is running wants to make sure there are no stale
+references to that address space on any cpu active (this e.g. is
+required when running as a Xen PV guest, where this problem has been
+observed and analyzed).
+
+In order to avoid that, drop off TLB lazy mode before switching to the
+temporary address space.
+
+Fixes: cefa929c034eb5d ("x86/mm: Introduce temporary mm structs")
+Signed-off-by: Juergen Gross <jgross@suse.com>
+Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+Link: https://lkml.kernel.org/r/20201009144225.12019-1-jgross@suse.com
+---
+ arch/x86/kernel/alternative.c |  9 +++++++++
+ 1 file changed, 9 insertions(+)
+
+diff --git a/arch/x86/kernel/alternative.c b/arch/x86/kernel/alternative.c
+index cdaab30..cd6be6f 100644
+--- a/arch/x86/kernel/alternative.c
++++ b/arch/x86/kernel/alternative.c
+@@ -807,6 +807,15 @@ static inline temp_mm_state_t use_temporary_mm(struct mm_struct *mm)
+ 	temp_mm_state_t temp_state;
+ 
+ 	lockdep_assert_irqs_disabled();
++
++	/*
++	 * Make sure not to be in TLB lazy mode, as otherwise we'll end up
++	 * with a stale address space WITHOUT being in lazy mode after
++	 * restoring the previous mm.
++	 */
++	if (this_cpu_read(cpu_tlbstate.is_lazy))
++		leave_mm(smp_processor_id());
++
+ 	temp_state.mm = this_cpu_read(cpu_tlbstate.loaded_mm);
+ 	switch_mm_irqs_off(NULL, mm, current);
+ 
