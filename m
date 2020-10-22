@@ -2,140 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1133A295C17
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:37:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE0FB295C1B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 11:38:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896029AbgJVJhC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 05:37:02 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:33025 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2895800AbgJVJg4 (ORCPT
+        id S2896034AbgJVJil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 05:38:41 -0400
+Received: from mail1.nippynetworks.com ([91.220.24.129]:35566 "EHLO
+        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2505549AbgJVJik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 05:36:56 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603359415;
+        Thu, 22 Oct 2020 05:38:40 -0400
+Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
+        (No client certificate requested)
+        (Authenticated sender: ed@wildgooses.com)
+        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4CH2Ns0M4vzTgZ7;
+        Thu, 22 Oct 2020 10:38:36 +0100 (BST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
+        s=dkim; t=1603359518;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=DC+3OwmtjhrVCpfk4sXvCEkgbYjM3Mk+x26MXzYFx48=;
-        b=VMLvYiWBWMQ8BdmpBnQeU65MkER6Womd4xJdO54glA3t/92ZkYXsTYq1nUygAYE8r7fHoJ
-        VgCH5M1VDUAcntGU/mdWH31g0jLaaceEeQfPMxf0koDQMbNQ9meQSM/seFb5+cOHaUP3NR
-        yWNVcXHNeqU07Xr7fsFTmP86uBEG6MA=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-481-oXTdLQjNMMegK_tfwCZIGg-1; Thu, 22 Oct 2020 05:36:50 -0400
-X-MC-Unique: oXTdLQjNMMegK_tfwCZIGg-1
-Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 6A2D364152;
-        Thu, 22 Oct 2020 09:36:46 +0000 (UTC)
-Received: from [10.36.113.152] (ovpn-113-152.ams2.redhat.com [10.36.113.152])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 7E9B810013D0;
-        Thu, 22 Oct 2020 09:36:41 +0000 (UTC)
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-To:     David Laight <David.Laight@ACULAB.COM>,
-        Greg KH <gregkh@linuxfoundation.org>
-Cc:     Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <20200925045146.1283714-1-hch@lst.de>
- <20200925045146.1283714-3-hch@lst.de> <20201021161301.GA1196312@kroah.com>
- <20201021233914.GR3576660@ZenIV.linux.org.uk>
- <20201022082654.GA1477657@kroah.com>
- <80a2e5fa-718a-8433-1ab0-dd5b3e3b5416@redhat.com>
- <5d2ecb24db1e415b8ff88261435386ec@AcuMS.aculab.com>
- <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
-Date:   Thu, 22 Oct 2020 11:36:40 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        bh=pTOJClBcVAFpfY4OoxPdAHYjx+AR4QSvVJde4Nim/Kk=;
+        b=MIH6KtO+RetV+W1FHpOQbEUR+TSZNwZXAlEjIEjtiEJniSVXr1jYZHV+4bVkmlKo1nvlf8
+        KMzmpzb7g0zmoosNs4cjxJlLtfwqdP0Xk+JYLKAkx4xU8BVGJoxyNyv8V+Vp7E2sevOsxt
+        38iHMMrsPFB1UNBsLmdVlzsHBFpFRRI=
+Subject: Re: [PATCH 1/2] x86: Conditional init of pcengines leds/keys gpios
+To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
+        linux-kernel@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>
+Cc:     fe@dev.tdt.de, hdegoede@redhat.com,
+        "Enrico Weigelt, metux IT consult" <info@metux.net>,
+        Darren Hart <dvhart@infradead.org>,
+        Andy Shevchenko <andy@infradead.org>,
+        platform-driver-x86@vger.kernel.org
+References: <2ba7fc12-a3a7-2783-54e6-27e9eb60ec9c@redhat.com>
+ <20201021214151.32229-1-lists@wildgooses.com>
+ <0720575c-88c3-4f88-caa7-4707139702a1@metux.net>
+From:   Ed W <lists@wildgooses.com>
+Message-ID: <5684534f-1280-4c37-af94-1e1bc7484585@wildgooses.com>
+Date:   Thu, 22 Oct 2020 10:38:36 +0100
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+In-Reply-To: <0720575c-88c3-4f88-caa7-4707139702a1@metux.net>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
+Content-Language: en-GB
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 11:32, David Laight wrote:
-> From: David Hildenbrand
->> Sent: 22 October 2020 10:25
-> ...
->> ... especially because I recall that clang and gcc behave slightly
->> differently:
+On 22/10/2020 10:22, Enrico Weigelt, metux IT consult wrote:
+> On 21.10.20 23:41, Ed Wildgoose wrote:
+>
+> Hi,
+>
+>> The pcengines bios/firmware includes ACPI tables (since 4.10.0.1) which
+>> will cause the kernel to automatically create led + gpio_key devices for
+>> the platform. This means that the platform setup now creates duplicates
+>> of all these led/key devices.
 >>
->> https://github.com/hjl-tools/x86-psABI/issues/2
->>
->> "Function args are different: narrow types are sign or zero extended to
->> 32 bits, depending on their type. clang depends on this for incoming
->> args, but gcc doesn't make that assumption. But both compilers do it
->> when calling, so gcc code can call clang code.
-> 
-> It really is best to use 'int' (or even 'long') for all numeric
-> arguments (and results) regardless of the domain of the value.
-> 
-> Related, I've always worried about 'bool'....
-> 
->> The upper 32 bits of registers are always undefined garbage for types
->> smaller than 64 bits."
-> 
-> On x86-64 the high bits are zeroed by all 32bit loads.
-
-Yeah, but does not help here.
+>> Driver conditionally initialises leds/keys only for older bios.
+> still breaks existing userlands as device names change - LEDs as well as
+> keys, and keycodes also change.
+>
+> IOW: userland needs to be depending on specific BIOS versions.
+>
+>
+> --mtx
 
 
-My thinking: if the compiler that calls import_iovec() has garbage in
-the upper 32 bit
+As a compromise can you change your userland to cope with dynamic names? I see two simple ways:
 
-a) gcc will zero it out and not rely on it being zero.
-b) clang will not zero it out, assuming it is zero.
+1) udev rule to set name as you wish
 
-But
+2) I uploaded a little script which uses simple globs to just figure out the base name depending on
+the board (also handles different board types entirely as well)
 
-a) will zero it out when calling the !inlined variant
-b) clang will zero it out when calling the !inlined variant
 
-When inlining, b) strikes. We access garbage. That would mean that we
-have calling code that's not generated by clang/gcc IIUC.
+I realise you have some stuff running with this, I don't know your situation specifically, but this
+feels like a really, really, small change to work around? Can you elaborate a little on why your
+users will be updating kernels without updating user code? Is there really no way to stick a
+compatibility udev rule in for your situation?
 
-We can test easily by changing the parameters instead of adding an "inline".
+To recap though, the situation for many years was that the naming convention was board specific.
+There is then just a small window (less than a year I think?) where users saw the name change to be
+non board specific (ie your new module). I would hazard a guess that given the speed of mainstream
+releases, few end users actually saw this change yet, or would notice? Those who did already
+accommodated the name change, so I would hazard a guess they can cope with the revert? (or not even
+notice?)
 
--- 
-Thanks,
 
-David / dhildenb
+Look, just propose a solution, I don't really mind. To me this is SUCH a TRIVIAL rename that I've
+already incorporated support for both naming conventions into my apps. I just want to get APU5/6
+support in, which is affecting some real boards I want to use in volume. I don't feel the current
+situation of duplicate devices should stay though.
+
+My opinion is that we punt "this breaks userland" to being the board vendors problem now. The board
+is configured largely through ACPI, so if the upstream changes the ACPI, then it's on them, not us.
+This seems to be the direction the kernel is heading, with ACPI and device trees being used to
+configure the boards, in preference to heavy platform drivers?
+
+
+Hans, can you arbitrate here please? Your previous suggestion was to implement a compatibility shim
+for older BIOS, that's done here. Happy to implement something else, just need a guide?
+
+Thanks all
+
+Ed W
 
