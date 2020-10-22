@@ -2,118 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F13EB296677
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:21:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C7CA429667F
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 23:22:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372252AbgJVVVw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 17:21:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40860 "EHLO
+        id S372285AbgJVVWf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 17:22:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40968 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897477AbgJVVVv (ORCPT
+        with ESMTP id S2897748AbgJVVWc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 17:21:51 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C837AC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:21:51 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id b19so1657880pld.0
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 14:21:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fySJoHhy5YXPAElLVamAnhk0uMbmYI/MuJ+gPrhlm5M=;
-        b=aJrov6ao+8CE/Gun5k6QqQK1z7aQZZ8lKvbtdkftZTGDpMOIypCtDI2KauHPz0xAvd
-         zDM0uWfpckROSxXz1Fz7eok7d7r26AdnAdiaYuYk0VwYQkNT0dKNUFTQlzu7Tsb4EKRH
-         6M0VyHWhR/6rhgK2MNcQsBZeeFdVLUIm5BmweL4Z5nY08tlGJ18DnAWyQDQXF1lmeRpx
-         P3A1ulvNdXaao3s1oMYrYfI8NQA4OH0nMfwsoPVuPd5dnf0PYbeBWh6wZReOU0H3rZ71
-         LggDcqgJUFybk56ZG7lLOx+JAlGm5MZQdOci/UnMLxhRZ8nqF9rQsZdx1B4BowBiuV0D
-         BAWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fySJoHhy5YXPAElLVamAnhk0uMbmYI/MuJ+gPrhlm5M=;
-        b=Kok3ZPCXhrCZ9Yk5xvMnaoIUAF8Tpj3f+zK2mdseUkp0nu/d7Wi7gQJEzw0rKKoLXB
-         BI2dfDA07nmqsfBXlzIRS8WqbIETkaZMuoGlgI8NRaWgUu6D4L3bFwMaYdR7m8Mo+wn/
-         nrIOoGZ4TFYCiZE2cJNN4ruLGGUKmczUhZIaAR2llND7wbe7qUd548wDXF31wAsoFct5
-         vLauAXlpaAKpwJb3IjYAgYMHyGcGVg2yaVlCXD8UPGytI1hgjup0M5pO2QMpwGIaTLuk
-         vu6ywlQ5BOXhUFyx/qxLueYgk0LJOq6i3ZP94+L8b9nqQimiBMJsK5U8PfuaphiwGyrr
-         oplA==
-X-Gm-Message-State: AOAM533PJv11+RVXaLFFFUFWRATLVOoqXvzKRiOsLE2RnA2NhPbgCr6l
-        z9ZKs+71TM2c1NAmAiB9/eS26vJ9Oj6j3r23mUj4Lw==
-X-Google-Smtp-Source: ABdhPJxXN4eVC1xO2hexMCghAZ0nThEQtIn2QS0/SNAo+/D8igL/3ibstbTSiZkDtq2Yp683TAYK+MhSfj8bEWTTYc8=
-X-Received: by 2002:a17:902:ba96:b029:d5:f36b:44af with SMTP id
- k22-20020a170902ba96b02900d5f36b44afmr4237070pls.51.1603401711083; Thu, 22
- Oct 2020 14:21:51 -0700 (PDT)
+        Thu, 22 Oct 2020 17:22:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1E405C0613D2;
+        Thu, 22 Oct 2020 14:22:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+        Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+        Content-Description:In-Reply-To:References;
+        bh=/G6plsTDuLLi41lWwfSKsVW5KJYWwk8QiIuvJmYW4EE=; b=o06/f9QvYVKSEgEE6eVUb3zkXe
+        95w1+d+U9YL2cmW3VGydPZjeh1XGu7Bex8YVd11m7tNBge/S6CH6MF0XuWCpj4fOocm4ZQTgJPz9v
+        U1hRS4O2yA4PbvlxaqvC9Qb+UmIGsvsRUdfq/xh1gbn3znx5S2FnyOTTpwdWsuA3LuKUXoehYOjNg
+        CP7fowiv+vy2jJ/cCV4b2RKVYZnUucdYwr94XC2VtORxS5Yw7g4g0/9MZWj5GzIf+GN9ZDEO+t97X
+        h0jN9egTDojBTvM0xogn2XcPj8y/bdo2p6t/46W9HbvYI11K1DY2y7X4PJBPXQ6PWelUtyYfzpbbr
+        82bSsL/w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVi2X-00046C-Bg; Thu, 22 Oct 2020 21:22:30 +0000
+From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
+Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Subject: [PATCH 0/6] Make block_read_full_page synchronous
+Date:   Thu, 22 Oct 2020 22:22:22 +0100
+Message-Id: <20201022212228.15703-1-willy@infradead.org>
+X-Mailer: git-send-email 2.21.3
 MIME-Version: 1.0
-References: <20201019224556.3536790-1-dlatypov@google.com> <CABVgOS=Kucf3QV=jpo3cLDgG38WvnuKpzEdP_RkBtRwHHPLe3Q@mail.gmail.com>
- <CAGS_qxpX0Do+z-wzCC=twbt-htL=Jkqvrk4L4rKTtXFPfX-TCA@mail.gmail.com>
- <20201022150648.GH4077@smile.fi.intel.com> <CAFd5g45o2G-bUvHNk2ehNuCsK6zVjN+rp88TyNmuJpfLbQi07g@mail.gmail.com>
- <20201022190526.GN4077@smile.fi.intel.com>
-In-Reply-To: <20201022190526.GN4077@smile.fi.intel.com>
-From:   Brendan Higgins <brendanhiggins@google.com>
-Date:   Thu, 22 Oct 2020 14:21:40 -0700
-Message-ID: <CAFd5g46RBSgqujAbPSKasP5B6ufojHwTztvOWjSg3Lxk5QGHxw@mail.gmail.com>
-Subject: Re: [PATCH] lib: add basic KUnit test for lib/math
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Daniel Latypov <dlatypov@google.com>,
-        David Gow <davidgow@google.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        Shuah Khan <skhan@linuxfoundation.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:04 PM Andy Shevchenko
-<andriy.shevchenko@linux.intel.com> wrote:
->
-> On Thu, Oct 22, 2020 at 11:53:50AM -0700, Brendan Higgins wrote:
-> > On Thu, Oct 22, 2020 at 8:06 AM Andy Shevchenko
-> > <andriy.shevchenko@linux.intel.com> wrote:
-> > > On Wed, Oct 21, 2020 at 10:47:50AM -0700, Daniel Latypov wrote:
->
-> ...
->
-> > > You need to put detailed comments in the code to have it as real example how to
-> > > create the KUnit test. But hey, it will mean that documentation sucks. So,
-> > > please update documentation to cover issues that you found and which motivated
-> > > you to create these test cases.
-> >
-> > I don't entirely disagree; leaning too heavily on code examples can be
-> > detrimental to docs. That being said, when I use other people's code,
-> > I often don't even look at the docs. So, I think the ideal is to have
-> > both.
->
-> Why do we have docs in the first place?
-> For test cases I think it's a crucial part, because tests many time are written
-> by newbies, who would like to understand all under-the-hood stuff. You imply
+This patchset does I/Os in larger chunks, if the blocks are adjacent.
+More importantly, it returns the actual error from ->readpage for
+filesystems which use block_read_full_page().  Unless fscrypt returns
+an error, in which case it turns into EIO because it has to roundtrip
+through bi_status.
 
-Good point. Yeah, we don't really have any documentation that explains
-the internals at all. I agree: we need to fix that.
+I don't have a system with fscrypt enabled, so I'd appreciate some
+testing from the fscrypt people.
 
-> that they need to drop themselves into the code directly. It's very harsh to
-> begin with Linux kernel development, really.
+Matthew Wilcox (Oracle) (6):
+  block: Add blk_completion
+  fs: Return error from block_read_full_page
+  fs: Convert block_read_full_page to be synchronous
+  fs: Hoist fscrypt decryption to bio completion handler
+  fs: Turn decrypt_bh into decrypt_bio
+  fs: Convert block_read_full_page to be synchronous with fscrypt
+    enabled
 
-No, I was not trying to imply that everyone should just jump in the
-code and ignore the docs. I was just trying to point out that some
-people - myself included - rather see code than docs. Clearly some
-people prefer docs over code as well. Thus, I was trying to argue that
-both are appropriate.
+ block/blk-core.c    |  61 +++++++++
+ fs/buffer.c         | 304 ++++++++++++++++++++++----------------------
+ include/linux/bio.h |  11 ++
+ 3 files changed, 226 insertions(+), 150 deletions(-)
 
-Nevertheless, based on the other comments you sent, I don't think
-that's what we are talking about: sounds like you just want us to
-improve the docs first to make sure we do it. That's fine with me.
+-- 
+2.28.0
 
-> > > Summarize this, please create usable documentation first.
->
-> So, no go for this w/o documentation being up-to-date. Or be honest to
-> everybody, it's sucks it needs to be removed. Then I will get your point.
->
-> --
-> With Best Regards,
-> Andy Shevchenko
->
->
