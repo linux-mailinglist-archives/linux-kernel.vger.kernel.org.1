@@ -2,77 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5B7FD296009
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:31:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BFF7829600B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 15:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2900116AbgJVNbZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 09:31:25 -0400
-Received: from mail-oi1-f196.google.com ([209.85.167.196]:41487 "EHLO
-        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2895506AbgJVNbY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 09:31:24 -0400
-Received: by mail-oi1-f196.google.com with SMTP id q136so1697779oic.8;
-        Thu, 22 Oct 2020 06:31:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=UhboZwAGzeqzQpbq3SMH7k8GtFSAUCRloSoaVz8dUUs=;
-        b=Y7IexbPEecF+GNQEpvybf3tEErwTEY+ZJr5GblEGI6Ls6p09MDwg7HfeBCdsWr0JPm
-         dXZ6YkaKD8NPQDSv7ggPuIgnBHsokl03LiV4Nfau1zj3tWW4b7hNqzZbK+BxyrOZ0igc
-         knPizA/Rr9euH2ykS3eMtICkpE2hYaAC7dK8vhZfP0D2rytYvqdyaZkl8IzXRRBAYJkM
-         DEFLyzj3o1ZDcOPvqRt+nNov+ytYftsWvBdVPJfi7328cbEZjZMDL04J+QoB2HlYT+TQ
-         AxpS3NfCgy2NAu5rrX3r+xq3qssYMM67TP8tQ3ndPqHC9KgIKEZ9Ot+4fpjtxvcZHG0K
-         4T9A==
-X-Gm-Message-State: AOAM533MEs08nSI4LEQjgW7ltY2TYeoNObddlHJe0FxLmZsTTNZYpB0Q
-        OyL5oZtVc5FS6VLOL/nwLqYKiTP8EawdxewsKqk=
-X-Google-Smtp-Source: ABdhPJz39R2SFO1iDXQQFvpVsKcekU58PIW9IUOOZB7j78BBf8BG/32DMa0/YHxLmJtqtTQWkAvTv7xhsdS1EoPSXP4=
-X-Received: by 2002:a05:6808:8f5:: with SMTP id d21mr1427916oic.153.1603373482175;
- Thu, 22 Oct 2020 06:31:22 -0700 (PDT)
+        id S2900127AbgJVNba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 09:31:30 -0400
+Received: from mga18.intel.com ([134.134.136.126]:7583 "EHLO mga18.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2895506AbgJVNb3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 09:31:29 -0400
+IronPort-SDR: /XPzOjJ6zcEjLKA50NUOXgl7YiY9L10KIPrAlG66/C4JYocoRM3gzJ3F9ITvouTeF2rFm/J5cN
+ q7+Tg4caHcOA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9781"; a="155311058"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="155311058"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by orsmga106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 06:31:27 -0700
+IronPort-SDR: ZtHX9vEE2nOZ4DgE3j62VO+vKT9O38aAHAtNNns8UiGdYTeYIXIJKbYDsIEkE3P8KdPxr+zMvO
+ YohhWF1xuGEw==
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="533968088"
+Received: from xiaoyaol-mobl.ccr.corp.intel.com (HELO [10.254.213.210]) ([10.254.213.210])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 06:31:25 -0700
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in
+ KVM_GET_SUPPORTED_CPUID
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Wanpeng Li <kernellwp@gmail.com>, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+ <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+From:   Xiaoyao Li <xiaoyao.li@intel.com>
+Message-ID: <6ad94df6-9ecd-e364-296a-34ba41e938b1@intel.com>
+Date:   Thu, 22 Oct 2020 21:31:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <20201016121709.8447-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201016121709.8447-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-In-Reply-To: <20201016121709.8447-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Thu, 22 Oct 2020 15:31:10 +0200
-Message-ID: <CAMuHMdX--Z-ms9O3c=+Daqq3JDaR30rVtMLCPQ4L9q=EtPcdAg@mail.gmail.com>
-Subject: Re: [PATCH 3/4] clk: renesas: r8a774b1: Add RPC clocks
-To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Cc:     Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>,
-        Prabhakar <prabhakar.csengg@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 2:17 PM Lad Prabhakar
-<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> From: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-> as well as the RPC-IF module clock, in the RZ/G2N (R8A774B1) CPG/MSSR
-> driver.
->
-> Inspired by commit 94e3935b5756 ("clk: renesas: r8a77980: Add RPC clocks").
->
-> Signed-off-by: Biju Das <biju.das.jz@bp.renesas.com>
-> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+On 10/22/2020 9:02 PM, Paolo Bonzini wrote:
+> On 22/10/20 03:34, Wanpeng Li wrote:
+>> From: Wanpeng Li <wanpengli@tencent.com>
+>>
+>> Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
+>>
+>> This ioctl returns x86 cpuid features which are supported by both the
+>> hardware and kvm in its default configuration.
+>>
+>> A well-behaved userspace should not set the bit if it is not supported.
+>>
+>> Suggested-by: Jim Mattson <jmattson@google.com>
+>> Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> 
+> It's common for userspace to copy all supported CPUID bits to
+> KVM_SET_CPUID2, I don't think this is the right behavior for
+> KVM_HINTS_REALTIME.
 
-Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
-i.e. will queue in renesas-clk-for-v5.11.
+It reminds of X86_FEATURE_WAITPKG, which is added to supported CPUID 
+recently as a fix but QEMU exposes it to guest only when "-overcommit 
+cpu-pm"
 
-Gr{oetje,eeting}s,
+> (But maybe this was discussed already; if so, please point me to the
+> previous discussion).
+> 
+> Paolo
+> 
 
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
