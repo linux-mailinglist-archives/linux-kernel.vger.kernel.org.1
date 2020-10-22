@@ -2,93 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1846C2962CB
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:36:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26A8A2962DA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 18:38:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901868AbgJVQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 12:36:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53086 "EHLO
+        id S2901911AbgJVQiZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 12:38:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897355AbgJVQgk (ORCPT
+        with ESMTP id S2897421AbgJVQiY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 12:36:40 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DB22C0613CE;
-        Thu, 22 Oct 2020 09:36:40 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id v22so1237024ply.12;
-        Thu, 22 Oct 2020 09:36:40 -0700 (PDT)
+        Thu, 22 Oct 2020 12:38:24 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3FB19C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:38:24 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id y12so3237843wrp.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 09:38:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nDX397cQgzi1RP7Xa1kem+DTa9TAokdNyCTIWzzUu0o=;
-        b=pXYjdUUlvrho5ldzchG0lyeU5Q6V1ftioPW0uTf/tZZRqG98j2CjL49DDiWZ9rCEt9
-         anfqlFejUAvnOFFQBEPt1T5OyZjZezCKi5DyZvUAK3H/kSfGqZFa4cXuh/1bWoHieNmv
-         lIZJC276WWoA35g8gzVfgOxHJuV33k06s5cZhhpk36LkdQUrpqNf8nkrGOQbqWw7AUrS
-         SBym7vllUO+wDk0LH38l3+NZqP+9TBrrPPXHw2nakJ26e6GMWK6VeR4/VlKa346tJZpI
-         sxON8P5qZpynMXpNg4l939Un6KQToJ3C1dr7Ypy7JPL65dLAuQpwau+9EUsHw9A5h6rw
-         VUhA==
+        d=android.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=v7FaFaTdMJ8tRDnhGBi1+id41DhCNPtJjvfWqcIsB1c=;
+        b=bWxDfT2Dsx5Kvnhe7Mx+CApRxX2EtdjqCMjmsTK/eYMeEXZsTt0RJpSB3CZxHvRluA
+         /C5QuVeAsZ/DeEPdKdhM0E0WGJx2T2v9m3MYhRW4THHYtS+ZE0DpFGmpGRt0IrHa82d0
+         Xv3iNh3SjhnIzs4SwmEIXMAdEaKHncc6EizoIKb2cmRXjknWU5304kZN9OG6XDiQpZxH
+         SerU5F0hZYBs905dOGoLpPMGvDJuO1BG3E++xZPursi7dE3b9wXy8NHFxPCu5h5w1pZ3
+         25XeVxXqCgjjGfO2eAUqnw28i9pF+/kRA21vMvb41oR7Wrr0+/g0yrh0R/IHAXK8n9/9
+         E2Uw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=nDX397cQgzi1RP7Xa1kem+DTa9TAokdNyCTIWzzUu0o=;
-        b=UhoaSu7ERwzVuNU85BzrGhFmp4biK5/KTpH3taZjCyNIJRsyoHZC90i3sZGBiYfjeD
-         0/SdPMkeY4XKbtRyJCSaJTzuzVkM+Zl1/kCImn7YML3UOczM955Wh4xXqaaEUA2mxwsh
-         ym9HX/1FTuwb4AhI+hu3rKASzLuHJdk2RKaxoVCy9hSuK25xzXQgRwBXtqyQF/p5AE8T
-         rswgO6wM7YnIstR+IrumtwxoN1Apzy8pTkZjwdEzuxgXyq0sANO3IQBaqS81huXK9iHc
-         dV7/ncAAA3CNI9l41X1HjS6T3qSJmbRxtjpH4M02TM/38/sx9DreIfY9dwcyGPwO8ghn
-         GaNw==
-X-Gm-Message-State: AOAM532qHU0Ge+HW1GXkMfEShkpmAALxAk2HZAMHbrfbvU2JABWoyAog
-        ZQDtY1iBRC0qSRVuYqHcRRLDI7Am0o0Hdg==
-X-Google-Smtp-Source: ABdhPJyyLpC5UK2zwIZgXPbUBYWPShqmVVk4l8rDynQHePrbP4vvhbq00vnT1ujOemB+Up500kqESA==
-X-Received: by 2002:a17:902:654a:b029:d5:e98f:2436 with SMTP id d10-20020a170902654ab02900d5e98f2436mr3323426pln.21.1603384599163;
-        Thu, 22 Oct 2020 09:36:39 -0700 (PDT)
-Received: from localhost ([2601:1c0:5200:a6:307:a401:7b76:c6e5])
-        by smtp.gmail.com with ESMTPSA id z73sm2822004pfc.75.2020.10.22.09.36.37
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=v7FaFaTdMJ8tRDnhGBi1+id41DhCNPtJjvfWqcIsB1c=;
+        b=pJdvyZmnKg7X2zoh2iaqfGz0X3lsOoqQh2oKDR1MeT5eKyS6WrWdX0ZalgY3/xKKJ7
+         dMpOHLISMclklVQvAWKMHpaExWqpTkz55AukEsfQl9UQrxHfPxKz+Enrz3h1i1Dk/w7r
+         0UJ7keuD1d57E4uqNVph1kmIZVqru6n2PWTdEBR15uL/2LBC8uV4H/4mnZPXwF1wMv7P
+         lIt5POj4O4RQYMYMQFBG8wFnnEC7+MK9/KpWeEtQc9pZaS2yIXmpVrG3qwC+pZdb/Pg7
+         2VXPffsRVKjixtfVQ2rquZ1YKRgLpfk7EbCE80ASUVSqfIgTg6cHmY0yy0sZbyX8k6zt
+         dGmw==
+X-Gm-Message-State: AOAM5304udqgp29OFs3IwUKeLQof5fz0g/aIDCDFnjpJi/16JtC59TsI
+        sg21zWdABLPevW3jDL9Vz4nS8A==
+X-Google-Smtp-Source: ABdhPJxsl1sqM39ATgrwBhkHtsUwIiON9rXgZ+SJgbMLgIv/DRX+c8/hwwiKfb1r2O2AFjrt8HKlnQ==
+X-Received: by 2002:adf:fe09:: with SMTP id n9mr3801569wrr.144.1603384703024;
+        Thu, 22 Oct 2020 09:38:23 -0700 (PDT)
+Received: from google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
+        by smtp.gmail.com with ESMTPSA id u20sm4013890wmm.29.2020.10.22.09.38.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 09:36:37 -0700 (PDT)
-From:   Rob Clark <robdclark@gmail.com>
-To:     linux-arm-msm@vger.kernel.org
-Cc:     Rob Clark <robdclark@chromium.org>, Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED
-        DEVICE TREE BINDINGS), linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] arm64: dts: qcom: sc7180: Fix number of interconnect cells
-Date:   Thu, 22 Oct 2020 09:38:10 -0700
-Message-Id: <20201022163810.429737-1-robdclark@gmail.com>
-X-Mailer: git-send-email 2.26.2
+        Thu, 22 Oct 2020 09:38:22 -0700 (PDT)
+Date:   Thu, 22 Oct 2020 17:38:20 +0100
+From:   Alessio Balsini <balsini@android.com>
+To:     Miklos Szeredi <miklos@szeredi.hu>
+Cc:     Alessio Balsini <balsini@android.com>,
+        Akilesh Kailash <akailash@google.com>,
+        Amir Goldstein <amir73il@gmail.com>,
+        Antonio SJ Musumeci <trapexit@spawn.link>,
+        David Anderson <dvander@google.com>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
+        Martijn Coenen <maco@android.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Lawrence <paullawrence@google.com>,
+        Stefano Duo <stefanoduo@google.com>,
+        Zimuzo Ezeozue <zezeozue@google.com>,
+        fuse-devel <fuse-devel@lists.sourceforge.net>,
+        kernel-team <kernel-team@android.com>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH V9 4/4] fuse: Handle asynchronous read and write in
+ passthrough
+Message-ID: <20201022163820.GD36774@google.com>
+References: <20200924131318.2654747-1-balsini@android.com>
+ <20200924131318.2654747-5-balsini@android.com>
+ <CAJfpegueAXqrfdu5WD+WKKmH9cg0BCQd6Q2bHJNS5XUKuxsmtg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJfpegueAXqrfdu5WD+WKKmH9cg0BCQd6Q2bHJNS5XUKuxsmtg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rob Clark <robdclark@chromium.org>
+On Wed, Sep 30, 2020 at 08:54:03PM +0200, Miklos Szeredi wrote:
+> On Thu, Sep 24, 2020 at 3:13 PM Alessio Balsini <balsini@android.com> wrote:
+> >
+> > Extend the passthrough feature by handling asynchronous IO both for read
+> > and write operations.
+> >
+> > When an AIO request is received, if the request targets a FUSE file with
+> > the passthrough functionality enabled, a new identical AIO request is
+> > created. The new request targets the lower file system file, and gets
+> > assigned a special FUSE passthrough AIO completion callback.
+> > When the lower file system AIO request is completed, the FUSE passthrough
+> > AIO completion callback is executed and propagates the completion signal to
+> > the FUSE AIO request by triggering its completion callback as well.
+> 
+> This ends up with almost identical code in fuse and overlayfs, right?
+> Maybe it's worth looking into moving these into common helpers.
+> 
+> Thanks,
+> Miklos
+> 
 
-Looks like thru some sort of mid-air collision, updating the # of
-interconnect cells for the display was missed.
+There are still a few differences between overlayfs and passthrough
+read/write_iter(), so that merge wouldn't be straightforward. And I
+would love to see this series merged before increasing its complexity,
+hopefully in the next version if everything is all right.
+I will anyway work on the cleanup patch you suggested right after FUSE
+passthrough gets in, so that I have a solid code base to work on.
 
-Fixes: e23b1220a2460 ("arm64: dts: qcom: sc7180: Increase the number of interconnect cells")
-Signed-off-by: Rob Clark <robdclark@chromium.org>
----
- arch/arm64/boot/dts/qcom/sc7180.dtsi | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Would this work for you?
 
-diff --git a/arch/arm64/boot/dts/qcom/sc7180.dtsi b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-index 6678f1e8e3958..a02776ce77a10 100644
---- a/arch/arm64/boot/dts/qcom/sc7180.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sc7180.dtsi
-@@ -2811,7 +2811,7 @@ mdss: mdss@ae00000 {
- 			interrupt-controller;
- 			#interrupt-cells = <1>;
- 
--			interconnects = <&mmss_noc MASTER_MDP0 &mc_virt SLAVE_EBI1>;
-+			interconnects = <&mmss_noc MASTER_MDP0 0 &mc_virt SLAVE_EBI1 0>;
- 			interconnect-names = "mdp0-mem";
- 
- 			iommus = <&apps_smmu 0x800 0x2>;
--- 
-2.26.2
+That cleanup patch would be handy also for the upcoming plan of having
+something similar to FUSE passthrough extended to directories, as it was
+mentioned in a previous discussion on this series with Amir.
 
+Thanks!
+Alessio
