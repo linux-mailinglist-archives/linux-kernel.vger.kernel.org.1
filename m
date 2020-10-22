@@ -2,114 +2,904 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B6F352963D0
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:34:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4524C2963CE
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 19:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S368046AbgJVReu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 13:34:50 -0400
-Received: from mo4-p01-ob.smtp.rzone.de ([85.215.255.51]:22748 "EHLO
-        mo4-p01-ob.smtp.rzone.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2900620AbgJVReu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 13:34:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; t=1603388085;
-        s=strato-dkim-0002; d=hartkopp.net;
-        h=In-Reply-To:Date:Message-ID:From:References:Cc:To:Subject:
-        X-RZG-CLASS-ID:X-RZG-AUTH:From:Subject:Sender;
-        bh=sCoMIGL7KWIQgDxcIKVQFpQUBV1hAWoEYlxe7X4a+Jw=;
-        b=ONJGUVhZYRdi0vioGxpTi21rTAbmDBdShN4JX1iDJkks8QtYl6wOfsfOxWfIzYglo5
-        GRz0ZQVtJ0HnfYp54RF7mnuhUUjVa/mRyS9RzMD3Um0t2TQZrtPOkZd7A1AD81dpQXII
-        vy5WWcNzTAYWpb2wXXboDkkaDLdTZn+kw7vaGxzUwyAS3yRsTY9y+7gP8nS8d5Mvps25
-        jsF2U+MQd36p73HgbdS5DrymdmfcKDnM3AHxLKgdg3iMVPQK77G33Koj5JQAiY/J+BEK
-        KAXq/HJ/Y/57pVlBegWzoph744sPCxBKxxlHvl1yfw+7nxHWjqmerQrr1xZgMdoDHEd2
-        I/NQ==
-X-RZG-AUTH: ":P2MHfkW8eP4Mre39l357AZT/I7AY/7nT2yrDxb8mjG14FZxedJy6qgO1o3PMaViOoLMGXsh5mUj+"
-X-RZG-CLASS-ID: mo00
-Received: from [192.168.50.177]
-        by smtp.strato.de (RZmta 47.2.1 DYNA|AUTH)
-        with ESMTPSA id D0b41cw9MHYKw3Q
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256 bits))
-        (Client did not present a certificate);
-        Thu, 22 Oct 2020 19:34:20 +0200 (CEST)
-Subject: Re: [PATCH] can: vxcan: Fix memleak in vxcan_newlink
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Dinghao Liu <dinghao.liu@zju.edu.cn>, kjlu@umn.edu,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        "David S. Miller" <davem@davemloft.net>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201021052150.25914-1-dinghao.liu@zju.edu.cn>
- <986c27bf-29b4-a4f7-1dcd-4cb5a446334b@hartkopp.net>
- <20201022091435.2449cf41@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Oliver Hartkopp <socketcan@hartkopp.net>
-Message-ID: <a7c5884d-2c7d-1868-8b93-414b43b3f7c1@hartkopp.net>
-Date:   Thu, 22 Oct 2020 19:34:14 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S2900534AbgJVRed (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 13:34:33 -0400
+Received: from foss.arm.com ([217.140.110.172]:33802 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2900430AbgJVRec (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 13:34:32 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9D2FE101E;
+        Thu, 22 Oct 2020 10:34:30 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 62C653F719;
+        Thu, 22 Oct 2020 10:34:29 -0700 (PDT)
+Subject: Re: [PATCH v4] driver/perf: Add PMU driver for the ARM DMC-620 memory
+ controller
+To:     Tuan Phan <tuanphan@os.amperecomputing.com>
+Cc:     patches@amperecomputing.com, mark.rutland@arm.com,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <5c24da3f-4fa3-79ad-0c0d-9b4828ebf684@arm.com>
+Date:   Thu, 22 Oct 2020 18:34:27 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <20201022091435.2449cf41@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
 Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On 22.10.20 18:14, Jakub Kicinski wrote:
-> On Wed, 21 Oct 2020 13:20:16 +0200 Oliver Hartkopp wrote:
->> On 21.10.20 07:21, Dinghao Liu wrote:
->>> When rtnl_configure_link() fails, peer needs to be
->>> freed just like when register_netdevice() fails.
->>>
->>> Signed-off-by: Dinghao Liu <dinghao.liu@zju.edu.cn>
->>
->> Acked-by: Oliver Hartkopp <socketcan@hartkopp.net>
->>
->> Btw. as the vxcan.c driver bases on veth.c the same issue can be found
->> there!
->>
->> At this point:
->> https://elixir.bootlin.com/linux/latest/source/drivers/net/veth.c#L1398
->>
->> err_register_dev:
->>           /* nothing to do */
->> err_configure_peer:
->>           unregister_netdevice(peer);
->>           return err; <<<<<<<<<<<<<<<<<<<<<<<
->>
->> err_register_peer:
->>           free_netdev(peer);
->>           return err;
->> }
->>
->> IMO the return must be removed to fall through the next label and free
->> the netdevice too.
->>
->> Would you like so send a patch for veth.c too?
+On 2020-10-21 00:10, Tuan Phan wrote:
+> DMC-620 PMU supports total 10 counters which each is
+> independently programmable to different events and can
+> be started and stopped individually.
 > 
-> Ah, this is where Liu Dinghao got the veth suggestion :)
+> Currently, it only supports ACPI. Other platforms feel free to test and add
+> support for device tree.
 > 
-> Does vxcan actually need this patch?
+> Usage example:
+>    #perf stat -e arm_dmc620_10008c000/clk_cycle_count/ -C 0
+>    Get perf event for clk_cycle_count counter.
 > 
-> static void vxcan_setup(struct net_device *dev)
-> {
-> 	[...]
->          dev->needs_free_netdev  = true;
+>    #perf stat -e arm_dmc620_10008c000/clkdiv2_allocate,mask=0x1f,match=0x2f,
+>    incr=2,invert=1/ -C 0
+>    The above example shows how to specify mask, match, incr,
+>    invert parameters for clkdiv2_allocate event.
 > 
+> Signed-off-by: Tuan Phan <tuanphan@os.amperecomputing.com>
+> ---
+> Changes in v4:
+> - Addressed Robin's comments.
+> 
+> Changes in v3:
+> - Removed "_OFFSET" suffix.
+> - Renamed "affinity" to "irq".
+> - Have a better definition of group register.
+> 
+> Changes in v2:
+> - Removed IRQF_SHARED flag and added support for multiple
+> PMUs sharing the same interrupt.
+> - Fixed an interrupt handler race condition.
+> 
+> The ACPI binding spec for PMU DMC620 can be downloaded at:
+> https://developer.arm.com/documentation/den0093/c/
+> 
+>   drivers/perf/Kconfig          |   7 +
+>   drivers/perf/Makefile         |   1 +
+>   drivers/perf/arm_dmc620_pmu.c | 746 ++++++++++++++++++++++++++++++++++++++++++
+>   3 files changed, 754 insertions(+)
+>   create mode 100644 drivers/perf/arm_dmc620_pmu.c
+> 
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 130327ff..3075cf1 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -130,6 +130,13 @@ config ARM_SPE_PMU
+>   	  Extension, which provides periodic sampling of operations in
+>   	  the CPU pipeline and reports this via the perf AUX interface.
+>   
+> +config ARM_DMC620_PMU
+> +	tristate "Enable PMU support for the ARM DMC-620 memory controller"
+> +	depends on (ARM64 && ACPI) || COMPILE_TEST
+> +	help
+> +	  Support for PMU events monitoring on the ARM DMC-620 memory
+> +	  controller.
+> +
+>   source "drivers/perf/hisilicon/Kconfig"
+>   
+>   endmenu
+> diff --git a/drivers/perf/Makefile b/drivers/perf/Makefile
+> index 5365fd5..5260b11 100644
+> --- a/drivers/perf/Makefile
+> +++ b/drivers/perf/Makefile
+> @@ -13,3 +13,4 @@ obj-$(CONFIG_QCOM_L3_PMU) += qcom_l3_pmu.o
+>   obj-$(CONFIG_THUNDERX2_PMU) += thunderx2_pmu.o
+>   obj-$(CONFIG_XGENE_PMU) += xgene_pmu.o
+>   obj-$(CONFIG_ARM_SPE_PMU) += arm_spe_pmu.o
+> +obj-$(CONFIG_ARM_DMC620_PMU) += arm_dmc620_pmu.o
+> diff --git a/drivers/perf/arm_dmc620_pmu.c b/drivers/perf/arm_dmc620_pmu.c
+> new file mode 100644
+> index 0000000..d72cd54
+> --- /dev/null
+> +++ b/drivers/perf/arm_dmc620_pmu.c
+> @@ -0,0 +1,746 @@
+> +// SPDX-License-Identifier: GPL-2.0-only
+> +/*
+> + * ARM DMC-620 memory controller PMU driver
+> + *
+> + * Copyright (C) 2020 Ampere Computing LLC.
+> + */
+> +
+> +#define DMC620_PMUNAME		"arm_dmc620"
+> +#define DMC620_DRVNAME		DMC620_PMUNAME "_pmu"
+> +#define pr_fmt(fmt)		DMC620_DRVNAME ": " fmt
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/bitfield.h>
+> +#include <linux/bitops.h>
+> +#include <linux/cpuhotplug.h>
+> +#include <linux/cpumask.h>
+> +#include <linux/device.h>
+> +#include <linux/errno.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/irq.h>
+> +#include <linux/kernel.h>
+> +#include <linux/list.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/perf_event.h>
+> +#include <linux/perf/arm_pmu.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/printk.h>
+> +#include <linux/rculist.h>
+> +#include <linux/refcount.h>
+> +
+> +#define DMC620_PA_SHIFT					12
+> +#define DMC620_CNT_INIT					0x80000000
+> +#define DMC620_CNT_MAX_PERIOD				0xffffffff
+> +#define DMC620_PMU_CLKDIV2_MAX_COUNTERS			8
+> +#define DMC620_PMU_CLK_MAX_COUNTERS			2
+> +#define DMC620_PMU_MAX_COUNTERS				\
+> +	(DMC620_PMU_CLKDIV2_MAX_COUNTERS + DMC620_PMU_CLK_MAX_COUNTERS)
+> +
+> +/*
+> + * The PMU registers start at 0xA00 in the DMC-620 memory map, and these
+> + * offsets are relative to that base.
+> + *
+> + * Each counter has a group of control/value registers, and the
+> + * DMC620_PMU_COUNTERn offsets are within a counter group.
+> + *
+> + * The counter registers groups start at 0xA10.
+> + */
+> +#define DMC620_PMU_OVERFLOW_STATUS_CLKDIV2		0x8
+> +#define  DMC620_PMU_OVERFLOW_STATUS_CLKDIV2_MASK	\
+> +		(DMC620_PMU_CLKDIV2_MAX_COUNTERS - 1)
+> +#define DMC620_PMU_OVERFLOW_STATUS_CLK			0xC
+> +#define  DMC620_PMU_OVERFLOW_STATUS_CLK_MASK		\
+> +		(DMC620_PMU_CLK_MAX_COUNTERS - 1)
+> +#define DMC620_PMU_COUNTERS_BASE			0x10
+> +#define DMC620_PMU_COUNTERn_MASK_31_00			0x0
+> +#define DMC620_PMU_COUNTERn_MASK_63_32			0x4
+> +#define DMC620_PMU_COUNTERn_MATCH_31_00			0x8
+> +#define DMC620_PMU_COUNTERn_MATCH_63_32			0xC
+> +#define DMC620_PMU_COUNTERn_CONTROL			0x10
+> +#define  DMC620_PMU_COUNTERn_CONTROL_ENABLE		BIT(0)
+> +#define  DMC620_PMU_COUNTERn_CONTROL_INVERT		BIT(1)
+> +#define  DMC620_PMU_COUNTERn_CONTROL_EVENT_MUX		GENMASK(6, 2)
+> +#define  DMC620_PMU_COUNTERn_CONTROL_INCR_MUX		GENMASK(8, 7)
+> +#define DMC620_PMU_COUNTERn_VALUE			0x20
+> +/* Offset of the registers for a given counter, relative to 0xA00 */
+> +#define DMC620_PMU_COUNTERn_OFFSET(n) \
+> +	(DMC620_PMU_COUNTERS_BASE + 0x28 * (n))
+> +
+> +static LIST_HEAD(dmc620_pmu_irqs);
+> +static DEFINE_MUTEX(dmc620_pmu_irqs_lock);
+> +
+> +struct dmc620_pmu_irq {
+> +	struct hlist_node node;
+> +	struct list_head pmus_node;
+> +	struct list_head irqs_node;
+> +	refcount_t refcount;
+> +	unsigned int irq_num;
+> +	unsigned int cpu;
+> +};
+> +
+> +struct dmc620_pmu {
+> +	struct pmu pmu;
+> +	struct platform_device *pdev;
+> +
+> +	void __iomem *base;
+> +	struct dmc620_pmu_irq *irq;
+> +	struct list_head pmus_node;
+> +
+> +	/*
+> +	 * We put all clkdiv2 and clk counters to a same array.
+> +	 * The first DMC620_PMU_CLKDIV2_MAX_COUNTERS bits belong to
+> +	 * clkdiv2 counters, the last DMC620_PMU_CLK_MAX_COUNTERS
+> +	 * belong to clk counters.
+> +	 */
+> +	DECLARE_BITMAP(used_mask, DMC620_PMU_MAX_COUNTERS);
+> +	struct perf_event *events[DMC620_PMU_MAX_COUNTERS];
+> +};
+> +
+> +#define to_dmc620_pmu(p) (container_of(p, struct dmc620_pmu, pmu))
+> +
+> +static int cpuhp_state_num;
+> +
+> +struct dmc620_pmu_event_attr {
+> +	struct device_attribute attr;
+> +	u8 clkdiv2;
+> +	u8 eventid;
+> +};
+> +
+> +static ssize_t
+> +dmc620_pmu_event_show(struct device *dev,
+> +			   struct device_attribute *attr, char *page)
+> +{
+> +	struct dmc620_pmu_event_attr *eattr;
+> +
+> +	eattr = container_of(attr, typeof(*eattr), attr);
+> +
+> +	return sprintf(page, "event=0x%x,clkdiv2=0x%x\n", eattr->eventid, eattr->clkdiv2);
+> +}
+> +
+> +#define DMC620_PMU_EVENT_ATTR(_name, _eventid, _clkdiv2)		\
+> +	(&((struct dmc620_pmu_event_attr[]) {{				\
+> +		.attr = __ATTR(_name, 0444, dmc620_pmu_event_show, NULL),	\
+> +		.clkdiv2 = _clkdiv2,						\
+> +		.eventid = _eventid,					\
+> +	}})[0].attr.attr)
+> +
+> +static struct attribute *dmc620_pmu_events_attrs[] = {
+> +	/* clkdiv2 events list */
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_cycle_count, 0x0, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_allocate, 0x1, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_queue_depth, 0x2, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_waiting_for_wr_data, 0x3, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_read_backlog, 0x4, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_waiting_for_mi, 0x5, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_hazard_resolution, 0x6, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_enqueue, 0x7, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_arbitrate, 0x8, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_lrank_turnaround_activate, 0x9, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_prank_turnaround_activate, 0xa, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_read_depth, 0xb, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_write_depth, 0xc, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_highigh_qos_depth, 0xd, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_high_qos_depth, 0xe, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_medium_qos_depth, 0xf, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_low_qos_depth, 0x10, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_activate, 0x11, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_rdwr, 0x12, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_refresh, 0x13, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_training_request, 0x14, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_t_mac_tracker, 0x15, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_bk_fsm_tracker, 0x16, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_bk_open_tracker, 0x17, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_ranks_in_pwr_down, 0x18, 1),
+> +	DMC620_PMU_EVENT_ATTR(clkdiv2_ranks_in_sref, 0x19, 1),
+> +
+> +	/* clk events list */
+> +	DMC620_PMU_EVENT_ATTR(clk_cycle_count, 0x0, 0),
+> +	DMC620_PMU_EVENT_ATTR(clk_request, 0x1, 0),
+> +	DMC620_PMU_EVENT_ATTR(clk_upload_stall, 0x2, 0),
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group dmc620_pmu_events_attr_group = {
+> +	.name = "events",
+> +	.attrs = dmc620_pmu_events_attrs,
+> +};
+> +
+> +/* User ABI */
+> +#define ATTR_CFG_FLD_mask_CFG		config
+> +#define ATTR_CFG_FLD_mask_LO		0
+> +#define ATTR_CFG_FLD_mask_HI		44
+> +#define ATTR_CFG_FLD_match_CFG		config1
+> +#define ATTR_CFG_FLD_match_LO		0
+> +#define ATTR_CFG_FLD_match_HI		44
+> +#define ATTR_CFG_FLD_invert_CFG		config2
+> +#define ATTR_CFG_FLD_invert_LO		0
+> +#define ATTR_CFG_FLD_invert_HI		0
+> +#define ATTR_CFG_FLD_incr_CFG		config2
+> +#define ATTR_CFG_FLD_incr_LO		1
+> +#define ATTR_CFG_FLD_incr_HI		2
+> +#define ATTR_CFG_FLD_event_CFG		config2
+> +#define ATTR_CFG_FLD_event_LO		3
+> +#define ATTR_CFG_FLD_event_HI		8
+> +#define ATTR_CFG_FLD_clkdiv2_CFG	config2
+> +#define ATTR_CFG_FLD_clkdiv2_LO		9
+> +#define ATTR_CFG_FLD_clkdiv2_HI		9
+> +
+> +#define __GEN_PMU_FORMAT_ATTR(cfg, lo, hi)			\
+> +	(lo) == (hi) ? #cfg ":" #lo "\n" : #cfg ":" #lo "-" #hi
+> +
+> +#define _GEN_PMU_FORMAT_ATTR(cfg, lo, hi)			\
+> +	__GEN_PMU_FORMAT_ATTR(cfg, lo, hi)
+> +
+> +#define GEN_PMU_FORMAT_ATTR(name)				\
+> +	PMU_FORMAT_ATTR(name,					\
+> +	_GEN_PMU_FORMAT_ATTR(ATTR_CFG_FLD_##name##_CFG,		\
+> +			     ATTR_CFG_FLD_##name##_LO,		\
+> +			     ATTR_CFG_FLD_##name##_HI))
+> +
+> +#define _ATTR_CFG_GET_FLD(attr, cfg, lo, hi)			\
+> +	((((attr)->cfg) >> lo) & GENMASK(hi - lo, 0))
 
-Oh!
+As per the buildbot report, GENMASK_ULL() would be appropriate when the 
+other side is a u64 (although either way this does look a lot like 
+reinventing FIELD_GET()...)
 
-In fact the vxcan.c is really similar to veth.c in these code snippets - 
-so I wondered why this never had been seen in veth.c.
+> +#define ATTR_CFG_GET_FLD(attr, name)				\
+> +	_ATTR_CFG_GET_FLD(attr,					\
+> +			  ATTR_CFG_FLD_##name##_CFG,		\
+> +			  ATTR_CFG_FLD_##name##_LO,		\
+> +			  ATTR_CFG_FLD_##name##_HI)
+> +
+> +GEN_PMU_FORMAT_ATTR(mask);
+> +GEN_PMU_FORMAT_ATTR(match);
+> +GEN_PMU_FORMAT_ATTR(invert);
+> +GEN_PMU_FORMAT_ATTR(incr);
+> +GEN_PMU_FORMAT_ATTR(event);
+> +GEN_PMU_FORMAT_ATTR(clkdiv2);
+> +
+> +static struct attribute *dmc620_pmu_formats_attrs[] = {
+> +	&format_attr_mask.attr,
+> +	&format_attr_match.attr,
+> +	&format_attr_invert.attr,
+> +	&format_attr_incr.attr,
+> +	&format_attr_event.attr,
+> +	&format_attr_clkdiv2.attr,
+> +	NULL,
+> +};
+> +
+> +static struct attribute_group dmc620_pmu_format_attr_group = {
+> +	.name	= "format",
+> +	.attrs	= dmc620_pmu_formats_attrs,
+> +};
+> +
+> +static const struct attribute_group *dmc620_pmu_attr_groups[] = {
+> +	&dmc620_pmu_events_attr_group,
+> +	&dmc620_pmu_format_attr_group,
+> +	NULL,
+> +};
+> +
+> +static inline
+> +u32 dmc620_pmu_creg_read(struct dmc620_pmu *dmc620_pmu,
+> +			unsigned int idx, unsigned int reg)
+> +{
+> +	return readl(dmc620_pmu->base + DMC620_PMU_COUNTERn_OFFSET(idx) + reg);
+> +}
+> +
+> +static inline
+> +void dmc620_pmu_creg_write(struct dmc620_pmu *dmc620_pmu,
+> +			unsigned int idx, unsigned int reg, u32 val)
+> +{
+> +	writel(val, dmc620_pmu->base + DMC620_PMU_COUNTERn_OFFSET(idx) + reg);
+> +}
+> +
+> +static
+> +unsigned int dmc620_event_to_counter_control(struct perf_event *event)
+> +{
+> +	struct perf_event_attr *attr = &event->attr;
+> +	unsigned int reg = 0;
+> +
+> +	reg |= FIELD_GET(DMC620_PMU_COUNTERn_CONTROL_INVERT,
 
-Then vxcan.c doesn't need that patch too :-/
+FIELD_PREP(), surely? (all 3 times)
 
-Thanks for the heads up!
+> +			ATTR_CFG_GET_FLD(attr, invert));
+> +	reg |= FIELD_GET(DMC620_PMU_COUNTERn_CONTROL_INCR_MUX,
+> +			ATTR_CFG_GET_FLD(attr, incr));
+> +	reg |= FIELD_GET(DMC620_PMU_COUNTERn_CONTROL_EVENT_MUX,
+> +			ATTR_CFG_GET_FLD(attr, event));
 
-@Marc: Can you please make sure that it doesn't get into upstream? Tnx!
+As a cheeky micro-optimisation, consider laying out the relevant fields 
+in the config word in the same order as the corresponding register 
+fields, such that the compiler can ultimately optimise this whole lot 
+together into a single mask/shift operation.
 
-Best,
-Oliver
+> +	return reg;
+> +}
+> +
+> +static int dmc620_get_event_idx(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +	int idx, start_idx, end_idx;
+> +
+> +	if (ATTR_CFG_GET_FLD(&event->attr, clkdiv2)) {
+> +		start_idx = 0;
+> +		end_idx = DMC620_PMU_CLKDIV2_MAX_COUNTERS;
+> +	} else {
+> +		start_idx = DMC620_PMU_CLKDIV2_MAX_COUNTERS;
+> +		end_idx = DMC620_PMU_MAX_COUNTERS;
+> +	}
+> +
+> +	for (idx = start_idx; idx < end_idx; ++idx) {
+> +		if (!test_and_set_bit(idx, dmc620_pmu->used_mask))
+> +			return idx;
+> +	}
+> +
+> +	/* The counters are all in use. */
+> +	return -EAGAIN;
+> +}
+> +
+> +static u64 dmc620_pmu_read_counter(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +
+> +	return dmc620_pmu_creg_read(dmc620_pmu,
+> +				    event->hw.idx, DMC620_PMU_COUNTERn_VALUE);
+> +}
 
+Might it be simpler to inline this in its sole caller? I'm not sure it 
+adds any clarity to have *two* levels of trivial indirection around a 
+simple register read.
+
+> +static void dmc620_pmu_event_update(struct perf_event *event)
+> +{
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	u64 delta, prev_count, new_count;
+> +
+> +	do {
+> +		/* We may also be called from the irq handler */
+> +		prev_count = local64_read(&hwc->prev_count);
+> +		new_count = dmc620_pmu_read_counter(event);
+> +	} while (local64_cmpxchg(&hwc->prev_count,
+> +			prev_count, new_count) != prev_count);
+> +	delta = (new_count - prev_count) & DMC620_CNT_MAX_PERIOD;
+> +	local64_add(delta, &event->count);
+> +}
+> +
+> +static void dmc620_pmu_event_set_period(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +
+> +	local64_set(&event->hw.prev_count, DMC620_CNT_INIT);
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_VALUE, DMC620_CNT_INIT);
+> +}
+> +
+> +static void dmc620_pmu_enable_counter(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +	struct perf_event_attr *attr = &event->attr;
+> +	u64 reg;
+> +
+> +	reg = ATTR_CFG_GET_FLD(attr, mask);
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_MASK_31_00, lower_32_bits(reg));
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_MASK_63_32, upper_32_bits(reg));
+> +
+> +	reg = ATTR_CFG_GET_FLD(attr, match);
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_MATCH_31_00, lower_32_bits(reg));
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_MATCH_63_32, upper_32_bits(reg));
+
+Do the mask and match values have to be rewritten every time, or could 
+those be set once in event_add() such that you can just toggle the 
+control register to start and stop the underlying counter?
+
+> +	reg = dmc620_event_to_counter_control(event) | DMC620_PMU_COUNTERn_CONTROL_ENABLE;
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_CONTROL, (u32)reg);
+> +}
+> +
+> +static void dmc620_pmu_disable_counter(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +
+> +	dmc620_pmu_creg_write(dmc620_pmu,
+> +			      event->hw.idx, DMC620_PMU_COUNTERn_CONTROL, 0);
+> +}
+> +
+> +static irqreturn_t dmc620_pmu_handle_irq(int irq_num, void *data)
+> +{
+> +	struct dmc620_pmu_irq *irq = data;
+> +	struct dmc620_pmu *dmc620_pmu;
+> +	irqreturn_t ret = IRQ_NONE;
+> +
+> +	rcu_read_lock();
+> +	list_for_each_entry_rcu(dmc620_pmu, &irq->pmus_node, pmus_node) {
+> +		unsigned long status;
+> +		struct perf_event *event;
+> +		unsigned int idx;
+> +
+> +		/*
+> +		 * HW doesn't provide a control to atomically disable all counters.
+> +		 * To prevent race condition, disable all events before continuing
+> +		 */
+
+I'm still doubtful that this doesn't introduce more inaccuracy overall 
+than whatever it's trying to avoid... :/
+
+> +		for (idx = 0; idx < DMC620_PMU_MAX_COUNTERS; idx++) {
+> +			event = dmc620_pmu->events[idx];
+> +			if (!event)
+> +				continue;
+> +			dmc620_pmu_disable_counter(event);
+> +		}
+> +
+> +		status = readl(dmc620_pmu->base + DMC620_PMU_OVERFLOW_STATUS_CLKDIV2);
+> +		status |= (readl(dmc620_pmu->base + DMC620_PMU_OVERFLOW_STATUS_CLK) <<
+> +				DMC620_PMU_CLKDIV2_MAX_COUNTERS);
+> +		if (!status)
+> +			continue;
+
+Oh hey, remember that time you unconditionally disabled all the live 
+counters on the way in? ;)
+
+> +		for_each_set_bit(idx, &status,
+> +				  DMC620_PMU_MAX_COUNTERS) {
+> +			event = dmc620_pmu->events[idx];
+> +			if (WARN_ON_ONCE(!event))
+> +				continue;
+> +			dmc620_pmu_event_update(event);
+> +			dmc620_pmu_event_set_period(event);
+> +		}
+> +
+> +		if (status & DMC620_PMU_OVERFLOW_STATUS_CLKDIV2_MASK)
+> +			writel(0, dmc620_pmu->base + DMC620_PMU_OVERFLOW_STATUS_CLKDIV2);
+> +
+> +		if ((status >> DMC620_PMU_CLKDIV2_MAX_COUNTERS) &
+> +			DMC620_PMU_OVERFLOW_STATUS_CLK_MASK)
+> +			writel(0, dmc620_pmu->base + DMC620_PMU_OVERFLOW_STATUS_CLK);
+> +
+> +		for (idx = 0; idx < DMC620_PMU_MAX_COUNTERS; idx++) {
+> +			event = dmc620_pmu->events[idx];
+> +			if (!event)
+> +				continue;
+> +			if (!(event->hw.state & PERF_HES_STOPPED))
+> +				dmc620_pmu_enable_counter(event);
+> +		}
+> +
+> +		ret = IRQ_HANDLED;
+> +	}
+> +	rcu_read_unlock();
+> +
+> +	return ret;
+> +}
+> +
+> +static struct dmc620_pmu_irq *__dmc620_pmu_get_irq(int irq_num)
+> +{
+> +	struct dmc620_pmu_irq *irq;
+> +	int ret;
+> +
+> +	list_for_each_entry(irq, &dmc620_pmu_irqs, irqs_node)
+> +		if (irq->irq_num == irq_num && refcount_inc_not_zero(&irq->refcount))
+> +			return irq;
+> +
+> +	irq = kzalloc(sizeof(*irq), GFP_KERNEL);
+> +	if (!irq)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	INIT_LIST_HEAD(&irq->pmus_node);
+> +
+> +	/* Pick one CPU to be the preferred one to use */
+> +	irq->cpu = raw_smp_processor_id();
+> +	refcount_set(&irq->refcount, 1);
+> +
+> +	ret = request_irq(irq_num, dmc620_pmu_handle_irq,
+> +			  IRQF_NOBALANCING | IRQF_NO_THREAD,
+> +			  "dmc620-pmu", irq);
+> +	if (ret)
+> +		goto out_free_aff;
+> +
+> +	ret = irq_set_affinity_hint(irq_num, cpumask_of(irq->cpu));
+> +	if (ret)
+> +		goto out_free_irq;
+> +
+> +	ret = cpuhp_state_add_instance_nocalls(cpuhp_state_num, &irq->node);
+> +	if (ret)
+> +		goto out_free_irq;
+> +
+> +	irq->irq_num = irq_num;
+> +	list_add(&irq->irqs_node, &dmc620_pmu_irqs);
+> +
+> +	return irq;
+> +
+> +out_free_irq:
+> +	free_irq(irq_num, irq);
+> +out_free_aff:
+> +	kfree(irq);
+> +	return ERR_PTR(ret);
+> +}
+> +
+> +static int dmc620_pmu_get_irq(struct dmc620_pmu *dmc620_pmu, int irq_num)
+> +{
+> +	struct dmc620_pmu_irq *irq;
+> +
+> +	mutex_lock(&dmc620_pmu_irqs_lock);
+> +	irq = __dmc620_pmu_get_irq(irq_num);
+> +	mutex_unlock(&dmc620_pmu_irqs_lock);
+> +
+> +	if (IS_ERR(irq))
+> +		return PTR_ERR(irq);
+> +
+> +	dmc620_pmu->irq = irq;
+> +	mutex_lock(&dmc620_pmu_irqs_lock);
+> +	list_add_rcu(&dmc620_pmu->pmus_node, &irq->pmus_node);
+> +	mutex_unlock(&dmc620_pmu_irqs_lock);
+> +
+> +	return 0;
+> +}
+> +
+> +static void dmc620_pmu_put_irq(struct dmc620_pmu *dmc620_pmu)
+> +{
+> +	struct dmc620_pmu_irq *irq = dmc620_pmu->irq;
+> +
+> +	mutex_lock(&dmc620_pmu_irqs_lock);
+> +	list_del_rcu(&dmc620_pmu->pmus_node);
+> +
+> +	if (!refcount_dec_and_test(&irq->refcount)) {
+> +		mutex_unlock(&dmc620_pmu_irqs_lock);
+> +		return;
+> +	}
+> +
+> +	list_del(&irq->irqs_node);
+> +	mutex_unlock(&dmc620_pmu_irqs_lock);
+> +
+> +	free_irq(irq->irq_num, irq);
+> +	cpuhp_state_remove_instance_nocalls(cpuhp_state_num, &irq->node);
+> +	kfree(irq);
+> +}
+> +
+> +static int dmc620_pmu_event_init(struct perf_event *event)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	struct perf_event *sibling;
+> +
+> +	if (event->attr.type != event->pmu->type)
+> +		return -ENOENT;
+> +
+> +	/*
+> +	 * DMC 620 PMUs are shared across all cpus and cannot
+> +	 * support task bound and sampling events.
+> +	 */
+> +	if (is_sampling_event(event) ||
+> +		event->attach_state & PERF_ATTACH_TASK) {
+> +		dev_dbg(dmc620_pmu->pmu.dev,
+> +			"Can't support per-task counters\n");
+> +		return -EOPNOTSUPP;
+> +	}
+> +
+> +	/*
+> +	 * Many perf core operations (eg. events rotation) operate on a
+> +	 * single CPU context. This is obvious for CPU PMUs, where one
+> +	 * expects the same sets of events being observed on all CPUs,
+> +	 * but can lead to issues for off-core PMUs, where each
+> +	 * event could be theoretically assigned to a different CPU. To
+> +	 * mitigate this, we enforce CPU assignment to one, selected
+> +	 * processor.
+> +	 */
+> +	event->cpu = dmc620_pmu->irq->cpu;
+> +	if (event->cpu < 0)
+> +		return -EINVAL;
+> +
+> +	/*
+> +	 * We must NOT create groups containing mixed PMUs, although software
+> +	 * events are acceptable.
+> +	 */
+> +	if (event->group_leader->pmu != event->pmu &&
+> +			!is_software_event(event->group_leader))
+> +		return -EINVAL;
+> +
+> +	for_each_sibling_event(sibling, event->group_leader) {
+> +		if (sibling->pmu != event->pmu &&
+> +				!is_software_event(sibling))
+> +			return -EINVAL;
+> +	}
+
+As before, if you can't start, stop, or read multiple counters 
+atomically, you can't really support groups of events for this PMU 
+either. It's impossible to measure accurate ratios with a variable 
+amount of skew between individual counters.
+
+> +	hwc->idx = -1;
+> +	return 0;
+> +}
+> +
+> +static void dmc620_pmu_read(struct perf_event *event)
+> +{
+> +	dmc620_pmu_event_update(event);
+> +}
+> +
+> +static void dmc620_pmu_start(struct perf_event *event, int flags)
+> +{
+> +	event->hw.state = 0;
+> +	dmc620_pmu_event_set_period(event);
+> +	dmc620_pmu_enable_counter(event);
+> +}
+> +
+> +static void dmc620_pmu_stop(struct perf_event *event, int flags)
+> +{
+> +	if (event->hw.state & PERF_HES_STOPPED)
+> +		return;
+> +
+> +	dmc620_pmu_disable_counter(event);
+> +	dmc620_pmu_event_update(event);
+> +	event->hw.state |= PERF_HES_STOPPED | PERF_HES_UPTODATE;
+> +}
+> +
+> +static int dmc620_pmu_add(struct perf_event *event, int flags)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	int idx;
+> +
+> +	idx = dmc620_get_event_idx(event);
+> +	if (idx < 0)
+> +		return idx;
+> +
+> +	hwc->idx = idx;
+> +	dmc620_pmu->events[idx] = event;
+> +	hwc->state = PERF_HES_STOPPED | PERF_HES_UPTODATE;
+> +
+> +	if (flags & PERF_EF_START)
+> +		dmc620_pmu_start(event, PERF_EF_RELOAD);
+> +
+> +	perf_event_update_userpage(event);
+> +	return 0;
+> +}
+> +
+> +static void dmc620_pmu_del(struct perf_event *event, int flags)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = to_dmc620_pmu(event->pmu);
+> +	struct hw_perf_event *hwc = &event->hw;
+> +	int idx = hwc->idx;
+> +
+> +	dmc620_pmu_stop(event, PERF_EF_UPDATE);
+> +	dmc620_pmu->events[idx] = NULL;
+> +	clear_bit(idx, dmc620_pmu->used_mask);
+> +	perf_event_update_userpage(event);
+> +}
+> +
+> +static int dmc620_pmu_cpu_teardown(unsigned int cpu,
+> +				   struct hlist_node *node)
+> +{
+> +	struct dmc620_pmu_irq *irq;
+> +	struct dmc620_pmu *dmc620_pmu;
+> +	unsigned int target;
+> +
+> +	irq = hlist_entry_safe(node, struct dmc620_pmu_irq, node);
+> +	if (cpu != irq->cpu)
+> +		return 0;
+> +
+> +	target = cpumask_any_but(cpu_online_mask, cpu);
+> +	if (target >= nr_cpu_ids)
+> +		return 0;
+> +
+> +	/* We're only reading, but this isn't the place to be involving RCU */
+> +	mutex_lock(&dmc620_pmu_irqs_lock);
+> +	list_for_each_entry(dmc620_pmu, &irq->pmus_node, pmus_node)
+> +		perf_pmu_migrate_context(&dmc620_pmu->pmu, irq->cpu, target);
+> +	mutex_unlock(&dmc620_pmu_irqs_lock);
+> +
+> +	WARN_ON(irq_set_affinity_hint(irq->irq_num, cpumask_of(target)));
+> +	irq->cpu = target;
+> +
+> +	return 0;
+> +}
+> +
+> +static int dmc620_pmu_device_probe(struct platform_device *pdev)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu;
+> +	struct resource *res;
+> +	char *name;
+> +	int irq_num;
+> +	int i, ret;
+> +
+> +	dmc620_pmu = devm_kzalloc(&pdev->dev,
+> +			sizeof(struct dmc620_pmu), GFP_KERNEL);
+> +	if (!dmc620_pmu)
+> +		return -ENOMEM;
+> +
+> +	dmc620_pmu->pdev = pdev;
+
+Is this ever used?
+
+> +	platform_set_drvdata(pdev, dmc620_pmu);
+> +
+> +	dmc620_pmu->pmu = (struct pmu) {
+> +		.module = THIS_MODULE,
+> +		.capabilities	= PERF_PMU_CAP_NO_EXCLUDE,
+> +		.task_ctx_nr	= perf_invalid_context,
+> +		.event_init	= dmc620_pmu_event_init,
+> +		.add		= dmc620_pmu_add,
+> +		.del		= dmc620_pmu_del,
+> +		.start		= dmc620_pmu_start,
+> +		.stop		= dmc620_pmu_stop,
+> +		.read		= dmc620_pmu_read,
+> +		.attr_groups	= dmc620_pmu_attr_groups,
+> +	};
+> +
+> +	res = platform_get_resource(pdev, IORESOURCE_MEM, 0);
+> +	dmc620_pmu->base = devm_ioremap_resource(&pdev->dev, res);
+> +	if (IS_ERR(dmc620_pmu->base))
+> +		return PTR_ERR(dmc620_pmu->base);
+> +
+> +	/* Make sure device is reset before enabling interrupt */
+> +	for (i = 0; i < DMC620_PMU_MAX_COUNTERS; i++)
+> +		dmc620_pmu_creg_write(dmc620_pmu, i, DMC620_PMU_COUNTERn_CONTROL, 0);
+
+Maybe make sure the overflow registers are clear too?
+
+> +	irq_num = platform_get_irq(pdev, 0);
+> +	if (irq_num < 0)
+> +		return irq_num;
+> +
+> +	ret = dmc620_pmu_get_irq(dmc620_pmu, irq_num);
+> +	if (ret)
+> +		return ret;
+> +
+> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+> +				  "%s_%llx", DMC620_PMUNAME,
+> +				  (res->start) >> DMC620_PA_SHIFT);
+
+res->start doesn't need parentheses, however I guess it might need 
+casting to u64 to solve the build warning (I'm not sure there's any 
+nicer way, unfortunately).
+
+Robin.
+
+> +	if (!name) {
+> +		dev_err(&pdev->dev,
+> +			  "Create name failed, PMU @%pa\n", &res->start);
+> +		goto out_teardown_dev;
+> +	}
+> +
+> +	ret = perf_pmu_register(&dmc620_pmu->pmu, name, -1);
+> +	if (ret)
+> +		goto out_teardown_dev;
+> +
+> +	return 0;
+> +
+> +out_teardown_dev:
+> +	dmc620_pmu_put_irq(dmc620_pmu);
+> +	synchronize_rcu();
+> +	return ret;
+> +}
+> +
+> +static int dmc620_pmu_device_remove(struct platform_device *pdev)
+> +{
+> +	struct dmc620_pmu *dmc620_pmu = platform_get_drvdata(pdev);
+> +
+> +	dmc620_pmu_put_irq(dmc620_pmu);
+> +
+> +	/* perf will synchronise RCU before devres can free dmc620_pmu */
+> +	perf_pmu_unregister(&dmc620_pmu->pmu);
+> +
+> +	return 0;
+> +}
+> +
+> +static const struct acpi_device_id dmc620_acpi_match[] = {
+> +	{ "ARMHD620", 0},
+> +	{},
+> +};
+> +MODULE_DEVICE_TABLE(acpi, dmc620_acpi_match);
+> +static struct platform_driver dmc620_pmu_driver = {
+> +	.driver	= {
+> +		.name		= DMC620_DRVNAME,
+> +		.acpi_match_table = dmc620_acpi_match,
+> +	},
+> +	.probe	= dmc620_pmu_device_probe,
+> +	.remove	= dmc620_pmu_device_remove,
+> +};
+> +
+> +static int __init dmc620_pmu_init(void)
+> +{
+> +	cpuhp_state_num = cpuhp_setup_state_multi(CPUHP_AP_ONLINE_DYN,
+> +				      DMC620_DRVNAME,
+> +				      NULL,
+> +				      dmc620_pmu_cpu_teardown);
+> +	if (cpuhp_state_num < 0)
+> +		return cpuhp_state_num;
+> +
+> +	return platform_driver_register(&dmc620_pmu_driver);
+> +}
+> +
+> +static void __exit dmc620_pmu_exit(void)
+> +{
+> +	platform_driver_unregister(&dmc620_pmu_driver);
+> +	cpuhp_remove_multi_state(cpuhp_state_num);
+> +}
+> +
+> +module_init(dmc620_pmu_init);
+> +module_exit(dmc620_pmu_exit);
+> +
+> +MODULE_DESCRIPTION("Perf driver for the ARM DMC-620 memory controller");
+> +MODULE_AUTHOR("Tuan Phan <tuanphan@os.amperecomputing.com");
+> +MODULE_LICENSE("GPL v2");
+> 
