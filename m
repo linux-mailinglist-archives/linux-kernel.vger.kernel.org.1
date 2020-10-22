@@ -2,288 +2,268 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EEAA296179
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:10:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 133D829617B
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 17:10:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2901245AbgJVPKd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 11:10:33 -0400
-Received: from mail1.nippynetworks.com ([91.220.24.129]:41278 "EHLO
-        mail1.nippynetworks.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2508416AbgJVPKb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 11:10:31 -0400
-Received: from macbookpro-ed.wildgooses.lan (unknown [212.69.38.73])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature ECDSA (P-256))
+        id S368349AbgJVPKy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 11:10:54 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:11852 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2508707AbgJVPKx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 11:10:53 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603379452; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=3C3F2lmQbp8gch9c0PmjXhNxmlr9JRn/7qUaP8Vq+pk=;
+ b=QUjUO6gVZNzPutMs1j5YIqU4hC+mkNeXTOM5s/rnsJpR1JA9MHUYbZhBKnAdCVcl0sXEsTNu
+ lMmI7GvF0x5ppYnvU2sZ2bafPRlVUE0JNfcguaUbW2R3q0C9KFDhrcC4pXbcCVWSrrLQa0Jd
+ CRgSLTJr7o/ENPEO+s2pAQPeOes=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n03.prod.us-west-2.postgun.com with SMTP id
+ 5f91a0f2319d4e9cb5653c6e (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Thu, 22 Oct 2020 15:10:42
+ GMT
+Sender: dikshita=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 2C691C433C9; Thu, 22 Oct 2020 15:10:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: ed@wildgooses.com)
-        by mail1.nippynetworks.com (Postfix) with ESMTPSA id 4CH9lj5RJjzTgZX;
-        Thu, 22 Oct 2020 16:10:25 +0100 (BST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wildgooses.com;
-        s=dkim; t=1603379429;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=xoZnghyL86LjuRh48xnNLuc12RaEl9wnNvCJlJnX08s=;
-        b=h05nHdK+uEAWSpj4PnguxcAM10C3YrjKYkthf3XBhEYs4nDouvc4ywlnSg4LGPCtBdrlMZ
-        YKq/R35vuW25T1d+Qmn2+uMlSMfOX1HqMuuq//k9ONAnH8FEPmYYE8QtD4kJQ/J748kY7I
-        ZkjAfYuc1dLB7Bt0iSH5YT7E+6Gk+8U=
-Subject: Re: [PATCH 1/2] x86: Remove led/gpio setup from pcengines platform
- driver
-To:     "Enrico Weigelt, metux IT consult" <lkml@metux.net>,
-        Hans de Goede <hdegoede@redhat.com>,
-        linux-kernel@vger.kernel.org
-Cc:     fe@dev.tdt.de, "Enrico Weigelt, metux IT consult" <info@metux.net>,
-        Darren Hart <dvhart@infradead.org>,
-        Andy Shevchenko <andy@infradead.org>,
-        platform-driver-x86@vger.kernel.org
-References: <20200921215919.3072-1-lists@wildgooses.com>
- <d4b2045c-769b-4998-64cc-682c01c105fb@wildgooses.com>
- <8058a804-a793-a5f8-d086-0bb0f600aef9@metux.net>
- <65efe44a-bbef-f982-462a-385fffe493a0@wildgooses.com>
- <0de126c4-f2aa-a817-0a38-32bf3ede84d1@redhat.com>
- <e953f3ee-2db1-1523-cd84-6acb26751a15@wildgooses.com>
- <d0d91191-cad2-94a1-6373-0f3ff4e38376@redhat.com>
- <795ae78b-26cf-f58d-6981-f68d7599ccdf@wildgooses.com>
- <6a603bd6-63ff-52e8-8fa2-4442b06e493b@metux.net>
-From:   Ed W <lists@wildgooses.com>
-Message-ID: <cb7a0dcd-7b4f-9baa-788d-c42db72afeb2@wildgooses.com>
-Date:   Thu, 22 Oct 2020 16:10:25 +0100
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:78.0)
- Gecko/20100101 Thunderbird/78.3.3
+        (Authenticated sender: dikshita)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 6BF63C433CB;
+        Thu, 22 Oct 2020 15:10:40 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <6a603bd6-63ff-52e8-8fa2-4442b06e493b@metux.net>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Content-Language: en-GB
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Thu, 22 Oct 2020 20:40:40 +0530
+From:   dikshita@codeaurora.org
+To:     Alexandre Courbot <acourbot@chromium.org>
+Cc:     Linux Media Mailing List <linux-media@vger.kernel.org>,
+        Stanimir Varbanov <stanimir.varbanov@linaro.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-arm-msm@vger.kernel.org,
+        Vikash Garodia <vgarodia@codeaurora.org>
+Subject: Re: [PATCH] venus: venc: add handling for VIDIOC_ENCODER_CMD
+In-Reply-To: <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
+References: <1603117737-16965-1-git-send-email-dikshita@codeaurora.org>
+ <CAPBb6MVPmW7MVveAKYzBXm=g=Ou4xviv5DjqMG+n0ax4OR7O0A@mail.gmail.com>
+Message-ID: <c6a5c4b7c4ae8cb4e653cf98ec8a9750@codeaurora.org>
+X-Sender: dikshita@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-
->> This is followed up by the patch I really want to try and get in, whic=
-h is to add support for APU5
->> and APU6. Particularly APU5 is quite interesting to me and significant=
-ly different to previous
->> boards in that it has a lot more mpcie slots that can be used for LTE =
-modules or wifi cards.
-> Okay, why not just treating them differently ?
->
-> Personally, I don't have an apu5, so can't tell much of them yet. But i=
-f
-> they're so different, I can live with those having different names /
-> keycode, assuming all this stuff is already supported by the lowest BIO=
-S
-> version they've ever been shipped with (remember: requirement of BIOS
-> upgrade in the field is also not an option). Can you please check
-> whether that's the case ?
->
-> In that case we don't need any per bios-version special magic, just
-> another entry in the DMI match table and separate board structs.
-
-
-You are reaching the wrong conclusion I feel?
-
-a) your proposal doesn't address that ACPI and the upstream board configu=
-re all this stuff already.
-We are creating duplicate devices right now. Patch 1 removes the duplicat=
-e device. I don't see that
-your proposal addresses the duplicate devices?
-
-b) there is no reason for naming to be different between APU2-4 and 5. Le=
-ts standardise. I use the
-boards somewhat interchangeably
-
-c) If you check my patch, there is already a DMI match for APU5, so this =
-can do whatever you want it
-to, however, since it's green fields, I've set it up to match the way APU=
-2-4 is working (in my patch)
-
-d) Your driver already broke my userspace a year back when you changed th=
-ese names. I've just
-supported all/both versions of the LED naming conventions since then (it =
-isn't hard). I do believe
-we are overthinking this? It's really trivial to incorporate?
-
-
-
-> For the mpcie reset lines we really should consider using the reset
-> controller framework or add it to pci core (so pci_bus drivers also
-> expose it to sysfs, in order to let userland trigger it). Tricky part
-> is letting the board driver attach the reset functionality to the
-> generic pci_bus driver. (grmpf, it wasn't ugly acpi, but dt instead,
-> this would be pretty trivial via dt-overlay :o).
-
-
-Knock yourself out. However, make sure that you read Pascal's email to yo=
-u where he states that
-these lines aren't actually wired up on many of the board revisions?
-
-
->> This
->> creates the realisation that the reset and sim-swap lines are always w=
-ired to the LTE slots, not to
->> the mpcie slots (although often they overlap in functionality), so nam=
-ing is corrected here.=20
-> Sorry, but i'm confused. What's the actual difference between mpcie and=
-
-> LTE slots ? What is an LTE slot anyways ? Are you talking about the USB=
-
-> lanes on the M2 slot ?
-
-
-The APU2-4 have
-
-- 3x mpcie *shaped* slots
-
-- On some boards there are two of these wired with the pcie signals
-
-- On some boards there are two or three of these wired with USB signals
-
-- On some boards there are mSATA signals to one of these slots
-
-- On some boards there are either 1x or 2x SIM cards wired to some of the=
- slots
-
-
-What is common is that the reset lines (and rfkill) go to the same slots =
-as the SIM lines.
-
-So my suggestion is to name these lines based on "purpose", ie modem1 and=
- modem2, which is 100%
-consistent, rather than slot number, since that varies based on which boa=
-rd you pickup off the pile
-
-
-The schematics are all publicly available. Although I think you may have =
-to ask Pascal for the
-APU5/6 ones. The rest are on the website
-
-
-I'm confused about what you mean by M2 slot? There are no m.2 slots on th=
-e board? only mpcie, some
-with USB signals, some with SIM?
-
-
-> According to the pinouts i've found, the reset line is dedicated to
-> PCIE, but perhaps we should treat it as "card reset" - IOW the whole
-> card resets, no matter which channels (sata, pcie, usb, ...) it is
-> actually using.
-
-
-Please read Pascal's email to you. He disconnected these lines on many bo=
-ard revisions.
-
-
->> I don't know if it's useful, but I uploaded a couple of scripts for be=
-eping and flashing the leds.
->> Here I just used globs to handle the different naming on the different=
- boards (since I need to
->> handle the older Alix boards as well). Enrico, is this useful to you?
->>
->> =C2=A0=C2=A0=C2=A0 https://github.com/nippynetworks/gpio-utils
-> The swap_sim script illustrates a good point, that I resisted to think
-> about: sim swapping needs extra, baseband specific logic, to make it
-> actually work :(
-
-
-We just need the GPIOs exposing in some way. Nothing else. Everything els=
-e is done in userspace
-
-
-> So, I'm still unsure whether this stuff should go into a separate
-> portmux subsystem or an extended rfkill (where the basebands have to
-> be put into) ... both options still a lot of work to do.
-
-
-Lets please focus on things we can achieve in the near future in this thr=
-ead
-
-
->> As an aside, these boards are super easy to flash as they support flas=
-hrom.=20
-> Easy in the lab. But not in the field - if *anything* goes wrong,
-> technician needs to fly out - several k$ plus days of downtime,
-> until the technician reaches the place.
-
-
-Not disagreeing, but it seems about as reliable as doing a software upgra=
-de. If you do those then
-you are likely safe doing this
-
-
-
->> The generic bios is quite slow to startup and I would like to prepare =
-
->> a customised version with shorter timeouts. Happy to work with
->> you on something separately if this is interesting?
-> Actually, I already planned an actual factory setup for these boxes,
-> which includes the whole process, hw testing, bios deployment,
-> OS/application deployment, etc, etc. Unfortunately, this is lots of
-> work to do (has to be someting that arbitrary field technicians,
-> who aren't sw engineers, can actually do on their own).
-
-
-I've already got one
-
-Hint: use netboot for simplest setup
-
-
-> Tried to get some sponsoring from pcengines, but they don't even seems
-> to be interested in an arranging simple things like LED names.
-> Damn, I'm really unhappy with these folks - we could have prevented muc=
-h
-> of this whole mess if they would talked to me (they know that I'm the
-> apu-board kernel maintainer) :(
-
-
-I'm hiring. Contact me offlist if you want to talk further?
-
-
-
-> Let's try summarize the current state of knowledge:
->
-> * apu2..4:
->   * BIOS support highly depends on BIOS version, we need to
->     support older versions.
->   * Field depends on on driver's naming, keycodes, ...
-
-
-Realistically that's only partially true:
-
-- older kernels and older bios has "old names"
-
-- kernels from a year back with your driver have a mix of "new" or "new +=
- old" names depending on
-whether the bios is newer than 4.10.
-
-- After the patch I proposed: newer bios and newer kernel use ACPI, older=
- bios match your driver,
-people upgrading from kernels more than about a year old don't notice sin=
-ce they move from "old"
-names to "acpi names" which are identical.
-
-
-
-> * simsw:
->   * similar to mpcie-reset (still experimental, ...) ...
->   * seems to be really bound to M2 ports
-
-
-Not experimental. Works reliably. Just don't toggle them during bootup (a=
-s your driver was doing in
-the past - current driver doesn't do this anymore - problem resolved)
-
-The GPIO lines are wired to a SIM swap chip which does all the work. The =
-LTE cards don't know or see
-what is happening
-
-
-Regards
-
-Ed W
-
-
+Hi Alex,
+
+Thanks for your suggestion, the helpers are good
+but it is complicated to use them in video deriver
+as video driver needs to deal with FW interface and
+wait for buffer processing from FW.
+So these helpers can't be used directly.
+
+For example in case of B frames,
+to encode such frame FW expect one more buffer to be queued
+on src queue which needs to be handled by queueing an empty buffer
+with EOS flag. Without EOS, we can't handle B frames.
+
+Thanks,
+Dikshita
+
+On 2020-10-20 14:27, Alexandre Courbot wrote:
+> Hi Dikshita,
+> 
+> On Mon, Oct 19, 2020 at 11:29 PM Dikshita Agarwal
+> <dikshita@codeaurora.org> wrote:
+>> 
+>> Add handling for below commands in encoder:
+>> 1. V4L2_ENC_CMD_STOP
+>> 2. V4L2_ENC_CMD_START
+> 
+> I suspect this can be implemented more easily (and more safely) using
+> the m2m encoder helpers introduced recently. Please see this commit
+> for details:
+> 
+> https://github.com/torvalds/linux/commit/2b48e113866a6735de3a99531183afb6217c2a60
+> 
+> By making use of this you can probably get rid of venus_enc_state
+> entirely. Also this generic implementation should take care of corner
+> cases that this patch does not address (like streaming off while a
+> drain is in progress).
+> 
+>> 
+>> Signed-off-by: Dikshita Agarwal <dikshita@codeaurora.org>
+>> ---
+>>  drivers/media/platform/qcom/venus/core.h |  9 +++++
+>>  drivers/media/platform/qcom/venus/venc.c | 64 
+>> +++++++++++++++++++++++++++++++-
+>>  2 files changed, 72 insertions(+), 1 deletion(-)
+>> 
+>> diff --git a/drivers/media/platform/qcom/venus/core.h 
+>> b/drivers/media/platform/qcom/venus/core.h
+>> index e30eeaf..5c46936 100644
+>> --- a/drivers/media/platform/qcom/venus/core.h
+>> +++ b/drivers/media/platform/qcom/venus/core.h
+>> @@ -276,6 +276,14 @@ enum venus_dec_state {
+>>         VENUS_DEC_STATE_DRC             = 7,
+>>  };
+>> 
+>> +enum venus_enc_state {
+>> +       VENUS_ENC_STATE_DEINIT          = 0,
+>> +       VENUS_ENC_STATE_INIT            = 1,
+>> +       VENUS_ENC_STATE_ENCODING        = 2,
+>> +       VENUS_ENC_STATE_STOPPED         = 3,
+>> +       VENUS_ENC_STATE_DRAIN           = 4,
+>> +};
+>> +
+>>  struct venus_ts_metadata {
+>>         bool used;
+>>         u64 ts_ns;
+>> @@ -367,6 +375,7 @@ struct venus_inst {
+>>         u8 quantization;
+>>         u8 xfer_func;
+>>         enum venus_dec_state codec_state;
+>> +       enum venus_enc_state enc_state;
+>>         wait_queue_head_t reconf_wait;
+>>         unsigned int subscriptions;
+>>         int buf_count;
+>> diff --git a/drivers/media/platform/qcom/venus/venc.c 
+>> b/drivers/media/platform/qcom/venus/venc.c
+>> index f7fb6e3..c6143b0 100644
+>> --- a/drivers/media/platform/qcom/venus/venc.c
+>> +++ b/drivers/media/platform/qcom/venus/venc.c
+>> @@ -498,6 +498,46 @@ static int venc_enum_frameintervals(struct file 
+>> *file, void *fh,
+>>         return 0;
+>>  }
+>> 
+>> +static int
+>> +venc_encoder_cmd(struct file *file, void *fh, struct v4l2_encoder_cmd 
+>> *cmd)
+>> +{
+>> +       struct venus_inst *inst = to_inst(file);
+>> +       struct hfi_frame_data fdata = {0};
+>> +       int ret = 0;
+>> +
+>> +       ret = v4l2_m2m_ioctl_try_encoder_cmd(file, fh, cmd);
+>> +       if (ret)
+>> +               return ret;
+>> +
+>> +       mutex_lock(&inst->lock);
+>> +
+>> +       if (cmd->cmd == V4L2_ENC_CMD_STOP &&
+>> +           inst->enc_state == VENUS_ENC_STATE_ENCODING) {
+>> +               /*
+>> +                * Implement V4L2_ENC_CMD_STOP by enqueue an empty 
+>> buffer on
+>> +                * encoder input to signal EOS.
+>> +                */
+>> +               if (!(inst->streamon_out && inst->streamon_cap))
+>> +                       goto unlock;
+>> +
+>> +               fdata.buffer_type = HFI_BUFFER_INPUT;
+>> +               fdata.flags |= HFI_BUFFERFLAG_EOS;
+>> +               fdata.device_addr = 0xdeadb000;
+>> +
+>> +               ret = hfi_session_process_buf(inst, &fdata);
+>> +
+>> +               inst->enc_state = VENUS_ENC_STATE_DRAIN;
+>> +       } else if (cmd->cmd == V4L2_ENC_CMD_START &&
+>> +               inst->enc_state == VENUS_ENC_STATE_STOPPED) {
+>> +               
+>> vb2_clear_last_buffer_dequeued(&inst->fh.m2m_ctx->cap_q_ctx.q);
+>> +               inst->enc_state = VENUS_ENC_STATE_ENCODING;
+>> +       }
+>> +
+>> +unlock:
+>> +       mutex_unlock(&inst->lock);
+>> +       return ret;
+>> +}
+>> +
+>>  static const struct v4l2_ioctl_ops venc_ioctl_ops = {
+>>         .vidioc_querycap = venc_querycap,
+>>         .vidioc_enum_fmt_vid_cap = venc_enum_fmt,
+>> @@ -525,6 +565,7 @@ static int venc_enum_frameintervals(struct file 
+>> *file, void *fh,
+>>         .vidioc_enum_frameintervals = venc_enum_frameintervals,
+>>         .vidioc_subscribe_event = v4l2_ctrl_subscribe_event,
+>>         .vidioc_unsubscribe_event = v4l2_event_unsubscribe,
+>> +       .vidioc_encoder_cmd = venc_encoder_cmd,
+>>  };
+>> 
+>>  static int venc_set_properties(struct venus_inst *inst)
+>> @@ -884,6 +925,8 @@ static int venc_start_streaming(struct vb2_queue 
+>> *q, unsigned int count)
+>>         if (ret)
+>>                 goto deinit_sess;
+>> 
+>> +       inst->enc_state = VENUS_ENC_STATE_ENCODING;
+>> +
+>>         mutex_unlock(&inst->lock);
+>> 
+>>         return 0;
+>> @@ -903,8 +946,19 @@ static int venc_start_streaming(struct vb2_queue 
+>> *q, unsigned int count)
+>>  static void venc_vb2_buf_queue(struct vb2_buffer *vb)
+>>  {
+>>         struct venus_inst *inst = vb2_get_drv_priv(vb->vb2_queue);
+>> +       struct vb2_v4l2_buffer *vbuf = to_vb2_v4l2_buffer(vb);
+>> 
+>>         mutex_lock(&inst->lock);
+>> +
+>> +       if (inst->enc_state == VENUS_ENC_STATE_STOPPED) {
+>> +               vbuf->sequence = inst->sequence_cap++;
+>> +               vbuf->field = V4L2_FIELD_NONE;
+>> +               vb2_set_plane_payload(vb, 0, 0);
+>> +               v4l2_m2m_buf_done(vbuf, VB2_BUF_STATE_DONE);
+>> +               mutex_unlock(&inst->lock);
+>> +               return;
+>> +       }
+>> +
+>>         venus_helper_vb2_buf_queue(vb);
+>>         mutex_unlock(&inst->lock);
+>>  }
+>> @@ -943,6 +997,11 @@ static void venc_buf_done(struct venus_inst 
+>> *inst, unsigned int buf_type,
+>>                 vb->planes[0].data_offset = data_offset;
+>>                 vb->timestamp = timestamp_us * NSEC_PER_USEC;
+>>                 vbuf->sequence = inst->sequence_cap++;
+>> +
+>> +               if ((vbuf->flags & V4L2_BUF_FLAG_LAST) &&
+>> +                   inst->enc_state == VENUS_ENC_STATE_DRAIN) {
+>> +                       inst->enc_state = VENUS_ENC_STATE_STOPPED;
+>> +               }
+>>         } else {
+>>                 vbuf->sequence = inst->sequence_out++;
+>>         }
+>> @@ -1041,6 +1100,9 @@ static int venc_open(struct file *file)
+>>         inst->clk_data.core_id = VIDC_CORE_ID_DEFAULT;
+>>         inst->core_acquired = false;
+>> 
+>> +       if (inst->enc_state == VENUS_ENC_STATE_DEINIT)
+>> +               inst->enc_state = VENUS_ENC_STATE_INIT;
+>> +
+>>         venus_helper_init_instance(inst);
+>> 
+>>         ret = pm_runtime_get_sync(core->dev_enc);
+>> @@ -1105,7 +1167,7 @@ static int venc_close(struct file *file)
+>>         mutex_destroy(&inst->lock);
+>>         v4l2_fh_del(&inst->fh);
+>>         v4l2_fh_exit(&inst->fh);
+>> -
+>> +       inst->enc_state = VENUS_ENC_STATE_DEINIT;
+>>         pm_runtime_put_sync(inst->core->dev_enc);
+>> 
+>>         kfree(inst);
+>> --
+>> 1.9.1
+>> 
