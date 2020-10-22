@@ -2,176 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74415295643
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:07:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E70F29564A
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 04:13:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2507568AbgJVCHn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Wed, 21 Oct 2020 22:07:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60056 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2507025AbgJVCHn (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Wed, 21 Oct 2020 22:07:43 -0400
-Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 04618C0613CE;
-        Wed, 21 Oct 2020 19:07:42 -0700 (PDT)
-Received: by fieldses.org (Postfix, from userid 2815)
-        id 393FD1C81; Wed, 21 Oct 2020 22:07:41 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 393FD1C81
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
-        s=default; t=1603332461;
-        bh=sbUwsZww/rB1W0BWKxrwwuLO12ajP4YFsTHjfo7VsIY=;
-        h=Date:To:Cc:Subject:From:From;
-        b=PuYkx6ABwrAV2BYXj+RQDidL15S1VhR3dR3syTEwG1rNS6f8VYp8o0dRliBa1b4nD
-         AJTP7uINX+wmomcra7JJ+IWGwyj8Fwb2IXu7+f3rEfV1JLZlXLlgUssDB80i5RycI8
-         jcJvp/dYMZLrCvUIEgFczUfveTGOz+rx0HrakHBI=
-Date:   Wed, 21 Oct 2020 22:07:41 -0400
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: [GIT PULL] nfsd change for 5.10
-Message-ID: <20201022020741.GA6074@fieldses.org>
+        id S2894921AbgJVCM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Wed, 21 Oct 2020 22:12:57 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:44524 "EHLO 1wt.eu"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2894914AbgJVCM5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Wed, 21 Oct 2020 22:12:57 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 09M2CPsC000915;
+        Thu, 22 Oct 2020 04:12:25 +0200
+Date:   Thu, 22 Oct 2020 04:12:25 +0200
+From:   Willy Tarreau <w@1wt.eu>
+To:     Joe Perches <joe@perches.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Marc Plumb <lkml.mplumb@gmail.com>,
+        Amit Klein <aksecurity@gmail.com>,
+        George Spelvin <lkml@sdf.org>,
+        Eric Dumazet <edumazet@google.com>,
+        "Jason A. Donenfeld" <Jason@zx2c4.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Kees Cook <keescook@chromium.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Theodore Ts'o" <tytso@mit.edu>, Florian Westphal <fw@strlen.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [GIT PULL] prandom32 changes for v5.10
+Message-ID: <20201022021225.GA911@1wt.eu>
+References: <20201012203226.GA11861@1wt.eu>
+ <CANEQ_+Jyf-MZEsvT5iMu0a=waJCiAKdLaOfLHe_py6AXOt-hjQ@mail.gmail.com>
+ <CAHk-=wioF37gX6iMCguGi7XrpBQqMiJ_5HjQ=dJQas_np8_MyQ@mail.gmail.com>
+ <20201021032725.GB396@1wt.eu>
+ <6700002d-e775-4c6b-5ebc-2d6a872f1a62@gmail.com>
+ <432132f9c678dc5093fd85055e5b708584018a0d.camel@perches.com>
+ <CAHk-=wi9Oe=NCG_S1X-rSFwkWe=vK7GYUHp22PFWa2W47WnzKA@mail.gmail.com>
+ <12bc8364008f797324097fb1974da1c0f75776b0.camel@perches.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-User-Agent: Mutt/1.5.21 (2010-09-15)
-From:   bfields@fieldses.org (J. Bruce Fields)
+In-Reply-To: <12bc8364008f797324097fb1974da1c0f75776b0.camel@perches.com>
+User-Agent: Mutt/1.6.1 (2016-04-27)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Please pull nfsd changes for 5.10 from:
+On Wed, Oct 21, 2020 at 02:41:06PM -0700, Joe Perches wrote:
+> On Wed, 2020-10-21 at 14:35 -0700, Linus Torvalds wrote:
+> > On Wed, Oct 21, 2020 at 2:20 PM Joe Perches <joe@perches.com> wrote:
+> > > While secure solutions are useful, I really wonder if
+> > > "George Spelvin" is a real person.
+> > 
+> > It's not his real name, no, but he's a real person.
+> > 
+> > I do have his real name from years ago when I needed to confirm his
+> > identity for sign-offs (I forget what for, I think it was some dcache
+> > name hashing thing).
+> > 
+> > So I can confirm he's a real person who just wants to keep private,
+> > and is competent when it comes to hashing and security.
+> 
+> I hope that real name is in some escrow somewhere and
+> not just in some long thrown away spinning rust disk.
+> 
+> And because George isn't a real name and contributions
+> by him have been accepted, the DCO should be updated
+> to show how pseudonymous contributions can be made.
 
-  git://linux-nfs.org/~bfields/linux.git tags/nfsd-5.10
+Well, if that helps, given that I already needed to modify his code
+and that his proposal totally makes sense, I can also replace his
+signed-off-by with a suggested-by in the patch and put a link to the
+original thread.
 
-The one new feature this time, from Anna Schumaker, is READ_PLUS, which
-has the same arguments as READ but allows the server to return an array
-of data and hole extents.
+I'll do my best to propose an update before -rc1 if that's still
+acceptable. Amit found that the code doesn't build when tests are
+enabled, visibly they were not on my side and likely explain why
+that failed for Linus.
 
-Otherwise it's a lot of cleanup and bugfixes.
-
---b.
-
-----------------------------------------------------------------
-Alex Dewar (2):
-      nfsd: Fix typo in comment
-      nfsd: Remove unnecessary assignment in nfs4xdr.c
-
-Anna Schumaker (5):
-      SUNRPC/NFSD: Implement xdr_reserve_space_vec()
-      NFSD: Add READ_PLUS data support
-      NFSD: Add READ_PLUS hole segment encoding
-      NFSD: Return both a hole and a data segment
-      NFSD: Encode a full READ_PLUS reply
-
-Artur Molchanov (1):
-      net/sunrpc: Fix return value for sysctl sunrpc.transports
-
-Chuck Lever (17):
-      NFSD: Correct type annotations in user xattr helpers
-      NFSD: Correct type annotations in user xattr XDR functions
-      NFSD: Correct type annotations in COPY XDR functions
-      NFSD: Add missing NFSv2 .pc_func methods
-      lockd: Replace PROC() macro with open code
-      NFSACL: Replace PROC() macro with open code
-      NFSD: Encoder and decoder functions are always present
-      NFSD: Clean up switch statement in nfsd_dispatch()
-      NFSD: Clean up stale comments in nfsd_dispatch()
-      NFSD: Clean up nfsd_dispatch() variables
-      NFSD: Refactor nfsd_dispatch() error paths
-      NFSD: Remove vestigial typedefs
-      NFSD: Fix .pc_release method for NFSv2
-      NFSD: Call NFSv2 encoders on error returns
-      NFSD: Remove the RETURN_STATUS() macro
-      NFSD: Map nfserr_wrongsec outside of nfsd_dispatch
-      NFSD: Hoist status code encoding into XDR encoder functions
-
-Dai Ngo (1):
-      NFSv4.2: Fix NFS4ERR_STALE error when doing inter server copy
-
-Dan Aloni (1):
-      svcrdma: fix bounce buffers for unaligned offsets and multiple pages
-
-Hou Tao (1):
-      nfsd: rename delegation related tracepoints to make them less confusing
-
-J. Bruce Fields (8):
-      nfsd: remove fault injection code
-      nfsd: give up callbacks on revoked delegations
-      MAINTAINERS: Note NFS docs under Documentation/
-      Documentation: update RPCSEC_GSSv3 RFC link
-      sunrpc: simplify do_cache_clean
-      nfsd: Cache R, RW, and W opens separately
-      nfsd4: remove check_conflicting_opens warning
-      nfsd: rq_lease_breaker cleanup
-
-Martijn de Gouw (1):
-      SUNRPC: fix copying of multiple pages in gss_read_proxy_verf()
-
-Randy Dunlap (1):
-      net: sunrpc: delete repeated words
-
-Rik van Riel (1):
-      silence nfscache allocation warnings with kvzalloc
-
-Roberto Bergantinos Corpas (1):
-      sunrpc: raise kernel RPC channel buffer size
-
-Tom Rix (1):
-      nfsd: remove unneeded break
-
-Xu Wang (1):
-      sunrpc: cache : Replace seq_printf with seq_puts
-
-Zheng Bin (1):
-      nfsd: fix comparison to bool warning
-
- Documentation/admin-guide/nfs/fault_injection.rst |  70 ---
- Documentation/admin-guide/nfs/index.rst           |   1 -
- Documentation/filesystems/nfs/rpc-server-gss.rst  |   5 +-
- MAINTAINERS                                       |   2 +
- fs/lockd/svc4proc.c                               | 248 +++++++--
- fs/lockd/svcproc.c                                | 250 +++++++--
- fs/nfs/nfs4file.c                                 |  38 +-
- fs/nfs/nfs4super.c                                |   5 +
- fs/nfs/super.c                                    |  17 +
- fs/nfs_common/Makefile                            |   1 +
- fs/nfs_common/nfs_ssc.c                           |  94 ++++
- fs/nfsd/Kconfig                                   |  12 +-
- fs/nfsd/Makefile                                  |   1 -
- fs/nfsd/export.c                                  |   2 +-
- fs/nfsd/filecache.c                               |   2 +-
- fs/nfsd/nfs2acl.c                                 | 160 ++++--
- fs/nfsd/nfs3acl.c                                 |  88 ++--
- fs/nfsd/nfs3proc.c                                | 238 +++++----
- fs/nfsd/nfs3xdr.c                                 |  25 +-
- fs/nfsd/nfs4proc.c                                |  34 +-
- fs/nfsd/nfs4state.c                               | 605 +---------------------
- fs/nfsd/nfs4xdr.c                                 | 202 ++++++--
- fs/nfsd/nfscache.c                                |  12 +-
- fs/nfsd/nfsctl.c                                  |   3 -
- fs/nfsd/nfsproc.c                                 | 283 +++++-----
- fs/nfsd/nfssvc.c                                  | 122 +++--
- fs/nfsd/nfsxdr.c                                  |  52 +-
- fs/nfsd/state.h                                   |  27 -
- fs/nfsd/trace.h                                   |   4 +-
- fs/nfsd/vfs.c                                     |   6 +-
- fs/nfsd/xdr.h                                     |  16 +-
- fs/nfsd/xdr3.h                                    |   1 +
- fs/nfsd/xdr4.h                                    |   1 +
- include/linux/nfs_ssc.h                           |  67 +++
- include/linux/sunrpc/xdr.h                        |   2 +
- include/uapi/linux/nfsacl.h                       |   2 +
- net/sunrpc/auth_gss/svcauth_gss.c                 |  27 +-
- net/sunrpc/backchannel_rqst.c                     |   2 +-
- net/sunrpc/cache.c                                |  21 +-
- net/sunrpc/sysctl.c                               |   8 +-
- net/sunrpc/xdr.c                                  |  47 +-
- net/sunrpc/xprtrdma/svc_rdma_rw.c                 |   2 +-
- net/sunrpc/xprtrdma/svc_rdma_sendto.c             |   3 +-
- tools/nfsd/inject_fault.sh                        |  50 --
- 44 files changed, 1490 insertions(+), 1368 deletions(-)
- delete mode 100644 Documentation/admin-guide/nfs/fault_injection.rst
- create mode 100644 fs/nfs_common/nfs_ssc.c
- create mode 100644 include/linux/nfs_ssc.h
- delete mode 100755 tools/nfsd/inject_fault.sh
+Willy
