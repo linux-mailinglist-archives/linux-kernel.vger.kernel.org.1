@@ -2,241 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44CBA295DAA
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:45:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 52081295DAC
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:45:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2502785AbgJVLp3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:45:29 -0400
-Received: from cloudserver094114.home.pl ([79.96.170.134]:42370 "EHLO
-        cloudserver094114.home.pl" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438840AbgJVLp3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:45:29 -0400
-Received: from 89-64-87-167.dynamic.chello.pl (89.64.87.167) (HELO kreacher.localnet)
- by serwer1319399.home.pl (79.96.170.134) with SMTP (IdeaSmtpServer 0.83.491)
- id 49394ccb93dbf3dd; Thu, 22 Oct 2020 13:45:26 +0200
-From:   "Rafael J. Wysocki" <rjw@rjwysocki.net>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com
-Subject: Re: [PATCH] sched/fair: check for idle core
-Date:   Thu, 22 Oct 2020 13:45:25 +0200
-Message-ID: <34115486.YmRjPRKJaA@kreacher>
-In-Reply-To: <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr> <20201022071145.GM2628@hirez.programming.kicks-ass.net> <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
+        id S2897480AbgJVLpr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:45:47 -0400
+Received: from foss.arm.com ([217.140.110.172]:55238 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2502778AbgJVLpr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:45:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2D0D8D6E;
+        Thu, 22 Oct 2020 04:45:46 -0700 (PDT)
+Received: from [10.57.20.67] (unknown [10.57.20.67])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 933593F66B;
+        Thu, 22 Oct 2020 04:45:43 -0700 (PDT)
+Subject: Re: [PATCH 2/5] thermal: devfreq_cooling: get a copy of device status
+To:     Daniel Lezcano <daniel.lezcano@linaro.org>,
+        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        dri-devel@lists.freedesktop.org
+Cc:     rui.zhang@intel.com, amit.kucheria@verdurent.com,
+        orjan.eide@arm.com, robh@kernel.org,
+        alyssa.rosenzweig@collabora.com, steven.price@arm.com,
+        airlied@linux.ie, daniel@ffwll.ch
+References: <20200921122007.29610-1-lukasz.luba@arm.com>
+ <20200921122007.29610-3-lukasz.luba@arm.com>
+ <199bf0e0-88b3-1908-c291-92c85bfe06b1@linaro.org>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <4ac3b6b0-0e3f-3971-78e6-362c367f8c30@arm.com>
+Date:   Thu, 22 Oct 2020 12:45:41 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+In-Reply-To: <199bf0e0-88b3-1908-c291-92c85bfe06b1@linaro.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thursday, October 22, 2020 12:47:03 PM CEST Viresh Kumar wrote:
-> On 22-10-20, 09:11, Peter Zijlstra wrote:
-> > Well, but we need to do something to force people onto schedutil,
-> > otherwise we'll get more crap like this thread.
-> > 
-> > Can we take the choice away? Only let Kconfig select which governors are
-> > available and then set the default ourselves? I mean, the end goal being
-> > to not have selectable governors at all, this seems like a good step
-> > anyway.
+Hi Daniel,
+
+On 10/14/20 3:34 PM, Daniel Lezcano wrote:
+> On 21/09/2020 14:20, Lukasz Luba wrote:
+>> Devfreq cooling needs to now the correct status of the device in order
+>> to operate. Do not rely on Devfreq last_status which might be a stale data
+>> and get more up-to-date values of the load.
+>>
+>> Devfreq framework can change the device status in the background. To
+>> mitigate this situation make a copy of the status structure and use it
+>> for internal calculations.
+>>
+>> In addition this patch adds normalization function, which also makes sure
+>> that whatever data comes from the device, it is in a sane range.
+>>
+>> Signed-off-by: Lukasz Luba <lukasz.luba@arm.com>
+>> ---
+>>   drivers/thermal/devfreq_cooling.c | 52 +++++++++++++++++++++++++------
+>>   1 file changed, 43 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/thermal/devfreq_cooling.c b/drivers/thermal/devfreq_cooling.c
+>> index 7063ccb7b86d..cf045bd4d16b 100644
+>> --- a/drivers/thermal/devfreq_cooling.c
+>> +++ b/drivers/thermal/devfreq_cooling.c
+>> @@ -227,6 +227,24 @@ static inline unsigned long get_total_power(struct devfreq_cooling_device *dfc,
+>>   							       voltage);
+>>   }
+>>   
+>> +static void _normalize_load(struct devfreq_dev_status *status)
+>> +{
+>> +	/* Make some space if needed */
+>> +	if (status->busy_time > 0xffff) {
+>> +		status->busy_time >>= 10;
+>> +		status->total_time >>= 10;
+>> +	}
+>> +
+>> +	if (status->busy_time > status->total_time)
+>> +		status->busy_time = status->total_time;
+>> +
+>> +	status->busy_time *= 100;
+>> +	status->busy_time /= status->total_time ? : 1;
+>> +
+>> +	/* Avoid division by 0 */
+>> +	status->busy_time = status->busy_time ? : 1;
+>> +	status->total_time = 100;
+>> +}
 > 
-> Just to clarify and complete the point a bit here, the users can still
-> pass the default governor from cmdline using
-> cpufreq.default_governor=, which will take precedence over the one the
-> below code is playing with. And later once the kernel is up, they can
-> still choose a different governor from userspace.
-
-Right.
-
-Also some people simply set "performance" as the default governor and then
-don't touch cpufreq otherwise (the idea is to get everything to the max
-freq right away and stay in that mode forever).  This still needs to be
-possible IMO.
-
-> > ---
-> > 
-> > diff --git a/drivers/cpufreq/Kconfig b/drivers/cpufreq/Kconfig
-> > index 2c7171e0b001..3a9f54b382c0 100644
-> > --- a/drivers/cpufreq/Kconfig
-> > +++ b/drivers/cpufreq/Kconfig
-> > @@ -34,77 +34,6 @@ config CPU_FREQ_STAT
-> >  
-> >  	  If in doubt, say N.
-> >  
-> > -choice
-> > -	prompt "Default CPUFreq governor"
-> > -	default CPU_FREQ_DEFAULT_GOV_USERSPACE if ARM_SA1100_CPUFREQ || ARM_SA1110_CPUFREQ
-> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if ARM64 || ARM
-> > -	default CPU_FREQ_DEFAULT_GOV_SCHEDUTIL if X86_INTEL_PSTATE && SMP
-> > -	default CPU_FREQ_DEFAULT_GOV_PERFORMANCE
-> > -	help
-> > -	  This option sets which CPUFreq governor shall be loaded at
-> > -	  startup. If in doubt, use the default setting.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_PERFORMANCE
-> > -	bool "performance"
-> > -	select CPU_FREQ_GOV_PERFORMANCE
-> > -	help
-> > -	  Use the CPUFreq governor 'performance' as default. This sets
-> > -	  the frequency statically to the highest frequency supported by
-> > -	  the CPU.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_POWERSAVE
-> > -	bool "powersave"
-> > -	select CPU_FREQ_GOV_POWERSAVE
-> > -	help
-> > -	  Use the CPUFreq governor 'powersave' as default. This sets
-> > -	  the frequency statically to the lowest frequency supported by
-> > -	  the CPU.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_USERSPACE
-> > -	bool "userspace"
-> > -	select CPU_FREQ_GOV_USERSPACE
-> > -	help
-> > -	  Use the CPUFreq governor 'userspace' as default. This allows
-> > -	  you to set the CPU frequency manually or when a userspace 
-> > -	  program shall be able to set the CPU dynamically without having
-> > -	  to enable the userspace governor manually.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_ONDEMAND
-> > -	bool "ondemand"
-> > -	select CPU_FREQ_GOV_ONDEMAND
-> > -	select CPU_FREQ_GOV_PERFORMANCE
-> > -	help
-> > -	  Use the CPUFreq governor 'ondemand' as default. This allows
-> > -	  you to get a full dynamic frequency capable system by simply
-> > -	  loading your cpufreq low-level hardware driver.
-> > -	  Be aware that not all cpufreq drivers support the ondemand
-> > -	  governor. If unsure have a look at the help section of the
-> > -	  driver. Fallback governor will be the performance governor.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
-> > -	bool "conservative"
-> > -	select CPU_FREQ_GOV_CONSERVATIVE
-> > -	select CPU_FREQ_GOV_PERFORMANCE
-> > -	help
-> > -	  Use the CPUFreq governor 'conservative' as default. This allows
-> > -	  you to get a full dynamic frequency capable system by simply
-> > -	  loading your cpufreq low-level hardware driver.
-> > -	  Be aware that not all cpufreq drivers support the conservative
-> > -	  governor. If unsure have a look at the help section of the
-> > -	  driver. Fallback governor will be the performance governor.
-> > -
-> > -config CPU_FREQ_DEFAULT_GOV_SCHEDUTIL
-> > -	bool "schedutil"
-> > -	depends on SMP
-> > -	select CPU_FREQ_GOV_SCHEDUTIL
-> > -	select CPU_FREQ_GOV_PERFORMANCE
-> > -	help
-> > -	  Use the 'schedutil' CPUFreq governor by default. If unsure,
-> > -	  have a look at the help section of that governor. The fallback
-> > -	  governor will be 'performance'.
-> > -
-> > -endchoice
-> > -
-> >  config CPU_FREQ_GOV_PERFORMANCE
-> >  	tristate "'performance' governor"
-> >  	help
-> > @@ -145,6 +74,7 @@ config CPU_FREQ_GOV_USERSPACE
-> >  config CPU_FREQ_GOV_ONDEMAND
-> >  	tristate "'ondemand' cpufreq policy governor"
-> >  	select CPU_FREQ_GOV_COMMON
-> > +	select CPU_FREQ_GOV_PERFORMANCE
-> >  	help
-> >  	  'ondemand' - This driver adds a dynamic cpufreq policy governor.
-> >  	  The governor does a periodic polling and 
-> > @@ -164,6 +94,7 @@ config CPU_FREQ_GOV_CONSERVATIVE
-> >  	tristate "'conservative' cpufreq governor"
-> >  	depends on CPU_FREQ
-> >  	select CPU_FREQ_GOV_COMMON
-> > +	select CPU_FREQ_GOV_PERFORMANCE
-> >  	help
-> >  	  'conservative' - this driver is rather similar to the 'ondemand'
-> >  	  governor both in its source code and its purpose, the difference is
-> > @@ -188,6 +119,7 @@ config CPU_FREQ_GOV_SCHEDUTIL
-> >  	bool "'schedutil' cpufreq policy governor"
-> >  	depends on CPU_FREQ && SMP
-> >  	select CPU_FREQ_GOV_ATTR_SET
-> > +	select CPU_FREQ_GOV_PERFORMANCE
+> Not sure that works if the devfreq governor is not on-demand.
 > 
-> And I am not really sure why we always wanted this backup performance
-> governor to be there unless the said governors are built as module.
+> Is it possible to use the energy model directly in devfreq to compute
+> the energy consumption given the state transitions since the last reading ?
 
-Apparently, some old drivers had problems with switching frequencies fast enough
-for ondemand to be used with them and the fallback was for those cases.  AFAICS.
+This change is actually trying to create a safety net for what we do.
 
-> >  	select IRQ_WORK
-> >  	help
-> >  	  This governor makes decisions based on the utilization data provided
-> > diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
-> > index 1877f5e2e5b0..6848e3337b65 100644
-> > --- a/drivers/cpufreq/cpufreq.c
-> > +++ b/drivers/cpufreq/cpufreq.c
-> > @@ -626,6 +626,49 @@ static struct cpufreq_governor *find_governor(const char *str_governor)
-> >  	return NULL;
-> >  }
-> >  
-> > +static struct cpufreq_governor *cpufreq_default_governor(void)
-> > +{
-> > +	struct cpufreq_governor *gov = NULL;
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_SCHEDUTIL
-> > +	gov = find_governor("schedutil");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_ONDEMAND
-> > +	gov = find_governor("ondemand");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_CONSERVATIVE
-> > +	gov = find_governor("conservative");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_USERSPACE
-> > +	gov = find_governor("userspace");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_POWERSAVE
-> > +	gov = find_governor("powersave");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +#ifdef CONFIG_CPU_FREQ_GOV_PERFORMANCE
-> > +	gov = find_governor("performance");
-> > +	if (gov)
-> > +		return gov;
-> > +#endif
-> > +
-> > +	return gov;
-> > +}
+In the original code we take the last_state directly:
+-	struct devfreq_dev_status *status = &df->last_status;
+
+Then we simply multiply by 'busy_time' and div by 'total_time',
+without checks... The values might be huge or zero, etc.
+The _normalize_load() introduces this safety.
+
+Apart from that, just simply taking a pointer to &df->last_status does
+not protect us from:
+- working on a struct which might be modified at the same time in
+   background - not safe
+- that struct might not be updated by long time, because devfreq
+   didn't check it for a long (there are two polling modes in devfreq)
+
+So taking a mutex and then a trigger the device status check and
+make a copy of newest data. It is more safe.
+
+I think this can be treated as a fix, not a feature.
+
 > 
-> I think that would be fine with me. Though we would be required to
-> update couple of defconfigs here to make sure they keep working the
-> way they wanted to.
+> The power will be read directly from devfreq which will return:
+> 
+> nrj + (current_power * (jiffies - last_update)) / (jiffies - last_update)
+> 
+> The devfreq cooling device driver would result in a much simpler code, no?
 
-Generally agreed, but see the point about the "performance" governor above.
+This is something that I would like to address after the EM changes are
+merged. It would be the next step, how to estimate the power by taking
+into consideration more information. This patch series just tries to
+make it possible to use EM. The model improvements would be next.
 
+Thank you Daniel for your review.
 
-
+Regards,
+Lukasz
