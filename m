@@ -2,28 +2,29 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B0B295D92
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:42:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3E778295D93
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:42:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897442AbgJVLmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:42:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:44106 "EHLO mx2.suse.de"
+        id S2897452AbgJVLmx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:42:53 -0400
+Received: from mx2.suse.de ([195.135.220.15]:44220 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2503029AbgJVLmn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:42:43 -0400
+        id S2897445AbgJVLmx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 07:42:53 -0400
 X-Virus-Scanned: by amavisd-new at test-mx.suse.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603366961;
+        t=1603366971;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=U/TEQOdMYbYjtth95CshJ8jvbzRyoAZQ22G8MKIsiHg=;
-        b=M1aFCR1l6/A0bHaqSJkzL6QCK2YC0Vnv08L9aexs4yihtSB58RuDQTvv13vnXB6fT8bHfP
-        YttZqf4dl1uwCPyC4M85q80Z1hh96WSAT2HnpoFN403xX4sF5hj3jmenvkga6Li2uDfSlb
-        ZDMvt4bciwr70drA9o5KKbMJwMDgGaE=
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=ZPz2y+YO6piDwEgz5Ay0n/hoYFYkbUrzL6JCfnlbRMo=;
+        b=gQIe/tQNmLR3WPX2UV1lMpjQMK9vbceEoiQCXbq4uuTloT2oQQWFgu2j1ZNut/3aVH9+QH
+        9NFcTI23J/00s5kE5Tl6s+4JoWUAHQtA1Y5bggXlvWCOU9BKg0Nh90GlmdfZ9jgiX+LPmD
+        BZCTqbqs9J13fKBGiwcSEU7Z3DGti4M=
 Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A286CABBE;
-        Thu, 22 Oct 2020 11:42:41 +0000 (UTC)
+        by mx2.suse.de (Postfix) with ESMTP id 74464AEC1;
+        Thu, 22 Oct 2020 11:42:51 +0000 (UTC)
 From:   Petr Mladek <pmladek@suse.com>
 To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
         Steven Rostedt <rostedt@goodmis.org>,
@@ -35,51 +36,107 @@ Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
         linux-kernel@vger.kernel.org, Petr Mladek <pmladek@suse.com>
-Subject: [RFC 0/2] printk: Official way to mute consoles
-Date:   Thu, 22 Oct 2020 13:42:26 +0200
-Message-Id: <20201022114228.9098-1-pmladek@suse.com>
+Subject: [RFC 1/2] printk: Add kernel parameter: mute_console
+Date:   Thu, 22 Oct 2020 13:42:27 +0200
+Message-Id: <20201022114228.9098-2-pmladek@suse.com>
 X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201022114228.9098-1-pmladek@suse.com>
+References: <20201022114228.9098-1-pmladek@suse.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The long discussion about handling empty console= came up with several
-problems. This patchset tries to solve the two original problems
-with empty console="" parameter:
+Users use various undocumented ways how to completely disable
+console output. It is usually done by passing an invalid console
+name, for example, console="", console=null.
 
-  + Prevent the potential crash by registering console for /dev/console.
-  + Prevent the performance regression by muting the consoles.
+It mostly works but just by chance. The console name is added to the list
+of preferred consoles and the variable "preferred_console" is set.
+As a result, any register_console() fails because the driver name
+does not match the invalid name. And the console is not used as
+a fallback because "preferred_console" is set.
 
-IMHO, the patchset makes sense on its own. It fixes a regression. It seems
-that people want this functionality [1][2][3].
+It stops working, when another console is defined on the command line
+or another way, for example, by SPCR or a device tree.
 
-Note that there are still some problems that might be solved later:
+More importantly, the above approach might break the system. /dev/console
+is used as stdin, stdout, and stderr for the init process [0]
 
-  + Invalid console=bla name might still prevent registering any console.
+Why yet another command line option?
 
-  + The kernel should not crash even when /dev/console does not point
-    to any real console. 
+console_loglevel is not reliable. It is manipulated also by user space
+when it configures log daemons.
 
-  + Should we add some fallback for stdin, stdout, and stderr when /dev/console
-    can't be opened? For example, /dev/null?
-    
-  + How user space handle missing none-console associated with /dev/console?
+People might also want to just disable the kernel messages but still
+use the console for login.
 
-[1] https://www.programmersought.com/article/19374022450/
-[2] https://developer.toradex.com/knowledge-base/how-to-disable-enable-debug-messages-in-linux
-[3] https://unix.stackexchange.com/questions/117926/try-to-disable-console-output-console-null-doesnt-work
+[0] https://lore.kernel.org/r/20201006025935.GA597@jagdpanzerIV.localdomain
 
+Suggested-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+---
+ .../admin-guide/kernel-parameters.txt         |  6 ++++++
+ kernel/printk/printk.c                        | 21 ++++++++++++++++++-
+ 2 files changed, 26 insertions(+), 1 deletion(-)
 
-Petr Mladek (2):
-  printk: Add kernel parameter: mute_console
-  printk: Restore and document obsolete ways to disable console output
-
- .../admin-guide/kernel-parameters.txt         | 11 +++++++
- kernel/printk/printk.c                        | 30 +++++++++++++++++--
- 2 files changed, 39 insertions(+), 2 deletions(-)
-
+diff --git a/Documentation/admin-guide/kernel-parameters.txt b/Documentation/admin-guide/kernel-parameters.txt
+index 02d4adbf98d2..52b9e7f5468d 100644
+--- a/Documentation/admin-guide/kernel-parameters.txt
++++ b/Documentation/admin-guide/kernel-parameters.txt
+@@ -2974,6 +2974,12 @@
+ 			Used for mtrr cleanup. It is spare mtrr entries number.
+ 			Set to 2 or more if your graphical card needs more.
+ 
++	mute_console	[KNL]
++			Completely disable printing of kernel messages to
++			the console. It can still be used as stdin, stdout,
++			and stderr for the init process. Also it can be used
++			for login.
++
+ 	n2=		[NET] SDL Inc. RISCom/N2 synchronous serial card
+ 
+ 	netdev=		[NET] Network devices parameters
+diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+index fe64a49344bf..63fb96630767 100644
+--- a/kernel/printk/printk.c
++++ b/kernel/printk/printk.c
+@@ -1207,6 +1207,19 @@ void __init setup_log_buf(int early)
+ 	memblock_free(__pa(new_log_buf), new_log_buf_len);
+ }
+ 
++static bool mute_console;
++
++static int __init mute_console_setup(char *str)
++{
++	mute_console = true;
++	pr_info("All consoles muted.\n");
++
++	return 0;
++}
++
++early_param("mute_console", mute_console_setup);
++module_param(mute_console, bool, 0644);
++
+ static bool __read_mostly ignore_loglevel;
+ 
+ static int __init ignore_loglevel_setup(char *str)
+@@ -1224,7 +1237,13 @@ MODULE_PARM_DESC(ignore_loglevel,
+ 
+ static bool suppress_message_printing(int level)
+ {
+-	return (level >= console_loglevel && !ignore_loglevel);
++	if (unlikely(mute_console))
++		return true;
++
++	if (unlikely(ignore_loglevel))
++		return false;
++
++	return (level >= console_loglevel);
+ }
+ 
+ #ifdef CONFIG_BOOT_PRINTK_DELAY
 -- 
 2.26.2
 
