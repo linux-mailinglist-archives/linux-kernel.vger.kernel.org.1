@@ -2,177 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8D3295DE5
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:00:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7310295DEA
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 14:01:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897749AbgJVMAW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 08:00:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38426 "EHLO
+        id S2503496AbgJVMBq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 08:01:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38668 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897741AbgJVMAV (ORCPT
+        with ESMTP id S2503007AbgJVMBp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 08:00:21 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B434BC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:00:20 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id i2so1631562ljg.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:00:20 -0700 (PDT)
+        Thu, 22 Oct 2020 08:01:45 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4EA99C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:01:45 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id l28so1903742lfp.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 05:01:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:from:date:message-id:subject:to;
-        bh=n58NkZJzVjLKTzwsAFYxWlkrSZkVUrs3TijMJQaRZaw=;
-        b=tVs6v7AliIf5OqxudM1o6/t24E2fdeL3c/N6yildMXqE7ac4i2kitgODKkNxeoLDoy
-         wf/QOYJi9/gt2ye8kemMXJGC9v5qz6wwWdeMa3GmsABxI42n+ps0HYltOhRlBOj7GTcj
-         pZUEJuy2AQAAiOIGaXPNY6HExKWrKEI8SPO+zgED8skofiUZEd6teVIeApWxNztIpWvR
-         BVY+T+BrEjTD35I3oF4k+7S25aub8HPha4qsLKgnMwEzXQLSfD6XiELHt9CsAVZRtUlK
-         ohYU8Ygo1D3J6bbSqFMCbfHzn6ASG+6w6//kVXCzFtmq7BbbxitM+yDJloLPkNgP1V1P
-         Kziw==
+        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=9tdVLshVcb2kwPka4/LRhjHcSm9h075NEyjA4ZLCJYs=;
+        b=kT5yuwwiXiJF2DtrWExMlv8mrMLi4ANew/WS18n4lRB+EeAfz0t5d91A/PEXNSN86X
+         dK9ybkCXThawY/2h24j8xRthMDWaoShIJhFjaNypNhpMnE4cCtBhLRX2fLZtmMo6sAvB
+         o4S9LmZtXuiCcNLYTafAglVOzUDsoDqc+YLN6pCbYYKlp4retHnv9iGhzOgjD7Iu7VKO
+         Tvf6cabWLTTDKUZPlfuy1rQx3rjQY1DaQ8uu7kOHwEah5WjJJ5/cmDK0vdntQlyc4c8B
+         rP3amoie/cJpfOZwF9dGeqmrVI6mbRFhSumVxCogR6XQm3o73dTDtaXW25SXq/V+mImd
+         CpDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
-        bh=n58NkZJzVjLKTzwsAFYxWlkrSZkVUrs3TijMJQaRZaw=;
-        b=qyNuNdW8lLLUehnCim79ma/Bbt1QDYnNQ0htSFXPVAobUKGxnLzW+vkNvHuAkMOy7y
-         Hlw0TDkpg6aGsH1ED8Gvrx+rE/M8H9Txh1jrv2a4eh+Q/5EaSoU4ViiAcdsf3u+yHBr9
-         hpGcqkBUT3VZQraukcZokGerfhg+sWDaPa/sMp9ROAs6rN1y0Kzohh+oaCJJSexnraEk
-         QfdqvnXioQrE39zxGq0SBvZARjh1vG/rZgX/o7jjQnxKwI+i85B94N9hxEp04+Ltf0vE
-         r+gQjZZkfgENnBgLh+QB8Ibie1L2ROzrywx5WYF/BmLy2deDLl6+ass/qq0EY42Q8+3S
-         tjOA==
-X-Gm-Message-State: AOAM530CV6WW2dkdbn8pdKRx94LmzJHwXa5PiimRK29UGqIjAwljltyw
-        RjypAmqqyN01mTmABpnUNIL+mH4ENCwjCDq+5p1I/PNVcR8VCA==
-X-Google-Smtp-Source: ABdhPJx/1Sdm5Xf6Slas9JKc+pC55zIgZlvcY3x67auMXV6X9l2ZdunX+0IIpBeZGXe19Ptaa5Fr8pFdq9OdXrLObdo=
-X-Received: by 2002:a2e:a41a:: with SMTP id p26mr801300ljn.126.1603368018683;
- Thu, 22 Oct 2020 05:00:18 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=9tdVLshVcb2kwPka4/LRhjHcSm9h075NEyjA4ZLCJYs=;
+        b=KP1lWs51b4dbV9ijT9UxKmzNMURQGGJSBV1SWjLSrxNf3VhtF4dHlnAi6fmwkQWWXH
+         aprbI9JjKMctXtQZXEK2vb1YcQ6jN3Y406e2SMblQGdy/nsddFFgs8r8w7rm75ksh2Bf
+         6GGvTVAwv6yS32+DtiZWcN8RTz7yuSxndqaCHTdlr7QJPMQSEEJMJsEKO+ElF+B5RPD9
+         190T2RLGuO48SCWWhNeTq75rrp8Lp4eId8MlclgFkaQ28/KMVQop73OnyE4cuepkStuR
+         dI5sZ67KF//N2CNkgYWZgqfpnzkyWoqiFYgHk1TTg1Xgp98VKR9oGmHxNK4bq09w1rOQ
+         UPfw==
+X-Gm-Message-State: AOAM533d76Ho7brf+Q70JBewsd+mw24sHEhrENAigLA8CzKmqW44CX2O
+        QnDaDduAFlQ7rY5wjV+FthKybQ==
+X-Google-Smtp-Source: ABdhPJylsP0EOfZL91sCKiPlZBvQTPHp1k3qJrpQ1C2jumtYhoAtSzGrCTDOaiPG8ukt2kTvSNZ+Ow==
+X-Received: by 2002:ac2:4545:: with SMTP id j5mr664027lfm.267.1603368103725;
+        Thu, 22 Oct 2020 05:01:43 -0700 (PDT)
+Received: from box.localdomain ([86.57.175.117])
+        by smtp.gmail.com with ESMTPSA id s14sm272993ljp.92.2020.10.22.05.01.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 05:01:43 -0700 (PDT)
+Received: by box.localdomain (Postfix, from userid 1000)
+        id AEBFC102F6D; Thu, 22 Oct 2020 15:01:42 +0300 (+03)
+Date:   Thu, 22 Oct 2020 15:01:42 +0300
+From:   "Kirill A. Shutemov" <kirill@shutemov.name>
+To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc:     "peterz@infradead.org" <peterz@infradead.org>,
+        "jmattson@google.com" <jmattson@google.com>,
+        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
+        "vkuznets@redhat.com" <vkuznets@redhat.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "joro@8bytes.org" <joro@8bytes.org>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "pbonzini@redhat.com" <pbonzini@redhat.com>,
+        "wanpengli@tencent.com" <wanpengli@tencent.com>,
+        "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
+        "keescook@chromium.org" <keescook@chromium.org>,
+        "rppt@kernel.org" <rppt@kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "aarcange@redhat.com" <aarcange@redhat.com>,
+        "liran.alon@oracle.com" <liran.alon@oracle.com>,
+        "wad@chromium.org" <wad@chromium.org>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>
+Subject: Re: [RFCv2 09/16] KVM: mm: Introduce VM_KVM_PROTECTED
+Message-ID: <20201022120142.uzephkci7pfy3kwq@box>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-10-kirill.shutemov@linux.intel.com>
+ <b13e29ea41e1961ea5cfea9e941320842c2d1695.camel@intel.com>
 MIME-Version: 1.0
-From:   Charles Hsu <hsu.yuegteng@gmail.com>
-Date:   Thu, 22 Oct 2020 20:00:07 +0800
-Message-ID: <CAJArhDZ2nTc-wHLKRon8_Oqo8WG28m7ni08saHrW=HqbJAHoew@mail.gmail.com>
-Subject: [PATCH] hwmon: (pmbus) Add driver for STMicroelectronics PM6764TR
- Voltage Regulator
-To:     linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <b13e29ea41e1961ea5cfea9e941320842c2d1695.camel@intel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the pmbus driver for the STMicroelectronics pm6764tr voltage regulator.
+On Wed, Oct 21, 2020 at 06:47:32PM +0000, Edgecombe, Rick P wrote:
+> On Tue, 2020-10-20 at 09:18 +0300, Kirill A. Shutemov wrote:
+> >  include/linux/mm.h  |  8 ++++++++
+> >  mm/gup.c            | 20 ++++++++++++++++----
+> >  mm/huge_memory.c    | 20 ++++++++++++++++----
+> >  mm/memory.c         |  3 +++
+> >  mm/mmap.c           |  3 +++
+> >  virt/kvm/async_pf.c |  2 +-
+> >  virt/kvm/kvm_main.c |  9 +++++----
+> >  7 files changed, 52 insertions(+), 13 deletions(-)
+> 
+> There is another get_user_pages() in
+> paging_tmpl.h:FNAME(cmpxchg_gpte). 
 
-Signed-off-by: Charles Hsu <hsu.yungteng@gmail.com>
----
- drivers/hwmon/pmbus/Kconfig    |  8 ++++
- drivers/hwmon/pmbus/Makefile   |  1 +
- drivers/hwmon/pmbus/pm6764tr.c | 76 ++++++++++++++++++++++++++++++++++
- 3 files changed, 85 insertions(+)
- create mode 100644 drivers/hwmon/pmbus/pm6764tr.c
+Right, I will look into it. I wounder why I don't step onto it.
 
-diff --git a/drivers/hwmon/pmbus/Kconfig b/drivers/hwmon/pmbus/Kconfig
-index a25faf69fce3..e976997ee163 100644
---- a/drivers/hwmon/pmbus/Kconfig
-+++ b/drivers/hwmon/pmbus/Kconfig
-@@ -287,4 +287,12 @@ config SENSORS_ZL6100
-   This driver can also be built as a module. If so, the module will
-   be called zl6100.
+> Also, did you leave off FOLL_KVM in gfn_to_page_many_atomic() on
+> purpose? It looks like its only used for pte prefetch which I guess is
+> not required.
 
-+config SENSORS_PM6764TR
-+ tristate "PM6764TR"
-+ help
-+  If you say yes here you get hardware monitoring support for PM6764TR.
-+
-+  This driver can also be built as a module. If so, the module will
-+  be called pm6764tr.
-+
- endif # PMBUS
-diff --git a/drivers/hwmon/pmbus/Makefile b/drivers/hwmon/pmbus/Makefile
-index 4c97ad0bd791..bb89fcf9544d 100644
---- a/drivers/hwmon/pmbus/Makefile
-+++ b/drivers/hwmon/pmbus/Makefile
-@@ -32,3 +32,4 @@ obj-$(CONFIG_SENSORS_UCD9000) += ucd9000.o
- obj-$(CONFIG_SENSORS_UCD9200) += ucd9200.o
- obj-$(CONFIG_SENSORS_XDPE122) += xdpe12284.o
- obj-$(CONFIG_SENSORS_ZL6100) += zl6100.o
-+obj-$(CONFIG_SENSORS_PM6764TR) += pm6764tr.o
-\ No newline at end of file
-diff --git a/drivers/hwmon/pmbus/pm6764tr.c b/drivers/hwmon/pmbus/pm6764tr.c
-new file mode 100644
-index 000000000000..e03b1441268e
---- /dev/null
-+++ b/drivers/hwmon/pmbus/pm6764tr.c
-@@ -0,0 +1,76 @@
-+// SPDX-License-Identifier: GPL-2.0-or-later
-+
-+#include <linux/kernel.h>
-+#include <linux/module.h>
-+#include <linux/init.h>
-+#include <linux/err.h>
-+#include <linux/slab.h>
-+#include <linux/mutex.h>
-+#include <linux/i2c.h>
-+#include <linux/pmbus.h>
-+#include "pmbus.h"
-+
-+#define PM6764TR_PMBUS_READ_VOUT 0xD4
-+
-+static int pm6764tr_read_word_data(struct i2c_client *client, int
-page, int reg)
-+{
-+ int ret;
-+
-+ switch (reg) {
-+ case PMBUS_VIRT_READ_VMON:
-+ ret = pmbus_read_word_data(client, page,
-+   PM6764TR_PMBUS_READ_VOUT);
-+ break;
-+ default:
-+ ret = -ENODATA;
-+ break;
-+ }
-+ return ret;
-+}
-+
-+static struct pmbus_driver_info pm6764tr_info = {
-+ .pages = 1,
-+ .format[PSC_VOLTAGE_IN] = linear,
-+ .format[PSC_VOLTAGE_OUT] = vid,
-+ .format[PSC_TEMPERATURE] = linear,
-+ .format[PSC_CURRENT_OUT] = linear,
-+ .format[PSC_POWER] = linear,
-+ .func[0] = PMBUS_HAVE_VIN | PMBUS_HAVE_IIN |  PMBUS_HAVE_PIN |
-+    PMBUS_HAVE_IOUT | PMBUS_HAVE_POUT | PMBUS_HAVE_VMON |
-+ PMBUS_HAVE_STATUS_IOUT | PMBUS_HAVE_STATUS_VOUT |
-+ PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP,
-+    .read_word_data = pm6764tr_read_word_data,
-+};
-+
-+static int pm6764tr_probe(struct i2c_client *client,
-+  const struct i2c_device_id *id)
-+{
-+ return pmbus_do_probe(client, id, &pm6764tr_info);
-+}
-+
-+static const struct i2c_device_id pm6764tr_id[] = {
-+ {"pm6764tr", 0},
-+ {}
-+};
-+MODULE_DEVICE_TABLE(i2c, pm6764tr_id);
-+
-+static const struct of_device_id pm6764tr_of_match[] = {
-+ {.compatible = "pm6764tr"},
-+ {}
-+};
-+
-+static struct i2c_driver pm6764tr_driver = {
-+ .driver = {
-+   .name = "pm6764tr",
-+   .of_match_table = of_match_ptr(pm6764tr_of_match),
-+   },
-+ .probe = pm6764tr_probe,
-+ .remove = pmbus_do_remove,
-+ .id_table = pm6764tr_id,
-+};
-+
-+module_i2c_driver(pm6764tr_driver);
-+
-+MODULE_AUTHOR("Charles Hsu");
-+MODULE_DESCRIPTION("PMBus driver for ST PM6764TR");
-+MODULE_LICENSE("GPL");
---
-2.25.1
+FOLL_FAST_ONLY is going to fail anyway. The caller has to handle it
+gracefully.
+
+-- 
+ Kirill A. Shutemov
