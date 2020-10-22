@@ -2,82 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83FBC295D18
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:00:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D8C95295D21
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:03:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896908AbgJVLAX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:00:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57390 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2437752AbgJVLAW (ORCPT
+        id S2896933AbgJVLDl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:03:41 -0400
+Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:18752 "EHLO
+        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2443221AbgJVLDl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:00:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9687AC0613CE;
-        Thu, 22 Oct 2020 04:00:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=tklRJM55A606e8BmYLgHJwN5p3mhmxAvMtLfd57Ar3Y=; b=vqgRtRCAN+1Az/C7xci1AaHn6K
-        g9Io4i53lsfH2Xu5DAFJzb8S7GtgAvhrARjoaeiP5dQhrzcNVmSUryVCGKegIOvEavvNSaVDvsth1
-        cURfh9wo7Os8hf7NXXGOuidqv232CJen4FxPdBYNhEfyj/m3KEUcQzufwMSs37pLm2kUW1DQ4KlgD
-        J04YDIjtVjtsrqYy9TT9OKFnafsItsVSUUyjydLGHlDcgWmUGATpEYSi86uPbsxdndkPZ6B3xHIlJ
-        a8KK7wsXgXolQ5BN8N9cVExif++0W3E7wIvNtylzlSrKGIv6PoCKqBjnQ7cSLJ7Vw/thyaN8G+b41
-        7KsXH1IQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVYKQ-000321-21; Thu, 22 Oct 2020 11:00:18 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 160873010D2;
-        Thu, 22 Oct 2020 13:00:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 0395F203CC4B2; Thu, 22 Oct 2020 13:00:15 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:00:15 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Anatoly Pugachev <matorola@gmail.com>
-Cc:     Linux Kernel list <linux-kernel@vger.kernel.org>,
-        Sparc kernel list <sparclinux@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>
-Subject: Re: [sparc64] lockdep: Fix lockdep recursion - call trace
-Message-ID: <20201022110015.GJ2594@hirez.programming.kicks-ass.net>
-References: <CADxRZqwQ_nvbGrzDzOjzt=R5x6yvsU4AujhpxXYs8cHFwoCjmA@mail.gmail.com>
+        Thu, 22 Oct 2020 07:03:41 -0400
+X-Greylist: delayed 2011 seconds by postgrey-1.27 at vger.kernel.org; Thu, 22 Oct 2020 07:03:40 EDT
+Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
+        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09MATQtd015340;
+        Thu, 22 Oct 2020 03:29:59 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=proofpoint;
+ bh=Hlxo1EQRm6bPj+EzLOfc5c8T9eaguqn7eH+B7jwwCww=;
+ b=UZWcoknhObXe85r0Pcu22/7nAbquZuBLW90psTmGp+Ks+yiMWXCqaXrhLN8K3a7ZteOu
+ IFnDXkCeondYT7Cqz05BsP22WeW16aM01M6A+NFnVZUj42RahDwSkx9hOUAyKY5VIfHG
+ dUic8rX7j7uhgxkXYCkxS4VoPb0K1FmFVq7rxAZfwKuUBcgOocMBn+mI6tgisKjmUBid
+ mgbYQk/B3C0aeeGGSm0dstKkm19KuGAsO963RO5+DRBhw9kUGNzxNfYPcX9rBWK27iLY
+ m/qEGG9hX+L+PgSR7oqejFpXGMT54ax23Ndrsd/Q+EPus4ed1J0j++BUpG0CLefWZe+i yA== 
+Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2170.outbound.protection.outlook.com [104.47.58.170])
+        by mx0b-0014ca01.pphosted.com with ESMTP id 347v6ykww7-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Thu, 22 Oct 2020 03:29:49 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=C4KcY1uzxeSQakZ6TTEDJwi3mQHAnbDJzyIwsp7NpgYQL0pRkyODjC4P27IwMDh1DZ+B/3am6BHNE6LAHBwqdlN40+QO9H/dEpoyVIsNNms7a5Yn49wlHgfEPidw2XdLvKwn4KtBp0iORYrK5+4dwl863oxOC5ayEBqN+uqD5soswmEtoLktHytoY/8NFwbRq53+McKWXrNsgj2EgV5cza0ULW2YbqkHwzwlggjmDgZ/6GRo4OrU3i/0iRb+WBfGuLHrsBF9pfIelC/GoMBQD8feRZg88rGOUgSBNLvyURQsAGuostJNrqZHpj4q3FZofBPIS9FNFRFky8v0B1rqlw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hlxo1EQRm6bPj+EzLOfc5c8T9eaguqn7eH+B7jwwCww=;
+ b=TNhrw1wsTpKay4pS459EDgdEoThF4JX7tMUTJsp8ow9Bl+MmwBxRrqGCrpnJPECw/4KQNAdeZdP9/aHuUx59DcLtggiDPBs1TGYDyhVdFkQyugttCJNtyxy0VNJv7EbYnxk+Skm2kC02klPvEq2E72L8SQ26gbafwQPNrwZm4y74Gfx+5b6bqPWwlftsd3Xst+yuHYoCs6vxf8UtgLCgJnuOHSIPpBh8aPa9ojXIzaOmPHwq1h+zEjIkjw7MrI1KANYMLUaL8/4A/lUw6WS2p6JhreWhrxuKWxsJLiZeIG9GOfCVthOzffB40Bp6KvP3xCxwhNrwu5wMaCgRwkUV4Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
+ dkim=pass header.d=cadence.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Hlxo1EQRm6bPj+EzLOfc5c8T9eaguqn7eH+B7jwwCww=;
+ b=L8x37ddoBNfZBPBlnH7sJjqcWx0GpcuDGEkL10VtLdOM2KqxjWsYm9voMf5taHVCdCQAELqdmMU1b8cQoJOj/D7XP9ejzBqHwR5IXOVJWzR0PIl/pNXZFtmR8p9ARvtCPrwAmHEqSeK0qXC3hqdSBVjCfviZwDhjqhuiaDMgo5g=
+Received: from DM5PR07MB3196.namprd07.prod.outlook.com (2603:10b6:3:e4::16) by
+ DM6PR07MB4523.namprd07.prod.outlook.com (2603:10b6:5:ca::11) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3477.27; Thu, 22 Oct 2020 10:29:43 +0000
+Received: from DM5PR07MB3196.namprd07.prod.outlook.com
+ ([fe80::e183:a7f3:3bcd:fa64]) by DM5PR07MB3196.namprd07.prod.outlook.com
+ ([fe80::e183:a7f3:3bcd:fa64%7]) with mapi id 15.20.3477.029; Thu, 22 Oct 2020
+ 10:29:43 +0000
+From:   Parshuram Raju Thombare <pthombar@cadence.com>
+To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
+CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>
+Subject: RE: [PATCH v3] net: macb: add support for high speed interface
+Thread-Topic: [PATCH v3] net: macb: add support for high speed interface
+Thread-Index: AQHWp9HS4UctazNdVUWuQbMULgmNwKmiZpMAgAEAG1A=
+Date:   Thu, 22 Oct 2020 10:29:43 +0000
+Message-ID: <DM5PR07MB31961F14DD8A38B7FFA8DA24C11D0@DM5PR07MB3196.namprd07.prod.outlook.com>
+References: <1603302245-30654-1-git-send-email-pthombar@cadence.com>
+ <20201021185056.GN1551@shell.armlinux.org.uk>
+In-Reply-To: <20201021185056.GN1551@shell.armlinux.org.uk>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy03ZDQ1ZmIwYi0xNDUxLTExZWItODYwZi0wMDUwNTZjMDAwMDhcYW1lLXRlc3RcN2Q0NWZiMGMtMTQ1MS0xMWViLTg2MGYtMDA1MDU2YzAwMDA4Ym9keS50eHQiIHN6PSIxOTExIiB0PSIxMzI0NzgzNjE4MDI0NTQwMDEiIGg9InlWZGZhT3ZONHRVVUF5alErNFhieGNCWkZ2dz0iIGlkPSIiIGJsPSIwIiBibz0iMSIvPjwvbWV0YT4=
+x-dg-rorf: true
+authentication-results: armlinux.org.uk; dkim=none (message not signed)
+ header.d=none;armlinux.org.uk; dmarc=none action=none
+ header.from=cadence.com;
+x-originating-ip: [34.98.221.38]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 146c61b1-e2da-4f07-856b-08d876756414
+x-ms-traffictypediagnostic: DM6PR07MB4523:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <DM6PR07MB4523E809A6F87C49BA6E87B1C11D0@DM6PR07MB4523.namprd07.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:8273;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: wQcQoD4WQGsaw4TMKwYZxXh2ePwwtH7VE1Yq2k2HKP/xC3MUlQnwEhb/pgpzvAEgwPvQJk8KHz1uRAwtSvlAvMZSHcAqDvW4ETi6zH6QwfWqZCdfJOXPFRXjDZSLsee3H+c3Uv18sRgjGI1ClHgT5wSu+bCvs3TOLpZPCWSMxw8YeZXilbneEYVYOT1icjWjPlJkKJ+4dqQesbtH2R4Ibt4V7zcS1PSirhJdskbSxmjgfb4OVHFuFRgnVlxhyPU6bbKTN5jvKvOhfBuF5ms0oHTrAH2sIM4SIqi1t18YAgldvLgblLTYejkC59tbILGNhR8K5ua4UhLbITtxJK4FXNvw4sa1HfTkpMZ96bkF52U5L2W405fXR5ggVbCylH+s
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR07MB3196.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(36092001)(54906003)(71200400001)(186003)(55016002)(26005)(83380400001)(107886003)(5660300002)(316002)(33656002)(7696005)(6506007)(478600001)(4326008)(52536014)(6916009)(76116006)(2906002)(8676002)(66946007)(66476007)(9686003)(86362001)(66556008)(64756008)(8936002)(66446008);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: aXF6MjS27vSJb21iT5Y6lMpd1D0I9vGZcZ9xOpfTB8hoacakoEqXIWV5MnolLHY89iYGHS7z3FOatqhQdUzTsv6TRMWlpW8GhvhWUz/OEl38Hsq4alNV+Lh6MJWpFIAiGDCV8aKaxXqMICqAD6nfzrKq1CtwiSQPKENFN7RMt85OgY6V+OHhzr1vdZPHE/03fdJJxMD7d1pfKyzlzXDHIb1fXSDx7qC6lO1sGS/Rx534WIGdWSunDB0NA3vcpq2N8ibDhX2PnSnTBWXWKO3u4BN3Je3u1Y1AaiIBQlETQPcQQriTV82SQDqPGg0M+GAx/N4QfgAK3IFuSdQrLadEnBjZ42+MRTF3cCAZD5CONeHri+9etA3NA5rqHRxAVylnHQ/hyuT91jgSl8VRCFf6RCBe8sUO+2hkFr+rX3wSGQTERC2TFuGWFxUdrHXLvFy4Qfn1oOE4Gio1/EhFTTjLbNiG+p9YeeieoaTATw2xLuwoBUvqNQbFzqDkHWdPXU/ib5z28JKT4lbxfy6JqfW9/PuMx6K81oLQgVES7yc8GrVHTbbax9tTOUTtc39GVXyT8KsDqFkjyPPhWe4FodLQ4WP6CMefRdty5oXJiTDoa+26Uq07CjGuDOmb3nDqM/pCjVThNugcxbpE27iZ0u0JLA==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CADxRZqwQ_nvbGrzDzOjzt=R5x6yvsU4AujhpxXYs8cHFwoCjmA@mail.gmail.com>
+X-OriginatorOrg: cadence.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM5PR07MB3196.namprd07.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 146c61b1-e2da-4f07-856b-08d876756414
+X-MS-Exchange-CrossTenant-originalarrivaltime: 22 Oct 2020 10:29:43.3213
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: /cP1WtUUxmwutL6m3042B7d2Bk99PHSiG78KVjgxbTXjp0R+ZP9JiWN/U363R27DHxuVbLWtXC3rvQyLzjQ38chJduIY0mo7eocYLGWHecc=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB4523
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-22_06:2020-10-20,2020-10-22 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 clxscore=1015
+ mlxlogscore=999 phishscore=0 suspectscore=0 malwarescore=0 impostorscore=0
+ adultscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010220070
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:21:55PM +0300, Anatoly Pugachev wrote:
-> Hello!
-> 
-> Bisected the following linux calltrace after v5.9 :
-> 
-> [    8.650198] systemd[1]: Started Journal Service.
-> [    9.028125] ------------[ cut here ]------------
-> [    9.028171] WARNING: CPU: 11 PID: 499 at
-> net/netfilter/nf_tables_api.c:622 nft_chain_parse_hook+0x7c/0x360
-> [nf_tables]
-> [    9.028185] Modules linked in: nf_tables nfnetlink sunrpc ip_tables
-> x_tables ipv6 crc_ccitt autofs4 ext4 crc16 mbcache jbd2 raid10 raid456
-> async_raid6_recov async_mem
-> cpy async_pq async_xor xor async_tx raid6_pq raid1 raid0 multipath
-> linear md_mod crc32c_sparc64
-> [    9.028243] CPU: 11 PID: 499 Comm: nft Tainted: G        W
-> 5.9.0-rc8-00209-gbaffd723e44d #111
-> [    9.028255] Call Trace:
-> [    9.028269] [<00000000004727e8>] __warn+0xa8/0x120
-> [    9.028278] [<0000000000472c20>] warn_slowpath_fmt+0x34/0x74
-> [    9.028291] [<00000000100c19fc>] nft_chain_parse_hook+0x7c/0x360 [nf_tables]
+>If you're going to support pcs_ops for the 10GBASE-R mode, can you
+>also convert macb to use pcs_ops for the lower speed modes as well?
 
-> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+Ok, I will add pcs_ops for low speed as well. In fact, having single
+pcs_ops and using check for interface type within each method of
+pcs_ops to decide appropriate action will also solve the below mentioned
+issue when phylink requests 10GBASE-R and subsequently selects a
+different interface mode.
 
-What's unexpected.. while I just queued a another fix for that commit:
+Since macb_mac_an_restart  is empty, macb_mac_pcs_get_state only
+sets "state->link =3D 0" and there is nothing to be done in pcs_config, the=
+re will
+be no changes in pcs_ops methods pcs_get_state, pcs_config and pcs_link_up,
+except guarding current code in these methods by
+interface =3D=3D PHY_INTERFACE_MODE_10GBASER check.
 
-  https://lkml.kernel.org/r/20201022103028.GC2611@hirez.programming.kicks-ass.net
+pcs_config and pcs_link_up passes "interface" as an argument, and in
+pcs_get_state call "state->interface" appeared to be populated just before
+calling it and hence should be valid.
 
-I don't think that explains this WARN. Let me go prod at it.
+ 528         state->interface =3D pl->link_config.interface;
+ ...
+ 535
+ 536         if (pl->pcs_ops)
+ 537                 pl->pcs_ops->pcs_get_state(pl->pcs, state);
+ 538         else if (pl->mac_ops->mac_pcs_get_state)
+ 539                 pl->mac_ops->mac_pcs_get_state(pl->config, state);
+ 540         else
+ 541                 state->link =3D 0;
+=20
+>> +	val =3D gem_readl(bp, NCFGR);
+>> +	val =3D GEM_BIT(PCSSEL) | (~GEM_BIT(SGMIIEN) & val);
+>> +	gem_writel(bp, NCFGR, val);
+>
+>This looks like it's configuring the MAC rather than the PCS - it
+>should probably be in mac_prepare() or mac_config().
+
+Ok
+
+>What happens if phylink requests 10GBASE-R and subsequently selects
+>a different interface mode? You end up with the PCS still registered
+>and phylink will use it even when not in 10GBASE-R mode - so its
+>functions will also be called.
+
