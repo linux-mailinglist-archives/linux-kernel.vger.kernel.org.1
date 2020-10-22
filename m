@@ -2,106 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8D39295D83
-	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:39:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2B2D4295D87
+	for <lists+linux-kernel@lfdr.de>; Thu, 22 Oct 2020 13:39:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897389AbgJVLj0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 07:39:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2438250AbgJVLjY (ORCPT
+        id S2897429AbgJVLjz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 07:39:55 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:46450 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2503003AbgJVLjz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 07:39:24 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6BF5C0613CE;
-        Thu, 22 Oct 2020 04:39:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=2E3kMNYpFQGPJuJs5up4gmdkpzSi7nO8NUmiDPeWiQQ=; b=CW73PwlR38lmWk+q+2+HFhgQuz
-        +yjEknYiNUpUp3NUKo0e64Urvvc2QZgBrozVyCHtXYFuJzT4hVRy5iJ0OFpwM7/03CP1JSH3/3iYP
-        wRGy00lrmbp8eG6Mw1e66eJxxR6ghHhHCOzksHvRMXiRf2LxS9wmLx/P+eOvQW/AyMmDQjQa+R+tW
-        LVpurff96NnOsac7Wi/ijogF4zymdv9CeU0d1ATNDA4CeB4j1C4QV1DJ8I9W1sjFxcGFQBrYkgBEQ
-        82W6koSkl6OZFyMSdxkjzHjcBMBIT/RMv5fXEcP29Dw1LW8u3j+Modv+PO1cls1vGR3BF+vE/vyAX
-        MMbEjYiQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVYw3-0006KQ-UF; Thu, 22 Oct 2020 11:39:12 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 404F730377D;
-        Thu, 22 Oct 2020 13:39:09 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 28F02203CC4B2; Thu, 22 Oct 2020 13:39:09 +0200 (CEST)
-Date:   Thu, 22 Oct 2020 13:39:09 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Javi Merino <javi.merino@kernel.org>,
-        Amit Kucheria <amit.kucheria@verdurent.com>,
-        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Rafael Wysocki <rjw@rjwysocki.net>, linux-pm@vger.kernel.org,
-        lukasz.luba@arm.com
-Subject: Re: [PATCH 2/2] thermal: cpufreq_cooling: Reuse effective_cpu_util()
-Message-ID: <20201022113909.GE2611@hirez.programming.kicks-ass.net>
-References: <cover.1594707424.git.viresh.kumar@linaro.org>
- <b051b42f0c4f36d7177978e090c6a85df17922c6.1594707424.git.viresh.kumar@linaro.org>
- <20200716115605.GR10769@hirez.programming.kicks-ass.net>
- <20201022083255.37xl3lffwk5qo6uk@vireshk-i7>
- <20201022090523.GV2628@hirez.programming.kicks-ass.net>
- <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+        Thu, 22 Oct 2020 07:39:55 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id 17B051C0B7D; Thu, 22 Oct 2020 13:39:53 +0200 (CEST)
+Date:   Thu, 22 Oct 2020 13:39:52 +0200
+From:   Pavel Machek <pavel@ucw.cz>
+To:     Pavel Pisa <pisa@cmp.felk.cvut.cz>
+Cc:     linux-can@vger.kernel.org, devicetree@vger.kernel.org,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Oliver Hartkopp <socketcan@hartkopp.net>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        David Miller <davem@davemloft.net>,
+        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
+        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Marin Jerabek <martin.jerabek01@gmail.com>,
+        Ondrej Ille <ondrej.ille@gmail.com>,
+        Jiri Novak <jnovak@fel.cvut.cz>,
+        Jaroslav Beran <jara.beran@gmail.com>,
+        Petr Porazil <porazil@pikron.com>,
+        Drew Fustini <pdp7pdp7@gmail.com>
+Subject: Re: [PATCH v6 4/6] can: ctucanfd: CTU CAN FD open-source IP core -
+ PCI bus support.
+Message-ID: <20201022113952.GC30566@duo.ucw.cz>
+References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz>
+ <9783a6d0a3e79ca4106cf1794aa06c8436700137.1603354744.git.pisa@cmp.felk.cvut.cz>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="32u276st3Jlj2kUU"
 Content-Disposition: inline
-In-Reply-To: <20201022110656.gaphjv2tzhj4f5y6@vireshk-i7>
+In-Reply-To: <9783a6d0a3e79ca4106cf1794aa06c8436700137.1603354744.git.pisa@cmp.felk.cvut.cz>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:36:56PM +0530, Viresh Kumar wrote:
-> On 22-10-20, 11:05, Peter Zijlstra wrote:
-> > On Thu, Oct 22, 2020 at 02:02:55PM +0530, Viresh Kumar wrote:
-> > > One of the issues I see with this is that schedutil may not be
-> > > available in all configurations and it is still absolutely fine to
-> > > using the suggested helper to get the energy numbers in such cases, so
-> > > we shouldn't really make it scheutil dependent.
-> > 
-> > The only constraint on schedutil is SMP I think; aside from that it
-> > should/could always be available.
-> > 
-> > Given the trainwreck here:
-> > 
-> >   20201022071145.GM2628@hirez.programming.kicks-ass.net
-> > 
-> > (you're on Cc), I'm starting to lean more and more towards making it
-> > unconditionally available (when SMP).
-> > 
-> > Anybody forcing it off either sets performance (in which case we don't
-> > care about energy usage anyway)
-> 
-> I agree.
-> 
-> > or they select one of the old (broken)
-> > ondemand/conservative things and I don't give a crap.
-> 
-> The other kernel layers, for example cpufreq-cooling in question here,
-> don't really need to bother with the governor in use and should be
-> able to get the energy numbers anyway. So for me, the energy number
-> that the cpufreq-cooling stuff gets should be same irrespective of the
-> governor in use, schedutil or ondemand.
-> 
-> Having said that, schedutil really doesn't need to install the
-> fallback (which you suggested earlier), rather the scheduler core can
-> do that directly with cpufreq core and schedutil can also use the same
-> fallback mechanism maybe ? And so we can avoid the exporting of stuff
-> that way.
 
-I suppose that could work, yes. It's a bit weird to have two
-interactions with cpufreq, once through a governor and once outside it,
-but I suppose I can live with that.
+--32u276st3Jlj2kUU
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+
+
+> @@ -12,4 +12,13 @@ config CAN_CTUCANFD
+> =20
+>  if CAN_CTUCANFD
+> =20
+> +config CAN_CTUCANFD_PCI
+> +	tristate "CTU CAN-FD IP core PCI/PCIe driver"
+> +	depends on PCI
+> +	help
+> +	  This driver adds PCI/PCIe support for CTU CAN-FD IP core.
+> +	  The project providing FPGA design for Intel EP4CGX15 based DB4CGX15
+> +	  PCIe board with PiKRON.com designed transceiver riser shield is avail=
+able
+> +	  at https://gitlab.fel.cvut.cz/canbus/pcie-ctu_can_fd .
+> +
+>  endif
+
+Ok, now the if in the first patch makes sense. It can stay.
+
+And it is separate module, so EXPORT_SYMBOLs make sense. Ok.
+
+> +#ifndef PCI_VENDOR_ID_TEDIA
+> +#define PCI_VENDOR_ID_TEDIA 0x1760
+> +#endif
+
+> +#define PCI_DEVICE_ID_ALTERA_CTUCAN_TEST  0xCAFD
+> +#define PCI_DEVICE_ID_TEDIA_CTUCAN_VER21 0xff00
+
+These should go elsewhere.
+
+> +static bool use_msi =3D 1;
+> +static bool pci_use_second =3D 1;
+
+true?
+
+Best regards,
+							Pavel
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--32u276st3Jlj2kUU
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5FviAAKCRAw5/Bqldv6
+8uDPAJ9N8U7LTRinG5wknzSv9xu+BsSDhwCfdYHxBEZ0QWL9qQdQ9DF/src6zvU=
+=1hJA
+-----END PGP SIGNATURE-----
+
+--32u276st3Jlj2kUU--
