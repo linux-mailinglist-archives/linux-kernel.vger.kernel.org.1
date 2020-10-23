@@ -2,262 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AFF69296FDE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:05:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F3BA296FE2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:08:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464236AbgJWNFO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:05:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44586 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S464230AbgJWNFM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:05:12 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 03547C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:05:11 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id e17so1716226wru.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:05:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=semihalf-com.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=0tDZG2QXwAtXIV9FNwWQRXbE5wHh/hZpuXcTzCtBfWc=;
-        b=wZztWpB3u9MiM5IylLZH778ki5xv1bs59Ch+0OdAsFeDheDC8MF3Bl3ydb7/fcFpGs
-         Sarv5ExaWbCoANMopMQWbl2kZqUmZyR5SdBXoz5dJXklUQMwNmb+cRCZMMxI2NRWKoI2
-         OMOq29kjQzK0qcFgTkxIzgoloXxglg0cBIWfAQwidjAwTSSU1QyMOc96Qye8gC9JsLGp
-         kxJQCt9xrXp9NsGIJi9tOCcWTIEcN2rQuHfdUAMgLb0y9m6FlRLF72x/IghJyzsOTKiI
-         NhznftvkjZWQJ4e/PFEx2j1uO+ESD/HcXHXnwulNPVENFzZo7/PYdpdAHmUI5RaLk8jX
-         b3XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=0tDZG2QXwAtXIV9FNwWQRXbE5wHh/hZpuXcTzCtBfWc=;
-        b=nBxvwFrLEHbAvSRzODIN8TkcN+roJdYaa3BnP39h3ZWM22PwTvNRXv026x1F/Q5IeN
-         y1X6HHoh3e5faddskRH1nIKbk1uBK2Ql64JigmhpDyDhdYbN6wZujbdmQmQBhmE3okUb
-         trx3EDPLg5VwfjXQwL/arYVoRWPs5h95PRtq58Q/0bYINGdEkuHREpP+jeO37iz6KMsh
-         0V/XNzZ9yRlkh2VyBAKQXlnkFaleqQ31/W82kH0jt3ob7Y7//FW2qiGs6E3IoiqMaNkH
-         kiu3KudGIkPqI4kw53R6HwvNTo0u3Ndo3wauo72YefslYAL8vMDl/j99Fey3yuUkCbS2
-         mXtA==
-X-Gm-Message-State: AOAM533unuSCnlhZ1NRTw/vgr3A2nXbGQq/QXGh/AenlerPbiL6e3yNa
-        qLHS17zbeu3UBNFeiM2xnr3OXw==
-X-Google-Smtp-Source: ABdhPJzpbS93jJyLCJK3eYwLBNOD3ASipxM7IF9xvAkrpxT7SfhZJ/2nCMxhNMtkpQo/Gmb6V3Xajw==
-X-Received: by 2002:a5d:488e:: with SMTP id g14mr2554460wrq.203.1603458310485;
-        Fri, 23 Oct 2020 06:05:10 -0700 (PDT)
-Received: from tnowicki.c.googlers.com (216.131.76.34.bc.googleusercontent.com. [34.76.131.216])
-        by smtp.gmail.com with ESMTPSA id l26sm2918296wmi.41.2020.10.23.06.05.09
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 06:05:09 -0700 (PDT)
-Subject: Re: [PATCH v4 0/4] Add system mmu support for Armada-806
-To:     Robin Murphy <robin.murphy@arm.com>,
-        Denis Odintsov <d.odintsov@traviangames.com>
-Cc:     "will@kernel.org" <will@kernel.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "gregory.clement@bootlin.com" <gregory.clement@bootlin.com>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "hannah@marvell.com" <hannah@marvell.com>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "nadavh@marvell.com" <nadavh@marvell.com>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "mw@semihalf.com" <mw@semihalf.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>
-References: <20200715070649.18733-1-tn@semihalf.com>
- <517BB937-1F18-4CCF-81BF-11777BB99779@traviangames.com>
- <9ff9682f-c165-2ad4-6edd-9e56d7ec7424@semihalf.com>
- <88409606-6672-8955-2681-ece34dda24b8@arm.com>
-From:   Tomasz Nowicki <tn@semihalf.com>
-Message-ID: <762f88f5-689e-a312-e135-6b7491c19110@semihalf.com>
-Date:   Fri, 23 Oct 2020 13:05:09 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S464256AbgJWNIh convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 09:08:37 -0400
+Received: from mail-eopbgr1320119.outbound.protection.outlook.com ([40.107.132.119]:10738
+        "EHLO APC01-PU1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S464224AbgJWNIg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:08:36 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=S1RzJxw4qAFW9CMuMzXdHR5+sROhSLcxOdo2w1LnVV0BwkZS8VAleVBOdLFag8osBsaxb72x5ej8SBBhkq3bEhSgO60FOP0yuYkZFoCrZzmP3TGA2VZj7oYknXG8MTSLQIDB918AXxFOvlcZIIQaGyKrjYY0dyvpz3LWhrfo3kw0MpBfdxuMDBXv15MwSCtdGY/FGuL8GfgxMgjnw4S+5sumL1IOfGvc0cWU+GKMwvUnRCUVB+RX6JW3fpnFm6sshsL6+DXbZjwCZ/Y1xsh7IckbvBCzzfWlg5ha+h+yhH0S4CXHzVDIQ5djkSFBw+vp8DHgBWyy5cHvyyqzr0zHLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=9tQVct3ha1NTNnrUrjRfTF0aXxq5Kkpy6owhkOj7Sbw=;
+ b=W3MRZDAtLrJYxuNOVE+6D4oIt3AJbmsgCVQRoksazslv2XlemA7qa9NV/VVS4eKplWusvyL/LL6Te66r/F6mgndDyW/LafxBoDff7mApWsQEDiJG/NKguQR909pkyQJzOnJxKt7lF4bBY9FvkMBVLWWGW3lKMDGlusnnMelKkdOHCOAPzVPq1jFmNIPJ9VAh+ywufPwze6JvNAnWYwER5Ak4v8BQyxBWxdibZ7j6VCAICU+j5edHmD3UAmcBjL9CfPPOhvREeVKmOiPu1WYBa8cD7W/mtLxmTpq1AMKp3Ae4WYTPhUsPa1qw+G0IvlOOz7reqDa8z5DgL4J4rza5iA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=aspeedtech.com; dmarc=pass action=none
+ header.from=aspeedtech.com; dkim=pass header.d=aspeedtech.com; arc=none
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com (2603:1096:803:6::17)
+ by PU1PR06MB2183.apcprd06.prod.outlook.com (2603:1096:803:2c::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 23 Oct
+ 2020 13:08:30 +0000
+Received: from PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc]) by PS1PR0601MB1849.apcprd06.prod.outlook.com
+ ([fe80::31d5:24c7:7ac6:a5cc%7]) with mapi id 15.20.3477.029; Fri, 23 Oct 2020
+ 13:08:30 +0000
+From:   Dylan Hung <dylan_hung@aspeedtech.com>
+To:     Andrew Jeffery <andrew@aj.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>
+CC:     BMC-SW <BMC-SW@aspeedtech.com>,
+        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
+        Po-Yu Chuang <ratbert@faraday-tech.com>,
+        netdev <netdev@vger.kernel.org>,
+        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Jakub Kicinski <kuba@kernel.org>,
+        David Miller <davem@davemloft.net>
+Subject: RE: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+Thread-Topic: [PATCH] net: ftgmac100: Fix missing TX-poll issue
+Thread-Index: AQHWper5b6m5IMpmJk2Uyk3yAiWzCqmen8qAgACopgCAALYZ4IAA6dGAgAAnUwCAAAR0AIAD3tsw
+Date:   Fri, 23 Oct 2020 13:08:30 +0000
+Message-ID: <PS1PR0601MB18498469F0263306A6E5183F9C1A0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
+ <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
+ <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
+ <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
+ <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
+ <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
+ <529612e1-c6c4-4d33-91df-2a30bf2e1675@www.fastmail.com>
+In-Reply-To: <529612e1-c6c4-4d33-91df-2a30bf2e1675@www.fastmail.com>
+Accept-Language: zh-TW, en-US
+Content-Language: zh-TW
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: aj.id.au; dkim=none (message not signed)
+ header.d=none;aj.id.au; dmarc=none action=none header.from=aspeedtech.com;
+x-originating-ip: [211.20.114.70]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: b32be31d-3683-4467-4cae-08d87754bd46
+x-ms-traffictypediagnostic: PU1PR06MB2183:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <PU1PR06MB2183C7B7914F11DD577B20629C1A0@PU1PR06MB2183.apcprd06.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 1udGjDiGm7sX6YKMBTNCt7JBbSYpEoxIEx2vwpBxVb0DXFbv9zS/TR7QEzX0qVywzL8wyjvY5sgvG0UEcS4a7aE7nRPyaieUpRkdsGF6/YEVBInQlll2i0ZDz99JHKJlcly91U3QK0y0Tu5GTtuUBYnXgqAsCYZ+AUdrn4N18rKfxf/qPfOmeHo47JKAiD0zySkWThM49S1Xuo7e60/A/xHTVnDgy03Gmyl2Uaar0ACFAtzDHOYmwec1fHvebraMMauzQqhTqGUbD4OcTQVZPRB9WMQwVTJewaf2rmocRpAlPJZSxlzrncKxXrBSA46KBUhJq1RRnBSK2W32jYdV/Q==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PS1PR0601MB1849.apcprd06.prod.outlook.com;PTR:;CAT:NONE;SFS:(136003)(376002)(346002)(396003)(366004)(39830400003)(54906003)(66446008)(76116006)(66476007)(478600001)(52536014)(71200400001)(5660300002)(66556008)(66946007)(83380400001)(64756008)(2906002)(8676002)(9686003)(86362001)(4001150100001)(26005)(316002)(55236004)(33656002)(110136005)(6506007)(4326008)(7696005)(186003)(53546011)(55016002)(8936002);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: MDrRVD9aKN9xDv43RfZttNht+k3LtzXjMIGlAomC5KlryPd6z7YwGPx51buF5oI6T6PmGVLa6a0Ti2+hOTuuuXTY3ssb0iMyWrZI834bP3g8mbpmAv7tsYgXZJYEYdkTAU1eSfSoUE90bY8Kwh912wtSI2fbJbgAe098KfuAukPylinU/LDdv9h9oPhnWGRTJiD99MGvQXwleJXQ116Lzg782OelakTeKVF/cETdbuTArx9SGhcCnCBYUrKQCiReZxlpZWEJ4De5tdrCumKQuUYFE54OuC61pytAM6dU7NSIQOeTeP7jqRQ5JezwgT9Iy4RktYyyhPPg03uiP0x5suuNGvYa4O9rNkzedsNgTLaR70fwC09nxtGYgMSi6guwUkfqc8DhPvyr6QKaMTxH2m2YbLXB5mmQ+YWjxjfRJew5nxFWby/DSwpZsvCor/0WAaNEpL6GvmPOAK09oXCqdmrdH39jIVKQa+aahPIhRIn05kgXoZcqrgLyqbubnuCju7VcaHJ/moT6hIzPTZy3sI23Vs2u7khotxqiIoOdv2c+86jXo1FD4jx552EAwpUBrdc455JdcErL/yP/yCDDivMQYkui89U2M8qV2TlcnPAMzlmkH4Qs85aeP1RmXlndQYeUOtC6G+LbB5Q5DzJTyw==
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-In-Reply-To: <88409606-6672-8955-2681-ece34dda24b8@arm.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: aspeedtech.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PS1PR0601MB1849.apcprd06.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b32be31d-3683-4467-4cae-08d87754bd46
+X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2020 13:08:30.8094
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 43d4aa98-e35b-4575-8939-080e90d5a249
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: Kuj5SeOHChTJMBnQjONABSUxatwgJhq514g4K69arsPEDUN06/ATaMT3o1Vi8xBDalOOFBwowKAS3DFO9H/05GLEa+pGH2CPQAywrQrU/d4=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU1PR06MB2183
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 12:33 PM, Robin Murphy wrote:
-> On 2020-10-23 13:19, Tomasz Nowicki wrote:
->> Hi Denis,
->>
->> Sorry for late response, we had to check few things. Please see 
->> comments inline.
->>
->> On 10/6/20 3:16 PM, Denis Odintsov wrote:
->>> Hi,
->>>
->>>> Am 15.07.2020 um 09:06 schrieb Tomasz Nowicki <tn@semihalf.com>:
->>>>
->>>> The series is meant to support SMMU for AP806 and a workaround
->>>> for accessing ARM SMMU 64bit registers is the gist of it.
->>>>
->>>> For the record, AP-806 can't access SMMU registers with 64bit width.
->>>> This patches split the readq/writeq into two 32bit accesses instead
->>>> and update DT bindings.
->>>>
->>>> The series was successfully tested on a vanilla v5.8-rc3 kernel and
->>>> Intel e1000e PCIe NIC. The same for platform devices like SATA and USB.
->>>>
->>>> For reference, previous versions are listed below:
->>>> V1: https://lkml.org/lkml/2018/10/15/373
->>>> V2: https://lkml.org/lkml/2019/7/11/426
->>>> V3: https://lkml.org/lkml/2020/7/2/1114
->>>>
->>>
->>> 1) After enabling SMMU on Armada 8040, and 
->>> ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=y by default in kernel since 
->>> 954a03be033c7cef80ddc232e7cbdb17df735663,
->>> internal eMMC is prevented from being initialised (as there is no 
->>> iommus property for ap_sdhci0)
->>> Disabling "Disable bypass by default" make it work, but the patch 
->>> highly suggest doing it properly.
->>> I wasn't able to find correct path for ap_sdhci for iommus in any 
->>> publicly available documentation,
->>> would be highly appreciated addressed properly, thank you!
->>>
->>> 2) Second issue I got (btw I have ClearFog GT 8k armada-8040 based 
->>> board) is mpci ath10k card.
->>> It is found, it is enumerated, it is visible in lspci, but it fails 
->>> to be initialised. Here is the log:
->>
->> Firmware has to configure and assign device StreamIDs. Most of the 
->> devices are configured properly and supported in public FW. However, 
->> for both these cases (ap_sdhci0 and PCIe) some extra (u-boot/UEFI/ATF) 
->> patches are required which are not available yet. Sorry we let that 
->> happen.
->>
->> Since we have dependency on custom FW and we cannot enforce people to 
->> patch their FW we will send the follow up fix patch (v5.9+) and revert 
->> respective DTS changes.
+> -----Original Message-----
+> From: Andrew Jeffery [mailto:andrew@aj.id.au]
+> Sent: Wednesday, October 21, 2020 6:26 AM
+> To: Benjamin Herrenschmidt <benh@kernel.crashing.org>; Arnd Bergmann
+> <arnd@arndb.de>; Dylan Hung <dylan_hung@aspeedtech.com>
+> Cc: BMC-SW <BMC-SW@aspeedtech.com>; linux-aspeed
+> <linux-aspeed@lists.ozlabs.org>; Po-Yu Chuang <ratbert@faraday-tech.com>;
+> netdev <netdev@vger.kernel.org>; OpenBMC Maillist
+> <openbmc@lists.ozlabs.org>; Linux Kernel Mailing List
+> <linux-kernel@vger.kernel.org>; Jakub Kicinski <kuba@kernel.org>; David
+> Miller <davem@davemloft.net>
+> Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
 > 
-> Note that it should be sufficient to simply keep the SMMU node disabled, 
-> rather than fully revert everything. For example, the PCIe SMMU for Arm 
-> Juno boards has been in that state for a long time - there are reasons 
-> why it isn't (yet) 100% usable for everyone, but it can easily be 
-> enabled locally for development (as I do).
 > 
-
-Actually that was our plan :) but then we decided to keep DTS clean if 
-something is not used. Your reasoning, however, does make sense and we 
-will go for it.
-
-Thanks,
-Tomasz
-
 > 
->> The most important Armada-806 SMMU driver enhancements were merged so 
->> people who still willing to use SMMU need to provide proper DTB and 
->> use ARM_SMMU_DISABLE_BYPASS_BY_DEFAUL=n (or via kernel command line) 
->> with extra cautious.
->>
->> Thanks,
->> Tomasz
->>
->>>
->>> [    1.743754] armada8k-pcie f2600000.pcie: host bridge 
->>> /cp0/pcie@f2600000 ranges:
->>> [    1.751116] armada8k-pcie f2600000.pcie:      MEM 
->>> 0x00f6000000..0x00f6efffff -> 0x00f6000000
->>> [    1.964690] armada8k-pcie f2600000.pcie: Link up
->>> [    1.969379] armada8k-pcie f2600000.pcie: PCI host bridge to bus 
->>> 0000:00
->>> [    1.976026] pci_bus 0000:00: root bus resource [bus 00-ff]
->>> [    1.981537] pci_bus 0000:00: root bus resource [mem 
->>> 0xf6000000-0xf6efffff]
->>> [    1.988462] pci 0000:00:00.0: [11ab:0110] type 01 class 0x060400
->>> [    1.994504] pci 0000:00:00.0: reg 0x10: [mem 0x00000000-0x000fffff]
->>> [    2.000843] pci 0000:00:00.0: supports D1 D2
->>> [    2.005132] pci 0000:00:00.0: PME# supported from D0 D1 D3hot
->>> [    2.011853] pci 0000:01:00.0: [168c:003c] type 00 class 0x028000
->>> [    2.018001] pci 0000:01:00.0: reg 0x10: [mem 0x00000000-0x001fffff 
->>> 64bit]
->>> [    2.025002] pci 0000:01:00.0: reg 0x30: [mem 0x00000000-0x0000ffff 
->>> pref]
->>> [    2.032111] pci 0000:01:00.0: supports D1 D2
->>> [    2.049409] pci 0000:00:00.0: BAR 14: assigned [mem 
->>> 0xf6000000-0xf61fffff]
->>> [    2.056322] pci 0000:00:00.0: BAR 0: assigned [mem 
->>> 0xf6200000-0xf62fffff]
->>> [    2.063142] pci 0000:00:00.0: BAR 15: assigned [mem 
->>> 0xf6300000-0xf63fffff pref]
->>> [    2.070484] pci 0000:01:00.0: BAR 0: assigned [mem 
->>> 0xf6000000-0xf61fffff 64bit]
->>> [    2.077880] pci 0000:01:00.0: BAR 6: assigned [mem 
->>> 0xf6300000-0xf630ffff pref]
->>> [    2.085135] pci 0000:00:00.0: PCI bridge to [bus 01-ff]
->>> [    2.090384] pci 0000:00:00.0:   bridge window [mem 
->>> 0xf6000000-0xf61fffff]
->>> [    2.097202] pci 0000:00:00.0:   bridge window [mem 
->>> 0xf6300000-0xf63fffff pref]
->>> [    2.104539] pcieport 0000:00:00.0: Adding to iommu group 4
->>> [    2.110232] pcieport 0000:00:00.0: PME: Signaling with IRQ 38
->>> [    2.116141] pcieport 0000:00:00.0: AER: enabled with IRQ 38
->>> [    8.131135] ath10k_pci 0000:01:00.0: Adding to iommu group 4
->>> [    8.131874] ath10k_pci 0000:01:00.0: enabling device (0000 -> 0002)
->>> [    8.132203] ath10k_pci 0000:01:00.0: pci irq msi oper_irq_mode 2 
->>> irq_mode 0 reset_mode 0
->>>
->>> up to that point the log is the same as without SMMU enabled, except 
->>> "Adding to iommu group N" lines, and IRQ being 37
->>>
->>> [    8.221328] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.313362] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.409373] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.553433] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.641370] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.737979] ath10k_pci 0000:01:00.0: failed to poke copy engine: -16
->>> [    8.807356] ath10k_pci 0000:01:00.0: Failed to get pcie state 
->>> addr: -16
->>> [    8.814032] ath10k_pci 0000:01:00.0: failed to setup init config: -16
->>> [    8.820605] ath10k_pci 0000:01:00.0: could not power on hif bus (-16)
->>> [    8.827111] ath10k_pci 0000:01:00.0: could not probe fw (-16)
->>>
->>> Thank you!
->>>
->>>> v3 -> v4
->>>> - call cfg_probe() impl hook a bit earlier which simplifies errata 
->>>> handling
->>>> - use hi_lo_readq_relaxed() and hi_lo_writeq_relaxed() for register 
->>>> accessors
->>>> - keep SMMU status disabled by default and enable where possible 
->>>> (DTS changes)
->>>> - commit logs improvements and other minor fixes
->>>>
->>>> Hanna Hawa (1):
->>>>   iommu/arm-smmu: Workaround for Marvell Armada-AP806 SoC erratum
->>>>     #582743
->>>>
->>>> Marcin Wojtas (1):
->>>>   arm64: dts: marvell: add SMMU support
->>>>
->>>> Tomasz Nowicki (2):
->>>>   iommu/arm-smmu: Call configuration impl hook before consuming 
->>>> features
->>>>   dt-bindings: arm-smmu: add compatible string for Marvell Armada-AP806
->>>>     SMMU-500
->>>>
->>>> Documentation/arm64/silicon-errata.rst        |  3 ++
->>>> .../devicetree/bindings/iommu/arm,smmu.yaml   |  4 ++
->>>> arch/arm64/boot/dts/marvell/armada-7040.dtsi  | 28 ++++++++++++
->>>> arch/arm64/boot/dts/marvell/armada-8040.dtsi  | 40 +++++++++++++++++
->>>> arch/arm64/boot/dts/marvell/armada-ap80x.dtsi | 18 ++++++++
->>>> drivers/iommu/arm-smmu-impl.c                 | 45 +++++++++++++++++++
->>>> drivers/iommu/arm-smmu.c                      | 11 +++--
->>>> 7 files changed, 145 insertions(+), 4 deletions(-)
->>>>
->>>> -- 
->>>> 2.17.1
->>>>
->>>> _______________________________________________
->>>> iommu mailing list
->>>> iommu@lists.linux-foundation.org
->>>> https://lists.linuxfoundation.org/mailman/listinfo/iommu
->>>>
->>>
+> On Wed, 21 Oct 2020, at 08:40, Benjamin Herrenschmidt wrote:
+> > On Tue, 2020-10-20 at 21:49 +0200, Arnd Bergmann wrote:
+> > > On Tue, Oct 20, 2020 at 11:37 AM Dylan Hung
+> <dylan_hung@aspeedtech.com> wrote:
+> > > > > +1 @first is system memory from dma_alloc_coherent(), right?
+> > > > >
+> > > > > You shouldn't have to do this. Is coherent DMA memory broken on
+> > > > > your platform?
+> > > >
+> > > > It is about the arbitration on the DRAM controller.  There are two
+> queues in the dram controller, one is for the CPU access and the other is for
+> the HW engines.
+> > > > When CPU issues a store command, the dram controller just
+> acknowledges cpu's request and pushes the request into the queue.  Then
+> CPU triggers the HW MAC engine, the HW engine starts to fetch the DMA
+> memory.
+> > > > But since the cpu's request may still stay in the queue, the HW engine
+> may fetch the wrong data.
+> >
+> > Actually, I take back what I said earlier, the above seems to imply
+> > this is more generic.
+> >
+> > Dylan, please confirm, does this affect *all* DMA capable devices ? If
+> > yes, then it's a really really bad design bug in your chips
+> > unfortunately and the proper fix is indeed to make dma_wmb() do a
+> > dummy read of some sort (what address though ? would any dummy
+> > non-cachable page do ?) to force the data out as *all* drivers will
+> > potentially be affected.
+> >
+
+The issue was found on our test chip (ast2600 version A0) which is just for testing and won't be mass-produced.  This HW bug has been fixed on ast2600 A1 and later versions.
+
+To verify the HW fix, I run overnight iperf and kvm tests on ast2600A1 without this patch, and get stable result without hanging.
+So I think we can discard this patch.
+
+> > I was under the impression that it was a specific timing issue in the
+> > vhub and ethernet parts, but if it's more generic then it needs to be
+> > fixed globally.
+> >
+> 
+> We see a similar issue in the XDMA engine where it can transfer stale data to
+> the host. I think the driver ended up using memcpy_toio() to work around that
+> despite using a DMA reserved memory region.
