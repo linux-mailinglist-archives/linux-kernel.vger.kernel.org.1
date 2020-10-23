@@ -2,164 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB9BE297021
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:15:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD806297027
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:16:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464412AbgJWNPg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:15:36 -0400
-Received: from mail-dm6nam11on2041.outbound.protection.outlook.com ([40.107.223.41]:12513
-        "EHLO NAM11-DM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S464403AbgJWNPf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:15:35 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=R7EAqFFW7tuXAXt/x0wH6v//7PFy6Rzr9HBCtDMimZlAjnLtAi6FHU/9txhAwXyQ0UOVVCns6XFSC/kZfF0qwTWMC0Nouw6imMcAb+jp6GBDvEXpWNR+SOQLMaGeBtYJzQ6Bvr2QnGoab8R0QvB8ZXm/QG7gMRMDMIIPYHwhYbGI+dQ7g2gsvYfTGc7pVvz8Kj7JyJHfX6kP+7hG4GpMtsr0oMIUxdGJyeT6A/AXhg3depKr8WY75LLrm2h++oJU5cFxuRnt5+bUGOxFLGIdAvBmLBZT68VrKK1wpUnoERS4IqNQ77nAJD7TEEVj/4nA6AVAGkT5X5aO+bbOCgxbcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RhNF3WIJOI+R7ojiHqcQnYQl9yTi13G+x0CW00x+reQ=;
- b=eA8QNxTYZzmrI9dGJaCHrCSQnQM0CSr+3kQbsFp+Sjsr7BD5KQmFni7sj4KSgE4MnOggKwg28ALtlmuajMSfbeILBAb23dq+X6GPcafACC/NIZ4N+hUMAt0yBPAyDCqXOUvKyMzq5sL6k98Cd2QTlw7JfKr348PDbzH2xe5XbPwoFcfhJsD9vRyHh8c202G7+1Dq6cmyndDGTAU8+wIxWjyOM/0rMyo5Ne4YKKsWLAm1JkJV5I6VE5OG5+wlS5namxLwPKpQowlS0jLa8QQHh2zCzqkWnvRnIAFrcnGfGlmt68QQlMz9OXsFaw7iz65PUoXWHgDalEkGuRTslUWGzQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=RhNF3WIJOI+R7ojiHqcQnYQl9yTi13G+x0CW00x+reQ=;
- b=W/LT8lhbXlh0fz1oNjX9s8eIAsAh3dKfMUfD92DoxmHd6tGDZrlsdCnWjlLTsAI1a8sjimWvmYCHky+0cTujNs1K8709BPHTCnLDTPMNLCdYMW80bV+0FA3JICo87xhs90/ZrqKH7UAhqo1ceL2NjSSUcPcuDwK1YJYfbAoDiOs=
-Authentication-Results: intel.com; dkim=none (message not signed)
- header.d=none;intel.com; dmarc=none action=none header.from=amd.com;
-Received: from BY5PR12MB4098.namprd12.prod.outlook.com (2603:10b6:a03:205::8)
- by BYAPR12MB4726.namprd12.prod.outlook.com (2603:10b6:a03:98::25) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Fri, 23 Oct
- 2020 13:15:30 +0000
-Received: from BY5PR12MB4098.namprd12.prod.outlook.com
- ([fe80::e1a3:69b7:a02d:a74d]) by BY5PR12MB4098.namprd12.prod.outlook.com
- ([fe80::e1a3:69b7:a02d:a74d%5]) with mapi id 15.20.3477.029; Fri, 23 Oct 2020
- 13:15:29 +0000
-From:   Sandeep Singh <Sandeep.Singh@amd.com>
-To:     mathias.nyman@intel.com, gregkh@linuxfoundation.org,
-        linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        sanket.goswami@amd.com, Nehal-bakulchandra.Shah@amd.com
-Cc:     Shyam-sundar.S-k@amd.com, Sandeep Singh <sandeep.singh@amd.com>,
-        Sanket Goswami <Sanket.Goswami@amd.com>
-Subject: [PATCH v2] usb: xhci: Workaround for S3 issue on AMD SNPS 3.0 xHC
-Date:   Fri, 23 Oct 2020 18:45:03 +0530
-Message-Id: <20201023131503.759671-1-Sandeep.Singh@amd.com>
-X-Mailer: git-send-email 2.25.1
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Originating-IP: [165.204.156.251]
-X-ClientProxiedBy: MAXPR0101CA0062.INDPRD01.PROD.OUTLOOK.COM
- (2603:1096:a00:e::24) To BY5PR12MB4098.namprd12.prod.outlook.com
- (2603:10b6:a03:205::8)
+        id S464423AbgJWNQn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:16:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46350 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464413AbgJWNQm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:16:42 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B56DC0613CE;
+        Fri, 23 Oct 2020 06:16:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f2ugiX9dLGJTsb+7jg1YhjwKk+hw5A7t8TuQNw8y1QM=; b=tj/Dxpvg8n2uDQE1cje//2o+Iu
+        MNEVnQcmTtOQ5MaoLhl7va1Ej3ULpOfdbyH9aWpYE+9zvIoLMLWc4OFykJOBsg/jlMTuES6ddHIK4
+        5pc+Yvwlkx85bAe3Dto7W06h+40KZ3T79LU+YN0s86aPM8Z1JemtW6oWcqRl87AP9SGWP7gSXJqRN
+        8j4EX7rFI4R4Kubd3OWZyChO2T/t+UdzWHYR3gSJwzhtXld5X3Ecgj4BHzfMjVUqFhVLouJlji5fu
+        jx+JB9loeiEp9dMxOVuCQUcntaMZq7LdUHu+FRMEjskNGkjpKOP/f53dYNH+bPpodjpcIAZ2MQbCd
+        UHDNJjPg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVwvn-0005SV-5u; Fri, 23 Oct 2020 13:16:31 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 57F46302753;
+        Fri, 23 Oct 2020 15:16:28 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 44FD32B6778C0; Fri, 23 Oct 2020 15:16:28 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 15:16:28 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201023131628.GY2628@hirez.programming.kicks-ass.net>
+References: <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
+ <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+ <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
+ <20201022212033.GA646497@xps15>
+ <20201023073905.GM2611@hirez.programming.kicks-ass.net>
+ <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+ <20201023094115.GR2611@hirez.programming.kicks-ass.net>
+ <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+ <20201023105431.GM2594@hirez.programming.kicks-ass.net>
+ <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from jatayu.amd.com (165.204.156.251) by MAXPR0101CA0062.INDPRD01.PROD.OUTLOOK.COM (2603:1096:a00:e::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22 via Frontend Transport; Fri, 23 Oct 2020 13:15:27 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: b4828ed8-f13c-4184-89e9-08d87755b6cd
-X-MS-TrafficTypeDiagnostic: BYAPR12MB4726:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BYAPR12MB472686EEE2D52F836651910CE01A0@BYAPR12MB4726.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:2887;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: I5WR4LNaAfxNU0aofTFphZEjgN62aWIe8/Cxb8qcIOY2/K81v5UPh2RwKAVwjbjoaCaia/6VCie1EzgJ0QI3hh9+62bXGjdVGr+Jcq8U2Favc+c7T1jKHkJRd2ZhDOmM1erg8rUgS0qy0TST3QCIq/Iaz5t4lUUHQh2ACYX1XmRfBlAWNjqrCMC3+jcx9pozFG9klRR8AGZohDHRjtaTTlizD+mfcjVNTeQpbMcThZDlhDA+1wI5k4LhsSEiUKB059gQmtN90GuLHp9BME0eLtuRps3uYshtjd57r7sX7urYsrb6hCXhqIb7qkba6hbi6rLE2uxBFbLMcQqcL1FJMafrU5XhVG9o6mpu4wPwJoTczRS0e8ffUmtqcZvhJ0A7LvHbAEeDmeH9MKVX9s0cVQ==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4098.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(396003)(346002)(136003)(39860400002)(376002)(478600001)(54906003)(8936002)(1076003)(6486002)(2616005)(956004)(83380400001)(2906002)(8676002)(6666004)(66946007)(4326008)(36756003)(186003)(16526019)(316002)(66556008)(66476007)(26005)(86362001)(52116002)(7696005)(6636002)(5660300002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: iY6v9NDUzoiOXIbfbzdQxCagznOqAQ8V9fn10z5mm4uTkMc1oSUMyY1x3L/zmRaUlnk+chvInreyQbNYvYXKnVEXpx+KM50CbNxOaQKwASz49idcWSYIRf8dTxfQzRauCdu9g207IXqwOkLP1EaU0Dr9KtmYD8PHMhYnmXZGxl/9AYqvvrpFilE/AWUP8yGbjtASK0Gc1jO/nfWZQ0vPE7iXBbqM4q/dM1yjaYlwDasd/2PhDTK3L/wyux4Tu7B6CVj2XmuGyI9/RILN1cgbspmSUFzKl7qgJRP2rASQRDJLm/Y8laD6vvYFOZ2lRzFAx27SmCisoY7jW11yDCNSeCqLs7CgUk9W6AkqU31Fgm2BHrZ+H0UroJtIUHCFEtFOB17wexu9WIhJolU+DhgdL4UJdVLMA4Ws/iRIzVjzeNq2fkhV0GJIhpjV/6ixPp81kJvB4s1RWDGyNEEMGkPuDw+AUxtpaL39KRNn5GclOyFcLrrpJoqQOoRE36Q294eSTWlN3zfcJW6ulgM17Y3XXQYbj+pGxvOPTEBPm0iYvnN7LAvMDWEPtoxnAfgtxOnXAtI9ArbKZz4IK/wNNpA+rPWs3QxfTnEIY4pQ0aeMCVxVKaaoG7erMpLIlraSLc8Kh5djVjjnai/bk3ydox7A6Q==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b4828ed8-f13c-4184-89e9-08d87755b6cd
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4098.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 13:15:29.7212
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2nJNcY/mFhFEAa5Rl29XBRuDEPwYQcSBnfHMQKI87DXw9y7zAUGaEKTrNxzOi17O
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR12MB4726
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sandeep Singh <sandeep.singh@amd.com>
+On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
+> On 10/23/20 11:54 AM, Peter Zijlstra wrote:
 
-On some platform of AMD, S3 fails with HCE and SRE errors. To fix this,
-need to disable a bit which is enable in sparse controller.
+> > I think I'm more confused now :-/
+> > 
+> > Where do we use ->owner after event creation? The moment you create your
+> > eventN you create the link to sink0. That link either succeeds (same
+> > 'cookie') or fails.
+> 
+> The event->sink link is established at creation. At event::add(), we
+> check the sink is free (i.e, it is inactive) or is used by an event
+> of the same session (this is where the owner field *was* required. But
+> this is not needed anymore, as we cache the "owner" read pid in the
+> handle->rb->aux_priv for each event and this is compared against the
+> pid from the handle currently driving the hardware)
 
-Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
-Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
----
-Changes since v1:(https://lkml.org/lkml/2020/10/23/368)
-	-> Add xhci.h changes
+*groan*.. that's going to be a mess with sinks that are shared between
+CPUs :/
 
- drivers/usb/host/xhci-pci.c | 17 +++++++++++++++++
- drivers/usb/host/xhci.h     |  1 +
- 2 files changed, 18 insertions(+)
+> > I'm also not seeing why exactly we need ->owner in the first place.
+> > 
+> > Suppose we make the sink0 device return -EBUSY on open() when it is
+> > active. Then a perf session can open the sink0 device, create perf
+> > events and attach them to the sink0 device using
+> > perf_event_attr::config2. The events will attach to sink0 and increment
+> > its usage count, such that any further open() will fail.
+> 
+> Thats where we are diverging. The sink device doesn't have any fops. It
+> is all managed by the coresight driver transparent to the perf tool. All
+> the perf tool does is, specifying which sink to use (btw, we now have
+> automatic sink selection support which gets rid of this, and uses
+> the best possible sink e.g, in case of per-CPU sinks).
 
-diff --git a/drivers/usb/host/xhci-pci.c b/drivers/usb/host/xhci-pci.c
-index c26c06e5c88c..bf89172c43ca 100644
---- a/drivers/usb/host/xhci-pci.c
-+++ b/drivers/usb/host/xhci-pci.c
-@@ -23,6 +23,8 @@
- #define SSIC_PORT_CFG2_OFFSET	0x30
- #define PROG_DONE		(1 << 30)
- #define SSIC_PORT_UNUSED	(1 << 31)
-+#define SPARSE_DISABLE_BIT	17
-+#define SPARSE_CNTL_ENABLE	0xC12C
- 
- /* Device for a quirk */
- #define PCI_VENDOR_ID_FRESCO_LOGIC	0x1b73
-@@ -161,6 +163,9 @@ static void xhci_pci_quirks(struct device *dev, struct xhci_hcd *xhci)
- 	    (pdev->device == 0x15e0 || pdev->device == 0x15e1))
- 		xhci->quirks |= XHCI_SNPS_BROKEN_SUSPEND;
- 
-+	if (pdev->vendor == PCI_VENDOR_ID_AMD && pdev->device == 0x15e5)
-+		xhci->quirks |= XHCI_DISABLE_SPARSE;
-+
- 	if (pdev->vendor == PCI_VENDOR_ID_AMD)
- 		xhci->quirks |= XHCI_TRUST_TX_LENGTH;
- 
-@@ -498,6 +503,15 @@ static void xhci_pme_quirk(struct usb_hcd *hcd)
- 	readl(reg);
- }
- 
-+static void xhci_sparse_control_quirk(struct usb_hcd *hcd)
-+{
-+	u32 reg;
-+
-+	reg = readl(hcd->regs + SPARSE_CNTL_ENABLE);
-+	reg &= ~BIT(SPARSE_DISABLE_BIT);
-+	writel(reg, hcd->regs + SPARSE_CNTL_ENABLE);
-+}
-+
- static int xhci_pci_suspend(struct usb_hcd *hcd, bool do_wakeup)
- {
- 	struct xhci_hcd	*xhci = hcd_to_xhci(hcd);
-@@ -517,6 +531,9 @@ static int xhci_pci_suspend(struct usb_hcd *hcd, bool do_wakeup)
- 	if (xhci->quirks & XHCI_SSIC_PORT_UNUSED)
- 		xhci_ssic_port_unused_quirk(hcd, true);
- 
-+	if (xhci->quirks & XHCI_DISABLE_SPARSE)
-+		xhci_sparse_control_quirk(hcd);
-+
- 	ret = xhci_suspend(xhci, do_wakeup);
- 	if (ret && (xhci->quirks & XHCI_SSIC_PORT_UNUSED))
- 		xhci_ssic_port_unused_quirk(hcd, false);
-diff --git a/drivers/usb/host/xhci.h b/drivers/usb/host/xhci.h
-index 8be88379c0fb..ebb359ebb261 100644
---- a/drivers/usb/host/xhci.h
-+++ b/drivers/usb/host/xhci.h
-@@ -1877,6 +1877,7 @@ struct xhci_hcd {
- #define XHCI_SNPS_BROKEN_SUSPEND    BIT_ULL(35)
- #define XHCI_RENESAS_FW_QUIRK	BIT_ULL(36)
- #define XHCI_SKIP_PHY_INIT	BIT_ULL(37)
-+#define XHCI_DISABLE_SPARSE	BIT_ULL(38)
- 
- 	unsigned int		num_active_eps;
- 	unsigned int		limit_active_eps;
--- 
-2.25.1
+per-CPU sinks sounds a lot better.
 
+I'm really not convinced it makes sense to do what you do with shared
+sinks though. You'll loose random parts of the execution trace because
+of what the other CPUs do.
+
+Full exclusive sink access is far more deterministic.
+
+> > Once the events are created, the perf tool close()s the sink0 device,
+> > which is now will in-use by the events. No other events can be attached
+> > to it.
+> > 
+> > Or are you doing the event->sink mapping every time you do: pmu::add()?
+> > That sounds insane.
+> 
+> Sink is already mapped at event create. But yes, the refcount on the
+> sink is managed at start/stop. Thats when we need to make sure that the
+> event being scheduled belongs to the same owner as the one already
+> driving the sink.
+
+pmu::add() I might hope, because pmu::start() is not allowed to fail.
+
+> That way another session could use the same sink if it is free. i.e
+> 
+> perf record -e cs_etm/@sink0/u --per-thread app1
+> 
+> and
+> 
+> perf record -e cs_etm/@sink0/u --per-thread app2
+> 
+> both can work as long as the sink is not used by the other session.
+
+Like said above, if sink is shared between CPUs, that's going to be a
+trainwreck :/ Why do you want that?
+
+And once you have per-CPU sinks like mentioned above, the whole problem
+goes away.
