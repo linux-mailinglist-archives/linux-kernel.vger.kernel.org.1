@@ -2,140 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33918296BDB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:13:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 26E00296BDE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:14:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461209AbgJWJNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:13:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
+        id S461226AbgJWJOM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:14:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37052 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461197AbgJWJNG (ORCPT
+        with ESMTP id S461183AbgJWJOL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:13:06 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA50AC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id s21so1151970oij.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=qM5nhEMYeFdEA7QerSEffOkMoRD8vG6Y+rmNtsxnjd4=;
-        b=Xxk1aGPWSfFkpkis6OoEqJ2gCaQ0ahlPrRIzd5LTpnMwyB8U4J5r+K0BKl7hDE+eYN
-         3FcbH6Xq/dGBMGOJztPD8i+0aPOjlnDIfmE3yk5nKc52BxNSLHg2zElLlqf99LJUx8Jn
-         jnSHwE5Y+hs0wMvh4+/GAgohgcKexUIqGABys=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=qM5nhEMYeFdEA7QerSEffOkMoRD8vG6Y+rmNtsxnjd4=;
-        b=A9Zp2TacFIExDgqLJ+FEQbAvKskVJmpCqXHQ2BBIRvzFX6DYOIuSZXxyng70jswaOI
-         dGtDHwjEb0LZbCa6mOpVDv8wuzAELYxf3BHzUkZn0Kam0u0WNUwmWN557fxxG6JPJZQb
-         wXB7z+culV3123l7cRF4DaHUJkgjyUptCG+zUEhdX1Ez+ZSj9g834iNqnTwH8AxFUWxr
-         aJfsNawymJIr05KBiUfKfXMs28COVbFR8TH1gjfFeRZAq3pi10+m0pPPkcIHVab5r8vV
-         6S/uaDKaJcOgipJCYuRGMNSmwMP/LwmfBj1LuwIIUUT0kA4U8qecMowK/poOSxOCcxTi
-         7thg==
-X-Gm-Message-State: AOAM533jHYhYNwU8TYIR8HSYkRKp8pM8T/+nuXPQ7+Shw1PV/cVnHcGF
-        PgHaL+uD2efhVoEPD+xPxBp3xfFgAmnotTN+sbvobQ==
-X-Google-Smtp-Source: ABdhPJxJfW2e7RMT1o53fgdROAZNOXDUkt9dx9afCHGb/w0gAtXuC9OHLmkK0ZV4M3byXb+A+RT/xRPrOH90bLENhKU=
-X-Received: by 2002:aca:39d6:: with SMTP id g205mr958482oia.14.1603444384107;
- Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
+        Fri, 23 Oct 2020 05:14:11 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C989C0613CE;
+        Fri, 23 Oct 2020 02:14:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Bc/Tl7QrHQ8TS00H9eZHX8HpJf7gnLju80W3+dBio3s=; b=lHd/Y1XEta78XOwzEbRgq/UpU2
+        A73VJLFqdMTxta2mKEIuA4xhXip9HWuId1knbAKvRkldwoW/HCUVhiDtojltIj8JcsLhWqCrMVJVu
+        TWggv/tZBG2rywCZT9hxTZ1KWViMWFeX+/1jN8Q4GJNcQl/5tO1GpHlomoV7+s5pg4/GoXkBAHxXl
+        N9bvOBR1/3BgkmHsIoiihX/L2LKkryJc3oI7y7muTeVt4v66HZE/jkji3cbb6myWrMgnKFX/EW0HI
+        3FYEGvf4D5QnGxvF83oZCyFuAF/SKnjGgp9x4wtd8xSoAh69Cgmt+1sg259JZHpXkc0NkMJbJafpJ
+        P8zwFb2Q==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVt8s-0006xU-8j; Fri, 23 Oct 2020 09:13:46 +0000
+Date:   Fri, 23 Oct 2020 10:13:46 +0100
+From:   "hch@infradead.org" <hch@infradead.org>
+To:     Mike Snitzer <snitzer@redhat.com>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Sergei Shtepa <sergei.shtepa@veeam.com>,
+        Damien Le Moal <Damien.LeMoal@wdc.com>,
+        Hannes Reinecke <hare@suse.de>,
+        "axboe@kernel.dk" <axboe@kernel.dk>,
+        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
+        "hch@infradead.org" <hch@infradead.org>,
+        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "len.brown@intel.com" <len.brown@intel.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
+        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
+        "ming.lei@redhat.com" <ming.lei@redhat.com>,
+        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
+        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
+        "bvanassche@acm.org" <bvanassche@acm.org>,
+        "osandov@fb.com" <osandov@fb.com>,
+        "koct9i@gmail.com" <koct9i@gmail.com>,
+        "steve@sk2.org" <steve@sk2.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        device-mapper development <dm-devel@redhat.com>,
+        Alasdair G Kergon <agk@redhat.com>
+Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
+Message-ID: <20201023091346.GA25115@infradead.org>
+References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
+ <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
+ <20201021141044.GF20749@veeam.com>
+ <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
+ <20201022094402.GA21466@veeam.com>
+ <BL0PR04MB6514AC1B1FF313E6A14D122CE71D0@BL0PR04MB6514.namprd04.prod.outlook.com>
+ <20201022135213.GB21466@veeam.com>
+ <20201022151418.GR9832@magnolia>
+ <CAMM=eLfO_L-ZzcGmpPpHroznnSOq_KEWignFoM09h7Am9yE83g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch> <20201021085655.1192025-5-daniel.vetter@ffwll.ch>
-In-Reply-To: <20201021085655.1192025-5-daniel.vetter@ffwll.ch>
-From:   Daniel Vetter <daniel.vetter@ffwll.ch>
-Date:   Fri, 23 Oct 2020 11:12:52 +0200
-Message-ID: <CAKMK7uE50TPNruEQv5JDX91q0DDqy-CXfbQzc48YeqPzSE96yA@mail.gmail.com>
-Subject: Re: [PATCH v3 04/16] misc/habana: Use FOLL_LONGTERM for userptr
-To:     DRI Development <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Cc:     KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        "open list:DMA BUFFER SHARING FRAMEWORK" 
-        <linux-media@vger.kernel.org>,
-        linux-s390 <linux-s390@vger.kernel.org>,
-        Daniel Vetter <daniel.vetter@intel.com>,
-        Jason Gunthorpe <jgg@ziepe.ca>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        John Hubbard <jhubbard@nvidia.com>,
-        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
-        Jan Kara <jack@suse.cz>,
-        Dan Williams <dan.j.williams@intel.com>,
-        Oded Gabbay <oded.gabbay@gmail.com>,
-        Omer Shpigelman <oshpigelman@habana.ai>,
-        Ofir Bitton <obitton@habana.ai>,
-        Tomer Tayar <ttayar@habana.ai>,
-        Moti Haimovski <mhaimovski@habana.ai>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Pawel Piskorski <ppiskorski@habana.ai>,
-        Daniel Vetter <daniel.vetter@ffwll.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAMM=eLfO_L-ZzcGmpPpHroznnSOq_KEWignFoM09h7Am9yE83g@mail.gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Oded,
+On Thu, Oct 22, 2020 at 01:54:16PM -0400, Mike Snitzer wrote:
+> On Thu, Oct 22, 2020 at 11:14 AM Darrick J. Wong
+> > Stupid question: Why don't you change the block layer to make it
+> > possible to insert device mapper devices after the blockdev has been set
+> > up?
+> 
+> Not a stupid question.  Definitely something that us DM developers
+> have wanted to do for a while.  Devil is in the details but it is the
+> right way forward.
+> 
 
-Did testing on your end turn up anything, or can I put an
-ack&tested-by from you on the two habana patches for the next round?
+Yes, I think that is the right thing to do.  And I don't think it should
+be all that hard.  All we'd need in the I/O path is something like the
+pseudo-patch below, which will allow the interposer driver to resubmit
+bios using submit_bio_noacct as long as the driver sets BIO_INTERPOSED.
 
-Thanks, Daniel
-
-On Wed, Oct 21, 2020 at 10:57 AM Daniel Vetter <daniel.vetter@ffwll.ch> wro=
-te:
->
-> These are persistent, not just for the duration of a dma operation.
->
-> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
-> Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> Cc: Andrew Morton <akpm@linux-foundation.org>
-> Cc: John Hubbard <jhubbard@nvidia.com>
-> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
-> Cc: Jan Kara <jack@suse.cz>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: linux-mm@kvack.org
-> Cc: linux-arm-kernel@lists.infradead.org
-> Cc: linux-samsung-soc@vger.kernel.org
-> Cc: linux-media@vger.kernel.org
-> Cc: Oded Gabbay <oded.gabbay@gmail.com>
-> Cc: Omer Shpigelman <oshpigelman@habana.ai>
-> Cc: Ofir Bitton <obitton@habana.ai>
-> Cc: Tomer Tayar <ttayar@habana.ai>
-> Cc: Moti Haimovski <mhaimovski@habana.ai>
-> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: Pawel Piskorski <ppiskorski@habana.ai>
-> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
-> ---
->  drivers/misc/habanalabs/common/memory.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
-alabs/common/memory.c
-> index 327b64479f97..767d3644c033 100644
-> --- a/drivers/misc/habanalabs/common/memory.c
-> +++ b/drivers/misc/habanalabs/common/memory.c
-> @@ -1288,7 +1288,8 @@ static int get_user_memory(struct hl_device *hdev, =
-u64 addr, u64 size,
->                 return -ENOMEM;
->         }
->
-> -       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE=
-,
-> +       rc =3D pin_user_pages_fast(start, npages,
-> +                                FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
->                                  userptr->pages);
->
->         if (rc !=3D npages) {
-> --
-> 2.28.0
->
-
-
---=20
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+diff --git a/block/blk-core.c b/block/blk-core.c
+index ac00d2fa4eb48d..3f6f1eb565e0a8 100644
+--- a/block/blk-core.c
++++ b/block/blk-core.c
+@@ -1051,6 +1051,9 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
+ 		return BLK_QC_T_NONE;
+ 	}
+ 
++	if (blk_has_interposer(bio->bi_disk) &&
++	    !(bio->bi_flags & BIO_INTERPOSED))
++		return __submit_bio_interposed(bio);
+ 	if (!bio->bi_disk->fops->submit_bio)
+ 		return __submit_bio_noacct_mq(bio);
+ 	return __submit_bio_noacct(bio);
