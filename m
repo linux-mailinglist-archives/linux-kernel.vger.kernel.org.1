@@ -2,155 +2,349 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC8C5296A6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:42:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58EC2296A6C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:42:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374497AbgJWHmQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 03:42:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:57648 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S374460AbgJWHmQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:42:16 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603438934;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=NCVcXJgtnbl5xb/5N2lzG24wq0yxvkQDQbOQxlLLxpQ=;
-        b=rOH447hh4FY+XSJSdXj2KLMddyoXyyI0coBmjHTAKTAdQ0xgipqYuH0kTlgMSZhafzmOTF
-        xW/RK/WU3YlW2KOxjWVzvvy0tzi5R+C+4ZCo+g8dp5Ve/0NGWOAnC0sW1j2yEy4hOmJJIo
-        5fb6CvzXFagvuPXphyJ9u7dZQpO6Pg8=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CCE89AE7D;
-        Fri, 23 Oct 2020 07:42:14 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 09:42:13 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Johannes Weiner <hannes@cmpxchg.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-team@fb.com
-Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
-Message-ID: <20201023074213.GR23790@dhcp22.suse.cz>
-References: <20201022151844.489337-1-hannes@cmpxchg.org>
+        id S375762AbgJWHmn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:42:43 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51076 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374510AbgJWHmn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 03:42:43 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A914DC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:42:41 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id b26so518180pff.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:42:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QnTlgTGQOBWDFz3JgBcHIU+xNf8Nl884zoAHdXf3D6Q=;
+        b=UkYIC54WzDPOHhDRc637UwX58Hz+FVl13MSLCU7naxTgverctDiRVat0O23ZJAjOkK
+         UxLmhRXWZbMmIYD1yZzSe+ogCQlJfPH1+Ythf5rDwbLqmTNsXjFSC4DBnd/oixMnq/H6
+         EEyoCOmC6ij8YwOr/kdpp2OYWlrwfSuYCjGA4ckOG+7uE9oGtSlQ2X9nvSiJRUVmTiMT
+         YkHyIpk+T7FxiPtGfoGjnSChc5l//pvppMwW1bhr6odKmdT/iyPHGwu7tVQ54enm+Kdr
+         huD0eQM3KzzpqIqcC0c0m9Mqm2uFj8FXbamK0Mb65/kaAy9rPITBvSrDoJoQusujLXqp
+         hUgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=QnTlgTGQOBWDFz3JgBcHIU+xNf8Nl884zoAHdXf3D6Q=;
+        b=G0Ijli7aYVA/DodjltgEXiJGiUR2Z9QHfVm4JgaJLrKKb3SdyIaIHfaNt1yYtsPndN
+         4j4OYM1q8AQJvRq0Dgqj8zr2O876ZJd2zp2aBIDokQsoGS0JTejcl+klOtDhKgqzncdc
+         1m9dp//3a7zMlL0AwfSwWlv/ilXAlDp86+DuEFuvWbaSkjRAu0/pZlVeMqpROhm00dWw
+         tBJi2FjdoptKENu1EYrTklKxojM4SnBKwYxpfWDWAXpiyctZDql54fIbhWk86wUjb9/A
+         OLoO6zHBLgIiwLEoXmxIJtAwmB/B8FcwhF+uyUwA/lM4m+ssGnzjvickweBUFdtd9oN3
+         8oCQ==
+X-Gm-Message-State: AOAM5336MLh8HxO6DHF66mAyOzv7hn0tLBcqGQ080jSRry6ORf7/zgnr
+        6unfA+bMN1emaqaNYyip4HE=
+X-Google-Smtp-Source: ABdhPJxLzwQuemUa02cfRN8eZg4hCe4mGG+P/GMpqxnbKXH1tH2dryJL/WFomcAVAJGh0m5NVo5kQA==
+X-Received: by 2002:a17:90a:7188:: with SMTP id i8mr1129110pjk.76.1603438961135;
+        Fri, 23 Oct 2020 00:42:41 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([112.159.19.5])
+        by smtp.gmail.com with ESMTPSA id k3sm962896pff.71.2020.10.23.00.42.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 00:42:40 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH] perf stat: Support regex pattern in --for-each-cgroup
+Date:   Fri, 23 Oct 2020 16:42:34 +0900
+Message-Id: <20201023074234.395002-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22-10-20 11:18:44, Johannes Weiner wrote:
-> As huge page usage in the page cache and for shmem files proliferates
-> in our production environment, the performance monitoring team has
-> asked for per-cgroup stats on those pages.
-> 
-> We already track and export anon_thp per cgroup. We already track file
-> THP and shmem THP per node, so making them per-cgroup is only a matter
-> of switching from node to lruvec counters. All callsites are in places
-> where the pages are charged and locked, so page->memcg is stable.
-> 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+To make the command line even more compact with cgroups, support regex
+pattern matching in cgroup names.
 
-Acked-by: Michal Hocko <mhocko@suse.com>
+  $ perf stat -a -e cpu-clock,cycles --for-each-cgroup '^.$' sleep 1
 
-> ---
->  mm/filemap.c     | 4 ++--
->  mm/huge_memory.c | 4 ++--
->  mm/khugepaged.c  | 4 ++--
->  mm/memcontrol.c  | 6 +++++-
->  mm/shmem.c       | 2 +-
->  5 files changed, 12 insertions(+), 8 deletions(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index e80aa9d2db68..334ce608735c 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -204,9 +204,9 @@ static void unaccount_page_cache_page(struct address_space *mapping,
->  	if (PageSwapBacked(page)) {
->  		__mod_lruvec_page_state(page, NR_SHMEM, -nr);
->  		if (PageTransHuge(page))
-> -			__dec_node_page_state(page, NR_SHMEM_THPS);
-> +			__dec_lruvec_page_state(page, NR_SHMEM_THPS);
->  	} else if (PageTransHuge(page)) {
-> -		__dec_node_page_state(page, NR_FILE_THPS);
-> +		__dec_lruvec_page_state(page, NR_FILE_THPS);
->  		filemap_nr_thps_dec(mapping);
->  	}
->  
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index cba3812a5c3e..5fe044e5dad5 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -2707,9 +2707,9 @@ int split_huge_page_to_list(struct page *page, struct list_head *list)
->  		spin_unlock(&ds_queue->split_queue_lock);
->  		if (mapping) {
->  			if (PageSwapBacked(head))
-> -				__dec_node_page_state(head, NR_SHMEM_THPS);
-> +				__dec_lruvec_page_state(head, NR_SHMEM_THPS);
->  			else
-> -				__dec_node_page_state(head, NR_FILE_THPS);
-> +				__dec_lruvec_page_state(head, NR_FILE_THPS);
->  		}
->  
->  		__split_huge_page(page, list, end, flags);
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index f1d5f6dde47c..04828e21f434 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -1833,9 +1833,9 @@ static void collapse_file(struct mm_struct *mm,
->  	}
->  
->  	if (is_shmem)
-> -		__inc_node_page_state(new_page, NR_SHMEM_THPS);
-> +		__inc_lruvec_page_state(new_page, NR_SHMEM_THPS);
->  	else {
-> -		__inc_node_page_state(new_page, NR_FILE_THPS);
-> +		__inc_lruvec_page_state(new_page, NR_FILE_THPS);
->  		filemap_nr_thps_inc(mapping);
->  	}
->  
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 2636f8bad908..98177d5e8e03 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1507,6 +1507,8 @@ static struct memory_stat memory_stats[] = {
->  	 * constant(e.g. powerpc).
->  	 */
->  	{ "anon_thp", 0, NR_ANON_THPS },
-> +	{ "file_thp", 0, NR_FILE_THPS },
-> +	{ "shmem_thp", 0, NR_SHMEM_THPS },
->  #endif
->  	{ "inactive_anon", PAGE_SIZE, NR_INACTIVE_ANON },
->  	{ "active_anon", PAGE_SIZE, NR_ACTIVE_ANON },
-> @@ -1537,7 +1539,9 @@ static int __init memory_stats_init(void)
->  
->  	for (i = 0; i < ARRAY_SIZE(memory_stats); i++) {
->  #ifdef CONFIG_TRANSPARENT_HUGEPAGE
-> -		if (memory_stats[i].idx == NR_ANON_THPS)
-> +		if (memory_stats[i].idx == NR_ANON_THPS ||
-> +		    memory_stats[i].idx == NR_FILE_THPS ||
-> +		    memory_stats[i].idx == NR_SHMEM_THPS)
->  			memory_stats[i].ratio = HPAGE_PMD_SIZE;
->  #endif
->  		VM_BUG_ON(!memory_stats[i].ratio);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..5009d783d954 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -713,7 +713,7 @@ static int shmem_add_to_page_cache(struct page *page,
->  		}
->  		if (PageTransHuge(page)) {
->  			count_vm_event(THP_FILE_ALLOC);
-> -			__inc_node_page_state(page, NR_SHMEM_THPS);
-> +			__inc_lruvec_page_state(page, NR_SHMEM_THPS);
->  		}
->  		mapping->nrpages += nr;
->  		__mod_lruvec_page_state(page, NR_FILE_PAGES, nr);
-> -- 
-> 2.29.0
+   Performance counter stats for 'system wide':
 
+            992.90 msec cpu-clock                 A #    0.992 CPUs utilized
+     4,155,444,322      cycles                    A #    4.204 GHz                      (100.00%)
+            988.53 msec cpu-clock                 B #    0.988 CPUs utilized
+     4,137,114,788      cycles                    B #    4.185 GHz                      (100.00%)
+            983.94 msec cpu-clock                 C #    0.983 CPUs utilized
+     4,117,862,551      cycles                    C #    4.166 GHz                      (99.99%)
+
+       1.000975519 seconds time elapsed
+
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/util/cgroup.c | 192 ++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 168 insertions(+), 24 deletions(-)
+
+diff --git a/tools/perf/util/cgroup.c b/tools/perf/util/cgroup.c
+index b81324a13a2b..127c2411fb9f 100644
+--- a/tools/perf/util/cgroup.c
++++ b/tools/perf/util/cgroup.c
+@@ -13,9 +13,19 @@
+ #include <stdlib.h>
+ #include <string.h>
+ #include <api/fs/fs.h>
++#include <ftw.h>
++#include <regex.h>
+ 
+ int nr_cgroups;
+ 
++/* used to match cgroup name with patterns */
++struct cgroup_name {
++	struct list_head list;
++	bool used;
++	char name[];
++};
++static LIST_HEAD(cgroup_list);
++
+ static int open_cgroup(const char *name)
+ {
+ 	char path[PATH_MAX + 1];
+@@ -149,6 +159,137 @@ void evlist__set_default_cgroup(struct evlist *evlist, struct cgroup *cgroup)
+ 		evsel__set_default_cgroup(evsel, cgroup);
+ }
+ 
++/* helper function for ftw() in match_cgroups and list_cgroups */
++static int add_cgroup_name(const char *fpath, const struct stat *sb __maybe_unused,
++			   int typeflag)
++{
++	struct cgroup_name *cn;
++
++	if (typeflag != FTW_D)
++		return 0;
++
++	cn = malloc(sizeof(*cn) + strlen(fpath) + 1);
++	if (cn == NULL)
++		return -1;
++
++	cn->used = false;
++	strcpy(cn->name, fpath);
++
++	list_add_tail(&cn->list, &cgroup_list);
++	return 0;
++}
++
++static void release_cgroup_list(void)
++{
++	struct cgroup_name *cn;
++
++	while (!list_empty(&cgroup_list)) {
++		cn = list_first_entry(&cgroup_list, struct cgroup_name, list);
++		list_del(&cn->list);
++		free(cn);
++	}
++}
++
++/* collect given cgroups only */
++static int list_cgroups(const char *str)
++{
++	const char *p, *e, *eos = str + strlen(str);
++	struct cgroup_name *cn;
++	char *s;
++
++	/* use given name as is - for testing purpose */
++	for (;;) {
++		p = strchr(str, ',');
++		e = p ? p : eos;
++
++		if (e - str) {
++			int ret;
++
++			s = strndup(str, e - str);
++			if (!s)
++				return -1;
++			/* pretend if it's added by ftw() */
++			ret = add_cgroup_name(s, NULL, FTW_D);
++			free(s);
++			if (ret)
++				return -1;
++		} else {
++			if (add_cgroup_name("", NULL, FTW_D) < 0)
++				return -1;
++		}
++
++		if (!p)
++			break;
++		str = p+1;
++	}
++
++	/* these groups will be used */
++	list_for_each_entry(cn, &cgroup_list, list)
++		cn->used = true;
++
++	return 0;
++}
++
++/* collect all cgroups first and then match with the pattern */
++static int match_cgroups(const char *str)
++{
++	char mnt[PATH_MAX];
++	const char *p, *e, *eos = str + strlen(str);
++	struct cgroup_name *cn;
++	regex_t reg;
++	int prefix_len;
++	char *s;
++
++	if (cgroupfs_find_mountpoint(mnt, sizeof(mnt), "perf_event"))
++		return -1;
++
++	/* cgroup_name will have a full path, skip the root directory */
++	prefix_len = strlen(mnt);
++
++	/* collect all cgroups in the cgroup_list */
++	if (ftw(mnt, add_cgroup_name, 20) < 0)
++		return -1;
++
++	for (;;) {
++		p = strchr(str, ',');
++		e = p ? p : eos;
++
++		/* allow empty cgroups, i.e., skip */
++		if (e - str) {
++			/* termination added */
++			s = strndup(str, e - str);
++			if (!s)
++				return -1;
++			if (regcomp(&reg, s, REG_NOSUB)) {
++				free(s);
++				return -1;
++			}
++
++			/* check cgroup name with the pattern */
++			list_for_each_entry(cn, &cgroup_list, list) {
++				char *name = cn->name + prefix_len;
++
++				if (name[0] == '/' && name[1])
++					name++;
++				if (!regexec(&reg, name, 0, NULL, 0))
++					cn->used = true;
++			}
++			regfree(&reg);
++			free(s);
++		} else {
++			/* first entry to root cgroup */
++			cn = list_first_entry(&cgroup_list, struct cgroup_name,
++					      list);
++			cn->used = true;
++		}
++
++		if (!p)
++			break;
++		str = p+1;
++	}
++	return prefix_len;
++}
++
+ int parse_cgroups(const struct option *opt, const char *str,
+ 		  int unset __maybe_unused)
+ {
+@@ -201,6 +342,11 @@ int parse_cgroups(const struct option *opt, const char *str,
+ 	return 0;
+ }
+ 
++static bool has_pattern_string(const char *str)
++{
++	return !!strpbrk(str, "{}[]()|*+?^$");
++}
++
+ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
+ 			  struct rblist *metric_events, bool open_cgroup)
+ {
+@@ -208,8 +354,9 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
+ 	struct evsel *pos, *evsel, *leader;
+ 	struct rblist orig_metric_events;
+ 	struct cgroup *cgrp = NULL;
+-	const char *p, *e, *eos = str + strlen(str);
++	struct cgroup_name *cn;
+ 	int ret = -1;
++	int prefix_len;
+ 
+ 	if (evlist->core.nr_entries == 0) {
+ 		fprintf(stderr, "must define events before cgroups\n");
+@@ -234,24 +381,25 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
+ 		rblist__init(&orig_metric_events);
+ 	}
+ 
+-	for (;;) {
+-		p = strchr(str, ',');
+-		e = p ? p : eos;
++	if (has_pattern_string(str))
++		prefix_len = match_cgroups(str);
++	else
++		prefix_len = list_cgroups(str);
+ 
+-		/* allow empty cgroups, i.e., skip */
+-		if (e - str) {
+-			/* termination added */
+-			char *name = strndup(str, e - str);
+-			if (!name)
+-				goto out_err;
++	if (prefix_len < 0)
++		goto out_err;
+ 
+-			cgrp = cgroup__new(name, open_cgroup);
+-			free(name);
+-			if (cgrp == NULL)
+-				goto out_err;
+-		} else {
+-			cgrp = NULL;
+-		}
++	list_for_each_entry(cn, &cgroup_list, list) {
++		char *name;
++
++		if (!cn->used)
++			continue;
++
++		/* cgroup_name might have a full path, skip the prefix */
++		name = cn->name + prefix_len;
++		if (name[0] == '/' && name[1])
++			name++;
++		cgrp = cgroup__new(name, open_cgroup);
+ 
+ 		leader = NULL;
+ 		evlist__for_each_entry(orig_list, pos) {
+@@ -277,23 +425,19 @@ int evlist__expand_cgroup(struct evlist *evlist, const char *str,
+ 			if (metricgroup__copy_metric_events(tmp_list, cgrp,
+ 							    metric_events,
+ 							    &orig_metric_events) < 0)
+-				break;
++				goto out_err;
+ 		}
+ 
+ 		perf_evlist__splice_list_tail(evlist, &tmp_list->core.entries);
+ 		tmp_list->core.nr_entries = 0;
+-
+-		if (!p) {
+-			ret = 0;
+-			break;
+-		}
+-		str = p+1;
+ 	}
++	ret = 0;
+ 
+ out_err:
+ 	evlist__delete(orig_list);
+ 	evlist__delete(tmp_list);
+ 	rblist__exit(&orig_metric_events);
++	release_cgroup_list();
+ 
+ 	return ret;
+ }
 -- 
-Michal Hocko
-SUSE Labs
+2.29.0.rc1.297.gfa9743e501-goog
+
