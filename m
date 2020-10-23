@@ -2,114 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0429B297886
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:57:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDE86297897
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:00:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755494AbgJWU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:57:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755398AbgJWU5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:57:12 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DB8F520936;
-        Fri, 23 Oct 2020 20:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603486631;
-        bh=thTY5zzsx7x7mMLiptzquDZ6NGow+NNFqLQSrgL6Qhg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=EYsxIIr2Lc8Ke+p7KXQJoR9s3TpIKPDEeXpMZk3IgazHq+cA4qO0S3X39ecdto3nr
-         ZE7XfaDDJS0UC8XJYfVX/Ke0dYAwKRILtt0gzdP4PbzRUetJ/Z7+VyXFnicpuAsbek
-         uXCacsSCDVzuOlgYPB65xext8Wy0XIGcSadEZ/hw=
-Date:   Fri, 23 Oct 2020 13:57:09 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Yi Li <yili@winhong.com>
-Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        davem@davemloft.net
-Subject: Re: [PATCH] net treewide: Use skb_is_gso
-Message-ID: <20201023135709.0f89fd59@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201021103030.3432231-1-yili@winhong.com>
-References: <20201021103030.3432231-1-yili@winhong.com>
+        id S1756551AbgJWVAS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:00:18 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:46567 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756459AbgJWVAR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:00:17 -0400
+Received: from wld157.hos.anvin.org (c-24-6-168-49.hsd1.ca.comcast.net [24.6.168.49])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 09NL00sd3977700
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 23 Oct 2020 14:00:00 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 09NL00sd3977700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020092401; t=1603486802;
+        bh=9u/4bAHcrBBcc7goONQARCdwO+FUd0P7GG36TXEkpHY=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=gKnCvn2haztGzj+7RlTFTHDsXYJwAuq4PU+wKo7S3FTdvCAXvVfMAfeWEq542gu4Y
+         RVxxkmefKR2XmdSdxFhF7EY7waiWoETQuhhlzpy1LfKBdVeqd96IcKBD1XzNll5zEk
+         pAnJL3wHH5q8PqKYb8EaaTzTJ2uhaMPtw8VduB0ronP91vOIyc5gHe/FG2IGb33IFR
+         Pzf4Bvaxi73tsZDKoIoIVgOKBYnLiwZO35EvmQfHJoMIrlpCP4DoVrX9YZ3ZY+bNmK
+         6BEMsi+5twpsOmZp72hHJ9oV45sgyuVYOP56Gwe8GFSMISQFY9LiVn6dr9FIYEa26o
+         RW96m+CngfF2Q==
+Date:   Fri, 23 Oct 2020 13:59:58 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com>
+References: <20201023203154.27335-1-linux@rasmusvillemoes.dk> <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] x86/uaccess: fix code generation in put_user()
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+CC:     Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   hpa@zytor.com
+Message-ID: <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 18:30:30 +0800 Yi Li wrote:
-> This patch introduces the use of the inline func skb_is_gso in place of
-> tests for skb_shinfo(skb)->gso_size.
-> 
-> - if (skb_shinfo(skb)->gso_size)
-> + if (skb_is_gso(skb))
-> 
-> - if (unlikely(skb_shinfo(skb)->gso_size))
-> + if (unlikely(skb_is_gso(skb)))
-> 
-> - if (!skb_shinfo(skb)->gso_size)
-> + if (!skb_is_gso(skb))
-> 
-> Signed-off-by: Yi Li <yili@winhong.com>
+On October 23, 2020 1:55:22 PM PDT, Linus Torvalds <torvalds@linux-foundati=
+on=2Eorg> wrote:
+>Thanks, applied=2E
+>
+>On Fri, Oct 23, 2020 at 1:32 PM Rasmus Villemoes
+><linux@rasmusvillemoes=2Edk> wrote:
+>>
+>> I'm wondering if one would also need to make __ptr_pu and __ret_pu
+>> explicitly "%"_ASM_CX"=2E
+>
+>No, the "c"/"0" thing is much better, and makes it properly atomic wrt
+>the actual asm=2E
+>
+>As mentioned to Andy, the "register asm()" thing is not uncommon and
+>often useful, but when you can specify the register directly in asm,
+>that's certainly simpler and more straightforward and preferred=2E
+>
+>              Linus
 
-The places where gso_size is used on the Rx path may be driver
-specific, so I'd rather you left those out.
-
-At a quick look - the following ifs ones are on the Rx path:
-
-> diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-> index 1a6ec1a12d53..af20884cd772 100644
-> --- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-> +++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
-> @@ -732,7 +732,7 @@ static void bnx2x_gro_receive(struct bnx2x *bp, struct bnx2x_fastpath *fp,
->  			       struct sk_buff *skb)
->  {
->  #ifdef CONFIG_INET
-> -	if (skb_shinfo(skb)->gso_size) {
-> +	if (skb_is_gso(skb)) {
->  		switch (be16_to_cpu(skb->protocol)) {
->  		case ETH_P_IP:
->  			bnx2x_gro_csum(bp, skb, bnx2x_gro_ip_csum);
-
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> index a362516a3185..e694c99ee540 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
-> @@ -2990,7 +2990,7 @@ static int hns3_set_gro_and_checksum(struct hns3_enet_ring *ring,
->  						    HNS3_RXD_GRO_SIZE_M,
->  						    HNS3_RXD_GRO_SIZE_S);
->  	/* if there is no HW GRO, do not set gro params */
-> -	if (!skb_shinfo(skb)->gso_size) {
-> +	if (!skb_is_gso(skb)) {
->  		hns3_rx_checksum(ring, skb, l234info, bd_base_info, ol_info);
->  		return 0;
->  	}
-> diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
-> index 7ef3369953b6..9c264768f166 100644
-> --- a/drivers/net/ethernet/ibm/ibmveth.c
-> +++ b/drivers/net/ethernet/ibm/ibmveth.c
-> @@ -1251,7 +1251,7 @@ static void ibmveth_rx_mss_helper(struct sk_buff *skb, u16 mss, int lrg_pkt)
->  		tcph->check = 0;
->  	}
->  
-> -	if (skb_shinfo(skb)->gso_size) {
-> +	if (skb_is_gso(skb)) {
->  		hdr_len = offset + tcph->doff * 4;
->  		skb_shinfo(skb)->gso_segs =
->  				DIV_ROUND_UP(skb->len - hdr_len,
-
-> diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-> index a2494bf85007..092e24893cb9 100644
-> --- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
-> +++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
-> @@ -934,7 +934,7 @@ static void qede_gro_receive(struct qede_dev *edev,
->  	}
->  
->  #ifdef CONFIG_INET
-> -	if (skb_shinfo(skb)->gso_size) {
-> +	if (skb_is_gso(skb)) {
->  		skb_reset_network_header(skb);
->  
->  		switch (skb->protocol) {
+There is no same reason to mess around with hacks when we are talking abou=
+t dx:ax, though=2E We have to do pretty ugly hacks when other register pair=
+s are involved, but "A" is there for a reason=2E _ASM_AX64 maybe=2E=2E=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
