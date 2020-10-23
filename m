@@ -2,39 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2AFA2297455
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:36:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1781829746D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464045AbgJWQfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33730 "EHLO mail.kernel.org"
+        id S465899AbgJWQgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:36:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751845AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751849AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:50 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 38F79246AE;
+        by mail.kernel.org (Postfix) with ESMTPSA id 49A1C246B1;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470828;
-        bh=wFAn0R/tOd0Kse8l+Oi7WKhaA3ZlYRYbU5RUMjj5mUY=;
+        bh=qOuTdzghgltOScEElE8bNf/ssmRDCheIoPBJ0QJVxCY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=KU9oAuoHnG9RRaRL/yHmNiCrFh+7U1K9d8gKjoak3zpb5iONPyeVfB+sKSIIpXMJd
-         Wx+zNnOLY+lwUbkrCDXq9wdUVxJJ5zZqNzZ2p6A8+80Pg3gDVes5heM5Tf5/Mto2Ul
-         QyAvW/kqeiL4AfAXWvUAFmYNunP3lGONZ6+VdAS0=
+        b=PoRCM1tkg7AbJRo9v5Yq9jWpGCK7RkUCYHWK8mZbnuFz2nB2GIyF13q6t2iQwQX69
+         CGHGQGLC7wiEspLR+fHXoON8HQau2Vl7UPMOqiI4wA74mVF86xEmzT+5nc2pTJmt11
+         Ve9YTdC90LTe941mHHRV9Mt2GVnoRZDIJksP06xU=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Aws-6O; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Awv-7f; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 34/56] fs: fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:21 +0200
-Message-Id: <eb5b1596a78485a6b60d73baea3ce50223c10dbb.1603469755.git.mchehab+huawei@kernel.org>
+        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 35/56] jbd2: fix kernel-doc markups
+Date:   Fri, 23 Oct 2020 18:33:22 +0200
+Message-Id: <ef76f7a51fbb1ff7d9d1ff36f5ce65f1c3e5e3c2.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -45,199 +45,314 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Two markups are at the wrong place. Kernel-doc only
-support having the comment just before the identifier.
+Kernel-doc markup should use this format:
+        identifier - description
+
+They should not have any type before that, as otherwise
+the parser won't do the right thing.
 
 Also, some identifiers have different names between their
 prototypes and the kernel-doc markup.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- fs/dcache.c   | 72 +++++++++++++++++++++++++--------------------------
- fs/inode.c    |  4 +--
- fs/seq_file.c |  5 ++--
- fs/super.c    | 12 ++++-----
- 4 files changed, 47 insertions(+), 46 deletions(-)
+ fs/jbd2/journal.c     | 34 ++++++++++++++++++----------------
+ fs/jbd2/transaction.c | 31 ++++++++++++++++---------------
+ include/linux/jbd2.h  |  2 +-
+ 3 files changed, 35 insertions(+), 32 deletions(-)
 
-diff --git a/fs/dcache.c b/fs/dcache.c
-index ea0485861d93..6eabb48a49fc 100644
---- a/fs/dcache.c
-+++ b/fs/dcache.c
-@@ -456,23 +456,6 @@ static void d_lru_shrink_move(struct list_lru_one *lru, struct dentry *dentry,
- 	list_lru_isolate_move(lru, &dentry->d_lru, list);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 0c7c42bd530f..f71848367ab6 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -566,12 +566,14 @@ static int __jbd2_journal_force_commit(journal_t *journal)
  }
  
--/**
-- * d_drop - drop a dentry
-- * @dentry: dentry to drop
-- *
-- * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
-- * be found through a VFS lookup any more. Note that this is different from
-- * deleting the dentry - d_delete will try to mark the dentry negative if
-- * possible, giving a successful _negative_ lookup, while d_drop will
-- * just make the cache lookup fail.
-- *
-- * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
-- * reason (NFS timeouts or autofs deletes).
-- *
-- * __d_drop requires dentry->d_lock
-- * ___d_drop doesn't mark dentry as "unhashed"
-- *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
-- */
- static void ___d_drop(struct dentry *dentry)
- {
- 	struct hlist_bl_head *b;
-@@ -501,6 +484,23 @@ void __d_drop(struct dentry *dentry)
- }
- EXPORT_SYMBOL(__d_drop);
- 
-+/**
-+ * d_drop - drop a dentry
-+ * @dentry: dentry to drop
-+ *
-+ * d_drop() unhashes the entry from the parent dentry hashes, so that it won't
-+ * be found through a VFS lookup any more. Note that this is different from
-+ * deleting the dentry - d_delete will try to mark the dentry negative if
-+ * possible, giving a successful _negative_ lookup, while d_drop will
-+ * just make the cache lookup fail.
-+ *
-+ * d_drop() is used mainly for stuff that wants to invalidate a dentry for some
-+ * reason (NFS timeouts or autofs deletes).
-+ *
-+ * __d_drop requires dentry->d_lock
-+ * ___d_drop doesn't mark dentry as "unhashed"
-+ *   (dentry->d_hash.pprev will be LIST_POISON2, not NULL).
-+ */
- void d_drop(struct dentry *dentry)
- {
- 	spin_lock(&dentry->d_lock);
-@@ -989,6 +989,25 @@ struct dentry *d_find_any_alias(struct inode *inode)
- }
- EXPORT_SYMBOL(d_find_any_alias);
- 
-+static struct dentry *__d_find_alias(struct inode *inode)
-+{
-+	struct dentry *alias;
-+
-+	if (S_ISDIR(inode->i_mode))
-+		return __d_find_any_alias(inode);
-+
-+	hlist_for_each_entry(alias, &inode->i_dentry, d_u.d_alias) {
-+		spin_lock(&alias->d_lock);
-+ 		if (!d_unhashed(alias)) {
-+			__dget_dlock(alias);
-+			spin_unlock(&alias->d_lock);
-+			return alias;
-+		}
-+		spin_unlock(&alias->d_lock);
-+	}
-+	return NULL;
-+}
-+
  /**
-  * d_find_alias - grab a hashed alias of inode
-  * @inode: inode in question
-@@ -1003,25 +1022,6 @@ EXPORT_SYMBOL(d_find_any_alias);
-  * If the inode has an IS_ROOT, DCACHE_DISCONNECTED alias, then prefer
-  * any other hashed alias over that one.
+- * Force and wait upon a commit if the calling process is not within
+- * transaction.  This is used for forcing out undo-protected data which contains
+- * bitmaps, when the fs is running out of space.
++ * jbd2_journal_force_commit_nested - Force and wait upon a commit if the
++ * calling process is not within transaction.
+  *
+  * @journal: journal to force
+  * Returns true if progress was made.
++ *
++ * This is used for forcing out undo-protected data which contains
++ * bitmaps, when the fs is running out of space.
   */
--static struct dentry *__d_find_alias(struct inode *inode)
--{
--	struct dentry *alias;
--
--	if (S_ISDIR(inode->i_mode))
--		return __d_find_any_alias(inode);
--
--	hlist_for_each_entry(alias, &inode->i_dentry, d_u.d_alias) {
--		spin_lock(&alias->d_lock);
-- 		if (!d_unhashed(alias)) {
--			__dget_dlock(alias);
--			spin_unlock(&alias->d_lock);
--			return alias;
--		}
--		spin_unlock(&alias->d_lock);
--	}
--	return NULL;
--}
--
- struct dentry *d_find_alias(struct inode *inode)
+ int jbd2_journal_force_commit_nested(journal_t *journal)
  {
- 	struct dentry *de = NULL;
-diff --git a/fs/inode.c b/fs/inode.c
-index 9d78c37b00b8..aad3dcf2e259 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -1496,7 +1496,7 @@ struct inode *find_inode_rcu(struct super_block *sb, unsigned long hashval,
- EXPORT_SYMBOL(find_inode_rcu);
+@@ -582,7 +584,7 @@ int jbd2_journal_force_commit_nested(journal_t *journal)
+ }
  
  /**
-- * find_inode_by_rcu - Find an inode in the inode cache
-+ * find_inode_by_ino_rcu - Find an inode in the inode cache
-  * @sb:		Super block of file system to search
-  * @ino:	The inode number to match
+- * int journal_force_commit() - force any uncommitted transactions
++ * jbd2_journal_force_commit() - force any uncommitted transactions
+  * @journal: journal to force
   *
-@@ -1778,7 +1778,7 @@ static int update_time(struct inode *inode, struct timespec64 *time, int flags)
- }
+  * Caller want unconditional commit. We can only force the running transaction
+@@ -1899,7 +1901,7 @@ static int load_superblock(journal_t *journal)
+ 
  
  /**
-- *	touch_atime	-	update the access time
-+ *	atime_needs_update	-	update the access time
-  *	@path: the &struct path to update
-  *	@inode: inode to update
+- * int jbd2_journal_load() - Read journal from disk.
++ * jbd2_journal_load() - Read journal from disk.
+  * @journal: Journal to act on.
   *
-diff --git a/fs/seq_file.c b/fs/seq_file.c
-index 31219c1db17d..f0b933179a74 100644
---- a/fs/seq_file.c
-+++ b/fs/seq_file.c
-@@ -653,7 +653,8 @@ void seq_puts(struct seq_file *m, const char *s)
- EXPORT_SYMBOL(seq_puts);
- 
- /**
-- * A helper routine for putting decimal numbers without rich format of printf().
-+ * seq_put_decimal_ull_width - A helper routine for putting decimal numbers
-+ * 			       without rich format of printf().
-  * only 'unsigned long long' is supported.
-  * @m: seq_file identifying the buffer to which data should be written
-  * @delimiter: a string which is printed before the number
-@@ -1028,7 +1029,7 @@ struct hlist_node *seq_hlist_next_rcu(void *v,
- EXPORT_SYMBOL(seq_hlist_next_rcu);
- 
- /**
-- * seq_hlist_start_precpu - start an iteration of a percpu hlist array
-+ * seq_hlist_start_percpu - start an iteration of a percpu hlist array
-  * @head: pointer to percpu array of struct hlist_heads
-  * @cpu:  pointer to cpu "cursor"
-  * @pos:  start position of sequence
-diff --git a/fs/super.c b/fs/super.c
-index a51c2083cd6b..3f7a4c10ef0a 100644
---- a/fs/super.c
-+++ b/fs/super.c
-@@ -1820,12 +1820,6 @@ int freeze_super(struct super_block *sb)
- }
- EXPORT_SYMBOL(freeze_super);
- 
--/**
-- * thaw_super -- unlock filesystem
-- * @sb: the super to thaw
-- *
-- * Unlocks the filesystem and marks it writeable again after freeze_super().
-- */
- static int thaw_super_locked(struct super_block *sb)
- {
- 	int error;
-@@ -1861,6 +1855,12 @@ static int thaw_super_locked(struct super_block *sb)
- 	return 0;
+  * Given a journal_t structure which tells us which disk blocks contain
+@@ -1972,7 +1974,7 @@ int jbd2_journal_load(journal_t *journal)
  }
  
-+/**
-+ * thaw_super -- unlock filesystem
-+ * @sb: the super to thaw
-+ *
-+ * Unlocks the filesystem and marks it writeable again after freeze_super().
-+ */
- int thaw_super(struct super_block *sb)
- {
- 	down_write(&sb->s_umount);
+ /**
+- * void jbd2_journal_destroy() - Release a journal_t structure.
++ * jbd2_journal_destroy() - Release a journal_t structure.
+  * @journal: Journal to act on.
+  *
+  * Release a journal_t structure once it is no longer in use by the
+@@ -2050,7 +2052,7 @@ int jbd2_journal_destroy(journal_t *journal)
+ 
+ 
+ /**
+- *int jbd2_journal_check_used_features() - Check if features specified are used.
++ * jbd2_journal_check_used_features() - Check if features specified are used.
+  * @journal: Journal to check.
+  * @compat: bitmask of compatible features
+  * @ro: bitmask of features that force read-only mount
+@@ -2085,7 +2087,7 @@ int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
+ }
+ 
+ /**
+- * int jbd2_journal_check_available_features() - Check feature set in journalling layer
++ * jbd2_journal_check_available_features() - Check feature set in journalling layer
+  * @journal: Journal to check.
+  * @compat: bitmask of compatible features
+  * @ro: bitmask of features that force read-only mount
+@@ -2117,7 +2119,7 @@ int jbd2_journal_check_available_features(journal_t *journal, unsigned long comp
+ }
+ 
+ /**
+- * int jbd2_journal_set_features() - Mark a given journal feature in the superblock
++ * jbd2_journal_set_features() - Mark a given journal feature in the superblock
+  * @journal: Journal to act on.
+  * @compat: bitmask of compatible features
+  * @ro: bitmask of features that force read-only mount
+@@ -2201,7 +2203,7 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
+ }
+ 
+ /*
+- * jbd2_journal_clear_features () - Clear a given journal feature in the
++ * jbd2_journal_clear_features() - Clear a given journal feature in the
+  * 				    superblock
+  * @journal: Journal to act on.
+  * @compat: bitmask of compatible features
+@@ -2230,7 +2232,7 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
+ EXPORT_SYMBOL(jbd2_journal_clear_features);
+ 
+ /**
+- * int jbd2_journal_flush () - Flush journal
++ * jbd2_journal_flush() - Flush journal
+  * @journal: Journal to act on.
+  *
+  * Flush all data for a given journal to disk and empty the journal.
+@@ -2305,7 +2307,7 @@ int jbd2_journal_flush(journal_t *journal)
+ }
+ 
+ /**
+- * int jbd2_journal_wipe() - Wipe journal contents
++ * jbd2_journal_wipe() - Wipe journal contents
+  * @journal: Journal to act on.
+  * @write: flag (see below)
+  *
+@@ -2346,7 +2348,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
+ }
+ 
+ /**
+- * void jbd2_journal_abort () - Shutdown the journal immediately.
++ * jbd2_journal_abort () - Shutdown the journal immediately.
+  * @journal: the journal to shutdown.
+  * @errno:   an error number to record in the journal indicating
+  *           the reason for the shutdown.
+@@ -2437,7 +2439,7 @@ void jbd2_journal_abort(journal_t *journal, int errno)
+ }
+ 
+ /**
+- * int jbd2_journal_errno () - returns the journal's error state.
++ * jbd2_journal_errno() - returns the journal's error state.
+  * @journal: journal to examine.
+  *
+  * This is the errno number set with jbd2_journal_abort(), the last
+@@ -2461,7 +2463,7 @@ int jbd2_journal_errno(journal_t *journal)
+ }
+ 
+ /**
+- * int jbd2_journal_clear_err () - clears the journal's error state
++ * jbd2_journal_clear_err() - clears the journal's error state
+  * @journal: journal to act on.
+  *
+  * An error must be cleared or acked to take a FS out of readonly
+@@ -2481,7 +2483,7 @@ int jbd2_journal_clear_err(journal_t *journal)
+ }
+ 
+ /**
+- * void jbd2_journal_ack_err() - Ack journal err.
++ * jbd2_journal_ack_err() - Ack journal err.
+  * @journal: journal to act on.
+  *
+  * An error must be cleared or acked to take a FS out of readonly
+diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+index 43985738aa86..4cf88191b025 100644
+--- a/fs/jbd2/transaction.c
++++ b/fs/jbd2/transaction.c
+@@ -517,7 +517,7 @@ EXPORT_SYMBOL(jbd2__journal_start);
+ 
+ 
+ /**
+- * handle_t *jbd2_journal_start() - Obtain a new handle.
++ * jbd2_journal_start() - Obtain a new handle.
+  * @journal: Journal to start transaction on.
+  * @nblocks: number of block buffer we might modify
+  *
+@@ -564,7 +564,7 @@ void jbd2_journal_free_reserved(handle_t *handle)
+ EXPORT_SYMBOL(jbd2_journal_free_reserved);
+ 
+ /**
+- * int jbd2_journal_start_reserved() - start reserved handle
++ * jbd2_journal_start_reserved() - start reserved handle
+  * @handle: handle to start
+  * @type: for handle statistics
+  * @line_no: for handle statistics
+@@ -618,7 +618,7 @@ int jbd2_journal_start_reserved(handle_t *handle, unsigned int type,
+ EXPORT_SYMBOL(jbd2_journal_start_reserved);
+ 
+ /**
+- * int jbd2_journal_extend() - extend buffer credits.
++ * jbd2_journal_extend() - extend buffer credits.
+  * @handle:  handle to 'extend'
+  * @nblocks: nr blocks to try to extend by.
+  * @revoke_records: number of revoke records to try to extend by.
+@@ -743,7 +743,7 @@ static void stop_this_handle(handle_t *handle)
+ }
+ 
+ /**
+- * int jbd2_journal_restart() - restart a handle .
++ * jbd2__journal_restart() - restart a handle .
+  * @handle:  handle to restart
+  * @nblocks: nr credits requested
+  * @revoke_records: number of revoke record credits requested
+@@ -813,7 +813,7 @@ int jbd2_journal_restart(handle_t *handle, int nblocks)
+ EXPORT_SYMBOL(jbd2_journal_restart);
+ 
+ /**
+- * void jbd2_journal_lock_updates () - establish a transaction barrier.
++ * jbd2_journal_lock_updates () - establish a transaction barrier.
+  * @journal:  Journal to establish a barrier on.
+  *
+  * This locks out any further updates from being started, and blocks
+@@ -872,7 +872,7 @@ void jbd2_journal_lock_updates(journal_t *journal)
+ }
+ 
+ /**
+- * void jbd2_journal_unlock_updates (journal_t* journal) - release barrier
++ * jbd2_journal_unlock_updates () - release barrier
+  * @journal:  Journal to release the barrier on.
+  *
+  * Release a transaction barrier obtained with jbd2_journal_lock_updates().
+@@ -1180,7 +1180,8 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
+ }
+ 
+ /**
+- * int jbd2_journal_get_write_access() - notify intent to modify a buffer for metadata (not data) update.
++ * jbd2_journal_get_write_access() - notify intent to modify a buffer
++ *				     for metadata (not data) update.
+  * @handle: transaction to add buffer modifications to
+  * @bh:     bh to be used for metadata writes
+  *
+@@ -1224,7 +1225,7 @@ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
+  * unlocked buffer beforehand. */
+ 
+ /**
+- * int jbd2_journal_get_create_access () - notify intent to use newly created bh
++ * jbd2_journal_get_create_access () - notify intent to use newly created bh
+  * @handle: transaction to new buffer to
+  * @bh: new buffer.
+  *
+@@ -1304,7 +1305,7 @@ int jbd2_journal_get_create_access(handle_t *handle, struct buffer_head *bh)
+ }
+ 
+ /**
+- * int jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
++ * jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
+  *     non-rewindable consequences
+  * @handle: transaction
+  * @bh: buffer to undo
+@@ -1381,7 +1382,7 @@ int jbd2_journal_get_undo_access(handle_t *handle, struct buffer_head *bh)
+ }
+ 
+ /**
+- * void jbd2_journal_set_triggers() - Add triggers for commit writeout
++ * jbd2_journal_set_triggers() - Add triggers for commit writeout
+  * @bh: buffer to trigger on
+  * @type: struct jbd2_buffer_trigger_type containing the trigger(s).
+  *
+@@ -1423,7 +1424,7 @@ void jbd2_buffer_abort_trigger(struct journal_head *jh,
+ }
+ 
+ /**
+- * int jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
++ * jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
+  * @handle: transaction to add buffer to.
+  * @bh: buffer to mark
+  *
+@@ -1591,7 +1592,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
+ }
+ 
+ /**
+- * void jbd2_journal_forget() - bforget() for potentially-journaled buffers.
++ * jbd2_journal_forget() - bforget() for potentially-journaled buffers.
+  * @handle: transaction handle
+  * @bh:     bh to 'forget'
+  *
+@@ -1760,7 +1761,7 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
+ }
+ 
+ /**
+- * int jbd2_journal_stop() - complete a transaction
++ * jbd2_journal_stop() - complete a transaction
+  * @handle: transaction to complete.
+  *
+  * All done for a particular handle.
+@@ -2078,7 +2079,7 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
+ }
+ 
+ /**
+- * int jbd2_journal_try_to_free_buffers() - try to free page buffers.
++ * jbd2_journal_try_to_free_buffers() - try to free page buffers.
+  * @journal: journal for operation
+  * @page: to try and free
+  *
+@@ -2409,7 +2410,7 @@ static int journal_unmap_buffer(journal_t *journal, struct buffer_head *bh,
+ }
+ 
+ /**
+- * void jbd2_journal_invalidatepage()
++ * jbd2_journal_invalidatepage()
+  * @journal: journal to use for flush...
+  * @page:    page to flush
+  * @offset:  start of the range to invalidate
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 3c5f76ce88f1..17bed9684cba 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -397,7 +397,7 @@ static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
+ #define JI_WAIT_DATA (1 << __JI_WAIT_DATA)
+ 
+ /**
+- * struct jbd_inode - The jbd_inode type is the structure linking inodes in
++ * struct jbd2_inode - The jbd_inode type is the structure linking inodes in
+  * ordered mode present in a transaction so that we can sync them during commit.
+  */
+ struct jbd2_inode {
 -- 
 2.26.2
 
