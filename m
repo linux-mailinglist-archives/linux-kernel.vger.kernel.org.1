@@ -2,106 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF6CA29688C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:37:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C2B829688F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:43:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374712AbgJWChU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:37:20 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:50013 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374631AbgJWChT (ORCPT
+        id S460216AbgJWCnz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:43:55 -0400
+Received: from kvm5.telegraphics.com.au ([98.124.60.144]:45140 "EHLO
+        kvm5.telegraphics.com.au" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2440111AbgJWCnz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:37:19 -0400
-Received: from mail-lj1-f198.google.com ([209.85.208.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <po-hsu.lin@canonical.com>)
-        id 1kVmxB-00069b-9Q
-        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 02:37:17 +0000
-Received: by mail-lj1-f198.google.com with SMTP id a20so1559460ljn.23
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:37:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kL6r0YME8JPJ77vl3uRAXuFWZJrygKvOlR68AHYrrHU=;
-        b=ZiC2hkxwZNFmt+ln+fKFqgbCMiElKtib3bIQUWv3rxMCf6q2RWDefyuSFX2EIrHhQ4
-         kKdmWqK4CEeX7b9ZkqJvceotwofOo0e203TGgpalyjrzDuUlxjEae9vcEOcg5+oIdTSv
-         DpsNNrUxKJ4i+CqW5V57DUs7O1m9kV5MyM/kqQ+wdSa+8BOGAWYvpfbARSqPsBvDa3AR
-         GBuf5O1sOzbAxEYg4QUndHKkAdbSrFnylYe69BONd98UQWh9G121bCbbPgHlCi63tEdA
-         F9TJMtFnBvusZlogF2m+0VdqHcxPn1ejUtuJdp8foKaBK98XUYBdSFz4Rmd+xFwD9N7i
-         jDEQ==
-X-Gm-Message-State: AOAM5332gGMpn9IheVoad/2UnCf/WTDWARJRyZ1Bf/+9j/dV338R51mI
-        vToXMgq+uR7j5x6g7ckU9UW+fwlkO/8YJhGPCnmy12rmoCB/Iqgg1i3i+oEim+skKfH6C1ch/Sa
-        gmFSczi/viq1VXdT1DOjFiEsrLeLMSp2+Z/K9c7PsAFrRc0z920jRXuGK
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr2009856ljn.145.1603420636642;
-        Thu, 22 Oct 2020 19:37:16 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxRfCpmV1tRBi4tQH9ePl5vBE3c7CunlQdQpCfkUSbLWC4WSzKxov2iLonbzZOeUBfANDvUahwOcsIODRjVAck=
-X-Received: by 2002:a2e:b610:: with SMTP id r16mr2009846ljn.145.1603420636341;
- Thu, 22 Oct 2020 19:37:16 -0700 (PDT)
+        Thu, 22 Oct 2020 22:43:55 -0400
+Received: from localhost (localhost.localdomain [127.0.0.1])
+        by kvm5.telegraphics.com.au (Postfix) with ESMTP id 8375E2A909;
+        Thu, 22 Oct 2020 22:43:51 -0400 (EDT)
+Date:   Fri, 23 Oct 2020 13:44:01 +1100 (AEDT)
+From:   Finn Thain <fthain@telegraphics.com.au>
+To:     Tianxianting <tian.xianting@h3c.com>
+cc:     "kashyap.desai@broadcom.com" <kashyap.desai@broadcom.com>,
+        "sumit.saxena@broadcom.com" <sumit.saxena@broadcom.com>,
+        "shivasharan.srikanteshwara@broadcom.com" 
+        <shivasharan.srikanteshwara@broadcom.com>,
+        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
+        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
+        "megaraidlinux.pdl@broadcom.com" <megaraidlinux.pdl@broadcom.com>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] scsi: megaraid_sas: use spin_lock() in hard IRQ
+In-Reply-To: <89c5cb05cb844939ae684db0077f675f@h3c.com>
+Message-ID: <alpine.LNX.2.23.453.2010231324510.6@nippy.intranet>
+References: <20201021064502.35469-1-tian.xianting@h3c.com> <alpine.LNX.2.23.453.2010221312460.6@nippy.intranet> <9923f28dd2b34499a17c53e8fa33f1ca@h3c.com> <alpine.LNX.2.23.453.2010221424390.6@nippy.intranet> <89c5cb05cb844939ae684db0077f675f@h3c.com>
 MIME-Version: 1.0
-References: <20201022083616.41666-1-po-hsu.lin@canonical.com> <87a6wdy9si.fsf@mpe.ellerman.id.au>
-In-Reply-To: <87a6wdy9si.fsf@mpe.ellerman.id.au>
-From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
-Date:   Fri, 23 Oct 2020 10:37:05 +0800
-Message-ID: <CAMy_GT8pMJ4So3zHLLUR8EeL8MfUbv2zTv48p8GXUW3Dm_bFOA@mail.gmail.com>
-Subject: Re: [PATCH] selftests/powerpc/eeh: disable kselftest timeout setting
- for eeh-basic
-To:     Michael Ellerman <mpe@ellerman.id.au>
-Cc:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        linux-kselftest@vger.kernel.org, benh@kernel.crashing.org,
-        shuah <shuah@kernel.org>, mbenes@suse.cz,
-        joe.lawrence@redhat.com, mathieu.desnoyers@efficios.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:07 AM Michael Ellerman <mpe@ellerman.id.au> wrote:
->
-> Po-Hsu Lin <po-hsu.lin@canonical.com> writes:
-> > The eeh-basic test got its own 60 seconds timeout (defined in commit
-> > 414f50434aa2 "selftests/eeh: Bump EEH wait time to 60s") per breakable
-> > device.
-> >
-> > And we have discovered that the number of breakable devices varies
-> > on different hardware. The device recovery time ranges from 0 to 35
-> > seconds. In our test pool it will take about 30 seconds to run on a
-> > Power8 system that with 5 breakable devices, 60 seconds to run on a
-> > Power9 system that with 4 breakable devices.
-> >
-> > Thus it's better to disable the default 45 seconds timeout setting in
-> > the kselftest framework to give it a chance to finish. And let the
-> > test to take care of the timeout control.
->
-> I'd prefer if we still had some timeout, maybe 5 or 10 minutes? Just in
-> case the test goes completely bonkers.
->
-OK, let's go for 5 minutes.
-Will send V2 later.
-Thanks for your suggestion!
+On Thu, 22 Oct 2020, Tianxianting wrote:
 
-> cheers
->
-> > diff --git a/tools/testing/selftests/powerpc/eeh/Makefile b/tools/testing/selftests/powerpc/eeh/Makefile
-> > index b397bab..ae963eb 100644
-> > --- a/tools/testing/selftests/powerpc/eeh/Makefile
-> > +++ b/tools/testing/selftests/powerpc/eeh/Makefile
-> > @@ -3,7 +3,7 @@ noarg:
-> >       $(MAKE) -C ../
-> >
-> >  TEST_PROGS := eeh-basic.sh
-> > -TEST_FILES := eeh-functions.sh
-> > +TEST_FILES := eeh-functions.sh settings
-> >
-> >  top_srcdir = ../../../../..
-> >  include ../../lib.mk
-> > diff --git a/tools/testing/selftests/powerpc/eeh/settings b/tools/testing/selftests/powerpc/eeh/settings
-> > new file mode 100644
-> > index 0000000..e7b9417
-> > --- /dev/null
-> > +++ b/tools/testing/selftests/powerpc/eeh/settings
-> > @@ -0,0 +1 @@
-> > +timeout=0
-> > --
-> > 2.7.4
+> I see, If we add this patch, we need to get all cpu arch that support 
+> nested interrupts.
+> 
+
+I was just calling into question 1. the benefit (does it improve 
+performance?) and 2. the code style (is it less portable?).
+
+It's really the style question that mostly interests me because I've had 
+to code around the nested interrupt situation before, and everytime it 
+comes up it makes me wonder about the necessity.
+
+I was not trying to veto your patch. It is not my position to do that. If 
+Broadcom likes the patch, that's great.
