@@ -2,119 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 688EE296B3C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:29:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CB77A296B3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:29:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460629AbgJWI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:29:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460621AbgJWI3o (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:29:44 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F113C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:29:44 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t22so468067plr.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=MMav+PtnWA8e0lc96loqiE6mTzZH6xG4l/t4zMITsAk=;
-        b=YQ2AKoRwpkty0tvJPPA8WCCIKDOr9TT0bTWA5t2FhKzhb8Ss+jzt3G3AS/k5guH6wq
-         tI72tb/I4pZzAHl9BKirKz2Yage3lUKgCDS8DdgzH7cpUBIh3Ad1oYsmvnT7tobdj7VG
-         dkhy0/7q1cL2Fzl3+y6xUeWAGbtcUgE4nPH+nKbpSj2OE05m9gWZn/K1ObetheeZob0x
-         yafIFMf9P8AYz8MCi8WnOob24dMArObcFn1ZIZ41wCSgzyGdtfo8iuFPNkNM2ciLFX15
-         B8iaKwOQQJUJMCdm9o7EHXdgn7Gp8jbdSGwwFZMuWuXWDIbPes52ML1nZVpUMvOGfiTz
-         pV6w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=MMav+PtnWA8e0lc96loqiE6mTzZH6xG4l/t4zMITsAk=;
-        b=drsji8aRYW61gL0U+LV2ubtK7sBH2YUT90v/03Y82EixXBycgw+O6MsD/0ultQvWdq
-         cHGLwJXnzzQ5D/FjvipdPHF4Hdyc2fgCQHB37LtzJicHE+Htrv2zEsbJIQ2HlzNM/0s4
-         1xwFxgrk1K9scZTpl/plyD2lO0XiY6DlHsZ7lDRnPtvUkWQxwLpT/UQYaggJHyu9wUhm
-         sFLVVQS9ySJ/PYXItsAbc2Hz8VFysOte/gnUhXs5J6dmsuGY80WF2nJyGS3TJQNS0v4F
-         M9gNfDQ28/qH7yX4mX9HvYkzCR94PgVSpME5kywvmv39nf8/ojPIk6DL6W7+51AaHvVz
-         Rj0Q==
-X-Gm-Message-State: AOAM531xUzphxyaTK99YSDITG24ps9B8FPkK91e8LlXxSQTavdrgLRLK
-        I83DNeJG2xEMEaBvVGlie78VVQ==
-X-Google-Smtp-Source: ABdhPJzWK1/wuqJtRsFK0GxzZn3Rmp3+fNzvootOjfC35/ce5xHXdauekDAiOnFpGysDl/EFqjHNZw==
-X-Received: by 2002:a17:902:6bc5:b029:d3:f10c:9449 with SMTP id m5-20020a1709026bc5b02900d3f10c9449mr1154917plt.54.1603441783714;
-        Fri, 23 Oct 2020 01:29:43 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id e2sm1021057pgd.27.2020.10.23.01.29.42
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Oct 2020 01:29:43 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 13:59:41 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Hector Yuan <hector.yuan@mediatek.com>
-Cc:     linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
-        Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        wsd_upstream@mediatek.com
-Subject: Re: [PATCH v1 2/6] dt-bindings: arm: cpus: Document
- 'mtk,freq-domain' property
-Message-ID: <20201023082941.yfjewzdsnspug7by@vireshk-i7>
-References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
- <1603441493-18554-3-git-send-email-hector.yuan@mediatek.com>
+        id S460636AbgJWI3w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:29:52 -0400
+Received: from mx2.suse.de ([195.135.220.15]:38466 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S460475AbgJWI3v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:29:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5491AABF4;
+        Fri, 23 Oct 2020 08:29:50 +0000 (UTC)
+Subject: Re: [PATCH] gpu/drm/mgag200:remove break after return
+To:     Bernard <bernard@vivo.com>
+Cc:     Dave Airlie <airlied@redhat.com>, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+        opensource.kernel@vivo.com
+References: <ADgA6wAcDbnOQfg3AhKb6KoN.3.1603439329788.Hmail.bernard@vivo.com>
+From:   Thomas Zimmermann <tzimmermann@suse.de>
+Message-ID: <44e91fc5-275e-0cd3-b6cd-acc14621a9fd@suse.de>
+Date:   Fri, 23 Oct 2020 10:29:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603441493-18554-3-git-send-email-hector.yuan@mediatek.com>
-User-Agent: NeoMutt/20180716-391-311a52
+In-Reply-To: <ADgA6wAcDbnOQfg3AhKb6KoN.3.1603439329788.Hmail.bernard@vivo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23-10-20, 16:24, Hector Yuan wrote:
-> From: "Hector.Yuan" <hector.yuan@mediatek.com>
-> 
-> Add devicetree documentation for 'mtk,freq-domain' property specific
-> to Mediatek CPUs. This property is used to reference the CPUFREQ node
-> along with the domain id.
-> 
-> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
-> ---
->  Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
->  1 file changed, 6 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
-> index 1222bf1..06a6f5b 100644
-> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
-> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
-> @@ -255,6 +255,12 @@ properties:
->  
->        where voltage is in V, frequency is in MHz.
->  
-> +  mtk-freq-domain:
-> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
-> +    description:
-> +      CPUs supporting freq-domain must set their "mtk-freq-domain" property
-> +      with phandle to a cpufreq_hw node followed by the domain id.
-> +
+Hi
 
-Name should have been mtk,freq-domain I believe. Rob will confirm the
-rest.
+On 23.10.20 09:48, Bernard wrote:
+> 
+> 
+> From: Thomas Zimmermann <tzimmermann@suse.de>
+> Date: 2020-10-23 15:13:30
+> To:  Bernard Zhao <bernard@vivo.com>,Dave Airlie <airlied@redhat.com>,David Airlie <airlied@linux.ie>,Daniel Vetter <daniel@ffwll.ch>,dri-devel@lists.freedesktop.org,linux-kernel@vger.kernel.org
+> Cc:  opensource.kernel@vivo.com
+> Subject: Re: [PATCH] gpu/drm/mgag200:remove break after return>Hi
+>>
+>> On 23.10.20 09:00, Bernard Zhao wrote:
+>>> In function mgag200_set_pci_regs, there are some switch cases
+>>> returned, then break. These break will never run.
+>>> This patch is to make the code a bit readable.
+>>>
+>>> Signed-off-by: Bernard Zhao <bernard@vivo.com>
+>>> ---
+>>>  drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +----
+>>>  1 file changed, 1 insertion(+), 4 deletions(-)
+>>>
+>>> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> index 38672f9e5c4f..de873a5d276e 100644
+>>> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+>>> @@ -794,20 +794,17 @@ static int mgag200_crtc_set_plls(struct mga_device *mdev, long clock)
+>>>  	case G200_SE_A:
+>>>  	case G200_SE_B:
+>>>  		return mga_g200se_set_plls(mdev, clock);
+>>> -		break;
+>>>  	case G200_WB:
+>>>  	case G200_EW3:
+>>>  		return mga_g200wb_set_plls(mdev, clock);
+>>> -		break;
+>>>  	case G200_EV:
+>>>  		return mga_g200ev_set_plls(mdev, clock);
+>>> -		break;
+>>>  	case G200_EH:
+>>>  	case G200_EH3:
+>>>  		return mga_g200eh_set_plls(mdev, clock);
+>>> -		break;
+>>>  	case G200_ER:
+>>>  		return mga_g200er_set_plls(mdev, clock);
+>>> +	default:
+>>
+>> No default case here. If one of the enum values is not handled by the
+>> switch, the compiler should warn about it.
+> 
+> Hi
+> 
+> For this point I was a little confused, about this switch variable "mdev->type", my understanding is that this variable`s value can be certain only when the code is running.
+> How does the compiler warn this("If one of the enum values is not handled") before the code runs?
 
->    power-domains:
->      $ref: '/schemas/types.yaml#/definitions/phandle-array'
->      description:
-> -- 
-> 1.7.9.5
+The enum mga_type {} has values (G200_ER, G200_WB, etc) that are known
+to the compiler. If one of those values does not show up in the switch
+statement, the compiler warns. Adding default would silence this warning.
+
+In principle, mdev->type could contain any value that fits into an int.
+But assigning anything that is not listed in enum mga_type {} is
+considered an error as well.
+
+Best regards
+Thomas
+
+> 
+> BR//Bernard
+> 
+>> Best regards
+>> Thomas
+>>
+>>>  		break;
+>>>  	}
+>>>  
+>>>
+>>
+>> -- 
+>> Thomas Zimmermann
+>> Graphics Driver Developer
+>> SUSE Software Solutions Germany GmbH
+>> Maxfeldstr. 5, 90409 Nürnberg, Germany
+>> (HRB 36809, AG Nürnberg)
+>> Geschäftsführer: Felix Imendörffer
+> 
+> 
 
 -- 
-viresh
+Thomas Zimmermann
+Graphics Driver Developer
+SUSE Software Solutions Germany GmbH
+Maxfeldstr. 5, 90409 Nürnberg, Germany
+(HRB 36809, AG Nürnberg)
+Geschäftsführer: Felix Imendörffer
