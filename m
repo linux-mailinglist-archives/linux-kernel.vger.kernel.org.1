@@ -2,106 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD02A29698B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:12:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7D7C0296991
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:12:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372224AbgJWGMF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:12:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37206 "EHLO
+        id S372256AbgJWGMt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:12:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37334 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2897560AbgJWGMF (ORCPT
+        with ESMTP id S2898360AbgJWGMt (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:12:05 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06ACFC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:12:05 -0700 (PDT)
-Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
-        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kVqIe-00047x-IK; Fri, 23 Oct 2020 08:11:40 +0200
-Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
-        (envelope-from <ukl@pengutronix.de>)
-        id 1kVqIc-0007Pm-9n; Fri, 23 Oct 2020 08:11:38 +0200
-Date:   Fri, 23 Oct 2020 08:11:36 +0200
-From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Sylwester Nawrocki <s.nawrocki@samsung.com>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-media@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-samsung-soc@vger.kernel.org,
-        linux-hwmon@vger.kernel.org, linux-pwm@vger.kernel.org,
-        Kamil Debski <kamil@wypas.org>
-Subject: Re: [PATCH 1/4] MAINTAINERS: move Kamil Debski to credits
-Message-ID: <20201023061136.cjhpuh5lye6sclf6@pengutronix.de>
-References: <20201016151528.7553-1-krzk@kernel.org>
- <20201022191314.plesyizmczgdmodr@pengutronix.de>
- <20201022200925.GA2525@kozik-lap>
+        Fri, 23 Oct 2020 02:12:49 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 523DEC0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:12:49 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id c20so324610pfr.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:12:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=sEILgJLNi06NCo6epaYREQDcaIzCOIdwa2hMmhI70Jg=;
+        b=iEqMXrLl0RL9xxIe+yfy28ibTGW9XVZWczPvCKUllYRfiEFmJPM2anznMKLapDG9GX
+         h7fnY0QO9J39RQvjjk6GD2akI/wjl1Mypvlg3BnfAVpyz9zhgpfuAQTjAXsBtCG5Exa5
+         lxczUH9ovOtGzrFI/jP4wdP8IYbl1WAsqECR1KiSM7OSkr/+q8/tTjMMF2R5lWvKiINW
+         SAfOCr02zbJAmeQJhWNSACGYQwgOsAk3WxHmdTiN5sumdBi8BI41NGlRqv1gibcDhA/7
+         tGQ/GqL5zqisZz6Doa8Q/FVduwMTQPnLFWR+Rm5Cox9874x7+V4mYixHU/h1T3TOGmn5
+         HN9A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=sEILgJLNi06NCo6epaYREQDcaIzCOIdwa2hMmhI70Jg=;
+        b=sHokVYIJPyheGJ3oBzLo5fUWxamsoGw+AqN1CAzCPbFQRsWAabBdEBKAR5BO1Q1RYB
+         ey0RfQuPhF05f29K7iz4Ug6zOzKV2iseF1M9VGcZJaiMu1uzWQt/923sYGUxBJh8iRMh
+         RM2tHFcUtcHszPH7yFc66QAm9EOnz3gvTaBuZydB45EkJmpdqRt9dJh/1Qw4BoE60FeN
+         o8qipsOer0Vb8PAgFeK1mEwXBhZ5txcakwDppyyVWU0lRh9s88E5gnyuWHCqPJyYrFNU
+         kgkhpCKrodUpeCS3N/gFKgcfW3z9wXY7zT8pU+cNdV4GPror4ubVhvl79HSqCcFp4KHf
+         aDgw==
+X-Gm-Message-State: AOAM531M0fd7B3WbBot0Mgh6QKxLEkqIF1m2OV1OgZ8wGG3RHIQAVjX7
+        hwhDhxZN+CCDqfePGCieUQn+Bg==
+X-Google-Smtp-Source: ABdhPJxwrBrDCshuFRMlZZPQRHvFk4BrZKTWyVBbDUgWGljRIN46qOVADLDi8JM3k8vZHA67hjjKQw==
+X-Received: by 2002:a63:8f5d:: with SMTP id r29mr840712pgn.18.1603433568888;
+        Thu, 22 Oct 2020 23:12:48 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id t15sm743131pjy.33.2020.10.22.23.12.47
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 22 Oct 2020 23:12:48 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 11:42:46 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        srinivas.pandruvada@linux.intel.com
+Subject: Re: [PATCH] sched/fair: check for idle core
+Message-ID: <20201023061246.irzbrl62baoawmqv@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <20201022071145.GM2628@hirez.programming.kicks-ass.net>
+ <20201022104703.nw45dwor6wfn4ity@vireshk-i7>
+ <34115486.YmRjPRKJaA@kreacher>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="64of3vfnxriskdjj"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022200925.GA2525@kozik-lap>
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <34115486.YmRjPRKJaA@kreacher>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 22-10-20, 13:45, Rafael J. Wysocki wrote:
+> On Thursday, October 22, 2020 12:47:03 PM CEST Viresh Kumar wrote:
+> > And I am not really sure why we always wanted this backup performance
+> > governor to be there unless the said governors are built as module.
+> 
+> Apparently, some old drivers had problems with switching frequencies fast enough
+> for ondemand to be used with them and the fallback was for those cases.  AFAICS.
 
---64of3vfnxriskdjj
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Do we still need this ? Or better ask those platforms to individually
+enable both of them.
 
-Hello Krzysztof,
-
-On Thu, Oct 22, 2020 at 10:09:25PM +0200, Krzysztof Kozlowski wrote:
-> On Thu, Oct 22, 2020 at 09:13:14PM +0200, Uwe Kleine-K=F6nig wrote:
-> > this series doesn't seem to be applied and looking at the list of people
-> > this mail was sent "To:" it's not obvious who is expected to take it. I
-> > assume it is not for us linux-pwm guys and will tag it as
-> > "not-applicable" in our patchwork.
->=20
-> All of the patches, including the one here, touch actually multiple
-> subsystems, so if this is OK with you, I could take them through
-> Samsung SoC.
-
-I don't object. And I failed to find where pwm is touched (I assume I
-didn't look carefully enough).
-
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---64of3vfnxriskdjj
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+SdBUACgkQwfwUeK3K
-7AkxRQf7B5uGR0Tf8DzE82B5Uy0nOOhk7weuNjW+IHxy78ekhlyQxfjS0sJ0rYc9
-Z6G2m0AmEmMmDVq8u0FHZ9u6viBuXKfQ4CqlNd2UiR7olagr61pGbrSxjIwgIDA4
-zSEbNILuUqqenjp6m0FGSP6HUNfUbF6pNI0XWnZELus0wST2fdIUH508b4gtlTYX
-9wRzn7EMA1jzzZtqP1okoAa2C1B2CQvXXdD3YUByJruBhXGRpJ3rf26S6wW9r59x
-snDtRxeFWYxgPWbyehWse1Il0R5LgdBAYfdFK0NNFG2EltMzB8vstGKpd9AEI2ka
-Yn6pL8rsDumxeUoXxlK2dPArdLZwuw==
-=RZQR
------END PGP SIGNATURE-----
-
---64of3vfnxriskdjj--
+-- 
+viresh
