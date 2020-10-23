@@ -2,79 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0AC8A297826
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:18:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56A5329782B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756000AbgJWUSS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:18:18 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42302 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755987AbgJWUSS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:18:18 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kW3Vn-003Ake-7G; Fri, 23 Oct 2020 22:18:07 +0200
-Date:   Fri, 23 Oct 2020 22:18:07 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Oleksij Rempel <o.rempel@pengutronix.de>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
-Subject: Re: [RFC PATCH v1 1/6] net: phy: add CAN PHY Virtual Bus
-Message-ID: <20201023201807.GC752111@lunn.ch>
-References: <20201023105626.6534-1-o.rempel@pengutronix.de>
- <20201023105626.6534-2-o.rempel@pengutronix.de>
+        id S1756015AbgJWUTJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:19:09 -0400
+Received: from smtprelay0104.hostedemail.com ([216.40.44.104]:46266 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1756008AbgJWUTJ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 16:19:09 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay02.hostedemail.com (Postfix) with ESMTP id DD4F21730851;
+        Fri, 23 Oct 2020 20:19:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2198:2199:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3353:3622:3653:3834:3865:3866:3867:3868:3870:3871:3874:4321:4560:5007:6119:6248:9010:10004:10400:10483:10848:11026:11232:11658:11914:12043:12297:12438:12663:12740:12760:12895:13069:13095:13161:13229:13311:13357:13439:14096:14097:14659:14721:14777:19901:19997:21063:21080:21433:21627:21660:30054:30070:30085:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: thing33_0e181ed2725c
+X-Filterd-Recvd-Size: 2638
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf08.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 23 Oct 2020 20:19:06 +0000 (UTC)
+Message-ID: <b2532a0a0032d39657a46198bf572a53232d29a4.camel@perches.com>
+Subject: Re: [PATCH v3] checkpatch: fix false positives in REPEATED_WORD
+ warning
+From:   Joe Perches <joe@perches.com>
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>,
+        Aditya Srivastava <yashsri421@gmail.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com
+Date:   Fri, 23 Oct 2020 13:19:05 -0700
+In-Reply-To: <alpine.DEB.2.21.2010232104150.11676@felia>
+References: <20201023133828.19609-1-yashsri421@gmail.com>
+         <alpine.DEB.2.21.2010232104150.11676@felia>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023105626.6534-2-o.rempel@pengutronix.de>
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 12:56:21PM +0200, Oleksij Rempel wrote:
-> Most of CAN PHYs (transceivers) are not attached to any data bus, so we
-> are not able to communicate with them. For this case, we introduce a CAN
-> specific virtual bus to make use of existing PHY framework.
-> 
-> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
-> ---
->  drivers/net/phy/Kconfig       |   8 ++
->  drivers/net/phy/Makefile      |   1 +
->  drivers/net/phy/can_phy_bus.c | 196 ++++++++++++++++++++++++++++++++++
+On Fri, 2020-10-23 at 21:06 +0200, Lukas Bulwahn wrote:
+> On Fri, 23 Oct 2020, Aditya Srivastava wrote:
+> > A quick evaluation on v5.6..v5.8 showed that this fix reduces
+> > REPEATED_WORD warnings from 2797 to 907.
+> > 
+> > A quick manual check found all cases are related to hex output or
+> > list command outputs in commit messages.
+[] 
+> I think this strategy now makes sense and has the right complexity for a 
+> good heuristics in this case.
 
-Hi Oleksij
+The proper indentation was not followed as described in a previous reply.
+This patch also causes conflicts with Dwaipayan's earlier effort.
 
-mdio drivers have moved to drivers/net/mdio.
+Lastly, I'm not sure this complexity is worthwhile.
 
->  include/linux/can/phy.h       |  21 ++++
->  4 files changed, 226 insertions(+)
->  create mode 100644 drivers/net/phy/can_phy_bus.c
->  create mode 100644 include/linux/can/phy.h
-> 
-> diff --git a/drivers/net/phy/Kconfig b/drivers/net/phy/Kconfig
-> index 698bea312adc..39e3f57ea60a 100644
-> --- a/drivers/net/phy/Kconfig
-> +++ b/drivers/net/phy/Kconfig
-> @@ -153,6 +153,14 @@ config BCM_CYGNUS_PHY
->  config BCM_NET_PHYLIB
->  	tristate
->  
-> +config CAN_PHY_BUS
-> +	tristate "Virtual CAN PHY Bus"
-> +	depends on PHYLIB
-> +	help
-> +	  Most CAN PHYs (transceivers) are not attached to any data bus, so we
-> +	  are not able to communicate with them. For this case, a CAN specific
-> +	  virtual bus to make use of existing PHY framework.
+The style is also somewhat complex and doesn't allow for upper and lower
+case variants.
 
-Is there anything CAN specific here? Maybe we should just call it a
-virtual PHY bus?
+I still think that a trivial "is $first hex only" test is simpler.
 
-	Andrew
+Perhaps use a hash and an exists test if this is useful at all.
+
+What specific matches were found with this word list?
+Why not just add those to the word list?
+
+In all the nearly 1 million commit descriptions in the kernel without
+the patch contexts, these were the only hex-like word matches I found
+with their count of matches:
+
+76 be
+17 Add
+13 add
+6 dada
+2 Bad
+2 bad
+
+100 or so false positives in about a million commits isn't many.
+
+dada is not an actual word in a commit message so I suggest
+adding hex word like checks only for "be" "add" and "bad".
+
+Maybe "added" too but that hasn't been used as far as I can tell.
+
+But all the other dictionary entries don't appear to be useful.
+
+So maybe something like:
+
+our %allow_repeated_words = (
+	add => '',
+	added => '',
+	bad => '',
+	be => '',
+);
+
+and
+
+	next if (exists($allow_repeated_words{lc($first)}));
+
