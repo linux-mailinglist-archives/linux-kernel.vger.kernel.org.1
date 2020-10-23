@@ -2,82 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 514D9296C91
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:14:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3A7A296CD3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461994AbgJWKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:14:26 -0400
-Received: from mga09.intel.com ([134.134.136.24]:41359 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S461906AbgJWKO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:14:26 -0400
-IronPort-SDR: zf8lCfXOSOburnJRLQ1IA11cbqAKffmO9pTxcaFfag81YGszskYOi5O8fdI8cQVrBeQ4djGy/6
- k/QLdpcWm35A==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="167776701"
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="167776701"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga008.fm.intel.com ([10.253.24.58])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:14:21 -0700
-IronPort-SDR: k2nXBRs3QZ/XH/H9tsrKtVoFHbmFvvLaTJOUIBX3JQUhqZzb+Y4WMU1JEup+QY7ajzeCGuF+Ay
- 1DbaPSHJ13Uw==
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="302628827"
-Received: from spiccard-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.38])
-  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:14:08 -0700
-Date:   Fri, 23 Oct 2020 13:14:08 +0300
-From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-To:     Dave Hansen <dave.hansen@intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-Message-ID: <20201023101408.GF168477@linux.intel.com>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
- <91637b13-c0ee-82bd-05cd-5ce848004eae@intel.com>
+        id S462321AbgJWKZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:25:49 -0400
+Received: from slot0.packallstationery-co-za.email ([86.104.194.82]:56930 "EHLO
+        slot0.packallstationery-co-za.email" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S462303AbgJWKZn (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:25:43 -0400
+X-Greylist: delayed 605 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 06:25:43 EDT
+DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=packallstationery-co-za.email;
+ h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=demap@packallstationery-co-za.email;
+ bh=KPY0JLydxvzvAjGu04JfAIpD7KI=;
+ b=CBvThsWjmIQOnsAszykMvod2itOEwuyjQNbe5iPI/RRmVq1kW2BgezZldy0Ye8DdDF+jPDThVVaW
+   fobnBN6l7wkE6LCuurOlIGAKSvvW/Fe0xe8eECyCo6OSKvO9PDD1Vnb1ZXiuNZVE+E6dfDr+Y0Uj
+   2u6t0FTrC5647uJfSKBhvdjBQtpO8xq3BxrUmvu+BU233J09WqbAI/U5Wa6xri+rGToVUmu5nb6o
+   nqlb/qi4bKzJWLUTbIBXXt+TJa+e5PpV5J6vuIcBRvwZ2evP40vjncUr0g/s0cD+wXSvfzW4BbtA
+   QPK68tRiWfXwztgdrFBfl06zBofQJQaQtMEYeA==
+DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=packallstationery-co-za.email;
+ b=Wmx7txF8ECuv2M6fbPv4h3lsFQHG/NKVRAWAehNW7jmu3dbHgRZC72km0J0MddRKcXZ6pLRoA115
+   6sHtjRXj/QSDM0u9PD7sBHkU35S8bE+CMvTdat6UvN/Kzg+0gaxIqUfTfjIZ7K8XZvSZ7pp0WoCU
+   WIzJwj2Ssr1/Iv/eozFlGcJiY+fUcnAbwJi+qh6ohqon9kA4qWUH/4PsEBPHwJERjRjMiAxUOVWV
+   9ypo17d/BZkXOLLWz5IrHVWIuLpXN1CBm+fZM9+f0/pyy7LVhtYwP0feeFDYeyGoojgJrS1f7TfZ
+   lMjZHTGfymtDY0pZMOiejfau9roIxC4yA7LJPg==;
+Reply-To: iraqofficgenerationchemicals@outlook.com
+From:   iraqofficgenerationchemicals <demap@packallstationery-co-za.email>
+To:     linux-kernel@vger.kernel.org
+Subject: price offer  for linux-kernel@vger.kernel.org
+Date:   23 Oct 2020 03:15:33 -0700
+Message-ID: <20201023031533.6446D5BAB2833975@packallstationery-co-za.email>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <91637b13-c0ee-82bd-05cd-5ce848004eae@intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain;
+        charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, Oct 20, 2020 at 08:48:54AM -0700, Dave Hansen wrote:
-> >  int __init sgx_drv_init(void)
-> >  {
-> >  	unsigned int eax, ebx, ecx, edx;
-> > @@ -181,5 +192,12 @@ int __init sgx_drv_init(void)
-> >  		return ret;
-> >  	}
-> >  
-> > +	ret = misc_register(&sgx_dev_provision);
-> > +	if (ret) {
-> > +		pr_err("Creating /dev/sgx/provision failed with %d.\n", ret);
-> > +		misc_deregister(&sgx_dev_enclave);
-> > +		return ret;
-> > +	}
-> > +
-> 
-> Isn't it a *bit* too specific to say that a device file failed to be
-> created?  Do other misc devices use this kind of message?
+Hello Dear,
 
-Before seeing this I had already removed it. It is incosistent at
-least and quite useless error really. We have tracing tools for
-this.
+Any possibilities to get price offer for your product at
+earliest? Customer is waiting.
 
-/Jarkko
+Please confirm me below with your price offer.
+
+*  Delivery time after payment of requested Order? [I have to
+confirm delivery time to our clients]
+
+*  Each item approximate weight? [This is important to calculate
+freight cost]
+
+Your early reply is highly appreciated.
+
+
+Thanks in advance.
+Regards
+Mr. Kasim Fadhil
+Import manager
+
+
+This e-mail may contain confidential and/or privileged=20
+information. If you are not the intended recipient (or have=20
+received this e-mail in error) please notify the sender=20
+immediately and destroy this e-mail. Any unauthorised copying,=20
+disclosure or distribution of the material in this e-mail is=20
+strictly forbidden
+
+Este e-mail pode conter informa=C3=A7=C3=B5es confidenciais e / ou=20
+privilegiadas. Se voc=C3=AA n=C3=A3o for o destinat=C3=A1rio pretendido (ou=
+=20
+tiver recebido este e-mail por engano), notifique o remetente=20
+imediatamente e destrua este e-mail. Qualquer c=C3=B3pia, divulga=C3=A7=C3=
+=A3o=20
+ou distribui=C3=A7=C3=A3o n=C3=A3o autorizada do material neste e-mail =C3=
+=A9=20
+estritamente proibida.
+
+=EF=81=90 Before printing think about your responsibility for the=20
+ENVIRONMENT
+
