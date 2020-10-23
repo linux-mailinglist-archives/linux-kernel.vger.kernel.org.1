@@ -2,73 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E97BC2969B2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:29:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EEC5F2969F8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:55:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372733AbgJWG3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:29:15 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:33050 "EHLO huawei.com"
+        id S375471AbgJWGzI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:55:08 -0400
+Received: from mail.garant55.ru ([82.200.106.164]:56470 "EHLO infomsk.ru"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S369627AbgJWG3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:29:15 -0400
-Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id E0EC4BBF3C1F6B357141;
-        Fri, 23 Oct 2020 14:29:12 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS408-HUB.china.huawei.com
- (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 23 Oct 2020
- 14:29:06 +0800
-Subject: Re: [PATCH v1 0/5] Introduce a new helper marco
- DEFINE_STORE_ATTRIBUTE at seq_file.c
-To:     Al Viro <viro@zeniv.linux.org.uk>
-CC:     <akpm@linux-foundation.org>, <andriy.shevchenko@linux.intel.com>,
-        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
-        <felipe.balbi@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <uma.shankar@intel.com>, <anshuman.gupta@intel.com>,
-        <animesh.manna@intel.com>, <linux-usb@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1603355997-32350-1-git-send-email-luojiaxing@huawei.com>
- <20201022122858.GT3576660@ZenIV.linux.org.uk>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <7003f142-5d53-1285-c6cd-a8e8d9c076b7@huawei.com>
-Date:   Fri, 23 Oct 2020 14:29:05 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
+        id S373445AbgJWGzI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 02:55:08 -0400
+X-Greylist: delayed 3604 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 02:55:07 EDT
+Received: from [82.200.106.161] (HELO User)
+  by infomsk.ru (CommuniGate Pro SMTP 5.2.3)
+  with SMTP id 11635874; Fri, 23 Oct 2020 12:54:57 +0700
+Reply-To: <senmenekssea@gmail.com>
+From:   "LEO NATHAN" <r.huber@ewatt.com>
+Subject: RESPOND FOR DETAILS
+Date:   Thu, 22 Oct 2020 22:54:57 -0700
 MIME-Version: 1.0
-In-Reply-To: <20201022122858.GT3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Type: text/plain;
+        charset="Windows-1251"
 Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+X-Priority: 3
+X-MSMail-Priority: Normal
+X-Mailer: Microsoft Outlook Express 6.00.2600.0000
+X-MimeOLE: Produced By Microsoft MimeOLE V6.00.2600.0000
+Message-ID: <auto-000011635874@infomsk.ru>
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
-
-On 2020/10/22 20:28, Al Viro wrote:
-> On Thu, Oct 22, 2020 at 04:39:52PM +0800, Luo Jiaxing wrote:
->> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
->> for read-only file, but we found many of drivers also want a helper marco for
->> read-write file too.
-> DEFINE_SHOW_ATTRIBUTE is a bloody bad idea; let's not replicate the garbage
-> any further.  If you want templates - C++ is over that way...
-
-
-I am sorry but would you mind to explain it in more detail that why 
-DEFINE_SHOW_ATTRIBUTE is a bad idea?
-
-I found that DEFINE_SHOW_ATTRIBUTE is convenient and avoids a lot of 
-duplicate code When add some debugfs file for DFX.
-
-
-Thanks
-
-Jiaxing
-
-
->
-> .
->
-
+Dear,I am in the UK and very sick due to cancer, will die.want to distribute $10,000,000.00 via you my name is LEO NATHAN
