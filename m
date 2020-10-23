@@ -2,44 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B59972973DD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:31:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 680622973C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:30:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751743AbgJWQbg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:31:36 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:59626 "EHLO
+        id S1751622AbgJWQat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:30:49 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57569 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751514AbgJWQan (ORCPT
+        by vger.kernel.org with ESMTP id S1751587AbgJWQap (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:30:43 -0400
+        Fri, 23 Oct 2020 12:30:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603470641;
+        s=mimecast20190719; t=1603470643;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=Emf4QJ3bhXaHVmzs09mmYMKc8xfp1s/70FDmcTsiE+U=;
-        b=aD3g/YJ8c5cWilOpOpiegIO9+MDP/H2yJKXRG0xns0uIlJYQ+a/j/Y8peK9s9eCM8xGNen
-        xYtOjcQqGjVmDs6a1Ruw95C+cr2yp3X/swqsqpMvEXQ46Z+HLCjYv7LD2ROuDfewXZUawg
-        SwVo68YYwx4em4U28DlxNkmw3MKb9+E=
+        bh=DZ+rMtNIVJE0chFpsiXOgLU87Yhy1rI2EEdvRwuExCc=;
+        b=dkc2WkJhqV0DLcEVbo+BMvag6SKyjfIKOHIgQx95m5WeULOgEMp8eiWl0WU6BXZkp7S8m4
+        yzPvGPsAFf+y9M8UoYwQMLfLEXQjdMY/9ympaRGMBn+zmVFm0IfSAU4zzpgZ+pAsnWFdmd
+        W63gSaL0r7rui7ONZxuwbr9mfXGtV8c=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-473-JmtyH64bM-iJWS4dDMCruQ-1; Fri, 23 Oct 2020 12:30:39 -0400
-X-MC-Unique: JmtyH64bM-iJWS4dDMCruQ-1
+ us-mta-61-BFZEmebkObOBuuT2IKKCaQ-1; Fri, 23 Oct 2020 12:30:40 -0400
+X-MC-Unique: BFZEmebkObOBuuT2IKKCaQ-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 5B110805F15;
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id CD7FB805729;
         Fri, 23 Oct 2020 16:30:38 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 025DC59;
-        Fri, 23 Oct 2020 16:30:37 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 75F08756AC;
+        Fri, 23 Oct 2020 16:30:38 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     bgardon@google.com
-Subject: [PATCH 13/22] kvm: x86/mmu: Allocate struct kvm_mmu_pages for all pages in TDP MMU
-Date:   Fri, 23 Oct 2020 12:30:15 -0400
-Message-Id: <20201023163024.2765558-14-pbonzini@redhat.com>
+Subject: [PATCH 14/22] kvm: x86/mmu: Support invalidate range MMU notifier for TDP MMU
+Date:   Fri, 23 Oct 2020 12:30:16 -0400
+Message-Id: <20201023163024.2765558-15-pbonzini@redhat.com>
 In-Reply-To: <20201023163024.2765558-1-pbonzini@redhat.com>
 References: <20201023163024.2765558-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -51,9 +51,9 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Ben Gardon <bgardon@google.com>
 
-Attach struct kvm_mmu_pages to every page in the TDP MMU to track
-metadata, facilitate NX reclaim, and enable inproved parallelism of MMU
-operations in future patches.
+In order to interoperate correctly with the rest of KVM and other Linux
+subsystems, the TDP MMU must correctly handle various MMU notifiers. Add
+hooks to handle the invalidate range family of MMU notifiers.
 
 Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
 machine. This series introduced no new failures.
@@ -62,88 +62,171 @@ This series can be viewed in Gerrit at:
 	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
 
 Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20201014182700.2888246-12-bgardon@google.com>
+Message-Id: <20201014182700.2888246-13-bgardon@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h |  4 ++++
- arch/x86/kvm/mmu/tdp_mmu.c      | 13 ++++++++++---
- 2 files changed, 14 insertions(+), 3 deletions(-)
+ arch/x86/kvm/mmu/mmu.c     |  9 ++++-
+ arch/x86/kvm/mmu/tdp_mmu.c | 80 +++++++++++++++++++++++++++++++++++---
+ arch/x86/kvm/mmu/tdp_mmu.h |  3 ++
+ 3 files changed, 86 insertions(+), 6 deletions(-)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index 082684ce2d1b..d44858b69353 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1004,7 +1004,11 @@ struct kvm_arch {
- 	 * operations.
- 	 */
- 	bool tdp_mmu_enabled;
+diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
+index 31d7ba716b44..35c277ed6c78 100644
+--- a/arch/x86/kvm/mmu/mmu.c
++++ b/arch/x86/kvm/mmu/mmu.c
+@@ -1497,7 +1497,14 @@ static int kvm_handle_hva(struct kvm *kvm, unsigned long hva,
+ int kvm_unmap_hva_range(struct kvm *kvm, unsigned long start, unsigned long end,
+ 			unsigned flags)
+ {
+-	return kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
++	int r;
 +
-+	/* List of struct tdp_mmu_pages being used as roots */
- 	struct list_head tdp_mmu_roots;
-+	/* List of struct tdp_mmu_pages not being used as roots */
-+	struct list_head tdp_mmu_pages;
- };
++	r = kvm_handle_hva_range(kvm, start, end, 0, kvm_unmap_rmapp);
++
++	if (kvm->arch.tdp_mmu_enabled)
++		r |= kvm_tdp_mmu_zap_hva_range(kvm, start, end);
++
++	return r;
+ }
  
- struct kvm_vm_stat {
+ int kvm_set_spte_hva(struct kvm *kvm, unsigned long hva, pte_t pte)
 diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index ae8ac15b5623..f06802289c1f 100644
+index f06802289c1f..96bc6aa39628 100644
 --- a/arch/x86/kvm/mmu/tdp_mmu.c
 +++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -28,6 +28,7 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- 	kvm->arch.tdp_mmu_enabled = true;
- 
- 	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
-+	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_pages);
+@@ -52,7 +52,7 @@ bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
  }
  
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
-@@ -169,6 +170,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	bool is_leaf = is_present && is_last_spte(new_spte, level);
- 	bool pfn_changed = spte_to_pfn(old_spte) != spte_to_pfn(new_spte);
- 	u64 *pt;
-+	struct kvm_mmu_page *sp;
- 	u64 old_child_spte;
- 	int i;
+ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+-			  gfn_t start, gfn_t end);
++			  gfn_t start, gfn_t end, bool can_yield);
  
-@@ -234,6 +236,9 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 	 */
- 	if (was_present && !was_leaf && (pfn_changed || !is_present)) {
- 		pt = spte_to_child_pt(old_spte, level);
-+		sp = sptep_to_sp(pt);
-+
-+		list_del(&sp->link);
+ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
+ {
+@@ -65,7 +65,7 @@ void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
  
- 		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
- 			old_child_spte = READ_ONCE(*(pt + i));
-@@ -247,6 +252,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 						   KVM_PAGES_PER_HPAGE(level));
+ 	list_del(&root->link);
  
- 		free_page((unsigned long)pt);
-+		kmem_cache_free(mmu_page_header_cache, sp);
- 	}
- }
+-	zap_gfn_range(kvm, root, 0, max_gfn);
++	zap_gfn_range(kvm, root, 0, max_gfn, false);
  
-@@ -424,8 +430,7 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 	bool huge_page_disallowed = exec && nx_huge_page_workaround_enabled;
- 	struct kvm_mmu *mmu = vcpu->arch.mmu;
+ 	free_page((unsigned long)root->spt);
+ 	kmem_cache_free(mmu_page_header_cache, root);
+@@ -303,9 +303,14 @@ static bool tdp_mmu_iter_flush_cond_resched(struct kvm *kvm, struct tdp_iter *it
+  * non-root pages mapping GFNs strictly within that range. Returns true if
+  * SPTEs have been cleared and a TLB flush is needed before releasing the
+  * MMU lock.
++ * If can_yield is true, will release the MMU lock and reschedule if the
++ * scheduler needs the CPU or there is contention on the MMU lock. If this
++ * function cannot yield, it will not release the MMU lock or reschedule and
++ * the caller must ensure it does not supply too large a GFN range, or the
++ * operation can cause a soft lockup.
+  */
+ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
+-			  gfn_t start, gfn_t end)
++			  gfn_t start, gfn_t end, bool can_yield)
+ {
  	struct tdp_iter iter;
--	struct kvm_mmu_memory_cache *pf_pt_cache =
--			&vcpu->arch.mmu_shadow_page_cache;
-+	struct kvm_mmu_page *sp;
- 	u64 *child_pt;
- 	u64 new_spte;
- 	int ret;
-@@ -471,7 +476,9 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 		}
+ 	bool flush_needed = false;
+@@ -326,7 +331,10 @@ static bool zap_gfn_range(struct kvm *kvm, struct kvm_mmu_page *root,
  
- 		if (!is_shadow_present_pte(iter.old_spte)) {
--			child_pt = kvm_mmu_memory_cache_alloc(pf_pt_cache);
-+			sp = alloc_tdp_mmu_page(vcpu, iter.gfn, iter.level);
-+			list_add(&sp->link, &vcpu->kvm->arch.tdp_mmu_pages);
-+			child_pt = sp->spt;
- 			clear_page(child_pt);
- 			new_spte = make_nonleaf_spte(child_pt,
- 						     !shadow_accessed_mask);
+ 		tdp_mmu_set_spte(kvm, &iter, 0);
+ 
+-		flush_needed = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
++		if (can_yield)
++			flush_needed = tdp_mmu_iter_flush_cond_resched(kvm, &iter);
++		else
++			flush_needed = true;
+ 	}
+ 	return flush_needed;
+ }
+@@ -349,7 +357,7 @@ bool kvm_tdp_mmu_zap_gfn_range(struct kvm *kvm, gfn_t start, gfn_t end)
+ 		 */
+ 		kvm_mmu_get_root(kvm, root);
+ 
+-		flush |= zap_gfn_range(kvm, root, start, end);
++		flush |= zap_gfn_range(kvm, root, start, end, true);
+ 
+ 		kvm_mmu_put_root(kvm, root);
+ 	}
+@@ -496,3 +504,65 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 
+ 	return ret;
+ }
++
++static int kvm_tdp_mmu_handle_hva_range(struct kvm *kvm, unsigned long start,
++		unsigned long end, unsigned long data,
++		int (*handler)(struct kvm *kvm, struct kvm_memory_slot *slot,
++			       struct kvm_mmu_page *root, gfn_t start,
++			       gfn_t end, unsigned long data))
++{
++	struct kvm_memslots *slots;
++	struct kvm_memory_slot *memslot;
++	struct kvm_mmu_page *root;
++	int ret = 0;
++	int as_id;
++
++	for_each_tdp_mmu_root(kvm, root) {
++		/*
++		 * Take a reference on the root so that it cannot be freed if
++		 * this thread releases the MMU lock and yields in this loop.
++		 */
++		kvm_mmu_get_root(kvm, root);
++
++		as_id = kvm_mmu_page_as_id(root);
++		slots = __kvm_memslots(kvm, as_id);
++		kvm_for_each_memslot(memslot, slots) {
++			unsigned long hva_start, hva_end;
++			gfn_t gfn_start, gfn_end;
++
++			hva_start = max(start, memslot->userspace_addr);
++			hva_end = min(end, memslot->userspace_addr +
++				      (memslot->npages << PAGE_SHIFT));
++			if (hva_start >= hva_end)
++				continue;
++			/*
++			 * {gfn(page) | page intersects with [hva_start, hva_end)} =
++			 * {gfn_start, gfn_start+1, ..., gfn_end-1}.
++			 */
++			gfn_start = hva_to_gfn_memslot(hva_start, memslot);
++			gfn_end = hva_to_gfn_memslot(hva_end + PAGE_SIZE - 1, memslot);
++
++			ret |= handler(kvm, memslot, root, gfn_start,
++				       gfn_end, data);
++		}
++
++		kvm_mmu_put_root(kvm, root);
++	}
++
++	return ret;
++}
++
++static int zap_gfn_range_hva_wrapper(struct kvm *kvm,
++				     struct kvm_memory_slot *slot,
++				     struct kvm_mmu_page *root, gfn_t start,
++				     gfn_t end, unsigned long unused)
++{
++	return zap_gfn_range(kvm, root, start, end, false);
++}
++
++int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
++			      unsigned long end)
++{
++	return kvm_tdp_mmu_handle_hva_range(kvm, start, end, 0,
++					    zap_gfn_range_hva_wrapper);
++}
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
+index aed21a7a3bd6..af25d2462cb8 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.h
++++ b/arch/x86/kvm/mmu/tdp_mmu.h
+@@ -18,4 +18,7 @@ void kvm_tdp_mmu_zap_all(struct kvm *kvm);
+ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
+ 		    int map_writable, int max_level, kvm_pfn_t pfn,
+ 		    bool prefault);
++
++int kvm_tdp_mmu_zap_hva_range(struct kvm *kvm, unsigned long start,
++			      unsigned long end);
+ #endif /* __KVM_X86_MMU_TDP_MMU_H */
 -- 
 2.26.2
 
