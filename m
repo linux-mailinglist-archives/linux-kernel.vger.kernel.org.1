@@ -2,92 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F3AB2974D7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:48:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE7132974DA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:49:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372965AbgJWQsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51374 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462852AbgJWQs3 (ORCPT
+        id S1750245AbgJWQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:48:57 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:45744 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465779AbgJWQs5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:48:29 -0400
-Received: from mail-wr1-x444.google.com (mail-wr1-x444.google.com [IPv6:2a00:1450:4864:20::444])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 662ECC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:48:29 -0700 (PDT)
-Received: by mail-wr1-x444.google.com with SMTP id n15so2787978wrq.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=memsql.com; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ZC2Dh9koWunjCaFQ0yegSpVnhZcJzrp1WPeUxVV9K1U=;
-        b=ei2DFm6ifLWtvvqfEDL51CwiGCAXkhvcCTRMhU48M7dErj6QHje58qXOACqG03RsEZ
-         u8NPenEqnD/YVLi1uOVbKVI8kyA/FLShuD+KMQqCzlnBaGv+F4uFNV+c3DFU4pUsHMMc
-         bZa21diwQJgBd5vDZc8g15TCn0s26O/kxQpTM=
+        Fri, 23 Oct 2020 12:48:57 -0400
+Received: by mail-ot1-f66.google.com with SMTP id f37so1928437otf.12;
+        Fri, 23 Oct 2020 09:48:55 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=ZC2Dh9koWunjCaFQ0yegSpVnhZcJzrp1WPeUxVV9K1U=;
-        b=QGH3TActMxHs4ert715PWR6nYYq3c9o75b1eF+PJbRFmrfVeBDO36Es6X61OKm++TQ
-         wAxw7ZR3zYYmSDP4pabQn+9NRviUcuT6jSr/aAHZK4X1V7da1E7gYdNH3eKM6c258ve3
-         /qQnl6ezGRddRh7FzhAJAvIKLgSKfdv0gHpP1Z9zqF+lX47mhz2HT0VgO19g1LJdzcUR
-         cF+jVbnAF7nynkzUxeSH+eCcPcGcgE4oB/IIFqdhZva8bM5tXgxfisW/0hMc13ouAoBz
-         pGVkJRFAu7VIcRhLPpD4ldHfuSBffOz/rdSHOqie1TTikRt/FiJD6/Ff5pn5doSHJTXf
-         PZGg==
-X-Gm-Message-State: AOAM5333/UtAkr63JJJgRAM00K1IB8oAKcY/QcQj1wge4YQl6kcMM60O
-        azoyJYfz123DPk3levQpRv3axQ==
-X-Google-Smtp-Source: ABdhPJwpEgf9jzJ4lH1LeQe5HX73reEjlkdFwZ3NHT2X1w0fwY+VwRvl3p55TC0ZnWN0ZsSok77bvA==
-X-Received: by 2002:adf:8362:: with SMTP id 89mr3738705wrd.280.1603471708004;
-        Fri, 23 Oct 2020 09:48:28 -0700 (PDT)
-Received: from rdias-suse-pc.lan (bl13-26-148.dsl.telepac.pt. [85.246.26.148])
-        by smtp.gmail.com with ESMTPSA id m14sm4508047wro.43.2020.10.23.09.48.26
+        bh=t41Wz1ftPJdXoRBo6WvXtJCsvezv0jqP6YqdxmMi1Bc=;
+        b=BU2XYLGaYNiJG1++zXuJf5XdXlDoDAJehIk50hyQTVdXnFe2FKqLaIpao5JrP5sAvf
+         s3JR/SfB5dMpyUuYltjpUD+v6bplgByO6R4V/sivHbz1J+3tyigOsSoCw2bd9YiBsQFs
+         dP6JxyeEIBu5cfCsjsURrTE3Oxh9dDMUwwRicW2ho4vga6qjlEfsHoc4CwWV+DvJ4n8c
+         HJ+1CWZRsuM3u8kEzA/0vceSzap+G1MZLBZ8NQFto42uFd3o6UHOHQyyAa7RcTkBaQ6Q
+         sY1DFqlY8u2gKYK9SNa8vntnagxK256B6X7HnRmBBuOE/YyhpEtYqC3y9bqzBliPrLw8
+         KQTQ==
+X-Gm-Message-State: AOAM533qNV0ELNaouwgGmGS3TJUbvRlJzcm8a7oJKtp5TmodgV/cTTgm
+        UHj1TwObbYYlyApjZLObeA==
+X-Google-Smtp-Source: ABdhPJzfGSbMJv/KSQd6oguikGdkSvbMIqgnr+wSNyj8vVZh/6asblfBhCslPDOELSEjJGqwDkH/PA==
+X-Received: by 2002:a05:6830:13c4:: with SMTP id e4mr2212329otq.142.1603471735136;
+        Fri, 23 Oct 2020 09:48:55 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id j7sm507432otc.77.2020.10.23.09.48.54
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 09:48:27 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 17:48:25 +0100
-From:   Ricardo Dias <rdias@memsql.com>
-To:     Eric Dumazet <edumazet@google.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
-        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
-        netdev <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] tcp: fix race condition when creating child sockets from
- syncookies
-Message-ID: <20201023164825.GA321826@rdias-suse-pc.lan>
-References: <20201023111352.GA289522@rdias-suse-pc.lan>
- <CANn89iJDt=XpUZA_uYK98cK8tctW6M=f4RFtGQpTxRaqwnnqSQ@mail.gmail.com>
- <20201023155145.GA316015@rdias-suse-pc.lan>
- <CANn89iL2VOH+Mg9-U7pkpMkKykDfhoX-GMRnF-oBmZmCGohDtA@mail.gmail.com>
- <20201023160628.GA316690@rdias-suse-pc.lan>
- <CANn89i+OZF2HJQYT0FGtzyFeZMdof9RAfGXQRKUVY6Hg9ZPpcg@mail.gmail.com>
+        Fri, 23 Oct 2020 09:48:54 -0700 (PDT)
+Received: (nullmailer pid 2850563 invoked by uid 1000);
+        Fri, 23 Oct 2020 16:48:53 -0000
+Date:   Fri, 23 Oct 2020 11:48:53 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>
+Cc:     Zhen Lei <thunder.leizhen@huawei.com>, linux-leds@vger.kernel.org,
+        devicetree@vger.kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] dt-bindings: leds: Update devicetree documents for
+ ID_RGB
+Message-ID: <20201023164853.GA2850155@bogus>
+References: <20201016115703.30184-1-dmurphy@ti.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CANn89i+OZF2HJQYT0FGtzyFeZMdof9RAfGXQRKUVY6Hg9ZPpcg@mail.gmail.com>
+In-Reply-To: <20201016115703.30184-1-dmurphy@ti.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:36:29PM +0200, Eric Dumazet wrote:
-> On Fri, Oct 23, 2020 at 6:06 PM Ricardo Dias <rdias@memsql.com> wrote:
+On Fri, 16 Oct 2020 06:57:03 -0500, Dan Murphy wrote:
+> Update the leds/common.yaml to indicate that the max color ID is 9.
+> Reflect the same change in the leds-class-multicolor.yaml
 > 
-> > And what about the loopback interface? Why couldn't the loopback
-> > interface also use a single RX queue?
-> >
+> Reported-by: Zhen Lei <thunder.leizhen@huawei.com>
+> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> ---
+>  Documentation/devicetree/bindings/leds/common.yaml       | 2 +-
+>  .../devicetree/bindings/leds/leds-class-multicolor.yaml  | 9 +++++----
+>  2 files changed, 6 insertions(+), 5 deletions(-)
 > 
-> Loopback is using a per-cpu queue, with no crossing, for efficiency.
-> 
-> That means : whenever a packet is sent on lo interface from CPU X, it
-> is put on CPU X backlog queue.
-> 
-> If the connect() and sendmsg() are run from different cpus, then the
-> ACK (from last packet of 3WH) and the data packet might land on
-> different queues.
 
-In that case, I can change the patch to only iterate the ehash bucket
-only when the listening socket is using the loopback interface, correct?
-
-
+Applied, thanks!
