@@ -2,80 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 41DC6297927
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:55:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5728429792C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:56:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756998AbgJWVzv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:55:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54556 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756951AbgJWVzv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:55:51 -0400
-Received: from localhost (unknown [148.87.23.9])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3B65A208E4;
-        Fri, 23 Oct 2020 21:55:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603490150;
-        bh=fr3ruBddVg9TlYCp+CZnRfHx6VcGZUDFahrT/xtZW+U=;
-        h=Date:From:To:Cc:Subject:From;
-        b=BOxKeBFpabXA4pwnuplRivXSyq1MHzNvEoaJst5oSUzrBz361816qRxhRI9iV4A16
-         iSHdTVd/53EEKAKBl6Wm5cwv82bgt0eS5XZQ4mWC5/Nedtw/qq0YMWW7Qwwg0SRR54
-         qF56ZddI6GavOw4KQar009mKnoCaAgnbwrqrfZ0Q=
-Date:   Fri, 23 Oct 2020 14:55:46 -0700
-From:   "Darrick J. Wong" <djwong@kernel.org>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     "Darrick J. Wong" <djwong@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-        david@fromorbit.com, linux-kernel@vger.kernel.org,
-        sandeen@sandeen.net, hch@lst.de
-Subject: [GIT PULL] xfs: fixes for 5.10-rc1
-Message-ID: <20201023215546.GU9832@magnolia>
+        id S1752792AbgJWV4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:56:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43302 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465494AbgJWV4f (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:56:35 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A6C9DC0613CE;
+        Fri, 23 Oct 2020 14:56:35 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603490194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=79rTg2SKZLoa/evVojUPAbe7jLqXBquN2CeaB2ok8dM=;
+        b=EetW5+h2WAFfLhHoLTCZ9y+9G7Ei5unrNieHG1oDovYqkcijqZVi/zV19BnVNHeDAYAq1y
+        5BPQvOBeenBqLGZsMVj0lxrhTePplE91mlRbpz6CwZlY5ngqViOYE+dIpuSbgEqXN/hk+p
+        jZgnfrBD4hxFmjvZv0feO4rHUiJ10r7PGhwlaj55UBGIzybRn6FLG3VxHgQfGbyY8XfR5y
+        ZWdJnyBKnvxoeq281PMRil6StYpFCqPQgpfBqwHXqkT9CU72euIqVkVtoVbuIqm2lzXkVL
+        8SmRG2kKrV0hOeL1M2wDVZUriXPi0GcVcw6UJ+cQfZoek59YI4kGMXrtfSvuHw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603490194;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=79rTg2SKZLoa/evVojUPAbe7jLqXBquN2CeaB2ok8dM=;
+        b=+wyfQHnakkKyqSE/2uGjxNcZTwxnMUoslSbSCXRrWkS+13bWcBa+tI0OQQwYJbaGoQJY9w
+        kc67vWEIFcKYyjAw==
+To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 07/10] x86/entry: Pass irqentry_state_t by reference
+In-Reply-To: <20201022222701.887660-8-ira.weiny@intel.com>
+References: <20201022222701.887660-1-ira.weiny@intel.com> <20201022222701.887660-8-ira.weiny@intel.com>
+Date:   Fri, 23 Oct 2020 23:56:33 +0200
+Message-ID: <87y2jw4ne6.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Oct 22 2020 at 15:26, ira weiny wrote:
+> From: Ira Weiny <ira.weiny@intel.com>
+>
+> In preparation for adding PKS information to struct irqentry_state_t
+> change all call sites and usages to pass the struct by reference
+> instead of by value.
 
-Please pull this nice short branch, which integrates two bug fixes that
-trickled in during the merge window.
+This still does not explain WHY you need to do that. 'Preparation' is a
+pretty useless information.
 
-The branch merges cleanly with upstream as of a few minutes ago, so
-please let me know if anything strange happens.
+What is the actual reason for this? Just because PKS information feels
+better that way?
 
---D
+Also what is PKS information? Changelogs have to make sense on their own
+and not only in the context of a larger series of changes.
 
-The following changes since commit 894645546bb12ce008dcba0f68834d270fcd1dde:
+> While we are editing the call sites it is a good time to standardize on
+> the name 'irq_state'.
 
-  xfs: fix Kconfig asking about XFS_SUPPORT_V4 when XFS_FS=n (2020-10-16 15:34:28 -0700)
+  While at it change all usage sites to consistently use the variable
+  name 'irq_state'.
 
-are available in the Git repository at:
+Or something like that. See Documentation/process/...
 
-  git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/xfs-5.10-merge-7
+Thanks,
 
-for you to fetch changes up to 2e76f188fd90d9ac29adbb82c30345f84d04bfa4:
-
-  xfs: cancel intents immediately if process_intents fails (2020-10-21 16:28:46 -0700)
-
-----------------------------------------------------------------
-Fixes for 5.10-rc1:
-- Make fallocate check the alignment of its arguments against the
-fundamental allocation unit of the volume the file lives on, so that we
-don't trigger the fs' alignment checks.
-- Cancel unprocessed log intents immediately when log recovery fails, to
-avoid a log deadlock.
-
-----------------------------------------------------------------
-Darrick J. Wong (2):
-      xfs: fix fallocate functions when rtextsize is larger than 1
-      xfs: cancel intents immediately if process_intents fails
-
- fs/xfs/xfs_bmap_util.c   | 18 +++++-------------
- fs/xfs/xfs_file.c        | 40 +++++++++++++++++++++++++++++++++++-----
- fs/xfs/xfs_linux.h       |  6 ++++++
- fs/xfs/xfs_log_recover.c |  8 ++++++++
- 4 files changed, 54 insertions(+), 18 deletions(-)
+        tglx
