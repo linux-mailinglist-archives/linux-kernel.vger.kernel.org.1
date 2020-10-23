@@ -2,43 +2,43 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0B997297237
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 480C429723A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465772AbgJWP0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:26:23 -0400
-Received: from mail-io1-f69.google.com ([209.85.166.69]:41327 "EHLO
-        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S465755AbgJWP0X (ORCPT
+        id S465781AbgJWP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:26:27 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:47889 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465751AbgJWP0X (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 11:26:23 -0400
-Received: by mail-io1-f69.google.com with SMTP id j21so1413803iog.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:22 -0700 (PDT)
+Received: by mail-il1-f197.google.com with SMTP id w74so919322ila.14
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=oMIJBTmP0vIg508VNCbknQmv+Io37D65u+fsrIqcKHc=;
-        b=oruJ2pmVrg48OdiqVbi+UOk/H0pwVx+85Hrvv0dFAQ7uPpCREUORydsmCpL50voGGD
-         Ox+9C9fQzLqoq7mgG8UeZNh3UtxdAnxk6RqqXSLDJGx/VlfWl66XIsv9NvMxVMwRKcTG
-         ej43o0ssCa5cQlpePrzm1VV3Ujyy0Og5RT0EAQfIBz/zVMCtt/lGXaDxmFd3K8omgKf3
-         bqesedToBEGPhDP4Y3ROIpZb8WKpqSiPhzZnVueBdqijiSCMjTUij92jr1oZDMxYUHbJ
-         BwILqdyAa/Xo3dEa0CfYVXmmB55A5nuIKN9Yqrecbt/f/q6vrieEBNyqtlPPaao2//1e
-         FCYQ==
-X-Gm-Message-State: AOAM533qgd6GsxBxOpnhhlcIOM66tp3zb2Esg5dzgOQ3uCsH3CrbBXwM
-        P3LQpNIhGqr3qbyPnZ6js0OGBTWXqz2ubrH5GdAyHW3RtC3+
-X-Google-Smtp-Source: ABdhPJyPRb8gqdjGjwDg4eKpR9nluRHSl1mR/EHKx+GllNBM4d74Lqivc4ACh8LUV3kLNWjFjjCchWjWKwZSZWoCWT4ydQHhR03Z
+        bh=fVF0gABiOKEQfoDST5uccDfvXF8ctJ4vneZIvOOcqcM=;
+        b=i+8j78tFFkhN0sjXi3uXBcupX8lUObAnkk2mx6sZv+PPeKgihLiwsFbtEohztCltsi
+         OJUcXGKvmeksx3R318efj2ratHmDsZfD/PMZ0imHQonA1gbTshRqd0/FEmxz6bQBF4XU
+         m8gM7e5nVvNwTT8lSPw1TjeQu04mActDfvfEZvyjAhMJvVHJKigdu2aZoOj7SBzco7xB
+         jOaw5U3vRrVCPCBhkNo4gQuAtGwjoBBxUYQGB7+5uhO/5X8QjY5X6zu5Mxst6w8Tygg5
+         sUKemiXhrlirz5MJrJuXxz3RuyYIq7jxSAlxqj9SgyImtwZzZ5eFZlZuGYWaGq45kbYU
+         zGEA==
+X-Gm-Message-State: AOAM532uK+MZ7H0drlWVSFfGuzMhhqdSeFr5O2Qa4N4yr9a+n6eUyGWI
+        iJl+hZGqopXHAXmiwPmvH/OZ7J4rjx+tScd1s/U3LSxYr7c9
+X-Google-Smtp-Source: ABdhPJx1GJ3FEApap2mJFzhYOOp0cZktQgnYogiRNJ0zbC3dZOhzXU448rZupVa+jORc+uwTXnnhMWtbbsMZyRcKKsZ1Uj/yxR/8
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1508:: with SMTP id b8mr2340163jat.25.1603466781639;
+X-Received: by 2002:a92:b503:: with SMTP id f3mr2130770ile.23.1603466781178;
  Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
 Date:   Fri, 23 Oct 2020 08:26:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000edcabe05b25833f7@google.com>
-Subject: memory leak in gadget_setup
-From:   syzbot <syzbot+bd38200f53df6259e6bf@syzkaller.appspotmail.com>
-To:     andreyknvl@google.com, balbi@kernel.org, dan.carpenter@oracle.com,
-        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000e6c3d405b25833b7@google.com>
+Subject: general protection fault in call_commit_handler
+From:   syzbot <syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com>
+To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,132 +48,77 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    96485e44 Merge tag 'ext4_for_linus' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=16f1b91c500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=504c0405f28172a
-dashboard link: https://syzkaller.appspot.com/bug?extid=bd38200f53df6259e6bf
+HEAD commit:    9ff9b0d3 Merge tag 'net-next-5.10' of git://git.kernel.org..
+git tree:       bpf-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=12377207900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=10a98dcaa4fa65a2
+dashboard link: https://syzkaller.appspot.com/bug?extid=444248c79e117bc99f46
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16ead664500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16a44cc4500000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105d15a4500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11973e78500000
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10bd270c500000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12bd270c500000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14bd270c500000
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+bd38200f53df6259e6bf@syzkaller.appspotmail.com
+Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
 
-BUG: memory leak
-unreferenced object 0xffff888110622660 (size 32):
-  comm "softirq", pid 0, jiffies 4294941981 (age 12.480s)
-  hex dump (first 32 bytes):
-    02 00 00 00 08 00 00 00 80 06 00 01 00 00 40 00  ..............@.
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000efd29abd>] kmalloc include/linux/slab.h:554 [inline]
-    [<00000000efd29abd>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
-    [<00000000efd29abd>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
-    [<00000000efd29abd>] gadget_setup+0xf6/0x220 drivers/usb/gadget/legacy/raw_gadget.c:343
-    [<00000000952c4a46>] dummy_timer+0xb9f/0x14c0 drivers/usb/gadget/udc/dummy_hcd.c:1899
-    [<0000000074ac2c54>] call_timer_fn+0x38/0x200 kernel/time/timer.c:1415
-    [<00000000560a3a79>] expire_timers kernel/time/timer.c:1460 [inline]
-    [<00000000560a3a79>] __run_timers.part.0+0x319/0x400 kernel/time/timer.c:1757
-    [<000000009d9503d0>] __run_timers kernel/time/timer.c:1738 [inline]
-    [<000000009d9503d0>] run_timer_softirq+0x3d/0x80 kernel/time/timer.c:1770
-    [<000000009df27c89>] __do_softirq+0xcc/0x2c2 kernel/softirq.c:298
-    [<000000007a3f1a47>] asm_call_irq_on_stack+0xf/0x20
-    [<000000004a62cc2e>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
-    [<000000004a62cc2e>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
-    [<000000004a62cc2e>] do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
-    [<00000000b0086800>] invoke_softirq kernel/softirq.c:393 [inline]
-    [<00000000b0086800>] __irq_exit_rcu kernel/softirq.c:423 [inline]
-    [<00000000b0086800>] irq_exit_rcu+0x91/0xc0 kernel/softirq.c:435
-    [<00000000175f9523>] sysvec_apic_timer_interrupt+0x36/0x80 arch/x86/kernel/apic/apic.c:1091
-    [<00000000a348e847>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-    [<0000000060661100>] native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-    [<0000000060661100>] arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-    [<0000000060661100>] acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-    [<0000000060661100>] acpi_idle_do_entry+0xc3/0xd0 drivers/acpi/processor_idle.c:517
-    [<000000003f413b99>] acpi_idle_enter+0x128/0x1f0 drivers/acpi/processor_idle.c:648
-    [<00000000f5e5afb8>] cpuidle_enter_state+0xc9/0x650 drivers/cpuidle/cpuidle.c:237
-    [<00000000d50d51fc>] cpuidle_enter+0x29/0x40 drivers/cpuidle/cpuidle.c:351
-    [<00000000d674baed>] call_cpuidle kernel/sched/idle.c:132 [inline]
-    [<00000000d674baed>] cpuidle_idle_call kernel/sched/idle.c:213 [inline]
-    [<00000000d674baed>] do_idle+0x1c8/0x250 kernel/sched/idle.c:273
-
-BUG: memory leak
-unreferenced object 0xffff888110622380 (size 32):
-  comm "softirq", pid 0, jiffies 4294942017 (age 12.120s)
-  hex dump (first 32 bytes):
-    02 00 00 00 08 00 00 00 80 06 00 01 00 00 40 00  ..............@.
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000efd29abd>] kmalloc include/linux/slab.h:554 [inline]
-    [<00000000efd29abd>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
-    [<00000000efd29abd>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
-    [<00000000efd29abd>] gadget_setup+0xf6/0x220 drivers/usb/gadget/legacy/raw_gadget.c:343
-    [<00000000952c4a46>] dummy_timer+0xb9f/0x14c0 drivers/usb/gadget/udc/dummy_hcd.c:1899
-    [<0000000074ac2c54>] call_timer_fn+0x38/0x200 kernel/time/timer.c:1415
-    [<00000000560a3a79>] expire_timers kernel/time/timer.c:1460 [inline]
-    [<00000000560a3a79>] __run_timers.part.0+0x319/0x400 kernel/time/timer.c:1757
-    [<000000009d9503d0>] __run_timers kernel/time/timer.c:1738 [inline]
-    [<000000009d9503d0>] run_timer_softirq+0x3d/0x80 kernel/time/timer.c:1770
-    [<000000009df27c89>] __do_softirq+0xcc/0x2c2 kernel/softirq.c:298
-    [<000000007a3f1a47>] asm_call_irq_on_stack+0xf/0x20
-    [<000000004a62cc2e>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
-    [<000000004a62cc2e>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
-    [<000000004a62cc2e>] do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
-    [<00000000b0086800>] invoke_softirq kernel/softirq.c:393 [inline]
-    [<00000000b0086800>] __irq_exit_rcu kernel/softirq.c:423 [inline]
-    [<00000000b0086800>] irq_exit_rcu+0x91/0xc0 kernel/softirq.c:435
-    [<00000000175f9523>] sysvec_apic_timer_interrupt+0x36/0x80 arch/x86/kernel/apic/apic.c:1091
-    [<00000000a348e847>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-    [<0000000060661100>] native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-    [<0000000060661100>] arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-    [<0000000060661100>] acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-    [<0000000060661100>] acpi_idle_do_entry+0xc3/0xd0 drivers/acpi/processor_idle.c:517
-    [<000000003f413b99>] acpi_idle_enter+0x128/0x1f0 drivers/acpi/processor_idle.c:648
-    [<00000000f5e5afb8>] cpuidle_enter_state+0xc9/0x650 drivers/cpuidle/cpuidle.c:237
-    [<00000000d50d51fc>] cpuidle_enter+0x29/0x40 drivers/cpuidle/cpuidle.c:351
-    [<00000000d674baed>] call_cpuidle kernel/sched/idle.c:132 [inline]
-    [<00000000d674baed>] cpuidle_idle_call kernel/sched/idle.c:213 [inline]
-    [<00000000d674baed>] do_idle+0x1c8/0x250 kernel/sched/idle.c:273
-
-BUG: memory leak
-unreferenced object 0xffff888110dfc020 (size 32):
-  comm "softirq", pid 0, jiffies 4294942067 (age 11.620s)
-  hex dump (first 32 bytes):
-    02 00 00 00 08 00 00 00 80 06 00 01 00 00 40 00  ..............@.
-    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-  backtrace:
-    [<00000000efd29abd>] kmalloc include/linux/slab.h:554 [inline]
-    [<00000000efd29abd>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
-    [<00000000efd29abd>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
-    [<00000000efd29abd>] gadget_setup+0xf6/0x220 drivers/usb/gadget/legacy/raw_gadget.c:343
-    [<00000000952c4a46>] dummy_timer+0xb9f/0x14c0 drivers/usb/gadget/udc/dummy_hcd.c:1899
-    [<0000000074ac2c54>] call_timer_fn+0x38/0x200 kernel/time/timer.c:1415
-    [<00000000560a3a79>] expire_timers kernel/time/timer.c:1460 [inline]
-    [<00000000560a3a79>] __run_timers.part.0+0x319/0x400 kernel/time/timer.c:1757
-    [<000000009d9503d0>] __run_timers kernel/time/timer.c:1738 [inline]
-    [<000000009d9503d0>] run_timer_softirq+0x3d/0x80 kernel/time/timer.c:1770
-    [<000000009df27c89>] __do_softirq+0xcc/0x2c2 kernel/softirq.c:298
-    [<000000007a3f1a47>] asm_call_irq_on_stack+0xf/0x20
-    [<000000004a62cc2e>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
-    [<000000004a62cc2e>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
-    [<000000004a62cc2e>] do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
-    [<00000000b0086800>] invoke_softirq kernel/softirq.c:393 [inline]
-    [<00000000b0086800>] __irq_exit_rcu kernel/softirq.c:423 [inline]
-    [<00000000b0086800>] irq_exit_rcu+0x91/0xc0 kernel/softirq.c:435
-    [<00000000175f9523>] sysvec_apic_timer_interrupt+0x36/0x80 arch/x86/kernel/apic/apic.c:1091
-    [<00000000a348e847>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
-    [<0000000060661100>] native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
-    [<0000000060661100>] arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
-    [<0000000060661100>] acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
-    [<0000000060661100>] acpi_idle_do_entry+0xc3/0xd0 drivers/acpi/processor_idle.c:517
-    [<000000003f413b99>] acpi_idle_enter+0x128/0x1f0 drivers/acpi/processor_idle.c:648
-    [<00000000f5e5afb8>] cpuidle_enter_state+0xc9/0x650 drivers/cpuidle/cpuidle.c:237
-    [<00000000d50d51fc>] cpuidle_enter+0x29/0x40 drivers/cpuidle/cpuidle.c:351
-    [<00000000d674baed>] call_cpuidle kernel/sched/idle.c:132 [inline]
-    [<00000000d674baed>] cpuidle_idle_call kernel/sched/idle.c:213 [inline]
-    [<00000000d674baed>] do_idle+0x1c8/0x250 kernel/sched/idle.c:273
-
+general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+CPU: 1 PID: 8503 Comm: syz-executor669 Not tainted 5.9.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+RIP: 0010:call_commit_handler+0x8b/0x110 net/wireless/wext-core.c:900
+Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 7d 48 8b 9d e0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 75 73 48 b8 00 00 00 00 00 fc ff df 48 8b 1b 48 89 da
+RSP: 0018:ffffc90001927ca8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8844a758
+RDX: 0000000000000000 RSI: ffffffff8844a765 RDI: ffff88809b6f81e0
+RBP: ffff88809b6f8000 R08: 0000000000000000 R09: ffff88809b6f8047
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809b6f8040
+R13: ffffc90001927db0 R14: ffff88809b6f8000 R15: 0000000000000004
+FS:  0000000000725880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00000000200000c0 CR3: 00000000aabca000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ ioctl_standard_call+0x1b8/0x1f0 net/wireless/wext-core.c:1029
+ wireless_process_ioctl+0xc8/0x4c0 net/wireless/wext-core.c:954
+ wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
+ wext_ioctl_dispatch net/wireless/wext-core.c:975 [inline]
+ wext_handle_ioctl+0x26b/0x280 net/wireless/wext-core.c:1048
+ sock_ioctl+0x439/0x730 net/socket.c:1119
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
+ do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
+RIP: 0033:0x441549
+Code: e8 ec 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffec8be6028 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 00007ffec8be6050 RCX: 0000000000441549
+RDX: 00000000200000c0 RSI: 0000000000008b04 RDI: 0000000000000003
+RBP: 0000000000000003 R08: 0000002000000000 R09: 0000002000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
+R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+Modules linked in:
+---[ end trace e41146864548f580 ]---
+RIP: 0010:call_commit_handler+0x8b/0x110 net/wireless/wext-core.c:900
+Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 7d 48 8b 9d e0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 75 73 48 b8 00 00 00 00 00 fc ff df 48 8b 1b 48 89 da
+RSP: 0018:ffffc90001927ca8 EFLAGS: 00010246
+RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8844a758
+RDX: 0000000000000000 RSI: ffffffff8844a765 RDI: ffff88809b6f81e0
+RBP: ffff88809b6f8000 R08: 0000000000000000 R09: ffff88809b6f8047
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809b6f8040
+R13: ffffc90001927db0 R14: ffff88809b6f8000 R15: 0000000000000004
+FS:  0000000000725880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f952003c058 CR3: 00000000aabca000 CR4: 00000000001506e0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
 
 ---
@@ -183,5 +128,6 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 syzbot can test patches for this issue, for details see:
 https://goo.gl/tpsmEJ#testing-patches
