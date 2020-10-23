@@ -2,128 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E1C7297867
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:47:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E79B297869
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:47:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756367AbgJWUrR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:47:17 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:41788 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751644AbgJWUrR (ORCPT
+        id S1756378AbgJWUrn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:47:43 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:60992 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756370AbgJWUrm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:47:17 -0400
-Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kW3xt-0004Zo-0g; Fri, 23 Oct 2020 16:47:09 -0400
-Date:   Fri, 23 Oct 2020 16:47:08 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Yu Xu <xuyu@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>, linux-mm@kvack.org,
-        kernel-team@fb.com, linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201023164708.5842f3fb@imladris.surriel.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 23 Oct 2020 16:47:42 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by asavdk3.altibox.net (Postfix) with ESMTPS id BB09020037;
+        Fri, 23 Oct 2020 22:47:35 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 22:47:33 +0200
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Rob Herring <robh@kernel.org>
+Cc:     devicetree@vger.kernel.org, alsa-devel@alsa-project.org,
+        linux-pm@vger.kernel.org, linux-iio@vger.kernel.org,
+        linux-usb@vger.kernel.org, linux-mmc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        linux-gpio@vger.kernel.org, linux-mtd@lists.infradead.org,
+        linux-i2c@vger.kernel.org, linux-serial@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: More whitespace clean-ups in schema files
+Message-ID: <20201023204733.GA72065@ravnborg.org>
+References: <20201023192258.3126047-1-robh@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@shelob.surriel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023192258.3126047-1-robh@kernel.org>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=JfrnYn6hAAAA:8 a=e5mUnYsNAAAA:8 a=VwQbUJbxAAAA:8
+        a=foHCeV_ZAAAA:8 a=7gkXJVJtAAAA:8 a=ruYZUhiEchJcPueZ5-MA:9
+        a=CjuIK1q_8ugA:10 a=1CNFftbPRP8L7MoqJWF3:22 a=Vxmtnl_E_bksehYqCbjh:22
+        a=AjGcO6oz07-iQ99wixmX:22 a=h8a9FgHX5U4dIE3jaWyr:22
+        a=E9Po1WZjFZOl8hwRPBS3:22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The allocation flags of anonymous transparent huge pages can be controlled
-through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-help the system from getting bogged down in the page reclaim and compaction
-code when many THPs are getting allocated simultaneously.
-
-However, the gfp_mask for shmem THP allocations were not limited by those
-configuration settings, and some workloads ended up with all CPUs stuck
-on the LRU lock in the page reclaim code, trying to allocate dozens of
-THPs simultaneously.
-
-This patch applies the same configurated limitation of THPs to shmem
-hugepage allocations, to prevent that from happening.
-
-This way a THP defrag setting of "never" or "defer+madvise" will result
-in quick allocation failures without direct reclaim when no 2MB free
-pages are available.
-
-With this patch applied, THP allocations for tmpfs will be a little
-more aggressive than today for files mmapped with MADV_HUGEPAGE,
-and a little less aggressive for files that are not mmapped or
-mapped without that flag.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
---- 
-v3: fix NULL vma issue spotted by Hugh Dickins & tested
-v2: move gfp calculation to shmem_getpage_gfp as suggested by Yu Xu
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index c603237e006c..0a5b164a26d9 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
- extern void pm_restrict_gfp_mask(void);
- extern void pm_restore_gfp_mask(void);
- 
-+extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
-+
- #ifdef CONFIG_PM_SLEEP
- extern bool pm_suspended_storage(void);
- #else
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9474dbc150ed..6296bdff9693 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -649,9 +649,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-  *	    available
-  * never: never stall for any thp allocation
-  */
--static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-+gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
- {
--	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
-+	const bool vma_madvised = vma && (vma->vm_flags & VM_HUGEPAGE);
- 
- 	/* Always do synchronous compaction */
- 	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 537c137698f8..9710b9df91e9 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
- 		return NULL;
- 
- 	shmem_pseudo_vma_init(&pvma, info, hindex);
--	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
--			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
-+	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-+			       true);
- 	shmem_pseudo_vma_destroy(&pvma);
- 	if (page)
- 		prep_transhuge_page(page);
-@@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	struct page *page;
- 	enum sgp_type sgp_huge = sgp;
- 	pgoff_t hindex = index;
-+	gfp_t huge_gfp;
- 	int error;
- 	int once = 0;
- 	int alloced = 0;
-@@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	}
- 
- alloc_huge:
--	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
-+	huge_gfp = alloc_hugepage_direct_gfpmask(vma);
-+	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
- 	if (IS_ERR(page)) {
- alloc_nohuge:
- 		page = shmem_alloc_and_acct_page(gfp, inode,
-
+On Fri, Oct 23, 2020 at 02:22:58PM -0500, Rob Herring wrote:
+> Clean-up incorrect indentation, extra spaces, and missing EOF newline in
+> schema files. Most of the clean-ups are for list indentation which
+> should always be 2 spaces more than the preceding keyword.
+> 
+> Found with yamllint (now integrated into the checks).
+> 
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: dri-devel@lists.freedesktop.org
+> Cc: linux-gpio@vger.kernel.org
+> Cc: linux-i2c@vger.kernel.org
+> Cc: linux-iio@vger.kernel.org
+> Cc: linux-pm@vger.kernel.org
+> Cc: alsa-devel@alsa-project.org
+> Cc: linux-mmc@vger.kernel.org
+> Cc: linux-mtd@lists.infradead.org
+> Cc: linux-serial@vger.kernel.org
+> Cc: linux-usb@vger.kernel.org
+> Signed-off-by: Rob Herring <robh@kernel.org>
+Acked-by: Sam Ravnborg <sam@ravnborg.org> # for display
