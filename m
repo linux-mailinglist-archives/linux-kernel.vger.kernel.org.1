@@ -2,57 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70FDC297999
+	by mail.lfdr.de (Postfix) with ESMTP id DF41929799A
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:24:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754354AbgJWXWU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 19:22:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56402 "EHLO
+        id S1758546AbgJWXW1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 19:22:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56434 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754109AbgJWXWR (ORCPT
+        with ESMTP id S1754381AbgJWXW1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 19:22:17 -0400
+        Fri, 23 Oct 2020 19:22:27 -0400
 Received: from mail-ej1-x642.google.com (mail-ej1-x642.google.com [IPv6:2a00:1450:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6D8FEC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 16:22:15 -0700 (PDT)
-Received: by mail-ej1-x642.google.com with SMTP id t25so4544433ejd.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 16:22:15 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B3751C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 16:22:26 -0700 (PDT)
+Received: by mail-ej1-x642.google.com with SMTP id c15so4609000ejs.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 16:22:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=rasmusvillemoes.dk; s=google;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=++BugjGu7Yhj4JJ5Ke8vw5pSfa1dW+nAyP06MUn3l9A=;
-        b=fR0nhC4hwwjEQcrMhtmyY8sKhRj7dxdyF2zz4p2zmTkw1Z0wFyN6uM8KqqmqF9puaD
-         azZCsjAie4XeXmRw8k5oFcVimIPj5arVNPrWI/4l7+qfonfFuq1dSKSgUP+3yJoNTWGY
-         PK6TCb5HWFqHN0sC5H3zBhkAPcfUPFCdkfRjA=
+        bh=IsEIFoe7sZUuYhcMcTQFflZv80V+XCrEWT+PDhHP6xY=;
+        b=WPW0NNDdKQvCSAhhDOrwNw9dMjbs6A8JVXUrjTqIgR7bsnYa6xixXVEKNbvnju0c5t
+         MRcXdP28n33qfWwKDTG/15TYQVG6kCYEW0a+6tG9z6XSJB1IToGvXw+NwjAwkxSfNnQ/
+         lhz4yx1sLnKH/IrdCZ1Lg0SQwSqiH42iRTpf8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=++BugjGu7Yhj4JJ5Ke8vw5pSfa1dW+nAyP06MUn3l9A=;
-        b=Fp65XsnPp0E0Nu+Sw3ACfb3FJULVF92LmPXwm/JgX8SN7ngmxSiN/RTTN2Kuhbddg0
-         MEiIS+J4unHjW3OpHat5sU/6uOz0Rxgb5u2P9dh60UTC10tfm+zW2MUcaI05Lmz/Tb3r
-         BbuvfKUg4ZKfh05mX1sVniVksx3vqDGGpxSKtuIMmM+moAR+uw240E3evW2Rs+beuJ3r
-         yGm/k9b+rcePXWkaUT6/Mo0vvtmWXL8mUnNkY7wPUiw4TbO2HSzoYDN+vFkoXL62RWux
-         HDA/L9fL4Gd9+WYVUh0E5xG0i3GTqvb48Y0XhM7q4hqoKNg5vV7I/FCC6nu6/yzMrf70
-         lgFA==
-X-Gm-Message-State: AOAM530O+OVZmX8BrSktQqYqEBYClT7EDXBnYUy1ug9f5oiWh7X3RNVa
-        VtFLHx+X2uWUCUNt5maMf8hLK2Ef3lypGoYbBKE=
-X-Google-Smtp-Source: ABdhPJy+FWvlI+Yb5UgOMrRC0uoX6rrAlvnu2D+ZLWWHSqFs6mIC+Extu8sxGFc3rWBf00r8KmBxUg==
-X-Received: by 2002:a17:906:4d59:: with SMTP id b25mr4565331ejv.404.1603495334032;
-        Fri, 23 Oct 2020 16:22:14 -0700 (PDT)
+        bh=IsEIFoe7sZUuYhcMcTQFflZv80V+XCrEWT+PDhHP6xY=;
+        b=sjfpZkyCRNB3whe4GJdfS7SKD42lGI96oUEiPIfU4vd0vvDu1NkS9ZwonDmLaoQTWa
+         hGfw6Mltqx8ZuigSyvdL6gg1wlDeqaedT4inn1Ks+JaoGo8aA4/zLP63eg7RL1cUWY/P
+         puz2ZsyVAE2rEO8HXbrnbaJrGARu8o8eGQEvLuKIEDa8hGaVuEP5N2PxQvTe7A/QWcUn
+         Nw5m4a3ZWa7c2zia11RvlVHf3Nkgq78VMbnXVMYHFsljxICONrWQCvwtuZAQ4LsjRxoG
+         kYVOyjyewsDHQY3Ed3j9xhKaGtp/BdDWphxIonr3CWaERTiye+Cjk2XkGcm6jZE9nWDo
+         LIZw==
+X-Gm-Message-State: AOAM530ZBxDrzSn4lGRh8dMKvQ1cc/bHE3XvLTPyY4hMDuLLON/M4sUE
+        jAg8A5AY28QDeNIM7wQOCdO/rQ==
+X-Google-Smtp-Source: ABdhPJwHFQQs9h1GtuNWhnvYjSEssXP1pmsJpJk3lNxPNHQCXTndKGBRBBWs85n9Hf/Ekk9osTPoZg==
+X-Received: by 2002:a17:906:3ada:: with SMTP id z26mr4249760ejd.151.1603495345371;
+        Fri, 23 Oct 2020 16:22:25 -0700 (PDT)
 Received: from prevas-ravi.aaad.autarch.net (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
-        by smtp.gmail.com with ESMTPSA id q25sm1447937eja.86.2020.10.23.16.22.13
+        by smtp.gmail.com with ESMTPSA id ck19sm1474650ejb.99.2020.10.23.16.22.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 16:22:13 -0700 (PDT)
+        Fri, 23 Oct 2020 16:22:24 -0700 (PDT)
 From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
-To:     stable@vger.kernel.org,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Masahiro Yamada <masahiroy@kernel.org>
+To:     stable@vger.kernel.org, Masahiro Yamada <masahiroy@kernel.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Cc:     Greg KH <gregkh@linuxfoundation.org>, linux-kernel@vger.kernel.org
-Subject: [PATCH 4.4-stable] scripts/setlocalversion: make git describe output more reliable
-Date:   Sat, 24 Oct 2020 01:22:07 +0200
-Message-Id: <20201023232207.10373-1-linux@rasmusvillemoes.dk>
+Subject: [PATCH 4.9-stable] scripts/setlocalversion: make git describe output more reliable
+Date:   Sat, 24 Oct 2020 01:22:20 +0200
+Message-Id: <20201023232220.10448-1-linux@rasmusvillemoes.dk>
 X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -97,7 +96,7 @@ with the current rule for -stable patches, and is almost always enough
 to identify the head commit unambigously - in the few cases where it
 does not, the v5.4.3-00021- prefix would certainly nail it down.
 
-[Adapt to `` vs $() differences between 4.4 and upstream.]
+[Adapt to `` vs $() differences between 4.9 and upstream.]
 
 Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
 Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
