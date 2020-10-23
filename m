@@ -2,279 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EF215297853
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:39:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 65F90297859
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:41:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756244AbgJWUjr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:39:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59042 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756237AbgJWUjr (ORCPT
+        id S1756259AbgJWUk6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:40:58 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:21717 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1756245AbgJWUk5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:39:47 -0400
-Received: from mail-wm1-x331.google.com (mail-wm1-x331.google.com [IPv6:2a00:1450:4864:20::331])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95E5CC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 13:39:46 -0700 (PDT)
-Received: by mail-wm1-x331.google.com with SMTP id q5so3459539wmq.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 13:39:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=R031GMB5o7wKRMxxngE9oQ0dOzwqqmG4OcaE/SxTSaM=;
-        b=qbbqqCtj7p8rqQr4z7igzK/XRI4lu+VEPdFpv3jn8LBevJfHvG1rkrcP6HOrQV08tP
-         8/AymsE7xnZKbhKCZAkzH+zVldeVmbr9gikVBvtu2BT0eRq4ia9Onez8UA80C6ADgDZ6
-         KyR45fJ/TedLBq+D6NscZdWKZW1IJdBA+/d5CeW+X1T3k9elTAOYc4K18Aa0OHx0XgTj
-         QZmXaykMOo/nCeNvroPzDMX9KHNSytLIRnXovyomJLFJid72iTztJ835dO/ohratk9Bp
-         nf5cL9PGiYVK6pEwT6RZdVHs4Q3zBglYm/AOKxBbnmS6Bry/mEz02NhZaSaAL49r2YE1
-         JqHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=R031GMB5o7wKRMxxngE9oQ0dOzwqqmG4OcaE/SxTSaM=;
-        b=kheetXjXJaX5tnFIc6t5ioJnRxUnQRy+5mtnMcmbhPbkX31L1g/4Bpfo33mS4tg5H/
-         /UEKm7a5MOmA35BxWmdAdeO3WKUNUYduyBqV6Sket1KhePmkCf9BZSi1Ye7Ul7Acc5oj
-         7Fy2urFJYtIkTydE9X9RMrmvCUTHlLTnT1JuKGi0x4g6LLAr7avWPbSq6aJfOewSCne2
-         E+/mWCM+fljOSmgOHfd/FRRQGZIYeLOpVxEYkPlh/cCt6HOSdOd2Hf4kHG3MR/pWhp8O
-         9zkX2nl1zwpZD41tBAWEVBqrj3TOb6LzRmcWUn1CDkea8yHPXB5RkWfjxpw1YG38HSgt
-         HlvA==
-X-Gm-Message-State: AOAM530bNkKP/AwylpFNzu6bmUkjYgH3xeFhW26W5PM/OV2dlAglTml7
-        Cv6qL0/Ax/FPl92Ecl5nBPY=
-X-Google-Smtp-Source: ABdhPJwVo3KSWXOkDajXO6R2oUq4gnY5da6LVmhryTID4UGz2psxOzD16NtbS2UHUGCtVsKTO3WG0w==
-X-Received: by 2002:a05:600c:230a:: with SMTP id 10mr4126900wmo.151.1603485585279;
-        Fri, 23 Oct 2020 13:39:45 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id f139sm5574716wme.47.2020.10.23.13.39.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 13:39:44 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 22:39:43 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     mripard@kernel.org, wens@csie.org, mirq-linux@rere.qmqm.pl,
-        broonie@kernel.org, lgirdwood@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [BUG] Error applying setting, reverse things back on lot of
- devices
-Message-ID: <20201023203943.GA21435@Red>
-References: <20201021183149.GA8436@Red>
- <20201023134201.GA533@Red>
+        Fri, 23 Oct 2020 16:40:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603485655;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=a3pMnOcWFThjKdDsxfmbI+DYS5weG2T0/ht11gpp4qQ=;
+        b=JZd5fuC+MF0GcTWZbKm+vlgseAOW0BcvH3QhlbE0xZEe8sGGcG3IiPzhtanCYHDxxi8Oli
+        y+NMfzGFCA8QRK45vQU/fNSRkqtfiwbH9CrvXuA+dsu94n/Mj2R7HOPur+FyCGTxHyyN9N
+        35NSXkPXj8r25mdkmubHNweWi08utyU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-139-Dsav4riYMDeJtcCT1H38iQ-1; Fri, 23 Oct 2020 16:40:53 -0400
+X-MC-Unique: Dsav4riYMDeJtcCT1H38iQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44FE41882FB6;
+        Fri, 23 Oct 2020 20:40:51 +0000 (UTC)
+Received: from madcap2.tricolour.ca (unknown [10.10.110.2])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id A971D614F5;
+        Fri, 23 Oct 2020 20:40:36 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 16:40:33 -0400
+From:   Richard Guy Briggs <rgb@redhat.com>
+To:     Paul Moore <paul@paul-moore.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
+Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
+Message-ID: <20201023204033.GI2882171@madcap2.tricolour.ca>
+References: <cover.1593198710.git.rgb@redhat.com>
+ <6e2e10432e1400f747918eeb93bf45029de2aa6c.1593198710.git.rgb@redhat.com>
+ <CAHC9VhSCm5eeBcyY8bBsnxr-hK4rkso9_NJHJec2OXLu4m5QTA@mail.gmail.com>
+ <20200729194058.kcbsqjhzunjpipgm@madcap2.tricolour.ca>
+ <CAHC9VhRUwCKBjffA_XNSjUwvUn8e6zfmy8WD203dK7R2KD0__g@mail.gmail.com>
+ <20201002195231.GH2882171@madcap2.tricolour.ca>
+ <20201021163926.GA3929765@madcap2.tricolour.ca>
+ <CAHC9VhRb7XMyTrcrmzM3yQO+eLdO_r2+DOLKr9apDDeH4ua2Ew@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023134201.GA533@Red>
+In-Reply-To: <CAHC9VhRb7XMyTrcrmzM3yQO+eLdO_r2+DOLKr9apDDeH4ua2Ew@mail.gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:42:01PM +0200, Corentin Labbe wrote:
-> On Wed, Oct 21, 2020 at 08:31:49PM +0200, Corentin Labbe wrote:
-> > Hello
-> > 
-> > On next-20201016, booting my sun8i-r40-bananapi-m2-ultra, the boot end without at least stmmac working.
-> > [    0.000000] Booting Linux on physical CPU 0x0
-> > [    0.000000] Linux version 5.9.0-next-20201016-00055-g98489213ff7c-dirty (compile@Red) (armv7a-unknown-linux-gnueabihf-gcc (Gentoo 9.3.0-r1 p3) 9.3.0, GNU ld (Gentoo 2.33.1 p2) 2.33.1) #162 SMP Tue Oct 20 08:10:25 CEST 2020
-> > [    0.000000] CPU: ARMv7 Processor [410fc075] revision 5 (ARMv7), cr=10c5387d
-> > [    0.000000] CPU: div instructions available: patching division code
-> > [    0.000000] CPU: PIPT / VIPT nonaliasing data cache, VIPT aliasing instruction cache
-> > [    0.000000] OF: fdt: Machine model: Banana Pi BPI-M2-Ultra
-> > [    0.000000] Memory policy: Data cache writealloc
-> > [    0.000000] cma: Reserved 16 MiB at 0xbec00000
-> > [    0.000000] Zone ranges:
-> > [    0.000000]   Normal   [mem 0x0000000040000000-0x000000006fffffff]
-> > [    0.000000]   HighMem  [mem 0x0000000070000000-0x00000000bfffffff]
-> > [    0.000000] Movable zone start for each node
-> > [    0.000000] Early memory node ranges
-> > [    0.000000]   node   0: [mem 0x0000000040000000-0x00000000bfffffff]
-> > [    0.000000] Initmem setup node 0 [mem 0x0000000040000000-0x00000000bfffffff]
-> > [    0.000000] psci: probing for conduit method from DT.
-> > [    0.000000] psci: Using PSCI v0.1 Function IDs from DT
-> > [    0.000000] percpu: Embedded 15 pages/cpu s30924 r8192 d22324 u61440
-> > [    0.000000] Built 1 zonelists, mobility grouping on.  Total pages: 522752
-> > [    0.000000] Kernel command line: console=ttyS0,115200n8 root=/dev/ram0 ip=dhcp trace_event=initcall:*,module:* trace_options=stacktrace ip=dhcp
-> > [    0.000000] Dentry cache hash table entries: 131072 (order: 7, 524288 bytes, linear)
-> > [    0.000000] Inode-cache hash table entries: 65536 (order: 6, 262144 bytes, linear)
-> > [    0.000000] mem auto-init: stack:off, heap alloc:off, heap free:off
-> > [    0.000000] Memory: 2020320K/2097152K available (7168K kernel code, 934K rwdata, 2252K rodata, 1024K init, 248K bss, 60448K reserved, 16384K cma-reserved, 1294324K highmem)
-> > [    0.000000] SLUB: HWalign=64, Order=0-3, MinObjects=0, CPUs=4, Nodes=1
-> > [    0.000000] rcu: Hierarchical RCU implementation.
-> > [    0.000000] rcu: 	RCU event tracing is enabled.
-> > [    0.000000] rcu: 	RCU restricting CPUs from NR_CPUS=8 to nr_cpu_ids=4.
-> > [    0.000000] rcu: RCU calculated value of scheduler-enlistment delay is 10 jiffies.
-> > [    0.000000] rcu: Adjusting geometry for rcu_fanout_leaf=16, nr_cpu_ids=4
-> > [    0.000000] NR_IRQS: 16, nr_irqs: 16, preallocated irqs: 16
-> > [    0.000000] GIC: Using split EOI/Deactivate mode
-> > [    0.000000] random: get_random_bytes called from start_kernel+0x320/0x4ac with crng_init=0
-> > [    0.000000] arch_timer: cp15 timer(s) running at 24.00MHz (phys).
-> > [    0.000000] clocksource: arch_sys_counter: mask: 0xffffffffffffff max_cycles: 0x588fe9dc0, max_idle_ns: 440795202592 ns
-> > [    0.000007] sched_clock: 56 bits at 24MHz, resolution 41ns, wraps every 4398046511097ns
-> > [    0.000020] Switching to timer-based delay loop, resolution 41ns
-> > [    0.000176] Console: colour dummy device 80x30
-> > [    0.000230] Calibrating delay loop (skipped), value calculated using timer frequency.. 48.00 BogoMIPS (lpj=240000)
-> > [    0.000251] pid_max: default: 32768 minimum: 301
-> > [    0.000395] Mount-cache hash table entries: 2048 (order: 1, 8192 bytes, linear)
-> > [    0.000414] Mountpoint-cache hash table entries: 2048 (order: 1, 8192 bytes, linear)
-> > [    0.001117] CPU: Testing write buffer coherency: ok
-> > [    0.001420] /cpus/cpu@0 missing clock-frequency property
-> > [    0.001442] /cpus/cpu@1 missing clock-frequency property
-> > [    0.001459] /cpus/cpu@2 missing clock-frequency property
-> > [    0.001477] /cpus/cpu@3 missing clock-frequency property
-> > [    0.001490] CPU0: thread -1, cpu 0, socket 0, mpidr 80000000
-> > [    0.002001] Setting up static identity map for 0x40100000 - 0x40100060
-> > [    0.002119] rcu: Hierarchical SRCU implementation.
-> > [    0.002580] smp: Bringing up secondary CPUs ...
-> > [    0.013271] CPU1: thread -1, cpu 1, socket 0, mpidr 80000001
-> > [    0.024063] CPU2: thread -1, cpu 2, socket 0, mpidr 80000002
-> > [    0.034784] CPU3: thread -1, cpu 3, socket 0, mpidr 80000003
-> > [    0.034880] smp: Brought up 1 node, 4 CPUs
-> > [    0.034904] SMP: Total of 4 processors activated (192.00 BogoMIPS).
-> > [    0.034912] CPU: All CPU(s) started in HYP mode.
-> > [    0.034919] CPU: Virtualization extensions available.
-> > [    0.035754] devtmpfs: initialized
-> > [    0.041021] VFP support v0.3: implementor 41 architecture 2 part 30 variant 7 rev 5
-> > [    0.041258] clocksource: jiffies: mask: 0xffffffff max_cycles: 0xffffffff, max_idle_ns: 19112604462750000 ns
-> > [    0.041283] futex hash table entries: 1024 (order: 4, 65536 bytes, linear)
-> > [    0.042026] pinctrl core: initialized pinctrl subsystem
-> > [    0.043049] NET: Registered protocol family 16
-> > [    0.044324] DMA: preallocated 256 KiB pool for atomic coherent allocations
-> > [    0.045360] thermal_sys: Registered thermal governor 'step_wise'
-> > [    0.045788] hw-breakpoint: found 5 (+1 reserved) breakpoint and 4 watchpoint registers.
-> > [    0.045805] hw-breakpoint: maximum watchpoint size is 8 bytes.
-> > [    0.065862] alg: extra crypto tests enabled.  This is intended for developer use only.
-> > [    0.123361] alg_test_stdrng test ansi_cprng
-> > [    0.150327] SCSI subsystem initialized
-> > [    0.150742] usbcore: registered new interface driver usbfs
-> > [    0.150789] usbcore: registered new interface driver hub
-> > [    0.150845] usbcore: registered new device driver usb
-> > [    0.151014] mc: Linux media interface: v0.10
-> > [    0.151049] videodev: Linux video capture interface: v2.00
-> > [    0.151149] pps_core: LinuxPPS API ver. 1 registered
-> > [    0.151159] pps_core: Software ver. 5.3.6 - Copyright 2005-2007 Rodolfo Giometti <giometti@linux.it>
-> > [    0.151180] PTP clock support registered
-> > [    0.151575] Advanced Linux Sound Architecture Driver Initialized.
-> > [    0.152420] clocksource: Switched to clocksource arch_sys_counter
-> > [    0.159588] NET: Registered protocol family 2
-> > [    0.160080] tcp_listen_portaddr_hash hash table entries: 512 (order: 0, 6144 bytes, linear)
-> > [    0.160112] TCP established hash table entries: 8192 (order: 3, 32768 bytes, linear)
-> > [    0.160188] TCP bind hash table entries: 8192 (order: 4, 65536 bytes, linear)
-> > [    0.160304] TCP: Hash tables configured (established 8192 bind 8192)
-> > [    0.160423] UDP hash table entries: 512 (order: 2, 16384 bytes, linear)
-> > [    0.160489] UDP-Lite hash table entries: 512 (order: 2, 16384 bytes, linear)
-> > [    0.160689] NET: Registered protocol family 1
-> > [    0.161248] RPC: Registered named UNIX socket transport module.
-> > [    0.161263] RPC: Registered udp transport module.
-> > [    0.161272] RPC: Registered tcp transport module.
-> > [    0.161280] RPC: Registered tcp NFSv4.1 backchannel transport module.
-> > [    0.161510] Unpacking initramfs...
-> > [    1.988543] Freeing initrd memory: 30460K
-> > [    1.989598] hw perfevents: enabled with armv7_cortex_a7 PMU driver, 5 counters available
-> > [    1.990836] workingset: timestamp_bits=30 max_order=19 bucket_order=0
-> > [    1.996523] NFS: Registering the id_resolver key type
-> > [    1.996573] Key type id_resolver registered
-> > [    1.996582] Key type id_legacy registered
-> > [    1.996659] NET: Registered protocol family 38
-> > [    1.996725] bounce: pool size: 64 pages
-> > [    1.996770] Block layer SCSI generic (bsg) driver version 0.4 loaded (major 246)
-> > [    1.996782] io scheduler mq-deadline registered
-> > [    1.996790] io scheduler kyber registered
-> > [    1.997771] sun4i-usb-phy 1c13400.phy: failed to get clock usb0_phy
-> > [    1.999624] sun4i-pinctrl 1c20800.pinctrl: supply vcc-pi not found, using dummy regulator
-> > [    2.052865] Serial: 8250/16550 driver, 8 ports, IRQ sharing disabled
-> > [    2.058849] sun8i-mixer 1100000.mixer: Couldn't get our reset line
-> > [    2.058962] sun4i-drm display-engine: Couldn't bind all pipelines components
-> > [    2.061927] lima 1c40000.gpu: gp - mali400 version major 1 minor 1
-> > [    2.061987] lima 1c40000.gpu: pp0 - mali400 version major 1 minor 1
-> > [    2.062041] lima 1c40000.gpu: pp1 - mali400 version major 1 minor 1
-> > [    2.062092] lima 1c40000.gpu: l2 cache 64K, 4-way, 64byte cache line, 64bit external bus
-> > [    2.062567] lima 1c40000.gpu: bus rate = 200000000
-> > [    2.062584] lima 1c40000.gpu: mod rate = 297000000
-> > [    2.062990] [drm] Initialized lima 1.1.0 20191231 for 1c40000.gpu on minor 0
-> > [    2.071234] loop: module loaded
-> > [    2.072785] libphy: Fixed MDIO Bus: probed
-> > [    2.073308] CAN device driver interface
-> > [    2.074052] ehci_hcd: USB 2.0 'Enhanced' Host Controller (EHCI) Driver
-> > [    2.074063] ehci-platform: EHCI generic platform driver
-> > [    2.074552] ohci_hcd: USB 1.1 'Open' Host Controller (OHCI) Driver
-> > [    2.074579] ohci-platform: OHCI generic platform driver
-> > [    2.076335] sun6i-rtc 1c20400.rtc: registered as rtc0
-> > [    2.076383] sun6i-rtc 1c20400.rtc: setting system clock to 1970-01-01T00:00:08 UTC (8)
-> > [    2.076394] sun6i-rtc 1c20400.rtc: RTC enabled
-> > [    2.076673] i2c /dev entries driver
-> > [    2.079404] sunxi-wdt 1c20c90.watchdog: Watchdog enabled (timeout=16 sec, nowayout=0)
-> > [    2.079812] device-mapper: ioctl: 4.43.0-ioctl (2020-10-01) initialised: dm-devel@redhat.com
-> > [    2.080803] sun8i-ce 1c15000.crypto: Set mod clock to 300000000 (300 Mhz) from 24000000 (24 Mhz)
-> > [    2.081050] sun8i-ce 1c15000.crypto: will run requests pump with realtime priority
-> > [    2.081384] sun8i-ce 1c15000.crypto: will run requests pump with realtime priority
-> > [    2.081521] sun8i-ce 1c15000.crypto: will run requests pump with realtime priority
-> > [    2.081630] sun8i-ce 1c15000.crypto: will run requests pump with realtime priority
-> > [    2.081728] sun8i-ce 1c15000.crypto: Register cbc(aes)
-> > [    2.120538] sun8i-ce 1c15000.crypto: Fallback for cbc-aes-sun8i-ce is cbc(aes-generic)
-> > [    2.357120] sun8i-ce 1c15000.crypto: Register ecb(aes)
-> > [    2.387952] sun8i-ce 1c15000.crypto: Fallback for ecb-aes-sun8i-ce is ecb(aes-generic)
-> > [    2.407064] random: fast init done
-> > [    2.589700] sun8i-ce 1c15000.crypto: Register cbc(des3_ede)
-> > [    2.641051] sun8i-ce 1c15000.crypto: Fallback for cbc-des3-sun8i-ce is cbc(des3_ede-generic)
-> > [    3.281510] sun8i-ce 1c15000.crypto: Register ecb(des3_ede)
-> > [    3.333414] sun8i-ce 1c15000.crypto: Fallback for ecb-des3-sun8i-ce is ecb(des3_ede-generic)
-> > [    3.874269] sun8i-ce 1c15000.crypto: Register md5
-> > [    3.874437] sun8i-ce 1c15000.crypto: Fallback for md5-sun8i-ce is md5-generic
-> > [    3.980669] sun8i-ce 1c15000.crypto: Register sha1
-> > [    3.980869] sun8i-ce 1c15000.crypto: Fallback for sha1-sun8i-ce is sha1-generic
-> > [    4.104525] sun8i-ce 1c15000.crypto: Register sha224
-> > [    4.159000] sun8i-ce 1c15000.crypto: Fallback for sha224-sun8i-ce is sha224-generic
-> > [    4.323465] sun8i-ce 1c15000.crypto: Register sha256
-> > [    4.323665] sun8i-ce 1c15000.crypto: Fallback for sha256-sun8i-ce is sha256-generic
-> > [    4.484572] sun8i-ce 1c15000.crypto: DEBUG: Algo of sha384 not supported
-> > [    4.484598] sun8i-ce 1c15000.crypto: DEBUG: Algo of sha512 not supported
-> > [    4.484609] sun8i-ce 1c15000.crypto: Register stdrng
-> > [    4.484782] alg_test_stdrng test sun8i-ce-prng
-> > [    4.484881] sun8i-ce 1c15000.crypto: TRNG not supported
-> > [    4.484897] sun8i-ce 1c15000.crypto: CryptoEngine Die ID 0
-> > [    4.486084] usbcore: registered new interface driver usbhid
-> > [    4.486098] usbhid: USB HID core driver
-> > [    4.488554] NET: Registered protocol family 17
-> > [    4.488580] can: controller area network core
-> > [    4.488668] NET: Registered protocol family 29
-> > [    4.488681] can: raw protocol
-> > [    4.488691] can: broadcast manager protocol
-> > [    4.488705] can: netlink gateway - max_hops=1
-> > [    4.488918] Key type dns_resolver registered
-> > [    4.489063] Registering SWP/SWPB emulation handler
-> > [    4.501808] sun4i-usb-phy 1c13400.phy: Couldn't get regulator usb1_vbus... Deferring probe
-> > [    4.503853] sun4i-pinctrl 1c20800.pinctrl: supply vcc-pi not found, using dummy regulator
-> > [    4.505470] sun4i-pinctrl 1c20800.pinctrl: initialized sunXi PIO driver
-> > [    4.507391] sun4i-pinctrl 1c20800.pinctrl: supply vcc-pb not found, using dummy regulator
-> > [    4.508216] printk: console [ttyS0] disabled
-> > [    4.528470] 1c28000.serial: ttyS0 at MMIO 0x1c28000 (irq = 45, base_baud = 1500000) is a U6_16550A
-> > [    5.585887] printk: console [ttyS0] enabled
-> > [    5.590785] dw-apb-uart 1c28c00.serial: Error applying setting, reverse things back
-> > [    5.609876] sun4i-drm display-engine: bound 1100000.mixer (ops 0xc087f4d0)
-> > [    5.618713] sun4i-drm display-engine: bound 1200000.mixer (ops 0xc087f4d0)
-> > [    5.626022] sun4i-drm display-engine: bound 1c70000.tcon-top (ops 0xc08837e0)
-> > [    5.633467] sun4i-drm display-engine: bound 1c73000.lcd-controller (ops 0xc087b760)
-> > [    5.641177] sun8i-dw-hdmi 1ee0000.hdmi: supply hvcc not found, using dummy regulator
-> > [    5.682538] sun8i-dw-hdmi 1ee0000.hdmi: Detected HDMI TX controller v1.32a with HDCP (sun8i_dw_hdmi_phy)
-> > [    5.692591] sun8i-dw-hdmi 1ee0000.hdmi: registered DesignWare HDMI I2C bus driver
-> > [    5.700429] sun4i-drm display-engine: bound 1ee0000.hdmi (ops 0xc087ea28)
-> > [    5.707707] [drm] Initialized sun4i-drm 1.0.0 20150629 for display-engine on minor 1
-> > [    5.715530] sun4i-drm display-engine: [drm] Cannot find any crtc or sizes
-> > [    5.723563] dwmac-sun8i 1c50000.ethernet: Error applying setting, reverse things back
-> > [    5.734175] sun4i-drm display-engine: [drm] Cannot find any crtc or sizes
-> > [    5.741110] i2c i2c-1: Not using recovery: no recover_bus() found
-> > [    5.748415] axp20x-i2c 1-0034: AXP20x variant AXP221 found
-> > [    5.761265] input: axp20x-pek as /devices/platform/soc/1c2ac00.i2c/i2c-1/1-0034/axp221-pek/input/input0
-> > [    5.780739] vcc-3v3: supplied by regulator-dummy
-> > [    5.786045] vdd-cpu: supplied by regulator-dummy
-> > [    5.791332] vdd-sys: supplied by regulator-dummy
-> > [    5.796585] dcdc4: supplied by regulator-dummy
-> > [    5.801647] vcc-dram: supplied by regulator-dummy
-> > [    5.806470] vcc-gmac-phy: failed to get the current voltage: -EINVAL
-> > [    5.812839] axp20x-regulator axp20x-regulator: Failed to register dc1sw
-> > [    5.820291] axp20x-regulator: probe of axp20x-regulator failed with error -22
+On 2020-10-22 21:21, Paul Moore wrote:
+> On Wed, Oct 21, 2020 at 12:39 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> > Here is an exmple I was able to generate after updating the testsuite
+> > script to include a signalling example of a nested audit container
+> > identifier:
+> >
+> > ----
+> > type=PROCTITLE msg=audit(2020-10-21 10:31:16.655:6731) : proctitle=/usr/bin/perl -w containerid/test
+> > type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=7129731255799087104^3333941723245477888
+> > type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115583 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+> > type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=3333941723245477888
+> > type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115580 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+> > type=CONTAINER_ID msg=audit(2020-10-21 10:31:16.655:6731) : contid=8098399240850112512^3333941723245477888
+> > type=OBJ_PID msg=audit(2020-10-21 10:31:16.655:6731) : opid=115582 oauid=root ouid=root oses=1 obj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 ocomm=perl
+> > type=SYSCALL msg=audit(2020-10-21 10:31:16.655:6731) : arch=x86_64 syscall=kill success=yes exit=0 a0=0xfffe3c84 a1=SIGTERM a2=0x4d524554 a3=0x0 items=0 ppid=115564 pid=115567 auid=root uid=root gid=root euid=root suid=root fsuid=root egid=root sgid=root fsgid=root tty=ttyS0 ses=1 comm=perl exe=/usr/bin/perl subj=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=testsuite-1603290671-AcLtUulY
+> > ----
+> >
+> > There are three CONTAINER_ID records which need some way of associating with OBJ_PID records.  An additional CONTAINER_ID record would be present if the killing process itself had an audit container identifier.  I think the most obvious way to connect them is with a pid= field in the CONTAINER_ID record.
 > 
-> I have just saw thoses 3 lines which are probably the real problem.
-> I have started a new bisect with this error, but it is hitting the same "crash range" the first one.
-> 
+> Using a "pid=" field as a way to link CONTAINER_ID records to other
+> records raises a few questions.  What happens if/when we need to
+> represent those PIDs in the context of a namespace?  Are we ever going
+> to need to link to records which don't have a "pid=" field?  I haven't
+> done the homework to know if either of these are a concern right now,
+> but I worry that this might become a problem in the future.
 
-I have bisected the problem to commit aea6cb99703e17019e025aa71643b4d3e0a24413 ("regulator: resolve supply after creating regulator")
-Reverting this fix my problem.
+Good point about PID namespaces in the future but those accompanying
+records will already have to be conditioned for the PID namespace
+context that is requesting it, so I don't see this as a showstopper.
+
+I've forgotten about an important one we already hit, which is a network
+event that only has a NETFILTER_PKT record, but in that case, there is
+no ambiguity since there are no other records associated with that
+event.  So the second is already an issue now.  Using
+task_tgid_nr(current), in the contid testsuite script network event it
+attributed it to ping which caused the event, but we cannot use this
+since it wasn't triggered by a syscall and doesn't accurately reflect
+the kernel thread that received it.  It could just be set to zero for
+network events.
+
+> The idea of using something like "item=" is interesting.  As you
+> mention, the "item=" field does present some overlap problems with the
+> PATH record, but perhaps we can do something similar.  What if we
+> added a "record=" (or similar, I'm not worried about names at this
+> point) to each record, reset to 0/1 at the start of each event, and
+> when we needed to link records somehow we could add a "related=1,..,N"
+> field.  This would potentially be useful beyond just the audit
+> container ID work.
+
+Does it make any sense to use the same keyword in each type of record
+such as record/records as in PATH/SYSCALL: item/items ?
+
+(I prefer 0-indexed like item=...)
+
+> paul moore
+
+- RGB
+
+--
+Richard Guy Briggs <rgb@redhat.com>
+Sr. S/W Engineer, Kernel Security, Base Operating Systems
+Remote, Ottawa, Red Hat Canada
+IRC: rgb, SunRaycer
+Voice: +1.647.777.2635, Internal: (81) 32635
 
