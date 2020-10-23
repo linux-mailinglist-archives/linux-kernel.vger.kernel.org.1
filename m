@@ -2,65 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C26DF296B39
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:29:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 688EE296B3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:29:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460462AbgJWI3a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:29:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58366 "EHLO
+        id S460629AbgJWI3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:29:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58408 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375737AbgJWI33 (ORCPT
+        with ESMTP id S460621AbgJWI3o (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:29:29 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8AC4AC0613CE;
-        Fri, 23 Oct 2020 01:29:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=5aZPshIdzYGdOyeUaVThuatYClUPIqWMANiMs5m6ywA=; b=r3jTgQk+GfQ6Hx0b/c0vTrdVhN
-        9uGnyvOKocl2KWwpmv/Xi+BPfdgpjfav5jCSdAnMDUVBLEhCjI81pSsId/BZEQoLeGku+SksbPy7Q
-        LJY47mE+ptCJfWTKM/HV7SzJrj383ul1bpZsVzUovCsvw7dCwZFOQ6qgNN/VKJGyhCupMGJ5I6/74
-        A+D62bGn/9uUbIkrO6n8cPO8xblOSYq0U3NbjkxCJcji1ygq396b9Fo59eTPiNOA7CJvCTyLjlBaO
-        3DldTbrN6kkO3UpAwqf1bQMLRaxXn5PLqRvKh+UqWU5jpU6Bg/3oC2h6QipENF1uqGTGqKVE113Kp
-        yyzQ+dhw==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVsRz-00044z-Pb; Fri, 23 Oct 2020 08:29:27 +0000
-Date:   Fri, 23 Oct 2020 09:29:27 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Christopher Unkel <cunkel@drivescale.com>
-Cc:     linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Song Liu <song@kernel.org>
-Subject: Re: [PATCH 1/3] md: align superblock writes to physical blocks
-Message-ID: <20201023082927.GA15144@infradead.org>
-References: <20201023033130.11354-1-cunkel@drivescale.com>
- <20201023033130.11354-2-cunkel@drivescale.com>
+        Fri, 23 Oct 2020 04:29:44 -0400
+Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F113C0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:29:44 -0700 (PDT)
+Received: by mail-pl1-x641.google.com with SMTP id t22so468067plr.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:29:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=MMav+PtnWA8e0lc96loqiE6mTzZH6xG4l/t4zMITsAk=;
+        b=YQ2AKoRwpkty0tvJPPA8WCCIKDOr9TT0bTWA5t2FhKzhb8Ss+jzt3G3AS/k5guH6wq
+         tI72tb/I4pZzAHl9BKirKz2Yage3lUKgCDS8DdgzH7cpUBIh3Ad1oYsmvnT7tobdj7VG
+         dkhy0/7q1cL2Fzl3+y6xUeWAGbtcUgE4nPH+nKbpSj2OE05m9gWZn/K1ObetheeZob0x
+         yafIFMf9P8AYz8MCi8WnOob24dMArObcFn1ZIZ41wCSgzyGdtfo8iuFPNkNM2ciLFX15
+         B8iaKwOQQJUJMCdm9o7EHXdgn7Gp8jbdSGwwFZMuWuXWDIbPes52ML1nZVpUMvOGfiTz
+         pV6w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=MMav+PtnWA8e0lc96loqiE6mTzZH6xG4l/t4zMITsAk=;
+        b=drsji8aRYW61gL0U+LV2ubtK7sBH2YUT90v/03Y82EixXBycgw+O6MsD/0ultQvWdq
+         cHGLwJXnzzQ5D/FjvipdPHF4Hdyc2fgCQHB37LtzJicHE+Htrv2zEsbJIQ2HlzNM/0s4
+         1xwFxgrk1K9scZTpl/plyD2lO0XiY6DlHsZ7lDRnPtvUkWQxwLpT/UQYaggJHyu9wUhm
+         sFLVVQS9ySJ/PYXItsAbc2Hz8VFysOte/gnUhXs5J6dmsuGY80WF2nJyGS3TJQNS0v4F
+         M9gNfDQ28/qH7yX4mX9HvYkzCR94PgVSpME5kywvmv39nf8/ojPIk6DL6W7+51AaHvVz
+         Rj0Q==
+X-Gm-Message-State: AOAM531xUzphxyaTK99YSDITG24ps9B8FPkK91e8LlXxSQTavdrgLRLK
+        I83DNeJG2xEMEaBvVGlie78VVQ==
+X-Google-Smtp-Source: ABdhPJzWK1/wuqJtRsFK0GxzZn3Rmp3+fNzvootOjfC35/ce5xHXdauekDAiOnFpGysDl/EFqjHNZw==
+X-Received: by 2002:a17:902:6bc5:b029:d3:f10c:9449 with SMTP id m5-20020a1709026bc5b02900d3f10c9449mr1154917plt.54.1603441783714;
+        Fri, 23 Oct 2020 01:29:43 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id e2sm1021057pgd.27.2020.10.23.01.29.42
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 01:29:43 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 13:59:41 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Hector Yuan <hector.yuan@mediatek.com>
+Cc:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, linux-pm@vger.kernel.org,
+        Rob Herring <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        wsd_upstream@mediatek.com
+Subject: Re: [PATCH v1 2/6] dt-bindings: arm: cpus: Document
+ 'mtk,freq-domain' property
+Message-ID: <20201023082941.yfjewzdsnspug7by@vireshk-i7>
+References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
+ <1603441493-18554-3-git-send-email-hector.yuan@mediatek.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023033130.11354-2-cunkel@drivescale.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <1603441493-18554-3-git-send-email-hector.yuan@mediatek.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> +	/* Respect physical block size if feasible. */
-> +	bmask = queue_physical_block_size(rdev->bdev->bd_disk->queue)-1;
-> +	if (!((rdev->sb_start * 512) & bmask) && (rdev->sb_size & bmask)) {
-> +		int candidate_size = (rdev->sb_size | bmask) + 1;
+On 23-10-20, 16:24, Hector Yuan wrote:
+> From: "Hector.Yuan" <hector.yuan@mediatek.com>
+> 
+> Add devicetree documentation for 'mtk,freq-domain' property specific
+> to Mediatek CPUs. This property is used to reference the CPUFREQ node
+> along with the domain id.
+> 
+> Signed-off-by: Hector.Yuan <hector.yuan@mediatek.com>
+> ---
+>  Documentation/devicetree/bindings/arm/cpus.yaml |    6 ++++++
+>  1 file changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/arm/cpus.yaml b/Documentation/devicetree/bindings/arm/cpus.yaml
+> index 1222bf1..06a6f5b 100644
+> --- a/Documentation/devicetree/bindings/arm/cpus.yaml
+> +++ b/Documentation/devicetree/bindings/arm/cpus.yaml
+> @@ -255,6 +255,12 @@ properties:
+>  
+>        where voltage is in V, frequency is in MHz.
+>  
+> +  mtk-freq-domain:
+> +    $ref: '/schemas/types.yaml#/definitions/phandle-array'
+> +    description:
+> +      CPUs supporting freq-domain must set their "mtk-freq-domain" property
+> +      with phandle to a cpufreq_hw node followed by the domain id.
 > +
-> +		if (minor_version) {
-> +			int sectors = candidate_size / 512;
-> +
-> +			if (rdev->data_offset >= sb_start + sectors
-> +			    && rdev->new_data_offset >= sb_start + sectors)
 
-Linux coding style wants operators before the continuing line.
+Name should have been mtk,freq-domain I believe. Rob will confirm the
+rest.
 
-> +				rdev->sb_size = candidate_size;
-> +		} else if (bmask <= 4095)
-> +			rdev->sb_size = candidate_size;
-> +	}
+>    power-domains:
+>      $ref: '/schemas/types.yaml#/definitions/phandle-array'
+>      description:
+> -- 
+> 1.7.9.5
 
-I also think this code would benefit from being factored into a helper.
+-- 
+viresh
