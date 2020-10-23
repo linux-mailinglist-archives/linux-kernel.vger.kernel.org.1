@@ -2,125 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F46297280
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:39:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7B00D297287
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:39:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465981AbgJWPi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:38:59 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39075 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S462963AbgJWPi7 (ORCPT
+        id S1750947AbgJWPjc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:39:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40452 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750938AbgJWPjb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:38:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603467537;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-        bh=J409roG8zhXcXXCErK007R3MrYblBFNCZHcPyX0EW1c=;
-        b=XJE35/s2zUe2BolLTB0RwLnpdWA3VT6S+nucSd/hmDWQt7mANgLPwS1rsMG/6X/aNPDIrh
-        6rdVUtWdIwiQPGXs5e9JAZRFJxp/zP+83vz4cF4frD3yiCTgWV8V0lpbaI77XVSewmbEhw
-        64ZVnEQuo4oL7Trm9mH6OjqDEwqXF44=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-190-WxrfRJEEOtWeuf0CbspCdA-1; Fri, 23 Oct 2020 11:38:56 -0400
-X-MC-Unique: WxrfRJEEOtWeuf0CbspCdA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B8F7E80400B;
-        Fri, 23 Oct 2020 15:38:53 +0000 (UTC)
-Received: from redhat.com (ovpn-113-117.ams2.redhat.com [10.36.113.117])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 948346EF5D;
-        Fri, 23 Oct 2020 15:38:34 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 11:38:32 -0400
-From:   "Michael S. Tsirkin" <mst@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        borntraeger@de.ibm.com, david@redhat.com, elic@nvidia.com,
-        jasowang@redhat.com, lingshan.zhu@intel.com, li.wang@windriver.com,
-        mst@redhat.com, pankaj.gupta.linux@gmail.com, pmorel@linux.ibm.com,
-        rikard.falkeborn@gmail.com, sgarzare@redhat.com,
-        stable@vger.kernel.org, tiantao6@hisilicon.com
-Subject: [GIT PULL] vhost,vdpa,virtio: cleanups, fixes
-Message-ID: <20201023113832-mutt-send-email-mst@kernel.org>
+        Fri, 23 Oct 2020 11:39:31 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70120C0613CE;
+        Fri, 23 Oct 2020 08:39:31 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id m65so1230177qte.11;
+        Fri, 23 Oct 2020 08:39:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=qOVd9UhLI7kiQ0IFAtx6IIBCdi5AELKItNtYBhHqjaE=;
+        b=quUw+PfLbV4wPtNKWLIK18uDCTR/vnjL1PpASoBAg6skamnBWdCoxbomE2UaiFRcfH
+         C/OCG1ZWJH7A3CCFyQ6noJzm9/9rDsZdOdUIoYBWuinPvI7z2qEFe5t/wa/9nMNZqhLQ
+         8WP3dlER/Og+jaZFHrq3G3AGuCkY3OM+MCxR6s7pW9pGSeZQLLZBCI0Z+isdbuLypFIG
+         TSVzsy7mfpYYy3FwTWRp6qzsUeauVbKowyxQs3pJ+KiZoDNJUW45Omjg1wxWzRg9Q3r4
+         3b2agoNIVfAmYieQ+87HRtHQ8fQQHliJg2tgAbh54O2iB24gsa28xowP9r4Wzl7CakFx
+         AbvA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=qOVd9UhLI7kiQ0IFAtx6IIBCdi5AELKItNtYBhHqjaE=;
+        b=Sc5QY8QHy5znqbQAprHMpQ9NC0RWUZc0/QeTlY+sFEUMP/3jQ/1K9LHVhPbZIwo0U5
+         JRfU6+Wggcoxw/nXO7BZguvk+E+Q69c2jYv23xstRfoRzb3oArTZuojTadf6NSJMxzfS
+         4yGxh4Xot/+R/tt5NGJUwuIlKqzN5GJFsnJKCzhlh2K0zFLwkXlWK349JSLWmypKCT6t
+         EbVBYWiU7B4VKrny8z6DeRPVgYMqzVY7O8oPainae2mYgM4mvOZWre+Meh82s1qd6QYP
+         ctueR3vTPe7EuhuhWixAupgF+YA8Mi7P//ICcUlEfT6BLRacpWPt7DQs0fKN47WXnwaG
+         eM4Q==
+X-Gm-Message-State: AOAM532rm1oosHuWzlghfc0/Zc6DBTU3G8lDd2lmSqHBTnJKjH6RyG/+
+        /TLTVlTa0yHirRyXyi0AcrrFXfqF5Fe6Tg==
+X-Google-Smtp-Source: ABdhPJzpUlxpPQmTafPPSGazWRhpm0nfLHeey4rvt8RMPB7oYxwRIW/EURbv3Up4on/hzT5TFGRy0w==
+X-Received: by 2002:ac8:1095:: with SMTP id a21mr2690776qtj.260.1603467570567;
+        Fri, 23 Oct 2020 08:39:30 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id q7sm1063618qtd.49.2020.10.23.08.39.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 08:39:29 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Fri, 23 Oct 2020 11:39:27 -0400
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/6] crypto: Use memzero_explicit() for clearing state
+Message-ID: <20201023153927.GA217686@rani.riverdale.lan>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-2-nivedita@alum.mit.edu>
+ <20201022043633.GD857@sol.localdomain>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-X-Mutt-Fcc: =sent
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+In-Reply-To: <20201022043633.GD857@sol.localdomain>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Was holding out for a couple of big new features including vop and rpmsg
-support for 1.0, but it looks like they won't make it in time.
-virtio i2c might be ready soon but that's a new driver so
-if it's ready soon it's probably ok to merge outside the merge
-window ... we'll see.
+On Wed, Oct 21, 2020 at 09:36:33PM -0700, Eric Biggers wrote:
+> On Tue, Oct 20, 2020 at 04:39:52PM -0400, Arvind Sankar wrote:
+> > Without the barrier_data() inside memzero_explicit(), the compiler may
+> > optimize away the state-clearing if it can tell that the state is not
+> > used afterwards. At least in lib/crypto/sha256.c:__sha256_final(), the
+> > function can get inlined into sha256(), in which case the memset is
+> > optimized away.
+> > 
+> > Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> 
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> 
+> Maybe get the one in arch/arm64/crypto/sha3-ce-glue.c too?
+> 
+> - Eric
 
-The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
-
-  Linux 5.9 (2020-10-11 14:15:50 -0700)
-
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 88a0d60c6445f315fbcfff3db792021bb3a67b28:
-
-  MAINTAINERS: add URL for virtio-mem (2020-10-21 10:48:11 -0400)
-
-----------------------------------------------------------------
-vhost,vdpa,virtio: cleanups, fixes
-
-A very quiet cycle, no new features.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-David Hildenbrand (1):
-      MAINTAINERS: add URL for virtio-mem
-
-Eli Cohen (3):
-      vdpa/mlx5: Make use of a specific 16 bit endianness API
-      vdpa/mlx5: Fix failure to bring link up
-      vdpa/mlx5: Setup driver only if VIRTIO_CONFIG_S_DRIVER_OK
-
-Li Wang (1):
-      vhost: reduce stack usage in log_used
-
-Pierre Morel (2):
-      virtio: let arch advertise guest's memory access restrictions
-      s390: virtio: PV needs VIRTIO I/O device protection
-
-Rikard Falkeborn (3):
-      virtio-balloon: Constify id_table
-      virtio_input: Constify id_table
-      virtio-mem: Constify mem_id_table
-
-Stefano Garzarella (1):
-      vringh: fix __vringh_iov() when riov and wiov are different
-
-Tian Tao (1):
-      vhost_vdpa: Fix duplicate included kernel.h
-
-Zhu Lingshan (1):
-      vhost_vdpa: remove unnecessary spin_lock in vhost_vring_call
-
- MAINTAINERS                       |  1 +
- arch/s390/Kconfig                 |  1 +
- arch/s390/mm/init.c               | 11 +++++++++++
- drivers/vdpa/mlx5/net/mlx5_vnet.c | 12 ++++++++++--
- drivers/vhost/vdpa.c              |  9 +--------
- drivers/vhost/vhost.c             |  5 +----
- drivers/vhost/vhost.h             |  2 +-
- drivers/vhost/vringh.c            |  9 +++++----
- drivers/virtio/Kconfig            |  6 ++++++
- drivers/virtio/virtio.c           | 15 +++++++++++++++
- drivers/virtio/virtio_balloon.c   |  2 +-
- drivers/virtio/virtio_input.c     |  2 +-
- drivers/virtio/virtio_mem.c       |  2 +-
- include/linux/virtio_config.h     | 10 ++++++++++
- 14 files changed, 65 insertions(+), 22 deletions(-)
-
+Hm, there are a few more as well like that. But now I'm thinking it's
+only the generic sha256.c that may be problematic. The rest of them are
+in _final() functions which will be stored as function pointers in a
+structure, so there should be no risk of them getting optimized away?
