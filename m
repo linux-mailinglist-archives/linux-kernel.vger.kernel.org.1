@@ -2,22 +2,22 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4DD29758C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:10:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D1C229758F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753079AbgJWRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:09:58 -0400
-Received: from foss.arm.com ([217.140.110.172]:56910 "EHLO foss.arm.com"
+        id S1753092AbgJWRKO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:10:14 -0400
+Received: from foss.arm.com ([217.140.110.172]:56926 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750823AbgJWRJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:09:57 -0400
+        id S1753086AbgJWRKO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:10:14 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9A441FB;
-        Fri, 23 Oct 2020 10:09:56 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9601B1FB;
+        Fri, 23 Oct 2020 10:10:13 -0700 (PDT)
 Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F14EE3F719;
-        Fri, 23 Oct 2020 10:09:54 -0700 (PDT)
-Subject: Re: [PATCH v3 03/20] perf arm-spe: Refactor payload size calculation
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E47163F719;
+        Fri, 23 Oct 2020 10:10:11 -0700 (PDT)
+Subject: Re: [PATCH v3 04/20] perf arm-spe: Refactor arm_spe_get_events()
 To:     Leo Yan <leo.yan@linaro.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -30,7 +30,7 @@ To:     Leo Yan <leo.yan@linaro.org>,
         James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
         Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
 References: <20201022145816.14069-1-leo.yan@linaro.org>
- <20201022145816.14069-4-leo.yan@linaro.org>
+ <20201022145816.14069-5-leo.yan@linaro.org>
 From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
 Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  xsFNBFNPCKMBEAC+6GVcuP9ri8r+gg2fHZDedOmFRZPtcrMMF2Cx6KrTUT0YEISsqPoJTKld
@@ -76,12 +76,12 @@ Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
  fDO4SAgJMIl6H5awliCY2zQvLHysS/Wb8QuB09hmhLZ4AifdHyF1J5qeePEhgTA+BaUbiUZf
  i4aIXCH3Wv6K
 Organization: ARM Ltd.
-Message-ID: <b77beca4-91e3-5b76-8cd6-ba31057374a8@arm.com>
-Date:   Fri, 23 Oct 2020 18:08:53 +0100
+Message-ID: <fa476979-4c43-a247-7fb6-b77117575c20@arm.com>
+Date:   Fri, 23 Oct 2020 18:09:20 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201022145816.14069-4-leo.yan@linaro.org>
+In-Reply-To: <20201022145816.14069-5-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -89,97 +89,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2020 15:57, Leo Yan wrote:
-
-Hi Leo,
-
-> This patch defines macro to extract "sz" field from header, and renames
-> the function payloadlen() to arm_spe_payload_len().
+On 22/10/2020 15:58, Leo Yan wrote:
+> In function arm_spe_get_events(), the event packet's 'index' is assigned
+> as payload length, but the flow is not directive: it firstly gets the
+> packet length from the return value of arm_spe_get_payload(), the value
+> includes header length (1) and payload length:
+> 
+>   int ret = arm_spe_get_payload(buf, len, packet);
+> 
+> and then reduces header length from packet length, so finally get the
+> payload length:
+> 
+>   packet->index = ret - 1;
+> 
+> To simplify the code, this patch directly assigns payload length to
+> event packet's index; and at the end it calls arm_spe_get_payload() to
+> return the payload value.
 > 
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-> ---
->  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c | 18 +++++++++---------
->  .../util/arm-spe-decoder/arm-spe-pkt-decoder.h |  3 +++
->  2 files changed, 12 insertions(+), 9 deletions(-)
-> 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 7c7b5eb09fba..4294c133a465 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -69,22 +69,22 @@ const char *arm_spe_pkt_name(enum arm_spe_pkt_type type)
->  	return arm_spe_packet_name[type];
->  }
->  
-> -/* return ARM SPE payload size from its encoding,
-> - * which is in bits 5:4 of the byte.
-> - * 00 : byte
-> - * 01 : halfword (2)
-> - * 10 : word (4)
-> - * 11 : doubleword (8)
-> +/*
-> + * Extracts the field "sz" from header bits and converts to bytes:
-> + *   00 : byte (1)
-> + *   01 : halfword (2)
-> + *   10 : word (4)
-> + *   11 : doubleword (8)
->   */
-> -static int payloadlen(unsigned char byte)
-> +static unsigned int arm_spe_payload_len(unsigned char hdr)
->  {
-> -	return 1 << ((byte & 0x30) >> 4);
-> +	return 1 << SPE_HEADER_SZ(hdr);
 
-I know, I know, I asked for this, but now looking again at it - and
-after having seen the whole series:
-This is now really trivial, and there are just two users? And
-SPE_HEADER_SZ() is only used in here?
-
-So either you just stuff the "1U << .." into the callers of
-arm_spe_payload_len(), or indeed put all of this into one macro (as you
-had originally).
-
-Apologies for this forth and back, but I didn't realise how this is
-really used eventually, and I just saw the transition from function to
-macro.
-
-But please use 1U << .., signed shifts are treacherous.
-
->  }
->  
->  static int arm_spe_get_payload(const unsigned char *buf, size_t len,
->  			       struct arm_spe_pkt *packet)
->  {
-> -	size_t payload_len = payloadlen(buf[0]);
-> +	size_t payload_len = arm_spe_payload_len(buf[0]);
->  
->  	if (len < 1 + payload_len)
->  		return ARM_SPE_NEED_MORE_BYTES;
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index 4c870521b8eb..e9ea8e3ead5d 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -9,6 +9,7 @@
->  
->  #include <stddef.h>
->  #include <stdint.h>
-> +#include <linux/bits.h>
->  
->  #define ARM_SPE_PKT_DESC_MAX		256
->  
-> @@ -36,6 +37,8 @@ struct arm_spe_pkt {
->  	uint64_t		payload;
->  };
->  
-> +#define SPE_HEADER_SZ(val)			((val & GENMASK_ULL(5, 4)) >> 4)
-
-If you should keep this, please put parentheses around "val".
+Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
 Cheers,
 Andre
 
-> +
->  #define SPE_ADDR_PKT_HDR_INDEX_INS		(0x0)
->  #define SPE_ADDR_PKT_HDR_INDEX_BRANCH		(0x1)
->  #define SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT	(0x2)
+> ---
+>  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 4294c133a465..f3bb8bf102aa 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -136,8 +136,6 @@ static int arm_spe_get_timestamp(const unsigned char *buf, size_t len,
+>  static int arm_spe_get_events(const unsigned char *buf, size_t len,
+>  			      struct arm_spe_pkt *packet)
+>  {
+> -	int ret = arm_spe_get_payload(buf, len, packet);
+> -
+>  	packet->type = ARM_SPE_EVENTS;
+>  
+>  	/* we use index to identify Events with a less number of
+> @@ -145,9 +143,9 @@ static int arm_spe_get_events(const unsigned char *buf, size_t len,
+>  	 * LLC-REFILL, and REMOTE-ACCESS events are identified if
+>  	 * index > 1.
+>  	 */
+> -	packet->index = ret - 1;
+> +	packet->index = arm_spe_payload_len(buf[0]);
+>  
+> -	return ret;
+> +	return arm_spe_get_payload(buf, len, packet);
+>  }
+>  
+>  static int arm_spe_get_data_source(const unsigned char *buf, size_t len,
 > 
 
