@@ -2,88 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 22FAE296C8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:13:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 514D9296C91
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:14:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461983AbgJWKNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:13:05 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46112 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461951AbgJWKND (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:13:03 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4A535C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:13:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=Etqkj2bfKGrEGoasEHlQF8c/aYVNaOVt7ntOYQjQy0U=; b=bb/ID+nt/J/pIMZmWsDKIuo9f
-        jylxYWY6FzN4XPAxXyJTeSC6OgQs6+fzpVejDl1UozSPJSvSI8UKdW3pVUtRljaVybV4biSqDKMJ/
-        JVTTaJk1IZknFfdMjEqGs3zD07xjeaJump4i1INPvETbcPy75j5Xh8AHgL6Uh16FaX3+YXxpg7EDU
-        LnC4K8cohqxa40H7oWEqfG6MdtQElFWfiIM6z5m+3tZgWL1MJpmQ9a3bkNA8zfeENLphhDC0F9/gm
-        8wpGlzFsijAwLCcZDGP7LUW5tbgvZkj9X0mkr5WRjRCJYMVrwS5jOgDxu3XGHAqKZeB7OTuSji26m
-        DgThbypDg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49922)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVu4A-0003HE-Qn; Fri, 23 Oct 2020 11:12:58 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVu4A-0008MK-4j; Fri, 23 Oct 2020 11:12:58 +0100
-Date:   Fri, 23 Oct 2020 11:12:58 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Miles Chen <miles.chen@mediatek.com>
-Cc:     Catalin Marinas <catalin.marinas@arm.com>,
-        Minchan Kim <minchan@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
-        Suren Baghdasaryan <surenb@google.com>
-Subject: Re: [PATCH v2 4/4] arm: replace vector mem type with read-only type
-Message-ID: <20201023101257.GZ1551@shell.armlinux.org.uk>
-References: <20201023091437.8225-1-miles.chen@mediatek.com>
- <20201023091437.8225-5-miles.chen@mediatek.com>
+        id S461994AbgJWKO0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:14:26 -0400
+Received: from mga09.intel.com ([134.134.136.24]:41359 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S461906AbgJWKO0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:14:26 -0400
+IronPort-SDR: zf8lCfXOSOburnJRLQ1IA11cbqAKffmO9pTxcaFfag81YGszskYOi5O8fdI8cQVrBeQ4djGy/6
+ k/QLdpcWm35A==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="167776701"
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="167776701"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:14:21 -0700
+IronPort-SDR: k2nXBRs3QZ/XH/H9tsrKtVoFHbmFvvLaTJOUIBX3JQUhqZzb+Y4WMU1JEup+QY7ajzeCGuF+Ay
+ 1DbaPSHJ13Uw==
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="302628827"
+Received: from spiccard-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.38])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:14:08 -0700
+Date:   Fri, 23 Oct 2020 13:14:08 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+Message-ID: <20201023101408.GF168477@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
+ <91637b13-c0ee-82bd-05cd-5ce848004eae@intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023091437.8225-5-miles.chen@mediatek.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <91637b13-c0ee-82bd-05cd-5ce848004eae@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:14:37PM +0800, Miles Chen wrote:
-> Since kernel no longer writes to the vector, try to replace
-> the vector mem type with read-only type and remove L_PTE_MT_VECTORS.
+On Tue, Oct 20, 2020 at 08:48:54AM -0700, Dave Hansen wrote:
+> >  int __init sgx_drv_init(void)
+> >  {
+> >  	unsigned int eax, ebx, ecx, edx;
+> > @@ -181,5 +192,12 @@ int __init sgx_drv_init(void)
+> >  		return ret;
+> >  	}
+> >  
+> > +	ret = misc_register(&sgx_dev_provision);
+> > +	if (ret) {
+> > +		pr_err("Creating /dev/sgx/provision failed with %d.\n", ret);
+> > +		misc_deregister(&sgx_dev_enclave);
+> > +		return ret;
+> > +	}
+> > +
 > 
-> from Catalin in [1]:
-> "
-> > I don't think this matters since the kernel no longer writes to the
-> > vectors page at run-time but it needs cleaning up a bit (and testing in
-> > case I missed something). IOW, do we still need a dedicated mapping type
-> > for the vectors or we can simply use the read-only user page attributes?
-> "
+> Isn't it a *bit* too specific to say that a device file failed to be
+> created?  Do other misc devices use this kind of message?
 
-Catalin is incorrect. If CONFIG_KUSER_HELPERS is enabled, then the
-vectors page is definitely written to - it's a user interface, so
-it's not going to change:
+Before seeing this I had already removed it. It is incosistent at
+least and quite useless error really. We have tracing tools for
+this.
 
-#ifdef CONFIG_KUSER_HELPERS
-                        /*
-                         * User space must never try to access this
-                         * directly.  Expect your app to break
-                         * eventually if you do so.  The user helper
-                         * at 0xffff0fe0 must be used instead.  (see
-                         * entry-armv.S for details)
-                         */
-                        *((unsigned int *)0xffff0ff0) = val;
-#endif
-
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+/Jarkko
