@@ -2,83 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 484232976B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B12812976BC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:18:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464743AbgJWSQg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:16:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36906 "EHLO
+        id S465043AbgJWSSK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:18:10 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37152 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370817AbgJWSQg (ORCPT
+        with ESMTP id S373222AbgJWSSJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:16:36 -0400
-Received: from mail-lf1-x12e.google.com (mail-lf1-x12e.google.com [IPv6:2a00:1450:4864:20::12e])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5B7E1C0613CE;
-        Fri, 23 Oct 2020 11:16:34 -0700 (PDT)
-Received: by mail-lf1-x12e.google.com with SMTP id 184so3181096lfd.6;
-        Fri, 23 Oct 2020 11:16:34 -0700 (PDT)
+        Fri, 23 Oct 2020 14:18:09 -0400
+Received: from mail-qk1-x743.google.com (mail-qk1-x743.google.com [IPv6:2607:f8b0:4864:20::743])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1D186C0613CE;
+        Fri, 23 Oct 2020 11:18:09 -0700 (PDT)
+Received: by mail-qk1-x743.google.com with SMTP id k9so2043325qki.6;
+        Fri, 23 Oct 2020 11:18:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jgzcJanOtbB8ayQ+kiIz5HlevCgPPzDSXuFBsBzfzgw=;
-        b=COKoTY6bBNMDEhrNUCwfe0PSeTmqzg6KeKk3FLIWTCs4ABrO5BXgAXkKwSLnrW22d/
-         lwc1x7Dc4wInGPDIkJ+UwApBF+YfKGZh22dsUTdb8iwkhr+INFO/xplaW8cYqbz77nmI
-         1ttkAvXUlAyVfXHIk0Dj/ZHaO9E2n+RbgaXVSe/sfXY0l8rwpwuLaL9UHgqWhT8qwbK6
-         IgKvGM8xhwsCeGHuoeCHpx3ckYdC0w70F60dHE31yg2NijGPbRCUCNcbvReKDao1qHG8
-         oN6YEATAmbFJTH51xFNk4Kif2EgbjeEddbWWt4pPPG+HGn+4ZjKDhSNy+uk6mViq7QE9
-         rd5Q==
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ApmfhOk09K1c2h42K2OFIKlhksWgTdh0h8R2DYpKkGg=;
+        b=M74xl8cYZSW0prcIqN7ut2RW7gUef6hRHZUtdYXmWenCI8kT2/007Ghy3Mrdi9iigB
+         4VE1XBPu9F67xCjKCd2fMYwbIqPiRdV4BEOG27bbrxE1AQVuooKre/Fdg0ybBYHA6FTb
+         u65jpA9e30UACimGxh4X7eD807T0FNjv6VSdGcR6FcuXkoaq68HabDbflLJSuHI9QnRX
+         JB5CvNgyucygA77M8KwrS3aHkb2V4GHzJifwlATJqysjm1DE2RjpQUJ3ChXL99vUlOB+
+         P80OshneXOkR01/AVozsgWNvSLdd/wo3WSJ0sF0r8URRVb3ELgahRINkbLyykZya75U/
+         fzsA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=jgzcJanOtbB8ayQ+kiIz5HlevCgPPzDSXuFBsBzfzgw=;
-        b=DwFkIYey5BN1qqgHf2RJmdC4q0b8vLu7HKoA9m8AZE34yeb4ptWscqyuiN1iPyVZHZ
-         HZTEWdizKA8sVwFiLxUbZjM9v+XMEwVRCViF6ookhAvaZZUZnLRAQKHJqM1v1AUCpTSG
-         LgrjwKfFTEoPVra5Rm12PtxrZJYTMKLxKZKym/qgZmuFdV8XL6GaNEVnViGIx2xB6tdF
-         P5O7M09Jk702VCkCo1hSW9v5XnEs6YK9bbKDGimzoiTMz+Y3Bd9NzWpbe+l3ME/H9oaP
-         LYWEEp5LOhsKRWCET849HuoscUn9bl07fMTD8Z0+t4Mq00puxpY78+I3vQYvHPwmK6tm
-         3x0g==
-X-Gm-Message-State: AOAM532vGFDp1L1fGGURqleIgGFcjZZGJyGL9mwNSnZJevILCL47XGah
-        4HgTKtlHedDpLrPAjkBrOxA=
-X-Google-Smtp-Source: ABdhPJz6dnqB4MNO7eUYQIREgtgBPqL+k+1Okg6aZvhLKsEVPgt0sNQZQl7/VTyf1vs8OVXchLV/nw==
-X-Received: by 2002:a19:408b:: with SMTP id n133mr489667lfa.564.1603476992897;
-        Fri, 23 Oct 2020 11:16:32 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a31a:4241:5400:113e:58f9:4c3d:30])
-        by smtp.gmail.com with ESMTPSA id r6sm204143lfm.242.2020.10.23.11.16.31
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ApmfhOk09K1c2h42K2OFIKlhksWgTdh0h8R2DYpKkGg=;
+        b=frOzA4IraJ/uUkV7Tlg0MGFjgY5nYhZiN9MNi9p7YHt95KqUgcH+et/QhF2QMs5imS
+         HZVi9qx+cM4CcAICFBYCWvKxK2jPoOxw6FFw3UcQM31oH+bYQ5t5PXe9PH0VAL+bJer7
+         2kUgbW9iZVH5I3Xy8dIAzXLvRU+fwYqdAymgvmsSGQV0hfafuMbPwizVfAbml6Yse50H
+         uAH8FFpH/WjHS16C5SiW7ZquVIkYuoaH7ssNr1jXkeMaaOA9pzm7gYg2zbyygzeyPnwI
+         hoB7lDOYxAzgUNBQg6XYD+2Pe1Av/5jn8KxFGlRsItD0nQbrIOKAoG/wsRRAj621+sA4
+         S6XQ==
+X-Gm-Message-State: AOAM530pG+jpBpqRonaB8IgzLJ7xVNEWwncKytdM+9p1eouk5mpeCx73
+        6mHFK7/+ELEmz+PtHXCLU0s=
+X-Google-Smtp-Source: ABdhPJzL+Y/Y3v+RNMx6QZ7ufhfNcHgfgtL1CtQE+JhXLIEePvrmgG8+UqwAvHHf62Ohb9pq7QzyVA==
+X-Received: by 2002:a37:2c07:: with SMTP id s7mr3521015qkh.297.1603477088197;
+        Fri, 23 Oct 2020 11:18:08 -0700 (PDT)
+Received: from ubuntu-m3-large-x86 ([2604:1380:45d1:2600::3])
+        by smtp.gmail.com with ESMTPSA id z13sm1280146qkl.2.2020.10.23.11.18.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 11:16:32 -0700 (PDT)
-From:   Maciej Matuszczyk <maccraft123mc@gmail.com>
-To:     robh+dt@kernel.org, heiko@sntech.de
-Cc:     devicetree@vger.kernel.org, linux-rockchip@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        Maciej Matuszczyk <maccraft123mc@gmail.com>
-Subject: [PATCH] Fix poweroff issue on Odroid Go Advance
-Date:   Fri, 23 Oct 2020 20:16:29 +0200
-Message-Id: <20201023181629.119727-1-maccraft123mc@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        Fri, 23 Oct 2020 11:18:07 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 11:18:05 -0700
+From:   Nathan Chancellor <natechancellor@gmail.com>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Jonathan Corbet <corbet@lwn.net>, linux-kbuild@vger.kernel.org,
+        clang-built-linux@googlegroups.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] kbuild: remove unused OBJSIZE
+Message-ID: <20201023181805.GA3852821@ubuntu-m3-large-x86>
+References: <patch.git-ef02981ce9bc.your-ad-here.call-01603453662-ext-3714@work.hours>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <patch.git-ef02981ce9bc.your-ad-here.call-01603453662-ext-3714@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
----
- arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts | 1 -
- 1 file changed, 1 deletion(-)
+On Fri, Oct 23, 2020 at 01:57:32PM +0200, Vasily Gorbik wrote:
+> The "size" tool has been solely used by s390 to enforce .bss section usage
+> restrictions in early startup code. Since commit 980d5f9ab36b ("s390/boot:
+> enable .bss section for compressed kernel") and commit 2e83e0eb85ca
+> ("s390: clean .bss before running uncompressed kernel") these restrictions
+> have been lifted for the decompressor and uncompressed kernel and the
+> size tool is now unused.
+> 
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-diff --git a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-index 35bd6b904b9c..337681038519 100644
---- a/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-+++ b/arch/arm64/boot/dts/rockchip/rk3326-odroid-go2.dts
-@@ -243,7 +243,6 @@ rk817: pmic@20 {
- 		interrupts = <RK_PB2 IRQ_TYPE_LEVEL_LOW>;
- 		pinctrl-names = "default";
- 		pinctrl-0 = <&pmic_int>;
--		rockchip,system-power-controller;
- 		wakeup-source;
- 		#clock-cells = <1>;
- 		clock-output-names = "rk808-clkout1", "xin32k";
--- 
-2.28.0
+Reviewed-by: Nathan Chancellor <natechancellor@gmail.com>
 
+Thanks for the patch!
+
+> ---
+>  Documentation/kbuild/llvm.rst | 5 ++---
+>  Makefile                      | 4 +---
+>  2 files changed, 3 insertions(+), 6 deletions(-)
+> 
+> diff --git a/Documentation/kbuild/llvm.rst b/Documentation/kbuild/llvm.rst
+> index cf3ca236d2cc..21c847890d03 100644
+> --- a/Documentation/kbuild/llvm.rst
+> +++ b/Documentation/kbuild/llvm.rst
+> @@ -57,9 +57,8 @@ to enable them. ::
+>  They can be enabled individually. The full list of the parameters: ::
+>  
+>  	make CC=clang LD=ld.lld AR=llvm-ar NM=llvm-nm STRIP=llvm-strip \
+> -	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump OBJSIZE=llvm-size \
+> -	  READELF=llvm-readelf HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar \
+> -	  HOSTLD=ld.lld
+> +	  OBJCOPY=llvm-objcopy OBJDUMP=llvm-objdump READELF=llvm-readelf \
+> +	  HOSTCC=clang HOSTCXX=clang++ HOSTAR=llvm-ar HOSTLD=ld.lld
+>  
+>  Currently, the integrated assembler is disabled by default. You can pass
+>  ``LLVM_IAS=1`` to enable it.
+> diff --git a/Makefile b/Makefile
+> index d35a59f98e83..d2123c2c829a 100644
+> --- a/Makefile
+> +++ b/Makefile
+> @@ -433,7 +433,6 @@ NM		= llvm-nm
+>  OBJCOPY		= llvm-objcopy
+>  OBJDUMP		= llvm-objdump
+>  READELF		= llvm-readelf
+> -OBJSIZE		= llvm-size
+>  STRIP		= llvm-strip
+>  else
+>  CC		= $(CROSS_COMPILE)gcc
+> @@ -443,7 +442,6 @@ NM		= $(CROSS_COMPILE)nm
+>  OBJCOPY		= $(CROSS_COMPILE)objcopy
+>  OBJDUMP		= $(CROSS_COMPILE)objdump
+>  READELF		= $(CROSS_COMPILE)readelf
+> -OBJSIZE		= $(CROSS_COMPILE)size
+>  STRIP		= $(CROSS_COMPILE)strip
+>  endif
+>  PAHOLE		= pahole
+> @@ -509,7 +507,7 @@ KBUILD_LDFLAGS :=
+>  CLANG_FLAGS :=
+>  
+>  export ARCH SRCARCH CONFIG_SHELL BASH HOSTCC KBUILD_HOSTCFLAGS CROSS_COMPILE LD CC
+> -export CPP AR NM STRIP OBJCOPY OBJDUMP OBJSIZE READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+> +export CPP AR NM STRIP OBJCOPY OBJDUMP READELF PAHOLE RESOLVE_BTFIDS LEX YACC AWK INSTALLKERNEL
+>  export PERL PYTHON PYTHON3 CHECK CHECKFLAGS MAKE UTS_MACHINE HOSTCXX
+>  export KGZIP KBZIP2 KLZOP LZMA LZ4 XZ ZSTD
+>  export KBUILD_HOSTCXXFLAGS KBUILD_HOSTLDFLAGS KBUILD_HOSTLDLIBS LDFLAGS_MODULE
+> -- 
+> 2.25.4
