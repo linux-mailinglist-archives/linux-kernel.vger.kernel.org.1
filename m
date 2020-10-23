@@ -2,190 +2,260 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1CD74296BBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:05:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 03121296BBD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:05:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461092AbgJWJFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:05:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35620 "EHLO
+        id S461102AbgJWJF3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:05:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35696 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460856AbgJWJFA (ORCPT
+        with ESMTP id S461096AbgJWJF3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:05:00 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 70EDAC0613CE;
-        Fri, 23 Oct 2020 02:05:00 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id l18so738609pgg.0;
-        Fri, 23 Oct 2020 02:05:00 -0700 (PDT)
+        Fri, 23 Oct 2020 05:05:29 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 29696C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:05:28 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id a7so1179362lfk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:05:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DQ/CVKCNragvB1O7ANGOionjdGWwalxvzO9nuCzggIA=;
-        b=lZPzSKMpBaufNwfzgJ3zRO/Rfr0J01u0IxvQuMJV1PNUPQQTjP1dx8Xc3u9nAr1rUC
-         HN6C3m87DNZfYZAeARKz5j8X31EZ06MjAjQ73RcspsClUi+CrUPSjFAa/K1/vgkWao8w
-         mgChmaTMWB8Sf4y5Brqka5lVG1TI8U/b+abs/x+KhwN4pewFuF+9v/JbotrUVPt0aYcK
-         E5oLNxlfQ7XfxewIXE5SklFawuGURi+6adgJF2WqVZltVVt6+eT0xRM3kgS789zDdQJZ
-         /9FlKc6wHfe3MPr6QDHY9aI06bIvmJDl7WvZlxC1OMRl5t+6FjcOv64ZOnlBWDQwu6wd
-         p8ug==
+        d=ragnatech-se.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to;
+        bh=11FP7yalsP50Ez/WueamNfeyE2agUkdlErUqg/OXuMw=;
+        b=W/sERpTP4lxb2ggRoioWFZlxUIepyCZ97ubq2C5VUOng+ES1C6TQBSBc0id96c9gzh
+         G7VwvHRMNYYQ7+r9jaR9TWrxOIMagAiqZJePOcazaVo1ewFNE6d/2tL7xx6p1O0pikfH
+         nO5o1nEMnDizIqoZeCwfBRTguc7tJcJcBWHszOkeisHj/oVesrIX7dxYeNVxG2OWyYag
+         KwZsTiFzBu/c7UHJ9i5eIDBt/hyQFfBjxS1kg1JgbNEOKINRU5BUKht5Gd+6Qlsy8Pw1
+         xI46qw2UFX2qOLP1xe0ykKc6vrd/JscbXLkU2Hzfqy3lTmCcE026YhTNz0/j9rbzxNS5
+         zARA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=DQ/CVKCNragvB1O7ANGOionjdGWwalxvzO9nuCzggIA=;
-        b=kNXbH0sv3U6kr1hEztpg8BGyXso8QRAkHZ6iZVJGZykjj63kipT3pcBkOhHpkrryvN
-         3Dle3PFv1RxmKrgY6KaxZVvV/HjOPVtTQQATOUU5wSQQLxAWJF6GTQBe0waqdIRQA+R8
-         q1DjWNsTeELL0QDEcqTg6S1rTRDF8xHhKOsNRsBZKRBQqaq2E5yNbBn+m0kfXwS+6hTz
-         Zz5vRCpn/73UTiGa8a0TXoMDMUaA3J227iiBlGZrQAi1JP+hG8TfGsSU2P8POcmJkpmG
-         6Mi8TrEElKQ80ozu0OyOOK1ulxhVtSOEj95wIGw7O1p8ai02Yi6kmVvGsgc6M9gSKlD1
-         ul5g==
-X-Gm-Message-State: AOAM532ueO7T8x6svZqbo22kcxgyhrQ0QolhOdJDvBFfSDVZLbYJX5qY
-        PHW4YfN74gUhBNXRb6AsQ6OQ/eETscJ/qpZc
-X-Google-Smtp-Source: ABdhPJyCo9y+h78hQs56Kwo+EEu42JwV5Q0/e+JHwjNWuHWTft9FmFBjJkn6S4tP7fGOa7Ubji1SYg==
-X-Received: by 2002:a17:90a:8684:: with SMTP id p4mr1372581pjn.232.1603443900074;
-        Fri, 23 Oct 2020 02:05:00 -0700 (PDT)
-Received: from ruantu-3.localdomain ([103.230.142.242])
-        by smtp.gmail.com with ESMTPSA id n5sm1057296pgm.82.2020.10.23.02.04.56
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=11FP7yalsP50Ez/WueamNfeyE2agUkdlErUqg/OXuMw=;
+        b=TOM817/AcwPXJvU0kD6+D0osxV2Y2F0Ak+tSNWjIAydWmr6FSivZ5bn58bkUh4DQPa
+         UXUb1BO+ofOW1vbRWCNmmoS8klcA2Y1EwyYB26JKjDU1ojknliY4fxsmvK5e+NKYGJfa
+         ZTeHQTpd9YtgE+cEtSZ4Jffvp0S1bvUC2l7c5PqnZ5xS3RQoEtVBasI1Dc52oVb/2MyY
+         OxmFFVXukDQGtsA6kpnQL4TE8ERiF9atwS/wvyt20J1G/htFXae9bK0mkTARxAMu9YHX
+         NZ6qwpEbAxVU/WFqP/YLoxhHqGuywxM/XhKCFEGI8ggK2BkRPVITv4M/j1qC054ZdyLS
+         eb5Q==
+X-Gm-Message-State: AOAM533dok2x3DsTYI2cBoAK3tAoRICBs+pF66eMz3z+wLQPbGv3G+i8
+        IbfOKpB1CBoRawbXTFMM6QAVKw==
+X-Google-Smtp-Source: ABdhPJwPYhQ0wJjoyfbQl/e5iUtqMSAHb3mWoLpwYBweHjq/SMbEM2HSHb+NBsdypLcOig6o6+NPlg==
+X-Received: by 2002:a19:24c2:: with SMTP id k185mr476316lfk.46.1603443926584;
+        Fri, 23 Oct 2020 02:05:26 -0700 (PDT)
+Received: from localhost (h-209-203.A463.priv.bahnhof.se. [155.4.209.203])
+        by smtp.gmail.com with ESMTPSA id m29sm78448lfj.144.2020.10.23.02.05.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 02:04:59 -0700 (PDT)
-From:   Yu-Tung Chang <mtwget@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yu-Tung Chang <mtwget@gmail.com>
-Subject: [PATCH] ARM: dts: sun8i: add FriendlyArm ZeroPi support
-Date:   Fri, 23 Oct 2020 17:04:52 +0800
-Message-Id: <20201023090452.10409-1-mtwget@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        Fri, 23 Oct 2020 02:05:25 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 11:05:24 +0200
+From:   Niklas =?iso-8859-1?Q?S=F6derlund?= 
+        <niklas.soderlund@ragnatech.se>
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        linux-renesas-soc@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Subject: Re: [PATCH v2 2/4] arm64: dts: renesas: Add support for MIPI Adapter
+ V2.1 connected to HiHope RZ/G2H
+Message-ID: <20201023090524.GD2158081@oden.dyn.berto.se>
+References: <20201020125134.22625-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20201020125134.22625-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201020125134.22625-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  The ZeroPi is another fun board developed
-  by FriendlyELEC for makers,
-  hobbyists and fans.
+Hi Lad,
 
-  ZeroPi key features
-  - Allwinner H3, Quad-core Cortex-A7@1.2GHz
-  - 256MB/512MB DDR3 RAM
-  - microsd slot
-  - 10/100/1000Mbps Ethernet
-  - Debug Serial Port
-  - DC 5V/2A power-supply
+Thanks for your work.
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
----
- .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
- arch/arm/boot/dts/Makefile                    |  1 +
- arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 69 +++++++++++++++++++
- 3 files changed, 75 insertions(+)
- create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+On 2020-10-20 13:51:32 +0100, Lad Prabhakar wrote:
+> Add support for AISTARVISION MIPI Adapter V2.1 board connected to HiHope
+> RZ/G2H board.
+> 
+> Common file hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi is created
+> which will be used by RZ/G2{HMN}, by default the CSI20 node is tied to
+> ov5645 camera endpoint and the imx219 camera endpoint is tied to CSI40.
+> 
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index efc9118233b4..9392a9a3f7e7 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -246,6 +246,11 @@ properties:
-           - const: friendlyarm,nanopi-neo-plus2
-           - const: allwinner,sun50i-h5
- 
-+      - description: FriendlyARM ZeroPi
-+        items:
-+          - const: friendlyarm,zeropi
-+          - const: allwinner,sun50i-h3
-+
-       - description: Gemei G9 Tablet
-         items:
-           - const: gemei,g9
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..f05e54257947 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1187,6 +1187,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
- 	sun8i-h3-orangepi-plus2e.dtb \
- 	sun8i-h3-orangepi-zero-plus2.dtb \
- 	sun8i-h3-rervision-dvk.dtb \
-+	sun8i-h3-zeropi.dtb \
- 	sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
- 	sun8i-r16-bananapi-m2m.dtb \
- 	sun8i-r16-nintendo-nes-classic.dtb \
-diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-new file mode 100644
-index 000000000000..388ad6b6da2b
---- /dev/null
-+++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-@@ -0,0 +1,69 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
-+ */
-+
-+#include "sun8i-h3-nanopi.dtsi"
-+
-+/ {
-+	model = "FriendlyARM ZeroPi";
-+	compatible = "friendlyarm,zeropi", "allwinner,sun8i-h3";
-+
-+	aliases {
-+		ethernet0 = &emac;
-+	};
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gmac_power_pin_nanopi>;
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
-+	};
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&pio {
-+	gmac_power_pin_nanopi: gmac_power_pin@0 {
-+		pins = "PD6";
-+		function = "gpio_out";
-+	};
-+};
-+
-+&external_mdio {
-+	ext_rgmii_phy: ethernet-phy@1 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <7>;
-+	};
-+};
-+
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	status = "okay";
-+	dr_mode = "peripheral";
-+};
-+
-+&usbphy {
-+	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
-+};
+I have not reviewed the schematics but the patch in itself looks good,
+
+Acked-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+
+> ---
+> v1->v2 - No change
+> ---
+>  arch/arm64/boot/dts/renesas/Makefile          |   1 +
+>  ...rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi | 109 ++++++++++++++++++
+>  .../r8a774e1-hihope-rzg2h-ex-mipi-2.1.dts     |  16 +++
+>  3 files changed, 126 insertions(+)
+>  create mode 100644 arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi
+>  create mode 100644 arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-mipi-2.1.dts
+> 
+> diff --git a/arch/arm64/boot/dts/renesas/Makefile b/arch/arm64/boot/dts/renesas/Makefile
+> index dffefe030a76..f98e9e2e520d 100644
+> --- a/arch/arm64/boot/dts/renesas/Makefile
+> +++ b/arch/arm64/boot/dts/renesas/Makefile
+> @@ -22,6 +22,7 @@ dtb-$(CONFIG_ARCH_R8A774C0) += r8a774c0-ek874-mipi-2.1.dtb
+>  dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h.dtb
+>  dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h-ex.dtb
+>  dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h-ex-idk-1110wr.dtb
+> +dtb-$(CONFIG_ARCH_R8A774E1) += r8a774e1-hihope-rzg2h-ex-mipi-2.1.dtb
+>  
+>  dtb-$(CONFIG_ARCH_R8A77950) += r8a77950-salvator-x.dtb
+>  dtb-$(CONFIG_ARCH_R8A77950) += r8a77950-ulcb.dtb
+> diff --git a/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi
+> new file mode 100644
+> index 000000000000..c62ddb9b2ba5
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi
+> @@ -0,0 +1,109 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device Tree Source for the HiHope RZ/G2[HMN] MIPI common parts
+> + *
+> + * Copyright (C) 2020 Renesas Electronics Corp.
+> + */
+> +
+> +#define MIPI_OV5645_PARENT_I2C i2c2
+> +#define MIPI_IMX219_PARENT_I2C i2c3
+> +#include "aistarvision-mipi-adapter-2.1.dtsi"
+> +
+> +&csi20 {
+> +	status = "okay";
+> +
+> +	ports {
+> +		port@0 {
+> +			reg = <0>;
+> +			csi20_in: endpoint {
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +				remote-endpoint = <&ov5645_ep>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&csi40 {
+> +	status = "okay";
+> +
+> +	ports {
+> +		port@0 {
+> +			reg = <0>;
+> +			csi40_in: endpoint {
+> +				clock-lanes = <0>;
+> +				data-lanes = <1 2>;
+> +				remote-endpoint = <&imx219_ep>;
+> +			};
+> +		};
+> +	};
+> +};
+> +
+> +&i2c3 {
+> +	pinctrl-0 = <&i2c3_pins>;
+> +	pinctrl-names = "default";
+> +	status = "okay";
+> +};
+> +
+> +&imx219 {
+> +	port {
+> +		imx219_ep: endpoint {
+> +			clock-lanes = <0>;
+> +			data-lanes = <1 2>;
+> +			link-frequencies = /bits/ 64 <456000000>;
+> +			remote-endpoint = <&csi40_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&ov5645 {
+> +	enable-gpios = <&gpio6 4 GPIO_ACTIVE_HIGH>;
+> +	reset-gpios = <&gpio6 8 GPIO_ACTIVE_LOW>;
+> +
+> +	port {
+> +		ov5645_ep: endpoint {
+> +			clock-lanes = <0>;
+> +			data-lanes = <1 2>;
+> +			remote-endpoint = <&csi20_in>;
+> +		};
+> +	};
+> +};
+> +
+> +&pfc {
+> +	i2c3_pins: i2c3 {
+> +		groups = "i2c3";
+> +		function = "i2c3";
+> +	};
+> +};
+> +
+> +&vin0 {
+> +	status = "okay";
+> +};
+> +
+> +&vin1 {
+> +	status = "okay";
+> +};
+> +
+> +&vin2 {
+> +	status = "okay";
+> +};
+> +
+> +&vin3 {
+> +	status = "okay";
+> +};
+> +
+> +&vin4 {
+> +	status = "okay";
+> +};
+> +
+> +&vin5 {
+> +	status = "okay";
+> +};
+> +
+> +&vin6 {
+> +	status = "okay";
+> +};
+> +
+> +&vin7 {
+> +	status = "okay";
+> +};
+> diff --git a/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-mipi-2.1.dts b/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-mipi-2.1.dts
+> new file mode 100644
+> index 000000000000..46adb6efb5e6
+> --- /dev/null
+> +++ b/arch/arm64/boot/dts/renesas/r8a774e1-hihope-rzg2h-ex-mipi-2.1.dts
+> @@ -0,0 +1,16 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Device Tree Source for the HiHope RZ/G2H board
+> + * connected with aistarvision-mipi-v2-adapter board
+> + *
+> + * Copyright (C) 2020 Renesas Electronics Corp.
+> + */
+> +
+> +/dts-v1/;
+> +#include "r8a774e1-hihope-rzg2h-ex.dts"
+> +#include "hihope-rzg2-ex-aistarvision-mipi-adapter-2.1.dtsi"
+> +
+> +/ {
+> +	model = "HopeRun HiHope RZ/G2H with sub board connected with aistarvision-mipi-v2-adapter board";
+> +	compatible = "hoperun,hihope-rzg2h", "renesas,r8a774e1";
+> +};
+> -- 
+> 2.17.1
+> 
+
 -- 
-2.29.0
-
+Regards,
+Niklas Söderlund
