@@ -2,111 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72FE229686D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:07:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6EE29686F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:07:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374500AbgJWCHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:07:14 -0400
-Received: from szxga01-in.huawei.com ([45.249.212.187]:3650 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S374489AbgJWCHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:07:14 -0400
-Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.56])
-        by Forcepoint Email with ESMTP id 173DF4436115AF78727F;
-        Fri, 23 Oct 2020 10:07:12 +0800 (CST)
-Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
- DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
- id 14.3.487.0; Fri, 23 Oct 2020 10:07:11 +0800
-Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
- (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Fri, 23
- Oct 2020 10:07:11 +0800
-Subject: Re: [External] Re: [PATCH] nvme-rdma: handle nvme completion data
- length
-To:     zhenwei pi <pizhenwei@bytedance.com>
-CC:     <kbusch@kernel.org>, <hch@lst.de>, <sagi@grimberg.me>,
-        <axboe@fb.com>, <linux-kernel@vger.kernel.org>,
-        <linux-nvme@lists.infradead.org>, Yibo Zhu <zhuyibo@bytedance.com>
-References: <20201022083850.1334880-1-pizhenwei@bytedance.com>
- <04a97f73-ba13-a4b5-3ea4-fc438391507e@huawei.com>
- <1c78dbe5-47a4-1590-e064-681cba5fb01d@bytedance.com>
-From:   Chao Leng <lengchao@huawei.com>
-Message-ID: <c2891e98-a81c-7f3a-3b19-1e34bd1f212c@huawei.com>
-Date:   Fri, 23 Oct 2020 10:07:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
- Thunderbird/68.9.0
+        id S374513AbgJWCHt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:07:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56372 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374489AbgJWCHt (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 22:07:49 -0400
+Received: from ozlabs.org (ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED94DC0613CE;
+        Thu, 22 Oct 2020 19:07:48 -0700 (PDT)
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CHSL7224qz9sSW;
+        Fri, 23 Oct 2020 13:07:42 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603418865;
+        bh=2wOOWjsThqrRIuYHegSLgBdfvQnpIlCV69Pl6Zthnic=;
+        h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+        b=XN4TWA2G0k9IpwryRhNwOYSkcZT99cdaPf9vQLHGnu84J2SYuZZbJKi/9GX4NN114
+         cjOzFGd72FvW8dnJNcn0qtIEzzSAokNE7I6dnJleHlDYbS7HujM4kYBhERaVELCEO2
+         vdCfi6MlZ3FpzvFyrj9IkWy+MX19D3HCD9+qyXwSGr0y/e1rhufU0k5kr3qs3eVGri
+         FeDFEiw7Y0lg4B9I/fKsb1LnMObLY3LG4GXKsuGBDL7aPCkUiSAX7c4KyZrresWMyl
+         /xJPmLePNX+PWyDAXi3fygPrMaNwqo7c6YK6z7OeDeJWr5aCjc+znpaj0ZlXBvDoma
+         4g1pGrl04pYuA==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     Po-Hsu Lin <po-hsu.lin@canonical.com>,
+        linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org
+Cc:     po-hsu.lin@canonical.com, benh@kernel.crashing.org,
+        shuah@kernel.org, mbenes@suse.cz, joe.lawrence@redhat.com,
+        mathieu.desnoyers@efficios.com
+Subject: Re: [PATCH] selftests/powerpc/eeh: disable kselftest timeout setting for eeh-basic
+In-Reply-To: <20201022083616.41666-1-po-hsu.lin@canonical.com>
+References: <20201022083616.41666-1-po-hsu.lin@canonical.com>
+Date:   Fri, 23 Oct 2020 13:07:41 +1100
+Message-ID: <87a6wdy9si.fsf@mpe.ellerman.id.au>
 MIME-Version: 1.0
-In-Reply-To: <1c78dbe5-47a4-1590-e064-681cba5fb01d@bytedance.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-Originating-IP: [10.169.42.93]
-X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
- dggema772-chm.china.huawei.com (10.1.198.214)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Po-Hsu Lin <po-hsu.lin@canonical.com> writes:
+> The eeh-basic test got its own 60 seconds timeout (defined in commit
+> 414f50434aa2 "selftests/eeh: Bump EEH wait time to 60s") per breakable
+> device.
+>
+> And we have discovered that the number of breakable devices varies
+> on different hardware. The device recovery time ranges from 0 to 35
+> seconds. In our test pool it will take about 30 seconds to run on a
+> Power8 system that with 5 breakable devices, 60 seconds to run on a
+> Power9 system that with 4 breakable devices.
+>
+> Thus it's better to disable the default 45 seconds timeout setting in
+> the kselftest framework to give it a chance to finish. And let the
+> test to take care of the timeout control.
 
+I'd prefer if we still had some timeout, maybe 5 or 10 minutes? Just in
+case the test goes completely bonkers.
 
-On 2020/10/22 18:05, zhenwei pi wrote:
-> On 10/22/20 5:55 PM, Chao Leng wrote:
->>
->>
->> On 2020/10/22 16:38, zhenwei pi wrote:
->>> Hit a kernel warning:
->>> refcount_t: underflow; use-after-free.
->>> WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
->>>
->>> RIP: 0010:refcount_warn_saturate+0xd9/0xe0
->>> Call Trace:
->>>   <IRQ>
->>>   nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
->>>   __ib_process_cq+0x76/0x150 [ib_core]
->>>   ...
->>>
->>> The reason is that a zero bytes message received from target, and the
->>> host side continues to process without length checking, then the
->>> previous CQE is processed twice.
->>>
->>> Handle data length, ignore zero bytes message, and try to recovery for
->>> corrupted CQE case.
->>>
->>> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
->>> ---
->>>   drivers/nvme/host/rdma.c | 11 +++++++++++
->>>   1 file changed, 11 insertions(+)
->>>
->>> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
->>> index 9e378d0a0c01..9f5112040d43 100644
->>> --- a/drivers/nvme/host/rdma.c
->>> +++ b/drivers/nvme/host/rdma.c
->>> @@ -1767,6 +1767,17 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
->>>           return;
->>>       }
->>> +    if (unlikely(!wc->byte_len)) {
->>> +        /* zero bytes message could be ignored */
->>> +        return;
-Resource leak, need nvme_rdma_post_recv.
->>> +    } else if (unlikely(wc->byte_len < len)) {
->>> +        /* Corrupted completion, try to recovry */
->>> +        dev_err(queue->ctrl->ctrl.device,
->>> +            "Unexpected nvme completion length(%d)\n", wc->byte_len);
->>> +        nvme_rdma_error_recovery(queue->ctrl);
->>> +        return;
->>> +    }
->> !wc->byte_len and wc->byte_len < len may be the same type of anomaly.
->> Why do different error handling?
->> In which scenario zero bytes message received from target? fault inject test or normal test/run?
-> 
-> Zero bytes message could be used as transport layer keep alive mechanism (I's also developing target side transport layer keep alive now. To reclaim resource, target side needs to close dead connections even kato is set as 0).
-nvme over fabric protocol do not define this.
-May be async event is a option for target keep alive(if kato set as 0).
-> 
->>> +
->>>       ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
->>>       /*
->>>        * AEN requests are special as they don't time out and can
->>>
-> 
+cheers
+
+> diff --git a/tools/testing/selftests/powerpc/eeh/Makefile b/tools/testing/selftests/powerpc/eeh/Makefile
+> index b397bab..ae963eb 100644
+> --- a/tools/testing/selftests/powerpc/eeh/Makefile
+> +++ b/tools/testing/selftests/powerpc/eeh/Makefile
+> @@ -3,7 +3,7 @@ noarg:
+>  	$(MAKE) -C ../
+>  
+>  TEST_PROGS := eeh-basic.sh
+> -TEST_FILES := eeh-functions.sh
+> +TEST_FILES := eeh-functions.sh settings
+>  
+>  top_srcdir = ../../../../..
+>  include ../../lib.mk
+> diff --git a/tools/testing/selftests/powerpc/eeh/settings b/tools/testing/selftests/powerpc/eeh/settings
+> new file mode 100644
+> index 0000000..e7b9417
+> --- /dev/null
+> +++ b/tools/testing/selftests/powerpc/eeh/settings
+> @@ -0,0 +1 @@
+> +timeout=0
+> -- 
+> 2.7.4
