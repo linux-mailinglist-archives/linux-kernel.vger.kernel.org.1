@@ -2,143 +2,290 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54DC5296D1C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:56:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 29BE7296D1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462550AbgJWK4g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:56:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52828 "EHLO
+        id S462572AbgJWK4j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:56:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52832 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375948AbgJWK4g (ORCPT
+        with ESMTP id S462548AbgJWK4g (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 06:56:36 -0400
-Received: from mail-il1-x143.google.com (mail-il1-x143.google.com [IPv6:2607:f8b0:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1521BC0613CE;
-        Fri, 23 Oct 2020 03:56:36 -0700 (PDT)
-Received: by mail-il1-x143.google.com with SMTP id k1so924057ilc.10;
-        Fri, 23 Oct 2020 03:56:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=NhXXBZvOqnnKgp8e8E44rbe9kMHuy3jw+DbuZ8kOGPI=;
-        b=SdHTGWkdI8sX5d+3VNo2JuCHTz14ap27/QcCsv8uJ0Ow85NEQgiQTMS7sMARwPHVsC
-         TPeIfIXwXUUq5jiiZOxk+HK/Gm7fKMadEJqLItYlBDnhctQmZHwj8bYqB3eZHykhIIw+
-         nSqD/S3YiJfloeeTjMQaS47Kshr1OvJmqVrjmG/O9342rD3EcMpdh4jvVmXZYFRHuDtB
-         QeduDCpWT1pMWcNt9Pu9Fw/8XgyMx2ih3zYCwyEqU6ITbbWw/ueisgO3B+Pb/uIMTN9u
-         GlsVQlZJLRQc6xcxb00b+8ANN9YyxEqFzHkhoZmfG3rciXJ7XMHrbhcQXtEuB5UPsCkw
-         BO/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=NhXXBZvOqnnKgp8e8E44rbe9kMHuy3jw+DbuZ8kOGPI=;
-        b=gZHMbYD9gMHS4w2bYvRbJKd2WMjFsWxUdbt0ODq5+cqMo2zg2a5k/Thmw/K5gfgTpg
-         9k4WPAClYNnDNNBk8ccegZjfH9+Ma01BfoHQxoK/eWT5bVoepUjen9FJGrT9QPzQ/iR7
-         avLr1PpS9WpCp749yapg2H9Ce0+VMHPM1Iz4/soWCmLyeDyoTi7hyhl/WzrAr8jUADza
-         hUbKy4k2fJ4Sm6iw+VIgqpZvFkjw1QRY3s0MjUlflJFihIiIkHdS5MKiLx94zlMK+dd6
-         3Nlcc9U2+qZPMyV+Or4Ahte4tEbGCGfahNtCEoR7Hnd7lsfWdvCV/VhhKVz1+atl/xrM
-         K1NQ==
-X-Gm-Message-State: AOAM533yYOI8aBlzt/lQ/glJopsRfOVMdIMCkDDB3HcvgjK4aXIn3FJl
-        6YKfbl6ntGl7jSZcR8hO/i68wnnqOUYcM1L2xhw=
-X-Google-Smtp-Source: ABdhPJwqxD4E3yd+IWpRX89yT6cwf574xQQPBA7z0oVMhmFFmx9lD1/ATgSIGmkmjTTNisrqoQXzBDYMirVNtMt8bKE=
-X-Received: by 2002:a92:cd42:: with SMTP id v2mr1048841ilq.65.1603450595274;
- Fri, 23 Oct 2020 03:56:35 -0700 (PDT)
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 746FEC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:56:36 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVukG-00087r-Kr; Fri, 23 Oct 2020 12:56:28 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVukF-0001km-H8; Fri, 23 Oct 2020 12:56:27 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Oliver Hartkopp <socketcan@hartkopp.net>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
+Subject: [RFC PATCH v1 5/6] can: flexcan: add phylink support
+Date:   Fri, 23 Oct 2020 12:56:25 +0200
+Message-Id: <20201023105626.6534-6-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
+References: <20201023105626.6534-1-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-References: <20201022150808.763082-1-aford173@gmail.com> <20201022150808.763082-4-aford173@gmail.com>
- <20201023095227.GE42872@kozik-lap>
-In-Reply-To: <20201023095227.GE42872@kozik-lap>
-From:   Adam Ford <aford173@gmail.com>
-Date:   Fri, 23 Oct 2020 05:56:24 -0500
-Message-ID: <CAHCN7x+ux+G2fcjsBU6mSDO_f=NEYCwy9yND2j4a2_fqJTN6eA@mail.gmail.com>
-Subject: Re: [PATCH 3/4] arm64: dts: imx8mn: add GPC node and power domains
-To:     Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Marek Vasut <marex@denx.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 4:52 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
->
-> On Thu, Oct 22, 2020 at 10:08:06AM -0500, Adam Ford wrote:
-> > This adds the DT nodes to describe the power domains available on the
-> > i.MX8MN. There are four power domains, but the displaymix and mipi
-> > power domains need a separate clock block controller which is also
-> > pending for 8MP and 8MM. Once the path for those is clear, Nano will
-> > need something similar, but the registers for Nano differ.  For now,
-> > the dispmix and mipi are placeholders.
-> >
-> > Signed-off-by: Adam Ford <aford173@gmail.com>
-> >
-> > diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > index 9b4baf7bdfb1..27733fbe87e9 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > @@ -596,6 +596,55 @@ src: reset-controller@30390000 {
-> >                               interrupts = <GIC_SPI 89 IRQ_TYPE_LEVEL_HIGH>;
-> >                               #reset-cells = <1>;
-> >                       };
-> > +
-> > +                     gpc: gpc@303a0000 {
-> > +                             compatible = "fsl,imx8mn-gpc";
-> > +                             reg = <0x303a0000 0x10000>;
-> > +                             interrupt-parent = <&gic>;
-> > +                             interrupt-controller;
-> > +                             #interrupt-cells = <3>;
->
-> Missing interrupts.
-Oops.  I'll go back and review this.
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/can/Kconfig   |   2 +
+ drivers/net/can/flexcan.c | 133 +++++++++++++++++++++++++++++++++++++-
+ 2 files changed, 134 insertions(+), 1 deletion(-)
 
->
-> > +
-> > +                             pgc {
-> > +                                     #address-cells = <1>;
-> > +                                     #size-cells = <0>;
-> > +
-> > +                                     pgc_hsiomix: power-domain@0 {
-> > +                                             #power-domain-cells = <0>;
-> > +                                             reg = <IMX8MN_POWER_DOMAIN_HSIOMIX>;
-> > +                                             clocks = <&clk IMX8MN_CLK_USB_BUS>;
-> > +                                     };
-> > +
-> > +                                     pgc_otg1: power-domain@1 {
-> > +                                             #power-domain-cells = <0>;
-> > +                                             reg = <IMX8MN_POWER_DOMAIN_OTG1>;
-> > +                                             power-domains = <&pgc_hsiomix>;
-> > +                                     };
-> > +
-> > +                                     pgc_gpumix: power-domain@2 {
-> > +                                             #power-domain-cells = <0>;
-> > +                                             reg = <IMX8MN_POWER_DOMAIN_GPUMIX>;
-> > +                                             clocks = <&clk IMX8MN_CLK_GPU_CORE_ROOT>,
-> > +                                                      <&clk IMX8MN_CLK_GPU_SHADER_DIV>,
-> > +                                                      <&clk IMX8MN_CLK_GPU_BUS_ROOT>,
-> > +                                                      <&clk IMX8MN_CLK_GPU_AHB>;
-> > +                                             resets = <&src IMX8MQ_RESET_GPU_RESET>;
->
-> Does it compile without include? Did the include come via dependencies
-> of this patch?
+diff --git a/drivers/net/can/Kconfig b/drivers/net/can/Kconfig
+index 424970939fd4..fc5db96a34be 100644
+--- a/drivers/net/can/Kconfig
++++ b/drivers/net/can/Kconfig
+@@ -98,6 +98,8 @@ config CAN_AT91
+ config CAN_FLEXCAN
+ 	tristate "Support for Freescale FLEXCAN based chips"
+ 	depends on OF && HAS_IOMEM
++	select PHYLINK
++	select CAN_PHY
+ 	help
+ 	  Say Y here if you want to support for Freescale FlexCAN.
+ 
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 881799bd9c5e..c320eed31322 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -14,6 +14,7 @@
+ #include <linux/can/dev.h>
+ #include <linux/can/error.h>
+ #include <linux/can/led.h>
++#include <linux/can/phy.h>
+ #include <linux/can/rx-offload.h>
+ #include <linux/clk.h>
+ #include <linux/delay.h>
+@@ -24,6 +25,9 @@
+ #include <linux/netdevice.h>
+ #include <linux/of.h>
+ #include <linux/of_device.h>
++#include <linux/of_mdio.h>
++#include <linux/of_net.h>
++#include <linux/phylink.h>
+ #include <linux/pinctrl/consumer.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+@@ -361,6 +365,10 @@ struct flexcan_priv {
+ 	/* Read and Write APIs */
+ 	u32 (*read)(void __iomem *addr);
+ 	void (*write)(u32 val, void __iomem *addr);
++
++	phy_interface_t phy_if_mode;
++	struct phylink *phylink;
++	struct phylink_config phylink_config;
+ };
+ 
+ static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
+@@ -1653,9 +1661,16 @@ static int flexcan_open(struct net_device *dev)
+ 		return -EINVAL;
+ 	}
+ 
++	err = phylink_of_phy_connect(priv->phylink, priv->dev->of_node, 0);
++	if (err) {
++		netdev_err(dev, "phylink_of_phy_connect filed with err: %i\n",
++			   err);
++		return err;
++	}
++
+ 	err = pm_runtime_get_sync(priv->dev);
+ 	if (err < 0)
+-		return err;
++		goto out_phy_put;
+ 
+ 	err = open_candev(dev);
+ 	if (err)
+@@ -1710,6 +1725,8 @@ static int flexcan_open(struct net_device *dev)
+ 	can_rx_offload_enable(&priv->offload);
+ 	netif_start_queue(dev);
+ 
++	phylink_start(priv->phylink);
++
+ 	return 0;
+ 
+  out_offload_del:
+@@ -1720,6 +1737,8 @@ static int flexcan_open(struct net_device *dev)
+ 	close_candev(dev);
+  out_runtime_put:
+ 	pm_runtime_put(priv->dev);
++ out_phy_put:
++	phylink_disconnect_phy(priv->phylink);
+ 
+ 	return err;
+ }
+@@ -1740,6 +1759,104 @@ static int flexcan_close(struct net_device *dev)
+ 
+ 	can_led_event(dev, CAN_LED_EVENT_STOP);
+ 
++	phylink_stop(priv->phylink);
++	phylink_disconnect_phy(priv->phylink);
++
++	return 0;
++}
++
++static void flexcan_mac_config(struct phylink_config *config, unsigned int mode,
++			      const struct phylink_link_state *state)
++{
++	/* Not Supported */
++}
++
++static void flexcan_mac_validate(struct phylink_config *config,
++			    unsigned long *supported,
++			    struct phylink_link_state *state)
++{
++	struct flexcan_priv *priv = netdev_priv(to_net_dev(config->dev));
++	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
++
++	switch (state->interface) {
++	case PHY_INTERFACE_MODE_NA:
++	case PHY_INTERFACE_MODE_CAN:
++		break;
++	default:
++		goto unsupported;
++	}
++
++	phylink_set(mask, CAN_HS);
++	phylink_set(mask, CAN_LS);
++	phylink_set(mask, CAN_SW);
++
++	/* max bitrate supported by the controller */
++	if (!state->max_bitrate || state->max_bitrate > 1000000)
++		state->max_bitrate = 1000000;
++
++	priv->can.bitrate_max = state->max_bitrate;
++
++	bitmap_and(supported, supported, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
++	bitmap_and(state->advertising, state->advertising, mask,
++		   __ETHTOOL_LINK_MODE_MASK_NBITS);
++
++	return;
++unsupported:
++	bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
++}
++
++static void flexcan_mac_pcs_get_state(struct phylink_config *config,
++				     struct phylink_link_state *state)
++{
++	state->link = 0;
++}
++
++static void flexcan_mac_an_restart(struct phylink_config *config)
++{
++	/* Not Supported */
++}
++
++static void flexcan_mac_link_down(struct phylink_config *config,
++				 unsigned int mode, phy_interface_t interface)
++{
++	/* Not Supported */
++}
++
++static void flexcan_mac_link_up(struct phylink_config *config,
++			       struct phy_device *phy,
++			       unsigned int mode, phy_interface_t interface,
++			       int speed, int duplex,
++			       bool tx_pause, bool rx_pause)
++{
++	/* Not Supported */
++}
++
++
++
++static const struct phylink_mac_ops flexcan_phylink_mac_ops = {
++	.validate = flexcan_mac_validate,
++	.mac_pcs_get_state = flexcan_mac_pcs_get_state,
++	.mac_an_restart = flexcan_mac_an_restart,
++	.mac_config = flexcan_mac_config,
++	.mac_link_down = flexcan_mac_link_down,
++	.mac_link_up = flexcan_mac_link_up,
++};
++
++static int flexcan_phylink_setup(struct flexcan_priv *priv,
++				 struct net_device *dev)
++{
++	struct phylink *phylink;
++
++	priv->phylink_config.dev = &dev->dev;
++	priv->phylink_config.type = PHYLINK_NETDEV;
++
++	phylink = phylink_create(&priv->phylink_config, priv->dev->fwnode,
++				 priv->phy_if_mode, &flexcan_phylink_mac_ops);
++	if (IS_ERR(phylink))
++		return PTR_ERR(phylink);
++
++	priv->phylink = phylink;
+ 	return 0;
+ }
+ 
+@@ -1818,6 +1935,12 @@ static int register_flexcandev(struct net_device *dev)
+ 	if (err)
+ 		goto out_chip_disable;
+ 
++	err = flexcan_phylink_setup(priv, dev);
++	if (err) {
++		netdev_err(dev, "failed to setup phylink (%d)\n", err);
++		goto out_chip_disable;
++	}
++
+ 	/* Disable core and let pm_runtime_put() disable the clocks.
+ 	 * If CONFIG_PM is not enabled, the clocks will stay powered.
+ 	 */
+@@ -1921,6 +2044,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ {
+ 	const struct of_device_id *of_id;
+ 	const struct flexcan_devtype_data *devtype_data;
++	phy_interface_t phy_if_mode;
+ 	struct net_device *dev;
+ 	struct flexcan_priv *priv;
+ 	struct regulator *reg_xceiver;
+@@ -1943,6 +2067,12 @@ static int flexcan_probe(struct platform_device *pdev)
+ 				     "clock-frequency", &clock_freq);
+ 		of_property_read_u8(pdev->dev.of_node,
+ 				    "fsl,clk-source", &clk_src);
++		can_phy_register(pdev->dev.of_node);
++		err = of_get_phy_mode(pdev->dev.of_node, &phy_if_mode);
++		if (err) {
++			dev_err(&pdev->dev, "missing phy-mode property in DT\n");
++			return err;
++		}
+ 	}
+ 
+ 	if (!clock_freq) {
+@@ -2019,6 +2149,7 @@ static int flexcan_probe(struct platform_device *pdev)
+ 	priv->clk_src = clk_src;
+ 	priv->devtype_data = devtype_data;
+ 	priv->reg_xceiver = reg_xceiver;
++	priv->phy_if_mode = phy_if_mode;
+ 
+ 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
+ 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
+-- 
+2.28.0
 
-Oops.  I cherry picked the git commits, but I forgot to include the
-includes which is why it compiles for me.  I'll fix in a V2.
-
-Thanks for all the reviews.
-
-adam
->
-> Best regards,
-> Krzysztof
->
