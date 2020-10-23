@@ -2,139 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 993522974C4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:40:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 265A92974C6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:41:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751541AbgJWQkq convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 12:40:46 -0400
-Received: from smtp.h3c.com ([60.191.123.56]:14926 "EHLO h3cspam01-ex.h3c.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750414AbgJWQkp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:40:45 -0400
-Received: from DAG2EX07-IDC.srv.huawei-3com.com ([10.8.0.70])
-        by h3cspam01-ex.h3c.com with ESMTPS id 09NGdvON035320
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 24 Oct 2020 00:39:57 +0800 (GMT-8)
-        (envelope-from tian.xianting@h3c.com)
-Received: from DAG2EX03-BASE.srv.huawei-3com.com (10.8.0.66) by
- DAG2EX07-IDC.srv.huawei-3com.com (10.8.0.70) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2106.2; Sat, 24 Oct 2020 00:40:02 +0800
-Received: from DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074])
- by DAG2EX03-BASE.srv.huawei-3com.com ([fe80::5d18:e01c:bbbd:c074%7]) with
- mapi id 15.01.2106.002; Sat, 24 Oct 2020 00:40:02 +0800
-From:   Tianxianting <tian.xianting@h3c.com>
-To:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>
-CC:     "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] mm: bio_alloc never fails when set GFP_NOIO, GFP_KERNEL
-Thread-Topic: [PATCH] mm: bio_alloc never fails when set GFP_NOIO, GFP_KERNEL
-Thread-Index: AQHWp1lEOcaxBjwhyUKPdENxUdfPnqmlZyxg
-Date:   Fri, 23 Oct 2020 16:40:01 +0000
-Message-ID: <02af899a94624d85a19b6510060c8b06@h3c.com>
-References: <20201021031128.14100-1-tian.xianting@h3c.com>
-In-Reply-To: <20201021031128.14100-1-tian.xianting@h3c.com>
-Accept-Language: en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-originating-ip: [10.99.141.128]
-x-sender-location: DAG2
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1751619AbgJWQlF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:41:05 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:34792 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750718AbgJWQlE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:41:04 -0400
+Received: by mail-ot1-f68.google.com with SMTP id k3so1362712otp.1;
+        Fri, 23 Oct 2020 09:41:04 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=UDWtMyYSLVePrS01DufFEOfcUdCjtavoaAvC7J8Gwks=;
+        b=F0TjQLftHnVCX//1FFLSy5sp5jTXha95YUtNrCokdwPykt+o6XsBKPSoewMKXkp5QG
+         JkP6yr4JEH+MAtiLpKdkGjXzJ91BKt7/L2HB/20+fAfv1a0j4JXfakVawpH64NZ2P30C
+         nxHaqOXhfTLPY2JaNFZ0LSzjz/jqdVjyY7K+8Ju7PXYRuac+stwSi8IKl9ld3+3zQjOR
+         1m+ukTbsMGQZy1ABxIWJtNbIJ8ewo0KB/zkfHz51msTXAj8WIDegWVVqBAZu2IY4edbu
+         Tfc79vk19EouRbbAr777S1KeWXvsZy8kkUdFmnKhH6BN5c6HHHH4HaOBSmIkw/EScpWd
+         k2vg==
+X-Gm-Message-State: AOAM530JhB4tfuS1+PVwg/Iqg16jWJ4+CLzkmw17cZ2Isdp1Z5i2Y3u6
+        ITCAjmABE+zs2DznSaudcQ==
+X-Google-Smtp-Source: ABdhPJx2fxYbzud+b/OdnVyfZqAZrkhfAmTT58S9MYcyhy1Av6UFaKRLE2gPsxz4PAXSTNSs0fgujg==
+X-Received: by 2002:a9d:7502:: with SMTP id r2mr2180159otk.82.1603471263808;
+        Fri, 23 Oct 2020 09:41:03 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id 8sm577628oii.45.2020.10.23.09.41.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:41:03 -0700 (PDT)
+Received: (nullmailer pid 2838954 invoked by uid 1000);
+        Fri, 23 Oct 2020 16:41:02 -0000
+Date:   Fri, 23 Oct 2020 11:41:02 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Oleksij Rempel <o.rempel@pengutronix.de>
+Cc:     Rob Herring <robh+dt@kernel.org>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        David Jander <david@protonic.nl>,
+        Shawn Guo <shawnguo@kernel.org>, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Mark Rutland <mark.rutland@arm.com>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        linux-arm-kernel@lists.infradead.org,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>
+Subject: Re: [PATCH v4 1/3] dt-bindings: vendor-prefixes: Add an entry for
+ Van der Laan b.v.
+Message-ID: <20201023164102.GA2838572@bogus>
+References: <20201022102733.3277-1-o.rempel@pengutronix.de>
+ <20201022102733.3277-2-o.rempel@pengutronix.de>
 MIME-Version: 1.0
-X-DNSRBL: 
-X-MAIL: h3cspam01-ex.h3c.com 09NGdvON035320
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022102733.3277-2-o.rempel@pengutronix.de>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andrew
-Could I get your comments for this patch?  Thanks in advance.
+On Thu, 22 Oct 2020 12:27:31 +0200, Oleksij Rempel wrote:
+> Add "vdl" entry for Van der Laan b.v.: https://www.teamvdl.nl/
+> 
+> Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+> ---
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
+> 
 
------Original Message-----
-From: tianxianting (RD) 
-Sent: Wednesday, October 21, 2020 11:11 AM
-To: akpm@linux-foundation.org
-Cc: linux-mm@kvack.org; linux-kernel@vger.kernel.org; tianxianting (RD) <tian.xianting@h3c.com>
-Subject: [PATCH] mm: bio_alloc never fails when set GFP_NOIO, GFP_KERNEL
 
-bio_alloc with __GFP_DIRECT_RECLAIM(which is included in GFP_NOIO,
-GFP_KERNEL) never fails, as stated in the comments of bio_alloc_bioset.
+Please add Acked-by/Reviewed-by tags when posting new versions. However,
+there's no need to repost patches *only* to add the tags. The upstream
+maintainer will do that for acks received on the version they apply.
 
-So we can remove multiple unneeded null checks of bio_alloc and simplify the code.
-
-We have done it in fs/ext4/readpage.c, fs/ext4/page-io.c, fs/direct-io.c, and so forth.
-
-Signed-off-by: Xianting Tian <tian.xianting@h3c.com>
----
- mm/page_io.c | 31 +++++++++++--------------------
- 1 file changed, 11 insertions(+), 20 deletions(-)
-
-diff --git a/mm/page_io.c b/mm/page_io.c index e485a6e8a..9215bb356 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -30,18 +30,20 @@ static struct bio *get_swap_bio(gfp_t gfp_flags,
- 				struct page *page, bio_end_io_t end_io)  {
- 	struct bio *bio;
-+	struct block_device *bdev;
- 
-+	/*
-+	 * bio_alloc will _always_ be able to allocate a bio if
-+	 * __GFP_DIRECT_RECLAIM is set, see comments for bio_alloc_bioset().
-+	 */
- 	bio = bio_alloc(gfp_flags, 1);
--	if (bio) {
--		struct block_device *bdev;
-+	bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
-+	bio_set_dev(bio, bdev);
-+	bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
-+	bio->bi_end_io = end_io;
- 
--		bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
--		bio_set_dev(bio, bdev);
--		bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
--		bio->bi_end_io = end_io;
-+	bio_add_page(bio, page, thp_size(page), 0);
- 
--		bio_add_page(bio, page, thp_size(page), 0);
--	}
- 	return bio;
- }
- 
-@@ -351,19 +353,13 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
- 
- 	ret = 0;
- 	bio = get_swap_bio(GFP_NOIO, page, end_write_func);
--	if (bio == NULL) {
--		set_page_dirty(page);
--		unlock_page(page);
--		ret = -ENOMEM;
--		goto out;
--	}
- 	bio->bi_opf = REQ_OP_WRITE | REQ_SWAP | wbc_to_write_flags(wbc);
- 	bio_associate_blkg_from_page(bio, page);
- 	count_swpout_vm_event(page);
- 	set_page_writeback(page);
- 	unlock_page(page);
- 	submit_bio(bio);
--out:
-+
- 	return ret;
- }
- 
-@@ -416,11 +412,6 @@ int swap_readpage(struct page *page, bool synchronous)
- 
- 	ret = 0;
- 	bio = get_swap_bio(GFP_KERNEL, page, end_swap_bio_read);
--	if (bio == NULL) {
--		unlock_page(page);
--		ret = -ENOMEM;
--		goto out;
--	}
- 	disk = bio->bi_disk;
- 	/*
- 	 * Keep this task valid during swap readpage because the oom killer may
---
-2.17.1
+If a tag was not added on purpose, please state why and what changed.
 
