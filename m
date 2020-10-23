@@ -2,115 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A20629686A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:06:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72FE229686D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:07:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374479AbgJWCGh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:06:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56182 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374472AbgJWCGh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:06:37 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9565FC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:06:35 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id t4so32358plq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:06:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Z/yeAGcBPMGJ7wXSXQ/nz7qrdo5sTv1FqSZ7yT/QmoA=;
-        b=YRTZftdPPt0d40caYdFxN0JlV5+ojRSNp1GurRiRoHUZVTqRH2N6hsArflPHsID33Z
-         o+OunPjLZswUzKC1rCIXwhW7KzI2fu2j0Q+0GQCdn5ppLJKH/YqtztUxmSZgKAupuJNm
-         qN+XIr5UcYSP56QTmRgYY5IXYW78MGDBfrZtXboEhUc/SoFrD+uFXf1bcDUBEgLlN09a
-         hooPZUU0q/Oa5VinKOmWMmAK427Ig0hV0p45zcjJBYv5c2sOv2yUVaiSPtfFxQxrAG8N
-         nT82Wcd1LpNKl4dkAnupXF/Ny90GCPU2s9aDiLiFzu51y+Ab0vznGaKYLWxKGr2Ky0vT
-         mzqw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=Z/yeAGcBPMGJ7wXSXQ/nz7qrdo5sTv1FqSZ7yT/QmoA=;
-        b=E3PgZtjzEbX5Va2FvLWPsECfpdGy0oap07dHpUOIkq7wHIur33Nmaccoc4q++NYLoJ
-         7JuhhUKVFWS5z3Z7n82pS9boVaVY8OWmOlJvK4yX0Qltw5sXBgel0PRgeUraTOjfp45R
-         tCD6eGuD+SaN5sGpOGtBnKI9uWyfqLe6psZ3AzRz417A8HtUHVIfhZcR6EOxEHQSHnhO
-         BloAvB/IGEGKSyvu37a5unK3+esak8lmm2wzTs3QANMndhePiQKi4DqFxlUGhmELqIDy
-         IeX3cnxXzEv6VIAOxNTiAtnWqYLJm/r84d8MSiSFC+XBsxzvVJBwuqJCnCp04H0V0Nct
-         53jA==
-X-Gm-Message-State: AOAM532uo6GXv2UhA7G0Iaa7GIjFBKYKHVP4wxCG+NF3xjuM2g8MBLtU
-        euVhX/J3vChbhvtxvkjE0BI=
-X-Google-Smtp-Source: ABdhPJyAaFlk/W1q2mHSOqMljUN2fAPjQt/kFoH4EmPCVvGV4Ol9BLxCcNduSgEM7Y+HOx6sL4V8Xg==
-X-Received: by 2002:a17:902:7794:b029:d5:ced2:cc20 with SMTP id o20-20020a1709027794b02900d5ced2cc20mr102275pll.25.1603418795147;
-        Thu, 22 Oct 2020 19:06:35 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([112.159.19.5])
-        by smtp.gmail.com with ESMTPSA id ga19sm143978pjb.3.2020.10.22.19.06.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 19:06:34 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [PATCH] perf trace beauty: Allow header files in a different path
-Date:   Fri, 23 Oct 2020 11:06:28 +0900
-Message-Id: <20201023020628.346257-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S374500AbgJWCHO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:07:14 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3650 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S374489AbgJWCHO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 22:07:14 -0400
+Received: from DGGEMM401-HUB.china.huawei.com (unknown [172.30.72.56])
+        by Forcepoint Email with ESMTP id 173DF4436115AF78727F;
+        Fri, 23 Oct 2020 10:07:12 +0800 (CST)
+Received: from dggema772-chm.china.huawei.com (10.1.198.214) by
+ DGGEMM401-HUB.china.huawei.com (10.3.20.209) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Fri, 23 Oct 2020 10:07:11 +0800
+Received: from [10.169.42.93] (10.169.42.93) by dggema772-chm.china.huawei.com
+ (10.1.198.214) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1913.5; Fri, 23
+ Oct 2020 10:07:11 +0800
+Subject: Re: [External] Re: [PATCH] nvme-rdma: handle nvme completion data
+ length
+To:     zhenwei pi <pizhenwei@bytedance.com>
+CC:     <kbusch@kernel.org>, <hch@lst.de>, <sagi@grimberg.me>,
+        <axboe@fb.com>, <linux-kernel@vger.kernel.org>,
+        <linux-nvme@lists.infradead.org>, Yibo Zhu <zhuyibo@bytedance.com>
+References: <20201022083850.1334880-1-pizhenwei@bytedance.com>
+ <04a97f73-ba13-a4b5-3ea4-fc438391507e@huawei.com>
+ <1c78dbe5-47a4-1590-e064-681cba5fb01d@bytedance.com>
+From:   Chao Leng <lengchao@huawei.com>
+Message-ID: <c2891e98-a81c-7f3a-3b19-1e34bd1f212c@huawei.com>
+Date:   Fri, 23 Oct 2020 10:07:10 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
+In-Reply-To: <1c78dbe5-47a4-1590-e064-681cba5fb01d@bytedance.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
+X-Originating-IP: [10.169.42.93]
+X-ClientProxiedBy: dggeme705-chm.china.huawei.com (10.1.199.101) To
+ dggema772-chm.china.huawei.com (10.1.198.214)
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Current script to generate mmap flags and prot checks headers from the
-uapi/asm-generic directory but it might come from a different
-directory in some environment.  So change the pattern to accept it.
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/trace/beauty/mmap_flags.sh | 4 ++--
- tools/perf/trace/beauty/mmap_prot.sh  | 2 +-
- 2 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/trace/beauty/mmap_flags.sh b/tools/perf/trace/beauty/mmap_flags.sh
-index 39eb2595983b..76825710c725 100755
---- a/tools/perf/trace/beauty/mmap_flags.sh
-+++ b/tools/perf/trace/beauty/mmap_flags.sh
-@@ -28,12 +28,12 @@ egrep -q $regex ${linux_mman} && \
- 	egrep -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
- 	sed -r "s/$regex/\2 \1 \1 \1 \2/g" | \
- 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n#ifndef MAP_%s\n#define MAP_%s %s\n#endif\n")
--([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.*' ${arch_mman}) &&
-+([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+.*uapi/asm-generic/mman.*' ${arch_mman}) &&
- (egrep $regex ${header_dir}/mman-common.h | \
- 	egrep -vw 'MAP_(UNINITIALIZED|TYPE|SHARED_VALIDATE)' | \
- 	sed -r "s/$regex/\2 \1 \1 \1 \2/g"	| \
- 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n#ifndef MAP_%s\n#define MAP_%s %s\n#endif\n")
--([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.h>.*' ${arch_mman}) &&
-+([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+.*uapi/asm-generic/mman.h>.*' ${arch_mman}) &&
- (egrep $regex ${header_dir}/mman.h | \
- 	sed -r "s/$regex/\2 \1 \1 \1 \2/g"	| \
- 	xargs printf "\t[ilog2(%s) + 1] = \"%s\",\n#ifndef MAP_%s\n#define MAP_%s %s\n#endif\n")
-diff --git a/tools/perf/trace/beauty/mmap_prot.sh b/tools/perf/trace/beauty/mmap_prot.sh
-index 28f638f8d216..664d8d534a50 100755
---- a/tools/perf/trace/beauty/mmap_prot.sh
-+++ b/tools/perf/trace/beauty/mmap_prot.sh
-@@ -17,7 +17,7 @@ prefix="PROT"
- 
- printf "static const char *mmap_prot[] = {\n"
- regex=`printf '^[[:space:]]*#[[:space:]]*define[[:space:]]+%s_([[:alnum:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*' ${prefix}`
--([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+<uapi/asm-generic/mman.*' ${arch_mman}) &&
-+([ ! -f ${arch_mman} ] || egrep -q '#[[:space:]]*include[[:space:]]+.*uapi/asm-generic/mman.*' ${arch_mman}) &&
- (egrep $regex ${common_mman} | \
- 	egrep -vw PROT_NONE | \
- 	sed -r "s/$regex/\2 \1 \1 \1 \2/g"	| \
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+On 2020/10/22 18:05, zhenwei pi wrote:
+> On 10/22/20 5:55 PM, Chao Leng wrote:
+>>
+>>
+>> On 2020/10/22 16:38, zhenwei pi wrote:
+>>> Hit a kernel warning:
+>>> refcount_t: underflow; use-after-free.
+>>> WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
+>>>
+>>> RIP: 0010:refcount_warn_saturate+0xd9/0xe0
+>>> Call Trace:
+>>>   <IRQ>
+>>>   nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
+>>>   __ib_process_cq+0x76/0x150 [ib_core]
+>>>   ...
+>>>
+>>> The reason is that a zero bytes message received from target, and the
+>>> host side continues to process without length checking, then the
+>>> previous CQE is processed twice.
+>>>
+>>> Handle data length, ignore zero bytes message, and try to recovery for
+>>> corrupted CQE case.
+>>>
+>>> Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+>>> ---
+>>>   drivers/nvme/host/rdma.c | 11 +++++++++++
+>>>   1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+>>> index 9e378d0a0c01..9f5112040d43 100644
+>>> --- a/drivers/nvme/host/rdma.c
+>>> +++ b/drivers/nvme/host/rdma.c
+>>> @@ -1767,6 +1767,17 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
+>>>           return;
+>>>       }
+>>> +    if (unlikely(!wc->byte_len)) {
+>>> +        /* zero bytes message could be ignored */
+>>> +        return;
+Resource leak, need nvme_rdma_post_recv.
+>>> +    } else if (unlikely(wc->byte_len < len)) {
+>>> +        /* Corrupted completion, try to recovry */
+>>> +        dev_err(queue->ctrl->ctrl.device,
+>>> +            "Unexpected nvme completion length(%d)\n", wc->byte_len);
+>>> +        nvme_rdma_error_recovery(queue->ctrl);
+>>> +        return;
+>>> +    }
+>> !wc->byte_len and wc->byte_len < len may be the same type of anomaly.
+>> Why do different error handling?
+>> In which scenario zero bytes message received from target? fault inject test or normal test/run?
+> 
+> Zero bytes message could be used as transport layer keep alive mechanism (I's also developing target side transport layer keep alive now. To reclaim resource, target side needs to close dead connections even kato is set as 0).
+nvme over fabric protocol do not define this.
+May be async event is a option for target keep alive(if kato set as 0).
+> 
+>>> +
+>>>       ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
+>>>       /*
+>>>        * AEN requests are special as they don't time out and can
+>>>
+> 
