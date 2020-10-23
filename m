@@ -2,124 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 26B2F297657
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF4DD297659
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:02:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754118AbgJWSBb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:01:31 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45252 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751571AbgJWSBb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:01:31 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603476089;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=sYUk+0wycss9Jl0gKNB2yEmVhQdLfD7n3Pwk615mRNM=;
-        b=CMmDJhXLdr4v34TFV74GJpYPkNLP/3sz72znUpUXn8YraRmTUzHPLy3Ews0zDjr2T5aT6F
-        iurpC+lgJYf97fHUy5GbDZInAwgvI1IszR0td2RXcFYnO3Kgx4AR+u6rk+aIo1kjm1i4RI
-        5BF7Soa/Fw5L/+ebqcn+fJQEWEuovMc=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id CBE6EAC54;
-        Fri, 23 Oct 2020 18:01:28 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 20:01:28 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Arpitha Raghunandan <98.arpi@gmail.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, idryomov@gmail.com,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
-Message-ID: <20201023180128.GB13609@alley>
-References: <20201022151349.47436-1-98.arpi@gmail.com>
- <20201022191606.GQ4077@smile.fi.intel.com>
- <0ab618c7-8c5c-00ae-8e08-0c1b99f3bf5c@rasmusvillemoes.dk>
- <01f8ca45-60d1-ad67-f8eb-354dec411a78@gmail.com>
+        id S1754130AbgJWSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:01:40 -0400
+Received: from smtprelay0116.hostedemail.com ([216.40.44.116]:46618 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1754121AbgJWSBj (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:01:39 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E2C42180A90FD;
+        Fri, 23 Oct 2020 18:01:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3874:4321:5007:8603:10004:10400:10848:10967:11026:11232:11658:11783:11914:12043:12296:12297:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21324:21451:21627:21740:21741:30054:30060:30070:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: nail06_130978d2725b
+X-Filterd-Recvd-Size: 2266
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 23 Oct 2020 18:01:36 +0000 (UTC)
+Message-ID: <c0210eade81060382884e1f38ca7f71742d02b61.camel@perches.com>
+Subject: Re: [PATCH v3 01/56] scripts: kernel-doc: fix typedef parsing
+From:   Joe Perches <joe@perches.com>
+To:     Jonathan Corbet <corbet@lwn.net>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Date:   Fri, 23 Oct 2020 11:01:35 -0700
+In-Reply-To: <20201023112226.4035e3f7@lwn.net>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+         <d0b2146c4ced3121342583bb3d962628fc96759b.1603469755.git.mchehab+huawei@kernel.org>
+         <20201023112226.4035e3f7@lwn.net>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <01f8ca45-60d1-ad67-f8eb-354dec411a78@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-23 19:13:00, Arpitha Raghunandan wrote:
-> On 23/10/20 4:36 pm, Rasmus Villemoes wrote:
-> > On 22/10/2020 21.16, Andy Shevchenko wrote:
-> >> On Thu, Oct 22, 2020 at 08:43:49PM +0530, Arpitha Raghunandan wrote:
-> >>> Converted test failure:
-> >>>     # Subtest: printf-kunit-test
-> >>>     1..1
-> >>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-> >>> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
-> >>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> >>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
-> >>> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
-> >>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
-> >>> kvasprintf(..., "%pi4|%pI4", ...) returned
-> >>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
-> >>>     not ok 1 - selftest
-> >>> not ok 1 - printf-kunit-test
-> >>
-> >> Not bad. Rasmus, what do you think?
-> > 
-> > Much better, but that '1..1' and reporting the entire test suite as 1
-> > single (failing or passing) test is (also) a regression. Look at the
-> > original
-> > 
-> >>> [    0.591409] test_printf: all 388 tests passed
-> > 
-> > or
-> > 
-> >>> [    0.619495] test_printf: failed 3 out of 388 tests
-> > 
-> > That's far more informative, and I'd prefer if the summary information
-> > (whether in the all-good case or some-failing) included something like
-> > this. In particular, I have at some point spotted that I failed to
-> > properly hook up a new test case (or perhaps failed to re-compile, or
-> > somehow still ran the old kernel binary, don't remember which it was) by
-> > noticing that the total number of tests hadn't increased. The new output
-> > would not help catch such PEBKACs.
-> > 
-> > Rasmus
-> > 
+On Fri, 2020-10-23 at 11:22 -0600, Jonathan Corbet wrote:
+> On Fri, 23 Oct 2020 18:32:48 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
 > 
-> Splitting the test into multiple test cases in KUnit will display
-> the number and name of tests that pass or fail. This will be similar
-> to the lib/list-test.c test as can be seen here:
-> https://elixir.bootlin.com/linux/latest/source/lib/list-test.c.
-> I will work on this for the next version of this patch.
+> > The include/linux/genalloc.h file defined this typedef:
+> > 
+> > 	typedef unsigned long (*genpool_algo_t)(unsigned long *map,unsigned long size,unsigned long start,unsigned int nr,void *data, struct gen_pool *pool, unsigned long start_addr);
+[]
+> > diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+[]
+> >      # Parse function prototypes
+> > -    if ($x =~ /typedef\s+(\w+)\s*\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
+> > +    if ($x =~ /typedef\s+(\w+\s*){1,}\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
+> 
+> I sure wish we could find a way to make all these regexes more
+> understandable and maintainable.  Reviewing a change like this is ... fun.
 
-We should probably agree on the granularity first.
+Perhaps using some of the checkpatch regex definitions like:
 
-It looks like an overkill to split the tests into 388 functions
-and define KUNIT_CASE() lines. It might be possible to hide
-this into macros but macros are hell for debugging.
+$Type
+$Ident
+$balanced_parens
 
-I suggest to split it by the current functions that do more test()
-call inside. I mean to define something like:
+would help improve readability.
 
-static struct kunit_case printf_test_cases[] = {
-	KUNIT_CASE(basic),
-	KUNIT_CASE(number),
-	KUNIT_CASE(string),
-	KUNIT_CASE(plain_pointer),
-	KUNIT_CASE(null_poiter),
-	KUNIT_CASE(error_pointer),
-	KUNIT_CASE(addr),
-	KUNIT_CASE(struct_resource),
-	KUNIT_CASE(dentry),
-	KUNIT_CASE(pointer_addr),
-	 ...,
-	{}
-};
+And the regex above doesn't quite work for spacing after typedef.
+The regex should allow space between the open parenthesis and the *
 
-Best Regards,
-Petr
+	typedef <Type> ( * <Ident> ) (args...);
+
+And this regex does not find typedefs that use another typedef as <Ident> like:
+
+arch/s390/include/asm/debug.h:typedef int (debug_header_proc_t) (debug_info_t *id,
+
+
