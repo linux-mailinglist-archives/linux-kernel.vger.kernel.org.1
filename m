@@ -2,66 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15A929712E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:18:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2E154297123
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:16:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750439AbgJWOSH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:18:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56204 "EHLO mail.kernel.org"
+        id S1750400AbgJWOQY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:16:24 -0400
+Received: from smtp.radex.nl ([178.250.146.7]:59095 "EHLO radex-web.radex.nl"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750412AbgJWOSC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:18:02 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 920612192A;
-        Fri, 23 Oct 2020 14:18:01 +0000 (UTC)
-Received: from rostedt by gandalf.local.home with local (Exim 4.94)
-        (envelope-from <rostedt@goodmis.org>)
-        id 1kVxtI-004def-3I; Fri, 23 Oct 2020 10:18:00 -0400
-Message-ID: <20201023141759.979794867@goodmis.org>
-User-Agent: quilt/0.66
-Date:   Fri, 23 Oct 2020 10:16:11 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     linux-kernel@vger.kernel.org
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Qiujun Huang <hqjagain@gmail.com>
-Subject: [for-linus][PATCH 2/2] ring-buffer: Update the description for ring_buffer_wait
-References: <20201023141609.430954343@goodmis.org>
+        id S1750392AbgJWOQY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:16:24 -0400
+Received: from [192.168.1.158] (cust-178-250-146-69.breedbanddelft.nl [178.250.146.69])
+        by radex-web.radex.nl (Postfix) with ESMTPS id C172724065;
+        Fri, 23 Oct 2020 16:16:21 +0200 (CEST)
+From:   Ferry Toth <fntoth@gmail.com>
+Subject: Re: [PATCH v1 1/2] device property: Keep secondary firmware node
+ secondary by type
+To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-kernel@vger.kernel.org,
+        Saravana Kannan <saravanak@google.com>,
+        linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
+References: <20201022184100.71659-1-andriy.shevchenko@linux.intel.com>
+ <20201023123412.GA614478@kuha.fi.intel.com>
+Message-ID: <cca210f1-503e-0f6c-b394-a86f9abf8c67@gmail.com>
+Date:   Fri, 23 Oct 2020 16:16:21 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ISO-8859-15
+In-Reply-To: <20201023123412.GA614478@kuha.fi.intel.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Qiujun Huang <hqjagain@gmail.com>
+Hi
 
-The function changed at some point, but the description was not
-updated.
-
-Link: https://lkml.kernel.org/r/20201017095246.5170-1-hqjagain@gmail.com
-
-Signed-off-by: Qiujun Huang <hqjagain@gmail.com>
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/ring_buffer.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/kernel/trace/ring_buffer.c b/kernel/trace/ring_buffer.c
-index 5c6a9c6a058f..7f45fd9d5a45 100644
---- a/kernel/trace/ring_buffer.c
-+++ b/kernel/trace/ring_buffer.c
-@@ -793,7 +793,7 @@ static void rb_wake_up_waiters(struct irq_work *work)
-  * ring_buffer_wait - wait for input to the ring buffer
-  * @buffer: buffer to wait on
-  * @cpu: the cpu buffer to wait on
-- * @full: wait until a full page is available, if @cpu != RING_BUFFER_ALL_CPUS
-+ * @full: wait until the percentage of pages are available, if @cpu != RING_BUFFER_ALL_CPUS
-  *
-  * If @cpu == RING_BUFFER_ALL_CPUS then the task will wake up as soon
-  * as data is added to any of the @buffer's cpu buffers. Otherwise
--- 
-2.28.0
-
-
+Op 23-10-2020 om 14:34 schreef Heikki Krogerus:
+> On Thu, Oct 22, 2020 at 09:40:59PM +0300, Andy Shevchenko wrote:
+>> Behind primary and secondary we understand the type of the nodes
+>> which might define their ordering. However, if primary node gone,
+>> we can't maintain the ordering by definition of the linked list.
+>> Thus, by ordering secondary node becomes first in the list.
+>> But in this case the meaning of it is still secondary (or auxiliary).
+>> The type of the node is maintained by the secondary pointer in it:
+>>
+>> 	secondary pointer		Meaning
+>> 	NULL or valid			primary node
+>> 	ERR_PTR(-ENODEV)		secondary node
+>>
+>> So, if by some reason we do the following sequence of calls
+>>
+>> 	set_primary_fwnode(dev, NULL);
+>> 	set_primary_fwnode(dev, primary);
+>>
+>> we should preserve secondary node.
+>>
+>> This concept is supported by the description of set_primary_fwnode()
+>> along with implementation of set_secondary_fwnode(). Hence, fix
+>> the commit c15e1bdda436 to follow this as well.
+>>
+>> Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
+>> Cc: Ferry Toth<fntoth@gmail.com>
+>> Signed-off-by: Andy Shevchenko<andriy.shevchenko@linux.intel.com>
+> FWIW:
+>
+> Reviewed-by: Heikki Krogerus<heikki.krogerus@linux.intel.com>
+> Tested-by: Ferry Toth<fntoth@gmail.com>
+>> ---
+>>   drivers/base/core.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/base/core.c b/drivers/base/core.c
+>> index c852f16c111b..41feab679fa1 100644
+>> --- a/drivers/base/core.c
+>> +++ b/drivers/base/core.c
+>> @@ -4278,7 +4278,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+>>   	} else {
+>>   		if (fwnode_is_primary(fn)) {
+>>   			dev->fwnode = fn->secondary;
+>> -			fn->secondary = NULL;
+>> +			fn->secondary = ERR_PTR(-ENODEV);
+>>   		} else {
+>>   			dev->fwnode = NULL;
+>>   		}
+>> -- 
+>> 2.28.0
