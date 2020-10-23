@@ -2,107 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51A0529687A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:24:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 274F329687C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:25:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374560AbgJWCYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:24:20 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374540AbgJWCYT (ORCPT
+        id S374588AbgJWCZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:25:16 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53442 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S374548AbgJWCZP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:24:19 -0400
-Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09352C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:24:19 -0700 (PDT)
-Received: by mail-pg1-x530.google.com with SMTP id h6so12492pgk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:24:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IilmWqQBIzdGRFEb8WDv/BGb6Zru01TJYp2UzzvimNo=;
-        b=wpeItj4YfzkY9NGX9eDHOZimPqRVq75UcGTuCiNxcwnlDWgOiW57hJ3NtX0tTfJp2E
-         x2gbYpQzowr6u+7nM+r93TWzmVJxllGDoUTgZ049kEHsNpVgR0XoNyr4ckDamD/ih83h
-         wrS82wdQoSkFPu8fwQVOA/taOU3+U89m7ITVz3gRrXAq8FpurjLUryK6+7jU8zFmVfBl
-         bOqk86u+zEi7/njiX3F6GTKjlUlx6FUlQf1ixvdQwrqtmllqDIuFudNIsYqinCpgCbTH
-         WlHaXTrHm+w7bpds8L3b4oGt1U2zNH03mToy3yfk3NWzqy8UBC2j6sYRhEksUGnNfc9Y
-         uNiQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IilmWqQBIzdGRFEb8WDv/BGb6Zru01TJYp2UzzvimNo=;
-        b=G3jWe6Wre7v90bTyJSwCIgxp8W4zfOqkv2gD3RUlLtjAY4vk/3zsIjIoNSs2eAZils
-         /hyVYRHQT5IKhDy+u0WLXqKqsfSi6rFZhYepW0a9PXIorXssMxKagbVE2pJh9AQA1ImM
-         9FqWeDRLTS4r0ctppAHDeuBO7aAOMQp5/aNMCVNAF1N479sOVanmOMUfYV2NNC/PnRSv
-         dWdXUO7lf8MKZ75i/Z3hJLyEDjBTFlaLU3Fqi4EEHlDJSXOmdPOLLy273mPQlOQXbLxX
-         v5Uzrl7Er4fptf8NAIMGYZn+EKHjB4uvkIdAOXO2n7nWFNfUgCIMtqwmKH6COtSKAqr0
-         xXYA==
-X-Gm-Message-State: AOAM533oNBE+8oJpH3CKyZ0V3o6ruLoVUHlHWB+xiDJgBLHvZo87yRC+
-        OLn/Voo2febzuE+5oDrgkVbIRg==
-X-Google-Smtp-Source: ABdhPJzA5EZBSeUdXLjtYYke6gTJ/cVfed1VsTekaPVYNDWK1FLHOCtzWYTzE2/HpeO13h227ZcwHA==
-X-Received: by 2002:a62:a10a:0:b029:154:fd62:ba90 with SMTP id b10-20020a62a10a0000b0290154fd62ba90mr10722pff.62.1603419858432;
-        Thu, 22 Oct 2020 19:24:18 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id g85sm82708pfb.4.2020.10.22.19.24.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 19:24:17 -0700 (PDT)
-Subject: Re: Question on io-wq
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Zhang Qiang <qiang.zhang@windriver.com>, viro@zeniv.linux.org.uk,
-        io-uring@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
-        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-References: <98c41fba-87fe-b08d-2c8c-da404f91ef31@windriver.com>
- <20201023020514.2230-1-hdanton@sina.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <e61d3c07-7db0-28d8-03a0-cae13698a634@kernel.dk>
-Date:   Thu, 22 Oct 2020 20:24:16 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Thu, 22 Oct 2020 22:25:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603419914;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=XBDq/dF8AYxxnodSggGeabhLd4I0L4Fwx/764jAbR9o=;
+        b=ixzgO9pNIZEeEuToSsBhCjUwOYGJ4zT2Vahx416uRMGGTKmkx9zirNivF7hgO0eh+PxDGh
+        2NMeyXxZsu7I31UG5eedd2abK1wQAQDUtuy3HaFwV7aAsmOjjVFF1gx0EFs5PVFK40usYC
+        IPi8ioAAU4n5QldnvVZCnx3z2k40mL8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-542-6U_Og_7LNIK37hqKnwp8jw-1; Thu, 22 Oct 2020 22:25:10 -0400
+X-MC-Unique: 6U_Og_7LNIK37hqKnwp8jw-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 585C080F044;
+        Fri, 23 Oct 2020 02:25:08 +0000 (UTC)
+Received: from jason-ThinkPad-X1-Carbon-6th.redhat.com (ovpn-13-85.pek2.redhat.com [10.72.13.85])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 9E9985576E;
+        Fri, 23 Oct 2020 02:24:56 +0000 (UTC)
+From:   Jason Wang <jasowang@redhat.com>
+To:     mst@redhat.com, virtualization@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org
+Cc:     rob.miller@broadcom.com, lingshan.zhu@intel.com,
+        eperezma@redhat.com, lulu@redhat.com, shahafs@mellanox.com,
+        hanand@xilinx.com, mhabets@solarflare.com, gdawar@xilinx.com,
+        saugatm@xilinx.com, vmireyno@marvell.com,
+        zhangweining@ruijie.com.cn, eli@mellanox.com,
+        Jason Wang <jasowang@redhat.com>
+Subject: [PATCH V3 0/3] vDPA: API for reporting IOVA range
+Date:   Fri, 23 Oct 2020 10:24:51 +0800
+Message-Id: <20201023022454.24402-1-jasowang@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023020514.2230-1-hdanton@sina.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 8:05 PM, Hillf Danton wrote:
-> On Thu, 22 Oct 2020 08:08:09 -0600 Jens Axboe wrote:
->> On 10/22/20 3:02 AM, Zhang,Qiang wrote:
->>>
->>> Hi Jens Axboe
->>>
->>> There are some problem in 'io_wqe_worker' thread, when the 
->>> 'io_wqe_worker' be create and  Setting the affinity of CPUs in NUMA 
->>> nodes, due to CPU hotplug, When the last CPU going down, the 
->>> 'io_wqe_worker' thread will run anywhere. when the CPU in the node goes 
->>> online again, we should restore their cpu bindings?
->>
->> Something like the below should help in ensuring affinities are
->> always correct - trigger an affinity set for an online CPU event. We
->> should not need to do it for offlining. Can you test it?
-> 
-> CPU affinity is intact because of nothing to do on offline, and scheduler
-> will move the stray workers on to the correct NUMA node if any CPU goes
-> online, so it's a bit hard to see what is going to be tested.
+Hi All:
 
-Test it yourself:
+This series introduces API for reporing IOVA range. This is a must for
+userspace to work correclty:
 
-- Boot with > 1 NUMA node
-- Start an io_uring, you now get 2 workers, each affinitized to a node
-- Now offline all CPUs in one node
-- Online one or more of the CPU in that same node
+- for the process that uses vhost-vDPA directly, the IOVA must be
+  allocated from this range.
+- for VM(qemu), when vIOMMU is not enabled, fail early if GPA is out
+  of range
+- for VM(qemu), when vIOMMU is enabled, determine a valid guest
+  address width and then guest IOVA allocator can behave correctly.
 
-The end result is that the worker on the node that was offlined now
-has a mask of the other node, plus the newly added CPU.
+Please review.
 
-So your last statement isn't correct, which is what the original
-reporter stated.
+Changes from V2:
+- silent build warnings
+
+Changes from V1:
+
+- do not mandate get_iova_range() for device with its own DMA
+  translation logic and assume a [0, ULLONG_MAX] range
+- mandate IOVA range only for IOMMU that forcing aperture
+- forbid the map which is out of the IOVA range in vhost-vDPA
+
+Jason Wang (3):
+  vdpa: introduce config op to get valid iova range
+  vhost: vdpa: report iova range
+  vdpa_sim: implement get_iova_range()
+
+ drivers/vdpa/vdpa_sim/vdpa_sim.c | 12 ++++++++++
+ drivers/vhost/vdpa.c             | 40 ++++++++++++++++++++++++++++++++
+ include/linux/vdpa.h             | 15 ++++++++++++
+ include/uapi/linux/vhost.h       |  4 ++++
+ include/uapi/linux/vhost_types.h |  9 +++++++
+ 5 files changed, 80 insertions(+)
 
 -- 
-Jens Axboe
+2.20.1
 
