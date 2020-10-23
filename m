@@ -2,96 +2,126 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17FF3296E59
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:22:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B408296F0D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:26:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463610AbgJWMWd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:22:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37886 "EHLO
+        id S372338AbgJWM0M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 08:26:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38564 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463591AbgJWMWa (ORCPT
+        with ESMTP id S2898202AbgJWM0L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:22:30 -0400
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5091DC0613D4;
-        Fri, 23 Oct 2020 05:22:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=ZqZwulKWsNeOfTRPnUtP6s+k2zE4Jglq98sJ21G983w=; b=CN5qPyYW/KGgKCqGUJA+vsxCy
-        yR2VXmwysHq99WJCJiNSr//TMWWaZUH7G+vI/fc9GAfvWivfnnIHfjne/DyNoSsCcCEm0lVypw8FQ
-        SB4oL7wlaHyj8lKHfGGh+8hTt/q50UnIlZtZO1+fxeYRtAK2LbSmsRqB6nz1M4B7wMk95LszILdDn
-        n6f0kO/tuD/yA3G6dGUX/MNGoEmFeW5JoqNBVYyFt/KcZyC3li8rvOtuXnOdW614W73BgpIqOOctb
-        QYMjY+2JoWDAvXdMyQueSxhLYRYXo3CMFcIHPlTG6ITfUHkbVESIy0CIwLhE+wBrh/RtcMTKnWHcl
-        6YYY3ZNOg==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49966)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kVw5S-0003Pn-7D; Fri, 23 Oct 2020 13:22:26 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kVw5Q-0008Rd-Cj; Fri, 23 Oct 2020 13:22:24 +0100
-Date:   Fri, 23 Oct 2020 13:22:24 +0100
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Marc Kleine-Budde <mkl@pengutronix.de>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        Marek Vasut <marex@denx.de>, Andrew Lunn <andrew@lunn.ch>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        linux-kernel@vger.kernel.org, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org, kernel@pengutronix.de,
-        David Jander <david@protonic.nl>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>
-Subject: Re: [RFC PATCH v1 0/6] add initial CAN PHY support
-Message-ID: <20201023122224.GD1551@shell.armlinux.org.uk>
-References: <20201023105626.6534-1-o.rempel@pengutronix.de>
- <20201023114502.GC1551@shell.armlinux.org.uk>
- <043b37a0-5aa4-0311-a3f4-09c61ad20671@pengutronix.de>
+        Fri, 23 Oct 2020 08:26:11 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF584C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:26:11 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id w25so738886vsk.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:26:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=SbiM058sppBM2ejB0BKsLTyfit1usvLgD9lTKm1udBQ=;
+        b=ROZCwsIRP2IVMu9iOTAMvfqGoXLdd4eDrvuamqNxCT7kMI1yF2ub3ixtnQ2y/MS79R
+         d8s6eDXGU4X/PXaPwHuWSq5j+WXU9aExYxJp9eby/IYOmGbI80nYUBr1tVLefYOeciNV
+         L9v5hKp1+BWlZFTA8UJGITaIM+7D6NPRl5V+fOsLIm4O8/i1GpytSCVonKaQyFXF7eot
+         9zmBawTgHsdb9dEoWzzA896vnMLKqccUd/+udRPFp9Kq3eJxhASbVctIDw+6TP/k/vTb
+         Tv2b7vvTwehg7ExRWLoO5VQEPxfwrIyxEg1HFRrR1bGznWIRM9Q5IPU45oRwrUun+aH1
+         8DEA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=SbiM058sppBM2ejB0BKsLTyfit1usvLgD9lTKm1udBQ=;
+        b=tYgjdA1gjYOBbfP+HkkIg0Kzlcf7Ppf7Zp2OHZUObK5GEXK1IDyF1cDDLjouZgTJg6
+         vu8syGqNZjEyRYI7TW7Zw2D78vgd39yXZ/bHbS1MNSMiAckMaMo8AANjhRzsf85RWirL
+         j8to04ye6CEhmR1qkTjkQOIzoeUt+NtKdpdUvtHoa4llgQDTdLBoey3IXjPdxp4c3m4T
+         dHANOzV3rl399s7giyjwV6Yh+ill95eWK69qda+I1llcf12alDAlegviRm2XGtDygqMv
+         JD30rIknJn5y/0ZQfdenD5/AnrwCpRTWqIAUzEz997Y5uL4gLZH1/iSkiNkRlELdBey+
+         qwHA==
+X-Gm-Message-State: AOAM531cylia3Jp5XiNELPxOeKtJIBT9/CGqgppep4BCSa1Qckhy1QZV
+        zWWOp5nZo9yY02WIq7DZ2yAi/6B48pypXBEcQ2W4WA==
+X-Google-Smtp-Source: ABdhPJwCWRGvbGLHU8VapiWEJeresFqhayakEx40w5ZiKSNlLE07YGg25rKi83MAt/isEEkTOm5D8TzAOtGuWwOF22A=
+X-Received: by 2002:a67:6c86:: with SMTP id h128mr1072002vsc.42.1603455970903;
+ Fri, 23 Oct 2020 05:26:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <043b37a0-5aa4-0311-a3f4-09c61ad20671@pengutronix.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+References: <20201022222337.19857-1-michael@walle.cc>
+In-Reply-To: <20201022222337.19857-1-michael@walle.cc>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 23 Oct 2020 14:25:34 +0200
+Message-ID: <CAPDyKFrH=G58fSMExb+QA794BhAXk-NFV2djNRObyHTH9R7W3w@mail.gmail.com>
+Subject: Re: [PATCH v2] mmc: sdhci-of-esdhc: set timeout to max before tuning
+To:     Michael Walle <michael@walle.cc>
+Cc:     "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Yangbo Lu <yangbo.lu@nxp.com>,
+        Adrian Hunter <adrian.hunter@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:14:09PM +0200, Marc Kleine-Budde wrote:
-> On 10/23/20 1:45 PM, Russell King - ARM Linux admin wrote:
-> > On Fri, Oct 23, 2020 at 12:56:20PM +0200, Oleksij Rempel wrote:
-> >> - The upcoming CAN SIC and CAN SIC XL PHYs use a different interface to
-> >>   the CAN controller. This means the controller needs to know which type
-> >>   of PHY is attached to configure the interface in the correct mode. Use
-> >>   PHY link for that, too.
-> > 
-> > Is this dynamic in some form?
-> 
-> There isn't any CAN SIC transceivers out there yet. I suspect there will be no
-> auto detection possible, so we would describe the type of the attached
-> transceiver via device tree.
-> 
-> In the future I can think of some devices that have a MUX and use the a classic
-> transceiver (CAN high-speed) for legacy deployments and CAN SIC transceivers if
-> connected to a "modern" CAN bus.
-> 
-> Someone (i.e. the user or the system integrator) has to configure the MUX to
-> select the correct transceiver.
+On Fri, 23 Oct 2020 at 00:24, Michael Walle <michael@walle.cc> wrote:
+>
+> On rare occations there is the following error:
+>
+>   mmc0: Tuning timeout, falling back to fixed sampling clock
+>
+> There are SD cards which takes a significant longer time to reply to the
+> first CMD19 command. The eSDHC takes the data timeout value into account
+> during the tuning period. The SDHCI core doesn't explicitly set this
+> timeout for the tuning procedure. Thus on the slow cards, there might be
+> a spurious "Buffer Read Ready" interrupt, which in turn triggers a wrong
+> sequence of events. In the end this will lead to an unsuccessful tuning
+> procedure and to the above error.
+>
+> To workaround this, set the timeout to the maximum value (which is the
+> best we can do) and the SDHCI core will take care of the proper timeout
+> handling.
+>
+> Fixes: ba49cbd0936e ("mmc: sdhci-of-esdhc: add tuning support")
+> Signed-off-by: Michael Walle <michael@walle.cc>
+> Acked-by: Adrian Hunter <adrian.hunter@intel.com>
 
-Hmm. So it's static, and described in firmware. So, that brings me to
-the obvious question: why use phylink for this rather than the phylib
-APIs?
+Applied for fixes and by adding a stable tag, thanks!
 
-phylink isn't obsoleting phylib in any way, and phylib does support
-the ability for the PHY to change its MAC side interface (if it didn't
-then PHYs such as 88x3310 and similar wouldn't be usable.)
+I am not sure for what stable kernel this applies to, but I guess we
+will get notified about that, sooner or later.
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Kind regards
+Uffe
+
+
+>
+> ---
+> Changes since v1:
+>  - Added fixes tag. Suggested by Ulf Hansson.
+>
+>  drivers/mmc/host/sdhci-of-esdhc.c | 11 +++++++++++
+>  1 file changed, 11 insertions(+)
+>
+> diff --git a/drivers/mmc/host/sdhci-of-esdhc.c b/drivers/mmc/host/sdhci-of-esdhc.c
+> index 0b45eff6fed4..baf7801a1804 100644
+> --- a/drivers/mmc/host/sdhci-of-esdhc.c
+> +++ b/drivers/mmc/host/sdhci-of-esdhc.c
+> @@ -1052,6 +1052,17 @@ static int esdhc_execute_tuning(struct mmc_host *mmc, u32 opcode)
+>
+>         esdhc_tuning_block_enable(host, true);
+>
+> +       /*
+> +        * The eSDHC controller takes the data timeout value into account
+> +        * during tuning. If the SD card is too slow sending the response, the
+> +        * timer will expire and a "Buffer Read Ready" interrupt without data
+> +        * is triggered. This leads to tuning errors.
+> +        *
+> +        * Just set the timeout to the maximum value because the core will
+> +        * already take care of it in sdhci_send_tuning().
+> +        */
+> +       sdhci_writeb(host, 0xe, SDHCI_TIMEOUT_CONTROL);
+> +
+>         hs400_tuning = host->flags & SDHCI_HS400_TUNING;
+>
+>         do {
+> --
+> 2.20.1
+>
