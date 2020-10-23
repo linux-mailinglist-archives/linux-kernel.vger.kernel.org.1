@@ -2,162 +2,304 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8EC82968ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:57:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 582FF296921
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 06:30:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375122AbgJWD5i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 23:57:38 -0400
-Received: from mail-mw2nam10on2044.outbound.protection.outlook.com ([40.107.94.44]:34752
-        "EHLO NAM10-MW2-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S370032AbgJWD5i (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 23:57:38 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=CJilAXiL6mP3v6XAbeKq41xp54ANG7KxSJtwAZ0ObcEizDkjGP70hxhcsn2HvhirYpTs57JgqrbLQw2JtyH4ZYQTHWTQL1RgvQ96uZxIKJgWYTf4tglT4cNqbnJGS2dKQ41eYigwVASeqqU0hLy08I8naVPN1PfGbM2GVoU/l/Qkq/gS/3we7GyPh8HQX/4HeeMPkYQlYp/mWrUrSCKbkGxs/wAlIrJZYxjArI2mXwgJVz2lkjJqjJT4hiwaUruCi5Z8aeqyQfXHOlLJRRtawRf677dpLf6hbBc7ynYyIXOrC06n+qTuoKS/PMWjfTpc4nJSTqsxNPKyVSbb7NA/bw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yu22tUf21nu1+gcpdlf+Frn35Hf6HgYhpcDafdoSpJE=;
- b=DgePUWnTI2+1yo9DTfJwPfD61gZrWMJejBBDRND/AK3fKxnSwecj1+kdDI54ywxI7XKwtdQ1xkhEKxwFjgDvADxKSRn/5ct3bT77p5Z1Gwcdf7WxMf3imWxzwFmfhSXv32/l9Jr2iPfZEJOLn+NEStBz9055n9hn6wbdsCEx8YWIyPokOFwiakYI8VXirfC/IKNub4T3AobTzyt3oBP87nX7tRoE6ObRn6gCMuTtOV9QzZV12eiifnW5T1Hem1YBeixBQ3qcF74R0Hi6hu8PASeYIANyQBethzkRAanHMFMLiZWcXrKWGjullVkLx/EP+97mTPMVScYx4KP77/jhPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=windriver.com; dmarc=pass action=none
- header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
+        id S375275AbgJWE3t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 00:29:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49824 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S370373AbgJWE3s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 00:29:48 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 967D2C0613CE;
+        Thu, 22 Oct 2020 21:29:48 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id c15so524117ejs.0;
+        Thu, 22 Oct 2020 21:29:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=windriversystems.onmicrosoft.com;
- s=selector2-windriversystems-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Yu22tUf21nu1+gcpdlf+Frn35Hf6HgYhpcDafdoSpJE=;
- b=QnR/WUVD2pOuII4xUULYVaYg8owMh7KcDTIIZGtSZqhyPouDaQ1APg2Ley2t5uGStiEPmEEacxkpWomVqfFZsgJTFPFsT5MUc5Ml/pP1jXYsww+NH1OyUPgVDK5zQDvLwnPJVQ38r1Bdiiec5KJUe9QdihIPqQuj8kAc2S71Bq4=
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
- by BYAPR11MB3223.namprd11.prod.outlook.com (2603:10b6:a03:1b::26) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Fri, 23 Oct
- 2020 03:57:31 +0000
-Received: from BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05]) by BYAPR11MB2632.namprd11.prod.outlook.com
- ([fe80::80e9:e002:eeff:4d05%3]) with mapi id 15.20.3455.030; Fri, 23 Oct 2020
- 03:57:31 +0000
-From:   "Zhang, Qiang" <Qiang.Zhang@windriver.com>
-To:     Jens Axboe <axboe@kernel.dk>
-CC:     "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>
-Subject: =?gb2312?B?u9i4tDogUXVlc3Rpb24gb24gaW8td3E=?=
-Thread-Topic: Question on io-wq
-Thread-Index: AQHWqFIIJfBUWm45qk6/o7Xr3klK5qmjqOaAgADl1fCAAAFT6A==
-Date:   Fri, 23 Oct 2020 03:57:31 +0000
-Message-ID: <BYAPR11MB2632500DAAE5C09DA7C5A6C9FF1A0@BYAPR11MB2632.namprd11.prod.outlook.com>
-References: <98c41fba-87fe-b08d-2c8c-da404f91ef31@windriver.com>,<8dd4bc4c-9d8e-fb5a-6931-3e861ad9b4bf@kernel.dk>,<BYAPR11MB2632F2892640FCF08997B36AFF1A0@BYAPR11MB2632.namprd11.prod.outlook.com>
-In-Reply-To: <BYAPR11MB2632F2892640FCF08997B36AFF1A0@BYAPR11MB2632.namprd11.prod.outlook.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: kernel.dk; dkim=none (message not signed)
- header.d=none;kernel.dk; dmarc=none action=none header.from=windriver.com;
-x-originating-ip: [60.247.85.82]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: ed9d9d3a-6889-41f7-42ed-08d87707c451
-x-ms-traffictypediagnostic: BYAPR11MB3223:
-x-microsoft-antispam-prvs: <BYAPR11MB3223C6D8D4A0C160AF9F510CFF1A0@BYAPR11MB3223.namprd11.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:1060;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: lS3ERxEktofW+ibP1Nr7q/TJoEqoUwJtxV6YGY2ZbnNF0m7n74tRZYs1NiZrm4tBl/p8DkvdZibgHJ16oL/rNC5S8WelythrVHZUqPp4pHCM3DO/fvaXVaj/GXqIuBmbjTNe+o2JTs9WY6EY6VEONK1aUxJ2m6hXBIKJZgjDZgTOosHZwpR+rTn7OGNs/RpN+tLFR3mPEXCpS279hxfljYpKYMYz1N0qCZPoy9q2qS1H/vbj1QWa+NGZITDo/jVBCj6qv+xd9v9m8H7P6vzvpoMm67KLAQi4Nh2BDf/DF96QDdtYe/p8qqftsi67pUbg
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39850400004)(376002)(366004)(396003)(346002)(136003)(224303003)(86362001)(2940100002)(83380400001)(8936002)(71200400001)(4326008)(316002)(54906003)(33656002)(5660300002)(7696005)(26005)(66946007)(9686003)(55016002)(2906002)(6916009)(52536014)(66556008)(91956017)(64756008)(66446008)(6506007)(76116006)(53546011)(66476007)(186003)(478600001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: t/aPvEy/xV0MNvX2+bKgxykTP5GZcsn9yCadOpX2qxaa9RKPbStOXT6Z+5LTfsBO4CjrnnykQLALfpOTdB6SSZG/Fv4sxc+z4mwjBRy0iHKyTo9MF25ZMsYxKpobTyMQY/IYdy1RLJXCSyjW+BUL961po5lHHY0B3gyk5O7dUdG7mNBliemv+uxLHn6vMnZVIxalGV47PZ1FrHZIz3piXSlQy2+pC+47YI43YwBWxpedOZb00EhqHk/I8aT3kQDaA75/AJ8CVunWX7N1GL5XUvhNMtMTkROa4I/hlGRBtcruFobA7ntwPWuc4X4L7Doln/7mpj8slj4N6lqWYuCxdn//A3e1UUindQVYuElfBwJTwWZjLZLACluSGcHmEHQVgXUbNnL+iseFW/UnXNmrOPlbIyuVAJ7Cyj6+bnKMk3I0qVbNHWuKzYIS9UF5VYyzal3W8HfV+gmab0ReXYwBGla7taKMwFPnvafyJLs9kQigMjdwyomF8IeXfUM34O/ClYZ5OKIWNZqFMWFP1/doZbPOt0SX9MATTDPOTSde8GWlg1Bz461TUzzhWKvv7bU6QMvTOlSZ9dALkX8MdXJ+LyqxgFx7m78VBWZSSP0KROOD763079g5yMVkz67wG3sGgIFstSQZiZvMMBckq3zLaw==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="gb2312"
-Content-Transfer-Encoding: base64
-MIME-Version: 1.0
-X-OriginatorOrg: windriver.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed9d9d3a-6889-41f7-42ed-08d87707c451
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2020 03:57:31.4391
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gitMO8g7TaOJ+WTrmP2bhWC7y/Ogw+Qt3B1EKpQQLYa0Nj5aG5QYjKFRhzx1snqT0QQaMazUwCc8mwYZnRrGDgFz9LV8MFqwvqhV0zrBnyk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB3223
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references;
+        bh=JCYEtAknaYoow1p4w2UL35VcfGDZh6EnoPxbBlVBVmQ=;
+        b=Vg7g80b18r5hVqjFLMqOqqBgsFNMXuRbcpjLlvcgoVEkDmwxNEk+6/LIhFmoIN7My8
+         dBFQchZ7iN5v8BX2QuNiszhSMOh8ZCuwwkI2LpRazvfO/Y1H8dP4hLJ7acXhiMNkv7EX
+         77Mn69chczT1n0AsYA+qpDUKF4+Qel50Bnxc/xYxqHTk54m2gNZvTX0ElLWGPw8PE8Sr
+         UTDrZcfYdQ/XPsRzxDsT26MLCIbUoc0Obh73hnY73op/wNOF2GwczfD4Qt/4jomXjA0K
+         J9+v9S5VFuydyNLkUnE1YKqYOnGj6xHTuzRpYBHlw6qIk7oT2tezaEXQhrAy3nAlrYGW
+         nuew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references;
+        bh=JCYEtAknaYoow1p4w2UL35VcfGDZh6EnoPxbBlVBVmQ=;
+        b=lJJlFlQFXH22b8eRJV6Mb5Gye9i69vLdtoa+TM97Mv8bxYmiMR6V+wI1DiDAhUfBib
+         72GVdOMuFKfNnP2TaLcrm0AH1zbcLDgKG1Yo2RAMqPlwFa/y2pDGg+CIkBuvIPv+W6UH
+         2ArYpeqH56S6eqIzs+OpwEAMrwJPWEs8mwnFbnByDq90XOW5ZY4qaGLjB2BOyYPiDe24
+         gdaVZJ1EUQsP1VdwKnnKhjueoDIUD26aLO03SxU6tIi1/dBzSyduhY4Rlw3mzvo+1P2b
+         eKCXkBtUbNrM4C4m3cK9DSBhs1tjG61ixs9tCm0wfZuzSzqABFFNJUCZQLLwCmNPyOvZ
+         IswQ==
+X-Gm-Message-State: AOAM532PgWBH1bQRHZdKxNkRQyLXeRJfo/pFLXlFx5iAFQK8xFw4hXZj
+        B832VDr5TxUnt3imLsUo6VY=
+X-Google-Smtp-Source: ABdhPJxmDFsd9WNvB74m7EN9pR9l7vA33L9BOWqceY7JGz59kfaLVT7PirjNqnXzr+FVBryLisHEJw==
+X-Received: by 2002:a17:906:3397:: with SMTP id v23mr223950eja.212.1603427387230;
+        Thu, 22 Oct 2020 21:29:47 -0700 (PDT)
+Received: from localhost.localdomain ([185.200.214.168])
+        by smtp.gmail.com with ESMTPSA id r26sm123349eja.13.2020.10.22.21.29.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 21:29:46 -0700 (PDT)
+From:   izabela.bakollari@gmail.com
+To:     nhorman@tuxdriver.com, davem@davemloft.net, kuba@kernel.org
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        izabela.bakollari@gmail.com
+Subject: [PATCHv4 net-next] dropwatch: Support monitoring of dropped frames
+Date:   Fri, 23 Oct 2020 06:29:43 +0200
+Message-Id: <20201023042943.563284-1-izabela.bakollari@gmail.com>
+X-Mailer: git-send-email 2.18.4
+In-Reply-To: <20200707171515.110818-1-izabela.bakollari@gmail.com>
+References: <20200707171515.110818-1-izabela.bakollari@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-CgpfX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fCreivP7IyzogWmhhbmcs
-IFFpYW5nIDxRaWFuZy5aaGFuZ0B3aW5kcml2ZXIuY29tPgq3osvNyrG85DogMjAyMMTqMTDUwjIz
-yNUgMTE6NTUKytW8/sjLOiBKZW5zIEF4Ym9lCrOty806IHZpcm9AemVuaXYubGludXgub3JnLnVr
-OyBpby11cmluZ0B2Z2VyLmtlcm5lbC5vcmc7IGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc7
-IGxpbnV4LWZzZGV2ZWxAdmdlci5rZXJuZWwub3JnCtb3zOI6ILvYuLQ6IFF1ZXN0aW9uIG9uIGlv
-LXdxCgoKCl9fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX19fX18Kt6K8/sjLOiBK
-ZW5zIEF4Ym9lIDxheGJvZUBrZXJuZWwuZGs+Creiy83KsbzkOiAyMDIwxOoxMNTCMjLI1SAyMjow
-OArK1bz+yMs6IFpoYW5nLCBRaWFuZwqzrcvNOiB2aXJvQHplbml2LmxpbnV4Lm9yZy51azsgaW8t
-dXJpbmdAdmdlci5rZXJuZWwub3JnOyBsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnOyBsaW51
-eC1mc2RldmVsQHZnZXIua2VybmVsLm9yZwrW98ziOiBSZTogUXVlc3Rpb24gb24gaW8td3EKCk9u
-IDEwLzIyLzIwIDM6MDIgQU0sIFpoYW5nLFFpYW5nIHdyb3RlOgo+Cj4gSGkgSmVucyBBeGJvZQo+
-Cj4gVGhlcmUgYXJlIHNvbWUgcHJvYmxlbSBpbiAnaW9fd3FlX3dvcmtlcicgdGhyZWFkLCB3aGVu
-IHRoZQo+ICdpb193cWVfd29ya2VyJyBiZSBjcmVhdGUgYW5kICBTZXR0aW5nIHRoZSBhZmZpbml0
-eSBvZiBDUFVzIGluIE5VTUEKPiBub2RlcywgZHVlIHRvIENQVSBob3RwbHVnLCBXaGVuIHRoZSBs
-YXN0IENQVSBnb2luZyBkb3duLCB0aGUKPiAnaW9fd3FlX3dvcmtlcicgdGhyZWFkIHdpbGwgcnVu
-IGFueXdoZXJlLiB3aGVuIHRoZSBDUFUgaW4gdGhlIG5vZGUgZ29lcwo+IG9ubGluZSBhZ2Fpbiwg
-d2Ugc2hvdWxkIHJlc3RvcmUgdGhlaXIgY3B1IGJpbmRpbmdzPwoKPlNvbWV0aGluZyBsaWtlIHRo
-ZSBiZWxvdyBzaG91bGQgaGVscCBpbiBlbnN1cmluZyBhZmZpbml0aWVzIGFyZQo+YWx3YXlzIGNv
-cnJlY3QgLSB0cmlnZ2VyIGFuIGFmZmluaXR5IHNldCBmb3IgYW4gb25saW5lIENQVSBldmVudC4g
-V2UKPnNob3VsZCBub3QgbmVlZCB0byBkbyBpdCBmb3Igb2ZmbGluaW5nLiBDYW4geW91IHRlc3Qg
-aXQ/CgoKPmRpZmYgLS1naXQgYS9mcy9pby13cS5jIGIvZnMvaW8td3EuYwo+aW5kZXggNDAxMmZm
-NTQxYjdiLi4zYmYwMjlkMTE3MGUgMTAwNjQ0Cj4tLS0gYS9mcy9pby13cS5jCj4rKysgYi9mcy9p
-by13cS5jCj5AQCAtMTksNiArMTksNyBAQAogPiNpbmNsdWRlIDxsaW51eC90YXNrX3dvcmsuaD4K
-ID4jaW5jbHVkZSA8bGludXgvYmxrLWNncm91cC5oPgogPiNpbmNsdWRlIDxsaW51eC9hdWRpdC5o
-Pgo+KyNpbmNsdWRlIDxsaW51eC9jcHUuaD4KCiA+I2luY2x1ZGUgImlvLXdxLmgiCj4KPkBAIC0x
-MjMsOSArMTI0LDEzIEBAIHN0cnVjdCBpb193cSB7CiA+ICAgICAgIHJlZmNvdW50X3QgcmVmczsK
-ICA+ICAgICAgc3RydWN0IGNvbXBsZXRpb24gZG9uZTsKPgo+KyAgICAgICBzdHJ1Y3QgaGxpc3Rf
-bm9kZSBjcHVocF9ub2RlOwo+KwogPiAgICAgICByZWZjb3VudF90IHVzZV9yZWZzOwogPn07Cj4K
-PitzdGF0aWMgZW51bSBjcHVocF9zdGF0ZSBpb193cV9vbmxpbmU7Cj4rCiA+c3RhdGljIGJvb2wg
-aW9fd29ya2VyX2dldChzdHJ1Y3QgaW9fd29ya2VyICp3b3JrZXIpCiA+ewogICA+ICAgICByZXR1
-cm4gcmVmY291bnRfaW5jX25vdF96ZXJvKCZ3b3JrZXItPnJlZik7Cj5AQCAtMTA5Niw2ICsxMTAx
-LDEzIEBAIHN0cnVjdCBpb193cSAqaW9fd3FfY3JlYXRlKHVuc2lnbmVkIGJvdW5kZWQsID5zdHJ1
-Y3QgaW9fd3FfZGF0YSAqZGF0YSkKID4gICAgICAgICAgICAgICByZXR1cm4gRVJSX1BUUigtRU5P
-TUVNKTsKICA+ICAgICAgfQo+Cj4rICAgICAgIHJldCA9IGNwdWhwX3N0YXRlX2FkZF9pbnN0YW5j
-ZV9ub2NhbGxzKGlvX3dxX29ubGluZSwgPiZ3cS0+Y3B1aHBfbm9kZSk7Cj4rICAgICAgIGlmIChy
-ZXQpIHsKPisgICAgICAgICAgICAgICBrZnJlZSh3cS0+d3Flcyk7Cj4rICAgICAgICAgICAgICAg
-a2ZyZWUod3EpOwo+KyAgICAgICAgICAgICAgIHJldHVybiBFUlJfUFRSKHJldCk7Cj4rICAgICAg
-IH0KPisKPiAgICAgICAgd3EtPmZyZWVfd29yayA9IGRhdGEtPmZyZWVfd29yazsKPiAgICAgICAg
-d3EtPmRvX3dvcmsgPSBkYXRhLT5kb193b3JrOwo+Cj5AQCAtMTE0NSw2ICsxMTU3LDcgQEAgc3Ry
-dWN0IGlvX3dxICppb193cV9jcmVhdGUodW5zaWduZWQgYm91bmRlZCwgPnN0cnVjdCBpb193cV9k
-YXRhICpkYXRhKQogPiAgICAgICByZXQgPSBQVFJfRVJSKHdxLT5tYW5hZ2VyKTsKID4gICAgICAg
-Y29tcGxldGUoJndxLT5kb25lKTsKID5lcnI6Cj4rICAgICAgIGNwdWhwX3N0YXRlX3JlbW92ZV9p
-bnN0YW5jZV9ub2NhbGxzKGlvX3dxX29ubGluZSwgPiZ3cS0+Y3B1aHBfbm9kZSk7CiAgPiAgICAg
-IGZvcl9lYWNoX25vZGUobm9kZSkKID4gICAgICAgICAgICAgICBrZnJlZSh3cS0+d3Flc1tub2Rl
-XSk7CiA+ICAgICAgIGtmcmVlKHdxLT53cWVzKTsKPkBAIC0xMTY0LDYgKzExNzcsOCBAQCBzdGF0
-aWMgdm9pZCBfX2lvX3dxX2Rlc3Ryb3koc3RydWN0IGlvX3dxICp3cSkKID57CiA+ICAgICAgIGlu
-dCBub2RlOwo+Cj4rICAgICAgIGNwdWhwX3N0YXRlX3JlbW92ZV9pbnN0YW5jZV9ub2NhbGxzKGlv
-X3dxX29ubGluZSwgPiZ3cS0+Y3B1aHBfbm9kZSk7Cj4rCiAgID4gICAgIHNldF9iaXQoSU9fV1Ff
-QklUX0VYSVQsICZ3cS0+c3RhdGUpOwogID4gICAgICBpZiAod3EtPm1hbmFnZXIpCiA+ICAgICAg
-ICAgICAgICAga3RocmVhZF9zdG9wKHdxLT5tYW5hZ2VyKTsKPkBAIC0xMTkxLDMgKzEyMDYsNDAg
-QEAgc3RydWN0IHRhc2tfc3RydWN0ICppb193cV9nZXRfdGFzayhzdHJ1Y3QgaW9fd3EgPip3cSkK
-ID57CiA+ICAgICAgcmV0dXJuIHdxLT5tYW5hZ2VyOwogPn0KPisKPitzdGF0aWMgYm9vbCBpb193
-cV93b3JrZXJfYWZmaW5pdHkoc3RydWN0IGlvX3dvcmtlciAqd29ya2VyLCB2b2lkICpkYXRhKQo+
-K3sKPisgICAgICAgc3RydWN0IHRhc2tfc3RydWN0ICp0YXNrID0gd29ya2VyLT50YXNrOwo+KyAg
-ICAgICB1bnNpZ25lZCBsb25nIGZsYWdzOwo+KwogICAgICAgICAgIHN0cnVjdCBycV9mbGFncyBy
-ZjsKICAgICAgICAgICBzdHJ1Y3QgcnEgKnJxOwogICAgICAgICAgIHJxID0gdGFza19ycV9sb2Nr
-KHRhc2ssICZyZik7CgotLS0gICAgICAgcmF3X3NwaW5fbG9ja19pcnFzYXZlKCZ0YXNrLT5waV9s
-b2NrLCBmbGFncyk7Cj4rICAgICAgIGRvX3NldF9jcHVzX2FsbG93ZWQodGFzaywgY3B1bWFza19v
-Zl9ub2RlKHdvcmtlci0+d3FlLT5ub2RlKSk7Cj4rICAgICAgIHRhc2stPmZsYWdzIHw9IFBGX05P
-X1NFVEFGRklOSVRZOwotLS0gICAgICByYXdfc3Bpbl91bmxvY2tfaXJxcmVzdG9yZSgmdGFzay0+
-cGlfbG9jaywgZmxhZ3MpOwogICAgICAgICAgIAogICAgICAgICAgICAgIHRhc2tfcnFfdW5sb2Nr
-KHJxLCB0YXNrLCAmcmYpOwoKPisgICAgICAgcmV0dXJuIGZhbHNlOwo+K30KPisKPitzdGF0aWMg
-aW50IGlvX3dxX2NwdV9vbmxpbmUodW5zaWduZWQgaW50IGNwdSwgc3RydWN0IGhsaXN0X25vZGUg
-Km5vZGUpCj4rewo+KyAgICAgICBzdHJ1Y3QgaW9fd3EgKndxID0gaGxpc3RfZW50cnlfc2FmZShu
-b2RlLCBzdHJ1Y3QgaW9fd3EsIGNwdWhwX25vZGUpOwo+KyAgICAgICBpbnQgaTsKPisKPisgICAg
-ICAgcmN1X3JlYWRfbG9jaygpOwo+KyAgICAgICBmb3JfZWFjaF9ub2RlKGkpCj4rICAgICAgICAg
-ICAgICAgaW9fd3FfZm9yX2VhY2hfd29ya2VyKHdxLT53cWVzW2ldLCBpb193cV93b3JrZXJfYWZm
-aW5pdHksID5OVUxMKTsKPisgICAgICAgcmN1X3JlYWRfdW5sb2NrKCk7Cj4rICAgICAgIHJldHVy
-biAwOwo+K30KPisKPitzdGF0aWMgX19pbml0IGludCBpb193cV9pbml0KHZvaWQpCj4rewo+KyAg
-ICAgICBpbnQgcmV0Owo+Kwo+KyAgICAgICByZXQgPSBjcHVocF9zZXR1cF9zdGF0ZV9tdWx0aShD
-UFVIUF9BUF9PTkxJTkVfRFlOLCA+ImlvLT53cS9vbmxpbmUiLAo+KyAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgICAgICAgICAgIGlvX3dxX2NwdV9vbmxpbmUsIE5VTEwpOwo+KyAgICAgICBp
-ZiAocmV0IDwgMCkKPisgICAgICAgICAgICAgICByZXR1cm4gcmV0Owo+KyAgICAgICBpb193cV9v
-bmxpbmUgPSByZXQ7Cj4rICAgICAgIHJldHVybiAwOwo+K30KPitzdWJzeXNfaW5pdGNhbGwoaW9f
-d3FfaW5pdCk7Cj4KPi0tCj5KZW5zIEF4Ym9lCgo=
+From: Izabela Bakollari <izabela.bakollari@gmail.com>
+
+Dropwatch is a utility that monitors dropped frames by having userspace
+record them over the dropwatch protocol over a file. This augument
+allows live monitoring of dropped frames using tools like tcpdump.
+
+With this feature, dropwatch allows two additional commands (start and
+stop interface) which allows the assignment of a net_device to the
+dropwatch protocol. When assinged, dropwatch will clone dropped frames,
+and receive them on the assigned interface, allowing tools like tcpdump
+to monitor for them.
+
+With this feature, create a dummy ethernet interface (ip link add dev
+dummy0 type dummy), assign it to the dropwatch kernel subsystem, by using
+these new commands, and then monitor dropped frames in real time by
+running tcpdump -i dummy0.
+
+Signed-off-by: Izabela Bakollari <izabela.bakollari@gmail.com>
+---
+ include/uapi/linux/net_dropmon.h |   3 +
+ net/core/drop_monitor.c          | 120 +++++++++++++++++++++++++++++++
+ 2 files changed, 123 insertions(+)
+
+diff --git a/include/uapi/linux/net_dropmon.h b/include/uapi/linux/net_dropmon.h
+index 67e31f329190..e8e861e03a8a 100644
+--- a/include/uapi/linux/net_dropmon.h
++++ b/include/uapi/linux/net_dropmon.h
+@@ -58,6 +58,8 @@ enum {
+ 	NET_DM_CMD_CONFIG_NEW,
+ 	NET_DM_CMD_STATS_GET,
+ 	NET_DM_CMD_STATS_NEW,
++	NET_DM_CMD_START_IFC,
++	NET_DM_CMD_STOP_IFC,
+ 	_NET_DM_CMD_MAX,
+ };
+ 
+@@ -93,6 +95,7 @@ enum net_dm_attr {
+ 	NET_DM_ATTR_SW_DROPS,			/* flag */
+ 	NET_DM_ATTR_HW_DROPS,			/* flag */
+ 	NET_DM_ATTR_FLOW_ACTION_COOKIE,		/* binary */
++	NET_DM_ATTR_IFNAME,			/* string */
+ 
+ 	__NET_DM_ATTR_MAX,
+ 	NET_DM_ATTR_MAX = __NET_DM_ATTR_MAX - 1
+diff --git a/net/core/drop_monitor.c b/net/core/drop_monitor.c
+index 8e33cec9fc4e..dea85291808b 100644
+--- a/net/core/drop_monitor.c
++++ b/net/core/drop_monitor.c
+@@ -30,6 +30,7 @@
+ #include <net/genetlink.h>
+ #include <net/netevent.h>
+ #include <net/flow_offload.h>
++#include <net/sock.h>
+ 
+ #include <trace/events/skb.h>
+ #include <trace/events/napi.h>
+@@ -46,6 +47,7 @@
+  */
+ static int trace_state = TRACE_OFF;
+ static bool monitor_hw;
++struct net_device *interface;
+ 
+ /* net_dm_mutex
+  *
+@@ -54,6 +56,8 @@ static bool monitor_hw;
+  */
+ static DEFINE_MUTEX(net_dm_mutex);
+ 
++static DEFINE_SPINLOCK(interface_lock);
++
+ struct net_dm_stats {
+ 	u64 dropped;
+ 	struct u64_stats_sync syncp;
+@@ -217,6 +221,7 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+ 	struct nlattr *nla;
+ 	int i;
+ 	struct sk_buff *dskb;
++	struct sk_buff *nskb = NULL;
+ 	struct per_cpu_dm_data *data;
+ 	unsigned long flags;
+ 
+@@ -255,6 +260,20 @@ static void trace_drop_common(struct sk_buff *skb, void *location)
+ 
+ out:
+ 	spin_unlock_irqrestore(&data->lock, flags);
++	spin_lock_irqsave(&interface_lock, flags);
++	if (interface && interface != skb->dev) {
++		nskb = skb_clone(skb, GFP_ATOMIC);
++		if (!nskb)
++			goto free;
++		nskb->dev = interface;
++	}
++	spin_unlock_irqrestore(&interface_lock, flags);
++	if (nskb)
++		netif_receive_skb(nskb);
++
++free:
++	spin_unlock_irqrestore(&interface_lock, flags);
++	return;
+ }
+ 
+ static void trace_kfree_skb_hit(void *ignore, struct sk_buff *skb, void *location)
+@@ -1315,6 +1334,89 @@ static int net_dm_cmd_trace(struct sk_buff *skb,
+ 	return -EOPNOTSUPP;
+ }
+ 
++static bool is_dummy_dev(struct net_device *dev)
++{
++	struct ethtool_drvinfo drvinfo;
++
++	if (dev->ethtool_ops && dev->ethtool_ops->get_drvinfo) {
++		memset(&drvinfo, 0, sizeof(drvinfo));
++		dev->ethtool_ops->get_drvinfo(dev, &drvinfo);
++
++		if (strcmp(drvinfo.driver, "dummy"))
++			return false;
++		return true;
++	}
++	return false;
++}
++
++static int net_dm_interface_start(struct net *net, const char *ifname)
++{
++	struct net_device *dev = dev_get_by_name(net, ifname);
++	unsigned long flags;
++	int rc = -EBUSY;
++
++	if (!dev)
++		return -ENODEV;
++
++	if (!is_dummy_dev(dev)) {
++		rc = -EOPNOTSUPP;
++		goto out;
++	}
++
++	spin_lock_irqsave(&interface_lock, flags);
++	if (!interface) {
++		interface = dev;
++		rc = 0;
++	}
++	spin_unlock_irqrestore(&interface_lock, flags);
++
++	goto out;
++
++out:
++	dev_put(dev);
++	return rc;
++}
++
++static int net_dm_interface_stop(struct net *net, const char *ifname)
++{
++	unsigned long flags;
++	int rc = -ENODEV;
++
++	spin_lock_irqsave(&interface_lock, flags);
++	if (interface && interface->name == ifname) {
++		dev_put(interface);
++		interface = NULL;
++		rc = 0;
++	}
++	spin_unlock_irqrestore(&interface_lock, flags);
++
++	return rc;
++}
++
++static int net_dm_cmd_ifc_trace(struct sk_buff *skb, struct genl_info *info)
++{
++	struct net *net = sock_net(skb->sk);
++	char ifname[IFNAMSIZ];
++
++	if (net_dm_is_monitoring())
++		return -EBUSY;
++
++	if (!info->attrs[NET_DM_ATTR_IFNAME])
++		return -EINVAL;
++
++	memset(ifname, 0, IFNAMSIZ);
++	nla_strlcpy(ifname, info->attrs[NET_DM_ATTR_IFNAME], IFNAMSIZ - 1);
++
++	switch (info->genlhdr->cmd) {
++	case NET_DM_CMD_START_IFC:
++		return net_dm_interface_start(net, ifname);
++	case NET_DM_CMD_STOP_IFC:
++		return net_dm_interface_stop(net, ifname);
++	}
++
++	return 0;
++}
++
+ static int net_dm_config_fill(struct sk_buff *msg, struct genl_info *info)
+ {
+ 	void *hdr;
+@@ -1503,6 +1605,7 @@ static int dropmon_net_event(struct notifier_block *ev_block,
+ 	struct net_device *dev = netdev_notifier_info_to_dev(ptr);
+ 	struct dm_hw_stat_delta *new_stat = NULL;
+ 	struct dm_hw_stat_delta *tmp;
++	unsigned long flags;
+ 
+ 	switch (event) {
+ 	case NETDEV_REGISTER:
+@@ -1529,6 +1632,12 @@ static int dropmon_net_event(struct notifier_block *ev_block,
+ 				}
+ 			}
+ 		}
++		spin_lock_irqsave(&interface_lock, flags);
++		if (interface && interface == dev) {
++			dev_put(interface);
++			interface = NULL;
++		}
++		spin_unlock_irqrestore(&interface_lock, flags);
+ 		mutex_unlock(&net_dm_mutex);
+ 		break;
+ 	}
+@@ -1543,6 +1652,7 @@ static const struct nla_policy net_dm_nl_policy[NET_DM_ATTR_MAX + 1] = {
+ 	[NET_DM_ATTR_QUEUE_LEN] = { .type = NLA_U32 },
+ 	[NET_DM_ATTR_SW_DROPS]	= {. type = NLA_FLAG },
+ 	[NET_DM_ATTR_HW_DROPS]	= {. type = NLA_FLAG },
++	[NET_DM_ATTR_IFNAME] = {. type = NLA_STRING, .len = IFNAMSIZ },
+ };
+ 
+ static const struct genl_ops dropmon_ops[] = {
+@@ -1570,6 +1680,16 @@ static const struct genl_ops dropmon_ops[] = {
+ 		.cmd = NET_DM_CMD_STATS_GET,
+ 		.doit = net_dm_cmd_stats_get,
+ 	},
++	{
++		.cmd = NET_DM_CMD_START_IFC,
++		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
++		.doit = net_dm_cmd_ifc_trace,
++	},
++	{
++		.cmd = NET_DM_CMD_STOP_IFC,
++		.validate = GENL_DONT_VALIDATE_STRICT | GENL_DONT_VALIDATE_DUMP,
++		.doit = net_dm_cmd_ifc_trace,
++	},
+ };
+ 
+ static int net_dm_nl_pre_doit(const struct genl_ops *ops,
+-- 
+2.18.4
+
