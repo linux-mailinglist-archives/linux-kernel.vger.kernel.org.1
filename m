@@ -2,113 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 87843296A03
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:00:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F357296A02
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:00:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375506AbgJWHAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 03:00:35 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373732AbgJWHAe (ORCPT
+        id S375497AbgJWHAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:00:14 -0400
+Received: from mail-m17613.qiye.163.com ([59.111.176.13]:2746 "EHLO
+        mail-m17613.qiye.163.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373639AbgJWHAO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:00:34 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05526C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:00:33 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id y1so366153plp.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:00:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=gVvp5GTF6tEYF1l4MyLe+EEACPzCJh/rTLhZ25K7Yus=;
-        b=KWPJbAFMvmpj3OAzC7C9dIn2g7wa3y2PZbYxCq7caZotONOVMgoXy8ZqkhAHrJUTSJ
-         ds68D0aFcyb8vTkMBMfaRF5rduNxICRu4bABQKpWk5TRzbPUcaLMnPeXNn6J9WUdmge/
-         Zwg+e50jvhe0RtX4j6BcUzxnTK2SUU+zIsF7psfkuC0aqOAJRCKlz1tY88KbKg3oWDoZ
-         ZxoDyY3j8K7k5TZXwMRDcUZviq6w2gV4rDjvhK1PLEdnrcq2A95liY19s/dcTuW8Igcm
-         9i8FpsMUPQBkQkPH+IRowt6GVsQSiEIqWPp6ZKYPmxkX8+buhBqcj85d6XINiIjUl+wk
-         TjYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=gVvp5GTF6tEYF1l4MyLe+EEACPzCJh/rTLhZ25K7Yus=;
-        b=cjtyTviswMkO1OxR0F1bUG1ywZJEH1mE9nf+vOH5/uOUszwfkeEZhPWlQ5i0LVAS4n
-         J4/NirRgGeEPUpGzQdZ3QIxz3XleZyMwLBX2v2e4twib4rPY+lUTUZgZhykQFtnbows8
-         gSBNTC5MdAmaFQbrDyibBgkCfINe7WeYGYECR67S8W/rM54PbMHvxW352O+TJ018MP50
-         S9UbL+XLgvmL87wZc2IKTHmhr2UDELNEe/s2VSMndgYS7hLPqHhV81w+FjHxn3w1gm8m
-         oz2qrI+i1Gpbzrs07mUw0iIwzOw2HDFoBL57UEwth8Jt6PtK59+jfYbvPHx8OqdeR6MC
-         YHtQ==
-X-Gm-Message-State: AOAM533dbrXQvCcTymjfHMYKMmkdw2aGP94c5GXWwEdDs4iyjiwTZycd
-        AB121xTGpRX6Luxg6qQzXFvusg==
-X-Google-Smtp-Source: ABdhPJyM1RekPYb05cSt8HvXzUhVRJa3OqIUptCqYP36bORzn5wOfny7OcuR9gEWaEs3/69n6p/s/w==
-X-Received: by 2002:a17:902:b70a:b029:d2:6391:a80f with SMTP id d10-20020a170902b70ab02900d26391a80fmr1186265pls.0.1603436432573;
-        Fri, 23 Oct 2020 00:00:32 -0700 (PDT)
-Received: from libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id h4sm795139pgc.13.2020.10.23.00.00.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Oct 2020 00:00:31 -0700 (PDT)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, axboe@fb.com
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        pizhenwei@bytedance.com
-Subject: [PATCH v2] nvme-rdma: handle nvme completion data length
-Date:   Fri, 23 Oct 2020 14:59:10 +0800
-Message-Id: <20201023065910.1358586-1-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.11.0
+        Fri, 23 Oct 2020 03:00:14 -0400
+Received: from ubuntu.localdomain (unknown [157.0.31.124])
+        by mail-m17613.qiye.163.com (Hmail) with ESMTPA id 64AFD482BB8;
+        Fri, 23 Oct 2020 15:00:10 +0800 (CST)
+From:   Bernard Zhao <bernard@vivo.com>
+To:     Dave Airlie <airlied@redhat.com>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Cc:     opensource.kernel@vivo.com, Bernard Zhao <bernard@vivo.com>
+Subject: [PATCH] gpu/drm/mgag200:remove break after return
+Date:   Fri, 23 Oct 2020 00:00:03 -0700
+Message-Id: <20201023070004.55105-1-bernard@vivo.com>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-HM-Spam-Status: e1kfGhgUHx5ZQUtXWQgYFAkeWUFZS1VLWVdZKFlBSE83V1ktWUFJV1kPCR
+        oVCBIfWUFZHx1NGUsdSR5JGB0eVkpNS0hPSE1PSktNSk5VEwETFhoSFyQUDg9ZV1kWGg8SFR0UWU
+        FZT0tIVUpKS09ISVVLWQY+
+X-HM-Sender-Digest: e1kMHhlZQR0aFwgeV1kSHx4VD1lBWUc6NDo6MDo*ED8fQjRWQ0keIj1P
+        EgNPCwlVSlVKTUtIT0hNT0pKS0hMVTMWGhIXVRkeCRUaCR87DRINFFUYFBZFWVdZEgtZQVlKTkxV
+        S1VISlVKSU9ZV1kIAVlBSUpLSTcG
+X-HM-Tid: 0a755441f6d193bakuws64afd482bb8
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hit a kernel warning:
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
+In function mgag200_set_pci_regs, there are some switch cases
+returned, then break. These break will never run.
+This patch is to make the code a bit readable.
 
-RIP: 0010:refcount_warn_saturate+0xd9/0xe0
-Call Trace:
- <IRQ>
- nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
- __ib_process_cq+0x76/0x150 [ib_core]
- ...
-
-The reason is that a zero bytes message received from target, and the
-host side continues to process without length checking, then the
-previous CQE is processed twice.
-
-Handle data length, ignore zero bytes message, and try to recovery for
-corrupted CQE case.
-
-Thanks to Chao Leng for suggestions.
-
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
+Signed-off-by: Bernard Zhao <bernard@vivo.com>
 ---
- drivers/nvme/host/rdma.c | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index 9e378d0a0c01..2ecadd309f4a 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1767,6 +1767,21 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
- 		return;
+diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/mgag200/mgag200_mode.c
+index 38672f9e5c4f..de873a5d276e 100644
+--- a/drivers/gpu/drm/mgag200/mgag200_mode.c
++++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
+@@ -794,20 +794,17 @@ static int mgag200_crtc_set_plls(struct mga_device *mdev, long clock)
+ 	case G200_SE_A:
+ 	case G200_SE_B:
+ 		return mga_g200se_set_plls(mdev, clock);
+-		break;
+ 	case G200_WB:
+ 	case G200_EW3:
+ 		return mga_g200wb_set_plls(mdev, clock);
+-		break;
+ 	case G200_EV:
+ 		return mga_g200ev_set_plls(mdev, clock);
+-		break;
+ 	case G200_EH:
+ 	case G200_EH3:
+ 		return mga_g200eh_set_plls(mdev, clock);
+-		break;
+ 	case G200_ER:
+ 		return mga_g200er_set_plls(mdev, clock);
++	default:
+ 		break;
  	}
  
-+	/* received data length checking */
-+	if (unlikely(wc->byte_len < len)) {
-+		/* zero bytes message could be ignored */
-+		if (!wc->byte_len) {
-+			nvme_rdma_post_recv(queue, qe);
-+			return;
-+		}
-+
-+		/* corrupted completion, try to recovry */
-+		dev_err(queue->ctrl->ctrl.device,
-+			"Unexpected nvme completion length(%d)\n", wc->byte_len);
-+		nvme_rdma_error_recovery(queue->ctrl);
-+		return;
-+	}
-+
- 	ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
- 	/*
- 	 * AEN requests are special as they don't time out and can
 -- 
-2.11.0
+2.28.0
 
