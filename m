@@ -2,97 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2F5A296BCB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F2986296BCD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:09:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460197AbgJWJJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:09:09 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:60690 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S461115AbgJWJJJ (ORCPT
+        id S461150AbgJWJJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:09:19 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36290 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461032AbgJWJJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:09:09 -0400
-X-UUID: a1011b1453ba4d83ae8b7df3dcf87bfb-20201023
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=3WEtnopcYNnyU+ht9FURWd9kEIt+fKwHVmbbqq2fROE=;
-        b=SNh8NghRDD4dZy3Pf5pYL3djNfNuXM5M04TxUc3z6YPZ2JRGTSKqD6iogAZutUIZQg0P6a9QbQdDRU9DbXBQb46RVL45qK1b3scDyZz1fnpQe3XNmDgEc06wim56yWzP8fvdFG5AhmNFLViBBirNuKBso/d7NPaXWIXEXWpEr4s=;
-X-UUID: a1011b1453ba4d83ae8b7df3dcf87bfb-20201023
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1431867585; Fri, 23 Oct 2020 17:09:02 +0800
-Received: from mtkcas10.mediatek.inc (172.21.101.39) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Oct 2020 17:09:00 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas10.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Oct 2020 17:09:00 +0800
-Message-ID: <1603444138.20224.19.camel@mtkswgap22>
-Subject: Re: [PATCH v1] cpufreq: mediatek-hw: Add support for Mediatek
- cpufreq HW driver
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>
-Date:   Fri, 23 Oct 2020 17:08:58 +0800
-In-Reply-To: <20201023082817.5vp4cvi2lmpaozcn@vireshk-i7>
-References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
-         <20201023082817.5vp4cvi2lmpaozcn@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        Fri, 23 Oct 2020 05:09:18 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4B3ACC0613CE;
+        Fri, 23 Oct 2020 02:09:17 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id h2so508860pll.11;
+        Fri, 23 Oct 2020 02:09:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90y1EmZ8ExMVl4uu0iOAC31TNJDdFr08bOUs5sThwIc=;
+        b=AVC5r633pDK3sSsRQxrljPVbC2JNShoDmTSlP9f4KImqz+7AN/bL7JOKVQY0R+0QcZ
+         r3Diz0DSsyHxkIQW+f7BbyBEPe64ogPnXsCFFq27wND9rND/Obgxyf9rTvwG09RwEksD
+         pyP3t1PotiqF02guRlM1cvwkHW3s6EnFlZOty7wLcJZME/q7L+b9wKfZ5WkLbRpdwFYe
+         /Yka+0G67vWgfXyEa0S5scOatD4AI2Uuh5NJJvGNjdcapf8V/NiDeZRjYw4S3qSbvvwE
+         XWEfg3KGm4jZ7sg/9K8sSFSLZAzHcGmaNJM+zDekrKLImPwYd55ExS+bV20omxHQ9rJn
+         WoRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=90y1EmZ8ExMVl4uu0iOAC31TNJDdFr08bOUs5sThwIc=;
+        b=t/8H4juaZOKcJ0i3LBAVR+OtZI8wVNpNr0Cr4h7/LvB6jNqN5THOEHo6raoRoXGbxZ
+         Fwpo4loDx+w+Z4e10IrUakyo7K0PypUZuGpbsgX7jJG0Aj7Vd1lqHf8ososE3l545YcZ
+         oM8NxNceaOr76VJDI7xqrtjG1Ew4kyZPSOuxtPVqkqoyX4P9SPSbOMSLoTIovwC/3P2+
+         SCCtpvFDnCOShPVnxu7Z2h5Jx580s9ZotWe8kTTOQh2SmnBIK7o1o3PmHSVC1CNWMQkH
+         /tOL5Gdsf94elsomxFFawGCmiv9c6WAJGikCIBrEKPqNWDvuTIiGi0EZm1+YICOvHE68
+         tPlw==
+X-Gm-Message-State: AOAM531XzJHHxQ4XMfiEmT9QBq6+oG5XBrNAydaYC7F8fFBe6yyK0T+t
+        0RcFRWqv7G3Zls1qXwleXeeOpK2QG36zifwX
+X-Google-Smtp-Source: ABdhPJzoANkVSJjRlPgNhGGO6NAgZx4i19k6LUz3orIq32M1CEgOf4KPOA0GFOfHXEjf4Ux1+gWOvA==
+X-Received: by 2002:a17:902:7249:b029:d6:4d:7d82 with SMTP id c9-20020a1709027249b02900d6004d7d82mr1376694pll.74.1603444156880;
+        Fri, 23 Oct 2020 02:09:16 -0700 (PDT)
+Received: from ruantu-3.localdomain ([103.230.142.242])
+        by smtp.gmail.com with ESMTPSA id z23sm1132381pgf.12.2020.10.23.02.09.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 02:09:16 -0700 (PDT)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yu-Tung Chang <mtwget@gmail.com>
+Subject: [PATCH v1] ARM: dts: sun8i: add FriendlyArm ZeroPi support
+Date:   Fri, 23 Oct 2020 17:09:08 +0800
+Message-Id: <20201023090908.10659-1-mtwget@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: BFAEE2C64C5F4F78B9D894AC69314D171E959363740E77E7C149C17B814AB9BB2000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEwLTIzIGF0IDEzOjU4ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
-IE9uIDIzLTEwLTIwLCAxNjoyNCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gVGhpcyBwYXRjaHNl
-dCBpbmNsdWRlcyA2IHBhdGNoZXMgYW5kIGRlcGVuZHMgb24gdGhlIE1UNjc3OSBEVFMgcGF0Y2hb
-MV0gc3VibWl0dGVkIGJ5IEhhbmtzIENoZW4uDQo+ID4gVGhlIGZpcnN0IDMgcGF0Y2hlcyBhcmUg
-Zm9yIENQVUZSRVEgSFcgZHJpdmVyIGFuZCBkZXZpY2UgdHJlZSBiaW5kaW5nLCB3aGljaCBhcmUg
-YWxyZWFkeSBzZW50IGJlZm9yZSBzZXBhcmF0ZWx5IFsyXVszXS4gRm9yIGJpbmRpbmcgcGFydCwg
-SSBhZGQgYSBuZXcgcGF0Y2ggdG8gYWRkIHByb3BlcnR5IGluIGNwdSBzY2hlbWEuDQo+ID4gQmVz
-aWRlcywgd2UgYWRkIHRocmVlIG1vcmUgcGF0Y2hlcyBpbmNsdWRpbmcgRU0gcG93ZXIgdGFibGUs
-IFNWUyBDUFUgaW5pdGlhbGl6ZSwgYW5kIGNvb2xpbmcgZGV2aWNlLg0KPiANCj4gQW5kIGV2ZW4g
-YWZ0ZXIgc28gbWFueSB2ZXJzaW9ucyBvZiB0aGVzZSB5b3UgY2hvc2UgdG8gbmFtZSB0aGlzIFYx
-LiBJdA0KPiBpcyB2ZXJ5IGRpZmZpY3VsdCBmb3IgcmV2aWV3ZXJzIHRvIGZpbmQgdGltZSB0byBy
-ZXZpZXcgeW91ciBzdHVmZiwgYW5kDQo+IHRoZXkgZXhwZWN0IHNvbWUgc29ydCBvZiBzdW1tYXJ5
-IGZyb20geW91IG9uIHdoYXQgZXhhY3RseSBjaGFuZ2VkIGZyb20NCj4gbGFzdCB2ZXJzaW9uIGFu
-ZCB5b3UgYWxzbyBuZWVkIHRvIG5hbWUgdGhlIGN1cnJlbnQgdmVyc2lvbiBjdXJyZW50bHkuDQo+
-IA0KPiBUaGlzIHNob3VsZCBoYXZlIGJlZW4gVjggYW5kIHlvdSBzaG91bGQgaGF2ZSBhZGRlZCBh
-ICJWNy0+VjggZGlmZjoiDQo+IHNlY3Rpb24gaGVyZSwgbmFtaW5nIGFsbCB0aGUgY2hhbmdlcyB5
-b3UgZGlkLiBQbGVhc2Ugc2VuZCB0aGF0IGFzDQo+IHJlcGx5IHRvIHRoaXMgZW1haWwsIHNvIEkg
-Y2FuIHNlZSB3aGF0IHJlYWxseSBjaGFuZ2VkLg0KPiANCkhpLCBWaXJlc2gNCg0KU29ycnkgZm9y
-IHlvdXIgaW5jb252ZW5pZW5jZS4NCiMxfiMzIGlzIGZvciBjcHVmcmVxIGRyaXZlciB3ZSBoYXZl
-IHJldmlld2VkIGFuZCB0aGUgYmluZGluZ3Mgd2hpY2gNCnNlcGFyYXRlIGZyZXEgZG9tYWluIHRv
-IENQVSBzY2hlbWEuVGhlcmUgaXMgbm8gY2hhbmdlIGZvciB0aGUgZHJpdmVyDQppdHNlbGYuDQog
-IDEuIGNwdWZyZXE6IG1lZGlhdGVrLWh3OiBBZGQgc3VwcG9ydCBmb3IgQ1BVRlJFUSBIVw0KICAy
-LiBkdC1iaW5kaW5nczogYXJtOiBjcHVzOiBEb2N1bWVudCAnbXRrLGZyZXEtZG9tYWluJyBwcm9w
-ZXJ0eQ0KICAzLiBkdC1iaW5kaW5nczogY3B1ZnJlcTogYWRkIGJpbmRpbmdzIGZvciBNZWRpYVRl
-ayBjcHVmcmVxIEhXDQoNCiM0fiM2IGlzIGZvciBvdGhlciBDUFUgZmVhdHVyZXMsIGkuZS4gU1ZT
-IFsxXQ0KICA0LiBjcHVmcmVxOiBtZWRpYXRlay1odzogcmVnaXN0ZXIgRU0gcG93ZXIgdGFibGUN
-CiAgNS4gY3B1ZnJlcTogbWVkaWF0ZWstaHc6IEFkZCBTVlMgQ1BVIGluaXRpYWxpemF0aW9uDQog
-IDYuIGNwdWZyZXE6IG1lZGlhdGVrLWh3OiBBZGQgY29vbGluZyBkZXYgZmxhZw0KDQpJIHN1cHBv
-c2VkIHRoYXQgaXQgY291bGQgYmUgbW9yZSBjbGVhbiB0byBzZXBhcmF0ZSAjNH4jNiBpbiBhbm90
-aGVyDQpwYXRjaHNldC5NYXkgSSBrbm93IGlzIGl0IG9rYXkgdG8geW91PyBPciBJIHNob3VsZCBt
-ZXJnZSBhbGwgb2YgY2hhbmdlcw0KaW50byB2OCBsaWtlIHlvdSBtZW50aW9uZWQ/IFRoYW5rIHlv
-dS4NCg0KWzFdDQpodHRwczovL3BhdGNod29yay5rZXJuZWwub3JnL3Byb2plY3QvbGludXgtbWVk
-aWF0ZWsvcGF0Y2gvMjAxOTA5MDYxMDA1MTQuMzA4MDMtNC1yb2dlci5sdSU0MG1lZGlhdGVrLmNv
-bS8NCg==
+The ZeroPi is another fun board developed
+by FriendlyELEC for makers,
+hobbyists and fans.
+
+ZeroPi key features
+- Allwinner H3, Quad-core Cortex-A7@1.2GHz
+- 256MB/512MB DDR3 RAM
+- microsd slot
+- 10/100/1000Mbps Ethernet
+- Debug Serial Port
+- DC 5V/2A power-supply
+
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+---
+ .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 69 +++++++++++++++++++
+ 3 files changed, 75 insertions(+)
+ create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index efc9118233b4..9392a9a3f7e7 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -246,6 +246,11 @@ properties:
+           - const: friendlyarm,nanopi-neo-plus2
+           - const: allwinner,sun50i-h5
+ 
++      - description: FriendlyARM ZeroPi
++        items:
++          - const: friendlyarm,zeropi
++          - const: allwinner,sun50i-h3
++
+       - description: Gemei G9 Tablet
+         items:
+           - const: gemei,g9
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 4572db3fa5ae..f05e54257947 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1187,6 +1187,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
+ 	sun8i-h3-orangepi-plus2e.dtb \
+ 	sun8i-h3-orangepi-zero-plus2.dtb \
+ 	sun8i-h3-rervision-dvk.dtb \
++	sun8i-h3-zeropi.dtb \
+ 	sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
+ 	sun8i-r16-bananapi-m2m.dtb \
+ 	sun8i-r16-nintendo-nes-classic.dtb \
+diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
+new file mode 100644
+index 000000000000..388ad6b6da2b
+--- /dev/null
++++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
+@@ -0,0 +1,69 @@
++// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
++/*
++ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
++ */
++
++#include "sun8i-h3-nanopi.dtsi"
++
++/ {
++	model = "FriendlyARM ZeroPi";
++	compatible = "friendlyarm,zeropi", "allwinner,sun8i-h3";
++
++	aliases {
++		ethernet0 = &emac;
++	};
++
++	reg_gmac_3v3: gmac-3v3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&gmac_power_pin_nanopi>;
++		regulator-name = "gmac-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		startup-delay-us = <100000>;
++		enable-active-high;
++		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>;
++	};
++};
++
++&ehci0 {
++	status = "okay";
++};
++
++&ohci0 {
++	status = "okay";
++};
++
++&pio {
++	gmac_power_pin_nanopi: gmac_power_pin@0 {
++		pins = "PD6";
++		function = "gpio_out";
++	};
++};
++
++&external_mdio {
++	ext_rgmii_phy: ethernet-phy@1 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <7>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii";
++
++	allwinner,leds-active-low;
++	status = "okay";
++};
++
++&usb_otg {
++	status = "okay";
++	dr_mode = "peripheral";
++};
++
++&usbphy {
++	usb0_id_det-gpios = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
++};
+-- 
+2.29.0
 
