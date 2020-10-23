@@ -2,162 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F7612975DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:38:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DC8162975E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:39:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753605AbgJWRiS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:38:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35486 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751573AbgJWRiR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:38:17 -0400
-Received: from gaia (unknown [95.145.162.19])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 26A7721527;
-        Fri, 23 Oct 2020 17:38:13 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 18:38:11 +0100
-From:   Catalin Marinas <catalin.marinas@arm.com>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     robh+dt@kernel.org, hch@lst.de, ardb@kernel.org,
-        linux-kernel@vger.kernel.org, robin.murphy@arm.com,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rpi-kernel@lists.infradead.org, jeremy.linton@arm.com,
-        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
-        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com
-Subject: Re: [PATCH v4 5/7] arm64: mm: Set ZONE_DMA size based on
- devicetree's dma-ranges
-Message-ID: <20201023173810.GH25736@gaia>
-References: <20201021123437.21538-1-nsaenzjulienne@suse.de>
- <20201021123437.21538-6-nsaenzjulienne@suse.de>
- <20201022180632.GI1229@gaia>
- <a6ab535a70958b1f79b45583eef8ba7f7172f9ce.camel@suse.de>
+        id S1753625AbgJWRi7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:38:59 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59276 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753619AbgJWRi6 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:38:58 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02906C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:38:58 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id j18so1914329pfa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:38:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=2DJUxnPz1qfNMYLpAt5xVlprmZzzkEHM3xpAbSqH2VY=;
+        b=ABgAteEbdhDZZq55hFyGeQUSwkHVdOlVv4fM5TK99e5OtJik2dv4uTciF9UZ1JV4yF
+         xnrp/yjAeqrqfIZVEXaL6Og9I0jY+yFr8s8xRYQYk7UUnFGoMbwiKd0XNcMkMKr2Lthq
+         JzCNC0bNRO1UJrfuCpUsZRNiS0C17oFOYQzhvQwsbZ7oAK8BvHN2e5dtEHRD1PCjOFZ1
+         3d2KaPH77QFOBymGkPye53fkMHRKu+VgwwFWClr9vSIzA2Gw2wEuOmssvcXKJoZ3gP5E
+         h1t5Q7xdwrB8K2nJHH4QMBggN59MeWUBytcOVkyhqgzK1ziTQo2F3lFoTBsra1pdXFID
+         qe8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=2DJUxnPz1qfNMYLpAt5xVlprmZzzkEHM3xpAbSqH2VY=;
+        b=opN6hOg0xTf3Grr8kNwauid/FJDZ566kE/I82DxlEadzKnhuNKK2cNU69vhebv/xOg
+         HpwY+ppurnPA2gKsMupaHngAjr0buL/xbhXEYUblqCKHRDIfQh5mJJvbQp5pvS02BxK0
+         AFudp3YwIwMnfOV78eELpXDcR7uI1rZkOPENXMk3bRIaxnW+dcDg98AjbLPgVLdhC43c
+         Z5tsCAfcu8yyHaSyDaYA4WQwpE8P3lg3pt9Gb3zr2gNmohOaZ+LVArXJ30ascqkJJMz3
+         5OOWuOZZgrxe1cQIPM82VU10JLFcKFRwFtGf+qgYO9F4V8bewdFjUXW3p3fCKdZ0cFhd
+         AwdA==
+X-Gm-Message-State: AOAM532MuyQD62UpxgLm3Ry/lk9iL8+Yt6Z4gWUuhM0jZFe6w+h5uBOU
+        6GuiUYdRKYpaW8rsPM8oAvHDCOMzFVt2N1PjEVQK9g==
+X-Google-Smtp-Source: ABdhPJzTAVHPon+h+Q7bqsEe8mbsZYqQUKGTojz0v5PDtYXqIlLdgBAkk97u5UkEmog6rAtficaIPgO1q4MxNWa4nzw=
+X-Received: by 2002:a63:78c3:: with SMTP id t186mr3027369pgc.12.1603474737279;
+ Fri, 23 Oct 2020 10:38:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a6ab535a70958b1f79b45583eef8ba7f7172f9ce.camel@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201020184746.300555-1-axelrasmussen@google.com>
+ <20201020184746.300555-2-axelrasmussen@google.com> <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
+In-Reply-To: <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
+From:   Axel Rasmussen <axelrasmussen@google.com>
+Date:   Fri, 23 Oct 2020 10:38:20 -0700
+Message-ID: <CAJHvVcjzZgsvdzciR5v_wkgf3M7aD_vNGv3TXrf5Z5K6SLprSA@mail.gmail.com>
+Subject: Re: [PATCH v4 1/1] mmap_lock: add tracepoints around lock acquisition
+To:     Vlastimil Babka <vbabka@suse.cz>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:27:49PM +0200, Nicolas Saenz Julienne wrote:
-> On Thu, 2020-10-22 at 19:06 +0100, Catalin Marinas wrote:
-> > On Wed, Oct 21, 2020 at 02:34:35PM +0200, Nicolas Saenz Julienne wrote:
-> > > @@ -188,9 +186,11 @@ static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-> > >  static void __init zone_sizes_init(unsigned long min, unsigned long max)
-> > >  {
-> > >  	unsigned long max_zone_pfns[MAX_NR_ZONES]  = {0};
-> > > +	unsigned int __maybe_unused dt_zone_dma_bits;
-> > >  
-> > >  #ifdef CONFIG_ZONE_DMA
-> > > -	zone_dma_bits = ARM64_ZONE_DMA_BITS;
-> > > +	dt_zone_dma_bits = ilog2(of_dma_get_max_cpu_address(NULL));
-> > > +	zone_dma_bits = min(32U, dt_zone_dma_bits);
-> > 
-> > A thought: can we remove the min here and expand ZONE_DMA to whatever
-> > dt_zone_dma_bits says? More on this below.
-> 
-> On most platforms we'd get PHYS_ADDR_MAX, or something bigger than the actual
-> amount of RAM. Which would ultimately create a system wide ZONE_DMA. At first
-> sight, I don't see it breaking dma-direct in any way.
-> 
-> On the other hand, there is a big amount of MMIO devices out there that can
-> only handle 32-bit addressing. Be it PCI cards or actual IP cores. To make
-> things worse, this limitation is often expressed in the driver, not FW (with
-> dma_set_mask() and friends). If those devices aren't behind an IOMMU we have be
-> able to provide at least 32-bit addressable memory. See this comment from
-> dma_direct_supported():
-> 
-> /*
->  * Because 32-bit DMA masks are so common we expect every architecture
->  * to be able to satisfy them - either by not supporting more physical
->  * memory, or by providing a ZONE_DMA32.  If neither is the case, the
->  * architecture needs to use an IOMMU instead of the direct mapping.
->  */
-> 
-> I think, for the common case, we're stuck with at least one zone spanning the
-> 32-bit address space.
-
-You are right, I guess it makes sense to keep a 32-bit zone as not all
-devices would be described as such.
-
-> > >  	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits);
-> > >  	max_zone_pfns[ZONE_DMA] = PFN_DOWN(arm64_dma_phys_limit);
-> > >  #endif
-> > 
-> > I was talking earlier to Ard and Robin on the ZONE_DMA32 history and the
-> > need for max_zone_phys(). This was rather theoretical, the Seattle
-> > platform has all RAM starting above 4GB and that led to an empty
-> > ZONE_DMA32 originally. The max_zone_phys() hack was meant to lift
-> > ZONE_DMA32 into the bottom of the RAM, on the assumption that such
-> > 32-bit devices would have a DMA offset hardwired. We are not aware of
-> > any such case on arm64 systems and even on Seattle, IIUC 32-bit devices
-> > only work if they are behind an SMMU (so no hardwired offset).
-> > 
-> > In hindsight, it would have made more sense on platforms with RAM above
-> > 4GB to expand ZONE_DMA32 to cover the whole memory (so empty
-> > ZONE_NORMAL). Something like:
-> > 
-> > diff --git a/arch/arm64/mm/init.c b/arch/arm64/mm/init.c
-> > index a53c1e0fb017..7d5e3dd85617 100644
-> > --- a/arch/arm64/mm/init.c
-> > +++ b/arch/arm64/mm/init.c
-> > @@ -187,8 +187,12 @@ static void __init reserve_elfcorehdr(void)
-> >   */
-> >  static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-> >  {
-> > -	phys_addr_t offset = memblock_start_of_DRAM() & GENMASK_ULL(63, zone_bits);
-> > -	return min(offset + (1ULL << zone_bits), memblock_end_of_DRAM());
-> > +	phys_addr_t zone_mask = 1ULL << zone_bits;
+On Fri, Oct 23, 2020 at 7:00 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>
+> On 10/20/20 8:47 PM, Axel Rasmussen wrote:
+> > The goal of these tracepoints is to be able to debug lock contention
+> > issues. This lock is acquired on most (all?) mmap / munmap / page fault
+> > operations, so a multi-threaded process which does a lot of these can
+> > experience significant contention.
+> >
+> > We trace just before we start acquisition, when the acquisition returns
+> > (whether it succeeded or not), and when the lock is released (or
+> > downgraded). The events are broken out by lock type (read / write).
+> >
+> > The events are also broken out by memcg path. For container-based
+> > workloads, users often think of several processes in a memcg as a single
+> > logical "task", so collecting statistics at this level is useful.
+> >
+> > The end goal is to get latency information. This isn't directly included
+> > in the trace events. Instead, users are expected to compute the time
+> > between "start locking" and "acquire returned", using e.g. synthetic
+> > events or BPF. The benefit we get from this is simpler code.
+> >
+> > Because we use tracepoint_enabled() to decide whether or not to trace,
+> > this patch has effectively no overhead unless tracepoints are enabled at
+> > runtime. If tracepoints are enabled, there is a performance impact, but
+> > how much depends on exactly what e.g. the BPF program does.
+> >
+> > Reviewed-by: Michel Lespinasse <walken@google.com>
+> > Acked-by: Yafang Shao <laoar.shao@gmail.com>
+> > Acked-by: David Rientjes <rientjes@google.com>
+> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>
+> All seem fine to me, except I started to wonder..
+>
 > > +
-> > +	if (!(memblock_start_of_DRAM() & zone_mask))
-> > +		zone_mask = PHYS_ADDR_MAX;
+> > +#ifdef CONFIG_MEMCG
 > > +
-> > +	return min(zone_mask, memblock_end_of_DRAM());
-> >  }
-> >  
-> >  static void __init zone_sizes_init(unsigned long min, unsigned long max)
-> > 
-> > I don't think this makes any difference for ZONE_DMA unless a
-> > broken DT or IORT reports the max CPU address below the start of DRAM.
-> > 
-> > There's a minor issue if of_dma_get_max_cpu_address() matches
-> > memblock_end_of_DRAM() but they are not a power of 2. We'd be left with
-> > a bit of RAM at the end in ZONE_NORMAL due to ilog2 truncation.
-> 
-> I agree it makes no sense to create more than one zone when the beginning of
-> RAM is located above the 32-bit address space. I'm all for disregarding the
-> possibility of hardwired offsets. As a bonus, as we already discussed some time
-> ago, this is something that never played well with current dma-direct code[1].
-> 
-> [1] https://lkml.org/lkml/2020/9/8/377
+> > +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
+> > +
+> > +/*
+> > + * Write the given mm_struct's memcg path to a percpu buffer, and return a
+> > + * pointer to it. If the path cannot be determined, the buffer will contain the
+> > + * empty string.
+> > + *
+> > + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
+> > + * disabled by the caller before calling us, and re-enabled only after the
+> > + * caller is done with the pointer.
+>
+> Is this enough? What if we fill the buffer and then an interrupt comes and the
+> handler calls here again? We overwrite the buffer and potentially report a wrong
+> cgroup after the execution resumes?
+> If nothing worse can happen (are interrupts disabled while the ftrace code is
+> copying from the buffer?), then it's probably ok?
 
-Maybe this one is still worth fixing, at least for consistency. But it's
-not urgent.
+I think you're right, get_cpu()/put_cpu() only deals with preemption,
+not interrupts.
 
-My diff above has a side-effect that if dt_zone_dma_bits is below the
-start of DRAM, ZONE_DMA gets expanded to PHYS_ADDR_MAX. If this was
-32-bit, that's fine but if it was, say, 30-bit because of some firmware
-misdescription with RAM starting at 2GB, we end up with no ZONE_DMA32. I
-think max_zone_phys() could cap this at 32, as a safety mechanism:
+I'm somewhat sure this code can be called in interrupt context, so I
+don't think we can use locks to prevent this situation. I think it
+works like this: say we acquire the lock, an interrupt happens, and
+then we try to acquire again on the same CPU; we can't sleep, so we're
+stuck.
 
-static phys_addr_t __init max_zone_phys(unsigned int zone_bits)
-{
-	phys_addr_t zone_mask = (1ULL << zone_bits) - 1;
-	phys_addr_t phys_start = memblock_start_of_DRAM();
+I think we can't kmalloc here (instead of a percpu buffer) either,
+since I would guess that kmalloc may also acquire mmap_lock itself?
 
-	if (!(phys_start & U32_MAX))
-		zone_mask = PHYS_ADDR_MAX;
-	else if (!(phys_start & zone_mask))
-		zone_mask = U32_MAX;
+Is adding local_irq_save()/local_irq_restore() in addition to
+get_cpu()/put_cpu() sufficient?
 
-	return min(zone_mask + 1, memblock_end_of_DRAM());
-}
-
-Assuming I got the shifting right, arm64_dma_phys_limit becomes:
-
- 	arm64_dma_phys_limit = max_zone_phys(zone_dma_bits, 32);
-
--- 
-Catalin
+>
+> > + */
+> > +static const char *get_mm_memcg_path(struct mm_struct *mm)
+> > +{
+> > +     struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
+> > +
+> > +     if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
+> > +             char *buf = this_cpu_ptr(trace_memcg_path);
+> > +
+> > +             cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
+> > +             return buf;
+> > +     }
+> > +     return "";
+> > +}
+> > +
+> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> > +     do {                                                                   \
+> > +             get_cpu();                                                     \
+> > +             trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),              \
+> > +                                    ##__VA_ARGS__);                         \
+> > +             put_cpu();                                                     \
+> > +     } while (0)
+> > +
+> > +#else /* !CONFIG_MEMCG */
+> > +
+> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> > +     trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
+> > +
+> > +#endif /* CONFIG_MEMCG */
+> > +
+> > +/*
+> > + * Trace calls must be in a separate file, as otherwise there's a circular
+> > + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
+> > + */
+> > +
+> > +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
+> > +{
+> > +     TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
+> > +}
+> > +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
+> > +
+> > +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
+> > +                                        bool success)
+> > +{
+> > +     TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
+> > +}
+> > +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
+> > +
+> > +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
+> > +{
+> > +     TRACE_MMAP_LOCK_EVENT(released, mm, write);
+> > +}
+> > +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
+> >
+>
