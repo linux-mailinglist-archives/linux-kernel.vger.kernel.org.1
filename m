@@ -2,147 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB7712973FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:33:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E12E2974B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:39:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750811AbgJWQdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:33:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460890AbgJWQdP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:33:15 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C588C0613CE;
-        Fri, 23 Oct 2020 09:33:15 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id g12so2671128wrp.10;
-        Fri, 23 Oct 2020 09:33:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=EKBrqd+PLm4bbuJx7BQuD7BkZFToxcOjYG/fkPh1R8AhVH5S6Ozh1D0xjpl6a43/dr
-         RAFENfo8DmbPGZplVWiDQeISOV0BNHj/Fd3D0LPdzeupB+JRFyK8UFwrauO9rtdGwhoC
-         kZUTe47nUNN+guqFtu84tN4lrKcIi057zxzz/Wa1t+PZMrajAE9D+1zIjOoS+QVPtfh3
-         ZXW80MmJ60p0Tc48qGNYn4OM6sFdcOELyfA8bdG37ZNVUbs1vkDVeRlEVHzLcGzfbUu/
-         RvI6/ehsllyITJBZU2bC0xeSByAcOyam1SgrZ4uNhtkQUwnbYx3ZNImSvbLK9CmC3qyK
-         Q1Hw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=Xwf33nSa7SnbcbYgs2fecqsNjB87K8IGlOiJtEXGhBrFNr7zzQPJ1QZs6qKlw4hL7I
-         Z0DIyZd8jQbS7LVZyTojKQrF9enO/zfDvRWFHcQpw05XyKDckDn/otoiS90dz9lGmQRm
-         LUIBonDy/4gjbODHc0XuzwAegfGq6yMS4Lj6zxKI0AegobjTakfBCPg9pQd7eX1LgQrd
-         xMBpYRxBZVYj62iu0anu1stUPmcolcZAHCWKNJpbARvNUaH+fc35xxM7I3Yt4IwUUvRR
-         rwesoPHlHlZhH1/UZZh7o1p0OCpfOpb9AeDMonS+c+Ctd1WRXhaocdc9jc9Park4yxvN
-         dmRw==
-X-Gm-Message-State: AOAM531VWZUjC8XqH+rgUTY2oh0gX701SFifrvz95vlmpFPPylQNOwSS
-        /A35WsChzhYI3N2IMwO5LRI=
-X-Google-Smtp-Source: ABdhPJyjw14LkSCmfH9h0UQNf4VxXTyn4j1iRBH8nvcaFay3INl44MsKdkBKcIvVGJM9aWJQahycyA==
-X-Received: by 2002:adf:e942:: with SMTP id m2mr3446606wrn.123.1603470794154;
-        Fri, 23 Oct 2020 09:33:14 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id u15sm4334808wrm.77.2020.10.23.09.33.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 09:33:13 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org,
-        andy.shevchenko@gmail.com
-Subject: [PATCH v6 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
-Date:   Fri, 23 Oct 2020 18:32:56 +0200
-Message-Id: <20201023163256.96000-4-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201023163256.96000-1-kholk11@gmail.com>
-References: <20201023163256.96000-1-kholk11@gmail.com>
+        id S1752356AbgJWQio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:38:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S465672AbgJWQds (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:33:48 -0400
+Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0CECF24655;
+        Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603470827;
+        bh=nT+N+cDqRMSdMopYlBC9EqpjXb3tIbAp0+W/XgZ3fAY=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=MFanc/i1EBFbkN/NDUqHAK0tFpfQtmPXV1wdzzrGLfkfnjez1vBPm8ENrtO4+suSd
+         id9C4rPhvYVMEnzKV4VqgO3I/mNXI6nDbzp22JksIX82DFTnVYzciwtRcZC3Ph94WR
+         ptmM4fZTOCZT4SsBuA4Trvo50Bq02+vfyK/RUbrU=
+Received: from mchehab by mail.kernel.org with local (Exim 4.94)
+        (envelope-from <mchehab@kernel.org>)
+        id 1kW00e-002Avh-W7; Fri, 23 Oct 2020 18:33:45 +0200
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
+Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
+        James Morse <james.morse@arm.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Robert Richter <rric@kernel.org>,
+        Tony Luck <tony.luck@intel.com>, linux-edac@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 10/56] EDAC: fix some kernel-doc markups
+Date:   Fri, 23 Oct 2020 18:32:57 +0200
+Message-Id: <1d291393ba58c7b80908a3fedf02d2f53921ffe9.1603469755.git.mchehab+huawei@kernel.org>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Kernel-doc markup should use this format:
+        identifier - description
 
-Add binding for the Novatek NT36xxx series touchscreen driver.
+Also, some enums are using wrong names at the kernel-doc
+markup.
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+ drivers/edac/edac_device.h | 11 +++++------
+ include/linux/edac.h       |  4 ++--
+ 2 files changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-new file mode 100644
-index 000000000000..1486b20d6c49
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT36xxx series touchscreen controller Bindings
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    const: novatek,nt36525
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Power supply regulator for VDD pin
-+
-+  vio-supply:
-+    description: Power supply regulator on VDD-IO pin
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      touchscreen@62 {
-+        compatible = "novatek,nt36525";
-+        reg = <0x62>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-+        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-+
-+...
+diff --git a/drivers/edac/edac_device.h b/drivers/edac/edac_device.h
+index c4c0e0bdce14..f90cbbb2ff73 100644
+--- a/drivers/edac/edac_device.h
++++ b/drivers/edac/edac_device.h
+@@ -258,7 +258,7 @@ extern struct edac_device_ctl_info *edac_device_alloc_ctl_info(
+ extern void edac_device_free_ctl_info(struct edac_device_ctl_info *ctl_info);
+ 
+ /**
+- * edac_device_add_device: Insert the 'edac_dev' structure into the
++ * edac_device_add_device - Insert the 'edac_dev' structure into the
+  *	 edac_device global list and create sysfs entries associated with
+  *	 edac_device structure.
+  *
+@@ -271,9 +271,8 @@ extern void edac_device_free_ctl_info(struct edac_device_ctl_info *ctl_info);
+ extern int edac_device_add_device(struct edac_device_ctl_info *edac_dev);
+ 
+ /**
+- * edac_device_del_device:
+- *	Remove sysfs entries for specified edac_device structure and
+- *	then remove edac_device structure from global list
++ * edac_device_del_device - Remove sysfs entries for specified edac_device
++ * 	structure and then remove edac_device structure from global list
+  *
+  * @dev:
+  *	Pointer to struct &device representing the edac device
+@@ -286,7 +285,7 @@ extern int edac_device_add_device(struct edac_device_ctl_info *edac_dev);
+ extern struct edac_device_ctl_info *edac_device_del_device(struct device *dev);
+ 
+ /**
+- * Log correctable errors.
++ * edac_device_handle_ce_count - Log correctable errors.
+  *
+  * @edac_dev: pointer to struct &edac_device_ctl_info
+  * @inst_nr: number of the instance where the CE error happened
+@@ -299,7 +298,7 @@ void edac_device_handle_ce_count(struct edac_device_ctl_info *edac_dev,
+ 				 const char *msg);
+ 
+ /**
+- * Log uncorrectable errors.
++ * edac_device_handle_ue_count - Log uncorrectable errors.
+  *
+  * @edac_dev: pointer to struct &edac_device_ctl_info
+  * @inst_nr: number of the instance where the CE error happened
+diff --git a/include/linux/edac.h b/include/linux/edac.h
+index 15e8f3d8a895..52d7487f6bd4 100644
+--- a/include/linux/edac.h
++++ b/include/linux/edac.h
+@@ -229,7 +229,7 @@ enum mem_type {
+ #define MEM_FLAG_NVDIMM         BIT(MEM_NVDIMM)
+ 
+ /**
+- * enum edac-type - Error Detection and Correction capabilities and mode
++ * enum edac_type - Error Detection and Correction capabilities and mode
+  * @EDAC_UNKNOWN:	Unknown if ECC is available
+  * @EDAC_NONE:		Doesn't support ECC
+  * @EDAC_RESERVED:	Reserved ECC type
+@@ -309,7 +309,7 @@ enum scrub_type {
+ #define OP_OFFLINE		0x300
+ 
+ /**
+- * enum edac_mc_layer - memory controller hierarchy layer
++ * enum edac_mc_layer_type - memory controller hierarchy layer
+  *
+  * @EDAC_MC_LAYER_BRANCH:	memory layer is named "branch"
+  * @EDAC_MC_LAYER_CHANNEL:	memory layer is named "channel"
 -- 
-2.28.0
+2.26.2
 
