@@ -2,149 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D0D9296D55
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:06:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4C419296D53
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:06:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462763AbgJWLGW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:06:22 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54382 "EHLO
+        id S462752AbgJWLGO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:06:14 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54360 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462754AbgJWLGU (ORCPT
+        with ESMTP id S462620AbgJWLGN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:06:20 -0400
-Received: from mail-yb1-xb42.google.com (mail-yb1-xb42.google.com [IPv6:2607:f8b0:4864:20::b42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9B17AC0613CE;
-        Fri, 23 Oct 2020 04:06:18 -0700 (PDT)
-Received: by mail-yb1-xb42.google.com with SMTP id b138so870989yba.5;
-        Fri, 23 Oct 2020 04:06:18 -0700 (PDT)
+        Fri, 23 Oct 2020 07:06:13 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0850EC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 04:06:12 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id k3so1780309ejj.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 04:06:11 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=C6tDpxrPvO2txeQMW3b7anFd1euvgBbroarKLdTIHWM=;
-        b=j7PDDrCRZ2t5WLja4U6quYl4fuju83vmjbKBnpvVA6cJljlq1mlE0i1niPHbo2qgxU
-         814X6Vv8AeTdixMi9yTlQSi5Rv7g1rFKQ1HL3ggHq27n9XrtqnZEfK9y5p3BacGOo6/y
-         1UuVnbC/eSsnxHuizWwMZ/ySa+qUR3VpdswGI04kAOGTp5TSkRIfnc3+11MiF16DfHM4
-         ZOMEvQnBYS77OAicU+XKD1w6y7P/5KK66Cqni57M1kPwuqbwaWvU/eOdVj3tZd32ALS6
-         kuT/92r5Ti6JNtPg6UTGUsqAFQXBr9qaOIkniIBuv1D/E3p9Hhqk1wMiMvgf2CJ6a8Ji
-         8Gtg==
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=sa/Nn3ofOc6VafcCvPSadCW8GlnmiSqdzkE6Af70Ogk=;
+        b=YLru0Rw5qj+XYTVYL91y0RrrKzL0fGi2PV3nF3dBaQpU/q90mxcZBX2Kpt2aXElkW+
+         +GJGhNJ7VoiAyEk0fVCrpJc8R0FGGQ5mMgYW+8NZZ2SzNJq0CYTMDHY/izVpTGHtqV1P
+         DHsC2X5jlvWp4wsSA/i4okDx5R2MPsrfRHeR0=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=C6tDpxrPvO2txeQMW3b7anFd1euvgBbroarKLdTIHWM=;
-        b=Tj6B44/sE/XiesJeSWVOEhpLivjGYsx9u/zE+9WWemPk/OJT33Fq4W0ZICIwv+S3ne
-         /lfe32LqeJsxTG2fYccE6HxCnjuaUERWEG+9eeYoz9uf3RhsYmaK6rmGQHjAlQs9U8Gh
-         6NSK1KXM2PxojsSNRqY9f/9b2y35oC/+MS+bbr70ZC35B6NvIxFuF3sWfv7Uqw2WURdZ
-         W4iU2ncNRuG2mj/pJ3g2zvxne0rjtPkKwCXJbsiwIflth+vtGLvga9cfOfN7x9VK9Gl/
-         Am3tpogHYNRajKHiO6eQQ89Gi1IVV3zY92RnuCTaMHRuy+QZLZVhQY3okJffCP5Qegbh
-         DGRw==
-X-Gm-Message-State: AOAM5307tTIRx+vsjFKCz2wNUp/AxndJMy6UtmawxYBopOnXww4ZqOoV
-        45qOmzXziDY4Mfw+POr4QDm9GXH/+Afklf4+gcJXAOlnAQRr4Q==
-X-Google-Smtp-Source: ABdhPJytm7w35ctnRVaSIkSiRPwWwcD+5Re1wjcFIRqen5YATV77dN56tGqr5AUjCWK0sIuE4DgjeVCWOfSKQ6n2ma8=
-X-Received: by 2002:a25:41c9:: with SMTP id o192mr2410179yba.127.1603451177822;
- Fri, 23 Oct 2020 04:06:17 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=sa/Nn3ofOc6VafcCvPSadCW8GlnmiSqdzkE6Af70Ogk=;
+        b=fS0csYbPXksyzycQVu8c4BK57ukS81tKNXqtHIfiVhax87wlM9fPmGMYZXXyjBQPtb
+         LXbmCLvX9dzQ5aNNMSGWuqKX9qbrzBwBRfo1xqi5H1/U60pffHahY5ZT2MQoLfBfKAZV
+         UTtvG6enJzNoqL08W4izbAepwh8PCMwmxLPE/O6GbmtM/f1TjTAUBttuYpnVSWR8WSti
+         aGqnR/sN+SfygMXjE2oD/Tiof+/kvEQc4Opku2SVdcBEoz6Z8UNsVqVvEN0TtuuivrJn
+         NnqKZoo8+8iPlcCEOpGnw1lRiLgTtIpWNOCFtYTXpAVHcKXsWLX6dPmkVDhNFe1P2HcX
+         GsEA==
+X-Gm-Message-State: AOAM530hFiNEGGZApiDo17Jas2VVj44v/lcAY6uwbdvt3y3SIKGnCSlb
+        piNJqyz4uqy6xdqjjTmSVWtgeA==
+X-Google-Smtp-Source: ABdhPJw2fLLCK3gQbucoPr+cIfCcmX4tucFnbhPVvHDL5QD4i4LYyaC1LBo71kMyZyY1A8CSrMTmVA==
+X-Received: by 2002:a17:906:6d04:: with SMTP id m4mr1520328ejr.68.1603451170550;
+        Fri, 23 Oct 2020 04:06:10 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id f7sm645773ejz.23.2020.10.23.04.06.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 04:06:09 -0700 (PDT)
+Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
+To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        pmladek@suse.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, alexandre.belloni@bootlin.com,
+        gregkh@linuxfoundation.org, rdunlap@infradead.org,
+        idryomov@gmail.com, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+References: <20201022151349.47436-1-98.arpi@gmail.com>
+ <20201022191606.GQ4077@smile.fi.intel.com>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <0ab618c7-8c5c-00ae-8e08-0c1b99f3bf5c@rasmusvillemoes.dk>
+Date:   Fri, 23 Oct 2020 13:06:07 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201016121709.8447-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201016121709.8447-5-prabhakar.mahadev-lad.rj@bp.renesas.com> <CAMuHMdVPfoU_X3A4ioy9TeJHmovE5P=fDYpShsWTzFYXmZoiww@mail.gmail.com>
-In-Reply-To: <CAMuHMdVPfoU_X3A4ioy9TeJHmovE5P=fDYpShsWTzFYXmZoiww@mail.gmail.com>
-From:   "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date:   Fri, 23 Oct 2020 12:05:51 +0100
-Message-ID: <CA+V-a8tX0qxFyf85QAC0h2t-s2Uo3EiQvJz2PU0+vw=ov1d2rA@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: renesas: r8a774c0: Add RPC clocks
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201022191606.GQ4077@smile.fi.intel.com>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Geert,
+On 22/10/2020 21.16, Andy Shevchenko wrote:
+> On Thu, Oct 22, 2020 at 08:43:49PM +0530, Arpitha Raghunandan wrote:
+>> Convert test lib/test_printf.c to KUnit. More information about
+>> KUnit can be found at:
+>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
+>> KUnit provides a common framework for unit tests in the kernel.
+>> KUnit and kselftest are standardizing around KTAP, converting this
+>> test to KUnit makes this test output in KTAP which we are trying to
+>> make the standard test result format for the kernel. More about
+>> the KTAP format can be found at:
+>> https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
+>> I ran both the original and converted tests as is to produce the
+>> output for success of the test in the two cases. I also ran these
+>> tests with a small modification to show the difference in the output
+>> for failure of the test in both cases. The modification I made is:
+>> - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+>> + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
+>>
+>> Original test success:
+>> [    0.591262] test_printf: loaded.
+>> [    0.591409] test_printf: all 388 tests passed
+>>
+>> Original test failure:
+>> [    0.619345] test_printf: loaded.
+>> [    0.619394] test_printf: vsnprintf(buf, 256, "%piS|%pIS", ...)
+>> wrote '127.000.000.001|127.0.0.1', expected
+>> '127-000.000.001|127.0.0.1'
+>> [    0.619395] test_printf: vsnprintf(buf, 25, "%piS|%pIS", ...) wrote
+>> '127.000.000.001|127.0.0.', expected '127-000.000.001|127.0.0.'
+>> [    0.619396] test_printf: kvasprintf(..., "%piS|%pIS", ...) returned
+>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+>> [    0.619495] test_printf: failed 3 out of 388 tests
+>>
+>> Converted test success:
+>>     # Subtest: printf-kunit-test
+>>     1..1
+>>     ok 1 - selftest
+>> ok 1 - printf-kunit-test
+>>
+>> Converted test failure:
+>>     # Subtest: printf-kunit-test
+>>     1..1
+>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
+>> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
+>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
+>> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
+>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
+>> kvasprintf(..., "%pi4|%pI4", ...) returned
+>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+>>     not ok 1 - selftest
+>> not ok 1 - printf-kunit-test
+> 
+> Not bad. Rasmus, what do you think?
 
-Thank you for the review.
+Much better, but that '1..1' and reporting the entire test suite as 1
+single (failing or passing) test is (also) a regression. Look at the
+original
 
-On Thu, Oct 22, 2020 at 3:09 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
->
-> Hi Prabhakar,
->
-> On Fri, Oct 16, 2020 at 2:17 PM Lad Prabhakar
-> <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-> > as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
-> > driver.
-> >
-> > Inspired by commit 94e3935b5756 ("clk: renesas: r8a77980: Add RPC clocks").
-> >
-> > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
->
-> Thanks for your patch!
->
-> > --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> > +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> > @@ -73,6 +74,12 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
-> >         DEF_FIXED(".s2",       CLK_S2,             CLK_PLL1,       4, 1),
-> >         DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
-> >         DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
-> > +       DEF_BASE(".rpcsrc",    CLK_RPCSRC, CLK_TYPE_GEN3_RPCSRC, CLK_PLL1),
-> > +
-> > +       DEF_BASE("rpc",        R8A774C0_CLK_RPC, CLK_TYPE_GEN3_RPC,
-> > +                CLK_RPCSRC),
-> > +       DEF_BASE("rpcd2",      R8A774C0_CLK_RPCD2, CLK_TYPE_GEN3_RPCD2,
-> > +                R8A774C0_CLK_RPC),
-> >
-> >         DEF_DIV6_RO(".r",      CLK_RINT,           CLK_EXTAL, CPG_RCKCR, 32),
-> >
->
-> > @@ -275,6 +283,10 @@ static int __init r8a774c0_cpg_mssr_init(struct device *dev)
-> >         return rcar_gen3_cpg_init(cpg_pll_config, 0, cpg_mode);
-> >  }
-> >
-> > +static const struct clk_div_table cpg_rpcsrc_div_table[] = {
-> > +       { 0, 5 }, { 1, 3 }, { 2, 8 }, {3, 2}, {0, 0},
-> > +};
->
-> The above models RPCSRC as a clock generated by dividing PLL1 by either
-> 5, 3, 8, or 2.  This does not match the hardware user's manual, which
-> states that RPCSRC is either PLL1 divided by 5 or 3, or PLL0 divided by
-> 8 or 2.
->
-Oops I completely missed that.
+>> [    0.591409] test_printf: all 388 tests passed
 
-But as per the manual (R-Car manual Rev.2.20) which I am referring to
-5, 3 and 2 are sourced from PLL1 and 5/8 (ie D3/E3) are sourced from
-PLL0.
+or
 
-> I think you need a new clock type (CLK_TYPE_GEN3E_RPCSRC, as it applies
-> to RZ/G2E, and R-Car E3?), which registers a composite clock consisting
-> of a mux and divider.  This is a bit similar to the RPC/RPCD2 clocks,
-> which are composite clocks consisting of a divider and a gate.
->
-atm rcar_gen3_cpg_clk_register() only supports single parent, so if I
-am getting it right you mean I need to add two separate entries for
-RPSRC  one with PLL0 and one with PLL1 ?
+>> [    0.619495] test_printf: failed 3 out of 388 tests
 
-> Note that R-Car D3 is similar, except that PLL0 is divided by 5 or 2, which
-> means yet another clock type (and div_table).
->
-I'm a bit confused here for D3 PLL0 is divided by 5 (n=5) ?
+That's far more informative, and I'd prefer if the summary information
+(whether in the all-good case or some-failing) included something like
+this. In particular, I have at some point spotted that I failed to
+properly hook up a new test case (or perhaps failed to re-compile, or
+somehow still ran the old kernel binary, don't remember which it was) by
+noticing that the total number of tests hadn't increased. The new output
+would not help catch such PEBKACs.
 
-Cheers,
-Prabhakar
-
-> Gr{oetje,eeting}s,
->
->                         Geert
->
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
->
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
->                                 -- Linus Torvalds
+Rasmus
