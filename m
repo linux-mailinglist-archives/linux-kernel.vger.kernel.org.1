@@ -2,75 +2,187 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E67AA2975E8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:40:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CFDE52975EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:42:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753661AbgJWRkZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:40:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59508 "EHLO
+        id S462007AbgJWRmL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:42:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59784 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753654AbgJWRkY (ORCPT
+        with ESMTP id S461796AbgJWRmL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:40:24 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2B56C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:40:24 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id r3so1245412plo.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:40:24 -0700 (PDT)
+        Fri, 23 Oct 2020 13:42:11 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E728AC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:42:10 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id i26so1467988pgl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:42:10 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=99DVFI2Yq/R6a6ntok28QqPAZDkallXtdfQ5cTK1JxI=;
-        b=I+z3shC76iB8Z8ke/TS1EVyKE8lmQEFQO1h4BbCSODPNuOrRG8hWWTFeLceK1KxiRr
-         QE1Wk1EUtyDYRMbni55MoR1wXRzY9kOx5VYS7uJDQNyzxciAhDCkM9xRx+THnHNziua/
-         17dTOVkdkeuVu1yj0YHbROYRd2TBWUIEOlh0A=
+        d=broadcom.com; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to;
+        bh=EN8OgzabuZFik0SqD18wVWHgK4DR83469YZvxuflHEQ=;
+        b=EHwJ6Ojdnw47GSwrlggiv71JzixMhJmZdpeyVca4m+A8IuODUzlAopWkeuB48sSwOC
+         otsyiZAX1hDyq2ePBegeD94Mmr5UltGBGd6qV1NGJ0aHV8u/wU6C+y7fX6zuZWBMcL6P
+         wBUVsRT0iP2LcLNExehd9SrzLnc33HXGruBtY=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=99DVFI2Yq/R6a6ntok28QqPAZDkallXtdfQ5cTK1JxI=;
-        b=py43XG/GxTiEUvVIHXhMUkszZsiVpAPbHqdtbLyQlsqbKDtK8kVd1LgEMUaiir5IDd
-         4kPLJrnQlnclG1t+td8DvrZSyA4Sw0vHBbbjs7IkX032oUdSJcua1j8LzNPBVCy8yWKO
-         Kg4PiqcHIermmWM9VvGkn9gx9ivs10Ct4g5UoPzbAuXrzSeihktyQ3rWxQQH8Te/nmAJ
-         CbB/kP2U8B+wqAritkktp6eO8f7YKu9CwpURRRqWy+LDHDN0YHW9sEZvbg1ZEjKWxCOD
-         3Jpj6YO7bsa9jxxUBNkpcOCS75u/m42qVL/CbpCTGH2mxEUWrnQphCpB4LPNxTsqBpDM
-         I0bQ==
-X-Gm-Message-State: AOAM53311b3teTgStwujxdN3bUwv40+ovbgFelueGes0iF6HZOPM0t99
-        E08y/HeJtWoOjQ9Z0zqbMKAAfg==
-X-Google-Smtp-Source: ABdhPJwbgpR5Deyo7oPN3KlpdN7ivxAnUNFkd6aQUNjY1w+4J2kK+WD8RMq6M5ii++eBGMoY7xDnJw==
-X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id d10-20020a170902aa8ab02900d3c9dd77d1mr48509plr.0.1603474824401;
-        Fri, 23 Oct 2020 10:40:24 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id v6sm3278997pjh.10.2020.10.23.10.40.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 10:40:23 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 10:40:22 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Anton Vorontsov <anton@enomsg.org>,
-        Colin Cross <ccross@android.com>,
-        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 37/56] pstore/zone: fix a kernel-doc markup
-Message-ID: <202010231040.0FD31DA7@keescook>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <576a3e3c27b84d0e36ced89840872ec3f251b2b2.1603469755.git.mchehab+huawei@kernel.org>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to;
+        bh=EN8OgzabuZFik0SqD18wVWHgK4DR83469YZvxuflHEQ=;
+        b=Xp46Vbm1Jhxk8ELffIhwdHJGyyhfpfmzLU86DVgxAlKfZWzfrR99hg1vYhZ3KR/hdl
+         zf6qP6FV48wqK229IGzb+Et1pNZdSV+4dyS2TErjUyoASzt5BV/7SiCqcYGN8JhWifUQ
+         OnS7FZQ1UM/ZXFVRc1BCJlCcd6ruGvQquxNqXymjfrWVRqrJ7ZW1PIGxCCaI/+ZoeqYA
+         tsFSnGNdF6rd1/ZOjvz/3n9Igs85nmxSG6xoVvCxskMQHSnqba2GZMc2t5A9ZaMjKhVx
+         igagxoJGRza3KDCe8X6lp7v3lLD+rlrnyW7NCnFaLEZAVI/I6xQYpQKtziI6E7eE8UFN
+         nVgQ==
+X-Gm-Message-State: AOAM532Snxy5+ArOw20aP8LPePKTsNL3keWqs+SqiU7Zz6IAWhXu6HI+
+        ELJsg++R3agOUlISKx3WTI84eg==
+X-Google-Smtp-Source: ABdhPJxFYLcjOeA/3lJQerAi8IO/ZOsJRnDcUjPxifGN2s0ETk832kwXGsyuAM3ZzzWhX7D4RCHJCg==
+X-Received: by 2002:aa7:9201:0:b029:156:1a1f:5291 with SMTP id 1-20020aa792010000b02901561a1f5291mr283815pfo.13.1603474929874;
+        Fri, 23 Oct 2020 10:42:09 -0700 (PDT)
+Received: from [10.230.182.181] ([192.19.224.250])
+        by smtp.gmail.com with ESMTPSA id u65sm2719177pfc.11.2020.10.23.10.42.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 10:42:09 -0700 (PDT)
+Subject: Re: [PATCH v1 6/6] i2c: iproc: handle rx fifo full interrupt
+To:     Dhananjay Phadke <dphadke@linux.microsoft.com>,
+        rayagonda.kokatanur@broadcom.com
+Cc:     andriy.shevchenko@linux.intel.com,
+        bcm-kernel-feedback-list@broadcom.com, brendanhiggins@google.com,
+        f.fainelli@gmail.com, linux-arm-kernel@lists.infradead.org,
+        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org,
+        lori.hikichi@broadcom.com, rjui@broadcom.com,
+        sbranden@broadcom.com, wsa@kernel.org
+References: <20201011182254.17776-7-rayagonda.kokatanur@broadcom.com>
+ <20201011182254.17776-7-rayagonda.kokatanur@broadcom.com>
+From:   Ray Jui <ray.jui@broadcom.com>
+Message-ID: <e9d15e5a-e868-baff-177f-81aa1d742ff1@broadcom.com>
+Date:   Fri, 23 Oct 2020 10:42:04 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <576a3e3c27b84d0e36ced89840872ec3f251b2b2.1603469755.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20201011182254.17776-7-rayagonda.kokatanur@broadcom.com>
+Content-Type: multipart/signed; protocol="application/pkcs7-signature"; micalg=sha-256;
+        boundary="000000000000a73fe005b25a198f"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:33:24PM +0200, Mauro Carvalho Chehab wrote:
-> The documented struct is psz_head and not psz_buffer.
+--000000000000a73fe005b25a198f
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+
+
+
+On 10/12/2020 3:03 PM, Dhananjay Phadke wrote:
+> From: Rayagonda Kokatanur <rayagonda.kokatanur@broadcom.com>
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> On Sun, 11 Oct 2020 23:52:54 +0530, Rayagonda Kokatanur wrote:
+>> Add code to handle IS_S_RX_FIFO_FULL_SHIFT interrupt to support
+>> master write request with >= 64 bytes.
+>>
+>> Iproc has a slave rx fifo size of 64 bytes.
+>> Rx fifo full interrupt (IS_S_RX_FIFO_FULL_SHIFT) will be generated
+>> when RX fifo becomes full. This can happen if master issues write
+>> request of more than 64 bytes.
+>>
+> 
+> ARM cores run much faster than I2C bus, why would rx fifo go full when
+> rx interrupt is enabled and bytes are read out by bus driver isr?
+> Isn't fifo read pointer updated on these byte reads?
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Hi Rayagonda,
 
--- 
-Kees Cook
+Could you please reply on this question? For transactions > 64 bytes, do
+we batch until RX FIFO is full before we read out the data?
+
+Thanks,
+
+Ray
+
+> Does controller stretch clock when rx fifo is full (e.g. kernel has
+> crashed, bus driver isn't draining fifo)?
+> 
+
+--000000000000a73fe005b25a198f
+Content-Type: application/pkcs7-signature; name="smime.p7s"
+Content-Transfer-Encoding: base64
+Content-Disposition: attachment; filename="smime.p7s"
+Content-Description: S/MIME Cryptographic Signature
+
+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
+Gp3tsmw0Vz7IMJs6DQIm7T8CfIzeId1IIHcH02MbpO7m1Btzyz625FoBWF8CAwEAAaOCAcswggHH
+MA4GA1UdDwEB/wQEAwIFoDCBngYIKwYBBQUHAQEEgZEwgY4wTQYIKwYBBQUHMAKGQWh0dHA6Ly9z
+ZWN1cmUuZ2xvYmFsc2lnbi5jb20vY2FjZXJ0L2dzcGVyc29uYWxzaWduMnNoYTJnM29jc3AuY3J0
+MD0GCCsGAQUFBzABhjFodHRwOi8vb2NzcDIuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24y
+c2hhMmczME0GA1UdIARGMEQwQgYKKwYBBAGgMgEoCjA0MDIGCCsGAQUFBwIBFiZodHRwczovL3d3
+dy5nbG9iYWxzaWduLmNvbS9yZXBvc2l0b3J5LzAJBgNVHRMEAjAAMEQGA1UdHwQ9MDswOaA3oDWG
+M2h0dHA6Ly9jcmwuZ2xvYmFsc2lnbi5jb20vZ3NwZXJzb25hbHNpZ24yc2hhMmczLmNybDAfBgNV
+HREEGDAWgRRyYXkuanVpQGJyb2FkY29tLmNvbTATBgNVHSUEDDAKBggrBgEFBQcDBDAfBgNVHSME
+GDAWgBRpcoJiMWeVRIV3kYDEBDZJnXsLYTAdBgNVHQ4EFgQUvUTLkCwFvnpejW/KGvdaDA31b+sw
+DQYJKoZIhvcNAQELBQADggEBACMny/9Y1OPK7qwiBKBMt478eBgXnTlJ0J0HNebYcxN/l7fKIKMb
+/eX/AQKIDsHeshmV2ekPU4yY/04veXx3QTgmE1bb4ksKEFEbU0LXlVPrnlgNn8M75cPymegn/2yU
+r1+htd2eve3obmKc5Lrl0GP+4m72XxAOL687Aw5vRa4Lf294s+x4d+VRwUjoFTj9zyLhexWQuJv/
+yX1HjSkrlIsRwi6DN0/ieL04O9aD1UNPlCC6akGnv4tgwlESh51M564qhonlfSW6La+L/aTIuQc0
+88lq8s/VMBBGdc7176/v5TbNwEC/c5QYbp2n76rAmKKjhjwWmBk64yLT7CoIxk0xggJvMIICawIB
+ATBtMF0xCzAJBgNVBAYTAkJFMRkwFwYDVQQKExBHbG9iYWxTaWduIG52LXNhMTMwMQYDVQQDEypH
+bG9iYWxTaWduIFBlcnNvbmFsU2lnbiAyIENBIC0gU0hBMjU2IC0gRzMCDCUMagLNLily51ao1jAN
+BglghkgBZQMEAgEFAKCB1DAvBgkqhkiG9w0BCQQxIgQgPBruO3nO+9aalxly96Lt8kte3ro/L1oD
+nrWMi71CPKEwGAYJKoZIhvcNAQkDMQsGCSqGSIb3DQEHATAcBgkqhkiG9w0BCQUxDxcNMjAxMDIz
+MTc0MjEwWjBpBgkqhkiG9w0BCQ8xXDBaMAsGCWCGSAFlAwQBKjALBglghkgBZQMEARYwCwYJYIZI
+AWUDBAECMAoGCCqGSIb3DQMHMAsGCSqGSIb3DQEBCjALBgkqhkiG9w0BAQcwCwYJYIZIAWUDBAIB
+MA0GCSqGSIb3DQEBAQUABIIBAD+9h8+EXjlVaGQms58Wb7lObZobvBwGCkdFyEbq/poOwun0m3HB
+5iSphi3Kl6viPa6FIYOL3Mq9nYH2UgRgSHki6Ypo30hDoZLd/oGo8RpHZGfiKgGwP7lTPwC1vLFA
+CRO1jY5BIySNaW2WzQu2o/JFu57+kicB2oj+L5UC1sSV7Ws+Dg394WzfgffOtNbt0dmxngucCrXo
+UKkaHRCSuHkx3lFW3xQ6fxnpUVVFqOLXVlkYEIGy1vJ4MYbDNMmnTaJhDnaNwfyj+8hrf+4Kh62x
+QalhKwVyEmrjNarl0OyEtNfPRxqEjEBbKr+rSx6gqvsj4VI9Lqls+H3NWSW16Nk=
+--000000000000a73fe005b25a198f--
