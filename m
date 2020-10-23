@@ -2,123 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8CE9296A9D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:50:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 725A4296AA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375918AbgJWHuK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 03:50:10 -0400
-Received: from mail.cn.fujitsu.com ([183.91.158.132]:8343 "EHLO
-        heian.cn.fujitsu.com" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S375898AbgJWHuI (ORCPT
+        id S375929AbgJWHuR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:50:17 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:38709 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S375898AbgJWHuP (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:50:08 -0400
-X-IronPort-AV: E=Sophos;i="5.77,407,1596470400"; 
-   d="scan'208";a="100439341"
-Received: from unknown (HELO cn.fujitsu.com) ([10.167.33.5])
-  by heian.cn.fujitsu.com with ESMTP; 23 Oct 2020 15:50:01 +0800
-Received: from G08CNEXMBPEKD04.g08.fujitsu.local (unknown [10.167.33.201])
-        by cn.fujitsu.com (Postfix) with ESMTP id 9C9E14CE1A07;
-        Fri, 23 Oct 2020 15:50:00 +0800 (CST)
-Received: from [10.167.225.206] (10.167.225.206) by
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201) with Microsoft SMTP Server
- (TLS) id 15.0.1497.2; Fri, 23 Oct 2020 15:50:00 +0800
-Subject: Re: [PATCH v2] fs: Handle I_DONTCACHE in iput_final() instead of
- generic_drop_inode()
-To:     <viro@zeniv.linux.org.uk>
-CC:     <linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-        <david@fromorbit.com>, <linux-xfs@vger.kernel.org>,
-        <y-goto@fujitsu.com>, "Ira Weiny" <ira.weiny@intel.com>
-References: <20200904075939.176366-1-lihao2018.fnst@cn.fujitsu.com>
- <20200908230331.GF1930795@iweiny-DESK2.sc.intel.com>
-From:   "Li, Hao" <lihao2018.fnst@cn.fujitsu.com>
-Message-ID: <f1d1a56f-caec-3c68-6c70-1b6f995cab95@cn.fujitsu.com>
-Date:   Fri, 23 Oct 2020 15:49:59 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        Fri, 23 Oct 2020 03:50:15 -0400
+Received: by mail-oi1-f195.google.com with SMTP id h10so935428oie.5;
+        Fri, 23 Oct 2020 00:50:14 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=NEFKGMFztXrtLM7V+Dzt+kj+SJdV5KpwZ6Pprgtcfz8=;
+        b=JAuBx7yU6WjnskNrbWTanGcCe0Rmn/8QOFScmXFf2534cpKKS6vTVZn1f5TUT+aVYi
+         HACqAZ7GpVCWyH6xd2GxE0dRLchPY/u1PrzWsPF4VgjowakX5nToEfO7sIGXAQdABFyr
+         HMPnzftJOikqyMkKhPB2sPSmqlD9OkLmfKvbyKRUfWN8gBRFCXPI3zVxMzR2tvPTji41
+         7sY70l7lriIjmROjgOrYCsxVpuxywkSnW4/w1PAvbVpLfovY8JFiqGCvPsvUQq4djpr8
+         NGn/Do0EG8TxqV5LyNWPZ133IJHhAH4cd/sr+Rt86vqnEv2a1BhZnv1pGtj9EFHNzVB5
+         QJdQ==
+X-Gm-Message-State: AOAM531I1axWizeHsl0WimwQchUpbnr2blY/J4z240mSL+RvDlnwaMj+
+        lgBm6VItRilrXtdiNBgzwTEKbyMz+D8r2VgRu8U=
+X-Google-Smtp-Source: ABdhPJxiu7QCXa82UKjRREGTfH8LGAKF/rOF0/sI6lMPX0airvcxDQe5I4HNnayWH0c+Sqy1hDiLvce45ZUPmOVmCoo=
+X-Received: by 2002:aca:f203:: with SMTP id q3mr715940oih.148.1603439414434;
+ Fri, 23 Oct 2020 00:50:14 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20200908230331.GF1930795@iweiny-DESK2.sc.intel.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-Originating-IP: [10.167.225.206]
-X-ClientProxiedBy: G08CNEXCHPEKD06.g08.fujitsu.local (10.167.33.205) To
- G08CNEXMBPEKD04.g08.fujitsu.local (10.167.33.201)
-X-yoursite-MailScanner-ID: 9C9E14CE1A07.AB7FC
-X-yoursite-MailScanner: Found to be clean
-X-yoursite-MailScanner-From: lihao2018.fnst@cn.fujitsu.com
-X-Spam-Status: No
+References: <20201020125134.22625-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201020125134.22625-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201020125134.22625-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 23 Oct 2020 09:50:03 +0200
+Message-ID: <CAMuHMdWM8uh3Rm4ghn94ZwkTE6rjOmHAThYCL_oh3=Fg+OpHgA@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] arm64: dts: renesas: Add support for MIPI Adapter
+ V2.1 connected to HiHope RZ/G2M
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Geert Uytterhoeven <geert+renesas@glider.be>,
+        Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+Hi Prabhakar,
 
-Ping.
-
-This patch need to be merged... Thanks.
-
-On 2020/9/9 7:03, Ira Weiny wrote:
-> On Fri, Sep 04, 2020 at 03:59:39PM +0800, Hao Li wrote:
->> If generic_drop_inode() returns true, it means iput_final() can evict
->> this inode regardless of whether it is dirty or not. If we check
->> I_DONTCACHE in generic_drop_inode(), any inode with this bit set will be
->> evicted unconditionally. This is not the desired behavior because
->> I_DONTCACHE only means the inode shouldn't be cached on the LRU list.
->> As for whether we need to evict this inode, this is what
->> generic_drop_inode() should do. This patch corrects the usage of
->> I_DONTCACHE.
->>
->> This patch was proposed in [1].
->>
->> [1]: https://lore.kernel.org/linux-fsdevel/20200831003407.GE12096@dread.disaster.area/
->>
->> Fixes: dae2f8ed7992 ("fs: Lift XFS_IDONTCACHE to the VFS layer")
->> Signed-off-by: Hao Li <lihao2018.fnst@cn.fujitsu.com>
-> Reviewed-by: Ira Weiny <ira.weiny@intel.com>
+On Tue, Oct 20, 2020 at 2:52 PM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add support for AISTARVISION MIPI Adapter V2.1 board connected to HiHope
+> RZ/G2M board.
 >
->> ---
->> Changes in v2:
->>  - Adjust code format
->>  - Add Fixes tag in commit message
->>
->>  fs/inode.c         | 4 +++-
->>  include/linux/fs.h | 3 +--
->>  2 files changed, 4 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/inode.c b/fs/inode.c
->> index 72c4c347afb7..19ad823f781c 100644
->> --- a/fs/inode.c
->> +++ b/fs/inode.c
->> @@ -1625,7 +1625,9 @@ static void iput_final(struct inode *inode)
->>  	else
->>  		drop = generic_drop_inode(inode);
->>  
->> -	if (!drop && (sb->s_flags & SB_ACTIVE)) {
->> +	if (!drop &&
->> +	    !(inode->i_state & I_DONTCACHE) &&
->> +	    (sb->s_flags & SB_ACTIVE)) {
->>  		inode_add_lru(inode);
->>  		spin_unlock(&inode->i_lock);
->>  		return;
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index e019ea2f1347..93caee80ce47 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -2922,8 +2922,7 @@ extern int inode_needs_sync(struct inode *inode);
->>  extern int generic_delete_inode(struct inode *inode);
->>  static inline int generic_drop_inode(struct inode *inode)
->>  {
->> -	return !inode->i_nlink || inode_unhashed(inode) ||
->> -		(inode->i_state & I_DONTCACHE);
->> +	return !inode->i_nlink || inode_unhashed(inode);
->>  }
->>  extern void d_mark_dontcache(struct inode *inode);
->>  
->> -- 
->> 2.28.0
->>
->>
->>
->
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
+
+Thanks for your patch!
+
+> --- a/arch/arm64/boot/dts/renesas/Makefile
+> +++ b/arch/arm64/boot/dts/renesas/Makefile
+> @@ -6,6 +6,7 @@ dtb-$(CONFIG_ARCH_R8A774A1) += r8a774a1-hihope-rzg2m-ex-idk-1110wr.dtb
+>  dtb-$(CONFIG_ARCH_R8A774A1) += r8a774a1-hihope-rzg2m-rev2.dtb
+>  dtb-$(CONFIG_ARCH_R8A774A1) += r8a774a1-hihope-rzg2m-rev2-ex.dtb
+>  dtb-$(CONFIG_ARCH_R8A774A1) += r8a774a1-hihope-rzg2m-rev2-ex-idk-1110wr.dtb
+> +dtb-$(CONFIG_ARCH_R8A774A1) += r8a774a1-hihope-rzg2m-ex-mipi-2.1.dtb
+
+I'll fix sort order while applying...
+
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
+i.e. will queue in renesas-devel for v5.11.
+
+Gr{oetje,eeting}s,
+
+                        Geert
 
 
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
