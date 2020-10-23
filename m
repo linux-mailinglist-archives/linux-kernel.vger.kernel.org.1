@@ -2,89 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57F202967EA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:27:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0F3F32967EF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:30:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373769AbgJWA1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 20:27:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41078 "EHLO
+        id S373790AbgJWAav (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:30:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41578 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S368640AbgJWA1g (ORCPT
+        with ESMTP id S373783AbgJWAau (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 20:27:36 -0400
-Received: from mail-oo1-xc42.google.com (mail-oo1-xc42.google.com [IPv6:2607:f8b0:4864:20::c42])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AC69EC0613CE;
-        Thu, 22 Oct 2020 17:27:34 -0700 (PDT)
-Received: by mail-oo1-xc42.google.com with SMTP id w7so832384oow.7;
-        Thu, 22 Oct 2020 17:27:34 -0700 (PDT)
+        Thu, 22 Oct 2020 20:30:50 -0400
+Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1397EC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:30:49 -0700 (PDT)
+Received: by mail-lf1-x144.google.com with SMTP id d24so4479514lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:30:48 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=linux-foundation.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=aQvNC1AmdgK5p6sZekOtJZt51bCkVEXa3LYTnENoFbQ=;
-        b=j/oembIxbDWcajp2t7dd3nEwj4jRNjOYac/qtsl5+J98FasO733144KtnXcNV4hkD1
-         6oFSy0P3LS+70WQ+SDVB8+lncYVi5K9DixOD83J/+Mrpafj4MRuGjKd0MZOhQdTIDjtM
-         Pakpcx020jNkzcPPteQP8VWd0dZDfhelPxcNKjWcAA04SAhMIQv5FRLzeVVveoYbxbFQ
-         sb0N9xUWsXKRabZWVpTP/Ri9DHYGu7EBlgq9cEeRBSs9Wiv5VQ8v4z+kSl8eOJHXgdL5
-         xBuW2yu3cY0TNrp6VmLurE+8Z/sAPihymJXmRvr0NiqqRU4fF6OU1hvtnoKY5CTtRCBg
-         w/Kw==
+        bh=EKRAxIo6c5FisvVeBU9yqsWIDr+qdhruysORLXOncrM=;
+        b=bS2jLvh7vQ7kVcl9lNidPdK72YodR3TdlvHITcAlNYbV1H5WvtWBHkH3n72zN5qksn
+         hhTGaYZupVEqQDijLXzlvu27kjGqNTTSQHebcdWKhIDs1IxhBoQmiF2fzAUbTd+hIJwi
+         P6mCkiBawvH/9GPgqnfBayA/RDSiwcxFNhm+8=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=aQvNC1AmdgK5p6sZekOtJZt51bCkVEXa3LYTnENoFbQ=;
-        b=Zz/PWExoMV5fBYO917Cd2OUwYHcs9t5GhBpfzRo4hqVPtod3ZQ5o72ZnYR/FbkG1aA
-         6yROqnm8nfO5GwafyAsG8wBgGSTMYlXJ7F9RRsrDrh+zz6A35+I7YBRi/cpcro6/ViJL
-         iGUh2eZ7LTuP/zpOeqIfvqUO9fmQKbuNCC5RDsRAC6z6oja7c+g83yCeHJkvCXcktqh+
-         8HToQFebRwrhVXLxsbG5PAbKujC1G6cK5mivxIRiIAmu+WyuApZXO3yLMpHSwvq8dnHn
-         FDXkCZE02Yq6s1xVjW7iBQVKI/kzzE/KikLraYYALgVPNvIEmT35T7yapj/UXlOIqGcF
-         I0vg==
-X-Gm-Message-State: AOAM533dYDIe1qHPuC9z2ia1T99v+v7AKA/aJ3rD3rlK6qkLDG3p9gsY
-        G6/LC3rWmsToMa/8xOlzwZfPBJnO/DWtrB8YzGk=
-X-Google-Smtp-Source: ABdhPJxRLlSCqeLv9Lsgex1OW0di1q8rB15SfjyqpDEqTmQstsheD9F7BziiTHPf8oAeJ2qkczHJDTYAGWydv8UCWo0=
-X-Received: by 2002:a4a:c54:: with SMTP id n20mr3791479ooe.66.1603412853740;
- Thu, 22 Oct 2020 17:27:33 -0700 (PDT)
+        bh=EKRAxIo6c5FisvVeBU9yqsWIDr+qdhruysORLXOncrM=;
+        b=Bi3un9MJ+KbpmtOCRh+aPndM48G1CILt30W58lchPco0HzPES1qrNmZNr20WurOdsV
+         4Pn+HPzy60t7km0mfxxqi3bLodr3f5693/1v3sx7juz6qi7Xq9X0Y5QmdUfdqFt9f14B
+         2opSawktiOhgUYyz9kSkoaiD//WBmA0v4h2V1FH/OAptRd2eWQYXRCOa1bGOGIPb1A7q
+         bPFlBN1Li8JqWSh+dIFxQ7ZnygyeD389VOlesBKGycp9BC2z4ysgb2Vp/2OwqdV/apuq
+         3CgceI1fnX0F/PZeL3aIqM42DeNH5ymcyo67XckDoHkbgFHsoy58sQ/2P33XvJ0QE5Kv
+         7AjA==
+X-Gm-Message-State: AOAM532EdetzKugriBL9LN+Fc5KINVsN/v0onKEscJRjqj/AREB2Lf4g
+        vfm0h3+8SO7ozBCL4JxUzGdhhpqmBFZ64w==
+X-Google-Smtp-Source: ABdhPJxJSxTC2iclUu0yk1rjd/m3yhw9TRy2Tv0JOL+FrvE3tG3X/PzN2tCYSeI2P11Xw/EauGS39Q==
+X-Received: by 2002:ac2:52b9:: with SMTP id r25mr1552625lfm.274.1603413047272;
+        Thu, 22 Oct 2020 17:30:47 -0700 (PDT)
+Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com. [209.85.167.53])
+        by smtp.gmail.com with ESMTPSA id i139sm414426lfi.276.2020.10.22.17.30.46
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 17:30:46 -0700 (PDT)
+Received: by mail-lf1-f53.google.com with SMTP id d24so4479479lfa.8
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:30:46 -0700 (PDT)
+X-Received: by 2002:a05:651c:503:: with SMTP id o3mr1747084ljp.421.1603412592176;
+ Thu, 22 Oct 2020 17:23:12 -0700 (PDT)
 MIME-Version: 1.0
-References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com> <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
-In-Reply-To: <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
-From:   Wanpeng Li <kernellwp@gmail.com>
-Date:   Fri, 23 Oct 2020 08:27:21 +0800
-Message-ID: <CANRm+CxDBHnz1crs8_Lkb6-KRHCSwjk6bEMz3n2FwDs2ypbhQw@mail.gmail.com>
-Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, kvm <kvm@vger.kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com> <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+In-Reply-To: <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 22 Oct 2020 17:22:56 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgeHE7AS2Q4kPrkC5dMqfx_6+E84+FcEDYJSTugxqivUA@mail.gmail.com>
+Message-ID: <CAHk-=wgeHE7AS2Q4kPrkC5dMqfx_6+E84+FcEDYJSTugxqivUA@mail.gmail.com>
+Subject: Re: mmstress[1309]: segfault at 7f3d71a36ee8 ip 00007f3d77132bdf sp
+ 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        X86 ML <x86@kernel.org>, LTP List <ltp@lists.linux.it>,
+        lkft-triage@lists.linaro.org,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        linux-mm <linux-mm@kvack.org>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        zenglg.jy@cn.fujitsu.com, Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        Dmitry Vyukov <dvyukov@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 at 21:02, Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Thu, Oct 22, 2020 at 5:11 PM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On 22/10/20 03:34, Wanpeng Li wrote:
-> > From: Wanpeng Li <wanpengli@tencent.com>
-> >
-> > Per KVM_GET_SUPPORTED_CPUID ioctl documentation:
-> >
-> > This ioctl returns x86 cpuid features which are supported by both the
-> > hardware and kvm in its default configuration.
-> >
-> > A well-behaved userspace should not set the bit if it is not supported.
-> >
-> > Suggested-by: Jim Mattson <jmattson@google.com>
-> > Signed-off-by: Wanpeng Li <wanpengli@tencent.com>
+> In particular, I wonder if it's that KASAN causes some reload pattern,
+> and the whole
 >
-> It's common for userspace to copy all supported CPUID bits to
-> KVM_SET_CPUID2, I don't think this is the right behavior for
-> KVM_HINTS_REALTIME.
+>      register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);
+> ..
+>      asm volatile(.. "r" (__val_pu) ..)
 >
-> (But maybe this was discussed already; if so, please point me to the
-> previous discussion).
+> thing causes problems.
 
-The discussion is here. :) https://www.spinics.net/lists/kvm/msg227265.html
+That pattern isn't new (see the same pattern and the comment above get_user).
 
-    Wanpeng
+But our previous use of that pattern had it as an output of the asm,
+and the new use is as an input. That obviously shouldn't matter, but
+if it's some odd compiler code generation interaction, all bets are
+off..
+
+                Linus
