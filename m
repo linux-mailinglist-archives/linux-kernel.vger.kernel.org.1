@@ -2,48 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EFF8D2979BC
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:43:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F6612979BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:43:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758797AbgJWXmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 19:42:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
+        id S1758811AbgJWXmS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 19:42:18 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758779AbgJWXmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 19:42:15 -0400
-Subject: Re: [git pull] Input updates for v5.10-rc0
+        id S1758779AbgJWXmR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 19:42:17 -0400
+Subject: Re: [GIT PULL] More power management updates for v5.10-rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603496534;
-        bh=ZB2icJbzEIVseELIlD7fbk/bDYUbxeLenma9nxr1oCU=;
+        s=default; t=1603496536;
+        bh=IopQKtI70nmqa2GR2ocD5+Y4WGKBoJzhpAciTOk3XL0=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1ataTDlF6xoP7+XXapeN7tbpbQSfTMY6c6eUxwizRoSV+BuF87mWuL0Y2GpVHAEB/
-         43R8fPMQa9pPX8uXRn9Ddg5Ch/l2hT6ohYLT7CKvUm+MEEptCD1cJrE1PkKwD8vTwE
-         TrvOS0RbdhwMq18KjxkOWn5eUJRBSPRQtUzGtd0c=
+        b=hxbkv99weAPzORBDwX4uIV2MZ0aK0XIASD4fBWQmkpYSa1uMzW3ldlnnwqTSi8TtW
+         cQpFpcaOxXMUY81t76Q2dtdkn5udb6yi4493TYWK0Ipi6u70R2L0aGYMackGh72N9J
+         an1Pq7RsqONpQRkZCtGZ/AwrKK84FaYoJU5//xss=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201023045421.GA2205724@dtor-ws>
-References: <20201023045421.GA2205724@dtor-ws>
-X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201023045421.GA2205724@dtor-ws>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
-X-PR-Tracked-Commit-Id: bb0bc0cfeabc0d6865865e8d3a601bea6711f951
+In-Reply-To: <CAJZ5v0jJq1myATF3gG=4JwCbBnn3X-MsPXA=nN=WVMcSuDGVzg@mail.gmail.com>
+References: <CAJZ5v0jJq1myATF3gG=4JwCbBnn3X-MsPXA=nN=WVMcSuDGVzg@mail.gmail.com>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <CAJZ5v0jJq1myATF3gG=4JwCbBnn3X-MsPXA=nN=WVMcSuDGVzg@mail.gmail.com>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.10-rc1-2
+X-PR-Tracked-Commit-Id: 41c169d9ae2c890552044e129d101995b62c8a02
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: bd7e8c996f5aba542f416ee6d19e91fd3668674f
-Message-Id: <160349653444.22217.12971150119313974490.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Oct 2020 23:42:14 +0000
-To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+X-PR-Merge-Commit-Id: 41f762a15a6324f67c3f084ece694c26f196cece
+Message-Id: <160349653650.22217.16361775469553406430.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Oct 2020 23:42:16 +0000
+To:     "Rafael J. Wysocki" <rafael@kernel.org>
 Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
+        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Thu, 22 Oct 2020 21:54:21 -0700:
+The pull request you sent on Fri, 23 Oct 2020 19:29:43 +0200:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git pm-5.10-rc1-2
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/bd7e8c996f5aba542f416ee6d19e91fd3668674f
+https://git.kernel.org/torvalds/c/41f762a15a6324f67c3f084ece694c26f196cece
 
 Thank you!
 
