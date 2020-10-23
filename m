@@ -2,157 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DECE629682E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:53:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BF96296834
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:58:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374153AbgJWAxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 20:53:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:39894 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2900356AbgJWAxm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 20:53:42 -0400
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F32D124630;
-        Fri, 23 Oct 2020 00:53:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603414421;
-        bh=H7BSQBTeld9dIe7VZCTb35eY55DnK0do+KNc0IrodUk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=KiTUVx2RfDCA18tppCH65YVG0kmUIN5GraBTZpBsOQPBOViAOA9Juk8PIjQi+atQN
-         61CEirviHxZKb4fqSblB6roOvMSesxvdvLhFKL8z+r541lpvuGJeriXLlqXR21MXLB
-         7PLtXs+iuiy+ZJ0isFZV/Uz6wqy8jkvpQkou4eKM=
-Date:   Thu, 22 Oct 2020 17:53:39 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
-Message-ID: <20201022201825.GA3329812@google.com>
-References: <20201020195258.2005605-1-jaegeuk@kernel.org>
- <20201020195258.2005605-6-jaegeuk@kernel.org>
- <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
- <20201021045213.GB3004521@google.com>
- <e3e58a89474d23f1b9446fe2e38a7426@codeaurora.org>
+        id S374189AbgJWA6O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:58:14 -0400
+Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:2257 "EHLO
+        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2901407AbgJWA6O (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 20:58:14 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f922a990000>; Thu, 22 Oct 2020 17:58:01 -0700
+Received: from [10.2.173.3] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 23 Oct
+ 2020 00:58:12 +0000
+From:   Zi Yan <ziy@nvidia.com>
+To:     Roman Gushchin <guro@fb.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH v1 0/2] mm: cma: introduce a non-blocking version of
+ cma_release()
+Date:   Thu, 22 Oct 2020 20:58:10 -0400
+X-Mailer: MailMate (1.13.2r5673)
+Message-ID: <09C785FF-8FEA-4178-9172-4E41C173E82A@nvidia.com>
+In-Reply-To: <20201023004739.GH300658@carbon.dhcp.thefacebook.com>
+References: <20201022225308.2927890-1-guro@fb.com>
+ <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
+ <20201023004739.GH300658@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e3e58a89474d23f1b9446fe2e38a7426@codeaurora.org>
+Content-Type: multipart/signed;
+        boundary="=_MailMate_3F54904D-4ACE-4B66-8101-E086CACBEC8E_=";
+        micalg=pgp-sha512; protocol="application/pgp-signature"
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603414681; bh=nM0eKBYIq5L+uXKx3FvXdPIBvrvzPf2aMSTaYXzWw50=;
+        h=From:To:CC:Subject:Date:X-Mailer:Message-ID:In-Reply-To:
+         References:MIME-Version:Content-Type:X-Originating-IP:
+         X-ClientProxiedBy;
+        b=lyQxg1wFlUJQj24dQSxzv2IleqbLOMTF+6CRcVQvaB/btkfT3YxOQqwO85Yf9rP9A
+         HavNoUvlKAITcwO371fz639ZvJerbfT04/l0BTMTy2Gr8mFkZ5yzlVuryqMUoaaXF7
+         E49vmyvsegd0H7dfLoIxza+nio+ru5GZeOVT2c7EYfVQ3kg93SYOZSauV28nZP66WA
+         t2WL0ZYvB8TEH/XUvezHiVNB6mos3+rnOTXH9ucXN/eAjMWtocRjRhOPCVPBWWsgQr
+         xE3B2bH+voB00QzivYxUvq3PsUSihKX3S8KNGQNrApDWPhqL17FJPeoYdl+EqAeRMY
+         C92vubK01XzYA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21, Can Guo wrote:
-> On 2020-10-21 12:52, jaegeuk@kernel.org wrote:
-> > On 10/21, Can Guo wrote:
-> > > On 2020-10-21 03:52, Jaegeuk Kim wrote:
-> > > > The below call stack prevents clk_gating at every IO completion.
-> > > > We can remove the condition, ufshcd_any_tag_in_use(), since
-> > > > clkgating_work
-> > > > will check it again.
-> > > >
-> > > 
-> > > I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
-> > > gate_work() can break UFS clk gating's functionality.
-> > > 
-> > > ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use.
-> > > However,
-> > > they are not exactly same - ufshcd_any_tag_in_use() returns true if
-> > > any tag
-> > > assigned from block layer is still in use, but tags are released
-> > > asynchronously
-> > > (through block softirq), meaning it does not reflect the real
-> > > occupation of
-> > > UFS host.
-> > > That is after UFS host finishes all tasks, ufshcd_any_tag_in_use()
-> > > can still
-> > > return true.
-> > > 
-> > > This change only removes the check of ufshcd_any_tag_in_use() in
-> > > ufshcd_release(),
-> > > but having the check of it in gate_work() can still prevent gating
-> > > from
-> > > happening.
-> > > The current change works for you maybe because the tags are release
-> > > before
-> > > hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is
-> > > shorter
-> > > or
-> > > somehow block softirq is retarded, gate_work() may have chance to see
-> > > ufshcd_any_tag_in_use()
-> > > returns true. What do you think?
-> > 
-> > I don't think this breaks clkgating, but fix the wrong condition check
-> > which
-> > prevented gate_work at all. As you mentioned, even if this schedules
-> > gate_work
-> > by racy conditions, gate_work will handle it as a last resort.
-> > 
-> 
-> If clocks cannot be gated after the last task is cleared from UFS host, then
-> clk gating
-> is broken, no? Assume UFS has completed the last task in its queue, as this
-> change says,
-> ufshcd_any_tag_in_use() is preventing ufshcd_release() from invoking
-> gate_work().
-> Similarly, ufshcd_any_tag_in_use() can prevent gate_work() from doing its
-> real work -
-> disabling the clocks. Do you agree?
-> 
->         if (hba->clk_gating.active_reqs
->                 || hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
->                 || ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks
->                 || hba->active_uic_cmd || hba->uic_async_done)
->                 goto rel_lock;
+--=_MailMate_3F54904D-4ACE-4B66-8101-E086CACBEC8E_=
+Content-Type: text/plain; charset="UTF-8"; markup=markdown
+Content-Transfer-Encoding: quoted-printable
 
-I see the point, but this happens only when clkgate_delay_ms is too short
-to give enough time for releasing tag. If it's correctly set, I think there'd
-be no problem, unless softirq was delayed by other RT threads which is just
-a corner case tho.
+On 22 Oct 2020, at 20:47, Roman Gushchin wrote:
 
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
-> > > 
-> > > Thanks,
-> > > 
-> > > Can Guo.
-> > > 
-> > > In __ufshcd_transfer_req_compl
-> > > Ihba->lrb_in_use is cleared immediately when UFS driver
-> > > finishes all tasks
-> > > 
-> > > > ufshcd_complete_requests(struct ufs_hba *hba)
-> > > >   ufshcd_transfer_req_compl()
-> > > >     __ufshcd_transfer_req_compl()
-> > > >       __ufshcd_release(hba)
-> > > >         if (ufshcd_any_tag_in_use() == 1)
-> > > >            return;
-> > > >   ufshcd_tmc_handler(hba);
-> > > >     blk_mq_tagset_busy_iter();
-> > > >
-> > > > Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> > > > Cc: Avri Altman <avri.altman@wdc.com>
-> > > > Cc: Can Guo <cang@codeaurora.org>
-> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > > ---
-> > > >  drivers/scsi/ufs/ufshcd.c | 2 +-
-> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > >
-> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > index b5ca0effe636..cecbd4ace8b4 100644
-> > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
-> > > >
-> > > >  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
-> > > >  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
-> > > > -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
-> > > > +	    hba->outstanding_tasks ||
-> > > >  	    hba->active_uic_cmd || hba->uic_async_done)
-> > > >  		return;
+> On Thu, Oct 22, 2020 at 07:42:45PM -0400, Zi Yan wrote:
+>> On 22 Oct 2020, at 18:53, Roman Gushchin wrote:
+>>
+>>> This small patchset introduces a non-blocking version of cma_release(=
+)
+>>> and simplifies the code in hugetlbfs, where previously we had to
+>>> temporarily drop hugetlb_lock around the cma_release() call.
+>>>
+>>> It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
+>>> THP under a memory pressure requires a cma_release() call. If it's
+>>
+>> Thanks for the patch. But during 1GB THP split, we only clear
+>> the bitmaps without releasing the pages. Also in cma_release_nowait(),=
+
+>> the first page in the allocated CMA region is reused to store
+>> struct cma_clear_bitmap_work, but the same method cannot be used
+>> during THP split, since the first page is still in-use. We might
+>> need to allocate some new memory for struct cma_clear_bitmap_work,
+>> which might not be successful under memory pressure. Any suggestion
+>> on where to store struct cma_clear_bitmap_work when I only want to
+>> clear bitmap without releasing the pages?
+>
+> It means we can't use cma_release() there either, because it does clear=
+
+> individual pages. We need to clear the cma bitmap without touching page=
+s.
+>
+> Can you handle an error there?
+>
+> If so, we can introduce something like int cma_schedule_bitmap_clearanc=
+e(),
+> which will allocate a work structure and will be able to return -ENOMEM=
+
+> in the unlikely case of error.
+>
+> Will it work for you?
+
+Yes, it works. Thanks.
+
+=E2=80=94
+Best Regards,
+Yan Zi
+
+--=_MailMate_3F54904D-4ACE-4B66-8101-E086CACBEC8E_=
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="signature.asc"
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQJDBAEBCgAtFiEEh7yFAW3gwjwQ4C9anbJR82th+ooFAl+SKqIPHHppeUBudmlk
+aWEuY29tAAoJEJ2yUfNrYfqKzN4QAJBztkS2oOkDx2OKEHvJfKlo14kSjvTDXEHq
+rRYgOQBjk0cXqhT0DeLJ0KvitmEZUWWR/bhlQ4yWUWDOvfc+X/LM3PuEOmlc2djR
+LJOoaS1wrDrltyT7apFmNW4n/PP/TGL3IFxcZy3VA96t9NKZtkNrTfZPpZhMQYVf
+Gn9yCELGkYPpm7D5TTIr9xt23jT+dtVrakAdXa7DCuzCKuHEInjo3RlNThO7xNzK
+wse9HEugSfTPyXRpAxf7WgtNjKfWzsDN5m9k7e8owE8TZfv9qM3uH8zlYuJMDdGi
+ey7uanT9B9vC93HkeEf73fcKG3sjY3v37xGTVjl2P04cZkMgLUawtaUE1Cw2runz
+DTHNz/sp8R56ci5sbdG3XW6vr7uukStYS9dV0mN9wgW46Ga4uHGXvaPX7INTrBCA
+K+0V+nCnLJaxoyffa1OEoZLzl6wlV6m71QrsIBYdA0ILvrrGqeU9AQvCboMwrYSL
+7WG4aVPP291dimOrOwbJmjRkKuuJqdHIfBz5NQw8sG3sHsAFoM121RBmxouOuc5K
+3UtzARDa/Msqby+urLcyuFe7SjDABCAjmFIO/tc/biF1NdTyD/90lbQ+2g8Okgkt
+8gB3VJdzIFNyAl7CMaKTKimUQnciCDZKjaEGoJEy24Eu+7f34VnixoWyMQXW+tSW
+HY3tMKFE
+=mmUM
+-----END PGP SIGNATURE-----
+
+--=_MailMate_3F54904D-4ACE-4B66-8101-E086CACBEC8E_=--
