@@ -2,265 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D879D2978B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:14:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB7332978BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:16:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755376AbgJWVOC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:14:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36206 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752905AbgJWVOC (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:14:02 -0400
-Received: from mail-qv1-xf44.google.com (mail-qv1-xf44.google.com [IPv6:2607:f8b0:4864:20::f44])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EAC99C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:14:01 -0700 (PDT)
-Received: by mail-qv1-xf44.google.com with SMTP id de3so1495813qvb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:14:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ys6/dFrrFsL4y4l24br+6PAG0LG5Fz1UTTpuLLI1IQI=;
-        b=UnYwEt3/jcBFWx32q0vM2GdSbPWRUqKH40bFKLaNXWYy5Bgv4z7oNlHXg+IPp3/tCO
-         g9wW27o9LQEvQEeyv+Iz+OSlvtKABvTwX+y6G96hrZLeVin4qe3uGaaxfa5W3LcW0N7Z
-         l4qH63fuFxIUIoKGLPts8TZiMOGLF0zzBhLpY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ys6/dFrrFsL4y4l24br+6PAG0LG5Fz1UTTpuLLI1IQI=;
-        b=B8qpJxOJt33nfqvMNItnZVGSPClzm//uWnEVfobydYkX/ZLTFz5z2/6+ysb23sS9BO
-         U92LTPmtz1R7P6Q8SqRsss3JD0QTgYqBxW4qfzAuU0RCq5cEwtl0nvTughQ+/ZtQBAOQ
-         O113vAQN5xtzzVxeUzVdmukUPZTQs3OI8sd+VB/49HHI0EMIBcrJp7wjwWtzI7SShwsf
-         NsRXj/uYo3ZKnJGcWfNpschrvLN9a70D24LuGTRqzBE/WES6Xbc6dgF+7S2iaXLrQj9G
-         d214EbrFEuK5yJBis/i/3kEnHTfeeceJn0PlxS+krLNaYy76PQOWR82SB82hwxzi2/Q8
-         ynYA==
-X-Gm-Message-State: AOAM5313fyCaTtQVCHhk9K8M5PpS9/rno4u++kC0Lld0uHiKiLN+SMgt
-        K64dL0zkJBTsy+hoehNPCuA2rZTt3o83qA==
-X-Google-Smtp-Source: ABdhPJxiksRYZtfifj3tQW8PBUDe5uHDGKXZzd8w6St1uHL5kKb7yJTd+9nNcXWUMd9rstul2fxoKQ==
-X-Received: by 2002:a0c:f706:: with SMTP id w6mr1151288qvn.48.1603487640781;
-        Fri, 23 Oct 2020 14:14:00 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id x91sm1743727qte.69.2020.10.23.14.13.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 14:14:00 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 17:13:59 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Michael Jeanson <mjeanson@efficios.com>
-Cc:     linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf@vger.kernel.org
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
-Message-ID: <20201023211359.GC3563800@google.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
- <20201023195352.26269-7-mjeanson@efficios.com>
+        id S1756023AbgJWVQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:16:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40250 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755437AbgJWVQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:16:08 -0400
+Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CA74F24688;
+        Fri, 23 Oct 2020 21:16:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603487767;
+        bh=qQcFmOGTx12wPD63RiThRe7Vh0MNAYSb3WtVSv6KO9I=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=ylYjv002r5/d4PJz5MfpZMB4thciSwlk1eXkJiCA3bvenmoPxzuiHjvcXDcackAcE
+         w6VNJ7rBH6083fbGYBlG3chnrNZbtJNPqO54/g2gQKHUjVIOrFDXlaNINXtFbJdoKt
+         OK0nV4hNeaJ18/R+8VfmdHAtYYky9/5RkmV0QCgE=
+Received: by mail-lj1-f178.google.com with SMTP id h20so3011574lji.9;
+        Fri, 23 Oct 2020 14:16:06 -0700 (PDT)
+X-Gm-Message-State: AOAM5337x3XfZ2H+iQYCxwVuwsAo2l/BfiG/SaJARh8J72H8DUzAZiGl
+        2N/bhe5jmH8tCgkklWYJzAiC/vEHWJ8aRCVwm9M=
+X-Google-Smtp-Source: ABdhPJxMP4Oqfuc0h+oHI0VayAXX1a002RyckvG+CEYT7Qe0w/jJqsSdKxhG124OF9Ag+jl4aWynWIOTPbYK55JDXo0=
+X-Received: by 2002:a05:651c:cd:: with SMTP id 13mr1498277ljr.392.1603487764782;
+ Fri, 23 Oct 2020 14:16:04 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023195352.26269-7-mjeanson@efficios.com>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+ <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+ <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
+ <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+ <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com> <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
+From:   Song Liu <song@kernel.org>
+Date:   Fri, 23 Oct 2020 14:15:53 -0700
+X-Gmail-Original-Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
+Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
+Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+ 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
-> From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> 
-> Considering that tracer callbacks expect RCU to be watching (for
-> instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
-> rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
-> no point in using SRCU anymore given that rcuidle tracepoints need to
-> ensure RCU is watching. Therefore, simply use sched-RCU like normal
-> tracepoints for rcuidle tracepoints.
+On Fri, Oct 23, 2020 at 10:51 AM Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
+>
+> On Fri, Oct 23, 2020 at 10:00 AM Naresh Kamboju
+> <naresh.kamboju@linaro.org> wrote:
+> >
+> > [Old patch from yesterday]
+> >
+> > After applying your patch on top on linux next tag 20201015
+> > there are two observations,
+> >   1) i386 build failed. please find build error build
+>
+> Yes, this was expected. That patch explicitly only works on x86-64,
+> because 32-bit needs the double register handling for 64-bit values
+> (mainly loff_t).
+>
+> >   2) x86_64 kasan test PASS and the reported error not found.
+>
+> Ok, good. That confirms that the problem you reported is indeed the
+> register allocation.
+>
+> The patch I sent an hour ago (the one based on Rasmus' one from
+> yesterday) should fix things too, and - unlike yesterday's - work on
+> 32-bit.
+>
+> But I'll wait for confirmation (and hopefully a sign-off from Rasmus
+> so that I can give him authorship) before actually committing it.
+>
+>               Linus
 
-High level question:
+My test vm failed to boot since
 
-IIRC, doing this increases overhead for general tracing that does not use
-perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
-tracepoints. I remember adding SRCU because of this reason.
+commit d55564cfc222326e944893eff0c4118353e349ec
+x86: Make __put_user() generate an out-of-line call
 
-Can the 'rcuidle' information not be pushed down further, such that perf does
-it because it requires RCU to be watching, so that it does not effect, say,
-trace events?
+The patch also fixed it.
 
-thanks,
-
- - Joel
-
-> Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-> Cc: Michael Jeanson <mjeanson@efficios.com>
-> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: bpf@vger.kernel.org
-> ---
->  include/linux/tracepoint.h | 33 +++++++--------------------------
->  kernel/tracepoint.c        | 25 +++++++++----------------
->  2 files changed, 16 insertions(+), 42 deletions(-)
-> 
-> diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-> index 0386b54cbcbb..1414b11f864b 100644
-> --- a/include/linux/tracepoint.h
-> +++ b/include/linux/tracepoint.h
-> @@ -13,7 +13,6 @@
->   */
->  
->  #include <linux/smp.h>
-> -#include <linux/srcu.h>
->  #include <linux/errno.h>
->  #include <linux/types.h>
->  #include <linux/cpumask.h>
-> @@ -33,8 +32,6 @@ struct trace_eval_map {
->  
->  #define TRACEPOINT_DEFAULT_PRIO	10
->  
-> -extern struct srcu_struct tracepoint_srcu;
-> -
->  extern int
->  tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data);
->  extern int
-> @@ -86,7 +83,6 @@ int unregister_tracepoint_module_notifier(struct notifier_block *nb)
->  static inline void tracepoint_synchronize_unregister(void)
->  {
->  	synchronize_rcu_tasks_trace();
-> -	synchronize_srcu(&tracepoint_srcu);
->  	synchronize_rcu();
->  }
->  #else
-> @@ -175,25 +171,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  		if (!(cond))						\
->  			return;						\
->  									\
-> -		/* srcu can't be used from NMI */			\
-> -		WARN_ON_ONCE(rcuidle && in_nmi());			\
-> -									\
-> -		if (maysleep) {						\
-> -			might_sleep();					\
-> +		might_sleep_if(maysleep);				\
-> +		if (rcuidle)						\
-> +			rcu_irq_enter_irqson();				\
-> +		if (maysleep)						\
->  			rcu_read_lock_trace();				\
-> -		} else {						\
-> -			/* keep srcu and sched-rcu usage consistent */	\
-> +		else							\
->  			preempt_disable_notrace();			\
-> -		}							\
-> -									\
-> -		/*							\
-> -		 * For rcuidle callers, use srcu since sched-rcu	\
-> -		 * doesn't work from the idle path.			\
-> -		 */							\
-> -		if (rcuidle) {						\
-> -			__idx = srcu_read_lock_notrace(&tracepoint_srcu);\
-> -			rcu_irq_enter_irqson();				\
-> -		}							\
->  									\
->  		it_func_ptr = rcu_dereference_raw((tp)->funcs);		\
->  									\
-> @@ -205,15 +189,12 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
->  			} while ((++it_func_ptr)->func);		\
->  		}							\
->  									\
-> -		if (rcuidle) {						\
-> -			rcu_irq_exit_irqson();				\
-> -			srcu_read_unlock_notrace(&tracepoint_srcu, __idx);\
-> -		}							\
-> -									\
->  		if (maysleep)						\
->  			rcu_read_unlock_trace();			\
->  		else							\
->  			preempt_enable_notrace();			\
-> +		if (rcuidle)						\
-> +			rcu_irq_exit_irqson();				\
->  	} while (0)
->  
->  #ifndef MODULE
-> diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-> index 8d8e41c5d8a5..68b4e50798b1 100644
-> --- a/kernel/tracepoint.c
-> +++ b/kernel/tracepoint.c
-> @@ -18,9 +18,6 @@
->  extern tracepoint_ptr_t __start___tracepoints_ptrs[];
->  extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
->  
-> -DEFINE_SRCU(tracepoint_srcu);
-> -EXPORT_SYMBOL_GPL(tracepoint_srcu);
-> -
->  /* Set to 1 to enable tracepoint debug output */
->  static const int tracepoint_debug;
->  
-> @@ -65,14 +62,9 @@ static void rcu_tasks_trace_free_old_probes(struct rcu_head *head)
->  	kfree(container_of(head, struct tp_probes, rcu));
->  }
->  
-> -static void srcu_free_old_probes(struct rcu_head *head)
-> -{
-> -	call_rcu_tasks_trace(head, rcu_tasks_trace_free_old_probes);
-> -}
-> -
->  static void rcu_free_old_probes(struct rcu_head *head)
->  {
-> -	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
-> +	call_rcu_tasks_trace(head, rcu_tasks_trace_free_old_probes);
->  }
->  
->  static __init int release_early_probes(void)
-> @@ -90,7 +82,7 @@ static __init int release_early_probes(void)
->  	return 0;
->  }
->  
-> -/* SRCU and Tasks Trace RCU are initialized at core_initcall */
-> +/* Tasks Trace RCU is initialized at core_initcall */
->  postcore_initcall(release_early_probes);
->  
->  static inline void release_probes(struct tracepoint_func *old)
-> @@ -100,9 +92,8 @@ static inline void release_probes(struct tracepoint_func *old)
->  			struct tp_probes, probes[0]);
->  
->  		/*
-> -		 * We can't free probes if SRCU and Tasks Trace RCU are not
-> -		 * initialized yet. Postpone the freeing till after both are
-> -		 * initialized.
-> +		 * We can't free probes if Tasks Trace RCU is not initialized yet.
-> +		 * Postpone the freeing till after Tasks Trace RCU is initialized.
->  		 */
->  		if (unlikely(!ok_to_free_tracepoints)) {
->  			tp_probes->rcu.next = early_probes;
-> @@ -111,9 +102,11 @@ static inline void release_probes(struct tracepoint_func *old)
->  		}
->  
->  		/*
-> -		 * Tracepoint probes are protected by sched RCU, SRCU and
-> -		 * Tasks Trace RCU by chaining the callbacks we cover all three
-> -		 * cases and wait for all three grace periods.
-> +		 * Tracepoint probes are protected by both sched RCU and
-> +		 * Tasks Trace RCU, by calling the Tasks Trace RCU callback in
-> +		 * the sched RCU callback we cover both cases. So let us chain
-> +		 * the Tasks Trace RCU and sched RCU callbacks to wait for both
-> +		 * grace periods.
->  		 */
->  		call_rcu(&tp_probes->rcu, rcu_free_old_probes);
->  	}
-> -- 
-> 2.25.1
-> 
+Thanks!
+Song
