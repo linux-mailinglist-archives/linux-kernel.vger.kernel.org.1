@@ -2,72 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4314D2969AE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:27:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E97BC2969B2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:29:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S369974AbgJWG1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:27:16 -0400
-Received: from mga14.intel.com ([192.55.52.115]:50330 "EHLO mga14.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2898454AbgJWG1Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:27:16 -0400
-IronPort-SDR: l71xQqnb88U4fJATYdTLndqUZiyK0cHBRPlGLAHrU71l5MWoEBfhokI7m1GtcSavJuU8ZhtXSP
- Bsraln7AVyHA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="166850854"
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="166850854"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 23:27:09 -0700
-IronPort-SDR: iEcDPwK14VKvyoX2Rqv4SPxJGglj4BDc4Q2l0Up16jowqUgvMpSPWSPUP8/Cwh/H0VJW4C+H4K
- +/vuScI1dfEA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="466961410"
-Received: from mylly.fi.intel.com (HELO [10.237.72.73]) ([10.237.72.73])
-  by orsmga004.jf.intel.com with ESMTP; 22 Oct 2020 23:27:08 -0700
-Subject: Re: [PATCH v3] i2c: designware: call
- i2c_dw_read_clear_intrbits_slave() once
-To:     Michael Wu <michael.wu@vatics.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        Mika Westerberg <mika.westerberg@linux.intel.com>,
-        linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc:     Morgan Chang <morgan.chang@vatics.com>
-References: <20201023054027.13540-1-michael.wu@vatics.com>
-From:   Jarkko Nikula <jarkko.nikula@linux.intel.com>
-Message-ID: <a44aacbb-fcb4-f83f-b781-b69f52944f09@linux.intel.com>
-Date:   Fri, 23 Oct 2020 09:27:07 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S372733AbgJWG3P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:29:15 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:33050 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S369627AbgJWG3P (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 02:29:15 -0400
+Received: from DGGEMS408-HUB.china.huawei.com (unknown [172.30.72.60])
+        by Forcepoint Email with ESMTP id E0EC4BBF3C1F6B357141;
+        Fri, 23 Oct 2020 14:29:12 +0800 (CST)
+Received: from [127.0.0.1] (10.57.22.126) by DGGEMS408-HUB.china.huawei.com
+ (10.3.19.208) with Microsoft SMTP Server id 14.3.487.0; Fri, 23 Oct 2020
+ 14:29:06 +0800
+Subject: Re: [PATCH v1 0/5] Introduce a new helper marco
+ DEFINE_STORE_ATTRIBUTE at seq_file.c
+To:     Al Viro <viro@zeniv.linux.org.uk>
+CC:     <akpm@linux-foundation.org>, <andriy.shevchenko@linux.intel.com>,
+        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
+        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
+        <felipe.balbi@linux.intel.com>, <gregkh@linuxfoundation.org>,
+        <uma.shankar@intel.com>, <anshuman.gupta@intel.com>,
+        <animesh.manna@intel.com>, <linux-usb@vger.kernel.org>,
+        <linux-scsi@vger.kernel.org>, <linuxarm@huawei.com>
+References: <1603355997-32350-1-git-send-email-luojiaxing@huawei.com>
+ <20201022122858.GT3576660@ZenIV.linux.org.uk>
+From:   luojiaxing <luojiaxing@huawei.com>
+Message-ID: <7003f142-5d53-1285-c6cd-a8e8d9c076b7@huawei.com>
+Date:   Fri, 23 Oct 2020 14:29:05 +0800
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.2.1
 MIME-Version: 1.0
-In-Reply-To: <20201023054027.13540-1-michael.wu@vatics.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
+In-Reply-To: <20201022122858.GT3576660@ZenIV.linux.org.uk>
+Content-Type: text/plain; charset="utf-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Originating-IP: [10.57.22.126]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 8:40 AM, Michael Wu wrote:
-> If some bits were cleared by i2c_dw_read_clear_intrbits_slave() in
-> i2c_dw_isr_slave() and not handled immediately, those cleared bits would
-> not be shown again by later i2c_dw_read_clear_intrbits_slave(). They
-> therefore were forgotten to be handled.
-> 
-> i2c_dw_read_clear_intrbits_slave() should be called once in an ISR and take
-> its returned state for all later handlings.
-> 
-> Signed-off-by: Michael Wu <michael.wu@vatics.com>
-> ---
-> 
-> Change in v3:
->   - revert deleted braces of 'else' branch in v2
-> 
-> Change in v2:
->   - revert moving I2C_SLAVE_WRITE_REQUESTED reporting in v1
-> 
->   drivers/i2c/busses/i2c-designware-slave.c | 7 +------
->   1 file changed, 1 insertion(+), 6 deletions(-)
-> 
-Acked-by: Jarkko Nikula <jarkko.nikula@linux.intel.com>
+Hi
+
+On 2020/10/22 20:28, Al Viro wrote:
+> On Thu, Oct 22, 2020 at 04:39:52PM +0800, Luo Jiaxing wrote:
+>> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
+>> for read-only file, but we found many of drivers also want a helper marco for
+>> read-write file too.
+> DEFINE_SHOW_ATTRIBUTE is a bloody bad idea; let's not replicate the garbage
+> any further.  If you want templates - C++ is over that way...
+
+
+I am sorry but would you mind to explain it in more detail that why 
+DEFINE_SHOW_ATTRIBUTE is a bad idea?
+
+I found that DEFINE_SHOW_ATTRIBUTE is convenient and avoids a lot of 
+duplicate code When add some debugfs file for DFX.
+
+
+Thanks
+
+Jiaxing
+
+
+>
+> .
+>
+
