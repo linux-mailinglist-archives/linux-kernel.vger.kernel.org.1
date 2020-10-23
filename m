@@ -2,114 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C953C296E17
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:58:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 113B1296E1C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:00:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463309AbgJWL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:58:36 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:8417 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S463298AbgJWL6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:58:20 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CHjRV0CCKz9v03C;
-        Fri, 23 Oct 2020 13:58:14 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 7G-FT5rRhz1r; Fri, 23 Oct 2020 13:58:13 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CHjRT6NvJz9v036;
-        Fri, 23 Oct 2020 13:58:13 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B5098B869;
-        Fri, 23 Oct 2020 13:58:15 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id 1m4yl6SK3FoB; Fri, 23 Oct 2020 13:58:15 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 73E308B85E;
-        Fri, 23 Oct 2020 13:58:14 +0200 (CEST)
-Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
- simplify __get_datapage()
-To:     Will Deacon <will@kernel.org>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linuxppc-dev@lists.ozlabs.org
-References: <87wo34tbas.fsf@mpe.ellerman.id.au>
- <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
- <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
- <87imd5h5kb.fsf@mpe.ellerman.id.au>
- <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
- <87a6yf34aj.fsf@mpe.ellerman.id.au> <20200921112638.GC2139@willie-the-truck>
- <ad72ffd3-a552-cc98-7545-d30285fd5219@csgroup.eu>
- <542145eb-7d90-0444-867e-c9cbb6bdd8e3@gmail.com>
- <ba9861da-2f5b-a649-5626-af00af634546@csgroup.eu>
- <20201023112514.GE20933@willie-the-truck>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <284cacf4-9811-4b67-385c-2783a7cd9b31@csgroup.eu>
-Date:   Fri, 23 Oct 2020 13:57:47 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S463365AbgJWL77 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:59:59 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:33714 "EHLO
+        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S369960AbgJWL77 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:59:59 -0400
+Received: by mail-ot1-f67.google.com with SMTP id t15so1071012otk.0;
+        Fri, 23 Oct 2020 04:59:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VVsEq+wRbGQg5Ha262jtQgKJ2V9xu+fwLoD8r3aBHAg=;
+        b=X9BdsVdCspr4xaYTx6E3dGaxWFHAZZH6HQw+c4QR9azkCuyURku2iyguwgEXpz9um4
+         W4/W52ZI6YEnE3/I8Ix+L+ItgES6tT1L5o32WyPmD6nZOtTAwy40bu/XhAs7rbf5PdUw
+         ryAyPqEZIYs5/I+h23dfVff4ThnJIKI4bH/h4mfM8TuEIPmVMR1xprvL0o554CtV+i0r
+         ybdYHH2DBHYTzjPnbYxZz0yHTx0as5xaf6jMZ81TLgbdvJizaSNLxptHuhApZyP2Zh5g
+         rMQZRoxaeMhPP2NKfDk7bLpcQoqc9msvm+ebGj0PX9eacyG3xJ1z6KKAhUTiERK0MQ+d
+         OiRg==
+X-Gm-Message-State: AOAM533HiiUwpxLa+VGOZrPrpCa32mbR08Rl6L6YvTuIuWyiZ3ZTb2Pr
+        AjgWKGQ5Hr+MLL3X3z9rWGryM0I9jwlDgEQ8gQk=
+X-Google-Smtp-Source: ABdhPJyT5r2GaLzXcgx6D+Y+xfPH3602a59tadmtl2LzoO/Xu/5IGCPU+shg1Mg9Nm/Z3xXuiWIEx1h39/tU0iFa9EU=
+X-Received: by 2002:a9d:ac9:: with SMTP id 67mr1320247otq.321.1603454397748;
+ Fri, 23 Oct 2020 04:59:57 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201023112514.GE20933@willie-the-truck>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher> <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <8312288.dAKoTdFk2S@kreacher> <20201023061703.jjpmoeq7wzwqtsid@vireshk-i7>
+In-Reply-To: <20201023061703.jjpmoeq7wzwqtsid@vireshk-i7>
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Oct 2020 13:59:45 +0200
+Message-ID: <CAJZ5v0gt42=KRbKzRp7H6RrRdpxY-T_X_L9JjcMB+9VrvKAdvw@mail.gmail.com>
+Subject: Re: [PATCH] cpufreq: Avoid configuring old governors as default with intel_pstate
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 23, 2020 at 8:17 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
+>
+> On 22-10-20, 18:23, Rafael J. Wysocki wrote:
+> > From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > Subject: [PATCH] cpufreq: Avoid configuring old governors as default with intel_pstate
+> >
+> > Commit 33aa46f252c7 ("cpufreq: intel_pstate: Use passive mode by
+> > default without HWP") was meant to cause intel_pstate without HWP
+> > to be used in the passive mode with the schedutil governor on top of
+> > it by default, but it missed the case in which either "ondemand" or
+> > "conservative" was selected as the default governor in the existing
+> > kernel config, in which case the previous old governor configuration
+> > would be used, causing the default legacy governor to be used on top
+> > of intel_pstate instead of schedutil.
+> >
+> > Address this by preventing "ondemand" and "conservative" from being
+> > configured as the default cpufreq governor in the case when schedutil
+> > is the default choice for the default governor setting.
+> >
+> > [Note that the default cpufreq governor can still be set via the
+> >  kernel command line if need be and that choice is not limited,
+> >  so if anyone really wants to use one of the legacy governors by
+> >  default, it can be achieved this way.]
+> >
+> > Fixes: 33aa46f252c7 ("cpufreq: intel_pstate: Use passive mode by default without HWP")
+> > Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
+> > Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
+> > ---
+> >  drivers/cpufreq/Kconfig |    2 ++
+> >  1 file changed, 2 insertions(+)
+> >
+> > Index: linux-pm/drivers/cpufreq/Kconfig
+> > ===================================================================
+> > --- linux-pm.orig/drivers/cpufreq/Kconfig
+> > +++ linux-pm/drivers/cpufreq/Kconfig
+> > @@ -71,6 +71,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
+> >
+> >  config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+> >       bool "ondemand"
+> > +     depends on !SMP || !X86_INTEL_PSTATE
+> >       select CPU_FREQ_GOV_ONDEMAND
+> >       select CPU_FREQ_GOV_PERFORMANCE
+> >       help
+> > @@ -83,6 +84,7 @@ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
+> >
+> >  config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
+> >       bool "conservative"
+> > +     depends on !SMP || !X86_INTEL_PSTATE
+>
+> While reading this first it felt like a SMP platforms related problem
+> (which I was surprised about), and then I understood what you are
+> doing.
+>
+> I wonder if rewriting it this way makes it more readable with same
+> result eventually.
+>
+>         depends on !(X86_INTEL_PSTATE && SMP)
 
+Agreed, will update.
 
-Le 23/10/2020 à 13:25, Will Deacon a écrit :
-> On Fri, Oct 23, 2020 at 01:22:04PM +0200, Christophe Leroy wrote:
->> Hi Dmitry,
->>
->> Le 28/09/2020 à 17:08, Dmitry Safonov a écrit :
->>> On 9/27/20 8:43 AM, Christophe Leroy wrote:
->>>>
->>>>
->>>> Le 21/09/2020 à 13:26, Will Deacon a écrit :
->>>>> On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
->>>>>> Dmitry Safonov <0x7f454c46@gmail.com> writes:
->>> [..]
->>>>>>> I'll cook a patch for vm_special_mapping if you don't mind :-)
->>>>>>
->>>>>> That would be great, thanks!
->>>>>
->>>>> I lost track of this one. Is there a patch kicking around to resolve
->>>>> this,
->>>>> or is the segfault expected behaviour?
->>>>>
->>>>
->>>> IIUC dmitry said he will cook a patch. I have not seen any patch yet.
->>>
->>> Yes, sorry about the delay - I was a bit busy with xfrm patches.
->>>
->>> I'll send patches for .close() this week, working on them now.
->>
->> I haven't seen the patches, did you sent them out finally ?
-> 
-> I think it's this series:
-> 
-> https://lore.kernel.org/r/20201013013416.390574-1-dima@arista.com
-> 
-> but they look really invasive to me, so I may cook a small hack for arm64
-> in the meantine / for stable.
-> 
-
-Not sure we are talking about the same thing.
-
-I can't see any new .close function added to vm_special_mapping in order to replace arch_unmap() hook.
-
-Christophe
+Thanks!
