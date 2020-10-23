@@ -2,182 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C15F29683D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 03:02:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1118F296849
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 03:21:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374228AbgJWBCq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 21:02:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46470 "EHLO
+        id S374300AbgJWBVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 21:21:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374221AbgJWBCp (ORCPT
-        <rfc822;Linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 21:02:45 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9BEF3C0613CE
-        for <Linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:02:45 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id y12so5947490wrp.6
-        for <Linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:02:45 -0700 (PDT)
+        with ESMTP id S374289AbgJWBVp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 21:21:45 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC580C0613D5
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:21:43 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id qh17so72698ejb.6
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:21:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PeIkXK9B1GsAnFw5j39YSRAnSJLkSrJNmAO/G3HgJms=;
-        b=tbfdzTiQ6tIEXeqLHbf3o1YyIofphsp3/bg1sfA3jzLQ5qFTGielnOyRoNFmzhmtiH
-         3tQAtTQojkSJJMcBqyFOtTu7nvK7w63zS9Fg+L3KbmCfHl3EzmcVEpj5GU+EuJUX5AlV
-         GF84bVih1ow9O6jK7Ca5Az7u4ZrHhe9F5WcgvwgFq1AE7DTOCfPmZjiku4eW/q9E+d0M
-         yA3Cw0t0fJouLkBsLdEzb4AHzXo4DUjIr4JCm2o33SaQbYnxt9/EO/mO7ucrIeUjeb7z
-         /EtWYw+GHDJ9NeJv9k/FFU3l1nRnL3FImUxV/kxM/lK+BHXi7gvqZrXivqbaILPHx/v8
-         DJNQ==
+         :cc:content-transfer-encoding;
+        bh=aoxn8RZh5GwLX2OTvbY4F3fYrAFarAXAp+zyIW9UVc0=;
+        b=bWPmglrUmUWeh/iJB7I1EBJU+TdBzoO9kJeAZdj0Mj7vyjbv9DyccX5Lt+lUFusiZw
+         HWpqEJDPjpY3Pe66lK3CAkBsqcDG1SzJroJ/TrLWOH68lnkP3CHZa96739LkvB31F0p2
+         UKaI6v6FS6fL3igL3m2SvuN8QdEUHemh+0A+WspZbjpxU8NlNH1xji6y4zYUku/PAtIG
+         VlsE4Z2Vr2DxmyRQoiSH2mQuJn6k9T8lU/ZuPxibEI768Vlsje7dAVkK4A+TJ9+adHG8
+         +FBZ1+GlJF4yKcmomBogElmJ3P88v835veafFeBLgDo8obHbAFEfQjagR4wLw4RxeZia
+         Dx4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PeIkXK9B1GsAnFw5j39YSRAnSJLkSrJNmAO/G3HgJms=;
-        b=T16rcPv61qots4u5zitCA15UYmMTarmGnQXFSkxcmpTS+JQKW79PXNxfWXd711mHMN
-         3nFR066buGUMJFsJFqlDVNI78avTGdd6wsBIK8Ka62ck5ZH9OxEy0m3A26bZCdSj5ZRa
-         Z7FAGODtQcxdVM//kpXctRf4f1wmDXrmMTp/AiZbz5800bXS8kaYqi7aEhi6NST+/6HZ
-         kZYu/XO+mtZ0UoKZuX+6tsbAlIGrLHlVN0AaHqb3hWGWK7Xh78oucgf7D/7xtDuRi61v
-         qKiKtjjVt/8h4XBwS1w6qFA7gKpaNzMMpcuCyXd68L/gNpQxl6L2FQNzTjkaCSsU6bBN
-         gIkw==
-X-Gm-Message-State: AOAM533uHoixux+wq6N9obOQQPXBfUlkW8JjdrHXtBmzYOqDI2EQlyGq
-        H44WhndbyI5E5vshnnfJsYPHhsIrO2QZcZ+9JMsqqQ==
-X-Google-Smtp-Source: ABdhPJzirUFhlwzW44Sjw6Z+3BuTdLcQtjKzd+8PSpOEXl6S5XEDxGKoGZ/fle3nqhloxR07ORGb3fuTbZmf3vl1g58=
-X-Received: by 2002:adf:b19c:: with SMTP id q28mr5066460wra.119.1603414963474;
- Thu, 22 Oct 2020 18:02:43 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=aoxn8RZh5GwLX2OTvbY4F3fYrAFarAXAp+zyIW9UVc0=;
+        b=epbQVA7dB5OiTIIdYMHgS+osCIxJvGfKus4dPu3CI2H6aNqePTXt91c54FKrGpg316
+         /v94rkAL1RVfpqqTQtlADzJCFQbH0uliy7ctXfRzeMQ07YxHNH30F9kTTv0ufdnUBkdI
+         Uj1hLsuWG9DE9lTyUiAfd46Hl41bTMxlmXD7jy0xAMKNjTxh2Sqge6mArJIqhjUX5Vuj
+         iKDovboPKQuZc9uv78SM+NH+U4Rf0+UOreu9v+IsF5n2hWlRhVCBC5iZDhcJTdaxZndw
+         7bfgIHW6h6G93+7wUjz7AQMGYk79/3mkY711w6E/WLP7QUIlOyzQmg02dMjEc3iVQKsB
+         lkJQ==
+X-Gm-Message-State: AOAM531dhSks3YuIlHgOFzj7AcLEDpEkQapLOQgL44Mu5d3byIZf1xED
+        3PCIcOQ66P26syktD/qus7xh0+R3OjQ+yhlRubhn
+X-Google-Smtp-Source: ABdhPJzDtfnYw+rfKgxc4a8mUFIh6ll/aQ2+0itoJxliGHEeO3L/XBWkrOQEYSixIJb79O9lCBjh5YKgmDlUs8u/x/U=
+X-Received: by 2002:a17:906:25cc:: with SMTP id n12mr4813564ejb.488.1603416102090;
+ Thu, 22 Oct 2020 18:21:42 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201023005334.7869-1-yao.jin@linux.intel.com>
-In-Reply-To: <20201023005334.7869-1-yao.jin@linux.intel.com>
-From:   Ian Rogers <irogers@google.com>
-Date:   Thu, 22 Oct 2020 18:02:31 -0700
-Message-ID: <CAP-5=fWtQB2emBg804LgwqztXF-W-+-9Z-s48VOGD+dpBDX4hQ@mail.gmail.com>
-Subject: Re: [PATCH] perf vendor events: Fix DRAM_BW_Use 0 issue for CLX/SKX
-To:     Jin Yao <yao.jin@linux.intel.com>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <Linux-kernel@vger.kernel.org>,
-        Andi Kleen <ak@linux.intel.com>,
-        Kan Liang <kan.liang@intel.com>, "Jin, Yao" <yao.jin@intel.com>
+References: <cover.1593198710.git.rgb@redhat.com> <6e2e10432e1400f747918eeb93bf45029de2aa6c.1593198710.git.rgb@redhat.com>
+ <CAHC9VhSCm5eeBcyY8bBsnxr-hK4rkso9_NJHJec2OXLu4m5QTA@mail.gmail.com>
+ <20200729194058.kcbsqjhzunjpipgm@madcap2.tricolour.ca> <CAHC9VhRUwCKBjffA_XNSjUwvUn8e6zfmy8WD203dK7R2KD0__g@mail.gmail.com>
+ <20201002195231.GH2882171@madcap2.tricolour.ca> <20201021163926.GA3929765@madcap2.tricolour.ca>
+In-Reply-To: <20201021163926.GA3929765@madcap2.tricolour.ca>
+From:   Paul Moore <paul@paul-moore.com>
+Date:   Thu, 22 Oct 2020 21:21:31 -0400
+Message-ID: <CAHC9VhRb7XMyTrcrmzM3yQO+eLdO_r2+DOLKr9apDDeH4ua2Ew@mail.gmail.com>
+Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
+To:     Richard Guy Briggs <rgb@redhat.com>
+Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
+        containers@lists.linux-foundation.org,
+        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
+        Linux-Audit Mailing List <linux-audit@redhat.com>,
+        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
+        simo@redhat.com, netdev@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
+        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 5:54 PM Jin Yao <yao.jin@linux.intel.com> wrote:
+On Wed, Oct 21, 2020 at 12:39 PM Richard Guy Briggs <rgb@redhat.com> wrote:
+> Here is an exmple I was able to generate after updating the testsuite
+> script to include a signalling example of a nested audit container
+> identifier:
 >
-> Ian reports an issue that the metric DRAM_BW_Use often remains 0.
+> ----
+> type=3DPROCTITLE msg=3Daudit(2020-10-21 10:31:16.655:6731) : proctitle=3D=
+/usr/bin/perl -w containerid/test
+> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
+7129731255799087104^3333941723245477888
+> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115583 =
+oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
+d_t:s0-s0:c0.c1023 ocomm=3Dperl
+> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
+3333941723245477888
+> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115580 =
+oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
+d_t:s0-s0:c0.c1023 ocomm=3Dperl
+> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
+8098399240850112512^3333941723245477888
+> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115582 =
+oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
+d_t:s0-s0:c0.c1023 ocomm=3Dperl
+> type=3DSYSCALL msg=3Daudit(2020-10-21 10:31:16.655:6731) : arch=3Dx86_64 =
+syscall=3Dkill success=3Dyes exit=3D0 a0=3D0xfffe3c84 a1=3DSIGTERM a2=3D0x4=
+d524554 a3=3D0x0 items=3D0 ppid=3D115564 pid=3D115567 auid=3Droot uid=3Droo=
+t gid=3Droot euid=3Droot suid=3Droot fsuid=3Droot egid=3Droot sgid=3Droot f=
+sgid=3Droot tty=3DttyS0 ses=3D1 comm=3Dperl exe=3D/usr/bin/perl subj=3Dunco=
+nfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3Dtestsuite-160329067=
+1-AcLtUulY
+> ----
 >
-> The metric expression for DRAM_BW_Use on CLX/SKX:
->
-> "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time"
->
-> The counts of uncore_imc/cas_count_read/ and uncore_imc/cas_count_write/
-> are scaled up by 64, that is to turn a count of cache lines into bytes,
-> the count is then divided by 1000000000 to give GB.
->
-> However, the counts of uncore_imc/cas_count_read/ and
-> uncore_imc/cas_count_write/ have been scaled yet.
->
-> The scale values are from sysfs, such as
-> /sys/devices/uncore_imc_0/events/cas_count_read.scale.
-> It's 6.103515625e-5 (64 / 1024.0 / 1024.0).
->
-> So if we use original metric expression, the result is not correct.
->
-> But the difficulty is, for SKL client, the counts are not scaled.
->
-> The metric expression for DRAM_BW_Use on SKL:
->
-> "64 * ( arb@event\\=0x81\\,umask\\=0x1@ + arb@event\\=0x84\\,umask\\=0x1@ ) / 1000000 / duration_time / 1000"
->
-> root@kbl-ppc:~# perf stat -M DRAM_BW_Use -a -- sleep 1
->
->  Performance counter stats for 'system wide':
->
->                190      arb/event=0x84,umask=0x1/ #     1.86 DRAM_BW_Use
->         29,093,178      arb/event=0x81,umask=0x1/
->      1,000,703,287 ns   duration_time
->
->        1.000703287 seconds time elapsed
->
-> The result is expected.
->
-> So the easy way is just change the metric expression for CLX/SKX.
-> This patch changes the metric expression to:
->
-> "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time"
->
-> 1048576 = 1024 * 1024.
->
-> Before (tested on CLX):
->
-> root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
->
->  Performance counter stats for 'system wide':
->
->             765.35 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
->               5.42 MiB  uncore_imc/cas_count_write/
->         1001515088 ns   duration_time
->
->        1.001515088 seconds time elapsed
->
-> After:
->
-> root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
->
->  Performance counter stats for 'system wide':
->
->             767.95 MiB  uncore_imc/cas_count_read/ #     0.80 DRAM_BW_Use
+> There are three CONTAINER_ID records which need some way of associating w=
+ith OBJ_PID records.  An additional CONTAINER_ID record would be present if=
+ the killing process itself had an audit container identifier.  I think the=
+ most obvious way to connect them is with a pid=3D field in the CONTAINER_I=
+D record.
 
-Nit, using ScaleUnit would allow this to be 0.80GB/s.
+Using a "pid=3D" field as a way to link CONTAINER_ID records to other
+records raises a few questions.  What happens if/when we need to
+represent those PIDs in the context of a namespace?  Are we ever going
+to need to link to records which don't have a "pid=3D" field?  I haven't
+done the homework to know if either of these are a concern right now,
+but I worry that this might become a problem in the future.
 
->               5.02 MiB  uncore_imc/cas_count_write/
->         1001900010 ns   duration_time
->
->        1.001900010 seconds time elapsed
->
-> Fixes: 038d3b53c284 ("perf vendor events intel: Update CascadelakeX events to v1.08")
-> Fixes: b5ff7f2799a4 ("perf vendor events: Update SkylakeX events to v1.21")
-> Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+The idea of using something like "item=3D" is interesting.  As you
+mention, the "item=3D" field does present some overlap problems with the
+PATH record, but perhaps we can do something similar.  What if we
+added a "record=3D" (or similar, I'm not worried about names at this
+point) to each record, reset to 0/1 at the start of each event, and
+when we needed to link records somehow we could add a "related=3D1,..,N"
+field.  This would potentially be useful beyond just the audit
+container ID work.
 
-Acked-by: Ian Rogers <irogers@google.com>
-
-Thanks,
-Ian
-
-> ---
->  tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json | 2 +-
->  tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json     | 2 +-
->  2 files changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> index de3193552277..00f4fcffa815 100644
-> --- a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
-> @@ -329,7 +329,7 @@
->      },
->      {
->          "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
-> -        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
-> +        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
->          "MetricGroup": "Memory_BW;SoC",
->          "MetricName": "DRAM_BW_Use"
->      },
-> diff --git a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> index f31794d3b926..0dd8b13b5cfb 100644
-> --- a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> +++ b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
-> @@ -323,7 +323,7 @@
->      },
->      {
->          "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
-> -        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
-> +        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
->          "MetricGroup": "Memory_BW;SoC",
->          "MetricName": "DRAM_BW_Use"
->      },
-> --
-> 2.17.1
->
+--=20
+paul moore
+www.paul-moore.com
