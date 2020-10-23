@@ -2,146 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C09D229682C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:48:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6EE16296831
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:54:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374111AbgJWAsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 20:48:11 -0400
-Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26064 "EHLO
-        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S369352AbgJWAsL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 20:48:11 -0400
-Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09N0hDIt026836;
-        Thu, 22 Oct 2020 17:47:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=facebook; bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
- b=OMxFuue1WZdTre33Dn5FPHMC6oI7NBkAIZioIPupz7AWMzaZ93A9uqsFB9KcVCe0a25n
- GmhgU17Ry8pL1MG7gQI6QwAF+ziLmCDtLvqzViukVAq30oXEC4dg5fwtRaqva2QjC1Og
- weENXG7flwIUmAyrZkldmA35SO3usozRh6U= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34bfu71pj1-7
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-        Thu, 22 Oct 2020 17:47:51 -0700
-Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
- by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Thu, 22 Oct 2020 17:47:47 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HpW/34w7q/2GNUifGC97JgGSU5f6CxWyHOc0KiLcAUJt2WwBUeWDVMrjZurX0u8nHbB+oRCy7rRqrcjZvYNn44ABenRAhObfKoEv4Xm+fhBn0MbXDL2sEmh8khVVzik4HdwOaH9n60QSt+b5WIpk/bQCiP7ib/m7nY3ot4lTemNtrBXHjzPl33CDGCaAwmrZmaGXfvGS+3K9qPrXAznhC2Ci48pINMz1cjwPP0OLn/ydzK7WnyFJbL45TTKeder9JHO+g6GPMT96yXsJTEmKcWULzlVcfeOAWGjQm8XsDcTr5+hb8k/xXbzen07O50jrv9s1a4bY/EJ6HjAYj3Qopg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
- b=XjXK9/guA5ImBlAP1zUXV3oJABRQZYwMBp+8N00eZPPtIFPSxuGhNORB/7sXAYlY17uWcI9dPyFZQXrq2VOMG+Sco6fzGavNrH6xKluZSUTHmTU0pd3qlYQq7TMijLPJyIM7yKBjr2TZlasg7iQWwaU3dz1mLLqq0FeiaxmybOFz9ZRWmZI0Gndd1KLue7AW2KB2bIKrTfiqyIEobMDedtdWYIomgaBdPlCXUfbhxOAVaQW38842uBT0heBijWd7Agt4j/82fW+aW52a22qUU4ue0hL56nPV/ycDF1ZUBTpN+uFN5nIijakrU0LPCISqRgyv9bv/+ljZ7KMYoWXXSQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
- header.d=fb.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
- s=selector2-fb-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
- b=eJIW1P/9y5EniNhswCYFMHZb16smDv5rqhxTEjjjS2x0ynfSiM9VkTSbwIZSnJR7pSkXLQu7742XLPiWHGWdblUxbpVPTsn20CV4+VVEE/cEuSKpYcFZAVAZh6xzjy4HY38H8n0sGP5BOMlQ/n9XNshY3KftLY57dNMZ76PHu74=
-Authentication-Results: nvidia.com; dkim=none (message not signed)
- header.d=none;nvidia.com; dmarc=none action=none header.from=fb.com;
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
- by BY5PR15MB3683.namprd15.prod.outlook.com (2603:10b6:a03:1b3::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Fri, 23 Oct
- 2020 00:47:44 +0000
-Received: from BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
- ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Fri, 23 Oct 2020
- 00:47:43 +0000
-Date:   Thu, 22 Oct 2020 17:47:39 -0700
-From:   Roman Gushchin <guro@fb.com>
-To:     Zi Yan <ziy@nvidia.com>
-CC:     Andrew Morton <akpm@linux-foundation.org>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Mike Kravetz <mike.kravetz@oracle.com>,
-        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
-        <linux-mm@kvack.org>, <kernel-team@fb.com>
-Subject: Re: [PATCH v1 0/2] mm: cma: introduce a non-blocking version of
- cma_release()
-Message-ID: <20201023004739.GH300658@carbon.dhcp.thefacebook.com>
-References: <20201022225308.2927890-1-guro@fb.com>
- <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
-X-Originating-IP: [2620:10d:c090:400::4:3243]
-X-ClientProxiedBy: MWHPR1601CA0014.namprd16.prod.outlook.com
- (2603:10b6:300:da::24) To BYAPR15MB4136.namprd15.prod.outlook.com
- (2603:10b6:a03:96::24)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::4:3243) by MWHPR1601CA0014.namprd16.prod.outlook.com (2603:10b6:300:da::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25 via Frontend Transport; Fri, 23 Oct 2020 00:47:42 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: d56e5684-7190-4822-58ec-08d876ed409b
-X-MS-TrafficTypeDiagnostic: BY5PR15MB3683:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <BY5PR15MB3683D5B43FD476E0E6EEF873BE1A0@BY5PR15MB3683.namprd15.prod.outlook.com>
-X-FB-Source: Internal
-X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Y2fjPjPdBUAl28C80AOOTNe/cTuzVlK6mTn8+M8P/Qx/jreZCjxlbogReGhHMbS+KXL/8ejC1QWxhlgtfTLiSeoMoVHyrkdSnDGFdPED4OytOB3fuzgw67QNauTqrO3+CIIRC352LkWQyAUKJL/IgEfxWz43l2ihScJSRO6YHHExEdumHZZG8YAHnTSlC5sApuVntuDjr7fxfotyuMNgwNtpHFcHL0zpPO+xvsT6Ac5Je+mZuBWOoWbB8QA11W6CWlF388YVCTzxqda29ZoAQf5a4NX1Ghchd7KnddJl/gogMQMSFpq25scsTXEzq0AAmJdd7Ic7GmdrAinsk62AOw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(136003)(396003)(366004)(478600001)(83380400001)(55016002)(6916009)(8936002)(66946007)(1076003)(33656002)(8676002)(86362001)(66476007)(6666004)(2906002)(66556008)(9686003)(5660300002)(4326008)(53546011)(7696005)(16526019)(186003)(54906003)(6506007)(316002)(52116002);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData: 2qRMNXhQz4coEe1nQXNLApYUE8HUOqnuZj2cHdLluIBoChtrY0Cpyk9TvYUaN+VS12X2D1E2bM23yGCNEWq2orzgi++BAMBre6DFT9R2YW2rJOTizLUsGOnr85x5dzEisHQufK9SGeBJK1Bav7ITYLl71X/EpOb5L8rfoRNpYLfQw6EAjbDPfw9MvNxS2FObWceKILu65Kb2ttZVLjurA6YE/U6lcheKNFL6Wn4KL18J5g8EClGsZnLht2YAmm6OIg0ftcntMUWmmRP2w6SBR6cn5QIPBrUwC0lreHHFbhhyvYiyJMOD67Xcp3E2alIbF+I6Jgbhhlue6F/l0wtyxVNm5KSSxEWt5fDa44IAMrzwo6moUZuDKm0XrvBOC+2/uMsMaXxcRo3TeymzohIcYI3wiKt6ju5Ek2To178vpoNXfhIlks/pXYNkjpgwdoeO6Vttzw4fZlL22cAg4j9Bnlh3ffkwCjLw585NvtW3p7g7xYN3iV4EwhGQIbEsA5Bs+TL1Vm0bBu3XWb9URsF4Rcb87aAIZwbHTf/i8F6DxP7djjpk0OwwVmjxsDUUsybDFhrpHOJjWQMu3O9r6VRNm0jHPLEi36Eadrs9Fbj3qwJ9wFWBJJoWnp+R6n4HwBDLGMIzAooR31Ms7iqq6J83vI+DnZtKxBAirBUMgGUCE5I=
-X-MS-Exchange-CrossTenant-Network-Message-Id: d56e5684-7190-4822-58ec-08d876ed409b
-X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 00:47:43.8353
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: KOMJmFKed7UMNsv2x0IKkB39jl1EwTT1WSphsdbC2GnFaQnLWVRzvb+ZzEB+Lelp
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3683
-X-OriginatorOrg: fb.com
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-22_17:2020-10-20,2020-10-22 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
- adultscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015 spamscore=0
- mlxlogscore=999 impostorscore=0 malwarescore=0 mlxscore=0
- priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2009150000 definitions=main-2010230004
-X-FB-Internal: deliver
+        id S374162AbgJWAyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:54:12 -0400
+Received: from mga06.intel.com ([134.134.136.31]:53246 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2900876AbgJWAyL (ORCPT <rfc822;Linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 20:54:11 -0400
+IronPort-SDR: o6sX6t8mKSTLJ00hSm3IEb6jVnl7szro6SpmY5L079u95yZe59UwscsBbVjMc5D3vgL9PJksVw
+ K55sE5hGhZ1w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="229247596"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="229247596"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 17:54:09 -0700
+IronPort-SDR: swHK9eY0ASrKYZrtdpr+3Tj0kJB3cpK4Ssb9GH0u/YUwawn5WtSnjDPhl1SUvNoyMi2S0FlgxC
+ zcyixqgPMGjw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="423282924"
+Received: from kbl-ppc.sh.intel.com ([10.239.159.163])
+  by fmsmga001.fm.intel.com with ESMTP; 22 Oct 2020 17:54:05 -0700
+From:   Jin Yao <yao.jin@linux.intel.com>
+To:     acme@kernel.org, jolsa@kernel.org, peterz@infradead.org,
+        mingo@redhat.com, alexander.shishkin@linux.intel.com
+Cc:     Linux-kernel@vger.kernel.org, ak@linux.intel.com,
+        kan.liang@intel.com, yao.jin@intel.com, irogers@google.com,
+        Jin Yao <yao.jin@linux.intel.com>
+Subject: [PATCH] perf vendor events: Fix DRAM_BW_Use 0 issue for CLX/SKX
+Date:   Fri, 23 Oct 2020 08:53:34 +0800
+Message-Id: <20201023005334.7869-1-yao.jin@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 07:42:45PM -0400, Zi Yan wrote:
-> On 22 Oct 2020, at 18:53, Roman Gushchin wrote:
-> 
-> > This small patchset introduces a non-blocking version of cma_release()
-> > and simplifies the code in hugetlbfs, where previously we had to
-> > temporarily drop hugetlb_lock around the cma_release() call.
-> >
-> > It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
-> > THP under a memory pressure requires a cma_release() call. If it's
-> 
-> Thanks for the patch. But during 1GB THP split, we only clear
-> the bitmaps without releasing the pages. Also in cma_release_nowait(),
-> the first page in the allocated CMA region is reused to store
-> struct cma_clear_bitmap_work, but the same method cannot be used
-> during THP split, since the first page is still in-use. We might
-> need to allocate some new memory for struct cma_clear_bitmap_work,
-> which might not be successful under memory pressure. Any suggestion
-> on where to store struct cma_clear_bitmap_work when I only want to
-> clear bitmap without releasing the pages?
+Ian reports an issue that the metric DRAM_BW_Use often remains 0.
 
-It means we can't use cma_release() there either, because it does clear
-individual pages. We need to clear the cma bitmap without touching pages.
+The metric expression for DRAM_BW_Use on CLX/SKX:
 
-Can you handle an error there?
+"( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time"
 
-If so, we can introduce something like int cma_schedule_bitmap_clearance(),
-which will allocate a work structure and will be able to return -ENOMEM
-in the unlikely case of error.
+The counts of uncore_imc/cas_count_read/ and uncore_imc/cas_count_write/
+are scaled up by 64, that is to turn a count of cache lines into bytes,
+the count is then divided by 1000000000 to give GB.
 
-Will it work for you?
+However, the counts of uncore_imc/cas_count_read/ and
+uncore_imc/cas_count_write/ have been scaled yet.
 
-Thanks!
+The scale values are from sysfs, such as
+/sys/devices/uncore_imc_0/events/cas_count_read.scale.
+It's 6.103515625e-5 (64 / 1024.0 / 1024.0).
+
+So if we use original metric expression, the result is not correct.
+
+But the difficulty is, for SKL client, the counts are not scaled.
+
+The metric expression for DRAM_BW_Use on SKL:
+
+"64 * ( arb@event\\=0x81\\,umask\\=0x1@ + arb@event\\=0x84\\,umask\\=0x1@ ) / 1000000 / duration_time / 1000"
+
+root@kbl-ppc:~# perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+               190      arb/event=0x84,umask=0x1/ #     1.86 DRAM_BW_Use
+        29,093,178      arb/event=0x81,umask=0x1/
+     1,000,703,287 ns   duration_time
+
+       1.000703287 seconds time elapsed
+
+The result is expected.
+
+So the easy way is just change the metric expression for CLX/SKX.
+This patch changes the metric expression to:
+
+"( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time"
+
+1048576 = 1024 * 1024.
+
+Before (tested on CLX):
+
+root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+            765.35 MiB  uncore_imc/cas_count_read/ #     0.00 DRAM_BW_Use
+              5.42 MiB  uncore_imc/cas_count_write/
+        1001515088 ns   duration_time
+
+       1.001515088 seconds time elapsed
+
+After:
+
+root@lkp-csl-2sp5 ~# perf stat -M DRAM_BW_Use -a -- sleep 1
+
+ Performance counter stats for 'system wide':
+
+            767.95 MiB  uncore_imc/cas_count_read/ #     0.80 DRAM_BW_Use
+              5.02 MiB  uncore_imc/cas_count_write/
+        1001900010 ns   duration_time
+
+       1.001900010 seconds time elapsed
+
+Fixes: 038d3b53c284 ("perf vendor events intel: Update CascadelakeX events to v1.08")
+Fixes: b5ff7f2799a4 ("perf vendor events: Update SkylakeX events to v1.21")
+Signed-off-by: Jin Yao <yao.jin@linux.intel.com>
+---
+ tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json | 2 +-
+ tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json     | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+index de3193552277..00f4fcffa815 100644
+--- a/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/cascadelakex/clx-metrics.json
+@@ -329,7 +329,7 @@
+     },
+     {
+         "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
+-        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
++        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
+         "MetricGroup": "Memory_BW;SoC",
+         "MetricName": "DRAM_BW_Use"
+     },
+diff --git a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
+index f31794d3b926..0dd8b13b5cfb 100644
+--- a/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
++++ b/tools/perf/pmu-events/arch/x86/skylakex/skx-metrics.json
+@@ -323,7 +323,7 @@
+     },
+     {
+         "BriefDescription": "Average external Memory Bandwidth Use for reads and writes [GB / sec]",
+-        "MetricExpr": "( 64 * ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) / 1000000000 ) / duration_time",
++        "MetricExpr": "( ( ( uncore_imc@cas_count_read@ + uncore_imc@cas_count_write@ ) * 1048576 ) / 1000000000 ) / duration_time",
+         "MetricGroup": "Memory_BW;SoC",
+         "MetricName": "DRAM_BW_Use"
+     },
+-- 
+2.17.1
+
