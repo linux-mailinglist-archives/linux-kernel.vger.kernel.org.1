@@ -2,142 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C916B29699D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:17:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B8322969A5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:20:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372370AbgJWGRI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:17:08 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37994 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372337AbgJWGRI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:17:08 -0400
-Received: from mail-pl1-x641.google.com (mail-pl1-x641.google.com [IPv6:2607:f8b0:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA794C0613D4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:17:06 -0700 (PDT)
-Received: by mail-pl1-x641.google.com with SMTP id t4so298276plq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:17:06 -0700 (PDT)
+        id S372566AbgJWGUY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:20:24 -0400
+Received: from mail-mw2nam12on2072.outbound.protection.outlook.com ([40.107.244.72]:43489
+        "EHLO NAM12-MW2-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S372497AbgJWGUX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 02:20:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Ik2QyskoBIPaNjB/eST4rU0DSjn9JagR4XyOLzjJRLdU/w2MAj7YeASA78y99i+hC6U6YkDBxtjRwDwY66yXRNxqRD/y4wpiL1mlU2mJXNvMDtyB3LDCYI+BvJGnNHm3R6H0f0wYY0RI7nTUGK9Yt6HVxCe6vMpzczWtyQUjM+ukYjHbPERXF+CUFsQu2R+JOTHk4M8Oy35hvMNESYcT2bFk8tWa9mG2cRVCD2d5lmu0K1RCq5UB4hgruM1iGbAE98YTKgnbwf2A8KkvSMaUamYmexWVMZE8lLz52E8PMISOvJH8lzoBx0FX1f6wgYNEEb4KqTRb+8pGALKRD+1rNA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=us9KZrMSXCLyU0MhHT0h2hJTL4e7Vp60kF6bbjCXnQk=;
+ b=ShVOS6p63GxzFanTVTlJclXcb2tkiOu7nyqteBwExwNPgy4UJiaDxPIoV+Mf50FK9/shuKiDUiaQBrdzQ+mMEWHm1YF58c0Nzuakwg5faxSERoTQRmDeu7gp9275pok0d56uk9jJPu2GtY08pNukTRwGy0QwwydvTIUCus98hC/DbG9XJTCQMKObFEP1KuYhDsl5ty/9wFMlHcga22QSZJBiJcx+tIICticUrPUxMDo2Ll69PQFJ4h0/E9+q9D3Yu+9acu1vMF5w1pBSH8cKjv8Otq7qrICUsVse7SH9owxCnSTlCump7PrW/gbhc+59uQa1aUWRcdJNJRa+Sr12hw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=windriver.com; dmarc=pass action=none
+ header.from=windriver.com; dkim=pass header.d=windriver.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=qZx9FbWhVPPPhazjV3moDfr24pwj93WkkmuXXCaHCHA=;
-        b=B64hrugZLYwFDebwJ2n7cVm7IRpj+T6U2GvjbXeupsrBGTGAYwZLtGRoMLjXS0LCNS
-         Nmo2U523Hv+ktz4L2Otq4L86ZqOFYu3WLlrAGgpC49UpMaaAYNxmetjkWeXqk0jiSIla
-         gY5Ho3k8QylY8TFUS5YT3M6B9u2h4iyXMgZXERvFgGVAcRiT1CaboY4C/hVO8V4atbq6
-         rPURegBP7LxCH+Yr4d4x1Qa7LALmduuR2heeao1YguWmBHEJ87V3XyUSsA2jJopT9x3d
-         rQLsbWY1PBXHXcJEfEf4Mrc4huuq4akMabCdSsVJtGm8Kgp+4t+qR6lvCa8qqXL9hsz+
-         nLvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=qZx9FbWhVPPPhazjV3moDfr24pwj93WkkmuXXCaHCHA=;
-        b=L/jCxruLSjpNBTrfkigyiTpnuVx8WlBFw90Ysx4ObfDqIDfXymJoFhAMqKzXT4xTd/
-         pxyz11bP6rHJDRymnytVz9WGzd6jorNf+OFHPthRq1PRx7D96a8EZ9ksyamGL0bgZ8VY
-         eDpSbrS0yRFh7wIg22H3XnnyWcWfciD8BNUkfF037kRHWJ70Vb4DvXd6iUE1lrropRcy
-         UpfyPt3HlciF6tWokDkUnwz4b1Ilg8y1UwLYBJA1CXbUSnpwbjPk/PitWJI+SMCTYuYK
-         2Kl+b4qoMX8wZnvQHyzF1YOm0F7baJx1A+O5pozpqraqQ7be7G2ikApqjVAdjz01BJjg
-         PHOA==
-X-Gm-Message-State: AOAM532I/eJfL2dyZygMJ7R1b0vYxaCmklN+vFVsprybJ0WjqEatsto4
-        p4prwaqWM8Ub0qFiIBLThL2fYw==
-X-Google-Smtp-Source: ABdhPJzxbFDFyOM5J2fHvcReFefR6cHQ7tvPbgE4SQ5a7DPzKvxN0M1pWbmG6xTE/UMs2sLWAUz7Tg==
-X-Received: by 2002:a17:902:6b45:b029:d3:df34:3222 with SMTP id g5-20020a1709026b45b02900d3df343222mr874550plt.68.1603433825974;
-        Thu, 22 Oct 2020 23:17:05 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id lb13sm600802pjb.5.2020.10.22.23.17.04
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Oct 2020 23:17:05 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 11:47:03 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        srinivas.pandruvada@linux.intel.com,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: [PATCH] cpufreq: Avoid configuring old governors as default with
- intel_pstate
-Message-ID: <20201023061703.jjpmoeq7wzwqtsid@vireshk-i7>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <34115486.YmRjPRKJaA@kreacher>
- <20201022120213.GG2611@hirez.programming.kicks-ass.net>
- <8312288.dAKoTdFk2S@kreacher>
+ d=windriversystems.onmicrosoft.com;
+ s=selector2-windriversystems-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=us9KZrMSXCLyU0MhHT0h2hJTL4e7Vp60kF6bbjCXnQk=;
+ b=EQr2shg1/ha8+/dE1jsdVhkPNRvxYF/754h2Ds3mBDzbIMhM5UY0E2y24HexkApjjlDxvCij+8czoshNz2Zo9PpRtRfjamrUshI8BzWV3ojXNre8wKUfyA73+Hf5iRDR+IW3J2eVsTwtSo9yKXf82flgO/HUeoZpGhfkxF7fIc0=
+Authentication-Results: kernel.dk; dkim=none (message not signed)
+ header.d=none;kernel.dk; dmarc=none action=none header.from=windriver.com;
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com (2603:10b6:a02:c4::17)
+ by BYAPR11MB2901.namprd11.prod.outlook.com (2603:10b6:a03:91::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.22; Fri, 23 Oct
+ 2020 06:20:21 +0000
+Received: from BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::80e9:e002:eeff:4d05]) by BYAPR11MB2632.namprd11.prod.outlook.com
+ ([fe80::80e9:e002:eeff:4d05%3]) with mapi id 15.20.3455.030; Fri, 23 Oct 2020
+ 06:20:21 +0000
+From:   qiang.zhang@windriver.com
+To:     axboe@kernel.dk
+Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
+        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] io-wq: fix 'task->pi_lock' spin lock protect
+Date:   Fri, 23 Oct 2020 14:20:03 +0800
+Message-Id: <20201023062003.3353-1-qiang.zhang@windriver.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [60.247.85.82]
+X-ClientProxiedBy: HK2PR04CA0077.apcprd04.prod.outlook.com
+ (2603:1096:202:15::21) To BYAPR11MB2632.namprd11.prod.outlook.com
+ (2603:10b6:a02:c4::17)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8312288.dAKoTdFk2S@kreacher>
-User-Agent: NeoMutt/20180716-391-311a52
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from pek-qzhang2-d1.wrs.com (60.247.85.82) by HK2PR04CA0077.apcprd04.prod.outlook.com (2603:1096:202:15::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 23 Oct 2020 06:20:19 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 36e72916-4049-4976-3929-08d8771bb7de
+X-MS-TrafficTypeDiagnostic: BYAPR11MB2901:
+X-Microsoft-Antispam-PRVS: <BYAPR11MB29019927FDFD50F36AA20792FF1A0@BYAPR11MB2901.namprd11.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:475;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: vUoWqfOv/B3Wa1sK8+emdJVsbAOFMBmkHM9EiBexT2Z2CGhwpy26CCpjL9f3LrwC1odoFXS2cRFzl9FNlM+VAZKgZxyz4YvW+z+vShqNq8JIOnqZO7zj3Tcy1eNOWgHW1XCbnmo/o6+g8uGigmSFtkWyxkYU04BXdlkaowUNPXgCndTbqNp/5eq+GS4/QgIyXFdDxzBXMMvvvegWxLNaBQU8m3oNRfG/vNAJwohvdhHTtBesmwsEqtXVMIrO72qXKH6lgaLPG8DgiOLN7uWS2aXhNirZhLHV5jguXdP1BsfgXM0DdTHEJRtwYJ0azfOz6NnFo65r7budob5TaaCipQ==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR11MB2632.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(39850400004)(376002)(396003)(366004)(478600001)(186003)(5660300002)(4326008)(26005)(6512007)(9686003)(2906002)(1076003)(316002)(6506007)(4744005)(6666004)(2616005)(16526019)(956004)(8676002)(6916009)(8936002)(66946007)(86362001)(66476007)(6486002)(83380400001)(36756003)(52116002)(66556008);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: TsgT3vb3PB7QGQT+31+hZbayxG1ql4O+HoauVuc4QgaX2ySnRQabXGZTYT8H0OKbBh+3mMhAJmed+pEnAoEG/tPsODvf4ExDByYPyQqRJ0wAHlhh90C+6R2BQnA/dtjddtq//3QeCcqfOk+nmHTZM2EiUvoI2yr92BJ8LQqTs3BhhZpZgey0GLK1Lkq25JpeSfnEtURY0vWvjwaeys6+WYRoysjT3M2yJ2DbWkZN9wxb6jb3WgU3UZAMimH571HNObCBFJBvkKDTLZ6FHGdefQqiqKn7t6UTfE0Orn4CNAXrla05vpNIPPRPOaxsxLZwr6NaZLvNyV1qzC6utECBA3SCX5FmRMK7XwejZPosJhUR1BN40ezozCpKehpEko7GaAHzhVAroRL4fbesKk0Ui+HqNt7amR3kKBjCU4KmBzt+3SJP4MvnzJRVH7tjyS22m7FWafhnTgF/ZfjHYOnklEy2uL2ISAv+DFlAub+gu14MAKnQWvj2JpNBwgni7g7DZUuhEZ+xSt+EGhf8CXLQPOXmYl0aN/mvsemakWCs++X38tCpVL4CCLTmpCVfrCu7Q+qGJxIgYjFDCphK4zTqO49PhlpI/kb8koqFtcVuIHFlpiOIjh0jje/vvyv+EOF786oqxpUFNreQlbvIG/IjnQ==
+X-OriginatorOrg: windriver.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 36e72916-4049-4976-3929-08d8771bb7de
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR11MB2632.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 06:20:20.9419
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ddb2873-a1ad-4a18-ae4e-4644631433be
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tHor9bKmjNS78kp0wM9Rh6tOEhQ3EXFw4UQYIiM8yTb5u00wogm9c0Ap6vRgW9UTYpr1yKtGn1LiketVeGYe1Q//8GIG5lDCsQthyHTWXGE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BYAPR11MB2901
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-20, 18:23, Rafael J. Wysocki wrote:
-> From: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> Subject: [PATCH] cpufreq: Avoid configuring old governors as default with intel_pstate
-> 
-> Commit 33aa46f252c7 ("cpufreq: intel_pstate: Use passive mode by
-> default without HWP") was meant to cause intel_pstate without HWP
-> to be used in the passive mode with the schedutil governor on top of
-> it by default, but it missed the case in which either "ondemand" or
-> "conservative" was selected as the default governor in the existing
-> kernel config, in which case the previous old governor configuration
-> would be used, causing the default legacy governor to be used on top
-> of intel_pstate instead of schedutil.
-> 
-> Address this by preventing "ondemand" and "conservative" from being
-> configured as the default cpufreq governor in the case when schedutil
-> is the default choice for the default governor setting.
-> 
-> [Note that the default cpufreq governor can still be set via the
->  kernel command line if need be and that choice is not limited,
->  so if anyone really wants to use one of the legacy governors by
->  default, it can be achieved this way.]
-> 
-> Fixes: 33aa46f252c7 ("cpufreq: intel_pstate: Use passive mode by default without HWP")
-> Cc: 5.8+ <stable@vger.kernel.org> # 5.8+
-> Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
-> ---
->  drivers/cpufreq/Kconfig |    2 ++
->  1 file changed, 2 insertions(+)
-> 
-> Index: linux-pm/drivers/cpufreq/Kconfig
-> ===================================================================
-> --- linux-pm.orig/drivers/cpufreq/Kconfig
-> +++ linux-pm/drivers/cpufreq/Kconfig
-> @@ -71,6 +71,7 @@ config CPU_FREQ_DEFAULT_GOV_USERSPACE
->  
->  config CPU_FREQ_DEFAULT_GOV_ONDEMAND
->  	bool "ondemand"
-> +	depends on !SMP || !X86_INTEL_PSTATE
->  	select CPU_FREQ_GOV_ONDEMAND
->  	select CPU_FREQ_GOV_PERFORMANCE
->  	help
-> @@ -83,6 +84,7 @@ config CPU_FREQ_DEFAULT_GOV_ONDEMAND
->  
->  config CPU_FREQ_DEFAULT_GOV_CONSERVATIVE
->  	bool "conservative"
-> +	depends on !SMP || !X86_INTEL_PSTATE
+From: Zqiang <qiang.zhang@windriver.com>
 
-While reading this first it felt like a SMP platforms related problem
-(which I was surprised about), and then I understood what you are
-doing.
+The set CPU affinity func 'do_set_cpus_allowed' may be operate
+'task_rq', need add rq lock protect, replace 'pi_lock' spinlock
+protect with task_rq_lock func.
 
-I wonder if rewriting it this way makes it more readable with same
-result eventually.
+Signed-off-by: Zqiang <qiang.zhang@windriver.com>
+---
+ fs/io-wq.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-	depends on !(X86_INTEL_PSTATE && SMP)
-
+diff --git a/fs/io-wq.c b/fs/io-wq.c
+index d3165ce339c2..6ea3e0224e63 100644
+--- a/fs/io-wq.c
++++ b/fs/io-wq.c
+@@ -1209,11 +1209,13 @@ static bool io_wq_worker_affinity(struct io_worker *worker, void *data)
+ {
+ 	struct task_struct *task = worker->task;
+ 	unsigned long flags;
++	struct rq_flags rf;
++	struct rq *rq;
+ 
+-	raw_spin_lock_irqsave(&task->pi_lock, flags);
++	rq = task_rq_lock(task, &rf);
+ 	do_set_cpus_allowed(task, cpumask_of_node(worker->wqe->node));
+ 	task->flags |= PF_NO_SETAFFINITY;
+-	raw_spin_unlock_irqrestore(&task->pi_lock, flags);
++	task_rq_unlock(rq, task, &rf);
+ 	return false;
+ }
+ 
 -- 
-viresh
+2.17.1
+
