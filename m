@@ -2,92 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFC0B296C64
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:56:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A1CD296C65
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:57:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461805AbgJWJ4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:56:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43522 "EHLO
+        id S461727AbgJWJ5X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:57:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43686 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461535AbgJWJ4S (ORCPT
+        with ESMTP id S461630AbgJWJ5W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:56:18 -0400
-Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 524FBC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:56:17 -0700 (PDT)
-Received: by mail-qt1-x843.google.com with SMTP id z33so428528qth.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:56:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=pMRKWLCWwiDqv8Kcsdlr0JKmuLPbQM18b8vsreWvgas=;
-        b=WuUaXlyVwuJrSiRaxHYD7TdqddGgQnTLrsa8KJ7dVOxgafvuDtzkyjg2w071e0RNBp
-         Qs4jsEB+LkpsUP5J32oIL07oc/ifFArjSDQ7nzDRZFHQQgeBs0O8aGZ079fzFEVQ424U
-         O3g2GJUS/4pfXExNQj87rA9bLZJr5U2MWRAN49TDhu2uvUzhTOYYAiEddst0aAHgV8CF
-         Kdb8t04wQRAAcp15bU0Nkilr26dfoMVOBNYBnZAVcszr8hWWgv6lsvsBtUi1VosOrFIQ
-         8dq3VqRfQ1ria3svhvIFn/lT4mF1DLgLpVctQYrDcw6J54e2+7x+RNKR5j7URZkUaQYu
-         JCTw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=pMRKWLCWwiDqv8Kcsdlr0JKmuLPbQM18b8vsreWvgas=;
-        b=cAC3zod8aRWaRoWHcSsDGPtWLhNzEupHXmS6YLh+/WCT8jAiJZfYzalYyfjB19MWuV
-         sqlKWJokxCsYDmci5/f9JhdAVYCsRIAHleqwaun6CFgGTlS3LnptHpfkeGkCBJPOs6eI
-         esRRfUGp4vlRI3IANte0SEaU2lv+PWrlb8TfAViN+Onwfaa7qVpzW1za97OsoSSr7Uck
-         wyiT1yfIQ/Tfk/xK8kaqOTab/G5t4yY4mR6NV09CLzFF4ELblpvd3/W5+DBf8yMMJChR
-         2RTBMWwxPVR/oaW1Wn1JrPuwvUAzmQxp9kRUnJm1HflGn4jyTGugpKz2F/52MiU5mBgr
-         zAaA==
-X-Gm-Message-State: AOAM533vpn1A6jFBpi8B9Q4zL9XXR9ofqAPuMtgXkazPdfAtv7DUZRIj
-        fjk+08osCBoaQS4tGgi8luPSy42TkmXlU5w68NzQ9A==
-X-Google-Smtp-Source: ABdhPJxOPLJ+Hvsi7SDoI5LsL3Hn6kijquIduRFT614kfi2coMdgJmFYW8zhqVTxpA8JoynEVepCIaNp77n0yaRxuCU=
-X-Received: by 2002:ac8:c04:: with SMTP id k4mr1348416qti.66.1603446976304;
- Fri, 23 Oct 2020 02:56:16 -0700 (PDT)
+        Fri, 23 Oct 2020 05:57:22 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C40AFC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:57:22 -0700 (PDT)
+Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVtox-0002Kh-94; Fri, 23 Oct 2020 11:57:15 +0200
+Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
+        (envelope-from <ore@pengutronix.de>)
+        id 1kVtor-0001ih-Ry; Fri, 23 Oct 2020 11:57:09 +0200
+From:   Oleksij Rempel <o.rempel@pengutronix.de>
+To:     Andrew Lunn <andrew@lunn.ch>,
+        "David S. Miller" <davem@davemloft.net>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
+        David Jander <david@protonic.nl>, kernel@pengutronix.de,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
+        Marek Vasut <marex@denx.de>
+Subject: [PATCH v1] net: phy: remove spaces
+Date:   Fri, 23 Oct 2020 11:57:09 +0200
+Message-Id: <20201023095709.6544-1-o.rempel@pengutronix.de>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <00000000000069b76105b00bcbfd@google.com> <00000000000055421f05b253489b@google.com>
-In-Reply-To: <00000000000055421f05b253489b@google.com>
-From:   Dmitry Vyukov <dvyukov@google.com>
-Date:   Fri, 23 Oct 2020 11:56:04 +0200
-Message-ID: <CACT4Y+b9naqoj4c3qaGrqwD1YsAb96zToZg8m2QCitovV9jj7g@mail.gmail.com>
-Subject: Re: INFO: rcu detected stall in sys_newlstat
-To:     syzbot <syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com>
-Cc:     David Howells <dhowells@redhat.com>,
-        =?UTF-8?B?RnLDqWTDqXJpYyBXZWlzYmVja2Vy?= <fweisbec@gmail.com>,
-        linux-afs@lists.infradead.org, LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        Thomas Gleixner <tglx@linutronix.de>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
+X-SA-Exim-Mail-From: ore@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 11:34 AM syzbot
-<syzbot+60b38542a0dfb2e0f746@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 1d0e850a49a5b56f8f3cb51e74a11e2fedb96be6
-> Author: David Howells <dhowells@redhat.com>
-> Date:   Fri Oct 16 12:21:14 2020 +0000
->
->     afs: Fix cell removal
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=103fa33c500000
-> start commit:   eff48dde Merge tag 'trace-v5.9-rc5' of git://git.kernel.or..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=af502ec9a451c9fc
-> dashboard link: https://syzkaller.appspot.com/bug?extid=60b38542a0dfb2e0f746
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14ddd69b900000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=179a69ab900000
->
-> If the result looks correct, please mark the issue as fixed by replying with:
->
-> #syz fix: afs: Fix cell removal
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
+---
+ drivers/net/phy/phy-core.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-Based on the reproducer looks right:
+diff --git a/drivers/net/phy/phy-core.c b/drivers/net/phy/phy-core.c
+index 8d333d3084ed..635be83962b6 100644
+--- a/drivers/net/phy/phy-core.c
++++ b/drivers/net/phy/phy-core.c
+@@ -120,10 +120,10 @@ static const struct phy_setting settings[] = {
+ 	PHY_SETTING( 100000, FULL, 100000baseDR_Full		),
+ 	PHY_SETTING( 100000, FULL, 100000baseSR_Full		),
+ 	/* 56G */
+-	PHY_SETTING(  56000, FULL,  56000baseCR4_Full	  	),
+-	PHY_SETTING(  56000, FULL,  56000baseKR4_Full	  	),
+-	PHY_SETTING(  56000, FULL,  56000baseLR4_Full	  	),
+-	PHY_SETTING(  56000, FULL,  56000baseSR4_Full	  	),
++	PHY_SETTING(  56000, FULL,  56000baseCR4_Full		),
++	PHY_SETTING(  56000, FULL,  56000baseKR4_Full		),
++	PHY_SETTING(  56000, FULL,  56000baseLR4_Full		),
++	PHY_SETTING(  56000, FULL,  56000baseSR4_Full		),
+ 	/* 50G */
+ 	PHY_SETTING(  50000, FULL,  50000baseCR2_Full		),
+ 	PHY_SETTING(  50000, FULL,  50000baseKR2_Full		),
+-- 
+2.28.0
 
-#syz fix: afs: Fix cell removal
