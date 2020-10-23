@@ -2,130 +2,138 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A5C296D44
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:03:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2BB57296D50
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:04:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462677AbgJWLD1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:03:27 -0400
-Received: from mx4.veeam.com ([104.41.138.86]:52752 "EHLO mx4.veeam.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S462618AbgJWLD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:03:26 -0400
-Received: from mail.veeam.com (prgmbx01.amust.local [172.24.0.171])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mx4.veeam.com (Postfix) with ESMTPS id 6D9A8887F2;
-        Fri, 23 Oct 2020 14:03:22 +0300 (MSK)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=veeam.com; s=mx4;
-        t=1603451002; bh=65sH+UMPTiYCb05Btrrm4bWQp8NDibtw9NY4NHi6CiU=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To:From;
-        b=FVRYdNY4iU3fryanL+UcAz/hDXzgEbgZP/dN7KMYRZ/my5KPzb1LupgLfz5nx0rts
-         d6uwIFh++QA1slMQ0phsgOo/Dqs+ABXRfXgHxjCpuKrD2YULI2KOxQ3cjxpTiFcOZN
-         rqp2382d6jWDTvDYgPIp+o9hPZuHB2UraC1JzjNI=
-Received: from veeam.com (172.24.14.5) by prgmbx01.amust.local (172.24.0.171)
- with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.721.2; Fri, 23 Oct 2020
- 13:03:20 +0200
-Date:   Fri, 23 Oct 2020 14:04:07 +0300
-From:   Sergei Shtepa <sergei.shtepa@veeam.com>
-To:     Hannes Reinecke <hare@suse.de>
-CC:     "hch@infradead.org" <hch@infradead.org>,
-        Mike Snitzer <snitzer@redhat.com>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        "Damien Le Moal" <Damien.LeMoal@wdc.com>,
-        "axboe@kernel.dk" <axboe@kernel.dk>,
-        "viro@zeniv.linux.org.uk" <viro@zeniv.linux.org.uk>,
-        "linux-xfs@vger.kernel.org" <linux-xfs@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "len.brown@intel.com" <len.brown@intel.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>,
-        "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        Johannes Thumshirn <Johannes.Thumshirn@wdc.com>,
-        "ming.lei@redhat.com" <ming.lei@redhat.com>,
-        "jack@suse.cz" <jack@suse.cz>, "tj@kernel.org" <tj@kernel.org>,
-        "gustavo@embeddedor.com" <gustavo@embeddedor.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "osandov@fb.com" <osandov@fb.com>,
-        "koct9i@gmail.com" <koct9i@gmail.com>,
-        "steve@sk2.org" <steve@sk2.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        device-mapper development <dm-devel@redhat.com>,
-        Alasdair G Kergon <agk@redhat.com>
-Subject: Re: [PATCH 0/2] block layer filter and block device snapshot module
-Message-ID: <20201023110407.GA23020@veeam.com>
-References: <71926887-5707-04a5-78a2-ffa2ee32bd68@suse.de>
- <20201021141044.GF20749@veeam.com>
- <ca8eaa40-b422-2272-1fd9-1d0a354c42bf@suse.de>
- <20201022094402.GA21466@veeam.com>
- <BL0PR04MB6514AC1B1FF313E6A14D122CE71D0@BL0PR04MB6514.namprd04.prod.outlook.com>
- <20201022135213.GB21466@veeam.com>
- <20201022151418.GR9832@magnolia>
- <CAMM=eLfO_L-ZzcGmpPpHroznnSOq_KEWignFoM09h7Am9yE83g@mail.gmail.com>
- <20201023091346.GA25115@infradead.org>
- <d50062cd-929d-c8ff-5851-4e1d517dc4cb@suse.de>
+        id S462746AbgJWLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:04:46 -0400
+Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:54974 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S462676AbgJWLEp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:04:45 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C4F128B759EE;
+        Fri, 23 Oct 2020 11:04:44 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:305:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6120:7901:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13439:13972:14659:14721:21080:21221:21627:30054:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: bag64_200105227259
+X-Filterd-Recvd-Size: 3643
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 23 Oct 2020 11:04:43 +0000 (UTC)
+Message-ID: <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
+Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle
+ more patterns
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Fri, 23 Oct 2020 04:04:42 -0700
+In-Reply-To: <20201023094307.20820-1-dwaipayanray1@gmail.com>
+References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-In-Reply-To: <d50062cd-929d-c8ff-5851-4e1d517dc4cb@suse.de>
-X-Originating-IP: [172.24.14.5]
-X-ClientProxiedBy: prgmbx02.amust.local (172.24.0.172) To prgmbx01.amust.local
- (172.24.0.171)
-X-EsetResult: clean, is OK
-X-EsetId: 37303A29C604D26A677764
-X-Veeam-MMEX: True
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The 10/23/2020 13:31, Hannes Reinecke wrote:
-> On 10/23/20 11:13 AM, hch@infradead.org wrote:
-> > On Thu, Oct 22, 2020 at 01:54:16PM -0400, Mike Snitzer wrote:
-> >> On Thu, Oct 22, 2020 at 11:14 AM Darrick J. Wong
-> >>> Stupid question: Why don't you change the block layer to make it
-> >>> possible to insert device mapper devices after the blockdev has been set
-> >>> up?
-> >>
-> >> Not a stupid question.  Definitely something that us DM developers
-> >> have wanted to do for a while.  Devil is in the details but it is the
-> >> right way forward.
-> >>
-> > 
-> > Yes, I think that is the right thing to do.  And I don't think it should
-> > be all that hard.  All we'd need in the I/O path is something like the
-> > pseudo-patch below, which will allow the interposer driver to resubmit
-> > bios using submit_bio_noacct as long as the driver sets BIO_INTERPOSED.
-> > 
-> > diff --git a/block/blk-core.c b/block/blk-core.c
-> > index ac00d2fa4eb48d..3f6f1eb565e0a8 100644
-> > --- a/block/blk-core.c
-> > +++ b/block/blk-core.c
-> > @@ -1051,6 +1051,9 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
-> >   		return BLK_QC_T_NONE;
-> >   	}
-> >   
-> > +	if (blk_has_interposer(bio->bi_disk) &&
-> > +	    !(bio->bi_flags & BIO_INTERPOSED))
-> > +		return __submit_bio_interposed(bio);
-> >   	if (!bio->bi_disk->fops->submit_bio)
-> >   		return __submit_bio_noacct_mq(bio);
-> >   	return __submit_bio_noacct(bio);
-> > 
-
-It`s will be great! Approximately this interception capability is not
-enough now.
-
-> My thoughts went more into the direction of hooking into ->submit_bio, 
-> seeing that it's a NULL pointer for most (all?) block drivers.
+On Fri, 2020-10-23 at 15:13 +0530, Dwaipayan Ray wrote:
+> It is generally preferred that the macros from
+> include/linux/compiler_attributes.h are used, unless there
+> is a reason not to.
 > 
-> But sure, I'll check how the interposer approach would turn out.
+> Checkpatch currently checks __attribute__ for each of
 
-If anyone will do the patch blk-interposer, please add me to CC.
-I will try to offer my module that will use blk-interposer.
+checkpatch, no need for capitalization
 
--- 
-Sergei Shtepa
-Veeam Software developer.
+and non-trivially:
+
+> +			my $attr_list = qr {
+> +				__alias__|
+> +				__aligned__$|
+> +				__aligned__\(.*\)|
+> +				__always_inline__|
+> +				__assume_aligned__\(.*\)|
+> +				__cold__|
+> +				__const__|
+> +				__copy__\(.*\)|
+> +				__designated_init__|
+> +				__externally_visible__|
+> +				__fallthrough__|
+> +				__gnu_inline__|
+> +				__malloc__|
+> +				__mode__\(.*\)|
+> +				__no_caller_saved_registers__|
+> +				__noclone__|
+> +				__noinline__|
+> +				__nonstring__|
+> +				__noreturn__|
+> +				__packed__|
+> +				__pure__|
+> +				__used__
+> +			}x;
+[]
+> +			my %attr_replace = (
+> +				"__alias__"			=> "__alias",
+> +				"__aligned__"		=> "__aligned_largest",
+> +				"__aligned__("		=> "__aligned",
+> +				"__always_inline__" 	=> "__always_inline",
+> +				"__assume_aligned__("	=> "__assume_aligned",
+> +				"__cold__"			=> "__cold",
+> +				"__const__"			=> "__const",
+> +				"__copy__("			=> "__copy",
+> +				"__designated_init__"		=> "__designated_init",
+> +				"__externally_visible__"	=> "__visible",
+> +				"__fallthrough__"		=> "fallthrough",
+> +				"__gnu_inline__"		=> "__gnu_inline",
+> +				"__malloc__"		=> "__malloc",
+> +				"__mode__("			=> "__mode",
+> +				"__no_caller_saved_registers__" => "__no_caller_saved_registers",
+> +				"__noclone__"		=> "__noclone",
+> +				"__noinline__"		=> "noinline",
+> +				"__nonstring__"		=> "__nonstring",
+> +				"__noreturn__"		=> "__noreturn",
+> +				"__packed__"		=> "__packed",
+> +				"__pure__"			=> "__pure",
+> +				"__used__"			=> "__used"
+> +			);
+> +
+> +			if ($attr =~/^($attr_list)/) {
+
+I would remove the __ from the entries here.
+
+And you could check using
+
+	$line =~ /__attribute__\s*\(\s*($balanced_parens)\s*)/
+
+and check for all attributes in $1 after
+stripping the leading and trailing parens
+and any leading and trailing underscores
+from each attribute.
+
+And you only need one hash and you should 
+check for existence of the key rather than
+have multiple lists.
+
+	if (exists($attributes($attr))) {
+
+> +				my $old = $1;
+> +				if ($old =~ /^(__.+__\()(.*)\)/) {
+> +					my $new = $attr_replace{$1};
+> +					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +					     "$new($2) is preffered over __attribute__(($old))\n" . $herecurr);
+
+preferred
+
+> +				} else {
+> +					my $new = $attr_replace{$old};
+> +					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +					     "$new is preffered over __attribute__(($old))\n" . $herecurr);
+> +				}
+> +			}
+
+
