@@ -2,360 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5FCBD297563
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:57:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D1D729756A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:59:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751559AbgJWQ50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:57:26 -0400
-Received: from mx2.suse.de ([195.135.220.15]:32800 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S461853AbgJWQ5Z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:57:25 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 486C7AC48;
-        Fri, 23 Oct 2020 16:57:23 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id EB3C91E1348; Fri, 23 Oct 2020 18:57:22 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 18:57:22 +0200
-From:   Jan Kara <jack@suse.cz>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 35/56] jbd2: fix kernel-doc markups
-Message-ID: <20201023165722.GH9119@quack2.suse.cz>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <ef76f7a51fbb1ff7d9d1ff36f5ce65f1c3e5e3c2.1603469755.git.mchehab+huawei@kernel.org>
+        id S1751664AbgJWQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:59:17 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462951AbgJWQ7R (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:59:17 -0400
+Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542B1C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:59:17 -0700 (PDT)
+Received: by mail-ot1-x341.google.com with SMTP id o14so1975976otj.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:59:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=GSVr128pqOoBVgaQYWDeH7y0Q+csz3WwPIzOZPNEXDU=;
+        b=Gm9gB8LfWqXjYNl+ezisHjcKPpuYsHthevYvIaDtlEB9d+b83tyLXhvxMbEAce2RCO
+         CmF8L6JhFKT5CK4tQHjNkssG/iskl/etKY6pLS+99Ew2EqkVPbrprYCdRzwzkjudwoPf
+         Dfkh6+Z5B7HoPwQvg1wb//RugPRsKW2CDOH9dKQLQ7WLbz4rR5u4HvTWlgz5rgBdDd+j
+         3WTb3QYAXr7pej5bwi+5CdYDUZi9D4M5JopRMJee1TnfGVj3oVywjh7rApTeHq4nqZDp
+         GTDkyqsJy2mwxZ/NVxcjG+ll2QChI1WzogLNWiZ8G0k6ung0cvBNwr8oZIExoq4nG1Yo
+         0fIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=GSVr128pqOoBVgaQYWDeH7y0Q+csz3WwPIzOZPNEXDU=;
+        b=Rl5Eg2E5nb83wKIZFeIybnCustnzc38Y49pzjStu5TL92ZZWKG5d9WAaB2ST3uR4Lm
+         gGnRJPvvLaNDn4hCapUtpxuOP3Bnuhwi1fIcIE9DjuTuc8W3Na3r9p7kxQI595kwrGeG
+         NWMPTsRTD9ucCqTj7OpIMOD6sJZMCYkKCp92CSbh2ekAfsMLu0/LIW925zop+ws0qvxc
+         jcjRqkDjH74JHY8OwX+kxlUNnnFnKBjcuTU7J3zoBxpVNgD9IxjyWNzKHVtSuUdPDwbh
+         zos0cY/ezb2YpH/r1g9T3O6FLVi2fibJxQ6dbViMkrMQbmcaBOML50Tvw7q6ukEnBOEb
+         Dsvw==
+X-Gm-Message-State: AOAM5301eVdE7LR4D5FfTZsgjSbrHBt2RybyneaQmVHzwiEY57+KpX4n
+        z9rxnLLbM5k6GWWNDElwgv+QoZO/Vz+Wc3uXx2DKqw==
+X-Google-Smtp-Source: ABdhPJyeGWHQQDGVimyZ+QBAQPt7x+bmS1YILgkR+mEnGxuK2O6BoKn48ADm59edMi2szBv9/R+InVHL3y6rZeYy5GA=
+X-Received: by 2002:a05:6830:10d3:: with SMTP id z19mr2501059oto.295.1603472354961;
+ Fri, 23 Oct 2020 09:59:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ef76f7a51fbb1ff7d9d1ff36f5ce65f1c3e5e3c2.1603469755.git.mchehab+huawei@kernel.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+ <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+ <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+In-Reply-To: <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 23 Oct 2020 09:59:03 -0700
+Message-ID: <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Mohammed Gamal <mgamal@redhat.com>,
+        kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 23-10-20 18:33:22, Mauro Carvalho Chehab wrote:
-> Kernel-doc markup should use this format:
->         identifier - description
-> 
-> They should not have any type before that, as otherwise
-> the parser won't do the right thing.
-> 
-> Also, some identifiers have different names between their
-> prototypes and the kernel-doc markup.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+On Fri, Oct 23, 2020 at 2:22 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+>
+> On 23/10/20 05:14, Sean Christopherson wrote:
+> >>>> +
+> >>>> +       /*
+> >>>> +        * Check that the GPA doesn't exceed physical memory limits, as that is
+> >>>> +        * a guest page fault.  We have to emulate the instruction here, because
+> >>>> +        * if the illegal address is that of a paging structure, then
+> >>>> +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+> >>>> +        * would also use advanced VM-exit information for EPT violations to
+> >>>> +        * reconstruct the page fault error code.
+> >>>> +        */
+> >>>> +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
+> >>>> +               return kvm_emulate_instruction(vcpu, 0);
+> >>>> +
+> >>> Is kvm's in-kernel emulator up to the task? What if the instruction in
+> >>> question is AVX-512, or one of the myriad instructions that the
+> >>> in-kernel emulator can't handle? Ice Lake must support the advanced
+> >>> VM-exit information for EPT violations, so that would seem like a
+> >>> better choice.
+> >>>
+> >> Anyone?
+> >
+> > Using "advanced info" if it's supported seems like the way to go.  Outright
+> > requiring it is probably overkill; if userspace wants to risk having to kill a
+> > (likely broken) guest, so be it.
+>
+> Yeah, the instruction is expected to page-fault here.  However the
+> comment is incorrect and advanced information does not help here.
+>
+> The problem is that page fault error code bits cannot be reconstructed
+> from bits 0..2 of the EPT violation exit qualification, if bit 8 is
+> clear in the exit qualification (that is, if the access causing the EPT
+> violation is to a paging-structure entry).  In that case bits 0..2 refer
+> to the paging-structure access rather than to the final access.  In fact
+> advanced information is not available at all for paging-structure access
+> EPT violations.
 
-Thanks for the patch. It looks good. You can add:
+True, but the in-kernel emulator can only handle a very small subset
+of the available instructions.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/jbd2/journal.c     | 34 ++++++++++++++++++----------------
->  fs/jbd2/transaction.c | 31 ++++++++++++++++---------------
->  include/linux/jbd2.h  |  2 +-
->  3 files changed, 35 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 0c7c42bd530f..f71848367ab6 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -566,12 +566,14 @@ static int __jbd2_journal_force_commit(journal_t *journal)
->  }
->  
->  /**
-> - * Force and wait upon a commit if the calling process is not within
-> - * transaction.  This is used for forcing out undo-protected data which contains
-> - * bitmaps, when the fs is running out of space.
-> + * jbd2_journal_force_commit_nested - Force and wait upon a commit if the
-> + * calling process is not within transaction.
->   *
->   * @journal: journal to force
->   * Returns true if progress was made.
-> + *
-> + * This is used for forcing out undo-protected data which contains
-> + * bitmaps, when the fs is running out of space.
->   */
->  int jbd2_journal_force_commit_nested(journal_t *journal)
->  {
-> @@ -582,7 +584,7 @@ int jbd2_journal_force_commit_nested(journal_t *journal)
->  }
->  
->  /**
-> - * int journal_force_commit() - force any uncommitted transactions
-> + * jbd2_journal_force_commit() - force any uncommitted transactions
->   * @journal: journal to force
->   *
->   * Caller want unconditional commit. We can only force the running transaction
-> @@ -1899,7 +1901,7 @@ static int load_superblock(journal_t *journal)
->  
->  
->  /**
-> - * int jbd2_journal_load() - Read journal from disk.
-> + * jbd2_journal_load() - Read journal from disk.
->   * @journal: Journal to act on.
->   *
->   * Given a journal_t structure which tells us which disk blocks contain
-> @@ -1972,7 +1974,7 @@ int jbd2_journal_load(journal_t *journal)
->  }
->  
->  /**
-> - * void jbd2_journal_destroy() - Release a journal_t structure.
-> + * jbd2_journal_destroy() - Release a journal_t structure.
->   * @journal: Journal to act on.
->   *
->   * Release a journal_t structure once it is no longer in use by the
-> @@ -2050,7 +2052,7 @@ int jbd2_journal_destroy(journal_t *journal)
->  
->  
->  /**
-> - *int jbd2_journal_check_used_features() - Check if features specified are used.
-> + * jbd2_journal_check_used_features() - Check if features specified are used.
->   * @journal: Journal to check.
->   * @compat: bitmask of compatible features
->   * @ro: bitmask of features that force read-only mount
-> @@ -2085,7 +2087,7 @@ int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
->  }
->  
->  /**
-> - * int jbd2_journal_check_available_features() - Check feature set in journalling layer
-> + * jbd2_journal_check_available_features() - Check feature set in journalling layer
->   * @journal: Journal to check.
->   * @compat: bitmask of compatible features
->   * @ro: bitmask of features that force read-only mount
-> @@ -2117,7 +2119,7 @@ int jbd2_journal_check_available_features(journal_t *journal, unsigned long comp
->  }
->  
->  /**
-> - * int jbd2_journal_set_features() - Mark a given journal feature in the superblock
-> + * jbd2_journal_set_features() - Mark a given journal feature in the superblock
->   * @journal: Journal to act on.
->   * @compat: bitmask of compatible features
->   * @ro: bitmask of features that force read-only mount
-> @@ -2201,7 +2203,7 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
->  }
->  
->  /*
-> - * jbd2_journal_clear_features () - Clear a given journal feature in the
-> + * jbd2_journal_clear_features() - Clear a given journal feature in the
->   * 				    superblock
->   * @journal: Journal to act on.
->   * @compat: bitmask of compatible features
-> @@ -2230,7 +2232,7 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
->  EXPORT_SYMBOL(jbd2_journal_clear_features);
->  
->  /**
-> - * int jbd2_journal_flush () - Flush journal
-> + * jbd2_journal_flush() - Flush journal
->   * @journal: Journal to act on.
->   *
->   * Flush all data for a given journal to disk and empty the journal.
-> @@ -2305,7 +2307,7 @@ int jbd2_journal_flush(journal_t *journal)
->  }
->  
->  /**
-> - * int jbd2_journal_wipe() - Wipe journal contents
-> + * jbd2_journal_wipe() - Wipe journal contents
->   * @journal: Journal to act on.
->   * @write: flag (see below)
->   *
-> @@ -2346,7 +2348,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
->  }
->  
->  /**
-> - * void jbd2_journal_abort () - Shutdown the journal immediately.
-> + * jbd2_journal_abort () - Shutdown the journal immediately.
->   * @journal: the journal to shutdown.
->   * @errno:   an error number to record in the journal indicating
->   *           the reason for the shutdown.
-> @@ -2437,7 +2439,7 @@ void jbd2_journal_abort(journal_t *journal, int errno)
->  }
->  
->  /**
-> - * int jbd2_journal_errno () - returns the journal's error state.
-> + * jbd2_journal_errno() - returns the journal's error state.
->   * @journal: journal to examine.
->   *
->   * This is the errno number set with jbd2_journal_abort(), the last
-> @@ -2461,7 +2463,7 @@ int jbd2_journal_errno(journal_t *journal)
->  }
->  
->  /**
-> - * int jbd2_journal_clear_err () - clears the journal's error state
-> + * jbd2_journal_clear_err() - clears the journal's error state
->   * @journal: journal to act on.
->   *
->   * An error must be cleared or acked to take a FS out of readonly
-> @@ -2481,7 +2483,7 @@ int jbd2_journal_clear_err(journal_t *journal)
->  }
->  
->  /**
-> - * void jbd2_journal_ack_err() - Ack journal err.
-> + * jbd2_journal_ack_err() - Ack journal err.
->   * @journal: journal to act on.
->   *
->   * An error must be cleared or acked to take a FS out of readonly
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 43985738aa86..4cf88191b025 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -517,7 +517,7 @@ EXPORT_SYMBOL(jbd2__journal_start);
->  
->  
->  /**
-> - * handle_t *jbd2_journal_start() - Obtain a new handle.
-> + * jbd2_journal_start() - Obtain a new handle.
->   * @journal: Journal to start transaction on.
->   * @nblocks: number of block buffer we might modify
->   *
-> @@ -564,7 +564,7 @@ void jbd2_journal_free_reserved(handle_t *handle)
->  EXPORT_SYMBOL(jbd2_journal_free_reserved);
->  
->  /**
-> - * int jbd2_journal_start_reserved() - start reserved handle
-> + * jbd2_journal_start_reserved() - start reserved handle
->   * @handle: handle to start
->   * @type: for handle statistics
->   * @line_no: for handle statistics
-> @@ -618,7 +618,7 @@ int jbd2_journal_start_reserved(handle_t *handle, unsigned int type,
->  EXPORT_SYMBOL(jbd2_journal_start_reserved);
->  
->  /**
-> - * int jbd2_journal_extend() - extend buffer credits.
-> + * jbd2_journal_extend() - extend buffer credits.
->   * @handle:  handle to 'extend'
->   * @nblocks: nr blocks to try to extend by.
->   * @revoke_records: number of revoke records to try to extend by.
-> @@ -743,7 +743,7 @@ static void stop_this_handle(handle_t *handle)
->  }
->  
->  /**
-> - * int jbd2_journal_restart() - restart a handle .
-> + * jbd2__journal_restart() - restart a handle .
->   * @handle:  handle to restart
->   * @nblocks: nr credits requested
->   * @revoke_records: number of revoke record credits requested
-> @@ -813,7 +813,7 @@ int jbd2_journal_restart(handle_t *handle, int nblocks)
->  EXPORT_SYMBOL(jbd2_journal_restart);
->  
->  /**
-> - * void jbd2_journal_lock_updates () - establish a transaction barrier.
-> + * jbd2_journal_lock_updates () - establish a transaction barrier.
->   * @journal:  Journal to establish a barrier on.
->   *
->   * This locks out any further updates from being started, and blocks
-> @@ -872,7 +872,7 @@ void jbd2_journal_lock_updates(journal_t *journal)
->  }
->  
->  /**
-> - * void jbd2_journal_unlock_updates (journal_t* journal) - release barrier
-> + * jbd2_journal_unlock_updates () - release barrier
->   * @journal:  Journal to release the barrier on.
->   *
->   * Release a transaction barrier obtained with jbd2_journal_lock_updates().
-> @@ -1180,7 +1180,8 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
->  }
->  
->  /**
-> - * int jbd2_journal_get_write_access() - notify intent to modify a buffer for metadata (not data) update.
-> + * jbd2_journal_get_write_access() - notify intent to modify a buffer
-> + *				     for metadata (not data) update.
->   * @handle: transaction to add buffer modifications to
->   * @bh:     bh to be used for metadata writes
->   *
-> @@ -1224,7 +1225,7 @@ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
->   * unlocked buffer beforehand. */
->  
->  /**
-> - * int jbd2_journal_get_create_access () - notify intent to use newly created bh
-> + * jbd2_journal_get_create_access () - notify intent to use newly created bh
->   * @handle: transaction to new buffer to
->   * @bh: new buffer.
->   *
-> @@ -1304,7 +1305,7 @@ int jbd2_journal_get_create_access(handle_t *handle, struct buffer_head *bh)
->  }
->  
->  /**
-> - * int jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
-> + * jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
->   *     non-rewindable consequences
->   * @handle: transaction
->   * @bh: buffer to undo
-> @@ -1381,7 +1382,7 @@ int jbd2_journal_get_undo_access(handle_t *handle, struct buffer_head *bh)
->  }
->  
->  /**
-> - * void jbd2_journal_set_triggers() - Add triggers for commit writeout
-> + * jbd2_journal_set_triggers() - Add triggers for commit writeout
->   * @bh: buffer to trigger on
->   * @type: struct jbd2_buffer_trigger_type containing the trigger(s).
->   *
-> @@ -1423,7 +1424,7 @@ void jbd2_buffer_abort_trigger(struct journal_head *jh,
->  }
->  
->  /**
-> - * int jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
-> + * jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
->   * @handle: transaction to add buffer to.
->   * @bh: buffer to mark
->   *
-> @@ -1591,7 +1592,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
->  }
->  
->  /**
-> - * void jbd2_journal_forget() - bforget() for potentially-journaled buffers.
-> + * jbd2_journal_forget() - bforget() for potentially-journaled buffers.
->   * @handle: transaction handle
->   * @bh:     bh to 'forget'
->   *
-> @@ -1760,7 +1761,7 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
->  }
->  
->  /**
-> - * int jbd2_journal_stop() - complete a transaction
-> + * jbd2_journal_stop() - complete a transaction
->   * @handle: transaction to complete.
->   *
->   * All done for a particular handle.
-> @@ -2078,7 +2079,7 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
->  }
->  
->  /**
-> - * int jbd2_journal_try_to_free_buffers() - try to free page buffers.
-> + * jbd2_journal_try_to_free_buffers() - try to free page buffers.
->   * @journal: journal for operation
->   * @page: to try and free
->   *
-> @@ -2409,7 +2410,7 @@ static int journal_unmap_buffer(journal_t *journal, struct buffer_head *bh,
->  }
->  
->  /**
-> - * void jbd2_journal_invalidatepage()
-> + * jbd2_journal_invalidatepage()
->   * @journal: journal to use for flush...
->   * @page:    page to flush
->   * @offset:  start of the range to invalidate
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 3c5f76ce88f1..17bed9684cba 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -397,7 +397,7 @@ static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
->  #define JI_WAIT_DATA (1 << __JI_WAIT_DATA)
->  
->  /**
-> - * struct jbd_inode - The jbd_inode type is the structure linking inodes in
-> + * struct jbd2_inode - The jbd_inode type is the structure linking inodes in
->   * ordered mode present in a transaction so that we can sync them during commit.
->   */
->  struct jbd2_inode {
-> -- 
-> 2.26.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+If bit 8 is set in the exit qualification, we should use the advanced
+VM-exit information. If it's clear, we should just do a software page
+walk of the guest's x86 page tables. The in-kernel emulator should
+only be used as a last resort on hardware that doesn't support the
+advanced VM-exit information for EPT violations.
