@@ -2,105 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2A6F2970D5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:44:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D06B12970D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:46:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750026AbgJWNod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:44:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750018AbgJWNoc (ORCPT
+        id S1750075AbgJWNqE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:46:04 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6969 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374057AbgJWNqE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:44:32 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7453C0613CE;
-        Fri, 23 Oct 2020 06:44:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=627oe94ZLeKyjbn+qyvUY++lrQo5+wHp1qVKRnwOyEA=; b=tAeBy66w9joU2PrbRcza5JTXle
-        OQ1GNbtKm1kuwALnI3n5XGE48bmTbzeIUI3woO3q/FJzb5CMWMcPWAr2mw4nh/tkvhoTmvRMse5M5
-        398H/FWTpl07yUabCgpJ3R43gitI0mK0dEzUUNo/vAl9B5F0hjZPr9XWXtd9ythKH1x4j8HnmvTpV
-        XxR/NkHFLrB/KjBpbKKGC7ui/GCLc9dXVwMVVqGcz9iaJ2qK02ANhTToLcwLuLZskBzmufSxPUTRY
-        H17rSXqWnece4UGf2Oj722qSORrug+kLR5xQI9znH+pwqIUVHki8yvnZtkFe6g3jq+X4sGqr+jcQ2
-        dmRyGHmA==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVxMh-0007Dn-0M; Fri, 23 Oct 2020 13:44:19 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF997304D28;
-        Fri, 23 Oct 2020 15:44:16 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id B819D23268BA4; Fri, 23 Oct 2020 15:44:16 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 15:44:16 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201023134416.GA2628@hirez.programming.kicks-ass.net>
-References: <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
- <20201022212033.GA646497@xps15>
- <20201023073905.GM2611@hirez.programming.kicks-ass.net>
- <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
- <20201023094115.GR2611@hirez.programming.kicks-ass.net>
- <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
- <20201023105431.GM2594@hirez.programming.kicks-ass.net>
- <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
- <20201023131628.GY2628@hirez.programming.kicks-ass.net>
- <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
+        Fri, 23 Oct 2020 09:46:04 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f92de6b0002>; Fri, 23 Oct 2020 06:45:15 -0700
+Received: from [10.25.102.106] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 23 Oct
+ 2020 13:45:56 +0000
+Subject: Re: [PATCH v4 08/15] Documentation: of: Convert graph bindings to
+ json-schema
+To:     Philipp Zabel <p.zabel@pengutronix.de>,
+        Rob Herring <robh@kernel.org>
+CC:     <broonie@kernel.org>, <lgirdwood@gmail.com>,
+        <kuninori.morimoto.gx@renesas.com>,
+        <pierre-louis.bossart@linux.intel.com>, <perex@perex.cz>,
+        <tiwai@suse.com>, <thierry.reding@gmail.com>,
+        <jonathanh@nvidia.com>, <alsa-devel@alsa-project.org>,
+        <devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <sharadg@nvidia.com>,
+        <mkumard@nvidia.com>, <viswanathl@nvidia.com>,
+        <rlokhande@nvidia.com>, <dramesh@nvidia.com>,
+        <atalambedu@nvidia.com>, <nwartikar@nvidia.com>,
+        <swarren@nvidia.com>, <nicoleotsuka@gmail.com>
+References: <1602859382-19505-1-git-send-email-spujar@nvidia.com>
+ <1602859382-19505-9-git-send-email-spujar@nvidia.com>
+ <20201019215628.GA3650804@bogus>
+ <ea670e2ed677d67afdb52e876eeee35eb9d7949e.camel@pengutronix.de>
+From:   Sameer Pujar <spujar@nvidia.com>
+Message-ID: <9cea202e-6ffb-c9da-d9c0-debc351fd944@nvidia.com>
+Date:   Fri, 23 Oct 2020 19:15:52 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
+In-Reply-To: <ea670e2ed677d67afdb52e876eeee35eb9d7949e.camel@pengutronix.de>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-GB
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603460715; bh=xEanTRCOYabNAppmF/+BLQC44ZrW3FYCtdF8/+89DCo=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+         Content-Language:X-Originating-IP:X-ClientProxiedBy;
+        b=P+mXkpL3P8Yckwuga28igVEQhM0NlLpL0YNCr9SXLwURhQYJZpYQStl24TUoJ54E1
+         wB+hizDdXiwDup9Drb3CykEYfZOZmSfj2Eo5gdKet1ENTH5AiPAg2jQlT2NN/EA7z9
+         rEOObWzslgQPhs5UYie/6WPc9mMrAK6nGnjArdN7GtiX4Yj2p7M5PI8ayRMhb5JqP3
+         vTAXxwCTDQR1syYDud+GyXz7o3BXZQ8Ny+ZmkHs6tiGezIVj6++nEH6lBf087sJcYo
+         CzE12yAY8dhDxnonWrNUSLqL0TaEKZwpxGXf1CALvKaRNM60a1ofgsy0ndzis+6gOP
+         opcv5TrtwfSgA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
-> On 10/23/20 2:16 PM, Peter Zijlstra wrote:
-> > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
 
-> > > That way another session could use the same sink if it is free. i.e
-> > > 
-> > > perf record -e cs_etm/@sink0/u --per-thread app1
-> > > 
-> > > and
-> > > 
-> > > perf record -e cs_etm/@sink0/u --per-thread app2
-> > > 
-> > > both can work as long as the sink is not used by the other session.
-> > 
-> > Like said above, if sink is shared between CPUs, that's going to be a
-> > trainwreck :/ Why do you want that?
-> 
-> That ship has sailed. That is how the current generation of systems are,
-> unfortunately. But as I said, this is changing and there are guidelines
-> in place to avoid these kind of topologies. With the future
-> technologies, this will be completely gone.
+>>> Signed-off-by: Sameer Pujar <spujar@nvidia.com>
+>>> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+>>> ---
+>>>   Documentation/devicetree/bindings/graph.txt  | 128 --------------------
+> The removed Documentation/devicetree/bindings/graph.txt is referenced by
+> a lot of files, tree-wide. Should the references be updated in the same
+> series?
 
-I understand that the hardware is like that, but why do you want to
-support this insanity in software?
+May be possible to include in the same series if it is just about using 
+'graph.yaml' reference instead of 'graph.txt' in various files.
 
-If you only allow a single sink user (group) at the same time, your
-problem goes away. Simply disallow the above scenario, do not allow
-concurrent sink users if sinks are shared like this.
+...
 
-Have the perf-record of app2 above fail because the sink is in-user
-already.
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/graph.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Common bindings for device graphs
+>>> +
+>>> +description: |
+>>> +  The hierarchical organisation of the device tree is well suited to describe
+>>> +  control flow to devices, but there can be more complex connections between
+>>> +  devices that work together to form a logical compound device, following an
+>>> +  arbitrarily complex graph.
+>>> +  There already is a simple directed graph between devices tree nodes using
+>>> +  phandle properties pointing to other nodes to describe connections that
+>>> +  can not be inferred from device tree parent-child relationships. The device
+>>> +  tree graph bindings described herein abstract more complex devices that can
+>>> +  have multiple specifiable ports, each of which can be linked to one or more
+>>> +  ports of other devices.
+>>> +
+>>> +  These common bindings do not contain any information about the direction or
+>>> +  type of the connections, they just map their existence. Specific properties
+>>> +  may be described by specialized bindings depending on the type of connection.
+>>> +
+>>> +  To see how this binding applies to video pipelines, for example, see
+>>> +  Documentation/devicetree/bindings/media/video-interfaces.txt.
+>>> +  Here the ports describe data interfaces, and the links between them are
+>>> +  the connecting data buses. A single port with multiple connections can
+>>> +  correspond to multiple devices being connected to the same physical bus.
+>>> +
+>>> +maintainers:
+>>> +  - Philipp Zabel <p.zabel@pengutronix.de>
+>>> +
+>>> +definitions:
+>>> +
+>>> +  port:
+>>> +    type: object
+>>> +    description: |
+>>> +      If there is more than one 'port' or more than one 'endpoint' node
+>>> +      or 'reg' property present in the port and/or endpoint nodes then
+>>> +      '#address-cells' and '#size-cells' properties are required in relevant
+>>> +      parent node.
+>> reg property.
+> What about #address-cells and #size-cells in port and ports nodes?
+> These must either be #address-cells = <1>, #size-cells = <0>, or they
+> can be absent if the parent node already has the same, or if a port node
+> only contains a single endpoint.
 
-Only if the hardware has per-CPU sinks can you allow this.
+Yes, will list these properties for port/ports.
+
+...
