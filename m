@@ -2,91 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 326A129791D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:52:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C3043297921
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:53:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756961AbgJWVwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:52:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756954AbgJWVwg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:52:36 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EB9C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:52:35 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id t9so2326139qtp.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:52:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=QceJnC4dRZPNkE1Yt9KuuGN8xx+4GwM1datfjLxkevI=;
-        b=WQkCZZCHD6jm8iZpwmjelqu62p54kzklxbWMj9e47TSQ/ZoawDCnqq1XnyNgtNr1Yw
-         2ITC0kxWyZzXaZmsOjYG8/dRfkcM9mUmRQD2unmG8cHb8ZgQUJrcH+IQNifUWp4YOFp0
-         IEy8KWJXFe06CxAJPb8PYBarepEpRo9W1/aWY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=QceJnC4dRZPNkE1Yt9KuuGN8xx+4GwM1datfjLxkevI=;
-        b=cp1dDqs+2axUTYB20zVJWMWUK5m0cbxqn+dHqgFMCxsKG0tQ4v+ZX2GrFUhldbRD0T
-         eIJOmb1umAdQLnQlAVfgv7tlF/3WUTHjucxGTX2x7uvnQEohHSOSPIqasKd/s5D1sDM+
-         SHY19r40lPELqkh6UmHv9gV3cTYF6z4hP/QwGH1yH7mIUj8a4wza9KDvMAQcCPyiNjW4
-         fORDu4gG9+aCwtQycmgcC9GwV0sPxCzdEevsUTE7acysCIQEOvBIWt2CG2XmiFMfiRmr
-         7fBWEWlzIuyylI6J3rOc1y/+3xvBgsbn0sgHnb63BsCDDVb/f53HPcqmLcA94p8Pz7In
-         ugnw==
-X-Gm-Message-State: AOAM531FeSK0SokMkmTtRckStqZvtTsr70mSGJmnp/QF2F9aPjbAAQ5C
-        I12eVIeYD2AykLuUJWzysAo2qqRVUQ4LqEifzInwEQ==
-X-Google-Smtp-Source: ABdhPJzxXiLM9Nysgq5xrTIC3dLNLCltoNzSRKxMC5NQrfFdsOPRswCaJmdEcvw3BhdladEH4EyKNknvu/OiuiZsQo0=
-X-Received: by 2002:ac8:5a45:: with SMTP id o5mr4581914qta.182.1603489954911;
- Fri, 23 Oct 2020 14:52:34 -0700 (PDT)
+        id S1756972AbgJWVxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:53:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54192 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756964AbgJWVxc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:53:32 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ACE4720857;
+        Fri, 23 Oct 2020 21:53:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603490012;
+        bh=Ij37+nLWdhORElfqYs8jtc6OQd/BGn0J09kWaWaub44=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=nugwVx/zVZIlwfzOET6+GuwwgnQJjNPwjBmYCB7gf+774kJ69BUcUP+RTBwca/lsB
+         qRxXBt0K8ECFwoDH04ZlccuEerj8ssPgYIUvGXt4T2CzH1oeS3WeRcFofla8b2y37r
+         qwaDS8+OekhJASNfUtZR9bhduF5kZ7eg7ifGd4Vw=
+Date:   Fri, 23 Oct 2020 14:53:29 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Herbert Xu <herbert@gondor.apana.org.au>
+Cc:     Arvind Sankar <nivedita@alum.mit.edu>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org,
+        Sami Tolvanen <samitolvanen@google.com>
+Subject: Re: [PATCH v2 1/6] crypto: Use memzero_explicit() for clearing state
+Message-ID: <20201023215329.GA180517@gmail.com>
+References: <20201020203957.3512851-1-nivedita@alum.mit.edu>
+ <20201020203957.3512851-2-nivedita@alum.mit.edu>
+ <20201022043633.GD857@sol.localdomain>
+ <20201023153927.GA217686@rani.riverdale.lan>
+ <20201023155604.GA3908702@gmail.com>
+ <20201023204536.GB27708@gondor.apana.org.au>
 MIME-Version: 1.0
-References: <20201022061554.3418060-1-pmalani@chromium.org>
- <20201022065719.GA1440360@kroah.com> <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
-In-Reply-To: <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
-From:   Prashant Malani <pmalani@chromium.org>
-Date:   Fri, 23 Oct 2020 14:52:23 -0700
-Message-ID: <CACeCKac-kfL_thmNRWs8sfj8TszNbrGZk2qptrJ1DLeuwQ9QCQ@mail.gmail.com>
-Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
-To:     Greg KH <gregkh@linuxfoundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
-        Benson Leung <bleung@chromium.org>,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023204536.GB27708@gondor.apana.org.au>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:13 AM Prashant Malani <pmalani@chromium.org> wrote:
->
-> Thanks for reviewing the patch, Greg.
->
-> On Wed, Oct 21, 2020 at 11:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+On Sat, Oct 24, 2020 at 07:45:36AM +1100, Herbert Xu wrote:
+> On Fri, Oct 23, 2020 at 08:56:04AM -0700, Eric Biggers wrote:
 > >
-> > >
-> > > +What:                /sys/class/typec/<port>-cable/identity/product_type_vdo
-> > > +Date:                October 2020
-> > > +Contact:     Prashant Malani <pmalani@chromium.org>
-> > > +Description:
-> > > +             Product Type VDOs part of Discover Identity command result. 3 values
-> > > +             are displayed (for the 3 possible Product Type VDOs), one per line.
-> > > +             The values will show 0s until Discover Identity command result becomes
-> > > +             available. The values can be polled.
-> >
-> > Why are you describing the same value in two different locations?
->
-> Both cable and partner can have Discover Identity VDOs and they are
-> listed separately in sysfs.
-> The other VDOs (id_header, cert_stat and product) have separate
-> descriptions for cable and partner too.
-> Perhaps there is a case for consolidating the listings here (factor
-> out the ones which are common to cable and partner).
->
+> > When clearing memory because "it may be sensitive" rather than "it's needed for
+> > the code to behave correctly", I think it's best to use memzero_explicit() to
+> > make the intent clear, even if it seems that memset() is sufficient.  Also keep
+> > in mind that support for compiling the kernel with LTO (link-time optimization)
+> > is being worked on (and some people already do it), which results in more code
+> > being optimized out.
+> 
+> The rule up until now has been that we only use memzero_explicit for
+> stack variables.  At this point please don't convert anything else
+> as it will cause too much churn.
+> 
+> If LTO did arrive we should do a global conversion.
+> 
 
-Just an update: I added a patch to the series which consolidates these
-repeat identity entries into 1 location:
-https://lore.kernel.org/linux-usb/20201023214328.1262883-1-pmalani@chromium.org/
+LTO is actively being worked on, now up to v6:
+https://lkml.kernel.org/lkml/20201013003203.4168817-1-samitolvanen@google.com/
+And in the real world it's already being used; the Android Compatibility
+Definition Document strongly recommends enabling CFI, which depends on LTO.
 
-Thanks and best regards,
+It's doubtful that anyone will do a global conversion from memset() to
+memzero_explicit(), as it's too hard to find all the places that should be
+converted.  They are in lots of different subsystems; the crypto subsystem will
+have the most, but not all.  We just need to fix as many as we can.  If you'd
+like to do something more comprehensive than this patch, that would be great,
+but I hope we don't wait forever for a global conversion that never happens.
+
+FWIW, kfree_sensitive() (formerly kzfree) already got converted by
+https://git.kernel.org/linus/8982ae527fbef170, and it wasn't really
+controversial.  Some people even wanted Cc stable (which I disagreed with, but
+it apparently made the final version).
+
+- Eric
