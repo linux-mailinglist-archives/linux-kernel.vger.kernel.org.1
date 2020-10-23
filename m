@@ -2,89 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48E66296F34
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 34A93296F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:31:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463830AbgJWM36 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:29:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39146 "EHLO
+        id S463630AbgJWMbb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 08:31:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:39380 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372608AbgJWM35 (ORCPT
+        with ESMTP id S2505954AbgJWMba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:29:57 -0400
-Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 377ACC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:29:57 -0700 (PDT)
-Received: by mail-wm1-x342.google.com with SMTP id d3so1320168wma.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:29:57 -0700 (PDT)
+        Fri, 23 Oct 2020 08:31:30 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 46506C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:31:29 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id l15so1329381wmi.3
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:31:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7rIF8N/i8VFiSPcWy7t2VnCvFrWFZsMucLJqXY/Ky6I=;
-        b=1sfZ/A80DOJRkuDn+aMTJEqRnTd7jlDaBzl/CTej9gD9qfX1ZXXwxvI9nL7Mhm2zCy
-         ppp30/JsZrruqfWCbWJvNoRaBZqiukoFqxkMsDnWCvp3OOvc8RXTvrYb4BM+JnII9wtx
-         vuu8zwt4MUCheX8x2ne4bex/JPdNTKobo4TXdbwrB2OkXP1PTIPGeUdA5qxC6TEgw/2H
-         io/sCFvCAYFZj3Nvg8qIEhdXdn4scXwM0VjR2jviSTN4KdxZXtJiSwPSp6T9HPcA0GSX
-         cq9+t8tjpmvOZQz5iYSwz2ArAQ6dTVS3ILRv0D67dVDYJqX+xgfOIBbSY3KgeA6k35I2
-         vY/g==
+        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=OgsYaNT7si4aUmj94LUjpDJPk7YDycSfzUdAI52Aub4=;
+        b=VZpi6JBFejPcuHx/0xa8bObFcO7Gg481B13EEknIsI5tXtO9GC7/umRRZlu/BQ9Ron
+         4ie4+8bOaIJpXzYB6uZ5FmseJDhSrW1dM+xFAy/aaVAT8a2NP4jJgOc1s7EF8khg1Ub0
+         vRYCsHLJOTnGLCQb+a/2hJUQP1HWJQWs8slKF0XJXtOBM06bxlOIXVMOXoKh+EQr491C
+         MrklP1atlg/A9GR7YdCYo76hDlqcOn0loczylzWCGgVVdR9vTCqIIJGtC+7NmlhtyG7y
+         vkzKeZdX+N1CA2Oe4Qa31RBkDGqoIhcJhZc2hNZUGJnV/+sf34LHT5Qs+WZ/+ww7/26+
+         MCdw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=7rIF8N/i8VFiSPcWy7t2VnCvFrWFZsMucLJqXY/Ky6I=;
-        b=XTi72bgoJGXzPMrkynjudOxMczKO4/KSgkjZfvLJjGAEjq8oXoqR3lqrPfMml57hdw
-         vRm3iyI5uhACXKBgMwjAAVMUuBQ3FZ28d9KJlBjtbedbfXRE0qHR9hteOx7rICV9BzU7
-         LJtcq9hQF7Kn76hvkQymkGc3YwmgGnrufXEFNkg26RKEiewr3OVY60puFUMooEzf3/i8
-         k3CtKxziFvoS4IRG16QbrqeRhQvhKPA4YnE7DtCnHY/TdMn/EhIacbEHebtmNYe8Q6bH
-         bD/JatP065gs7dGisRIZ3RFYYLnEI/HtAhCDEuyfK2Gs3CJWFcU5I9wM5vWQyuonDFoy
-         GajA==
-X-Gm-Message-State: AOAM530OooeFJFOi2u6NsucUaDyk1gqBJkxTdtc2oNHeNPYlkCqz61Bp
-        h9rInBEsczcA2JgJ5IoAtVBoczz3xQCYUg==
-X-Google-Smtp-Source: ABdhPJy8hebC8ysED7iakQTxAZEuNSTOYysF1RdKWxwQs5f/GemG//s/NvSNRjFXup1EEZ3JM+edIw==
-X-Received: by 2002:a1c:2905:: with SMTP id p5mr2116034wmp.187.1603456195733;
-        Fri, 23 Oct 2020 05:29:55 -0700 (PDT)
-Received: from localhost.localdomain (211.160.185.81.rev.sfr.net. [81.185.160.211])
-        by smtp.gmail.com with ESMTPSA id z15sm3138527wrq.24.2020.10.23.05.29.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 05:29:54 -0700 (PDT)
-From:   Fabien Parent <fparent@baylibre.com>
-To:     linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-mmc@vger.kernel.org
-Cc:     matthias.bgg@gmail.com, ulf.hansson@linaro.org,
-        chaotian.jing@mediatek.com, Fabien Parent <fparent@baylibre.com>
-Subject: [PATCH] mmc: host: mtk-sd: enable recheck_sdio_irq for MT8516 SoC
-Date:   Fri, 23 Oct 2020 14:29:50 +0200
-Message-Id: <20201023122950.60903-1-fparent@baylibre.com>
-X-Mailer: git-send-email 2.28.0
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=OgsYaNT7si4aUmj94LUjpDJPk7YDycSfzUdAI52Aub4=;
+        b=LUbTtPVe0TUcV4hunVFYP3Az/+oRyygGwCldISHjyc+V3oqiEwqGgC5Yzz3yjLLZSA
+         HVCabQJCBPwxkHJ/p44Em96gC58+vv1CDOx/l4QZlWPFrbqB+sgkRgEuNcFZfqTTJTTG
+         a+PtDmoQ4EE/p4CQvxauOYmCoB290nS+tNIXcpy99R27oaNUn8LsjQ749m/HEK0GDT6P
+         V5eHpIInf0P9pl4dgQxlNsc7kaB7aDfBk4CV24bwUkdf45NH/l/ptu+YKL/8sW1eADFe
+         biZZzfFGzCgzF2E+HM42fbOVM8KKHcHOpHX/LoMXopeP2c89zu9zYJz3L0FLZlguT/Qj
+         tHQg==
+X-Gm-Message-State: AOAM530pChkki7NXQZRd+zI6W0ozRYasPrUzBazZHsXUvV+C2xR6Q62i
+        OcRmKq0p84V8aE5meFZF7Xy1GXTns/EbzpD8c215HQ==
+X-Google-Smtp-Source: ABdhPJzCrKXMDdLXDXqAEB5GIUv0k5E7npGAomI+NZQd7jBeyb84zmgrGhWm2O4AlDjcnRLEraHrM13t0zQVeTLIw5Y=
+X-Received: by 2002:a1c:6743:: with SMTP id b64mr1986488wmc.157.1603456287911;
+ Fri, 23 Oct 2020 05:31:27 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <1603448245-79429-1-git-send-email-guoren@kernel.org>
+In-Reply-To: <1603448245-79429-1-git-send-email-guoren@kernel.org>
+From:   Anup Patel <anup@brainfault.org>
+Date:   Fri, 23 Oct 2020 17:12:09 +0530
+Message-ID: <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] irqchip/irq-sifive-plic: Fixup wrong size of
+ xxx_PER_HART and reg base
+To:     Guo Ren <guoren@kernel.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, wesley@sifive.com,
+        Yash Shah <yash.shah@sifive.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-MT8516 SoC suffers from sometimes losing SDIO IRQs, this makes SDIO
-devices sometimes unstable. Make use of the new property
-recheck_sdio_irq to fix the SDIO stability issues on MT8516.
+On Fri, Oct 23, 2020 at 3:48 PM <guoren@kernel.org> wrote:
+>
+> From: Guo Ren <guoren@linux.alibaba.com>
+>
+> ENABLE and CONTEXT registers contain M & S status for per-hart, so
+> ref to the specification the correct definition is double to the
+> current value.
+>
+> The value of hart_base and enable_base should be calculated by real
+> physical hartid not software id. Sometimes the CPU node's <reg>
+> from dts is not equal to the sequence index.
+>
+> Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> ---
+>  drivers/irqchip/irq-sifive-plic.c | 12 ++++++------
+>  1 file changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> index eaa3e9f..2e56576 100644
+> --- a/drivers/irqchip/irq-sifive-plic.c
+> +++ b/drivers/irqchip/irq-sifive-plic.c
+> @@ -44,16 +44,16 @@
+>   * Each hart context has a vector of interrupt enable bits associated with it.
+>   * There's one bit for each interrupt source.
+>   */
+> -#define ENABLE_BASE                    0x2000
+> -#define     ENABLE_PER_HART            0x80
+> +#define ENABLE_BASE                    0x2080
+> +#define     ENABLE_PER_HART            0x100
+>
+>  /*
+>   * Each hart context has a set of control registers associated with it.  Right
+>   * now there's only two: a source priority threshold over which the hart will
+>   * take an interrupt, and a register to claim interrupts.
+>   */
+> -#define CONTEXT_BASE                   0x200000
+> -#define     CONTEXT_PER_HART           0x1000
+> +#define CONTEXT_BASE                   0x201000
+> +#define     CONTEXT_PER_HART           0x2000
+>  #define     CONTEXT_THRESHOLD          0x00
+>  #define     CONTEXT_CLAIM              0x04
+>
+> @@ -358,10 +358,10 @@ static int __init plic_init(struct device_node *node,
+>                 cpumask_set_cpu(cpu, &priv->lmask);
+>                 handler->present = true;
+>                 handler->hart_base =
+> -                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
+> +                       priv->regs + CONTEXT_BASE + hartid * CONTEXT_PER_HART;
+>                 raw_spin_lock_init(&handler->enable_lock);
+>                 handler->enable_base =
+> -                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
+> +                       priv->regs + ENABLE_BASE + hartid * ENABLE_PER_HART;
+>                 handler->priv = priv;
+>  done:
+>                 for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
+> --
+> 2.7.4
+>
 
-Signed-off-by: Fabien Parent <fparent@baylibre.com>
----
- drivers/mmc/host/mtk-sd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+There is no one-to-one mapping between PLIC context and HARTID. Instead,
+we have many-to-one mapping between PLIC contexts and HARTID. In other
+words, we have one PLIC context for each interrupt capable mode (i.e.
+M/S-mode) of each HART.
 
-diff --git a/drivers/mmc/host/mtk-sd.c b/drivers/mmc/host/mtk-sd.c
-index a704745e5882..3dc102eefe49 100644
---- a/drivers/mmc/host/mtk-sd.c
-+++ b/drivers/mmc/host/mtk-sd.c
-@@ -524,7 +524,7 @@ static const struct mtk_mmc_compatible mt7622_compat = {
- 
- static const struct mtk_mmc_compatible mt8516_compat = {
- 	.clk_div_bits = 12,
--	.recheck_sdio_irq = false,
-+	.recheck_sdio_irq = true,
- 	.hs400_tune = false,
- 	.pad_tune_reg = MSDC_PAD_TUNE0,
- 	.async_fifo = true,
--- 
-2.28.0
+For example, on SiFive Unleashed we have 5 HARTs but HARTID=0 has
+only M-mode capable of taking interrupts so we have total (1 + 2x4) = 9
+PLIC contexts.
 
+I would also like to highlight that this patch is forcing PLIC driver to always
+use PLIC S-mode context for each HART which breaks the Linux RISC-V
+NoMMU kernel.
+
+There is no issue with the existing defines because these are aligned with
+above and latest PLIC spec.
+(Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc)
+
+NACK to this patch from my side.
+
+Regards,
+Anup
