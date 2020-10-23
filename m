@@ -2,125 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2CF4229723C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C2C929723F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:27:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465789AbgJWP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:26:28 -0400
-Received: from mail-io1-f72.google.com ([209.85.166.72]:50111 "EHLO
-        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S465756AbgJWP0W (ORCPT
+        id S465805AbgJWP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:27:16 -0400
+Received: from mail-pg1-f196.google.com ([209.85.215.196]:43595 "EHLO
+        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462196AbgJWP1Q (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:26:22 -0400
-Received: by mail-io1-f72.google.com with SMTP id y25so1410419iod.16
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:22 -0700 (PDT)
+        Fri, 23 Oct 2020 11:27:16 -0400
+Received: by mail-pg1-f196.google.com with SMTP id r10so1505942pgb.10;
+        Fri, 23 Oct 2020 08:27:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=2P8P5jvsF2otgmMApO2WQcy9L60H8t9eFc1xKbDFhRU=;
-        b=XWRgknqVkfeRJLTtODQgqyoA988cGo/FWcrNmVSwGBXbib+teY/eAWjWsSUx7Sws02
-         WuGo0mzlC8J/lxYGHvf+azXJm/Vm9XKHD4ddNNm9LZvWK48trBGunsgseWHMh9Q0mHsz
-         b1QCg5dDcTFrDDwJvAACBmPWKWSo+hn23NGuDgomj1B54HfH0Ke2rcHdhuCObrIg/iiz
-         lGWn657PwWCvC2BLJkWs1ZD8sRUqqCeD+GwSsAYyq8trTTk2qAIgV1HpodLAhTr2vOAE
-         P3qtlmnCPBn//s45y3VQOCa9drNJTP3qZEaXPRJPYEoC3xB5DyU5s98vbFESQ2XKNc10
-         KlPQ==
-X-Gm-Message-State: AOAM5301/Q081sD3vQa0Q+7nGy/xlDoty8He4F2Tgd+qqCOwx6NgstOr
-        EYHAE63f22nHDMcbwT7oZZVg15G8zDGqxpCVCu53xY4zNMfB
-X-Google-Smtp-Source: ABdhPJyv4NL87W+dc7TB4wd/aPNsdbJ2dkgslxRpBgiV06ubl6tKS7Uc0ocYJKnSgN+zkq1FtyrCSDv19b5CF/xWiGnzxGm/DCY1
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=BLVFBML2Vwax1XyDeMppx9C3lOBX85F9Q67T1CeljKY=;
+        b=PW7flJX+qlxsMTWjY8G8NIIrIK34rAfZdykbHO3sgOht/xqz678v2jiPwLqHDgSnwY
+         WuBYNtZCVdTHlvLqUB8yhJkcXTc/LsSZHUDtU7TyVdz6JMsb5nhBV6F9m/Xel+TkQ3j5
+         d+Gj2pWOr24Rnsylx6FB0A2hqRI3oephUxKE2kPN/PwaUf/TU9Nxs8yy/hLNQcckKdbP
+         pw14y4nGg8Fss320J1DzKuY866UlSBJ9VfZGulCian5EaHnZo0moL13tz5vyw5QzWBAR
+         tn0qi29TrBaqYSAn9VAB0iMgxFmTe/Qdg+VOLMwP7NX6ylFPWfsXgGBESwodNCsSLzmp
+         0gmg==
+X-Gm-Message-State: AOAM530F7pTzSMc2ZGovDX5V2q8hC2FCALIz/1P6r0UhXnpNppnTE8Ko
+        gF9eBgVruTrs76vmyO5azxSdE8NAxV1KPw==
+X-Google-Smtp-Source: ABdhPJxKO0uOkptR8CUzV7g074wD+rgIs0xpvIRLo8ZQpNiEBUz3XTXUQ4A03M1xKLM9YaBFCJL6oA==
+X-Received: by 2002:a17:90a:e997:: with SMTP id v23mr3037101pjy.195.1603466834441;
+        Fri, 23 Oct 2020 08:27:14 -0700 (PDT)
+Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
+        by smtp.gmail.com with ESMTPSA id u21sm2243209pfk.89.2020.10.23.08.27.11
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 08:27:12 -0700 (PDT)
+Subject: Re: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
+To:     Chanho Park <chanho61.park@samsung.com>, jejb@linux.ibm.com,
+        martin.petersen@oracle.com
+Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
+ <20201020070516.129273-1-chanho61.park@samsung.com>
+ <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
+ <000a01d6a761$efafcaf0$cf0f60d0$@samsung.com>
+ <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
+ <008a01d6a830$1a109800$4e31c800$@samsung.com>
+From:   Bart Van Assche <bvanassche@acm.org>
+Message-ID: <6e204521-74e4-cc6c-27e7-3a290c492793@acm.org>
+Date:   Fri, 23 Oct 2020 08:27:10 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-X-Received: by 2002:a92:d906:: with SMTP id s6mr2061607iln.225.1603466781872;
- Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 08:26:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000f158c305b2583300@google.com>
-Subject: divide error in do_journal_end
-From:   syzbot <syzbot+d0d781aeeb8e16f710f1@syzkaller.appspotmail.com>
-To:     alex.shi@linux.alibaba.com, axboe@kernel.dk, jack@suse.cz,
-        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
-        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <008a01d6a830$1a109800$4e31c800$@samsung.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On 10/21/20 9:59 PM, Chanho Park wrote:
+>> Please use udev or systemd instead of adding code in the UFS driver that
+>> is
+>> not necessary when udev or systemd is used.
+>>
+> 
+> What I mentioned was how it can be handled when we mount rootfs directly from kernel.
+> 
+> 1) kernel -> initramfs (mount root) -> systemd
+> 2) kernel (mount root) -> systemd
+>   -> In this case, we normally use root=/dev/sda1 from kernel commandline to mount the rootfs.
+> 
+> Like fstab can support legacy node mount, ufs driver also needs to provide
+> an option for using the permanent legacy node. If you're really worry about > adding a new codes for all UFS driver, we can put this as controller specific> or optional feature.
 
-syzbot found the following issue on:
+The only code that should occur in the UFS driver is code that is specific
+to UFS devices. Since the functionality in this patch is not UFS specific,
+it should be added elsewhere.
 
-HEAD commit:    c4d6fe73 Merge tag 'xarray-5.9' of git://git.infradead.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=10c4b837900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ae5161e82506407f
-dashboard link: https://syzkaller.appspot.com/bug?extid=d0d781aeeb8e16f710f1
-compiler:       gcc (GCC) 10.1.0-syz 20200507
+Additionally, since this functionality can be implemented easily in user
+space, I think it should be implemented in user space instead of in the
+kernel. Even when not using systemd or udev, it is easy to implement a loop
+that waits until a certain LUN or WWID appears.
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+d0d781aeeb8e16f710f1@syzkaller.appspotmail.com
-
-divide error: 0000 [#1] PREEMPT SMP KASAN
-CPU: 0 PID: 8486 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:do_journal_end+0x15d6/0x4950 fs/reiserfs/journal.c:4075
-Code: c6 41 84 f0 0f 85 3b 2c 00 00 83 e2 07 38 d1 40 0f 9e c6 84 c9 0f 95 c2 40 84 d6 0f 85 24 2c 00 00 8b 4b 14 48 8d 7d 18 31 d2 <48> f7 f1 4a 8d 34 2a 48 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1
-RSP: 0018:ffffc900013ffb28 EFLAGS: 00010246
-RAX: 0000000000000009 RBX: ffff888048daf000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880235f3018
-RBP: ffff8880235f3000 R08: 0000000000000001 R09: ffff888048dafffb
-R10: ffffed10091b5fff R11: 0000000000000000 R12: 0000000000001000
-R13: 0000000000000000 R14: ffffc900013ffd48 R15: ffffc90016d11000
-FS:  000000000259f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffcd5edb9f8 CR3: 000000002cd8f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- do_journal_release fs/reiserfs/journal.c:1916 [inline]
- journal_release+0x14d/0x4e0 fs/reiserfs/journal.c:1970
- reiserfs_put_super+0xe0/0x5c0 fs/reiserfs/super.c:616
- generic_shutdown_super+0x144/0x370 fs/super.c:464
- kill_block_super+0x97/0xf0 fs/super.c:1446
- deactivate_locked_super+0x94/0x160 fs/super.c:335
- deactivate_super+0xad/0xd0 fs/super.c:366
- cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
- task_work_run+0xdd/0x190 kernel/task_work.c:141
- tracehook_notify_resume include/linux/tracehook.h:188 [inline]
- exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
- exit_to_user_mode_prepare+0x1ac/0x1d0 kernel/entry/common.c:192
- syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:267
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x460887
-Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffcd5edb9f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
-RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000460887
-RDX: 0000000000403188 RSI: 0000000000000002 RDI: 00007ffcd5edbaa0
-RBP: 0000000000000596 R08: 0000000000000000 R09: 000000000000000b
-R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffcd5edcb30
-R13: 00000000025a0a60 R14: 0000000000000000 R15: 00007ffcd5edcb30
-Modules linked in:
----[ end trace fb4ea409a588af8f ]---
-RIP: 0010:do_journal_end+0x15d6/0x4950 fs/reiserfs/journal.c:4075
-Code: c6 41 84 f0 0f 85 3b 2c 00 00 83 e2 07 38 d1 40 0f 9e c6 84 c9 0f 95 c2 40 84 d6 0f 85 24 2c 00 00 8b 4b 14 48 8d 7d 18 31 d2 <48> f7 f1 4a 8d 34 2a 48 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1
-RSP: 0018:ffffc900013ffb28 EFLAGS: 00010246
-RAX: 0000000000000009 RBX: ffff888048daf000 RCX: 0000000000000000
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880235f3018
-RBP: ffff8880235f3000 R08: 0000000000000001 R09: ffff888048dafffb
-R10: ffffed10091b5fff R11: 0000000000000000 R12: 0000000000001000
-R13: 0000000000000000 R14: ffffc900013ffd48 R15: ffffc90016d11000
-FS:  000000000259f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000562ae37a0da8 CR3: 000000002cd8f000 CR4: 00000000001506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Bart.
