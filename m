@@ -2,127 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BFAF2297133
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:19:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E4FB3297131
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:18:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750465AbgJWOTQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:19:16 -0400
-Received: from mga05.intel.com ([192.55.52.43]:10819 "EHLO mga05.intel.com"
+        id S1750453AbgJWOSk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:18:40 -0400
+Received: from mga14.intel.com ([192.55.52.115]:19985 "EHLO mga14.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750456AbgJWOTN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:19:13 -0400
-IronPort-SDR: ygtbCWKKYGF0O3uSoUxfnKvM9omi0G0OhzhIJc/dqZ6v2x39QIlLy75ORGpVWAUnbxWWkKGQVs
- Z5cSMBMwCaVQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="252379728"
+        id S1750426AbgJWOSi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:18:38 -0400
+IronPort-SDR: LdIdsxg/i4l+hV2SP0a2+XyDZtebRf5JDFQ6GNM4zWOpFGaf/xxnfueA09x4+v7Q4RfPG069sb
+ KGlwrTuGmRBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="166896945"
 X-IronPort-AV: E=Sophos;i="5.77,408,1596524400"; 
-   d="scan'208";a="252379728"
+   d="scan'208";a="166896945"
 X-Amp-Result: SKIPPED(no attachment in message)
 X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 07:19:07 -0700
-IronPort-SDR: +FqPtGgiscVJJtnZzF+ippaZhZXO4oiyiC6Z6gFoYW1m5k2M0b5kYNIVucghcUvOHh+CkPmNZD
- OEBqBE8pCjBg==
+Received: from orsmga003.jf.intel.com ([10.7.209.27])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 07:18:34 -0700
+IronPort-SDR: cwYGM98kQmo5KJhfcwDaNOrMZBL+vf98U/ZCNeQQ3f4kytt4mFOOdoehpAusvhwF4KkDJpOjtu
+ O9YhvcDtzADg==
 X-IronPort-AV: E=Sophos;i="5.77,408,1596524400"; 
-   d="scan'208";a="467083514"
-Received: from palquiza-mobl1.amr.corp.intel.com (HELO [10.213.185.90]) ([10.213.185.90])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 07:19:05 -0700
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-To:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+   d="scan'208";a="317104862"
+Received: from smile.fi.intel.com (HELO smile) ([10.237.68.40])
+  by orsmga003-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 07:18:31 -0700
+Received: from andy by smile with local (Exim 4.94)
+        (envelope-from <andriy.shevchenko@linux.intel.com>)
+        id 1kVxum-00E8KY-TH; Fri, 23 Oct 2020 17:19:32 +0300
+Date:   Fri, 23 Oct 2020 17:19:32 +0300
+From:   Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To:     Ferry Toth <fntoth@gmail.com>
+Cc:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
         linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
-        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
-        cedric.xing@intel.com, chenalexchen@google.com,
-        conradparker@google.com, cyhanish@google.com,
-        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
-        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
-        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
-        sean.j.christopherson@intel.com, tglx@linutronix.de,
-        yaozhangx@google.com, mikko.ylinen@intel.com
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
- <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
- <20201023101736.GG168477@linux.intel.com>
-From:   Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
- z5cecg==
-Message-ID: <f2ff64e6-8fe1-55ee-ae7c-f19d7907d60e@intel.com>
-Date:   Fri, 23 Oct 2020 07:19:05 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Saravana Kannan <saravanak@google.com>,
+        linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
+Subject: Re: [PATCH v1 1/2] device property: Keep secondary firmware node
+ secondary by type
+Message-ID: <20201023141932.GW4077@smile.fi.intel.com>
+References: <20201022184100.71659-1-andriy.shevchenko@linux.intel.com>
+ <20201023123412.GA614478@kuha.fi.intel.com>
+ <ef59c911-8d8b-783a-c756-05123f428302@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023101736.GG168477@linux.intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ef59c911-8d8b-783a-c756-05123f428302@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 3:17 AM, Jarkko Sakkinen wrote:
-> On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
->> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
->>> + * Failure to explicitly request access to a restricted attribute will cause
->>> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
->>> + * is access to the PROVISION_KEY.
->> Could we also justify why access is restricted, please?  Maybe:
->>
->> 	Access is restricted because PROVISION_KEY is burned uniquely
->> 	into each each processor, making it a perfect unique identifier
->> 	with privacy and fingerprinting implications.
->>
->> Are there any other reasons for doing it this way?
-> AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
-> PROVISION_SEALING_KEY also have random salt added, i.e. they change
-> every boot cycle.
+On Fri, Oct 23, 2020 at 04:03:20PM +0200, Ferry Toth wrote:
+> Hi
 > 
-> There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
-> 3D :-)
+> Op 23-10-2020 om 14:34 schreef Heikki Krogerus:
+> > On Thu, Oct 22, 2020 at 09:40:59PM +0300, Andy Shevchenko wrote:
+> > > Behind primary and secondary we understand the type of the nodes
+> > > which might define their ordering. However, if primary node gone,
+> > > we can't maintain the ordering by definition of the linked list.
+> > > Thus, by ordering secondary node becomes first in the list.
+> > > But in this case the meaning of it is still secondary (or auxiliary).
+> > > The type of the node is maintained by the secondary pointer in it:
+> > > 
+> > > 	secondary pointer		Meaning
+> > > 	NULL or valid			primary node
+> > > 	ERR_PTR(-ENODEV)		secondary node
+> > > 
+> > > So, if by some reason we do the following sequence of calls
+> > > 
+> > > 	set_primary_fwnode(dev, NULL);
+> > > 	set_primary_fwnode(dev, primary);
+> > > 
+> > > we should preserve secondary node.
+> > > 
+> > > This concept is supported by the description of set_primary_fwnode()
+> > > along with implementation of set_secondary_fwnode(). Hence, fix
+> > > the commit c15e1bdda436 to follow this as well.
+> > > 
+> > > Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
+> > > Cc: Ferry Toth <fntoth@gmail.com>
+> > > Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> > FWIW:
+> > 
+> > Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+> > Tested-by: Ferry Toth <fntoth@gmail.com>
 
-Does that mean there are no privacy implications from access to the
-provisioning keys?  If that's true, why do we need a separate permission
-framework for creating provisioning enclaves?
+The quoting above is broken, I dare to put it below without any quoting.
+
+Tested-by: Ferry Toth <fntoth@gmail.com>
+
+> > > ---
+> > >   drivers/base/core.c | 2 +-
+> > >   1 file changed, 1 insertion(+), 1 deletion(-)
+> > > 
+> > > diff --git a/drivers/base/core.c b/drivers/base/core.c
+> > > index c852f16c111b..41feab679fa1 100644
+> > > --- a/drivers/base/core.c
+> > > +++ b/drivers/base/core.c
+> > > @@ -4278,7 +4278,7 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
+> > >   	} else {
+> > >   		if (fwnode_is_primary(fn)) {
+> > >   			dev->fwnode = fn->secondary;
+> > > -			fn->secondary = NULL;
+> > > +			fn->secondary = ERR_PTR(-ENODEV);
+> > >   		} else {
+> > >   			dev->fwnode = NULL;
+> > >   		}
+> > > -- 
+> > > 2.28.0
+
+-- 
+With Best Regards,
+Andy Shevchenko
+
+
