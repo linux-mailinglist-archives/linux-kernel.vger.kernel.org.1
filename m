@@ -2,154 +2,200 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50BA92973C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:31:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 173862973ED
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:32:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751655AbgJWQax (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:30:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:57860 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751623AbgJWQau (ORCPT
+        id S1751785AbgJWQce (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:32:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48772 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750767AbgJWQcd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:30:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603470648;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=2r6z2eq2n8RapzH3Hc0CANhd1X+6+VQ1WVVzaGN7U3M=;
-        b=AYAjDiRtYmvFI0533z20s3QrAc5Nc9jmec5cG6KyZZHEvmgeH/CFUoLr0eInYR7LZCXc/c
-        ZJqWJR0qRhrQQqgJXFHB+4MqRt/yHDuWQzzd1/a14MY+aJDUufR/NOk7ZGBgSPfjIym892
-        /W5OPYOTfNlQanwPapWsZ2D+hlIKgkQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-275-RCsahkEeOdaZ4_LF-Vm3WA-1; Fri, 23 Oct 2020 12:30:44 -0400
-X-MC-Unique: RCsahkEeOdaZ4_LF-Vm3WA-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.phx2.redhat.com [10.5.11.13])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 3608C10309BB;
-        Fri, 23 Oct 2020 16:30:43 +0000 (UTC)
-Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id C6CE09CBC8;
-        Fri, 23 Oct 2020 16:30:42 +0000 (UTC)
-From:   Paolo Bonzini <pbonzini@redhat.com>
-To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     bgardon@google.com
-Subject: [PATCH 22/22] kvm: x86/mmu: NX largepage recovery for TDP MMU
-Date:   Fri, 23 Oct 2020 12:30:24 -0400
-Message-Id: <20201023163024.2765558-23-pbonzini@redhat.com>
-In-Reply-To: <20201023163024.2765558-1-pbonzini@redhat.com>
-References: <20201023163024.2765558-1-pbonzini@redhat.com>
+        Fri, 23 Oct 2020 12:32:33 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D954C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:32:33 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id c15so1395044qtc.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:32:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20150623.gappssmtp.com; s=20150623;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=otK2xA8v8qWmWLWMrDWaTpQeBb9p8Hm57qmSK0JBmb8=;
+        b=z8nsTyCYFCOST4TXZPaey2SY8VFRd0iebOTlu5+j0on+94luwg1h2Tt973fyNulw6G
+         0+S/9f0pOHZPxMbqxiS43LAWlawfINi5VIqUl0F3OGHze6Zr3ARy9dzJnmT4oegH6tqp
+         RKfdgiWivifk1HAJNkchrEBD3uAzC+ZGQ3GLCLPJEp3IBQR5IaT3nQyydfo70KJLaiL1
+         UINuLzKEr7LWcHHPOt5U9WJyNtlK67YaCsX08baal2yJoBnaPqLpjwtJG3fempMmIHa2
+         Gla9PQ4vZxWp4Uq2gEIFpUz56ib+ruIYJFnkzRIi5drplneehgdrupFbRTxy4TATzQjM
+         th3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=otK2xA8v8qWmWLWMrDWaTpQeBb9p8Hm57qmSK0JBmb8=;
+        b=WlATFK6dgyTiAPlN38wOH3Gf7lKaVVQo8BQD2pLfOwT67jWmO2oz7VGCvjifBivOov
+         VVrLg415NAS0C0D51P3P8hctiwn6mj8s7gQNn/rAXSL12lLLwBky46/BW0x6krnoC//3
+         ywaNY53e9FKacd8t+X5ttfTrQHgeHyB7JcD0/+ENistalFApXIgF33hwSoqYwg68Tf4C
+         0C9CgpvaugW14OtEWSlYdHeRskvwpNILdTFveKhbOI+el0EMuffYddLtrlU2G13u7SYA
+         GWL5OsfzEKSgMl2SWZuOSocCcp+TdN9XbYIV8AnTWhGzhG/aiCRmATtx0gT3G1CgbSt/
+         T/lA==
+X-Gm-Message-State: AOAM531wlMsMmRfcxdy6xSuHuI6VP3KFYj8YdsVD+hfoD4UK+6p5flHS
+        mKi2zkxLe9nsnUeuplFOb4EPYg==
+X-Google-Smtp-Source: ABdhPJyIpHNoKFReeo/s8D25hhOsKucPeO2uMAXJ2UXBrKMwgcOoMIt0du72wmcaB22RwhAJPsRpoQ==
+X-Received: by 2002:ac8:7517:: with SMTP id u23mr2823683qtq.261.1603470752834;
+        Fri, 23 Oct 2020 09:32:32 -0700 (PDT)
+Received: from localhost ([2620:10d:c091:480::1:c400])
+        by smtp.gmail.com with ESMTPSA id a3sm1203866qtp.63.2020.10.23.09.32.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:32:32 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 12:30:53 -0400
+From:   Johannes Weiner <hannes@cmpxchg.org>
+To:     Roman Gushchin <guro@fb.com>
+Cc:     Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+        Richard Palethorpe <rpalethorpe@suse.com>, ltp@lists.linux.it,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Shakeel Butt <shakeelb@google.com>,
+        Christoph Lameter <cl@linux.com>,
+        Michal Hocko <mhocko@kernel.org>, Tejun Heo <tj@kernel.org>,
+        Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>
+Subject: Re: [RFC PATCH] mm: memcg/slab: Stop reparented obj_cgroups from
+ charging root
+Message-ID: <20201023163053.GB535375@cmpxchg.org>
+References: <20201014190749.24607-1-rpalethorpe@suse.com>
+ <20201016094702.GA95052@blackbook>
+ <20201016145308.GA312010@cmpxchg.org>
+ <20201016171502.GA102311@blackbook>
+ <20201019222845.GA64774@carbon.dhcp.thefacebook.com>
+ <20201020162714.GC46039@blackbook>
+ <20201020170717.GA153102@carbon.DHCP.thefacebook.com>
+ <20201020181822.GA397401@cmpxchg.org>
+ <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.13
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021193322.GA300658@carbon.dhcp.thefacebook.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+On Wed, Oct 21, 2020 at 12:33:22PM -0700, Roman Gushchin wrote:
+> On Tue, Oct 20, 2020 at 02:18:22PM -0400, Johannes Weiner wrote:
+> > On Tue, Oct 20, 2020 at 10:07:17AM -0700, Roman Gushchin wrote:
+> > > If we want these counter to function properly, then we should go into the opposite
+> > > direction and remove the special handling of the root memory cgroup in many places.
+> > 
+> > I suspect this is also by far the most robust solution from a code and
+> > maintenance POV.
+> > 
+> > I don't recall the page counter at the root level having been a
+> > concern in recent years, even though it's widely used in production
+> > environments. It's lockless and cache compact. It's also per-cpu
+> > batched, which means it isn't actually part of the memcg hotpath.
+> 
+> 
+> I agree.
+> 
+> Here is my first attempt. Comments are welcome!
+> 
+> It doesn't solve the original problem though (use_hierarchy == false and
+> objcg reparenting), I'll send a separate patch for that.
+> 
+> Thanks!
+> 
+> --
+> 
+> From 9c7d94a3f999447417b02a7100527ce1922bc252 Mon Sep 17 00:00:00 2001
+> From: Roman Gushchin <guro@fb.com>
+> Date: Tue, 20 Oct 2020 18:05:43 -0700
+> Subject: [PATCH RFC] mm: memcontrol: do not treat the root memory cgroup
+>  specially
+> 
+> Currently the root memory cgroup is treated in a special way:
+> it's not charged and uncharged directly (only indirectly with their
+> descendants), processes belonging to the root memory cgroup are exempt
+> from the kernel- and the socket memory accounting.
+> 
+> At the same time some of root level statistics and data are available
+> to a user:
+>   - cgroup v2: memory.stat
+>   - cgroup v1: memory.stat, memory.usage_in_bytes, memory.memsw.usage_in_bytes,
+>                memory.kmem.usage_in_bytes and memory.kmem.tcp.usage_in_bytes
+> 
+> Historically the reason for a special treatment was an avoidance
+> of extra performance cost, however now it's unlikely a good reason:
+> over years there was a significant improvement in the performance
+> of the memory cgroup code. Also on a modern system actively using
+> cgroups (e.g. managed by systemd) there are usually no (significant)
+> processes in the root memory cgroup.
+> 
+> The special treatment of the root memory cgroups creates a number of
+> issues visible to a user:
+> 1) slab stats on the root level do not include the slab memory
+>    consumed by processes in the root memory cgroup
+> 2) non-slab kernel memory consumed by processes in the root memory cgroup
+>    is not included into memory.kmem.usage_in_bytes
+> 3) socket memory consumed by processes in the root memory cgroup
+>    is not included into memory.kmem.tcp.usage_in_bytes
+> 
+> It complicates the code and increases a risk of new bugs.
+> 
+> This patch removes a number of exceptions related to the handling of
+> the root memory cgroup. With this patch applied the root memory cgroup
+> is treated uniformly to other cgroups in the following cases:
+> 1) root memory cgroup is charged and uncharged directly, try_charge()
+>    and cancel_charge() do not return immediately if the root memory
+>    cgroups is passed. uncharge_batch() and __mem_cgroup_clear_mc()
+>    do not handle the root memory cgroup specially.
+> 2) per-memcg slab statistics is gathered for the root memory cgroup
+> 3) shrinkers infra treats the root memory cgroup as any other memory
+>    cgroup
+> 4) non-slab kernel memory accounting doesn't exclude pages allocated
+>    by processes belonging to the root memory cgroup
+> 5) if a socket is opened by a process in the root memory cgroup,
+>    the socket memory is accounted
+> 6) root cgroup is charged for the used swap memory.
+> 
+> Signed-off-by: Roman Gushchin <guro@fb.com>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 
-When KVM maps a largepage backed region at a lower level in order to
-make it executable (i.e. NX large page shattering), it reduces the TLB
-performance of that region. In order to avoid making this degradation
-permanent, KVM must periodically reclaim shattered NX largepages by
-zapping them and allowing them to be rebuilt in the page fault handler.
+This looks great.
 
-With this patch, the TDP MMU does not respect KVM's rate limiting on
-reclaim. It traverses the entire TDP structure every time. This will be
-addressed in a future patch.
+The try_charge(), cancel_charge() etc. paths are relatively
+straight-forward and look correct to me.
 
-Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-machine. This series introduced no new failures.
+The swap counters too.
 
-This series can be viewed in Gerrit at:
-	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
+Slab is a bit trickier, but it also looks correct to me.
 
-Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20201014182700.2888246-21-bgardon@google.com>
-Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
----
- arch/x86/kvm/mmu/mmu.c          | 13 +++++++++----
- arch/x86/kvm/mmu/mmu_internal.h |  3 +++
- arch/x86/kvm/mmu/tdp_mmu.c      |  6 ++++++
- 3 files changed, 18 insertions(+), 4 deletions(-)
+I'm having some trouble with the shrinkers. Currently, tracked objects
+allocated in non-root cgroups live in that cgroup. Tracked objects in
+the root cgroup, as well as untracked objects, live in a global pool.
+When reclaim iterates all memcgs and calls shrink_slab(), we special
+case the root_mem_cgroup and redirect to the global pool.
 
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 7b52fa1f01b0..17587f496ec7 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -776,7 +776,7 @@ static void account_shadowed(struct kvm *kvm, struct kvm_mmu_page *sp)
- 	kvm_mmu_gfn_disallow_lpage(slot, gfn);
- }
- 
--static void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-+void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
- {
- 	if (sp->lpage_disallowed)
- 		return;
-@@ -804,7 +804,7 @@ static void unaccount_shadowed(struct kvm *kvm, struct kvm_mmu_page *sp)
- 	kvm_mmu_gfn_allow_lpage(slot, gfn);
- }
- 
--static void unaccount_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
-+void unaccount_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp)
- {
- 	--kvm->stat.nx_lpage_splits;
- 	sp->lpage_disallowed = false;
-@@ -5988,8 +5988,13 @@ static void kvm_recover_nx_lpages(struct kvm *kvm)
- 				      struct kvm_mmu_page,
- 				      lpage_disallowed_link);
- 		WARN_ON_ONCE(!sp->lpage_disallowed);
--		kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
--		WARN_ON_ONCE(sp->lpage_disallowed);
-+		if (sp->tdp_mmu_page)
-+			kvm_tdp_mmu_zap_gfn_range(kvm, sp->gfn,
-+				sp->gfn + KVM_PAGES_PER_HPAGE(sp->role.level));
-+		else {
-+			kvm_mmu_prepare_zap_page(kvm, sp, &invalid_list);
-+			WARN_ON_ONCE(sp->lpage_disallowed);
-+		}
- 
- 		if (need_resched() || spin_needbreak(&kvm->mmu_lock)) {
- 			kvm_mmu_commit_zap_page(kvm, &invalid_list);
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index 6db40ea85974..bfc6389edc28 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -143,4 +143,7 @@ bool is_nx_huge_page_enabled(void);
- 
- void *mmu_memory_cache_alloc(struct kvm_mmu_memory_cache *mc);
- 
-+void account_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp);
-+void unaccount_huge_nx_page(struct kvm *kvm, struct kvm_mmu_page *sp);
-+
- #endif /* __KVM_X86_MMU_INTERNAL_H */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index 5158d02b8925..e246d71b8ea2 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -273,6 +273,9 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 
- 		list_del(&sp->link);
- 
-+		if (sp->lpage_disallowed)
-+			unaccount_huge_nx_page(kvm, sp);
-+
- 		for (i = 0; i < PT64_ENT_PER_PAGE; i++) {
- 			old_child_spte = READ_ONCE(*(pt + i));
- 			WRITE_ONCE(*(pt + i), 0);
-@@ -571,6 +574,9 @@ int kvm_tdp_mmu_map(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
- 						     !shadow_accessed_mask);
- 
- 			trace_kvm_mmu_get_page(sp, true);
-+			if (huge_page_disallowed && req_level >= iter.level)
-+				account_huge_nx_page(vcpu->kvm, sp);
-+
- 			tdp_mmu_set_spte(vcpu->kvm, &iter, new_spte);
- 		}
- 	}
--- 
-2.26.2
+After your patch we have tracked objects allocated in the root cgroup
+actually live in the root cgroup. Removing the shrinker special case
+is correct in order to shrink those - but it removes the call to
+shrink the global pool of untracked allocation classes.
 
+I think we need to restore the double call to shrink_slab() we had
+prior to this:
+
+commit aeed1d325d429ac9699c4bf62d17156d60905519
+Author: Vladimir Davydov <vdavydov.dev@gmail.com>
+Date:   Fri Aug 17 15:48:17 2018 -0700
+
+    mm/vmscan.c: generalize shrink_slab() calls in shrink_node()
+    
+    The patch makes shrink_slab() be called for root_mem_cgroup in the same
+    way as it's called for the rest of cgroups.  This simplifies the logic
+    and improves the readability.
+
+where we iterate through all cgroups, including the root, to reclaim
+objects accounted to those respective groups; and then a call to scan
+the global pool of untracked objects in that numa node.
+
+For ease of review/verification, it could be helpful to split the
+patch and remove the root exception case-by-case (not callsite by
+callsite, but e.g. the swap counter, the memory counter etc.).
