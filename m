@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E5812975CD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:31:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 660742975CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:31:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753478AbgJWRbR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:31:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34424 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753457AbgJWRbM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:31:12 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5BC4920EDD;
-        Fri, 23 Oct 2020 17:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603474271;
-        bh=5sJrPDSqlBqp4k079QLSvl4B+9r33Hetazy5nXQ2hfY=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=RY4KiNxZ+u9TS7Ur6zqq5ZIf/xYI65tdYeelwPgx0PwCRG3fnej4DEf0e8L48tPJm
-         jf+DUNQTh1bNhRnuI/br5zPQ/xabXtS0vJtg99TKB12RsWLrhrRfnCGd9PlwsOjsWW
-         yN1Vl4iGmt2uX7uTBwYDIM9u/VsRkQvS4uUq56xQ=
-Date:   Fri, 23 Oct 2020 10:31:10 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xie He <xie.he.0141@gmail.com>
-Cc:     "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Network Developers <netdev@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Neil Horman <nhorman@tuxdriver.com>,
-        John Fastabend <john.fastabend@gmail.com>,
-        Jesper Dangaard Brouer <hawk@kernel.org>
-Subject: Re: [PATCH net RFC] net: Clear IFF_TX_SKB_SHARING for all Ethernet
- devices using skb_padto
-Message-ID: <20201023103110.3017f961@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <CAJht_EMuVzRSp+OmKFY0nPnkC0a39k93KQAeaOFghLBy6TXgiQ@mail.gmail.com>
-References: <20201022072814.91560-1-xie.he.0141@gmail.com>
-        <CAJht_ENMQ3nZb1BOCyyVzJjBK87yk+E1p+Jv5UQuZ1+g1jK1cg@mail.gmail.com>
-        <20201022082239.2ae23264@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <CAJht_EM638CQDb5opnVxfQ81Z2U9hGZbnE581RFZrAQvenn+qQ@mail.gmail.com>
-        <20201022174451.1cd858ae@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-        <CAJht_EOo50TxEUJmQMBBnaH4FW_2Afpcrr0pStFEXH1Bg3vteg@mail.gmail.com>
-        <CAJht_EMuVzRSp+OmKFY0nPnkC0a39k93KQAeaOFghLBy6TXgiQ@mail.gmail.com>
+        id S1753491AbgJWRbh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:31:37 -0400
+Received: from mail-ot1-f68.google.com ([209.85.210.68]:35791 "EHLO
+        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461620AbgJWRbg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:31:36 -0400
+Received: by mail-ot1-f68.google.com with SMTP id n11so2086202ota.2;
+        Fri, 23 Oct 2020 10:31:35 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=hT2i530CLOTYlwicvZdH7tp3aHwzMHf9nt1Ew4Fstvo=;
+        b=hnO15ku5wZHPvJlsSylvO3RWP2DEubFoFuXSXXICmfN89WXc5QsuOlIWezc6B/HG1r
+         Dope8V4tEgHCUzdv3k+I5eJ+VWL3vUfVqP2YDjD5pkc4x1qNKubCWDq8HZUS1xUHVEc6
+         0+RrhCeszmGlhnaHlJJsuWxdV/oPgmduBw4MVs+n2+PCKzLkNuLJaUFKc+AKXfZeObY8
+         x/NYA54cIf+tbANVR52A4qZwf3WE46dDw5c3fXvac4hCRvLR+Z+T/eYvWW7rcndC2HJ9
+         llWu2SdvGBt+RSjYtjxkO9Mc+0TDi76SObYnb1Qll/4b/Uew33gtbPRMbLgGyMRVWBUs
+         9KhQ==
+X-Gm-Message-State: AOAM530Vdo5ZpSGTueGIN5p89tEEaSiVYSrWJQp6YCb23xIB3EvtKGfP
+        VwSgHjMZ6fG7kbEZ1MDuPVCvdUw6fse6dKn94cAZPr0YPOw=
+X-Google-Smtp-Source: ABdhPJzVYBjwtKKMSaTxsR2lpJzPEyvQmO1p2eGiFjZwKiH1xkc5Qno4uWu9/C0hyRYhPno/hIgTeQomUf4GVHlbJ/Q=
+X-Received: by 2002:a9d:734f:: with SMTP id l15mr2649488otk.260.1603474295544;
+ Fri, 23 Oct 2020 10:31:35 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+From:   "Rafael J. Wysocki" <rafael@kernel.org>
+Date:   Fri, 23 Oct 2020 19:31:24 +0200
+Message-ID: <CAJZ5v0hSpDBUG34ahJDQqs4u+io9x5HBSy6wq15RENG6ci3cJA@mail.gmail.com>
+Subject: [GIT PULL] More ACPI updates for v5.10-rc1
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux PM <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 19:25:40 -0700 Xie He wrote:
-> On Thu, Oct 22, 2020 at 6:56 PM Xie He <xie.he.0141@gmail.com> wrote:
-> > My patch isn't complete. Because there are so many drivers with this
-> > problem, I feel it's hard to solve them all at once. So I only grepped
-> > "skb_padto" under "drivers/net/ethernet". There are other drivers
-> > under "ethernet" using "skb_pad", "skb_put_padto" or "eth_skb_pad".
-> > There are also (fake) Ethernet drivers under "drivers/net/wireless". I
-> > feel it'd take a long time and also be error-prone to solve them all,
-> > so I feel it'd be the best if there are other solutions.  
-> 
-> BTW, I also see some Ethernet drivers calling skb_push to prepend
-> strange headers to the skbs. For example,
-> 
-> drivers/net/ethernet/mellanox/mlxsw/switchx2.c prepends a header of
-> MLXSW_TXHDR_LEN (16).
-> 
-> We can't send shared skbs to these drivers either because they modify the skbs.
-> 
-> It seems to me that many drivers have always assumed that they can
-> modify the skb whenever needed. They've never considered there might
-> be shared skbs. I guess adding IFF_TX_SKB_SHARING to ether_setup was a
-> bad idea. It not only made the code less clean, but also didn't agree
-> with the actual situations of the drivers.
+Hi Linus,
 
-Indeed. If we remove IFF_TX_SKB_SHARING from ether_setup we may need to
-add the flag to the drivers that used to work, otherwise people using
-pktgen will see a regression.
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ acpi-5.10-rc1-2
+
+with top-most commit 2818cc745445ae5866598fe45fe563ef843e30af
+
+ Merge branches 'acpi-debug', 'acpi-reboot', 'acpi-processor',
+'acpi-dptf' and 'acpi-utils'
+
+on top of commit cf1d2b44f6c701ffff58606b5b8a8996190d6e7d
+
+ Merge tag 'acpi-5.10-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more ACPI updates for 5.10-rc1.
+
+These include an ACPICA code build fix related to recent GPE register
+access changes, a Kconfig cleanup related to the Dynamic Platform and
+Thremal Framework (DPTF) support, a reboot issue workaround, a debug
+module fix and a couple of janitorial changes.
+
+Specifics:
+
+ - Fix ACPICA code build after recent changes related to accessing
+   GPE registers (Rafael Wysocki).
+
+ - Clean up DPTF part of the ACPI Kconfig (Rafael Wysocki).
+
+ - Work around a reboot issue related to RESET_REG (Zhang Rui).
+
+ - Prevent ACPI debug module from attempting to run (and crashing)
+   when ACPI is disabled (Jamie Iles).
+
+ - Drop confusing comment from the ACPI processor driver (Alex Hung).
+
+ - Drop a few unreachable break statements (Tom Rix).
+
+Thanks!
+
+
+---------------
+
+Alex Hung (1):
+      ACPI: processor: remove comment regarding string _UID support
+
+Jamie Iles (1):
+      ACPI: debug: don't allow debugging when ACPI is disabled
+
+Rafael J. Wysocki (3):
+      ACPI: DPTF: Fix participant driver names
+      ACPI: DPTF: Add ACPI_DPTF Kconfig menu
+      ACPICA: Add missing type casts in GPE register access code
+
+Tom Rix (1):
+      ACPI: utils: remove unreachable breaks
+
+Zhang Rui (1):
+      ACPI: reboot: Avoid racing after writing to ACPI RESET_REG
+
+---------------
+
+ drivers/acpi/acpi_dbg.c           |  3 +++
+ drivers/acpi/acpi_processor.c     |  1 -
+ drivers/acpi/acpica/hwgpe.c       |  4 ++--
+ drivers/acpi/dptf/Kconfig         | 29 ++++++++++++++++++++++++-----
+ drivers/acpi/dptf/dptf_pch_fivr.c |  2 +-
+ drivers/acpi/dptf/dptf_power.c    |  2 +-
+ drivers/acpi/reboot.c             | 11 +++++++++++
+ drivers/acpi/utils.c              |  4 ----
+ 8 files changed, 42 insertions(+), 14 deletions(-)
