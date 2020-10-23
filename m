@@ -2,180 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 67F52296B04
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:16:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE651296B18
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:23:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375662AbgJWIQh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:16:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56316 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374553AbgJWIQg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:16:36 -0400
-Received: from mail-qt1-x84a.google.com (mail-qt1-x84a.google.com [IPv6:2607:f8b0:4864:20::84a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C839AC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:16:35 -0700 (PDT)
-Received: by mail-qt1-x84a.google.com with SMTP id i39so347766qtb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:16:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:message-id:mime-version:subject:from:to:cc;
-        bh=bCm9g8jcXgNZHZSC/xIRr4kSLYBexCpDEsc6joeepFo=;
-        b=nDzHHzuuY4+Qn8h9VBK+hQKJ2M5ExitXX5DXSUJQc61LT6/uljyOCVj5N7Vkr66Rl+
-         8QFZ5uVzSHpv2CfZWQtlc21toPyvl5r/0ondqAvctKOqxUpozCBkvB1Dsa0aexVky8XA
-         yDJe7lmCeIRKvc8AGGGZJ8MyYdks5CWn87vBHm9N0MDLnDsTbaaC6Lpg/D+doGJCIja9
-         24hus9xuLEkIi7Czbps0GubYleM2wSauB5cxdWAgT85L2roWZ+vEJC0WcczUJnaypQ97
-         OhRec1t0pyuoTgdwIedzNvJoTLn2JZlGj1W32cyRetkzCUAEaFnj6kLGCU5NUnUVrRdb
-         8hjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
-         :to:cc;
-        bh=bCm9g8jcXgNZHZSC/xIRr4kSLYBexCpDEsc6joeepFo=;
-        b=N3fmIJpFaWcvYTmJdB8YwDnDsn0x7XVV1DwGy83D4X0OSf3wZH5SCLuQKM/wckTMjI
-         XGBANn5oKgph01W8bHAoB6mh6poLryXuyxXe4wXx/kolPEWi9pw5EdYmMxKGnEzhgM83
-         vh8DaUd8RZkcNwbZ5Okq+88quEvqUguSEm11KHuKZMdVj1aVXt39DIgjvJCNX/cghsv6
-         ZhZ7zA8duWe+vqGllcwlfAIVQ9UO60Cs3kPTxjIe88uaafv3nIwhX3BioRafRWtWCHsq
-         3lOeHvuUdWqLW3RJ7T/EaK5koyC3/axhJIN0QbvVkpcrpoKAkqFJ+yANEKLee5zmQrSC
-         pzAA==
-X-Gm-Message-State: AOAM530ZAw/V4mDsrXyILwdDwPeR418x8HQpCgVnnggCa4RC4gLnsObZ
-        B3tLJEopA8x1ijY3doJ70K++HxCh/O0=
-X-Google-Smtp-Source: ABdhPJy1fBXppRJkGFYZcpfRxOJ0Xx8LJjMo83rvtkGnO8uefQZOXktiGylDqXceHIJzaL1OXkuInOrPPRw=
-Sender: "glider via sendgmr" <glider@glider.muc.corp.google.com>
-X-Received: from glider.muc.corp.google.com ([2a00:79e0:15:13:f693:9fff:fef4:9ff])
- (user=glider job=sendgmr) by 2002:a0c:a304:: with SMTP id u4mr1004964qvu.58.1603440994760;
- Fri, 23 Oct 2020 01:16:34 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 10:16:28 +0200
-Message-Id: <20201023081628.1296884-1-glider@google.com>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.29.0.rc2.309.g374f81d7ae-goog
-Subject: [PATCH v4] x86: add failure injection to get/put/clear_user
-From:   Alexander Potapenko <glider@google.com>
-To:     akpm@linux-foundation.org, bp@alien8.de, mingo@redhat.com,
-        corbet@lwn.net, tglx@linutronix.de, arnd@arndb.de
-Cc:     akinobu.mita@gmail.com, hpa@zytor.com, viro@zeniv.linux.org.uk,
-        glider@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        x86@kernel.org, albert.linde@gmail.com,
-        Albert van der Linde <alinde@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S375942AbgJWIXt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:23:49 -0400
+Received: from mail-vi1eur05on2085.outbound.protection.outlook.com ([40.107.21.85]:31553
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S369593AbgJWIXs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:23:48 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gT3qhf7Spnf3oYVwlbpaQYDY87ttM3kXxtBROAKrLTDT2bHdOAx9MiPqOrafIVJ7c+4l/rTxc+Hw98dGssty4Mz1NBXeiPsBsQtp5roN8gHKlkfDj58Rn0tQPa6dW/K7mFXS7Dr8FmFnxtBGXSDBYlWBjY/p5qWiR0O69J90VUaqB8pnTj9HizBIUCcNJ0Cfzwk6/OhVc4N7VTgc1zk7WdqbCQ/J/Lq55+26XTED+yKVmW0Lq07S6ThvK+3qcdq+5Bs0IB2iGObIXbbgQqI45uWq0c0hwcniyGfa+Sb78xS/J8oNGxwlI+CfwyO5c9++dTB0pnnOLmMuQVK8Q5tZLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uKfCW6ex1LncEkW/NqA2vfj1JSUgmn/Y8S/rGrO4/x4=;
+ b=Z3uDiSelDdfY7kSy/BruwnQwVulmgNOjhjDmvAK22R11XT60NdB7PVjincRA8ZB6rgPHBvGqoJLXlS7Zs+uGia2okWUuwLEr/ZVS6/cUVQbNQhtedeooRhK8v5dn0UeWZUGZQGzr8y1UXgtXaBJGnEdVA0371M9uVgQy35Yuy4XALWS6GhHNHB2W0QvDc7aujB3zuRDerSs+DmHMSRxJoZy+FDmNTKEPt941n9s7R6awPDTH99fGmdsKMPZC7nIhc7+RIoofcQG5hZAmcqoNlb9QaGYqffwc7GDOQPYKmPlVQE1RseUVd9X3AGhj1E/OPoloZ944paR8doFRggl6QQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uKfCW6ex1LncEkW/NqA2vfj1JSUgmn/Y8S/rGrO4/x4=;
+ b=HKYAq0LmfpD3JUEosmHm0/qKKjkJx5JfFslbMwH6S84/bR3NUOM2RIe+gYrJQd7kxVoVZvSMlZoJRxE6IvKNvMcAXoKMxFSrW0/fO3cvMGRFiuR5LUephVq71o0g15hkK63CgBWbtoOsITpx4q9F+nkQE1IJGM/ypOI/xjvjGsQ=
+Authentication-Results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nxp.com;
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com (2603:10a6:4:a1::14)
+ by DB7PR04MB5465.eurprd04.prod.outlook.com (2603:10a6:10:85::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 23 Oct
+ 2020 08:23:43 +0000
+Received: from DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef]) by DB6PR0402MB2760.eurprd04.prod.outlook.com
+ ([fe80::ec42:b6d0:7666:19ef%8]) with mapi id 15.20.3477.028; Fri, 23 Oct 2020
+ 08:23:43 +0000
+From:   peng.fan@nxp.com
+To:     shawnguo@kernel.org, s.hauer@pengutronix.de, festevam@gmail.com
+Cc:     kernel@pengutronix.de, linux-imx@nxp.com,
+        linux-i2c@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH 1/2] i2c: imx: use devm_request_threaded_irq to simplify code
+Date:   Fri, 23 Oct 2020 16:18:22 +0800
+Message-Id: <1603441103-17735-1-git-send-email-peng.fan@nxp.com>
+X-Mailer: git-send-email 2.7.4
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.66]
+X-ClientProxiedBy: SG2PR03CA0148.apcprd03.prod.outlook.com
+ (2603:1096:4:c8::21) To DB6PR0402MB2760.eurprd04.prod.outlook.com
+ (2603:10a6:4:a1::14)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (119.31.174.66) by SG2PR03CA0148.apcprd03.prod.outlook.com (2603:1096:4:c8::21) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256) id 15.20.3499.6 via Frontend Transport; Fri, 23 Oct 2020 08:23:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: be642abf-3460-4d0c-2388-08d8772cf418
+X-MS-TrafficTypeDiagnostic: DB7PR04MB5465:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <DB7PR04MB5465D02FBDA20178D262A6F2881A0@DB7PR04MB5465.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:431;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 6lRSCC5TIVl0Px7QO+o+igPv4tnKPnJTBRK0Ojo2bOIDJBjSEKISvzODGw7cJf6veuq27PrdAVSt9kmw9FWKsky+qu5oGCY+nvFh2BV1nO7y5WNSoFZPAMU55CtJGXfWkD+g3k7O+j/5BE/9GIVAKuMgr4CQ2PliQWocM6aP5Grmne0CnOwiY/P4/d+VjVpN1sD5lKUtzRlIs08vhPe2DIBdhG+TgkaEvCR/puei4aY/goNfMj+KDq70eEdI6SkGSdWvBG4KR0G8Xr+mJ71yNbTmDSXRUYtZl8aunVc+qJyPwVOiDbp9rRrcuWTvd+4nTmbhf8LgtgrgciWo0v5/eKFfwrCVGyZzUv1hkIcbo+6lWiCBuxDSwo1bV+kBG+Mw
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DB6PR0402MB2760.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(396003)(39860400002)(376002)(366004)(6486002)(83380400001)(956004)(186003)(26005)(316002)(2616005)(478600001)(2906002)(9686003)(36756003)(16526019)(8676002)(66946007)(6512007)(6506007)(69590400008)(8936002)(52116002)(4326008)(86362001)(5660300002)(66556008)(6666004)(66476007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: JBZbP1PFnMQOhOvMC9koCCTWnbrTJV2xfpDp8htOCKex4jNYXX7uK84W5UQPdhcgz/6BEpGnO3/fdu7AjofQCWWhBOI/S4FNLlMUShye7IBt68aHsx3KBoIIj2CLMmriGYjji3H5k3xaeZKe/slKjmjU3PIzAs0Jb0Ait7hsvvaO79aiBIsMOtc2W5hpX+B0rHNI8TrkxJRVjd4gMKttCD/vjD2YPk6AfnbD6KtB6ucdCcCSCD1CtVEhzq3jcDDDcAn4iSrxYUClRTjGYJdXBbV6aGZcXWuLAlxQ4iRC4Vgy7HLeThO5QvG4ps5apFMvsVJdo2eFX24g1VzBRo7RwWAVxFmUpwiGWUHoTcBRuGSprsraBZb7Jke+vNfyV1lpYt11PhiHIg1pL/IFEtmlT95gU2EEJ28acH6FtjcEu9hzMCjY1ikPUuUVFN9/ktAle2+CKALleMEYeg2M+cByBw4GVNttoPPc0YCXXhhqyQKJ6WtnsV7P2EcTfqsLOGDglBJwUmeE8jJlX+oF7MnXDyJHO9iEZ7QTd7aGECObNGgcNHwGiagofT74ldc+etQ/PYzq3tyZ8bOvxu6E97kQtiRXvZKaKZqTHG4Sknf+d5UyNcSalcL1MyQlONeuUbdtLlpUFxBPMuxdszAcopi4DQ==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: be642abf-3460-4d0c-2388-08d8772cf418
+X-MS-Exchange-CrossTenant-AuthSource: DB6PR0402MB2760.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 08:23:43.3482
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: W39+UmJ+jVcANvM2SsiyA6TPxsqLsr+n+c2RPN+6AosIauRp67Ln1ymK6u9/oHWft8x94wI/TIyu6q41qx/kCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB7PR04MB5465
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Albert van der Linde <alinde@google.com>
+From: Peng Fan <peng.fan@nxp.com>
 
-To test fault-tolerance of user memory acceses in x86, add support for
-fault injection.
+Use devm_request_threaded_irq to simplify code
 
-Make both put_user() and get_user() fail with -EFAULT, and clear_user()
-fail by not clearing any bytes.
-
-Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
-Reviewed-by: Alexander Potapenko <glider@google.com>
-Signed-off-by: Albert van der Linde <alinde@google.com>
-Signed-off-by: Alexander Potapenko <glider@google.com>
-
+Signed-off-by: Peng Fan <peng.fan@nxp.com>
 ---
-v2:
- - no significant changes
+ drivers/i2c/busses/i2c-imx.c | 10 +++-------
+ 1 file changed, 3 insertions(+), 7 deletions(-)
 
-v3:
- - no changes
-
-v4:
- - instrument the new out-of-line implementations of get_user()/put_user()
- - fix a minor checkpatch warning in the inline assembly
-
----
----
- arch/x86/include/asm/uaccess.h | 36 ++++++++++++++++++++++------------
- arch/x86/lib/usercopy_64.c     |  3 +++
- 2 files changed, 26 insertions(+), 13 deletions(-)
-
-diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
-index f13659523108..7041ebc48b75 100644
---- a/arch/x86/include/asm/uaccess.h
-+++ b/arch/x86/include/asm/uaccess.h
-@@ -5,6 +5,7 @@
-  * User space memory access functions
-  */
- #include <linux/compiler.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/kasan-checks.h>
- #include <linux/string.h>
- #include <asm/asm.h>
-@@ -126,11 +127,16 @@ extern int __get_user_bad(void);
- 	int __ret_gu;							\
- 	register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);		\
- 	__chk_user_ptr(ptr);						\
--	asm volatile("call __" #fn "_%P4"				\
--		     : "=a" (__ret_gu), "=r" (__val_gu),		\
--			ASM_CALL_CONSTRAINT				\
--		     : "0" (ptr), "i" (sizeof(*(ptr))));		\
--	(x) = (__force __typeof__(*(ptr))) __val_gu;			\
-+	if (should_fail_usercopy()) {					\
-+		(x) = 0;						\
-+		__ret_gu = -EFAULT;					\
-+	} else {							\
-+		asm volatile("call __" #fn "_%P4"			\
-+			     : "=a" (__ret_gu), "=r" (__val_gu),	\
-+				ASM_CALL_CONSTRAINT			\
-+			     : "0" (ptr), "i" (sizeof(*(ptr))));	\
-+		(x) = (__force __typeof__(*(ptr))) __val_gu;		\
-+	}								\
- 	__builtin_expect(__ret_gu, 0);					\
- })
+diff --git a/drivers/i2c/busses/i2c-imx.c b/drivers/i2c/busses/i2c-imx.c
+index e6f8d6e45a15..ba9d639223ec 100644
+--- a/drivers/i2c/busses/i2c-imx.c
++++ b/drivers/i2c/busses/i2c-imx.c
+@@ -1216,8 +1216,8 @@ static int i2c_imx_probe(struct platform_device *pdev)
+ 		goto rpm_disable;
  
-@@ -213,14 +219,18 @@ extern void __put_user_nocheck_8(void);
- 	int __ret_pu;							\
- 	register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);		\
- 	__chk_user_ptr(ptr);						\
--	__val_pu = (x);							\
--	asm volatile("call __" #fn "_%P[size]"				\
--		     : "=c" (__ret_pu),					\
--			ASM_CALL_CONSTRAINT				\
--		     : "0" (ptr),					\
--		       "r" (__val_pu),					\
--		       [size] "i" (sizeof(*(ptr)))			\
--		     :"ebx");						\
-+	if (unlikely(should_fail_usercopy())) {				\
-+		__ret_pu = -EFAULT;					\
-+	} else {							\
-+		__val_pu = (x);						\
-+		asm volatile("call __" #fn "_%P[size]"			\
-+			     : "=c" (__ret_pu),				\
-+				ASM_CALL_CONSTRAINT			\
-+			     : "0" (ptr),				\
-+			       "r" (__val_pu),				\
-+			       [size] "i" (sizeof(*(ptr)))		\
-+			     : "ebx");					\
-+	}								\
- 	__builtin_expect(__ret_pu, 0);					\
- })
+ 	/* Request IRQ */
+-	ret = request_threaded_irq(irq, i2c_imx_isr, NULL, IRQF_SHARED,
+-				   pdev->name, i2c_imx);
++	ret = devm_request_threaded_irq(&pdev->dev, irq, i2c_imx_isr, NULL, IRQF_SHARED,
++					pdev->name, i2c_imx);
+ 	if (ret) {
+ 		dev_err(&pdev->dev, "can't claim irq %d\n", irq);
+ 		goto rpm_disable;
+@@ -1265,7 +1265,6 @@ static int i2c_imx_probe(struct platform_device *pdev)
  
-diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-index 508c81e97ab1..5617b3864586 100644
---- a/arch/x86/lib/usercopy_64.c
-+++ b/arch/x86/lib/usercopy_64.c
-@@ -7,6 +7,7 @@
-  * Copyright 2002 Andi Kleen <ak@suse.de>
-  */
- #include <linux/export.h>
-+#include <linux/fault-inject-usercopy.h>
- #include <linux/uaccess.h>
- #include <linux/highmem.h>
- 
-@@ -50,6 +51,8 @@ EXPORT_SYMBOL(__clear_user);
- 
- unsigned long clear_user(void __user *to, unsigned long n)
+ clk_notifier_unregister:
+ 	clk_notifier_unregister(i2c_imx->clk, &i2c_imx->clk_change_nb);
+-	free_irq(irq, i2c_imx);
+ rpm_disable:
+ 	pm_runtime_put_noidle(&pdev->dev);
+ 	pm_runtime_disable(&pdev->dev);
+@@ -1278,7 +1277,7 @@ static int i2c_imx_probe(struct platform_device *pdev)
+ static int i2c_imx_remove(struct platform_device *pdev)
  {
-+	if (should_fail_usercopy())
-+		return n;
- 	if (access_ok(to, n))
- 		return __clear_user(to, n);
- 	return n;
+ 	struct imx_i2c_struct *i2c_imx = platform_get_drvdata(pdev);
+-	int irq, ret;
++	int ret;
+ 
+ 	ret = pm_runtime_get_sync(&pdev->dev);
+ 	if (ret < 0)
+@@ -1298,9 +1297,6 @@ static int i2c_imx_remove(struct platform_device *pdev)
+ 	imx_i2c_write_reg(0, i2c_imx, IMX_I2C_I2SR);
+ 
+ 	clk_notifier_unregister(i2c_imx->clk, &i2c_imx->clk_change_nb);
+-	irq = platform_get_irq(pdev, 0);
+-	if (irq >= 0)
+-		free_irq(irq, i2c_imx);
+ 	clk_disable_unprepare(i2c_imx->clk);
+ 
+ 	pm_runtime_put_noidle(&pdev->dev);
 -- 
-2.29.0.rc2.309.g374f81d7ae-goog
+2.28.0
 
