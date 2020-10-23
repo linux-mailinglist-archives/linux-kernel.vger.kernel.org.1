@@ -2,74 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6944A297860
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:42:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94FAA297862
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:42:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756278AbgJWUmO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:42:14 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59416 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756266AbgJWUmN (ORCPT
+        id S1756289AbgJWUmU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:42:20 -0400
+Received: from smtprelay0199.hostedemail.com ([216.40.44.199]:50956 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1756266AbgJWUmS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:42:13 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6515C0613CE;
-        Fri, 23 Oct 2020 13:42:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=HPNK4arnkW2Dq4M58HcOUzaclycvISxal8U4KN3Txio=; b=nLRKQF5KgnrgPpI/VAe1RNljYQ
-        9W/uDSWFLEg+5sW/8dsvxg6gb26oN31X4825l5eV4eGhF7lPXdsPJDBOZgt3a4sifk3QmEsqtC5uH
-        H2WInmO64irZy4SFAMbTGh/1JnBSJnIP5NqQltd/AKW38wZQPSQ59VXL0ydC41YfgsZaLasND1tWr
-        JKZPlh3sSqkp7EWd1zbc9un46BWjRYQ2VGC8xti1T61Z7fNLF92WLYxq+iP/7tgSwu3b2hu6FkgoN
-        JYUkcHubvHmvYwUALsxmMMfX4e/du/jDZ2AHt1ZK3OQTuhVuIgu9TwJfSxUewAwzDyhYPYtw+cDxW
-        HMfvMtfA==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kW3t4-0000TQ-MJ; Fri, 23 Oct 2020 20:42:11 +0000
-Date:   Fri, 23 Oct 2020 21:42:10 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-block@vger.kernel.org, linux-fscrypt@vger.kernel.org
-Subject: Re: [PATCH 3/6] fs: Convert block_read_full_page to be synchronous
-Message-ID: <20201023204210.GF20115@casper.infradead.org>
-References: <20201022212228.15703-1-willy@infradead.org>
- <20201022212228.15703-4-willy@infradead.org>
- <20201022234011.GD3613750@gmail.com>
- <20201023132138.GB20115@casper.infradead.org>
- <20201023161335.GB3908702@gmail.com>
+        Fri, 23 Oct 2020 16:42:18 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 8D97D18224D86;
+        Fri, 23 Oct 2020 20:42:16 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:968:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3867:3868:3873:4184:4321:5007:6120:7901:7903:10004:10400:10848:11232:11658:11783:11914:12043:12297:12740:12895:13069:13071:13161:13229:13311:13357:13439:13894:14180:14659:14721:21060:21080:21221:21451:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:18,LUA_SUMMARY:none
+X-HE-Tag: bite17_5c072682725c
+X-Filterd-Recvd-Size: 2218
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf06.hostedemail.com (Postfix) with ESMTPA;
+        Fri, 23 Oct 2020 20:42:15 +0000 (UTC)
+Message-ID: <8710630d8c01bf6f3749e3d11d193a805f2d2048.camel@perches.com>
+Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle
+ more patterns
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Date:   Fri, 23 Oct 2020 13:42:14 -0700
+In-Reply-To: <2a3b90ee-b9bd-2586-9d68-45cbf7e499a9@gmail.com>
+References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
+         <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
+         <CABJPP5Dx4qj-_0gOx0bmaWvJj3okB-tNGJg5-8Y3KF2LnCjowQ@mail.gmail.com>
+         <2e8279841d604dde8a3335c092db921007f6744e.camel@perches.com>
+         <2a3b90ee-b9bd-2586-9d68-45cbf7e499a9@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023161335.GB3908702@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 09:13:35AM -0700, Eric Biggers wrote:
-> On Fri, Oct 23, 2020 at 02:21:38PM +0100, Matthew Wilcox wrote:
-> > I wonder about allocating bios that can accommodate more bvecs.  Not sure
-> > how often filesystems have adjacent blocks which go into non-adjacent
-> > sub-page blocks.  It's certainly possible that a filesystem might have
-> > a page consisting of DDhhDDDD ('D' for Data, 'h' for hole), but how
-> > likely is it to have written the two data chunks next to each other?
-> > Maybe with O_SYNC?
+On Sat, 2020-10-24 at 00:44 +0530, Dwaipayan Ray wrote:
+> Hi,
+
+Hi again.
+
+> I modified the check to check the attributes from the map.
+> There are two checks - one for the normal attributes and
+> one for the ones with arguments, which needs just a bit more
+> processing.
 > 
-> I think that's a rare case that's not very important to optimize.  And there's
-> already a lot of code where filesystems *could* submit a single bio in that case
-> but don't.  For example, both fs/direct-io.c and fs/iomap/direct-io.c only
-> submit bios that contain logically contiguous data.
+> So attributes like __packed__ as well as those like
+> __aligned__(x) are handled.
+> 
+> What do you think?
+> 
+> ---
+> +            $line =~ /__attribute__\s*\(\s*($balanced_parens)\s*\)/)
+> {
+> +            my $attr = trim($1);
+> +            $attr =~ s/\(\s*_*(.*)\)/$1/;
+> +            while($attr =~ s/(.*)_$/$1/) {}  # Remove trailing
+> underscores
 
-True.  iomap/buffered-io.c will do it though.
+	I think this could be a single test like:
 
-> If you do implement this optimization, note that it wouldn't work when a
-> bio_crypt_ctx is set, since the data must be logically contiguous in that case.
-> To handle that you'd need to call fscrypt_mergeable_bio_bh() when adding each
-> block, and submit the bio if it returns false.  (In contrast, with your current
-> proposal, calling fscrypt_mergeable_bio_bh() isn't necessary because each bio
-> only contains logically contiguous data within one page.)
+		while ($attr =~ /\s*(\w+)\s*(${balanced_parens})?/g) {
+			my $curr_attr = $1;
+			my $parens = $2;
+			$curr_attr = s/^_*(.*)_*$/$1/;
+			
+> +            my %attr_list = (
+> +                "alias"            => "__alias",
+> +                "aligned"        => "__aligned",
 
-Oh, that's disappointing.  I had assumed that you'd set up the dun for
-the logical block corresponding to the start of the page and then you'd
-be able to decrypt any range in the page.
+These might be better using tab alignment.
+
+And you might special case format(printf/scanf here too
+
+
