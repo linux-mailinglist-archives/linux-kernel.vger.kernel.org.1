@@ -2,89 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8D14E29711D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:13:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35C8F297110
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:08:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374226AbgJWONE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:13:04 -0400
-Received: from smtp.radex.nl ([178.250.146.7]:59091 "EHLO radex-web.radex.nl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373579AbgJWOND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:13:03 -0400
-Received: from [192.168.1.158] (cust-178-250-146-69.breedbanddelft.nl [178.250.146.69])
-        by radex-web.radex.nl (Postfix) with ESMTPS id 540B22407C;
-        Fri, 23 Oct 2020 16:03:43 +0200 (CEST)
-Subject: Re: [PATCH v1 2/2] device property: Don't clear secondary pointer for
- shared primary firmware node
-To:     Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-kernel@vger.kernel.org,
-        Saravana Kannan <saravanak@google.com>,
-        linux-acpi@vger.kernel.org, "Rafael J. Wysocki" <rafael@kernel.org>
-References: <20201022184100.71659-1-andriy.shevchenko@linux.intel.com>
- <20201022184100.71659-2-andriy.shevchenko@linux.intel.com>
- <20201023123544.GB614478@kuha.fi.intel.com>
-From:   Ferry Toth <fntoth@gmail.com>
-Message-ID: <584104f7-0d87-4070-1e67-f51f9bee0a94@gmail.com>
-Date:   Fri, 23 Oct 2020 16:03:42 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1750287AbgJWOIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:08:13 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:36609 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1750250AbgJWOIN (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:08:13 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09NE7ipV024993
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Oct 2020 10:07:45 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id 9B7A2420107; Fri, 23 Oct 2020 10:07:44 -0400 (EDT)
+Date:   Fri, 23 Oct 2020 10:07:44 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Brendan Higgins <brendanhiggins@google.com>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        David Gow <davidgow@google.com>
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead
+ of selecting it
+Message-ID: <20201023140744.GS181507@mit.edu>
+References: <20201020073740.29081-1-geert@linux-m68k.org>
+ <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+ <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org>
+ <20201021223649.GP181507@mit.edu>
+ <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023123544.GB614478@kuha.fi.intel.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+On Thu, Oct 22, 2020 at 04:52:52PM -0700, Brendan Higgins wrote:
+> So you, me, Luis, David, and a whole bunch of other people have been
+> thinking about this problem for a while. What if we just put
+> kunitconfig fragments in directories along side the test files they
+> enable?
+> 
+> For example, we could add a file to fs/ext4/kunitconfig which contains:
+> 
+> CONFIG_EXT4_FS=y
+> CONFIG_EXT4_KUNIT_TESTS=y
+> 
+> We could do something similar in fs/jdb2, etc.
+> 
+> Obviously some logically separate KUnit tests (different maintainers,
+> different Kconfig symbols, etc) reside in the same directory, for
+> these we could name the kunitconfig file something like
+> lib/list-test.kunitconfig (not a great example because lists are
+> always built into Linux), but you get the idea.
+> 
+> Then like Ted suggested, if you call kunit.py run foo/bar, then
+> 
+> if bar is a directory, then kunit.py will look for foo/bar/kunitconfig
+> 
+> if bar is a file ending with .kunitconfig like foo/bar.kunitconfig,
+> then it will use that kunitconfig
+> 
+> if bar is '...' (foo/...) then kunit.py will look for all kunitconfigs
+> underneath foo.
+> 
+> Once all the kunitconfigs have been resolved, they will be merged into
+> the .kunitconfig. If they can be successfully merged together, the new
+> .kunitconfig will then continue to function as it currently does.
 
-Op 23-10-2020 om 14:35 schreef Heikki Krogerus:
-> On Thu, Oct 22, 2020 at 09:41:00PM +0300, Andy Shevchenko wrote:
->> It appears that firmware nodes can be shared between devices. In such case
->> when a (child) device is about to be deleted, its firmware node may be shared
->> and ACPI_COMPANION_SET(..., NULL) call for it breaks the secondary link
->> of the shared primary firmware node.
->>
->> In order to prevent that, check, if the device has a parent and parent's
->> firmware node is shared with its child, and avoid crashing the link.
->>
->> Fixes: c15e1bdda436 ("device property: Fix the secondary firmware node handling in set_primary_fwnode()")
->> Reported-by: Ferry Toth <fntoth@gmail.com>
->> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-> FWIW:
->
-> Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+I was thinking along a similar set of lines this morning.  One thing
+I'd add in addition to your suggestion to that is to change how
+.kunitconfig is interpreted such that
 
-Tested-by: Ferry Toth <fntoth@gmail.com>
+CONFIG_KUNIT=y
 
->> ---
->>   drivers/base/core.c | 4 +++-
->>   1 file changed, 3 insertions(+), 1 deletion(-)
->>
->> diff --git a/drivers/base/core.c b/drivers/base/core.c
->> index 41feab679fa1..78114ddac755 100644
->> --- a/drivers/base/core.c
->> +++ b/drivers/base/core.c
->> @@ -4264,6 +4264,7 @@ static inline bool fwnode_is_primary(struct fwnode_handle *fwnode)
->>    */
->>   void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
->>   {
->> +	struct device *parent = dev->parent;
->>   	struct fwnode_handle *fn = dev->fwnode;
->>   
->>   	if (fwnode) {
->> @@ -4278,7 +4279,8 @@ void set_primary_fwnode(struct device *dev, struct fwnode_handle *fwnode)
->>   	} else {
->>   		if (fwnode_is_primary(fn)) {
->>   			dev->fwnode = fn->secondary;
->> -			fn->secondary = ERR_PTR(-ENODEV);
->> +			if (!(parent && fn == parent->fwnode))
->> +				fn->secondary = ERR_PTR(-ENODEV);
->>   		} else {
->>   			dev->fwnode = NULL;
->>   		}
->> -- 
->> 2.28.0
+is always implied, so it doesn't have to be specified explicitly, and
+that if a line like:
+
+fs/ext4
+
+or
+
+mm
+
+etc. occurs, that will cause a include of the Kunitconfig (I'd using a
+capitalized version of the filename like Kconfig, so that it's easier
+to see in a directory listing) in the named directory.
+
+That way, .kunitconfig is backwards compatible, but it also allows
+people to put a one-liner into .kunitconfig to enable the unit tests
+for that particular directory.
+
+What do folks think?
+
+Cheers,
+
+						- Ted
