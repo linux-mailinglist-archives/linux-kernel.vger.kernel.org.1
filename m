@@ -2,14 +2,14 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD2362973E8
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5B42973E7
 	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:32:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751780AbgJWQcI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:32:08 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:29086 "EHLO
+        id S1751772AbgJWQcG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:32:06 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:31010 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751517AbgJWQad (ORCPT
+        by vger.kernel.org with ESMTP id S1750708AbgJWQad (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:30:33 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -18,28 +18,28 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=E+3IRJB6Q1/p5CmMrxkT9gnBU657hxEY63DzKc8Vg14=;
-        b=Lmzy0GO/R7Qab7QilElPTjk/UEqjwbNlV/9BqFPIO8DeXTFXNw8Lb9XB+y9mj/bLAs38vJ
-        qZ83oLECwN8Ds93Af/XVXhXSzMHNegwdbKqBLG/ZpOiZwOKiZ0qRxeEmd26hkZ8ws55OEI
-        d+msXIyLsZwA0AJI76wcnzSyNMQ3euo=
+        bh=pu5pTTwDQG7Y2LlVE/UD0j9Vgozx1GRFAEtYr8veM/0=;
+        b=hHii/4Lax236ucGRz1jwKIsyi/bdh6592tig9bvBYATiHaQZBVmZn6STPfWI+IRjsu0ZbY
+        1N9fDgVG/PWMw1PAtOGdkJlVTgzLDgUOLIGGLr0xBUaA6bQ7z/JpITdOAVVMkNVK+ybLah
+        DmtutreHcLOSYFEEmEo0lZpJvV48afk=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-532-E-Q0nn2iM_atWqcOb2snhw-1; Fri, 23 Oct 2020 12:30:26 -0400
-X-MC-Unique: E-Q0nn2iM_atWqcOb2snhw-1
+ us-mta-593-25jy23OHOsm_xqWT5wge5w-1; Fri, 23 Oct 2020 12:30:27 -0400
+X-MC-Unique: 25jy23OHOsm_xqWT5wge5w-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 66C39ADC3A;
-        Fri, 23 Oct 2020 16:30:25 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 866A21891E92;
+        Fri, 23 Oct 2020 16:30:26 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 05FEF5DA78;
-        Fri, 23 Oct 2020 16:30:24 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 266EF5D9E2;
+        Fri, 23 Oct 2020 16:30:26 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Cc:     bgardon@google.com
-Subject: [PATCH 01/22] kvm: mmu: Separate making non-leaf sptes from link_shadow_page
-Date:   Fri, 23 Oct 2020 12:30:03 -0400
-Message-Id: <20201023163024.2765558-2-pbonzini@redhat.com>
+Subject: [PATCH 03/22] KVM: mmu: Separate updating a PTE from kvm_set_pte_rmapp
+Date:   Fri, 23 Oct 2020 12:30:05 -0400
+Message-Id: <20201023163024.2765558-4-pbonzini@redhat.com>
 In-Reply-To: <20201023163024.2765558-1-pbonzini@redhat.com>
 References: <20201023163024.2765558-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -49,66 +49,59 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+The TDP MMU's own function for the changed-PTE notifier will need to be
+update a PTE in the exact same way as the shadow MMU.  Rather than
+re-implementing this logic, factor the SPTE creation out of kvm_set_pte_rmapp.
 
-The TDP MMU page fault handler will need to be able to create non-leaf
-SPTEs to build up the paging structures. Rather than re-implementing the
-function, factor the SPTE creation out of link_shadow_page.
+Extracted out of a patch by Ben Gardon. <bgardon@google.com>
 
-Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-machine. This series introduced no new failures.
-
-This series can be viewed in Gerrit at:
-	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-
-Signed-off-by: Ben Gardon <bgardon@google.com>
-Message-Id: <20200925212302.3979661-9-bgardon@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/kvm/mmu/mmu.c | 21 +++++++++++++++------
- 1 file changed, 15 insertions(+), 6 deletions(-)
+ arch/x86/kvm/mmu/mmu.c | 24 +++++++++++++++++-------
+ 1 file changed, 17 insertions(+), 7 deletions(-)
 
 diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 08c5fb60fcce..60103fd07bd2 100644
+index ef4a63af8fce..3dec4744ab9c 100644
 --- a/arch/x86/kvm/mmu/mmu.c
 +++ b/arch/x86/kvm/mmu/mmu.c
-@@ -2573,21 +2573,30 @@ static void shadow_walk_next(struct kvm_shadow_walk_iterator *iterator)
- 	__shadow_walk_next(iterator, *iterator->sptep);
+@@ -1747,6 +1747,21 @@ static int kvm_unmap_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 	return kvm_zap_rmapp(kvm, rmap_head);
  }
  
--static void link_shadow_page(struct kvm_vcpu *vcpu, u64 *sptep,
--			     struct kvm_mmu_page *sp)
-+static u64 make_nonleaf_spte(u64 *child_pt, bool ad_disabled)
- {
- 	u64 spte;
- 
--	BUILD_BUG_ON(VMX_EPT_WRITABLE_MASK != PT_WRITABLE_MASK);
--
--	spte = __pa(sp->spt) | shadow_present_mask | PT_WRITABLE_MASK |
-+	spte = __pa(child_pt) | shadow_present_mask | PT_WRITABLE_MASK |
- 	       shadow_user_mask | shadow_x_mask | shadow_me_mask;
- 
--	if (sp_ad_disabled(sp))
-+	if (ad_disabled)
- 		spte |= SPTE_AD_DISABLED_MASK;
- 	else
- 		spte |= shadow_accessed_mask;
- 
-+	return spte;
++static u64 kvm_mmu_changed_pte_notifier_make_spte(u64 old_spte, kvm_pfn_t new_pfn)
++{
++	u64 new_spte;
++
++	new_spte = old_spte & ~PT64_BASE_ADDR_MASK;
++	new_spte |= (u64)new_pfn << PAGE_SHIFT;
++
++	new_spte &= ~PT_WRITABLE_MASK;
++	new_spte &= ~SPTE_HOST_WRITEABLE;
++
++	new_spte = mark_spte_for_access_track(new_spte);
++
++	return new_spte;
 +}
 +
-+static void link_shadow_page(struct kvm_vcpu *vcpu, u64 *sptep,
-+			     struct kvm_mmu_page *sp)
-+{
-+	u64 spte;
-+
-+	BUILD_BUG_ON(VMX_EPT_WRITABLE_MASK != PT_WRITABLE_MASK);
-+
-+	spte = make_nonleaf_spte(sp->spt, sp_ad_disabled(sp));
-+
- 	mmu_spte_set(sptep, spte);
+ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 			     struct kvm_memory_slot *slot, gfn_t gfn, int level,
+ 			     unsigned long data)
+@@ -1772,13 +1787,8 @@ static int kvm_set_pte_rmapp(struct kvm *kvm, struct kvm_rmap_head *rmap_head,
+ 			pte_list_remove(rmap_head, sptep);
+ 			goto restart;
+ 		} else {
+-			new_spte = *sptep & ~PT64_BASE_ADDR_MASK;
+-			new_spte |= (u64)new_pfn << PAGE_SHIFT;
+-
+-			new_spte &= ~PT_WRITABLE_MASK;
+-			new_spte &= ~SPTE_HOST_WRITEABLE;
+-
+-			new_spte = mark_spte_for_access_track(new_spte);
++			new_spte = kvm_mmu_changed_pte_notifier_make_spte(
++					*sptep, new_pfn);
  
- 	mmu_page_add_parent_pte(vcpu, sp, sptep);
+ 			mmu_spte_clear_track_bits(sptep);
+ 			mmu_spte_set(sptep, new_spte);
 -- 
 2.26.2
 
