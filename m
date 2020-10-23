@@ -2,96 +2,258 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2DF44296C46
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:41:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2DE2C296C48
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:43:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461629AbgJWJlv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:41:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41312 "EHLO
+        id S461634AbgJWJnd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:43:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41582 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461514AbgJWJlv (ORCPT
+        with ESMTP id S461520AbgJWJnd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:41:51 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ECAD2C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:41:49 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id e17so1043559wru.12
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:41:49 -0700 (PDT)
+        Fri, 23 Oct 2020 05:43:33 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 72A1FC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:43:33 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id w11so555206pll.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:43:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1v+BRYKpLF85NN75H+Cg4QVm6ILks7BYKSUstLByCSA=;
-        b=oJb60JlqLfIPB3mYZlJZW1WfSN6XWa6RPumJBVEtsy/6axY6bbAq6u8xHFHg6HZNxJ
-         3Ps6GFAictfqzt/K8+GFutVZJTgML8R/FAef3D6uUngWtyLssceUu24Eo1mp4Py/bW0O
-         RXqnuVJyeev6/0nHYXm8UCn3d+y8FfyegBnOF3rWcJ4lLmBqD3jQ4JdDAhaK7ICYvVG3
-         CUZeoN10Pl4j+22yT/iW81VkVWazCaMk4dU5pRMABr7SenEWUkvNp6+jvBH1baC458LH
-         RUL7L0AQMTxK8UDxiYGedJoRZ75cZqWqjzR5iI4yFAa3zKmfhS1YtLi5gg7VVbaUjLLv
-         Ut3A==
+        bh=UngXBlnnjkw1Wqy0iVM1SCifmatRfaaY7ktN8yajVH8=;
+        b=hsKdJZljvb949NMcBwXlzAFMzOnQO0E0d345EHHx2ybHwi6fBEaftmadcUBDnkrAW1
+         p5DR2YFUdKsUgl3uaJNyi8CD+tlNzEG2WoTga60H61CQS1rjY0iboX503QP20EST9MW+
+         tNGA5mQlaKD2CVTpXHI9O3ngF/C2W1oMrIFeTLJTmXiTKjRn+HRCXwGo2YnjNIwnadSj
+         D3YJm/oELielGv0+d8QB3faYNG8wxcUo6L3z5MI6aFUrGLrX55l7RfMO3pyFETnQ4flb
+         90kuhrsF2rhZgyP+wiNO37D8nXaNh1N7B9xHbHHe9i9WPdp7ch189a+4hBTMCby78V1h
+         Tn9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=1v+BRYKpLF85NN75H+Cg4QVm6ILks7BYKSUstLByCSA=;
-        b=SBWd2gTJmYiylzl3RI5hX45XAlzhEZl9TkQlp2VuGhab3hYkxsuhwy8QHBrmPMmsVv
-         MRhuMmx6GX+qXQzMASTJbCcAQFbrMX9FfifTeZDCUaplCPeKPkRty1wvFzIVjPbC5HOp
-         wd+6hQHztiJci0Ybd6JFBEJyuZu29eS5GtXSNZ+4fiVpqXY4JLLg/jqXVZOaYeSqM5xp
-         TODIw/acDt75salvgvEMRuuFfC2HKzRJtN6C7jluWpF/faiexpERrBc143N3w/Vh9KFE
-         qJgT7b+7zvACXYnsbvMKgfQxiqzRgdwA/9a9uHDN+TNgLw5fypZWBQwvU/RAExUzrQSY
-         YtnA==
-X-Gm-Message-State: AOAM530aCjGOuDqHorNi9R7rxwV3uuZE6VG0IGF6uYhgCbgEcA7zz2Ub
-        Cpm6yUvhWMqIF1FA5H2aEI7SrQ==
-X-Google-Smtp-Source: ABdhPJwDPdzCYwR9mXKv2Bg6I8v/LszFvMGCXhdz5/Gevez4gwbQglfp6HED2cYJ6awSzPcjAx1Vkg==
-X-Received: by 2002:adf:97cb:: with SMTP id t11mr1801202wrb.292.1603446108704;
-        Fri, 23 Oct 2020 02:41:48 -0700 (PDT)
-Received: from starbuck.lan (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.googlemail.com with ESMTPSA id t5sm2543023wrb.21.2020.10.23.02.41.47
+        bh=UngXBlnnjkw1Wqy0iVM1SCifmatRfaaY7ktN8yajVH8=;
+        b=WGtTJxAWPtjg9QvJOx/iDsh7qe3tYjl2J8MuJaioRBa218citIh/LPSRKE64VVjDba
+         pR0WkHaLc08ZOdgUXo7EtxoYjy+3wchUzw95C204vUCLJ0QxkgSYjA5qBnlWjdmzJvxM
+         c+lvm9W9DBEknJIsdSVwXU+++iDZS7K7eyWL/PL2y/kVKm8qrs7qDZfShnKzBte86wL8
+         7FLhKFNbbE9bWLX6YFIfGSgBa8HxQe4wK/Z2VAXHX9iiC3oL9ValvfJZ7XQy1S8flpoW
+         o9zXDxm5AtvTqBvgAMJJ3C/zstgmZV2EYN0OB3zu73qEo7TZuWovDnIFhG38EF4vwY7r
+         xw6g==
+X-Gm-Message-State: AOAM531V7MKdy7W/MMLFj/g1PHA8FpN646pABZG8LUaGR7tQeC8BoU9w
+        PJhHE6JG+kqXrB+b51MXtRbiK66LuvxaU0hS
+X-Google-Smtp-Source: ABdhPJxzmYn1mKMJ6BRjBP3kJxc+8BMvcD6T6TZUD/0ODubNTlQ0ryH8aPRUEa/BZsrAvdRpJD5IoQ==
+X-Received: by 2002:a17:902:7c0d:b029:d3:de09:a3 with SMTP id x13-20020a1709027c0db02900d3de0900a3mr1639764pll.52.1603446212846;
+        Fri, 23 Oct 2020 02:43:32 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:6890:ae4b:a0f8:1bbb:ec51])
+        by smtp.gmail.com with ESMTPSA id bx24sm1756775pjb.20.2020.10.23.02.43.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 02:41:47 -0700 (PDT)
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Kevin Hilman <khilman@baylibre.com>
-Cc:     Jerome Brunet <jbrunet@baylibre.com>,
-        linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] arm64: dts: meson: odroid-n2 plus: fix vddcpu_a pwm
-Date:   Fri, 23 Oct 2020 11:41:39 +0200
-Message-Id: <20201023094139.809379-1-jbrunet@baylibre.com>
-X-Mailer: git-send-email 2.25.4
+        Fri, 23 Oct 2020 02:43:32 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH RFC v2] checkpatch: extend attributes check to handle more patterns
+Date:   Fri, 23 Oct 2020 15:13:07 +0530
+Message-Id: <20201023094307.20820-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-X-Patchwork-Bot: notify
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On the odroid N2 plus, cpufreq is not available due to an error on the cpu
-regulators. vddcpu a and b get the same PWM. The one provided to vddcpu A
-is incorrect. Because vddcpu B PWM is busy the regulator cannot register:
+It is generally preferred that the macros from
+include/linux/compiler_attributes.h are used, unless there
+is a reason not to.
 
-> pwm-regulator regulator-vddcpu-b: Failed to get PWM: -16
+Checkpatch currently checks __attribute__ for each of
+packed, aligned, printf, scanf, and weak. Other declarations
+in compiler_attributes.h are not handled.
 
-Like on the odroid n2, use PWM A out of GPIOE_2 for vddcpu A to fix the
-problem
+Add a generic test to check the presence of such attributes.
+Some attributes require more specific handling and are kept
+separate.
 
-Fixes: 98d24896ee11 ("arm64: dts: meson: add support for the ODROID-N2+")
-Signed-off-by: Jerome Brunet <jbrunet@baylibre.com>
+New attributes which are now handled are:
+
+__alias__(#symbol)
+__always_inline__
+__assume_aligned__(a, ## __VA_ARGS__)
+__cold__
+__const__
+__copy__(symbol)
+__designated_init__
+__externally_visible__
+__gnu_inline__
+__malloc__
+__mode__(x)
+__no_caller_saved_registers__
+__noclone__
+__fallthrough__
+__noinline__
+__nonstring__
+__noreturn__
+__pure__
+__unused__
+__used__
+
+Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
 ---
- arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ scripts/checkpatch.pl | 130 ++++++++++++++++++++++++++++++------------
+ 1 file changed, 94 insertions(+), 36 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-index 5de2815ba99d..ce1198ad34e4 100644
---- a/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-+++ b/arch/arm64/boot/dts/amlogic/meson-g12b-odroid-n2-plus.dts
-@@ -19,7 +19,7 @@ &vddcpu_a {
- 	regulator-min-microvolt = <680000>;
- 	regulator-max-microvolt = <1040000>;
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7e505688257a..69324c2e55d6 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6155,50 +6155,108 @@ sub process {
+ 			}
+ 		}
  
--	pwms = <&pwm_AO_cd 1 1500 0>;
-+	pwms = <&pwm_ab 0 1500 0>;
- };
+-# Check for __attribute__ packed, prefer __packed
++# Check for compiler attributes
+ 		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
+-			WARN("PREFER_PACKED",
+-			     "__packed is preferred over __attribute__((packed))\n" . $herecurr);
+-		}
++		    $line =~ /\b__attribute__\s*\(\s*\((.*)\)\s*\)/) {
++			my $attr = trim($1);
++
++			my $attr_list = qr {
++				__alias__|
++				__aligned__$|
++				__aligned__\(.*\)|
++				__always_inline__|
++				__assume_aligned__\(.*\)|
++				__cold__|
++				__const__|
++				__copy__\(.*\)|
++				__designated_init__|
++				__externally_visible__|
++				__fallthrough__|
++				__gnu_inline__|
++				__malloc__|
++				__mode__\(.*\)|
++				__no_caller_saved_registers__|
++				__noclone__|
++				__noinline__|
++				__nonstring__|
++				__noreturn__|
++				__packed__|
++				__pure__|
++				__used__
++			}x;
  
- &vddcpu_b {
+-# Check for __attribute__ aligned, prefer __aligned
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
+-			WARN("PREFER_ALIGNED",
+-			     "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
+-		}
++			my %attr_replace = (
++				"__alias__"			=> "__alias",
++				"__aligned__"		=> "__aligned_largest",
++				"__aligned__("		=> "__aligned",
++				"__always_inline__" 	=> "__always_inline",
++				"__assume_aligned__("	=> "__assume_aligned",
++				"__cold__"			=> "__cold",
++				"__const__"			=> "__const",
++				"__copy__("			=> "__copy",
++				"__designated_init__"		=> "__designated_init",
++				"__externally_visible__"	=> "__visible",
++				"__fallthrough__"		=> "fallthrough",
++				"__gnu_inline__"		=> "__gnu_inline",
++				"__malloc__"		=> "__malloc",
++				"__mode__("			=> "__mode",
++				"__no_caller_saved_registers__" => "__no_caller_saved_registers",
++				"__noclone__"		=> "__noclone",
++				"__noinline__"		=> "noinline",
++				"__nonstring__"		=> "__nonstring",
++				"__noreturn__"		=> "__noreturn",
++				"__packed__"		=> "__packed",
++				"__pure__"			=> "__pure",
++				"__used__"			=> "__used"
++			);
++
++			if ($attr =~/^($attr_list)/) {
++				my $old = $1;
++				if ($old =~ /^(__.+__\()(.*)\)/) {
++					my $new = $attr_replace{$1};
++					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++					     "$new($2) is preffered over __attribute__(($old))\n" . $herecurr);
++				} else {
++					my $new = $attr_replace{$old};
++					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++					     "$new is preffered over __attribute__(($old))\n" . $herecurr);
++				}
++			}
+ 
+-# Check for __attribute__ section, prefer __section
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
+-			my $old = substr($rawline, $-[1], $+[1] - $-[1]);
+-			my $new = substr($old, 1, -1);
+-			if (WARN("PREFER_SECTION",
+-				 "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++			# Check for __attribute__ format(printf, prefer __printf
++			if ($attr =~ /^_*format_*\s*\(\s*printf/) {
++				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				         "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
++
++				}
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(printf, prefer __printf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
+-			if (WARN("PREFER_PRINTF",
+-				 "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
++			# Check for __attribute__ format(scanf, prefer __scanf
++			if ($attr =~ /^_*format_*\s*\(\s*scanf\b/) {
++				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				         "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
++				}
++			}
+ 
++			# Check for __attribute__ section, prefer __section
++			if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
++				my $old = substr($rawline, $-[1], $+[1] - $-[1]);
++				my $new = substr($old, 1, -1);
++				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				         "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++				}
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(scanf, prefer __scanf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
+-			if (WARN("PREFER_SCANF",
+-				 "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
++			# Check for __attribute__ unused, prefer __always_unused or __maybe_unused
++			if ($attr =~ /^_*unused_*/) {
++				WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				     "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
+ 			}
+ 		}
+ 
 -- 
-2.25.4
+2.27.0
 
