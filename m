@@ -2,94 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 06F77296B54
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:39:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AA31B296B56
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:40:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460721AbgJWIjv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:39:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57726 "EHLO mail.kernel.org"
+        id S460730AbgJWIkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:40:21 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45756 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S460709AbgJWIju (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:39:50 -0400
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BA01422253;
-        Fri, 23 Oct 2020 08:39:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603442389;
-        bh=VvRSe/OoqsH6RWGRZu9ZjCYTv4OyRkDtBy9Tp5f+wyM=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ImXHeoN1ZKHEd/w7JhcCdvImXbJuvOX4ynCQAR4ku/jRK+hDMf2kn5k3NiR7MazIl
-         QXhvZ5LF+658kVs8Kx2ja2RFsEKb5EL/2uhZHlWlvaLt4SUBqAqFkAGFoKSkWMZSR0
-         lfSF6PyCATPOiwVtUyEI7hguvwsECyXG2QnK0rvE=
-Received: by mail-qv1-f50.google.com with SMTP id cv1so305657qvb.2;
-        Fri, 23 Oct 2020 01:39:49 -0700 (PDT)
-X-Gm-Message-State: AOAM533x0FUQrqbrfXAy9loujORhFI0svUQ3dZljvhmQzgUchnKWpDSH
-        Br+NOF2wKyhw5nfhgEk2bhYLw1DEa2n7/FrIvoU=
-X-Google-Smtp-Source: ABdhPJyJjzoKaK5cagyt39oBcijtYdW9B/rA44OHpXj7KabOoID/HljAtUFY9foobN6cU/y9qnZy0qQaSzJxUuB8HBI=
-X-Received: by 2002:ad4:4203:: with SMTP id k3mr1182611qvp.8.1603442388461;
- Fri, 23 Oct 2020 01:39:48 -0700 (PDT)
+        id S460684AbgJWIkV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:40:21 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 95BF3ABF4;
+        Fri, 23 Oct 2020 08:40:19 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 09:40:16 +0100
+From:   Mel Gorman <mgorman@suse.de>
+To:     Julia Lawall <Julia.Lawall@inria.fr>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/fair: check for idle core
+Message-ID: <20201023084016.GP32041@suse.de>
+References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
 MIME-Version: 1.0
-References: <20201019073908.32262-1-dylan_hung@aspeedtech.com>
- <CACPK8Xfn+Gn0PHCfhX-vgLTA6e2=RT+D+fnLF67_1j1iwqh7yg@mail.gmail.com>
- <20201019120040.3152ea0b@kicinski-fedora-pc1c0hjn.dhcp.thefacebook.com>
- <PS1PR0601MB1849166CBF6D1678E6E1210C9C1F0@PS1PR0601MB1849.apcprd06.prod.outlook.com>
- <CAK8P3a2pEfbLDWTppVHmGxXduOWPCwBw-8bMY9h3EbEecsVfTA@mail.gmail.com>
- <32bfb619bbb3cd6f52f9e5da205673702fed228f.camel@kernel.crashing.org>
- <CAK8P3a2j7fV5EFmC8UvSyvXixU8=Nmp6hrJco-fdP2Z+w8bLnA@mail.gmail.com>
- <CAK8P3a0qzyb0z-OH-hGNJ8iQoLckVkkz4DQfYpFFd=UuXP3gwA@mail.gmail.com> <f3f4243408afb4e31a72b8ccb8cef4ba539c67a3.camel@kernel.crashing.org>
-In-Reply-To: <f3f4243408afb4e31a72b8ccb8cef4ba539c67a3.camel@kernel.crashing.org>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Fri, 23 Oct 2020 10:39:32 +0200
-X-Gmail-Original-Message-ID: <CAK8P3a1JD57NSz+_ffyNwX-ERnDq56taNXryoVyV6ZXzEXft0g@mail.gmail.com>
-Message-ID: <CAK8P3a1JD57NSz+_ffyNwX-ERnDq56taNXryoVyV6ZXzEXft0g@mail.gmail.com>
-Subject: Re: [PATCH] net: ftgmac100: Fix missing TX-poll issue
-To:     Benjamin Herrenschmidt <benh@kernel.crashing.org>
-Cc:     Arnd Bergmann <arnd@kernel.org>,
-        Dylan Hung <dylan_hung@aspeedtech.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Joel Stanley <joel@jms.id.au>,
-        "David S . Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Po-Yu Chuang <ratbert@faraday-tech.com>,
-        linux-aspeed <linux-aspeed@lists.ozlabs.org>,
-        OpenBMC Maillist <openbmc@lists.ozlabs.org>,
-        BMC-SW <BMC-SW@aspeedtech.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-15
+Content-Disposition: inline
+In-Reply-To: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 9:41 AM Benjamin Herrenschmidt
-<benh@kernel.crashing.org> wrote:
-> On Wed, 2020-10-21 at 14:11 +0200, Arnd Bergmann wrote:
->
-> > > At the moment, the only chips that need the heavy barrier are
-> > > omap4 and mstar_v7, and early l2 cache controllers (not the one
-> > > on Cortex-A7) have another synchronization callback that IIRC
-> > > is used for streaming mappings.
->
->  .../...
->
-> > > Obviously, adding one of these for ast2600 would slow down every
-> > > mb() and writel() a lot, but if it is a chip-wide problem rather than
-> > > one isolated to the network device, it would be the correct solution,
-> > > provided that a correct code sequence can be found.
->
-> I'm surprised that problem doesn't already exist on the ast2400 and
-> 2500 and I thus worry about the performance impact of such a workaround
-> applied generally to every MMIO writes....
->
-> But we did kill mmiowb so ... ;-)
+On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
+> In the case of a thread wakeup, wake_affine determines whether a core
+> will be chosen for the thread on the socket where the thread ran
+> previously or on the socket of the waker.  This is done primarily by
+> comparing the load of the core where th thread ran previously (prev)
+> and the load of the waker (this).
+> 
+> commit 11f10e5420f6 ("sched/fair: Use load instead of runnable load
+> in wakeup path") changed the load computation from the runnable load
+> to the load average, where the latter includes the load of threads
+> that have already blocked on the core.
+> 
+> When a short-running daemon processes happens to run on prev, this
+> change raised the situation that prev could appear to have a greater
+> load than this, even when prev is actually idle.  When prev and this
+> are on the same socket, the idle prev is detected later, in
+> select_idle_sibling.  But if that does not hold, prev is completely
+> ignored, causing the waking thread to move to the socket of the waker.
+> In the case of N mostly active threads on N cores, this triggers other
+> migrations and hurts performance.
+> 
+> In contrast, before commit 11f10e5420f6, the load on an idle core
+> was 0, and in the case of a non-idle waker core, the effect of
+> wake_affine was to select prev as the target for searching for a core
+> for the waking thread.
+> 
+> To avoid unnecessary migrations, extend wake_affine_idle to check
+> whether the core where the thread previously ran is currently idle,
+> and if so simply return that core as the target.
+> target
+> [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+> load in wakeup path")
+> 
+> This particularly has an impact when using the ondemand power manager,
+> where kworkers run every 0.004 seconds on all cores, increasing the
+> likelihood that an idle core will be considered to have a load.
+> 
+> The following numbers were obtained with the benchmarking tool
+> hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+> benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+> tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+> 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+> management were used.  Times are in seconds.  All experiments use all
+> 160 hardware threads.
+> 
+> 	v5.9/intel-pstate	v5.9+patch/intel-pstate
+> bt.C.c	24.725724+-0.962340	23.349608+-1.607214
+> lu.C.x	29.105952+-4.804203	25.249052+-5.561617
+> sp.C.x	31.220696+-1.831335	30.227760+-2.429792
+> ua.C.x	26.606118+-1.767384	25.778367+-1.263850
+> 
+> 	v5.9/ondemand		v5.9+patch/ondemand
+> bt.C.c	25.330360+-1.028316	23.544036+-1.020189
+> lu.C.x	35.872659+-4.872090	23.719295+-3.883848
+> sp.C.x	32.141310+-2.289541	29.125363+-0.872300
+> ua.C.x	29.024597+-1.667049	25.728888+-1.539772
+> 
+> On the smaller data sets (A and B) and on the other NAS benchmarks
+> there is no impact on performance.
+> 
+> This also has a major impact on the splash2x.volrend benchmark of the
+> parsec benchmark suite that goes from 1m25 without this patch to 0m45,
+> in active (intel_pstate) mode.
+> 
+> Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+> Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+> 
 
-The real cost would have to be measured of course, and it depends a
-lot on how it's done. The read-from-uncached-memory as in the 1/4
-patch here seems fairly expensive, the mstarv7_mb() method (spinning
-on an mmio read) seems worse, but the omap4 method (a posted write
-to a mmio address in the memory controller to enforce a barrier between
-the two ports) doesn't seem that bad and would correspond to what
-the chip should be doing in the first place.
+In principal, I think the patch is ok after the recent discussion. I'm
+holding off an ack until a battery of tests on loads with different
+levels of utilisation and wakeup patterns makes its way through a test
+grid. It's based on Linus's tree mid-merge window that includes what is
+in the scheduler pipeline
 
-       Arnd
+-- 
+Mel Gorman
+SUSE Labs
