@@ -2,44 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 89DCA296AF3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:10:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E3B5296AD7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:01:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375451AbgJWIK3 convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 04:10:29 -0400
-Received: from mail.ebc.gob.bo ([181.115.182.242]:35950 "EHLO mail.ebc.gob.bo"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S460482AbgJWIK2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:10:28 -0400
-X-Greylist: delayed 23406 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 04:10:27 EDT
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.ebc.gob.bo (Postfix) with ESMTP id D0A73B22805;
-        Thu, 22 Oct 2020 19:32:48 -0400 (BOT)
-Received: from mail.ebc.gob.bo ([127.0.0.1])
-        by localhost (mail.ebc.gob.bo [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zghnKHnKpxQN; Thu, 22 Oct 2020 19:32:47 -0400 (BOT)
-Received: from localhost (localhost.localdomain [127.0.0.1])
-        by mail.ebc.gob.bo (Postfix) with ESMTP id 98F29B228B1;
-        Thu, 22 Oct 2020 19:32:39 -0400 (BOT)
-X-Virus-Scanned: amavisd-new at ebc.gob.bo
-Received: from mail.ebc.gob.bo ([127.0.0.1])
-        by localhost (mail.ebc.gob.bo [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id 67BEVWOaKioe; Thu, 22 Oct 2020 19:32:38 -0400 (BOT)
-Received: from [192.168.225.91] (unknown [154.21.23.152])
-        by mail.ebc.gob.bo (Postfix) with ESMTPSA id 282AEB2285D;
-        Thu, 22 Oct 2020 19:31:52 -0400 (BOT)
-Content-Type: text/plain; charset="iso-8859-1"
+        id S371633AbgJWIBJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:01:09 -0400
+Received: from jabberwock.ucw.cz ([46.255.230.98]:37150 "EHLO
+        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S370556AbgJWIBI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:01:08 -0400
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+        id AE2791C0B77; Fri, 23 Oct 2020 10:01:05 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 10:01:05 +0200
+From:   Pavel Machek <pavel@denx.de>
+To:     Thomas Gleixner <tglx@linutronix.de>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        linux-usb@vger.kernel.org,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Johan Hovold <johan@kernel.org>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: Re: [patch 00/12] UBS: Cleanup in_interupt/in_irq/in_atomic() usage
+Message-ID: <20201023080105.GA21737@duo.ucw.cz>
+References: <20201014145215.518912759@linutronix.de>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8BIT
-Content-Description: Mail message body
-Subject: Donation for you
-To:     Recipients <royahag7@gmail.com>
-From:   Rahmi Koc Foundation <royahag7@gmail.com>
-Date:   Fri, 23 Oct 2020 00:17:00 +0100
-Reply-To: royahag7@gmail.com
-Message-Id: <20201022233153.282AEB2285D@mail.ebc.gob.bo>
+Content-Type: multipart/signed; micalg=pgp-sha1;
+        protocol="application/pgp-signature"; boundary="LQksG6bCIzRHxTLp"
+Content-Disposition: inline
+In-Reply-To: <20201014145215.518912759@linutronix.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I am donating $3,700,000 USD to you. Reply back for more information. Email royahag7@gmail.com
+
+--LQksG6bCIzRHxTLp
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+
+> The usage of such constructs in USB is rather limited. Most of it is in
+> debug code and (misleading) comments. But of course there are also a few
+> few bugs including one unfixable.
+
+The "UBS" typo in the subject got me confused for a while.
+
+Best regards,
+									Pavel
+
+--=20
+http://www.livejournal.com/~pavelmachek
+
+--LQksG6bCIzRHxTLp
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5KNwQAKCRAw5/Bqldv6
+8g6WAJ0RsWU890W8aKyhaM0u5+J+pgoQDACdFG70EftfltJu1+ltFuMJ8UnKttM=
+=Xauw
+-----END PGP SIGNATURE-----
+
+--LQksG6bCIzRHxTLp--
