@@ -2,185 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B2B27296AB2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:56:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4931296AB4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:57:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S376031AbgJWH4H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 03:56:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53170 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S376020AbgJWH4D (ORCPT
+        id S369880AbgJWH5j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:57:39 -0400
+Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:8180 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2896937AbgJWH5i (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:56:03 -0400
-Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 71AD8C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:56:03 -0700 (PDT)
-Received: by mail-wr1-x441.google.com with SMTP id s9so699213wro.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:56:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=/SNcQNTo06eYbWggxW6UOAFjPQ1H0tu2qDw1XijNeRw=;
-        b=CVl+ZUvJNSTelmJgD2DdCIA/kwY4nJMHESm/5iLIkcQJXVj2rijeq3MuB8Zsz5zx/T
-         VahW0LE5kLAYZmr0iD9M7kSzSNf/C93dJqTZt/+xXU4TukOpH/8L/GuA/HXY6OnHfGZh
-         m3QSbS6iZXqxC4LY9xvfNEs5aWu6Bio7vR7eI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=/SNcQNTo06eYbWggxW6UOAFjPQ1H0tu2qDw1XijNeRw=;
-        b=cVj1fkqyQgIxaWIEzqXfVZk1NvgpZwqUo55yYHK/vH5x8KQ6YglxwNiTMZYg7XvMGa
-         gVBb71ZxKJ/NH43Vj/V287WGGXSlSNirA+9X8NXZ/NdhXhnyK1DbmQkuF8jGrwgRql8m
-         wnn9G4aAxaZd5zCW79IUvm+/r4PQDg6ZmZa2ax7XgcUPTo86+KKGcO1sbnr8JHlhyiSZ
-         efeXXhu7DW8vuN/byVcb3kBInzQFJ0pzEFwIBvjMkjDPv+0Y8KHntkn5IQnZHX2ed3te
-         5cev2kvKMBwQcomyP6/L9wff5e8rmPr2Rgfbx88ge2jmWaK+/SH3K0FR+EUWvb7XZlMi
-         jBBw==
-X-Gm-Message-State: AOAM531q6VkyDzBwI+M53gHgZx5hm5QLPCGK8Chjj3324OWX+8b+X/wz
-        dKVeb+2xrAk4n4lmYnLXGpEkEFy/zQDtaWGOarcrqQ==
-X-Google-Smtp-Source: ABdhPJxZFORJ4Tr+SkfBVztLuJ/zgKr93fxZsXD5FewSFQ1f0hvr0ngms9GSLXN0Q5h10kUYApcqSbjs7tAIZIGMzGg=
-X-Received: by 2002:adf:f78d:: with SMTP id q13mr1183396wrp.258.1603439761801;
- Fri, 23 Oct 2020 00:56:01 -0700 (PDT)
+        Fri, 23 Oct 2020 03:57:38 -0400
+Received: from pps.filterd (m0098413.ppops.net [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09N7c1OX028360;
+        Fri, 23 Oct 2020 03:57:17 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=uaq+VlNOGuAN/hj0SDjgAd94+zuOdR736ZcpTgyYVcI=;
+ b=Dpb4EAH+yCBFrh1lu9QKGLeY51f155CDEQf/gzEILcEnLL4NbZMmO9YOvxxElIcEj3Jp
+ JgX1dEa8yCwgOJBsH7VpKLyiJTBxv/NAlY4UDbLfpgFI5+pmTXV9RHoJT9y2Dbwb1qPp
+ 05htiGr/8KTCmdKwgbXM9AjZJIKYB4fpN9qXda4s36O5T0tN1h5Xnr1JJO8yX3JIwr1b
+ /hGktAEgWg1TJm2VAuQ1H/+siBQZv+79rJnjslZQtVBC1NGG/a+mLNgFOmzSsK2H4fJd
+ pS/DMfHCQtK8yUuoCr+ObkEif5s92MkH4xZ17llnFMUzo3Cvr6REf5BU50i+XCtiD6vH hw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34b73rnvrm-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Oct 2020 03:57:17 -0400
+Received: from m0098413.ppops.net (m0098413.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09N7bbJb026897;
+        Fri, 23 Oct 2020 03:57:17 -0400
+Received: from ppma04dal.us.ibm.com (7a.29.35a9.ip4.static.sl-reverse.com [169.53.41.122])
+        by mx0b-001b2d01.pphosted.com with ESMTP id 34b73rnvr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Oct 2020 03:57:17 -0400
+Received: from pps.filterd (ppma04dal.us.ibm.com [127.0.0.1])
+        by ppma04dal.us.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09N7q5sD013257;
+        Fri, 23 Oct 2020 07:57:16 GMT
+Received: from b01cxnp22035.gho.pok.ibm.com (b01cxnp22035.gho.pok.ibm.com [9.57.198.25])
+        by ppma04dal.us.ibm.com with ESMTP id 347r8a2mty-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Fri, 23 Oct 2020 07:57:16 +0000
+Received: from b01ledav005.gho.pok.ibm.com (b01ledav005.gho.pok.ibm.com [9.57.199.110])
+        by b01cxnp22035.gho.pok.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09N7vF8T27066636
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Oct 2020 07:57:15 GMT
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 94892AE05F;
+        Fri, 23 Oct 2020 07:57:15 +0000 (GMT)
+Received: from b01ledav005.gho.pok.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 45517AE05C;
+        Fri, 23 Oct 2020 07:57:11 +0000 (GMT)
+Received: from localhost.localdomain (unknown [9.199.49.224])
+        by b01ledav005.gho.pok.ibm.com (Postfix) with ESMTP;
+        Fri, 23 Oct 2020 07:57:10 +0000 (GMT)
+Subject: Re: [PATCH v2 2/2] perf jevents: Add test for arch std events
+To:     John Garry <john.garry@huawei.com>, peterz@infradead.org,
+        mingo@redhat.com, acme@kernel.org, mark.rutland@arm.com,
+        alexander.shishkin@linux.intel.com, jolsa@redhat.com,
+        namhyung@kernel.org, irogers@google.com, yao.jin@linux.intel.com,
+        yeyunfeng@huawei.com
+Cc:     linux-kernel@vger.kernel.org, linuxarm@huawei.com
+References: <1603364547-197086-1-git-send-email-john.garry@huawei.com>
+ <1603364547-197086-3-git-send-email-john.garry@huawei.com>
+From:   kajoljain <kjain@linux.ibm.com>
+Message-ID: <1f54b1c5-e788-57f1-b2d4-c0d33af85f00@linux.ibm.com>
+Date:   Fri, 23 Oct 2020 13:27:09 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.11.0
 MIME-Version: 1.0
-References: <20200914080619.4178587-1-cychiang@chromium.org>
- <20200914080619.4178587-3-cychiang@chromium.org> <7bdc0d63-27b1-f99e-c5f8-65f880733d16@linaro.org>
- <CAFv8NwLkvxX2avoLY+4NY5gBv0dQ863hFFiqy7iQOJxH4WenmQ@mail.gmail.com>
- <20201015161251.GF4390@sirena.org.uk> <CAFv8NwL1xX=yPGFqQL_mOzAnPTfH0Z0J6ibG1+D32W46Nx0KYQ@mail.gmail.com>
- <20201020143711.GC9448@sirena.org.uk> <63f1a29c-0758-97b8-ce80-fe43d91630fa@linaro.org>
- <CAFv8NwJ-+f146Ss9Mk=nEXjm1B--ZwhAgnfx-cTi7DGEKqC1-Q@mail.gmail.com>
- <e876421c-dfeb-e853-1b65-53a786e9bcf9@linaro.org> <20201021123913.GD4497@sirena.org.uk>
- <CA+Px+wV-uoODRQTZqv7RuyOUoGBoh5GnT2h4iW9mJGRL=UFfgQ@mail.gmail.com> <14e7db29-4825-6e9d-22a0-5121bb7006e2@linaro.org>
-In-Reply-To: <14e7db29-4825-6e9d-22a0-5121bb7006e2@linaro.org>
-From:   Cheng-yi Chiang <cychiang@chromium.org>
-Date:   Fri, 23 Oct 2020 15:55:35 +0800
-Message-ID: <CAFv8Nw+zigiF0cbuk8t+4inf_X6twh+2zyyXchRTXASM4V_xBQ@mail.gmail.com>
-Subject: Re: [PATCH v11 2/3] ASoC: qcom: dt-bindings: Add sc7180 machine bindings
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     Tzung-Bi Shih <tzungbi@google.com>,
-        Mark Brown <broonie@kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Taniya Das <tdas@codeaurora.org>,
-        Rohit kumar <rohitkr@codeaurora.org>,
-        Banajit Goswami <bgoswami@codeaurora.org>,
-        Patrick Lai <plai@codeaurora.org>,
-        Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephan Gerhold <stephan@gerhold.net>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Heiko Stuebner <heiko@sntech.de>,
-        Srinivasa Rao <srivasam@codeaurora.org>,
-        Doug Anderson <dianders@chromium.org>,
-        Dylan Reid <dgreid@chromium.org>,
-        Tzung-Bi Shih <tzungbi@chromium.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
-        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        "moderated list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM..." 
-        <alsa-devel@alsa-project.org>,
-        "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        "open list:ARM/Rockchip SoC..." <linux-rockchip@lists.infradead.org>,
-        Ajye Huang <ajye_huang@compal.corp-partner.google.com>,
-        xuyuqing@huaqin.corp-partner.google.com
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <1603364547-197086-3-git-send-email-john.garry@huawei.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-23_03:2020-10-20,2020-10-23 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 phishscore=0 clxscore=1015 mlxscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 mlxlogscore=999 bulkscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010230047
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sorry for resending this mail.
-I forgot to use plain text mode in the previous mail.
-On Thu, Oct 22, 2020 at 6:12 PM Srinivas Kandagatla
-<srinivas.kandagatla@linaro.org> wrote:
->
->
->
-> On 22/10/2020 04:29, Tzung-Bi Shih wrote:
-> > Hi, sorry for jumping into your discussion but I am trying to
-> > summarize them to make sure we are on the same page.  Pardon me to
-> > manually copy-and-paste partial sentences to quote.
-> >
-> > ACK:
-> > - Don't expose DAI connections in compatible strings.
-> > - Use "model" DT property to make the card more UCM2-friendly.
-> > - Expose new DT properties to distinguish different DMIC models.
-> >
-> > NACK:
-> > - All the board variations using exactly the same compatible string.
-> > => This is less realistic.  Although the CODECS information can be
-> > retrieved from DT, it is inevitable to have some custom code for each
-> > CODEC.
-> >
-> > Per Mark's words:
-> >> a different CODEC is something that often justifies a separate compatible
-> > I think we should use different compatible strings for new CODECS
-> > combinations.  And we should try to reuse the machine driver if they
-> > share the most code.  In the worst case, introduce a new machine
-> > driver for the new CODECS combinations.
-> >
-> > - Srinivas's suggestion to set driver_name.
-> > e.g. card->driver_name = "SM8250";
-> > => This sounds like a new DT property should be parsed in
-> > sound/soc/qcom/common.c.  For example: "qcom,family"?  But as we do
-> > less care about UCM2 for now, I would prefer to just leave it as is.
-> >
-> No, you can just hardcode this driver_name in your machine driver rather
-> than getting it from DT, this is how everyone does!.
-> So need of adding anything to common.c
->
-ACK
-> The thing that I suggested to add to common.c is setting card->long_name
-> from "model" property.
->
 
-NACK
-I found that I don't need to set card->long_name in common.c because
-soc-core.c already sets longname using card->name if
-card->long_name is NULL.
 
-        soc_setup_card_name(card->snd_card->longname,
-                            card->long_name, card->name, 0);
+On 10/22/20 4:32 PM, John Garry wrote:
+> Recently there was an undetected breakage for std arch event support.
+> 
+> Add support in "PMU events" testcase to detect such breakages.
+> 
+> For this, the "test" arch needs has support added to process std arch
+> events. And a test event is added for the test, ifself.
+> 
+> Also add a few code comments to help understand the code a bit better.
 
-So we can leave common.c as it is and still get long name.
+Patch looks good to me.
 
-> >
-> > I would expect the following variants in DTS (just for example):
-> >
-> > sound {
-> >    compatible = "qcom,sc7180-trogdor";
-> Make sure that vendor name is correct here, am not sure if trogdor is
-> qcom board or Google own board!
-ACK
-I should use "google,sc7180-trogdor" because google is the vendor.
->
-> >    model = "sc7180-rt5682-max98357a-1mic";
-> > }
-> >
-> > sound {
-> >    compatible = "qcom,sc7180-trogdor";
-> >    model = "sc7180-rt5682-max98357a-2mic";
-> >    dmic-gpio = ...
-> > }
-> >
-> > sound {
-> >    compatible = "qcom,sc7180-pompom";
-> >    model = "sc7180-adau7002-max98357a";
-> > }
-> >
-> >
-> > Please correct me if there is any misunderstanding.
->
-> Looks good to me!
-> thanks for doing this!
-Thank you. I will collect the discussion result to send a v12, and
-sync with variant board partners to submit following machine driver
-changes.
-We will make sure future projects follow this approach
->
-> --srini
-> >
+Reviewed-By: Kajol Jain<kjain@linux.ibm.com>
+
+Thanks,
+Kajol Jain
+> 
+> Signed-off-by: John Garry <john.garry@huawei.com>
+> ---
+>  .../perf/pmu-events/arch/test/arch-std-events.json |  8 ++++++++
+>  .../perf/pmu-events/arch/test/test_cpu/cache.json  |  5 +++++
+>  tools/perf/pmu-events/jevents.c                    |  4 ++++
+>  tools/perf/tests/pmu-events.c                      | 14 ++++++++++++++
+>  4 files changed, 31 insertions(+)
+>  create mode 100644 tools/perf/pmu-events/arch/test/arch-std-events.json
+>  create mode 100644 tools/perf/pmu-events/arch/test/test_cpu/cache.json
+> 
+> diff --git a/tools/perf/pmu-events/arch/test/arch-std-events.json b/tools/perf/pmu-events/arch/test/arch-std-events.json
+> new file mode 100644
+> index 000000000000..43f6f729d6ae
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/test/arch-std-events.json
+> @@ -0,0 +1,8 @@
+> +[
+> +    {
+> +        "PublicDescription": "Attributable Level 3 cache access, read",
+> +        "EventCode": "0x40",
+> +        "EventName": "L3_CACHE_RD",
+> +        "BriefDescription": "L3 cache access, read"
+> +    }
+> +]
+> diff --git a/tools/perf/pmu-events/arch/test/test_cpu/cache.json b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
+> new file mode 100644
+> index 000000000000..036d0efdb2bb
+> --- /dev/null
+> +++ b/tools/perf/pmu-events/arch/test/test_cpu/cache.json
+> @@ -0,0 +1,5 @@
+> +[
+> +    {
+> +	 "ArchStdEvent": "L3_CACHE_RD"
+> +    }
+> +]
+> \ No newline at end of file
+> diff --git a/tools/perf/pmu-events/jevents.c b/tools/perf/pmu-events/jevents.c
+> index 7326c14c4623..72cfa3b5046d 100644
+> --- a/tools/perf/pmu-events/jevents.c
+> +++ b/tools/perf/pmu-events/jevents.c
+> @@ -1162,6 +1162,10 @@ int main(int argc, char *argv[])
+>  
+>  	sprintf(ldirname, "%s/test", start_dirname);
+>  
+> +	rc = nftw(ldirname, preprocess_arch_std_files, maxfds, 0);
+> +	if (rc)
+> +		goto err_processing_std_arch_event_dir;
+> +
+>  	rc = nftw(ldirname, process_one_file, maxfds, 0);
+>  	if (rc)
+>  		goto err_processing_dir;
+> diff --git a/tools/perf/tests/pmu-events.c b/tools/perf/tests/pmu-events.c
+> index d3517a74d95e..ad2b21591275 100644
+> --- a/tools/perf/tests/pmu-events.c
+> +++ b/tools/perf/tests/pmu-events.c
+> @@ -14,8 +14,10 @@
+>  #include "util/parse-events.h"
+>  
+>  struct perf_pmu_test_event {
+> +	/* used for matching against events from generated pmu-events.c */
+>  	struct pmu_event event;
+>  
+> +	/* used for matching against event aliases */
+>  	/* extra events for aliases */
+>  	const char *alias_str;
+>  
+> @@ -78,6 +80,17 @@ static struct perf_pmu_test_event test_cpu_events[] = {
+>  		.alias_str = "umask=0,(null)=0x30d40,event=0x3a",
+>  		.alias_long_desc = "Number of Enhanced Intel SpeedStep(R) Technology (EIST) transitions",
+>  	},
+> +	{
+> +		.event = {
+> +			.name = "l3_cache_rd",
+> +			.event = "event=0x40",
+> +			.desc = "L3 cache access, read",
+> +			.long_desc = "Attributable Level 3 cache access, read",
+> +			.topic = "cache",
+> +		},
+> +		.alias_str = "event=0x40",
+> +		.alias_long_desc = "Attributable Level 3 cache access, read",
+> +	},
+>  	{ /* sentinel */
+>  		.event = {
+>  			.name = NULL,
+> @@ -357,6 +370,7 @@ static int __test__pmu_event_aliases(char *pmu_name, int *count)
+>  }
+>  
+>  
+> +/* Test that aliases generated are as expected */
+>  static int test_aliases(void)
+>  {
+>  	struct perf_pmu *pmu = NULL;
+> 
