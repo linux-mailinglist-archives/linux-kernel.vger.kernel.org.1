@@ -2,164 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 429EF297640
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:57:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F82E29763D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:57:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754029AbgJWR5C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:57:02 -0400
-Received: from aserp2130.oracle.com ([141.146.126.79]:43244 "EHLO
-        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754021AbgJWR5C (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:57:02 -0400
-Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
-        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NHtQfR016737;
-        Fri, 23 Oct 2020 17:56:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-transfer-encoding;
- s=corp-2020-01-29; bh=4zxd3ptZdEcqBmIGvpJr2OlJGLs4SbYdy4/wlWqVbZs=;
- b=S98QTqRCOxVIj3y5/hYWqGZ+hW7k0txwjW/FYlyGPD3Co6um7sp9UpMQZE7HWSYvMCSY
- chCYH/YtcuqcNQ9/7CzmNqDswtR93x0nVU4YxXIVrJUOI2kgLN5PzcSICkIS82xgzwEw
- 5eaTNAVXTVbs+fjqebVvjFADFFxKs4qOX9+A9AfR+0FUSgJxNdsZ8kChE7AMGiJFU9rD
- zM1YaCbNfKKy/TkWGCUzGI5qDYsIQlA3bNHpBDYzy/iQHGVdaKNWBCCy2YtpJbwhSj5V
- FTa2E9bnKZlC6YkZvajQMvAmYclGGkxJXcAoBRXT93j0Uup34UfQQHuAC5PrOOVKI0Rj tw== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2130.oracle.com with ESMTP id 347p4bcgvq-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Oct 2020 17:56:42 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NHeBNu044162;
-        Fri, 23 Oct 2020 17:56:41 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by userp3020.oracle.com with ESMTP id 34ak1babg4-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Oct 2020 17:56:41 +0000
-Received: from abhmp0012.oracle.com (abhmp0012.oracle.com [141.146.116.18])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09NHudhe005487;
-        Fri, 23 Oct 2020 17:56:39 GMT
-Received: from concerto.us.oracle.com (/10.65.191.104)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Fri, 23 Oct 2020 10:56:38 -0700
-From:   Khalid Aziz <khalid.aziz@oracle.com>
-To:     jannh@google.com, hch@infradead.org, catalin.marinas@arm.com,
-        davem@davemloft.net, akpm@linux-foundation.org
-Cc:     Khalid Aziz <khalid.aziz@oracle.com>, anthony.yznaga@oracle.com,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        sparclinux@vger.kernel.org
-Subject: [PATCH] sparc64: Use arch_validate_flags() to validate ADI flag
-Date:   Fri, 23 Oct 2020 11:56:11 -0600
-Message-Id: <20201023175611.12819-1-khalid.aziz@oracle.com>
-X-Mailer: git-send-email 2.25.1
+        id S1754018AbgJWR4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:56:51 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43380 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462685AbgJWR4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:56:51 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id BD450AC82;
+        Fri, 23 Oct 2020 17:56:49 +0000 (UTC)
+To:     Axel Rasmussen <axelrasmussen@google.com>
+Cc:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        David Rientjes <rientjes@google.com>,
+        Yafang Shao <laoar.shao@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linux MM <linux-mm@kvack.org>
+References: <20201020184746.300555-1-axelrasmussen@google.com>
+ <20201020184746.300555-2-axelrasmussen@google.com>
+ <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
+ <CAJHvVcjzZgsvdzciR5v_wkgf3M7aD_vNGv3TXrf5Z5K6SLprSA@mail.gmail.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 1/1] mmap_lock: add tracepoints around lock acquisition
+Message-ID: <a98b7807-9ed9-feda-f182-0031e6512328@suse.cz>
+Date:   Fri, 23 Oct 2020 19:56:49 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
+In-Reply-To: <CAJHvVcjzZgsvdzciR5v_wkgf3M7aD_vNGv3TXrf5Z5K6SLprSA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 8bit
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 phishscore=0
- spamscore=0 adultscore=0 mlxlogscore=912 malwarescore=0 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010230110
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
- clxscore=1015 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
- phishscore=0 adultscore=0 mlxlogscore=911 impostorscore=0 spamscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010230110
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When userspace calls mprotect() to enable ADI on an address range,
-do_mprotect_pkey() calls arch_validate_prot() to validate new
-protection flags. arch_validate_prot() for sparc looks at the first
-VMA associated with address range to verify if ADI can indeed be
-enabled on this address range. This has two issues - (1) Address
-range might cover multiple VMAs while arch_validate_prot() looks at
-only the first VMA, (2) arch_validate_prot() peeks at VMA without
-holding mmap lock which can result in race condition.
+On 10/23/20 7:38 PM, Axel Rasmussen wrote:
+> On Fri, Oct 23, 2020 at 7:00 AM Vlastimil Babka <vbabka@suse.cz> wrote:
+>>
+>> On 10/20/20 8:47 PM, Axel Rasmussen wrote:
+>> > The goal of these tracepoints is to be able to debug lock contention
+>> > issues. This lock is acquired on most (all?) mmap / munmap / page fault
+>> > operations, so a multi-threaded process which does a lot of these can
+>> > experience significant contention.
+>> >
+>> > We trace just before we start acquisition, when the acquisition returns
+>> > (whether it succeeded or not), and when the lock is released (or
+>> > downgraded). The events are broken out by lock type (read / write).
+>> >
+>> > The events are also broken out by memcg path. For container-based
+>> > workloads, users often think of several processes in a memcg as a single
+>> > logical "task", so collecting statistics at this level is useful.
+>> >
+>> > The end goal is to get latency information. This isn't directly included
+>> > in the trace events. Instead, users are expected to compute the time
+>> > between "start locking" and "acquire returned", using e.g. synthetic
+>> > events or BPF. The benefit we get from this is simpler code.
+>> >
+>> > Because we use tracepoint_enabled() to decide whether or not to trace,
+>> > this patch has effectively no overhead unless tracepoints are enabled at
+>> > runtime. If tracepoints are enabled, there is a performance impact, but
+>> > how much depends on exactly what e.g. the BPF program does.
+>> >
+>> > Reviewed-by: Michel Lespinasse <walken@google.com>
+>> > Acked-by: Yafang Shao <laoar.shao@gmail.com>
+>> > Acked-by: David Rientjes <rientjes@google.com>
+>> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+>>
+>> All seem fine to me, except I started to wonder..
+>>
+>> > +
+>> > +#ifdef CONFIG_MEMCG
+>> > +
+>> > +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
+>> > +
+>> > +/*
+>> > + * Write the given mm_struct's memcg path to a percpu buffer, and return a
+>> > + * pointer to it. If the path cannot be determined, the buffer will contain the
+>> > + * empty string.
+>> > + *
+>> > + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
+>> > + * disabled by the caller before calling us, and re-enabled only after the
+>> > + * caller is done with the pointer.
+>>
+>> Is this enough? What if we fill the buffer and then an interrupt comes and the
+>> handler calls here again? We overwrite the buffer and potentially report a wrong
+>> cgroup after the execution resumes?
+>> If nothing worse can happen (are interrupts disabled while the ftrace code is
+>> copying from the buffer?), then it's probably ok?
+> 
+> I think you're right, get_cpu()/put_cpu() only deals with preemption,
+> not interrupts.
+> 
+> I'm somewhat sure this code can be called in interrupt context, so I
+> don't think we can use locks to prevent this situation. I think it
+> works like this: say we acquire the lock, an interrupt happens, and
+> then we try to acquire again on the same CPU; we can't sleep, so we're
+> stuck.
 
-arch_validate_flags() from commit c462ac288f2c ("mm: Introduce
-arch_validate_flags()") allows for VMA flags to be validated for all
-VMAs that cover the address range given by user while holding mmap
-lock. This patch updates sparc code to move the VMA check from
-arch_validate_prot() to arch_validate_flags() to fix above two
-issues.
+Yes, we could perhaps trylock() and if it fails, give up on the memcg path.
 
-Suggested-by: Jann Horn <jannh@google.com>
-Suggested-by: Christoph Hellwig <hch@infradead.org>
-Suggested-by: Catalin Marinas <catalin.marinas@arm.com>
-Signed-off-by: Khalid Aziz <khalid.aziz@oracle.com>
----
- arch/sparc/include/asm/mman.h | 54 +++++++++++++++++++----------------
- 1 file changed, 29 insertions(+), 25 deletions(-)
+> I think we can't kmalloc here (instead of a percpu buffer) either,
+> since I would guess that kmalloc may also acquire mmap_lock itself?
 
-diff --git a/arch/sparc/include/asm/mman.h b/arch/sparc/include/asm/mman.h
-index f94532f25db1..274217e7ed70 100644
---- a/arch/sparc/include/asm/mman.h
-+++ b/arch/sparc/include/asm/mman.h
-@@ -57,35 +57,39 @@ static inline int sparc_validate_prot(unsigned long prot, unsigned long addr)
- {
- 	if (prot & ~(PROT_READ | PROT_WRITE | PROT_EXEC | PROT_SEM | PROT_ADI))
- 		return 0;
--	if (prot & PROT_ADI) {
--		if (!adi_capable())
--			return 0;
-+	return 1;
-+}
- 
--		if (addr) {
--			struct vm_area_struct *vma;
-+#define arch_validate_flags(vm_flags) arch_validate_flags(vm_flags)
-+/* arch_validate_flags() - Ensure combination of flags is valid for a
-+ *	VMA.
-+ */
-+static inline bool arch_validate_flags(unsigned long vm_flags)
-+{
-+	/* If ADI is being enabled on this VMA, check for ADI
-+	 * capability on the platform and ensure VMA is suitable
-+	 * for ADI
-+	 */
-+	if (vm_flags & VM_SPARC_ADI) {
-+		if (!adi_capable())
-+			return false;
- 
--			vma = find_vma(current->mm, addr);
--			if (vma) {
--				/* ADI can not be enabled on PFN
--				 * mapped pages
--				 */
--				if (vma->vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
--					return 0;
-+		/* ADI can not be enabled on PFN mapped pages */
-+		if (vm_flags & (VM_PFNMAP | VM_MIXEDMAP))
-+			return false;
- 
--				/* Mergeable pages can become unmergeable
--				 * if ADI is enabled on them even if they
--				 * have identical data on them. This can be
--				 * because ADI enabled pages with identical
--				 * data may still not have identical ADI
--				 * tags on them. Disallow ADI on mergeable
--				 * pages.
--				 */
--				if (vma->vm_flags & VM_MERGEABLE)
--					return 0;
--			}
--		}
-+		/* Mergeable pages can become unmergeable
-+		 * if ADI is enabled on them even if they
-+		 * have identical data on them. This can be
-+		 * because ADI enabled pages with identical
-+		 * data may still not have identical ADI
-+		 * tags on them. Disallow ADI on mergeable
-+		 * pages.
-+		 */
-+		if (vm_flags & VM_MERGEABLE)
-+			return false;
- 	}
--	return 1;
-+	return true;
- }
- #endif /* CONFIG_SPARC64 */
- 
--- 
-2.25.1
+the overhead is not worth it anyway, for a tracepoint
+
+> Is adding local_irq_save()/local_irq_restore() in addition to
+> get_cpu()/put_cpu() sufficient?
+
+If you do that, then I guess you don't need get_cpu()/put_cpu() anymore. But 
+it's more costly.
+
+But sounds like we are solving something that the tracing subystem has to solve 
+as well to store the trace event data, so maybe Steven has some better idea?
+
+>>
+>> > + */
+>> > +static const char *get_mm_memcg_path(struct mm_struct *mm)
+>> > +{
+>> > +     struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
+>> > +
+>> > +     if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
+>> > +             char *buf = this_cpu_ptr(trace_memcg_path);
+>> > +
+>> > +             cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
+>> > +             return buf;
+>> > +     }
+>> > +     return "";
+>> > +}
+>> > +
+>> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+>> > +     do {                                                                   \
+>> > +             get_cpu();                                                     \
+>> > +             trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),              \
+>> > +                                    ##__VA_ARGS__);                         \
+>> > +             put_cpu();                                                     \
+>> > +     } while (0)
+>> > +
+>> > +#else /* !CONFIG_MEMCG */
+>> > +
+>> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+>> > +     trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
+>> > +
+>> > +#endif /* CONFIG_MEMCG */
+>> > +
+>> > +/*
+>> > + * Trace calls must be in a separate file, as otherwise there's a circular
+>> > + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
+>> > + */
+>> > +
+>> > +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
+>> > +{
+>> > +     TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
+>> > +}
+>> > +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
+>> > +
+>> > +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
+>> > +                                        bool success)
+>> > +{
+>> > +     TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
+>> > +}
+>> > +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
+>> > +
+>> > +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
+>> > +{
+>> > +     TRACE_MMAP_LOCK_EVENT(released, mm, write);
+>> > +}
+>> > +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
+>> >
+>>
+> 
 
