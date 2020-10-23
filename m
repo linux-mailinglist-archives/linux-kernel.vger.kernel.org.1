@@ -2,182 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 28552296D14
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:54:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1FF03296D16
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:55:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462531AbgJWKyo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:54:44 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52534 "EHLO
+        id S462541AbgJWKy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:54:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52566 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462523AbgJWKyo (ORCPT
+        with ESMTP id S375722AbgJWKy5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:54:44 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B2705C0613CE;
-        Fri, 23 Oct 2020 03:54:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=aJ2ByrTz/AMs3NHTvzyxOkdZXXigLDWsKyC5gK/mghE=; b=U/xrkLpLQXSROUc3tnTgxLEv8G
-        VedqqQjaEaatkmePJAIomik608rvm7HAorDzu3+GSIecqopf2Qz44l/wuacIPhj4nKiok+N+ucA4d
-        AMKyMeXOX18lmMovGMl0rHcl67eiO8296N5+uKZz8ZJYeNT0WQeh6dhFqB88cncRN7bk8WATh/mto
-        cJgLehclyJP49dIxF2NtCsre9I+o6jAV+VeZkRQcAQQPCrGh5qEzVeY1Unu59XUgqJyLJh26rxb3A
-        37+xezEY1u5bqLu7eO8ryS5cfvc/RXveg6/hXXrGSqpH8riUY5PqNYQ9guluJVog2e5gnJoW3TE7K
-        c2nhUSuw==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVuiP-0005Vy-5l; Fri, 23 Oct 2020 10:54:33 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BDF78304D28;
-        Fri, 23 Oct 2020 12:54:31 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A4DEE203D09CC; Fri, 23 Oct 2020 12:54:31 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 12:54:31 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201023105431.GM2594@hirez.programming.kicks-ass.net>
-References: <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <20201022113214.GD2611@hirez.programming.kicks-ass.net>
- <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
- <20201022150609.GI2611@hirez.programming.kicks-ass.net>
- <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
- <20201022212033.GA646497@xps15>
- <20201023073905.GM2611@hirez.programming.kicks-ass.net>
- <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
- <20201023094115.GR2611@hirez.programming.kicks-ass.net>
- <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+        Fri, 23 Oct 2020 06:54:57 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ACD08C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:54:55 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id l18so951953pgg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:54:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=rq8SD2nOs+mpGfCg9fmURj/887r5YEwCC5NsLKmvNs0=;
+        b=K422mEHRp2c7O2z4ARx3bZpVQCQ4cs8VqtVWOWE9dVpPAv7gdE0XpTNQ1nUNuKzM1F
+         Z7zjwndzCYekp0Q+7bBapBI9h84fiBH3E4O3SxLGRIYBT6mqldA4GcH2JlGBMkGzz4aw
+         aT2y0TkR9ruL6zbVd+wfrSlrPPRA/le5F4ysLhZxmPIwC/V5xJzv9wq3knNW6xCUTEMe
+         naE2QvwlR7gw+IQgHob6adxUyY21JlVpbT9s8TkJsK/F0exiS93Mxzj0OHGYFM0ynP5C
+         g00mFZH/PeTKYV25BYkGrniBgLIPOfQL3EmaSsBC2jtYftyDkIG/w9XnGEnS40AARiYO
+         O+Vg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=rq8SD2nOs+mpGfCg9fmURj/887r5YEwCC5NsLKmvNs0=;
+        b=oOV7AeQsvPwVWGZC33/gw8vcHaRt3kM4pWLRLFARzoCaRcFuitnX8FGcQclnfafmD3
+         58AY3nyhBOrqgcELsDt9OGKj81AR24NiX2Q2KztISdmLxgIpOFMIAtxz49VuAmu17V82
+         iG07OXnrycrGn2bJXViYaovM0mr/t/XpIPt5+1c21tUpiZ6p7Muo9TFTuPq/q65an4MV
+         cKIGzTSYHJBGwz3A3hR5sfdkQ62mt83esDiTTG8+D0a+rVCNtxNLsRVaTxEJqyFIUc7l
+         N7sRe0WUMhcCeKK3l6yTxuQZTOmfdLJTmObxKQTYjKyYUWVu+nKyq8VPXb/c3pKP92n2
+         HCMA==
+X-Gm-Message-State: AOAM531EPzuFoqgvlxW1EjWRo4bsMlMIAj7xyKpkHJf6u4mugUVs3Kje
+        aox6lrFsz1Ti4mys1tmQ9VJo0w==
+X-Google-Smtp-Source: ABdhPJwH3Fvnd8EAmIOD4KepLfyuCFw2nqFMxKtbxHQ+ay0fRdcVtMdDvsXe7Nu0VUR2hNofjmqlGw==
+X-Received: by 2002:a05:6a00:845:b029:155:dcd2:7322 with SMTP id q5-20020a056a000845b0290155dcd27322mr1493189pfk.49.1603450495152;
+        Fri, 23 Oct 2020 03:54:55 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id s8sm1847655pjn.46.2020.10.23.03.54.53
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 03:54:54 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 16:24:52 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 1/2] sched/core: Rename and move schedutil_cpu_util()
+ to core.c
+Message-ID: <20201023105452.aivb5o6dws76evc3@vireshk-i7>
+References: <cover.1603448113.git.viresh.kumar@linaro.org>
+ <80c66f55ac7f04b3ecd4ebf12d69d86c89480fa7.1603448113.git.viresh.kumar@linaro.org>
+ <20201023103407.GK2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+In-Reply-To: <20201023103407.GK2594@hirez.programming.kicks-ass.net>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 11:34:32AM +0100, Suzuki Poulose wrote:
-> On 10/23/20 10:41 AM, Peter Zijlstra wrote:
-> > On Fri, Oct 23, 2020 at 09:49:53AM +0100, Suzuki Poulose wrote:
-> > > On 10/23/20 8:39 AM, Peter Zijlstra wrote:
-> > 
-> > > > So then I don't understand the !->owner issue, that only happens when
-> > > > the task dies, which cannot be concurrent with event creation. Are you
-> > > 
-> > > Part of the patch from Sai, fixes this by avoiding the dereferencing
-> > > after event creation (by caching it). But the kernel events needs
-> > > fixing.
-> > 
-> > I'm fundamentally failing here. Creating a link to the sink is strictly
-> > event-creation time. Why would you ever need it again later? Later you
-> > already have the sink setup.
-> > 
+On 23-10-20, 12:34, Peter Zijlstra wrote:
+> On Fri, Oct 23, 2020 at 03:50:20PM +0530, Viresh Kumar wrote:
+> > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > index d2003a7d5ab5..369ff54d11d4 100644
+> > --- a/kernel/sched/core.c
+> > +++ b/kernel/sched/core.c
+> > @@ -5117,6 +5117,119 @@ struct task_struct *idle_task(int cpu)
+> >  	return cpu_rq(cpu)->idle;
+> >  }
+> >  
+> > +/*
+> > + * This function computes an effective utilization for the given CPU, to be
+> > + * used for frequency selection given the linear relation: f = u * f_max.
+> > + *
+> > + * The scheduler tracks the following metrics:
+> > + *
+> > + *   cpu_util_{cfs,rt,dl,irq}()
+> > + *   cpu_bw_dl()
+> > + *
+> > + * Where the cfs,rt and dl util numbers are tracked with the same metric and
+> > + * synchronized windows and are thus directly comparable.
+> > + *
+> > + * The cfs,rt,dl utilization are the running times measured with rq->clock_task
+> > + * which excludes things like IRQ and steal-time. These latter are then accrued
+> > + * in the irq utilization.
+> > + *
+> > + * The DL bandwidth number otoh is not a measured metric but a value computed
+> > + * based on the task model parameters and gives the minimal utilization
+> > + * required to meet deadlines.
+> > + */
+> > +unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+> > +				 unsigned long max, enum cpu_util_type type,
+> > +				 struct task_struct *p)
+> > +{
+> 	...
+> > +}
+> > +
+> > +unsigned long sched_cpu_util(int cpu, enum cpu_util_type type,
+> > +			     unsigned long max)
+> > +{
+> > +	return effective_cpu_util(cpu, cpu_util_cfs(cpu_rq(cpu)), max, type,
+> > +				  NULL);
+> > +}
 > 
-> Sorry for the lack of clarity here, and you are not alone unless you
-> have drowned in the CoreSight topologies ;-)
-> 
-> Typically current generation of systems have the following topology :
-> 
-> CPU0
->  etm0   \
->          \  ________
->          /          \
-> CPU1    /            \
->   etm1                \
->                        \
->                        /-------  sink0
-> CPU2                  /
->   etm2  \            /
->          \ ________ /
->          /
-> CPU3    /
->   etm3
-> 
-> 
-> i.e, Multiple ETMs share a sink. [for the sake of simplicity, I have
-> used one sink. Even though there could be potential sinks (of different
-> types), none of them are private to the ETMs. So, in a nutshell, a sink
-> can be reached by multiple ETMs. ]
-> 
-> Now, for a session :
-> 
-> perf record -e cs_etm/sinkid=sink0/u workload
-> 
-> We create an event per CPU (say eventN, which are scheduled based on the
-> threads that could execute on the CPU. At this point we have finalized
-> the sink0, and have allocated necessary buffer for the sink0.
-> 
-> Now, when the threads are scheduled on the CPUs, we start the
-> appropriate events for the CPUs.
-> 
-> e.g,
->  CPU0 sched -> workload:0 - > etm0->event0_start -> Turns all
-> the components upto sink0, starting the trace collection in the buffer.
-> 
-> Now, if another CPU, CPU1 starts tracing event1 for workload:1 thread,
-> it will eventually try to turn ON the sink0.Since sink0 is already
-> active tracing event0, we could allow this to go through and collect
-> the trace in the *same hardware buffer* (which can be demuxed from the
-> single AUX record using the TraceID in the packets). Please note that
-> we do double buffering and hardware buffer is copied only when the sink0
-> is stopped (see below).
-> 
-> But, if the event scheduled on CPU1 doesn't belong to the above session, but
-> belongs to different perf session
->  (say, perf record -e  cs_etm/sinkid=sink0/u benchmark),
-> 
-> we can't allow this to succeed and mix the trace data in to that of workload
-> and thus fail the operation.
-> 
-> In a nutshell, since the sinks are shared, we start the sink on the
-> first event and keeps sharing the sink buffer with any event that
-> belongs to the same session (using refcounts). The sink is only released
-> for other sessions, when there are no more events in the session tracing
-> on any of the ETMs.
-> 
-> I know this is fundamentally a topology issue, but that is not something
-> we can fix. But the situation is changing and we are starting to see
-> systems with per-CPU sinks.
-> 
-> Hope this helps.
+> Shouldn't all that be: #ifdef CONFIG_SMP ?
 
-I think I'm more confused now :-/
+I didn't realize that these matrices are only available in case of SMP
+and that's why schedutil isn't available for !SMP. I wonder what we
+should be doing in cpufreq_cooling now ? Make it depend on SMP ? Or
+calculate load the traditional way (the stuff I just removed) for !SMP
+case ?
 
-Where do we use ->owner after event creation? The moment you create your
-eventN you create the link to sink0. That link either succeeds (same
-'cookie') or fails.
+:)
 
-If it fails, event creation fails, the end.
-
-On success, we have the sink pointer in our event and we never ever need
-to look at ->owner ever again.
-
-I'm also not seeing why exactly we need ->owner in the first place.
-
-Suppose we make the sink0 device return -EBUSY on open() when it is
-active. Then a perf session can open the sink0 device, create perf
-events and attach them to the sink0 device using
-perf_event_attr::config2. The events will attach to sink0 and increment
-its usage count, such that any further open() will fail.
-
-Once the events are created, the perf tool close()s the sink0 device,
-which is now will in-use by the events. No other events can be attached
-to it.
-
-Or are you doing the event->sink mapping every time you do: pmu::add()?
-That sounds insane.
+-- 
+viresh
