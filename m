@@ -2,114 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7EDD5296D5D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:08:35 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BAB45296D5F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:08:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462776AbgJWLI3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:08:29 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:44470 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462587AbgJWLI2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:08:28 -0400
-Received: by mail-ed1-f68.google.com with SMTP id t20so1122231edr.11;
-        Fri, 23 Oct 2020 04:08:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Y2vpKPxhmwelF3MsVDfZZeRPwKr78dCwggVY3DuvCGU=;
-        b=ed8Wl7eeIGT+dBS5GgOcceADzjHY+jKaT/lBOf0TG37frHEGbDZm8oYDPGEbl/ME5t
-         lrkvf3+n5BU4Y2BkHk+7pbT77rp4L/3K5fmU2SNwE1xfKRGGCZtlPc5EK/VBa23qMN9T
-         vEHKlsmgJJiElUKJWLmH8UjYmaGU9lsJaRVTWAJHWdTsFY9ndawvEZhEcbmOHc4jyiqf
-         rmGGGWPTTXcrrisU76ISkyGk0mIjXgOjSOdiTwJboyHydRHJKAKWXJs0/2XKV+1NY5Dr
-         mpFslUFqQ5nPSo7cu9H1DcDjQ18tjI5RZrac8sC5UEiF8E1tVOdBfNpV5OZmlVPnM197
-         7S/w==
-X-Gm-Message-State: AOAM533gHGZs+jL3TrTk5neEQHZ6T0a6o6/mV3DRMQYZshD+kaSqInKC
-        DC/+ZCYusnlgJzKgCZT0aDE=
-X-Google-Smtp-Source: ABdhPJz2CPrp1rxXN84/WklOzCcpaQV91ekIZAOzbOGw3tsPlRawVKASz4NbbpELicciI3QZgD9IlA==
-X-Received: by 2002:a05:6402:1d2c:: with SMTP id dh12mr1552246edb.256.1603451306893;
-        Fri, 23 Oct 2020 04:08:26 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id h26sm587188edr.71.2020.10.23.04.08.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 04:08:25 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 13:08:23 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Marek Vasut <marex@denx.de>,
-        Lucas Stach <l.stach@pengutronix.de>,
-        Adam Ford-BE <aford@beaconembedded.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 4/4] arm64: dts: imx8mn: Add power-domain reference in
- USB controller
-Message-ID: <20201023110823.GA48162@kozik-lap>
-References: <20201022150808.763082-1-aford173@gmail.com>
- <20201022150808.763082-5-aford173@gmail.com>
- <20201023095518.GF42872@kozik-lap>
- <CAHCN7xK52cRA3xHmmDQB_aYACfDpVdZvWNXTr4Hd9b3BDnSHyg@mail.gmail.com>
+        id S462784AbgJWLIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:08:45 -0400
+Received: from foss.arm.com ([217.140.110.172]:49534 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462703AbgJWLIp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:08:45 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 7D0B7113E;
+        Fri, 23 Oct 2020 04:08:44 -0700 (PDT)
+Received: from [10.57.14.27] (unknown [10.57.14.27])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6A0F43F66B;
+        Fri, 23 Oct 2020 04:08:40 -0700 (PDT)
+Subject: Re: [PATCH V2 1/2] sched/core: Rename and move schedutil_cpu_util()
+ to core.c
+To:     Viresh Kumar <viresh.kumar@linaro.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
+        linux-pm@vger.kernel.org
+References: <cover.1603448113.git.viresh.kumar@linaro.org>
+ <80c66f55ac7f04b3ecd4ebf12d69d86c89480fa7.1603448113.git.viresh.kumar@linaro.org>
+ <20201023103407.GK2594@hirez.programming.kicks-ass.net>
+ <20201023105452.aivb5o6dws76evc3@vireshk-i7>
+From:   Lukasz Luba <lukasz.luba@arm.com>
+Message-ID: <f3ab8761-4507-90e9-54f4-e6843863aa89@arm.com>
+Date:   Fri, 23 Oct 2020 12:08:38 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
+ Thunderbird/60.9.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <CAHCN7xK52cRA3xHmmDQB_aYACfDpVdZvWNXTr4Hd9b3BDnSHyg@mail.gmail.com>
+In-Reply-To: <20201023105452.aivb5o6dws76evc3@vireshk-i7>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:03:32AM -0500, Adam Ford wrote:
-> On Fri, Oct 23, 2020 at 4:55 AM Krzysztof Kozlowski <krzk@kernel.org> wrote:
-> >
-> > On Thu, Oct 22, 2020 at 10:08:07AM -0500, Adam Ford wrote:
-> > > The USB OTG controller cannot be used until the power-domain is enabled
-> > > unless it was started in the bootloader.
-> > >
-> > > Adding the power-domain reference to the OTG node allows the OTG
-> > > controller to operate.
-> > >
-> > > Signed-off-by: Adam Ford <aford173@gmail.com>
-> > >
-> >
-> > I wonder, why your patches do not have usual Git trailer with summary of
-> > changes (after '---')?
+
+
+On 10/23/20 11:54 AM, Viresh Kumar wrote:
+> On 23-10-20, 12:34, Peter Zijlstra wrote:
+>> On Fri, Oct 23, 2020 at 03:50:20PM +0530, Viresh Kumar wrote:
+>>> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+>>> index d2003a7d5ab5..369ff54d11d4 100644
+>>> --- a/kernel/sched/core.c
+>>> +++ b/kernel/sched/core.c
+>>> @@ -5117,6 +5117,119 @@ struct task_struct *idle_task(int cpu)
+>>>   	return cpu_rq(cpu)->idle;
+>>>   }
+>>>   
+>>> +/*
+>>> + * This function computes an effective utilization for the given CPU, to be
+>>> + * used for frequency selection given the linear relation: f = u * f_max.
+>>> + *
+>>> + * The scheduler tracks the following metrics:
+>>> + *
+>>> + *   cpu_util_{cfs,rt,dl,irq}()
+>>> + *   cpu_bw_dl()
+>>> + *
+>>> + * Where the cfs,rt and dl util numbers are tracked with the same metric and
+>>> + * synchronized windows and are thus directly comparable.
+>>> + *
+>>> + * The cfs,rt,dl utilization are the running times measured with rq->clock_task
+>>> + * which excludes things like IRQ and steal-time. These latter are then accrued
+>>> + * in the irq utilization.
+>>> + *
+>>> + * The DL bandwidth number otoh is not a measured metric but a value computed
+>>> + * based on the task model parameters and gives the minimal utilization
+>>> + * required to meet deadlines.
+>>> + */
+>>> +unsigned long effective_cpu_util(int cpu, unsigned long util_cfs,
+>>> +				 unsigned long max, enum cpu_util_type type,
+>>> +				 struct task_struct *p)
+>>> +{
+>> 	...
+>>> +}
+>>> +
+>>> +unsigned long sched_cpu_util(int cpu, enum cpu_util_type type,
+>>> +			     unsigned long max)
+>>> +{
+>>> +	return effective_cpu_util(cpu, cpu_util_cfs(cpu_rq(cpu)), max, type,
+>>> +				  NULL);
+>>> +}
+>>
+>> Shouldn't all that be: #ifdef CONFIG_SMP ?
 > 
-> I historically have just done 'git format-patch -pX'  but I haven't
-> seen complaints that the summary was missing.  I can add them going
-> forward.  Most of these individual patches have only touched single
-> files or created new files all together.
+> I didn't realize that these matrices are only available in case of SMP
+> and that's why schedutil isn't available for !SMP. I wonder what we
+> should be doing in cpufreq_cooling now ? Make it depend on SMP ? Or
+> calculate load the traditional way (the stuff I just removed) for !SMP
+> case ?
 
-The patch stat is useful, especially if it touches multiple
-files/subsystems. However it's not needed, so I was just wondering :)
+IMO the !SMP can leave with the old design, so keeping two
+implementations under #ifdef CONFIG_SMP is fair I would say in this
+case.
+
+There are popular platforms !SMP (BeagleBone, RPi1, RPiZero) but I
+haven't heard anyone was using IPA on them.
+
+Regards,
+Lukasz
 
 > 
-> >
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > index 27733fbe87e9..605e6dbd2c6f 100644
-> > > --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> > > @@ -979,6 +979,7 @@ usbotg1: usb@32e40000 {
-> > >                               assigned-clock-parents = <&clk IMX8MN_SYS_PLL2_500M>;
-> > >                               fsl,usbphy = <&usbphynop1>;
-> > >                               fsl,usbmisc = <&usbmisc1 0>;
-> > > +                             power-domains = <&pgc_otg1>;
-> >
-> > I guess you need it also for the usbphynop1 and usbmisc1.
+> :)
 > 
-> From what I can see looking at the IP blocks and the vendor's code
-> repo, only the usbotg IP block needs the power-domain to enable the
-> clocking going to it.  AFAICT, neither the usbphynop nor the usbmisc
-> are using clocks gated by the power-domain.
-> Thanks again for all your reviews.
-
-Mhm, ok then.  Thanks for checking.
-
-Best regards,
-Krzysztof
