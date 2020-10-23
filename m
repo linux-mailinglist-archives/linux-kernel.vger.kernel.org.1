@@ -2,136 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 91896296C82
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:10:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4493C296C85
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:12:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461934AbgJWKKs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:10:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45762 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461865AbgJWKKs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:10:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4926BC0613CE;
-        Fri, 23 Oct 2020 03:10:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Message-ID:From:CC:To:Subject:
-        Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:
-        Date:Sender:Reply-To:Content-ID:Content-Description;
-        bh=jXQnc7Q33alBw5s5WLWKGYdqKsDW1KG+Q/3M71QxBdI=; b=uqI3gMVHxYqEhYiFk20HpC0ulk
-        5pp39b//mVScB2AHwEKx2ff1S7I/ml2Sd0HCXLiP49xnQXhi191xTawF13hrJKNSzoyhfL/CIMR6I
-        w6GoSq8vF0eAt6nETjr3O0sN0FolBYB0sJrJzVdvuASdtjpFk1FZR2+4FIpSGTBtgxQswGXncOlHq
-        q9P5hCEikbyEBSq7fB9hUZrd2Iv/TYYOuGFXDbxFtVojF8eOKMv5L2oIIymSsYWMQrQ5dHXp/wxld
-        VKOmPzgCgDQCpGOFKj4Rcu3FbGKgyG+R75E8XgbinDoaMZEwb4HBfc62yKYh1FvH/ddRtvlWMMXZe
-        QDuGUcbw==;
-Received: from [2a01:4c8:1094:6472:254e:1156:1596:d8f5]
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVu1z-0001DG-KG; Fri, 23 Oct 2020 10:10:44 +0000
-Date:   Fri, 23 Oct 2020 11:10:39 +0100
-User-Agent: K-9 Mail for Android
-In-Reply-To: <87y2jy542v.fsf@nanos.tec.linutronix.de>
-References: <87y2jy542v.fsf@nanos.tec.linutronix.de>
+        id S461944AbgJWKMG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:12:06 -0400
+Received: from mga17.intel.com ([192.55.52.151]:46184 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S461902AbgJWKMF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:12:05 -0400
+IronPort-SDR: 4fU/Woo3wmfkc5Pk3qimhBVE01hqnJRwAn3eLIJ8m9b3k2LJzA6obYmqrh6C5zhxXaydZDFQDj
+ 7VuZ1pPnoaUA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="147513133"
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="147513133"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:11:59 -0700
+IronPort-SDR: LSKuDUDfpwS2jQem0DjiV2xOl3oOGjpv/J4wOGYEJ9lcXgMvZn9siwQDe+1XtTE/0JD8p9mo2E
+ iYMGhBGYBt8Q==
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="534346115"
+Received: from spiccard-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.38])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:11:44 -0700
+Date:   Fri, 23 Oct 2020 13:11:44 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jethro Beekman <jethro@fortanix.com>,
+        Haitao Huang <haitao.huang@linux.intel.com>,
+        Chunyang Hui <sanqian.hcy@antfin.com>,
+        Jordan Hand <jorhand@linux.microsoft.com>,
+        Nathaniel McCallum <npmccallum@redhat.com>,
+        Seth Moore <sethmo@google.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Suresh Siddha <suresh.b.siddha@intel.com>,
+        akpm@linux-foundation.org, andriy.shevchenko@linux.intel.com,
+        asapek@google.com, bp@alien8.de, cedric.xing@intel.com,
+        chenalexchen@google.com, conradparker@google.com,
+        cyhanish@google.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, puiterwijk@redhat.com,
+        rientjes@google.com, tglx@linutronix.de, yaozhangx@google.com,
+        mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 13/24] x86/sgx: Add SGX_IOC_ENCLAVE_ADD_PAGES
+Message-ID: <20201023101144.GE168477@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-14-jarkko.sakkinen@linux.intel.com>
+ <1739984e-0010-2031-1561-809a0b6380bb@intel.com>
+ <20201018050311.GK68722@linux.intel.com>
+ <516a1b7a-38cc-adde-833b-b661cbee97f2@intel.com>
+ <20201019211525.GC23072@linux.intel.com>
+ <564152e4-2334-2c82-1a12-4c980b08a944@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 8/8] x86/ioapic: Generate RTE directly from parent irqchip's MSI message
-To:     Thomas Gleixner <tglx@linutronix.de>, x86@kernel.org
-CC:     kvm <kvm@vger.kernel.org>, Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-hyperv@vger.kernel.org
-From:   David Woodhouse <dwmw2@infradead.org>
-Message-ID: <C53CAD52-38F8-47D7-A5BE-4F470532EF20@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by merlin.infradead.org. See http://www.infradead.org/rpr.html
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <564152e4-2334-2c82-1a12-4c980b08a944@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 19, 2020 at 02:44:19PM -0700, Dave Hansen wrote:
+> On 10/19/20 2:15 PM, Sean Christopherson wrote:
+> >>>> Yeah...  Don't we need to do another access_ok() check here, if we
+> >>>> needed one above since we are moving away from addrp.src?
+> >>> I don't think so because the page is pinned with get_user_pages().
+> >> No, get_user_pages() is orthogonal.
+> >>
+> >> Looking at this again, you _might_ be OK since you validated addp.length
+> >> against encl->size.  But, it's all very convoluted and doesn't look very
+> >> organized or obviously right.
+> > The easiest fix would be to have the existing access_ok() check the entire
+> > range, no?  Or am I missing something obvious?
+> 
+> In general, I want the actual userspace access to be as close as
+> possible and 1:1 with the access_ok() checks.  That way, it's blatantly
+> obvious that the pointers have been checked.
+> 
+> *But* get_user_pages() has access_ok() checks inside of its
+> implementation, which makes sense.  *But*, that begs the question of
+> what the top-level one was doing in the first place.  Maybe it was just
+> superfluous.
+> 
+> Either way, it still doesn't explain what this is doing:
 
+I guess it is just history. Used to be one page ioctl.
 
-On 22 October 2020 22:43:52 BST, Thomas Gleixner <tglx@linutronix=2Ede> wr=
-ote:
->On Fri, Oct 09 2020 at 11:46, David Woodhouse wrote:
->
->@@ -45,12 +45,11 @@ enum irq_alloc_type {
-> };
->
->> +static void mp_swizzle_msi_dest_bits(struct irq_data *irq_data, void
->*_entry)
->> +{
->> +	struct msi_msg msg;
->> +	u32 *entry =3D _entry;
->
->Why is this a void * argument and then converting it to a u32 *? Just
->to
->make that function completely unreadable?
+> > +       ret = get_user_pages(src, 1, 0, &src_page, NULL);
+> > +       if (ret < 1)
+> > +               return -EFAULT;
+> > +
+> > +       pginfo.secs = (unsigned long)sgx_get_epc_addr(encl->secs.epc_page);
+> > +       pginfo.addr = SGX_ENCL_PAGE_ADDR(encl_page);
+> > +       pginfo.metadata = (unsigned long)secinfo;
+> > +       pginfo.contents = (unsigned long)kmap_atomic(src_page);
+> > +
+> > +       ret = __eadd(&pginfo, sgx_get_epc_addr(epc_page));
+> > +
+> > +       kunmap_atomic((void *)pginfo.contents);
+> 
+> I think the point is to create a stable kernel alias address for
+> 'src_page' so that any mucking with the userspace mapping doesn't screw
+> up the __eadd() and any failures aren't due to reclaim or MADV_DONTNEED.
+> 
+> If this isn't even touching the userspace mapping, it didn't need
+> access_ok() in the first place.
 
-It makes the callers slightly more readable, not having to cast to uint32_=
-t* from the struct=2E
+The whole access_ok() check is just evolutionary cruft. I will remove
+it.
 
-I did ponder defining a new struct with bitfields named along the lines of=
- 'msi_addr_bits_19_to_4', but that seemed like overkill=2E
-
->> +
->> +	irq_chip_compose_msi_msg(irq_data, &msg);
->
->Lacks a comment=2E Also mp_swizzle=2E=2E=2E is a misnomer as this invokes=
- the
->msi compose function which is not what the function name suggests=2E
-
-It's got a four-line comment right there after it as we use the bits we go=
-t from it=2E
-
->> +	/*
->> +	 * They're in a bit of a random order for historical reasons, but
->> +	 * the IO/APIC is just a device for turning interrupt lines into
->> +	 * MSIs, and various bits of the MSI addr/data are just swizzled
->> +	 * into/from the bits of Redirection Table Entry=2E
->> +	 */
->> +	entry[0] &=3D 0xfffff000;
->> +	entry[0] |=3D (msg=2Edata & (MSI_DATA_DELIVERY_MODE_MASK |
->> +				 MSI_DATA_VECTOR_MASK));
->> +	entry[0] |=3D (msg=2Eaddress_lo & MSI_ADDR_DEST_MODE_MASK) << 9;
->> +
->> +	entry[1] &=3D 0xffff;
->> +	entry[1] |=3D (msg=2Eaddress_lo & MSI_ADDR_DEST_ID_MASK) << 12;
->
->Sorry, but this is unreviewable gunk=2E
-
-Crap=2E Sure, want to look at the I/OAPIC and MSI documentation and observ=
-e that it's just shifting bits around and "these bits go there, those bits =
-go here=2E=2E=2E" but there's no magic which will make that go away=2E At s=
-ome point you end up swizzling bits around with seemingly random bitmasks a=
-nd shifts which you have to have worked out from the docs=2E
-
-Now that I killed off the various IOMMU bits which also horrifically touch=
- the RTE directly, perhaps there is more scope for faffing around with it d=
-ifferently, but it won't really change much=2E It's just urinating into the=
- atmospheric disturbance=2E
-
-
->Aside of that it works magically because polarity,trigger and mask bit
->have been set up before=2E But of course a comment about this is
->completely overrated=2E
-
-Well yes, there's a lot about the I/OAPIC code which is a bit horrid but t=
-his patch is doing just one thing: making the bits get from e=2Eg=2E cfg->d=
-est_apicid and cfg->vector into the RTE in a generic fashion which does the=
- right thing for IR too=2E Other cleanups are somewhat orthogonal, but yes =
-it's a good spot that one of these was somewhat redundant in the first plac=
-e=2E We could fix that up in a separate patch which comes first perhaps=2E
-
-If we're starting to clean up I/OAPIC code I'd like to take a long hard lo=
-ok at the level ack code paths, and the fact that we have separate ack_apic=
-_irq and apic_ack_irq functions (or something like that; on phone now) whic=
-h do different things=2E Perhaps the order (or the capitals on APIC which o=
-ne of them has) makes it sane and meaningful for them both to exist and do =
-different things?
-
-I also note the Hyper-V "remapping" takes the IR code path and I'm not sur=
-e that's OK=2E Because of the complete lack of overall documentation on wha=
-t it's all doing and why=2E
-
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+/Jarkko
