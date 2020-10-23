@@ -2,71 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 96D31297931
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:59:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B35129793C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 00:11:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1757035AbgJWV7u (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:59:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43794 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757027AbgJWV7u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:59:50 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 591B8C0613CE;
-        Fri, 23 Oct 2020 14:59:50 -0700 (PDT)
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603490388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mcqtPkA0tz7ylkWcpgHi1whok+ruukbSXl7bVbRNeHw=;
-        b=FpQmBJoq1nNNC4QO/xEsdNA1Wbti7sa5bKvyG9sxwcqPPWtOcPaCfWHtjhhrHtdUsbWyXk
-        WuJFdPY9XA7e+0DEWHd8Rf+IBNRbxbf0fGtk3WY35MEYWRsCO/al04Qy+n8N35/YhhZLyT
-        +qyXEDBepFoJ/UzLTB1z9KkOc67HKEEspRF1UkSXJFofyra8sQxfXRyr6iIdIJ522WMsTn
-        rGHA9pvAWa0xtjYG5RpmS4+VYuClBkA7FcnnuaQjQsQavxrmtjMX1yyL73Onjqp8lR1m3x
-        uqEwc+8Y5+pRUNn7WDf5/n76QQ5uM03H/QHZiUgjVoT9Lqy3Ug2xR58HjkD51A==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603490388;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=mcqtPkA0tz7ylkWcpgHi1whok+ruukbSXl7bVbRNeHw=;
-        b=nHmm/QYqpi4s8doFzwGapHfMVQpfgwSLj29GjpCVLTMZfVMcMdPOuaBxwzoLga1IiapECr
-        VsJQfTGT65LC3sCw==
-To:     Elliot Berman <eberman@codeaurora.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Jonathan Corbet <corbet@lwn.net>
-Cc:     Elliot Berman <eberman@codeaurora.org>,
-        Trilok Soni <tsoni@codeaurora.org>,
-        Prasad Sodagudi <psodagud@codeaurora.org>,
-        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org
-Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
-In-Reply-To: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
-References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
-Date:   Fri, 23 Oct 2020 23:59:48 +0200
-Message-ID: <87v9f04n8r.fsf@nanos.tec.linutronix.de>
+        id S1757062AbgJWWL3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 18:11:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56996 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1757036AbgJWWL2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 18:11:28 -0400
+Received: from gmail.com (unknown [104.132.1.76])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0AAA720724;
+        Fri, 23 Oct 2020 22:11:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603491088;
+        bh=oYDdkAGeOEwqEQlJ3M1O6TGp5eWuctvbDWvQg3nFwJc=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=xxb/GAjvsPxTRs76hmFkdHimX18DvXWGGDbMDdK7f2OEgLtOzJAp9fOMx79mW5KDW
+         jrF+kplGKkYgHIb12ePKpXbDRPxWF5qKWHe+jO3D2Sf+yoFJccO/pd/9RPWaYrAw18
+         eywmcxbINrfrNIQN0OFWYyur+NOhGakeNv7rhJsE=
+Date:   Fri, 23 Oct 2020 15:11:26 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Arvind Sankar <nivedita@alum.mit.edu>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        David Laight <David.Laight@aculab.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] crypto: lib/sha256 - Don't clear temporary
+ variables
+Message-ID: <20201023221126.GB180517@gmail.com>
+References: <20201023192203.400040-1-nivedita@alum.mit.edu>
+ <20201023192203.400040-3-nivedita@alum.mit.edu>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023192203.400040-3-nivedita@alum.mit.edu>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22 2020 at 15:04, Elliot Berman wrote:
-> In a heterogeneous multiprocessor system, specifying the 'maxcpus'
-> parameter on kernel command line does not provide sufficient control
-> over which CPUs are brought online at kernel boot time, since CPUs may
-> have nonuniform performance characteristics. Thus, add bootcpus kernel
-> parameter to control which CPUs should be brought online during kernel
-> boot. When both maxcpus and bootcpus is set, the more restrictive of the
-> two are booted.
+On Fri, Oct 23, 2020 at 03:22:00PM -0400, Arvind Sankar wrote:
+> The assignments to clear a through h and t1/t2 are optimized out by the
+> compiler because they are unused after the assignments.
+> 
+> Clearing individual scalar variables is unlikely to be useful, as they
+> may have been assigned to registers, and even if stack spilling was
+> required, there may be compiler-generated temporaries that are
+> impossible to clear in any case.
+> 
+> So drop the clearing of a through h and t1/t2.
+> 
+> Signed-off-by: Arvind Sankar <nivedita@alum.mit.edu>
+> ---
+>  lib/crypto/sha256.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/lib/crypto/sha256.c b/lib/crypto/sha256.c
+> index d43bc39ab05e..099cd11f83c1 100644
+> --- a/lib/crypto/sha256.c
+> +++ b/lib/crypto/sha256.c
+> @@ -202,7 +202,6 @@ static void sha256_transform(u32 *state, const u8 *input)
+>  	state[4] += e; state[5] += f; state[6] += g; state[7] += h;
+>  
+>  	/* clear any sensitive info... */
+> -	a = b = c = d = e = f = g = h = t1 = t2 = 0;
+>  	memzero_explicit(W, 64 * sizeof(u32));
+>  }
 
-What for? 'maxcpus' is a debug hack at best and outright dangerous on
-certain architectures. Why do we need more of that? Just let the machine
-boot and offline the CPUs from user space.
+Looks good,
 
-Thanks,
-
-        tglx
+Reviewed-by: Eric Biggers <ebiggers@google.com>
