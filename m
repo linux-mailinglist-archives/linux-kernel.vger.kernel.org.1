@@ -2,88 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0E10D297104
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:59:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B013B297109
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:00:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750198AbgJWN7K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:59:10 -0400
-Received: from foss.arm.com ([217.140.110.172]:53388 "EHLO foss.arm.com"
+        id S1750226AbgJWOAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:00:01 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45782 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750190AbgJWN7J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:59:09 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id BFE69113E;
-        Fri, 23 Oct 2020 06:59:08 -0700 (PDT)
-Received: from bogus (unknown [10.57.15.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20BEA3F66B;
-        Fri, 23 Oct 2020 06:59:06 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 14:59:04 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org, Sudeep Holla <sudeep.holla@arm.com>,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
- performance domains
-Message-ID: <20201023135904.ayqznoxocxsvwl6v@bogus>
-References: <20201021183104.27949-1-sudeep.holla@arm.com>
- <20201022182233.hklq6j5n5kkqg4yv@bogus>
- <CAL_JsqKw8SiQ3vCYbf5vKgKP7dHgcpxCVET4XuV5rsR34EQLgw@mail.gmail.com>
+        id S373819AbgJWOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:00:01 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id F2286AEC1;
+        Fri, 23 Oct 2020 13:59:59 +0000 (UTC)
+To:     Axel Rasmussen <axelrasmussen@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Michel Lespinasse <walken@google.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Jann Horn <jannh@google.com>,
+        Chinwen Chang <chinwen.chang@mediatek.com>,
+        Davidlohr Bueso <dbueso@suse.de>,
+        David Rientjes <rientjes@google.com>
+Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org
+References: <20201020184746.300555-1-axelrasmussen@google.com>
+ <20201020184746.300555-2-axelrasmussen@google.com>
+From:   Vlastimil Babka <vbabka@suse.cz>
+Subject: Re: [PATCH v4 1/1] mmap_lock: add tracepoints around lock acquisition
+Message-ID: <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
+Date:   Fri, 23 Oct 2020 15:59:59 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqKw8SiQ3vCYbf5vKgKP7dHgcpxCVET4XuV5rsR34EQLgw@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <20201020184746.300555-2-axelrasmussen@google.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 08:24:06AM -0500, Rob Herring wrote:
-> On Thu, Oct 22, 2020 at 1:22 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 07:31:03PM +0100, Sudeep Holla wrote:
-> > > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
-> > > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
-> > > _allocate_opp_table() which is called from dev_pm_opp_add and it
-> > > now propagates the error back to the caller.
-> > >
-> > > SCMI performance domain re-used clock bindings to keep it simple. However
-> > > with the above mentioned change, if clock property is present in a device
-> > > node, opps can't be added until clk_get succeeds. So in order to fix the
-> > > issue, we can register dummy clocks which is completely ugly.
-> > >
-> > > Since there are no upstream users for the SCMI performance domain clock
-> > > bindings, let us introduce separate performance domain bindings for the
-> > > same.
-> > >
-> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > ---
-> > >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
-> > >  1 file changed, 16 insertions(+), 3 deletions(-)
-> > >
-> > > v1[1]->v2:
-> > >       - Changed the generic #perf-domain-cells to more SCMI specific
-> > >         property #arm,scmi-perf-domain-cells
-> > >
-> >
-> > Is more specific #arm,scmi-perf-domain-cells acceptable ?
-> > Sorry for the rush, but this fixes SCMI cpufreq which is broken after
-> > commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
-> > -EPROBE_DEFER")
+On 10/20/20 8:47 PM, Axel Rasmussen wrote:
+> The goal of these tracepoints is to be able to debug lock contention
+> issues. This lock is acquired on most (all?) mmap / munmap / page fault
+> operations, so a multi-threaded process which does a lot of these can
+> experience significant contention.
 > 
-> If you are in a rush, you'd better go the dummy clock route. We should
-> get this binding right and I think that means something common, not
-> SCMI specific.
+> We trace just before we start acquisition, when the acquisition returns
+> (whether it succeeded or not), and when the lock is released (or
+> downgraded). The events are broken out by lock type (read / write).
+> 
+> The events are also broken out by memcg path. For container-based
+> workloads, users often think of several processes in a memcg as a single
+> logical "task", so collecting statistics at this level is useful.
+> 
+> The end goal is to get latency information. This isn't directly included
+> in the trace events. Instead, users are expected to compute the time
+> between "start locking" and "acquire returned", using e.g. synthetic
+> events or BPF. The benefit we get from this is simpler code.
+> 
+> Because we use tracepoint_enabled() to decide whether or not to trace,
+> this patch has effectively no overhead unless tracepoints are enabled at
+> runtime. If tracepoints are enabled, there is a performance impact, but
+> how much depends on exactly what e.g. the BPF program does.
+> 
+> Reviewed-by: Michel Lespinasse <walken@google.com>
+> Acked-by: Yafang Shao <laoar.shao@gmail.com>
+> Acked-by: David Rientjes <rientjes@google.com>
+> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+
+All seem fine to me, except I started to wonder..
+
+> +
+> +#ifdef CONFIG_MEMCG
+> +
+> +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
+> +
+> +/*
+> + * Write the given mm_struct's memcg path to a percpu buffer, and return a
+> + * pointer to it. If the path cannot be determined, the buffer will contain the
+> + * empty string.
+> + *
+> + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
+> + * disabled by the caller before calling us, and re-enabled only after the
+> + * caller is done with the pointer.
+
+Is this enough? What if we fill the buffer and then an interrupt comes and the 
+handler calls here again? We overwrite the buffer and potentially report a wrong 
+cgroup after the execution resumes?
+If nothing worse can happen (are interrupts disabled while the ftrace code is 
+copying from the buffer?), then it's probably ok?
+
+> + */
+> +static const char *get_mm_memcg_path(struct mm_struct *mm)
+> +{
+> +	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
+> +
+> +	if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
+> +		char *buf = this_cpu_ptr(trace_memcg_path);
+> +
+> +		cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
+> +		return buf;
+> +	}
+> +	return "";
+> +}
+> +
+> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> +	do {                                                                   \
+> +		get_cpu();                                                     \
+> +		trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),              \
+> +				       ##__VA_ARGS__);                         \
+> +		put_cpu();                                                     \
+> +	} while (0)
+> +
+> +#else /* !CONFIG_MEMCG */
+> +
+> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
+> +	trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
+> +
+> +#endif /* CONFIG_MEMCG */
+> +
+> +/*
+> + * Trace calls must be in a separate file, as otherwise there's a circular
+> + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
+> + */
+> +
+> +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
+> +
+> +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
+> +					   bool success)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
+> +
+> +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
+> +{
+> +	TRACE_MMAP_LOCK_EVENT(released, mm, write);
+> +}
+> +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
 > 
 
-Ah OK, I assumed you wanted to make it SCMI specific. It makes sense to
-have something generic like clocks for OPP domains.
-
-There was discussion on the other thread to use empty OPP list for
-firmware discoverable OPP list. Random thought here is to add domain ID
-to OPP binding and use that ?
-
---
-Regards,
-Sudeep
