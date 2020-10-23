@@ -2,134 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA413296CA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:18:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CC9BC296C9F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:17:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462037AbgJWKSg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:18:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45322 "EHLO mail.kernel.org"
+        id S462019AbgJWKRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:17:50 -0400
+Received: from mga01.intel.com ([192.55.52.88]:25468 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S461215AbgJWKSf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:18:35 -0400
-Received: from localhost.localdomain (unknown [42.120.72.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5E0C824182;
-        Fri, 23 Oct 2020 10:18:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603448314;
-        bh=VQkOQqXVAMZZl0wG36+SPXHmfOpuP3DhOAi57iQd4xo=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ZtVp2hNnwKo2BHrStyM/agggm9GlwzSD0M0qp+eKjILGY/n6PR4CNYDEygQ2rcHL+
-         CtTu9EEFV7ziMODxvLTFw/3dG0Fs2WI3lHtpm8pc5OKbhvbdOLtzHgZSdEo27ovDBO
-         tW/E3nHFIJGYlEwYcrVXK1B1FXD8e8HSv6pr/iRY=
-From:   guoren@kernel.org
-To:     palmerdabbelt@google.com, paul.walmsley@sifive.com,
-        anup@brainfault.org, greentime.hu@sifive.com, zong.li@sifive.com,
-        atish.patra@wdc.com, tglx@linutronix.de, jason@lakedaemon.net,
-        maz@kernel.org, wesley@sifive.com, yash.shah@sifive.com, hch@lst.de
-Cc:     linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org,
-        guoren@kernel.org, Guo Ren <guoren@linux.alibaba.com>
-Subject: [PATCH 3/3] irqchip/irq-sifive-plic: Fixup set_affinity enable irq unexpected
-Date:   Fri, 23 Oct 2020 10:17:25 +0000
-Message-Id: <1603448245-79429-3-git-send-email-guoren@kernel.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603448245-79429-1-git-send-email-guoren@kernel.org>
-References: <1603448245-79429-1-git-send-email-guoren@kernel.org>
+        id S461988AbgJWKRu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:17:50 -0400
+IronPort-SDR: A8IA4UzmUDifyKHjT85CA9A59uVoaWk+N+/+FxmIknTZTDFN1QNAijcF0Dqdv+7IP64eEHPYX0
+ 4GE5UbZXcbBQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="185352567"
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="185352567"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:17:47 -0700
+IronPort-SDR: 8R2W1v3NGVDW9ZLWYANyBw7bz22goQZILHJf34zh6h07eJo3OMc2zb6OFpHq7BgJQerIu0fPAg
+ BfizRXJhv4OA==
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="302629463"
+Received: from spiccard-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.38])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 03:17:35 -0700
+Date:   Fri, 23 Oct 2020 13:17:36 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     x86@kernel.org, linux-sgx@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+Message-ID: <20201023101736.GG168477@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
+ <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Guo Ren <guoren@linux.alibaba.com>
+On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
+> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
+> > + * Failure to explicitly request access to a restricted attribute will cause
+> > + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
+> > + * is access to the PROVISION_KEY.
+> 
+> Could we also justify why access is restricted, please?  Maybe:
+> 
+> 	Access is restricted because PROVISION_KEY is burned uniquely
+> 	into each each processor, making it a perfect unique identifier
+> 	with privacy and fingerprinting implications.
+> 
+> Are there any other reasons for doing it this way?
 
-For PLIC, we only have enable registers to control per hart's irq
-affinity and irq_set_affinity would call plic_irq_toggle to enable
-the IRQ's routing. So we can't enable irq in irq_domain_map before
-request_irq, it'll let uninitialized devices' irq exception.
+AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
+PROVISION_SEALING_KEY also have random salt added, i.e. they change
+every boot cycle.
 
-The solution is to check the irq has been enabled, just like what
-irq-gic-v3 has done in gic_set_affinity.
+There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
+3D :-)
 
-Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
----
- drivers/irqchip/irq-sifive-plic.c | 45 ++++++++++++++++++++++++++++++++++++---
- 1 file changed, 42 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-index 0003322..1a63859 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -130,6 +130,36 @@ static void plic_irq_mask(struct irq_data *d)
- }
- 
- #ifdef CONFIG_SMP
-+static inline bool plic_toggle_is_enabled(struct plic_handler *handler,
-+						int hwirq)
-+{
-+	u32 __iomem *reg = handler->enable_base + (hwirq / 32) * sizeof(u32);
-+	u32 hwirq_mask = 1 << (hwirq % 32);
-+
-+	if (readl(reg) & hwirq_mask)
-+		return true;
-+	else
-+		return false;
-+}
-+
-+static inline bool plic_irq_is_enabled(const struct cpumask *mask,
-+				   struct irq_data *d)
-+{
-+	int cpu;
-+
-+	for_each_cpu(cpu, mask) {
-+		struct plic_handler *handler = per_cpu_ptr(&plic_handlers, cpu);
-+
-+		if (!handler->present)
-+			continue;
-+
-+		if (plic_toggle_is_enabled(handler, d->hwirq))
-+			return true;
-+	}
-+
-+	return false;
-+}
-+
- static int plic_set_affinity(struct irq_data *d,
- 			     const struct cpumask *mask_val, bool force)
- {
-@@ -141,8 +171,10 @@ static int plic_set_affinity(struct irq_data *d,
- 
- 	irq_data_update_effective_affinity(d, &amask);
- 
--	plic_irq_toggle(&priv->lmask, d, 0);
--	plic_irq_toggle(&amask, d, 1);
-+	if (plic_irq_is_enabled(&priv->lmask, d)) {
-+		plic_irq_toggle(&priv->lmask, d, 0);
-+		plic_irq_toggle(&amask, d, 1);
-+	}
- 
- 	return IRQ_SET_MASK_OK_DONE;
- }
-@@ -168,12 +200,19 @@ static struct irq_chip plic_chip = {
- static int plic_irqdomain_map(struct irq_domain *d, unsigned int irq,
- 			      irq_hw_number_t hwirq)
- {
-+	unsigned int cpu;
- 	struct plic_priv *priv = d->host_data;
- 
- 	irq_domain_set_info(d, irq, hwirq, &plic_chip, d->host_data,
- 			    handle_fasteoi_irq, NULL, NULL);
- 	irq_set_noprobe(irq);
--	irq_set_affinity(irq, &priv->lmask);
-+
-+	cpu = cpumask_any_and(&priv->lmask, cpu_online_mask);
-+	if (WARN_ON_ONCE(cpu >= nr_cpu_ids))
-+		return -EINVAL;
-+
-+	irq_set_affinity(irq, cpumask_of(cpu));
-+
- 	return 0;
- }
- 
--- 
-2.7.4
-
+/Jarkko
