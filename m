@@ -2,121 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A15E029760F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:48:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C407297614
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:49:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753805AbgJWRsa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:48:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60782 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753796AbgJWRsa (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:48:30 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE5A7C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:48:29 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id r10so1807337pgb.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:48:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=uHs6b4ooy0rgFnXBjoHTZU/MFzwidZAAr9PXWq9UsVk=;
-        b=h9H11cgbsiLIfnCVNg9C63PczJj6klub3nyQOP7k17qHXCkM3+IiRWUf+K8onV/M6f
-         cq6hpYWY5tijhMZOqe4vpxWnGOmq8cRM3qeYtsvRKEgPmJNNtDrmOS532+baO+0nsP5H
-         4oTZzToITDWX/+cRTyYkk0o02ppC4ZW2srP3cde+HPF1A0gWOS7McnJYg5AziS2A8+k5
-         FA/pfx2HXxsJo1PFtx/M/61rAc4BlJZES29IbLZRpqOuPDxsS+IoEvzMCqD9jME5DLTE
-         nrFqzJCCPwXyQB8C7frIf3mqYooXH89m8/kypUCqoZ0QyzM52bhO/vCOCMQcptgtC5Xq
-         D7GQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=uHs6b4ooy0rgFnXBjoHTZU/MFzwidZAAr9PXWq9UsVk=;
-        b=VNbJnoWGFOGefRSb8PVcV5cgn40Vt3eqPKmRy0/rSlHOZyh2z3JwVAirmnm716Dq/4
-         /agWn0A16+3Ko/Iz5B/NtiUE4u6FT3pZ3xVJfT0bSUtM/ddqHNiyeCvl2QUk+wkwSiQG
-         Hgzyp/KyXjAxA8gewcZzkVcTaCydLXAgtu1jQDl0gbwB5qD19PBCVyAepqRAss8BTE1V
-         k2Bvncuttde4eIg6CT6qNQsr7RwARFILJeeuhor0Ucdgsc2MZPQ8BvlFfsdW5Lk6kmx3
-         b0tIUoAf1eSmPk0FIp79+8N1VtNMOynh+lIJHFdbgwRtjO8zq/JyCMQry9TyjF1U57AH
-         W6Jg==
-X-Gm-Message-State: AOAM533QDR8X1kSWNbiNj0WKxtoHv2zOwaaFeF4+lD2ob+l0WA4kD46R
-        pgYdWIkMHrHwyveXtHOJLF0qOA==
-X-Google-Smtp-Source: ABdhPJyvkbZhNi51MOK3wMCs4cSy44OvLHixOCI7o3MOo/m8861HBGG5Vdka871MDYa0ozQesghZuQ==
-X-Received: by 2002:a17:90a:450d:: with SMTP id u13mr3848288pjg.148.1603475309279;
-        Fri, 23 Oct 2020 10:48:29 -0700 (PDT)
-Received: from google.com ([2620:15c:201:2:f693:9fff:fef4:1b6d])
-        by smtp.gmail.com with ESMTPSA id w6sm2555511pgw.28.2020.10.23.10.48.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 10:48:28 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 10:48:22 -0700
-From:   Sami Tolvanen <samitolvanen@google.com>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Josh Poimboeuf <jpoimboe@redhat.com>, Jann Horn <jannh@google.com>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Masahiro Yamada <masahiroy@kernel.org>,
+        id S1753818AbgJWRs4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:48:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462375AbgJWRs4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:48:56 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2E2A021582;
+        Fri, 23 Oct 2020 17:48:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603475335;
+        bh=yB/s/IuPvxvA/D6puPVcHV6lCpGyQvaLhZjmJ20tayI=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=k9fHBrAYM+wp3NSCtKkRtPQhXi4dbODGDL1e5+yrI0yvizi07AfTLwsncPus7fsq3
+         PgzedNtYAq/z8dABaFdKA5m0OuRfVF24Yw3iSKjqeu+QWxiEWHLtB6J+olk3nzZOzR
+         okJSUOlRqfDaLjGwcw8+aGODIQel3BFuv/X1NEiQ=
+Date:   Fri, 23 Oct 2020 10:48:53 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Josh Don <joshdon@google.com>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
-        Will Deacon <will@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kbuild <linux-kbuild@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        linux-pci@vger.kernel.org
-Subject: Re: [PATCH v6 22/25] x86/asm: annotate indirect jumps
-Message-ID: <20201023174822.GA2696347@google.com>
-References: <CAG48ez2baAvKDA0wfYLKy-KnM_1CdOwjU873VJGDM=CErjsv_A@mail.gmail.com>
- <20201015102216.GB2611@hirez.programming.kicks-ass.net>
- <20201015203942.f3kwcohcwwa6lagd@treble>
- <CABCJKufDLmBCwmgGnfLcBw_B_4U8VY-R-dSNNp86TFfuMobPMw@mail.gmail.com>
- <20201020185217.ilg6w5l7ujau2246@treble>
- <CABCJKucVjFtrOsw58kn4OnW5kdkUh8G7Zs4s6QU9s6O7soRiAA@mail.gmail.com>
- <20201021085606.GZ2628@hirez.programming.kicks-ass.net>
- <20201021093213.GV2651@hirez.programming.kicks-ass.net>
- <20201021212747.ofk74lugt4hhjdzg@treble>
- <20201022072553.GN2628@hirez.programming.kicks-ass.net>
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, Xi Wang <xii@google.com>
+Subject: Re: [PATCH 1/3] sched: better handling for busy polling loops
+Message-ID: <20201023104853.55ef1c20@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201023032944.399861-1-joshdon@google.com>
+References: <20201023032944.399861-1-joshdon@google.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022072553.GN2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 09:25:53AM +0200, Peter Zijlstra wrote:
-> On Wed, Oct 21, 2020 at 04:27:47PM -0500, Josh Poimboeuf wrote:
-> > On Wed, Oct 21, 2020 at 11:32:13AM +0200, Peter Zijlstra wrote:
-> > > On Wed, Oct 21, 2020 at 10:56:06AM +0200, Peter Zijlstra wrote:
-> > > 
-> > > > I do not see these in particular, although I do see a lot of:
-> > > > 
-> > > >   "sibling call from callable instruction with modified stack frame"
-> > > 
-> > > defconfig-build/vmlinux.o: warning: objtool: msr_write()+0x10a: sibling call from callable instruction with modified stack frame
-> > > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x99: (branch)
-> > > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x3e: (branch)
-> > > defconfig-build/vmlinux.o: warning: objtool:   msr_write()+0x0: <=== (sym)
-> > > 
-> > > $ nm defconfig-build/vmlinux.o | grep msr_write
-> > > 0000000000043250 t msr_write
-> > > 00000000004289c0 T msr_write
-> > > 0000000000003056 t msr_write.cold
-> > > 
-> > > Below 'fixes' it. So this is also caused by duplicate symbols.
-> > 
-> > There's a new linker flag for renaming duplicates:
-> > 
-> >   https://sourceware.org/bugzilla/show_bug.cgi?id=26391
-> > 
-> > But I guess that doesn't help us now.
+On Thu, 22 Oct 2020 20:29:42 -0700 Josh Don wrote:
+> Busy polling loops in the kernel such as network socket poll and kvm
+> halt polling have performance problems related to process scheduler load
+> accounting.
 > 
-> Well, depends a bit if clang can do it; we only need this for LTO builds
-> for now.
+> Both of the busy polling examples are opportunistic - they relinquish
+> the cpu if another thread is ready to run.
 
-LLD doesn't seem to support -z unique-symbol.
+That makes it sound like the busy poll code is trying to behave like an
+idle task. I thought need_resched() meant we leave when we run out of
+slice, or kernel needs to go through a resched for internal reasons. No?
 
-Sami
+> This design, however, doesn't
+> extend to multiprocessor load balancing very well. The scheduler still
+> sees the busy polling cpu as 100% busy and will be less likely to put
+> another thread on that cpu. In other words, if all cores are 100%
+> utilized and some of them are running real workloads and some others are
+> running busy polling loops, newly woken up threads will not prefer the
+> busy polling cpus. System wide throughput and latency may suffer.
+
+IDK how well this extends to networking. Busy polling in networking is
+a conscious trade-off of CPU for latency, if application chooses to
+busy poll (which isn't the default) we should respect that.
+
+Is your use case primarily kvm?
