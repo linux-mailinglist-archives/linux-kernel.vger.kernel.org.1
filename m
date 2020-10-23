@@ -2,85 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A056E29791C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:52:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 326A129791D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:52:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756950AbgJWVwW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:52:22 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:39695 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1756849AbgJWVwV (ORCPT
+        id S1756961AbgJWVwg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:52:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42694 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756954AbgJWVwg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:52:21 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-12-QwgdOorUNLe2Ru_w3N1p4w-1; Fri, 23 Oct 2020 22:52:17 +0100
-X-MC-Unique: QwgdOorUNLe2Ru_w3N1p4w-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 23 Oct 2020 22:52:16 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 23 Oct 2020 22:52:16 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
-        Peter Anvin <hpa@zytor.com>
-CC:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        "Sean Christopherson" <sean.j.christopherson@intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] x86/uaccess: fix code generation in put_user()
-Thread-Topic: [PATCH] x86/uaccess: fix code generation in put_user()
-Thread-Index: AQHWqYEb2jCDJax3wEWt3nUPTzGU4qmluWig
-Date:   Fri, 23 Oct 2020 21:52:16 +0000
-Message-ID: <bca28d6e33a3475193478e762214c6ea@AcuMS.aculab.com>
-References: <20201023203154.27335-1-linux@rasmusvillemoes.dk>
- <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com>
- <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com>
- <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 23 Oct 2020 17:52:36 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C5EB9C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:52:35 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id t9so2326139qtp.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:52:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=QceJnC4dRZPNkE1Yt9KuuGN8xx+4GwM1datfjLxkevI=;
+        b=WQkCZZCHD6jm8iZpwmjelqu62p54kzklxbWMj9e47TSQ/ZoawDCnqq1XnyNgtNr1Yw
+         2ITC0kxWyZzXaZmsOjYG8/dRfkcM9mUmRQD2unmG8cHb8ZgQUJrcH+IQNifUWp4YOFp0
+         IEy8KWJXFe06CxAJPb8PYBarepEpRo9W1/aWY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=QceJnC4dRZPNkE1Yt9KuuGN8xx+4GwM1datfjLxkevI=;
+        b=cp1dDqs+2axUTYB20zVJWMWUK5m0cbxqn+dHqgFMCxsKG0tQ4v+ZX2GrFUhldbRD0T
+         eIJOmb1umAdQLnQlAVfgv7tlF/3WUTHjucxGTX2x7uvnQEohHSOSPIqasKd/s5D1sDM+
+         SHY19r40lPELqkh6UmHv9gV3cTYF6z4hP/QwGH1yH7mIUj8a4wza9KDvMAQcCPyiNjW4
+         fORDu4gG9+aCwtQycmgcC9GwV0sPxCzdEevsUTE7acysCIQEOvBIWt2CG2XmiFMfiRmr
+         7fBWEWlzIuyylI6J3rOc1y/+3xvBgsbn0sgHnb63BsCDDVb/f53HPcqmLcA94p8Pz7In
+         ugnw==
+X-Gm-Message-State: AOAM531FeSK0SokMkmTtRckStqZvtTsr70mSGJmnp/QF2F9aPjbAAQ5C
+        I12eVIeYD2AykLuUJWzysAo2qqRVUQ4LqEifzInwEQ==
+X-Google-Smtp-Source: ABdhPJzxXiLM9Nysgq5xrTIC3dLNLCltoNzSRKxMC5NQrfFdsOPRswCaJmdEcvw3BhdladEH4EyKNknvu/OiuiZsQo0=
+X-Received: by 2002:ac8:5a45:: with SMTP id o5mr4581914qta.182.1603489954911;
+ Fri, 23 Oct 2020 14:52:34 -0700 (PDT)
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: base64
+References: <20201022061554.3418060-1-pmalani@chromium.org>
+ <20201022065719.GA1440360@kroah.com> <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
+In-Reply-To: <CACeCKacvhtSfQ=hGYHi3AdrTT+XY2RpKmPHuYWoxNVmRWMeBBA@mail.gmail.com>
+From:   Prashant Malani <pmalani@chromium.org>
+Date:   Fri, 23 Oct 2020 14:52:23 -0700
+Message-ID: <CACeCKac-kfL_thmNRWs8sfj8TszNbrGZk2qptrJ1DLeuwQ9QCQ@mail.gmail.com>
+Subject: Re: [PATCH v2] usb: typec: Expose Product Type VDOs via sysfs
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "open list:USB NETWORKING DRIVERS" <linux-usb@vger.kernel.org>,
+        Benson Leung <bleung@chromium.org>,
+        Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogTGludXMgVG9ydmFsZHMNCj4gU2VudDogMjMgT2N0b2JlciAyMDIwIDIyOjExDQo+IA0K
-PiBPbiBGcmksIE9jdCAyMywgMjAyMCBhdCAyOjAwIFBNIDxocGFAenl0b3IuY29tPiB3cm90ZToN
-Cj4gPg0KPiA+IFRoZXJlIGlzIG5vIHNhbWUgcmVhc29uIHRvIG1lc3MgYXJvdW5kIHdpdGggaGFj
-a3Mgd2hlbiB3ZSBhcmUgdGFsa2luZyBhYm91dCBkeDpheCwgdGhvdWdoLg0KPiANCj4gU3VyZSB0
-aGVyZSBpcy4NCj4gDQo+ICJBIiBkb2Vzbid0IGFjdHVhbGx5IG1lYW4gJWVkeDolZWF4IGxpa2Ug
-eW91IHNlZW0gdG8gdGhpbmsuDQo+IA0KPiBJdCBhY3R1YWxseSBtZWFucyAlZWF4IE9SICVlZHgs
-IGFuZCB0aGVuIGlmIGdpdmVuIGEgNjQtYml0IHZhbHVlLCBpdA0KPiB3aWxsIHVzZSB0aGUgY29t
-YmluYXRpb24gKHdpdGggJWVkeCBiZWluZyB0aGUgaGlnaCBiaXRzKS4NCj4gDQo+IFNvIHVzaW5n
-ICJBIiB1bmNvbmRpdGlvbmFsbHkgZG9lc24ndCB3b3JrIC0gaXQgZ2l2ZXMgcmFuZG9tIGJlaGF2
-aW9yDQo+IGZvciAzMi1iaXQgKG9yIHNtYWxsZXIpIHR5cGVzLg0KPiANCj4gT3IgeW91J2QgaGF2
-ZSB0byBjYXN0IHRoZSB2YWx1ZSB0byBhbHdheXMgYmUgNjQtYml0LCBhbmQgaGF2ZSB0aGUNCj4g
-ZXh0cmEgY29kZSBnZW5lcmF0aW9uLg0KPiANCj4gSU9XLCBhbiB1bmNvbmRpdGlvbmFsICJBIiBp
-cyB3cm9uZy4NCj4gDQo+IEFuZCB0aGUgYWx0ZXJuYXRpdmUgaXMgdG8ganVzdCBkdXBsaWNhdGUg
-dGhpbmdzLCBhbmQgZ28gYmFjayB0byB0aGUNCj4gZXhwbGljaXQgc2l6ZSB0ZXN0aW5nLCBidXQg
-aG9uZXN0bHksIEkgcmVhbGx5IHRoaW5rIHRoYXQncyBtdWNoIHdvcnNlDQo+IHRoYW4gcmVseWlu
-ZyBvbiBhIGRvY3VtZW50ZWQgZmVhdHVyZSBvZiAicmVnaXN0ZXIgYXNtKCkiIHRoYXQgZ2NjDQo+
-IF9kb2N1bWVudHNfIGlzIGZvciB0aGlzIGtpbmQgb2YgaW5saW5lIGFzbSB1c2UuDQoNCkNvdWxk
-IGRvX3B1dF91c2VyKCkgZG8gYW4gaW5pdGlhbCBjaGVjayBmb3IgNjQgYml0DQp0aGVuIGV4cGFu
-ZCBhIGRpZmZlcmVudCAjZGVmaW5lIHRoYXQgY29udGFpbnMgdGhlIGFjdHVhbA0KY29kZSBwYXNz
-aW5nIGVpdGhlciAiYSIgb3IgIkEiIGZvciB0aGUgY29uc3RyaWFudC4NCg0KQXBhcnQgZnJvbSBh
-bm90aGVyIGxldmVsIG9mIGluZGlyZWN0aW9uIG5vdGhpbmcgaXMgZHVwbGljYXRlZC4NCg0KCURh
-dmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3Vu
-dCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3
-Mzg2IChXYWxlcykNCg==
+On Thu, Oct 22, 2020 at 12:13 AM Prashant Malani <pmalani@chromium.org> wrote:
+>
+> Thanks for reviewing the patch, Greg.
+>
+> On Wed, Oct 21, 2020 at 11:56 PM Greg KH <gregkh@linuxfoundation.org> wrote:
+> >
+> > >
+> > > +What:                /sys/class/typec/<port>-cable/identity/product_type_vdo
+> > > +Date:                October 2020
+> > > +Contact:     Prashant Malani <pmalani@chromium.org>
+> > > +Description:
+> > > +             Product Type VDOs part of Discover Identity command result. 3 values
+> > > +             are displayed (for the 3 possible Product Type VDOs), one per line.
+> > > +             The values will show 0s until Discover Identity command result becomes
+> > > +             available. The values can be polled.
+> >
+> > Why are you describing the same value in two different locations?
+>
+> Both cable and partner can have Discover Identity VDOs and they are
+> listed separately in sysfs.
+> The other VDOs (id_header, cert_stat and product) have separate
+> descriptions for cable and partner too.
+> Perhaps there is a case for consolidating the listings here (factor
+> out the ones which are common to cable and partner).
+>
 
+Just an update: I added a patch to the series which consolidates these
+repeat identity entries into 1 location:
+https://lore.kernel.org/linux-usb/20201023214328.1262883-1-pmalani@chromium.org/
+
+Thanks and best regards,
