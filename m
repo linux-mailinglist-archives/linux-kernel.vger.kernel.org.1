@@ -2,150 +2,173 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55A392972CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:47:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DE9052972D0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:47:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751123AbgJWPqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:46:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22419 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S463664AbgJWPqw (ORCPT
+        id S463639AbgJWPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:47:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S463306AbgJWPrx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:46:52 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603468010;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:
-         content-transfer-encoding:content-transfer-encoding;
-        bh=TX4XQedEN+Ywa9WiNtmyeg6X9eUbMHcgElC578+OtLs=;
-        b=NANpI7/Uxb63n8pHMbnLZgBylrcczW4BEJKl/jiqHAMtWqiy305V+31zg548sgsTqBya8b
-        /30bkpw0iPM/D0XOzJ+YtUdLpnn/zBiD9FMXn3ClirnMih/EkEWrvhARxiloaEMG/Z2Zex
-        QiE/YNfUfrnX5r77IEV/TjJTNTa8vv4=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-283-sYnoJ2D_PkmEf7-0f3ougg-1; Fri, 23 Oct 2020 11:46:49 -0400
-X-MC-Unique: sYnoJ2D_PkmEf7-0f3ougg-1
-Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF3B418B9F00;
-        Fri, 23 Oct 2020 15:46:47 +0000 (UTC)
-Received: from max.home.com (unknown [10.40.192.23])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id AC6BF277DF;
-        Fri, 23 Oct 2020 15:46:43 +0000 (UTC)
-From:   Andreas Gruenbacher <agruenba@redhat.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
-Subject: [GIT PULL] GFS2 changes for 5.10
-Date:   Fri, 23 Oct 2020 17:46:41 +0200
-Message-Id: <20201023154642.1309908-1-agruenba@redhat.com>
+        Fri, 23 Oct 2020 11:47:53 -0400
+Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4581C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
+Received: by mail-pf1-x443.google.com with SMTP id h7so1662532pfn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Euid2rOIqVxU7BCKc29LGBrOY7GyDm6FtEEpwHglGRU=;
+        b=M/GS969E9V3i09GCuC41mYN/VDUOQUKzlMSMBpISUGxrl8e0AnBOu62xTbAgpXkzbS
+         5NLXBjzluFLSNZyvQWzcBuXc9alqLSImvHEoFLme/j0k89U1z+qsRc2m0IB+PsXamJf5
+         k1wezWUJ+yz+ead4BL9mEB0rQpouYI/1056Hk=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Euid2rOIqVxU7BCKc29LGBrOY7GyDm6FtEEpwHglGRU=;
+        b=BhSeKfh+G6JekjyU7mAiMgsz+ay+nVQ5QlXjbDMwsuLZps0RL1q6y0lLkFQw6clYBL
+         TTG/gqUpA4kjunq7Cx/k+k5Vvuo9/YmTt8ooit9Xoa+AC1jp5/OO2ffRaSLcm439ATIe
+         +SMK/6H9og/RcVn/YIGplFZTD2sxxSlOvZbnvbd6XKdfMydzwTY++Mhf8cBJOqpLdnBe
+         e5TXCEjvQpC1Qx0NGzX0aSoqzc8j+DDhRqp9hqJUSEbMvAwGLL/O0Qx9BhgO6J8CtbjH
+         e0ey/D/RDpxXi3Jg70T5PSldzRItuDr1HB5Wvhb9MojOOnwF17yH3N0gou5lSwcwWlyI
+         Agkg==
+X-Gm-Message-State: AOAM533xUkmdv9t7rhRqCcHDSqzm/O22vwbniVgs9c458bgcP2ks+jb1
+        udiFnuBu0o6GoKVXa0h1MUetBQ==
+X-Google-Smtp-Source: ABdhPJzYLUg/ViEmI70rBqC4Esx7lIduLkcNso4qinU5LfKpUejh1bMzhBnu8IwRnHgAqpvsWGhV+A==
+X-Received: by 2002:a62:7cd4:0:b029:154:f9ee:320b with SMTP id x203-20020a627cd40000b0290154f9ee320bmr2955753pfc.26.1603468073137;
+        Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
+Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
+        by smtp.gmail.com with ESMTPSA id t6sm2532576pfl.50.2020.10.23.08.47.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 08:47:52 -0700 (PDT)
+From:   Stephen Boyd <swboyd@chromium.org>
+To:     Will Deacon <will@kernel.org>,
+        Catalin Marinas <catalin.marinas@arm.com>
+Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Andre Przywara <andre.przywara@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
+Subject: [PATCH v3] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
+Date:   Fri, 23 Oct 2020 08:47:50 -0700
+Message-Id: <20201023154751.1973872-1-swboyd@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+According to the SMCCC spec[1](7.5.2 Discovery) the
+ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
+SMCCC_RET_NOT_SUPPORTED.
 
-could you please pull the following gfs2 changes for 5.10?
+ 0 is "workaround required and safe to call this function"
+ 1 is "workaround not required but safe to call this function"
+ SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
 
-Thanks a lot,
-Andreas
+SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
+calling this function may not work because it isn't implemented in some
+cases". Wonderful. We map this SMC call to
 
-The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
+ 0 is SPECTRE_MITIGATED
+ 1 is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-  Linux 5.9 (2020-10-11 14:15:50 -0700)
+For KVM hypercalls (hvc), we've implemented this function id to return
+SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
+isn't supposed to be there. Per the code we call
+arm64_get_spectre_v2_state() to figure out what to return for this
+feature discovery call.
 
-are available in the Git repository at:
+ 0 is SPECTRE_MITIGATED
+ SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.10
+Let's clean this up so that KVM tells the guest this mapping:
 
-for you to fetch changes up to bedb0f056faa94e953e7b3da5a77d25e0008364b:
+ 0 is SPECTRE_MITIGATED
+ 1 is SPECTRE_UNAFFECTED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-  gfs2: Recover statfs info in journal head (2020-10-23 15:47:38 +0200)
+Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
 
-----------------------------------------------------------------
-Changes in gfs2:
-* Use iomap for non-journaled buffered I/O.  This largely eliminates buffer
-  heads on filesystems where the block size matches the page size.  Many thanks
-  to Christoph Hellwig for this patch!
-* Fixes for some more journaled data filesystem bugs, found by running xfstests
-  with data journaling on for all files (chattr +j $MNT) (Bob Peterson).
-* gfs2_evict_inode refactoring (Bob Peterson).
-* Use the statfs data in the journal during recovery instead of reading it in
-  from the local statfs inodes (Abhi Das).
-* Several other minor fixes by various people.
+Cc: Andre Przywara <andre.przywara@arm.com>
+Cc: Steven Price <steven.price@arm.com>
+Cc: Marc Zyngier <maz@kernel.org>
+Cc: stable@vger.kernel.org
+Link: https://developer.arm.com/documentation/den0028/latest [1]
+Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
+Signed-off-by: Stephen Boyd <swboyd@chromium.org>
+---
 
-----------------------------------------------------------------
-Abhi Das (3):
-      gfs2: Add fields for statfs info in struct gfs2_log_header_host
-      gfs2: lookup local statfs inodes prior to journal recovery
-      gfs2: Recover statfs info in journal head
+I see that before commit c118bbb52743 ("arm64: KVM: Propagate full
+Spectre v2 workaround state to KVM guests") we had this mapping:
 
-Anant Thazhemadam (1):
-      gfs2: add validation checks for size of superblock
+ 0 is SPECTRE_MITIGATED
+ SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
 
-Andreas Gruenbacher (2):
-      gfs2: Make sure we don't miss any delayed withdraws
-      gfs2: Ignore subsequent errors after withdraw in rgrp_go_sync
+so the return value '1' wasn't there then. Once the commit was merged we
+introduced the notion of NOT_REQUIRED here when it shouldn't have been
+introduced.
 
-Andrew Price (1):
-      gfs2: Fix NULL pointer dereference in gfs2_rgrp_dump
+Changes from v2:
+ * Moved define to header file and used it
 
-Bob Peterson (20):
-      gfs2: Fix bad comment for trans_drain
-      gfs2: rename variable error to ret in gfs2_evict_inode
-      gfs2: factor evict_unlinked_inode out of gfs2_evict_inode
-      gfs2: further simplify gfs2_evict_inode with new func evict_should_delete
-      gfs2: factor evict_linked_inode out of gfs2_evict_inode
-      gfs2: simplify the logic in gfs2_evict_inode
-      gfs2: call truncate_inode_pages_final for address space glocks
-      gfs2: rename gfs2_write_full_page to gfs2_write_jdata_page, remove parm
-      gfs2: add missing log_blocks trace points in gfs2_write_revokes
-      gfs2: enhance log_blocks trace point to show log blocks free
-      gfs2: Wipe jdata and ail1 in gfs2_journal_wipe, formerly gfs2_meta_wipe
-      gfs2: make gfs2_ail1_empty_one return the count of active items
-      gfs2: don't lock sd_ail_lock in gfs2_releasepage
-      gfs2: Only set PageChecked if we have a transaction
-      gfs2: simplify gfs2_block_map
-      gfs2: Ignore journal log writes for jdata holes
-      gfs2: eliminate GLF_QUEUED flag in favor of list_empty(gl_holders)
-      gfs2: Fix comments to glock_hash_walk
-      gfs2: Only access gl_delete for iopen glocks
-      gfs2: Eliminate gl_vm
+Changes from v1:
+ * Way longer commit text, more background (sorry)
+ * Dropped proton-pack part because it was wrong
+ * Rebased onto other patch accepted upstream
 
-Christoph Hellwig (1):
-      gfs2: use iomap for buffered I/O in ordered and writeback mode
+ arch/arm64/kernel/proton-pack.c | 2 --
+ arch/arm64/kvm/hypercalls.c     | 2 +-
+ include/linux/arm-smccc.h       | 2 ++
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Jamie Iles (1):
-      gfs2: use-after-free in sysfs deregistration
+diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
+index 25f3c80b5ffe..c18eb7d41274 100644
+--- a/arch/arm64/kernel/proton-pack.c
++++ b/arch/arm64/kernel/proton-pack.c
+@@ -135,8 +135,6 @@ static enum mitigation_state spectre_v2_get_cpu_hw_mitigation_state(void)
+ 	return SPECTRE_VULNERABLE;
+ }
+ 
+-#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	(1)
+-
+ static enum mitigation_state spectre_v2_get_cpu_fw_mitigation_state(void)
+ {
+ 	int ret;
+diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
+index 9824025ccc5c..25ea4ecb6449 100644
+--- a/arch/arm64/kvm/hypercalls.c
++++ b/arch/arm64/kvm/hypercalls.c
+@@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
+ 				val = SMCCC_RET_SUCCESS;
+ 				break;
+ 			case SPECTRE_UNAFFECTED:
+-				val = SMCCC_RET_NOT_REQUIRED;
++				val = SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED;
+ 				break;
+ 			}
+ 			break;
+diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
+index 15c706fb0a37..0e50ba3e88d7 100644
+--- a/include/linux/arm-smccc.h
++++ b/include/linux/arm-smccc.h
+@@ -86,6 +86,8 @@
+ 			   ARM_SMCCC_SMC_32,				\
+ 			   0, 0x7fff)
+ 
++#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
++
+ /* Paravirtualised time calls (defined by ARM DEN0057A) */
+ #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
+ 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
 
-Liu Shixin (1):
-      gfs2: convert to use DEFINE_SEQ_ATTRIBUTE macro
-
- fs/gfs2/aops.c       |  68 ++++++++--------
- fs/gfs2/bmap.c       |  62 ++++++++++-----
- fs/gfs2/bmap.h       |   1 +
- fs/gfs2/glock.c      |  52 +++++-------
- fs/gfs2/glops.c      |  36 +++++----
- fs/gfs2/incore.h     |  29 ++++---
- fs/gfs2/log.c        |  89 ++++++++++++---------
- fs/gfs2/log.h        |   2 +-
- fs/gfs2/lops.c       |   2 +-
- fs/gfs2/lops.h       |   1 +
- fs/gfs2/meta_io.c    |  81 +++++++++++++++++--
- fs/gfs2/meta_io.h    |   2 +-
- fs/gfs2/ops_fstype.c | 173 ++++++++++++++++++++++++++--------------
- fs/gfs2/recovery.c   | 108 +++++++++++++++++++++++++
- fs/gfs2/rgrp.c       |  19 ++---
- fs/gfs2/rgrp.h       |   2 +-
- fs/gfs2/super.c      | 220 +++++++++++++++++++++++++++++++++++----------------
- fs/gfs2/super.h      |   5 ++
- fs/gfs2/sys.c        |   5 +-
- fs/gfs2/trace_gfs2.h |   7 +-
- fs/gfs2/util.c       |   2 +-
- fs/gfs2/util.h       |  10 +++
- 22 files changed, 675 insertions(+), 301 deletions(-)
+base-commit: 66dd3474702aa98d5844367e1577cdad78ef7c65
+-- 
+Sent by a computer, using git, on the internet
 
