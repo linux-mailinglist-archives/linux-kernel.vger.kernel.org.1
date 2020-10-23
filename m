@@ -2,141 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 809E8296F90
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:42:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 78603296F97
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:44:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463966AbgJWMmp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:42:45 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:34915 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373407AbgJWMmo (ORCPT
+        id S463976AbgJWMo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 08:44:28 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35134 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S463968AbgJWMo1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:42:44 -0400
-Received: by mail-oi1-f195.google.com with SMTP id w191so1716573oif.2;
-        Fri, 23 Oct 2020 05:42:44 -0700 (PDT)
+        Fri, 23 Oct 2020 08:44:27 -0400
+Received: from mail-pf1-f198.google.com ([209.85.210.198])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kVwQj-0002RE-Gu
+        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 12:44:25 +0000
+Received: by mail-pf1-f198.google.com with SMTP id m64so1044948pfm.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:44:25 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RjpCnjRYrt8usXfUiWWJM/i9Xqzzc0nEFPFueT3x2oI=;
-        b=ZxAZmXlYAcpKnkrpWhwstTSLSa0LglOyJtqw73AfeM1hmX4ijkmN7vXMM+/QlIB+ri
-         9W5Fl4efO1pGOmZS2hZG/vKwPnnI+loW/SlfiqM4hl8slzd5gDbl3GA35/qNg28jWiQW
-         XCOAW8TM0X0xfBxrAsp+QHOGVbSTAPmTRvPYP3iIRN6hh9XjTYCQvGeP58Af+mLQQ2FU
-         GEkFc9t0T8DDUzTvlSGmAK9QB2tO7M24SrWQQ+PwPc7DqNuyaMAx0U3Jyz/A1cRoHOfO
-         Ssi/tb8Fu7Bbl1ZogOAiHuzuSJPsKT0zOw12r0VgG6LylAK75gkNjwGaGlHNlBb+i1MI
-         HOfw==
-X-Gm-Message-State: AOAM533iez2HLnncX5y9bTV8ZOaxfP8/cJYhkhQZfHUMwee+BIwnUvGR
-        EE5dgv/FcMYI647IepKVJXEFv1FFGcOONFNFskc=
-X-Google-Smtp-Source: ABdhPJybx+NEzgUJybBLn+A/LL5wFPpu5es5hgHmPOZ4aeJkJtuRPxSh7JojLW3XGJ9dCA5JI9clJQa2OxyqukLcHPs=
-X-Received: by 2002:aca:f203:: with SMTP id q3mr1413369oih.148.1603456963090;
- Fri, 23 Oct 2020 05:42:43 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201016121709.8447-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20201016121709.8447-5-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <CAMuHMdVPfoU_X3A4ioy9TeJHmovE5P=fDYpShsWTzFYXmZoiww@mail.gmail.com> <CA+V-a8tX0qxFyf85QAC0h2t-s2Uo3EiQvJz2PU0+vw=ov1d2rA@mail.gmail.com>
-In-Reply-To: <CA+V-a8tX0qxFyf85QAC0h2t-s2Uo3EiQvJz2PU0+vw=ov1d2rA@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 23 Oct 2020 14:42:32 +0200
-Message-ID: <CAMuHMdUdVhp-g_3G2+MZd9thyxojB-w1SnmPd0XuWgB4XztOzg@mail.gmail.com>
-Subject: Re: [PATCH 4/4] clk: renesas: r8a774c0: Add RPC clocks
-To:     "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Cc:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Biju Das <biju.das.jz@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=ss/2egyBfIZAiVE1IR9ul+5JtgcnBAIRvrLL4JsLF5Q=;
+        b=DgcCEq50lLcsUtxwPlfG2+CrHo8dupz3lwjGchgtJuMenTisrvumN22Y1NLUbk8N2J
+         cnB7O5aOCjYbI5zp+ldtzl4E7rnBztcQSLz0PXhDRO/hkMGGTxs7d0Btmom1u/r6bpFm
+         Fbix2tqskYbL6295zUj/RxeEfVIKOUVVjprURPQzfvLsswe0Kj9+5YZ5EvVXSKZOVhbE
+         Oh/XnbLP5zNaufSHOAyCeXlEayIyE5bi3LEQX3SZQzeGCuc1RDNlAwQZLEsJMx6Y+M8o
+         QWtTAOCmj/rGoWFY/+Fubr4DoVCl36aQ2Iybko24bU46Yds/PeON4pI3qa7YFPDsLywO
+         LxzQ==
+X-Gm-Message-State: AOAM532zN7p82rcBKKxghxvo6/U2BfxbGlDNgJH/vEqZ5H7oFO8TXczt
+        PiOtCEDEu5FkZoW6JD34OWakeqmPh7qsFIaUFIzgeIcWjLnXFvDqax78eCHe/L0Wu/08rkpW7r2
+        0SsUCzN3ycVqdsR2qAQhWslavOPb9uGQwtps69nUlPg==
+X-Received: by 2002:a17:90a:1596:: with SMTP id m22mr2330755pja.189.1603457064105;
+        Fri, 23 Oct 2020 05:44:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz6WrdLJEpNg0KYKwPikTKprEryePQjp/3SPSByjnLdoLTieJcrcAUKrt7vXluOMlPGu0y8rg==
+X-Received: by 2002:a17:90a:1596:: with SMTP id m22mr2330726pja.189.1603457063688;
+        Fri, 23 Oct 2020 05:44:23 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id js21sm2572456pjb.14.2020.10.23.05.44.20
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 05:44:22 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 1/4] ALSA: hda: Refactor codec PM to use direct-complete
+ optimization
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <s5hk0vh89fv.wl-tiwai@suse.de>
+Date:   Fri, 23 Oct 2020 20:44:18 +0800
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Harsha Priya <harshapriya.n@intel.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 7bit
+Message-Id: <9D7D9C4C-3245-41A3-B0C4-D74FBB5FE91A@canonical.com>
+References: <20201023102340.25494-1-kai.heng.feng@canonical.com>
+ <s5hk0vh89fv.wl-tiwai@suse.de>
+To:     Takashi Iwai <tiwai@suse.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Prabhakar,
 
-On Fri, Oct 23, 2020 at 1:06 PM Lad, Prabhakar
-<prabhakar.csengg@gmail.com> wrote:
-> On Thu, Oct 22, 2020 at 3:09 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Oct 16, 2020 at 2:17 PM Lad Prabhakar
-> > <prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
-> > > Describe the RPCSRC internal clock and the RPC[D2] clocks derived from it,
-> > > as well as the RPC-IF module clock, in the RZ/G2E (R8A774C0) CPG/MSSR
-> > > driver.
-> > >
-> > > Inspired by commit 94e3935b5756 ("clk: renesas: r8a77980: Add RPC clocks").
-> > >
-> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> > > Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
-> >
-> > Thanks for your patch!
-> >
-> > > --- a/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> > > +++ b/drivers/clk/renesas/r8a774c0-cpg-mssr.c
-> > > @@ -73,6 +74,12 @@ static const struct cpg_core_clk r8a774c0_core_clks[] __initconst = {
-> > >         DEF_FIXED(".s2",       CLK_S2,             CLK_PLL1,       4, 1),
-> > >         DEF_FIXED(".s3",       CLK_S3,             CLK_PLL1,       6, 1),
-> > >         DEF_FIXED(".sdsrc",    CLK_SDSRC,          CLK_PLL1,       2, 1),
-> > > +       DEF_BASE(".rpcsrc",    CLK_RPCSRC, CLK_TYPE_GEN3_RPCSRC, CLK_PLL1),
-> > > +
-> > > +       DEF_BASE("rpc",        R8A774C0_CLK_RPC, CLK_TYPE_GEN3_RPC,
-> > > +                CLK_RPCSRC),
-> > > +       DEF_BASE("rpcd2",      R8A774C0_CLK_RPCD2, CLK_TYPE_GEN3_RPCD2,
-> > > +                R8A774C0_CLK_RPC),
-> > >
-> > >         DEF_DIV6_RO(".r",      CLK_RINT,           CLK_EXTAL, CPG_RCKCR, 32),
-> > >
-> >
-> > > @@ -275,6 +283,10 @@ static int __init r8a774c0_cpg_mssr_init(struct device *dev)
-> > >         return rcar_gen3_cpg_init(cpg_pll_config, 0, cpg_mode);
-> > >  }
-> > >
-> > > +static const struct clk_div_table cpg_rpcsrc_div_table[] = {
-> > > +       { 0, 5 }, { 1, 3 }, { 2, 8 }, {3, 2}, {0, 0},
-> > > +};
-> >
-> > The above models RPCSRC as a clock generated by dividing PLL1 by either
-> > 5, 3, 8, or 2.  This does not match the hardware user's manual, which
-> > states that RPCSRC is either PLL1 divided by 5 or 3, or PLL0 divided by
-> > 8 or 2.
-> >
-> Oops I completely missed that.
->
-> But as per the manual (R-Car manual Rev.2.20) which I am referring to
-> 5, 3 and 2 are sourced from PLL1 and 5/8 (ie D3/E3) are sourced from
-> PLL0.
 
-True, I misread the clocksource of the last entry.
+> On Oct 23, 2020, at 19:32, Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> On Fri, 23 Oct 2020 12:23:35 +0200,
+> Kai-Heng Feng wrote:
+>> 
+>> +static void hda_codec_pm_complete(struct device *dev)
+>> {
+>> 	struct hda_codec *codec = dev_to_hda_codec(dev);
+>> -	int ret;
+>> 
+>> -	ret = pm_runtime_force_resume(dev);
+>> -	/* schedule jackpoll work for jack detection update */
+>> -	if (codec->jackpoll_interval ||
+>> -	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
+>> -		schedule_delayed_work(&codec->jackpoll_work,
+>> -				      codec->jackpoll_interval);
+>> -	return ret;
+>> +	if (pm_runtime_suspended(dev) &&
+>> +	    (hda_codec_need_resume(codec) || codec->forced_resume))
+>> +		pm_request_resume(dev);
+> 
+> You shouldn't drop the check of codec->jackpoll_interval.  If this
+> field is set, the codec driver has to resume no matter what it was, so
+> that the polling can start up again.
 
-> > I think you need a new clock type (CLK_TYPE_GEN3E_RPCSRC, as it applies
-> > to RZ/G2E, and R-Car E3?), which registers a composite clock consisting
-> > of a mux and divider.  This is a bit similar to the RPC/RPCD2 clocks,
-> > which are composite clocks consisting of a divider and a gate.
-> >
-> atm rcar_gen3_cpg_clk_register() only supports single parent, so if I
-> am getting it right you mean I need to add two separate entries for
-> RPSRC  one with PLL0 and one with PLL1 ?
+Ok, will address in v2.
 
-You can encode a second parent in the high halfword, cfr. what
-CLK_TYPE_GEN3_MDSEL and CLK_TYPE_GEN3_RCKSEL.
+Kai-Heng
 
-Note to myself: convert cpg_core_clk to a union, to make encoding
-and decoding easier.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
-> > Note that R-Car D3 is similar, except that PLL0 is divided by 5 or 2, which
-> > means yet another clock type (and div_table).
-> >
-> I'm a bit confused here for D3 PLL0 is divided by 5 (n=5) ?
-
-Sorry, same misreading as above.
-Have a nice weekend!
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
