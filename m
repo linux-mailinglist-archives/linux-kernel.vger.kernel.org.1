@@ -2,62 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F5BF2978A0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:04:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94B4E2978A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:04:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465898AbgJWVER (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:04:17 -0400
-Received: from smtprelay0175.hostedemail.com ([216.40.44.175]:41532 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S463274AbgJWVER (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:04:17 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay05.hostedemail.com (Postfix) with ESMTP id 3A7C718029123;
-        Fri, 23 Oct 2020 21:04:16 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1567:1593:1594:1711:1714:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:3871:3872:4321:5007:6120:7901:10004:10400:10848:11232:11658:11914:12296:12297:12740:12760:12895:13069:13161:13229:13311:13357:13439:14659:14721:21080:21221:21611:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: cause33_34001332725c
-X-Filterd-Recvd-Size: 1685
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf08.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 23 Oct 2020 21:04:15 +0000 (UTC)
-Message-ID: <4317722a8dc93b6de1dc974a8cb51c7f22d86ecf.camel@perches.com>
-Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle
- more patterns
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Fri, 23 Oct 2020 14:04:13 -0700
-In-Reply-To: <CABJPP5AcjAq0kg0MMggd2D6YUwVhq96otm-qQB3Snddt77VxAA@mail.gmail.com>
-References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
-         <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
-         <CABJPP5Dx4qj-_0gOx0bmaWvJj3okB-tNGJg5-8Y3KF2LnCjowQ@mail.gmail.com>
-         <2e8279841d604dde8a3335c092db921007f6744e.camel@perches.com>
-         <2a3b90ee-b9bd-2586-9d68-45cbf7e499a9@gmail.com>
-         <8710630d8c01bf6f3749e3d11d193a805f2d2048.camel@perches.com>
-         <CABJPP5AcjAq0kg0MMggd2D6YUwVhq96otm-qQB3Snddt77VxAA@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        id S1752752AbgJWVEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:04:33 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42410 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751213AbgJWVEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:04:33 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kW4Eb-003Azi-6p; Fri, 23 Oct 2020 23:04:25 +0200
+Date:   Fri, 23 Oct 2020 23:04:25 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: Re: [PATCH v3 18/56] net: phy: fix kernel-doc markups
+Message-ID: <20201023210425.GG752111@lunn.ch>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+ <d23c5638c4fd0e7b9f294f2bf647d2386428eb7e.1603469755.git.mchehab+huawei@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d23c5638c4fd0e7b9f294f2bf647d2386428eb7e.1603469755.git.mchehab+huawei@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-24 at 02:27 +0530, Dwaipayan Ray wrote:
-> Also I tried the pattern  attr =~ s/^_*(.*)_*$/$1/
-> for trimming the _ earlier. I think it doesn't trim the
-> trailing underscores in the suffix as (.*) captures everything greedily.
->
-> Is the iterative one perhaps okay instead?
-> while($attr =~ s/(.*)_$/$1/) {}
+On Fri, Oct 23, 2020 at 06:33:05PM +0200, Mauro Carvalho Chehab wrote:
+> Some functions have different names between their prototypes
+> and the kernel-doc markup.
+> 
+> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> ---
+>  drivers/net/phy/mdio_bus.c   | 2 +-
+>  drivers/net/phy/phy-c45.c    | 2 +-
+>  drivers/net/phy/phy.c        | 2 +-
+>  drivers/net/phy/phy_device.c | 2 +-
+>  drivers/net/phy/phylink.c    | 2 +-
+>  5 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+> index 757e950fb745..e59067c64e97 100644
+> --- a/drivers/net/phy/mdio_bus.c
+> +++ b/drivers/net/phy/mdio_bus.c
+> @@ -472,7 +472,7 @@ static inline void of_mdiobus_link_mdiodev(struct mii_bus *mdio,
+>  #endif
+>  
+>  /**
+> - * mdiobus_create_device_from_board_info - create a full MDIO device given
+> + * mdiobus_create_device - create a full MDIO device given
+>   * a mdio_board_info structure
+>   * @bus: MDIO bus to create the devices on
+>   * @bi: mdio_board_info structure describing the devices
 
-Then perhaps
- 
-	$curr_attr =~ s/^_+//; $curr_attr =~ s/_+$//;
+Hi Mauro
 
+If you need to repost, could you make use of:
 
+-U<n>
+--unified=<n>
+Generate diffs with <n> lines of context instead of the usual three.
+
+to increase the number of lines of context. Often three lines is not
+enough to include the function declaration in the patch, so i need to
+go look at the sources to do a review. 
+
+Reviewed-by: Andrew Lunn <andrew@lunn.ch>
+
+    Andrew
