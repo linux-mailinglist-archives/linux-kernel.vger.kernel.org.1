@@ -2,203 +2,186 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F0B42975C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:30:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7C1AA2975CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:31:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753453AbgJWR35 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:29:57 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:46018 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753444AbgJWR34 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:29:56 -0400
-Received: by mail-ot1-f65.google.com with SMTP id f37so2041057otf.12;
-        Fri, 23 Oct 2020 10:29:55 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
-        bh=IXO+oFGzZFMe3RRcGxHZuWeA7SXQBaRULI8TubEz+OI=;
-        b=n96vEu3UOxF0mRNxww5z8Wcywg9sS3mv096mKu+qAti6x7vIRdEK1xWzxt9PXEAkF7
-         OkrbAzlHKRPDr8omgHwQGcXmRCvb4OXyvhBOLW8A0G0XwJ8qM0LLexkevn3VglK+mvIW
-         kmzJvLgxSoVfwsb5up0Jsc6Hn9IeCI+DJljfBGbzybQzMlzQO8+4NwMop2yxVtKVaxxN
-         vjfD+QeIrsMIzJmIIZkjlSdDwlkvHQ/4BOY0I1Le2h5NCj+5/PF5u+X2/4C3LaQt4d4N
-         ba/icmLe5GONkwDQX8jcmct+tBlaVmO9JAjQk+70NcE7iPF6Mnh4PUlcw8xVITD6Lpdp
-         Zlxg==
-X-Gm-Message-State: AOAM532OfCzNTW7i4qfcXSFjXQgmGPqqidwBuNiuCVhZ+Kf8MrrYM/wl
-        mZKOhd+hWjaMZBj5ibg8bjzPcAiPJ43iJyErBL1ii2XjVF4=
-X-Google-Smtp-Source: ABdhPJwaUqMQ79RjPWrxI58BBn8CNW72fehlhqLoEjF976dRF9ieYVvgsIO9tsiM0PkRTle3VTzmhkyVS+eM5OWXCD8=
-X-Received: by 2002:a05:6830:18cd:: with SMTP id v13mr2650846ote.206.1603474194821;
- Fri, 23 Oct 2020 10:29:54 -0700 (PDT)
+        id S1753465AbgJWRbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:31:12 -0400
+Received: from mx2.suse.de ([195.135.220.15]:32872 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1753456AbgJWRbL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:31:11 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603474269;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=3rq43a05wms68FvUYQpJ6f6BxWzKhLrTDzGkVJPH+XM=;
+        b=PD0NClmWkXNM1R9LE07FzmL1COtEFexv1pz0M3EoIwWhgMmUE7qSMFoLxkjWkbB2V1a8nf
+        AVt6h7B/x58sFE9kNpxZM4SumJLliz0RQYtOZv1WOLAV0nHg7Vyy8a2wu4zSVix4GXrXPv
+        SJ6R9DVrxAcqXr0uCiM6oYkccq3lVfk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 54AF6AB95;
+        Fri, 23 Oct 2020 17:31:09 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 19:31:08 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        andriy.shevchenko@linux.intel.com, rostedt@goodmis.org,
+        sergey.senozhatsky@gmail.com, linux@rasmusvillemoes.dk,
+        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org,
+        rdunlap@infradead.org, idryomov@gmail.com,
+        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
+Message-ID: <20201023173108.GG32486@alley>
+References: <20201022151349.47436-1-98.arpi@gmail.com>
 MIME-Version: 1.0
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 23 Oct 2020 19:29:43 +0200
-Message-ID: <CAJZ5v0jJq1myATF3gG=4JwCbBnn3X-MsPXA=nN=WVMcSuDGVzg@mail.gmail.com>
-Subject: [GIT PULL] More power management updates for v5.10-rc1
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022151349.47436-1-98.arpi@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu 2020-10-22 20:43:49, Arpitha Raghunandan wrote:
+> Convert test lib/test_printf.c to KUnit. More information about
 
-Please pull from the tag
+> Converted test success:
+>     # Subtest: printf-kunit-test
+>     1..1
+>     ok 1 - selftest
+> ok 1 - printf-kunit-test
+> 
+> Converted test failure:
+>     # Subtest: printf-kunit-test
+>     1..1
+>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
+> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
+> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
+> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
+>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
+> kvasprintf(..., "%pi4|%pI4", ...) returned
+> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
+>     not ok 1 - selftest
 
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-5.10-rc1-2
+I agree with others that there should be more KUNIT_CASEs.
 
-with top-most commit 41c169d9ae2c890552044e129d101995b62c8a02
+> not ok 1 - printf-kunit-test
 
- Merge branch 'pm-avs'
+> --- a/lib/test_printf.c
+> +++ b/lib/printf_kunit.c
 
-on top of commit defb53a7c790f9e37a765de8a5d830ed15e2055b
+There is no standard at the moment. I see struct kunit_source defined,
+for example, in the following files:
 
- Merge tag 'pnp-5.10-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+*test*.c:
 
-to receive more power management updates for 5.10-rc1.
+      drivers/base/power/qos-test.c:
+      drivers/base/test/property-entry-test.c:
+      drivers/thunderbolt/test.c:
+      fs/ext4/inode-test.c:
+      kernel/kcsan/kcsan-test.c:
+      kernel/sysctl-test.c:
+      lib/kunit/string-stream-test.c:
+      lib/list-test.c:
+      lib/test_bits.c:
+      lib/test_kasan.c:
+      lib/test_linear_ranges.c:
+      net/mptcp/crypto_test.c:
+      net/mptcp/token_test.c:
+      security/apparmor/policy_unpack_test.c:
 
-First of all, the adaptive voltage scaling (AVS) drivers go to new
-platform-specific locations as planned (this part was reported to
-have merge conflicts against the new arm-soc updates in linux-next).
+kunit-*-test.c:
 
-In addition to that, there are some fixes (intel_idle, intel_pstate,
-RAPL, acpi_cpufreq), the addition of on/off notifiers and idle state
-accounting support to the generic power domains (genpd) code and some
-janitorial changes all over.
+       lib/kunit/kunit-example-test.c:
+       lib/kunit/kunit-test.c:
 
-Specifics:
+*_kunit.c
 
- - Move the AVS drivers to new platform-specific locations and get
-   rid of the drivers/power/avs directory (Ulf Hansson).
+      lib/bitfield_kunit.c:
 
- - Add on/off notifiers and idle state accounting support to the
-   generic power domains (genpd) framework (Ulf Hansson, Lina Iyer).
-
- - Ulf will maintain the PM domain part of cpuidle-psci (Ulf Hansson).
-
- - Make intel_idle disregard ACPI _CST if it cannot use the data
-   returned by that method (Mel Gorman).
-
- - Modify intel_pstate to avoid leaving useless sysfs directory
-   structure behind if it cannot be registered (Chen Yu).
-
- - Fix domain detection in the RAPL power capping driver and prevent
-   it from failing to enumerate the Psys RAPL domain (Zhang Rui).
-
- - Allow acpi-cpufreq to use ACPI _PSD information with Family 19 and
-   later AMD chips (Wei Huang).
-
- - Update the driver assumptions comment in intel_idle and fix a
-   kerneldoc comment in the runtime PM framework (Alexander Monakov,
-   Bean Huo).
-
- - Avoid unnecessary resets of the cached frequency in the schedutil
-   cpufreq governor to reduce overhead (Wei Wang).
-
- - Clean up the cpufreq core a bit (Viresh Kumar).
-
- - Make assorted minor janitorial changes (Daniel Lezcano, Geert
-   Uytterhoeven, Hubert Jasudowicz, Tom Rix).
-
- - Clean up and optimize the cpupower utility somewhat (Colin Ian
-   King, Martin Kaistra).
-
-Thanks!
+Please, either unify names of all the above modules or keep test_printf.c
 
 
----------------
 
-Alexander Monakov (1):
-      intel_idle: mention assumption that WBINVD is not needed
+> @@ -5,6 +5,7 @@
+>  
+>  #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+>  
+> +#include <kunit/test.h>
+>  #include <linux/init.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> @@ -30,64 +31,57 @@
+>  #define PAD_SIZE 16
+>  #define FILL_CHAR '$'
+>  
+> -static unsigned total_tests __initdata;
+> -static unsigned failed_tests __initdata;
+>  static char *test_buffer __initdata;
+>  static char *alloced_buffer __initdata;
+> +struct kunit *kunittest;
 
-Bean Huo (1):
-      PM: runtime: Fix typo in pm_runtime_set_active() helper comment
+This should be static variable.
 
-Chen Yu (1):
-      cpufreq: intel_pstate: Delete intel_pstate sysfs if failed to
-register the driver
+>  
+> -static int __printf(4, 0) __init
+> +static void __printf(4, 0) __init
+>  do_test(int bufsize, const char *expect, int elen,
+>  	const char *fmt, va_list ap)
+>  {
+>  	va_list aq;
+>  	int ret, written;
+>  
 
-Colin Ian King (1):
-      cpupowerutils: fix spelling mistake "dependant" -> "dependent"
+> @@ -696,8 +684,9 @@ test_pointer(void)
+>  	fwnode_pointer();
+>  }
+>  
+> -static void __init selftest(void)
+> +static void __init selftest(struct kunit *ktest)
 
-Daniel Lezcano (1):
-      cpuidle: Remove pointless stub
+>  {
+> +	kunittest = ktest;
+>  	alloced_buffer = kmalloc(BUF_SIZE + 2*PAD_SIZE, GFP_KERNEL);
 
-Geert Uytterhoeven (1):
-      PM: domains: Add curly braces to delimit comment + statement block
+The allocation and freeing should be done by the init,exit
+callbacs in struct kunit_testsuite. For example, see
+lib/kunit/kunit-test.c
 
-Hubert Jasudowicz (1):
-      powercap: Fix typo in Kconfig "Plance" -> "Plane"
+This function can then be removed. The particular tests will
+be called via more KUNIT_CASE() entries.
 
-Lina Iyer (1):
-      PM: domains: enable domain idle state accounting
+>  	if (!alloced_buffer)
+>  		return;
+> @@ -711,6 +700,17 @@ static void __init selftest(void)
+>  	kfree(alloced_buffer);
+>  }
+>  
+> -KSTM_MODULE_LOADERS(test_printf);
+> +static struct kunit_case printf_test_cases[] = {
+> +	KUNIT_CASE(selftest),
+> +	{}
+> +};
+> +
+> +static struct kunit_suite printf_test_suite = {
+> +	.name = "printf-kunit-test",
 
-Martin Kaistra (1):
-      cpupower: speed up generating git version string
+Please, use:
 
-Mel Gorman (1):
-      intel_idle: Ignore _CST if control cannot be taken from the platform
+	.name = "printf"
 
-Tom Rix (1):
-      PM: sleep: remove unreachable break
+The fact that it is kunit-test should be clear from the context.
 
-Ulf Hansson (7):
-      MAINTAINERS: Add section for cpuidle-psci PM domain
-      PM: domains: Add support for PM domain on/off notifiers for genpd
-      PM: AVS: rockchip-io: Move the driver to the rockchip specific drivers
-      PM: AVS: smartreflex Move driver to soc specific drivers
-      PM: domains: Fix build error for genpd notifiers
-      PM: AVS: qcom-cpr: Move the driver to the qcom specific drivers
-      PM: AVS: Drop the avs directory and the corresponding Kconfig
+> +	.test_cases = printf_test_cases,
+> +};
+> +
+> +kunit_test_suite(printf_test_suite);
+> +
 
-Viresh Kumar (1):
-      cpufreq: Improve code around unlisted freq check
-
-Wei Huang (1):
-      acpi-cpufreq: Honor _PSD table setting on new AMD CPUs
-
-Wei Wang (1):
-      cpufreq: schedutil: restore cached freq when next_f is not changed
-
-Zhang Rui (2):
-      powercap/intel_rapl: Fix domain detection
-      powercap/intel_rapl: enumerate Psys RAPL domain together with
-package RAPL domain
-
----------------
-
- MAINTAINERS                                        |  14 +-
- arch/arm/plat-omap/Kconfig                         |   2 +-
- drivers/base/power/domain.c                        | 167 +++++++++++++++++++--
- drivers/base/power/main.c                          |   1 -
- drivers/cpufreq/acpi-cpufreq.c                     |   3 +-
- drivers/cpufreq/cpufreq.c                          |  15 +-
- drivers/cpufreq/intel_pstate.c                     |  22 ++-
- drivers/idle/intel_idle.c                          |  15 +-
- drivers/power/Kconfig                              |   1 -
- drivers/power/Makefile                             |   1 -
- drivers/power/avs/Kconfig                          |  37 -----
- drivers/power/avs/Makefile                         |   4 -
- drivers/powercap/Kconfig                           |   2 +-
- drivers/powercap/intel_rapl_common.c               |  82 ++--------
- drivers/powercap/intel_rapl_msr.c                  |   5 +-
- drivers/soc/qcom/Kconfig                           |  16 ++
- drivers/soc/qcom/Makefile                          |   1 +
- drivers/{power/avs/qcom-cpr.c => soc/qcom/cpr.c}   |   0
- drivers/soc/rockchip/Kconfig                       |   8 +
- drivers/soc/rockchip/Makefile                      |   1 +
- .../rockchip/io-domain.c}                          |   0
- drivers/soc/ti/Makefile                            |   1 +
- drivers/{power/avs => soc/ti}/smartreflex.c        |   0
- include/linux/cpuidle.h                            |   5 -
- include/linux/intel_rapl.h                         |   7 +-
- include/linux/pm_domain.h                          |  24 +++
- include/linux/pm_runtime.h                         |   2 +-
- kernel/sched/cpufreq_schedutil.c                   |   5 +-
- tools/power/cpupower/Makefile                      |   2 +-
- tools/power/cpupower/debug/i386/intel_gsic.c       |   2 +-
- 30 files changed, 281 insertions(+), 164 deletions(-)
+Best Regards,
+Petr
