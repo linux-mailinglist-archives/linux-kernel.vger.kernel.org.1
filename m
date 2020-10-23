@@ -2,73 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C534D29741F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:34:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1B6452973F0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:33:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751911AbgJWQd5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:33:57 -0400
-Received: from mail.kernel.org ([198.145.29.99]:32792 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S465570AbgJWQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:33:47 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 042BA2464E;
-        Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603470827;
-        bh=smXO7tg/HPUrSgy1Z0++7ANOY+Q92oVSUkhCLjgR2y4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=EUJaR5jhGbcV+UpetekyaCly8XbU75RekMoDxhft9juGXIsv/yp5RLkYFdhWmJ8qW
-         PkxI2WPS9eohr9XNOSZ/soArJXwmymB/Ap1UGZ7mPI/GQq+LNGaRzJOpuzlZuGvxo3
-         3sgKCtY5u80y2kvwzGwyMaxousoIyyacWUKdt6is=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kW00e-002AvZ-Qn; Fri, 23 Oct 2020 18:33:44 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        "Jonathan Corbet" <corbet@lwn.net>, Borislav Petkov <bp@alien8.de>,
-        Ingo Molnar <mingo@redhat.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [PATCH v3 06/56] x86: mtrr: fix a kernel-doc markup
+        id S1750742AbgJWQdL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:33:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48868 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465280AbgJWQdL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:33:11 -0400
+Received: from mail-wr1-x441.google.com (mail-wr1-x441.google.com [IPv6:2a00:1450:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0E89DC0613CE;
+        Fri, 23 Oct 2020 09:33:11 -0700 (PDT)
+Received: by mail-wr1-x441.google.com with SMTP id b8so2704949wrn.0;
+        Fri, 23 Oct 2020 09:33:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1SwKwiPmjdYblqHqMnH6u+6pLbnCEWeJVYVaX2NJgK0=;
+        b=srQUsGDqfe66/423C2+u9gGLJT1XlWjdyzJfCqj8lAkudXLu254cXyzpFt953fyAMo
+         i2i83ugxTAgfo6UpqiqBbSzaZTc5ZBE7RvKGktXaJiC5J9bO9c2Pf7zqoxjwJHZexBHb
+         28NoB1l7WOFncscd6U54goS6YsLdVEeXjijSEop7QrtwU/nUNgJ6CnVY+hwWxAizc3J4
+         KYMtN8IdTZ2P9hYjzOsl8ZKwgjZTBFvH+8Z0VXoHyHRUKkO9UCC31JSEBhieUexlWZ/3
+         sQaZ6HYvy3e84EpFLTWCvvvvEcIzssJOeSksh+77BzZScClHCT/6rNZgG5mOTrx9vgxX
+         SOQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=1SwKwiPmjdYblqHqMnH6u+6pLbnCEWeJVYVaX2NJgK0=;
+        b=nO2gOkC/9O8XJlGxm7GQ4Jc8P7BvWp52QD/fM9tel/wLptZ26/0+c7XcoBTZ/b8v4Y
+         h8UTKaNtNXxAw6+iEj0TarDl65dGEcy0hNwYvlArFVlkQGfGcmEzDbdDWRp5oAygpafq
+         Juew/NA0PefITPIA8w+C9eEZW/1RJP7BtpTLsp2+ZVIcZe3GKNnmv9rOkZw5ce+/s2wb
+         Zo4bPiL1xVj77aP5dzx8wfU9FgMgyfC8MrkJqCmFNydDfRqM609VvI+Gi1F9uZI1Qvjj
+         ltdCT6UEsV3ciBTH7HMjkxgQBn1NR71UeB7aZ3yP4+VniBuRZ/nMpqrWVTjz09rzvF6J
+         jSbw==
+X-Gm-Message-State: AOAM533bmxcVZa6EQeuj8ztt2+2JmN79bHERVEy8jyME0Nook71/rVCJ
+        OMYAc359IRmnTqcA1QNtzOQ=
+X-Google-Smtp-Source: ABdhPJwdDHwlv1Io27fEfZSMdembBC2XKgtMA5+s5LDxo/jkPRAXRxAoiVs3AzE31+CfVeL6oejS1A==
+X-Received: by 2002:adf:a50e:: with SMTP id i14mr3549929wrb.121.1603470789653;
+        Fri, 23 Oct 2020 09:33:09 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id u15sm4334808wrm.77.2020.10.23.09.33.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:33:08 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        andy.shevchenko@gmail.com
+Subject: [PATCH v6 0/3] Add Novatek NT36xxx touchscreen driver
 Date:   Fri, 23 Oct 2020 18:32:53 +0200
-Message-Id: <2217cd4ae9e561da2825485eb97de77c65741489.1603469755.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+Message-Id: <20201023163256.96000-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-doc markup should use this format:
-	identifier - description
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- arch/x86/kernel/cpu/mtrr/mtrr.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+This patch series adds support for the Novatek NT36xxx Series' In-Cell
+touchscreen (integrated into the DriverIC).
 
-diff --git a/arch/x86/kernel/cpu/mtrr/mtrr.c b/arch/x86/kernel/cpu/mtrr/mtrr.c
-index 6a80f36b5d59..08a30c8e9431 100644
---- a/arch/x86/kernel/cpu/mtrr/mtrr.c
-+++ b/arch/x86/kernel/cpu/mtrr/mtrr.c
-@@ -813,7 +813,8 @@ void mtrr_ap_init(void)
- }
- 
- /**
-- * Save current fixed-range MTRR state of the first cpu in cpu_online_mask.
-+ * mtrr_save_state - Save current fixed-range MTRR state of the first
-+ *	cpu in cpu_online_mask.
-  */
- void mtrr_save_state(void)
- {
+This patch series has been tested against the following devices:
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
+
+Changes in v2:
+- Fixed sparse warnings from lkp kernel test robot
+
+Changes in v3 (as requested by Dmitry Torokhov):
+- Using shorthand u16/u32 (sorry for the overlook!)
+- Now using more input and touchscreen APIs
+- Fixed useless workqueue involvements
+- Removed useless locking
+- Switched reads and writes to use regmap
+- Moved header contents to nt36xxx.c
+- Fixed reset gpio handling
+- Other cleanups
+- P.S.: Thanks, Dmitry!
+
+Changes in v4:
+- Fixed regmap read length for CRC_ERR_FLAG final check
+- Fixed YAML binding, as requested by Krzysztof Kozlowski
+
+Changes in v5:
+- Replaced subsystem maintainer's name with .. mine,
+  usage of additionalProperties to unevaluatedProperties
+  and a typo fix for reset-gpios as per Rob Herring's review
+- Changed compatible string as per Krzysztof K. request
+- Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
+  in order to now reflect the driver name instead of the DT
+  compatible
+- Fixed blank line at EOF
+
+Changes in v6:
+- Removed include of_gpio.h, added mod_devicetable.h and
+  gpio/consumer.h
+- Added kerneldoc to relevant functions/enum
+- Used traditional patterns for error checking where possible
+- Documented calls to usleep/msleep
+- Using be16_to_cpu / get_unaligned_be16 where possible
+- Added helper for CRC error check on retrieved buffer
+- Decreased indentation in the CRC reboot recovery function
+- Removed instances of error code sum
+- Dropped all likely/unlikely optimization as per request
+- Removed redundant reset_gpio checks
+- Dropped of_match_ptr and ifdefs for CONFIG_OF
+
+AngeloGioacchino Del Regno (3):
+  dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
+  Input: Add Novatek NT36xxx touchscreen driver
+  dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
+    driver
+
+ .../bindings/input/touchscreen/nt36xxx.yaml   |  59 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/input/touchscreen/Kconfig             |  12 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/nt36xxx.c           | 895 ++++++++++++++++++
+ 5 files changed, 969 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+ create mode 100644 drivers/input/touchscreen/nt36xxx.c
+
 -- 
-2.26.2
+2.28.0
 
