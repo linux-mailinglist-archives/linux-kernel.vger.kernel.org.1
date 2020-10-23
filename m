@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BEBF297037
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:19:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 69A79297045
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464507AbgJWNTu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:19:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46854 "EHLO
+        id S464536AbgJWNUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:20:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S464493AbgJWNTp (ORCPT
+        with ESMTP id S372261AbgJWNUr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:19:45 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BDEA8C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:19:44 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id a7so2034601lfk.9
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:19:44 -0700 (PDT)
+        Fri, 23 Oct 2020 09:20:47 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FC3C0613CE;
+        Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id w17so1314789ilg.8;
+        Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=42/QJnTBpzJfK34Z8I/i86Pa85pWKg6cU4DTrB1R8G0=;
-        b=WsD3RCjBU2/gDCOB79XWImHCGbaDA9pH/0eqBfD4sCzHj+1JAxMaNdzaNP8k/KA9rn
-         t2pmFfbqqRunMeULfNBVr1WkuRi0qMo8o7guSHaPx80XPDOzne1yKmW22FU9Z6GlKhta
-         vBbALKwQWVLdAD/slIMWsiYhIjZrKChouZkNOrVzNh77QPW2pdNTnuSzpM5KZ/espzqa
-         gOSKt4AMn5T4zEiNt2Qpx3IDwfuDLcb4iB80CEdrUO5vuNdqAJ3HQqVeXPGtXocFBLE/
-         M/KxpyXhyN3WRwtys/GmKWqmpsEXm8pQgYwHrPHZqpbxXqhuQeaneQo2oAjB6B3UzDii
-         tH3Q==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=xeo0p2qdmsop/TDGgLs89AOUyadmvF116Tgqv/kxuwY=;
+        b=rA0a3idKXxsidmySKf+Rkby9uR/42z5EzIai/zfL40nh2Hp1baOLzQo7gW2oXp6ePA
+         DnLct+f+IP/d/4cM15oO56yQrZTPSPN5VjRHlrpu8U5v8hi1rlnZklmudQayA4HiSwAi
+         CAyx+A3fh7jqtpKrhJQDPd2G2qaaqjGmrxquAQ4+6rJddN6QenB2CeSmSYEajjHr3zAH
+         GP6qBdC5ilUJC2ygVbDU3U2gEe3WkczEO6+YQew/W8uS8n2sOvq39AjJbmXeWgMwmMR6
+         zP6eoYyCFf0QHzjnJLyIBfZo1ZDSox3835sl+fCVEXYWSIqUo04zFxpEcNok2fQZ2aiR
+         E8+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=42/QJnTBpzJfK34Z8I/i86Pa85pWKg6cU4DTrB1R8G0=;
-        b=bRywKpndYcKhAqxhnWW4DUGi2Ml3b+WRhS/cYFMaKFeYjQvUu93e3RBMpPpusdP3h0
-         aVwCra3uUJSxcocU9cPHXvTEyuYZEOb/Koi60Tdm1o3aaFu4g4N/gdD7S6BaWEDiW9wY
-         kzCg5aDJHU4dXtW/cLIGtjOBM5vKZFHAP4q8adh80Z2lUUtbxfx8ggoBB0jE2NiT9sUS
-         5lmzH2c0BKXVtDuZRNPepZFSk0EITVEJ76Si4deAP5exKbLhaFKEeLSJEslBExLZY5kT
-         8kSvmage/mg1b/Htiqog7RMaY37TJ/Zixa8zJUxKmNDP7PFcawx3o7CrGLOyxhc0tgNc
-         /VTg==
-X-Gm-Message-State: AOAM532Rjz89B+YLVF2guecPN50h/cktnLnBPa3B3AcTELntVdGCG9Sq
-        RkxrBb9k2DayDAVp/7298k7zcQ==
-X-Google-Smtp-Source: ABdhPJx1MpKQkvgHj6D1gAJ1OzdDgkZgE/Fy3vrqCzBYYCELpavWDo54R7yMHsyr6KsZbd6X0scDTQ==
-X-Received: by 2002:a19:b14:: with SMTP id 20mr867172lfl.308.1603459183251;
-        Fri, 23 Oct 2020 06:19:43 -0700 (PDT)
-Received: from eriador.lan ([188.162.64.195])
-        by smtp.gmail.com with ESMTPSA id o22sm161564ljg.122.2020.10.23.06.19.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 06:19:42 -0700 (PDT)
-From:   Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-To:     Andy Gross <agross@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Jonathan Marek <jonathan@marek.ca>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>
-Cc:     linux-arm-msm@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        devicetree@vger.kernel.org, linux-clk@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v2 5/5] clk: qcom: dispcc-sm8250: handle MMCX power domain
-Date:   Fri, 23 Oct 2020 16:19:25 +0300
-Message-Id: <20201023131925.334864-6-dmitry.baryshkov@linaro.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
-References: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=xeo0p2qdmsop/TDGgLs89AOUyadmvF116Tgqv/kxuwY=;
+        b=ZfNdl4dVpjxX96OQnSdqQEFh5djw6ZZCiNDaz2LMyxXiFHjBpi8yz7zkD//qoDKlqy
+         lHZLzH5OraNM2z5qZfMDWHW7QdMqZNcxCnuW/9nH2JK9WYir6haHlyJC2nUgzRgTktpl
+         k5vaQRkeZZllSj765KkiCDfSB63USF/UWqJltfC1asPmfxvLAujzpfrJVoCh+HTf6+DL
+         ZgpQMgOUlD11DOh5AklqouTJ898pyq7d7nUWIBsMqTCxAbNGuDyYDSwTyIBe4Ofn2DbG
+         hgRlRtTh+puyPGD1m5MEUXXzizVVglu6eLPy+5eZ4b6lZCPzXWocI61BAlJIJjekkwnU
+         6AlQ==
+X-Gm-Message-State: AOAM530vZmmTRJmLv0HZ8Fzt7dAC+7JRgQ7AaDEcB+Q6hHiYftsmjJgM
+        nTwIWJ68I4yjO/HqLZfzoa8YRvfRWh4lrSg8ydA=
+X-Google-Smtp-Source: ABdhPJwQCcuMZaG2NyGoy2d/3qKC/ZI6eB7q5tOvNNnzAZjOE5Rr6ZPQU1MCYZyj0UEzOHE6kIz0bBqP6t6tmDeCl58=
+X-Received: by 2002:a92:c213:: with SMTP id j19mr1656992ilo.205.1603459246105;
+ Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1601974764.git.syednwaris@gmail.com> <CACRpkdZcfR8Vyavpi4xM1zJab6SgapGBYqK9GR2mp-xh=LuVsw@mail.gmail.com>
+In-Reply-To: <CACRpkdZcfR8Vyavpi4xM1zJab6SgapGBYqK9GR2mp-xh=LuVsw@mail.gmail.com>
+From:   Syed Nayyar Waris <syednwaris@gmail.com>
+Date:   Fri, 23 Oct 2020 18:50:34 +0530
+Message-ID: <CACG_h5rHvWEUZSfHvF198_i+xjc_gN5ioXYniZqij0wx=3wnqQ@mail.gmail.com>
+Subject: Re: [PATCH v11 0/4] Introduce the for_each_set_clump macro
+To:     Linus Walleij <linus.walleij@linaro.org>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        William Breathitt Gray <vilhelm.gray@gmail.com>,
+        Michal Simek <michal.simek@xilinx.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Robert Richter <rrichter@marvell.com>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
+        Masahiro Yamada <yamada.masahiro@socionext.com>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        "(Exiting) Amit Kucheria" <amit.kucheria@verdurent.com>,
+        Linux-Arch <linux-arch@vger.kernel.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        Linux PM list <linux-pm@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On SM8250 MMCX power domain is required to access MMDS_GDSC registers.
-This power domain is expressed as mmcx-supply regulator property. Use
-this regulator as MDSS_GDSC supply.
+On Wed, Oct 7, 2020 at 2:09 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+>
+> On Tue, Oct 6, 2020 at 11:20 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+>
+> > Since this patchset primarily affects GPIO drivers, would you like
+> > to pick it up through your GPIO tree?
+>
+> Definitely will, once we are finished!
+>
+> I see Andy still has comments and we need more iterations.
+> That is fine, because we are not in any hurry. Just keep posting
+> it!
+>
+> Let's merge this for v5.11 when we are finished with it.
+>
+> Yours,
+> Linus Walleij
 
-Signed-off-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
----
- drivers/clk/qcom/dispcc-sm8250.c | 1 +
- 1 file changed, 1 insertion(+)
+Hi Linus,
 
-diff --git a/drivers/clk/qcom/dispcc-sm8250.c b/drivers/clk/qcom/dispcc-sm8250.c
-index 07a98d3f882d..588575e1169d 100644
---- a/drivers/clk/qcom/dispcc-sm8250.c
-+++ b/drivers/clk/qcom/dispcc-sm8250.c
-@@ -963,6 +963,7 @@ static struct gdsc mdss_gdsc = {
- 	},
- 	.pwrsts = PWRSTS_OFF_ON,
- 	.flags = HW_CTRL,
-+	.supply = "mmcx",
- };
- 
- static struct clk_regmap *disp_cc_sm8250_clocks[] = {
--- 
-2.28.0
+Just thought of giving an update. The V-12 revision of the patchset
+has been submitted (19 Oct).
 
+Let me know if you face any questions regarding the V-12 patchset. Thanks !
+
+Regards
+Syed Nayyar Waris
