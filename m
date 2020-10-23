@@ -2,53 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9D8A29774B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:53:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 72AD6297755
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:53:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755096AbgJWSxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:53:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59598 "EHLO mail.kernel.org"
+        id S1755137AbgJWSxU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:53:20 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59826 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1750881AbgJWSxK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:53:10 -0400
-Subject: Re: [GIT PULL] vhost,vdpa,virtio: cleanups, fixes
+        id S1755124AbgJWSxS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:53:18 -0400
+Subject: Re: [GIT PULL] More arm64 updates for -rc1
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603479190;
-        bh=Fut4z9JGmD3maTcbN0fyqQYAM6FFJ60UFXb6vsO1lrQ=;
+        s=default; t=1603479198;
+        bh=wyQOfmcmzLnzDsDrpiUfI+TKiJQTY9lGY8lMrooXQB4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=1rYV7y8L4fqyq9/Y6Bnv1MRUN5CH9C1NVdDlnXKwc+pHbTGwO+qs9nuzXdqbcqgQ2
-         iK879U4YmweY6ZAB3WKs5YSBOBm357iHtVfUFwj6qAaBElopHUrBpO3aA07Cyr9mpu
-         +ORWDuaAJduX+3FjpxGUBUrHT/szHvvNtSoosSfs=
+        b=gWy+SbCa/MNxV/jNskBeDzgUoinD71KboGHJqSI9RGnfClMpL9A2zYvNc/V1Z3rYt
+         519dZQzktzNc9r7PPH+ZiDtSla9UO83VpIhBk9kAyVLv8tteexNi3By6W97W3UEvAA
+         XQ8QsP02mRD23VVhWVQtwR4yH1UpULRvJrGya/k4=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201023113832-mutt-send-email-mst@kernel.org>
-References: <20201023113832-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-List-Id: Linux virtualization <virtualization.lists.linux-foundation.org>
-X-PR-Tracked-Message-Id: <20201023113832-mutt-send-email-mst@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-X-PR-Tracked-Commit-Id: 88a0d60c6445f315fbcfff3db792021bb3a67b28
+In-Reply-To: <20201022161948.GA19780@willie-the-truck>
+References: <20201022161948.GA19780@willie-the-truck>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201022161948.GA19780@willie-the-truck>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
+X-PR-Tracked-Commit-Id: 66dd3474702aa98d5844367e1577cdad78ef7c65
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 9313f8026328d0309d093f6774be4b8f5340c0e5
-Message-Id: <160347919010.2166.1997610625454370758.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Oct 2020 18:53:10 +0000
-To:     "Michael S. Tsirkin" <mst@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        pankaj.gupta.linux@gmail.com, pmorel@linux.ibm.com,
-        kvm@vger.kernel.org, netdev@vger.kernel.org, mst@redhat.com,
-        linux-kernel@vger.kernel.org, rikard.falkeborn@gmail.com,
-        virtualization@lists.linux-foundation.org, li.wang@windriver.com,
-        borntraeger@de.ibm.com, stable@vger.kernel.org,
-        tiantao6@hisilicon.com, elic@nvidia.com, lingshan.zhu@intel.com
+X-PR-Merge-Commit-Id: 032c7ed958174957a4d6eac61806f66e1123d815
+Message-Id: <160347919799.2166.12198363463857720670.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Oct 2020 18:53:17 +0000
+To:     Will Deacon <will@kernel.org>
+Cc:     torvalds@linux-foundation.org, catalin.marinas@arm.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        kernel-team@android.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Oct 2020 11:38:32 -0400:
+The pull request you sent on Thu, 22 Oct 2020 17:19:48 +0100:
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+> git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git tags/arm64-upstream
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/9313f8026328d0309d093f6774be4b8f5340c0e5
+https://git.kernel.org/torvalds/c/032c7ed958174957a4d6eac61806f66e1123d815
 
 Thank you!
 
