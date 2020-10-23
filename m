@@ -2,192 +2,146 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 32F6F29682B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:47:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C09D229682C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:48:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374121AbgJWArM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 20:47:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44088 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S369263AbgJWArL (ORCPT
+        id S374111AbgJWAsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:48:11 -0400
+Received: from mx0b-00082601.pphosted.com ([67.231.153.30]:26064 "EHLO
+        mx0b-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S369352AbgJWAsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 20:47:11 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 16A1AC0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:47:10 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id t25so5010631ejd.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:47:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=g1fKv4uIFw00jGTFevCKZ2EUtvU5bvfHONMclCNXS0g=;
-        b=INwr97+4ebmw4zMtRmFnFz7YRPoYX7r8pZ9kiBBrF1ljXHhvOlMeQd/QH5/KUevV4I
-         yAZWPf1Hr0YD9NUIi4hptrBfwvXwj+cHBq+sSedcAFYkFeFsZSRfiRXrFDkMpSMUpUGG
-         v0HIHqE07ynn+18J1ZCzEus/Qc+mvOlFnJL/PpJTz34QuTAGje4p+ewVRHaze3i0Zdu0
-         +OPhRbDVzWUIFLF6+H76P/2o5HNE+2FjQwoRETq72MmNkvnAuxkpOvm1vCMfkpFDY9B3
-         y3v6YEU4kHf7ZRdFavxufN3RQFNoGbny2PAPW39Vx4zo1kp+NCqSg1wVuBJUC12Yn5Tb
-         mvcA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=g1fKv4uIFw00jGTFevCKZ2EUtvU5bvfHONMclCNXS0g=;
-        b=aFEKpEyjumfvy48flG+zwhKgV4fe+ToSQm4+jLwRRkhc5NEL+evFBK+JcWtLXbzicd
-         4FITipz+o3K8bRLCeRk0vHNvKtyxQDiGNbuxmouxGR7PkesuM2yMFHYiQPijixN5OCs3
-         P7Q0QFpOenzASJ4v8STaGmRfACCDH1rxYnYsa2lmoXJuWbMnZLSfdkeh4MQpiXNPDuYg
-         own6ysPXcWodRrESFvMxGmnLJi2+Fq78eGSgfSweCX73JTIfmM7Hz4BsaMtATS1RKt0i
-         xZ6X6y5cnrT2tN3RFWpiVoScNgTU9gmlDOiJMuiiTSntepEAZcS6onPiXBCfpbCBePsN
-         1/FA==
-X-Gm-Message-State: AOAM530rZmeqYUoSxBgtXhWiIsrxXyCAGtWblHml7vuHscKLE4ByJ1dx
-        crGiajEkbCInDFNALyyizND41I8tOjnd1fdnpVqy
-X-Google-Smtp-Source: ABdhPJyCbWQwG6rJ6tXOYTck4ENVi87u45X4HoUd/41upX3LNVKE6gy6QZaZ/OFp/yZvHeqMP9g78zkH2Y2z2MsE/uM=
-X-Received: by 2002:a17:906:33c7:: with SMTP id w7mr4591813eja.398.1603414028542;
- Thu, 22 Oct 2020 17:47:08 -0700 (PDT)
+        Thu, 22 Oct 2020 20:48:11 -0400
+Received: from pps.filterd (m0109331.ppops.net [127.0.0.1])
+        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09N0hDIt026836;
+        Thu, 22 Oct 2020 17:47:52 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=facebook; bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
+ b=OMxFuue1WZdTre33Dn5FPHMC6oI7NBkAIZioIPupz7AWMzaZ93A9uqsFB9KcVCe0a25n
+ GmhgU17Ry8pL1MG7gQI6QwAF+ziLmCDtLvqzViukVAq30oXEC4dg5fwtRaqva2QjC1Og
+ weENXG7flwIUmAyrZkldmA35SO3usozRh6U= 
+Received: from maileast.thefacebook.com ([163.114.130.16])
+        by mx0a-00082601.pphosted.com with ESMTP id 34bfu71pj1-7
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+        Thu, 22 Oct 2020 17:47:51 -0700
+Received: from NAM02-CY1-obe.outbound.protection.outlook.com (100.104.31.183)
+ by o365-in.thefacebook.com (100.104.35.173) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1979.3; Thu, 22 Oct 2020 17:47:47 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HpW/34w7q/2GNUifGC97JgGSU5f6CxWyHOc0KiLcAUJt2WwBUeWDVMrjZurX0u8nHbB+oRCy7rRqrcjZvYNn44ABenRAhObfKoEv4Xm+fhBn0MbXDL2sEmh8khVVzik4HdwOaH9n60QSt+b5WIpk/bQCiP7ib/m7nY3ot4lTemNtrBXHjzPl33CDGCaAwmrZmaGXfvGS+3K9qPrXAznhC2Ci48pINMz1cjwPP0OLn/ydzK7WnyFJbL45TTKeder9JHO+g6GPMT96yXsJTEmKcWULzlVcfeOAWGjQm8XsDcTr5+hb8k/xXbzen07O50jrv9s1a4bY/EJ6HjAYj3Qopg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
+ b=XjXK9/guA5ImBlAP1zUXV3oJABRQZYwMBp+8N00eZPPtIFPSxuGhNORB/7sXAYlY17uWcI9dPyFZQXrq2VOMG+Sco6fzGavNrH6xKluZSUTHmTU0pd3qlYQq7TMijLPJyIM7yKBjr2TZlasg7iQWwaU3dz1mLLqq0FeiaxmybOFz9ZRWmZI0Gndd1KLue7AW2KB2bIKrTfiqyIEobMDedtdWYIomgaBdPlCXUfbhxOAVaQW38842uBT0heBijWd7Agt4j/82fW+aW52a22qUU4ue0hL56nPV/ycDF1ZUBTpN+uFN5nIijakrU0LPCISqRgyv9bv/+ljZ7KMYoWXXSQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fb.com; dmarc=pass action=none header.from=fb.com; dkim=pass
+ header.d=fb.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.onmicrosoft.com;
+ s=selector2-fb-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=T+gzfg5oHh3TqNNMBW/NWc6o5peHtrCZx+0NB1sn2Uc=;
+ b=eJIW1P/9y5EniNhswCYFMHZb16smDv5rqhxTEjjjS2x0ynfSiM9VkTSbwIZSnJR7pSkXLQu7742XLPiWHGWdblUxbpVPTsn20CV4+VVEE/cEuSKpYcFZAVAZh6xzjy4HY38H8n0sGP5BOMlQ/n9XNshY3KftLY57dNMZ76PHu74=
+Authentication-Results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=fb.com;
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com (2603:10b6:a03:96::24)
+ by BY5PR15MB3683.namprd15.prod.outlook.com (2603:10b6:a03:1b3::23) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Fri, 23 Oct
+ 2020 00:47:44 +0000
+Received: from BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2]) by BYAPR15MB4136.namprd15.prod.outlook.com
+ ([fe80::d834:4987:4916:70f2%5]) with mapi id 15.20.3477.028; Fri, 23 Oct 2020
+ 00:47:43 +0000
+Date:   Thu, 22 Oct 2020 17:47:39 -0700
+From:   Roman Gushchin <guro@fb.com>
+To:     Zi Yan <ziy@nvidia.com>
+CC:     Andrew Morton <akpm@linux-foundation.org>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        <saberlily.xia@hisilicon.com>, <linux-kernel@vger.kernel.org>,
+        <linux-mm@kvack.org>, <kernel-team@fb.com>
+Subject: Re: [PATCH v1 0/2] mm: cma: introduce a non-blocking version of
+ cma_release()
+Message-ID: <20201023004739.GH300658@carbon.dhcp.thefacebook.com>
+References: <20201022225308.2927890-1-guro@fb.com>
+ <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <F8551A10-E254-44FC-B28E-9E7F8AC14B57@nvidia.com>
+X-Originating-IP: [2620:10d:c090:400::4:3243]
+X-ClientProxiedBy: MWHPR1601CA0014.namprd16.prod.outlook.com
+ (2603:10b6:300:da::24) To BYAPR15MB4136.namprd15.prod.outlook.com
+ (2603:10b6:a03:96::24)
 MIME-Version: 1.0
-References: <20201020191732.4049987-1-salyzyn@android.com> <20201020191732.4049987-2-salyzyn@android.com>
- <CAHC9VhTZitGFRCnRgLJLNUnFEhM0kp7E_51No1aam3CRf-WCpg@mail.gmail.com> <ba6516a2-0d7a-3733-f974-943d296a1c15@android.com>
-In-Reply-To: <ba6516a2-0d7a-3733-f974-943d296a1c15@android.com>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 22 Oct 2020 20:46:57 -0400
-Message-ID: <CAHC9VhRYf4gU=wmQ2o40zt9SSPHqRBst4So4P6SwwJ7KrXtvnw@mail.gmail.com>
-Subject: Re: [PATCH v17 1/4] Add flags option to get xattr method paired to __vfs_getxattr
-To:     Mark Salyzyn <salyzyn@android.com>
-Cc:     linux-kernel@vger.kernel.org, kernel-team@android.com,
-        Jan Kara <jack@suse.cz>, Jeff Layton <jlayton@kernel.org>,
-        David Sterba <dsterba@suse.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Mike Marshall <hubcap@omnibond.com>,
-        Stephen Smalley <sds@tycho.nsa.gov>,
-        linux-security-module@vger.kernel.org, selinux@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from carbon.dhcp.thefacebook.com (2620:10d:c090:400::4:3243) by MWHPR1601CA0014.namprd16.prod.outlook.com (2603:10b6:300:da::24) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.25 via Frontend Transport; Fri, 23 Oct 2020 00:47:42 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: d56e5684-7190-4822-58ec-08d876ed409b
+X-MS-TrafficTypeDiagnostic: BY5PR15MB3683:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <BY5PR15MB3683D5B43FD476E0E6EEF873BE1A0@BY5PR15MB3683.namprd15.prod.outlook.com>
+X-FB-Source: Internal
+X-MS-Oob-TLC-OOBClassifiers: OLM:9508;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: Y2fjPjPdBUAl28C80AOOTNe/cTuzVlK6mTn8+M8P/Qx/jreZCjxlbogReGhHMbS+KXL/8ejC1QWxhlgtfTLiSeoMoVHyrkdSnDGFdPED4OytOB3fuzgw67QNauTqrO3+CIIRC352LkWQyAUKJL/IgEfxWz43l2ihScJSRO6YHHExEdumHZZG8YAHnTSlC5sApuVntuDjr7fxfotyuMNgwNtpHFcHL0zpPO+xvsT6Ac5Je+mZuBWOoWbB8QA11W6CWlF388YVCTzxqda29ZoAQf5a4NX1Ghchd7KnddJl/gogMQMSFpq25scsTXEzq0AAmJdd7Ic7GmdrAinsk62AOw==
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BYAPR15MB4136.namprd15.prod.outlook.com;PTR:;CAT:NONE;SFS:(376002)(39860400002)(346002)(136003)(396003)(366004)(478600001)(83380400001)(55016002)(6916009)(8936002)(66946007)(1076003)(33656002)(8676002)(86362001)(66476007)(6666004)(2906002)(66556008)(9686003)(5660300002)(4326008)(53546011)(7696005)(16526019)(186003)(54906003)(6506007)(316002)(52116002);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData: 2qRMNXhQz4coEe1nQXNLApYUE8HUOqnuZj2cHdLluIBoChtrY0Cpyk9TvYUaN+VS12X2D1E2bM23yGCNEWq2orzgi++BAMBre6DFT9R2YW2rJOTizLUsGOnr85x5dzEisHQufK9SGeBJK1Bav7ITYLl71X/EpOb5L8rfoRNpYLfQw6EAjbDPfw9MvNxS2FObWceKILu65Kb2ttZVLjurA6YE/U6lcheKNFL6Wn4KL18J5g8EClGsZnLht2YAmm6OIg0ftcntMUWmmRP2w6SBR6cn5QIPBrUwC0lreHHFbhhyvYiyJMOD67Xcp3E2alIbF+I6Jgbhhlue6F/l0wtyxVNm5KSSxEWt5fDa44IAMrzwo6moUZuDKm0XrvBOC+2/uMsMaXxcRo3TeymzohIcYI3wiKt6ju5Ek2To178vpoNXfhIlks/pXYNkjpgwdoeO6Vttzw4fZlL22cAg4j9Bnlh3ffkwCjLw585NvtW3p7g7xYN3iV4EwhGQIbEsA5Bs+TL1Vm0bBu3XWb9URsF4Rcb87aAIZwbHTf/i8F6DxP7djjpk0OwwVmjxsDUUsybDFhrpHOJjWQMu3O9r6VRNm0jHPLEi36Eadrs9Fbj3qwJ9wFWBJJoWnp+R6n4HwBDLGMIzAooR31Ms7iqq6J83vI+DnZtKxBAirBUMgGUCE5I=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d56e5684-7190-4822-58ec-08d876ed409b
+X-MS-Exchange-CrossTenant-AuthSource: BYAPR15MB4136.namprd15.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 00:47:43.8353
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 8ae927fe-1255-47a7-a2af-5f3a069daaa2
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: KOMJmFKed7UMNsv2x0IKkB39jl1EwTT1WSphsdbC2GnFaQnLWVRzvb+ZzEB+Lelp
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR15MB3683
+X-OriginatorOrg: fb.com
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-22_17:2020-10-20,2020-10-22 signatures=0
+X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 suspectscore=1
+ adultscore=0 lowpriorityscore=0 bulkscore=0 clxscore=1015 spamscore=0
+ mlxlogscore=999 impostorscore=0 malwarescore=0 mlxscore=0
+ priorityscore=1501 phishscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.12.0-2009150000 definitions=main-2010230004
+X-FB-Internal: deliver
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 8:07 AM Mark Salyzyn <salyzyn@android.com> wrote:
-> On 10/20/20 6:17 PM, Paul Moore wrote:
-> > On Tue, Oct 20, 2020 at 3:17 PM Mark Salyzyn <salyzyn@android.com> wrote:
-> >> Add a flag option to get xattr method that could have a bit flag of
-> >> XATTR_NOSECURITY passed to it.  XATTR_NOSECURITY is generally then
-> >> set in the __vfs_getxattr path when called by security
-> >> infrastructure.
-> >>
-> >> This handles the case of a union filesystem driver that is being
-> >> requested by the security layer to report back the xattr data.
-> >>
-> >> For the use case where access is to be blocked by the security layer.
-> >>
-> >> The path then could be security(dentry) ->
-> >> __vfs_getxattr(dentry...XATTR_NOSECURITY) ->
-> >> handler->get(dentry...XATTR_NOSECURITY) ->
-> >> __vfs_getxattr(lower_dentry...XATTR_NOSECURITY) ->
-> >> lower_handler->get(lower_dentry...XATTR_NOSECURITY)
-> >> which would report back through the chain data and success as
-> >> expected, the logging security layer at the top would have the
-> >> data to determine the access permissions and report back the target
-> >> context that was blocked.
-> >>
-> >> Without the get handler flag, the path on a union filesystem would be
-> >> the errant security(dentry) -> __vfs_getxattr(dentry) ->
-> >> handler->get(dentry) -> vfs_getxattr(lower_dentry) -> nested ->
-> >> security(lower_dentry, log off) -> lower_handler->get(lower_dentry)
-> >> which would report back through the chain no data, and -EACCES.
-> >>
-> >> For selinux for both cases, this would translate to a correctly
-> >> determined blocked access. In the first case with this change a correct avc
-> >> log would be reported, in the second legacy case an incorrect avc log
-> >> would be reported against an uninitialized u:object_r:unlabeled:s0
-> >> context making the logs cosmetically useless for audit2allow.
-> >>
-> >> This patch series is inert and is the wide-spread addition of the
-> >> flags option for xattr functions, and a replacement of __vfs_getxattr
-> >> with __vfs_getxattr(...XATTR_NOSECURITY).
-> >>
-> >> Signed-off-by: Mark Salyzyn <salyzyn@android.com>
-> >> Reviewed-by: Jan Kara <jack@suse.cz>
-> >> Acked-by: Jan Kara <jack@suse.cz>
-> >> Acked-by: Jeff Layton <jlayton@kernel.org>
-> >> Acked-by: David Sterba <dsterba@suse.com>
-> >> Acked-by: Darrick J. Wong <darrick.wong@oracle.com>
-> >> Acked-by: Mike Marshall <hubcap@omnibond.com>
-> >> To: linux-fsdevel@vger.kernel.org
-> >> To: linux-unionfs@vger.kernel.org
-> >> Cc: Stephen Smalley <sds@tycho.nsa.gov>
-> >> Cc: linux-kernel@vger.kernel.org
-> >> Cc: linux-security-module@vger.kernel.org
-> >> Cc: kernel-team@android.com
-> > ...
+On Thu, Oct 22, 2020 at 07:42:45PM -0400, Zi Yan wrote:
+> On 22 Oct 2020, at 18:53, Roman Gushchin wrote:
+> 
+> > This small patchset introduces a non-blocking version of cma_release()
+> > and simplifies the code in hugetlbfs, where previously we had to
+> > temporarily drop hugetlb_lock around the cma_release() call.
 > >
-> >> <snip>
-> > [NOTE: added the SELinux list to the CC line]
->
->
-> Thanks and <ooops>
->
-> >
-> > I'm looking at this patchset in earnest for the first time and I'm a
-> > little uncertain about the need for the new XATTR_NOSECURITY flag;
-> > perhaps you can help me understand it better.  Looking over this
-> > patch, and quickly looking at the others in the series, it seems as
-> > though XATTR_NOSECURITY is basically used whenever a filesystem has to
-> > call back into the vfs layer (e.g. overlayfs, ecryptfs, etc).  Am I
-> > understanding that correctly?  If that assumption is correct, I'm not
-> > certain why the new XATTR_NOSECURITY flag is needed; why couldn't
-> > _vfs_getxattr() be used by all of the callers that need to bypass
-> > DAC/MAC with vfs_getxattr() continuing to perform the DAC/MAC checks?
-> > If for some reason _vfs_getxattr() can't be used, would it make more
-> > sense to create a new stripped/special getxattr function for use by
-> > nested filesystems?  Based on the number of revisions to this
-> > patchset, I'm sure it can't be that simple so please educate me :)
-> >
-> It is hard to please everyone :-}
->
-> Yes, calling back through the vfs layer.
->
-> I was told not to change or remove the __vfs_getxattr default behaviour,
-> but use the flag to pass through the new behavior. Security concerns
-> requiring the _key_ of the flag to be passed through rather than a
-> blanket bypass. This was also the similar security reasoning not to have
-> a special getxattr call.
->
-> [TL;DR]
->
-> history and details
->
-> When it goes down through the layers again, and into the underlying
-> filesystems, to get the getxattr, the xattributes are blocked, then the
-> selinux _context_ will not be copied into the buffer leaving the caller
-> looking at effectively u:r:unknown:s0. Well, they were blocked, so from
-> the security standpoint that part was accurate, but the evaluation of
-> the context is using the wrong rules and an (cosmetically) incorrect avc
-> report. This also poisons the cache layers that may hold on to the
-> context for future calls (+/- bugs) disturbing the future decisions (we
-> saw that in 4.14 and earlier vintage kernels without this patch, later
-> kernels appeared to clear up the cache bug).
->
-> The XATTR_NOSECURITY is used in the overlayfs driver for a substantial
-> majority of the calls for getxattr only if the data is private (ie: on
-> the stack, not returned to the caller) as simplification. A _real_
-> getxattr is performed when the data is returned to the caller. I expect
-> that subtlety will get lost in the passage of time though.
->
-> I had a global in_security flag set when selinux was requesting the
-> xattrs to evaluate security context, denied as a security risk since
-> someone could set the global flag. I had a separate special getxattr
-> function in the earlier patches, denied for security issues as well, and
-> others took issue with an additional confusing call site. I added the
-> flag parameter, and that satisfied the security concerns because the
-> value was only temporarily on the stack parameters and could not be
-> attacked to bypass xattr security. This flag passed to __vfs_getxattr
-> was also preferred from the security standpoint so that __vfs_getxattr
-> got the _key_ to bypass the xattr security checks. There was a brief
-> moment where the get_xattr and set_xattr calls shared a similar single
-> argument that pointed to a common call structure, but th as requested by
-> a few, but then denied once it was seen by stakeholders.
+> > It should help Zi Yan on his work on 1 GB THPs: splitting a gigantic
+> > THP under a memory pressure requires a cma_release() call. If it's
+> 
+> Thanks for the patch. But during 1GB THP split, we only clear
+> the bitmaps without releasing the pages. Also in cma_release_nowait(),
+> the first page in the allocated CMA region is reused to store
+> struct cma_clear_bitmap_work, but the same method cannot be used
+> during THP split, since the first page is still in-use. We might
+> need to allocate some new memory for struct cma_clear_bitmap_work,
+> which might not be successful under memory pressure. Any suggestion
+> on where to store struct cma_clear_bitmap_work when I only want to
+> clear bitmap without releasing the pages?
 
-Thanks for the background!
+It means we can't use cma_release() there either, because it does clear
+individual pages. We need to clear the cma bitmap without touching pages.
 
--- 
-paul moore
-www.paul-moore.com
+Can you handle an error there?
+
+If so, we can introduce something like int cma_schedule_bitmap_clearance(),
+which will allocate a work structure and will be able to return -ENOMEM
+in the unlikely case of error.
+
+Will it work for you?
+
+Thanks!
