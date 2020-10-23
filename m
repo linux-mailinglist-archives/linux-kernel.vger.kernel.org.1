@@ -2,99 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6139A2971C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:58:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B1B852971DB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:02:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465403AbgJWO6M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:58:12 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:40263 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461220AbgJWO6M (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:58:12 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f97so1611732otb.7;
-        Fri, 23 Oct 2020 07:58:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Sh4XGYh6HGjEIbya0JlmwandcV47fSdnDSxnvIYHkcU=;
-        b=UXu0b3AxMm8DP/6F7u0xPwQI2AcraBN0pzbkKR51CUO4nAFV89uaYnWQLMDadvkS0S
-         3OXdTjWQpIWonP6YoYwb+skWf2tyF3NFypXi9zDCShX0yUj7FkDZvytxcGwXSEdpiity
-         Q/gnOQO9gjItbC9MGKDiaHQuZs+a/J/69cbKknZ/+QjAjjQuvAgZcHg+nkzda6ARhsIK
-         fy2dQ2nu9eGuX/pej39dYI/pTF3D/n+MYjkrJdVlOv0oWP06gXSPf6wcAkvhSIhk4VY7
-         8I7KbiqrCD/E24TNfDi0bzeQ/72crCd2TIDnzZiOIDx9R+f7Dhf5WJPiqa+2kv9KD+/I
-         OK/A==
-X-Gm-Message-State: AOAM532O9REJ15uTWFxDHfnaEtD97n4FhIhNqdvf672QYzHEqhd/YgnP
-        R2VzkNFpC7y1aU+WKBnzNEpotd9vchRBL0QntIc=
-X-Google-Smtp-Source: ABdhPJwWynZevqQLElXxNd+RoaIFPGIei005wJY7JOjJGbL6bB5o7oYmvdQn9tUKdp++B0dXSF02UcHWy+GnYUcsFf0=
-X-Received: by 2002:a9d:ac9:: with SMTP id 67mr1981783otq.321.1603465091227;
- Fri, 23 Oct 2020 07:58:11 -0700 (PDT)
+        id S465507AbgJWPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:02:15 -0400
+Received: from foss.arm.com ([217.140.110.172]:54672 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S461452AbgJWPCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:02:14 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F0A2101E;
+        Fri, 23 Oct 2020 08:02:14 -0700 (PDT)
+Received: from bogus (unknown [10.57.15.80])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDE973F66E;
+        Fri, 23 Oct 2020 08:02:12 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 15:58:02 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
+ performance domains
+Message-ID: <20201023145802.wzb74hbuuiphgwvi@bogus>
+References: <20201020203710.10100-1-sudeep.holla@arm.com>
+ <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
+ <20201021163021.lkqhum3xnyzt6pir@bogus>
+ <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201022061748.13730-1-claude.yen@mediatek.com>
- <20201022061748.13730-2-claude.yen@mediatek.com> <20201022070154.hqvksoj4nss3er2e@bogus>
- <1603427300.7573.6.camel@mtkswgap22> <20201023144842.zos4pvpwv4r3rv4j@bogus>
-In-Reply-To: <20201023144842.zos4pvpwv4r3rv4j@bogus>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 23 Oct 2020 16:58:00 +0200
-Message-ID: <CAJZ5v0jJHBBrxANa-+mHFE47TZfE4NKNpgp0-rq2BD=Yw7qMXg@mail.gmail.com>
-Subject: Re: [PATCH] PM / s2idle: Export s2idle_set_ops
-To:     Sudeep Holla <sudeep.holla@arm.com>
-Cc:     claude yen <claude.yen@mediatek.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 4:48 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
->
-> On Fri, Oct 23, 2020 at 12:28:20PM +0800, claude yen wrote:
-> > On Thu, 2020-10-22 at 08:02 +0100, Sudeep Holla wrote:
-> > > On Thu, Oct 22, 2020 at 02:17:48PM +0800, Claude Yen wrote:
-> > > > As suspend_set_ops is exported in commit a5e4fd8783a2
-> > > > ("PM / Suspend: Export suspend_set_ops, suspend_valid_only_mem"),
-> > > > exporting s2idle_set_ops to make kernel module setup s2idle ops too.
+On Fri, Oct 23, 2020 at 08:21:21AM -0500, Rob Herring wrote:
+> On Wed, Oct 21, 2020 at 11:30 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
+> > > On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
 > > > >
-> > > > In this way, kernel module can hook platform suspend
-> > > > functions regardless of Suspend-to-Ram(S2R) or
-> > > > Suspend-to-Idle(S2I)
+> > > > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
+> > > > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
+> > > > _allocate_opp_table() which is called from dev_pm_opp_add and it
+> > > > now propagates the error back to the caller.
 > > > >
+> > > > SCMI performance domain re-used clock bindings to keep it simple. However
+> > > > with the above mentioned change, if clock property is present in a device
+> > > > node, opps can't be added until clk_get succeeds. So in order to fix the
+> > > > issue, we can register dummy clocks which is completely ugly.
+> > > >
+> > > > Since there are no upstream users for the SCMI performance domain clock
+> > > > bindings, let us introduce separate performance domain bindings for the
+> > > > same.
+> > > >
+> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > > ---
+> > > >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
+> > > >  1 file changed, 16 insertions(+), 3 deletions(-)
+> > > >
+> > > > Hi Rob/Viresh,
+> > > >
+> > > > This is actually a fix for the regression I reported here[1].
+> > > > I am not adding fixes tag as I am targeting in the same release and
+> > > > also because it is not directly related.
+> > > >
+> > > > Regards,
+> > > > Sudeep
+> > > >
+> > > > [1] https://lore.kernel.org/r/20201015180555.gacdzkofpibkdn2e@bogus
+> > > >
+> > > > P.S.:/me records that this binding needs to be moved to yaml in v5.11
+> > > >
+> > > > diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > > index 55deb68230eb..0a6c1b495403 100644
+> > > > --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > > +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > > @@ -44,7 +44,7 @@ as described in the following sections. If the platform supports dedicated
+> > > >  mboxes, mbox-names and shmem shall be present in the sub-node corresponding
+> > > >  to that protocol.
+> > > >
+> > > > -Clock/Performance bindings for the clocks/OPPs based on SCMI Message Protocol
+> > > > +Clock bindings for the clocks based on SCMI Message Protocol
+> > > >  ------------------------------------------------------------
+> > > >
+> > > >  This binding uses the common clock binding[1].
+> > > > @@ -52,6 +52,19 @@ This binding uses the common clock binding[1].
+> > > >  Required properties:
+> > > >  - #clock-cells : Should be 1. Contains the Clock ID value used by SCMI commands.
+> > > >
+> > > > +Performance bindings for the OPPs based on SCMI Message Protocol
+> > > > +------------------------------------------------------------
+> > > > +
+> > > > +Required properties:
+> > > > +- #perf-domain-cells: Should be 1. Contains the performance domain ID value
+> > > > +                     used by SCMI commands.
 > > >
-> > > If this is for arm64 platform, then NACK. You must use PSCI and it will
-> > > set the ops and it can't be module.
+> > > When is this not 1 (IOW, you only need this if variable)? How would it
+> > > be used outside SCMI (given it has a generic name)?
 > > >
 > >
-> > PSCI uses suspend_set_ops instead. And suspend_set_ops has been
-> > exported years ago.
+> > Ah, I thought we need this if phandle is followed by 1 or more arguments.
+> > If it is not compulsory I can drop this or make it scmi specific if we
+> > need it.
+> 
+> No, your options are fixed or variable number of cells. If this is
+> generic, then maybe it needs to be variable. If it's SCMI specific
+> then it can likely be fixed unless you can think of other information
+> you may need in the cells.
+> 
+> > > > +
+> > > > +* Property arm,scmi-perf-domain
+> > >
+> > > Yet this doesn't have a generic name. You mentioned on IRC this is
+> > > aligned with QCom, but why can't QCom use the same property here?
+> > >
 > >
-> > Suspend-to_Idle(S2I) is another suspend method supported by linux
-> > kernel. The corresponding s2idle_ops can be hooked by s2idle_set_ops
-> > by underlying platforms.  For example, S2I is now introduced into
-> > Mediatek SoC platforms. Besides, power management driver is built as
-> > kernel module.
-> >
-> > Mobile platforms are now call for kernel drivers to be kernel modules.
-> > This could help drivers easier to migrate to newer linux kernel.
-> > Ref: https://linuxplumbersconf.org/event/7/contributions/790/
-> >
->
-> I understand that. But I am interested in looking at the module you want
-> to use this and how that interacts with PSCI. If this is arm64, you must
-> use PSCI for system suspend and cpu suspend. What does this module do on
-> top of those is what I want to know. Please post that module or point
-> me if it is already present in the tree.
+> > This is SCMI firmware driven while they have hardware driven perf/freq
+> > domains. So different drivers, need to distinguish between the two.
+> 
+> So what if they are different drivers. That's *always* the case. The
+> clock provider(s) for 'clocks' is different for every SoC? I doesn't
+> matter who is the provider, it's the same information being described.
+> 
 
-Regardless, generally speaking, patches that export stuff to modules
-without an in-the-tree user needing this are not applicable to the
-mainline kernel source tree IMV.
 
-Cheers!
+More agreed, another one fresh on the list today[1]
+
+-- 
+Regards,
+Sudeep
+
+[1] https://lore.kernel.org/lkml/1603441493-18554-3-git-send-email-hector.yuan@mediatek.com
