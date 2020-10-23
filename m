@@ -2,138 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2BB57296D50
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:04:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BA963296D51
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:05:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462746AbgJWLEq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:04:46 -0400
-Received: from smtprelay0115.hostedemail.com ([216.40.44.115]:54974 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S462676AbgJWLEp (ORCPT
+        id S462676AbgJWLFg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:05:36 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54266 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462559AbgJWLFg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:04:45 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay03.hostedemail.com (Postfix) with ESMTP id C4F128B759EE;
-        Fri, 23 Oct 2020 11:04:44 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:305:355:379:599:968:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1542:1593:1594:1711:1730:1747:1777:1792:2197:2199:2393:2559:2562:2828:3138:3139:3140:3141:3142:3354:3622:3653:3865:3866:3867:3868:3870:3871:3872:3873:3874:4321:5007:6120:7901:7903:10004:10400:10848:11026:11232:11473:11658:11914:12043:12297:12438:12740:12760:12895:13439:13972:14659:14721:21080:21221:21627:30054:30070:30079:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: bag64_200105227259
-X-Filterd-Recvd-Size: 3643
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 23 Oct 2020 11:04:43 +0000 (UTC)
-Message-ID: <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
-Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle
- more patterns
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Fri, 23 Oct 2020 04:04:42 -0700
-In-Reply-To: <20201023094307.20820-1-dwaipayanray1@gmail.com>
-References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 23 Oct 2020 07:05:36 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2F496C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 04:05:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=Jnp658t1DDD6IIk2CsnZ4VQrdRxNgCykA+b+Xqnrt0c=; b=XXB/jxGXnn0cDQqUhob5WBh7gk
+        aGisOUGNcBAO0YStP4+VoVuzzKRLOnHKNmtO7lTcto+p1IyIOMRrSZJKeNzfUPMlv4rODQpxsGzQ4
+        QFaKTqe/dkibNDCO8pzihdHNI0ZiNao7Ozny4Woggre19RHl6seKoKtfMjAcAGYkrmFmBl/NckjdA
+        4ONTCM3ZjjmbUn17MmbrH/4xNGD04cuQOMd8YqSK0fRs6iifkuaNklK8+V75beXEOHp4gbnhNiydW
+        Gb4t1Ah7rTbN+w92RKm5aOUBtLu8+rptWoJQjUbfMAT6OuTIOJbL7ygpFDc+clCWRbxgjSZ7wRKa+
+        PdyerfiA==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVusw-0005Tp-2U; Fri, 23 Oct 2020 11:05:26 +0000
+Date:   Fri, 23 Oct 2020 12:05:26 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     NeilBrown <neilb@suse.de>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Daniel Jordan <daniel.m.jordan@oracle.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: [PATCH] workqueue: export apply_workqueue_attrs()
+Message-ID: <20201023110526.GB20293@infradead.org>
+References: <87blgzf5xy.fsf@notabene.neil.brown.name>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87blgzf5xy.fsf@notabene.neil.brown.name>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-23 at 15:13 +0530, Dwaipayan Ray wrote:
-> It is generally preferred that the macros from
-> include/linux/compiler_attributes.h are used, unless there
-> is a reason not to.
+On Mon, Oct 19, 2020 at 10:52:09AM +1100, NeilBrown wrote:
 > 
-> Checkpatch currently checks __attribute__ for each of
+> Lustre is a widely used cluster filesystem which is currently
+> out-of-tree, but work is underway to make it ready for upstream
+> submission.
+> 
+> Lustre needs apply_workqueue_attrs(), and for this reason that function
+> was exported in Commit 6106c0f82481 ("staging: lustre: lnet: convert
+> selftest to use workqueues").
 
-checkpatch, no need for capitalization
-
-and non-trivially:
-
-> +			my $attr_list = qr {
-> +				__alias__|
-> +				__aligned__$|
-> +				__aligned__\(.*\)|
-> +				__always_inline__|
-> +				__assume_aligned__\(.*\)|
-> +				__cold__|
-> +				__const__|
-> +				__copy__\(.*\)|
-> +				__designated_init__|
-> +				__externally_visible__|
-> +				__fallthrough__|
-> +				__gnu_inline__|
-> +				__malloc__|
-> +				__mode__\(.*\)|
-> +				__no_caller_saved_registers__|
-> +				__noclone__|
-> +				__noinline__|
-> +				__nonstring__|
-> +				__noreturn__|
-> +				__packed__|
-> +				__pure__|
-> +				__used__
-> +			}x;
-[]
-> +			my %attr_replace = (
-> +				"__alias__"			=> "__alias",
-> +				"__aligned__"		=> "__aligned_largest",
-> +				"__aligned__("		=> "__aligned",
-> +				"__always_inline__" 	=> "__always_inline",
-> +				"__assume_aligned__("	=> "__assume_aligned",
-> +				"__cold__"			=> "__cold",
-> +				"__const__"			=> "__const",
-> +				"__copy__("			=> "__copy",
-> +				"__designated_init__"		=> "__designated_init",
-> +				"__externally_visible__"	=> "__visible",
-> +				"__fallthrough__"		=> "fallthrough",
-> +				"__gnu_inline__"		=> "__gnu_inline",
-> +				"__malloc__"		=> "__malloc",
-> +				"__mode__("			=> "__mode",
-> +				"__no_caller_saved_registers__" => "__no_caller_saved_registers",
-> +				"__noclone__"		=> "__noclone",
-> +				"__noinline__"		=> "noinline",
-> +				"__nonstring__"		=> "__nonstring",
-> +				"__noreturn__"		=> "__noreturn",
-> +				"__packed__"		=> "__packed",
-> +				"__pure__"			=> "__pure",
-> +				"__used__"			=> "__used"
-> +			);
-> +
-> +			if ($attr =~/^($attr_list)/) {
-
-I would remove the __ from the entries here.
-
-And you could check using
-
-	$line =~ /__attribute__\s*\(\s*($balanced_parens)\s*)/
-
-and check for all attributes in $1 after
-stripping the leading and trailing parens
-and any leading and trailing underscores
-from each attribute.
-
-And you only need one hash and you should 
-check for existence of the key rather than
-have multiple lists.
-
-	if (exists($attributes($attr))) {
-
-> +				my $old = $1;
-> +				if ($old =~ /^(__.+__\()(.*)\)/) {
-> +					my $new = $attr_replace{$1};
-> +					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-> +					     "$new($2) is preffered over __attribute__(($old))\n" . $herecurr);
-
-preferred
-
-> +				} else {
-> +					my $new = $attr_replace{$old};
-> +					WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-> +					     "$new is preffered over __attribute__(($old))\n" . $herecurr);
-> +				}
-> +			}
-
-
+None of this matters.  We don't export unused symbols, period.
