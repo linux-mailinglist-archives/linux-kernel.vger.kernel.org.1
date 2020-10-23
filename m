@@ -2,44 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C32402973E2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 439012973DC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:31:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751762AbgJWQbr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:31:47 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33578 "EHLO
+        id S465255AbgJWQbf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:31:35 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:20272 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1751545AbgJWQah (ORCPT
+        by vger.kernel.org with ESMTP id S1751577AbgJWQan (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:30:37 -0400
+        Fri, 23 Oct 2020 12:30:43 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603470635;
+        s=mimecast20190719; t=1603470642;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=bvBa2lKKk81VHS9Ew+tuuP4bWoHVeVZHGHp/bxf4ZPI=;
-        b=GHQGaClpoVBJ5TEQFPowxPY+iMS0LmSfzP2RfbfoGn1T/1pMHuCLLFwJAfWNS7IogY2cdh
-        iLcD/RqQaxDNnMeC32E03mHYnMhhZgrFDRs1w2y+TGlTE0ttfLWaBlGrrhJ8j3jAQqPARb
-        unL+69iIlxynA7asPG+9QqBfw6iE23U=
+        bh=vZys5VvhSQ6/2I5CVfBFXnNyeXP4aUtEsSNzlhlUY5w=;
+        b=jFuyfUfdwc7I4OLdefEkEyWzDGUPxmjM8WrxwTbLnYbA7shcYtR40p1X2OXOFF3LUXxhaq
+        ABNAM8x1SgJtDU4oNT3tsUAeNlVui6hdXQVn+Ki9P8Au41N0GmjxK6TlQUfjQI0pu5SpUs
+        s0Peqiy9wFxfzY7e3denaa09Whn6pG4=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-376-5ouCjrRtPfqk-bqDqFIQoQ-1; Fri, 23 Oct 2020 12:30:29 -0400
-X-MC-Unique: 5ouCjrRtPfqk-bqDqFIQoQ-1
+ us-mta-241-u_SGprxJP-GZpMjh6iOzbw-1; Fri, 23 Oct 2020 12:30:37 -0400
+X-MC-Unique: u_SGprxJP-GZpMjh6iOzbw-1
 Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id B70B886ABDE;
-        Fri, 23 Oct 2020 16:30:28 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 428C3E9000;
+        Fri, 23 Oct 2020 16:30:36 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 576F25D9E2;
-        Fri, 23 Oct 2020 16:30:28 +0000 (UTC)
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 64A475D9E2;
+        Fri, 23 Oct 2020 16:30:29 +0000 (UTC)
 From:   Paolo Bonzini <pbonzini@redhat.com>
 To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Cc:     bgardon@google.com
-Subject: [PATCH 07/22] kvm: x86/mmu: Allocate and free TDP MMU roots
-Date:   Fri, 23 Oct 2020 12:30:09 -0400
-Message-Id: <20201023163024.2765558-8-pbonzini@redhat.com>
+Cc:     bgardon@google.com, Peter Xu <peterx@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>
+Subject: [PATCH 09/22] KVM: Cache as_id in kvm_memory_slot
+Date:   Fri, 23 Oct 2020 12:30:11 -0400
+Message-Id: <20201023163024.2765558-10-pbonzini@redhat.com>
 In-Reply-To: <20201023163024.2765558-1-pbonzini@redhat.com>
 References: <20201023163024.2765558-1-pbonzini@redhat.com>
 MIME-Version: 1.0
@@ -49,268 +50,58 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ben Gardon <bgardon@google.com>
+From: Peter Xu <peterx@redhat.com>
 
-The TDP MMU must be able to allocate paging structure root pages and track
-the usage of those pages. Implement a similar, but separate system for root
-page allocation to that of the x86 shadow paging implementation. When
-future patches add synchronization model changes to allow for parallel
-page faults, these pages will need to be handled differently from the
-x86 shadow paging based MMU's root pages.
+Cache the address space ID just like the slot ID.  It will be used in
+order to fill in the dirty ring entries.
 
-Tested by running kvm-unit-tests and KVM selftests on an Intel Haswell
-machine. This series introduced no new failures.
-
-This series can be viewed in Gerrit at:
-	https://linux-review.googlesource.com/c/virt/kvm/kvm/+/2538
-
-Signed-off-by: Ben Gardon <bgardon@google.com>
+Suggested-by: Paolo Bonzini <pbonzini@redhat.com>
+Suggested-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Reviewed-by: Sean Christopherson <sean.j.christopherson@intel.com>
+Signed-off-by: Peter Xu <peterx@redhat.com>
+Message-Id: <20201014182700.2888246-7-bgardon@google.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- arch/x86/include/asm/kvm_host.h |   1 +
- arch/x86/kvm/mmu/mmu.c          |  24 ++++++--
- arch/x86/kvm/mmu/mmu_internal.h |  20 +++++++
- arch/x86/kvm/mmu/tdp_mmu.c      | 102 ++++++++++++++++++++++++++++++++
- arch/x86/kvm/mmu/tdp_mmu.h      |   5 ++
- 5 files changed, 146 insertions(+), 6 deletions(-)
+ include/linux/kvm_host.h | 1 +
+ virt/kvm/kvm_main.c      | 6 ++++++
+ 2 files changed, 7 insertions(+)
 
-diff --git a/arch/x86/include/asm/kvm_host.h b/arch/x86/include/asm/kvm_host.h
-index f6d47ac74a52..082684ce2d1b 100644
---- a/arch/x86/include/asm/kvm_host.h
-+++ b/arch/x86/include/asm/kvm_host.h
-@@ -1004,6 +1004,7 @@ struct kvm_arch {
- 	 * operations.
- 	 */
- 	bool tdp_mmu_enabled;
-+	struct list_head tdp_mmu_roots;
+diff --git a/include/linux/kvm_host.h b/include/linux/kvm_host.h
+index 05e3c2fb3ef7..c6f45687ba89 100644
+--- a/include/linux/kvm_host.h
++++ b/include/linux/kvm_host.h
+@@ -346,6 +346,7 @@ struct kvm_memory_slot {
+ 	unsigned long userspace_addr;
+ 	u32 flags;
+ 	short id;
++	u16 as_id;
  };
  
- struct kvm_vm_stat {
-diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-index 2afaf17284bb..017d37b19cf3 100644
---- a/arch/x86/kvm/mmu/mmu.c
-+++ b/arch/x86/kvm/mmu/mmu.c
-@@ -185,7 +185,7 @@ struct kvm_shadow_walk_iterator {
- 	     __shadow_walk_next(&(_walker), spte))
+ static inline unsigned long kvm_dirty_bitmap_bytes(struct kvm_memory_slot *memslot)
+diff --git a/virt/kvm/kvm_main.c b/virt/kvm/kvm_main.c
+index 68edd25dcb11..2e8539213125 100644
+--- a/virt/kvm/kvm_main.c
++++ b/virt/kvm/kvm_main.c
+@@ -1247,6 +1247,11 @@ static int kvm_delete_memslot(struct kvm *kvm,
  
- static struct kmem_cache *pte_list_desc_cache;
--static struct kmem_cache *mmu_page_header_cache;
-+struct kmem_cache *mmu_page_header_cache;
- static struct percpu_counter kvm_total_used_mmu_pages;
+ 	memset(&new, 0, sizeof(new));
+ 	new.id = old->id;
++	/*
++	 * This is only for debugging purpose; it should never be referenced
++	 * for a removed memslot.
++	 */
++	new.as_id = as_id;
  
- static void mmu_spte_set(u64 *sptep, u64 spte);
-@@ -3132,9 +3132,13 @@ static void mmu_free_root_page(struct kvm *kvm, hpa_t *root_hpa,
- 		return;
+ 	r = kvm_set_memslot(kvm, mem, old, &new, as_id, KVM_MR_DELETE);
+ 	if (r)
+@@ -1313,6 +1318,7 @@ int __kvm_set_memory_region(struct kvm *kvm,
+ 	if (!mem->memory_size)
+ 		return kvm_delete_memslot(kvm, mem, &old, as_id);
  
- 	sp = to_shadow_page(*root_hpa & PT64_BASE_ADDR_MASK);
--	--sp->root_count;
--	if (!sp->root_count && sp->role.invalid)
--		kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
-+
-+	if (kvm_mmu_put_root(kvm, sp)) {
-+		if (sp->tdp_mmu_page)
-+			kvm_tdp_mmu_free_root(kvm, sp);
-+		else if (sp->role.invalid)
-+			kvm_mmu_prepare_zap_page(kvm, sp, invalid_list);
-+	}
- 
- 	*root_hpa = INVALID_PAGE;
- }
-@@ -3224,8 +3228,16 @@ static int mmu_alloc_direct_roots(struct kvm_vcpu *vcpu)
- 	hpa_t root;
- 	unsigned i;
- 
--	if (shadow_root_level >= PT64_ROOT_4LEVEL) {
--		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level, true);
-+	if (vcpu->kvm->arch.tdp_mmu_enabled) {
-+		root = kvm_tdp_mmu_get_vcpu_root_hpa(vcpu);
-+
-+		if (!VALID_PAGE(root))
-+			return -ENOSPC;
-+		vcpu->arch.mmu->root_hpa = root;
-+	} else if (shadow_root_level >= PT64_ROOT_4LEVEL) {
-+		root = mmu_alloc_root(vcpu, 0, 0, shadow_root_level,
-+				      true);
-+
- 		if (!VALID_PAGE(root))
- 			return -ENOSPC;
- 		vcpu->arch.mmu->root_hpa = root;
-diff --git a/arch/x86/kvm/mmu/mmu_internal.h b/arch/x86/kvm/mmu/mmu_internal.h
-index fc72f199eaa6..6665b10288ce 100644
---- a/arch/x86/kvm/mmu/mmu_internal.h
-+++ b/arch/x86/kvm/mmu/mmu_internal.h
-@@ -55,8 +55,12 @@ struct kvm_mmu_page {
- 
- 	/* Number of writes since the last time traversal visited this page.  */
- 	atomic_t write_flooding_count;
-+
-+	bool tdp_mmu_page;
- };
- 
-+extern struct kmem_cache *mmu_page_header_cache;
-+
- static inline struct kvm_mmu_page *to_shadow_page(hpa_t shadow_page)
- {
- 	struct page *page = pfn_to_page(shadow_page >> PAGE_SHIFT);
-@@ -89,4 +93,20 @@ void kvm_mmu_gfn_allow_lpage(struct kvm_memory_slot *slot, gfn_t gfn);
- bool kvm_mmu_slot_gfn_write_protect(struct kvm *kvm,
- 				    struct kvm_memory_slot *slot, u64 gfn);
- 
-+static inline void kvm_mmu_get_root(struct kvm *kvm, struct kvm_mmu_page *sp)
-+{
-+	BUG_ON(!sp->root_count);
-+	lockdep_assert_held(&kvm->mmu_lock);
-+
-+	++sp->root_count;
-+}
-+
-+static inline bool kvm_mmu_put_root(struct kvm *kvm, struct kvm_mmu_page *sp)
-+{
-+	lockdep_assert_held(&kvm->mmu_lock);
-+	--sp->root_count;
-+
-+	return !sp->root_count;
-+}
-+
- #endif /* __KVM_X86_MMU_INTERNAL_H */
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index e567e8aa61a1..76ebb5898dd7 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -1,6 +1,9 @@
- // SPDX-License-Identifier: GPL-2.0
- 
-+#include "mmu.h"
-+#include "mmu_internal.h"
- #include "tdp_mmu.h"
-+#include "spte.h"
- 
- static bool __read_mostly tdp_mmu_enabled = false;
- 
-@@ -21,10 +24,109 @@ void kvm_mmu_init_tdp_mmu(struct kvm *kvm)
- 
- 	/* This should not be changed for the lifetime of the VM. */
- 	kvm->arch.tdp_mmu_enabled = true;
-+
-+	INIT_LIST_HEAD(&kvm->arch.tdp_mmu_roots);
- }
- 
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm)
- {
- 	if (!kvm->arch.tdp_mmu_enabled)
- 		return;
-+
-+	WARN_ON(!list_empty(&kvm->arch.tdp_mmu_roots));
-+}
-+
-+#define for_each_tdp_mmu_root(_kvm, _root)			    \
-+	list_for_each_entry(_root, &_kvm->arch.tdp_mmu_roots, link)
-+
-+bool is_tdp_mmu_root(struct kvm *kvm, hpa_t hpa)
-+{
-+	struct kvm_mmu_page *sp;
-+
-+	sp = to_shadow_page(hpa);
-+
-+	return sp->tdp_mmu_page && sp->root_count;
-+}
-+
-+void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root)
-+{
-+	lockdep_assert_held(&kvm->mmu_lock);
-+
-+	WARN_ON(root->root_count);
-+	WARN_ON(!root->tdp_mmu_page);
-+
-+	list_del(&root->link);
-+
-+	free_page((unsigned long)root->spt);
-+	kmem_cache_free(mmu_page_header_cache, root);
-+}
-+
-+static union kvm_mmu_page_role page_role_for_level(struct kvm_vcpu *vcpu,
-+						   int level)
-+{
-+	union kvm_mmu_page_role role;
-+
-+	role = vcpu->arch.mmu->mmu_role.base;
-+	role.level = level;
-+	role.direct = true;
-+	role.gpte_is_8_bytes = true;
-+	role.access = ACC_ALL;
-+
-+	return role;
-+}
-+
-+static struct kvm_mmu_page *alloc_tdp_mmu_page(struct kvm_vcpu *vcpu, gfn_t gfn,
-+					       int level)
-+{
-+	struct kvm_mmu_page *sp;
-+
-+	sp = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_page_header_cache);
-+	sp->spt = kvm_mmu_memory_cache_alloc(&vcpu->arch.mmu_shadow_page_cache);
-+	set_page_private(virt_to_page(sp->spt), (unsigned long)sp);
-+
-+	sp->role.word = page_role_for_level(vcpu, level).word;
-+	sp->gfn = gfn;
-+	sp->tdp_mmu_page = true;
-+
-+	return sp;
-+}
-+
-+static struct kvm_mmu_page *get_tdp_mmu_vcpu_root(struct kvm_vcpu *vcpu)
-+{
-+	union kvm_mmu_page_role role;
-+	struct kvm *kvm = vcpu->kvm;
-+	struct kvm_mmu_page *root;
-+
-+	role = page_role_for_level(vcpu, vcpu->arch.mmu->shadow_root_level);
-+
-+	spin_lock(&kvm->mmu_lock);
-+
-+	/* Check for an existing root before allocating a new one. */
-+	for_each_tdp_mmu_root(kvm, root) {
-+		if (root->role.word == role.word) {
-+			kvm_mmu_get_root(kvm, root);
-+			spin_unlock(&kvm->mmu_lock);
-+			return root;
-+		}
-+	}
-+
-+	root = alloc_tdp_mmu_page(vcpu, 0, vcpu->arch.mmu->shadow_root_level);
-+	root->root_count = 1;
-+
-+	list_add(&root->link, &kvm->arch.tdp_mmu_roots);
-+
-+	spin_unlock(&kvm->mmu_lock);
-+
-+	return root;
-+}
-+
-+hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu)
-+{
-+	struct kvm_mmu_page *root;
-+
-+	root = get_tdp_mmu_vcpu_root(vcpu);
-+	if (!root)
-+		return INVALID_PAGE;
-+
-+	return __pa(root->spt);
- }
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.h b/arch/x86/kvm/mmu/tdp_mmu.h
-index cd4a562a70e9..ac0ef9129442 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.h
-+++ b/arch/x86/kvm/mmu/tdp_mmu.h
-@@ -7,4 +7,9 @@
- 
- void kvm_mmu_init_tdp_mmu(struct kvm *kvm);
- void kvm_mmu_uninit_tdp_mmu(struct kvm *kvm);
-+
-+bool is_tdp_mmu_root(struct kvm *kvm, hpa_t root);
-+hpa_t kvm_tdp_mmu_get_vcpu_root_hpa(struct kvm_vcpu *vcpu);
-+void kvm_tdp_mmu_free_root(struct kvm *kvm, struct kvm_mmu_page *root);
-+
- #endif /* __KVM_X86_MMU_TDP_MMU_H */
++	new.as_id = as_id;
+ 	new.id = id;
+ 	new.base_gfn = mem->guest_phys_addr >> PAGE_SHIFT;
+ 	new.npages = mem->memory_size >> PAGE_SHIFT;
 -- 
 2.26.2
 
