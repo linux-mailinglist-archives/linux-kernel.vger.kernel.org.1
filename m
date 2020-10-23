@@ -2,251 +2,309 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68BAA2977E5
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:55:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35FC02977EB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:57:06 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755118AbgJWTye (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 15:54:34 -0400
-Received: from mail.efficios.com ([167.114.26.124]:45766 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755006AbgJWTyV (ORCPT
+        id S1755202AbgJWTzr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 15:55:47 -0400
+Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:5013 "EHLO
+        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755025AbgJWTzq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:54:21 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 6EDFC27969A;
-        Fri, 23 Oct 2020 15:54:20 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id jXavxSd7PtMQ; Fri, 23 Oct 2020 15:54:20 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 0072727979E;
-        Fri, 23 Oct 2020 15:54:20 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com 0072727979E
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603482860;
-        bh=j9UnACLjaWXUFo/av68UOdzNoWRf/HE9TVrjkJrsWRU=;
-        h=From:To:Date:Message-Id:MIME-Version;
-        b=FER/C7w270ug+KSJHcCBfyo3oaJ8nz40XK6yMAvydFSXmhZk5/rKseIWmdYqcExqc
-         j0FPC4yoUENNueuIIPRaSKl61V7H1aSFVuWaWNaXC20VEDQtW7UBJzbAYHNoiJtg2p
-         buuRbfMOpL9HwiBdPiLYmgifvfzyrAx/8uSXEhm72vNIQ2lWQkSpPf7DQP0/SWSUDZ
-         lq5wzhJQua3SZliRAyxnsueizOM5GJk7HZbjAfLAPkHZkswgJS+IkD9BjLMuceQI6K
-         9gIZbbLKji17dvAgR2jdGW6cc9AzHIPuW+UMvg7+aSuGG6Z40mW0yj2ODkkGluBWHL
-         09PZcurWVIBtQ==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id oNOK1vXrZYpn; Fri, 23 Oct 2020 15:54:19 -0400 (EDT)
-Received: from localhost.localdomain (96-127-212-112.qc.cable.ebox.net [96.127.212.112])
-        by mail.efficios.com (Postfix) with ESMTPSA id 618C027971A;
-        Fri, 23 Oct 2020 15:54:19 -0400 (EDT)
-From:   Michael Jeanson <mjeanson@efficios.com>
-To:     linux-kernel@vger.kernel.org
-Cc:     mathieu.desnoyers@efficios.com,
-        Michael Jeanson <mjeanson@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>, bpf@vger.kernel.org
-Subject: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
-Date:   Fri, 23 Oct 2020 15:53:52 -0400
-Message-Id: <20201023195352.26269-7-mjeanson@efficios.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201023195352.26269-1-mjeanson@efficios.com>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
+        Fri, 23 Oct 2020 15:55:46 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9335470000>; Fri, 23 Oct 2020 12:55:51 -0700
+Received: from [10.40.202.195] (172.20.13.39) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Fri, 23 Oct
+ 2020 19:55:37 +0000
+Subject: Re: [PATCH V2] PCI: dwc: Add support to handle prefetchable memory
+ mapping
+To:     Rob Herring <robh@kernel.org>, Jingoo Han <jingoohan1@gmail.com>,
+        "Gustavo Pimentel" <gustavo.pimentel@synopsys.com>
+CC:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        "Thierry Reding" <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        <sagar.tv@gmail.com>
+References: <20201005121351.32516-1-vidyas@nvidia.com>
+ <20201020195931.12470-1-vidyas@nvidia.com>
+ <CAL_Jsq+7caR1t=_v9Q_n43zEu9CNuiJmk0nPnvL8+S27rYhm9g@mail.gmail.com>
+ <baa80ff4-5510-5c7b-303c-454adbf88a19@nvidia.com>
+ <CAL_JsqJbxuwwWqL3c_N9Rufk4TDoOBwETiUQqiE0P+W+d0RDow@mail.gmail.com>
+From:   Vidya Sagar <vidyas@nvidia.com>
+Message-ID: <9f34db7c-6816-1301-8260-c7b667c7f835@nvidia.com>
+Date:   Sat, 24 Oct 2020 01:25:33 +0530
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <CAL_JsqJbxuwwWqL3c_N9Rufk4TDoOBwETiUQqiE0P+W+d0RDow@mail.gmail.com>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [172.20.13.39]
+X-ClientProxiedBy: HQMAIL107.nvidia.com (172.20.187.13) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603482951; bh=bX39xCvD0HYjbuzF2+O5ZmoFbeADHXn+TsD6asE/YkI=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=EMe4DxT4Gjr381/XTP1UZKSFNbr6BeVaRcPC6DW00IdXxSbLJhpvT21P+EidJda9T
+         uOtdGWYHw0T3o11C3Qhk75Uo84cQZ9nyS9tfj2O7QenSpjjaIXYiLei8UUF1VtBLLq
+         LtsK23pLwqFUZ955jXC04MpWHQYXqbS2IRjPob1XWiBastOkGp6dUMJKXLG6XK29IK
+         guQgLpVeYZfTRZM6QjwRSkLqPPmHvgCW0X4fvhTxkmk/iLBdDqWtexVba0+WEOK4xV
+         xJNsuXaz2AKoxsn46VEwPNyhugl0F9CicUKXousW4GNOliTxFLGoewktTyTNTRZb+M
+         O49i6ajZbjLJw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
 
-Considering that tracer callbacks expect RCU to be watching (for
-instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
-rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
-no point in using SRCU anymore given that rcuidle tracepoints need to
-ensure RCU is watching. Therefore, simply use sched-RCU like normal
-tracepoints for rcuidle tracepoints.
 
-Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-Cc: Michael Jeanson <mjeanson@efficios.com>
-Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Cc: Peter Zijlstra <peterz@infradead.org>
-Cc: Alexei Starovoitov <ast@kernel.org>
-Cc: Yonghong Song <yhs@fb.com>
-Cc: Paul E. McKenney <paulmck@kernel.org>
-Cc: Ingo Molnar <mingo@redhat.com>
-Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Mark Rutland <mark.rutland@arm.com>
-Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-Cc: Jiri Olsa <jolsa@redhat.com>
-Cc: Namhyung Kim <namhyung@kernel.org>
-Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-Cc: bpf@vger.kernel.org
----
- include/linux/tracepoint.h | 33 +++++++--------------------------
- kernel/tracepoint.c        | 25 +++++++++----------------
- 2 files changed, 16 insertions(+), 42 deletions(-)
+On 10/23/2020 9:07 PM, Rob Herring wrote:
+> External email: Use caution opening links or attachments
+> 
+> 
+> On Fri, Oct 23, 2020 at 2:38 AM Vidya Sagar <vidyas@nvidia.com> wrote:
+>>
+>>
+>>
+>> On 10/23/2020 12:38 AM, Rob Herring wrote:
+>>> External email: Use caution opening links or attachments
+>>>
+>>>
+>>> On Tue, Oct 20, 2020 at 2:59 PM Vidya Sagar <vidyas@nvidia.com> wrote:
+>>>>
+>>>> DWC sub-system currently doesn't differentiate between prefetchable and
+>>>> non-prefetchable memory aperture entries in the 'ranges' property and
+>>>> provides ATU mapping only for the first memory aperture entry out of all
+>>>> the entries present. This was introduced by the
+>>>> commit 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources").
+>>>> Mapping for a memory apreture is required if its CPU address and the bus
+>>>> address are different and the current mechanism works only if the memory
+>>>> aperture which needs mapping happens to be the first entry. It doesn't
+>>>> work either if the memory aperture that needs mapping is not the first
+>>>> entry or if both prefetchable and non-prefetchable apertures need mapping.
+>>>
+>>> Well that's subtle...
+>>>
+>>>> This patch fixes this issue by differentiating between prefetchable and
+>>>> non-prefetchable apertures in the 'ranges' property there by removing the
+>>>> dependency on the order in which they are specified and adds support for
+>>>> mapping prefetchable aperture using ATU region-3 if required.
+>>>
+>>> Now you don't do any iATU entry for a 1:1 memory range which is a
+>>> change for pretty much every other platform. That means we leave the
+>>> PCI transaction config to the whims of how h/w designers hooked up the
+>>> sideband signals. I guess this is how Uniphier works as it only has 1
+>>> viewport...
+>>>
+>>> I think the assignment should be in this order:
+>>> - config space
+>>> - non-prefetchable (IIRC, it's required)
+>>> - prefetchable
+>>> - i/o
+>>>
+>>> Stopping assignment and warning if you run out of viewports. Looking
+>>> at the platforms, I think that would always work. There's only
+>>> uniphier and ls1012a where we run out. Those would still behave the
+>>> same.
+>> As I see from the code this is how the current mapping is done
+>>
+>> Region-0: [Fixed] Non-Prefetchable memory mapping
+>>
+>> Region-1: [Shared] if the num of view ports <= 2
+>>           Used for I/O by default but whenever config space is accessed,
+>> it is programmed to generate config space, and once done, will program
+>> it back for I/O generation. I'm not sure how they are synchonized when
+>> two different entities are trying to access the config space as well as
+>> the I/O at the same time.  I don't see any locking mechanism (or am I
+>> missing something here??)
+> 
+> They aren't synchronized. We just get lucky that I/O and config
+> accesses aren't interleaved frequently. IMO, we should just not
+> support I/O space on those platforms. AIUI, almost everything doesn't
+> use I/O nowadays.
+> 
+>>             [Fixed] if the num of view ports > 2
+>>           Used to generate configuration space accesses
+>>
+>> Region-2: [Fixed] I/O accesses
+>>
+>> Region-3: [Fixed] Prefetchable memory mapping (This patch is adding it)
+>>
+>> I honestly think that an attempt to re-assing what region is used for
+>> what purpose should go into a different patch.
+> 
+> Normally, I'd agree for a fix. If you want to fix it in a minimal way
+> such that we just setup the last memory region instead of the first,
+> then that's fine. But to implement the review feedback, you will
+> simply be adding support for multiple memory regions. The ATU doesn't
+> care about prefetchable or not. I think it will end up being a more
+> simple implementation if you just do the I/O region last and only if
+> you have an available.
 
-diff --git a/include/linux/tracepoint.h b/include/linux/tracepoint.h
-index 0386b54cbcbb..1414b11f864b 100644
---- a/include/linux/tracepoint.h
-+++ b/include/linux/tracepoint.h
-@@ -13,7 +13,6 @@
-  */
-=20
- #include <linux/smp.h>
--#include <linux/srcu.h>
- #include <linux/errno.h>
- #include <linux/types.h>
- #include <linux/cpumask.h>
-@@ -33,8 +32,6 @@ struct trace_eval_map {
-=20
- #define TRACEPOINT_DEFAULT_PRIO	10
-=20
--extern struct srcu_struct tracepoint_srcu;
--
- extern int
- tracepoint_probe_register(struct tracepoint *tp, void *probe, void *data=
-);
- extern int
-@@ -86,7 +83,6 @@ int unregister_tracepoint_module_notifier(struct notifi=
-er_block *nb)
- static inline void tracepoint_synchronize_unregister(void)
- {
- 	synchronize_rcu_tasks_trace();
--	synchronize_srcu(&tracepoint_srcu);
- 	synchronize_rcu();
- }
- #else
-@@ -175,25 +171,13 @@ static inline struct tracepoint *tracepoint_ptr_der=
-ef(tracepoint_ptr_t *p)
- 		if (!(cond))						\
- 			return;						\
- 									\
--		/* srcu can't be used from NMI */			\
--		WARN_ON_ONCE(rcuidle && in_nmi());			\
--									\
--		if (maysleep) {						\
--			might_sleep();					\
-+		might_sleep_if(maysleep);				\
-+		if (rcuidle)						\
-+			rcu_irq_enter_irqson();				\
-+		if (maysleep)						\
- 			rcu_read_lock_trace();				\
--		} else {						\
--			/* keep srcu and sched-rcu usage consistent */	\
-+		else							\
- 			preempt_disable_notrace();			\
--		}							\
--									\
--		/*							\
--		 * For rcuidle callers, use srcu since sched-rcu	\
--		 * doesn't work from the idle path.			\
--		 */							\
--		if (rcuidle) {						\
--			__idx =3D srcu_read_lock_notrace(&tracepoint_srcu);\
--			rcu_irq_enter_irqson();				\
--		}							\
- 									\
- 		it_func_ptr =3D rcu_dereference_raw((tp)->funcs);		\
- 									\
-@@ -205,15 +189,12 @@ static inline struct tracepoint *tracepoint_ptr_der=
-ef(tracepoint_ptr_t *p)
- 			} while ((++it_func_ptr)->func);		\
- 		}							\
- 									\
--		if (rcuidle) {						\
--			rcu_irq_exit_irqson();				\
--			srcu_read_unlock_notrace(&tracepoint_srcu, __idx);\
--		}							\
--									\
- 		if (maysleep)						\
- 			rcu_read_unlock_trace();			\
- 		else							\
- 			preempt_enable_notrace();			\
-+		if (rcuidle)						\
-+			rcu_irq_exit_irqson();				\
- 	} while (0)
-=20
- #ifndef MODULE
-diff --git a/kernel/tracepoint.c b/kernel/tracepoint.c
-index 8d8e41c5d8a5..68b4e50798b1 100644
---- a/kernel/tracepoint.c
-+++ b/kernel/tracepoint.c
-@@ -18,9 +18,6 @@
- extern tracepoint_ptr_t __start___tracepoints_ptrs[];
- extern tracepoint_ptr_t __stop___tracepoints_ptrs[];
-=20
--DEFINE_SRCU(tracepoint_srcu);
--EXPORT_SYMBOL_GPL(tracepoint_srcu);
--
- /* Set to 1 to enable tracepoint debug output */
- static const int tracepoint_debug;
-=20
-@@ -65,14 +62,9 @@ static void rcu_tasks_trace_free_old_probes(struct rcu=
-_head *head)
- 	kfree(container_of(head, struct tp_probes, rcu));
- }
-=20
--static void srcu_free_old_probes(struct rcu_head *head)
--{
--	call_rcu_tasks_trace(head, rcu_tasks_trace_free_old_probes);
--}
--
- static void rcu_free_old_probes(struct rcu_head *head)
- {
--	call_srcu(&tracepoint_srcu, head, srcu_free_old_probes);
-+	call_rcu_tasks_trace(head, rcu_tasks_trace_free_old_probes);
- }
-=20
- static __init int release_early_probes(void)
-@@ -90,7 +82,7 @@ static __init int release_early_probes(void)
- 	return 0;
- }
-=20
--/* SRCU and Tasks Trace RCU are initialized at core_initcall */
-+/* Tasks Trace RCU is initialized at core_initcall */
- postcore_initcall(release_early_probes);
-=20
- static inline void release_probes(struct tracepoint_func *old)
-@@ -100,9 +92,8 @@ static inline void release_probes(struct tracepoint_fu=
-nc *old)
- 			struct tp_probes, probes[0]);
-=20
- 		/*
--		 * We can't free probes if SRCU and Tasks Trace RCU are not
--		 * initialized yet. Postpone the freeing till after both are
--		 * initialized.
-+		 * We can't free probes if Tasks Trace RCU is not initialized yet.
-+		 * Postpone the freeing till after Tasks Trace RCU is initialized.
- 		 */
- 		if (unlikely(!ok_to_free_tracepoints)) {
- 			tp_probes->rcu.next =3D early_probes;
-@@ -111,9 +102,11 @@ static inline void release_probes(struct tracepoint_=
-func *old)
- 		}
-=20
- 		/*
--		 * Tracepoint probes are protected by sched RCU, SRCU and
--		 * Tasks Trace RCU by chaining the callbacks we cover all three
--		 * cases and wait for all three grace periods.
-+		 * Tracepoint probes are protected by both sched RCU and
-+		 * Tasks Trace RCU, by calling the Tasks Trace RCU callback in
-+		 * the sched RCU callback we cover both cases. So let us chain
-+		 * the Tasks Trace RCU and sched RCU callbacks to wait for both
-+		 * grace periods.
- 		 */
- 		call_rcu(&tp_probes->rcu, rcu_free_old_probes);
- 	}
---=20
-2.25.1
+I'll surely take it up next but would really like to hear from Jingoo 
+and Gustavo if this breaks any legacy implementations. For now, I'll 
+just program the ATU irrespective of 1:1 mapping as I want to get ToT 
+working again on Tegra194.
 
+> 
+>>
+>> I agree that I'm removing configuring an iATU region if it is for 1:1
+>> memory mapping. What I heard from our HW designers is that it is the
+>> default behavior of the Synopsys IP that if the CPU access falls in the
+>> aperture owned by Synopsys IP and there is no iATU region mapped to
+>> capture and generate any specific transaction for that address, then, by
+>> default it generates a memory transaction over the PCIe bus.
+>> It is also possible that some implementors might have chosen to alter
+>> this behavior.
+> 
+> If we assume they haven't, that pretty much guarantees they did. :)
+
+Ok. I'll address it in the next version
+
+> 
+>> In any case, I can continue to have the iATU programming
+>> done irrespective of whether it is for 1:1 mapping or not.
+>>
+>>>
+>>>
+>>>>
+>>>> Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
+>>>> Link: http://patchwork.ozlabs.org/project/linux-pci/patch/20200513190855.23318-1-vidyas@nvidia.com/
+>>>>
+>>>> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+>>>> ---
+>>>> V2:
+>>>> * Rewrote commit subject and description
+>>>> * Addressed review comments from Lorenzo
+>>>>
+>>>>    .../pci/controller/dwc/pcie-designware-host.c | 42 ++++++++++++++++---
+>>>>    drivers/pci/controller/dwc/pcie-designware.c  | 12 +++---
+>>>>    drivers/pci/controller/dwc/pcie-designware.h  |  4 +-
+>>>>    3 files changed, 46 insertions(+), 12 deletions(-)
+>>>>
+>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> index db547ee6ff3a..dae6da39bb90 100644
+>>>> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+>>>> @@ -521,9 +521,42 @@ static struct pci_ops dw_pcie_ops = {
+>>>>           .write = pci_generic_config_write,
+>>>>    };
+>>>>
+>>>> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
+>>>> +                                 struct resource_entry *win)
+>>>> +{
+>>>> +       struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>> +
+>>>> +       /* Check for prefetchable memory aperture */
+>>>> +       if (win->res->flags & IORESOURCE_PREFETCH && win->offset) {
+>>>> +               /* Number of view ports must at least be 4 to enable mapping */
+>>>> +               if (pci->num_viewport < 4) {
+>>>> +                       dev_warn(pci->dev,
+>>>> +                                "Insufficient ATU regions to map Prefetchable memory\n");
+>>>> +               } else {
+>>>> +                       dw_pcie_prog_outbound_atu(pci,
+>>>> +                                                 PCIE_ATU_REGION_INDEX3,
+>>>> +                                                 PCIE_ATU_TYPE_MEM,
+>>>> +                                                 win->res->start,
+>>>> +                                                 win->res->start - win->offset,
+>>>> +                                                 resource_size(win->res));
+>>>> +               }
+>>>> +       } else if (win->offset) { /* Non-prefetchable memory aperture */
+>>>> +               if (upper_32_bits(resource_size(win->res)))
+>>>> +                       dev_warn(pci->dev,
+>>>> +                                "Memory resource size exceeds max for 32 bits\n");
+>>>
+>>> This is not designware specific. Either core code should check this or
+>>> write a DT schema to check it.
+>> Ok. I'll move it to pci_parse_request_of_pci_ranges() API. A change like
+>> below would do right?
+> 
+> Yes.
+> 
+>>
+>> diff --git a/drivers/pci/of.c b/drivers/pci/of.c
+>> index ac24cd5439a9..6d872458196c 100644
+>> --- a/drivers/pci/of.c
+>> +++ b/drivers/pci/of.c
+>> @@ -556,6 +556,11 @@ static int pci_parse_request_of_pci_ranges(struct
+>> device *dev,
+>>                           break;
+>>                   case IORESOURCE_MEM:
+>>                           res_valid |= !(res->flags & IORESOURCE_PREFETCH);
+>> +
+>> +                       if (!(res->flags & IORESOURCE_PREFETCH))
+>> +                               if (upper_32_bits(resource_size(res)))
+>> +                                       dev_warn(dev,
+>> +                                                "Memory resource size
+>> exceeds max for 32 bits\n");
+>>                           break;
+>>                   }
+>>           }
+>>
+>> I hope that is the right place for it.
+>>
+>>>
+>>>> +               dw_pcie_prog_outbound_atu(pci,
+>>>> +                                         PCIE_ATU_REGION_INDEX0,
+>>>> +                                         PCIE_ATU_TYPE_MEM,
+>>>> +                                         win->res->start,
+>>>> +                                         win->res->start - win->offset,
+>>>> +                                         resource_size(win->res));
+>>>> +       }
+>>>> +}
+>>>> +
+>>>>    void dw_pcie_setup_rc(struct pcie_port *pp)
+>>>>    {
+>>>>           u32 val, ctrl, num_ctrls;
+>>>> +       struct resource_entry *win;
+>>>>           struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>>>>
+>>>>           /*
+>>>> @@ -578,13 +611,10 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>>>>            * ATU, so we should not program the ATU here.
+>>>>            */
+>>>>           if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+>>>> -               struct resource_entry *entry =
+>>>> -                       resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+>>>> +               resource_list_for_each_entry(win, &pp->bridge->windows)
+>>>> +                       if (resource_type(win->res) == IORESOURCE_MEM)
+>>>> +                               dw_pcie_setup_mem_atu(pp, win);
+>>>>
+>>>> -               dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+>>>> -                                         PCIE_ATU_TYPE_MEM, entry->res->start,
+>>>> -                                         entry->res->start - entry->offset,
+>>>> -                                         resource_size(entry->res));
+>>>>                   if (pci->num_viewport > 2)
+>>>>                           dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+>>>>                                                     PCIE_ATU_TYPE_IO, pp->io_base,
+>>>> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+>>>> index c2dea8fc97c8..b5e438b70cd5 100644
+>>>> --- a/drivers/pci/controller/dwc/pcie-designware.c
+>>>> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+>>>> @@ -228,7 +228,7 @@ static void dw_pcie_writel_ob_unroll(struct dw_pcie *pci, u32 index, u32 reg,
+>>>>    static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
+>>>>                                                int index, int type,
+>>>>                                                u64 cpu_addr, u64 pci_addr,
+>>>> -                                            u32 size)
+>>>> +                                            u64 size)
+>>>
+>>> How was this working for you before? Looks like a different change
+>>> from what I broke.
+>> Tegra194 has a 1:1 mapping for prefetchable memory as of today. But,
+>> when it is changed to a non 1:1 mapping, we need this support.
+> 
+> It's not about a non 1:1 map, but the size. In any case, it's a
+> separate change from fixing the regression.
+
+Ok. I'm going to push this part as a separate change in the next version.
+
+> 
+> Rob
+> 
