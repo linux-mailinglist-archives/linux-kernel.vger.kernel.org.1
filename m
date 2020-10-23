@@ -2,64 +2,67 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65C0F296877
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:22:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51A0529687A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:24:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374547AbgJWCWe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:22:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58598 "EHLO
+        id S374560AbgJWCYU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:24:20 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58864 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374540AbgJWCWe (ORCPT
+        with ESMTP id S374540AbgJWCYT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:22:34 -0400
-Received: from mail-pl1-x62f.google.com (mail-pl1-x62f.google.com [IPv6:2607:f8b0:4864:20::62f])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 370E6C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:22:34 -0700 (PDT)
-Received: by mail-pl1-x62f.google.com with SMTP id t4so49296plq.13
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:22:34 -0700 (PDT)
+        Thu, 22 Oct 2020 22:24:19 -0400
+Received: from mail-pg1-x530.google.com (mail-pg1-x530.google.com [IPv6:2607:f8b0:4864:20::530])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 09352C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:24:19 -0700 (PDT)
+Received: by mail-pg1-x530.google.com with SMTP id h6so12492pgk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:24:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:from:to:cc:references:message-id:date:user-agent
+        h=subject:to:cc:references:from:message-id:date:user-agent
          :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=eRN4VvkSMjUAVDmvFO/IncAAF1JRwx57SYil1mK0hAM=;
-        b=slXWMhQxek5pnsMwGTEvDRG4YA6tDbAOYvEjfIC8RRGgXggbmO/g/RencIIRqT6PCH
-         lR2d3JcOdabY70CuW/ydgjEEgTTwRBHXnArQk/gCyp0N5WoHYZKEzWc1nrNLkB2qChD3
-         bf/qf07/zzgoveQ+AZbBQ8I2DsHCkxHDhD4uGAnMOPE/GXYIN7aev4kKIVlUzJJk0/sm
-         yKscOn+UlK4wfXhd8w3qFUPU3GF1sH2HnJcegEEFt4YrB7WDAKubaJ1uFQjqEtx+f7rG
-         ycKCnNf1Dy7LCEe+vKWIt9cuRf1ivCYf8q0Xg3QGW2JSbHFG7BMaD90RI+m4lt5wZDoX
-         H+zA==
+        bh=IilmWqQBIzdGRFEb8WDv/BGb6Zru01TJYp2UzzvimNo=;
+        b=wpeItj4YfzkY9NGX9eDHOZimPqRVq75UcGTuCiNxcwnlDWgOiW57hJ3NtX0tTfJp2E
+         x2gbYpQzowr6u+7nM+r93TWzmVJxllGDoUTgZ049kEHsNpVgR0XoNyr4ckDamD/ih83h
+         wrS82wdQoSkFPu8fwQVOA/taOU3+U89m7ITVz3gRrXAq8FpurjLUryK6+7jU8zFmVfBl
+         bOqk86u+zEi7/njiX3F6GTKjlUlx6FUlQf1ixvdQwrqtmllqDIuFudNIsYqinCpgCbTH
+         WlHaXTrHm+w7bpds8L3b4oGt1U2zNH03mToy3yfk3NWzqy8UBC2j6sYRhEksUGnNfc9Y
+         uNiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
          :user-agent:mime-version:in-reply-to:content-language
          :content-transfer-encoding;
-        bh=eRN4VvkSMjUAVDmvFO/IncAAF1JRwx57SYil1mK0hAM=;
-        b=TqwhDRycGOz3DwcKp19IGhcezp+rToh2owcrSsvfzvqL/orpg061cfMoTyEMJgiZJg
-         U/pr+12W5hwzIpvaDeqKXM01McLidTXU9SrWb1wNwFecILzVMZha87Q/2ofqu8JaI5iZ
-         PwoowqHrvKShnPLHcMxjBVz9VuUK73hHupm8qIlN+LEzoF7GWkjsU+kX2sXWLcGLVGhj
-         CIcp9KTQFOtQI8nUwYa4moZSyIe3geS2zc8N1N8IGwHLlKtA4oarYw2R9CywlQTpkDRT
-         ERN2HjzQyzObekMen3wjdC2O53VMxX6sUVypPLuQKwOmMR7zzkDvitMmzeoiFBNoqbhH
-         coMw==
-X-Gm-Message-State: AOAM533oGsEYveBYg0NHjB27aBP+gHCT52bXiSiPKpVdyD3FkwgA+hSp
-        ZiHalP9hKSMR+0mIY/m2sEJbn1h+LDtmuA==
-X-Google-Smtp-Source: ABdhPJzgfYFUQi8ELACtuNjezZ830A5139WU+lqteVcVKP9/8bjfccP89Stp1zFoRmnIZEw68D1vYg==
-X-Received: by 2002:a17:902:708a:b029:d4:cf7c:6c59 with SMTP id z10-20020a170902708ab02900d4cf7c6c59mr83549plk.52.1603419753508;
-        Thu, 22 Oct 2020 19:22:33 -0700 (PDT)
+        bh=IilmWqQBIzdGRFEb8WDv/BGb6Zru01TJYp2UzzvimNo=;
+        b=G3jWe6Wre7v90bTyJSwCIgxp8W4zfOqkv2gD3RUlLtjAY4vk/3zsIjIoNSs2eAZils
+         /hyVYRHQT5IKhDy+u0WLXqKqsfSi6rFZhYepW0a9PXIorXssMxKagbVE2pJh9AQA1ImM
+         9FqWeDRLTS4r0ctppAHDeuBO7aAOMQp5/aNMCVNAF1N479sOVanmOMUfYV2NNC/PnRSv
+         dWdXUO7lf8MKZ75i/Z3hJLyEDjBTFlaLU3Fqi4EEHlDJSXOmdPOLLy273mPQlOQXbLxX
+         v5Uzrl7Er4fptf8NAIMGYZn+EKHjB4uvkIdAOXO2n7nWFNfUgCIMtqwmKH6COtSKAqr0
+         xXYA==
+X-Gm-Message-State: AOAM533oNBE+8oJpH3CKyZ0V3o6ruLoVUHlHWB+xiDJgBLHvZo87yRC+
+        OLn/Voo2febzuE+5oDrgkVbIRg==
+X-Google-Smtp-Source: ABdhPJzA5EZBSeUdXLjtYYke6gTJ/cVfed1VsTekaPVYNDWK1FLHOCtzWYTzE2/HpeO13h227ZcwHA==
+X-Received: by 2002:a62:a10a:0:b029:154:fd62:ba90 with SMTP id b10-20020a62a10a0000b0290154fd62ba90mr10722pff.62.1603419858432;
+        Thu, 22 Oct 2020 19:24:18 -0700 (PDT)
 Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id il17sm138073pjb.39.2020.10.22.19.22.32
+        by smtp.gmail.com with ESMTPSA id g85sm82708pfb.4.2020.10.22.19.24.17
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 22 Oct 2020 19:22:32 -0700 (PDT)
-Subject: Re: [PATCHSET v6] Add support for TIF_NOTIFY_SIGNAL
+        Thu, 22 Oct 2020 19:24:17 -0700 (PDT)
+Subject: Re: Question on io-wq
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Zhang Qiang <qiang.zhang@windriver.com>, viro@zeniv.linux.org.uk,
+        io-uring@vger.kernel.org, Pavel Begunkov <asml.silence@gmail.com>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <98c41fba-87fe-b08d-2c8c-da404f91ef31@windriver.com>
+ <20201023020514.2230-1-hdanton@sina.com>
 From:   Jens Axboe <axboe@kernel.dk>
-To:     linux-kernel@vger.kernel.org, io-uring@vger.kernel.org
-Cc:     peterz@infradead.org, oleg@redhat.com, tglx@linutronix.de
-References: <20201016154547.1573096-1-axboe@kernel.dk>
-Message-ID: <bf373428-bbc2-be66-db6b-0fa6352fa4ef@kernel.dk>
-Date:   Thu, 22 Oct 2020 20:22:31 -0600
+Message-ID: <e61d3c07-7db0-28d8-03a0-cae13698a634@kernel.dk>
+Date:   Thu, 22 Oct 2020 20:24:16 -0600
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.10.0
 MIME-Version: 1.0
-In-Reply-To: <20201016154547.1573096-1-axboe@kernel.dk>
+In-Reply-To: <20201023020514.2230-1-hdanton@sina.com>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
@@ -67,25 +70,38 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/16/20 9:45 AM, Jens Axboe wrote:
-> Hi,
+On 10/22/20 8:05 PM, Hillf Danton wrote:
+> On Thu, 22 Oct 2020 08:08:09 -0600 Jens Axboe wrote:
+>> On 10/22/20 3:02 AM, Zhang,Qiang wrote:
+>>>
+>>> Hi Jens Axboe
+>>>
+>>> There are some problem in 'io_wqe_worker' thread, when the 
+>>> 'io_wqe_worker' be create and  Setting the affinity of CPUs in NUMA 
+>>> nodes, due to CPU hotplug, When the last CPU going down, the 
+>>> 'io_wqe_worker' thread will run anywhere. when the CPU in the node goes 
+>>> online again, we should restore their cpu bindings?
+>>
+>> Something like the below should help in ensuring affinities are
+>> always correct - trigger an affinity set for an online CPU event. We
+>> should not need to do it for offlining. Can you test it?
 > 
-> The goal is this patch series is to decouple TWA_SIGNAL based task_work
-> from real signals and signal delivery. The motivation is speeding up
-> TWA_SIGNAL based task_work, particularly for threaded setups where
-> ->sighand is shared across threads. See the last patch for numbers.
-> 
-> Cleanups in this series, see changelog. But the arch and cleanup
-> series that goes after this series is much simpler now that we handle
-> TIF_NOTIFY_SIGNAL generically for !CONFIG_GENERIC_ENTRY.
+> CPU affinity is intact because of nothing to do on offline, and scheduler
+> will move the stray workers on to the correct NUMA node if any CPU goes
+> online, so it's a bit hard to see what is going to be tested.
 
-Any objections to this one? I just rebased this one and the full arch
-series that sits on top for -git, but apart from that, no changes.
+Test it yourself:
 
-Thomas, would be nice to know if you're good with patch 2+3 at this
-point. Once we get outside of the merge window next week, I'll post
-the updated series since we get a few conflicts at this point, and
-would be great if you could carry this for 5.11.
+- Boot with > 1 NUMA node
+- Start an io_uring, you now get 2 workers, each affinitized to a node
+- Now offline all CPUs in one node
+- Online one or more of the CPU in that same node
+
+The end result is that the worker on the node that was offlined now
+has a mask of the other node, plus the newly added CPU.
+
+So your last statement isn't correct, which is what the original
+reporter stated.
 
 -- 
 Jens Axboe
