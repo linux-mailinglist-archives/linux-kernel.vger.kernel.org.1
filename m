@@ -2,73 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 375F3296C52
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:47:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5CDFE296C56
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:50:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461700AbgJWJrI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:47:08 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:45966 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461692AbgJWJrI (ORCPT
+        id S461718AbgJWJuE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:50:04 -0400
+Received: from mail-oi1-f194.google.com ([209.85.167.194]:35179 "EHLO
+        mail-oi1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461633AbgJWJuD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:47:08 -0400
-Received: by mail-ej1-f65.google.com with SMTP id dt13so1475496ejb.12;
-        Fri, 23 Oct 2020 02:47:07 -0700 (PDT)
+        Fri, 23 Oct 2020 05:50:03 -0400
+Received: by mail-oi1-f194.google.com with SMTP id w191so1232456oif.2;
+        Fri, 23 Oct 2020 02:50:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=4dle8MfevTYw4HxOBkbBF4RWtrsDKeoGEvEwmzDZe1U=;
-        b=cYqvbG2OxwfbzyL6TIu+8DihESTPokr03Ej8C7SOtIGQNIHaKpntQQn+XOh92NxhGw
-         7akn1sVrxrMH2EJQd01p2dubcMnbk/CdsMyOf0HHgjVtSlR335pjikwDUgI8lrmWRVau
-         yR54nZtOLhoKOGVI0FTtOVT6195ia33hhQ960cFIHx1zUfomcgoCpoUu7jesp7LqgKVi
-         IsOOAizi/Xx858+CFF6xULAlW2WReSJbDDVMVlo9KGOKFIUSim+e0roSqvwUAs0LrHyG
-         fU1aLzx5lNAGlrTI8PQZZtreUhC0XT2ceVW8g7k9H/PlxyACQU5Gsfx9gVHixHBUuaT8
-         BimQ==
-X-Gm-Message-State: AOAM533eeJGXoQYuhnb9adMI8OIVbcYZqw9SAP03tMe3SR0I5/tqQVMr
-        8ja9Q2B2AbKJr2HagZk+sJAEdjvufsQ=
-X-Google-Smtp-Source: ABdhPJxG37WM83zzqlm5SZAZ+gBfrEFGfyk/6CDh0x3CW/zL0zEdOrVHiPKspjLas4qlGPw0jmi2jg==
-X-Received: by 2002:a17:906:4705:: with SMTP id y5mr1125765ejq.112.1603446426353;
-        Fri, 23 Oct 2020 02:47:06 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id bx24sm509757ejb.51.2020.10.23.02.47.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 02:47:05 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 11:47:02 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, marex@denx.de,
-        l.stach@pengutronix.de, aford@beaconembedded.com,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        Andrey Smirnov <andrew.smirnov@gmail.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/4] soc: imx: gpcv2: add support for i.MX8MN power
- domains
-Message-ID: <20201023094702.GD42872@kozik-lap>
-References: <20201022150808.763082-1-aford173@gmail.com>
- <20201022150808.763082-3-aford173@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=PWayfL3DB1sbxczvN3HaNAmINZC8QOsTcOY5NxvPFHs=;
+        b=leGCbL9EAHtOqbX1FaB7ubGMLp9FNsb+3oPGTmpwGtEWaGK0USPUxdZIrTwaiDYAff
+         i6gW3kx9coaAt8gBG7bmby99KJqKd81cI5WleFHXBlHB+pgjrOdrQlCFD3xL6Li6sa5G
+         97daKQSRwy8GkRX55Rl0fS8eOziWtqgiZJ7a9FpZb3/yi5uH5w6YHxAQWNs6yAuH1YSo
+         og78+A0f2J2TBzODS44BPieopbd1IDjE9lVDNlHdb8skcT7YJa38ZADjWrLI9O/9TdgS
+         coJf9sub97tC+bKZNrWao/wqplIrFhsC0I6pTY7Jd3WlRqQn4vdh0Pzkr+fhH4eMX2ZU
+         WMhw==
+X-Gm-Message-State: AOAM531XhbYWPHqKn+Y3UVE36g/6+gLvAFyYSSO+7CBfZXb7L3lrxsvt
+        E90FftQzjjnYfKIdWlMEmU/ej/7UghlETyrO9Qs=
+X-Google-Smtp-Source: ABdhPJxsQNRRM12UZXsIy6k5GjvYILqHZSfNkZwtrqi1qeegB0Qg4AxMFlyjVSRH190iuvheMYjF0j8WsWbnrhS6WWI=
+X-Received: by 2002:aca:f203:: with SMTP id q3mr946795oih.148.1603446602734;
+ Fri, 23 Oct 2020 02:50:02 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201022150808.763082-3-aford173@gmail.com>
+References: <20201023075530.19295-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20201023075530.19295-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20201023075530.19295-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 23 Oct 2020 11:49:51 +0200
+Message-ID: <CAMuHMdW0d3WRwupF-ZEnMdkumwLtRAw9yCLnb4AJ3RGZGP7Hwg@mail.gmail.com>
+Subject: Re: [PATCH 1/2] arm64: dts: renesas: hihope-common: Add optee node
+To:     Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Cc:     Magnus Damm <magnus.damm@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Linux-Renesas <linux-renesas-soc@vger.kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
+        <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Prabhakar <prabhakar.csengg@gmail.com>,
+        Biju Das <biju.das.jz@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 10:08:05AM -0500, Adam Ford wrote:
-> This adds support for the power domains founds on i.MX8MN. The Nano
-> has fewer domains than the Mini, and the access to some of these domains
-> is different than that of the Mini, the Mini power domains cannot be
-> reused.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
+Hi Prabhakar,
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+On Fri, Oct 23, 2020 at 9:56 AM Lad Prabhakar
+<prabhakar.mahadev-lad.rj@bp.renesas.com> wrote:
+> Add optee device tree node to HiHope RZ/G2{HMN} boards.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Biju Das <biju.das.jz@bp.renesas.com>
 
-Best regards,
-Krzysztof
+Thanks for your patch!
+
+> --- a/arch/arm64/boot/dts/renesas/hihope-common.dtsi
+> +++ b/arch/arm64/boot/dts/renesas/hihope-common.dtsi
+> @@ -110,6 +110,13 @@
+>                 #clock-cells = <0>;
+>                 clock-frequency = <25000000>;
+>         };
+> +
+> +       firmware {
+> +               optee {
+> +                       compatible = "linaro,optee-tz";
+> +                       method = "smc";
+> +               };
+> +       };
+>  };
+
+Should this be added to the SoC-specific .dtsi instead?
+How can we test this?
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+-- 
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
