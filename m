@@ -2,99 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 92D4A296893
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:45:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 10558296894
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:45:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460249AbgJWCpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:45:25 -0400
-Received: from mail-pg1-f195.google.com ([209.85.215.195]:46021 "EHLO
-        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460237AbgJWCpY (ORCPT
+        id S374732AbgJWCpu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 22:45:50 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:50185 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374724AbgJWCpu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:45:24 -0400
-Received: by mail-pg1-f195.google.com with SMTP id 19so22279pge.12;
-        Thu, 22 Oct 2020 19:45:24 -0700 (PDT)
+        Thu, 22 Oct 2020 22:45:50 -0400
+Received: from mail-pf1-f200.google.com ([209.85.210.200])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <po-hsu.lin@canonical.com>)
+        id 1kVn5Q-0006lf-1P
+        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 02:45:48 +0000
+Received: by mail-pf1-f200.google.com with SMTP id u24so2563033pfh.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 19:45:47 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=YixKmrm30sY9o+7/rbu6eu+lq+X0S/5/adkmWCbKRHI=;
-        b=Y3RN0Q3cx95CMxF7vlqgVH60PuXL3VMD6wNa0iKVg4Z3xE6eNug55U8tTrZ8M8NByz
-         H3eYN3zPH30lW39XdbKG23KL0z+ihmc20DIhoQaT21VrunWHtw6I/zhPU4eyziMZ/VBk
-         Tb73YeEiRhMHBjneliKiGKwYL0Exz8eb4uKcXq0rWlqUFzmcsuIhCysZzI3WCJj0i/2d
-         3lvBLT+E56/0Our9v9CtcIDXYRVLG1bDRqWxY9zVVokQ8cQZH5Qm7KUi3FZj5TtAxfJT
-         Cbmxh/Y1/so3ZKG5tnqgdGG0wearjAwMidZEhQY063wDOwOCEoHV7P8ODPSwzidXOSQu
-         ksUw==
-X-Gm-Message-State: AOAM5306V/Lt5ObTomo9ForiQdxQciATKwB0G1cRX4NyTaUjPPstf2EQ
-        63XnSMTJMzE8VdI/01eHlKwD7oM4xnc=
-X-Google-Smtp-Source: ABdhPJy6oS2urB+1IPOO2f/0Tn5I1UfEaUUP8R6liojrzTu/Y8L1gjA802kf6Yt808rtB6h9iZn2mA==
-X-Received: by 2002:a63:7d44:: with SMTP id m4mr293956pgn.223.1603421123595;
-        Thu, 22 Oct 2020 19:45:23 -0700 (PDT)
-Received: from localhost ([2601:647:5b00:1161:a4cc:eef9:fbc0:2781])
-        by smtp.gmail.com with ESMTPSA id g8sm8015pjb.5.2020.10.22.19.45.22
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=w+LvmvsmtGzZ1uHzJzeUdiay07yaHYmlemmh1WTIDHI=;
+        b=Y9RgFebu5vtGHwyoO2vmDObpsMQ/MxaJpLTmeRGodwE2HIGdnYch251gcdC198oVuf
+         FsdVZB48lATYnt6KlGAqmv0TcdtONZc2Pra39YG3xHKVsuWWmTSklKV4+821Q+KZWeOd
+         KXiUqRf3MoLSvbKm8LxqMwzAlWdcIbI0LNrbRlRUpKQ6Vlo0Grfw2M+Q53KtOfHmKjQn
+         FRvbZ9mClJifiXUIOu1VRCRReSVERMfG7O+FjKJthuWvcgFecALub7JzQuc58lFvbnK/
+         QEFiTyFjJUeZlKiznKrYd3Nk1gNlZx4d2ivagkBGhGEBQkJD4G2CJyYV1caB2G3oGK8H
+         EToA==
+X-Gm-Message-State: AOAM530BYHfLv86mPuaEqpnHugfRuMJRdMWm/dqvuBJqCRsuaWGM8mKx
+        tS17saclWCqrfWtLWEcngZ7G0hTOiEzvrHgyCIm15kSqATCci6JUgYGCUv7Tm8rsoKMvOTTGxDp
+        kXBfohDfbBOo0QeUYL26mfygc2+GBMFG7EsZvWJdl
+X-Received: by 2002:aa7:93b6:0:b029:155:3b0b:d47a with SMTP id x22-20020aa793b60000b02901553b0bd47amr43916pff.47.1603421146345;
+        Thu, 22 Oct 2020 19:45:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyv5aNbWQd3UURPz7hMTf6/sNTaQY+8/+utv3JQsZSdOZBhomxuettop494BLNfghDk6NDxdA==
+X-Received: by 2002:aa7:93b6:0:b029:155:3b0b:d47a with SMTP id x22-20020aa793b60000b02901553b0bd47amr43896pff.47.1603421145874;
+        Thu, 22 Oct 2020 19:45:45 -0700 (PDT)
+Received: from Leggiero.taipei.internal (61-220-137-37.HINET-IP.hinet.net. [61.220.137.37])
+        by smtp.gmail.com with ESMTPSA id b10sm101465pfr.135.2020.10.22.19.45.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 19:45:22 -0700 (PDT)
-From:   Moritz Fischer <mdf@kernel.org>
-To:     netdev@vger.kernel.org
-Cc:     davem@davemloft.net, linux-parisc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lucyyan@google.com,
-        moritzf@google.com, James.Bottomley@hansenpartnership.com,
-        Moritz Fischer <mdf@kernel.org>
-Subject: [PATCH/RFC net v2] net: dec: tulip: de2104x: Add shutdown handler to stop NIC
-Date:   Thu, 22 Oct 2020 19:45:20 -0700
-Message-Id: <20201023024520.626132-1-mdf@kernel.org>
-X-Mailer: git-send-email 2.28.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        Thu, 22 Oct 2020 19:45:45 -0700 (PDT)
+From:   Po-Hsu Lin <po-hsu.lin@canonical.com>
+To:     linux-kernel@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+        linux-kselftest@vger.kernel.org, mpe@ellerman.id.au
+Cc:     po-hsu.lin@canonical.com, benh@kernel.crashing.org,
+        shuah@kernel.org, mbenes@suse.cz, joe.lawrence@redhat.com,
+        mathieu.desnoyers@efficios.com
+Subject: [PATCHv2] selftests/powerpc/eeh: disable kselftest timeout setting for eeh-basic
+Date:   Fri, 23 Oct 2020 10:45:39 +0800
+Message-Id: <20201023024539.9512-1-po-hsu.lin@canonical.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The driver does not implement a shutdown handler which leads to issues
-when using kexec in certain scenarios. The NIC keeps on fetching
-descriptors which gets flagged by the IOMMU with errors like this:
+The eeh-basic test got its own 60 seconds timeout (defined in commit
+414f50434aa2 "selftests/eeh: Bump EEH wait time to 60s") per breakable
+device.
 
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
+And we have discovered that the number of breakable devices varies
+on different hardware. The device recovery time ranges from 0 to 35
+seconds. In our test pool it will take about 30 seconds to run on a
+Power8 system that with 5 breakable devices, 60 seconds to run on a
+Power9 system that with 4 breakable devices.
 
-Signed-off-by: Moritz Fischer <mdf@kernel.org>
+Extend the timeout setting in the kselftest framework to 5 minutes
+to give it a chance to finish.
+
+Signed-off-by: Po-Hsu Lin <po-hsu.lin@canonical.com>
 ---
+ tools/testing/selftests/powerpc/eeh/Makefile | 2 +-
+ tools/testing/selftests/powerpc/eeh/settings | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+ create mode 100644 tools/testing/selftests/powerpc/eeh/settings
 
-Changes from v1:
-- Replace call to de_remove_one with de_shutdown() function
-  as suggested by James.
-
----
- drivers/net/ethernet/dec/tulip/de2104x.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-index f1a2da15dd0a..6de0cd6cf4ca 100644
---- a/drivers/net/ethernet/dec/tulip/de2104x.c
-+++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-@@ -2180,11 +2180,19 @@ static int de_resume (struct pci_dev *pdev)
+diff --git a/tools/testing/selftests/powerpc/eeh/Makefile b/tools/testing/selftests/powerpc/eeh/Makefile
+index b397bab..ae963eb 100644
+--- a/tools/testing/selftests/powerpc/eeh/Makefile
++++ b/tools/testing/selftests/powerpc/eeh/Makefile
+@@ -3,7 +3,7 @@ noarg:
+ 	$(MAKE) -C ../
  
- #endif /* CONFIG_PM */
+ TEST_PROGS := eeh-basic.sh
+-TEST_FILES := eeh-functions.sh
++TEST_FILES := eeh-functions.sh settings
  
-+static void de_shutdown(struct pci_dev *pdev)
-+{
-+	struct net_device *dev = pci_get_drvdata (pdev);
-+
-+	de_close(dev);
-+}
-+
- static struct pci_driver de_driver = {
- 	.name		= DRV_NAME,
- 	.id_table	= de_pci_tbl,
- 	.probe		= de_init_one,
- 	.remove		= de_remove_one,
-+	.shutdown	= de_shutdown,
- #ifdef CONFIG_PM
- 	.suspend	= de_suspend,
- 	.resume		= de_resume,
+ top_srcdir = ../../../../..
+ include ../../lib.mk
+diff --git a/tools/testing/selftests/powerpc/eeh/settings b/tools/testing/selftests/powerpc/eeh/settings
+new file mode 100644
+index 0000000..694d707
+--- /dev/null
++++ b/tools/testing/selftests/powerpc/eeh/settings
+@@ -0,0 +1 @@
++timeout=300
 -- 
-2.28.0
+2.7.4
 
