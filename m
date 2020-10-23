@@ -2,173 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE9052972D0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:47:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D9DB52972D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:48:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463639AbgJWPry (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:47:54 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41764 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463306AbgJWPrx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:47:53 -0400
-Received: from mail-pf1-x443.google.com (mail-pf1-x443.google.com [IPv6:2607:f8b0:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4581C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
-Received: by mail-pf1-x443.google.com with SMTP id h7so1662532pfn.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Euid2rOIqVxU7BCKc29LGBrOY7GyDm6FtEEpwHglGRU=;
-        b=M/GS969E9V3i09GCuC41mYN/VDUOQUKzlMSMBpISUGxrl8e0AnBOu62xTbAgpXkzbS
-         5NLXBjzluFLSNZyvQWzcBuXc9alqLSImvHEoFLme/j0k89U1z+qsRc2m0IB+PsXamJf5
-         k1wezWUJ+yz+ead4BL9mEB0rQpouYI/1056Hk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=Euid2rOIqVxU7BCKc29LGBrOY7GyDm6FtEEpwHglGRU=;
-        b=BhSeKfh+G6JekjyU7mAiMgsz+ay+nVQ5QlXjbDMwsuLZps0RL1q6y0lLkFQw6clYBL
-         TTG/gqUpA4kjunq7Cx/k+k5Vvuo9/YmTt8ooit9Xoa+AC1jp5/OO2ffRaSLcm439ATIe
-         +SMK/6H9og/RcVn/YIGplFZTD2sxxSlOvZbnvbd6XKdfMydzwTY++Mhf8cBJOqpLdnBe
-         e5TXCEjvQpC1Qx0NGzX0aSoqzc8j+DDhRqp9hqJUSEbMvAwGLL/O0Qx9BhgO6J8CtbjH
-         e0ey/D/RDpxXi3Jg70T5PSldzRItuDr1HB5Wvhb9MojOOnwF17yH3N0gou5lSwcwWlyI
-         Agkg==
-X-Gm-Message-State: AOAM533xUkmdv9t7rhRqCcHDSqzm/O22vwbniVgs9c458bgcP2ks+jb1
-        udiFnuBu0o6GoKVXa0h1MUetBQ==
-X-Google-Smtp-Source: ABdhPJzYLUg/ViEmI70rBqC4Esx7lIduLkcNso4qinU5LfKpUejh1bMzhBnu8IwRnHgAqpvsWGhV+A==
-X-Received: by 2002:a62:7cd4:0:b029:154:f9ee:320b with SMTP id x203-20020a627cd40000b0290154f9ee320bmr2955753pfc.26.1603468073137;
-        Fri, 23 Oct 2020 08:47:53 -0700 (PDT)
-Received: from smtp.gmail.com ([2620:15c:202:201:3e52:82ff:fe6c:83ab])
-        by smtp.gmail.com with ESMTPSA id t6sm2532576pfl.50.2020.10.23.08.47.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 08:47:52 -0700 (PDT)
-From:   Stephen Boyd <swboyd@chromium.org>
-To:     Will Deacon <will@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>
-Cc:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        Andre Przywara <andre.przywara@arm.com>,
-        Steven Price <steven.price@arm.com>,
-        Marc Zyngier <maz@kernel.org>, stable@vger.kernel.org
-Subject: [PATCH v3] KVM: arm64: ARM_SMCCC_ARCH_WORKAROUND_1 doesn't return SMCCC_RET_NOT_REQUIRED
-Date:   Fri, 23 Oct 2020 08:47:50 -0700
-Message-Id: <20201023154751.1973872-1-swboyd@chromium.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        id S1751100AbgJWPsG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:48:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:36506 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S463613AbgJWPsF (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:48:05 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id A17C320878;
+        Fri, 23 Oct 2020 15:48:04 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 18:48:00 +0300
+From:   Leon Romanovsky <leonro@nvidia.com>
+To:     Greg KH <gregkh@linuxfoundation.org>
+Cc:     Dave Ertman <david.m.ertman@intel.com>,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        linux-rdma@vger.kernel.org, jgg@nvidia.com, dledford@redhat.com,
+        netdev@vger.kernel.org, davem@davemloft.net, kuba@kernel.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 00/10] Auxiliary bus implementation and SOF
+ multi-client support
+Message-ID: <20201023154800.GQ2611066@unreal>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
+ <20201023064946.GP2611066@unreal>
+ <20201023065610.GA2162757@kroah.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023065610.GA2162757@kroah.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-According to the SMCCC spec[1](7.5.2 Discovery) the
-ARM_SMCCC_ARCH_WORKAROUND_1 function id only returns 0, 1, and
-SMCCC_RET_NOT_SUPPORTED.
+On Fri, Oct 23, 2020 at 08:56:10AM +0200, Greg KH wrote:
+> On Fri, Oct 23, 2020 at 09:49:46AM +0300, Leon Romanovsky wrote:
+> > On Thu, Oct 22, 2020 at 05:33:28PM -0700, Dave Ertman wrote:
+> >
+> > <...>
+> >
+> > > Dave Ertman (1):
+> > >   Add auxiliary bus support
+> >
+> > We are in merge window now and both netdev and RDMA are closed for
+> > submissions. So I'll send my mlx5 conversion patches once -rc1 will
+> > be tagged.
+> >
+> > However, It is important that this "auxiliary bus" patch will be applied
+> > to some topic branch based on Linus's -rcX. It will give us an ability
+> > to pull this patch to RDMA, VDPA and netdev subsystems at the same time.
+>
+> I will do that, but as you said, it's the middle of the merge window and
+> I can't do anything until after -rc1 is out.
 
- 0 is "workaround required and safe to call this function"
- 1 is "workaround not required but safe to call this function"
- SMCCC_RET_NOT_SUPPORTED is "might be vulnerable or might not be, who knows, I give up!"
-
-SMCCC_RET_NOT_SUPPORTED might as well mean "workaround required, except
-calling this function may not work because it isn't implemented in some
-cases". Wonderful. We map this SMC call to
-
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-For KVM hypercalls (hvc), we've implemented this function id to return
-SMCCC_RET_NOT_SUPPORTED, 0, and SMCCC_RET_NOT_REQUIRED. One of those
-isn't supposed to be there. Per the code we call
-arm64_get_spectre_v2_state() to figure out what to return for this
-feature discovery call.
-
- 0 is SPECTRE_MITIGATED
- SMCCC_RET_NOT_REQUIRED is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Let's clean this up so that KVM tells the guest this mapping:
-
- 0 is SPECTRE_MITIGATED
- 1 is SPECTRE_UNAFFECTED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-Note: SMCCC_RET_NOT_AFFECTED is 1 but isn't part of the SMCCC spec
-
-Cc: Andre Przywara <andre.przywara@arm.com>
-Cc: Steven Price <steven.price@arm.com>
-Cc: Marc Zyngier <maz@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://developer.arm.com/documentation/den0028/latest [1]
-Fixes: c118bbb52743 ("arm64: KVM: Propagate full Spectre v2 workaround state to KVM guests")
-Signed-off-by: Stephen Boyd <swboyd@chromium.org>
----
-
-I see that before commit c118bbb52743 ("arm64: KVM: Propagate full
-Spectre v2 workaround state to KVM guests") we had this mapping:
-
- 0 is SPECTRE_MITIGATED
- SMCCC_RET_NOT_SUPPORTED is SPECTRE_VULNERABLE
-
-so the return value '1' wasn't there then. Once the commit was merged we
-introduced the notion of NOT_REQUIRED here when it shouldn't have been
-introduced.
-
-Changes from v2:
- * Moved define to header file and used it
-
-Changes from v1:
- * Way longer commit text, more background (sorry)
- * Dropped proton-pack part because it was wrong
- * Rebased onto other patch accepted upstream
-
- arch/arm64/kernel/proton-pack.c | 2 --
- arch/arm64/kvm/hypercalls.c     | 2 +-
- include/linux/arm-smccc.h       | 2 ++
- 3 files changed, 3 insertions(+), 3 deletions(-)
-
-diff --git a/arch/arm64/kernel/proton-pack.c b/arch/arm64/kernel/proton-pack.c
-index 25f3c80b5ffe..c18eb7d41274 100644
---- a/arch/arm64/kernel/proton-pack.c
-+++ b/arch/arm64/kernel/proton-pack.c
-@@ -135,8 +135,6 @@ static enum mitigation_state spectre_v2_get_cpu_hw_mitigation_state(void)
- 	return SPECTRE_VULNERABLE;
- }
- 
--#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	(1)
--
- static enum mitigation_state spectre_v2_get_cpu_fw_mitigation_state(void)
- {
- 	int ret;
-diff --git a/arch/arm64/kvm/hypercalls.c b/arch/arm64/kvm/hypercalls.c
-index 9824025ccc5c..25ea4ecb6449 100644
---- a/arch/arm64/kvm/hypercalls.c
-+++ b/arch/arm64/kvm/hypercalls.c
-@@ -31,7 +31,7 @@ int kvm_hvc_call_handler(struct kvm_vcpu *vcpu)
- 				val = SMCCC_RET_SUCCESS;
- 				break;
- 			case SPECTRE_UNAFFECTED:
--				val = SMCCC_RET_NOT_REQUIRED;
-+				val = SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED;
- 				break;
- 			}
- 			break;
-diff --git a/include/linux/arm-smccc.h b/include/linux/arm-smccc.h
-index 15c706fb0a37..0e50ba3e88d7 100644
---- a/include/linux/arm-smccc.h
-+++ b/include/linux/arm-smccc.h
-@@ -86,6 +86,8 @@
- 			   ARM_SMCCC_SMC_32,				\
- 			   0, 0x7fff)
- 
-+#define SMCCC_ARCH_WORKAROUND_RET_UNAFFECTED	1
-+
- /* Paravirtualised time calls (defined by ARM DEN0057A) */
- #define ARM_SMCCC_HV_PV_TIME_FEATURES				\
- 	ARM_SMCCC_CALL_VAL(ARM_SMCCC_FAST_CALL,			\
-
-base-commit: 66dd3474702aa98d5844367e1577cdad78ef7c65
--- 
-Sent by a computer, using git, on the internet
-
+Thanks a lot.
