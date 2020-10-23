@@ -2,110 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0599C296FA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:46:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0C805296FAE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:48:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464030AbgJWMqn convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 08:46:43 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:25814 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S464010AbgJWMql (ORCPT
+        id S464050AbgJWMsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 08:48:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464042AbgJWMsR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:46:41 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-256-SaM_0Qo5N_as2A7LuQL-Wg-1; Fri, 23 Oct 2020 13:46:37 +0100
-X-MC-Unique: SaM_0Qo5N_as2A7LuQL-Wg-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Fri, 23 Oct 2020 13:46:36 +0100
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Fri, 23 Oct 2020 13:46:36 +0100
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Greg KH' <gregkh@linuxfoundation.org>,
-        David Hildenbrand <david@redhat.com>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12A=
-Date:   Fri, 23 Oct 2020 12:46:36 +0000
-Message-ID: <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
-References: <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
- <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
- <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
-In-Reply-To: <20201022135036.GA1787470@kroah.com>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Fri, 23 Oct 2020 08:48:17 -0400
+Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC36FC0613CE;
+        Fri, 23 Oct 2020 05:48:17 -0700 (PDT)
+Received: by mail-qt1-x841.google.com with SMTP id z33so751970qth.8;
+        Fri, 23 Oct 2020 05:48:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kN9kvxiNVibBZTgq0gJlnAcXQlAi8tvlS3bLfxZ/9Tg=;
+        b=iSruePsCDOSSSek8VmIdWIecZPJdKPQB8neXqqeC0RcF1jNjM1uQe/LYOBgrDFst7v
+         k5UG8O4FaKJKN9Jq7EVBEvVG38rRjFCJ0J9xaAdZQOgCfmryI2Wd16uQFD0JYjAMiMJu
+         CLyQuSW+UJkXQHG1gsguO4sAuTUi3XRwEV12KQoirWZaDJ/vLsEJOMp6pFA4Gs9aUFd9
+         M0y2qhI+FNmAKp7i1dp/JeSaZCd3FL9V/ZfYFAFI92YyaCSGP/RwUfQ1Q3bK4eVm3YI0
+         vfdYpbi9wIB3/huwm73ZW8Bgs96cH65iOqmbHKOXWsl5iVXPCoFrbSQUH6fbHfz7jInJ
+         3LbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=kN9kvxiNVibBZTgq0gJlnAcXQlAi8tvlS3bLfxZ/9Tg=;
+        b=It3EAbpb11/EDzS/2hw2x2GRi3w3rj59MNT/msyR0IdxkcV4arhPJCALZuMRUHO//g
+         sitRyy3eKCNdU5SJc7dyDWQW7MFXHQSsMHscSOIDvlS/LMC/RmJI94yZx5xjZWWstWGp
+         TdqMgZzGjWO/KzTg7+CctCl96rVTW3OuDYz3LZgqA7UsNQc2RXI6xRLApTjKKw+8EaFd
+         CAaXJEtMpaXoSFC8GcnVdkvDh85zPBqfXhnCXOoyQOaaljdrBoJvjnAstQWWhFOhHsjl
+         sOGoJNEBvOQXKJOfew8ibr9y7M0y7Cq+ZgWiKqCWTblkYzuny4RPGbDMN1nkS6UQtkOl
+         0Vnw==
+X-Gm-Message-State: AOAM533N266A3kV2RYNlrhyO/C0W7kTClidGdVBLR6bQqvL7+zC0a4fN
+        m0PUiyC5aI+AxmQI6eEFwg8=
+X-Google-Smtp-Source: ABdhPJwss66nnNh/TIoNtNpkFq5ijx+SQxOSU4m66935MInf9uh/+db78AydLcYVToxU309qomK8BQ==
+X-Received: by 2002:ac8:5bc2:: with SMTP id b2mr1951485qtb.284.1603457296761;
+        Fri, 23 Oct 2020 05:48:16 -0700 (PDT)
+Received: from pm2-ws13.praxislan02.com ([2001:470:8:67e:ba27:ebff:fee8:ce27])
+        by smtp.gmail.com with ESMTPSA id q188sm626586qka.56.2020.10.23.05.48.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 05:48:16 -0700 (PDT)
+From:   Jason Andryuk <jandryuk@gmail.com>
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     Jason Andryuk <jandryuk@gmail.com>, stable@vger.kernel.org,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] i915: Add QUIRK_EDP_CHANNEL_EQ for Dell 7200 2-in-1
+Date:   Fri, 23 Oct 2020 08:48:04 -0400
+Message-Id: <20201023124804.11457-1-jandryuk@gmail.com>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Greg KH <gregkh@linuxfoundation.org>
-> Sent: 22 October 2020 14:51
+We're seeing channel equalization "fail" consistently coming out of DPMS
+on the eDP of a Dell Latitude 7200 2-in-1.  When the display tries to
+come out of DPMS, it briefly flashes on before going dark.  This repeats
+once per second, and the system is unusable.  ssh-ing into the system,
+it also seems to be sluggish when in this state.  You have to reboot to
+get the display back.
 
-I've rammed the code into godbolt.
+In intel_dp_link_training_channel_equalization, lane 0 can get to state
+0x7 by the 3rd pattern, but lane 1 never gets further than 0x1.
+[drm] ln0_1:0x0 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x0 adj_req2_3:0x0
+[drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x44 adj_req2_3:0x0
+[drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x88 adj_req2_3:0x0
+[drm] ln0_1:0x71 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+[drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+[drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
 
-https://godbolt.org/z/9v5PPW
+Narrow fast vs. wide slow is not an option because the max clock is
+270000 and the 1920x1280 resolution requires 2x270000.
+[drm] DP link computation with lane count min/max 1/2 270000/270000 bpp
+min/max 18/24 pixel clock 164250KHz
 
-Definitely a clang bug.
+The display is functional even though lane 1 is in state 0x1, so just
+return success for channel equalization on eDP.
 
-Search for [wx]24 in the clang output.
-nr_segs comes in as w2 and the initial bound checks are done on w2.
-w24 is loaded from w2 - I don't believe this changes the high bits.
-There are no references to w24, just x24.
-So the kmalloc_array() is passed 'huge' and will fail.
-The iov_iter_init also gets the 64bit value.
+Introduce QUIRK_EDP_CHANNEL_EQ and match the DMI for a Dell Latitude
+7200 2-in-1.  This quirk allows channel equalization to succeed even
+though it failed.
 
-Note that the gcc code has a sign-extend copy of w2.
+Workaround for https://gitlab.freedesktop.org/drm/intel/-/issues/1378
 
-	David
+Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
+Cc: <stable@vger.kernel.org>
+---
+ .../drm/i915/display/intel_dp_link_training.c |  7 +++++
+ drivers/gpu/drm/i915/display/intel_quirks.c   | 30 +++++++++++++++++++
+ drivers/gpu/drm/i915/i915_drv.h               |  1 +
+ 3 files changed, 38 insertions(+)
 
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+diff --git a/drivers/gpu/drm/i915/display/intel_dp_link_training.c b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
+index a23ed7290843..2dd441a94fda 100644
+--- a/drivers/gpu/drm/i915/display/intel_dp_link_training.c
++++ b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
+@@ -375,6 +375,13 @@ intel_dp_link_training_channel_equalization(struct intel_dp *intel_dp)
+ 
+ 	intel_dp_set_idle_link_train(intel_dp);
+ 
++	if (channel_eq == false &&
++	    intel_dp_is_edp(intel_dp) &&
++	    i915->quirks & QUIRK_EDP_CHANNEL_EQ) {
++		DRM_NOTE("Forcing channel_eq success for eDP\n");
++		channel_eq = true;
++	}
++
+ 	return channel_eq;
+ 
+ }
+diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
+index 46beb155d835..b45b23680321 100644
+--- a/drivers/gpu/drm/i915/display/intel_quirks.c
++++ b/drivers/gpu/drm/i915/display/intel_quirks.c
+@@ -53,6 +53,17 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
+ 	drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
+ }
+ 
++/*
++ * Some machines (Dell Latitude 7200 2-in-1) fail channel equalization
++ * on their eDP when it is actually usable.  This lets channel_eq
++ * report success.
++ */
++static void quirk_edp_channel_eq(struct drm_i915_private *i915)
++{
++	i915->quirks |= QUIRK_EDP_CHANNEL_EQ;
++	drm_info(&i915->drm, "applying eDP channel_eq quirk\n");
++}
++
+ struct intel_quirk {
+ 	int device;
+ 	int subsystem_vendor;
+@@ -72,6 +83,12 @@ static int intel_dmi_reverse_brightness(const struct dmi_system_id *id)
+ 	return 1;
+ }
+ 
++static int intel_dmi_edp_channel_eq(const struct dmi_system_id *id)
++{
++	DRM_INFO("eDP channel_eq workaround on %s\n", id->ident);
++	return 1;
++}
++
+ static const struct intel_dmi_quirk intel_dmi_quirks[] = {
+ 	{
+ 		.dmi_id_list = &(const struct dmi_system_id[]) {
+@@ -96,6 +113,19 @@ static const struct intel_dmi_quirk intel_dmi_quirks[] = {
+ 		},
+ 		.hook = quirk_invert_brightness,
+ 	},
++	{
++		.dmi_id_list = &(const struct dmi_system_id[]) {
++			{
++				.callback = intel_dmi_edp_channel_eq,
++				.ident = "Dell Latitude 7200 2-in-1",
++				.matches = {DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
++					    DMI_MATCH(DMI_PRODUCT_NAME, "Latitude 7200 2-in-1"),
++				},
++			},
++			{ }  /* terminating entry */
++		},
++		.hook = quirk_edp_channel_eq,
++	},
+ };
+ 
+ static struct intel_quirk intel_quirks[] = {
+diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
+index e4f7f6518945..fc32ea7380b7 100644
+--- a/drivers/gpu/drm/i915/i915_drv.h
++++ b/drivers/gpu/drm/i915/i915_drv.h
+@@ -525,6 +525,7 @@ struct i915_psr {
+ #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
+ #define QUIRK_INCREASE_T12_DELAY (1<<6)
+ #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
++#define QUIRK_EDP_CHANNEL_EQ (1<<8)
+ 
+ struct intel_fbdev;
+ struct intel_fbc_work;
+-- 
+2.26.2
 
