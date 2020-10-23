@@ -2,116 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C0CA297986
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:18:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3852F297987
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:18:29 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758519AbgJWXQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 19:16:46 -0400
-Received: from mail-bn8nam11on2072.outbound.protection.outlook.com ([40.107.236.72]:4096
-        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1758512AbgJWXQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 19:16:46 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jMbLNnZY+/mR+5N2ob2Y3IMcjdPJZjNdBidFgeFQ551+4HHxi+c5Tebri/L/R6hiXnbzeDPPouWYAR9RmpFKd4ltEgzA347HQxNsPXODdj/5fZoJwK0uM3BW76VjlnJtxMjRH1mJTqQmrvM3KfyBl+GT31+IoYlItOeS50bKL6AHYZb+i8rGZR/Vx5CDq40B4H2sXIDjF6hNedFF2fHaM6u2HrVA3zJGYbl4JSrtPYp/Ksf4zOfHQM18Gl0yGOma58hiq7c6/7a9vfGUtYUg/srRJvUAYvML8xuV1lESLoT5RniUR8ygialOERdbRCHZ+s0BwKw0RVqJJB48+S+hqA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z7rUNzBv7Ovn3jY5Z4Y+VP3qCSJhOqSSskSMbj0vU2I=;
- b=O2wZSbirZauApI9650ooPJNWNBug0raqyzWFuVPD+Kgu42bPjc/yHQzqmbmXaXALFcg/pDXDVg/v+rMwqYFKY35RCBMzJbSs/8+nRf6K89qzTiIMlmbLi5MQ95kNdvN01WDkuh4S8KLFxJMwtU+D95eok/NYvhIvG95adCsAorTNk/6gLGyBEhKuwKzLLXZ2GokMJiexFIgo3+zA58EiO8TTTgj8fP9SWZGFvBaXmUiPgzfNTOEIj++wYPwkp9URK9GjwL7v0DwH+ZhhW6Z05aKMt6fH+H7kqa5+jG1rNBq+w8u/o4on9VtHZeoIc2WZ13pNxxRxis9GkNx2PEDS0w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=z7rUNzBv7Ovn3jY5Z4Y+VP3qCSJhOqSSskSMbj0vU2I=;
- b=nnKoMkSxut1i7kwTjI6WbBytgFGtVp+NmBGFsnbWsTh4qtq1oNHi2bTE3wwx+eGw/JpYjXg4sPAJb/rghNJR47X4DTI/SNhE3QbyhscdZYkgrmL1kBS/bq5ylFEnuwE0DTDAmWKv9kI6WpIWR3Kdn2I1+xlI80aE0d8nOFNHwc0=
-Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
- header.d=none;lists.freedesktop.org; dmarc=none action=none
- header.from=amd.com;
-Received: from DM6PR12MB3962.namprd12.prod.outlook.com (10.255.175.85) by
- DM6PR12MB3178.namprd12.prod.outlook.com (20.179.107.75) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.18; Fri, 23 Oct 2020 23:16:42 +0000
-Received: from DM6PR12MB3962.namprd12.prod.outlook.com
- ([fe80::935:a67:59f8:7067]) by DM6PR12MB3962.namprd12.prod.outlook.com
- ([fe80::935:a67:59f8:7067%7]) with mapi id 15.20.3477.029; Fri, 23 Oct 2020
- 23:16:42 +0000
-Subject: Re: [PATCH 0/3] drm/amd/display: Fix kernel panic by breakpoint
-To:     Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org
-Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
-References: <20201023074656.11855-1-tiwai@suse.de>
-From:   Luben Tuikov <luben.tuikov@amd.com>
-Message-ID: <1d3e22ef-a301-f557-79ca-33d6520bb64e@amd.com>
-Date:   Fri, 23 Oct 2020 19:16:38 -0400
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
-In-Reply-To: <20201023074656.11855-1-tiwai@suse.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-CA
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [165.204.54.211]
-X-ClientProxiedBy: YT1PR01CA0044.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:2e::13) To DM6PR12MB3962.namprd12.prod.outlook.com
- (2603:10b6:5:1ce::21)
-MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from [10.252.35.64] (165.204.54.211) by YT1PR01CA0044.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Fri, 23 Oct 2020 23:16:40 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 1a0bf8ac-5911-4459-c47f-08d877a9b305
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3178:
-X-Microsoft-Antispam-PRVS: <DM6PR12MB31785147DB7FADDDEDF00C50991A0@DM6PR12MB3178.namprd12.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LMQA1s1QMS8QQYzSTcyQJ4lJkHxFXimd/Cp0CB2ejXi3kBpmxXxodvHcWiu0873CmmQ0u/bzPhXn7x76r0toO1BcAAld+J9FCLFdAjIWdayMMqHlLZR14v+xgMhMEnREFhpVQQzQveQzEEhpYLxfD99Lqpff2BKXhFg6YZXcPaAX3/6CBzFldtEpj0Z4AUmRy4Z/YLOK6kMMOyKmRNNXIF+Xpa0jwn7GXvFSC6dSUK0k7lWfcMBg5OihOW+9H01DJ8Am1XtNAP4soOz4sw6HfUgO+6HHtgHlMU5YwEoK7U5HxC8XuQUg0QZhsJvaDlGbXiyy6Ck33Kwqyioxw0E3FgAnCgDiaYuwtBxqFS7l7YJ6bNFyaLbBZLKes9wOMFcG
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3962.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(4001150100001)(86362001)(31686004)(6486002)(5660300002)(4744005)(316002)(16576012)(478600001)(4326008)(956004)(186003)(16526019)(44832011)(2616005)(66476007)(53546011)(66556008)(83380400001)(66946007)(26005)(2906002)(31696002)(8936002)(8676002)(52116002)(36756003)(43740500002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 7dbEk3JnBpW2f/UekSLoEVuOi6XKccGc6GMl32hH41lzr/FWZv9O3C6eLbmTOkmYPutYbECR+22/PSRuB3ktNxK8xdga4cl8YKQyNscW2HQUHWYb3OlZccgdgBT1Vh9h2grwYz0iD0v5wuWG3jjafXQaIXWV8qsYkRNpMbep8ZLP9caa3qKoM5g+tSH96/5sSqCNHTowCovagP0TS8KdmHt+ihKwvw0+yqdug6ZCKjteRKt4Bxz0HJ8Ho95tMTZV60dbV6EvCNcCX0jGvNzRgclQLqYW57Fs8bC9pd9/7b57b7r6dHdFZJUQEHz6vwY49kCs5jQOx2T7Fv2mHK1sU3JkBRzdDUl9OnTdMK6+iEf16PCXy9J0btFnNWnT657CiKQs1TPMytFao48RQqAiHfAeSOn5CwkenHkiiy+rvQD3TPLZFz3p3Et1B8hOyCOdJMBsxzVy5YZwHzay7arHkmKem8jXUUS5K+Z1Q/5q7zFtKfXcgxBU8TXFkKrFkVs6Mo+oXqVQJB5hGYu/zfrJwTGntsSZY5xB2sM9Gvxyzo7na9U16bJW5MxEtpRiymx94Q23Xn55W4JYriPSB6xkdBxX1hNBN3U5RZKEgj3KqGzjVB8c7421v769Hph8xaEOuKLuEAGi8dTPNwdOUnW0xg==
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0bf8ac-5911-4459-c47f-08d877a9b305
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3962.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 23:16:41.9527
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: vllPQH3w3wENFP4jqtOndXMRL5DWJoJ6zP4BqgLSMbXSlgnUwuVgILYyhSdKz7Z3
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3178
+        id S1758531AbgJWXSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 19:18:06 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:26229 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1758522AbgJWXSG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 19:18:06 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603495085; h=Message-Id: Date: Subject: Cc: To: From:
+ Sender; bh=0f5/ytiH+Cqg+mb/yUuFRUe/V1yccgp4ACqV4gwy/vI=; b=GR0XnKEABhsE9qXycI4ozk1iOb1/00WXB71wa3iYDzwfs+t3FhVfP+wtiRK9uSN2Zc/07g0b
+ 8bq6PflvYJAnjph408uFPuLAkCJYPnOzwaT37F6lwlaHf8hYh6/100hqy+7/9oX9HtkS2Skk
+ M9pKxBIISOzlKTfimRQtt4ohF/Q=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n06.prod.us-east-1.postgun.com with SMTP id
+ 5f9364ada56a9bfef05b4db2 (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Fri, 23 Oct 2020 23:18:05
+ GMT
+Sender: hemantk=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 66CBEC43385; Fri, 23 Oct 2020 23:18:04 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL
+        autolearn=no autolearn_force=no version=3.4.0
+Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: hemantk)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 3C787C433C9;
+        Fri, 23 Oct 2020 23:18:01 +0000 (UTC)
+DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 3C787C433C9
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
+Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
+From:   Hemant Kumar <hemantk@codeaurora.org>
+To:     manivannan.sadhasivam@linaro.org, gregkh@linuxfoundation.org
+Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        jhugo@codeaurora.org, bbhatt@codeaurora.org,
+        loic.poulain@linaro.org, netdev@vger.kernel.org,
+        Hemant Kumar <hemantk@codeaurora.org>
+Subject: [PATCH v9 0/4] userspace MHI client interface driver
+Date:   Fri, 23 Oct 2020 16:17:51 -0700
+Message-Id: <1603495075-11462-1-git-send-email-hemantk@codeaurora.org>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-23 03:46, Takashi Iwai wrote:
-> Hi,
-> 
-> the amdgpu driver's ASSERT_CRITICAL() macro calls the
-> kgdb_breakpoing() even if no debug option is set, and this leads to a
-> kernel panic on distro kernels.  The first two patches are the
-> oneliner fixes for those, while the last one is the cleanup of those
-> debug macros.
+This patch series adds support for UCI driver. UCI driver enables userspace
+clients to communicate to external MHI devices like modem and WLAN. UCI driver
+probe creates standard character device file nodes for userspace clients to
+perform open, read, write, poll and release file operations. These file
+operations call MHI core layer APIs to perform data transfer using MHI bus
+to communicate with MHI device. Patch is tested using arm64 based platform.
 
-This looks like good work and solid. Hopefully it gets picked up.
+V9:
+- Renamed dl_lock to dl_pending _lock and pending list to dl_pending for
+  clarity.
+- Used read lock to protect cur_buf.
+- Change transfer status check logic and only consider 0 and -EOVERFLOW as
+  only success.
+- Added __int to module init function.
+- Print channel name instead of minor number upon successful probe.
 
-Regards,
-Luben
+V8:
+- Fixed kernel test robot compilation error by changing %lu to %zu for
+  size_t.
+- Replaced uci with UCI in Kconfig, commit text, and comments in driver
+  code.
+- Fixed minor style related comments.
 
-> 
-> 
-> Takashi
-> 
-> ===
-> 
-> Takashi Iwai (3):
->   drm/amd/display: Fix kernel panic by dal_gpio_open() error
->   drm/amd/display: Don't invoke kgdb_breakpoint() unconditionally
->   drm/amd/display: Clean up debug macros
-> 
->  drivers/gpu/drm/amd/display/Kconfig             |  1 +
->  drivers/gpu/drm/amd/display/dc/gpio/gpio_base.c |  4 +--
->  drivers/gpu/drm/amd/display/dc/os_types.h       | 33 +++++++++----------------
->  3 files changed, 15 insertions(+), 23 deletions(-)
-> 
+V7:
+- Decoupled uci device and uci channel objects. uci device is
+  associated with device file node. uci channel is associated
+  with MHI channels. uci device refers to uci channel to perform
+  MHI channel operations for device file operations like read()
+  and write(). uci device increments its reference count for
+  every open(). uci device calls mhi_uci_dev_start_chan() to start
+  the MHI channel. uci channel object is tracking number of times
+  MHI channel is referred. This allows to keep the MHI channel in
+  start state until last release() is called. After that uci channel
+  reference count goes to 0 and uci channel clean up is performed
+  which stops the MHI channel. After the last call to release() if
+  driver is removed uci reference count becomes 0 and uci object is
+  cleaned up.
+- Use separate uci channel read and write lock to fine grain locking
+  between reader and writer.
+- Use uci device lock to synchronize open, release and driver remove.
+- Optimize for downlink only or uplink only UCI device.
+
+V6:
+- Moved uci.c to mhi directory.
+- Updated Kconfig to add module information.
+- Updated Makefile to rename uci object file name as mhi_uci
+- Removed kref for open count
+
+V5:
+- Removed mhi_uci_drv structure.
+- Used idr instead of creating global list of uci devices.
+- Used kref instead of local ref counting for uci device and
+  open count.
+- Removed unlikely macro.
+
+V4:
+- Fix locking to protect proper struct members.
+- Updated documentation describing uci client driver use cases.
+- Fixed uci ref counting in mhi_uci_open for error case.
+- Addressed style related review comments.
+
+V3: Added documentation for MHI UCI driver.
+
+V2: Added mutex lock to prevent multiple readers to access same
+mhi buffer which can result into use after free.
+
+Hemant Kumar (4):
+  bus: mhi: core: Add helper API to return number of free TREs
+  bus: mhi: core: Move MHI_MAX_MTU to external header file
+  docs: Add documentation for userspace client interface
+  bus: mhi: Add userspace client interface driver
+
+ Documentation/mhi/index.rst     |   1 +
+ Documentation/mhi/uci.rst       |  83 +++++
+ drivers/bus/mhi/Kconfig         |  13 +
+ drivers/bus/mhi/Makefile        |   4 +
+ drivers/bus/mhi/core/internal.h |   1 -
+ drivers/bus/mhi/core/main.c     |  12 +
+ drivers/bus/mhi/uci.c           | 658 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/mhi.h             |  12 +
+ 8 files changed, 783 insertions(+), 1 deletion(-)
+ create mode 100644 Documentation/mhi/uci.rst
+ create mode 100644 drivers/bus/mhi/uci.c
+
+-- 
+The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
+a Linux Foundation Collaborative Project
 
