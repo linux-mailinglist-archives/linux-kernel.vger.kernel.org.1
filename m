@@ -2,324 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 68F6A29790C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:47:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4D00297918
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:50:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756839AbgJWVrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:47:42 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41874 "EHLO
+        id S1756943AbgJWVuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:50:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42312 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756826AbgJWVrk (ORCPT
+        with ESMTP id S1756934AbgJWVuO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:47:40 -0400
-Received: from mail-io1-xd43.google.com (mail-io1-xd43.google.com [IPv6:2607:f8b0:4864:20::d43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B10C5C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:47:40 -0700 (PDT)
-Received: by mail-io1-xd43.google.com with SMTP id u62so3646277iod.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:47:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0bMgtasO4QBS+scqrbphxnvvVoAnwMbRo+mZ6Ntpvjs=;
-        b=bNX6ybv0AO6sp4f5ztASsGBxYRgYu0fc4lU0L73qh9nIGwqF2hXWuEct+FtthQDVg1
-         ujKzCoyDngBlbXsY5t4LZizU7Z1x0tS8/LUfXDfuGizwl+A6dBcs/+DGqTQYGZqDpI6e
-         E7ROBgZtPRplyUj8P9K3mmepBogAH1HBhcm8pYvc084JbmVlWquktxqZtRJj+tSHdSIn
-         qvIbxco5HC/FGqInw5BBMuUEd9nM9e1mTu0WVNHZBlqrR4x394eThFmoRt+s6cBcB2hY
-         C46YXP9RHpWBs2QjVovDu3urI1Gf2a/0/EwGKN7G7WDyngoDojNy4X0EfOCZicX/+4St
-         QtoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0bMgtasO4QBS+scqrbphxnvvVoAnwMbRo+mZ6Ntpvjs=;
-        b=pnS+j4yL4eKnhg1aN0tz3N9UGOA2BnAqXZS28kWk457ZFtIF/wjSSqtBfSsY69wkfZ
-         dOpOHD3MwNbW1NUcxVA5qz+eilif0N9UJsXZnxW/LQY/UO7DF5Jbo+vCMO9X6aabqKKl
-         D8nRg2woFtsSGVGSHrDTM1OphHjXM9bmM7SQe0ehW39YJk8lcKj7lJrcIQVX8ZuiMSw9
-         03cuHvmaENk2AeblamiGiLX4aWSyEFPB196wVeVXcqAlyvAhbG+/GG5ckBjgxSluh5TX
-         34hn2OPBJ+Dpk9Cf+z43NPpGOeBTm2yLmqcqN3XRnPMcaGyiouyC2AV00idbQNjddkpT
-         vsUQ==
-X-Gm-Message-State: AOAM533QVl97E38OSosKGwDrrSlgFBdJGJuvrZ40VSHVt0UwgYUyv3Ff
-        G/u6r9YrcltLtE/ZUxJ0HcNan06NymnxLwvpGYfVVDsDPXs=
-X-Google-Smtp-Source: ABdhPJwmsICvvBHRjddvvDlPICyYoGvXJVqPhH5tNcUKl1CNIHm37eTmY2ANj/DGf1XDGcjrDrbzmEtJesCXYco7aP8=
-X-Received: by 2002:a02:9543:: with SMTP id y61mr3842876jah.64.1603489660073;
- Fri, 23 Oct 2020 14:47:40 -0700 (PDT)
+        Fri, 23 Oct 2020 17:50:14 -0400
+Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D4874C0613CE;
+        Fri, 23 Oct 2020 14:50:13 -0700 (PDT)
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603489811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cHZqtXRz0EpqKwmVvrfGdZyZvC7siQQGSvicS0vKKBg=;
+        b=0yAkbZnTwDY2ALAbXdGN6vr3ehp2VwpXNIcf51OXNu5rvFRvmCFOCTkkOciH3bsMMB1GTJ
+        M49Ooo+35dE2U2EdR4GV6DqIHTyROF7HKJgwhEe+YkykUW9BNC5m+IszzFX1oA8ZEa0XuD
+        1d/dCepUNoGiDlYmKWo738FoXRvvngEHtiadyKHOVShEMn5o8bVNUoOmknFSNyw0C29P1y
+        lG0GxNgCHxB0lekDN0U72B9z95n6HUAC3ZK2mGWWUMRbEJvRSTaJxxe2QqwdMQCr0LGqOO
+        auNEwTjIY0XSihJxFVb3YEpC1IQVLCt4JgLsfilbBuSQ9ygKHpb0dXjIER+lPQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603489811;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=cHZqtXRz0EpqKwmVvrfGdZyZvC7siQQGSvicS0vKKBg=;
+        b=1RyBpBn3mRKQKuLJjCvQxmBBrnxabQDijrSaiAdGjc2n/P1b8Vr9dL2Zi4iX0nPaJ9AC7Q
+        vT1Rr3Z8/S0zuhCQ==
+To:     ira.weiny@intel.com, Ingo Molnar <mingo@redhat.com>,
+        Borislav Petkov <bp@alien8.de>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Ira Weiny <ira.weiny@intel.com>, x86@kernel.org,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Fenghua Yu <fenghua.yu@intel.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-nvdimm@lists.01.org,
+        linux-mm@kvack.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH 06/10] x86/entry: Move nmi entry/exit into common code
+In-Reply-To: <20201022222701.887660-7-ira.weiny@intel.com>
+References: <20201022222701.887660-1-ira.weiny@intel.com> <20201022222701.887660-7-ira.weiny@intel.com>
+Date:   Fri, 23 Oct 2020 23:50:11 +0200
+Message-ID: <874kmk6298.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
-References: <20201019221859.56680-1-luka.kovacic@sartura.hr>
- <20201019221859.56680-4-luka.kovacic@sartura.hr> <CAHp75VdnOJKwvZUOsj3bbT8tK9uZN=NufDrdhUvS886bNUpWhA@mail.gmail.com>
-In-Reply-To: <CAHp75VdnOJKwvZUOsj3bbT8tK9uZN=NufDrdhUvS886bNUpWhA@mail.gmail.com>
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-Date:   Fri, 23 Oct 2020 23:47:29 +0200
-Message-ID: <CADZsf3ZmeUZppsJaR7bT8y16L3Mj12tUfzo=hkV4nFgjN64Jqw@mail.gmail.com>
-Subject: Re: [PATCH v6 3/6] drivers: hwmon: Add the iEi WT61P803 PUZZLE HWMON driver
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-hwmon@vger.kernel.org,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Jean Delvare <jdelvare@suse.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
-        Luka Perkov <luka.perkov@sartura.hr>,
-        Robert Marko <robert.marko@sartura.hr>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Andy,
+On Thu, Oct 22 2020 at 15:26, ira weiny wrote:
 
-On Tue, Oct 20, 2020 at 10:59 AM Andy Shevchenko
-<andy.shevchenko@gmail.com> wrote:
+> From: Thomas Gleixner <tglx@linutronix.de>
 >
-> On Tue, Oct 20, 2020 at 1:19 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
-> >
-> > Add the iEi WT61P803 PUZZLE HWMON driver, that handles the fan speed
-> > control via PWM, reading fan speed and reading on-board temperature
-> > sensors.
-> >
-> > The driver registers a HWMON device and a simple thermal cooling device to
-> > enable in-kernel fan management.
-> >
-> > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+> Lockdep state handling on NMI enter and exit is nothing specific to X86. It's
+> not any different on other architectures. Also the extra state type is not
+> necessary, irqentry_state_t can carry the necessary information as well.
 >
-> ...
->
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/* iEi WT61P803 PUZZLE MCU HWMON Driver
->
-> Shouldn't be
-> /*
->  * IEI ...
->
-> ?
->
-> ...
->
-> > +/**
-> > + * struct iei_wt61p803_puzzle_thermal_cooling_device - Thermal cooling device instance
->
-> > + *
->
-> Please, remove all these blank lines in kernel doc descriptions.
->
-> > + * @mcu_hwmon:         MCU HWMON struct pointer
-> > + * @tcdev:             Thermal cooling device pointer
-> > + * @name:              Thermal cooling device name
-> > + * @pwm_channel:       PWM channel (0 or 1)
-> > + * @cooling_levels:    Thermal cooling device cooling levels
-> > + */
->
-> ...
->
-> > +struct iei_wt61p803_puzzle_hwmon {
-> > +       struct iei_wt61p803_puzzle *mcu;
-> > +       unsigned char *response_buffer;
-> > +       bool thermal_cooling_dev_present[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
-> > +       struct iei_wt61p803_puzzle_thermal_cooling_device
-> > +               *cdev[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
->
-> Isn't this constant a bit too long? Perhaps drop NUM (MAX would
-> suffice I think) for a starter.
+> Move it to common code and extend irqentry_state_t to carry lockdep
+> state.
 
-Okay, I'll drop NUM.
+This lacks something like:
 
->
-> > +};
->
-> ...
->
-> > +       static unsigned char temp_sensor_ntc_cmd[4] = {
-> > +               IEI_WT61P803_PUZZLE_CMD_HEADER_START,
-> > +               IEI_WT61P803_PUZZLE_CMD_TEMP,
-> > +               IEI_WT61P803_PUZZLE_CMD_TEMP_ALL
->
-> + comma.
->
-> > +       };
->
-> Why not to be consistent with the rest assignments, choose either
-> above form, or like you have done in the below functions.
+ [ Ira: Made the states a union as they are mutually exclusive and added
+        the missing kernel doc ]
 
-Assignments, where the array content will not be modified with custom
-values are done as above.
-Although I could change these to the other form, if that makes it clearer.
+Hrm.
+ 
+>  #ifndef irqentry_state
+>  typedef struct irqentry_state {
+> -	bool	exit_rcu;
+> +	union {
+> +		bool	exit_rcu;
+> +		bool	lockdep;
+> +	};
+>  } irqentry_state_t;
+>  #endif
 
-> Also, why 4?
+  -E_NO_KERNELDOC
 
-1 additional character is always required, as this array is passed by reference
-to the iei_wt61p803_puzzle_write_command() function, which requires it to
-store a calculated checksum of the array content.
+Thanks,
 
-This is done to avoid unnecessary copying of the array inside the MFD driver.
-
-The checksum is a part of the command, so the driver and the MCU can check
-the integrity of the sent data.
-
->
-> > +       size_t reply_size = 0;
->
-> How is it used in all these functions?
-
-I will add an additional check for the size of the received reply, as
-it should be fixed.
-
->
-> > +       int ret;
-> > +
-> > +       ret = iei_wt61p803_puzzle_write_command(mcu_hwmon->mcu, temp_sensor_ntc_cmd,
-> > +                                               sizeof(temp_sensor_ntc_cmd), resp_buf,
-> > +                                               &reply_size);
-> > +
-> > +       if (ret)
-> > +               return ret;
-> > +
-> > +       /* Check the number of NTC values (should be 0x32/'2') */
->
-> > +       if (resp_buf[3] != 0x32)
->
-> Instead of comment in the parentheses, just do it here
-> " != '2')"
->
-> > +               return -EIO;
->
-> ...
->
-> > +static int iei_wt61p803_puzzle_read(struct device *dev, enum hwmon_sensor_types type,
-> > +                                   u32 attr, int channel, long *val)
-> > +{
-> > +       struct iei_wt61p803_puzzle_hwmon *mcu_hwmon = dev_get_drvdata(dev->parent);
-> > +       int ret;
-> > +
-> > +       switch (type) {
-> > +       case hwmon_pwm:
->
-> > +               ret = iei_wt61p803_puzzle_read_pwm_channel(mcu_hwmon, channel, val);
-> > +               return ret;
->
->   return iei_...(...);
-> in all such cases.
->
-> > +       case hwmon_fan:
-> > +               ret = iei_wt61p803_puzzle_read_fan_speed(mcu_hwmon, channel, val);
-> > +               return ret;
-> > +       case hwmon_temp:
-> > +               ret = iei_wt61p803_puzzle_read_temp_sensor(mcu_hwmon, channel, val);
-> > +               return ret;
-> > +       default:
-> > +               return -EINVAL;
-> > +       }
-> > +}
->
-> ...
->
-> > +static umode_t iei_wt61p803_puzzle_is_visible(const void *data, enum hwmon_sensor_types type,
-> > +                                             u32 attr, int channel)
-> > +{
-> > +       switch (type) {
-> > +       case hwmon_pwm:
->
-> > +               switch (attr) {
-> > +               case hwmon_pwm_input:
-> > +                       return 0644;
-> > +               default:
-> > +                       return 0;
-> > +               }
->
-> Isn't too long for
->   if (attr == ...)
->     return 0644;
->   break;
->
-> ...see below...
->
-> > +       case hwmon_fan:
-> > +               switch (attr) {
-> > +               case hwmon_fan_input:
-> > +                       return 0444;
-> > +               default:
-> > +                       return 0;
-> > +               }
-> > +       case hwmon_temp:
-> > +               switch (attr) {
-> > +               case hwmon_temp_input:
-> > +                       return 0444;
-> > +               default:
-> > +                       return 0;
-> > +               }
->
-> > +       default:
-> > +               return 0;
->
-> break;
->
-> > +       }
->
-> return 0;
->
-> ?
->
-> > +}
->
-> ...
->
-> > +       mcu_hwmon->thermal_cooling_dev_present[pwm_channel] = true;
-> > +
->
-> > +       num_levels = fwnode_property_read_u8_array(child, "cooling-levels", NULL, 0);
->
-> fwnode_property_count_u8()
->
-> > +       if (num_levels > 0) {
->
-> You can improve readability by reducing indentation level via
-> replacement to negative conditional.
->
-> > +               cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
-> > +               if (!cdev)
-> > +                       return -ENOMEM;
-> > +
-> > +               cdev->cooling_levels = devm_kzalloc(dev, num_levels, GFP_KERNEL);
->
-> For the sake of cleaness, shouldn't it be devm_kmalloc_array() ?
-> (Note, zeroing is not needed if you read entire array)
-
-I agree, this can be converted to devm_kmalloc_array().
-
->
-> > +               if (!cdev->cooling_levels)
-> > +                       return -ENOMEM;
-> > +
-> > +               ret = fwnode_property_read_u8_array(child, "cooling-levels",
-> > +                                                   cdev->cooling_levels,
-> > +                                                   num_levels);
-> > +               if (ret) {
-> > +                       dev_err(dev, "Couldn't read property 'cooling-levels'");
-> > +                       return ret;
-> > +               }
-> > +
-> > +               snprintf(cdev->name, THERMAL_NAME_LENGTH, "iei_wt61p803_puzzle_%d", pwm_channel);
-> > +
-> > +               cdev->tcdev = devm_thermal_of_cooling_device_register(dev, NULL,
-> > +                               cdev->name, cdev, &iei_wt61p803_puzzle_cooling_ops);
-> > +               if (IS_ERR(cdev->tcdev))
-> > +                       return PTR_ERR(cdev->tcdev);
-> > +
-> > +               cdev->mcu_hwmon = mcu_hwmon;
-> > +               cdev->pwm_channel = pwm_channel;
-> > +
-> > +               mcu_hwmon->cdev[pwm_channel] = cdev;
-> > +       }
-> > +       return 0;
-> > +}
->
-> --
-> With Best Regards,
-> Andy Shevchenko
-
-I'll fix the issues you have mentioned above in the next patchset.
-
-Kind regards,
-Luka
+        tglx
