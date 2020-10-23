@@ -2,63 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E845296BA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:01:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 906F3296BA8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:02:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461001AbgJWJBL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:01:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35046 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460858AbgJWJBL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:01:11 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F3BCAC0613CE;
-        Fri, 23 Oct 2020 02:01:10 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 11:01:08 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603443669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=by2GFgbRZ/dj7bmTE0Htiaizc6lllZpv9RghLyuZt2M=;
-        b=w9KXDgAbuEgZmQ7408c2pKXcdzKJEHDerrFs2PNNsTckAIs7vCUb+EeD2wKImb9fjohNWq
-        GwCqUCVJC+T2YtWFzLgQYliDVQFzdpW/ftvo5XZnWT+gqUNt4L5NQdl8o3jkZY1xfy5WaV
-        /S2ZGbTmxzr201DQE9JOzK2oOt79k1idwz2VQHO8/dt/m3E3XypKmD8dH+7wVr08Nk3PDv
-        ur7hnICMZMSVKoJRJ0TYfb9K+CHecIoWQ5f7IwK6DAYcSKazRoQeWV8OKr1x33orqmM1wj
-        Z6faAWCHdPbzt2a1+9jI7UlR0jDhc6hh1Urd+Kom8aVz2JYfEOJoDEhoin7kmw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603443669;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=by2GFgbRZ/dj7bmTE0Htiaizc6lllZpv9RghLyuZt2M=;
-        b=0bBhdwgHFAnmqncERKGjcGPDsJN8ckVbN7sxpmv5jbpObENkmHwb2TTlfBcjSY+Q5jl01b
-        3QG7f3j+bdlLtPAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Mike Galbraith <efault@gmx.de>
-Cc:     Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>
-Subject: Re: kvm+nouveau induced lockdep  gripe
-Message-ID: <20201023090108.5lunh4vqfpkllmap@linutronix.de>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
- <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+        id S461040AbgJWJCC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:02:02 -0400
+Received: from mga04.intel.com ([192.55.52.120]:4355 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S460812AbgJWJCB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 05:02:01 -0400
+IronPort-SDR: Xn34EuT6+opL3URXNAv1SwYiL3L5HxRs/KfTykG1gtQ1H1vteGpxYaKqY981gjCaH95WLv4zX/
+ Ekjygh+VzSLg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="165056223"
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="165056223"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga005.jf.intel.com ([10.7.209.41])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 02:01:53 -0700
+IronPort-SDR: 6tzpBxuGjJtkyyn2Y+eNJoGE9sbBdaNp04HxKPfGOSMojLMOPpJJn+lybR3uyTh7BFtPd1AC8E
+ HCpnNdppR//g==
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="534323340"
+Received: from spiccard-mobl1.ger.corp.intel.com (HELO localhost) ([10.249.41.38])
+  by orsmga005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 02:01:40 -0700
+Date:   Fri, 23 Oct 2020 12:01:37 +0300
+From:   Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Jarkko Sakkinen <jarkko@kernel.org>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Serge Ayoun <serge.ayoun@intel.com>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        dave.hansen@intel.com, haitao.huang@intel.com, kai.huang@intel.com,
+        kai.svahn@intel.com, kmoy@google.com, ludloff@google.com,
+        luto@kernel.org, nhorman@redhat.com, npmccallum@redhat.com,
+        puiterwijk@redhat.com, rientjes@google.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 08/24] x86/sgx: Initialize metadata for Enclave Page
+ Cache (EPC) sections
+Message-ID: <20201023090137.GA168477@linux.intel.com>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-9-jarkko.sakkinen@linux.intel.com>
+ <20201019084558.GA1155569@kapsi.fi>
+ <20201019123934.GA24325@zn.tnic>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+In-Reply-To: <20201019123934.GA24325@zn.tnic>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-22 07:28:20 [+0200], Mike Galbraith wrote:
-> I've only as yet seen nouveau lockdep gripage when firing up one of my
-> full distro KVM's.
+On Mon, Oct 19, 2020 at 02:39:34PM +0200, Borislav Petkov wrote:
+> On Mon, Oct 19, 2020 at 11:45:58AM +0300, Jarkko Sakkinen wrote:
+> > On Sat, Oct 03, 2020 at 07:50:43AM +0300, Jarkko Sakkinen wrote:
+> > > +config INTEL_SGX
+> > 
+> > Since the directory for this was renamed some iterations ago from
+> > arch/x86/kernel/cpu/sgx to intel_sgx given the feedback from Boris,
+> > I'm wondering should this also be renamed as X86_SGX?
+> 
+> I don't think it matters. I hardly doubt there will be anything else
+> "SGX" besides the Intel one...
 
-Could you please check !RT with the `threadirqs' command line option? I
-don't think RT is doing here anything different (except for having
-threaded interrupts enabled by default).
+Yeah, especially since it'd be namespaced to x86 (not CONFIG_SGX).
 
-Sebastian
+> -- 
+> Regards/Gruss,
+>     Boris.
+> 
+> https://people.kernel.org/tglx/notes-about-netiquette
+
+/Jarkko
