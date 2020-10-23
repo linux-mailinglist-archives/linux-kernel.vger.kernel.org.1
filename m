@@ -2,84 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BEA3C297626
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:53:53 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E40729762D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:54:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753881AbgJWRxq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:53:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42880 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1753873AbgJWRxp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:53:45 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F13F120760;
-        Fri, 23 Oct 2020 17:53:43 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 13:53:41 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
+        id S1753896AbgJWRyQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:54:16 -0400
+Received: from relay7-d.mail.gandi.net ([217.70.183.200]:51941 "EHLO
+        relay7-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1753885AbgJWRyQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:54:16 -0400
+X-Greylist: delayed 480 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 13:54:15 EDT
+X-Originating-IP: 93.29.109.196
+Received: from localhost.localdomain (unknown [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay7-d.mail.gandi.net (Postfix) with ESMTPSA id 51D8D2000D;
+        Fri, 23 Oct 2020 17:54:12 +0000 (UTC)
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 53/56] shed: fix kernel-doc markup
-Message-ID: <20201023135341.450727fc@gandalf.local.home>
-In-Reply-To: <21eac4426e02193aab877564f7d7d99114627a46.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-        <21eac4426e02193aab877564f7d7d99114627a46.1603469755.git.mchehab+huawei@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Mark Brown <broonie@kernel.org>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Maxime Ripard <mripard@kernel.org>, kevin.lhopital@hotmail.com
+Subject: [PATCH 0/3] media: i2c: OV8865 image sensor support
+Date:   Fri, 23 Oct 2020 19:54:03 +0200
+Message-Id: <20201023175406.504527-1-paul.kocialkowski@bootlin.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 18:33:40 +0200
-Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+This series adds support for the OV8865 image sensor, as a V4L2 subdev
+driver. Although an initial series was submitted by Kévin L'hôpital some
+weeks ago, this version is significantly new and should be considered a
+new series.
 
-> Kernel-doc requires that a kernel-doc markup to be immediatly
-> below the function prototype, as otherwise it will rename it.
-> So, move sys_sched_yield() markup to the right place.
-> 
-> Also fix the cpu_util() markup: Kernel-doc markups
-> should use this format:
->         identifier - description
+The final patch (not for merge) shows how to enable the OV8865 on the
+Banana Pi Camera Board v2 with the Banana Pi M3.
 
-The first change looks fine to me, but as I'm getting a new shed delivered
-soon, I originally thought this email was about that delivery!
+Cheers,
 
-I do have a nit about the second change.
+Paul
 
-> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> index aa4c6227cd6d..94386fcfafcf 100644
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -6287,7 +6287,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
->  }
->  
->  /**
-> - * Amount of capacity of a CPU that is (estimated to be) used by CFS tasks
-> + * cpu_util - Amount of capacity of a CPU that is (estimated to be)
-> + *	used by CFS tasks
+Kévin L'hôpital (1):
+  ARM: dts: sun8i: a83t: bananapi-m3: Enable MIPI CSI-2 with OV8865
 
-The description is to be a single line. The line break is ugly, and the 80
-col rule, is more of a guideline, and not something that *has* to be done.
+Paul Kocialkowski (2):
+  dt-bindings: media: i2c: Add OV8865 bindings documentation
+  media: i2c: Add support for the OV8865 image sensor
 
-Either shorten it, or just let it go a little longer.
+ .../bindings/media/i2c/ovti,ov8865.yaml       |  124 +
+ arch/arm/boot/dts/sun8i-a83t-bananapi-m3.dts  |   98 +
+ drivers/media/i2c/Kconfig                     |   13 +
+ drivers/media/i2c/Makefile                    |    1 +
+ drivers/media/i2c/ov8865.c                    | 3031 +++++++++++++++++
+ 5 files changed, 3267 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/media/i2c/ovti,ov8865.yaml
+ create mode 100644 drivers/media/i2c/ov8865.c
 
--- Steve
-
-
->   * @cpu: the CPU to get the utilization of
->   *
->   * The unit of the return value must be the one of capacity so we can compare
+-- 
+2.28.0
 
