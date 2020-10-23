@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04B1D2974A8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:39:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9569029749C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:39:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752324AbgJWQiV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:38:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33314 "EHLO mail.kernel.org"
+        id S1752281AbgJWQh4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:37:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33328 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751820AbgJWQdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751835AbgJWQdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:49 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7AA81223EA;
+        by mail.kernel.org (Postfix) with ESMTPSA id 93C4E24684;
         Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470827;
-        bh=BKM7L17mY/AVYbaBekF/DbVRgqrXGbkET0zZgx6V5Lc=;
+        bh=5lHzpILvKYHOsmZv84lgfmyWVXRvs6xXURMjdZd7/44=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=ACHRRoOojGyvIszgvI+ucpIl9hmgrFdRnffyViygY61ouLCIkklOJ08lfUqrZ2tOT
-         y5s2W0xLg1TfwofyHpkDMud4m8qoY30JIXaftKaYcb9CRabNgler2YqVz5XmoXg6Cy
-         CpBxMVEW56BXk5h3ESAzWtBF18hSNmLcSBhzbUCA=
+        b=spattuVYgruS9/Gz1Mm2vLSehqbbHi5E9HrFTSo4vkhPN+/FZ71iEbcuhhUfQGD54
+         hdryU0YtDFgffXSwSqian18NGbzictPIKoUXzcJO+PQ9wZhzAyCYSa/mTfJ8W0R3j5
+         UXKhgGJ9BQoMLKXc9Ark3t7KAwy/6Gx+D9+Bwtmo=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00f-002Aw5-D2; Fri, 23 Oct 2020 18:33:45 +0200
+        id 1kW00f-002Aw7-EE; Fri, 23 Oct 2020 18:33:45 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Kieran Bingham <kieran.bingham+renesas@ideasonboard.com>,
-        Miquel Raynal <miquel.raynal@bootlin.com>,
-        Richard Weinberger <richard@nod.at>,
-        Vignesh Raghavendra <vigneshr@ti.com>,
-        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org
-Subject: [PATCH v3 17/56] mtd: rawnand: fix a kernel-doc markup
-Date:   Fri, 23 Oct 2020 18:33:04 +0200
-Message-Id: <9ed47a57d12c40e73a9b01612ee119d39baa6236.1603469755.git.mchehab+huawei@kernel.org>
+        "David S. Miller" <davem@davemloft.net>,
+        "Jonathan Corbet" <corbet@lwn.net>, Andrew Lunn <andrew@lunn.ch>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH v3 18/56] net: phy: fix kernel-doc markups
+Date:   Fri, 23 Oct 2020 18:33:05 +0200
+Message-Id: <d23c5638c4fd0e7b9f294f2bf647d2386428eb7e.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -48,42 +48,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some identifiers have different names between their prototypes
+Some functions have different names between their prototypes
 and the kernel-doc markup.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/mtd/nand/raw/nand_bbt.c | 2 +-
- include/linux/mtd/rawnand.h     | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/net/phy/mdio_bus.c   | 2 +-
+ drivers/net/phy/phy-c45.c    | 2 +-
+ drivers/net/phy/phy.c        | 2 +-
+ drivers/net/phy/phy_device.c | 2 +-
+ drivers/net/phy/phylink.c    | 2 +-
+ 5 files changed, 5 insertions(+), 5 deletions(-)
 
-diff --git a/drivers/mtd/nand/raw/nand_bbt.c b/drivers/mtd/nand/raw/nand_bbt.c
-index 344a24fd2ca8..dced32a126d9 100644
---- a/drivers/mtd/nand/raw/nand_bbt.c
-+++ b/drivers/mtd/nand/raw/nand_bbt.c
-@@ -1087,7 +1087,7 @@ static int nand_update_bbt(struct nand_chip *this, loff_t offs)
- }
+diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
+index 757e950fb745..e59067c64e97 100644
+--- a/drivers/net/phy/mdio_bus.c
++++ b/drivers/net/phy/mdio_bus.c
+@@ -472,7 +472,7 @@ static inline void of_mdiobus_link_mdiodev(struct mii_bus *mdio,
+ #endif
  
  /**
-- * mark_bbt_regions - [GENERIC] mark the bad block table regions
-+ * mark_bbt_region - [GENERIC] mark the bad block table regions
-  * @this: the NAND device
-  * @td: bad block table descriptor
-  *
-diff --git a/include/linux/mtd/rawnand.h b/include/linux/mtd/rawnand.h
-index aac07940de09..ace1ce70f5e4 100644
---- a/include/linux/mtd/rawnand.h
-+++ b/include/linux/mtd/rawnand.h
-@@ -1286,7 +1286,8 @@ static inline bool nand_is_slc(struct nand_chip *chip)
- }
+- * mdiobus_create_device_from_board_info - create a full MDIO device given
++ * mdiobus_create_device - create a full MDIO device given
+  * a mdio_board_info structure
+  * @bus: MDIO bus to create the devices on
+  * @bi: mdio_board_info structure describing the devices
+diff --git a/drivers/net/phy/phy-c45.c b/drivers/net/phy/phy-c45.c
+index bd11e62bfdfe..077f2929c45e 100644
+--- a/drivers/net/phy/phy-c45.c
++++ b/drivers/net/phy/phy-c45.c
+@@ -9,7 +9,7 @@
+ #include <linux/phy.h>
  
  /**
-- * Check if the opcode's address should be sent only on the lower 8 bits
-+ * nand_opcode_8bits - Check if the opcode's address should be sent only on the
-+ *	lower 8 bits
-  * @command: opcode to check
+- * genphy_c45_setup_forced - configures a forced speed
++ * genphy_c45_pma_setup_forced - configures a forced speed
+  * @phydev: target phy_device struct
   */
- static inline int nand_opcode_8bits(unsigned int command)
+ int genphy_c45_pma_setup_forced(struct phy_device *phydev)
+diff --git a/drivers/net/phy/phy.c b/drivers/net/phy/phy.c
+index 35525a671400..71ed2596acf5 100644
+--- a/drivers/net/phy/phy.c
++++ b/drivers/net/phy/phy.c
+@@ -489,7 +489,7 @@ void phy_queue_state_machine(struct phy_device *phydev, unsigned long jiffies)
+ EXPORT_SYMBOL(phy_queue_state_machine);
+ 
+ /**
+- * phy_queue_state_machine - Trigger the state machine to run now
++ * phy_trigger_machine - Trigger the state machine to run now
+  *
+  * @phydev: the phy_device struct
+  */
+diff --git a/drivers/net/phy/phy_device.c b/drivers/net/phy/phy_device.c
+index 5dab6be6fc38..ea5d5fb42d01 100644
+--- a/drivers/net/phy/phy_device.c
++++ b/drivers/net/phy/phy_device.c
+@@ -2735,7 +2735,7 @@ static int phy_get_int_delay_property(struct device *dev, const char *name)
+ #endif
+ 
+ /**
+- * phy_get_delay_index - returns the index of the internal delay
++ * phy_get_internal_delay - returns the index of the internal delay
+  * @phydev: phy_device struct
+  * @dev: pointer to the devices device struct
+  * @delay_values: array of delays the PHY supports
+diff --git a/drivers/net/phy/phylink.c b/drivers/net/phy/phylink.c
+index fe2296fdda19..1318ccb62bd7 100644
+--- a/drivers/net/phy/phylink.c
++++ b/drivers/net/phy/phylink.c
+@@ -1649,7 +1649,7 @@ int phylink_ethtool_set_pauseparam(struct phylink *pl,
+ EXPORT_SYMBOL_GPL(phylink_ethtool_set_pauseparam);
+ 
+ /**
+- * phylink_ethtool_get_eee_err() - read the energy efficient ethernet error
++ * phylink_get_eee_err() - read the energy efficient ethernet error
+  *   counter
+  * @pl: a pointer to a &struct phylink returned from phylink_create().
+  *
 -- 
 2.26.2
 
