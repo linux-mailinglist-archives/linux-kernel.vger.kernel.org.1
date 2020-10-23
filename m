@@ -2,247 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D515296CBB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:21:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85A54296CC4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:24:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462127AbgJWKUj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:20:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47278 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462109AbgJWKUg (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:20:36 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 10199C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:20:36 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id t14so886329pgg.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:20:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=OJn3vpKHjyunPy1SpVU44rpe3v+8KsE7bamMpHnJEfA=;
-        b=sIRCbRdSslsypUJlXwkdywfbkFkaAOLp9J96punFZJpgC5lsWEp0u0DG3J5MMFe2nD
-         GTePe7hitMrf2Yk6GiU5vGkICySqd0oGgNRcyKV1P7Uj/9gMqqb2X+YbGjIlXxWKihAN
-         MOMYBWzrRydc7VXE7e6lr15QezFLpDq0VsDFA6/PTWlDNCqQftdUwR/azTjzW6Sv19pg
-         p2GrFOqCY94O8uEkWTVSW0qYZHqnHu3FGMK71vNzfaSzI3SotwR8HXwn/lKeNlmvKTo+
-         htT4QvC0Pgx9zJjsivM8ptJ1LHrF1CSCk6aR/IsjqRTaGR+921monB3JpkNkJIq9sC3f
-         wR4A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=OJn3vpKHjyunPy1SpVU44rpe3v+8KsE7bamMpHnJEfA=;
-        b=udkToX0FpyTRy8+hHGP25JexUWuKsn2OmWPBYNT7o/obuhpWxlnv4Re+1a683HcGT6
-         hrL2UHoGB6t098ObBRIDO4RIwaTDCIXDQWxg+CvMe3syJX/RJNRAUwi9Qvy08fbT0r25
-         YzL0BbVCZ4JF130UOCK87vuHqXmZt/Ah4/+IDFJu4oy65w2G2YLAKKibZyMOhO58J6mz
-         xmQc7iNggMEOgHTrB4E8OtynzilDthadr0/la4dgcf8pfnBOhupWhsUNUMMEnBbNfPFU
-         g8AKQNm6WcKoiziwu+1xTd7xKR/7SzEalaenGDYYniB7XcIFAri32uutHF7EgvMi3ebR
-         Vhzw==
-X-Gm-Message-State: AOAM530wr3Qmbu7r7eFggvu2gY8uGwSy3TEEacW2TBP6sCk5yFrXZ2NK
-        KRQjiVcD6nLk/PuOVFLPIGpCEA==
-X-Google-Smtp-Source: ABdhPJxCu5+eJ1PQLkD5WlGnkCCv328uYZldZ4WXNbQc5PMfBye1LisAbvKLs3GXRZqOu1ygYFjt5w==
-X-Received: by 2002:a63:4f26:: with SMTP id d38mr1467103pgb.34.1603448435552;
-        Fri, 23 Oct 2020 03:20:35 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id x2sm1614531pfc.133.2020.10.23.03.20.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Oct 2020 03:20:34 -0700 (PDT)
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Javi Merino <javi.merino@kernel.org>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Amit Kucheria <amitk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, Quentin Perret <qperret@google.com>,
-        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
-Subject: [PATCH V2 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
-Date:   Fri, 23 Oct 2020 15:50:21 +0530
-Message-Id: <11e7c7dcb07ae258fa02e187c9697252f3835466.1603448113.git.viresh.kumar@linaro.org>
-X-Mailer: git-send-email 2.25.0.rc1.19.g042ed3e048af
-In-Reply-To: <cover.1603448113.git.viresh.kumar@linaro.org>
-References: <cover.1603448113.git.viresh.kumar@linaro.org>
+        id S462163AbgJWKYp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:24:45 -0400
+Received: from szxga04-in.huawei.com ([45.249.212.190]:15767 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S375931AbgJWKYo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 06:24:44 -0400
+Received: from DGGEMS411-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id B89FF6F81F2CAD284A06;
+        Fri, 23 Oct 2020 18:24:42 +0800 (CST)
+Received: from localhost.localdomain (10.67.165.24) by
+ DGGEMS411-HUB.china.huawei.com (10.3.19.211) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 23 Oct 2020 18:24:36 +0800
+From:   Qi Liu <liuqi115@huawei.com>
+To:     <mathieu.poirier@linaro.org>, <suzuki.poulose@arm.com>,
+        <Al.Grant@arm.com>, <mike.leach@linaro.org>
+CC:     <linux-kernel@vger.kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linuxarm@huawei.com>
+Subject: [PATCH v3] coresight: etm4x: Modify core-commit of cpu to avoid the overflow of HiSilicon ETM
+Date:   Fri, 23 Oct 2020 18:23:15 +0800
+Message-ID: <1603448595-22615-1-git-send-email-liuqi115@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [10.67.165.24]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Several parts of the kernel are already using the effective CPU
-utilization (as seen by the scheduler) to get the current load on the
-CPU, do the same here instead of depending on the idle time of the CPU,
-which isn't that accurate comparatively.
+The ETM device can't keep up with the core pipeline when cpu core
+is at full speed. This may cause overflow within core and its ETM.
+This is a common phenomenon on ETM devices.
 
-Note that, this (and CPU frequency scaling in general) doesn't work that
-well with idle injection as that is done from rt threads and is counted
-as load while it tries to do quite the opposite. That should be solved
-separately though.
+On HiSilicon Hip08 platform, a specific feature is added to set
+core pipeline. So commit rate can be reduced manually to avoid ETM
+overflow.
 
-Signed-off-by: Viresh Kumar <viresh.kumar@linaro.org>
+Signed-off-by: Qi Liu <liuqi115@huawei.com>
 ---
- drivers/thermal/cpufreq_cooling.c | 70 +++++++------------------------
- 1 file changed, 16 insertions(+), 54 deletions(-)
+Change since v1:
+- add CONFIG_ETM4X_IMPDEF_FEATURE and CONFIG_ETM4X_IMPDEF_HISILICON
+  to keep specific feature off platforms which don't use it.
+Change since v2:
+- remove some unused variable.
 
-diff --git a/drivers/thermal/cpufreq_cooling.c b/drivers/thermal/cpufreq_cooling.c
-index cc2959f22f01..1315e4d4758b 100644
---- a/drivers/thermal/cpufreq_cooling.c
-+++ b/drivers/thermal/cpufreq_cooling.c
-@@ -19,6 +19,7 @@
- #include <linux/idr.h>
- #include <linux/pm_opp.h>
- #include <linux/pm_qos.h>
-+#include <linux/sched.h>
- #include <linux/slab.h>
- #include <linux/thermal.h>
- 
-@@ -38,16 +39,6 @@
-  *	...
-  */
- 
--/**
-- * struct time_in_idle - Idle time stats
-- * @time: previous reading of the absolute time that this cpu was idle
-- * @timestamp: wall time of the last invocation of get_cpu_idle_time_us()
-- */
--struct time_in_idle {
--	u64 time;
--	u64 timestamp;
--};
--
- /**
-  * struct cpufreq_cooling_device - data for cooling device with cpufreq
-  * @id: unique integer value corresponding to each cpufreq_cooling_device
-@@ -62,7 +53,6 @@ struct time_in_idle {
-  *	registered cooling device.
-  * @policy: cpufreq policy.
-  * @node: list_head to link all cpufreq_cooling_device together.
-- * @idle_time: idle time stats
-  * @qos_req: PM QoS contraint to apply
-  *
-  * This structure is required for keeping information of each registered
-@@ -76,7 +66,6 @@ struct cpufreq_cooling_device {
- 	struct em_perf_domain *em;
- 	struct cpufreq_policy *policy;
- 	struct list_head node;
--	struct time_in_idle *idle_time;
- 	struct freq_qos_request qos_req;
+ drivers/hwtracing/coresight/Kconfig                | 18 ++++++++
+ drivers/hwtracing/coresight/coresight-etm4x-core.c | 50 ++++++++++++++++++++++
+ 2 files changed, 68 insertions(+)
+
+diff --git a/drivers/hwtracing/coresight/Kconfig b/drivers/hwtracing/coresight/Kconfig
+index c119824..9665d70 100644
+--- a/drivers/hwtracing/coresight/Kconfig
++++ b/drivers/hwtracing/coresight/Kconfig
+@@ -110,6 +110,24 @@ config CORESIGHT_SOURCE_ETM4X
+ 	  To compile this driver as a module, choose M here: the
+ 	  module will be called coresight-etm4x.
+
++config ETM4X_IMPDEF_FEATURE
++	bool "Control overflow impdef support in CoreSight ETM 4.x driver "
++	depends on CORESIGHT_SOURCE_ETM4X
++	help
++	  This control provides overflow implement define for CoreSight
++	  ETM 4.x tracer module which could not reduce commit race
++	  automatically, and could avoid overflow within ETM tracer module
++	  and its cpu core.
++
++config ETM4X_IMPDEF_HISILICON
++	bool "Control overflow impdef support in HiSilicon ETM 4.x driver "
++	depends on ETM4X_IMPDEF_FEATURE
++	help
++	  This control provides overflow implement define for HiSilicon
++	  ETM 4.x tracer module of Hip08 platform. Overflow within ETM
++	  tracer module and its cpu core can be avoided by reducing core
++	  commit manually.
++
+ config CORESIGHT_STM
+ 	tristate "CoreSight System Trace Macrocell driver"
+ 	depends on (ARM && !(CPU_32v3 || CPU_32v4 || CPU_32v4T)) || ARM64
+diff --git a/drivers/hwtracing/coresight/coresight-etm4x-core.c b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+index abd706b..35f4333 100644
+--- a/drivers/hwtracing/coresight/coresight-etm4x-core.c
++++ b/drivers/hwtracing/coresight/coresight-etm4x-core.c
+@@ -103,12 +103,61 @@ struct etm4_enable_arg {
+ 	int rc;
  };
- 
-@@ -132,34 +121,18 @@ static u32 cpu_power_to_freq(struct cpufreq_cooling_device *cpufreq_cdev,
- }
- 
- /**
-- * get_load() - get load for a cpu since last updated
-- * @cpufreq_cdev:	&struct cpufreq_cooling_device for this cpu
-+ * get_load() - get current load for a cpu
-  * @cpu:	cpu number
-- * @cpu_idx:	index of the cpu in time_in_idle*
-  *
-- * Return: The average load of cpu @cpu in percentage since this
-- * function was last called.
-+ * Return: The current load of cpu @cpu in percentage.
-  */
--static u32 get_load(struct cpufreq_cooling_device *cpufreq_cdev, int cpu,
--		    int cpu_idx)
-+static u32 get_load(int cpu)
+
++#ifdef CONFIG_ETM4X_IMPDEF_FEATURE
++
++#ifdef CONFIG_ETM4X_IMPDEF_HISILICON
++
++#define HISI_HIP08_CORE_COMMIT_CLEAR	0x3000
++#define HISI_HIP08_CORE_COMMIT_SHIFT	12
++static void etm4_hisi_config_core_commit(int flag)
++{
++	u64 val;
++
++	asm volatile("mrs %0,s3_1_c15_c2_5" : "=r"(val));
++	val &= ~HISI_HIP08_CORE_COMMIT_CLEAR;
++	val |= flag << HISI_HIP08_CORE_COMMIT_SHIFT;
++	asm volatile("msr s3_1_c15_c2_5,%0" : : "r"(val));
++}
++#else
++static void etm4_hisi_config_core_commit(int flag)
++{
++}
++#endif /* CONFIG_ETM4X_IMPDEF_HISILICON */
++
++static void etm4_enable_arch_specific(void)
++{
++	/*
++	 * If ETM device is HiSilicon ETM device, reduce the
++	 * core-commit to avoid ETM overflow.
++	 */
++	etm4_hisi_config_core_commit(1);
++}
++
++static void etm4_disable_arch_specific(void)
++{
++	/*
++	 * If ETM device is HiSilicon ETM device, resume the
++	 * core-commit after ETM trace is complete.
++	 */
++	etm4_hisi_config_core_commit(0);
++}
++#else
++static void etm4_enable_arch_specific(void)
++{
++}
++
++static void etm4_disable_arch_specific(void)
++{
++}
++#endif /* CONFIG_ETM4X_IMPDEF_FEATURE */
++
+ static int etm4_enable_hw(struct etmv4_drvdata *drvdata)
  {
--	u32 load;
--	u64 now, now_idle, delta_time, delta_idle;
--	struct time_in_idle *idle_time = &cpufreq_cdev->idle_time[cpu_idx];
--
--	now_idle = get_cpu_idle_time(cpu, &now, 0);
--	delta_idle = now_idle - idle_time->time;
--	delta_time = now - idle_time->timestamp;
-+	unsigned long max = arch_scale_cpu_capacity(cpu);
-+	unsigned long util;
- 
--	if (delta_time <= delta_idle)
--		load = 0;
--	else
--		load = div64_u64(100 * (delta_time - delta_idle), delta_time);
--
--	idle_time->time = now_idle;
--	idle_time->timestamp = now;
--
--	return load;
-+	util = sched_cpu_util(cpu, ENERGY_UTIL, max);
-+	return (util * 100) / max;
- }
- 
- /**
-@@ -191,13 +164,12 @@ static u32 get_dynamic_power(struct cpufreq_cooling_device *cpufreq_cdev,
-  * Instead, we calculate the current power on the assumption that the
-  * immediate future will look like the immediate past.
-  *
-- * We use the current frequency and the average load since this
-- * function was last called.  In reality, there could have been
-- * multiple opps since this function was last called and that affects
-- * the load calculation.  While it's not perfectly accurate, this
-- * simplification is good enough and works.  REVISIT this, as more
-- * complex code may be needed if experiments show that it's not
-- * accurate enough.
-+ * We use the current frequency and the current load.  In reality,
-+ * there could have been multiple opps since this function was last
-+ * called and that affects the load calculation.  While it's not
-+ * perfectly accurate, this simplification is good enough and works.
-+ * REVISIT this, as more complex code may be needed if experiments show
-+ * that it's not accurate enough.
-  *
-  * Return: 0 on success, -E* if getting the static power failed.
-  */
-@@ -223,7 +195,7 @@ static int cpufreq_get_requested_power(struct thermal_cooling_device *cdev,
- 		u32 load;
- 
- 		if (cpu_online(cpu))
--			load = get_load(cpufreq_cdev, cpu, i);
-+			load = get_load(cpu);
- 		else
- 			load = 0;
- 
-@@ -517,13 +489,6 @@ __cpufreq_cooling_register(struct device_node *np,
- 
- 	cpufreq_cdev->policy = policy;
- 	num_cpus = cpumask_weight(policy->related_cpus);
--	cpufreq_cdev->idle_time = kcalloc(num_cpus,
--					 sizeof(*cpufreq_cdev->idle_time),
--					 GFP_KERNEL);
--	if (!cpufreq_cdev->idle_time) {
--		cdev = ERR_PTR(-ENOMEM);
--		goto free_cdev;
--	}
- 
- 	/* max_level is an index, not a counter */
- 	cpufreq_cdev->max_level = i - 1;
-@@ -531,7 +496,7 @@ __cpufreq_cooling_register(struct device_node *np,
- 	ret = ida_simple_get(&cpufreq_ida, 0, 0, GFP_KERNEL);
- 	if (ret < 0) {
- 		cdev = ERR_PTR(ret);
--		goto free_idle_time;
-+		goto free_cdev;
- 	}
- 	cpufreq_cdev->id = ret;
- 
-@@ -580,8 +545,6 @@ __cpufreq_cooling_register(struct device_node *np,
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
- remove_ida:
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
--free_idle_time:
--	kfree(cpufreq_cdev->idle_time);
- free_cdev:
- 	kfree(cpufreq_cdev);
- 	return cdev;
-@@ -674,7 +637,6 @@ void cpufreq_cooling_unregister(struct thermal_cooling_device *cdev)
- 	thermal_cooling_device_unregister(cdev);
- 	freq_qos_remove_request(&cpufreq_cdev->qos_req);
- 	ida_simple_remove(&cpufreq_ida, cpufreq_cdev->id);
--	kfree(cpufreq_cdev->idle_time);
- 	kfree(cpufreq_cdev);
- }
- EXPORT_SYMBOL_GPL(cpufreq_cooling_unregister);
--- 
-2.25.0.rc1.19.g042ed3e048af
+ 	int i, rc;
+ 	struct etmv4_config *config = &drvdata->config;
+ 	struct device *etm_dev = &drvdata->csdev->dev;
+
++	etm4_enable_arch_specific();
+ 	CS_UNLOCK(drvdata->base);
+
+ 	etm4_os_unlock(drvdata);
+@@ -475,6 +524,7 @@ static void etm4_disable_hw(void *info)
+ 	struct device *etm_dev = &drvdata->csdev->dev;
+ 	int i;
+
++	etm4_disable_arch_specific();
+ 	CS_UNLOCK(drvdata->base);
+
+ 	if (!drvdata->skip_power_up) {
+--
+2.8.1
 
