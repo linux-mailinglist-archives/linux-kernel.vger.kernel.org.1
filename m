@@ -2,42 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A556729749A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:39:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0ECDC29749D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:39:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752268AbgJWQhz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:37:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33218 "EHLO mail.kernel.org"
+        id S1751463AbgJWQh6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:37:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751827AbgJWQdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751826AbgJWQdt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:49 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B0D0E2466D;
+        by mail.kernel.org (Postfix) with ESMTPSA id A855F2468B;
         Fri, 23 Oct 2020 16:33:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470827;
-        bh=BrsZBR7koQ2qqaFL6eRPtePdqxTR24Sc0qDlBGevrWk=;
+        bh=qr1Bdzxu66hg12cVA1OzgoArW19xtMHTbFo6QeDuuRI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Oimw/63ihrsrByKmuEIfkXz18LwbL23JWKnDIaq4NZvGnZjQUJuE4FN72bBwDL4VD
-         d7+Z3kniZAlRjNTgEYrQQF2yXs608iKz5N+PisrjCLBkZGdXTvb20GEtFV3A1xKZas
-         BnRm7o2v/Eft026HnzfziiCeiVW+ViCc+RZTxqU0=
+        b=USsA8KUhim9AG5ih7fqD4h+zUCU3gsUMjm0mF9FGizpIdPcdY1oTVyv1+mRMbAvxB
+         HO636PBqTfDMFq1atO4dDvBkQPDHKR9qbCztWuDbfGwvTE1hLViArQ3zRXV2ZiF7ct
+         SjBA1Zo69J0PuKKETwd8lP17KygObCzn2WPem1Tw=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00f-002AwE-J5; Fri, 23 Oct 2020 18:33:45 +0200
+        id 1kW00f-002AwH-LI; Fri, 23 Oct 2020 18:33:45 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH v3 21/56] mac80211: fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:08 +0200
-Message-Id: <978d35eef2dc76e21c81931804e4eaefbd6d635e.1603469755.git.mchehab+huawei@kernel.org>
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH v3 22/56] parport: fix a kernel-doc markup
+Date:   Fri, 23 Oct 2020 18:33:09 +0200
+Message-Id: <7d7bc15bf755561c230ba95b4fc083fa1026a942.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -48,123 +45,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some identifiers have different names between their prototypes
-and the kernel-doc markup.
+The kernel-doc markup inside share.c is actually for
+__parport_register_driver. The actual goal seems to be
+to document parport_register_driver().
 
-Others need to be fixed, as kernel-doc markups should use this format:
-        identifier - description
-
-In the specific case of __sta_info_flush(), add a documentation
-for sta_info_flush(), as this one is the one used outside
-sta_info.c.
+So, fix the existing markup and add a new one.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- include/net/cfg80211.h  | 9 +++++----
- include/net/mac80211.h  | 7 ++++---
- net/mac80211/sta_info.h | 9 ++++++++-
- 3 files changed, 17 insertions(+), 8 deletions(-)
+ drivers/parport/share.c |  2 +-
+ include/linux/parport.h | 31 +++++++++++++++++++++++++++++++
+ 2 files changed, 32 insertions(+), 1 deletion(-)
 
-diff --git a/include/net/cfg80211.h b/include/net/cfg80211.h
-index 661edfc8722e..d5ab8d99739f 100644
---- a/include/net/cfg80211.h
-+++ b/include/net/cfg80211.h
-@@ -1444,7 +1444,7 @@ int cfg80211_check_station_change(struct wiphy *wiphy,
- 				  enum cfg80211_station_type statype);
+diff --git a/drivers/parport/share.c b/drivers/parport/share.c
+index 7fec4fefe151..62f8407923d4 100644
+--- a/drivers/parport/share.c
++++ b/drivers/parport/share.c
+@@ -243,7 +243,7 @@ static int port_detect(struct device *dev, void *dev_drv)
+ }
  
  /**
-- * enum station_info_rate_flags - bitrate info flags
-+ * enum rate_info_flags - bitrate info flags
-  *
-  * Used by the driver to indicate the specific rate transmission
-  * type for 802.11n transmissions.
-@@ -1517,7 +1517,7 @@ struct rate_info {
- };
- 
- /**
-- * enum station_info_rate_flags - bitrate info flags
-+ * enum bss_param_flags - bitrate info flags
-  *
-  * Used by the driver to indicate the specific rate transmission
-  * type for 802.11n transmissions.
-@@ -6467,7 +6467,8 @@ void cfg80211_ibss_joined(struct net_device *dev, const u8 *bssid,
- 			  struct ieee80211_channel *channel, gfp_t gfp);
- 
- /**
-- * cfg80211_notify_new_candidate - notify cfg80211 of a new mesh peer candidate
-+ * cfg80211_notify_new_peer_candidate - notify cfg80211 of a new mesh peer
-+ * 					candidate
-  *
-  * @dev: network device
-  * @macaddr: the MAC address of the new candidate
-@@ -7606,7 +7607,7 @@ u32 cfg80211_calculate_bitrate(struct rate_info *rate);
- void cfg80211_unregister_wdev(struct wireless_dev *wdev);
- 
- /**
-- * struct cfg80211_ft_event - FT Information Elements
-+ * struct cfg80211_ft_event_params - FT Information Elements
-  * @ies: FT IEs
-  * @ies_len: length of the FT IE in bytes
-  * @target_ap: target AP's MAC address
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index e8e295dae744..dcdba96814a2 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -3311,7 +3311,7 @@ enum ieee80211_roc_type {
- };
- 
- /**
-- * enum ieee80211_reconfig_complete_type - reconfig type
-+ * enum ieee80211_reconfig_type - reconfig type
-  *
-  * This enum is used by the reconfig_complete() callback to indicate what
-  * reconfiguration type was completed.
-@@ -6334,7 +6334,8 @@ bool ieee80211_tx_prepare_skb(struct ieee80211_hw *hw,
- 			      int band, struct ieee80211_sta **sta);
- 
- /**
-- * Sanity-check and parse the radiotap header of injected frames
-+ * ieee80211_parse_tx_radiotap - Sanity-check and parse the radiotap header
-+ *				 of injected frames
-  * @skb: packet injected by userspace
-  * @dev: the &struct device of this 802.11 device
+- *	parport_register_driver - register a parallel port device driver
++ *	__parport_register_driver - register a parallel port device driver
+  *	@drv: structure describing the driver
+  *	@owner: owner module of drv
+  *	@mod_name: module name string
+diff --git a/include/linux/parport.h b/include/linux/parport.h
+index 1fb508c19e83..f981f794c850 100644
+--- a/include/linux/parport.h
++++ b/include/linux/parport.h
+@@ -297,6 +297,37 @@ int __must_check __parport_register_driver(struct parport_driver *,
+  * parport_register_driver must be a macro so that KBUILD_MODNAME can
+  * be expanded
   */
-@@ -6389,7 +6390,7 @@ int ieee80211_parse_p2p_noa(const struct ieee80211_p2p_noa_attr *attr,
- void ieee80211_update_p2p_noa(struct ieee80211_noa_data *data, u32 tsf);
- 
- /**
-- * ieee80211_tdls_oper - request userspace to perform a TDLS operation
-+ * ieee80211_tdls_oper_request - request userspace to perform a TDLS operation
-  * @vif: virtual interface
-  * @peer: the peer's destination address
-  * @oper: the requested TDLS operation
-diff --git a/net/mac80211/sta_info.h b/net/mac80211/sta_info.h
-index 00ae81e9e1a1..7afd07636b81 100644
---- a/net/mac80211/sta_info.h
-+++ b/net/mac80211/sta_info.h
-@@ -785,7 +785,7 @@ int sta_info_init(struct ieee80211_local *local);
- void sta_info_stop(struct ieee80211_local *local);
- 
- /**
-- * sta_info_flush - flush matching STA entries from the STA table
-+ * __sta_info_flush - flush matching STA entries from the STA table
-  *
-  * Returns the number of removed STA entries.
-  *
-@@ -794,6 +794,13 @@ void sta_info_stop(struct ieee80211_local *local);
-  */
- int __sta_info_flush(struct ieee80211_sub_if_data *sdata, bool vlans);
- 
++
 +/**
-+ * sta_info_flush - flush matching STA entries from the STA table
++ *	parport_register_driver - register a parallel port device driver
++ *	@driver: structure describing the driver
 + *
-+ * Returns the number of removed STA entries.
++ *	This can be called by a parallel port device driver in order
++ *	to receive notifications about ports being found in the
++ *	system, as well as ports no longer available.
 + *
-+ * @sdata: sdata to remove all stations from
-+ */
- static inline int sta_info_flush(struct ieee80211_sub_if_data *sdata)
- {
- 	return __sta_info_flush(sdata, false);
++ *	If devmodel is true then the new device model is used
++ *	for registration.
++ *
++ *	The @driver structure is allocated by the caller and must not be
++ *	deallocated until after calling parport_unregister_driver().
++ *
++ *	If using the non device model:
++ *	The driver's attach() function may block.  The port that
++ *	attach() is given will be valid for the duration of the
++ *	callback, but if the driver wants to take a copy of the
++ *	pointer it must call parport_get_port() to do so.  Calling
++ *	parport_register_device() on that port will do this for you.
++ *
++ *	The driver's detach() function may block.  The port that
++ *	detach() is given will be valid for the duration of the
++ *	callback, but if the driver wants to take a copy of the
++ *	pointer it must call parport_get_port() to do so.
++ *
++ *
++ *	Returns 0 on success. The non device model will always succeeds.
++ *	but the new device model can fail and will return the error code.
++ **/
+ #define parport_register_driver(driver)             \
+ 	__parport_register_driver(driver, THIS_MODULE, KBUILD_MODNAME)
+ 
 -- 
 2.26.2
 
