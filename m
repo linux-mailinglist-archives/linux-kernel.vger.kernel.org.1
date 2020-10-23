@@ -2,123 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CADAA2968C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:30:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BB85F2968C7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:31:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374878AbgJWDah (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 23:30:37 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40722 "EHLO
+        id S460387AbgJWDbu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 23:31:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40948 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374855AbgJWDa3 (ORCPT
+        with ESMTP id S460381AbgJWDbp (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 23:30:29 -0400
-Received: from mail-qv1-xf4a.google.com (mail-qv1-xf4a.google.com [IPv6:2607:f8b0:4864:20::f4a])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9919AC0613CF
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:30:27 -0700 (PDT)
-Received: by mail-qv1-xf4a.google.com with SMTP id s9so114543qvd.17
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:30:27 -0700 (PDT)
+        Thu, 22 Oct 2020 23:31:45 -0400
+Received: from mail-ua1-x961.google.com (mail-ua1-x961.google.com [IPv6:2607:f8b0:4864:20::961])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E36E0C0613CF
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
+Received: by mail-ua1-x961.google.com with SMTP id x11so1123405uav.1
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=6HFlEVpudWH5pffnpQkc+Yc/oxstkbax6tUIXieA0lk=;
-        b=iVgGGpv/7FVDQ3pQoJo5ENDkVCIPPnAb2W/P85Q5YObYQ2qOZxGF5aIUBugdD4WxjU
-         Z5RiS70Guwrf2/je+hqDDOaMglLC2zunZShamfYLdW7/LeCKyl0Jm+323jMv/JP4bdLn
-         Cnc1mlvlswebVTlRL7llKF7A6RsRxb5HywKIzg2GugnXeaGy2yJebCLgsW4mT3HNGT67
-         Q9Ykutn29AadOxcTFqlJfponLBNNUotM0TG5bkKPWwVkNvEfLOzYa4mI5lFBvayOC1b3
-         zP5wOtjf8ftz3PMQHQr6qhUXN6Jm0YYw/T2c3+BrXI0d1YjElTouA69Vo9i4xhiZB1ok
-         Vx0Q==
+        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=ReTTaNs/1URCBe015zmmsnkZL8avfnlCHdKrYfMsUo4=;
+        b=iX0Eh39aqpOwnxJBatJaScEMnOAfgzq3qvGvZLeXjM61EmZgTGO89tuYRjCMi4Vks6
+         qrjr0Cua8S6hdGMKyDsTBRvygocQyPw+RKQa4U++kuTdKniSwXCoYQ3zAtg1Cik9M8my
+         xIUsq5GOicpeaB6RciM+uis9JHr5+7lizqD5ram1wHEhcWoqZjrwrbYW6pg0lAwlw7kY
+         Gy+KctTCtbD4G3F/SdXA8YY0t9egtxPxywawRsvnw84v95zN9mgHqT63yn0Ch7OuRvZh
+         MtFgXjlqxV0KsqWdGGjmAvT3afzaxfhN0//s7pRfWmHzy9C2FG3iKHUdA8ehJi5kfmv7
+         /dAQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=6HFlEVpudWH5pffnpQkc+Yc/oxstkbax6tUIXieA0lk=;
-        b=p1t/h43LwhrM+uJ9DLDuv0EFsPzbSbC84v0j1zVHxW6NKleyOYSpy5JugspJB1uT2u
-         ictlpx6ubSYy5MhdizLX9tbLFHPCL8iIgFu51QQLFbnvqfcI/YmV247aytKOEe3yf+zm
-         b/w+mrixKKpljSYFRtKwm3Hsu1ALaWUC0fekmiUJ4g2udrtvDEL64be27DL4U/isjVTD
-         J7mi4fB6UL0GJJAEUonpv1oCYdrBHcfkl6EWTwUUn4aQObx9MjiMtK+oHF1e1h+oAydo
-         p0aKLiPd34xHq8HcJlR2ZY3EQ41NYACMGH9jBnVRkBxAZJ6HOUjJ+TPNIY18ZCmvN6Hq
-         f4yQ==
-X-Gm-Message-State: AOAM533P0v0p5VrgTkAKC4ZDcfxskfasROpOOGsehIezI7bAssBdG2sE
-        bUVq9k3ekLiWneInE6nv2QfpOphZmB3V
-X-Google-Smtp-Source: ABdhPJywFZ9nl2zxccBBMSoKLsYKnTzcd6iRKtoGpdGnB7NFOH56JsDER6SvXGz5MrN+E2VlfKYlk66r6HEj
-Sender: "joshdon via sendgmr" <joshdon@joshdon.svl.corp.google.com>
-X-Received: from joshdon.svl.corp.google.com ([2620:15c:2cd:202:a28c:fdff:fee1:cc86])
- (user=joshdon job=sendgmr) by 2002:ad4:43ca:: with SMTP id
- o10mr376677qvs.33.1603423826790; Thu, 22 Oct 2020 20:30:26 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 20:29:44 -0700
-In-Reply-To: <20201023032944.399861-1-joshdon@google.com>
-Message-Id: <20201023032944.399861-3-joshdon@google.com>
-Mime-Version: 1.0
-References: <20201023032944.399861-1-joshdon@google.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH 3/3] net: better handling for network busy poll
-From:   Josh Don <joshdon@google.com>
-To:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>
-Cc:     Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Eric Dumazet <edumazet@google.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        kvm@vger.kernel.org, Josh Don <joshdon@google.com>,
-        Xi Wang <xii@google.com>
-Content-Type: text/plain; charset="UTF-8"
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=ReTTaNs/1URCBe015zmmsnkZL8avfnlCHdKrYfMsUo4=;
+        b=g3eqOYEBEKPHBQB+fJCBffiAig+olsI6aKCqMozlTTXcL9XOjoA6DsjIN5sAv5loLp
+         px6SnU9HBt3+SrT3iCMp9euOF1T7FiCK+vFmjY1QGEw0JvD8ypT1fbaZvytNMaZ2bQBK
+         Km3msbOrW0zql5yZp1yU5UNUfk8r/jfD0M5GLjTBNHhsH4eMMOxojdJnBXUXoG8qOOvq
+         UzUdkR+SEzhV2N/zIYHLWeFv+9/cc9Qp8ZzqQO3eTDDx2E/RxU62ZuFlyhBQ8WnEzujs
+         vZtsUMt2MfbowFT9addUYZSH2KJdVmA1+IyVXeGOuTHSDdmh4gYAH5Z1KUZyX0/eNyTM
+         ujzA==
+X-Gm-Message-State: AOAM530/4GTNf5z2GdB0wz4oORpW21+14GgI9zqLXEwGkcbAI3RSPquD
+        CsPoqjUnY65slVsD5iA5DnnL8SMEiHz3S6g+rBhtkSNaqLieHA==
+X-Google-Smtp-Source: ABdhPJwIWpFcsIiW8yfvDvEBcQIxb250sa2gQL1dNp7BJ2OoScUbPyV7hwErd66vzdMT6prDPTQFu4kP6WJF
+X-Received: by 2002:ab0:77d8:: with SMTP id y24mr130681uar.72.1603423903067;
+        Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
+Received: from dcs.hq.drivescale.com ([68.74.115.3])
+        by smtp-relay.gmail.com with ESMTP id p17sm40671vkf.7.2020.10.22.20.31.42;
+        Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
+X-Relaying-Domain: drivescale.com
+Received: from localhost.localdomain (gw1-dc.hq.drivescale.com [192.168.33.175])
+        by dcs.hq.drivescale.com (Postfix) with ESMTP id 2E05A420D3;
+        Fri, 23 Oct 2020 03:31:42 +0000 (UTC)
+From:   Christopher Unkel <cunkel@drivescale.com>
+To:     linux-raid@vger.kernel.org
+Cc:     linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
+        cunkel@drivescale.com
+Subject: [PATCH 0/3] mdraid sb and bitmap write alignment on 512e drives
+Date:   Thu, 22 Oct 2020 20:31:27 -0700
+Message-Id: <20201023033130.11354-1-cunkel@drivescale.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add the new functions prepare_to_busy_poll() and friends to
-napi_busy_loop(). The busy polling cpu will be considered an idle
-target during wake up balancing.
+Hello all,
 
-Suggested-by: Xi Wang <xii@google.com>
-Signed-off-by: Josh Don <joshdon@google.com>
-Signed-off-by: Xi Wang <xii@google.com>
----
- net/core/dev.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+While investigating some performance issues on mdraid 10 volumes
+formed with "512e" disks (4k native/physical sector size but with 512
+byte sector emulation), I've found two cases where mdraid will
+needlessly issue writes that start on 4k byte boundary, but are are
+shorter than 4k:
 
-diff --git a/net/core/dev.c b/net/core/dev.c
-index 266073e300b5..4fb4ae4b27fc 100644
---- a/net/core/dev.c
-+++ b/net/core/dev.c
-@@ -6476,7 +6476,7 @@ void napi_busy_loop(unsigned int napi_id,
- 	if (!napi)
- 		goto out;
- 
--	preempt_disable();
-+	prepare_to_busy_poll(); /* disables preemption */
- 	for (;;) {
- 		int work = 0;
- 
-@@ -6509,10 +6509,10 @@ void napi_busy_loop(unsigned int napi_id,
- 		if (!loop_end || loop_end(loop_end_arg, start_time))
- 			break;
- 
--		if (unlikely(need_resched())) {
-+		if (unlikely(!continue_busy_poll())) {
- 			if (napi_poll)
- 				busy_poll_stop(napi, have_poll_lock);
--			preempt_enable();
-+			end_busy_poll(true);
- 			rcu_read_unlock();
- 			cond_resched();
- 			if (loop_end(loop_end_arg, start_time))
-@@ -6523,7 +6523,7 @@ void napi_busy_loop(unsigned int napi_id,
- 	}
- 	if (napi_poll)
- 		busy_poll_stop(napi, have_poll_lock);
--	preempt_enable();
-+	end_busy_poll(true);
- out:
- 	rcu_read_unlock();
- }
+1. writes of the raid superblock; and
+2. writes of the last page of the write-intent bitmap.
+
+The following is an excerpt of a blocktrace of one of the component
+members of a mdraid 10 volume during a 4k write near the end of the
+array:
+
+  8,32  11        2     0.000001687   711  D  WS 2064 + 8 [kworker/11:1H]
+* 8,32  11        5     0.001454119   711  D  WS 2056 + 1 [kworker/11:1H]
+* 8,32  11        8     0.002847204   711  D  WS 2080 + 7 [kworker/11:1H]
+  8,32  11       11     0.003700545  3094  D  WS 11721043920 + 8 [md127_raid1]
+  8,32  11       14     0.308785692   711  D  WS 2064 + 8 [kworker/11:1H]
+* 8,32  11       17     0.310201697   711  D  WS 2056 + 1 [kworker/11:1H]
+  8,32  11       20     5.500799245   711  D  WS 2064 + 8 [kworker/11:1H]
+* 8,32  11       23    15.740923558   711  D  WS 2080 + 7 [kworker/11:1H]
+
+Note the starred transactions, which each start on a 4k boundary, but
+are less than 4k in length, and so will use the 512-byte emulation.
+Sector 2056 holds the superblock, and is written as a single 512-byte
+write.  Sector 2086 holds the bitmap bit relevant to the written
+sector.  When it is written the active bits of the last page of the
+bitmap are written, starting at sector 2080, padded out to the end of
+the 512-byte logical sector as required.  This results in a 3.5kb
+write, again using the 512-byte emulation.
+
+Note that in some arrays the last page of the bitmap may be
+sufficiently full that they are not affected by the issue with the
+bitmap write.
+
+As there can be a substantial penalty to using the 512-byte sector
+emulation (turning writes into read-modify writes if the relevant
+sector is not in the drive's cache) I believe it makes sense to pad
+these writes out to a 4k boundary.  The writes are already padded out
+for "4k native" drives, where the short access is illegal.
+
+The following patch set changes the superblock and bitmap writes to
+respect the physical block size (e.g. 4k for today's 512e drives) when
+possible.  In each case there is already logic for padding out to the
+underlying logical sector size.  I reuse or repeat the logic for
+padding out to the physical sector size, but treat the padding out as
+optional rather than mandatory.
+
+The corresponding block trace with these patches is:
+
+   8,32   1        2     0.000003410   694  D  WS 2064 + 8 [kworker/1:1H]
+   8,32   1        5     0.001368788   694  D  WS 2056 + 8 [kworker/1:1H]
+   8,32   1        8     0.002727981   694  D  WS 2080 + 8 [kworker/1:1H]
+   8,32   1       11     0.003533831  3063  D  WS 11721043920 + 8 [md127_raid1]
+   8,32   1       14     0.253952321   694  D  WS 2064 + 8 [kworker/1:1H]
+   8,32   1       17     0.255354215   694  D  WS 2056 + 8 [kworker/1:1H]
+   8,32   1       20     5.337938486   694  D  WS 2064 + 8 [kworker/1:1H]
+   8,32   1       23    15.577963062   694  D  WS 2080 + 8 [kworker/1:1H]
+
+I do notice that the code for bitmap writes has a more sophisticated
+and thorough check for overlap than the code for superblock writes.
+(Compare write_sb_page in md-bitmap.c vs. super_1_load in md.c.) From
+what I know since the various structures starts have always been 4k
+aligned anyway, it is always safe to pad the superblock write out to
+4k (as occurs on 4k native drives) but not necessarily futher.
+
+Feedback appreciated.
+
+  --Chris
+
+
+Christopher Unkel (3):
+  md: align superblock writes to physical blocks
+  md: factor sb write alignment check into function
+  md: pad writes to end of bitmap to physical blocks
+
+ drivers/md/md-bitmap.c | 80 +++++++++++++++++++++++++-----------------
+ drivers/md/md.c        | 15 ++++++++
+ 2 files changed, 63 insertions(+), 32 deletions(-)
+
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+2.17.1
 
