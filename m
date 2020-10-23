@@ -2,82 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D16C0296DF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:50:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FB84296DFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:55:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463212AbgJWLuB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:50:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55486 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S463205AbgJWLuA (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:50:00 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603453799;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=9AfaYkVLSY802vzN1LJgcu333YmY7HCYO1P84FAMi/c=;
-        b=VhPvxGOCKGQS4yA7Fk0Kl6fSkFlLXWwjBdCv2Y1vyqBjIFLtQrXRJZueUokKs2ZZ9mkwQD
-        msftKzV9SVTHY0X4ubAGAOvLyGd/s0SriHHK5gLceSyz11jm4bRZw/0O0HMqRyTuRnBOpq
-        Vy3+v4ISg/urQrV6dHVSXmf8zgRqrBo=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 6A121ACBF;
-        Fri, 23 Oct 2020 11:49:59 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 13:49:58 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     John Ogness <john.ogness@linutronix.de>
-Cc:     Guenter Roeck <linux@roeck-us.net>,
-        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] printk: Add kernel parameter: mute_console
-Message-ID: <20201023114958.GE32486@alley>
-References: <20201022114228.9098-1-pmladek@suse.com>
- <20201022114228.9098-2-pmladek@suse.com>
- <87a6wez9s4.fsf@jogness.linutronix.de>
- <5a30b3e8-c2c3-ceae-517e-c93fb2c3118f@roeck-us.net>
- <877driz50k.fsf@jogness.linutronix.de>
+        id S463226AbgJWLyq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:54:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33590 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S463215AbgJWLyp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:54:45 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DBBE8C0613CE;
+        Fri, 23 Oct 2020 04:54:44 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id s22so1039492pga.9;
+        Fri, 23 Oct 2020 04:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
+         :user-agent;
+        bh=08FxWPaHOZfE7vb8PUbzmWXfr0VHNirhD4p1dQWe7f8=;
+        b=HIBBt/puogeHvSvzCMXjQXsQgSaRU3Y65wcmIEES6DFYsPJ9NIPvuUdOWI+IP+ITXc
+         v3I36L7CxFXMul1PTDIPZoPoSQjR45g2PeSu2yQjixGNHkWtBQydLavAdKvx5E8FlXbc
+         u3Rx7IkRpLEnd9Poa4m+SxxWvx5Odzq3SHYcbNvOHGhwfD0XqTtNTQAaoxOKWiOC4oIF
+         J/HpJcRMlVfJKUQhudLBfRqcxf/gfEovbGhfnvEb96kJee6vmYKhuiwbV+DuQDgqIMv6
+         o6HXuoglMZXAzn5HRXoYq0MDsaJp+R+7SzRcj4dl8ZKbP79dcP+h75aKhIW/yOHvaPca
+         v/Nw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
+         :content-disposition:user-agent;
+        bh=08FxWPaHOZfE7vb8PUbzmWXfr0VHNirhD4p1dQWe7f8=;
+        b=RigfmX68P6AkHA0aozJH20Z+zyHFquSXn//JRD5a+1q+u50iztB8K5JiwfYBeQtNok
+         2jkxyAFy8w0CjuBDaAOzrocK6dZ3X+zjrzalkZ9AgE8zt+nsw5UoxaOSnCZAGo/A1+HA
+         jzE8SJoxfAGGyhU0JL+IszX0Wq5h49H94MfkGpOJaWL0wb3ODZBQk/TxrBgm5m1aeI6H
+         FH/Pq3P+S4bk4eOHiJWrV6H8IwpT4jzkXkr5U0uIY5BNqzKMIj6qgCQv6RRIqeUcZPFs
+         RQrftDWrRh0IMDZewP1KXSki27JaiLFN+VGkSlC8GRyeR2Pl2FW300C5NJ/c2cN8i54P
+         L0kw==
+X-Gm-Message-State: AOAM532kAHUhqbl89VUhmCjQWd4XEYPvftfwUR03363U7kWt/nsLjsJW
+        gnavYSM2qP12TF+g0nKe9p10hblDtKc=
+X-Google-Smtp-Source: ABdhPJyxxJf8RIPJtC70buGn5yiDFudcz3rMy2wb94QjGYSyyE9/w8cJm2EE5WVI4Lj2ejzFogJlAg==
+X-Received: by 2002:a17:90a:7788:: with SMTP id v8mr2199447pjk.8.1603454084224;
+        Fri, 23 Oct 2020 04:54:44 -0700 (PDT)
+Received: from cosmos ([103.113.142.250])
+        by smtp.gmail.com with ESMTPSA id s8sm2080852pjn.46.2020.10.23.04.54.42
+        (version=TLS1_2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 04:54:43 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 17:24:39 +0530
+From:   Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+To:     matthew.garrett@nebula.com, jk@ozlabs.org, ardb@kernel.org
+Cc:     linux-efi@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] efivarfs: fix memory leak in efivarfs_create()
+Message-ID: <20201023115429.GA2479@cosmos>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <877driz50k.fsf@jogness.linutronix.de>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 2020-10-22 16:59:15, John Ogness wrote:
-> On 2020-10-22, Guenter Roeck <linux@roeck-us.net> wrote:
-> > The whole point of the exercise is to disable all consoles, including
-> > default ones which are not explicitly specified on the command line.
-> 
-> In that case I think specifying something like:
-> 
->     console=null
-> 
-> makes that most sense. I think implementing a "null console" driver
-> would be quite simple. Then there would be no need for special handling
-> in the printk subsystem.
+kmemleak report:
+  unreferenced object 0xffff9b8915fcb000 (size 4096):
+  comm "efivarfs.sh", pid 2360, jiffies 4294920096 (age 48.264s)
+  hex dump (first 32 bytes):
+    2d 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  -...............
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000cc4d897c>] kmem_cache_alloc_trace+0x155/0x4b0
+    [<000000007d1dfa72>] efivarfs_create+0x6e/0x1a0
+    [<00000000e6ee18fc>] path_openat+0xe4b/0x1120
+    [<000000000ad0414f>] do_filp_open+0x91/0x100
+    [<00000000ce93a198>] do_sys_openat2+0x20c/0x2d0
+    [<000000002a91be6d>] do_sys_open+0x46/0x80
+    [<000000000a854999>] __x64_sys_openat+0x20/0x30
+    [<00000000c50d89c9>] do_syscall_64+0x38/0x90
+    [<00000000cecd6b5f>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-Heh, it actually already exists and has been created for exactly this
-purpose, see the commit 3117ff13f104e98b05b6 ("tty: Add NULL TTY
-driver").
+In efivarfs_create(), inode->i_private is setup with efivar_entry
+object which is never freed.
 
-Regarding the interface:
+Signed-off-by: Vamshi K Sthambamkadi <vamshi.k.sthambamkadi@gmail.com>
+---
+ fs/efivarfs/super.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-   + console=null or console= is OK when people do not want consoles
-     at all
+diff --git a/fs/efivarfs/super.c b/fs/efivarfs/super.c
+index 15880a6..f943fd0 100644
+--- a/fs/efivarfs/super.c
++++ b/fs/efivarfs/super.c
+@@ -21,6 +21,7 @@ LIST_HEAD(efivarfs_list);
+ static void efivarfs_evict_inode(struct inode *inode)
+ {
+ 	clear_inode(inode);
++	kfree(inode->i_private);
+ }
+ 
+ static const struct super_operations efivarfs_ops = {
+-- 
+2.7.4
 
-   + mute_console (or another extra parameter) would be needed if
-     people wanted to have login console.
-
-It is true that nobody asked for the login support. So, the null
-console should be enough for now.
-
-Best Regards,
-Petr
