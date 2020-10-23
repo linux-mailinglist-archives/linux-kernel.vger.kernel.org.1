@@ -2,155 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 106962970D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:43:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5EA8A2970CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:43:15 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465132AbgJWNnP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:43:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50608 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375453AbgJWNnM (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:43:12 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AEBD3C0613CE;
-        Fri, 23 Oct 2020 06:43:12 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b23so1295095pgb.3;
-        Fri, 23 Oct 2020 06:43:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=pmBXrQ+H88lZLbmY7ae4U43AsAKG0QhpFdqTk84uGF0=;
-        b=KrItvfJQHQ21qy5s8Tjz16tMM+oZgp1LkXY4KLVk4d1JGLZjK/P0DIQfKJDtGV483j
-         YKvyiY/gmKVMZrQPYqhPHABHp80chuYsYOgA8X06mFz1KT2iWDji57Cwby3NdAO3qvd7
-         x0wcd0hjILLFqVsi4swGWFrK/Bk4A6PX9EOBfMjDsHDgKbTQb4/kwByRbIbRSVbXfSzO
-         lsoOL8R3RGKzaA5vMS7Ou3rkvXXVwYTUTsigwY6lOqd6ONNl9M42HPjdCppqGIH8obZ9
-         b/w+d8OsTEClwG8DMyFUaL5jludC12FBBv8zXX/zBvAzRHPUOFkg1TGfAWMoCMHJ4j+J
-         OlIA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=pmBXrQ+H88lZLbmY7ae4U43AsAKG0QhpFdqTk84uGF0=;
-        b=lf6m8HIOZ8V6XMHRhKbuaUf2Jag5OmgIg3U0fVQC8wj6Su2V7Vwkw2I0ejRnln9pZ3
-         Fs0E5o+aonsU4n6qADgCfVf1BcST7+P052pnsTtZObGNtRibhB5vOZgpEcZkJmtKTJ/P
-         hE62DAyq2jfNlSgPp3xLumt09H6iYD5njJxsMueowvWx3nxzdSsEVJk5dQK9mSyZrSp5
-         l2/YEyzjy2SizSVuKJAFETzuVGVbS7M8ZjX9zZLP+nuLdE3C7snxkO9bEvTkDuQ3pY2k
-         2OgxzT0K/MooIrKDcIqgiq+kZlNwY7yQLoEM2MZmS87uqhPmzdsfRtKv8pYwVeXol/by
-         Fcpg==
-X-Gm-Message-State: AOAM532AqweWNa4y1RbCbUfH4lrLEX6Qlpq4qea7OJ6gILcF3wblWNuk
-        IwVfnwl/drSOLswe83SerTA=
-X-Google-Smtp-Source: ABdhPJxhTREG7RovyQQGCW1i9tNADzaozg3O8mnWd+ll8yyFFaHALVg+4uOpmqxfDL1Gn6kKZMpq0Q==
-X-Received: by 2002:a62:2905:0:b029:15b:57ef:3356 with SMTP id p5-20020a6229050000b029015b57ef3356mr2100428pfp.36.1603460592134;
-        Fri, 23 Oct 2020 06:43:12 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.242.32])
-        by smtp.gmail.com with ESMTPSA id d7sm2116014pgh.17.2020.10.23.06.43.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 06:43:11 -0700 (PDT)
-Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
-To:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        pmladek@suse.com, rostedt@goodmis.org,
-        sergey.senozhatsky@gmail.com, alexandre.belloni@bootlin.com,
-        gregkh@linuxfoundation.org, rdunlap@infradead.org,
-        idryomov@gmail.com, kunit-dev@googlegroups.com,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201022151349.47436-1-98.arpi@gmail.com>
- <20201022191606.GQ4077@smile.fi.intel.com>
- <0ab618c7-8c5c-00ae-8e08-0c1b99f3bf5c@rasmusvillemoes.dk>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <01f8ca45-60d1-ad67-f8eb-354dec411a78@gmail.com>
-Date:   Fri, 23 Oct 2020 19:13:00 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S465123AbgJWNnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:43:11 -0400
+Received: from foss.arm.com ([217.140.110.172]:53096 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S375453AbgJWNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:43:10 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1FE01FB;
+        Fri, 23 Oct 2020 06:43:09 -0700 (PDT)
+Received: from [10.57.50.191] (unknown [10.57.50.191])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 777713F66B;
+        Fri, 23 Oct 2020 06:43:08 -0700 (PDT)
+Subject: Re: [PATCH v4] driver/perf: Add PMU driver for the ARM DMC-620 memory
+ controller
+To:     Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
+Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
+        patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
+ <5c24da3f-4fa3-79ad-0c0d-9b4828ebf684@arm.com>
+ <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
+From:   Robin Murphy <robin.murphy@arm.com>
+Message-ID: <c4b8a58e-ca55-21ec-5a0d-50ab995a1d68@arm.com>
+Date:   Fri, 23 Oct 2020 14:43:07 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-In-Reply-To: <0ab618c7-8c5c-00ae-8e08-0c1b99f3bf5c@rasmusvillemoes.dk>
-Content-Type: text/plain; charset=windows-1252
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+In-Reply-To: <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/20 4:36 pm, Rasmus Villemoes wrote:
-> On 22/10/2020 21.16, Andy Shevchenko wrote:
->> On Thu, Oct 22, 2020 at 08:43:49PM +0530, Arpitha Raghunandan wrote:
->>> Convert test lib/test_printf.c to KUnit. More information about
->>> KUnit can be found at:
->>> https://www.kernel.org/doc/html/latest/dev-tools/kunit/index.html.
->>> KUnit provides a common framework for unit tests in the kernel.
->>> KUnit and kselftest are standardizing around KTAP, converting this
->>> test to KUnit makes this test output in KTAP which we are trying to
->>> make the standard test result format for the kernel. More about
->>> the KTAP format can be found at:
->>> https://lore.kernel.org/linux-kselftest/CY4PR13MB1175B804E31E502221BC8163FD830@CY4PR13MB1175.namprd13.prod.outlook.com/.
->>> I ran both the original and converted tests as is to produce the
->>> output for success of the test in the two cases. I also ran these
->>> tests with a small modification to show the difference in the output
->>> for failure of the test in both cases. The modification I made is:
->>> - test("127.000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
->>> + test("127-000.000.001|127.0.0.1", "%pi4|%pI4", &sa.sin_addr, &sa.sin_addr);
->>>
->>> Original test success:
->>> [    0.591262] test_printf: loaded.
->>> [    0.591409] test_printf: all 388 tests passed
->>>
->>> Original test failure:
->>> [    0.619345] test_printf: loaded.
->>> [    0.619394] test_printf: vsnprintf(buf, 256, "%piS|%pIS", ...)
->>> wrote '127.000.000.001|127.0.0.1', expected
->>> '127-000.000.001|127.0.0.1'
->>> [    0.619395] test_printf: vsnprintf(buf, 25, "%piS|%pIS", ...) wrote
->>> '127.000.000.001|127.0.0.', expected '127-000.000.001|127.0.0.'
->>> [    0.619396] test_printf: kvasprintf(..., "%piS|%pIS", ...) returned
->>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->>> [    0.619495] test_printf: failed 3 out of 388 tests
->>>
->>> Converted test success:
->>>     # Subtest: printf-kunit-test
->>>     1..1
->>>     ok 1 - selftest
->>> ok 1 - printf-kunit-test
->>>
->>> Converted test failure:
->>>     # Subtest: printf-kunit-test
->>>     1..1
->>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
->>> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
->>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
->>> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
->>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
->>> kvasprintf(..., "%pi4|%pI4", ...) returned
->>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->>>     not ok 1 - selftest
->>> not ok 1 - printf-kunit-test
+On 2020-10-22 22:46, Tuan Phan wrote:
+[...]
+>>> +#define _ATTR_CFG_GET_FLD(attr, cfg, lo, hi)			\
+>>> +	((((attr)->cfg) >> lo) & GENMASK(hi - lo, 0))
 >>
->> Not bad. Rasmus, what do you think?
+>> As per the buildbot report, GENMASK_ULL() would be appropriate when the other side is a u64 (although either way this does look a lot like reinventing FIELD_GET()...)
 > 
-> Much better, but that '1..1' and reporting the entire test suite as 1
-> single (failing or passing) test is (also) a regression. Look at the
-> original
-> 
->>> [    0.591409] test_printf: all 388 tests passed
-> 
-> or
-> 
->>> [    0.619495] test_printf: failed 3 out of 388 tests
-> 
-> That's far more informative, and I'd prefer if the summary information
-> (whether in the all-good case or some-failing) included something like
-> this. In particular, I have at some point spotted that I failed to
-> properly hook up a new test case (or perhaps failed to re-compile, or
-> somehow still ran the old kernel binary, don't remember which it was) by
-> noticing that the total number of tests hadn't increased. The new output
-> would not help catch such PEBKACs.
-> 
-> Rasmus
-> 
+> I will add (COMPILE_TEST && 64BIT) to Kconfig so it should fix the buildbot report.
 
-Splitting the test into multiple test cases in KUnit will display the number and name of tests that pass or fail. This will be similar to the lib/list-test.c test as can be seen here: https://elixir.bootlin.com/linux/latest/source/lib/list-test.c. I will work on this for the next version of this patch.
+Huh? The left-hand side of the "&" expression will always be a u64 here, 
+which is unsigned long long. Regardless of whether an unsigned long on 
+the right-hand side happens to be the same size, you have a semantic 
+type mismatch, which is trivial to put right. I can't comprehend why 
+introducing a fake build dependency to hide this would seem like a 
+better idea than making a tiny change to make the code 100% correct and 
+robust with zero practical impact :/
+
+Sure, you only copied this from the SPE driver; that doesn't mean it was 
+ever correct, simply that the mismatch was hidden since that driver *is* 
+tightly coupled to one particular CPU ISA.
+
+[...]
+>>> +static irqreturn_t dmc620_pmu_handle_irq(int irq_num, void *data)
+>>> +{
+>>> +	struct dmc620_pmu_irq *irq = data;
+>>> +	struct dmc620_pmu *dmc620_pmu;
+>>> +	irqreturn_t ret = IRQ_NONE;
+>>> +
+>>> +	rcu_read_lock();
+>>> +	list_for_each_entry_rcu(dmc620_pmu, &irq->pmus_node, pmus_node) {
+>>> +		unsigned long status;
+>>> +		struct perf_event *event;
+>>> +		unsigned int idx;
+>>> +
+>>> +		/*
+>>> +		 * HW doesn't provide a control to atomically disable all counters.
+>>> +		 * To prevent race condition, disable all events before continuing
+>>> +		 */
+>>
+>> I'm still doubtful that this doesn't introduce more inaccuracy overall than whatever it's trying to avoid... :/
+> 
+> It think it does. By disabling all counters, you make sure overflow status not change at the same time you are clearing
+> it(by writing zero) after reading all counters.
+
+Urgh, *now* I get what the race is - we don't have a proper 
+write-1-to-clear interrupt status register, so however much care we take 
+in writing back to the overflow register there's always *some* risk of 
+wiping out a new event when writing back, unless we ensure that no new 
+overflows can occur *before* reading the status. What a horrible piece 
+of hardware design... :(
+
+Perhaps it's worth expanding the comment a little more, since apparently 
+it's not super-obvious.
+
+[...]
+>>> +	/*
+>>> +	 * We must NOT create groups containing mixed PMUs, although software
+>>> +	 * events are acceptable.
+>>> +	 */
+>>> +	if (event->group_leader->pmu != event->pmu &&
+>>> +			!is_software_event(event->group_leader))
+>>> +		return -EINVAL;
+>>> +
+>>> +	for_each_sibling_event(sibling, event->group_leader) {
+>>> +		if (sibling->pmu != event->pmu &&
+>>> +				!is_software_event(sibling))
+>>> +			return -EINVAL;
+>>> +	}
+>>
+>> As before, if you can't start, stop, or read multiple counters atomically, you can't really support groups of events for this PMU either. It's impossible to measure accurate ratios with a variable amount of skew between individual counters.
+> 
+> Can you elaborate more? The only issue I know is we can’t stop all counters of same PMU atomically in IRQ handler to prevent race condition.  But it can be fixed by manually disable each counter. Other than that, every counters are working independently.
+
+The point of groups is to be able to count two or more events for the 
+exact same time period, in order to measure ratios between them 
+accurately. ->add, ->del, ->read, etc. are still called one at a time 
+for each event in the group, but those calls are made as part of a 
+transaction, which for most drivers is achieved by perf core calling 
+->pmu_disable and ->pmu_enable around the other calls. Since this driver 
+doesn't have enable/disable functionality, the individual events will 
+count for different lengths of time depending on what order those calls 
+are made in (which is not necessarily constant), and how long each one 
+takes. Thus you'll end up with an indeterminate amount of error between 
+what each count represents, and the group is not really any more 
+accurate than if the events were simply scheduled independently, which 
+is not how it's supposed to work.
+
+Come to think of it, you're also not validating that groups are even 
+schedulable - try something like:
+
+   perf stat -e 
+'{arm_dmc620_10008c000/clk_cycle_count/,arm_dmc620_10008c000/clk_request/,arm_dmc620_10008c000/clk_upload_stall/}' 
+sleep 5
+
+and observe perf core being very confused and unhappy when ->add starts 
+failing for a group that ->event_init said was OK, since 3 events won't 
+actually fit into the 2 available counters.
+
+As I said before, I think you probably would be able to make groups work 
+with some careful hooking up of snapshot functionality to ->start_txn 
+and ->commit_txn, but to start with it'll be an awful lot simpler to 
+just be honest and reject them.
+
+[...]
+>>> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
+>>> +				  "%s_%llx", DMC620_PMUNAME,
+>>> +				  (res->start) >> DMC620_PA_SHIFT);
+>>
+>> res->start doesn't need parentheses, however I guess it might need casting to u64 to solve the build warning (I'm not sure there's any nicer way, unfortunately).
+> 
+> I will remove those parentheses, we don’t need u64 as build warning only applies when it runs compiling test with 32bit.
+
+As above, deliberately hacking the build for the sake of not fixing 
+clearly dodgy code is crazy. The only correct format specifier for an 
+expression of type phys_addr_t/resource_size_t is "%pa"; if you want to 
+use a different format then explicitly converting the argument to a type 
+appropriate for that format (either via a simple cast or an intermediate 
+variable) is indisputably correct, regardless of whether you might 
+happen to get away with an implicit conversion sometimes.
+
+The whole point of maximising COMPILE_TEST coverage is to improve code 
+quality in order to avoid this exact situation, wherein someone copies a 
+pattern from an existing driver only to discover that it's not actually 
+as robust as it should be.
+
+Robin.
