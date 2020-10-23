@@ -2,100 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F8EB296C4A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:44:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 35668296C4D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:46:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461649AbgJWJon (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:44:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41760 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461641AbgJWJon (ORCPT
+        id S461668AbgJWJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:45:58 -0400
+Received: from fllv0015.ext.ti.com ([198.47.19.141]:47562 "EHLO
+        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461555AbgJWJp5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:44:43 -0400
-Received: from michel.telenet-ops.be (michel.telenet-ops.be [IPv6:2a02:1800:110:4::f00:18])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D34E8C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:44:42 -0700 (PDT)
-Received: from ramsan ([84.195.186.194])
-        by michel.telenet-ops.be with bizsmtp
-        id jMke230054C55Sk06MkeWb; Fri, 23 Oct 2020 11:44:38 +0200
-Received: from geert (helo=localhost)
-        by ramsan with local-esmtp (Exim 4.90_1)
-        (envelope-from <geert@linux-m68k.org>)
-        id 1kVtck-0007pP-4E; Fri, 23 Oct 2020 11:44:38 +0200
-Date:   Fri, 23 Oct 2020 11:44:38 +0200 (CEST)
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-To:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Roberto Bergantinos Corpas <rbergant@redhat.com>
-cc:     linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sunrpc: raise kernel RPC channel buffer size
-In-Reply-To: <20201019132000.GA32403@fieldses.org>
-Message-ID: <alpine.DEB.2.21.2010231141460.29805@ramsan.of.borg>
-References: <20201019093356.7395-1-rbergant@redhat.com> <20201019132000.GA32403@fieldses.org>
-User-Agent: Alpine 2.21 (DEB 202 2017-01-01)
+        Fri, 23 Oct 2020 05:45:57 -0400
+Received: from lelv0265.itg.ti.com ([10.180.67.224])
+        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09N9jXjC079273;
+        Fri, 23 Oct 2020 04:45:33 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603446333;
+        bh=vd/rQ8Z51OitxruTppvHsOzxNO2Z78PVRSBR/5M5zMk=;
+        h=From:To:CC:Subject:Date;
+        b=c1tHVgdTnRhcXT9gX9bvJRksoPbgIC5b1dTUMDWlbmmg/qfB//8HmH6b8NwPPrRpH
+         +x5fA3AEkbGkdmx8dvKTmHPpcFNzmHxeyIsTRxm1yWru6kvwDMGrsgATH+SnWyU/Jp
+         uMZ9pTiBJMoFAJ6xs7dQbZSc2WStqShwA6q4awN8=
+Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
+        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09N9jXcw091988
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 23 Oct 2020 04:45:33 -0500
+Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
+ (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 23
+ Oct 2020 04:45:32 -0500
+Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
+ (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Fri, 23 Oct 2020 04:45:32 -0500
+Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
+        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09N9jUfl007401;
+        Fri, 23 Oct 2020 04:45:30 -0500
+From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
+To:     <hyun.kwon@xilinx.com>, <laurent.pinchart@ideasonboard.com>,
+        <airlied@linux.ie>, <daniel@ffwll.ch>
+CC:     <dri-devel@lists.freedesktop.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>
+Subject: [PATCH] drm: xlnx: Use dma_request_chan for DMA channel request
+Date:   Fri, 23 Oct 2020 12:46:02 +0300
+Message-ID: <20201023094602.5630-1-peter.ujfalusi@ti.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
- 	Hi Bruce, Roberto,
+There is no need to use the of_dma_request_slave_channel() directly as
+dma_request_chan() is going to try to get the channel via OF as well.
 
-On Mon, 19 Oct 2020, J. Bruce Fields wrote:
-> On Mon, Oct 19, 2020 at 11:33:56AM +0200, Roberto Bergantinos Corpas wrote:
->> Its possible that using AUTH_SYS and mountd manage-gids option a
->> user may hit the 8k RPC channel buffer limit. This have been observed
->> on field, causing unanswered RPCs on clients after mountd fails to
->> write on channel :
->>
->> rpc.mountd[11231]: auth_unix_gid: error writing reply
->>
->> Userland nfs-utils uses a buffer size of 32k (RPC_CHAN_BUF_SIZE), so
->> lets match those two.
->
-> Thanks, applying.
->
-> That should allow about 4000 group memberships.  If that doesn't do it
-> then maybe it's time to rethink....
->
-> --b.
->
->>
->> Signed-off-by: Roberto Bergantinos Corpas <rbergant@redhat.com>
->> ---
->>  net/sunrpc/cache.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/net/sunrpc/cache.c b/net/sunrpc/cache.c
->> index baef5ee43dbb..08df4c599ab3 100644
->> --- a/net/sunrpc/cache.c
->> +++ b/net/sunrpc/cache.c
->> @@ -908,7 +908,7 @@ static ssize_t cache_do_downcall(char *kaddr, const char __user *buf,
->>  static ssize_t cache_slow_downcall(const char __user *buf,
->>  				   size_t count, struct cache_detail *cd)
->>  {
->> -	static char write_buf[8192]; /* protected by queue_io_mutex */
->> +	static char write_buf[32768]; /* protected by queue_io_mutex */
->>  	ssize_t ret = -EINVAL;
->>
->>  	if (count >= sizeof(write_buf))
+Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
+---
+ drivers/gpu/drm/xlnx/zynqmp_disp.c | 4 +---
+ 1 file changed, 1 insertion(+), 3 deletions(-)
 
-This is now commit 27a1e8a0f79e643d ("sunrpc: raise kernel RPC channel
-buffer size") upstream, and increases kernel size by 24 KiB, even if
-RPC is not used.
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+index 98bd48f13fd1..a4405d081aca 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+@@ -28,7 +28,6 @@
+ #include <linux/dmaengine.h>
+ #include <linux/module.h>
+ #include <linux/of.h>
+-#include <linux/of_dma.h>
+ #include <linux/platform_device.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/spinlock.h>
+@@ -1316,8 +1315,7 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
+ 
+ 		snprintf(dma_channel_name, sizeof(dma_channel_name),
+ 			 "%s%u", dma_names[layer->id], i);
+-		dma->chan = of_dma_request_slave_channel(disp->dev->of_node,
+-							 dma_channel_name);
++		dma->chan = dma_request_chan(disp->dev, dma_channel_name);
+ 		if (IS_ERR(dma->chan)) {
+ 			dev_err(disp->dev, "failed to request dma channel\n");
+ 			ret = PTR_ERR(dma->chan);
+-- 
+Peter
 
-Can this buffer allocated dynamically instead? This code path seems to
-be a slow path anyway. If it's critical, perhaps this buffer can be
-allocated on first use?
+Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
+Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
 
-Thanks!
-
-Gr{oetje,eeting}s,
-
- 						Geert
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
- 							    -- Linus Torvalds
