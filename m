@@ -2,43 +2,44 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 480C429723A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2CF4229723C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465781AbgJWP01 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:26:27 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:47889 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S465751AbgJWP0X (ORCPT
+        id S465789AbgJWP02 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:26:28 -0400
+Received: from mail-io1-f72.google.com ([209.85.166.72]:50111 "EHLO
+        mail-io1-f72.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465756AbgJWP0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:26:23 -0400
-Received: by mail-il1-f197.google.com with SMTP id w74so919322ila.14
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
+        Fri, 23 Oct 2020 11:26:22 -0400
+Received: by mail-io1-f72.google.com with SMTP id y25so1410419iod.16
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:22 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=fVF0gABiOKEQfoDST5uccDfvXF8ctJ4vneZIvOOcqcM=;
-        b=i+8j78tFFkhN0sjXi3uXBcupX8lUObAnkk2mx6sZv+PPeKgihLiwsFbtEohztCltsi
-         OJUcXGKvmeksx3R318efj2ratHmDsZfD/PMZ0imHQonA1gbTshRqd0/FEmxz6bQBF4XU
-         m8gM7e5nVvNwTT8lSPw1TjeQu04mActDfvfEZvyjAhMJvVHJKigdu2aZoOj7SBzco7xB
-         jOaw5U3vRrVCPCBhkNo4gQuAtGwjoBBxUYQGB7+5uhO/5X8QjY5X6zu5Mxst6w8Tygg5
-         sUKemiXhrlirz5MJrJuXxz3RuyYIq7jxSAlxqj9SgyImtwZzZ5eFZlZuGYWaGq45kbYU
-         zGEA==
-X-Gm-Message-State: AOAM532uK+MZ7H0drlWVSFfGuzMhhqdSeFr5O2Qa4N4yr9a+n6eUyGWI
-        iJl+hZGqopXHAXmiwPmvH/OZ7J4rjx+tScd1s/U3LSxYr7c9
-X-Google-Smtp-Source: ABdhPJx1GJ3FEApap2mJFzhYOOp0cZktQgnYogiRNJ0zbC3dZOhzXU448rZupVa+jORc+uwTXnnhMWtbbsMZyRcKKsZ1Uj/yxR/8
+        bh=2P8P5jvsF2otgmMApO2WQcy9L60H8t9eFc1xKbDFhRU=;
+        b=XWRgknqVkfeRJLTtODQgqyoA988cGo/FWcrNmVSwGBXbib+teY/eAWjWsSUx7Sws02
+         WuGo0mzlC8J/lxYGHvf+azXJm/Vm9XKHD4ddNNm9LZvWK48trBGunsgseWHMh9Q0mHsz
+         b1QCg5dDcTFrDDwJvAACBmPWKWSo+hn23NGuDgomj1B54HfH0Ke2rcHdhuCObrIg/iiz
+         lGWn657PwWCvC2BLJkWs1ZD8sRUqqCeD+GwSsAYyq8trTTk2qAIgV1HpodLAhTr2vOAE
+         P3qtlmnCPBn//s45y3VQOCa9drNJTP3qZEaXPRJPYEoC3xB5DyU5s98vbFESQ2XKNc10
+         KlPQ==
+X-Gm-Message-State: AOAM5301/Q081sD3vQa0Q+7nGy/xlDoty8He4F2Tgd+qqCOwx6NgstOr
+        EYHAE63f22nHDMcbwT7oZZVg15G8zDGqxpCVCu53xY4zNMfB
+X-Google-Smtp-Source: ABdhPJyv4NL87W+dc7TB4wd/aPNsdbJ2dkgslxRpBgiV06ubl6tKS7Uc0ocYJKnSgN+zkq1FtyrCSDv19b5CF/xWiGnzxGm/DCY1
 MIME-Version: 1.0
-X-Received: by 2002:a92:b503:: with SMTP id f3mr2130770ile.23.1603466781178;
+X-Received: by 2002:a92:d906:: with SMTP id s6mr2061607iln.225.1603466781872;
  Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
 Date:   Fri, 23 Oct 2020 08:26:21 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e6c3d405b25833b7@google.com>
-Subject: general protection fault in call_commit_handler
-From:   syzbot <syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com>
-To:     davem@davemloft.net, johannes@sipsolutions.net, kuba@kernel.org,
-        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
-        netdev@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Message-ID: <000000000000f158c305b2583300@google.com>
+Subject: divide error in do_journal_end
+From:   syzbot <syzbot+d0d781aeeb8e16f710f1@syzkaller.appspotmail.com>
+To:     alex.shi@linux.alibaba.com, axboe@kernel.dk, jack@suse.cz,
+        linux-kernel@vger.kernel.org, rdunlap@infradead.org,
+        reiserfs-devel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
@@ -48,75 +49,70 @@ Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    9ff9b0d3 Merge tag 'net-next-5.10' of git://git.kernel.org..
-git tree:       bpf-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=12377207900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=10a98dcaa4fa65a2
-dashboard link: https://syzkaller.appspot.com/bug?extid=444248c79e117bc99f46
+HEAD commit:    c4d6fe73 Merge tag 'xarray-5.9' of git://git.infradead.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10c4b837900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=ae5161e82506407f
+dashboard link: https://syzkaller.appspot.com/bug?extid=d0d781aeeb8e16f710f1
 compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=105d15a4500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11973e78500000
 
-Bisection is inconclusive: the issue happens on the oldest tested release.
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10bd270c500000
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=12bd270c500000
-console output: https://syzkaller.appspot.com/x/log.txt?x=14bd270c500000
+Unfortunately, I don't have any reproducer for this issue yet.
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+444248c79e117bc99f46@syzkaller.appspotmail.com
+Reported-by: syzbot+d0d781aeeb8e16f710f1@syzkaller.appspotmail.com
 
-general protection fault, probably for non-canonical address 0xdffffc0000000000: 0000 [#1] PREEMPT SMP KASAN
-KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-CPU: 1 PID: 8503 Comm: syz-executor669 Not tainted 5.9.0-syzkaller #0
+divide error: 0000 [#1] PREEMPT SMP KASAN
+CPU: 0 PID: 8486 Comm: syz-executor.0 Not tainted 5.9.0-syzkaller #0
 Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:call_commit_handler+0x8b/0x110 net/wireless/wext-core.c:900
-Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 7d 48 8b 9d e0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 75 73 48 b8 00 00 00 00 00 fc ff df 48 8b 1b 48 89 da
-RSP: 0018:ffffc90001927ca8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8844a758
-RDX: 0000000000000000 RSI: ffffffff8844a765 RDI: ffff88809b6f81e0
-RBP: ffff88809b6f8000 R08: 0000000000000000 R09: ffff88809b6f8047
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809b6f8040
-R13: ffffc90001927db0 R14: ffff88809b6f8000 R15: 0000000000000004
-FS:  0000000000725880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+RIP: 0010:do_journal_end+0x15d6/0x4950 fs/reiserfs/journal.c:4075
+Code: c6 41 84 f0 0f 85 3b 2c 00 00 83 e2 07 38 d1 40 0f 9e c6 84 c9 0f 95 c2 40 84 d6 0f 85 24 2c 00 00 8b 4b 14 48 8d 7d 18 31 d2 <48> f7 f1 4a 8d 34 2a 48 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc900013ffb28 EFLAGS: 00010246
+RAX: 0000000000000009 RBX: ffff888048daf000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880235f3018
+RBP: ffff8880235f3000 R08: 0000000000000001 R09: ffff888048dafffb
+R10: ffffed10091b5fff R11: 0000000000000000 R12: 0000000000001000
+R13: 0000000000000000 R14: ffffc900013ffd48 R15: ffffc90016d11000
+FS:  000000000259f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200000c0 CR3: 00000000aabca000 CR4: 00000000001506e0
+CR2: 00007ffcd5edb9f8 CR3: 000000002cd8f000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 Call Trace:
- ioctl_standard_call+0x1b8/0x1f0 net/wireless/wext-core.c:1029
- wireless_process_ioctl+0xc8/0x4c0 net/wireless/wext-core.c:954
- wext_ioctl_dispatch net/wireless/wext-core.c:987 [inline]
- wext_ioctl_dispatch net/wireless/wext-core.c:975 [inline]
- wext_handle_ioctl+0x26b/0x280 net/wireless/wext-core.c:1048
- sock_ioctl+0x439/0x730 net/socket.c:1119
- vfs_ioctl fs/ioctl.c:48 [inline]
- __do_sys_ioctl fs/ioctl.c:753 [inline]
- __se_sys_ioctl fs/ioctl.c:739 [inline]
- __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+ do_journal_release fs/reiserfs/journal.c:1916 [inline]
+ journal_release+0x14d/0x4e0 fs/reiserfs/journal.c:1970
+ reiserfs_put_super+0xe0/0x5c0 fs/reiserfs/super.c:616
+ generic_shutdown_super+0x144/0x370 fs/super.c:464
+ kill_block_super+0x97/0xf0 fs/super.c:1446
+ deactivate_locked_super+0x94/0x160 fs/super.c:335
+ deactivate_super+0xad/0xd0 fs/super.c:366
+ cleanup_mnt+0x3a3/0x530 fs/namespace.c:1118
+ task_work_run+0xdd/0x190 kernel/task_work.c:141
+ tracehook_notify_resume include/linux/tracehook.h:188 [inline]
+ exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
+ exit_to_user_mode_prepare+0x1ac/0x1d0 kernel/entry/common.c:192
+ syscall_exit_to_user_mode+0x38/0x260 kernel/entry/common.c:267
  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x441549
-Code: e8 ec 05 03 00 48 83 c4 18 c3 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 7b 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffec8be6028 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffec8be6050 RCX: 0000000000441549
-RDX: 00000000200000c0 RSI: 0000000000008b04 RDI: 0000000000000003
-RBP: 0000000000000003 R08: 0000002000000000 R09: 0000002000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000032
-R13: 0000000000000000 R14: 000000000000000c R15: 0000000000000004
+RIP: 0033:0x460887
+Code: 64 89 04 25 d0 02 00 00 58 5f ff d0 48 89 c7 e8 2f be ff ff 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 b8 a6 00 00 00 0f 05 <48> 3d 01 f0 ff ff 0f 83 ad 89 fb ff c3 66 2e 0f 1f 84 00 00 00 00
+RSP: 002b:00007ffcd5edb9f8 EFLAGS: 00000246 ORIG_RAX: 00000000000000a6
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000460887
+RDX: 0000000000403188 RSI: 0000000000000002 RDI: 00007ffcd5edbaa0
+RBP: 0000000000000596 R08: 0000000000000000 R09: 000000000000000b
+R10: 0000000000000005 R11: 0000000000000246 R12: 00007ffcd5edcb30
+R13: 00000000025a0a60 R14: 0000000000000000 R15: 00007ffcd5edcb30
 Modules linked in:
----[ end trace e41146864548f580 ]---
-RIP: 0010:call_commit_handler+0x8b/0x110 net/wireless/wext-core.c:900
-Code: 00 00 fc ff df 48 89 fa 48 c1 ea 03 80 3c 02 00 75 7d 48 8b 9d e0 01 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 da 48 c1 ea 03 <80> 3c 02 00 75 73 48 b8 00 00 00 00 00 fc ff df 48 8b 1b 48 89 da
-RSP: 0018:ffffc90001927ca8 EFLAGS: 00010246
-RAX: dffffc0000000000 RBX: 0000000000000000 RCX: ffffffff8844a758
-RDX: 0000000000000000 RSI: ffffffff8844a765 RDI: ffff88809b6f81e0
-RBP: ffff88809b6f8000 R08: 0000000000000000 R09: ffff88809b6f8047
-R10: 0000000000000000 R11: 0000000000000001 R12: ffff88809b6f8040
-R13: ffffc90001927db0 R14: ffff88809b6f8000 R15: 0000000000000004
-FS:  0000000000725880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
+---[ end trace fb4ea409a588af8f ]---
+RIP: 0010:do_journal_end+0x15d6/0x4950 fs/reiserfs/journal.c:4075
+Code: c6 41 84 f0 0f 85 3b 2c 00 00 83 e2 07 38 d1 40 0f 9e c6 84 c9 0f 95 c2 40 84 d6 0f 85 24 2c 00 00 8b 4b 14 48 8d 7d 18 31 d2 <48> f7 f1 4a 8d 34 2a 48 89 fa 48 b8 00 00 00 00 00 fc ff df 48 c1
+RSP: 0018:ffffc900013ffb28 EFLAGS: 00010246
+RAX: 0000000000000009 RBX: ffff888048daf000 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000001 RDI: ffff8880235f3018
+RBP: ffff8880235f3000 R08: 0000000000000001 R09: ffff888048dafffb
+R10: ffffed10091b5fff R11: 0000000000000000 R12: 0000000000001000
+R13: 0000000000000000 R14: ffffc900013ffd48 R15: ffffc90016d11000
+FS:  000000000259f940(0000) GS:ffff8880b9e00000(0000) knlGS:0000000000000000
 CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f952003c058 CR3: 00000000aabca000 CR4: 00000000001506e0
+CR2: 0000562ae37a0da8 CR3: 000000002cd8f000 CR4: 00000000001506f0
 DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
 DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
 
@@ -128,6 +124,3 @@ syzbot engineers can be reached at syzkaller@googlegroups.com.
 
 syzbot will keep track of this issue. See:
 https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
