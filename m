@@ -2,152 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD57929757E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:05:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BE4DD29758C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:10:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752992AbgJWRFY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:05:24 -0400
-Received: from smtp-8fae.mail.infomaniak.ch ([83.166.143.174]:42365 "EHLO
-        smtp-8fae.mail.infomaniak.ch" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1752985AbgJWRFY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:05:24 -0400
-Received: from smtp-2-0001.mail.infomaniak.ch (unknown [10.5.36.108])
-        by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4CHrFt53RpzlhypJ;
-        Fri, 23 Oct 2020 19:05:22 +0200 (CEST)
-Received: from localhost (unknown [94.23.54.103])
-        by smtp-2-0001.mail.infomaniak.ch (Postfix) with ESMTPA id 4CHrFt26Xvzlh8TG;
-        Fri, 23 Oct 2020 19:05:22 +0200 (CEST)
-From:   =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To:     Alasdair Kergon <agk@redhat.com>, Mike Snitzer <snitzer@redhat.com>
-Cc:     =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Deven Bowers <deven.desai@linux.microsoft.com>,
-        Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>,
-        Milan Broz <gmazyland@gmail.com>, dm-devel@redhat.com,
-        linux-integrity@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@linux.microsoft.com>
-Subject: [PATCH v3] dm verity: Add support for signature verification with 2nd keyring
-Date:   Fri, 23 Oct 2020 19:05:12 +0200
-Message-Id: <20201023170512.201124-1-mic@digikod.net>
-X-Mailer: git-send-email 2.28.0
+        id S1753079AbgJWRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:09:58 -0400
+Received: from foss.arm.com ([217.140.110.172]:56910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750823AbgJWRJ5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:09:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9A441FB;
+        Fri, 23 Oct 2020 10:09:56 -0700 (PDT)
+Received: from [192.168.2.22] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id F14EE3F719;
+        Fri, 23 Oct 2020 10:09:54 -0700 (PDT)
+Subject: Re: [PATCH v3 03/20] perf arm-spe: Refactor payload size calculation
+To:     Leo Yan <leo.yan@linaro.org>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Wei Li <liwei391@huawei.com>,
+        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
+References: <20201022145816.14069-1-leo.yan@linaro.org>
+ <20201022145816.14069-4-leo.yan@linaro.org>
+From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
+Autocrypt: addr=andre.przywara@arm.com; prefer-encrypt=mutual; keydata=
+ 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
+ i4aIXCH3Wv6K
+Organization: ARM Ltd.
+Message-ID: <b77beca4-91e3-5b76-8cd6-ba31057374a8@arm.com>
+Date:   Fri, 23 Oct 2020 18:08:53 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201022145816.14069-4-leo.yan@linaro.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Mickaël Salaün <mic@linux.microsoft.com>
+On 22/10/2020 15:57, Leo Yan wrote:
 
-Add a new configuration DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
-to enable dm-verity signatures to be verified against the secondary
-trusted keyring.  Instead of relying on the builtin trusted keyring
-(with hard-coded certificates), the second trusted keyring can include
-certificate authorities from the builtin trusted keyring and child
-certificates loaded at run time.  Using the secondary trusted keyring
-enables to use dm-verity disks (e.g. loop devices) signed by keys which
-did not exist at kernel build time, leveraging the certificate chain of
-trust model.  In practice, this makes it possible to update certificates
-without kernel update and reboot, aligning with module and kernel
-(kexec) signature verification which already use the secondary trusted
-keyring.
+Hi Leo,
 
-Cc: Alasdair Kergon <agk@redhat.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>
-Cc: Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>
-Cc: Jaskaran Khurana <jaskarankhurana@linux.microsoft.com>
-Cc: Mike Snitzer <snitzer@redhat.com>
-Cc: Milan Broz <gmazyland@gmail.com>
-Signed-off-by: Mickaël Salaün <mic@linux.microsoft.com>
----
+> This patch defines macro to extract "sz" field from header, and renames
+> the function payloadlen() to arm_spe_payload_len().
+> 
+> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> ---
+>  .../util/arm-spe-decoder/arm-spe-pkt-decoder.c | 18 +++++++++---------
+>  .../util/arm-spe-decoder/arm-spe-pkt-decoder.h |  3 +++
+>  2 files changed, 12 insertions(+), 9 deletions(-)
+> 
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> index 7c7b5eb09fba..4294c133a465 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
+> @@ -69,22 +69,22 @@ const char *arm_spe_pkt_name(enum arm_spe_pkt_type type)
+>  	return arm_spe_packet_name[type];
+>  }
+>  
+> -/* return ARM SPE payload size from its encoding,
+> - * which is in bits 5:4 of the byte.
+> - * 00 : byte
+> - * 01 : halfword (2)
+> - * 10 : word (4)
+> - * 11 : doubleword (8)
+> +/*
+> + * Extracts the field "sz" from header bits and converts to bytes:
+> + *   00 : byte (1)
+> + *   01 : halfword (2)
+> + *   10 : word (4)
+> + *   11 : doubleword (8)
+>   */
+> -static int payloadlen(unsigned char byte)
+> +static unsigned int arm_spe_payload_len(unsigned char hdr)
+>  {
+> -	return 1 << ((byte & 0x30) >> 4);
+> +	return 1 << SPE_HEADER_SZ(hdr);
 
-Previous version:
-https://lore.kernel.org/lkml/20201015150504.1319098-1-mic@digikod.net/
+I know, I know, I asked for this, but now looking again at it - and
+after having seen the whole series:
+This is now really trivial, and there are just two users? And
+SPE_HEADER_SZ() is only used in here?
 
-Changes since v2:
-* Add documentation about the builtin and the secondary trusted keyrings
-  (requested by Mike Snitzer).
+So either you just stuff the "1U << .." into the callers of
+arm_spe_payload_len(), or indeed put all of this into one macro (as you
+had originally).
 
-Changes since v1:
-* Extend the commit message (asked by Jarkko Sakkinen).
-* Rename the Kconfig "help" keyword according to commit 84af7a6194e4
-  ("checkpatch: kconfig: prefer 'help' over '---help---'").
----
- Documentation/admin-guide/device-mapper/verity.rst |  7 ++++++-
- drivers/md/Kconfig                                 | 13 ++++++++++++-
- drivers/md/dm-verity-verify-sig.c                  |  9 +++++++--
- 3 files changed, 25 insertions(+), 4 deletions(-)
+Apologies for this forth and back, but I didn't realise how this is
+really used eventually, and I just saw the transition from function to
+macro.
 
-diff --git a/Documentation/admin-guide/device-mapper/verity.rst b/Documentation/admin-guide/device-mapper/verity.rst
-index 66f71f0dab1b..b088a647acb7 100644
---- a/Documentation/admin-guide/device-mapper/verity.rst
-+++ b/Documentation/admin-guide/device-mapper/verity.rst
-@@ -134,7 +134,12 @@ root_hash_sig_key_desc <key_description>
-     the pkcs7 signature of the roothash. The pkcs7 signature is used to validate
-     the root hash during the creation of the device mapper block device.
-     Verification of roothash depends on the config DM_VERITY_VERIFY_ROOTHASH_SIG
--    being set in the kernel.
-+    being set in the kernel.  The signatures are checked against the builtin
-+    trusted keyring by default, or the secondary trusted keyring if
-+    DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING is set.  The secondary
-+    trusted keyring includes by default the builtin trusted keyring, and it can
-+    also gain new certificates at run time if they are signed by a certificate
-+    already in the secondary trusted keyring.
- 
- Theory of operation
- ===================
-diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-index 30ba3573626c..1d68935e45ef 100644
---- a/drivers/md/Kconfig
-+++ b/drivers/md/Kconfig
-@@ -530,11 +530,22 @@ config DM_VERITY_VERIFY_ROOTHASH_SIG
- 	bool "Verity data device root hash signature verification support"
- 	depends on DM_VERITY
- 	select SYSTEM_DATA_VERIFICATION
--	  help
-+	help
- 	  Add ability for dm-verity device to be validated if the
- 	  pre-generated tree of cryptographic checksums passed has a pkcs#7
- 	  signature file that can validate the roothash of the tree.
- 
-+	  By default, rely on the builtin trusted keyring.
-+
-+	  If unsure, say N.
-+
-+config DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
-+	bool "Verity data device root hash signature verification with secondary keyring"
-+	depends on DM_VERITY_VERIFY_ROOTHASH_SIG
-+	depends on SECONDARY_TRUSTED_KEYRING
-+	help
-+	  Rely on the secondary trusted keyring to verify dm-verity signatures.
-+
- 	  If unsure, say N.
- 
- config DM_VERITY_FEC
-diff --git a/drivers/md/dm-verity-verify-sig.c b/drivers/md/dm-verity-verify-sig.c
-index 614e43db93aa..29385dc470d5 100644
---- a/drivers/md/dm-verity-verify-sig.c
-+++ b/drivers/md/dm-verity-verify-sig.c
-@@ -119,8 +119,13 @@ int verity_verify_root_hash(const void *root_hash, size_t root_hash_len,
- 	}
- 
- 	ret = verify_pkcs7_signature(root_hash, root_hash_len, sig_data,
--				sig_len, NULL, VERIFYING_UNSPECIFIED_SIGNATURE,
--				NULL, NULL);
-+				sig_len,
-+#ifdef CONFIG_DM_VERITY_VERIFY_ROOTHASH_SIG_SECONDARY_KEYRING
-+				VERIFY_USE_SECONDARY_KEYRING,
-+#else
-+				NULL,
-+#endif
-+				VERIFYING_UNSPECIFIED_SIGNATURE, NULL, NULL);
- 
- 	return ret;
- }
+But please use 1U << .., signed shifts are treacherous.
 
-base-commit: bbf5c979011a099af5dc76498918ed7df445635b
--- 
-2.28.0
+>  }
+>  
+>  static int arm_spe_get_payload(const unsigned char *buf, size_t len,
+>  			       struct arm_spe_pkt *packet)
+>  {
+> -	size_t payload_len = payloadlen(buf[0]);
+> +	size_t payload_len = arm_spe_payload_len(buf[0]);
+>  
+>  	if (len < 1 + payload_len)
+>  		return ARM_SPE_NEED_MORE_BYTES;
+> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> index 4c870521b8eb..e9ea8e3ead5d 100644
+> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
+> @@ -9,6 +9,7 @@
+>  
+>  #include <stddef.h>
+>  #include <stdint.h>
+> +#include <linux/bits.h>
+>  
+>  #define ARM_SPE_PKT_DESC_MAX		256
+>  
+> @@ -36,6 +37,8 @@ struct arm_spe_pkt {
+>  	uint64_t		payload;
+>  };
+>  
+> +#define SPE_HEADER_SZ(val)			((val & GENMASK_ULL(5, 4)) >> 4)
+
+If you should keep this, please put parentheses around "val".
+
+Cheers,
+Andre
+
+> +
+>  #define SPE_ADDR_PKT_HDR_INDEX_INS		(0x0)
+>  #define SPE_ADDR_PKT_HDR_INDEX_BRANCH		(0x1)
+>  #define SPE_ADDR_PKT_HDR_INDEX_DATA_VIRT	(0x2)
+> 
 
