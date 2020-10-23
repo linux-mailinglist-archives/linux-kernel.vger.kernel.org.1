@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1781829746D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:37:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15D0297467
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:36:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465899AbgJWQgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:36:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
+        id S1752178AbgJWQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:36:41 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751849AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751850AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:50 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 49A1C246B1;
+        by mail.kernel.org (Postfix) with ESMTPSA id 5694C246B2;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470828;
-        bh=qOuTdzghgltOScEElE8bNf/ssmRDCheIoPBJ0QJVxCY=;
+        bh=+yokCfZBHZQZytH1I9mxcfAei7oyJOP+8TqDL5TGlyc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PoRCM1tkg7AbJRo9v5Yq9jWpGCK7RkUCYHWK8mZbnuFz2nB2GIyF13q6t2iQwQX69
-         CGHGQGLC7wiEspLR+fHXoON8HQau2Vl7UPMOqiI4wA74mVF86xEmzT+5nc2pTJmt11
-         Ve9YTdC90LTe941mHHRV9Mt2GVnoRZDIJksP06xU=
+        b=a0vWuH2Bni0XYil9FSemA/qforpzTLOg0gEYlG/7z+4OVU9nhiHSj9E6sPBM8Q6yO
+         MVRNBIqUfhLCl8n/RhXV3tUyRb6tFuL0FbQo2LjR2aHIf5YF7KuVIB7uDEtotcvXUY
+         pnArGmA62L3xdQIC3+cmJ3QPyvcGJrHGnV20Vtuw=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Awv-7f; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Ax0-8z; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        "J. Bruce Fields" <bfields@fieldses.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 35/56] jbd2: fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:22 +0200
-Message-Id: <ef76f7a51fbb1ff7d9d1ff36f5ce65f1c3e5e3c2.1603469755.git.mchehab+huawei@kernel.org>
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Jeff Layton <jlayton@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 36/56] locks: fix a typo at a kernel-doc markup
+Date:   Fri, 23 Oct 2020 18:33:23 +0200
+Message-Id: <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -45,314 +47,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-doc markup should use this format:
-        identifier - description
-
-They should not have any type before that, as otherwise
-the parser won't do the right thing.
-
-Also, some identifiers have different names between their
-prototypes and the kernel-doc markup.
+locks_delete_lock -> locks_delete_block
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- fs/jbd2/journal.c     | 34 ++++++++++++++++++----------------
- fs/jbd2/transaction.c | 31 ++++++++++++++++---------------
- include/linux/jbd2.h  |  2 +-
- 3 files changed, 35 insertions(+), 32 deletions(-)
+ fs/locks.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 0c7c42bd530f..f71848367ab6 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -566,12 +566,14 @@ static int __jbd2_journal_force_commit(journal_t *journal)
+diff --git a/fs/locks.c b/fs/locks.c
+index 1f84a03601fe..f3c3ce82a455 100644
+--- a/fs/locks.c
++++ b/fs/locks.c
+@@ -750,7 +750,7 @@ static void __locks_wake_up_blocks(struct file_lock *blocker)
  }
  
  /**
-- * Force and wait upon a commit if the calling process is not within
-- * transaction.  This is used for forcing out undo-protected data which contains
-- * bitmaps, when the fs is running out of space.
-+ * jbd2_journal_force_commit_nested - Force and wait upon a commit if the
-+ * calling process is not within transaction.
+- *	locks_delete_lock - stop waiting for a file lock
++ *	locks_delete_block - stop waiting for a file lock
+  *	@waiter: the lock which was waiting
   *
-  * @journal: journal to force
-  * Returns true if progress was made.
-+ *
-+ * This is used for forcing out undo-protected data which contains
-+ * bitmaps, when the fs is running out of space.
-  */
- int jbd2_journal_force_commit_nested(journal_t *journal)
- {
-@@ -582,7 +584,7 @@ int jbd2_journal_force_commit_nested(journal_t *journal)
- }
- 
- /**
-- * int journal_force_commit() - force any uncommitted transactions
-+ * jbd2_journal_force_commit() - force any uncommitted transactions
-  * @journal: journal to force
-  *
-  * Caller want unconditional commit. We can only force the running transaction
-@@ -1899,7 +1901,7 @@ static int load_superblock(journal_t *journal)
- 
- 
- /**
-- * int jbd2_journal_load() - Read journal from disk.
-+ * jbd2_journal_load() - Read journal from disk.
-  * @journal: Journal to act on.
-  *
-  * Given a journal_t structure which tells us which disk blocks contain
-@@ -1972,7 +1974,7 @@ int jbd2_journal_load(journal_t *journal)
- }
- 
- /**
-- * void jbd2_journal_destroy() - Release a journal_t structure.
-+ * jbd2_journal_destroy() - Release a journal_t structure.
-  * @journal: Journal to act on.
-  *
-  * Release a journal_t structure once it is no longer in use by the
-@@ -2050,7 +2052,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 
- 
- /**
-- *int jbd2_journal_check_used_features() - Check if features specified are used.
-+ * jbd2_journal_check_used_features() - Check if features specified are used.
-  * @journal: Journal to check.
-  * @compat: bitmask of compatible features
-  * @ro: bitmask of features that force read-only mount
-@@ -2085,7 +2087,7 @@ int jbd2_journal_check_used_features(journal_t *journal, unsigned long compat,
- }
- 
- /**
-- * int jbd2_journal_check_available_features() - Check feature set in journalling layer
-+ * jbd2_journal_check_available_features() - Check feature set in journalling layer
-  * @journal: Journal to check.
-  * @compat: bitmask of compatible features
-  * @ro: bitmask of features that force read-only mount
-@@ -2117,7 +2119,7 @@ int jbd2_journal_check_available_features(journal_t *journal, unsigned long comp
- }
- 
- /**
-- * int jbd2_journal_set_features() - Mark a given journal feature in the superblock
-+ * jbd2_journal_set_features() - Mark a given journal feature in the superblock
-  * @journal: Journal to act on.
-  * @compat: bitmask of compatible features
-  * @ro: bitmask of features that force read-only mount
-@@ -2201,7 +2203,7 @@ int jbd2_journal_set_features(journal_t *journal, unsigned long compat,
- }
- 
- /*
-- * jbd2_journal_clear_features () - Clear a given journal feature in the
-+ * jbd2_journal_clear_features() - Clear a given journal feature in the
-  * 				    superblock
-  * @journal: Journal to act on.
-  * @compat: bitmask of compatible features
-@@ -2230,7 +2232,7 @@ void jbd2_journal_clear_features(journal_t *journal, unsigned long compat,
- EXPORT_SYMBOL(jbd2_journal_clear_features);
- 
- /**
-- * int jbd2_journal_flush () - Flush journal
-+ * jbd2_journal_flush() - Flush journal
-  * @journal: Journal to act on.
-  *
-  * Flush all data for a given journal to disk and empty the journal.
-@@ -2305,7 +2307,7 @@ int jbd2_journal_flush(journal_t *journal)
- }
- 
- /**
-- * int jbd2_journal_wipe() - Wipe journal contents
-+ * jbd2_journal_wipe() - Wipe journal contents
-  * @journal: Journal to act on.
-  * @write: flag (see below)
-  *
-@@ -2346,7 +2348,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- }
- 
- /**
-- * void jbd2_journal_abort () - Shutdown the journal immediately.
-+ * jbd2_journal_abort () - Shutdown the journal immediately.
-  * @journal: the journal to shutdown.
-  * @errno:   an error number to record in the journal indicating
-  *           the reason for the shutdown.
-@@ -2437,7 +2439,7 @@ void jbd2_journal_abort(journal_t *journal, int errno)
- }
- 
- /**
-- * int jbd2_journal_errno () - returns the journal's error state.
-+ * jbd2_journal_errno() - returns the journal's error state.
-  * @journal: journal to examine.
-  *
-  * This is the errno number set with jbd2_journal_abort(), the last
-@@ -2461,7 +2463,7 @@ int jbd2_journal_errno(journal_t *journal)
- }
- 
- /**
-- * int jbd2_journal_clear_err () - clears the journal's error state
-+ * jbd2_journal_clear_err() - clears the journal's error state
-  * @journal: journal to act on.
-  *
-  * An error must be cleared or acked to take a FS out of readonly
-@@ -2481,7 +2483,7 @@ int jbd2_journal_clear_err(journal_t *journal)
- }
- 
- /**
-- * void jbd2_journal_ack_err() - Ack journal err.
-+ * jbd2_journal_ack_err() - Ack journal err.
-  * @journal: journal to act on.
-  *
-  * An error must be cleared or acked to take a FS out of readonly
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index 43985738aa86..4cf88191b025 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -517,7 +517,7 @@ EXPORT_SYMBOL(jbd2__journal_start);
- 
- 
- /**
-- * handle_t *jbd2_journal_start() - Obtain a new handle.
-+ * jbd2_journal_start() - Obtain a new handle.
-  * @journal: Journal to start transaction on.
-  * @nblocks: number of block buffer we might modify
-  *
-@@ -564,7 +564,7 @@ void jbd2_journal_free_reserved(handle_t *handle)
- EXPORT_SYMBOL(jbd2_journal_free_reserved);
- 
- /**
-- * int jbd2_journal_start_reserved() - start reserved handle
-+ * jbd2_journal_start_reserved() - start reserved handle
-  * @handle: handle to start
-  * @type: for handle statistics
-  * @line_no: for handle statistics
-@@ -618,7 +618,7 @@ int jbd2_journal_start_reserved(handle_t *handle, unsigned int type,
- EXPORT_SYMBOL(jbd2_journal_start_reserved);
- 
- /**
-- * int jbd2_journal_extend() - extend buffer credits.
-+ * jbd2_journal_extend() - extend buffer credits.
-  * @handle:  handle to 'extend'
-  * @nblocks: nr blocks to try to extend by.
-  * @revoke_records: number of revoke records to try to extend by.
-@@ -743,7 +743,7 @@ static void stop_this_handle(handle_t *handle)
- }
- 
- /**
-- * int jbd2_journal_restart() - restart a handle .
-+ * jbd2__journal_restart() - restart a handle .
-  * @handle:  handle to restart
-  * @nblocks: nr credits requested
-  * @revoke_records: number of revoke record credits requested
-@@ -813,7 +813,7 @@ int jbd2_journal_restart(handle_t *handle, int nblocks)
- EXPORT_SYMBOL(jbd2_journal_restart);
- 
- /**
-- * void jbd2_journal_lock_updates () - establish a transaction barrier.
-+ * jbd2_journal_lock_updates () - establish a transaction barrier.
-  * @journal:  Journal to establish a barrier on.
-  *
-  * This locks out any further updates from being started, and blocks
-@@ -872,7 +872,7 @@ void jbd2_journal_lock_updates(journal_t *journal)
- }
- 
- /**
-- * void jbd2_journal_unlock_updates (journal_t* journal) - release barrier
-+ * jbd2_journal_unlock_updates () - release barrier
-  * @journal:  Journal to release the barrier on.
-  *
-  * Release a transaction barrier obtained with jbd2_journal_lock_updates().
-@@ -1180,7 +1180,8 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
- }
- 
- /**
-- * int jbd2_journal_get_write_access() - notify intent to modify a buffer for metadata (not data) update.
-+ * jbd2_journal_get_write_access() - notify intent to modify a buffer
-+ *				     for metadata (not data) update.
-  * @handle: transaction to add buffer modifications to
-  * @bh:     bh to be used for metadata writes
-  *
-@@ -1224,7 +1225,7 @@ int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
-  * unlocked buffer beforehand. */
- 
- /**
-- * int jbd2_journal_get_create_access () - notify intent to use newly created bh
-+ * jbd2_journal_get_create_access () - notify intent to use newly created bh
-  * @handle: transaction to new buffer to
-  * @bh: new buffer.
-  *
-@@ -1304,7 +1305,7 @@ int jbd2_journal_get_create_access(handle_t *handle, struct buffer_head *bh)
- }
- 
- /**
-- * int jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
-+ * jbd2_journal_get_undo_access() -  Notify intent to modify metadata with
-  *     non-rewindable consequences
-  * @handle: transaction
-  * @bh: buffer to undo
-@@ -1381,7 +1382,7 @@ int jbd2_journal_get_undo_access(handle_t *handle, struct buffer_head *bh)
- }
- 
- /**
-- * void jbd2_journal_set_triggers() - Add triggers for commit writeout
-+ * jbd2_journal_set_triggers() - Add triggers for commit writeout
-  * @bh: buffer to trigger on
-  * @type: struct jbd2_buffer_trigger_type containing the trigger(s).
-  *
-@@ -1423,7 +1424,7 @@ void jbd2_buffer_abort_trigger(struct journal_head *jh,
- }
- 
- /**
-- * int jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
-+ * jbd2_journal_dirty_metadata() -  mark a buffer as containing dirty metadata
-  * @handle: transaction to add buffer to.
-  * @bh: buffer to mark
-  *
-@@ -1591,7 +1592,7 @@ int jbd2_journal_dirty_metadata(handle_t *handle, struct buffer_head *bh)
- }
- 
- /**
-- * void jbd2_journal_forget() - bforget() for potentially-journaled buffers.
-+ * jbd2_journal_forget() - bforget() for potentially-journaled buffers.
-  * @handle: transaction handle
-  * @bh:     bh to 'forget'
-  *
-@@ -1760,7 +1761,7 @@ int jbd2_journal_forget(handle_t *handle, struct buffer_head *bh)
- }
- 
- /**
-- * int jbd2_journal_stop() - complete a transaction
-+ * jbd2_journal_stop() - complete a transaction
-  * @handle: transaction to complete.
-  *
-  * All done for a particular handle.
-@@ -2078,7 +2079,7 @@ __journal_try_to_free_buffer(journal_t *journal, struct buffer_head *bh)
- }
- 
- /**
-- * int jbd2_journal_try_to_free_buffers() - try to free page buffers.
-+ * jbd2_journal_try_to_free_buffers() - try to free page buffers.
-  * @journal: journal for operation
-  * @page: to try and free
-  *
-@@ -2409,7 +2410,7 @@ static int journal_unmap_buffer(journal_t *journal, struct buffer_head *bh,
- }
- 
- /**
-- * void jbd2_journal_invalidatepage()
-+ * jbd2_journal_invalidatepage()
-  * @journal: journal to use for flush...
-  * @page:    page to flush
-  * @offset:  start of the range to invalidate
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 3c5f76ce88f1..17bed9684cba 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -397,7 +397,7 @@ static inline void jbd_unlock_bh_journal_head(struct buffer_head *bh)
- #define JI_WAIT_DATA (1 << __JI_WAIT_DATA)
- 
- /**
-- * struct jbd_inode - The jbd_inode type is the structure linking inodes in
-+ * struct jbd2_inode - The jbd_inode type is the structure linking inodes in
-  * ordered mode present in a transaction so that we can sync them during commit.
-  */
- struct jbd2_inode {
+  *	lockd/nfsd need to disconnect the lock while working on it.
 -- 
 2.26.2
 
