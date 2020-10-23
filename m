@@ -2,93 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A64062969FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:58:10 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87843296A03
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:00:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375494AbgJWG6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:58:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        id S375506AbgJWHAf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:00:35 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373558AbgJWG6H (ORCPT
+        with ESMTP id S373732AbgJWHAe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:58:07 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A462C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:58:07 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id h6so482659pgk.4
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:58:07 -0700 (PDT)
+        Fri, 23 Oct 2020 03:00:34 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 05526C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:00:33 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id y1so366153plp.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:00:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VWEgyRKyuD8Al2J5jv/DfuVXBHrVMDS7b+Ko3pQcdGs=;
-        b=t3YqLDMe682M0O+O/QgLfaOkTW0bWUdMZZAkWQsRi9mAcQOOgztU1eepQDVe6eN6+c
-         i7ZQLp+qYPBr01UClq0A/vSRkWEQXx6AjerYLDkcM2n+4yJgzWmy2VZhAHYwQcGveVVs
-         gsfmQVko7SK0rSZ4rGdhc91MkQApNNhGSHzqahXFFKAiIU5MY4TYh0vpeQJobPY54KQH
-         QPaVx7oH2wFPZMXm+jd0R8ucYTgJLqjgsG1rb56JGZ8cR4FFaV0ap0NRmeDU2URP8pMg
-         3nEslED9SY+66lLO+NrO0FykbBiVXQ+JdqSNXqlWfsco28QWsi2thHLNCAQ84I5jnTHh
-         cA+Q==
+        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id;
+        bh=gVvp5GTF6tEYF1l4MyLe+EEACPzCJh/rTLhZ25K7Yus=;
+        b=KWPJbAFMvmpj3OAzC7C9dIn2g7wa3y2PZbYxCq7caZotONOVMgoXy8ZqkhAHrJUTSJ
+         ds68D0aFcyb8vTkMBMfaRF5rduNxICRu4bABQKpWk5TRzbPUcaLMnPeXNn6J9WUdmge/
+         Zwg+e50jvhe0RtX4j6BcUzxnTK2SUU+zIsF7psfkuC0aqOAJRCKlz1tY88KbKg3oWDoZ
+         ZxoDyY3j8K7k5TZXwMRDcUZviq6w2gV4rDjvhK1PLEdnrcq2A95liY19s/dcTuW8Igcm
+         9i8FpsMUPQBkQkPH+IRowt6GVsQSiEIqWPp6ZKYPmxkX8+buhBqcj85d6XINiIjUl+wk
+         TjYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=VWEgyRKyuD8Al2J5jv/DfuVXBHrVMDS7b+Ko3pQcdGs=;
-        b=C071J28cgwPHn0h3isyWcN335yIKzLTTEvkGyxxyIo/PR1yuKYDCwMieLVOQbflb6w
-         hdOjwxP1FY50kJtRZutMsiD4aT382x11dsvGuqdeq3p7ukQuTGJAFe7IBWyYYFpC9Z7L
-         S+gUDSYXxNqAZmGtNiHx1016pQsUa0KzOLDiPE6RLvv68TD+CkRlz3IWNZzgl9USdmnN
-         z+InMkrWIcAmmZPneu+fLlWr4gQmiqhskkv4MYop0/0FIXMSQZEgKGg2n/N4i0AT9eA5
-         pmFekXzY3lbaxfTO1SWTHRr/ApYGM9kcmlEFuRFpyDcGrChamnKxWxerxQJNCJBfiN2G
-         y8gw==
-X-Gm-Message-State: AOAM533wRMYef/Ww2bdV8Lkd1mCZtvUsQIr6pzXYW1NqyTqFZFwm2iQ5
-        JLI0SVH+3DgSNw1Un7F/p1E=
-X-Google-Smtp-Source: ABdhPJzGH/VcBiNeWPzvAkx/7KesWs5DP4LvuuoZQpRs/aVMBQbd5nQP3BzBSXC/64qM1M+ps7NtKg==
-X-Received: by 2002:a17:90a:bc91:: with SMTP id x17mr877039pjr.113.1603436286598;
-        Thu, 22 Oct 2020 23:58:06 -0700 (PDT)
-Received: from nick-Blade-Stealth.lan ([2600:1700:6d11:6f:140b:65b9:cfba:15d7])
-        by smtp.googlemail.com with ESMTPSA id v199sm875573pfc.149.2020.10.22.23.58.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 23:58:05 -0700 (PDT)
-From:   Nick Desaulniers <nick.desaulniers@gmail.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-Cc:     Christoph Hellwig <hch@lst.de>,
-        Nick Desaulniers <nick.desaulniers@gmail.com>,
-        linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] bdi: fix -Wformat-security
-Date:   Thu, 22 Oct 2020 23:57:54 -0700
-Message-Id: <20201023065754.83084-1-nick.desaulniers@gmail.com>
-X-Mailer: git-send-email 2.25.1
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=gVvp5GTF6tEYF1l4MyLe+EEACPzCJh/rTLhZ25K7Yus=;
+        b=cjtyTviswMkO1OxR0F1bUG1ywZJEH1mE9nf+vOH5/uOUszwfkeEZhPWlQ5i0LVAS4n
+         J4/NirRgGeEPUpGzQdZ3QIxz3XleZyMwLBX2v2e4twib4rPY+lUTUZgZhykQFtnbows8
+         gSBNTC5MdAmaFQbrDyibBgkCfINe7WeYGYECR67S8W/rM54PbMHvxW352O+TJ018MP50
+         S9UbL+XLgvmL87wZc2IKTHmhr2UDELNEe/s2VSMndgYS7hLPqHhV81w+FjHxn3w1gm8m
+         oz2qrI+i1Gpbzrs07mUw0iIwzOw2HDFoBL57UEwth8Jt6PtK59+jfYbvPHx8OqdeR6MC
+         YHtQ==
+X-Gm-Message-State: AOAM533dbrXQvCcTymjfHMYKMmkdw2aGP94c5GXWwEdDs4iyjiwTZycd
+        AB121xTGpRX6Luxg6qQzXFvusg==
+X-Google-Smtp-Source: ABdhPJyM1RekPYb05cSt8HvXzUhVRJa3OqIUptCqYP36bORzn5wOfny7OcuR9gEWaEs3/69n6p/s/w==
+X-Received: by 2002:a17:902:b70a:b029:d2:6391:a80f with SMTP id d10-20020a170902b70ab02900d26391a80fmr1186265pls.0.1603436432573;
+        Fri, 23 Oct 2020 00:00:32 -0700 (PDT)
+Received: from libai.bytedance.net ([61.120.150.71])
+        by smtp.gmail.com with ESMTPSA id h4sm795139pgc.13.2020.10.23.00.00.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 00:00:31 -0700 (PDT)
+From:   zhenwei pi <pizhenwei@bytedance.com>
+To:     kbusch@kernel.org, hch@lst.de, sagi@grimberg.me, axboe@fb.com
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
+        pizhenwei@bytedance.com
+Subject: [PATCH v2] nvme-rdma: handle nvme completion data length
+Date:   Fri, 23 Oct 2020 14:59:10 +0800
+Message-Id: <20201023065910.1358586-1-pizhenwei@bytedance.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-mm/backing-dev.c:810:57: warning: format string is not a string literal
-(potentially insecure) [-Wformat-security]
-dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, bdi->dev_name);
-                                                       ^~~~~~~~~~~~~
+Hit a kernel warning:
+refcount_t: underflow; use-after-free.
+WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
 
-Signed-off-by: Nick Desaulniers <nick.desaulniers@gmail.com>
+RIP: 0010:refcount_warn_saturate+0xd9/0xe0
+Call Trace:
+ <IRQ>
+ nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
+ __ib_process_cq+0x76/0x150 [ib_core]
+ ...
+
+The reason is that a zero bytes message received from target, and the
+host side continues to process without length checking, then the
+previous CQE is processed twice.
+
+Handle data length, ignore zero bytes message, and try to recovery for
+corrupted CQE case.
+
+Thanks to Chao Leng for suggestions.
+
+Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
 ---
-Example patch showing off kernel development from a newly created twitch
-stream! Check it out at: https://twitch.tv/ndesaulniers.
+ drivers/nvme/host/rdma.c | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
 
- mm/backing-dev.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/mm/backing-dev.c b/mm/backing-dev.c
-index 408d5051d05b..5755578d671d 100644
---- a/mm/backing-dev.c
-+++ b/mm/backing-dev.c
-@@ -807,7 +807,7 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
- 		return 0;
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 9e378d0a0c01..2ecadd309f4a 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -1767,6 +1767,21 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
+ 		return;
+ 	}
  
- 	vsnprintf(bdi->dev_name, sizeof(bdi->dev_name), fmt, args);
--	dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, bdi->dev_name);
-+	dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, "%s", bdi->dev_name);
- 	if (IS_ERR(dev))
- 		return PTR_ERR(dev);
- 
++	/* received data length checking */
++	if (unlikely(wc->byte_len < len)) {
++		/* zero bytes message could be ignored */
++		if (!wc->byte_len) {
++			nvme_rdma_post_recv(queue, qe);
++			return;
++		}
++
++		/* corrupted completion, try to recovry */
++		dev_err(queue->ctrl->ctrl.device,
++			"Unexpected nvme completion length(%d)\n", wc->byte_len);
++		nvme_rdma_error_recovery(queue->ctrl);
++		return;
++	}
++
+ 	ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
+ 	/*
+ 	 * AEN requests are special as they don't time out and can
 -- 
-2.25.1
+2.11.0
 
