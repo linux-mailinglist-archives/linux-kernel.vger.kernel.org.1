@@ -2,207 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AC542969DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:46:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EB66F2969E1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:47:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375396AbgJWGqZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:46:25 -0400
-Received: from mga02.intel.com ([134.134.136.20]:64768 "EHLO mga02.intel.com"
+        id S375399AbgJWGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:47:39 -0400
+Received: from mx2.suse.de ([195.135.220.15]:45994 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373110AbgJWGqZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:46:25 -0400
-IronPort-SDR: vXF2q0QuI9Nn/Nzoy4JyisSC0X17+q1GwxJhmP22QVqzLGA3927pUbqhjGXXTYSO4xxpX3VmfS
- nnThRm77R9Hw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="154593898"
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="154593898"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by orsmga101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 23:46:18 -0700
-IronPort-SDR: YvNCxjV+D2RHcl1oHCWkr7ONJG4nVIRDltY35a/+CvtQTaoEsvzbPnToEyYmLQSiUy3nHBTZLX
- rgXEVwJKZRSg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
-   d="scan'208";a="360135219"
-Received: from lkp-server01.sh.intel.com (HELO 1f55bd7cde4b) ([10.239.97.150])
-  by orsmga007.jf.intel.com with ESMTP; 22 Oct 2020 23:46:16 -0700
-Received: from kbuild by 1f55bd7cde4b with local (Exim 4.92)
-        (envelope-from <lkp@intel.com>)
-        id 1kVqq6-00005d-Pf; Fri, 23 Oct 2020 06:46:14 +0000
-Date:   Fri, 23 Oct 2020 14:45:35 +0800
-From:   kernel test robot <lkp@intel.com>
-To:     "x86-ml" <x86@kernel.org>
-Cc:     linux-kernel@vger.kernel.org
-Subject: [tip:master] BUILD SUCCESS
- 95d591cca3b1851eaf66af066149183f18ff5ab3
-Message-ID: <5f927c0f.GCAhIuu1h+35XIYh%lkp@intel.com>
-User-Agent: Heirloom mailx 12.5 6/20/10
+        id S373100AbgJWGri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 02:47:38 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603435657;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=klhtciLu5zqObcp6VC8lGKNOReb4sC7Hz8VWst07W2Y=;
+        b=PmVmHiDn0PfT0NcTU++Qm5ePPlICPwdf4uapEZrNAtmW9iT6XCEwlsn/uX/j6WVBFytBWa
+        zm2smNYGEBBvL4tKz2LMtfc0zKufDqltW/rWvyATV0utmAyalM72iuW3m/18X2s7Qo/NJh
+        7QNHpJqkx4CoBHfg2VOry0/ae8CFSmI=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0B4C6B0D1;
+        Fri, 23 Oct 2020 06:47:37 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 08:47:36 +0200
+From:   Michal Hocko <mhocko@suse.com>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Hugh Dickins <hughd@google.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Matthew Wilcox <willy@infradead.org>
+Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
+Message-ID: <20201023064736.GQ23790@dhcp22.suse.cz>
+References: <20201021234846.5cc97e62@imladris.surriel.com>
+ <20201022081532.GJ23790@dhcp22.suse.cz>
+ <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
+ <20201022155022.GO23790@dhcp22.suse.cz>
+ <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git  master
-branch HEAD: 95d591cca3b1851eaf66af066149183f18ff5ab3  Merge branch 'x86/urgent'
+On Thu 22-10-20 12:06:01, Rik van Riel wrote:
+> On Thu, 2020-10-22 at 17:50 +0200, Michal Hocko wrote:
+> > On Thu 22-10-20 09:25:21, Rik van Riel wrote:
+> > > On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
+> > > > On Wed 21-10-20 23:48:46, Rik van Riel wrote:
+> > > > > 
+> > > > > diff --git a/mm/shmem.c b/mm/shmem.c
+> > > > > index 537c137698f8..d1290eb508e5 100644
+> > > > > --- a/mm/shmem.c
+> > > > > +++ b/mm/shmem.c
+> > > > > @@ -1545,8 +1545,11 @@ static struct page
+> > > > > *shmem_alloc_hugepage(gfp_t gfp,
+> > > > >  		return NULL;
+> > > > >  
+> > > > >  	shmem_pseudo_vma_init(&pvma, info, hindex);
+> > > > > -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY
+> > > > > |
+> > > > > __GFP_NOWARN,
+> > > > > -			HPAGE_PMD_ORDER, &pvma, 0,
+> > > > > numa_node_id(),
+> > > > > true);
+> > > > > +	/* Limit the gfp mask according to THP configuration.
+> > > > > */
+> > > > > +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
+> > > > 
+> > > > What is the reason for these when alloc_hugepage_direct_gfpmask
+> > > > provides
+> > > > the full mask?
+> > > 
+> > > The mapping_gfp_mask for the shmem file might have additional
+> > > restrictions above and beyond the gfp mask returned by
+> > > alloc_hugepage_direct_gfpmask, and I am not sure we should just
+> > > ignore the mapping_gfp_mask.
+> > 
+> > No, we shouldn't. But I do not see why you should be adding the above
+> > set of flags on top.
+> 
+> Because THP allocations are higher order and optimistic,
+> and we want them to:
+> 1) be annotated as compound allocations
+> 2) fail (and fall back to 4kB allocations) when they cannot
+>    be easily satisfied, and
+> 3) not create a spew of allocation failure backtraces on
+>    the (serial) console when these THP allocations fail
 
-elapsed time: 722m
-
-configs tested: 143
-configs skipped: 2
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-gcc tested configs:
-arm                                 defconfig
-arm64                            allyesconfig
-arm64                               defconfig
-arm                              allyesconfig
-arm                              allmodconfig
-powerpc                 mpc837x_mds_defconfig
-mips                          ath79_defconfig
-um                            kunit_defconfig
-powerpc                     ppa8548_defconfig
-mips                      malta_kvm_defconfig
-arm                             mxs_defconfig
-arc                        nsim_700_defconfig
-powerpc                      ppc44x_defconfig
-m68k                        m5307c3_defconfig
-s390                             allyesconfig
-powerpc                   currituck_defconfig
-powerpc                 canyonlands_defconfig
-arm                          pxa910_defconfig
-mips                         db1xxx_defconfig
-sparc64                             defconfig
-sh                           se7343_defconfig
-sh                           se7780_defconfig
-arm                            zeus_defconfig
-sh                           se7722_defconfig
-mips                     decstation_defconfig
-arm                      jornada720_defconfig
-sh                          lboxre2_defconfig
-arm                    vt8500_v6_v7_defconfig
-powerpc                     redwood_defconfig
-sh                             sh03_defconfig
-mips                      bmips_stb_defconfig
-sparc64                          alldefconfig
-sh                     magicpanelr2_defconfig
-sh                           se7206_defconfig
-parisc                generic-64bit_defconfig
-powerpc                         wii_defconfig
-arm                      integrator_defconfig
-arm                       aspeed_g4_defconfig
-arm                          moxart_defconfig
-mips                           jazz_defconfig
-arm                          lpd270_defconfig
-m68k                          hp300_defconfig
-arc                         haps_hs_defconfig
-mips                        qi_lb60_defconfig
-arm                            hisi_defconfig
-arm                        multi_v5_defconfig
-xtensa                              defconfig
-mips                  cavium_octeon_defconfig
-xtensa                    xip_kc705_defconfig
-m68k                        m5407c3_defconfig
-sh                             espt_defconfig
-arm                        realview_defconfig
-arm                           spitz_defconfig
-xtensa                         virt_defconfig
-powerpc                      ppc6xx_defconfig
-arm                       versatile_defconfig
-h8300                               defconfig
-m68k                        stmark2_defconfig
-powerpc                        icon_defconfig
-sh                               alldefconfig
-m68k                        mvme16x_defconfig
-mips                           rs90_defconfig
-powerpc                     mpc512x_defconfig
-ia64                             allmodconfig
-ia64                                defconfig
-ia64                             allyesconfig
-m68k                             allmodconfig
-m68k                                defconfig
-m68k                             allyesconfig
-nios2                               defconfig
-arc                              allyesconfig
-nds32                             allnoconfig
-c6x                              allyesconfig
-nds32                               defconfig
-nios2                            allyesconfig
-csky                                defconfig
-alpha                               defconfig
-alpha                            allyesconfig
-xtensa                           allyesconfig
-h8300                            allyesconfig
-arc                                 defconfig
-sh                               allmodconfig
-parisc                              defconfig
-parisc                           allyesconfig
-s390                                defconfig
-i386                             allyesconfig
-sparc                            allyesconfig
-sparc                               defconfig
-i386                                defconfig
-mips                             allyesconfig
-mips                             allmodconfig
-powerpc                          allyesconfig
-powerpc                          allmodconfig
-powerpc                           allnoconfig
-i386                 randconfig-a002-20201023
-i386                 randconfig-a005-20201023
-i386                 randconfig-a003-20201023
-i386                 randconfig-a001-20201023
-i386                 randconfig-a006-20201023
-i386                 randconfig-a004-20201023
-i386                 randconfig-a002-20201022
-i386                 randconfig-a005-20201022
-i386                 randconfig-a003-20201022
-i386                 randconfig-a001-20201022
-i386                 randconfig-a006-20201022
-i386                 randconfig-a004-20201022
-x86_64               randconfig-a011-20201022
-x86_64               randconfig-a013-20201022
-x86_64               randconfig-a016-20201022
-x86_64               randconfig-a015-20201022
-x86_64               randconfig-a012-20201022
-x86_64               randconfig-a014-20201022
-i386                 randconfig-a016-20201022
-i386                 randconfig-a014-20201022
-i386                 randconfig-a015-20201022
-i386                 randconfig-a012-20201022
-i386                 randconfig-a013-20201022
-i386                 randconfig-a011-20201022
-riscv                    nommu_k210_defconfig
-riscv                            allyesconfig
-riscv                    nommu_virt_defconfig
-riscv                             allnoconfig
-riscv                               defconfig
-riscv                          rv32_defconfig
-riscv                            allmodconfig
-x86_64                                   rhel
-x86_64                           allyesconfig
-x86_64                    rhel-7.6-kselftests
-x86_64                              defconfig
-x86_64                               rhel-8.3
-x86_64                                  kexec
-
-clang tested configs:
-x86_64               randconfig-a011-20201023
-x86_64               randconfig-a013-20201023
-x86_64               randconfig-a016-20201023
-x86_64               randconfig-a015-20201023
-x86_64               randconfig-a012-20201023
-x86_64               randconfig-a014-20201023
-x86_64               randconfig-a001-20201022
-x86_64               randconfig-a002-20201022
-x86_64               randconfig-a003-20201022
-x86_64               randconfig-a006-20201022
-x86_64               randconfig-a004-20201022
-x86_64               randconfig-a005-20201022
-
----
-0-DAY CI Kernel Test Service, Intel Corporation
-https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
+This all is already returned from alloc_hugepage_direct_gfpmask.
+-- 
+Michal Hocko
+SUSE Labs
