@@ -2,74 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2B5E6296B84
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:53:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BABDB296B8E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:56:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460912AbgJWIxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:53:39 -0400
-Received: from szxga04-in.huawei.com ([45.249.212.190]:15766 "EHLO huawei.com"
+        id S460881AbgJWI4T (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:56:19 -0400
+Received: from smtp21.cstnet.cn ([159.226.251.21]:57946 "EHLO cstnet.cn"
         rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S460768AbgJWIxj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:53:39 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.60])
-        by Forcepoint Email with ESMTP id CF2FE3B578607A66884D;
-        Fri, 23 Oct 2020 16:53:34 +0800 (CST)
-Received: from [127.0.0.1] (10.57.22.126) by DGGEMS413-HUB.china.huawei.com
- (10.3.19.213) with Microsoft SMTP Server id 14.3.487.0; Fri, 23 Oct 2020
- 16:53:26 +0800
-Subject: Re: [PATCH v1 1/5] seq_file: Introduce DEFINE_STORE_ATTRIBUTE()
- helper macro
-To:     Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-CC:     <akpm@linux-foundation.org>, <viro@zeniv.linux.org.uk>,
-        <linux-kernel@vger.kernel.org>, <martin.petersen@oracle.com>,
-        <john.garry@huawei.com>, <himanshu.madhani@cavium.com>,
-        <felipe.balbi@linux.intel.com>, <gregkh@linuxfoundation.org>,
-        <uma.shankar@intel.com>, <anshuman.gupta@intel.com>,
-        <animesh.manna@intel.com>, <linux-usb@vger.kernel.org>,
-        <linux-scsi@vger.kernel.org>, <linuxarm@huawei.com>
-References: <1603355997-32350-1-git-send-email-luojiaxing@huawei.com>
- <1603355997-32350-2-git-send-email-luojiaxing@huawei.com>
- <20201022142213.GC4077@smile.fi.intel.com>
-From:   luojiaxing <luojiaxing@huawei.com>
-Message-ID: <9e25f256-3381-ed0f-be79-69ae631170de@huawei.com>
-Date:   Fri, 23 Oct 2020 16:53:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.2.1
-MIME-Version: 1.0
-In-Reply-To: <20201022142213.GC4077@smile.fi.intel.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
-X-Originating-IP: [10.57.22.126]
-X-CFilter-Loop: Reflected
+        id S460855AbgJWI4T (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:56:19 -0400
+Received: from ubuntu18.localdomain (unknown [124.16.141.242])
+        by APP-01 (Coremail) with SMTP id qwCowADHKFaimpJf_Dx1Aw--.33307S2;
+        Fri, 23 Oct 2020 16:56:02 +0800 (CST)
+From:   Xu Wang <vulab@iscas.ac.cn>
+To:     jdmason@kudzu.us, davem@davemloft.net, kuba@kernel.org,
+        jesse.brandeburg@intel.com, christophe.jaillet@wanadoo.fr,
+        gustavoars@kernel.org, bigeasy@linutronix.de
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Xu Wang <vulab@iscas.ac.cn>
+Subject: [PATCH] vxge: remove unnecessary cast in kfree()
+Date:   Fri, 23 Oct 2020 16:55:33 +0800
+Message-Id: <20201023085533.4792-1-vulab@iscas.ac.cn>
+X-Mailer: git-send-email 2.17.1
+X-CM-TRANSID: qwCowADHKFaimpJf_Dx1Aw--.33307S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtF45uFW5Kw1DtF4rtF17Awb_yoW3ZwcE9r
+        42qF1rGFn8A34Skw4YyFZ3Z34S9an5XryrZFWxtFZxXFW2gFy3J34DZFZxXr98WF4xGFZx
+        GrZFyFy3A34FqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+        9fnUUIcSsGvfJTRUUUbVkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+        6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+        A2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+        Gr1UM28EF7xvwVC2z280aVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+        Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+        I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Gr0_Cr1lOx8S6xCaFVCjc4AY6r1j6r
+        4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+        n2kIc2xKxwCY02Avz4vE14v_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr
+        0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+        17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+        C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+        0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+        nxnUUI43ZEXa7VUjAhL5UUUUU==
+X-Originating-IP: [124.16.141.242]
+X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCgUSA1z4jFfGsQAAsW
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi
+Remove unnecessary cast in the argument to kfree.
 
-On 2020/10/22 22:22, Andy Shevchenko wrote:
-> On Thu, Oct 22, 2020 at 04:39:53PM +0800, Luo Jiaxing wrote:
->> We already own DEFINE_SHOW_ATTRIBUTE() helper macro for defining attribute
->> for read-only file, but we found many of drivers want a helper marco for
->> read-write file too.
-> I would expect that DEFINE_STORE maps to WO attribute...
-> For RW SHOW_STORE would be more appropriate.
->
-> Otherwise I think it makes sense.
+Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
+---
+ drivers/net/ethernet/neterion/vxge/vxge-config.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-
-Thanks for the review, it's true that the name is a bit inappropriate.
-
-I'll change the name if I get a v2 patch.
-
-But AI doesn't seem to like this macro  : )
-
-
-Thanks
-
-Jiaxing
-
-
->
+diff --git a/drivers/net/ethernet/neterion/vxge/vxge-config.c b/drivers/net/ethernet/neterion/vxge/vxge-config.c
+index f5d48d7c4ce2..da48dd85770c 100644
+--- a/drivers/net/ethernet/neterion/vxge/vxge-config.c
++++ b/drivers/net/ethernet/neterion/vxge/vxge-config.c
+@@ -1121,7 +1121,7 @@ static void __vxge_hw_blockpool_destroy(struct __vxge_hw_blockpool *blockpool)
+ 
+ 	list_for_each_safe(p, n, &blockpool->free_entry_list) {
+ 		list_del(&((struct __vxge_hw_blockpool_entry *)p)->item);
+-		kfree((void *)p);
++		kfree(p);
+ 	}
+ 
+ 	return;
+-- 
+2.17.1
 
