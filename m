@@ -2,98 +2,71 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EB66F2969E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:47:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E786F2969E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:47:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375399AbgJWGrj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:47:39 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45994 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373100AbgJWGri (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:47:38 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603435657;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=klhtciLu5zqObcp6VC8lGKNOReb4sC7Hz8VWst07W2Y=;
-        b=PmVmHiDn0PfT0NcTU++Qm5ePPlICPwdf4uapEZrNAtmW9iT6XCEwlsn/uX/j6WVBFytBWa
-        zm2smNYGEBBvL4tKz2LMtfc0zKufDqltW/rWvyATV0utmAyalM72iuW3m/18X2s7Qo/NJh
-        7QNHpJqkx4CoBHfg2VOry0/ae8CFSmI=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 0B4C6B0D1;
-        Fri, 23 Oct 2020 06:47:37 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 08:47:36 +0200
-From:   Michal Hocko <mhocko@suse.com>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Hugh Dickins <hughd@google.com>,
-        Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>
-Subject: Re: [PATCH] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201023064736.GQ23790@dhcp22.suse.cz>
-References: <20201021234846.5cc97e62@imladris.surriel.com>
- <20201022081532.GJ23790@dhcp22.suse.cz>
- <004062456494e9003b0f71b911f06f8c58a12797.camel@surriel.com>
- <20201022155022.GO23790@dhcp22.suse.cz>
- <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
+        id S375410AbgJWGro (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:47:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42660 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S375401AbgJWGro (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 02:47:44 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D0B64C0613CE;
+        Thu, 22 Oct 2020 23:47:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=BpKyPUKBRmupv+ADoXZ2WKJ98lsRlSNLBOv4kS8Twyc=; b=Lo756IB6V4p3RdlJwmiIy6xbvn
+        Ls602AVHxUgwIak6/ZqYxeI7y0RbWN8s3jIOk7Y5uM2tBQIoL2c72xeJSJqcBT2878VgPLWTn4yEG
+        TrBMtrLYvdHyvjwQmX75RuBokNricbhwv/0fJvLK8IB8INKytNNlI+ZoVYSHtxmiajfg9qkknhGWQ
+        m5OdyGXAW0o+4/UvBg4ccCR7DoDm7OMBrzjtVN6FS4mzXUQbGZTyi2AHmGzH+BS68T5/fGoD4d4Fn
+        SRkIWKzZqRZ51LvQnKrpOnBY5u/8trY24u/byG0830jsdz0zaENzwM9NXugPWCh+4TQMHe2l1VFPH
+        P6K4Webg==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVqrU-00062s-9u; Fri, 23 Oct 2020 06:47:40 +0000
+Date:   Fri, 23 Oct 2020 07:47:40 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Cc:     Christoph Hellwig <hch@infradead.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>,
+        Paul Burton <paulburton@kernel.org>,
+        linux-mips@vger.kernel.org, Bjorn Helgaas <bhelgaas@google.com>,
+        linux-pci@vger.kernel.org
+Subject: Re: [PATCH] PCI: export pci_find_host_bridge() to fix MFD build error
+Message-ID: <20201023064740.GB22405@infradead.org>
+References: <20201019061453.32295-1-rdunlap@infradead.org>
+ <20201020080219.GA21011@infradead.org>
+ <20201021100844.GA3693@alpha.franken.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1b2d262c30bd839ac433587532a27ad800df4771.camel@surriel.com>
+In-Reply-To: <20201021100844.GA3693@alpha.franken.de>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22-10-20 12:06:01, Rik van Riel wrote:
-> On Thu, 2020-10-22 at 17:50 +0200, Michal Hocko wrote:
-> > On Thu 22-10-20 09:25:21, Rik van Riel wrote:
-> > > On Thu, 2020-10-22 at 10:15 +0200, Michal Hocko wrote:
-> > > > On Wed 21-10-20 23:48:46, Rik van Riel wrote:
-> > > > > 
-> > > > > diff --git a/mm/shmem.c b/mm/shmem.c
-> > > > > index 537c137698f8..d1290eb508e5 100644
-> > > > > --- a/mm/shmem.c
-> > > > > +++ b/mm/shmem.c
-> > > > > @@ -1545,8 +1545,11 @@ static struct page
-> > > > > *shmem_alloc_hugepage(gfp_t gfp,
-> > > > >  		return NULL;
-> > > > >  
-> > > > >  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> > > > > -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY
-> > > > > |
-> > > > > __GFP_NOWARN,
-> > > > > -			HPAGE_PMD_ORDER, &pvma, 0,
-> > > > > numa_node_id(),
-> > > > > true);
-> > > > > +	/* Limit the gfp mask according to THP configuration.
-> > > > > */
-> > > > > +	gfp |= __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN;
-> > > > 
-> > > > What is the reason for these when alloc_hugepage_direct_gfpmask
-> > > > provides
-> > > > the full mask?
+On Wed, Oct 21, 2020 at 12:08:45PM +0200, Thomas Bogendoerfer wrote:
+> On Tue, Oct 20, 2020 at 09:02:19AM +0100, Christoph Hellwig wrote:
+> > On Sun, Oct 18, 2020 at 11:14:53PM -0700, Randy Dunlap wrote:
+> > > Fix a build error in drivers/mfd/ioc.o by exporting
+> > > pci_find_host_bridge().
 > > > 
-> > > The mapping_gfp_mask for the shmem file might have additional
-> > > restrictions above and beyond the gfp mask returned by
-> > > alloc_hugepage_direct_gfpmask, and I am not sure we should just
-> > > ignore the mapping_gfp_mask.
+> > > ERROR: modpost: "pci_find_host_bridge" [drivers/mfd/ioc3.ko] undefined!
 > > 
-> > No, we shouldn't. But I do not see why you should be adding the above
-> > set of flags on top.
+> > I think the mfd code should be fixed to not depend on such an internal
+> > symbol instead.
 > 
-> Because THP allocations are higher order and optimistic,
-> and we want them to:
-> 1) be annotated as compound allocations
-> 2) fail (and fall back to 4kB allocations) when they cannot
->    be easily satisfied, and
-> 3) not create a spew of allocation failure backtraces on
->    the (serial) console when these THP allocations fail
+> are you talking about the EXPORT_SYMBOL or the usage of
+> pci_find_host_bridge() outside of drivers/pci ? If the latter the
+> function is used in arm/arm64 code and pci controller code... so
+> I doesn't look like a pure internal symbol to me.
 
-This all is already returned from alloc_hugepage_direct_gfpmask.
--- 
-Michal Hocko
-SUSE Labs
+All of those are built-in and related bits aren't exported at all, or
+at best EXPORT_SYMBOL_GPL.  I think just not allowing the ioc3 mfd to
+be built modular might be the easiest fix here.  Especially as for IP27
+and co kernel it is everything but optional anyway.
