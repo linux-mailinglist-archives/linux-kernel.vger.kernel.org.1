@@ -2,86 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C2C929723F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:27:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F592297241
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:27:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465805AbgJWP1Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:27:16 -0400
-Received: from mail-pg1-f196.google.com ([209.85.215.196]:43595 "EHLO
-        mail-pg1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462196AbgJWP1Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:27:16 -0400
-Received: by mail-pg1-f196.google.com with SMTP id r10so1505942pgb.10;
-        Fri, 23 Oct 2020 08:27:15 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=BLVFBML2Vwax1XyDeMppx9C3lOBX85F9Q67T1CeljKY=;
-        b=PW7flJX+qlxsMTWjY8G8NIIrIK34rAfZdykbHO3sgOht/xqz678v2jiPwLqHDgSnwY
-         WuBYNtZCVdTHlvLqUB8yhJkcXTc/LsSZHUDtU7TyVdz6JMsb5nhBV6F9m/Xel+TkQ3j5
-         d+Gj2pWOr24Rnsylx6FB0A2hqRI3oephUxKE2kPN/PwaUf/TU9Nxs8yy/hLNQcckKdbP
-         pw14y4nGg8Fss320J1DzKuY866UlSBJ9VfZGulCian5EaHnZo0moL13tz5vyw5QzWBAR
-         tn0qi29TrBaqYSAn9VAB0iMgxFmTe/Qdg+VOLMwP7NX6ylFPWfsXgGBESwodNCsSLzmp
-         0gmg==
-X-Gm-Message-State: AOAM530F7pTzSMc2ZGovDX5V2q8hC2FCALIz/1P6r0UhXnpNppnTE8Ko
-        gF9eBgVruTrs76vmyO5azxSdE8NAxV1KPw==
-X-Google-Smtp-Source: ABdhPJxKO0uOkptR8CUzV7g074wD+rgIs0xpvIRLo8ZQpNiEBUz3XTXUQ4A03M1xKLM9YaBFCJL6oA==
-X-Received: by 2002:a17:90a:e997:: with SMTP id v23mr3037101pjy.195.1603466834441;
-        Fri, 23 Oct 2020 08:27:14 -0700 (PDT)
-Received: from [192.168.50.110] (c-73-241-217-19.hsd1.ca.comcast.net. [73.241.217.19])
-        by smtp.gmail.com with ESMTPSA id u21sm2243209pfk.89.2020.10.23.08.27.11
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 08:27:12 -0700 (PDT)
-Subject: Re: [PATCH] scsi: ufs: make sure scan sequence for multiple hosts
-To:     Chanho Park <chanho61.park@samsung.com>, jejb@linux.ibm.com,
-        martin.petersen@oracle.com
-Cc:     alim.akhtar@samsung.com, avri.altman@wdc.com,
-        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <CGME20201020070519epcas2p27906d7db7c74e45f2acf8243ec2eae1d@epcas2p2.samsung.com>
- <20201020070516.129273-1-chanho61.park@samsung.com>
- <7fafcc82-2c42-8ef5-14a6-7906b5956363@acm.org>
- <000a01d6a761$efafcaf0$cf0f60d0$@samsung.com>
- <0a5eb555-af2a-196a-2376-01dc4a92ae0c@acm.org>
- <008a01d6a830$1a109800$4e31c800$@samsung.com>
-From:   Bart Van Assche <bvanassche@acm.org>
-Message-ID: <6e204521-74e4-cc6c-27e7-3a290c492793@acm.org>
-Date:   Fri, 23 Oct 2020 08:27:10 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1750819AbgJWP12 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:27:28 -0400
+Received: from mga04.intel.com ([192.55.52.120]:31158 "EHLO mga04.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462254AbgJWP11 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:27:27 -0400
+IronPort-SDR: qSsfzkXXkgt5z5LGIrprJ9ZHf+S+xfW1ag2tXsOAaDdveEe2a4us1WLwE/NsqhkhTo1qH/8IdG
+ iCEwv/D8OlGg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="165098112"
+X-IronPort-AV: E=Sophos;i="5.77,408,1596524400"; 
+   d="scan'208";a="165098112"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga006.jf.intel.com ([10.7.209.51])
+  by fmsmga104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 08:27:24 -0700
+IronPort-SDR: 3Fs3y3ZJZi0vPaN4bVpebT2ToW8yu8kA2stZvwxqC8hZLdCQutq5ILFGxS4BUnBmIQduJc3YGW
+ NJgbDW3n3DPw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,408,1596524400"; 
+   d="scan'208";a="321768874"
+Received: from stinkbox.fi.intel.com (HELO stinkbox) ([10.237.72.174])
+  by orsmga006.jf.intel.com with SMTP; 23 Oct 2020 08:27:20 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Fri, 23 Oct 2020 18:27:19 +0300
+Date:   Fri, 23 Oct 2020 18:27:19 +0300
+From:   Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To:     Simon Ser <contact@emersion.fr>
+Cc:     Randy Dunlap <rdunlap@infradead.org>,
+        David Airlie <airlied@linux.ie>,
+        intel-gfx <intel-gfx@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        Pekka Paalanen <ppaalanen@gmail.com>
+Subject: Re: [Intel-gfx] drm_modes: signed integer overflow
+Message-ID: <20201023152719.GV6112@intel.com>
+References: <47527cdb-2eda-b5a3-d77c-3855b91a0b61@infradead.org>
+ <20201022101423.GI6112@intel.com>
+ <BaLsmzqZNUi-nVbYiLstRgspKGlLahAI8vM2_NPfos2PxM0N9lycj-Zn5TdqNtEHB-jeWgmzw9EHJxq4H5552tVi4bAZXTLnP0y1QsTPFtY=@emersion.fr>
 MIME-Version: 1.0
-In-Reply-To: <008a01d6a830$1a109800$4e31c800$@samsung.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <BaLsmzqZNUi-nVbYiLstRgspKGlLahAI8vM2_NPfos2PxM0N9lycj-Zn5TdqNtEHB-jeWgmzw9EHJxq4H5552tVi4bAZXTLnP0y1QsTPFtY=@emersion.fr>
+X-Patchwork-Hint: comment
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/20 9:59 PM, Chanho Park wrote:
->> Please use udev or systemd instead of adding code in the UFS driver that
->> is
->> not necessary when udev or systemd is used.
->>
+On Fri, Oct 23, 2020 at 03:14:20PM +0000, Simon Ser wrote:
+> On Thursday, October 22, 2020 12:14 PM, Ville Syrjälä <ville.syrjala@linux.intel.com> wrote:
 > 
-> What I mentioned was how it can be handled when we mount rootfs directly from kernel.
+> > On Wed, Oct 21, 2020 at 08:13:43PM -0700, Randy Dunlap wrote:
+> >
+> > > Hi,
+> > > With linux-next 20201021, when booting up, I am seeing this:
+> > > [ 0.560896] UBSAN: signed-integer-overflow in ../drivers/gpu/drm/drm_modes.c:765:20
+> > > [ 0.560903] 2376000 * 1000 cannot be represented in type 'int'
+> >
+> > Dang. Didn't realize these new crazy >8k modes have dotclocks reaching
+> > almost 6 GHz, which would overflow even u32. I guess we'll switch to
+> > 64bit maths. Now I wonder how many other places can hit this overflow
+> > in practice...
 > 
-> 1) kernel -> initramfs (mount root) -> systemd
-> 2) kernel (mount root) -> systemd
->   -> In this case, we normally use root=/dev/sda1 from kernel commandline to mount the rootfs.
+> Can you provide an example of a full crazy >8k mode?
+
+These are two extreme cases:
+        /* 216 - 10240x4320@100Hz 64:27 */
+        { DRM_MODE("10240x4320", DRM_MODE_TYPE_DRIVER, 5940000, 10240, 12432,
+                   12608, 13200, 0, 4320, 4336, 4356, 4500, 0,
+                   DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC),
+          .picture_aspect_ratio = HDMI_PICTURE_ASPECT_64_27, },
+        /* 217 - 10240x4320@120Hz 64:27 */
+        { DRM_MODE("10240x4320", DRM_MODE_TYPE_DRIVER, 5940000, 10240, 10528,
+                   10704, 11000, 0, 4320, 4336, 4356, 4500, 0,
+                   DRM_MODE_FLAG_PHSYNC | DRM_MODE_FLAG_PVSYNC),
+          .picture_aspect_ratio = HDMI_PICTURE_ASPECT_64_27, }
+
+> I'm trying to get
+> a fix for my user-space [1], and I'm wondering if int32_t is enough
+> after dividing by mode->htotal.
 > 
-> Like fstab can support legacy node mount, ufs driver also needs to provide
-> an option for using the permanent legacy node. If you're really worry about > adding a new codes for all UFS driver, we can put this as controller specific> or optional feature.
+> CC Pekka, just FYI (I think Weston has similar code).
+> 
+> [1]: https://github.com/swaywm/wlroots/pull/2450
 
-The only code that should occur in the UFS driver is code that is specific
-to UFS devices. Since the functionality in this patch is not UFS specific,
-it should be added elsewhere.
+What's with those 1000000LL constants? Are you storing
+clock in Hz units?
 
-Additionally, since this functionality can be implemented easily in user
-space, I think it should be implemented in user space instead of in the
-kernel. Even when not using systemd or udev, it is easy to implement a loop
-that waits until a certain LUN or WWID appears.
-
-Bart.
+-- 
+Ville Syrjälä
+Intel
