@@ -2,134 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9EB6929709F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:34:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 58AD72970A7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:34:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464924AbgJWNeY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:34:24 -0400
-Received: from mx0b-0014ca01.pphosted.com ([208.86.201.193]:58550 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S374889AbgJWNeX (ORCPT
+        id S465041AbgJWNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:34:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464934AbgJWNeq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:34:23 -0400
-Received: from pps.filterd (m0042333.ppops.net [127.0.0.1])
-        by mx0b-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09NDXh3f006708;
-        Fri, 23 Oct 2020 06:34:13 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=proofpoint;
- bh=qpHezhoznFWssT1rcvo5yXHLsx0wKw6m2fxclRNSGJA=;
- b=pHpen4C4bNm2vjw4TzsktJuIgHWA8NfYInWu6Ruy9wPGT6W6/+F4pDj/Yc+yQ0bCg2OD
- 6vSbS0nY7OMGu7WJl+5c/U50emXiTxJPwwmxUkUu1/wx242QdlYlgZVxs3m5VrAggKxR
- d9t/ZcuSnzG9oKOYYC9ZSGj6SqA8ackkVy/vrCe83xoCZkx2ejc2EL7YGbVRtASMdarQ
- 2y78+H8lJKK9HIZdVXj58/KmgKWBEOiXNqI6edNI99IZQd4u8I5mj4Z2s1/mIg6zbfRh
- AR110xS/za7Sr6PPlQj2w7K3KtX9X4w2rfEZDuoGa2PzFMqWUiKumSgIl0MHCKJFNcxu fQ== 
-Received: from nam11-bn8-obe.outbound.protection.outlook.com (mail-bn8nam11lp2177.outbound.protection.outlook.com [104.47.58.177])
-        by mx0b-0014ca01.pphosted.com with ESMTP id 347v6yshj2-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 06:34:12 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BdRdAgTuLU/RbDFj3h+W9ZEmGYKhlcfibWRfyEXu1sL+/pMj9ZH1VhV2n6jcgoJCPItzNhAbkKNr+UnIXrUWKJSy8+eWhIxjiJyCCrJFWASrQMGDqFuQBzATqr9F2Scrqdgzo5sYiFjVw4cd28NA2dv/fbgVJV6eJEKfrK5+cV6d0QdvedHsuP6sLeoQhgEDr0ENPQJoQcDJpzg+qeEhxQs+HTPuhe6YuQwG7Zbx+OeedX6IXaphbfeoAiKk05zDbKTsHiIOw6a5K/bKLKxZyCrI9lB+YZ7pbJ2bTpE9LzKdsJ6rXKSAVLlq1w0J3TRPkTavErhxHzW/a/DAibdfTg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qpHezhoznFWssT1rcvo5yXHLsx0wKw6m2fxclRNSGJA=;
- b=Jdoh0YjMfUgmVvurm4+02U2vnBcDreIllXzMlunyEwfQ1+EPQqsaVQUMdpKbaeEUBB6PcufEEi0kXm0ve43M2Zw8x39CFLhO4R/292y+nn+F+Tb5cLEio5f5Jowm5O/Yuj0+LBzxIAR4a3s/x9iqvRFatpdtjZMzqiWbhzJdHuVNcO2lEntszoBIlj6o44MchFdBgnrWWYRY3f7+/HdHYbwQzHFx/DhTsvb2RcZGsd/sEPnqM3oqV8auAUjj8g3Xikj/nKyAySLJ5VRLPXCfp+rqXRisQLvwXqnZc5j4YMaGw5MUlmqJ3tiAI9vQgtiYV/+MfeD+s/P8u0SacyPCug==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cadence.com; dmarc=pass action=none header.from=cadence.com;
- dkim=pass header.d=cadence.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=qpHezhoznFWssT1rcvo5yXHLsx0wKw6m2fxclRNSGJA=;
- b=rAhAUuyOQT54nvY2PJb3NGKdU0AvOI0aVDmhMaQmKhbBAOpH3CS3+uU5tVijxTNY58spoDx4S3Cjoh4+MsKYNh0qPpuRMDXjy5QVJmfb4PVQHnW25J5/JcuG34fvX+7ALPwFlCB2/Mabel5uuAExW4T/Tao6qnX905XB/twE8pI=
-Received: from DM5PR07MB3196.namprd07.prod.outlook.com (2603:10b6:3:e4::16) by
- DM6PR07MB4874.namprd07.prod.outlook.com (2603:10b6:5:a1::17) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3499.18; Fri, 23 Oct 2020 13:34:10 +0000
-Received: from DM5PR07MB3196.namprd07.prod.outlook.com
- ([fe80::e183:a7f3:3bcd:fa64]) by DM5PR07MB3196.namprd07.prod.outlook.com
- ([fe80::e183:a7f3:3bcd:fa64%7]) with mapi id 15.20.3499.019; Fri, 23 Oct 2020
- 13:34:10 +0000
-From:   Parshuram Raju Thombare <pthombar@cadence.com>
-To:     Russell King - ARM Linux admin <linux@armlinux.org.uk>
-CC:     "andrew@lunn.ch" <andrew@lunn.ch>,
-        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Milind Parab <mparab@cadence.com>
-Subject: RE: [PATCH v3] net: macb: add support for high speed interface
-Thread-Topic: [PATCH v3] net: macb: add support for high speed interface
-Thread-Index: AQHWp9HS4UctazNdVUWuQbMULgmNwKmiZpMAgAEAG1CAAY/28IAAGDyAgAAhBDA=
-Date:   Fri, 23 Oct 2020 13:34:09 +0000
-Message-ID: <DM5PR07MB31961A008F4EFA98443E63C6C11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
-References: <1603302245-30654-1-git-send-email-pthombar@cadence.com>
- <20201021185056.GN1551@shell.armlinux.org.uk>
- <DM5PR07MB31961F14DD8A38B7FFA8DA24C11D0@DM5PR07MB3196.namprd07.prod.outlook.com>
- <DM5PR07MB3196723723F236F6113DDF9EC11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
- <20201023112549.GB1551@shell.armlinux.org.uk>
-In-Reply-To: <20201023112549.GB1551@shell.armlinux.org.uk>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-dg-ref: PG1ldGE+PGF0IG5tPSJib2R5LnR4dCIgcD0iYzpcdXNlcnNccHRob21iYXJcYXBwZGF0YVxyb2FtaW5nXDA5ZDg0OWI2LTMyZDMtNGE0MC04NWVlLTZiODRiYTI5ZTM1Ylxtc2dzXG1zZy02YjRiMmFjMC0xNTM0LTExZWItODYwZi0wMDUwNTZjMDAwMDhcYW1lLXRlc3RcNmI0YjJhYzItMTUzNC0xMWViLTg2MGYtMDA1MDU2YzAwMDA4Ym9keS50eHQiIHN6PSI4MzMiIHQ9IjEzMjQ3OTMzNjQ1NzcwODIzOSIgaD0iTi9nSFNhRG1XNjRwdm5VY04xOTZvMEloQlB3PSIgaWQ9IiIgYmw9IjAiIGJvPSIxIi8+PC9tZXRhPg==
-x-dg-rorf: true
-authentication-results: armlinux.org.uk; dkim=none (message not signed)
- header.d=none;armlinux.org.uk; dmarc=none action=none
- header.from=cadence.com;
-x-originating-ip: [64.207.220.243]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 397d7b56-9c1e-4c28-ed03-08d8775852a3
-x-ms-traffictypediagnostic: DM6PR07MB4874:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM6PR07MB487499E346B5B3663FFF1AF3C11A0@DM6PR07MB4874.namprd07.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: 3vSIU2KK2rhPf5zNHZ3KpVE7S/iTvf+KlkkP+9VxgCKxZYsp+gQSv17o0IzbFi8y89Q+DSLal7DPxGgTj6aaOAONzxpsBxlhayNWGDurhh/kwDtV0bKcH4GMtc9aueagZa3WZElk0nr3/DRHtQmc76GcVP0Xz290hOAVFNiYC4gQCTBqhVhLIy5+LbLKyP0ZqW2iuXKym9eh0Y4OBE68uWMBLAAXBu+V+42gqFUpMtoEEvs6dZtFH0wns/vrxilI1K80ao4WXTzDJoXUXxxxI3qtwVX9Ym2EAPbf1+QGv4XWhoVvYCKBk6bae3DnYR0BPS1ruMr42njAXtOwanqp/qtohXV+tiKpIy7G8srPtLw2FPwqRCdRrXqIs1ryIxmQ
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM5PR07MB3196.namprd07.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(39860400002)(396003)(366004)(346002)(376002)(36092001)(6916009)(8936002)(55016002)(66476007)(9686003)(71200400001)(4744005)(8676002)(107886003)(2906002)(76116006)(52536014)(5660300002)(66946007)(66446008)(64756008)(66556008)(6506007)(26005)(478600001)(54906003)(186003)(33656002)(86362001)(4326008)(316002)(7696005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: iuXdcKjR/SSSTcFkJpNEMQmCxmlqwqKC271er7trwSdALWsjeXYPCamvSLBckpfY0erC+0gs2RhvHUpw/f4ZJTvYZcwqSM3/lcPO1egeez3v3Gi0qkBo8n0SKC/shy7QqvqFZU5YsLapyeQkWoHq1pn2GnR6YYdvdAUMTTQ0XMppixk1f5Yc98RUZwhDADIkW/3DkXM1OMsZsRbUp5iTh287AJ2ChfX0PRsBx8d5GOCzFFz/VcuPgYenV5uRCLlMF3PyuTR+3e/47yWHC52BhC0NS00s1cgn3+yki/x8yigoY8RDvzDfx07JPZu4fSDnyaCjKrVQCzgZ0lGip3GFdCXKqAouk2EoC+7SOPrzVO9jLzXKiIny7ya24a1W4X222oymvsPpaUhv3241FAK6X5UjJhxMELkCbaDG97+USZY5XrtcBp6QNEt9t7fFm6TU4vS+EeAEN+gDLCneg/tsgeBisIWkIde93wEFt4DWi+/wzK9SwQVYPetcbeK6Xu7rYSG53b01LXicxquJlDrfux7IK4k+ABoQV4hD/Gzns9GbJwDHiHUXK7wAj5YfpICdnpkhNdG1np4y2CzWskp8Y+/bxZ2iZ9Ske2Tn6hGyuy8NPJcp4WSPzDUTdEdaQ1+kqhJXtDcvxiucTf6oWG+rJQ==
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        Fri, 23 Oct 2020 09:34:46 -0400
+Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EDBC0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:34:45 -0700 (PDT)
+Received: by mail-ej1-x644.google.com with SMTP id gs25so2442181ejb.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:34:45 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=ybxYfhP0qOoEv/Z3igcvaiaTXfddpdf7DoEgMqfdT7A=;
+        b=bNaAR+OjYmeeEzFzzZBJyzDKMbF4do7AhpOBiv9gsSMgNMqyq5/l4Ywkmo2cc+ESzz
+         lH05Ok9PCaR+wHbV3UtzXlRRA8JfrhwHMLbb0Zj4NWXmQ4eNylNbUcFPFq5iZJZ3HE4A
+         4A9t44PEBK+fF9Uz9ustwTwn9OxP5fS7OhuPeCnuRonbtMuE6/l3mFYgIYjLd95R3VaS
+         dpWDsX5QYk6s/5ms0m/fST6rb3d8AWD5vnd1IhI1k1i/p+mau+CZ/smjsHXHtkBLdSSy
+         daqTJeHfA9fXyZGQ5P3D3zhZtf8qMmTy+xx4KaAg3dJBOtHchBp51fOrGZD//kZ/nWsq
+         0QAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=ybxYfhP0qOoEv/Z3igcvaiaTXfddpdf7DoEgMqfdT7A=;
+        b=bqdsJE1rI0afkGq7KapUbCU0tBvLsi7dVaiEUGuTeSzAuAc2AMbEpD6JGPhT4SfGrx
+         iYSQHmEl09TaCHlJPNcku/1V7NgXi3eYFWiOHf1Cy2Uw2LXgiFVk2vvKRVhD/m2Pz50d
+         yQV4PRuBHIfgd0csUEFum/NFlLGWzGGpc3uNRWIpYN9QCXQOx0QK0JhaztIz4uAsT+dO
+         I0mAN/rNDQUy19nuIsQwuDgzMfZdiaSKlF5Q1YhUbcfLGIJJYMyXcviGNkCY2uvJdPn+
+         VpbINOXCGroOUaHSneivzCxI1h6rrO8orzN+4GWo2QjAlc4BVi8XBLUChPokl2iCcXKd
+         3S2Q==
+X-Gm-Message-State: AOAM531Ke3P6LpvJdGReiNoWH0gjuczdxKo2unN45INaPfv9wAR7NJ1f
+        pE5YOTwDizI09lLtFcrS0mZZVA==
+X-Google-Smtp-Source: ABdhPJyJrpSO/TA1CFzr7cbXy98qv9z9QsL9dllO7dHUBx35a7onv2rOqG2fNwzz8c08kIOaSfCzMQ==
+X-Received: by 2002:a17:906:1418:: with SMTP id p24mr1964123ejc.46.1603460084421;
+        Fri, 23 Oct 2020 06:34:44 -0700 (PDT)
+Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
+        by smtp.gmail.com with ESMTPSA id q3sm788808edv.17.2020.10.23.06.34.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 06:34:43 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 15:34:23 +0200
+From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
+To:     "Raj, Ashok" <ashok.raj@intel.com>
+Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
+        zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, arnd@arndb.de,
+        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
+        linux-kernel@vger.kernel.org, linux-accelerators@lists.ozlabs.org,
+        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
+        linux-pci@vger.kernel.org, "Lu, Baolu" <baolu.lu@intel.com>,
+        Jacon Jun Pan <jacob.jun.pan@intel.com>
+Subject: Re: [RFC PATCH 0/2] iommu: Avoid unnecessary PRI queue flushes
+Message-ID: <20201023133423.GF2265982@myrica>
+References: <20201015090028.1278108-1-jean-philippe@linaro.org>
+ <20201015182211.GA54780@otc-nc-03>
+ <20201016075923.GB1309464@myrica>
+ <20201017112525.GA47206@otc-nc-03>
+ <20201019140824.GA1478235@myrica>
+ <20201019211608.GA79633@otc-nc-03>
 MIME-Version: 1.0
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM5PR07MB3196.namprd07.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 397d7b56-9c1e-4c28-ed03-08d8775852a3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 23 Oct 2020 13:34:09.8847
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: o/8YQYpfuwJoc57tdJx0E9MPoTiUcC/ac6ml1sv5+OUZVMHeDg1Ihf3i3BKYzYG+/rdAW7bW1h9RkPs30C01UxFxJgxo4d98pyVF0GRbiqE=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR07MB4874
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-23_07:2020-10-23,2020-10-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 clxscore=1015
- mlxlogscore=754 phishscore=0 suspectscore=0 malwarescore=0 impostorscore=0
- adultscore=0 lowpriorityscore=0 mlxscore=0 priorityscore=1501 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010230094
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019211608.GA79633@otc-nc-03>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
->Whenever the interface changes, we go through the full reconfiguration
->procedure that I've already outlined. This involves calling the
->mac_prepare() method which calls into mvpp2_mac_prepare() and its
->child mvpp2__mac_prepare().
+On Mon, Oct 19, 2020 at 02:16:08PM -0700, Raj, Ashok wrote:
+> Hi Jean
+> 
+> On Mon, Oct 19, 2020 at 04:08:24PM +0200, Jean-Philippe Brucker wrote:
+> > On Sat, Oct 17, 2020 at 04:25:25AM -0700, Raj, Ashok wrote:
+> > > > For devices that *don't* use a stop marker, the PCIe spec says (10.4.1.2):
+> > > > 
+> > > >   To stop [using a PASID] without using a Stop Marker Message, the
+> > > >   function shall:
+> > > >   1. Stop queueing new Page Request Messages for this PASID.
+> > > 
+> > > The device driver would need to tell stop sending any new PR's.
+> > > 
+> > > >   2. Finish transmitting any multi-page Page Request Messages for this
+> > > >      PASID (i.e. send the Page Request Message with the L bit Set).
+> > > >   3. Wait for PRG Response Messages associated any outstanding Page
+> > > >      Request Messages for the PASID.
+> > > > 
+> > > > So they have to flush their PR themselves. And since the device driver
+> > > > completes this sequence before calling unbind(), then there shouldn't be
+> > > > any oustanding PR for the PASID, and unbind() doesn't need to flush,
+> > > > right?
+> > > 
+> > > I can see how the device can complete #2,3 above. But the device driver
+> > > isn't the one managing page-responses right. So in order for the device to
+> > > know the above sequence is complete, it would need to get some assist from
+> > > IOMMU driver?
+> > 
+> > No the device driver just waits for the device to indicate that it has
+> > completed the sequence. That's what the magic stop-PASID mechanism
+> > described by PCIe does. In 6.20.1 "Managing PASID TLP Prefix Usage" it
+> > says:
+> 
+> The goal is we do this when the device is in a messup up state. So we can't
+> take for granted the device is properly operating which is why we are going
+> to wack the device with a flr().
+> 
+> The only thing that's supposed to work without a brain freeze is the
+> invalidation logic. Spec requires devices to respond to invalidations even when
+> they are in the process of flr().
+> 
+> So when IOMMU does an invalidation wait with a Page-Drain, IOMMU waits till
+> the response for that arrives before completing the descriptor. Due to 
+> the posted semantics it will ensure any PR's issued and in the fabric are flushed 
+> out to memory. 
+> 
+> I suppose you can wait for the device to vouch for all responses, but that
+> is assuming the device is still functioning properly. Given that we use it
+> in two places,
+> 
+> * Reclaiming a PASID - only during a tear down sequence, skipping it
+>   doesn't really buy us much.
 
-Ok, I misunderstood it as interface mode change between successive mac_prep=
-are().
-If major reconfiguration is certain to happen after every interface mode ch=
-ange,
-I will make another small modification in mac_prepare method to set appropr=
-iate
-pcs_ops for selected interface mode.=20
-pcs_ops for low speed, however, will just be existing non 10GBASE-R functio=
-ns renamed.
-This will allow us to get rid of old API's for non 10GBASE-R PCS. I hope yo=
-u are ok with
-these changes done in the same patch.
+Yes I was only wondering about normal PASID reclaim operations, in
+unbind(). Agreed that for FLR we need to properly clean the queue, though
+I do need to do more thinking about this.
+
+Anyway, having a full priq drain in unbind() isn't harmful, just
+unnecessary delay in my opinion. I'll drop these patches for now but
+thanks for the discussion.
+
+Thanks,
+Jean
+
+> * During FLR this can't be skipped anyway due to the above sequence
+>   requirement. 
+> 
+> > 
+> > "A Function must have a mechanism to request that it gracefully stop using
+> >  a specific PASID. This mechanism is device specific but must satisfy the
+> >  following rules:
+> >  [...]
+> >  * When the stop request mechanism indicates completion, the Function has:
+> >    [...]
+> >    * Complied with additional rules described in Address Translation
+> >      Services (Chapter 10 [10.4.1.2 quoted above]) if Address Translations
+> >      or Page Requests were issued on the behalf of this PASID."
+> > 
+> > So after the device driver initiates this mechanism in the device, the
+> > device must be able to indicate completion of the mechanism, which
+> > includes completing all in-flight Page Requests. At that point the device
+> > driver can call unbind() knowing there is no pending PR for this PASID.
+> > 
+> 
+> Cheers,
+> Ashok
