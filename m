@@ -2,220 +2,169 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 148EF296B11
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:19:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 71F27296B0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:19:51 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375906AbgJWITx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:19:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56818 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375861AbgJWITv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:19:51 -0400
-Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E87AFC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:19:49 -0700 (PDT)
-Received: by mail-wr1-x443.google.com with SMTP id b8so815853wrn.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:19:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=c04+KAnI/YvtT+KXpxHEmQlq7f8efi6nrfby4HpMQ+M=;
-        b=KdSPGpNlX1wlRZC80Im3mkC0rHOX3I6+VHgDyeDFAsOwsVKlcD0ZlgvbenjZHwKgXb
-         L0FUqlQL5D3e3H/lmjXBb5lC5pBuw+0JjIc8xzDikPQxu+w8gIcNrpG2eXXKcDMoCkBG
-         FmlN3i4HcZH5JPkJroF3N5NLN0WLs/zf1AF0PY1Js104sOd+jRRVIEs/qmd0n/2ZQhm3
-         acdOcqtjMERwdLJkUU6OY/32SjyPFxK4nogplxj8eCp1OqH9pzFwn1LnMExE8C5KHtp8
-         Mg4R7KWZPYkZZKWKPBi0cSrHm8pY/dTaowehfa647U3JKXLgdVQXpJl2/bGCpzriNOWO
-         ZVQg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=c04+KAnI/YvtT+KXpxHEmQlq7f8efi6nrfby4HpMQ+M=;
-        b=tX2vKTrhbNCdkIbZYQlDSqNq3OVoXX/o2FcDpCKurfB/EWQzfPKw6dQqu0k+v1WLnm
-         /2VTc8aW4A/Tk7sefRNm6IUS44JAX+ZJIPY6MsTauiTsla50BzR/AiYNKohUBXuAHsUn
-         I2XgKj4C6jxG8sM8YTsO26YwzDEi0tLNcH7BMVCQyl/7R4O/u1rlOYUgXXKNUodfcDHk
-         qlyRzDzbXyJhHENAaebBmlamnsCqfhfnsU+2iidc2J+cyquBfta7A+4ya6rAwriaj1sb
-         B3Iem1fkXcz1bwIb4aEMv3rEHYl5HOvaUdYHKnemOrWMCbNAl6dKyfX2tggJrZyX1sEK
-         3mFg==
-X-Gm-Message-State: AOAM531W6uFyH6ZYbsbyOtiNYmqSNMUg5nimUjo5Jr/pTQBI9xIRpDbi
-        NmC1xMGpJ+KvnzGjex591aOenYmtNJ+yGUIt8MtmRw==
-X-Google-Smtp-Source: ABdhPJyx6xrzHENLvmCTKNKQGYNBnXcfF3pvPdkMAurICf9diwE560i3HqF33Tzi+YjwmeJj7wuwgbOA8/erWwn+wQM=
-X-Received: by 2002:a05:6000:1109:: with SMTP id z9mr1197789wrw.388.1603441188297;
- Fri, 23 Oct 2020 01:19:48 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201023081628.1296884-1-glider@google.com>
-In-Reply-To: <20201023081628.1296884-1-glider@google.com>
-From:   Alexander Potapenko <glider@google.com>
-Date:   Fri, 23 Oct 2020 10:19:36 +0200
-Message-ID: <CAG_fn=Vu8Of2tMDsHsXroQNb++uKAnGg1vMAatCQAH2ZDSU=BA@mail.gmail.com>
-Subject: Re: [PATCH v4] x86: add failure injection to get/put/clear_user
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Borislav Petkov <bp@alien8.de>, Ingo Molnar <mingo@redhat.com>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Arnd Bergmann <arnd@arndb.de>
-Cc:     Akinobu Mita <akinobu.mita@gmail.com>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitriy Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        "open list:DOCUMENTATION" <linux-doc@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Albert Linde <albert.linde@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+        id S375859AbgJWITs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:19:48 -0400
+Received: from mx2.suse.de ([195.135.220.15]:59860 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S369877AbgJWITm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 04:19:42 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 5EA83AF22;
+        Fri, 23 Oct 2020 08:19:41 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 10:19:41 +0200
+Message-ID: <s5h4kml9wwy.wl-tiwai@suse.de>
+From:   Takashi Iwai <tiwai@suse.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 5.10-rc1
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI/1.14.6 (Maruoka)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 Emacs/25.3
+ (x86_64-suse-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI 1.14.6 - "Maruoka")
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-(Albert's @google.com address is gone, removing it from CC list)
+Linus,
 
-On Fri, Oct 23, 2020 at 10:16 AM Alexander Potapenko <glider@google.com> wr=
-ote:
->
-> From: Albert van der Linde <alinde@google.com>
->
-> To test fault-tolerance of user memory acceses in x86, add support for
-> fault injection.
->
-> Make both put_user() and get_user() fail with -EFAULT, and clear_user()
-> fail by not clearing any bytes.
->
-> Reviewed-by: Akinobu Mita <akinobu.mita@gmail.com>
-> Reviewed-by: Alexander Potapenko <glider@google.com>
-> Signed-off-by: Albert van der Linde <alinde@google.com>
-> Signed-off-by: Alexander Potapenko <glider@google.com>
->
-> ---
-> v2:
->  - no significant changes
->
-> v3:
->  - no changes
->
-> v4:
->  - instrument the new out-of-line implementations of get_user()/put_user(=
-)
->  - fix a minor checkpatch warning in the inline assembly
->
-> ---
-> ---
->  arch/x86/include/asm/uaccess.h | 36 ++++++++++++++++++++++------------
->  arch/x86/lib/usercopy_64.c     |  3 +++
->  2 files changed, 26 insertions(+), 13 deletions(-)
->
-> diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uacces=
-s.h
-> index f13659523108..7041ebc48b75 100644
-> --- a/arch/x86/include/asm/uaccess.h
-> +++ b/arch/x86/include/asm/uaccess.h
-> @@ -5,6 +5,7 @@
->   * User space memory access functions
->   */
->  #include <linux/compiler.h>
-> +#include <linux/fault-inject-usercopy.h>
->  #include <linux/kasan-checks.h>
->  #include <linux/string.h>
->  #include <asm/asm.h>
-> @@ -126,11 +127,16 @@ extern int __get_user_bad(void);
->         int __ret_gu;                                                   \
->         register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);            \
->         __chk_user_ptr(ptr);                                            \
-> -       asm volatile("call __" #fn "_%P4"                               \
-> -                    : "=3Da" (__ret_gu), "=3Dr" (__val_gu),             =
-   \
-> -                       ASM_CALL_CONSTRAINT                             \
-> -                    : "0" (ptr), "i" (sizeof(*(ptr))));                \
-> -       (x) =3D (__force __typeof__(*(ptr))) __val_gu;                   =
- \
-> +       if (should_fail_usercopy()) {                                   \
-> +               (x) =3D 0;                                               =
- \
-> +               __ret_gu =3D -EFAULT;                                    =
- \
-> +       } else {                                                        \
-> +               asm volatile("call __" #fn "_%P4"                       \
-> +                            : "=3Da" (__ret_gu), "=3Dr" (__val_gu),     =
-   \
-> +                               ASM_CALL_CONSTRAINT                     \
-> +                            : "0" (ptr), "i" (sizeof(*(ptr))));        \
-> +               (x) =3D (__force __typeof__(*(ptr))) __val_gu;           =
- \
-> +       }                                                               \
->         __builtin_expect(__ret_gu, 0);                                  \
->  })
->
-> @@ -213,14 +219,18 @@ extern void __put_user_nocheck_8(void);
->         int __ret_pu;                                                   \
->         register __typeof__(*(ptr)) __val_pu asm("%"_ASM_AX);           \
->         __chk_user_ptr(ptr);                                            \
-> -       __val_pu =3D (x);                                                =
- \
-> -       asm volatile("call __" #fn "_%P[size]"                          \
-> -                    : "=3Dc" (__ret_pu),                                =
- \
-> -                       ASM_CALL_CONSTRAINT                             \
-> -                    : "0" (ptr),                                       \
-> -                      "r" (__val_pu),                                  \
-> -                      [size] "i" (sizeof(*(ptr)))                      \
-> -                    :"ebx");                                           \
-> +       if (unlikely(should_fail_usercopy())) {                         \
-> +               __ret_pu =3D -EFAULT;                                    =
- \
-> +       } else {                                                        \
-> +               __val_pu =3D (x);                                        =
- \
-> +               asm volatile("call __" #fn "_%P[size]"                  \
-> +                            : "=3Dc" (__ret_pu),                        =
- \
-> +                               ASM_CALL_CONSTRAINT                     \
-> +                            : "0" (ptr),                               \
-> +                              "r" (__val_pu),                          \
-> +                              [size] "i" (sizeof(*(ptr)))              \
-> +                            : "ebx");                                  \
-> +       }                                                               \
->         __builtin_expect(__ret_pu, 0);                                  \
->  })
->
-> diff --git a/arch/x86/lib/usercopy_64.c b/arch/x86/lib/usercopy_64.c
-> index 508c81e97ab1..5617b3864586 100644
-> --- a/arch/x86/lib/usercopy_64.c
-> +++ b/arch/x86/lib/usercopy_64.c
-> @@ -7,6 +7,7 @@
->   * Copyright 2002 Andi Kleen <ak@suse.de>
->   */
->  #include <linux/export.h>
-> +#include <linux/fault-inject-usercopy.h>
->  #include <linux/uaccess.h>
->  #include <linux/highmem.h>
->
-> @@ -50,6 +51,8 @@ EXPORT_SYMBOL(__clear_user);
->
->  unsigned long clear_user(void __user *to, unsigned long n)
->  {
-> +       if (should_fail_usercopy())
-> +               return n;
->         if (access_ok(to, n))
->                 return __clear_user(to, n);
->         return n;
-> --
-> 2.29.0.rc2.309.g374f81d7ae-goog
->
+please pull sound fixes for v5.10-rc1 from:
 
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-5.10-rc1
 
---=20
-Alexander Potapenko
-Software Engineer
+The topmost commit is 033e4040d453f1f7111e5957a54f3019eb089cc6
 
-Google Germany GmbH
-Erika-Mann-Stra=C3=9Fe, 33
-80636 M=C3=BCnchen
+----------------------------------------------------------------
 
-Gesch=C3=A4ftsf=C3=BChrer: Paul Manicle, Halimah DeLaine Prado
-Registergericht und -nummer: Hamburg, HRB 86891
-Sitz der Gesellschaft: Hamburg
+sound fixes for 5.10-rc1
+
+Just a few additional small and trivial fixes.
+
+----------------------------------------------------------------
+
+Colin Ian King (1):
+      ALSA: hda/ca0132: make some const arrays static, makes object smaller
+
+Hui Wang (1):
+      ALSA: hda - Fix the return value if cb func is already registered
+
+Lukasz Halman (1):
+      ALSA: usb-audio: Line6 Pod Go interface requires static clock rate quirk
+
+Randy Dunlap (1):
+      ALSA: sparc: dbri: fix repeated word 'the'
+
+---
+ sound/pci/hda/hda_jack.c     | 18 +++++++++++++-----
+ sound/pci/hda/patch_ca0132.c | 18 ++++++++++++------
+ sound/sparc/dbri.c           |  2 +-
+ sound/usb/format.c           |  1 +
+ 4 files changed, 27 insertions(+), 12 deletions(-)
+
+diff --git a/sound/pci/hda/hda_jack.c b/sound/pci/hda/hda_jack.c
+index ded4813f8b54..588059428d8f 100644
+--- a/sound/pci/hda/hda_jack.c
++++ b/sound/pci/hda/hda_jack.c
+@@ -275,16 +275,21 @@ int snd_hda_jack_detect_state_mst(struct hda_codec *codec,
+ }
+ EXPORT_SYMBOL_GPL(snd_hda_jack_detect_state_mst);
+ 
+-static bool func_is_already_in_callback_list(struct hda_jack_tbl *jack,
+-					     hda_jack_callback_fn func)
++static struct hda_jack_callback *
++find_callback_from_list(struct hda_jack_tbl *jack,
++			hda_jack_callback_fn func)
+ {
+ 	struct hda_jack_callback *cb;
+ 
++	if (!func)
++		return NULL;
++
+ 	for (cb = jack->callback; cb; cb = cb->next) {
+ 		if (cb->func == func)
+-			return true;
++			return cb;
+ 	}
+-	return false;
++
++	return NULL;
+ }
+ 
+ /**
+@@ -309,7 +314,10 @@ snd_hda_jack_detect_enable_callback_mst(struct hda_codec *codec, hda_nid_t nid,
+ 	jack = snd_hda_jack_tbl_new(codec, nid, dev_id);
+ 	if (!jack)
+ 		return ERR_PTR(-ENOMEM);
+-	if (func && !func_is_already_in_callback_list(jack, func)) {
++
++	callback = find_callback_from_list(jack, func);
++
++	if (func && !callback) {
+ 		callback = kzalloc(sizeof(*callback), GFP_KERNEL);
+ 		if (!callback)
+ 			return ERR_PTR(-ENOMEM);
+diff --git a/sound/pci/hda/patch_ca0132.c b/sound/pci/hda/patch_ca0132.c
+index 2b38b2a716a1..e0c38f2735c6 100644
+--- a/sound/pci/hda/patch_ca0132.c
++++ b/sound/pci/hda/patch_ca0132.c
+@@ -7910,8 +7910,12 @@ static void ae7_post_dsp_asi_stream_setup(struct hda_codec *codec)
+ 
+ static void ae7_post_dsp_pll_setup(struct hda_codec *codec)
+ {
+-	const unsigned int addr[] = { 0x41, 0x45, 0x40, 0x43, 0x51 };
+-	const unsigned int data[] = { 0xc8, 0xcc, 0xcb, 0xc7, 0x8d };
++	static const unsigned int addr[] = {
++		0x41, 0x45, 0x40, 0x43, 0x51
++	};
++	static const unsigned int data[] = {
++		0xc8, 0xcc, 0xcb, 0xc7, 0x8d
++	};
+ 	unsigned int i;
+ 
+ 	for (i = 0; i < ARRAY_SIZE(addr); i++) {
+@@ -7925,10 +7929,12 @@ static void ae7_post_dsp_pll_setup(struct hda_codec *codec)
+ static void ae7_post_dsp_asi_setup_ports(struct hda_codec *codec)
+ {
+ 	struct ca0132_spec *spec = codec->spec;
+-	const unsigned int target[] = { 0x0b, 0x04, 0x06, 0x0a, 0x0c, 0x11,
+-					0x12, 0x13, 0x14 };
+-	const unsigned int data[]   = { 0x12, 0x00, 0x48, 0x05, 0x5f, 0xff,
+-					0xff, 0xff, 0x7f };
++	static const unsigned int target[] = {
++		0x0b, 0x04, 0x06, 0x0a, 0x0c, 0x11, 0x12, 0x13, 0x14
++	};
++	static const unsigned int data[] = {
++		0x12, 0x00, 0x48, 0x05, 0x5f, 0xff, 0xff, 0xff, 0x7f
++	};
+ 	unsigned int i;
+ 
+ 	mutex_lock(&spec->chipio_mutex);
+diff --git a/sound/sparc/dbri.c b/sound/sparc/dbri.c
+index 913adc8568d5..5a6fb66dd118 100644
+--- a/sound/sparc/dbri.c
++++ b/sound/sparc/dbri.c
+@@ -620,7 +620,7 @@ A circular command buffer is used here. A new command is being added
+ while another can be executed. The scheme works by adding two WAIT commands
+ after each sent batch of commands. When the next batch is prepared it is
+ added after the WAIT commands then the WAITs are replaced with single JUMP
+-command to the new batch. The the DBRI is forced to reread the last WAIT
++command to the new batch. Then the DBRI is forced to reread the last WAIT
+ command (replaced by the JUMP by then). If the DBRI is still executing
+ previous commands the request to reread the WAIT command is ignored.
+ 
+diff --git a/sound/usb/format.c b/sound/usb/format.c
+index 1b28d01d1f4c..3bfead393aa3 100644
+--- a/sound/usb/format.c
++++ b/sound/usb/format.c
+@@ -406,6 +406,7 @@ static int line6_parse_audio_format_rates_quirk(struct snd_usb_audio *chip,
+ 	case USB_ID(0x0e41, 0x4242): /* Line6 Helix Rack */
+ 	case USB_ID(0x0e41, 0x4244): /* Line6 Helix LT */
+ 	case USB_ID(0x0e41, 0x4246): /* Line6 HX-Stomp */
++	case USB_ID(0x0e41, 0x4247): /* Line6 Pod Go */
+ 	case USB_ID(0x0e41, 0x4248): /* Line6 Helix >= fw 2.82 */
+ 	case USB_ID(0x0e41, 0x4249): /* Line6 Helix Rack >= fw 2.82 */
+ 	case USB_ID(0x0e41, 0x424a): /* Line6 Helix LT >= fw 2.82 */
