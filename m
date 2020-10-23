@@ -2,113 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BB7332978BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:16:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33DEE2978BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:16:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756023AbgJWVQJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:16:09 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40250 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755437AbgJWVQI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:16:08 -0400
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CA74F24688;
-        Fri, 23 Oct 2020 21:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603487767;
-        bh=qQcFmOGTx12wPD63RiThRe7Vh0MNAYSb3WtVSv6KO9I=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=ylYjv002r5/d4PJz5MfpZMB4thciSwlk1eXkJiCA3bvenmoPxzuiHjvcXDcackAcE
-         w6VNJ7rBH6083fbGYBlG3chnrNZbtJNPqO54/g2gQKHUjVIOrFDXlaNINXtFbJdoKt
-         OK0nV4hNeaJ18/R+8VfmdHAtYYky9/5RkmV0QCgE=
-Received: by mail-lj1-f178.google.com with SMTP id h20so3011574lji.9;
-        Fri, 23 Oct 2020 14:16:06 -0700 (PDT)
-X-Gm-Message-State: AOAM5337x3XfZ2H+iQYCxwVuwsAo2l/BfiG/SaJARh8J72H8DUzAZiGl
-        2N/bhe5jmH8tCgkklWYJzAiC/vEHWJ8aRCVwm9M=
-X-Google-Smtp-Source: ABdhPJxMP4Oqfuc0h+oHI0VayAXX1a002RyckvG+CEYT7Qe0w/jJqsSdKxhG124OF9Ag+jl4aWynWIOTPbYK55JDXo0=
-X-Received: by 2002:a05:651c:cd:: with SMTP id 13mr1498277ljr.392.1603487764782;
- Fri, 23 Oct 2020 14:16:04 -0700 (PDT)
+        id S1756391AbgJWVQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:16:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756080AbgJWVQQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:16:16 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200F2C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:16:16 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id j62so2243364qtd.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:16:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ONKARXAOXhn+rHY7xamM2KWYF09JnFj33g4K/fnpqwM=;
+        b=dZHbRTxEQlVNK1Fn3lDYx9KoaG4539IChRW/73vmgucbEoNAKGqY3cxx2C8JihxF4c
+         yk3EYGmjEMxQy25x82lgkave7H1cfzUeayLBXwsabmJ6AokqKFFm2RJf+hTwKcOmqkhy
+         XW6sqma17y9IoiKWaDvODDu3IpABxcOWlSM3Kg9As/yfa3TLJmM/Jed6fv034H/BfWzr
+         +8dmLs8/UtwbnbtKmXCclcshq+lQwXC2cUz6LYS9kxDRBf1zonyOc/qBMDJtp4gjgZq5
+         fcDxfhbD+PmByI1v/vxoDkqXC0qdRtpB3fOaMKTkUxTI4QyV+2PvptkOwp2fbXcYATXA
+         ZBTQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ONKARXAOXhn+rHY7xamM2KWYF09JnFj33g4K/fnpqwM=;
+        b=PqWt2r3HKs4ABbWQVY9q/iTtm14LZDgHBh02nD3/Vms5TSGQq5yJHxQmNgi0/TTzsC
+         RUHU/epzvw9sAj/MX1JeNZi9Y0Z5rmwC+XZGccqTtKQaLOU8W1LVmDXDKN3j1DfbgBOe
+         cMns1zbfThW2zP8Ds8oTAsbi18jbGCb7yGFQMCkcM+mdPyQ9N2QggQurhMVeH7f0rp49
+         o6B5qXg+5x0BSqWRDh2Bt6JFD9YAdvv4Kr62WRtX5CsvBC1wSGNaZ4VNX28ql+YuxOs3
+         m/zyBw1F3F5YdWExviUZsnQbnXF9wZZfCO6/xZSD6GKFTPJDns8yRmJa9vgjrq3ovVlR
+         ayJQ==
+X-Gm-Message-State: AOAM533uSm2RRBkPQXEUMkwoQ/Op3Bs+e/z1BfIbPObYNkzznKxmC3pv
+        xdF0+An10LehTmEEnYRp2Yk=
+X-Google-Smtp-Source: ABdhPJwtzxN39qc5EDf5nyl74i4knkToIOcMwXNcjycEnGNhwF98VL5WSASbfdRhzrMKL1fGqKzDfg==
+X-Received: by 2002:a05:622a:4b:: with SMTP id y11mr4337580qtw.348.1603487775388;
+        Fri, 23 Oct 2020 14:16:15 -0700 (PDT)
+Received: from tong-desktop.local ([2601:5c0:c200:27c6:a59b:90b7:e05c:ed13])
+        by smtp.googlemail.com with ESMTPSA id b23sm1614691qkh.68.2020.10.23.14.16.14
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 14:16:14 -0700 (PDT)
+From:   Tong Zhang <ztong0001@gmail.com>
+To:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org
+Cc:     ztong0001@gmail.com
+Subject: [PATCH] qnx4: do not interpret -EIO as a correct address
+Date:   Fri, 23 Oct 2020 17:16:04 -0400
+Message-Id: <20201023211604.159074-1-ztong0001@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
- <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
- <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
- <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
- <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
- <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com> <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
-In-Reply-To: <CAHk-=wjyp3Y_vXJwvoieBJpmmTrs46kc4GKbq5x_nvonHvPJBw@mail.gmail.com>
-From:   Song Liu <song@kernel.org>
-Date:   Fri, 23 Oct 2020 14:15:53 -0700
-X-Gmail-Original-Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
-Message-ID: <CAPhsuW6wZRVoT3Bu6YBVjWVm6JBz9n6_RoZKGM7KrVAXx89SFQ@mail.gmail.com>
-Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
-        =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        X86 ML <x86@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:51 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Fri, Oct 23, 2020 at 10:00 AM Naresh Kamboju
-> <naresh.kamboju@linaro.org> wrote:
-> >
-> > [Old patch from yesterday]
-> >
-> > After applying your patch on top on linux next tag 20201015
-> > there are two observations,
-> >   1) i386 build failed. please find build error build
->
-> Yes, this was expected. That patch explicitly only works on x86-64,
-> because 32-bit needs the double register handling for 64-bit values
-> (mainly loff_t).
->
-> >   2) x86_64 kasan test PASS and the reported error not found.
->
-> Ok, good. That confirms that the problem you reported is indeed the
-> register allocation.
->
-> The patch I sent an hour ago (the one based on Rasmus' one from
-> yesterday) should fix things too, and - unlike yesterday's - work on
-> 32-bit.
->
-> But I'll wait for confirmation (and hopefully a sign-off from Rasmus
-> so that I can give him authorship) before actually committing it.
->
->               Linus
+qnx4_block_map() may return -EIO on funny qnx4 fs image, in this case do
+not interpret -EIO as a correct address
 
-My test vm failed to boot since
+Signed-off-by: Tong Zhang <ztong0001@gmail.com>
+---
+ fs/qnx4/inode.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-commit d55564cfc222326e944893eff0c4118353e349ec
-x86: Make __put_user() generate an out-of-line call
+diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
+index e8da1cde87b9..d3a40c5b1a9a 100644
+--- a/fs/qnx4/inode.c
++++ b/fs/qnx4/inode.c
+@@ -59,6 +59,8 @@ static int qnx4_get_block( struct inode *inode, sector_t iblock, struct buffer_h
+ 	QNX4DEBUG((KERN_INFO "qnx4: qnx4_get_block inode=[%ld] iblock=[%ld]\n",inode->i_ino,iblock));
+ 
+ 	phys = qnx4_block_map( inode, iblock );
++	if (phys == -EIO)
++		return -EIO;
+ 	if ( phys ) {
+ 		// logical block is before EOF
+ 		map_bh(bh, inode->i_sb, phys);
+-- 
+2.25.1
 
-The patch also fixed it.
-
-Thanks!
-Song
