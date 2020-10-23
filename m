@@ -2,113 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA3422969DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:40:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2880E2969D7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:38:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375357AbgJWGkG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:40:06 -0400
-Received: from mailout4.samsung.com ([203.254.224.34]:42673 "EHLO
-        mailout4.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S375348AbgJWGkG (ORCPT
+        id S375342AbgJWGic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:38:32 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S368119AbgJWGic (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:40:06 -0400
-Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
-        by mailout4.samsung.com (KnoxPortal) with ESMTP id 20201023064002epoutp0404ddd4d8dae5679ffcb86d10a62255e3~Ai9JJqwDl1889318893epoutp04e
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:40:02 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20201023064002epoutp0404ddd4d8dae5679ffcb86d10a62255e3~Ai9JJqwDl1889318893epoutp04e
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603435202;
-        bh=Oy9omAIecAKdgFVEVvzDVyMqznHnVZS3dnaOuPZUWXw=;
-        h=Subject:Reply-To:From:To:CC:Date:References:From;
-        b=DWzNA3RnCdc4OkSHSqycpmvpt1GJeM4oMs79PYFU6WlJfWZD2ag+7bhI6qnLGzNYJ
-         GuPtIz2sU/dpV2JhaHHZKpwSTZtMczxiFwkI/KfDxmyFk++6r9mywUVg/YnmR4h8AS
-         jJHvUMOYi3xLoHMx1ML5DLaVKoTi2217xjAPgXjw=
-Received: from epcpadp1 (unknown [182.195.40.11]) by epcas1p2.samsung.com
-        (KnoxPortal) with ESMTP id
-        20201023064002epcas1p29c622cb5a9788ea3e361bcc39950c083~Ai9IwWNI52161321613epcas1p2T;
-        Fri, 23 Oct 2020 06:40:02 +0000 (GMT)
-Mime-Version: 1.0
-Subject: RE: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
- ufshcd_read_desc_param()
-Reply-To: daejun7.park@samsung.com
-Sender: Daejun Park <daejun7.park@samsung.com>
-From:   Daejun Park <daejun7.park@samsung.com>
-To:     "cang@codeaurora.org" <cang@codeaurora.org>
-CC:     ALIM AKHTAR <alim.akhtar@samsung.com>,
-        "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "avri.altman@wdc.com" <avri.altman@wdc.com>,
-        "beanhuo@micron.com" <beanhuo@micron.com>,
-        "bvanassche@acm.org" <bvanassche@acm.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "jejb@linux.ibm.com" <jejb@linux.ibm.com>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "martin.petersen@oracle.com" <martin.petersen@oracle.com>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "rnayak@codeaurora.org" <rnayak@codeaurora.org>,
-        "salyzyn@google.com" <salyzyn@google.com>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "stanley.chu@mediatek.com" <stanley.chu@mediatek.com>
-X-Priority: 3
-X-Content-Kind-Code: NORMAL
-X-CPGS-Detection: blocking_info_exchange
-X-Drm-Type: N,general
-X-Msg-Generator: Mail
-X-Msg-Type: PERSONAL
-X-Reply-Demand: N
-Message-ID: <963815509.21603435202191.JavaMail.epsvc@epcpadp1>
-Date:   Fri, 23 Oct 2020 15:35:28 +0900
-X-CMS-MailID: 20201023063528epcms2p11b57d929a926d582539ce4e1a57caf80
+        Fri, 23 Oct 2020 02:38:32 -0400
+Received: from mail-pg1-x542.google.com (mail-pg1-x542.google.com [IPv6:2607:f8b0:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8BA4AC0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:38:32 -0700 (PDT)
+Received: by mail-pg1-x542.google.com with SMTP id r10so431446pgb.10
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:38:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:from:to:cc:references:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=du8DG9bmuPrMxShvvb8aQjcXCo588n8MEAUeaDJS0ro=;
+        b=jTvjxTQfWphPej6/1PfD28lAXYm0U1g/W21bzQeCqu/U7L+Z4hR6zakhVUaNOBMqGx
+         mee05wg+ZhnecR3FA+jjvoAjjCHhabm5pDHXc69JP7E9ZdS43xDoKP7XLQ3+Uja0jZqG
+         NPq2zBHqVWTCr98O/4qBN7dFoxIbd3r/CeTdulmx/IJjhmbQlIVEjWRS17O6J/u6ZJsW
+         VotXK4KtgnVJzmhe4O7e+1F2zIWGWFY0xSM3+B65H33q11j6GuukRYP0uEJmf+spdr9/
+         CvGUqJPDdc1yrNfGrbcovPJGwQZ4ZZPZmtfaxsfm96t4Rp/VCF9GT0YOaexVWbXoCPvo
+         O0cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:from:to:cc:references:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=du8DG9bmuPrMxShvvb8aQjcXCo588n8MEAUeaDJS0ro=;
+        b=dGavMuroLj8hbBYZP7x3qa6sxPaLT1yCGEhw3VEW3+ezPx5k5QrbnUBftA6QCGOHZm
+         N8S50stxnQ5RrXb0g7+vZ4UAjI4KEgTaYP4GlehIIlOqaaGM5BljO73NsN5c0sHgSo3x
+         n5pU5Pleg2n/ZCqICB3gKpCz6IrUzPLVtaAB+e5tk8hfWRZADXWT5htzl959z7h7Ypt6
+         4Z2qjkldyuSflFLlyHiyo4su0PotCzxw6y8PmfWh37EBYg+0LfVn8xUvnf9aj8LkmpY1
+         nsOfT4k6L04a/9fhOOr2AipFa91rb+MBi/Ro35H8jMG3e9RzZtn6CtLmeMXxyvfuqBQe
+         4o1A==
+X-Gm-Message-State: AOAM533AdAMy4rcpTofMjVIVVSPM2k6rJ63aufn1j94Bv/P951+3jDy4
+        P7YPOk9yWh/9QIUb0JRnmJA7WYKPD0tLYk6W
+X-Google-Smtp-Source: ABdhPJzgGubHtwtPVlQoW1i1YjP4CmDgF6KXik8vWFvSdt5ceVFh7FEl9ivr6PamrnrGEDOveB0pig==
+X-Received: by 2002:a17:90b:110b:: with SMTP id gi11mr819076pjb.25.1603435112090;
+        Thu, 22 Oct 2020 23:38:32 -0700 (PDT)
+Received: from ?IPv6:2402:3a80:429:6ba7:30ef:4722:a786:585f? ([2402:3a80:429:6ba7:30ef:4722:a786:585f])
+        by smtp.gmail.com with ESMTPSA id l3sm741272pju.28.2020.10.22.23.38.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 23:38:31 -0700 (PDT)
+Subject: Re: [PATCH v2] checkpatch: fix false positives in REPEATED_WORD
+ warning
+From:   Aditya <yashsri421@gmail.com>
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com
+References: <20201022145021.28211-1-yashsri421@gmail.com>
+ <4cbbd8d8b6c4d686f71648af8bc970baa4b0ee9b.camel@perches.com>
+ <5121bf7c-a126-6178-62ff-e54f0bb4cb6e@gmail.com>
+ <67247b2d51aa8b2da7377e400e9191733144ed0f.camel@perches.com>
+ <edaa9012-d512-26fc-0aca-f0eaf889a050@gmail.com>
+ <b853a8ab4daface74075e93d83f94655f13a2979.camel@perches.com>
+ <8845d575-596e-b2e0-26c1-16e704074fc8@gmail.com>
+Message-ID: <4d32f0db-0ab3-6a4d-9428-16e0651fbe29@gmail.com>
+Date:   Fri, 23 Oct 2020 12:08:25 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
+MIME-Version: 1.0
+In-Reply-To: <8845d575-596e-b2e0-26c1-16e704074fc8@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: AUTO_CONFIDENTIAL
-X-CPGSPASS: Y
-X-CPGSPASS: Y
-X-Hop-Count: 3
-X-CMS-RootMailID: 20201023063528epcms2p11b57d929a926d582539ce4e1a57caf80
-References: <CGME20201023063528epcms2p11b57d929a926d582539ce4e1a57caf80@epcms2p1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Can Guo
+On 23/10/20 12:03 pm, Aditya wrote:
+> However, though such cases haven't occurred over v6..v8.
+> 
+> Actually, we could simplify it more on the basis of occurrences in
+> v6..v8, for eg. if we check for /[0-9c-f][0-9a-f]+/ (instead of
+> /[0-9a-f]{2,}/), it gives us desired result over v6..v8, but again
+> we'll miss out cases such as:
+> 
 
->Since WB feature has been added, WB related sysfs entries can be accessed
->even when an UFS device does not support WB feature. In that case, the
->descriptors which are not supported by the UFS device may be wrongly
->reported when they are accessed from their corrsponding sysfs entries.
->Fix it by adding a sanity check of parameter offset against the actual
->decriptor length.
->
->Signed-off-by: Can Guo <cang@codeaurora.org>
->---
-> drivers/scsi/ufs/ufshcd.c | 24 +++++++++++++++---------
-> 1 file changed, 15 insertions(+), 9 deletions(-)
->
->diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->index a2ebcc8..aeec10d 100644
->--- a/drivers/scsi/ufs/ufshcd.c
->+++ b/drivers/scsi/ufs/ufshcd.c
->@@ -3184,13 +3184,19 @@ int ufshcd_read_desc_param(struct ufs_hba *hba,
-> 	/* Get the length of descriptor */
-> 	ufshcd_map_desc_id_to_length(hba, desc_id, &buff_len);
-> 	if (!buff_len) {
->-		dev_err(hba->dev, "%s: Failed to get desc length", __func__);
->+		dev_err(hba->dev, "%s: Failed to get desc length\n", __func__);
->+		return -EINVAL;
->+	}
->+
->+	if (param_offset >= buff_len) {
->+		dev_err(hba->dev, "%s: Invalid offset 0x%x in descriptor IDN 0x%x, length 0x%x\n",
->+			__func__, param_offset, desc_id, buff_len);
+Sorry, v5.6..v5.8
 
-In my understanding, this code seems to check incorrect access to not
-supportted features (e.g. WB) via buff_len value from
-ufshcd_map_desc_id_to_length().
-However, since buff_len is initialized as QUERY_DESC_MAX_SIZE and is
-updated later by ufshcd_update_desc_length(), So it is impossible to find
-incorrect access by checking buff_len at first time.
-
-Thanks,
-Daejun
