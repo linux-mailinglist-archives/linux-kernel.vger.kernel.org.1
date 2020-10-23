@@ -2,108 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 51E2C2968CA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:32:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 459CC2968CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:33:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460408AbgJWDcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 23:32:00 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
+        id S374894AbgJWDdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 23:33:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41292 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374886AbgJWDbq (ORCPT
+        with ESMTP id S374825AbgJWDdu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 23:31:46 -0400
-Received: from mail-oi1-x262.google.com (mail-oi1-x262.google.com [IPv6:2607:f8b0:4864:20::262])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE25C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:44 -0700 (PDT)
-Received: by mail-oi1-x262.google.com with SMTP id j7so363319oie.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=drivescale-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=RhHK93So0VcKlYFbgYUYXeSYVQkNms0+nxyySSnXb+k=;
-        b=IPFfdKZ7mj4Gn6Yl/tH8/Q+MuI0fe9tTCLLeMhotRbKJyhaUuHrUntFTcPozjRq4jQ
-         0/zjMXzmcPtSrP3uAwhkudtzUYH0ttPOb9Ba0727AiOdYNvgmaY9tMfNGca9wiVfntjW
-         Wyvx4HSZE3cAieHlJGxR4qlBiEgJi3IkljP78r0IwYLSC5TiNsCI1nrpqxkcPJzxqOLK
-         OD2vUXAJIO3CLAPZqACLpIIdR8kYlcJ/caEiRuCBuR70c+VCNl2ufzTPnhl+C2p7vTUR
-         b0smkrP7YD2kMNbs8wP/wqBgD4xZKQyHJcetRsR6c5BB51PY4W+mPYnQ90F1uD9O0UIc
-         OhWA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references;
-        bh=RhHK93So0VcKlYFbgYUYXeSYVQkNms0+nxyySSnXb+k=;
-        b=fY3KK2B9YpTtmiK6daMGSKj9ueAHswVCxvOvbCeu9ZQrl1Vvj4HUACpajCr/IkNZ9g
-         737t6ZFmOT1uvnhy1Crl+s+7Qzd6657KCSt9tdu2F4ulmJqAm++AnYYaGmBO7TbAEfJr
-         vs6B9gGj7Vj6ZrhYTHxbAtb5I7yGqHcrSF9KOEYIw5ujsvjHU8C2qN2Rywh3uZDvjTYE
-         ydCQUEIaQwrXV9p5NOeATd2DfL9H5YxmI4pWitMDmnTDMh/zWG8LZPM4k9SjdM0b0Gkd
-         GbX4EHNBLx07Jtf0SKFjA/yYdnagogOOYNPfIi9Hppw0cJfBd7acESUX/gIteaQxjm1n
-         vSGA==
-X-Gm-Message-State: AOAM531CVskn7pjYjkPG3118rh1vGbsV5nVKWV+lFpS2cnUl8dulZ/3k
-        5DpYbrCPMyUnRhTjxiPhU4Nf5VXGxKvhkd6oi/ATU4qCJU2Pcw==
-X-Google-Smtp-Source: ABdhPJybn2Qbcm4XVtdDVaJj0llIw0aTm6KmR3ZYalQvBvvjokAJn1bdXPkcektjFZ84uYebkJI2ytz6owL6
-X-Received: by 2002:a05:6808:28c:: with SMTP id z12mr246573oic.70.1603423903944;
-        Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
-Received: from dcs.hq.drivescale.com ([68.74.115.3])
-        by smtp-relay.gmail.com with ESMTP id w2sm42526ooc.20.2020.10.22.20.31.43;
-        Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
-X-Relaying-Domain: drivescale.com
-Received: from localhost.localdomain (gw1-dc.hq.drivescale.com [192.168.33.175])
-        by dcs.hq.drivescale.com (Postfix) with ESMTP id 51BBA420D3;
-        Fri, 23 Oct 2020 03:31:43 +0000 (UTC)
-From:   Christopher Unkel <cunkel@drivescale.com>
-To:     linux-raid@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
-        cunkel@drivescale.com
-Subject: [PATCH 3/3] md: pad writes to end of bitmap to physical blocks
-Date:   Thu, 22 Oct 2020 20:31:30 -0700
-Message-Id: <20201023033130.11354-4-cunkel@drivescale.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201023033130.11354-1-cunkel@drivescale.com>
-References: <20201023033130.11354-1-cunkel@drivescale.com>
+        Thu, 22 Oct 2020 23:33:50 -0400
+Received: from ozlabs.org (bilbo.ozlabs.org [IPv6:2401:3900:2:1::2])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 40350C0613CE;
+        Thu, 22 Oct 2020 20:33:50 -0700 (PDT)
+Received: by ozlabs.org (Postfix, from userid 1034)
+        id 4CHVFQ6MvJz9sSs; Fri, 23 Oct 2020 14:33:46 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ellerman.id.au;
+        s=201909; t=1603424026;
+        bh=AwOSiExI8NbntUvUtGVI5OP3bq4Ymzz/W7ahgDUbvLY=;
+        h=From:To:Cc:Subject:Date:From;
+        b=D10j4BBwWTAKb5ZBcmye4YTVu192Aio1PIHlJoc0gPDo1/RvtnE1CjJxnTlMmw2vO
+         xfA1Bq8AAl1zIdzdgkBYgQ1Y4Rt5hze4WKVymcV6nG8fCbcxCUnriJzp4fIyed2YtV
+         maOOINbUB9y6sFyMXE6F14y5/zM6/il5Nu4ekBJGZTe0StrL0CfONe65QPTWh0wTL+
+         as7pwNnbt2PSuYUECVqGmrXI6836PRw9UzyyYKjorsNTHJWV72CUEi0szipbRUeLMF
+         dE8KYBp2hnkkJVXzQIJn3z2y40L0XxN8TXgd/TdsbUtQhXzo2cYLn0D8fMZtK+5gaB
+         JiN5R9azn9MPw==
+From:   Michael Ellerman <mpe@ellerman.id.au>
+To:     linuxppc-dev@ozlabs.org, netdev@vger.kernel.org
+Cc:     davem@davemloft.net, linux-kernel@vger.kernel.org, kuba@kernel.org,
+        leoyang.li@nxp.com
+Subject: [PATCH] net: ucc_geth: Drop extraneous parentheses in comparison
+Date:   Fri, 23 Oct 2020 14:32:36 +1100
+Message-Id: <20201023033236.3296988-1-mpe@ellerman.id.au>
+X-Mailer: git-send-email 2.25.1
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Writes of the last page of the bitmap are padded out to the next logical
-block boundary.  However, they are not padded out to the next physical
-block boundary, so the writes may be less than a physical block.  On a
-"512e" disk (logical block 512 bytes, physical block 4k) and if the last
-page of the bitmap is less than 3584 bytes, this means that writes of
-the last bitmap page hit the 512-byte emulation.
+Clang warns about the extra parentheses in this comparison:
 
-Respect the physical block boundary as long as the resulting write
-doesn't run into other data, and is no longer than a page.  (If the
-physical block size is larger than a page no bitmap write will respect
-the physical block boundaries.)
+  drivers/net/ethernet/freescale/ucc_geth.c:1361:28:
+  warning: equality comparison with extraneous parentheses
+    if ((ugeth->phy_interface == PHY_INTERFACE_MODE_SGMII))
+         ~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Signed-off-by: Christopher Unkel <cunkel@drivescale.com>
+It seems clear the intent here is to do a comparison not an
+assignment, so drop the extra parentheses to avoid any confusion.
+
+Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
 ---
- drivers/md/md-bitmap.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/ethernet/freescale/ucc_geth.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index 600b89d5a3ad..21af5f94d495 100644
---- a/drivers/md/md-bitmap.c
-+++ b/drivers/md/md-bitmap.c
-@@ -264,10 +264,18 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
+diff --git a/drivers/net/ethernet/freescale/ucc_geth.c b/drivers/net/ethernet/freescale/ucc_geth.c
+index db791f60b884..d8ad478a0a13 100644
+--- a/drivers/net/ethernet/freescale/ucc_geth.c
++++ b/drivers/net/ethernet/freescale/ucc_geth.c
+@@ -1358,7 +1358,7 @@ static int adjust_enet_interface(struct ucc_geth_private *ugeth)
+ 	    (ugeth->phy_interface == PHY_INTERFACE_MODE_RTBI)) {
+ 		upsmr |= UCC_GETH_UPSMR_TBIM;
+ 	}
+-	if ((ugeth->phy_interface == PHY_INTERFACE_MODE_SGMII))
++	if (ugeth->phy_interface == PHY_INTERFACE_MODE_SGMII)
+ 		upsmr |= UCC_GETH_UPSMR_SGMM;
  
- 		if (page->index == store->file_pages-1) {
- 			int last_page_size = store->bytes & (PAGE_SIZE-1);
-+			int pb_aligned_size;
- 			if (last_page_size == 0)
- 				last_page_size = PAGE_SIZE;
- 			size = roundup(last_page_size,
- 				       bdev_logical_block_size(bdev));
-+			pb_aligned_size = roundup(last_page_size,
-+						  bdev_physical_block_size(bdev));
-+			if (pb_aligned_size > size
-+			    && pb_aligned_size <= PAGE_SIZE
-+			    && sb_write_alignment_ok(mddev, rdev, page, offset,
-+						     pb_aligned_size))
-+				size = pb_aligned_size;
- 		}
- 		/* Just make sure we aren't corrupting data or
- 		 * metadata
+ 	out_be32(&uf_regs->upsmr, upsmr);
 -- 
-2.17.1
+2.25.1
 
