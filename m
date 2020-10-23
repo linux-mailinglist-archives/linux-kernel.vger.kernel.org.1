@@ -2,115 +2,195 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D1D729756A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:59:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6587C297570
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:00:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751664AbgJWQ7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:59:17 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53120 "EHLO
+        id S1752184AbgJWRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:00:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462951AbgJWQ7R (ORCPT
+        with ESMTP id S1751221AbgJWRAY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:59:17 -0400
-Received: from mail-ot1-x341.google.com (mail-ot1-x341.google.com [IPv6:2607:f8b0:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 542B1C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:59:17 -0700 (PDT)
-Received: by mail-ot1-x341.google.com with SMTP id o14so1975976otj.6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:59:17 -0700 (PDT)
+        Fri, 23 Oct 2020 13:00:24 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C11C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:00:24 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id w17so2021790ilg.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:00:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=GSVr128pqOoBVgaQYWDeH7y0Q+csz3WwPIzOZPNEXDU=;
-        b=Gm9gB8LfWqXjYNl+ezisHjcKPpuYsHthevYvIaDtlEB9d+b83tyLXhvxMbEAce2RCO
-         CmF8L6JhFKT5CK4tQHjNkssG/iskl/etKY6pLS+99Ew2EqkVPbrprYCdRzwzkjudwoPf
-         Dfkh6+Z5B7HoPwQvg1wb//RugPRsKW2CDOH9dKQLQ7WLbz4rR5u4HvTWlgz5rgBdDd+j
-         3WTb3QYAXr7pej5bwi+5CdYDUZi9D4M5JopRMJee1TnfGVj3oVywjh7rApTeHq4nqZDp
-         GTDkyqsJy2mwxZ/NVxcjG+ll2QChI1WzogLNWiZ8G0k6ung0cvBNwr8oZIExoq4nG1Yo
-         0fIg==
+         :cc:content-transfer-encoding;
+        bh=o1VEizSN6TM+raklNtIXpsapMZWxETouBV0mamAPQo0=;
+        b=V+Gg9uICyKn5tIe46atfWAON+AixWQBBQ6Pn1mKsJ9LTyk3eEKENj8UdU0jz8oEJ/T
+         iY3pDKKGEDsjM5zsL71qeD2upMbTwf/0oJPU2qhreG0VoH8Btr+eBgBDvB9g58CZSQ96
+         Sgr8eEMx01tJ+JJaSGqxsdIW8XuWtidjH3RUren590Av2KVvyiUDBkwd3pzRSI5r/akg
+         4Be7/bT6OAM0TaD6IR1KR8VzV6ouQZqBCGjLPr0uzK1WtJoC3shbqQqA3Z4hhhb9EDl9
+         hZ/RmeUyYqgXTzKPMWN2s3dmpVJISsGiyopT/jpiQLJijpHH+ZJruUA+qldH7HfKM+2Z
+         DsWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=GSVr128pqOoBVgaQYWDeH7y0Q+csz3WwPIzOZPNEXDU=;
-        b=Rl5Eg2E5nb83wKIZFeIybnCustnzc38Y49pzjStu5TL92ZZWKG5d9WAaB2ST3uR4Lm
-         gGnRJPvvLaNDn4hCapUtpxuOP3Bnuhwi1fIcIE9DjuTuc8W3Na3r9p7kxQI595kwrGeG
-         NWMPTsRTD9ucCqTj7OpIMOD6sJZMCYkKCp92CSbh2ekAfsMLu0/LIW925zop+ws0qvxc
-         jcjRqkDjH74JHY8OwX+kxlUNnnFnKBjcuTU7J3zoBxpVNgD9IxjyWNzKHVtSuUdPDwbh
-         zos0cY/ezb2YpH/r1g9T3O6FLVi2fibJxQ6dbViMkrMQbmcaBOML50Tvw7q6ukEnBOEb
-         Dsvw==
-X-Gm-Message-State: AOAM5301eVdE7LR4D5FfTZsgjSbrHBt2RybyneaQmVHzwiEY57+KpX4n
-        z9rxnLLbM5k6GWWNDElwgv+QoZO/Vz+Wc3uXx2DKqw==
-X-Google-Smtp-Source: ABdhPJyeGWHQQDGVimyZ+QBAQPt7x+bmS1YILgkR+mEnGxuK2O6BoKn48ADm59edMi2szBv9/R+InVHL3y6rZeYy5GA=
-X-Received: by 2002:a05:6830:10d3:: with SMTP id z19mr2501059oto.295.1603472354961;
- Fri, 23 Oct 2020 09:59:14 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=o1VEizSN6TM+raklNtIXpsapMZWxETouBV0mamAPQo0=;
+        b=nCwj/HTuKAr7ghCIf6m75QzcIag6m3MbyOuCXQIa0Cs6txRVcrjO59ardYjMD3TJjy
+         pvixUl+y69JiOitGvJvz7OD5t/1eQPqJcd7sGcgt+Sy/YVQFzwvbWQihFzcthVw2GrHz
+         UdFMWuvMHJxwKfybhML93kr+fr5KHVCoxUAZiSHTrZYCAL7ROovPbNwOwuYFXBu0pTdp
+         ZAC+lsKBdB7dlgRSMMXwP4WSIqtb2CRwoSKX38LAvlbvgf6Q2pCjMlcy/lgjfukqKfGf
+         Cw4h7IU3Gq2WJizzHVopvo51putNulEs6veN+PmvhnRa8Jd0R10wA1BYdT+jiE6fle1v
+         7KVQ==
+X-Gm-Message-State: AOAM531JfRhIXsjjAQHvD28OYA0VHNEypGGgeQjWerahtU2bVH/0igAM
+        FLUHHRSWFVg0kbXFk5HNoMsPWvuhfh+qIgoYPViigg==
+X-Google-Smtp-Source: ABdhPJwrgJp/OuJrOp+n+UP8gE/pj8wa+8lsTQ0hX8+Y+rO4ME9yioa2pi9mLHL+KrbDWGnIoZjFUeIWTh+m6MuqhEo=
+X-Received: by 2002:a92:b6d2:: with SMTP id m79mr1190406ill.216.1603472422474;
+ Fri, 23 Oct 2020 10:00:22 -0700 (PDT)
 MIME-Version: 1.0
-References: <20200710154811.418214-1-mgamal@redhat.com> <20200710154811.418214-8-mgamal@redhat.com>
- <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
- <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
- <20201023031433.GF23681@linux.intel.com> <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
-In-Reply-To: <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
-From:   Jim Mattson <jmattson@google.com>
-Date:   Fri, 23 Oct 2020 09:59:03 -0700
-Message-ID: <CALMp9eQ8C0pp5yP4tLsckVWq=j3Xb=e4M7UVZz67+pngaXJJUw@mail.gmail.com>
-Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
- violation and misconfig
-To:     Paolo Bonzini <pbonzini@redhat.com>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Mohammed Gamal <mgamal@redhat.com>,
-        kvm list <kvm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Joerg Roedel <joro@8bytes.org>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+ <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+ <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com> <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+In-Reply-To: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+From:   Naresh Kamboju <naresh.kamboju@linaro.org>
+Date:   Fri, 23 Oct 2020 22:30:11 +0530
+Message-ID: <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com>
+Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+ 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
+        Al Viro <viro@zeniv.linux.org.uk>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 2:22 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
+On Fri, 23 Oct 2020 at 08:35, Linus Torvalds
+<torvalds@linux-foundation.org> wrote:
 >
-> On 23/10/20 05:14, Sean Christopherson wrote:
-> >>>> +
-> >>>> +       /*
-> >>>> +        * Check that the GPA doesn't exceed physical memory limits, as that is
-> >>>> +        * a guest page fault.  We have to emulate the instruction here, because
-> >>>> +        * if the illegal address is that of a paging structure, then
-> >>>> +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
-> >>>> +        * would also use advanced VM-exit information for EPT violations to
-> >>>> +        * reconstruct the page fault error code.
-> >>>> +        */
-> >>>> +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
-> >>>> +               return kvm_emulate_instruction(vcpu, 0);
-> >>>> +
-> >>> Is kvm's in-kernel emulator up to the task? What if the instruction in
-> >>> question is AVX-512, or one of the myriad instructions that the
-> >>> in-kernel emulator can't handle? Ice Lake must support the advanced
-> >>> VM-exit information for EPT violations, so that would seem like a
-> >>> better choice.
-> >>>
-> >> Anyone?
+> On Thu, Oct 22, 2020 at 6:36 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org>=
+ wrote:
 > >
-> > Using "advanced info" if it's supported seems like the way to go.  Outright
-> > requiring it is probably overkill; if userspace wants to risk having to kill a
-> > (likely broken) guest, so be it.
+> > The kernel Naresh originally referred to is here:
+> >   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
 >
-> Yeah, the instruction is expected to page-fault here.  However the
-> comment is incorrect and advanced information does not help here.
->
-> The problem is that page fault error code bits cannot be reconstructed
-> from bits 0..2 of the EPT violation exit qualification, if bit 8 is
-> clear in the exit qualification (that is, if the access causing the EPT
-> violation is to a paging-structure entry).  In that case bits 0..2 refer
-> to the paging-structure access rather than to the final access.  In fact
-> advanced information is not available at all for paging-structure access
-> EPT violations.
+> is unnecessary (because the 8-byte case is still just a single
+> register, no %eax:%edx games needed), it would be interesting to hear
+> if the attached patch fixes it. That would confirm that the problem
+> really is due to some register allocation issue interaction (or,
+> alternatively, it would tell me that there's something else going on).
 
-True, but the in-kernel emulator can only handle a very small subset
-of the available instructions.
+[Old patch from yesterday]
 
-If bit 8 is set in the exit qualification, we should use the advanced
-VM-exit information. If it's clear, we should just do a software page
-walk of the guest's x86 page tables. The in-kernel emulator should
-only be used as a last resort on hardware that doesn't support the
-advanced VM-exit information for EPT violations.
+After applying your patch on top on linux next tag 20201015
+there are two observations,
+  1) i386 build failed. please find build error build
+  2) x86_64 kasan test PASS and the reported error not found.
+
+
+i386 build failure,
+----------------------
+make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Di386 HOSTCC=3Dgc=
+c
+CC=3D"sccache gcc" O=3Dbuild
+#
+In file included from ../include/linux/uaccess.h:11,
+                 from ../arch/x86/include/asm/fpu/xstate.h:5,
+                 from ../arch/x86/include/asm/pgtable.h:26,
+                 from ../include/linux/pgtable.h:6,
+                 from ../include/linux/mm.h:33,
+                 from ../include/linux/memblock.h:13,
+                 from ../fs/proc/page.c:2:
+../fs/proc/page.c: In function =E2=80=98kpagecgroup_read=E2=80=99:
+../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
+constraints in an =E2=80=98asm=E2=80=99
+  217 |  asm volatile("call __" #fn "_%P[size]"    \
+      |  ^~~
+../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
+=E2=80=98do_put_user_call=E2=80=99
+  244 | #define put_user(x, ptr) ({ might_fault();
+do_put_user_call(put_user,x,ptr); })
+      |                                            ^~~~~~~~~~~~~~~~
+../fs/proc/page.c:307:7: note: in expansion of macro =E2=80=98put_user=E2=
+=80=99
+  307 |   if (put_user(ino, out)) {
+      |       ^~~~~~~~
+make[3]: *** [../scripts/Makefile.build:283: fs/proc/page.o] Error 1
+make[3]: Target '__build' not remade because of errors.
+make[2]: *** [../scripts/Makefile.build:500: fs/proc] Error 2
+In file included from ../include/linux/uaccess.h:11,
+                 from ../include/linux/sched/task.h:11,
+                 from ../include/linux/sched/signal.h:9,
+                 from ../include/linux/rcuwait.h:6,
+                 from ../include/linux/percpu-rwsem.h:7,
+                 from ../include/linux/fs.h:33,
+                 from ../include/linux/cgroup.h:17,
+                 from ../include/linux/memcontrol.h:13,
+                 from ../include/linux/swap.h:9,
+                 from ../include/linux/suspend.h:5,
+                 from ../kernel/power/user.c:10:
+../kernel/power/user.c: In function =E2=80=98snapshot_ioctl=E2=80=99:
+../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
+constraints in an =E2=80=98asm=E2=80=99
+  217 |  asm volatile("call __" #fn "_%P[size]"    \
+      |  ^~~
+../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
+=E2=80=98do_put_user_call=E2=80=99
+  244 | #define put_user(x, ptr) ({ might_fault();
+do_put_user_call(put_user,x,ptr); })
+      |                                            ^~~~~~~~~~~~~~~~
+../kernel/power/user.c:340:11: note: in expansion of macro =E2=80=98put_use=
+r=E2=80=99
+  340 |   error =3D put_user(size, (loff_t __user *)arg);
+      |           ^~~~~~~~
+../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
+constraints in an =E2=80=98asm=E2=80=99
+  217 |  asm volatile("call __" #fn "_%P[size]"    \
+      |  ^~~
+../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
+=E2=80=98do_put_user_call=E2=80=99
+  244 | #define put_user(x, ptr) ({ might_fault();
+do_put_user_call(put_user,x,ptr); })
+      |                                            ^~~~~~~~~~~~~~~~
+../kernel/power/user.c:346:11: note: in expansion of macro =E2=80=98put_use=
+r=E2=80=99
+  346 |   error =3D put_user(size, (loff_t __user *)arg);
+      |           ^~~~~~~~
+../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
+constraints in an =E2=80=98asm=E2=80=99
+  217 |  asm volatile("call __" #fn "_%P[size]"    \
+      |  ^~~
+../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
+=E2=80=98do_put_user_call=E2=80=99
+  244 | #define put_user(x, ptr) ({ might_fault();
+do_put_user_call(put_user,x,ptr); })
+      |                                            ^~~~~~~~~~~~~~~~
+../kernel/power/user.c:357:12: note: in expansion of macro =E2=80=98put_use=
+r=E2=80=99
+  357 |    error =3D put_user(offset, (loff_t __user *)arg);
+      |            ^~~~~~~~
+
+
+x86_64 Kasan tested and the reported issue not found.
+https://lkft.validation.linaro.org/scheduler/job/1868029#L2374
+
+- Naresh
