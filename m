@@ -2,41 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4630129742C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5D875297435
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751989AbgJWQec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:34:32 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
+        id S1750950AbgJWQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:35:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33228 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751873AbgJWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751871AbgJWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:51 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E67B02465D;
+        by mail.kernel.org (Postfix) with ESMTPSA id E5AA524640;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470829;
-        bh=EYMl2u5G3tlfoX5HXXlEe/QfwoVAS1SQndK7owUVadA=;
+        bh=kKdcFIDbvdIdbsg1p/Q0zZPYj9lZBHWVYn7UPRPdRmc=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Xwa0v9hqZvQ1dEBdD3N04U75jYRrJ8PA2P4GzyYLZplUlSdSee1SJVijgy8iAwCkR
-         4S4Y3HbJ2CV7eCgotlXiMgo4FG8c9c0mfC7WLXEpGz5gK+/ByxvFKo8Cuq1htkiit+
-         8Ys/Kr7ZUwBjIixyHl0kKi+V14S29uSIbodv8b0o=
+        b=MNfRxv0N9bT8FY1LJcnC3/1Mk38o6gShcU3ocS0Qh0WQ7dNgJFHZrMjOEMdEeDg0z
+         ZR+yeCxJVVpbSzGHkSe0f7oM3CGKYGIYBw5oCf0QopHixbOq8bd0L4Cm/HIzl+53RG
+         4tQQek6j+l7RulUlkXnLYJ/b6PU8QcyshTZjRCLg=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Axv-RP; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Axx-TT; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Kees Cook <keescook@chromium.org>,
-        Shuah Khan <shuah@kernel.org>, Will Drewry <wad@chromium.org>,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-Subject: [PATCH v3 55/56] selftests: kselftest_harness.h: partially fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:42 +0200
-Message-Id: <8d816b5a5f31600176fd9ad5e58c0a74bf79f8dd.1603469755.git.mchehab+huawei@kernel.org>
+        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 56/56] scrpits: kernel-doc: validate kernel-doc markup with the actual names
+Date:   Fri, 23 Oct 2020 18:33:43 +0200
+Message-Id: <a21343a7012c87391c4850bf3151ebd82add8d1c.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -47,333 +43,200 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The kernel-doc markups on this file are weird: they don't
-follow what's specified at:
+Kernel-doc currently expects that the kernel-doc markup to come
+just before the function/enum/struct/union/typedef prototype.
 
-	Documentation/doc-guide/kernel-doc.rst
+Yet, if it find things like:
 
-In particular, markups should use this format:
-        identifier - description
+	/**
+	 * refcount_add - add a value to a refcount
+	 * @i: the value to add to the refcount
+	 * @r: the refcount
+	 */
+	static inline void __refcount_add(int i, refcount_t *r, int *oldp);
+	static inline void refcount_add(int i, refcount_t *r);
 
-and not this:
-	identifier(args)
+Kernel-doc will do the wrong thing:
 
-The way the definitions are inside this file cause the
-parser to completely miss the identifier name of each
-function.
+	foobar.h:6: warning: Function parameter or member 'oldp' not described in '__refcount_add'
+	.. c:function:: void __refcount_add (int i, refcount_t *r, int *oldp)
 
-This prevents improving the script to do some needed validation
-tests.
+	   add a value to a refcount
 
-Address this part. Yet, furter changes are needed in order
-for it to fully follow the specs.
+	**Parameters**
+
+	``int i``
+	  the value to add to the refcount
+
+	``refcount_t *r``
+	  the refcount
+
+	``int *oldp``
+	  *undescribed*
+
+Basically, it will document "__refcount_add" with the kernel-doc
+markup for refcount_add.
+
+If both functions have the same arguments, this won't even
+produce any warning!
+
+Add a logic to check if the kernel-doc identifier matches the actual
+name of the C function or data structure that will be documented.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- tools/testing/selftests/kselftest_harness.h | 66 ++++++++++-----------
- 1 file changed, 33 insertions(+), 33 deletions(-)
+ scripts/kernel-doc | 62 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 46 insertions(+), 16 deletions(-)
 
-diff --git a/tools/testing/selftests/kselftest_harness.h b/tools/testing/selftests/kselftest_harness.h
-index f19804df244c..665d04f3b802 100644
---- a/tools/testing/selftests/kselftest_harness.h
-+++ b/tools/testing/selftests/kselftest_harness.h
-@@ -79,7 +79,7 @@
- #endif
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 311d213ee74d..1371cd45f78b 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -382,6 +382,9 @@ my $inline_doc_state;
+ # 'function', 'struct', 'union', 'enum', 'typedef'
+ my $decl_type;
  
- /**
-- * TH_LOG(fmt, ...)
-+ * TH_LOG()
-  *
-  * @fmt: format string
-  * @...: optional arguments
-@@ -113,7 +113,7 @@
- 			__FILE__, __LINE__, _metadata->name, ##__VA_ARGS__)
++# Name of the kernel-doc identifier for non-DOC markups
++my $identifier;
++
+ my $doc_start = '^/\*\*\s*$'; # Allow whitespace at end of comment start.
+ my $doc_end = '\*/';
+ my $doc_com = '\s*\*\s*';
+@@ -1203,6 +1206,11 @@ sub dump_struct($$) {
+ 	$declaration_name = $2;
+ 	my $members = $3;
  
- /**
-- * SKIP(statement, fmt, ...)
-+ * SKIP()
-  *
-  * @statement: statement to run after reporting SKIP
-  * @fmt: format string
-@@ -136,7 +136,7 @@
- } while (0)
++	if ($identifier ne $declaration_name) {
++	    print STDERR "${file}:$.: warning: expecting prototype for $decl_type $identifier. Prototype was for $decl_type $declaration_name instead\n";
++	    return;
++	}
++
+ 	# ignore members marked private:
+ 	$members =~ s/\/\*\s*private:.*?\/\*\s*public:.*?\*\///gosi;
+ 	$members =~ s/\/\*\s*private:.*//gosi;
+@@ -1391,6 +1399,11 @@ sub dump_enum($$) {
+     }
  
- /**
-- * TEST(test_name) - Defines the test function and creates the registration
-+ * TEST() - Defines the test function and creates the registration
-  * stub
-  *
-  * @test_name: test name
-@@ -155,7 +155,7 @@
- #define TEST(test_name) __TEST_IMPL(test_name, -1)
+     if ($declaration_name) {
++	if ($identifier ne $declaration_name) {
++	    print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
++	    return;
++	}
++
+ 	my %_members;
  
- /**
-- * TEST_SIGNAL(test_name, signal)
-+ * TEST_SIGNAL()
-  *
-  * @test_name: test name
-  * @signal: signal number
-@@ -195,7 +195,7 @@
- 		struct __test_metadata __attribute__((unused)) *_metadata)
+ 	$members =~ s/\s+$//;
+@@ -1446,6 +1459,11 @@ sub dump_typedef($$) {
+ 	$declaration_name = $2;
+ 	my $args = $3;
  
- /**
-- * FIXTURE_DATA(datatype_name) - Wraps the struct name so we have one less
-+ * FIXTURE_DATA() - Wraps the struct name so we have one less
-  * argument to pass around
-  *
-  * @datatype_name: datatype name
-@@ -212,7 +212,7 @@
- #define FIXTURE_DATA(datatype_name) struct _test_data_##datatype_name
++	if ($identifier ne $declaration_name) {
++	    print STDERR "${file}:$.: warning: expecting prototype for typedef $identifier. Prototype was for typedef $declaration_name instead\n";
++	    return;
++	}
++
+ 	create_parameterlist($args, ',', $file, $declaration_name);
  
- /**
-- * FIXTURE(fixture_name) - Called once per fixture to setup the data and
-+ * FIXTURE() - Called once per fixture to setup the data and
-  * register
-  *
-  * @fixture_name: fixture name
-@@ -239,7 +239,7 @@
- 	FIXTURE_DATA(fixture_name)
+ 	output_declaration($declaration_name,
+@@ -1472,6 +1490,11 @@ sub dump_typedef($$) {
+     if ($x =~ /typedef.*\s+(\w+)\s*;/) {
+ 	$declaration_name = $1;
  
- /**
-- * FIXTURE_SETUP(fixture_name) - Prepares the setup function for the fixture.
-+ * FIXTURE_SETUP() - Prepares the setup function for the fixture.
-  * *_metadata* is included so that EXPECT_* and ASSERT_* work correctly.
-  *
-  * @fixture_name: fixture name
-@@ -265,7 +265,7 @@
- 			__attribute__((unused)) *variant)
++	if ($identifier ne $declaration_name) {
++	    print STDERR "${file}:$.: warning: expecting prototype for typedef $identifier. Prototype was for typedef $declaration_name instead\n";
++	    return;
++	}
++
+ 	output_declaration($declaration_name,
+ 			   'typedef',
+ 			   {'typedef' => $declaration_name,
+@@ -1791,6 +1814,11 @@ sub dump_function($$) {
+ 	return;
+     }
  
- /**
-- * FIXTURE_TEARDOWN(fixture_name)
-+ * FIXTURE_TEARDOWN()
-  * *_metadata* is included so that EXPECT_* and ASSERT_* work correctly.
-  *
-  * @fixture_name: fixture name
-@@ -286,7 +286,7 @@
- 		FIXTURE_DATA(fixture_name) __attribute__((unused)) *self)
++    if ($identifier ne $declaration_name) {
++	print STDERR "${file}:$.: warning: expecting prototype for $identifier(). Prototype was for $declaration_name() instead\n";
++	return;
++    }
++
+     my $prms = join " ", @parameterlist;
+     check_sections($file, $declaration_name, "function", $sectcheck, $prms);
  
- /**
-- * FIXTURE_VARIANT(fixture_name) - Optionally called once per fixture
-+ * FIXTURE_VARIANT() - Optionally called once per fixture
-  * to declare fixture variant
-  *
-  * @fixture_name: fixture name
-@@ -305,7 +305,7 @@
- #define FIXTURE_VARIANT(fixture_name) struct _fixture_variant_##fixture_name
+@@ -1873,6 +1901,7 @@ sub tracepoint_munge($) {
+ 			     "$prototype\n";
+ 	} else {
+ 		$prototype = "static inline void trace_$tracepointname($tracepointargs)";
++		$identifier = "trace_$identifier";
+ 	}
+ }
  
- /**
-- * FIXTURE_VARIANT_ADD(fixture_name, variant_name) - Called once per fixture
-+ * FIXTURE_VARIANT_ADD() - Called once per fixture
-  * variant to setup and register the data
-  *
-  * @fixture_name: fixture name
-@@ -339,7 +339,7 @@
- 		_##fixture_name##_##variant_name##_variant =
+@@ -2036,7 +2065,6 @@ sub process_normal() {
+ #
+ sub process_name($$) {
+     my $file = shift;
+-    my $identifier;
+     my $descr;
  
- /**
-- * TEST_F(fixture_name, test_name) - Emits test registration and helpers for
-+ * TEST_F() - Emits test registration and helpers for
-  * fixture-based test cases
-  *
-  * @fixture_name: fixture name
-@@ -432,7 +432,7 @@
-  */
+     if (/$doc_block/o) {
+@@ -2049,12 +2077,19 @@ sub process_name($$) {
+ 	} else {
+ 	    $section = $1;
+ 	}
+-    }
+-    elsif (/$doc_decl/o) {
++    } elsif (/$doc_decl/o) {
+ 	$identifier = $1;
+-	if (/\s*([\w\s]+?)(\(\))?\s*-/) {
++	if (/\s*([\w\s]+?)(\(\))?\s*([-:].*)?$/) {
+ 	    $identifier = $1;
+ 	}
++	if ($identifier =~ m/^(struct|union|enum|typedef)\b\s*(\S*)/) {
++	    $decl_type = $1;
++	    $identifier = $2;
++	} else {
++	    $decl_type = 'function';
++	    $identifier =~ s/^define\s+//;
++	}
++	$identifier =~ s/\s+$//;
  
- /**
-- * ASSERT_EQ(expected, seen)
-+ * ASSERT_EQ()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -443,7 +443,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, ==, 1)
+ 	$state = STATE_BODY;
+ 	# if there's no @param blocks need to set up default section
+@@ -2062,7 +2097,7 @@ sub process_name($$) {
+ 	$contents = "";
+ 	$section = $section_default;
+ 	$new_start_line = $. + 1;
+-	if (/-(.*)/) {
++	if (/[-:](.*)/) {
+ 	    # strip leading/trailing/multiple spaces
+ 	    $descr= $1;
+ 	    $descr =~ s/^\s*//;
+@@ -2080,20 +2115,15 @@ sub process_name($$) {
+ 	    ++$warnings;
+ 	}
  
- /**
-- * ASSERT_NE(expected, seen)
-+ * ASSERT_NE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -454,7 +454,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, !=, 1)
+-	if ($identifier =~ m/^struct\b/) {
+-	    $decl_type = 'struct';
+-	} elsif ($identifier =~ m/^union\b/) {
+-	    $decl_type = 'union';
+-	} elsif ($identifier =~ m/^enum\b/) {
+-	    $decl_type = 'enum';
+-	} elsif ($identifier =~ m/^typedef\b/) {
+-	    $decl_type = 'typedef';
+-	} else {
+-	    $decl_type = 'function';
++	if ($identifier eq "") {
++	    print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
++	    print STDERR $_;
++	    ++$warnings;
++	    $state = STATE_NORMAL;
+ 	}
  
- /**
-- * ASSERT_LT(expected, seen)
-+ * ASSERT_LT()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -465,7 +465,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, <, 1)
- 
- /**
-- * ASSERT_LE(expected, seen)
-+ * ASSERT_LE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -476,7 +476,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, <=, 1)
- 
- /**
-- * ASSERT_GT(expected, seen)
-+ * ASSERT_GT()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -487,7 +487,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, >, 1)
- 
- /**
-- * ASSERT_GE(expected, seen)
-+ * ASSERT_GE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -498,7 +498,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, >=, 1)
- 
- /**
-- * ASSERT_NULL(seen)
-+ * ASSERT_NULL()
-  *
-  * @seen: measured value
-  *
-@@ -508,7 +508,7 @@
- 	__EXPECT(NULL, "NULL", seen, #seen, ==, 1)
- 
- /**
-- * ASSERT_TRUE(seen)
-+ * ASSERT_TRUE()
-  *
-  * @seen: measured value
-  *
-@@ -518,7 +518,7 @@
- 	__EXPECT(0, "0", seen, #seen, !=, 1)
- 
- /**
-- * ASSERT_FALSE(seen)
-+ * ASSERT_FALSE()
-  *
-  * @seen: measured value
-  *
-@@ -528,7 +528,7 @@
- 	__EXPECT(0, "0", seen, #seen, ==, 1)
- 
- /**
-- * ASSERT_STREQ(expected, seen)
-+ * ASSERT_STREQ()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -539,7 +539,7 @@
- 	__EXPECT_STR(expected, seen, ==, 1)
- 
- /**
-- * ASSERT_STRNE(expected, seen)
-+ * ASSERT_STRNE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -550,7 +550,7 @@
- 	__EXPECT_STR(expected, seen, !=, 1)
- 
- /**
-- * EXPECT_EQ(expected, seen)
-+ * EXPECT_EQ()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -561,7 +561,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, ==, 0)
- 
- /**
-- * EXPECT_NE(expected, seen)
-+ * EXPECT_NE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -572,7 +572,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, !=, 0)
- 
- /**
-- * EXPECT_LT(expected, seen)
-+ * EXPECT_LT()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -583,7 +583,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, <, 0)
- 
- /**
-- * EXPECT_LE(expected, seen)
-+ * EXPECT_LE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -594,7 +594,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, <=, 0)
- 
- /**
-- * EXPECT_GT(expected, seen)
-+ * EXPECT_GT()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -605,7 +605,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, >, 0)
- 
- /**
-- * EXPECT_GE(expected, seen)
-+ * EXPECT_GE()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -616,7 +616,7 @@
- 	__EXPECT(expected, #expected, seen, #seen, >=, 0)
- 
- /**
-- * EXPECT_NULL(seen)
-+ * EXPECT_NULL()
-  *
-  * @seen: measured value
-  *
-@@ -626,7 +626,7 @@
- 	__EXPECT(NULL, "NULL", seen, #seen, ==, 0)
- 
- /**
-- * EXPECT_TRUE(seen)
-+ * EXPECT_TRUE()
-  *
-  * @seen: measured value
-  *
-@@ -636,7 +636,7 @@
- 	__EXPECT(0, "0", seen, #seen, !=, 0)
- 
- /**
-- * EXPECT_FALSE(seen)
-+ * EXPECT_FALSE()
-  *
-  * @seen: measured value
-  *
-@@ -646,7 +646,7 @@
- 	__EXPECT(0, "0", seen, #seen, ==, 0)
- 
- /**
-- * EXPECT_STREQ(expected, seen)
-+ * EXPECT_STREQ()
-  *
-  * @expected: expected value
-  * @seen: measured value
-@@ -657,7 +657,7 @@
- 	__EXPECT_STR(expected, seen, ==, 0)
- 
- /**
-- * EXPECT_STRNE(expected, seen)
-+ * EXPECT_STRNE()
-  *
-  * @expected: expected value
-  * @seen: measured value
+ 	if ($verbose) {
+-	    print STDERR "${file}:$.: info: Scanning doc for $identifier\n";
++	    print STDERR "${file}:$.: info: Scanning doc for $decl_type $identifier\n";
+ 	}
+     } else {
+ 	print STDERR "${file}:$.: warning: Cannot understand $_ on line $.",
 -- 
 2.26.2
 
