@@ -2,92 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AB89029777A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:05:40 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B983D29777E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:05:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1753865AbgJWTFd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 15:05:33 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44620 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1753814AbgJWTFd (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:05:33 -0400
-Received: from mail-lf1-x144.google.com (mail-lf1-x144.google.com [IPv6:2a00:1450:4864:20::144])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8E8DC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:05:32 -0700 (PDT)
-Received: by mail-lf1-x144.google.com with SMTP id d24so3334850lfa.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:05:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=PlX2QDr5JXTLV/+pFMeSHpaHIWIoMTpMZ3CHCWOoKfI=;
-        b=IH9eUi1QJZocyOQ1cwxM2kztO+Z75OStTajGFwBB6CZKjBA+D5hdkycLXHmN0yjRfZ
-         4SI5s0Dp0wg3jsFtMFs489W9VRXaiLdbTvdJ2x8eH+v3amoUYzHTWlVghgsF8jtfpzis
-         JALnBVmvLXSsnUT1WcbbjqaHLPVvB0vMqCnXA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=PlX2QDr5JXTLV/+pFMeSHpaHIWIoMTpMZ3CHCWOoKfI=;
-        b=JtomDrlfDFbDWNGKkaopNrG9BlnD/+pVH1O2Vy3o2Y+R6IN1Qvi7ldQjasWp26BGR9
-         YEuVEz2rs22WR1J+xPdnhDeRCrR0s5K1fnfC0ypPTYhTrbY0dytXDFdIltG94hQu89QL
-         DRb/kp9NjkoVXdc6VIdLel8GcY/+NFL4V473+24TInIGXsEwcpnDLL9tCTDKbXF5cpFq
-         KQcqFSh8WHsY054nouptIgQW9gp2l+UKEnQNvQQVV8IwftTJGvcgOXo2mdsNiLhkVFbw
-         TME78OVTjbNwLrw90C6TBcYCFM5H6cwa7e1GM+xD4EubHk/snUPsvdTTNZw1dKmZL6Mu
-         JiQw==
-X-Gm-Message-State: AOAM533F+FU8W70sE+jz3oOOp04F8CWPyxEw80D6e7EGbwH6oTiAqenB
-        FinhIZ0jI3LCYJ7GJoNDcWSCj9fck0e7Jg==
-X-Google-Smtp-Source: ABdhPJzodx4cJFWCZrXY1CSToLhIVfc9YGVOb51qtxQTeh+keudyw2nvyWV5vKOWCgeByM5fiTpSIw==
-X-Received: by 2002:a19:2291:: with SMTP id i139mr1194099lfi.387.1603479931053;
-        Fri, 23 Oct 2020 12:05:31 -0700 (PDT)
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com. [209.85.167.41])
-        by smtp.gmail.com with ESMTPSA id s3sm255629lji.81.2020.10.23.12.05.28
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 12:05:29 -0700 (PDT)
-Received: by mail-lf1-f41.google.com with SMTP id l28so3326612lfp.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:05:28 -0700 (PDT)
-X-Received: by 2002:a19:4b03:: with SMTP id y3mr1127466lfa.534.1603479927999;
- Fri, 23 Oct 2020 12:05:27 -0700 (PDT)
+        id S1753895AbgJWTFw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 15:05:52 -0400
+Received: from foss.arm.com ([217.140.110.172]:58414 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462847AbgJWTFw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 15:05:52 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 07FFE101E;
+        Fri, 23 Oct 2020 12:05:51 -0700 (PDT)
+Received: from [192.168.122.166] (unknown [172.31.20.19])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6ABDA3F66E;
+        Fri, 23 Oct 2020 12:05:50 -0700 (PDT)
+Subject: Re: [PATCH v4 0/7] arm64: Default to 32-bit wide ZONE_DMA
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>,
+        robh+dt@kernel.org, catalin.marinas@arm.com, hch@lst.de,
+        ardb@kernel.org, linux-kernel@vger.kernel.org
+Cc:     robin.murphy@arm.com, linux-arm-kernel@lists.infradead.org,
+        linux-rpi-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, devicetree@vger.kernel.org,
+        will@kernel.org, lorenzo.pieralisi@arm.com, guohanjun@huawei.com,
+        linux-acpi@vger.kernel.org, linux-mm@kvack.org,
+        linux-riscv@lists.infradead.org
+References: <20201021123437.21538-1-nsaenzjulienne@suse.de>
+From:   Jeremy Linton <jeremy.linton@arm.com>
+Message-ID: <9bccc5ef-9457-044b-7193-d002a395e461@arm.com>
+Date:   Fri, 23 Oct 2020 14:05:45 -0500
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20201022144826.45665c12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201022144826.45665c12@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 23 Oct 2020 12:05:12 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgxBeNJTac5PDkzbdtvO3bZn+f9DzSHk-A6gzUAxFHVQw@mail.gmail.com>
-Message-ID: <CAHk-=wgxBeNJTac5PDkzbdtvO3bZn+f9DzSHk-A6gzUAxFHVQw@mail.gmail.com>
-Subject: Re: [GIT PULL] Networking
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     David Miller <davem@davemloft.net>,
-        Netdev <netdev@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201021123437.21538-1-nsaenzjulienne@suse.de>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 2:48 PM Jakub Kicinski <kuba@kernel.org> wrote:
->
-> Latest fixes from the networking tree. Experimenting with the format
-> of the description further, I'll find out if you liked it based on how
-> it ends up looking in the tree :)
+Hi,
 
-Looks fine to me. Honestly, the format isn't a huge deal, as long as
-it's understandable. But I do like the grouping, since that increases
-legibility.
+On 10/21/20 7:34 AM, Nicolas Saenz Julienne wrote:
+> Using two distinct DMA zones turned out to be problematic. Here's an
+> attempt go back to a saner default.
+> 
+> I tested this on both a RPi4 and QEMU.
 
-A lot of my editing of these things end up being about trying to make
-the merge messages from different people look somewhat uniform (a
-couple of common patterns, and generally a somewhat common indentation
-policy etc). And yours have already been closer to the norm than
-David's numbering is, for example.
+I've tested this in ACPI mode on the rpi4 (4+8G with/without the 3G 
+limiter) as well, with Ard's IORT patch. Nothing seems to have regressed.
 
-But I don't get _too_ hung up about it, the most important thing by
-far is that I get a feeling for the overview of the changes, and that
-I feel the commit message is useful and sensible for others that are
-interested in what's going on (ie I will generally try to edit out
-things like "This pull request does XYZ", because that kind of
-language makes no sense once it's a merge commit in the history).
+Thanks,
 
-             Linus
+Tested-by: Jeremy Linton <jeremy.linton@arm.com>
+
+
+
+
+> 
+> ---
+> 
+> Changes since v3:
+>   - Drop patch adding define in dma-mapping
+>   - Address small review changes
+>   - Update Ard's patch
+>   - Add new patch removing examples from mmzone.h
+> 
+> Changes since v2:
+>   - Introduce Ard's patch
+>   - Improve OF dma-ranges parsing function
+>   - Add unit test for OF function
+>   - Address small changes
+>   - Move crashkernel reservation later in boot process
+> 
+> Changes since v1:
+>   - Parse dma-ranges instead of using machine compatible string
+> 
+> Ard Biesheuvel (1):
+>    arm64: mm: Set ZONE_DMA size based on early IORT scan
+> 
+> Nicolas Saenz Julienne (6):
+>    arm64: mm: Move reserve_crashkernel() into mem_init()
+>    arm64: mm: Move zone_dma_bits initialization into zone_sizes_init()
+>    of/address: Introduce of_dma_get_max_cpu_address()
+>    of: unittest: Add test for of_dma_get_max_cpu_address()
+>    arm64: mm: Set ZONE_DMA size based on devicetree's dma-ranges
+>    mm: Remove examples from enum zone_type comment
+> 
+>   arch/arm64/mm/init.c      | 16 ++++++------
+>   drivers/acpi/arm64/iort.c | 52 +++++++++++++++++++++++++++++++++++++++
+>   drivers/of/address.c      | 42 +++++++++++++++++++++++++++++++
+>   drivers/of/unittest.c     | 18 ++++++++++++++
+>   include/linux/acpi_iort.h |  4 +++
+>   include/linux/mmzone.h    | 20 ---------------
+>   include/linux/of.h        |  7 ++++++
+>   7 files changed, 130 insertions(+), 29 deletions(-)
+> 
+
