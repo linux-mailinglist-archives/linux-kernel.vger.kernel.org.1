@@ -2,41 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15D0297467
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:36:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64C8029745F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:36:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752178AbgJWQgl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:36:41 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33132 "EHLO mail.kernel.org"
+        id S1751641AbgJWQgX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:36:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751850AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751848AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:50 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5694C246B2;
+        by mail.kernel.org (Postfix) with ESMTPSA id 608A5241A4;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470828;
-        bh=+yokCfZBHZQZytH1I9mxcfAei7oyJOP+8TqDL5TGlyc=;
+        bh=uokSk4pb8ToMUj5rUXCAVXVqGG2ogix2a2/PzZOFXVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=a0vWuH2Bni0XYil9FSemA/qforpzTLOg0gEYlG/7z+4OVU9nhiHSj9E6sPBM8Q6yO
-         MVRNBIqUfhLCl8n/RhXV3tUyRb6tFuL0FbQo2LjR2aHIf5YF7KuVIB7uDEtotcvXUY
-         pnArGmA62L3xdQIC3+cmJ3QPyvcGJrHGnV20Vtuw=
+        b=M2qOfeVwTtP16JZow33scpZCClWc89cCAUezcHPYIgRJ09HbNzTdz0eOBrQ5IJ0tC
+         4W4f47wZwspglPx2u9PPGBbTQJ+pD34Hg8ftaq8X9Smr5FVwtb2152kvA0zJPPXeQo
+         mFlDKAicPxr3IHE9onsNg3qwamQ2F1YXwgHkwDDY=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Ax0-8z; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Ax2-9l; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "J. Bruce Fields" <bfields@fieldses.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Jeff Layton <jlayton@kernel.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 36/56] locks: fix a typo at a kernel-doc markup
-Date:   Fri, 23 Oct 2020 18:33:23 +0200
-Message-Id: <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
+        Anton Vorontsov <anton@enomsg.org>,
+        Colin Cross <ccross@android.com>,
+        Kees Cook <keescook@chromium.org>,
+        Tony Luck <tony.luck@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3 37/56] pstore/zone: fix a kernel-doc markup
+Date:   Fri, 23 Oct 2020 18:33:24 +0200
+Message-Id: <576a3e3c27b84d0e36ced89840872ec3f251b2b2.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -47,26 +47,26 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-locks_delete_lock -> locks_delete_block
+The documented struct is psz_head and not psz_buffer.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- fs/locks.c | 2 +-
+ fs/pstore/zone.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/locks.c b/fs/locks.c
-index 1f84a03601fe..f3c3ce82a455 100644
---- a/fs/locks.c
-+++ b/fs/locks.c
-@@ -750,7 +750,7 @@ static void __locks_wake_up_blocks(struct file_lock *blocker)
- }
+diff --git a/fs/pstore/zone.c b/fs/pstore/zone.c
+index 3ce89216670c..46a1610c06fa 100644
+--- a/fs/pstore/zone.c
++++ b/fs/pstore/zone.c
+@@ -23,7 +23,7 @@
+ #include "internal.h"
  
  /**
-- *	locks_delete_lock - stop waiting for a file lock
-+ *	locks_delete_block - stop waiting for a file lock
-  *	@waiter: the lock which was waiting
+- * struct psz_head - header of zone to flush to storage
++ * struct psz_buffer - header of zone to flush to storage
   *
-  *	lockd/nfsd need to disconnect the lock while working on it.
+  * @sig: signature to indicate header (PSZ_SIG xor PSZONE-type value)
+  * @datalen: length of data in @data
 -- 
 2.26.2
 
