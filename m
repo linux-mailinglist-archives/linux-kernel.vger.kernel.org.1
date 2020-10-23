@@ -2,148 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B08DA296C07
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:24:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A85A9296C0A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:25:39 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461423AbgJWJYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:24:48 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:36077 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461413AbgJWJYs (ORCPT
+        id S461428AbgJWJZe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:25:34 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38784 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461101AbgJWJZc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:24:48 -0400
-Received: by mail-ot1-f65.google.com with SMTP id 32so735998otm.3;
-        Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zc+AeQKYu0eA1NCCr9Ea0RhGk/czUMV0vr6kVFJGHw0=;
-        b=svL8bMrhDiYdFU+nFRtfqmOTeNEsuLToWpA+nHPR5eeAcE7vAK9E0lqS+vuiZ6CrWN
-         PBQnXJ1Ri/xnY6yWeDoDwod69OLYqXUn4oD+B7/fozdJydzRwv+Zc/21rTv/pmxgvuJO
-         NE3sE3Qtew4RgCkawyh0mwvmHIqGwUTdmFJDMnPqYnFHHV/6dnTEr6Y3KyQuqk2bX9yG
-         x7al8CTEqWpgv4ghMJABLurkaPz1HG1CFbmeezoY5QzmFB6hvFaMkAAkxyDRHQFKcQx4
-         +dhlY7GLWB5uBcsb1GRz/M0rStunz4sVTfb26bvaifJyanZEaB6+kr43EcHMY3khCPx1
-         a1SQ==
-X-Gm-Message-State: AOAM533HcoD//sSkCHkQJXswjFpctjlDUp88eJeC1UFKkz9VVlgu3ZAT
-        sKqT5MxLYtDs9UKuhQRUhfo0eRav94ezvAFWrio=
-X-Google-Smtp-Source: ABdhPJxehtfOoAm+qzRUkw5mm184UYL/qN+HgKHa1e9IqAJmQlfvEJk1yo1vlYOgf9p2GgsKSFaJDrnAsY04iiRnVFk=
-X-Received: by 2002:a9d:3b76:: with SMTP id z109mr904469otb.250.1603445087314;
- Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
+        Fri, 23 Oct 2020 05:25:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 398D1C0613CE;
+        Fri, 23 Oct 2020 02:25:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bO9d4/8VddxQSew19V0MnlbQL7WrSOvaPC7e14MIGxc=; b=bMs3H12C0UD+AXbZSWgF2V+FVn
+        H1GG0oimFk7AUhal9+QFfWnCEIThL0YThVnEKz+E3S3p5+vMAlZsdcogYCE3IaqSvXXCfzwDPYvct
+        fjwVAb60LJehSk3xEe+okJz/qEUbqh846voXjVtSRiOlR9Qd74IxR7fnIFgUupCdfb1I+X9MRw0Rd
+        3Rvgv8+v7QfPVUKqXE4NEw6CWWEfHX759MwJTy4dhk0gva5Vr7psMOaX/iD8+v6DZa2g8X0ZM0BFs
+        wuj4jsgC/Trq0Cch7iqX7OIpZokrA+XiWUXM3gcCF/xq6YWijJbGIkPUfRplGdVseXUI1LmDnDz9s
+        2fe089zw==;
+Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVtK8-0007vB-4p; Fri, 23 Oct 2020 09:25:24 +0000
+Date:   Fri, 23 Oct 2020 10:25:24 +0100
+From:   Christoph Hellwig <hch@infradead.org>
+To:     Sherry Sun <sherry.sun@nxp.com>
+Cc:     hch@infradead.org, sudeep.dutt@intel.com, ashutosh.dixit@intel.com,
+        arnd@arndb.de, gregkh@linuxfoundation.org, kishon@ti.com,
+        lorenzo.pieralisi@arm.com, linux-kernel@vger.kernel.org,
+        linux-pci@vger.kernel.org, linux-imx@nxp.com
+Subject: Re: [PATCH V3 1/4] misc: vop: change the way of allocating vring and
+ device page
+Message-ID: <20201023092524.GA29066@infradead.org>
+References: <20201022050638.29641-1-sherry.sun@nxp.com>
+ <20201022050638.29641-2-sherry.sun@nxp.com>
 MIME-Version: 1.0
-References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
- <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
- <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet> <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
-In-Reply-To: <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Fri, 23 Oct 2020 11:24:36 +0200
-Message-ID: <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
-Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Finn Thain <fthain@telegraphics.com.au>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Tony Luck <tony.luck@intel.com>,
-        Fenghua Yu <fenghua.yu@intel.com>,
-        Greg Ungerer <gerg@linux-m68k.org>,
-        Philip Blundell <philb@gnu.org>,
-        Joshua Thompson <funaho@jurai.org>,
-        Sam Creasey <sammy@sammy.net>,
-        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-        Helge Deller <deller@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        John Stultz <john.stultz@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
-        Parisc List <linux-parisc@vger.kernel.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022050638.29641-2-sherry.sun@nxp.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Arnd,
+>  static int mic_dp_init(struct mic_device *mdev)
+>  {
+> -	mdev->dp = kzalloc(MIC_DP_SIZE, GFP_KERNEL);
+> +	mdev->dp = dma_alloc_coherent(&mdev->pdev->dev, MIC_DP_SIZE,
+> +				      &mdev->dp_dma_addr, GFP_KERNEL);
+>  	if (!mdev->dp)
+>  		return -ENOMEM;
+>  
+> -	mdev->dp_dma_addr = mic_map_single(mdev,
+> -		mdev->dp, MIC_DP_SIZE);
+> -	if (mic_map_error(mdev->dp_dma_addr)) {
+> -		kfree(mdev->dp);
+> -		dev_err(&mdev->pdev->dev, "%s %d err %d\n",
+> -			__func__, __LINE__, -ENOMEM);
+> -		return -ENOMEM;
+> -	}
+>  	mdev->ops->write_spad(mdev, MIC_DPLO_SPAD, mdev->dp_dma_addr);
+>  	mdev->ops->write_spad(mdev, MIC_DPHI_SPAD, mdev->dp_dma_addr >> 32);
+>  	return 0;
+> @@ -68,8 +62,7 @@ static int mic_dp_init(struct mic_device *mdev)
+>  /* Uninitialize the device page */
+>  static void mic_dp_uninit(struct mic_device *mdev)
+>  {
+> -	mic_unmap_single(mdev, mdev->dp_dma_addr, MIC_DP_SIZE);
+> -	kfree(mdev->dp);
+> +	dma_free_coherent(&mdev->pdev->dev, MIC_DP_SIZE, mdev->dp, mdev->dp_dma_addr);
+>  }
 
-On Fri, Oct 23, 2020 at 9:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
-> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > On Thu, 15 Oct 2020, Arnd Bergmann wrote:
-> > > On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
-> > > > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
-> >
-> > That configuration still produces the same 5 KiB of bloat. I see that
-> > kernel/time/Kconfig has this --
-> >
-> > # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
-> > # only related to the tick functionality. Oneshot clockevent devices
-> > # are supported independent of this.
-> > config TICK_ONESHOT
-> >         bool
-> >
-> > But my question was really about both kinds of dead code (oneshot device
-> > support and oneshot tick support). Anyway, after playing with the code for
-> > a bit I don't see any easy way to reduce the growth in text size.
->
-> Did you look more deeply into where those 5KB are? Is this just
-> the code in kernel/time/{clockevents,tick-common}.c and the
-> added platform specific bits, or is there something more?
-> I suppose the sysfs interface and the clockevents_update_freq()
-> logic are not really needed on m68k, but it wouldn't make much
-> sense to split those out either.
->
-> How does the 5KB bloat compare to the average bloat we get
-> from one release to the next? Geert has been collecting statistics
-> for this.
+This adds an over 80 char line.  Also please just kill mic_dp_init and
+mic_dp_uninit and inline those into the callers.
 
-It would be a fair share of the typical increase of ca. 30 KiB per
-kernel release. Still, it would be lost in the noise of the increase for
-v5.10-rc1:
+> +		vvr->buf = dma_alloc_coherent(vop_dev(vdev), VOP_INT_DMA_BUF_SIZE,
+> +					      &vvr->buf_da, GFP_KERNEL);
 
-    add/remove: 1200/455 grow/shrink: 1419/821 up/down: 468970/-93714 (375256)
-    Function                                     old     new   delta
-    _printk_rb_static_infos                        -  180224 +180224
-    write_buf                                   8192   32768  +24576
-    _printk_rb_static_descs                        -   24576  +24576
-    HUF_decompress4X4_usingDTable_internal         -    5664   +5664
-    HUF_decompress4X2_usingDTable_internal         -    5006   +5006
-    __ext4_ioctl                                   -    4774   +4774
-    sock_ops_convert_ctx_access                 3840    8462   +4622
-    ZSTD_decompressSequences                       -    3100   +3100
+Another overly long line.
 
-> > > The arm/rpc timer seems to be roughly in the same category as most of
-> > > the m68k ones or the i8253 counter on a PC. It's possible that some of
-> > > them could use the same logic as drivers/clocksource/i8253.o as long as
-> > > there is any hardware oneshot mode.
-> >
-> > There appear to be 15 platforms in that category. 4 have no clocksource
-> > besides the jiffies clocksource, meaning there's no practical alternative
-> > to using a periodic tick, like you did in your RFC patch:
-> >
-> > arch/m68k/apollo/config.c
-> > arch/m68k/q40/q40ints.c
-> > arch/m68k/sun3/sun3ints.c
-> > arch/m68k/sun3x/time.c
->
-> Do any of these have users? I'm fairly sure sun3x has never worked in mainline,
-> sun3 seems to still need the same few patches it did 20 years ago. I
-> couldn't find
-> much about Linux on Apollo or q40, the information on the web for either
-> of them seems to all be for linux-2.4 kernels.
+> @@ -1068,7 +1049,7 @@ vop_query_offset(struct vop_vdev *vdev, unsigned long offset,
+>  		struct vop_vringh *vvr = &vdev->vvr[i];
+>  
+>  		if (offset == start) {
+> -			*pa = virt_to_phys(vvr->vring.va);
+> +			*pa = vqconfig[i].address;
 
-They probably don't have any users.
-AFAIK, the only users are the usual triumvirate of amiga/atari/mac
-(and perhaps the fleet of VME boards in the Australian navy? ;)
+vqconfig[i].address is a __le64, so this needs an endian swap.
 
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
+But more importantly the caller of vop_query_offset, vop_mmap, uses
+remap_pfn_range and pa.  You cannot mix remap_pfn_range with DMA
+coherent allocations, it can only be mmaped using dma_mmap_coherent.
