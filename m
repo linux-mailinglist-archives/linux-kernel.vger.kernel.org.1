@@ -2,168 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA8A2970CF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:43:15 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A2A6F2970D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:44:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465123AbgJWNnL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:43:11 -0400
-Received: from foss.arm.com ([217.140.110.172]:53096 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S375453AbgJWNnK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:43:10 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C1FE01FB;
-        Fri, 23 Oct 2020 06:43:09 -0700 (PDT)
-Received: from [10.57.50.191] (unknown [10.57.50.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 777713F66B;
-        Fri, 23 Oct 2020 06:43:08 -0700 (PDT)
-Subject: Re: [PATCH v4] driver/perf: Add PMU driver for the ARM DMC-620 memory
- controller
-To:     Tuan Phan <tuanphan@amperemail.onmicrosoft.com>
-Cc:     Tuan Phan <tuanphan@os.amperecomputing.com>,
-        patches@amperecomputing.com, Mark Rutland <mark.rutland@arm.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org,
+        id S1750026AbgJWNod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:44:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50812 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750018AbgJWNoc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:44:32 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A7453C0613CE;
+        Fri, 23 Oct 2020 06:44:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=627oe94ZLeKyjbn+qyvUY++lrQo5+wHp1qVKRnwOyEA=; b=tAeBy66w9joU2PrbRcza5JTXle
+        OQ1GNbtKm1kuwALnI3n5XGE48bmTbzeIUI3woO3q/FJzb5CMWMcPWAr2mw4nh/tkvhoTmvRMse5M5
+        398H/FWTpl07yUabCgpJ3R43gitI0mK0dEzUUNo/vAl9B5F0hjZPr9XWXtd9ythKH1x4j8HnmvTpV
+        XxR/NkHFLrB/KjBpbKKGC7ui/GCLc9dXVwMVVqGcz9iaJ2qK02ANhTToLcwLuLZskBzmufSxPUTRY
+        H17rSXqWnece4UGf2Oj722qSORrug+kLR5xQI9znH+pwqIUVHki8yvnZtkFe6g3jq+X4sGqr+jcQ2
+        dmRyGHmA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVxMh-0007Dn-0M; Fri, 23 Oct 2020 13:44:19 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id CF997304D28;
+        Fri, 23 Oct 2020 15:44:16 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id B819D23268BA4; Fri, 23 Oct 2020 15:44:16 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 15:44:16 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
         linux-arm-kernel@lists.infradead.org
-References: <1603235425-29442-1-git-send-email-tuanphan@os.amperecomputing.com>
- <5c24da3f-4fa3-79ad-0c0d-9b4828ebf684@arm.com>
- <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <c4b8a58e-ca55-21ec-5a0d-50ab995a1d68@arm.com>
-Date:   Fri, 23 Oct 2020 14:43:07 +0100
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201023134416.GA2628@hirez.programming.kicks-ass.net>
+References: <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
+ <20201022212033.GA646497@xps15>
+ <20201023073905.GM2611@hirez.programming.kicks-ass.net>
+ <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+ <20201023094115.GR2611@hirez.programming.kicks-ass.net>
+ <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+ <20201023105431.GM2594@hirez.programming.kicks-ass.net>
+ <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
+ <20201023131628.GY2628@hirez.programming.kicks-ass.net>
+ <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
 MIME-Version: 1.0
-In-Reply-To: <1EC85DEF-8E0C-42B9-9B01-DA897147B1F7@amperemail.onmicrosoft.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-22 22:46, Tuan Phan wrote:
-[...]
->>> +#define _ATTR_CFG_GET_FLD(attr, cfg, lo, hi)			\
->>> +	((((attr)->cfg) >> lo) & GENMASK(hi - lo, 0))
->>
->> As per the buildbot report, GENMASK_ULL() would be appropriate when the other side is a u64 (although either way this does look a lot like reinventing FIELD_GET()...)
+On Fri, Oct 23, 2020 at 02:29:54PM +0100, Suzuki Poulose wrote:
+> On 10/23/20 2:16 PM, Peter Zijlstra wrote:
+> > On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
+
+> > > That way another session could use the same sink if it is free. i.e
+> > > 
+> > > perf record -e cs_etm/@sink0/u --per-thread app1
+> > > 
+> > > and
+> > > 
+> > > perf record -e cs_etm/@sink0/u --per-thread app2
+> > > 
+> > > both can work as long as the sink is not used by the other session.
+> > 
+> > Like said above, if sink is shared between CPUs, that's going to be a
+> > trainwreck :/ Why do you want that?
 > 
-> I will add (COMPILE_TEST && 64BIT) to Kconfig so it should fix the buildbot report.
+> That ship has sailed. That is how the current generation of systems are,
+> unfortunately. But as I said, this is changing and there are guidelines
+> in place to avoid these kind of topologies. With the future
+> technologies, this will be completely gone.
 
-Huh? The left-hand side of the "&" expression will always be a u64 here, 
-which is unsigned long long. Regardless of whether an unsigned long on 
-the right-hand side happens to be the same size, you have a semantic 
-type mismatch, which is trivial to put right. I can't comprehend why 
-introducing a fake build dependency to hide this would seem like a 
-better idea than making a tiny change to make the code 100% correct and 
-robust with zero practical impact :/
+I understand that the hardware is like that, but why do you want to
+support this insanity in software?
 
-Sure, you only copied this from the SPE driver; that doesn't mean it was 
-ever correct, simply that the mismatch was hidden since that driver *is* 
-tightly coupled to one particular CPU ISA.
+If you only allow a single sink user (group) at the same time, your
+problem goes away. Simply disallow the above scenario, do not allow
+concurrent sink users if sinks are shared like this.
 
-[...]
->>> +static irqreturn_t dmc620_pmu_handle_irq(int irq_num, void *data)
->>> +{
->>> +	struct dmc620_pmu_irq *irq = data;
->>> +	struct dmc620_pmu *dmc620_pmu;
->>> +	irqreturn_t ret = IRQ_NONE;
->>> +
->>> +	rcu_read_lock();
->>> +	list_for_each_entry_rcu(dmc620_pmu, &irq->pmus_node, pmus_node) {
->>> +		unsigned long status;
->>> +		struct perf_event *event;
->>> +		unsigned int idx;
->>> +
->>> +		/*
->>> +		 * HW doesn't provide a control to atomically disable all counters.
->>> +		 * To prevent race condition, disable all events before continuing
->>> +		 */
->>
->> I'm still doubtful that this doesn't introduce more inaccuracy overall than whatever it's trying to avoid... :/
-> 
-> It think it does. By disabling all counters, you make sure overflow status not change at the same time you are clearing
-> it(by writing zero) after reading all counters.
+Have the perf-record of app2 above fail because the sink is in-user
+already.
 
-Urgh, *now* I get what the race is - we don't have a proper 
-write-1-to-clear interrupt status register, so however much care we take 
-in writing back to the overflow register there's always *some* risk of 
-wiping out a new event when writing back, unless we ensure that no new 
-overflows can occur *before* reading the status. What a horrible piece 
-of hardware design... :(
-
-Perhaps it's worth expanding the comment a little more, since apparently 
-it's not super-obvious.
-
-[...]
->>> +	/*
->>> +	 * We must NOT create groups containing mixed PMUs, although software
->>> +	 * events are acceptable.
->>> +	 */
->>> +	if (event->group_leader->pmu != event->pmu &&
->>> +			!is_software_event(event->group_leader))
->>> +		return -EINVAL;
->>> +
->>> +	for_each_sibling_event(sibling, event->group_leader) {
->>> +		if (sibling->pmu != event->pmu &&
->>> +				!is_software_event(sibling))
->>> +			return -EINVAL;
->>> +	}
->>
->> As before, if you can't start, stop, or read multiple counters atomically, you can't really support groups of events for this PMU either. It's impossible to measure accurate ratios with a variable amount of skew between individual counters.
-> 
-> Can you elaborate more? The only issue I know is we can’t stop all counters of same PMU atomically in IRQ handler to prevent race condition.  But it can be fixed by manually disable each counter. Other than that, every counters are working independently.
-
-The point of groups is to be able to count two or more events for the 
-exact same time period, in order to measure ratios between them 
-accurately. ->add, ->del, ->read, etc. are still called one at a time 
-for each event in the group, but those calls are made as part of a 
-transaction, which for most drivers is achieved by perf core calling 
-->pmu_disable and ->pmu_enable around the other calls. Since this driver 
-doesn't have enable/disable functionality, the individual events will 
-count for different lengths of time depending on what order those calls 
-are made in (which is not necessarily constant), and how long each one 
-takes. Thus you'll end up with an indeterminate amount of error between 
-what each count represents, and the group is not really any more 
-accurate than if the events were simply scheduled independently, which 
-is not how it's supposed to work.
-
-Come to think of it, you're also not validating that groups are even 
-schedulable - try something like:
-
-   perf stat -e 
-'{arm_dmc620_10008c000/clk_cycle_count/,arm_dmc620_10008c000/clk_request/,arm_dmc620_10008c000/clk_upload_stall/}' 
-sleep 5
-
-and observe perf core being very confused and unhappy when ->add starts 
-failing for a group that ->event_init said was OK, since 3 events won't 
-actually fit into the 2 available counters.
-
-As I said before, I think you probably would be able to make groups work 
-with some careful hooking up of snapshot functionality to ->start_txn 
-and ->commit_txn, but to start with it'll be an awful lot simpler to 
-just be honest and reject them.
-
-[...]
->>> +	name = devm_kasprintf(&pdev->dev, GFP_KERNEL,
->>> +				  "%s_%llx", DMC620_PMUNAME,
->>> +				  (res->start) >> DMC620_PA_SHIFT);
->>
->> res->start doesn't need parentheses, however I guess it might need casting to u64 to solve the build warning (I'm not sure there's any nicer way, unfortunately).
-> 
-> I will remove those parentheses, we don’t need u64 as build warning only applies when it runs compiling test with 32bit.
-
-As above, deliberately hacking the build for the sake of not fixing 
-clearly dodgy code is crazy. The only correct format specifier for an 
-expression of type phys_addr_t/resource_size_t is "%pa"; if you want to 
-use a different format then explicitly converting the argument to a type 
-appropriate for that format (either via a simple cast or an intermediate 
-variable) is indisputably correct, regardless of whether you might 
-happen to get away with an implicit conversion sometimes.
-
-The whole point of maximising COMPILE_TEST coverage is to improve code 
-quality in order to avoid this exact situation, wherein someone copies a 
-pattern from an existing driver only to discover that it's not actually 
-as robust as it should be.
-
-Robin.
+Only if the hardware has per-CPU sinks can you allow this.
