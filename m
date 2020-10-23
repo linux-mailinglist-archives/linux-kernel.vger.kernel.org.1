@@ -2,101 +2,70 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FEBD2978AD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:11:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 85B802978B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:14:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755351AbgJWVLk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:11:40 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35834 "EHLO
+        id S1755427AbgJWVOh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:14:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36304 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752816AbgJWVLk (ORCPT
+        with ESMTP id S1755386AbgJWVOg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:11:40 -0400
-Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C9D8C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:11:39 -0700 (PDT)
-Received: by mail-lf1-x141.google.com with SMTP id b1so3695927lfp.11
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:11:39 -0700 (PDT)
+        Fri, 23 Oct 2020 17:14:36 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A55E5C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:14:36 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id i26so1957289pgl.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:14:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=fXzCbMmS+pANPvGGOB4GzLFNuZZfqJXRrvXjWTUQXbM=;
-        b=g0+Cq3Y2VhGGQSD9XXlMuRRYh8aZT17ZxEyY+io4SUKPWIrpX7Wagw+2y6I7NgfhjW
-         QNWyw8TkCDrsyFCw3qZOHy6PHywxTR+nPRrWdFTBx8SX7CuhDluDK3I2uwzGorIa8Pt7
-         rCld7UmTscJPXgBdhu/Nkr2ZGRQI4pDmI62sA=
+        d=chromium.org; s=google;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=P71T+Kpg5MOgFYOFRnTK618HMq/o9mo5YBqH2dbrEgk=;
+        b=BoCnvYihRsvf35k33Ps/dVRA9Y3Dl0jPf3SGgthL3mIWSUqEYByU0UApC7WFMiJWs6
+         DzLcvBB5f04SZ6tUIXJBvNGp/oLDhsKR/2/DdDY9n2KWxclMjN+Qd/Be6c+2lHsjKHe1
+         lSU9/kxdwgYdMrW2+dTjUTiRTGdqwVw9KOlUs=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=fXzCbMmS+pANPvGGOB4GzLFNuZZfqJXRrvXjWTUQXbM=;
-        b=I5LtJTY3nGnX5qlkvxtX1cGPvk+5ZfFfg/rlfZ9UPrVcnOqouwKX9LhwLaTYKq1q6B
-         rf3e4LjXj/5b2rYLc6ZWbBQcQsdrZIioPf1n7ORq4hnLEhwDPU1fjTFcdyfl+mirAzIw
-         7j4oGGIGR3KTrmzpQDjP+VhjhQjGu9mPhc0E1zBEKOEulNv2JXsDyjXd3oelqpF6rYSr
-         hcvAFVRCctycW77RbFI/3sxMmWt+UyYvHxO/uVNB2ZLBsviNyVHtnhWzboXH7JyoAusO
-         5keunrjeWmKOYIS+EUq5gE0V9+bHvr8mV6WlM8/QtiEc5G65nS6ZNw1Y7roBPj/dXoqh
-         FHDA==
-X-Gm-Message-State: AOAM532Elgv3Hgvfcd06cKcl7ibWNvwXkhlTFOf6B1e1Gb9Aozq2WhRH
-        woTJj6z50cZMYzzQyxm+bRn7qyPxw0FRlg==
-X-Google-Smtp-Source: ABdhPJwKo18pRLAWpk7DNTh3o8xuSduFz0YZaYJccgJV8ZKeny1s+597drs/pZ8QTThm4fxYR+zV2A==
-X-Received: by 2002:a19:6e46:: with SMTP id q6mr1477021lfk.413.1603487497303;
-        Fri, 23 Oct 2020 14:11:37 -0700 (PDT)
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com. [209.85.208.179])
-        by smtp.gmail.com with ESMTPSA id i3sm242522lfe.23.2020.10.23.14.11.35
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 14:11:35 -0700 (PDT)
-Received: by mail-lj1-f179.google.com with SMTP id m20so3011614ljj.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:11:35 -0700 (PDT)
-X-Received: by 2002:a2e:898c:: with SMTP id c12mr1737838lji.285.1603487495150;
- Fri, 23 Oct 2020 14:11:35 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=P71T+Kpg5MOgFYOFRnTK618HMq/o9mo5YBqH2dbrEgk=;
+        b=CMG+n06FkBQNPbRA9VKuItN8xTrMIPO+P6MgcqlNgsf0j2Fze45g0XEqmpBXsEfqDI
+         hwG72r/jynskt+cek5xXGhqtz4EhmmGqEmNvCQsAbglnQMMObmVvfkQ30Nb2lArcZcjW
+         BEdvFR9qu2GsFRNUJQnaB8GJqkzsUAABYPWah5FUBiM5NSxJpFgBR/DT0ZhgF0Q6IBlO
+         yFgWSdFitw5hB2DQOniP1Jfu8rLa6IwfO5k7XTPgt7we6MWf1OsJM7bk3Cj9PIsQBs2O
+         Mcx35ABZanr60LYWCucajQqS6JF2CckBUgvropWXMseZSMZCdHEUsoHYv25KXi8d8F78
+         MiRA==
+X-Gm-Message-State: AOAM533wk19Ngnq9g2h5Ktc5OsEis9iG7rS+m0EWjTtGokz0LVGCoB80
+        RpcQ5zy49VLYxy6CDVpfpej2ng==
+X-Google-Smtp-Source: ABdhPJxrOAkGB9aD7alcvtCbkZ2rgme5I/bNKCZ/OLr4HSQXnwm7bkykoEAaG8Pn02QRaHgPU+9j1A==
+X-Received: by 2002:aa7:8681:0:b029:153:7c2e:6ff5 with SMTP id d1-20020aa786810000b02901537c2e6ff5mr863359pfo.57.1603487676178;
+        Fri, 23 Oct 2020 14:14:36 -0700 (PDT)
+Received: from kuabhs-cdev.c.googlers.com.com (56.4.82.34.bc.googleusercontent.com. [34.82.4.56])
+        by smtp.gmail.com with ESMTPSA id bg11sm3578914pjb.49.2020.10.23.14.14.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 14:14:35 -0700 (PDT)
+From:   Abhishek Kumar <kuabhs@chromium.org>
+To:     dianders@chromium.org
+Cc:     ath10k@lists.infradead.org, briannorris@chromium.org,
+        kuabhs@chromium.org, kvalo@codeaurora.org,
+        linux-kernel@vger.kernel.org, linux-wireless@vger.kernel.org,
+        pillair@codeaurora.org
+Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
+Date:   Fri, 23 Oct 2020 21:13:50 +0000
+Message-Id: <20201023211350.740528-1-kuabhs@chromium.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+In-Reply-To: <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
+References: <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
 MIME-Version: 1.0
-References: <20201023203154.27335-1-linux@rasmusvillemoes.dk>
- <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com> <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com>
-In-Reply-To: <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Fri, 23 Oct 2020 14:11:19 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
-Message-ID: <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
-Subject: Re: [PATCH] x86/uaccess: fix code generation in put_user()
-To:     Peter Anvin <hpa@zytor.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 2:00 PM <hpa@zytor.com> wrote:
->
-> There is no same reason to mess around with hacks when we are talking about dx:ax, though.
+Additionally tested on ath10k based non-QMI platform
 
-Sure there is.
+Tested-on: QCA6174 HW3.2 WLAN.RM.4.4.1-00157-QCARMSWPZ-1
+Tested-by: Abhishek Kumar <kuabhs@chromium.org>
 
-"A" doesn't actually mean %edx:%eax like you seem to think.
-
-It actually means %eax OR %edx, and then if given a 64-bit value, it
-will use the combination (with %edx being the high bits).
-
-So using "A" unconditionally doesn't work - it gives random behavior
-for 32-bit (or smaller) types.
-
-Or you'd have to cast the value to always be 64-bit, and have the
-extra code generation.
-
-IOW, an unconditional "A" is wrong.
-
-And the alternative is to just duplicate things, and go back to the
-explicit size testing, but honestly, I really think that's much worse
-than relying on a documented feature of "register asm()" that gcc
-_documents_ is for this kind of inline asm use.
-
-So the "don't do pointless conditional duplication" is certainly a
-very sane reason for the code.
-
-            Linus
+-Abhishek
