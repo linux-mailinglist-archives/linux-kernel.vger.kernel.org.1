@@ -2,185 +2,133 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E756429693B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 06:54:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 880D829694B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:02:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896932AbgJWEyZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 00:54:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53576 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896662AbgJWEyZ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 00:54:25 -0400
-Received: from mail-pg1-x52c.google.com (mail-pg1-x52c.google.com [IPv6:2607:f8b0:4864:20::52c])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 190A2C0613CE;
-        Thu, 22 Oct 2020 21:54:25 -0700 (PDT)
-Received: by mail-pg1-x52c.google.com with SMTP id n9so255709pgt.8;
-        Thu, 22 Oct 2020 21:54:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :content-transfer-encoding;
-        bh=lsMim9fhx/TyK1uqD12rhdUeqHwdc89oDJ4SLQK8XTo=;
-        b=ci+XUqtt7/D+3YehXSxHeS1FbEqQdnjNh5F0slCdBHwu3ARWVSDINiN6zv6yWrdjv9
-         v9cPebqdONMGDANGucmxq+nUgYskiLgAg9HX+S4t2TkrrO1KtRA2vSSI+Ab21v3f4cv8
-         LRezbCwQQUDJFvWjAxjXjUj52viYR7OTKVA85R2+B4pZCHZ+jG1hj+c8FDxbs7xit4mI
-         QNzjREv8ejvCAOfrryIMNfpRdT1zZyFVY+mUjG15ilHynimMBUrOZOkgr0X/kTY8YXvq
-         wjQU6DsJZSw4fymv5K3vj8QhgCCMke9OBzkoeTRwtjyLA4CSCAEtIQXEykhrJJ0Y6Muc
-         DUWw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:content-transfer-encoding;
-        bh=lsMim9fhx/TyK1uqD12rhdUeqHwdc89oDJ4SLQK8XTo=;
-        b=Luo097MXrfSlxl7rcnE0XdDfr6S7oFfE/adrMkzBeZoatLDDHRzaUtUPdJnq+MlrGM
-         HsTXFZcv+sZbA5cRBppwSOuYgBmsaEaVxhG9mvEi9sMuKFMHnmTI8xl4UqdfvXEvLJ6T
-         bGGBMxdsnD7qOrTdG2DoaEPDNdTdnUYy0b/szfP/I2e/pi5se3JJoCyYw7oJMpCd9UH8
-         WvFPh9v68xcbt7nTXEqZ3p2N0k7XNAisy87aK+T1q2RyLtMreRZLlnC/w83eTKXEBhTb
-         TF2bD/B4oMb3XhOXVcd4y+iOHa0Tx+tAOL+8GMwCIe1lE6ILDP3ia5xIvM9eCTA8IdbV
-         tP+A==
-X-Gm-Message-State: AOAM533uF6gXonkljTHx+w4WvMzvRIMBbSY0vpbjbBrCmvD4b06E0H6M
-        u581YF2oV6JlMEXHOQfeYQk=
-X-Google-Smtp-Source: ABdhPJyXgQS06ImeWOM4aCtlY+CgCGEAw1LdssRNzPw7wnD213f71eQqs4MrWFKcz0hqtDoESdp0Jg==
-X-Received: by 2002:a17:90a:e50e:: with SMTP id t14mr495028pjy.118.1603428864397;
-        Thu, 22 Oct 2020 21:54:24 -0700 (PDT)
-Received: from dtor-ws ([2620:15c:202:201:a6ae:11ff:fe11:fcc3])
-        by smtp.gmail.com with ESMTPSA id kc21sm332267pjb.36.2020.10.22.21.54.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 21:54:23 -0700 (PDT)
-Date:   Thu, 22 Oct 2020 21:54:21 -0700
-From:   Dmitry Torokhov <dmitry.torokhov@gmail.com>
+        id S2896511AbgJWFCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 01:02:18 -0400
+Received: from mga06.intel.com ([134.134.136.31]:4872 "EHLO mga06.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2505392AbgJWFCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 01:02:16 -0400
+IronPort-SDR: Jf0YhBaQQqxLKqsa97Wa7X6tlTHlN3RWMjDF3mpkPSBFpSPaP46k8gSLia/dFZJD7b7Ri6mrrQ
+ 2B+svKdop7eQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="229263728"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="229263728"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 22:02:15 -0700
+IronPort-SDR: 7Day5D5KPL2/noKOCrxgfsCyMurAxXkzfTj5J0GV0BS3bePPACh7pdn5rGhilSEUDVqYQNYw7j
+ kzNa5DgChLHA==
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="466940929"
+Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
+  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 22:02:15 -0700
+Date:   Thu, 22 Oct 2020 22:02:14 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
 To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
-Subject: [git pull] Input updates for v5.10-rc0
-Message-ID: <20201023045421.GA2205724@dtor-ws>
+Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        zenglg.jy@cn.fujitsu.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+ 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
+ libc-2.27.so[7f3d77058000+1aa000]
+Message-ID: <20201023050214.GG23681@linux.intel.com>
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+ <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
+ <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
+ <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+User-Agent: Mutt/1.5.24 (2015-08-30)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Thu, Oct 22, 2020 at 08:05:05PM -0700, Linus Torvalds wrote:
+> On Thu, Oct 22, 2020 at 6:36 PM Daniel Díaz <daniel.diaz@linaro.org> wrote:
+> >
+> > The kernel Naresh originally referred to is here:
+> >   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
+> 
+> Thanks.
+> 
+> And when I started looking at it, I realized that my original idea
+> ("just look for __put_user_nocheck_X calls, there aren't so many of
+> those") was garbage, and that I was just being stupid.
+> 
+> Yes, the commit that broke was about __put_user(), but in order to not
+> duplicate all the code, it re-used the regular put_user()
+> infrastructure, and so all the normal put_user() calls are potential
+> problem spots too if this is about the compiler interaction with KASAN
+> and the asm changes.
+> 
+> So it's not just a couple of special cases to look at, it's all the
+> normal cases too.
+> 
+> Ok, back to the drawing board, but I think reverting it is probably
+> the right thing to do if I can't think of something smart.
+> 
+> That said, since you see this on x86-64, where the whole ugly trick with that
+> 
+>    register asm("%"_ASM_AX)
+> 
+> is unnecessary (because the 8-byte case is still just a single
+> register, no %eax:%edx games needed), it would be interesting to hear
+> if the attached patch fixes it. That would confirm that the problem
+> really is due to some register allocation issue interaction (or,
+> alternatively, it would tell me that there's something else going on).
 
-Please pull from:
+I haven't reproduced the crash, but I did find a smoking gun that confirms the
+"register shenanigans are evil shenanigans" theory.  I ran into a similar thing
+recently where a seemingly innocuous line of code after loading a value into a
+register variable wreaked havoc because it clobbered the input register.
 
-	git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+This put_user() in schedule_tail():
 
-to receive updates for the input subsystem. You will get:
+   if (current->set_child_tid)
+           put_user(task_pid_vnr(current), current->set_child_tid);
 
-- a new driver for ADC driven joysticks
-- a new Zintix touchscreen driver
-- enhancements to Intel SoC button array driver
-- support for F3A "function" in Synaptics RMI4 driver
-- assorted driver fixups
+generates the following assembly with KASAN out-of-line:
 
-Changelog:
----------
+   0xffffffff810dccc9 <+73>: xor    %edx,%edx
+   0xffffffff810dcccb <+75>: xor    %esi,%esi
+   0xffffffff810dcccd <+77>: mov    %rbp,%rdi
+   0xffffffff810dccd0 <+80>: callq  0xffffffff810bf5e0 <__task_pid_nr_ns>
+   0xffffffff810dccd5 <+85>: mov    %r12,%rdi
+   0xffffffff810dccd8 <+88>: callq  0xffffffff81388c60 <__asan_load8>
+   0xffffffff810dccdd <+93>: mov    0x590(%rbp),%rcx
+   0xffffffff810dcce4 <+100>: callq  0xffffffff817708a0 <__put_user_4>
+   0xffffffff810dcce9 <+105>: pop    %rbx
+   0xffffffff810dccea <+106>: pop    %rbp
+   0xffffffff810dcceb <+107>: pop    %r12
 
-Artur Rojek (2):
-      dt-bindings: input: Add docs for ADC driven joystick
-      Input: joystick - add ADC attached joystick driver.
-
-Dan Carpenter (1):
-      Input: imx6ul_tsc - clean up some errors in imx6ul_tsc_resume()
-
-Dmitry Torokhov (1):
-      Input: imx6ul_tsc - unify open/close and PM paths
-
-Furquan Shaikh (1):
-      Input: raydium_i2c_ts - use single i2c_transfer transaction when using RM_CMD_BANK_SWITCH
-
-Hans de Goede (8):
-      Input: allocate keycodes for notification-center, pickup-phone and hangup-phone
-      Input: allocate keycode for Fn + right shift
-      platform/x86: thinkpad_acpi: Add support for new hotkeys found on X1C8 / T14
-      platform/x86: thinkpad_acpi: Map Clipping tool hotkey to KEY_SELECTIVE_SCREENSHOT
-      Input: soc_button_array - add active_low setting to soc_button_info
-      Input: soc_button_array - add support for INT33D3 tablet-mode switch devices
-      Input: soc_button_array - work around DSDTs which modify the irqflags
-      Input: synaptics - enable InterTouch for ThinkPad T14 Gen 1
-
-Jason A. Donenfeld (2):
-      Input: synaptics-rmi4 - support bootloader v8 in f34v7
-      Input: synaptics - enable InterTouch for ThinkPad P1/X1E gen 2
-
-Joe Perches (1):
-      Input: MT - avoid comma separated statements
-
-Johnny Chuang (2):
-      Input: elants_i2c - report resolution of ABS_MT_TOUCH_MAJOR by FW information.
-      Input: elants_i2c - fix typo for an attribute to show calibration count
-
-Kenny Levinsen (1):
-      Input: evdev - per-client waitgroups
-
-Krzysztof Kozlowski (4):
-      Input: ep93xx_keypad - fix handling of platform_get_irq() error
-      Input: omap4-keypad - fix handling of platform_get_irq() error
-      Input: twl4030_keypad - fix handling of platform_get_irq() error
-      Input: sun4i-ps2 - fix handling of platform_get_irq() error
-
-Michael Srba (2):
-      dt-bindings: input/touchscreen: add bindings for zinitix
-      Input: add zinitix touchscreen driver
-
-Mika Penttilä (1):
-      Input: Add MAINTAINERS entry for SiS i2c touch input driver
-
-Vincent Huang (2):
-      Input: synaptics-rmi4 - rename f30_data to gpio_data
-      Input: synaptics-rmi4 - add support for F3A
-
-YueHaibing (1):
-      Input: stmfts - fix a & vs && typo
-
-Diffstat:
---------
-
- .../devicetree/bindings/input/adc-joystick.yaml    | 121 +++++
- .../bindings/input/touchscreen/zinitix.txt         |  40 ++
- .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
- MAINTAINERS                                        |   7 +
- drivers/hid/hid-rmi.c                              |   2 +-
- drivers/input/evdev.c                              |  19 +-
- drivers/input/input-mt.c                           |  11 +-
- drivers/input/joystick/Kconfig                     |  10 +
- drivers/input/joystick/Makefile                    |   1 +
- drivers/input/joystick/adc-joystick.c              | 264 ++++++++++
- drivers/input/keyboard/ep93xx_keypad.c             |   4 +-
- drivers/input/keyboard/omap4-keypad.c              |   6 +-
- drivers/input/keyboard/twl4030_keypad.c            |   8 +-
- drivers/input/misc/soc_button_array.c              | 100 +++-
- drivers/input/mouse/synaptics.c                    |   6 +-
- drivers/input/rmi4/Kconfig                         |   8 +
- drivers/input/rmi4/Makefile                        |   1 +
- drivers/input/rmi4/rmi_bus.c                       |   3 +
- drivers/input/rmi4/rmi_driver.h                    |   1 +
- drivers/input/rmi4/rmi_f30.c                       |  14 +-
- drivers/input/rmi4/rmi_f34v7.c                     |   9 +-
- drivers/input/rmi4/rmi_f3a.c                       | 241 +++++++++
- drivers/input/serio/sun4i-ps2.c                    |   9 +-
- drivers/input/touchscreen/Kconfig                  |  12 +
- drivers/input/touchscreen/Makefile                 |   1 +
- drivers/input/touchscreen/elants_i2c.c             |   8 +-
- drivers/input/touchscreen/imx6ul_tsc.c             |  47 +-
- drivers/input/touchscreen/raydium_i2c_ts.c         | 131 ++---
- drivers/input/touchscreen/stmfts.c                 |   2 +-
- drivers/input/touchscreen/zinitix.c                | 581 +++++++++++++++++++++
- drivers/platform/x86/thinkpad_acpi.c               |  18 +-
- include/linux/rmi.h                                |  11 +-
- include/uapi/linux/input-event-codes.h             |   4 +
- 33 files changed, 1531 insertions(+), 171 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/input/adc-joystick.yaml
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/zinitix.txt
- create mode 100644 drivers/input/joystick/adc-joystick.c
- create mode 100644 drivers/input/rmi4/rmi_f3a.c
- create mode 100644 drivers/input/touchscreen/zinitix.c
-
-Thanks.
-
-
--- 
-Dmitry
+__task_pid_nr_ns() returns the pid in %rax, which gets clobbered by
+__asan_load8()'s check on current for the current->set_child_tid dereference.
