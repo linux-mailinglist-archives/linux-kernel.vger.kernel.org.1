@@ -2,130 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6440129744A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DB7712973FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:33:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S376049AbgJWQdu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:33:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60972 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S460729AbgJWQdr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:33:47 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF876208C3;
-        Fri, 23 Oct 2020 16:33:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603470827;
-        bh=jqnFAPsIfCGcK4EmZia0M9yZrQtemKpIJgvWitRa3Vg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hA1AFJoVKGlISkeveViqf6CWXGyJh0elExzT2kuY+N5RE+wZt6QdJ9h8nzQ4WgSB2
-         Rh+J7XFhJwqBGteqo1wOQ2wae/PaDbDgIrjqPguDx70QnLjeMTaC3XDJY5vcbl4qBB
-         D/6W+kTO/uyI6yykN6BG0Oc/grQ3g1MvCvy5gxOA=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kW00e-002Avf-Ur; Fri, 23 Oct 2020 18:33:44 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        "Rafael J. Wysocki" <rafael@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH v3 09/56] drivers: base: fix some kernel-doc markups
+        id S1750811AbgJWQdS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:33:18 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48890 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S460890AbgJWQdP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:33:15 -0400
+Received: from mail-wr1-x443.google.com (mail-wr1-x443.google.com [IPv6:2a00:1450:4864:20::443])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8C588C0613CE;
+        Fri, 23 Oct 2020 09:33:15 -0700 (PDT)
+Received: by mail-wr1-x443.google.com with SMTP id g12so2671128wrp.10;
+        Fri, 23 Oct 2020 09:33:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
+        b=EKBrqd+PLm4bbuJx7BQuD7BkZFToxcOjYG/fkPh1R8AhVH5S6Ozh1D0xjpl6a43/dr
+         RAFENfo8DmbPGZplVWiDQeISOV0BNHj/Fd3D0LPdzeupB+JRFyK8UFwrauO9rtdGwhoC
+         kZUTe47nUNN+guqFtu84tN4lrKcIi057zxzz/Wa1t+PZMrajAE9D+1zIjOoS+QVPtfh3
+         ZXW80MmJ60p0Tc48qGNYn4OM6sFdcOELyfA8bdG37ZNVUbs1vkDVeRlEVHzLcGzfbUu/
+         RvI6/ehsllyITJBZU2bC0xeSByAcOyam1SgrZ4uNhtkQUwnbYx3ZNImSvbLK9CmC3qyK
+         Q1Hw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
+        b=Xwf33nSa7SnbcbYgs2fecqsNjB87K8IGlOiJtEXGhBrFNr7zzQPJ1QZs6qKlw4hL7I
+         Z0DIyZd8jQbS7LVZyTojKQrF9enO/zfDvRWFHcQpw05XyKDckDn/otoiS90dz9lGmQRm
+         LUIBonDy/4gjbODHc0XuzwAegfGq6yMS4Lj6zxKI0AegobjTakfBCPg9pQd7eX1LgQrd
+         xMBpYRxBZVYj62iu0anu1stUPmcolcZAHCWKNJpbARvNUaH+fc35xxM7I3Yt4IwUUvRR
+         rwesoPHlHlZhH1/UZZh7o1p0OCpfOpb9AeDMonS+c+Ctd1WRXhaocdc9jc9Park4yxvN
+         dmRw==
+X-Gm-Message-State: AOAM531VWZUjC8XqH+rgUTY2oh0gX701SFifrvz95vlmpFPPylQNOwSS
+        /A35WsChzhYI3N2IMwO5LRI=
+X-Google-Smtp-Source: ABdhPJyjw14LkSCmfH9h0UQNf4VxXTyn4j1iRBH8nvcaFay3INl44MsKdkBKcIvVGJM9aWJQahycyA==
+X-Received: by 2002:adf:e942:: with SMTP id m2mr3446606wrn.123.1603470794154;
+        Fri, 23 Oct 2020 09:33:14 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id u15sm4334808wrm.77.2020.10.23.09.33.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 09:33:13 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        andy.shevchenko@gmail.com
+Subject: [PATCH v6 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
 Date:   Fri, 23 Oct 2020 18:32:56 +0200
-Message-Id: <2fb6efd6a1f90d69ff73bf579566079cbb051e15.1603469755.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+Message-Id: <20201023163256.96000-4-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201023163256.96000-1-kholk11@gmail.com>
+References: <20201023163256.96000-1-kholk11@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-class_create is actually defined at the header. Fix the
-markup there and add a new one at the right place.
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-While here, also fix some markups for functions that have
-different names between their prototypes and kernel-doc
-comments.
+Add binding for the Novatek NT36xxx series touchscreen driver.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
 ---
- drivers/base/class.c                    |  2 +-
- drivers/base/devres.c                   |  2 +-
- drivers/base/firmware_loader/fallback.c |  2 +-
- include/linux/device/class.h            | 14 ++++++++++++++
- 4 files changed, 17 insertions(+), 3 deletions(-)
+ .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
+ 1 file changed, 59 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
 
-diff --git a/drivers/base/class.c b/drivers/base/class.c
-index c3451481194e..7476f393df97 100644
---- a/drivers/base/class.c
-+++ b/drivers/base/class.c
-@@ -210,7 +210,7 @@ static void class_create_release(struct class *cls)
- }
- 
- /**
-- * class_create - create a struct class structure
-+ * __class_create - create a struct class structure
-  * @owner: pointer to the module that is to "own" this struct class
-  * @name: pointer to a string for the name of this class.
-  * @key: the lock_class_key for this class; used by mutex lock debugging
-diff --git a/drivers/base/devres.c b/drivers/base/devres.c
-index 586e9a75c840..fb9d5289a620 100644
---- a/drivers/base/devres.c
-+++ b/drivers/base/devres.c
-@@ -149,7 +149,7 @@ void * __devres_alloc_node(dr_release_t release, size_t size, gfp_t gfp, int nid
- EXPORT_SYMBOL_GPL(__devres_alloc_node);
- #else
- /**
-- * devres_alloc - Allocate device resource data
-+ * devres_alloc_node - Allocate device resource data
-  * @release: Release function devres will be associated with
-  * @size: Allocation size
-  * @gfp: Allocation flags
-diff --git a/drivers/base/firmware_loader/fallback.c b/drivers/base/firmware_loader/fallback.c
-index 4dec4b79ae06..91899d185e31 100644
---- a/drivers/base/firmware_loader/fallback.c
-+++ b/drivers/base/firmware_loader/fallback.c
-@@ -128,7 +128,7 @@ static ssize_t timeout_show(struct class *class, struct class_attribute *attr,
- }
- 
- /**
-- * firmware_timeout_store() - set number of seconds to wait for firmware
-+ * timeout_store() - set number of seconds to wait for firmware
-  * @class: device class pointer
-  * @attr: device attribute pointer
-  * @buf: buffer to scan for timeout value
-diff --git a/include/linux/device/class.h b/include/linux/device/class.h
-index e8d470c457d1..e61ec5502019 100644
---- a/include/linux/device/class.h
-+++ b/include/linux/device/class.h
-@@ -256,6 +256,20 @@ extern void class_destroy(struct class *cls);
- 
- /* This is a #define to keep the compiler from merging different
-  * instances of the __key variable */
+diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+new file mode 100644
+index 000000000000..1486b20d6c49
+--- /dev/null
++++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+@@ -0,0 +1,59 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
 +
-+/**
-+ * class_create - create a struct class structure
-+ * @owner: pointer to the module that is to "own" this struct class
-+ * @name: pointer to a string for the name of this class.
-+ *
-+ * This is used to create a struct class pointer that can then be used
-+ * in calls to device_create().
-+ *
-+ * Returns &struct class pointer on success, or ERR_PTR() on error.
-+ *
-+ * Note, the pointer created here is to be destroyed when finished by
-+ * making a call to class_destroy().
-+ */
- #define class_create(owner, name)		\
- ({						\
- 	static struct lock_class_key __key;	\
++title: Novatek NT36xxx series touchscreen controller Bindings
++
++maintainers:
++  - AngeloGioacchino Del Regno <kholk11@gmail.com>
++
++allOf:
++  - $ref: touchscreen.yaml#
++
++properties:
++  compatible:
++    const: novatek,nt36525
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  reset-gpios:
++    maxItems: 1
++
++  vdd-supply:
++    description: Power supply regulator for VDD pin
++
++  vio-supply:
++    description: Power supply regulator on VDD-IO pin
++
++unevaluatedProperties: false
++
++required:
++  - compatible
++  - reg
++  - interrupts
++
++examples:
++  - |
++    #include <dt-bindings/interrupt-controller/irq.h>
++    #include <dt-bindings/gpio/gpio.h>
++
++    i2c {
++      #address-cells = <1>;
++      #size-cells = <0>;
++
++      touchscreen@62 {
++        compatible = "novatek,nt36525";
++        reg = <0x62>;
++        interrupt-parent = <&tlmm>;
++        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
++        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
++      };
++    };
++
++...
 -- 
-2.26.2
+2.28.0
 
