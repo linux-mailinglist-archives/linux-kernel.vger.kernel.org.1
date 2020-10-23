@@ -2,97 +2,151 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54728296D99
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:25:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DD556296DA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:26:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462947AbgJWLZV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:25:21 -0400
-Received: from mail.kernel.org ([198.145.29.99]:40590 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S462887AbgJWLZV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:25:21 -0400
-Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7521F20874;
-        Fri, 23 Oct 2020 11:25:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603452320;
-        bh=80IGgVr3jLT0tbKyUqY9AiiK9kcb+f4SmS4LteQxqm8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=hUUB8LRrYirMa7dtXS99Rfw/OcLZjncqFjJU853emGSXkp21c3O94EkA3aY/IDq4T
-         oQcoVwm2lzKE2+mou3F94TBpdoMDQFhh2aJfUdKjnesllLLdWgmKfx40YI66uhZr6+
-         K6Ge3tlkjn7ZZS9Nhkv+CJC1yQjQ3nR7lndklDCk=
-Date:   Fri, 23 Oct 2020 12:25:15 +0100
-From:   Will Deacon <will@kernel.org>
-To:     Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
- simplify __get_datapage()
-Message-ID: <20201023112514.GE20933@willie-the-truck>
-References: <87wo34tbas.fsf@mpe.ellerman.id.au>
- <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
- <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
- <87imd5h5kb.fsf@mpe.ellerman.id.au>
- <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
- <87a6yf34aj.fsf@mpe.ellerman.id.au>
- <20200921112638.GC2139@willie-the-truck>
- <ad72ffd3-a552-cc98-7545-d30285fd5219@csgroup.eu>
- <542145eb-7d90-0444-867e-c9cbb6bdd8e3@gmail.com>
- <ba9861da-2f5b-a649-5626-af00af634546@csgroup.eu>
+        id S462969AbgJWL0B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:26:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57378 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462868AbgJWL0A (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:26:00 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5F378C0613CE;
+        Fri, 23 Oct 2020 04:26:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=6PDeYQxNtg045NRHc1XlULYVUVuYGlzxkJDnsao8G9w=; b=mLHlNYkyyDY2dlrmBpuK+nB+I
+        eWLwkgic9XNJO0sY6G1oiTmQk35hqisG7P2IytIqtGtwvI10087RIBgxxyahx2tKnLFkcv1ayDmuT
+        w2X6xmYN4vw20+72kbP3ROUcycOOfya4qLN2xr9WiT6oAeqsvdDnqaibYH0AMs59QVGFgB/Ffgpjj
+        wnoYXQ9Q7at1qznZL4l0exWRRShzprq/6GkuDA9mgyYl+qGzDMZ45b2uq4jal2oGLKOOf1he27Y/m
+        gtQ8Ti+GviHhfb4sRZJ9N6WCE3+KeBzK4nfEYkDrGLcl5qudKidDJ0r3DWyK9Ab2hRboU/jBPUhNQ
+        4hoQpfBRA==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49950)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVvCj-0003MW-Et; Fri, 23 Oct 2020 12:25:53 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVvCf-0008Ov-Qv; Fri, 23 Oct 2020 12:25:49 +0100
+Date:   Fri, 23 Oct 2020 12:25:49 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>
+Subject: Re: [PATCH v3] net: macb: add support for high speed interface
+Message-ID: <20201023112549.GB1551@shell.armlinux.org.uk>
+References: <1603302245-30654-1-git-send-email-pthombar@cadence.com>
+ <20201021185056.GN1551@shell.armlinux.org.uk>
+ <DM5PR07MB31961F14DD8A38B7FFA8DA24C11D0@DM5PR07MB3196.namprd07.prod.outlook.com>
+ <DM5PR07MB3196723723F236F6113DDF9EC11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ba9861da-2f5b-a649-5626-af00af634546@csgroup.eu>
+In-Reply-To: <DM5PR07MB3196723723F236F6113DDF9EC11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
 User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 01:22:04PM +0200, Christophe Leroy wrote:
-> Hi Dmitry,
+On Fri, Oct 23, 2020 at 10:59:42AM +0000, Parshuram Raju Thombare wrote:
+> Hi,
 > 
-> Le 28/09/2020 à 17:08, Dmitry Safonov a écrit :
-> > On 9/27/20 8:43 AM, Christophe Leroy wrote:
-> > > 
-> > > 
-> > > Le 21/09/2020 à 13:26, Will Deacon a écrit :
-> > > > On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
-> > > > > Dmitry Safonov <0x7f454c46@gmail.com> writes:
-> > [..]
-> > > > > > I'll cook a patch for vm_special_mapping if you don't mind :-)
-> > > > > 
-> > > > > That would be great, thanks!
-> > > > 
-> > > > I lost track of this one. Is there a patch kicking around to resolve
-> > > > this,
-> > > > or is the segfault expected behaviour?
-> > > > 
-> > > 
-> > > IIUC dmitry said he will cook a patch. I have not seen any patch yet.
-> > 
-> > Yes, sorry about the delay - I was a bit busy with xfrm patches.
-> > 
-> > I'll send patches for .close() this week, working on them now.
+> I was trying to find out any ethernet driver where this issue of selecting appropriate
+> pcs_ops due to phylink changing interface mode dynamically is handled. 
+> But, apparently, so far only mvpp2 has adapted pcs_ops. And even in mvpp2, it is
+> not obvious how this case is handled. 
+
+Yes, mvpp2 is the only driver that has been converted.  I'm not sure
+why you say that it's not obvious how it's handled.
+
+Whenever the interface changes, we go through the full reconfiguration
+procedure that I've already outlined. This involves calling the
+mac_prepare() method which calls into mvpp2_mac_prepare() and its
+child mvpp2__mac_prepare().
+
+In mvpp2__mac_prepare(), we switch the "ops" for port->phylink_pcs,
+and then back in mvpp2_mac_prepare(), we ensure that the PCS instance
+is set to the port->phylink_pcs (which internally updates the
+pl->pcs_ops pointer in phylink.)
+
+That results in phylink switching between the XLG and GMAC PCS
+operations depending on the interface in use.
+
+> Also, apart from interface mode changed due to SFPs with different types of PHY
+> being used, it is not clear when phylink selects interface mode different than it
+> initially requested to the ethernet driver.
+
+The ethernet driver's initial interface mode has no real bearing when a
+SFP is inserted. A SFP or SFP+ module can require one of several
+different interface modes, and generally can not be programmed to
+operate in any other mode.
+
+For example, a 1G fiber SFP can _only_ operate in 1000BASE-X. SGMII and
+10G modes are not permissible. Trying to use RGMII (for example) is a
+nonsense because there aren't enough pins on the module to connect
+RGMII, and the module would not know what to do with it.
+
+If the module is a 10M/100M/1G copper SFP, then things get more fun -
+and what can be done depends whether the SFP has an accessible PHY we
+can drive. The PHY may support 1000BASE-X and/or SGMII, and there is
+no real way to determine which the SFP supports. The EEPROM does _not_
+help with this. We work around that at present by always using SGMII
+(there are copper modules that the PHY is inaccessible but is in SGMII
+mode - Mikrotik S-RJ01 for example). For others where the PHY is
+accessible, it is generally an 88E1111, which may power up in either
+SGMII or 1000BASE-X mode. We always select SGMII for these, and the
+88E1111 driver knows how to reprogram the PHY to operate in this mode.
+
+If it's a SFP+ module, then similar games occur. If it's a fiber module,
+then 10GBASE-R needs to be selected, since that's the protocol that is
+defined to be used over 10G fiber connections. Otherwise, again, it's
+up to the PHY - and the PHY can be one that switches between 10GBASE-R,
+2500BASE-X, and SGMII depending on the speed that was negotiated on its
+copper side.
+
+There is nothing simple here - but as far as the MAC driver is
+concerned, phylink will ask the MAC driver to reconfigure itself for
+the interface mode as appropriate.
+
+> >pcs_config and pcs_link_up passes "interface" as an argument, and in
+> >pcs_get_state call "state->interface" appeared to be populated just before
+> >calling it and hence should be valid.
 > 
-> I haven't seen the patches, did you sent them out finally ?
+> It seems state->interface in pcs_get_state is not always valid when SFPs with
+> different types of PHY are used.
+> 
+> There is a chance of SFP with different type of PHY is inserted,
+> eventually invoking phylink_resolve for interface mode different than
+> phylink initially requested, and causing major reconfiguration.
+> 
+> However, pcs_get_state is called before major reconfiguration, where selecting
+> which pcs_ops and PCS to be used is difficult without correct interface mode.  
 
-I think it's this series:
+Correct - state->interface will always be the currently configured
+interface mode, because that's the one that the MAC hardware is
+configured for. Other PCS interfaces may be powered down and/or
+disconnected from the serdes lane.
 
-https://lore.kernel.org/r/20201013013416.390574-1-dima@arista.com
+However, the interface will not change at the point you are referring
+to when in in-band mode (there is no support for dynamic changes of
+interface in that circumstance.) The change of interface happens when
+a SFP module is being brought up either via the phylink_sfp_config*()
+functions, or if there is a PHY, via the phylib driver propagating its
+operating interface mode back through phylink (but in this case, we
+will not be in in-band mode, and pcs_get_state() will not be called.)
 
-but they look really invasive to me, so I may cook a small hack for arm64
-in the meantine / for stable.
-
-Will
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
