@@ -2,98 +2,45 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 703FB297192
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:46:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 424792971AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:48:55 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465268AbgJWOqq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:46:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60908 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S375361AbgJWOqp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:46:45 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1750852AbgJWOs0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:48:26 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:58794 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750802AbgJWOrs (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:47:48 -0400
+Received: from obbardc-laptop.home (unknown [IPv6:2a00:23c5:9900:2d00:fa7c:ed23:2f0a:448d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E45AF21527;
-        Fri, 23 Oct 2020 14:46:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603464403;
-        bh=LtX8NeyP+cZ+2j1IkUU1onEVvrv3sB8QAV9FejdlLLQ=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n+Z3zXp7hD62WA2GyjU1CFbNrrDqUUtJgO3Hhs0qmS6IRk1kCefdPKHlJkGJDQDby
-         tb8m505yCaidWoXteLvLB2qPUN8tGHdSulV4hyYT/Cc4MZvzeSAaCs/I78FB9ZMO1G
-         o8KazfPZPnsdksdQupxOqy9g0C+sIFUJot2idFhI=
-Date:   Fri, 23 Oct 2020 16:47:18 +0200
-From:   'Greg KH' <gregkh@linuxfoundation.org>
-To:     David Laight <David.Laight@aculab.com>
-Cc:     'David Hildenbrand' <david@redhat.com>,
-        Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201023144718.GA2525489@kroah.com>
-References: <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022104805.GA1503673@kroah.com>
- <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
- <20201022125759.GA1685526@kroah.com>
- <20201022135036.GA1787470@kroah.com>
- <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
- <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
- <999e2926-9a75-72fd-007a-1de0af341292@redhat.com>
- <35d0ec90ef4f4a35a75b9df7d791f719@AcuMS.aculab.com>
+        (Authenticated sender: obbardc)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 87F831F467BE;
+        Fri, 23 Oct 2020 15:47:47 +0100 (BST)
+From:   Christopher Obbard <chris.obbard@collabora.com>
+To:     Richard Weinberger <richard@nod.at>
+Cc:     linux-um@lists.infradead.org, linux-kernel@vger.kernel.org,
+        anton.ivanov@cambridgegreys.com
+Subject: Re: [PATCH] um: Call pgtable_pmd_page_dtor() in __pmd_free_tlb()
+Date:   Fri, 23 Oct 2020 15:47:31 +0100
+Message-Id: <20201023144731.303328-1-chris.obbard@collabora.com>
+X-Mailer: git-send-email 2.28.0
+In-Reply-To: <20201019211049.22524-1-richard@nod.at>
+References: <20201019211049.22524-1-richard@nod.at>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35d0ec90ef4f4a35a75b9df7d791f719@AcuMS.aculab.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:39:24PM +0000, David Laight wrote:
-> From: David Hildenbrand
-> > Sent: 23 October 2020 15:33
-> ...
-> > I just checked against upstream code generated by clang 10 and it
-> > properly discards the upper 32bit via a mov w23 w2.
-> > 
-> > So at least clang 10 indeed properly assumes we could have garbage and
-> > masks it off.
-> > 
-> > Maybe the issue is somewhere else, unrelated to nr_pages ... or clang 11
-> > behaves differently.
+On Mon, Oct 19, 2020 at 11:10:49PM +0200, Richard Weinberger wrote:
+> Commit b2b29d6d0119 ("mm: account PMD tables like PTE tables") uncovered
+> a bug in uml, we forgot to call the destructor.
+> While we are here, give x a sane name.
 > 
-> We'll need the disassembly from a failing kernel image.
-> It isn't that big to hand annotate.
+> Reported-by: Anton Ivanov <anton.ivanov@cambridgegreys.com>
+> Co-developed-by: Matthew Wilcox <willy@infradead.org>
+> Signed-off-by: Richard Weinberger <richard@nod.at>
 
-I've worked around the merge at the moment in the android tree, but it
-is still quite reproducable, and will try to get a .o file to
-disassemble on Monday or so...
-
-thanks,
-
-greg k-h
+Tested-by: Christopher Obbard <chris.obbard@collabora.com>
