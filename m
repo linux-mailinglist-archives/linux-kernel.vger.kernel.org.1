@@ -2,179 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 291C9297642
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:57:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EB45297643
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:58:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754039AbgJWR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:57:27 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
+        id S1754045AbgJWR6B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:58:01 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34048 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754032AbgJWR51 (ORCPT
+        with ESMTP id S370201AbgJWR6A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:57:27 -0400
-Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D26C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:57:26 -0700 (PDT)
-Received: by mail-qv1-xf43.google.com with SMTP id de3so1111284qvb.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:57:26 -0700 (PDT)
+        Fri, 23 Oct 2020 13:58:00 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1FA79C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:58:00 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id 23so2480039ljv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:58:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+JxUy2GzdZMt7Q+iclaVOAYK8LG1kSIynwbO5JGpQtw=;
-        b=IfyuZyHQUSZF54cxePIo+EYiT8WqQLlcDVR/WgupdQWUTciWs4l/nyezKQcZsM+RZw
-         NDbC1uc1OsP79IzK2TcM7lc1Ls7rx1tcFc3yaPr1681HDUngev1KcdyKC+XnbB1ZXEqI
-         zeHUSUpwDX5zBWKyclODe+UVn+Rs6Rm0XUxrI=
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=7OND/0ZMqlDSvX9CBDIIXY1Bnl1QNzB/WvdK3N8e5bc=;
+        b=J4OytyOSN6yYKcMTq6lD3LKXaUzglar8AQOy3mU8H66JZTZN9U/2mpy/SLnt6doik/
+         OBBnUArLrtHD5UVK7Aq9EI4ZihGemkOPAtCAA0wsOWpEjFbOkmALpCir2KcmOiIHOIDE
+         FR9LBu9ye+FNEYsajxe2d7pKLF6/61uC+2tz4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+JxUy2GzdZMt7Q+iclaVOAYK8LG1kSIynwbO5JGpQtw=;
-        b=S8JMmKbS73QAYTQdEX5sf24ZawxV6Svie9wCsxsDC9HhoSG8syHwWxyypmAuGffbm7
-         3qH38P913wMOLPSCMqoJcZLW+vNti4Hi2ObuzTMG2TWM5aN5a5sqEavozXzYaO06JD2i
-         /IQ2rQoFlFD59VerZaZmMUL1iqM3wxaaB5S9bzPtmxGO9vWOnzHfnv4mVikEUFiwSuVL
-         EDrhLFQg2a0mtt0FZPBVQqwHxhfjGCDkKNNggLXBV3yxic4igOZOc71JiTDeHIHXCz6a
-         FmDgaEOxuo5npk45wlRllJT9w+VhS47wrCX2dUieUDAj+wSwRBLW+gG1aLg6/szooCgV
-         osXw==
-X-Gm-Message-State: AOAM531rkWeQs3N/4CdRGMOoATTqk99388VHlWwBgCwrTc2/NLZBSacS
-        CtGrU7i4gJPMScgv7hB7V47uZw==
-X-Google-Smtp-Source: ABdhPJyBgnsf0H7F+UybCjNc9BOLL/fcT9QjCvIde7QzsFPAyynBlrbOVseoHr/JOv//LWnmpvjqVg==
-X-Received: by 2002:a0c:ba85:: with SMTP id x5mr3482644qvf.7.1603475845975;
-        Fri, 23 Oct 2020 10:57:25 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id h125sm1229414qkc.36.2020.10.23.10.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 10:57:25 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 13:57:24 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
-        Julien Desfossez <jdesfossez@digitalocean.com>,
-        Tim Chen <tim.c.chen@linux.intel.com>,
-        Vineeth Pillai <viremana@linux.microsoft.com>,
-        Aaron Lu <aaron.lwe@gmail.com>,
-        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
-        linux-kernel@vger.kernel.org, mingo@kernel.org,
-        torvalds@linux-foundation.org, fweisbec@gmail.com,
-        keescook@chromium.org, kerrnel@google.com,
-        Phil Auld <pauld@redhat.com>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
-        Chen Yu <yu.c.chen@intel.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Agata Gruza <agata.gruza@intel.com>,
-        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
-        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
-        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
-        benbjiang@tencent.com,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
-        Dhaval Giani <dhaval.giani@oracle.com>,
-        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
-        chris.hyser@oracle.com,
-        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
-        Aaron Lu <aaron.lu@linux.alibaba.com>,
-        Aubrey Li <aubrey.li@linux.intel.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Tim Chen <tim.c.chen@intel.com>
-Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
- scheduling.
-Message-ID: <20201023175724.GA3563800@google.com>
-References: <20201020014336.2076526-1-joel@joelfernandes.org>
- <20201020014336.2076526-7-joel@joelfernandes.org>
- <20201023135129.GS2611@hirez.programming.kicks-ass.net>
- <20201023135400.GA2651@hirez.programming.kicks-ass.net>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=7OND/0ZMqlDSvX9CBDIIXY1Bnl1QNzB/WvdK3N8e5bc=;
+        b=QQt3yT1mUyCQo/qb3lX6IO7RnllGqodlUCXz0eMkqXLb5KhKHXbHJLkLu0xIFYnXg/
+         RHQZ0podQ19JwLASntr9WgPJGOr9LDvJn14pTPuauNHfoycf7ekni/ODDH3YVFnGg9NZ
+         QSlL5qZTlmy9T1nfCcmO6MCF2LoTJ8qVJCurdnwNdQr6OoDUa67P/tRl6irWij1nRW/K
+         nYrtQ+XcJMEZXCdiiubNe11/JRhzr5gVpVCYYr18HLnBhrLQREIVNoUuqX6bGhqTIsfu
+         RbHPNysfDwUmPWtJEiVeuI3meEqGWxTe7LsoCpj6kRMI4NCe2QjB0m9+ewE9NP+8FAmX
+         1bCQ==
+X-Gm-Message-State: AOAM531W/7lzdrp8IMDVmdtZz6L1Tlie28C3QjhY8w9WZDiL+xgP9xPM
+        etaC5r1vRDUHU7+gtd2D52Trs2ZjQnPKNA==
+X-Google-Smtp-Source: ABdhPJwzXkC/CI2U0SvsnSAx9X4MP4Bkwsfwf7NjuOu+mW2JfkVdfwcgOwUlZEF6ihmvaE1OgCRPfA==
+X-Received: by 2002:a2e:6e14:: with SMTP id j20mr1228261ljc.361.1603475878302;
+        Fri, 23 Oct 2020 10:57:58 -0700 (PDT)
+Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com. [209.85.208.180])
+        by smtp.gmail.com with ESMTPSA id g14sm200129lfb.307.2020.10.23.10.57.56
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 10:57:57 -0700 (PDT)
+Received: by mail-lj1-f180.google.com with SMTP id 23so2479922ljv.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:57:56 -0700 (PDT)
+X-Received: by 2002:a2e:87d2:: with SMTP id v18mr1269612ljj.371.1603475876643;
+ Fri, 23 Oct 2020 10:57:56 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023135400.GA2651@hirez.programming.kicks-ass.net>
+References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
+ <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com> <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com>
+In-Reply-To: <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Fri, 23 Oct 2020 10:57:40 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com>
+Message-ID: <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID changes for v5.10
+To:     Micah Morton <mortonm@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:54:00PM +0200, Peter Zijlstra wrote:
-> On Fri, Oct 23, 2020 at 03:51:29PM +0200, Peter Zijlstra wrote:
-> > On Mon, Oct 19, 2020 at 09:43:16PM -0400, Joel Fernandes (Google) wrote:
-> > > +			/*
-> > > +			 * If this sibling doesn't yet have a suitable task to
-> > > +			 * run; ask for the most elegible task, given the
-> > > +			 * highest priority task already selected for this
-> > > +			 * core.
-> > > +			 */
-> > > +			p = pick_task(rq_i, class, max);
-> > > +			if (!p) {
-> > > +				/*
-> > > +				 * If there weren't no cookies; we don't need to
-> > > +				 * bother with the other siblings.
-> > > +				 * If the rest of the core is not running a tagged
-> > > +				 * task, i.e.  need_sync == 0, and the current CPU
-> > > +				 * which called into the schedule() loop does not
-> > > +				 * have any tasks for this class, skip selecting for
-> > > +				 * other siblings since there's no point. We don't skip
-> > > +				 * for RT/DL because that could make CFS force-idle RT.
-> > > +				 */
-> > > +				if (i == cpu && !need_sync && class == &fair_sched_class)
-> > > +					goto next_class;
-> > > +
-> > > +				continue;
-> > > +			}
-> > 
-> > I'm failing to understand the class == &fair_sched_class bit.
+On Thu, Oct 15, 2020 at 5:01 PM Micah Morton <mortonm@chromium.org> wrote:
+>
+> I just rebased to v5.9 to make sure the 1-line changes that touch
+> kernel/capability.c, kernel/groups.c and kernel/sys.c still applied
+> cleanly without conflicts. Should I have rebased onto one of the -rc's
+> for v5.9 instead?
 
-The last line in the comment explains it "We don't skip for RT/DL because
-that could make CFS force-idle RT.".
+No. You shouldn't have rebased at all.
 
-Even if need_sync == false, we need to go look at other CPUs (non-local
-CPUs) to see if they could be running RT.
+Making sure something applies cleanly is simply not a reason to rebase.
 
-Say the RQs in a particular core look like this:
-Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+See
 
-rq0	       rq1
-CFS1 (tagged)  RT1 (not tag)
-CFS2 (tagged)
+  Documentation/maintainer/rebasing-and-merging.rst
 
-Say schedule() runs on rq0. Now, it will enter the above loop and
-pick_task(RT) will return NULL for 'p'. It will enter the above if() block
-and see that need_sync == false and will skip RT entirely.
+for some common rules.
 
-The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
-rq0		rq1
-CFS1		IDLE
-
-When it should have selected:
-rq0		r1
-IDLE		RT
-
-I saw this issue on real-world usecases in ChromeOS where an RT task gets
-constantly force-idled and breaks RT. The "class == &fair_sched_class" bit
-cures it.
-
-> > > +                          * for RT/DL because that could make CFS force-idle RT.
-> > IIRC the condition is such that the core doesn't have a cookie (we don't
-> > need to sync the threads) so we'll only do a pick for our local CPU.
-> > 
-> > That should be invariant of class.
-> 
-> That is; it should be the exact counterpart of this bit:
-> 
-> > +			/*
-> > +			 * Optimize the 'normal' case where there aren't any
-> > +			 * cookies and we don't need to sync up.
-> > +			 */
-> > +			if (i == cpu && !need_sync && !p->core_cookie) {
-> > +				next = p;
-> > +				goto done;
-> > +			}
-> 
-> If there is no task found in this class, try the next class, if there
-> is, we done.
-
-That's Ok. But we cannot skip RT class on other CPUs.
-
-thanks,
-
- - Joel
-
+             Linus
