@@ -2,61 +2,61 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3A7642968C8
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:31:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 51E2C2968CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:32:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460400AbgJWDbz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 23:31:55 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40962 "EHLO
+        id S460408AbgJWDcA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 23:32:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40960 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460379AbgJWDbp (ORCPT
+        with ESMTP id S374886AbgJWDbq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 23:31:45 -0400
-Received: from mail-ua1-x964.google.com (mail-ua1-x964.google.com [IPv6:2607:f8b0:4864:20::964])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9CA45C0613D8
+        Thu, 22 Oct 2020 23:31:46 -0400
+Received: from mail-oi1-x262.google.com (mail-oi1-x262.google.com [IPv6:2607:f8b0:4864:20::262])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7BE25C0613D5
         for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:44 -0700 (PDT)
-Received: by mail-ua1-x964.google.com with SMTP id y1so1111665uac.13
+Received: by mail-oi1-x262.google.com with SMTP id j7so363319oie.12
         for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:31:44 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=drivescale-com.20150623.gappssmtp.com; s=20150623;
         h=from:to:cc:subject:date:message-id:in-reply-to:references;
-        bh=u4+0Y7bAzMg/YXqgTqUkzy2qMdgH2YnKP3AD74JymMo=;
-        b=Mt2ODQmlOYCT3IidrPgKgGbfLpkgA2Psax0B2S4SZ1IhFmmMrYu/LmdpzG9dSy6S/P
-         agS1OJiKqIEMbpEZKZTwLQ3qafEZfdlh/eCjZhk2OIWjoaHNeCI+vrnaQ9PU+n9WOZkb
-         /UCIFEe/F/riaxkJpKvp9YXpvGlwNJOLgDajKXZ6Ki+KvguSIvGbdmm+Rhr1MRK8LevB
-         J3QSnWnOGD1h09sr95Njjp5tbNnmDeWeguKlqYPrfMxasyCSZgxezfD2CiPI5Q0XSkZv
-         9tF0iEg5z3YmSsWN7H0tGbGZ3xYpn1CQhpZqz6L59Mcw/j5qwXPvhky3mJo1qj5S/1LN
-         412g==
+        bh=RhHK93So0VcKlYFbgYUYXeSYVQkNms0+nxyySSnXb+k=;
+        b=IPFfdKZ7mj4Gn6Yl/tH8/Q+MuI0fe9tTCLLeMhotRbKJyhaUuHrUntFTcPozjRq4jQ
+         0/zjMXzmcPtSrP3uAwhkudtzUYH0ttPOb9Ba0727AiOdYNvgmaY9tMfNGca9wiVfntjW
+         Wyvx4HSZE3cAieHlJGxR4qlBiEgJi3IkljP78r0IwYLSC5TiNsCI1nrpqxkcPJzxqOLK
+         OD2vUXAJIO3CLAPZqACLpIIdR8kYlcJ/caEiRuCBuR70c+VCNl2ufzTPnhl+C2p7vTUR
+         b0smkrP7YD2kMNbs8wP/wqBgD4xZKQyHJcetRsR6c5BB51PY4W+mPYnQ90F1uD9O0UIc
+         OhWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references;
-        bh=u4+0Y7bAzMg/YXqgTqUkzy2qMdgH2YnKP3AD74JymMo=;
-        b=ZT/GfygD9LmKWUKiFR/kbWAlPETVM1oWEm0sZ678vTyD/lys4we+B7v1pwqBv3/DLy
-         Xavy6amxSyWNK9ENDSH49x2VXYu897BBJDEa88XCO4XEjxGOkoEMXSbfomxDd8C/2txW
-         xTq4T2a/jnPO9JsN+auTocLfdmStbcEIrg+l1jxReV656tB+CCoM5bTfAC5lSLsfYlDO
-         jmuYJGoQlgUfHw3yScxXqTn+yYJQ43IevARwn6tg6qwenDPUYPdlnUaJ7X7WWgH0xqFA
-         bl5xje2KLSf4x2dZC5T1cYJqnt3zw3mRGBOwcIfDqKYN9aD6jJ7Qxy4p06IJn5LSkoWh
-         Nzqg==
-X-Gm-Message-State: AOAM532AF7vmDonCmGYjRzcm2Z3TvdY1qoxJyjUhhmmF2bVWSVxNowot
-        djH/uH7nffB/0aQlNnKRAwKbupGU29UftEnsSkrboJcDUH3aJg==
-X-Google-Smtp-Source: ABdhPJyUdYcwe2zd4NKYvrzBKEkN6jghohmqKSxi0Xp5morutnxYFFoKeujE/dWznhiLLTA6ZGZ8ILWKo7n7
-X-Received: by 2002:a9f:21ab:: with SMTP id 40mr121810uac.88.1603423903843;
+        bh=RhHK93So0VcKlYFbgYUYXeSYVQkNms0+nxyySSnXb+k=;
+        b=fY3KK2B9YpTtmiK6daMGSKj9ueAHswVCxvOvbCeu9ZQrl1Vvj4HUACpajCr/IkNZ9g
+         737t6ZFmOT1uvnhy1Crl+s+7Qzd6657KCSt9tdu2F4ulmJqAm++AnYYaGmBO7TbAEfJr
+         vs6B9gGj7Vj6ZrhYTHxbAtb5I7yGqHcrSF9KOEYIw5ujsvjHU8C2qN2Rywh3uZDvjTYE
+         ydCQUEIaQwrXV9p5NOeATd2DfL9H5YxmI4pWitMDmnTDMh/zWG8LZPM4k9SjdM0b0Gkd
+         GbX4EHNBLx07Jtf0SKFjA/yYdnagogOOYNPfIi9Hppw0cJfBd7acESUX/gIteaQxjm1n
+         vSGA==
+X-Gm-Message-State: AOAM531CVskn7pjYjkPG3118rh1vGbsV5nVKWV+lFpS2cnUl8dulZ/3k
+        5DpYbrCPMyUnRhTjxiPhU4Nf5VXGxKvhkd6oi/ATU4qCJU2Pcw==
+X-Google-Smtp-Source: ABdhPJybn2Qbcm4XVtdDVaJj0llIw0aTm6KmR3ZYalQvBvvjokAJn1bdXPkcektjFZ84uYebkJI2ytz6owL6
+X-Received: by 2002:a05:6808:28c:: with SMTP id z12mr246573oic.70.1603423903944;
         Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
 Received: from dcs.hq.drivescale.com ([68.74.115.3])
-        by smtp-relay.gmail.com with ESMTP id y14sm25617vsd.5.2020.10.22.20.31.43;
+        by smtp-relay.gmail.com with ESMTP id w2sm42526ooc.20.2020.10.22.20.31.43;
         Thu, 22 Oct 2020 20:31:43 -0700 (PDT)
 X-Relaying-Domain: drivescale.com
 Received: from localhost.localdomain (gw1-dc.hq.drivescale.com [192.168.33.175])
-        by dcs.hq.drivescale.com (Postfix) with ESMTP id EA60A4211B;
-        Fri, 23 Oct 2020 03:31:42 +0000 (UTC)
+        by dcs.hq.drivescale.com (Postfix) with ESMTP id 51BBA420D3;
+        Fri, 23 Oct 2020 03:31:43 +0000 (UTC)
 From:   Christopher Unkel <cunkel@drivescale.com>
 To:     linux-raid@vger.kernel.org
 Cc:     linux-kernel@vger.kernel.org, Song Liu <song@kernel.org>,
         cunkel@drivescale.com
-Subject: [PATCH 2/3] md: factor sb write alignment check into function
-Date:   Thu, 22 Oct 2020 20:31:29 -0700
-Message-Id: <20201023033130.11354-3-cunkel@drivescale.com>
+Subject: [PATCH 3/3] md: pad writes to end of bitmap to physical blocks
+Date:   Thu, 22 Oct 2020 20:31:30 -0700
+Message-Id: <20201023033130.11354-4-cunkel@drivescale.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201023033130.11354-1-cunkel@drivescale.com>
 References: <20201023033130.11354-1-cunkel@drivescale.com>
@@ -64,103 +64,46 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Refactor in preparation for a second use of the logic.
+Writes of the last page of the bitmap are padded out to the next logical
+block boundary.  However, they are not padded out to the next physical
+block boundary, so the writes may be less than a physical block.  On a
+"512e" disk (logical block 512 bytes, physical block 4k) and if the last
+page of the bitmap is less than 3584 bytes, this means that writes of
+the last bitmap page hit the 512-byte emulation.
+
+Respect the physical block boundary as long as the resulting write
+doesn't run into other data, and is no longer than a page.  (If the
+physical block size is larger than a page no bitmap write will respect
+the physical block boundaries.)
 
 Signed-off-by: Christopher Unkel <cunkel@drivescale.com>
 ---
- drivers/md/md-bitmap.c | 72 +++++++++++++++++++++++-------------------
- 1 file changed, 40 insertions(+), 32 deletions(-)
+ drivers/md/md-bitmap.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
 
 diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
-index 200c5d0f08bf..600b89d5a3ad 100644
+index 600b89d5a3ad..21af5f94d495 100644
 --- a/drivers/md/md-bitmap.c
 +++ b/drivers/md/md-bitmap.c
-@@ -209,6 +209,44 @@ static struct md_rdev *next_active_rdev(struct md_rdev *rdev, struct mddev *mdde
- 	return NULL;
- }
+@@ -264,10 +264,18 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
  
-+static int sb_write_alignment_ok(struct mddev *mddev, struct md_rdev *rdev,
-+				 struct page *page, int offset, int size)
-+{
-+	if (mddev->external) {
-+		/* Bitmap could be anywhere. */
-+		if (rdev->sb_start + offset + (page->index
-+					       * (PAGE_SIZE/512))
-+		    > rdev->data_offset
-+		    &&
-+		    rdev->sb_start + offset
-+		    < (rdev->data_offset + mddev->dev_sectors
-+		     + (PAGE_SIZE/512)))
-+			return 0;
-+	} else if (offset < 0) {
-+		/* DATA  BITMAP METADATA  */
-+		if (offset
-+		    + (long)(page->index * (PAGE_SIZE/512))
-+		    + size/512 > 0)
-+			/* bitmap runs in to metadata */
-+			return 0;
-+		if (rdev->data_offset + mddev->dev_sectors
-+		    > rdev->sb_start + offset)
-+			/* data runs in to bitmap */
-+			return 0;
-+	} else if (rdev->sb_start < rdev->data_offset) {
-+		/* METADATA BITMAP DATA */
-+		if (rdev->sb_start
-+		    + offset
-+		    + page->index*(PAGE_SIZE/512) + size/512
-+		    > rdev->data_offset)
-+			/* bitmap runs in to data */
-+			return 0;
-+	} else {
-+		/* DATA METADATA BITMAP - no problems */
-+	}
-+	return 1;
-+}
-+
- static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
- {
- 	struct md_rdev *rdev;
-@@ -234,38 +272,8 @@ static int write_sb_page(struct bitmap *bitmap, struct page *page, int wait)
+ 		if (page->index == store->file_pages-1) {
+ 			int last_page_size = store->bytes & (PAGE_SIZE-1);
++			int pb_aligned_size;
+ 			if (last_page_size == 0)
+ 				last_page_size = PAGE_SIZE;
+ 			size = roundup(last_page_size,
+ 				       bdev_logical_block_size(bdev));
++			pb_aligned_size = roundup(last_page_size,
++						  bdev_physical_block_size(bdev));
++			if (pb_aligned_size > size
++			    && pb_aligned_size <= PAGE_SIZE
++			    && sb_write_alignment_ok(mddev, rdev, page, offset,
++						     pb_aligned_size))
++				size = pb_aligned_size;
+ 		}
  		/* Just make sure we aren't corrupting data or
  		 * metadata
- 		 */
--		if (mddev->external) {
--			/* Bitmap could be anywhere. */
--			if (rdev->sb_start + offset + (page->index
--						       * (PAGE_SIZE/512))
--			    > rdev->data_offset
--			    &&
--			    rdev->sb_start + offset
--			    < (rdev->data_offset + mddev->dev_sectors
--			     + (PAGE_SIZE/512)))
--				goto bad_alignment;
--		} else if (offset < 0) {
--			/* DATA  BITMAP METADATA  */
--			if (offset
--			    + (long)(page->index * (PAGE_SIZE/512))
--			    + size/512 > 0)
--				/* bitmap runs in to metadata */
--				goto bad_alignment;
--			if (rdev->data_offset + mddev->dev_sectors
--			    > rdev->sb_start + offset)
--				/* data runs in to bitmap */
--				goto bad_alignment;
--		} else if (rdev->sb_start < rdev->data_offset) {
--			/* METADATA BITMAP DATA */
--			if (rdev->sb_start
--			    + offset
--			    + page->index*(PAGE_SIZE/512) + size/512
--			    > rdev->data_offset)
--				/* bitmap runs in to data */
--				goto bad_alignment;
--		} else {
--			/* DATA METADATA BITMAP - no problems */
--		}
-+		if (!sb_write_alignment_ok(mddev, rdev, page, offset, size))
-+			goto bad_alignment;
- 		md_super_write(mddev, rdev,
- 			       rdev->sb_start + offset
- 			       + page->index * (PAGE_SIZE/512),
 -- 
 2.17.1
 
