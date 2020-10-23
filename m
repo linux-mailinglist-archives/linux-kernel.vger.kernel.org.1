@@ -2,49 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 43F5C297759
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:53:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CAF8B297758
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:53:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755172AbgJWSxd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:53:33 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59900 "EHLO mail.kernel.org"
+        id S1755160AbgJWSxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:53:24 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59888 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755131AbgJWSxT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:53:19 -0400
-Subject: Re: [GIT PULL] GFS2 changes for 5.10
+        id S1755135AbgJWSxU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:53:20 -0400
+Subject: Re: [GIT PULL] KVM changes for Linux 5.10
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603479199;
-        bh=1ZxuuTWj/DNlJ4AXwYWGGJ2HZldYOtVLHqJG7w+BrXQ=;
+        bh=IjAP73y7IG/n/JYBdwRJ8w4XeOpZ9U5HPUE44e+r9N4=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=YOYZ7tPEEXUGvR4Pm+//K9ZvVi3IDm8rR+M1RbKNuBdJ0YSHpKyxHDSqFVYEPi81U
-         hVwmkgX5E4OO+C0JDkQvE2CSNJKwTAb1w1MXZJqWoKSQWo1GD+wnb08j5vIwOTWsGm
-         aQXZJE1r6QMu/uggnMFAyxfE1syEvfD9RVE5DyjY=
+        b=k71XDvx2Zl7DTphAGuxcpLeT5J+aCIJuDJrc51nYSu05D3nM/OWCrcsj5S1tOx1R+
+         RCroKOijyNxnjtWe5cQRsyDHpWVLT+3zdr0WzSkVxgh3dWwfDU43JbBeiChS/N1uMY
+         5tbl7c+kePex67zk0Y7q/o524OozIkh8KXEQYlNc=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201023154642.1309908-1-agruenba@redhat.com>
-References: <20201023154642.1309908-1-agruenba@redhat.com>
+In-Reply-To: <20201023173619.2785471-1-pbonzini@redhat.com>
+References: <20201023173619.2785471-1-pbonzini@redhat.com>
 X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201023154642.1309908-1-agruenba@redhat.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.10
-X-PR-Tracked-Commit-Id: bedb0f056faa94e953e7b3da5a77d25e0008364b
+X-PR-Tracked-Message-Id: <20201023173619.2785471-1-pbonzini@redhat.com>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
+X-PR-Tracked-Commit-Id: 29cf0f5007a215b51feb0ae25ca5353480d53ead
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0adc313c4f20639f7e235b8d6719d96a2024cf91
-Message-Id: <160347919915.2166.15547527383595069420.pr-tracker-bot@kernel.org>
+X-PR-Merge-Commit-Id: f9a705ad1c077ec2872c641f0db9c0d5b4a097bb
+Message-Id: <160347919945.2166.2540518909924106756.pr-tracker-bot@kernel.org>
 Date:   Fri, 23 Oct 2020 18:53:19 +0000
-To:     Andreas Gruenbacher <agruenba@redhat.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     torvalds@linux-foundation.org, linux-kernel@vger.kernel.org,
+        kvm@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Oct 2020 17:46:41 +0200:
+The pull request you sent on Fri, 23 Oct 2020 13:36:19 -0400:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.10
+> https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0adc313c4f20639f7e235b8d6719d96a2024cf91
+https://git.kernel.org/torvalds/c/f9a705ad1c077ec2872c641f0db9c0d5b4a097bb
 
 Thank you!
 
