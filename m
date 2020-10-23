@@ -2,102 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3B9EB296E3A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:11:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80CC7296E3E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:12:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463461AbgJWMLi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:11:38 -0400
-Received: from mx2.suse.de ([195.135.220.15]:48570 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S369866AbgJWMLh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:11:37 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-        t=1603455095;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=PnUm70V+5EWN9rUJE/JshXA3shOzxaXojS/AI5HvYuU=;
-        b=fGHmfrh7RaefzeIoXnsKI090BfDNZzk44DVnLWWzvzAtfIIb357WQ7LUAoQFle0jgFsan4
-        fElCkPSwre6Zg0Fs64NFLrU1DHWvoxoIRbUzu/bQtFZuuXxIva/Xauuvix/Jy2yKxHATBJ
-        CtpSA5buHeil9AMYN+7DqAXtNekYMvQ=
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id A7F78B80F;
-        Fri, 23 Oct 2020 12:11:35 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 14:11:34 +0200
-From:   Petr Mladek <pmladek@suse.com>
-To:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] printk: Add kernel parameter: mute_console
-Message-ID: <20201023121134.GF32486@alley>
-References: <20201022114228.9098-1-pmladek@suse.com>
- <20201022114228.9098-2-pmladek@suse.com>
- <20201023003334.GA588@jagdpanzerIV.localdomain>
+        id S463477AbgJWMM5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 08:12:57 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36394 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S369893AbgJWMM4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 08:12:56 -0400
+Received: from mail-ua1-x942.google.com (mail-ua1-x942.google.com [IPv6:2607:f8b0:4864:20::942])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C207C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:12:56 -0700 (PDT)
+Received: by mail-ua1-x942.google.com with SMTP id t15so334397ual.6
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:12:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=9zTD62MDEiFJvjUs/krlr6v9XPRox7+W7YH3FUt+tPU=;
+        b=CNWB31mO34r8pQnTyPiSTEv4TUCv9alhApvdGjUQ4BFG2WTDboq/hCo0UJ/O+HsPVD
+         DOCQ6guLf13fZHFYRMyRw5H2OmXiTOjTcD7J5L4/xMQSzoVovOr8FWGvLvTYALuWZ10m
+         trV4cAKoYjHXTcB4dI6OEGu0PurOw+VvfgnStvE4nVm/feobsflEH2GKZCh1wSSSJDK3
+         l0HKxLu5z9i1AKlEQwV/isD1GkFn7DQpq+H16f+RehrMZGRp2vWl3KipBEkXi2Ed+nvc
+         Kc3RWRoZrSnoBn7N7f7ylzKJ1k8g+CD0F1F/knYZAf5y72Yy3taVrlyA1nXR9BYfjbwd
+         mSAw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=9zTD62MDEiFJvjUs/krlr6v9XPRox7+W7YH3FUt+tPU=;
+        b=oAslwYwVa9wyD0LxHWUCNbx/dbDktGbffYhS2A0YpemGWaaurT+6WtYBdrsQd5TX+f
+         h5e9iHzPpDXNTsAu6tlyeLPouO7taK4F+b44bgIXaOiwejDo1lwhIVwBFqM7pxxlqzlQ
+         y1Ru+pw86X4In9lrxDZPzUUGNju04TQV51JLcLP0vYHPcXdweRYJjpavtds9Hz3HLQ9D
+         EdRkmSt0s8rIJbxIL8x9L/pJ/RRmqskzfGlLMUkFXZk+hUhhuFY22DTMYMb6U5obvSz+
+         jjlkmFczKn8cCUSnrEK0Yi7qL7vA+7ZlcEv7YK2VgxkArboinEqLIz/aTjXKCK529i8l
+         8u9w==
+X-Gm-Message-State: AOAM532B/UK6FPKvJNxgD8W8Cbg3PmLdDIXkPYqipZrI+NWuYsQ91uAz
+        QQR0BozggdAaRqbbwT6+mWmKyQdZEXljktQAZJ+XCg==
+X-Google-Smtp-Source: ABdhPJxEEn2qFAANDfknPq/hSUgw7fhW0Nfp6pn4UcrN0NmuRnugLBJcxZH8GyNIxK6Y5gMJXU8XwyQ7o+HoPh77w+4=
+X-Received: by 2002:ab0:23d5:: with SMTP id c21mr968504uan.129.1603455175525;
+ Fri, 23 Oct 2020 05:12:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023003334.GA588@jagdpanzerIV.localdomain>
+References: <1600999061-13669-1-git-send-email-rui_feng@realsil.com.cn>
+ <CAPDyKFrnkF3mU5PJsy0VtEjPSToktSsRRtyMvQF97vymc+rY5A@mail.gmail.com>
+ <dd210290eef6467cbffca8cbaddb8b84@realsil.com.cn> <CAPDyKFqwsJaYrXMVabR7qui6yqr4FAHfYq1ghfsf0HtRSZpGGw@mail.gmail.com>
+ <20201023091408.GA5201@lst.de>
+In-Reply-To: <20201023091408.GA5201@lst.de>
+From:   Ulf Hansson <ulf.hansson@linaro.org>
+Date:   Fri, 23 Oct 2020 14:12:19 +0200
+Message-ID: <CAPDyKFpgEcEv8FH59ntmeQADEyCs6aiS8P0tEaru858DRQup=A@mail.gmail.com>
+Subject: Re: [PATCH 3/3] mmc: rtsx: Add SD Express mode support for RTS5261
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     =?UTF-8?B?5Yav6ZSQ?= <rui_feng@realsil.com.cn>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        "linux-mmc@vger.kernel.org" <linux-mmc@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri 2020-10-23 09:33:34, Sergey Senozhatsky wrote:
-> On (20/10/22 13:42), Petr Mladek wrote:
-> > +static bool mute_console;
-> > +
-> > +static int __init mute_console_setup(char *str)
-> > +{
-> > +	mute_console = true;
-> > +	pr_info("All consoles muted.\n");
-> > +
-> > +	return 0;
-> > +}
-> 
-> First of all, thanks a lot for picking this up and for the patch set!
-> 
-> I've several thoughts and comments below.
-> 
-> >  static bool suppress_message_printing(int level)
-> >  {
-> > -	return (level >= console_loglevel && !ignore_loglevel);
-> > +	if (unlikely(mute_console))
-> > +		return true;
-> > +
-> > +	if (unlikely(ignore_loglevel))
-> > +		return false;
-> > +
-> > +	return (level >= console_loglevel);
-> >  }
-> 
-> This is one way of doing it. Another one is to clear CON_ENABLED bit
-> from all consoles (upon registration), one upside of this is that we
-> will signal user-space that consoles are disabled/muted (by removing
-> the E flag from /proc/consoles).
+On Fri, 23 Oct 2020 at 11:14, Christoph Hellwig <hch@lst.de> wrote:
+>
+> On Fri, Oct 23, 2020 at 10:02:15AM +0200, Ulf Hansson wrote:
+> > > > Is there no mechanism to support read-only PCIe/NVMe based storage devices?
+> > > > If that is the case, maybe it's simply better to not support the readonly option
+> > > > at all for SD express cards?
+> > > >
+> > > I think there's no mechanism to support read-only PCIe/NVMe based storage devices.
+> >
+> > I have looped in Christoph, maybe he can give us his opinion on this.
+>
+> NVMe namespaces can have a bunch of 'write protection' modes advertised
+> by the controller, which Linux respects.  The controller in this case would
+> be part of the SD-Card.  IMHO it is a quality of implementation issue
+> of the SD-Card/Controller to have the the write protection mode of the
+> namespace(s) match that of the SD interface, and the SD card spec should
+> talk about that if it doesn't already.
 
-Hmm, CON_ENABLED is used by suspend/resume code unconditionaly. We
-would need another flag to define the state after resume.
+Christoph, thanks for your reply.
 
-Well, it is true that CON_ENABLED has the same effect. Messages are
-not printed to the console. So, introducing another variable is
-likely overkill.
+SD spec mentions the write-protect switch on SD cards, while uSD cards
+doesn't have one. In general, host drivers implement support for it
+via a dedicated GPIO line routed to one of the pins in the SD slot.
 
-> Thinking more about it. We are still relying on the fact that there is
-> anything registered as console driver, which is not necessarily the case,
-> we can have NULL console drivers list. So how about having a dummy struct
-> console in printk, with NOP read/write and NOP tty_driver and NOP
-> tty_operations. So that when init calls filp_open("/dev/console") and
-> we can't give tty anything but NULL, we'd just give tty back the dummy
-> NOP device.
+In this SD controller case, which is based upon PCI, it works a bit
+differently, as the state of the write protect pin is managed through
+the PCI interface.
 
-Yup, this seems to be the best solution.
+If I understand you correctly, you are saying that the controller
+should be able to communicate (upwards to the block layer) its known
+write protect state for the corresponding NVMe device, during
+initialization?
 
-Best Regards,
-Petr
+My apologies if the questions sounds silly, but I have limited
+knowledge about the NVMe protocol, sorry.
+
+Kind regards
+Uffe
