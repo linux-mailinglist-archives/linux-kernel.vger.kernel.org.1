@@ -2,109 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 78603296F97
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:44:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0599C296FA0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:46:48 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463976AbgJWMo2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:44:28 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:35134 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463968AbgJWMo1 (ORCPT
+        id S464030AbgJWMqn convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 08:46:43 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:25814 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S464010AbgJWMql (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:44:27 -0400
-Received: from mail-pf1-f198.google.com ([209.85.210.198])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kVwQj-0002RE-Gu
-        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 12:44:25 +0000
-Received: by mail-pf1-f198.google.com with SMTP id m64so1044948pfm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:44:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
-         :content-transfer-encoding:message-id:references:to;
-        bh=ss/2egyBfIZAiVE1IR9ul+5JtgcnBAIRvrLL4JsLF5Q=;
-        b=DgcCEq50lLcsUtxwPlfG2+CrHo8dupz3lwjGchgtJuMenTisrvumN22Y1NLUbk8N2J
-         cnB7O5aOCjYbI5zp+ldtzl4E7rnBztcQSLz0PXhDRO/hkMGGTxs7d0Btmom1u/r6bpFm
-         Fbix2tqskYbL6295zUj/RxeEfVIKOUVVjprURPQzfvLsswe0Kj9+5YZ5EvVXSKZOVhbE
-         Oh/XnbLP5zNaufSHOAyCeXlEayIyE5bi3LEQX3SZQzeGCuc1RDNlAwQZLEsJMx6Y+M8o
-         QWtTAOCmj/rGoWFY/+Fubr4DoVCl36aQ2Iybko24bU46Yds/PeON4pI3qa7YFPDsLywO
-         LxzQ==
-X-Gm-Message-State: AOAM532zN7p82rcBKKxghxvo6/U2BfxbGlDNgJH/vEqZ5H7oFO8TXczt
-        PiOtCEDEu5FkZoW6JD34OWakeqmPh7qsFIaUFIzgeIcWjLnXFvDqax78eCHe/L0Wu/08rkpW7r2
-        0SsUCzN3ycVqdsR2qAQhWslavOPb9uGQwtps69nUlPg==
-X-Received: by 2002:a17:90a:1596:: with SMTP id m22mr2330755pja.189.1603457064105;
-        Fri, 23 Oct 2020 05:44:24 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJz6WrdLJEpNg0KYKwPikTKprEryePQjp/3SPSByjnLdoLTieJcrcAUKrt7vXluOMlPGu0y8rg==
-X-Received: by 2002:a17:90a:1596:: with SMTP id m22mr2330726pja.189.1603457063688;
-        Fri, 23 Oct 2020 05:44:23 -0700 (PDT)
-Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
-        by smtp.gmail.com with ESMTPSA id js21sm2572456pjb.14.2020.10.23.05.44.20
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Oct 2020 05:44:22 -0700 (PDT)
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
-Subject: Re: [PATCH 1/4] ALSA: hda: Refactor codec PM to use direct-complete
- optimization
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-In-Reply-To: <s5hk0vh89fv.wl-tiwai@suse.de>
-Date:   Fri, 23 Oct 2020 20:44:18 +0800
-Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
-        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
-        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
-        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
-        Mark Brown <broonie@kernel.org>,
-        Harsha Priya <harshapriya.n@intel.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: 7bit
-Message-Id: <9D7D9C4C-3245-41A3-B0C4-D74FBB5FE91A@canonical.com>
-References: <20201023102340.25494-1-kai.heng.feng@canonical.com>
- <s5hk0vh89fv.wl-tiwai@suse.de>
-To:     Takashi Iwai <tiwai@suse.de>
-X-Mailer: Apple Mail (2.3608.120.23.2.4)
+        Fri, 23 Oct 2020 08:46:41 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-256-SaM_0Qo5N_as2A7LuQL-Wg-1; Fri, 23 Oct 2020 13:46:37 +0100
+X-MC-Unique: SaM_0Qo5N_as2A7LuQL-Wg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 23 Oct 2020 13:46:36 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 23 Oct 2020 13:46:36 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Greg KH' <gregkh@linuxfoundation.org>,
+        David Hildenbrand <david@redhat.com>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12A=
+Date:   Fri, 23 Oct 2020 12:46:36 +0000
+Message-ID: <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
+References: <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com>
+ <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
+ <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
+In-Reply-To: <20201022135036.GA1787470@kroah.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+From: Greg KH <gregkh@linuxfoundation.org>
+> Sent: 22 October 2020 14:51
 
+I've rammed the code into godbolt.
 
-> On Oct 23, 2020, at 19:32, Takashi Iwai <tiwai@suse.de> wrote:
-> 
-> On Fri, 23 Oct 2020 12:23:35 +0200,
-> Kai-Heng Feng wrote:
->> 
->> +static void hda_codec_pm_complete(struct device *dev)
->> {
->> 	struct hda_codec *codec = dev_to_hda_codec(dev);
->> -	int ret;
->> 
->> -	ret = pm_runtime_force_resume(dev);
->> -	/* schedule jackpoll work for jack detection update */
->> -	if (codec->jackpoll_interval ||
->> -	    (pm_runtime_suspended(dev) && hda_codec_need_resume(codec)))
->> -		schedule_delayed_work(&codec->jackpoll_work,
->> -				      codec->jackpoll_interval);
->> -	return ret;
->> +	if (pm_runtime_suspended(dev) &&
->> +	    (hda_codec_need_resume(codec) || codec->forced_resume))
->> +		pm_request_resume(dev);
-> 
-> You shouldn't drop the check of codec->jackpoll_interval.  If this
-> field is set, the codec driver has to resume no matter what it was, so
-> that the polling can start up again.
+https://godbolt.org/z/9v5PPW
 
-Ok, will address in v2.
+Definitely a clang bug.
 
-Kai-Heng
+Search for [wx]24 in the clang output.
+nr_segs comes in as w2 and the initial bound checks are done on w2.
+w24 is loaded from w2 - I don't believe this changes the high bits.
+There are no references to w24, just x24.
+So the kmalloc_array() is passed 'huge' and will fail.
+The iov_iter_init also gets the 64bit value.
 
-> 
-> 
-> thanks,
-> 
-> Takashi
+Note that the gcc code has a sign-extend copy of w2.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
