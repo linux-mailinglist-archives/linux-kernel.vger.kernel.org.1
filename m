@@ -2,164 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5EA4B2969FE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:57:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A64062969FF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 08:58:10 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375489AbgJWG5R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 02:57:17 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42338 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373514AbgJWG5R (ORCPT
+        id S375494AbgJWG6H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 02:58:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44248 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S373558AbgJWG6H (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 02:57:17 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09N6uw4Z017798;
-        Fri, 23 Oct 2020 01:56:58 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603436218;
-        bh=YudTYWiJAucQyueQrZhz7LaNUYfcee7zekZ8Agi5wNE=;
-        h=Subject:To:CC:References:From:Date:In-Reply-To;
-        b=vXot5HyOf60SrtnZFvJj3ik8mLI19Ypk0FXQJ4efILgUuT2jQm6m3D2IWx8Kr70WE
-         8mnxmsUC64K/G93/Ag/Mctb97OnuvADcBH5xwtnHGXALdbq7U0yYbTFm8b+H8C3OzN
-         JoRrShMJZIBGa0kcWH7KIvyIEBuTb2neMtz2OpzE=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09N6uwRA084096
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Oct 2020 01:56:58 -0500
-Received: from DLEE112.ent.ti.com (157.170.170.23) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 23
- Oct 2020 01:56:58 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE112.ent.ti.com
- (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 23 Oct 2020 01:56:58 -0500
-Received: from [10.250.235.36] (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09N6uq81086583;
-        Fri, 23 Oct 2020 01:56:54 -0500
-Subject: Re: [PATCH v3] PCI: cadence: Retrain Link to work around Gen2
- training defect.
-To:     Athani Nadeem Ladkhan <nadeem@cadence.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Tom Joseph <tjoseph@cadence.com>
-CC:     Swapnil Kashinath Jakhade <sjakhade@cadence.com>,
-        Milind Parab <mparab@cadence.com>
-References: <20200930182105.9752-1-nadeem@cadence.com>
- <a3a89720-6813-b344-630d-4cd2d6ccf24f@ti.com>
- <SN2PR07MB255715C886C2DC5B9044BC01D81E0@SN2PR07MB2557.namprd07.prod.outlook.com>
-From:   Kishon Vijay Abraham I <kishon@ti.com>
-Message-ID: <d2aa5519-e207-c3e5-9d81-14209d856b54@ti.com>
-Date:   Fri, 23 Oct 2020 12:26:52 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Fri, 23 Oct 2020 02:58:07 -0400
+Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A462C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:58:07 -0700 (PDT)
+Received: by mail-pg1-x541.google.com with SMTP id h6so482659pgk.4
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 23:58:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWEgyRKyuD8Al2J5jv/DfuVXBHrVMDS7b+Ko3pQcdGs=;
+        b=t3YqLDMe682M0O+O/QgLfaOkTW0bWUdMZZAkWQsRi9mAcQOOgztU1eepQDVe6eN6+c
+         i7ZQLp+qYPBr01UClq0A/vSRkWEQXx6AjerYLDkcM2n+4yJgzWmy2VZhAHYwQcGveVVs
+         gsfmQVko7SK0rSZ4rGdhc91MkQApNNhGSHzqahXFFKAiIU5MY4TYh0vpeQJobPY54KQH
+         QPaVx7oH2wFPZMXm+jd0R8ucYTgJLqjgsG1rb56JGZ8cR4FFaV0ap0NRmeDU2URP8pMg
+         3nEslED9SY+66lLO+NrO0FykbBiVXQ+JdqSNXqlWfsco28QWsi2thHLNCAQ84I5jnTHh
+         cA+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=VWEgyRKyuD8Al2J5jv/DfuVXBHrVMDS7b+Ko3pQcdGs=;
+        b=C071J28cgwPHn0h3isyWcN335yIKzLTTEvkGyxxyIo/PR1yuKYDCwMieLVOQbflb6w
+         hdOjwxP1FY50kJtRZutMsiD4aT382x11dsvGuqdeq3p7ukQuTGJAFe7IBWyYYFpC9Z7L
+         S+gUDSYXxNqAZmGtNiHx1016pQsUa0KzOLDiPE6RLvv68TD+CkRlz3IWNZzgl9USdmnN
+         z+InMkrWIcAmmZPneu+fLlWr4gQmiqhskkv4MYop0/0FIXMSQZEgKGg2n/N4i0AT9eA5
+         pmFekXzY3lbaxfTO1SWTHRr/ApYGM9kcmlEFuRFpyDcGrChamnKxWxerxQJNCJBfiN2G
+         y8gw==
+X-Gm-Message-State: AOAM533wRMYef/Ww2bdV8Lkd1mCZtvUsQIr6pzXYW1NqyTqFZFwm2iQ5
+        JLI0SVH+3DgSNw1Un7F/p1E=
+X-Google-Smtp-Source: ABdhPJzGH/VcBiNeWPzvAkx/7KesWs5DP4LvuuoZQpRs/aVMBQbd5nQP3BzBSXC/64qM1M+ps7NtKg==
+X-Received: by 2002:a17:90a:bc91:: with SMTP id x17mr877039pjr.113.1603436286598;
+        Thu, 22 Oct 2020 23:58:06 -0700 (PDT)
+Received: from nick-Blade-Stealth.lan ([2600:1700:6d11:6f:140b:65b9:cfba:15d7])
+        by smtp.googlemail.com with ESMTPSA id v199sm875573pfc.149.2020.10.22.23.58.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 22 Oct 2020 23:58:05 -0700 (PDT)
+From:   Nick Desaulniers <nick.desaulniers@gmail.com>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Christoph Hellwig <hch@lst.de>,
+        Nick Desaulniers <nick.desaulniers@gmail.com>,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] bdi: fix -Wformat-security
+Date:   Thu, 22 Oct 2020 23:57:54 -0700
+Message-Id: <20201023065754.83084-1-nick.desaulniers@gmail.com>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <SN2PR07MB255715C886C2DC5B9044BC01D81E0@SN2PR07MB2557.namprd07.prod.outlook.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nadeem,
+mm/backing-dev.c:810:57: warning: format string is not a string literal
+(potentially insecure) [-Wformat-security]
+dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, bdi->dev_name);
+                                                       ^~~~~~~~~~~~~
 
-On 19/10/20 10:48 pm, Athani Nadeem Ladkhan wrote:
-> Hi Kishon,
-> 
->> -----Original Message-----
->> From: Kishon Vijay Abraham I <kishon@ti.com>
->> Sent: Monday, October 19, 2020 10:59 AM
->> To: Athani Nadeem Ladkhan <nadeem@cadence.com>;
->> lorenzo.pieralisi@arm.com; robh@kernel.org; bhelgaas@google.com; linux-
->> pci@vger.kernel.org; linux-kernel@vger.kernel.org; Tom Joseph
->> <tjoseph@cadence.com>
->> Cc: Swapnil Kashinath Jakhade <sjakhade@cadence.com>; Milind Parab
->> <mparab@cadence.com>
->> Subject: Re: [PATCH v3] PCI: cadence: Retrain Link to work around Gen2
->> training defect.
->>
->> EXTERNAL MAIL
->>
->>
->> Hi Nadeem,
->>
->> On 30/09/20 11:51 pm, Nadeem Athani wrote:
->>> Cadence controller will not initiate autonomous speed change if
->>> strapped as Gen2. The Retrain Link bit is set as quirk to enable this speed
->> change.
->>>
->>> Signed-off-by: Nadeem Athani <nadeem@cadence.com>
->>> ---
->>> Changes in v3:
->>> - To set retrain link bit,checking device capability & link status.
->>> - 32bit read in place of 8bit.
->>> - Minor correction in patch comment.
->>> - Change in variable & macro name.
->>> Changes in v2:
->>> - 16bit read in place of 8bit.
->>>  drivers/pci/controller/cadence/pcie-cadence-host.c | 31
->> ++++++++++++++++++++++
->>>  drivers/pci/controller/cadence/pcie-cadence.h      |  9 ++++++-
->>>  2 files changed, 39 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> index 4550e0d469ca..2b2ae4e18032 100644
->>> --- a/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> +++ b/drivers/pci/controller/cadence/pcie-cadence-host.c
->>> @@ -77,6 +77,36 @@ static struct pci_ops cdns_pcie_host_ops = {
->>>  	.write		= pci_generic_config_write,
->>>  };
->>>
->>> +static void cdns_pcie_retrain(struct cdns_pcie *pcie) {
->>> +	u32 lnk_cap_sls, pcie_cap_off = CDNS_PCIE_RP_CAP_OFFSET;
->>> +	u16 lnk_stat, lnk_ctl;
->>> +
->>> +	if (!cdns_pcie_link_up(pcie))
->>> +		return;
->>> +
->>
->> Is there a IP version that can be used to check if that quirk is applicable?
-> There is no such provision.
+Signed-off-by: Nick Desaulniers <nick.desaulniers@gmail.com>
+---
+Example patch showing off kernel development from a newly created twitch
+stream! Check it out at: https://twitch.tv/ndesaulniers.
 
-hmm okay. Can we add a DT property to indicate the quirk then since
-AFAIK this is not required in future revisions of IP.
->>> +	/*
->>> +	 * Set retrain bit if current speed is 2.5 GB/s,
->>> +	 * but the PCIe root port support is > 2.5 GB/s.
->>> +	 */
->>> +
->>> +	lnk_cap_sls = cdns_pcie_readl(pcie, (CDNS_PCIE_RP_BASE +
->> pcie_cap_off +
->>> +				      PCI_EXP_LNKCAP));
->>> +	if ((lnk_cap_sls & PCI_EXP_LNKCAP_SLS) <=
->> PCI_EXP_LNKCAP_SLS_2_5GB)
->>> +		return;
->>> +
->>> +	lnk_stat = cdns_pcie_rp_readw(pcie, pcie_cap_off +
->> PCI_EXP_LNKSTA);
->>> +	if ((lnk_stat & PCI_EXP_LNKSTA_CLS) == PCI_EXP_LNKSTA_CLS_2_5GB)
->> {
->>> +		lnk_ctl = cdns_pcie_rp_readw(pcie,
->>> +					     pcie_cap_off + PCI_EXP_LNKCTL);
->>> +		lnk_ctl |= PCI_EXP_LNKCTL_RL;
->>> +		cdns_pcie_rp_writew(pcie, pcie_cap_off + PCI_EXP_LNKCTL,
->>> +				    lnk_ctl);
->>> +
->>> +		if (!cdns_pcie_link_up(pcie))
->>
->> Should this rather be a cdns_pcie_host_wait_for_link()?
-> The use of this api cdns_pcie_link_up was mentioned in earlier reviews.
-> The mentioned api cdns_pcie_host_wait_for_link is a wrapper in which there are multiple checks.
-> If insist, will replace with it.
+ mm/backing-dev.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-yeah, I think we should give some time for the link up to succeed after
-re-training.
+diff --git a/mm/backing-dev.c b/mm/backing-dev.c
+index 408d5051d05b..5755578d671d 100644
+--- a/mm/backing-dev.c
++++ b/mm/backing-dev.c
+@@ -807,7 +807,7 @@ int bdi_register_va(struct backing_dev_info *bdi, const char *fmt, va_list args)
+ 		return 0;
+ 
+ 	vsnprintf(bdi->dev_name, sizeof(bdi->dev_name), fmt, args);
+-	dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, bdi->dev_name);
++	dev = device_create(bdi_class, NULL, MKDEV(0, 0), bdi, "%s", bdi->dev_name);
+ 	if (IS_ERR(dev))
+ 		return PTR_ERR(dev);
+ 
+-- 
+2.25.1
 
-Thanks
-Kishon
