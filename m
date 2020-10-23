@@ -2,118 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D956296C2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:34:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 95B49296C44
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:41:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461595AbgJWJex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:34:53 -0400
-Received: from mail-ej1-f66.google.com ([209.85.218.66]:38679 "EHLO
-        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461588AbgJWJex (ORCPT
+        id S461626AbgJWJl0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:41:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461592AbgJWJl0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:34:53 -0400
-Received: by mail-ej1-f66.google.com with SMTP id ce10so1458183ejc.5;
-        Fri, 23 Oct 2020 02:34:51 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=xIVItItN3N7pseJnKSLk982NZI9iT/uzBTeYcyfN29E=;
-        b=Nm51sgLq2+m4HZ9wqqBtBqYssNJD9o73m1kvvbQW6WgkdMrzhdZa7fvPUTz94jsahh
-         FvHLgD/1cTd7CrnRdsL2nIODRBahoAYZLwiKpskflX5oEqlE35iYT8OekYK4qVvn4n3b
-         GqONA+AcAQ2sQRj/z1C4SAxdZ1UcnP3Hm5IyS79r0no4MZOq/s2OdhkYEFouuiJBod3N
-         +NIdXf8VLG47/2di9/59z1bCLA3L8OV4MKzd+dizVCW0bgdX9I7WsPMMvWujB23zK3br
-         SGUPTGI5pAFdAw1H2+31YAFc9dkrvm1Zp9BSCj9dzIGXy0XU8Xo5ZFQCpifpwAnQ9Hj2
-         YkoQ==
-X-Gm-Message-State: AOAM531MF4EHuJFHm/XVTt2+Ca4bYkkhltp92SBnYOrJFsE+D3Y1CxeC
-        Nkcw4mS7F75QWBfh1gJy77g=
-X-Google-Smtp-Source: ABdhPJywWFJR+C6CVaxj6LAyvrlb/aO/MBxhqBvkTXk7NZnjqRsiBabbSt5uIPlkaEVqN6Tbz2s4HQ==
-X-Received: by 2002:a17:906:2dc5:: with SMTP id h5mr1035220eji.507.1603445691039;
-        Fri, 23 Oct 2020 02:34:51 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id s12sm498655ejy.25.2020.10.23.02.34.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 02:34:49 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 11:34:46 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     linux-arm-kernel@lists.infradead.org, marex@denx.de,
-        aford@beaconembedded.com, l.stach@pengutronix.de,
-        Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: imx8mm: Add GPU node
-Message-ID: <20201023093446.GA42872@kozik-lap>
-References: <20201022171639.773702-1-aford173@gmail.com>
+        Fri, 23 Oct 2020 05:41:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 34E58C0613CE;
+        Fri, 23 Oct 2020 02:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=71opRXk+CVt0coUz0FPhVzMU7R20E+INO+PfC/78r9s=; b=LCt7s0vsBWeNbFSqkiV4Hp8kGZ
+        QtaThUO+HSqDN+ZhLsve9PrO3O/pZgUFRBq8PQ/XdJBL9ax2EJiDMn7njL7HpM//UfsWstDCOMq0d
+        d4GUW8h92cGdr+DjhPnGjt+vOiNDKDigpj81EOphkW1mai1r56dek13logIPV8FMvFOTBOY0ELhWI
+        BYeFSx3/GwueGQH+MQ8vJVHUk62MQIOjwYgn9Q9WGb/Ii5qjRt0DILOyii5zZf+JJ6FVj05kXBr5B
+        N9PcJ+BJS/iJYiYp7ciesNoGqUYd7LkPiz+3GSzPKczgPTu3qyIuDF2eKzCjSmm9sPOvEfFpPQwua
+        o3CsVZEQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVtZU-0005So-Ov; Fri, 23 Oct 2020 09:41:16 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 698B7304D2B;
+        Fri, 23 Oct 2020 11:41:15 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 5005E2B945263; Fri, 23 Oct 2020 11:41:15 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 11:41:15 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Suzuki Poulose <suzuki.poulose@arm.com>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
+Message-ID: <20201023094115.GR2611@hirez.programming.kicks-ass.net>
+References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
+ <20201022113214.GD2611@hirez.programming.kicks-ass.net>
+ <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
+ <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+ <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
+ <20201022212033.GA646497@xps15>
+ <20201023073905.GM2611@hirez.programming.kicks-ass.net>
+ <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201022171639.773702-1-aford173@gmail.com>
+In-Reply-To: <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 12:16:39PM -0500, Adam Ford wrote:
-> According to the documentation from NXP, the i.MX8M Nano has a
-> Vivante GC7000 Ultra Lite as its GPU core.
-> 
-> With this patch, the Etnaviv driver presents the GPU as:
->    etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
-> 
-> It uses the GPCV2 controller to enable the power domain for the GPU.
-> 
-> Signed-off-by: Adam Ford <aford173@gmail.com>
-> ---
-> This patch depends on a series located:
-> https://patchwork.kernel.org/project/linux-arm-kernel/list/?series=368903
-> and
-> 
-> diff --git a/arch/arm64/boot/dts/freescale/imx8mn.dtsi b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> index 605e6dbd2c6f..62c8cd3dea7c 100644
-> --- a/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> +++ b/arch/arm64/boot/dts/freescale/imx8mn.dtsi
-> @@ -4,6 +4,8 @@
->   */
->  
->  #include <dt-bindings/clock/imx8mn-clock.h>
-> +#include <dt-bindings/power/imx8mn-power.h>
-> +#include <dt-bindings/reset/imx8mq-reset.h>
->  #include <dt-bindings/gpio/gpio.h>
->  #include <dt-bindings/input/input.h>
->  #include <dt-bindings/interrupt-controller/arm-gic.h>
-> @@ -1019,6 +1021,31 @@ gpmi: nand-controller@33002000 {
->  			status = "disabled";
->  		};
->  
-> +		gpu: gpu@38000000 {
-> +			compatible = "vivante,gc";
-> +			reg = <0x38000000 0x8000>;
-> +			interrupts = <GIC_SPI 3 IRQ_TYPE_LEVEL_HIGH>;
-> +			clocks = <&clk IMX8MN_CLK_GPU_AHB>,
-> +				<&clk IMX8MN_CLK_GPU_BUS_ROOT>,
-> +				<&clk IMX8MN_CLK_GPU_CORE_ROOT>,
-> +				<&clk IMX8MN_CLK_GPU_SHADER_DIV>;
-> +			clock-names = "reg", "bus", "core", "shader";
-> +			assigned-clocks = <&clk IMX8MN_CLK_GPU_CORE_SRC>,
-> +					  <&clk IMX8MN_CLK_GPU_SHADER_SRC>,
-> +					  <&clk IMX8MN_CLK_GPU_AXI>,
-> +					  <&clk IMX8MN_CLK_GPU_AHB>,
-> +					  <&clk IMX8MN_GPU_PLL>,
-> +					  <&clk IMX8MN_CLK_GPU_CORE_DIV>,
-> +					  <&clk IMX8MN_CLK_GPU_SHADER_DIV>;
-> +			assigned-clock-parents = <&clk IMX8MN_GPU_PLL_OUT>,
-> +						  <&clk IMX8MN_GPU_PLL_OUT>,
-> +						  <&clk IMX8MN_SYS_PLL1_800M>,
-> +						  <&clk IMX8MN_SYS_PLL1_800M>;
-> +			assigned-clock-rates = <0>, <0>, <800000000>, <400000000>, <1200000000>,
-> +				<400000000>, <400000000>;
+On Fri, Oct 23, 2020 at 09:49:53AM +0100, Suzuki Poulose wrote:
+> On 10/23/20 8:39 AM, Peter Zijlstra wrote:
 
-Plaese indent it till '=' and put each entry in new line. This will
-match other 'assigned-clock' properties.
+> > So then I don't understand the !->owner issue, that only happens when
+> > the task dies, which cannot be concurrent with event creation. Are you
+> 
+> Part of the patch from Sai, fixes this by avoiding the dereferencing
+> after event creation (by caching it). But the kernel events needs
+> fixing.
 
-Best regards,
-Krzysztof
+I'm fundamentally failing here. Creating a link to the sink is strictly
+event-creation time. Why would you ever need it again later? Later you
+already have the sink setup.
