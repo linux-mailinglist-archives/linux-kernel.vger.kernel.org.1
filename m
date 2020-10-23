@@ -2,115 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F0AF29713D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:22:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id DA49C297140
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:23:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374726AbgJWOWB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:22:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56598 "EHLO
+        id S465180AbgJWOXI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:23:08 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56772 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374556AbgJWOV6 (ORCPT
+        with ESMTP id S374830AbgJWOXI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:21:58 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 82F17C0613CE;
-        Fri, 23 Oct 2020 07:21:58 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gs25so2664176ejb.1;
-        Fri, 23 Oct 2020 07:21:58 -0700 (PDT)
+        Fri, 23 Oct 2020 10:23:08 -0400
+Received: from mail-lf1-x141.google.com (mail-lf1-x141.google.com [IPv6:2a00:1450:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7DA67C0613CE;
+        Fri, 23 Oct 2020 07:23:06 -0700 (PDT)
+Received: by mail-lf1-x141.google.com with SMTP id v6so2276318lfa.13;
+        Fri, 23 Oct 2020 07:23:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:sender:from:date:message-id
-         :subject:to:cc;
-        bh=3rcXVSOL+tJRZBQm0pw/Zq9ogwm9bItd4VPlftbM00g=;
-        b=Bge8D9q4Ck+6oQR5swtz7kx/CVmO3H/gxI93IJbbAM8yPEyVzaym+n/+CREN6Aya6V
-         48qAhym76RmXks5OZYbeJqEh6rZj+GDw+9zgBKjBjHpYCpiUckLxwxM85Wxpqws4WCG1
-         kw6bp5+QWJAyIUd+vV5gVlCvpkg6SRKDSM36LJ0w3RW/wqdmznrdb01WoNfYVcRo/yjK
-         hqHr633nbepgJoGUrk2p+PeYO9lOG9GAetosPfND6Lk0euVNFd0YRCH46VaYi3reDIqo
-         37IYNKd0A/k96+BQXtXDcD8KJ3EuGkf0xITNm34FzUeTWudaHg33pg9qPLWTONieWWhM
-         WLoA==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o98sUAeRbrb+A+UaiLkMy3FmWgT2O18cCb+RARaOj3E=;
+        b=uk0kFLBbLZO4GwgQ14jK2wL+oqKrewXhlwH6K47Z0OaPIIvsL2bUlreldaFF+oHn5A
+         1xF7FcCLiurGrzazkcshhKVhPrCv9qeYG/kC1aaAGHXhObNyZDToylrFz6FSW2Z0CoN+
+         1ZE51zDezLl+B3LFJBrs7Zb/dxvFw780+ShOXRbvwB3s501TvMBfOzQg0c3ZHIh3bu4w
+         rwh/kW5i/jGmiTH7OHt4Ynbq82o6VR6SrrIqCsd+9bhue+1Pl/FAcr0UMz7cZPkeYFli
+         jgqkix0JOtjMEBv+ktKK+1EsfuFp7OXBdJglYTR2fj/I2xXbJcD+ZKVRa3S6mxBOHagu
+         obxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:sender:from
-         :date:message-id:subject:to:cc;
-        bh=3rcXVSOL+tJRZBQm0pw/Zq9ogwm9bItd4VPlftbM00g=;
-        b=d+uvW5Uq7QAr2ik/Wd7pq7jboStl0nEaMdZFcU8o1/ztx5XB2hoelmkUWOcakBvlB/
-         JuHII/rV5Es+l6Ifz7DazUwamEsVaM1P+63k8eypveWfxIgYCKb959WyL97r0DxC5sSU
-         8KIow+zHfZtcquhW8YMGSZG9I6d3U8kkGU4Ho8H3iZX4ZMxGn/ESDdChgsRUGrFNKUXy
-         i2M89dKNwroXn2PJhbT73YubR/jVcgCdRHWvYjgZ/lUe6dc3yScQ0SVETdxxgczZb/3m
-         LyreTGXvvPZetzLALY+LHkNNX87pQNvk6ZSoLr+PPcX3LYWGJ79ysJ/y4uG8TryRKFMX
-         arBA==
-X-Gm-Message-State: AOAM532Z60mF6n7d/YMCs3wVU4I1vlTt9Pfw96xYb/CLpnU+sH8VHXZn
-        /FN6hWemwQqgJXF64b6E7r2U8nfRs+F6lcf1Da8=
-X-Google-Smtp-Source: ABdhPJxPWuUVMmCsJll590lxcX3FUKbgd71i6nIoh0ZydFGbplw/o9febMpu6Mv6DOTrtp2ltM5kHrANFd2w2IZum5Q=
-X-Received: by 2002:a17:906:33c7:: with SMTP id w7mr2067255eja.398.1603462917224;
- Fri, 23 Oct 2020 07:21:57 -0700 (PDT)
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o98sUAeRbrb+A+UaiLkMy3FmWgT2O18cCb+RARaOj3E=;
+        b=ZtERHIjG4uGEuNdQpV9AAsNtxVpt2felKwuFRA8PTd9wLKHkb47Pjxm3XYl4QVK177
+         Iu1iLQLTbwk4fITM9SxAZbDze3M9JySrHn7XYj20hZoxjS1UmHqsLWv2x/kun2STeR48
+         ejSeojqenVtOJ5e99zODyNIVaR7R+tTrO+DzmnDRQQzLmK+0RVe1uRCocSJf3PCpgTJm
+         rFKmEdEhf0/GbVrMU2M0zCMcXkLzOHAbKLtVF/XWZdmevx+21Q43os7jSiILGNjH2WlX
+         ZKBrCRUm+HGFnUkOyC1wncaDXcR8GV5h9wY4tA3+EHk/x9J9360+oANfkBDSQOxx4n4y
+         T14w==
+X-Gm-Message-State: AOAM530Y5NlLGauHPlbOWVqEk2OUbnvq874PelPGLf7NV2pwKeKJ81np
+        0jZG7KhKRQJDf/YFvVQ7ZUht8/qR8XBjhGy03T4=
+X-Google-Smtp-Source: ABdhPJwgpoExunuD3z+CFCmAmQnUOxHL9KEOxmodPiG+o6BfjQjmAOAw9j4PuUH3O5RHY0D3tPDLOJZ2XzpkVyWqyDI=
+X-Received: by 2002:a19:8114:: with SMTP id c20mr774275lfd.77.1603462984856;
+ Fri, 23 Oct 2020 07:23:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20180129005948.7714-1-bjorn.andersson@linaro.org>
-In-Reply-To: <20180129005948.7714-1-bjorn.andersson@linaro.org>
-Sender: getarunks@gmail.com
-X-Google-Sender-Delegation: getarunks@gmail.com
-From:   Arun KS <arunks.linux@gmail.com>
-Date:   Fri, 23 Oct 2020 19:51:45 +0530
-X-Google-Sender-Auth: _vvNSE9j93IlwHnXLdmbEcZjtDI
-Message-ID: <CAKZGPAPrwXNeYk+bDiMBRczVf4PaBANnzhmenZie+V0BJ7OqBg@mail.gmail.com>
-Subject: Re: [PATCH] pinctrl: msm: Use dynamic GPIO numbering
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Linus Walleij <linus.walleij@linaro.org>,
-        linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Timur Tabi <timur@codeaurora.org>,
-        Arun KS <getarunks@gmail.com>
+References: <20201022122421.133976-1-gnurou@gmail.com>
+In-Reply-To: <20201022122421.133976-1-gnurou@gmail.com>
+From:   Alexandre Courbot <gnurou@gmail.com>
+Date:   Fri, 23 Oct 2020 23:22:52 +0900
+Message-ID: <CAAVeFu+P-3pkQGZJgvoX6cRZj8keek70sNy5ZkRozeygiLCwKQ@mail.gmail.com>
+Subject: Re: [PATCH] media: v4l2-mem2mem: always call poll_wait() on queues
+To:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Hans Verkuil <hverkuil-cisco@xs4all.nl>
+Cc:     linux-media <linux-media@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Jan 29, 2018 at 8:30 AM Bjorn Andersson
-<bjorn.andersson@linaro.org> wrote:
+On Thu, Oct 22, 2020 at 9:24 PM Alexandre Courbot <gnurou@gmail.com> wrote:
 >
-> The base of the TLMM gpiochip should not be statically defined as 0, fix
-> this to not artificially restrict the existence of multiple pinctrl-msm
-> devices.
-
-Can someone please provide the details why this is needed for
-pinctrl-msm.  Is there any msm-chipset using multiple tlmm devices?  I
-m only concerned because, after this change, the use of gpio number
-from user space has become a little difficult. Can we merge the patch
-from Timur to maintain the past behavior when multiple tlmm devices
-are not present, which is most likely the case?
-
-     static int base = 0;
-
-     chip->base = base;
-     base = -1;
-
-Regards,
-Arun
-
+> do_poll()/do_select() seem to set the _qproc member of poll_table to
+> NULL the first time they are called on a given table, making subsequent
+> calls of poll_wait() on that table no-ops. This is a problem for mem2mem
+> which calls poll_wait() on the V4L2 queues' waitqueues only when a
+> queue-related event is requested, which may not necessarily be the case
+> during the first poll.
 >
-> Fixes: f365be092572 ("pinctrl: Add Qualcomm TLMM driver")
-> Reported-by: Timur Tabi <timur@codeaurora.org>
-> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
+> For instance, a stateful decoder is typically only interested in
+> EPOLLPRI events when it starts, and will switch to listening to both
+> EPOLLPRI and EPOLLIN after receiving the initial resolution change event
+> and configuring the CAPTURE queue. However by the time that switch
+> happens and v4l2_m2m_poll_for_data() is called for the first time,
+> poll_wait() has become a no-op and the V4L2 queues waitqueues thus
+> cannot be registered.
+>
+> Fix this by moving the registration to v4l2_m2m_poll() and do it whether
+> or not one of the queue-related events are requested.
+>
+> Signed-off-by: Alexandre Courbot <gnurou@gmail.com>
 > ---
->  drivers/pinctrl/qcom/pinctrl-msm.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> I seem to be hitting all the polling corner cases recently! ^_^; This
+> time I was wondering why epoll_wait() never returned after I received
+> the first resolution change event from the vicodec stateful decoder.
+> This is why - please take a look!
 >
-> diff --git a/drivers/pinctrl/qcom/pinctrl-msm.c b/drivers/pinctrl/qcom/pinctrl-msm.c
-> index 495432f3341b..95e5c5ea40af 100644
-> --- a/drivers/pinctrl/qcom/pinctrl-msm.c
-> +++ b/drivers/pinctrl/qcom/pinctrl-msm.c
-> @@ -818,7 +818,7 @@ static int msm_gpio_init(struct msm_pinctrl *pctrl)
->                 return -EINVAL;
+>  drivers/media/v4l2-core/v4l2-mem2mem.c | 8 +++++---
+>  1 file changed, 5 insertions(+), 3 deletions(-)
 >
->         chip = &pctrl->chip;
-> -       chip->base = 0;
-> +       chip->base = -1;
->         chip->ngpio = ngpio;
->         chip->label = dev_name(pctrl->dev);
->         chip->parent = pctrl->dev;
+> diff --git a/drivers/media/v4l2-core/v4l2-mem2mem.c b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> index b221b4e438a1..65476ef2879f 100644
+> --- a/drivers/media/v4l2-core/v4l2-mem2mem.c
+> +++ b/drivers/media/v4l2-core/v4l2-mem2mem.c
+> @@ -887,9 +887,6 @@ static __poll_t v4l2_m2m_poll_for_data(struct file *file,
+>         src_q = v4l2_m2m_get_src_vq(m2m_ctx);
+>         dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
+>
+> -       poll_wait(file, &src_q->done_wq, wait);
+> -       poll_wait(file, &dst_q->done_wq, wait);
+> -
+>         /*
+>          * There has to be at least one buffer queued on each queued_list, which
+>          * means either in driver already or waiting for driver to claim it
+> @@ -922,9 +919,14 @@ __poll_t v4l2_m2m_poll(struct file *file, struct v4l2_m2m_ctx *m2m_ctx,
+>                        struct poll_table_struct *wait)
+>  {
+>         struct video_device *vfd = video_devdata(file);
+> +       struct vb2_queue *src_q = v4l2_m2m_get_src_vq(m2m_ctx);
+> +       struct vb2_queue *dst_q = v4l2_m2m_get_dst_vq(m2m_ctx);
+>         __poll_t req_events = poll_requested_events(wait);
+>         __poll_t rc = 0;
+>
+> +       poll_wait(file, &src_q->done_wq, wait);
+> +       poll_wait(file, &dst_q->done_wq, wait);
+
+This should probably include a comment to not move this back to
+v4l2_m2m_poll_for_data(). I'll add one and send a v2 unless someone
+points out that the premise of this patch is a bad idea to begin with.
+
+
+> +
+>         if (req_events & (EPOLLOUT | EPOLLWRNORM | EPOLLIN | EPOLLRDNORM))
+>                 rc = v4l2_m2m_poll_for_data(file, m2m_ctx, wait);
+>
 > --
-> 2.15.0
+> 2.29.0
 >
-> --
-> To unsubscribe from this list: send the line "unsubscribe linux-arm-msm" in
-> the body of a message to majordomo@vger.kernel.org
-> More majordomo info at  http://vger.kernel.org/majordomo-info.html
