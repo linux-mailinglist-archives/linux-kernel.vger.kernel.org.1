@@ -2,241 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D875297435
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8993B29746E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:37:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750950AbgJWQfQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:35:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33228 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751871AbgJWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:33:51 -0400
-Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E5AA524640;
-        Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603470829;
-        bh=kKdcFIDbvdIdbsg1p/Q0zZPYj9lZBHWVYn7UPRPdRmc=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MNfRxv0N9bT8FY1LJcnC3/1Mk38o6gShcU3ocS0Qh0WQ7dNgJFHZrMjOEMdEeDg0z
-         ZR+yeCxJVVpbSzGHkSe0f7oM3CGKYGIYBw5oCf0QopHixbOq8bd0L4Cm/HIzl+53RG
-         4tQQek6j+l7RulUlkXnLYJ/b6PU8QcyshTZjRCLg=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Axx-TT; Fri, 23 Oct 2020 18:33:46 +0200
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 56/56] scrpits: kernel-doc: validate kernel-doc markup with the actual names
-Date:   Fri, 23 Oct 2020 18:33:43 +0200
-Message-Id: <a21343a7012c87391c4850bf3151ebd82add8d1c.1603469755.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+        id S465112AbgJWQgv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:36:51 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49464 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464515AbgJWQgl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 12:36:41 -0400
+Received: from mail-io1-xd44.google.com (mail-io1-xd44.google.com [IPv6:2607:f8b0:4864:20::d44])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A9F81C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:36:41 -0700 (PDT)
+Received: by mail-io1-xd44.google.com with SMTP id z5so2537223iob.1
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 09:36:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=KOj/oHfwxUuvaYgCe+uyCqY9qKTixx5oRdiXvb0Y2Lo=;
+        b=Gbrae/12ltjvScvPtnck8CY8F6IEdPW8r/G5bdTru4Mr495QtvKEqkx0wCOE4lldFA
+         SHWlX0VslTR9iSEUphZvQvdMtzRWnTwBUSTSOQCNJtQrWAESJzw7fIL7AJr9kGtbZ8/f
+         HMM2cinNOf8VUvHb41p7hJGjHIG673cq2szUmhE3kOz3xfp1UUVPbv55iYMtLZlGbcMg
+         2iheUBSAqcfjBWrv70lgwLHePg9f8H9Js/Omdq5aylRwapBb8j2dcsCtRwrhSnYCzJWN
+         sta32ZfUuTVJCWy5XvjMNjk3eFd3zJKRe2SPo5ZXFGwpNAwCudtKiCk8dzg87ZaFFOIJ
+         kCnA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=KOj/oHfwxUuvaYgCe+uyCqY9qKTixx5oRdiXvb0Y2Lo=;
+        b=kVYqssWHYIsf9/UrlNYIZFzOEwDG7GtBXb/bn8f1xTzdVJLrw2OKDXSAOZ1W9Po1Sa
+         hdXglQaF0Yy2ZgBd9ZYsTMTGmZ/Ux9/Qg3oVd9LFUyykAh2G7Jxw6ZhPIt8/EwPg0dMn
+         g11xtObxegP/FdUHNHyJ0pDJjumc49Q18bnR9BW8uFl4V7xOmfthy7LtV/Z2L8C17nEw
+         MZ03+qPjjZ6/UiKsW3OLBd3ntpY330OwjMLIpDnQ3XRhdxCTXP/Lsp7Ny16dVjTERbc2
+         3ej0VgO0fwDZg9o/TRwtiDCDRQimqCrscQwrcku/dqjq5z4vq8gvuhuZmF9feE4Tq0Yv
+         7k3w==
+X-Gm-Message-State: AOAM5335XF7xwMQRTjy/5pTFjdMkTQY16xql7eeXW9wOdwgPVRwhX4Ut
+        ZL8iqFAF7wPNFOwhekD0QSayon1yHjtRlxaQD9sM2w==
+X-Google-Smtp-Source: ABdhPJznzDOojs2FtX5ZA1bExkgHggY5gvxhCu5xAgM9eK5VkKYxyXwxGKhU6pI5JVBM4/sb4lnPGLtlKOILsQYlJxg=
+X-Received: by 2002:a5d:8e12:: with SMTP id e18mr2043995iod.99.1603471000904;
+ Fri, 23 Oct 2020 09:36:40 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+References: <20201023111352.GA289522@rdias-suse-pc.lan> <CANn89iJDt=XpUZA_uYK98cK8tctW6M=f4RFtGQpTxRaqwnnqSQ@mail.gmail.com>
+ <20201023155145.GA316015@rdias-suse-pc.lan> <CANn89iL2VOH+Mg9-U7pkpMkKykDfhoX-GMRnF-oBmZmCGohDtA@mail.gmail.com>
+ <20201023160628.GA316690@rdias-suse-pc.lan>
+In-Reply-To: <20201023160628.GA316690@rdias-suse-pc.lan>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 23 Oct 2020 18:36:29 +0200
+Message-ID: <CANn89i+OZF2HJQYT0FGtzyFeZMdof9RAfGXQRKUVY6Hg9ZPpcg@mail.gmail.com>
+Subject: Re: [PATCH] tcp: fix race condition when creating child sockets from syncookies
+To:     Ricardo Dias <rdias@memsql.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-doc currently expects that the kernel-doc markup to come
-just before the function/enum/struct/union/typedef prototype.
+On Fri, Oct 23, 2020 at 6:06 PM Ricardo Dias <rdias@memsql.com> wrote:
 
-Yet, if it find things like:
+> And what about the loopback interface? Why couldn't the loopback
+> interface also use a single RX queue?
+>
 
-	/**
-	 * refcount_add - add a value to a refcount
-	 * @i: the value to add to the refcount
-	 * @r: the refcount
-	 */
-	static inline void __refcount_add(int i, refcount_t *r, int *oldp);
-	static inline void refcount_add(int i, refcount_t *r);
+Loopback is using a per-cpu queue, with no crossing, for efficiency.
 
-Kernel-doc will do the wrong thing:
+That means : whenever a packet is sent on lo interface from CPU X, it
+is put on CPU X backlog queue.
 
-	foobar.h:6: warning: Function parameter or member 'oldp' not described in '__refcount_add'
-	.. c:function:: void __refcount_add (int i, refcount_t *r, int *oldp)
-
-	   add a value to a refcount
-
-	**Parameters**
-
-	``int i``
-	  the value to add to the refcount
-
-	``refcount_t *r``
-	  the refcount
-
-	``int *oldp``
-	  *undescribed*
-
-Basically, it will document "__refcount_add" with the kernel-doc
-markup for refcount_add.
-
-If both functions have the same arguments, this won't even
-produce any warning!
-
-Add a logic to check if the kernel-doc identifier matches the actual
-name of the C function or data structure that will be documented.
-
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- scripts/kernel-doc | 62 ++++++++++++++++++++++++++++++++++------------
- 1 file changed, 46 insertions(+), 16 deletions(-)
-
-diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-index 311d213ee74d..1371cd45f78b 100755
---- a/scripts/kernel-doc
-+++ b/scripts/kernel-doc
-@@ -382,6 +382,9 @@ my $inline_doc_state;
- # 'function', 'struct', 'union', 'enum', 'typedef'
- my $decl_type;
- 
-+# Name of the kernel-doc identifier for non-DOC markups
-+my $identifier;
-+
- my $doc_start = '^/\*\*\s*$'; # Allow whitespace at end of comment start.
- my $doc_end = '\*/';
- my $doc_com = '\s*\*\s*';
-@@ -1203,6 +1206,11 @@ sub dump_struct($$) {
- 	$declaration_name = $2;
- 	my $members = $3;
- 
-+	if ($identifier ne $declaration_name) {
-+	    print STDERR "${file}:$.: warning: expecting prototype for $decl_type $identifier. Prototype was for $decl_type $declaration_name instead\n";
-+	    return;
-+	}
-+
- 	# ignore members marked private:
- 	$members =~ s/\/\*\s*private:.*?\/\*\s*public:.*?\*\///gosi;
- 	$members =~ s/\/\*\s*private:.*//gosi;
-@@ -1391,6 +1399,11 @@ sub dump_enum($$) {
-     }
- 
-     if ($declaration_name) {
-+	if ($identifier ne $declaration_name) {
-+	    print STDERR "${file}:$.: warning: expecting prototype for enum $identifier. Prototype was for enum $declaration_name instead\n";
-+	    return;
-+	}
-+
- 	my %_members;
- 
- 	$members =~ s/\s+$//;
-@@ -1446,6 +1459,11 @@ sub dump_typedef($$) {
- 	$declaration_name = $2;
- 	my $args = $3;
- 
-+	if ($identifier ne $declaration_name) {
-+	    print STDERR "${file}:$.: warning: expecting prototype for typedef $identifier. Prototype was for typedef $declaration_name instead\n";
-+	    return;
-+	}
-+
- 	create_parameterlist($args, ',', $file, $declaration_name);
- 
- 	output_declaration($declaration_name,
-@@ -1472,6 +1490,11 @@ sub dump_typedef($$) {
-     if ($x =~ /typedef.*\s+(\w+)\s*;/) {
- 	$declaration_name = $1;
- 
-+	if ($identifier ne $declaration_name) {
-+	    print STDERR "${file}:$.: warning: expecting prototype for typedef $identifier. Prototype was for typedef $declaration_name instead\n";
-+	    return;
-+	}
-+
- 	output_declaration($declaration_name,
- 			   'typedef',
- 			   {'typedef' => $declaration_name,
-@@ -1791,6 +1814,11 @@ sub dump_function($$) {
- 	return;
-     }
- 
-+    if ($identifier ne $declaration_name) {
-+	print STDERR "${file}:$.: warning: expecting prototype for $identifier(). Prototype was for $declaration_name() instead\n";
-+	return;
-+    }
-+
-     my $prms = join " ", @parameterlist;
-     check_sections($file, $declaration_name, "function", $sectcheck, $prms);
- 
-@@ -1873,6 +1901,7 @@ sub tracepoint_munge($) {
- 			     "$prototype\n";
- 	} else {
- 		$prototype = "static inline void trace_$tracepointname($tracepointargs)";
-+		$identifier = "trace_$identifier";
- 	}
- }
- 
-@@ -2036,7 +2065,6 @@ sub process_normal() {
- #
- sub process_name($$) {
-     my $file = shift;
--    my $identifier;
-     my $descr;
- 
-     if (/$doc_block/o) {
-@@ -2049,12 +2077,19 @@ sub process_name($$) {
- 	} else {
- 	    $section = $1;
- 	}
--    }
--    elsif (/$doc_decl/o) {
-+    } elsif (/$doc_decl/o) {
- 	$identifier = $1;
--	if (/\s*([\w\s]+?)(\(\))?\s*-/) {
-+	if (/\s*([\w\s]+?)(\(\))?\s*([-:].*)?$/) {
- 	    $identifier = $1;
- 	}
-+	if ($identifier =~ m/^(struct|union|enum|typedef)\b\s*(\S*)/) {
-+	    $decl_type = $1;
-+	    $identifier = $2;
-+	} else {
-+	    $decl_type = 'function';
-+	    $identifier =~ s/^define\s+//;
-+	}
-+	$identifier =~ s/\s+$//;
- 
- 	$state = STATE_BODY;
- 	# if there's no @param blocks need to set up default section
-@@ -2062,7 +2097,7 @@ sub process_name($$) {
- 	$contents = "";
- 	$section = $section_default;
- 	$new_start_line = $. + 1;
--	if (/-(.*)/) {
-+	if (/[-:](.*)/) {
- 	    # strip leading/trailing/multiple spaces
- 	    $descr= $1;
- 	    $descr =~ s/^\s*//;
-@@ -2080,20 +2115,15 @@ sub process_name($$) {
- 	    ++$warnings;
- 	}
- 
--	if ($identifier =~ m/^struct\b/) {
--	    $decl_type = 'struct';
--	} elsif ($identifier =~ m/^union\b/) {
--	    $decl_type = 'union';
--	} elsif ($identifier =~ m/^enum\b/) {
--	    $decl_type = 'enum';
--	} elsif ($identifier =~ m/^typedef\b/) {
--	    $decl_type = 'typedef';
--	} else {
--	    $decl_type = 'function';
-+	if ($identifier eq "") {
-+	    print STDERR "${file}:$.: warning: wrong kernel-doc identifier on line:\n";
-+	    print STDERR $_;
-+	    ++$warnings;
-+	    $state = STATE_NORMAL;
- 	}
- 
- 	if ($verbose) {
--	    print STDERR "${file}:$.: info: Scanning doc for $identifier\n";
-+	    print STDERR "${file}:$.: info: Scanning doc for $decl_type $identifier\n";
- 	}
-     } else {
- 	print STDERR "${file}:$.: warning: Cannot understand $_ on line $.",
--- 
-2.26.2
-
+If the connect() and sendmsg() are run from different cpus, then the
+ACK (from last packet of 3WH) and the data packet might land on
+different queues.
