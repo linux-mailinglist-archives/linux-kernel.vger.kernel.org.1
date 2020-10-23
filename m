@@ -2,102 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E050C297150
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:30:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AE51F297156
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:33:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750598AbgJWOa0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:30:26 -0400
-Received: from pb-smtp1.pobox.com ([64.147.108.70]:61887 "EHLO
-        pb-smtp1.pobox.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370692AbgJWOa0 (ORCPT
+        id S1750620AbgJWOdT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:33:19 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:33651 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1750606AbgJWOdS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:30:26 -0400
-Received: from pb-smtp1.pobox.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id E950989A1A;
-        Fri, 23 Oct 2020 10:30:23 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed; d=pobox.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-type; s=sasl; bh=t
-        t5+BrDSPhAtDayJ8zzkJFyDTEA=; b=a/BGi96ZSarOgWEoSgbvTvEfxyNSY10Vl
-        nrvzXeUSWJc0WDl9tMKfO43xcKpbd6pc4wgiCYUBwQ7+4e4h1M5X6ksrehH7/mtF
-        Baau/ASVn0uDZdsrK1FmxiZIbnpYgeMGOojB17I5GrEdE3Wr3qhSWJhorLZmK57i
-        6kW8+ZcSjc=
-DomainKey-Signature: a=rsa-sha1; c=nofws; d=pobox.com; h=from:to:cc
-        :subject:date:message-id:mime-version:content-type; q=dns; s=
-        sasl; b=xgr3BW7rEJYA1aMYUxlEtWFVYXfU1lNz2ojsc9ncmQoY+bed06DFNuBA
-        aubyblKG/XPRlVT57a7XKZpVz1ysC4owBDwPhDqKU2uzodIWa8es1ay5bK/MxlBu
-        368YweIlslavV5Z7vatOD5GiJeZZomc4KSlk+cyau2uj8mV+H+E=
-Received: from pb-smtp1.nyi.icgroup.com (unknown [127.0.0.1])
-        by pb-smtp1.pobox.com (Postfix) with ESMTP id E1B5589A18;
-        Fri, 23 Oct 2020 10:30:23 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-Received: from pobox.com (unknown [34.74.119.39])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        Fri, 23 Oct 2020 10:33:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603463597;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=CNcKkabSWjxdlB9if9c65y0HaLkS2aARxhdVq9CbB84=;
+        b=RgZTviaSdR7S1v4WSyKdNXpiKR0I4cepr4PlzBtm5onpd8D7rJQRtG2Kp+M+5C3QH071E2
+        7TdyG7+xrdM3VPZ/s0rd0RzlvJXgV5gVAdxhqJrdLC4Fz40jeglMuAEkWekJR4eVPuIISS
+        WKns5e8z61xA4dR83ldxpS/D5/c9cbI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-106-GwdqF8yrPV2_n9bqFnB1rQ-1; Fri, 23 Oct 2020 10:33:12 -0400
+X-MC-Unique: GwdqF8yrPV2_n9bqFnB1rQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by pb-smtp1.pobox.com (Postfix) with ESMTPSA id 6D70F89A17;
-        Fri, 23 Oct 2020 10:30:23 -0400 (EDT)
-        (envelope-from junio@pobox.com)
-From:   Junio C Hamano <gitster@pobox.com>
-To:     git@vger.kernel.org
-Cc:     Linux Kernel <linux-kernel@vger.kernel.org>,
-        git-packagers@googlegroups.com
-Subject: [ANNOUNCE] Git v2.29.1
-Date:   Fri, 23 Oct 2020 07:30:22 -0700
-Message-ID: <xmqq4kmlj9q9.fsf@gitster.c.googlers.com>
-User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 8331C804B6A;
+        Fri, 23 Oct 2020 14:33:09 +0000 (UTC)
+Received: from [10.36.114.18] (ovpn-114-18.ams2.redhat.com [10.36.114.18])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 44FD05D9CC;
+        Fri, 23 Oct 2020 14:33:04 +0000 (UTC)
+Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+From:   David Hildenbrand <david@redhat.com>
+To:     David Laight <David.Laight@ACULAB.COM>,
+        'Greg KH' <gregkh@linuxfoundation.org>
+Cc:     Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+References: <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com>
+ <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
+ <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
+ <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
+ <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <999e2926-9a75-72fd-007a-1de0af341292@redhat.com>
+Date:   Fri, 23 Oct 2020 16:33:03 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Pobox-Relay-ID: 4929F52C-153C-11EB-9BE6-D152C8D8090B-77302942!pb-smtp1.pobox.com
+In-Reply-To: <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The latest maintenance release Git v2.29.1 is now available at
-the usual places.
+On 23.10.20 15:09, David Hildenbrand wrote:
+> On 23.10.20 14:46, David Laight wrote:
+>> From: Greg KH <gregkh@linuxfoundation.org>
+>>> Sent: 22 October 2020 14:51
+>>
+>> I've rammed the code into godbolt.
+>>
+>> https://godbolt.org/z/9v5PPW
+>>
+>> Definitely a clang bug.
+>>
+>> Search for [wx]24 in the clang output.
+>> nr_segs comes in as w2 and the initial bound checks are done on w2.
+>> w24 is loaded from w2 - I don't believe this changes the high bits.
+>> There are no references to w24, just x24.
+>> So the kmalloc_array() is passed 'huge' and will fail.
+>> The iov_iter_init also gets the 64bit value.
+>>
+>> Note that the gcc code has a sign-extend copy of w2.
+> 
+> Do we have a result from using "unsigned long" in the base function and
+> explicitly masking of the high bits? That should definitely work.
+> 
+> Now, I am not a compiler expert, but as I already cited, at least on
+> x86-64 clang expects that the high bits were cleared by the caller - in
+> contrast to gcc. I suspect it's the same on arm64, but again, I am no
+> compiler expert.
+> 
+> If what I said and cites for x86-64 is correct, if the function expects
+> an "unsigned int", it will happily use 64bit operations without further
+> checks where valid when assuming high bits are zero. That's why even
+> converting everything to "unsigned int" as proposed by me won't work on
+> clang - it assumes high bits are zero (as indicated by Nick).
+> 
+> As I am neither a compiler experts (did I mention that already? ;) ) nor
+> an arm64 experts, I can't tell if this is a compiler BUG or not.
+> 
 
-The change in this release affects only those who build from the
-source *and* install with a non-standard SKIP_DASHED_BUILT_INS
-option turned on.  With the option turned on, Git 2.29 forgot to
-install a few programs in /usr/bin that made it unusable as the
-server side to accept pushes and fetches.
+I just checked against upstream code generated by clang 10 and it
+properly discards the upper 32bit via a mov w23 w2.
 
-To everybody else, this release is irrelevant and ignorable.  We
-know about at least one other brown-paper-bag regression we are
-going to fix with another maintenance release, so it may be a better
-idea to wait for 2.29.2 for most people.
+So at least clang 10 indeed properly assumes we could have garbage and
+masks it off.
 
-The tarballs are found at:
+Maybe the issue is somewhere else, unrelated to nr_pages ... or clang 11
+behaves differently.
 
-    https://www.kernel.org/pub/software/scm/git/
+-- 
+Thanks,
 
-The following public repositories all have a copy of the 'v2.29.1'
-tag and the 'maint' branch that the tag points at:
-
-  url = https://kernel.googlesource.com/pub/scm/git/git
-  url = git://repo.or.cz/alt-git.git
-  url = https://github.com/gitster/git
-
-----------------------------------------------------------------
-
-Git v2.29.1 Release Notes
-=========================
-
-This is to fix the build procedure change in 2.29 where we failed
-to install a few programs that should be installed in /usr/bin
-(namely, receive-pack, upload-archive and upload-pack) when the
-non-default SKIP_DASHED_BUILT_INS installation option is in effect.
-
-A minor glitch in a non-default installation may usually not deserve
-a hotfix, but I think Git for Windows ship binaries built with this
-option, so let's make an exception.
-
-----------------------------------------------------------------
-
-Changes since v2.29.0 are as follows:
-
-Johannes Schindelin (1):
-      SKIP_DASHED_BUILT_INS: do not skip the bin/ programs
-
-Junio C Hamano (1):
-      Git 2.29.1
+David / dhildenb
 
