@@ -2,120 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B8B1E29788C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:57:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0429B297886
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:57:16 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756457AbgJWU5g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:57:36 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33688 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755568AbgJWU5f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:57:35 -0400
-Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1206BC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 13:57:35 -0700 (PDT)
-Received: by mail-ot1-x344.google.com with SMTP id m11so2544418otk.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 13:57:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=0Q8U+/L+NAiRMdEBVnPpKYlruFlFQNzfDyRSymCS36c=;
-        b=CItn4+dM+cWWmNiowOMFXvq9LN4GMPvAPD7XH8de04+O2R8pu8O3HFIeVGOE8PqtUc
-         ZspxhlmfaEwDafnVzByaj/vrEY1JudiGizG+mcmam/4dx5G/zXbG3L456Y7nyFPEVDQq
-         CFkYNkOPLHg8+H1O6NuugtrNZ1H+gArqi8waCIVeECZ+1gc5rcxlJDOa30OmdG7yo6Uz
-         4xdt/agS32663/X+bhNEKix2ifHHJE+I1HPf220V7NeUTcq7dA10qavuyMML9TPSAJFF
-         gOTG7EBIyuHei5muqksmsVTk0YBNfI1yCWrEJU8UDRs2SStbXozawXW1zCRjace47zWH
-         tRwQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=0Q8U+/L+NAiRMdEBVnPpKYlruFlFQNzfDyRSymCS36c=;
-        b=kAHKWRTSOmCAN9/Qp23UWlaclJkEZVEGdXw/Mf49U4IFCgm5oxkrzX1iVQefMKHNda
-         ZZyCZMx80oXQMXMl1VISk0yhis4Locivrttq6wDV9n3ABJbJ1+VJivkyO/Z95gqSbcxL
-         hjAbsz/OenSTjHR4V5119REseaJYyKrLap+NT4baACPkQfh6uLCzE+HqTDi1Ls30MP/x
-         3uawTI2Q2n1IKtVdZI5Ygy8aoqQNTj9m7wDZWZ3G6brht4l4fTPz3+AKB5nXJNaNoEKG
-         sMAsyk7t7zQMLdelwZqvc5xXoYypuAkvwFUhhB3kENgHEKEH2EWg4f3PJYlRGw0XVGYR
-         Ok6w==
-X-Gm-Message-State: AOAM5336/0di2TQSFHKiNHZ9aUgRztUqUcmD0OZPcfLnDi3o18f+DR/p
-        3T+fFTlhACPyHlTSW6KI5StVSjg+U/7I4yLFuXwK4YUkDz3nu5Ug
-X-Google-Smtp-Source: ABdhPJyOLkHkxb4WQxUBzquEtUfl5S2mbcqKFZaUqbtDYYpTb7DpMjuz1m7knFJj9r+KXaBZtOc20iTkNUQ0vZOOldo=
-X-Received: by 2002:a05:6830:1db1:: with SMTP id z17mr3510344oti.30.1603486654226;
- Fri, 23 Oct 2020 13:57:34 -0700 (PDT)
+        id S1755494AbgJWU5M (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:57:12 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58980 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1755398AbgJWU5M (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 16:57:12 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id DB8F520936;
+        Fri, 23 Oct 2020 20:57:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603486631;
+        bh=thTY5zzsx7x7mMLiptzquDZ6NGow+NNFqLQSrgL6Qhg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=EYsxIIr2Lc8Ke+p7KXQJoR9s3TpIKPDEeXpMZk3IgazHq+cA4qO0S3X39ecdto3nr
+         ZE7XfaDDJS0UC8XJYfVX/Ke0dYAwKRILtt0gzdP4PbzRUetJ/Z7+VyXFnicpuAsbek
+         uXCacsSCDVzuOlgYPB65xext8Wy0XIGcSadEZ/hw=
+Date:   Fri, 23 Oct 2020 13:57:09 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Yi Li <yili@winhong.com>
+Cc:     netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        davem@davemloft.net
+Subject: Re: [PATCH] net treewide: Use skb_is_gso
+Message-ID: <20201023135709.0f89fd59@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201021103030.3432231-1-yili@winhong.com>
+References: <20201021103030.3432231-1-yili@winhong.com>
 MIME-Version: 1.0
-References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
- <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
- <CABJPP5Dx4qj-_0gOx0bmaWvJj3okB-tNGJg5-8Y3KF2LnCjowQ@mail.gmail.com>
- <2e8279841d604dde8a3335c092db921007f6744e.camel@perches.com>
- <2a3b90ee-b9bd-2586-9d68-45cbf7e499a9@gmail.com> <8710630d8c01bf6f3749e3d11d193a805f2d2048.camel@perches.com>
-In-Reply-To: <8710630d8c01bf6f3749e3d11d193a805f2d2048.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sat, 24 Oct 2020 02:27:05 +0530
-Message-ID: <CABJPP5AcjAq0kg0MMggd2D6YUwVhq96otm-qQB3Snddt77VxAA@mail.gmail.com>
-Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle more patterns
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 2:12 AM Joe Perches <joe@perches.com> wrote:
->
-> On Sat, 2020-10-24 at 00:44 +0530, Dwaipayan Ray wrote:
-> > Hi,
->
-> Hi again.
->
-> > I modified the check to check the attributes from the map.
-> > There are two checks - one for the normal attributes and
-> > one for the ones with arguments, which needs just a bit more
-> > processing.
-> >
-> > So attributes like __packed__ as well as those like
-> > __aligned__(x) are handled.
-> >
-> > What do you think?
-> >
-> > ---
-> > +            $line =~ /__attribute__\s*\(\s*($balanced_parens)\s*\)/)
-> > {
-> > +            my $attr = trim($1);
-> > +            $attr =~ s/\(\s*_*(.*)\)/$1/;
-> > +            while($attr =~ s/(.*)_$/$1/) {}  # Remove trailing
-> > underscores
->
->         I think this could be a single test like:
->
->                 while ($attr =~ /\s*(\w+)\s*(${balanced_parens})?/g) {
->                         my $curr_attr = $1;
->                         my $parens = $2;
->                         $curr_attr = s/^_*(.*)_*$/$1/;
->
+On Wed, 21 Oct 2020 18:30:30 +0800 Yi Li wrote:
+> This patch introduces the use of the inline func skb_is_gso in place of
+> tests for skb_shinfo(skb)->gso_size.
+> 
+> - if (skb_shinfo(skb)->gso_size)
+> + if (skb_is_gso(skb))
+> 
+> - if (unlikely(skb_shinfo(skb)->gso_size))
+> + if (unlikely(skb_is_gso(skb)))
+> 
+> - if (!skb_shinfo(skb)->gso_size)
+> + if (!skb_is_gso(skb))
+> 
+> Signed-off-by: Yi Li <yili@winhong.com>
 
-Thanks, I will do that.
+The places where gso_size is used on the Rx path may be driver
+specific, so I'd rather you left those out.
 
-Also I tried the pattern  attr =~ s/^_*(.*)_*$/$1/
-for trimming the _ earlier. I think it doesn't trim the
-trailing underscores in the suffix as (.*) captures everything greedily.
+At a quick look - the following ifs ones are on the Rx path:
 
-Is the iterative one perhaps okay instead?
-while($attr =~ s/(.*)_$/$1/) {}
+> diff --git a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+> index 1a6ec1a12d53..af20884cd772 100644
+> --- a/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+> +++ b/drivers/net/ethernet/broadcom/bnx2x/bnx2x_cmn.c
+> @@ -732,7 +732,7 @@ static void bnx2x_gro_receive(struct bnx2x *bp, struct bnx2x_fastpath *fp,
+>  			       struct sk_buff *skb)
+>  {
+>  #ifdef CONFIG_INET
+> -	if (skb_shinfo(skb)->gso_size) {
+> +	if (skb_is_gso(skb)) {
+>  		switch (be16_to_cpu(skb->protocol)) {
+>  		case ETH_P_IP:
+>  			bnx2x_gro_csum(bp, skb, bnx2x_gro_ip_csum);
 
-> > +            my %attr_list = (
-> > +                "alias"            => "__alias",
-> > +                "aligned"        => "__aligned",
->
-> These might be better using tab alignment.
->
-> And you might special case format(printf/scanf here too
+> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> index a362516a3185..e694c99ee540 100644
+> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_enet.c
+> @@ -2990,7 +2990,7 @@ static int hns3_set_gro_and_checksum(struct hns3_enet_ring *ring,
+>  						    HNS3_RXD_GRO_SIZE_M,
+>  						    HNS3_RXD_GRO_SIZE_S);
+>  	/* if there is no HW GRO, do not set gro params */
+> -	if (!skb_shinfo(skb)->gso_size) {
+> +	if (!skb_is_gso(skb)) {
+>  		hns3_rx_checksum(ring, skb, l234info, bd_base_info, ol_info);
+>  		return 0;
+>  	}
+> diff --git a/drivers/net/ethernet/ibm/ibmveth.c b/drivers/net/ethernet/ibm/ibmveth.c
+> index 7ef3369953b6..9c264768f166 100644
+> --- a/drivers/net/ethernet/ibm/ibmveth.c
+> +++ b/drivers/net/ethernet/ibm/ibmveth.c
+> @@ -1251,7 +1251,7 @@ static void ibmveth_rx_mss_helper(struct sk_buff *skb, u16 mss, int lrg_pkt)
+>  		tcph->check = 0;
+>  	}
+>  
+> -	if (skb_shinfo(skb)->gso_size) {
+> +	if (skb_is_gso(skb)) {
+>  		hdr_len = offset + tcph->doff * 4;
+>  		skb_shinfo(skb)->gso_segs =
+>  				DIV_ROUND_UP(skb->len - hdr_len,
 
-Yes I think they are special cases now too. I didn't post the
-entire context, so my mistake.
-
-Thanks,
-Dwaipayan.
+> diff --git a/drivers/net/ethernet/qlogic/qede/qede_fp.c b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+> index a2494bf85007..092e24893cb9 100644
+> --- a/drivers/net/ethernet/qlogic/qede/qede_fp.c
+> +++ b/drivers/net/ethernet/qlogic/qede/qede_fp.c
+> @@ -934,7 +934,7 @@ static void qede_gro_receive(struct qede_dev *edev,
+>  	}
+>  
+>  #ifdef CONFIG_INET
+> -	if (skb_shinfo(skb)->gso_size) {
+> +	if (skb_is_gso(skb)) {
+>  		skb_reset_network_header(skb);
+>  
+>  		switch (skb->protocol) {
