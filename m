@@ -2,171 +2,261 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFC0297733
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:46:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7791F297739
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:48:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755008AbgJWSqX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:46:23 -0400
-Received: from bedivere.hansenpartnership.com ([96.44.175.130]:34954 "EHLO
-        bedivere.hansenpartnership.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S465802AbgJWSqX (ORCPT
+        id S1755060AbgJWSsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:48:12 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41880 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755045AbgJWSsL (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:46:23 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by bedivere.hansenpartnership.com (Postfix) with ESMTP id 6D5C712811DE;
-        Fri, 23 Oct 2020 11:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603478782;
-        bh=Z0P7xAz4y7i8dIiRV6SiqEYgPgrzt7vkHce19pGuLV4=;
-        h=Subject:From:To:Cc:Date:From;
-        b=UOMASn5BsZ6W70lgP+52uOxHNGJwSgUYxwW3mm+tdgygcz+3sEVmxB9HRDTXDIiJD
-         lHgENK2kJr7kwB+IAbAilcshr+LOuruEoxL8OtoTXK1BU2CkaCIIuIxrLhtV4qKSH2
-         bNY16WlrNEdDlQRaQpxDpwopgImGvMTtBiO+sqIw=
-Received: from bedivere.hansenpartnership.com ([127.0.0.1])
-        by localhost (bedivere.hansenpartnership.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id 3KDFmZn3ZexH; Fri, 23 Oct 2020 11:46:22 -0700 (PDT)
-Received: from jarvis.int.hansenpartnership.com (unknown [IPv6:2601:600:8280:66d1::c447])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by bedivere.hansenpartnership.com (Postfix) with ESMTPSA id 1345B12810AE;
-        Fri, 23 Oct 2020 11:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=hansenpartnership.com;
-        s=20151216; t=1603478782;
-        bh=Z0P7xAz4y7i8dIiRV6SiqEYgPgrzt7vkHce19pGuLV4=;
-        h=Subject:From:To:Cc:Date:From;
-        b=UOMASn5BsZ6W70lgP+52uOxHNGJwSgUYxwW3mm+tdgygcz+3sEVmxB9HRDTXDIiJD
-         lHgENK2kJr7kwB+IAbAilcshr+LOuruEoxL8OtoTXK1BU2CkaCIIuIxrLhtV4qKSH2
-         bNY16WlrNEdDlQRaQpxDpwopgImGvMTtBiO+sqIw=
-Message-ID: <4affd2a9c347e5f1231485483bf852737ea08151.camel@HansenPartnership.com>
-Subject: [GIT PULL] final round of SCSI updates for the 5.9+ merge window
-From:   James Bottomley <James.Bottomley@HansenPartnership.com>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Fri, 23 Oct 2020 11:46:21 -0700
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.34.4 
+        Fri, 23 Oct 2020 14:48:11 -0400
+Received: from mail-wm1-x342.google.com (mail-wm1-x342.google.com [IPv6:2a00:1450:4864:20::342])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5CB0CC0613D4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:48:11 -0700 (PDT)
+Received: by mail-wm1-x342.google.com with SMTP id c194so2721635wme.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:48:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=a0PzLeTg3yakVCFG7qD5Xig1rmXRsgD+wVT4ZvpvDgc=;
+        b=MYXkJzrFf+sXRkOO2oFypfPDGTu4Ljs/eaRLz3UGkWRrODXeXSCJGpHCko/QrL0+0a
+         cAfkTtvK76NKERxdaNv/Wzb86wFgiUpNk11FllfJuD4SegIhJ3XqAwsR/+opIGm8UfnJ
+         A7yWeYdxf7n2bzxqTGOl7QCksS4y4+hWL94yrJW35pzOyawWxC+6JSD5CGqH1TIfHAla
+         cmNAhUsmuLdEpry4hZUh2/sNKhbhLEHNrMJC6hkNxWoDAuFWkytb3jnR1SbmhLER4Ui/
+         uw20cq0vLlodd8a4r0++6HuMZxF+hyOHRzO2FcUnKaXV/qjYGQUJXT04EjHdvyZZw7Is
+         B27w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=a0PzLeTg3yakVCFG7qD5Xig1rmXRsgD+wVT4ZvpvDgc=;
+        b=j8nT3YLw6bhg9RO51xX76IuapzPuncRC0DV4LfjLszZcuF9yAB0Szd3VMPQ76Ii+GH
+         nM9Aj5QONetvuu5j3CnNNJtd5WxjxA/ZIn0bojF3MgSbr8whjj0vDKu1laiG+Lisoj+4
+         48VGOb2nNJOdqrsjmZl161D5pYxX9/njG+LWJhtm+d3R/cvbi+GlgtfYAa5HQgt6Mfbv
+         JiHbs4wq60DxiNyGRMG2p1+U7YZd1SY29rpoEzjsu/y2Tv8Y8kBRRuhaD/urldU6p8Wn
+         VpSgqkH2noHVtyaQRV7xox9gRbickyn/alfa/IWPmG6EmU9vHT/DQzwfKmzUKdcFDobG
+         BYpg==
+X-Gm-Message-State: AOAM530xfMjn0pDO4dWbLnzlUKZoUPTxEe63kEWQxOCzRKwcEIvlIgmT
+        VLYJb+RMxn+Hx/bOBjrUoaz3FA==
+X-Google-Smtp-Source: ABdhPJzJ9MrdBDYGIxOFyAs3TuHSCjPE/x6kmNr1dP9zBCFjQ8F0sC1WS1pL9q0L0vRzPXAbs9HxdA==
+X-Received: by 2002:a1c:59c3:: with SMTP id n186mr3671406wmb.32.1603478889733;
+        Fri, 23 Oct 2020 11:48:09 -0700 (PDT)
+Received: from elver.google.com ([100.105.32.75])
+        by smtp.gmail.com with ESMTPSA id 1sm5314861wre.61.2020.10.23.11.48.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 11:48:08 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 20:48:03 +0200
+From:   Marco Elver <elver@google.com>
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        yzaikin@google.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] kunit: Support for Parameterized Testing
+Message-ID: <20201023184803.GA3922681@elver.google.com>
+References: <20201023150536.282568-1-98.arpi@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023150536.282568-1-98.arpi@gmail.com>
+User-Agent: Mutt/1.14.6 (2020-07-11)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The set of core changes here is Christoph's submission path cleanups. 
-These introduced a couple of regressions when first proposed so they
-got held over from the initial merge window pull request to give more
-testing time, which they've now had and Syzbot has confirmed the
-regression it detected is fixed.  The other main changes are two driver
-updates (arcmsr, pm80xx) and assorted minor clean ups.
+On Fri, Oct 23, 2020 at 08:35PM +0530, Arpitha Raghunandan wrote:
+> Implementation of support for parameterized testing in KUnit.
 
-The patch is available here:
+Already looks much cleaner, thanks for using this approach!
 
-git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+I think the commit message needs a brief summary of the approach.
 
-The short changelog is:
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> ---
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+> 
+>  include/kunit/test.h | 45 ++++++++++++++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 20 +++++++++++++++++++-
+>  2 files changed, 64 insertions(+), 1 deletion(-)
+> 
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index a423fffefea0..c417ac140326 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -141,6 +141,7 @@ struct kunit;
+>  struct kunit_case {
+>  	void (*run_case)(struct kunit *test);
+>  	const char *name;
+> +	void* (*generate_params)(struct kunit *test, void *prev);
 
-Christoph Hellwig (11):
-      scsi: core: Set sc_data_direction to DMA_NONE for no-transfer commands
-      scsi: sr: Initialize ->cmd_len
-      scsi: core: Only start the request just before dispatching
-      scsi: core: Remove scsi_setup_cmnd() and scsi_setup_fs_cmnd()
-      scsi: core: Clean up allocation and freeing of sgtables
-      scsi: core: Rename scsi_mq_prep_fn() to scsi_prepare_cmd()
-      scsi: core: Rename scsi_prep_state_check() to scsi_device_state_check()
-      scsi: core: Use rq_dma_dir in scsi_setup_cmnd()
-      scsi: core: Move command size detection out of the fast path
-      scsi: core: Remove scsi_init_cmd_errh
-      scsi: core: Don't export scsi_device_from_queue()
+Would adding documentation above this field be the right place, or
+somewhere else? In any case, some explanation of the protocol would be
+good.
 
-Christophe JAILLET (1):
-      scsi: isci: Fix a typo in a comment
+>  	/* private: internal use only. */
+>  	bool success;
+> @@ -162,6 +163,9 @@ static inline char *kunit_status_to_string(bool status)
+>   * &struct kunit_case for an example on how to use it.
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> +#define KUNIT_CASE_PARAM(test_name, gen_params)			\
+> +		{ .run_case = test_name, .name = #test_name,	\
+> +		  .generate_params = gen_params }
+>  
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +212,15 @@ struct kunit {
+>  	const char *name; /* Read only after initialization! */
+>  	char *log; /* Points at case log after initialization */
+>  	struct kunit_try_catch try_catch;
+> +	/* param_values points to test case parameters in parameterized tests */
+> +	void *param_values;
+> +	/*
+> +	 * current_param stores the index of the parameter in
+> +	 * the array of parameters in parameterized tests.
+> +	 * current_param + 1 is printed to indicate the parameter
+> +	 * that causes the test to fail in case of test failure.
+> +	 */
+> +	int current_param;
+>  	/*
+>  	 * success starts as true, and may only be set to false during a
+>  	 * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1755,36 @@ do {									       \
+>  						fmt,			       \
+>  						##__VA_ARGS__)
+>  
+> +/**
+> + * kunit_param_generator_helper() - Helper method for test parameter generators
+> + * 				    required in parameterized tests.
+> + * @test: The test context object.
+> + * @prev_param: a pointer to the previous test parameter, NULL for first parameter.
+> + * @param_array: a user-supplied pointer to an array of test parameters.
+> + * @array_size: number of test parameters in the array.
+> + * @type_size: size of one test parameter.
+> + */
+> +static inline void *kunit_param_generator_helper(struct kunit *test,
 
-Colin Ian King (2):
-      scsi: qla2xxx: Fix return of uninitialized value in rval
-      scsi: sym53c8xx_2: Fix sizeof() mismatch
+I don't think this needs to be inline, but see my other suggestion
+below, which might make this function obsolete.
 
-Daniel Wagner (1):
-      scsi: qla2xxx: Do not consume srb greedily
+> +					void *prev_param,
+> +					void *param_array,
+> +					size_t array_size,
+> +					size_t type_size)
+> +{
+> +	KUNIT_ASSERT_EQ(test, (prev_param - param_array) % type_size, 0);
+> +
+> +	if (!prev_param)
+> +		return param_array;
+> +
+> +	KUNIT_ASSERT_GE(test, prev_param, param_array);
+> +
+> +	if (prev_param + type_size < param_array + (array_size * type_size))
+> +		return prev_param + type_size;
+> +	else
+> +		return NULL;
+> +}
+> +
+> +#define KUNIT_PARAM_GENERATOR_HELPER(test, prev_param, param_array, param_type) \
+> +	kunit_param_generator_helper(test, prev_param, param_array,		\
+> +				ARRAY_SIZE(param_array), sizeof(param_type))
 
-Jason Yan (1):
-      scsi: gdth: Make option_setup() static
+You do not need param_type, you can use the same trick that ARRAY_SIZE
+uses:
 
-Jing Xiangfeng (2):
-      scsi: myrb: Remove redundant assignment to variable timeout
-      scsi: bfa: Fix error return in bfad_pci_init()
+	#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
 
-Julia Lawall (1):
-      scsi: target: rd: Drop double zeroing
-
-Liu Shixin (4):
-      scsi: snic: Simplify the return expression of svnic_cq_alloc()
-      scsi: fnic: Simplify the return expression of vnic_wq_copy_alloc()
-      scsi: initio: Use module_pci_driver() to simplify the code
-      scsi: dc395x: Use module_pci_driver() to simplify the code
-
-Pavel Machek (CIP) (1):
-      scsi: qla2xxx: Use constant when it is known
-
-Qinglang Miao (2):
-      scsi: fcoe: Simplify the return expression of fcoe_sysfs_setup()
-      scsi: qla2xxx: Convert to DEFINE_SHOW_ATTRIBUTE
-
-Tom Rix (1):
-      scsi: qla2xxx: Initialize variable in qla8044_poll_reg()
-
-Viswas G (4):
-      scsi: pm80xx: Driver version update
-      scsi: pm80xx: Increase the number of outstanding I/O supported to 1024
-      scsi: pm80xx: Remove DMA memory allocation for ccb and device structures
-      scsi: pm80xx: Increase number of supported queues
-
-Ye Bin (2):
-      scsi: qla4xxx: Fix inconsistent format argument type
-      scsi: myrb: Fix inconsistent format argument types
-
-Zheng Yongjun (1):
-      scsi: 53c700: Remove set but not used variable
-
-ching Huang (4):
-      scsi: arcmsr: Update driver version to v1.50.00.02-20200819
-      scsi: arcmsr: Add support for ARC-1886 series RAID controllers
-      scsi: arcmsr: Fix device hot-plug monitoring timer stop
-      scsi: arcmsr: Remove unnecessary syntax
-
-And the diffstat:
-
- drivers/scsi/53c700.c                 |   4 -
- drivers/scsi/arcmsr/arcmsr.h          | 102 ++++++++-
- drivers/scsi/arcmsr/arcmsr_hba.c      | 377 ++++++++++++++++++++++++++--------
- drivers/scsi/bfa/bfad.c               |   1 +
- drivers/scsi/dc395x.c                 |  25 +--
- drivers/scsi/fcoe/fcoe_sysfs.c        |   8 +-
- drivers/scsi/fnic/vnic_wq_copy.c      |   8 +-
- drivers/scsi/gdth.c                   | 151 +++++++-------
- drivers/scsi/initio.c                 |  14 +-
- drivers/scsi/isci/remote_node_table.h |   2 +-
- drivers/scsi/myrb.c                   |   5 +-
- drivers/scsi/pm8001/pm8001_ctl.c      |   6 +-
- drivers/scsi/pm8001/pm8001_defs.h     |  27 ++-
- drivers/scsi/pm8001/pm8001_hwi.c      |  38 ++--
- drivers/scsi/pm8001/pm8001_init.c     | 221 +++++++++++++-------
- drivers/scsi/pm8001/pm8001_sas.h      |  15 +-
- drivers/scsi/pm8001/pm80xx_hwi.c      | 109 +++++-----
- drivers/scsi/qla2xxx/qla_dfs.c        |  68 +-----
- drivers/scsi/qla2xxx/qla_isr.c        |  42 ++--
- drivers/scsi/qla2xxx/qla_nvme.c       |   8 +-
- drivers/scsi/qla2xxx/qla_nx2.c        |   2 +-
- drivers/scsi/qla4xxx/ql4_nx.c         |   2 +-
- drivers/scsi/scsi_lib.c               | 108 ++++------
- drivers/scsi/sd.c                     |  27 +--
- drivers/scsi/snic/vnic_cq.c           |   8 +-
- drivers/scsi/sr.c                     |  17 +-
- drivers/scsi/sym53c8xx_2/sym_hipd.c   |   2 +-
- drivers/target/target_core_rd.c       |   2 +-
- include/scsi/scsi_cmnd.h              |   3 +-
- 29 files changed, 818 insertions(+), 584 deletions(-)
-
-James
+So you could use sizeof((param_aray)[0]) instead of sizeof(param_type).
+ARRAY_SIZE already checks for you that it's a real array via
+__must_be_array().
 
 
+The other question is, will kunit_param_generator_helper() find much use
+without the KUNIT_PARAM_GENERATOR_HELPER() macro? If I have some
+complicated generator protocol to generate params, then I'd just
+directly write the generator function. If your intent is to simplify the
+common-case array based generators, why not just have a macro generate
+the generator function?
+
+More specifically, have this macro here:
+
++#define KUNIT_ARRAY_PARAM(name, array)								\
++	static void *name##_gen_params(struct kunit *test, void *prev)				\
++	{											\
++		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
++		return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;			\
++	}
+
+[ It is entirely untested, but if it works verbatim you'll probably need my
+
+	Co-developed-by: Marco Elver <elver@google.com>
+	Signed-off-by: Marco Elver <elver@google.com>
+ 
+ just in case... ]
+
+Then, it can be used as follows:
+
+	static int num_cpus[] = {1, 2, 3, 4, 5};
+	KUNIT_ARRAY_PARAM(num_cpus, num_cpus);
+
+Then somewhere else:
+
+	KUNIT_CASE_PARAM(some_test, num_cpus_gen_params);
+
+>  #endif /* _KUNIT_TEST_H */
+> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
+> index 750704abe89a..0e6ffe6384a7 100644
+> --- a/lib/kunit/test.c
+> +++ b/lib/kunit/test.c
+> @@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
+>  }
+>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
+>  
+> +static void kunit_print_failed_param(struct kunit *test)
+> +{
+> +	kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
+> +}
+> +
+>  static void kunit_print_string_stream(struct kunit *test,
+>  				      struct string_stream *stream)
+>  {
+> @@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
+>  	assert->format(assert, stream);
+>  
+>  	kunit_print_string_stream(test, stream);
+> +	if (test->param_values)
+> +		kunit_print_failed_param(test);
+>  
+>  	WARN_ON(string_stream_destroy(stream));
+>  }
+> @@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
+>  		}
+>  	}
+>  
+> -	test_case->run_case(test);
+> +	if (!test_case->generate_params) {
+> +		test_case->run_case(test);
+> +	} else {
+> +		test->param_values = test_case->generate_params(test, NULL);
+> +		test->current_param = 0;
+> +
+> +		while (test->param_values) {
+> +			test_case->run_case(test);
+> +			test->param_values = test_case->generate_params(test, test->param_values);
+> +			test->current_param++;
+> +		}
+> +	}
+>  }
+>  
+>  static void kunit_case_internal_cleanup(struct kunit *test)
+
+Otherwise looks fine.
+
+Thanks,
+-- Marco
