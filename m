@@ -2,97 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4EA129707C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:29:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F844297080
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:30:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464839AbgJWN3y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:29:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44484 "EHLO mail.kernel.org"
+        id S464846AbgJWN37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:29:59 -0400
+Received: from foss.arm.com ([217.140.110.172]:52682 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S374233AbgJWN3x (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:29:53 -0400
-Received: from localhost (unknown [176.167.163.208])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C2474208E4;
-        Fri, 23 Oct 2020 13:29:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603459793;
-        bh=PIj6gL/WL9dtdsJ1vZSsuwhKFFiZ2/p2I3g1d0riLbg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=Rw60FdcUJe+qyTPBmrOTcj5E3NoXurL8oWAxHIHPprbeTYuMCT+7Gs3n5RBd2Jy5W
-         WRf+9+yliV+0OQ5yC5iaBH4gFNMCFFUYp3ljQpakpeC0v3npDWlVhd5N6nD37RbpdM
-         ZmYSewtFRn5JthS5ZvXUueon8401r4+/gaYy2aI0=
-Date:   Fri, 23 Oct 2020 15:29:50 +0200
-From:   Frederic Weisbecker <frederic@kernel.org>
+        id S374233AbgJWN35 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:29:57 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 8939D142F;
+        Fri, 23 Oct 2020 06:29:56 -0700 (PDT)
+Received: from [10.57.13.45] (unknown [10.57.13.45])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 542D13F66B;
+        Fri, 23 Oct 2020 06:29:54 -0700 (PDT)
+Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
+ tmc_enable_etf_sink_perf()
 To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        mtosatti@redhat.com, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        helgaas@kernel.org, jeffrey.t.kirsher@intel.com,
-        jacob.e.keller@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com,
-        Thomas Gleixner <tglx@linutronix.de>
-Subject: Re: [PATCH v4 2/4] sched/isolation: Extend nohz_full to isolate
- managed IRQs
-Message-ID: <20201023132950.GA47962@lothringen>
-References: <20200928183529.471328-1-nitesh@redhat.com>
- <20200928183529.471328-3-nitesh@redhat.com>
- <20201023132505.GZ2628@hirez.programming.kicks-ass.net>
+Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Mike Leach <mike.leach@linaro.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
+        Stephen Boyd <swboyd@chromium.org>,
+        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org
+References: <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
+ <20201022150609.GI2611@hirez.programming.kicks-ass.net>
+ <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
+ <20201022212033.GA646497@xps15>
+ <20201023073905.GM2611@hirez.programming.kicks-ass.net>
+ <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+ <20201023094115.GR2611@hirez.programming.kicks-ass.net>
+ <bd8c136d-9dfa-a760-31f9-eb8d6698aced@arm.com>
+ <20201023105431.GM2594@hirez.programming.kicks-ass.net>
+ <2457de8f-8bc3-b350-fdc7-61276da31ce6@arm.com>
+ <20201023131628.GY2628@hirez.programming.kicks-ass.net>
+From:   Suzuki Poulose <suzuki.poulose@arm.com>
+Message-ID: <728fd89c-78f2-0c5c-0443-c91c62b02f0e@arm.com>
+Date:   Fri, 23 Oct 2020 14:29:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.2
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023132505.GZ2628@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201023131628.GY2628@hirez.programming.kicks-ass.net>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-GB
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:25:05PM +0200, Peter Zijlstra wrote:
-> On Mon, Sep 28, 2020 at 02:35:27PM -0400, Nitesh Narayan Lal wrote:
-> > Extend nohz_full feature set to include isolation from managed IRQS. This
+On 10/23/20 2:16 PM, Peter Zijlstra wrote:
+> On Fri, Oct 23, 2020 at 01:56:47PM +0100, Suzuki Poulose wrote:
+>> On 10/23/20 11:54 AM, Peter Zijlstra wrote:
 > 
-> So you say it's for managed-irqs, the feature is actually called
-> MANAGED_IRQ, but, AFAICT, it does *NOT* in fact affect managed IRQs.
+>>> I think I'm more confused now :-/
+>>>
+>>> Where do we use ->owner after event creation? The moment you create your
+>>> eventN you create the link to sink0. That link either succeeds (same
+>>> 'cookie') or fails.
+>>
+>> The event->sink link is established at creation. At event::add(), we
+>> check the sink is free (i.e, it is inactive) or is used by an event
+>> of the same session (this is where the owner field *was* required. But
+>> this is not needed anymore, as we cache the "owner" read pid in the
+>> handle->rb->aux_priv for each event and this is compared against the
+>> pid from the handle currently driving the hardware)
 > 
-> Also, as per Thomas' earlier points, managed-irqs are in fact perfectly
-> fine and don't need help at at...
+> *groan*.. that's going to be a mess with sinks that are shared between
+> CPUs :/
 > 
-> > is required specifically for setups that only uses nohz_full and still
-> > requires isolation for maintaining lower latency for the listed CPUs.
-> > 
-> > Suggested-by: Frederic Weisbecker <frederic@kernel.org>
+>>> I'm also not seeing why exactly we need ->owner in the first place.
+>>>
+>>> Suppose we make the sink0 device return -EBUSY on open() when it is
+>>> active. Then a perf session can open the sink0 device, create perf
+>>> events and attach them to the sink0 device using
+>>> perf_event_attr::config2. The events will attach to sink0 and increment
+>>> its usage count, such that any further open() will fail.
+>>
+>> Thats where we are diverging. The sink device doesn't have any fops. It
+>> is all managed by the coresight driver transparent to the perf tool. All
+>> the perf tool does is, specifying which sink to use (btw, we now have
+>> automatic sink selection support which gets rid of this, and uses
+>> the best possible sink e.g, in case of per-CPU sinks).
+> 
+> per-CPU sinks sounds a lot better.
+> 
+> I'm really not convinced it makes sense to do what you do with shared
+> sinks though. You'll loose random parts of the execution trace because
+> of what the other CPUs do.
 
-Ah and yes there is this tag :-p
+The ETM trace protocol has in built TraceID to distinguish the packets
+and thus we could decode the trace streams from the shared buffer.
+[ But, we don't have buffer overflow interrupts (I am keeping the lid 
+closed on that can, for the sake of keeping sanity ;-) ), and thus
+any shared session could easily loose data unless we tune the AUX
+buffer size to a really large buffer ].
 
-So that's my bad, I really thought this thing was about managed IRQ.
-The problem is that I can't find a single documentation about them so I'm
-too clueless on that matter.
+> 
+> Full exclusive sink access is far more deterministic.
+> 
+>>> Once the events are created, the perf tool close()s the sink0 device,
+>>> which is now will in-use by the events. No other events can be attached
+>>> to it.
+>>>
+>>> Or are you doing the event->sink mapping every time you do: pmu::add()?
+>>> That sounds insane.
+>>
+>> Sink is already mapped at event create. But yes, the refcount on the
+>> sink is managed at start/stop. Thats when we need to make sure that the
+>> event being scheduled belongs to the same owner as the one already
+>> driving the sink.
+> 
+> pmu::add() I might hope, because pmu::start() is not allowed to fail.
+> 
 
-Thanks.
+Right. If we can't get the sink, we simply truncate the buffer.
 
-> > Signed-off-by: Nitesh Narayan Lal <nitesh@redhat.com>
-> > ---
-> >  kernel/sched/isolation.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> > index 5a6ea03f9882..9df9598a9e39 100644
-> > --- a/kernel/sched/isolation.c
-> > +++ b/kernel/sched/isolation.c
-> > @@ -141,7 +141,7 @@ static int __init housekeeping_nohz_full_setup(char *str)
-> >  	unsigned int flags;
-> >  
-> >  	flags = HK_FLAG_TICK | HK_FLAG_WQ | HK_FLAG_TIMER | HK_FLAG_RCU |
-> > -		HK_FLAG_MISC | HK_FLAG_KTHREAD;
-> > +		HK_FLAG_MISC | HK_FLAG_KTHREAD | HK_FLAG_MANAGED_IRQ;
-> >  
-> >  	return housekeeping_setup(str, flags);
-> >  }
-> > -- 
-> > 2.18.2
-> > 
+>> That way another session could use the same sink if it is free. i.e
+>>
+>> perf record -e cs_etm/@sink0/u --per-thread app1
+>>
+>> and
+>>
+>> perf record -e cs_etm/@sink0/u --per-thread app2
+>>
+>> both can work as long as the sink is not used by the other session.
+> 
+> Like said above, if sink is shared between CPUs, that's going to be a
+> trainwreck :/ Why do you want that?
+
+That ship has sailed. That is how the current generation of systems are,
+unfortunately. But as I said, this is changing and there are guidelines
+in place to avoid these kind of topologies. With the future
+technologies, this will be completely gone.
+
+> 
+> And once you have per-CPU sinks like mentioned above, the whole problem
+> goes away.
+
+True, until then, this is the best we could do.
+
+Suzuki
+
+
+
