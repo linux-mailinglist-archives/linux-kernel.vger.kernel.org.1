@@ -2,195 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6587C297570
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:00:34 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0CF36297577
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:03:50 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752184AbgJWRA0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:00:26 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53304 "EHLO
+        id S1752229AbgJWRDo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:03:44 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53794 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1751221AbgJWRAY (ORCPT
+        with ESMTP id S464587AbgJWRDm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:00:24 -0400
-Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 69C11C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:00:24 -0700 (PDT)
-Received: by mail-il1-x141.google.com with SMTP id w17so2021790ilg.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:00:24 -0700 (PDT)
+        Fri, 23 Oct 2020 13:03:42 -0400
+Received: from mail-oo1-xc43.google.com (mail-oo1-xc43.google.com [IPv6:2607:f8b0:4864:20::c43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3CB7DC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:03:40 -0700 (PDT)
+Received: by mail-oo1-xc43.google.com with SMTP id l18so553203ooa.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:03:40 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
+        d=google.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=o1VEizSN6TM+raklNtIXpsapMZWxETouBV0mamAPQo0=;
-        b=V+Gg9uICyKn5tIe46atfWAON+AixWQBBQ6Pn1mKsJ9LTyk3eEKENj8UdU0jz8oEJ/T
-         iY3pDKKGEDsjM5zsL71qeD2upMbTwf/0oJPU2qhreG0VoH8Btr+eBgBDvB9g58CZSQ96
-         Sgr8eEMx01tJ+JJaSGqxsdIW8XuWtidjH3RUren590Av2KVvyiUDBkwd3pzRSI5r/akg
-         4Be7/bT6OAM0TaD6IR1KR8VzV6ouQZqBCGjLPr0uzK1WtJoC3shbqQqA3Z4hhhb9EDl9
-         hZ/RmeUyYqgXTzKPMWN2s3dmpVJISsGiyopT/jpiQLJijpHH+ZJruUA+qldH7HfKM+2Z
-         DsWA==
+         :cc;
+        bh=kDz4gn4LXn8aroBJkBNj8TPyfOZEVwrvC4JEhPovxCc=;
+        b=tjp99hRnrJBWxkp6Vt0ZTXhFtCr8W0JWcM22W0i9CA7yy4mHa6ojSztPNyjJ3u7rtD
+         7sCLlloe1t0myru2qd38kAns9VptXqnUuhDcXVC5gohNzj3MXvXdYgxqizZ3I3VtllXf
+         p5Xk4rlkLzsQHoKm9imbgsaeTbeHmYfx3sZz7CylGiqMZtt89WZzVA4LxCybWYkjDbXs
+         UFgov1fNAKJ1g1C3CbOHJNiAiNpSzX2y2ovtd1Ekthm8VPID/De9cCy9ciEvaMT/P5Pt
+         S++RquTwOhZMxYYRa1KSo/UDyv3g/bbC9cF0E5TRG0Jsn0GdNfx4nlaWOeGd8hoH+c5D
+         f5AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=o1VEizSN6TM+raklNtIXpsapMZWxETouBV0mamAPQo0=;
-        b=nCwj/HTuKAr7ghCIf6m75QzcIag6m3MbyOuCXQIa0Cs6txRVcrjO59ardYjMD3TJjy
-         pvixUl+y69JiOitGvJvz7OD5t/1eQPqJcd7sGcgt+Sy/YVQFzwvbWQihFzcthVw2GrHz
-         UdFMWuvMHJxwKfybhML93kr+fr5KHVCoxUAZiSHTrZYCAL7ROovPbNwOwuYFXBu0pTdp
-         ZAC+lsKBdB7dlgRSMMXwP4WSIqtb2CRwoSKX38LAvlbvgf6Q2pCjMlcy/lgjfukqKfGf
-         Cw4h7IU3Gq2WJizzHVopvo51putNulEs6veN+PmvhnRa8Jd0R10wA1BYdT+jiE6fle1v
-         7KVQ==
-X-Gm-Message-State: AOAM531JfRhIXsjjAQHvD28OYA0VHNEypGGgeQjWerahtU2bVH/0igAM
-        FLUHHRSWFVg0kbXFk5HNoMsPWvuhfh+qIgoYPViigg==
-X-Google-Smtp-Source: ABdhPJwrgJp/OuJrOp+n+UP8gE/pj8wa+8lsTQ0hX8+Y+rO4ME9yioa2pi9mLHL+KrbDWGnIoZjFUeIWTh+m6MuqhEo=
-X-Received: by 2002:a92:b6d2:: with SMTP id m79mr1190406ill.216.1603472422474;
- Fri, 23 Oct 2020 10:00:22 -0700 (PDT)
+         :message-id:subject:to:cc;
+        bh=kDz4gn4LXn8aroBJkBNj8TPyfOZEVwrvC4JEhPovxCc=;
+        b=Vo+4lc5ZsNhaC4BRVASR6vAuapy7SeE88gvLU7AP1jGYu4w9pG8D7xkbHJQCslKlyc
+         VZolXUWGGrPQ0o1ScTeOPmk0RxZW6Ms0WozpWNIDv0R7wbhyzbodZ/YL1ya4pwCh8Qxj
+         vBd/KMPMCjmEA/NCJH0jY9iQpdD5pmVz1EbwIbxWS3vzKyvavsDfMtzEcA6Y7sNJv5LZ
+         Fn2oYZGutFpkkT8/mXBvoh3mtHzTThEQco7c2c2NMhnYZAilqsrIm38rAISJiOr+Wdcc
+         T/rNgNqmUSaID7scWhw8FwQyRrwYKL4rUcmLu4DHn3D2cJvbMVJpXkuSI55axvT9OHSS
+         hX8A==
+X-Gm-Message-State: AOAM530fgq3PHLpB0Nop48wFjP+XeUY4wAXWmodgS3ZxVI8vLeU6Mksb
+        yZKjmz7YR5BuXCGuUX8OHhi3pjDxFAJ4FMawhs/Lf0cZ6Wg=
+X-Google-Smtp-Source: ABdhPJyUiPATpJxZtE/yL8srFLqEuuE6XYH/4Xen/h6AQ79x3D9IEVDVce9xV4+7I+k6nfpkG46wmc1vDcpKbn81EoA=
+X-Received: by 2002:a4a:dcc8:: with SMTP id h8mr2435632oou.81.1603472619282;
+ Fri, 23 Oct 2020 10:03:39 -0700 (PDT)
 MIME-Version: 1.0
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
- <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
- <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
- <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com> <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
-In-Reply-To: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
-From:   Naresh Kamboju <naresh.kamboju@linaro.org>
-Date:   Fri, 23 Oct 2020 22:30:11 +0530
-Message-ID: <CA+G9fYu5aGbMHaR1tewV9dPwXrUR5cbGHJC1BT=GSLsYYwN6Nw@mail.gmail.com>
-Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        X86 ML <x86@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
-        Al Viro <viro@zeniv.linux.org.uk>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+ <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com> <CALMp9eR3Ng-WBrumXaJAecLWZECf-1NfzW+eTA0VxWuAcKAjAA@mail.gmail.com>
+ <281bca2d-d534-1032-eed3-7ee7705cb12c@redhat.com> <CALMp9eQyJXko_CKPgg4xRDCsvOmA8zJvrg_kmU6weu=MwKBv0w@mail.gmail.com>
+ <823d5027-a1e5-4b91-2d35-693f3c2b9642@redhat.com>
+In-Reply-To: <823d5027-a1e5-4b91-2d35-693f3c2b9642@redhat.com>
+From:   Jim Mattson <jmattson@google.com>
+Date:   Fri, 23 Oct 2020 10:03:27 -0700
+Message-ID: <CALMp9eQBnvMOxo7u2yEavTpKJB845OFmCQ6BnqUYUoMdbt9U9w@mail.gmail.com>
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in KVM_GET_SUPPORTED_CPUID
+To:     Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 at 08:35, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Fri, Oct 23, 2020 at 2:07 AM Paolo Bonzini <pbonzini@redhat.com> wrote:
 >
-> On Thu, Oct 22, 2020 at 6:36 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org>=
- wrote:
-> >
-> > The kernel Naresh originally referred to is here:
-> >   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
+> On 22/10/20 19:13, Jim Mattson wrote:
+> > We don't actually use KVM_GET_SUPPORTED_CPUID at all today. If it's
+> > commonly being misinterpreted as you say, perhaps we should add a
+> > KVM_GET_TRUE_SUPPORTED_CPUID ioctl. Or, perhaps we can just fix this
+> > in the documentation?
 >
-> is unnecessary (because the 8-byte case is still just a single
-> register, no %eax:%edx games needed), it would be interesting to hear
-> if the attached patch fixes it. That would confirm that the problem
-> really is due to some register allocation issue interaction (or,
-> alternatively, it would tell me that there's something else going on).
+> Yes, I think we should fix the documentation and document the best
+> practices around MSRs and CPUID bits.  Mostly documenting what QEMU
+> does, perhaps without all the quirks it has to support old kernels that
+> messed things up even more.
+>
+> Paolo
 
-[Old patch from yesterday]
-
-After applying your patch on top on linux next tag 20201015
-there are two observations,
-  1) i386 build failed. please find build error build
-  2) x86_64 kasan test PASS and the reported error not found.
-
-
-i386 build failure,
-----------------------
-make -sk KBUILD_BUILD_USER=3DTuxBuild -C/linux -j16 ARCH=3Di386 HOSTCC=3Dgc=
-c
-CC=3D"sccache gcc" O=3Dbuild
-#
-In file included from ../include/linux/uaccess.h:11,
-                 from ../arch/x86/include/asm/fpu/xstate.h:5,
-                 from ../arch/x86/include/asm/pgtable.h:26,
-                 from ../include/linux/pgtable.h:6,
-                 from ../include/linux/mm.h:33,
-                 from ../include/linux/memblock.h:13,
-                 from ../fs/proc/page.c:2:
-../fs/proc/page.c: In function =E2=80=98kpagecgroup_read=E2=80=99:
-../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
-constraints in an =E2=80=98asm=E2=80=99
-  217 |  asm volatile("call __" #fn "_%P[size]"    \
-      |  ^~~
-../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
-=E2=80=98do_put_user_call=E2=80=99
-  244 | #define put_user(x, ptr) ({ might_fault();
-do_put_user_call(put_user,x,ptr); })
-      |                                            ^~~~~~~~~~~~~~~~
-../fs/proc/page.c:307:7: note: in expansion of macro =E2=80=98put_user=E2=
-=80=99
-  307 |   if (put_user(ino, out)) {
-      |       ^~~~~~~~
-make[3]: *** [../scripts/Makefile.build:283: fs/proc/page.o] Error 1
-make[3]: Target '__build' not remade because of errors.
-make[2]: *** [../scripts/Makefile.build:500: fs/proc] Error 2
-In file included from ../include/linux/uaccess.h:11,
-                 from ../include/linux/sched/task.h:11,
-                 from ../include/linux/sched/signal.h:9,
-                 from ../include/linux/rcuwait.h:6,
-                 from ../include/linux/percpu-rwsem.h:7,
-                 from ../include/linux/fs.h:33,
-                 from ../include/linux/cgroup.h:17,
-                 from ../include/linux/memcontrol.h:13,
-                 from ../include/linux/swap.h:9,
-                 from ../include/linux/suspend.h:5,
-                 from ../kernel/power/user.c:10:
-../kernel/power/user.c: In function =E2=80=98snapshot_ioctl=E2=80=99:
-../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
-constraints in an =E2=80=98asm=E2=80=99
-  217 |  asm volatile("call __" #fn "_%P[size]"    \
-      |  ^~~
-../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
-=E2=80=98do_put_user_call=E2=80=99
-  244 | #define put_user(x, ptr) ({ might_fault();
-do_put_user_call(put_user,x,ptr); })
-      |                                            ^~~~~~~~~~~~~~~~
-../kernel/power/user.c:340:11: note: in expansion of macro =E2=80=98put_use=
-r=E2=80=99
-  340 |   error =3D put_user(size, (loff_t __user *)arg);
-      |           ^~~~~~~~
-../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
-constraints in an =E2=80=98asm=E2=80=99
-  217 |  asm volatile("call __" #fn "_%P[size]"    \
-      |  ^~~
-../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
-=E2=80=98do_put_user_call=E2=80=99
-  244 | #define put_user(x, ptr) ({ might_fault();
-do_put_user_call(put_user,x,ptr); })
-      |                                            ^~~~~~~~~~~~~~~~
-../kernel/power/user.c:346:11: note: in expansion of macro =E2=80=98put_use=
-r=E2=80=99
-  346 |   error =3D put_user(size, (loff_t __user *)arg);
-      |           ^~~~~~~~
-../arch/x86/include/asm/uaccess.h:217:2: error: inconsistent operand
-constraints in an =E2=80=98asm=E2=80=99
-  217 |  asm volatile("call __" #fn "_%P[size]"    \
-      |  ^~~
-../arch/x86/include/asm/uaccess.h:244:44: note: in expansion of macro
-=E2=80=98do_put_user_call=E2=80=99
-  244 | #define put_user(x, ptr) ({ might_fault();
-do_put_user_call(put_user,x,ptr); })
-      |                                            ^~~~~~~~~~~~~~~~
-../kernel/power/user.c:357:12: note: in expansion of macro =E2=80=98put_use=
-r=E2=80=99
-  357 |    error =3D put_user(offset, (loff_t __user *)arg);
-      |            ^~~~~~~~
-
-
-x86_64 Kasan tested and the reported issue not found.
-https://lkft.validation.linaro.org/scheduler/job/1868029#L2374
-
-- Naresh
+I'd really like to be able to call an ioctl that will help me
+determine whether the host can support the guest CPUID information
+that I already have (e.g. on the target of a live migration). At first
+glance, KVM_GET_SUPPORTED_CPUID appeared to be that ioctl. Sadly, it
+appears that no such ioctl exists.
