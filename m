@@ -2,180 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF9F2972BB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:45:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55A392972CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:47:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751091AbgJWPpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:45:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34600 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S463313AbgJWPpZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:45:25 -0400
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S1751123AbgJWPqy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:46:54 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:22419 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S463664AbgJWPqw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:46:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603468010;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=TX4XQedEN+Ywa9WiNtmyeg6X9eUbMHcgElC578+OtLs=;
+        b=NANpI7/Uxb63n8pHMbnLZgBylrcczW4BEJKl/jiqHAMtWqiy305V+31zg548sgsTqBya8b
+        /30bkpw0iPM/D0XOzJ+YtUdLpnn/zBiD9FMXn3ClirnMih/EkEWrvhARxiloaEMG/Z2Zex
+        QiE/YNfUfrnX5r77IEV/TjJTNTa8vv4=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-283-sYnoJ2D_PkmEf7-0f3ougg-1; Fri, 23 Oct 2020 11:46:49 -0400
+X-MC-Unique: sYnoJ2D_PkmEf7-0f3ougg-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ED08024673;
-        Fri, 23 Oct 2020 15:45:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603467923;
-        bh=G6M/BTlJg0FbYXp3CDG9TBtlEGlMSzVeKa7vY6mNHfA=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=WyvjvOvROY+IG+DfKhwK9L8oCSrnKk8bKt9/1GzuHrmsiYW+IiqOIMkw+qft9jms4
-         rqUjOjdQu0Cbn9n/AHrl1OxN4dnOwY1ssJb51bdJJ0upNNWeBvDZL4ZUzD0AB7nnQ0
-         XgRSBdI4tBdHgVU+jxaLBory2RAlvJ16a/tw6mIw=
-Received: by mail-ed1-f51.google.com with SMTP id dn5so1970897edb.10;
-        Fri, 23 Oct 2020 08:45:22 -0700 (PDT)
-X-Gm-Message-State: AOAM530BoG3bfTXcTDYWJZ+nOSLWNqEyh0Pz/k3CeKnIjCYrU5V3SADg
-        +xL1yGyaB972NCZIgu4OgMuKmTMOBSfvs6qDng==
-X-Google-Smtp-Source: ABdhPJx0SUdWMn6Vo3xfJkuFhv02uNkzsQmCZ8hthB7UjShnrm6FmW8b0KoxznzvfpoL1Xhz7/ifyV9SXc3gShTo5t8=
-X-Received: by 2002:aa7:c3ca:: with SMTP id l10mr2814992edr.72.1603467921215;
- Fri, 23 Oct 2020 08:45:21 -0700 (PDT)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DF3B418B9F00;
+        Fri, 23 Oct 2020 15:46:47 +0000 (UTC)
+Received: from max.home.com (unknown [10.40.192.23])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id AC6BF277DF;
+        Fri, 23 Oct 2020 15:46:43 +0000 (UTC)
+From:   Andreas Gruenbacher <agruenba@redhat.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Andreas Gruenbacher <agruenba@redhat.com>,
+        cluster-devel@redhat.com, linux-kernel@vger.kernel.org
+Subject: [GIT PULL] GFS2 changes for 5.10
+Date:   Fri, 23 Oct 2020 17:46:41 +0200
+Message-Id: <20201023154642.1309908-1-agruenba@redhat.com>
 MIME-Version: 1.0
-References: <20201023133130.194140-1-fparent@baylibre.com> <20201023133130.194140-5-fparent@baylibre.com>
-In-Reply-To: <20201023133130.194140-5-fparent@baylibre.com>
-From:   Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Date:   Fri, 23 Oct 2020 23:45:10 +0800
-X-Gmail-Original-Message-ID: <CAAOTY_9QWfrExsjSaeGtA6KGZYLyscuc76jdDjHwawd8y964hA@mail.gmail.com>
-Message-ID: <CAAOTY_9QWfrExsjSaeGtA6KGZYLyscuc76jdDjHwawd8y964hA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/5] drm/mediatek: add DDP support for MT8167
-To:     Fabien Parent <fparent@baylibre.com>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        DTML <devicetree@vger.kernel.org>,
-        DRI Development <dri-devel@lists.freedesktop.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        David Airlie <airlied@linux.ie>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Chun-Kuang Hu <chunkuang.hu@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi, Fabien:
+Hi Linus,
 
-Fabien Parent <fparent@baylibre.com> =E6=96=BC 2020=E5=B9=B410=E6=9C=8823=
-=E6=97=A5 =E9=80=B1=E4=BA=94 =E4=B8=8B=E5=8D=889:31=E5=AF=AB=E9=81=93=EF=BC=
-=9A
->
-> Add DDP support for MT8167 SoC.
+could you please pull the following gfs2 changes for 5.10?
 
-Reviewed-by: Chun-Kuang Hu <chunkuang.hu@kernel.org>
+Thanks a lot,
+Andreas
 
-> Signed-off-by: Fabien Parent <fparent@baylibre.com>
-> ---
->
-> Changelog:
->
-> V2: don't set DDP_MUTEX_SOF_DSI{1,2,3} since they are not available on MT=
-8167
->
->  drivers/gpu/drm/mediatek/mtk_drm_ddp.c | 47 ++++++++++++++++++++++++++
->  1 file changed, 47 insertions(+)
->
-> diff --git a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c b/drivers/gpu/drm/med=
-iatek/mtk_drm_ddp.c
-> index 014c1bbe1df2..1f99db6b1a42 100644
-> --- a/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> +++ b/drivers/gpu/drm/mediatek/mtk_drm_ddp.c
-> @@ -25,6 +25,19 @@
->
->  #define INT_MUTEX                              BIT(1)
->
-> +#define MT8167_MUTEX_MOD_DISP_PWM              1
-> +#define MT8167_MUTEX_MOD_DISP_OVL0             6
-> +#define MT8167_MUTEX_MOD_DISP_OVL1             7
-> +#define MT8167_MUTEX_MOD_DISP_RDMA0            8
-> +#define MT8167_MUTEX_MOD_DISP_RDMA1            9
-> +#define MT8167_MUTEX_MOD_DISP_WDMA0            10
-> +#define MT8167_MUTEX_MOD_DISP_CCORR            11
-> +#define MT8167_MUTEX_MOD_DISP_COLOR            12
-> +#define MT8167_MUTEX_MOD_DISP_AAL              13
-> +#define MT8167_MUTEX_MOD_DISP_GAMMA            14
-> +#define MT8167_MUTEX_MOD_DISP_DITHER           15
-> +#define MT8167_MUTEX_MOD_DISP_UFOE             16
-> +
->  #define MT8173_MUTEX_MOD_DISP_OVL0             11
->  #define MT8173_MUTEX_MOD_DISP_OVL1             12
->  #define MT8173_MUTEX_MOD_DISP_RDMA0            13
-> @@ -73,6 +86,8 @@
->  #define MUTEX_SOF_DPI1                 4
->  #define MUTEX_SOF_DSI2                 5
->  #define MUTEX_SOF_DSI3                 6
-> +#define MT8167_MUTEX_SOF_DPI0          2
-> +#define MT8167_MUTEX_SOF_DPI1          3
->
->
->  struct mtk_disp_mutex {
-> @@ -135,6 +150,21 @@ static const unsigned int mt2712_mutex_mod[DDP_COMPO=
-NENT_ID_MAX] =3D {
->         [DDP_COMPONENT_WDMA1] =3D MT2712_MUTEX_MOD_DISP_WDMA1,
->  };
->
-> +static const unsigned int mt8167_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
-> +       [DDP_COMPONENT_AAL0] =3D MT8167_MUTEX_MOD_DISP_AAL,
-> +       [DDP_COMPONENT_CCORR] =3D MT8167_MUTEX_MOD_DISP_CCORR,
-> +       [DDP_COMPONENT_COLOR0] =3D MT8167_MUTEX_MOD_DISP_COLOR,
-> +       [DDP_COMPONENT_DITHER] =3D MT8167_MUTEX_MOD_DISP_DITHER,
-> +       [DDP_COMPONENT_GAMMA] =3D MT8167_MUTEX_MOD_DISP_GAMMA,
-> +       [DDP_COMPONENT_OVL0] =3D MT8167_MUTEX_MOD_DISP_OVL0,
-> +       [DDP_COMPONENT_OVL1] =3D MT8167_MUTEX_MOD_DISP_OVL1,
-> +       [DDP_COMPONENT_PWM0] =3D MT8167_MUTEX_MOD_DISP_PWM,
-> +       [DDP_COMPONENT_RDMA0] =3D MT8167_MUTEX_MOD_DISP_RDMA0,
-> +       [DDP_COMPONENT_RDMA1] =3D MT8167_MUTEX_MOD_DISP_RDMA1,
-> +       [DDP_COMPONENT_UFOE] =3D MT8167_MUTEX_MOD_DISP_UFOE,
-> +       [DDP_COMPONENT_WDMA0] =3D MT8167_MUTEX_MOD_DISP_WDMA0,
-> +};
-> +
->  static const unsigned int mt8173_mutex_mod[DDP_COMPONENT_ID_MAX] =3D {
->         [DDP_COMPONENT_AAL0] =3D MT8173_MUTEX_MOD_DISP_AAL,
->         [DDP_COMPONENT_COLOR0] =3D MT8173_MUTEX_MOD_DISP_COLOR0,
-> @@ -163,6 +193,13 @@ static const unsigned int mt2712_mutex_sof[DDP_MUTEX=
-_SOF_DSI3 + 1] =3D {
->         [DDP_MUTEX_SOF_DSI3] =3D MUTEX_SOF_DSI3,
->  };
->
-> +static const unsigned int mt8167_mutex_sof[DDP_MUTEX_SOF_DSI3 + 1] =3D {
-> +       [DDP_MUTEX_SOF_SINGLE_MODE] =3D MUTEX_SOF_SINGLE_MODE,
-> +       [DDP_MUTEX_SOF_DSI0] =3D MUTEX_SOF_DSI0,
-> +       [DDP_MUTEX_SOF_DPI0] =3D MT8167_MUTEX_SOF_DPI0,
-> +       [DDP_MUTEX_SOF_DPI1] =3D MT8167_MUTEX_SOF_DPI1,
-> +};
-> +
->  static const struct mtk_ddp_data mt2701_ddp_driver_data =3D {
->         .mutex_mod =3D mt2701_mutex_mod,
->         .mutex_sof =3D mt2712_mutex_sof,
-> @@ -177,6 +214,14 @@ static const struct mtk_ddp_data mt2712_ddp_driver_d=
-ata =3D {
->         .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
->  };
->
-> +static const struct mtk_ddp_data mt8167_ddp_driver_data =3D {
-> +       .mutex_mod =3D mt8167_mutex_mod,
-> +       .mutex_sof =3D mt8167_mutex_sof,
-> +       .mutex_mod_reg =3D MT2701_DISP_MUTEX0_MOD0,
-> +       .mutex_sof_reg =3D MT2701_DISP_MUTEX0_SOF0,
-> +       .no_clk =3D true,
-> +};
-> +
->  static const struct mtk_ddp_data mt8173_ddp_driver_data =3D {
->         .mutex_mod =3D mt8173_mutex_mod,
->         .mutex_sof =3D mt2712_mutex_sof,
-> @@ -400,6 +445,8 @@ static const struct of_device_id ddp_driver_dt_match[=
-] =3D {
->           .data =3D &mt2701_ddp_driver_data},
->         { .compatible =3D "mediatek,mt2712-disp-mutex",
->           .data =3D &mt2712_ddp_driver_data},
-> +       { .compatible =3D "mediatek,mt8167-disp-mutex",
-> +         .data =3D &mt8167_ddp_driver_data},
->         { .compatible =3D "mediatek,mt8173-disp-mutex",
->           .data =3D &mt8173_ddp_driver_data},
->         {},
-> --
-> 2.28.0
->
+The following changes since commit bbf5c979011a099af5dc76498918ed7df445635b:
+
+  Linux 5.9 (2020-10-11 14:15:50 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/gfs2/linux-gfs2.git tags/gfs2-for-5.10
+
+for you to fetch changes up to bedb0f056faa94e953e7b3da5a77d25e0008364b:
+
+  gfs2: Recover statfs info in journal head (2020-10-23 15:47:38 +0200)
+
+----------------------------------------------------------------
+Changes in gfs2:
+* Use iomap for non-journaled buffered I/O.  This largely eliminates buffer
+  heads on filesystems where the block size matches the page size.  Many thanks
+  to Christoph Hellwig for this patch!
+* Fixes for some more journaled data filesystem bugs, found by running xfstests
+  with data journaling on for all files (chattr +j $MNT) (Bob Peterson).
+* gfs2_evict_inode refactoring (Bob Peterson).
+* Use the statfs data in the journal during recovery instead of reading it in
+  from the local statfs inodes (Abhi Das).
+* Several other minor fixes by various people.
+
+----------------------------------------------------------------
+Abhi Das (3):
+      gfs2: Add fields for statfs info in struct gfs2_log_header_host
+      gfs2: lookup local statfs inodes prior to journal recovery
+      gfs2: Recover statfs info in journal head
+
+Anant Thazhemadam (1):
+      gfs2: add validation checks for size of superblock
+
+Andreas Gruenbacher (2):
+      gfs2: Make sure we don't miss any delayed withdraws
+      gfs2: Ignore subsequent errors after withdraw in rgrp_go_sync
+
+Andrew Price (1):
+      gfs2: Fix NULL pointer dereference in gfs2_rgrp_dump
+
+Bob Peterson (20):
+      gfs2: Fix bad comment for trans_drain
+      gfs2: rename variable error to ret in gfs2_evict_inode
+      gfs2: factor evict_unlinked_inode out of gfs2_evict_inode
+      gfs2: further simplify gfs2_evict_inode with new func evict_should_delete
+      gfs2: factor evict_linked_inode out of gfs2_evict_inode
+      gfs2: simplify the logic in gfs2_evict_inode
+      gfs2: call truncate_inode_pages_final for address space glocks
+      gfs2: rename gfs2_write_full_page to gfs2_write_jdata_page, remove parm
+      gfs2: add missing log_blocks trace points in gfs2_write_revokes
+      gfs2: enhance log_blocks trace point to show log blocks free
+      gfs2: Wipe jdata and ail1 in gfs2_journal_wipe, formerly gfs2_meta_wipe
+      gfs2: make gfs2_ail1_empty_one return the count of active items
+      gfs2: don't lock sd_ail_lock in gfs2_releasepage
+      gfs2: Only set PageChecked if we have a transaction
+      gfs2: simplify gfs2_block_map
+      gfs2: Ignore journal log writes for jdata holes
+      gfs2: eliminate GLF_QUEUED flag in favor of list_empty(gl_holders)
+      gfs2: Fix comments to glock_hash_walk
+      gfs2: Only access gl_delete for iopen glocks
+      gfs2: Eliminate gl_vm
+
+Christoph Hellwig (1):
+      gfs2: use iomap for buffered I/O in ordered and writeback mode
+
+Jamie Iles (1):
+      gfs2: use-after-free in sysfs deregistration
+
+Liu Shixin (1):
+      gfs2: convert to use DEFINE_SEQ_ATTRIBUTE macro
+
+ fs/gfs2/aops.c       |  68 ++++++++--------
+ fs/gfs2/bmap.c       |  62 ++++++++++-----
+ fs/gfs2/bmap.h       |   1 +
+ fs/gfs2/glock.c      |  52 +++++-------
+ fs/gfs2/glops.c      |  36 +++++----
+ fs/gfs2/incore.h     |  29 ++++---
+ fs/gfs2/log.c        |  89 ++++++++++++---------
+ fs/gfs2/log.h        |   2 +-
+ fs/gfs2/lops.c       |   2 +-
+ fs/gfs2/lops.h       |   1 +
+ fs/gfs2/meta_io.c    |  81 +++++++++++++++++--
+ fs/gfs2/meta_io.h    |   2 +-
+ fs/gfs2/ops_fstype.c | 173 ++++++++++++++++++++++++++--------------
+ fs/gfs2/recovery.c   | 108 +++++++++++++++++++++++++
+ fs/gfs2/rgrp.c       |  19 ++---
+ fs/gfs2/rgrp.h       |   2 +-
+ fs/gfs2/super.c      | 220 +++++++++++++++++++++++++++++++++++----------------
+ fs/gfs2/super.h      |   5 ++
+ fs/gfs2/sys.c        |   5 +-
+ fs/gfs2/trace_gfs2.h |   7 +-
+ fs/gfs2/util.c       |   2 +-
+ fs/gfs2/util.h       |  10 +++
+ 22 files changed, 675 insertions(+), 301 deletions(-)
+
