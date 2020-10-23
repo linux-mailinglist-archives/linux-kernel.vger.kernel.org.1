@@ -2,98 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94A87296D83
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:22:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0BCBE296D8D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:23:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462892AbgJWLWN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:22:13 -0400
-Received: from pegase1.c-s.fr ([93.17.236.30]:11771 "EHLO pegase1.c-s.fr"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S462884AbgJWLWN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:22:13 -0400
-Received: from localhost (mailhub1-int [192.168.12.234])
-        by localhost (Postfix) with ESMTP id 4CHhdr2C4Mz9v0Bm;
-        Fri, 23 Oct 2020 13:22:08 +0200 (CEST)
-X-Virus-Scanned: Debian amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
-        with ESMTP id 4bQxQ0ZzRlqa; Fri, 23 Oct 2020 13:22:08 +0200 (CEST)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-        by pegase1.c-s.fr (Postfix) with ESMTP id 4CHhdr16n6z9v0Bh;
-        Fri, 23 Oct 2020 13:22:08 +0200 (CEST)
-Received: from localhost (localhost [127.0.0.1])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 689E78B86A;
-        Fri, 23 Oct 2020 13:22:09 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-        with ESMTP id x57ZEzlZN1Za; Fri, 23 Oct 2020 13:22:09 +0200 (CEST)
-Received: from [192.168.4.90] (unknown [192.168.4.90])
-        by messagerie.si.c-s.fr (Postfix) with ESMTP id 844328B869;
-        Fri, 23 Oct 2020 13:22:08 +0200 (CEST)
-Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
- simplify __get_datapage()
-To:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        Will Deacon <will@kernel.org>,
-        Michael Ellerman <mpe@ellerman.id.au>
-Cc:     Benjamin Herrenschmidt <benh@kernel.crashing.org>,
-        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
-        linux-arch <linux-arch@vger.kernel.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        open list <linux-kernel@vger.kernel.org>,
-        Andy Lutomirski <luto@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Vincenzo Frascino <vincenzo.frascino@arm.com>,
-        linuxppc-dev@lists.ozlabs.org
-References: <cover.1588079622.git.christophe.leroy@c-s.fr>
- <0d2201efe3c7727f2acc718aefd7c5bb22c66c57.1588079622.git.christophe.leroy@c-s.fr>
- <87wo34tbas.fsf@mpe.ellerman.id.au>
- <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
- <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
- <87imd5h5kb.fsf@mpe.ellerman.id.au>
- <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
- <87a6yf34aj.fsf@mpe.ellerman.id.au> <20200921112638.GC2139@willie-the-truck>
- <ad72ffd3-a552-cc98-7545-d30285fd5219@csgroup.eu>
- <542145eb-7d90-0444-867e-c9cbb6bdd8e3@gmail.com>
-From:   Christophe Leroy <christophe.leroy@csgroup.eu>
-Message-ID: <ba9861da-2f5b-a649-5626-af00af634546@csgroup.eu>
-Date:   Fri, 23 Oct 2020 13:22:04 +0200
-User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.1
+        id S462919AbgJWLWv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:22:51 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:34088 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S462778AbgJWLWr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:22:47 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NBJ1NW008646;
+        Fri, 23 Oct 2020 11:22:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : mime-version : content-type; s=corp-2020-01-29;
+ bh=Ij3kbeYHmjUPJ1In5uZ/O+jWnMmXyszv3wHt8UYtJRE=;
+ b=knRh3c/Mg+yybdbvRMpoQm+glM7jOQUMan1Ua3F5jiGwbBTBk0ykXhR2p+dg5uUaf+UK
+ IX9JW66QVXAkhs5fMN2B8bRvYcHKEYTSrvqCSoM8KHNIo198rN0bB5NygGlBiB+7xeNc
+ iL1V2Nfmjy7FoGzs5DSC9n4NFqC2wMf9hGASXLVuJJcahMnoDpTQAEDmRfuJ8BlzCwRO
+ Icom4LhPAO2MctXDsMzyBMeHK1bOkCz3epPK4faxlQqdhOxVey7EeUoqWSyO1i08jui3
+ A9eWLL5Z7cC1XlYiS+OLacDEUl1Osh6m1VTtn+3G8DYi4ix+quDlFBdmbvZ2fgwl3fFF Zg== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2130.oracle.com with ESMTP id 347p4baqr2-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 23 Oct 2020 11:22:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NBKED5099291;
+        Fri, 23 Oct 2020 11:22:22 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 348a6rndyx-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Oct 2020 11:22:21 +0000
+Received: from abhmp0003.oracle.com (abhmp0003.oracle.com [141.146.116.9])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09NBMKrO005923;
+        Fri, 23 Oct 2020 11:22:20 GMT
+Received: from mwanda (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 23 Oct 2020 04:22:20 -0700
+Date:   Fri, 23 Oct 2020 14:22:12 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Yisen Zhuang <yisen.zhuang@huawei.com>
+Cc:     Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Yonglong Liu <liuyonglong@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: [PATCH net] net: hns3: clean up a return in hclge_tm_bp_setup()
+Message-ID: <20201023112212.GA282278@mwanda>
 MIME-Version: 1.0
-In-Reply-To: <542145eb-7d90-0444-867e-c9cbb6bdd8e3@gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: fr
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Mailer: git-send-email haha only kidding
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9782 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 mlxlogscore=999
+ bulkscore=0 spamscore=0 adultscore=0 suspectscore=0 mlxscore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010230080
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9782 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 priorityscore=1501
+ clxscore=1011 malwarescore=0 mlxscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 impostorscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010230080
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dmitry,
+Smatch complains that "ret" might be uninitialized if we don't enter
+the loop.  We do always enter the loop so it's a false positive, but
+it's cleaner to just return a literal zero and that silences the
+warning as well.
 
-Le 28/09/2020 à 17:08, Dmitry Safonov a écrit :
-> On 9/27/20 8:43 AM, Christophe Leroy wrote:
->>
->>
->> Le 21/09/2020 à 13:26, Will Deacon a écrit :
->>> On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
->>>> Dmitry Safonov <0x7f454c46@gmail.com> writes:
-> [..]
->>>>> I'll cook a patch for vm_special_mapping if you don't mind :-)
->>>>
->>>> That would be great, thanks!
->>>
->>> I lost track of this one. Is there a patch kicking around to resolve
->>> this,
->>> or is the segfault expected behaviour?
->>>
->>
->> IIUC dmitry said he will cook a patch. I have not seen any patch yet.
-> 
-> Yes, sorry about the delay - I was a bit busy with xfrm patches.
-> 
-> I'll send patches for .close() this week, working on them now.
+Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+---
+ drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I haven't seen the patches, did you sent them out finally ?
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
+index 15f69fa86323..e8495f58a1a8 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3pf/hclge_tm.c
+@@ -1373,7 +1373,7 @@ static int hclge_tm_bp_setup(struct hclge_dev *hdev)
+ 			return ret;
+ 	}
+ 
+-	return ret;
++	return 0;
+ }
+ 
+ int hclge_pause_setup_hw(struct hclge_dev *hdev, bool init)
+-- 
+2.28.0
 
-Christophe
