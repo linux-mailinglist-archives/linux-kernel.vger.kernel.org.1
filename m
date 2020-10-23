@@ -2,60 +2,72 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AF7CA2977D9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:48:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 581642977CE
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:43:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754948AbgJWTsC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 15:48:02 -0400
-Received: from ms.lwn.net ([45.79.88.28]:51894 "EHLO ms.lwn.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754840AbgJWTsB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:48:01 -0400
-Received: from lwn.net (localhost [127.0.0.1])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by ms.lwn.net (Postfix) with ESMTPSA id 996EA7DE;
-        Fri, 23 Oct 2020 19:47:59 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 13:47:57 -0600
-From:   Jonathan Corbet <corbet@lwn.net>
-To:     Peter Zijlstra <peterz@infradead.org>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Ard Biesheuvel <ardb@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
-        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 49/56] refcount.h: fix a kernel-doc markup
-Message-ID: <20201023134757.628f91b7@lwn.net>
-In-Reply-To: <20201023193907.GI2974@worktop.programming.kicks-ass.net>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-        <fd94a95cfe01b97190b6ffb9e942cb4bbeeaa6bf.1603469755.git.mchehab+huawei@kernel.org>
-        <202010231039.DE05B63@keescook>
-        <20201023193907.GI2974@worktop.programming.kicks-ass.net>
-Organization: LWN.net
+        id S1754836AbgJWTnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 15:43:39 -0400
+Received: from mailoutvs27.siol.net ([185.57.226.218]:45136 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1754479AbgJWTni (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 15:43:38 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 126DA528120;
+        Fri, 23 Oct 2020 21:43:36 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id rEXZf2IX2IaY; Fri, 23 Oct 2020 21:43:35 +0200 (CEST)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id C4F7052818E;
+        Fri, 23 Oct 2020 21:43:35 +0200 (CEST)
+Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: 031275009)
+        by mail.siol.net (Postfix) with ESMTPSA id 52CA9528176;
+        Fri, 23 Oct 2020 21:43:35 +0200 (CEST)
+From:   Jernej Skrabec <jernej.skrabec@siol.net>
+To:     mripard@kernel.org, wens@csie.org
+Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: [PATCH] arm64: dts: allwinner: h6: Pine H64: Fix ethernet node
+Date:   Fri, 23 Oct 2020 21:49:02 +0200
+Message-Id: <20201023194902.368239-1-jernej.skrabec@siol.net>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 21:39:07 +0200
-Peter Zijlstra <peterz@infradead.org> wrote:
+Ethernet PHY provides RX and TX delay on both models, A and B. Although
+schematic for model A suggests only TX delay, network never worked with
+such configuration.
 
-> > >  /**
-> > > - * struct refcount_t - variant of atomic_t specialized for reference counts
-> > > + * struct refcount_struct - variant of atomic_t specialized for reference counts  
-> > 
-> > Hm, this is a weird one. Yes, it's actually "struct refcount_struct",
-> > but the usage should be refcount_t (through the typedef). I'm not sure
-> > what the right way to document this is.  
-> 
-> Yeah, this is wrong. If this is due to a kernel doc warning, the kernel
-> doc machinery is wrong *again*.
+Fix ethernet node to reflect PHY delays.
 
-...except that, since refcount_t is a typedef, "struct refcount_t" doesn't
-actually exist.  Whether it works properly after doing s/struct// remains
-to be seen...
+Fixes: 729e1ffcf47e ("arm64: allwinner: h6: add support for the Ethernet =
+on Pine H64")
+Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
+---
+ arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-jon
+diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts b/arch/=
+arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
+index af85b2074867..961732c52aa0 100644
+--- a/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
++++ b/arch/arm64/boot/dts/allwinner/sun50i-h6-pine-h64.dts
+@@ -100,7 +100,7 @@ &ehci3 {
+ &emac {
+ 	pinctrl-names =3D "default";
+ 	pinctrl-0 =3D <&ext_rgmii_pins>;
+-	phy-mode =3D "rgmii";
++	phy-mode =3D "rgmii-id";
+ 	phy-handle =3D <&ext_rgmii_phy>;
+ 	phy-supply =3D <&reg_gmac_3v3>;
+ 	allwinner,rx-delay-ps =3D <200>;
+--=20
+2.29.0
+
