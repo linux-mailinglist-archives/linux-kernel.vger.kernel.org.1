@@ -2,150 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B013B297109
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:00:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D84B229710B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:03:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750226AbgJWOAB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:00:01 -0400
-Received: from mx2.suse.de ([195.135.220.15]:45782 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373819AbgJWOAB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:00:01 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id F2286AEC1;
-        Fri, 23 Oct 2020 13:59:59 +0000 (UTC)
-To:     Axel Rasmussen <axelrasmussen@google.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        David Rientjes <rientjes@google.com>
-Cc:     Yafang Shao <laoar.shao@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-References: <20201020184746.300555-1-axelrasmussen@google.com>
- <20201020184746.300555-2-axelrasmussen@google.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v4 1/1] mmap_lock: add tracepoints around lock acquisition
-Message-ID: <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
-Date:   Fri, 23 Oct 2020 15:59:59 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S374546AbgJWODm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:03:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S374541AbgJWODl (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:03:41 -0400
+Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E8DBCC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 07:03:39 -0700 (PDT)
+Received: by mail-il1-x142.google.com with SMTP id n5so1451861ile.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 07:03:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=mRssJ8ydvqoiUM8sCx1vOe+z6Z5ELMLVEz5GB2mujoE=;
+        b=qVnKKmWEAm0tfevBxG8rohkBBkyKlxmoQaS3qyQab549eqEpSl0oV7ZaCdkNsJbuE/
+         kHi1jn95s1rccakqFUVXeSml70b7i34pPKIw9QgA/oAn4nwBJGMmeDt7oXiL20a25XYn
+         EtpfoTrKVJV9n11Kf1pR2NaFLqFzUvUqLI95fEX7R1//3V+5RGWmgfytn3HqwL2vZHww
+         s3BpqsuRXbNW36+STmgyfKDXJX08GZS3f9WAWGo2EuQVeDczmDwa04ag4Wf2De51teAf
+         JcbFqXGzwjreIWBEUAyHJlhHenkH4iRRke0qo/lb/6saPU51C+Dpbv3zJ1v5iXORC307
+         6S1Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=mRssJ8ydvqoiUM8sCx1vOe+z6Z5ELMLVEz5GB2mujoE=;
+        b=tZcew5Ii7zdnlyB1+TgiiuKgLtHJmZR3TO3i8ZHpvGxiV502gOsi9yF3obr1RRkwSZ
+         7m2UhiDblr1LIKHRBc0eGdrv7upPDtALLJB2gZPb4tNGJ1RTCvZjQ8Syfa9xb5AS2ZLw
+         H9e0f7pPDhL+0/RgWUFdcxV5ti3to4we33A4sHhAomnnn32NTHETWXdV0l5g6GWiH7Ou
+         QK6PVO9tBzmA3pWRpTvqVxlsfguj35BTWeKpTM7MK95hfy3OhTtAGnSa9JQMnaKX4Vww
+         tiLUeWlJ0M5rrxiIr+EuiFu1vHUyS9KZwhsCyitfB4RfCcN2YblKBTT5FDx6uY+lantE
+         nLaA==
+X-Gm-Message-State: AOAM533M+tECv9TTWIXuoSEC1+G2VdBtNEys2LdCLNCHu5nfW/LrIA8n
+        eamXSgvMbzVDnaLHzKCO/LUgyeKyMnb07waPkBR6VA==
+X-Google-Smtp-Source: ABdhPJzrFPt45G3s0kkUubcqEPhNGKToH3X0KJNnX5ZYLf5G+oDxxsNkj03vFpNV0eVyJ5dgf2XfB+FJJrli479WSeQ=
+X-Received: by 2002:a05:6e02:970:: with SMTP id q16mr1766465ilt.69.1603461818703;
+ Fri, 23 Oct 2020 07:03:38 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201020184746.300555-2-axelrasmussen@google.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+References: <20201023111352.GA289522@rdias-suse-pc.lan>
+In-Reply-To: <20201023111352.GA289522@rdias-suse-pc.lan>
+From:   Eric Dumazet <edumazet@google.com>
+Date:   Fri, 23 Oct 2020 16:03:27 +0200
+Message-ID: <CANn89iJDt=XpUZA_uYK98cK8tctW6M=f4RFtGQpTxRaqwnnqSQ@mail.gmail.com>
+Subject: Re: [PATCH] tcp: fix race condition when creating child sockets from syncookies
+To:     Ricardo Dias <rdias@memsql.com>
+Cc:     David Miller <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Alexey Kuznetsov <kuznet@ms2.inr.ac.ru>,
+        Hideaki YOSHIFUJI <yoshfuji@linux-ipv6.org>,
+        netdev <netdev@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/20/20 8:47 PM, Axel Rasmussen wrote:
-> The goal of these tracepoints is to be able to debug lock contention
-> issues. This lock is acquired on most (all?) mmap / munmap / page fault
-> operations, so a multi-threaded process which does a lot of these can
-> experience significant contention.
-> 
-> We trace just before we start acquisition, when the acquisition returns
-> (whether it succeeded or not), and when the lock is released (or
-> downgraded). The events are broken out by lock type (read / write).
-> 
-> The events are also broken out by memcg path. For container-based
-> workloads, users often think of several processes in a memcg as a single
-> logical "task", so collecting statistics at this level is useful.
-> 
-> The end goal is to get latency information. This isn't directly included
-> in the trace events. Instead, users are expected to compute the time
-> between "start locking" and "acquire returned", using e.g. synthetic
-> events or BPF. The benefit we get from this is simpler code.
-> 
-> Because we use tracepoint_enabled() to decide whether or not to trace,
-> this patch has effectively no overhead unless tracepoints are enabled at
-> runtime. If tracepoints are enabled, there is a performance impact, but
-> how much depends on exactly what e.g. the BPF program does.
-> 
-> Reviewed-by: Michel Lespinasse <walken@google.com>
-> Acked-by: Yafang Shao <laoar.shao@gmail.com>
-> Acked-by: David Rientjes <rientjes@google.com>
-> Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
+On Fri, Oct 23, 2020 at 1:14 PM Ricardo Dias <rdias@memsql.com> wrote:
+>
+> When the TCP stack is in SYN flood mode, the server child socket is
+> created from the SYN cookie received in a TCP packet with the ACK flag
+> set.
+>
+...
 
-All seem fine to me, except I started to wonder..
+This patch only handles IPv4, unless I am missing something ?
 
-> +
-> +#ifdef CONFIG_MEMCG
-> +
-> +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
-> +
-> +/*
-> + * Write the given mm_struct's memcg path to a percpu buffer, and return a
-> + * pointer to it. If the path cannot be determined, the buffer will contain the
-> + * empty string.
-> + *
-> + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
-> + * disabled by the caller before calling us, and re-enabled only after the
-> + * caller is done with the pointer.
+It looks like the fix should be done in inet_ehash_insert(), not
+adding yet another helper in TCP.
+This would be family generic.
 
-Is this enough? What if we fill the buffer and then an interrupt comes and the 
-handler calls here again? We overwrite the buffer and potentially report a wrong 
-cgroup after the execution resumes?
-If nothing worse can happen (are interrupts disabled while the ftrace code is 
-copying from the buffer?), then it's probably ok?
-
-> + */
-> +static const char *get_mm_memcg_path(struct mm_struct *mm)
-> +{
-> +	struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
-> +
-> +	if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
-> +		char *buf = this_cpu_ptr(trace_memcg_path);
-> +
-> +		cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
-> +		return buf;
-> +	}
-> +	return "";
-> +}
-> +
-> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-> +	do {                                                                   \
-> +		get_cpu();                                                     \
-> +		trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),              \
-> +				       ##__VA_ARGS__);                         \
-> +		put_cpu();                                                     \
-> +	} while (0)
-> +
-> +#else /* !CONFIG_MEMCG */
-> +
-> +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
-> +	trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
-> +
-> +#endif /* CONFIG_MEMCG */
-> +
-> +/*
-> + * Trace calls must be in a separate file, as otherwise there's a circular
-> + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
-> + */
-> +
-> +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
-> +{
-> +	TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
-> +}
-> +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
-> +
-> +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
-> +					   bool success)
-> +{
-> +	TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
-> +}
-> +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
-> +
-> +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
-> +{
-> +	TRACE_MMAP_LOCK_EVENT(released, mm, write);
-> +}
-> +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
-> 
-
+Note that normally, all packets for the same 4-tuple should be handled
+by the same cpu,
+so this race is quite unlikely to happen in standard setups.
