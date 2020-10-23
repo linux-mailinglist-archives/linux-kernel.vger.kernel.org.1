@@ -2,121 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD5F296CF2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:36:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E7D0296CF6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:37:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462455AbgJWKgN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:36:13 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49702 "EHLO
+        id S462461AbgJWKh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:37:26 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49894 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S460818AbgJWKgN (ORCPT
+        with ESMTP id S460872AbgJWKh0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:36:13 -0400
-Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6D85C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:36:12 -0700 (PDT)
-Received: by mail-lj1-x244.google.com with SMTP id c21so1003902ljn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:36:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2qkq9CfQOJr8zJttsFKuFINhGnc+H3tDfc2bDWRdxKM=;
-        b=fhbRPsyb8i9xNHMf4eL5ienqhn7upoD6FePa/IEF7DMBI6HisVrOD33691JnVkmeQi
-         ET2W5Takymxk8FVZvUA5hEAmwX7HYwQurYbORAkttNqTL4VuRwkIkfZ0h/JLlpG+GR6u
-         a6BWrna+MBVKLQ9UAl6mF4AeywD0FcFeHeltPhaw+5YZUumYlpF1v4IBLvpmcnJozg9Y
-         mdYng2/8mGvFa8kUyHbVE6+aKlNVE+cfharL9bJyzKCwIk0S5XbJIlfVAvfrxBP5+Heo
-         ouekvBs9rnWndDp/Nb7lQTKqSqykoCFGoOQ+zBx0i7e4ynHDUpbUISETkwzCkX6DMDnH
-         3oJw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2qkq9CfQOJr8zJttsFKuFINhGnc+H3tDfc2bDWRdxKM=;
-        b=FFuVFNh+yx2H8FWswTP9Ab+SoA6zssgL18hLeZ4ReyQBKm5rqJuLum8Gi4iuUvCVmP
-         RkVGMZfxP68taW/HjTTx/th+YPePa3BJCRuVhKFVzKn00FlrOJPQGo8kowHjRn77huVk
-         btXzzheq54Nqo5sgFbF+PPf6ng+Nb4xSkJGx7/grGaJGnPFdz2eW4in8Bky5Fa+8a6a3
-         18S51j2SC27I9Sam6RQl/wCwQTMoU5kzLt+3E1GMXYj4daUnx6tGMQby8X2vGiiv880o
-         VyAqE/haBw3CHMn06yDTwHS4Blu5qgzuw625+eTrUpqpyDst69FXLMKteBA8GamZXGw0
-         XVgQ==
-X-Gm-Message-State: AOAM532W5zfMRgd1x3qVQuwZuKPAwDRKGh8Fq/WxLOJWUT53X0pQq3ju
-        xGEEw/ICjhu4Y/bRJ03/wZ8GdQ==
-X-Google-Smtp-Source: ABdhPJxQnKcTu7fqc4QutnnpTAjI9nHlJriPNvSeoN91l9+74XgAkQagFMHTs4++JLMhsXVHrZdecg==
-X-Received: by 2002:a2e:b889:: with SMTP id r9mr639609ljp.378.1603449371412;
-        Fri, 23 Oct 2020 03:36:11 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id x18sm99408lfe.158.2020.10.23.03.36.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 03:36:10 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id D5683102F98; Fri, 23 Oct 2020 13:36:10 +0300 (+03)
-Date:   Fri, 23 Oct 2020 13:36:10 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "jmattson@google.com" <jmattson@google.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        "vkuznets@redhat.com" <vkuznets@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "aarcange@redhat.com" <aarcange@redhat.com>,
-        "keescook@chromium.org" <keescook@chromium.org>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "pbonzini@redhat.com" <pbonzini@redhat.com>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "liran.alon@oracle.com" <liran.alon@oracle.com>,
-        "rppt@kernel.org" <rppt@kernel.org>,
-        "wad@chromium.org" <wad@chromium.org>,
-        "wanpengli@tencent.com" <wanpengli@tencent.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>
-Subject: Re: [RFCv2 14/16] KVM: Handle protected memory in
- __kvm_map_gfn()/__kvm_unmap_gfn()
-Message-ID: <20201023103610.facpukoiodnj5v73@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <20201020061859.18385-15-kirill.shutemov@linux.intel.com>
- <8404a8802dbdbf81c8f75249039580f9e6942095.camel@intel.com>
- <20201022120645.vdmytvcmdoku73os@box>
- <4df3bb56f56f5a8d69b4b288317111046158cebb.camel@intel.com>
+        Fri, 23 Oct 2020 06:37:26 -0400
+Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 49268C0613CE;
+        Fri, 23 Oct 2020 03:37:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=uifDgOFT+ovFqMdHJqFiOFvQ6rRjqzTBjl7A2ngyOZE=; b=U+KLDS67IR6sUenKJO2Hpvby04
+        v4H68xvDSBdlDKCMYr/9xY8zpMGwM5bJuXiRfgIAbA5erYiAOG462xdnXPu26eCv+VwRGduN+CTHc
+        w1DbURYhKqa7xvh43zfdFs8yqSnJsXHm5k+m+HPf6uq6SS9v0a3o9l9v+NPQyRL+5a8FiSLSl7q0F
+        mTxA1XGNl21q/MbliOsDfBiMovd8ia/95v0rLDvlgBuBp6QTa4vh19WMpl9jX3CWBAMW8vKZbYnfC
+        wI5eFJJqzek5/UDSFW1L/E3FCS0Lf9rPHHrEs6fHcgOuJCh/VQeZsTE+T7zSxDiOujsqHYQr0XVpQ
+        7yDyvXLA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVuRe-00040e-DT; Fri, 23 Oct 2020 10:37:14 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 025E2302753;
+        Fri, 23 Oct 2020 12:37:13 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id E4DC0203D09CC; Fri, 23 Oct 2020 12:37:12 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 12:37:12 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+Cc:     Ingo Molnar <mingo@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Amit Daniel Kachhap <amit.kachhap@gmail.com>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Javi Merino <javi.merino@kernel.org>,
+        Zhang Rui <rui.zhang@intel.com>,
+        Amit Kucheria <amitk@kernel.org>, linux-kernel@vger.kernel.org,
+        Quentin Perret <qperret@google.com>,
+        Lukasz Luba <lukasz.luba@arm.com>, linux-pm@vger.kernel.org
+Subject: Re: [PATCH V2 2/2] thermal: cpufreq_cooling: Reuse sched_cpu_util()
+Message-ID: <20201023103712.GL2594@hirez.programming.kicks-ass.net>
+References: <cover.1603448113.git.viresh.kumar@linaro.org>
+ <11e7c7dcb07ae258fa02e187c9697252f3835466.1603448113.git.viresh.kumar@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4df3bb56f56f5a8d69b4b288317111046158cebb.camel@intel.com>
+In-Reply-To: <11e7c7dcb07ae258fa02e187c9697252f3835466.1603448113.git.viresh.kumar@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 04:59:49PM +0000, Edgecombe, Rick P wrote:
-> On Thu, 2020-10-22 at 15:06 +0300, Kirill A. Shutemov wrote:
-> > > I think the page could have got unmapped since the gup via the
-> > > hypercall on another CPU. It could be an avenue for the guest to
-> > > crash
-> > > the host.
-> > 
-> > Hm.. I'm not sure I follow. Could you elaborate on what scenario you
-> > have
-> > in mind?
+On Fri, Oct 23, 2020 at 03:50:21PM +0530, Viresh Kumar wrote:
+> Several parts of the kernel are already using the effective CPU
+> utilization (as seen by the scheduler) to get the current load on the
+> CPU, do the same here instead of depending on the idle time of the CPU,
+> which isn't that accurate comparatively.
 > 
-> Kind of similar scenario as the userspace triggered oops. My
-> understanding is that the protected status was gathered along with the
-> gup, but after the mm gets unlocked, nothing stops the page
-> transitioning to unmapped(?). At which point kmap() from a previous gup
-> with !protected, would go down the regular kmap() route and return an
-> address to an unmapped page.
-> 
-> So the guest kernel could start with a page mapped as shared via the
-> hypercall. Then trigger one of the PV MSR's that kmap() on CPU0. On
-> CPU1, after the gup on CPU0, it could transitioned the page to
-> private/unmapped via the hypercall. So the hva_to_pfn() would find
-> !protected, but by the time the kmap() happened the page would have
-> been unmapped. Am I missing something?
+> Note that, this (and CPU frequency scaling in general) doesn't work that
+> well with idle injection as that is done from rt threads and is counted
+> as load while it tries to do quite the opposite. That should be solved
+> separately though.
 
-We need to fail protection enabling if a page is pinned. That's the only
-option I see. But it might be pain to debug.
-
--- 
- Kirill A. Shutemov
+Actual numbers that show the goodness would be nice ;-) Because clearly
+we're doing this make it better.
