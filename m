@@ -2,123 +2,383 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1A48B2967F4
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:33:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 46D24296813
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 02:36:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S373822AbgJWAdj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 20:33:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373815AbgJWAdi (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 20:33:38 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 02F35C0613CE
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:33:38 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id 19so2079196pge.12
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 17:33:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=+lVaUm+mt4Dn/C7y5wypETHPv79D4JhdQvf1YdjtjU8=;
-        b=Zr8Ndps1DsC07jJMnlWyIUaWvFklugkZsrtLlyOZcSmF3VUL4oRwSp4byq58mCBxoY
-         ZEbPD4omh+EoeCZmZupePY2YeQifILcUuixnIDhx/+a/xnpaLGzRWo47cit2sEQwoeqd
-         UXET4xSEgZ0xtsnfngKaT0E2L9QMqJa81HZNjOzDpzGrDCYjlhF73f1PEeS7E1HG3y0i
-         LUuT2ZsgllNQVRPDvbdEM+FTMC5wr6ndETjCUMY+tj9c9gkS8JD/viC1DOQ7WwXT7YCQ
-         eLtfDmDsricrGn4PnK2JDg5Ma1jEBFOT6nWXtATmtJ0ig8oLh9Poqdt4Z/wWxOCzKPdu
-         ya1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=+lVaUm+mt4Dn/C7y5wypETHPv79D4JhdQvf1YdjtjU8=;
-        b=M054scb0GdwVsf9yqIl2e9F5X51yLknQdhgLpTI3H9UC0cQ4rlc75fZGrgZwJNswYo
-         Alw7cGiwT0ifDGlgCXUWjIPJ3/7g2ClPqAeR+7AoFFs9YzwF89UVTkWHynXq0c7rpScY
-         GNzdTwMX/luajT6p3+taipTk80Agwlbs/H3Rp53wxOoLn89hNBLrwWMig9i5sBs29QvQ
-         PrGhnTp9+vzsZVreXM+Vkxkh0QJUyLGrZ+QdCc3JYBfcY0LbBKiE0TMF5pQc8vcAJhVR
-         lasuHj54tzL48KpxnzdSgSTEokzM85in1Kf1MR1fKgb2btYCd0FdR2mR0nPZE9Fpbp6n
-         WZqw==
-X-Gm-Message-State: AOAM533tfU0h2XVSQrRPQp/sy8BJX7mG2NaMjCv9jDfUThkuTCx3rk/D
-        lshRUdC86TH9rE6BnYEnwccGKsgAWVI44g==
-X-Google-Smtp-Source: ABdhPJw+fJuvzHTQcwTOUfRv2QuPQYhzMVm7Oct098aAz7wmJX5m/wPTlIKk8FZGWfhHv7Dd1F8H8Q==
-X-Received: by 2002:a63:134d:: with SMTP id 13mr4401196pgt.370.1603413217446;
-        Thu, 22 Oct 2020 17:33:37 -0700 (PDT)
-Received: from localhost ([2409:10:2e40:5100:6e29:95ff:fe2d:8f34])
-        by smtp.gmail.com with ESMTPSA id e186sm3533671pfh.60.2020.10.22.17.33.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 22 Oct 2020 17:33:36 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 09:33:34 +0900
-From:   Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        John Ogness <john.ogness@linutronix.de>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Shreyas Joshi <shreyas.joshi@biamp.com>,
-        shreyasjoshi15@gmail.com,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC 1/2] printk: Add kernel parameter: mute_console
-Message-ID: <20201023003334.GA588@jagdpanzerIV.localdomain>
-References: <20201022114228.9098-1-pmladek@suse.com>
- <20201022114228.9098-2-pmladek@suse.com>
+        id S373992AbgJWAgT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 20:36:19 -0400
+Received: from mga11.intel.com ([192.55.52.93]:43016 "EHLO mga11.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S373791AbgJWAf3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 20:35:29 -0400
+IronPort-SDR: 4GQUuxDWy9cAeqppVlIQtafA3HDfHvgri3duOEs/8Acw5sJg43D3CKMBUK8FmA5PxwnMXamAj8
+ YQ6qMkY2jOUg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="164118647"
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="164118647"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga008.fm.intel.com ([10.253.24.58])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 17:35:26 -0700
+IronPort-SDR: 6Pptt0QEJl+6NDAsOUm3bC0SzSV690gnyVhTidKs6s1Oo0y5OX+ZNJ4Igk7sUUdjBJUGQD7UVP
+ IVJvuOyZIHGw==
+X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
+   d="scan'208";a="302505814"
+Received: from dmert-dev.jf.intel.com ([10.166.241.5])
+  by fmsmga008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 17:35:26 -0700
+From:   Dave Ertman <david.m.ertman@intel.com>
+To:     alsa-devel@alsa-project.org
+Cc:     tiwai@suse.de, broonie@kernel.org, linux-rdma@vger.kernel.org,
+        jgg@nvidia.com, dledford@redhat.com, netdev@vger.kernel.org,
+        davem@davemloft.net, kuba@kernel.org, gregkh@linuxfoundation.org,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        parav@mellanox.com, shiraz.saleem@intel.com,
+        dan.j.williams@intel.com, kiran.patil@intel.com,
+        linux-kernel@vger.kernel.org, leonro@nvidia.com
+Subject: [PATCH v3 06/10] ASoC: SOF: Intel: Remove IPC flood test support in SOF core
+Date:   Thu, 22 Oct 2020 17:33:34 -0700
+Message-Id: <20201023003338.1285642-7-david.m.ertman@intel.com>
+X-Mailer: git-send-email 2.26.2
+In-Reply-To: <20201023003338.1285642-1-david.m.ertman@intel.com>
+References: <20201023003338.1285642-1-david.m.ertman@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022114228.9098-2-pmladek@suse.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On (20/10/22 13:42), Petr Mladek wrote:
-> +static bool mute_console;
-> +
-> +static int __init mute_console_setup(char *str)
-> +{
-> +	mute_console = true;
-> +	pr_info("All consoles muted.\n");
-> +
-> +	return 0;
-> +}
+From: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
 
-First of all, thanks a lot for picking this up and for the patch set!
+Remove the IPC flood test support in the SOF core as it is
+now added in the IPC flood test client.
 
-I've several thoughts and comments below.
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Signed-off-by: Fred Oh <fred.oh@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Signed-off-by: Dave Ertman <david.m.ertman@intel.com>
+---
+ sound/soc/sof/Kconfig    |   8 --
+ sound/soc/sof/debug.c    | 230 ---------------------------------------
+ sound/soc/sof/sof-priv.h |   6 +-
+ 3 files changed, 1 insertion(+), 243 deletions(-)
 
->  static bool suppress_message_printing(int level)
->  {
-> -	return (level >= console_loglevel && !ignore_loglevel);
-> +	if (unlikely(mute_console))
-> +		return true;
-> +
-> +	if (unlikely(ignore_loglevel))
-> +		return false;
-> +
-> +	return (level >= console_loglevel);
->  }
+diff --git a/sound/soc/sof/Kconfig b/sound/soc/sof/Kconfig
+index 13bde36cc5d7..a0f9474b8143 100644
+--- a/sound/soc/sof/Kconfig
++++ b/sound/soc/sof/Kconfig
+@@ -182,14 +182,6 @@ config SND_SOC_SOF_DEBUG_ENABLE_FIRMWARE_TRACE
+ 	  module parameter (similar to dynamic debug)
+ 	  If unsure, select "N".
+ 
+-config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST
+-	bool "SOF enable IPC flood test"
+-	help
+-	  This option enables the IPC flood test which can be used to flood
+-	  the DSP with test IPCs and gather stats about response times.
+-	  Say Y if you want to enable IPC flood test.
+-	  If unsure, select "N".
+-
+ config SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST_CLIENT
+ 	tristate "SOF enable IPC flood test client"
+ 	depends on SND_SOC_SOF_CLIENT
+diff --git a/sound/soc/sof/debug.c b/sound/soc/sof/debug.c
+index 9419a99bab53..d224641768da 100644
+--- a/sound/soc/sof/debug.c
++++ b/sound/soc/sof/debug.c
+@@ -232,120 +232,10 @@ static int snd_sof_debugfs_probe_item(struct snd_sof_dev *sdev,
+ }
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-#define MAX_IPC_FLOOD_DURATION_MS 1000
+-#define MAX_IPC_FLOOD_COUNT 10000
+-#define IPC_FLOOD_TEST_RESULT_LEN 512
+-
+-static int sof_debug_ipc_flood_test(struct snd_sof_dev *sdev,
+-				    struct snd_sof_dfsentry *dfse,
+-				    bool flood_duration_test,
+-				    unsigned long ipc_duration_ms,
+-				    unsigned long ipc_count)
+-{
+-	struct sof_ipc_cmd_hdr hdr;
+-	struct sof_ipc_reply reply;
+-	u64 min_response_time = U64_MAX;
+-	ktime_t start, end, test_end;
+-	u64 avg_response_time = 0;
+-	u64 max_response_time = 0;
+-	u64 ipc_response_time;
+-	int i = 0;
+-	int ret;
+-
+-	/* configure test IPC */
+-	hdr.cmd = SOF_IPC_GLB_TEST_MSG | SOF_IPC_TEST_IPC_FLOOD;
+-	hdr.size = sizeof(hdr);
+-
+-	/* set test end time for duration flood test */
+-	if (flood_duration_test)
+-		test_end = ktime_get_ns() + ipc_duration_ms * NSEC_PER_MSEC;
+-
+-	/* send test IPC's */
+-	while (1) {
+-		start = ktime_get();
+-		ret = sof_ipc_tx_message(sdev->ipc, hdr.cmd, &hdr, hdr.size,
+-					 &reply, sizeof(reply));
+-		end = ktime_get();
+-
+-		if (ret < 0)
+-			break;
+-
+-		/* compute min and max response times */
+-		ipc_response_time = ktime_to_ns(ktime_sub(end, start));
+-		min_response_time = min(min_response_time, ipc_response_time);
+-		max_response_time = max(max_response_time, ipc_response_time);
+-
+-		/* sum up response times */
+-		avg_response_time += ipc_response_time;
+-		i++;
+-
+-		/* test complete? */
+-		if (flood_duration_test) {
+-			if (ktime_to_ns(end) >= test_end)
+-				break;
+-		} else {
+-			if (i == ipc_count)
+-				break;
+-		}
+-	}
+-
+-	if (ret < 0)
+-		dev_err(sdev->dev,
+-			"error: ipc flood test failed at %d iterations\n", i);
+-
+-	/* return if the first IPC fails */
+-	if (!i)
+-		return ret;
+-
+-	/* compute average response time */
+-	do_div(avg_response_time, i);
+-
+-	/* clear previous test output */
+-	memset(dfse->cache_buf, 0, IPC_FLOOD_TEST_RESULT_LEN);
+-
+-	if (flood_duration_test) {
+-		dev_dbg(sdev->dev, "IPC Flood test duration: %lums\n",
+-			ipc_duration_ms);
+-		snprintf(dfse->cache_buf, IPC_FLOOD_TEST_RESULT_LEN,
+-			 "IPC Flood test duration: %lums\n", ipc_duration_ms);
+-	}
+-
+-	dev_dbg(sdev->dev,
+-		"IPC Flood count: %d, Avg response time: %lluns\n",
+-		i, avg_response_time);
+-	dev_dbg(sdev->dev, "Max response time: %lluns\n",
+-		max_response_time);
+-	dev_dbg(sdev->dev, "Min response time: %lluns\n",
+-		min_response_time);
+-
+-	/* format output string */
+-	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
+-		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
+-		 "IPC Flood count: %d\nAvg response time: %lluns\n",
+-		 i, avg_response_time);
+-
+-	snprintf(dfse->cache_buf + strlen(dfse->cache_buf),
+-		 IPC_FLOOD_TEST_RESULT_LEN - strlen(dfse->cache_buf),
+-		 "Max response time: %lluns\nMin response time: %lluns\n",
+-		 max_response_time, min_response_time);
+-
+-	return ret;
+-}
+-#endif
+ 
+ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 				  size_t count, loff_t *ppos)
+ {
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	struct snd_sof_dfsentry *dfse = file->private_data;
+-	struct snd_sof_dev *sdev = dfse->sdev;
+-	unsigned long ipc_duration_ms = 0;
+-	bool flood_duration_test = false;
+-	unsigned long ipc_count = 0;
+-	struct dentry *dentry;
+-	int err;
+-#endif
+ 	size_t size;
+ 	char *string;
+ 	int ret;
+@@ -357,78 +247,6 @@ static ssize_t sof_dfsentry_write(struct file *file, const char __user *buffer,
+ 	size = simple_write_to_buffer(string, count, ppos, buffer, count);
+ 	ret = size;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	/*
+-	 * write op is only supported for ipc_flood_count or
+-	 * ipc_flood_duration_ms debugfs entries atm.
+-	 * ipc_flood_count floods the DSP with the number of IPC's specified.
+-	 * ipc_duration_ms test floods the DSP for the time specified
+-	 * in the debugfs entry.
+-	 */
+-	dentry = file->f_path.dentry;
+-	if (strcmp(dentry->d_name.name, "ipc_flood_count") &&
+-	    strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) {
+-		ret = -EINVAL;
+-		goto out;
+-	}
+-
+-	if (!strcmp(dentry->d_name.name, "ipc_flood_duration_ms"))
+-		flood_duration_test = true;
+-
+-	/* test completion criterion */
+-	if (flood_duration_test)
+-		ret = kstrtoul(string, 0, &ipc_duration_ms);
+-	else
+-		ret = kstrtoul(string, 0, &ipc_count);
+-	if (ret < 0)
+-		goto out;
+-
+-	/* limit max duration/ipc count for flood test */
+-	if (flood_duration_test) {
+-		if (!ipc_duration_ms) {
+-			ret = size;
+-			goto out;
+-		}
+-
+-		/* find the minimum. min() is not used to avoid warnings */
+-		if (ipc_duration_ms > MAX_IPC_FLOOD_DURATION_MS)
+-			ipc_duration_ms = MAX_IPC_FLOOD_DURATION_MS;
+-	} else {
+-		if (!ipc_count) {
+-			ret = size;
+-			goto out;
+-		}
+-
+-		/* find the minimum. min() is not used to avoid warnings */
+-		if (ipc_count > MAX_IPC_FLOOD_COUNT)
+-			ipc_count = MAX_IPC_FLOOD_COUNT;
+-	}
+-
+-	ret = pm_runtime_get_sync(sdev->dev);
+-	if (ret < 0 && ret != -EACCES) {
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: debugfs write failed to resume %d\n",
+-				    ret);
+-		pm_runtime_put_noidle(sdev->dev);
+-		goto out;
+-	}
+-
+-	/* flood test */
+-	ret = sof_debug_ipc_flood_test(sdev, dfse, flood_duration_test,
+-				       ipc_duration_ms, ipc_count);
+-
+-	pm_runtime_mark_last_busy(sdev->dev);
+-	err = pm_runtime_put_autosuspend(sdev->dev);
+-	if (err < 0)
+-		dev_err_ratelimited(sdev->dev,
+-				    "error: debugfs write failed to idle %d\n",
+-				    err);
+-
+-	/* return size if test is successful */
+-	if (ret >= 0)
+-		ret = size;
+-out:
+-#endif
+ 	kfree(string);
+ 	return ret;
+ }
+@@ -444,25 +262,6 @@ static ssize_t sof_dfsentry_read(struct file *file, char __user *buffer,
+ 	int size;
+ 	u8 *buf;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	struct dentry *dentry;
+-
+-	dentry = file->f_path.dentry;
+-	if ((!strcmp(dentry->d_name.name, "ipc_flood_count") ||
+-	     !strcmp(dentry->d_name.name, "ipc_flood_duration_ms")) &&
+-	    dfse->cache_buf) {
+-		if (*ppos)
+-			return 0;
+-
+-		count = strlen(dfse->cache_buf);
+-		size_ret = copy_to_user(buffer, dfse->cache_buf, count);
+-		if (size_ret)
+-			return -EFAULT;
+-
+-		*ppos += count;
+-		return count;
+-	}
+-#endif
+ 	size = dfse->size;
+ 
+ 	/* validate position & count */
+@@ -606,17 +405,6 @@ int snd_sof_debugfs_buf_item(struct snd_sof_dev *sdev,
+ 	dfse->size = size;
+ 	dfse->sdev = sdev;
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	/*
+-	 * cache_buf is unused for SOF_DFSENTRY_TYPE_BUF debugfs entries.
+-	 * So, use it to save the results of the last IPC flood test.
+-	 */
+-	dfse->cache_buf = devm_kzalloc(sdev->dev, IPC_FLOOD_TEST_RESULT_LEN,
+-				       GFP_KERNEL);
+-	if (!dfse->cache_buf)
+-		return -ENOMEM;
+-#endif
+-
+ 	debugfs_create_file(name, mode, sdev->debugfs_root, dfse,
+ 			    &sof_dfs_fops);
+ 	/* add to dfsentry list */
+@@ -662,24 +450,6 @@ int snd_sof_dbg_init(struct snd_sof_dev *sdev)
+ 		return err;
+ #endif
+ 
+-#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST)
+-	/* create read-write ipc_flood_count debugfs entry */
+-	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
+-				       "ipc_flood_count", 0666);
+-
+-	/* errors are only due to memory allocation, not debugfs */
+-	if (err < 0)
+-		return err;
+-
+-	/* create read-write ipc_flood_duration_ms debugfs entry */
+-	err = snd_sof_debugfs_buf_item(sdev, NULL, 0,
+-				       "ipc_flood_duration_ms", 0666);
+-
+-	/* errors are only due to memory allocation, not debugfs */
+-	if (err < 0)
+-		return err;
+-#endif
+-
+ 	return 0;
+ }
+ EXPORT_SYMBOL_GPL(snd_sof_dbg_init);
+diff --git a/sound/soc/sof/sof-priv.h b/sound/soc/sof/sof-priv.h
+index cca239c09d0e..e44158410b24 100644
+--- a/sound/soc/sof/sof-priv.h
++++ b/sound/soc/sof/sof-priv.h
+@@ -50,10 +50,6 @@ extern int sof_core_debug;
+ #define SOF_FORMATS (SNDRV_PCM_FMTBIT_S16_LE | SNDRV_PCM_FMTBIT_S24_LE | \
+ 	SNDRV_PCM_FMTBIT_S32_LE | SNDRV_PCM_FMTBIT_FLOAT)
+ 
+-#define ENABLE_DEBUGFS_CACHEBUF \
+-	(IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE) || \
+-	 IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_IPC_FLOOD_TEST))
+-
+ /* So far the primary core on all DSPs has ID 0 */
+ #define SOF_DSP_PRIMARY_CORE 0
+ 
+@@ -301,7 +297,7 @@ struct snd_sof_dfsentry {
+ 	 * or if it is accessible only when the DSP is in D0.
+ 	 */
+ 	enum sof_debugfs_access_type access_type;
+-#if ENABLE_DEBUGFS_CACHEBUF
++#if IS_ENABLED(CONFIG_SND_SOC_SOF_DEBUG_ENABLE_DEBUGFS_CACHE)
+ 	char *cache_buf; /* buffer to cache the contents of debugfs memory */
+ #endif
+ 	struct snd_sof_dev *sdev;
+-- 
+2.26.2
 
-This is one way of doing it. Another one is to clear CON_ENABLED bit
-from all consoles (upon registration), one upside of this is that we
-will signal user-space that consoles are disabled/muted (by removing
-the E flag from /proc/consoles).
-
-But, if I'm mistaken, but this mutes only printk side, consoles still
-have uart running:
-	printf -> tty -> uart -> serial_driver_IRQ() -> TX
-	seriaal_driver_IRQ() -> RX -> uart -> tty
-
-so user space, in theory, still can push messages to slow consoles,
-AFAIU.
-
-Thinking more about it. We are still relying on the fact that there is
-anything registered as console driver, which is not necessarily the case,
-we can have NULL console drivers list. So how about having a dummy struct
-console in printk, with NOP read/write and NOP tty_driver and NOP
-tty_operations. So that when init calls filp_open("/dev/console") and
-we can't give tty anything but NULL, we'd just give tty back the dummy
-NOP device.
-
-	-ss
