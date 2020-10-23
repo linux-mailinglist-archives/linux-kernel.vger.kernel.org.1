@@ -2,99 +2,286 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1FFDF297706
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:35:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D8B2976F2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:34:17 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755016AbgJWSex (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:34:53 -0400
-Received: from gate.crashing.org ([63.228.1.57]:46520 "EHLO gate.crashing.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1754809AbgJWSep (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:34:45 -0400
-Received: from gate.crashing.org (localhost.localdomain [127.0.0.1])
-        by gate.crashing.org (8.14.1/8.14.1) with ESMTP id 09NIREDK014153;
-        Fri, 23 Oct 2020 13:27:15 -0500
-Received: (from segher@localhost)
-        by gate.crashing.org (8.14.1/8.14.1/Submit) id 09NIRD8Q014147;
-        Fri, 23 Oct 2020 13:27:13 -0500
-X-Authentication-Warning: gate.crashing.org: segher set sender to segher@kernel.crashing.org using -f
-Date:   Fri, 23 Oct 2020 13:27:13 -0500
-From:   Segher Boessenkool <segher@kernel.crashing.org>
-To:     Al Viro <viro@zeniv.linux.org.uk>
-Cc:     David Hildenbrand <david@redhat.com>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "'Greg KH'" <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        David Laight <David.Laight@aculab.com>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201023182713.GG2672@gate.crashing.org>
-References: <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com> <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com> <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com> <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com> <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com> <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com> <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com> <20201023175857.GA3576660@ZenIV.linux.org.uk>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023175857.GA3576660@ZenIV.linux.org.uk>
-User-Agent: Mutt/1.4.2.3i
+        id S1754844AbgJWSeJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:34:09 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:39089 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1754824AbgJWSeH (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:34:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603478044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=pL5izsDjQRsypIzAphsn/fSHZTMIi/wrQPFpeQ075jc=;
+        b=YCeLU8sQRI7j/R3eR4Zsxj6WQHUPBpTEobeZdbajvxvYWSlUYG+Q7ABFK7ypET7tFY5Che
+        Kz6Pl0RhWt2mfrA5J8mIq5HKA6w40UclnAQIXZ+bQYPugbYQlC/IjsNo7PXO4BTz2lw563
+        soGmOs47uw+lNvoWj1773uE2lRfGYF4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-140-Cta9AOMOPMeUePGWD_2XIw-1; Fri, 23 Oct 2020 14:34:01 -0400
+X-MC-Unique: Cta9AOMOPMeUePGWD_2XIw-1
+Received: by mail-qt1-f200.google.com with SMTP id r4so1675982qta.9
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:34:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=pL5izsDjQRsypIzAphsn/fSHZTMIi/wrQPFpeQ075jc=;
+        b=Gu9wwg26DLzQ4UHiJTgvlYQIyFo7pLLb9PeDD+61T/gqBdVX5Y3z2664jIPxEE+EDT
+         AZmEMkRAqppBXJXRI1WmPYoVADEWptyaY5qQmWjmVG1j11Q0RBquhlgYl4oZVq4CEcds
+         c83q6CyjR5VC60myYXvu2PTZin7P9tZ5Dh1LNJGA7DopS0X80C4bdaSASLKk7rCRj7lm
+         /7kRRTvJJJSWs7wHVRJEsE5r3bLLP+s6Sh8MsQvEzj3U/n9t2KymxGc4bBXZpmComh4i
+         HQzwudxXjfQykyqzQ1bxGMmj9tZKyZdjah3E75dcJN6O3YGy1VxJbyvZdkWt5NArXg6X
+         rnEg==
+X-Gm-Message-State: AOAM5325UfPfkMbGE4rRvmfsSHgcckVK5yxkWxrKP3JaE4gkURmP97oZ
+        7wrySaxYTxvdGRhwrpZB52mHtQLnKKLkWWxLOEe/gyT1RJTDiPXqTMSQhaR0rBHWfsEr2Uooo1h
+        2cAoFdOelzlAAML+nDBsZ4pm7
+X-Received: by 2002:a05:620a:12a6:: with SMTP id x6mr3846074qki.189.1603478040897;
+        Fri, 23 Oct 2020 11:34:00 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyCQX1jtoxh1ViMa4LFhKfs/4Hk6xAW6w7MMX1Jb8GfVLG+w/bEYVQx/I2vqVV8zeS85EEhZw==
+X-Received: by 2002:a05:620a:12a6:: with SMTP id x6mr3846044qki.189.1603478040477;
+        Fri, 23 Oct 2020 11:34:00 -0700 (PDT)
+Received: from xz-x1.redhat.com (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
+        by smtp.gmail.com with ESMTPSA id u11sm1490407qtk.61.2020.10.23.11.33.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 11:33:59 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        peterx@redhat.com, Andrew Jones <drjones@redhat.com>,
+        "Dr . David Alan Gilbert" <dgilbert@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH v15 00/14] KVM: Dirty ring interface
+Date:   Fri, 23 Oct 2020 14:33:44 -0400
+Message-Id: <20201023183358.50607-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:58:57PM +0100, Al Viro wrote:
-> On Fri, Oct 23, 2020 at 03:09:30PM +0200, David Hildenbrand wrote:
-> 
-> > Now, I am not a compiler expert, but as I already cited, at least on
-> > x86-64 clang expects that the high bits were cleared by the caller - in
-> > contrast to gcc. I suspect it's the same on arm64, but again, I am no
-> > compiler expert.
-> > 
-> > If what I said and cites for x86-64 is correct, if the function expects
-> > an "unsigned int", it will happily use 64bit operations without further
-> > checks where valid when assuming high bits are zero. That's why even
-> > converting everything to "unsigned int" as proposed by me won't work on
-> > clang - it assumes high bits are zero (as indicated by Nick).
-> > 
-> > As I am neither a compiler experts (did I mention that already? ;) ) nor
-> > an arm64 experts, I can't tell if this is a compiler BUG or not.
-> 
-> On arm64 when callee expects a 32bit argument, the caller is *not* responsible
-> for clearing the upper half of 64bit register used to pass the value - it only
-> needs to store the actual value into the lower half.  The callee must consider
-> the contents of the upper half of that register as undefined.  See AAPCS64 (e.g.
-> https://github.com/ARM-software/abi-aa/blob/master/aapcs64/aapcs64.rst#parameter-passing-rules
-> ); AFAICS, the relevant bit is
-> 	"Unlike in the 32-bit AAPCS, named integral values must be narrowed by
-> the callee rather than the caller."
+Paolo:=0D
+=0D
+I'm rebasing again to the next merge window branch of kvm, assuming it's=0D
+kvm-5.10-1/upstream tag.  I don't know whether you'd like to merge it for t=
+his=0D
+merge window.  Just in case you still would like to, so you'll have somethi=
+ng=0D
+to pick up very easily based on the new tdp mmu changes.=0D
+=0D
+I feel a bit sorry for disturbing reviewers on recent frequent repostings.=
+=0D
+It's just a way to try move this forward a bit since I still think it's a q=
+uite=0D
+useful thing to have upstream for not yet another logging interface, but al=
+so a=0D
+chance to improve auto-converge and maybe it could be useful to solve some =
+huge=0D
+vm issues.  Anyway, I guess this is the last attempt if I won't get more re=
+view=0D
+comments out of this series, and I'll hold until so.=0D
+=0D
+In all cases, please consider to squash patch1/2 into corresponding patches=
+ in=0D
+kvm-next because the numbers are wrong in current tree.=0D
+=0D
+Thanks.=0D
+=0D
+----------=0D
+=0D
+KVM branch:=0D
+  https://github.com/xzpeter/linux/tree/kvm-dirty-ring=0D
+=0D
+QEMU branch for testing:=0D
+  https://github.com/xzpeter/qemu/tree/kvm-dirty-ring=0D
+=0D
+v15:=0D
+- rebase to kvm tree tag kvm-5.10-1/for-upstream=0D
+=0D
+v14:=0D
+- fix a testcase race reported by kernel test robot.  More can be found at:=
+=0D
+  https://lore.kernel.org/kvm/20201007204525.GF6026@xz-x1/=0D
+=0D
+v13:=0D
+- rebase to kvm/queue rather than 5.9-rc7.  I think, kvm/queue is broken.  =
+I=0D
+  can only test the dirty ring after I revert 3eb900173c71 ("KVM: x86: VMX:=
+=0D
+  Prevent MSR passthrough when MSR access is denied", 2020-09-28), otherwis=
+e=0D
+  the guest will hang on vcpu0 looping forever during boot Linux.=0D
+- added another trivial patch "KVM: Documentation: Update entry for=0D
+  KVM_X86_SET_MSR_FILTER".  It should be squashed into 1a155254ff93 ("KVM: =
+x86:=0D
+  Introduce MSR filtering", 2020-09-28) directly.=0D
+=0D
+v12:=0D
+- add r-bs for Sean=0D
+- rebase=0D
+=0D
+v11:=0D
+- rebased to kvm/queue (seems the newest)=0D
+- removed kvm_dirty_ring_waitqueue() tracepoint since not used=0D
+- set memslot->as_id in kvm_delete_memslot() [Sean]=0D
+- let __copy_to_user() always return -EFAULT [Sean]=0D
+- rename 'r' in alloc_apic_access_page into 'hva' [Sean]=0D
+=0D
+For previous versions, please refer to:=0D
+=0D
+V1: https://lore.kernel.org/kvm/20191129213505.18472-1-peterx@redhat.com=0D
+V2: https://lore.kernel.org/kvm/20191221014938.58831-1-peterx@redhat.com=0D
+V3: https://lore.kernel.org/kvm/20200109145729.32898-1-peterx@redhat.com=0D
+V4: https://lore.kernel.org/kvm/20200205025105.367213-1-peterx@redhat.com=0D
+V5: https://lore.kernel.org/kvm/20200304174947.69595-1-peterx@redhat.com=0D
+V6: https://lore.kernel.org/kvm/20200309214424.330363-1-peterx@redhat.com=0D
+V7: https://lore.kernel.org/kvm/20200318163720.93929-1-peterx@redhat.com=0D
+V8: https://lore.kernel.org/kvm/20200331190000.659614-1-peterx@redhat.com=0D
+V9: https://lore.kernel.org/kvm/20200523225659.1027044-1-peterx@redhat.com=
+=0D
+V10: https://lore.kernel.org/kvm/20200601115957.1581250-1-peterx@redhat.com=
+/=0D
+=0D
+Overview=0D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0D
+=0D
+This is a continued work from Lei Cao <lei.cao@stratus.com> and Paolo=0D
+Bonzini on the KVM dirty ring interface.=0D
+=0D
+The new dirty ring interface is another way to collect dirty pages for=0D
+the virtual machines. It is different from the existing dirty logging=0D
+interface in a few ways, majorly:=0D
+=0D
+  - Data format: The dirty data was in a ring format rather than a=0D
+    bitmap format, so dirty bits to sync for dirty logging does not=0D
+    depend on the size of guest memory any more, but speed of=0D
+    dirtying.  Also, the dirty ring is per-vcpu, while the dirty=0D
+    bitmap is per-vm.=0D
+=0D
+  - Data copy: The sync of dirty pages does not need data copy any more,=0D
+    but instead the ring is shared between the userspace and kernel by=0D
+    page sharings (mmap() on vcpu fd)=0D
+=0D
+  - Interface: Instead of using the old KVM_GET_DIRTY_LOG,=0D
+    KVM_CLEAR_DIRTY_LOG interfaces, the new ring uses the new=0D
+    KVM_RESET_DIRTY_RINGS ioctl when we want to reset the collected=0D
+    dirty pages to protected mode again (works like=0D
+    KVM_CLEAR_DIRTY_LOG, but ring based).  To collecting dirty bits,=0D
+    we only need to read the ring data, no ioctl is needed.=0D
+=0D
+Ring Layout=0D
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=0D
+=0D
+KVM dirty ring is per-vcpu.  Each ring is an array of kvm_dirty_gfn=0D
+defined as:=0D
+=0D
+struct kvm_dirty_gfn {=0D
+        __u32 flags;=0D
+        __u32 slot; /* as_id | slot_id */=0D
+        __u64 offset;=0D
+};=0D
+=0D
+Each GFN is a state machine itself.  The state is embeded in the flags=0D
+field, as defined in the uapi header:=0D
+=0D
+/*=0D
+ * KVM dirty GFN flags, defined as:=0D
+ *=0D
+ * |---------------+---------------+--------------|=0D
+ * | bit 1 (reset) | bit 0 (dirty) | Status       |=0D
+ * |---------------+---------------+--------------|=0D
+ * |             0 |             0 | Invalid GFN  |=0D
+ * |             0 |             1 | Dirty GFN    |=0D
+ * |             1 |             X | GFN to reset |=0D
+ * |---------------+---------------+--------------|=0D
+ *=0D
+ * Lifecycle of a dirty GFN goes like:=0D
+ *=0D
+ *      dirtied         collected        reset=0D
+ * 00 -----------> 01 -------------> 1X -------+=0D
+ *  ^                                          |=0D
+ *  |                                          |=0D
+ *  +------------------------------------------+=0D
+ *=0D
+ * The userspace program is only responsible for the 01->1X state=0D
+ * conversion (to collect dirty bits).  Also, it must not skip any=0D
+ * dirty bits so that dirty bits are always collected in sequence.=0D
+ */=0D
+=0D
+Testing=0D
+=3D=3D=3D=3D=3D=3D=3D=0D
+=0D
+This series provided both the implementation of the KVM dirty ring and=0D
+the test case.  Also I've implemented the QEMU counterpart that can=0D
+run with the new KVM, link can be found at the top of the cover=0D
+letter.  However that's still a very initial version which is prone to=0D
+change and future optimizations.=0D
+=0D
+I did some measurement with the new method with 24G guest running some=0D
+dirty workload, I don't see any speedup so far, even in some heavy=0D
+dirty load it'll be slower (e.g., when 800MB/s random dirty rate, kvm=0D
+dirty ring takes average of ~73s to complete migration while dirty=0D
+logging only needs average of ~55s).  However that's understandable=0D
+because 24G guest means only 1M dirty bitmap, that's still a suitable=0D
+case for dirty logging.  Meanwhile heavier workload means worst case=0D
+for dirty ring.=0D
+=0D
+More tests are welcomed if there's bigger host/guest, especially on=0D
+COLO-like workload.=0D
+=0D
+Please review, thanks.=0D
+=0D
+Peter Xu (14):=0D
+  KVM: Documentation: Update entry for KVM_X86_SET_MSR_FILTER=0D
+  KVM: Documentation: Update entry for KVM_CAP_ENFORCE_PV_CPUID=0D
+  KVM: X86: Don't track dirty for KVM_SET_[TSS_ADDR|IDENTITY_MAP_ADDR]=0D
+  KVM: Pass in kvm pointer into mark_page_dirty_in_slot()=0D
+  KVM: X86: Implement ring-based dirty memory tracking=0D
+  KVM: Make dirty ring exclusive to dirty bitmap log=0D
+  KVM: Don't allocate dirty bitmap if dirty ring is enabled=0D
+  KVM: selftests: Always clear dirty bitmap after iteration=0D
+  KVM: selftests: Sync uapi/linux/kvm.h to tools/=0D
+  KVM: selftests: Use a single binary for dirty/clear log test=0D
+  KVM: selftests: Introduce after_vcpu_run hook for dirty log test=0D
+  KVM: selftests: Add dirty ring buffer test=0D
+  KVM: selftests: Let dirty_log_test async for dirty ring test=0D
+  KVM: selftests: Add "-c" parameter to dirty log test=0D
+=0D
+ Documentation/virt/kvm/api.rst                | 129 ++++-=0D
+ arch/x86/include/asm/kvm_host.h               |   6 +-=0D
+ arch/x86/include/uapi/asm/kvm.h               |   1 +=0D
+ arch/x86/kvm/Makefile                         |   3 +-=0D
+ arch/x86/kvm/mmu/mmu.c                        |  10 +-=0D
+ arch/x86/kvm/mmu/tdp_mmu.c                    |   2 +-=0D
+ arch/x86/kvm/svm/avic.c                       |   9 +-=0D
+ arch/x86/kvm/vmx/vmx.c                        |  96 ++--=0D
+ arch/x86/kvm/x86.c                            |  46 +-=0D
+ include/linux/kvm_dirty_ring.h                | 103 ++++=0D
+ include/linux/kvm_host.h                      |  21 +-=0D
+ include/trace/events/kvm.h                    |  63 +++=0D
+ include/uapi/linux/kvm.h                      |  53 ++=0D
+ tools/include/uapi/linux/kvm.h                |  78 ++-=0D
+ tools/testing/selftests/kvm/Makefile          |   2 -=0D
+ .../selftests/kvm/clear_dirty_log_test.c      |   6 -=0D
+ tools/testing/selftests/kvm/dirty_log_test.c  | 516 ++++++++++++++++--=0D
+ .../testing/selftests/kvm/include/kvm_util.h  |   4 +=0D
+ tools/testing/selftests/kvm/lib/kvm_util.c    |  72 ++-=0D
+ .../selftests/kvm/lib/kvm_util_internal.h     |   4 +=0D
+ virt/kvm/dirty_ring.c                         | 197 +++++++=0D
+ virt/kvm/kvm_main.c                           | 158 +++++-=0D
+ 22 files changed, 1438 insertions(+), 141 deletions(-)=0D
+ create mode 100644 include/linux/kvm_dirty_ring.h=0D
+ delete mode 100644 tools/testing/selftests/kvm/clear_dirty_log_test.c=0D
+ create mode 100644 virt/kvm/dirty_ring.c=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
-Or the formal rule:
-
-C.9 	If the argument is an Integral or Pointer Type, the size of the
-	argument is less than or equal to 8 bytes and the NGRN is less
-	than 8, the argument is copied to the least significant bits in
-	x[NGRN]. The NGRN is incremented by one. The argument has now
-	been allocated.
-
-
-Segher
