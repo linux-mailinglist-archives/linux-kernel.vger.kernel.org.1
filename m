@@ -2,182 +2,279 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C2B0296A23
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:16:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B44B296A28
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 09:19:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S375657AbgJWHQC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 03:16:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46988 "EHLO
+        id S375664AbgJWHTZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 03:19:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47506 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373950AbgJWHQC (ORCPT
+        with ESMTP id S369274AbgJWHTY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 03:16:02 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A1316C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:16:01 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id c21so449305ljn.13
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 00:16:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=57USzFpsWiPQzNOzRw9qjMnByIV9pu7Vaq3e5wmlXPo=;
-        b=P0rcIz02drFreoGEWHz0sOEvIS0h0AmfpjXPV6R2sOrg3Hhe6kQ2qDTkQbGWm6uVMr
-         ORswWCMA63hSlbdxEtZaHh7XpQ3/D8rIOOl+M0ZBq9SgDTvgR/ivaNR++oW0H56JbQIy
-         GvGWjALm7OwF7jVun1CXD0dcN+6l32d6jZOeMu2ivIUOi25UTPwc5mev05iVEMvkBbE9
-         CyXcY9bSDaFEYVs7keCGjKoPCkJKlE/I8/ZzAeoMpcbNfg4M8XkwxKu1mi3w2zK918/g
-         G3pyCs7v/wXpcJLSyjkEHnVk5iX5eAIFwdJnE8zrNruCy1GDD6Bp6jO85yOinM1e1OGf
-         c00w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=57USzFpsWiPQzNOzRw9qjMnByIV9pu7Vaq3e5wmlXPo=;
-        b=Sn1EeDoE3FX3NCgfyY4a1xHnm8ziwT7dMRK4tEyCxTltZKpohma0knYr925RqSvkGA
-         GTugIDEhUHN3o5YUUS3vTr7Uwjob0hEsXUG+67Bpbs6NcHu0uS7p7u/4n8VTB2eX991m
-         MWC1pALXgeovE0yVyod/JDAQ7mqumkWy2VcppQ0rR94xXCA2yoxk9YpmhHibabD5wnpR
-         jiqnPD62GSThzKlsy+KC+OEM54b1VM6KNPGy35OtPmDwydu9ATvvRLRiH9k8wcyV1ZV8
-         z+YTqd0u3XbMerc6zNkU0TtLQLJ2n0B1M2cgTLTvVwB7gYcbOsGN+suubXW9as1HdFax
-         TNtQ==
-X-Gm-Message-State: AOAM53196XU7U727C3ZdBf0RX9b3Dn7OdXrJgX5g7FGx0dL/i9dV3cle
-        xBixDdqU9BpSC+7CevtLI7VQ2vIM6uRPYBQSIFMmbw==
-X-Google-Smtp-Source: ABdhPJxUaI7yebnJAYY6+39XWQtUP9agIyKTPc7MCcBmt7DnonTTQtorFSbkWVeUnwY/ITDknsr/abkXyiZZEmmaUCw=
-X-Received: by 2002:a2e:8787:: with SMTP id n7mr337039lji.111.1603437360069;
- Fri, 23 Oct 2020 00:16:00 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201022134354.3485-1-vincent.guittot@linaro.org>
- <jhj1rhqqplq.mognet@arm.com> <CAKfTPtBP8GntXP40mkq6NeppeFU1vZfFN_u41Athwouw-BBAMA@mail.gmail.com>
- <jhjzh4ep31l.mognet@arm.com>
-In-Reply-To: <jhjzh4ep31l.mognet@arm.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Fri, 23 Oct 2020 09:15:48 +0200
-Message-ID: <CAKfTPtCysU8OikyOqYLsoYEiBjyQbuw_X9RjJWh3NFO89=5RFQ@mail.gmail.com>
-Subject: Re: [PATCH] sched/fair: prefer prev cpu in asymmetric wakeup path
-To:     Valentin Schneider <valentin.schneider@arm.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
+        Fri, 23 Oct 2020 03:19:24 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 706E0C0613CE;
+        Fri, 23 Oct 2020 00:19:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=f2zG0rse0rP2KMvxNrYyo4BrFzXK52fXqXFpWjS+UJM=; b=KM9p6HAHydkdVAr48tQn8+RqNd
+        H0CBbXtOAQHVSWkRBySQs1qJTutTJAbSTO5x1+V/1fJbyHewmKzc5jalKusP2kPYxqQcSxa0sTGQy
+        V5krYT+EyRkZozcMWAiDL/fK75plVEXvCC0ZvepZaFnI23WwamSwYRMWVbPN3wGBGzkgBmBK1Ogj9
+        877xRZd9XOIJCCAdevUybXx7rIUKjNbD/zxFwpswX/Oj/pgci7Fv7EGYWvcISyQI3h1dI2O32pK7B
+        /Xb/avXNb8uqZrBHVKQJwwX2nNNherwfQXs+XRYarbD8Pwz9W47zOI9ejy9L8tRy88DvTLXL54E5l
+        ouPk+0mg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVrLu-00088z-Kk; Fri, 23 Oct 2020 07:19:06 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A65D5304D28;
+        Fri, 23 Oct 2020 09:19:05 +0200 (CEST)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8FA0E203D09CB; Fri, 23 Oct 2020 09:19:05 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 09:19:05 +0200
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Josh Don <joshdon@google.com>, g@hirez.programming.kicks-ass.net
+Cc:     Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
         Dietmar Eggemann <dietmar.eggemann@arm.com>,
         Steven Rostedt <rostedt@goodmis.org>,
         Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Morten Rasmussen <morten.rasmussen@arm.com>
-Content-Type: text/plain; charset="UTF-8"
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Eric Dumazet <edumazet@google.com>,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        kvm@vger.kernel.org, Xi Wang <xii@google.com>
+Subject: Re: [PATCH 1/3] sched: better handling for busy polling loops
+Message-ID: <20201023071905.GL2611@hirez.programming.kicks-ass.net>
+References: <20201023032944.399861-1-joshdon@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023032944.399861-1-joshdon@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 at 19:46, Valentin Schneider
-<valentin.schneider@arm.com> wrote:
->
->
-> On 22/10/20 16:33, Vincent Guittot wrote:
-> > On Thu, 22 Oct 2020 at 16:53, Valentin Schneider
-> > <valentin.schneider@arm.com> wrote:
-> >> > @@ -6170,7 +6170,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
-> >> >   * maximize capacity.
-> >> >   */
-> >> >  static int
-> >> > -select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
-> >> > +select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int prev, int target)
-> >> >  {
-> >> >       unsigned long best_cap = 0;
-> >> >       int cpu, best_cpu = -1;
-> >> > @@ -6178,9 +6178,22 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
-> >> >
-> >> >       sync_entity_load_avg(&p->se);
-> >> >
-> >> > +     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
-> >> > +         task_fits_capacity(p, capacity_of(target)))
-> >> > +             return target;
-> >> > +
-> >>
-> >> I think we still need to check for CPU affinity here.
-> >
-> > yes good point
-> >
-> >>
-> >> >       cpus = this_cpu_cpumask_var_ptr(select_idle_mask);
-> >> >       cpumask_and(cpus, sched_domain_span(sd), p->cpus_ptr);
-> >> >
-> >> > +     /*
-> >> > +      * If the previous CPU belongs to this asymmetric domain and is idle,
-> >> > +      * check it 1st as it's the best candidate.
-> >> > +      */
-> >> > +     if (prev != target && cpumask_test_cpu(prev, cpus) &&
-> >> > +         (available_idle_cpu(prev) || sched_idle_cpu(prev)) &&
-> >> > +         task_fits_capacity(p, capacity_of(prev)))
-> >> > +             return prev;
-> >> > +
-> >> >       for_each_cpu_wrap(cpu, cpus, target) {
-> >>
-> >> So we prioritize target over prev, like the rest of the
-> >> select_idle_sibling() family. Here however we apply the same acceptability
-> >> function to target, prev and the loop body, so perhaps we could simplify
-> >> this to:
-> >
-> > My 1st implementation was similar to you proposal below but i finally
-> > decided to strictly follow the same sequence as symmetric which:
-> > - checks target
-> > - then prev cpu
-> > - and finally uses target as the starting point of the loop for
-> > looking for another cpu
-> >
-> > Using prev as the starting point of the loop will change which cpu
-> > will be selected but I don't have a strong opinion if this will make a
-> > real difference at the end because bit position doesn't imply any
-> > relation with others cpus.
-> >
->
-> Yep, also one difference with the symmetric path here is that the first
-> checks against target & prev use exactly the same criteria as the loop
-> body, so we shouldn't feel shy about doing this here.
->
-> > So I'm fine to go with your proposal below
-> >
-> > Also I wonder if i should also add the test of p->recent_used_cpu and
-> > the per cpu kthread optimization, which benefit XFS IIRC.
-> >
->
-> If we head down that route it would be nice to reuse the existing
-> conditions (rather than copy and tweak them) and move the asymmetric loop
-> further down. Maybe with something like (with a better name though):
+On Thu, Oct 22, 2020 at 08:29:42PM -0700, Josh Don wrote:
+> Busy polling loops in the kernel such as network socket poll and kvm
+> halt polling have performance problems related to process scheduler load
+> accounting.
 
-Yes, That would ensure that asymmetric will stay align symmetric.
+AFAICT you're not actually fixing the load accounting issue at all.
 
-I 'm going to look at this for the next version
+> This change also disables preemption for the duration of the busy
+> polling loop. This is important, as it ensures that if a polling thread
+> decides to end its poll to relinquish cpu to another thread, the polling
+> thread will actually exit the busy loop and potentially block. When it
+> later becomes runnable, it will have the opportunity to find an idle cpu
+> via wakeup cpu selection.
 
->
->   static inline bool asym_task_fits_capacity(struct task_struct *p, int cpu)
->   {
->           if (!static_branch_unlikely(&sched_asym_cpucapacity))
->                   return true;
->
->           return task_fits_capacity(p, capacity_of(cpu));
->   }
->
-> and we could && that to the existing cases. Food for thought.
->
-> >>
-> >>   if (accept(target))
-> >>       return target;
-> >>
-> >>   ...
-> >>
-> >>   for_each_cpu_wrap(cpu, cpus, prev) {
-> >>       ...
-> >>   }
-> >>
-> >> That way we evaluate target twice only if it isn't a direct candidate
-> >> (but might be a fallback one).
-> >>
-> >> >               unsigned long cpu_cap = capacity_of(cpu);
-> >> >
-> >> > @@ -6223,7 +6236,7 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
-> >> >               if (!sd)
-> >> >                       goto symmetric;
-> >> >
-> >> > -             i = select_idle_capacity(p, sd, target);
-> >> > +             i = select_idle_capacity(p, sd, prev, target);
-> >> >               return ((unsigned)i < nr_cpumask_bits) ? i : target;
-> >> >       }
+At the cost of inducing a sleep+wake cycle; which is mucho expensive. So
+this could go either way. No data presented.
+
+> +void prepare_to_busy_poll(void)
+> +{
+> +	struct rq __maybe_unused *rq = this_rq();
+> +	unsigned long __maybe_unused flags;
+> +
+> +	/* Preemption will be reenabled by end_busy_poll() */
+> +	preempt_disable();
+> +
+> +#ifdef CONFIG_SMP
+> +	raw_spin_lock_irqsave(&rq->lock, flags);
+> +	/* preemption disabled; only one thread can poll at a time */
+> +	WARN_ON_ONCE(rq->busy_polling);
+> +	rq->busy_polling++;
+> +	raw_spin_unlock_irqrestore(&rq->lock, flags);
+> +#endif
+
+Explain to me the purpose of that rq->lock usage.
+
+> +}
+> +EXPORT_SYMBOL(prepare_to_busy_poll);
+
+_GPL
+
+> +
+> +int continue_busy_poll(void)
+> +{
+> +	if (!single_task_running())
+> +		return 0;
+
+Why? If there's more, we'll end up in the below condition anyway.
+
+> +
+> +	/* Important that we check this, since preemption is disabled */
+> +	if (need_resched())
+> +		return 0;
+> +
+> +	return 1;
+> +}
+> +EXPORT_SYMBOL(continue_busy_poll);
+
+_GPL
+
+> +
+> +/*
+> + * Restore any state modified by prepare_to_busy_poll(), including re-enabling
+> + * preemption.
+> + *
+> + * @allow_resched: If true, this potentially calls schedule() as part of
+> + * enabling preemption. A busy poll loop can use false in order to have an
+> + * opportunity to block before rescheduling.
+> + */
+> +void end_busy_poll(bool allow_resched)
+> +{
+> +#ifdef CONFIG_SMP
+> +	struct rq *rq = this_rq();
+> +	unsigned long flags;
+> +
+> +	raw_spin_lock_irqsave(&rq->lock, flags);
+> +	BUG_ON(!rq->busy_polling); /* not paired with prepare() */
+> +	rq->busy_polling--;
+> +	raw_spin_unlock_irqrestore(&rq->lock, flags);
+> +#endif
+
+Again, please explain this lock usage.
+
+> +
+> +	/*
+> +	 * preemption needs to be kept disabled between prepare_to_busy_poll()
+> +	 * and end_busy_poll().
+> +	 */
+> +	BUG_ON(preemptible());
+> +	if (allow_resched)
+> +		preempt_enable();
+> +	else
+> +		preempt_enable_no_resched();
+
+NAK on @allow_resched
+
+> +}
+> +EXPORT_SYMBOL(end_busy_poll);
+
+_GPL
+
+> +
+>  #ifdef CONFIG_CGROUP_SCHED
+>  /* task_group_lock serializes the addition/removal of task groups */
+>  static DEFINE_SPINLOCK(task_group_lock);
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 1a68a0536add..58e525c74cc6 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -5460,6 +5460,11 @@ static int sched_idle_cpu(int cpu)
+>  {
+>  	return sched_idle_rq(cpu_rq(cpu));
+>  }
+> +
+> +static int sched_idle_or_polling_cpu(int cpu)
+> +{
+> +	return sched_idle_cpu(cpu) || polling_cpu(cpu);
+> +}
+>  #endif
+>  
+>  /*
+> @@ -5880,6 +5885,7 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+>  	u64 latest_idle_timestamp = 0;
+>  	int least_loaded_cpu = this_cpu;
+>  	int shallowest_idle_cpu = -1;
+> +	int found_polling = 0;
+>  	int i;
+>  
+>  	/* Check if we have any choice: */
+> @@ -5914,10 +5920,14 @@ find_idlest_group_cpu(struct sched_group *group, struct task_struct *p, int this
+>  				shallowest_idle_cpu = i;
+>  			}
+>  		} else if (shallowest_idle_cpu == -1) {
+> +			int polling = polling_cpu(i);
+> +
+>  			load = cpu_load(cpu_rq(i));
+> -			if (load < min_load) {
+> +			if ((polling == found_polling && load < min_load) ||
+> +			    (polling && !found_polling)) {
+>  				min_load = load;
+>  				least_loaded_cpu = i;
+> +				found_polling = polling;
+>  			}
+>  		}
+>  	}
+> @@ -6085,7 +6095,7 @@ static int select_idle_smt(struct task_struct *p, int target)
+>  	for_each_cpu(cpu, cpu_smt_mask(target)) {
+>  		if (!cpumask_test_cpu(cpu, p->cpus_ptr))
+>  			continue;
+> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> +		if (available_idle_cpu(cpu) || sched_idle_or_polling_cpu(cpu))
+>  			return cpu;
+>  	}
+>  
+> @@ -6149,7 +6159,7 @@ static int select_idle_cpu(struct task_struct *p, struct sched_domain *sd, int t
+>  	for_each_cpu_wrap(cpu, cpus, target) {
+>  		if (!--nr)
+>  			return -1;
+> -		if (available_idle_cpu(cpu) || sched_idle_cpu(cpu))
+> +		if (available_idle_cpu(cpu) || sched_idle_or_polling_cpu(cpu))
+>  			break;
+>  	}
+>  
+> @@ -6179,7 +6189,7 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
+>  	for_each_cpu_wrap(cpu, cpus, target) {
+>  		unsigned long cpu_cap = capacity_of(cpu);
+>  
+> -		if (!available_idle_cpu(cpu) && !sched_idle_cpu(cpu))
+> +		if (!available_idle_cpu(cpu) && !sched_idle_or_polling_cpu(cpu))
+>  			continue;
+>  		if (task_fits_capacity(p, cpu_cap))
+>  			return cpu;
+> @@ -6223,14 +6233,14 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  	}
+>  
+>  symmetric:
+> -	if (available_idle_cpu(target) || sched_idle_cpu(target))
+> +	if (available_idle_cpu(target) || sched_idle_or_polling_cpu(target))
+>  		return target;
+>  
+>  	/*
+>  	 * If the previous CPU is cache affine and idle, don't be stupid:
+>  	 */
+>  	if (prev != target && cpus_share_cache(prev, target) &&
+> -	    (available_idle_cpu(prev) || sched_idle_cpu(prev)))
+> +	    (available_idle_cpu(prev) || sched_idle_or_polling_cpu(prev)))
+>  		return prev;
+>  
+>  	/*
+> @@ -6252,7 +6262,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+>  	if (recent_used_cpu != prev &&
+>  	    recent_used_cpu != target &&
+>  	    cpus_share_cache(recent_used_cpu, target) &&
+> -	    (available_idle_cpu(recent_used_cpu) || sched_idle_cpu(recent_used_cpu)) &&
+> +	    (available_idle_cpu(recent_used_cpu) ||
+> +	     sched_idle_or_polling_cpu(recent_used_cpu)) &&
+>  	    cpumask_test_cpu(p->recent_used_cpu, p->cpus_ptr)) {
+>  		/*
+>  		 * Replace recent_used_cpu with prev as it is a potential
+
+
+None of this affects load-tracking
+
+> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> index 28709f6b0975..45de468d0ffb 100644
+> --- a/kernel/sched/sched.h
+> +++ b/kernel/sched/sched.h
+> @@ -1003,6 +1003,8 @@ struct rq {
+>  
+>  	/* This is used to determine avg_idle's max value */
+>  	u64			max_idle_balance_cost;
+> +
+> +	unsigned int		busy_polling;
+
+This is a good location, cache-wise, because?
+
+>  #endif /* CONFIG_SMP */
+>  
+>  #ifdef CONFIG_IRQ_TIME_ACCOUNTING
