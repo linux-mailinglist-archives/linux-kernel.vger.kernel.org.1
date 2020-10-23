@@ -2,84 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3A7A296CD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:26:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8DD5E296C9A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:16:53 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462321AbgJWKZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:25:49 -0400
-Received: from slot0.packallstationery-co-za.email ([86.104.194.82]:56930 "EHLO
-        slot0.packallstationery-co-za.email" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S462303AbgJWKZn (ORCPT
+        id S462009AbgJWKQt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:16:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46692 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461961AbgJWKQs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:25:43 -0400
-X-Greylist: delayed 605 seconds by postgrey-1.27 at vger.kernel.org; Fri, 23 Oct 2020 06:25:43 EDT
-DKIM-Signature: v=1; a=rsa-sha1; c=relaxed/relaxed; s=dkim; d=packallstationery-co-za.email;
- h=Reply-To:From:To:Subject:Date:Message-ID:MIME-Version:Content-Type:Content-Transfer-Encoding; i=demap@packallstationery-co-za.email;
- bh=KPY0JLydxvzvAjGu04JfAIpD7KI=;
- b=CBvThsWjmIQOnsAszykMvod2itOEwuyjQNbe5iPI/RRmVq1kW2BgezZldy0Ye8DdDF+jPDThVVaW
-   fobnBN6l7wkE6LCuurOlIGAKSvvW/Fe0xe8eECyCo6OSKvO9PDD1Vnb1ZXiuNZVE+E6dfDr+Y0Uj
-   2u6t0FTrC5647uJfSKBhvdjBQtpO8xq3BxrUmvu+BU233J09WqbAI/U5Wa6xri+rGToVUmu5nb6o
-   nqlb/qi4bKzJWLUTbIBXXt+TJa+e5PpV5J6vuIcBRvwZ2evP40vjncUr0g/s0cD+wXSvfzW4BbtA
-   QPK68tRiWfXwztgdrFBfl06zBofQJQaQtMEYeA==
-DomainKey-Signature: a=rsa-sha1; c=nofws; q=dns; s=dkim; d=packallstationery-co-za.email;
- b=Wmx7txF8ECuv2M6fbPv4h3lsFQHG/NKVRAWAehNW7jmu3dbHgRZC72km0J0MddRKcXZ6pLRoA115
-   6sHtjRXj/QSDM0u9PD7sBHkU35S8bE+CMvTdat6UvN/Kzg+0gaxIqUfTfjIZ7K8XZvSZ7pp0WoCU
-   WIzJwj2Ssr1/Iv/eozFlGcJiY+fUcnAbwJi+qh6ohqon9kA4qWUH/4PsEBPHwJERjRjMiAxUOVWV
-   9ypo17d/BZkXOLLWz5IrHVWIuLpXN1CBm+fZM9+f0/pyy7LVhtYwP0feeFDYeyGoojgJrS1f7TfZ
-   lMjZHTGfymtDY0pZMOiejfau9roIxC4yA7LJPg==;
-Reply-To: iraqofficgenerationchemicals@outlook.com
-From:   iraqofficgenerationchemicals <demap@packallstationery-co-za.email>
-To:     linux-kernel@vger.kernel.org
-Subject: price offer  for linux-kernel@vger.kernel.org
-Date:   23 Oct 2020 03:15:33 -0700
-Message-ID: <20201023031533.6446D5BAB2833975@packallstationery-co-za.email>
+        Fri, 23 Oct 2020 06:16:48 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 961FEC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:16:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=u6Dt4eNB9uo93oxRYc8MfzJ3qNz/BQ4UPg0GgCDWsm0=; b=0r39HtvR8ZB+QTz2zzG67pEFd
+        dFAPK/XpPLUpDvn3JFW1gqHAObbTmkOYOSlWOJHlgFnqP+pdyzzMJnSbr9aZ2s6A+Ukos/9KujyD/
+        PnGRbPAJPY5gyQDZsCUSj10NZiao/46Ds9xMTZOg5CT9DoYqcfKK1dWIW1B2tixzzvJSQ5Gk8nMSH
+        3h8kDACleJFEKadbOzI6JjqUkfk1TQyVARDGf+GzUt2Fw/YYTWcGJ1R6VaM97OdKUqa1weh/gAYOg
+        L5E+nAHf6QR6j9c1bvRNJICXPsross/qxHCmiwz7Qpy/mJI01cYIczQTMkkMzwoFp0Eia2Hy1UTYM
+        EbjZidWFg==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:49924)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVu7m-0003Hh-PE; Fri, 23 Oct 2020 11:16:42 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVu7k-0008MT-R3; Fri, 23 Oct 2020 11:16:40 +0100
+Date:   Fri, 23 Oct 2020 11:16:40 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Miles Chen <miles.chen@mediatek.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Minchan Kim <minchan@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com,
+        Will Deacon <will.deacon@arm.com>,
+        Steve Capper <steve.capper@linaro.org>,
+        Simon Horman <horms@verge.net.au>,
+        Suren Baghdasaryan <surenb@google.com>
+Subject: Re: [PATCH v2 2/4] arm: mm: reordering memory type table
+Message-ID: <20201023101640.GA1551@shell.armlinux.org.uk>
+References: <20201023091437.8225-1-miles.chen@mediatek.com>
+ <20201023091437.8225-3-miles.chen@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain;
-        charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023091437.8225-3-miles.chen@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Dear,
+On Fri, Oct 23, 2020 at 05:14:35PM +0800, Miles Chen wrote:
+> From: Minchan Kim <minchan@kernel.org>
+> 
+> To use bit 5 in page table as L_PTE_SPECIAL, we need a room for that.
+> It seems we don't need 4 bits for the memory type with ARMv6+.
+> If it's true, let's reorder bits to make bit 5 free.
+> 
+> We will use the bit for L_PTE_SPECIAL in next patch.
+> 
+> A note from Catalin in [1]:
+> "
+> > Anyway, on ARMv7 or ARMv6+LPAE, the non-shared device gets mapped to
+> > shared device in hardware. Looking through the arm32 code, it seems that
+> > MT_DEVICE_NONSHARED is used by arch/arm/mach-shmobile/setup-r8a7779.c
+> > and IIUC that's a v7 platform (R-Car H1, Cortex-A9). I think the above
+> > should be defined to L_PTE_MT_DEV_SHARED, unless I miss any place where
+> > DEV_NONSHARED is relevant on ARMv6 (adding Simon to confirm on shmbile).
+> "
+> 
+> [1] https://lore.kernel.org/patchwork/patch/986574/
+> 
+> Cc: Russell King <linux@armlinux.org.uk>
+> Cc: Catalin Marinas <catalin.marinas@arm.com>
+> Cc: Will Deacon <will.deacon@arm.com>
+> Cc: Steve Capper <steve.capper@linaro.org>
+> Cc: Simon Horman <horms@verge.net.au>
+> Cc: Minchan Kim <minchan@kernel.org>
+> Cc: Suren Baghdasaryan <surenb@google.com>
+> Signed-off-by: Minchan Kim <minchan@kernel.org>
+> Signed-off-by: Miles Chen <miles.chen@mediatek.com>
+> ---
+>  arch/arm/include/asm/pgtable-2level.h | 21 +++++++++++++++++----
+>  arch/arm/mm/proc-macros.S             |  4 ++--
+>  2 files changed, 19 insertions(+), 6 deletions(-)
+> 
+> diff --git a/arch/arm/include/asm/pgtable-2level.h b/arch/arm/include/asm/pgtable-2level.h
+> index 27a8635abea0..cdcd55cca37d 100644
+> --- a/arch/arm/include/asm/pgtable-2level.h
+> +++ b/arch/arm/include/asm/pgtable-2level.h
+> @@ -161,14 +161,27 @@
+>  #define L_PTE_MT_BUFFERABLE	(_AT(pteval_t, 0x01) << 2)	/* 0001 */
+>  #define L_PTE_MT_WRITETHROUGH	(_AT(pteval_t, 0x02) << 2)	/* 0010 */
+>  #define L_PTE_MT_WRITEBACK	(_AT(pteval_t, 0x03) << 2)	/* 0011 */
+> +#define L_PTE_MT_DEV_SHARED	(_AT(pteval_t, 0x04) << 2)	/* 0100 */
+> +#define L_PTE_MT_VECTORS	(_AT(pteval_t, 0x05) << 2)	/* 0101 */
+>  #define L_PTE_MT_MINICACHE	(_AT(pteval_t, 0x06) << 2)	/* 0110 (sa1100, xscale) */
+>  #define L_PTE_MT_WRITEALLOC	(_AT(pteval_t, 0x07) << 2)	/* 0111 */
+> -#define L_PTE_MT_DEV_SHARED	(_AT(pteval_t, 0x04) << 2)	/* 0100 */
+> -#define L_PTE_MT_DEV_NONSHARED	(_AT(pteval_t, 0x0c) << 2)	/* 1100 */
 
-Any possibilities to get price offer for your product at
-earliest? Customer is waiting.
+Sorry, no, this isn't going to work.
 
-Please confirm me below with your price offer.
+The lower two bits of this (bits 2 and 3) are explicitly designed to fit
+the C and B bits used in older architectures. Changing L_PTE_MT_VECTORS
+from having value '11' to '01' changes the functionality on older CPUs.
 
-*  Delivery time after payment of requested Order? [I have to
-confirm delivery time to our clients]
-
-*  Each item approximate weight? [This is important to calculate
-freight cost]
-
-Your early reply is highly appreciated.
-
-
-Thanks in advance.
-Regards
-Mr. Kasim Fadhil
-Import manager
-
-
-This e-mail may contain confidential and/or privileged=20
-information. If you are not the intended recipient (or have=20
-received this e-mail in error) please notify the sender=20
-immediately and destroy this e-mail. Any unauthorised copying,=20
-disclosure or distribution of the material in this e-mail is=20
-strictly forbidden
-
-Este e-mail pode conter informa=C3=A7=C3=B5es confidenciais e / ou=20
-privilegiadas. Se voc=C3=AA n=C3=A3o for o destinat=C3=A1rio pretendido (ou=
-=20
-tiver recebido este e-mail por engano), notifique o remetente=20
-imediatamente e destrua este e-mail. Qualquer c=C3=B3pia, divulga=C3=A7=C3=
-=A3o=20
-ou distribui=C3=A7=C3=A3o n=C3=A3o autorizada do material neste e-mail =C3=
-=A9=20
-estritamente proibida.
-
-=EF=81=90 Before printing think about your responsibility for the=20
-ENVIRONMENT
-
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
