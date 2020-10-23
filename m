@@ -2,132 +2,239 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0881296956
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:17:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D3FF4296959
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:26:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S370574AbgJWFQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 01:16:59 -0400
-Received: from szxga07-in.huawei.com ([45.249.212.35]:42898 "EHLO huawei.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S367977AbgJWFQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 01:16:59 -0400
-Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
-        by Forcepoint Email with ESMTP id F300D337B6A9F62BD12F;
-        Fri, 23 Oct 2020 13:16:52 +0800 (CST)
-Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
- DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
- 14.3.487.0; Fri, 23 Oct 2020 13:16:43 +0800
-From:   Zenghui Yu <yuzenghui@huawei.com>
-To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-        <davem@davemloft.net>, <kuba@kernel.org>
-CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wanghaibin.wang@huawei.com>, <tanhuazhong@huawei.com>,
-        Zenghui Yu <yuzenghui@huawei.com>
-Subject: [PATCH net] net: hns3: Clear the CMDQ registers before unmapping BAR region
-Date:   Fri, 23 Oct 2020 13:15:50 +0800
-Message-ID: <20201023051550.793-1-yuzenghui@huawei.com>
-X-Mailer: git-send-email 2.23.0.windows.1
+        id S370658AbgJWFZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 01:25:51 -0400
+Received: from mga12.intel.com ([192.55.52.136]:7364 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S370648AbgJWFZu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 01:25:50 -0400
+IronPort-SDR: jBnNP6s1A1cIFIBNzUSjRgYOI1fQ4kxSIdZdbUj/vfvLCOyEGaCVVg4Y9e/9Oi9RaBK/XFJlmy
+ sfb3kjfrUZ0w==
+X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="146922566"
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="146922566"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga007.jf.intel.com ([10.7.209.58])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 22:25:49 -0700
+IronPort-SDR: TypCs3Y627uoQc98vprVBz/mnPBZXoSzEpM6LWc9Tvowcgg1TvTeZi9yiMnG9pN12UelhGu5Zb
+ QjYJNnQ+xkuQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,407,1596524400"; 
+   d="scan'208";a="360118965"
+Received: from cli6-desk1.ccr.corp.intel.com (HELO [10.239.161.135]) ([10.239.161.135])
+  by orsmga007.jf.intel.com with ESMTP; 22 Oct 2020 22:25:39 -0700
+Subject: Re: [PATCH v8 -tip 02/26] sched: Introduce sched_class::pick_task()
+To:     Joel Fernandes <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>,
+        Thomas Glexiner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Frederic Weisbecker <fweisbec@gmail.com>,
+        Kees Cook <keescook@chromium.org>,
+        Greg Kerr <kerrnel@google.com>, Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com,
+        Dario Faggioli <dfaggioli@suse.com>,
+        Paul Turner <pjt@google.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Patrick Bellasi <derkling@google.com>,
+        =?UTF-8?B?YmVuYmppYW5nKOiSi+W9qik=?= <benbjiang@tencent.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>,
+        Jesse Barnes <jsbarnes@google.com>,
+        "Hyser,Chris" <chris.hyser@oracle.com>,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>,
+        "Ning, Hongyu" <hongyu.ning@linux.intel.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-3-joel@joelfernandes.org>
+ <8ea1aa61-4a1c-2687-9f15-1062d37606c7@linux.intel.com>
+ <CAEXW_YT-pKJiA-APEtJv9QuyoYB0wNrH3EbAyc=3dwMfav+F6Q@mail.gmail.com>
+From:   "Li, Aubrey" <aubrey.li@linux.intel.com>
+Message-ID: <a2b66294-6a66-b5c1-7706-29bc92f416f5@linux.intel.com>
+Date:   Fri, 23 Oct 2020 13:25:38 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7BIT
-Content-Type:   text/plain; charset=US-ASCII
-X-Originating-IP: [10.174.185.179]
-X-CFilter-Loop: Reflected
+In-Reply-To: <CAEXW_YT-pKJiA-APEtJv9QuyoYB0wNrH3EbAyc=3dwMfav+F6Q@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When unbinding the hns3 driver with the HNS3 VF, I got the following
-kernel panic:
+On 2020/10/22 23:25, Joel Fernandes wrote:
+> On Thu, Oct 22, 2020 at 12:59 AM Li, Aubrey <aubrey.li@linux.intel.com> wrote:
+>>
+>> On 2020/10/20 9:43, Joel Fernandes (Google) wrote:
+>>> From: Peter Zijlstra <peterz@infradead.org>
+>>>
+>>> Because sched_class::pick_next_task() also implies
+>>> sched_class::set_next_task() (and possibly put_prev_task() and
+>>> newidle_balance) it is not state invariant. This makes it unsuitable
+>>> for remote task selection.
+>>>
+>>> Tested-by: Julien Desfossez <jdesfossez@digitalocean.com>
+>>> Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
+>>> Signed-off-by: Vineeth Remanan Pillai <vpillai@digitalocean.com>
+>>> Signed-off-by: Julien Desfossez <jdesfossez@digitalocean.com>
+>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+>>> ---
+>>>  kernel/sched/deadline.c  | 16 ++++++++++++++--
+>>>  kernel/sched/fair.c      | 32 +++++++++++++++++++++++++++++++-
+>>>  kernel/sched/idle.c      |  8 ++++++++
+>>>  kernel/sched/rt.c        | 14 ++++++++++++--
+>>>  kernel/sched/sched.h     |  3 +++
+>>>  kernel/sched/stop_task.c | 13 +++++++++++--
+>>>  6 files changed, 79 insertions(+), 7 deletions(-)
+>>>
+>>> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
+>>> index 814ec49502b1..0271a7848ab3 100644
+>>> --- a/kernel/sched/deadline.c
+>>> +++ b/kernel/sched/deadline.c
+>>> @@ -1848,7 +1848,7 @@ static struct sched_dl_entity *pick_next_dl_entity(struct rq *rq,
+>>>       return rb_entry(left, struct sched_dl_entity, rb_node);
+>>>  }
+>>>
+>>> -static struct task_struct *pick_next_task_dl(struct rq *rq)
+>>> +static struct task_struct *pick_task_dl(struct rq *rq)
+>>>  {
+>>>       struct sched_dl_entity *dl_se;
+>>>       struct dl_rq *dl_rq = &rq->dl;
+>>> @@ -1860,7 +1860,18 @@ static struct task_struct *pick_next_task_dl(struct rq *rq)
+>>>       dl_se = pick_next_dl_entity(rq, dl_rq);
+>>>       BUG_ON(!dl_se);
+>>>       p = dl_task_of(dl_se);
+>>> -     set_next_task_dl(rq, p, true);
+>>> +
+>>> +     return p;
+>>> +}
+>>> +
+>>> +static struct task_struct *pick_next_task_dl(struct rq *rq)
+>>> +{
+>>> +     struct task_struct *p;
+>>> +
+>>> +     p = pick_task_dl(rq);
+>>> +     if (p)
+>>> +             set_next_task_dl(rq, p, true);
+>>> +
+>>>       return p;
+>>>  }
+>>>
+>>> @@ -2517,6 +2528,7 @@ const struct sched_class dl_sched_class
+>>>
+>>>  #ifdef CONFIG_SMP
+>>>       .balance                = balance_dl,
+>>> +     .pick_task              = pick_task_dl,
+>>>       .select_task_rq         = select_task_rq_dl,
+>>>       .migrate_task_rq        = migrate_task_rq_dl,
+>>>       .set_cpus_allowed       = set_cpus_allowed_dl,
+>>> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+>>> index dbd9368a959d..bd6aed63f5e3 100644
+>>> --- a/kernel/sched/fair.c
+>>> +++ b/kernel/sched/fair.c
+>>> @@ -4450,7 +4450,7 @@ pick_next_entity(struct cfs_rq *cfs_rq, struct sched_entity *curr)
+>>>        * Avoid running the skip buddy, if running something else can
+>>>        * be done without getting too unfair.
+>>>        */
+>>> -     if (cfs_rq->skip == se) {
+>>> +     if (cfs_rq->skip && cfs_rq->skip == se) {
+>>>               struct sched_entity *second;
+>>>
+>>>               if (se == curr) {
+>>> @@ -6976,6 +6976,35 @@ static void check_preempt_wakeup(struct rq *rq, struct task_struct *p, int wake_
+>>>               set_last_buddy(se);
+>>>  }
+>>>
+>>> +#ifdef CONFIG_SMP
+>>> +static struct task_struct *pick_task_fair(struct rq *rq)
+>>> +{
+>>> +     struct cfs_rq *cfs_rq = &rq->cfs;
+>>> +     struct sched_entity *se;
+>>> +
+>>> +     if (!cfs_rq->nr_running)
+>>> +             return NULL;
+>>> +
+>>> +     do {
+>>> +             struct sched_entity *curr = cfs_rq->curr;
+>>> +
+>>> +             se = pick_next_entity(cfs_rq, NULL);
+>>> +
+>>> +             if (curr) {
+>>> +                     if (se && curr->on_rq)
+>>> +                             update_curr(cfs_rq);
+>>> +
+>>> +                     if (!se || entity_before(curr, se))
+>>> +                             se = curr;
+>>> +             }
+>>> +
+>>> +             cfs_rq = group_cfs_rq(se);
+>>> +     } while (cfs_rq);
+>>> ++
+>>> +     return task_of(se);
+>>> +}
+>>> +#endif
+>>
+>> One of my machines hangs when I run uperf with only one message:
+>> [  719.034962] BUG: kernel NULL pointer dereference, address: 0000000000000050
+>>
+>> Then I replicated the problem on my another machine(no serial console),
+>> here is the stack by manual copy.
+>>
+>> Call Trace:
+>>  pick_next_entity+0xb0/0x160
+>>  pick_task_fair+0x4b/0x90
+>>  __schedule+0x59b/0x12f0
+>>  schedule_idle+0x1e/0x40
+>>  do_idle+0x193/0x2d0
+>>  cpu_startup_entry+0x19/0x20
+>>  start_secondary+0x110/0x150
+>>  secondary_startup_64_no_verify+0xa6/0xab
+> 
+> Interesting. Wondering if we screwed something up in the rebase.
+> 
+> Questions:
+> 1. Does the issue happen if you just apply only up until this patch,
+> or the entire series?
 
-[  265.709989] Unable to handle kernel paging request at virtual address ffff800054627000
-[  265.717928] Mem abort info:
-[  265.720740]   ESR = 0x96000047
-[  265.723810]   EC = 0x25: DABT (current EL), IL = 32 bits
-[  265.729126]   SET = 0, FnV = 0
-[  265.732195]   EA = 0, S1PTW = 0
-[  265.735351] Data abort info:
-[  265.738227]   ISV = 0, ISS = 0x00000047
-[  265.742071]   CM = 0, WnR = 1
-[  265.745055] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000009b54000
-[  265.751753] [ffff800054627000] pgd=0000202ffffff003, p4d=0000202ffffff003, pud=00002020020eb003, pmd=00000020a0dfc003, pte=0000000000000000
-[  265.764314] Internal error: Oops: 96000047 [#1] SMP
-[  265.830357] CPU: 61 PID: 20319 Comm: bash Not tainted 5.9.0+ #206
-[  265.836423] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
-[  265.843873] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
-[  265.843890] pc : hclgevf_cmd_uninit+0xbc/0x300
-[  265.861988] lr : hclgevf_cmd_uninit+0xb0/0x300
-[  265.861992] sp : ffff80004c983b50
-[  265.881411] pmr_save: 000000e0
-[  265.884453] x29: ffff80004c983b50 x28: ffff20280bbce500
-[  265.889744] x27: 0000000000000000 x26: 0000000000000000
-[  265.895034] x25: ffff800011a1f000 x24: ffff800011a1fe90
-[  265.900325] x23: ffff0020ce9b00d8 x22: ffff0020ce9b0150
-[  265.905616] x21: ffff800010d70e90 x20: ffff800010d70e90
-[  265.910906] x19: ffff0020ce9b0080 x18: 0000000000000004
-[  265.916198] x17: 0000000000000000 x16: ffff800011ae32e8
-[  265.916201] x15: 0000000000000028 x14: 0000000000000002
-[  265.916204] x13: ffff800011ae32e8 x12: 0000000000012ad8
-[  265.946619] x11: ffff80004c983b50 x10: 0000000000000000
-[  265.951911] x9 : ffff8000115d0888 x8 : 0000000000000000
-[  265.951914] x7 : ffff800011890b20 x6 : c0000000ffff7fff
-[  265.951917] x5 : ffff80004c983930 x4 : 0000000000000001
-[  265.951919] x3 : ffffa027eec1b000 x2 : 2b78ccbbff369100
-[  265.964487] x1 : 0000000000000000 x0 : ffff800054627000
-[  265.964491] Call trace:
-[  265.964494]  hclgevf_cmd_uninit+0xbc/0x300
-[  265.964496]  hclgevf_uninit_ae_dev+0x9c/0xe8
-[  265.964501]  hnae3_unregister_ae_dev+0xb0/0x130
-[  265.964516]  hns3_remove+0x34/0x88 [hns3]
-[  266.009683]  pci_device_remove+0x48/0xf0
-[  266.009692]  device_release_driver_internal+0x114/0x1e8
-[  266.030058]  device_driver_detach+0x28/0x38
-[  266.034224]  unbind_store+0xd4/0x108
-[  266.037784]  drv_attr_store+0x40/0x58
-[  266.041435]  sysfs_kf_write+0x54/0x80
-[  266.045081]  kernfs_fop_write+0x12c/0x250
-[  266.049076]  vfs_write+0xc4/0x248
-[  266.052378]  ksys_write+0x74/0xf8
-[  266.055677]  __arm64_sys_write+0x24/0x30
-[  266.059584]  el0_svc_common.constprop.3+0x84/0x270
-[  266.064354]  do_el0_svc+0x34/0xa0
-[  266.067658]  el0_svc+0x38/0x40
-[  266.070700]  el0_sync_handler+0x8c/0xb0
-[  266.074519]  el0_sync+0x140/0x180
+I applied the entire series and just find a related patch to report the
+issue.
 
-It looks like the BAR memory region had already been unmapped before we
-start clearing CMDQ registers in it, which is pretty bad and the kernel
-happily kills itself because of a Current EL Data Abort (on arm64).
+> 2. Do you see the issue in v7? Not much if at all has changed in this
+> part of the code from v7 -> v8 but could be something in the newer
+> kernel.
+> 
 
-Moving the CMDQ uninitialization a bit early fixes the issue for me.
+IIRC, I can run uperf successfully on v7.
+I'm on tip/master 2d3e8c9424c9 (origin/master) "Merge branch 'linus'."
+Please let me know if this is a problem, or you have a repo I can pull
+for testing.
 
-Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
----
+> We tested this series after rebase heavily so it is indeed strange to
+> see this so late.
+Cc Hongyu - Maybe we can run the test cases in our hand before next release.
 
-I have almost zero knowledge about the hns3 driver. You can regard this
-as a report and make a better fix if possible.
-
-I can't even figure out that how can we live with this issue for a long
-time... It should exists since commit 34f81f049e35 ("net: hns3: clear
-command queue's registers when unloading VF driver"), where we start
-writing something into the unmapped area.
-
- drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-index 50c84c5e65d2..c8e3fdd5999c 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
-@@ -3262,8 +3262,8 @@ static void hclgevf_uninit_hdev(struct hclgevf_dev *hdev)
- 		hclgevf_uninit_msi(hdev);
- 	}
- 
--	hclgevf_pci_uninit(hdev);
- 	hclgevf_cmd_uninit(hdev);
-+	hclgevf_pci_uninit(hdev);
- 	hclgevf_uninit_mac_list(hdev);
- }
- 
--- 
-2.19.1
-
+Thanks,
+-Aubrey
