@@ -2,444 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DEFF429706A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:27:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F64B297078
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:29:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464776AbgJWN1k (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:27:40 -0400
-Received: from foss.arm.com ([217.140.110.172]:52596 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373830AbgJWN1j (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:27:39 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1320B1FB;
-        Fri, 23 Oct 2020 06:27:38 -0700 (PDT)
-Received: from [10.57.14.27] (unknown [10.57.14.27])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 417B23F66B;
-        Fri, 23 Oct 2020 06:27:34 -0700 (PDT)
-Subject: Re: [PATCH 4/4] powercap/drivers/dtpm: Add CPU energy model based
- support
-To:     Daniel Lezcano <daniel.lezcano@linaro.org>
-Cc:     rafael@kernel.org, srinivas.pandruvada@linux.intel.com,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        rui.zhang@intel.com, "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Anup Patel <anup.patel@wdc.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Marc Zyngier <maz@kernel.org>,
-        Andrew Jones <drjones@redhat.com>,
-        Michael Kelley <mikelley@microsoft.com>,
-        Mike Leach <mike.leach@linaro.org>,
-        Kajol Jain <kjain@linux.ibm.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Steven Price <steven.price@arm.com>
-References: <20201006122024.14539-1-daniel.lezcano@linaro.org>
- <20201006122024.14539-5-daniel.lezcano@linaro.org>
-From:   Lukasz Luba <lukasz.luba@arm.com>
-Message-ID: <e8feea30-e5d5-9504-a42a-99fde9fdd64a@arm.com>
-Date:   Fri, 23 Oct 2020 14:27:32 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:60.0) Gecko/20100101
- Thunderbird/60.9.0
+        id S464800AbgJWN3F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:29:05 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:33985 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S374232AbgJWN3C (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:29:02 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-1-v1vYoM8jOeGMKLhWfd8r_g-1; Fri, 23 Oct 2020 14:28:58 +0100
+X-MC-Unique: v1vYoM8jOeGMKLhWfd8r_g-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Fri, 23 Oct 2020 14:28:57 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Fri, 23 Oct 2020 14:28:57 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arnd Bergmann' <arnd@arndb.de>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        David Hildenbrand <david@redhat.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Christoph Hellwig <hch@lst.de>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        David Howells <dhowells@redhat.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12D///tDgIAAEbpg
+Date:   Fri, 23 Oct 2020 13:28:57 +0000
+Message-ID: <8e758668cffa4713969df33299180c64@AcuMS.aculab.com>
+References: <df2e0758-b8ed-5aec-6adc-a18f499c0179@redhat.com>
+ <20201022090155.GA1483166@kroah.com>
+ <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
+ <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
+ <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
+ <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
+ <20201022104805.GA1503673@kroah.com> <20201022121849.GA1664412@kroah.com>
+ <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
+ <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
+ <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
+ <CAK8P3a1n+b8hOMhNQSDzgic03dyXbmpccfTJ3C1bGKvzsgMXbg@mail.gmail.com>
+In-Reply-To: <CAK8P3a1n+b8hOMhNQSDzgic03dyXbmpccfTJ3C1bGKvzsgMXbg@mail.gmail.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-In-Reply-To: <20201006122024.14539-5-daniel.lezcano@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
 Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyMyBPY3RvYmVyIDIwMjAgMTQ6MjMNCj4gDQo+
+IE9uIEZyaSwgT2N0IDIzLCAyMDIwIGF0IDI6NDYgUE0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5MYWln
+aHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+ID4NCj4gPiBGcm9tOiBHcmVnIEtIIDxncmVna2hAbGlu
+dXhmb3VuZGF0aW9uLm9yZz4NCj4gPiA+IFNlbnQ6IDIyIE9jdG9iZXIgMjAyMCAxNDo1MQ0KPiA+
+DQo+ID4gSSd2ZSByYW1tZWQgdGhlIGNvZGUgaW50byBnb2Rib2x0Lg0KPiA+DQo+ID4gaHR0cHM6
+Ly9nb2Rib2x0Lm9yZy96Lzl2NVBQVw0KPiA+DQo+ID4gRGVmaW5pdGVseSBhIGNsYW5nIGJ1Zy4N
+Cj4gPg0KPiA+IFNlYXJjaCBmb3IgW3d4XTI0IGluIHRoZSBjbGFuZyBvdXRwdXQuDQo+ID4gbnJf
+c2VncyBjb21lcyBpbiBhcyB3MiBhbmQgdGhlIGluaXRpYWwgYm91bmQgY2hlY2tzIGFyZSBkb25l
+IG9uIHcyLg0KPiA+IHcyNCBpcyBsb2FkZWQgZnJvbSB3MiAtIEkgZG9uJ3QgYmVsaWV2ZSB0aGlz
+IGNoYW5nZXMgdGhlIGhpZ2ggYml0cy4NCj4gDQo+IFlvdSBiZWxpZXZlIHdyb25nLCAibW92IHcy
+NCwgdzIiIGlzIGEgemVyby1leHRlbmRpbmcgb3BlcmF0aW9uLg0KDQpBaCBvaywgYnV0IGdjYyB1
+c2VzIHV0eHcgZm9yIHRoZSBzYW1lIHRhc2suDQpJIGd1ZXNzIHRoZXkgY291bGQgYmUgdGhlIHNh
+bWUgb3Bjb2RlLg0KDQpMYXN0IHRpbWUgSSB3cm90ZSBBUk0gdGh1bWIgZGlkbid0IHJlYWxseSBl
+eGlzdCAtIG5ldmVyIG1pbmQgNjRiaXQNCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVz
+cyBMYWtlc2lkZSwgQnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEg
+MVBULCBVSw0KUmVnaXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
-
-On 10/6/20 1:20 PM, Daniel Lezcano wrote:
-> With the powercap dtpm controller, we are able to plug devices with
-> power limitation features in the tree.
-> 
-> The following patch introduces the CPU power limitation based on the
-> energy model and the performance states.
-> 
-> The power limitation is done at the performance domain level. If some
-> CPUs are unplugged, the corresponding power will be substracted from
-> the performance domain total power.
-> 
-> It is up to the platform to initialize the dtpm tree and add the CPU.
-> 
-> Here is an example to create a simple tree with one root node called
-> "pkg" and the cpu's performance domains.
-> 
-> int dtpm_register_pkg(struct dtpm_descr *descr)
-> {
-> 	struct dtpm *pkg;
-> 	int ret;
-> 
-> 	pkg = dtpm_alloc();
-> 	if (!pkg)
-> 		return -ENOMEM;
-> 
-> 	ret = dtpm_register_parent(descr->name, pkg, descr->parent);
-> 	if (ret)
-> 		return ret;
-> 
-> 	return dtpm_register_cpu(pkg);
-> }
-> 
-> struct dtpm_descr descr = {
-> 	.name = "pkg",
-> 	.init = dtpm_register_pkg,
-> };
-> DTPM_DECLARE(descr);
-> 
-> Signed-off-by: Daniel Lezcano <daniel.lezcano@linaro.org>
-> ---
->   drivers/powercap/Kconfig    |   8 ++
->   drivers/powercap/Makefile   |   1 +
->   drivers/powercap/dtpm_cpu.c | 242 ++++++++++++++++++++++++++++++++++++
->   include/linux/cpuhotplug.h  |   1 +
->   include/linux/dtpm.h        |   3 +
->   5 files changed, 255 insertions(+)
->   create mode 100644 drivers/powercap/dtpm_cpu.c
-> 
-> diff --git a/drivers/powercap/Kconfig b/drivers/powercap/Kconfig
-> index 777cf60300b8..240dc09e8dc2 100644
-> --- a/drivers/powercap/Kconfig
-> +++ b/drivers/powercap/Kconfig
-> @@ -49,4 +49,12 @@ config DTPM
->   	help
->   	  This enables support for the power capping for the dynamic
->   	  thermal management userspace engine.
-> +
-> +config DTPM_CPU
-> +	bool "Add CPU power capping based on the energy model"
-> +	depends on DTPM && ENERGY_MODEL
-> +	help
-> +	  This enables support for CPU power limitation based on
-> +	  energy model.
-> +
->   endif
-> diff --git a/drivers/powercap/Makefile b/drivers/powercap/Makefile
-> index 6482ac52054d..fabcf388a8d3 100644
-> --- a/drivers/powercap/Makefile
-> +++ b/drivers/powercap/Makefile
-> @@ -1,5 +1,6 @@
->   # SPDX-License-Identifier: GPL-2.0-only
->   obj-$(CONFIG_DTPM) += dtpm.o
-> +obj-$(CONFIG_DTPM_CPU) += dtpm_cpu.o
->   obj-$(CONFIG_POWERCAP)	+= powercap_sys.o
->   obj-$(CONFIG_INTEL_RAPL_CORE) += intel_rapl_common.o
->   obj-$(CONFIG_INTEL_RAPL) += intel_rapl_msr.o
-> diff --git a/drivers/powercap/dtpm_cpu.c b/drivers/powercap/dtpm_cpu.c
-> new file mode 100644
-> index 000000000000..23ebf704c599
-> --- /dev/null
-> +++ b/drivers/powercap/dtpm_cpu.c
-> @@ -0,0 +1,242 @@
-> +// SPDX-License-Identifier: GPL-2.0-only
-> +/*
-> + * Copyright 2020 Linaro Limited
-> + *
-> + * Author: Daniel Lezcano <daniel.lezcano@linaro.org>
-> + *
-> + */
-> +#include <linux/cpumask.h>
-> +#include <linux/cpufreq.h>
-> +#include <linux/cpuhotplug.h>
-> +#include <linux/dtpm.h>
-> +#include <linux/energy_model.h>
-> +#include <linux/pm_qos.h>
-> +#include <linux/slab.h>
-> +#include <linux/units.h>
-> +
-> +static struct dtpm *__parent;
-> +
-> +static DEFINE_PER_CPU(struct dtpm *, dtpm_per_cpu);
-> +
-> +struct dtpm_cpu {
-> +	struct freq_qos_request qos_req;
-> +	int cpu;
-> +};
-> +
-> +static int power_add(struct dtpm *dtpm, struct em_perf_domain *em)
-> +{
-> +	u64 power_min, power_max;
-> +
-> +	power_min = em->table[0].power;
-> +	power_min *= MICROWATT_PER_MILLIWATT;
-> +	power_min += dtpm->power_min;
-> +
-> +	power_max = em->table[em->nr_perf_states - 1].power;
-> +	power_max *= MICROWATT_PER_MILLIWATT;
-> +	power_max += dtpm->power_max;
-> +
-> +	return dtpm_update_power(dtpm, power_min, power_max);
-> +}
-> +
-> +static int power_sub(struct dtpm *dtpm, struct em_perf_domain *em)
-> +{
-> +	u64 power_min, power_max;
-> +
-> +	power_min = em->table[0].power;
-> +	power_min *= MICROWATT_PER_MILLIWATT;
-> +	power_min = dtpm->power_min - power_min;
-> +
-> +	power_max = em->table[em->nr_perf_states - 1].power;
-> +	power_max *= MICROWATT_PER_MILLIWATT;
-> +	power_max = dtpm->power_max - power_max;
-> +
-> +	return dtpm_update_power(dtpm, power_min, power_max);
-> +}
-> +
-> +static int set_pd_power_limit(struct powercap_zone *pcz, int cid,
-> +			      u64 power_limit)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +	struct em_perf_domain *pd;
-> +	unsigned long freq;
-> +	int i, nr_cpus;
-> +
-> +	spin_lock(&dtpm->lock);
-> +
-> +	power_limit = clamp_val(power_limit, dtpm->power_min, dtpm->power_max);
-> +
-> +	pd = em_cpu_get(dtpm_cpu->cpu);
-> +
-> +	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-> +
-> +	for (i = 0; i < pd->nr_perf_states; i++) {
-> +
-> +		u64 power = pd->table[i].power * MICROWATT_PER_MILLIWATT;
-> +
-> +		if ((power * nr_cpus) > power_limit)
-
-We have one node in that DTPM hierarchy tree, which represents all CPUs
-which are in 'related_cpus' mask. I saw below that we just remove the
-node in hotplug.
-
-I have put a comment below asking if we could change the registration,
-which will affect power calculation.
-
-
-> +			break;
-> +	}
-> +
-> +	freq = pd->table[i - 1].frequency;
-> +
-> +	freq_qos_update_request(&dtpm_cpu->qos_req, freq);
-> +
-> +	dtpm->power_limit = power_limit;
-> +
-> +	spin_unlock(&dtpm->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int get_pd_power_limit(struct powercap_zone *pcz, int cid, u64 *data)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +
-> +	spin_lock(&dtpm->lock);
-> +	*data = dtpm->power_max;
-> +	spin_unlock(&dtpm->lock);
-> +
-> +	return 0;
-> +}
-> +
-> +static int get_pd_power_uw(struct powercap_zone *pcz, u64 *power_uw)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +	struct em_perf_domain *pd;
-> +	unsigned long freq;
-> +	int i, nr_cpus;
-> +
-> +	freq = cpufreq_quick_get(dtpm_cpu->cpu);
-> +	pd = em_cpu_get(dtpm_cpu->cpu);
-> +	nr_cpus = cpumask_weight(to_cpumask(pd->cpus));
-> +
-> +	for (i = 0; i < pd->nr_perf_states; i++) {
-> +
-> +		if (pd->table[i].frequency < freq)
-> +			continue;
-> +
-> +		*power_uw = pd->table[i].power *
-> +			MICROWATT_PER_MILLIWATT * nr_cpus;
-
-Same here, we have 'nr_cpus'.
-
-> +
-> +		return 0;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int cpu_release_zone(struct powercap_zone *pcz)
-> +{
-> +	struct dtpm *dtpm = to_dtpm(pcz);
-> +	struct dtpm_cpu *dtpm_cpu = dtpm->private;
-> +
-> +	freq_qos_remove_request(&dtpm_cpu->qos_req);
-> +
-> +	return dtpm_release_zone(pcz);
-> +}
-> +
-> +static struct powercap_zone_constraint_ops pd_constraint_ops = {
-> +	.set_power_limit_uw = set_pd_power_limit,
-> +	.get_power_limit_uw = get_pd_power_limit,
-> +};
-> +
-> +static struct powercap_zone_ops pd_zone_ops = {
-> +	.get_power_uw = get_pd_power_uw,
-> +	.release = cpu_release_zone,
-> +};
-> +
-> +static int cpuhp_dtpm_cpu_offline(unsigned int cpu)
-> +{
-> +	struct cpufreq_policy *policy;
-> +	struct em_perf_domain *pd;
-> +	struct dtpm *dtpm;
-> +
-> +	policy = cpufreq_cpu_get(cpu);
-> +
-> +	if (!policy)
-> +		return 0;
-> +
-> +	pd = em_cpu_get(cpu);
-> +	if (!pd)
-> +		return -EINVAL;
-> +
-> +	dtpm = per_cpu(dtpm_per_cpu, cpu);
-> +
-> +	power_sub(dtpm, pd);
-> +
-> +	if (cpumask_weight(policy->cpus) != 1)
-> +		return 0;
-> +
-> +	for_each_cpu(cpu, policy->related_cpus)
-> +		per_cpu(dtpm_per_cpu, cpu) = NULL;
-
-Hotplugging one CPU would affect others. I would keep them
-all but marked somehow that CPU is offline.
-
-> +
-> +	dtpm_unregister(dtpm);
-
-Could we keep the node in the hierarchy on CPU hotplug?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static int cpuhp_dtpm_cpu_online(unsigned int cpu)
-> +{
-> +        struct dtpm *dtpm;
-> +	struct dtpm_cpu *dtpm_cpu;
-> +	struct cpufreq_policy *policy;
-> +	struct em_perf_domain *pd;
-> +	char name[CPUFREQ_NAME_LEN];
-> +	int ret;
-> +
-> +	policy = cpufreq_cpu_get(cpu);
-> +
-> +	if (!policy)
-> +		return 0;
-> +
-> +	pd = em_cpu_get(cpu);
-> +	if (!pd)
-> +		return -EINVAL;
-> +
-> +	dtpm = per_cpu(dtpm_per_cpu, cpu);
-> +	if (dtpm)
-> +		return power_add(dtpm, pd);
-> +
-> +	dtpm = dtpm_alloc();
-> +	if (!dtpm)
-> +		return -EINVAL;
-> +
-> +	dtpm_cpu = kzalloc(sizeof(dtpm_cpu), GFP_KERNEL);
-> +	if (!dtpm_cpu)
-> +		return -ENOMEM;
-> +
-> +	dtpm->private = dtpm_cpu;
-> +	dtpm_cpu->cpu = cpu;
-> +
-> +	for_each_cpu(cpu, policy->related_cpus)
-> +		per_cpu(dtpm_per_cpu, cpu) = dtpm;
-> +
-> +	ret = power_add(dtpm, pd);
-> +	if (ret)
-> +		return ret;
-> +
-> +	dtpm->power_limit = dtpm->power_max;
-> +
-> +	sprintf(name, "cpu%d", dtpm_cpu->cpu);
-> +
-> +	ret = dtpm_register(name, dtpm, __parent, &pd_zone_ops,
-> +			    1, &pd_constraint_ops);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = freq_qos_add_request(&policy->constraints,
-> +				   &dtpm_cpu->qos_req, FREQ_QOS_MAX,
-> +				   pd->table[pd->nr_perf_states - 1].frequency);
-> +	return ret;
-> +}
-> +
-> +int dtpm_register_cpu(struct dtpm *parent)
-> +{
-> +	__parent = parent;
-> +
-> +	return cpuhp_setup_state(CPUHP_AP_DTPM_CPU_ONLINE,
-> +				 "dtpm_cpu:online",
-> +				 cpuhp_dtpm_cpu_online,
-> +				 cpuhp_dtpm_cpu_offline);
-> +}
-> diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
-> index bf9181cef444..6792bad4a435 100644
-> --- a/include/linux/cpuhotplug.h
-> +++ b/include/linux/cpuhotplug.h
-> @@ -190,6 +190,7 @@ enum cpuhp_state {
->   	CPUHP_AP_ONLINE_DYN_END		= CPUHP_AP_ONLINE_DYN + 30,
->   	CPUHP_AP_X86_HPET_ONLINE,
->   	CPUHP_AP_X86_KVM_CLK_ONLINE,
-> +	CPUHP_AP_DTPM_CPU_ONLINE,
->   	CPUHP_AP_ACTIVE,
->   	CPUHP_ONLINE,
->   };
-> diff --git a/include/linux/dtpm.h b/include/linux/dtpm.h
-> index 6696bdcfdb87..b62215a13baa 100644
-> --- a/include/linux/dtpm.h
-> +++ b/include/linux/dtpm.h
-> @@ -70,4 +70,7 @@ int dtpm_register_parent(const char *name, struct dtpm *dtpm,
->   int dtpm_register(const char *name, struct dtpm *dtpm, struct dtpm *parent,
->   		  struct powercap_zone_ops *ops, int nr_constraints,
->   		  struct powercap_zone_constraint_ops *const_ops);
-> +
-> +int dtpm_register_cpu(struct dtpm *parent);
-> +
->   #endif
-> 
-
-I have a few comments for this DTPM CPU.
-
-1. Maybe we can register these CPUs differently. First register
-the parent node as a separate dtpm based on 'policy->related_cpus. Then
-register new children nodes, one for each CPU. When the CPU is up, mark
-it as 'active'.
-
-2. We don't remove the node when the CPU is hotplugged, but we mark it
-'!active' Or 'offline'. The power calculation could be done in upper
-node, which takes into account that flag for children.
-
-3. We would only remove the node when it's module is unloaded (e.g. GPU)
-
-That would make the tree more stable and also more detailed.
-We would also account the power properly when one CPU went offline, but
-the other are still there.
-
-What do you think?
-
-
-Regards,
-Lukasz
