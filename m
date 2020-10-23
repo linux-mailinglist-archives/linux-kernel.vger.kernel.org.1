@@ -2,42 +2,42 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EEC89296CCD
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:26:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 64D41296CD2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:26:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462264AbgJWKZb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:25:31 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48006 "EHLO
+        id S462311AbgJWKZp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:25:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48076 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462201AbgJWKZR (ORCPT
+        with ESMTP id S462279AbgJWKZe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:25:17 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 56427C0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:25:17 -0700 (PDT)
+        Fri, 23 Oct 2020 06:25:34 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4F529C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:25:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=Content-Type:MIME-Version:References:
+        d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
         Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
         Content-ID:Content-Description:In-Reply-To;
-        bh=pwB07HLOjdLdHR1fwUU0rUBjwGriYzqrq3cRu9cgll0=; b=D9QV0aRqAj8VcIkksgBpLybzs3
-        l6E6bgvrGGzSBIex0cdV1560WF/DVhbvjW8Insk31mt6EjsZ2nxLDDVtJMYi+12i1hC0k+FTtIMbZ
-        I+6wXPf+CSLRQnbywYP//ZWw+amJ4CNYeuTig7oTwh+GlRG3lZJ+0xleHVn0MKJiE4uE9Vtz5bgG1
-        dOKqf9VCW7feYM8j4jdEDGkXfBttE6/LanH2E00ZiZ1rlQP9NgRSYYPXC4djA1GwM9Ls+MbpeTWrn
-        LSsG/lMFi6e5LTaBXTZt14c3PzIAvOE1V4B8bQ65EdtkEtKTqLxAEfUUk+BXgAZzoREqg4P7qV9m2
-        ESnTtNhg==;
+        bh=EjnTp/QikUuE1BfKWEe1zQPhiywNw+2cOH36Y7Nq8HI=; b=bi0HbtHS6S3w0BdYKE0mi9E5fb
+        CQJzhxGdSv+EGkgj7k2/LY+xD4dG8Tfjrgdw9PfJ4X7enU95Ym/glLQjcQlNy4WzmOQ/JDLe4H6Iq
+        n9qurB4RhVeMtd2t1C+doe3rvpQd2deaGPvhSiv8ka6GbfDp11Nw1c3TvxdDJusJO23QfCs8Delsk
+        TBMuwvk2YOOt/BG11wJDslL+AECCbjhorxbizBpK8uY4W09Ptwwwvuwd5Zr/qjCXYfcuB6MuOypab
+        QduqNfzusslEv1IidWfNRTr13knGgZWZnu6QAZCO+20kr8qvghAbf3zav5TjU6EUo7MNmEhag5DFc
+        RFmkD2zQ==;
 Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVuFp-0003BQ-SM; Fri, 23 Oct 2020 10:25:02 +0000
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kVuFp-0002tJ-FV; Fri, 23 Oct 2020 10:25:03 +0000
 Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DEEA4307938;
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id E0AFD307958;
         Fri, 23 Oct 2020 12:24:56 +0200 (CEST)
 Received: by hirez.programming.kicks-ass.net (Postfix, from userid 0)
-        id 710F629DDA663; Fri, 23 Oct 2020 12:24:56 +0200 (CEST)
-Message-ID: <20201023102347.406912197@infradead.org>
+        id 7672529DDA665; Fri, 23 Oct 2020 12:24:56 +0200 (CEST)
+Message-ID: <20201023102347.499155098@infradead.org>
 User-Agent: quilt/0.66
-Date:   Fri, 23 Oct 2020 12:12:12 +0200
+Date:   Fri, 23 Oct 2020 12:12:13 +0200
 From:   Peter Zijlstra <peterz@infradead.org>
 To:     tglx@linutronix.de, mingo@kernel.org
 Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
@@ -47,7 +47,7 @@ Cc:     linux-kernel@vger.kernel.org, bigeasy@linutronix.de,
         rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
         bristot@redhat.com, vincent.donnefort@arm.com, tj@kernel.org,
         ouwen210@hotmail.com
-Subject: [PATCH v4 14/19] sched, lockdep: Annotate ->pi_lock recursion
+Subject: [PATCH v4 15/19] sched: Fix migrate_disable() vs rt/dl balancing
 References: <20201023101158.088940906@infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
@@ -55,45 +55,477 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There's a valid ->pi_lock recursion issue where the actual PI code
-tries to wake up the stop task. Make lockdep aware so it doesn't
-complain about this.
+In order to minimize the interference of migrate_disable() on lower
+priority tasks, which can be deprived of runtime due to being stuck
+below a higher priority task. Teach the RT/DL balancers to push away
+these higher priority tasks when a lower priority task gets selected
+to run on a freshly demoted CPU (pull).
+
+This adds migration interference to the higher priority task, but
+restores bandwidth to system that would otherwise be irrevocably lost.
+Without this it would be possible to have all tasks on the system
+stuck on a single CPU, each task preempted in a migrate_disable()
+section with a single high priority task running.
+
+This way we can still approximate running the M highest priority tasks
+on the system.
+
+Migrating the top task away is (ofcourse) still subject to
+migrate_disable() too, which means the lower task is subject to an
+interference equivalent to the worst case migrate_disable() section.
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- kernel/sched/core.c |   15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+ include/linux/preempt.h |   38 +++++++++++++++------------
+ include/linux/sched.h   |    3 +-
+ kernel/sched/core.c     |   67 ++++++++++++++++++++++++++++++++++++++++--------
+ kernel/sched/deadline.c |   29 +++++++++++++++-----
+ kernel/sched/rt.c       |   63 ++++++++++++++++++++++++++++++++++++---------
+ kernel/sched/sched.h    |   32 ++++++++++++++++++++++
+ 6 files changed, 185 insertions(+), 47 deletions(-)
 
+--- a/include/linux/preempt.h
++++ b/include/linux/preempt.h
+@@ -325,24 +325,28 @@ static inline void preempt_notifier_init
+ #if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
+ 
+ /*
+- * Migrate-Disable and why it is (strongly) undesired.
++ * Migrate-Disable and why it is undesired.
+  *
+- * The premise of the Real-Time schedulers we have on Linux
+- * (SCHED_FIFO/SCHED_DEADLINE) is that M CPUs can/will run M tasks
+- * concurrently, provided there are sufficient runnable tasks, also known as
+- * work-conserving. For instance SCHED_DEADLINE tries to schedule the M
+- * earliest deadline threads, and SCHED_FIFO the M highest priority threads.
+- *
+- * The correctness of various scheduling models depends on this, but is it
+- * broken by migrate_disable() that doesn't imply preempt_disable(). Where
+- * preempt_disable() implies an immediate priority ceiling, preemptible
+- * migrate_disable() allows nesting.
+- *
+- * The worst case is that all tasks preempt one another in a migrate_disable()
+- * region and stack on a single CPU. This then reduces the available bandwidth
+- * to a single CPU. And since Real-Time schedulability theory considers the
+- * Worst-Case only, all Real-Time analysis shall revert to single-CPU
+- * (instantly solving the SMP analysis problem).
++ * When a preempted task becomes elegible to run under the ideal model (IOW it
++ * becomes one of the M highest priority tasks), it might still have to wait
++ * for the preemptee's migrate_disable() section to complete. Thereby suffering
++ * a reduction in bandwidth in the exact duration of the migrate_disable()
++ * section.
++ *
++ * Per this argument, the change from preempt_disable() to migrate_disable()
++ * gets us:
++ *
++ * - a higher priority tasks gains reduced wake-up latency; with preempt_disable()
++ *   it would have had to wait for the lower priority task.
++ *
++ * - a lower priority tasks; which under preempt_disable() could've instantly
++ *   migrated away when another CPU becomes available, is now constrained
++ *   by the ability to push the higher priority task away, which might itself be
++ *   in a migrate_disable() section, reducing it's available bandwidth.
++ *
++ * IOW it trades latency / moves the interference term, but it stays in the
++ * system, and as long as it remains unbounded, the system is not fully
++ * deterministic.
+  *
+  *
+  * The reason we have it anyway.
+--- a/include/linux/sched.h
++++ b/include/linux/sched.h
+@@ -716,8 +716,9 @@ struct task_struct {
+ 	cpumask_t			cpus_mask;
+ 	void				*migration_pending;
+ #if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
+-	int				migration_disabled;
++	unsigned short			migration_disabled;
+ #endif
++	unsigned short			migration_flags;
+ 
+ #ifdef CONFIG_PREEMPT_RCU
+ 	int				rcu_read_lock_nesting;
 --- a/kernel/sched/core.c
 +++ b/kernel/sched/core.c
-@@ -2602,6 +2602,7 @@ int select_task_rq(struct task_struct *p
+@@ -1763,11 +1763,6 @@ void migrate_enable(void)
+ }
+ EXPORT_SYMBOL_GPL(migrate_enable);
  
- void sched_set_stop_task(int cpu, struct task_struct *stop)
+-static inline bool is_migration_disabled(struct task_struct *p)
+-{
+-	return p->migration_disabled;
+-}
+-
+ static inline bool rq_has_pinned_tasks(struct rq *rq)
  {
-+	static struct lock_class_key stop_pi_lock;
- 	struct sched_param param = { .sched_priority = MAX_RT_PRIO - 1 };
- 	struct task_struct *old_stop = cpu_rq(cpu)->stop;
+ 	return rq->nr_pinned;
+@@ -1974,6 +1969,49 @@ static int migration_cpu_stop(void *data
+ 	return 0;
+ }
  
-@@ -2617,6 +2618,20 @@ void sched_set_stop_task(int cpu, struct
- 		sched_setscheduler_nocheck(stop, SCHED_FIFO, &param);
- 
- 		stop->sched_class = &stop_sched_class;
++int push_cpu_stop(void *arg)
++{
++	struct rq *lowest_rq = NULL, *rq = this_rq();
++	struct task_struct *p = arg;
 +
-+		/*
-+		 * The PI code calls rt_mutex_setprio() with ->pi_lock held to
-+		 * adjust the effective priority of a task. As a result,
-+		 * rt_mutex_setprio() can trigger (RT) balancing operations,
-+		 * which can then trigger wakeups of the stop thread to push
-+		 * around the current task.
-+		 *
-+		 * The stop task itself will never be part of the PI-chain, it
-+		 * never blocks, therefore that ->pi_lock recursion is safe.
-+		 * Tell lockdep about this by placing the stop->pi_lock in its
-+		 * own class.
-+		 */
-+		lockdep_set_class(&stop->pi_lock, &stop_pi_lock);
++	raw_spin_lock_irq(&p->pi_lock);
++	raw_spin_lock(&rq->lock);
++
++	if (task_rq(p) != rq)
++		goto out_unlock;
++
++	if (is_migration_disabled(p)) {
++		p->migration_flags |= MDF_PUSH;
++		goto out_unlock;
++	}
++
++	p->migration_flags &= ~MDF_PUSH;
++
++	if (p->sched_class->find_lock_rq)
++		lowest_rq = p->sched_class->find_lock_rq(p, rq);
++
++	if (!lowest_rq)
++		goto out_unlock;
++
++	// XXX validate p is still the highest prio task
++	if (task_rq(p) == rq) {
++		deactivate_task(rq, p, 0);
++		set_task_cpu(p, lowest_rq->cpu);
++		activate_task(lowest_rq, p, 0);
++		resched_curr(lowest_rq);
++	}
++
++	double_unlock_balance(rq, lowest_rq);
++
++out_unlock:
++	rq->push_busy = false;
++	raw_spin_unlock(&rq->lock);
++	raw_spin_unlock_irq(&p->pi_lock);
++
++	put_task_struct(p);
++	return 0;
++}
++
+ /*
+  * sched_class::set_cpus_allowed must do the below, but is not required to
+  * actually call this function.
+@@ -2054,6 +2092,14 @@ static int affine_move_task(struct rq *r
+ 
+ 	/* Can the task run on the task's current CPU? If so, we're done */
+ 	if (cpumask_test_cpu(task_cpu(p), &p->cpus_mask)) {
++		struct task_struct *push_task = NULL;
++
++		if ((flags & SCA_MIGRATE_ENABLE) &&
++		    (p->migration_flags & MDF_PUSH) && !rq->push_busy) {
++			rq->push_busy = true;
++			push_task = get_task_struct(p);
++		}
++
+ 		pending = p->migration_pending;
+ 		if (pending) {
+ 			refcount_inc(&pending->refs);
+@@ -2062,6 +2108,11 @@ static int affine_move_task(struct rq *r
+ 		}
+ 		task_rq_unlock(rq, p, rf);
+ 
++		if (push_task) {
++			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
++					    p, &rq->push_work);
++		}
++
+ 		if (complete)
+ 			goto do_complete;
+ 
+@@ -2098,6 +2149,7 @@ static int affine_move_task(struct rq *r
+ 	if (flags & SCA_MIGRATE_ENABLE) {
+ 
+ 		refcount_inc(&pending->refs); /* pending->{arg,stop_work} */
++		p->migration_flags &= ~MDF_PUSH;
+ 		task_rq_unlock(rq, p, rf);
+ 
+ 		pending->arg = (struct migration_arg) {
+@@ -2716,11 +2768,6 @@ static inline int __set_cpus_allowed_ptr
+ 
+ static inline void migrate_disable_switch(struct rq *rq, struct task_struct *p) { }
+ 
+-static inline bool is_migration_disabled(struct task_struct *p)
+-{
+-	return false;
+-}
+-
+ static inline bool rq_has_pinned_tasks(struct rq *rq)
+ {
+ 	return false;
+--- a/kernel/sched/deadline.c
++++ b/kernel/sched/deadline.c
+@@ -2129,6 +2129,9 @@ static int push_dl_task(struct rq *rq)
+ 		return 0;
+ 
+ retry:
++	if (is_migration_disabled(next_task))
++		return 0;
++
+ 	if (WARN_ON(next_task == rq->curr))
+ 		return 0;
+ 
+@@ -2206,7 +2209,7 @@ static void push_dl_tasks(struct rq *rq)
+ static void pull_dl_task(struct rq *this_rq)
+ {
+ 	int this_cpu = this_rq->cpu, cpu;
+-	struct task_struct *p;
++	struct task_struct *p, *push_task;
+ 	bool resched = false;
+ 	struct rq *src_rq;
+ 	u64 dmin = LONG_MAX;
+@@ -2236,6 +2239,7 @@ static void pull_dl_task(struct rq *this
+ 			continue;
+ 
+ 		/* Might drop this_rq->lock */
++		push_task = NULL;
+ 		double_lock_balance(this_rq, src_rq);
+ 
+ 		/*
+@@ -2267,17 +2271,27 @@ static void pull_dl_task(struct rq *this
+ 					   src_rq->curr->dl.deadline))
+ 				goto skip;
+ 
+-			resched = true;
+-
+-			deactivate_task(src_rq, p, 0);
+-			set_task_cpu(p, this_cpu);
+-			activate_task(this_rq, p, 0);
+-			dmin = p->dl.deadline;
++			if (is_migration_disabled(p)) {
++				push_task = get_push_task(src_rq);
++			} else {
++				deactivate_task(src_rq, p, 0);
++				set_task_cpu(p, this_cpu);
++				activate_task(this_rq, p, 0);
++				dmin = p->dl.deadline;
++				resched = true;
++			}
+ 
+ 			/* Is there any other task even earlier? */
+ 		}
+ skip:
+ 		double_unlock_balance(this_rq, src_rq);
++
++		if (push_task) {
++			raw_spin_unlock(&this_rq->lock);
++			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
++					    push_task, &src_rq->push_work);
++			raw_spin_lock(&this_rq->lock);
++		}
  	}
  
- 	cpu_rq(cpu)->stop = stop;
+ 	if (resched)
+@@ -2524,6 +2538,7 @@ const struct sched_class dl_sched_class
+ 	.rq_online              = rq_online_dl,
+ 	.rq_offline             = rq_offline_dl,
+ 	.task_woken		= task_woken_dl,
++	.find_lock_rq		= find_lock_later_rq,
+ #endif
+ 
+ 	.task_tick		= task_tick_dl,
+--- a/kernel/sched/rt.c
++++ b/kernel/sched/rt.c
+@@ -1859,7 +1859,7 @@ static struct task_struct *pick_next_pus
+  * running task can migrate over to a CPU that is running a task
+  * of lesser priority.
+  */
+-static int push_rt_task(struct rq *rq)
++static int push_rt_task(struct rq *rq, bool pull)
+ {
+ 	struct task_struct *next_task;
+ 	struct rq *lowest_rq;
+@@ -1873,6 +1873,34 @@ static int push_rt_task(struct rq *rq)
+ 		return 0;
+ 
+ retry:
++	if (is_migration_disabled(next_task)) {
++		struct task_struct *push_task = NULL;
++		int cpu;
++
++		if (!pull || rq->push_busy)
++			return 0;
++
++		cpu = find_lowest_rq(rq->curr);
++		if (cpu == -1 || cpu == rq->cpu)
++			return 0;
++
++		/*
++		 * Given we found a CPU with lower priority than @next_task,
++		 * therefore it should be running. However we cannot migrate it
++		 * to this other CPU, instead attempt to push the current
++		 * running task on this CPU away.
++		 */
++		push_task = get_push_task(rq);
++		if (push_task) {
++			raw_spin_unlock(&rq->lock);
++			stop_one_cpu_nowait(rq->cpu, push_cpu_stop,
++					    push_task, &rq->push_work);
++			raw_spin_lock(&rq->lock);
++		}
++
++		return 0;
++	}
++
+ 	if (WARN_ON(next_task == rq->curr))
+ 		return 0;
+ 
+@@ -1927,12 +1955,10 @@ static int push_rt_task(struct rq *rq)
+ 	deactivate_task(rq, next_task, 0);
+ 	set_task_cpu(next_task, lowest_rq->cpu);
+ 	activate_task(lowest_rq, next_task, 0);
+-	ret = 1;
+-
+ 	resched_curr(lowest_rq);
++	ret = 1;
+ 
+ 	double_unlock_balance(rq, lowest_rq);
+-
+ out:
+ 	put_task_struct(next_task);
+ 
+@@ -1942,7 +1968,7 @@ static int push_rt_task(struct rq *rq)
+ static void push_rt_tasks(struct rq *rq)
+ {
+ 	/* push_rt_task will return true if it moved an RT */
+-	while (push_rt_task(rq))
++	while (push_rt_task(rq, false))
+ 		;
+ }
+ 
+@@ -2095,7 +2121,8 @@ void rto_push_irq_work_func(struct irq_w
+ 	 */
+ 	if (has_pushable_tasks(rq)) {
+ 		raw_spin_lock(&rq->lock);
+-		push_rt_tasks(rq);
++		while (push_rt_task(rq, true))
++			;
+ 		raw_spin_unlock(&rq->lock);
+ 	}
+ 
+@@ -2120,7 +2147,7 @@ static void pull_rt_task(struct rq *this
+ {
+ 	int this_cpu = this_rq->cpu, cpu;
+ 	bool resched = false;
+-	struct task_struct *p;
++	struct task_struct *p, *push_task;
+ 	struct rq *src_rq;
+ 	int rt_overload_count = rt_overloaded(this_rq);
+ 
+@@ -2167,6 +2194,7 @@ static void pull_rt_task(struct rq *this
+ 		 * double_lock_balance, and another CPU could
+ 		 * alter this_rq
+ 		 */
++		push_task = NULL;
+ 		double_lock_balance(this_rq, src_rq);
+ 
+ 		/*
+@@ -2194,11 +2222,14 @@ static void pull_rt_task(struct rq *this
+ 			if (p->prio < src_rq->curr->prio)
+ 				goto skip;
+ 
+-			resched = true;
+-
+-			deactivate_task(src_rq, p, 0);
+-			set_task_cpu(p, this_cpu);
+-			activate_task(this_rq, p, 0);
++			if (is_migration_disabled(p)) {
++				push_task = get_push_task(src_rq);
++			} else {
++				deactivate_task(src_rq, p, 0);
++				set_task_cpu(p, this_cpu);
++				activate_task(this_rq, p, 0);
++				resched = true;
++			}
+ 			/*
+ 			 * We continue with the search, just in
+ 			 * case there's an even higher prio task
+@@ -2208,6 +2239,13 @@ static void pull_rt_task(struct rq *this
+ 		}
+ skip:
+ 		double_unlock_balance(this_rq, src_rq);
++
++		if (push_task) {
++			raw_spin_unlock(&this_rq->lock);
++			stop_one_cpu_nowait(src_rq->cpu, push_cpu_stop,
++					    push_task, &src_rq->push_work);
++			raw_spin_lock(&this_rq->lock);
++		}
+ 	}
+ 
+ 	if (resched)
+@@ -2449,6 +2487,7 @@ const struct sched_class rt_sched_class
+ 	.rq_offline             = rq_offline_rt,
+ 	.task_woken		= task_woken_rt,
+ 	.switched_from		= switched_from_rt,
++	.find_lock_rq		= find_lock_lowest_rq,
+ #endif
+ 
+ 	.task_tick		= task_tick_rt,
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -1057,6 +1057,8 @@ struct rq {
+ #if defined(CONFIG_PREEMPT_RT) && defined(CONFIG_SMP)
+ 	unsigned int		nr_pinned;
+ #endif
++	unsigned int		push_busy;
++	struct cpu_stop_work	push_work;
+ };
+ 
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+@@ -1084,6 +1086,16 @@ static inline int cpu_of(struct rq *rq)
+ #endif
+ }
+ 
++#define MDF_PUSH	0x01
++
++static inline bool is_migration_disabled(struct task_struct *p)
++{
++#if defined(CONFIG_SMP) && defined(CONFIG_PREEMPT_RT)
++	return p->migration_disabled;
++#else
++	return false;
++#endif
++}
+ 
+ #ifdef CONFIG_SCHED_SMT
+ extern void __update_idle_core(struct rq *rq);
+@@ -1823,6 +1835,8 @@ struct sched_class {
+ 
+ 	void (*rq_online)(struct rq *rq);
+ 	void (*rq_offline)(struct rq *rq);
++
++	struct rq *(*find_lock_rq)(struct task_struct *p, struct rq *rq);
+ #endif
+ 
+ 	void (*task_tick)(struct rq *rq, struct task_struct *p, int queued);
+@@ -1918,6 +1932,24 @@ extern void trigger_load_balance(struct
+ 
+ extern void set_cpus_allowed_common(struct task_struct *p, const struct cpumask *new_mask, u32 flags);
+ 
++static inline struct task_struct *get_push_task(struct rq *rq)
++{
++	struct task_struct *p = rq->curr;
++
++	lockdep_assert_held(&rq->lock);
++
++	if (rq->push_busy)
++		return NULL;
++
++	if (p->nr_cpus_allowed == 1)
++		return NULL;
++
++	rq->push_busy = true;
++	return get_task_struct(p);
++}
++
++extern int push_cpu_stop(void *arg);
++
+ #endif
+ 
+ #ifdef CONFIG_CPU_IDLE
 
 
