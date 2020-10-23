@@ -2,179 +2,116 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DC7F29797E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C0CA297986
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:18:28 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758464AbgJWXJk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 19:09:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37748 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758457AbgJWXJk (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 19:09:40 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 03D582168B;
-        Fri, 23 Oct 2020 23:09:38 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 19:09:37 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>
-Subject: [PATCH] tracing, synthetic events: Replace buggy strcat() with
- seq_buf operations
-Message-ID: <20201023190937.7cd48f5a@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+        id S1758519AbgJWXQq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 19:16:46 -0400
+Received: from mail-bn8nam11on2072.outbound.protection.outlook.com ([40.107.236.72]:4096
+        "EHLO NAM11-BN8-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1758512AbgJWXQq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 19:16:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jMbLNnZY+/mR+5N2ob2Y3IMcjdPJZjNdBidFgeFQ551+4HHxi+c5Tebri/L/R6hiXnbzeDPPouWYAR9RmpFKd4ltEgzA347HQxNsPXODdj/5fZoJwK0uM3BW76VjlnJtxMjRH1mJTqQmrvM3KfyBl+GT31+IoYlItOeS50bKL6AHYZb+i8rGZR/Vx5CDq40B4H2sXIDjF6hNedFF2fHaM6u2HrVA3zJGYbl4JSrtPYp/Ksf4zOfHQM18Gl0yGOma58hiq7c6/7a9vfGUtYUg/srRJvUAYvML8xuV1lESLoT5RniUR8ygialOERdbRCHZ+s0BwKw0RVqJJB48+S+hqA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z7rUNzBv7Ovn3jY5Z4Y+VP3qCSJhOqSSskSMbj0vU2I=;
+ b=O2wZSbirZauApI9650ooPJNWNBug0raqyzWFuVPD+Kgu42bPjc/yHQzqmbmXaXALFcg/pDXDVg/v+rMwqYFKY35RCBMzJbSs/8+nRf6K89qzTiIMlmbLi5MQ95kNdvN01WDkuh4S8KLFxJMwtU+D95eok/NYvhIvG95adCsAorTNk/6gLGyBEhKuwKzLLXZ2GokMJiexFIgo3+zA58EiO8TTTgj8fP9SWZGFvBaXmUiPgzfNTOEIj++wYPwkp9URK9GjwL7v0DwH+ZhhW6Z05aKMt6fH+H7kqa5+jG1rNBq+w8u/o4on9VtHZeoIc2WZ13pNxxRxis9GkNx2PEDS0w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amdcloud.onmicrosoft.com; s=selector2-amdcloud-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=z7rUNzBv7Ovn3jY5Z4Y+VP3qCSJhOqSSskSMbj0vU2I=;
+ b=nnKoMkSxut1i7kwTjI6WbBytgFGtVp+NmBGFsnbWsTh4qtq1oNHi2bTE3wwx+eGw/JpYjXg4sPAJb/rghNJR47X4DTI/SNhE3QbyhscdZYkgrmL1kBS/bq5ylFEnuwE0DTDAmWKv9kI6WpIWR3Kdn2I1+xlI80aE0d8nOFNHwc0=
+Authentication-Results: lists.freedesktop.org; dkim=none (message not signed)
+ header.d=none;lists.freedesktop.org; dmarc=none action=none
+ header.from=amd.com;
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com (10.255.175.85) by
+ DM6PR12MB3178.namprd12.prod.outlook.com (20.179.107.75) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.3499.18; Fri, 23 Oct 2020 23:16:42 +0000
+Received: from DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::935:a67:59f8:7067]) by DM6PR12MB3962.namprd12.prod.outlook.com
+ ([fe80::935:a67:59f8:7067%7]) with mapi id 15.20.3477.029; Fri, 23 Oct 2020
+ 23:16:42 +0000
+Subject: Re: [PATCH 0/3] drm/amd/display: Fix kernel panic by breakpoint
+To:     Takashi Iwai <tiwai@suse.de>, dri-devel@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org, amd-gfx@lists.freedesktop.org
+References: <20201023074656.11855-1-tiwai@suse.de>
+From:   Luben Tuikov <luben.tuikov@amd.com>
+Message-ID: <1d3e22ef-a301-f557-79ca-33d6520bb64e@amd.com>
+Date:   Fri, 23 Oct 2020 19:16:38 -0400
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
+In-Reply-To: <20201023074656.11855-1-tiwai@suse.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-CA
 Content-Transfer-Encoding: 7bit
+X-Originating-IP: [165.204.54.211]
+X-ClientProxiedBy: YT1PR01CA0044.CANPRD01.PROD.OUTLOOK.COM
+ (2603:10b6:b01:2e::13) To DM6PR12MB3962.namprd12.prod.outlook.com
+ (2603:10b6:5:1ce::21)
+MIME-Version: 1.0
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from [10.252.35.64] (165.204.54.211) by YT1PR01CA0044.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:2e::13) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Fri, 23 Oct 2020 23:16:40 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 1a0bf8ac-5911-4459-c47f-08d877a9b305
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3178:
+X-Microsoft-Antispam-PRVS: <DM6PR12MB31785147DB7FADDDEDF00C50991A0@DM6PR12MB3178.namprd12.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: LMQA1s1QMS8QQYzSTcyQJ4lJkHxFXimd/Cp0CB2ejXi3kBpmxXxodvHcWiu0873CmmQ0u/bzPhXn7x76r0toO1BcAAld+J9FCLFdAjIWdayMMqHlLZR14v+xgMhMEnREFhpVQQzQveQzEEhpYLxfD99Lqpff2BKXhFg6YZXcPaAX3/6CBzFldtEpj0Z4AUmRy4Z/YLOK6kMMOyKmRNNXIF+Xpa0jwn7GXvFSC6dSUK0k7lWfcMBg5OihOW+9H01DJ8Am1XtNAP4soOz4sw6HfUgO+6HHtgHlMU5YwEoK7U5HxC8XuQUg0QZhsJvaDlGbXiyy6Ck33Kwqyioxw0E3FgAnCgDiaYuwtBxqFS7l7YJ6bNFyaLbBZLKes9wOMFcG
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3962.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(396003)(366004)(39860400002)(136003)(4001150100001)(86362001)(31686004)(6486002)(5660300002)(4744005)(316002)(16576012)(478600001)(4326008)(956004)(186003)(16526019)(44832011)(2616005)(66476007)(53546011)(66556008)(83380400001)(66946007)(26005)(2906002)(31696002)(8936002)(8676002)(52116002)(36756003)(43740500002);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: 7dbEk3JnBpW2f/UekSLoEVuOi6XKccGc6GMl32hH41lzr/FWZv9O3C6eLbmTOkmYPutYbECR+22/PSRuB3ktNxK8xdga4cl8YKQyNscW2HQUHWYb3OlZccgdgBT1Vh9h2grwYz0iD0v5wuWG3jjafXQaIXWV8qsYkRNpMbep8ZLP9caa3qKoM5g+tSH96/5sSqCNHTowCovagP0TS8KdmHt+ihKwvw0+yqdug6ZCKjteRKt4Bxz0HJ8Ho95tMTZV60dbV6EvCNcCX0jGvNzRgclQLqYW57Fs8bC9pd9/7b57b7r6dHdFZJUQEHz6vwY49kCs5jQOx2T7Fv2mHK1sU3JkBRzdDUl9OnTdMK6+iEf16PCXy9J0btFnNWnT657CiKQs1TPMytFao48RQqAiHfAeSOn5CwkenHkiiy+rvQD3TPLZFz3p3Et1B8hOyCOdJMBsxzVy5YZwHzay7arHkmKem8jXUUS5K+Z1Q/5q7zFtKfXcgxBU8TXFkKrFkVs6Mo+oXqVQJB5hGYu/zfrJwTGntsSZY5xB2sM9Gvxyzo7na9U16bJW5MxEtpRiymx94Q23Xn55W4JYriPSB6xkdBxX1hNBN3U5RZKEgj3KqGzjVB8c7421v769Hph8xaEOuKLuEAGi8dTPNwdOUnW0xg==
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 1a0bf8ac-5911-4459-c47f-08d877a9b305
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3962.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 23:16:41.9527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vllPQH3w3wENFP4jqtOndXMRL5DWJoJ6zP4BqgLSMbXSlgnUwuVgILYyhSdKz7Z3
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB3178
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
+On 2020-10-23 03:46, Takashi Iwai wrote:
+> Hi,
+> 
+> the amdgpu driver's ASSERT_CRITICAL() macro calls the
+> kgdb_breakpoing() even if no debug option is set, and this leads to a
+> kernel panic on distro kernels.  The first two patches are the
+> oneliner fixes for those, while the last one is the cleanup of those
+> debug macros.
 
-There was a memory corruption bug happening while running the synthetic
-event selftests:
+This looks like good work and solid. Hopefully it gets picked up.
 
- kmemleak: Cannot insert 0xffff8c196fa2afe5 into the object search tree (overlaps existing)
- CPU: 5 PID: 6866 Comm: ftracetest Tainted: G        W         5.9.0-rc5-test+ #577
- Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01 v03.03 07/14/2016
- Call Trace:
-  dump_stack+0x8d/0xc0
-  create_object.cold+0x3b/0x60
-  slab_post_alloc_hook+0x57/0x510
-  ? tracing_map_init+0x178/0x340
-  __kmalloc+0x1b1/0x390
-  tracing_map_init+0x178/0x340
-  event_hist_trigger_func+0x523/0xa40
-  trigger_process_regex+0xc5/0x110
-  event_trigger_write+0x71/0xd0
-  vfs_write+0xca/0x210
-  ksys_write+0x70/0xf0
-  do_syscall_64+0x33/0x40
-  entry_SYSCALL_64_after_hwframe+0x44/0xa9
- RIP: 0033:0x7fef0a63a487
- Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
- RSP: 002b:00007fff76f18398 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
- RAX: ffffffffffffffda RBX: 0000000000000039 RCX: 00007fef0a63a487
- RDX: 0000000000000039 RSI: 000055eb3b26d690 RDI: 0000000000000001
- RBP: 000055eb3b26d690 R08: 000000000000000a R09: 0000000000000038
- R10: 000055eb3b2cdb80 R11: 0000000000000246 R12: 0000000000000039
- R13: 00007fef0a70b500 R14: 0000000000000039 R15: 00007fef0a70b700
- kmemleak: Kernel memory leak detector disabled
- kmemleak: Object 0xffff8c196fa2afe0 (size 8):
- kmemleak:   comm "ftracetest", pid 6866, jiffies 4295082531
- kmemleak:   min_count = 1
- kmemleak:   count = 0
- kmemleak:   flags = 0x1
- kmemleak:   checksum = 0
- kmemleak:   backtrace:
-      __kmalloc+0x1b1/0x390
-      tracing_map_init+0x1be/0x340
-      event_hist_trigger_func+0x523/0xa40
-      trigger_process_regex+0xc5/0x110
-      event_trigger_write+0x71/0xd0
-      vfs_write+0xca/0x210
-      ksys_write+0x70/0xf0
-      do_syscall_64+0x33/0x40
-      entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Regards,
+Luben
 
-The cause came down to a use of strcat() that was adding a string that was
-shorten, but the strcat() did not take that into account.
-
-strcat() is extremely dangerous as it does not care how big the buffer is.
-Replace it with seq_buf operations that prevent the buffer from being
-overwritten if what is being written is bigger than the buffer.
-
-Fixes: 10819e25799a ("tracing: Handle synthetic event array field type checking correctly")
-Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
----
- kernel/trace/trace_events_synth.c | 37 ++++++++++++++++++-------------
- 1 file changed, 22 insertions(+), 15 deletions(-)
-
-diff --git a/kernel/trace/trace_events_synth.c b/kernel/trace/trace_events_synth.c
-index 3212e2c653b3..bdd427ccdfc5 100644
---- a/kernel/trace/trace_events_synth.c
-+++ b/kernel/trace/trace_events_synth.c
-@@ -585,6 +585,7 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 	struct synth_field *field;
- 	const char *prefix = NULL, *field_type = argv[0], *field_name, *array;
- 	int len, ret = 0;
-+	struct seq_buf s;
- 	ssize_t size;
- 
- 	if (field_type[0] == ';')
-@@ -630,13 +631,9 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		field_type++;
- 	len = strlen(field_type) + 1;
- 
--        if (array) {
--                int l = strlen(array);
-+	if (array)
-+		len += strlen(array);
- 
--                if (l && array[l - 1] == ';')
--                        l--;
--                len += l;
--        }
- 	if (prefix)
- 		len += strlen(prefix);
- 
-@@ -645,14 +642,18 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		ret = -ENOMEM;
- 		goto free;
- 	}
-+	seq_buf_init(&s, field->type, len);
- 	if (prefix)
--		strcat(field->type, prefix);
--	strcat(field->type, field_type);
-+		seq_buf_puts(&s, prefix);
-+	seq_buf_puts(&s, field_type);
- 	if (array) {
--		strcat(field->type, array);
--		if (field->type[len - 1] == ';')
--			field->type[len - 1] = '\0';
-+		seq_buf_puts(&s, array);
-+		if (s.buffer[s.len - 1] == ';')
-+			s.len--;
- 	}
-+	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-+		goto free;
-+	s.buffer[s.len] = '\0';
- 
- 	size = synth_field_size(field->type);
- 	if (size < 0) {
-@@ -663,17 +664,23 @@ static struct synth_field *parse_synth_field(int argc, const char **argv,
- 		if (synth_field_is_string(field->type)) {
- 			char *type;
- 
--			type = kzalloc(sizeof("__data_loc ") + strlen(field->type) + 1, GFP_KERNEL);
-+			len = sizeof("__data_loc ") + strlen(field->type) + 1;
-+			type = kzalloc(len, GFP_KERNEL);
- 			if (!type) {
- 				ret = -ENOMEM;
- 				goto free;
- 			}
- 
--			strcat(type, "__data_loc ");
--			strcat(type, field->type);
-+			seq_buf_init(&s, type, len);
-+			seq_buf_puts(&s, "__data_loc ");
-+			seq_buf_puts(&s, field->type);
- 			kfree(field->type);
--			field->type = type;
- 
-+			if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-+				goto free;
-+			s.buffer[s.len] = '\0';
-+
-+			field->type = type;
- 			field->is_dynamic = true;
- 			size = sizeof(u64);
- 		} else {
--- 
-2.25.4
+> 
+> 
+> Takashi
+> 
+> ===
+> 
+> Takashi Iwai (3):
+>   drm/amd/display: Fix kernel panic by dal_gpio_open() error
+>   drm/amd/display: Don't invoke kgdb_breakpoint() unconditionally
+>   drm/amd/display: Clean up debug macros
+> 
+>  drivers/gpu/drm/amd/display/Kconfig             |  1 +
+>  drivers/gpu/drm/amd/display/dc/gpio/gpio_base.c |  4 +--
+>  drivers/gpu/drm/amd/display/dc/os_types.h       | 33 +++++++++----------------
+>  3 files changed, 15 insertions(+), 23 deletions(-)
+> 
 
