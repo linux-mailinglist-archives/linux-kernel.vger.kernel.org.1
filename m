@@ -2,286 +2,170 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6C474297232
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:25:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A4C5429723D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:26:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465748AbgJWPZt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:25:49 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:13202 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S462034AbgJWPZt (ORCPT
+        id S465796AbgJWP0a (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:26:30 -0400
+Received: from mail-io1-f69.google.com ([209.85.166.69]:52465 "EHLO
+        mail-io1-f69.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S465754AbgJWP0W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:25:49 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09NF80Up173997;
-        Fri, 23 Oct 2020 11:25:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding; s=pp1;
- bh=4Oa+MQeYoCD5dtHPc4P27y5/l9DQ48/TR9kQHv0a+I0=;
- b=CaAVifl9EWUfFA4Pj8R7NdQa7fuXgRoZmUut6qsvO81ugnq9kXxb2hgudoJDtaDhukjV
- 3mhRspxql6gmVDHM1lH4w/gFAjiwHWADQuBtD4Wa12ifv3+7QclmsFVlglQCay02bo8t
- ZN2nDDn7kHXNht5ZrMhSr0VaYhl8NQ8qctLRpw4xqKg0wB6QUBCs/cF60JgSYSqOmufZ
- ITlgs5LrldkAQiKrGiqcAPOTAaMV9zU2RmOUTEjXsY0n6u2Q0xXubxSbCg56k46eF+w7
- /9MLXSdZn9+izzae51ZO/gGcVGIwXvPHAoiFkBQDHp9ewnv8/4+9u+FAU5k0PcIGDO0m Yw== 
-Received: from ppma02fra.de.ibm.com (47.49.7a9f.ip4.static.sl-reverse.com [159.122.73.71])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34byj04ret-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 11:25:42 -0400
-Received: from pps.filterd (ppma02fra.de.ibm.com [127.0.0.1])
-        by ppma02fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09NF6u3E022838;
-        Fri, 23 Oct 2020 15:25:40 GMT
-Received: from b06cxnps4074.portsmouth.uk.ibm.com (d06relay11.portsmouth.uk.ibm.com [9.149.109.196])
-        by ppma02fra.de.ibm.com with ESMTP id 347r883gct-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 15:25:40 +0000
-Received: from d06av22.portsmouth.uk.ibm.com (d06av22.portsmouth.uk.ibm.com [9.149.105.58])
-        by b06cxnps4074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09NFPcks33030600
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Oct 2020 15:25:38 GMT
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2AE744C05A;
-        Fri, 23 Oct 2020 15:25:38 +0000 (GMT)
-Received: from d06av22.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DEDD54C050;
-        Fri, 23 Oct 2020 15:25:36 +0000 (GMT)
-Received: from localhost.localdomain (unknown [9.79.244.89])
-        by d06av22.portsmouth.uk.ibm.com (Postfix) with ESMTP;
-        Fri, 23 Oct 2020 15:25:36 +0000 (GMT)
-From:   Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
-To:     shuah@kernel.org, trenn@suse.com
-Cc:     linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        latha@linux.vnet.ibm.com,
-        "Pavithra R . Prakash" <pavrampu@in.ibm.com>
-Subject: [PATCH v4] cpupower: Provide online and offline CPU information
-Date:   Fri, 23 Oct 2020 20:55:27 +0530
-Message-Id: <20201023152527.15884-1-latha@linux.vnet.ibm.com>
-X-Mailer: git-send-email 2.24.3 (Apple Git-128)
+        Fri, 23 Oct 2020 11:26:22 -0400
+Received: by mail-io1-f69.google.com with SMTP id e10so1410408ioq.19
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=KqIcLxoWMOgyDIHlPgDtbim81ixqYlsTiyIh2/2tzCw=;
+        b=AGs6teoVA2ZfaJYkoBk+t+13uHYofUWBdSwjTj3NEeVUO1oBIj6Zvg8/68MIWlGtpR
+         hMvFuQ9SlFA2RC9EewSQfMkjFpkjXIzZnMs1HCaRbl4WxUQaLB8rpgScNBdZjNayrHy1
+         +KagDk/+sDg4ankn22SLS+WnMTvtoU8l6e4e8TW/y56VgRrNwHMr36duJiWTYBCII2DD
+         8VoMK5O1qHc5DxQJmqclJY34fRYhylJ4B7ThR38dr5RByvr6bTmSR6kK6pkjTNy7+nkh
+         l6BAfHVhGG+hD1LKCoC4FmSYRBrZfFgw5MUHIae7iD5XoFQlX+o9jwm8sYiDVET0ebxW
+         x6yg==
+X-Gm-Message-State: AOAM5327lfX5wwekmXm+N1jZiPHtqB6euya02qaQ6tzO8of0yhOAahXD
+        3qBMpTcqhw0m07CbcnjXORB5e7tRx2RmtdXTgSYHgwwuyCoE
+X-Google-Smtp-Source: ABdhPJyQJG0klV3QpY/n69STwAcXuoqdz8cqXb2l79ISbKCrbLFAfWl2C5+b+6t9lIwtd5cVx5M8ahHyAiBJLzLxNWdUg0YFGc8S
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-23_07:2020-10-23,2020-10-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1011
- phishscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 suspectscore=2
- mlxlogscore=999 adultscore=0 spamscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010230103
+X-Received: by 2002:a02:cb0c:: with SMTP id j12mr2415315jap.54.1603466781423;
+ Fri, 23 Oct 2020 08:26:21 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 08:26:21 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ea810305b2583377@google.com>
+Subject: memory leak in gadget_bind
+From:   syzbot <syzbot+0a4ec40b66726854dd11@syzkaller.appspotmail.com>
+To:     andreyknvl@google.com, balbi@kernel.org, dan.carpenter@oracle.com,
+        gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When a user tries to modify cpuidle or cpufreq properties on offline
-CPUs, the tool returns success (exit status 0) but also does not provide
-any warning message regarding offline cpus that may have been specified
-but left unchanged. In case of all or a few CPUs being offline, it can be
-difficult to keep track of which CPUs didn't get the new frequency or idle
-state set. Silent failures are difficult to keep track of when there are a
-huge number of CPUs on which the action is performed.
+Hello,
 
-This patch adds helper functions to find both online and offline CPUs and
-print them out accordingly.
+syzbot found the following issue on:
 
-We use these helper functions in cpuidle-set and cpufreq-set to print an
-additional message if the user attempts to modify offline cpus.
+HEAD commit:    f9893351 Merge tag 'kconfig-v5.10' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13ff53f7900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=b8e9005328853c49
+dashboard link: https://syzkaller.appspot.com/bug?extid=0a4ec40b66726854dd11
+compiler:       gcc (GCC) 10.1.0-syz 20200507
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=177a731c500000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1328d038500000
 
-Reported-by: Pavithra R. Prakash <pavrampu@in.ibm.com>
-Signed-off-by: Brahadambal Srinivasan <latha@linux.vnet.ibm.com>
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+0a4ec40b66726854dd11@syzkaller.appspotmail.com
+
+BUG: memory leak
+unreferenced object 0xffff888110c4d9c0 (size 32):
+  comm "syz-executor693", pid 8462, jiffies 4294942114 (age 13.040s)
+  hex dump (first 32 bytes):
+    01 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000b2b2ae2f>] kmalloc include/linux/slab.h:554 [inline]
+    [<00000000b2b2ae2f>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
+    [<00000000b2b2ae2f>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
+    [<00000000b2b2ae2f>] gadget_bind+0x223/0x340 drivers/usb/gadget/legacy/raw_gadget.c:303
+    [<000000005cc0921f>] udc_bind_to_driver+0x62/0x150 drivers/usb/gadget/udc/core.c:1413
+    [<000000009fe15fa6>] usb_gadget_probe_driver+0x1c7/0x230 drivers/usb/gadget/udc/core.c:1476
+    [<00000000a41bab17>] raw_ioctl_run drivers/usb/gadget/legacy/raw_gadget.c:512 [inline]
+    [<00000000a41bab17>] raw_ioctl+0x5da/0xf30 drivers/usb/gadget/legacy/raw_gadget.c:1210
+    [<0000000085e98ccd>] vfs_ioctl fs/ioctl.c:48 [inline]
+    [<0000000085e98ccd>] __do_sys_ioctl fs/ioctl.c:753 [inline]
+    [<0000000085e98ccd>] __se_sys_ioctl fs/ioctl.c:739 [inline]
+    [<0000000085e98ccd>] __x64_sys_ioctl+0xfc/0x140 fs/ioctl.c:739
+    [<00000000b1e8d60c>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+    [<0000000084cf691c>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+
+BUG: memory leak
+unreferenced object 0xffff88810ba5e4e0 (size 32):
+  comm "softirq", pid 0, jiffies 4294942152 (age 12.660s)
+  hex dump (first 32 bytes):
+    02 00 00 00 08 00 00 00 80 06 00 01 00 00 40 00  ..............@.
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000203e8439>] kmalloc include/linux/slab.h:554 [inline]
+    [<00000000203e8439>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
+    [<00000000203e8439>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
+    [<00000000203e8439>] gadget_setup+0xf6/0x220 drivers/usb/gadget/legacy/raw_gadget.c:343
+    [<000000009fb695b0>] dummy_timer+0xb9f/0x14c0 drivers/usb/gadget/udc/dummy_hcd.c:1899
+    [<00000000c61b4b01>] call_timer_fn+0x38/0x200 kernel/time/timer.c:1415
+    [<0000000044ef2390>] expire_timers kernel/time/timer.c:1460 [inline]
+    [<0000000044ef2390>] __run_timers.part.0+0x319/0x400 kernel/time/timer.c:1757
+    [<000000005e8b3107>] __run_timers kernel/time/timer.c:1738 [inline]
+    [<000000005e8b3107>] run_timer_softirq+0x3d/0x80 kernel/time/timer.c:1770
+    [<000000000af0f05c>] __do_softirq+0xcc/0x2c2 kernel/softirq.c:298
+    [<0000000065b29993>] asm_call_irq_on_stack+0xf/0x20
+    [<00000000670a912a>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+    [<00000000670a912a>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+    [<00000000670a912a>] do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
+    [<00000000b238919a>] invoke_softirq kernel/softirq.c:393 [inline]
+    [<00000000b238919a>] __irq_exit_rcu kernel/softirq.c:423 [inline]
+    [<00000000b238919a>] irq_exit_rcu+0x91/0xc0 kernel/softirq.c:435
+    [<00000000ab949bfc>] sysvec_apic_timer_interrupt+0x36/0x80 arch/x86/kernel/apic/apic.c:1091
+    [<00000000ae73d7f6>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+    [<00000000c54c318f>] native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+    [<00000000c54c318f>] arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+    [<00000000c54c318f>] acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+    [<00000000c54c318f>] acpi_idle_do_entry+0xc3/0xd0 drivers/acpi/processor_idle.c:517
+    [<00000000ac55bfeb>] acpi_idle_enter+0x128/0x1f0 drivers/acpi/processor_idle.c:648
+    [<000000008d561dc0>] cpuidle_enter_state+0xc9/0x650 drivers/cpuidle/cpuidle.c:237
+    [<000000007b67805b>] cpuidle_enter+0x29/0x40 drivers/cpuidle/cpuidle.c:351
+    [<000000001370c1be>] call_cpuidle kernel/sched/idle.c:132 [inline]
+    [<000000001370c1be>] cpuidle_idle_call kernel/sched/idle.c:213 [inline]
+    [<000000001370c1be>] do_idle+0x1c8/0x250 kernel/sched/idle.c:273
+
+BUG: memory leak
+unreferenced object 0xffff888110f48b20 (size 32):
+  comm "softirq", pid 0, jiffies 4294942183 (age 12.350s)
+  hex dump (first 32 bytes):
+    02 00 00 00 08 00 00 00 80 06 00 01 00 00 40 00  ..............@.
+    00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+  backtrace:
+    [<00000000203e8439>] kmalloc include/linux/slab.h:554 [inline]
+    [<00000000203e8439>] raw_event_queue_add drivers/usb/gadget/legacy/raw_gadget.c:66 [inline]
+    [<00000000203e8439>] raw_queue_event drivers/usb/gadget/legacy/raw_gadget.c:225 [inline]
+    [<00000000203e8439>] gadget_setup+0xf6/0x220 drivers/usb/gadget/legacy/raw_gadget.c:343
+    [<000000009fb695b0>] dummy_timer+0xb9f/0x14c0 drivers/usb/gadget/udc/dummy_hcd.c:1899
+    [<00000000c61b4b01>] call_timer_fn+0x38/0x200 kernel/time/timer.c:1415
+    [<0000000044ef2390>] expire_timers kernel/time/timer.c:1460 [inline]
+    [<0000000044ef2390>] __run_timers.part.0+0x319/0x400 kernel/time/timer.c:1757
+    [<000000005e8b3107>] __run_timers kernel/time/timer.c:1738 [inline]
+    [<000000005e8b3107>] run_timer_softirq+0x3d/0x80 kernel/time/timer.c:1770
+    [<000000000af0f05c>] __do_softirq+0xcc/0x2c2 kernel/softirq.c:298
+    [<0000000065b29993>] asm_call_irq_on_stack+0xf/0x20
+    [<00000000670a912a>] __run_on_irqstack arch/x86/include/asm/irq_stack.h:26 [inline]
+    [<00000000670a912a>] run_on_irqstack_cond arch/x86/include/asm/irq_stack.h:77 [inline]
+    [<00000000670a912a>] do_softirq_own_stack+0x32/0x40 arch/x86/kernel/irq_64.c:77
+    [<00000000b238919a>] invoke_softirq kernel/softirq.c:393 [inline]
+    [<00000000b238919a>] __irq_exit_rcu kernel/softirq.c:423 [inline]
+    [<00000000b238919a>] irq_exit_rcu+0x91/0xc0 kernel/softirq.c:435
+    [<00000000ab949bfc>] sysvec_apic_timer_interrupt+0x36/0x80 arch/x86/kernel/apic/apic.c:1091
+    [<00000000ae73d7f6>] asm_sysvec_apic_timer_interrupt+0x12/0x20 arch/x86/include/asm/idtentry.h:631
+    [<00000000c54c318f>] native_safe_halt arch/x86/include/asm/irqflags.h:60 [inline]
+    [<00000000c54c318f>] arch_safe_halt arch/x86/include/asm/irqflags.h:103 [inline]
+    [<00000000c54c318f>] acpi_safe_halt drivers/acpi/processor_idle.c:111 [inline]
+    [<00000000c54c318f>] acpi_idle_do_entry+0xc3/0xd0 drivers/acpi/processor_idle.c:517
+    [<00000000ac55bfeb>] acpi_idle_enter+0x128/0x1f0 drivers/acpi/processor_idle.c:648
+    [<000000008d561dc0>] cpuidle_enter_state+0xc9/0x650 drivers/cpuidle/cpuidle.c:237
+    [<000000007b67805b>] cpuidle_enter+0x29/0x40 drivers/cpuidle/cpuidle.c:351
+    [<000000001370c1be>] call_cpuidle kernel/sched/idle.c:132 [inline]
+    [<000000001370c1be>] cpuidle_idle_call kernel/sched/idle.c:213 [inline]
+    [<000000001370c1be>] do_idle+0x1c8/0x250 kernel/sched/idle.c:273
+
+
+
 ---
- tools/power/cpupower/utils/cpufreq-set.c     |  3 +
- tools/power/cpupower/utils/cpuidle-set.c     |  4 ++
- tools/power/cpupower/utils/cpupower.c        |  8 +++
- tools/power/cpupower/utils/helpers/helpers.h | 12 ++++
- tools/power/cpupower/utils/helpers/misc.c    | 66 +++++++++++++++++++-
- 5 files changed, 92 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-v1-->v2: Added helper functions to find online and offline CPUs and print them.
-v2-->v3: Fixed some build issues
-v3-->v4: Fixed the commit log and moved the version summary to the correct place. 
-
-diff --git a/tools/power/cpupower/utils/cpufreq-set.c b/tools/power/cpupower/utils/cpufreq-set.c
-index 7b2164e07057..c5e60a39cfa6 100644
---- a/tools/power/cpupower/utils/cpufreq-set.c
-+++ b/tools/power/cpupower/utils/cpufreq-set.c
-@@ -315,6 +315,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	get_cpustate();
- 
- 	/* loop over CPUs */
- 	for (cpu = bitmask_first(cpus_chosen);
-@@ -332,5 +333,7 @@ int cmd_freq_set(int argc, char **argv)
- 		}
- 	}
- 
-+	print_offline_cpus();
-+
- 	return 0;
- }
-diff --git a/tools/power/cpupower/utils/cpuidle-set.c b/tools/power/cpupower/utils/cpuidle-set.c
-index 569f268f4c7f..46158928f9ad 100644
---- a/tools/power/cpupower/utils/cpuidle-set.c
-+++ b/tools/power/cpupower/utils/cpuidle-set.c
-@@ -95,6 +95,8 @@ int cmd_idle_set(int argc, char **argv)
- 		exit(EXIT_FAILURE);
- 	}
- 
-+	get_cpustate();
-+
- 	/* Default is: set all CPUs */
- 	if (bitmask_isallclear(cpus_chosen))
- 		bitmask_setall(cpus_chosen);
-@@ -181,5 +183,7 @@ int cmd_idle_set(int argc, char **argv)
- 			break;
- 		}
- 	}
-+
-+	print_offline_cpus();
- 	return EXIT_SUCCESS;
- }
-diff --git a/tools/power/cpupower/utils/cpupower.c b/tools/power/cpupower/utils/cpupower.c
-index 8e3d08042825..8ac3304a9957 100644
---- a/tools/power/cpupower/utils/cpupower.c
-+++ b/tools/power/cpupower/utils/cpupower.c
-@@ -34,6 +34,8 @@ int run_as_root;
- int base_cpu;
- /* Affected cpus chosen by -c/--cpu param */
- struct bitmask *cpus_chosen;
-+struct bitmask *online_cpus;
-+struct bitmask *offline_cpus;
- 
- #ifdef DEBUG
- int be_verbose;
-@@ -178,6 +180,8 @@ int main(int argc, const char *argv[])
- 	char pathname[32];
- 
- 	cpus_chosen = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	online_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
-+	offline_cpus = bitmask_alloc(sysconf(_SC_NPROCESSORS_CONF));
- 
- 	argc--;
- 	argv += 1;
-@@ -230,6 +234,10 @@ int main(int argc, const char *argv[])
- 		ret = p->main(argc, argv);
- 		if (cpus_chosen)
- 			bitmask_free(cpus_chosen);
-+		if (online_cpus)
-+			bitmask_free(online_cpus);
-+		if (offline_cpus)
-+			bitmask_free(offline_cpus);
- 		return ret;
- 	}
- 	print_help();
-diff --git a/tools/power/cpupower/utils/helpers/helpers.h b/tools/power/cpupower/utils/helpers/helpers.h
-index c258eeccd05f..d5799aa71e1f 100644
---- a/tools/power/cpupower/utils/helpers/helpers.h
-+++ b/tools/power/cpupower/utils/helpers/helpers.h
-@@ -94,6 +94,8 @@ struct cpupower_cpu_info {
-  */
- extern int get_cpu_info(struct cpupower_cpu_info *cpu_info);
- extern struct cpupower_cpu_info cpupower_cpu_info;
-+
-+
- /* cpuid and cpuinfo helpers  **************************/
- 
- /* X86 ONLY ****************************************/
-@@ -171,4 +173,14 @@ static inline unsigned int cpuid_ecx(unsigned int op) { return 0; };
- static inline unsigned int cpuid_edx(unsigned int op) { return 0; };
- #endif /* defined(__i386__) || defined(__x86_64__) */
- 
-+/*
-+ * CPU State related functions
-+ */
-+extern struct bitmask *online_cpus;
-+extern struct bitmask *offline_cpus;
-+
-+void get_cpustate(void);
-+void print_online_cpus(void);
-+void print_offline_cpus(void);
-+
- #endif /* __CPUPOWERUTILS_HELPERS__ */
-diff --git a/tools/power/cpupower/utils/helpers/misc.c b/tools/power/cpupower/utils/helpers/misc.c
-index f406adc40bad..2ead98169cf5 100644
---- a/tools/power/cpupower/utils/helpers/misc.c
-+++ b/tools/power/cpupower/utils/helpers/misc.c
-@@ -1,8 +1,12 @@
- // SPDX-License-Identifier: GPL-2.0
--#if defined(__i386__) || defined(__x86_64__)
-+
-+#include <stdio.h>
-+#include <stdlib.h>
- 
- #include "helpers/helpers.h"
- 
-+#if defined(__i386__) || defined(__x86_64__)
-+
- #define MSR_AMD_HWCR	0xc0010015
- 
- int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
-@@ -41,3 +45,63 @@ int cpufreq_has_boost_support(unsigned int cpu, int *support, int *active,
- 	return 0;
- }
- #endif /* #if defined(__i386__) || defined(__x86_64__) */
-+
-+/* get_cpustate
-+ *
-+ * Gather the information of all online CPUs into bitmask struct
-+ */
-+void get_cpustate(void)
-+{
-+	unsigned int cpu = 0;
-+
-+	bitmask_clearall(online_cpus);
-+	bitmask_clearall(offline_cpus);
-+
-+	for (cpu = bitmask_first(cpus_chosen);
-+		cpu <= bitmask_last(cpus_chosen); cpu++) {
-+
-+		if (cpupower_is_cpu_online(cpu) == 1)
-+			bitmask_setbit(online_cpus, cpu);
-+		else
-+			bitmask_setbit(offline_cpus, cpu);
-+
-+		continue;
-+	}
-+}
-+
-+/* print_online_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are online currently
-+ */
-+void print_online_cpus(void)
-+{
-+	int str_len = 0;
-+	char *online_cpus_str = NULL;
-+
-+	str_len = online_cpus->size * 5;
-+	online_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(online_cpus)) {
-+		bitmask_displaylist(online_cpus_str, str_len, online_cpus);
-+		printf(_("Following CPUs are online:\n%s\n"), online_cpus_str);
-+	}
-+}
-+
-+/* print_offline_cpus
-+ *
-+ * Print the CPU numbers of all CPUs that are offline currently
-+ */
-+void print_offline_cpus(void)
-+{
-+	int str_len = 0;
-+	char *offline_cpus_str = NULL;
-+
-+	str_len = offline_cpus->size * 5;
-+	offline_cpus_str = (void *)malloc(sizeof(char) * str_len);
-+
-+	if (!bitmask_isallclear(offline_cpus)) {
-+		bitmask_displaylist(offline_cpus_str, str_len, offline_cpus);
-+		printf(_("Following CPUs are offline:\n%s\n"), offline_cpus_str);
-+		printf(_("cpupower set operation was not performed on them\n"));
-+	}
-+}
--- 
-2.24.3 (Apple Git-128)
-
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
