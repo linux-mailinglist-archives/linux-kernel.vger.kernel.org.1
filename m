@@ -2,78 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA04E296B1E
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:25:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E537296B32
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:26:00 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S460565AbgJWIZQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:25:16 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:54300 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S460536AbgJWIZL (ORCPT
+        id S460607AbgJWIZy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:25:54 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57796 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372605AbgJWIZy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:25:11 -0400
-X-UUID: 3d526c3e86174cb295d6d5aed979d2f1-20201023
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=UBtQH+OlTScmb/PO4fc+5+GucCo+qd6V6KQVG2XIAsg=;
-        b=REqEq5DQ71HR+x0jqq323w4bhNpSCgR/FnagOYs23UJ6OyYaEw5GzQRbfjPCTGVPGuNBG8qV1BT8Sj2E+SK9Nkk3z6NhfZyiXlAwSv6GtoFvMdDHbyrZ6lIBXZO/1Yp2pHJ6QvibHFBTKwC17sqZICzsE55mzTdzmaPa12vrz1Y=;
-X-UUID: 3d526c3e86174cb295d6d5aed979d2f1-20201023
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw01.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 695823342; Fri, 23 Oct 2020 16:25:01 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs07n2.mediatek.inc (172.21.101.141) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Fri, 23 Oct 2020 16:24:59 +0800
-Received: from mtkswgap22.mediatek.inc (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Fri, 23 Oct 2020 16:24:59 +0800
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        Fri, 23 Oct 2020 04:25:54 -0400
+Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE01CC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:25:53 -0700 (PDT)
+Received: from [2a0a:edc0:0:900:6245:cbff:fea0:1793] (helo=kresse.office.stw.pengutronix.de)
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <l.stach@pengutronix.de>)
+        id 1kVsOC-00005o-25; Fri, 23 Oct 2020 10:25:32 +0200
+Message-ID: <15c51fd40f3c79b9afd208e2890263bb936e8434.camel@pengutronix.de>
+From:   Lucas Stach <l.stach@pengutronix.de>
+To:     Adam Ford <aford173@gmail.com>, Marek Vasut <marex@denx.de>
+Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
+        Adam Ford-BE <aford@beaconembedded.com>,
         Rob Herring <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <devicetree@vger.kernel.org>
-CC:     <linux-kernel@vger.kernel.org>, <wsd_upstream@mediatek.com>,
-        <hector.yuan@mediatek.com>
-Subject: [PATCH v1 6/6] cpufreq: mediatek-hw: Add cooling dev flag
-Date:   Fri, 23 Oct 2020 16:24:53 +0800
-Message-ID: <1603441493-18554-7-git-send-email-hector.yuan@mediatek.com>
-X-Mailer: git-send-email 1.7.9.5
-In-Reply-To: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
-References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        devicetree <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Date:   Fri, 23 Oct 2020 10:25:30 +0200
+In-Reply-To: <CAHCN7x+66Ziza0G2Q6iho9z3RKsiw9=PyqoCayXCXyAONcDLow@mail.gmail.com>
+References: <20201022171639.773702-1-aford173@gmail.com>
+         <5d17f3de-6864-c8fb-6413-24de943df1fd@denx.de>
+         <CAHCN7x+66Ziza0G2Q6iho9z3RKsiw9=PyqoCayXCXyAONcDLow@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.30.5-1.1 
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:900:6245:cbff:fea0:1793
+X-SA-Exim-Mail-From: l.stach@pengutronix.de
+X-Spam-Checker-Version: SpamAssassin 3.4.2 (2018-09-13) on
+        metis.ext.pengutronix.de
+X-Spam-Level: 
+X-Spam-Status: No, score=-1.5 required=4.0 tests=AWL,BAYES_00,RDNS_NONE,
+        SPF_HELO_NONE,SPF_SOFTFAIL autolearn=no autolearn_force=no
+        version=3.4.2
+Subject: Re: [PATCH] arm64: dts: imx8mm: Add GPU node
+X-SA-Exim-Version: 4.2.1 (built Wed, 08 May 2019 21:11:16 +0000)
+X-SA-Exim-Scanned: Yes (on metis.ext.pengutronix.de)
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RnJvbTogIkhlY3Rvci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KDQpBZGQgY29v
-bGluZyBkZXZpY2UgZmxhZyBmb3IgdGhlcm1hbCB0aHJvdHRsZQ0KDQpTaWduZWQtb2ZmLWJ5OiBI
-ZWN0b3IuWXVhbiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KLS0tDQogZHJpdmVycy9jcHVm
-cmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYyB8ICAgIDMgKystDQogMSBmaWxlIGNoYW5nZWQsIDIg
-aW5zZXJ0aW9ucygrKSwgMSBkZWxldGlvbigtKQ0KDQpkaWZmIC0tZ2l0IGEvZHJpdmVycy9jcHVm
-cmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYyBiL2RyaXZlcnMvY3B1ZnJlcS9tZWRpYXRlay1jcHVm
-cmVxLWh3LmMNCmluZGV4IDE1ZmJhMjAuLjY2NWYyMjBmIDEwMDY0NA0KLS0tIGEvZHJpdmVycy9j
-cHVmcmVxL21lZGlhdGVrLWNwdWZyZXEtaHcuYw0KKysrIGIvZHJpdmVycy9jcHVmcmVxL21lZGlh
-dGVrLWNwdWZyZXEtaHcuYw0KQEAgLTE2NSw3ICsxNjUsOCBAQCBzdGF0aWMgaW50IG10a19jcHVm
-cmVxX2h3X2NwdV9leGl0KHN0cnVjdCBjcHVmcmVxX3BvbGljeSAqcG9saWN5KQ0KIA0KIHN0YXRp
-YyBzdHJ1Y3QgY3B1ZnJlcV9kcml2ZXIgY3B1ZnJlcV9tdGtfaHdfZHJpdmVyID0gew0KIAkuZmxh
-Z3MJCT0gQ1BVRlJFUV9TVElDS1kgfCBDUFVGUkVRX05FRURfSU5JVElBTF9GUkVRX0NIRUNLIHwN
-Ci0JCQkgIENQVUZSRVFfSEFWRV9HT1ZFUk5PUl9QRVJfUE9MSUNZLA0KKwkJCSAgQ1BVRlJFUV9I
-QVZFX0dPVkVSTk9SX1BFUl9QT0xJQ1kgfA0KKwkJCSAgQ1BVRlJFUV9JU19DT09MSU5HX0RFViwN
-CiAJLnZlcmlmeQkJPSBjcHVmcmVxX2dlbmVyaWNfZnJlcXVlbmN5X3RhYmxlX3ZlcmlmeSwNCiAJ
-LnRhcmdldF9pbmRleAk9IG10a19jcHVmcmVxX2h3X3RhcmdldF9pbmRleCwNCiAJLmdldAkJPSBt
-dGtfY3B1ZnJlcV9od19nZXQsDQotLSANCjEuNy45LjUNCg==
+On Do, 2020-10-22 at 13:31 -0500, Adam Ford wrote:
+> On Thu, Oct 22, 2020 at 1:17 PM Marek Vasut <marex@denx.de> wrote:
+> > On 10/22/20 7:16 PM, Adam Ford wrote:
+> > > According to the documentation from NXP, the i.MX8M Nano has a
+> > > Vivante GC7000 Ultra Lite as its GPU core.
+> > > 
+> > > With this patch, the Etnaviv driver presents the GPU as:
+> > >    etnaviv-gpu 38000000.gpu: model: GC7000, revision: 6203
+> > > 
+> > > It uses the GPCV2 controller to enable the power domain for the
+> > > GPU.
+> > 
+> > Subject should say 8mn , not 8mm .
+> 
+> ugh.. My mistake.  I'll submit a V2 once other have had a chance to
+> give some feedback.
+> 
+> Maybe NXP can comment on the dialog below.
+> 
+> > Are the assigned-clock-rates correct ?
+> 
+> I used the assigned clock rates from the vendor kernel, with the
+> exception of running at 400MHz instead of 600MHz.  According to the
+> datasheet, the GPU clock needs to be 400MHZ to run at 0.85V. The
+> 600MHz operating point for the GPU requires a 0.95V operating point.
+> Since the default operating point for the Nano shows 0.85V, I left
+> the
+> GPU clock lower to match the normal operating speed.  This varies a
+> bit from the vendor kernel, but their kernel is also showing a 0.95V
+> operating point, so I think that's why they are specifying a 600MHz
+> operating point.
+> 
+> On the Beacon embedded board, we're driving the LPDDR to 800MHz which
+> requires the ARM to run at .95V.   I was able to override the
+> assigned-clock rates for my board to run at 600MHz, and change the
+> ARM
+> operating point to .95V to meet the spec.
+> 
+> My intent was to use the defaults and let the board files override
+> them.   If you want, I can try to look through the board files to see
+> what operating point their using and propose updates to those
+> respective device trees to address the clocks on those boards.
+
+I think this is fine as-is with this explanation. At least we have a
+precedent in the i.MX8MQ DT where the assigned clocks are for the base
+(non overdrive) operating point and boards can choose to override it if
+they want to use the overdrive OPP. At least until we add proper
+frequency scaling in etnaviv, which should obsolete those fixed clock
+rates.
+
+Regards,
+Lucas
 
