@@ -2,123 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DD97429720A
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:13:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7E22F29720B
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:13:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465620AbgJWPNV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:13:21 -0400
-Received: from mx0b-001b2d01.pphosted.com ([148.163.158.5]:14372 "EHLO
-        mx0b-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S461735AbgJWPNU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:13:20 -0400
-Received: from pps.filterd (m0098421.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09NF849Q174402;
-        Fri, 23 Oct 2020 11:12:50 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=66H34WxHFjZ41e1XswNbb1laU7BuQLFc816MyowA0J8=;
- b=i2dKDoDh1RG1cUKqPZxkj7AL+aEG1rd+4NQxu2yiO7N/98/ceaJJ6ftMw+tFslQT4hP8
- eueKn67B75QUB5OW4XPhcT3kFJxNanJmYZ7RJrQ/o4q2IGk0o+yXwnu7mSJumGSxqL8g
- bJ/FBTlweAaWeSuuzJXqSAUhopF3tYr4cayyJVRKsKUyTXwQwYl0Np4vnlwrzsJ+Y9m1
- U2dD5ddcdpYnK5OaDMpgjb3rPmnwh9DaPnk4lewFGNEt6+0ZVLcIrFVpIEYny2pCw9cA
- KaIZ3zxTecGTsiHZrOatI1VvbOck+lOPPCR7r5JtWQq8TKDYlzsB4ToFrvGAC0Ofoab+ 6Q== 
-Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34byj04bn8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 11:12:50 -0400
-Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
-        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09NF6IiJ004681;
-        Fri, 23 Oct 2020 15:12:48 GMT
-Received: from b06cxnps3075.portsmouth.uk.ibm.com (d06relay10.portsmouth.uk.ibm.com [9.149.109.195])
-        by ppma05fra.de.ibm.com with ESMTP id 347r883g4f-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Fri, 23 Oct 2020 15:12:48 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3075.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09NFCkNW29098472
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Fri, 23 Oct 2020 15:12:46 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 0D44D11C058;
-        Fri, 23 Oct 2020 15:12:46 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id AEDC811C052;
-        Fri, 23 Oct 2020 15:12:45 +0000 (GMT)
-Received: from oc3871087118.ibm.com (unknown [9.145.85.144])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Fri, 23 Oct 2020 15:12:45 +0000 (GMT)
-Date:   Fri, 23 Oct 2020 17:12:44 +0200
-From:   Alexander Gordeev <agordeev@linux.ibm.com>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>
-Subject: Re: [PATCH] selftests/ftrace: remove _do_fork() leftovers
-Message-ID: <20201023151243.GA1537@oc3871087118.ibm.com>
-References: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
- <20201023093523.65c495f8@gandalf.local.home>
+        id S465629AbgJWPNc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:13:32 -0400
+Received: from mx2.suse.de ([195.135.220.15]:54962 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S465622AbgJWPNb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:13:31 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 9C90AB945;
+        Fri, 23 Oct 2020 15:13:29 +0000 (UTC)
+Received: by quack2.suse.cz (Postfix, from userid 1000)
+        id 250871E1348; Fri, 23 Oct 2020 17:13:29 +0200 (CEST)
+Date:   Fri, 23 Oct 2020 17:13:29 +0200
+From:   Jan Kara <jack@suse.cz>
+To:     kernel test robot <lkp@intel.com>
+Cc:     Amir Goldstein <amir73il@gmail.com>, Jan Kara <jack@suse.cz>,
+        LKML <linux-kernel@vger.kernel.org>, lkp@lists.01.org,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [fsnotify] 9b93f33105:
+ WARNING:missing_R10_value_at__fsnotify_parent/0x
+Message-ID: <20201023151329.GA9119@quack2.suse.cz>
+References: <20201023003842.GC31092@shao2-debian>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023093523.65c495f8@gandalf.local.home>
-User-Agent: Mutt/1.5.21 (2010-09-15)
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-23_07:2020-10-23,2020-10-23 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 clxscore=1015
- phishscore=0 priorityscore=1501 mlxscore=0 malwarescore=0 suspectscore=0
- mlxlogscore=999 adultscore=0 spamscore=0 lowpriorityscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010230103
+In-Reply-To: <20201023003842.GC31092@shao2-debian>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 09:35:23AM -0400, Steven Rostedt wrote:
-> On Fri, 23 Oct 2020 10:52:03 +0200
-> Alexander Gordeev <agordeev@linux.ibm.com> wrote:
-> 
-> > diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
-> > index acb17ce..0ddb948 100644
-> > --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
-> > +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
-> > @@ -39,7 +39,7 @@ do_test() {
-> >      disable_tracing
-> >  
-> >      echo do_execve* > set_ftrace_filter
-> > -    echo *do_fork >> set_ftrace_filter
-> > +    echo kernel_clone >> set_ftrace_filter
-> >  
-> >      echo $PID > set_ftrace_notrace_pid
-> >      echo function > current_tracer
-> > diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
-> > index 9f0a968..71319b3 100644
-> > --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
-> > +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
-> > @@ -39,7 +39,7 @@ do_test() {
-> >      disable_tracing
-> >  
-> >      echo do_execve* > set_ftrace_filter
-> > -    echo *do_fork >> set_ftrace_filter
-> > +    echo kernel_clone >> set_ftrace_filter
-> >  
-> >      echo $PID > set_ftrace_pid
-> >      echo function > current_tracer
-> 
-> The issue I have with this, is that I run these tests on older kernels too,
-> and tests that use to work on older kernels should still work. In fact,
-> this fails on the kernel I'm currently adding new changes to!
-> 
-> Perhaps we should have:
-> 
-> 	# older kernels have do_fork, but newer kernels have kernel_clone
-> 	echo kernel_clone >> set_ftrace_filter || echo *do_fork >> set_ftrace_filter
+Hello,
 
-Would you suggest to do the same with all occurences in
-eea11285dab3 ("tracing: switch to kernel_clone()")?
-Otherwise it does not really make sense to just fix couple
-of tests out of dozens.
-
-> The above still seems to work for me.
+On Fri 23-10-20 08:38:42, kernel test robot wrote:
+> Greeting,
 > 
-> -- Steve
+> FYI, we noticed the following commit (built with gcc-9):
+> 
+> commit: 9b93f33105f5f9bd3d016ff870eb6000c9d89eff ("fsnotify: send event with parent/name info to sb/mount/non-dir marks")
+> https://git.kernel.org/cgit/linux/kernel/git/torvalds/linux.git master
+> 
+> 
+> in testcase: will-it-scale
+> version: will-it-scale-x86_64-b695a1b-1_20201007
+> with following parameters:
+> 
+> 	nr_task: 192
+> 	mode: process
+> 	test: read2
+> 	cpufreq_governor: performance
+> 	ucode: 0x11
+> 
+...
+> [  117.801209] perf version 5.9.rc8.gc85fb28b6f99
+> [  117.801219] 
+> [  182.458747] perf: interrupt took too long (2668 > 2500),perf: interrupt took too long (4516 > 4352), lowering kernel.perf_event_max_sample_rate to 44000
+>  lowering kernel.perf_event_max_sample_rperf: interrupt took too long (5950 > 5645), lowering kernel.perf_event_max_sample_rate to 33000
+> ate to 74000
+> perf: interrupt took too long (7658 > 7437), lowering kernel.perf_event_max_sample_rate to 26000
+> [  182.502968] perf: interrupt took too long (7658 > 7437), lowering kernel.perf_event_max_sample_rate to 26000
+> [  182.525840] perf: interrupt took too long (9889 > 9572), lowering kernel.perf_event_max_sample_rate to 20000
+> f_event_max_sample_rate to 12000
+> [  182.560905] perf: interrupt took too long (21827 > 20585), lowering kernel.perf_event_max_sample_rate to 9000
+> [  182.609949] perf: interrupt took too long (30149 > 27283), lowering kernel.perf_event_max_sample_rate to 6000
+> [  182.622872] perf: interrupt took too long (38986 > 37686), lowering kernel.perf_event_max_sample_rate to 5000
+> [  182.672850] perf: interrupt took too long (50874 > 48732), lowering kernel.perf_event_max_sample_rate to 3000
+> [  182.732849] perf: interrupt took too long (63885 > 63592), lowering kernel.perf_event_max_sample_rate to 3000
+> [  182.751847] perf: interrupt took too long (80901 > 79856), lowering kernel.perf_event_max_sample_rate to 2000
+> [  188.527603] WARNING: missing R10 value at __fsnotify_parent+0x25/0x280
+
+OK, that's an unwinder warning but we don't do anything special in
+__fsnotify_parent(). Let's CC x86 guys if they have idea what's going on.
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
