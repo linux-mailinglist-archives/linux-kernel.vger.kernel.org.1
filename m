@@ -2,75 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA44F296BF9
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:21:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 82BF7296BFC
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:22:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461350AbgJWJVW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:21:22 -0400
-Received: from smtp21.cstnet.cn ([159.226.251.21]:49876 "EHLO cstnet.cn"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S461338AbgJWJVW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:21:22 -0400
-Received: from localhost.localdomain (unknown [124.16.141.242])
-        by APP-01 (Coremail) with SMTP id qwCowACHjuaGoJJfbPJ1Aw--.34707S2;
-        Fri, 23 Oct 2020 17:21:10 +0800 (CST)
-From:   Xu Wang <vulab@iscas.ac.cn>
-To:     bryan.whitehead@microchip.com, UNGLinuxDriver@microchip.com,
-        davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org
-Cc:     linux-kernel@vger.kernel.org
-Subject: [PATCH] net: microchip: Remove unneeded variable ret
-Date:   Fri, 23 Oct 2020 09:21:07 +0000
-Message-Id: <20201023092107.28065-1-vulab@iscas.ac.cn>
-X-Mailer: git-send-email 2.17.1
-X-CM-TRANSID: qwCowACHjuaGoJJfbPJ1Aw--.34707S2
-X-Coremail-Antispam: 1UD129KBjvdXoW7GFy7ZryrCFW7Xr48AF1xuFg_yoWDWFg_Cr
-        1Fqw1xtr1DJw4q9r4qkw4DJ34v9FWDXw1kAa1kKrWfAwn8Ja109r97ZFnxAF18XrW5KF4D
-        urnaqF1UA3WxtjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUIcSsGvfJTRUUUb2xYjsxI4VWkCwAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I
-        6I8E6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM2
-        8CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0
-        cI8IcVCY1x0267AKxVW8JVWxJwA2z4x0Y4vEx4A2jsIE14v26F4UJVW0owA2z4x0Y4vEx4
-        A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IE
-        w4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r4j6F4UMc
-        vjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY02Avz4vE14v_GFWl42xK82IY
-        c2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s
-        026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF
-        0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0x
-        vE42xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
-        87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxT5dDUUUU
-X-Originating-IP: [124.16.141.242]
-X-CM-SenderInfo: pyxotu46lvutnvoduhdfq/1tbiCQUSA102ZqG+cAAAs-
+        id S461358AbgJWJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:22:22 -0400
+Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:5252 "EHLO
+        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S461313AbgJWJWV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 05:22:21 -0400
+X-IronPort-AV: E=Sophos;i="5.77,407,1596492000"; 
+   d="scan'208";a="474003322"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 11:21:51 +0200
+Date:   Fri, 23 Oct 2020 11:21:50 +0200 (CEST)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Mel Gorman <mgorman@suse.de>
+cc:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] sched/fair: check for idle core
+In-Reply-To: <20201023084016.GP32041@suse.de>
+Message-ID: <alpine.DEB.2.22.394.2010231121200.2707@hadrien>
+References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr> <20201023084016.GP32041@suse.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Remove unneeded variable ret used to store return value.
 
-Signed-off-by: Xu Wang <vulab@iscas.ac.cn>
----
- drivers/net/ethernet/microchip/lan743x_main.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index a1938842f828..8ea0b4eec19c 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -834,14 +834,13 @@ static int lan743x_mac_init(struct lan743x_adapter *adapter)
- 
- static int lan743x_mac_open(struct lan743x_adapter *adapter)
- {
--	int ret = 0;
- 	u32 temp;
- 
- 	temp = lan743x_csr_read(adapter, MAC_RX);
- 	lan743x_csr_write(adapter, MAC_RX, temp | MAC_RX_RXEN_);
- 	temp = lan743x_csr_read(adapter, MAC_TX);
- 	lan743x_csr_write(adapter, MAC_TX, temp | MAC_TX_TXEN_);
--	return ret;
-+	return 0;
- }
- 
- static void lan743x_mac_close(struct lan743x_adapter *adapter)
--- 
-2.17.1
+On Fri, 23 Oct 2020, Mel Gorman wrote:
 
+> On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
+> > In the case of a thread wakeup, wake_affine determines whether a core
+> > will be chosen for the thread on the socket where the thread ran
+> > previously or on the socket of the waker.  This is done primarily by
+> > comparing the load of the core where th thread ran previously (prev)
+> > and the load of the waker (this).
+> >
+> > commit 11f10e5420f6 ("sched/fair: Use load instead of runnable load
+> > in wakeup path") changed the load computation from the runnable load
+> > to the load average, where the latter includes the load of threads
+> > that have already blocked on the core.
+> >
+> > When a short-running daemon processes happens to run on prev, this
+> > change raised the situation that prev could appear to have a greater
+> > load than this, even when prev is actually idle.  When prev and this
+> > are on the same socket, the idle prev is detected later, in
+> > select_idle_sibling.  But if that does not hold, prev is completely
+> > ignored, causing the waking thread to move to the socket of the waker.
+> > In the case of N mostly active threads on N cores, this triggers other
+> > migrations and hurts performance.
+> >
+> > In contrast, before commit 11f10e5420f6, the load on an idle core
+> > was 0, and in the case of a non-idle waker core, the effect of
+> > wake_affine was to select prev as the target for searching for a core
+> > for the waking thread.
+> >
+> > To avoid unnecessary migrations, extend wake_affine_idle to check
+> > whether the core where the thread previously ran is currently idle,
+> > and if so simply return that core as the target.
+> > target
+> > [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
+> > load in wakeup path")
+> >
+> > This particularly has an impact when using the ondemand power manager,
+> > where kworkers run every 0.004 seconds on all cores, increasing the
+> > likelihood that an idle core will be considered to have a load.
+> >
+> > The following numbers were obtained with the benchmarking tool
+> > hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
+> > benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
+> > tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
+> > 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
+> > management were used.  Times are in seconds.  All experiments use all
+> > 160 hardware threads.
+> >
+> > 	v5.9/intel-pstate	v5.9+patch/intel-pstate
+> > bt.C.c	24.725724+-0.962340	23.349608+-1.607214
+> > lu.C.x	29.105952+-4.804203	25.249052+-5.561617
+> > sp.C.x	31.220696+-1.831335	30.227760+-2.429792
+> > ua.C.x	26.606118+-1.767384	25.778367+-1.263850
+> >
+> > 	v5.9/ondemand		v5.9+patch/ondemand
+> > bt.C.c	25.330360+-1.028316	23.544036+-1.020189
+> > lu.C.x	35.872659+-4.872090	23.719295+-3.883848
+> > sp.C.x	32.141310+-2.289541	29.125363+-0.872300
+> > ua.C.x	29.024597+-1.667049	25.728888+-1.539772
+> >
+> > On the smaller data sets (A and B) and on the other NAS benchmarks
+> > there is no impact on performance.
+> >
+> > This also has a major impact on the splash2x.volrend benchmark of the
+> > parsec benchmark suite that goes from 1m25 without this patch to 0m45,
+> > in active (intel_pstate) mode.
+> >
+> > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
+> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
+> > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
+> >
+>
+> In principal, I think the patch is ok after the recent discussion. I'm
+> holding off an ack until a battery of tests on loads with different
+> levels of utilisation and wakeup patterns makes its way through a test
+> grid. It's based on Linus's tree mid-merge window that includes what is
+> in the scheduler pipeline
+
+OK, if it doesn't work out, it would be interesting to know what goes
+badly.
+
+thanks,
+julia
