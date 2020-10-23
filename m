@@ -2,86 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31C9629796F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 00:52:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EDA8B297972
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 00:54:58 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758381AbgJWWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 18:52:20 -0400
-Received: from terminus.zytor.com ([198.137.202.136]:37513 "EHLO
-        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758348AbgJWWwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 18:52:19 -0400
-Received: from wld157.hos.anvin.org (c-24-6-168-49.hsd1.ca.comcast.net [24.6.168.49])
-        (authenticated bits=0)
-        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 09NMq3vn4013373
-        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-        Fri, 23 Oct 2020 15:52:03 -0700
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 09NMq3vn4013373
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
-        s=2020092401; t=1603493524;
-        bh=EGRt4ztnZwAX3jt6Vs1L6I71nyIhTSB2Csb5qpzwG7c=;
-        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
-        b=apotMjaOLOewyHJ6I7jiM3el3vCLm1tB5bAtUZYVoAme0w+704l59xN02nygQoy+8
-         mBtM/Sf8n44b9zTNAk1q3NA/8YanTUE7WrAiadFuJmkVLOzztoNfVbEsSUODb7Kj1v
-         X/Znsp+ujjXpiFVDdjm6xfFwTNeT9shBYTVzp8AyCzgEbRFj1FmA0u+PE/07RGJ7oc
-         tCTJ48DZgy7oOGCAOhBakYMN5mknxZq0MSr6poDFzqtOLZr5AgeCbMIiTnh287+jQn
-         gEq6NgHBsAtuOVJFvOitwopMcBlvkfOV2R5+KOkQYtFcPCVLbYYZYcD/APrEXxhvlF
-         EprCPOEXzOS6Q==
-Date:   Fri, 23 Oct 2020 15:52:00 -0700
-User-Agent: K-9 Mail for Android
-In-Reply-To: <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
-References: <20201023203154.27335-1-linux@rasmusvillemoes.dk> <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com> <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com> <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
+        id S1758406AbgJWWy5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 18:54:57 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:35832 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1758396AbgJWWy4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 18:54:56 -0400
+Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 1DA2020B4905;
+        Fri, 23 Oct 2020 15:54:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1DA2020B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1603493695;
+        bh=YGbAk5ZPXKS3MwP2MCJgwylXpPWtw4VBI3P7eYMsasE=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=s6tiEEKrsgrcNdDHkHFy1PWBspDVW/Y/1tk/hV4xn8q1r2paxanTHW5GdrRUAhYri
+         YE8qrkSUe2ntdDnjt/3egpgUPwmyVtdcNSLTmaUskpAyc41w7fnauhNrq1INwTZ/ey
+         Rl+Dh3T26UOBLDK3UQYnKavKO+J8KBFeOShs02I0=
+Subject: Re: [PATCH v4 5/6] IMA: add hook to measure critical data from kernel
+ components
+To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
+        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
+        gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
+ <20200923192011.5293-6-tusharsu@linux.microsoft.com>
+ <dc22359475f0c233abdb9257d1ca745d4be3f9af.camel@linux.ibm.com>
+From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
+Message-ID: <016d20e1-bb8f-f1f5-c69b-6fd811126e0c@linux.microsoft.com>
+Date:   Fri, 23 Oct 2020 15:54:54 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] x86/uaccess: fix code generation in put_user()
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-CC:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
-        the arch/x86 maintainers <x86@kernel.org>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-From:   hpa@zytor.com
-Message-ID: <06B6997A-81AC-409D-A654-309FA8697F0C@zytor.com>
+In-Reply-To: <dc22359475f0c233abdb9257d1ca745d4be3f9af.camel@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On October 23, 2020 2:11:19 PM PDT, Linus Torvalds <torvalds@linux-foundati=
-on=2Eorg> wrote:
->On Fri, Oct 23, 2020 at 2:00 PM <hpa@zytor=2Ecom> wrote:
->>
->> There is no same reason to mess around with hacks when we are talking
->about dx:ax, though=2E
->
->Sure there is=2E
->
->"A" doesn't actually mean %edx:%eax like you seem to think=2E
->
->It actually means %eax OR %edx, and then if given a 64-bit value, it
->will use the combination (with %edx being the high bits)=2E
->
->So using "A" unconditionally doesn't work - it gives random behavior
->for 32-bit (or smaller) types=2E
->
->Or you'd have to cast the value to always be 64-bit, and have the
->extra code generation=2E
->
->IOW, an unconditional "A" is wrong=2E
->
->And the alternative is to just duplicate things, and go back to the
->explicit size testing, but honestly, I really think that's much worse
->than relying on a documented feature of "register asm()" that gcc
->_documents_ is for this kind of inline asm use=2E
->
->So the "don't do pointless conditional duplication" is certainly a
->very sane reason for the code=2E
->
->            Linus
 
-Unconditional "A" is definitely wrong, no argument there=2E
---=20
-Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
+
+On 2020-10-22 3:35 p.m., Mimi Zohar wrote:
+> Hi Tushar,
+> 
+> On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
+>> Currently, IMA does not provide a generic function for kernel components
+>> to measure their data. A generic function provided by IMA would
+>> enable various parts of the kernel with easier and faster on-boarding to
+>> use IMA infrastructure, would avoid code duplication, and consistent
+>> usage of IMA policy option "data_sources:=" across the kernel.
+>>
+>> Add a new IMA func CRITICAL_DATA and a corresponding IMA hook
+>> ima_measure_critical_data() to support measuring various critical kernel
+>> components. Limit the measurement to the components that are specified
+>> in the IMA policy - CRITICAL_DATA+data_sources.
+>>
+>> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
+> 
+> Normally the new LSM or IMA hook is defined before defining a method of
+> constraining that hook.  Please drop 2/6 (IMA: conditionally allow
+> empty rule data) and reverse the order of 4/6 and 5/6.   That will
+> allow each patch to update the Documentation appropriately, making the
+> change self contained.
+> 
+Sure. I will drop 2/6, and reverse the order of 4/6 and 5/6.
+>> ---
+>>   Documentation/ABI/testing/ima_policy |  8 ++++++-
+>>   include/linux/ima.h                  |  8 +++++++
+>>   security/integrity/ima/ima.h         |  1 +
+>>   security/integrity/ima/ima_api.c     |  2 +-
+>>   security/integrity/ima/ima_main.c    | 26 +++++++++++++++++++++
+>>   security/integrity/ima/ima_policy.c  | 34 ++++++++++++++++++++++++----
+>>   6 files changed, 72 insertions(+), 7 deletions(-)
+>>
+>> diff --git a/Documentation/ABI/testing/ima_policy b/Documentation/ABI/testing/ima_policy
+>> index a81cf79fb255..d33bb51309fc 100644
+>> --- a/Documentation/ABI/testing/ima_policy
+>> +++ b/Documentation/ABI/testing/ima_policy
+>> @@ -29,7 +29,7 @@ Description:
+>>   		base: 	func:= [BPRM_CHECK][MMAP_CHECK][CREDS_CHECK][FILE_CHECK][MODULE_CHECK]
+>>   				[FIRMWARE_CHECK]
+>>   				[KEXEC_KERNEL_CHECK] [KEXEC_INITRAMFS_CHECK]
+>> -				[KEXEC_CMDLINE] [KEY_CHECK]
+>> +				[KEXEC_CMDLINE] [KEY_CHECK] [CRITICAL_DATA]
+>>   			mask:= [[^]MAY_READ] [[^]MAY_WRITE] [[^]MAY_APPEND]
+>>   			       [[^]MAY_EXEC]
+>>   			fsmagic:= hex value
+>> @@ -51,6 +51,8 @@ Description:
+>>   			data_sources:= list of kernel components
+>>   			(eg, selinux|apparmor|dm-crypt) that contain data critical
+>>   			to the security of the kernel.
+>> +			Only valid when action is "measure" and func is
+>> +			CRITICAL_DATA.
+>>   
+>>   		default policy:
+>>   			# PROC_SUPER_MAGIC
+>> @@ -128,3 +130,7 @@ Description:
+>>   		keys added to .builtin_trusted_keys or .ima keyring:
+>>   
+>>   			measure func=KEY_CHECK keyrings=.builtin_trusted_keys|.ima
+>> +
+>> +		Example of measure rule using CRITICAL_DATA to measure critical data
+>> +
+>> +			measure func=CRITICAL_DATA data_sources=selinux|apparmor|dm-crypt
+> 
+> 
+> As data sources are added, the documentation example should be updated
+> to reflect the new source.  Please do not include examples that don't
+> yet exist.
+> 
+Makes sense. Will do.
+> 
+>> diff --git a/security/integrity/ima/ima_main.c b/security/integrity/ima/ima_main.c
+>> index 6888fc372abf..d55896f28790 100644
+>> --- a/security/integrity/ima/ima_main.c
+>> +++ b/security/integrity/ima/ima_main.c
+>> @@ -867,6 +867,32 @@ void ima_kexec_cmdline(int kernel_fd, const void *buf, int size)
+>>   	fdput(f);
+>>   }
+>>   
+>> +/**
+>> + * ima_measure_critical_data - measure critical data
+>> + * @event_name: name for the given data
+>> + * @event_data_source: name of the event data source
+>> + * @buf: pointer to buffer containing data to measure
+>> + * @buf_len: length of buffer(in bytes)
+>> + * @measure_buf_hash: if set to true - will measure hash of the buf,
+>> + *                    instead of buf
+>> + *
+>> + * Buffers can only be measured, not appraised.
+>> + */
+> 
+> Perhaps the reason for defining both the event_name and
+> event_data_source will become clearer with an example.  At this point I
+> can only guess as to why both are needed (e.g. perhaps a data source
+> defines multiple events).
+> 
+Yes. Precisely. For example, in “dm-crypt” case: the data source is
+“dm-crypt” and possible events are “add_target”, “post_suspend”,
+"resume" etc. I will add a more detailed hook description as you
+suggested below, and explain this point in it.
+> While "Buffers can only be measured, not appraised" is true, it was cut
+> & pasted from ima_kexec_cmdline.  Measuring the kexec boot cmdline is
+> self describing.  Here, a larger, more detailed IMA hook description
+> would be appropriate.
+Will add. Thanks Mimi.
+> 
+> thanks,
+> 
+> Mimi
+> 
