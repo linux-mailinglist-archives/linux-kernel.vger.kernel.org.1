@@ -2,161 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58AD72970A7
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:34:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7449A2970B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:35:30 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465041AbgJWNew (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:34:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49310 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S464934AbgJWNeq (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:34:46 -0400
-Received: from mail-ej1-x644.google.com (mail-ej1-x644.google.com [IPv6:2a00:1450:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C3EDBC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:34:45 -0700 (PDT)
-Received: by mail-ej1-x644.google.com with SMTP id gs25so2442181ejb.1
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:34:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ybxYfhP0qOoEv/Z3igcvaiaTXfddpdf7DoEgMqfdT7A=;
-        b=bNaAR+OjYmeeEzFzzZBJyzDKMbF4do7AhpOBiv9gsSMgNMqyq5/l4Ywkmo2cc+ESzz
-         lH05Ok9PCaR+wHbV3UtzXlRRA8JfrhwHMLbb0Zj4NWXmQ4eNylNbUcFPFq5iZJZ3HE4A
-         4A9t44PEBK+fF9Uz9ustwTwn9OxP5fS7OhuPeCnuRonbtMuE6/l3mFYgIYjLd95R3VaS
-         dpWDsX5QYk6s/5ms0m/fST6rb3d8AWD5vnd1IhI1k1i/p+mau+CZ/smjsHXHtkBLdSSy
-         daqTJeHfA9fXyZGQ5P3D3zhZtf8qMmTy+xx4KaAg3dJBOtHchBp51fOrGZD//kZ/nWsq
-         0QAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ybxYfhP0qOoEv/Z3igcvaiaTXfddpdf7DoEgMqfdT7A=;
-        b=bqdsJE1rI0afkGq7KapUbCU0tBvLsi7dVaiEUGuTeSzAuAc2AMbEpD6JGPhT4SfGrx
-         iYSQHmEl09TaCHlJPNcku/1V7NgXi3eYFWiOHf1Cy2Uw2LXgiFVk2vvKRVhD/m2Pz50d
-         yQV4PRuBHIfgd0csUEFum/NFlLGWzGGpc3uNRWIpYN9QCXQOx0QK0JhaztIz4uAsT+dO
-         I0mAN/rNDQUy19nuIsQwuDgzMfZdiaSKlF5Q1YhUbcfLGIJJYMyXcviGNkCY2uvJdPn+
-         VpbINOXCGroOUaHSneivzCxI1h6rrO8orzN+4GWo2QjAlc4BVi8XBLUChPokl2iCcXKd
-         3S2Q==
-X-Gm-Message-State: AOAM531Ke3P6LpvJdGReiNoWH0gjuczdxKo2unN45INaPfv9wAR7NJ1f
-        pE5YOTwDizI09lLtFcrS0mZZVA==
-X-Google-Smtp-Source: ABdhPJyJrpSO/TA1CFzr7cbXy98qv9z9QsL9dllO7dHUBx35a7onv2rOqG2fNwzz8c08kIOaSfCzMQ==
-X-Received: by 2002:a17:906:1418:: with SMTP id p24mr1964123ejc.46.1603460084421;
-        Fri, 23 Oct 2020 06:34:44 -0700 (PDT)
-Received: from myrica ([2001:1715:4e26:a7e0:116c:c27a:3e7f:5eaf])
-        by smtp.gmail.com with ESMTPSA id q3sm788808edv.17.2020.10.23.06.34.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 06:34:43 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 15:34:23 +0200
-From:   Jean-Philippe Brucker <jean-philippe@linaro.org>
-To:     "Raj, Ashok" <ashok.raj@intel.com>
-Cc:     dwmw2@infradead.org, baolu.lu@linux.intel.com, joro@8bytes.org,
-        zhangfei.gao@linaro.org, wangzhou1@hisilicon.com, arnd@arndb.de,
-        gregkh@linuxfoundation.org, iommu@lists.linux-foundation.org,
-        linux-kernel@vger.kernel.org, linux-accelerators@lists.ozlabs.org,
-        kevin.tian@intel.com, jacob.jun.pan@linux.intel.com,
-        linux-pci@vger.kernel.org, "Lu, Baolu" <baolu.lu@intel.com>,
-        Jacon Jun Pan <jacob.jun.pan@intel.com>
-Subject: Re: [RFC PATCH 0/2] iommu: Avoid unnecessary PRI queue flushes
-Message-ID: <20201023133423.GF2265982@myrica>
-References: <20201015090028.1278108-1-jean-philippe@linaro.org>
- <20201015182211.GA54780@otc-nc-03>
- <20201016075923.GB1309464@myrica>
- <20201017112525.GA47206@otc-nc-03>
- <20201019140824.GA1478235@myrica>
- <20201019211608.GA79633@otc-nc-03>
+        id S465046AbgJWNf0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:35:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1725901AbgJWNf0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:35:26 -0400
+Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 61CEE208E4;
+        Fri, 23 Oct 2020 13:35:25 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 09:35:23 -0400
+From:   Steven Rostedt <rostedt@goodmis.org>
+To:     Alexander Gordeev <agordeev@linux.ibm.com>
+Cc:     linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] selftests/ftrace: remove _do_fork() leftovers
+Message-ID: <20201023093523.65c495f8@gandalf.local.home>
+In-Reply-To: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
+References: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
+X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019211608.GA79633@otc-nc-03>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 02:16:08PM -0700, Raj, Ashok wrote:
-> Hi Jean
-> 
-> On Mon, Oct 19, 2020 at 04:08:24PM +0200, Jean-Philippe Brucker wrote:
-> > On Sat, Oct 17, 2020 at 04:25:25AM -0700, Raj, Ashok wrote:
-> > > > For devices that *don't* use a stop marker, the PCIe spec says (10.4.1.2):
-> > > > 
-> > > >   To stop [using a PASID] without using a Stop Marker Message, the
-> > > >   function shall:
-> > > >   1. Stop queueing new Page Request Messages for this PASID.
-> > > 
-> > > The device driver would need to tell stop sending any new PR's.
-> > > 
-> > > >   2. Finish transmitting any multi-page Page Request Messages for this
-> > > >      PASID (i.e. send the Page Request Message with the L bit Set).
-> > > >   3. Wait for PRG Response Messages associated any outstanding Page
-> > > >      Request Messages for the PASID.
-> > > > 
-> > > > So they have to flush their PR themselves. And since the device driver
-> > > > completes this sequence before calling unbind(), then there shouldn't be
-> > > > any oustanding PR for the PASID, and unbind() doesn't need to flush,
-> > > > right?
-> > > 
-> > > I can see how the device can complete #2,3 above. But the device driver
-> > > isn't the one managing page-responses right. So in order for the device to
-> > > know the above sequence is complete, it would need to get some assist from
-> > > IOMMU driver?
-> > 
-> > No the device driver just waits for the device to indicate that it has
-> > completed the sequence. That's what the magic stop-PASID mechanism
-> > described by PCIe does. In 6.20.1 "Managing PASID TLP Prefix Usage" it
-> > says:
-> 
-> The goal is we do this when the device is in a messup up state. So we can't
-> take for granted the device is properly operating which is why we are going
-> to wack the device with a flr().
-> 
-> The only thing that's supposed to work without a brain freeze is the
-> invalidation logic. Spec requires devices to respond to invalidations even when
-> they are in the process of flr().
-> 
-> So when IOMMU does an invalidation wait with a Page-Drain, IOMMU waits till
-> the response for that arrives before completing the descriptor. Due to 
-> the posted semantics it will ensure any PR's issued and in the fabric are flushed 
-> out to memory. 
-> 
-> I suppose you can wait for the device to vouch for all responses, but that
-> is assuming the device is still functioning properly. Given that we use it
-> in two places,
-> 
-> * Reclaiming a PASID - only during a tear down sequence, skipping it
->   doesn't really buy us much.
+On Fri, 23 Oct 2020 10:52:03 +0200
+Alexander Gordeev <agordeev@linux.ibm.com> wrote:
 
-Yes I was only wondering about normal PASID reclaim operations, in
-unbind(). Agreed that for FLR we need to properly clean the queue, though
-I do need to do more thinking about this.
+> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> index acb17ce..0ddb948 100644
+> --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> @@ -39,7 +39,7 @@ do_test() {
+>      disable_tracing
+>  
+>      echo do_execve* > set_ftrace_filter
+> -    echo *do_fork >> set_ftrace_filter
+> +    echo kernel_clone >> set_ftrace_filter
+>  
+>      echo $PID > set_ftrace_notrace_pid
+>      echo function > current_tracer
+> diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> index 9f0a968..71319b3 100644
+> --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> @@ -39,7 +39,7 @@ do_test() {
+>      disable_tracing
+>  
+>      echo do_execve* > set_ftrace_filter
+> -    echo *do_fork >> set_ftrace_filter
+> +    echo kernel_clone >> set_ftrace_filter
+>  
+>      echo $PID > set_ftrace_pid
+>      echo function > current_tracer
 
-Anyway, having a full priq drain in unbind() isn't harmful, just
-unnecessary delay in my opinion. I'll drop these patches for now but
-thanks for the discussion.
+The issue I have with this, is that I run these tests on older kernels too,
+and tests that use to work on older kernels should still work. In fact,
+this fails on the kernel I'm currently adding new changes to!
 
-Thanks,
-Jean
+Perhaps we should have:
 
-> * During FLR this can't be skipped anyway due to the above sequence
->   requirement. 
-> 
-> > 
-> > "A Function must have a mechanism to request that it gracefully stop using
-> >  a specific PASID. This mechanism is device specific but must satisfy the
-> >  following rules:
-> >  [...]
-> >  * When the stop request mechanism indicates completion, the Function has:
-> >    [...]
-> >    * Complied with additional rules described in Address Translation
-> >      Services (Chapter 10 [10.4.1.2 quoted above]) if Address Translations
-> >      or Page Requests were issued on the behalf of this PASID."
-> > 
-> > So after the device driver initiates this mechanism in the device, the
-> > device must be able to indicate completion of the mechanism, which
-> > includes completing all in-flight Page Requests. At that point the device
-> > driver can call unbind() knowing there is no pending PR for this PASID.
-> > 
-> 
-> Cheers,
-> Ashok
+	# older kernels have do_fork, but newer kernels have kernel_clone
+	echo kernel_clone >> set_ftrace_filter || echo *do_fork >> set_ftrace_filter
+
+The above still seems to work for me.
+
+-- Steve
