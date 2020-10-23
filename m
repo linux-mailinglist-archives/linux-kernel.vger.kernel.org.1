@@ -2,95 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6568297811
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:08:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 916AC29781A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 22:11:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755843AbgJWUIT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 16:08:19 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43848 "EHLO mail.kernel.org"
+        id S1755871AbgJWUK6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 16:10:58 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42272 "EHLO vps0.lunn.ch"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S373801AbgJWUIT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 16:08:19 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4EBB52074B;
-        Fri, 23 Oct 2020 20:08:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603483698;
-        bh=PBxDsNa9eupj497fDh0fJdE39YKr8dT/TwIlRRt4n6E=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=PqADASWMcA8kWsb62wYmFIYJCEWyAAoVlkXNLtKXxvzB1CdxBadLa6r03CGShshpw
-         3PRVW+/C5TSzvIbPBNVaCARohCkGY702I7zLN/OPFlkKXv6p6rC+31NRCKf+tIA3RT
-         aH9BgDioWNpROO1UqK34wDAeTsB7ouQKkcl0SFJ0=
-Date:   Fri, 23 Oct 2020 13:08:16 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Moritz Fischer <mdf@kernel.org>
-Cc:     netdev@vger.kernel.org, davem@davemloft.net,
-        linux-parisc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        lucyyan@google.com, moritzf@google.com,
-        James.Bottomley@hansenpartnership.com
-Subject: Re: [PATCH/RFC net v2] net: dec: tulip: de2104x: Add shutdown
- handler to stop NIC
-Message-ID: <20201023130816.7abd450d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201023024520.626132-1-mdf@kernel.org>
-References: <20201023024520.626132-1-mdf@kernel.org>
+        id S1755859AbgJWUK5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 16:10:57 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kW3Og-003AhL-PB; Fri, 23 Oct 2020 22:10:46 +0200
+Date:   Fri, 23 Oct 2020 22:10:46 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     Grygorii Strashko <grygorii.strashko@ti.com>,
+        "David S. Miller" <davem@davemloft.net>, netdev@vger.kernel.org,
+        Jakub Kicinski <kuba@kernel.org>,
+        Heiner Kallweit <hkallweit1@gmail.com>,
+        Sekhar Nori <nsekhar@ti.com>, linux-kernel@vger.kernel.org,
+        Vignesh Raghavendra <vigneshr@ti.com>,
+        Roger Quadros <rogerq@ti.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Sergei Shtylyov <sergei.shtylyov@cogentembedded.com>
+Subject: Re: [PATCH] RFC: net: phy: of phys probe/reset issue
+Message-ID: <20201023201046.GB752111@lunn.ch>
+References: <20201023174750.21356-1-grygorii.strashko@ti.com>
+ <450d262e-242c-77f1-9f06-e25943cc595c@gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <450d262e-242c-77f1-9f06-e25943cc595c@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, 22 Oct 2020 19:45:20 -0700 Moritz Fischer wrote:
-> The driver does not implement a shutdown handler which leads to issues
-> when using kexec in certain scenarios. The NIC keeps on fetching
-> descriptors which gets flagged by the IOMMU with errors like this:
-> 
-> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-> DMAR: DMAR:[DMA read] Request device [5e:00.0]fault addr fffff000
-> 
-> Signed-off-by: Moritz Fischer <mdf@kernel.org>
+> Yes there is: have your Ethernet PHY compatible string be of the form
+> "ethernetAAAA.BBBB" and then there is no need for such hacking.
+> of_get_phy_id() will parse that compatible and that will trigger
+> of_mdiobus_register_phy() to take the phy_device_create() path.
 
-Change looks good.
+Yep. That does seem like the cleanest way to do this. Let the PHY
+driver deal with the resources it needs.
 
-Philosophically speaking I wonder if this is a fix or a feature.
-If missing .shutdown callback was a bug we shouldn't accept drivers
-which don't specify it :S
-
-If you don't have a strong preference I'd rather apply this to net-next.
-
-In any case - you need to respin, 'cause this does not apply to net
-either :)
-
-> diff --git a/drivers/net/ethernet/dec/tulip/de2104x.c b/drivers/net/ethernet/dec/tulip/de2104x.c
-> index f1a2da15dd0a..6de0cd6cf4ca 100644
-> --- a/drivers/net/ethernet/dec/tulip/de2104x.c
-> +++ b/drivers/net/ethernet/dec/tulip/de2104x.c
-> @@ -2180,11 +2180,19 @@ static int de_resume (struct pci_dev *pdev)
->  
->  #endif /* CONFIG_PM */
->  
-> +static void de_shutdown(struct pci_dev *pdev)
-> +{
-> +	struct net_device *dev = pci_get_drvdata (pdev);
-
-No space needed before parens
-
-> +
-> +	de_close(dev);
-> +}
-> +
->  static struct pci_driver de_driver = {
->  	.name		= DRV_NAME,
->  	.id_table	= de_pci_tbl,
->  	.probe		= de_init_one,
->  	.remove		= de_remove_one,
-> +	.shutdown	= de_shutdown,
->  #ifdef CONFIG_PM
->  	.suspend	= de_suspend,
->  	.resume		= de_resume,
-
+       Andrew
