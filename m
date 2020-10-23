@@ -2,233 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52D092976C0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:18:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0868A2976AF
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:14:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750074AbgJWSSi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:18:38 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37228 "EHLO
+        id S464180AbgJWSNh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:13:37 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36444 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S465122AbgJWSSh (ORCPT
+        with ESMTP id S371522AbgJWSNg (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:18:37 -0400
-Received: from mail-pg1-x541.google.com (mail-pg1-x541.google.com [IPv6:2607:f8b0:4864:20::541])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 81622C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:18:36 -0700 (PDT)
-Received: by mail-pg1-x541.google.com with SMTP id f38so1893935pgm.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:18:36 -0700 (PDT)
+        Fri, 23 Oct 2020 14:13:36 -0400
+Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0F173C0613CE;
+        Fri, 23 Oct 2020 11:13:36 -0700 (PDT)
+Received: by mail-ej1-x641.google.com with SMTP id ce10so3606576ejc.5;
+        Fri, 23 Oct 2020 11:13:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=amarulasolutions.com; s=google;
+        d=gmail.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=TodvX9MTBX7vTykdv70rmek7Lo3V0evCYJjQaUL+VJE=;
-        b=pk9cTuw5sWjL9dMKYE/Zfxs3S2rkulRAJrsheIWcrgFP8sZyVF8n+sITafKUJONJr9
-         lgdBm3Pr4BRoNjcEasVyfAstxqMSmZBHuE8IJ85+q+He1IihI7qo8yPp9K6n5Ehwc4C6
-         DldFcIvPFLQ3qIVmAatrU9ap8S6guuEdQZKnU=
+        bh=J4Eh2qaJksTCTY1k45teLXaWXNH/ycvD9ltpm944k0Q=;
+        b=lFi+TwD2vaAsrYHdJUzkp6N61fIOnh9+vKHJEudtGhn9CdTxA44JxC28ilTy4/53iD
+         ZVNwMOqKf0jPH8k5codeD54T6uVec8mcd9Bk4K5U4bma2IoUpueoyD9uSEy78ml8VzRO
+         LNcsCN+TUIF596XouiRcRboHJoyDTnt8yBoYr3qu92wlW8KRgB+TzWYlVReuER3Y9eT2
+         jBaT+9DrkKSorVSnG5g4Zfn+XCrfUPJ/o91TjhXX9BrbjUxSp4dT1zTe6EkvYKk2TaPf
+         aS6qcZz5zum5mdHIKGuv52mVvYKDP6G+CICO+eYC4YmEc1rzn+QCRmmtN+LFmBJpr+C0
+         zX+Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=TodvX9MTBX7vTykdv70rmek7Lo3V0evCYJjQaUL+VJE=;
-        b=bBdkjT2TIYlGZy+DVXt5i0df5JJDuoauTyOnssHudGtVmenmEBz14tOm5LkUreRu2d
-         RzwQ9fCJQVBzTBuo9gRL/O1BC/xQcUHR+VYik2KVO3RFeYrwuBcEQd5+71cSfAvj8yfc
-         paxkj4pc4o7rj0WW+McPmkfjneAk4Q/5NNSLE81Jo1qg56bR5Ta0TqCqg0CSBWTPWAku
-         V+JZFL2Vi2B/bLVI3oMah21ixxH+i9MkiqA5mxSCg1ADqC5/TTpT3ZRCi9QebOjgJG80
-         g5TqvR+0WJZpFe3z/SOW4kvDvySyWosHW1ce18+9d7kBJoNQELzWR0fsx838JY56e01F
-         +WhQ==
-X-Gm-Message-State: AOAM5332/5KxCGBL3Ol+rc/VQjIT/np5PW6YuCbTIorJCLh0tb4whNMY
-        cM8wLocR9LdUygDtzmNxfaMByg==
-X-Google-Smtp-Source: ABdhPJxQW2pUQfxcv7j3aOU6N98NepZVuSxtJOAGI9h+/OdIr68fiDyV4dSGLx4Br4bp3DQaku7nRQ==
-X-Received: by 2002:a05:6a00:1742:b029:155:dcd2:9155 with SMTP id j2-20020a056a001742b0290155dcd29155mr3543036pfc.78.1603477116038;
-        Fri, 23 Oct 2020 11:18:36 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:c809:c7a4:2d08:2249:ad54:d32d])
-        by smtp.gmail.com with ESMTPSA id q24sm3271162pfn.72.2020.10.23.11.18.32
+        bh=J4Eh2qaJksTCTY1k45teLXaWXNH/ycvD9ltpm944k0Q=;
+        b=knBbwYtSYwd0LSk7WLikukwbQiYOrhDlw4uQPcTrYtujXE3lLVQFr15dpoS6rYOb+U
+         dwwF4ECWn7AKPVIYP9HoMySLRVDOEkFKl/Dd2yfP92Zs51jFMyCQAK/o9IAPb2+wTbGN
+         7PCkGbkn15y9aXidN77eDFxZs9pHtrhtoayk4D1r1gneuy96i2BZAlx/Kqs5woaQ/liX
+         jghI7txD8oxUtJHNjt7LkhuJ4MoYZxYFagisZfgYyfzOQvHB5QadHe05XnnSC6RcXriP
+         YJDXcZ94Xr+A0qxGqWlr0wHnWt6NkqzbExgYlra3X0lYZ20Whb9UnBVFgx2oF/Uxqctx
+         /XPg==
+X-Gm-Message-State: AOAM531xyWfB4yg8rnp+RaxjhlyCsRGESwltdZhmMa0P8H/fy50zAMnM
+        4lE23ZULbmmHjiMVvIj4ZCxg7Bz/Pw0m3w==
+X-Google-Smtp-Source: ABdhPJw4MiBcK6lhwt3Mpbwm8hf16I6Hw1+0s7bS8R/2YorDzTQE48+QOyklgXhBBgNG0ZQGdqDUyg==
+X-Received: by 2002:a17:906:12cf:: with SMTP id l15mr3434340ejb.540.1603476814307;
+        Fri, 23 Oct 2020 11:13:34 -0700 (PDT)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net. [213.161.5.97])
+        by smtp.gmail.com with ESMTPSA id k23sm1231498ejk.0.2020.10.23.11.13.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 11:18:35 -0700 (PDT)
-From:   Jagan Teki <jagan@amarulasolutions.com>
-To:     Heiko Stuebner <heiko@sntech.de>, Rob Herring <robh+dt@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Will Deacon <will@kernel.org>
-Cc:     Tom Cubie <tom@radxa.com>,
-        Suniel Mahesh <sunil@amarulasolutions.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-rockchip@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-amarula <linux-amarula@amarulasolutions.com>,
-        Jagan Teki <jagan@amarulasolutions.com>
-Subject: [PATCH 2/2] ARM: dts: rockchip: Add SDIO0 node for VMARC SOM
-Date:   Fri, 23 Oct 2020 23:48:14 +0530
-Message-Id: <20201023181814.220974-2-jagan@amarulasolutions.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201023181814.220974-1-jagan@amarulasolutions.com>
-References: <20201023181814.220974-1-jagan@amarulasolutions.com>
+        Fri, 23 Oct 2020 11:13:32 -0700 (PDT)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com
+Cc:     Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Paul Kocialkowski <paul.kocialkowski@bootlin.com>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com,
+        paul.kocialkowski@bootlin.com
+Subject: Re: [linux-sunxi] [PATCH 01/14] phy: Distinguish between Rx and Tx for MIPI D-PHY with submodes
+Date:   Fri, 23 Oct 2020 20:18:58 +0200
+Message-ID: <7673189.jqQXtdQLJ6@kista>
+In-Reply-To: <20201023174546.504028-2-paul.kocialkowski@bootlin.com>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com> <20201023174546.504028-2-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Rockchip RK3288 and RK3399Pro based VMARC SOM has sdio0 for
-connecting WiFi/BT devices as a pluggable card via M.2 E-Key.
+Hi!
 
-Add associated sdio0 nodes, properties.
+Dne petek, 23. oktober 2020 ob 19:45:33 CEST je Paul Kocialkowski napisal(a):
+> As some D-PHY controllers support both Rx and Tx mode, we need a way for
+> users to explicitly request one or the other. For instance, Rx mode can
+> be used along with MIPI CSI-2 while Tx mode can be used with MIPI DSI.
+> 
+> Introduce new MIPI D-PHY PHY submodes to use with PHY_MODE_MIPI_DPHY.
+> The default (zero value) is kept to Tx so only the rkisp1 driver, which
+> uses D-PHY in Rx mode, needs to be adapted.
+> 
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> ---
+>  drivers/staging/media/rkisp1/rkisp1-isp.c |  3 ++-
+>  include/linux/phy/phy-mipi-dphy.h         | 13 +++++++++++++
 
-Signed-off-by: Jagan Teki <jagan@amarulasolutions.com>
----
- arch/arm/boot/dts/rk3288-vmarc-som.dtsi       | 40 +++++++++++++++++++
- .../dts/rockchip-radxa-dalang-carrier.dtsi    | 21 ++++++++++
- .../dts/rockchip/rk3399pro-vmarc-som.dtsi     | 16 ++++++++
- 3 files changed, 77 insertions(+)
+I think some changes are missing in this patch. For example, 
+phy_set_mode_ext() must be modified to take another argument, otherwise change 
+of rkisp1-isp driver doesn't make much sense.
 
-diff --git a/arch/arm/boot/dts/rk3288-vmarc-som.dtsi b/arch/arm/boot/dts/rk3288-vmarc-som.dtsi
-index 4a373f5aa600..353d95b9953b 100644
---- a/arch/arm/boot/dts/rk3288-vmarc-som.dtsi
-+++ b/arch/arm/boot/dts/rk3288-vmarc-som.dtsi
-@@ -231,6 +231,23 @@ regulator-state-mem {
- 	};
- };
- 
-+&i2c1 {
-+	clock-frequency = <400000>;
-+	status = "okay";
-+
-+	hym8563: hym8563@51 {
-+		compatible = "haoyu,hym8563";
-+		reg = <0x51>;
-+		#clock-cells = <0>;
-+		clock-frequency = <32768>;
-+		clock-output-names = "hym8563";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&hym8563_int>;
-+		interrupt-parent = <&gpio5>;
-+		interrupts = <RK_PC3 IRQ_TYPE_LEVEL_LOW>;
-+	};
-+};
-+
- &i2c5 {
- 	status = "okay";
- };
-@@ -241,10 +258,17 @@ &io_domains {
- 	gpio1830-supply = <&vcc_18>;
- 	gpio30-supply = <&vcc_io>;
- 	sdcard-supply = <&vccio_sd>;
-+	wifi-supply = <&vcc_wl>;
- 	status = "okay";
- };
- 
- &pinctrl {
-+	hym8563 {
-+		hym8563_int: hym8563-int {
-+			rockchip,pins = <5 RK_PC3 RK_FUNC_GPIO &pcfg_pull_up>;
-+		};
-+	};
-+
- 	pcfg_pull_none_drv_8ma: pcfg-pull-none-drv-8ma {
- 		drive-strength = <8>;
- 	};
-@@ -260,6 +284,12 @@ pmic_int: pmic-int {
- 		};
- 	};
- 
-+	sdio-pwrseq {
-+		wifi_enable_h: wifi-enable-h {
-+			rockchip,pins = <4 RK_PD4 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	sdmmc {
- 		sdmmc_bus4: sdmmc-bus4 {
- 			rockchip,pins =
-@@ -291,6 +321,16 @@ usb0_en_oc: usb0-en-oc {
- 	};
- };
- 
-+&sdio_pwrseq {
-+	/*
-+	 * On the module itself this is one of these (depending
-+	 * on the actual card populated):
-+	 * - SDIO_RESET_L_WL_REG_ON
-+	 * - PDN (power down when low)
-+	 */
-+	reset-gpios = <&gpio4 RK_PD4 GPIO_ACTIVE_LOW>;	/* WIFI_REG_ON */
-+};
-+
- &usbphy {
- 	status = "okay";
- };
-diff --git a/arch/arm/boot/dts/rockchip-radxa-dalang-carrier.dtsi b/arch/arm/boot/dts/rockchip-radxa-dalang-carrier.dtsi
-index 26b53eac4706..da1d548b7330 100644
---- a/arch/arm/boot/dts/rockchip-radxa-dalang-carrier.dtsi
-+++ b/arch/arm/boot/dts/rockchip-radxa-dalang-carrier.dtsi
-@@ -15,6 +15,14 @@ clkin_gmac: external-gmac-clock {
- 		#clock-cells = <0>;
- 	};
- 
-+	sdio_pwrseq: sdio-pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		clocks = <&hym8563>;
-+		clock-names = "ext_clock";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&wifi_enable_h>;
-+	};
-+
- 	vcc12v_dcin: vcc12v-dcin-regulator {
- 		compatible = "regulator-fixed";
- 		regulator-name = "vcc12v_dcin";
-@@ -78,6 +86,19 @@ &pwm2 {
- 	status = "okay";
- };
- 
-+&sdio0 {
-+	bus-width = <4>;
-+	cap-sd-highspeed;
-+	cap-sdio-irq;
-+	keep-power-in-suspend;
-+	mmc-pwrseq = <&sdio_pwrseq>;
-+	non-removable;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&sdio0_bus4 &sdio0_cmd &sdio0_clk>;
-+	sd-uhs-sdr104;
-+	status = "okay";
-+};
-+
- &sdmmc {
- 	bus-width = <4>;
- 	cap-mmc-highspeed;
-diff --git a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-index 5d087be04af8..7257494d2831 100644
---- a/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-+++ b/arch/arm64/boot/dts/rockchip/rk3399pro-vmarc-som.dtsi
-@@ -353,6 +353,12 @@ pmic_int_l: pmic-int-l {
- 		};
- 	};
- 
-+	sdio-pwrseq {
-+		wifi_enable_h: wifi-enable-h {
-+			rockchip,pins = <2 RK_PD3 RK_FUNC_GPIO &pcfg_pull_none>;
-+		};
-+	};
-+
- 	vbus_host {
- 		usb1_en_oc: usb1-en-oc {
- 			rockchip,pins = <4 RK_PD1 RK_FUNC_GPIO &pcfg_pull_up>;
-@@ -371,6 +377,16 @@ &pmu_io_domains {
- 	pmu1830-supply = <&vcc_1v8>;
- };
- 
-+&sdio_pwrseq {
-+	/*
-+	 * On the module itself this is one of these (depending
-+	 * on the actual card populated):
-+	 * - SDIO_RESET_L_WL_REG_ON
-+	 * - PDN (power down when low)
-+	 */
-+	reset-gpios = <&gpio2 RK_PD3 GPIO_ACTIVE_LOW>;
-+};
-+
- &sdhci {
- 	bus-width = <8>;
- 	mmc-hs400-1_8v;
--- 
-2.25.1
+Best regards,
+Jernej
+
+>  2 files changed, 15 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-isp.c b/drivers/staging/
+media/rkisp1/rkisp1-isp.c
+> index 6ec1e9816e9f..0afbce00121e 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-isp.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-isp.c
+> @@ -902,7 +902,8 @@ static int rkisp1_mipi_csi2_start(struct rkisp1_isp 
+*isp,
+>  
+>  	phy_mipi_dphy_get_default_config(pixel_clock, isp->sink_fmt-
+>bus_width,
+>  					 sensor->lanes, cfg);
+> -	phy_set_mode(sensor->dphy, PHY_MODE_MIPI_DPHY);
+> +	phy_set_mode_ext(cdev->dphy, PHY_MODE_MIPI_DPHY,
+> +			 PHY_MIPI_DPHY_SUBMODE_RX);
+>  	phy_configure(sensor->dphy, &opts);
+>  	phy_power_on(sensor->dphy);
+>  
+> diff --git a/include/linux/phy/phy-mipi-dphy.h b/include/linux/phy/phy-mipi-
+dphy.h
+> index a877ffee845d..0f57ef46a8b5 100644
+> --- a/include/linux/phy/phy-mipi-dphy.h
+> +++ b/include/linux/phy/phy-mipi-dphy.h
+> @@ -6,6 +6,19 @@
+>  #ifndef __PHY_MIPI_DPHY_H_
+>  #define __PHY_MIPI_DPHY_H_
+>  
+> +/**
+> + * enum phy_mipi_dphy_submode - MIPI D-PHY sub-mode
+> + *
+> + * A MIPI D-PHY can be used to transmit or receive data.
+> + * Since some controllers can support both, the direction to enable is 
+specified
+> + * with the PHY sub-mode. Transmit is assumed by default with phy_set_mode.
+> + */
+> +
+> +enum phy_mipi_dphy_submode {
+> +	PHY_MIPI_DPHY_SUBMODE_TX = 0,
+> +	PHY_MIPI_DPHY_SUBMODE_RX,
+> +};
+> +
+>  /**
+>   * struct phy_configure_opts_mipi_dphy - MIPI D-PHY configuration set
+>   *
+> -- 
+> 2.28.0
+> 
+> -- 
+> You received this message because you are subscribed to the Google Groups 
+"linux-sunxi" group.
+> To unsubscribe from this group and stop receiving emails from it, send an 
+email to linux-sunxi+unsubscribe@googlegroups.com.
+> To view this discussion on the web, visit https://groups.google.com/d/msgid/
+linux-sunxi/20201023174546.504028-2-paul.kocialkowski%40bootlin.com.
+> 
+
 
