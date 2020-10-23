@@ -2,117 +2,110 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E4A8E297145
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:26:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F63529714D
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 16:27:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750566AbgJWO0Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 10:26:24 -0400
-Received: from mail-io1-f71.google.com ([209.85.166.71]:40459 "EHLO
-        mail-io1-f71.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750552AbgJWO0X (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 10:26:23 -0400
-Received: by mail-io1-f71.google.com with SMTP id v7so1253530ioe.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 07:26:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=Z4Tr5QAzJ2lgG9KcvZ/0qJAH0HusoMoqaOHz0jBjIaI=;
-        b=EPj5RjH3mVtiJfWny+TecsjYFqhQQC3E97zxzNUs14yw0oUbVe3d7OfH9wEuIJ+RfY
-         7d4bUGg+evzpXM8Mu85tNDsZHOS4je4lN7bN6SXbwbFxKV8gncPAtiHg8TbXnPlW1jnF
-         Or7la+CeX+PRHOP2u1fYs8Ud8DGlEC2dDUdMN38ZCwbz/rE3kJHolC05oCDRCnaT5UhN
-         Sbh4KRminCLp+bJGwMGzFpRX4UEwzb/sKqZL9QsASjYuZl9Snc3dgH+KGdNLpaszxXNQ
-         4zP8gKfNYnOvo1KuJ/ndX99NRougJfa4hvCpWEjOd7o8j+L6/Y9+YcHxya1Y0P+SjyO5
-         LeMQ==
-X-Gm-Message-State: AOAM533yj/DrvfbLqkY6ZKAX00WIVjBbjkY671JWXckRGjKIvyEjYuHq
-        ih1dydTU0BmqZmjfrFUcLJhOj07uDyF7E4iT7BJqE/YVB/Hr
-X-Google-Smtp-Source: ABdhPJzk4dcF/J0Wz+uXYl+HclT4T5n1i7kObeQdlcQAz/kIqfGHvOjOEZbAfOVCThSryxrSWYp2eXuQ9Z8QH5LfDSm+F91vCNe7
+        id S1750593AbgJWO1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 10:27:36 -0400
+Received: from foss.arm.com ([217.140.110.172]:53910 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1750553AbgJWO1f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 10:27:35 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A6F1113E;
+        Fri, 23 Oct 2020 07:27:34 -0700 (PDT)
+Received: from bogus (unknown [10.57.15.80])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D1E9C3F66B;
+        Fri, 23 Oct 2020 07:27:32 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 15:27:30 +0100
+From:   Sudeep Holla <sudeep.holla@arm.com>
+To:     Rob Herring <robh+dt@kernel.org>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Sudeep Holla <sudeep.holla@arm.com>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
+ performance domains
+Message-ID: <20201023142730.ru4rfoj3atxyinww@bogus>
+References: <20201020203710.10100-1-sudeep.holla@arm.com>
+ <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
+ <20201021181951.xu2igea2qbca3alf@bogus>
+ <CAL_JsqJ0OO68AbML7osOU3fNzJk3NhXYrWVmNwn8mwtNzSuf8g@mail.gmail.com>
 MIME-Version: 1.0
-X-Received: by 2002:a92:99d7:: with SMTP id t84mr1074072ilk.108.1603463182790;
- Fri, 23 Oct 2020 07:26:22 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 07:26:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000006bb5d505b2575d29@google.com>
-Subject: memory leak in xdp_umem_create
-From:   syzbot <syzbot+eb71df123dc2be2c1456@syzkaller.appspotmail.com>
-To:     andrii@kernel.org, ast@kernel.org, bjorn.topel@intel.com,
-        bpf@vger.kernel.org, daniel@iogearbox.net, davem@davemloft.net,
-        hawk@kernel.org, john.fastabend@gmail.com,
-        jonathan.lemon@gmail.com, kafai@fb.com, kpsingh@chromium.org,
-        kuba@kernel.org, linux-kernel@vger.kernel.org,
-        magnus.karlsson@intel.com, netdev@vger.kernel.org,
-        songliubraving@fb.com, syzkaller-bugs@googlegroups.com, yhs@fb.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAL_JsqJ0OO68AbML7osOU3fNzJk3NhXYrWVmNwn8mwtNzSuf8g@mail.gmail.com>
+User-Agent: NeoMutt/20171215
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 23, 2020 at 08:34:05AM -0500, Rob Herring wrote:
+> On Wed, Oct 21, 2020 at 1:19 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> >
+> > On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
+> > > On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > > >
+> >
+> > [...]
+> >
+> > >
+> > > When is this not 1 (IOW, you only need this if variable)? How would it
+> > > be used outside SCMI (given it has a generic name)?
+> > >
+> > > > +
+> > > > +* Property arm,scmi-perf-domain
+> > >
+> > [...]
+> >
+> > > Really though, why can't you give SCMI a CPUs MPIDR and get its domain?
+> > >
+> >
+> > Now I remembered why we can't use MPIDR. The spec talks about perf domains
+> > for devices in generic. CPU is just a special device. We will still need
+> > a mechanism to get device performance domain. So MPIDR idea was dropped to
+> > keep it uniform across all the devices.
+>
+> What implications to the binding are there for non-CPU devices? Do
+> they need more cells? How does this integrate our plethora of other PM
+> related bindings?
+>
 
-syzbot found the following issue on:
+Ideally it is just a device perf domain ID. SCMI f/w will just assign
+perf domain IDs for both CPUs and other devices like GPUs sequentially
+without any distinction.
 
-HEAD commit:    f804b315 Merge tag 'linux-watchdog-5.10-rc1' of git://www...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1797677f900000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=504c0405f28172a
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb71df123dc2be2c1456
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f27544500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12fc4de8500000
+However, I can't speak about other aspects of PM especially on wild
+variety of platforms we have on Arm.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+eb71df123dc2be2c1456@syzkaller.appspotmail.com
+Today even with SCMI each device/cpu needs to track clock or performance,
+reset, power, voltage, ...etc domains and their IDs needs to be passed
+via DT.
 
-Warning: Permanently added '10.128.10.22' (ECDSA) to the list of known hosts.
-executing program
-executing program
-BUG: memory leak
-unreferenced object 0xffff888110c1e400 (size 96):
-  comm "syz-executor230", pid 8462, jiffies 4294942469 (age 13.280s)
-  hex dump (first 32 bytes):
-    00 50 e0 00 00 c9 ff ff 00 00 02 00 00 00 00 00  .P..............
-    00 00 00 00 00 10 00 00 20 00 00 00 20 00 00 00  ........ ... ...
-  backtrace:
-    [<00000000c4608c2b>] kmalloc include/linux/slab.h:554 [inline]
-    [<00000000c4608c2b>] kzalloc include/linux/slab.h:666 [inline]
-    [<00000000c4608c2b>] xdp_umem_create+0x33/0x630 net/xdp/xdp_umem.c:229
-    [<00000000551a05ed>] xsk_setsockopt+0x4ad/0x590 net/xdp/xsk.c:852
-    [<00000000f143ff32>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
-    [<0000000076c65982>] __do_sys_setsockopt net/socket.c:2143 [inline]
-    [<0000000076c65982>] __se_sys_setsockopt net/socket.c:2140 [inline]
-    [<0000000076c65982>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
-    [<00000000d47a7174>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000fb8e5852>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+We are thinking of making all these device ID centric in future. It means
+if the device tree had scmi device ID for each of them, we must be able to
+perform any power management or configuration management on that device.
+SCMI f/w must then abstract everything at device level. Just a thought
+as of now and it aligns with some of the ACPI concepts.
 
-BUG: memory leak
-unreferenced object 0xffff88810e018f00 (size 256):
-  comm "syz-executor230", pid 8462, jiffies 4294942469 (age 13.280s)
-  hex dump (first 32 bytes):
-    00 00 4f 04 00 ea ff ff 40 00 4f 04 00 ea ff ff  ..O.....@.O.....
-    80 00 4f 04 00 ea ff ff c0 00 4f 04 00 ea ff ff  ..O.......O.....
-  backtrace:
-    [<00000000257d0c74>] kmalloc_array include/linux/slab.h:594 [inline]
-    [<00000000257d0c74>] kcalloc include/linux/slab.h:605 [inline]
-    [<00000000257d0c74>] xdp_umem_pin_pages net/xdp/xdp_umem.c:89 [inline]
-    [<00000000257d0c74>] xdp_umem_reg net/xdp/xdp_umem.c:207 [inline]
-    [<00000000257d0c74>] xdp_umem_create+0x3cc/0x630 net/xdp/xdp_umem.c:240
-    [<00000000551a05ed>] xsk_setsockopt+0x4ad/0x590 net/xdp/xsk.c:852
-    [<00000000f143ff32>] __sys_setsockopt+0x1b0/0x360 net/socket.c:2132
-    [<0000000076c65982>] __do_sys_setsockopt net/socket.c:2143 [inline]
-    [<0000000076c65982>] __se_sys_setsockopt net/socket.c:2140 [inline]
-    [<0000000076c65982>] __x64_sys_setsockopt+0x22/0x30 net/socket.c:2140
-    [<00000000d47a7174>] do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-    [<00000000fb8e5852>] entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> So somewhere in the firmware we're defining device X is domain 0,
+> device Y is domain 1, etc. Then we do this again in DT. Seems fragile
+> to define this information twice. I guess that's true for any number
+> space SCMI defines.
+>
 
+Correct and agreed on your point. Any ideas to make this discoverable ?
+Atleast with SCMI, we have been able to reduce the amount of information
+just to that ID(though there are multiple ID space today for each aspects
+of PM and config management). As I mentioned we would like to make it
+device centric. Any thoughts on making IDs discoverable is appreciated.
 
+We thought about names and other things during initial days of the
+spec evolution, but we circled back to how does OS provide that info and
+we go back to DT/ACPI which was not too bad at that time. We can see if
+we can improve anything there.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-syzbot can test patches for this issue, for details see:
-https://goo.gl/tpsmEJ#testing-patches
+--
+Regards,
+Sudeep
