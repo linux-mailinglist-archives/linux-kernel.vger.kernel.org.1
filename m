@@ -2,94 +2,124 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 876DA29764D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:59:17 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 144DD297652
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:59:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754070AbgJWR7P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:59:15 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34238 "EHLO
+        id S1754110AbgJWR7t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:59:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34326 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463587AbgJWR7O (ORCPT
+        with ESMTP id S1754099AbgJWR7s (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:59:14 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D6B0DC0613CE;
-        Fri, 23 Oct 2020 10:59:13 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kW1L7-00749v-U5; Fri, 23 Oct 2020 17:58:58 +0000
-Date:   Fri, 23 Oct 2020 18:58:57 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     David Hildenbrand <david@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        'Greg KH' <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Christoph Hellwig <hch@lst.de>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Message-ID: <20201023175857.GA3576660@ZenIV.linux.org.uk>
-References: <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022104805.GA1503673@kroah.com>
- <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
- <20201022125759.GA1685526@kroah.com>
- <20201022135036.GA1787470@kroah.com>
- <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
- <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
+        Fri, 23 Oct 2020 13:59:48 -0400
+Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8ED45C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:59:47 -0700 (PDT)
+Received: by mail-qt1-x842.google.com with SMTP id m65so1599333qte.11
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:59:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=IDpHMieNXZZBIoI1fIHPCKIb5NTvidIxfCr8Im48pc4=;
+        b=IDaJPA5bANTTSZhZyxYX2w2AIzGVuL3oCR2wpEGarXb7mxVjjtzPeh3NDdeE2f3PU2
+         4dnwndVV3sHqykCR8NpRg/A+VjzGqwEB3VO1+m2LbzmrRdZ6nCE7b2XiuQY0oQptNdPh
+         X4qPu5ewGRXHxffnYOZvUuYHpTsi80BTsfx5I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=IDpHMieNXZZBIoI1fIHPCKIb5NTvidIxfCr8Im48pc4=;
+        b=aa8Zah72JK8XlnLELAf5yEFzC8j/L4O4uBXeNOMMcJgJE+pLZvOxgEayRPP9lcEjSY
+         WFToRrHwnlMS6BA/vn1CMZoJePjGKrLnlppj8Lz4K1TUfHAZJGwHnK9jmq25Nmp+Er9Q
+         IiohKty6UlKFsejXKvs3Nb3+AkO4+N4DKHmqoo6c/wLeltkgnVXLYJvb+ZVIxRh+ZeR9
+         MzVuXlKgGHDluqAyEQh6JoIp+4WKT+KhComoTmoggNyeaLVY7g8yikB9rckMMcMDiYzo
+         iqOPB9FktGJV9tIyPAktxHHOYD+yu9m3xJFPB4VaIagmrhh8oMKTkiLt4Jil/FbSJBk3
+         KVlA==
+X-Gm-Message-State: AOAM533idbrS7zux7oRWsq2IcgpDiZ22NJGFaLARZ/AlPTj866ormtyr
+        5yACDdnUrCzX+Gxbuso/thJ+GQ==
+X-Google-Smtp-Source: ABdhPJyYidiNXKL8OLdU3yRDOm0JPUlJrrdRLcon0lUBYOQbJ18fEWBB5VK02l2lBtZeJ0O9ig0xHw==
+X-Received: by 2002:ac8:5141:: with SMTP id h1mr2008705qtn.139.1603475986754;
+        Fri, 23 Oct 2020 10:59:46 -0700 (PDT)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id z69sm1255839qkb.7.2020.10.23.10.59.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 10:59:46 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 13:59:45 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20201023175945.GB3563800@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-7-joel@joelfernandes.org>
+ <20201023150544.GG2974@worktop.programming.kicks-ass.net>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20201023150544.GG2974@worktop.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 03:09:30PM +0200, David Hildenbrand wrote:
-
-> Now, I am not a compiler expert, but as I already cited, at least on
-> x86-64 clang expects that the high bits were cleared by the caller - in
-> contrast to gcc. I suspect it's the same on arm64, but again, I am no
-> compiler expert.
+On Fri, Oct 23, 2020 at 05:05:44PM +0200, Peter Zijlstra wrote:
+> On Mon, Oct 19, 2020 at 09:43:16PM -0400, Joel Fernandes (Google) wrote:
+> > From: Peter Zijlstra <peterz@infradead.org>
+> > 
+> > Instead of only selecting a local task, select a task for all SMT
+> > siblings for every reschedule on the core (irrespective which logical
+> > CPU does the reschedule).
 > 
-> If what I said and cites for x86-64 is correct, if the function expects
-> an "unsigned int", it will happily use 64bit operations without further
-> checks where valid when assuming high bits are zero. That's why even
-> converting everything to "unsigned int" as proposed by me won't work on
-> clang - it assumes high bits are zero (as indicated by Nick).
+> This:
 > 
-> As I am neither a compiler experts (did I mention that already? ;) ) nor
-> an arm64 experts, I can't tell if this is a compiler BUG or not.
+> > 
+> > During a CPU hotplug event, schedule would be called with the hotplugged
+> > CPU not in the cpumask. So use for_each_cpu(_wrap)_or to include the
+> > current cpu in the task pick loop.
+> > 
+> > There are multiple loops in pick_next_task that iterate over CPUs in
+> > smt_mask. During a hotplug event, sibling could be removed from the
+> > smt_mask while pick_next_task is running. So we cannot trust the mask
+> > across the different loops. This can confuse the logic. Add a retry logic
+> > if smt_mask changes between the loops.
+> 
+> isn't entirely accurate anymore, is it?
 
-On arm64 when callee expects a 32bit argument, the caller is *not* responsible
-for clearing the upper half of 64bit register used to pass the value - it only
-needs to store the actual value into the lower half.  The callee must consider
-the contents of the upper half of that register as undefined.  See AAPCS64 (e.g.
-https://github.com/ARM-software/abi-aa/blob/master/aapcs64/aapcs64.rst#parameter-passing-rules
-); AFAICS, the relevant bit is
-	"Unlike in the 32-bit AAPCS, named integral values must be narrowed by
-the callee rather than the caller."
+Yes you are right, we need to delete this bit from the changelog. :-(. I'll
+go do that.
+
+thanks,
+
+ - Joel
+
