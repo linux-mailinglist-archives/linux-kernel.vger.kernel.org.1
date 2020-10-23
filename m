@@ -2,42 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBFE6297436
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:32 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 01CED297432
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:35:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1751624AbgJWQfS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:35:18 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33586 "EHLO mail.kernel.org"
+        id S462662AbgJWQfI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:35:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33336 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751863AbgJWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S460729AbgJWQdv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:51 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4D37246DC;
+        by mail.kernel.org (Postfix) with ESMTPSA id ED1C924706;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603470828;
-        bh=mdSdh5AGZt6OomnwQnDQKEOlC4NrmBkjBQ0E/tv2ezo=;
+        s=default; t=1603470829;
+        bh=rItW9x31JNK0epQQegBAn1Gj/Xyt1H69mENmOqwza/Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xAxL9zxTXBFGtdrarG7uuibMZOhjG5gKpg1OD8UyzeKOtxBxVfbz9TKwnYR8shj+8
-         ZbmH8Ss/WZdcFyhc3MyOZAkavbzReotyZxAAmORI3uTDXYLlFglulmkI2dqO/BjCcW
-         VqJIVAfgqmhUkWc9aK18X9f794OlP+b5rJEceXZc=
+        b=SzI3oyhH9/LZ0/V8EuroC56RaZXZpviO+rugkXUBxXAFTeXVbfURNV+u9Af2fw9B6
+         ivzwN0j1YGhKc4oR50WDNJaENI+aNAqk9e0RQEuPtJc4fB4oY9jIlsmf96v8gqmINX
+         YKMszTP0AiYyNxmrmwSByiELMEsb0PTcUeRRN9UE=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Axl-Nf; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Axp-P7; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Williams <dan.j.williams@intel.com>,
-        David Hildenbrand <david@redhat.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Mel Gorman <mgorman@suse.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 52/56] resource: fix kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:39 +0200
-Message-Id: <926c3c9de205325acf609ea5e28dd905bda9768b.1603469755.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 53/56] shed: fix kernel-doc markup
+Date:   Fri, 23 Oct 2020 18:33:40 +0200
+Message-Id: <21eac4426e02193aab877564f7d7d99114627a46.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -48,81 +53,68 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Kernel-doc markups should use this format:
-        identifier - description
+Kernel-doc requires that a kernel-doc markup to be immediatly
+below the function prototype, as otherwise it will rename it.
+So, move sys_sched_yield() markup to the right place.
 
-While here, fix a kernel-doc tag that was using, instead,
-a normal comment block.
+Also fix the cpu_util() markup: Kernel-doc markups
+should use this format:
+        identifier - description
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- kernel/resource.c | 24 ++++++++++++++----------
- 1 file changed, 14 insertions(+), 10 deletions(-)
+ kernel/sched/core.c | 16 ++++++++--------
+ kernel/sched/fair.c |  3 ++-
+ 2 files changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/kernel/resource.c b/kernel/resource.c
-index 3ae2f56cc79d..9738920abdca 100644
---- a/kernel/resource.c
-+++ b/kernel/resource.c
-@@ -320,9 +320,8 @@ int release_resource(struct resource *old)
- EXPORT_SYMBOL(release_resource);
- 
- /**
-- * Finds the lowest iomem resource that covers part of [@start..@end].  The
-- * caller must specify @start, @end, @flags, and @desc (which may be
-- * IORES_DESC_NONE).
-+ * find_next_iomem_res - Finds the lowest iomem resource that covers part of
-+ *			 [@start..@end].
-  *
-  * If a resource is found, returns 0 and @*res is overwritten with the part
-  * of the resource that's within [@start..@end]; if none is found, returns
-@@ -337,6 +336,9 @@ EXPORT_SYMBOL(release_resource);
-  * @desc:	descriptor the resource must have
-  * @first_lvl:	walk only the first level children, if set
-  * @res:	return ptr, if resource found
-+ *
-+ * The caller must specify @start, @end, @flags, and @desc
-+ * (which may be IORES_DESC_NONE).
-  */
- static int find_next_iomem_res(resource_size_t start, resource_size_t end,
- 			       unsigned long flags, unsigned long desc,
-@@ -416,11 +418,9 @@ static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 8160ab5263f8..f7189247f007 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -6076,14 +6076,6 @@ SYSCALL_DEFINE3(sched_getaffinity, pid_t, pid, unsigned int, len,
+ 	return ret;
  }
  
- /**
-- * Walks through iomem resources and calls func() with matching resource
-- * ranges. This walks through whole tree and not just first level children.
-- * All the memory ranges which overlap start,end and also match flags and
-- * desc are valid candidates.
+-/**
+- * sys_sched_yield - yield the current processor to other threads.
 - *
-+ * walk_iomem_res_desc - Walks through iomem resources and calls func()
-+ *			 with matching resource ranges.
-+ * *
-  * @desc: I/O resource descriptor. Use IORES_DESC_NONE to skip @desc check.
-  * @flags: I/O resource flags
-  * @start: start addr
-@@ -428,6 +428,10 @@ static int __walk_iomem_res_desc(resource_size_t start, resource_size_t end,
-  * @arg: function argument for the callback @func
-  * @func: callback function that is called for each qualifying resource area
-  *
-+ * This walks through whole tree and not just first level children.
-+ * All the memory ranges which overlap start,end and also match flags and
-+ * desc are valid candidates.
-+ *
-  * NOTE: For a new descriptor search, define a new IORES_DESC in
-  * <linux/ioport.h> and set it in 'desc' of a target resource entry.
-  */
-@@ -1372,9 +1376,9 @@ static bool system_ram_resources_mergeable(struct resource *r1,
- 	       !r1->child && !r2->child;
+- * This function yields the current CPU to other tasks. If there are no
+- * other threads running on this CPU then this function will return.
+- *
+- * Return: 0.
+- */
+ static void do_sched_yield(void)
+ {
+ 	struct rq_flags rf;
+@@ -6105,6 +6097,14 @@ static void do_sched_yield(void)
+ 	schedule();
  }
  
--/*
 +/**
-  * merge_system_ram_resource - mark the System RAM resource mergeable and try to
-- * merge it with adjacent, mergeable resources
-+ * 	merge it with adjacent, mergeable resources
-  * @res: resource descriptor
++ * sys_sched_yield - yield the current processor to other threads.
++ *
++ * This function yields the current CPU to other tasks. If there are no
++ * other threads running on this CPU then this function will return.
++ *
++ * Return: 0.
++ */
+ SYSCALL_DEFINE0(sched_yield)
+ {
+ 	do_sched_yield();
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index aa4c6227cd6d..94386fcfafcf 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -6287,7 +6287,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
+ }
+ 
+ /**
+- * Amount of capacity of a CPU that is (estimated to be) used by CFS tasks
++ * cpu_util - Amount of capacity of a CPU that is (estimated to be)
++ *	used by CFS tasks
+  * @cpu: the CPU to get the utilization of
   *
-  * This interface is intended for memory hotplug, whereby lots of contiguous
+  * The unit of the return value must be the one of capacity so we can compare
 -- 
 2.26.2
 
