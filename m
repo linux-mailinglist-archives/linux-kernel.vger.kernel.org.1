@@ -2,139 +2,50 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B1B852971DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:02:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D624A2971D8
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 17:01:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465507AbgJWPCP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 11:02:15 -0400
-Received: from foss.arm.com ([217.140.110.172]:54672 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S461452AbgJWPCO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 11:02:14 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4F0A2101E;
-        Fri, 23 Oct 2020 08:02:14 -0700 (PDT)
-Received: from bogus (unknown [10.57.15.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EDE973F66E;
-        Fri, 23 Oct 2020 08:02:12 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 15:58:02 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>
-Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
- performance domains
-Message-ID: <20201023145802.wzb74hbuuiphgwvi@bogus>
-References: <20201020203710.10100-1-sudeep.holla@arm.com>
- <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
- <20201021163021.lkqhum3xnyzt6pir@bogus>
- <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
+        id S465495AbgJWPBP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 11:01:15 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34548 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461370AbgJWPBP (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 11:01:15 -0400
+Received: from smtp.domeneshop.no (smtp.domeneshop.no [IPv6:2a01:5b40:0:3005::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C890CC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 08:01:14 -0700 (PDT)
+Received: from [2a02:fe0:c700:2:687c:e90d:da70:b07d] (port=59358)
+        by smtp.domeneshop.no with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.92)
+        (envelope-from <Ywe_C4rlyn@b9n-web.net>)
+        id 1kVyZ5-0006sZ-SN
+        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 17:01:11 +0200
+To:     linux-kernel@vger.kernel.org
+From:   =?UTF-8?Q?Ywe_C=c3=a6rlyn?= <Ywe_C4rlyn@b9n-web.net>
+Subject: B9n X - a further refinement + Yehova namecalling "Nigger Nerd" etc.
+Message-ID: <d8f1322d-660e-f4b4-8374-0ba7374caf6f@b9n-web.net>
+Date:   Fri, 23 Oct 2020 17:01:03 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 08:21:21AM -0500, Rob Herring wrote:
-> On Wed, Oct 21, 2020 at 11:30 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
-> > > On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > >
-> > > > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
-> > > > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
-> > > > _allocate_opp_table() which is called from dev_pm_opp_add and it
-> > > > now propagates the error back to the caller.
-> > > >
-> > > > SCMI performance domain re-used clock bindings to keep it simple. However
-> > > > with the above mentioned change, if clock property is present in a device
-> > > > node, opps can't be added until clk_get succeeds. So in order to fix the
-> > > > issue, we can register dummy clocks which is completely ugly.
-> > > >
-> > > > Since there are no upstream users for the SCMI performance domain clock
-> > > > bindings, let us introduce separate performance domain bindings for the
-> > > > same.
-> > > >
-> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > > ---
-> > > >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
-> > > >  1 file changed, 16 insertions(+), 3 deletions(-)
-> > > >
-> > > > Hi Rob/Viresh,
-> > > >
-> > > > This is actually a fix for the regression I reported here[1].
-> > > > I am not adding fixes tag as I am targeting in the same release and
-> > > > also because it is not directly related.
-> > > >
-> > > > Regards,
-> > > > Sudeep
-> > > >
-> > > > [1] https://lore.kernel.org/r/20201015180555.gacdzkofpibkdn2e@bogus
-> > > >
-> > > > P.S.:/me records that this binding needs to be moved to yaml in v5.11
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > index 55deb68230eb..0a6c1b495403 100644
-> > > > --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > @@ -44,7 +44,7 @@ as described in the following sections. If the platform supports dedicated
-> > > >  mboxes, mbox-names and shmem shall be present in the sub-node corresponding
-> > > >  to that protocol.
-> > > >
-> > > > -Clock/Performance bindings for the clocks/OPPs based on SCMI Message Protocol
-> > > > +Clock bindings for the clocks based on SCMI Message Protocol
-> > > >  ------------------------------------------------------------
-> > > >
-> > > >  This binding uses the common clock binding[1].
-> > > > @@ -52,6 +52,19 @@ This binding uses the common clock binding[1].
-> > > >  Required properties:
-> > > >  - #clock-cells : Should be 1. Contains the Clock ID value used by SCMI commands.
-> > > >
-> > > > +Performance bindings for the OPPs based on SCMI Message Protocol
-> > > > +------------------------------------------------------------
-> > > > +
-> > > > +Required properties:
-> > > > +- #perf-domain-cells: Should be 1. Contains the performance domain ID value
-> > > > +                     used by SCMI commands.
-> > >
-> > > When is this not 1 (IOW, you only need this if variable)? How would it
-> > > be used outside SCMI (given it has a generic name)?
-> > >
-> >
-> > Ah, I thought we need this if phandle is followed by 1 or more arguments.
-> > If it is not compulsory I can drop this or make it scmi specific if we
-> > need it.
-> 
-> No, your options are fixed or variable number of cells. If this is
-> generic, then maybe it needs to be variable. If it's SCMI specific
-> then it can likely be fixed unless you can think of other information
-> you may need in the cells.
-> 
-> > > > +
-> > > > +* Property arm,scmi-perf-domain
-> > >
-> > > Yet this doesn't have a generic name. You mentioned on IRC this is
-> > > aligned with QCom, but why can't QCom use the same property here?
-> > >
-> >
-> > This is SCMI firmware driven while they have hardware driven perf/freq
-> > domains. So different drivers, need to distinguish between the two.
-> 
-> So what if they are different drivers. That's *always* the case. The
-> clock provider(s) for 'clocks' is different for every SoC? I doesn't
-> matter who is the provider, it's the same information being described.
-> 
+I further refined the concept to B9n X, part of the B9n Fair Pay Projects.
+
+Website is now on https://b9n-web.net/
+
+Further we see a problem with behaviour with Yehova, that calls people 
+Nerd, Nigger etc. This is not a Goed ofcourse. Could be the root of 
+behaviour problems here aswell. It was also called "Lamenes" earlier in 
+the environment, but in Windows that is associated with disabled. It was 
+not about disabled though, but Yehovans of said type.
+
+Serenity.
+Ywe Cærlyn
 
 
-More agreed, another one fresh on the list today[1]
-
--- 
-Regards,
-Sudeep
-
-[1] https://lore.kernel.org/lkml/1603441493-18554-3-git-send-email-hector.yuan@mediatek.com
