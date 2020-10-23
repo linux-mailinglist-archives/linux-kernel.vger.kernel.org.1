@@ -2,101 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69A79297045
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:20:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F3A4B29704C
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:21:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464536AbgJWNUr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:20:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47014 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S372261AbgJWNUr (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:20:47 -0400
-Received: from mail-il1-x142.google.com (mail-il1-x142.google.com [IPv6:2607:f8b0:4864:20::142])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B4FC3C0613CE;
-        Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
-Received: by mail-il1-x142.google.com with SMTP id w17so1314789ilg.8;
-        Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xeo0p2qdmsop/TDGgLs89AOUyadmvF116Tgqv/kxuwY=;
-        b=rA0a3idKXxsidmySKf+Rkby9uR/42z5EzIai/zfL40nh2Hp1baOLzQo7gW2oXp6ePA
-         DnLct+f+IP/d/4cM15oO56yQrZTPSPN5VjRHlrpu8U5v8hi1rlnZklmudQayA4HiSwAi
-         CAyx+A3fh7jqtpKrhJQDPd2G2qaaqjGmrxquAQ4+6rJddN6QenB2CeSmSYEajjHr3zAH
-         GP6qBdC5ilUJC2ygVbDU3U2gEe3WkczEO6+YQew/W8uS8n2sOvq39AjJbmXeWgMwmMR6
-         zP6eoYyCFf0QHzjnJLyIBfZo1ZDSox3835sl+fCVEXYWSIqUo04zFxpEcNok2fQZ2aiR
-         E8+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xeo0p2qdmsop/TDGgLs89AOUyadmvF116Tgqv/kxuwY=;
-        b=ZfNdl4dVpjxX96OQnSdqQEFh5djw6ZZCiNDaz2LMyxXiFHjBpi8yz7zkD//qoDKlqy
-         lHZLzH5OraNM2z5qZfMDWHW7QdMqZNcxCnuW/9nH2JK9WYir6haHlyJC2nUgzRgTktpl
-         k5vaQRkeZZllSj765KkiCDfSB63USF/UWqJltfC1asPmfxvLAujzpfrJVoCh+HTf6+DL
-         ZgpQMgOUlD11DOh5AklqouTJ898pyq7d7nUWIBsMqTCxAbNGuDyYDSwTyIBe4Ofn2DbG
-         hgRlRtTh+puyPGD1m5MEUXXzizVVglu6eLPy+5eZ4b6lZCPzXWocI61BAlJIJjekkwnU
-         6AlQ==
-X-Gm-Message-State: AOAM530vZmmTRJmLv0HZ8Fzt7dAC+7JRgQ7AaDEcB+Q6hHiYftsmjJgM
-        nTwIWJ68I4yjO/HqLZfzoa8YRvfRWh4lrSg8ydA=
-X-Google-Smtp-Source: ABdhPJwQCcuMZaG2NyGoy2d/3qKC/ZI6eB7q5tOvNNnzAZjOE5Rr6ZPQU1MCYZyj0UEzOHE6kIz0bBqP6t6tmDeCl58=
-X-Received: by 2002:a92:c213:: with SMTP id j19mr1656992ilo.205.1603459246105;
- Fri, 23 Oct 2020 06:20:46 -0700 (PDT)
+        id S373083AbgJWNVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:21:35 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42528 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S372480AbgJWNVe (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:21:34 -0400
+Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id CE6D520878;
+        Fri, 23 Oct 2020 13:21:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603459293;
+        bh=tcIf+YLtp09S6ktv2lmr+RmiL/UpMdZ1xUk88JleAx4=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=V7YP8pcGUA997rXsYpwdd2ACAVF9hRXJJWKeBUjnAfzK7u6alSW8fET5E7J7zgwWR
+         EEAEjv4CtK8m6Y/sFVTX9pK5jpP0i3Ooo7/D48Y2W0CcCoj4QuuG3z8hSyDpHEkH/s
+         P4F6KIFWfFMnK0l2ZgMy8HndS02MQKbJMeZRAPkc=
+Received: by mail-oi1-f175.google.com with SMTP id l4so1794237oii.13;
+        Fri, 23 Oct 2020 06:21:33 -0700 (PDT)
+X-Gm-Message-State: AOAM532mhopd9331kv57uRIZhzSC6Vt2/FUsOGYIqCHxG43JM0xdff5c
+        h+Ij1zfZdeX1leL0L9wakeQBHdCxS5koQfTUQg==
+X-Google-Smtp-Source: ABdhPJxvPfyz6rm5n/WXwNeFZtY47gjlfmj9ctFWS6FN1er0aQ5AFtUPdDWxy3CB/VaS1ZHKpcDLnBRCQJ+QjvkFc0Q=
+X-Received: by 2002:aca:5dc2:: with SMTP id r185mr1712876oib.106.1603459292939;
+ Fri, 23 Oct 2020 06:21:32 -0700 (PDT)
 MIME-Version: 1.0
-References: <cover.1601974764.git.syednwaris@gmail.com> <CACRpkdZcfR8Vyavpi4xM1zJab6SgapGBYqK9GR2mp-xh=LuVsw@mail.gmail.com>
-In-Reply-To: <CACRpkdZcfR8Vyavpi4xM1zJab6SgapGBYqK9GR2mp-xh=LuVsw@mail.gmail.com>
-From:   Syed Nayyar Waris <syednwaris@gmail.com>
-Date:   Fri, 23 Oct 2020 18:50:34 +0530
-Message-ID: <CACG_h5rHvWEUZSfHvF198_i+xjc_gN5ioXYniZqij0wx=3wnqQ@mail.gmail.com>
-Subject: Re: [PATCH v11 0/4] Introduce the for_each_set_clump macro
-To:     Linus Walleij <linus.walleij@linaro.org>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        William Breathitt Gray <vilhelm.gray@gmail.com>,
-        Michal Simek <michal.simek@xilinx.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Robert Richter <rrichter@marvell.com>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>,
-        Masahiro Yamada <yamada.masahiro@socionext.com>,
-        Zhang Rui <rui.zhang@intel.com>,
-        Daniel Lezcano <daniel.lezcano@linaro.org>,
-        "(Exiting) Amit Kucheria" <amit.kucheria@verdurent.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux PM list <linux-pm@vger.kernel.org>
+References: <20201020203710.10100-1-sudeep.holla@arm.com> <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
+ <20201021163021.lkqhum3xnyzt6pir@bogus>
+In-Reply-To: <20201021163021.lkqhum3xnyzt6pir@bogus>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 23 Oct 2020 08:21:21 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
+Message-ID: <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
+ performance domains
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 7, 2020 at 2:09 PM Linus Walleij <linus.walleij@linaro.org> wrote:
+On Wed, Oct 21, 2020 at 11:30 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
 >
-> On Tue, Oct 6, 2020 at 11:20 AM Syed Nayyar Waris <syednwaris@gmail.com> wrote:
+> On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
+> > On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+> > >
+> > > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
+> > > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
+> > > _allocate_opp_table() which is called from dev_pm_opp_add and it
+> > > now propagates the error back to the caller.
+> > >
+> > > SCMI performance domain re-used clock bindings to keep it simple. However
+> > > with the above mentioned change, if clock property is present in a device
+> > > node, opps can't be added until clk_get succeeds. So in order to fix the
+> > > issue, we can register dummy clocks which is completely ugly.
+> > >
+> > > Since there are no upstream users for the SCMI performance domain clock
+> > > bindings, let us introduce separate performance domain bindings for the
+> > > same.
+> > >
+> > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > > ---
+> > >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
+> > >  1 file changed, 16 insertions(+), 3 deletions(-)
+> > >
+> > > Hi Rob/Viresh,
+> > >
+> > > This is actually a fix for the regression I reported here[1].
+> > > I am not adding fixes tag as I am targeting in the same release and
+> > > also because it is not directly related.
+> > >
+> > > Regards,
+> > > Sudeep
+> > >
+> > > [1] https://lore.kernel.org/r/20201015180555.gacdzkofpibkdn2e@bogus
+> > >
+> > > P.S.:/me records that this binding needs to be moved to yaml in v5.11
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > index 55deb68230eb..0a6c1b495403 100644
+> > > --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
+> > > @@ -44,7 +44,7 @@ as described in the following sections. If the platform supports dedicated
+> > >  mboxes, mbox-names and shmem shall be present in the sub-node corresponding
+> > >  to that protocol.
+> > >
+> > > -Clock/Performance bindings for the clocks/OPPs based on SCMI Message Protocol
+> > > +Clock bindings for the clocks based on SCMI Message Protocol
+> > >  ------------------------------------------------------------
+> > >
+> > >  This binding uses the common clock binding[1].
+> > > @@ -52,6 +52,19 @@ This binding uses the common clock binding[1].
+> > >  Required properties:
+> > >  - #clock-cells : Should be 1. Contains the Clock ID value used by SCMI commands.
+> > >
+> > > +Performance bindings for the OPPs based on SCMI Message Protocol
+> > > +------------------------------------------------------------
+> > > +
+> > > +Required properties:
+> > > +- #perf-domain-cells: Should be 1. Contains the performance domain ID value
+> > > +                     used by SCMI commands.
+> >
+> > When is this not 1 (IOW, you only need this if variable)? How would it
+> > be used outside SCMI (given it has a generic name)?
+> >
 >
-> > Since this patchset primarily affects GPIO drivers, would you like
-> > to pick it up through your GPIO tree?
->
-> Definitely will, once we are finished!
->
-> I see Andy still has comments and we need more iterations.
-> That is fine, because we are not in any hurry. Just keep posting
-> it!
->
-> Let's merge this for v5.11 when we are finished with it.
->
-> Yours,
-> Linus Walleij
+> Ah, I thought we need this if phandle is followed by 1 or more arguments.
+> If it is not compulsory I can drop this or make it scmi specific if we
+> need it.
 
-Hi Linus,
+No, your options are fixed or variable number of cells. If this is
+generic, then maybe it needs to be variable. If it's SCMI specific
+then it can likely be fixed unless you can think of other information
+you may need in the cells.
 
-Just thought of giving an update. The V-12 revision of the patchset
-has been submitted (19 Oct).
+> > > +
+> > > +* Property arm,scmi-perf-domain
+> >
+> > Yet this doesn't have a generic name. You mentioned on IRC this is
+> > aligned with QCom, but why can't QCom use the same property here?
+> >
+>
+> This is SCMI firmware driven while they have hardware driven perf/freq
+> domains. So different drivers, need to distinguish between the two.
 
-Let me know if you face any questions regarding the V-12 patchset. Thanks !
+So what if they are different drivers. That's *always* the case. The
+clock provider(s) for 'clocks' is different for every SoC? I doesn't
+matter who is the provider, it's the same information being described.
 
-Regards
-Syed Nayyar Waris
+Rob
