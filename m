@@ -2,144 +2,202 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF848297014
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:12:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B85229701F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:13:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464386AbgJWNMj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:12:39 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35275 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S464268AbgJWNMi (ORCPT
+        id S464398AbgJWNNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:13:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:45822 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S372985AbgJWNNO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:12:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603458756;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=jTvh5muq91KS5CpSKJexFoXC1Qp8u72sWKaaLH+BBx8=;
-        b=Jo3aDhqMMpcWtLQYVz5jebmJdaCZTJg7UEX2OlXqzjjDl0DwiC7Sj1f+8xm5vlPDYcLGfR
-        Q9rEfKw6+quixfepfYo1kzCbywQ01j73hhE6/jnrAJ9smTZXAwmEjYChDJakDpQsgGFQsx
-        jMgiTw84h1fNoOCWeHRt3Bn01eUFkNY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-164-YV1Nynx1P4GwePi1t-8udg-1; Fri, 23 Oct 2020 09:12:32 -0400
-X-MC-Unique: YV1Nynx1P4GwePi1t-8udg-1
-Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 44117192CC47;
-        Fri, 23 Oct 2020 13:12:29 +0000 (UTC)
-Received: from [10.36.114.18] (ovpn-114-18.ams2.redhat.com [10.36.114.18])
-        by smtp.corp.redhat.com (Postfix) with ESMTP id 55E915C1CF;
-        Fri, 23 Oct 2020 13:12:24 +0000 (UTC)
-Subject: Re: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-To:     Al Viro <viro@zeniv.linux.org.uk>,
-        Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        David Laight <David.Laight@aculab.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        David Howells <dhowells@redhat.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>
-References: <20201022090155.GA1483166@kroah.com>
- <e04d0c5d-e834-a15b-7844-44dcc82785cc@redhat.com>
- <a1533569-948a-1d5b-e231-5531aa988047@redhat.com>
- <bc0a091865f34700b9df332c6e9dcdfd@AcuMS.aculab.com>
- <5fd6003b-55a6-2c3c-9a28-8fd3a575ca78@redhat.com>
- <20201022132342.GB8781@lst.de>
- <8f1fff0c358b4b669d51cc80098dbba1@AcuMS.aculab.com>
- <CAKwvOdnix6YGFhsmT_mY8ORNPTOsN3HwS33Dr0Ykn-pyJ6e-Bw@mail.gmail.com>
- <CAK8P3a3LjG+ZvmQrkb9zpgov8xBkQQWrkHBPgjfYSqBKGrwT4w@mail.gmail.com>
- <CAKwvOdnhONvrHLAuz_BrAuEpnF5mD9p0YPGJs=NZZ0EZNo7dFQ@mail.gmail.com>
- <20201022192458.GV3576660@ZenIV.linux.org.uk>
-From:   David Hildenbrand <david@redhat.com>
-Organization: Red Hat GmbH
-Message-ID: <e7a8f709-87b8-c328-6190-8371c6fa3ae8@redhat.com>
-Date:   Fri, 23 Oct 2020 15:12:23 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        Fri, 23 Oct 2020 09:13:14 -0400
+Received: from mail-qt1-x843.google.com (mail-qt1-x843.google.com [IPv6:2607:f8b0:4864:20::843])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 8023FC0613CE;
+        Fri, 23 Oct 2020 06:13:13 -0700 (PDT)
+Received: by mail-qt1-x843.google.com with SMTP id m9so822499qth.7;
+        Fri, 23 Oct 2020 06:13:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=dKwShB7j5WEHxhR5oiuUjAihJ9isJepwJWV2MacDLa0=;
+        b=c5u1/fdRe1TryIt+dk0dVaKDNfWt+3dershqJRZzHxVUllML0+fzPGPT7XanYwSKAX
+         trRk5Vj2Hm6ZHq+TscRkPU6FTz96pb3cjlPk6CwtjR+RSvXOOcpRpqe5ukB58ZDniE3A
+         6gB/+XGqW4VNURSHlpdhnCGXsknxtffvoqL2rl6GlI9l26ii/WG3QGLmRK9b7O+Jzhbi
+         EB3Fg9wg6hBTG30K1WmJfKQazw6uoJLHyy1Bw8dGGKUAnKCJKlYx6rN6+4lbzZxfrQvV
+         Byy+BHg/1778XnpFE6i8Ip/qsue53auGy7ek0p68fTWD/WyHjGZNEGKcgXM8lxZgNbTY
+         kxfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=dKwShB7j5WEHxhR5oiuUjAihJ9isJepwJWV2MacDLa0=;
+        b=RSyc4v3SLhC8fUzVDoz0Ne4OhzoXo7qAM+2kmKjO6YNVDOgz2lnp+lYMR0cH5uMFxG
+         gbdZ9cJkV5CABhtd0JBNOP/Y2twGe7eXc9nrZpr6bpXzF7vqvcbcTpK4qehaO5TxzxTC
+         N+ifP1Po4A8EB7DB46BGUk24AU7h0W3QlORYqg0e6wjjakYFybn1y/U+q2YXSbefQMl8
+         cz1LtyCe3RIAQ2Vr+oiqS2lcZ5hohoWy1H49OFlU5XkimTS3JSvJFHHEiy/aQdy/YhkX
+         CVhtbXU3zmUtRy8bg0cqMkrY24l+CbpQpmdX5ypBZd0qaqybtUkLT/kAU8NAErylFNp3
+         EQTQ==
+X-Gm-Message-State: AOAM532OueC9fiCVsEMe4UR4UhhVx35w3luFGkO2CZHliUw2HMv2YXII
+        PS8Zf9IA9UX8ZqUQgY2ydR0=
+X-Google-Smtp-Source: ABdhPJz5xgI/Vu6FALA7961ba27Gp5lHM6yAaQbHJCStwgE42CvcxLM7krpHPQWY+++yowlF8XxNrQ==
+X-Received: by 2002:a05:622a:1c4:: with SMTP id t4mr1963479qtw.147.1603458792636;
+        Fri, 23 Oct 2020 06:13:12 -0700 (PDT)
+Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
+        by smtp.gmail.com with ESMTPSA id u11sm805404qtk.61.2020.10.23.06.13.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 06:13:11 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 09:12:56 -0400
+From:   William Breathitt Gray <vilhelm.gray@gmail.com>
+To:     David Lechner <david@lechnology.com>
+Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
+        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
+        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
+        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
+Subject: Re: [PATCH v5 1/5] counter: Internalize sysfs interface code
+Message-ID: <20201023131256.GA30908@shinobu>
+References: <cover.1601170670.git.vilhelm.gray@gmail.com>
+ <e38f6dc3a08bf2510034334262776a6ed1df8b89.1601170670.git.vilhelm.gray@gmail.com>
+ <157d1edf-feec-33b5-7ad5-94f99316ca6e@lechnology.com>
+ <20201018144901.GB231549@shinobu>
+ <d2418c64-f1c7-810d-b80e-91155e0aaffd@lechnology.com>
 MIME-Version: 1.0
-In-Reply-To: <20201022192458.GV3576660@ZenIV.linux.org.uk>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="0F1p//8PRICkK4MW"
+Content-Disposition: inline
+In-Reply-To: <d2418c64-f1c7-810d-b80e-91155e0aaffd@lechnology.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22.10.20 21:24, Al Viro wrote:
-> On Thu, Oct 22, 2020 at 12:04:52PM -0700, Nick Desaulniers wrote:
-> 
->> Passing an `unsigned long` as an `unsigned int` does no such
->> narrowing: https://godbolt.org/z/TvfMxe (same vice-versa, just tail
->> calls, no masking instructions).
->> So if rw_copy_check_uvector() is inlined into import_iovec() (looking
->> at the mainline@1028ae406999), then children calls of
->> `rw_copy_check_uvector()` will be interpreting the `nr_segs` register
->> unmodified, ie. garbage in the upper 32b.
-> 
-> FWIW,
-> 
-> void f(unsinged long v)
-> {
-> 	if (v != 1)
-> 		printf("failed\n");
-> }
-> 
-> void g(unsigned int v)
-> {
-> 	f(v);
-> }
-> 
-> void h(unsigned long v)
-> {
-> 	g(v);
-> }
-> 
-> main()
-> {
-> 	h(0x100000001);
-> }
-> 
-> must not produce any output on a host with 32bit int and 64bit long, regardless of
-> the inlining, having functions live in different compilation units, etc.
-> 
-> Depending upon the calling conventions, compiler might do truncation in caller or
-> in a callee, but it must be done _somewhere_.
 
-The interesting case is having g() in a separate compilation unit and
-force-calling g() with 0x100000001 via inline ASM. So forcing garbage
-into high bits.
+--0F1p//8PRICkK4MW
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I'll paly with it.
+On Tue, Oct 20, 2020 at 10:38:43AM -0500, David Lechner wrote:
+> On 10/18/20 9:49 AM, William Breathitt Gray wrote:
+> > On Mon, Oct 12, 2020 at 09:15:00PM -0500, David Lechner wrote:
+> >> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
+> >>> diff --git a/drivers/counter/counter-core.c b/drivers/counter/counter=
+-core.c
+> >>> new file mode 100644
+> >>> index 000000000000..987c6e8277eb
+> >>> --- /dev/null
+> >>> +++ b/drivers/counter/counter-core.c
+> >>
+> >>
+> >>> +/**
+> >>> + * counter_register - register Counter to the system
+> >>> + * @counter:	pointer to Counter to register
+> >>> + *
+> >>> + * This function registers a Counter to the system. A sysfs "counter=
+" directory
+> >>> + * will be created and populated with sysfs attributes correlating w=
+ith the
+> >>> + * Counter Signals, Synapses, and Counts respectively.
+> >>> + */
+> >>> +int counter_register(struct counter_device *const counter)
+> >>> +{
+> >>> +	struct device *const dev =3D &counter->dev;
+> >>> +	int err;
+> >>> +
+> >>> +	/* Acquire unique ID */
+> >>> +	counter->id =3D ida_simple_get(&counter_ida, 0, 0, GFP_KERNEL);
+> >>> +	if (counter->id < 0)
+> >>> +		return counter->id;
+> >>> +
+> >>> +	/* Configure device structure for Counter */
+> >>> +	dev->type =3D &counter_device_type;
+> >>> +	dev->bus =3D &counter_bus_type;
+> >>> +	if (counter->parent) {
+> >>> +		dev->parent =3D counter->parent;
+> >>> +		dev->of_node =3D counter->parent->of_node;
+> >>> +	}
+> >>> +	dev_set_name(dev, "counter%d", counter->id);
+> >>> +	device_initialize(dev);> +	dev_set_drvdata(dev, counter);
+> >>> +
+> >>> +	/* Add Counter sysfs attributes */
+> >>> +	err =3D counter_sysfs_add(counter);
+> >>> +	if (err)
+> >>> +		goto err_free_id;
+> >>> +
+> >>> +	/* Add device to system */
+> >>> +	err =3D device_add(dev);
+> >>> +	if (err) {
+> >>> +		put_device(dev);
+> >>> +		goto err_free_id;
+> >>> +	}
+> >>> +
+> >>> +	return 0;
+> >>> +
+> >>> +err_free_id:
+> >>> +	/* get_device/put_device combo used to free managed resources */
+> >>> +	get_device(dev);
+> >>> +	put_device(dev);
+> >>
+> >> I've never seen this in a driver before, so it makes me think this is
+> >> not the "right way" to do this. After device_initialize() is called, we
+> >> already should have a reference to dev, so only device_put() is needed.
+> >=20
+> > I do admit this feels very hacky, but I'm not sure how to handle this
+> > more elegantly. The problem is that device_initialize() is not enough by
+> > itself -- it just initializes the structure, while device_add()
+> > increments the reference count via a call to get_device().
+>=20
+> add_device() also releases this reference by calling put_device() in all
+> return paths. The reference count is initialized to 1 in device_initializ=
+e().
+>=20
+> device_initialize > kobject_init > kobject_init_internal > kref_init
 
--- 
-Thanks,
+You're right, I completely overlooked this: kref_init() initializes the
+reference count to 1. Therefore, the get_device() call is incorrect and
+should be be removed.
 
-David / dhildenb
+> >=20
+> > So let's assume counter_sysfs_add() fails and we go to err_free_id
+> > before device_add() is called; if we ignore get_device(), the reference
+> > count will be 0 at this point. We then call put_device(), which calls
+> > kobject_put(), kref_put(), and eventually refcount_dec_and_test().
+> >=20
+> > The refcount_dec_and_test() function returns 0 at this point because the
+> > reference count can't be decremented further (refcount is already 0), so
+> > release() is never called and we end up leaking all the memory we
+> > allocated in counter_sysfs_add().
+> >=20
+> > Is my logic correct here?
+>=20
+> Not quite. I think you missed a few things I mentioned above. So we never
+> have a ref count of 0 until the very last call to put_device().
 
+Ack.
+
+William Breathitt Gray
+
+--0F1p//8PRICkK4MW
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+S1s0ACgkQhvpINdm7
+VJIUCA/9H4U4VQUw5cCxP0N7nT9UimOljvgGcou0GNnv1ZB9gg52QQfWXvkIXZmL
+2TT15CA+RE3truIWSgJtVOQq2Jir59zh57EamE3ZUtmmZRVwraN2Ne42cx6gj/Th
+q8xfynbUJIZ8LGGNsFp34K5dk1ME7w68/5c880HTdcroadW2XZkkrwzzw8d4vde/
+eDDv9yCRbZsrVAFTfrdNEGajJktiZfTjWy+XQZcrjZl5No/zoO4wuXwGAGorxUkt
+DlC594HMJAsjDI+6DcswkjcvYNrSE+T5iKbp+J5wW86jBoHcaz9MrXH26sRsCpGx
+RJ0vUzDtpqFpaM2s6x+yG8Lb4M0kJYe8wGQH1meXL2ypppmJ9Fa3yu1MZ4Ic6aOT
+5GZnVzzvpjZoamOjoCTVPUl4AC+rC/bo+bNfPydUsriow41augsH2TIs9MioYSem
+KirIumFrBMh/ZYc4IGxO3quJoneinz5evcradtjX0vj5YWxeNrfk5l5Bo9onjYWx
+iJXz+o4TghJNxC4vzBngE1TwhI3343GUHIESA6I0BvHpiW/ZXFfAg0d8VPvzAElD
+rXzva+ZtzlwrC46iDoeyDTG/5/aqCdUctD82TGORH9yvQfW6AQXur+auEjHHai+q
+5PjM/uVDiFEZntsV9ucuj/q4Cf71dHrQ+1TMy55P1iO56+siZCM=
+=dPgv
+-----END PGP SIGNATURE-----
+
+--0F1p//8PRICkK4MW--
