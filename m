@@ -2,92 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 094132970BA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:37:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F5B42970C2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:38:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S371537AbgJWNhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:37:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49708 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S370815AbgJWNhY (ORCPT
+        id S465060AbgJWNil (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:38:41 -0400
+Received: from userp2120.oracle.com ([156.151.31.85]:41670 "EHLO
+        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S371982AbgJWNik (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:37:24 -0400
-Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F020AC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:37:23 -0700 (PDT)
-Received: by mail-vs1-xe43.google.com with SMTP id s15so878512vsm.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:37:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Zc7t+lOzY7cTGJnijbB9ZWGm7Y121IIAMh0AQlwU3pA=;
-        b=YdHU1o5OjK8fiIdbmhMO+IyNC8TEW8YOMBNOvHEY2cYnrBk8/gyhlYYIjqHjd0NJ7N
-         Q6JBWCM+gB37AP1jOXbf9Qs6KcHuJqiJ3/FVRG29uZZ8jNuBpdaQ5Kmh+w25khqb98O7
-         fuaszBb44mle10AmhDlAgsLQDc7XXCO0ws3mJyf5n05zELyfTPtRGhaM1i8oM7amc2Fc
-         DjnSs/nDUeaxSyqWD/mF0nMOPxn1l7Z028HeK7L9fJPPANXe3r3b8yJt+YSKnXOTX5eS
-         GLq4LFVkP1G723OStpmTnkAxGBLBZSlWGC7QGzkxDC4GiKD75t2DgvwWH/qbfNQK0Ovd
-         dYUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Zc7t+lOzY7cTGJnijbB9ZWGm7Y121IIAMh0AQlwU3pA=;
-        b=MGp6EcNZLwQfy4s9jtnzldp63tlHkXJED7RNKXVGXNQrS4tlQcYfouCe6ZiORRidVw
-         RY9P9uF/BMx2OF9CnLElWBdx7fRX7m9eLG452WpJoEIdLwgPzTtuZ7BMrUSyRQ+C1ag8
-         +0uCRCqJqKEpv9NfLDTlgiQDJ1utjHohZtNitS6w3BQfOQZ7vU7wCQaVj0CgO7OWpoWK
-         P61S0/+jDKsS0REGcsGLMqxGcWK6bXmgw1uBRB1A5M1khJ0itvAq4FmkiX1Fq1GAT8xT
-         AVGkPFWi0XCrqigpKf/77VQomuNTyFxgnrRPuYNohoenvosj/CkvZlzftXBAkNrhwGmd
-         TksQ==
-X-Gm-Message-State: AOAM532v01WqPw07QYOeOxHYlSB9OgXBJHyRYXjrCg84VXvVRWaczOcj
-        hdq0qBU2zqwkaBeNC/udN0YsMHEZHPoYMjgJa4o=
-X-Google-Smtp-Source: ABdhPJzARGEDC4xlej7yvuuABhHcmbQVxvjDThXOHqDeOTG4DEZsLZNb6d3iTK/9tJ5SYw2WGPPvdSR0KQcyvZVXMYk=
-X-Received: by 2002:a67:cc2:: with SMTP id 185mr1422202vsm.42.1603460243020;
- Fri, 23 Oct 2020 06:37:23 -0700 (PDT)
+        Fri, 23 Oct 2020 09:38:40 -0400
+Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
+        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NDYJeI087810;
+        Fri, 23 Oct 2020 13:38:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=subject : to : cc :
+ references : from : message-id : date : mime-version : in-reply-to :
+ content-type : content-transfer-encoding; s=corp-2020-01-29;
+ bh=f68vJI26CdskCy/ucIn4jhkM8wmlpjwl4MW/M1mNHhg=;
+ b=PfdBGxLVfz4qeCvoJmnJEqhZdQbNZ1LH0KcIGHn1uWllnU0bExSIMwArZ086J/bcI0W/
+ npbxmjzJIXAymSYSw4RZGVPRw67Xw55VB709eHh7kQqajaNOa3OcdyEw0CXukKX+gEoR
+ 9l3An1MhlDJtG6SnH4BISnKpCZw8L5/jiN5sXX/lqToCvdGdRA3VSIb5immyNSYw8Hmz
+ hiefXPzRYqCbkt9ORvymaTfBnr4oJ3Vgk6xEUxJnOQCs9/nek1LRZ1t+eWjfHvZWl90I
+ 1gj0dj1JEg5ZmPDBOhgbKaLDNS3DAGm3FRMav1auuVyhqeydK5wgRrj4J23ZzPsiOb9R KA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by userp2120.oracle.com with ESMTP id 34ak16uh2s-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Fri, 23 Oct 2020 13:38:11 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09NDZlV4073341;
+        Fri, 23 Oct 2020 13:38:11 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 348ah20hea-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Fri, 23 Oct 2020 13:38:11 +0000
+Received: from abhmp0017.oracle.com (abhmp0017.oracle.com [141.146.116.23])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09NDc2iq013614;
+        Fri, 23 Oct 2020 13:38:03 GMT
+Received: from [10.74.86.114] (/10.74.86.114)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Fri, 23 Oct 2020 06:38:02 -0700
+Subject: Re: [PATCH v2 0/5] xen: event handling cleanup
+To:     Juergen Gross <jgross@suse.com>, xen-devel@lists.xenproject.org,
+        linux-kernel@vger.kernel.org, x86@kernel.org,
+        linux-doc@vger.kernel.org
+Cc:     Stefano Stabellini <sstabellini@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        "H. Peter Anvin" <hpa@zytor.com>, Jonathan Corbet <corbet@lwn.net>
+References: <20201022094907.28560-1-jgross@suse.com>
+From:   boris.ostrovsky@oracle.com
+Organization: Oracle Corporation
+Message-ID: <71ea84e2-31d8-328d-fce6-fafb2010a229@oracle.com>
+Date:   Fri, 23 Oct 2020 09:37:59 -0400
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:78.0)
+ Gecko/20100101 Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201012132404.113031-1-jingxiangfeng@huawei.com>
-In-Reply-To: <20201012132404.113031-1-jingxiangfeng@huawei.com>
-From:   Sven Van Asbroeck <thesven73@gmail.com>
-Date:   Fri, 23 Oct 2020 09:37:12 -0400
-Message-ID: <CAGngYiXY95R5=fUPQ2aBXOQsPXrkp8E4TTmU_75pQZN9OuiUUA@mail.gmail.com>
-Subject: Re: [PATCH] staging: fieldbus: anybuss: jump to correct label in an
- error path
-To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
-Cc:     Greg KH <gregkh@linuxfoundation.org>, devel@driverdev.osuosl.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201022094907.28560-1-jgross@suse.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9782 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010230095
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9782 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 phishscore=0
+ priorityscore=1501 clxscore=1011 malwarescore=0 mlxscore=0 adultscore=0
+ lowpriorityscore=0 impostorscore=0 spamscore=0 mlxlogscore=999
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010230095
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Jing, thank you for your patch.
 
-Reviewed-by: Sven Van Asbroeck <TheSven73@gmail.com>
+On 10/22/20 5:49 AM, Juergen Gross wrote:
+> Do some cleanups in Xen event handling code.
+>
+> Changes in V2:
+> - addressed comments
+>
+> Juergen Gross (5):
+>   xen: remove no longer used functions
+>   xen/events: make struct irq_info private to events_base.c
+>   xen/events: only register debug interrupt for 2-level events
+>   xen/events: unmask a fifo event channel only if it was masked
+>   Documentation: add xen.fifo_events kernel parameter description
+>
+>  .../admin-guide/kernel-parameters.txt         |  7 ++
+>  arch/x86/xen/smp.c                            | 19 ++--
+>  arch/x86/xen/xen-ops.h                        |  2 +
+>  drivers/xen/events/events_2l.c                |  7 +-
+>  drivers/xen/events/events_base.c              | 94 +++++++++++++------
+>  drivers/xen/events/events_fifo.c              |  9 +-
+>  drivers/xen/events/events_internal.h          | 70 ++------------
+>  include/xen/events.h                          |  8 --
+>  8 files changed, 102 insertions(+), 114 deletions(-)
+>
 
-On Mon, Oct 12, 2020 at 9:17 AM Jing Xiangfeng <jingxiangfeng@huawei.com> wrote:
->
-> In current code, controller_probe() misses to call ida_simple_remove()
-> in an error path. Jump to correct label to fix it.
->
-> Fixes: 17614978ed34 ("staging: fieldbus: anybus-s: support the Arcx anybus controller")
-> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
-> ---
->  drivers/staging/fieldbus/anybuss/arcx-anybus.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/staging/fieldbus/anybuss/arcx-anybus.c b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-> index 5b8d0bae9ff3..b5fded15e8a6 100644
-> --- a/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-> +++ b/drivers/staging/fieldbus/anybuss/arcx-anybus.c
-> @@ -293,7 +293,7 @@ static int controller_probe(struct platform_device *pdev)
->         regulator = devm_regulator_register(dev, &can_power_desc, &config);
->         if (IS_ERR(regulator)) {
->                 err = PTR_ERR(regulator);
-> -               goto out_reset;
-> +               goto out_ida;
->         }
->         /* make controller info visible to userspace */
->         cd->class_dev = kzalloc(sizeof(*cd->class_dev), GFP_KERNEL);
-> --
-> 2.17.1
->
+Applied to for-linus-5.10b.
+
+
+-boris
+
