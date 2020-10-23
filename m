@@ -2,68 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE7132974DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 819D32974E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:49:45 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750245AbgJWQs5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:48:57 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:45744 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S465779AbgJWQs5 (ORCPT
+        id S1750888AbgJWQti (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:49:38 -0400
+Received: from mail-oi1-f196.google.com ([209.85.167.196]:41271 "EHLO
+        mail-oi1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464780AbgJWQth (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 12:48:57 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f37so1928437otf.12;
-        Fri, 23 Oct 2020 09:48:55 -0700 (PDT)
+        Fri, 23 Oct 2020 12:49:37 -0400
+Received: by mail-oi1-f196.google.com with SMTP id k65so1993892oih.8;
+        Fri, 23 Oct 2020 09:49:35 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:date:from:to:cc:subject:message-id:references
          :mime-version:content-disposition:in-reply-to;
-        bh=t41Wz1ftPJdXoRBo6WvXtJCsvezv0jqP6YqdxmMi1Bc=;
-        b=BU2XYLGaYNiJG1++zXuJf5XdXlDoDAJehIk50hyQTVdXnFe2FKqLaIpao5JrP5sAvf
-         s3JR/SfB5dMpyUuYltjpUD+v6bplgByO6R4V/sivHbz1J+3tyigOsSoCw2bd9YiBsQFs
-         dP6JxyeEIBu5cfCsjsURrTE3Oxh9dDMUwwRicW2ho4vga6qjlEfsHoc4CwWV+DvJ4n8c
-         HJ+1CWZRsuM3u8kEzA/0vceSzap+G1MZLBZ8NQFto42uFd3o6UHOHQyyAa7RcTkBaQ6Q
-         sY1DFqlY8u2gKYK9SNa8vntnagxK256B6X7HnRmBBuOE/YyhpEtYqC3y9bqzBliPrLw8
-         KQTQ==
-X-Gm-Message-State: AOAM533qNV0ELNaouwgGmGS3TJUbvRlJzcm8a7oJKtp5TmodgV/cTTgm
-        UHj1TwObbYYlyApjZLObeA==
-X-Google-Smtp-Source: ABdhPJzfGSbMJv/KSQd6oguikGdkSvbMIqgnr+wSNyj8vVZh/6asblfBhCslPDOELSEjJGqwDkH/PA==
-X-Received: by 2002:a05:6830:13c4:: with SMTP id e4mr2212329otq.142.1603471735136;
-        Fri, 23 Oct 2020 09:48:55 -0700 (PDT)
+        bh=sNWKGn3DDIoyEpIxZv2Re159Qqhhyn1QhElnu+a7Lmc=;
+        b=RgC0opqi5tSHkrxuW5dPLnGw7tqKgd7DuU2TzhlOe3yG0bwCJeBHm0PJKDk4z8tHjh
+         Pv8/GI9uo3kEI11qAsAnKjOIMF28OFKFt5I/8e+/G34B7eOvMjqxs2D0kKxOX8IAGXwZ
+         wH95CyrmxclTNgokWllNuxXgHjqse8ui19nSEk513dV4tHAc5grSGQ9wZUiaD1ZH8pJt
+         k8zCSce3qQOzUiTgJgynRN5Wg7nF+oQyRSenZ5zBWQyEiEeQ1fGiFiPxcG1QQ12Gq+T8
+         ErHW8nVFqLQxqcbYRzs2n5MucO5PNqax33o/Lw5bIIiv6vJwl4wt2XY0YTxTBAMn6doa
+         Z7Zw==
+X-Gm-Message-State: AOAM53334pOWbdQtmVUo6W5D+RUq145UDGgQ9sHD7I+9QlYx7lSMauKH
+        SPOyHOFfMWjl5F2u2uxqxA==
+X-Google-Smtp-Source: ABdhPJw+inBHwHbjguZV3WazG0/oY/ETAyqQeaGUd3GD5InJ8OviJOAS4DVeUgezdEFSV2ZlJjHWEw==
+X-Received: by 2002:a54:4812:: with SMTP id j18mr2536886oij.70.1603471775270;
+        Fri, 23 Oct 2020 09:49:35 -0700 (PDT)
 Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id j7sm507432otc.77.2020.10.23.09.48.54
+        by smtp.gmail.com with ESMTPSA id f124sm595217oia.27.2020.10.23.09.49.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 09:48:54 -0700 (PDT)
-Received: (nullmailer pid 2850563 invoked by uid 1000);
-        Fri, 23 Oct 2020 16:48:53 -0000
-Date:   Fri, 23 Oct 2020 11:48:53 -0500
+        Fri, 23 Oct 2020 09:49:34 -0700 (PDT)
+Received: (nullmailer pid 2851617 invoked by uid 1000);
+        Fri, 23 Oct 2020 16:49:33 -0000
+Date:   Fri, 23 Oct 2020 11:49:33 -0500
 From:   Rob Herring <robh@kernel.org>
-To:     Dan Murphy <dmurphy@ti.com>
-Cc:     Zhen Lei <thunder.leizhen@huawei.com>, linux-leds@vger.kernel.org,
-        devicetree@vger.kernel.org, pavel@ucw.cz, robh+dt@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] dt-bindings: leds: Update devicetree documents for
- ID_RGB
-Message-ID: <20201023164853.GA2850155@bogus>
-References: <20201016115703.30184-1-dmurphy@ti.com>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devicetree@vger.kernel.org, dennis-yc.hsieh@mediatek.com,
+        bibby.hsieh@mediatek.com, ck.hu@mediatek.com,
+        matthias.bgg@gmail.com, linux-mediatek@lists.infradead.org,
+        jaswinder.singh@linaro.org
+Subject: Re: [PATCH] dt-bindings: mailbox: mtk-gce: fix incorrect mbox-cells
+ value
+Message-ID: <20201023164933.GA2851393@bogus>
+References: <20201018193016.3339045-1-fparent@baylibre.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201016115703.30184-1-dmurphy@ti.com>
+In-Reply-To: <20201018193016.3339045-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 06:57:03 -0500, Dan Murphy wrote:
-> Update the leds/common.yaml to indicate that the max color ID is 9.
-> Reflect the same change in the leds-class-multicolor.yaml
+On Sun, 18 Oct 2020 21:30:16 +0200, Fabien Parent wrote:
+> As the binding documentation says, #mbox-cells must have a value of 2,
+> but the example use a value 3. The MT8173 device tree correctly use
+> mbox-cells = <2>. This commit fixes the example.
 > 
-> Reported-by: Zhen Lei <thunder.leizhen@huawei.com>
-> Signed-off-by: Dan Murphy <dmurphy@ti.com>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
->  Documentation/devicetree/bindings/leds/common.yaml       | 2 +-
->  .../devicetree/bindings/leds/leds-class-multicolor.yaml  | 9 +++++----
->  2 files changed, 6 insertions(+), 5 deletions(-)
+>  Documentation/devicetree/bindings/mailbox/mtk-gce.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
 Applied, thanks!
