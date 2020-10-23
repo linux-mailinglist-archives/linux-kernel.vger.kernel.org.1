@@ -2,132 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 98F62296E12
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:58:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C953C296E17
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:58:47 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463296AbgJWL6P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:58:15 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:42301 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463270AbgJWL56 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:57:58 -0400
-Received: by mail-ot1-f66.google.com with SMTP id h62so1031287oth.9;
-        Fri, 23 Oct 2020 04:57:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=VPZjENjZEQI2fdov67q7C96gjcEt4c20fJuNO1dmeTg=;
-        b=MCavkfte2QIAy9FNEi0zBESEyCcfDV7eQO4BXievJ7SNan2VQu2JsHj1Nr5gd7SqqM
-         /Z0uEHw4KkZXAVI+9vmaEEMgqHZ9qworUfcLyslC2vkNGUrB2lKNri8YBLt3UInrKplt
-         roIOVgCcBXOLM02wu00HxciSnKVvRPQzxSA/jUTRHZ5QVXFa5RzerHf+miL2hjKcyDSx
-         evJ1XJbm5faAbtpOHhCfJz9V6uHhnVZXGB4WhcDbCCKOEBbdoAH8cE+FH/d8q0gAmagd
-         TduceW8X1ZY+s3Iv3qGf/lzJTCtZx3V8XFZxSC2CP3lJHen2VuWZLk53+CtpzT9CekLm
-         VXtg==
-X-Gm-Message-State: AOAM532GcGMZM3yjQ3ROQfHDsO6AyPue5NYon3knHI/yJrqmmRhrsjjV
-        NE+BTxtHJ3hSQZubj5Z/EasWTPJAbHFxuIwattk=
-X-Google-Smtp-Source: ABdhPJwzYVko2+WxG5doBROxXZMkD/iOiNfDHtR232x78k1VRbQ8g9LcOKBX8+LyRL0GCnNOeW8msfnuO3K9Ylqq1zI=
-X-Received: by 2002:a9d:734f:: with SMTP id l15mr1347856otk.260.1603454277339;
- Fri, 23 Oct 2020 04:57:57 -0700 (PDT)
+        id S463309AbgJWL6g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:58:36 -0400
+Received: from pegase1.c-s.fr ([93.17.236.30]:8417 "EHLO pegase1.c-s.fr"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S463298AbgJWL6U (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:58:20 -0400
+Received: from localhost (mailhub1-int [192.168.12.234])
+        by localhost (Postfix) with ESMTP id 4CHjRV0CCKz9v03C;
+        Fri, 23 Oct 2020 13:58:14 +0200 (CEST)
+X-Virus-Scanned: Debian amavisd-new at c-s.fr
+Received: from pegase1.c-s.fr ([192.168.12.234])
+        by localhost (pegase1.c-s.fr [192.168.12.234]) (amavisd-new, port 10024)
+        with ESMTP id 7G-FT5rRhz1r; Fri, 23 Oct 2020 13:58:13 +0200 (CEST)
+Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
+        by pegase1.c-s.fr (Postfix) with ESMTP id 4CHjRT6NvJz9v036;
+        Fri, 23 Oct 2020 13:58:13 +0200 (CEST)
+Received: from localhost (localhost [127.0.0.1])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 4B5098B869;
+        Fri, 23 Oct 2020 13:58:15 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at c-s.fr
+Received: from messagerie.si.c-s.fr ([127.0.0.1])
+        by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
+        with ESMTP id 1m4yl6SK3FoB; Fri, 23 Oct 2020 13:58:15 +0200 (CEST)
+Received: from [192.168.4.90] (unknown [192.168.4.90])
+        by messagerie.si.c-s.fr (Postfix) with ESMTP id 73E308B85E;
+        Fri, 23 Oct 2020 13:58:14 +0200 (CEST)
+Subject: Re: [PATCH v8 2/8] powerpc/vdso: Remove __kernel_datapage_offset and
+ simplify __get_datapage()
+To:     Will Deacon <will@kernel.org>
+Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Paul Mackerras <paulus@samba.org>, nathanl@linux.ibm.com,
+        linux-arch <linux-arch@vger.kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        open list <linux-kernel@vger.kernel.org>,
+        Andy Lutomirski <luto@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        linuxppc-dev@lists.ozlabs.org
+References: <87wo34tbas.fsf@mpe.ellerman.id.au>
+ <2f9b7d02-9e2f-4724-2608-c5573f6507a2@csgroup.eu>
+ <6862421a-5a14-2e38-b825-e39e6ad3d51d@csgroup.eu>
+ <87imd5h5kb.fsf@mpe.ellerman.id.au>
+ <CAJwJo6ZANqYkSHbQ+3b+Fi_VT80MtrzEV5yreQAWx-L8j8x2zA@mail.gmail.com>
+ <87a6yf34aj.fsf@mpe.ellerman.id.au> <20200921112638.GC2139@willie-the-truck>
+ <ad72ffd3-a552-cc98-7545-d30285fd5219@csgroup.eu>
+ <542145eb-7d90-0444-867e-c9cbb6bdd8e3@gmail.com>
+ <ba9861da-2f5b-a649-5626-af00af634546@csgroup.eu>
+ <20201023112514.GE20933@willie-the-truck>
+From:   Christophe Leroy <christophe.leroy@csgroup.eu>
+Message-ID: <284cacf4-9811-4b67-385c-2783a7cd9b31@csgroup.eu>
+Date:   Fri, 23 Oct 2020 13:57:47 +0200
+User-Agent: Mozilla/5.0 (Windows NT 6.1; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.1
 MIME-Version: 1.0
-References: <1666263.spd1I39WAV@kreacher> <76352140.UXiy1LajID@kreacher> <20201023061018.euom3sfxw7uvtmya@vireshk-i7>
-In-Reply-To: <20201023061018.euom3sfxw7uvtmya@vireshk-i7>
-From:   "Rafael J. Wysocki" <rafael@kernel.org>
-Date:   Fri, 23 Oct 2020 13:57:44 +0200
-Message-ID: <CAJZ5v0iRgRx-WH3qddkLnpWxFCihSehNcfiQ6zqGoPGm36e=9Q@mail.gmail.com>
-Subject: Re: [PATCH 1/2] cpufreq: intel_pstate: Avoid missing HWP max updates
- in passive mode
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-Cc:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Zhang Rui <rui.zhang@intel.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201023112514.GE20933@willie-the-truck>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: fr
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 8:10 AM Viresh Kumar <viresh.kumar@linaro.org> wrote:
->
-> On 22-10-20, 13:57, Rafael J. Wysocki wrote:
-> > Index: linux-pm/drivers/cpufreq/cpufreq.c
-> > ===================================================================
-> > --- linux-pm.orig/drivers/cpufreq/cpufreq.c
-> > +++ linux-pm/drivers/cpufreq/cpufreq.c
-> > @@ -2182,6 +2182,9 @@ int __cpufreq_driver_target(struct cpufr
-> >       pr_debug("target for CPU %u: %u kHz, relation %u, requested %u kHz\n",
-> >                policy->cpu, target_freq, relation, old_target_freq);
-> >
-> > +     if (cpufreq_driver->target)
-> > +             return cpufreq_driver->target(policy, target_freq, relation);
-> > +
-> >       /*
-> >        * This might look like a redundant call as we are checking it again
-> >        * after finding index. But it is left intentionally for cases where
-> > @@ -2194,9 +2197,6 @@ int __cpufreq_driver_target(struct cpufr
-> >       /* Save last value to restore later on errors */
-> >       policy->restore_freq = policy->cur;
-> >
-> > -     if (cpufreq_driver->target)
-> > -             return cpufreq_driver->target(policy, target_freq, relation);
-> > -
-> >       if (!cpufreq_driver->target_index)
-> >               return -EINVAL;
->
-> From what I understood, you want your driver to get notified about
-> policy->min/max changes and right now they are making it work from
-> within the target() callback.
 
-Not exactly.
 
-The driver needs to update some internal upper and lower boundary
-values along with the target freq and skipping the update when target
-freq doesn't change prevents it from doing that.
+Le 23/10/2020 à 13:25, Will Deacon a écrit :
+> On Fri, Oct 23, 2020 at 01:22:04PM +0200, Christophe Leroy wrote:
+>> Hi Dmitry,
+>>
+>> Le 28/09/2020 à 17:08, Dmitry Safonov a écrit :
+>>> On 9/27/20 8:43 AM, Christophe Leroy wrote:
+>>>>
+>>>>
+>>>> Le 21/09/2020 à 13:26, Will Deacon a écrit :
+>>>>> On Fri, Aug 28, 2020 at 12:14:28PM +1000, Michael Ellerman wrote:
+>>>>>> Dmitry Safonov <0x7f454c46@gmail.com> writes:
+>>> [..]
+>>>>>>> I'll cook a patch for vm_special_mapping if you don't mind :-)
+>>>>>>
+>>>>>> That would be great, thanks!
+>>>>>
+>>>>> I lost track of this one. Is there a patch kicking around to resolve
+>>>>> this,
+>>>>> or is the segfault expected behaviour?
+>>>>>
+>>>>
+>>>> IIUC dmitry said he will cook a patch. I have not seen any patch yet.
+>>>
+>>> Yes, sorry about the delay - I was a bit busy with xfrm patches.
+>>>
+>>> I'll send patches for .close() this week, working on them now.
+>>
+>> I haven't seen the patches, did you sent them out finally ?
+> 
+> I think it's this series:
+> 
+> https://lore.kernel.org/r/20201013013416.390574-1-dima@arista.com
+> 
+> but they look really invasive to me, so I may cook a small hack for arm64
+> in the meantine / for stable.
+> 
 
-The policy min and max changes are communicated to the driver via the
-governor ->limits() callback and that can only call
-__cpufreq_driver_target() then or defer the update to the next
-->fast_switch() invocation.  Either way, the driver needs to have a
-chance to carry out the full update even if the target frequency
-doesn't change, but the policy min or max limits may have changed.
+Not sure we are talking about the same thing.
 
-> Your commit log talks about policy->max and powersave combination,
+I can't see any new .close function added to vm_special_mapping in order to replace arch_unmap() hook.
 
-Yes, it does, because that's a very clearly visible symptom.
-
-> I think the same will be true in case of policy->min and performance ?
-
-It might in theory, but it is not in practice, because the HWP min is
-set to the target freq (and the target freq is already clamped between
-the policy min and max).
-
-But generally speaking you are right, this would be a problem for any
-driver having to update some internal upper and lower boundary
-settings along with the target freq.
-
-> And also with any other governor (like schedutil) if the target_freq doesn't change for a while.
-
-Well, yes.
-
-A change of one of the limits that doesn't cause the target to change
-may be missed in general.
-
-> And IMHO, this change is more like a band-aid which is going to remove
-> the check of target != cur for all target() type drivers (which aren't
-> many) and it feels like a penalty on them (which is also there for
-> intel-cpufreq without hwp), and that we will get into the same problem
-> for target_index() drivers as well if they want to do something
-> similar in future, i.e. skip checking for same-freq.
->
-> Maybe adding a new flag for the cpufreq-driver for force-updates would
-> be a better solution ? Which will make this very much driver
-> dependent.
-
-Fair enough, I'll add a driver flag for that.
-
-Also I split the patch into the core part and the driver-specific part
-for clarity.
-
-Thanks!
+Christophe
