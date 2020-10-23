@@ -2,142 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8F492970EF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:55:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF0722970F3
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:56:52 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S465153AbgJWNz1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:55:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:53306 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S464793AbgJWNz0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:55:26 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F80D113E;
-        Fri, 23 Oct 2020 06:55:25 -0700 (PDT)
-Received: from bogus (unknown [10.57.15.80])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3283E3F66B;
-        Fri, 23 Oct 2020 06:55:24 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 14:55:21 +0100
-From:   Sudeep Holla <sudeep.holla@arm.com>
-To:     Rob Herring <robh+dt@kernel.org>
-Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        devicetree@vger.kernel.org,
-        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        Sudeep Holla <sudeep.holla@arm.com>
-Subject: Re: [PATCH 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
- performance domains
-Message-ID: <20201023135521.pjv3ctpxrsg4z2oz@bogus>
-References: <20201020203710.10100-1-sudeep.holla@arm.com>
- <CAL_JsqKH9pN7E7o+UY7YmOrOKCUigrMTxY3f3AH4PdpQUAaawg@mail.gmail.com>
- <20201021163021.lkqhum3xnyzt6pir@bogus>
- <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
+        id S1750171AbgJWN4t (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:56:49 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52684 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1750146AbgJWN4s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:56:48 -0400
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [IPv6:2001:4d48:ad52:32c8:5054:ff:fe00:142])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 905E6C0613CE;
+        Fri, 23 Oct 2020 06:56:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=yP+Q48wjyA1OtcAwAs6WtGA6NCAOZIUoYj9ZiEEVx+0=; b=j5UPJ/itw1xdW6ep+I1m7UHQm
+        ob4rOr6elyUGAyYU0Me2YV5fMc0ECSL/cVI1BO9W9/nrL5B/9Kvt6/YFGU01JNN4HRxLWmibHYet1
+        QtA/C+5//NcXiu/cl3Z1K3TEQEJ3bry6aM3RISxKLhFknrrTuRb1NjqJmTPf+9vNhW8dSOjnZ2JNB
+        T9W3IWcpwpbyNqWvjknpu3R485AKnl1THo/i75y5QZmj/sBvFz6boBr7dHNYcBN+iYygiUNc1uMSJ
+        3k80MrIkURWZXjosAfVlhY1yJ+5q3i+x7rZGpctuiugcTE06q69gOPR6SqCYe7OgLR00PjkzQTI9Q
+        SVsepb4kw==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:50000)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kVxYg-0003Y1-CZ; Fri, 23 Oct 2020 14:56:42 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kVxYc-0008V4-7h; Fri, 23 Oct 2020 14:56:38 +0100
+Date:   Fri, 23 Oct 2020 14:56:38 +0100
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Parshuram Raju Thombare <pthombar@cadence.com>
+Cc:     "andrew@lunn.ch" <andrew@lunn.ch>,
+        "nicolas.ferre@microchip.com" <nicolas.ferre@microchip.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Milind Parab <mparab@cadence.com>
+Subject: Re: [PATCH v3] net: macb: add support for high speed interface
+Message-ID: <20201023135638.GE1551@shell.armlinux.org.uk>
+References: <1603302245-30654-1-git-send-email-pthombar@cadence.com>
+ <20201021185056.GN1551@shell.armlinux.org.uk>
+ <DM5PR07MB31961F14DD8A38B7FFA8DA24C11D0@DM5PR07MB3196.namprd07.prod.outlook.com>
+ <DM5PR07MB3196723723F236F6113DDF9EC11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
+ <20201023112549.GB1551@shell.armlinux.org.uk>
+ <DM5PR07MB31961A008F4EFA98443E63C6C11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAL_JsqJFu-kn8uY9Jv0B-i2uNkx9wXg86N-aVTTH+zYz2MrxDA@mail.gmail.com>
-User-Agent: NeoMutt/20171215
+In-Reply-To: <DM5PR07MB31961A008F4EFA98443E63C6C11A0@DM5PR07MB3196.namprd07.prod.outlook.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 08:21:21AM -0500, Rob Herring wrote:
-> On Wed, Oct 21, 2020 at 11:30 AM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> >
-> > On Wed, Oct 21, 2020 at 11:20:27AM -0500, Rob Herring wrote:
-> > > On Tue, Oct 20, 2020 at 3:37 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
-> > > >
-> > > > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
-> > > > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
-> > > > _allocate_opp_table() which is called from dev_pm_opp_add and it
-> > > > now propagates the error back to the caller.
-> > > >
-> > > > SCMI performance domain re-used clock bindings to keep it simple. However
-> > > > with the above mentioned change, if clock property is present in a device
-> > > > node, opps can't be added until clk_get succeeds. So in order to fix the
-> > > > issue, we can register dummy clocks which is completely ugly.
-> > > >
-> > > > Since there are no upstream users for the SCMI performance domain clock
-> > > > bindings, let us introduce separate performance domain bindings for the
-> > > > same.
-> > > >
-> > > > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
-> > > > ---
-> > > >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
-> > > >  1 file changed, 16 insertions(+), 3 deletions(-)
-> > > >
-> > > > Hi Rob/Viresh,
-> > > >
-> > > > This is actually a fix for the regression I reported here[1].
-> > > > I am not adding fixes tag as I am targeting in the same release and
-> > > > also because it is not directly related.
-> > > >
-> > > > Regards,
-> > > > Sudeep
-> > > >
-> > > > [1] https://lore.kernel.org/r/20201015180555.gacdzkofpibkdn2e@bogus
-> > > >
-> > > > P.S.:/me records that this binding needs to be moved to yaml in v5.11
-> > > >
-> > > > diff --git a/Documentation/devicetree/bindings/arm/arm,scmi.txt b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > index 55deb68230eb..0a6c1b495403 100644
-> > > > --- a/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > +++ b/Documentation/devicetree/bindings/arm/arm,scmi.txt
-> > > > @@ -44,7 +44,7 @@ as described in the following sections. If the platform supports dedicated
-> > > >  mboxes, mbox-names and shmem shall be present in the sub-node corresponding
-> > > >  to that protocol.
-> > > >
-> > > > -Clock/Performance bindings for the clocks/OPPs based on SCMI Message Protocol
-> > > > +Clock bindings for the clocks based on SCMI Message Protocol
-> > > >  ------------------------------------------------------------
-> > > >
-> > > >  This binding uses the common clock binding[1].
-> > > > @@ -52,6 +52,19 @@ This binding uses the common clock binding[1].
-> > > >  Required properties:
-> > > >  - #clock-cells : Should be 1. Contains the Clock ID value used by SCMI commands.
-> > > >
-> > > > +Performance bindings for the OPPs based on SCMI Message Protocol
-> > > > +------------------------------------------------------------
-> > > > +
-> > > > +Required properties:
-> > > > +- #perf-domain-cells: Should be 1. Contains the performance domain ID value
-> > > > +                     used by SCMI commands.
-> > >
-> > > When is this not 1 (IOW, you only need this if variable)? How would it
-> > > be used outside SCMI (given it has a generic name)?
-> > >
-> >
-> > Ah, I thought we need this if phandle is followed by 1 or more arguments.
-> > If it is not compulsory I can drop this or make it scmi specific if we
-> > need it.
->
-> No, your options are fixed or variable number of cells. If this is
-> generic, then maybe it needs to be variable. If it's SCMI specific
-> then it can likely be fixed unless you can think of other information
-> you may need in the cells.
->
+On Fri, Oct 23, 2020 at 01:34:09PM +0000, Parshuram Raju Thombare wrote:
+> >Whenever the interface changes, we go through the full reconfiguration
+> >procedure that I've already outlined. This involves calling the
+> >mac_prepare() method which calls into mvpp2_mac_prepare() and its
+> >child mvpp2__mac_prepare().
+> 
+> Ok, I misunderstood it as interface mode change between successive mac_prepare().
+> If major reconfiguration is certain to happen after every interface mode change,
+> I will make another small modification in mac_prepare method to set appropriate
+> pcs_ops for selected interface mode. 
+> pcs_ops for low speed, however, will just be existing non 10GBASE-R functions renamed.
+> This will allow us to get rid of old API's for non 10GBASE-R PCS. I hope you are ok with
+> these changes done in the same patch.
 
-Understood.
+Yes, that sounds good.
 
-> > > > +
-> > > > +* Property arm,scmi-perf-domain
-> > >
-> > > Yet this doesn't have a generic name. You mentioned on IRC this is
-> > > aligned with QCom, but why can't QCom use the same property here?
-> > >
-> >
-> > This is SCMI firmware driven while they have hardware driven perf/freq
-> > domains. So different drivers, need to distinguish between the two.
->
-> So what if they are different drivers. That's *always* the case. The
-> clock provider(s) for 'clocks' is different for every SoC? I doesn't
-> matter who is the provider, it's the same information being described.
->
+Thanks.
 
-Fair enough. I was basing my argument on the fact that Qcom has users for
-those bindings and I see limited scope for consolidation as that binding
-has more information about the cpufreq-hw hardware block.
-
---
-Regards,
-Sudeep
+-- 
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
