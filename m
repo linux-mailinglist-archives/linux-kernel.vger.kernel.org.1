@@ -2,86 +2,393 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33DEE2978BF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:16:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 011F92978CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:24:18 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756391AbgJWVQS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:16:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36568 "EHLO
+        id S1756637AbgJWVYC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:24:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756080AbgJWVQQ (ORCPT
+        with ESMTP id S1756030AbgJWVYC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:16:16 -0400
-Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200F2C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:16:16 -0700 (PDT)
-Received: by mail-qt1-x844.google.com with SMTP id j62so2243364qtd.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:16:16 -0700 (PDT)
+        Fri, 23 Oct 2020 17:24:02 -0400
+Received: from mail-ot1-x344.google.com (mail-ot1-x344.google.com [IPv6:2607:f8b0:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 39C8BC0613CE;
+        Fri, 23 Oct 2020 14:24:02 -0700 (PDT)
+Received: by mail-ot1-x344.google.com with SMTP id k3so2066792otp.1;
+        Fri, 23 Oct 2020 14:24:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ONKARXAOXhn+rHY7xamM2KWYF09JnFj33g4K/fnpqwM=;
-        b=dZHbRTxEQlVNK1Fn3lDYx9KoaG4539IChRW/73vmgucbEoNAKGqY3cxx2C8JihxF4c
-         yk3EYGmjEMxQy25x82lgkave7H1cfzUeayLBXwsabmJ6AokqKFFm2RJf+hTwKcOmqkhy
-         XW6sqma17y9IoiKWaDvODDu3IpABxcOWlSM3Kg9As/yfa3TLJmM/Jed6fv034H/BfWzr
-         +8dmLs8/UtwbnbtKmXCclcshq+lQwXC2cUz6LYS9kxDRBf1zonyOc/qBMDJtp4gjgZq5
-         fcDxfhbD+PmByI1v/vxoDkqXC0qdRtpB3fOaMKTkUxTI4QyV+2PvptkOwp2fbXcYATXA
-         ZBTQ==
+        h=sender:date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=gUCiDILDTrTnxFKCvB7S7EViTN3weS1vsJ+gyCkYGxY=;
+        b=L2l/CHHXGvMzS/7UXARz2o/4N3xwOscQDf44MR1qtny0cmOI++N4erjaZ+DuYoJIrR
+         q7jIduPjqVCPwYs6+oUSUbLYysjXyuZm6OPPRQqlmxkdTWbWh5rBcQ9SvB/w04i5bHYN
+         1r+RhUJH7DZxW2/cH/kCnZqk8ZcxtUuQTapyoG1Ock6T2Jz3XbOE+dnsFY2lrEgOByy8
+         YmNZ8eGmLUkJlO48xvQ3Scrjj/ttDIVRNUj3SHw3m3zbVJmBi3E4MyusVPSGWvFrvS15
+         ZRGvrDIfhY1cndtsBBW5ljTu1zgyjP4sqzipJe3NmTxtxr6JOEIgQxDQnqxN0FoKcMeW
+         00kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ONKARXAOXhn+rHY7xamM2KWYF09JnFj33g4K/fnpqwM=;
-        b=PqWt2r3HKs4ABbWQVY9q/iTtm14LZDgHBh02nD3/Vms5TSGQq5yJHxQmNgi0/TTzsC
-         RUHU/epzvw9sAj/MX1JeNZi9Y0Z5rmwC+XZGccqTtKQaLOU8W1LVmDXDKN3j1DfbgBOe
-         cMns1zbfThW2zP8Ds8oTAsbi18jbGCb7yGFQMCkcM+mdPyQ9N2QggQurhMVeH7f0rp49
-         o6B5qXg+5x0BSqWRDh2Bt6JFD9YAdvv4Kr62WRtX5CsvBC1wSGNaZ4VNX28ql+YuxOs3
-         m/zyBw1F3F5YdWExviUZsnQbnXF9wZZfCO6/xZSD6GKFTPJDns8yRmJa9vgjrq3ovVlR
-         ayJQ==
-X-Gm-Message-State: AOAM533uSm2RRBkPQXEUMkwoQ/Op3Bs+e/z1BfIbPObYNkzznKxmC3pv
-        xdF0+An10LehTmEEnYRp2Yk=
-X-Google-Smtp-Source: ABdhPJwtzxN39qc5EDf5nyl74i4knkToIOcMwXNcjycEnGNhwF98VL5WSASbfdRhzrMKL1fGqKzDfg==
-X-Received: by 2002:a05:622a:4b:: with SMTP id y11mr4337580qtw.348.1603487775388;
-        Fri, 23 Oct 2020 14:16:15 -0700 (PDT)
-Received: from tong-desktop.local ([2601:5c0:c200:27c6:a59b:90b7:e05c:ed13])
-        by smtp.googlemail.com with ESMTPSA id b23sm1614691qkh.68.2020.10.23.14.16.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 14:16:14 -0700 (PDT)
-From:   Tong Zhang <ztong0001@gmail.com>
-To:     Anders Larsen <al@alarsen.net>, linux-kernel@vger.kernel.org
-Cc:     ztong0001@gmail.com
-Subject: [PATCH] qnx4: do not interpret -EIO as a correct address
-Date:   Fri, 23 Oct 2020 17:16:04 -0400
-Message-Id: <20201023211604.159074-1-ztong0001@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to:user-agent;
+        bh=gUCiDILDTrTnxFKCvB7S7EViTN3weS1vsJ+gyCkYGxY=;
+        b=pjqFKFaPoJ2RrPti3KROYosz9IeAGD7gWJnsOugecHVZNocxxUhbNPTOVx/eqSa4cV
+         sfF4vder+3VOuhw83pxWrN7Gx6AnIKL8Y5hcDGEmiubqprzu0o433vp3MOzkJV4BGBrl
+         HOgQKtdKfgsPr5WkDwwi5NvEq3QqqJi0g6JhZ61DbqVXfF5T4UM/O+RH1WZEqgp6nozA
+         80xjYVOFHBat77q/3dKO+9iM/ve9WA71QtYPFaSz4/3UolUMmNSfT7cETE6qCn+LmenO
+         C5HjNkiL7TYle46uHSmfiQlpnaTpqn36vss0QgCHElKF9KdFipmSgrocIWnKfdGv01O/
+         gciQ==
+X-Gm-Message-State: AOAM533Xk6qimX/N0UzgcwnUeXJEoa9F4TxyfbBYWE5W0/CVHTcSYN4n
+        ZyNnBuppj8bGqT6ehCwnfZ4=
+X-Google-Smtp-Source: ABdhPJx9HwEaL5bxnLhumSjN82nwcCXUKH6q5Ir5Wk1/LVeqroRUl4VTqRnuyAdT4KvETzAHWVRu7w==
+X-Received: by 2002:a05:6830:1bce:: with SMTP id v14mr3051558ota.361.1603488241441;
+        Fri, 23 Oct 2020 14:24:01 -0700 (PDT)
+Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id v19sm676333ota.61.2020.10.23.14.24.00
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Fri, 23 Oct 2020 14:24:01 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date:   Fri, 23 Oct 2020 14:23:59 -0700
+From:   Guenter Roeck <linux@roeck-us.net>
+To:     Chris Packham <chris.packham@alliedtelesis.co.nz>
+Cc:     jdelvare@suse.com, Tobi Wulff <tobi.wulff@alliedtelesis.co.nz>,
+        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/2] hwmon: (adt7470) Create functions for updating
+ readings and limits
+Message-ID: <20201023212359.GA29197@roeck-us.net>
+References: <20201019223423.31488-1-chris.packham@alliedtelesis.co.nz>
+ <20201019223423.31488-2-chris.packham@alliedtelesis.co.nz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201019223423.31488-2-chris.packham@alliedtelesis.co.nz>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-qnx4_block_map() may return -EIO on funny qnx4 fs image, in this case do
-not interpret -EIO as a correct address
+On Tue, Oct 20, 2020 at 11:34:22AM +1300, Chris Packham wrote:
+> Split the body of adt7470_update_device() into two helper functions
+> adt7470_update_sensors() and adt7470_update_limits(). Although neither
+> of the new helpers returns an error yet lay the groundwork for
+> propagating failures through to the sysfs readers.
+> 
+> Signed-off-by: Chris Packham <chris.packham@alliedtelesis.co.nz>
 
-Signed-off-by: Tong Zhang <ztong0001@gmail.com>
----
- fs/qnx4/inode.c | 2 ++
- 1 file changed, 2 insertions(+)
+Applied.
 
-diff --git a/fs/qnx4/inode.c b/fs/qnx4/inode.c
-index e8da1cde87b9..d3a40c5b1a9a 100644
---- a/fs/qnx4/inode.c
-+++ b/fs/qnx4/inode.c
-@@ -59,6 +59,8 @@ static int qnx4_get_block( struct inode *inode, sector_t iblock, struct buffer_h
- 	QNX4DEBUG((KERN_INFO "qnx4: qnx4_get_block inode=[%ld] iblock=[%ld]\n",inode->i_ino,iblock));
- 
- 	phys = qnx4_block_map( inode, iblock );
-+	if (phys == -EIO)
-+		return -EIO;
- 	if ( phys ) {
- 		// logical block is before EOF
- 		map_bh(bh, inode->i_sb, phys);
--- 
-2.25.1
+Thanks,
+Guenter
 
+> ---
+>  drivers/hwmon/adt7470.c | 154 ++++++++++++++++++++++++++++++----------
+>  1 file changed, 118 insertions(+), 36 deletions(-)
+> 
+> diff --git a/drivers/hwmon/adt7470.c b/drivers/hwmon/adt7470.c
+> index 740f39a54ab0..2e8feacccf84 100644
+> --- a/drivers/hwmon/adt7470.c
+> +++ b/drivers/hwmon/adt7470.c
+> @@ -270,37 +270,11 @@ static int adt7470_update_thread(void *p)
+>  	return 0;
+>  }
+>  
+> -static struct adt7470_data *adt7470_update_device(struct device *dev)
+> +static int adt7470_update_sensors(struct adt7470_data *data)
+>  {
+> -	struct adt7470_data *data = dev_get_drvdata(dev);
+>  	struct i2c_client *client = data->client;
+> -	unsigned long local_jiffies = jiffies;
+>  	u8 cfg;
+>  	int i;
+> -	int need_sensors = 1;
+> -	int need_limits = 1;
+> -
+> -	/*
+> -	 * Figure out if we need to update the shadow registers.
+> -	 * Lockless means that we may occasionally report out of
+> -	 * date data.
+> -	 */
+> -	if (time_before(local_jiffies, data->sensors_last_updated +
+> -			SENSOR_REFRESH_INTERVAL) &&
+> -	    data->sensors_valid)
+> -		need_sensors = 0;
+> -
+> -	if (time_before(local_jiffies, data->limits_last_updated +
+> -			LIMIT_REFRESH_INTERVAL) &&
+> -	    data->limits_valid)
+> -		need_limits = 0;
+> -
+> -	if (!need_sensors && !need_limits)
+> -		return data;
+> -
+> -	mutex_lock(&data->lock);
+> -	if (!need_sensors)
+> -		goto no_sensor_update;
+>  
+>  	if (!data->temperatures_probed)
+>  		adt7470_read_temperatures(client, data);
+> @@ -352,12 +326,13 @@ static struct adt7470_data *adt7470_update_device(struct device *dev)
+>  	data->alarms_mask = adt7470_read_word_data(client,
+>  						   ADT7470_REG_ALARM1_MASK);
+>  
+> -	data->sensors_last_updated = local_jiffies;
+> -	data->sensors_valid = 1;
+> +	return 0;
+> +}
+>  
+> -no_sensor_update:
+> -	if (!need_limits)
+> -		goto out;
+> +static int adt7470_update_limits(struct adt7470_data *data)
+> +{
+> +	struct i2c_client *client = data->client;
+> +	int i;
+>  
+>  	for (i = 0; i < ADT7470_TEMP_COUNT; i++) {
+>  		data->temp_min[i] = i2c_smbus_read_byte_data(client,
+> @@ -382,12 +357,55 @@ static struct adt7470_data *adt7470_update_device(struct device *dev)
+>  						ADT7470_REG_PWM_TMIN(i));
+>  	}
+>  
+> -	data->limits_last_updated = local_jiffies;
+> -	data->limits_valid = 1;
+> +	return 0;
+> +}
+>  
+> +static struct adt7470_data *adt7470_update_device(struct device *dev)
+> +{
+> +	struct adt7470_data *data = dev_get_drvdata(dev);
+> +	unsigned long local_jiffies = jiffies;
+> +	int need_sensors = 1;
+> +	int need_limits = 1;
+> +	int err;
+> +
+> +	/*
+> +	 * Figure out if we need to update the shadow registers.
+> +	 * Lockless means that we may occasionally report out of
+> +	 * date data.
+> +	 */
+> +	if (time_before(local_jiffies, data->sensors_last_updated +
+> +			SENSOR_REFRESH_INTERVAL) &&
+> +	    data->sensors_valid)
+> +		need_sensors = 0;
+> +
+> +	if (time_before(local_jiffies, data->limits_last_updated +
+> +			LIMIT_REFRESH_INTERVAL) &&
+> +	    data->limits_valid)
+> +		need_limits = 0;
+> +
+> +	if (!need_sensors && !need_limits)
+> +		return data;
+> +
+> +	mutex_lock(&data->lock);
+> +	if (need_sensors) {
+> +		err = adt7470_update_sensors(data);
+> +		if (err < 0)
+> +			goto out;
+> +		data->sensors_last_updated = local_jiffies;
+> +		data->sensors_valid = 1;
+> +	}
+> +
+> +	if (need_limits) {
+> +		err = adt7470_update_limits(data);
+> +		if (err < 0)
+> +			goto out;
+> +		data->limits_last_updated = local_jiffies;
+> +		data->limits_valid = 1;
+> +	}
+>  out:
+>  	mutex_unlock(&data->lock);
+> -	return data;
+> +
+> +	return err < 0 ? ERR_PTR(err) : data;
+>  }
+>  
+>  static ssize_t auto_update_interval_show(struct device *dev,
+> @@ -395,6 +413,10 @@ static ssize_t auto_update_interval_show(struct device *dev,
+>  					 char *buf)
+>  {
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->auto_update_interval);
+>  }
+>  
+> @@ -422,6 +444,10 @@ static ssize_t num_temp_sensors_show(struct device *dev,
+>  				     char *buf)
+>  {
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->num_temp_sensors);
+>  }
+>  
+> @@ -451,6 +477,10 @@ static ssize_t temp_min_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", 1000 * data->temp_min[attr->index]);
+>  }
+>  
+> @@ -483,6 +513,10 @@ static ssize_t temp_max_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", 1000 * data->temp_max[attr->index]);
+>  }
+>  
+> @@ -515,6 +549,10 @@ static ssize_t temp_show(struct device *dev, struct device_attribute *devattr,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", 1000 * data->temp[attr->index]);
+>  }
+>  
+> @@ -524,6 +562,9 @@ static ssize_t alarm_mask_show(struct device *dev,
+>  {
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+>  
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%x\n", data->alarms_mask);
+>  }
+>  
+> @@ -554,6 +595,9 @@ static ssize_t fan_max_show(struct device *dev,
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+>  
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	if (FAN_DATA_VALID(data->fan_max[attr->index]))
+>  		return sprintf(buf, "%d\n",
+>  			       FAN_PERIOD_TO_RPM(data->fan_max[attr->index]));
+> @@ -590,6 +634,9 @@ static ssize_t fan_min_show(struct device *dev,
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+>  
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	if (FAN_DATA_VALID(data->fan_min[attr->index]))
+>  		return sprintf(buf, "%d\n",
+>  			       FAN_PERIOD_TO_RPM(data->fan_min[attr->index]));
+> @@ -626,6 +673,9 @@ static ssize_t fan_show(struct device *dev, struct device_attribute *devattr,
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+>  
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	if (FAN_DATA_VALID(data->fan[attr->index]))
+>  		return sprintf(buf, "%d\n",
+>  			       FAN_PERIOD_TO_RPM(data->fan[attr->index]));
+> @@ -637,6 +687,10 @@ static ssize_t force_pwm_max_show(struct device *dev,
+>  				  struct device_attribute *devattr, char *buf)
+>  {
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->force_pwm_max);
+>  }
+>  
+> @@ -670,6 +724,10 @@ static ssize_t pwm_show(struct device *dev, struct device_attribute *devattr,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->pwm[attr->index]);
+>  }
+>  
+> @@ -763,6 +821,10 @@ static ssize_t pwm_max_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->pwm_max[attr->index]);
+>  }
+>  
+> @@ -794,6 +856,10 @@ static ssize_t pwm_min_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", data->pwm_min[attr->index]);
+>  }
+>  
+> @@ -825,6 +891,10 @@ static ssize_t pwm_tmax_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	/* the datasheet says that tmax = tmin + 20C */
+>  	return sprintf(buf, "%d\n", 1000 * (20 + data->pwm_tmin[attr->index]));
+>  }
+> @@ -834,6 +904,10 @@ static ssize_t pwm_tmin_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", 1000 * data->pwm_tmin[attr->index]);
+>  }
+>  
+> @@ -866,6 +940,10 @@ static ssize_t pwm_auto_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+> +
+>  	return sprintf(buf, "%d\n", 1 + data->pwm_automatic[attr->index]);
+>  }
+>  
+> @@ -911,8 +989,12 @@ static ssize_t pwm_auto_temp_show(struct device *dev,
+>  {
+>  	struct sensor_device_attribute *attr = to_sensor_dev_attr(devattr);
+>  	struct adt7470_data *data = adt7470_update_device(dev);
+> -	u8 ctrl = data->pwm_auto_temp[attr->index];
+> +	u8 ctrl;
+> +
+> +	if (IS_ERR(data))
+> +		return PTR_ERR(data);
+>  
+> +	ctrl = data->pwm_auto_temp[attr->index];
+>  	if (ctrl)
+>  		return sprintf(buf, "%d\n", 1 << (ctrl - 1));
+>  	else
