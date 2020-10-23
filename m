@@ -2,125 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82BF7296BFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:22:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id ACC28296BFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:22:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461358AbgJWJWW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:22:22 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:5252 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S461313AbgJWJWV (ORCPT
+        id S461368AbgJWJWa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:22:30 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35077 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S461313AbgJWJW3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:22:21 -0400
-X-IronPort-AV: E=Sophos;i="5.77,407,1596492000"; 
-   d="scan'208";a="474003322"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 11:21:51 +0200
-Date:   Fri, 23 Oct 2020 11:21:50 +0200 (CEST)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Mel Gorman <mgorman@suse.de>
-cc:     Ingo Molnar <mingo@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] sched/fair: check for idle core
-In-Reply-To: <20201023084016.GP32041@suse.de>
-Message-ID: <alpine.DEB.2.22.394.2010231121200.2707@hadrien>
-References: <1603372550-14680-1-git-send-email-Julia.Lawall@inria.fr> <20201023084016.GP32041@suse.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Fri, 23 Oct 2020 05:22:29 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603444948;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=zFy8cKDrlOK1vlR1rPZ1yB4Mtk+7r9jVofEsE3/FjNs=;
+        b=WZhse79o2PD+XYU6fUFocjqEkzk/uQw7bvpdElUMZ6q+z32yWMQ6p8rBidhzTQ1llKN+bz
+        EP2PtnPGzWJfyZal9Arpo5/uML4X0ND01giTtlv1YeZ7S3C8jLAr9Kz5bS7A+3Gb7tlXUH
+        9+TKNAwuW33qEK0wnUp8m7kME0qcqAU=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-216-u01CMOkIOVG5IUBmPhG-6w-1; Fri, 23 Oct 2020 05:22:26 -0400
+X-MC-Unique: u01CMOkIOVG5IUBmPhG-6w-1
+Received: by mail-wm1-f71.google.com with SMTP id y13so127588wmj.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:22:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:to:cc:references:from:subject:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=zFy8cKDrlOK1vlR1rPZ1yB4Mtk+7r9jVofEsE3/FjNs=;
+        b=qW7mikR8nSx0oREOy1I/nGIz0Kba82WFA62wRPHkC/W66wzc2Xi+aeGrtvoOZwFu/q
+         hWn8D0jexKnStNoZSzbUmBruH9eey5oyVA7+2HqOay24nxTsPNIt7A4TXGyqNNnOym2D
+         aQ/JrFQt+vOjSmkXijfXuC0+s3JIp6Snb1A8AcSdNR5BY/JXXXt20j8jU8F5qfxJEV3T
+         yF6mUWd+vQSMqT+yNNaounrFILxpjil1PvBo64ndJ2rqt08mge75gj+5FJ+nouInaoew
+         ly9+NwyKah01x9i03ppcaGMBUS9FVPjVxwiKKCP5tmyNdKu/cVahuyYKhc0ts4mOdpMz
+         f1CA==
+X-Gm-Message-State: AOAM531qhOI3eWkeCnFQ2weGQ7jwIIKoXVfQH7oTtbLCgAbnFWSIWUyF
+        kPefiTzA3ebvk6F4W3Sc8lWEU3dv8OvD6ZP8k8mVLC2tO7nRa9g/qWyCrDsXa5Z4yn86aa28SVa
+        HZCDpXUa5r7oDiT5cGMvVPNU6
+X-Received: by 2002:adf:f4ca:: with SMTP id h10mr1528196wrp.89.1603444944947;
+        Fri, 23 Oct 2020 02:22:24 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJz3ds5i6Jy9xzhnQs1hXxTjYyriEn+pFklF0XOxau77zxYKeBo36Gsgq5Oa8cvPmD7wkyXiEg==
+X-Received: by 2002:adf:f4ca:: with SMTP id h10mr1528179wrp.89.1603444944727;
+        Fri, 23 Oct 2020 02:22:24 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id 205sm2081202wme.38.2020.10.23.02.22.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 02:22:24 -0700 (PDT)
+To:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Jim Mattson <jmattson@google.com>
+Cc:     Mohammed Gamal <mgamal@redhat.com>, kvm list <kvm@vger.kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <20200710154811.418214-1-mgamal@redhat.com>
+ <20200710154811.418214-8-mgamal@redhat.com>
+ <CALMp9eSbY6FjZAXt7ojQrX_SC_Lyg24dTGFZdKZK7fARGA=3hg@mail.gmail.com>
+ <CALMp9eTFzQMpsrGhN4uJxyUHMKd5=yFwxLoBy==2BTHwmv_UGQ@mail.gmail.com>
+ <20201023031433.GF23681@linux.intel.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Subject: Re: [PATCH v3 7/9] KVM: VMX: Add guest physical address check in EPT
+ violation and misconfig
+Message-ID: <498cfe12-f3e4-c4a2-f36b-159ccc10cdc4@redhat.com>
+Date:   Fri, 23 Oct 2020 11:22:23 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201023031433.GF23681@linux.intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-
-On Fri, 23 Oct 2020, Mel Gorman wrote:
-
-> On Thu, Oct 22, 2020 at 03:15:50PM +0200, Julia Lawall wrote:
-> > In the case of a thread wakeup, wake_affine determines whether a core
-> > will be chosen for the thread on the socket where the thread ran
-> > previously or on the socket of the waker.  This is done primarily by
-> > comparing the load of the core where th thread ran previously (prev)
-> > and the load of the waker (this).
-> >
-> > commit 11f10e5420f6 ("sched/fair: Use load instead of runnable load
-> > in wakeup path") changed the load computation from the runnable load
-> > to the load average, where the latter includes the load of threads
-> > that have already blocked on the core.
-> >
-> > When a short-running daemon processes happens to run on prev, this
-> > change raised the situation that prev could appear to have a greater
-> > load than this, even when prev is actually idle.  When prev and this
-> > are on the same socket, the idle prev is detected later, in
-> > select_idle_sibling.  But if that does not hold, prev is completely
-> > ignored, causing the waking thread to move to the socket of the waker.
-> > In the case of N mostly active threads on N cores, this triggers other
-> > migrations and hurts performance.
-> >
-> > In contrast, before commit 11f10e5420f6, the load on an idle core
-> > was 0, and in the case of a non-idle waker core, the effect of
-> > wake_affine was to select prev as the target for searching for a core
-> > for the waking thread.
-> >
-> > To avoid unnecessary migrations, extend wake_affine_idle to check
-> > whether the core where the thread previously ran is currently idle,
-> > and if so simply return that core as the target.
-> > target
-> > [1] commit 11f10e5420f6ce ("sched/fair: Use load instead of runnable
-> > load in wakeup path")
-> >
-> > This particularly has an impact when using the ondemand power manager,
-> > where kworkers run every 0.004 seconds on all cores, increasing the
-> > likelihood that an idle core will be considered to have a load.
-> >
-> > The following numbers were obtained with the benchmarking tool
-> > hyperfine (https://github.com/sharkdp/hyperfine) on the NAS parallel
-> > benchmarks (https://www.nas.nasa.gov/publications/npb.html).  The
-> > tests were run on an 80-core Intel(R) Xeon(R) CPU E7-8870 v4 @
-> > 2.10GHz.  Active (intel_pstate) and passive (intel_cpufreq) power
-> > management were used.  Times are in seconds.  All experiments use all
-> > 160 hardware threads.
-> >
-> > 	v5.9/intel-pstate	v5.9+patch/intel-pstate
-> > bt.C.c	24.725724+-0.962340	23.349608+-1.607214
-> > lu.C.x	29.105952+-4.804203	25.249052+-5.561617
-> > sp.C.x	31.220696+-1.831335	30.227760+-2.429792
-> > ua.C.x	26.606118+-1.767384	25.778367+-1.263850
-> >
-> > 	v5.9/ondemand		v5.9+patch/ondemand
-> > bt.C.c	25.330360+-1.028316	23.544036+-1.020189
-> > lu.C.x	35.872659+-4.872090	23.719295+-3.883848
-> > sp.C.x	32.141310+-2.289541	29.125363+-0.872300
-> > ua.C.x	29.024597+-1.667049	25.728888+-1.539772
-> >
-> > On the smaller data sets (A and B) and on the other NAS benchmarks
-> > there is no impact on performance.
-> >
-> > This also has a major impact on the splash2x.volrend benchmark of the
-> > parsec benchmark suite that goes from 1m25 without this patch to 0m45,
-> > in active (intel_pstate) mode.
-> >
-> > Fixes: 11f10e5420f6 ("sched/fair: Use load instead of runnable load in wakeup path")
-> > Signed-off-by: Julia Lawall <Julia.Lawall@inria.fr>
-> > Reviewed-by Vincent Guittot <vincent.guittot@linaro.org>
-> >
+On 23/10/20 05:14, Sean Christopherson wrote:
+>>>> +
+>>>> +       /*
+>>>> +        * Check that the GPA doesn't exceed physical memory limits, as that is
+>>>> +        * a guest page fault.  We have to emulate the instruction here, because
+>>>> +        * if the illegal address is that of a paging structure, then
+>>>> +        * EPT_VIOLATION_ACC_WRITE bit is set.  Alternatively, if supported we
+>>>> +        * would also use advanced VM-exit information for EPT violations to
+>>>> +        * reconstruct the page fault error code.
+>>>> +        */
+>>>> +       if (unlikely(kvm_mmu_is_illegal_gpa(vcpu, gpa)))
+>>>> +               return kvm_emulate_instruction(vcpu, 0);
+>>>> +
+>>> Is kvm's in-kernel emulator up to the task? What if the instruction in
+>>> question is AVX-512, or one of the myriad instructions that the
+>>> in-kernel emulator can't handle? Ice Lake must support the advanced
+>>> VM-exit information for EPT violations, so that would seem like a
+>>> better choice.
+>>>
+>> Anyone?
 >
-> In principal, I think the patch is ok after the recent discussion. I'm
-> holding off an ack until a battery of tests on loads with different
-> levels of utilisation and wakeup patterns makes its way through a test
-> grid. It's based on Linus's tree mid-merge window that includes what is
-> in the scheduler pipeline
+> Using "advanced info" if it's supported seems like the way to go.  Outright
+> requiring it is probably overkill; if userspace wants to risk having to kill a
+> (likely broken) guest, so be it.
 
-OK, if it doesn't work out, it would be interesting to know what goes
-badly.
+Yeah, the instruction is expected to page-fault here.  However the
+comment is incorrect and advanced information does not help here.
 
-thanks,
-julia
+The problem is that page fault error code bits cannot be reconstructed
+from bits 0..2 of the EPT violation exit qualification, if bit 8 is
+clear in the exit qualification (that is, if the access causing the EPT
+violation is to a paging-structure entry).  In that case bits 0..2 refer
+to the paging-structure access rather than to the final access.  In fact
+advanced information is not available at all for paging-structure access
+EPT violations.
+
+Thanks,
+
+Paolo
+
