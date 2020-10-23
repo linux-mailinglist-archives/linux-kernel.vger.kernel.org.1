@@ -2,117 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E2DE296BCF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:09:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 33918296BDB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:13:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461190AbgJWJJ4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:09:56 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36386 "EHLO
+        id S461209AbgJWJNH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:13:07 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36866 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461182AbgJWJJz (ORCPT
+        with ESMTP id S461197AbgJWJNG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:09:55 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 57A88C0613CE;
-        Fri, 23 Oct 2020 02:09:55 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id bh6so524226plb.5;
-        Fri, 23 Oct 2020 02:09:55 -0700 (PDT)
+        Fri, 23 Oct 2020 05:13:06 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BA50AC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id s21so1151970oij.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
+        d=ffwll.ch; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=xuWQAlQv3OUlkNPH4uDNpUc9APhaKy9hZDLX83ypl+8=;
-        b=K2Hxsjmcc+sTwvAIvsRO07AaKT13u1kEboHWoywS48QZnrOxhy4GbK7zWr5hHT+d7F
-         MHNaE+BGG+CURadnC6lF59xCZz12/cdqKSrADFaU9WKRvTPWJ7LwZQx1As6RdmdIkt47
-         svRDVApQ5LTt9wCqultuByNZwhpY/i9RS6aG5HOw3ieAwSoXQAWGiqCOcH/+0Rf0/SmA
-         EdI4VqEWC02WjXVRgPO+vlCxUljeSgtRK06Br4f7YQ1JySElDFJetX3shol07iYOz0NS
-         Nhyfoov6e2AuEgxL1uqvVPWPOQafX+KE7zd14RJQPvP6Y8+MFWkbosbHNAIbMbECo5sB
-         1tYw==
+         :cc:content-transfer-encoding;
+        bh=qM5nhEMYeFdEA7QerSEffOkMoRD8vG6Y+rmNtsxnjd4=;
+        b=Xxk1aGPWSfFkpkis6OoEqJ2gCaQ0ahlPrRIzd5LTpnMwyB8U4J5r+K0BKl7hDE+eYN
+         3FcbH6Xq/dGBMGOJztPD8i+0aPOjlnDIfmE3yk5nKc52BxNSLHg2zElLlqf99LJUx8Jn
+         jnSHwE5Y+hs0wMvh4+/GAgohgcKexUIqGABys=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=xuWQAlQv3OUlkNPH4uDNpUc9APhaKy9hZDLX83ypl+8=;
-        b=DNVQC6QpT5QKXGFdmOK7McseUg7IX3p5eObac67JMvuEG/A01r3tGnNWD8UwlhMOMi
-         r/N4gAGPxxLchTuhRExsMI+q81VBx90JY758jcfg4jnVtdQtHfmyJQ38uoacOuMIx+vr
-         zDdwI0KTTEaJFPEt6nr4PYaUHS6OmvQ1vgcSCiBHS/A2uoRPWOsYdpjGl7bo26cTlDPr
-         MqthVcOaHa+tYua+ZRlfA0AHnkS/eBbbkanSJqBz34S3/LmFSQE8fYK9VumC2/7LW/2P
-         9luZSXiYPkvvDed5Y9/UT25Es7JtlNfxShKqwzoAr1hLu2IU77UpBvSlUnTrWcy+954r
-         5vHw==
-X-Gm-Message-State: AOAM533ScG9hsq4Y1xRqkEsyuNAYbresfQfEdHttSo2c4/WwceZUj9Vl
-        gryXh10I+2vgSgLqD+7gLSPf4wPKMHDB7STxmg==
-X-Google-Smtp-Source: ABdhPJzv5tSwrbDBtQ6aZLfkw4IYFW0K/Iha8OS76J7ws/85axaytL2RHKp6qTEj7O2FwBFsJNRXSQeSzreAwayXhcg=
-X-Received: by 2002:a17:902:b08b:b029:d5:f570:d514 with SMTP id
- p11-20020a170902b08bb02900d5f570d514mr1593892plr.68.1603444194797; Fri, 23
- Oct 2020 02:09:54 -0700 (PDT)
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=qM5nhEMYeFdEA7QerSEffOkMoRD8vG6Y+rmNtsxnjd4=;
+        b=A9Zp2TacFIExDgqLJ+FEQbAvKskVJmpCqXHQ2BBIRvzFX6DYOIuSZXxyng70jswaOI
+         dGtDHwjEb0LZbCa6mOpVDv8wuzAELYxf3BHzUkZn0Kam0u0WNUwmWN557fxxG6JPJZQb
+         wXB7z+culV3123l7cRF4DaHUJkgjyUptCG+zUEhdX1Ez+ZSj9g834iNqnTwH8AxFUWxr
+         aJfsNawymJIr05KBiUfKfXMs28COVbFR8TH1gjfFeRZAq3pi10+m0pPPkcIHVab5r8vV
+         6S/uaDKaJcOgipJCYuRGMNSmwMP/LwmfBj1LuwIIUUT0kA4U8qecMowK/poOSxOCcxTi
+         7thg==
+X-Gm-Message-State: AOAM533jHYhYNwU8TYIR8HSYkRKp8pM8T/+nuXPQ7+Shw1PV/cVnHcGF
+        PgHaL+uD2efhVoEPD+xPxBp3xfFgAmnotTN+sbvobQ==
+X-Google-Smtp-Source: ABdhPJxJfW2e7RMT1o53fgdROAZNOXDUkt9dx9afCHGb/w0gAtXuC9OHLmkK0ZV4M3byXb+A+RT/xRPrOH90bLENhKU=
+X-Received: by 2002:aca:39d6:: with SMTP id g205mr958482oia.14.1603444384107;
+ Fri, 23 Oct 2020 02:13:04 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201022213017.8066-1-rsalvaterra@gmail.com>
-In-Reply-To: <20201022213017.8066-1-rsalvaterra@gmail.com>
-From:   Rui Salvaterra <rsalvaterra@gmail.com>
-Date:   Fri, 23 Oct 2020 10:09:43 +0100
-Message-ID: <CALjTZvagCQu3Wz39wK3ij=NPHyT6gs7-4tub7DjLjNbt2HhFTQ@mail.gmail.com>
-Subject: Re: [PATCH v2] zram: break the strict dependency from lzo
-To:     minchan@kernel.org, ngupta@vflare.org,
-        sergey.senozhatsky.work@gmail.com
-Cc:     linux-kernel@vger.kernel.org, linux-block@vger.kernel.org
+References: <20201021085655.1192025-1-daniel.vetter@ffwll.ch> <20201021085655.1192025-5-daniel.vetter@ffwll.ch>
+In-Reply-To: <20201021085655.1192025-5-daniel.vetter@ffwll.ch>
+From:   Daniel Vetter <daniel.vetter@ffwll.ch>
+Date:   Fri, 23 Oct 2020 11:12:52 +0200
+Message-ID: <CAKMK7uE50TPNruEQv5JDX91q0DDqy-CXfbQzc48YeqPzSE96yA@mail.gmail.com>
+Subject: Re: [PATCH v3 04/16] misc/habana: Use FOLL_LONGTERM for userptr
+To:     DRI Development <dri-devel@lists.freedesktop.org>,
+        LKML <linux-kernel@vger.kernel.org>
+Cc:     KVM list <kvm@vger.kernel.org>, Linux MM <linux-mm@kvack.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        linux-s390 <linux-s390@vger.kernel.org>,
+        Daniel Vetter <daniel.vetter@intel.com>,
+        Jason Gunthorpe <jgg@ziepe.ca>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
+        =?UTF-8?B?SsOpcsO0bWUgR2xpc3Nl?= <jglisse@redhat.com>,
+        Jan Kara <jack@suse.cz>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Oded Gabbay <oded.gabbay@gmail.com>,
+        Omer Shpigelman <oshpigelman@habana.ai>,
+        Ofir Bitton <obitton@habana.ai>,
+        Tomer Tayar <ttayar@habana.ai>,
+        Moti Haimovski <mhaimovski@habana.ai>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Pawel Piskorski <ppiskorski@habana.ai>,
+        Daniel Vetter <daniel.vetter@ffwll.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Sigh. Please disregard this too, I also need to fix the default
-selection. I'll send a new version against 5.10-rc1, next week.
+Hi Oded,
 
-On Thu, 22 Oct 2020 at 22:30, Rui Salvaterra <rsalvaterra@gmail.com> wrote:
+Did testing on your end turn up anything, or can I put an
+ack&tested-by from you on the two habana patches for the next round?
+
+Thanks, Daniel
+
+On Wed, Oct 21, 2020 at 10:57 AM Daniel Vetter <daniel.vetter@ffwll.ch> wro=
+te:
 >
-> There's nothing special about zram and lzo. It works just fine without it, so
-> as long as at least one of the other supported compression algorithms is
-> selected.
+> These are persistent, not just for the duration of a dma operation.
 >
-> Signed-off-by: Rui Salvaterra <rsalvaterra@gmail.com>
+> Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
+> Cc: Jason Gunthorpe <jgg@ziepe.ca>
+> Cc: Andrew Morton <akpm@linux-foundation.org>
+> Cc: John Hubbard <jhubbard@nvidia.com>
+> Cc: J=C3=A9r=C3=B4me Glisse <jglisse@redhat.com>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: linux-mm@kvack.org
+> Cc: linux-arm-kernel@lists.infradead.org
+> Cc: linux-samsung-soc@vger.kernel.org
+> Cc: linux-media@vger.kernel.org
+> Cc: Oded Gabbay <oded.gabbay@gmail.com>
+> Cc: Omer Shpigelman <oshpigelman@habana.ai>
+> Cc: Ofir Bitton <obitton@habana.ai>
+> Cc: Tomer Tayar <ttayar@habana.ai>
+> Cc: Moti Haimovski <mhaimovski@habana.ai>
+> Cc: Daniel Vetter <daniel.vetter@ffwll.ch>
+> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+> Cc: Pawel Piskorski <ppiskorski@habana.ai>
+> Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.com>
 > ---
-> v2: fix the dependency on CRYPTO.
+>  drivers/misc/habanalabs/common/memory.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
->  drivers/block/zram/Kconfig | 6 +++++-
->  drivers/block/zram/zcomp.c | 2 ++
->  2 files changed, 7 insertions(+), 1 deletion(-)
+> diff --git a/drivers/misc/habanalabs/common/memory.c b/drivers/misc/haban=
+alabs/common/memory.c
+> index 327b64479f97..767d3644c033 100644
+> --- a/drivers/misc/habanalabs/common/memory.c
+> +++ b/drivers/misc/habanalabs/common/memory.c
+> @@ -1288,7 +1288,8 @@ static int get_user_memory(struct hl_device *hdev, =
+u64 addr, u64 size,
+>                 return -ENOMEM;
+>         }
 >
-> diff --git a/drivers/block/zram/Kconfig b/drivers/block/zram/Kconfig
-> index fe7a4b7d30cf..14b2b098d662 100644
-> --- a/drivers/block/zram/Kconfig
-> +++ b/drivers/block/zram/Kconfig
-> @@ -2,7 +2,6 @@
->  config ZRAM
->         tristate "Compressed RAM block device support"
->         depends on BLOCK && SYSFS && ZSMALLOC && CRYPTO
-> -       select CRYPTO_LZO
->         help
->           Creates virtual block devices called /dev/zramX (X = 0, 1, ...).
->           Pages written to these disks are compressed and stored in memory
-> @@ -37,3 +36,8 @@ config ZRAM_MEMORY_TRACKING
->           /sys/kernel/debug/zram/zramX/block_state.
+> -       rc =3D pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE=
+,
+> +       rc =3D pin_user_pages_fast(start, npages,
+> +                                FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+>                                  userptr->pages);
 >
->           See Documentation/admin-guide/blockdev/zram.rst for more information.
-> +
-> +config ZRAM_AUTOSEL_ALGO
-> +       def_bool y
-> +       depends on ZRAM && !(CRYPTO_LZ4 || CRYPTO_LZ4HC || CRYPTO_842 || CRYPTO_ZSTD)
-> +       select CRYPTO_LZO
-> diff --git a/drivers/block/zram/zcomp.c b/drivers/block/zram/zcomp.c
-> index 33e3b76c4fa9..052aa3f65514 100644
-> --- a/drivers/block/zram/zcomp.c
-> +++ b/drivers/block/zram/zcomp.c
-> @@ -15,8 +15,10 @@
->  #include "zcomp.h"
->
->  static const char * const backends[] = {
-> +#if IS_ENABLED(CONFIG_CRYPTO_LZO)
->         "lzo",
->         "lzo-rle",
-> +#endif
->  #if IS_ENABLED(CONFIG_CRYPTO_LZ4)
->         "lz4",
->  #endif
+>         if (rc !=3D npages) {
 > --
 > 2.28.0
 >
+
+
+--=20
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
