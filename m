@@ -2,184 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6F82E29763D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:57:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 291C9297642
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 19:57:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754018AbgJWR4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 13:56:51 -0400
-Received: from mx2.suse.de ([195.135.220.15]:43380 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S462685AbgJWR4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 13:56:51 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id BD450AC82;
-        Fri, 23 Oct 2020 17:56:49 +0000 (UTC)
-To:     Axel Rasmussen <axelrasmussen@google.com>
-Cc:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Michel Lespinasse <walken@google.com>,
-        Daniel Jordan <daniel.m.jordan@oracle.com>,
-        Jann Horn <jannh@google.com>,
-        Chinwen Chang <chinwen.chang@mediatek.com>,
-        Davidlohr Bueso <dbueso@suse.de>,
-        David Rientjes <rientjes@google.com>,
-        Yafang Shao <laoar.shao@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linux MM <linux-mm@kvack.org>
-References: <20201020184746.300555-1-axelrasmussen@google.com>
- <20201020184746.300555-2-axelrasmussen@google.com>
- <fa6b9d13-0ef5-4d5d-bda3-657300028e23@suse.cz>
- <CAJHvVcjzZgsvdzciR5v_wkgf3M7aD_vNGv3TXrf5Z5K6SLprSA@mail.gmail.com>
-From:   Vlastimil Babka <vbabka@suse.cz>
-Subject: Re: [PATCH v4 1/1] mmap_lock: add tracepoints around lock acquisition
-Message-ID: <a98b7807-9ed9-feda-f182-0031e6512328@suse.cz>
-Date:   Fri, 23 Oct 2020 19:56:49 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S1754039AbgJWR51 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 13:57:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33958 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754032AbgJWR51 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 13:57:27 -0400
+Received: from mail-qv1-xf43.google.com (mail-qv1-xf43.google.com [IPv6:2607:f8b0:4864:20::f43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C8D26C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:57:26 -0700 (PDT)
+Received: by mail-qv1-xf43.google.com with SMTP id de3so1111284qvb.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 10:57:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=+JxUy2GzdZMt7Q+iclaVOAYK8LG1kSIynwbO5JGpQtw=;
+        b=IfyuZyHQUSZF54cxePIo+EYiT8WqQLlcDVR/WgupdQWUTciWs4l/nyezKQcZsM+RZw
+         NDbC1uc1OsP79IzK2TcM7lc1Ls7rx1tcFc3yaPr1681HDUngev1KcdyKC+XnbB1ZXEqI
+         zeHUSUpwDX5zBWKyclODe+UVn+Rs6Rm0XUxrI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=+JxUy2GzdZMt7Q+iclaVOAYK8LG1kSIynwbO5JGpQtw=;
+        b=S8JMmKbS73QAYTQdEX5sf24ZawxV6Svie9wCsxsDC9HhoSG8syHwWxyypmAuGffbm7
+         3qH38P913wMOLPSCMqoJcZLW+vNti4Hi2ObuzTMG2TWM5aN5a5sqEavozXzYaO06JD2i
+         /IQ2rQoFlFD59VerZaZmMUL1iqM3wxaaB5S9bzPtmxGO9vWOnzHfnv4mVikEUFiwSuVL
+         EDrhLFQg2a0mtt0FZPBVQqwHxhfjGCDkKNNggLXBV3yxic4igOZOc71JiTDeHIHXCz6a
+         FmDgaEOxuo5npk45wlRllJT9w+VhS47wrCX2dUieUDAj+wSwRBLW+gG1aLg6/szooCgV
+         osXw==
+X-Gm-Message-State: AOAM531rkWeQs3N/4CdRGMOoATTqk99388VHlWwBgCwrTc2/NLZBSacS
+        CtGrU7i4gJPMScgv7hB7V47uZw==
+X-Google-Smtp-Source: ABdhPJyBgnsf0H7F+UybCjNc9BOLL/fcT9QjCvIde7QzsFPAyynBlrbOVseoHr/JOv//LWnmpvjqVg==
+X-Received: by 2002:a0c:ba85:: with SMTP id x5mr3482644qvf.7.1603475845975;
+        Fri, 23 Oct 2020 10:57:25 -0700 (PDT)
+Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
+        by smtp.gmail.com with ESMTPSA id h125sm1229414qkc.36.2020.10.23.10.57.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 10:57:25 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 13:57:24 -0400
+From:   Joel Fernandes <joel@joelfernandes.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aaron Lu <aaron.lu@linux.alibaba.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 06/26] sched: Add core wide task selection and
+ scheduling.
+Message-ID: <20201023175724.GA3563800@google.com>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-7-joel@joelfernandes.org>
+ <20201023135129.GS2611@hirez.programming.kicks-ass.net>
+ <20201023135400.GA2651@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-In-Reply-To: <CAJHvVcjzZgsvdzciR5v_wkgf3M7aD_vNGv3TXrf5Z5K6SLprSA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023135400.GA2651@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 7:38 PM, Axel Rasmussen wrote:
-> On Fri, Oct 23, 2020 at 7:00 AM Vlastimil Babka <vbabka@suse.cz> wrote:
->>
->> On 10/20/20 8:47 PM, Axel Rasmussen wrote:
->> > The goal of these tracepoints is to be able to debug lock contention
->> > issues. This lock is acquired on most (all?) mmap / munmap / page fault
->> > operations, so a multi-threaded process which does a lot of these can
->> > experience significant contention.
->> >
->> > We trace just before we start acquisition, when the acquisition returns
->> > (whether it succeeded or not), and when the lock is released (or
->> > downgraded). The events are broken out by lock type (read / write).
->> >
->> > The events are also broken out by memcg path. For container-based
->> > workloads, users often think of several processes in a memcg as a single
->> > logical "task", so collecting statistics at this level is useful.
->> >
->> > The end goal is to get latency information. This isn't directly included
->> > in the trace events. Instead, users are expected to compute the time
->> > between "start locking" and "acquire returned", using e.g. synthetic
->> > events or BPF. The benefit we get from this is simpler code.
->> >
->> > Because we use tracepoint_enabled() to decide whether or not to trace,
->> > this patch has effectively no overhead unless tracepoints are enabled at
->> > runtime. If tracepoints are enabled, there is a performance impact, but
->> > how much depends on exactly what e.g. the BPF program does.
->> >
->> > Reviewed-by: Michel Lespinasse <walken@google.com>
->> > Acked-by: Yafang Shao <laoar.shao@gmail.com>
->> > Acked-by: David Rientjes <rientjes@google.com>
->> > Signed-off-by: Axel Rasmussen <axelrasmussen@google.com>
->>
->> All seem fine to me, except I started to wonder..
->>
->> > +
->> > +#ifdef CONFIG_MEMCG
->> > +
->> > +DEFINE_PER_CPU(char[MAX_FILTER_STR_VAL], trace_memcg_path);
->> > +
->> > +/*
->> > + * Write the given mm_struct's memcg path to a percpu buffer, and return a
->> > + * pointer to it. If the path cannot be determined, the buffer will contain the
->> > + * empty string.
->> > + *
->> > + * Note: buffers are allocated per-cpu to avoid locking, so preemption must be
->> > + * disabled by the caller before calling us, and re-enabled only after the
->> > + * caller is done with the pointer.
->>
->> Is this enough? What if we fill the buffer and then an interrupt comes and the
->> handler calls here again? We overwrite the buffer and potentially report a wrong
->> cgroup after the execution resumes?
->> If nothing worse can happen (are interrupts disabled while the ftrace code is
->> copying from the buffer?), then it's probably ok?
+On Fri, Oct 23, 2020 at 03:54:00PM +0200, Peter Zijlstra wrote:
+> On Fri, Oct 23, 2020 at 03:51:29PM +0200, Peter Zijlstra wrote:
+> > On Mon, Oct 19, 2020 at 09:43:16PM -0400, Joel Fernandes (Google) wrote:
+> > > +			/*
+> > > +			 * If this sibling doesn't yet have a suitable task to
+> > > +			 * run; ask for the most elegible task, given the
+> > > +			 * highest priority task already selected for this
+> > > +			 * core.
+> > > +			 */
+> > > +			p = pick_task(rq_i, class, max);
+> > > +			if (!p) {
+> > > +				/*
+> > > +				 * If there weren't no cookies; we don't need to
+> > > +				 * bother with the other siblings.
+> > > +				 * If the rest of the core is not running a tagged
+> > > +				 * task, i.e.  need_sync == 0, and the current CPU
+> > > +				 * which called into the schedule() loop does not
+> > > +				 * have any tasks for this class, skip selecting for
+> > > +				 * other siblings since there's no point. We don't skip
+> > > +				 * for RT/DL because that could make CFS force-idle RT.
+> > > +				 */
+> > > +				if (i == cpu && !need_sync && class == &fair_sched_class)
+> > > +					goto next_class;
+> > > +
+> > > +				continue;
+> > > +			}
+> > 
+> > I'm failing to understand the class == &fair_sched_class bit.
+
+The last line in the comment explains it "We don't skip for RT/DL because
+that could make CFS force-idle RT.".
+
+Even if need_sync == false, we need to go look at other CPUs (non-local
+CPUs) to see if they could be running RT.
+
+Say the RQs in a particular core look like this:
+Let CFS1 and CFS2 be 2 tagged CFS tags. Let RT1 be an untagged RT task.
+
+rq0	       rq1
+CFS1 (tagged)  RT1 (not tag)
+CFS2 (tagged)
+
+Say schedule() runs on rq0. Now, it will enter the above loop and
+pick_task(RT) will return NULL for 'p'. It will enter the above if() block
+and see that need_sync == false and will skip RT entirely.
+
+The end result of the selection will be (say prio(CFS1) > prio(CFS2)):
+rq0		rq1
+CFS1		IDLE
+
+When it should have selected:
+rq0		r1
+IDLE		RT
+
+I saw this issue on real-world usecases in ChromeOS where an RT task gets
+constantly force-idled and breaks RT. The "class == &fair_sched_class" bit
+cures it.
+
+> > > +                          * for RT/DL because that could make CFS force-idle RT.
+> > IIRC the condition is such that the core doesn't have a cookie (we don't
+> > need to sync the threads) so we'll only do a pick for our local CPU.
+> > 
+> > That should be invariant of class.
 > 
-> I think you're right, get_cpu()/put_cpu() only deals with preemption,
-> not interrupts.
+> That is; it should be the exact counterpart of this bit:
 > 
-> I'm somewhat sure this code can be called in interrupt context, so I
-> don't think we can use locks to prevent this situation. I think it
-> works like this: say we acquire the lock, an interrupt happens, and
-> then we try to acquire again on the same CPU; we can't sleep, so we're
-> stuck.
-
-Yes, we could perhaps trylock() and if it fails, give up on the memcg path.
-
-> I think we can't kmalloc here (instead of a percpu buffer) either,
-> since I would guess that kmalloc may also acquire mmap_lock itself?
-
-the overhead is not worth it anyway, for a tracepoint
-
-> Is adding local_irq_save()/local_irq_restore() in addition to
-> get_cpu()/put_cpu() sufficient?
-
-If you do that, then I guess you don't need get_cpu()/put_cpu() anymore. But 
-it's more costly.
-
-But sounds like we are solving something that the tracing subystem has to solve 
-as well to store the trace event data, so maybe Steven has some better idea?
-
->>
->> > + */
->> > +static const char *get_mm_memcg_path(struct mm_struct *mm)
->> > +{
->> > +     struct mem_cgroup *memcg = get_mem_cgroup_from_mm(mm);
->> > +
->> > +     if (memcg != NULL && likely(memcg->css.cgroup != NULL)) {
->> > +             char *buf = this_cpu_ptr(trace_memcg_path);
->> > +
->> > +             cgroup_path(memcg->css.cgroup, buf, MAX_FILTER_STR_VAL);
->> > +             return buf;
->> > +     }
->> > +     return "";
->> > +}
->> > +
->> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
->> > +     do {                                                                   \
->> > +             get_cpu();                                                     \
->> > +             trace_mmap_lock_##type(mm, get_mm_memcg_path(mm),              \
->> > +                                    ##__VA_ARGS__);                         \
->> > +             put_cpu();                                                     \
->> > +     } while (0)
->> > +
->> > +#else /* !CONFIG_MEMCG */
->> > +
->> > +#define TRACE_MMAP_LOCK_EVENT(type, mm, ...)                                   \
->> > +     trace_mmap_lock_##type(mm, "", ##__VA_ARGS__)
->> > +
->> > +#endif /* CONFIG_MEMCG */
->> > +
->> > +/*
->> > + * Trace calls must be in a separate file, as otherwise there's a circular
->> > + * dependency between linux/mmap_lock.h and trace/events/mmap_lock.h.
->> > + */
->> > +
->> > +void __mmap_lock_do_trace_start_locking(struct mm_struct *mm, bool write)
->> > +{
->> > +     TRACE_MMAP_LOCK_EVENT(start_locking, mm, write);
->> > +}
->> > +EXPORT_SYMBOL(__mmap_lock_do_trace_start_locking);
->> > +
->> > +void __mmap_lock_do_trace_acquire_returned(struct mm_struct *mm, bool write,
->> > +                                        bool success)
->> > +{
->> > +     TRACE_MMAP_LOCK_EVENT(acquire_returned, mm, write, success);
->> > +}
->> > +EXPORT_SYMBOL(__mmap_lock_do_trace_acquire_returned);
->> > +
->> > +void __mmap_lock_do_trace_released(struct mm_struct *mm, bool write)
->> > +{
->> > +     TRACE_MMAP_LOCK_EVENT(released, mm, write);
->> > +}
->> > +EXPORT_SYMBOL(__mmap_lock_do_trace_released);
->> >
->>
+> > +			/*
+> > +			 * Optimize the 'normal' case where there aren't any
+> > +			 * cookies and we don't need to sync up.
+> > +			 */
+> > +			if (i == cpu && !need_sync && !p->core_cookie) {
+> > +				next = p;
+> > +				goto done;
+> > +			}
 > 
+> If there is no task found in this class, try the next class, if there
+> is, we done.
+
+That's Ok. But we cannot skip RT class on other CPUs.
+
+thanks,
+
+ - Joel
 
