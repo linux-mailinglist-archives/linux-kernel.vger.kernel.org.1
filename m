@@ -2,103 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 45A7429778C
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9C63129778E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 21:15:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754593AbgJWTPB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 15:15:01 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46078 "EHLO
+        id S1755694AbgJWTPN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 15:15:13 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:46108 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1750025AbgJWTPB (ORCPT
+        with ESMTP id S1754626AbgJWTPM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 15:15:01 -0400
-Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E34EC0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:15:00 -0700 (PDT)
-Received: by mail-ed1-x542.google.com with SMTP id o18so2576708edq.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:15:00 -0700 (PDT)
+        Fri, 23 Oct 2020 15:15:12 -0400
+Received: from mail-pf1-x442.google.com (mail-pf1-x442.google.com [IPv6:2607:f8b0:4864:20::442])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 44F45C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:15:12 -0700 (PDT)
+Received: by mail-pf1-x442.google.com with SMTP id h7so2142784pfn.2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 12:15:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=icMK60GhKKKQhTV5Pyj9suVv+bBVVFbJ7wD/aCD2HK4=;
-        b=jmIOXw9USFhftMZ9bsMglijHYHwg5XRQXt4roQQd8+vPY1RSnDZML19fjAPKGNz6A3
-         fHLQsmrSMMWqY4FD8z9wGvG3fru1zS1ZvcDENI8ua3pA7lVDQo5PUsCNoAlYmfZpF6L4
-         4rrGMJyavlk8/4PqBf9ZXjpdqSB/vcD7S0lRs=
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-transfer-encoding:content-language;
+        bh=KzL5VVv9OBTE8cblb6xc9qq9hjO17uW0mb/l3hbABK8=;
+        b=T3R3ffmKYTWAmta7ZNbr9pjO+4nVjqBUiHz+11QNzUW4zabMSWsW5/5bfdR+p5FLbK
+         iGr7AfcuXf6t5YGpJsJ1XcSK8rYkTWtxt/or9cVbFLHYrktaZbi7SCqqN3odTeSZnNWo
+         keFGZgB+p1ULtiVPznwAcZdzwmpHgsVi456s7SyFRifx116kygD3JflHPOb3+XvEaj9e
+         HSzwbcFHW01IABmjsmhjdkOl/HnhM+YFO0+bnrow8zihgql5CYPbCsZJQSk697j6Xgfq
+         6zqilTWuduJkwoXWvNMfRICZhByyzTCsvskfO6ulJsnG/Si55V486uv46wNaVPPYtjcA
+         gQRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=icMK60GhKKKQhTV5Pyj9suVv+bBVVFbJ7wD/aCD2HK4=;
-        b=EJ073fdsPMP4rEKB73dgRFq4XvBysIfqFFoNwQFq5/glNOcE6AXLmFpg+RCtDjrpWq
-         Df0yeJRUvnC5lDZmZXoFe3LH2j8q5UduvAaO+aiW71fArl7ptkMfwfRT/+ASbS6D5dpj
-         sJyl0GFMyzuqCrTfS13jKc0DgjsADuGMcRVRCh9ERT2p9iR0P9JwaQiN7lID9ltQ46lN
-         WVN8xIo/Ih9thF/AltORJxPNRzVQzWsNbSPifZgHfT8z37CIkYYb9qjj1npOb3asbtuo
-         IKarrJy6pOIBZ+OEffYIkZi+F8nsL/5zqGXOahK/MEGkR1fOpWLX3YCGHjBDmHoq67N8
-         KtAg==
-X-Gm-Message-State: AOAM533X8pjYyUccjbOkU6SxqniGjmBL4TwjMMZHlL/Br3ZDRUwFT5Y0
-        Wb9sWVNcdxYhg2phiYy5Q2GjDjxFd26bHCD5WsRUuZO86Rw=
-X-Google-Smtp-Source: ABdhPJzpws9M76h1oM8kMw86Lv4HFd4d+oXrZ6W+m0fuw9WVnlApbCE8QbzRooWTTpTP222JHLdK6pzRn41ISnC4AZY=
-X-Received: by 2002:aa7:cf93:: with SMTP id z19mr3690893edx.26.1603480499235;
- Fri, 23 Oct 2020 12:14:59 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=KzL5VVv9OBTE8cblb6xc9qq9hjO17uW0mb/l3hbABK8=;
+        b=Ofu9h8q6+fUOyrlIyGQ6c0AiFXeClOEzpi4DU0j4jOCNWIpS9PhJcCVjx8r+aGz4jx
+         OIEKlhSxcm6qG5YKP6Gn7PKJNj6DL2dnc5AEahQgU1OP+efScWBdfCcd3CeF9k4OlpFl
+         +rNm6HOiniZS6L2n6fiha9f8hdH4Mfu0PJkYKISY37VaDuEkUmKDEX6mgZJfqwAc9jFf
+         Vl9lrOakKWqSPXuNiytV+Xz+4VZtvJaOB0olkJissn0FfNIBIscXXqa3c/a/7Av2xpTb
+         XAn6kZStSgCJWQdPvr1Axl+8YuFFgnyypIX/EuE7NCzeHuaH6vKiaX7yMJZWem9ckXp5
+         2M9w==
+X-Gm-Message-State: AOAM531JppcxDIzXBgpkswyC/cZPKWZWF9XxRFUpExPNTKYR55IcGYKz
+        +BjWmPlqrzdOlfqL5oOqfQ0/KBpTXLrhE4xa
+X-Google-Smtp-Source: ABdhPJzdQhYD+xPo2N0v/aeawiojXa1CbWlFTZZ1TjsHko5jmUEIdQu2Rs7qAbj+nQrIf+doGKxoiQ==
+X-Received: by 2002:a62:1844:0:b029:152:80d3:8647 with SMTP id 65-20020a6218440000b029015280d38647mr631613pfy.18.1603480511546;
+        Fri, 23 Oct 2020 12:15:11 -0700 (PDT)
+Received: from ?IPv6:2405:201:9004:6890:ae4b:a0f8:1bbb:ec51? ([2405:201:9004:6890:ae4b:a0f8:1bbb:ec51])
+        by smtp.gmail.com with ESMTPSA id t13sm3052594pfc.1.2020.10.23.12.15.09
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 12:15:11 -0700 (PDT)
+Subject: Re: [PATCH RFC v2] checkpatch: extend attributes check to handle more
+ patterns
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+References: <20201023094307.20820-1-dwaipayanray1@gmail.com>
+ <d2b05b45adbcf3f1d16692b054862a7aa7353f6d.camel@perches.com>
+ <CABJPP5Dx4qj-_0gOx0bmaWvJj3okB-tNGJg5-8Y3KF2LnCjowQ@mail.gmail.com>
+ <2e8279841d604dde8a3335c092db921007f6744e.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Message-ID: <2a3b90ee-b9bd-2586-9d68-45cbf7e499a9@gmail.com>
+Date:   Sat, 24 Oct 2020 00:44:49 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.9.0
 MIME-Version: 1.0
-References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
- <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
- <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com> <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com>
-In-Reply-To: <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com>
-From:   Micah Morton <mortonm@chromium.org>
-Date:   Fri, 23 Oct 2020 12:14:47 -0700
-Message-ID: <CAJ-EccMu_AGfOYASyteGosdOc1SMHeVTLax5aoZSQf7_n0Xq2Q@mail.gmail.com>
-Subject: Re: [GIT PULL] SafeSetID changes for v5.10
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-security-module <linux-security-module@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <2e8279841d604dde8a3335c092db921007f6744e.camel@perches.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 8bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:57 AM Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
->
-> On Thu, Oct 15, 2020 at 5:01 PM Micah Morton <mortonm@chromium.org> wrote:
-> >
-> > I just rebased to v5.9 to make sure the 1-line changes that touch
-> > kernel/capability.c, kernel/groups.c and kernel/sys.c still applied
-> > cleanly without conflicts. Should I have rebased onto one of the -rc's
-> > for v5.9 instead?
->
-> No. You shouldn't have rebased at all.
 
-Ok so before the rebase ("reparent"), the commits were based on top of
-some commit that was months old at this point (can't quite remember
-now, I think one of the -rc's for v5.8).
+>>> And you could check using
+>>>
+>>>          $line =~ /__attribute__\s*\(\s*($balanced_parens)\s*)/
+>>>
+>>> and check for all attributes in $1 after
+>>> stripping the leading and trailing parens
+>>> and any leading and trailing underscores
+>>> from each attribute.
+>>>
+>>> And you only need one hash and you should
+>>> check for existence of the key rather than
+>>> have multiple lists.
+>>>
+>>>          if (exists($attributes($attr))) {
+>>>
+>> Okay thanks!
+>> But what should be done for the attributes which are
+>> parameterized, like __aligned__(x). Should all the __
+>> for these entries be trimmed too?
+> yes
+>
+>> There are also
+>> cases where there are multiple versions like:
+>>
+>> __aligned__
+>> __aligned__(x)
+> $ git grep __aligned__ | grep -v -P '__aligned__\s*\('
+>
+> AFAIK: There is only one use of bare __aligned__ and
+> that's in compiler_attributes.h
+>
+>> To help differentiate between them what can be done?
+>> Should i make the keys as:
+>>
+>> aligned
+>> aligned__(
+>>
+>> instead of
+>>
+>> __aligned__
+>> __aligned__(
+> Just use aligned
+>
+> Just fyi:
+>
+> these are the uses of __attribute__ in the kernel
+> with all the underscores and spaces removed so there's
+> some value in finding the multiple actual attributes .
 
-I guess the lesson here is never rebase or fast-forward merge my
-upstream-bound -next branch until it has emptied entirely into the
-mainline? And if that doesn't happen for whatever reason during one
-merge window and I have to wait for the next one, I just send you
-un-reparented/un-fastforwarded possibly outdated commits and you will
-resolve conflicts if any?
 
-The reason for the rebase making sense to me here was that the changes
-to common kernel code are very simple (a few one line changes) and
-easy to quickly verify after the rebase -- and the vast majority of
-the complexity of the code in the pull request was confined to the
-SafeSetID code base, which had no changes over the time span from
-original base to the reparented base. So I had basically considered it
-a no-op rebase. I probably should have explained this in the pull
-request.
+Hi,
+I modified the check to check the attributes from the map.
+There are two checks - one for the normal attributes and
+one for the ones with arguments, which needs just a bit more processing.
 
-Thanks
+So attributes like __packed__ as well as those like
+__aligned__(x) are handled.
 
->
-> Making sure something applies cleanly is simply not a reason to rebase.
->
-> See
->
->   Documentation/maintainer/rebasing-and-merging.rst
->
-> for some common rules.
->
->              Linus
+What do you think?
+
+---
++            $line =~ /__attribute__\s*\(\s*($balanced_parens)\s*\)/) {
++            my $attr = trim($1);
++            $attr =~ s/\(\s*_*(.*)\)/$1/;
++            while($attr =~ s/(.*)_$/$1/) {}  # Remove trailing underscores
++
++            my %attr_list = (
++                "alias"            => "__alias",
++                "aligned"        => "__aligned",
++                "always_inline"     => "__always_inline",
++                "assume_aligned"    => "__assume_aligned",
++                "cold"            => "__cold",
++                "const"            => "__const",
++                "copy"            => "__copy",
++                "designated_init"        => "__designated_init",
++                "externally_visible"    => "__visible",
++                "fallthrough"        => "fallthrough",
++                "gnu_inline"        => "__gnu_inline",
++                "malloc"        => "__malloc",
++                "mode"            => "__mode",
++                "no_caller_saved_registers" => 
+"__no_caller_saved_registers",
++                "noclone"        => "__noclone",
++                "noinline"        => "noinline",
++                "nonstring"        => "__nonstring",
++                "noreturn"        => "__noreturn",
++                "packed"        => "__packed",
++                "pure"            => "__pure",
++                "used"            => "__used"
++            );
++
++            if (exists($attr_list{$attr})) {
++                my $new = $attr_list{$attr};
++                WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++                     "$new is preffered over 
+__attribute__((__${attr}__))\n" . $herecurr);
++            }
++
++            # Check for attributes with parameters, like copy__(symbol)
++            if ($attr =~ /(.*)__(\(.*\))/) {
++                if (exists($attr_list{$1})) {
++                    my $new = $attr_list{$1};
++                    WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++                         "$new$2 is preffered over 
+__attribute__((__${attr}))\n" . $herecurr);
++                }
++            }
+---
+
+If this is okay I would like to send in a proper v3.
+
+Thanks,
+Dwaipayan.
