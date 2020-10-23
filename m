@@ -2,133 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 880D829694B
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:02:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B0648296951
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:11:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2896511AbgJWFCS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 01:02:18 -0400
-Received: from mga06.intel.com ([134.134.136.31]:4872 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2505392AbgJWFCQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 01:02:16 -0400
-IronPort-SDR: Jf0YhBaQQqxLKqsa97Wa7X6tlTHlN3RWMjDF3mpkPSBFpSPaP46k8gSLia/dFZJD7b7Ri6mrrQ
- 2B+svKdop7eQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9782"; a="229263728"
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="229263728"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 22:02:15 -0700
-IronPort-SDR: 7Day5D5KPL2/noKOCrxgfsCyMurAxXkzfTj5J0GV0BS3bePPACh7pdn5rGhilSEUDVqYQNYw7j
- kzNa5DgChLHA==
-X-IronPort-AV: E=Sophos;i="5.77,404,1596524400"; 
-   d="scan'208";a="466940929"
-Received: from sjchrist-coffee.jf.intel.com (HELO linux.intel.com) ([10.54.74.160])
-  by orsmga004-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Oct 2020 22:02:15 -0700
-Date:   Thu, 22 Oct 2020 22:02:14 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-        Naresh Kamboju <naresh.kamboju@linaro.org>,
-        Stephen Rothwell <sfr@canb.auug.org.au>,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        zenglg.jy@cn.fujitsu.com,
-        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
-        Viresh Kumar <viresh.kumar@linaro.org>,
-        X86 ML <x86@kernel.org>,
-        open list <linux-kernel@vger.kernel.org>,
-        lkft-triage@lists.linaro.org,
-        "Eric W. Biederman" <ebiederm@xmission.com>,
-        linux-mm <linux-mm@kvack.org>,
-        linux-m68k <linux-m68k@lists.linux-m68k.org>,
-        Linux-Next Mailing List <linux-next@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        kasan-dev <kasan-dev@googlegroups.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Christian Brauner <christian.brauner@ubuntu.com>,
-        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
-        Al Viro <viro@zeniv.linux.org.uk>
-Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
- 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in
- libc-2.27.so[7f3d77058000+1aa000]
-Message-ID: <20201023050214.GG23681@linux.intel.com>
-References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
- <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
- <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
- <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
- <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
- <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com>
- <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
- <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+        id S2897190AbgJWFLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 01:11:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2896917AbgJWFLQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 01:11:16 -0400
+Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B853C0613D2
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 22:11:16 -0700 (PDT)
+Received: by mail-pg1-x544.google.com with SMTP id b23so299689pgb.3
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 22:11:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=bhDFTk2Ai9IvHYceetl+B1zPhbW6KMdcdI29Sg0Eo+M=;
+        b=YcYR9zUcIUB4QIGYTdL3C7cdtzm1L9GbyIWrm9ZWiQ8goix/zhDkSZggOL5RqjkO/P
+         wXfQzC5Dp20D6f1zcduUGvEar6jNSMUpS2LFjca49huhilc1uibA3ZlKnN3tNTMaE62T
+         wzrkCCI34HrsTIFT3zj7VDqJt7Q+PO+P8zBixWe+RcojIdUkM5r9XNvLBpnesm9fO5Bz
+         xtcBWcRNBXw6vEKO0VlENJYQvgIOy+qJS4vdgkO/6oDJbyCrCMTGs95Q3yiDuB0Zw8Hj
+         2LV2FUftIvhnhhmd8sg7GuY9hj9ypsS0qDzjiDlru6xPdcERrBgQhonVTIGUJu5fg0nQ
+         CpGw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=bhDFTk2Ai9IvHYceetl+B1zPhbW6KMdcdI29Sg0Eo+M=;
+        b=tLdNsXlYaNGTrPgAGfs8YNfr/Si7VlSr4YJPQuHS43Na0Ww03RPqe8FXAMw+rjhiye
+         1MIdKcSjE9+vQtxBvvDPbxAvk2RUP5LuMvlUNweUqET9yjg1uwlwUJPiZ5NVY/u7D7C/
+         ILsvMlkjzj3aedMPitm2pVM3f2cyMDVflNPZskqkBYdW7KDLnbaWtXMyXZyWE7jqUkmc
+         04SZrvHfXKoM96DrjrcSC4KbiQkwL+Ct5h7ZhCqLyu7v5njQDA6p4vLIyEI8+ANUe+4X
+         kJ9xtSNWxjcjn9afzO/L4RkgflTSfBQ12jjW8U2PDbcofcgKyAqvgtLCPm4OEnMWFW6Q
+         uVvg==
+X-Gm-Message-State: AOAM533OS2d1d7Sy3ZG709F40d0bcZHdiMAo5CoatGX+mR1rcToVczes
+        0voL84BQsmzdG5lXAbYjBRYePA==
+X-Google-Smtp-Source: ABdhPJyN98CytOuNDU/P9oEgDgKuEou0RaGFmC2Be4QHtDolgE6CQO010qLoOYGeIeKGV40ISqebMw==
+X-Received: by 2002:a62:be04:0:b029:160:6c5:d7fe with SMTP id l4-20020a62be040000b029016006c5d7femr469851pff.21.1603429875495;
+        Thu, 22 Oct 2020 22:11:15 -0700 (PDT)
+Received: from localhost ([122.181.54.133])
+        by smtp.gmail.com with ESMTPSA id y27sm499082pfr.122.2020.10.22.22.11.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 22 Oct 2020 22:11:13 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 10:41:12 +0530
+From:   Viresh Kumar <viresh.kumar@linaro.org>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     A L <mail@lechevalier.se>, Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
+        kernel-janitors@vger.kernel.org,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Gilles Muller <Gilles.Muller@inria.fr>,
+        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
+        Linux PM <linux-pm@vger.kernel.org>,
+        Len Brown <len.brown@intel.com>
+Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
+Message-ID: <20201023051112.7p4qgr2opyoyeep4@vireshk-i7>
+References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
+ <34115486.YmRjPRKJaA@kreacher>
+ <20201022120213.GG2611@hirez.programming.kicks-ass.net>
+ <1790766.jaFeG3T87Z@kreacher>
+ <20201022122949.GW2628@hirez.programming.kicks-ass.net>
+ <c232b2.c086afce.17550fc4644@lechevalier.se>
+ <CAKfTPtDUMdxWSKQgyjPCn+D-zYzpfgMEy0WYGAQzhcr1jnAX7w@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
-User-Agent: Mutt/1.5.24 (2015-08-30)
+In-Reply-To: <CAKfTPtDUMdxWSKQgyjPCn+D-zYzpfgMEy0WYGAQzhcr1jnAX7w@mail.gmail.com>
+User-Agent: NeoMutt/20180716-391-311a52
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 08:05:05PM -0700, Linus Torvalds wrote:
-> On Thu, Oct 22, 2020 at 6:36 PM Daniel Díaz <daniel.diaz@linaro.org> wrote:
+On 22-10-20, 17:55, Vincent Guittot wrote:
+> On Thu, 22 Oct 2020 at 17:45, A L <mail@lechevalier.se> wrote:
 > >
-> > The kernel Naresh originally referred to is here:
-> >   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
+> >
+> >
+> > ---- From: Peter Zijlstra <peterz@infradead.org> -- Sent: 2020-10-22 - 14:29 ----
+> >
+> > > On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
+> > >> > However I do want to retire ondemand, conservative and also very much
+> > >> > intel_pstate/active mode.
+> > >>
+> > >> I agree in general, but IMO it would not be prudent to do that without making
+> > >> schedutil provide the same level of performance in all of the relevant use
+> > >> cases.
+> > >
+> > > Agreed; I though to have understood we were there already.
+> >
+> > Hi,
+> >
+> >
+> > Currently schedutil does not populate all stats like ondemand does, which can be a problem for some monitoring software.
+> >
+> > On my AMD 3000G CPU with kernel-5.9.1:
+> >
+> >
+> > grep. /sys/devices/system/cpu/cpufreq/policy0/stats/*
+> >
+> > With ondemand:
+> > time_in_state:3900000 145179
+> > time_in_state:1600000 9588482
+> > total_trans:177565
+> > trans_table:   From  :    To
+> > trans_table:         :   3900000   1600000
+> > trans_table:  3900000:         0     88783
+> > trans_table:  1600000:     88782         0
+> >
+> > With schedutil only two file exists:
+> > reset:<empty>
+> > total_trans:216609
+> >
+> >
+> > I'd really like to have these stats populated with schedutil, if that's possible.
 > 
-> Thanks.
-> 
-> And when I started looking at it, I realized that my original idea
-> ("just look for __put_user_nocheck_X calls, there aren't so many of
-> those") was garbage, and that I was just being stupid.
-> 
-> Yes, the commit that broke was about __put_user(), but in order to not
-> duplicate all the code, it re-used the regular put_user()
-> infrastructure, and so all the normal put_user() calls are potential
-> problem spots too if this is about the compiler interaction with KASAN
-> and the asm changes.
-> 
-> So it's not just a couple of special cases to look at, it's all the
-> normal cases too.
-> 
-> Ok, back to the drawing board, but I think reverting it is probably
-> the right thing to do if I can't think of something smart.
-> 
-> That said, since you see this on x86-64, where the whole ugly trick with that
-> 
->    register asm("%"_ASM_AX)
-> 
-> is unnecessary (because the 8-byte case is still just a single
-> register, no %eax:%edx games needed), it would be interesting to hear
-> if the attached patch fixes it. That would confirm that the problem
-> really is due to some register allocation issue interaction (or,
-> alternatively, it would tell me that there's something else going on).
+> Your problem might have been fixed with
+> commit 96f60cddf7a1 ("cpufreq: stats: Enable stats for fast-switch as well")
 
-I haven't reproduced the crash, but I did find a smoking gun that confirms the
-"register shenanigans are evil shenanigans" theory.  I ran into a similar thing
-recently where a seemingly innocuous line of code after loading a value into a
-register variable wreaked havoc because it clobbered the input register.
+Thanks Vincent. Right, I have already fixed that for everyone.
 
-This put_user() in schedule_tail():
-
-   if (current->set_child_tid)
-           put_user(task_pid_vnr(current), current->set_child_tid);
-
-generates the following assembly with KASAN out-of-line:
-
-   0xffffffff810dccc9 <+73>: xor    %edx,%edx
-   0xffffffff810dcccb <+75>: xor    %esi,%esi
-   0xffffffff810dcccd <+77>: mov    %rbp,%rdi
-   0xffffffff810dccd0 <+80>: callq  0xffffffff810bf5e0 <__task_pid_nr_ns>
-   0xffffffff810dccd5 <+85>: mov    %r12,%rdi
-   0xffffffff810dccd8 <+88>: callq  0xffffffff81388c60 <__asan_load8>
-   0xffffffff810dccdd <+93>: mov    0x590(%rbp),%rcx
-   0xffffffff810dcce4 <+100>: callq  0xffffffff817708a0 <__put_user_4>
-   0xffffffff810dcce9 <+105>: pop    %rbx
-   0xffffffff810dccea <+106>: pop    %rbp
-   0xffffffff810dcceb <+107>: pop    %r12
-
-__task_pid_nr_ns() returns the pid in %rax, which gets clobbered by
-__asan_load8()'s check on current for the current->set_child_tid dereference.
+-- 
+viresh
