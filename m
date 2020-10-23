@@ -2,121 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E09B296BBF
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:05:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 86908296BC1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:07:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461109AbgJWJFv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:05:51 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48980 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S461024AbgJWJFu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:05:50 -0400
-Received: from pobox.suse.cz (nat1.prg.suse.com [195.250.132.148])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4801C24182;
-        Fri, 23 Oct 2020 09:05:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603443950;
-        bh=TQKLdLhdLKw6el7lOB1+SFBPA1fgCoQQr5pswqEOitA=;
-        h=Date:From:To:cc:Subject:In-Reply-To:References:From;
-        b=H4r2kixVq/7XMuy33rBrjOCxmWkXYBywIU30BNMXRQWjyWFucR6Wembertnuyuq35
-         sNfvR/YftxllOajVowwm0hZHIu5BOGSMDE6TDcB70nwuhE8Fc68MzvUCY/lJ03FIMn
-         7EBgGaeHDeSVKog7WBrh4eu+sz1ZeQqo3Y+z3p8s=
-Date:   Fri, 23 Oct 2020 11:05:46 +0200 (CEST)
-From:   Jiri Kosina <jikos@kernel.org>
-To:     Sandeep Singh <Sandeep.Singh@amd.com>
-cc:     benjamin.tissoires@redhat.com, linux-kernel@vger.kernel.org,
-        linux-input@vger.kernel.org, jic23@kernel.org,
-        Nehal-bakulchandra.Shah@amd.com, Shyam-sundar.S-k@amd.com,
-        lipheng@hanmail.net, Richard Neumann <mail@richard-neumann.de>
-Subject: Re: [PATCH] AMD_SFH: Fix for incorrect Sensor index
-In-Reply-To: <20201023085947.459045-1-Sandeep.Singh@amd.com>
-Message-ID: <nycvar.YFH.7.76.2010231104540.18859@cbobk.fhfr.pm>
-References: <20201023085947.459045-1-Sandeep.Singh@amd.com>
-User-Agent: Alpine 2.21 (LSU 202 2017-01-01)
+        id S461127AbgJWJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:07:28 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:30164 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S461114AbgJWJHZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 05:07:25 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603444044;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=rDSn1aAjNMgpc4B1YOGiuNHspmgqNuHO0dXhh/lQRnk=;
+        b=AI6oS8eeeoW1kFVXcD0lcpckls16fgrwOfG2XrvF9utDX95PTiZmXdjCd9T9XqH3BRwLCo
+        4wovB/nyk01BVvNTWOqBoaM3V9H6SkxFM3u5YPUS2Yks6xjF5jQhGKabPt57p1cNsOb9nW
+        eXwVB1ucKI9oAu1J/cd2xkEuzDMhK7o=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-346-1tGkt_0fOpGRmMUJaQqZdg-1; Fri, 23 Oct 2020 05:07:23 -0400
+X-MC-Unique: 1tGkt_0fOpGRmMUJaQqZdg-1
+Received: by mail-wm1-f70.google.com with SMTP id y83so116461wmc.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:07:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=rDSn1aAjNMgpc4B1YOGiuNHspmgqNuHO0dXhh/lQRnk=;
+        b=Cnb0v+a7I5GcDikAr2uP3NqG/8Av4NIDwPJSNoC7u90UM4XQQL6ugyfEozPg/6hz71
+         bAhAo4Aax7x2j4A+ANLRPQa1/Ks02Gq8+zfV2SgfFXcdWQG9IvzixcOo/w2SVo82tEai
+         fvKytcCaH9uw/26eP0Rhx+8k7Csc6loKgCAF4KVsvSKqPg0e9FAIhZzeOzZy3padG7b2
+         oXi6B7g2jzwjTPhw4EQgwZcG/I5Src6EE/2/092Q0izkex6dZJL/J5Sdn9L21OxSmBDr
+         RgENFyQK9hn1iawYv/0FNuE3JlcHcRRAs84svvkG3+uajYCdy7EKYvlJP6eXX/Cv2DaN
+         aTWA==
+X-Gm-Message-State: AOAM530uWiU/Yrl1AE+c1Kk5Ww2bo2MRBBe7yvpoS91wG/IDmXujvUgi
+        pbKUTMduxa0iptbOTId8hN5FMH0AnNDjXfYo/vYmhLPB0xMIkiknVVnmwbVFfy9YGDPDiT/ojg7
+        pKWdGLJNW/gqnobi+XK2nBJ/k
+X-Received: by 2002:a1c:7e4e:: with SMTP id z75mr1254482wmc.55.1603444038825;
+        Fri, 23 Oct 2020 02:07:18 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJymkAQVzRC+NdRJu3Qpt8v16P0bBR5YMQh/1cANaSLmKSByCA2TahG776pO8+Ion6vfQ8liog==
+X-Received: by 2002:a1c:7e4e:: with SMTP id z75mr1254464wmc.55.1603444038582;
+        Fri, 23 Oct 2020 02:07:18 -0700 (PDT)
+Received: from ?IPv6:2001:b07:6468:f312:c8dd:75d4:99ab:290a? ([2001:b07:6468:f312:c8dd:75d4:99ab:290a])
+        by smtp.gmail.com with ESMTPSA id b63sm2041759wme.9.2020.10.23.02.07.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 02:07:17 -0700 (PDT)
+Subject: Re: [PATCH] KVM: X86: Expose KVM_HINTS_REALTIME in
+ KVM_GET_SUPPORTED_CPUID
+To:     Jim Mattson <jmattson@google.com>
+Cc:     Wanpeng Li <kernellwp@gmail.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        kvm list <kvm@vger.kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Joerg Roedel <joro@8bytes.org>
+References: <1603330475-7063-1-git-send-email-wanpengli@tencent.com>
+ <cfd9d16f-6ddf-60d5-f73d-bb49ccd4055f@redhat.com>
+ <CALMp9eR3Ng-WBrumXaJAecLWZECf-1NfzW+eTA0VxWuAcKAjAA@mail.gmail.com>
+ <281bca2d-d534-1032-eed3-7ee7705cb12c@redhat.com>
+ <CALMp9eQyJXko_CKPgg4xRDCsvOmA8zJvrg_kmU6weu=MwKBv0w@mail.gmail.com>
+From:   Paolo Bonzini <pbonzini@redhat.com>
+Message-ID: <823d5027-a1e5-4b91-2d35-693f3c2b9642@redhat.com>
+Date:   Fri, 23 Oct 2020 11:07:16 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <CALMp9eQyJXko_CKPgg4xRDCsvOmA8zJvrg_kmU6weu=MwKBv0w@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020, Sandeep Singh wrote:
+On 22/10/20 19:13, Jim Mattson wrote:
+> We don't actually use KVM_GET_SUPPORTED_CPUID at all today. If it's
+> commonly being misinterpreted as you say, perhaps we should add a
+> KVM_GET_TRUE_SUPPORTED_CPUID ioctl. Or, perhaps we can just fix this
+> in the documentation?
 
-> From: Sandeep Singh <sandeep.singh@amd.com>
-> 
-> Add fix for incorrect sensor index and minor code clean-up.
-> 
-> Reported-by: Mandoli <lipheng@hanmail.net>
+Yes, I think we should fix the documentation and document the best
+practices around MSRs and CPUID bits.  Mostly documenting what QEMU
+does, perhaps without all the quirks it has to support old kernels that
+messed things up even more.
 
-CCing Richard Neumann, I believe he reported exactly the same issue too, 
-and thus should be added as Reported-by: too. Agreed?
-
-Thanks.
-
-> Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
-> Fixes: SFH: PCIe driver to add support of AMD sensor fusion hub (4f567b9f8141)
-> ---
-> This patch can be applied on = for-5.11/amd-sfh-hid
-> 
->  drivers/hid/amd-sfh-hid/amd_sfh_pcie.c             |  6 +++---
->  .../amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h  | 14 --------------
->  2 files changed, 3 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-> index 9c5eb442e1a6..a51c7b76283b 100644
-> --- a/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-> +++ b/drivers/hid/amd-sfh-hid/amd_sfh_pcie.c
-> @@ -20,9 +20,9 @@
->  #define DRIVER_NAME	"pcie_mp2_amd"
->  #define DRIVER_DESC	"AMD(R) PCIe MP2 Communication Driver"
->  
-> -#define ACEL_EN		BIT(1)
-> -#define GYRO_EN		BIT(2)
-> -#define MAGNO_EN	BIT(3)
-> +#define ACEL_EN		BIT(0)
-> +#define GYRO_EN		BIT(1)
-> +#define MAGNO_EN		BIT(2)
->  #define ALS_EN		BIT(19)
->  
->  void amd_start_sensor(struct amd_mp2_dev *privdata, struct amd_mp2_sensor_info info)
-> diff --git a/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h b/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
-> index ac9a01cc1454..095c471d8fd6 100644
-> --- a/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
-> +++ b/drivers/hid/amd-sfh-hid/hid_descriptor/amd_sfh_hid_desc.h
-> @@ -16,11 +16,6 @@ enum desc_type {
->  	feature_size,
->  };
->  
-> -struct _hid_report_descriptor {
-> -	u8 bDescriptorType;
-> -	u8 wDescriptorLength;
-> -};
-> -
->  struct common_feature_property {
->  	/* common properties */
->  	u8 report_id;
-> @@ -38,15 +33,6 @@ struct common_input_property {
->  	u8 event_type;
->  } __packed;
->  
-> -struct _hid_device_descriptor {
-> -	u8 bLength;
-> -	u8 bDescriptorType;
-> -	u8 bcdHID[2];
-> -	u8 bCountryCode;
-> -	u8 bNumDescriptors;
-> -	struct _hid_report_descriptor *reports;
-> -};
-> -
->  struct accel3_feature_report {
->  	struct common_feature_property common_property;
->  	/* properties specific to this sensor */
-> -- 
-> 2.25.1
-> 
-
--- 
-Jiri Kosina
-SUSE Labs
+Paolo
 
