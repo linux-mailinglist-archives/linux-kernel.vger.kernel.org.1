@@ -2,123 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 852BE296D70
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:16:42 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BDEEA296D75
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:17:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462849AbgJWLQi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:16:38 -0400
-Received: from mail-ej1-f65.google.com ([209.85.218.65]:34846 "EHLO
-        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462757AbgJWLQh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:16:37 -0400
-Received: by mail-ej1-f65.google.com with SMTP id p5so1860069ejj.2;
-        Fri, 23 Oct 2020 04:16:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=I7tXxZpGoreg85HA0VUxkudPh8npM8uC5nLxLgLNurw=;
-        b=cM3Z4sytLTIjLxEXkNvyBil5R8nHzT/o2Yat1OZfrvDefqeNUpfdDlillmtt+lCgR/
-         KDxKxbPrKWl5elWiA30ol7GPxUCCxoek/zC/qGugbGIB5G00Xg8ySmCeMjxMJ1R9N1L7
-         BoXRjDclAga4WhMmgqCFgjTKYWwfX+yXI6YtU8bJ+IrrvFMy6yJOVAwMhFN7B3uFTPOM
-         XlhWSojXPM+nzCVa4ypWaIBUG2e21dXTirZ5D5MvgjSuzQNGzE6VxZD/h4RMXCx7HAP3
-         0ODXZ6CuBiMiDSuReGbo+hPxuz96UMrxmnv1e5iI7NYtbgPkzF2LILErWSVMpfWq9JEB
-         yJOQ==
-X-Gm-Message-State: AOAM5338zadOGz07tyZRCLrstk127x5qDgCjq05GOkistM7gqxQVpo7/
-        0aRaC0satQ0jByGWtkcNusI=
-X-Google-Smtp-Source: ABdhPJzoA3+2dyw0HIdiALYHcsoNfM039rsAqi/Wc+Hi2TMGcbUlUhwbDTGeU1VWf0IsmpGbG0mD6Q==
-X-Received: by 2002:a17:906:a04c:: with SMTP id bg12mr1373658ejb.317.1603451795423;
-        Fri, 23 Oct 2020 04:16:35 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.171])
-        by smtp.googlemail.com with ESMTPSA id ao17sm666245ejc.18.2020.10.23.04.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 04:16:34 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 13:16:32 +0200
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     Adam Ford <aford173@gmail.com>
-Cc:     arm-soc <linux-arm-kernel@lists.infradead.org>,
-        Adam Ford-BE <aford@beaconembedded.com>,
+        id S462859AbgJWLRu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:17:50 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37642 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S462682AbgJWLRt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:17:49 -0400
+Received: from willie-the-truck (236.31.169.217.in-addr.arpa [217.169.31.236])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 99D83207BB;
+        Fri, 23 Oct 2020 11:17:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603451868;
+        bh=FMY1pwU92BhVoBdk6p1+lhsYf8oY2OspVIzwsdBME40=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=hULYTVvLFl4f+Cpv5lt8polFR0TAAUl17U/ruVVcZpILx6kRHx3YJpFAxHaF/TdfF
+         bcUfdlnYX9W4ehIxlXHqLUrnouA5UJIvo6J/CjFUer4nwlY8Ivwwl0vCRsQhSgP66H
+         xlIc9+GM6ulIV4o9PEs1acazSYt7uer0MMAv371o=
+Date:   Fri, 23 Oct 2020 12:17:41 +0100
+From:   Will Deacon <will@kernel.org>
+To:     Yong Wu <yong.wu@mediatek.com>
+Cc:     Joerg Roedel <joro@8bytes.org>,
+        Matthias Brugger <matthias.bgg@gmail.com>,
         Rob Herring <robh+dt@kernel.org>,
-        Shawn Guo <shawnguo@kernel.org>,
-        Sascha Hauer <s.hauer@pengutronix.de>,
-        Pengutronix Kernel Team <kernel@pengutronix.de>,
-        Fabio Estevam <festevam@gmail.com>,
-        NXP Linux Team <linux-imx@nxp.com>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] arm64: dts: imx: Add Beacon i.MX8M Nano development kit
-Message-ID: <20201023111632.GB48162@kozik-lap>
-References: <20201022165751.771695-1-aford173@gmail.com>
- <20201023094437.GB42872@kozik-lap>
- <CAHCN7xKLgNvMJP9YoP1eQa_f3-GLNj3ZSuvJA9RcF4OJufHhgg@mail.gmail.com>
+        Robin Murphy <robin.murphy@arm.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Evan Green <evgreen@chromium.org>,
+        Tomasz Figa <tfiga@google.com>,
+        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
+        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
+        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
+        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
+Subject: Re: [PATCH v3 08/24] iommu/io-pgtable-arm-v7s: Use ias to check the
+ valid iova in unmap
+Message-ID: <20201023111740.GA20933@willie-the-truck>
+References: <20200930070647.10188-1-yong.wu@mediatek.com>
+ <20200930070647.10188-9-yong.wu@mediatek.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAHCN7xKLgNvMJP9YoP1eQa_f3-GLNj3ZSuvJA9RcF4OJufHhgg@mail.gmail.com>
+In-Reply-To: <20200930070647.10188-9-yong.wu@mediatek.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:51:56AM -0500, Adam Ford wrote:
-> > > diff --git a/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
-> > > new file mode 100644
-> > > index 000000000000..faa55d888065
-> > > --- /dev/null
-> > > +++ b/arch/arm64/boot/dts/freescale/imx8mn-beacon-kit.dts
-> > > @@ -0,0 +1,19 @@
-> > > +// SPDX-License-Identifier: (GPL-2.0 OR MIT)
-> > > +/*
-> > > + * Copyright 2020 Compass Electronics Group, LLC
-> > > + */
-> > > +
-> > > +/dts-v1/;
-> > > +
-> > > +#include "imx8mn.dtsi"
-> > > +#include "imx8mn-beacon-som.dtsi"
-> > > +#include "imx8mn-beacon-baseboard.dtsi"
-> >
-> > Why do you need baseboard as DTSI? Is is separate than kit? Judging by
-> > contents look like just empty/fake DTS and the baseboard should be the
-> > DTS.
-> >
-> > Another hint: Baseboard also does not have its compatible, so it cannot
-> > exist in real life separate from the development kit...
+On Wed, Sep 30, 2020 at 03:06:31PM +0800, Yong Wu wrote:
+> Use the ias for the valid iova checking in arm_v7s_unmap. This is a
+> preparing patch for supporting iova 34bit for MediaTek.
+> BTW, change the ias/oas checking format in arm_v7s_map.
 > 
-> The baseboard can handle two separate, mutually exclusive video
-> outputs. It has a LVDS bridge chip and an HDMI bridge chip, but
-> without the DSI and LCDIF support, neither can function.
-> Right now, that LVDS chip doesn't have an upstream driver, but I plan
-> to introduce it once the LCDIF, and DSI interfaces are available and
-> functional.
+> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
+> ---
+>  drivers/iommu/io-pgtable-arm-v7s.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> Once there is video support, the kit-level DTS file will get support
-> for one of the video outputs, and a second DTS file will get created
-> to support the other.  Both of these kit-level files would include the
-> baseboard and SOM DTSI files since they would be common to both kits.
+> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
+> index a688f22cbe3b..4c9d8dccfc5a 100644
+> --- a/drivers/iommu/io-pgtable-arm-v7s.c
+> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
+> @@ -526,8 +526,7 @@ static int arm_v7s_map(struct io_pgtable_ops *ops, unsigned long iova,
+>  	if (!(prot & (IOMMU_READ | IOMMU_WRITE)))
+>  		return 0;
+>  
+> -	if (WARN_ON(iova >= (1ULL << data->iop.cfg.ias) ||
+> -		    paddr >= (1ULL << data->iop.cfg.oas)))
+> +	if (WARN_ON(iova >> data->iop.cfg.ias || paddr >> data->iop.cfg.oas))
+>  		return -ERANGE;
 
-Sounds good.
+As discussed when reviewing these for Android, please leave this code as-is.
 
-> 
-> > > +
-> > > +/ {
-> > > +     model = "Beacon EmbeddedWorks i.MX8M Mini Development Kit";
-> > > +     compatible = "beacon,imx8mn-beacon-kit", "fsl,imx8mn";
-> >
-> > Undocumented compatible.
-> 
-> I am still trying to learn the YAML rules.  Do I just add it to the
-> fsl.yaml?  'beacon' is in the vendor-prefixes, but I looked and the
-> 'imx8mm-beacon-kit' which is already in the kernel doesn't have a
-> compatible either and they are virtually identical.
+>  
+>  	ret = __arm_v7s_map(data, iova, paddr, size, prot, 1, data->pgd, gfp);
+> @@ -717,7 +716,7 @@ static size_t arm_v7s_unmap(struct io_pgtable_ops *ops, unsigned long iova,
+>  {
+>  	struct arm_v7s_io_pgtable *data = io_pgtable_ops_to_data(ops);
+>  
+> -	if (WARN_ON(upper_32_bits(iova)))
+> +	if (WARN_ON(iova >> data->iop.cfg.ias))
+>  		return 0;
 
-Enough will be adding it to the fsl.yaml. There is no strict need for
-separate compatible for baseboard, although that's quite common practice
-since you want to reuse it.
+And avoid the UB here for 32-bit machines by comparing with 1ULL <<
+iop.cfg.ias instead.
 
-The beacon,imx8mm-beacon-kit is in fsl.yaml, so you can just duplicate
-for imx8mn.
+Thanks,
 
-Best regards,
-Krzysztof
-
+Will
