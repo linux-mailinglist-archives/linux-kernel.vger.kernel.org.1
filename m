@@ -2,767 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E698529689D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 04:57:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A77E2968A2
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 05:06:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374815AbgJWC5m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 22:57:42 -0400
-Received: from out30-57.freemail.mail.aliyun.com ([115.124.30.57]:44447 "EHLO
-        out30-57.freemail.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S374806AbgJWC5m (ORCPT
+        id S460260AbgJWDF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 23:05:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36900 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S460253AbgJWDF0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 22:57:42 -0400
-X-Alimail-AntiSpam: AC=PASS;BC=-1|-1;BR=01201311R151e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=e01e04407;MF=zoucao@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0UCt828I_1603421853;
-Received: from ali-6c96cfe06eab.local(mailfrom:zoucao@linux.alibaba.com fp:SMTPD_---0UCt828I_1603421853)
-          by smtp.aliyun-inc.com(127.0.0.1);
-          Fri, 23 Oct 2020 10:57:34 +0800
-Subject: Re: [PATCH 1/2] fs:regfs: add register easy filesystem
-From:   zc <zoucao@linux.alibaba.com>
-To:     viro@zeniv.linux.org.uk
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        zoucao <zoucao@linux.alibaba.com>
-References: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
-Message-ID: <00513aa5-1cc5-bc1c-1ca7-d5cd6e3f1ed6@linux.alibaba.com>
-Date:   Fri, 23 Oct 2020 10:57:33 +0800
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:68.0)
- Gecko/20100101 Thunderbird/68.10.0
+        Thu, 22 Oct 2020 23:05:26 -0400
+Received: from mail-lj1-x241.google.com (mail-lj1-x241.google.com [IPv6:2a00:1450:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 597D9C0613CE
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:05:26 -0700 (PDT)
+Received: by mail-lj1-x241.google.com with SMTP id a4so4165021lji.12
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:05:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Na94wtC1BhSlnxPRS1UAdX72oiIY6E2rGP3IXkaaAPI=;
+        b=dvQpU+FB9bJIevPoyZUx0Zefem4fScj4c1Gi0SaeCK5Q9yI9nesRnzjd+UaB+pY0Io
+         MQlmn/KIjYgbmrUu++HqyEv1sajyLI/DtsrPFcq1odZmHAA9otSr14zvP3X3mR7rw59T
+         axPQewjAT8o4TjKIP1JKavPS6yuA49BTh5Ujg=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Na94wtC1BhSlnxPRS1UAdX72oiIY6E2rGP3IXkaaAPI=;
+        b=jP+RD47G3ZG/cI0WAmb90Oo+9Jx9fqUC50traa90AKYOuMdqEcSQHz2zYQdwQh68Wn
+         u0T8ds8vLqAN15Oj9HWJKUILKJLH4Dqjo03DO5OETGFxIBXcViV9Z31qfif7MCdovgaR
+         GNVQ2T4kULN4qtD+e+IRxqiSyBA2VJwsspGNwyxl6V/o2qeOqWD2JlKZsx3j/kl1IZ1c
+         zJ/8McM0aW5qkJtQtCpDawiOzOyqWHDzah1I/dqYb6EqMRZ7e2PFONCXn2Y+dmcMGjF0
+         zsOwjrQ4FRccTZOU0w12dav+AI32HAB/8E2HQ7xC1UxyMVAEg+1uQHg82upKSh7FGpVt
+         l15w==
+X-Gm-Message-State: AOAM532ostL6kmWQrdpyYMtLASa+ouBlR2xejFQrGwsqMFUGCP0ndw01
+        72fritbuAj4dPC1WVAHZtejkkK9R6axsnA==
+X-Google-Smtp-Source: ABdhPJyBVtssk0RxclJTYHlQk5XO9Lca2KUtSYOxC00VoEMlzb04GeCNsuJrQ7oRWYNSTU51qZ8hjw==
+X-Received: by 2002:a05:651c:118d:: with SMTP id w13mr5468ljo.167.1603422324484;
+        Thu, 22 Oct 2020 20:05:24 -0700 (PDT)
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com. [209.85.167.44])
+        by smtp.gmail.com with ESMTPSA id f16sm5235lfk.110.2020.10.22.20.05.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 22 Oct 2020 20:05:22 -0700 (PDT)
+Received: by mail-lf1-f44.google.com with SMTP id a7so265899lfk.9
+        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 20:05:22 -0700 (PDT)
+X-Received: by 2002:a19:83c9:: with SMTP id f192mr33971lfd.148.1603422321812;
+ Thu, 22 Oct 2020 20:05:21 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1603175408-96164-1-git-send-email-zoucao@linux.alibaba.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <CA+G9fYvHze+hKROmiB0uL90S8h9ppO9S9Xe7RWwv808QwOd_Yw@mail.gmail.com>
+ <CAHk-=wg5-P79Hr4iaC_disKR2P+7cRVqBA9Dsria9jdVwHo0+A@mail.gmail.com>
+ <CA+G9fYv=DUanNfL2yza=y9kM7Y9bFpVv22Wd4L9NP28i0y7OzA@mail.gmail.com>
+ <CA+G9fYudry0cXOuSfRTqHKkFKW-sMrA6Z9BdQFmtXsnzqaOgPg@mail.gmail.com>
+ <CAHk-=who8WmkWuuOJeGKa-7QCtZHqp3PsOSJY0hadyywucPMcQ@mail.gmail.com>
+ <CAHk-=wi=sf4WtmZXgGh=nAp4iQKftCKbdQqn56gjifxWNpnkxw@mail.gmail.com> <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
+In-Reply-To: <CAEUSe78A4fhsyF6+jWKVjd4isaUeuFWLiWqnhic87BF6cecN3w@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Thu, 22 Oct 2020 20:05:05 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+Message-ID: <CAHk-=wgqAp5B46SWzgBt6UkheVGFPs2rrE6H4aqLExXE1TXRfQ@mail.gmail.com>
+Subject: Re: [LTP] mmstress[1309]: segfault at 7f3d71a36ee8 ip
+ 00007f3d77132bdf sp 00007f3d71a36ee8 error 4 in libc-2.27.so[7f3d77058000+1aa000]
+To:     =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Cc:     Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Stephen Rothwell <sfr@canb.auug.org.au>,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        zenglg.jy@cn.fujitsu.com,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>,
+        X86 ML <x86@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        lkft-triage@lists.linaro.org,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        linux-mm <linux-mm@kvack.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux-Next Mailing List <linux-next@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        kasan-dev <kasan-dev@googlegroups.com>,
+        Dmitry Vyukov <dvyukov@google.com>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Ingo Molnar <mingo@redhat.com>, LTP List <ltp@lists.linux.it>,
+        Al Viro <viro@zeniv.linux.org.uk>
+Content-Type: multipart/mixed; boundary="000000000000eb07d805b24dd94f"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi viro:
+--000000000000eb07d805b24dd94f
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-   Through regfs is very sample and easy,  but i think it is a Interest 
-,  could give  some suggestions?
+On Thu, Oct 22, 2020 at 6:36 PM Daniel D=C3=ADaz <daniel.diaz@linaro.org> w=
+rote:
+>
+> The kernel Naresh originally referred to is here:
+>   https://builds.tuxbuild.com/SCI7Xyjb7V2NbfQ2lbKBZw/
 
+Thanks.
 
-Regards,
+And when I started looking at it, I realized that my original idea
+("just look for __put_user_nocheck_X calls, there aren't so many of
+those") was garbage, and that I was just being stupid.
 
-zc
+Yes, the commit that broke was about __put_user(), but in order to not
+duplicate all the code, it re-used the regular put_user()
+infrastructure, and so all the normal put_user() calls are potential
+problem spots too if this is about the compiler interaction with KASAN
+and the asm changes.
 
-在 2020/10/20 下午2:30, Zou Cao 写道:
-> register filesystem is mapping the register into file dentry, it
-> will use the io readio to get the register val. DBT file is use
-> to decript the register tree, you can use it as follow:
->
-> 	mount -t regfs -o dtb=test.dtb none /mnt
->
-> 	test.dts:
-> 	/ {
->
-> 	compatible = "hisilicon,hi6220-hikey", "hisilicon,hi6220";
-> 	#address-cells = <0x2>;
-> 	#size-cells = <0x2>;
-> 	model = "HiKey Development Board";
->
-> 	gic-v3-dist{
-> 		reg = <0x0 0x8000000 0x0 0x10000>;
-> 		GIC_CTRL {
-> 			offset = <0x0>;
-> 		};
-> 		GICD_TYPER {
-> 			offset = <0x4>;
-> 		};
-> 	   };
-> 	};
->
-> it will create all regiter dentry file in /mnt
->
-> Signed-off-by: Zou Cao <zoucao@linux.alibaba.com>
-> ---
->   fs/Kconfig             |   1 +
->   fs/Makefile            |   1 +
->   fs/regfs/Kconfig       |   7 +
->   fs/regfs/Makefile      |   8 ++
->   fs/regfs/file.c        | 107 +++++++++++++++
->   fs/regfs/inode.c       | 354 +++++++++++++++++++++++++++++++++++++++++++++++++
->   fs/regfs/internal.h    |  32 +++++
->   fs/regfs/regfs_inode.h |  32 +++++
->   fs/regfs/supper.c      |  71 ++++++++++
->   9 files changed, 613 insertions(+)
->   create mode 100644 fs/regfs/Kconfig
->   create mode 100644 fs/regfs/Makefile
->   create mode 100644 fs/regfs/file.c
->   create mode 100644 fs/regfs/inode.c
->   create mode 100644 fs/regfs/internal.h
->   create mode 100644 fs/regfs/regfs_inode.h
->   create mode 100644 fs/regfs/supper.c
->
-> diff --git a/fs/Kconfig b/fs/Kconfig
-> index a88aa3a..d95acaf 100644
-> --- a/fs/Kconfig
-> +++ b/fs/Kconfig
-> @@ -324,6 +324,7 @@ endif # NETWORK_FILESYSTEMS
->   source "fs/nls/Kconfig"
->   source "fs/dlm/Kconfig"
->   source "fs/unicode/Kconfig"
-> +source "fs/regfs/Kconfig"
->   
->   config IO_WQ
->   	bool
-> diff --git a/fs/Makefile b/fs/Makefile
-> index 2ce5112..24f3878 100644
-> --- a/fs/Makefile
-> +++ b/fs/Makefile
-> @@ -136,3 +136,4 @@ obj-$(CONFIG_EFIVAR_FS)		+= efivarfs/
->   obj-$(CONFIG_EROFS_FS)		+= erofs/
->   obj-$(CONFIG_VBOXSF_FS)		+= vboxsf/
->   obj-$(CONFIG_ZONEFS_FS)		+= zonefs/
-> +obj-$(CONFIG_REGFS_FS)		+= zonefs/
-> diff --git a/fs/regfs/Kconfig b/fs/regfs/Kconfig
-> new file mode 100644
-> index 0000000..74ba85b
-> --- /dev/null
-> +++ b/fs/regfs/Kconfig
-> @@ -0,0 +1,7 @@
-> +config REGFS_FS
-> +	tristate "registers filesystem support"
-> +	depends on ARM64
-> +	help
-> +	  regfs support the read and write register of device resource by
-> +	  dentry filesystem, it is more easy to support bsp debug. it also
-> +	  support to printk the register val when panic
-> diff --git a/fs/regfs/Makefile b/fs/regfs/Makefile
-> new file mode 100644
-> index 0000000..26d5eef
-> --- /dev/null
-> +++ b/fs/regfs/Makefile
-> @@ -0,0 +1,8 @@
-> +# SPDX-License-Identifier: GPL-2.0-only
-> +#
-> +#Makefile for the linux ramfs routines.
-> +#
-> +
-> +obj-y += regfs.o
-> +
-> +regfs-objs += inode.o file.o supper.o
-> diff --git a/fs/regfs/file.c b/fs/regfs/file.c
-> new file mode 100644
-> index 0000000..6cd9f3d
-> --- /dev/null
-> +++ b/fs/regfs/file.c
-> @@ -0,0 +1,107 @@
-> +#include <linux/fs.h>
-> +#include <linux/mm.h>
-> +#include <linux/mpage.h>
-> +#include <linux/writeback.h>
-> +#include <linux/buffer_head.h>
-> +#include <linux/kernel.h>
-> +#include <linux/mm.h>
-> +#include <linux/memcontrol.h>
-> +#include <linux/iomap.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/uio.h>
-> +#include <linux/buffer_head.h>
-> +#include <linux/dax.h>
-> +#include <linux/writeback.h>
-> +#include <linux/swap.h>
-> +#include <linux/bio.h>
-> +#include <linux/sched/signal.h>
-> +#include <linux/migrate.h>
-> +
-> +#include "regfs_inode.h"
-> +#include "internal.h"
-> +
-> +ssize_t regfs_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
-> +{
-> +	struct file *file = iocb->ki_filp;
-> +	struct inode *inode = file->f_mapping->host;
-> +	ssize_t ret;
-> +
-> +	inode_lock(inode);
-> +	ret = generic_write_checks(iocb, from);
-> +	if (ret > 0)
-> +		ret = __generic_file_write_iter(iocb, from);
-> +	inode_unlock(inode);
-> +
-> +	if (ret > 0)
-> +		ret = generic_write_sync(iocb, ret);
-> +	return ret;
-> +}
-> +
-> +static ssize_t regfs_file_read(struct file *file, char __user *buf, size_t len, loff_t *ppos)
-> +{
-> +	struct address_space *mapping = file->f_mapping;
-> +	struct regfs_inode_info  *info = REGFS_I(mapping->host);
-> +	char str[64];
-> +	unsigned long val;
-> +
-> +	val = readl_relaxed(info->base + info->offset);
-> +
-> +	loc_debug("name:%s base:%p val:%lx\n"
-> +			, file->f_path.dentry->d_iname
-> +			, info->base + info->offset
-> +			, val);
-> +
-> +	snprintf(str, 64, "%lx", val);
-> +
-> +	return simple_read_from_buffer(buf, len, ppos, str, strlen(str));
-> +}
-> +
-> +static ssize_t regfs_file_write(struct file *file, const char __user *buf, size_t len, loff_t *ppos)
-> +{
-> +	struct address_space *mapping = file->f_mapping;
-> +	struct regfs_inode_info  *info = REGFS_I(mapping->host);
-> +	char str[67];
-> +	unsigned long val = 0;
-> +	loff_t pos = *ppos;
-> +	size_t res;
-> +
-> +	if (pos < 0)
-> +		return -EINVAL;
-> +	if (pos >= len || len > 66)
-> +		return 0;
-> +
-> +	res = copy_from_user(str, buf, len);
-> +	if (res)
-> +		return -EFAULT;
-> +	str[len] = 0;
-> +
-> +	if (kstrtoul(str, 16, &val) < 0)
-> +		return -EINVAL;
-> +
-> +	writel_relaxed(val, info->base + info->offset);
-> +
-> +	loc_debug("name:%s base:%p val:%lx\n"
-> +			, file->f_path.dentry->d_iname
-> +			, info->base + info->offset
-> +			, val);
-> +
-> +	return len;
-> +}
-> +
-> +const struct file_operations regfs_file_operations = {
-> +	.read = regfs_file_read,
-> +	.write = regfs_file_write,
-> +};
-> +
-> +const struct inode_operations regfs_file_inode_operations = {
-> +	.setattr	= simple_setattr,
-> +	.getattr	= simple_getattr,
-> +};
-> +
-> +const struct address_space_operations regfs_aops = {
-> +	.readpage   = simple_readpage,
-> +	.write_begin    = simple_write_begin,
-> +	.write_end  = simple_write_end,
-> +	.set_page_dirty = __set_page_dirty_buffers,
-> +};
-> +
-> diff --git a/fs/regfs/inode.c b/fs/regfs/inode.c
-> new file mode 100644
-> index 0000000..1643fcd
-> --- /dev/null
-> +++ b/fs/regfs/inode.c
-> @@ -0,0 +1,354 @@
-> +/*
-> + * Resizable simple ram filesystem for Linux.
-> + *
-> + * Copyright (C) 2000 Linus Torvalds.
-> + *               2000 Transmeta Corp.
-> + *
-> + * Usage limits added by David Gibson, Linuxcare Australia.
-> + * This file is released under the GPL.
-> + */
-> +
-> +/*
-> + * NOTE! This filesystem is probably most useful
-> + * not as a real filesystem, but as an example of
-> + * how virtual filesystems can be written.
-> + *
-> + * It doesn't get much simpler than this. Consider
-> + * that this file implements the full semantics of
-> + * a POSIX-compliant read-write filesystem.
-> + *
-> + * Note in particular how the filesystem does not
-> + * need to implement any data structures of its own
-> + * to keep track of the virtual data: using the VFS
-> + * caches is sufficient.
-> + */
-> +
-> +#include <linux/fs.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/highmem.h>
-> +#include <linux/time.h>
-> +#include <linux/init.h>
-> +#include <linux/string.h>
-> +#include <linux/backing-dev.h>
-> +#include <linux/sched.h>
-> +#include <linux/parser.h>
-> +#include <linux/magic.h>
-> +#include <linux/slab.h>
-> +#include <linux/kernel.h>
-> +#include <linux/of.h>
-> +#include <linux/of_fdt.h>
-> +#include <linux/libfdt.h>
-> +#include <asm/uaccess.h>
-> +#include <linux/module.h>
-> +#include "regfs_inode.h"
-> +#include "internal.h"
-> +
-> +static LIST_HEAD(regfs_head);
-> +
-> +static const struct inode_operations regfs_dir_inode_operations;
-> +int regfs_debug;
-> +module_param(regfs_debug, int, S_IRUGO);
-> +MODULE_PARM_DESC(regfs_debug, "enable regfs debug mode");
-> +
-> +struct inode *regfs_get_inode(struct super_block *sb, const struct inode *dir, umode_t mode, dev_t dev)
-> +{
-> +	struct inode *inode = new_inode(sb);
-> +
-> +	if (inode) {
-> +		inode->i_ino = get_next_ino();
-> +		inode_init_owner(inode, dir, mode);
-> +		inode->i_mapping->a_ops = &regfs_aops;
-> +		//inode->i_mapping->backing_dev_info = &regfs_backing_dev_info;
-> +		mapping_set_gfp_mask(inode->i_mapping, GFP_HIGHUSER);
-> +		mapping_set_unevictable(inode->i_mapping);
-> +		inode->i_atime = inode->i_mtime = inode->i_ctime = current_time(inode);
-> +		switch (mode & S_IFMT) {
-> +		default:
-> +			init_special_inode(inode, mode, dev);
-> +			break;
-> +		case S_IFREG:
-> +			inode->i_op = &regfs_file_inode_operations;
-> +			inode->i_fop = &regfs_file_operations;
-> +			break;
-> +		case S_IFDIR:
-> +			inode->i_op = &regfs_dir_inode_operations;
-> +			inode->i_fop = &simple_dir_operations;
-> +
-> +			/* directory inodes start off with i_nlink == 2 (for "." entry) */
-> +			inc_nlink(inode);
-> +			break;
-> +		case S_IFLNK:
-> +			inode->i_op = &page_symlink_inode_operations;
-> +			break;
-> +		}
-> +	}
-> +
-> +	return inode;
-> +}
-> +
-> +static const struct inode_operations regfs_dir_inode_operations = {
-> +	.lookup		= simple_lookup,
-> +};
-> +
-> +static struct dentry *new_dentry_create(struct super_block *sb, struct dentry *parent,
-> +		 const char *name, bool is_dir, struct res_data *res)
-> +{
-> +	struct dentry *dentry;
-> +	struct inode *inode;
-> +	struct regfs_inode_info *ei;
-> +	struct regfs_fs_info *fsi = sb->s_fs_info;
-> +
-> +	dentry = d_alloc_name(parent, name);
-> +	if (!dentry)
-> +		return NULL;
-> +
-> +	inode = new_inode(sb);
-> +	if (!inode)
-> +		goto out;
-> +
-> +	ei = REGFS_I(inode);
-> +	inode->i_ino = get_next_ino();;
-> +	inode->i_mtime = inode->i_atime = inode->i_ctime = current_time(inode);
-> +	inode->i_uid =  GLOBAL_ROOT_UID;
-> +	inode->i_gid =  GLOBAL_ROOT_GID;
-> +	if (is_dir) {
-> +		inode->i_mode = S_IFDIR | S_IRUGO | S_IWUSR;
-> +		inode->i_op = &regfs_dir_inode_operations;
-> +		inode->i_fop = &simple_dir_operations;
-> +		list_add(&ei->list, &fsi->list);
-> +	} else {
-> +		inode->i_mode = S_IFREG | S_IRUGO | S_IWUSR;
-> +		inode->i_op = &regfs_file_inode_operations;
-> +		inode->i_fop = &regfs_file_operations;
-> +		inc_nlink(inode);
-> +	}
-> +	ei->base = (void *)res->base;
-> +	ei->offset = res->offset;
-> +	ei->type = res->type;
-> +
-> +	d_add(dentry, inode);
-> +
-> +	loc_debug("new dentry io base:%llx offset:%llx ei:%llx\n", (u64)ei->base, (u64)ei->offset, (u64)ei);
-> +	return dentry;
-> +out:
-> +	dput(dentry);
-> +	return NULL;
-> +}
-> +
-> +static void node_transfer_dentry(struct super_block *sb)
-> +{
-> +	struct regfs_fs_info *fsi = sb->s_fs_info;
-> +	void *blob = fsi->dtb_buf;
-> +	const char *pathp;
-> +	int node_offset, depth = -1;
-> +	struct dentry *parent = NULL;
-> +	u64 parent_base;
-> +
-> +	for (node_offset = fdt_next_node(blob, -1, &depth);
-> +		node_offset >= 0 && depth >= 0;
-> +		node_offset = fdt_next_node(blob, node_offset, &depth)) {
-> +
-> +		const struct fdt_property *prop;
-> +		struct res_data res;
-> +
-> +		pathp = fdt_get_name(blob, node_offset, NULL);
-> +		prop = (void *)fdt_getprop(blob, node_offset, "reg", NULL);
-> +
-> +		if (prop) {
-> +			unsigned long phys;
-> +
-> +			phys = fdt32_to_cpu(((const __be32 *)prop)[1]);
-> +			res.type = RES_TYPE_RANGE;
-> +			res.offset = fdt32_to_cpu(((const __be32 *)prop)[3]);
-> +			res.base = (u64)ioremap(phys, res.offset);
-> +
-> +			if (!res.base) {
-> +				parent = NULL;
-> +				parent_base = 0;
-> +				continue;
-> +			}
-> +
-> +			loc_debug("%s reg:%lx size:%lx map:%llx\n\n", pathp
-> +				 , (unsigned long) fdt32_to_cpu(((const __be32 *)prop)[1])
-> +				 , (unsigned long) fdt32_to_cpu(((const __be32 *)prop)[3])
-> +				 , (u64)res.base);
-> +
-> +			parent = new_dentry_create(sb, sb->s_root, (const char *)pathp, true, &res);
-> +			parent_base = res.base;
-> +
-> +		} else {
-> +			// parent dentry is create failed, igonre all child dentry
-> +			if (!parent)
-> +				continue;
-> +
-> +			prop = (void *)fdt_getprop(blob, node_offset, "offset", NULL);
-> +			if (prop) {
-> +
-> +				res.offset = fdt32_to_cpu(*(const __be32 *)prop);
-> +				res.base = parent_base;
-> +				res.type = RES_TYPE_ITEM;
-> +
-> +				new_dentry_create(sb, parent, (const char *) pathp, false, &res);
-> +				loc_debug("%s offset:%lx\n", pathp, (unsigned long)fdt32_to_cpu(*(const __be32 *)prop));
-> +			}
-> +		}
-> +	}
-> +}
-> +
-> +static int parse_options(char *options, struct super_block *sb)
-> +{
-> +	char *p;
-> +	int ret = -EINVAL;
-> +	struct regfs_fs_info *fsi;
-> +	size_t msize = INT_MAX;
-> +
-> +	fsi = sb->s_fs_info;
-> +
-> +	if (!options)
-> +		return -EINVAL;
-> +
-> +	while ((p = strsep(&options, ",")) != NULL) {
-> +		char *name, *name_val;
-> +
-> +		name = strsep(&p, "=");
-> +		if (name == NULL)
-> +			goto failed;
-> +
-> +		name_val = strsep(&p, "=");
-> +		if (name_val == NULL)
-> +			goto failed;
-> +
-> +		//get resource address
-> +		if (!strcmp(name, "dtb")) {
-> +			ret = kernel_read_file_from_path(name_val, &fsi->dtb_buf, &fsi->dtb_len, msize, READING_UNKNOWN);
-> +			if (ret) {
-> +				pr_err("load %s failed\n", name_val);
-> +				goto failed;
-> +			}
-> +		} else
-> +			goto failed;
-> +	};
-> +
-> +	return 0;
-> +
-> +failed:
-> +	return ret;
-> +}
-> +
-> +int regfs_fill_super(struct super_block *sb, void *data, int silent)
-> +{
-> +	struct regfs_fs_info *fsi;
-> +	struct inode *inode;
-> +	int err;
-> +
-> +	fsi = kzalloc(sizeof(struct regfs_fs_info), GFP_KERNEL);
-> +	if (!fsi)
-> +		return -ENOMEM;
-> +
-> +	sb->s_fs_info = fsi;
-> +	fsi->sb = sb;
-> +
-> +	err = parse_options((char *)data, sb);
-> +	if (err)
-> +		goto out;
-> +
-> +	sb->s_maxbytes		= MAX_LFS_FILESIZE;
-> +	sb->s_blocksize		= PAGE_SIZE;
-> +	sb->s_blocksize_bits	= PAGE_SHIFT;
-> +	sb->s_magic		= RAMFS_MAGIC;
-> +	sb->s_op		= &regfs_ops;
-> +	sb->s_time_gran		= 1;
-> +
-> +	inode = regfs_get_inode(sb, NULL, S_IFDIR, 0);
-> +	sb->s_root = d_make_root(inode);
-> +	if (!sb->s_root)
-> +		goto out;
-> +
-> +	INIT_LIST_HEAD(&fsi->list);
-> +	INIT_LIST_HEAD(&fsi->regfs_head);
-> +	list_add(&fsi->regfs_head, &regfs_head);
-> +
-> +	return 0;
-> +
-> +out:
-> +	if (fsi)
-> +		kfree(fsi);
-> +
-> +	return err;
-> +}
-> +
-> +struct dentry *regfs_mount(struct file_system_type *fs_type,
-> +	int flags, const char *dev_name, void *data)
-> +{
-> +	struct dentry *root_dentry;
-> +	struct super_block *sb;
-> +
-> +	root_dentry = mount_nodev(fs_type, flags, data, regfs_fill_super);
-> +
-> +	sb = root_dentry->d_sb;
-> +
-> +	if (sb->s_root) {
-> +		node_transfer_dentry(sb);
-> +	} else
-> +		return NULL;
-> +
-> +	return root_dentry;
-> +}
-> +
-> +static void regfs_kill_sb(struct super_block *sb)
-> +{
-> +	struct regfs_fs_info *fsi = sb->s_fs_info;
-> +	struct regfs_inode_info *info_res;
-> +
-> +	list_for_each_entry(info_res,  &fsi->list, list)
-> +		iounmap(info_res->base);
-> +
-> +	if (fsi) {
-> +		if (fsi->dtb_buf)
-> +			vfree(fsi->dtb_buf);
-> +		list_del(&fsi->regfs_head);
-> +		kfree(sb->s_fs_info);
-> +	}
-> +	kill_litter_super(sb);
-> +}
-> +
-> +static struct file_system_type regfs_fs_type = {
-> +	.name		= "regfs",
-> +	.mount		= regfs_mount,
-> +	.kill_sb	= regfs_kill_sb,
-> +	.fs_flags	= FS_USERNS_MOUNT,
-> +};
-> +
-> +static void init_once(void *foo)
-> +{
-> +	struct regfs_inode_info *ei = (struct regfs_inode_info *) foo;
-> +
-> +	inode_init_once(&ei->vfs_inode);
-> +}
-> +
-> +static int __init init_regfs_fs(void)
-> +{
-> +
-> +	regfs_inode_cachep = kmem_cache_create_usercopy("regfs_inode_cache",
-> +				sizeof(struct regfs_inode_info), 0,
-> +				(SLAB_RECLAIM_ACCOUNT | SLAB_MEM_SPREAD | SLAB_ACCOUNT),
-> +				0, 0, init_once);
-> +
-> +	if (!regfs_inode_cachep)
-> +		return -ENOMEM;
-> +
-> +	return  register_filesystem(&regfs_fs_type);
-> +}
-> +
-> +static void __exit exit_regfs_fs(void)
-> +{
-> +	unregister_filesystem(&regfs_fs_type);
-> +	rcu_barrier();
-> +	kmem_cache_destroy(regfs_inode_cachep);
-> +}
-> +
-> +module_init(init_regfs_fs);
-> +module_exit(exit_regfs_fs);
-> +
-> +MODULE_LICENSE("GPL");
-> +MODULE_AUTHOR("Zou Cao<zoucaox@linux.alibaba.com>");
-> diff --git a/fs/regfs/internal.h b/fs/regfs/internal.h
-> new file mode 100644
-> index 0000000..61577bb
-> --- /dev/null
-> +++ b/fs/regfs/internal.h
-> @@ -0,0 +1,32 @@
-> +#ifndef __INTERNAL_H__
-> +#define __INTERNAL_H__
-> +
-> +#define loc_debug(fmt, ...)   \
-> +	do {                       \
-> +		if (regfs_debug)   \
-> +			printk(fmt, ##__VA_ARGS__); \
-> +	} while (0)
-> +
-> +struct regfs_fs_info {
-> +	struct super_block *sb;
-> +	void   *dtb_buf;
-> +	u64  	dtb_len;
-> +	u64  	iomem;
-> +	u64  size;
-> +	// supper ifs list
-> +	struct list_head regfs_head;
-> +	// io map list of inode
-> +	struct list_head list;
-> +};
-> +
-> +#define RAMFS_DEFAULT_MODE	0755
-> +
-> +extern int regfs_debug;
-> +extern const struct address_space_operations regfs_aops;
-> +extern const struct inode_operations regfs_file_inode_operations;
-> +extern const struct file_operations regfs_file_operations;
-> +extern const struct super_operations regfs_ops;
-> +extern struct kmem_cache *regfs_inode_cachep;
-> +int regfs_supper_init(void);
-> +
-> +#endif
-> diff --git a/fs/regfs/regfs_inode.h b/fs/regfs/regfs_inode.h
-> new file mode 100644
-> index 0000000..0883e05
-> --- /dev/null
-> +++ b/fs/regfs/regfs_inode.h
-> @@ -0,0 +1,32 @@
-> +#ifndef __REGFS_INODE_H__
-> +#define __REGFS_INODE_H__
-> +
-> +enum res_type {
-> +	RES_TYPE_NONE = 0,
-> +	RES_TYPE_RANGE,
-> +	RES_TYPE_ITEM,
-> +};
-> +
-> +struct regfs_inode_info {
-> +	unsigned long flag;
-> +	struct inode vfs_inode;
-> +	void __iomem *base;
-> +	u64  offset;
-> +	u64  val;  //for panic save
-> +	struct list_head list;  //inode list
-> +	enum res_type type;
-> +};
-> +
-> +struct res_data {
-> +	enum res_type type;
-> +	u64  base;
-> +	u64  offset;
-> +};
-> +
-> +static inline struct regfs_inode_info *REGFS_I(struct inode *inode)
-> +{
-> +	return container_of(inode, struct regfs_inode_info, vfs_inode);
-> +}
-> +
-> +#endif
-> +
-> diff --git a/fs/regfs/supper.c b/fs/regfs/supper.c
-> new file mode 100644
-> index 0000000..35733b6
-> --- /dev/null
-> +++ b/fs/regfs/supper.c
-> @@ -0,0 +1,71 @@
-> +#include <linux/fs.h>
-> +#include <linux/pagemap.h>
-> +#include <linux/highmem.h>
-> +#include <linux/time.h>
-> +#include <linux/init.h>
-> +#include <linux/string.h>
-> +#include <linux/backing-dev.h>
-> +#include <linux/sched.h>
-> +#include <linux/parser.h>
-> +#include <linux/magic.h>
-> +#include <linux/slab.h>
-> +#include <linux/kernel.h>
-> +#include <linux/uaccess.h>
-> +#include <linux/module.h>
-> +#include <linux/iversion.h>
-> +#include "regfs_inode.h"
-> +#include "internal.h"
-> +
-> +struct kmem_cache *regfs_inode_cachep;
-> +
-> +/*
-> + * Display the mount options in /proc/mounts.
-> + */
-> +
-> +static struct inode *regfs_alloc_inode(struct super_block *sb)
-> +{
-> +	struct regfs_inode_info *ei;
-> +
-> +	ei = kmem_cache_alloc(regfs_inode_cachep, GFP_NOFS);
-> +	if (!ei)
-> +		return NULL;
-> +
-> +	inode_set_iversion(&ei->vfs_inode, 1);
-> +	ei->type = RES_TYPE_NONE;
-> +
-> +	return &ei->vfs_inode;
-> +}
-> +
-> +static void regfs_i_callback(struct rcu_head *head)
-> +{
-> +	struct inode *inode = container_of(head, struct inode, i_rcu);
-> +
-> +	kmem_cache_free(regfs_inode_cachep, REGFS_I(inode));
-> +}
-> +
-> +static void regfs_destroy_inode(struct inode *inode)
-> +{
-> +	call_rcu(&inode->i_rcu, regfs_i_callback);
-> +}
-> +
-> +static int regfs_write_inode(struct inode *inode, struct writeback_control *wbc)
-> +{
-> +	return 0;
-> +}
-> +
-> +static int regfs_drop_inode(struct inode *inode)
-> +{
-> +	return generic_drop_inode(inode);
-> +}
-> +
-> +const struct super_operations regfs_ops = {
-> +	.alloc_inode    = regfs_alloc_inode,
-> +	.destroy_inode  = regfs_destroy_inode,
-> +	.write_inode    = regfs_write_inode,
-> +	.drop_inode = regfs_drop_inode,
-> +};
-> +
-> +int regfs_supper_init(void)
-> +{
-> +	return 0;
-> +}
+So it's not just a couple of special cases to look at, it's all the
+normal cases too.
+
+Ok, back to the drawing board, but I think reverting it is probably
+the right thing to do if I can't think of something smart.
+
+That said, since you see this on x86-64, where the whole ugly trick with th=
+at
+
+   register asm("%"_ASM_AX)
+
+is unnecessary (because the 8-byte case is still just a single
+register, no %eax:%edx games needed), it would be interesting to hear
+if the attached patch fixes it. That would confirm that the problem
+really is due to some register allocation issue interaction (or,
+alternatively, it would tell me that there's something else going on).
+
+                  Linus
+
+--000000000000eb07d805b24dd94f
+Content-Type: application/octet-stream; name=patch
+Content-Disposition: attachment; filename=patch
+Content-Transfer-Encoding: base64
+Content-ID: <f_kglo76xr0>
+X-Attachment-Id: f_kglo76xr0
+
+IGFyY2gveDg2L2luY2x1ZGUvYXNtL3VhY2Nlc3MuaCB8IDQgKystLQogMSBmaWxlIGNoYW5nZWQs
+IDIgaW5zZXJ0aW9ucygrKSwgMiBkZWxldGlvbnMoLSkKCmRpZmYgLS1naXQgYS9hcmNoL3g4Ni9p
+bmNsdWRlL2FzbS91YWNjZXNzLmggYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS91YWNjZXNzLmgKaW5k
+ZXggZjEzNjU5NTIzMTA4Li4wZjNlMjAyZDllZWEgMTAwNjQ0Ci0tLSBhL2FyY2gveDg2L2luY2x1
+ZGUvYXNtL3VhY2Nlc3MuaAorKysgYi9hcmNoL3g4Ni9pbmNsdWRlL2FzbS91YWNjZXNzLmgKQEAg
+LTIxMSwxNCArMjExLDE0IEBAIGV4dGVybiB2b2lkIF9fcHV0X3VzZXJfbm9jaGVja184KHZvaWQp
+OwogI2RlZmluZSBkb19wdXRfdXNlcl9jYWxsKGZuLHgscHRyKQkJCQkJXAogKHsJCQkJCQkJCQlc
+CiAJaW50IF9fcmV0X3B1OwkJCQkJCQlcCi0JcmVnaXN0ZXIgX190eXBlb2ZfXygqKHB0cikpIF9f
+dmFsX3B1IGFzbSgiJSJfQVNNX0FYKTsJCVwKKwlfX3R5cGVvZl9fKCoocHRyKSkgX192YWxfcHU7
+CQkJCQlcCiAJX19jaGtfdXNlcl9wdHIocHRyKTsJCQkJCQlcCiAJX192YWxfcHUgPSAoeCk7CQkJ
+CQkJCVwKIAlhc20gdm9sYXRpbGUoImNhbGwgX18iICNmbiAiXyVQW3NpemVdIgkJCQlcCiAJCSAg
+ICAgOiAiPWMiIChfX3JldF9wdSksCQkJCQlcCiAJCQlBU01fQ0FMTF9DT05TVFJBSU5UCQkJCVwK
+IAkJICAgICA6ICIwIiAocHRyKSwJCQkJCVwKLQkJICAgICAgICJyIiAoX192YWxfcHUpLAkJCQkJ
+XAorCQkgICAgICAgImEiIChfX3ZhbF9wdSksCQkJCQlcCiAJCSAgICAgICBbc2l6ZV0gImkiIChz
+aXplb2YoKihwdHIpKSkJCQlcCiAJCSAgICAgOiJlYngiKTsJCQkJCQlcCiAJX19idWlsdGluX2V4
+cGVjdChfX3JldF9wdSwgMCk7CQkJCQlcCg==
+--000000000000eb07d805b24dd94f--
