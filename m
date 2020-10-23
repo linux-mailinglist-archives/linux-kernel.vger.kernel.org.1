@@ -2,92 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35668296C4D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:46:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id BC337296C4E
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:46:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461668AbgJWJp6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:45:58 -0400
-Received: from fllv0015.ext.ti.com ([198.47.19.141]:47562 "EHLO
-        fllv0015.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461555AbgJWJp5 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:45:57 -0400
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-        by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09N9jXjC079273;
-        Fri, 23 Oct 2020 04:45:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603446333;
-        bh=vd/rQ8Z51OitxruTppvHsOzxNO2Z78PVRSBR/5M5zMk=;
-        h=From:To:CC:Subject:Date;
-        b=c1tHVgdTnRhcXT9gX9bvJRksoPbgIC5b1dTUMDWlbmmg/qfB//8HmH6b8NwPPrRpH
-         +x5fA3AEkbGkdmx8dvKTmHPpcFNzmHxeyIsTRxm1yWru6kvwDMGrsgATH+SnWyU/Jp
-         uMZ9pTiBJMoFAJ6xs7dQbZSc2WStqShwA6q4awN8=
-Received: from DLEE107.ent.ti.com (dlee107.ent.ti.com [157.170.170.37])
-        by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09N9jXcw091988
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Fri, 23 Oct 2020 04:45:33 -0500
-Received: from DLEE104.ent.ti.com (157.170.170.34) by DLEE107.ent.ti.com
- (157.170.170.37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Fri, 23
- Oct 2020 04:45:32 -0500
-Received: from lelv0326.itg.ti.com (10.180.67.84) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Fri, 23 Oct 2020 04:45:32 -0500
-Received: from feketebors.ti.com (ileax41-snat.itg.ti.com [10.172.224.153])
-        by lelv0326.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09N9jUfl007401;
-        Fri, 23 Oct 2020 04:45:30 -0500
-From:   Peter Ujfalusi <peter.ujfalusi@ti.com>
-To:     <hyun.kwon@xilinx.com>, <laurent.pinchart@ideasonboard.com>,
-        <airlied@linux.ie>, <daniel@ffwll.ch>
-CC:     <dri-devel@lists.freedesktop.org>,
-        <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH] drm: xlnx: Use dma_request_chan for DMA channel request
-Date:   Fri, 23 Oct 2020 12:46:02 +0300
-Message-ID: <20201023094602.5630-1-peter.ujfalusi@ti.com>
-X-Mailer: git-send-email 2.29.0
+        id S461677AbgJWJqQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:46:16 -0400
+Received: from mx2.suse.de ([195.135.220.15]:35886 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S461670AbgJWJqP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 05:46:15 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603446374;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=KTM/+P4KRWrBjgo7uNy72xB7J3AIXl7gcRb4zVxC7og=;
+        b=j/V5xQTUvBfmvAZAgahqEJecnxGoI7WUntBbUzIioH2u+E3cuQqd4E8i0ExLIVb+ipMasA
+        UQRu+1l1DITKij0vK506075LDp4L1e0oHJuLDYwH8R0bazLOX/UVK+Ulv7VuSaCidP+4Z2
+        sVqnyQCwTmRpVdfDMnQklUY++GmBTFk=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 0D304AFF2;
+        Fri, 23 Oct 2020 09:46:14 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 11:46:13 +0200
+From:   Petr Mladek <pmladek@suse.com>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        John Ogness <john.ogness@linutronix.de>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Guenter Roeck <linux@roeck-us.net>,
+        Shreyas Joshi <shreyas.joshi@biamp.com>,
+        shreyasjoshi15@gmail.com,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sergey Senozhatsky <sergey.senozhatsky.work@gmail.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [RFC 1/2] printk: Add kernel parameter: mute_console
+Message-ID: <20201023094613.GD32486@alley>
+References: <20201022114228.9098-1-pmladek@suse.com>
+ <20201022114228.9098-2-pmladek@suse.com>
+ <20201022094512.37c9bf5d@gandalf.local.home>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201022094512.37c9bf5d@gandalf.local.home>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There is no need to use the of_dma_request_slave_channel() directly as
-dma_request_chan() is going to try to get the channel via OF as well.
+On Thu 2020-10-22 09:45:12, Steven Rostedt wrote:
+> On Thu, 22 Oct 2020 13:42:27 +0200
+> Petr Mladek <pmladek@suse.com> wrote:
+> 
+> > diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> > index fe64a49344bf..63fb96630767 100644
+> > --- a/kernel/printk/printk.c
+> > +++ b/kernel/printk/printk.c
+> > @@ -1207,6 +1207,19 @@ void __init setup_log_buf(int early)
+> >  	memblock_free(__pa(new_log_buf), new_log_buf_len);
+> >  }
+> >  
+> > +static bool mute_console;
+> > +
+> > +static int __init mute_console_setup(char *str)
+> > +{
+> > +	mute_console = true;
+> > +	pr_info("All consoles muted.\n");
+> > +
+> > +	return 0;
+> > +}
+> > +
+> > +early_param("mute_console", mute_console_setup);
+> > +module_param(mute_console, bool, 0644);
+> > +
+> 
+> Why have both early_param and module_param? What's the purpose of
+> module_param? Usually that's there to just set a variable, without a need
+> for another interface. But if you have early_param() that sets
+> mute_console, isn't that redundant?
 
-Signed-off-by: Peter Ujfalusi <peter.ujfalusi@ti.com>
----
- drivers/gpu/drm/xlnx/zynqmp_disp.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+I was surprised as well. But both seem to be needed:
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 98bd48f13fd1..a4405d081aca 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -28,7 +28,6 @@
- #include <linux/dmaengine.h>
- #include <linux/module.h>
- #include <linux/of.h>
--#include <linux/of_dma.h>
- #include <linux/platform_device.h>
- #include <linux/pm_runtime.h>
- #include <linux/spinlock.h>
-@@ -1316,8 +1315,7 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
- 
- 		snprintf(dma_channel_name, sizeof(dma_channel_name),
- 			 "%s%u", dma_names[layer->id], i);
--		dma->chan = of_dma_request_slave_channel(disp->dev->of_node,
--							 dma_channel_name);
-+		dma->chan = dma_request_chan(disp->dev, dma_channel_name);
- 		if (IS_ERR(dma->chan)) {
- 			dev_err(disp->dev, "failed to request dma channel\n");
- 			ret = PTR_ERR(dma->chan);
--- 
-Peter
+   + early_param allows to enable it on the command line.
+     Note that module_param would need to be set via
+     printk.mute_console
 
-Texas Instruments Finland Oy, Porkkalankatu 22, 00180 Helsinki.
-Y-tunnus/Business ID: 0615521-4. Kotipaikka/Domicile: Helsinki
+   + module_param() allows to modify the state at runtime
 
+IMHO, both should be possible. It is supposed to be used similar
+way like ignore_loglevel.
+
+Best Regards,
+Petr
