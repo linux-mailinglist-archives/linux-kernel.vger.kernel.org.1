@@ -2,68 +2,53 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 184A029772D
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:43:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3917729774A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:53:19 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1750845AbgJWSnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:43:37 -0400
-Received: from mailoutvs32.siol.net ([185.57.226.223]:48432 "EHLO
-        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
-        with ESMTP id S461845AbgJWSnh (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:43:37 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTP id 72D2C52828D;
-        Fri, 23 Oct 2020 20:43:34 +0200 (CEST)
-X-Virus-Scanned: amavisd-new at psrvmta11.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta11.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id TVbMFK320epr; Fri, 23 Oct 2020 20:43:34 +0200 (CEST)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Postfix) with ESMTPS id 2F71D5282BB;
-        Fri, 23 Oct 2020 20:43:34 +0200 (CEST)
-Received: from kista.localdomain (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: 031275009)
-        by mail.siol.net (Postfix) with ESMTPSA id 91F0A52828D;
-        Fri, 23 Oct 2020 20:43:33 +0200 (CEST)
-From:   Jernej Skrabec <jernej.skrabec@siol.net>
-To:     mripard@kernel.org, wens@csie.org
-Cc:     robh+dt@kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-sunxi@googlegroups.com
-Subject: [PATCH] arm64: dts: allwinner: h5: OrangePi PC2: Fix ethernet node
-Date:   Fri, 23 Oct 2020 20:48:58 +0200
-Message-Id: <20201023184858.3272918-1-jernej.skrabec@siol.net>
-X-Mailer: git-send-email 2.29.0
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+        id S1755117AbgJWSxL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:53:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59620 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1751075AbgJWSxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 14:53:11 -0400
+Subject: Re: [GIT PULL] vfs: move the clone/dedupe/remap helpers to a single file
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603479190;
+        bh=HHt80Ha7I/hetx4FemW8Gke/bL18AaLTJWY5rr037oQ=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=DLYX7c/AhjZTAerCcfUdQob+yeV3nEfKbuh7RwnCJSM3lf3bgk6qnBIHsF8SnkmR+
+         BMC/rkc22FtzdOqjv+suTPNrnoeKrls256AWFzcnRKYKYcDykCF2I7KvmO05zHxD9S
+         g/ZNTJJqgszAtbuz9YAOpASxOG1yXoKEJImiqSPo=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201022222358.GD9825@magnolia>
+References: <20201022222358.GD9825@magnolia>
+X-PR-Tracked-List-Id: <linux-mm.kvack.org>
+X-PR-Tracked-Message-Id: <20201022222358.GD9825@magnolia>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.10-merge-1
+X-PR-Tracked-Commit-Id: 407e9c63ee571f44a2dfb0828fc30daa02abb6dc
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c4728cfbed0f54eacc21138c99da2a91895c8c5a
+Message-Id: <160347919039.2166.4768124292251668926.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Oct 2020 18:53:10 +0000
+To:     "Darrick J. Wong" <djwong@kernel.org>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+        linux-mm@kvack.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
-node.
+The pull request you sent on Thu, 22 Oct 2020 15:23:58 -0700:
 
-Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
-Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
----
- arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+> git://git.kernel.org/pub/scm/fs/xfs/xfs-linux.git tags/vfs-5.10-merge-1
 
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts b/a=
-rch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-index 7d7aad18f078..8bf2db9dcbda 100644
---- a/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h5-orangepi-pc2.dts
-@@ -123,7 +123,7 @@ &emac {
- 	pinctrl-0 =3D <&emac_rgmii_pins>;
- 	phy-supply =3D <&reg_gmac_3v3>;
- 	phy-handle =3D <&ext_rgmii_phy>;
--	phy-mode =3D "rgmii";
-+	phy-mode =3D "rgmii-id";
- 	status =3D "okay";
- };
-=20
---=20
-2.29.0
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c4728cfbed0f54eacc21138c99da2a91895c8c5a
 
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
