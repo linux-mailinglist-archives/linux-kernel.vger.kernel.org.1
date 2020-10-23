@@ -2,210 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B0FF296D2F
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:57:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 19F8D296D38
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 12:59:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S462644AbgJWK5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 06:57:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52850 "EHLO
+        id S462665AbgJWK6X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 06:58:23 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53154 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S462560AbgJWK4i (ORCPT
+        with ESMTP id S460693AbgJWK6W (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 06:56:38 -0400
-Received: from metis.ext.pengutronix.de (metis.ext.pengutronix.de [IPv6:2001:67c:670:201:290:27ff:fe1d:cc33])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 942F0C0613D6
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 03:56:38 -0700 (PDT)
-Received: from dude.hi.pengutronix.de ([2001:67c:670:100:1d::7])
-        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVukG-00087s-Kr; Fri, 23 Oct 2020 12:56:28 +0200
-Received: from ore by dude.hi.pengutronix.de with local (Exim 4.92)
-        (envelope-from <ore@pengutronix.de>)
-        id 1kVukF-0001kw-I7; Fri, 23 Oct 2020 12:56:27 +0200
-From:   Oleksij Rempel <o.rempel@pengutronix.de>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        "David S. Miller" <davem@davemloft.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Oliver Hartkopp <socketcan@hartkopp.net>
-Cc:     Oleksij Rempel <o.rempel@pengutronix.de>,
-        David Jander <david@protonic.nl>, kernel@pengutronix.de,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        Russell King <linux@armlinux.org.uk>, mkl@pengutronix.de,
-        Marek Vasut <marex@denx.de>, linux-can@vger.kernel.org
-Subject: [RFC PATCH v1 6/6] can: flexcan: add ethtool support
-Date:   Fri, 23 Oct 2020 12:56:26 +0200
-Message-Id: <20201023105626.6534-7-o.rempel@pengutronix.de>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201023105626.6534-1-o.rempel@pengutronix.de>
-References: <20201023105626.6534-1-o.rempel@pengutronix.de>
+        Fri, 23 Oct 2020 06:58:22 -0400
+Received: from mail-vs1-xe43.google.com (mail-vs1-xe43.google.com [IPv6:2607:f8b0:4864:20::e43])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2ACE1C0613CE;
+        Fri, 23 Oct 2020 03:58:22 -0700 (PDT)
+Received: by mail-vs1-xe43.google.com with SMTP id p25so615660vsq.4;
+        Fri, 23 Oct 2020 03:58:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ItpYQ9GC5N7T8BIaRPk6eDBkbaLNrhafp2hlkR07Zf8=;
+        b=UWCMKvB22GNLPgs/wI1WMvtJJWWyCwl5uYR5/+GlTMTjEXFJELvwTkGow1zPIG31qj
+         5owmCXqTsL5+giHkxsK0gu7nxaD9rL6MAxrU9aoPPHSUErOmQ1byFpAdhPywSz46Rf1R
+         il793oELbdCqICbPhyEHegwwP7QeNl4SysPX035uiWDlK/w5X4MGYvYYjwrMKHQ+QL0w
+         CYTHoxTDcFsTmnKYHb3jJ0uwYRFi1tkB5Y2lhIFNN2dHLD1uPIbzV3sp0H2IUXDx/V9t
+         CgZ5R4ScrCUewwPHap8Vj6iRKJjkvjkwFncidFOZUGR/Do5bHy8oSM3ikMqlkpwVkLLc
+         FQOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ItpYQ9GC5N7T8BIaRPk6eDBkbaLNrhafp2hlkR07Zf8=;
+        b=NnNobxdp9Zh+jCQJEX/3AFW+CTKupnXBFiMoceXwrMia+6LkvgtJRLbcK5nqvHqjdR
+         CeUVxe/KiHWqw358xYiXjZunuRXi9opSFRFxNpcT967FN2nSG7/IsTaCPzMn9Mwbu1E5
+         w/RYTusCGkzsW7VpABgaGnyva5TIBQcyJPgydvzRbtITl8mWO8h83zfUGuOBkmTzRDBZ
+         PznGFl6oljOdupdh6ptKTdtcJ5mGMxqCbulGFgErS82BecdR0LNI3zYWvXOXykv6YG/y
+         fZZArQS2peMrgz0HbQFlWJVpzKtcx2LorKTtrhOlSVchywU9v1ZEK8P9/WUnhxtdTUDk
+         Z+bQ==
+X-Gm-Message-State: AOAM533hTqixtxvpf1NXnB4vlvl/WTvHA6fvYfQB8t1vv7eBJ2p45STx
+        allay15jgvcWStPNu2BqbEalemYTmEP/9ncBnlI=
+X-Google-Smtp-Source: ABdhPJzRCu5YBLYYbZrfyB1lNhHvs2A3xuz04HFQccRe3INHBEU4kBKApK9853f5c1kF9RhQUXPegvd1h6khtJJrJuU=
+X-Received: by 2002:a05:6102:31b5:: with SMTP id d21mr796747vsh.19.1603450701006;
+ Fri, 23 Oct 2020 03:58:21 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::7
-X-SA-Exim-Mail-From: ore@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+References: <20201019204636.139997-1-robdclark@gmail.com>
+In-Reply-To: <20201019204636.139997-1-robdclark@gmail.com>
+From:   =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>
+Date:   Fri, 23 Oct 2020 12:58:09 +0200
+Message-ID: <CAOeoa-fAkNGfCbmZ-nBaYyupFV4Eo8fc7pKimaWtPhczmK4h3Q@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH v3 00/23] drm/msm: de-struct_mutex-ification
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Daniel Vetter <daniel.vetter@ffwll.ch>,
+        Liviu Dudau <liviu.dudau@arm.com>,
+        Akhil P Oommen <akhilpo@codeaurora.org>,
+        Harigovindan P <harigovi@codeaurora.org>,
+        Eric Anholt <eric@anholt.net>,
+        AngeloGioacchino Del Regno <kholk11@gmail.com>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Emil Velikov <emil.velikov@collabora.com>,
+        Rob Clark <robdclark@chromium.org>,
+        Jonathan Marek <jonathan@marek.ca>,
+        Matthias Kaehlcke <mka@chromium.org>,
+        Thierry Reding <treding@nvidia.com>,
+        "open list:DMA BUFFER SHARING FRAMEWORK" 
+        <linux-media@vger.kernel.org>,
+        Thomas Zimmermann <tzimmermann@suse.de>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        Sharat Masetty <smasetty@codeaurora.org>,
+        Abhinav Kumar <abhinavk@codeaurora.org>,
+        "moderated list:DMA BUFFER SHARING FRAMEWORK" 
+        <linaro-mm-sig@lists.linaro.org>,
+        Jordan Crouse <jcrouse@codeaurora.org>,
+        Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Rajendra Nayak <rnayak@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Brian Masney <masneyb@onstation.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Signed-off-by: Oleksij Rempel <o.rempel@pengutronix.de>
----
- drivers/net/can/flexcan.c | 111 ++++++++++++++++++++++++++++++++++++++
- 1 file changed, 111 insertions(+)
+On Mon, Oct 19, 2020 at 10:45 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> This doesn't remove *all* the struct_mutex, but it covers the worst
+> of it, ie. shrinker/madvise/free/retire.  The submit path still uses
+> struct_mutex, but it still needs *something* serialize a portion of
+> the submit path, and lock_stat mostly just shows the lock contention
+> there being with other submits.  And there are a few other bits of
+> struct_mutex usage in less critical paths (debugfs, etc).  But this
+> seems like a reasonable step in the right direction.
+>
+> v2: teach lockdep about shrinker locking patters (danvet) and
+>     convert to obj->resv locking (danvet)
+> v3: fix get_vaddr locking for legacy userspace (relocs), devcoredump,
+>     and rd/hangrd
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index c320eed31322..8f487ac37f5e 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -247,6 +247,11 @@
- /* support memory detection and correction */
- #define FLEXCAN_QUIRK_SUPPORT_ECC BIT(10)
- 
-+#define FLEXCAN_DEFAULT_MSG_ENABLE \
-+	(NETIF_MSG_DRV | NETIF_MSG_PROBE | NETIF_MSG_LINK | NETIF_MSG_TIMER \
-+	 NETIF_MSG_IFDOWN | NETIF_MSG_IFUP | NETIF_MSG_RX_ERR | \
-+	 NETIF_MSG_TX_ERR)
-+
- /* Structure of the message buffer */
- struct flexcan_mb {
- 	u32 can_ctrl;
-@@ -369,6 +374,18 @@ struct flexcan_priv {
- 	phy_interface_t phy_if_mode;
- 	struct phylink *phylink;
- 	struct phylink_config phylink_config;
-+	u32 msg_enable;
-+};
-+
-+struct flexcan_statistic {
-+	unsigned short offset;
-+	u32 mask;
-+	const char name[ETH_GSTRING_LEN];
-+};
-+
-+static const struct flexcan_statistic flexcan_statistics[] = {
-+	{ 0x001c, GENMASK(15, 7), "RX_ERR", },
-+	{ 0x001c, GENMASK(7, 0), "TX_ERR", },
- };
- 
- static const struct flexcan_devtype_data fsl_p1010_devtype_data = {
-@@ -492,6 +509,98 @@ static inline void flexcan_write_le(u32 val, void __iomem *addr)
- 	iowrite32(val, addr);
- }
- 
-+static void flexcan_get_drvinfo(struct net_device *ndev,
-+			       struct ethtool_drvinfo *info)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	strlcpy(info->driver, "flexcan", sizeof(info->driver));
-+	strlcpy(info->bus_info, of_node_full_name(priv->dev->of_node),
-+		sizeof(info->bus_info));
-+}
-+
-+static int flexcan_get_link_ksettings(struct net_device *ndev,
-+				   struct ethtool_link_ksettings *kset)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return phylink_ethtool_ksettings_get(priv->phylink, kset);
-+}
-+
-+static int flexcan_set_link_ksettings(struct net_device *ndev,
-+				   const struct ethtool_link_ksettings *kset)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return phylink_ethtool_ksettings_set(priv->phylink, kset);
-+}
-+
-+static int flexcan_ethtool_nway_reset(struct net_device *ndev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return phylink_ethtool_nway_reset(priv->phylink);
-+}
-+
-+static void flexcan_set_msglevel(struct net_device *ndev, u32 value)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	priv->msg_enable = value;
-+}
-+
-+static u32 flexcan_get_msglevel(struct net_device *ndev)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+
-+	return priv->msg_enable;
-+}
-+
-+static void flexcan_ethtool_get_strings(struct net_device *netdev, u32 sset,
-+				       u8 *data)
-+{
-+	if (sset == ETH_SS_STATS) {
-+		int i;
-+
-+		for (i = 0; i < ARRAY_SIZE(flexcan_statistics); i++)
-+			memcpy(data + i * ETH_GSTRING_LEN,
-+			       flexcan_statistics[i].name, ETH_GSTRING_LEN);
-+	}
-+}
-+
-+static void flexcan_ethtool_get_stats(struct net_device *ndev,
-+				     struct ethtool_stats *stats, u64 *data)
-+{
-+	struct flexcan_priv *priv = netdev_priv(ndev);
-+	struct flexcan_regs __iomem *regs = priv->regs;
-+	int i;
-+
-+	for (i = 0; i < ARRAY_SIZE(flexcan_statistics); i++)
-+		*data++ = u32_get_bits(priv->read(regs + flexcan_statistics[i].offset),
-+					flexcan_statistics[i].mask);
-+}
-+
-+static int flexcan_ethtool_get_sset_count(struct net_device *ndev, int sset)
-+{
-+	if (sset == ETH_SS_STATS)
-+		return ARRAY_SIZE(flexcan_statistics);
-+	return -EOPNOTSUPP;
-+}
-+
-+static const struct ethtool_ops flexcan_ethtool_ops = {
-+	.get_drvinfo			= flexcan_get_drvinfo,
-+	.get_link			= ethtool_op_get_link,
-+	.get_ts_info			= ethtool_op_get_ts_info,
-+	.get_link_ksettings		= flexcan_get_link_ksettings,
-+	.set_link_ksettings		= flexcan_set_link_ksettings,
-+	.nway_reset			= flexcan_ethtool_nway_reset,
-+	.get_msglevel			= flexcan_get_msglevel,
-+	.set_msglevel			= flexcan_set_msglevel,
-+	.get_strings			= flexcan_ethtool_get_strings,
-+	.get_ethtool_stats		= flexcan_ethtool_get_stats,
-+	.get_sset_count			= flexcan_ethtool_get_sset_count,
-+};
-+
- static struct flexcan_mb __iomem *flexcan_get_mb(const struct flexcan_priv *priv,
- 						 u8 mb_index)
- {
-@@ -2122,6 +2231,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	SET_NETDEV_DEV(dev, &pdev->dev);
- 
- 	dev->netdev_ops = &flexcan_netdev_ops;
-+	dev->ethtool_ops = &flexcan_ethtool_ops;
- 	dev->irq = irq;
- 	dev->flags |= IFF_ECHO;
- 
-@@ -2150,6 +2260,7 @@ static int flexcan_probe(struct platform_device *pdev)
- 	priv->devtype_data = devtype_data;
- 	priv->reg_xceiver = reg_xceiver;
- 	priv->phy_if_mode = phy_if_mode;
-+	priv->msg_enable = netif_msg_init(-1, FLEXCAN_DEFAULT_MSG_ENABLE);
- 
- 	if (priv->devtype_data->quirks & FLEXCAN_QUIRK_SUPPORT_FD) {
- 		priv->can.ctrlmode_supported |= CAN_CTRLMODE_FD |
--- 
-2.28.0
+For the series:
 
+Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
+
+> Rob Clark (23):
+>   drm/msm: Fix a couple incorrect usages of get_vaddr_active()
+>   drm/msm/gem: Add obj->lock wrappers
+>   drm/msm/gem: Rename internal get_iova_locked helper
+>   drm/msm/gem: Move prototypes to msm_gem.h
+>   drm/msm/gem: Add some _locked() helpers
+>   drm/msm/gem: Move locking in shrinker path
+>   drm/msm/submit: Move copy_from_user ahead of locking bos
+>   drm/msm: Do rpm get sooner in the submit path
+>   drm/msm/gem: Switch over to obj->resv for locking
+>   drm/msm: Use correct drm_gem_object_put() in fail case
+>   drm/msm: Drop chatty trace
+>   drm/msm: Move update_fences()
+>   drm/msm: Add priv->mm_lock to protect active/inactive lists
+>   drm/msm: Document and rename preempt_lock
+>   drm/msm: Protect ring->submits with it's own lock
+>   drm/msm: Refcount submits
+>   drm/msm: Remove obj->gpu
+>   drm/msm: Drop struct_mutex from the retire path
+>   drm/msm: Drop struct_mutex in free_object() path
+>   drm/msm: Remove msm_gem_free_work
+>   drm/msm: Drop struct_mutex in madvise path
+>   drm/msm: Drop struct_mutex in shrinker path
+>   drm/msm: Don't implicit-sync if only a single ring
+>
+>  drivers/gpu/drm/msm/adreno/a5xx_gpu.c     |   6 +-
+>  drivers/gpu/drm/msm/adreno/a5xx_preempt.c |  12 +-
+>  drivers/gpu/drm/msm/adreno/a6xx_gpu.c     |   6 +-
+>  drivers/gpu/drm/msm/disp/mdp4/mdp4_crtc.c |   1 +
+>  drivers/gpu/drm/msm/disp/mdp5/mdp5_crtc.c |   1 +
+>  drivers/gpu/drm/msm/dsi/dsi_host.c        |   1 +
+>  drivers/gpu/drm/msm/msm_debugfs.c         |   7 +
+>  drivers/gpu/drm/msm/msm_drv.c             |  21 +-
+>  drivers/gpu/drm/msm/msm_drv.h             |  73 +-----
+>  drivers/gpu/drm/msm/msm_fbdev.c           |   1 +
+>  drivers/gpu/drm/msm/msm_gem.c             | 266 +++++++++++-----------
+>  drivers/gpu/drm/msm/msm_gem.h             | 133 +++++++++--
+>  drivers/gpu/drm/msm/msm_gem_shrinker.c    |  81 ++-----
+>  drivers/gpu/drm/msm/msm_gem_submit.c      | 158 ++++++++-----
+>  drivers/gpu/drm/msm/msm_gpu.c             | 110 +++++----
+>  drivers/gpu/drm/msm/msm_gpu.h             |   5 +-
+>  drivers/gpu/drm/msm/msm_rd.c              |   2 +-
+>  drivers/gpu/drm/msm/msm_ringbuffer.c      |   3 +-
+>  drivers/gpu/drm/msm/msm_ringbuffer.h      |  13 +-
+>  19 files changed, 495 insertions(+), 405 deletions(-)
+>
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
