@@ -2,127 +2,161 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1118F296849
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 03:21:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A662A29684F
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 03:34:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S374300AbgJWBVp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Thu, 22 Oct 2020 21:21:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49358 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374289AbgJWBVp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Thu, 22 Oct 2020 21:21:45 -0400
-Received: from mail-ej1-x641.google.com (mail-ej1-x641.google.com [IPv6:2a00:1450:4864:20::641])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC580C0613D5
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:21:43 -0700 (PDT)
-Received: by mail-ej1-x641.google.com with SMTP id qh17so72698ejb.6
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 18:21:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=aoxn8RZh5GwLX2OTvbY4F3fYrAFarAXAp+zyIW9UVc0=;
-        b=bWPmglrUmUWeh/iJB7I1EBJU+TdBzoO9kJeAZdj0Mj7vyjbv9DyccX5Lt+lUFusiZw
-         HWpqEJDPjpY3Pe66lK3CAkBsqcDG1SzJroJ/TrLWOH68lnkP3CHZa96739LkvB31F0p2
-         UKaI6v6FS6fL3igL3m2SvuN8QdEUHemh+0A+WspZbjpxU8NlNH1xji6y4zYUku/PAtIG
-         VlsE4Z2Vr2DxmyRQoiSH2mQuJn6k9T8lU/ZuPxibEI768Vlsje7dAVkK4A+TJ9+adHG8
-         +FBZ1+GlJF4yKcmomBogElmJ3P88v835veafFeBLgDo8obHbAFEfQjagR4wLw4RxeZia
-         Dx4Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=aoxn8RZh5GwLX2OTvbY4F3fYrAFarAXAp+zyIW9UVc0=;
-        b=epbQVA7dB5OiTIIdYMHgS+osCIxJvGfKus4dPu3CI2H6aNqePTXt91c54FKrGpg316
-         /v94rkAL1RVfpqqTQtlADzJCFQbH0uliy7ctXfRzeMQ07YxHNH30F9kTTv0ufdnUBkdI
-         Uj1hLsuWG9DE9lTyUiAfd46Hl41bTMxlmXD7jy0xAMKNjTxh2Sqge6mArJIqhjUX5Vuj
-         iKDovboPKQuZc9uv78SM+NH+U4Rf0+UOreu9v+IsF5n2hWlRhVCBC5iZDhcJTdaxZndw
-         7bfgIHW6h6G93+7wUjz7AQMGYk79/3mkY711w6E/WLP7QUIlOyzQmg02dMjEc3iVQKsB
-         lkJQ==
-X-Gm-Message-State: AOAM531dhSks3YuIlHgOFzj7AcLEDpEkQapLOQgL44Mu5d3byIZf1xED
-        3PCIcOQ66P26syktD/qus7xh0+R3OjQ+yhlRubhn
-X-Google-Smtp-Source: ABdhPJzDtfnYw+rfKgxc4a8mUFIh6ll/aQ2+0itoJxliGHEeO3L/XBWkrOQEYSixIJb79O9lCBjh5YKgmDlUs8u/x/U=
-X-Received: by 2002:a17:906:25cc:: with SMTP id n12mr4813564ejb.488.1603416102090;
- Thu, 22 Oct 2020 18:21:42 -0700 (PDT)
+        id S374321AbgJWBeq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Thu, 22 Oct 2020 21:34:46 -0400
+Received: from mail-vi1eur05on2066.outbound.protection.outlook.com ([40.107.21.66]:42208
+        "EHLO EUR05-VI1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S374313AbgJWBeq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Thu, 22 Oct 2020 21:34:46 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=SciEahLJFDsilatKfQ/kxgsTND2CPSJoHFzwKXd/NxpbHGT/XYnJoBKTjxSOqTfsE5BamVkkANM5lc12Qf3GH9/od/JdD6L6okneOvDkN+OtqYAT3YRQmjJbyUDSZCMdh0yIafCyoRzAcuj9P+DmF7SaCMWN7iVM3McKkeudV/9YDBjKgcp7fCzj4LhZQdG6cBfHn3/OUGSYCupAgRPGyvSSiwX6cGx8O55/Cq/Lwb7m15W/GPU49tkCtMGZTDbDevMGAkTc4xRtlFQNgRdvxrUZQCSYx3cwO4A2qNDtZ13MuUtLS2ToSRjMwutfSbP+O4CAE9LJk4BGhdjov2TXOQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qAN91Vjb6jjWx+sd0ntrCGdspgEFE3Db3pRk/gbfQIs=;
+ b=RpPOFK8y5+QO0JvNAFFSTBZ41K7oe6ZyqlLIeYuswMOYbCaLXzZ+gzKFUc9znsDf/KD7Tq1ajXOZZpY8kbk3lEqVxZpYHbkbU/JR2JrvdYtHMFVqRCntszORehntw36TrOSEMg8TWMOpQTnvO5q70YG/iHa6z7N7Xrn9cZQkLtkpgl5ngtVtGdFEjAsvDF1+mWAqVFfmN2bcJLpDZB+syb1p7zgmoN7cMZz5QyOVD7HaEn1QbBE/51ZUdoyv8cGxNlKg6S3nfEIoasu7nux6ab0RSVw2bIAlt6fz40ijYlmc4B0tG6Z/hHJVMnM3SAhIjxLIRiymZ320GoBgTq8jwg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=qAN91Vjb6jjWx+sd0ntrCGdspgEFE3Db3pRk/gbfQIs=;
+ b=j1NaE2QT9+RtskeRfoVwbslKnnswatsfgXzsk4+q6YdvJoZE3GP1SBWuqGYZnJrUXnlL+SKTTMQLU9HUg3tW70lUfd69k6ksYbpBxMOyPNrJxDH1Hnx18FUbSYqWO0d48Xhb2q5iOfP/9LSuBEx8XQIFQPX1jVhRwRPQQuQDyUg=
+Authentication-Results: linuxfoundation.org; dkim=none (message not signed)
+ header.d=none;linuxfoundation.org; dmarc=none action=none
+ header.from=nxp.com;
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VI1PR04MB5503.eurprd04.prod.outlook.com (2603:10a6:803:d1::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Fri, 23 Oct
+ 2020 01:34:40 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3499.018; Fri, 23 Oct 2020
+ 01:34:40 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Jiri Slaby <jirislaby@kernel.org>,
+        Fugang Duan <fugang.duan@nxp.com>,
+        linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Michael Walle <michael@walle.cc>, Peng Fan <peng.fan@nxp.com>
+Subject: [PATCH v2 tty] tty: serial: fsl_lpuart: LS1021A has a FIFO size of 16 words, like LS1028A
+Date:   Fri, 23 Oct 2020 04:34:29 +0300
+Message-Id: <20201023013429.3551026-1-vladimir.oltean@nxp.com>
+X-Mailer: git-send-email 2.25.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Originating-IP: [188.26.174.215]
+X-ClientProxiedBy: AM4PR05CA0009.eurprd05.prod.outlook.com (2603:10a6:205::22)
+ To VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
 MIME-Version: 1.0
-References: <cover.1593198710.git.rgb@redhat.com> <6e2e10432e1400f747918eeb93bf45029de2aa6c.1593198710.git.rgb@redhat.com>
- <CAHC9VhSCm5eeBcyY8bBsnxr-hK4rkso9_NJHJec2OXLu4m5QTA@mail.gmail.com>
- <20200729194058.kcbsqjhzunjpipgm@madcap2.tricolour.ca> <CAHC9VhRUwCKBjffA_XNSjUwvUn8e6zfmy8WD203dK7R2KD0__g@mail.gmail.com>
- <20201002195231.GH2882171@madcap2.tricolour.ca> <20201021163926.GA3929765@madcap2.tricolour.ca>
-In-Reply-To: <20201021163926.GA3929765@madcap2.tricolour.ca>
-From:   Paul Moore <paul@paul-moore.com>
-Date:   Thu, 22 Oct 2020 21:21:31 -0400
-Message-ID: <CAHC9VhRb7XMyTrcrmzM3yQO+eLdO_r2+DOLKr9apDDeH4ua2Ew@mail.gmail.com>
-Subject: Re: [PATCH ghak90 V9 05/13] audit: log container info of syscalls
-To:     Richard Guy Briggs <rgb@redhat.com>
-Cc:     nhorman@tuxdriver.com, linux-api@vger.kernel.org,
-        containers@lists.linux-foundation.org,
-        LKML <linux-kernel@vger.kernel.org>, dhowells@redhat.com,
-        Linux-Audit Mailing List <linux-audit@redhat.com>,
-        netfilter-devel@vger.kernel.org, ebiederm@xmission.com,
-        simo@redhat.com, netdev@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Eric Paris <eparis@parisplace.org>,
-        mpatel@redhat.com, Serge Hallyn <serge@hallyn.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from localhost.localdomain (188.26.174.215) by AM4PR05CA0009.eurprd05.prod.outlook.com (2603:10a6:205::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Fri, 23 Oct 2020 01:34:39 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 772c9e55-d11a-4162-91b7-08d876f3cf3e
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5503:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB55038ED46F8048D0F16E1537E01A0@VI1PR04MB5503.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:1728;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: ONuMLLP2/zxUk039x1dd5pqqhgdV2ghGU/5JyevMVj8cCrYIlp41pnRmNiNc7gYspQd6YaS2G9qsv24vIDpIzhsdi/mxkPbKQhaj9ZhYgd8ELA36Oxqvhvg369vUY+h7zQbyNq56rJiWwRz9UAzI+YSBiCia2KxTZtLERCi2V4hfWjvXzZK30/YBD4TtoaeLjhwgy5pWeLwK/dKfelGCt4bEIaTnnGYG5uhm9Yf/5vzewCfVZsZt4ppRcg0lT79COUEGG7aJqxBJulc+ygufcOTCiw07bepe3lfXoL7NsD2ZN+d7Ke0tnQPirjMkRYSVil9C5OvzvHaNkd/p+00SF0omWEr94Zq9G5tT8wQ1spD/oLnOpgSGm0Co3Wakm98d
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(346002)(376002)(366004)(136003)(39860400002)(396003)(36756003)(44832011)(69590400008)(8676002)(2906002)(6506007)(316002)(110136005)(5660300002)(6636002)(66556008)(1076003)(52116002)(66476007)(186003)(956004)(83380400001)(2616005)(6666004)(86362001)(26005)(66946007)(6512007)(478600001)(6486002)(8936002)(16526019);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: R8Yl390EqU7M5UlDahpqD3wHsObDL7w10J3pJuaDlqeBoMwD2RwTCtsjmOzZtPxpL3yhTletCdCQI2s12hxno2X5cWf/G7PCu6/1FMMCiP/h20pUp1VQO5NezYeDRW93BDEFTOWs8jSm7mZJppDG+BCLnsvMplpqOjhhMg0gJEN6QOPmWe8T+fZaNB3twMWwuob9hxHK06U/65ejRTHRdA8zcpbo2uczM/43qupz0dRrGOvrcypo6IkdisMK/re/8eZEJFrWT+B57UtKM5BIcCQx/F3n7lnvzy2L7mYJ2xj1tYXzrRdolVyAHFJYbnsmFySHpfTqCv2aiaoYWLYfOpslARnl5r/Ps+vJWTPkAfm6vBbWr1f4dNS4IS8ql6WZGO8eVwci5eW9fv+L7vwi41LNuhE0YPUGM8WTrrFSjMVmC7On0ib6kl8ZNnb0Lo9Ssh2OYeA97RlUyOcDUonjadaeY+gjuksDMKHIysoqhq45v4G4PJFnVjjeydpgJyB9iTS6uDmEddCmNI5wu5pLkwLngQVEx3XtGBN6evwUx9RNtpmQ/fgaQ933J/ye0hLLpJ+tyJf2oJR7iU/4rCLiHE9sqnqCMwAkjYxN5ffi1725YRh1Fwws+nu+YPgl6w6gf5gzm6nxnAAh0fQAPZeIUg==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 772c9e55-d11a-4162-91b7-08d876f3cf3e
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2020 01:34:40.0739
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: IOaTlsKAaSSpnBsZD6IFQLrOKrjhiRBEOUDc92jRaJStsxeQar4iTOZvtQarPjtGUVDvtoNwiibCLQ+z4QiOVA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5503
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:39 PM Richard Guy Briggs <rgb@redhat.com> wrote:
-> Here is an exmple I was able to generate after updating the testsuite
-> script to include a signalling example of a nested audit container
-> identifier:
->
-> ----
-> type=3DPROCTITLE msg=3Daudit(2020-10-21 10:31:16.655:6731) : proctitle=3D=
-/usr/bin/perl -w containerid/test
-> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
-7129731255799087104^3333941723245477888
-> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115583 =
-oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
-d_t:s0-s0:c0.c1023 ocomm=3Dperl
-> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
-3333941723245477888
-> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115580 =
-oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
-d_t:s0-s0:c0.c1023 ocomm=3Dperl
-> type=3DCONTAINER_ID msg=3Daudit(2020-10-21 10:31:16.655:6731) : contid=3D=
-8098399240850112512^3333941723245477888
-> type=3DOBJ_PID msg=3Daudit(2020-10-21 10:31:16.655:6731) : opid=3D115582 =
-oauid=3Droot ouid=3Droot oses=3D1 obj=3Dunconfined_u:unconfined_r:unconfine=
-d_t:s0-s0:c0.c1023 ocomm=3Dperl
-> type=3DSYSCALL msg=3Daudit(2020-10-21 10:31:16.655:6731) : arch=3Dx86_64 =
-syscall=3Dkill success=3Dyes exit=3D0 a0=3D0xfffe3c84 a1=3DSIGTERM a2=3D0x4=
-d524554 a3=3D0x0 items=3D0 ppid=3D115564 pid=3D115567 auid=3Droot uid=3Droo=
-t gid=3Droot euid=3Droot suid=3Droot fsuid=3Droot egid=3Droot sgid=3Droot f=
-sgid=3Droot tty=3DttyS0 ses=3D1 comm=3Dperl exe=3D/usr/bin/perl subj=3Dunco=
-nfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023 key=3Dtestsuite-160329067=
-1-AcLtUulY
-> ----
->
-> There are three CONTAINER_ID records which need some way of associating w=
-ith OBJ_PID records.  An additional CONTAINER_ID record would be present if=
- the killing process itself had an audit container identifier.  I think the=
- most obvious way to connect them is with a pid=3D field in the CONTAINER_I=
-D record.
+Prior to the commit that this one fixes, the FIFO size was derived from
+the read-only register LPUARTx_FIFO[TXFIFOSIZE] using the following
+formula:
 
-Using a "pid=3D" field as a way to link CONTAINER_ID records to other
-records raises a few questions.  What happens if/when we need to
-represent those PIDs in the context of a namespace?  Are we ever going
-to need to link to records which don't have a "pid=3D" field?  I haven't
-done the homework to know if either of these are a concern right now,
-but I worry that this might become a problem in the future.
+TX FIFO size = 2 ^ (LPUARTx_FIFO[TXFIFOSIZE] - 1)
 
-The idea of using something like "item=3D" is interesting.  As you
-mention, the "item=3D" field does present some overlap problems with the
-PATH record, but perhaps we can do something similar.  What if we
-added a "record=3D" (or similar, I'm not worried about names at this
-point) to each record, reset to 0/1 at the start of each event, and
-when we needed to link records somehow we could add a "related=3D1,..,N"
-field.  This would potentially be useful beyond just the audit
-container ID work.
+The documentation for LS1021A is a mess. Under chapter 26.1.3 LS1021A
+LPUART module special consideration, it mentions TXFIFO_SZ and RXFIFO_SZ
+being equal to 4, and in the register description for LPUARTx_FIFO, it
+shows the out-of-reset value of TXFIFOSIZE and RXFIFOSIZE fields as "011",
+even though these registers read as "101" in reality.
 
---=20
-paul moore
-www.paul-moore.com
+And when LPUART on LS1021A was working, the "101" value did correspond
+to "16 datawords", by applying the formula above, even though the
+documentation is wrong again (!!!!) and says that "101" means 64 datawords
+(hint: it doesn't).
+
+So the "new" formula created by commit f77ebb241ce0 has all the premises
+of being wrong for LS1021A, because it relied only on false data and no
+actual experimentation.
+
+Interestingly, in commit c2f448cff22a ("tty: serial: fsl_lpuart: add
+LS1028A support"), Michael Walle applied a workaround to this by manually
+setting the FIFO widths for LS1028A. It looks like the same values are
+used by LS1021A as well, in fact.
+
+When the driver thinks that it has a deeper FIFO than it really has,
+getty (user space) output gets truncated.
+
+Many thanks to Michael for pointing out where to look.
+
+Fixes: f77ebb241ce0 ("tty: serial: fsl_lpuart: correct the FIFO depth size")
+Suggested-by: Michael Walle <michael@walle.cc>
+Signed-off-by: Vladimir Oltean <vladimir.oltean@nxp.com>
+---
+Changes in v2:
+Reworded commit message.
+
+ drivers/tty/serial/fsl_lpuart.c | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
+
+diff --git a/drivers/tty/serial/fsl_lpuart.c b/drivers/tty/serial/fsl_lpuart.c
+index ff4b88c637d0..bd047e1f9bea 100644
+--- a/drivers/tty/serial/fsl_lpuart.c
++++ b/drivers/tty/serial/fsl_lpuart.c
+@@ -314,9 +314,10 @@ MODULE_DEVICE_TABLE(of, lpuart_dt_ids);
+ /* Forward declare this for the dma callbacks*/
+ static void lpuart_dma_tx_complete(void *arg);
+ 
+-static inline bool is_ls1028a_lpuart(struct lpuart_port *sport)
++static inline bool is_layerscape_lpuart(struct lpuart_port *sport)
+ {
+-	return sport->devtype == LS1028A_LPUART;
++	return (sport->devtype == LS1021A_LPUART ||
++		sport->devtype == LS1028A_LPUART);
+ }
+ 
+ static inline bool is_imx8qxp_lpuart(struct lpuart_port *sport)
+@@ -1701,11 +1702,11 @@ static int lpuart32_startup(struct uart_port *port)
+ 					    UARTFIFO_FIFOSIZE_MASK);
+ 
+ 	/*
+-	 * The LS1028A has a fixed length of 16 words. Although it supports the
+-	 * RX/TXSIZE fields their encoding is different. Eg the reference manual
+-	 * states 0b101 is 16 words.
++	 * The LS1021A and LS1028A have a fixed FIFO depth of 16 words.
++	 * Although they support the RX/TXSIZE fields, their encoding is
++	 * different. Eg the reference manual states 0b101 is 16 words.
+ 	 */
+-	if (is_ls1028a_lpuart(sport)) {
++	if (is_layerscape_lpuart(sport)) {
+ 		sport->rxfifo_size = 16;
+ 		sport->txfifo_size = 16;
+ 		sport->port.fifosize = sport->txfifo_size;
+-- 
+2.25.1
+
