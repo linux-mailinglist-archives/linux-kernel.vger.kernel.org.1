@@ -2,136 +2,132 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0648296951
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:11:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E0881296956
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 07:17:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2897190AbgJWFLQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 01:11:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56142 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2896917AbgJWFLQ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 01:11:16 -0400
-Received: from mail-pg1-x544.google.com (mail-pg1-x544.google.com [IPv6:2607:f8b0:4864:20::544])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0B853C0613D2
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 22:11:16 -0700 (PDT)
-Received: by mail-pg1-x544.google.com with SMTP id b23so299689pgb.3
-        for <linux-kernel@vger.kernel.org>; Thu, 22 Oct 2020 22:11:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=bhDFTk2Ai9IvHYceetl+B1zPhbW6KMdcdI29Sg0Eo+M=;
-        b=YcYR9zUcIUB4QIGYTdL3C7cdtzm1L9GbyIWrm9ZWiQ8goix/zhDkSZggOL5RqjkO/P
-         wXfQzC5Dp20D6f1zcduUGvEar6jNSMUpS2LFjca49huhilc1uibA3ZlKnN3tNTMaE62T
-         wzrkCCI34HrsTIFT3zj7VDqJt7Q+PO+P8zBixWe+RcojIdUkM5r9XNvLBpnesm9fO5Bz
-         xtcBWcRNBXw6vEKO0VlENJYQvgIOy+qJS4vdgkO/6oDJbyCrCMTGs95Q3yiDuB0Zw8Hj
-         2LV2FUftIvhnhhmd8sg7GuY9hj9ypsS0qDzjiDlru6xPdcERrBgQhonVTIGUJu5fg0nQ
-         CpGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=bhDFTk2Ai9IvHYceetl+B1zPhbW6KMdcdI29Sg0Eo+M=;
-        b=tLdNsXlYaNGTrPgAGfs8YNfr/Si7VlSr4YJPQuHS43Na0Ww03RPqe8FXAMw+rjhiye
-         1MIdKcSjE9+vQtxBvvDPbxAvk2RUP5LuMvlUNweUqET9yjg1uwlwUJPiZ5NVY/u7D7C/
-         ILsvMlkjzj3aedMPitm2pVM3f2cyMDVflNPZskqkBYdW7KDLnbaWtXMyXZyWE7jqUkmc
-         04SZrvHfXKoM96DrjrcSC4KbiQkwL+Ct5h7ZhCqLyu7v5njQDA6p4vLIyEI8+ANUe+4X
-         kJ9xtSNWxjcjn9afzO/L4RkgflTSfBQ12jjW8U2PDbcofcgKyAqvgtLCPm4OEnMWFW6Q
-         uVvg==
-X-Gm-Message-State: AOAM533OS2d1d7Sy3ZG709F40d0bcZHdiMAo5CoatGX+mR1rcToVczes
-        0voL84BQsmzdG5lXAbYjBRYePA==
-X-Google-Smtp-Source: ABdhPJyN98CytOuNDU/P9oEgDgKuEou0RaGFmC2Be4QHtDolgE6CQO010qLoOYGeIeKGV40ISqebMw==
-X-Received: by 2002:a62:be04:0:b029:160:6c5:d7fe with SMTP id l4-20020a62be040000b029016006c5d7femr469851pff.21.1603429875495;
-        Thu, 22 Oct 2020 22:11:15 -0700 (PDT)
-Received: from localhost ([122.181.54.133])
-        by smtp.gmail.com with ESMTPSA id y27sm499082pfr.122.2020.10.22.22.11.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 22 Oct 2020 22:11:13 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 10:41:12 +0530
-From:   Viresh Kumar <viresh.kumar@linaro.org>
-To:     Vincent Guittot <vincent.guittot@linaro.org>
-Cc:     A L <mail@lechevalier.se>, Peter Zijlstra <peterz@infradead.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Julia Lawall <julia.lawall@inria.fr>,
-        Mel Gorman <mgorman@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        kernel-janitors@vger.kernel.org,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Valentin Schneider <valentin.schneider@arm.com>,
-        Gilles Muller <Gilles.Muller@inria.fr>,
-        Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        Len Brown <len.brown@intel.com>
-Subject: Re: default cpufreq gov, was: [PATCH] sched/fair: check for idle core
-Message-ID: <20201023051112.7p4qgr2opyoyeep4@vireshk-i7>
-References: <1603211879-1064-1-git-send-email-Julia.Lawall@inria.fr>
- <34115486.YmRjPRKJaA@kreacher>
- <20201022120213.GG2611@hirez.programming.kicks-ass.net>
- <1790766.jaFeG3T87Z@kreacher>
- <20201022122949.GW2628@hirez.programming.kicks-ass.net>
- <c232b2.c086afce.17550fc4644@lechevalier.se>
- <CAKfTPtDUMdxWSKQgyjPCn+D-zYzpfgMEy0WYGAQzhcr1jnAX7w@mail.gmail.com>
+        id S370574AbgJWFQ7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 01:16:59 -0400
+Received: from szxga07-in.huawei.com ([45.249.212.35]:42898 "EHLO huawei.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S367977AbgJWFQ7 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 01:16:59 -0400
+Received: from DGGEMS413-HUB.china.huawei.com (unknown [172.30.72.58])
+        by Forcepoint Email with ESMTP id F300D337B6A9F62BD12F;
+        Fri, 23 Oct 2020 13:16:52 +0800 (CST)
+Received: from DESKTOP-8RFUVS3.china.huawei.com (10.174.185.179) by
+ DGGEMS413-HUB.china.huawei.com (10.3.19.213) with Microsoft SMTP Server id
+ 14.3.487.0; Fri, 23 Oct 2020 13:16:43 +0800
+From:   Zenghui Yu <yuzenghui@huawei.com>
+To:     <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
+        <davem@davemloft.net>, <kuba@kernel.org>
+CC:     <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wanghaibin.wang@huawei.com>, <tanhuazhong@huawei.com>,
+        Zenghui Yu <yuzenghui@huawei.com>
+Subject: [PATCH net] net: hns3: Clear the CMDQ registers before unmapping BAR region
+Date:   Fri, 23 Oct 2020 13:15:50 +0800
+Message-ID: <20201023051550.793-1-yuzenghui@huawei.com>
+X-Mailer: git-send-email 2.23.0.windows.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKfTPtDUMdxWSKQgyjPCn+D-zYzpfgMEy0WYGAQzhcr1jnAX7w@mail.gmail.com>
-User-Agent: NeoMutt/20180716-391-311a52
+Content-Transfer-Encoding: 7BIT
+Content-Type:   text/plain; charset=US-ASCII
+X-Originating-IP: [10.174.185.179]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22-10-20, 17:55, Vincent Guittot wrote:
-> On Thu, 22 Oct 2020 at 17:45, A L <mail@lechevalier.se> wrote:
-> >
-> >
-> >
-> > ---- From: Peter Zijlstra <peterz@infradead.org> -- Sent: 2020-10-22 - 14:29 ----
-> >
-> > > On Thu, Oct 22, 2020 at 02:19:29PM +0200, Rafael J. Wysocki wrote:
-> > >> > However I do want to retire ondemand, conservative and also very much
-> > >> > intel_pstate/active mode.
-> > >>
-> > >> I agree in general, but IMO it would not be prudent to do that without making
-> > >> schedutil provide the same level of performance in all of the relevant use
-> > >> cases.
-> > >
-> > > Agreed; I though to have understood we were there already.
-> >
-> > Hi,
-> >
-> >
-> > Currently schedutil does not populate all stats like ondemand does, which can be a problem for some monitoring software.
-> >
-> > On my AMD 3000G CPU with kernel-5.9.1:
-> >
-> >
-> > grep. /sys/devices/system/cpu/cpufreq/policy0/stats/*
-> >
-> > With ondemand:
-> > time_in_state:3900000 145179
-> > time_in_state:1600000 9588482
-> > total_trans:177565
-> > trans_table:   From  :    To
-> > trans_table:         :   3900000   1600000
-> > trans_table:  3900000:         0     88783
-> > trans_table:  1600000:     88782         0
-> >
-> > With schedutil only two file exists:
-> > reset:<empty>
-> > total_trans:216609
-> >
-> >
-> > I'd really like to have these stats populated with schedutil, if that's possible.
-> 
-> Your problem might have been fixed with
-> commit 96f60cddf7a1 ("cpufreq: stats: Enable stats for fast-switch as well")
+When unbinding the hns3 driver with the HNS3 VF, I got the following
+kernel panic:
 
-Thanks Vincent. Right, I have already fixed that for everyone.
+[  265.709989] Unable to handle kernel paging request at virtual address ffff800054627000
+[  265.717928] Mem abort info:
+[  265.720740]   ESR = 0x96000047
+[  265.723810]   EC = 0x25: DABT (current EL), IL = 32 bits
+[  265.729126]   SET = 0, FnV = 0
+[  265.732195]   EA = 0, S1PTW = 0
+[  265.735351] Data abort info:
+[  265.738227]   ISV = 0, ISS = 0x00000047
+[  265.742071]   CM = 0, WnR = 1
+[  265.745055] swapper pgtable: 4k pages, 48-bit VAs, pgdp=0000000009b54000
+[  265.751753] [ffff800054627000] pgd=0000202ffffff003, p4d=0000202ffffff003, pud=00002020020eb003, pmd=00000020a0dfc003, pte=0000000000000000
+[  265.764314] Internal error: Oops: 96000047 [#1] SMP
+[  265.830357] CPU: 61 PID: 20319 Comm: bash Not tainted 5.9.0+ #206
+[  265.836423] Hardware name: Huawei TaiShan 2280 V2/BC82AMDDA, BIOS 1.05 09/18/2019
+[  265.843873] pstate: 80400009 (Nzcv daif +PAN -UAO -TCO BTYPE=--)
+[  265.843890] pc : hclgevf_cmd_uninit+0xbc/0x300
+[  265.861988] lr : hclgevf_cmd_uninit+0xb0/0x300
+[  265.861992] sp : ffff80004c983b50
+[  265.881411] pmr_save: 000000e0
+[  265.884453] x29: ffff80004c983b50 x28: ffff20280bbce500
+[  265.889744] x27: 0000000000000000 x26: 0000000000000000
+[  265.895034] x25: ffff800011a1f000 x24: ffff800011a1fe90
+[  265.900325] x23: ffff0020ce9b00d8 x22: ffff0020ce9b0150
+[  265.905616] x21: ffff800010d70e90 x20: ffff800010d70e90
+[  265.910906] x19: ffff0020ce9b0080 x18: 0000000000000004
+[  265.916198] x17: 0000000000000000 x16: ffff800011ae32e8
+[  265.916201] x15: 0000000000000028 x14: 0000000000000002
+[  265.916204] x13: ffff800011ae32e8 x12: 0000000000012ad8
+[  265.946619] x11: ffff80004c983b50 x10: 0000000000000000
+[  265.951911] x9 : ffff8000115d0888 x8 : 0000000000000000
+[  265.951914] x7 : ffff800011890b20 x6 : c0000000ffff7fff
+[  265.951917] x5 : ffff80004c983930 x4 : 0000000000000001
+[  265.951919] x3 : ffffa027eec1b000 x2 : 2b78ccbbff369100
+[  265.964487] x1 : 0000000000000000 x0 : ffff800054627000
+[  265.964491] Call trace:
+[  265.964494]  hclgevf_cmd_uninit+0xbc/0x300
+[  265.964496]  hclgevf_uninit_ae_dev+0x9c/0xe8
+[  265.964501]  hnae3_unregister_ae_dev+0xb0/0x130
+[  265.964516]  hns3_remove+0x34/0x88 [hns3]
+[  266.009683]  pci_device_remove+0x48/0xf0
+[  266.009692]  device_release_driver_internal+0x114/0x1e8
+[  266.030058]  device_driver_detach+0x28/0x38
+[  266.034224]  unbind_store+0xd4/0x108
+[  266.037784]  drv_attr_store+0x40/0x58
+[  266.041435]  sysfs_kf_write+0x54/0x80
+[  266.045081]  kernfs_fop_write+0x12c/0x250
+[  266.049076]  vfs_write+0xc4/0x248
+[  266.052378]  ksys_write+0x74/0xf8
+[  266.055677]  __arm64_sys_write+0x24/0x30
+[  266.059584]  el0_svc_common.constprop.3+0x84/0x270
+[  266.064354]  do_el0_svc+0x34/0xa0
+[  266.067658]  el0_svc+0x38/0x40
+[  266.070700]  el0_sync_handler+0x8c/0xb0
+[  266.074519]  el0_sync+0x140/0x180
 
+It looks like the BAR memory region had already been unmapped before we
+start clearing CMDQ registers in it, which is pretty bad and the kernel
+happily kills itself because of a Current EL Data Abort (on arm64).
+
+Moving the CMDQ uninitialization a bit early fixes the issue for me.
+
+Signed-off-by: Zenghui Yu <yuzenghui@huawei.com>
+---
+
+I have almost zero knowledge about the hns3 driver. You can regard this
+as a report and make a better fix if possible.
+
+I can't even figure out that how can we live with this issue for a long
+time... It should exists since commit 34f81f049e35 ("net: hns3: clear
+command queue's registers when unloading VF driver"), where we start
+writing something into the unmapped area.
+
+ drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+index 50c84c5e65d2..c8e3fdd5999c 100644
+--- a/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
++++ b/drivers/net/ethernet/hisilicon/hns3/hns3vf/hclgevf_main.c
+@@ -3262,8 +3262,8 @@ static void hclgevf_uninit_hdev(struct hclgevf_dev *hdev)
+ 		hclgevf_uninit_msi(hdev);
+ 	}
+ 
+-	hclgevf_pci_uninit(hdev);
+ 	hclgevf_cmd_uninit(hdev);
++	hclgevf_pci_uninit(hdev);
+ 	hclgevf_uninit_mac_list(hdev);
+ }
+ 
 -- 
-viresh
+2.19.1
+
