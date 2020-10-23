@@ -2,146 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5318829796A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 00:50:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 31C9629796F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 00:52:24 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758373AbgJWWuy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 18:50:54 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:35334 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1758363AbgJWWuy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 18:50:54 -0400
-Received: from [192.168.86.21] (c-71-197-163-6.hsd1.wa.comcast.net [71.197.163.6])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 9CF4220B4905;
-        Fri, 23 Oct 2020 15:50:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9CF4220B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603493453;
-        bh=51mgwXigRi3atgRXO7/qeI9rkW4VOXGqrl7CREykoC8=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=oB1UhE8Mwjj2hC32U8VKu5Fv4YAqtmu14D18ybG6Ynbp4bjTodMVMCcO39GKwBF0e
-         RsBMxDUxLt+kM4xGamw27sTktTv6GAKG143EYkFMQSxDkhaNEWNlVJGv5z/VXpMGVE
-         03PbGPdTsRAs9TcgNoiaWXY8D7yOZLUdJBTC8bz8=
-Subject: Re: [PATCH v4 4/6] IMA: add policy to measure critical data from
- kernel components
-To:     Mimi Zohar <zohar@linux.ibm.com>, stephen.smalley.work@gmail.com,
-        casey@schaufler-ca.com, agk@redhat.com, snitzer@redhat.com,
-        gmazyland@gmail.com
-Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
-        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
-        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dm-devel@redhat.com
-References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
- <20200923192011.5293-5-tusharsu@linux.microsoft.com>
- <37aa4e6f5db6c53f4021f829ec09388d55d28208.camel@linux.ibm.com>
-From:   Tushar Sugandhi <tusharsu@linux.microsoft.com>
-Message-ID: <87499f4e-d1d1-916c-24d2-0228bcacad26@linux.microsoft.com>
-Date:   Fri, 23 Oct 2020 15:50:52 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1758381AbgJWWwU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 18:52:20 -0400
+Received: from terminus.zytor.com ([198.137.202.136]:37513 "EHLO
+        mail.zytor.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1758348AbgJWWwT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 18:52:19 -0400
+Received: from wld157.hos.anvin.org (c-24-6-168-49.hsd1.ca.comcast.net [24.6.168.49])
+        (authenticated bits=0)
+        by mail.zytor.com (8.15.2/8.15.2) with ESMTPSA id 09NMq3vn4013373
+        (version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+        Fri, 23 Oct 2020 15:52:03 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 09NMq3vn4013373
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+        s=2020092401; t=1603493524;
+        bh=EGRt4ztnZwAX3jt6Vs1L6I71nyIhTSB2Csb5qpzwG7c=;
+        h=Date:In-Reply-To:References:Subject:To:CC:From:From;
+        b=apotMjaOLOewyHJ6I7jiM3el3vCLm1tB5bAtUZYVoAme0w+704l59xN02nygQoy+8
+         mBtM/Sf8n44b9zTNAk1q3NA/8YanTUE7WrAiadFuJmkVLOzztoNfVbEsSUODb7Kj1v
+         X/Znsp+ujjXpiFVDdjm6xfFwTNeT9shBYTVzp8AyCzgEbRFj1FmA0u+PE/07RGJ7oc
+         tCTJ48DZgy7oOGCAOhBakYMN5mknxZq0MSr6poDFzqtOLZr5AgeCbMIiTnh287+jQn
+         gEq6NgHBsAtuOVJFvOitwopMcBlvkfOV2R5+KOkQYtFcPCVLbYYZYcD/APrEXxhvlF
+         EprCPOEXzOS6Q==
+Date:   Fri, 23 Oct 2020 15:52:00 -0700
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
+References: <20201023203154.27335-1-linux@rasmusvillemoes.dk> <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com> <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com> <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <37aa4e6f5db6c53f4021f829ec09388d55d28208.camel@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] x86/uaccess: fix code generation in put_user()
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+CC:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        the arch/x86 maintainers <x86@kernel.org>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Naresh Kamboju <naresh.kamboju@linaro.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+From:   hpa@zytor.com
+Message-ID: <06B6997A-81AC-409D-A654-309FA8697F0C@zytor.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On October 23, 2020 2:11:19 PM PDT, Linus Torvalds <torvalds@linux-foundati=
+on=2Eorg> wrote:
+>On Fri, Oct 23, 2020 at 2:00 PM <hpa@zytor=2Ecom> wrote:
+>>
+>> There is no same reason to mess around with hacks when we are talking
+>about dx:ax, though=2E
+>
+>Sure there is=2E
+>
+>"A" doesn't actually mean %edx:%eax like you seem to think=2E
+>
+>It actually means %eax OR %edx, and then if given a 64-bit value, it
+>will use the combination (with %edx being the high bits)=2E
+>
+>So using "A" unconditionally doesn't work - it gives random behavior
+>for 32-bit (or smaller) types=2E
+>
+>Or you'd have to cast the value to always be 64-bit, and have the
+>extra code generation=2E
+>
+>IOW, an unconditional "A" is wrong=2E
+>
+>And the alternative is to just duplicate things, and go back to the
+>explicit size testing, but honestly, I really think that's much worse
+>than relying on a documented feature of "register asm()" that gcc
+>_documents_ is for this kind of inline asm use=2E
+>
+>So the "don't do pointless conditional duplication" is certainly a
+>very sane reason for the code=2E
+>
+>            Linus
 
-
-On 2020-10-22 2:15 p.m., Mimi Zohar wrote:
-> Hi Tushar,
-> 
-> The above Subject line should be truncated to "IMA: add policy to
-> measure critical data".
-> 
-> On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
->> There would be several candidate kernel components suitable for IMA
->> measurement. Not all of them would have support for IMA measurement.
-> 
-> This intro is besides the point.  The patch description should describe
-> what is meant by "critical data".
-> 
-Thanks. I will fix the description to address this.
-
->> Also, system administrators may not want to measure data for all of
->> them, even when they support IMA measurement.
->> An IMA policy option
->> specific to various kernel components is needed to measure their
->> respective critical data.
->>
->> This policy option needs to be constrained to measure data for
->> specific kernel components that are specified as input values to the
->> policy option.
->>
->> Add a new IMA policy option - "data_sources:=" to allow measuring
->> various critical kernel components. This policy option would enable the
->> system administrators to limit the measurement to the components
->> listed in "data_sources:=", if the components support IMA measurement.
->>
->> The new policy option "data_sources:=" is different from the existing
->> policy option "keyrings:=".
->>
->> In case of "keyrings:=", a policy may measure all keyrings (when
->> "keyrings:=" option is not provided for func KEY_CHECK), or may
->> constrain which keyrings need to be measured (when "keyrings:=" option
->> is provided for func KEY_CHECK).
->>
->> But unlike "keyrings:=", the entries in "data_sources:=" would have
->> different data format. Further, the components listed in
->> "data_sources:=" need to be modified to call IMA to measure their
->> data. Therefore, unlike "keyrings:=", IMA shouldn't measure all of the
->> components by default, when "data_sources:=" is not specified. Because
->> measuring non-vetted components just by specifying them as a policy
->> option value may impact the overall reliability of the system.
->>
->> To address this, "data_sources:=" should be a mandatory policy option
->> for func=CRITICAL_DATA. This func is introduced in the 5th patch in this
->> series). And the compile-time vetting functionality described above is
->> introduced in the 6th patch in this series.
->>
->> Signed-off-by: Tushar Sugandhi <tusharsu@linux.microsoft.com>
-> 
-> I don't understand what you mean by "non-vetted" components, nor how
-> measuring critical data may impact the overall reliability of the
-> system.
-> 
-Tushar: Before we introduced the mechanism to check supported
-data-sources at compile time (patch 6/6 of this series), there was a
-back-and-forth on whether “data_sources:=” should be a mandatory policy
-option, or optional like “keyrings:=”. And we decided to make the
-“data_sources:=” mandatory. But now that we have the compile time check
-(patch 6/6 of this series), we can switch to make “data_sources:=”
-optional (with the default to allow measuring all critical data – just 
-like what you suggested below). I will make the code and description 
-changes accordingly.
-> The system owner or adminstrator defines what they want to measure,
-> including "critical data", based on the policy rules.  They might
-> decide that they want to constrain which "critical data" is measured by
-> specifying "data_sources:=", but that decision is their perogative.
-> The default should allow measuring all critical data.
-> 
-Makes sense.
-To summarize, we will make the decision which sources to measure- based
-on the sources defined in the allow list (in patch 6) and the sources
-defined in “data_sources:=”. If “data_sources:=” is not present, we will
-measure all sources defined in the allow list.
-Hope my this understanding is correct based on your feedback.
-
->   A simple example of "critical data" could be some in memory structure,
-> along the lines of __ro_after_init, or hash of the memory structure.
-> Once the data structure is initialized, the "critical data" measurement
-> shouldn't change.    From the attestation server perspective, the IMA
-> measurement list would contain a single record unless the critical data
-> changes.  The attestation server doesn't need to know anything about
-> the initial value, just that it has changed in order to trigger some
-> sort alert.
-Yes agreed. After the updates (based on your feedback) I stated above,
-the behavior should remain consistent with what you described here.
-> 
-> thanks,
-> 
-> Mimi
-> 
+Unconditional "A" is definitely wrong, no argument there=2E
+--=20
+Sent from my Android device with K-9 Mail=2E Please excuse my brevity=2E
