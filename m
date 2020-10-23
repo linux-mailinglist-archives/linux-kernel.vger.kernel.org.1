@@ -2,40 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5BB1A297468
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:36:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9278329747A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 18:37:34 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752185AbgJWQgn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 12:36:43 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33226 "EHLO mail.kernel.org"
+        id S1752214AbgJWQh0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 12:37:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33734 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751840AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1751844AbgJWQdu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
         Fri, 23 Oct 2020 12:33:50 -0400
 Received: from mail.kernel.org (ip5f5ad5a3.dynamic.kabel-deutschland.de [95.90.213.163])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C45C24641;
+        by mail.kernel.org (Postfix) with ESMTPSA id 3BA49246B0;
         Fri, 23 Oct 2020 16:33:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
         s=default; t=1603470828;
-        bh=QtoGRTSylDJqRgGFl+2IEK4wws+paYf2E8QEhkhHbdI=;
+        bh=jeh4YC+MxwGcd5mb9mDgW+smzNJeeNqLiKDD0oaDL0E=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hEIB+q2tWBVixEjqnwpiMbiJeCp/19tHBnF+K+4L7lCcqpnSY2d5cQDUHnRqq8E3B
-         GYXKY5Gvf1/QwKaYsYY0ExUq9v7xK7WjiVF4T6LX4K4Z3LiIZ+S5lJI4DFIwSoyPBY
-         yDd8aKrlBhPYRJ0nItAd61UlPvnIkM5HOjgvwudA=
+        b=dp5HB/65JaGeWDQP2R/ITfNqB1n/bHLrckWbFxT5Bp9FOnlfGcjRGyEKH0DGZtaQP
+         0QJIH6hjUZqRVe4jOzmY6HVrR+JwJ7wapnt/ZbDverJRmvQrYY23iK8+xDjbgIK0TD
+         Mgfqtra+eUaq0iZWCMK5wW6w2jiKd0IFMRzUEUtU=
 Received: from mchehab by mail.kernel.org with local (Exim 4.94)
         (envelope-from <mchehab@kernel.org>)
-        id 1kW00g-002Awn-4Z; Fri, 23 Oct 2020 18:33:46 +0200
+        id 1kW00g-002Awp-5N; Fri, 23 Oct 2020 18:33:46 +0200
 From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>
 Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
         "Jonathan Corbet" <corbet@lwn.net>,
-        Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Manohar Vanga <manohar.vanga@gmail.com>,
+        Martyn Welch <martyn@welchs.me.uk>, devel@driverdev.osuosl.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH v3 32/56] video: fix some kernel-doc markups
-Date:   Fri, 23 Oct 2020 18:33:19 +0200
-Message-Id: <8078dde13eac44d5361abb606e098abd724b2ccd.1603469755.git.mchehab+huawei@kernel.org>
+Subject: [PATCH v3 33/56] vme: fix two kernel-doc markups
+Date:   Fri, 23 Oct 2020 18:33:20 +0200
+Message-Id: <51bfb6724975302f66d64e4ad71de451a7cbbf99.1603469755.git.mchehab+huawei@kernel.org>
 X-Mailer: git-send-email 2.26.2
 In-Reply-To: <cover.1603469755.git.mchehab+huawei@kernel.org>
 References: <cover.1603469755.git.mchehab+huawei@kernel.org>
@@ -51,37 +52,31 @@ and the kernel-doc markup.
 
 Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 ---
- drivers/video/fbdev/core/fbcmap.c | 2 +-
- drivers/video/hdmi.c              | 3 ++-
- 2 files changed, 3 insertions(+), 2 deletions(-)
+ drivers/vme/vme.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/video/fbdev/core/fbcmap.c b/drivers/video/fbdev/core/fbcmap.c
-index e5ae33c1a8e8..757d5c3f620b 100644
---- a/drivers/video/fbdev/core/fbcmap.c
-+++ b/drivers/video/fbdev/core/fbcmap.c
-@@ -76,7 +76,7 @@ static const struct fb_cmap default_16_colors = {
- 
- 
- /**
-- *	fb_alloc_cmap - allocate a colormap
-+ *	fb_alloc_cmap_gfp - allocate a colormap
-  *	@cmap: frame buffer colormap structure
-  *	@len: length of @cmap
-  *	@transp: boolean, 1 if there is transparency, 0 otherwise
-diff --git a/drivers/video/hdmi.c b/drivers/video/hdmi.c
-index b7a1d6fae90d..e44b7cec95fd 100644
---- a/drivers/video/hdmi.c
-+++ b/drivers/video/hdmi.c
-@@ -1688,7 +1688,8 @@ static int hdmi_audio_infoframe_unpack(struct hdmi_audio_infoframe *frame,
+diff --git a/drivers/vme/vme.c b/drivers/vme/vme.c
+index b398293980b6..bb4fed52f74d 100644
+--- a/drivers/vme/vme.c
++++ b/drivers/vme/vme.c
+@@ -73,7 +73,7 @@ static struct vme_bridge *find_bridge(struct vme_resource *resource)
  }
  
  /**
-- * hdmi_vendor_infoframe_unpack() - unpack binary buffer to a HDMI vendor infoframe
-+ * hdmi_vendor_any_infoframe_unpack() - unpack binary buffer to a HDMI
-+ * 	vendor infoframe
-  * @frame: HDMI Vendor infoframe
-  * @buffer: source buffer
-  * @size: size of buffer
+- * vme_free_consistent - Allocate contiguous memory.
++ * vme_alloc_consistent - Allocate contiguous memory.
+  * @resource: Pointer to VME resource.
+  * @size: Size of allocation required.
+  * @dma: Pointer to variable to store physical address of allocation.
+@@ -647,7 +647,7 @@ int vme_master_get(struct vme_resource *resource, int *enabled,
+ EXPORT_SYMBOL(vme_master_get);
+ 
+ /**
+- * vme_master_write - Read data from VME space into a buffer.
++ * vme_master_read - Read data from VME space into a buffer.
+  * @resource: Pointer to VME master resource.
+  * @buf: Pointer to buffer where data should be transferred.
+  * @count: Number of bytes to transfer.
 -- 
 2.26.2
 
