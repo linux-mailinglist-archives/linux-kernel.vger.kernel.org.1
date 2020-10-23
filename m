@@ -2,81 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFA88297058
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:23:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A7BDF29705A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 15:24:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464590AbgJWNXV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 09:23:21 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47498 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S373633AbgJWNXT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 09:23:19 -0400
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 4785FC0613D4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:23:19 -0700 (PDT)
-Received: by mail-io1-xd34.google.com with SMTP id k6so1753226ior.2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 06:23:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=iIXXMTAFKEUOXUJ6Hngll7ihraOgdUZlAqeHFDgyY7I=;
-        b=e7HMtDUxozZVnJQN4nwx6gLgKj9Jh+YYtcUP0Pwy2VfGhM4YnjwyEnS1PB21YHuawu
-         fxCMdVoVaM/YqMIwFCLig2gaY+Pq2qeANvbTD6ywLw+6FPpma09F5IIx3ZU0o6dKHO5L
-         5S90l/cQd207SDdENPR1e05TtRYG0CCtx9Pz5aDD8/nVyOcn99UvLbfr/58K7fOPyLOP
-         9FnVdvagyDojndRSERh4xujbIa4TAvdYt0Z8dXCqyQ2Ylvk+mJ5anzdGES5/b8r10xX6
-         ZFX5kfiaxGLUpdQRNX+pMmyUWE286ClMagOhHW6l3bvanVRvZRS/7yfQSpjaaZhzdxjf
-         m3Hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=iIXXMTAFKEUOXUJ6Hngll7ihraOgdUZlAqeHFDgyY7I=;
-        b=W+LXTWIBGfykeMPg4oqsfGEgjDsULDi3wObMKMcFECg9NtjmCiiz7Q2ruePi5M7YrR
-         LImiRjlPmfvs4Oyq8LflHO7J7xYApiDRfeZO0uQyYDIOZkYN5X27+V3+wgFPYtSGe9lG
-         0mZ4PrB+ic5J6r5/G+CsmSQM3vaMMLAdJKrEFYHFkomu/gD6L2ZcgKiWU29zJBb/lGcC
-         Ho1zqD2SAoleTnc/6VEViGLQxHY0LFWHX/SDuedlz4L7+4jM+f6nVOkZKTE3LQwChm7H
-         +fywS/2MWynH1ve/VNAZKcpx2NtMTrAYaE1kKo7N59pEcwDJHVbAa62RkOTqFFJ8FeBl
-         7qMA==
-X-Gm-Message-State: AOAM531Lo7Rqs9imctHTPyMnL3PdkPdmzDzn7EOTc/ULEmYhbxU5vTwY
-        +A+01lhtS4m+fuqVExoTlSSfQaNEJG1FaA==
-X-Google-Smtp-Source: ABdhPJy9ZE3R9jmYdEpwid3c9GavbQ0/arGXkTiSPg8hHX1/yxqhlduNTA/d6K6ddXpkttLEEGEtTw==
-X-Received: by 2002:a05:6602:1216:: with SMTP id y22mr1572155iot.53.1603459398359;
-        Fri, 23 Oct 2020 06:23:18 -0700 (PDT)
-Received: from [192.168.1.30] ([65.144.74.34])
-        by smtp.gmail.com with ESMTPSA id c1sm940393ile.0.2020.10.23.06.23.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 06:23:17 -0700 (PDT)
-Subject: Re: [PATCH] io-wq: fix 'task->pi_lock' spin lock protect
-To:     qiang.zhang@windriver.com
-Cc:     viro@zeniv.linux.org.uk, linux-fsdevel@vger.kernel.org,
-        io-uring@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20201023062003.3353-1-qiang.zhang@windriver.com>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <80fa2e28-bbb4-dfa7-7215-c8cea052dca0@kernel.dk>
-Date:   Fri, 23 Oct 2020 07:23:17 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S464610AbgJWNYW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 09:24:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43152 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S373636AbgJWNYT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 09:24:19 -0400
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 114D5207FF;
+        Fri, 23 Oct 2020 13:24:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603459459;
+        bh=G+G1NFp9JRYJ2dro4Br/7MRvnCJKwRWzwLiKAvbHXMw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=TvwvXbS+GkFEkPvgBxp4l2VnS9df6+iB5O6NCGP6AZp4CrWe4l8ePd/rhBEFHu4j1
+         e4XJUfyOhwpxpXqWdXhaly/jTblUYqLjUa8ciYjVTfrU0FHWfoT3qa8UBY2wuLOBHA
+         zc/Bm2xN2TsLw+CG1Bvipd3cUDiOwN0qBzzczIT8=
+Received: by mail-oi1-f178.google.com with SMTP id f8so1820956oij.10;
+        Fri, 23 Oct 2020 06:24:19 -0700 (PDT)
+X-Gm-Message-State: AOAM531FrMn6MQkgFnDU1N8MLgbuHxqNDEfweYVi2tiWLgu68APmOQPE
+        Gl3aRF08dKhI4WmjomaLVcI6VzeDREdlOassWg==
+X-Google-Smtp-Source: ABdhPJz4tFeZJDr7rzOvZGMNHZJWe/2fbjbgtc6bLDWUKizS54PAUe5/dg0vPDI/EoI/0wqVYwg+Wb2V7cwL+yFzGf0=
+X-Received: by 2002:a05:6808:10e:: with SMTP id b14mr1741212oie.152.1603459458302;
+ Fri, 23 Oct 2020 06:24:18 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201023062003.3353-1-qiang.zhang@windriver.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201021183104.27949-1-sudeep.holla@arm.com> <20201022182233.hklq6j5n5kkqg4yv@bogus>
+In-Reply-To: <20201022182233.hklq6j5n5kkqg4yv@bogus>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Fri, 23 Oct 2020 08:24:06 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqKw8SiQ3vCYbf5vKgKP7dHgcpxCVET4XuV5rsR34EQLgw@mail.gmail.com>
+Message-ID: <CAL_JsqKw8SiQ3vCYbf5vKgKP7dHgcpxCVET4XuV5rsR34EQLgw@mail.gmail.com>
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm,scmi: Do not use clocks for SCMI
+ performance domains
+To:     Sudeep Holla <sudeep.holla@arm.com>
+Cc:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        devicetree@vger.kernel.org,
+        linux-arm-kernel <linux-arm-kernel@lists.infradead.org>,
+        Viresh Kumar <viresh.kumar@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 12:20 AM, qiang.zhang@windriver.com wrote:
-> From: Zqiang <qiang.zhang@windriver.com>
-> 
-> The set CPU affinity func 'do_set_cpus_allowed' may be operate
-> 'task_rq', need add rq lock protect, replace 'pi_lock' spinlock
-> protect with task_rq_lock func.
+On Thu, Oct 22, 2020 at 1:22 PM Sudeep Holla <sudeep.holla@arm.com> wrote:
+>
+> On Wed, Oct 21, 2020 at 07:31:03PM +0100, Sudeep Holla wrote:
+> > Commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
+> > -EPROBE_DEFER") handles -EPROBE_DEFER for the clock/interconnects within
+> > _allocate_opp_table() which is called from dev_pm_opp_add and it
+> > now propagates the error back to the caller.
+> >
+> > SCMI performance domain re-used clock bindings to keep it simple. However
+> > with the above mentioned change, if clock property is present in a device
+> > node, opps can't be added until clk_get succeeds. So in order to fix the
+> > issue, we can register dummy clocks which is completely ugly.
+> >
+> > Since there are no upstream users for the SCMI performance domain clock
+> > bindings, let us introduce separate performance domain bindings for the
+> > same.
+> >
+> > Signed-off-by: Sudeep Holla <sudeep.holla@arm.com>
+> > ---
+> >  .../devicetree/bindings/arm/arm,scmi.txt      | 19 ++++++++++++++++---
+> >  1 file changed, 16 insertions(+), 3 deletions(-)
+> >
+> > v1[1]->v2:
+> >       - Changed the generic #perf-domain-cells to more SCMI specific
+> >         property #arm,scmi-perf-domain-cells
+> >
+>
+> Is more specific #arm,scmi-perf-domain-cells acceptable ?
+> Sorry for the rush, but this fixes SCMI cpufreq which is broken after
+> commit dd461cd9183f ("opp: Allow dev_pm_opp_get_opp_table() to return
+> -EPROBE_DEFER")
 
-Thanks, I'm going to fold this one.
+If you are in a rush, you'd better go the dummy clock route. We should
+get this binding right and I think that means something common, not
+SCMI specific.
 
--- 
-Jens Axboe
-
+Rob
