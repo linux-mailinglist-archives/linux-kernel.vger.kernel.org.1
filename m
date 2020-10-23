@@ -2,79 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF4DD297659
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:02:01 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5900129765A
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 20:02:02 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754130AbgJWSBk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 14:01:40 -0400
-Received: from smtprelay0116.hostedemail.com ([216.40.44.116]:46618 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1754121AbgJWSBj (ORCPT
+        id S1754140AbgJWSBs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 14:01:48 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:54391 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1754122AbgJWSBr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 14:01:39 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay04.hostedemail.com (Postfix) with ESMTP id E2C42180A90FD;
-        Fri, 23 Oct 2020 18:01:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 90,9,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:982:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3653:3865:3866:3867:3868:3871:3874:4321:5007:8603:10004:10400:10848:10967:11026:11232:11658:11783:11914:12043:12296:12297:12740:12895:13069:13161:13229:13311:13357:13439:13894:14181:14659:14721:21080:21324:21451:21627:21740:21741:30054:30060:30070:30080:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
-X-HE-Tag: nail06_130978d2725b
-X-Filterd-Recvd-Size: 2266
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf10.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 23 Oct 2020 18:01:36 +0000 (UTC)
-Message-ID: <c0210eade81060382884e1f38ca7f71742d02b61.camel@perches.com>
-Subject: Re: [PATCH v3 01/56] scripts: kernel-doc: fix typedef parsing
-From:   Joe Perches <joe@perches.com>
-To:     Jonathan Corbet <corbet@lwn.net>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        linux-kernel@vger.kernel.org
-Date:   Fri, 23 Oct 2020 11:01:35 -0700
-In-Reply-To: <20201023112226.4035e3f7@lwn.net>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-         <d0b2146c4ced3121342583bb3d962628fc96759b.1603469755.git.mchehab+huawei@kernel.org>
-         <20201023112226.4035e3f7@lwn.net>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 23 Oct 2020 14:01:47 -0400
+Received: by mail-wm1-f67.google.com with SMTP id w23so1484173wmi.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 11:01:46 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=FOoNRIlK8tVk9G9mU4rHeaxRE409AWMqWNc43DoFZTI=;
+        b=jHilHIUCvw8CgLC125N/NYOYDeS5fm093cRYdtosjc7l6BZEglg60w6IjOER0hBJnC
+         a8eN7Wpmb1hu5ABYtLlGSUNCsMwtBGgeYvHrlQgrRzj4jaHtLXHkSKoaKYT2J3kK2BoR
+         82OSo/jdNgs4Tb/BVJneWlRTmY6BFZO9ABeg5sYGc+tv5al6NlHsZx3rSupGEVNFRUnp
+         3kHcmnv20IwajsQi9Uxk8+H1pgcYiIJTMLlF+EgJD1cHld9wRqSMbvQaZPPdnnqQoP4c
+         iHdbTRCjL0qa+Bu1d1Os8ezMBDNETmc0ZjURbrFXnDm7HjoYIUABtA71XKww9is2g2jq
+         zKQQ==
+X-Gm-Message-State: AOAM532+p3g3aL50jDj6BqNmIVSw1QDj6HGYNiS2V7LBPLsTpryjyMVL
+        Z1racAQc5G90h2ls861Fe3wVieOgi0U=
+X-Google-Smtp-Source: ABdhPJznH3Ks3tjgn71i4pENBXnNM8JvrRyqwAx0NlW5n8cK5ihA/6xBD2I2jPlbzbwaXvfHerufMA==
+X-Received: by 2002:a1c:1b46:: with SMTP id b67mr3681152wmb.82.1603476105288;
+        Fri, 23 Oct 2020 11:01:45 -0700 (PDT)
+Received: from ?IPv6:2601:647:4802:9070:f912:ab69:c0c3:c2f7? ([2601:647:4802:9070:f912:ab69:c0c3:c2f7])
+        by smtp.gmail.com with ESMTPSA id k203sm5045341wmb.37.2020.10.23.11.01.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 23 Oct 2020 11:01:44 -0700 (PDT)
+Subject: Re: [PATCH v2] nvme-rdma: handle nvme completion data length
+To:     zhenwei pi <pizhenwei@bytedance.com>, kbusch@kernel.org,
+        hch@lst.de, axboe@fb.com
+Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201023065910.1358586-1-pizhenwei@bytedance.com>
+From:   Sagi Grimberg <sagi@grimberg.me>
+Message-ID: <d23e33e7-d545-2ad0-d163-5182dd5430b1@grimberg.me>
+Date:   Fri, 23 Oct 2020 11:01:40 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201023065910.1358586-1-pizhenwei@bytedance.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-23 at 11:22 -0600, Jonathan Corbet wrote:
-> On Fri, 23 Oct 2020 18:32:48 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > The include/linux/genalloc.h file defined this typedef:
-> > 
-> > 	typedef unsigned long (*genpool_algo_t)(unsigned long *map,unsigned long size,unsigned long start,unsigned int nr,void *data, struct gen_pool *pool, unsigned long start_addr);
-[]
-> > diff --git a/scripts/kernel-doc b/scripts/kernel-doc
-[]
-> >      # Parse function prototypes
-> > -    if ($x =~ /typedef\s+(\w+)\s*\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
-> > +    if ($x =~ /typedef\s+(\w+\s*){1,}\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
-> 
-> I sure wish we could find a way to make all these regexes more
-> understandable and maintainable.  Reviewing a change like this is ... fun.
 
-Perhaps using some of the checkpatch regex definitions like:
+> diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+> index 9e378d0a0c01..2ecadd309f4a 100644
+> --- a/drivers/nvme/host/rdma.c
+> +++ b/drivers/nvme/host/rdma.c
+> @@ -1767,6 +1767,21 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
+>   		return;
+>   	}
+>   
+> +	/* received data length checking */
+> +	if (unlikely(wc->byte_len < len)) {
+> +		/* zero bytes message could be ignored */
+> +		if (!wc->byte_len) {
+> +			nvme_rdma_post_recv(queue, qe);
+> +			return;
+> +		}
 
-$Type
-$Ident
-$balanced_parens
-
-would help improve readability.
-
-And the regex above doesn't quite work for spacing after typedef.
-The regex should allow space between the open parenthesis and the *
-
-	typedef <Type> ( * <Ident> ) (args...);
-
-And this regex does not find typedefs that use another typedef as <Ident> like:
-
-arch/s390/include/asm/debug.h:typedef int (debug_header_proc_t) (debug_info_t *id,
-
-
+Nothing in the spec defines zero-length messages, hence we cannot
+support something that is not standard. If your array needs this,
+please submit a TPAR to the NVMe TWG.
