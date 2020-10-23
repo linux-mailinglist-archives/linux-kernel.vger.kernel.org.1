@@ -2,116 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F786296C03
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:23:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B08DA296C07
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:24:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461387AbgJWJXs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:23:48 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38512 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461296AbgJWJXs (ORCPT
+        id S461423AbgJWJYs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:24:48 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:36077 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S461413AbgJWJYs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:23:48 -0400
-Received: from merlin.infradead.org (merlin.infradead.org [IPv6:2001:8b0:10b:1231::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAD9C0613CE;
-        Fri, 23 Oct 2020 02:23:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FhPQVYPKzjZ8/oy407X+/jEjQ3F6X7vjeMfGUTwb1/s=; b=SntEyj6RUzJKiVSNK0R8fP7o43
-        lFHAFYQdWYluGPCpfeHIr8gcpC32+mdL5UhfBktIJXnwKNt/5YpDc1LkN0ugKka6FzDJhUH/Owj6x
-        xzcnRXLobLR0DZMnAU+xqiX8YEsQFa0PCNns7XMiDthnzQiJG8J6MfR+TtxYPiBzHHJyYy89u+HWZ
-        KFUz13zm/T9vajibb2OZPSvWWjc823NEHrxNKeJzGZTSPfTHUfkWKsEMoDcXmCjlRaYNrOceYw5TJ
-        6HQogX7xruk/ArxsCMU6YPhcxkfj/1TzooiR7AqiLWeM8pPDVkYhsx0UY/RoB+SzS1E+GilQoxFbA
-        T8XIW/Ew==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVtIR-0000wo-Ct; Fri, 23 Oct 2020 09:23:39 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D2489302753;
-        Fri, 23 Oct 2020 11:23:37 +0200 (CEST)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id A4655209DE6E2; Fri, 23 Oct 2020 11:23:37 +0200 (CEST)
-Date:   Fri, 23 Oct 2020 11:23:37 +0200
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Suzuki Poulose <suzuki.poulose@arm.com>
-Cc:     Mathieu Poirier <mathieu.poirier@linaro.org>,
-        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
-        Mike Leach <mike.leach@linaro.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, coresight@lists.linaro.org,
-        Stephen Boyd <swboyd@chromium.org>,
-        linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCHv2 2/4] coresight: tmc-etf: Fix NULL ptr dereference in
- tmc_enable_etf_sink_perf()
-Message-ID: <20201023092337.GQ2611@hirez.programming.kicks-ass.net>
-References: <cover.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <aa6e571156d6e26e54da0bb3015ba474e4a08da0.1603363729.git.saiprakash.ranjan@codeaurora.org>
- <20201022113214.GD2611@hirez.programming.kicks-ass.net>
- <e7d236f7-61c2-731d-571b-839e0e545563@arm.com>
- <20201022150609.GI2611@hirez.programming.kicks-ass.net>
- <788706f2-0670-b7b6-a153-3ec6f16e0f2e@arm.com>
- <20201022212033.GA646497@xps15>
- <20201023073905.GM2611@hirez.programming.kicks-ass.net>
- <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+        Fri, 23 Oct 2020 05:24:48 -0400
+Received: by mail-ot1-f65.google.com with SMTP id 32so735998otm.3;
+        Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Zc+AeQKYu0eA1NCCr9Ea0RhGk/czUMV0vr6kVFJGHw0=;
+        b=svL8bMrhDiYdFU+nFRtfqmOTeNEsuLToWpA+nHPR5eeAcE7vAK9E0lqS+vuiZ6CrWN
+         PBQnXJ1Ri/xnY6yWeDoDwod69OLYqXUn4oD+B7/fozdJydzRwv+Zc/21rTv/pmxgvuJO
+         NE3sE3Qtew4RgCkawyh0mwvmHIqGwUTdmFJDMnPqYnFHHV/6dnTEr6Y3KyQuqk2bX9yG
+         x7al8CTEqWpgv4ghMJABLurkaPz1HG1CFbmeezoY5QzmFB6hvFaMkAAkxyDRHQFKcQx4
+         +dhlY7GLWB5uBcsb1GRz/M0rStunz4sVTfb26bvaifJyanZEaB6+kr43EcHMY3khCPx1
+         a1SQ==
+X-Gm-Message-State: AOAM533HcoD//sSkCHkQJXswjFpctjlDUp88eJeC1UFKkz9VVlgu3ZAT
+        sKqT5MxLYtDs9UKuhQRUhfo0eRav94ezvAFWrio=
+X-Google-Smtp-Source: ABdhPJxehtfOoAm+qzRUkw5mm184UYL/qN+HgKHa1e9IqAJmQlfvEJk1yo1vlYOgf9p2GgsKSFaJDrnAsY04iiRnVFk=
+X-Received: by 2002:a9d:3b76:: with SMTP id z109mr904469otb.250.1603445087314;
+ Fri, 23 Oct 2020 02:24:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <174e6461-4d46-cb65-c094-c06ee3b21568@arm.com>
+References: <20201008154651.1901126-1-arnd@arndb.de> <20201008154651.1901126-14-arnd@arndb.de>
+ <alpine.LNX.2.23.453.2010091900150.12@nippy.intranet> <CAK8P3a3rM7gJjdTtcKzr6yi15n6xs-yhEpmSOf3QHfahQwxqkw@mail.gmail.com>
+ <alpine.LNX.2.23.453.2010150937430.16@nippy.intranet> <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
+In-Reply-To: <CAK8P3a3i6cum_9xGgsbxjXXvbRsP8Po5qLZ0Agb3c4gZTKC9GQ@mail.gmail.com>
+From:   Geert Uytterhoeven <geert@linux-m68k.org>
+Date:   Fri, 23 Oct 2020 11:24:36 +0200
+Message-ID: <CAMuHMdUyGH=ORa4yHivMeJZaGQ3kEXi1kr9=P+u1y3QQnC+-4g@mail.gmail.com>
+Subject: Re: [RFC 13/13] m68k: mac: convert to generic clockevent
+To:     Arnd Bergmann <arnd@kernel.org>
+Cc:     Finn Thain <fthain@telegraphics.com.au>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Russell King <linux@armlinux.org.uk>,
+        Tony Luck <tony.luck@intel.com>,
+        Fenghua Yu <fenghua.yu@intel.com>,
+        Greg Ungerer <gerg@linux-m68k.org>,
+        Philip Blundell <philb@gnu.org>,
+        Joshua Thompson <funaho@jurai.org>,
+        Sam Creasey <sammy@sammy.net>,
+        "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+        Helge Deller <deller@gmx.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        John Stultz <john.stultz@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "linux-ia64@vger.kernel.org" <linux-ia64@vger.kernel.org>,
+        Parisc List <linux-parisc@vger.kernel.org>,
+        linux-m68k <linux-m68k@lists.linux-m68k.org>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 09:49:53AM +0100, Suzuki Poulose wrote:
-> On 10/23/20 8:39 AM, Peter Zijlstra wrote:
+Hi Arnd,
 
-> > So then I don't understand the !->owner issue, that only happens when
-> > the task dies, which cannot be concurrent with event creation. Are you
-> 
-> Part of the patch from Sai, fixes this by avoiding the dereferencing
-> after event creation (by caching it). But the kernel events needs
-> fixing.
-> 
-> One follow up question on the !->owner issue. Given the ->owner is
-> dying, does it prevent events from being scheduled ? Or is there a delay
-> between that and eventually stopping the events. In this case, we hit
-> the issue when :
-> 
-> A					  A or B ?
-> 
-> event_start()
->   ...					event->owner = NULL
-> 
->  READ_ONCE(event->owner);
-> 
-> Is this expected ?
+On Fri, Oct 23, 2020 at 9:52 AM Arnd Bergmann <arnd@kernel.org> wrote:
+> On Sun, Oct 18, 2020 at 2:55 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > On Thu, 15 Oct 2020, Arnd Bergmann wrote:
+> > > On Thu, Oct 15, 2020 at 3:19 AM Finn Thain <fthain@telegraphics.com.au> wrote:
+> > > > On Sat, 10 Oct 2020, Arnd Bergmann wrote:
+> >
+> > That configuration still produces the same 5 KiB of bloat. I see that
+> > kernel/time/Kconfig has this --
+> >
+> > # Core internal switch. Selected by NO_HZ_COMMON / HIGH_RES_TIMERS. This is
+> > # only related to the tick functionality. Oneshot clockevent devices
+> > # are supported independent of this.
+> > config TICK_ONESHOT
+> >         bool
+> >
+> > But my question was really about both kinds of dead code (oneshot device
+> > support and oneshot tick support). Anyway, after playing with the code for
+> > a bit I don't see any easy way to reduce the growth in text size.
+>
+> Did you look more deeply into where those 5KB are? Is this just
+> the code in kernel/time/{clockevents,tick-common}.c and the
+> added platform specific bits, or is there something more?
+> I suppose the sysfs interface and the clockevents_update_freq()
+> logic are not really needed on m68k, but it wouldn't make much
+> sense to split those out either.
+>
+> How does the 5KB bloat compare to the average bloat we get
+> from one release to the next? Geert has been collecting statistics
+> for this.
 
-Yeah, teardown is a bit of an effort. Also, you can pass an fd over a
-unix socket to another process, so this isn't something you can rely on
-in any case.
+It would be a fair share of the typical increase of ca. 30 KiB per
+kernel release. Still, it would be lost in the noise of the increase for
+v5.10-rc1:
 
-The perf tool doesn't do it, but the kernel infra should be able to deal
-with someone doing a perf-deamon of sorts, where you can request a perf
-event and recieve a fd from it.
+    add/remove: 1200/455 grow/shrink: 1419/821 up/down: 468970/-93714 (375256)
+    Function                                     old     new   delta
+    _printk_rb_static_infos                        -  180224 +180224
+    write_buf                                   8192   32768  +24576
+    _printk_rb_static_descs                        -   24576  +24576
+    HUF_decompress4X4_usingDTable_internal         -    5664   +5664
+    HUF_decompress4X2_usingDTable_internal         -    5006   +5006
+    __ext4_ioctl                                   -    4774   +4774
+    sock_ops_convert_ctx_access                 3840    8462   +4622
+    ZSTD_decompressSequences                       -    3100   +3100
 
-Imagine the fun ;-)
+> > > The arm/rpc timer seems to be roughly in the same category as most of
+> > > the m68k ones or the i8253 counter on a PC. It's possible that some of
+> > > them could use the same logic as drivers/clocksource/i8253.o as long as
+> > > there is any hardware oneshot mode.
+> >
+> > There appear to be 15 platforms in that category. 4 have no clocksource
+> > besides the jiffies clocksource, meaning there's no practical alternative
+> > to using a periodic tick, like you did in your RFC patch:
+> >
+> > arch/m68k/apollo/config.c
+> > arch/m68k/q40/q40ints.c
+> > arch/m68k/sun3/sun3ints.c
+> > arch/m68k/sun3x/time.c
+>
+> Do any of these have users? I'm fairly sure sun3x has never worked in mainline,
+> sun3 seems to still need the same few patches it did 20 years ago. I
+> couldn't find
+> much about Linux on Apollo or q40, the information on the web for either
+> of them seems to all be for linux-2.4 kernels.
 
-> > As for the kernel events.. why do you care about the actual task_struct
-> > * in there? I see you're using it to grab the task-pid, but how is that
-> > useful?
-> 
-> Correct, kernel events are something that the driver didn't account for.
-> May be we could handle this case with a "special pid" and simply
-> disallow sharing (which is fine I believe, given there are not grouping
-> for the kernel created events).
+They probably don't have any users.
+AFAIK, the only users are the usual triumvirate of amiga/atari/mac
+(and perhaps the fleet of VME boards in the Australian navy? ;)
 
-Why do you need a pid in the first place? Can't you use the "task_struct
-*" as a value?
+Gr{oetje,eeting}s,
+
+                        Geert
+
+
+--
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+
+In personal conversations with technical people, I call myself a hacker. But
+when I'm talking to journalists I just say "programmer" or something like that.
+                                -- Linus Torvalds
