@@ -2,78 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 20C98296AE0
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:03:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 6E035296AF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 10:10:22 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S372243AbgJWIDX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 04:03:23 -0400
-Received: from smtprelay0230.hostedemail.com ([216.40.44.230]:49598 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2898418AbgJWIDW (ORCPT
+        id S460447AbgJWIKP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 04:10:15 -0400
+Received: from mail-il1-f197.google.com ([209.85.166.197]:37096 "EHLO
+        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S460443AbgJWIHS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 04:03:22 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 76F86182CED2A;
-        Fri, 23 Oct 2020 08:03:21 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1541:1593:1594:1711:1730:1747:1777:1792:1981:2194:2198:2199:2200:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3874:4250:4321:4362:5007:6119:7903:7974:8700:10004:10400:10848:11026:11232:11658:11914:12043:12050:12297:12740:12760:12895:13069:13255:13311:13357:13439:14181:14659:14721:21080:21325:21627:21939:30054:30070:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:4,LUA_SUMMARY:none
-X-HE-Tag: sort57_5a0f0a927258
-X-Filterd-Recvd-Size: 2339
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf03.hostedemail.com (Postfix) with ESMTPA;
-        Fri, 23 Oct 2020 08:03:20 +0000 (UTC)
-Message-ID: <64b49cd3680f45808dad286b408e7b196c31ec79.camel@perches.com>
-Subject: Re: [PATCH] treewide: Convert macro and uses of __section(foo) to
- __section("foo")
-From:   Joe Perches <joe@perches.com>
-To:     Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        linuxppc-dev@lists.ozlabs.org
-Date:   Fri, 23 Oct 2020 01:03:18 -0700
-In-Reply-To: <CANiq72nfHjXkN65jy+unz0k66qvAALNhhhDZsxqPRLdtLKOW_Q@mail.gmail.com>
-References: <fe8abcc88cff676ead8ee48db1e993e63b0611c7.1603327264.git.joe@perches.com>
-         <CANiq72nfHjXkN65jy+unz0k66qvAALNhhhDZsxqPRLdtLKOW_Q@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Fri, 23 Oct 2020 04:07:18 -0400
+Received: by mail-il1-f197.google.com with SMTP id c66so598760ilf.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 01:07:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
+        bh=tY4Chwt2lim2tU/fW6X+MittzJYJbxA26up1ghmDZFU=;
+        b=U/pn3sbKxQxZeVR6391T5FvjA4gsKcBYm34Ru9vdWnomNdmMJ9Rk/D36EpUDkcBSWJ
+         B04JcXg3BlTKtnY/6uqH6SAWb5rpGRCeLf9o3LxhPkWcGBcWfs/CHX/vtpKGezcZtmmN
+         KJY54Xds5Bs0sW34rDH1f1/IlC7+AjEVyTA+4wuwD4MXn3EA6DLWH1lHYfUIJOWioRmk
+         lfx3EyEryrmKo+46kYRtx5W4DzlMF/SlZ4eFGq1hQ/WvxCCZSQRME+gFu3o2Arxububn
+         ic/Tpi6OcOhIPadr3/rTQMPx+uOYxE6BSiz9Kv3aQqA5l/syr94V0glj2tGWTozZBFLE
+         E/QA==
+X-Gm-Message-State: AOAM5310DXIaxszZm4gXfngp3vuGx3ylazPCKh+mlMU3XwxkF2+Z85tJ
+        lUpyb0Jr5RyrWIwMWADMwgbNqxRwYJJp7k/wg8dQ+8GCJuEm
+X-Google-Smtp-Source: ABdhPJwfJOsQ74vN0cP494oodhvYDJXImc680fvWiKW8A0FOKM9DBN5EQQLjHzs8KjYkPeR2r7LJDvBU6tYB/Y/pyoOjtk25Clry
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:1651:: with SMTP id a17mr1033900jat.39.1603440437832;
+ Fri, 23 Oct 2020 01:07:17 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 01:07:17 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b731f405b2521197@google.com>
+Subject: KMSAN: uninit-value in ax88179_get_mac_addr
+From:   syzbot <syzbot+4993e4a0e237f1b53747@syzkaller.appspotmail.com>
+To:     andrew@lunn.ch, besslein.andreas@gmail.com,
+        bjorn.andersson@linaro.org, colin.king@canonical.com,
+        davem@davemloft.net, glider@google.com, jk@ozlabs.org,
+        kuba@kernel.org, linux-kernel@vger.kernel.org,
+        linux-usb@vger.kernel.org, netdev@vger.kernel.org,
+        pfink@christ-es.de, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-23 at 08:08 +0200, Miguel Ojeda wrote:
-> On Thu, Oct 22, 2020 at 4:36 AM Joe Perches <joe@perches.com> wrote:
-> > 
-> > Use a more generic form for __section that requires quotes to avoid
-> > complications with clang and gcc differences.
-> 
-> I performed visual inspection (one by one...) and the only thing I saw
-> is that sometimes the `__attribute__` has a whitespace afterwards and
-> sometimes it doesn't, same for the commas inside, e.g.:
-> 
-> -  __used __attribute__((section(".modinfo"), unused, aligned(1)))  \
-> +  __used __section(".modinfo") __attribute__((unused, aligned(1)))  \
-> 
-> and:
-> 
-> -    __attribute__ ((unused,__section__ ("__param"),aligned(sizeof(void *)))) \
-> +    __section("__param") __attribute__ ((unused, aligned(sizeof(void *)))) \
-> 
-> I think the patch tries to follow the style of the replaced line, but
-> for the commas in this last case it didn't. Anyway, it is not
-> important.
+Hello,
 
-Here the change follows the kernel style of space after comma.
+syzbot found the following issue on:
 
-> I can pick it up in my queue along with the __alias one and keep it
-> for a few weeks in -next.
+HEAD commit:    ce8056d1 wip: changed copy_from_user where instrumented
+git tree:       https://github.com/google/kmsan.git master
+console output: https://syzkaller.appspot.com/x/log.txt?x=11212a66900000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=3afe005fb99591f
+dashboard link: https://syzkaller.appspot.com/bug?extid=4993e4a0e237f1b53747
+compiler:       clang version 10.0.0 (https://github.com/llvm/llvm-project/ c2443155a0fb245c8f17f2c1c72b6ea391e86e81)
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12ceb4b6900000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1645f266900000
 
-Thanks Miguel, but IMO it doesn't need time in next.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+4993e4a0e237f1b53747@syzkaller.appspotmail.com
 
-Applying it just before an rc1 minimizes conflicts.
+ax88179_178a 1-1:101.123 (unnamed net_device) (uninitialized): Failed to write reg index 0x0002: -71
+ax88179_178a 1-1:101.123 (unnamed net_device) (uninitialized): Failed to write reg index 0x0002: -71
+ax88179_178a 1-1:101.123 (unnamed net_device) (uninitialized): Failed to write reg index 0x0001: -71
+ax88179_178a 1-1:101.123 (unnamed net_device) (uninitialized): Failed to read reg index 0x0006: -71
+=====================================================
+BUG: KMSAN: uninit-value in is_valid_ether_addr include/linux/etherdevice.h:195 [inline]
+BUG: KMSAN: uninit-value in ax88179_get_mac_addr+0x481/0x850 drivers/net/usb/ax88179_178a.c:1310
+CPU: 0 PID: 3337 Comm: kworker/0:2 Not tainted 5.8.0-rc5-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
+Workqueue: usb_hub_wq hub_event
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:121
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:215
+ is_valid_ether_addr include/linux/etherdevice.h:195 [inline]
+ ax88179_get_mac_addr+0x481/0x850 drivers/net/usb/ax88179_178a.c:1310
+ ax88179_bind+0x3ec/0x19c0 drivers/net/usb/ax88179_178a.c:1348
+ usbnet_probe+0x1152/0x3f90 drivers/net/usb/usbnet.c:1737
+ usb_probe_interface+0xece/0x1550 drivers/usb/core/driver.c:374
+ really_probe+0xf20/0x20b0 drivers/base/dd.c:529
+ driver_probe_device+0x293/0x390 drivers/base/dd.c:701
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
+ bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
+ bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
+ device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
+ usb_set_configuration+0x380f/0x3f10 drivers/usb/core/message.c:2032
+ usb_generic_driver_probe+0x138/0x300 drivers/usb/core/generic.c:241
+ usb_probe_device+0x311/0x490 drivers/usb/core/driver.c:272
+ really_probe+0xf20/0x20b0 drivers/base/dd.c:529
+ driver_probe_device+0x293/0x390 drivers/base/dd.c:701
+ __device_attach_driver+0x63f/0x830 drivers/base/dd.c:807
+ bus_for_each_drv+0x2ca/0x3f0 drivers/base/bus.c:431
+ __device_attach+0x4e2/0x7f0 drivers/base/dd.c:873
+ device_initial_probe+0x4a/0x60 drivers/base/dd.c:920
+ bus_probe_device+0x177/0x3d0 drivers/base/bus.c:491
+ device_add+0x3b0e/0x40d0 drivers/base/core.c:2680
+ usb_new_device+0x1bd4/0x2a30 drivers/usb/core/hub.c:2554
+ hub_port_connect drivers/usb/core/hub.c:5208 [inline]
+ hub_port_connect_change drivers/usb/core/hub.c:5348 [inline]
+ port_event drivers/usb/core/hub.c:5494 [inline]
+ hub_event+0x5e7b/0x8a70 drivers/usb/core/hub.c:5576
+ process_one_work+0x1688/0x2140 kernel/workqueue.c:2269
+ worker_thread+0x10bc/0x2730 kernel/workqueue.c:2415
+ kthread+0x551/0x590 kernel/kthread.c:292
+ ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:293
+
+Local variable ----mac@ax88179_get_mac_addr created at:
+ ax88179_get_mac_addr+0x4d/0x850 drivers/net/usb/ax88179_178a.c:1297
+ ax88179_get_mac_addr+0x4d/0x850 drivers/net/usb/ax88179_178a.c:1297
+=====================================================
 
 
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+syzbot can test patches for this issue, for details see:
+https://goo.gl/tpsmEJ#testing-patches
