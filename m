@@ -2,73 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E2700296DE1
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:42:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4BA57296DE5
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 13:42:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S463157AbgJWLmX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 07:42:23 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59916 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463147AbgJWLmW (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 07:42:22 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 83323C0613CE;
-        Fri, 23 Oct 2020 04:42:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=uTBzimS1PCb6rk5CYfmm7DQ57ZumL5IF6N2uuwCT5ic=; b=ACJo1cAnkf3SCtOXvhzF84HPAz
-        utZFVfmrmNmBVfyFa5t0dItqVsR7LlM9a/jTwu2II5s5V7yF3kAfVMAnMzrXyZDJpdWcEwVJSnBdA
-        ssO+4GIuRRj3bJhia6MZuAmiwlqfgDAZwC+arcGcmvM62SC4BkH/APIgbr+WE9JUWbkEsxQJv1T+8
-        URB45+a6Ia7ysOI4DPNhoQMYW4TeQKE/LaC/YAFY5RH5zcgq+ifmOcQ6rd+lmpRFWMkpzlB1/MrUx
-        w1PAwnEZ8ryBA9uzRY/Ptw2NcZNt8qJY6m1u4wwhuG9ZxAeJpjMOjMJrrw6GfqYiffp3/XudIOj1F
-        F69t2U5g==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kVvSe-0007Yd-Ua; Fri, 23 Oct 2020 11:42:21 +0000
-Date:   Fri, 23 Oct 2020 12:42:20 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Hannes Reinecke <hare@suse.de>
-Cc:     linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [RFC] synchronous readpage for buffer_heads
-Message-ID: <20201023114220.GY20115@casper.infradead.org>
-References: <20201022152256.GU20115@casper.infradead.org>
- <25528b1a-7434-62cb-705a-7269d050bbc1@suse.de>
+        id S463169AbgJWLmc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 07:42:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44740 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S463160AbgJWLma (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 07:42:30 -0400
+Received: from [192.168.0.50] (89-70-52-201.dynamic.chello.pl [89.70.52.201])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0D714221F9;
+        Fri, 23 Oct 2020 11:42:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603453349;
+        bh=wS/X3ln10wqe8Ba/FDfOxDqc+VBkiXalNXlIqq6K46w=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=tTXF469B7fw/ODbqFlQBiV2EwedvGT/CD6gIzFwHtR+JlvDo+Z4JJa6+dlyt5Zn2p
+         HhtEBK2jQg55UpKvv1K0R8ijngTWDW48FxGQGpc/EKThX00WwxwDEzJaCODBZOYtbz
+         PE1bUDZCLzTwcRbnwaI5t/uoSUad/8odM5MVI09w=
+Subject: Re: [PATCH 2/2] clk: samsung: exynos-clkout: convert to module driver
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Tomasz Figa <tomasz.figa@gmail.com>, linux-clk@vger.kernel.org
+Cc:     Sylwester Nawrocki <s.nawrocki@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Kukjin Kim <kgene@kernel.org>,
+        linux-samsung-soc@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Marek Szyprowski <m.szyprowski@samsung.com>
+References: <20201001165646.32279-1-krzk@kernel.org>
+ <20201001165646.32279-3-krzk@kernel.org>
+From:   Sylwester Nawrocki <snawrocki@kernel.org>
+Message-ID: <d84ea240-5bb7-1b77-b287-c2bcca971201@kernel.org>
+Date:   Fri, 23 Oct 2020 13:42:25 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <25528b1a-7434-62cb-705a-7269d050bbc1@suse.de>
+In-Reply-To: <20201001165646.32279-3-krzk@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 08:22:07AM +0200, Hannes Reinecke wrote:
-> On 10/22/20 5:22 PM, Matthew Wilcox wrote:
-> Hmm. You are aware, of course, that hch et al are working on replacing bhs
-> with iomap, right?
+On 10/1/20 18:56, Krzysztof Kozlowski wrote:
+> The Exynos clkout driver depends on board input clock (typically XXTI or
+> XUSBXTI), however on Exynos4 boards these clocks were modeled as part of
+> SoC clocks (Exynos4 clocks driver).  Obviously this is not proper, but
+> correcting it would break DT backward compatibility.
+> 
+> Both drivers - clkout and Exynos4 clocks - register the clock providers
+> with CLK_OF_DECLARE/OF_DECLARE_1 so their order is fragile (in the
+> Makefile clkout is behind Exynos4 clock).  It will work only if the
+> Exynos4 clock driver comes up before clkout.
+> 
+> A change in DTS adding input clock reference to Exynos4 clocks input
+> PLL, see reverted commit eaf2d2f6895d ("ARM: dts: exynos: add input
+> clock to CMU in Exynos4412 Odroid"), caused probe reorder: the clkout
+> appeared before Exynos4 clock provider.  Since clkout depends on Exynos4
+> clocks and does not support deferred probe, this did not work and caused
+> later failure of usb3503 USB hub probe which needs clkout:
+> 
+>      [    5.007442] usb3503 0-0008: unable to request refclk (-517)
+> 
+> The Exynos clkout driver is not a critical/core clock so there is
+> actually no problem in instantiating it later, as a regular module.
+> This removes specific probe ordering and adds support for probe
+> deferral.
 
-$ git shortlog --author=Wilcox origin/master -- fs/iomap |head -1
-Matthew Wilcox (Oracle) (17):
 
-But actually, I don't see anyone working on a mass migration of
-filesystems from either using BHs directly or using the mpage code to
-using iomap.  I have a summer student for next summer who I'm going to
-let loose on this problem, but I fear buffer_heads will be with us for
-a long time to come.
+The patch looks good to me, I have tested it on Trats2, where CLKOUT
+provides master clock for the audio codec.
 
-I mean, who's going to convert reiserfs to iomap?
-$ git log --no-merges --since=2015-01-01 origin/master fs/reiserfs |grep -c ^comm
-130
+Tested-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-Not exactly a thriving development community.  It doesn't even support
-fallocate.
+With the debug print removed feel free to apply it through your tree.
+Reviewed-by: Sylwester Nawrocki <s.nawrocki@samsung.com>
 
-> So wouldn't it be more useful to concentrate on the iomap code, and ensure
-> that _that_ is working correctly?
-
-Did that one first, then did mpage_readpage(), now I've moved on to
-block_read_full_page().  Now I'm going to go back and redo iomap
-with everything I learned doing block_read_full_page().  It's going
-to use blk_completion.
+--
+Regards,
+Sylwester
