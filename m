@@ -2,50 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 937912979B9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:43:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id EFF8D2979BC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 01:43:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758788AbgJWXmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 19:42:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46402 "EHLO mail.kernel.org"
+        id S1758797AbgJWXmP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 19:42:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46420 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758779AbgJWXmL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 19:42:11 -0400
-Subject: Re: [GIT PULL] final round of SCSI updates for the 5.9+ merge window
+        id S1758779AbgJWXmP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 19:42:15 -0400
+Subject: Re: [git pull] Input updates for v5.10-rc0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603496531;
-        bh=nAjy8bkfhE88+gKUveTQczXrleQW2tS2ziU2FycHsXU=;
+        s=default; t=1603496534;
+        bh=ZB2icJbzEIVseELIlD7fbk/bDYUbxeLenma9nxr1oCU=;
         h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=tKX9pjfycMsObhbPdsS5PoeKr6beAAi61fFgTzDD4l9zgNEngdo1Eke1Kifq9eXVM
-         B2bWFGUV0ktlAo328k/XgFW+/HhgVpB3dQJw2JEuApPXiKvYtGJMB/XkFZu8BQpneD
-         TtI4tdQSn1W5gdcXwAZPMbrsepAnXj9joK3cTWpE=
+        b=1ataTDlF6xoP7+XXapeN7tbpbQSfTMY6c6eUxwizRoSV+BuF87mWuL0Y2GpVHAEB/
+         43R8fPMQa9pPX8uXRn9Ddg5Ch/l2hT6ohYLT7CKvUm+MEEptCD1cJrE1PkKwD8vTwE
+         TrvOS0RbdhwMq18KjxkOWn5eUJRBSPRQtUzGtd0c=
 From:   pr-tracker-bot@kernel.org
-In-Reply-To: <4affd2a9c347e5f1231485483bf852737ea08151.camel@HansenPartnership.com>
-References: <4affd2a9c347e5f1231485483bf852737ea08151.camel@HansenPartnership.com>
-X-PR-Tracked-List-Id: <linux-scsi.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4affd2a9c347e5f1231485483bf852737ea08151.camel@HansenPartnership.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
-X-PR-Tracked-Commit-Id: 1ef16a407f544408d3559e4de2ed05591df4da75
+In-Reply-To: <20201023045421.GA2205724@dtor-ws>
+References: <20201023045421.GA2205724@dtor-ws>
+X-PR-Tracked-List-Id: <linux-input.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201023045421.GA2205724@dtor-ws>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
+X-PR-Tracked-Commit-Id: bb0bc0cfeabc0d6865865e8d3a601bea6711f951
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: af995383eb653f875c4e4e2349d5b0b4ba839eaa
-Message-Id: <160349653124.22217.10098010982248353095.pr-tracker-bot@kernel.org>
-Date:   Fri, 23 Oct 2020 23:42:11 +0000
-To:     James Bottomley <James.Bottomley@HansenPartnership.com>
-Cc:     Andrew Morton <akpm@linux-foundation.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-scsi <linux-scsi@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: bd7e8c996f5aba542f416ee6d19e91fd3668674f
+Message-Id: <160349653444.22217.12971150119313974490.pr-tracker-bot@kernel.org>
+Date:   Fri, 23 Oct 2020 23:42:14 +0000
+To:     Dmitry Torokhov <dmitry.torokhov@gmail.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-input@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Fri, 23 Oct 2020 11:46:21 -0700:
+The pull request you sent on Thu, 22 Oct 2020 21:54:21 -0700:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/jejb/scsi.git scsi-misc
+> git://git.kernel.org/pub/scm/linux/kernel/git/dtor/input.git for-linus
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/af995383eb653f875c4e4e2349d5b0b4ba839eaa
+https://git.kernel.org/torvalds/c/bd7e8c996f5aba542f416ee6d19e91fd3668674f
 
 Thank you!
 
