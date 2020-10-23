@@ -2,194 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C805296FAE
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:48:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 25D8F296FBB
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 14:53:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S464050AbgJWMsS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 08:48:18 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41960 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S464042AbgJWMsR (ORCPT
+        id S464098AbgJWMxR convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Fri, 23 Oct 2020 08:53:17 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:35470 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S464051AbgJWMxQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 08:48:17 -0400
-Received: from mail-qt1-x841.google.com (mail-qt1-x841.google.com [IPv6:2607:f8b0:4864:20::841])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id BC36FC0613CE;
-        Fri, 23 Oct 2020 05:48:17 -0700 (PDT)
-Received: by mail-qt1-x841.google.com with SMTP id z33so751970qth.8;
-        Fri, 23 Oct 2020 05:48:17 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kN9kvxiNVibBZTgq0gJlnAcXQlAi8tvlS3bLfxZ/9Tg=;
-        b=iSruePsCDOSSSek8VmIdWIecZPJdKPQB8neXqqeC0RcF1jNjM1uQe/LYOBgrDFst7v
-         k5UG8O4FaKJKN9Jq7EVBEvVG38rRjFCJ0J9xaAdZQOgCfmryI2Wd16uQFD0JYjAMiMJu
-         CLyQuSW+UJkXQHG1gsguO4sAuTUi3XRwEV12KQoirWZaDJ/vLsEJOMp6pFA4Gs9aUFd9
-         M0y2qhI+FNmAKp7i1dp/JeSaZCd3FL9V/ZfYFAFI92YyaCSGP/RwUfQ1Q3bK4eVm3YI0
-         vfdYpbi9wIB3/huwm73ZW8Bgs96cH65iOqmbHKOXWsl5iVXPCoFrbSQUH6fbHfz7jInJ
-         3LbQ==
+        Fri, 23 Oct 2020 08:53:16 -0400
+Received: from mail-pg1-f197.google.com ([209.85.215.197])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <kai.heng.feng@canonical.com>)
+        id 1kVwZG-0003FN-R2
+        for linux-kernel@vger.kernel.org; Fri, 23 Oct 2020 12:53:15 +0000
+Received: by mail-pg1-f197.google.com with SMTP id t195so1088011pgb.15
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 05:53:14 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=kN9kvxiNVibBZTgq0gJlnAcXQlAi8tvlS3bLfxZ/9Tg=;
-        b=It3EAbpb11/EDzS/2hw2x2GRi3w3rj59MNT/msyR0IdxkcV4arhPJCALZuMRUHO//g
-         sitRyy3eKCNdU5SJc7dyDWQW7MFXHQSsMHscSOIDvlS/LMC/RmJI94yZx5xjZWWstWGp
-         TdqMgZzGjWO/KzTg7+CctCl96rVTW3OuDYz3LZgqA7UsNQc2RXI6xRLApTjKKw+8EaFd
-         CAaXJEtMpaXoSFC8GcnVdkvDh85zPBqfXhnCXOoyQOaaljdrBoJvjnAstQWWhFOhHsjl
-         sOGoJNEBvOQXKJOfew8ibr9y7M0y7Cq+ZgWiKqCWTblkYzuny4RPGbDMN1nkS6UQtkOl
-         0Vnw==
-X-Gm-Message-State: AOAM533N266A3kV2RYNlrhyO/C0W7kTClidGdVBLR6bQqvL7+zC0a4fN
-        m0PUiyC5aI+AxmQI6eEFwg8=
-X-Google-Smtp-Source: ABdhPJwss66nnNh/TIoNtNpkFq5ijx+SQxOSU4m66935MInf9uh/+db78AydLcYVToxU309qomK8BQ==
-X-Received: by 2002:ac8:5bc2:: with SMTP id b2mr1951485qtb.284.1603457296761;
-        Fri, 23 Oct 2020 05:48:16 -0700 (PDT)
-Received: from pm2-ws13.praxislan02.com ([2001:470:8:67e:ba27:ebff:fee8:ce27])
-        by smtp.gmail.com with ESMTPSA id q188sm626586qka.56.2020.10.23.05.48.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 05:48:16 -0700 (PDT)
-From:   Jason Andryuk <jandryuk@gmail.com>
-To:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>
-Cc:     Jason Andryuk <jandryuk@gmail.com>, stable@vger.kernel.org,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] i915: Add QUIRK_EDP_CHANNEL_EQ for Dell 7200 2-in-1
-Date:   Fri, 23 Oct 2020 08:48:04 -0400
-Message-Id: <20201023124804.11457-1-jandryuk@gmail.com>
-X-Mailer: git-send-email 2.26.2
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+        h=x-gm-message-state:mime-version:subject:from:in-reply-to:date:cc
+         :content-transfer-encoding:message-id:references:to;
+        bh=eQD5RdIj2axOzAgoVfN+eJW9uUKoyO8pNPOdpJJuNKI=;
+        b=niUhsWADi5liLGAqin1qGf421UT6axAJwFjUBiP35igVbXA0yAh1GCY5L+xlBjzBqO
+         VDNuKesbkU/YtEexoo7lvaWZHArxmgvs9kSD/kCGJxqAZ0EybZSQqq/qaHlUSZGfmFW1
+         U7grycyPeXOUr5r/yA6KzMNaW9l87Zsszei0191bG350XuOnACDtX9Lb/MMvgmZYzD7h
+         y7w8zRUy0UoLyo1LEsrtg1DYrTa8mnhDzrvmursyNA3O1X/KNLZ5urobuulT+64zALrt
+         HO7nA40al8A99NYE8ijqV0cjpOexVvMj7mAYgw0p/YfKbc9iNSAyYMuYqnMQlvuphW4n
+         83Og==
+X-Gm-Message-State: AOAM533RL94y8xe4KRPraQEev2Dl2f2qpiGfnnHqv09M5f53gdJSJq1J
+        bZU489UBpmlYE+/ewRUyyl/N9IB8mrKk/wRo1xG9bTddYNKsYxQq/bRqCZvFex25lhzNfVf1fDY
+        Upb59wfAWB/CF430diFt76enPrqDy7oAnW9MLKhWfZQ==
+X-Received: by 2002:a63:2d87:: with SMTP id t129mr1974766pgt.206.1603457593161;
+        Fri, 23 Oct 2020 05:53:13 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJyI8syoCoaAVfWjq6dOj4WJZk2nF7k2P6xmGzSO6nyVBO3DgpxHg96Dl4Num9hvY5LtX2lw5w==
+X-Received: by 2002:a63:2d87:: with SMTP id t129mr1974749pgt.206.1603457592863;
+        Fri, 23 Oct 2020 05:53:12 -0700 (PDT)
+Received: from [192.168.1.208] (220-133-187-190.HINET-IP.hinet.net. [220.133.187.190])
+        by smtp.gmail.com with ESMTPSA id ls8sm2336497pjb.54.2020.10.23.05.53.10
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 05:53:12 -0700 (PDT)
+Content-Type: text/plain;
+        charset=us-ascii
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.4\))
+Subject: Re: [PATCH 2/4] ALSA: hda: Stop mangling PCI MSI
+From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
+In-Reply-To: <s5himb189by.wl-tiwai@suse.de>
+Date:   Fri, 23 Oct 2020 20:53:08 +0800
+Cc:     tiwai@suse.com, Jaroslav Kysela <perex@perex.cz>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        "moderated list:SOUND" <alsa-devel@alsa-project.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: 8BIT
+Message-Id: <6562A60B-C27C-4912-94AE-6A23839DABF4@canonical.com>
+References: <20201023102340.25494-1-kai.heng.feng@canonical.com>
+ <20201023102340.25494-2-kai.heng.feng@canonical.com>
+ <s5himb189by.wl-tiwai@suse.de>
+To:     Takashi Iwai <tiwai@suse.de>
+X-Mailer: Apple Mail (2.3608.120.23.2.4)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We're seeing channel equalization "fail" consistently coming out of DPMS
-on the eDP of a Dell Latitude 7200 2-in-1.  When the display tries to
-come out of DPMS, it briefly flashes on before going dark.  This repeats
-once per second, and the system is unusable.  ssh-ing into the system,
-it also seems to be sluggish when in this state.  You have to reboot to
-get the display back.
 
-In intel_dp_link_training_channel_equalization, lane 0 can get to state
-0x7 by the 3rd pattern, but lane 1 never gets further than 0x1.
-[drm] ln0_1:0x0 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x0 adj_req2_3:0x0
-[drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x44 adj_req2_3:0x0
-[drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x88 adj_req2_3:0x0
-[drm] ln0_1:0x71 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
-[drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
-[drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
 
-Narrow fast vs. wide slow is not an option because the max clock is
-270000 and the 1920x1280 resolution requires 2x270000.
-[drm] DP link computation with lane count min/max 1/2 270000/270000 bpp
-min/max 18/24 pixel clock 164250KHz
+> On Oct 23, 2020, at 19:34, Takashi Iwai <tiwai@suse.de> wrote:
+> 
+> On Fri, 23 Oct 2020 12:23:36 +0200,
+> Kai-Heng Feng wrote:
+>> 
+>> @@ -1038,14 +1036,6 @@ static int azx_suspend(struct device *dev)
+>> 		__azx_runtime_suspend(chip);
+>> 	else
+>> 		pm_runtime_force_suspend(dev);
+>> -	if (bus->irq >= 0) {
+>> -		free_irq(bus->irq, chip);
+>> -		bus->irq = -1;
+>> -		chip->card->sync_irq = -1;
+>> -	}
+> 
+> This release of irq has nothing to do with MSI.  There has been PCI
+> controllers that assign to a different IRQ line after the resume.
 
-The display is functional even though lane 1 is in state 0x1, so just
-return success for channel equalization on eDP.
+Can this issue happened before commit 41017f0cac925 ("[PATCH] PCI: MSI(X) save/restore for suspend/resume") was merged?
 
-Introduce QUIRK_EDP_CHANNEL_EQ and match the DMI for a Dell Latitude
-7200 2-in-1.  This quirk allows channel equalization to succeed even
-though it failed.
+Kai-Heng
 
-Workaround for https://gitlab.freedesktop.org/drm/intel/-/issues/1378
-
-Signed-off-by: Jason Andryuk <jandryuk@gmail.com>
-Cc: <stable@vger.kernel.org>
----
- .../drm/i915/display/intel_dp_link_training.c |  7 +++++
- drivers/gpu/drm/i915/display/intel_quirks.c   | 30 +++++++++++++++++++
- drivers/gpu/drm/i915/i915_drv.h               |  1 +
- 3 files changed, 38 insertions(+)
-
-diff --git a/drivers/gpu/drm/i915/display/intel_dp_link_training.c b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-index a23ed7290843..2dd441a94fda 100644
---- a/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-+++ b/drivers/gpu/drm/i915/display/intel_dp_link_training.c
-@@ -375,6 +375,13 @@ intel_dp_link_training_channel_equalization(struct intel_dp *intel_dp)
- 
- 	intel_dp_set_idle_link_train(intel_dp);
- 
-+	if (channel_eq == false &&
-+	    intel_dp_is_edp(intel_dp) &&
-+	    i915->quirks & QUIRK_EDP_CHANNEL_EQ) {
-+		DRM_NOTE("Forcing channel_eq success for eDP\n");
-+		channel_eq = true;
-+	}
-+
- 	return channel_eq;
- 
- }
-diff --git a/drivers/gpu/drm/i915/display/intel_quirks.c b/drivers/gpu/drm/i915/display/intel_quirks.c
-index 46beb155d835..b45b23680321 100644
---- a/drivers/gpu/drm/i915/display/intel_quirks.c
-+++ b/drivers/gpu/drm/i915/display/intel_quirks.c
-@@ -53,6 +53,17 @@ static void quirk_increase_ddi_disabled_time(struct drm_i915_private *i915)
- 	drm_info(&i915->drm, "Applying Increase DDI Disabled quirk\n");
- }
- 
-+/*
-+ * Some machines (Dell Latitude 7200 2-in-1) fail channel equalization
-+ * on their eDP when it is actually usable.  This lets channel_eq
-+ * report success.
-+ */
-+static void quirk_edp_channel_eq(struct drm_i915_private *i915)
-+{
-+	i915->quirks |= QUIRK_EDP_CHANNEL_EQ;
-+	drm_info(&i915->drm, "applying eDP channel_eq quirk\n");
-+}
-+
- struct intel_quirk {
- 	int device;
- 	int subsystem_vendor;
-@@ -72,6 +83,12 @@ static int intel_dmi_reverse_brightness(const struct dmi_system_id *id)
- 	return 1;
- }
- 
-+static int intel_dmi_edp_channel_eq(const struct dmi_system_id *id)
-+{
-+	DRM_INFO("eDP channel_eq workaround on %s\n", id->ident);
-+	return 1;
-+}
-+
- static const struct intel_dmi_quirk intel_dmi_quirks[] = {
- 	{
- 		.dmi_id_list = &(const struct dmi_system_id[]) {
-@@ -96,6 +113,19 @@ static const struct intel_dmi_quirk intel_dmi_quirks[] = {
- 		},
- 		.hook = quirk_invert_brightness,
- 	},
-+	{
-+		.dmi_id_list = &(const struct dmi_system_id[]) {
-+			{
-+				.callback = intel_dmi_edp_channel_eq,
-+				.ident = "Dell Latitude 7200 2-in-1",
-+				.matches = {DMI_MATCH(DMI_SYS_VENDOR, "Dell Inc."),
-+					    DMI_MATCH(DMI_PRODUCT_NAME, "Latitude 7200 2-in-1"),
-+				},
-+			},
-+			{ }  /* terminating entry */
-+		},
-+		.hook = quirk_edp_channel_eq,
-+	},
- };
- 
- static struct intel_quirk intel_quirks[] = {
-diff --git a/drivers/gpu/drm/i915/i915_drv.h b/drivers/gpu/drm/i915/i915_drv.h
-index e4f7f6518945..fc32ea7380b7 100644
---- a/drivers/gpu/drm/i915/i915_drv.h
-+++ b/drivers/gpu/drm/i915/i915_drv.h
-@@ -525,6 +525,7 @@ struct i915_psr {
- #define QUIRK_PIN_SWIZZLED_PAGES (1<<5)
- #define QUIRK_INCREASE_T12_DELAY (1<<6)
- #define QUIRK_INCREASE_DDI_DISABLED_TIME (1<<7)
-+#define QUIRK_EDP_CHANNEL_EQ (1<<8)
- 
- struct intel_fbdev;
- struct intel_fbc_work;
--- 
-2.26.2
+> 
+>> -	if (azx_acquire_irq(chip, 1) < 0)
+>> -		return -EIO;
+> 
+> Ditto.
+> 
+> 
+> thanks,
+> 
+> Takashi
 
