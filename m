@@ -2,79 +2,64 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94B4E2978A2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:04:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4E9832978AA
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 23:09:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1752752AbgJWVEd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 17:04:33 -0400
-Received: from vps0.lunn.ch ([185.16.172.187]:42410 "EHLO vps0.lunn.ch"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1751213AbgJWVEd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 17:04:33 -0400
-Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
-        (envelope-from <andrew@lunn.ch>)
-        id 1kW4Eb-003Azi-6p; Fri, 23 Oct 2020 23:04:25 +0200
-Date:   Fri, 23 Oct 2020 23:04:25 +0200
-From:   Andrew Lunn <andrew@lunn.ch>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Russell King <linux@armlinux.org.uk>,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH v3 18/56] net: phy: fix kernel-doc markups
-Message-ID: <20201023210425.GG752111@lunn.ch>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
- <d23c5638c4fd0e7b9f294f2bf647d2386428eb7e.1603469755.git.mchehab+huawei@kernel.org>
+        id S1755334AbgJWVJr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 17:09:47 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35544 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755323AbgJWVJr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 17:09:47 -0400
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB443C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 14:09:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=URKMB+l8lr+9mNV3UVoDcLLnTLfY/moWX1npvKJgs6g=; b=h1zpfDEgO90CZITyuoe0+XKlAq
+        TnHTtX9Vne+elsmCyPlv4dvH419GP8HJgSvDu3d94ciTv985sCImVUZBEeL0vZqhVjHAzUjULo52q
+        sCXqE7ziAOp8jR7OaSIIKh7yie11M7fYPPhtW3xc/oAykCJft7oTZ7Xl9uPsO8nbIT66/gj1++x4O
+        taKLmy9FaBXu9Yeq8J0GUYMJceOOLFh+DQMbsiYQWhC1ZTH1jbnzdSC4VWha/lvYbSc9WvyMau3vP
+        MLlAoaXg7e8952+Dv7X/kvELtT9vFDfDJHj9y5MV/vvnD/kwxmJXV19CQ7RHrmHj5KvJeptTbc7mH
+        3OC1Ml9Q==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kW4Jb-0002Lv-VJ; Fri, 23 Oct 2020 21:09:36 +0000
+Date:   Fri, 23 Oct 2020 22:09:35 +0100
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Hugh Dickins <hughd@google.com>, Yu Xu <xuyu@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>, linux-mm@kvack.org,
+        kernel-team@fb.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] mm,thp,shmem: limit shmem THP alloc gfp_mask
+Message-ID: <20201023210935.GG20115@casper.infradead.org>
+References: <20201023164708.5842f3fb@imladris.surriel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d23c5638c4fd0e7b9f294f2bf647d2386428eb7e.1603469755.git.mchehab+huawei@kernel.org>
+In-Reply-To: <20201023164708.5842f3fb@imladris.surriel.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 06:33:05PM +0200, Mauro Carvalho Chehab wrote:
-> Some functions have different names between their prototypes
-> and the kernel-doc markup.
-> 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->  drivers/net/phy/mdio_bus.c   | 2 +-
->  drivers/net/phy/phy-c45.c    | 2 +-
->  drivers/net/phy/phy.c        | 2 +-
->  drivers/net/phy/phy_device.c | 2 +-
->  drivers/net/phy/phylink.c    | 2 +-
->  5 files changed, 5 insertions(+), 5 deletions(-)
-> 
-> diff --git a/drivers/net/phy/mdio_bus.c b/drivers/net/phy/mdio_bus.c
-> index 757e950fb745..e59067c64e97 100644
-> --- a/drivers/net/phy/mdio_bus.c
-> +++ b/drivers/net/phy/mdio_bus.c
-> @@ -472,7 +472,7 @@ static inline void of_mdiobus_link_mdiodev(struct mii_bus *mdio,
->  #endif
+On Fri, Oct 23, 2020 at 04:47:08PM -0400, Rik van Riel wrote:
+> +++ b/include/linux/gfp.h
+> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
+>  extern void pm_restrict_gfp_mask(void);
+>  extern void pm_restore_gfp_mask(void);
 >  
->  /**
-> - * mdiobus_create_device_from_board_info - create a full MDIO device given
-> + * mdiobus_create_device - create a full MDIO device given
->   * a mdio_board_info structure
->   * @bus: MDIO bus to create the devices on
->   * @bi: mdio_board_info structure describing the devices
+> +extern gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma);
 
-Hi Mauro
+Without the types, the name of this function makes me think it allocates
+something.  Like alloc_hugepage_vma() does.  With the types, it's obvious
+that it gets the gfpmask.  Can this patch rename it, perhaps to
 
-If you need to repost, could you make use of:
+gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
 
--U<n>
---unified=<n>
-Generate diffs with <n> lines of context instead of the usual three.
+(hugepage is also ambiguous because it might be for hugetlbfs and we use,
+eg, mapping_gfp_mask, not mapping_gfpmask).
 
-to increase the number of lines of context. Often three lines is not
-enough to include the function declaration in the patch, so i need to
-go look at the sources to do a review. 
-
-Reviewed-by: Andrew Lunn <andrew@lunn.ch>
-
-    Andrew
