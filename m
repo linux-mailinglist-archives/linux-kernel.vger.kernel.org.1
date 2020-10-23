@@ -2,461 +2,298 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2BA9296BC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:07:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8AC1D296BC6
+	for <lists+linux-kernel@lfdr.de>; Fri, 23 Oct 2020 11:09:01 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S461120AbgJWJH2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 05:07:28 -0400
-Received: from mail-il1-f197.google.com ([209.85.166.197]:40361 "EHLO
-        mail-il1-f197.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S461113AbgJWJHY (ORCPT
+        id S461100AbgJWJJA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 05:09:00 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36242 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S460914AbgJWJI7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 05:07:24 -0400
-Received: by mail-il1-f197.google.com with SMTP id w12so686574ilj.7
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 02:07:23 -0700 (PDT)
+        Fri, 23 Oct 2020 05:08:59 -0400
+Received: from mail-vs1-xe42.google.com (mail-vs1-xe42.google.com [IPv6:2607:f8b0:4864:20::e42])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 51DD4C0613CE;
+        Fri, 23 Oct 2020 02:08:59 -0700 (PDT)
+Received: by mail-vs1-xe42.google.com with SMTP id b3so474188vsc.5;
+        Fri, 23 Oct 2020 02:08:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=wem+NylVu/3ov/fkXS57osU2iNI0XmG3B8ARt9wz/5A=;
+        b=R6KdPQnObho4Td4VWsSPL63GF2j7KplJv3T018SPGs21Azl4R++Cxwt3TAAmXY+MKJ
+         KDE/ZM3PkRGKdnHjWQv1VUJJPTw0xihDNdnPPpH5bgF5xHcKNgrTBYap5plzdVH8x5JI
+         gcBy3LlTw/jmFmWIVC9C7y9etu3W3JCsIbDwQ7Y71QPBROOmiZlgXXE2AgEbQW8nMHjA
+         CnROv6l9tsnplQs5IYCphtXH5yXki+Fv15FetSAx8nOfvp+eVUQ3bZ4gKgRicEwbz60f
+         L6CaH0phF3FmtqGWVBImj/SLLr55B1mEPAR5fecuRZONO1xAc9R2P3g8XWRUWj2wtq52
+         yg0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:message-id:subject:from:to;
-        bh=eHaJ/DCBMXkf0GERgPm7+1gNQuby2IfgpZTtk42mYSY=;
-        b=sjIyhMFfxPAC/P4FGtLxbR9usB+SKXc3cwDPJRImOwAr/aMMSNo4pQpPsQxD7zchlJ
-         /IIow2teEcwfYW2AXMh0jrYj6xJgG7I9jItIqPrWtgf//jGfAEDRXd5HeLVkZwRrejuf
-         GQ4gdnGerLnHBwY+HEXdsKciPn9ms0ToAFAfn1DoNeQON8sWE6/lcCbJEHQNfIqSwT/w
-         I8UqHj3IikORrw4JLeVzOKQyHVQWT3mZumqUL4FkOPnfQ025wvQjljoOjZw+dm8qfUFY
-         OPRk0SEfAK5WDm1MXS69SApggFOi8hMfXhvh2r1hCdrnPVjiSE5H1v0jGQ8T4lw98ZZj
-         yvgA==
-X-Gm-Message-State: AOAM5306HSACDDp8sOxgYiyfRPTyXNEKI1VG2km+Fg/Le2q6TEu7Zqvh
-        2JK4pt6+xQJn42+2F5pmy+nEtRTITi+olnjU4rC2cpKkTtl9
-X-Google-Smtp-Source: ABdhPJyLHAfkhWr0fTREVGwWAYICjAL4LmBr5T6TpsTiqTm1lmnQqZArNipJdw4EUtyl/aevapsIwYlX71Y5ajs49MOTvcTGxyMd
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=wem+NylVu/3ov/fkXS57osU2iNI0XmG3B8ARt9wz/5A=;
+        b=W4EkH1BqqiXIixFjTXo9eVeNFsE0Dgccc+vJQ46I8TOfOx+cT8WA0Pse8slAElBGGR
+         /+MFB2pPY9s55aKxkL5JOf/Se3nNOiwxwtW+uPMCJKhwl98Qyam+hIhytc9OF5Y9KCGj
+         IKdsGlXTs5lIpq1qcKt+VbrZSx3zX9yEhu6jqkZYQFFUdYjRlDW+zkvhlMu0k5XlQjL2
+         05xM5cZMIFkZw0nxzu4My/7z0A2xccuHwfgu5u4hA/yRoyYOppxfOjMx0VUlkxMPjJDO
+         0WGkVjwaVftHBz6GPaPg2fw//moNuUm8YkOMl669QCXossJ3PDpP9nIeky+7SW9jp6WX
+         x4cQ==
+X-Gm-Message-State: AOAM533K7bJ4QvIbZjXOzovbC6kHf9GlAQ1b56ELWMO9K+RdA9L01Dl2
+        OamkGTljb2hAR9MLOQnGu1oG/Rr4e9DNJ/idMFk=
+X-Google-Smtp-Source: ABdhPJy38Q095ZgB/JArW7mlS/RlJXZzyXODxGBRzGe7+80ka89drMo7RnqzfKBzNLpoLvGP5AoC1EUoK7cpD/gg5xc=
+X-Received: by 2002:a05:6102:31b5:: with SMTP id d21mr593072vsh.19.1603444138226;
+ Fri, 23 Oct 2020 02:08:58 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a92:c650:: with SMTP id 16mr869420ill.94.1603444043218;
- Fri, 23 Oct 2020 02:07:23 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 02:07:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000009d056805b252e883@google.com>
-Subject: possible deadlock in send_sigurg (2)
-From:   syzbot <syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com>
-To:     bfields@fieldses.org, jlayton@kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+References: <20201019204636.139997-1-robdclark@gmail.com> <20201019204636.139997-8-robdclark@gmail.com>
+In-Reply-To: <20201019204636.139997-8-robdclark@gmail.com>
+From:   =?UTF-8?Q?Kristian_H=C3=B8gsberg?= <hoegsberg@gmail.com>
+Date:   Fri, 23 Oct 2020 11:08:46 +0200
+Message-ID: <CAOeoa-dmWmsd86ZT6KVQbcpKHJ-1TNz-Tcx0nJFUXbbK+Ds3mA@mail.gmail.com>
+Subject: Re: [Freedreno] [PATCH v3 07/23] drm/msm/submit: Move copy_from_user
+ ahead of locking bos
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     dri-devel <dri-devel@lists.freedesktop.org>,
+        Rob Clark <robdclark@chromium.org>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <freedreno@lists.freedesktop.org>, David Airlie <airlied@linux.ie>,
+        "open list:DRM DRIVER FOR MSM ADRENO GPU" 
+        <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        Daniel Vetter <daniel@ffwll.ch>, Sean Paul <sean@poorly.run>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Mon, Oct 19, 2020 at 10:45 PM Rob Clark <robdclark@gmail.com> wrote:
+>
+> From: Rob Clark <robdclark@chromium.org>
+>
+> We cannot switch to using obj->resv for locking without first moving all
+> the copy_from_user() ahead of submit_lock_objects().  Otherwise in the
+> mm fault path we aquire mm->mmap_sem before obj lock, but in the submit
+> path the order is reversed.
+>
+> Signed-off-by: Rob Clark <robdclark@chromium.org>
+> ---
+>  drivers/gpu/drm/msm/msm_gem.h        |   3 +
+>  drivers/gpu/drm/msm/msm_gem_submit.c | 121 ++++++++++++++++-----------
+>  2 files changed, 76 insertions(+), 48 deletions(-)
+>
+> diff --git a/drivers/gpu/drm/msm/msm_gem.h b/drivers/gpu/drm/msm/msm_gem.h
+> index c5232b8da794..0b7dda312992 100644
+> --- a/drivers/gpu/drm/msm/msm_gem.h
+> +++ b/drivers/gpu/drm/msm/msm_gem.h
+> @@ -240,7 +240,10 @@ struct msm_gem_submit {
+>                 uint32_t type;
+>                 uint32_t size;  /* in dwords */
+>                 uint64_t iova;
+> +               uint32_t offset;/* in dwords */
+>                 uint32_t idx;   /* cmdstream buffer idx in bos[] */
+> +               uint32_t nr_relocs;
+> +               struct drm_msm_gem_submit_reloc *relocs;
+>         } *cmd;  /* array of size nr_cmds */
+>         struct {
+>                 uint32_t flags;
+> diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> index aa5c60a7132d..002130d826aa 100644
+> --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> @@ -62,11 +62,16 @@ static struct msm_gem_submit *submit_create(struct drm_device *dev,
+>
+>  void msm_gem_submit_free(struct msm_gem_submit *submit)
+>  {
+> +       unsigned i;
+> +
+>         dma_fence_put(submit->fence);
+>         list_del(&submit->node);
+>         put_pid(submit->pid);
+>         msm_submitqueue_put(submit->queue);
+>
+> +       for (i = 0; i < submit->nr_cmds; i++)
+> +               kfree(submit->cmd[i].relocs);
+> +
+>         kfree(submit);
+>  }
+>
+> @@ -150,6 +155,60 @@ static int submit_lookup_objects(struct msm_gem_submit *submit,
+>         return ret;
+>  }
+>
+> +static int submit_lookup_cmds(struct msm_gem_submit *submit,
+> +               struct drm_msm_gem_submit *args, struct drm_file *file)
+> +{
+> +       unsigned i, sz;
+> +       int ret = 0;
+> +
+> +       for (i = 0; i < args->nr_cmds; i++) {
+> +               struct drm_msm_gem_submit_cmd submit_cmd;
+> +               void __user *userptr =
+> +                       u64_to_user_ptr(args->cmds + (i * sizeof(submit_cmd)));
+> +
+> +               ret = copy_from_user(&submit_cmd, userptr, sizeof(submit_cmd));
+> +               if (ret) {
+> +                       ret = -EFAULT;
+> +                       goto out;
+> +               }
+> +
+> +               /* validate input from userspace: */
+> +               switch (submit_cmd.type) {
+> +               case MSM_SUBMIT_CMD_BUF:
+> +               case MSM_SUBMIT_CMD_IB_TARGET_BUF:
+> +               case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+> +                       break;
+> +               default:
+> +                       DRM_ERROR("invalid type: %08x\n", submit_cmd.type);
+> +                       return -EINVAL;
+> +               }
+> +
+> +               if (submit_cmd.size % 4) {
+> +                       DRM_ERROR("non-aligned cmdstream buffer size: %u\n",
+> +                                       submit_cmd.size);
+> +                       ret = -EINVAL;
+> +                       goto out;
+> +               }
+> +
+> +               submit->cmd[i].type = submit_cmd.type;
+> +               submit->cmd[i].size = submit_cmd.size / 4;
+> +               submit->cmd[i].offset = submit_cmd.submit_offset / 4;
+> +               submit->cmd[i].idx  = submit_cmd.submit_idx;
+> +               submit->cmd[i].nr_relocs = submit_cmd.nr_relocs;
+> +
+> +               sz = sizeof(struct drm_msm_gem_submit_reloc) * submit_cmd.nr_relocs;
+> +               submit->cmd[i].relocs = kmalloc(sz, GFP_KERNEL);
 
-syzbot found the following issue on:
+kmalloc_array() or check_mul_overflow() here for the integer overflow check.
 
-HEAD commit:    7cf726a5 Merge tag 'linux-kselftest-kunit-5.10-rc1' of git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=14ba8ea0500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=80f536b098d66fd2
-dashboard link: https://syzkaller.appspot.com/bug?extid=c5e32344981ad9f33750
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c5e32344981ad9f33750@syzkaller.appspotmail.com
-
-========================================================
-WARNING: possible irq lock inversion dependency detected
-5.9.0-syzkaller #0 Not tainted
---------------------------------------------------------
-syz-executor.4/8709 just changed the state of lock:
-ffff8880132a3438 (&f->f_owner.lock){.+..}-{2:2}, at: send_sigurg+0x1e/0xac0 fs/fcntl.c:824
-but this lock was taken by another, HARDIRQ-safe lock in the past:
- (&dev->event_lock){-...}-{2:2}
-
-
-and interrupts could create inverse lock ordering between them.
-
-
-other info that might help us debug this:
-Chain exists of:
-  &dev->event_lock --> &new->fa_lock --> &f->f_owner.lock
-
- Possible interrupt unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&f->f_owner.lock);
-                               local_irq_disable();
-                               lock(&dev->event_lock);
-                               lock(&new->fa_lock);
-  <Interrupt>
-    lock(&dev->event_lock);
-
- *** DEADLOCK ***
-
-1 lock held by syz-executor.4/8709:
- #0: ffff88802a83c160 (sk_lock-AF_INET){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1581 [inline]
- #0: ffff88802a83c160 (sk_lock-AF_INET){+.+.}-{0:0}, at: inet_wait_for_connect net/ipv4/af_inet.c:596 [inline]
- #0: ffff88802a83c160 (sk_lock-AF_INET){+.+.}-{0:0}, at: __inet_stream_connect+0x596/0xe30 net/ipv4/af_inet.c:686
-
-the shortest dependencies between 2nd lock and 1st lock:
-   -> (&dev->event_lock){-...}-{2:2} {
-      IN-HARDIRQ-W at:
-                          lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                          lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                          __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                          _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
-                          input_event drivers/input/input.c:440 [inline]
-                          input_event+0x7b/0xb0 drivers/input/input.c:433
-                          input_report_key include/linux/input.h:417 [inline]
-                          psmouse_report_standard_buttons+0x2c/0x80 drivers/input/mouse/psmouse-base.c:123
-                          psmouse_report_standard_packet drivers/input/mouse/psmouse-base.c:141 [inline]
-                          psmouse_process_byte+0x1e1/0x890 drivers/input/mouse/psmouse-base.c:232
-                          psmouse_handle_byte+0x41/0x1b0 drivers/input/mouse/psmouse-base.c:274
-                          psmouse_interrupt+0x304/0xf00 drivers/input/mouse/psmouse-base.c:426
-                          serio_interrupt+0x88/0x150 drivers/input/serio/serio.c:1002
-                          i8042_interrupt+0x27a/0x520 drivers/input/serio/i8042.c:598
-                          __handle_irq_event_percpu+0x20b/0x9e0 kernel/irq/handle.c:156
-                          handle_irq_event_percpu kernel/irq/handle.c:196 [inline]
-                          handle_irq_event+0x102/0x290 kernel/irq/handle.c:213
-                          handle_edge_irq+0x25f/0xd00 kernel/irq/chip.c:819
-                          asm_call_irq_on_stack+0xf/0x20
-                          __run_irq_on_irqstack arch/x86/include/asm/irq_stack.h:48 [inline]
-                          run_irq_on_irqstack_cond arch/x86/include/asm/irq_stack.h:101 [inline]
-                          handle_irq arch/x86/kernel/irq.c:230 [inline]
-                          __common_interrupt arch/x86/kernel/irq.c:249 [inline]
-                          common_interrupt+0x120/0x200 arch/x86/kernel/irq.c:239
-                          asm_common_interrupt+0x1e/0x40 arch/x86/include/asm/idtentry.h:622
-                          arch_local_irq_restore arch/x86/include/asm/paravirt.h:653 [inline]
-                          __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:160 [inline]
-                          _raw_spin_unlock_irqrestore+0x4d/0x90 kernel/locking/spinlock.c:191
-                          spin_unlock_irqrestore include/linux/spinlock.h:409 [inline]
-                          i8042_command+0x111/0x130 drivers/input/serio/i8042.c:348
-                          i8042_aux_write+0xd7/0x120 drivers/input/serio/i8042.c:383
-                          serio_write include/linux/serio.h:125 [inline]
-                          ps2_do_sendbyte+0x2cc/0x640 drivers/input/serio/libps2.c:40
-                          ps2_sendbyte+0x4b/0x90 drivers/input/serio/libps2.c:92
-                          cypress_ps2_sendbyte drivers/input/mouse/cypress_ps2.c:42 [inline]
-                          cypress_ps2_read_cmd_status drivers/input/mouse/cypress_ps2.c:116 [inline]
-                          cypress_send_ext_cmd+0x1cb/0x8a0 drivers/input/mouse/cypress_ps2.c:189
-                          cypress_detect+0x75/0x190 drivers/input/mouse/cypress_ps2.c:205
-                          psmouse_do_detect drivers/input/mouse/psmouse-base.c:1009 [inline]
-                          psmouse_try_protocol+0x211/0x370 drivers/input/mouse/psmouse-base.c:1023
-                          psmouse_extensions+0x557/0x930 drivers/input/mouse/psmouse-base.c:1146
-                          psmouse_switch_protocol+0x52a/0x740 drivers/input/mouse/psmouse-base.c:1542
-                          psmouse_connect+0x5e6/0xfc0 drivers/input/mouse/psmouse-base.c:1632
-                          serio_connect_driver drivers/input/serio/serio.c:47 [inline]
-                          serio_driver_probe+0x72/0xa0 drivers/input/serio/serio.c:778
-                          really_probe+0x282/0x9f0 drivers/base/dd.c:554
-                          driver_probe_device+0xfe/0x1d0 drivers/base/dd.c:738
-                          device_driver_attach+0x228/0x290 drivers/base/dd.c:1013
-                          __driver_attach drivers/base/dd.c:1090 [inline]
-                          __driver_attach+0xda/0x240 drivers/base/dd.c:1044
-                          bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:305
-                          serio_attach_driver drivers/input/serio/serio.c:808 [inline]
-                          serio_handle_event+0x5f6/0xa30 drivers/input/serio/serio.c:227
-                          process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
-                          worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
-                          kthread+0x3b5/0x4a0 kernel/kthread.c:292
-                          ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-      INITIAL USE at:
-                         lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                         lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                         __raw_spin_lock_irqsave include/linux/spinlock_api_smp.h:110 [inline]
-                         _raw_spin_lock_irqsave+0x94/0xd0 kernel/locking/spinlock.c:159
-                         input_inject_event+0xa6/0x310 drivers/input/input.c:466
-                         __led_set_brightness drivers/leds/led-core.c:48 [inline]
-                         led_set_brightness_nopm drivers/leds/led-core.c:275 [inline]
-                         led_set_brightness_nosleep+0xe6/0x1a0 drivers/leds/led-core.c:292
-                         led_set_brightness+0x134/0x170 drivers/leds/led-core.c:267
-                         led_trigger_event drivers/leds/led-triggers.c:387 [inline]
-                         led_trigger_event+0x70/0xd0 drivers/leds/led-triggers.c:377
-                         kbd_led_trigger_activate+0xfa/0x130 drivers/tty/vt/keyboard.c:1005
-                         led_trigger_set+0x61e/0xbd0 drivers/leds/led-triggers.c:195
-                         led_trigger_set_default drivers/leds/led-triggers.c:259 [inline]
-                         led_trigger_set_default+0x1a6/0x230 drivers/leds/led-triggers.c:246
-                         led_classdev_register_ext+0x552/0x6e0 drivers/leds/led-class.c:417
-                         led_classdev_register include/linux/leds.h:190 [inline]
-                         input_leds_connect+0x3fb/0x740 drivers/input/input-leds.c:139
-                         input_attach_handler+0x180/0x1f0 drivers/input/input.c:1031
-                         input_register_device.cold+0xf0/0x243 drivers/input/input.c:2229
-                         atkbd_connect+0x736/0x9d0 drivers/input/keyboard/atkbd.c:1293
-                         serio_connect_driver drivers/input/serio/serio.c:47 [inline]
-                         serio_driver_probe+0x72/0xa0 drivers/input/serio/serio.c:778
-                         really_probe+0x282/0x9f0 drivers/base/dd.c:554
-                         driver_probe_device+0xfe/0x1d0 drivers/base/dd.c:738
-                         device_driver_attach+0x228/0x290 drivers/base/dd.c:1013
-                         __driver_attach drivers/base/dd.c:1090 [inline]
-                         __driver_attach+0xda/0x240 drivers/base/dd.c:1044
-                         bus_for_each_dev+0x147/0x1d0 drivers/base/bus.c:305
-                         serio_attach_driver drivers/input/serio/serio.c:808 [inline]
-                         serio_handle_event+0x5f6/0xa30 drivers/input/serio/serio.c:227
-                         process_one_work+0x933/0x15a0 kernel/workqueue.c:2272
-                         worker_thread+0x64c/0x1120 kernel/workqueue.c:2418
-                         kthread+0x3b5/0x4a0 kernel/kthread.c:292
-                         ret_from_fork+0x1f/0x30 arch/x86/entry/entry_64.S:296
-    }
-    ... key      at: [<ffffffff8e616a40>] __key.5+0x0/0x40
-    ... acquired at:
-   __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-   _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-   spin_lock include/linux/spinlock.h:354 [inline]
-   evdev_pass_values+0x195/0xa70 drivers/input/evdev.c:262
-   evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-   input_pass_values drivers/input/input.c:134 [inline]
-   input_handle_event+0x324/0x1400 drivers/input/input.c:399
-   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-   evdev_write+0x424/0x750 drivers/input/evdev.c:530
-   vfs_write+0x2b0/0x730 fs/read_write.c:584
-   ksys_write+0x1ee/0x250 fs/read_write.c:639
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-  -> (&client->buffer_lock){....}-{2:2} {
-     INITIAL USE at:
-                       lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                       lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                       __raw_spin_lock include/linux/spinlock_api_smp.h:142 [inline]
-                       _raw_spin_lock+0x2a/0x40 kernel/locking/spinlock.c:151
-                       spin_lock include/linux/spinlock.h:354 [inline]
-                       evdev_pass_values+0x195/0xa70 drivers/input/evdev.c:262
-                       evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-                       input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-                       input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-                       input_pass_values drivers/input/input.c:134 [inline]
-                       input_handle_event+0x324/0x1400 drivers/input/input.c:399
-                       input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-                       evdev_write+0x424/0x750 drivers/input/evdev.c:530
-                       vfs_write+0x2b0/0x730 fs/read_write.c:584
-                       ksys_write+0x1ee/0x250 fs/read_write.c:639
-                       do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-                       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-   }
-   ... key      at: [<ffffffff8e616f40>] __key.4+0x0/0x40
-   ... acquired at:
-   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-   kill_fasync_rcu fs/fcntl.c:1002 [inline]
-   kill_fasync fs/fcntl.c:1023 [inline]
-   kill_fasync+0x14b/0x460 fs/fcntl.c:1016
-   __pass_event drivers/input/evdev.c:240 [inline]
-   evdev_pass_values+0x72a/0xa70 drivers/input/evdev.c:279
-   evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-   input_pass_values drivers/input/input.c:134 [inline]
-   input_handle_event+0x324/0x1400 drivers/input/input.c:399
-   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-   evdev_write+0x424/0x750 drivers/input/evdev.c:530
-   vfs_write+0x2b0/0x730 fs/read_write.c:584
-   ksys_write+0x1ee/0x250 fs/read_write.c:639
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
- -> (&new->fa_lock){....}-{2:2} {
-    INITIAL USE at:
-                     lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                     lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                     __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
-                     _raw_write_lock_irq+0x94/0xd0 kernel/locking/spinlock.c:311
-                     fasync_remove_entry+0xb6/0x1f0 fs/fcntl.c:880
-                     fasync_helper+0x9e/0xb0 fs/fcntl.c:983
-                     __fput+0x70f/0x920 fs/file_table.c:278
-                     task_work_run+0xdd/0x190 kernel/task_work.c:141
-                     tracehook_notify_resume include/linux/tracehook.h:188 [inline]
-                     exit_to_user_mode_loop kernel/entry/common.c:165 [inline]
-                     exit_to_user_mode_prepare+0x20e/0x230 kernel/entry/common.c:192
-                     syscall_exit_to_user_mode+0x7a/0x2c0 kernel/entry/common.c:267
-                     entry_SYSCALL_64_after_hwframe+0x44/0xa9
-    INITIAL READ USE at:
-                          lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                          lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                          __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                          _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-                          kill_fasync_rcu fs/fcntl.c:1002 [inline]
-                          kill_fasync fs/fcntl.c:1023 [inline]
-                          kill_fasync+0x14b/0x460 fs/fcntl.c:1016
-                          __pass_event drivers/input/evdev.c:240 [inline]
-                          evdev_pass_values+0x72a/0xa70 drivers/input/evdev.c:279
-                          evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-                          input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-                          input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-                          input_pass_values drivers/input/input.c:134 [inline]
-                          input_handle_event+0x324/0x1400 drivers/input/input.c:399
-                          input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-                          evdev_write+0x424/0x750 drivers/input/evdev.c:530
-                          vfs_write+0x2b0/0x730 fs/read_write.c:584
-                          ksys_write+0x1ee/0x250 fs/read_write.c:639
-                          do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-                          entry_SYSCALL_64_after_hwframe+0x44/0xa9
-  }
-  ... key      at: [<ffffffff8dadc160>] __key.0+0x0/0x40
-  ... acquired at:
-   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-   send_sigio+0x24/0x360 fs/fcntl.c:786
-   kill_fasync_rcu fs/fcntl.c:1009 [inline]
-   kill_fasync fs/fcntl.c:1023 [inline]
-   kill_fasync+0x205/0x460 fs/fcntl.c:1016
-   __pass_event drivers/input/evdev.c:240 [inline]
-   evdev_pass_values+0x72a/0xa70 drivers/input/evdev.c:279
-   evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-   input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-   input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-   input_pass_values drivers/input/input.c:134 [inline]
-   input_handle_event+0x324/0x1400 drivers/input/input.c:399
-   input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-   evdev_write+0x424/0x750 drivers/input/evdev.c:530
-   vfs_write+0x2b0/0x730 fs/read_write.c:584
-   ksys_write+0x1ee/0x250 fs/read_write.c:639
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
--> (&f->f_owner.lock){.+..}-{2:2} {
-   HARDIRQ-ON-R at:
-                    lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                    lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                    __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                    _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-                    send_sigurg+0x1e/0xac0 fs/fcntl.c:824
-                    sk_send_sigurg+0x76/0x300 net/core/sock.c:2925
-                    tcp_check_urg.isra.0+0x1f4/0x710 net/ipv4/tcp_input.c:5489
-                    tcp_urg net/ipv4/tcp_input.c:5530 [inline]
-                    tcp_rcv_established+0x106c/0x1e40 net/ipv4/tcp_input.c:5862
-                    tcp_v4_do_rcv+0x5d1/0x870 net/ipv4/tcp_ipv4.c:1652
-                    sk_backlog_rcv include/net/sock.h:1010 [inline]
-                    __release_sock+0x134/0x3a0 net/core/sock.c:2523
-                    release_sock+0x54/0x1b0 net/core/sock.c:3053
-                    sk_stream_wait_memory+0x5bd/0xe60 net/core/stream.c:145
-                    tcp_sendmsg_locked+0x1034/0x2d30 net/ipv4/tcp.c:1402
-                    tcp_sendmsg+0x2b/0x40 net/ipv4/tcp.c:1442
-                    inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:817
-                    sock_sendmsg_nosec net/socket.c:651 [inline]
-                    sock_sendmsg+0xcf/0x120 net/socket.c:671
-                    __sys_sendto+0x21c/0x320 net/socket.c:1992
-                    __do_sys_sendto net/socket.c:2004 [inline]
-                    __se_sys_sendto net/socket.c:2000 [inline]
-                    __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
-                    do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-                    entry_SYSCALL_64_after_hwframe+0x44/0xa9
-   INITIAL USE at:
-                   lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                   lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                   __raw_write_lock_irq include/linux/rwlock_api_smp.h:196 [inline]
-                   _raw_write_lock_irq+0x94/0xd0 kernel/locking/spinlock.c:311
-                   f_modown+0x2a/0x390 fs/fcntl.c:90
-                   __f_setown fs/fcntl.c:109 [inline]
-                   f_setown+0xf4/0x230 fs/fcntl.c:137
-                   sock_ioctl+0x263/0x730 net/socket.c:1128
-                   vfs_ioctl fs/ioctl.c:48 [inline]
-                   __do_sys_ioctl fs/ioctl.c:753 [inline]
-                   __se_sys_ioctl fs/ioctl.c:739 [inline]
-                   __x64_sys_ioctl+0x193/0x200 fs/ioctl.c:739
-                   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-                   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-   INITIAL READ USE at:
-                        lock_acquire kernel/locking/lockdep.c:5442 [inline]
-                        lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-                        __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-                        _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-                        send_sigio+0x24/0x360 fs/fcntl.c:786
-                        kill_fasync_rcu fs/fcntl.c:1009 [inline]
-                        kill_fasync fs/fcntl.c:1023 [inline]
-                        kill_fasync+0x205/0x460 fs/fcntl.c:1016
-                        __pass_event drivers/input/evdev.c:240 [inline]
-                        evdev_pass_values+0x72a/0xa70 drivers/input/evdev.c:279
-                        evdev_events+0x20c/0x330 drivers/input/evdev.c:307
-                        input_to_handler+0x2a0/0x4c0 drivers/input/input.c:115
-                        input_pass_values.part.0+0x284/0x700 drivers/input/input.c:145
-                        input_pass_values drivers/input/input.c:134 [inline]
-                        input_handle_event+0x324/0x1400 drivers/input/input.c:399
-                        input_inject_event+0x2f5/0x310 drivers/input/input.c:471
-                        evdev_write+0x424/0x750 drivers/input/evdev.c:530
-                        vfs_write+0x2b0/0x730 fs/read_write.c:584
-                        ksys_write+0x1ee/0x250 fs/read_write.c:639
-                        do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-                        entry_SYSCALL_64_after_hwframe+0x44/0xa9
- }
- ... key      at: [<ffffffff8dadb380>] __key.5+0x0/0x40
- ... acquired at:
-   mark_usage kernel/locking/lockdep.c:4311 [inline]
-   __lock_acquire+0x11f5/0x5590 kernel/locking/lockdep.c:4791
-   lock_acquire kernel/locking/lockdep.c:5442 [inline]
-   lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
-   __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
-   _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
-   send_sigurg+0x1e/0xac0 fs/fcntl.c:824
-   sk_send_sigurg+0x76/0x300 net/core/sock.c:2925
-   tcp_check_urg.isra.0+0x1f4/0x710 net/ipv4/tcp_input.c:5489
-   tcp_urg net/ipv4/tcp_input.c:5530 [inline]
-   tcp_rcv_established+0x106c/0x1e40 net/ipv4/tcp_input.c:5862
-   tcp_v4_do_rcv+0x5d1/0x870 net/ipv4/tcp_ipv4.c:1652
-   sk_backlog_rcv include/net/sock.h:1010 [inline]
-   __release_sock+0x134/0x3a0 net/core/sock.c:2523
-   release_sock+0x54/0x1b0 net/core/sock.c:3053
-   sk_stream_wait_memory+0x5bd/0xe60 net/core/stream.c:145
-   tcp_sendmsg_locked+0x1034/0x2d30 net/ipv4/tcp.c:1402
-   tcp_sendmsg+0x2b/0x40 net/ipv4/tcp.c:1442
-   inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:817
-   sock_sendmsg_nosec net/socket.c:651 [inline]
-   sock_sendmsg+0xcf/0x120 net/socket.c:671
-   __sys_sendto+0x21c/0x320 net/socket.c:1992
-   __do_sys_sendto net/socket.c:2004 [inline]
-   __se_sys_sendto net/socket.c:2000 [inline]
-   __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
-   do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-   entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-
-stack backtrace:
-CPU: 0 PID: 8709 Comm: syz-executor.4 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x198/0x1fb lib/dump_stack.c:118
- print_irq_inversion_bug kernel/locking/lockdep.c:4410 [inline]
- check_usage_backwards kernel/locking/lockdep.c:3883 [inline]
- mark_lock_irq kernel/locking/lockdep.c:3973 [inline]
- mark_lock.cold+0x6f/0x74 kernel/locking/lockdep.c:4408
- mark_usage kernel/locking/lockdep.c:4311 [inline]
- __lock_acquire+0x11f5/0x5590 kernel/locking/lockdep.c:4791
- lock_acquire kernel/locking/lockdep.c:5442 [inline]
- lock_acquire+0x219/0x9d0 kernel/locking/lockdep.c:5407
- __raw_read_lock include/linux/rwlock_api_smp.h:149 [inline]
- _raw_read_lock+0x5b/0x70 kernel/locking/spinlock.c:223
- send_sigurg+0x1e/0xac0 fs/fcntl.c:824
- sk_send_sigurg+0x76/0x300 net/core/sock.c:2925
- tcp_check_urg.isra.0+0x1f4/0x710 net/ipv4/tcp_input.c:5489
- tcp_urg net/ipv4/tcp_input.c:5530 [inline]
- tcp_rcv_established+0x106c/0x1e40 net/ipv4/tcp_input.c:5862
- tcp_v4_do_rcv+0x5d1/0x870 net/ipv4/tcp_ipv4.c:1652
- sk_backlog_rcv include/net/sock.h:1010 [inline]
- __release_sock+0x134/0x3a0 net/core/sock.c:2523
- release_sock+0x54/0x1b0 net/core/sock.c:3053
- sk_stream_wait_memory+0x5bd/0xe60 net/core/stream.c:145
- tcp_sendmsg_locked+0x1034/0x2d30 net/ipv4/tcp.c:1402
- tcp_sendmsg+0x2b/0x40 net/ipv4/tcp.c:1442
- inet_sendmsg+0x99/0xe0 net/ipv4/af_inet.c:817
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- __sys_sendto+0x21c/0x320 net/socket.c:1992
- __do_sys_sendto net/socket.c:2004 [inline]
- __se_sys_sendto net/socket.c:2000 [inline]
- __x64_sys_sendto+0xdd/0x1b0 net/socket.c:2000
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x45de59
-Code: 0d b4 fb ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db b3 fb ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007fcfd761cc78 EFLAGS: 00000246 ORIG_RAX: 000000000000002c
-RAX: ffffffffffffffda RBX: 000000000002e880 RCX: 000000000045de59
-RDX: ffffffffffffff58 RSI: 0000000020000140 RDI: 0000000000000003
-RBP: 000000000118bf78 R08: 0000000020000100 R09: 0000000000000010
-R10: 0000000020008005 R11: 0000000000000246 R12: 000000000118bf2c
-R13: 000000000169fb7f R14: 00007fcfd761d9c0 R15: 000000000118bf2c
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> +               ret = copy_from_user(submit->cmd[i].relocs, userptr, sz);
+> +               if (ret) {
+> +                       ret = -EFAULT;
+> +                       goto out;
+> +               }
+> +       }
+> +
+> +out:
+> +       return ret;
+> +}
+> +
+>  static void submit_unlock_unpin_bo(struct msm_gem_submit *submit,
+>                 int i, bool backoff)
+>  {
+> @@ -301,7 +360,7 @@ static int submit_bo(struct msm_gem_submit *submit, uint32_t idx,
+>
+>  /* process the reloc's and patch up the cmdstream as needed: */
+>  static int submit_reloc(struct msm_gem_submit *submit, struct msm_gem_object *obj,
+> -               uint32_t offset, uint32_t nr_relocs, uint64_t relocs)
+> +               uint32_t offset, uint32_t nr_relocs, struct drm_msm_gem_submit_reloc *relocs)
+>  {
+>         uint32_t i, last_offset = 0;
+>         uint32_t *ptr;
+> @@ -327,18 +386,11 @@ static int submit_reloc(struct msm_gem_submit *submit, struct msm_gem_object *ob
+>         }
+>
+>         for (i = 0; i < nr_relocs; i++) {
+> -               struct drm_msm_gem_submit_reloc submit_reloc;
+> -               void __user *userptr =
+> -                       u64_to_user_ptr(relocs + (i * sizeof(submit_reloc)));
+> +               struct drm_msm_gem_submit_reloc submit_reloc = relocs[i];
+>                 uint32_t off;
+>                 uint64_t iova;
+>                 bool valid;
+>
+> -               if (copy_from_user(&submit_reloc, userptr, sizeof(submit_reloc))) {
+> -                       ret = -EFAULT;
+> -                       goto out;
+> -               }
+> -
+>                 if (submit_reloc.submit_offset % 4) {
+>                         DRM_ERROR("non-aligned reloc offset: %u\n",
+>                                         submit_reloc.submit_offset);
+> @@ -694,6 +746,10 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>         if (ret)
+>                 goto out;
+>
+> +       ret = submit_lookup_cmds(submit, args, file);
+> +       if (ret)
+> +               goto out;
+> +
+>         /* copy_*_user while holding a ww ticket upsets lockdep */
+>         ww_acquire_init(&submit->ticket, &reservation_ww_class);
+>         has_ww_ticket = true;
+> @@ -710,60 +766,29 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+>                 goto out;
+>
+>         for (i = 0; i < args->nr_cmds; i++) {
+> -               struct drm_msm_gem_submit_cmd submit_cmd;
+> -               void __user *userptr =
+> -                       u64_to_user_ptr(args->cmds + (i * sizeof(submit_cmd)));
+>                 struct msm_gem_object *msm_obj;
+>                 uint64_t iova;
+>
+> -               ret = copy_from_user(&submit_cmd, userptr, sizeof(submit_cmd));
+> -               if (ret) {
+> -                       ret = -EFAULT;
+> -                       goto out;
+> -               }
+> -
+> -               /* validate input from userspace: */
+> -               switch (submit_cmd.type) {
+> -               case MSM_SUBMIT_CMD_BUF:
+> -               case MSM_SUBMIT_CMD_IB_TARGET_BUF:
+> -               case MSM_SUBMIT_CMD_CTX_RESTORE_BUF:
+> -                       break;
+> -               default:
+> -                       DRM_ERROR("invalid type: %08x\n", submit_cmd.type);
+> -                       ret = -EINVAL;
+> -                       goto out;
+> -               }
+> -
+> -               ret = submit_bo(submit, submit_cmd.submit_idx,
+> +               ret = submit_bo(submit, submit->cmd[i].idx,
+>                                 &msm_obj, &iova, NULL);
+>                 if (ret)
+>                         goto out;
+>
+> -               if (submit_cmd.size % 4) {
+> -                       DRM_ERROR("non-aligned cmdstream buffer size: %u\n",
+> -                                       submit_cmd.size);
+> +               if (!submit->cmd[i].size ||
+> +                       ((submit->cmd[i].size + submit->cmd[i].offset) >
+> +                               msm_obj->base.size / 4)) {
+> +                       DRM_ERROR("invalid cmdstream size: %u\n", submit->cmd[i].size * 4);
+>                         ret = -EINVAL;
+>                         goto out;
+>                 }
+>
+> -               if (!submit_cmd.size ||
+> -                       ((submit_cmd.size + submit_cmd.submit_offset) >
+> -                               msm_obj->base.size)) {
+> -                       DRM_ERROR("invalid cmdstream size: %u\n", submit_cmd.size);
+> -                       ret = -EINVAL;
+> -                       goto out;
+> -               }
+> -
+> -               submit->cmd[i].type = submit_cmd.type;
+> -               submit->cmd[i].size = submit_cmd.size / 4;
+> -               submit->cmd[i].iova = iova + submit_cmd.submit_offset;
+> -               submit->cmd[i].idx  = submit_cmd.submit_idx;
+> +               submit->cmd[i].iova = iova + (submit->cmd[i].offset * 4);
+>
+>                 if (submit->valid)
+>                         continue;
+>
+> -               ret = submit_reloc(submit, msm_obj, submit_cmd.submit_offset,
+> -                               submit_cmd.nr_relocs, submit_cmd.relocs);
+> +               ret = submit_reloc(submit, msm_obj, submit->cmd[i].offset * 4,
+> +                               submit->cmd[i].nr_relocs, submit->cmd[i].relocs);
+>                 if (ret)
+>                         goto out;
+>         }
+> --
+> 2.26.2
+>
+> _______________________________________________
+> Freedreno mailing list
+> Freedreno@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/freedreno
