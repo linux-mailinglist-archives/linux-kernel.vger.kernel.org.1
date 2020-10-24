@@ -2,60 +2,194 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70E87297B79
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 10:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C2066297B7C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 10:33:57 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760074AbgJXI0x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 04:26:53 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54564 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1760061AbgJXI0g (ORCPT
+        id S1760084AbgJXIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 04:31:30 -0400
+Received: from relay3-d.mail.gandi.net ([217.70.183.195]:44711 "EHLO
+        relay3-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1755842AbgJXIb2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 04:26:36 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 85E1FC0613CE;
-        Sat, 24 Oct 2020 01:26:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=7WW5OjIy5DyHhu4sd+/BFehn7zhBtJPdgdSvBW+0nug=; b=od7s9IcHsTFcQ60ryu18jthu4I
-        tb2R2rJxn3zQfbHPnVVKSnxt2ZAPoC2wcS8OcyYayPjWJ6Wmgb37qXN8hvJ1rOoUPe3XJMzJpg5s+
-        kwmAWmOfSggXZaqgigIHK2sVs9ZoKzHvSUaPhBDeH1nzRObTzMEGFhxhZJJ030Q5RBau+Y9QPerqq
-        DQs31HF9msjTKWVMYSQzeOoAnTNru1QN+nA9aIs3LEgFBn/fkMNw87uNWF7cBD66lsU8Vjiee3H8Q
-        EYuvrzHBEfGoPK2QCqcnsfAO67lXimVaecmmG4sZTjnBESEZYL6SRLDl7I5dlLXA8F1pxnVc3s+9J
-        u21gzJUg==;
-Received: from hch by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kWEsU-00037d-Od; Sat, 24 Oct 2020 08:26:18 +0000
-Date:   Sat, 24 Oct 2020 09:26:18 +0100
-From:   Christoph Hellwig <hch@infradead.org>
-To:     Claude Yen <claude.yen@mediatek.com>
-Cc:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        wsd_upstream@mediatek.com, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mediatek@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] PM / s2idle: Export s2idle_set_ops
-Message-ID: <20201024082618.GA10844@infradead.org>
-References: <20201022061748.13730-1-claude.yen@mediatek.com>
+        Sat, 24 Oct 2020 04:31:28 -0400
+X-Originating-IP: 93.29.109.196
+Received: from aptenodytes (196.109.29.93.rev.sfr.net [93.29.109.196])
+        (Authenticated sender: paul.kocialkowski@bootlin.com)
+        by relay3-d.mail.gandi.net (Postfix) with ESMTPSA id 3C7846000E;
+        Sat, 24 Oct 2020 08:31:22 +0000 (UTC)
+Date:   Sat, 24 Oct 2020 10:31:21 +0200
+From:   Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+To:     Jernej =?utf-8?Q?=C5=A0krabec?= <jernej.skrabec@gmail.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Maxime Ripard <mripard@kernel.org>,
+        Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [linux-sunxi] [PATCH 01/14] phy: Distinguish between Rx and Tx
+ for MIPI D-PHY with submodes
+Message-ID: <20201024083121.GB1739@aptenodytes>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-2-paul.kocialkowski@bootlin.com>
+ <7673189.jqQXtdQLJ6@kista>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="SkvwRMAIpAhPCcCJ"
 Content-Disposition: inline
-In-Reply-To: <20201022061748.13730-1-claude.yen@mediatek.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <7673189.jqQXtdQLJ6@kista>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 02:17:47PM +0800, Claude Yen wrote:
-> This series based on 5.9-rc1
-> 
-> As suspend_set_ops is exported in commit a5e4fd8783a2
-> ("PM / Suspend: Export suspend_set_ops, suspend_valid_only_mem"),
-> exporting s2idle_set_ops to make kernel module setup s2idle ops too.
-> 
-> In this way, kernel module can hook platform suspend functions
-> regardless of Suspend-to-Ram(S2R) or Suspend-to-Idle(S2I)
 
-Where is the actual users of the export?
+--SkvwRMAIpAhPCcCJ
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi Jernej,
+
+On Fri 23 Oct 20, 20:18, Jernej =C5=A0krabec wrote:
+> Dne petek, 23. oktober 2020 ob 19:45:33 CEST je Paul Kocialkowski napisal=
+(a):
+> > As some D-PHY controllers support both Rx and Tx mode, we need a way for
+> > users to explicitly request one or the other. For instance, Rx mode can
+> > be used along with MIPI CSI-2 while Tx mode can be used with MIPI DSI.
+> >=20
+> > Introduce new MIPI D-PHY PHY submodes to use with PHY_MODE_MIPI_DPHY.
+> > The default (zero value) is kept to Tx so only the rkisp1 driver, which
+> > uses D-PHY in Rx mode, needs to be adapted.
+> >=20
+> > Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+> > ---
+> >  drivers/staging/media/rkisp1/rkisp1-isp.c |  3 ++-
+> >  include/linux/phy/phy-mipi-dphy.h         | 13 +++++++++++++
+>=20
+> I think some changes are missing in this patch. For example,=20
+> phy_set_mode_ext() must be modified to take another argument, otherwise c=
+hange=20
+> of rkisp1-isp driver doesn't make much sense.
+
+Thanks for looking into this! As you can see in:
+https://elixir.bootlin.com/linux/latest/source/include/linux/phy/phy.h#L213
+
+phy_set_mode_ext already takes a submode argument (which is already used for
+USB mode selection, for instance) and phy_set_mode is just a macro which ca=
+lls
+phy_set_mode_ext with submode set to 0.
+
+In our case, that means that most current users of phy_set_mode with
+PHY_MODE_MIPI_DPHY will select Tx mode by default, so there is no particular
+need for adaptation. Only the rkisp1 driver uses PHY_MODE_MIPI_DPHY for Rx,
+so this one was changed to use phy_set_mode_ext with PHY_MIPI_DPHY_SUBMODE_=
+RX
+instead.
+
+As a result, there should be no missing changes. Do you agree?
+
+Cheers,
+
+Paul
+
+> Best regards,
+> Jernej
+>=20
+> >  2 files changed, 15 insertions(+), 1 deletion(-)
+> >=20
+> > diff --git a/drivers/staging/media/rkisp1/rkisp1-isp.c b/drivers/stagin=
+g/
+> media/rkisp1/rkisp1-isp.c
+> > index 6ec1e9816e9f..0afbce00121e 100644
+> > --- a/drivers/staging/media/rkisp1/rkisp1-isp.c
+> > +++ b/drivers/staging/media/rkisp1/rkisp1-isp.c
+> > @@ -902,7 +902,8 @@ static int rkisp1_mipi_csi2_start(struct rkisp1_isp=
+=20
+> *isp,
+> > =20
+> >  	phy_mipi_dphy_get_default_config(pixel_clock, isp->sink_fmt-
+> >bus_width,
+> >  					 sensor->lanes, cfg);
+> > -	phy_set_mode(sensor->dphy, PHY_MODE_MIPI_DPHY);
+> > +	phy_set_mode_ext(cdev->dphy, PHY_MODE_MIPI_DPHY,
+> > +			 PHY_MIPI_DPHY_SUBMODE_RX);
+> >  	phy_configure(sensor->dphy, &opts);
+> >  	phy_power_on(sensor->dphy);
+> > =20
+> > diff --git a/include/linux/phy/phy-mipi-dphy.h b/include/linux/phy/phy-=
+mipi-
+> dphy.h
+> > index a877ffee845d..0f57ef46a8b5 100644
+> > --- a/include/linux/phy/phy-mipi-dphy.h
+> > +++ b/include/linux/phy/phy-mipi-dphy.h
+> > @@ -6,6 +6,19 @@
+> >  #ifndef __PHY_MIPI_DPHY_H_
+> >  #define __PHY_MIPI_DPHY_H_
+> > =20
+> > +/**
+> > + * enum phy_mipi_dphy_submode - MIPI D-PHY sub-mode
+> > + *
+> > + * A MIPI D-PHY can be used to transmit or receive data.
+> > + * Since some controllers can support both, the direction to enable is=
+=20
+> specified
+> > + * with the PHY sub-mode. Transmit is assumed by default with phy_set_=
+mode.
+> > + */
+> > +
+> > +enum phy_mipi_dphy_submode {
+> > +	PHY_MIPI_DPHY_SUBMODE_TX =3D 0,
+> > +	PHY_MIPI_DPHY_SUBMODE_RX,
+> > +};
+> > +
+> >  /**
+> >   * struct phy_configure_opts_mipi_dphy - MIPI D-PHY configuration set
+> >   *
+> > --=20
+> > 2.28.0
+> >=20
+> > --=20
+> > You received this message because you are subscribed to the Google Grou=
+ps=20
+> "linux-sunxi" group.
+> > To unsubscribe from this group and stop receiving emails from it, send =
+an=20
+> email to linux-sunxi+unsubscribe@googlegroups.com.
+> > To view this discussion on the web, visit https://groups.google.com/d/m=
+sgid/
+> linux-sunxi/20201023174546.504028-2-paul.kocialkowski%40bootlin.com.
+> >=20
+>=20
+>=20
+
+--=20
+Paul Kocialkowski, Bootlin
+Embedded Linux and kernel engineering
+https://bootlin.com
+
+--SkvwRMAIpAhPCcCJ
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEEJZpWjZeIetVBefti3cLmz3+fv9EFAl+T5lkACgkQ3cLmz3+f
+v9Ev9Qf/SwpZnjc+n98ehFg0OUFmpeLOPDBC9zc+f+m5G+tx0pVb1W9yIqiLKv3z
+zgq/ppkkOpTXztICfPBpp15wNNMQJ737VkB/Q9H71XlX2oaIH0f1P1LWm+TFIjQg
+zhMRa4NVdYrhfgQeaLL2WvA4cFVpduz63Mqr3bJ8u1+9mnX9toq9xTGaLNJcKnb6
+Pjb92gXs04D9uBSCnRSpTuKPdsDRrG+qV3IoI6NtD6cfCv9A10t5DlGaWOEqz+No
+xFNzGzKb7g4V44dCjo4wHeyhjOHQ/6mAmBrgmGbBB477uUIrf+VzfH6yrDssk8Rt
+1ksyv89f0fPrRa5JRekEVVAsY+sj9Q==
+=zcV3
+-----END PGP SIGNATURE-----
+
+--SkvwRMAIpAhPCcCJ--
