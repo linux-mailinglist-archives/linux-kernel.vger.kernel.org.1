@@ -2,144 +2,137 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CF395297A7E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:12:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 83BBD297A89
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:39:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759330AbgJXDMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 23:12:46 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759320AbgJXDMp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 23:12:45 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48276C0613CE;
-        Fri, 23 Oct 2020 20:12:43 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id l2so236237pjt.5;
-        Fri, 23 Oct 2020 20:12:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
-         :references:in-reply-to:accept-language:content-language
-         :content-transfer-encoding:mime-version;
-        bh=zTBRtgT7pbWlqs1vi69+HR0XTTRLAETUhmExxew5NDo=;
-        b=ZpZKjdJtSqcsG89NdJQp0+s02MLtTNI1vpHpSP7oKzdakHEcSKkvY7CcHhj5zms+jS
-         l9y4mKUj4WTaUKiYUlGX5SdYjTKc3Aq4oSzUSPj3rdneVz3SyraFboXN4SX8mgI5XLLh
-         OPf15zn6cf/vEf1/lhFTbatI8uncx9PzX6wvpWEagn8Eo/3TPAoLoeBfyL03cgwEAft8
-         Ungpe1hhZmMvlxUyPODGJMX+hnlgfCXCSOKsoq2U+AYQbrz4AW3VesOhTKYzBWSnZ7JK
-         hVkUTsJbcnS/1qPyjMgloBhCg/zYdep+btUB7LEtGjiXQh6mi1pwh+s1+zhw6tCnGyy0
-         JAvQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
-         :date:message-id:references:in-reply-to:accept-language
-         :content-language:content-transfer-encoding:mime-version;
-        bh=zTBRtgT7pbWlqs1vi69+HR0XTTRLAETUhmExxew5NDo=;
-        b=h0NdEHSMPa8C39kL+8lG+TWvLiWu0Bx0KHDmgigpAQY1JIfakpNnuh0l4xsxeKqtf0
-         r3J/xHkeKlIDpOWpiNx/zFd6hNAdT3mYx9AWgv+JUOxebZArXM0ViIg+wcjL5iVDqFE8
-         le/W5W/dYfmwPUIMI7zWTCNn9/HF7oHozABXBtLMqtwSaeKdbbluc4Z8PAVUe3z1OZgJ
-         kHDTFxImthTxiQgl52ubOYP01VmKkSq1gPSBLHWKZm4dqDqnvFP/i+BIrASo2YNDnr/S
-         +Qoe/e2Ph8LeV8pw+FWI/a8KINiZfh5Y7hxPmMGn1JpRv7uX1zHbeQ/8V9GD+mdfYqnw
-         8c1A==
-X-Gm-Message-State: AOAM531gk+FA+gVpV3qFhfAkEGka7cPQIEfzpl56Z5bgES/dSe9y3Hhu
-        g4kBJwRMqWUGM058gIdPfOM=
-X-Google-Smtp-Source: ABdhPJzQmQEnxa9/l+9Lq4CzVsMG9+8m/ikAGTD954YrN3sd7D9wuPDi6xuu6zomPp9QihOAFq344g==
-X-Received: by 2002:a17:902:7c86:b029:d5:f680:f756 with SMTP id y6-20020a1709027c86b02900d5f680f756mr2165248pll.39.1603509162822;
-        Fri, 23 Oct 2020 20:12:42 -0700 (PDT)
-Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
-        by smtp.gmail.com with ESMTPSA id j12sm4204812pjs.21.2020.10.23.20.12.38
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Fri, 23 Oct 2020 20:12:41 -0700 (PDT)
-From:   Jingoo Han <jingoohan1@gmail.com>
-To:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        "linux-samsung-soc@vger.kernel.org" 
-        <linux-samsung-soc@vger.kernel.org>,
-        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
-CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Han Jingoo <jingoohan1@gmail.com>
-Subject: Re: [PATCH v2 5/6] pci: dwc: pci-exynos: rework the driver to support
- Exynos5433 variant
-Thread-Topic: [PATCH v2 5/6] pci: dwc: pci-exynos: rework the driver to
- support Exynos5433 variant
-Thread-Index: ATYzNHA3LqEW/SeHeSezfbTZ8+mXqGl5LTQyaXktNDK6VWtTUg==
-X-MS-Exchange-MessageSentRepresentingType: 1
-Date:   Sat, 24 Oct 2020 03:12:35 +0000
-Message-ID: <SLXP216MB047790A7FD4D1E7304493343AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
-References: <20201023075744.26200-1-m.szyprowski@samsung.com>
- <CGME20201023075756eucas1p18765653e747842eef4b438aff32ef136@eucas1p1.samsung.com>
- <20201023075744.26200-6-m.szyprowski@samsung.com>
-In-Reply-To: <20201023075744.26200-6-m.szyprowski@samsung.com>
-Accept-Language: ko-KR, en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-Exchange-Organization-SCL: -1
-X-MS-TNEF-Correlator: 
-X-MS-Exchange-Organization-RecordReviewCfmType: 0
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        id S1759410AbgJXDjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 23:39:18 -0400
+Received: from mout.gmx.net ([212.227.15.15]:56945 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1759401AbgJXDjS (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:39:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603510706;
+        bh=z2fZJ+74FdCw6KSbABz34DjIc1OZizInioY9naIqR34=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=AYY66JrbQWQ7mJoji68IQ4UpO4A9Nd9xvhs54Zju2Wo11gBCPvdcDxyalDMvXorHg
+         twpdpIcqdB0jJLPzX8m/kD78O5icrt9z/bodCyOLtefLTomBeTUF582gR3hLISeCEN
+         AT8869dusVlcm8EhXuizEsCPU9bTZB+QzGH4bGcc=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.simpson.net ([185.221.151.75]) by mail.gmx.com (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M8ykW-1kSLA42o1W-006BUb; Sat, 24
+ Oct 2020 05:38:26 +0200
+Message-ID: <8922fa338e3ea737371875b007ca8451b961bc0a.camel@gmx.de>
+Subject: Re: kvm+nouveau induced lockdep  gripe
+From:   Mike Galbraith <efault@gmx.de>
+To:     Hillf Danton <hdanton@sina.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Skeggs <bskeggs@redhat.com>, nouveau@lists.freedesktop.org
+Date:   Sat, 24 Oct 2020 05:38:23 +0200
+In-Reply-To: <20201024022236.19608-1-hdanton@sina.com>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
+         <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+         <20201023090108.5lunh4vqfpkllmap@linutronix.de>
+         <20201024022236.19608-1-hdanton@sina.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:klYpJ5JyXopHwA7RwvqCM/67JvMOtvUl0u2nwj4adS2U6PbO/Pn
+ 1+d55NWQHHPy+E5A435zc2U45GY/x4w8JT7S1nRwG786s9sYwm3+Vi4S99Q1NUtABU/wjbb
+ tG9xTP+jhiBARamx1LGTq7pvz9a6iF5gB3nXrms6OZGhA4bGwdNbKnkiqmm8U7bZL/H8GKO
+ s+5JupkCl3UklbPTUpFCw==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:BRZF/EVgMRw=:n8LJpsWlXu7tsk5HkID0cq
+ UspbueVploQFEOMZl1w15PV5YTH9SbxHquEKKW9zvD7FDFC6yp/tVXKsXplFCwdXzMny22O/w
+ nQXGNrHBdbvVsjyzfLF8PPCUQMbDCXkii2yafZddyWhRu0UWJi8UC3gFoijoKMZ4VBB/t5YE/
+ A7F8P3oEge87D5x6bD7ELcOBu6dSV7xHKfuVlVjcQOIp6sBNBL1cXzQVCQpb27gWx9yazgnaP
+ jdBzfKFi2zC6bNZIhFD5g6vaBa+mXnb3cfILfAh+exQNCb7s8U24glnULJu9Mhx1L2rhnm6x1
+ Yy9LFKAVdqm1nkkSR9O7vr/KofW3lG8XuuKG6apBVt8QC2aHD6PUS7h7caFumm1QYx34c9WFn
+ eNkkxr2EbpMY5vcjtvpO83fu6asy+8vncSa5eUbNJonKz6+O1xvJaqKu9CNp7lwXo2L0M1yiE
+ lVhQ4ciHOmp3aYBG8CHL+Sza6YMBhvBEmZwSDJPGk34bFdQ6wBuu0nefJYoaLLG+0UIHZeaAh
+ EGWc2TP2v5ZdxMRPu+oPqV0dGFfGSWnE3tYkTwdD/2cvIfpoS1u2uW1zum17n68EsuxDZQ9Lu
+ WS7VmtkfwuoA1OMszKdhfFlFPTSvDACmSuSWTpvs1qgTP289TB82MKMB9SMgxey1ChtOOsqM/
+ 8daEV28+JbsjRm0jzf2d9sybFoCeIUogUgfF4rXyQJ033VIex8BKHpL1jZqlESE+RKFxOcON2
+ dyNUfLBpiCsqqlGvvceFx7QRkLJhczIwyj5GsSYDnPt03HT2UsBaEtlo4N2ShGEUEa9mpTWTx
+ JJhikuWPdqztXmBNVjB2W+6E5m0XLbjfOXukukIH8Ma0yF7x79X6UKaCvw1X0dS3lLnmQyOAf
+ 9HnG72xiYUe02ClDP8lw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20, 3:58 AM, Marek Szyprowski wrote:
->=20
-> From: Jaehoon Chung <jh80.chung@samsung.com>
+On Sat, 2020-10-24 at 10:22 +0800, Hillf Danton wrote:
 >
-> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-> dts: exynos: Remove Exynos5440"). Rework this driver to support DWC PCIe
-> variant found in the Exynos5433 SoCs.
->
-> The main difference in Exynos5433 variant is lack of the MSI support
-> (the MSI interrupt is not even routed to the CPU).
->
-> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-> [mszyprow: reworked the driver to support only Exynos5433 variant,
->	   simplified code, rebased onto current kernel code, added
->	   regulator support, converted to the regular platform driver,
->	   removed MSI related code, rewrote commit message]
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/pci/controller/dwc/Kconfig      |   3 +-
->  drivers/pci/controller/dwc/pci-exynos.c | 358 ++++++++++--------------
->  drivers/pci/quirks.c                    |   1 +
->  3 files changed, 145 insertions(+), 217 deletions(-)
+> Looks like we can break the lock chain by moving ttm bo's release
+> method out of mmap_lock, see diff below.
 
-[....]
+Ah, the perfect compliment to morning java, a patchlet to wedge in and
+see what happens.
 
-> diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/contro=
-ller/dwc/pci-exynos.c
-> index 242683cde04a..58056fbdc2fa 100644
-> --- a/drivers/pci/controller/dwc/pci-exynos.c
-> +++ b/drivers/pci/controller/dwc/pci-exynos.c
-> @@ -2,26 +2,23 @@
->  /*
->   * PCIe host controller driver for Samsung Exynos SoCs
->   *
-> - * Copyright (C) 2013 Samsung Electronics Co., Ltd.
-> + * Copyright (C) 2013-2020 Samsung Electronics Co., Ltd.
->   *		https://www.samsung.com
->   *
->   * Author: Jingoo Han <jg1.han@samsung.com>
-> + *	   Jaehoon Chung <jh80.chung@samsung.com>
+wedge/build/boot <schlurp... ahhh>
 
-Would you explain the reason why you add him as an author?
-If reasonable, I will accept it. Also, I want gentle discussion, not aggres=
-sive one.
-Thank you.
+Mmm, box says no banana... a lot.
 
-Best regards,
-Jingoo Han
+[   30.456921] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+[   30.456924] WARNING: inconsistent lock state
+[   30.456928] 5.9.0.gf11901e-master #2 Tainted: G S          E
+[   30.456932] --------------------------------
+[   30.456935] inconsistent {SOFTIRQ-ON-W} -> {IN-SOFTIRQ-W} usage.
+[   30.456940] ksoftirqd/4/36 [HC0[0]:SC1[1]:HE1:SE0] takes:
+[   30.456944] ffff8e2c8bde9e40 (&mgr->vm_lock){++?+}-{2:2}, at: drm_vma_o=
+ffset_remove+0x14/0x70 [drm]
+[   30.456976] {SOFTIRQ-ON-W} state was registered at:
+[   30.456982]   lock_acquire+0x1a7/0x3b0
+[   30.456987]   _raw_write_lock+0x2f/0x40
+[   30.457006]   drm_vma_offset_add+0x1c/0x60 [drm]
+[   30.457013]   ttm_bo_init_reserved+0x28b/0x460 [ttm]
+[   30.457020]   ttm_bo_init+0x57/0x110 [ttm]
+[   30.457066]   nouveau_bo_init+0xb0/0xc0 [nouveau]
+[   30.457108]   nouveau_bo_new+0x4d/0x60 [nouveau]
+[   30.457145]   nv84_fence_create+0xb9/0x130 [nouveau]
+[   30.457180]   nvc0_fence_create+0xe/0x47 [nouveau]
+[   30.457221]   nouveau_drm_device_init+0x3d9/0x800 [nouveau]
+[   30.457262]   nouveau_drm_probe+0xfb/0x200 [nouveau]
+[   30.457268]   local_pci_probe+0x42/0x90
+[   30.457272]   pci_device_probe+0xe7/0x1a0
+[   30.457276]   really_probe+0xf7/0x4d0
+[   30.457280]   driver_probe_device+0x5d/0x140
+[   30.457284]   device_driver_attach+0x4f/0x60
+[   30.457288]   __driver_attach+0xa4/0x140
+[   30.457292]   bus_for_each_dev+0x67/0x90
+[   30.457296]   bus_add_driver+0x18c/0x230
+[   30.457299]   driver_register+0x5b/0xf0
+[   30.457304]   do_one_initcall+0x54/0x2f0
+[   30.457309]   do_init_module+0x5b/0x21b
+[   30.457314]   load_module+0x1e40/0x2370
+[   30.457317]   __do_sys_finit_module+0x98/0xe0
+[   30.457321]   do_syscall_64+0x33/0x40
+[   30.457326]   entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   30.457329] irq event stamp: 366850
+[   30.457335] hardirqs last  enabled at (366850): [<ffffffffa11312ff>] rc=
+u_nocb_unlock_irqrestore+0x4f/0x60
+[   30.457342] hardirqs last disabled at (366849): [<ffffffffa11384ef>] rc=
+u_do_batch+0x59f/0x990
+[   30.457347] softirqs last  enabled at (366834): [<ffffffffa1c002d7>] __=
+do_softirq+0x2d7/0x4a4
+[   30.457357] softirqs last disabled at (366839): [<ffffffffa10928c2>] ru=
+n_ksoftirqd+0x32/0x60
+[   30.457363]
+               other info that might help us debug this:
+[   30.457369]  Possible unsafe locking scenario:
 
->   */
+[   30.457375]        CPU0
+[   30.457378]        ----
+[   30.457381]   lock(&mgr->vm_lock);
+[   30.457386]   <Interrupt>
+[   30.457389]     lock(&mgr->vm_lock);
+[   30.457394]
+                *** DEADLOCK ***
 
-[....]
+<snips 999 lockdep lines and zillion ATOMIC_SLEEP gripes>
+
