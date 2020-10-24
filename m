@@ -2,491 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E1D66297C0E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:18:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id D7B65297C1E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:34:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761134AbgJXLSl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 07:18:41 -0400
-Received: from mx0a-0014ca01.pphosted.com ([208.84.65.235]:36478 "EHLO
-        mx0a-0014ca01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1759572AbgJXLSj (ORCPT
+        id S1761157AbgJXLe1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 07:34:27 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54934 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1759684AbgJXLeY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 07:18:39 -0400
-Received: from pps.filterd (m0042385.ppops.net [127.0.0.1])
-        by mx0a-0014ca01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09OBHslj020949;
-        Sat, 24 Oct 2020 04:18:23 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com; h=from : to : cc :
- subject : date : message-id : mime-version : content-type; s=proofpoint;
- bh=pxRWDdDYD92VnkhYx9RMweODih7ByJuu5T+67SduZNw=;
- b=j5rKErG5uHVKx0CPUrlxNKa7WrQDIXmsTE2+vI2FZHomY60Wa6cpZ0Yc8a2PVIFUcmAf
- ECy5eC+dYEg+HBX6hbJKvisFruhKUfy/CHejZwgbv2APGVP1vW5KDllCxy+NABt3txb0
- oeKP/QygXzaJRZUdtkpGMSAUloHkB8f82eq3/XhMh3K+LuZVX1u0bb/4MJ20Fdjz2hGU
- nkZodbkj8+XPqNXgRnhfeVO6gyRNbaFiEkksHbMrsOgRrFWy1zVHnZtbvSBHl772nxo+
- ePzUBtUbOAIHfiWtaDrFDQVSjAeJTWmPw4vzXTBAECzjwZ1uHkhETNVm6VujTZtMVSj5 Vw== 
-Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2103.outbound.protection.outlook.com [104.47.58.103])
-        by mx0a-0014ca01.pphosted.com with ESMTP id 34cgtvg9y0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Sat, 24 Oct 2020 04:18:23 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=WXmiJKxPPhPVD4WB/LR7p9zt7pv18ThH1E6JQmIUnd8XWzT6Dg6ZzU1pk9hWfCos0BFe0B0+4qkomFa5W624EasUXAkiv53p7DlNa3mRtPjalCzT21cirFkRxMmHSmvvH0eVzzgBzcn8t4szHPU5j8d5V35f956c9mnu9yMjqkTGUXZprGu2/Ax/UHzmQUX6coNvIV6USpcZLd/GHFXTdHSLP3bkTzFzStbXfZZwuBww01AEMskAsRHkNvc4XgbNuEmYzaX9YbqSCHuZXqZdM65GJVCLkqUw/nbxd+Fd9HWV4uD73EUoAJvErO56viug6ceuYvtgnmDWiSxOReWe+Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pxRWDdDYD92VnkhYx9RMweODih7ByJuu5T+67SduZNw=;
- b=dVHyxDkT7rxAGceT6QW+R9gnoRyBfBxzLnIhPDd1Frd4np59gce1dHjY/YLRVgLIaQlbu0XG2E/qFrXwzy1RZSoc+jB+0qS3+p3+Q1CpCr+Xbfdw4JPs15LbSG34Bvybs8vWcV/3DA3QEr3vePmiNx1LcSNk3MVRIpnR3dy5LU6Z87BHLl+DJgPOSE9RFaIc2qQVdlg6kSnUxLjy5U+JA1VX4DpOsDWa0mGdjIOd3aVgT3KWVPi+gEK93xUV5BeO4edFUty3jJVeCuT4XXnKfUbas0QkDcTEyLt/lhBhSBAdVjel4fTixyDzvhc6JAIm3kvBTl/EbacWWj+XqadSFA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 158.140.1.147) smtp.rcpttodomain=microchip.com smtp.mailfrom=cadence.com;
- dmarc=pass (p=none sp=none pct=100) action=none header.from=cadence.com;
- dkim=none (message not signed); arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cadence.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=pxRWDdDYD92VnkhYx9RMweODih7ByJuu5T+67SduZNw=;
- b=wegW8UbfMUgez/Pml/K+GqRCmgpnYE2NtKf3eQJs2ZtquFqdmtCuhKKc/eDLCXkfMnZKKSxzn/tjk/QiUwFIamvKxJjmGp0MKJdhiSUOHtevcok8eQvBI7K9dUdvM5+QLO5IvNuaaCdFePctnwONZfzHQyupZHbzw4yJcnusrJ4=
-Received: from BN0PR02CA0012.namprd02.prod.outlook.com (2603:10b6:408:e4::17)
- by SJ0PR07MB7518.namprd07.prod.outlook.com (2603:10b6:a03:289::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Sat, 24 Oct
- 2020 11:18:19 +0000
-Received: from BN8NAM12FT050.eop-nam12.prod.protection.outlook.com
- (2603:10b6:408:e4:cafe::78) by BN0PR02CA0012.outlook.office365.com
- (2603:10b6:408:e4::17) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend
- Transport; Sat, 24 Oct 2020 11:18:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 158.140.1.147)
- smtp.mailfrom=cadence.com; microchip.com; dkim=none (message not signed)
- header.d=none;microchip.com; dmarc=pass action=none header.from=cadence.com;
-Received-SPF: Pass (protection.outlook.com: domain of cadence.com designates
- 158.140.1.147 as permitted sender) receiver=protection.outlook.com;
- client-ip=158.140.1.147; helo=sjmaillnx1.cadence.com;
-Received: from sjmaillnx1.cadence.com (158.140.1.147) by
- BN8NAM12FT050.mail.protection.outlook.com (10.13.182.143) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.3520.9 via Frontend Transport; Sat, 24 Oct 2020 11:18:19 +0000
-Received: from maileu3.global.cadence.com (maileu3.cadence.com [10.160.88.99])
-        by sjmaillnx1.cadence.com (8.14.4/8.14.4) with ESMTP id 09OBIMtC022318
-        (version=TLSv1/SSLv3 cipher=AES256-SHA bits=256 verify=OK);
-        Sat, 24 Oct 2020 04:18:23 -0700
-X-CrossPremisesHeadersFilteredBySendConnector: maileu3.global.cadence.com
-Received: from maileu3.global.cadence.com (10.160.88.99) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3; Sat, 24 Oct 2020 13:18:15 +0200
-Received: from vleu-orange.cadence.com (10.160.88.83) by
- maileu3.global.cadence.com (10.160.88.99) with Microsoft SMTP Server (TLS) id
- 15.0.1367.3 via Frontend Transport; Sat, 24 Oct 2020 13:18:15 +0200
-Received: from vleu-orange.cadence.com (localhost.localdomain [127.0.0.1])
-        by vleu-orange.cadence.com (8.14.4/8.14.4) with ESMTP id 09OBIFD5028095;
-        Sat, 24 Oct 2020 13:18:15 +0200
-Received: (from pthombar@localhost)
-        by vleu-orange.cadence.com (8.14.4/8.14.4/Submit) id 09OBIBYb028094;
-        Sat, 24 Oct 2020 13:18:11 +0200
-From:   Parshuram Thombare <pthombar@cadence.com>
-To:     <linux@armlinux.org.uk>, <andrew@lunn.ch>
-CC:     <nicolas.ferre@microchip.com>, <davem@davemloft.net>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <mparab@cadence.com>, Parshuram Thombare <pthombar@cadence.com>
-Subject: [PATCH v5] net: macb: add support for high speed interface
-Date:   Sat, 24 Oct 2020 13:18:09 +0200
-Message-ID: <1603538289-28057-1-git-send-email-pthombar@cadence.com>
-X-Mailer: git-send-email 2.2.2
+        Sat, 24 Oct 2020 07:34:24 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 07FFCC0613CE;
+        Sat, 24 Oct 2020 04:34:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=fZ8bj6A3iDt5ahbAYnewSKmCG4NGnBSbfCNkigTIWGo=; b=Uwf6/V6TPWMW6u1n4LU6NM9mCQ
+        2Vpb9FvM/Xr8S3prSaFOUExp6Zf1wce/Pcr8SJ/0A8oijJVAZxLkb+WtmXyAehy8Ju8/VuCjc+1rh
+        C2xc1/JkqgEj5JG9PGJGn1AsxG2rzxsBMmD5J13rDXLFrgn5InxRqpsz4MbG9ak+TGgdvhFAafRJN
+        6mAmkPk746usYyRdEfR+Fxyq5avD2ToUqlJUUmgiwCdwzg+2kMxWSXdyCjG0eo8ClsOk7HLNovbKb
+        q1iAbUc5l2rUCBSJmAkYlrKxDDT443GinqZ8HF5204B9mrqVFt13L9iAw6plxJy8vie2x1Kktem19
+        APfXLqdA==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <kernel.org@kernel.org>)
+        id 1kWHoC-0006JU-3z; Sat, 24 Oct 2020 14:34:04 +0300
+Date:   Sat, 24 Oct 2020 14:34:03 +0300
+From:   Jarkko Sakkinen <kernel.org@kernel.org>
+To:     Dave Hansen <dave.hansen@intel.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Jethro Beekman <jethro@fortanix.com>,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+Message-ID: <20201024113403.GA29427@kernel.org>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
+ <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
+ <20201023101736.GG168477@linux.intel.com>
+ <f2ff64e6-8fe1-55ee-ae7c-f19d7907d60e@intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-OrganizationHeadersPreserved: maileu3.global.cadence.com
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: e5ff3cec-a91e-4abb-940d-08d8780e82e2
-X-MS-TrafficTypeDiagnostic: SJ0PR07MB7518:
-X-Microsoft-Antispam-PRVS: <SJ0PR07MB7518F408DB10BD4EE6E8A1C7C11B0@SJ0PR07MB7518.namprd07.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:4303;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: USYtUNkxX8rAn+GQCTbxno3gahdLnVj4Ht11ySOTqQU2YgmFjUP2Hz5hQsRpYfy4IQjXR2rRLP8+BF/XzxHk97Vm9t8UkcaVB8u6URqegMdpTFCcLBuvnRCTW812QurbTHNLcZYUtinLFHese4ThwKd1t1xYOBhfL6ibdRBYQrTkYKQde3NaF8rqWk0cN6GMiTPLb9m+bYOMjRbuF7FhFZN4vf4tPgd92er3qqICqQJflxJvEao6IT/5Rw/HfD+gL3Ju2q60DVwF147tse4d+aWv/nFSw2lqNUwFCoTWV0bejmRSDxZBqni6sGXSY3SMTP3tAwzR3aW/FIbqv963urbf2Vv+qQxAfqOCA3Eq9ti7KQ0zwD91mgJPprvTPBXhNJ5gNZ2nZVR8vYvZHzuYlhgcmQwajaQ1/sSKWaR49nw=
-X-Forefront-Antispam-Report: CIP:158.140.1.147;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:sjmaillnx1.cadence.com;PTR:unknown.Cadence.COM;CAT:NONE;SFS:(4636009)(396003)(136003)(346002)(376002)(39860400002)(36092001)(46966005)(2906002)(26005)(42186006)(82740400003)(36906005)(70586007)(5660300002)(316002)(2616005)(47076004)(186003)(110136005)(70206006)(54906003)(478600001)(30864003)(83380400001)(356005)(336012)(8676002)(8936002)(7636003)(4326008)(82310400003)(36756003)(426003)(107886003)(86362001);DIR:OUT;SFP:1101;
-X-OriginatorOrg: cadence.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Oct 2020 11:18:19.1748
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e5ff3cec-a91e-4abb-940d-08d8780e82e2
-X-MS-Exchange-CrossTenant-Id: d36035c5-6ce6-4662-a3dc-e762e61ae4c9
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=d36035c5-6ce6-4662-a3dc-e762e61ae4c9;Ip=[158.140.1.147];Helo=[sjmaillnx1.cadence.com]
-X-MS-Exchange-CrossTenant-AuthSource: BN8NAM12FT050.eop-nam12.prod.protection.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR07MB7518
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-24_09:2020-10-23,2020-10-24 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_check_notspam policy=outbound_check score=0 phishscore=0
- adultscore=0 spamscore=0 clxscore=1015 priorityscore=1501 mlxlogscore=999
- suspectscore=0 impostorscore=0 mlxscore=0 lowpriorityscore=0 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010240084
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f2ff64e6-8fe1-55ee-ae7c-f19d7907d60e@intel.com>
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: kernel.org@kernel.org
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds support for 10GBASE-R interface to the linux driver for
-Cadence's ethernet controller.
-This controller has separate MAC's and PCS'es for low and high speed paths.
-High speed PCS supports 100M, 1G, 2.5G, 5G and 10G through rate adaptation
-implementation. However, since it doesn't support auto negotiation, linux
-driver is modified to support 10GBASE-R instead of USXGMII. 
+On Fri, Oct 23, 2020 at 07:19:05AM -0700, Dave Hansen wrote:
+> On 10/23/20 3:17 AM, Jarkko Sakkinen wrote:
+> > On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
+> >> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
+> >>> + * Failure to explicitly request access to a restricted attribute will cause
+> >>> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
+> >>> + * is access to the PROVISION_KEY.
+> >> Could we also justify why access is restricted, please?  Maybe:
+> >>
+> >> 	Access is restricted because PROVISION_KEY is burned uniquely
+> >> 	into each each processor, making it a perfect unique identifier
+> >> 	with privacy and fingerprinting implications.
+> >>
+> >> Are there any other reasons for doing it this way?
+> > AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
+> > PROVISION_SEALING_KEY also have random salt added, i.e. they change
+> > every boot cycle.
+> > 
+> > There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
+> > 3D :-)
+> 
+> Does that mean there are no privacy implications from access to the
+> provisioning keys?  If that's true, why do we need a separate permission
+> framework for creating provisioning enclaves?
 
-Signed-off-by: Parshuram Thombare <pthombar@cadence.com>
----
-Changes between v4 and v5:
-1. Correctly programming MAC bits mac_config.
+As I've understood it, the key material for those keys is not even
+required in the current SGX architecture, it was used in the legacy EPID
+scheme, but the attribute itself is useful.
 
-Changes between v3 and v4:
-1. Adapted new phylink pcs_ops for low speed PCS.
-2. Moved high speed MAC configuration from pcs_config
-   to mac_config.
+Let's assume that we have some sort of quoting enclave Q, which guards a
+public key pair, which signs quotes of other enclaves. Let's assume we
+have an attestation server A, which will enable some capabilities [*],
+if it receives a quote signed with that public key pair.
 
-Changes between v2 and v3:
-1. Replace USXGMII interface by 10GBASE-R interface.
-2. Adapted new phylink pcs_ops for high speed PCS.
-3. Added pcs_get_state for high speed PCS.
+1. E gets the report key with EGETKEY.
+2. E constructs REPORTDATA (37.16) and TARGETINFO (37.17) structures.
+   The former describes the enclaves contents and attributes and latter
+   the target, i.e. Q in this artitificial example.
+3. E calls EREPORT to generate a structure called REPORT MAC'd with the
+   *targets* report key. It knows, which key to usue from REPORTDATA.
+4. The runtime will then pass this to Q.
+5. Q will check if ATTRIBUTE.PROVISION_KEY is set. If it is, Q will
+   know that the enclave is allowed to get attested. Then it will
+   sign the report with the guarded public key pair and send it to
+   the attestation server.
 
----
- drivers/net/ethernet/cadence/macb.h      |  44 +++++++++++
- drivers/net/ethernet/cadence/macb_main.c | 128 +++++++++++++++++++++++++++++--
- 2 files changed, 166 insertions(+), 6 deletions(-)
+The example is artificial, e.g. there could be something more complex,
+but the idea is essentially this.
 
-diff --git a/drivers/net/ethernet/cadence/macb.h b/drivers/net/ethernet/cadence/macb.h
-index 5de47f6..1f5da4e 100644
---- a/drivers/net/ethernet/cadence/macb.h
-+++ b/drivers/net/ethernet/cadence/macb.h
-@@ -77,10 +77,12 @@
- #define MACB_RBQPH		0x04D4
- 
- /* GEM register offsets. */
-+#define GEM_NCR			0x0000 /* Network Control */
- #define GEM_NCFGR		0x0004 /* Network Config */
- #define GEM_USRIO		0x000c /* User IO */
- #define GEM_DMACFG		0x0010 /* DMA Configuration */
- #define GEM_JML			0x0048 /* Jumbo Max Length */
-+#define GEM_HS_MAC_CONFIG	0x0050 /* GEM high speed config */
- #define GEM_HRB			0x0080 /* Hash Bottom */
- #define GEM_HRT			0x0084 /* Hash Top */
- #define GEM_SA1B		0x0088 /* Specific1 Bottom */
-@@ -166,6 +168,9 @@
- #define GEM_DCFG7		0x0298 /* Design Config 7 */
- #define GEM_DCFG8		0x029C /* Design Config 8 */
- #define GEM_DCFG10		0x02A4 /* Design Config 10 */
-+#define GEM_DCFG12		0x02AC /* Design Config 12 */
-+#define GEM_USX_CONTROL		0x0A80 /* High speed PCS control register */
-+#define GEM_USX_STATUS		0x0A88 /* High speed PCS status register */
- 
- #define GEM_TXBDCTRL	0x04cc /* TX Buffer Descriptor control register */
- #define GEM_RXBDCTRL	0x04d0 /* RX Buffer Descriptor control register */
-@@ -272,11 +277,19 @@
- #define MACB_IRXFCS_OFFSET	19
- #define MACB_IRXFCS_SIZE	1
- 
-+/* GEM specific NCR bitfields. */
-+#define GEM_ENABLE_HS_MAC_OFFSET	31
-+#define GEM_ENABLE_HS_MAC_SIZE		1
-+
- /* GEM specific NCFGR bitfields. */
-+#define GEM_FD_OFFSET		1 /* Full duplex */
-+#define GEM_FD_SIZE		1
- #define GEM_GBE_OFFSET		10 /* Gigabit mode enable */
- #define GEM_GBE_SIZE		1
- #define GEM_PCSSEL_OFFSET	11
- #define GEM_PCSSEL_SIZE		1
-+#define GEM_PAE_OFFSET		13 /* Pause enable */
-+#define GEM_PAE_SIZE		1
- #define GEM_CLK_OFFSET		18 /* MDC clock division */
- #define GEM_CLK_SIZE		3
- #define GEM_DBW_OFFSET		21 /* Data bus width */
-@@ -461,11 +474,17 @@
- #define MACB_REV_OFFSET				0
- #define MACB_REV_SIZE				16
- 
-+/* Bitfield in HS_MAC_CONFIG */
-+#define GEM_HS_MAC_SPEED_OFFSET			0
-+#define GEM_HS_MAC_SPEED_SIZE			3
-+
- /* Bitfields in DCFG1. */
- #define GEM_IRQCOR_OFFSET			23
- #define GEM_IRQCOR_SIZE				1
- #define GEM_DBWDEF_OFFSET			25
- #define GEM_DBWDEF_SIZE				3
-+#define GEM_NO_PCS_OFFSET			0
-+#define GEM_NO_PCS_SIZE				1
- 
- /* Bitfields in DCFG2. */
- #define GEM_RX_PKT_BUFF_OFFSET			20
-@@ -500,6 +519,28 @@
- #define GEM_RXBD_RDBUFF_OFFSET			8
- #define GEM_RXBD_RDBUFF_SIZE			4
- 
-+/* Bitfields in DCFG12. */
-+#define GEM_HIGH_SPEED_OFFSET			26
-+#define GEM_HIGH_SPEED_SIZE			1
-+
-+/* Bitfields in USX_CONTROL. */
-+#define GEM_USX_CTRL_SPEED_OFFSET		14
-+#define GEM_USX_CTRL_SPEED_SIZE			3
-+#define GEM_SERDES_RATE_OFFSET			12
-+#define GEM_SERDES_RATE_SIZE			2
-+#define GEM_RX_SCR_BYPASS_OFFSET		9
-+#define GEM_RX_SCR_BYPASS_SIZE			1
-+#define GEM_TX_SCR_BYPASS_OFFSET		8
-+#define GEM_TX_SCR_BYPASS_SIZE			1
-+#define GEM_TX_EN_OFFSET			1
-+#define GEM_TX_EN_SIZE				1
-+#define GEM_SIGNAL_OK_OFFSET			0
-+#define GEM_SIGNAL_OK_SIZE			1
-+
-+/* Bitfields in USX_STATUS. */
-+#define GEM_USX_BLOCK_LOCK_OFFSET		0
-+#define GEM_USX_BLOCK_LOCK_SIZE			1
-+
- /* Bitfields in TISUBN */
- #define GEM_SUBNSINCR_OFFSET			0
- #define GEM_SUBNSINCRL_OFFSET			24
-@@ -663,6 +704,8 @@
- #define MACB_CAPS_GIGABIT_MODE_AVAILABLE	0x20000000
- #define MACB_CAPS_SG_DISABLED			0x40000000
- #define MACB_CAPS_MACB_IS_GEM			0x80000000
-+#define MACB_CAPS_PCS				0x01000000
-+#define MACB_CAPS_HIGH_SPEED			0x02000000
- 
- /* LSO settings */
- #define MACB_LSO_UFO_ENABLE			0x01
-@@ -1201,6 +1244,7 @@ struct macb {
- 	struct mii_bus		*mii_bus;
- 	struct phylink		*phylink;
- 	struct phylink_config	phylink_config;
-+	struct phylink_pcs	phylink_pcs;
- 
- 	u32			caps;
- 	unsigned int		dma_burst_length;
-diff --git a/drivers/net/ethernet/cadence/macb_main.c b/drivers/net/ethernet/cadence/macb_main.c
-index 883e47c..b7bc160 100644
---- a/drivers/net/ethernet/cadence/macb_main.c
-+++ b/drivers/net/ethernet/cadence/macb_main.c
-@@ -84,6 +84,9 @@ struct sifive_fu540_macb_mgmt {
- #define MACB_WOL_HAS_MAGIC_PACKET	(0x1 << 0)
- #define MACB_WOL_ENABLED		(0x1 << 1)
- 
-+#define HS_SPEED_10000M			4
-+#define MACB_SERDES_RATE_10G		1
-+
- /* Graceful stop timeouts in us. We should allow up to
-  * 1 frame time (10 Mbits/s, full-duplex, ignoring collisions)
-  */
-@@ -513,6 +516,7 @@ static void macb_validate(struct phylink_config *config,
- 	    state->interface != PHY_INTERFACE_MODE_RMII &&
- 	    state->interface != PHY_INTERFACE_MODE_GMII &&
- 	    state->interface != PHY_INTERFACE_MODE_SGMII &&
-+	    state->interface != PHY_INTERFACE_MODE_10GBASER &&
- 	    !phy_interface_mode_is_rgmii(state->interface)) {
- 		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
- 		return;
-@@ -525,10 +529,31 @@ static void macb_validate(struct phylink_config *config,
- 		return;
- 	}
- 
-+	if (state->interface == PHY_INTERFACE_MODE_10GBASER &&
-+	    !(bp->caps & MACB_CAPS_HIGH_SPEED &&
-+	      bp->caps & MACB_CAPS_PCS)) {
-+		bitmap_zero(supported, __ETHTOOL_LINK_MODE_MASK_NBITS);
-+		return;
-+	}
-+
- 	phylink_set_port_modes(mask);
- 	phylink_set(mask, Autoneg);
- 	phylink_set(mask, Asym_Pause);
- 
-+	if (bp->caps & MACB_CAPS_GIGABIT_MODE_AVAILABLE &&
-+	    (state->interface == PHY_INTERFACE_MODE_NA ||
-+	     state->interface == PHY_INTERFACE_MODE_10GBASER)) {
-+		phylink_set(mask, 10000baseCR_Full);
-+		phylink_set(mask, 10000baseER_Full);
-+		phylink_set(mask, 10000baseKR_Full);
-+		phylink_set(mask, 10000baseLR_Full);
-+		phylink_set(mask, 10000baseLRM_Full);
-+		phylink_set(mask, 10000baseSR_Full);
-+		phylink_set(mask, 10000baseT_Full);
-+		if (state->interface != PHY_INTERFACE_MODE_NA)
-+			goto out;
-+	}
-+
- 	phylink_set(mask, 10baseT_Half);
- 	phylink_set(mask, 10baseT_Full);
- 	phylink_set(mask, 100baseT_Half);
-@@ -545,23 +570,80 @@ static void macb_validate(struct phylink_config *config,
- 		if (!(bp->caps & MACB_CAPS_NO_GIGABIT_HALF))
- 			phylink_set(mask, 1000baseT_Half);
- 	}
--
-+out:
- 	bitmap_and(supported, supported, mask, __ETHTOOL_LINK_MODE_MASK_NBITS);
- 	bitmap_and(state->advertising, state->advertising, mask,
- 		   __ETHTOOL_LINK_MODE_MASK_NBITS);
- }
- 
--static void macb_mac_pcs_get_state(struct phylink_config *config,
-+static void macb_usx_pcs_link_up(struct phylink_pcs *pcs, unsigned int mode,
-+				 phy_interface_t interface, int speed,
-+				 int duplex)
-+{
-+	struct macb *bp = container_of(pcs, struct macb, phylink_pcs);
-+	u32 config;
-+
-+	config = gem_readl(bp, USX_CONTROL);
-+	config = GEM_BFINS(SERDES_RATE, MACB_SERDES_RATE_10G, config);
-+	config = GEM_BFINS(USX_CTRL_SPEED, HS_SPEED_10000M, config);
-+	config &= ~(GEM_BIT(TX_SCR_BYPASS) | GEM_BIT(RX_SCR_BYPASS));
-+	config |= GEM_BIT(TX_EN);
-+	gem_writel(bp, USX_CONTROL, config);
-+}
-+
-+static void macb_usx_pcs_get_state(struct phylink_pcs *pcs,
- 				   struct phylink_link_state *state)
- {
-+	struct macb *bp = container_of(pcs, struct macb, phylink_pcs);
-+	u32 val;
-+
-+	state->speed = SPEED_10000;
-+	state->duplex = 1;
-+	state->an_complete = 1;
-+
-+	val = gem_readl(bp, USX_STATUS);
-+	state->link = !!(val & GEM_BIT(USX_BLOCK_LOCK));
-+	val = gem_readl(bp, NCFGR);
-+	if (val & GEM_BIT(PAE))
-+		state->pause = MLO_PAUSE_RX;
-+}
-+
-+static int macb_usx_pcs_config(struct phylink_pcs *pcs,
-+			       unsigned int mode,
-+			       phy_interface_t interface,
-+			       const unsigned long *advertising,
-+			       bool permit_pause_to_mac)
-+{
-+	struct macb *bp = container_of(pcs, struct macb, phylink_pcs);
-+
-+	gem_writel(bp, USX_CONTROL, gem_readl(bp, USX_CONTROL) |
-+		   GEM_BIT(SIGNAL_OK));
-+
-+	return 0;
-+}
-+
-+static void macb_pcs_get_state(struct phylink_pcs *pcs,
-+			       struct phylink_link_state *state)
-+{
- 	state->link = 0;
- }
- 
--static void macb_mac_an_restart(struct phylink_config *config)
-+static void macb_pcs_an_restart(struct phylink_pcs *pcs)
- {
- 	/* Not supported */
- }
- 
-+static const struct phylink_pcs_ops macb_phylink_usx_pcs_ops = {
-+	.pcs_get_state = macb_usx_pcs_get_state,
-+	.pcs_config = macb_usx_pcs_config,
-+	.pcs_link_up = macb_usx_pcs_link_up,
-+};
-+
-+static const struct phylink_pcs_ops macb_phylink_pcs_ops = {
-+	.pcs_get_state = macb_pcs_get_state,
-+	.pcs_an_restart = macb_pcs_an_restart,
-+};
-+
- static void macb_mac_config(struct phylink_config *config, unsigned int mode,
- 			    const struct phylink_link_state *state)
- {
-@@ -569,25 +651,35 @@ static void macb_mac_config(struct phylink_config *config, unsigned int mode,
- 	struct macb *bp = netdev_priv(ndev);
- 	unsigned long flags;
- 	u32 old_ctrl, ctrl;
-+	u32 old_ncr, ncr;
- 
- 	spin_lock_irqsave(&bp->lock, flags);
- 
- 	old_ctrl = ctrl = macb_or_gem_readl(bp, NCFGR);
-+	old_ncr = ncr = macb_or_gem_readl(bp, NCR);
- 
- 	if (bp->caps & MACB_CAPS_MACB_IS_EMAC) {
- 		if (state->interface == PHY_INTERFACE_MODE_RMII)
- 			ctrl |= MACB_BIT(RM9200_RMII);
- 	} else if (macb_is_gem(bp)) {
- 		ctrl &= ~(GEM_BIT(SGMIIEN) | GEM_BIT(PCSSEL));
-+		ncr &= ~GEM_BIT(ENABLE_HS_MAC);
- 
--		if (state->interface == PHY_INTERFACE_MODE_SGMII)
-+		if (state->interface == PHY_INTERFACE_MODE_SGMII) {
- 			ctrl |= GEM_BIT(SGMIIEN) | GEM_BIT(PCSSEL);
-+		} else if (state->interface == PHY_INTERFACE_MODE_10GBASER) {
-+			ctrl |= GEM_BIT(PCSSEL);
-+			ncr |= GEM_BIT(ENABLE_HS_MAC);
-+		}
- 	}
- 
- 	/* Apply the new configuration, if any */
- 	if (old_ctrl ^ ctrl)
- 		macb_or_gem_writel(bp, NCFGR, ctrl);
- 
-+	if (old_ncr ^ ncr)
-+		macb_or_gem_writel(bp, NCR, ncr);
-+
- 	spin_unlock_irqrestore(&bp->lock, flags);
- }
- 
-@@ -664,6 +756,10 @@ static void macb_mac_link_up(struct phylink_config *config,
- 
- 	macb_or_gem_writel(bp, NCFGR, ctrl);
- 
-+	if (bp->phy_interface == PHY_INTERFACE_MODE_10GBASER)
-+		gem_writel(bp, HS_MAC_CONFIG, GEM_BFINS(HS_MAC_SPEED, HS_SPEED_10000M,
-+							gem_readl(bp, HS_MAC_CONFIG)));
-+
- 	spin_unlock_irqrestore(&bp->lock, flags);
- 
- 	/* Enable Rx and Tx */
-@@ -672,10 +768,25 @@ static void macb_mac_link_up(struct phylink_config *config,
- 	netif_tx_wake_all_queues(ndev);
- }
- 
-+static int macb_mac_prepare(struct phylink_config *config, unsigned int mode,
-+			    phy_interface_t interface)
-+{
-+	struct net_device *ndev = to_net_dev(config->dev);
-+	struct macb *bp = netdev_priv(ndev);
-+
-+	if (interface == PHY_INTERFACE_MODE_10GBASER)
-+		bp->phylink_pcs.ops = &macb_phylink_usx_pcs_ops;
-+	else
-+		bp->phylink_pcs.ops = &macb_phylink_pcs_ops;
-+
-+	phylink_set_pcs(bp->phylink, &bp->phylink_pcs);
-+
-+	return 0;
-+}
-+
- static const struct phylink_mac_ops macb_phylink_ops = {
- 	.validate = macb_validate,
--	.mac_pcs_get_state = macb_mac_pcs_get_state,
--	.mac_an_restart = macb_mac_an_restart,
-+	.mac_prepare = macb_mac_prepare,
- 	.mac_config = macb_mac_config,
- 	.mac_link_down = macb_mac_link_down,
- 	.mac_link_up = macb_mac_link_up,
-@@ -3523,6 +3634,11 @@ static void macb_configure_caps(struct macb *bp,
- 		dcfg = gem_readl(bp, DCFG1);
- 		if (GEM_BFEXT(IRQCOR, dcfg) == 0)
- 			bp->caps |= MACB_CAPS_ISR_CLEAR_ON_WRITE;
-+		if (GEM_BFEXT(NO_PCS, dcfg) == 0)
-+			bp->caps |= MACB_CAPS_PCS;
-+		dcfg = gem_readl(bp, DCFG12);
-+		if (GEM_BFEXT(HIGH_SPEED, dcfg) == 1)
-+			bp->caps |= MACB_CAPS_HIGH_SPEED;
- 		dcfg = gem_readl(bp, DCFG2);
- 		if ((dcfg & (GEM_BIT(RX_PKT_BUFF) | GEM_BIT(TX_PKT_BUFF))) == 0)
- 			bp->caps |= MACB_CAPS_FIFO_MODE;
--- 
-2.7.4
+[*] With TPM and measured boot this could be to open network for a data
+    center node. Quote is just the term used for a signed measurement in
+    remote attestation schemes generally.
 
+/Jarkko
