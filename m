@@ -2,147 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8052297C01
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 12:51:58 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 63E83297C07
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:01:59 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761117AbgJXKvl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 06:51:41 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:48406 "EHLO
+        id S1759407AbgJXLB4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 07:01:56 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50012 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1761072AbgJXKvY (ORCPT
+        with ESMTP id S1758622AbgJXLBy (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 06:51:24 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9717BC0613CE;
-        Sat, 24 Oct 2020 03:51:23 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id 13so4786133wmf.0;
-        Sat, 24 Oct 2020 03:51:23 -0700 (PDT)
+        Sat, 24 Oct 2020 07:01:54 -0400
+Received: from mail-lj1-x244.google.com (mail-lj1-x244.google.com [IPv6:2a00:1450:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AA2D3C0613CE;
+        Sat, 24 Oct 2020 04:01:53 -0700 (PDT)
+Received: by mail-lj1-x244.google.com with SMTP id i2so4325423ljg.4;
+        Sat, 24 Oct 2020 04:01:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=gghvbGwyzyua7lEb25CgL2cnMZlNxJAbetgC6vSEA4diF1YkNZdVbg6Bguw5N444al
-         9/QwfvWTsEnfAawhZxOiyV/gYm3wsU7og0dCQbvkSPbcq/giBXUAfm9l8ypWTf78KuUh
-         nJo02E4qSftesu5wkYu8ClVABaT9VVBf6Pyg3zilnUVr0XoAwBaCgv2mfVpEB7xPAtZA
-         /VQSd6xsH6JWjZaCiE3GvncvSVg52KFKwjODL4zMzhvGJYst6EALeoe2GK1Yu23Vvqmz
-         X4+X3iu8lU2SrVAFe+MvUPkyTbRG1QZBpDWRTVve5g8rDwpgRFFGWfPgmFn9moui8b1E
-         4sTw==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=J7AXGwZjHBo0cvQ8nOxRhJ0Ve52DSlFqmlnOi+p9Ml4=;
+        b=RB4Ifw11Et8ewDdQ71Y1JyrVaP+QLMh5l+oakjdrwQqGAl+nHe8uPPEeSLuG61NzR1
+         sNlfoKNM/zeyich0IQ1x7luJpp1P6jMpoTUVVoSPsU2FWKW0VjThcIA/BY+ubptMqYcP
+         3TX7OTFWPFRQe36AXd0enGK0j7/iTZ0RkxsX4jm9C4QkD6paQFYN5MRRUIcmOvvXluLO
+         aJBFFdJLrm9qiUoerblrXizM7ULYrs0ROpLNN1rvpc2qY2j+u0jYs0g9nhxBGIYcPuLh
+         RlMyDCwNUtdirjqOiqSuOweLQ7UgzXjflCcohOUD/148FRKfYGfxCgeHAR6lJU/HzaV8
+         Ampg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=Sq/g3QntWZKliuSV9V54j9Wg1RchEoNv9jy29pYMN/E=;
-        b=PhdwIfs90YWEI/d2zpRZYdiI/G/GjYwMf3753XNAvqn9RwxwBUpuK8epX//Jlhlz97
-         AT1nIrErumXSBPCOtmgMQEAzM6iifQS0r8fP6DNjrQtxU7kMGZe0GmKXkVqCZlyd2wRz
-         sAFurSPfix2RI0bu0ZFQRfdSf6iuNKxpbsPl7KYT7i0QuFFwhwD6KS9V3TbD5W7zyRoJ
-         F4IR7yAV5B7m08USubLWH9JCi/Q/7KAUA/tThTTd9Oj5MhewYCaFWircfIl085klv6tB
-         NFv5FKFj1+IY3TYFlICyy15a0wWnPQwbxBDpDReQbA/Mq2CEyrEwlKnIABLJtgnERkhP
-         Jz6g==
-X-Gm-Message-State: AOAM530ZJssxfNzceWlMFIm+jmls/DtcaT/u2mFDCDqcry1D0yFocVCW
-        f1bJqJdcl5xRFlTNBu3WYrc=
-X-Google-Smtp-Source: ABdhPJyOVfJCCxsbnRdlNwPQQBn9LClTz5MwVi8sGfeJQRSlKBm0lAiVrBTTR5ULQvX2QVcyB9ewBw==
-X-Received: by 2002:a7b:c114:: with SMTP id w20mr1573678wmi.105.1603536682261;
-        Sat, 24 Oct 2020 03:51:22 -0700 (PDT)
-Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
-        by smtp.gmail.com with ESMTPSA id 3sm8792632wmd.19.2020.10.24.03.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 03:51:21 -0700 (PDT)
-From:   kholk11@gmail.com
-To:     dmitry.torokhov@gmail.com
-Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
-        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
-        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
-        devicetree@vger.kernel.org, krzk@kernel.org,
-        andy.shevchenko@gmail.com
-Subject: [PATCH v7 3/3] dt-bindings: touchscreen: Add binding for Novatek NT36xxx series driver
-Date:   Sat, 24 Oct 2020 12:51:11 +0200
-Message-Id: <20201024105111.15829-4-kholk11@gmail.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201024105111.15829-1-kholk11@gmail.com>
-References: <20201024105111.15829-1-kholk11@gmail.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=J7AXGwZjHBo0cvQ8nOxRhJ0Ve52DSlFqmlnOi+p9Ml4=;
+        b=tkmDQL9F/sbUXM567YsZo9U+TQ/DZSFp0vdVEs9EaKIJQzqmEikvC+19WKXy5JHPiI
+         i3jNRPDEL7XKPo0mRgShSslNt2k9qE1Y/Pizp2h/IJuoSvCWe0zY5KOhE42cR26CR/Re
+         zLCJtcbqtMmNEHLe9sgp9QVxRuTxoUj58ffLeiDmh2eTgNIZsGnYDVYGhAkGCg36jJ3F
+         95SeMACHsV4ulbKI/FX6dZ5O2HSsFixv9U+XWHzrX0xcTk7eCswycuKBtYM9AAF7QIwN
+         +8kystwXGDSAimPjTyOTuMn+A9YtzFLzWqhdcDEvZTxVJyk4vvIw/XENZ/HTgiuq7kLh
+         fKMw==
+X-Gm-Message-State: AOAM532tui9+U5lhVoa2+GDKxmU/OoE4OkKgOH18OGYLRUq890gvyyH9
+        +6AMM9P8uLDONSi+dySVfB7iZv4BVxY=
+X-Google-Smtp-Source: ABdhPJziG/fPpVvjAmCunEwpSNa2+UJyviag/t3AiZqI88dIphjawUEOM+KFCId+O3zeCfP2ehG6zg==
+X-Received: by 2002:a2e:8997:: with SMTP id c23mr2256835lji.132.1603537311739;
+        Sat, 24 Oct 2020 04:01:51 -0700 (PDT)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id v20sm483354lji.90.2020.10.24.04.01.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Oct 2020 04:01:51 -0700 (PDT)
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Kees Cook <keescook@chromium.org>
+Cc:     Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
+        systemd-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <dave.martin@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022075447.GO3819@arm.com>
+ <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
+ <202010221256.A4F95FD11@keescook> <20201023090232.GA25736@gaia>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <cf655c11-d854-281a-17ae-262ddf0aaa08@gmail.com>
+Date:   Sat, 24 Oct 2020 14:01:30 +0300
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201023090232.GA25736@gaia>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: AngeloGioacchino Del Regno <kholk11@gmail.com>
+On 23.10.2020 12.02, Catalin Marinas wrote:
+> On Thu, Oct 22, 2020 at 01:02:18PM -0700, Kees Cook wrote:
+>> Regardless, it makes sense to me to have the kernel load the executable
+>> itself with BTI enabled by default. I prefer gaining Catalin's suggested
+>> patch[2]. :)
+> [...]
+>> [2] https://lore.kernel.org/linux-arm-kernel/20201022093104.GB1229@gaia/
+> 
+> I think I first heard the idea at Mark R ;).
+> 
+> It still needs glibc changes to avoid the mprotect(), or at least ignore
+> the error. Since this is an ABI change and we don't know which kernels
+> would have it backported, maybe better to still issue the mprotect() but
+> ignore the failure.
 
-Add binding for the Novatek NT36xxx series touchscreen driver.
+What about kernel adding an auxiliary vector as a flag to indicate that 
+BTI is supported and recommended by the kernel? Then dynamic loader 
+could use that to detect that a) the main executable is BTI protected 
+and there's no need to mprotect() it and b) PROT_BTI flag should be 
+added to all PROT_EXEC pages.
 
-Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
----
- .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
- 1 file changed, 59 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+In absence of the vector, the dynamic loader might choose to skip doing 
+PROT_BTI at all (since the main executable isn't protected anyway 
+either, or maybe even the kernel is up-to-date but it knows that it's 
+not recommended for some reason, or maybe the kernel is so ancient that 
+it doesn't know about BTI). Optionally it could still read the flag from 
+ELF later (for compatibility with old kernels) and then do the 
+mprotect() dance, which may trip seccomp filters, possibly fatally.
 
-diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-new file mode 100644
-index 000000000000..1486b20d6c49
---- /dev/null
-+++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-@@ -0,0 +1,59 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
-+
-+title: Novatek NT36xxx series touchscreen controller Bindings
-+
-+maintainers:
-+  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-+
-+allOf:
-+  - $ref: touchscreen.yaml#
-+
-+properties:
-+  compatible:
-+    const: novatek,nt36525
-+
-+  reg:
-+    maxItems: 1
-+
-+  interrupts:
-+    maxItems: 1
-+
-+  reset-gpios:
-+    maxItems: 1
-+
-+  vdd-supply:
-+    description: Power supply regulator for VDD pin
-+
-+  vio-supply:
-+    description: Power supply regulator on VDD-IO pin
-+
-+unevaluatedProperties: false
-+
-+required:
-+  - compatible
-+  - reg
-+  - interrupts
-+
-+examples:
-+  - |
-+    #include <dt-bindings/interrupt-controller/irq.h>
-+    #include <dt-bindings/gpio/gpio.h>
-+
-+    i2c {
-+      #address-cells = <1>;
-+      #size-cells = <0>;
-+
-+      touchscreen@62 {
-+        compatible = "novatek,nt36525";
-+        reg = <0x62>;
-+        interrupt-parent = <&tlmm>;
-+        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-+        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
-+      };
-+    };
-+
-+...
--- 
-2.28.0
-
+-Topi
