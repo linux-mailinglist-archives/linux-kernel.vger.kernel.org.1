@@ -2,158 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23CBA297EA2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 23:09:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1D54A297EAB
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 23:12:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764552AbgJXVJZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 17:09:25 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:58032 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1763077AbgJXVJY (ORCPT
+        id S1764584AbgJXVMT convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 24 Oct 2020 17:12:19 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31936 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1764561AbgJXVMQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 17:09:24 -0400
-Received: from mail-ot1-x343.google.com (mail-ot1-x343.google.com [IPv6:2607:f8b0:4864:20::343])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C2E4FC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 14:09:14 -0700 (PDT)
-Received: by mail-ot1-x343.google.com with SMTP id o14so4716620otj.6
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 14:09:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brighamcampbell-com.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=YmDiLIstb4K9D6S9jTZohBVgF8FGdooIv9+LYA/HqZ8=;
-        b=g6EQ9oF5oYzdppaDHsTe5WnO+lDrZN/zWvEhTjNNdfjQzXwECsPBR84sHnIm/244ut
-         dF7BxNWOYAGD64UZXpyWwi5tZf4PV7OB53GkFlBfRUWAJyFmzJZyfdoCaxjGrPELrina
-         H/vY2S3CtFCb9JBbwNw6IiFBr6E9pFM7R3IoBq0aqsyyJLeMLK2HBo7w3o5TnARn8O34
-         6BSpZOQiKpPajrstnRyJ/vRjMYyR3oAlZJEZhNfWqc9LN4mNp+Eb/dWkkuQkYa8pKNxZ
-         dWQUPxPp2+jHXo1RNjQFImYOTim5gbxf8NVD/Hjw70LfpnqLMV7t2IhF0AR9KEQqvMjB
-         PqeQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=YmDiLIstb4K9D6S9jTZohBVgF8FGdooIv9+LYA/HqZ8=;
-        b=aN6x28a0VgzLbYC22/vp0CX8bTd16AT9cqlxTeUzqRfFWBfR1lCuNUHy869Ma9eXSP
-         MHzSRMHbXKFlg0vel8XZOWLpQR/hc0Nr+v9Vn2a1a4lTuI+00/R98RrzMXQgH29dDGKf
-         S+c9FALEIkQwckZBhYXsCGrZAbT+6h8mqJRYApXbS4L6IkkIPo4WaRBnF3/r0LMz2Ie4
-         7LGmQtPbWx8izH4AbW1UzaRkyeAJeRbYj6Bqe6xzb37vtjIDGvAwC5KQ7Mkzt62y1+r1
-         gAPbA0eFY3HgdF1iO8VsDUQlJQN7TzN+tyEEjSs2wgBUr5oeIprve/FfJgo7TZxSf3LJ
-         iRTw==
-X-Gm-Message-State: AOAM532KDIt3YsqXB7Sh/rmD5A8FYWCOl17dobwSJOg59l2PPor5z8y1
-        YhEdMSQxrpqThMEvYbd4ucxRng==
-X-Google-Smtp-Source: ABdhPJxQRzlCmBugYgNRY1i0fnNciLHOU5Jv0qRUCTs0LGm43BVaaCoYtHPqErO8Ane2O+9a+MPT2A==
-X-Received: by 2002:a05:6830:4028:: with SMTP id i8mr6071668ots.90.1603573753565;
-        Sat, 24 Oct 2020 14:09:13 -0700 (PDT)
-Received: from arch-xps.localdomain ([209.221.58.71])
-        by smtp.gmail.com with ESMTPSA id l62sm1670268oif.18.2020.10.24.14.09.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 14:09:12 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 15:09:10 -0600
-From:   Brigham Campbell <me@brighamcampbell.com>
-To:     robh+dt@kernel.org, robh@kernel.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, alchark@gmail.com
-Subject: Re: [PATCH] ARM: dts: Add empty "chosen" node to WM8xxx device trees
-Message-ID: <20201024210910.GA27207@arch-xps.localdomain>
-References: <20201009165742.GA35334@arch-xps.localdomain>
+        Sat, 24 Oct 2020 17:12:16 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-3-gvyTKESiOkaAGmzuPOOVdg-1; Sat, 24 Oct 2020 22:12:12 +0100
+X-MC-Unique: gvyTKESiOkaAGmzuPOOVdg-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 24 Oct 2020 22:12:11 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 24 Oct 2020 22:12:11 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Segher Boessenkool' <segher@kernel.crashing.org>
+CC:     Al Viro <viro@zeniv.linux.org.uk>,
+        David Hildenbrand <david@redhat.com>,
+        "linux-aio@kvack.org" <linux-aio@kvack.org>,
+        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
+        David Howells <dhowells@redhat.com>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>,
+        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
+        "kernel-team@android.com" <kernel-team@android.com>,
+        Arnd Bergmann <arnd@arndb.de>,
+        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Jens Axboe <axboe@kernel.dk>,
+        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
+        'Greg KH' <gregkh@linuxfoundation.org>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-security-module@vger.kernel.org" 
+        <linux-security-module@vger.kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
+Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
+ rw_copy_check_uvector() into lib/iov_iter.c"
+Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12CAAGD4RoAAL/BggAFBVoCAAE2bsA==
+Date:   Sat, 24 Oct 2020 21:12:11 +0000
+Message-ID: <7c642593ca08469f8c00c0de10a09540@AcuMS.aculab.com>
+References: <20201022104805.GA1503673@kroah.com>
+ <20201022121849.GA1664412@kroah.com>
+ <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
+ <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
+ <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
+ <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
+ <20201023175857.GA3576660@ZenIV.linux.org.uk>
+ <20201023182713.GG2672@gate.crashing.org>
+ <e9a3136ead214186877804aabde74b38@AcuMS.aculab.com>
+ <20201024172903.GK2672@gate.crashing.org>
+In-Reply-To: <20201024172903.GK2672@gate.crashing.org>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201009165742.GA35334@arch-xps.localdomain>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 09, 2020 at 10:57:42AM -0600, Brigham Campbell wrote:
-> The following patch is a bug fix for an issue introduced by commit
-> abe60a3a7afb4058278864aa18c5faf62094c11a which removed the deprecated
-> device tree skeletons.
+From: Segher Boessenkool
+> Sent: 24 October 2020 18:29
 > 
-> For the devices corresponding to these device trees, an updated version
-> of U-Boot is not available. Therefore, we must append DTBs to the kernel
-> instead of counting on the bootloader to load one into memory and pass
-> the pointer to the kernel during init.
+> On Fri, Oct 23, 2020 at 09:28:59PM +0000, David Laight wrote:
+> > From: Segher Boessenkool
+> > > Sent: 23 October 2020 19:27
+> > > On Fri, Oct 23, 2020 at 06:58:57PM +0100, Al Viro wrote:
+> > > > On Fri, Oct 23, 2020 at 03:09:30PM +0200, David Hildenbrand wrote:
+> > > > On arm64 when callee expects a 32bit argument, the caller is *not* responsible
+> > > > for clearing the upper half of 64bit register used to pass the value - it only
+> > > > needs to store the actual value into the lower half.  The callee must consider
+> > > > the contents of the upper half of that register as undefined.  See AAPCS64 (e.g.
+> > > > https://github.com/ARM-software/abi-aa/blob/master/aapcs64/aapcs64.rst#parameter-passing-rules
+> > > > ); AFAICS, the relevant bit is
+> > > > 	"Unlike in the 32-bit AAPCS, named integral values must be narrowed by
+> > > > the callee rather than the caller."
+> > >
+> > > Or the formal rule:
+> > >
+> > > C.9 	If the argument is an Integral or Pointer Type, the size of the
+> > > 	argument is less than or equal to 8 bytes and the NGRN is less
+> > > 	than 8, the argument is copied to the least significant bits in
+> > > 	x[NGRN]. The NGRN is incremented by one. The argument has now
+> > > 	been allocated.
+> >
+> > So, in essence, if the value is in a 64bit register the calling
+> > code is independent of the actual type of the formal parameter.
+> > Clearly a value might need explicit widening.
 > 
-> For some reason, when this method of appending DTBs to the kernel is
-> used with any revision after abe60a3a7, the DTB seems to load correctly,
-> but the kernel parameters aren't loaded correctly. Regardless of whether
-> the kernel parameters are built into the kernel or passed in via U-Boot,
-> they simply aren't registered by the running kernel.
-> 
-> Adding an empty "chosen" node to the device tree fixes this issue. I've
-> tested this with a WM8650-based laptop. Regrettably, I'd be lying if I
-> said that I know exactly why this fixes the problem. However, I know
-> that this solution works. I'm happy to hear suggestions/ridicule
-> regarding these changes.
-> 
-> Finally, I have my suspicions that the WM8xxx series devices aren't the
-> only ones affected by this issue. I think this solution, if acceptable,
-> could be applied to other devices which may or may not be having issues
-> related to appended DTBs and kernel parameters. Perhaps other devices
-> which commit abe60a3a7 changed?
-> 
-> This is my first patch submission to the Linux kernel, so please tear it
-> apart. Let me know what I've done incorrectly. And thanks, Alexey, for
-> helping me along. I have much to learn and I wouldn't have made it half
-> as far without his patience.
-> 
-> Thanks,
-> Brigham Campbell
-> 
-> Signed-off-by: Brigham Campbell <me@brighamcampbell.com>
-> 
-> ---
->  arch/arm/boot/dts/wm8505.dtsi | 2 ++
->  arch/arm/boot/dts/wm8650.dtsi | 2 ++
->  arch/arm/boot/dts/wm8850.dtsi | 2 ++
->  3 files changed, 6 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/wm8505.dtsi b/arch/arm/boot/dts/wm8505.dtsi
-> index 168cd12b07bc..2b814b48b458 100644
-> --- a/arch/arm/boot/dts/wm8505.dtsi
-> +++ b/arch/arm/boot/dts/wm8505.dtsi
-> @@ -10,6 +10,8 @@ / {
->  	#size-cells = <1>;
->  	compatible = "wm,wm8505";
->  
-> +	chosen {};
-> +
->  	cpus {
->  		#address-cells = <0>;
->  		#size-cells = <0>;
-> diff --git a/arch/arm/boot/dts/wm8650.dtsi b/arch/arm/boot/dts/wm8650.dtsi
-> index bc057b6f7d16..a68c82c8035e 100644
-> --- a/arch/arm/boot/dts/wm8650.dtsi
-> +++ b/arch/arm/boot/dts/wm8650.dtsi
-> @@ -10,6 +10,8 @@ / {
->  	#size-cells = <1>;
->  	compatible = "wm,wm8650";
->  
-> +	chosen {};
-> +
->  	cpus {
->  		#address-cells = <0>;
->  		#size-cells = <0>;
-> diff --git a/arch/arm/boot/dts/wm8850.dtsi b/arch/arm/boot/dts/wm8850.dtsi
-> index 65c9271050e6..c864883ae777 100644
-> --- a/arch/arm/boot/dts/wm8850.dtsi
-> +++ b/arch/arm/boot/dts/wm8850.dtsi
-> @@ -10,6 +10,8 @@ / {
->  	#size-cells = <1>;
->  	compatible = "wm,wm8850";
->  
-> +	chosen {};
-> +
->  	cpus {
->  		#address-cells = <1>;
->  		#size-cells = <0>;
-> -- 
-> 2.28.0
-> 
+> No, this says that if you pass a 32-bit integer in a 64-bit register,
+> then the top 32 bits of that register hold an undefined value.
 
-Sorry to generate another notification, but I don't believe I've
-recieved a response on this patch in the ~two weeks it's been up. Did I
-format something incorrectly or have I sent it to the wrong addresses?
-Maybe the relevant maintainer has just been busy?
+That's sort of what I meant.
+The 'normal' junk in the hight bits will there because the variable
+in the calling code is wider.
 
-Thanks,
-Brigham Campbell
+> > I've found a copy of the 64 bit arm instruction set.
+> > Unfortunately it is alpha sorted and repetitive so shows none
+> > of the symmetry and makes things difficult to find.
+> 
+> All of this is ABI, not ISA.  Look at the AAPCS64 pointed to above.
+> 
+> > But, contrary to what someone suggested most register writes
+> > (eg from arithmetic) seem to zero/extend the high bits.
+> 
+> Everything that writes a "w" does, yes.  But that has nothing to do with
+> the parameter passing rules, that is ABI.  It just means that very often
+> a 32-bit integer will be passed zero-extended in a 64-bit register, but
+> that is just luck (or not, it makes finding bugs harder ;-) )
+
+Working out why the code is wrong is more of an ISA issue than an ABI one.
+It may be an ABI one, but the analysis is ISA.
+
+I've written a lot of asm over the years - decoding compiler generated
+asm isn't that hard.
+At least ARM doesn't have annulled delay slots.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
