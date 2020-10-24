@@ -2,692 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58A47297DD8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:43:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E15A0297DDD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:51:27 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762696AbgJXRnh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 13:43:37 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:36479 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1762683AbgJXRng (ORCPT
+        id S1762741AbgJXRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 13:51:25 -0400
+Received: from relay-us1.mymailcheap.com ([51.81.35.219]:54476 "EHLO
+        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1762733AbgJXRvZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 13:43:36 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603561414;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=wfK1GD6C4cM5jRErpt6dzhA7NtxHV6nM+F/NCnK5o34=;
-        b=YudnkmL3GlojgC76aV1Gx74FQl+ZTP3qshf7K36iQjoJgS6jKPmmAkmhGDLv/M/L6FQIq0
-        qvL7kqzp7EXQP/eujW/Szqtm0sqinPzmLx+e/OfkTRiUTbM7N63Vlhvzh48NP3QW2T1GLb
-        VdIhFcvTL3OqN1VCetYu9lMEQMqLN14=
-Received: from mail-oi1-f199.google.com (mail-oi1-f199.google.com
- [209.85.167.199]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-88-_fLTu5r_MZWMDsG5mkrIOw-1; Sat, 24 Oct 2020 13:43:32 -0400
-X-MC-Unique: _fLTu5r_MZWMDsG5mkrIOw-1
-Received: by mail-oi1-f199.google.com with SMTP id j9so3432894oii.0
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 10:43:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=wfK1GD6C4cM5jRErpt6dzhA7NtxHV6nM+F/NCnK5o34=;
-        b=D4UOWUlPxFq15/+Ywf2FWTJI9VcFM04ZXrDg663Lcpe5rqOL6jMBa45zn7tIowifzL
-         wELdmxN/7V2dARmz/zh1N+f8QyOrGQzPq55HUShI3WGCXl1CTXJBKGBRL36l1+XXiJIj
-         K8LxDoAvGapSNIw4MYaXihkVBFjF1yJ72zFiq1oblFrYkK2mSHQXQ1geTh1WHMcE/Fe0
-         +Fcl+GeAkdr9DNXayVGbPw8E3zeU0cRshkEd5VCuWZhYsDqjUgwFshCikH24i4kLJlWh
-         BJ8jTKInUh0+D6xo4RZJ4HEriaLJE5F7xaWGyPsu3BkJ+5a1V1keDA7MI4CSRK8Z0a5f
-         Ma9A==
-X-Gm-Message-State: AOAM530KNemKbl1tK+nmirWDK92TJiTh0zUh+j8T3lkcs34Y2DzM4pWg
-        RHzyBLCscrJuThoNMuLFslXCkT+au0rZKmc4XzN/g1y6Bwm3x1tsmaem7MVtpuvfqaerkhpja3O
-        REBEg1mFeGQDeQBZp9UFUBX4t
-X-Received: by 2002:a9d:4e83:: with SMTP id v3mr6907925otk.156.1603561411000;
-        Sat, 24 Oct 2020 10:43:31 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJyQJh3nQDPdg09j+HQe0z7deFlZPQoTPay+2uALXjEhSZFMlqYxx7MLbrM7V3thuuCdKNXytw==
-X-Received: by 2002:a9d:4e83:: with SMTP id v3mr6907903otk.156.1603561410639;
-        Sat, 24 Oct 2020 10:43:30 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id b16sm1333250oti.4.2020.10.24.10.43.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Oct 2020 10:43:30 -0700 (PDT)
-Subject: Re: [RFC PATCH 6/6] ethernet: dfl-eth-group: add support for the 10G
- configurations
-To:     Xu Yilun <yilun.xu@intel.com>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
-        mdf@kernel.org, lee.jones@linaro.org
-Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
-        netdev@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com,
-        Russ Weight <russell.h.weight@intel.com>
-References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
- <1603442745-13085-7-git-send-email-yilun.xu@intel.com>
-From:   Tom Rix <trix@redhat.com>
-Message-ID: <71a24631-a85f-9f07-0e71-377e09b08db3@redhat.com>
-Date:   Sat, 24 Oct 2020 10:43:28 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.6.0
+        Sat, 24 Oct 2020 13:51:25 -0400
+Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
+        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id A87E720E29;
+        Sat, 24 Oct 2020 17:51:23 +0000 (UTC)
+Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
+        by relay5.mymailcheap.com (Postfix) with ESMTPS id B746D20100;
+        Sat, 24 Oct 2020 17:51:20 +0000 (UTC)
+Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
+        by relay1.mymailcheap.com (Postfix) with ESMTPS id 8EBE93F1C5;
+        Sat, 24 Oct 2020 17:51:18 +0000 (UTC)
+Received: from localhost (localhost [127.0.0.1])
+        by filter1.mymailcheap.com (Postfix) with ESMTP id 6F47D2A359;
+        Sat, 24 Oct 2020 13:51:18 -0400 (EDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
+        s=default; t=1603561878;
+        bh=aVQacDor6pG41Pl/v7YjPYCOYPsZrwjxjqQcNYBRudg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=TZu5EjBXqzPxTkuUurhixihe0BkicgUFN/zJ/JW1dDl9tIT5wN5EPiJvHaHAJqYts
+         cgQ0vbKAig3Vq6n9zKmmln9fiWeC/z1qdjXRjIMgwHUcZknFYHS41SAPZdGONjZ4zP
+         z462fmi2Vb5asyxJVF/640rQWIykd4Stvl7tOra0=
+X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
+Received: from filter1.mymailcheap.com ([127.0.0.1])
+        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
+        with ESMTP id fExfxNYMQzqg; Sat, 24 Oct 2020 13:51:17 -0400 (EDT)
+Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
+        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by filter1.mymailcheap.com (Postfix) with ESMTPS;
+        Sat, 24 Oct 2020 13:51:17 -0400 (EDT)
+Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
+        by mail20.mymailcheap.com (Postfix) with ESMTP id 342EF400C0;
+        Sat, 24 Oct 2020 17:51:16 +0000 (UTC)
+Authentication-Results: mail20.mymailcheap.com;
+        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="CgWyXQ5R";
+        dkim-atps=neutral
+AI-Spam-Status: Not processed
+Received: from ice-e5v2.lan (unknown [59.41.160.66])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
+        (No client certificate requested)
+        by mail20.mymailcheap.com (Postfix) with ESMTPSA id B7730400C0;
+        Sat, 24 Oct 2020 17:51:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
+        t=1603561872; bh=aVQacDor6pG41Pl/v7YjPYCOYPsZrwjxjqQcNYBRudg=;
+        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+        b=CgWyXQ5RL9TEMGozS/ZRaqnKwgrC/IpGdtgZbNxJoo2V32toh8/cb5TO02gXGIWpc
+         IFPgDh5jXilAcEpAPsPjwSFCq2hvTbGADKZxU/PfKJir+6SOlMlk/zSjLydIYb9DsO
+         5GHyqMQPMmqrBcWZ7YOQ7pnHvhvPp8hOE8xyK02w=
+Message-ID: <79894e1266db69e463ee74a52551101298cae03e.camel@aosc.io>
+Subject: Re: [linux-sunxi] [PATCH 02/10] ARM: dts: sun6i: a31-hummingbird:
+ Enable RGMII RX/TX delay on Ethernet PHY
+From:   Icenowy Zheng <icenowy@aosc.io>
+To:     wens@kernel.org, Maxime Ripard <mripard@kernel.org>,
+        Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Date:   Sun, 25 Oct 2020 01:51:06 +0800
+In-Reply-To: <20201024162515.30032-2-wens@kernel.org>
+References: <20201024162515.30032-1-wens@kernel.org>
+         <20201024162515.30032-2-wens@kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-In-Reply-To: <1603442745-13085-7-git-send-email-yilun.xu@intel.com>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 342EF400C0
+X-Spamd-Result: default: False [-0.10 / 10.00];
+         RCVD_VIA_SMTP_AUTH(0.00)[];
+         ARC_NA(0.00)[];
+         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
+         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.66:received];
+         FROM_HAS_DN(0.00)[];
+         TO_DN_SOME(0.00)[];
+         TO_MATCH_ENVRCPT_ALL(0.00)[];
+         MIME_GOOD(-0.10)[text/plain];
+         DMARC_NA(0.00)[aosc.io];
+         R_SPF_SOFTFAIL(0.00)[~all];
+         ML_SERVERS(-3.10)[213.133.102.83];
+         DKIM_TRACE(0.00)[aosc.io:+];
+         RCPT_COUNT_SEVEN(0.00)[8];
+         RCVD_NO_TLS_LAST(0.10)[];
+         FROM_EQ_ENVFROM(0.00)[];
+         MIME_TRACE(0.00)[0:+];
+         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
+         RCVD_COUNT_TWO(0.00)[2];
+         MID_RHS_MATCH_FROM(0.00)[];
+         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
+X-Rspamd-Server: mail20.mymailcheap.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+在 2020-10-25星期日的 00:25 +0800，Chen-Yu Tsai写道：
+> From: Chen-Yu Tsai <wens@csie.org>
+> 
+> The Ethernet PHY on the A31 Hummingbird has the RX and TX delays
+> enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
+> 
+> Fix the phy-mode description to correct reflect this so that the
+> implementation doesn't reconfigure the delays incorrectly. This
+> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+> rx/tx delay config").
 
-On 10/23/20 1:45 AM, Xu Yilun wrote:
-> This patch adds 10G configurations support for dfl ether group private
-> feature.
->
-> 10G configurations have different PHY & MAC IP blocks from 25G, so a
-> different set of HW operations is implemented, but the software arch is
-> quite similar with 25G.
+Personally I think they should revert this commit, and consider other
+solution.
 
-Yes, it looks like functions only differ by a #defined register.
+This commit breaks everything.
 
-So 25 & 10 should be refactored to have a common base functions.
+(Although the patch on individual DT patches are technically correct)
 
-Tom
-
->
-> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
-> Signed-off-by: Russ Weight <russell.h.weight@intel.com>
+> 
+> Fixes: c220aec2bb79 ("ARM: dts: sun6i: Add Merrii A31 Hummingbird
+> support")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 > ---
->  drivers/net/ethernet/intel/Makefile             |   2 +-
->  drivers/net/ethernet/intel/dfl-eth-group-10g.c  | 544 ++++++++++++++++++++++++
->  drivers/net/ethernet/intel/dfl-eth-group-main.c |   3 +
->  drivers/net/ethernet/intel/dfl-eth-group.h      |   1 +
->  4 files changed, 549 insertions(+), 1 deletion(-)
->  create mode 100644 drivers/net/ethernet/intel/dfl-eth-group-10g.c
->
-> diff --git a/drivers/net/ethernet/intel/Makefile b/drivers/net/ethernet/intel/Makefile
-> index 1624c26..be097656 100644
-> --- a/drivers/net/ethernet/intel/Makefile
-> +++ b/drivers/net/ethernet/intel/Makefile
-> @@ -17,6 +17,6 @@ obj-$(CONFIG_IAVF) += iavf/
->  obj-$(CONFIG_FM10K) += fm10k/
->  obj-$(CONFIG_ICE) += ice/
+>  arch/arm/boot/dts/sun6i-a31-hummingbird.dts | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+> b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+> index 049e6ab3cf56..73de34ae37fd 100644
+> --- a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+> +++ b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
+> @@ -154,7 +154,7 @@ &gmac {
+>  	pinctrl-names = "default";
+>  	pinctrl-0 = <&gmac_rgmii_pins>;
+>  	phy-handle = <&phy1>;
+> -	phy-mode = "rgmii";
+> +	phy-mode = "rgmii-id";
+>  	status = "okay";
+>  };
 >  
-> -dfl-eth-group-objs := dfl-eth-group-main.o dfl-eth-group-25g.o
-> +dfl-eth-group-objs := dfl-eth-group-main.o dfl-eth-group-10g.o dfl-eth-group-25g.o
->  obj-$(CONFIG_FPGA_DFL_ETH_GROUP) += dfl-eth-group.o
->  obj-$(CONFIG_INTEL_M10_BMC_RETIMER) += intel-m10-bmc-retimer.o
-> diff --git a/drivers/net/ethernet/intel/dfl-eth-group-10g.c b/drivers/net/ethernet/intel/dfl-eth-group-10g.c
-> new file mode 100644
-> index 0000000..36f9dfc
-> --- /dev/null
-> +++ b/drivers/net/ethernet/intel/dfl-eth-group-10g.c
-> @@ -0,0 +1,544 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/* Driver for 10G Ether Group private feature on Intel PAC (Programmable
-> + * Acceleration Card) N3000
-> + *
-> + * Copyright (C) 2019-2020 Intel Corporation, Inc.
-> + *
-> + * Authors:
-> + *   Wu Hao <hao.wu@intel.com>
-> + *   Xu Yilun <yilun.xu@intel.com>
-> + */
-> +#include <linux/netdevice.h>
-> +
-> +#include "dfl-eth-group.h"
-> +
-> +/* 10G PHY Register */
-> +#define PHY_LOOPBACK		0x2e1
-> +#define PHY_LOOPBACK_SERIAL	BIT(0)
-> +
-> +/* 10G MAC Register */
-> +#define TX_FRAME_MAXLENGTH	0x2c
-> +#define TX_PAUSE_FRAME_QUANTA	0x42
-> +#define TX_PAUSE_FRAME_HOLDOFF	0x43
-> +#define TX_PAUSE_FRAME_EN	0x44
-> +#define TX_PAUSE_FRAME_EN_CFG	BIT(0)
-> +#define RX_FRAME_MAXLENGTH	0xae
-> +
-> +/* Additional Feature Register */
-> +#define ADD_PHY_CTRL		0x0
-> +#define PHY_RESET		BIT(0)
-> +
-> +static int edev10g_reset(struct eth_dev *edev, bool en)
-> +{
-> +	struct eth_com *phy = edev->phy;
-> +	struct device *dev = edev->dev;
-> +	u32 val;
-> +	int ret;
-> +
-> +	/* 10G eth group supports PHY reset. It uses external reset. */
-> +	ret = eth_com_add_feat_read_reg(phy, ADD_PHY_CTRL, &val);
-> +	if (ret) {
-> +		dev_err(dev, "fail to read ADD_PHY_CTRL reg: %d\n", ret);
-> +		return ret;
-> +	}
-> +
-> +	/* return if PHY is already in expected state */
-> +	if ((val & PHY_RESET && en) || (!(val & PHY_RESET) && !en))
-> +		return 0;
-> +
-> +	if (en)
-> +		val |= PHY_RESET;
-> +	else
-> +		val &= ~PHY_RESET;
-> +
-> +	ret = eth_com_add_feat_write_reg(phy, ADD_PHY_CTRL, val);
-> +	if (ret)
-> +		dev_err(dev, "fail to write ADD_PHY_CTRL reg: %d\n", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static ssize_t tx_pause_frame_quanta_show(struct device *d,
-> +					  struct device_attribute *attr,
-> +					  char *buf)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(to_net_dev(d));
-> +	u32 data;
-> +	int ret;
-> +
-> +	ret = eth_com_read_reg(edev->mac, TX_PAUSE_FRAME_QUANTA, &data);
-> +
-> +	return ret ? : sprintf(buf, "0x%x\n", data);
-> +}
-> +
-> +static ssize_t tx_pause_frame_quanta_store(struct device *d,
-> +					   struct device_attribute *attr,
-> +					   const char *buf, size_t len)
-> +{
-> +	struct net_device *netdev = to_net_dev(d);
-> +	struct eth_dev *edev;
-> +	u32 data;
-> +	int ret;
-> +
-> +	if (kstrtou32(buf, 0, &data))
-> +		return -EINVAL;
-> +
-> +	edev = net_device_to_eth_dev(netdev);
-> +
-> +	rtnl_lock();
-> +
-> +	if (netif_running(netdev)) {
-> +		netdev_err(netdev, "must be stopped to change pause param\n");
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	ret = eth_com_write_reg(edev->mac, TX_PAUSE_FRAME_QUANTA, data);
-> +
-> +out:
-> +	rtnl_unlock();
-> +
-> +	return ret ? : len;
-> +}
-> +static DEVICE_ATTR_RW(tx_pause_frame_quanta);
-> +
-> +static ssize_t tx_pause_frame_holdoff_show(struct device *d,
-> +					   struct device_attribute *attr,
-> +					   char *buf)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(to_net_dev(d));
-> +	u32 data;
-> +	int ret;
-> +
-> +	ret = eth_com_read_reg(edev->mac, TX_PAUSE_FRAME_HOLDOFF, &data);
-> +
-> +	return ret ? : sprintf(buf, "0x%x\n", data);
-> +}
-> +
-> +static ssize_t tx_pause_frame_holdoff_store(struct device *d,
-> +					    struct device_attribute *attr,
-> +					    const char *buf, size_t len)
-> +{
-> +	struct net_device *netdev = to_net_dev(d);
-> +	struct eth_dev *edev;
-> +	u32 data;
-> +	int ret;
-> +
-> +	if (kstrtou32(buf, 0, &data))
-> +		return -EINVAL;
-> +
-> +	edev = net_device_to_eth_dev(netdev);
-> +
-> +	rtnl_lock();
-> +
-> +	if (netif_running(netdev)) {
-> +		netdev_err(netdev, "must be stopped to change pause param\n");
-> +		ret = -EBUSY;
-> +		goto out;
-> +	}
-> +
-> +	ret = eth_com_write_reg(edev->mac, TX_PAUSE_FRAME_HOLDOFF, data);
-> +
-> +out:
-> +	rtnl_unlock();
-> +
-> +	return ret ? : len;
-> +}
-> +static DEVICE_ATTR_RW(tx_pause_frame_holdoff);
-> +
-> +static struct attribute *edev10g_dev_attrs[] = {
-> +	&dev_attr_tx_pause_frame_quanta.attr,
-> +	&dev_attr_tx_pause_frame_holdoff.attr,
-> +	NULL
-> +};
-> +
-> +/* device attributes */
-> +static const struct attribute_group edev10g_attr_group = {
-> +	.attrs = edev10g_dev_attrs,
-> +};
-> +
-> +/* ethtool ops */
-> +static struct stat_info stats_10g[] = {
-> +	/* TX Statistics */
-> +	{STAT_INFO(0x142, "tx_frame_ok")},
-> +	{STAT_INFO(0x144, "tx_frame_err")},
-> +	{STAT_INFO(0x146, "tx_frame_crc_err")},
-> +	{STAT_INFO(0x148, "tx_octets_ok")},
-> +	{STAT_INFO(0x14a, "tx_pause_mac_ctrl_frames")},
-> +	{STAT_INFO(0x14c, "tx_if_err")},
-> +	{STAT_INFO(0x14e, "tx_unicast_frame_ok")},
-> +	{STAT_INFO(0x150, "tx_unicast_frame_err")},
-> +	{STAT_INFO(0x152, "tx_multicast_frame_ok")},
-> +	{STAT_INFO(0x154, "tx_multicast_frame_err")},
-> +	{STAT_INFO(0x156, "tx_broadcast_frame_ok")},
-> +	{STAT_INFO(0x158, "tx_broadcast_frame_err")},
-> +	{STAT_INFO(0x15a, "tx_ether_octets")},
-> +	{STAT_INFO(0x15c, "tx_ether_pkts")},
-> +	{STAT_INFO(0x15e, "tx_ether_undersize_pkts")},
-> +	{STAT_INFO(0x160, "tx_ether_oversize_pkts")},
-> +	{STAT_INFO(0x162, "tx_ether_pkts_64_octets")},
-> +	{STAT_INFO(0x164, "tx_ether_pkts_65_127_octets")},
-> +	{STAT_INFO(0x166, "tx_ether_pkts_128_255_octets")},
-> +	{STAT_INFO(0x168, "tx_ether_pkts_256_511_octets")},
-> +	{STAT_INFO(0x16a, "tx_ether_pkts_512_1023_octets")},
-> +	{STAT_INFO(0x16c, "tx_ether_pkts_1024_1518_octets")},
-> +	{STAT_INFO(0x16e, "tx_ether_pkts_1519_x_octets")},
-> +	{STAT_INFO(0x176, "tx_unicast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x178, "tx_multicast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x17a, "tx_broadcast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x17c, "tx_pfc_mac_ctrl_frames")},
-> +
-> +	/* RX Statistics */
-> +	{STAT_INFO(0x1c2, "rx_frame_ok")},
-> +	{STAT_INFO(0x1c4, "rx_frame_err")},
-> +	{STAT_INFO(0x1c6, "rx_frame_crc_err")},
-> +	{STAT_INFO(0x1c8, "rx_octets_ok")},
-> +	{STAT_INFO(0x1ca, "rx_pause_mac_ctrl_frames")},
-> +	{STAT_INFO(0x1cc, "rx_if_err")},
-> +	{STAT_INFO(0x1ce, "rx_unicast_frame_ok")},
-> +	{STAT_INFO(0x1d0, "rx_unicast_frame_err")},
-> +	{STAT_INFO(0x1d2, "rx_multicast_frame_ok")},
-> +	{STAT_INFO(0x1d4, "rx_multicast_frame_err")},
-> +	{STAT_INFO(0x1d6, "rx_broadcast_frame_ok")},
-> +	{STAT_INFO(0x1d8, "rx_broadcast_frame_err")},
-> +	{STAT_INFO(0x1da, "rx_ether_octets")},
-> +	{STAT_INFO(0x1dc, "rx_ether_pkts")},
-> +	{STAT_INFO(0x1de, "rx_ether_undersize_pkts")},
-> +	{STAT_INFO(0x1e0, "rx_ether_oversize_pkts")},
-> +	{STAT_INFO(0x1e2, "rx_ether_pkts_64_octets")},
-> +	{STAT_INFO(0x1e4, "rx_ether_pkts_65_127_octets")},
-> +	{STAT_INFO(0x1e6, "rx_ether_pkts_128_255_octets")},
-> +	{STAT_INFO(0x1e8, "rx_ether_pkts_256_511_octets")},
-> +	{STAT_INFO(0x1ea, "rx_ether_pkts_512_1023_octets")},
-> +	{STAT_INFO(0x1ec, "rx_ether_pkts_1024_1518_octets")},
-> +	{STAT_INFO(0x1ee, "rx_ether_pkts_1519_x_octets")},
-> +	{STAT_INFO(0x1f0, "rx_ether_fragments")},
-> +	{STAT_INFO(0x1f2, "rx_ether_jabbers")},
-> +	{STAT_INFO(0x1f4, "rx_ether_crc_err")},
-> +	{STAT_INFO(0x1f6, "rx_unicast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x1f8, "rx_multicast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x1fa, "rx_broadcast_mac_ctrl_frames")},
-> +	{STAT_INFO(0x1fc, "rx_pfc_mac_ctrl_frames")},
-> +};
-> +
-> +static void edev10g_get_strings(struct net_device *netdev, u32 stringset, u8 *s)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	unsigned int i;
-> +
-> +	if (stringset != ETH_SS_STATS || edev->lw_mac)
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(stats_10g); i++, s += ETH_GSTRING_LEN)
-> +		memcpy(s, stats_10g[i].string, ETH_GSTRING_LEN);
-> +}
-> +
-> +static int edev10g_get_sset_count(struct net_device *netdev, int stringset)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +
-> +	if (stringset != ETH_SS_STATS || edev->lw_mac)
-> +		return -EOPNOTSUPP;
-> +
-> +	return (int)ARRAY_SIZE(stats_10g);
-> +}
-> +
-> +static void edev10g_get_stats(struct net_device *netdev,
-> +			      struct ethtool_stats *stats, u64 *data)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	unsigned int i;
-> +
-> +	if (edev->lw_mac || !netif_running(netdev))
-> +		return;
-> +
-> +	for (i = 0; i < ARRAY_SIZE(stats_10g); i++)
-> +		data[i] = read_mac_stats(edev->mac, stats_10g[i].addr);
-> +}
-> +
-> +static int edev10g_get_link_ksettings(struct net_device *netdev,
-> +				      struct ethtool_link_ksettings *cmd)
-> +{
-> +	if (!netdev->phydev)
-> +		return -ENODEV;
-> +
-> +	phy_ethtool_ksettings_get(netdev->phydev, cmd);
-> +
-> +	return 0;
-> +}
-> +
-> +static void edev10g_get_pauseparam(struct net_device *netdev,
-> +				   struct ethtool_pauseparam *pause)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	u32 data;
-> +	int ret;
-> +
-> +	pause->autoneg = 0;
-> +	pause->rx_pause = 0;
-> +
-> +	ret = eth_com_read_reg(edev->mac, TX_PAUSE_FRAME_EN, &data);
-> +	if (ret) {
-> +		pause->tx_pause = 0;
-> +		return;
-> +	}
-> +
-> +	pause->tx_pause = (data & TX_PAUSE_FRAME_EN_CFG) ? 0x1 : 0;
-> +}
-> +
-> +static int edev10g_set_pauseparam(struct net_device *netdev,
-> +				  struct ethtool_pauseparam *pause)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	struct eth_com *mac = edev->mac;
-> +	bool enable = pause->tx_pause;
-> +	u32 data;
-> +	int ret;
-> +
-> +	if (pause->autoneg || pause->rx_pause)
-> +		return -EOPNOTSUPP;
-> +
-> +	if (netif_running(netdev)) {
-> +		netdev_err(netdev, "must be stopped to change pause param\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	ret = eth_com_read_reg(mac, TX_PAUSE_FRAME_EN, &data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (enable)
-> +		data |= TX_PAUSE_FRAME_EN_CFG;
-> +	else
-> +		data &= ~TX_PAUSE_FRAME_EN_CFG;
-> +
-> +	return eth_com_write_reg(mac, TX_PAUSE_FRAME_EN, data);
-> +}
-> +
-> +static const struct ethtool_ops edev10g_ethtool_ops = {
-> +	.get_link = ethtool_op_get_link,
-> +	.get_strings = edev10g_get_strings,
-> +	.get_sset_count = edev10g_get_sset_count,
-> +	.get_ethtool_stats = edev10g_get_stats,
-> +	.get_link_ksettings = edev10g_get_link_ksettings,
-> +	.get_pauseparam = edev10g_get_pauseparam,
-> +	.set_pauseparam = edev10g_set_pauseparam,
-> +};
-> +
-> +/* netdev ops */
-> +static int edev10g_netdev_open(struct net_device *netdev)
-> +{
-> +	struct n3000_net_priv *priv = netdev_priv(netdev);
-> +	struct eth_dev *edev = priv->edev;
-> +	int ret;
-> +
-> +	ret = edev10g_reset(edev, false);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (netdev->phydev)
-> +		phy_start(netdev->phydev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int edev10g_netdev_stop(struct net_device *netdev)
-> +{
-> +	struct n3000_net_priv *priv = netdev_priv(netdev);
-> +	struct eth_dev *edev = priv->edev;
-> +	int ret;
-> +
-> +	ret = edev10g_reset(edev, true);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (netdev->phydev)
-> +		phy_stop(netdev->phydev);
-> +
-> +	return 0;
-> +}
-> +
-> +static int edev10g_mtu_init(struct net_device *netdev)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	struct eth_com *mac = edev->mac;
-> +	u32 tx = 0, rx = 0, mtu;
-> +	int ret;
-> +
-> +	ret = eth_com_read_reg(mac, TX_FRAME_MAXLENGTH, &tx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = eth_com_read_reg(mac, RX_FRAME_MAXLENGTH, &rx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	mtu = min(min(tx, rx), netdev->max_mtu);
-> +
-> +	ret = eth_com_write_reg(mac, TX_FRAME_MAXLENGTH, rx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = eth_com_write_reg(mac, RX_FRAME_MAXLENGTH, tx);
-> +	if (ret)
-> +		return ret;
-> +
-> +	netdev->mtu = mtu;
-> +
-> +	return 0;
-> +}
-> +
-> +static int edev10g_change_mtu(struct net_device *netdev, int new_mtu)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	struct eth_com *mac = edev->mac;
-> +	int ret;
-> +
-> +	if (netif_running(netdev)) {
-> +		netdev_err(netdev, "must be stopped to change mtu\n");
-> +		return -EBUSY;
-> +	}
-> +
-> +	ret = eth_com_write_reg(mac, TX_FRAME_MAXLENGTH, new_mtu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	ret = eth_com_write_reg(mac, RX_FRAME_MAXLENGTH, new_mtu);
-> +	if (ret)
-> +		return ret;
-> +
-> +	netdev->mtu = new_mtu;
-> +
-> +	return 0;
-> +}
-> +
-> +static int edev10g_set_loopback(struct net_device *netdev, bool en)
-> +{
-> +	struct eth_dev *edev = net_device_to_eth_dev(netdev);
-> +	struct eth_com *phy = edev->phy;
-> +	u32 data;
-> +	int ret;
-> +
-> +	ret = eth_com_read_reg(phy, PHY_LOOPBACK, &data);
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (en)
-> +		data |= PHY_LOOPBACK_SERIAL;
-> +	else
-> +		data &= ~PHY_LOOPBACK_SERIAL;
-> +
-> +	return eth_com_write_reg(phy, PHY_LOOPBACK, data);
-> +}
-> +
-> +static int edev10g_set_features(struct net_device *netdev,
-> +				netdev_features_t features)
-> +{
-> +	netdev_features_t changed = netdev->features ^ features;
-> +
-> +	if (changed & NETIF_F_LOOPBACK)
-> +		return edev10g_set_loopback(netdev,
-> +					    !!(features & NETIF_F_LOOPBACK));
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct net_device_ops edev10g_netdev_ops = {
-> +	.ndo_open = edev10g_netdev_open,
-> +	.ndo_stop = edev10g_netdev_stop,
-> +	.ndo_change_mtu = edev10g_change_mtu,
-> +	.ndo_set_features = edev10g_set_features,
-> +	.ndo_start_xmit = n3000_dummy_netdev_xmit,
-> +};
-> +
-> +static void edev10g_adjust_link(struct net_device *netdev)
-> +{}
-> +
-> +static int edev10g_netdev_init(struct net_device *netdev)
-> +{
-> +	int ret;
-> +
-> +	ret = edev10g_mtu_init(netdev);
-> +	if (ret)
-> +		return ret;
-> +
-> +	return edev10g_set_loopback(netdev,
-> +				   !!(netdev->features & NETIF_F_LOOPBACK));
-> +}
-> +
-> +static int dfl_eth_dev_10g_init(struct eth_dev *edev)
-> +{
-> +	__ETHTOOL_DECLARE_LINK_MODE_MASK(mask) = { 0, };
-> +	struct device *dev = edev->dev;
-> +	struct phy_device *phydev;
-> +	struct net_device *netdev;
-> +	int ret;
-> +
-> +	netdev = n3000_netdev_create(edev);
-> +	if (!netdev)
-> +		return -ENOMEM;
-> +
-> +	netdev->hw_features |= NETIF_F_LOOPBACK;
-> +	netdev->netdev_ops = &edev10g_netdev_ops;
-> +	netdev->ethtool_ops = &edev10g_ethtool_ops;
-> +
-> +	phydev = phy_connect(netdev, edev->phy_id, edev10g_adjust_link,
-> +			     PHY_INTERFACE_MODE_NA);
-> +	if (IS_ERR(phydev)) {
-> +		dev_err(dev, "PHY connection failed\n");
-> +		ret = PTR_ERR(phydev);
-> +		goto err_free_netdev;
-> +	}
-> +
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT, mask);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT, mask);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT, mask);
-> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, mask);
-> +	linkmode_and(phydev->supported, phydev->supported, mask);
-> +	linkmode_copy(phydev->advertising, phydev->supported);
-> +
-> +	phy_attached_info(phydev);
-> +
-> +	ret = edev10g_netdev_init(netdev);
-> +	if (ret) {
-> +		dev_err(dev, "fail to init netdev %s\n", netdev->name);
-> +		goto err_phy_disconnect;
-> +	}
-> +
-> +	netdev->sysfs_groups[0] = &edev10g_attr_group;
-> +
-> +	netif_carrier_off(netdev);
-> +	ret = register_netdev(netdev);
-> +	if (ret) {
-> +		dev_err(dev, "fail to register netdev %s\n", netdev->name);
-> +		goto err_phy_disconnect;
-> +	}
-> +
-> +	edev->netdev = netdev;
-> +
-> +	return 0;
-> +
-> +err_phy_disconnect:
-> +	if (netdev->phydev)
-> +		phy_disconnect(phydev);
-> +err_free_netdev:
-> +	free_netdev(netdev);
-> +
-> +	return ret;
-> +}
-> +
-> +static void dfl_eth_dev_10g_remove(struct eth_dev *edev)
-> +{
-> +	struct net_device *netdev = edev->netdev;
-> +
-> +	if (netdev->phydev)
-> +		phy_disconnect(netdev->phydev);
-> +
-> +	unregister_netdev(netdev);
-> +}
-> +
-> +struct eth_dev_ops dfl_eth_dev_10g_ops = {
-> +	.lineside_init = dfl_eth_dev_10g_init,
-> +	.lineside_remove = dfl_eth_dev_10g_remove,
-> +	.reset = edev10g_reset,
-> +};
-> diff --git a/drivers/net/ethernet/intel/dfl-eth-group-main.c b/drivers/net/ethernet/intel/dfl-eth-group-main.c
-> index a29b8b1..89b4450 100644
-> --- a/drivers/net/ethernet/intel/dfl-eth-group-main.c
-> +++ b/drivers/net/ethernet/intel/dfl-eth-group-main.c
-> @@ -481,6 +481,9 @@ static int eth_group_setup(struct dfl_eth_group *egroup)
->  		return ret;
->  
->  	switch (egroup->speed) {
-> +	case 10:
-> +		egroup->ops = &dfl_eth_dev_10g_ops;
-> +		break;
->  	case 25:
->  		egroup->ops = &dfl_eth_dev_25g_ops;
->  		break;
-> diff --git a/drivers/net/ethernet/intel/dfl-eth-group.h b/drivers/net/ethernet/intel/dfl-eth-group.h
-> index 2e90f86..63f49a0 100644
-> --- a/drivers/net/ethernet/intel/dfl-eth-group.h
-> +++ b/drivers/net/ethernet/intel/dfl-eth-group.h
-> @@ -77,6 +77,7 @@ struct net_device *n3000_netdev_create(struct eth_dev *edev);
->  netdev_tx_t n3000_dummy_netdev_xmit(struct sk_buff *skb,
->  				    struct net_device *dev);
->  
-> +extern struct eth_dev_ops dfl_eth_dev_10g_ops;
->  extern struct eth_dev_ops dfl_eth_dev_25g_ops;
->  extern struct eth_dev_ops dfl_eth_dev_40g_ops;
->  
-
+> -- 
+> 2.28.0
+> 
