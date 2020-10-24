@@ -2,125 +2,175 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1372C297E08
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 20:47:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 236C9297E0D
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 21:05:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1763965AbgJXSrC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 14:47:02 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36354 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1763956AbgJXSrB (ORCPT
+        id S1763995AbgJXTFB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 15:05:01 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:17161 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1763969AbgJXTFA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 14:47:01 -0400
-Received: from ZenIV.linux.org.uk (zeniv.linux.org.uk [IPv6:2002:c35c:fd02::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B59ECC0613CE;
-        Sat, 24 Oct 2020 11:47:00 -0700 (PDT)
-Received: from viro by ZenIV.linux.org.uk with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kWOZ6-007i1l-Um; Sat, 24 Oct 2020 18:46:57 +0000
-Date:   Sat, 24 Oct 2020 19:46:56 +0100
-From:   Al Viro <viro@zeniv.linux.org.uk>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [git pull] vfs misc pile
-Message-ID: <20201024184656.GB3576660@ZenIV.linux.org.uk>
+        Sat, 24 Oct 2020 15:05:00 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f947ae30000>; Sat, 24 Oct 2020 12:05:09 -0700
+Received: from HQMAIL105.nvidia.com (172.20.187.12) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 24 Oct
+ 2020 19:04:48 +0000
+Received: from vidyas-desktop.nvidia.com (10.124.1.5) by mail.nvidia.com
+ (172.20.187.12) with Microsoft SMTP Server id 15.0.1473.3 via Frontend
+ Transport; Sat, 24 Oct 2020 19:04:44 +0000
+From:   Vidya Sagar <vidyas@nvidia.com>
+To:     <bhelgaas@google.com>, <hkallweit1@gmail.com>,
+        <wangxiongfeng2@huawei.com>, <mika.westerberg@linux.intel.com>,
+        <kai.heng.feng@canonical.com>, <chris.packham@alliedtelesis.co.nz>,
+        <yangyicong@hisilicon.com>, <lorenzo.pieralisi@arm.com>,
+        <treding@nvidia.com>, <jonathanh@nvidia.com>
+CC:     <linux-pci@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <kthota@nvidia.com>, <mmaddireddy@nvidia.com>, <vidyas@nvidia.com>,
+        <sagar.tv@gmail.com>
+Subject: [PATCH] PCI/ASPM: Save/restore ASPM-L1SS controls for suspend/resume
+Date:   Sun, 25 Oct 2020 00:34:42 +0530
+Message-ID: <20201024190442.871-1-vidyas@nvidia.com>
+X-Mailer: git-send-email 2.17.1
+X-NVConfidentiality: public
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
+Content-Type: text/plain
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603566309; bh=q2rN4AS7b8SyNIzcyTCEM5jUNZt8kPk2IuLGGIQak14=;
+        h=From:To:CC:Subject:Date:Message-ID:X-Mailer:X-NVConfidentiality:
+         MIME-Version:Content-Type;
+        b=O03kuHT9/aA5qqzXwxazkq3CJx/dD0V4ccDAjRdrJVxDlIU77tVv0VR7ts0JFbUTW
+         VUSlYJYOFFummPeG4mUCDSzPrEIh5yCAxEnKHOdSyif0xNKJ7I1masWVI/LKDanGRa
+         m9HYg/Ohqc7zC7rnx5SvNe6WM8DVliXbr8cqLyVmzXeO3j6GfXePfsEVOEJn3TgzYk
+         AzuE/s6rOi05cPIiWNYlgB6lREp4TnFAtPZJ6fxWDm+HASQZBA2oY+Fw/CGlW26ipU
+         azhrr5LFzVXIus4AJA+yBRZsEi19J77gUjGw8PBnArO+D9SAbbgi0dJSiCaDDU5xSv
+         aJ1LdjQHbNZ/A==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-	Assorted stuff all over the place (the largest group here is
-Christoph's stat cleanups).  This is probably the last pull request
-for this window - there's also a group of sparc patches in -next,
-and davem seemed to be OK with that at the time, but I'd rather have
-it go through his tree when he's back - nothing urgent in that series.
+Previously ASPM L1-Sub-States control registers (CTL1 and CTL2) weren't
+saved and restored during suspend/resume leading to ASPM-L1SS
+configuration being lost post resume.
 
-The following changes since commit 9123e3a74ec7b934a4a099e98af6a61c2f80bbf5:
+Save the ASPM-L1SS control registers so that the configuration is retained
+post resume.
 
-  Linux 5.9-rc1 (2020-08-16 13:04:57 -0700)
+Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+---
+v1:
+* It would be really good if someone can verify it on a non tegra194 platform
 
-are available in the git repository at:
+ drivers/pci/pci.c       |  7 +++++++
+ drivers/pci/pci.h       |  4 ++++
+ drivers/pci/pcie/aspm.c | 41 +++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 52 insertions(+)
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/viro/vfs.git work.misc
+diff --git a/drivers/pci/pci.c b/drivers/pci/pci.c
+index a458c46d7e39..034497264bde 100644
+--- a/drivers/pci/pci.c
++++ b/drivers/pci/pci.c
+@@ -1551,6 +1551,7 @@ int pci_save_state(struct pci_dev *dev)
+ 		return i;
+ 
+ 	pci_save_ltr_state(dev);
++	pci_save_aspm_l1ss_state(dev);
+ 	pci_save_dpc_state(dev);
+ 	pci_save_aer_state(dev);
+ 	return pci_save_vc_state(dev);
+@@ -1656,6 +1657,7 @@ void pci_restore_state(struct pci_dev *dev)
+ 	 * LTR itself (in the PCIe capability).
+ 	 */
+ 	pci_restore_ltr_state(dev);
++	pci_restore_aspm_l1ss_state(dev);
+ 
+ 	pci_restore_pcie_state(dev);
+ 	pci_restore_pasid_state(dev);
+@@ -3319,6 +3321,11 @@ void pci_allocate_cap_save_buffers(struct pci_dev *dev)
+ 	if (error)
+ 		pci_err(dev, "unable to allocate suspend buffer for LTR\n");
+ 
++	error = pci_add_ext_cap_save_buffer(dev, PCI_EXT_CAP_ID_L1SS,
++					    2 * sizeof(u32));
++	if (error)
++		pci_err(dev, "unable to allocate suspend buffer for ASPM-L1SS\n");
++
+ 	pci_allocate_vc_save_buffers(dev);
+ }
+ 
+diff --git a/drivers/pci/pci.h b/drivers/pci/pci.h
+index fa12f7cbc1a0..8d2135f61e36 100644
+--- a/drivers/pci/pci.h
++++ b/drivers/pci/pci.h
+@@ -565,11 +565,15 @@ void pcie_aspm_init_link_state(struct pci_dev *pdev);
+ void pcie_aspm_exit_link_state(struct pci_dev *pdev);
+ void pcie_aspm_pm_state_change(struct pci_dev *pdev);
+ void pcie_aspm_powersave_config_link(struct pci_dev *pdev);
++void pci_save_aspm_l1ss_state(struct pci_dev *dev);
++void pci_restore_aspm_l1ss_state(struct pci_dev *dev);
+ #else
+ static inline void pcie_aspm_init_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_exit_link_state(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_pm_state_change(struct pci_dev *pdev) { }
+ static inline void pcie_aspm_powersave_config_link(struct pci_dev *pdev) { }
++static inline void pci_save_aspm_l1ss_state(struct pci_dev *dev) { }
++static inline void pci_restore_aspm_l1ss_state(struct pci_dev *dev) { }
+ #endif
+ 
+ #ifdef CONFIG_PCIE_ECRC
+diff --git a/drivers/pci/pcie/aspm.c b/drivers/pci/pcie/aspm.c
+index 253c30cc1967..d965bbc563ed 100644
+--- a/drivers/pci/pcie/aspm.c
++++ b/drivers/pci/pcie/aspm.c
+@@ -742,6 +742,47 @@ static void pcie_config_aspm_l1ss(struct pcie_link_state *link, u32 state)
+ 				PCI_L1SS_CTL1_L1SS_MASK, val);
+ }
+ 
++void pci_save_aspm_l1ss_state(struct pci_dev *dev)
++{
++	struct pci_cap_saved_state *save_state;
++	int aspm_l1ss;
++	u32 *cap;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
++	if (!aspm_l1ss)
++		return;
++
++	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
++	if (!save_state)
++		return;
++
++	cap = (u32 *)&save_state->cap.data[0];
++	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, cap++);
++	pci_read_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, cap++);
++}
++
++void pci_restore_aspm_l1ss_state(struct pci_dev *dev)
++{
++	struct pci_cap_saved_state *save_state;
++	int aspm_l1ss;
++	u32 *cap;
++
++	if (!pci_is_pcie(dev))
++		return;
++
++	save_state = pci_find_saved_ext_cap(dev, PCI_EXT_CAP_ID_L1SS);
++	aspm_l1ss = pci_find_ext_capability(dev, PCI_EXT_CAP_ID_L1SS);
++	if (!save_state || !aspm_l1ss)
++		return;
++
++	cap = (u32 *)&save_state->cap.data[0];
++	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL1, *cap++);
++	pci_write_config_dword(dev, aspm_l1ss + PCI_L1SS_CTL2, *cap++);
++}
++
+ static void pcie_config_aspm_dev(struct pci_dev *pdev, u32 val)
+ {
+ 	pcie_capability_clear_and_set_word(pdev, PCI_EXP_LNKCTL,
+-- 
+2.17.1
 
-for you to fetch changes up to f2d077ff1b5c17008cff5dc27e7356a694e55462:
-
-  fs: remove KSTAT_QUERY_FLAGS (2020-09-26 22:55:05 -0400)
-
-----------------------------------------------------------------
-Al Viro (1):
-      reduce boilerplate in fsid handling
-
-Alex Dewar (1):
-      fs: omfs: use kmemdup() rather than kmalloc+memcpy
-
-Christoph Hellwig (5):
-      fs: remove vfs_statx_fd
-      fs: implement vfs_stat and vfs_lstat in terms of vfs_fstatat
-      fs: move vfs_fstatat out of line
-      fs: remove vfs_stat_set_lookup_flags
-      fs: remove KSTAT_QUERY_FLAGS
-
-Krzysztof Wilczyński (1):
-      fs: Remove duplicated flag O_NDELAY occurring twice in VALID_OPEN_FLAGS
-
-Mattias Nissler (1):
-      Add a "nosymfollow" mount option.
-
-Ross Zwisler (1):
-      selftests: mount: add nosymfollow tests
-
- fs/9p/vfs_super.c                                  |   3 +-
- fs/adfs/super.c                                    |   3 +-
- fs/affs/super.c                                    |   3 +-
- fs/befs/linuxvfs.c                                 |   3 +-
- fs/bfs/inode.c                                     |   3 +-
- fs/ceph/super.c                                    |   3 +-
- fs/cramfs/inode.c                                  |   3 +-
- fs/efs/super.c                                     |   3 +-
- fs/erofs/super.c                                   |   3 +-
- fs/exfat/super.c                                   |   3 +-
- fs/ext2/super.c                                    |   3 +-
- fs/ext4/super.c                                    |   3 +-
- fs/f2fs/super.c                                    |   3 +-
- fs/fat/inode.c                                     |   3 +-
- fs/hfs/super.c                                     |   3 +-
- fs/hfsplus/super.c                                 |   3 +-
- fs/hpfs/super.c                                    |   3 +-
- fs/isofs/inode.c                                   |   3 +-
- fs/minix/inode.c                                   |   3 +-
- fs/namei.c                                         |   3 +-
- fs/namespace.c                                     |   2 +
- fs/nilfs2/super.c                                  |   3 +-
- fs/ntfs/super.c                                    |   3 +-
- fs/omfs/inode.c                                    |   6 +-
- fs/proc_namespace.c                                |   1 +
- fs/qnx4/inode.c                                    |   3 +-
- fs/qnx6/inode.c                                    |   3 +-
- fs/romfs/super.c                                   |   3 +-
- fs/squashfs/super.c                                |   3 +-
- fs/stat.c                                          |  70 +++----
- fs/statfs.c                                        |   2 +
- fs/sysv/inode.c                                    |   3 +-
- fs/udf/super.c                                     |   3 +-
- fs/ufs/super.c                                     |   3 +-
- fs/xfs/xfs_super.c                                 |   3 +-
- fs/zonefs/super.c                                  |   3 +-
- include/linux/fcntl.h                              |   2 +-
- include/linux/fs.h                                 |  22 +--
- include/linux/mount.h                              |   3 +-
- include/linux/stat.h                               |   2 -
- include/linux/statfs.h                             |   6 +
- include/uapi/linux/mount.h                         |   1 +
- tools/testing/selftests/mount/.gitignore           |   1 +
- tools/testing/selftests/mount/Makefile             |   4 +-
- tools/testing/selftests/mount/nosymfollow-test.c   | 218 +++++++++++++++++++++
- tools/testing/selftests/mount/run_nosymfollow.sh   |   4 +
- .../{run_tests.sh => run_unprivileged_remount.sh}  |   0
- 47 files changed, 308 insertions(+), 129 deletions(-)
- create mode 100644 tools/testing/selftests/mount/nosymfollow-test.c
- create mode 100755 tools/testing/selftests/mount/run_nosymfollow.sh
- rename tools/testing/selftests/mount/{run_tests.sh => run_unprivileged_remount.sh} (100%)
