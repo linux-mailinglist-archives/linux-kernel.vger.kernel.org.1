@@ -2,90 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 79FFB297C91
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:19:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C0165297C93
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:24:35 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761724AbgJXNNp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 09:13:45 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:33955 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1761716AbgJXNNl (ORCPT
+        id S1761736AbgJXNY3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 09:24:29 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43504 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1761729AbgJXNY3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 09:13:41 -0400
-Received: from mail-wm1-f69.google.com ([209.85.128.69])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kWJMZ-0007mZ-Ix
-        for linux-kernel@vger.kernel.org; Sat, 24 Oct 2020 13:13:39 +0000
-Received: by mail-wm1-f69.google.com with SMTP id z62so1214062wmb.1
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 06:13:39 -0700 (PDT)
+        Sat, 24 Oct 2020 09:24:29 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 26606C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 06:24:29 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id r10so2468800plx.3
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 06:24:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=WKK8YZuOj3Yh6We8Y+x2rmG2WWLX2F33ea9of7SdLcU=;
+        b=PDnJMBsEhleRMRxBsspAd228iliqApLm5aVCYMsttPhfVahie7p50RrwWUOSUjRI1Z
+         TQv4XzWWz+odtXmaeMo+TBM+p+qZJBOXDkmwLJtZdiNmiVVv+U6uY1doe1n41ec6vzCP
+         RkFOOxSyBk4Fd85EFsx6dWUnIiqi8zXRYTIUlXeifUHSPQUmjdhxU3yxzroQMN+Um69Y
+         4C/kk5pl3IdsQl9VNQWoLpiHyQ72LW9KzHeVXAJzmh8qZON0VnrlTjJUsmQkpevNEVi0
+         wPw/TIV+HhxujKnF3kXtVs6llqtcPMKpHK6I5ylCeXJTFdlqdgqtFYkAbBtkOWLmqOZz
+         2fIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=eVttoSXvi/+R5QaLq4CVVO/8VY2PkGXsswXQjE147KQ=;
-        b=JMB9NpDqE/57GyEwsGCFEFI5BfwCFdoM29Tbz7AUk5iqr/EZnj1qK0NUdkzi39jizp
-         OFI9HTtY/LmqCkabpfx6By1gUXqUtG9qXOjrXVIeKJVmxRVVeBH3hYGKpNg85/lhjSP0
-         ytdo69kgYvvC374HvgEEDj1jBV/IEfEPe2sL3myY7f7t+C0v7hSvF8sE53m3FPUMI+tb
-         1QgxraNWpNBl190oAt/rQ6eqC5z1QwU3O8bRvp50qY+55yFXuZJe7Mk/ck6ZeVRv5ATE
-         /JOmAbApCd9b56oVMgysZR6lvCMswO6uDC9SsJ53n20Ze7+UPXaAg0ceQlK0ZrBXP0r9
-         Fgvw==
-X-Gm-Message-State: AOAM533I6LylOayFDCxCftgL+FmFzgqLHfVzPEOrQo6NyBUGoUQCcyWP
-        7Mp4P2VDoTxrvealYN4k0xP+SlW1QF8JqyQVYgc68mviC6q9b22kAPWiWC4ozAEYvsGsDOeGXfy
-        BfVpX75C8Uq1cvJ4ewZc+qEVwWhk1Dp+pO2nYG31QbA==
-X-Received: by 2002:a1c:f719:: with SMTP id v25mr6919189wmh.186.1603545219174;
-        Sat, 24 Oct 2020 06:13:39 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxb4Q7HPONqIXu6KDJ5bPFCRZSabTgLRKzN7DRjvCNRHQmmn9cL4hmqjKPxKsOk91n35/bpIQ==
-X-Received: by 2002:a1c:f719:: with SMTP id v25mr6919021wmh.186.1603545216681;
-        Sat, 24 Oct 2020 06:13:36 -0700 (PDT)
-Received: from localhost (host-79-33-123-6.retail.telecomitalia.it. [79.33.123.6])
-        by smtp.gmail.com with ESMTPSA id c185sm10661303wma.44.2020.10.24.06.13.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 06:13:36 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 15:13:33 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: swap file broken with ext4 fast-commit
-Message-ID: <20201024131333.GA32124@xps-13-7390>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=WKK8YZuOj3Yh6We8Y+x2rmG2WWLX2F33ea9of7SdLcU=;
+        b=pFJx1SJuuKQ5hSrdG1/UqgQaE2AEKLGSeHufgtGQtCnwCD/U9cjHeM4ICGDOiavcS0
+         SqGTEUBZun1hu0HiuRpxs4jBG2CO7vL02UK90ofQMC9Vhh2otdfkdI1t69hE9my0IvpU
+         gOIS0gxchpHTQ2RXdYAj1btJHgZieVRxBuSCkb95C5uPzyWUmmDRRJe0KnH1rdzLmQsZ
+         AqV5X487XJIElj+UtHtKn6fEH1VZsAMGLwW04iImTJwqz7jiCHKH6xfufcOVLAOIAk9n
+         tFPCyzuphaSR9OHC3RPXIjlrQ4EVWAp6ne9gepuUuhnGWjgcL/Fo2l5oFMHDGvPTlI8L
+         LuEQ==
+X-Gm-Message-State: AOAM533P7M4RXtau2Ii5xXdE+alQ2mSQSjoFbF56y1ifPU1ZnUMJeIu2
+        F4GCaMzRKY6JFMlESC5OM7g=
+X-Google-Smtp-Source: ABdhPJzPcmq6tGCFnwdcWkYFySvcrzQ24fdevzf4NIsgatgYjtvgE7dokjoVc+RTHubxilthExFnoA==
+X-Received: by 2002:a17:90a:c28f:: with SMTP id f15mr7591678pjt.143.1603545868511;
+        Sat, 24 Oct 2020 06:24:28 -0700 (PDT)
+Received: from ?IPv6:2402:3a80:40f:9156:55ee:fad5:f15e:347e? ([2402:3a80:40f:9156:55ee:fad5:f15e:347e])
+        by smtp.gmail.com with ESMTPSA id j23sm5250323pgm.76.2020.10.24.06.24.24
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Oct 2020 06:24:27 -0700 (PDT)
+Subject: Re: [PATCH v3] checkpatch: fix false positives in REPEATED_WORD
+ warning
+To:     Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc:     joe@perches.com, linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com
+References: <20201023133828.19609-1-yashsri421@gmail.com>
+ <alpine.DEB.2.21.2010232104150.11676@felia>
+From:   Aditya <yashsri421@gmail.com>
+Message-ID: <c9512657-d7d0-bf04-0e40-b3463c9f5e1b@gmail.com>
+Date:   Sat, 24 Oct 2020 18:54:22 +0530
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+In-Reply-To: <alpine.DEB.2.21.2010232104150.11676@felia>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I'm getting the following error if I try to create and activate a swap
-file defined on an ext4 filesystem:
+On 24/10/20 12:36 am, Lukas Bulwahn wrote:
+> 
+> 
+> On Fri, 23 Oct 2020, Aditya Srivastava wrote:
+> 
+>> Presence of hexadecimal address or symbol results in false warning
+>> message by checkpatch.pl.
+>>
+> 
+> I think this strategy now makes sense and has the right complexity for a 
+> good heuristics in this case.
+> 
+> Nice job, Aditya.
+> 
+> Are you ready for a next challenge of this kind? Would you like to work on 
+> further rules that can be improved with your evaluation approach?
+> 
+> Lukas
+> 
 
- [   34.406479] swapon: file is not committed
+Yes, I would like work on further rules.
 
-The swap file is created in the root filesystem (ext4 mounted with the
-following options):
-
-$ grep " / " /proc/mounts
-/dev/vda1 / ext4 rw,relatime 0 0
-
-No matter how long I wait or how many times I run sync, I'm still
-getting the same error and the swap file is never activated.
-
-A git bisect shows that this issue has been introduced by the following
-commit:
-
- aa75f4d3daae ("ext4: main fast-commit commit path")
-
-Simple test case to reproduce the problem:
-
- # fallocate -l 8G /swapfile
- # chmod 0600 /swapfile
- # mkswap /swapfile
- # swapon /swapfile
-
-Maybe we're missing to mark the inode as clean somewhere, even if the
-transation is committed to the journal?
-
-Thanks,
--Andrea
+Thanks
+Aditya
