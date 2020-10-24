@@ -2,137 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2224C297D8A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 18:56:07 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E418297D8E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 18:58:41 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762460AbgJXQzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 12:55:55 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:38386 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1762450AbgJXQzz (ORCPT
+        id S1762471AbgJXQ6c (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 12:58:32 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:22944 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1762464AbgJXQ6a (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 12:55:55 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 4E5ECA43;
-        Sat, 24 Oct 2020 18:55:52 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1603558552;
-        bh=iwZCfHnxDvI7npLeEEZlTyt9HVGP23tXV1eY5GsaguI=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=U2NrGUJDHmhvDBhFgA1VTW29VBivoX2XQzIw9LpBJ32WaMn5PFCELDmO4jOevlzfE
-         6os1thaKyBCIglQJfVCmEaVEC5zYCUMiL88MbnP5h+H4a7Qbc7iQRWr0ImbRDp6un5
-         yyaKO68bT09ElGh3xypa6JuejeAnzy9dlNsDIwgQ=
-Date:   Sat, 24 Oct 2020 19:55:06 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 7/9] ipu3-cio2: Check if pci_dev->dev's fwnode is
- a software_node in cio2_parse_firmware() and set
- FWNODE_GRAPH_DEVICE_DISABLED if so
-Message-ID: <20201024165506.GB3943@pendragon.ideasonboard.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-8-djrscally@gmail.com>
- <20201020091958.GC4077@smile.fi.intel.com>
- <20201020120615.GV13341@paasikivi.fi.intel.com>
- <32bbb4db-17d7-b9d1-950f-8f29d67539c3@gmail.com>
- <20201020224910.GB2703@paasikivi.fi.intel.com>
- <20201024003955.GS5979@pendragon.ideasonboard.com>
- <20201024142907.GB26150@paasikivi.fi.intel.com>
- <cb717718-8d84-8213-31d1-a1b342bb78a0@gmail.com>
+        Sat, 24 Oct 2020 12:58:30 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-22-YOgp6WC1NdimiQHmmRzXug-1; Sat, 24 Oct 2020 17:58:26 +0100
+X-MC-Unique: YOgp6WC1NdimiQHmmRzXug-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sat, 24 Oct 2020 17:58:25 +0100
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sat, 24 Oct 2020 17:58:25 +0100
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Linus Torvalds' <torvalds@linux-foundation.org>,
+        'Peter Anvin' <hpa@zytor.com>
+CC:     'Rasmus Villemoes' <linux@rasmusvillemoes.dk>,
+        'Thomas Gleixner' <tglx@linutronix.de>,
+        'Ingo Molnar' <mingo@redhat.com>,
+        'Borislav Petkov' <bp@alien8.de>,
+        'the arch/x86 maintainers' <x86@kernel.org>,
+        "'Sean Christopherson'" <sean.j.christopherson@intel.com>,
+        'Naresh Kamboju' <naresh.kamboju@linaro.org>,
+        'Linux Kernel Mailing List' <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] x86/uaccess: fix code generation in put_user()
+Thread-Topic: [PATCH] x86/uaccess: fix code generation in put_user()
+Thread-Index: AQHWqYEb2jCDJax3wEWt3nUPTzGU4qmluWiggAE71BA=
+Date:   Sat, 24 Oct 2020 16:58:25 +0000
+Message-ID: <1eaa025ba7104edd815c9ac66d5790e4@AcuMS.aculab.com>
+References: <20201023203154.27335-1-linux@rasmusvillemoes.dk>
+ <CAHk-=wj1m3cvS-3dOYzNavYWLFu=9fwo0-6HTHJhG-X5B73gZg@mail.gmail.com>
+ <8820745F-E761-42E6-8A70-7B04EE70692C@zytor.com>
+ <CAHk-=wg9L3EZk=cBjt5R3LkE8Y6swwOZ8sxhpQYcJO3Fj1wLbQ@mail.gmail.com>
+ <bca28d6e33a3475193478e762214c6ea@AcuMS.aculab.com>
+In-Reply-To: <bca28d6e33a3475193478e762214c6ea@AcuMS.aculab.com>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <cb717718-8d84-8213-31d1-a1b342bb78a0@gmail.com>
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Dan,
+RnJvbTogRGF2aWQgTGFpZ2h0DQo+IFNlbnQ6IDIzIE9jdG9iZXIgMjAyMCAyMjo1Mg0KLi4uDQo+
+IENvdWxkIGRvX3B1dF91c2VyKCkgZG8gYW4gaW5pdGlhbCBjaGVjayBmb3IgNjQgYml0DQo+IHRo
+ZW4gZXhwYW5kIGEgZGlmZmVyZW50ICNkZWZpbmUgdGhhdCBjb250YWlucyB0aGUgYWN0dWFsDQo+
+IGNvZGUgcGFzc2luZyBlaXRoZXIgImEiIG9yICJBIiBmb3IgdGhlIGNvbnN0cmlhbnQuDQo+IA0K
+PiBBcGFydCBmcm9tIGFub3RoZXIgbGV2ZWwgb2YgaW5kaXJlY3Rpb24gbm90aGluZyBpcyBkdXBs
+aWNhdGVkLg0KDQpUaGlzIGNvZGUgc2VlbXMgdG8gY29tcGlsZSB0byBzb21ldGhpbmcgc2Vuc2li
+bGUuDQpJdCBkb2VzIG5lZWQgY2hhbmdlIHRoZSByZWdpc3RlcnMgdGhhdCBnZXRfdXNlcl9uKCkg
+bXVzdA0KdXNlIC0gdGhlIG5vcm1hbCByZXR1cm4gdmFsdWUgaXMgbm93IGluICVheCAoYW5kICVk
+eCBmb3INCjY0Yml0IHZhbHVlcyBvbiAzMmJpdCBzeXN0ZW1zLCB3aXRoIHRoZSBlcnJvciBpbiAl
+Y3guDQooSSd2ZSBub3QgYWN0dWFsbHkgdGVzdGVkIGl0LikNCg0KI2RlZmluZSBfX2ludHR5cGVf
+bWF4KHgsIF9tYXgpIF9fdHlwZW9mX18oICAgICAgXA0KICAgICAgICBfX3R5cGVmaXRzKHgsY2hh
+ciwgICAgICAgICAgICAgICAgICAgICAgXA0KICAgICAgICAgIF9fdHlwZWZpdHMoeCxzaG9ydCwg
+ICAgICAgICAgICAgICAgICAgXA0KICAgICAgICAgICAgX190eXBlZml0cyh4LGludCwgICAgICAg
+ICAgICAgICAgICAgXA0KICAgICAgICAgICAgICBfX3R5cGVmaXRzKHgsbG9uZyxfbWF4KSkpKSkN
+Cg0KI2RlZmluZSBfX2ludHR5cGUoeCkgX19pbnR0eXBlX21heCh4LCAwVUxMKQ0KDQojZGVmaW5l
+IGdldF91c2VyXzEoeCwgcHRyLCB0eXBlLCBjb25zdHJhaW50KSAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICBcDQooeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgIGludCBfX3JldF9ndTsgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgIHR5
+cGUgX192YWxfZ3U7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICBcDQogICAgICAgIGFzbSB2b2xhdGlsZSgiY2FsbCBfX2dldF91c2VyXyVQNCIgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgICAgICAgICAgICAgICA6ICI9YyIgKF9f
+cmV0X2d1KSwgY29uc3RyYWludCAoX192YWxfZ3UpLCAgICAgICAgICBcDQogICAgICAgICAgICAg
+ICAgICAgICAgICBBU01fQ0FMTF9DT05TVFJBSU5UICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBcDQogICAgICAgICAgICAgICAgICAgICA6ICJhIiAocHRyKSwgImkiIChzaXplb2YoKihwdHIp
+KSkpOyAgICAgICAgICAgICAgICBcDQogICAgICAgICh4KSA9IChfX2ZvcmNlIF9fdHlwZW9mX18o
+KihwdHIpKSkgX192YWxfZ3U7ICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgIF9fYnVpbHRp
+bl9leHBlY3QoX19yZXRfZ3UsIDApOyAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBc
+DQp9KQ0KDQojZGVmaW5lIGdldF91c2VyKHgsIHB0cikgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICBcDQooeyAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgIF9fY2hr
+X3VzZXJfcHRyKHB0cik7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICBcDQogICAgICAgIG1pZ2h0X2ZhdWx0KCk7ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgIChzaXplb2YgKihwdHIpID4gc2l6ZW9mKGxv
+bmcpKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcDQogICAgICAgICAgICAgICAg
+PyBnZXRfdXNlcl8xKHgsIHB0ciwgbG9uZyBsb25nLCAiPUEiKSAgICAgICAgICAgICAgICAgICBc
+DQogICAgICAgICAgICAgICAgOiBnZXRfdXNlcl8xKHgsIHB0ciwgX19pbnR0eXBlX21heCgqKHB0
+ciksMHVsKSwgIj1hIik7ICBcDQp9KQ0KDQpUaGUgX19pbnR0eXBlX21heCgpIGlzIG5lZWRlZCAo
+SSB0aGluaykgYmVjYXVzZSBjbGFuZyB3aWxsIHRyeSAoYW5kIGZhaWwpDQp0byBnZW5lcmF0ZSB0
+aGUgYXNtIGZvciA2NGJpdCB2YWx1ZXMgb24gMzJiaXQgc3lzdGVtcy4NClNvIHRoZSB0eXBlIG5l
+ZWRzIGxpbWl0aW5nIHRvIDMyYml0cy4NCkFsd2F5cyB1c2luZyAnbG9uZycgd29ya3MgLSBidXQg
+Z2VuZXJhdGVzIGV4dHJhIGNhc3RzLg0KDQpUaGUgIj1BIiBjb25zdHJhaW50ICglcmF4IG9yICVy
+ZHgpIGlzIG5ldmVyIHVzZWQgb24gNjRiaXQgYmVjYXVzZQ0KdGhlIHRlc3QgaXMgYWx3YXlzIGZh
+bHNlLg0KDQoJRGF2aWQNCg0KLQ0KUmVnaXN0ZXJlZCBBZGRyZXNzIExha2VzaWRlLCBCcmFtbGV5
+IFJvYWQsIE1vdW50IEZhcm0sIE1pbHRvbiBLZXluZXMsIE1LMSAxUFQsIFVLDQpSZWdpc3RyYXRp
+b24gTm86IDEzOTczODYgKFdhbGVzKQ0K
 
-On Sat, Oct 24, 2020 at 05:33:32PM +0100, Dan Scally wrote:
-> On 24/10/2020 15:29, Sakari Ailus wrote:
-> > On Sat, Oct 24, 2020 at 03:39:55AM +0300, Laurent Pinchart wrote:
-> >> On Wed, Oct 21, 2020 at 01:49:10AM +0300, Sakari Ailus wrote:
-> >>> On Tue, Oct 20, 2020 at 08:56:07PM +0100, Dan Scally wrote:
-> >>>> On 20/10/2020 13:06, Sakari Ailus wrote:
-> >>>>> On Tue, Oct 20, 2020 at 12:19:58PM +0300, Andy Shevchenko wrote:
-> >>>>>> On Mon, Oct 19, 2020 at 11:59:01PM +0100, Daniel Scally wrote:
-> >>>>>>> fwnode_graph_get_endpoint_by_id() will optionally parse enabled devices
-> >>>>>>> only; that status being determined through the .device_is_available() op
-> >>>>>>> of the device's fwnode. As software_nodes don't have that operation and
-> >>>>>>> adding it is meaningless, we instead need to check if the device's fwnode
-> >>>>>>> is a software_node and if so pass the appropriate flag to disable that
-> >>>>>>> check
-> >>>>>>
-> >>>>>> Period.
-> >>>>>>
-> >>>>>> I'm wondering if actually this can be hidden in fwnode_graph_get_endpoint_by_id().
-> >>>>>
-> >>>>> The device availability test is actually there for a reason. Some firmware
-> >>>>> implementations put all the potential devices in the tables and only one
-> >>>>> (of some) of them are available.
-> >>>>>
-> >>>>> Could this be implemented so that if the node is a software node, then get
-> >>>>> its parent and then see if that is available?
-> >>>>>
-> >>>>> I guess that could be implemented in software node ops. Any opinions?
-> >>>>
-> >>>> Actually when considering the cio2 device, it seems that
-> >>>> set_secondary_fwnode() actually overwrites the _primary_, given
-> >>>> fwnode_is_primary(dev->fwnode) returns false. So in at least some cases,
-> >>>> this wouldn't work.
-> >>>
-> >>> Ouch. I wonder when this happens --- have you checked what's the primary
-> >>> there? I guess it might be if it's a PCI device without the corresponding
-> >>> ACPI device node?
-> >>>
-> >>> I remember you had an is_available implementation that just returned true
-> >>> for software nodes in an early version of the set? I think it would still
-> >>> be a lesser bad in this case.
-> >>
-> >> How about the following ?
-> >
-> > Looks good to me.
->
-> If we're agreed on this (and it's fine by me too), do you want me to
-> include it in the next set, or are you going to do it separately Laurent?
-
-Feel free to include it in the next version, but I can send a patch if
-you prefer.
-
-> >> diff --git a/drivers/base/property.c b/drivers/base/property.c
-> >> index 81bd01ed4042..ea44ba846299 100644
-> >> --- a/drivers/base/property.c
-> >> +++ b/drivers/base/property.c
-> >> @@ -706,9 +706,14 @@ EXPORT_SYMBOL_GPL(fwnode_handle_put);
-> >>  /**
-> >>   * fwnode_device_is_available - check if a device is available for use
-> >>   * @fwnode: Pointer to the fwnode of the device.
-> >> + *
-> >> + * For fwnode node types that don't implement the .device_is_available()
-> >> + * operation, such as software nodes, this function returns true.
-> >>   */
-> >>  bool fwnode_device_is_available(const struct fwnode_handle *fwnode)
-> >>  {
-> >> +	if (!fwnode_has_op(fwnode, device_is_available))
-> >> +		return true;
-> >>  	return fwnode_call_bool_op(fwnode, device_is_available);
-> >>  }
-> >>  EXPORT_SYMBOL_GPL(fwnode_device_is_available);
-
--- 
-Regards,
-
-Laurent Pinchart
