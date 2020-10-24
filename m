@@ -2,152 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 794C0297E66
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 22:23:23 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EF5F297E69
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 22:23:40 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764378AbgJXUXP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 16:23:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58174 "EHLO mail.kernel.org"
+        id S1764390AbgJXUXj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 16:23:39 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:59576 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1764296AbgJXUXO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 16:23:14 -0400
-Received: from localhost (83-245-197-237.elisa-laajakaista.fi [83.245.197.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4B73A22276;
-        Sat, 24 Oct 2020 20:23:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603570993;
-        bh=OUUHQchNeaZSA5Ychtwc5x6Ol2ZEQdBNnz0+GXVGGS0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=dBz//X92mG9QZRUy9A35CcTIz07Nwas4kA/0nBtU44U/fd57I9Nz9z4IKa9DauvXd
-         9QwlqNsQ+bAsl29Yz18wrX3M26yL/BtOrXbiT9krW6WYt8LZkYdK9FqpUAgbBlDLyo
-         a5ScUowMy9DKq7jv52hfWgTj3ZY7TSIJnkOCaxVk=
-Date:   Sat, 24 Oct 2020 23:23:11 +0300
-From:   Jarkko Sakkinen <jarkko@kernel.org>
-To:     Andy Lutomirski <luto@kernel.org>
-Cc:     Dave Hansen <dave.hansen@intel.com>,
-        Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
-        X86 ML <x86@kernel.org>, linux-sgx@vger.kernel.org,
-        LKML <linux-kernel@vger.kernel.org>,
-        LSM List <linux-security-module@vger.kernel.org>,
-        Jethro Beekman <jethro@fortanix.com>,
-        Darren Kenny <darren.kenny@oracle.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        asapek@google.com, Borislav Petkov <bp@alien8.de>,
-        "Xing, Cedric" <cedric.xing@intel.com>, chenalexchen@google.com,
-        Conrad Parker <conradparker@google.com>, cyhanish@google.com,
-        "Huang, Haitao" <haitao.huang@intel.com>,
-        "Huang, Kai" <kai.huang@intel.com>,
-        "Svahn, Kai" <kai.svahn@intel.com>, Keith Moyer <kmoy@google.com>,
-        Christian Ludloff <ludloff@google.com>,
-        Neil Horman <nhorman@redhat.com>,
-        Nathaniel McCallum <npmccallum@redhat.com>,
-        Patrick Uiterwijk <puiterwijk@redhat.com>,
-        David Rientjes <rientjes@google.com>,
-        "Christopherson, Sean J" <sean.j.christopherson@intel.com>,
-        Thomas Gleixner <tglx@linutronix.de>, yaozhangx@google.com,
-        Mikko Ylinen <mikko.ylinen@intel.com>
-Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
-Message-ID: <20201024194632.GA3642@kernel.org>
-References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
- <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
- <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
- <20201023101736.GG168477@linux.intel.com>
- <f2ff64e6-8fe1-55ee-ae7c-f19d7907d60e@intel.com>
- <20201024113403.GA29427@kernel.org>
- <CALCETrWxA6AgU8zg=npS=4NaA1_Pu9UwScEnr_Gk0wF-BOmqqQ@mail.gmail.com>
+        id S1764381AbgJXUXi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 16:23:38 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 72C841A0589;
+        Sat, 24 Oct 2020 22:23:35 +0200 (CEST)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 62F541A0547;
+        Sat, 24 Oct 2020 22:23:35 +0200 (CEST)
+Received: from localhost (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 4F318202EC;
+        Sat, 24 Oct 2020 22:23:35 +0200 (CEST)
+Date:   Sat, 24 Oct 2020 23:23:35 +0300
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Adam Ford <aford173@gmail.com>
+Cc:     linux-clk@vger.kernel.org, marex@denx.de,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        devicetree@vger.kernel.org
+Subject: Re: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
+Message-ID: <20201024202335.y3npwtgragpp5wcz@fsr-ub1664-175>
+References: <20201024162016.1003041-1-aford173@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrWxA6AgU8zg=npS=4NaA1_Pu9UwScEnr_Gk0wF-BOmqqQ@mail.gmail.com>
+In-Reply-To: <20201024162016.1003041-1-aford173@gmail.com>
+User-Agent: NeoMutt/20180622
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 08:47:28AM -0700, Andy Lutomirski wrote:
-> On Sat, Oct 24, 2020 at 4:34 AM Jarkko Sakkinen <kernel.org@kernel.org> wrote:
-> >
-> > On Fri, Oct 23, 2020 at 07:19:05AM -0700, Dave Hansen wrote:
-> > > On 10/23/20 3:17 AM, Jarkko Sakkinen wrote:
-> > > > On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
-> > > >> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
-> > > >>> + * Failure to explicitly request access to a restricted attribute will cause
-> > > >>> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
-> > > >>> + * is access to the PROVISION_KEY.
-> > > >> Could we also justify why access is restricted, please?  Maybe:
-> > > >>
-> > > >>    Access is restricted because PROVISION_KEY is burned uniquely
-> > > >>    into each each processor, making it a perfect unique identifier
-> > > >>    with privacy and fingerprinting implications.
-> > > >>
-> > > >> Are there any other reasons for doing it this way?
-> > > > AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
-> > > > PROVISION_SEALING_KEY also have random salt added, i.e. they change
-> > > > every boot cycle.
-> > > >
-> > > > There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
-> > > > 3D :-)
-> > >
-> > > Does that mean there are no privacy implications from access to the
-> > > provisioning keys?  If that's true, why do we need a separate permission
-> > > framework for creating provisioning enclaves?
-> >
-> > As I've understood it, the key material for those keys is not even
-> > required in the current SGX architecture, it was used in the legacy EPID
-> > scheme, but the attribute itself is useful.
-> >
-> > Let's assume that we have some sort of quoting enclave Q, which guards a
-> > public key pair, which signs quotes of other enclaves. Let's assume we
-> > have an attestation server A, which will enable some capabilities [*],
-> > if it receives a quote signed with that public key pair.
-> >
-> > 1. E gets the report key with EGETKEY.
-> > 2. E constructs REPORTDATA (37.16) and TARGETINFO (37.17) structures.
-> >    The former describes the enclaves contents and attributes and latter
-> >    the target, i.e. Q in this artitificial example.
-> > 3. E calls EREPORT to generate a structure called REPORT MAC'd with the
-> >    *targets* report key. It knows, which key to usue from REPORTDATA.
-> > 4. The runtime will then pass this to Q.
-> > 5. Q will check if ATTRIBUTE.PROVISION_KEY is set. If it is, Q will
-> >    know that the enclave is allowed to get attested. Then it will
-> >    sign the report with the guarded public key pair and send it to
-> >    the attestation server.
+On 20-10-24 11:20:12, Adam Ford wrote:
+> There are some less-documented registers which control clocks and 
+> resets for the multimedia block which controls the LCDIF, ISI, MIPI 
+> CSI, and MIPI DSI.
 > 
-> I think you have this a little bit off.  AIUI E won't have
-> ATTRIBUTE.PROVISION_KEY set -- Q will.  Q uses the provisioning key to
-> convince an Intel server that it's running on a genuine Intel CPU, and
-> the Intel server will return a signed certificate that Q can chain off
-> of to generate attestations for E.
+> The i.Mx8M Nano appears to have a subset of the i.MX8MP registers with
+> a couple shared registers with the i.MX8MM.  This series builds on the
+> series that have been submitted for both of those other two platforms.
+> 
+> This is an RFC because when enabling the corresponding DTS node, the 
+> system freezes on power on.  There are a couple of clocks that don't
+> correspond to either the imx8mp nor the imx8mm, so I might have something
+> wrong, and I was hoping for some constructive feedback in order to get
+> the imx8m Nano to a similar point of the Mini and Plus.
+> 
 
-Right, I was confused by that RAND column, until Jethro corrected me.
+Thanks for the effort.
 
-Actually, quoting enclave (QE) authorizes itself with a provisioning
-certification enclave (PCE), which holds certificates and revocation
-lists for provisioning secrets unique to a CPU. And the sequence that I
-described happens between PCE and QE. It accepts requests from enclaves
-with ATTRIBUTES.PROVISION key bits set to 1 according to:
+I'm assuming this relies on the following patchset, right ?
+https://lkml.org/lkml/2020/10/24/139
 
-  https://software.intel.com/content/dam/develop/external/us/en/documents/intel-sgx-support-for-third-party-attestation-801017.pdf
-
-The source code for the reference  is available here:
-
-  https://github.com/intel/SGXDataCenterAttestationPrimitives
-
-And binaries are here:
-
-  https://01.org/intel-softwareguard-extensions/downloads/intel-sgx-dcap-1.6-release
-
-They are provided for the inevitable reason that, it is the way bind to
-the hardware, i.e. proof that you are running on a genuine CPU.
-
-The network part is that PCE and QE can certify to an application, if an
-enclave running in a different computer is an enclave.
-
-> Dave, I would rephrase what you're saying a bit.  The PROVISION_KEY
-> attribute allows enclaves to access keys that are unique to a
-> processor and unchangeable.  Unlike other SGX keys, these keys are not
-> affected by OWNER_EPOCH changes and therefore cannot be reset.
-
-/Jarkko
+> Adam Ford (3):
+>   dt-bindings: clock: imx8mn: Add media blk_ctl clock IDs
+>   dt-bindings: reset: imx8mn: Add media blk_ctl reset IDs
+>   clk: imx: Add blk-ctl driver for i.MX8MN
+> 
+>  drivers/clk/imx/clk-blk-ctl-imx8mn.c     | 80 ++++++++++++++++++++++++
+>  include/dt-bindings/clock/imx8mn-clock.h | 11 ++++
+>  include/dt-bindings/reset/imx8mn-reset.h | 22 +++++++
+>  3 files changed, 113 insertions(+)
+>  create mode 100644 drivers/clk/imx/clk-blk-ctl-imx8mn.c
+>  create mode 100644 include/dt-bindings/reset/imx8mn-reset.h
+> 
+> -- 
+> 2.25.1
+> 
