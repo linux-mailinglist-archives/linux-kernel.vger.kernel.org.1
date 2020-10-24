@@ -2,98 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D8A7297C9F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:38:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8C91C297CA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:52:43 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761777AbgJXNiw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 09:38:52 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34175 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1761768AbgJXNiu (ORCPT
+        id S1761800AbgJXNvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 09:51:33 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:60884 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1725939AbgJXNvd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 09:38:50 -0400
-Received: from mail-wr1-f70.google.com ([209.85.221.70])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kWJku-0000rb-Et
-        for linux-kernel@vger.kernel.org; Sat, 24 Oct 2020 13:38:48 +0000
-Received: by mail-wr1-f70.google.com with SMTP id h8so2307379wrt.9
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 06:38:48 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=RDRwq8+3VpThffYJtXt/v2rYH+3Mm1/lRXG8WvQsfX8=;
-        b=XWP0/7VyrFdcUKnIYR/l6rilqluKG2nkx4XSperaskI79QtW99/3A7l3UU+gp0z3Lb
-         dCQh/lGyistlQSvCkNMLLVIeczze7EcdNdfTY1Exv33ZJoD46squjEDij3RL4ure/Shg
-         Psl47LFt6NbJ5yi7Rh2ZfW9BsE1B2QyghZayYPapoMZ1T41HsOQh8sKal1HJo5ZN1csp
-         UaChT04TOVsFvKrKQNb32TjoW9/AYcspfSunhAfx6/3grFQ0HfSBc69YXhvj3RwDnDb5
-         BEi4Zw2YNYZ2BFeGvBiqh0+MCwylu7FX8bSWtbkvHY/7izQ9oGrcBOW5oQbFCY7AjUX5
-         8wSA==
-X-Gm-Message-State: AOAM531+fnGNPkx7ixBOqQF3qw2kNADnJG7DxSMIybuCt7NHyAMfSuyV
-        knq2nZeVH8vJmLKWJTFKVmhapv4jKsAMfoyFmE41mNZ8csFXo033oDamqC+AoK6+xR54A201Tf6
-        O+mkjN6ISsQDo54wMQZ4DXLoJ+5YQLcFURx7/LtgDeg==
-X-Received: by 2002:a1c:9695:: with SMTP id y143mr6623605wmd.146.1603546728000;
-        Sat, 24 Oct 2020 06:38:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw2E7LrJHN/ax9a42WqsByu0neKeFDFF22hpeLgIQ06+1FEVSmOr//XRtzNPnWYirII/z/lgw==
-X-Received: by 2002:a1c:9695:: with SMTP id y143mr6623590wmd.146.1603546727785;
-        Sat, 24 Oct 2020 06:38:47 -0700 (PDT)
-Received: from localhost (host-79-33-123-6.retail.telecomitalia.it. [79.33.123.6])
-        by smtp.gmail.com with ESMTPSA id m12sm9937844wmi.33.2020.10.24.06.38.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 06:38:47 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 15:38:46 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: swap file broken with ext4 fast-commit
-Message-ID: <20201024133846.GA33750@xps-13-7390>
-References: <20201024131333.GA32124@xps-13-7390>
+        Sat, 24 Oct 2020 09:51:33 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ODnLHD080910;
+        Sat, 24 Oct 2020 13:50:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=corp-2020-01-29;
+ bh=7rjOYCVlssD4+N9kW3ptFrEt/i1XeNEK+8icb/redcs=;
+ b=vXT7Hl7EIjBJFGpKmhCb4LY0i2v/CpTf+9gaJqRz8CDsX+ZTbO0UuZ5b9anKlqBd8Sog
+ jOz+WpzLDCwkYaqI+aJEAGuoePxrdCSpmpwWpLqL2hcGqJLEqcFOAO/E+0MO3uYfweCq
+ DAWghKJGkwbTjJJhMqR9u5IaL9oMH3zhRHhVfl/Iknk4X7kehOePytmkS83jFFpXpZAO
+ jkeZ4j5VyuGA8enIspRuTOg5O7knR1wkVFLVb6EymG/7W6vI18ZFea0UULMUo/9iIBx+
+ JQ+1quEbquWMfXxUdOkPeB2tPzgpulq1yX5OSYatftIF4C9/oFE3ho/zZVEli5cedFVD tg== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2120.oracle.com with ESMTP id 34cc7kgpm0-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Sat, 24 Oct 2020 13:50:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ODkWeO109630;
+        Sat, 24 Oct 2020 13:48:14 GMT
+Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
+        by userp3020.oracle.com with ESMTP id 34cbkhh38e-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sat, 24 Oct 2020 13:48:14 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09ODm1Gd027136;
+        Sat, 24 Oct 2020 13:48:01 GMT
+Received: from kadam (/41.57.98.10)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Sat, 24 Oct 2020 06:48:01 -0700
+Date:   Sat, 24 Oct 2020 16:47:52 +0300
+From:   Dan Carpenter <dan.carpenter@oracle.com>
+To:     Christoph Hellwig <hch@lst.de>
+Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Matthew Auld <matthew.auld@intel.com>,
+        Chris Wilson <chris@chris-wilson.co.uk>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Fix a crash in shmem_pin_map() error handling
+Message-ID: <20201024134752.GF18329@kadam>
+References: <20201023113401.GG282278@mwanda>
+ <20201023121941.GB18499@lst.de>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201024131333.GA32124@xps-13-7390>
+In-Reply-To: <20201023121941.GB18499@lst.de>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
+ phishscore=0 mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010240105
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010240106
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 03:13:37PM +0200, Andrea Righi wrote:
-> I'm getting the following error if I try to create and activate a swap
-> file defined on an ext4 filesystem:
+On Fri, Oct 23, 2020 at 02:19:41PM +0200, Christoph Hellwig wrote:
+> > diff --git a/drivers/gpu/drm/i915/gt/shmem_utils.c b/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > index f011ea42487e..7eb542018219 100644
+> > --- a/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > +++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
+> > @@ -52,8 +52,9 @@ struct file *shmem_create_from_object(struct drm_i915_gem_object *obj)
+> >  void *shmem_pin_map(struct file *file)
+> >  {
+> >  	struct page **pages;
+> > -	size_t n_pages, i;
+> > +	size_t n_pages;
+> >  	void *vaddr;
+> > +	int i;
+> >  
+> >  	n_pages = file->f_mapping->host->i_size >> PAGE_SHIFT;
+> >  	pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
 > 
->  [   34.406479] swapon: file is not committed
-> 
-> The swap file is created in the root filesystem (ext4 mounted with the
-> following options):
-> 
-> $ grep " / " /proc/mounts
-> /dev/vda1 / ext4 rw,relatime 0 0
-> 
-> No matter how long I wait or how many times I run sync, I'm still
-> getting the same error and the swap file is never activated.
-> 
-> A git bisect shows that this issue has been introduced by the following
-> commit:
-> 
->  aa75f4d3daae ("ext4: main fast-commit commit path")
-> 
-> Simple test case to reproduce the problem:
-> 
->  # fallocate -l 8G /swapfile
->  # chmod 0600 /swapfile
->  # mkswap /swapfile
->  # swapon /swapfile
-> 
-> Maybe we're missing to mark the inode as clean somewhere, even if the
-> transation is committed to the journal?
+> This assumes we never have more than INT_MAX worth of pages before
+> a failure. 
 
-I think I see the problem. There's something wrong in
-ext4_inode_datasync_dirty(), it looks like the logic to check if the
-inode is dirty is quite the opposite.
+Doh.  Yeah.  My bad.
 
-I'll test and send a patch soon.
-
--Andrea
+regards,
+dan carpenter
