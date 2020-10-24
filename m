@@ -2,107 +2,316 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5D7F2297E48
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 21:58:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B402297E50
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 22:04:07 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1763703AbgJXT6K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 15:58:10 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47156 "EHLO
+        id S1764096AbgJXUDL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 16:03:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47920 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1762862AbgJXT6J (ORCPT
+        with ESMTP id S1764079AbgJXUDK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 15:58:09 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6DF29C0613CE;
-        Sat, 24 Oct 2020 12:58:09 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c194so6184480wme.2;
-        Sat, 24 Oct 2020 12:58:09 -0700 (PDT)
+        Sat, 24 Oct 2020 16:03:10 -0400
+Received: from mail-wm1-x344.google.com (mail-wm1-x344.google.com [IPv6:2a00:1450:4864:20::344])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E63F9C0613D2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:03:09 -0700 (PDT)
+Received: by mail-wm1-x344.google.com with SMTP id c194so6203420wme.2
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:03:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=yI7DQlIbMqrUzjgEWDyjjKv7eTTNrYda8KbimVLIc34=;
-        b=Kfs3KwQIv5oHHLZBxh0f7hx0NVJopMhp1MJXOke5qWjomNYbc9aCSK+m+heDKCf/mg
-         s4L5wdwcIZB0V9GsKDNm50n5XVHN81Hs+//PqrXlr3B3Gnv0Ai3IlD9ToxhbOB7NRuUV
-         xhl7oYwnhEvF4PoHPPyQ1ihzVCFt+gUeJ7zeosJrTlP8nD2YMJiEROoSd958jXIKu/xR
-         EKluP+G5tCGD2efi+WbX2Uw2D2JmbaAqThRVEtWqiH32AQ6bFzyiE26Y6c1hY0ex8u8V
-         IMVN8PDVjUaJS1gYUp/12+dw69NiVAgJacs+pVPNAGSrr2Fiyt6KYR1BxBEqb5UN7YOv
-         eyew==
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ykbWFrF4DLoLSFHlYjKaVhZVh2Azih5ulLgw1xBdGTk=;
+        b=f/th5z/NtzzTdGYC5io7O8vnGVy/XLnUYRkmFTzv+dpVZmij+8dq6P1BafNn1mlnml
+         pea9J9jay9+663rTHY2ftfK8JIYN4EftFobuXdr9gymCSNYXqiEiu33Epd1GMsVykS/z
+         fBg7yhRdFOjX7BaQs1hpIjhcTD5T8NDbVqC2f71KfhaJ0n+4JL/o60XC73o6y+wnX2HS
+         LQYl181Isk9Jj4iiJqaclEJHE6A55DdJDsunBm7CWGOw3pkbbx0Wq4O+21l+1k5IOPix
+         Sylim7g+yHlGGNX22vYT8YoDSpQejDd8iPn05n5mJKWbbwTCiqmup0+kTUwizJf0Wzef
+         NMMg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yI7DQlIbMqrUzjgEWDyjjKv7eTTNrYda8KbimVLIc34=;
-        b=rprJqqUv5pi5/LqWjmtRLZmKkJtogouIIV+oZCHlUnXgP30uyPvcTBMynwcQqBLQeZ
-         Pz2SVYhsUmsxV2dperLA2Xrj23B20NQ+8gtkUb6J3BN+MIBVZsh3XXEEP/ugYJZ/1ddo
-         YsM7lIi8idXW/cBCb4JFaFfv87z+TgPBISjNdrSEthLnOXMZO586V8rOGRfPTby7rW5V
-         zF68NFJVRRx+VQIMgbMxt5iB07mG2ZxA8HB/6cjC54gZ6gVsPGk9ff41cOaqZsa8jX8H
-         3WEROISdjWC0MycqAvu2FpYB420mbR3UMSHZzaCgbu6oa0Ap3bmQw2sgNkycGxFXv4Hi
-         tSbQ==
-X-Gm-Message-State: AOAM533X49d8Gn27/nPJ8d/aor1MHmK46ns5iKKODMbWbIy0J3Qe1o/e
-        XYHoLdq1ZbhaBbDlNcCWWgg=
-X-Google-Smtp-Source: ABdhPJyrPbPLmcv1UVjJniX/1N6rypikoOlIc4kvJZnYMxhNeDIecThfOdFEaXW5slBdlVe1YUw00w==
-X-Received: by 2002:a1c:a3c2:: with SMTP id m185mr8189575wme.161.1603569485953;
-        Sat, 24 Oct 2020 12:58:05 -0700 (PDT)
-Received: from Red ([2a01:cb1d:3d5:a100:264b:feff:fe03:2806])
-        by smtp.googlemail.com with ESMTPSA id v6sm11564319wmj.6.2020.10.24.12.58.04
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=ykbWFrF4DLoLSFHlYjKaVhZVh2Azih5ulLgw1xBdGTk=;
+        b=HYhUk8uuwgNC9R2ij1ESvfX+iNlXtfqECWJJWbog2Wb6H6hh+zW4NynC+H2N0u6FoJ
+         dwl7wpSiLedklt6KzD4qp6ueAU2O1eyfPSjp6jAUL8YL6qKpuqMgSExmIFkVnJJdsA2s
+         ZmCnl3gHT8Ha8HakCMYd+x80FxT/PFPOgyH0Hu9pY7YHeDlNDA4OxJ2l+W4FFcNTfEYw
+         wGPDyB/aYRzXwuipJGZKnMJN9ajcahJPTlB3vGUacL/VPgUh6jxzbK6N4p1LPi6MCKCe
+         6WzSEpzBMqjQOi3Lf9im2rhtYTE2bkrJKakgJzWVUyu8i3pBFOFMeo5VMJY+Whv+j9Xv
+         3itw==
+X-Gm-Message-State: AOAM533D3TzhvjcsBkdX+A8yycETxThCxqFSnaiateyrlxtZqTgjD2j0
+        E/ZFpr3grHblvD4o0kyhngJSgA==
+X-Google-Smtp-Source: ABdhPJzutYOC//lk9+11Sdq3e30rkbq13pc0iEetkKhWNXaPX/bi4gYoZ+fiA3GQoDJDXpLShTm5ww==
+X-Received: by 2002:a1c:c912:: with SMTP id f18mr8535466wmb.150.1603569788433;
+        Sat, 24 Oct 2020 13:03:08 -0700 (PDT)
+Received: from localhost.localdomain (34.169.185.81.rev.sfr.net. [81.185.169.34])
+        by smtp.gmail.com with ESMTPSA id j7sm14106305wrn.81.2020.10.24.13.03.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 12:58:05 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 21:58:03 +0200
-From:   Corentin Labbe <clabbe.montjoie@gmail.com>
-To:     Chen-Yu Tsai <wens@kernel.org>
-Cc:     Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        Sat, 24 Oct 2020 13:03:07 -0700 (PDT)
+From:   Fabien Parent <fparent@baylibre.com>
+To:     linux-mediatek@lists.infradead.org,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [linux-sunxi] [PATCH 10/10] arm64: dts: allwinner: a64:
- bananapi-m64: Enable RGMII RX/TX delay on PHY
-Message-ID: <20201024195803.GA30672@Red>
-References: <20201024162515.30032-1-wens@kernel.org>
- <20201024162515.30032-10-wens@kernel.org>
+Cc:     matthias.bgg@gmail.com, robh+dt@kernel.org, broonie@kernel.org,
+        lgirdwood@gmail.com, Fabien Parent <fparent@baylibre.com>,
+        Rob Herring <robh@kernel.org>
+Subject: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
+Date:   Sat, 24 Oct 2020 22:03:03 +0200
+Message-Id: <20201024200304.1427864-1-fparent@baylibre.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201024162515.30032-10-wens@kernel.org>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 12:25:15AM +0800, Chen-Yu Tsai wrote:
-> From: Chen-Yu Tsai <wens@csie.org>
-> 
-> The Ethernet PHY on the Bananapi M64 has the RX and TX delays
-> enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
-> 
-> Fix the phy-mode description to correct reflect this so that the
-> implementation doesn't reconfigure the delays incorrectly. This
-> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> rx/tx delay config").
-> 
-> Fixes: e7295499903d ("arm64: allwinner: bananapi-m64: Enable dwmac-sun8i")
-> Fixes: 94f442886711 ("arm64: dts: allwinner: A64: Restore EMAC changes")
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> index 3ea5182ca489..e5e840b9fbb4 100644
-> --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> @@ -105,7 +105,7 @@ &ehci1 {
->  &emac {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&rgmii_pins>;
-> -	phy-mode = "rgmii";
-> +	phy-mode = "rgmii-id";
->  	phy-handle = <&ext_rgmii_phy>;
->  	phy-supply = <&reg_dc1sw>;
->  	status = "okay";
-> -- 
-> 2.28.0
+Add binding documentation of the regulator for MT6392 SoCs.
 
-Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+Signed-off-by: Fabien Parent <fparent@baylibre.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
+---
 
-Thanks
+v5:
+	* No change
+v4:
+	* No change
+v3:
+	* No change
+v2:
+	* Use 'pmic' as node name for the pmic.
+	* Use 'regulators' as node name for the regulators
+	* use dash instead of underscore for regulator's node names.
+
+ .../bindings/regulator/mt6392-regulator.txt   | 220 ++++++++++++++++++
+ 1 file changed, 220 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/regulator/mt6392-regulator.txt
+
+diff --git a/Documentation/devicetree/bindings/regulator/mt6392-regulator.txt b/Documentation/devicetree/bindings/regulator/mt6392-regulator.txt
+new file mode 100644
+index 000000000000..d03c0707fabc
+--- /dev/null
++++ b/Documentation/devicetree/bindings/regulator/mt6392-regulator.txt
+@@ -0,0 +1,220 @@
++Mediatek MT6392 Regulator
++
++Required properties:
++- compatible: "mediatek,mt6392-regulator"
++- mt6392regulator: List of regulators provided by this controller. It is named
++  according to its regulator type, buck_<name> and ldo_<name>.
++  The definition for each of these nodes is defined using the standard binding
++  for regulators at Documentation/devicetree/bindings/regulator/regulator.txt.
++
++The valid names for regulators are::
++BUCK:
++  buck_vproc, buck_vsys, buck_vcore
++LDO:
++  ldo_vxo22, ldo_vaud22, ldo_vcama, ldo_vaud28, ldo_vadc18, ldo_vcn35,
++  ldo_vio28. ldo_vusb, ldo_vmc, ldo_vmch, ldo_vemc3v3, ldo_vgp1, ldo_vgp2,
++  ldo_vcn18, ldo_vcamaf, ldo_vm, ldo_vio18, ldo_vcamd, ldo_vcamio, ldo_vm25,
++  ldo_vefuse
++
++Example:
++	pmic {
++		compatible = "mediatek,mt6392", "mediatek,mt6323";
++		mediatek,system-power-controller;
++
++		regulator {
++			compatible = "mediatek,mt6392-regulator";
++
++			mt6392_vproc_reg: buck-vproc {
++				regulator-name = "buck_vproc";
++				regulator-min-microvolt = < 700000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <12500>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vsys_reg: buck-vsys {
++				regulator-name = "buck_vsys";
++				regulator-min-microvolt = <1400000>;
++				regulator-max-microvolt = <2987500>;
++				regulator-ramp-delay = <25000>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vcore_reg: buck-vcore {
++				regulator-name = "buck_vcore";
++				regulator-min-microvolt = < 700000>;
++				regulator-max-microvolt = <1350000>;
++				regulator-ramp-delay = <12500>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vxo22_reg: ldo-vxo22 {
++				regulator-name = "ldo_vxo22";
++				regulator-min-microvolt = <2200000>;
++				regulator-max-microvolt = <2200000>;
++				regulator-enable-ramp-delay = <110>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vaud22_reg: ldo-vaud22 {
++				regulator-name = "ldo_vaud22";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <2200000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vcama_reg: ldo-vcama {
++				regulator-name = "ldo_vcama";
++				regulator-min-microvolt = <2800000>;
++				regulator-max-microvolt = <2800000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vaud28_reg: ldo-vaud28 {
++				regulator-name = "ldo_vaud28";
++				regulator-min-microvolt = <2800000>;
++				regulator-max-microvolt = <2800000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vadc18_reg: ldo-vadc18 {
++				regulator-name = "ldo_vadc18";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vcn35_reg: ldo-vcn35 {
++				regulator-name = "ldo_vcn35";
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3600000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vio28_reg: ldo-vio28 {
++				regulator-name = "ldo_vio28";
++				regulator-min-microvolt = <2800000>;
++				regulator-max-microvolt = <2800000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vusb_reg: ldo-vusb {
++				regulator-name = "ldo_vusb";
++				regulator-min-microvolt = <3300000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vmc_reg: ldo-vmc {
++				regulator-name = "ldo_vmc";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-boot-on;
++			};
++
++			mt6392_vmch_reg: ldo-vmch {
++				regulator-name = "ldo_vmch";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-boot-on;
++			};
++
++			mt6392_vemc3v3_reg: ldo-vemc3v3 {
++				regulator-name = "ldo_vemc3v3";
++				regulator-min-microvolt = <3000000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-boot-on;
++			};
++
++			mt6392_vgp1_reg: ldo-vgp1 {
++				regulator-name = "ldo_vgp1";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vgp2_reg: ldo-vgp2 {
++				regulator-name = "ldo_vgp2";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vcn18_reg: ldo-vcn18 {
++				regulator-name = "ldo_vcn18";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vcamaf_reg: ldo-vcamaf {
++				regulator-name = "ldo_vcamaf";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vm_reg: ldo-vm {
++				regulator-name = "ldo_vm";
++				regulator-min-microvolt = <1240000>;
++				regulator-max-microvolt = <1390000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vio18_reg: ldo-vio18 {
++				regulator-name = "ldo_vio18";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-enable-ramp-delay = <264>;
++				regulator-always-on;
++				regulator-boot-on;
++			};
++
++			mt6392_vcamd_reg: ldo-vcamd {
++				regulator-name = "ldo_vcamd";
++				regulator-min-microvolt = <1200000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vcamio_reg: ldo-vcamio {
++				regulator-name = "ldo_vcamio";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <1800000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vm25_reg: ldo-vm25 {
++				regulator-name = "ldo_vm25";
++				regulator-min-microvolt = <2500000>;
++				regulator-max-microvolt = <2500000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++
++			mt6392_vefuse_reg: ldo-vefuse {
++				regulator-name = "ldo_vefuse";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <2000000>;
++				regulator-enable-ramp-delay = <264>;
++			};
++		};
++	};
+-- 
+2.28.0
+
