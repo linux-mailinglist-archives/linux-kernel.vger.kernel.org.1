@@ -2,139 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DA50297A1B
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:50:39 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0EF297A21
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 03:12:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759059AbgJXAsM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:48:12 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:42392 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1757092AbgJXAsM (ORCPT
+        id S1757168AbgJXBEb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 21:04:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:43780 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1752900AbgJXBEb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:48:12 -0400
-Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kW7j3-0006r6-8t; Fri, 23 Oct 2020 20:48:05 -0400
-Date:   Fri, 23 Oct 2020 20:48:04 -0400
-From:   Rik van Riel <riel@surriel.com>
-To:     Hugh Dickins <hughd@google.com>
-Cc:     Yu Xu <xuyu@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>
-Subject: [PATCH v4] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201023204804.3f8d19c1@imladris.surriel.com>
-X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        Fri, 23 Oct 2020 21:04:31 -0400
+Received: from mail-ed1-x542.google.com (mail-ed1-x542.google.com [IPv6:2a00:1450:4864:20::542])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 261B4C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 18:04:31 -0700 (PDT)
+Received: by mail-ed1-x542.google.com with SMTP id o18so3280824edq.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 18:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3TrZ6giZbKfNISBDB1glOp0uFfqVNMz3sDITuh2vlh8=;
+        b=Zw6K4ZmIuCl+yOt+zWkwDGUIUM1xCoaDw2wV5TXLNVnGqwmiKAj7sO07GlgWkzP9M1
+         vQm+s+Eo778Jh7FcK8PFjGiQPwunDqaXrlcF4tPvEW/DBJ7KIdvGKbUp+Od4zgcP3Qc0
+         yrcc94/xWTQIJykQfevQacf9ywQ9x1MnbPhSc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=3TrZ6giZbKfNISBDB1glOp0uFfqVNMz3sDITuh2vlh8=;
+        b=jjuWr4nxt8fFmmoXe199b6Js+SuXQF8CPcJ7I6p1/EXKs8CbSqr2Cxv9uPe4saYO2v
+         DdpUfU2LxU1wVSLq9n//lQc8yPO8wlE5xO72eHo+vXdQIF1rx/h54EM+yME8iwljLk2t
+         6Zg2/jjLYq6SEMeAz6WB+1A4PElkC2LJXBgsPr5EzUjuzs53fxfB7PjDrHfZ8volDu4S
+         5p7em164RNJVuouRK2L5UcfZ3PA9EVjqGkHBvQjEhUiB1oWRVKxBnfKKlNNktkeM7xLM
+         Z9uQPscdcha6YWThqLBc8ASLdNumUmDa3FEAmcLjMI6OESjUy49+l7jJndiPkAAEHmTo
+         miQA==
+X-Gm-Message-State: AOAM533haCd8/CostARRT/Ytgw1v4vvBr6u+E5WTa4LumFr98yuBlZ5R
+        vf6316275kuXjpP9SBbCBfv7xA==
+X-Google-Smtp-Source: ABdhPJyW95fa8I73bvyB54A4buqImKHpYUUhkCEy3L+G9TOnyiHq4RcjUjn3r+jGNGXrSr2jgbuDHw==
+X-Received: by 2002:a50:9ec6:: with SMTP id a64mr4829926edf.382.1603501469750;
+        Fri, 23 Oct 2020 18:04:29 -0700 (PDT)
+Received: from prevas-ravi.prevas.se (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id sd18sm1578111ejb.24.2020.10.23.18.04.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 18:04:29 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        Yi Wang <wang.yi59@zte.com.cn>,
+        Liao Pingfang <liao.pingfang@zte.com.cn>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] kernel/sys.c: fix prototype of prctl_get_tid_address()
+Date:   Sat, 24 Oct 2020 03:04:26 +0200
+Message-Id: <20201024010427.27405-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-Sender: riel@shelob.surriel.com
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The allocation flags of anonymous transparent huge pages can be controlled
-through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-help the system from getting bogged down in the page reclaim and compaction
-code when many THPs are getting allocated simultaneously.
+tid_addr is not a "pointer to (pointer to int in userspace)"; it is in
+fact a "pointer to (pointer to int in userspace) in userspace". So
+sparse rightfully complains about passing a kernel pointer to
+put_user().
 
-However, the gfp_mask for shmem THP allocations were not limited by those
-configuration settings, and some workloads ended up with all CPUs stuck
-on the LRU lock in the page reclaim code, trying to allocate dozens of
-THPs simultaneously.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
+ kernel/sys.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-This patch applies the same configurated limitation of THPs to shmem
-hugepage allocations, to prevent that from happening.
-
-This way a THP defrag setting of "never" or "defer+madvise" will result
-in quick allocation failures without direct reclaim when no 2MB free
-pages are available.
-
-With this patch applied, THP allocations for tmpfs will be a little
-more aggressive than today for files mmapped with MADV_HUGEPAGE,
-and a little less aggressive for files that are not mmapped or
-mapped without that flag.
-
-Signed-off-by: Rik van Riel <riel@surriel.com>
---- 
-v4: rename alloc_hugepage_direct_gfpmask to vma_thp_gfp_mask (Matthew Wilcox)
-v3: fix NULL vma issue spotted by Hugh Dickins & tested
-v2: move gfp calculation to shmem_getpage_gfp as suggested by Yu Xu
-
-diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-index c603237e006c..c7615c9ba03c 100644
---- a/include/linux/gfp.h
-+++ b/include/linux/gfp.h
-@@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
- extern void pm_restrict_gfp_mask(void);
- extern void pm_restore_gfp_mask(void);
+diff --git a/kernel/sys.c b/kernel/sys.c
+index 6401880dff74a80a4594..85395f5cebc34d073cf4 100644
+--- a/kernel/sys.c
++++ b/kernel/sys.c
+@@ -2238,12 +2238,12 @@ static int prctl_set_mm(int opt, unsigned long addr,
+ }
  
-+extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
-+
- #ifdef CONFIG_PM_SLEEP
- extern bool pm_suspended_storage(void);
- #else
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9474dbc150ed..c5d03b2f2f2f 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -649,9 +649,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
-  *	    available
-  * never: never stall for any thp allocation
-  */
--static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-+gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma)
+ #ifdef CONFIG_CHECKPOINT_RESTORE
+-static int prctl_get_tid_address(struct task_struct *me, int __user **tid_addr)
++static int prctl_get_tid_address(struct task_struct *me, int __user * __user *tid_addr)
  {
--	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
-+	const bool vma_madvised = vma && (vma->vm_flags & VM_HUGEPAGE);
- 
- 	/* Always do synchronous compaction */
- 	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
-@@ -744,7 +744,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
- 			pte_free(vma->vm_mm, pgtable);
- 		return ret;
- 	}
--	gfp = alloc_hugepage_direct_gfpmask(vma);
-+	gfp = vma_thp_gfp_mask(vma);
- 	page = alloc_hugepage_vma(gfp, vma, haddr, HPAGE_PMD_ORDER);
- 	if (unlikely(!page)) {
- 		count_vm_event(THP_FAULT_FALLBACK);
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 537c137698f8..6c3cb192a88d 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
- 		return NULL;
- 
- 	shmem_pseudo_vma_init(&pvma, info, hindex);
--	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
--			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
-+	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-+			       true);
- 	shmem_pseudo_vma_destroy(&pvma);
- 	if (page)
- 		prep_transhuge_page(page);
-@@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	struct page *page;
- 	enum sgp_type sgp_huge = sgp;
- 	pgoff_t hindex = index;
-+	gfp_t huge_gfp;
- 	int error;
- 	int once = 0;
- 	int alloced = 0;
-@@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
- 	}
- 
- alloc_huge:
--	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
-+	huge_gfp = vma_thp_gfp_mask(vma);
-+	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
- 	if (IS_ERR(page)) {
- alloc_nohuge:
- 		page = shmem_alloc_and_acct_page(gfp, inode,
+ 	return put_user(me->clear_child_tid, tid_addr);
+ }
+ #else
+-static int prctl_get_tid_address(struct task_struct *me, int __user **tid_addr)
++static int prctl_get_tid_address(struct task_struct *me, int __user * __user *tid_addr)
+ {
+ 	return -EINVAL;
+ }
+@@ -2427,7 +2427,7 @@ SYSCALL_DEFINE5(prctl, int, option, unsigned long, arg2, unsigned long, arg3,
+ 		error = prctl_set_mm(arg2, arg3, arg4, arg5);
+ 		break;
+ 	case PR_GET_TID_ADDRESS:
+-		error = prctl_get_tid_address(me, (int __user **)arg2);
++		error = prctl_get_tid_address(me, (int __user * __user *)arg2);
+ 		break;
+ 	case PR_SET_CHILD_SUBREAPER:
+ 		me->signal->is_child_subreaper = !!arg2;
+-- 
+2.23.0
+
