@@ -2,122 +2,242 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B3221297E5C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 22:16:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id B3428297E61
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 22:20:49 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764329AbgJXUQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 16:16:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49940 "EHLO
+        id S1764365AbgJXUUm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 16:20:42 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50618 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1760381AbgJXUQP (ORCPT
+        with ESMTP id S1764358AbgJXUUm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 16:16:15 -0400
-Received: from mail-qk1-x744.google.com (mail-qk1-x744.google.com [IPv6:2607:f8b0:4864:20::744])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AC40C0613D2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:16:15 -0700 (PDT)
-Received: by mail-qk1-x744.google.com with SMTP id h140so4896149qke.7
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:16:15 -0700 (PDT)
+        Sat, 24 Oct 2020 16:20:42 -0400
+Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E6C65C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:20:41 -0700 (PDT)
+Received: by mail-oi1-x244.google.com with SMTP id m128so6327710oig.7
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 13:20:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=sNibd5271qltOBrFTFlcW1OzSSGz8hEoaHyOgvca/yQ=;
-        b=IFcMQrkTZBs1x3u+BfZVylQ7KVCjnzIL06JqzCFR7pPR98Un2Yre/mK8K4ZEpBJaiQ
-         lDMdX0Leh6d46OKYPHLeRC66YAzvVgxpqvDp84GUcsuzbm81j+CqjcCKB08goPiBL/E4
-         DdH0QrHkoJIxCFYSRNRGSxK8DVNF0UMx0syuvE5+L9hTEjXrIFTiOqFt3tvSNiPHT6dg
-         u6KdsVJTGr6XwZOnxqbnXdACG25cu4J9CLzj15p4R6b0luGvamKP2MuPMH79tDO3uW+n
-         dTFzeVxcOtMSAOe3S6uBafLq+fm294dP+m8ItJJK+DJT127+8viu/4XYCrKwPQ1xOCQs
-         2FwQ==
+        bh=VG0Yc/GlRSlgn6rbhnDixnyqF/KHMumMevzsRNu/XRA=;
+        b=CiGJIZxtm4Ivj7gUdpRMEJE8/XhDFWdkcF6CaKL076yEJKuUtouOaz71Qvb0OTWMzb
+         3FMepYAE8EaL/m6DfVEis1icUbho+fr0mpPH8fgYHrkbo6zlVjBCUjlYYdOc19TbN4P1
+         CSgcQkpfO20DiCvGMPwOcKK4Ve7Z+hBjH8/wXwuaZOgUJ8dmwAH/kBKls5xokiIlkTGt
+         nI+RcwbC22U5iCkxZvFilKEzJPa7cyOJc0oGONB5vvYpYORLo+uIt0QMz8efxjMx4CZi
+         jB6jiV0rpNp8OP7TWveRbQlsJQ8sSEMOU6/3HYjjqAcR9wPMAGA628qFW4iix8sTnwSL
+         O42A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=sNibd5271qltOBrFTFlcW1OzSSGz8hEoaHyOgvca/yQ=;
-        b=qfg6kcmNl6lhLZRzOOAP9t3fcAa7c2ymtEXK0pB7Itintbi4JbMCETMpbfM2sZfiOT
-         E7rIxjB9QJwfIv/dbOtS/WOtWkQXTRz4MqBlGTGVV+/la7R7HJQ63Wf2im/UV1GG8t7B
-         55GYvm7ubgxsnkiQDR8Z0BMcRsa2AmQmchbnstyGe0s57N4doaPuc7P1mC3LXCyKcjMp
-         WlEO/vn57PseGmjKJ/FTt+SnTz9FYk6OWwj/icxXdg4DOpbwi2JVPPW4LQMtgwO4NGmD
-         J1O0wiTOr/o2kPVRw5IJpoYe13hy70SbxgCAEr5EEvi2zVe50HHlZ0fl9aXkledBRJqO
-         A+sg==
-X-Gm-Message-State: AOAM530WUDqoy5U2op8Y7APqTU5Rpw2e4+0T5oN3+tIg1qzhDrIIp/7L
-        vOY2zdt5+C5r1Cos2zo8iZd3x0j7DZ4dUebA9Sg=
-X-Google-Smtp-Source: ABdhPJyOk1Llh4n/0AuvDW92FcJ4KCA5Dg8irNeNLfSJBQKoVDiCwkVNoz2H9/obehtEh0invVOFTnWEINdZyyr2PcU=
-X-Received: by 2002:a37:9d0c:: with SMTP id g12mr8263523qke.264.1603570574548;
- Sat, 24 Oct 2020 13:16:14 -0700 (PDT)
+        bh=VG0Yc/GlRSlgn6rbhnDixnyqF/KHMumMevzsRNu/XRA=;
+        b=YCx8pFB7N+vqN4lA1Iz6xr3gyq+wdLFzgIIK2wigNotFRcQ2AaE2JDyXz4Wuy93XP8
+         x6p2QlR1EfroqUq0QhteQ5JUfCq2bpt94iMblf71WySOBhlRnat3ZRFrFTrjiBj3PlTJ
+         TQk89MLe4qvVjNjlNs0hInggooMM+w3p1ux/jXzXglFzKbHT87C+2HfMi0XxJ9SxFhYU
+         XOuQahliHIDzINK0HOcWLxbQM9AY7ovsalwjgaIb7RUiRpZgmoOjSHiBZmng9/luIB3P
+         LtMSXMlygY18Wxh39T92uRdUQFnDfIsY9wGgoPRqrUi9yovt5FcRDHBQbyZshLSUaI2D
+         FF8Q==
+X-Gm-Message-State: AOAM532XtLEqQY/MVN0zqntAL51HcDAG5JS/spl9RKqfTG2SLg+tjAP0
+        twq1TbG65F2ow/u1252RwO2V3sRg5TZwnq9rwEA=
+X-Google-Smtp-Source: ABdhPJyHjPrEKBTi1fy3q/eFBSSVUjWLnk8yqoNO9OkvyEAfWwXwKUn6YXtwvDySdHHzXHW5gFCjVF06KdyDIz+7Zho=
+X-Received: by 2002:aca:2101:: with SMTP id 1mr7430348oiz.110.1603570841059;
+ Sat, 24 Oct 2020 13:20:41 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201008182713.2764-1-harshalchau04@gmail.com>
- <20201009045734.GA112189@kroah.com> <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
- <CADVatmOf18xUEvjWFzenut=KsHtoEZ5OSZF1oCqFJsbkx_Mb9g@mail.gmail.com>
- <CAFEvwukbxCY4wffd_1jLo+vjfXfBC4sFDpJ1vY4wfT+=yFA--w@mail.gmail.com>
- <0eb6f48d05624c8abaf00ae1bd4d88a9@AcuMS.aculab.com> <CAFEvwu=76mPtXSEgpwSoRC0rC0tkU5BiEx1X5O2VwVSPJ7m4Rw@mail.gmail.com>
- <CAK8P3a0y5MjP7AXOpmqc7xpGFCSvTGWHPT_eev5OpJJGVcRVdA@mail.gmail.com>
-In-Reply-To: <CAK8P3a0y5MjP7AXOpmqc7xpGFCSvTGWHPT_eev5OpJJGVcRVdA@mail.gmail.com>
-From:   harshal chaudhari <harshalchau04@gmail.com>
-Date:   Sun, 25 Oct 2020 01:46:02 +0530
-Message-ID: <CAFEvwukjrxjPj5wUAv1ngCyu3yHPRqeOiB8ActopkQ4rfv7T0Q@mail.gmail.com>
-Subject: Re: [PATCH] char: ppdev: check if ioctl argument is present and valid
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
+References: <20201024090557.45092-1-dwaipayanray1@gmail.com>
+In-Reply-To: <20201024090557.45092-1-dwaipayanray1@gmail.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sun, 25 Oct 2020 01:50:11 +0530
+Message-ID: <CABJPP5AoeDvRRe0WGReHTXqgzSe1=3_iz=jtpRiHp1BiMc6=kw@mail.gmail.com>
+Subject: Re: [PATCH v3] checkpatch: extend attributes check to handle more patterns
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 12:51 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Sat, Oct 24, 2020 at 2:36 PM Dwaipayan Ray <dwaipayanray1@gmail.com> wrote:
 >
-> On Sat, Oct 24, 2020 at 5:54 PM harshal chaudhari
-> <harshalchau04@gmail.com> wrote:
-> > On Tue, Oct 13, 2020 at 4:42 PM David Laight <David.Laight@aculab.com> wrote:
+> It is generally preferred that the macros from
+> include/linux/compiler_attributes.h are used, unless there
+> is a reason not to.
 >
-> > So I am a little bit confused about this check whether it's required or not
-> > Please could you point me in the right direction?
-> >
-> > In any case, thanks for your help ...
-> >
-> > Here is a driver source located in: linux/drivers/misc/xilinx_sdfec.c
-> >
-> > static long xsdfec_dev_ioctl(struct file *fptr, unsigned int cmd,
-> > unsigned long data)
-> > {
-> > struct xsdfec_dev *xsdfec;
-> > void __user *arg = NULL;
-> > int rval = -EINVAL;
-> >
-> > if (_IOC_TYPE(cmd) != XSDFEC_MAGIC)
-> >                return -ENOTTY;
-> >
-> > /* check if ioctl argument is present and valid */
-> > if (_IOC_DIR(cmd) != _IOC_NONE)
-> > {
-> >         arg = (void __user *)data;
-> >         if (!arg)
-> >                    return rval;
-> > }
-> >
+> checkpatch currently checks __attribute__ for each of
+> packed, aligned, printf, scanf, and weak. Other declarations
+> in compiler_attributes.h are not handled.
 >
-> All of this can be removed, and replaced with unconditional
+> Add a generic test to check the presence of such attributes.
+> Some attributes require more specific handling and are kept
+> separate.
 >
->      void __user *arg = (void __user *)data;
->      int rval;
+> New attributes which are now handled are:
 >
-> with an "rval = -ENOTTY" added in the 'default' case. This will
-> make it behave more like other drivers, returning -ENOTTY for
-> any unknown ioctl command, and returning -EFAULT for all
-> invalid pointers, including NULL.
+> __alias__(#symbol)
+> __always_inline__
+> __assume_aligned__(a, ## __VA_ARGS__)
+> __cold__
+> __const__
+> __copy__(symbol)
+> __designated_init__
+> __externally_visible__
+> __gnu_inline__
+> __malloc__
+> __mode__(x)
+> __no_caller_saved_registers__
+> __noclone__
+> __fallthrough__
+> __noinline__
+> __nonstring__
+> __noreturn__
+> __pure__
+> __unused__
+> __used__
 >
-> xsdfec_dev_compat_ioctl() can removed as well, with the file operations
-> changed to an unconditional (removing the #ifdef)
+> Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
+> Suggested-by: Joe Perches <joe@perches.com>
+> Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+> ---
+>  scripts/checkpatch.pl | 105 +++++++++++++++++++++++++++---------------
+>  1 file changed, 69 insertions(+), 36 deletions(-)
 >
->       .compat_ioctl = compat_ptr_ioctl(),
+> diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> index 7e505688257a..01d83d345b4c 100755
+> --- a/scripts/checkpatch.pl
+> +++ b/scripts/checkpatch.pl
+> @@ -6155,50 +6155,83 @@ sub process {
+>                         }
+>                 }
 >
-> This will not affect behavior, it's just another simplification.
+> -# Check for __attribute__ packed, prefer __packed
+> +# Check for compiler attributes
+>                 if ($realfile !~ m@\binclude/uapi/@ &&
+> -                   $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
+> -                       WARN("PREFER_PACKED",
+> -                            "__packed is preferred over __attribute__((packed))\n" . $herecurr);
+> -               }
+> +                   $line =~ /__attribute__\s*\(\s*($balanced_parens)\s*\)/) {
+> +                       my $attr = $1;
+> +                       $attr =~ s/\s*\(\s*(.*)\)\s*/$1/;
+> +
+> +                       my %attr_list = (
+> +                               "alias"                         => "__alias",
+> +                               "aligned"                       => "__aligned",
+> +                               "always_inline"                 => "__always_inline",
+> +                               "assume_aligned"                => "__assume_aligned",
+> +                               "cold"                          => "__cold",
+> +                               "const"                         => "__const",
+> +                               "copy"                          => "__copy",
+> +                               "designated_init"               => "__designated_init",
+> +                               "externally_visible"            => "__visible",
+> +                               "fallthrough"                   => "fallthrough",
+> +                               "gnu_inline"                    => "__gnu_inline",
+> +                               "malloc"                        => "__malloc",
+> +                               "mode"                          => "__mode",
+> +                               "no_caller_saved_registers"     => "__no_caller_saved_registers",
+> +                               "noclone"                       => "__noclone",
+> +                               "noinline"                      => "noinline",
+> +                               "nonstring"                     => "__nonstring",
+> +                               "noreturn"                      => "__noreturn",
+> +                               "packed"                        => "__packed",
+> +                               "pure"                          => "__pure",
+> +                               "used"                          => "__used"
+> +                       );
+> +
+> +                       if ($attr =~ /^(\w+)\s*(${balanced_parens})?/) {
+> +                               my $curr_attr = $1;
+> +                               my $params = '';
+> +                               $params = $2 if defined($2);
+> +                               $curr_attr =~ s/^[\s_]+|[\s_]+$//g;
+> +
+> +                               if (exists($attr_list{$curr_attr})) {
+> +                                       my $new = $attr_list{$curr_attr};
+> +                                       WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +                                            "$new$params is preffered over __attribute__(($attr))\n" . $herecurr);
+> +                               }
+> +                       }
+>
+> -# Check for __attribute__ aligned, prefer __aligned
+> -               if ($realfile !~ m@\binclude/uapi/@ &&
+> -                   $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
+> -                       WARN("PREFER_ALIGNED",
+> -                            "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
+> -               }
+> +                       # Check for __attribute__ format(printf, prefer __printf
+> +                       if ($attr =~ /^_*format_*\s*\(\s*printf/) {
+> +                               if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +                                        "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
+> +                                       $fix) {
+> +                                       $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
+>
+> -# Check for __attribute__ section, prefer __section
+> -               if ($realfile !~ m@\binclude/uapi/@ &&
+> -                   $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
+> -                       my $old = substr($rawline, $-[1], $+[1] - $-[1]);
+> -                       my $new = substr($old, 1, -1);
+> -                       if (WARN("PREFER_SECTION",
+> -                                "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
+> -                           $fix) {
+> -                               $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
+> +                               }
+>                         }
+> -               }
+>
+> -# Check for __attribute__ format(printf, prefer __printf
+> -               if ($realfile !~ m@\binclude/uapi/@ &&
+> -                   $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
+> -                       if (WARN("PREFER_PRINTF",
+> -                                "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
+> -                           $fix) {
+> -                               $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
+> +                       # Check for __attribute__ format(scanf, prefer __scanf
+> +                       if ($attr =~ /^_*format_*\s*\(\s*scanf\b/) {
+> +                               if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +                                        "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
+> +                                       $fix) {
+> +                                       $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
+> +                               }
+> +                       }
+>
+> +                       # Check for __attribute__ section, prefer __section
+> +                       if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
+> +                               my $old = substr($rawline, $-[1], $+[1] - $-[1]);
+> +                               my $new = substr($old, 1, -1);
+> +                               if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +                                        "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
+> +                                       $fix) {
+> +                                       $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
+> +                               }
+>                         }
+> -               }
+>
+> -# Check for __attribute__ format(scanf, prefer __scanf
+> -               if ($realfile !~ m@\binclude/uapi/@ &&
+> -                   $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
+> -                       if (WARN("PREFER_SCANF",
+> -                                "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
+> -                           $fix) {
+> -                               $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
+> +                       # Check for __attribute__ unused, prefer __always_unused or __maybe_unused
+> +                       if ($attr =~ /^_*unused/) {
+> +                               WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> +                                    "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
+>                         }
+>                 }
+>
+> --
+> 2.27.0
+>
+Hi,
+In this version there is only one generic test for both parameterized
+and non parameterized attributes.
 
-Thanks a lot Arnd. Got the point. and i will make the change
-and i will send it to relevant maintainers of that driver file.
+And four attribute checks are kept separate and unaltered from the
+original implementation. Those are the format(printf/scanf), section
+and unused(which can be resolved to __always_unused or __maybe_unused).
 
-Once again thanks!
-
->           Arnd
+Thanks,
+Dwaipayan.
