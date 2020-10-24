@@ -2,139 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6E9182979D8
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:08:50 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E1B62979DC
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:13:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755990AbgJXAIp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:08:45 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35302 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1755868AbgJXAIp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:08:45 -0400
-Received: from mail-pl1-x633.google.com (mail-pl1-x633.google.com [IPv6:2607:f8b0:4864:20::633])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9E82C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 17:08:41 -0700 (PDT)
-Received: by mail-pl1-x633.google.com with SMTP id bf6so1877005plb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 17:08:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=ELtm28Vl0mdQlp5QVj6XQMpSZ1M2eKnxUctFAp+J6CQ=;
-        b=a3N6xit6/Nqlq1MUZFQ4Y4RHVbqiLwuE5DnOMiMnx6J3Hl+SEikhuBmONLM3fVip7m
-         G1t/iUoiDvm9b1Sjx+0xmEpftOOx8WJwqsJU+J2V/CAuYD+MvZeo+g45lTglP2iu6Lkv
-         ABBHtMSyUJg72p+gGOpfCoF7zItMd5GSCGsywMj37us49OJ+sexg9K1Khw+KFxNhfODL
-         NBseTHtY+AQWAlSqfTayEv75UzDNtnLWovz2tSSQVVzH8v/DN8GN9Q4OU7cGxYUYVydw
-         MCj98joQUpPnXQL2FAyiFG/CN1pIfMHctbI8Ku07JphaXx31U/zbvPqlP7wzWGK1vYZp
-         H2cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=ELtm28Vl0mdQlp5QVj6XQMpSZ1M2eKnxUctFAp+J6CQ=;
-        b=Go89y1cGbHqJSyYF6kh+KAliMkLsf2jVAZyCM+faSMYM+ket7punTdQto3EbcqugE0
-         K/CYdfjMExmOm1c0SA+xHcw2l9roi4UTJEhR7syludfXBWC8gJt167OibXYPKXOGPd2L
-         pAtIxvZhEUH7QOMclWKutUHkpjMnce4Z8B3r/FS9A+HHL6vxeH/sTbbYffbQUG8CzXsc
-         d+KZxYsBlvUxPiIbqtEpLmkUXfTl7ntoDJlZKSdSGXS8Oq6qWzQIl7s1XOs17gbaunGq
-         VFtX7oVDQEDQfxKw2xxWEdaJKODcBRK/OoCK0zOYfQ1PFnhJ9D0Hg5WcIdW4eA+yRQEL
-         SAVQ==
-X-Gm-Message-State: AOAM533OhEKDEGaZdkHAuz9SCvUo1lJn/wZISb29gBqWRef/x3HdaeNf
-        DuQ7VJmr3+GUKn4sWXo+SoZlWv4sdZMaPAKt
-X-Google-Smtp-Source: ABdhPJy6qXABwqTeRPQqVu4tiegEa8MYXN3fKBzw0WR6Uj9vdOwcRgD59rLTgrjcEGq/luyl4N/0KQ==
-X-Received: by 2002:a17:90a:be11:: with SMTP id a17mr5073562pjs.181.1603498121409;
-        Fri, 23 Oct 2020 17:08:41 -0700 (PDT)
-Received: from localhost.localdomain ([2402:3a80:429:6ba7:30ef:4722:a786:585f])
-        by smtp.googlemail.com with ESMTPSA id bo16sm4252137pjb.41.2020.10.23.17.08.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 17:08:40 -0700 (PDT)
-From:   Aditya Srivastava <yashsri421@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        lukas.bulwahn@gmail.com, dwaipayanray1@gmail.com,
-        Aditya Srivastava <yashsri421@gmail.com>
-Subject: [PATCH v4] checkpatch: fix false positives in REPEATED_WORD warning
-Date:   Sat, 24 Oct 2020 05:38:30 +0530
-Message-Id: <20201024000830.12871-1-yashsri421@gmail.com>
-X-Mailer: git-send-email 2.17.1
+        id S1756028AbgJXANE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:13:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33042 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756013AbgJXAND (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 20:13:03 -0400
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E7139223EA
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 00:13:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603498383;
+        bh=3Sic+5wFvAIsX7gow5/0D1Jg1LI5KglLa6qXaFqF0lg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=qH2E+FWRuLgzSgq7rzIVEJ2u4jerkFDQcS/zeQrmqK5RtegUNG/1kzgYPAbgtoWa+
+         huT18KsuZ3X3HxX/X5k1/4Ya/kF3hr15RF2+WxL+aGwmd9AERmF+3AaIZteYphA/9j
+         QSOK6xN8HAkWIPryFQj1On+kk+zFG2nM7bEgA0cY=
+Received: by mail-wm1-f54.google.com with SMTP id d3so4325621wma.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 17:13:02 -0700 (PDT)
+X-Gm-Message-State: AOAM530pdkC2aQ8pcjLXG0zzgwHyzWpubyJHIIUNYChM81wNDtoNWtaL
+        CoqzhhXaYAciFbunSeSBflUPxHO/chD7+d1w8Hi4MA==
+X-Google-Smtp-Source: ABdhPJxIH/U5FUZelCs0pudEFPG0vdWmPQ1EJjuTOnGovHNyzn1hDGdiRvxzEI6czvOlBM059FrS9cyRYdgEKwiK9XY=
+X-Received: by 2002:a7b:c858:: with SMTP id c24mr4596888wml.176.1603498381377;
+ Fri, 23 Oct 2020 17:13:01 -0700 (PDT)
+MIME-Version: 1.0
+References: <20201021092750.GA4050@zn.tnic> <20201021232613.e40c1daef4b567e0e29044a4@kernel.org>
+ <20201021164558.GB4050@zn.tnic> <20201022163100.1139b28220da4eafb5e70fcc@kernel.org>
+ <20201022093044.GA29222@zn.tnic> <20201022222140.f46e6db1243e05fdd049b504@kernel.org>
+ <CALCETrWhzzZ=EAoKZ4=k3FjffvS_3R4o5N1Rkj9FkHQdiUag6A@mail.gmail.com>
+ <20201023182850.c54ac863159fb312c411c029@kernel.org> <20201023093254.GC23324@zn.tnic>
+ <20201023194704.f723c86e5f8dfc1133dd5930@kernel.org> <20201023232741.GF23324@zn.tnic>
+In-Reply-To: <20201023232741.GF23324@zn.tnic>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Fri, 23 Oct 2020 17:12:49 -0700
+X-Gmail-Original-Message-ID: <CALCETrVQDVLPwTTXgsRYSjxVmzeK5ekmrEiT2rWkQKO0inRLGQ@mail.gmail.com>
+Message-ID: <CALCETrVQDVLPwTTXgsRYSjxVmzeK5ekmrEiT2rWkQKO0inRLGQ@mail.gmail.com>
+Subject: Re: [RFC] Have insn decoder functions return success/failure
+To:     Borislav Petkov <bp@alien8.de>
+Cc:     Masami Hiramatsu <mhiramat@kernel.org>,
+        Andy Lutomirski <luto@kernel.org>, x86-ml <x86@kernel.org>,
+        Joerg Roedel <jroedel@suse.de>,
+        lkml <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Presence of hexadecimal address or symbol results in false warning
-message by checkpatch.pl.
+On Fri, Oct 23, 2020 at 4:27 PM Borislav Petkov <bp@alien8.de> wrote:
+>
+> On Fri, Oct 23, 2020 at 07:47:04PM +0900, Masami Hiramatsu wrote:
+> > Thanks! I look forward to it.
+>
+> Ok, here's a first stab, it is a single big diff and totally untested
+> but it should show what I mean. I've made some notes while converting,
+> as I went along.
+>
+> Have a look at insn_decode() and its call sites: they are almost trivial
+> now because caller needs simply to do:
+>
+>         if (insn_decode(insn, buffer, ...))
+>
+> and not care about any helper functions.
+>
+> For some of the call sites it still makes sense to do a piecemeal insn
+> decoding and I've left them this way but they can be converted too, if
+> one wants.
+>
+> In any case, just have a look please and lemme know if that looks OKish.
+> I'll do the actual splitting and testing afterwards.
+>
+> And what Andy wants can't be done with the decoder because it already
+> gets a fixed size buffer and length - it doesn't do the fetching. The
+> caller does.
+>
+> What you wanna do:
+>
+> > len = min(15, remaining bytes in page);
+> > fetch len bytes;
+> > insn_init();
+> > ret = insn_decode_fully();
+>
+> <--- you can't always know here whether the insn is valid if you don't
+> have all the bytes. But you can always fetch *all* bytes and then give
+> it to the decoder for checking.
+>
+> Also, this doesn't make any sense: try insn decode on a subset of bytes
+> and then if it fails, try it on the whole set of bytes. Why even try the
+> subset - it will almost always fail.
 
-For example, running checkpatch on commit b8ad540dd4e4 ("mptcp: fix
-memory leak in mptcp_subflow_create_socket()") results in warning:
+I disagree.  A real CPU does exactly what I'm describing.  If I stick
+0xcc at the end of a page and a make the next page not-present, I get
+#BP, not #PF.  But if I stick 0x0F at the end of a page and mark the
+next page not-present, I get #PF.  If we're trying to decode an
+instruction in user memory, we can kludge it by trying to fetch 15
+bytes and handling -EFAULT by fetching fewer bytes, but that's gross
+and doesn't really have the right semantics.  What we actually want is
+to fetch up to the page boundary and try to decode it.  If it's a
+valid instruction or if it's definitely invalid, we're done.
+Otherwise we fetch across the page boundary.
 
-WARNING:REPEATED_WORD: Possible repeated word: 'ff'
-    00 00 00 00 00 00 00 00 00 2f 30 0a 81 88 ff ff  ........./0.....
+Eventually we should wrap this whole mess up in an insn_decode_user()
+helper that does the right thing.  And we can then make that helper
+extra fancy by getting PKRU and EPT-hacker-execute-only right, whereas
+we currently get these cases wrong.
 
-Similarly, the presence of list command output in commit results in
-an unnecessary warning.
-
-For example, running checkpatch on commit 899e5ffbf246 ("perf record:
-Introduce --switch-output-event") gives:
-
-WARNING:REPEATED_WORD: Possible repeated word: 'root'
-  dr-xr-x---. 12 root root    4096 Apr 27 17:46 ..
-
-Here, it reports 'ff' and 'root to be repeated, but it is in fact part
-of some address or code, where it has to be repeated.
-
-In these cases, the intent of the warning to find stylistic issues in
-commit messages is not met and the warning is just completely wrong in
-this case.
-
-To avoid these warnings, add additional regex check for the
-directory permission pattern and avoid checking the line for this
-class of warning. Similarly, to avoid hex pattern, check if the word
-consists of hex symbols and skip this warning if it is not among the
-common english words formed using hex letters.
-
-A quick evaluation on v5.6..v5.8 showed that this fix reduces
-REPEATED_WORD warnings from 2797 to 907.
-
-A quick manual check found all cases are related to hex output or
-list command outputs in commit messages.
-
-Signed-off-by: Aditya Srivastava <yashsri421@gmail.com>
----
- scripts/checkpatch.pl | 15 ++++++++++++++-
- 1 file changed, 14 insertions(+), 1 deletion(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7e505688257a..1d42d08d520b 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -3049,7 +3049,9 @@ sub process {
- 		}
- 
- # check for repeated words separated by a single space
--		if ($rawline =~ /^\+/ || $in_commit_log) {
-+# avoid false positive from list command eg, '-rw-r--r-- 1 root root'
-+		if (($rawline =~ /^\+/ || $in_commit_log) &&
-+                    $rawline !~ /[bcCdDlMnpPs\?-][rwxsStT-]{9}/) {
- 			pos($rawline) = 1 if (!$in_commit_log);
- 			while ($rawline =~ /\b($word_pattern) (?=($word_pattern))/g) {
- 
-@@ -3074,6 +3076,17 @@ sub process {
- 				next if ($start_char =~ /^\S$/);
- 				next if (index(" \t.,;?!", $end_char) == -1);
- 
-+                                # avoid repeating hex occurrences like 'ff ff fe 09 ...'
-+                                my %allow_repeated_words = (
-+                                        add => '',
-+                                        added => '',
-+                                        bad => '',
-+                                        be => '',
-+                                );
-+                                if ($first =~ /\b[0-9a-f]{2,}\b/) {
-+                                        next if (!exists($allow_repeated_words{lc($first)}));
-+                                }
-+
- 				if (WARN("REPEATED_WORD",
- 					 "Possible repeated word: '$first'\n" . $herecurr) &&
- 				    $fix) {
--- 
-2.17.1
-
+Does this make sense?
