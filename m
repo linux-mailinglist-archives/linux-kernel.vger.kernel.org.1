@@ -2,131 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3AAA7297A46
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:01:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3F2DE297A4C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:09:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758866AbgJXCBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 22:01:07 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:48643 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758860AbgJXCBH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 22:01:07 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603504866; h=References: In-Reply-To: Message-Id: Date:
- Subject: Cc: To: From: Sender;
- bh=LsrF9A455fo2bZDr+8/zyU20ZPTx/b0ZJyqUIXY1FFA=; b=fm016DVS2vw74lfMw9NBSsKBPE70DX40AC/UyBqOqYyAr0y2zcNhhBOulITwr9cT3cSBtSuc
- 8FcIb2ThNtoIafDzh3yrOLrpT10G6AXOB8JlTwSZItymRGXEITWEXW+z3vPY2NdrgehFClwf
- wvCvpTX0XPxmrba6H3A1T95TXKQ=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f938ad4c6b781f7532371dd (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Sat, 24 Oct 2020 02:00:52
- GMT
-Sender: hemantk=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 34B52C433FF; Sat, 24 Oct 2020 02:00:52 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,SPF_FAIL,
-        URIBL_BLOCKED autolearn=no autolearn_force=no version=3.4.0
-Received: from codeaurora.org (i-global254.qualcomm.com [199.106.103.254])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-SHA256 (128/128 bits))
+        id S1756450AbgJXCI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 22:08:57 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54909 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1755338AbgJXCI5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 22:08:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603505336;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=TyNEe+vv4iRyq+oo7Hz26v9tT88fTf/9Q+gM91AeZ/U=;
+        b=K9NjELY4Jg9fRZ/nt+5+O6j4cE4SR0SujLs1WSr7mOrIo9BUtJ47LTEkn3WcGuNzA2oGRn
+        ow1iC74cE1WIz8rGSQ7wEW7rFPGPRrdSFDe4Q02rWAs9KYlgEABfALWQ4lSOeCoETk/2OU
+        TKcLETSVr3IBhsxWBqEnrbZX9001Lo8=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-53-HZ6NTf5aP22FAfLxYL8_oA-1; Fri, 23 Oct 2020 22:08:52 -0400
+X-MC-Unique: HZ6NTf5aP22FAfLxYL8_oA-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        (Authenticated sender: hemantk)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 32855C433C9;
-        Sat, 24 Oct 2020 02:00:51 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org 32855C433C9
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=hemantk@codeaurora.org
-From:   Hemant Kumar <hemantk@codeaurora.org>
-To:     manivannan.sadhasivam@linaro.org
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        jhugo@codeaurora.org, bbhatt@codeaurora.org,
-        loic.poulain@linaro.org, Hemant Kumar <hemantk@codeaurora.org>
-Subject: [PATCH v1 2/2] bus: mhi: core: Check for device supported event rings and channels
-Date:   Fri, 23 Oct 2020 19:00:43 -0700
-Message-Id: <1603504843-38557-3-git-send-email-hemantk@codeaurora.org>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1603504843-38557-1-git-send-email-hemantk@codeaurora.org>
-References: <1603504843-38557-1-git-send-email-hemantk@codeaurora.org>
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 488B1805EFC;
+        Sat, 24 Oct 2020 02:08:48 +0000 (UTC)
+Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 918E95D9D5;
+        Sat, 24 Oct 2020 02:08:44 +0000 (UTC)
+Date:   Fri, 23 Oct 2020 22:08:43 -0400
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Lokesh Gidra <lokeshgidra@google.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-doc@vger.kernel.org, kaleshsingh@google.com,
+        calin@google.com, surenb@google.com, nnk@google.com,
+        jeffv@google.com, kernel-team@android.com,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>,
+        Daniel Colascione <dancol@google.com>
+Subject: Re: [PATCH v5 1/2] Add UFFD_USER_MODE_ONLY
+Message-ID: <20201024020843.GB19707@redhat.com>
+References: <20201011062456.4065576-1-lokeshgidra@google.com>
+ <20201011062456.4065576-2-lokeshgidra@google.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201011062456.4065576-2-lokeshgidra@google.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is possible that the device does not support the number of event
-rings and channels that the controller would like to use. Read the
-MHICFG to determine device-side support and if the controller requests
-more than the device supports, bailout without configuring device MMIO
-registers.
+On Sat, Oct 10, 2020 at 11:24:55PM -0700, Lokesh Gidra wrote:
+> userfaultfd handles page faults from both user and kernel code.
+> Add a new UFFD_USER_MODE_ONLY flag for userfaultfd(2) that makes
+> the resulting userfaultfd object refuse to handle faults from kernel
+> mode, treating these faults as if SIGBUS were always raised, causing
+> the kernel code to fail with EFAULT.
+> 
+> A future patch adds a knob allowing administrators to give some
+> processes the ability to create userfaultfd file objects only if they
+> pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
+> will exploit userfaultfd's ability to delay kernel page faults to open
+> timing windows for future exploits.
+> 
+> Signed-off-by: Daniel Colascione <dancol@google.com>
+> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
 
-Signed-off-by: Hemant Kumar <hemantk@codeaurora.org>
----
- drivers/bus/mhi/core/init.c     | 31 +++++++++++++++++++++++++++++++
- drivers/bus/mhi/core/internal.h |  4 ++++
- 2 files changed, 35 insertions(+)
-
-diff --git a/drivers/bus/mhi/core/init.c b/drivers/bus/mhi/core/init.c
-index 70fd6af..35a6b1d 100644
---- a/drivers/bus/mhi/core/init.c
-+++ b/drivers/bus/mhi/core/init.c
-@@ -488,6 +488,37 @@ int mhi_init_mmio(struct mhi_controller *mhi_cntrl)
- 		{ 0, 0, 0 }
- 	};
- 
-+	/* range check b/w host and device supported ev rings and channels */
-+	ret = mhi_read_reg(mhi_cntrl, base, MHICFG, &val);
-+	if (ret) {
-+		dev_err(dev, "Unable to read MHICFG register\n");
-+		return -EIO;
-+	}
-+
-+	if (MHICFG_NHWER(val) < mhi_cntrl->hw_ev_rings) {
-+		dev_err(dev, "#HWEV ring: host requires %d dev supports %d\n",
-+			mhi_cntrl->hw_ev_rings, MHICFG_NHWER(val));
-+		return -EIO;
-+	}
-+
-+	if (MHICFG_NER(val) < mhi_cntrl->total_ev_rings) {
-+		dev_err(dev, "#EV ring: host requires %d dev supports %d\n",
-+			mhi_cntrl->total_ev_rings, MHICFG_NER(val));
-+		return -EIO;
-+	}
-+
-+	if (MHICFG_NHWCH(val) < mhi_cntrl->hw_chan) {
-+		dev_err(dev, "#HWCH: host requires %d dev supports %d\n",
-+			mhi_cntrl->hw_chan, MHICFG_NHWCH(val));
-+		return -EIO;
-+	}
-+
-+	if (MHICFG_NCH(val) < mhi_cntrl->max_chan) {
-+		dev_err(dev, "#CH: host requires %d dev supports %d\n",
-+			mhi_cntrl->max_chan, MHICFG_NCH(val));
-+		return -EIO;
-+	}
-+
- 	dev_dbg(dev, "Initializing MHI registers\n");
- 
- 	/* Read channel db offset */
-diff --git a/drivers/bus/mhi/core/internal.h b/drivers/bus/mhi/core/internal.h
-index 3d8e480..9cbfa71 100644
---- a/drivers/bus/mhi/core/internal.h
-+++ b/drivers/bus/mhi/core/internal.h
-@@ -28,6 +28,10 @@ extern struct bus_type mhi_bus_type;
- #define MHICFG_NHWCH_SHIFT (8)
- #define MHICFG_NCH_MASK (0xFF)
- #define MHICFG_NCH_SHIFT (0)
-+#define MHICFG_NHWER(n) (((n) & MHICFG_NHWER_MASK) >> MHICFG_NHWER_SHIFT)
-+#define MHICFG_NER(n) (((n) & MHICFG_NER_MASK) >> MHICFG_NER_SHIFT)
-+#define MHICFG_NHWCH(n) (((n) & MHICFG_NHWCH_MASK) >> MHICFG_NHWCH_SHIFT)
-+#define MHICFG_NCH(n) (((n) & MHICFG_NCH_MASK) >> MHICFG_NCH_SHIFT)
- 
- #define CHDBOFF (0x18)
- #define CHDBOFF_CHDBOFF_MASK (0xFFFFFFFF)
--- 
-The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-a Linux Foundation Collaborative Project
+Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
 
