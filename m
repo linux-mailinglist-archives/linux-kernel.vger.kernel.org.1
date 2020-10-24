@@ -2,276 +2,737 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2022A297AD7
+	by mail.lfdr.de (Postfix) with ESMTP id B149B297AD8
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 06:51:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759505AbgJXEoU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 00:44:20 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:6061 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759497AbgJXEoT (ORCPT
+        id S1759514AbgJXEvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 00:51:38 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50106 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1759507AbgJXEvh (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 00:44:19 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f93b1290001>; Fri, 23 Oct 2020 21:44:25 -0700
-Received: from DRHQMAIL107.nvidia.com (10.27.9.16) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 24 Oct
- 2020 04:44:19 +0000
-Received: from [10.2.51.100] (10.124.1.5) by DRHQMAIL107.nvidia.com
- (10.27.9.16) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sat, 24 Oct
- 2020 04:44:18 +0000
-Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
-To:     Jason Gunthorpe <jgg@nvidia.com>, <linux-kernel@vger.kernel.org>
-CC:     Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
-References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
-From:   John Hubbard <jhubbard@nvidia.com>
-Message-ID: <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
-Date:   Fri, 23 Oct 2020 21:44:17 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
-MIME-Version: 1.0
-In-Reply-To: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- DRHQMAIL107.nvidia.com (10.27.9.16)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603514665; bh=dZmEj41ZnNcA0Bwj+XEkxo0hna5AZJyyxKSR/d6Km+o=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=EoIy1YvBUxSmIyjTrRpnQ0qz8flZqHuGaZky6hgIArWebizbcTNjy9nEXyt+UEX1d
-         zAThx4gexPNoDXJG8guDShIWCi23fbC0SoGiQ8whamLT5ILfEvqBwy4djjwmGLkMqN
-         2rSEBk5mM8Lcz/DHxmTNB7i5n4yIUI/HWrrcB/h7rdR0qeE6VHq07i69Ah2+wivtBm
-         7yyrPwzFyBZH15rIAZesROW7123ckNgrplmCMf80EzeXh1lQbl3QSrcYUlFjtEE4Pc
-         ImoMXaBH4vf54hex29sym6hh7UakvnGolKxyFVrFR7dBBt67jruGjbDVUnzEbpe/u7
-         LgoUjV+ZmhYfA==
+        Sat, 24 Oct 2020 00:51:37 -0400
+Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9084AC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 21:51:37 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id x13so2832441pgp.7
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 21:51:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id;
+        bh=oftBd3rEuUms4LFHcZ1zXa+XWbelil5Yo2PNPupD+gk=;
+        b=H4F6RhqKlSAqXMEqVWWJTIuhIEBDs8ZR+tt5HQi6Nh1M6hydFfpbFFEOFhH/5ICusx
+         h2Dg1Op/xOIyBTVsKULQtfikXmNNA194qxGk5VBKG8Yait/S03cQW4h4FDOXbPk9rqvA
+         /TI86nNeY+6NNFKQuNC2cDNBA4tjdZ1l1JTTUmEH6W2fM3YbjL6MxIWll70f0Y8qtlkJ
+         yhUYnvr51R2OVA1mOtuK9b1ikyvZMoMoWCzqv16HrRqXhYVAkhz3u/QkuZ4vm2qSGSmp
+         tbUNCaS1GAOazobwgLqHgJp07XrhaMyWPeGILD8A+6+1OkOmyqk6WjK0gDzsArAa7DV/
+         j7Kg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id;
+        bh=oftBd3rEuUms4LFHcZ1zXa+XWbelil5Yo2PNPupD+gk=;
+        b=dZJKbbjb+Al2zo8DPDYqsncHyR69sxfl7l6mQ9a00kWrKP87WM+UpWaI7OD87ihBH5
+         DHupFR5VRMIzAqChJ/+I9DAnv22TQBQ4eW7DqLHKf4fGUt6E7hs2aMzFVgks9c9OJG4E
+         EWTnwd0yBuu6L7e4kNd0tgCPt7dPnqSa77TCpL8OSl/cDqmmIkMoqIfVGIibuVVuqr/8
+         TUlSYYOM/4HoqtX4/o2tS9IrPxzGWLJZBNPjz5H9NoFPL2KNDzA01qCkYgkf41Kwj1o8
+         zh4ihq5LooZwOKFeI1s4PgfsaWcW15bgKEfmiln0Py7GTfNDCG8nGAFkicK9dApUyx1j
+         2E3A==
+X-Gm-Message-State: AOAM530iqIUdFbcCde408ELQPBhpeL62qszqlP2QVfv+oT+y3I3itATR
+        LVsXEF0CmynefOCR0VvSY9Q=
+X-Google-Smtp-Source: ABdhPJwu46oUyIUbsrq389LUndb+oDU2USFtingeaA5whEvdvrcGWIg1d6VGmJ847UEB4E7gh+ijWQ==
+X-Received: by 2002:a05:6a00:13aa:b029:15d:73e6:2e9f with SMTP id t42-20020a056a0013aab029015d73e62e9fmr2521013pfg.0.1603515096701;
+        Fri, 23 Oct 2020 21:51:36 -0700 (PDT)
+Received: from localhost.localdomain (36-225-30-31.dynamic-ip.hinet.net. [36.225.30.31])
+        by smtp.gmail.com with ESMTPSA id q8sm4050749pfg.118.2020.10.23.21.51.31
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 21:51:35 -0700 (PDT)
+From:   Keith Tzneg <matsufan@gmail.com>
+X-Google-Original-From: Keith Tzneg <keith.tzeng@quantatw.com>
+To:     alsa-devel@alsa-project.org
+Cc:     Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Kai Vehmanen <kai.vehmanen@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Naveen Manohar <naveen.m@intel.com>,
+        Yong Zhi <yong.zhi@intel.com>,
+        Libin Yang <libin.yang@linux.intel.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Sathyanarayana Nujella <sathyanarayana.nujella@intel.com>,
+        Kuninori Morimoto <kuninori.morimoto.gx@renesas.com>,
+        Fred Oh <fred.oh@linux.intel.com>,
+        Mac Chiang <mac.chiang@intel.com>,
+        Rander Wang <rander.wang@linux.intel.com>,
+        Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>,
+        Brent Lu <brent.lu@intel.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v3] ASoC: Intel: boards: Add CML_RT1015 m/c driver
+Date:   Sat, 24 Oct 2020 12:51:27 +0800
+Message-Id: <1603515087-4092-1-git-send-email-keith.tzeng@quantatw.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 5:19 PM, Jason Gunthorpe wrote:
-> The next patch in this series makes the lockless flow a little more
-> complex, so move the entire block into a new function and remove a level
-> of indention. Tidy a bit of cruft:
-> 
->   - addr is always the same as start, so use start
->   - Use the modern check_add_overflow() for computing end = start + len
->   - nr_pinned << PAGE_SHIFT needs an unsigned long cast, like nr_pages
->   - The handling of ret and nr_pinned can be streamlined a bit
-> 
-> No functional change.
+From: Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>
 
-Looks nice. Because of the above, which is not just code movement but
-quite a bit more than that, I had to rake through it with a fine-toothed
-comb to be sure it's OK. I think it is. But as a side effect, I noticed
-some tiny polishing ideas that popped up, see below.
+Machine driver to enable RT5682 on SSP0, DMIC, HDMI and RT1015 AMP on
+SSP1: Enabled 4 CH TDM playback with 24 bit data.
 
+Signed-off-by: Keith Tzeng <keith.tzeng@quanta.corp-partner.google.com>
+---
+ sound/soc/intel/boards/Kconfig                    |  15 +
+ sound/soc/intel/boards/Makefile                   |   2 +
+ sound/soc/intel/boards/cml_rt1015_rt5682.c        | 570 ++++++++++++++++++++++
+ sound/soc/intel/common/soc-acpi-intel-cnl-match.c |   7 +
+ 4 files changed, 594 insertions(+)
+ create mode 100644 sound/soc/intel/boards/cml_rt1015_rt5682.c
 
-> 
-> Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> ---
->   mm/gup.c | 88 +++++++++++++++++++++++++++++---------------------------
->   1 file changed, 46 insertions(+), 42 deletions(-)
-> 
-> diff --git a/mm/gup.c b/mm/gup.c
-> index 102877ed77a4b4..ecbe1639ea2af7 100644
-> --- a/mm/gup.c
-> +++ b/mm/gup.c
-> @@ -2671,13 +2671,42 @@ static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
->   	return ret;
->   }
->   
-> +static unsigned int lockless_pages_from_mm(unsigned long addr,
-
-It would be slightly more consistent to use "start" here, too, instead of addr.
-
-Separately, I'm not joyful about the change to unsigned int for the
-return type. I understand why you did it and that's perfectly sound
-reasoning: there is no -ERRNO possible here, and nr_pinned will always
-be >=0. And it's correct, although it does have a type mismatch in the
-return value.
-
-However, I'd argue, mildly, that it's better to just leave everything as
-"int" for nr_pages and nr_pinned, in gup.c, and just keep all the types
-matched perfectly. This helps avoid bugs. And if we want to meaningfully
-upgrade that, then either:
-
-a) change all the nr_pages and nr_pinned throughout, to "long", or
-
-b) change all the nr_pages and nr_pinned all function args, and use int
-return types throughout, as a "O or -ERRNO, only" return value
-convention.
-
-
-
-> +					   unsigned long end,
-> +					   unsigned int gup_flags,
-> +					   struct page **pages)
-> +{
-> +	unsigned long flags;
-> +	int nr_pinned = 0;
-> +
-> +	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) ||
-> +	    !gup_fast_permitted(addr, end))
-
-That actually fits on a single 80-col line, so let's leave it that way:
-
-	if (!IS_ENABLED(CONFIG_HAVE_FAST_GUP) || !gup_fast_permitted(addr, end))
-
-> +		return 0;
-> +
-> +	/*
-> +	 * Disable interrupts. The nested form is used, in order to allow full,
-> +	 * general purpose use of this routine.
-> +	 *
-> +	 * With interrupts disabled, we block page table pages from being freed
-> +	 * from under us. See struct mmu_table_batch comments in
-> +	 * include/asm-generic/tlb.h for more details.
-> +	 *
-> +	 * We do not adopt an rcu_read_lock(.) here as we also want to block
-> +	 * IPIs that come from THPs splitting.
-> +	 */
-> +	local_irq_save(flags);
-> +	gup_pgd_range(addr, end, gup_flags, pages, &nr_pinned);
-> +	local_irq_restore(flags);
-> +	return nr_pinned;
-> +}
-> +
->   static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
->   					unsigned int gup_flags,
->   					struct page **pages)
->   {
-> -	unsigned long addr, len, end;
-> -	unsigned long flags;
-> -	int nr_pinned = 0, ret = 0;
-> +	unsigned long len, end;
-> +	unsigned int nr_pinned;
-
-If you choose to take the advice above, then this should be left as "int
-nr_pinned".
-
-> +	int ret;
->   
->   	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
->   				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
-> @@ -2691,53 +2720,28 @@ static int internal_get_user_pages_fast(unsigned long start, int nr_pages,
->   		might_lock_read(&current->mm->mmap_lock);
->   
->   	start = untagged_addr(start) & PAGE_MASK;
-> -	addr = start;
->   	len = (unsigned long) nr_pages << PAGE_SHIFT;
-> -	end = start + len;
-> -
-> -	if (end <= start)
-> +	if (check_add_overflow(start, len, &end))
->   		return 0;
-
-Very nice.
-
->   	if (unlikely(!access_ok((void __user *)start, len)))
->   		return -EFAULT;
->   
-> -	/*
-> -	 * Disable interrupts. The nested form is used, in order to allow
-> -	 * full, general purpose use of this routine.
-> -	 *
-> -	 * With interrupts disabled, we block page table pages from being
-> -	 * freed from under us. See struct mmu_table_batch comments in
-> -	 * include/asm-generic/tlb.h for more details.
-> -	 *
-> -	 * We do not adopt an rcu_read_lock(.) here as we also want to
-
-I wish I had not copied that comment verbatim when I moved it here. Can
-you please delete the weird ".", so that it just reads:
-
-	 * We do not adopt an rcu_read_lock() here, because we also want to
-
-> -	 * block IPIs that come from THPs splitting.
-> -	 */
-> -	if (IS_ENABLED(CONFIG_HAVE_FAST_GUP) && gup_fast_permitted(start, end)) {
-> -		unsigned long fast_flags = gup_flags;
-> -
-> -		local_irq_save(flags);
-> -		gup_pgd_range(addr, end, fast_flags, pages, &nr_pinned);
-> -		local_irq_restore(flags);
-> -		ret = nr_pinned;
-> -	}
-> -
-> -	if (nr_pinned < nr_pages && !(gup_flags & FOLL_FAST_ONLY)) {
-> -		/* Try to get the remaining pages with get_user_pages */
-> -		start += nr_pinned << PAGE_SHIFT;
-> -		pages += nr_pinned;
-> -
-> -		ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned,
-> -					      gup_flags, pages);
-> +	nr_pinned = lockless_pages_from_mm(start, end, gup_flags, pages);
-> +	if (nr_pinned == nr_pages || gup_flags & FOLL_FAST_ONLY)
-> +		return nr_pinned;
->   
-> +	/* Try to get the remaining pages with get_user_pages */
-
-Could we tweak that to this, as long as we're here:
-
-	/* Slow path: Try to get the remaining pages with get_user_pages */
-
-
-> +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
-> +	pages += nr_pinned;
-> +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
-> +				      pages);
-> +	if (ret < 0) {
->   		/* Have to be a bit careful with return values */
-
-...and can we move that comment up one level, so that it reads:
-
-	/* Have to be a bit careful with return values */
-	if (ret < 0) {
-		if (nr_pinned)
-			return nr_pinned;
-		return ret;
-	}
-	return ret + nr_pinned;
-
-Thinking about this longer term, it would be nice if the whole gup/pup API
-set just stopped pretending that anyone cares about partial success, because
-they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
-additional set of API wrappers that did some sort of limited retry just like
-some of the callers do, that would be a happier story.
-
-That has nothing to do with your patch, I'm just baiting Matthew Wilcox and
-linux-mm to tell me that they love the idea, or hate it, or don't care. :)
-
-
-> -		if (nr_pinned > 0) {
-> -			if (ret < 0)
-> -				ret = nr_pinned;
-> -			else
-> -				ret += nr_pinned;
-> -		}
-> +		if (nr_pinned)
-> +			return nr_pinned;
-> +		return ret;
->   	}
-> -
-> -	return ret;
-> +	return ret + nr_pinned;
->   }
->   /**
->    * get_user_pages_fast_only() - pin user pages in memory
-> 
-
-thanks,
+diff --git a/sound/soc/intel/boards/Kconfig b/sound/soc/intel/boards/Kconfig
+index c10c378..f674c56 100644
+--- a/sound/soc/intel/boards/Kconfig
++++ b/sound/soc/intel/boards/Kconfig
+@@ -496,6 +496,21 @@ config SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH
+ 	  Say Y if you have such a device.
+ 	  If unsure select "N".
+ 
++config SND_SOC_INTEL_SOF_CML_RT1015_RT5682_MACH
++        tristate "CML with RT1015 and RT5682 in I2S Mode"
++        depends on I2C && ACPI && GPIOLIB
++        depends on MFD_INTEL_LPSS || COMPILE_TEST
++        depends on SND_HDA_CODEC_HDMI && SND_SOC_SOF_HDA_AUDIO_CODEC
++        select SND_SOC_RT1015
++        select SND_SOC_RT5682_I2C
++        select SND_SOC_DMIC
++        select SND_SOC_HDAC_HDMI
++        help
++          This adds support for ASoC machine driver for SOF platform with
++          RT1015 + RT5682 I2S codec.
++          Say Y if you have such a device.
++          If unsure select "N".
++
+ endif ## SND_SOC_SOF_COMETLAKE && SND_SOC_SOF_HDA_LINK
+ 
+ if SND_SOC_SOF_JASPERLAKE
+diff --git a/sound/soc/intel/boards/Makefile b/sound/soc/intel/boards/Makefile
+index a58e4d2..73131cc 100644
+--- a/sound/soc/intel/boards/Makefile
++++ b/sound/soc/intel/boards/Makefile
+@@ -20,6 +20,7 @@ snd-soc-sst-byt-cht-es8316-objs := bytcht_es8316.o
+ snd-soc-sst-byt-cht-nocodec-objs := bytcht_nocodec.o
+ snd-soc-sof_rt5682-objs := sof_rt5682.o hda_dsp_common.o sof_maxim_common.o
+ snd-soc-cml_rt1011_rt5682-objs := cml_rt1011_rt5682.o hda_dsp_common.o
++snd-soc-cml_rt1015_rt5682-objs := cml_rt1015_rt5682.o
+ snd-soc-kbl_da7219_max98357a-objs := kbl_da7219_max98357a.o
+ snd-soc-kbl_da7219_max98927-objs := kbl_da7219_max98927.o
+ snd-soc-kbl_rt5663_max98927-objs := kbl_rt5663_max98927.o
+@@ -60,6 +61,7 @@ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_DA7213_MACH) += snd-soc-sst-byt-cht-da7213.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_ES8316_MACH) += snd-soc-sst-byt-cht-es8316.o
+ obj-$(CONFIG_SND_SOC_INTEL_BYT_CHT_NOCODEC_MACH) += snd-soc-sst-byt-cht-nocodec.o
+ obj-$(CONFIG_SND_SOC_INTEL_SOF_CML_RT1011_RT5682_MACH) += snd-soc-cml_rt1011_rt5682.o
++obj-$(CONFIG_SND_SOC_INTEL_SOF_CML_RT1015_RT5682_MACH) += cml_rt1015_rt5682.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98357A_MACH) += snd-soc-kbl_da7219_max98357a.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_DA7219_MAX98927_MACH) += snd-soc-kbl_da7219_max98927.o
+ obj-$(CONFIG_SND_SOC_INTEL_KBL_RT5663_MAX98927_MACH) += snd-soc-kbl_rt5663_max98927.o
+diff --git a/sound/soc/intel/boards/cml_rt1015_rt5682.c b/sound/soc/intel/boards/cml_rt1015_rt5682.c
+new file mode 100644
+index 0000000..9117f52
+--- /dev/null
++++ b/sound/soc/intel/boards/cml_rt1015_rt5682.c
+@@ -0,0 +1,570 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright(c) 2019 Intel Corporation.
++
++/*
++ * Intel Cometlake I2S Machine driver for RT1015 + RT5682 codec
++ */
++
++#include <linux/input.h>
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/clk.h>
++#include <linux/dmi.h>
++#include <linux/slab.h>
++#include <asm/cpu_device_id.h>
++#include <linux/acpi.h>
++#include <sound/core.h>
++#include <sound/jack.h>
++#include <sound/pcm.h>
++#include <sound/pcm_params.h>
++#include <sound/soc.h>
++#include <sound/rt5682.h>
++#include <sound/soc-acpi.h>
++#include "../../codecs/rt1015.h"
++#include "../../codecs/rt5682.h"
++#include "../../codecs/hdac_hdmi.h"
++
++/* The platform clock outputs 24Mhz clock to codec as I2S MCLK */
++#define CML_PLAT_CLK	24000000
++#define CML_RT1015_CODEC_DAI "rt1015-aif"
++#define CML_RT5682_CODEC_DAI "rt5682-aif1"
++#define NAME_SIZE 32
++
++#define SOF_RT1015_SPEAKER_WL		BIT(0)
++#define SOF_RT1015_SPEAKER_WR		BIT(1)
++#define SOF_RT1015_SPEAKER_TL		BIT(2)
++#define SOF_RT1015_SPEAKER_TR		BIT(3)
++#define SPK_CH 4
++
++/* Default: Woofer speakers  */
++static unsigned long sof_rt1015_quirk = SOF_RT1015_SPEAKER_WL |
++					SOF_RT1015_SPEAKER_WR;
++
++static int sof_rt1015_quirk_cb(const struct dmi_system_id *id)
++{
++	sof_rt1015_quirk = (unsigned long)id->driver_data;
++	return 1;
++}
++
++static const struct dmi_system_id sof_rt1015_quirk_table[] = {
++	{
++		.callback = sof_rt1015_quirk_cb,
++		.matches = {
++			DMI_MATCH(DMI_SYS_VENDOR, "Google"),
++			DMI_MATCH(DMI_PRODUCT_NAME, "Dooly"),
++	},
++		.driver_data = (void *)(SOF_RT1015_SPEAKER_WL | SOF_RT1015_SPEAKER_WR),
++	},
++	{
++	}
++};
++
++static struct snd_soc_jack hdmi_jack[3];
++
++struct hdmi_pcm {
++	struct list_head head;
++	struct snd_soc_dai *codec_dai;
++	int device;
++};
++
++struct card_private {
++	char codec_name[SND_ACPI_I2C_ID_LEN];
++	struct snd_soc_jack headset;
++	struct list_head hdmi_pcm_list;
++};
++
++static const struct snd_kcontrol_new cml_controls[] = {
++	SOC_DAPM_PIN_SWITCH("Headphone Jack"),
++	SOC_DAPM_PIN_SWITCH("Headset Mic"),
++	SOC_DAPM_PIN_SWITCH("WL Ext Spk"),
++	SOC_DAPM_PIN_SWITCH("WR Ext Spk"),
++};
++
++static const struct snd_kcontrol_new cml_rt1015_tt_controls[] = {
++	SOC_DAPM_PIN_SWITCH("TL Ext Spk"),
++	SOC_DAPM_PIN_SWITCH("TR Ext Spk"),
++};
++
++static const struct snd_soc_dapm_widget cml_rt1015_rt5682_widgets[] = {
++	SND_SOC_DAPM_SPK("WL Ext Spk", NULL),
++	SND_SOC_DAPM_SPK("WR Ext Spk", NULL),
++	SND_SOC_DAPM_HP("Headphone Jack", NULL),
++	SND_SOC_DAPM_MIC("Headset Mic", NULL),
++	SND_SOC_DAPM_MIC("SoC DMIC", NULL),
++};
++
++static const struct snd_soc_dapm_widget cml_rt1015_tt_widgets[] = {
++	SND_SOC_DAPM_SPK("TL Ext Spk", NULL),
++	SND_SOC_DAPM_SPK("TR Ext Spk", NULL),
++};
++
++static const struct snd_soc_dapm_route cml_rt1015_rt5682_map[] = {
++	/*WL/WR speaker*/
++	{"WL Ext Spk", NULL, "WL SPO"},
++	{"WR Ext Spk", NULL, "WR SPO"},
++
++	/* HP jack connectors - unknown if we have jack detection */
++	{ "Headphone Jack", NULL, "HPOL" },
++	{ "Headphone Jack", NULL, "HPOR" },
++
++	/* other jacks */
++	{ "IN1P", NULL, "Headset Mic" },
++
++	/* DMIC */
++	{ "DMic", NULL, "SoC DMIC" },
++};
++
++static const struct snd_soc_dapm_route cml_rt1015_tt_map[] = {
++	/*TL/TR speaker*/
++	{"TL Ext Spk", NULL, "TL SPO" },
++	{"TR Ext Spk", NULL, "TR SPO" },
++};
++
++static int cml_rt5682_codec_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_component *component = rtd->codec_dai->component;
++	struct snd_soc_jack *jack;
++	int ret;
++
++	/* need to enable ASRC function for 24MHz mclk rate */
++	rt5682_sel_asrc_clk_src(component, RT5682_DA_STEREO1_FILTER |
++				RT5682_AD_STEREO1_FILTER,
++				RT5682_CLK_SEL_I2S1_ASRC);
++
++	/*
++	 * Headset buttons map to the google Reference headset.
++	 * These can be configured by userspace.
++	 */
++	ret = snd_soc_card_jack_new(rtd->card, "Headset Jack",
++				    SND_JACK_HEADSET | SND_JACK_BTN_0 |
++				    SND_JACK_BTN_1 | SND_JACK_BTN_2 |
++				    SND_JACK_BTN_3,
++				    &ctx->headset, NULL, 0);
++	if (ret) {
++		dev_err(rtd->dev, "Headset Jack creation failed: %d\n", ret);
++		return ret;
++	}
++
++	jack = &ctx->headset;
++
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_0, KEY_PLAYPAUSE);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_1, KEY_VOICECOMMAND);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_2, KEY_VOLUMEUP);
++	snd_jack_set_key(jack->jack, SND_JACK_BTN_3, KEY_VOLUMEDOWN);
++	ret = snd_soc_component_set_jack(component, jack, NULL);
++	if (ret)
++		dev_err(rtd->dev, "Headset Jack call-back failed: %d\n", ret);
++
++	return ret;
++};
++
++static int cml_rt1015_spk_init(struct snd_soc_pcm_runtime *rtd)
++{
++	int ret = 0;
++	struct snd_soc_card *card = rtd->card;
++
++	if (sof_rt1015_quirk & (SOF_RT1015_SPEAKER_TL |
++				SOF_RT1015_SPEAKER_TR)) {
++
++		ret = snd_soc_add_card_controls(card, cml_rt1015_tt_controls,
++					ARRAY_SIZE(cml_rt1015_tt_controls));
++		if (ret)
++			return ret;
++
++		ret = snd_soc_dapm_new_controls(&card->dapm,
++					cml_rt1015_tt_widgets,
++					ARRAY_SIZE(cml_rt1015_tt_widgets));
++		if (ret)
++			return ret;
++
++		ret = snd_soc_dapm_add_routes(&card->dapm, cml_rt1015_tt_map,
++					ARRAY_SIZE(cml_rt1015_tt_map));
++
++		if (ret)
++			return ret;
++	}
++
++	return ret;
++}
++
++static int cml_rt5682_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai = rtd->codec_dai;
++	int clk_id, clk_freq, pll_out, ret;
++
++	clk_id = RT5682_PLL1_S_MCLK;
++	clk_freq = CML_PLAT_CLK;
++
++	pll_out = params_rate(params) * 512;
++
++	ret = snd_soc_dai_set_pll(codec_dai, 0, clk_id, clk_freq, pll_out);
++	if (ret < 0)
++		dev_warn(rtd->dev, "snd_soc_dai_set_pll err = %d\n", ret);
++
++	/* Configure sysclk for codec */
++	ret = snd_soc_dai_set_sysclk(codec_dai, RT5682_SCLK_S_PLL1,
++				     pll_out, SND_SOC_CLOCK_IN);
++	if (ret < 0)
++		dev_warn(rtd->dev, "snd_soc_dai_set_sysclk err = %d\n", ret);
++
++	/*
++	 * slot_width should be equal or large than data length, set them
++	 * be the same
++	 */
++	ret = snd_soc_dai_set_tdm_slot(codec_dai, 0x0, 0x0, 2,
++				       params_width(params));
++	if (ret < 0)
++		dev_warn(rtd->dev, "set TDM slot err:%d\n", ret);
++	return ret;
++}
++
++static int cml_rt1015_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_card *card = rtd->card;
++	int srate, i, ret = 0;
++
++	srate = params_rate(params);
++
++	for_each_rtd_codec_dai(rtd, i, codec_dai) {
++		/* Set tdm/i2s1 master bclk ratio */
++		ret = snd_soc_dai_set_bclk_ratio(codec_dai, 64);
++		if (ret < 0) {
++			dev_err(card->dev, "failed to set bclk ratio\n");
++			return ret;
++		}
++		/* 64 Fs to drive 24 bit data */
++		ret = snd_soc_dai_set_pll(codec_dai, 0, RT1015_PLL_S_BCLK,
++					  64 * srate, 256 * srate);
++		if (ret < 0) {
++			dev_err(card->dev, "codec_dai clock not set\n");
++			return ret;
++		}
++
++		ret = snd_soc_dai_set_sysclk(codec_dai,
++					     RT1015_SCLK_S_PLL,
++					     256 * srate, SND_SOC_CLOCK_IN);
++		if (ret < 0) {
++			dev_err(card->dev, "codec_dai clock not set\n");
++			return ret;
++		}
++
++	}
++	return 0;
++}
++
++static struct snd_soc_ops cml_rt5682_ops = {
++	.hw_params = cml_rt5682_hw_params,
++};
++
++static const struct snd_soc_ops cml_rt1015_ops = {
++	.hw_params = cml_rt1015_hw_params,
++};
++
++static int sof_card_late_probe(struct snd_soc_card *card)
++{
++	struct card_private *ctx = snd_soc_card_get_drvdata(card);
++	struct snd_soc_component *component = NULL;
++	char jack_name[NAME_SIZE];
++	struct hdmi_pcm *pcm;
++	int ret, i = 0;
++
++	list_for_each_entry(pcm, &ctx->hdmi_pcm_list, head) {
++		component = pcm->codec_dai->component;
++		snprintf(jack_name, sizeof(jack_name),
++			 "HDMI/DP, pcm=%d Jack", pcm->device);
++		ret = snd_soc_card_jack_new(card, jack_name,
++					    SND_JACK_AVOUT, &hdmi_jack[i],
++					    NULL, 0);
++		if (ret)
++			return ret;
++
++		ret = hdac_hdmi_jack_init(pcm->codec_dai, pcm->device,
++					  &hdmi_jack[i]);
++		if (ret < 0)
++			return ret;
++
++		i++;
++	}
++	if (!component)
++		return -EINVAL;
++
++	return hdac_hdmi_jack_port_init(component, &card->dapm);
++}
++
++static int hdmi_init(struct snd_soc_pcm_runtime *rtd)
++{
++	struct card_private *ctx = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *dai = rtd->codec_dai;
++	struct hdmi_pcm *pcm;
++
++	pcm = devm_kzalloc(rtd->card->dev, sizeof(*pcm), GFP_KERNEL);
++	if (!pcm)
++		return -ENOMEM;
++
++	pcm->device = dai->id;
++	pcm->codec_dai = dai;
++
++	list_add_tail(&pcm->head, &ctx->hdmi_pcm_list);
++
++	return 0;
++}
++
++/* Cometlake digital audio interface glue - connects codec <--> CPU */
++
++SND_SOC_DAILINK_DEF(ssp0_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP0 Pin")));
++SND_SOC_DAILINK_DEF(ssp0_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("i2c-10EC5682:00",
++				CML_RT5682_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(ssp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("SSP1 Pin")));
++SND_SOC_DAILINK_DEF(ssp1_codec,
++	DAILINK_COMP_ARRAY(
++	/* WL */ COMP_CODEC("i2c-10EC1015:00", CML_RT1015_CODEC_DAI),
++	/* WR */ COMP_CODEC("i2c-10EC1015:01", CML_RT1015_CODEC_DAI)));
++
++SND_SOC_DAILINK_DEF(dmic_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC01 Pin")));
++
++SND_SOC_DAILINK_DEF(dmic16k_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("DMIC16k Pin")));
++
++SND_SOC_DAILINK_DEF(dmic_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("dmic-codec", "dmic-hifi")));
++
++SND_SOC_DAILINK_DEF(idisp1_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp1 Pin")));
++SND_SOC_DAILINK_DEF(idisp1_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi1")));
++
++SND_SOC_DAILINK_DEF(idisp2_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp2 Pin")));
++SND_SOC_DAILINK_DEF(idisp2_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi2")));
++
++SND_SOC_DAILINK_DEF(idisp3_pin,
++	DAILINK_COMP_ARRAY(COMP_CPU("iDisp3 Pin")));
++SND_SOC_DAILINK_DEF(idisp3_codec,
++	DAILINK_COMP_ARRAY(COMP_CODEC("ehdaudio0D2", "intel-hdmi-hifi3")));
++
++SND_SOC_DAILINK_DEF(platform,
++	DAILINK_COMP_ARRAY(COMP_PLATFORM("0000:00:1f.3")));
++
++static struct snd_soc_dai_link cml_rt1015_rt5682_dailink[] = {
++	/* Back End DAI links */
++	{
++		/* SSP0 - Codec */
++		.name = "SSP0-Codec",
++		.id = 0,
++		.init = cml_rt5682_codec_init,
++		.ignore_pmdown_time = 1,
++		.ops = &cml_rt5682_ops,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(ssp0_pin, ssp0_codec, platform),
++	},
++	{
++		.name = "dmic01",
++		.id = 1,
++		.ignore_suspend = 1,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic_pin, dmic_codec, platform),
++	},
++	{
++		.name = "dmic16k",
++		.id = 2,
++		.ignore_suspend = 1,
++		.dpcm_capture = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(dmic16k_pin, dmic_codec, platform),
++	},
++	{
++		.name = "iDisp1",
++		.id = 3,
++		.init = hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp1_pin, idisp1_codec, platform),
++	},
++	{
++		.name = "iDisp2",
++		.id = 4,
++		.init = hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp2_pin, idisp2_codec, platform),
++	},
++	{
++		.name = "iDisp3",
++		.id = 5,
++		.init = hdmi_init,
++		.dpcm_playback = 1,
++		.no_pcm = 1,
++		SND_SOC_DAILINK_REG(idisp3_pin, idisp3_codec, platform),
++	},
++	{
++		/*
++		 * SSP1 - Codec : added to end of list ensuring
++		 * reuse of common topologies for other end points
++		 * and changing only SSP1's codec
++		 */
++		.name = "SSP1-Codec",
++		.id = 6,
++		.dpcm_playback = 1,
++		.dpcm_capture = 1, /* Capture stream provides Feedback */
++		.no_pcm = 1,
++		.init = cml_rt1015_spk_init,
++		.ops = &cml_rt1015_ops,
++		SND_SOC_DAILINK_REG(ssp1_pin, ssp1_codec, platform),
++	},
++};
++
++static struct snd_soc_codec_conf rt1015_conf[] = {
++	{
++		.dev_name = "i2c-10EC1015:00",
++		.name_prefix = "WL",
++	},
++	{
++		.dev_name = "i2c-10EC1015:01",
++		.name_prefix = "WR",
++	},
++};
++
++/* Cometlake audio machine driver for RT1015 and RT5682 */
++static struct snd_soc_card snd_soc_card_cml = {
++	.name = "cml_rt1015_rt5682",
++	.dai_link = cml_rt1015_rt5682_dailink,
++	.num_links = ARRAY_SIZE(cml_rt1015_rt5682_dailink),
++	.codec_conf = rt1015_conf,
++	.num_configs = ARRAY_SIZE(rt1015_conf),
++	.dapm_widgets = cml_rt1015_rt5682_widgets,
++	.num_dapm_widgets = ARRAY_SIZE(cml_rt1015_rt5682_widgets),
++	.dapm_routes = cml_rt1015_rt5682_map,
++	.num_dapm_routes = ARRAY_SIZE(cml_rt1015_rt5682_map),
++	.controls = cml_controls,
++	.num_controls = ARRAY_SIZE(cml_controls),
++	.fully_routed = true,
++	.late_probe = sof_card_late_probe,
++};
++
++static int snd_cml_rt1015_probe(struct platform_device *pdev)
++{
++	struct snd_soc_dai_link_component *rt1015_dais_components;
++	struct snd_soc_codec_conf *rt1015_dais_confs;
++	struct card_private *ctx;
++	struct snd_soc_acpi_mach *mach;
++	const char *platform_name;
++	int ret, i;
++
++	ctx = devm_kzalloc(&pdev->dev, sizeof(*ctx), GFP_ATOMIC);
++	if (!ctx)
++		return -ENOMEM;
++
++	INIT_LIST_HEAD(&ctx->hdmi_pcm_list);
++	mach = (&pdev->dev)->platform_data;
++	snd_soc_card_cml.dev = &pdev->dev;
++	platform_name = mach->mach_params.platform;
++
++	dmi_check_system(sof_rt1015_quirk_table);
++
++	dev_info(&pdev->dev, "sof_rt1015_quirk = %lx\n", sof_rt1015_quirk);
++
++	if (sof_rt1015_quirk & (SOF_RT1015_SPEAKER_TL |
++				SOF_RT1015_SPEAKER_TR)) {
++		rt1015_dais_confs = devm_kzalloc(&pdev->dev,
++					sizeof(struct snd_soc_codec_conf) *
++					SPK_CH, GFP_KERNEL);
++
++		if (!rt1015_dais_confs)
++			return -ENOMEM;
++
++		rt1015_dais_components = devm_kzalloc(&pdev->dev,
++					sizeof(struct snd_soc_dai_link_component) *
++					SPK_CH, GFP_KERNEL);
++
++		if (!rt1015_dais_components)
++			return -ENOMEM;
++
++		for (i = 0; i < SPK_CH; i++) {
++			rt1015_dais_confs[i].dev_name = devm_kasprintf(&pdev->dev,
++								GFP_KERNEL,
++								"i2c-10EC1015:0%d",
++								i);
++
++			if (!rt1015_dais_confs[i].dev_name)
++				return -ENOMEM;
++
++			switch (i) {
++			case 0:
++				rt1015_dais_confs[i].name_prefix = "WL";
++				break;
++			case 1:
++				rt1015_dais_confs[i].name_prefix = "WR";
++				break;
++			case 2:
++				rt1015_dais_confs[i].name_prefix = "TL";
++				break;
++			case 3:
++				rt1015_dais_confs[i].name_prefix = "TR";
++				break;
++			default:
++				return -EINVAL;
++			}
++			rt1015_dais_components[i].name = devm_kasprintf(&pdev->dev,
++								GFP_KERNEL,
++								"i2c-10EC1015:0%d",
++								i);
++			if (!rt1015_dais_components[i].name)
++				return -ENOMEM;
++
++			rt1015_dais_components[i].dai_name = CML_RT1015_CODEC_DAI;
++		}
++
++		snd_soc_card_cml.codec_conf = rt1015_dais_confs;
++		snd_soc_card_cml.num_configs = SPK_CH;
++
++		for (i = 0; i < ARRAY_SIZE(cml_rt1015_rt5682_dailink); i++) {
++			if (!strcmp(cml_rt1015_rt5682_dailink[i].codecs->dai_name,
++					CML_RT1015_CODEC_DAI)) {
++				cml_rt1015_rt5682_dailink[i].codecs = rt1015_dais_components;
++				cml_rt1015_rt5682_dailink[i].num_codecs = SPK_CH;
++			}
++		}
++	}
++
++	/* set platform name for each dailink */
++	ret = snd_soc_fixup_dai_links_platform_name(&snd_soc_card_cml,
++						    platform_name);
++	if (ret)
++		return ret;
++	snd_soc_card_set_drvdata(&snd_soc_card_cml, ctx);
++
++	return devm_snd_soc_register_card(&pdev->dev, &snd_soc_card_cml);
++}
++
++static struct platform_driver snd_cml_rt1015_rt5682_driver = {
++	.probe = snd_cml_rt1015_probe,
++	.driver = {
++		.name = "cml_rt1015_rt5682",
++		.pm = &snd_soc_pm_ops,
++	},
++};
++module_platform_driver(snd_cml_rt1015_rt5682_driver);
++
++/* Module information */
++MODULE_DESCRIPTION("Cometlake Audio Machine driver - RT1015 and RT5682 in I2S mode");
++MODULE_AUTHOR("Naveen Manohar <naveen.m@intel.com>");
++MODULE_AUTHOR("Sathya Prakash M R <sathya.prakash.m.r@intel.com>");
++MODULE_AUTHOR("Shuming Fan <shumingf@realtek.com>");
++MODULE_AUTHOR("Mac Chiang <mac.chiang@intel.com>");
++MODULE_LICENSE("GPL v2");
++MODULE_ALIAS("platform:cml_rt1015_rt5682");
+diff --git a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+index b80f032a..4f99da8 100644
+--- a/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
++++ b/sound/soc/intel/common/soc-acpi-intel-cnl-match.c
+@@ -23,6 +23,13 @@ struct snd_soc_acpi_mach snd_soc_acpi_intel_cnl_machines[] = {
+ 		.sof_fw_filename = "sof-cnl.ri",
+ 		.sof_tplg_filename = "sof-cnl-rt274.tplg",
+ 	},
++	{
++		.id = "10EC1015",
++		.drv_name = "cml_rt1015_rt5682",
++		.quirk_data = &cml_codecs,
++		.sof_fw_filename = "sof-cnl.ri",
++		.sof_tplg_filename = "sof-cml-rt1015-rt5682.tplg",
++	},
+ 	{},
+ };
+ EXPORT_SYMBOL_GPL(snd_soc_acpi_intel_cnl_machines);
 -- 
-John Hubbard
-NVIDIA
+2.7.4
+
