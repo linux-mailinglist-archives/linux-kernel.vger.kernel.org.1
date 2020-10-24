@@ -2,22 +2,23 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 74EC9297A07
+	by mail.lfdr.de (Postfix) with ESMTP id E156D297A08
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:33:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755419AbgJXAdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:33:09 -0400
-Received: from foss.arm.com ([217.140.110.172]:60424 "EHLO foss.arm.com"
+        id S1755499AbgJXAdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:33:22 -0400
+Received: from foss.arm.com ([217.140.110.172]:60442 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755375AbgJXAdJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:33:09 -0400
+        id S1755382AbgJXAdV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 20:33:21 -0400
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 94F4A113E;
-        Fri, 23 Oct 2020 17:33:08 -0700 (PDT)
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 1C867113E;
+        Fri, 23 Oct 2020 17:33:21 -0700 (PDT)
 Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E83343F719;
-        Fri, 23 Oct 2020 17:33:06 -0700 (PDT)
-Subject: Re: [PATCH v3 14/20] perf arm-spe: Refactor event type handling
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6F3043F719;
+        Fri, 23 Oct 2020 17:33:19 -0700 (PDT)
+Subject: Re: [PATCH v3 18/20] perf arm-spe: Add more sub classes for operation
+ packet
 To:     Leo Yan <leo.yan@linaro.org>,
         Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
@@ -30,15 +31,15 @@ To:     Leo Yan <leo.yan@linaro.org>,
         James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
         Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
 References: <20201022145816.14069-1-leo.yan@linaro.org>
- <20201022145816.14069-15-leo.yan@linaro.org>
+ <20201022145816.14069-19-leo.yan@linaro.org>
 From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
 Organization: ARM Ltd.
-Message-ID: <97a7b5b2-2bed-1044-a5c3-14d875e3b888@arm.com>
-Date:   Sat, 24 Oct 2020 01:32:14 +0100
+Message-ID: <b029198a-7b04-14e3-261c-f17b4e44d586@arm.com>
+Date:   Sat, 24 Oct 2020 01:32:27 +0100
 User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
  Thunderbird/68.12.0
 MIME-Version: 1.0
-In-Reply-To: <20201022145816.14069-15-leo.yan@linaro.org>
+In-Reply-To: <20201022145816.14069-19-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-GB
 Content-Transfer-Encoding: 7bit
@@ -50,13 +51,24 @@ On 22/10/2020 15:58, Leo Yan wrote:
 
 Hi,
 
-> Move the enums of event types to arm-spe-pkt-decoder.h, thus function
-> arm_spe_pkt_desc() can them for bitmasks.
+> For the operation type packet payload with load/store class, it misses
+> to support these sub classes:
 > 
-> Suggested-by: Andre Przywara <andre.przywara@arm.com>
+>   - A load/store targeting the general-purpose registers;
+>   - A load/store targeting unspecified registers;
+>   - The ARMv8.4 nested virtualisation extension can redirect system
+>     register accesses to a memory page controlled by the hypervisor.
+>     The SPE profiling feature in newer implementations can tag those
+>     memory accesses accordingly.
+> 
+> Add the bit pattern describing load/store sub classes, so that the perf
+> tool can decode it properly.
+> 
+> Inspired by Andre Przywara, refined the commit log and code for more
+> clear description.
+> 
+> Co-developed-by: Andre Przywara <andre.przywara@arm.com>
 > Signed-off-by: Leo Yan <leo.yan@linaro.org>
-
-The move is fine, and I checked the bitmasks as well.
 
 Reviewed-by: Andre Przywara <andre.przywara@arm.com>
 
@@ -64,141 +76,50 @@ Cheers,
 Andre
 
 > ---
->  .../util/arm-spe-decoder/arm-spe-decoder.h    | 17 --------------
->  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 22 +++++++++----------
->  .../arm-spe-decoder/arm-spe-pkt-decoder.h     | 18 +++++++++++++++
->  3 files changed, 29 insertions(+), 28 deletions(-)
+>  .../arm-spe-decoder/arm-spe-pkt-decoder.c     | 28 +++++++++++++++++--
+>  1 file changed, 26 insertions(+), 2 deletions(-)
 > 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> index a5111a8d4360..24727b8ca7ff 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-decoder.h
-> @@ -13,23 +13,6 @@
->  
->  #include "arm-spe-pkt-decoder.h"
->  
-> -enum arm_spe_events {
-> -	EV_EXCEPTION_GEN	= 0,
-> -	EV_RETIRED		= 1,
-> -	EV_L1D_ACCESS		= 2,
-> -	EV_L1D_REFILL		= 3,
-> -	EV_TLB_ACCESS		= 4,
-> -	EV_TLB_WALK		= 5,
-> -	EV_NOT_TAKEN		= 6,
-> -	EV_MISPRED		= 7,
-> -	EV_LLC_ACCESS		= 8,
-> -	EV_LLC_MISS		= 9,
-> -	EV_REMOTE_ACCESS	= 10,
-> -	EV_ALIGNMENT		= 11,
-> -	EV_PARTIAL_PREDICATE	= 17,
-> -	EV_EMPTY_PREDICATE	= 18,
-> -};
-> -
->  enum arm_spe_sample_type {
->  	ARM_SPE_L1D_ACCESS	= 1 << 0,
->  	ARM_SPE_L1D_MISS	= 1 << 1,
 > diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index 8a6b50f32a52..58a1390b7a43 100644
+> index 59b538563d31..c1a3b0afd1de 100644
 > --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
 > +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -277,58 +277,58 @@ static int arm_spe_pkt_desc_event(const struct arm_spe_pkt *packet,
->  	if (ret < 0)
->  		return ret;
->  
-> -	if (payload & 0x1) {
-> +	if (payload & BIT(EV_EXCEPTION_GEN)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " EXCEPTION-GEN");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x2) {
-> +	if (payload & BIT(EV_RETIRED)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " RETIRED");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x4) {
-> +	if (payload & BIT(EV_L1D_ACCESS)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-ACCESS");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x8) {
-> +	if (payload & BIT(EV_L1D_REFILL)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " L1D-REFILL");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x10) {
-> +	if (payload & BIT(EV_TLB_ACCESS)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-ACCESS");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x20) {
-> +	if (payload & BIT(EV_TLB_WALK)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " TLB-REFILL");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x40) {
-> +	if (payload & BIT(EV_NOT_TAKEN)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " NOT-TAKEN");
->  		if (ret < 0)
->  			return ret;
->  	}
-> -	if (payload & 0x80) {
-> +	if (payload & BIT(EV_MISPRED)) {
->  		ret = arm_spe_pkt_snprintf(&buf, &blen, " MISPRED");
->  		if (ret < 0)
->  			return ret;
->  	}
->  	if (packet->index > 1) {
-> -		if (payload & 0x100) {
-> +		if (payload & BIT(EV_LLC_ACCESS)) {
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-ACCESS");
->  			if (ret < 0)
->  				return ret;
->  		}
-> -		if (payload & 0x200) {
-> +		if (payload & BIT(EV_LLC_MISS)) {
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, " LLC-REFILL");
->  			if (ret < 0)
->  				return ret;
->  		}
-> -		if (payload & 0x400) {
-> +		if (payload & BIT(EV_REMOTE_ACCESS)) {
->  			ret = arm_spe_pkt_snprintf(&buf, &blen, " REMOTE-ACCESS");
->  			if (ret < 0)
->  				return ret;
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index 8a291f451ef8..12c344454cf1 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -92,6 +92,24 @@ struct arm_spe_pkt {
->  #define SPE_CNT_PKT_HDR_INDEX_ISSUE_LAT		0x1
->  #define SPE_CNT_PKT_HDR_INDEX_TRANS_LAT		0x2
->  
-> +/* Event packet payload */
-> +enum arm_spe_events {
-> +	EV_EXCEPTION_GEN	= 0,
-> +	EV_RETIRED		= 1,
-> +	EV_L1D_ACCESS		= 2,
-> +	EV_L1D_REFILL		= 3,
-> +	EV_TLB_ACCESS		= 4,
-> +	EV_TLB_WALK		= 5,
-> +	EV_NOT_TAKEN		= 6,
-> +	EV_MISPRED		= 7,
-> +	EV_LLC_ACCESS		= 8,
-> +	EV_LLC_MISS		= 9,
-> +	EV_REMOTE_ACCESS	= 10,
-> +	EV_ALIGNMENT		= 11,
-> +	EV_PARTIAL_PREDICATE	= 17,
-> +	EV_EMPTY_PREDICATE	= 18,
-> +};
+> @@ -370,11 +370,35 @@ static int arm_spe_pkt_desc_op_type(const struct arm_spe_pkt *packet,
+>  				if (ret < 0)
+>  					return ret;
+>  			}
+> -		} else if (SPE_OP_PKT_LDST_SUBCLASS_GET(payload) ==
+> -					SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP) {
+> +		}
 > +
->  const char *arm_spe_pkt_name(enum arm_spe_pkt_type);
+> +		switch (SPE_OP_PKT_LDST_SUBCLASS_GET(payload)) {
+> +		case SPE_OP_PKT_LDST_SUBCLASS_SIMD_FP:
+>  			ret = arm_spe_pkt_snprintf(&buf, &blen, " SIMD-FP");
+>  			if (ret < 0)
+>  				return ret;
+> +
+> +			break;
+> +		case SPE_OP_PKT_LDST_SUBCLASS_GP_REG:
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " GP-REG");
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			break;
+> +		case SPE_OP_PKT_LDST_SUBCLASS_UNSPEC_REG:
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " UNSPEC-REG");
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			break;
+> +		case SPE_OP_PKT_LDST_SUBCLASS_NV_SYSREG:
+> +			ret = arm_spe_pkt_snprintf(&buf, &blen, " NV-SYSREG");
+> +			if (ret < 0)
+> +				return ret;
+> +
+> +			break;
+> +		default:
+> +			break;
+>  		}
 >  
->  int arm_spe_get_packet(const unsigned char *buf, size_t len,
+>  		return buf_len - blen;
 > 
 
