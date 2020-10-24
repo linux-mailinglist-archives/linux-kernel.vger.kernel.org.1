@@ -2,162 +2,356 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9A18297AE2
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:19:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A47B4297AE4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:22:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759555AbgJXFNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:13:04 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
+        id S1759568AbgJXFUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:20:53 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54530 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1728270AbgJXFNE (ORCPT
+        with ESMTP id S1759559AbgJXFUx (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:13:04 -0400
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012FBC0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:13:03 -0700 (PDT)
-Received: by mail-pj1-x1041.google.com with SMTP id az3so335440pjb.4
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:13:03 -0700 (PDT)
+        Sat, 24 Oct 2020 01:20:53 -0400
+Received: from mail-yb1-xb49.google.com (mail-yb1-xb49.google.com [IPv6:2607:f8b0:4864:20::b49])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9E0E6C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:20:51 -0700 (PDT)
+Received: by mail-yb1-xb49.google.com with SMTP id w8so4653754ybj.14
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:20:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
-        h=date:subject:cc:from:to:message-id;
-        bh=FyIsB+gaIcHxAQo0rZx0L2tAsyceupiqK9XkzWHDLMc=;
-        b=L8BR2WhnzckT0m5aJ2aziY/2sezjG6V4vvxTR2ESbuEPjQpo4d5cdvEk3NnGhDBrGV
-         5181WmnG94aj9yAZ/Z/YYDieUsQDwZyVwzpVdWdvR21qhWuqZb1QsUN/D94ZjGUv0JDH
-         Yx/INTBKLLTgFpyOnoys3oQ4Jh4s/GXVXSmMnzoKRjhkgDC2NxbvsaXL32R9u46zpIV4
-         qj0AbCj6Qyzh+839aCLQcydRpCaO7j+5JLvD3ZszS7x6glkLLH4DmcNkTdcUktvz4S2Z
-         XBtguqvu6GFnVOOEh6muyb7+7UZXP4UPPDKB7nN7d9E71szPEz92xHm6cM3hBK9mZ/me
-         oG/A==
+        d=google.com; s=20161025;
+        h=sender:date:message-id:mime-version:subject:from:to:cc;
+        bh=XUKWEM4NfTIrdifGeDlgTnb3DIIp0WzBf5aGfHmkVY4=;
+        b=wAoUmc0suCpJWK3zcj47A7k6lx5z+MaMmNNlJ5KWN6vgQZ/szunAl7RhudmKGuJ6+9
+         lFKByz7u4iJnh9Prrj7NzI5JKlS63fkCrMpQJUE6G3e9fcr2MYkDeYi5kgQGbvpIPJJ2
+         s6O/9rwWV6hZRn2x2AjyViSggLl99ig3HGvmx8SvXxxvKo0B4HwsZ84JZ3rcXoEr9GxR
+         gXAVcycKbH/s6drCrWFAQF4aoxT/rSUhWUkwnzJ6/Z+uiyhFqa7NFFFOamltPnqe25NN
+         udPujFtDx3ExjcqzgS81dzb8YZafrTgL5CxNF8k80Im7jrIlaxcIPoj50FEB0wI3i9pU
+         MN5Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:subject:cc:from:to:message-id;
-        bh=FyIsB+gaIcHxAQo0rZx0L2tAsyceupiqK9XkzWHDLMc=;
-        b=NyGVMAqE3GfIeLayTet3TcK+X83uqu0lRr4FMd5fesbqekni1z7FkXT3Rsk6qyaS70
-         5xuqSr1frHeIgm1rl1ATB626AuiJj0kXBLdXL0Z1g/hDqDvf/W1iDyVh11FY7+9MQT9H
-         Yb9/5yKZVVxy47PWvK8xYnOTJVdz//emg6kxF3b8s9UL2GHfstk1RHbx7Z8RflOIGwDp
-         h7awmDfUehz7OXuS0cP7PTVWSmQ5T97EYvCrZ1LJSPQbJkRKTKKa5EGKeOT0ZmKN3ZJM
-         +d0s8TbmChSMXFtfXWRRxlZ25hb0G/w/Y/2eZqbwciL5sxir0iQ/Mty0nXPmuKxSdI76
-         SrpA==
-X-Gm-Message-State: AOAM533x/UKzjhimLsTcjxqqKGpjqTY6tceKsow5njHmHsWYZ/eEgkIU
-        io8sEbhKpx29vB2j2tzNm0lcxQ==
-X-Google-Smtp-Source: ABdhPJxhR31oDZ8cgCyRu5/yU1XmD4TCgTc2I/xDbH4a4w1D+xJ3c0rv/CuK6EmkbJ6JGXmZ2jj62Q==
-X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr990882pjb.221.1603516382692;
-        Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
-Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
-        by smtp.gmail.com with ESMTPSA id y137sm4070147pfc.77.2020.10.23.22.13.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
-X-Google-Original-Date: Fri, 23 Oct 2020 22:12:46 PDT (-0700)
-Subject: [GIT PULL] RISC-V Patches for the 5.10 Merge Window, Part 2
-CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-From:   Palmer Dabbelt <palmer@dabbelt.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Message-ID: <mhng-ed53d520-0ecd-4767-ade1-f4266118c3c0@palmerdabbelt-glaptop1>
+        h=x-gm-message-state:sender:date:message-id:mime-version:subject:from
+         :to:cc;
+        bh=XUKWEM4NfTIrdifGeDlgTnb3DIIp0WzBf5aGfHmkVY4=;
+        b=O/aI3EbVdMTk/yQQyL7I7sHeOtsAZYC2zilZkXQYl1REIgiNdz6V8FXUyYUMcQIrz/
+         m21GYZ0kMe0wxNsn2SKycLsThoycnmWpdpGpi7ujuL6F/diGTLWfSCVDpfVo8BX3ClEf
+         3Y12qxgpD6QxLw9xEAQXsKW0WXjSyKX0gFtpEzOoPmc0sVq+6mzmH0ZTnVOIk5+JC+D/
+         luedvyxTUUvrwiT2yZdN59FdISrDbnjt9Wg2fLBhO75KYYh4lCQhFJ42cEuvr3FJXSxN
+         81kR10s4+6+/Ltw+941rQDACa4+gcfuKJOXslgItDzxChs9S8+yRys9FUYHd33gE3h2/
+         mlcw==
+X-Gm-Message-State: AOAM5311t1KYWx2CWtcMqO7U7uTAVmZOR9NVRCI7Yg7nzM2SCm6I19zy
+        lALY3MZjdpckVbI8sMYsRp5LZhu1oc+0vg==
+X-Google-Smtp-Source: ABdhPJz6fz65aGrTuYdWibzsm5Lk3krkyZWSmhwcAP77GfpWsiIFGH+GKZA+K+I7WMHvC8eu1bpBPnr8fCfMEg==
+Sender: "davidgow via sendgmr" <davidgow@spirogrip.svl.corp.google.com>
+X-Received: from spirogrip.svl.corp.google.com ([2620:15c:2cb:201:42a8:f0ff:fe4d:3548])
+ (user=davidgow job=sendgmr) by 2002:a25:8190:: with SMTP id
+ p16mr264220ybk.134.1603516850597; Fri, 23 Oct 2020 22:20:50 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 22:20:47 -0700
+Message-Id: <20201024052047.2526780-1-davidgow@google.com>
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+Subject: [PATCH v4] fat: Add KUnit tests for checksums and timestamps
+From:   David Gow <davidgow@google.com>
+To:     OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org
+Cc:     kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
+        linux-kernel@vger.kernel.org, David Gow <davidgow@google.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following changes since commit de22d2107ced3cc5355cc9dbbd85e44183546bd5:
+Add some basic sanity-check tests for the fat_checksum() function and
+the fat_time_unix2fat() and fat_time_fat2unix() functions. These unit
+tests verify these functions return correct output for a number of test
+inputs.
 
-  RISC-V: Add page table dump support for uefi (2020-10-02 14:31:33 -0700)
+These tests were inspored by -- and serve a similar purpose to -- the
+timestamp parsing KUnit tests in ext4[1].
 
-are available in the Git repository at:
+Note that, unlike fat_time_unix2fat, fat_time_fat2unix wasn't previously
+exported, so this patch exports it as well. This is required for the
+case where we're building the fat and fat_test as modules.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-mw1
+[1]:
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/fs/ext4/inode-test.c
 
-for you to fetch changes up to e8d444d3e98c255f91d228984abc46cfdfaf48b4:
+Signed-off-by: David Gow <davidgow@google.com>
+Acked-by: OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>
+---
 
-  riscv: remove address space overrides using set_fs() (2020-10-04 10:27:10 -0700)
+Changes since v3:
+https://lore.kernel.org/linux-kselftest/20201021061713.1545931-1-davidgow@google.com/
+- Update the Kconfig entry to use "depends on" rather than "select", as
+  discussed in [2].
+- Depend on "MSDOS_FS || VFAT_FS", rather than "FAT_FS", as we need the
+  CONFIG_FAT_DEFAULT_CODEPAGE symbol to be defined.
 
-----------------------------------------------------------------
-RISC-V Patches for the 5.10 Merge Window, Part 2
+Changes since v2:
+https://lore.kernel.org/linux-kselftest/20201020055856.1270482-1-davidgow@google.com/
+- Comment that the export for fat_time_fat2unix() function is for KUnit
+  tests.
 
-This actually just contains a single patch set:
+Changes since v1:
+https://lore.kernel.org/linux-kselftest/20201017064107.375174-1-davidgow@google.com/
+- Now export fat_time_fat2unix() so that the test can access it when
+  built as a module.
 
-* The remainder of Christoph's work to remove set_fs, including the RISC-V
-  portion.
 
-----------------------------------------------------------------
-I know I said in the previous PR that I'd keep including shortlogs as of the
-last tag, but I haven't done that here as it would include my previous PR.
-Essentially I wanted to wait for the base branch of this to land first, as it
-touched a lot.  Rather than rebasing I've just left the original merge in
-place and sent a shortlog against master.
+[2]:
+https://lore.kernel.org/linux-ext4/52959e99-4105-3de9-730c-c46894b82bdd@infradead.org/T/#t
 
-I'm not sure why the diffstat shows so much more, though.  I manually checked
-the commits and my merge has the same commits yours does.  It's my first time
-trying this particular sort of merge (though the last one had a tag-based merge
-of the same sort, which IIUC shouldn't be any different) so hopefully it went
-OK.
+ fs/fat/Kconfig    |  12 +++
+ fs/fat/Makefile   |   2 +
+ fs/fat/fat_test.c | 196 ++++++++++++++++++++++++++++++++++++++++++++++
+ fs/fat/misc.c     |   2 +
+ 4 files changed, 212 insertions(+)
+ create mode 100644 fs/fat/fat_test.c
 
-Christoph Hellwig (8):
-      uaccess: provide a generic TASK_SIZE_MAX definition
-      asm-generic: improve the nommu {get,put}_user handling
-      asm-generic: add nommu implementations of __{get,put}_kernel_nofault
-      asm-generic: make the set_fs implementation optional
-      riscv: use memcpy based uaccess for nommu again
-      riscv: refactor __get_user and __put_user
-      riscv: implement __get_kernel_nofault and __put_user_nofault
-      riscv: remove address space overrides using set_fs()
+diff --git a/fs/fat/Kconfig b/fs/fat/Kconfig
+index 66532a71e8fd..5f44bf94224e 100644
+--- a/fs/fat/Kconfig
++++ b/fs/fat/Kconfig
+@@ -115,3 +115,15 @@ config FAT_DEFAULT_UTF8
+ 	  Say Y if you use UTF-8 encoding for file names, N otherwise.
+ 
+ 	  See <file:Documentation/filesystems/vfat.rst> for more information.
++
++config FAT_KUNIT_TEST
++	tristate "Unit Tests for FAT filesystems" if !KUNIT_ALL_TESTS
++	depends on KUNIT & (MSDOS_FS || VFAT_FS)
++	default KUNIT_ALL_TESTS
++	help
++	  This builds the FAT KUnit tests
++
++	  For more information on KUnit and unit tests in general, please refer
++	  to the KUnit documentation in Documentation/dev-tools/kunit
++
++	  If unsure, say N
+diff --git a/fs/fat/Makefile b/fs/fat/Makefile
+index 70645ce2f7fc..2b034112690d 100644
+--- a/fs/fat/Makefile
++++ b/fs/fat/Makefile
+@@ -10,3 +10,5 @@ obj-$(CONFIG_MSDOS_FS) += msdos.o
+ fat-y := cache.o dir.o fatent.o file.o inode.o misc.o nfs.o
+ vfat-y := namei_vfat.o
+ msdos-y := namei_msdos.o
++
++obj-$(CONFIG_FAT_KUNIT_TEST) += fat_test.o
+diff --git a/fs/fat/fat_test.c b/fs/fat/fat_test.c
+new file mode 100644
+index 000000000000..c99bfbdf89bb
+--- /dev/null
++++ b/fs/fat/fat_test.c
+@@ -0,0 +1,196 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * KUnit tests for FAT filesystems.
++ *
++ * Copyright (C) 2020 Google LLC.
++ * Author: David Gow <davidgow@google.com>
++ */
++
++#include <kunit/test.h>
++
++#include "fat.h"
++
++static void fat_checksum_test(struct kunit *test)
++{
++	/* With no extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("VMLINUX    "), 44);
++	/* With 3-letter extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("README  TXT"), 115);
++	/* With short (1-letter) extension. */
++	KUNIT_EXPECT_EQ(test, fat_checksum("ABCDEFGHA  "), 98);
++}
++
++
++struct fat_timestamp_testcase {
++	const char *name;
++	struct timespec64 ts;
++	__le16 time;
++	__le16 date;
++	u8 cs;
++	int time_offset;
++};
++
++const static struct fat_timestamp_testcase time_test_cases[] = {
++	{
++		.name = "Earliest possible UTC (1980-01-01 00:00:00)",
++		.ts = {.tv_sec = 315532800LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 33,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Latest possible UTC (2107-12-31 23:59:58)",
++		.ts = {.tv_sec = 4354819198LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 65439,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Earliest possible (UTC-11) (== 1979-12-31 13:00:00 UTC)",
++		.ts = {.tv_sec = 315493200LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 33,
++		.cs = 0,
++		.time_offset = 11 * 60,
++	},
++	{
++		.name = "Latest possible (UTC+11) (== 2108-01-01 10:59:58 UTC)",
++		.ts = {.tv_sec = 4354858798LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 65439,
++		.cs = 0,
++		.time_offset = -11 * 60,
++	},
++	{
++		.name = "Leap Day / Year (1996-02-29 00:00:00)",
++		.ts = {.tv_sec = 825552000LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 8285,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Year 2000 is leap year (2000-02-29 00:00:00)",
++		.ts = {.tv_sec = 951782400LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 10333,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Year 2100 not leap year (2100-03-01 00:00:00)",
++		.ts = {.tv_sec = 4107542400LL, .tv_nsec = 0L},
++		.time = 0,
++		.date = 61537,
++		.cs = 0,
++		.time_offset = 0,
++	},
++	{
++		.name = "Leap year + timezone UTC+1 (== 2004-02-29 00:30:00 UTC)",
++		.ts = {.tv_sec = 1078014600LL, .tv_nsec = 0L},
++		.time = 48064,
++		.date = 12380,
++		.cs = 0,
++		.time_offset = -60,
++	},
++	{
++		.name = "Leap year + timezone UTC-1 (== 2004-02-29 23:30:00 UTC)",
++		.ts = {.tv_sec = 1078097400LL, .tv_nsec = 0L},
++		.time = 960,
++		.date = 12385,
++		.cs = 0,
++		.time_offset = 60,
++	},
++	{
++		.name = "VFAT odd-second resolution (1999-12-31 23:59:59)",
++		.ts = {.tv_sec = 946684799LL, .tv_nsec = 0L},
++		.time = 49021,
++		.date = 10143,
++		.cs = 100,
++		.time_offset = 0,
++	},
++	{
++		.name = "VFAT 10ms resolution (1980-01-01 00:00:00:0010)",
++		.ts = {.tv_sec = 315532800LL, .tv_nsec = 10000000L},
++		.time = 0,
++		.date = 33,
++		.cs = 1,
++		.time_offset = 0,
++	},
++};
++
++static void fat_time_fat2unix_test(struct kunit *test)
++{
++	struct msdos_sb_info fake_sb;
++	int i;
++	struct timespec64 ts;
++
++	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
++		fake_sb.options.tz_set = 1;
++		fake_sb.options.time_offset = time_test_cases[i].time_offset;
++
++		fat_time_fat2unix(&fake_sb, &ts,
++				  time_test_cases[i].time,
++				  time_test_cases[i].date,
++				  time_test_cases[i].cs);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].ts.tv_sec,
++				    ts.tv_sec,
++				    "Timestamp mismatch (seconds) in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].ts.tv_nsec,
++				    ts.tv_nsec,
++				    "Timestamp mismatch (nanoseconds) in case \"%s\"\n",
++				    time_test_cases[i].name);
++	}
++}
++
++static void fat_time_unix2fat_test(struct kunit *test)
++{
++	struct msdos_sb_info fake_sb;
++	int i;
++	__le16 date, time;
++	u8 cs;
++
++	for (i = 0; i < ARRAY_SIZE(time_test_cases); ++i) {
++		fake_sb.options.tz_set = 1;
++		fake_sb.options.time_offset = time_test_cases[i].time_offset;
++
++		fat_time_unix2fat(&fake_sb, &time_test_cases[i].ts,
++				  &time, &date, &cs);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].time,
++				    time,
++				    "Time mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].date,
++				    date,
++				    "Date mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++		KUNIT_EXPECT_EQ_MSG(test,
++				    time_test_cases[i].cs,
++				    cs,
++				    "Centisecond mismatch in case \"%s\"\n",
++				    time_test_cases[i].name);
++	}
++}
++
++static struct kunit_case fat_test_cases[] = {
++	KUNIT_CASE(fat_checksum_test),
++	KUNIT_CASE(fat_time_fat2unix_test),
++	KUNIT_CASE(fat_time_unix2fat_test),
++	{},
++};
++
++static struct kunit_suite fat_test_suite = {
++	.name = "fat_test",
++	.test_cases = fat_test_cases,
++};
++
++kunit_test_suites(&fat_test_suite);
++
++MODULE_LICENSE("GPL v2");
+diff --git a/fs/fat/misc.c b/fs/fat/misc.c
+index f1b2a1fc2a6a..3eabd07b38e2 100644
+--- a/fs/fat/misc.c
++++ b/fs/fat/misc.c
+@@ -229,6 +229,8 @@ void fat_time_fat2unix(struct msdos_sb_info *sbi, struct timespec64 *ts,
+ 		ts->tv_nsec = 0;
+ 	}
+ }
++/* Export fat_time_fat2unix() for the fat_test KUnit tests. */
++EXPORT_SYMBOL_GPL(fat_time_fat2unix);
+ 
+ /* Convert linear UNIX date to a FAT time/date pair. */
+ void fat_time_unix2fat(struct msdos_sb_info *sbi, struct timespec64 *ts,
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-Palmer Dabbelt (1):
-      Merge branch 'base.set_fs' of git://git.kernel.org/.../viro/vfs into for-next
-
- arch/Kconfig                            |   3 +
- arch/alpha/Kconfig                      |   1 +
- arch/arc/Kconfig                        |   1 +
- arch/arm/Kconfig                        |   1 +
- arch/arm64/Kconfig                      |   1 +
- arch/c6x/Kconfig                        |   1 +
- arch/csky/Kconfig                       |   1 +
- arch/h8300/Kconfig                      |   1 +
- arch/hexagon/Kconfig                    |   1 +
- arch/ia64/Kconfig                       |   1 +
- arch/m68k/Kconfig                       |   1 +
- arch/microblaze/Kconfig                 |   1 +
- arch/mips/Kconfig                       |   1 +
- arch/nds32/Kconfig                      |   1 +
- arch/nios2/Kconfig                      |   1 +
- arch/openrisc/Kconfig                   |   1 +
- arch/parisc/Kconfig                     |   1 +
- arch/powerpc/include/asm/processor.h    |   7 --
- arch/powerpc/include/asm/thread_info.h  |   5 +-
- arch/powerpc/include/asm/uaccess.h      |  67 ++++--------
- arch/powerpc/kernel/signal.c            |   3 -
- arch/powerpc/lib/sstep.c                |   6 +-
- arch/riscv/Kconfig                      |   1 +
- arch/riscv/include/asm/thread_info.h    |   6 --
- arch/riscv/include/asm/uaccess.h        | 177 ++++++++++++++++----------------
- arch/riscv/kernel/process.c             |   1 -
- arch/riscv/lib/Makefile                 |   2 +-
- arch/s390/Kconfig                       |   1 +
- arch/sh/Kconfig                         |   1 +
- arch/sparc/Kconfig                      |   1 +
- arch/um/Kconfig                         |   1 +
- arch/x86/ia32/ia32_aout.c               |   1 -
- arch/x86/include/asm/page_32_types.h    |  11 ++
- arch/x86/include/asm/page_64_types.h    |  38 +++++++
- arch/x86/include/asm/processor.h        |  60 +----------
- arch/x86/include/asm/thread_info.h      |   2 -
- arch/x86/include/asm/uaccess.h          |  26 +----
- arch/x86/kernel/asm-offsets.c           |   3 -
- arch/x86/lib/getuser.S                  |  47 ++++-----
- arch/x86/lib/putuser.S                  |  25 ++---
- arch/xtensa/Kconfig                     |   1 +
- drivers/misc/lkdtm/bugs.c               |  10 --
- drivers/misc/lkdtm/core.c               |   2 -
- drivers/misc/lkdtm/lkdtm.h              |   2 -
- drivers/misc/lkdtm/usercopy.c           |  15 ---
- fs/proc/inode.c                         | 119 ++++++++++++++-------
- fs/proc/proc_sysctl.c                   |  48 ++++-----
- fs/read_write.c                         |  69 ++++++++-----
- fs/splice.c                             | 130 +++--------------------
- include/asm-generic/uaccess.h           | 109 ++++++++++++--------
- include/linux/bpf-cgroup.h              |   2 +-
- include/linux/fs.h                      |   2 -
- include/linux/proc_fs.h                 |   1 +
- include/linux/uaccess.h                 |  22 ++++
- kernel/bpf/cgroup.c                     |   2 +-
- lib/test_bitmap.c                       |  91 ++++------------
- tools/testing/selftests/lkdtm/tests.txt |   2 -
- 57 files changed, 509 insertions(+), 629 deletions(-)
