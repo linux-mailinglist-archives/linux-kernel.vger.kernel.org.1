@@ -2,181 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B706297AF4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:54:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E292297AF7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:54:33 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759657AbgJXFxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:53:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759650AbgJXFxu (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:53:50 -0400
-Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B1C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:53:49 -0700 (PDT)
-Received: by mail-lj1-x243.google.com with SMTP id d24so3832475ljg.10
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:53:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=gRtWRnJLTGmKjwzMm2qSH7uQWeKFM7blQ/IQ4eSzr+M=;
-        b=f7mq2j1iGFivuER3YlgrExopH89NMdJk0OALk+LhmgtNiv7vwPI9uDcONKc1l1A3Ys
-         dCmOaFAAfbrwkX41EcvOXC4wnQiiPIj0XzysHl8+cH7KrO/WXMFQ/ne8UIZNpaHuUshs
-         Ly8js049ZyRFJ+NpAOyxwZUN7GibXW/Q2k30sqaRIgVnxrevPzYO6OIq8XIaxbas3Okk
-         JDZfkOahnw6qQYSVAaklRYNYhqzoXf6vye6svLwyQSwNODW6x2l3DTgGe/5tRsfU3YtJ
-         4zj2H9UDuqUHrHI929gsH4KgtFEuUaQBeMhIN/IWG4+QbrzC59+kEMYyy7ncYs+g8pJA
-         woLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=gRtWRnJLTGmKjwzMm2qSH7uQWeKFM7blQ/IQ4eSzr+M=;
-        b=HAICqGe701QigETSnqng36QQ8YbsTjWRHCLu1g9sim+Sr1ZEc1BAVQuBZgvA/LUe1k
-         SsUSkiZDrG5qMGJG31/li4N+EZervLTQXae0R0NSCdElX2tK6k081PDUQQ29PQTHJU1b
-         cmZbwGjP60jipGLYhJpYT2BzFVh9U4WCqhVxvYXlgeq9g5njk0BVU6n88k6IHdqRZ1a8
-         mgcQdLUaR0GEGl9EPdkfAqdSip3dWZ4eRErrPWml1eFpbI1G7acgBcyRk6jB3dV+a+qj
-         GzKjE0BaHgWIt61rrrrTg1AHvr/o7551CWrnt2dND2DM6+q2Ir7WjAjV/2LRCZYBw+rR
-         SyXg==
-X-Gm-Message-State: AOAM5305UEZwiX+/UWNJEFG8Db46AVjIhn2/VDEtwQpi6n9oMmsD135T
-        Q/1hpHypt54tWZ3hYswgHi/H0HsmdSDnE8C7LsvVkA==
-X-Google-Smtp-Source: ABdhPJxoB4i1Nx1nNwZkRrPF7huFyJMzQ+OZbgncNLRIimt+pOMcEQFXhAeWVGU7wPnkkY70fkbjli8kj7MG1KXq7XE=
-X-Received: by 2002:a05:651c:297:: with SMTP id b23mr2262253ljo.363.1603518827938;
- Fri, 23 Oct 2020 22:53:47 -0700 (PDT)
+        id S1759669AbgJXFya (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:54:30 -0400
+Received: from mga01.intel.com ([192.55.52.88]:11277 "EHLO mga01.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1759661AbgJXFya (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 01:54:30 -0400
+IronPort-SDR: xY+Ve1KRiRYMeCZE1OB9RXVMqeh2R8t9kBz9nkfQrVe5EiltmB36ON0KnYYe6CB21rMps7SXOh
+ xJ4+B0IaN4kg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9783"; a="185467975"
+X-IronPort-AV: E=Sophos;i="5.77,411,1596524400"; 
+   d="scan'208";a="185467975"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga002.jf.intel.com ([10.7.209.21])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 22:54:23 -0700
+IronPort-SDR: 6fl/ealswHdpGbu0zESN86QWWrsl82DWaHLWJ2Sg2xO8/gkHa1TMgQWcdj0yWrreQ/pg//8QSC
+ yYAgH+JgKPwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,411,1596524400"; 
+   d="scan'208";a="333507868"
+Received: from lkp-server01.sh.intel.com (HELO cda15bb6d7bd) ([10.239.97.150])
+  by orsmga002.jf.intel.com with ESMTP; 23 Oct 2020 22:54:19 -0700
+Received: from kbuild by cda15bb6d7bd with local (Exim 4.92)
+        (envelope-from <lkp@intel.com>)
+        id 1kWCVO-0000Q3-G4; Sat, 24 Oct 2020 05:54:18 +0000
+Date:   Sat, 24 Oct 2020 13:54:09 +0800
+From:   kernel test robot <lkp@intel.com>
+To:     David Gow <davidgow@google.com>,
+        OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>,
+        Brendan Higgins <brendanhiggins@google.com>, shuah@kernel.org
+Cc:     kbuild-all@lists.01.org, kunit-dev@googlegroups.com,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        David Gow <davidgow@google.com>
+Subject: Re: [PATCH v4] fat: Add KUnit tests for checksums and timestamps
+Message-ID: <202010241330.3jsFukha-lkp@intel.com>
+References: <20201024052047.2526780-1-davidgow@google.com>
 MIME-Version: 1.0
-References: <20201020073740.29081-1-geert@linux-m68k.org> <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
- <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org> <20201021223649.GP181507@mit.edu>
- <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com> <20201023140744.GS181507@mit.edu>
-In-Reply-To: <20201023140744.GS181507@mit.edu>
-From:   David Gow <davidgow@google.com>
-Date:   Sat, 24 Oct 2020 13:53:36 +0800
-Message-ID: <CABVgOSnVpspcmAUZ+zjmjwgnGJEHPOjXahj8xCHc-ymZAKxeuw@mail.gmail.com>
-Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
- selecting it
-To:     "Theodore Y. Ts'o" <tytso@mit.edu>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        Randy Dunlap <rdunlap@infradead.org>,
-        Geert Uytterhoeven <geert@linux-m68k.org>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Paolo Abeni <pabeni@redhat.com>,
-        Matthieu Baerts <matthieu.baerts@tessares.net>,
-        linux-ext4@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201024052047.2526780-1-davidgow@google.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 10:07 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
->
-> On Thu, Oct 22, 2020 at 04:52:52PM -0700, Brendan Higgins wrote:
-> > So you, me, Luis, David, and a whole bunch of other people have been
-> > thinking about this problem for a while. What if we just put
-> > kunitconfig fragments in directories along side the test files they
-> > enable?
-> >
-> > For example, we could add a file to fs/ext4/kunitconfig which contains:
-> >
-> > CONFIG_EXT4_FS=3Dy
-> > CONFIG_EXT4_KUNIT_TESTS=3Dy
-> >
-> > We could do something similar in fs/jdb2, etc.
-> >
-> > Obviously some logically separate KUnit tests (different maintainers,
-> > different Kconfig symbols, etc) reside in the same directory, for
-> > these we could name the kunitconfig file something like
-> > lib/list-test.kunitconfig (not a great example because lists are
-> > always built into Linux), but you get the idea.
-> >
-> > Then like Ted suggested, if you call kunit.py run foo/bar, then
-> >
-> > if bar is a directory, then kunit.py will look for foo/bar/kunitconfig
-> >
-> > if bar is a file ending with .kunitconfig like foo/bar.kunitconfig,
-> > then it will use that kunitconfig
-> >
-> > if bar is '...' (foo/...) then kunit.py will look for all kunitconfigs
-> > underneath foo.
-> >
-> > Once all the kunitconfigs have been resolved, they will be merged into
-> > the .kunitconfig. If they can be successfully merged together, the new
-> > .kunitconfig will then continue to function as it currently does.
->
-> I was thinking along a similar set of lines this morning.  One thing
-> I'd add in addition to your suggestion to that is to change how
-> .kunitconfig is interpreted such that
->
-> CONFIG_KUNIT=3Dy
->
-> is always implied, so it doesn't have to be specified explicitly, and
-> that if a line like:
->
-> fs/ext4
->
-> or
->
-> mm
->
-> etc. occurs, that will cause a include of the Kunitconfig (I'd using a
-> capitalized version of the filename like Kconfig, so that it's easier
-> to see in a directory listing) in the named directory.
->
-> That way, .kunitconfig is backwards compatible, but it also allows
-> people to put a one-liner into .kunitconfig to enable the unit tests
-> for that particular directory.
->
-> What do folks think?
->
+Hi David,
 
-I quite like the idea of supporting includes, as it'd make it easier
-to have test hierarchies as well: fs/Kunitconfig could include
-ext4/Kunitconfig and fat/Kunitconfig, for instance. If we're adding
-something more complicated to the Kunitconfig files than just raw
-config entries, there are other things we could do, too (personally,
-I'd quite like to be able to list KUnit test modules to be loaded
-someday, though that's a bit outside the scope of this discussion).
+I love your patch! Yet something to improve:
 
-There are some issues with exactly how we format these that'll need to
-be resolved: there are cases where there are multiple distinct "areas"
-that need testing which share a subdirectory (something like lib/), so
-just using directory paths with one Kunitconfig file per directory has
-some limitations. At the same time, it's definitely nicer to be able
-to just specify a directory where that works.
+[auto build test ERROR on linus/master]
+[also build test ERROR on v5.9 next-20201023]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch]
 
-Here's what I propose (noting that, realistically, it's unlikely we'll
-have time to build the perfect system straight away):
+url:    https://github.com/0day-ci/linux/commits/David-Gow/fat-Add-KUnit-tests-for-checksums-and-timestamps/20201024-132133
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git f11901ed723d1351843771c3a84b03a253bbf8b2
+config: sparc-randconfig-s031-20201024
+compiler: sparc-linux-gcc (GCC) 9.3.0
+reproduce:
+        wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
+        chmod +x ~/bin/make.cross
+        # apt-get install sparse
+        # sparse version: v0.6.3-17-g2d3af347-dirty
+        # https://github.com/0day-ci/linux/commit/3904bec3c79102be934e8021abb02c9176f099d7
+        git remote add linux-review https://github.com/0day-ci/linux
+        git fetch --no-tags linux-review David-Gow/fat-Add-KUnit-tests-for-checksums-and-timestamps/20201024-132133
+        git checkout 3904bec3c79102be934e8021abb02c9176f099d7
+        # save the attached .config to linux build tree
+        COMPILER_INSTALL_PATH=$HOME/0day COMPILER=gcc-9.3.0 make.cross C=1 CF='-fdiagnostic-prefix -D__CHECK_ENDIAN__' ARCH=sparc 
 
-1. We've agreed that 'select' isn't the solution we want, so accept
-this patch to get rid of it, and avoid using it elsewhere (I've done
-this for the fat test[1]). Do we know if changing this now will
-seriously break anyone's workflow (particularly if there's something
-automated that'd break?)
+If you fix the issue, kindly add following tag as appropriate
+Reported-by: kernel test robot <lkp@intel.com>
 
-2. Add support to kunit.py for loading an arbitrary kunitconfig,
-rather than using the default one in the root or build dir. (e.g.,
-kunit.py run [path_to_kunitconfig]). This'd let us create
-per-subsystem/feature/etc kunitconfigs and use them straight away.
-This'd still require people to pass in the kunitconfig path each time
-they run the tests, but'd at least give maintainers a single command
-they can use and recommend =E2=80=94 they'd just need to have a Kunitconfig
-file somewhere in the tree with the tests they want people to run.
-Maybe if you pass a directory path, it looks for "Kunitconfig" in that
-directory, but otherwise it can be a file like
-"lib/data-structres.Kunitconfig" or something which doesn't correspond
-to a directory.
+All errors (new ones prefixed by >>):
 
-3. Add the include support, etc, to kunitconfig, so people working on
-multiple subsystems can more easily run groups of tests. This may get
-a little complicated if we care about handling things with conflicting
-dependencies, so I don't want to hold up the first two on that.
+   fs/fat/Kconfig:121:warning: ignoring unsupported character '&'
+>> fs/fat/Kconfig:122: syntax error
+   fs/fat/Kconfig:121: invalid statement
+   fs/fat/Kconfig:122: invalid statement
+   fs/fat/Kconfig:123: invalid statement
+   fs/fat/Kconfig:124: unknown statement "This"
+   fs/fat/Kconfig:126:warning: ignoring unsupported character ','
+   fs/fat/Kconfig:126: unknown statement "For"
+   fs/fat/Kconfig:127:warning: ignoring unsupported character '/'
+   fs/fat/Kconfig:127:warning: ignoring unsupported character '/'
+   fs/fat/Kconfig:127: unknown statement "to"
+   fs/fat/Kconfig:129:warning: ignoring unsupported character ','
+   fs/fat/Kconfig:129: unknown statement "If"
+   make[2]: *** [scripts/kconfig/Makefile:71: oldconfig] Error 1
+   make[1]: *** [Makefile:604: oldconfig] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'oldconfig' not remade because of errors.
+--
+   fs/fat/Kconfig:121:warning: ignoring unsupported character '&'
+>> fs/fat/Kconfig:122: syntax error
+   fs/fat/Kconfig:121: invalid statement
+   fs/fat/Kconfig:122: invalid statement
+   fs/fat/Kconfig:123: invalid statement
+   fs/fat/Kconfig:124: unknown statement "This"
+   fs/fat/Kconfig:126:warning: ignoring unsupported character ','
+   fs/fat/Kconfig:126: unknown statement "For"
+   fs/fat/Kconfig:127:warning: ignoring unsupported character '/'
+   fs/fat/Kconfig:127:warning: ignoring unsupported character '/'
+   fs/fat/Kconfig:127: unknown statement "to"
+   fs/fat/Kconfig:129:warning: ignoring unsupported character ','
+   fs/fat/Kconfig:129: unknown statement "If"
+   make[2]: *** [scripts/kconfig/Makefile:71: olddefconfig] Error 1
+   make[1]: *** [Makefile:604: olddefconfig] Error 2
+   make: *** [Makefile:185: __sub-make] Error 2
+   make: Target 'olddefconfig' not remade because of errors.
 
-How does that sound?
+vim +122 fs/fat/Kconfig
 
--- David
+ > 122		default KUNIT_ALL_TESTS
 
-[1]: https://lore.kernel.org/linux-kselftest/20201024052047.2526780-1-david=
-gow@google.com/
+---
+0-DAY CI Kernel Test Service, Intel Corporation
+https://lists.01.org/hyperkitty/list/kbuild-all@lists.01.org
