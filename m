@@ -2,156 +2,181 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 352BB297AED
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:28:36 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B706297AF4
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:54:31 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759615AbgJXF2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:28:34 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25361 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1759606AbgJXF2c (ORCPT
+        id S1759657AbgJXFxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:53:50 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59536 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1759650AbgJXFxu (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:28:32 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603517311;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=vd2I/f5RofY3x7C2jd1o0wXMsUuljuM8vhhKZ0yIIvg=;
-        b=XBR4TF2IcPZ6qeBlie5b+UVMA5dioYH4t796JEhrEPBwU3jLJTIDfILzY+NTMxCKwD27GR
-        lXtjw1n6eyoq1M+pzk7inwMn4pE/afcHkFiezujkHi752ezW41QPZXEHIl/JNvr0u5dKq9
-        n1dJDM0lgJdmuswioXdEsDOXEc3CIwY=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-545-uXiFPTrvMD60sm5BzdsBww-1; Sat, 24 Oct 2020 01:28:24 -0400
-X-MC-Unique: uXiFPTrvMD60sm5BzdsBww-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C47C5804B81;
-        Sat, 24 Oct 2020 05:28:20 +0000 (UTC)
-Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id F09055D9D5;
-        Sat, 24 Oct 2020 05:28:16 +0000 (UTC)
-Date:   Sat, 24 Oct 2020 01:28:16 -0400
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Nick Kralevich <nnk@google.com>
-Cc:     Lokesh Gidra <lokeshgidra@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
-        Calin Juravle <calin@google.com>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Jeffrey Vander Stoep <jeffv@google.com>,
-        "Cc: Android Kernel" <kernel-team@android.com>,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
-Message-ID: <20201024052816.GD19707@redhat.com>
-References: <20200924065606.3351177-1-lokeshgidra@google.com>
- <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
- <20201008040141.GA17076@redhat.com>
- <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
+        Sat, 24 Oct 2020 01:53:50 -0400
+Received: from mail-lj1-x243.google.com (mail-lj1-x243.google.com [IPv6:2a00:1450:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F00B1C0613D2
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:53:49 -0700 (PDT)
+Received: by mail-lj1-x243.google.com with SMTP id d24so3832475ljg.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:53:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=gRtWRnJLTGmKjwzMm2qSH7uQWeKFM7blQ/IQ4eSzr+M=;
+        b=f7mq2j1iGFivuER3YlgrExopH89NMdJk0OALk+LhmgtNiv7vwPI9uDcONKc1l1A3Ys
+         dCmOaFAAfbrwkX41EcvOXC4wnQiiPIj0XzysHl8+cH7KrO/WXMFQ/ne8UIZNpaHuUshs
+         Ly8js049ZyRFJ+NpAOyxwZUN7GibXW/Q2k30sqaRIgVnxrevPzYO6OIq8XIaxbas3Okk
+         JDZfkOahnw6qQYSVAaklRYNYhqzoXf6vye6svLwyQSwNODW6x2l3DTgGe/5tRsfU3YtJ
+         4zj2H9UDuqUHrHI929gsH4KgtFEuUaQBeMhIN/IWG4+QbrzC59+kEMYyy7ncYs+g8pJA
+         woLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=gRtWRnJLTGmKjwzMm2qSH7uQWeKFM7blQ/IQ4eSzr+M=;
+        b=HAICqGe701QigETSnqng36QQ8YbsTjWRHCLu1g9sim+Sr1ZEc1BAVQuBZgvA/LUe1k
+         SsUSkiZDrG5qMGJG31/li4N+EZervLTQXae0R0NSCdElX2tK6k081PDUQQ29PQTHJU1b
+         cmZbwGjP60jipGLYhJpYT2BzFVh9U4WCqhVxvYXlgeq9g5njk0BVU6n88k6IHdqRZ1a8
+         mgcQdLUaR0GEGl9EPdkfAqdSip3dWZ4eRErrPWml1eFpbI1G7acgBcyRk6jB3dV+a+qj
+         GzKjE0BaHgWIt61rrrrTg1AHvr/o7551CWrnt2dND2DM6+q2Ir7WjAjV/2LRCZYBw+rR
+         SyXg==
+X-Gm-Message-State: AOAM5305UEZwiX+/UWNJEFG8Db46AVjIhn2/VDEtwQpi6n9oMmsD135T
+        Q/1hpHypt54tWZ3hYswgHi/H0HsmdSDnE8C7LsvVkA==
+X-Google-Smtp-Source: ABdhPJxoB4i1Nx1nNwZkRrPF7huFyJMzQ+OZbgncNLRIimt+pOMcEQFXhAeWVGU7wPnkkY70fkbjli8kj7MG1KXq7XE=
+X-Received: by 2002:a05:651c:297:: with SMTP id b23mr2262253ljo.363.1603518827938;
+ Fri, 23 Oct 2020 22:53:47 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+References: <20201020073740.29081-1-geert@linux-m68k.org> <CAFd5g44dGaKyDQGPeanE1G8MPzVdVkqbWjJhj+nQJGUgkezz9g@mail.gmail.com>
+ <fa84c31f-218f-76be-87de-aa85c3c9b621@infradead.org> <20201021223649.GP181507@mit.edu>
+ <CAFd5g44ymt3h6=_h3muHb9A6pPXaTnfhnixYrSny_sEUKGnzzQ@mail.gmail.com> <20201023140744.GS181507@mit.edu>
+In-Reply-To: <20201023140744.GS181507@mit.edu>
+From:   David Gow <davidgow@google.com>
+Date:   Sat, 24 Oct 2020 13:53:36 +0800
+Message-ID: <CABVgOSnVpspcmAUZ+zjmjwgnGJEHPOjXahj8xCHc-ymZAKxeuw@mail.gmail.com>
+Subject: Re: [PATCH] ext: EXT4_KUNIT_TESTS should depend on EXT4_FS instead of
+ selecting it
+To:     "Theodore Y. Ts'o" <tytso@mit.edu>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Geert Uytterhoeven <geert@linux-m68k.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Paolo Abeni <pabeni@redhat.com>,
+        Matthieu Baerts <matthieu.baerts@tessares.net>,
+        linux-ext4@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+On Fri, Oct 23, 2020 at 10:07 PM Theodore Y. Ts'o <tytso@mit.edu> wrote:
+>
+> On Thu, Oct 22, 2020 at 04:52:52PM -0700, Brendan Higgins wrote:
+> > So you, me, Luis, David, and a whole bunch of other people have been
+> > thinking about this problem for a while. What if we just put
+> > kunitconfig fragments in directories along side the test files they
+> > enable?
+> >
+> > For example, we could add a file to fs/ext4/kunitconfig which contains:
+> >
+> > CONFIG_EXT4_FS=3Dy
+> > CONFIG_EXT4_KUNIT_TESTS=3Dy
+> >
+> > We could do something similar in fs/jdb2, etc.
+> >
+> > Obviously some logically separate KUnit tests (different maintainers,
+> > different Kconfig symbols, etc) reside in the same directory, for
+> > these we could name the kunitconfig file something like
+> > lib/list-test.kunitconfig (not a great example because lists are
+> > always built into Linux), but you get the idea.
+> >
+> > Then like Ted suggested, if you call kunit.py run foo/bar, then
+> >
+> > if bar is a directory, then kunit.py will look for foo/bar/kunitconfig
+> >
+> > if bar is a file ending with .kunitconfig like foo/bar.kunitconfig,
+> > then it will use that kunitconfig
+> >
+> > if bar is '...' (foo/...) then kunit.py will look for all kunitconfigs
+> > underneath foo.
+> >
+> > Once all the kunitconfigs have been resolved, they will be merged into
+> > the .kunitconfig. If they can be successfully merged together, the new
+> > .kunitconfig will then continue to function as it currently does.
+>
+> I was thinking along a similar set of lines this morning.  One thing
+> I'd add in addition to your suggestion to that is to change how
+> .kunitconfig is interpreted such that
+>
+> CONFIG_KUNIT=3Dy
+>
+> is always implied, so it doesn't have to be specified explicitly, and
+> that if a line like:
+>
+> fs/ext4
+>
+> or
+>
+> mm
+>
+> etc. occurs, that will cause a include of the Kunitconfig (I'd using a
+> capitalized version of the filename like Kconfig, so that it's easier
+> to see in a directory listing) in the named directory.
+>
+> That way, .kunitconfig is backwards compatible, but it also allows
+> people to put a one-liner into .kunitconfig to enable the unit tests
+> for that particular directory.
+>
+> What do folks think?
+>
 
-On Thu, Oct 08, 2020 at 04:22:36PM -0700, Nick Kralevich wrote:
-> I haven't tried to verify this myself. I wonder if the usermode
-> hardening changes also impacted this exploit? See
-> https://lkml.org/lkml/2017/1/16/468
+I quite like the idea of supporting includes, as it'd make it easier
+to have test hierarchies as well: fs/Kunitconfig could include
+ext4/Kunitconfig and fat/Kunitconfig, for instance. If we're adding
+something more complicated to the Kunitconfig files than just raw
+config entries, there are other things we could do, too (personally,
+I'd quite like to be able to list KUnit test modules to be loaded
+someday, though that's a bit outside the scope of this discussion).
 
-My plan was to:
+There are some issues with exactly how we format these that'll need to
+be resolved: there are cases where there are multiple distinct "areas"
+that need testing which share a subdirectory (something like lib/), so
+just using directory paths with one Kunitconfig file per directory has
+some limitations. At the same time, it's definitely nicer to be able
+to just specify a directory where that works.
 
-1) reproduce with the old buggy kernel
+Here's what I propose (noting that, realistically, it's unlikely we'll
+have time to build the perfect system straight away):
 
-2) forward port the bug to the very first version that had both the
-   slub and page freelist randomization available and keep them
-   disabled
+1. We've agreed that 'select' isn't the solution we want, so accept
+this patch to get rid of it, and avoid using it elsewhere (I've done
+this for the fat test[1]). Do we know if changing this now will
+seriously break anyone's workflow (particularly if there's something
+automated that'd break?)
 
-3) enable the freelist randomization features (which are already
-   enabled by default in the current enterprise kernels) and see if
-   that makes the attack not workable
+2. Add support to kunit.py for loading an arbitrary kunitconfig,
+rather than using the default one in the root or build dir. (e.g.,
+kunit.py run [path_to_kunitconfig]). This'd let us create
+per-subsystem/feature/etc kunitconfigs and use them straight away.
+This'd still require people to pass in the kunitconfig path each time
+they run the tests, but'd at least give maintainers a single command
+they can use and recommend =E2=80=94 they'd just need to have a Kunitconfig
+file somewhere in the tree with the tests they want people to run.
+Maybe if you pass a directory path, it looks for "Kunitconfig" in that
+directory, but otherwise it can be a file like
+"lib/data-structres.Kunitconfig" or something which doesn't correspond
+to a directory.
 
-The hardening of the usermode helper you mentioned is spot on, but it
-would have been something to worry about and possibly roll back at
-point 2), but I couldn't get past point 1)..
+3. Add the include support, etc, to kunitconfig, so people working on
+multiple subsystems can more easily run groups of tests. This may get
+a little complicated if we care about handling things with conflicting
+dependencies, so I don't want to hold up the first two on that.
 
-Plenty other hardening techniques (just like the usermode helper) are
-very specific to a single attack, but the randomization looks generic
-enough to cover the entire class.
+How does that sound?
 
-> But again, focusing on an exploit, which is inherently fragile in
-> nature and dependent on the state of the kernel tree at a particular
-> time, is unlikely to be useful to analyze this patch.
+-- David
 
-Agreed. A single exploit using userfaultfd to enlarge the race window
-of the use-after-free, not being workable anymore with randomized slub
-and page freelist enabled, wouldn't have meant a thing by itself.
-
-As opposed if that single exploit was still fairly reproducible, it
-would have been enough to consider the sysctl default to zero as
-something providing a more tangible long term benefit. That would have
-been good information to have too, if that's actually the case.
-
-I was merely attempting to get a first data point.. overall it would
-be nice to initiate some research to verify the exact statistical
-effects that slub/page randomization has on those use-after-free race
-conditions that can be enlarged by blocking kernel faults, given we're
-already paying the price for it. I don't think anybody has a sure
-answer at this point, if we can entirely rely on those features or not.
-
-> Seccomp causes more problems than just performance. Seccomp is not
-> designed for whole-of-system protections. Please see my other writeup
-> at https://lore.kernel.org/lkml/CAFJ0LnEo-7YUvgOhb4pHteuiUW+wPfzqbwXUCGAA35ZMx11A-w@mail.gmail.com/
-
-Whole-of-system protection I guess helps primarily because it requires
-no change to userland I guess.
-
-An example of a task not running as root (and without ptrace
-capability) that could use more seccomp blocking:
-
-# cat /proc/1517/cmdline ; echo ; grep CapEff /proc/1517/status; grep Seccomp /proc/1517/status
-/vendor/bin/hw/qcrild
-CapEff: 0000001000003000
-Seccomp:        0
-
-My view is that if the various binaries started by init.rc are run
-without a strict seccomp filter there would be more things to worry
-about, than kernel initiated userfaults for those.
-
-Still the solution in the v5 patchset looks the safest for all until
-we'll be able to tell if the slub/page randomizaton (or any other
-generic enough robustness feature) is already effective against an
-enlarged race window of kernel initiated userfaults and at the same
-time it provides the main benefit of avoiding divergence in the
-behavior of the userfaultfd syscall if invoked within the Android
-userland.
-
-Thanks,
-Andrea
-
+[1]: https://lore.kernel.org/linux-kselftest/20201024052047.2526780-1-david=
+gow@google.com/
