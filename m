@@ -2,100 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A9BE8297D31
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 17:53:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0109B297D2B
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 17:53:23 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762057AbgJXPoa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 11:44:30 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36680 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756857AbgJXPo3 (ORCPT
+        id S1761978AbgJXPoA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 11:44:00 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:51288 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1761950AbgJXPn7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 11:44:29 -0400
-Received: from mail-lj1-x242.google.com (mail-lj1-x242.google.com [IPv6:2a00:1450:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 2922AC0613CE;
-        Sat, 24 Oct 2020 08:44:29 -0700 (PDT)
-Received: by mail-lj1-x242.google.com with SMTP id h20so4875395lji.9;
-        Sat, 24 Oct 2020 08:44:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iVvngnWeIDGhbxLx06m+FoOELtVvu4vONgAX93A/tXY=;
-        b=kvnx4TOKigpxlEKazViL6WLSKKrbU0dOmb5zHP7dZbPHHdved9KAw96ScO0YXfUbBL
-         GWMcOZvfKBSte7uOI8XI+79DsSEDU+kukxn/3vHWgEJrM397fkjibfcIczl9akmjgoII
-         XwGNe7impjNc3/qRrYCgpprD0BDRXXPjYBPnZjF9Qgp/cHwOBebv/QCnoYNh3y3RWTzP
-         41HwRVcWSBJ4ojwoRWAMt/zZYBpN7UcTuoFJQe0bl42A83RmUNmDnihz18wCpUx1Av//
-         mD0S0NHOQpzevaYzpcSIGNTViExTnluNLcOqoeL3JonjEVjRVKI8Cwzi9/5MtGCmEqXN
-         3myg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=iVvngnWeIDGhbxLx06m+FoOELtVvu4vONgAX93A/tXY=;
-        b=HqAmHaLgOvf8THcbS2kLNpzBMHM7EimI0z86qShhw1z9PfJVQ+kCe9R9/V3xhoCM0B
-         wPKhmERvoooG3SHOdHt9/imgV5bf3Z2hQJjhkVDklzHCTbf3GQzHXOU+sTaontKYDfGj
-         B0r6VyAlFlH8MJDLnuvCmu6LijtA3JMbHEtj18/kQBTUapgdja6ahtGAwriWOYke9K1V
-         XJp/3d75qZRwbLkQARBHsMo2ZuVJBb7DhWsaGXdr7KOgWu44mtAlciG1wwO4nxkvIP1T
-         9K27xIDZrB7n5C66ekHP01JtxhqhjmrtswQgj33FDAdpcB3doey1iNkjsLz5iI6tA53f
-         OSQw==
-X-Gm-Message-State: AOAM530QzFlhQuzuFFJivuJ50rfTjjixFFRPrJ5IzIkcmY2vdxFRQuzV
-        phFGcfvRuW+fokpc36rzG7Z0alt3/48=
-X-Google-Smtp-Source: ABdhPJz/klHWcs3bRbKDkYASeDigVNP3nTTs5rtGYA7UaR3O9h/X1CTwcak2v4Vg9hMKBIhvW+fi3w==
-X-Received: by 2002:a2e:87cd:: with SMTP id v13mr2689614ljj.146.1603554266621;
-        Sat, 24 Oct 2020 08:44:26 -0700 (PDT)
-Received: from localhost.localdomain ([2a02:a315:5445:5300:e9e3:358e:a790:ce1c])
-        by smtp.googlemail.com with ESMTPSA id 76sm472536lfn.128.2020.10.24.08.44.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 08:44:25 -0700 (PDT)
-From:   =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-To:     kgene@kernel.org, krzk@kernel.org, mturquette@baylibre.com,
-        sboyd@kernel.org
-Cc:     s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Pawe=C5=82=20Chmiel?= <pawel.mikolaj.chmiel@gmail.com>
-Subject: [PATCH] clk: exynos7: Mark aclk_fsys1_200 as critical
-Date:   Sat, 24 Oct 2020 17:43:46 +0200
-Message-Id: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Sat, 24 Oct 2020 11:43:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603554238;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=pJLNUpS6ea+ny+4LUiVCKeZjlZnueWST9pU3roA+Uu4=;
+        b=PqDBUzg06TRClPn7oODv6oCQAPcNR/JYJFlmfec8arLwqm0G+XCRg9y8XSh4A0+QxAk6q2
+        8SdoxaVYQ6S2xX9Qph35vSUqeDq60m896WWpG1hfZ3tnZGxMVf5HNrktZQqXV2eHuVjXMD
+        +hirRYGUVliMV8LOOQUN5TeJl3t9E08=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-510-fHG3iwD_Ndqu_Wvf04eVvw-1; Sat, 24 Oct 2020 11:43:54 -0400
+X-MC-Unique: fHG3iwD_Ndqu_Wvf04eVvw-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 737F2804B6A;
+        Sat, 24 Oct 2020 15:43:52 +0000 (UTC)
+Received: from krava (unknown [10.40.192.80])
+        by smtp.corp.redhat.com (Postfix) with SMTP id 863A810013D0;
+        Sat, 24 Oct 2020 15:43:50 +0000 (UTC)
+Date:   Sat, 24 Oct 2020 17:43:49 +0200
+From:   Jiri Olsa <jolsa@redhat.com>
+To:     Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 06/15] perf session: load data directory into tool
+ process memory
+Message-ID: <20201024154349.GC2589351@krava>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d28243e3-3178-d7cd-7b96-7ed63fd83493@linux.intel.com>
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This clock must be always enabled to allow access to any registers in
-fsys1 CMU. Until proper solution based on runtime PM is applied
-(similar to what was done for Exynos5433), mark that clock as critical
-so it won't be disabled.
+On Wed, Oct 21, 2020 at 07:01:19PM +0300, Alexey Budankov wrote:
+> 
+> Read trace files located in data directory into tool process memory.
+> Basic analysis support of data directories is provided for report
+> mode. Raw dump (-D) and aggregated reports are available for data
+> directories, still with no memory consumption optimizations. However
+> data directories collected with --compression-level option enabled
+> can be analyzed with little less memory because trace files are
+> unmaped from tool process memory after loading collected data.
+> The implementation is based on the prototype [1], [2].
+> 
+> [1] git clone https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git -b perf/record_threads
+> [2] https://lore.kernel.org/lkml/20180913125450.21342-1-jolsa@kernel.org/
+> 
+> Suggested-by: Jiri Olsa <jolsa@kernel.org>
 
-It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
-UFS module is probed before pmic used to power that device.
-In this case defer probe was happening and that clock was disabled by
-UFS driver, causing whole boot to hang on next CMU access.
+very loosely ;-) so there was a reason for all that reader refactoring,
+so we could have __perf_session__process_dir_events function:
 
-Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
----
- drivers/clk/samsung/clk-exynos7.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+  https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit/?h=perf/record_threads&id=308aa7cff1fed335401cfc02c7bac1a4644af68e
 
-diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
-index c1ff715e960c..1048d83f097b 100644
---- a/drivers/clk/samsung/clk-exynos7.c
-+++ b/drivers/clk/samsung/clk-exynos7.c
-@@ -538,7 +538,8 @@ static const struct samsung_gate_clock top1_gate_clks[] __initconst = {
- 		ENABLE_ACLK_TOP13, 28, CLK_SET_RATE_PARENT |
- 		CLK_IS_CRITICAL, 0),
- 	GATE(CLK_ACLK_FSYS1_200, "aclk_fsys1_200", "dout_aclk_fsys1_200",
--		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT, 0),
-+		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT |
-+		CLK_IS_CRITICAL, 0),
- 
- 	GATE(CLK_SCLK_PHY_FSYS1_26M, "sclk_phy_fsys1_26m",
- 		"dout_sclk_phy_fsys1_26m", ENABLE_SCLK_TOP1_FSYS11,
--- 
-2.25.1
+when reporting the threaded record data on really big servers,
+you will run out of memory, so you need to read and flush all
+the files together by smaller pieces
+
+IMO we need to have this change before we allow threaded record
+
+jirka
+
+
+> Suggested-by: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/util/session.c | 48 +++++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/session.h |  1 +
+>  2 files changed, 49 insertions(+)
+> 
+> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+> index 6afc670fdf0c..0752eec19813 100644
+> --- a/tools/perf/util/session.c
+> +++ b/tools/perf/util/session.c
+> @@ -2212,6 +2212,17 @@ reader__process_events(struct reader *rd, struct perf_session *session,
+>  		goto more;
+>  
+>  out:
+> +	if (rd->unmap_file) {
+> +		int i;
+> +
+> +		for (i = 0; i < NUM_MMAPS; i++) {
+> +			if (mmaps[i]) {
+> +				munmap(mmaps[i], mmap_size);
+> +				mmaps[i] = NULL;
+> +			}
+> +		}
+> +	}
+> +
+>  	return err;
+>  }
+>  
+> @@ -2231,6 +2242,7 @@ static int __perf_session__process_events(struct perf_session *session)
+>  		.data_offset	= session->header.data_offset,
+>  		.process	= process_simple,
+>  		.path		= session->data->file.path,
+> +		.unmap_file	= false,
+>  	};
+>  	struct ordered_events *oe = &session->ordered_events;
+>  	struct perf_tool *tool = session->tool;
+> @@ -2247,6 +2259,42 @@ static int __perf_session__process_events(struct perf_session *session)
+>  	err = reader__process_events(&rd, session, &prog);
+>  	if (err)
+>  		goto out_err;
+> +
+> +	if (perf_data__is_dir(session->data)) {
+> +		int i, nr = session->data->dir.nr;
+> +		struct reader file_rd[nr];
+> +		u64 total_size = perf_data__size(session->data);
+> +
+> +		total_size -= session->data->file.size;
+> +		ui_progress__init_size(&prog, total_size, "Sorting events...");
+> +
+> +		memset(&file_rd, 0, nr * sizeof(file_rd[0]));
+> +
+> +		for (i = 0; i < nr ; i++) {
+> +			struct perf_data_file *file;
+> +
+> +			file = &session->data->dir.files[i];
+> +			file_rd[i] = (struct reader) {
+> +				.fd             = file->fd,
+> +				.path           = file->path,
+> +				.data_size      = file->size,
+> +				.data_offset    = 0,
+> +				.process	= process_simple,
+> +			};
+> +			file_rd[i].unmap_file = perf_header__has_feat(&session->header,
+> +								      HEADER_COMPRESSED);
+> +			session->reader = &file_rd[i];
+> +
+> +			if (zstd_init(&(file_rd[i].zstd_data), 0))
+> +				goto out_err;
+> +			err = reader__process_events(&file_rd[i], session, &prog);
+> +			zstd_fini(&(file_rd[i].zstd_data));
+> +			session->reader = NULL;
+> +			if (err)
+> +				goto out_err;
+> +		}
+> +	}
+> +
+>  	/* do the final flush for ordered samples */
+>  	err = ordered_events__flush(oe, OE_FLUSH__FINAL);
+>  	if (err)
+> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+> index 4fc9ccdf7970..d428f3eaf7fd 100644
+> --- a/tools/perf/util/session.h
+> +++ b/tools/perf/util/session.h
+> @@ -43,6 +43,7 @@ struct reader {
+>  	u64		 data_offset;
+>  	reader_cb_t	 process;
+>  	struct zstd_data zstd_data;
+> +	bool		 unmap_file;
+>  };
+>  
+>  struct perf_session {
+> -- 
+> 2.24.1
+> 
 
