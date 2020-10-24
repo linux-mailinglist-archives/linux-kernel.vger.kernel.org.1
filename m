@@ -2,36 +2,39 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FD02979F6
+	by mail.lfdr.de (Postfix) with ESMTP id C30552979F7
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756435AbgJXA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:28:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
+        id S1758819AbgJXA24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:28:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41920 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1756390AbgJXA2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:28:46 -0400
+        id S1755505AbgJXA2z (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 20:28:55 -0400
 Received: from localhost (cpc102338-sgyl38-2-0-cust404.18-2.cable.virginm.net [77.102.33.149])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9958622274;
-        Sat, 24 Oct 2020 00:28:45 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B76A42225E;
+        Sat, 24 Oct 2020 00:28:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603499326;
-        bh=32XWQhmf2fVSD8v1CY5v7gHT3K2lKMcNN/oPnMyqnMM=;
+        s=default; t=1603499335;
+        bh=+FhP76HiOXe3pLSCqtvML2xh8BV++5Vbe3/EWxwGkS0=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=JPGAuEs7+4VUhMKKdXZG/LQTnx1a+EStQyyQ6fkoVqfPgjFgmepkBZDsV/h20Bd4B
-         P8/Sm6HsBShl7Ko/IhG8Q/XiWPSgahyb4A/ColiqD4Bp4V2NuyHnN+DXyO3bC3cG8/
-         +x+Cj8IJzevU9ULTEYXsTeiKGuhdL0W4QfHr/CoQ=
-Date:   Sat, 24 Oct 2020 01:28:44 +0100
+        b=dQ4WtqDRR9mWnKyBXxnLs1n5kJnoMWQ+fNdXS+7h3F1eWUPtwmG/YfyflQSUmTckJ
+         xSD5QvPO5yw1C+LiYg1Az8ytrcMrDCZHcvBxNpCoKDe+qMjjf6bR40myzgnrLgS6QJ
+         XP5lQqGlOZopAoGcU4sp8UyUKud4YuN/z10SQ0s4=
+Date:   Sat, 24 Oct 2020 01:28:53 +0100
 From:   Mark Brown <broonie@kernel.org>
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        alsa-devel@alsa-project.org
-In-Reply-To: <20201023095849.22894-1-srinivas.kandagatla@linaro.org>
-References: <20201023095849.22894-1-srinivas.kandagatla@linaro.org>
-Subject: Re: [PATCH] ASoC: qcom: sdm845: set driver name correctly
-Message-Id: <160349931942.28438.7096729717850687887.b4-ty@kernel.org>
+To:     lgirdwood@gmail.com, perex@perex.cz,
+        Olivier Moysan <olivier.moysan@st.com>,
+        alexandre.torgue@st.com, tiwai@suse.com, arnaud.patard@rtp-net.org
+Cc:     alsa-devel@alsa-project.org, arnaud.pouliquen@st.com,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20201020150109.482-1-olivier.moysan@st.com>
+References: <20201020150109.482-1-olivier.moysan@st.com>
+Subject: Re: [PATCH v2] ASoC: cs42l51: manage mclk shutdown delay
+Message-Id: <160349931941.28438.14503960964995572782.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -39,18 +42,15 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 10:58:49 +0100, Srinivas Kandagatla wrote:
-> With the current state of code, we would endup with something like
-> below in /proc/asound/cards for 2 machines based on this driver.
-> 
-> Machine 1:
->  0 [DB845c            ]: DB845c - DB845c
->                        DB845c
-> Machine 2:
->  0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
->                      LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
-> 
-> [...]
+On Tue, 20 Oct 2020 17:01:09 +0200, Olivier Moysan wrote:
+> A delay must be introduced before the shutdown down of the mclk,
+> as stated in CS42L51 datasheet. Otherwise the codec may
+> produce some noise after the end of DAPM power down sequence.
+> The delay between DAC and CLOCK_SUPPLY widgets is too short.
+> Add a delay in mclk shutdown request to manage the shutdown delay
+> explicitly. From experiments, at least 10ms delay is necessary.
+> Set delay to 20ms as recommended in Documentation/timers/timers-howto.rst
+> when using msleep().
 
 Applied to
 
@@ -58,8 +58,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: qcom: sdm845: set driver name correctly
-      commit: 3f48b6eba15ea342ef4cb420b580f5ed6605669f
+[1/1] ASoC: cs42l51: manage mclk shutdown delay
+      commit: 20afe581c9b980848ad097c4d54dde9bec7593ef
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
