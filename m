@@ -2,75 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 84BC0297A2A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 03:29:55 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 80597297A2E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 03:30:56 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758405AbgJXB30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 21:29:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46567 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1758378AbgJXB30 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 21:29:26 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603502979;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=ogycSequd4RWbLt37l5/NyaOWw9tEvhtrAKSAsPiEMw=;
-        b=K9h4Sf5JolNxJlNzdnUwpN03CxNtKDKEJKh/o/7AdbV8S0KKFWXQZ/Cwpzf06zFNeK5sZ7
-        hbEkQ+u8BkbfSZrY1ymUHdlFrwSPJoJ53ITgd5hKoFB0Uy0NpRUgNhk7+hBa1Q9W+vp/dA
-        Ho0EkgIL8jmRrpFEXLkUPjs+/mSvLP0=
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com
- [209.85.166.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-132-uxiaPhtaO3yz0hFJnyH7OA-1; Fri, 23 Oct 2020 21:29:37 -0400
-X-MC-Unique: uxiaPhtaO3yz0hFJnyH7OA-1
-Received: by mail-io1-f71.google.com with SMTP id t187so2892871iof.22
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 18:29:37 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ogycSequd4RWbLt37l5/NyaOWw9tEvhtrAKSAsPiEMw=;
-        b=F7mGdtEzRphYdbBEaxDyBch/NUMAp+a6RMUrjuFifNMizK9ozGoXYi69N/FpWV/MED
-         NW9qCzeD2dpJvErOflxiN7HmSSSwTblx12+KRkk/ARtZ7LuQaOF93eWNGYlsxY6AvhoM
-         9BqvDw9kjbfBwXqD3mCHpIOrnKNscIJFyx2ZO/M7e4Fqrm4jELQbV7ZE3U7fFsxsmj/W
-         1d5RK8I+TUy6lrqtJ4DHlHb24uVPGJLnD3OHdXkO7t080zwWljRc6OtQc3eyy5RvSQgC
-         4MDBTag/MZWQ8nOIUQ2/EiVcEwSb3voMZwwK8vPYde6PCR+vvtNhq7EF4RS7Nb6JowFt
-         pioA==
-X-Gm-Message-State: AOAM5337ERwqfmX2JZpeUqJ8XFHSzSv6gTsL7be5I0a8wZStKHJsIiYJ
-        OX9igMZjKN8cou5UnftAu+r8mHzks6lIMK+ueSDjtmwWp2ZUGJ5yU29MHOToI+ZSMfIpCzJfrJ0
-        gwsT6Zrye7oqc+jcUqw3YGqSOrKDbFQk9/URqFbus
-X-Received: by 2002:a6b:b2d3:: with SMTP id b202mr3802841iof.160.1603502976601;
-        Fri, 23 Oct 2020 18:29:36 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxL9cgjj9msggBKdld+zc3mavGBv95bE1zEnc9UIG56vqccc9hNyG8nL/Sg+QJaV3dufZIxfd4ReLL9I0jiepM=
-X-Received: by 2002:a6b:b2d3:: with SMTP id b202mr3802831iof.160.1603502976385;
- Fri, 23 Oct 2020 18:29:36 -0700 (PDT)
+        id S1759111AbgJXBag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 21:30:36 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1758374AbgJXBaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 21:30:35 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id E759F24248;
+        Sat, 24 Oct 2020 01:30:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603503048;
+        bh=x5Z3BxJamZWJHbN/ae8iRgL3C6hpakpG7U7uZIwqix0=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=K/ghEOJzPZajtixQ73DFYy7GPpMcaNqLOAm7LvdLGVLgLDpUWePbJ+PIJurvgeOx2
+         g4YiAcDGht7T0jWlQEyJinlHPJ65v38eHRJjw06ZmwkCmoai/vEj4MFUdFJGGigN4C
+         R/Bc5RFzgjsjwdAbPXHoUEiDgqx6nxVYtAxB8ZV4=
+Date:   Fri, 23 Oct 2020 18:30:47 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Alex Elder <elder@linaro.org>
+Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
+        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
+        swboyd@chromium.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH net] net: ipa: command payloads already mapped
+Message-ID: <20201023183047.42e315c1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201022010029.11877-1-elder@linaro.org>
+References: <20201022010029.11877-1-elder@linaro.org>
 MIME-Version: 1.0
-References: <20201019093356.7395-1-rbergant@redhat.com> <20201019132000.GA32403@fieldses.org>
- <alpine.DEB.2.21.2010231141460.29805@ramsan.of.borg> <20201024000434.GA31481@fieldses.org>
-In-Reply-To: <20201024000434.GA31481@fieldses.org>
-From:   Roberto Bergantinos Corpas <rbergant@redhat.com>
-Date:   Sat, 24 Oct 2020 03:29:25 +0200
-Message-ID: <CACWnjLw_EJBnz9ywkg=-7HVScJT1gKRmYRda1MWUrPYTWkHXzw@mail.gmail.com>
-Subject: Re: [PATCH] sunrpc: raise kernel RPC channel buffer size
-To:     "J. Bruce Fields" <bfields@fieldses.org>
-Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
-        linux-nfs@vger.kernel.org,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Good point Geert !
+On Wed, 21 Oct 2020 20:00:29 -0500 Alex Elder wrote:
+> IPA transactions describe actions to be performed by the IPA
+> hardware.  Three cases use IPA transactions:  transmitting a socket
+> buffer; providing a page to receive packet data; and issuing an IPA
+> immediate command.  An IPA transaction contains a scatter/gather
+> list (SGL) to hold the set of actions to be performed.
+> 
+> We map buffers in the SGL for DMA at the time they are added to the
+> transaction.  For skb TX transactions, we fill the SGL with a call
+> to skb_to_sgvec().  Page RX transactions involve a single page
+> pointer, and that is recorded in the SGL with sg_set_page().  In
+> both of these cases we then map the SGL for DMA with a call to
+> dma_map_sg().
+> 
+> Immediate commands are different.  The payload for an immediate
+> command comes from a region of coherent DMA memory, which must
+> *not* be mapped for DMA.  For that reason, gsi_trans_cmd_add()
+> sort of hand-crafts each SGL entry added to a command transaction.
+> 
+> This patch fixes a problem with the code that crafts the SGL entry
+> for an immediate command.  Previously a portion of the SGL entry was
+> updated using sg_set_buf().  However this is not valid because it
+> includes a call to virt_to_page() on the buffer, but the command
+> buffer pointer is not a linear address.
+> 
+> Since we never actually map the SGL for command transactions, there
+> are very few fields in the SGL we need to fill.  Specifically, we
+> only need to record the DMA address and the length, so they can be
+> used by __gsi_trans_commit() to fill a TRE.  We additionally need to
+> preserve the SGL flags so for_each_sg() still works.  For that we
+> can simply assign a null page pointer for command SGL entries.
+> 
+> Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
+> Reported-by: Stephen Boyd <swboyd@chromium.org>
+> Tested-by: Stephen Boyd <swboyd@chromium.org>
+> Signed-off-by: Alex Elder <elder@linaro.org>
 
-> How about making it a kvmalloc?
-
-I can post a new patch using kvmalloc, Bruce looks we can also
-prescind of queue_io_mutex, what do you think ?
-
->
-> --b.
->
-
+Applied, thanks!
