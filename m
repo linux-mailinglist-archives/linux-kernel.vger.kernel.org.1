@@ -2,102 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 31AB5297DB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:15:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C4166297DB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:17:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762533AbgJXRPE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 13:15:04 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:46594 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1762526AbgJXRPD (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 13:15:03 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 539B820020;
-        Sat, 24 Oct 2020 19:14:59 +0200 (CEST)
-Date:   Sat, 24 Oct 2020 19:14:57 +0200
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Bernard <bernard@vivo.com>
-Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
-        opensource.kernel@vivo.com, David Airlie <airlied@linux.ie>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Dave Airlie <airlied@redhat.com>
-Subject: Re: Re: [PATCH] gpu/drm/mgag200:remove break after return
-Message-ID: <20201024171457.GA76883@ravnborg.org>
-References: <a6eab3c7-f1dd-82db-1cc0-35997c04bd7d@suse.de>
- <ADgA6wAcDbnOQfg3AhKb6KoN.3.1603439329788.Hmail.bernard@vivo.com>
+        id S1762548AbgJXRRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 13:17:21 -0400
+Received: from vps0.lunn.ch ([185.16.172.187]:42946 "EHLO vps0.lunn.ch"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1760482AbgJXRRU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 13:17:20 -0400
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94)
+        (envelope-from <andrew@lunn.ch>)
+        id 1kWNA9-003IWW-CW; Sat, 24 Oct 2020 19:17:05 +0200
+Date:   Sat, 24 Oct 2020 19:17:05 +0200
+From:   Andrew Lunn <andrew@lunn.ch>
+To:     Ioana Ciornei <ioana.ciornei@nxp.com>
+Cc:     Heiner Kallweit <hkallweit1@gmail.com>,
+        Russell King <linux@armlinux.org.uk>,
+        Jakub Kicinski <kuba@kernel.org>, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        Alexandru Ardelean <alexandru.ardelean@analog.com>,
+        Andre Edich <andre.edich@microchip.com>,
+        Antoine Tenart <atenart@kernel.org>,
+        Baruch Siach <baruch@tkos.co.il>,
+        Christophe Leroy <christophe.leroy@c-s.fr>,
+        Dan Murphy <dmurphy@ti.com>,
+        Divya Koppera <Divya.Koppera@microchip.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Hauke Mehrtens <hauke@hauke-m.de>,
+        Jerome Brunet <jbrunet@baylibre.com>,
+        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Marco Felsch <m.felsch@pengutronix.de>,
+        Marek Vasut <marex@denx.de>,
+        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+        Mathias Kresin <dev@kresin.me>,
+        Maxim Kochetkov <fido_max@inbox.ru>,
+        Michael Walle <michael@walle.cc>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        Nisar Sayed <Nisar.Sayed@microchip.com>,
+        Oleksij Rempel <o.rempel@pengutronix.de>,
+        Philippe Schenker <philippe.schenker@toradex.com>,
+        Willy Liu <willy.liu@realtek.com>,
+        Yuiko Oshino <yuiko.oshino@microchip.com>
+Subject: Re: [RFC net-next 0/5] net: phy: add support for shared interrupts
+Message-ID: <20201024171705.GK745568@lunn.ch>
+References: <20201024121412.10070-1-ioana.ciornei@nxp.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ADgA6wAcDbnOQfg3AhKb6KoN.3.1603439329788.Hmail.bernard@vivo.com>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=1WtWmnkvAAAA:8 a=20KFwNOVAAAA:8 a=VwQbUJbxAAAA:8
-        a=24COTcmDj64ZDdr2WTQA:9 a=CjuIK1q_8ugA:10 a=-_UHfarfsM-RsASml2Jt:22
-        a=AjGcO6oz07-iQ99wixmX:22
+In-Reply-To: <20201024121412.10070-1-ioana.ciornei@nxp.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Bernard.
+> - Every PHY driver gains a .handle_interrupt() implementation that, for
+>   the most part, would look like below:
+> 
+> 	irq_status = phy_read(phydev, INTR_STATUS);
+> 	if (irq_status < 0) {
+> 		phy_error(phydev);
+> 		return IRQ_NONE;
+> 	}
+> 
+> 	if (irq_status == 0)
+> 		return IRQ_NONE;
+> 
+> 	phy_trigger_machine(phydev);
+> 
+> 	return IRQ_HANDLED;
 
-On Fri, Oct 23, 2020 at 03:48:49PM +0800, Bernard wrote:
-> 
-> 
-> From: Thomas Zimmermann <tzimmermann@suse.de>
-> Date: 2020-10-23 15:13:30
-> To:  Bernard Zhao <bernard@vivo.com>,Dave Airlie <airlied@redhat.com>,David Airlie <airlied@linux.ie>,Daniel Vetter <daniel@ffwll.ch>,dri-devel@lists.freedesktop.org,linux-kernel@vger.kernel.org
-> Cc:  opensource.kernel@vivo.com
-> Subject: Re: [PATCH] gpu/drm/mgag200:remove break after return>Hi
-> >
-> >On 23.10.20 09:00, Bernard Zhao wrote:
-> >> In function mgag200_set_pci_regs, there are some switch cases
-> >> returned, then break. These break will never run.
-> >> This patch is to make the code a bit readable.
-> >> 
-> >> Signed-off-by: Bernard Zhao <bernard@vivo.com>
-> >> ---
-> >>  drivers/gpu/drm/mgag200/mgag200_mode.c | 5 +----
-> >>  1 file changed, 1 insertion(+), 4 deletions(-)
-> >> 
-> >> diff --git a/drivers/gpu/drm/mgag200/mgag200_mode.c b/drivers/gpu/drm/mgag200/mgag200_mode.c
-> >> index 38672f9e5c4f..de873a5d276e 100644
-> >> --- a/drivers/gpu/drm/mgag200/mgag200_mode.c
-> >> +++ b/drivers/gpu/drm/mgag200/mgag200_mode.c
-> >> @@ -794,20 +794,17 @@ static int mgag200_crtc_set_plls(struct mga_device *mdev, long clock)
-> >>  	case G200_SE_A:
-> >>  	case G200_SE_B:
-> >>  		return mga_g200se_set_plls(mdev, clock);
-> >> -		break;
-> >>  	case G200_WB:
-> >>  	case G200_EW3:
-> >>  		return mga_g200wb_set_plls(mdev, clock);
-> >> -		break;
-> >>  	case G200_EV:
-> >>  		return mga_g200ev_set_plls(mdev, clock);
-> >> -		break;
-> >>  	case G200_EH:
-> >>  	case G200_EH3:
-> >>  		return mga_g200eh_set_plls(mdev, clock);
-> >> -		break;
-> >>  	case G200_ER:
-> >>  		return mga_g200er_set_plls(mdev, clock);
-> >> +	default:
-> >
-> >No default case here. If one of the enum values is not handled by the
-> >switch, the compiler should warn about it.
-> 
-> Hi
-> 
-> For this point I was a little confused, about this switch variable "mdev->type", my understanding is that this variable`s value can be certain only when the code is running.
-> How does the compiler warn this("If one of the enum values is not handled") before the code runs?
+Hi Ioana
 
-If the switch/case does not include "G200_ER" then the compiler can see
-one enum value is missing from the list and can warn.
-As a test - Try to drop the default and drop G200_ER - then the
-compiler (hopefully) will warn.
+It looks like phy_trigger_machine(phydev) could be left in the core,
+phy_interrupt(). It just needs to look at the return code, IRQ_HANDLED
+means trigger the state machine.
 
-	Sam
+      Andrew
