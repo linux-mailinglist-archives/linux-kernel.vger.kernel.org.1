@@ -2,92 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3F2DE297A4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:09:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 94F5E297A4F
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:09:09 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756450AbgJXCI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 22:08:57 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:54909 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1755338AbgJXCI5 (ORCPT
+        id S1758893AbgJXCJF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 22:09:05 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53586 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1758754AbgJXCJE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 22:08:57 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603505336;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=TyNEe+vv4iRyq+oo7Hz26v9tT88fTf/9Q+gM91AeZ/U=;
-        b=K9NjELY4Jg9fRZ/nt+5+O6j4cE4SR0SujLs1WSr7mOrIo9BUtJ47LTEkn3WcGuNzA2oGRn
-        ow1iC74cE1WIz8rGSQ7wEW7rFPGPRrdSFDe4Q02rWAs9KYlgEABfALWQ4lSOeCoETk/2OU
-        TKcLETSVr3IBhsxWBqEnrbZX9001Lo8=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-53-HZ6NTf5aP22FAfLxYL8_oA-1; Fri, 23 Oct 2020 22:08:52 -0400
-X-MC-Unique: HZ6NTf5aP22FAfLxYL8_oA-1
-Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 488B1805EFC;
-        Sat, 24 Oct 2020 02:08:48 +0000 (UTC)
-Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
-        by smtp.corp.redhat.com (Postfix) with ESMTPS id 918E95D9D5;
-        Sat, 24 Oct 2020 02:08:44 +0000 (UTC)
-Date:   Fri, 23 Oct 2020 22:08:43 -0400
-From:   Andrea Arcangeli <aarcange@redhat.com>
-To:     Lokesh Gidra <lokeshgidra@google.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kaleshsingh@google.com,
-        calin@google.com, surenb@google.com, nnk@google.com,
-        jeffv@google.com, kernel-team@android.com,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>,
-        Daniel Colascione <dancol@google.com>
-Subject: Re: [PATCH v5 1/2] Add UFFD_USER_MODE_ONLY
-Message-ID: <20201024020843.GB19707@redhat.com>
-References: <20201011062456.4065576-1-lokeshgidra@google.com>
- <20201011062456.4065576-2-lokeshgidra@google.com>
+        Fri, 23 Oct 2020 22:09:04 -0400
+Received: from fieldses.org (fieldses.org [IPv6:2600:3c00:e000:2f7::1])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 904F9C0613CE;
+        Fri, 23 Oct 2020 19:09:04 -0700 (PDT)
+Received: by fieldses.org (Postfix, from userid 2815)
+        id 8EFBB6EF1; Fri, 23 Oct 2020 22:09:03 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 fieldses.org 8EFBB6EF1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fieldses.org;
+        s=default; t=1603505343;
+        bh=oTkEZ0FtoBONxlpTmAUkZC3Y2Ho8JGEOJH4m6h9xLVI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=NeRpsQW+u12z6TGaV4YnehdFjxUJJYJumHYj6Qoi5RhgE8T3y/G6gZBaZVu/LZwpz
+         AjHGiErn84B9BtCl6F9820YI/LfTRfeR3KIeHzVgxG67ltjUJ2s3WbWEtXtuW7TmNT
+         yDWWTiduPjui2/MslgN2k3gWICth4oDttut9Rouo=
+Date:   Fri, 23 Oct 2020 22:09:03 -0400
+From:   "J. Bruce Fields" <bfields@fieldses.org>
+To:     Roberto Bergantinos Corpas <rbergant@redhat.com>
+Cc:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        linux-nfs@vger.kernel.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] sunrpc: raise kernel RPC channel buffer size
+Message-ID: <20201024020903.GC31481@fieldses.org>
+References: <20201019093356.7395-1-rbergant@redhat.com>
+ <20201019132000.GA32403@fieldses.org>
+ <alpine.DEB.2.21.2010231141460.29805@ramsan.of.borg>
+ <20201024000434.GA31481@fieldses.org>
+ <CACWnjLw_EJBnz9ywkg=-7HVScJT1gKRmYRda1MWUrPYTWkHXzw@mail.gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201011062456.4065576-2-lokeshgidra@google.com>
-User-Agent: Mutt/1.14.7 (2020-08-29)
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
+In-Reply-To: <CACWnjLw_EJBnz9ywkg=-7HVScJT1gKRmYRda1MWUrPYTWkHXzw@mail.gmail.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 10, 2020 at 11:24:55PM -0700, Lokesh Gidra wrote:
-> userfaultfd handles page faults from both user and kernel code.
-> Add a new UFFD_USER_MODE_ONLY flag for userfaultfd(2) that makes
-> the resulting userfaultfd object refuse to handle faults from kernel
-> mode, treating these faults as if SIGBUS were always raised, causing
-> the kernel code to fail with EFAULT.
+On Sat, Oct 24, 2020 at 03:29:25AM +0200, Roberto Bergantinos Corpas wrote:
+> Good point Geert !
 > 
-> A future patch adds a knob allowing administrators to give some
-> processes the ability to create userfaultfd file objects only if they
-> pass UFFD_USER_MODE_ONLY, reducing the likelihood that these processes
-> will exploit userfaultfd's ability to delay kernel page faults to open
-> timing windows for future exploits.
+> > How about making it a kvmalloc?
 > 
-> Signed-off-by: Daniel Colascione <dancol@google.com>
-> Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
+> I can post a new patch using kvmalloc, Bruce looks we can also
+> prescind of queue_io_mutex, what do you think ?
 
-Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
+And revert da77005f0d64, I think. 
 
+Maybe there's something I'm missing, but I don't think we need all that
+complexity.
+
+--b.
