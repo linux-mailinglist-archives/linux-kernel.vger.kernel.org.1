@@ -2,233 +2,148 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 23523298174
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E957298178
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:33:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415402AbgJYLX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 07:23:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415395AbgJYLXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 07:23:25 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5205E222E8;
-        Sun, 25 Oct 2020 11:23:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603625004;
-        bh=wsyWi0whkTqHhXLDxOJJ5R69Qo3xgR/xs/zAJvhAmm0=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n5/5E1gYP0gcNcUMnlMimgW0cncit8L8M4+u7oLANwVVnyuDQsCS7AP3xnKg4bW/W
-         61gfWW4S6WpPYXWkCwRp2Ws5Z1Ve+jqtaLGapdYlZJYE0RkRfncrVaDukL0dXUNInk
-         y6Cqg/97uoPHs+41euzYx6CV0IrfK1SXNS2iC6C8=
-Date:   Sun, 25 Oct 2020 13:23:16 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Topi Miettinen <toiwoton@gmail.com>
-Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        id S1415442AbgJYLdV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 07:33:21 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49528 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1415431AbgJYLdU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 07:33:20 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABF0BC0613CE;
+        Sun, 25 Oct 2020 04:33:20 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id o1so1619864pjt.2;
+        Sun, 25 Oct 2020 04:33:20 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NLwOajz7aLbYTCZJfZv4NGxOgDz/dYsUjO8aQaKp6ps=;
+        b=j+7+X28549W+BrYcs7KatPfnkg3umYsdcjB+PsIuZdtA5kqWyqlnD230ae3p6VXXSs
+         DAdjbrvEPPncflGS63+zsp8q7v2j9GE5l0RIKlUGZb4U8g4dSaUnhUQqK7mOYDrqj8t6
+         eKYhyCZXwV1D6HqcendEtsrku+KR4IYroD7xcIchaNdOY6bnrHCQrHbUPHCUDs51oSbf
+         76PpSC6/bPxFkY71ie+EhIWZm25BzKlrd/jVET2Eu4m6UQAi8f0XhLRz1CN0hMnIQGpb
+         bUZ/5Io0D5U5C1BOwWXCui3acqh7toFHI+ldHY/y4dGtfrk3JWxyPEaVHLPXc/iY4IgI
+         oWcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=NLwOajz7aLbYTCZJfZv4NGxOgDz/dYsUjO8aQaKp6ps=;
+        b=geYpW/Z3pwkgPQ9dMrSTW/PBhRRnehofjzC6aBhz6hcN3164LQP/mES4ATL90J9i3s
+         rON+Och2QBk1CU/QpuNli+a0RdP/JpBNqp0IxIQfu0wKXMGREMBNdtYhGNFg9AE+nTWu
+         vo+E86K/G5SEAo7Ctc+z3pCtM7C96KcdS5MemGhFwRc1YFRi7ps5M0AfAGqaEl/V41Sg
+         BqiMRAuNHrptilRseLiszdLI3P3JtRq3apk5DsDz6dxFPd1KrIcTVEjbIKRwLIasmhzk
+         5DwzVR6SI06oiNmZM0nKPT+cU4WeXKttxtmP2vF1O4leAFPLGNLaNpJo1djM+/WnX2VH
+         eEww==
+X-Gm-Message-State: AOAM532LalJLPWWgH+4Wt8EAJPYoq4RNp36XW4NGAaxzmBS3QxAJbIh7
+        LKOrfVE+RVmE0I5yhmFkbWg=
+X-Google-Smtp-Source: ABdhPJyETl+EMoUUbZE2de5fwBvYir5gEzAt9d8BzO/XXFUJWvOdwy4xs6N7rTzEH4QIMbduoyYj1w==
+X-Received: by 2002:a17:902:a50f:b029:d6:da2:aaa7 with SMTP id s15-20020a170902a50fb02900d60da2aaa7mr9034793plq.42.1603625599643;
+        Sun, 25 Oct 2020 04:33:19 -0700 (PDT)
+Received: from lte-devbox.localdomain (KD106154087147.au-net.ne.jp. [106.154.87.147])
+        by smtp.googlemail.com with ESMTPSA id cs21sm21557515pjb.0.2020.10.25.04.33.15
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Oct 2020 04:33:18 -0700 (PDT)
+From:   Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+To:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Harald Welte <laforge@gnumonks.org>
+Cc:     fujiwara.masahiro@gmail.com,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Andreas Schultz <aschultz@tpip.net>,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] mm: Optional full ASLR for mmap() and mremap()
-Message-ID: <20201025112316.GF392079@kernel.org>
-References: <20201002110917.4227-1-toiwoton@gmail.com>
+Subject: [PATCH net] gtp: fix an use-before-init in gtp_newlink()
+Date:   Sat, 24 Oct 2020 15:42:33 +0000
+Message-Id: <20201024154233.4024-1-fujiwara.masahiro@gmail.com>
+X-Mailer: git-send-email 2.24.3
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201002110917.4227-1-toiwoton@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 02, 2020 at 02:09:17PM +0300, Topi Miettinen wrote:
-> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
-> enables full randomization of memory mappings created with mmap(NULL,
-> ...). With 2, the base of the VMA used for such mappings is random,
-> but the mappings are created in predictable places within the VMA and
-> in sequential order. With 3, new VMAs are created to fully randomize
-> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
-> even if not necessary.
-> 
-> On 32 bit systems this may cause problems due to increased VM
-> fragmentation if the address space gets crowded.
-> 
-> In this example, with value of 2, ld.so.cache, libc, an anonymous mmap
-> and locale-archive are located close to each other:
-> $ strace /bin/sync
-> ...
-> openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
-> fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
-> mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e7f2000
-> ...
-> openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
-> read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
-> fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
-> mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7d9c1e7f0000
-> mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7d9c1e62b000
-> ...
-> openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
-> fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
-> mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e0c9000
-> 
-> With 3, they are located in unrelated addresses:
-> $ echo 3 > /proc/sys/kernel/randomize_va_space
-> $ /bin/sync
-> ...
-> openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
-> fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
-> mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0xeda4fbea000
-> ...
-> openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
-> read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
-> fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
-> mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8fb9c1d000
-> mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xaabd8598000
-> ...
-> openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
-> fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
-> mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0xbe351ab8000
+*_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
+sends GTP packets while creating new GTP device.
 
-Nit: this can be better illustrated with /proc/$pid/maps
+RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
+<SNIP>
+Call Trace:
+ <IRQ>
+ gtp_encap_recv+0xc2/0x2e0 [gtp]
+ ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
+ udp_queue_rcv_one_skb+0x1fe/0x530
+ udp_queue_rcv_skb+0x40/0x1b0
+ udp_unicast_rcv_skb.isra.0+0x78/0x90
+ __udp4_lib_rcv+0x5af/0xc70
+ udp_rcv+0x1a/0x20
+ ip_protocol_deliver_rcu+0xc5/0x1b0
+ ip_local_deliver_finish+0x48/0x50
+ ip_local_deliver+0xe5/0xf0
+ ? ip_protocol_deliver_rcu+0x1b0/0x1b0
 
-> Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
-> ---
-> v2: also randomize mremap(..., MREMAP_MAYMOVE)
-> ---
->  Documentation/admin-guide/hw-vuln/spectre.rst |  6 +++---
->  Documentation/admin-guide/sysctl/kernel.rst   | 11 +++++++++++
->  init/Kconfig                                  |  2 +-
->  mm/mmap.c                                     |  7 ++++++-
->  mm/mremap.c                                   | 15 +++++++++++++++
->  5 files changed, 36 insertions(+), 5 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
-> index e05e581af5cf..9ea250522077 100644
-> --- a/Documentation/admin-guide/hw-vuln/spectre.rst
-> +++ b/Documentation/admin-guide/hw-vuln/spectre.rst
-> @@ -254,7 +254,7 @@ Spectre variant 2
->     left by the previous process will also be cleared.
->  
->     User programs should use address space randomization to make attacks
-> -   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
-> +   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
->  
->  3. A virtualized guest attacking the host
->  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-> @@ -499,8 +499,8 @@ Spectre variant 2
->     more overhead and run slower.
->  
->     User programs should use address space randomization
-> -   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
-> -   difficult.
-> +   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
-> +   more difficult.
->  
->  3. VM mitigation
->  ^^^^^^^^^^^^^^^^
-> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
-> index d4b32cc32bb7..acd0612155d9 100644
-> --- a/Documentation/admin-guide/sysctl/kernel.rst
-> +++ b/Documentation/admin-guide/sysctl/kernel.rst
-> @@ -1060,6 +1060,17 @@ that support this feature.
->      Systems with ancient and/or broken binaries should be configured
->      with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
->      address space randomization.
-> +
-> +3   Additionally enable full randomization of memory mappings created
-> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
-> +    mappings is random, but the mappings are created in predictable
-> +    places within the VMA and in sequential order. With 3, new VMAs
-> +    are created to fully randomize the mappings. Also mremap(...,
-> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
-> +
-> +    On 32 bit systems this may cause problems due to increased VM
-> +    fragmentation if the address space gets crowded.
-> +
->  ==  ===========================================================================
->  
->  
-> diff --git a/init/Kconfig b/init/Kconfig
-> index d6a0b31b13dc..c5ea2e694f6a 100644
-> --- a/init/Kconfig
-> +++ b/init/Kconfig
-> @@ -1859,7 +1859,7 @@ config COMPAT_BRK
->  	  also breaks ancient binaries (including anything libc5 based).
->  	  This option changes the bootup default to heap randomization
->  	  disabled, and can be overridden at runtime by setting
-> -	  /proc/sys/kernel/randomize_va_space to 2.
-> +	  /proc/sys/kernel/randomize_va_space to 2 or 3.
->  
->  	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
->  
-> diff --git a/mm/mmap.c b/mm/mmap.c
-> index 40248d84ad5f..489368f43af1 100644
-> --- a/mm/mmap.c
-> +++ b/mm/mmap.c
-> @@ -47,6 +47,7 @@
->  #include <linux/pkeys.h>
->  #include <linux/oom.h>
->  #include <linux/sched/mm.h>
-> +#include <linux/elf-randomize.h>
->  
->  #include <linux/uaccess.h>
->  #include <asm/cacheflush.h>
-> @@ -206,7 +207,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
->  #ifdef CONFIG_COMPAT_BRK
->  	/*
->  	 * CONFIG_COMPAT_BRK can still be overridden by setting
-> -	 * randomize_va_space to 2, which will still cause mm->start_brk
-> +	 * randomize_va_space to >= 2, which will still cause mm->start_brk
->  	 * to be arbitrarily shifted
->  	 */
->  	if (current->brk_randomized)
-> @@ -1407,6 +1408,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
->  	if (mm->map_count > sysctl_max_map_count)
->  		return -ENOMEM;
->  
-> +	/* Pick a random address even outside current VMAs? */
-> +	if (!addr && randomize_va_space >= 3)
-> +		addr = arch_mmap_rnd();
-> +
->  	/* Obtain the address to map to. we verify (or select) it and ensure
->  	 * that it represents a valid section of the address space.
->  	 */
-> diff --git a/mm/mremap.c b/mm/mremap.c
-> index 138abbae4f75..c7fd1ab5fb5f 100644
-> --- a/mm/mremap.c
-> +++ b/mm/mremap.c
-> @@ -24,6 +24,7 @@
->  #include <linux/uaccess.h>
->  #include <linux/mm-arch-hooks.h>
->  #include <linux/userfaultfd_k.h>
-> +#include <linux/elf-randomize.h>
->  
->  #include <asm/cacheflush.h>
->  #include <asm/tlbflush.h>
-> @@ -720,6 +721,20 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
->  		goto out;
->  	}
->  
-> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
-> +		/*
-> +		 * Caller is happy with a different address, so let's
-> +		 * move even if not necessary!
-> +		 */
-> +		new_addr = arch_mmap_rnd();
-> +
-> +		ret = mremap_to(addr, old_len, new_addr, new_len,
-> +				&locked, flags, &uf, &uf_unmap_early,
-> +				&uf_unmap);
-> +		goto out;
-> +	}
-> +
-> +
->  	/*
->  	 * Always allow a shrinking remap: that just unmaps
->  	 * the unnecessary pages..
-> -- 
-> 2.28.0
-> 
-> 
+gtp_encap_enable() should be called after gtp_hastable_new() otherwise
+*_pdp_find() will access the uninitialized hash table.
 
+Fixes: 1e3a3abd8 ("gtp: make GTP sockets in gtp_newlink optional")
+Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+---
+ drivers/net/gtp.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+index 8e47d0112e5d..6c56337b02a3 100644
+--- a/drivers/net/gtp.c
++++ b/drivers/net/gtp.c
+@@ -663,10 +663,6 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+ 
+ 	gtp = netdev_priv(dev);
+ 
+-	err = gtp_encap_enable(gtp, data);
+-	if (err < 0)
+-		return err;
+-
+ 	if (!data[IFLA_GTP_PDP_HASHSIZE]) {
+ 		hashsize = 1024;
+ 	} else {
+@@ -676,13 +672,18 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+ 	}
+ 
+ 	err = gtp_hashtable_new(gtp, hashsize);
++	if (err < 0) {
++		return err;
++	}
++
++	err = gtp_encap_enable(gtp, data);
+ 	if (err < 0)
+ 		goto out_encap;
+ 
+ 	err = register_netdevice(dev);
+ 	if (err < 0) {
+ 		netdev_dbg(dev, "failed to register new netdev %d\n", err);
+-		goto out_hashtable;
++		goto out_encap;
+ 	}
+ 
+ 	gn = net_generic(dev_net(dev), gtp_net_id);
+@@ -693,11 +694,10 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+ 
+ 	return 0;
+ 
+-out_hashtable:
+-	kfree(gtp->addr_hash);
+-	kfree(gtp->tid_hash);
+ out_encap:
+ 	gtp_encap_disable(gtp);
++	kfree(gtp->addr_hash);
++	kfree(gtp->tid_hash);
+ 	return err;
+ }
+ 
 -- 
-Sincerely yours,
-Mike.
+2.24.3
+
