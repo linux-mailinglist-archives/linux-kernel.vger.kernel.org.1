@@ -2,127 +2,236 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CEE1E297A72
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:07:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B6C8297A78
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:10:14 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759237AbgJXDHT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 23:07:19 -0400
-Received: from mail-il1-f199.google.com ([209.85.166.199]:41515 "EHLO
-        mail-il1-f199.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1754257AbgJXDHT (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 23:07:19 -0400
-Received: by mail-il1-f199.google.com with SMTP id l5so3106004ilf.8
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 20:07:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:date:in-reply-to:message-id:subject
-         :from:to;
-        bh=+f5KaRkMNp2H9YTKaVRIxMmnVKmfIt7q48LvCaRF0Ns=;
-        b=Q2mcwAecWmUQ1Wo2HHEkp1eooYOtpMka8IMp5lahVLnyWckIrP3gsHKYFUjRGQUzwA
-         REb2NC1FcrudW/HN9K/dqmBmNrr6gyKjvV7UAx/1Gw7HSx3fKOEk/K6+qvkZNG8YcI9e
-         w/DQnZ4IJsFRJsBR5AeLxE0ctX9XIMgf5Q4AZPi66OwSrncgTUEAnpFfa4I8le8rOveB
-         /4oZy0mjw/a702s2P7x4g+eA7qU0leLqM6FHqb1PdXo1oZVe51763cC1bF6I41BffoJw
-         WycFpQyjsLH4Y5/UFghWNi4viaeRFznIn0JseC62va7HlAUGzlJuVIsTvDwsTq9D/6o7
-         tn9Q==
-X-Gm-Message-State: AOAM530Wsb3PPvns5og2tNLpaOrA/PuTrbAm0DAG27rNN+0H9JM2xJn/
-        ITieMy+w7cH5N/yMtSucoV8qjVvWhgefZ3hZAGFhq7/zjBKE
-X-Google-Smtp-Source: ABdhPJyX5CGjMWLoP15isE4qEaNneI+lMoj529yEcMzeMQUaUvz6w9wzt3J5qhiARVu2523YJ/lzwBOs4QaY8mpAEsQOou9UfSXn
+        id S1759307AbgJXDKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 23:10:04 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1759300AbgJXDKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:10:02 -0400
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id F0F8D22272
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 03:10:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603509001;
+        bh=T2MY35WzTyMya24fc1ZRV/JbBaR5f7YTXksJCq7PiYg=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=lSEpSy2qpv44JkKtncmsE8Ns/GpLo+I5kNHv92N1+B/azneD2Bp3+1DPrvhxzpMCV
+         qbNVXOrpmMjZUJPfORP7SLQy7i88IMOEcg81BdTP1FXQMjgPA3TPPPlVyKFLxvfkSQ
+         RqmvAG1u6euo4PGB1FoeRyU/BZkCTZhDMktLyqxs=
+Received: by mail-lf1-f45.google.com with SMTP id c141so4452622lfg.5
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 20:10:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530WtCoOcSNw1LWWlBz3E0WEH/6ARLZHo8dfd+VTsj1JSnzHy/0Z
+        faa84cxwUZZPc7buhIlbZlw1YFjHmJJBiWIo1nk=
+X-Google-Smtp-Source: ABdhPJzk/Eff6yLqLbwZHcWOxTj59jpy4SEfa8P10MfMEwbh3atXnMPy370F7GDb5S/xd9ADT89o8s4JLP5bLoauvL8=
+X-Received: by 2002:a19:e305:: with SMTP id a5mr1595530lfh.549.1603508999204;
+ Fri, 23 Oct 2020 20:09:59 -0700 (PDT)
 MIME-Version: 1.0
-X-Received: by 2002:a5e:9618:: with SMTP id a24mr4169239ioq.27.1603508837084;
- Fri, 23 Oct 2020 20:07:17 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 20:07:17 -0700
-In-Reply-To: <000000000000335adc05b23300f6@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a0f8a305b261fe4a@google.com>
-Subject: Re: WARNING in dma_map_page_attrs
-From:   syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>
-To:     christian.koenig@amd.com, dri-devel@lists.freedesktop.org,
-        hch@lst.de, iommu@lists.linux-foundation.org,
-        linaro-mm-sig-owner@lists.linaro.org,
-        linaro-mm-sig@lists.linaro.org, linux-kernel@vger.kernel.org,
-        linux-media@vger.kernel.org, m.szyprowski@samsung.com,
-        netdev@vger.kernel.org, robin.murphy@arm.com,
-        sumit.semwal@linaro.org, syzkaller-bugs@googlegroups.com
+References: <1603448245-79429-1-git-send-email-guoren@kernel.org> <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com>
+In-Reply-To: <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com>
+From:   Guo Ren <guoren@kernel.org>
+Date:   Sat, 24 Oct 2020 11:09:47 +0800
+X-Gmail-Original-Message-ID: <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
+Message-ID: <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
+Subject: Re: [PATCH 1/3] irqchip/irq-sifive-plic: Fixup wrong size of
+ xxx_PER_HART and reg base
+To:     Anup Patel <anup@brainfault.org>
+Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Greentime Hu <greentime.hu@sifive.com>,
+        Zong Li <zong.li@sifive.com>,
+        Atish Patra <atish.patra@wdc.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Jason Cooper <jason@lakedaemon.net>,
+        Marc Zyngier <maz@kernel.org>, wesley@sifive.com,
+        Yash Shah <yash.shah@sifive.com>,
+        Christoph Hellwig <hch@lst.de>,
+        linux-riscv <linux-riscv@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
+        Guo Ren <guoren@linux.alibaba.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-syzbot has found a reproducer for the following issue on:
+On Fri, Oct 23, 2020 at 8:31 PM Anup Patel <anup@brainfault.org> wrote:
+>
+> On Fri, Oct 23, 2020 at 3:48 PM <guoren@kernel.org> wrote:
+> >
+> > From: Guo Ren <guoren@linux.alibaba.com>
+> >
+> > ENABLE and CONTEXT registers contain M & S status for per-hart, so
+> > ref to the specification the correct definition is double to the
+> > current value.
+> >
+> > The value of hart_base and enable_base should be calculated by real
+> > physical hartid not software id. Sometimes the CPU node's <reg>
+> > from dts is not equal to the sequence index.
+> >
+> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
+> > ---
+> >  drivers/irqchip/irq-sifive-plic.c | 12 ++++++------
+> >  1 file changed, 6 insertions(+), 6 deletions(-)
+> >
+> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
+> > index eaa3e9f..2e56576 100644
+> > --- a/drivers/irqchip/irq-sifive-plic.c
+> > +++ b/drivers/irqchip/irq-sifive-plic.c
+> > @@ -44,16 +44,16 @@
+> >   * Each hart context has a vector of interrupt enable bits associated with it.
+> >   * There's one bit for each interrupt source.
+> >   */
+> > -#define ENABLE_BASE                    0x2000
+> > -#define     ENABLE_PER_HART            0x80
+> > +#define ENABLE_BASE                    0x2080
+> > +#define     ENABLE_PER_HART            0x100
+> >
+> >  /*
+> >   * Each hart context has a set of control registers associated with it.  Right
+> >   * now there's only two: a source priority threshold over which the hart will
+> >   * take an interrupt, and a register to claim interrupts.
+> >   */
+> > -#define CONTEXT_BASE                   0x200000
+> > -#define     CONTEXT_PER_HART           0x1000
+> > +#define CONTEXT_BASE                   0x201000
+> > +#define     CONTEXT_PER_HART           0x2000
+> >  #define     CONTEXT_THRESHOLD          0x00
+> >  #define     CONTEXT_CLAIM              0x04
+> >
+> > @@ -358,10 +358,10 @@ static int __init plic_init(struct device_node *node,
+> >                 cpumask_set_cpu(cpu, &priv->lmask);
+> >                 handler->present = true;
+> >                 handler->hart_base =
+> > -                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
+> > +                       priv->regs + CONTEXT_BASE + hartid * CONTEXT_PER_HART;
+> >                 raw_spin_lock_init(&handler->enable_lock);
+> >                 handler->enable_base =
+> > -                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
+> > +                       priv->regs + ENABLE_BASE + hartid * ENABLE_PER_HART;
+> >                 handler->priv = priv;
+> >  done:
+> >                 for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
+> > --
+> > 2.7.4
+> >
+>
+> There is no one-to-one mapping between PLIC context and HARTID. Instead,
+> we have many-to-one mapping between PLIC contexts and HARTID. In other
+> words, we have one PLIC context for each interrupt capable mode (i.e.
+> M/S-mode) of each HART.
+>
+> For example, on SiFive Unleashed we have 5 HARTs but HARTID=0 has
+> only M-mode capable of taking interrupts so we have total (1 + 2x4) = 9
+> PLIC contexts.
+That's OK, but what the bug I want to point out is enable_base &
+context_base should be calculated by 'hartid' not 'i'.
 
-HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of git://git.kernel.org/..
-git tree:       net
-console output: https://syzkaller.appspot.com/x/log.txt?x=13125390500000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=46c6fea3eb827ae1
-dashboard link: https://syzkaller.appspot.com/bug?extid=34dc2fea3478e659af01
-compiler:       gcc (GCC) 10.1.0-syz 20200507
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=16858664500000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f402ef900000
+For example, how we deal with below dts configuration:
+        cpus {
+                #address-cells = <1>;
+                #size-cells = <0>;
+                timebase-frequency = <3000000>;
+                cpu@0 {
+                        device_type = "cpu";
+                        reg = <2>;  //********* different from index
+                        status = "okay";
+                        compatible = "riscv";
+                        riscv,isa = "rv64imafdcsu";
+                        mmu-type = "riscv,sv39";
+                        cpu0_intc: interrupt-controller {
+                                #interrupt-cells = <1>;
+                                compatible = "riscv,cpu-intc";
+                                interrupt-controller;
+                        };
+                };
+                cpu@1 {
+                        device_type = "cpu";
+                        reg = <3>; //********* different from index
+                        status = "fail";
+                        compatible = "riscv";
+                        riscv,isa = "rv64imafdcsu";
+                        mmu-type = "riscv,sv39";
+                        cpu1_intc: interrupt-controller {
+                                #interrupt-cells = <1>;
+                                compatible = "riscv,cpu-intc";
+                                interrupt-controller;
+                        };
+                };
+      }
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com
+>
+> I would also like to highlight that this patch is forcing PLIC driver to always
+> use PLIC S-mode context for each HART which breaks the Linux RISC-V
+> NoMMU kernel.
+Yes, I forgot M-mode and I will correct it.
 
-netdevsim netdevsim0 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim0 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-infiniband syz2: set active
-infiniband syz2: added macvlan0
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 8488 at kernel/dma/mapping.c:149 dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149
-Modules linked in:
-CPU: 1 PID: 8488 Comm: syz-executor144 Not tainted 5.9.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/01/2011
-RIP: 0010:dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149
-Code: 80 3c 10 00 0f 85 ed 01 00 00 48 8b 1d 86 38 e9 0c e9 2d fc ff ff 48 89 c3 e9 d1 fd ff ff e8 04 11 12 00 0f 0b e8 fd 10 12 00 <0f> 0b 49 c7 c4 ff ff ff ff e9 d5 fd ff ff e8 ea 10 12 00 48 8d 7b
-RSP: 0018:ffffc90000fdec68 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffffffff894d1060 RCX: ffffffff815df1e3
-RDX: ffff8880208c1a40 RSI: ffffffff815df5b3 RDI: ffff8880196f8b00
-RBP: ffff88801412d800 R08: 0000000000000002 R09: 0000000000000000
-R10: 0000000000000002 R11: 0000000000000000 R12: ffffea0000504b40
-R13: ffff8880196f86e8 R14: 00000000000008b8 R15: 0000000000000002
-FS:  0000000001b26880(0000) GS:ffff8880b9f00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00000000200002c0 CR3: 0000000022446000 CR4: 00000000001506e0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- dma_map_single_attrs include/linux/dma-mapping.h:279 [inline]
- ib_dma_map_single include/rdma/ib_verbs.h:3967 [inline]
- ib_mad_post_receive_mads+0x23f/0xd60 drivers/infiniband/core/mad.c:2715
- ib_mad_port_start drivers/infiniband/core/mad.c:2862 [inline]
- ib_mad_port_open drivers/infiniband/core/mad.c:3016 [inline]
- ib_mad_init_device+0x72b/0x1400 drivers/infiniband/core/mad.c:3092
- add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:680
- enable_device_and_get+0x1d5/0x3c0 drivers/infiniband/core/device.c:1301
- ib_register_device drivers/infiniband/core/device.c:1376 [inline]
- ib_register_device+0x7a7/0xa40 drivers/infiniband/core/device.c:1335
- rxe_register_device+0x46d/0x570 drivers/infiniband/sw/rxe/rxe_verbs.c:1182
- rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
- rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:507
- rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
- rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
- nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
- rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
- rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
- rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
- netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
- netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
- netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
- sock_sendmsg_nosec net/socket.c:651 [inline]
- sock_sendmsg+0xcf/0x120 net/socket.c:671
- ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
- ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
- __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
- do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-RIP: 0033:0x443699
-Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 0f 83 db 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
-RSP: 002b:00007ffc067db418 EFLAGS: 00000246 ORIG_RAX: 000000000000002e
-RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443699
-RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000003
-RBP: 00007ffc067db420 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc067db430
-R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+>
+> There is no issue with the existing defines because these are aligned with
+> above and latest PLIC spec.
+> (Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc)
+>
+> NACK to this patch from my side.
 
+Here is my new patch which fixup m-mode linux:
+
+diff --git a/drivers/irqchip/irq-sifive-plic.c
+b/drivers/irqchip/irq-sifive-plic.c
+index 4048657..e34e1d9 100644
+--- a/drivers/irqchip/irq-sifive-plic.c
++++ b/drivers/irqchip/irq-sifive-plic.c
+@@ -45,7 +45,13 @@
+  * There's one bit for each interrupt source.
+  */
+ #define ENABLE_BASE                    0x2000
+-#define     ENABLE_PER_HART            0x80
++#define     ENABLE_PER_HART            0x100
++#ifdef CONFIG_RISCV_M_MODE
++#define     ENABLE_OFFSET              0
++#else
++#define     ENABLE_OFFSET              0x80
++#endif
++
+
+ /*
+  * Each hart context has a set of control registers associated with it.  Right
+@@ -53,9 +59,14 @@
+  * take an interrupt, and a register to claim interrupts.
+  */
+ #define CONTEXT_BASE                   0x200000
+-#define     CONTEXT_PER_HART           0x1000
++#define     CONTEXT_PER_HART           0x2000
+ #define     CONTEXT_THRESHOLD          0x00
+ #define     CONTEXT_CLAIM              0x04
++#ifdef CONFIG_RISCV_M_MODE
++#define     CONTEXT_OFFSET             0
++#else
++#define     CONTEXT_OFFSET             0x1000
++#endif
+
+ #define        PLIC_DISABLE_THRESHOLD          0x7
+ #define        PLIC_ENABLE_THRESHOLD           0
+@@ -358,10 +369,10 @@ static int __init plic_init(struct device_node *node,
+                cpumask_set_cpu(cpu, &priv->lmask);
+                handler->present = true;
+                handler->hart_base =
+-                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
++                       priv->regs + CONTEXT_BASE + hartid *
+CONTEXT_PER_HART + CONTEXT_OFFSET;
+                raw_spin_lock_init(&handler->enable_lock);
+                handler->enable_base =
+-                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
++                       priv->regs + ENABLE_BASE + hartid *
+ENABLE_PER_HART + ENABLE_OFFSET;
+                handler->priv = priv;
+ done:
+                for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
+
+--
+Best Regards
+ Guo Ren
+
+ML: https://lore.kernel.org/linux-csky/
