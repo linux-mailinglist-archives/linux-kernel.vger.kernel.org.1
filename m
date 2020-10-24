@@ -2,98 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D0719297C56
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 14:34:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E7BB2297C5C
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 14:40:12 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761393AbgJXMeS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 08:34:18 -0400
-Received: from rere.qmqm.pl ([91.227.64.183]:18323 "EHLO rere.qmqm.pl"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1761383AbgJXMeR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 08:34:17 -0400
-Received: from remote.user (localhost [127.0.0.1])
-        by rere.qmqm.pl (Postfix) with ESMTPSA id 4CJLBZ6TxQz5H;
-        Sat, 24 Oct 2020 14:34:14 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=rere.qmqm.pl; s=1;
-        t=1603542855; bh=ZpKqDVMnGnFJxAu7glq/SOb5QpupbYxViZoh10ycH/Y=;
-        h=Date:From:Subject:To:Cc:From;
-        b=TETUnYOcnj9cUs+MZ6Oz3QIH0Y+RCCi2l6MIfVS8gi4cEq4BFpJNp8T2snJqhT0DX
-         pPQh2lJWjW2qLrJDP4R2NK58o+bGdGbO7GBYhZlLPln4h8xH56txp0JhKpR+Z4nm6z
-         3Kh8ycNzYtCEyr4/WJeObFsAZ9UL6u58Xcf1FAk2rxwCHN6DXez3zHWFXUYZBO6lOU
-         vajF2trceBBjEOLNNZbZAJPRrN0ZNI0R8kSBnz24da4lY5IVIUdRdmRH55y9RKOcT0
-         mmo2oMFcYow2IyIRUe5LnlDf0pe6myAmpoC7d5uo/WlhhRVHAKk0rKIvbv9P06IQOe
-         ir15k4GlbfBPw==
-X-Virus-Status: Clean
-X-Virus-Scanned: clamav-milter 0.102.4 at mail
-Date:   Sat, 24 Oct 2020 14:34:14 +0200
-Message-Id: <e6e89abff9004e8ed2e79a9ccf1377eeac9e4134.1603542719.git.mirq-linux@rere.qmqm.pl>
-From:   =?UTF-8?q?Micha=C5=82=20Miros=C5=82aw?= <mirq-linux@rere.qmqm.pl>
-Subject: [RESEND v2] ASoC: tegra20-spdif: remove "default m"
+        id S1761430AbgJXMkK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 08:40:10 -0400
+Received: from conuserg-09.nifty.com ([210.131.2.76]:60870 "EHLO
+        conuserg-09.nifty.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1761413AbgJXMkI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 08:40:08 -0400
+Received: from oscar.flets-west.jp (softbank126090211135.bbtec.net [126.90.211.135]) (authenticated)
+        by conuserg-09.nifty.com with ESMTP id 09OCdV89029147;
+        Sat, 24 Oct 2020 21:39:32 +0900
+DKIM-Filter: OpenDKIM Filter v2.10.3 conuserg-09.nifty.com 09OCdV89029147
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nifty.com;
+        s=dec2015msa; t=1603543173;
+        bh=81zyaYaVR1S6fInGALmKGZwy2+4D+jIaUDdhWxoELSc=;
+        h=From:To:Cc:Subject:Date:From;
+        b=1fPtJVNgKR2Ygu1jSUFbZGiZVHI8sNWnruf+BP68TbqndfBMTzqwB6TxAtiVAH9/E
+         O/atUFJ08z6lozUQy0V+ZWsNTk8/SIUUk99FJ3fb1Eyiv9IHetkt2dKVQVR3f9RmFa
+         SK0hRQNumCo8BzUUMu78WI8FvH6VIxTSzhnClhZwvcllAzBbbDYJoqY0ax2itnw4aP
+         Q/gzldBjFPrY8eoEXTygWpFLUpTL0nzmbUjv6fi08fcTlHhM9Ke/ORMsPvZWGHsz7w
+         f0n2GJicMJgr8sLYrQvklhoydNddsFkt/HiHfOteGRrrPIMDAWI1+ZjWWt+JwfgKiT
+         uujT3EFJ0EY8w==
+X-Nifty-SrcIP: [126.90.211.135]
+From:   Masahiro Yamada <masahiroy@kernel.org>
+To:     linux-kbuild@vger.kernel.org
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/3] kconfig: qconf: drop Qt4 support
+Date:   Sat, 24 Oct 2020 21:38:39 +0900
+Message-Id: <20201024123841.1201922-1-masahiroy@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-To:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Takashi Iwai <tiwai@suse.com>,
-        Stephen Warren <swarren@nvidia.com>
-Cc:     linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Make tegra20-spdif default to N as all other drivers do.
-Add the selection to defconfigs instead.
+It is possible to keep this compatible with both Qt4 and Qt5, but not
+worth the efforts any more; it would require us to test this on both of
+them, and prevent us from using new features in Qt5.
 
-Signed-off-by: Michał Mirosław <mirq-linux@rere.qmqm.pl>
-Fixes: 774fec338bfc ("ASoC: Tegra: Implement SPDIF CPU DAI")
----
- v2: add the symbol to defconfig as suggested by Thierry Reding
----
- arch/arm/configs/multi_v7_defconfig | 1 +
- arch/arm/configs/tegra_defconfig    | 1 +
- sound/soc/tegra/Kconfig             | 1 -
- 3 files changed, 2 insertions(+), 1 deletion(-)
+Qt5 was released in 2012, and now widely available.
 
-diff --git a/arch/arm/configs/multi_v7_defconfig b/arch/arm/configs/multi_v7_defconfig
-index e9e76e32f10f..19342ac738a5 100644
---- a/arch/arm/configs/multi_v7_defconfig
-+++ b/arch/arm/configs/multi_v7_defconfig
-@@ -743,6 +743,7 @@ CONFIG_SND_SOC_STM32_I2S=m
- CONFIG_SND_SUN4I_CODEC=m
- CONFIG_SND_SOC_TEGRA=m
- CONFIG_SND_SOC_TEGRA20_I2S=m
-+CONFIG_SND_SOC_TEGRA20_SPDIF=m
- CONFIG_SND_SOC_TEGRA30_I2S=m
- CONFIG_SND_SOC_TEGRA_RT5640=m
- CONFIG_SND_SOC_TEGRA_WM8753=m
-diff --git a/arch/arm/configs/tegra_defconfig b/arch/arm/configs/tegra_defconfig
-index fff5fae0db30..08526eb50484 100644
---- a/arch/arm/configs/tegra_defconfig
-+++ b/arch/arm/configs/tegra_defconfig
-@@ -225,6 +225,7 @@ CONFIG_SND_HDA_CODEC_HDMI=y
- CONFIG_SND_SOC=y
- CONFIG_SND_SOC_TEGRA=y
- CONFIG_SND_SOC_TEGRA20_I2S=y
-+CONFIG_SND_SOC_TEGRA20_SPDIF=y
- CONFIG_SND_SOC_TEGRA30_I2S=y
- CONFIG_SND_SOC_TEGRA_RT5640=y
- CONFIG_SND_SOC_TEGRA_WM8753=y
-diff --git a/sound/soc/tegra/Kconfig b/sound/soc/tegra/Kconfig
-index 3d91bd3e59cd..a62cc87551ac 100644
---- a/sound/soc/tegra/Kconfig
-+++ b/sound/soc/tegra/Kconfig
-@@ -39,7 +39,6 @@ config SND_SOC_TEGRA20_I2S
- config SND_SOC_TEGRA20_SPDIF
- 	tristate "Tegra20 SPDIF interface"
- 	depends on SND_SOC_TEGRA
--	default m
- 	help
- 	  Say Y or M if you want to add support for the Tegra20 SPDIF interface.
- 	  You will also need to select the individual machine drivers to support
+Drop the Qt4 support.
+
+Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
+---
+
+ scripts/kconfig/qconf-cfg.sh | 12 ++----------
+ 1 file changed, 2 insertions(+), 10 deletions(-)
+
+diff --git a/scripts/kconfig/qconf-cfg.sh b/scripts/kconfig/qconf-cfg.sh
+index 02ccc0ae1031..d1eb2407c35d 100755
+--- a/scripts/kconfig/qconf-cfg.sh
++++ b/scripts/kconfig/qconf-cfg.sh
+@@ -2,7 +2,6 @@
+ # SPDX-License-Identifier: GPL-2.0
+ 
+ PKG="Qt5Core Qt5Gui Qt5Widgets"
+-PKG2="QtCore QtGui"
+ 
+ if [ -z "$(command -v pkg-config)" ]; then
+ 	echo >&2 "*"
+@@ -18,15 +17,8 @@ if pkg-config --exists $PKG; then
+ 	exit 0
+ fi
+ 
+-if pkg-config --exists $PKG2; then
+-	echo cflags=\"$(pkg-config --cflags $PKG2)\"
+-	echo libs=\"$(pkg-config --libs $PKG2)\"
+-	echo moc=\"$(pkg-config --variable=moc_location QtCore)\"
+-	exit 0
+-fi
+-
+ echo >&2 "*"
+-echo >&2 "* Could not find Qt via pkg-config."
+-echo >&2 "* Please install either Qt 4.8 or 5.x. and make sure it's in PKG_CONFIG_PATH"
++echo >&2 "* Could not find Qt5 via pkg-config."
++echo >&2 "* Please install Qt5 and make sure it's in PKG_CONFIG_PATH"
+ echo >&2 "*"
+ exit 1
 -- 
-2.20.1
+2.25.1
 
