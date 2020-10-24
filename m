@@ -2,147 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E15A0297DDD
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:51:27 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 99EB5297DDE
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 19:54:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762741AbgJXRvZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 13:51:25 -0400
-Received: from relay-us1.mymailcheap.com ([51.81.35.219]:54476 "EHLO
-        relay-us1.mymailcheap.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1762733AbgJXRvZ (ORCPT
+        id S1762755AbgJXRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 13:53:15 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:50068 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1762749AbgJXRxO (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 13:51:25 -0400
-Received: from relay5.mymailcheap.com (relay5.mymailcheap.com [159.100.241.64])
-        by relay-us1.mymailcheap.com (Postfix) with ESMTPS id A87E720E29;
-        Sat, 24 Oct 2020 17:51:23 +0000 (UTC)
-Received: from relay1.mymailcheap.com (relay1.mymailcheap.com [144.217.248.102])
-        by relay5.mymailcheap.com (Postfix) with ESMTPS id B746D20100;
-        Sat, 24 Oct 2020 17:51:20 +0000 (UTC)
-Received: from filter1.mymailcheap.com (filter1.mymailcheap.com [149.56.130.247])
-        by relay1.mymailcheap.com (Postfix) with ESMTPS id 8EBE93F1C5;
-        Sat, 24 Oct 2020 17:51:18 +0000 (UTC)
-Received: from localhost (localhost [127.0.0.1])
-        by filter1.mymailcheap.com (Postfix) with ESMTP id 6F47D2A359;
-        Sat, 24 Oct 2020 13:51:18 -0400 (EDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mymailcheap.com;
-        s=default; t=1603561878;
-        bh=aVQacDor6pG41Pl/v7YjPYCOYPsZrwjxjqQcNYBRudg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=TZu5EjBXqzPxTkuUurhixihe0BkicgUFN/zJ/JW1dDl9tIT5wN5EPiJvHaHAJqYts
-         cgQ0vbKAig3Vq6n9zKmmln9fiWeC/z1qdjXRjIMgwHUcZknFYHS41SAPZdGONjZ4zP
-         z462fmi2Vb5asyxJVF/640rQWIykd4Stvl7tOra0=
-X-Virus-Scanned: Debian amavisd-new at filter1.mymailcheap.com
-Received: from filter1.mymailcheap.com ([127.0.0.1])
-        by localhost (filter1.mymailcheap.com [127.0.0.1]) (amavisd-new, port 10024)
-        with ESMTP id fExfxNYMQzqg; Sat, 24 Oct 2020 13:51:17 -0400 (EDT)
-Received: from mail20.mymailcheap.com (mail20.mymailcheap.com [51.83.111.147])
-        (using TLSv1.2 with cipher ADH-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by filter1.mymailcheap.com (Postfix) with ESMTPS;
-        Sat, 24 Oct 2020 13:51:17 -0400 (EDT)
-Received: from [213.133.102.83] (ml.mymailcheap.com [213.133.102.83])
-        by mail20.mymailcheap.com (Postfix) with ESMTP id 342EF400C0;
-        Sat, 24 Oct 2020 17:51:16 +0000 (UTC)
-Authentication-Results: mail20.mymailcheap.com;
-        dkim=pass (1024-bit key; unprotected) header.d=aosc.io header.i=@aosc.io header.b="CgWyXQ5R";
-        dkim-atps=neutral
-AI-Spam-Status: Not processed
-Received: from ice-e5v2.lan (unknown [59.41.160.66])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits))
-        (No client certificate requested)
-        by mail20.mymailcheap.com (Postfix) with ESMTPSA id B7730400C0;
-        Sat, 24 Oct 2020 17:51:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=aosc.io; s=default;
-        t=1603561872; bh=aVQacDor6pG41Pl/v7YjPYCOYPsZrwjxjqQcNYBRudg=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=CgWyXQ5RL9TEMGozS/ZRaqnKwgrC/IpGdtgZbNxJoo2V32toh8/cb5TO02gXGIWpc
-         IFPgDh5jXilAcEpAPsPjwSFCq2hvTbGADKZxU/PfKJir+6SOlMlk/zSjLydIYb9DsO
-         5GHyqMQPMmqrBcWZ7YOQ7pnHvhvPp8hOE8xyK02w=
-Message-ID: <79894e1266db69e463ee74a52551101298cae03e.camel@aosc.io>
-Subject: Re: [linux-sunxi] [PATCH 02/10] ARM: dts: sun6i: a31-hummingbird:
- Enable RGMII RX/TX delay on Ethernet PHY
-From:   Icenowy Zheng <icenowy@aosc.io>
-To:     wens@kernel.org, Maxime Ripard <mripard@kernel.org>,
-        Jernej Skrabec <jernej.skrabec@siol.net>
-Cc:     linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>,
-        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Date:   Sun, 25 Oct 2020 01:51:06 +0800
-In-Reply-To: <20201024162515.30032-2-wens@kernel.org>
-References: <20201024162515.30032-1-wens@kernel.org>
-         <20201024162515.30032-2-wens@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 
+        Sat, 24 Oct 2020 13:53:14 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kWNix-0001VD-Js; Sat, 24 Oct 2020 13:53:03 -0400
+Message-ID: <e8bb0a68d2881d01143701eb81aee94b2448fd68.camel@surriel.com>
+Subject: Re: [PATCH v4] mm,thp,shmem: limit shmem THP alloc gfp_mask
+From:   Rik van Riel <riel@surriel.com>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     Hugh Dickins <hughd@google.com>, Yu Xu <xuyu@linux.alibaba.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Mel Gorman <mgorman@suse.de>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        linux-kernel@vger.kernel.org, kernel-team@fb.com,
+        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
+        Michal Hocko <mhocko@suse.com>
+Date:   Sat, 24 Oct 2020 13:53:03 -0400
+In-Reply-To: <20201024020922.GH20115@casper.infradead.org>
+References: <20201023204804.3f8d19c1@imladris.surriel.com>
+         <20201024020922.GH20115@casper.infradead.org>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-EsNs16WKP7UDH8iBf2MT"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 342EF400C0
-X-Spamd-Result: default: False [-0.10 / 10.00];
-         RCVD_VIA_SMTP_AUTH(0.00)[];
-         ARC_NA(0.00)[];
-         R_DKIM_ALLOW(0.00)[aosc.io:s=default];
-         RECEIVED_SPAMHAUS_PBL(0.00)[59.41.160.66:received];
-         FROM_HAS_DN(0.00)[];
-         TO_DN_SOME(0.00)[];
-         TO_MATCH_ENVRCPT_ALL(0.00)[];
-         MIME_GOOD(-0.10)[text/plain];
-         DMARC_NA(0.00)[aosc.io];
-         R_SPF_SOFTFAIL(0.00)[~all];
-         ML_SERVERS(-3.10)[213.133.102.83];
-         DKIM_TRACE(0.00)[aosc.io:+];
-         RCPT_COUNT_SEVEN(0.00)[8];
-         RCVD_NO_TLS_LAST(0.10)[];
-         FROM_EQ_ENVFROM(0.00)[];
-         MIME_TRACE(0.00)[0:+];
-         ASN(0.00)[asn:24940, ipnet:213.133.96.0/19, country:DE];
-         RCVD_COUNT_TWO(0.00)[2];
-         MID_RHS_MATCH_FROM(0.00)[];
-         HFILTER_HELO_BAREIP(3.00)[213.133.102.83,1]
-X-Rspamd-Server: mail20.mymailcheap.com
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-在 2020-10-25星期日的 00:25 +0800，Chen-Yu Tsai写道：
-> From: Chen-Yu Tsai <wens@csie.org>
-> 
-> The Ethernet PHY on the A31 Hummingbird has the RX and TX delays
-> enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
-> 
-> Fix the phy-mode description to correct reflect this so that the
-> implementation doesn't reconfigure the delays incorrectly. This
-> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> rx/tx delay config").
 
-Personally I think they should revert this commit, and consider other
-solution.
+--=-EsNs16WKP7UDH8iBf2MT
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This commit breaks everything.
+On Sat, 2020-10-24 at 03:09 +0100, Matthew Wilcox wrote:
+> On Fri, Oct 23, 2020 at 08:48:04PM -0400, Rik van Riel wrote:
+> > The allocation flags of anonymous transparent huge pages can be
+> > controlled
+> > through the files in /sys/kernel/mm/transparent_hugepage/defrag,
+> > which can
+> > help the system from getting bogged down in the page reclaim and
+> > compaction
+> > code when many THPs are getting allocated simultaneously.
+> >=20
+> > However, the gfp_mask for shmem THP allocations were not limited by
+> > those
+> > configuration settings, and some workloads ended up with all CPUs
+> > stuck
+> > on the LRU lock in the page reclaim code, trying to allocate dozens
+> > of
+> > THPs simultaneously.
+> >=20
+> > This patch applies the same configurated limitation of THPs to
+> > shmem
+> > hugepage allocations, to prevent that from happening.
+> >=20
+> > This way a THP defrag setting of "never" or "defer+madvise" will
+> > result
+> > in quick allocation failures without direct reclaim when no 2MB
+> > free
+> > pages are available.
+> >=20
+> > With this patch applied, THP allocations for tmpfs will be a little
+> > more aggressive than today for files mmapped with MADV_HUGEPAGE,
+> > and a little less aggressive for files that are not mmapped or
+> > mapped without that flag.
+>=20
+> How about this code path though?
+>=20
+> shmem_get_pages() [ in i915 ]
+>   shmem_read_mapping_page_gfp(__GFP_NORETRY | __GFP_NOWARN)
+>     shmem_getpage_gfp()
+>       shmem_alloc_and_acct_page()
+>         shmem_alloc_hugepage()
+>=20
+> I feel like the NORETRY from i915 should override whatever is set
+> in sysfs for anon THPs.  What do others think?
 
-(Although the patch on individual DT patches are technically correct)
+It looks like currently the only way to get a THP
+allocation with __GFP_DIRECT_RECLAIM and without
+__GFP_NORETRY (which does nothing without
+__GFP_DIRECT_RECLAIM) is to explicitly do an
+madvise MADV_HUGEPAGE on a VMA.
 
-> 
-> Fixes: c220aec2bb79 ("ARM: dts: sun6i: Add Merrii A31 Hummingbird
-> support")
-> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> ---
->  arch/arm/boot/dts/sun6i-a31-hummingbird.dts | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-> b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-> index 049e6ab3cf56..73de34ae37fd 100644
-> --- a/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-> +++ b/arch/arm/boot/dts/sun6i-a31-hummingbird.dts
-> @@ -154,7 +154,7 @@ &gmac {
->  	pinctrl-names = "default";
->  	pinctrl-0 = <&gmac_rgmii_pins>;
->  	phy-handle = <&phy1>;
-> -	phy-mode = "rgmii";
-> +	phy-mode = "rgmii-id";
->  	status = "okay";
->  };
->  
-> -- 
-> 2.28.0
-> 
+I am not convinced the i915 driver should
+override a userspace madvise.
+
+--=20
+All Rights Reversed.
+
+--=-EsNs16WKP7UDH8iBf2MT
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+Uaf8ACgkQznnekoTE
+3oNrlgf+IvnPSk5SIIzWtcHHyoBUttjdDn/ziiCG76djIOfJPxDT1MjfNQIfpfyX
+tB4txq8aA/m+oj6GMwO59Jlc9+R7Fyj8C21io14RQXJRCamjkRqWqOl5g82AHrq4
+Pi8D7hYOV5bHFk1HoODZaj5JGHYi6bq8NS4tVftu5UEXR+eVrwfdwn/0Hgt+EEjP
+8zIXZp59TZon1abCGaCangNHFbcn5krBDyQl1sAazwSxdxnnpb2o33+8cwOIugYI
+u442yl7EvM14AWN0DtYCdbk26SNPThNxTuT1MszAIqouUFTsyepruNcmP/+2mo43
+M7K0Ce1tT3gjj7Lrh7ZfOuaR8sRxbw==
+=x0QG
+-----END PGP SIGNATURE-----
+
+--=-EsNs16WKP7UDH8iBf2MT--
+
