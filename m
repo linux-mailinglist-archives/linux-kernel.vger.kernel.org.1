@@ -2,159 +2,162 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F3764297ADF
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:08:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E9A18297AE2
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:19:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759545AbgJXFIr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:08:47 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52706 "EHLO
+        id S1759555AbgJXFNE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:13:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53350 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759537AbgJXFIr (ORCPT
+        with ESMTP id S1728270AbgJXFNE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:08:47 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 24106C0613CE;
-        Fri, 23 Oct 2020 22:08:46 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id l2so317940pjt.5;
-        Fri, 23 Oct 2020 22:08:46 -0700 (PDT)
+        Sat, 24 Oct 2020 01:13:04 -0400
+Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 012FBC0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:13:03 -0700 (PDT)
+Received: by mail-pj1-x1041.google.com with SMTP id az3so335440pjb.4
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 22:13:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=fjaSUVFJm1JVw244s2m2ztF0RKFCy/L3lODaApmqKEY=;
-        b=Dy58VvAhl/znmltBfnj9Hzm/FtbhfUgpGMlvSE9xwJUaZ6cHFTvuh0f1w/FPla3/x2
-         0vk06xgcUgtGOXwe75Z2e/qwmM8C471sRTWhsVM0CYnOtTiouDR3b6vLLhSXakvs8eFZ
-         uymgg7KkFog5OiPgmJR1YbveRCYZQqR6S+SVXQxMLADixxhT0BM/kp8O0iBW5lMkT+6q
-         pxbnPfrJ6Q37L9btErdzoo6az/LFq1Fe71F/wimmn5YzKR8t5DtV0L8N2xyleCqGEW+k
-         abC89/M2KvFMKTgqA2N6E5Xx79TbTIB294hEeIGsfpLYaKbSorcSyl8s+ry1SI9/d0Nu
-         FINA==
+        d=dabbelt-com.20150623.gappssmtp.com; s=20150623;
+        h=date:subject:cc:from:to:message-id;
+        bh=FyIsB+gaIcHxAQo0rZx0L2tAsyceupiqK9XkzWHDLMc=;
+        b=L8BR2WhnzckT0m5aJ2aziY/2sezjG6V4vvxTR2ESbuEPjQpo4d5cdvEk3NnGhDBrGV
+         5181WmnG94aj9yAZ/Z/YYDieUsQDwZyVwzpVdWdvR21qhWuqZb1QsUN/D94ZjGUv0JDH
+         Yx/INTBKLLTgFpyOnoys3oQ4Jh4s/GXVXSmMnzoKRjhkgDC2NxbvsaXL32R9u46zpIV4
+         qj0AbCj6Qyzh+839aCLQcydRpCaO7j+5JLvD3ZszS7x6glkLLH4DmcNkTdcUktvz4S2Z
+         XBtguqvu6GFnVOOEh6muyb7+7UZXP4UPPDKB7nN7d9E71szPEz92xHm6cM3hBK9mZ/me
+         oG/A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=fjaSUVFJm1JVw244s2m2ztF0RKFCy/L3lODaApmqKEY=;
-        b=q2xrNfqypzaUA0cCcKUuKOnNHz4otAQPeUaZYm9N6LjITXLehIv+IO/DXTYY1jUSFC
-         7D8VzRIMRaWsRfEqIpxX+Twgv1PDwCcbydZC5q8zvfGTegaaqCB+tU+VKG97tY8OZZLM
-         TO/V2iCk1FUrf2ZPpGkksLayoh6aZYINQzG9+oDNIzzD3/HGncp8XbgpoPT29pJquEK/
-         1TyG74nBlVi9W5hHHUmi5wDCq2cBo833gPDBr8oRa6uevc2K9u/5IBXps0DiDkbVCNjk
-         sKxV2tJJx3s1VtXzdm/2UIr3NMZN9uqRlOO/h1IvlZqWYsDFo92zsRsMU2hZ9Z9SJs/u
-         P7Wg==
-X-Gm-Message-State: AOAM531Wtrb5utbKf6G0wVy961mRDD1ZEbxduNA4FFGcTI7OsD6Cbmj3
-        OyXUKxj8VGrhZ9YIVuqO/8YqJzVI6kofdrDt
-X-Google-Smtp-Source: ABdhPJzMw4FH+jjCGG7bREV97DUiLKrfg+/6FY5v3qm03LrH3LqYN1flii67GCds7GtvWcc8RLMtww==
-X-Received: by 2002:a17:902:7006:b029:d5:f56f:931a with SMTP id y6-20020a1709027006b02900d5f56f931amr2154454plk.8.1603516125765;
-        Fri, 23 Oct 2020 22:08:45 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.242.32])
-        by smtp.gmail.com with ESMTPSA id c127sm3998591pfc.115.2020.10.23.22.08.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 22:08:44 -0700 (PDT)
-Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
-To:     Petr Mladek <pmladek@suse.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        brendanhiggins@google.com, skhan@linuxfoundation.org,
-        rostedt@goodmis.org, sergey.senozhatsky@gmail.com,
-        alexandre.belloni@bootlin.com, gregkh@linuxfoundation.org,
-        rdunlap@infradead.org, idryomov@gmail.com,
-        kunit-dev@googlegroups.com, linux-kselftest@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org
-References: <20201022151349.47436-1-98.arpi@gmail.com>
- <20201022191606.GQ4077@smile.fi.intel.com>
- <0ab618c7-8c5c-00ae-8e08-0c1b99f3bf5c@rasmusvillemoes.dk>
- <01f8ca45-60d1-ad67-f8eb-354dec411a78@gmail.com>
- <20201023180128.GB13609@alley>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <0a9e5183-b4aa-0a72-ca84-01e09b4b04c1@gmail.com>
-Date:   Sat, 24 Oct 2020 10:38:39 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
-MIME-Version: 1.0
-In-Reply-To: <20201023180128.GB13609@alley>
-Content-Type: text/plain; charset=UTF-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+        h=x-gm-message-state:date:subject:cc:from:to:message-id;
+        bh=FyIsB+gaIcHxAQo0rZx0L2tAsyceupiqK9XkzWHDLMc=;
+        b=NyGVMAqE3GfIeLayTet3TcK+X83uqu0lRr4FMd5fesbqekni1z7FkXT3Rsk6qyaS70
+         5xuqSr1frHeIgm1rl1ATB626AuiJj0kXBLdXL0Z1g/hDqDvf/W1iDyVh11FY7+9MQT9H
+         Yb9/5yKZVVxy47PWvK8xYnOTJVdz//emg6kxF3b8s9UL2GHfstk1RHbx7Z8RflOIGwDp
+         h7awmDfUehz7OXuS0cP7PTVWSmQ5T97EYvCrZ1LJSPQbJkRKTKKa5EGKeOT0ZmKN3ZJM
+         +d0s8TbmChSMXFtfXWRRxlZ25hb0G/w/Y/2eZqbwciL5sxir0iQ/Mty0nXPmuKxSdI76
+         SrpA==
+X-Gm-Message-State: AOAM533x/UKzjhimLsTcjxqqKGpjqTY6tceKsow5njHmHsWYZ/eEgkIU
+        io8sEbhKpx29vB2j2tzNm0lcxQ==
+X-Google-Smtp-Source: ABdhPJxhR31oDZ8cgCyRu5/yU1XmD4TCgTc2I/xDbH4a4w1D+xJ3c0rv/CuK6EmkbJ6JGXmZ2jj62Q==
+X-Received: by 2002:a17:90a:fd12:: with SMTP id cv18mr990882pjb.221.1603516382692;
+        Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
+Received: from localhost (76-210-143-223.lightspeed.sntcca.sbcglobal.net. [76.210.143.223])
+        by smtp.gmail.com with ESMTPSA id y137sm4070147pfc.77.2020.10.23.22.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
+Date:   Fri, 23 Oct 2020 22:13:02 -0700 (PDT)
+X-Google-Original-Date: Fri, 23 Oct 2020 22:12:46 PDT (-0700)
+Subject: [GIT PULL] RISC-V Patches for the 5.10 Merge Window, Part 2
+CC:         linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Palmer Dabbelt <palmer@dabbelt.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Message-ID: <mhng-ed53d520-0ecd-4767-ade1-f4266118c3c0@palmerdabbelt-glaptop1>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23/10/20 11:31 pm, Petr Mladek wrote:
-> On Fri 2020-10-23 19:13:00, Arpitha Raghunandan wrote:
->> On 23/10/20 4:36 pm, Rasmus Villemoes wrote:
->>> On 22/10/2020 21.16, Andy Shevchenko wrote:
->>>> On Thu, Oct 22, 2020 at 08:43:49PM +0530, Arpitha Raghunandan wrote:
->>>>> Converted test failure:
->>>>>     # Subtest: printf-kunit-test
->>>>>     1..1
->>>>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
->>>>> vsnprintf(buf, 256, "%pi4|%pI4", ...) wrote
->>>>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->>>>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:82
->>>>> vsnprintf(buf, 5, "%pi4|%pI4", ...) wrote '127.', expected '127-'
->>>>>     # selftest: EXPECTATION FAILED at lib/printf_kunit.c:118
->>>>> kvasprintf(..., "%pi4|%pI4", ...) returned
->>>>> '127.000.000.001|127.0.0.1', expected '127-000.000.001|127.0.0.1'
->>>>>     not ok 1 - selftest
->>>>> not ok 1 - printf-kunit-test
->>>>
->>>> Not bad. Rasmus, what do you think?
->>>
->>> Much better, but that '1..1' and reporting the entire test suite as 1
->>> single (failing or passing) test is (also) a regression. Look at the
->>> original
->>>
->>>>> [    0.591409] test_printf: all 388 tests passed
->>>
->>> or
->>>
->>>>> [    0.619495] test_printf: failed 3 out of 388 tests
->>>
->>> That's far more informative, and I'd prefer if the summary information
->>> (whether in the all-good case or some-failing) included something like
->>> this. In particular, I have at some point spotted that I failed to
->>> properly hook up a new test case (or perhaps failed to re-compile, or
->>> somehow still ran the old kernel binary, don't remember which it was) by
->>> noticing that the total number of tests hadn't increased. The new output
->>> would not help catch such PEBKACs.
->>>
->>> Rasmus
->>>
->>
->> Splitting the test into multiple test cases in KUnit will display
->> the number and name of tests that pass or fail. This will be similar
->> to the lib/list-test.c test as can be seen here:
->> https://elixir.bootlin.com/linux/latest/source/lib/list-test.c.
->> I will work on this for the next version of this patch.
-> 
-> We should probably agree on the granularity first.
-> 
-> It looks like an overkill to split the tests into 388 functions
-> and define KUNIT_CASE() lines. It might be possible to hide
-> this into macros but macros are hell for debugging.
-> 
-> I suggest to split it by the current functions that do more test()
-> call inside. I mean to define something like:
-> 
-> static struct kunit_case printf_test_cases[] = {
-> 	KUNIT_CASE(basic),
-> 	KUNIT_CASE(number),
-> 	KUNIT_CASE(string),
-> 	KUNIT_CASE(plain_pointer),
-> 	KUNIT_CASE(null_poiter),
-> 	KUNIT_CASE(error_pointer),
-> 	KUNIT_CASE(addr),
-> 	KUNIT_CASE(struct_resource),
-> 	KUNIT_CASE(dentry),
-> 	KUNIT_CASE(pointer_addr),
-> 	 ...,
-> 	{}
-> };
-> 
-> Best Regards,
-> Petr
-> 
+The following changes since commit de22d2107ced3cc5355cc9dbbd85e44183546bd5:
 
-Okay, I will split it by the current functions that have more test() calls inside as suggested.
-I will also make changes as per your other suggestions for the next version.
-Thanks!
+  RISC-V: Add page table dump support for uefi (2020-10-02 14:31:33 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/riscv/linux.git tags/riscv-for-linus-5.10-mw1
+
+for you to fetch changes up to e8d444d3e98c255f91d228984abc46cfdfaf48b4:
+
+  riscv: remove address space overrides using set_fs() (2020-10-04 10:27:10 -0700)
+
+----------------------------------------------------------------
+RISC-V Patches for the 5.10 Merge Window, Part 2
+
+This actually just contains a single patch set:
+
+* The remainder of Christoph's work to remove set_fs, including the RISC-V
+  portion.
+
+----------------------------------------------------------------
+I know I said in the previous PR that I'd keep including shortlogs as of the
+last tag, but I haven't done that here as it would include my previous PR.
+Essentially I wanted to wait for the base branch of this to land first, as it
+touched a lot.  Rather than rebasing I've just left the original merge in
+place and sent a shortlog against master.
+
+I'm not sure why the diffstat shows so much more, though.  I manually checked
+the commits and my merge has the same commits yours does.  It's my first time
+trying this particular sort of merge (though the last one had a tag-based merge
+of the same sort, which IIUC shouldn't be any different) so hopefully it went
+OK.
+
+Christoph Hellwig (8):
+      uaccess: provide a generic TASK_SIZE_MAX definition
+      asm-generic: improve the nommu {get,put}_user handling
+      asm-generic: add nommu implementations of __{get,put}_kernel_nofault
+      asm-generic: make the set_fs implementation optional
+      riscv: use memcpy based uaccess for nommu again
+      riscv: refactor __get_user and __put_user
+      riscv: implement __get_kernel_nofault and __put_user_nofault
+      riscv: remove address space overrides using set_fs()
+
+Palmer Dabbelt (1):
+      Merge branch 'base.set_fs' of git://git.kernel.org/.../viro/vfs into for-next
+
+ arch/Kconfig                            |   3 +
+ arch/alpha/Kconfig                      |   1 +
+ arch/arc/Kconfig                        |   1 +
+ arch/arm/Kconfig                        |   1 +
+ arch/arm64/Kconfig                      |   1 +
+ arch/c6x/Kconfig                        |   1 +
+ arch/csky/Kconfig                       |   1 +
+ arch/h8300/Kconfig                      |   1 +
+ arch/hexagon/Kconfig                    |   1 +
+ arch/ia64/Kconfig                       |   1 +
+ arch/m68k/Kconfig                       |   1 +
+ arch/microblaze/Kconfig                 |   1 +
+ arch/mips/Kconfig                       |   1 +
+ arch/nds32/Kconfig                      |   1 +
+ arch/nios2/Kconfig                      |   1 +
+ arch/openrisc/Kconfig                   |   1 +
+ arch/parisc/Kconfig                     |   1 +
+ arch/powerpc/include/asm/processor.h    |   7 --
+ arch/powerpc/include/asm/thread_info.h  |   5 +-
+ arch/powerpc/include/asm/uaccess.h      |  67 ++++--------
+ arch/powerpc/kernel/signal.c            |   3 -
+ arch/powerpc/lib/sstep.c                |   6 +-
+ arch/riscv/Kconfig                      |   1 +
+ arch/riscv/include/asm/thread_info.h    |   6 --
+ arch/riscv/include/asm/uaccess.h        | 177 ++++++++++++++++----------------
+ arch/riscv/kernel/process.c             |   1 -
+ arch/riscv/lib/Makefile                 |   2 +-
+ arch/s390/Kconfig                       |   1 +
+ arch/sh/Kconfig                         |   1 +
+ arch/sparc/Kconfig                      |   1 +
+ arch/um/Kconfig                         |   1 +
+ arch/x86/ia32/ia32_aout.c               |   1 -
+ arch/x86/include/asm/page_32_types.h    |  11 ++
+ arch/x86/include/asm/page_64_types.h    |  38 +++++++
+ arch/x86/include/asm/processor.h        |  60 +----------
+ arch/x86/include/asm/thread_info.h      |   2 -
+ arch/x86/include/asm/uaccess.h          |  26 +----
+ arch/x86/kernel/asm-offsets.c           |   3 -
+ arch/x86/lib/getuser.S                  |  47 ++++-----
+ arch/x86/lib/putuser.S                  |  25 ++---
+ arch/xtensa/Kconfig                     |   1 +
+ drivers/misc/lkdtm/bugs.c               |  10 --
+ drivers/misc/lkdtm/core.c               |   2 -
+ drivers/misc/lkdtm/lkdtm.h              |   2 -
+ drivers/misc/lkdtm/usercopy.c           |  15 ---
+ fs/proc/inode.c                         | 119 ++++++++++++++-------
+ fs/proc/proc_sysctl.c                   |  48 ++++-----
+ fs/read_write.c                         |  69 ++++++++-----
+ fs/splice.c                             | 130 +++--------------------
+ include/asm-generic/uaccess.h           | 109 ++++++++++++--------
+ include/linux/bpf-cgroup.h              |   2 +-
+ include/linux/fs.h                      |   2 -
+ include/linux/proc_fs.h                 |   1 +
+ include/linux/uaccess.h                 |  22 ++++
+ kernel/bpf/cgroup.c                     |   2 +-
+ lib/test_bitmap.c                       |  91 ++++------------
+ tools/testing/selftests/lkdtm/tests.txt |   2 -
+ 57 files changed, 509 insertions(+), 629 deletions(-)
