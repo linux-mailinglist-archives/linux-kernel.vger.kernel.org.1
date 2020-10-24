@@ -2,279 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90AB1297AE6
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:24:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id AD4CA297AE9
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:26:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759575AbgJXFX7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:23:59 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55002 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1752873AbgJXFX7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:23:59 -0400
-Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1A70C0613CE;
-        Fri, 23 Oct 2020 22:23:58 -0700 (PDT)
-Received: by mail-pj1-x1042.google.com with SMTP id c17so344339pjo.5;
-        Fri, 23 Oct 2020 22:23:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IRCTFLxnKQ3FPr8M9KF2s2918UZVWOkYh+ykqRS7IC8=;
-        b=gdwOMut2p1pDRPPYhKTUmDnE7ySPIU7AZA/B8IoIMY03gGP2UbrLCHxc/jio9G3vn3
-         D4+H0QXF6o7PQQc8lShXEBOIO4eauP7ObDU0aRfWMcBNgJZ5m7fPeKtiYDxtfQgjBuJL
-         1lIM7nDi3GIdBmDfBN0Az3kZ+AdyG7GGs/CRE1eB6+vTzTG3ea8nG2Zfv/dYzxSZCFeU
-         Nbf9MYKtfSIFbMEeUvO/U3Jr6obRJFdZcfHghw1eaz8Q9e1y2UCDMOvSQUNOnKWZJp7y
-         udHZSKhaUfTos0frHx96uPSgWejxVJaMXZmmiRhKyGLXLDiaM8A04sg33YD387fXFs7v
-         7wrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IRCTFLxnKQ3FPr8M9KF2s2918UZVWOkYh+ykqRS7IC8=;
-        b=LV+6D2QDcclfmjue6pV2bweWbI2KSM+MGje23/IOZiHuHu9QE2PRScgUNkBZdINZgA
-         dA3rX3ks8XTSLFhrtsfcAqNP/pecs8QDaaerc1AHl6sNdTDWxdLglZTAuNtOqjmx0ANP
-         OLxG931QgHoYFMV+HTi3EGY/krANTjTo5XgAUl3Z0aIg3dspVpwxwJML/PAQPnsh2swS
-         xbjXqBNWuJCm0gNUJavjWRFCEAg31x32B5uR0jLvut4SfyJOzYJSGV9EaUhUdDSFwpwS
-         HB1i0Ri05zIS/dgUCqeG/NV0mna4susNK09mSeJBsTZTmxSdTO/Zw6i/o07FsEhw5GlM
-         b7ag==
-X-Gm-Message-State: AOAM530nDjpnZ8NVxpWD8ZEp9x/QRJfk7mkx0NQZDSxo6G0cP4+vOSQm
-        AUC9N9oDiR7IMuZbfNuRy6RCWv0mziqM62lj
-X-Google-Smtp-Source: ABdhPJy89fRYqOs1olXn9jsRFF9ut58I9WltmtEJObxNLDMrDIz0woJO2qDWi9vX2eviuL3a6VyAFQ==
-X-Received: by 2002:a17:902:7102:b029:d3:ef48:e51e with SMTP id a2-20020a1709027102b02900d3ef48e51emr2158617pll.72.1603517038007;
-        Fri, 23 Oct 2020 22:23:58 -0700 (PDT)
-Received: from [192.168.86.81] ([106.51.242.32])
-        by smtp.gmail.com with ESMTPSA id z23sm3515874pgf.12.2020.10.23.22.23.52
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 23 Oct 2020 22:23:57 -0700 (PDT)
-Subject: Re: [PATCH v2 1/2] kunit: Support for Parameterized Testing
-To:     Marco Elver <elver@google.com>
-Cc:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        yzaikin@google.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-References: <20201023150536.282568-1-98.arpi@gmail.com>
- <20201023184803.GA3922681@elver.google.com>
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-Message-ID: <91906d36-1f5b-b388-42a7-881b0915f0ea@gmail.com>
-Date:   Sat, 24 Oct 2020 10:53:51 +0530
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1759597AbgJXF0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:26:07 -0400
+Received: from mout.gmx.net ([212.227.17.21]:41379 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1759587AbgJXF0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 01:26:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603517118;
+        bh=b3ZhFExOM/Mi+jTGQq/8sj0hlfcBhjmxWLijxZQ6gmI=;
+        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
+        b=bVJoE23/yS3qF93ysErE3rRfSbkzM+/bZza5CS8f+HoeAnG5fPbSRYKrOJ4Qc7o5S
+         J0SutYwo1wc5lBdSQt9uEOaRIgW4KUUhPzleimJ/v+vLqcSnoDeVVUswYvboJe2MiR
+         rdHk79eYKRSQukWxbfmgKKLtA9anjAg2YzXOy6Ec=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from homer.simpson.net ([185.221.151.75]) by mail.gmx.com (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N9Mtg-1kJyg53NB6-015Fiy; Sat, 24
+ Oct 2020 07:25:17 +0200
+Message-ID: <08aa64d8e07b8b7d4509a0b3233d0c46ce7609c0.camel@gmx.de>
+Subject: Re: kvm+nouveau induced lockdep  gripe
+From:   Mike Galbraith <efault@gmx.de>
+To:     Hillf Danton <hdanton@sina.com>
+Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-rt-users <linux-rt-users@vger.kernel.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Skeggs <bskeggs@redhat.com>
+Date:   Sat, 24 Oct 2020 07:25:16 +0200
+In-Reply-To: <20201024050000.8104-1-hdanton@sina.com>
+References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
+         <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
+         <20201023090108.5lunh4vqfpkllmap@linutronix.de>
+         <20201024022236.19608-1-hdanton@sina.com>
+         <20201024050000.8104-1-hdanton@sina.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+User-Agent: Evolution 3.34.4 
 MIME-Version: 1.0
-In-Reply-To: <20201023184803.GA3922681@elver.google.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:RC4oGzib7N1JfCTG7d08sLQGw5Qu6NK+FnY6BWAQSPMnd5X+V3k
+ YBxePLrmZUCzcLEXbm5bu1I9esZOLfZ7y9KUJ62C796GeGeKwnea5dltWVSbvx+xCOAQ1pJ
+ Zei6S0HSoF1zsXNZn4jD4ZCFVGa4F0ubF3bt35iF0ysUnHNciI2jXuYKlcyYFGK1hr6MBYY
+ hxO1J5Atz0YbPnBEwESyA==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:zQzq8qQSGaw=:uOCtBOoUFo7t5yzM55RQUY
+ fdeMhq4Jwcd6GjuU56ZS5/en05cfnG5ePJD+KrH4r1kVxYS71s+7w7oVqkVjIdBoCGs2/OXid
+ urLayNfi4q8S54ZsqZhO8FAb42iMjjylatsBclr151I5Bpu4D58PDPrarKRbzwd3Xg78XAnFe
+ lzNx2dUK6tI6UeHBrxvBBbGZzVAJPiGZj/2aPm4aBnmkVoY3dop2PRt5prAfjeUS1z23/dWxz
+ ZzLEZZv2RwjuNbK18tM5jm+Ni7ghyFQWU/FD2WiKv7mM/u4Xc/5WKEzXKa/8QGJIFYcw+J3al
+ XzDYsq3x5q5lsePvNIcDRbOfEvG5/UpCuBYPuzkYtGQhrR3vqwUTY36PT6CjKWxGzvtgFLNT7
+ IcSRU8PJNgM6yKZYPdkR/97D6rYtCkfAH1oMSwP9CyDeN5Lm50MGpXT9skKTgJkitzosXxgaO
+ aWA82igzENay4s/Um3HEsNjCLII6TTxsYUEsMnmBA3N/eV0ZQ1sd208Ubx1PVEGDPHlEW2fnf
+ NMyrePkIDXuEuHDYYSWFv6j/LnR9rC/SMoO+5iQhwiEDo5w9iD5PZfyKfo7SRaKjS7n860gi8
+ dpJFnQHVgB/3OUIyD4TmniT5o5k2kgABNbi2n++3q0ao9vNSPzXeEWq1MiWa9a8YbVA92Qvpj
+ TVjlGHbFA8wR72fHwJssXLwSFXe31eP5mgXKTcXAQKO/VcmseSV/r/dvVWoM3xM8EKHtfeOpQ
+ ucEu3cwd/VGvkGQoLlDnAaJeICwk9HSSY7lbW3Ey71QQDBxBh1mKy6NAKl6ofYzXFPo093zPU
+ 1aeuBOGBO64GDfN7Jm9IGsa9QvOKE5ZrMgfqBHKssRgEcH2Ng5+jRIylThWqefb8Jrsbpkk3g
+ Kx/HUqOnIsmP99dwwFYQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/20 12:18 am, Marco Elver wrote:
-> On Fri, Oct 23, 2020 at 08:35PM +0530, Arpitha Raghunandan wrote:
->> Implementation of support for parameterized testing in KUnit.
-> 
-> Already looks much cleaner, thanks for using this approach!
-> 
-> I think the commit message needs a brief summary of the approach.
-> 
+On Sat, 2020-10-24 at 13:00 +0800, Hillf Danton wrote:
+> On Sat, 24 Oct 2020 05:38:23 +0200 Mike Galbraith wrote:
+> > On Sat, 2020-10-24 at 10:22 +0800, Hillf Danton wrote:
+> > >
+> > > Looks like we can break the lock chain by moving ttm bo's release
+> > > method out of mmap_lock, see diff below.
+> >
+> > Ah, the perfect compliment to morning java, a patchlet to wedge in and
+> > see what happens.
+> >
+> > wedge/build/boot <schlurp... ahhh>
+> >
+> > Mmm, box says no banana... a lot.
+>
+> Hmm...curious how that word went into your mind. And when?
 
-Okay, I will add a more detailed commit message for the next version.
+There's a colloquial expression "close, but no cigar", and a variant
+"close, but no banana".  The intended communication being "not quite".
 
->> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
->> ---
->> Changes v1->v2:
->> - Use of a generator method to access test case parameters
->>
->>  include/kunit/test.h | 45 ++++++++++++++++++++++++++++++++++++++++++++
->>  lib/kunit/test.c     | 20 +++++++++++++++++++-
->>  2 files changed, 64 insertions(+), 1 deletion(-)
->>
->> diff --git a/include/kunit/test.h b/include/kunit/test.h
->> index a423fffefea0..c417ac140326 100644
->> --- a/include/kunit/test.h
->> +++ b/include/kunit/test.h
->> @@ -141,6 +141,7 @@ struct kunit;
->>  struct kunit_case {
->>  	void (*run_case)(struct kunit *test);
->>  	const char *name;
->> +	void* (*generate_params)(struct kunit *test, void *prev);
-> 
-> Would adding documentation above this field be the right place, or
-> somewhere else? In any case, some explanation of the protocol would be
-> good.
-> 
+	-Mike
 
-I will include this.
-
->>  	/* private: internal use only. */
->>  	bool success;
->> @@ -162,6 +163,9 @@ static inline char *kunit_status_to_string(bool status)
->>   * &struct kunit_case for an example on how to use it.
->>   */
->>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
->> +#define KUNIT_CASE_PARAM(test_name, gen_params)			\
->> +		{ .run_case = test_name, .name = #test_name,	\
->> +		  .generate_params = gen_params }
->>  
->>  /**
->>   * struct kunit_suite - describes a related collection of &struct kunit_case
->> @@ -208,6 +212,15 @@ struct kunit {
->>  	const char *name; /* Read only after initialization! */
->>  	char *log; /* Points at case log after initialization */
->>  	struct kunit_try_catch try_catch;
->> +	/* param_values points to test case parameters in parameterized tests */
->> +	void *param_values;
->> +	/*
->> +	 * current_param stores the index of the parameter in
->> +	 * the array of parameters in parameterized tests.
->> +	 * current_param + 1 is printed to indicate the parameter
->> +	 * that causes the test to fail in case of test failure.
->> +	 */
->> +	int current_param;
->>  	/*
->>  	 * success starts as true, and may only be set to false during a
->>  	 * test case; thus, it is safe to update this across multiple
->> @@ -1742,4 +1755,36 @@ do {									       \
->>  						fmt,			       \
->>  						##__VA_ARGS__)
->>  
->> +/**
->> + * kunit_param_generator_helper() - Helper method for test parameter generators
->> + * 				    required in parameterized tests.
->> + * @test: The test context object.
->> + * @prev_param: a pointer to the previous test parameter, NULL for first parameter.
->> + * @param_array: a user-supplied pointer to an array of test parameters.
->> + * @array_size: number of test parameters in the array.
->> + * @type_size: size of one test parameter.
->> + */
->> +static inline void *kunit_param_generator_helper(struct kunit *test,
-> 
-> I don't think this needs to be inline, but see my other suggestion
-> below, which might make this function obsolete.
-> 
->> +					void *prev_param,
->> +					void *param_array,
->> +					size_t array_size,
->> +					size_t type_size)
->> +{
->> +	KUNIT_ASSERT_EQ(test, (prev_param - param_array) % type_size, 0);
->> +
->> +	if (!prev_param)
->> +		return param_array;
->> +
->> +	KUNIT_ASSERT_GE(test, prev_param, param_array);
->> +
->> +	if (prev_param + type_size < param_array + (array_size * type_size))
->> +		return prev_param + type_size;
->> +	else
->> +		return NULL;
->> +}
->> +
->> +#define KUNIT_PARAM_GENERATOR_HELPER(test, prev_param, param_array, param_type) \
->> +	kunit_param_generator_helper(test, prev_param, param_array,		\
->> +				ARRAY_SIZE(param_array), sizeof(param_type))
-> 
-> You do not need param_type, you can use the same trick that ARRAY_SIZE
-> uses:
-> 
-> 	#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-> 
-> So you could use sizeof((param_aray)[0]) instead of sizeof(param_type).
-> ARRAY_SIZE already checks for you that it's a real array via
-> __must_be_array().
-> 
-> 
-> The other question is, will kunit_param_generator_helper() find much use
-> without the KUNIT_PARAM_GENERATOR_HELPER() macro? If I have some
-> complicated generator protocol to generate params, then I'd just
-> directly write the generator function. If your intent is to simplify the
-> common-case array based generators, why not just have a macro generate
-> the generator function?
-> 
-> More specifically, have this macro here:
-> 
-> +#define KUNIT_ARRAY_PARAM(name, array)								\
-> +	static void *name##_gen_params(struct kunit *test, void *prev)				\
-> +	{											\
-> +		typeof((array)[0]) *__next = prev ? ((typeof(__next)) prev) + 1 : (array);	\
-> +		return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;			\
-> +	}
-> 
-> [ It is entirely untested, but if it works verbatim you'll probably need my
-> 
-> 	Co-developed-by: Marco Elver <elver@google.com>
-> 	Signed-off-by: Marco Elver <elver@google.com>
->  
->  just in case... ]
-> 
-> Then, it can be used as follows:
-> 
-> 	static int num_cpus[] = {1, 2, 3, 4, 5};
-> 	KUNIT_ARRAY_PARAM(num_cpus, num_cpus);
-> 
-> Then somewhere else:
-> 
-> 	KUNIT_CASE_PARAM(some_test, num_cpus_gen_params);
-> 
-
-Yes, a macro can be used to generate the generator function. I will work with this
-for the next version.
-
->>  #endif /* _KUNIT_TEST_H */
->> diff --git a/lib/kunit/test.c b/lib/kunit/test.c
->> index 750704abe89a..0e6ffe6384a7 100644
->> --- a/lib/kunit/test.c
->> +++ b/lib/kunit/test.c
->> @@ -127,6 +127,11 @@ unsigned int kunit_test_case_num(struct kunit_suite *suite,
->>  }
->>  EXPORT_SYMBOL_GPL(kunit_test_case_num);
->>  
->> +static void kunit_print_failed_param(struct kunit *test)
->> +{
->> +	kunit_err(test, "\n\tTest failed at parameter: %d\n", test->current_param + 1);
->> +}
->> +
->>  static void kunit_print_string_stream(struct kunit *test,
->>  				      struct string_stream *stream)
->>  {
->> @@ -168,6 +173,8 @@ static void kunit_fail(struct kunit *test, struct kunit_assert *assert)
->>  	assert->format(assert, stream);
->>  
->>  	kunit_print_string_stream(test, stream);
->> +	if (test->param_values)
->> +		kunit_print_failed_param(test);
->>  
->>  	WARN_ON(string_stream_destroy(stream));
->>  }
->> @@ -239,7 +246,18 @@ static void kunit_run_case_internal(struct kunit *test,
->>  		}
->>  	}
->>  
->> -	test_case->run_case(test);
->> +	if (!test_case->generate_params) {
->> +		test_case->run_case(test);
->> +	} else {
->> +		test->param_values = test_case->generate_params(test, NULL);
->> +		test->current_param = 0;
->> +
->> +		while (test->param_values) {
->> +			test_case->run_case(test);
->> +			test->param_values = test_case->generate_params(test, test->param_values);
->> +			test->current_param++;
->> +		}
->> +	}
->>  }
->>  
->>  static void kunit_case_internal_cleanup(struct kunit *test)
-> 
-> Otherwise looks fine.
-> 
-> Thanks,
-> -- Marco
-> 
-
-Thanks!
