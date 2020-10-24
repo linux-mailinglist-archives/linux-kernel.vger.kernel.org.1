@@ -2,130 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6DE4E297A64
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:53:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 55F4E297A65
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:59:46 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759180AbgJXCvn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 22:51:43 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:60058 "EHLO
+        id S1759194AbgJXC7Z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 22:59:25 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:33022 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759143AbgJXCvm (ORCPT
+        with ESMTP id S1759162AbgJXC7Z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 22:51:42 -0400
+        Fri, 23 Oct 2020 22:59:25 -0400
 Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CFD45C0613D2
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id l18so2751665pgg.0
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 748E1C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:59:25 -0700 (PDT)
+Received: by mail-pg1-x543.google.com with SMTP id l18so2758380pgg.0
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:59:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
-        b=KV9CaDvJWjMnPRerYDVMgQAXXWpZHin64zb+D/uzzh1jn14cp0unh77C/PFSi1YRzK
-         RZfD1gMNw3MWr1O3MZFrAq4q3G7PSiATA+70iI9uAQA2HKgtdZPU5ZKeEhN0FxWII7A1
-         PAl5jVvc7Gf5OQwDzQpiXkqTFQP3OLcIftsxw=
+        d=gmail.com; s=20161025;
+        h=sender:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=Qk/Q24uKS39WZNcG5ZV9esraD5KJhyJ79A9IAxWqPQE=;
+        b=NLcqQNW4WYC8MjUEfwTo4NVcLjlEralTmj3C1BOn/roojvEOdQtSShKL8Hyfw4HEAz
+         UpRO3964oMBXE2Q7bVcWpAEYoNjbCzC3Vyd8jBY7sYqyorZfENICBgojgdMvrlULLx8P
+         2ruUkKX4vpZL3B/2bF0YCoo8z9kGK/d4s7tobxwZt2C1gu7Y2vb/iJYmqUfTHmpoz1LI
+         SvVmRh1mtj4l380FAL7rv/0U/L2/RZ6d1F90nKwOeGVc8KbpV6NgHJXd345r4kC8fl2B
+         9vn85WoBVDFfGI4zZ30LcywBlGK+d+CX9+gcP+9jl4WPe2idO92AEhDfRgCWHuKTnVam
+         pvVQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=exQNVvRWJFpZVay5bCbuF8Chc+K90S79cyDW4pCR96s=;
-        b=FaKJXLM2ToSDEbS2onjKolLb4ztP+f0Jzmbitp82bXqzZDmjOiJAvcae/kq/rIo9Nz
-         lpTOt90TCmE5dxKTDtF/wESSTJOaJgsHddobFmTQfGJZaYeWL8DwvCk6j4xf3VQEXxRN
-         ifvayLwSBDDQzC/k/c73jiO3laKLp24K05I4rBxAcWZCqn6fcrGyp2/1Jspb8I4+p+1b
-         2I3IVsq+9by3xZxt4i1I/77mlKFA/WEfmfouBcoOwDMPfXNLnglp9m7KiRIDMasFPFZG
-         UUFFOzPwW0MdJT6RvUxzhYA3vo7MyFmP+nKp8xwQ2fAHgkvPrxapJBkIP8vmEbAJwPsc
-         DFLg==
-X-Gm-Message-State: AOAM533H96a8mL42+AJKC9Aih67xjMtOKd4PPTaksCd3xoqw38EHyPit
-        9gT/kHoHyJzV2eLydf8i+SNLiQ==
-X-Google-Smtp-Source: ABdhPJzyHxgz6MKrJyx7Q6S+HFMiDqjWeZc2uxi66QjlrB6Ze3vMN0w5ckv5WraSwYbQvKBy86p7Rg==
-X-Received: by 2002:a63:f84c:: with SMTP id v12mr4442172pgj.125.1603507902217;
-        Fri, 23 Oct 2020 19:51:42 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id s20sm3363159pfu.112.2020.10.23.19.51.40
+        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
+         :mime-version:content-transfer-encoding;
+        bh=Qk/Q24uKS39WZNcG5ZV9esraD5KJhyJ79A9IAxWqPQE=;
+        b=O8ZTqJsUHG40g86wvbad9aDDEo+trpwE5ILuCHhQJs7N/n1IOIu7jnqcHz4n267wyo
+         Fbt5il91LjoukAPZkw0JlbFgI5FOyKWk18qSNk34FcL0wGDal5x0Hcf8VRFvU0gNEwZu
+         h/Z+2q8uv8AKXcYkrq7dnxS17pXsQt6mTjEy08DDAqLRJ0CyKiGZl4D+IxIVjVvqAeIP
+         4k7Iop5+7ieaLiXPtfFG66MswX3rFLVyn4aTZqEj4jzyRp5yAaGDTqMUN6ccJ6mAu4ia
+         ibwELwR3mS/Qd6nkE9VGgRfs14nj80U+8sM4n9ORU+h0WwSc5CpjdvEpUWjN7aSrojXk
+         jn8g==
+X-Gm-Message-State: AOAM530UmIjk6gemDD+p+c2COAuBs3Fvxf6uU8xNRg4+GZCbVi+vI0Sv
+        f141TqiFxx1icFOn1QS54TU=
+X-Google-Smtp-Source: ABdhPJxLFuyjQvMoF6L5mBwYfM7zAM6Aut7TEkDM9wdE1heza97KOxNUZ0r+yHZB5kdLPXjGZyTwZA==
+X-Received: by 2002:a63:d442:: with SMTP id i2mr4460485pgj.181.1603508364822;
+        Fri, 23 Oct 2020 19:59:24 -0700 (PDT)
+Received: from balhae.roam.corp.google.com ([112.159.19.5])
+        by smtp.gmail.com with ESMTPSA id s10sm4038235pji.7.2020.10.23.19.59.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 23 Oct 2020 19:51:41 -0700 (PDT)
-Date:   Fri, 23 Oct 2020 19:51:40 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     YiFei Zhu <zhuyifei1999@gmail.com>
-Cc:     Linux Containers <containers@lists.linux-foundation.org>,
-        YiFei Zhu <yifeifz2@illinois.edu>, bpf <bpf@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andy Lutomirski <luto@amacapital.net>,
-        David Laight <David.Laight@aculab.com>,
-        Dimitrios Skarlatos <dskarlat@cs.cmu.edu>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Hubertus Franke <frankeh@us.ibm.com>,
-        Jack Chen <jianyan2@illinois.edu>,
-        Jann Horn <jannh@google.com>,
-        Josep Torrellas <torrella@illinois.edu>,
-        Tianyin Xu <tyxu@illinois.edu>,
-        Tobin Feldman-Fitzthum <tobin@ibm.com>,
-        Tycho Andersen <tycho@tycho.pizza>,
-        Valentin Rothberg <vrothber@redhat.com>,
-        Will Drewry <wad@chromium.org>
-Subject: Re: [PATCH v4 seccomp 5/5] seccomp/cache: Report cache data through
- /proc/pid/seccomp_cache
-Message-ID: <202010231945.90FA4A4AA@keescook>
-References: <cover.1602263422.git.yifeifz2@illinois.edu>
- <c2077b8a86c6d82d611007d81ce81d32f718ec59.1602263422.git.yifeifz2@illinois.edu>
- <202010091613.B671C86@keescook>
- <CABqSeARZWBQrLkzd3ozF16ghkADQqcN4rUoJS2MKkd=73g4nVA@mail.gmail.com>
- <202010121556.1110776B83@keescook>
- <CABqSeAT2-vNVUrXSWiGp=cXCvz8LbOrTBo1GbSZP2Z+CKdegJA@mail.gmail.com>
- <CABqSeASc-3n_LXpYhb+PYkeAOsfSjih4qLMZ5t=q5yckv3w0nQ@mail.gmail.com>
- <202010221520.44C5A7833E@keescook>
- <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+        Fri, 23 Oct 2020 19:59:24 -0700 (PDT)
+Sender: Namhyung Kim <namhyung@gmail.com>
+From:   Namhyung Kim <namhyung@kernel.org>
+To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Jiri Olsa <jolsa@redhat.com>
+Cc:     Ingo Molnar <mingo@kernel.org>,
+        Peter Zijlstra <a.p.zijlstra@chello.nl>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Stephane Eranian <eranian@google.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Ian Rogers <irogers@google.com>
+Subject: [PATCH 1/2] perf test: Use generic event for expand_libpfm_events()
+Date:   Sat, 24 Oct 2020 11:59:17 +0900
+Message-Id: <20201024025918.453431-1-namhyung@kernel.org>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABqSeAT4L65_uS=45uxPZALKaDSDocMviMginLOV2N0h-e1AzA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 06:40:08PM -0500, YiFei Zhu wrote:
-> On Thu, Oct 22, 2020 at 5:32 PM Kees Cook <keescook@chromium.org> wrote:
-> > I've been going back and forth on this, and I think what I've settled
-> > on is I'd like to avoid new CONFIG dependencies just for this feature.
-> > Instead, how about we just fill in SECCOMP_NATIVE and SECCOMP_COMPAT
-> > for all the HAVE_ARCH_SECCOMP_FILTER architectures, and then the
-> > cache reporting can be cleanly tied to CONFIG_SECCOMP_FILTER? It
-> > should be relatively simple to extract those details and make
-> > SECCOMP_ARCH_{NATIVE,COMPAT}_NAME part of the per-arch enabling patches?
-> 
-> Hmm. So I could enable the cache logic to every architecture (one
-> patch per arch) that does not have the sparse syscall numbers, and
-> then have the proc reporting after the arch patches? I could do that.
-> I don't have test machines to run anything other than x86_64 or ia32,
-> so they will need a closer look by people more familiar with those
-> arches.
+I found that the UNHALTED_CORE_CYCLES event is only available in the
+Intel machines and it makes other vendors/archs fail on the test.  As
+libpfm4 can parse the generic events like cycles, let's use them.
 
-Cool, yes please. It looks like MIPS will need to be skipped for now. I
-would have the debug cache reporting patch then depend on
-!CONFIG_HAVE_SPARSE_SYSCALL_NR.
+Fixes: 40b74c30ffb9 ("perf test: Add expand cgroup event test")
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+---
+ tools/perf/tests/expand-cgroup.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> > I'd still like to get more specific workload performance numbers too.
-> > The microbenchmark is nice, but getting things like build times under
-> > docker's default seccomp filter, etc would be lovely. I've almost gotten
-> > there, but my benchmarks are still really noisy and CPU isolation
-> > continues to frustrate me. :)
-> 
-> Ok, let me know if I can help.
-
-Do you have a test environment where you can compare the before/after
-of repeated kernel build times (or some other sufficiently
-complex/interesting) workload under these conditions:
-
-bare metal
-docker w/ seccomp policy disabled
-docker w/ default seccomp policy
-
-This is what I've been trying to construct, but it's really noisy, so
-I've been trying to pin CPUs and NUMA memory nodes, but it's not really
-helping yet. :P
-
+diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
+index d5771e4d094f..4c59f3ae438f 100644
+--- a/tools/perf/tests/expand-cgroup.c
++++ b/tools/perf/tests/expand-cgroup.c
+@@ -145,7 +145,7 @@ static int expand_libpfm_events(void)
+ 	int ret;
+ 	struct evlist *evlist;
+ 	struct rblist metric_events;
+-	const char event_str[] = "UNHALTED_CORE_CYCLES";
++	const char event_str[] = "CYCLES";
+ 	struct option opt = {
+ 		.value = &evlist,
+ 	};
 -- 
-Kees Cook
+2.29.0.rc1.297.gfa9743e501-goog
+
