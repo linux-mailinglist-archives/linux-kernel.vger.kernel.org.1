@@ -2,81 +2,144 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A0FA2297A7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:12:20 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id CF395297A7E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:12:54 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759319AbgJXDMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 23:12:08 -0400
-Received: from mga06.intel.com ([134.134.136.31]:38867 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759309AbgJXDMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 23:12:07 -0400
-IronPort-SDR: D5OXP6KpamIb9aVNOSFKkZTTJQT7tLUkUDHFFUhlJuDOi3uzpsPSYjD3vlYiti0N+VOhBuitJp
- /2r60hwkENaA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9783"; a="229389569"
-X-IronPort-AV: E=Sophos;i="5.77,410,1596524400"; 
-   d="scan'208";a="229389569"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 20:11:59 -0700
-IronPort-SDR: bIZ2xj+aw96+Sk1yGTWgbb5Ogmaor9oKaSj9duSyedbvH1saqltNxrA9rOPpS3/YmqrJibpRFZ
- nKVX7ZkXQj6w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,410,1596524400"; 
-   d="scan'208";a="354637310"
-Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
-  by fmsmga002.fm.intel.com with ESMTP; 23 Oct 2020 20:11:59 -0700
-From:   Sean Christopherson <sean.j.christopherson@intel.com>
-To:     Paolo Bonzini <pbonzini@redhat.com>,
-        Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
-Subject: [PATCH] KVM: x86/mmu: Avoid modulo operator on 64-bit value to fix i386 build
-Date:   Fri, 23 Oct 2020 20:11:50 -0700
-Message-Id: <20201024031150.9318-1-sean.j.christopherson@intel.com>
-X-Mailer: git-send-email 2.28.0
+        id S1759330AbgJXDMq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 23:12:46 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:35090 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1759320AbgJXDMp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:12:45 -0400
+Received: from mail-pj1-x1042.google.com (mail-pj1-x1042.google.com [IPv6:2607:f8b0:4864:20::1042])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 48276C0613CE;
+        Fri, 23 Oct 2020 20:12:43 -0700 (PDT)
+Received: by mail-pj1-x1042.google.com with SMTP id l2so236237pjt.5;
+        Fri, 23 Oct 2020 20:12:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :content-transfer-encoding:mime-version;
+        bh=zTBRtgT7pbWlqs1vi69+HR0XTTRLAETUhmExxew5NDo=;
+        b=ZpZKjdJtSqcsG89NdJQp0+s02MLtTNI1vpHpSP7oKzdakHEcSKkvY7CcHhj5zms+jS
+         l9y4mKUj4WTaUKiYUlGX5SdYjTKc3Aq4oSzUSPj3rdneVz3SyraFboXN4SX8mgI5XLLh
+         OPf15zn6cf/vEf1/lhFTbatI8uncx9PzX6wvpWEagn8Eo/3TPAoLoeBfyL03cgwEAft8
+         Ungpe1hhZmMvlxUyPODGJMX+hnlgfCXCSOKsoq2U+AYQbrz4AW3VesOhTKYzBWSnZ7JK
+         hVkUTsJbcnS/1qPyjMgloBhCg/zYdep+btUB7LEtGjiXQh6mi1pwh+s1+zhw6tCnGyy0
+         JAvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
+         :date:message-id:references:in-reply-to:accept-language
+         :content-language:content-transfer-encoding:mime-version;
+        bh=zTBRtgT7pbWlqs1vi69+HR0XTTRLAETUhmExxew5NDo=;
+        b=h0NdEHSMPa8C39kL+8lG+TWvLiWu0Bx0KHDmgigpAQY1JIfakpNnuh0l4xsxeKqtf0
+         r3J/xHkeKlIDpOWpiNx/zFd6hNAdT3mYx9AWgv+JUOxebZArXM0ViIg+wcjL5iVDqFE8
+         le/W5W/dYfmwPUIMI7zWTCNn9/HF7oHozABXBtLMqtwSaeKdbbluc4Z8PAVUe3z1OZgJ
+         kHDTFxImthTxiQgl52ubOYP01VmKkSq1gPSBLHWKZm4dqDqnvFP/i+BIrASo2YNDnr/S
+         +Qoe/e2Ph8LeV8pw+FWI/a8KINiZfh5Y7hxPmMGn1JpRv7uX1zHbeQ/8V9GD+mdfYqnw
+         8c1A==
+X-Gm-Message-State: AOAM531gk+FA+gVpV3qFhfAkEGka7cPQIEfzpl56Z5bgES/dSe9y3Hhu
+        g4kBJwRMqWUGM058gIdPfOM=
+X-Google-Smtp-Source: ABdhPJzQmQEnxa9/l+9Lq4CzVsMG9+8m/ikAGTD954YrN3sd7D9wuPDi6xuu6zomPp9QihOAFq344g==
+X-Received: by 2002:a17:902:7c86:b029:d5:f680:f756 with SMTP id y6-20020a1709027c86b02900d5f680f756mr2165248pll.39.1603509162822;
+        Fri, 23 Oct 2020 20:12:42 -0700 (PDT)
+Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
+        by smtp.gmail.com with ESMTPSA id j12sm4204812pjs.21.2020.10.23.20.12.38
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 23 Oct 2020 20:12:41 -0700 (PDT)
+From:   Jingoo Han <jingoohan1@gmail.com>
+To:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        "linux-samsung-soc@vger.kernel.org" 
+        <linux-samsung-soc@vger.kernel.org>,
+        "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>
+CC:     "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Han Jingoo <jingoohan1@gmail.com>
+Subject: Re: [PATCH v2 5/6] pci: dwc: pci-exynos: rework the driver to support
+ Exynos5433 variant
+Thread-Topic: [PATCH v2 5/6] pci: dwc: pci-exynos: rework the driver to
+ support Exynos5433 variant
+Thread-Index: ATYzNHA3LqEW/SeHeSezfbTZ8+mXqGl5LTQyaXktNDK6VWtTUg==
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date:   Sat, 24 Oct 2020 03:12:35 +0000
+Message-ID: <SLXP216MB047790A7FD4D1E7304493343AA1B0@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+References: <20201023075744.26200-1-m.szyprowski@samsung.com>
+ <CGME20201023075756eucas1p18765653e747842eef4b438aff32ef136@eucas1p1.samsung.com>
+ <20201023075744.26200-6-m.szyprowski@samsung.com>
+In-Reply-To: <20201023075744.26200-6-m.szyprowski@samsung.com>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator: 
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Replace a modulo operator with the more common pattern for computing the
-gfn "offset" of a huge page to fix an i386 build error.
+On 10/23/20, 3:58 AM, Marek Szyprowski wrote:
+>=20
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+>
+> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
+> dts: exynos: Remove Exynos5440"). Rework this driver to support DWC PCIe
+> variant found in the Exynos5433 SoCs.
+>
+> The main difference in Exynos5433 variant is lack of the MSI support
+> (the MSI interrupt is not even routed to the CPU).
+>
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: reworked the driver to support only Exynos5433 variant,
+>	   simplified code, rebased onto current kernel code, added
+>	   regulator support, converted to the regular platform driver,
+>	   removed MSI related code, rewrote commit message]
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>  drivers/pci/controller/dwc/Kconfig      |   3 +-
+>  drivers/pci/controller/dwc/pci-exynos.c | 358 ++++++++++--------------
+>  drivers/pci/quirks.c                    |   1 +
+>  3 files changed, 145 insertions(+), 217 deletions(-)
 
-  arch/x86/kvm/mmu/tdp_mmu.c:212: undefined reference to `__umoddi3'
+[....]
 
-Fixes: 2f2fad0897cb ("kvm: x86/mmu: Add functions to handle changed TDP SPTEs")
-Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
-Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
----
+> diff --git a/drivers/pci/controller/dwc/pci-exynos.c b/drivers/pci/contro=
+ller/dwc/pci-exynos.c
+> index 242683cde04a..58056fbdc2fa 100644
+> --- a/drivers/pci/controller/dwc/pci-exynos.c
+> +++ b/drivers/pci/controller/dwc/pci-exynos.c
+> @@ -2,26 +2,23 @@
+>  /*
+>   * PCIe host controller driver for Samsung Exynos SoCs
+>   *
+> - * Copyright (C) 2013 Samsung Electronics Co., Ltd.
+> + * Copyright (C) 2013-2020 Samsung Electronics Co., Ltd.
+>   *		https://www.samsung.com
+>   *
+>   * Author: Jingoo Han <jg1.han@samsung.com>
+> + *	   Jaehoon Chung <jh80.chung@samsung.com>
 
-Linus, do you want to take this directly so that it's in rc1?  I don't
-know whether Paolo will be checking mail before then.
+Would you explain the reason why you add him as an author?
+If reasonable, I will accept it. Also, I want gentle discussion, not aggres=
+sive one.
+Thank you.
 
- arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Best regards,
+Jingoo Han
 
-diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
-index e246d71b8ea2..27e381c9da6c 100644
---- a/arch/x86/kvm/mmu/tdp_mmu.c
-+++ b/arch/x86/kvm/mmu/tdp_mmu.c
-@@ -209,7 +209,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
- 
- 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
- 	WARN_ON(level < PG_LEVEL_4K);
--	WARN_ON(gfn % KVM_PAGES_PER_HPAGE(level));
-+	WARN_ON(gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
- 
- 	/*
- 	 * If this warning were to trigger it would indicate that there was a
--- 
-2.28.0
+>   */
 
+[....]
