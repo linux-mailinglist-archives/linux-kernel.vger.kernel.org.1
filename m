@@ -2,123 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1EF7F297CBB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 16:10:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 2680E297CBD
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 16:11:11 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761910AbgJXOKC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 10:10:02 -0400
-Received: from mail-eopbgr130082.outbound.protection.outlook.com ([40.107.13.82]:11232
-        "EHLO EUR01-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1755692AbgJXOKB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 10:10:01 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=hEjoFvrzZhCE/APuqMf2hoTlYbsWyQesw74os7/8ecB3oSV+fdlZ/j7hhq3MKrWRZw/IrWHROLTQ1oAz8UjJgUc9McKmUOhLao8kBi4CZUhVOQ/qP0kBBSOkmIKKrkSl4JPjqRYaEnl5fQSmluXy4f32qZXIS1QsEaaizN4bQwEtaoJNBDlbkmSBx7W+QcS2jtPWrsBsgw/TlWxYIZgiR5Z/KIyIlEmq/dvyOkw3fjZO+5aLx0124Pd1pIiDaLo0QsPIo1uPMLR48tlct9sKfFOs3viX1PCCF98oA6aaJTTGyqoEXjx+wzoiQinTfb2Ry4JhpZs8bKLBJ+v+oqjbGg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=03NrHPKkKak8mZNn1IjOK324ODYG1N7kM0lWks7besE=;
- b=Ym+loN0Yzqd/umOCEpQAqwMBVoWJpXVfUTWyBDWZFIkhc0jx5a6tKTqNeTraMMo4el/mblo7BUQ2zvNfkM2l8ROFSbj1MPIwCMWzFN2DUGidm3UjyNrbk+5LW1HYzBgyL2GdAyvYpu5IRw6cdjC6Ui8wuLuxPJp+vrqXtOdlKjCIsfEXtmKTdnZlZrrBaN3V32suVtLa8ZmYBXcBCYYNFEhGIgs1nc9rZM0+2nJRZxiZV9LNDIBYzRRS5VR9NEOoD0lQTnyBenugHflpq1bRwgSj92KLMa8wHUZ3/r5lyA55kJFDBaBUD5wrB8aYlzGpzLZAIM3l8EOeoNouuZMDdQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=03NrHPKkKak8mZNn1IjOK324ODYG1N7kM0lWks7besE=;
- b=p9qqidoF+QvGMU/7dS0W6XqQBV+97Ayy7c6MtWAUs1TrcEFdt7IuF+RA8R21yLbO+fscK5QaPCdRZ5VzUpZoo+gBwGKAwVjvjQHdK7O/d64eKLuikP6TOeGdT2rkpGGv9EKPYUM5uQeXEaBAc7UF3WCqjpHb8aT11EVdOieNask=
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- (2603:10a6:803:16::14) by VI1PR04MB5885.eurprd04.prod.outlook.com
- (2603:10a6:803:e1::33) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Sat, 24 Oct
- 2020 14:09:54 +0000
-Received: from VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324]) by VI1PR0402MB3871.eurprd04.prod.outlook.com
- ([fe80::607d:cbc4:9191:b324%5]) with mapi id 15.20.3499.019; Sat, 24 Oct 2020
- 14:09:54 +0000
-From:   Ioana Ciornei <ioana.ciornei@nxp.com>
-To:     Andrew Lunn <andrew@lunn.ch>,
-        Heiner Kallweit <hkallweit1@gmail.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Jakub Kicinski <kuba@kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-CC:     Alexandru Ardelean <alexandru.ardelean@analog.com>,
-        Andre Edich <andre.edich@microchip.com>,
-        Antoine Tenart <atenart@kernel.org>,
-        Baruch Siach <baruch@tkos.co.il>,
-        Christophe Leroy <christophe.leroy@c-s.fr>,
-        Dan Murphy <dmurphy@ti.com>,
-        Divya Koppera <Divya.Koppera@microchip.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        Jerome Brunet <jbrunet@baylibre.com>,
-        Kavya Sree Kotagiri <kavyasree.kotagiri@microchip.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Marco Felsch <m.felsch@pengutronix.de>,
-        Marek Vasut <marex@denx.de>,
-        Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-        Mathias Kresin <dev@kresin.me>,
-        Maxim Kochetkov <fido_max@inbox.ru>,
-        Michael Walle <michael@walle.cc>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        Nisar Sayed <Nisar.Sayed@microchip.com>,
-        Oleksij Rempel <o.rempel@pengutronix.de>,
-        Philippe Schenker <philippe.schenker@toradex.com>,
-        Willy Liu <willy.liu@realtek.com>,
-        Yuiko Oshino <yuiko.oshino@microchip.com>
-Subject: Re: [RFC net-next 0/5] net: phy: add support for shared interrupts
-Thread-Topic: [RFC net-next 0/5] net: phy: add support for shared interrupts
-Thread-Index: AQHWqf897amgBiGDU0S3g6psdVpuFqmmyrGA
-Date:   Sat, 24 Oct 2020 14:09:54 +0000
-Message-ID: <20201024140953.rwmkc4ldpruz7cqn@skbuf>
-References: <20201024121412.10070-1-ioana.ciornei@nxp.com>
-In-Reply-To: <20201024121412.10070-1-ioana.ciornei@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-authentication-results: lunn.ch; dkim=none (message not signed)
- header.d=none;lunn.ch; dmarc=none action=none header.from=nxp.com;
-x-originating-ip: [188.26.174.215]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 04640639-0855-447a-20ea-08d878267b67
-x-ms-traffictypediagnostic: VI1PR04MB5885:
-x-microsoft-antispam-prvs: <VI1PR04MB588573A38041708CBF2BF33AE01B0@VI1PR04MB5885.eurprd04.prod.outlook.com>
-x-ms-oob-tlc-oobclassifiers: OLM:8273;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: U1+lNVjbjH1sdgfm7cMfpVzJJDmSxgi/QW5Vapgz4DZ+gD4D0B8kipg+NZhLMW0UhnSd2vrZf9YvifofYsTKIEqbtX7Jou+MDJP2SIlFBheWD9YTvUvJm9xec6p3PwKuaNyrHH05qo88/JYBWrcurcEbGDuHRBUX5NetqTxTt9dj0keQzkKcVTuw0IRMdvjPvPvU8nJP7rZKG5gHPogQYE6C6umCz6PGC79n0Oa7LUvP8Y/CAkRoaeJMHL3fYkJzciLoYcKNlozPUIqGvT+ZCIJJ52B0Ei3EoEP1L8wydhOr0Y1gYDJOWNhmtDgUMXyLzjliBwTd2EiikH6q4KxD8lk/qrGqJtB/NO692aE6Ia5lThZm5kGHgxUQH0cP4vEYaOArMdU47X0gitOBG0YiOA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR0402MB3871.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(136003)(39860400002)(376002)(396003)(366004)(346002)(91956017)(66556008)(2906002)(86362001)(44832011)(83380400001)(1076003)(4326008)(5660300002)(8676002)(76116006)(966005)(66946007)(478600001)(6486002)(4744005)(26005)(8936002)(64756008)(66476007)(54906003)(186003)(66446008)(71200400001)(110136005)(6506007)(6512007)(316002)(9686003)(7406005)(7416002)(33716001);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: iGD05MuiUf96lJ5BF4V0lETZS+YXlSHxzav/5EvpZ4eXNC6Rrs6qXhL1wxkcpNy+QtArrZuqWkenYRxNJZMAjdMHQtCwHwg7xZmCTZDFCPbAEZP3Dh+Xku9pi4TvVttSS4TaUN/q5QFR6CIQLePy8BOs8qyYk8nqjaW6RSIqdlfx6gJfcrpAQjqm2n1fKG1tEQeyOTyszjnEYC1YAN2m7zGPK301oMvggikyRIzVWlhU2RLNo2Bwk4D8AfNXge7E5iFXpMjrDOWax4vP8dxyXrkjNfC96mBwr0XGEq3EF3EeYK1X+33iUAWg7xreQDtKMNefAU7yDMAe5XFayaBdqAs/4bXif5b4b35r0f/eVQq9SwpzSa6kAqH2wL5eEDLEfO/rB8QUA6WDav/1aho+8O4SjowR/KDlRAmJrktrZvQj9U8X6AWhRTPlj3CvnOa5gZS8FvWjcyt8n+vclMMugmKkD4tB8FHkGGwRS8ndXZswSGIlOLRO+Y79KWFFWXNyzlRU3PQf41ubuHnKFrYWyP+PbijgPB+srtKNi9pxHAPDosbkuYzYEGvl/Car2/5I4v55hm+MVJIMCCmCLVGmZ8lBkZIIylL20O0Kz5AS9X9McRP+fjqZ8mii/POmYUiecy/vKRXN6IojprE43A0Fqg==
-x-ms-exchange-transport-forked: True
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <2EBD8EDA8BE49D489B6F4F6EEEA1FE8D@eurprd04.prod.outlook.com>
-Content-Transfer-Encoding: quoted-printable
+        id S1761917AbgJXOLD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 10:11:03 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50594 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1759742AbgJXOLC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 10:11:02 -0400
+Received: from mail-oi1-x241.google.com (mail-oi1-x241.google.com [IPv6:2607:f8b0:4864:20::241])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id D1700C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 07:11:02 -0700 (PDT)
+Received: by mail-oi1-x241.google.com with SMTP id s21so5685231oij.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 07:11:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to;
+        bh=qDTCfS+VEWVi3xEdbzSRaJW/rnaHPe1zxbojP+JjQRU=;
+        b=bYki6YPDJNM5BytpcWw1pOThSB2ZK4O7Ze7jjYjxjNQxa6dQIOVZIHDR1pZwfADptX
+         blB2+n02v7aTC9JNnBXLf+m4ibbyCaxyYEfKyIF1v5of6TG5RKe4f/klYjqzjY1E5Iwn
+         2dUdWcIkrHBql2LZtjOWm174MTGuEOA5gcDAIyO5y6k6odjT+iFXIT2US5SWlDAXa+dz
+         YaXd1hFFzF272BNY/Ta/xMvJqZbcdcrPgFvMBz8Lkkm1igJWANlorta8AN051CncrwMU
+         tWTl2iZZxBND4okFKAc54qqdElEsL5JdB4dVT0Z9q8dn4fmUmZ+W3nMSCC1368Mqh1zw
+         ChNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to;
+        bh=qDTCfS+VEWVi3xEdbzSRaJW/rnaHPe1zxbojP+JjQRU=;
+        b=Frsb+76QH6wS3flVRHedsRdxKzZekVEQdikQqf9hXyNWdJ4OEZvSIC5ibGZ1w2ZDro
+         gPbxqsFUhTSs1U4m4bAOtZgg736J5BwijBjAWb/+WaurQw5ksRxM+oN534RB6Z94lbXK
+         q9t9/kUEDfjSg6vo8Pjks0LsRlXJzvBlBHoNDV3D5ocS7BRw9l+tWUnjwxZST2t8RqmN
+         IVC2HYfo1TyB4S99y+zmDBbxBDAaGLrd1ClKGuAgD/KEkNwm1KRCng93KPF1VaeAqDrG
+         pPo9FJG6ms8DLaI3+eMkGh3LQCc1gKBDr6lN6e759kO9MrRq3OeiJlBz75VF0fZ+yChv
+         oUPQ==
+X-Gm-Message-State: AOAM532QsuTYSEdJP1VbsSSYRsMbzxTgSBU8Ekap1hL2wgV6rwcJMah6
+        u+cmqe6KDjfH1V935koYwFyiZwHk+2G/PZ3ZJtY=
+X-Google-Smtp-Source: ABdhPJw9j9Q+fJLvyPykmCNMe7Bt0Au8gY5ibCf86YCmyBj2bC7wS2EX8QQDwxuSwmesk/Ir/oDaopRbLWaB2vQLP/Q=
+X-Received: by 2002:aca:1105:: with SMTP id 5mr6325925oir.46.1603548662268;
+ Sat, 24 Oct 2020 07:11:02 -0700 (PDT)
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR0402MB3871.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 04640639-0855-447a-20ea-08d878267b67
-X-MS-Exchange-CrossTenant-originalarrivaltime: 24 Oct 2020 14:09:54.6322
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: gvQD8qLydsUAS5GsArwV3lKkPd4Z7OPfmIFgt4hPHfHN364eIKnc4DleKvE3N0NjQlou/DDhZqeQXHo/XqX8Ww==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5885
+Received: by 2002:a05:6830:145:0:0:0:0 with HTTP; Sat, 24 Oct 2020 07:11:01
+ -0700 (PDT)
+Reply-To: ccserviceorg93@gmail.com
+From:   Geogiakendy <togounionlomewesternoffice@gmail.com>
+Date:   Sat, 24 Oct 2020 16:11:01 +0200
+Message-ID: <CABY4=WDwZNRYvPJ81d7Wd3+G5+Qzd_hwB7HF-wBG+DjEYWW_TQ@mail.gmail.com>
+Subject: Re
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 03:14:07PM +0300, Ioana Ciornei wrote:
+Dear beneficiary,
 
-> This RFC just contains the patches for phylib and a single driver -
-> Atheros. The rest can be found on my Github branch here: TODO
-> They will be submitted as a multi-part series once the merge window
-> closes.
->=20
+I am happy to let you know that we have successfully concluded the
+deal two weeks ago. The total funds were successfully transferred to
+the new bank account in Venezuela.
 
-It seems that I forgot to add a link to the Github branch. Here it is:
+You are a good person and I appreciate your efforts and support during
+the transactions. I have decided to compensate you with the total
+amount of $800,000.00 USD.
 
-https://github.com/IoanaCiornei/linux/commits/phylib-shared-irq=
+I have deposited a total sum of$800,000.00 USD with the bank and I
+have instructed my account officer in the bank to send the money to
+you through ATM VISA CARD as soon as you contact her.Therefore you
+should contact my account officer Mrs. Roselyne Johnson and instruct
+her to send the $800,000.00 USD to you via ATM CARD.Contact Person:
+Mrs. Roselyne Johnson.
+
+E-Mail :(ccserviceorg93@gmail.com)
+
+Please note that I will move to Venezuela today through Emirate
+airline and I may not be able to communicate with you soon because I
+will be very busy in Venezuela.Remember to send your information to
+her as sated below for easy communication with her.
+
+a) Your Full Name ==========================
+b) Your home country =======================
+c) Your Home Address =========================
+d) Your phone number =========================
+
+Please you should manage the money. it is a token of my appreciation
+for your efforts and attempts to help me during the transaction. Also
+you should remember to invest your money in a good business as we
+discussed.
+
+Best regards.
+Mr.Phillips Umeh.
