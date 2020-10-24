@@ -2,120 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2F6B6297A12
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:41:04 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A5E70297A1A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:50:38 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1756936AbgJXAko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:40:44 -0400
-Received: from perceval.ideasonboard.com ([213.167.242.64]:41818 "EHLO
-        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756845AbgJXAko (ORCPT
+        id S1757085AbgJXArb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:47:31 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41180 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1757067AbgJXAra (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:40:44 -0400
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 899A9B26;
-        Sat, 24 Oct 2020 02:40:41 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1603500041;
-        bh=VS+PHa1Z7q4KnYHiQFEbziY0WQ7duYT8JngUrBH/cuk=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=uzQOPDdJ+M/aKp3bkYQe6/CAimSQuD3zp+YaCod/QHXMfjjpVPLz49BVDdHlUAtEW
-         w7/NfpctFSrSj7hoEBe00uG6OOHOS8Ctm40KLwyeq759KKP5CYKFx+wf6Wu8i+ctF4
-         fk2vsYOqQJPBdYhQAIgunrjR5q5bmLCb/Vk6KmYU=
-Date:   Sat, 24 Oct 2020 03:39:55 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Sakari Ailus <sakari.ailus@linux.intel.com>
-Cc:     Dan Scally <djrscally@gmail.com>,
-        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-        linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        sergey.senozhatsky@gmail.com, rostedt@goodmis.org,
-        pmladek@suse.com, mchehab@kernel.org, tian.shu.qiu@intel.com,
-        bingbu.cao@intel.com, yong.zhi@intel.com, rafael@kernel.org,
-        gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 7/9] ipu3-cio2: Check if pci_dev->dev's fwnode is
- a software_node in cio2_parse_firmware() and set
- FWNODE_GRAPH_DEVICE_DISABLED if so
-Message-ID: <20201024003955.GS5979@pendragon.ideasonboard.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-8-djrscally@gmail.com>
- <20201020091958.GC4077@smile.fi.intel.com>
- <20201020120615.GV13341@paasikivi.fi.intel.com>
- <32bbb4db-17d7-b9d1-950f-8f29d67539c3@gmail.com>
- <20201020224910.GB2703@paasikivi.fi.intel.com>
+        Fri, 23 Oct 2020 20:47:30 -0400
+Received: from mail-ej1-x643.google.com (mail-ej1-x643.google.com [IPv6:2a00:1450:4864:20::643])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9D074C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 17:47:30 -0700 (PDT)
+Received: by mail-ej1-x643.google.com with SMTP id s15so245100ejf.8
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 17:47:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9nGBhSaBuMaImbsbpDD696OYT/ES8t/q7g+4eLy+bu8=;
+        b=gOZhoV+6gGSXqS8XfN8jVsjRRRjofmjn+hpYzAmNvCrWy9I5g0qMUVR5e5R9NweGJ0
+         ABDDLfGOiOVsu/LmVAo2oaVNbi03304MCep7p0yUlBcH13Q6UhLDnjwymy4mLmiWZhls
+         3uHEGqYLM0eAJBn6cq3eglfA4U2IMp01rPZkI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=9nGBhSaBuMaImbsbpDD696OYT/ES8t/q7g+4eLy+bu8=;
+        b=n01t2JczsMdeWHJ8TjGwRzrcssIoKIKd43513c3dUkIVnqxxu8fYZeH9yJ1VvP2Gu+
+         PWuKG55r5SEZHtzVHp9hahK72dit249XOxNLWrOdMiXOMP/q7pnnlmlPjlaGYUxwdxmZ
+         wOMeVmtcDK3DOwcSXnAAp+eL5scztqxN+Rjicx0PSjtMfQlJKLmGzG03KCNLHniISP8E
+         BUy9JcDLGccINh5sNp73+GqIhSXi6ry1qWawB0QoFMqzOq4wWrAUXq4q9mD7NHS4/Nka
+         b1HCdDw78B2I55GzQM21KkaHul3zJd/gVQ/5cvfGhP1tr9wlkaL6Bsgmv3lHWBDJ04dw
+         FHgA==
+X-Gm-Message-State: AOAM531iMMxGEZYaU08RYU3UHP8Frwy3aZjLrRxgt/JTDjhnccg3GB5h
+        0kXaS7xRYSDfoFkMTcrmi5ZqCA==
+X-Google-Smtp-Source: ABdhPJwDurk4oHPdsox9A9z3dqzjWUY5yj8mDDqlIRq04fNZyTcZK1l9lEzo723x7M0+yR9UN4D2tg==
+X-Received: by 2002:a17:906:3bd7:: with SMTP id v23mr4829055ejf.100.1603500449274;
+        Fri, 23 Oct 2020 17:47:29 -0700 (PDT)
+Received: from prevas-ravi.prevas.se (5.186.115.188.cgn.fibianet.dk. [5.186.115.188])
+        by smtp.gmail.com with ESMTPSA id i14sm1527349ejp.2.2020.10.23.17.47.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 23 Oct 2020 17:47:28 -0700 (PDT)
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+To:     Alex Deucher <alexander.deucher@amd.com>,
+        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+        David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        kernel test robot <lkp@intel.com>,
+        amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/ttm: add __user annotation in radeon_ttm_vram_read
+Date:   Sat, 24 Oct 2020 02:47:06 +0200
+Message-Id: <20201024004706.24518-1-linux@rasmusvillemoes.dk>
+X-Mailer: git-send-email 2.23.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201020224910.GB2703@paasikivi.fi.intel.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Sakari
+Keep sparse happy by preserving the __user annotation when casting.
 
-On Wed, Oct 21, 2020 at 01:49:10AM +0300, Sakari Ailus wrote:
-> On Tue, Oct 20, 2020 at 08:56:07PM +0100, Dan Scally wrote:
-> > On 20/10/2020 13:06, Sakari Ailus wrote:
-> > > On Tue, Oct 20, 2020 at 12:19:58PM +0300, Andy Shevchenko wrote:
-> > >> On Mon, Oct 19, 2020 at 11:59:01PM +0100, Daniel Scally wrote:
-> > >>> fwnode_graph_get_endpoint_by_id() will optionally parse enabled devices
-> > >>> only; that status being determined through the .device_is_available() op
-> > >>> of the device's fwnode. As software_nodes don't have that operation and
-> > >>> adding it is meaningless, we instead need to check if the device's fwnode
-> > >>> is a software_node and if so pass the appropriate flag to disable that
-> > >>> check
-> > >> Period.
-> > >>
-> > >> I'm wondering if actually this can be hidden in fwnode_graph_get_endpoint_by_id().
-> > > The device availability test is actually there for a reason. Some firmware
-> > > implementations put all the potential devices in the tables and only one
-> > > (of some) of them are available.
-> > >
-> > > Could this be implemented so that if the node is a software node, then get
-> > > its parent and then see if that is available?
-> > >
-> > > I guess that could be implemented in software node ops. Any opinions?
-> > Actually when considering the cio2 device, it seems that
-> > set_secondary_fwnode() actually overwrites the _primary_, given
-> > fwnode_is_primary(dev->fwnode) returns false. So in at least some cases,
-> > this wouldn't work.
-> 
-> Ouch. I wonder when this happens --- have you checked what's the primary
-> there? I guess it might be if it's a PCI device without the corresponding
-> ACPI device node?
-> 
-> I remember you had an is_available implementation that just returned true
-> for software nodes in an early version of the set? I think it would still
-> be a lesser bad in this case.
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: Rasmus Villemoes <linux@rasmusvillemoes.dk>
+---
 
-How about the following ?
+kernel test robot has already started spamming me due to 9c5743dff. If
+I don't fix those warnings I'll keep getting those emails for
+months, so let me do the easy ones.
 
-diff --git a/drivers/base/property.c b/drivers/base/property.c
-index 81bd01ed4042..ea44ba846299 100644
---- a/drivers/base/property.c
-+++ b/drivers/base/property.c
-@@ -706,9 +706,14 @@ EXPORT_SYMBOL_GPL(fwnode_handle_put);
- /**
-  * fwnode_device_is_available - check if a device is available for use
-  * @fwnode: Pointer to the fwnode of the device.
-+ *
-+ * For fwnode node types that don't implement the .device_is_available()
-+ * operation, such as software nodes, this function returns true.
-  */
- bool fwnode_device_is_available(const struct fwnode_handle *fwnode)
- {
-+	if (!fwnode_has_op(fwnode, device_is_available))
-+		return true;
- 	return fwnode_call_bool_op(fwnode, device_is_available);
- }
- EXPORT_SYMBOL_GPL(fwnode_device_is_available);
 
+ drivers/gpu/drm/radeon/radeon_ttm.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/radeon/radeon_ttm.c b/drivers/gpu/drm/radeon/radeon_ttm.c
+index 36150b7f31a90aa1eece..ecfe88b0a35d8f317712 100644
+--- a/drivers/gpu/drm/radeon/radeon_ttm.c
++++ b/drivers/gpu/drm/radeon/radeon_ttm.c
+@@ -1005,7 +1005,7 @@ static ssize_t radeon_ttm_vram_read(struct file *f, char __user *buf,
+ 		value = RREG32(RADEON_MM_DATA);
+ 		spin_unlock_irqrestore(&rdev->mmio_idx_lock, flags);
+ 
+-		r = put_user(value, (uint32_t *)buf);
++		r = put_user(value, (uint32_t __user *)buf);
+ 		if (r)
+ 			return r;
+ 
 -- 
-Regards,
+2.23.0
 
-Laurent Pinchart
