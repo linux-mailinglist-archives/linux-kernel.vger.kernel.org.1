@@ -2,51 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BE60297E36
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 21:37:25 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A4A9297E39
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 21:47:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764110AbgJXThX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 15:37:23 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55386 "EHLO mail.kernel.org"
+        id S1764169AbgJXTqz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 15:46:55 -0400
+Received: from wtarreau.pck.nerim.net ([62.212.114.60]:45635 "EHLO 1wt.eu"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1764095AbgJXThW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 15:37:22 -0400
-Subject: Re: [GIT PULL] x86/seves fixes for v5.10-rc1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603568242;
-        bh=rss86u1NIcD3VynZsNFIkz0Dz3BQrqRkFl11N/hM2Tk=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=F3kxIyMEfrEIm0ZlPD0eo2yX81esYsU3hvv3mcHy7D0uz3EQSHvMLktELDpI8LOos
-         xshICQwN/vdcBsE0vDjgB2WzvEGSuGa6k58lHaYrMAriOyhW8Apn0QRf08GA6NRR6L
-         e/2nUEZVzYdNrRLjW0+DhbZQ3ciSYZbV9k9YvQWI=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201024092323.GA15609@zn.tnic>
-References: <20201024092323.GA15609@zn.tnic>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201024092323.GA15609@zn.tnic>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_seves_fixes_for_v5.10_rc1
-X-PR-Tracked-Commit-Id: b17a45b6e53f6613118b2e5cfc4a992cc50deb2c
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c51ae1247262d4b19451ded1107d9b1b69c57541
-Message-Id: <160356824214.4617.10689325527161580770.pr-tracker-bot@kernel.org>
-Date:   Sat, 24 Oct 2020 19:37:22 +0000
-To:     Borislav Petkov <bp@suse.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        x86-ml <x86@kernel.org>, lkml <linux-kernel@vger.kernel.org>
+        id S1763904AbgJXTqz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 15:46:55 -0400
+Received: (from willy@localhost)
+        by pcw.home.local (8.15.2/8.15.2/Submit) id 09OJkoLo013765;
+        Sat, 24 Oct 2020 21:46:50 +0200
+From:   Willy Tarreau <w@1wt.eu>
+Cc:     linux-kernel@vger.kernel.org, Willy Tarreau <w@1wt.eu>
+Subject: [PATCH v4 0/3] random32: make prandom_u32() less predictable
+Date:   Sat, 24 Oct 2020 21:46:18 +0200
+Message-Id: <20201024194621.13720-1-w@1wt.eu>
+X-Mailer: git-send-email 2.9.0
+To:     unlisted-recipients:; (no To-header on input)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sat, 24 Oct 2020 11:23:23 +0200:
+This is the cleanup of the latest series of prandom_u32 experimentations
+consisting in using SipHash instead of Tausworthe to produce the randoms
+used by the network stack. The changes to the files were kept minimal,
+and the controversial commit that used to take noise from the fast_pool
+(f227e3ec3b5c) was reverted. Instead, a dedicated "net_rand_noise" per_cpu
+variable is fed from various sources of activities (networking, scheduling)
+to perturb the SipHash state using fast, non-trivially predictable data,
+instead of keeping it fully deterministic. The goal is essentially to make
+any occasional memory leakage or brute-force attempt useless.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git tags/x86_seves_fixes_for_v5.10_rc1
+The resulting code was verified to be very slightly faster on x86_64 than
+what is was with the controversial commit above, though this remains barely
+above measurement noise. It was also tested on i386 and arm, and build-
+tested only on arm64.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c51ae1247262d4b19451ded1107d9b1b69c57541
+The whole discussion around this is archived here:
+  https://lore.kernel.org/netdev/20200808152628.GA27941@SDF.ORG/
 
-Thank you!
+The code is also available for you to pull at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/wtarreau/prandom.git tags/20201024-v4-5.10
+
+---
+v4:
+  - access noise using raw_cpu_read() instead of this_cpu_read()
+  - fixed build with CONFIG_RANDOM32_SELFTEST
+  - added a selftest for the prandom32 code
+   
+v3:
+  This v3 is a rebase on top of 5.9-final, and switches __this_cpu_read()
+  for this_cpu_read() to address a crash on i386+SMP+PREEMPT reported by
+  LKP. Nothing else was changed.
+
+George Spelvin (1):
+  random32: make prandom_u32() output unpredictable
+
+Willy Tarreau (2):
+  random32: add noise from network and scheduling activity
+  random32: add a selftest for the prandom32 code
+
+ drivers/char/random.c   |   1 -
+ include/linux/prandom.h |  55 ++++-
+ kernel/time/timer.c     |   9 +-
+ lib/random32.c          | 525 ++++++++++++++++++++++++++--------------
+ net/core/dev.c          |   4 +
+ 5 files changed, 404 insertions(+), 190 deletions(-)
 
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+2.28.0
+
