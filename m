@@ -2,114 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 104E8297A0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:33:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 5ED90297A0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:36:05 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1755857AbgJXAdc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:33:32 -0400
-Received: from foss.arm.com ([217.140.110.172]:60466 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1755607AbgJXAdb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:33:31 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3DDA7113E;
-        Fri, 23 Oct 2020 17:33:31 -0700 (PDT)
-Received: from [192.168.2.22] (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 8DA7B3F719;
-        Fri, 23 Oct 2020 17:33:29 -0700 (PDT)
-Subject: Re: [PATCH v3 19/20] perf arm_spe: Decode memory tagging properties
-To:     Leo Yan <leo.yan@linaro.org>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Wei Li <liwei391@huawei.com>,
-        James Clark <james.clark@arm.com>, Al Grant <Al.Grant@arm.com>,
-        Dave Martin <Dave.Martin@arm.com>, linux-kernel@vger.kernel.org
-References: <20201022145816.14069-1-leo.yan@linaro.org>
- <20201022145816.14069-20-leo.yan@linaro.org>
-From:   =?UTF-8?Q?Andr=c3=a9_Przywara?= <andre.przywara@arm.com>
-Organization: ARM Ltd.
-Message-ID: <e213f5f1-42a1-5155-433c-9617cb444a9e@arm.com>
-Date:   Sat, 24 Oct 2020 01:32:37 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        id S1756818AbgJXAfq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:35:46 -0400
+Received: from perceval.ideasonboard.com ([213.167.242.64]:41734 "EHLO
+        perceval.ideasonboard.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1756252AbgJXAfp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 20:35:45 -0400
+Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
+        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 2E79AA1C;
+        Sat, 24 Oct 2020 02:35:43 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+        s=mail; t=1603499743;
+        bh=NbyCUxAU6lhvIbqrP0bRYys1d2xfIqZWoMdhyQf020A=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=S0TgQHhJm22pfbwPg66Pg0OYRGGGxBckG6ALN9D4QdwskckmDf/m2vAqgR+FFJZll
+         LJoUK5auUzVJCp/Oo30i1+4ev9gDHNiib/kyD/w1gfV+B5NZrMD70OIJIS1O/LoDWU
+         6bb76mwRoPXfj/v3v17I39l71EGludnd6IPv/j3c=
+Date:   Sat, 24 Oct 2020 03:34:56 +0300
+From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To:     Daniel Scally <djrscally@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
+        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
+        laurent.pinchart+renesas@ideasonboard.com,
+        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
+        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
+        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
+        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
+        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
+        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
+        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
+        dan.carpenter@oracle.org
+Subject: Re: [RFC PATCH v3 6/9] ipu3-cio2: Rename ipu3-cio2.c to allow module
+ to be built from multiple sources files retaining ipu3-cio2 name
+Message-ID: <20201024003456.GR5979@pendragon.ideasonboard.com>
+References: <20201019225903.14276-1-djrscally@gmail.com>
+ <20201019225903.14276-7-djrscally@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <20201022145816.14069-20-leo.yan@linaro.org>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-GB
-Content-Transfer-Encoding: 7bit
+Content-Disposition: inline
+In-Reply-To: <20201019225903.14276-7-djrscally@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 22/10/2020 15:58, Leo Yan wrote:
+Hi Daniel,
 
-Hi,
+Thank you for the patch.
 
-> From: Andre Przywara <andre.przywara@arm.com>
+On Mon, Oct 19, 2020 at 11:59:00PM +0100, Daniel Scally wrote:
+> ipu3-cio2 driver needs extending with multiple files; rename the main
+> source file and specify the renamed file in Makefile to accommodate that.
 > 
-> When SPE records a physical address, it can additionally tag the event
-> with information from the Memory Tagging architecture extension.
-> 
-> Decode the two additional fields in the SPE event payload.
-> 
-> [leoy: Refined patch to use predefined macros]
-> 
-> Signed-off-by: Andre Przywara <andre.przywara@arm.com>
-> Signed-off-by: Leo Yan <leo.yan@linaro.org>
+> Signed-off-by: Daniel Scally <djrscally@gmail.com>
 > ---
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c | 6 +++++-
->  tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h | 2 ++
->  2 files changed, 7 insertions(+), 1 deletion(-)
+> Changes in v3:
+> 	- patch introduced
 > 
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> index c1a3b0afd1de..74ac12cbec69 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.c
-> @@ -432,6 +432,7 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
->  				 char *buf, size_t buf_len)
->  {
->  	int ns, el, idx = packet->index;
-> +	int ch, pat;
->  	u64 payload = packet->payload;
->  
->  	switch (idx) {
-> @@ -448,9 +449,12 @@ static int arm_spe_pkt_desc_addr(const struct arm_spe_pkt *packet,
->  					    "VA 0x%llx", payload);
->  	case SPE_ADDR_PKT_HDR_INDEX_DATA_PHYS:
->  		ns = !!SPE_ADDR_PKT_GET_NS(payload);
-> +		ch = !!SPE_ADDR_PKT_GET_CH(payload);
-> +		pat = SPE_ADDR_PKT_GET_PAT(payload);
->  		payload = SPE_ADDR_PKT_ADDR_GET_BYTES_0_6(payload);
->  		return arm_spe_pkt_snprintf(&buf, &buf_len,
-> -					    "PA 0x%llx ns=%d", payload, ns);
-> +					    "PA 0x%llx ns=%d ch=%d, pat=%x",
-> +					    payload, ns, ch, pat);
->  	default:
->  		return 0;
->  	}
-> diff --git a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> index 31dbb8c0fde3..d69af0d618ea 100644
-> --- a/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> +++ b/tools/perf/util/arm-spe-decoder/arm-spe-pkt-decoder.h
-> @@ -75,6 +75,8 @@ struct arm_spe_pkt {
->  
->  #define SPE_ADDR_PKT_GET_NS(v)			(((v) & BIT(63)) >> 63)
->  #define SPE_ADDR_PKT_GET_EL(v)			(((v) & GENMASK_ULL(62, 61)) >> 61)
-> +#define SPE_ADDR_PKT_GET_CH(v)			(((v) & BIT(62)) >> 62)
-
-You need BIT_ULL() here to make this work on 32-bit systems.
-
-Cheers,
-Andre
-
-> +#define SPE_ADDR_PKT_GET_PAT(v)			(((v) & GENMASK_ULL(59, 56)) >> 56)
->  
->  #define SPE_ADDR_PKT_EL0			0
->  #define SPE_ADDR_PKT_EL1			1
+>  drivers/media/pci/intel/ipu3/Makefile                          | 2 ++
+>  drivers/media/pci/intel/ipu3/{ipu3-cio2.c => ipu3-cio2-main.c} | 0
+>  2 files changed, 2 insertions(+)
+>  rename drivers/media/pci/intel/ipu3/{ipu3-cio2.c => ipu3-cio2-main.c} (100%)
 > 
+> diff --git a/drivers/media/pci/intel/ipu3/Makefile b/drivers/media/pci/intel/ipu3/Makefile
+> index 98ddd5bea..b4e3266d9 100644
+> --- a/drivers/media/pci/intel/ipu3/Makefile
+> +++ b/drivers/media/pci/intel/ipu3/Makefile
+> @@ -1,2 +1,4 @@
+>  # SPDX-License-Identifier: GPL-2.0-only
+>  obj-$(CONFIG_VIDEO_IPU3_CIO2) += ipu3-cio2.o
+> +
+> +ipu3-cio2-y += ipu3-cio2-main.o
+> \ No newline at end of file
 
+I would have sworn the usual naming for this kind of case was -drv.c,
+but it seems -main.c is more common (I've probably been mistaken by
+focussing quite a bit on drivers/gpu/drm/ in the past few years).
+-core.c wins over both though :-) Anyway, enough bikeshedding, with the
+newline fixed,
+
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+> diff --git a/drivers/media/pci/intel/ipu3/ipu3-cio2.c b/drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
+> similarity index 100%
+> rename from drivers/media/pci/intel/ipu3/ipu3-cio2.c
+> rename to drivers/media/pci/intel/ipu3/ipu3-cio2-main.c
+
+-- 
+Regards,
+
+Laurent Pinchart
