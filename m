@@ -2,113 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50271297C1F
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:34:37 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B2AD297C23
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:40:21 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761164AbgJXLec (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 07:34:32 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54952 "EHLO
+        id S1760035AbgJXLkQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 07:40:16 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:55824 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759684AbgJXLeb (ORCPT
+        with ESMTP id S1759759AbgJXLkQ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 07:34:31 -0400
-Received: from mail-lf1-x143.google.com (mail-lf1-x143.google.com [IPv6:2a00:1450:4864:20::143])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3BAE8C0613CE;
-        Sat, 24 Oct 2020 04:34:29 -0700 (PDT)
-Received: by mail-lf1-x143.google.com with SMTP id j30so5354689lfp.4;
-        Sat, 24 Oct 2020 04:34:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=IoKvQwjpmgnwDqwDMU0dzPR0LnLnshRSMNK/AI0kcxw=;
-        b=mqiOOs7TyvklH3y6Ood3stRdGCXNjS2vgVdrSrZQ2N5rvNmXE4ypAGwbOH+pu5ZkZU
-         cLFinzJ8s1Tc1dBlP3n6K9U1vTiiudbu4H1PwQEoeFI7WihRODKM6wJlcI16HoaXOosR
-         PQtOWyYZ5vxd3flAAaj+Fgat/sdOALkni45sy0aydIfRvlwxm3dwa0l5WDx3QP/dG3y6
-         pYy6zdGvNsP3Z9aeTINusM1N7KGKTk/bljhK8h8j6gQ8iHYyydmfoS0E2Io29bJlsvT5
-         ZfDv1jpttgUuhifKJENIVwPfjjhn0XCWIAk65JMYKL0UIJotL4bcojoT7g08pknvpe9X
-         BBhg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=IoKvQwjpmgnwDqwDMU0dzPR0LnLnshRSMNK/AI0kcxw=;
-        b=Do0myV1lQhGsRpBq6dZweldI5RIXrfMStYdTrqYeWSnK0RleWmurBZJiFA9oU8KTVe
-         ftSaceYAEfo3HuLfsJDj6KabDvDeyA+BQKZ/DWJhKm/RkWSj0ra8NGl0cwzrLUqHWNTZ
-         gIRtTidM5cNyP5y378VKGxT88ic6spVv31wffQOKow5jmlujSJhcoJqy+HQH5XKUyD/N
-         d1E23hN5uUtCnwhrd1Qnm8NWvh/HP22mzj+/LN61ROXcTE3ty/woLzR2DASAEnMQmbGe
-         ZrWy+MN4950xSrwWOThsapIcVvOGp6NuFrzoenQFLpx2ebGRjxD/J0NrBjat8NdReN8R
-         KO8A==
-X-Gm-Message-State: AOAM530uqtbfVPAFz7vADJc1mHuHby5U/PhkGUPcUq+JTedlXIucvnul
-        VYXdoC+hqjvSpPJiOP6nG03F/lvu8zY=
-X-Google-Smtp-Source: ABdhPJzwvsaTluGQK36qa7V3CiVSFtEKeTqt9O3nz3uBAt8xGRnoa/SVo39MAjPgTAB/taz96NuywQ==
-X-Received: by 2002:a19:2355:: with SMTP id j82mr1914155lfj.36.1603539267465;
-        Sat, 24 Oct 2020 04:34:27 -0700 (PDT)
-Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
-        by smtp.gmail.com with ESMTPSA id y24sm411089lfy.194.2020.10.24.04.34.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 24 Oct 2020 04:34:26 -0700 (PDT)
-Subject: Re: BTI interaction between seccomp filters in systemd and glibc
- mprotect calls, causing service failures
-To:     Salvatore Mesoraca <s.mesoraca16@gmail.com>
-Cc:     Kees Cook <keescook@chromium.org>,
-        Szabolcs Nagy <szabolcs.nagy@arm.com>,
-        Jeremy Linton <jeremy.linton@arm.com>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
-        systemd-devel@lists.freedesktop.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Mark Brown <broonie@kernel.org>,
-        Dave Martin <dave.martin@arm.com>,
-        Catalin Marinas <Catalin.Marinas@arm.com>,
-        Will Deacon <will.deacon@arm.com>,
-        Kernel Hardening <kernel-hardening@lists.openwall.com>,
-        linux-hardening@vger.kernel.org
-References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
- <20201022075447.GO3819@arm.com>
- <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
- <202010221256.A4F95FD11@keescook>
- <180cd894-d42d-2bdb-093c-b5360b0ecb1e@gmail.com>
- <CAJHCu1Jrtx=OVEiTVwPJg7CxRkV83tS=HsYeLoAGRf_tgYq_iQ@mail.gmail.com>
-From:   Topi Miettinen <toiwoton@gmail.com>
-Message-ID: <3cb894d4-049f-aa25-4450-d1df36a1b92e@gmail.com>
-Date:   Sat, 24 Oct 2020 14:34:06 +0300
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.12.0
+        Sat, 24 Oct 2020 07:40:16 -0400
+Received: from mail.kapsi.fi (mail.kapsi.fi [IPv6:2001:67c:1be8::25])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 79452C0613CE;
+        Sat, 24 Oct 2020 04:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=kapsi.fi;
+         s=20161220; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
+        Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
+        Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+        :Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+        List-Post:List-Owner:List-Archive;
+        bh=cEaW0P/Q37QkXw0l0MiflWs0S8KrBx1DeB/TsJB3hSI=; b=HCKITNGbekOeJfVv+ZqdunnAjy
+        yfjdmn6leqM5SwZMuM9XyI2TLh4la3rzvdcqIA2YwFsVvIxgW0K8mc5Jgl85qxDMQgfTI9Y110YVL
+        CVs6YDEYWT/utQgBD3NOJtrAv6mQL5YL8Rr7uMkanVXHEOM+etjCloc8zMM9+XI7SVSXejz9sodNM
+        QBqOGYCqerqfkyjoiFyBdf/hdHA/YOUM+laQ6aiSmSmS96gOO1pstWxIiZq7JhUFwwryv2NSN3Chy
+        RufnStj9HcWZCGlV2dPByL9cfpzUoWpZSzeX//C1V2CqH8sv5kOuoARHHOtydaRY8gZGa95T6fI5i
+        L1vHRkoA==;
+Received: from 83-245-197-237.elisa-laajakaista.fi ([83.245.197.237] helo=localhost)
+        by mail.kapsi.fi with esmtpsa (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.89)
+        (envelope-from <kernel.org@kernel.org>)
+        id 1kWHu1-0007fm-Bv; Sat, 24 Oct 2020 14:40:05 +0300
+Date:   Sat, 24 Oct 2020 14:40:04 +0300
+From:   Jarkko Sakkinen <kernel.org@kernel.org>
+To:     Jethro Beekman <jethro@fortanix.com>
+Cc:     Jarkko Sakkinen <jarkko.sakkinen@linux.intel.com>,
+        Dave Hansen <dave.hansen@intel.com>, x86@kernel.org,
+        linux-sgx@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Darren Kenny <darren.kenny@oracle.com>,
+        Andy Lutomirski <luto@kernel.org>, akpm@linux-foundation.org,
+        andriy.shevchenko@linux.intel.com, asapek@google.com, bp@alien8.de,
+        cedric.xing@intel.com, chenalexchen@google.com,
+        conradparker@google.com, cyhanish@google.com,
+        haitao.huang@intel.com, kai.huang@intel.com, kai.svahn@intel.com,
+        kmoy@google.com, ludloff@google.com, nhorman@redhat.com,
+        npmccallum@redhat.com, puiterwijk@redhat.com, rientjes@google.com,
+        sean.j.christopherson@intel.com, tglx@linutronix.de,
+        yaozhangx@google.com, mikko.ylinen@intel.com
+Subject: Re: [PATCH v39 15/24] x86/sgx: Add SGX_IOC_ENCLAVE_PROVISION
+Message-ID: <20201024114004.GB29427@kernel.org>
+References: <20201003045059.665934-1-jarkko.sakkinen@linux.intel.com>
+ <20201003045059.665934-16-jarkko.sakkinen@linux.intel.com>
+ <7bb4ff7b-0778-ad70-1fe0-6e1db284d45a@intel.com>
+ <20201023101736.GG168477@linux.intel.com>
+ <5dc74a43-d738-3711-6967-59d8264a5ee4@fortanix.com>
 MIME-Version: 1.0
-In-Reply-To: <CAJHCu1Jrtx=OVEiTVwPJg7CxRkV83tS=HsYeLoAGRf_tgYq_iQ@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <5dc74a43-d738-3711-6967-59d8264a5ee4@fortanix.com>
+X-SA-Exim-Connect-IP: 83.245.197.237
+X-SA-Exim-Mail-From: kernel.org@kernel.org
+X-SA-Exim-Scanned: No (on mail.kapsi.fi); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.10.2020 20.52, Salvatore Mesoraca wrote:
-> Hi,
+On Fri, Oct 23, 2020 at 04:23:55PM +0200, Jethro Beekman wrote:
+> On 2020-10-23 12:17, Jarkko Sakkinen wrote:
+> > On Tue, Oct 20, 2020 at 02:19:26PM -0700, Dave Hansen wrote:
+> >> On 10/2/20 9:50 PM, Jarkko Sakkinen wrote:
+> >>> + * Failure to explicitly request access to a restricted attribute will cause
+> >>> + * sgx_ioc_enclave_init() to fail.  Currently, the only restricted attribute
+> >>> + * is access to the PROVISION_KEY.
+> >>
+> >> Could we also justify why access is restricted, please?  Maybe:
+> >>
+> >> 	Access is restricted because PROVISION_KEY is burned uniquely
+> >> 	into each each processor, making it a perfect unique identifier
+> >> 	with privacy and fingerprinting implications.
+> >>
+> >> Are there any other reasons for doing it this way?
+> > 
+> > AFAIK, if I interperet the SDM correctl, PROVISION_KEY and
+> > PROVISION_SEALING_KEY also have random salt added, i.e. they change
+> > every boot cycle.
+> > 
+> > There is "RAND = yes" on those keys in Table 40-64 of Intel SDM volume
+> > 3D :-)
+> > 
 > 
-> On Thu, 22 Oct 2020 at 23:24, Topi Miettinen <toiwoton@gmail.com> wrote:
->> SARA looks interesting. What is missing is a prctl() to enable all W^X
->> protections irrevocably for the current process, then systemd could
->> enable it for services with MemoryDenyWriteExecute=yes.
-> 
-> SARA actually has a procattr[0] interface to do just that.
-> There is also a library[1] to help using it.
+> This is nonsense. The whole point of sealing keys is that they don't
+> change every boot. If did they they'd have no value over enclave
+> memory. RAND means that the KEYID field from the KEYREQUEST is
+> included in the derivation (as noted in the source row of the table
+> you looked at).
 
-That means that /proc has to be available and writable at that point, so 
-setting up procattrs has to be done before mount namespaces are set up. 
-In general, it would be nice for sandboxing facilities in kernel if 
-there would be a way to start enforcing restrictions only at next 
-execve(), like setexeccon() for SELinux and aa_change_onexec() for 
-AppArmor. Otherwise the exact order of setting up various sandboxing 
-options can be very tricky to arrange correctly, since each option may 
-have a subtle effect to the sandboxing features enabled later. In case 
-of SARA, the operations done between shuffling the mount namespace and 
-before execve() shouldn't be affected so it isn't important. Even if it 
-did (a new sandboxing feature in the future would need trampolines or 
-JIT code generation), maybe the procattr file could be opened early but 
-it could be written closer to execve().
+I just looked that the column name is RAND, the row is called "Provision
+key" and the cell has "Yes" in it.
 
--Topi
+> --
+> Jethro Beekman | Fortanix
+
+/Jarkko
