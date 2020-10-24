@@ -2,86 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9CA6D297C25
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:41:57 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 3730A297C26
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 13:42:08 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761174AbgJXLlw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 07:41:52 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56072 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1759799AbgJXLlw (ORCPT
+        id S1761183AbgJXLmE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 07:42:04 -0400
+Received: from smtprelay0024.hostedemail.com ([216.40.44.24]:47410 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1761176AbgJXLmE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 07:41:52 -0400
-Received: from mail-pg1-x529.google.com (mail-pg1-x529.google.com [IPv6:2607:f8b0:4864:20::529])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47DA2C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 04:41:52 -0700 (PDT)
-Received: by mail-pg1-x529.google.com with SMTP id o3so3201400pgr.11
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 04:41:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition
-         :user-agent;
-        bh=zDEIEjz6Osy2duw1QBXBYhv7Cd9Q+Aw1BVsmA9mXdS8=;
-        b=pJz4Lt6NvsjGVZPBT+E5G6u9r/WnUW2sNxbUQ3WY1clSmKk9sZmhI6RF4SNKEhM3Rq
-         k5deqwcBO4uqE0lFMBxoQvX2W5AwTtVwPtWoJXogF0SpkV5Gm0dQ39IaFD/JUFybntVf
-         QhjYRMuYm7wH1gEstvJd/gRjTuxHyjiGhm8+NODh7WWjVO+n2zH3UFpUB0tQM4iA/a0z
-         VWU+mPWFHGgaSnHIeiRwcQnRxPv6T3KR4d0pkovVPvOWKfVWJA9Fj/zV9Ufr+WzV2ciC
-         DDa/0KX8xE3nvRbQ5lj+NffZusxrRZw2Qn7LHKn8QsOi4BOq3gJvg6TwtYhPZwylkUBr
-         NAQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition:user-agent;
-        bh=zDEIEjz6Osy2duw1QBXBYhv7Cd9Q+Aw1BVsmA9mXdS8=;
-        b=VmAqBmQNasAMU950PtMbhkwh1GxuTDWS1N0OPT5APDgsiDPCAKytHPKVxnAngCikYu
-         kTYDrAiskcA8+x3KYoEusfJXJU7BrHAl1L2acsYCWorQ6oWwUdPLZN55bjqNxlpxuEZw
-         a6pf9tfTQnPXwcWN6FA0kiLRg8NTYbhqeGqUdzpx9yLEKP8f7UDmGpFanR3YummoKHxb
-         /I0ql5dfc3zhzSnVisn7b0Pwn57g2u3CnUyee4Qu3jQsMBMPazh/IO30yolJeLEq4xc5
-         DB8WdTn0wU9dKzdzV5vczAO2261+D8OOF8Y/39BFwAwmXPbrlQnAvNJPYcFfDxiYTpAk
-         NYBg==
-X-Gm-Message-State: AOAM533n2kw+CEkw+VPi3MPr9iNSCVPTtjjlL7W2XoF2u110R/OrgmUV
-        dvdQ4jB2yMkUkppe4Sbw5Sg3HDrgJE8=
-X-Google-Smtp-Source: ABdhPJyMIpfJCxGNi0UL3881WhqukwJ9WgZC70ZiXzfb9ZgC5SH//OAYBHaF5m1qXOXVurOCIOdyCA==
-X-Received: by 2002:a63:1d22:: with SMTP id d34mr5893496pgd.152.1603539711673;
-        Sat, 24 Oct 2020 04:41:51 -0700 (PDT)
-Received: from localhost (144.34.187.180.16clouds.com. [144.34.187.180])
-        by smtp.gmail.com with ESMTPSA id i24sm5321367pfd.7.2020.10.24.04.41.49
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Sat, 24 Oct 2020 04:41:51 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 11:41:44 +0000
-From:   Long Li <lonuxli.64@gmail.com>
-To:     akpm@linux-foundation.org
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v1] mm/migrate: fix comment spelling
-Message-ID: <20201024114144.GA20552@lilong>
+        Sat, 24 Oct 2020 07:42:04 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay08.hostedemail.com (Postfix) with ESMTP id 5FA87182CED5B;
+        Sat, 24 Oct 2020 11:42:03 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:334:355:368:369:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1538:1561:1593:1594:1711:1714:1730:1747:1777:1792:2393:2525:2561:2564:2682:2685:2828:2859:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3622:3866:3867:3870:3873:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4250:4321:4362:5007:7514:7903:7974:9025:10004:10400:11232:11658:11914:12043:12297:12555:12740:12760:12895:12986:13069:13095:13311:13357:13439:14181:14659:14721:21080:21325:21433:21627:21660:21811:30003:30054:30089:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: kiss23_3c0db5e27261
+X-Filterd-Recvd-Size: 1290
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf04.hostedemail.com (Postfix) with ESMTPA;
+        Sat, 24 Oct 2020 11:42:02 +0000 (UTC)
+Message-ID: <b9f92d932251a3fc6f22cafc36a9d1f0c6fede15.camel@perches.com>
+Subject: Re: [PATCH v5] checkpatch: fix false positives in REPEATED_WORD
+ warning
+From:   Joe Perches <joe@perches.com>
+To:     Aditya Srivastava <yashsri421@gmail.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com,
+        dwaipayanray1@gmail.com
+Date:   Sat, 24 Oct 2020 04:42:01 -0700
+In-Reply-To: <20201024102253.13614-1-yashsri421@gmail.com>
+References: <20201024102253.13614-1-yashsri421@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The word in the comment is misspelled, it should be "include".
+On Sat, 2020-10-24 at 15:52 +0530, Aditya Srivastava wrote:
+> Presence of hexadecimal address or symbol results in false warning
+> message by checkpatch.pl.
 
-Signed-off-by: Long Li <lonuxli.64@gmail.com>
----
- mm/migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Thanks Aditya, this looks OK to me.
+Andrew can you please pick up this patch on top of Dwaipayan's?
 
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 5ca5842df5db..d79640ab8aa1 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1694,7 +1694,7 @@ static int move_pages_and_store_status(struct mm_struct *mm, int node,
- 		 * Positive err means the number of failed
- 		 * pages to migrate.  Since we are going to
- 		 * abort and return the number of non-migrated
--		 * pages, so need to incude the rest of the
-+		 * pages, so need to include the rest of the
- 		 * nr_pages that have not been attempted as
- 		 * well.
- 		 */
--- 
-2.17.1
+1: https://lore.kernel.org/lkml/20201017162732.152351-1-dwaipayanray1@gmail.com/
+2: https://lore.kernel.org/lkml/20201024102253.13614-1-yashsri421@gmail.com/
+
 
