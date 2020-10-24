@@ -2,88 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD4CA297AE9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:26:11 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 352BB297AED
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 07:28:36 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759597AbgJXF0H (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 01:26:07 -0400
-Received: from mout.gmx.net ([212.227.17.21]:41379 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759587AbgJXF0H (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 01:26:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603517118;
-        bh=b3ZhFExOM/Mi+jTGQq/8sj0hlfcBhjmxWLijxZQ6gmI=;
-        h=X-UI-Sender-Class:Subject:From:To:Cc:Date:In-Reply-To:References;
-        b=bVJoE23/yS3qF93ysErE3rRfSbkzM+/bZza5CS8f+HoeAnG5fPbSRYKrOJ4Qc7o5S
-         J0SutYwo1wc5lBdSQt9uEOaRIgW4KUUhPzleimJ/v+vLqcSnoDeVVUswYvboJe2MiR
-         rdHk79eYKRSQukWxbfmgKKLtA9anjAg2YzXOy6Ec=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from homer.simpson.net ([185.221.151.75]) by mail.gmx.com (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1N9Mtg-1kJyg53NB6-015Fiy; Sat, 24
- Oct 2020 07:25:17 +0200
-Message-ID: <08aa64d8e07b8b7d4509a0b3233d0c46ce7609c0.camel@gmx.de>
-Subject: Re: kvm+nouveau induced lockdep  gripe
-From:   Mike Galbraith <efault@gmx.de>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Date:   Sat, 24 Oct 2020 07:25:16 +0200
-In-Reply-To: <20201024050000.8104-1-hdanton@sina.com>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
-         <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
-         <20201023090108.5lunh4vqfpkllmap@linutronix.de>
-         <20201024022236.19608-1-hdanton@sina.com>
-         <20201024050000.8104-1-hdanton@sina.com>
-Content-Type: text/plain; charset="ISO-8859-15"
-User-Agent: Evolution 3.34.4 
+        id S1759615AbgJXF2e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 01:28:34 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:25361 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1759606AbgJXF2c (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 01:28:32 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603517311;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=vd2I/f5RofY3x7C2jd1o0wXMsUuljuM8vhhKZ0yIIvg=;
+        b=XBR4TF2IcPZ6qeBlie5b+UVMA5dioYH4t796JEhrEPBwU3jLJTIDfILzY+NTMxCKwD27GR
+        lXtjw1n6eyoq1M+pzk7inwMn4pE/afcHkFiezujkHi752ezW41QPZXEHIl/JNvr0u5dKq9
+        n1dJDM0lgJdmuswioXdEsDOXEc3CIwY=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-545-uXiFPTrvMD60sm5BzdsBww-1; Sat, 24 Oct 2020 01:28:24 -0400
+X-MC-Unique: uXiFPTrvMD60sm5BzdsBww-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.phx2.redhat.com [10.5.11.14])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id C47C5804B81;
+        Sat, 24 Oct 2020 05:28:20 +0000 (UTC)
+Received: from mail (ovpn-116-241.rdu2.redhat.com [10.10.116.241])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id F09055D9D5;
+        Sat, 24 Oct 2020 05:28:16 +0000 (UTC)
+Date:   Sat, 24 Oct 2020 01:28:16 -0400
+From:   Andrea Arcangeli <aarcange@redhat.com>
+To:     Nick Kralevich <nnk@google.com>
+Cc:     Lokesh Gidra <lokeshgidra@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
+        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Eric Biggers <ebiggers@kernel.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-doc@vger.kernel.org, Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>,
+        Mike Rapoport <rppt@linux.vnet.ibm.com>,
+        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Nitin Gupta <nigupta@nvidia.com>,
+        Vlastimil Babka <vbabka@suse.cz>,
+        Iurii Zaikin <yzaikin@google.com>,
+        Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH v4 0/2] Control over userfaultfd kernel-fault handling
+Message-ID: <20201024052816.GD19707@redhat.com>
+References: <20200924065606.3351177-1-lokeshgidra@google.com>
+ <CA+EESO7kCqtJf+ApoOcceFT+NX8pBwGmOr0q0PVnJf9Dnkrp6A@mail.gmail.com>
+ <20201008040141.GA17076@redhat.com>
+ <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:RC4oGzib7N1JfCTG7d08sLQGw5Qu6NK+FnY6BWAQSPMnd5X+V3k
- YBxePLrmZUCzcLEXbm5bu1I9esZOLfZ7y9KUJ62C796GeGeKwnea5dltWVSbvx+xCOAQ1pJ
- Zei6S0HSoF1zsXNZn4jD4ZCFVGa4F0ubF3bt35iF0ysUnHNciI2jXuYKlcyYFGK1hr6MBYY
- hxO1J5Atz0YbPnBEwESyA==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:zQzq8qQSGaw=:uOCtBOoUFo7t5yzM55RQUY
- fdeMhq4Jwcd6GjuU56ZS5/en05cfnG5ePJD+KrH4r1kVxYS71s+7w7oVqkVjIdBoCGs2/OXid
- urLayNfi4q8S54ZsqZhO8FAb42iMjjylatsBclr151I5Bpu4D58PDPrarKRbzwd3Xg78XAnFe
- lzNx2dUK6tI6UeHBrxvBBbGZzVAJPiGZj/2aPm4aBnmkVoY3dop2PRt5prAfjeUS1z23/dWxz
- ZzLEZZv2RwjuNbK18tM5jm+Ni7ghyFQWU/FD2WiKv7mM/u4Xc/5WKEzXKa/8QGJIFYcw+J3al
- XzDYsq3x5q5lsePvNIcDRbOfEvG5/UpCuBYPuzkYtGQhrR3vqwUTY36PT6CjKWxGzvtgFLNT7
- IcSRU8PJNgM6yKZYPdkR/97D6rYtCkfAH1oMSwP9CyDeN5Lm50MGpXT9skKTgJkitzosXxgaO
- aWA82igzENay4s/Um3HEsNjCLII6TTxsYUEsMnmBA3N/eV0ZQ1sd208Ubx1PVEGDPHlEW2fnf
- NMyrePkIDXuEuHDYYSWFv6j/LnR9rC/SMoO+5iQhwiEDo5w9iD5PZfyKfo7SRaKjS7n860gi8
- dpJFnQHVgB/3OUIyD4TmniT5o5k2kgABNbi2n++3q0ao9vNSPzXeEWq1MiWa9a8YbVA92Qvpj
- TVjlGHbFA8wR72fHwJssXLwSFXe31eP5mgXKTcXAQKO/VcmseSV/r/dvVWoM3xM8EKHtfeOpQ
- ucEu3cwd/VGvkGQoLlDnAaJeICwk9HSSY7lbW3Ey71QQDBxBh1mKy6NAKl6ofYzXFPo093zPU
- 1aeuBOGBO64GDfN7Jm9IGsa9QvOKE5ZrMgfqBHKssRgEcH2Ng5+jRIylThWqefb8Jrsbpkk3g
- Kx/HUqOnIsmP99dwwFYQ==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAFJ0LnGoD9NaKhbsohdXo5zt5nyMOX=g1aMRX0b0W1zBSNaSBg@mail.gmail.com>
+User-Agent: Mutt/1.14.7 (2020-08-29)
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.14
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 2020-10-24 at 13:00 +0800, Hillf Danton wrote:
-> On Sat, 24 Oct 2020 05:38:23 +0200 Mike Galbraith wrote:
-> > On Sat, 2020-10-24 at 10:22 +0800, Hillf Danton wrote:
-> > >
-> > > Looks like we can break the lock chain by moving ttm bo's release
-> > > method out of mmap_lock, see diff below.
-> >
-> > Ah, the perfect compliment to morning java, a patchlet to wedge in and
-> > see what happens.
-> >
-> > wedge/build/boot <schlurp... ahhh>
-> >
-> > Mmm, box says no banana... a lot.
->
-> Hmm...curious how that word went into your mind. And when?
+Hello,
 
-There's a colloquial expression "close, but no cigar", and a variant
-"close, but no banana".  The intended communication being "not quite".
+On Thu, Oct 08, 2020 at 04:22:36PM -0700, Nick Kralevich wrote:
+> I haven't tried to verify this myself. I wonder if the usermode
+> hardening changes also impacted this exploit? See
+> https://lkml.org/lkml/2017/1/16/468
 
-	-Mike
+My plan was to:
+
+1) reproduce with the old buggy kernel
+
+2) forward port the bug to the very first version that had both the
+   slub and page freelist randomization available and keep them
+   disabled
+
+3) enable the freelist randomization features (which are already
+   enabled by default in the current enterprise kernels) and see if
+   that makes the attack not workable
+
+The hardening of the usermode helper you mentioned is spot on, but it
+would have been something to worry about and possibly roll back at
+point 2), but I couldn't get past point 1)..
+
+Plenty other hardening techniques (just like the usermode helper) are
+very specific to a single attack, but the randomization looks generic
+enough to cover the entire class.
+
+> But again, focusing on an exploit, which is inherently fragile in
+> nature and dependent on the state of the kernel tree at a particular
+> time, is unlikely to be useful to analyze this patch.
+
+Agreed. A single exploit using userfaultfd to enlarge the race window
+of the use-after-free, not being workable anymore with randomized slub
+and page freelist enabled, wouldn't have meant a thing by itself.
+
+As opposed if that single exploit was still fairly reproducible, it
+would have been enough to consider the sysctl default to zero as
+something providing a more tangible long term benefit. That would have
+been good information to have too, if that's actually the case.
+
+I was merely attempting to get a first data point.. overall it would
+be nice to initiate some research to verify the exact statistical
+effects that slub/page randomization has on those use-after-free race
+conditions that can be enlarged by blocking kernel faults, given we're
+already paying the price for it. I don't think anybody has a sure
+answer at this point, if we can entirely rely on those features or not.
+
+> Seccomp causes more problems than just performance. Seccomp is not
+> designed for whole-of-system protections. Please see my other writeup
+> at https://lore.kernel.org/lkml/CAFJ0LnEo-7YUvgOhb4pHteuiUW+wPfzqbwXUCGAA35ZMx11A-w@mail.gmail.com/
+
+Whole-of-system protection I guess helps primarily because it requires
+no change to userland I guess.
+
+An example of a task not running as root (and without ptrace
+capability) that could use more seccomp blocking:
+
+# cat /proc/1517/cmdline ; echo ; grep CapEff /proc/1517/status; grep Seccomp /proc/1517/status
+/vendor/bin/hw/qcrild
+CapEff: 0000001000003000
+Seccomp:        0
+
+My view is that if the various binaries started by init.rc are run
+without a strict seccomp filter there would be more things to worry
+about, than kernel initiated userfaults for those.
+
+Still the solution in the v5 patchset looks the safest for all until
+we'll be able to tell if the slub/page randomizaton (or any other
+generic enough robustness feature) is already effective against an
+enlarged race window of kernel initiated userfaults and at the same
+time it provides the main benefit of avoiding divergence in the
+behavior of the userfaultfd syscall if invoked within the Android
+userland.
+
+Thanks,
+Andrea
 
