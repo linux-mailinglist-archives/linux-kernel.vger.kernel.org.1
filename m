@@ -2,75 +2,47 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1D54A297EAB
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 23:12:26 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id E135E297EB7
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 23:22:42 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1764584AbgJXVMT convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sat, 24 Oct 2020 17:12:19 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:31936 "EHLO
+        id S1764620AbgJXVWZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 17:22:25 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:30515 "EHLO
         eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1764561AbgJXVMQ (ORCPT
+        by vger.kernel.org with ESMTP id S1764298AbgJXVWZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 17:12:16 -0400
+        Sat, 24 Oct 2020 17:22:25 -0400
 Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
  TLS) by relay.mimecast.com with ESMTP id
- uk-mtapsc-3-gvyTKESiOkaAGmzuPOOVdg-1; Sat, 24 Oct 2020 22:12:12 +0100
-X-MC-Unique: gvyTKESiOkaAGmzuPOOVdg-1
+ uk-mta-188-shKdvF7EPDC_vaSvWm_dYQ-1; Sat, 24 Oct 2020 22:22:20 +0100
+X-MC-Unique: shKdvF7EPDC_vaSvWm_dYQ-1
 Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
  AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sat, 24 Oct 2020 22:12:11 +0100
+ Server (TLS) id 15.0.1347.2; Sat, 24 Oct 2020 22:22:20 +0100
 Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
  AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sat, 24 Oct 2020 22:12:11 +0100
+ Sat, 24 Oct 2020 22:22:20 +0100
 From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Segher Boessenkool' <segher@kernel.crashing.org>
-CC:     Al Viro <viro@zeniv.linux.org.uk>,
-        David Hildenbrand <david@redhat.com>,
-        "linux-aio@kvack.org" <linux-aio@kvack.org>,
-        "linux-mips@vger.kernel.org" <linux-mips@vger.kernel.org>,
-        David Howells <dhowells@redhat.com>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        Christoph Hellwig <hch@lst.de>,
-        "linux-arch@vger.kernel.org" <linux-arch@vger.kernel.org>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-        "io-uring@vger.kernel.org" <io-uring@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        Jens Axboe <axboe@kernel.dk>,
-        "linux-parisc@vger.kernel.org" <linux-parisc@vger.kernel.org>,
-        'Greg KH' <gregkh@linuxfoundation.org>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "linux-security-module@vger.kernel.org" 
-        <linux-security-module@vger.kernel.org>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>
-Subject: RE: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Topic: Buggy commit tracked to: "Re: [PATCH 2/9] iov_iter: move
- rw_copy_check_uvector() into lib/iov_iter.c"
-Thread-Index: AQHWqE5GNDfnH4y9nkGWtfqJueR1KKmjTCJQgAAN4UiAAAD2IIAASOeCgAF+12CAAGD4RoAAL/BggAFBVoCAAE2bsA==
-Date:   Sat, 24 Oct 2020 21:12:11 +0000
-Message-ID: <7c642593ca08469f8c00c0de10a09540@AcuMS.aculab.com>
-References: <20201022104805.GA1503673@kroah.com>
- <20201022121849.GA1664412@kroah.com>
- <98d9df88-b7ef-fdfb-7d90-2fa7a9d7bab5@redhat.com>
- <20201022125759.GA1685526@kroah.com> <20201022135036.GA1787470@kroah.com>
- <134f162d711d466ebbd88906fae35b33@AcuMS.aculab.com>
- <935f7168-c2f5-dd14-7124-412b284693a2@redhat.com>
- <20201023175857.GA3576660@ZenIV.linux.org.uk>
- <20201023182713.GG2672@gate.crashing.org>
- <e9a3136ead214186877804aabde74b38@AcuMS.aculab.com>
- <20201024172903.GK2672@gate.crashing.org>
-In-Reply-To: <20201024172903.GK2672@gate.crashing.org>
+To:     'Arnd Bergmann' <arnd@kernel.org>,
+        harshal chaudhari <harshalchau04@gmail.com>
+CC:     Greg KH <gregkh@linuxfoundation.org>,
+        Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] char: ppdev: check if ioctl argument is present and valid
+Thread-Topic: [PATCH] char: ppdev: check if ioctl argument is present and
+ valid
+Thread-Index: AQHWoT91EN0LvzjofE2muVvqxptK+6mVYKwQgBHSmAmAACBxgA==
+Date:   Sat, 24 Oct 2020 21:22:20 +0000
+Message-ID: <4b1b1656d0be452a80f2f81f98e79e24@AcuMS.aculab.com>
+References: <20201008182713.2764-1-harshalchau04@gmail.com>
+ <20201009045734.GA112189@kroah.com>
+ <CADVatmONWsfsj4-WKhNAcXjKXbUrgyD6UpK+ML6TNpqtp8be9A@mail.gmail.com>
+ <CADVatmOf18xUEvjWFzenut=KsHtoEZ5OSZF1oCqFJsbkx_Mb9g@mail.gmail.com>
+ <CAFEvwukbxCY4wffd_1jLo+vjfXfBC4sFDpJ1vY4wfT+=yFA--w@mail.gmail.com>
+ <0eb6f48d05624c8abaf00ae1bd4d88a9@AcuMS.aculab.com>
+ <CAFEvwu=76mPtXSEgpwSoRC0rC0tkU5BiEx1X5O2VwVSPJ7m4Rw@mail.gmail.com>
+ <CAK8P3a0y5MjP7AXOpmqc7xpGFCSvTGWHPT_eev5OpJJGVcRVdA@mail.gmail.com>
+In-Reply-To: <CAK8P3a0y5MjP7AXOpmqc7xpGFCSvTGWHPT_eev5OpJJGVcRVdA@mail.gmail.com>
 Accept-Language: en-GB, en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
@@ -83,71 +55,49 @@ X-Mimecast-Spam-Score: 0
 X-Mimecast-Originator: aculab.com
 Content-Language: en-US
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Segher Boessenkool
-> Sent: 24 October 2020 18:29
-> 
-> On Fri, Oct 23, 2020 at 09:28:59PM +0000, David Laight wrote:
-> > From: Segher Boessenkool
-> > > Sent: 23 October 2020 19:27
-> > > On Fri, Oct 23, 2020 at 06:58:57PM +0100, Al Viro wrote:
-> > > > On Fri, Oct 23, 2020 at 03:09:30PM +0200, David Hildenbrand wrote:
-> > > > On arm64 when callee expects a 32bit argument, the caller is *not* responsible
-> > > > for clearing the upper half of 64bit register used to pass the value - it only
-> > > > needs to store the actual value into the lower half.  The callee must consider
-> > > > the contents of the upper half of that register as undefined.  See AAPCS64 (e.g.
-> > > > https://github.com/ARM-software/abi-aa/blob/master/aapcs64/aapcs64.rst#parameter-passing-rules
-> > > > ); AFAICS, the relevant bit is
-> > > > 	"Unlike in the 32-bit AAPCS, named integral values must be narrowed by
-> > > > the callee rather than the caller."
-> > >
-> > > Or the formal rule:
-> > >
-> > > C.9 	If the argument is an Integral or Pointer Type, the size of the
-> > > 	argument is less than or equal to 8 bytes and the NGRN is less
-> > > 	than 8, the argument is copied to the least significant bits in
-> > > 	x[NGRN]. The NGRN is incremented by one. The argument has now
-> > > 	been allocated.
-> >
-> > So, in essence, if the value is in a 64bit register the calling
-> > code is independent of the actual type of the formal parameter.
-> > Clearly a value might need explicit widening.
-> 
-> No, this says that if you pass a 32-bit integer in a 64-bit register,
-> then the top 32 bits of that register hold an undefined value.
-
-That's sort of what I meant.
-The 'normal' junk in the hight bits will there because the variable
-in the calling code is wider.
-
-> > I've found a copy of the 64 bit arm instruction set.
-> > Unfortunately it is alpha sorted and repetitive so shows none
-> > of the symmetry and makes things difficult to find.
-> 
-> All of this is ABI, not ISA.  Look at the AAPCS64 pointed to above.
-> 
-> > But, contrary to what someone suggested most register writes
-> > (eg from arithmetic) seem to zero/extend the high bits.
-> 
-> Everything that writes a "w" does, yes.  But that has nothing to do with
-> the parameter passing rules, that is ABI.  It just means that very often
-> a 32-bit integer will be passed zero-extended in a 64-bit register, but
-> that is just luck (or not, it makes finding bugs harder ;-) )
-
-Working out why the code is wrong is more of an ISA issue than an ABI one.
-It may be an ABI one, but the analysis is ISA.
-
-I've written a lot of asm over the years - decoding compiler generated
-asm isn't that hard.
-At least ARM doesn't have annulled delay slots.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+RnJvbTogQXJuZCBCZXJnbWFubg0KPiBTZW50OiAyNCBPY3RvYmVyIDIwMjAgMjA6MjENCj4gVG86
+IGhhcnNoYWwgY2hhdWRoYXJpIDxoYXJzaGFsY2hhdTA0QGdtYWlsLmNvbT4NCj4gQ2M6IERhdmlk
+IExhaWdodCA8RGF2aWQuTGFpZ2h0QEFDVUxBQi5DT00+OyBHcmVnIEtIIDxncmVna2hAbGludXhm
+b3VuZGF0aW9uLm9yZz47IFN1ZGlwIE11a2hlcmplZQ0KPiA8c3VkaXBtLm11a2hlcmplZUBnbWFp
+bC5jb20+OyBsaW51eC1rZXJuZWwgPGxpbnV4LWtlcm5lbEB2Z2VyLmtlcm5lbC5vcmc+DQo+IFN1
+YmplY3Q6IFJlOiBbUEFUQ0hdIGNoYXI6IHBwZGV2OiBjaGVjayBpZiBpb2N0bCBhcmd1bWVudCBp
+cyBwcmVzZW50IGFuZCB2YWxpZA0KPiANCj4gT24gU2F0LCBPY3QgMjQsIDIwMjAgYXQgNTo1NCBQ
+TSBoYXJzaGFsIGNoYXVkaGFyaQ0KPiA8aGFyc2hhbGNoYXUwNEBnbWFpbC5jb20+IHdyb3RlOg0K
+PiA+IE9uIFR1ZSwgT2N0IDEzLCAyMDIwIGF0IDQ6NDIgUE0gRGF2aWQgTGFpZ2h0IDxEYXZpZC5M
+YWlnaHRAYWN1bGFiLmNvbT4gd3JvdGU6DQo+IA0KPiA+IFNvIEkgYW0gYSBsaXR0bGUgYml0IGNv
+bmZ1c2VkIGFib3V0IHRoaXMgY2hlY2sgd2hldGhlciBpdCdzIHJlcXVpcmVkIG9yIG5vdA0KPiA+
+IFBsZWFzZSBjb3VsZCB5b3UgcG9pbnQgbWUgaW4gdGhlIHJpZ2h0IGRpcmVjdGlvbj8NCj4gPg0K
+PiA+IEluIGFueSBjYXNlLCB0aGFua3MgZm9yIHlvdXIgaGVscCAuLi4NCj4gPg0KPiA+IEhlcmUg
+aXMgYSBkcml2ZXIgc291cmNlIGxvY2F0ZWQgaW46IGxpbnV4L2RyaXZlcnMvbWlzYy94aWxpbnhf
+c2RmZWMuYw0KPiA+DQo+ID4gc3RhdGljIGxvbmcgeHNkZmVjX2Rldl9pb2N0bChzdHJ1Y3QgZmls
+ZSAqZnB0ciwgdW5zaWduZWQgaW50IGNtZCwNCj4gPiB1bnNpZ25lZCBsb25nIGRhdGEpDQo+ID4g
+ew0KPiA+IHN0cnVjdCB4c2RmZWNfZGV2ICp4c2RmZWM7DQo+ID4gdm9pZCBfX3VzZXIgKmFyZyA9
+IE5VTEw7DQo+ID4gaW50IHJ2YWwgPSAtRUlOVkFMOw0KPiA+DQo+ID4gaWYgKF9JT0NfVFlQRShj
+bWQpICE9IFhTREZFQ19NQUdJQykNCj4gPiAgICAgICAgICAgICAgICByZXR1cm4gLUVOT1RUWTsN
+Cj4gPg0KPiA+IC8qIGNoZWNrIGlmIGlvY3RsIGFyZ3VtZW50IGlzIHByZXNlbnQgYW5kIHZhbGlk
+ICovDQo+ID4gaWYgKF9JT0NfRElSKGNtZCkgIT0gX0lPQ19OT05FKQ0KPiA+IHsNCj4gPiAgICAg
+ICAgIGFyZyA9ICh2b2lkIF9fdXNlciAqKWRhdGE7DQo+ID4gICAgICAgICBpZiAoIWFyZykNCj4g
+PiAgICAgICAgICAgICAgICAgICAgcmV0dXJuIHJ2YWw7DQo+ID4gfQ0KPiA+DQo+IA0KPiBBbGwg
+b2YgdGhpcyBjYW4gYmUgcmVtb3ZlZCwgYW5kIHJlcGxhY2VkIHdpdGggdW5jb25kaXRpb25hbA0K
+PiANCj4gICAgICB2b2lkIF9fdXNlciAqYXJnID0gKHZvaWQgX191c2VyICopZGF0YTsNCj4gICAg
+ICBpbnQgcnZhbDsNCj4gDQo+IHdpdGggYW4gInJ2YWwgPSAtRU5PVFRZIiBhZGRlZCBpbiB0aGUg
+J2RlZmF1bHQnIGNhc2UuIFRoaXMgd2lsbA0KPiBtYWtlIGl0IGJlaGF2ZSBtb3JlIGxpa2Ugb3Ro
+ZXIgZHJpdmVycywgcmV0dXJuaW5nIC1FTk9UVFkgZm9yDQo+IGFueSB1bmtub3duIGlvY3RsIGNv
+bW1hbmQsIGFuZCByZXR1cm5pbmcgLUVGQVVMVCBmb3IgYWxsDQo+IGludmFsaWQgcG9pbnRlcnMs
+IGluY2x1ZGluZyBOVUxMLg0KDQpZZXAsIHRoZSB0aGluZyB0byByZW1lbWJlciBpcyB0aGF0IGV2
+ZW4gaWYgeW91IGFjdHVhbGx5DQp2ZXJpZmllZCB0aGF0IHRoZSB1c2VyIGJ1ZmZlciBjb3VsZCBi
+ZSBhY2Nlc3NlZCBvbiBlbnRyeQ0KdG8gdGhlIGlvY3RsIGNvZGUgYW5vdGhlciBhcHBsaWNhdGlv
+biB0aHJlYWQgY291bGQgdW5tYXANCnRoZSBtZW1vcnkgYXJlYSBiZWZvcmUgeW91IGRvIGEgbGF0
+ZXIgYWNjZXNzLg0KDQpXaGF0IHlvdSBtYXkgd2FudCB0byBkbyBpcyBjb3B5IHRoZSB1c2VyIGJ1
+ZmZlciBpbnRvIGENCmtlcm5lbCBidWZmZXIgYXQgdGhlIHRvcCBvZiB0aGUgaW9jdGwgY29kZSBh
+bmQgd3JpdGUgaXQNCmJhY2sgYXQgdGhlIGJvdHRvbS4NCkJ1dCBkbyBtYWtlIGFic29sdXRlbHkg
+c3VyZSB5b3UgZG9uJ3Qgb3ZlcmZsb3cgdGhlIGtlcm5lbA0KYnVmZmVyIG9mIGFjY2VzcyBiZXlv
+bmQgaXRzIGVuZC4NCg0KCURhdmlkDQoNCi0NClJlZ2lzdGVyZWQgQWRkcmVzcyBMYWtlc2lkZSwg
+QnJhbWxleSBSb2FkLCBNb3VudCBGYXJtLCBNaWx0b24gS2V5bmVzLCBNSzEgMVBULCBVSw0KUmVn
+aXN0cmF0aW9uIE5vOiAxMzk3Mzg2IChXYWxlcykNCg==
 
