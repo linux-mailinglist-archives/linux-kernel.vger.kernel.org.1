@@ -2,181 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39794297B86
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 10:50:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 04E9C297B89
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 11:02:32 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1760127AbgJXIup (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 04:50:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35078 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1760120AbgJXIuo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 04:50:44 -0400
-Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1760187AbgJXJCD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 05:02:03 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31179 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1755379AbgJXJCC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 05:02:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603530121;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=WsLnm4h/QDa//59tO5yt/GI/Eb0fBcrMjcG64YafxHk=;
+        b=dEKjDMwE8BlznUw+sjvdtYP/ByKlRPkH44Vq1T+Y6hTT+CGIdDz6LM2cAXU76LVgbnxwLr
+        VjeHTK9rgptFvNp8856Za7A9NHdeUEBXhFc+fZnHoAVSYi8KTwgPz8WyEJWDWgYmVkpMHh
+        ZkLmk4HYIYsr9/7IVUrIcHIClbH3b2Y=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-10-qpo_KEXKO6acdAvr6sRrLA-1; Sat, 24 Oct 2020 05:01:59 -0400
+X-MC-Unique: qpo_KEXKO6acdAvr6sRrLA-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37C542177B;
-        Sat, 24 Oct 2020 08:50:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603529443;
-        bh=ljVzpvEvHjrBo7BgLCaeSUhDmJcuqrGcgtk31UWUZdg=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=IBUmlIvxOuW3DA0obRC18N7HIIazYk1NtZnrV6QLDFgoH8tKlVfWS86Hcuu1nTW0d
-         Eg2w3ojStZFXe4zplRxfKbjGSpFc2/tDEhRHcsPAjzC3DmLrRyoYCs9Aci6r2MP3yD
-         pU+OOjnpKo1C1Epknvd5pL3CkLNg76gkX7kjmafA=
-Date:   Sat, 24 Oct 2020 17:50:40 +0900
-From:   Masami Hiramatsu <mhiramat@kernel.org>
-To:     Tom Zanussi <zanussi@kernel.org>
-Cc:     rostedt@goodmis.org, axelrasmussen@google.com, mhiramat@kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] tracing/dynevent: Delegate parsing to create
- function
-Message-Id: <20201024175040.3c7a69dcff5f110e713350be@kernel.org>
-In-Reply-To: <af206cdc069b1de4670c0a27458eb98263eaf84e.1603484117.git.zanussi@kernel.org>
-References: <cover.1603484117.git.zanussi@kernel.org>
-        <af206cdc069b1de4670c0a27458eb98263eaf84e.1603484117.git.zanussi@kernel.org>
-X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 58DD85F9E8;
+        Sat, 24 Oct 2020 09:01:58 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id E903D10027AB;
+        Sat, 24 Oct 2020 09:01:57 +0000 (UTC)
+From:   Paolo Bonzini <pbonzini@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [GIT PULL] KVM fixes for Linux 5.10-rc1
+Date:   Sat, 24 Oct 2020 05:01:57 -0400
+Message-Id: <20201024090157.2818024-1-pbonzini@redhat.com>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tom,
+Linus,
 
-Thanks for the update!
+The following changes since commit 29cf0f5007a215b51feb0ae25ca5353480d53ead:
 
-On Fri, 23 Oct 2020 15:33:52 -0500
-Tom Zanussi <zanussi@kernel.org> wrote:
+  kvm: x86/mmu: NX largepage recovery for TDP MMU (2020-10-23 03:42:16 -0400)
 
-> From: Masami Hiramatsu <mhiramat@kernel.org>
-> 
-> Delegate command parsing to each create function so that the
-> command syntax can be customized.
-> 
-> Signed-off-by: Masami Hiramatsu <mhiramat@kernel.org>
-> [ zanussi@kernel.org: added synthetic event modifications ]
+are available in the Git repository at:
 
-Since you've customized the synth_event parser, could you update
-the patch description? (Or split this into 2 patches)
+  https://git.kernel.org/pub/scm/virt/kvm/kvm.git tags/for-linus
 
-> Signed-off-by: Tom Zanussi <zanussi@kernel.org>
-> ---
->  kernel/trace/trace.c              |  23 +---
->  kernel/trace/trace.h              |   3 +-
->  kernel/trace/trace_dynevent.c     |  35 +++---
->  kernel/trace/trace_dynevent.h     |   4 +-
->  kernel/trace/trace_events_synth.c | 186 ++++++++++++++++--------------
->  kernel/trace/trace_kprobe.c       |  33 +++---
->  kernel/trace/trace_probe.c        |  17 +++
->  kernel/trace/trace_probe.h        |   1 +
->  kernel/trace/trace_uprobe.c       |  17 ++-
->  9 files changed, 174 insertions(+), 145 deletions(-)
+for you to fetch changes up to 77377064c3a94911339f13ce113b3abf265e06da:
 
-[..]
-> @@ -1223,26 +1176,43 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->  		goto out;
->  	}
->  
-> -	for (i = 0; i < argc - 1; i++) {
-> -		if (strcmp(argv[i], ";") == 0)
-> -			continue;
-> +	tmp_fields = saved_fields = kstrdup(raw_fields, GFP_KERNEL);
-> +	if (!tmp_fields) {
-> +		ret = -ENOMEM;
-> +		goto out;
-> +	}
-> +
-> +	while ((field_str = strsep(&tmp_fields, ";")) != NULL) {
->  		if (n_fields == SYNTH_FIELDS_MAX) {
->  			synth_err(SYNTH_ERR_TOO_MANY_FIELDS, 0);
->  			ret = -EINVAL;
->  			goto err;
->  		}
->  
-> -		field = parse_synth_field(argc - i, &argv[i], &consumed);
-> +		argv = argv_split(GFP_KERNEL, field_str, &argc);
-> +		if (!argv) {
-> +			ret = -ENOMEM;
-> +			goto err;
-> +		}
-> +
-> +		if (!argc)
-> +			continue;
-> +
-> +		field = parse_synth_field(argc, argv);
->  		if (IS_ERR(field)) {
-> +			argv_free(argv);
->  			ret = PTR_ERR(field);
->  			goto err;
->  		}
-> +
-> +		argv_free(argv);
-> +
->  		fields[n_fields++] = field;
->  		i += consumed - 1;
+  KVM: ioapic: break infinite recursion on lazy EOI (2020-10-24 04:42:06 -0400)
 
-You may not need this line (and "consumed") anymore?
+----------------------------------------------------------------
+Two fixes for the pull request, and an unrelated bugfix for
+a host hang.
 
->  	}
->  
-> -	if (i < argc && strcmp(argv[i], ";") != 0) {
-> -		synth_err(SYNTH_ERR_INVALID_FIELD, errpos(argv[i]));
-> +	if (n_fields == 0) {
-> +		synth_err(SYNTH_ERR_CMD_INCOMPLETE, 0);
->  		ret = -EINVAL;
->  		goto err;
->  	}
-> @@ -1261,6 +1231,8 @@ static int __create_synth_event(int argc, const char *name, const char **argv)
->   out:
->  	mutex_unlock(&event_mutex);
->  
-> +	kfree(saved_fields);
-> +
->  	return ret;
->   err:
->  	for (i = 0; i < n_fields; i++)
-> @@ -1378,18 +1350,35 @@ int synth_event_delete(const char *event_name)
->  }
->  EXPORT_SYMBOL_GPL(synth_event_delete);
->  
-> -static int create_or_delete_synth_event(int argc, char **argv)
-> +static int create_or_delete_synth_event(const char *raw_command)
->  {
-> -	const char *name = argv[0];
-> -	int ret;
-> +	char **argv, *name = NULL, *fields;
-> +	int argc = 0, ret = 0;
-> +
-> +	last_cmd_set(raw_command);
-> +
-> +	argv = argv_split(GFP_KERNEL, raw_command, &argc);
-> +	if (!argv)
-> +		return -ENOMEM;
+----------------------------------------------------------------
 
-If you are sure the first argument is the name, you don't need
-to use argv_split, but just strpbrk(raw_command, " \t"), something
-like this.
+Paolo Bonzini (1):
+      KVM: vmx: rename pi_init to avoid conflict with paride
 
-	raw_command = skip_spaces(raw_command);
-	p = strpbrk(raw_command, " \t");
-	if (!p)
-		return -EINVAL;
+Sean Christopherson (1):
+      KVM: x86/mmu: Avoid modulo operator on 64-bit value to fix i386 build
 
-	name = kmemdup_nul(raw_command, p - raw_command, GFP_KERNEL);
-	field = skip_spaces(p);
+Vitaly Kuznetsov (1):
+      KVM: ioapic: break infinite recursion on lazy EOI
 
-...
+ arch/x86/kvm/ioapic.c          | 5 +----
+ arch/x86/kvm/mmu/tdp_mmu.c     | 2 +-
+ arch/x86/kvm/vmx/posted_intr.c | 2 +-
+ arch/x86/kvm/vmx/posted_intr.h | 4 ++--
+ arch/x86/kvm/vmx/vmx.c         | 2 +-
+ 5 files changed, 6 insertions(+), 9 deletions(-)
 
-	ret = __create_synth_event(name, fields);
-free:
-	kfree(name);
-
-(BTW, we should have find_spaces() instead of slow strpbrk().)
-
-
-Thank you,
-
-
--- 
-Masami Hiramatsu <mhiramat@kernel.org>
