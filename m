@@ -2,104 +2,196 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C91C297CA9
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:52:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B4BD297CB0
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 15:59:37 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761800AbgJXNvd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 09:51:33 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:60884 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725939AbgJXNvd (ORCPT
+        id S1761825AbgJXN7W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 09:59:22 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:43756 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1761814AbgJXN7V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 09:51:33 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ODnLHD080910;
-        Sat, 24 Oct 2020 13:50:15 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=7rjOYCVlssD4+N9kW3ptFrEt/i1XeNEK+8icb/redcs=;
- b=vXT7Hl7EIjBJFGpKmhCb4LY0i2v/CpTf+9gaJqRz8CDsX+ZTbO0UuZ5b9anKlqBd8Sog
- jOz+WpzLDCwkYaqI+aJEAGuoePxrdCSpmpwWpLqL2hcGqJLEqcFOAO/E+0MO3uYfweCq
- DAWghKJGkwbTjJJhMqR9u5IaL9oMH3zhRHhVfl/Iknk4X7kehOePytmkS83jFFpXpZAO
- jkeZ4j5VyuGA8enIspRuTOg5O7knR1wkVFLVb6EymG/7W6vI18ZFea0UULMUo/9iIBx+
- JQ+1quEbquWMfXxUdOkPeB2tPzgpulq1yX5OSYatftIF4C9/oFE3ho/zZVEli5cedFVD tg== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by aserp2120.oracle.com with ESMTP id 34cc7kgpm0-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sat, 24 Oct 2020 13:50:15 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09ODkWeO109630;
-        Sat, 24 Oct 2020 13:48:14 GMT
-Received: from userv0122.oracle.com (userv0122.oracle.com [156.151.31.75])
-        by userp3020.oracle.com with ESMTP id 34cbkhh38e-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sat, 24 Oct 2020 13:48:14 +0000
-Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
-        by userv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09ODm1Gd027136;
-        Sat, 24 Oct 2020 13:48:01 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sat, 24 Oct 2020 06:48:01 -0700
-Date:   Sat, 24 Oct 2020 16:47:52 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Christoph Hellwig <hch@lst.de>
-Cc:     Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        David Airlie <airlied@linux.ie>,
-        Daniel Vetter <daniel@ffwll.ch>,
-        Tvrtko Ursulin <tvrtko.ursulin@intel.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Matthew Auld <matthew.auld@intel.com>,
-        Chris Wilson <chris@chris-wilson.co.uk>,
-        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] drm/i915: Fix a crash in shmem_pin_map() error handling
-Message-ID: <20201024134752.GF18329@kadam>
-References: <20201023113401.GG282278@mwanda>
- <20201023121941.GB18499@lst.de>
+        Sat, 24 Oct 2020 09:59:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603547959;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=8KmBaS2YJr8kWdyqWOIZ92IbUvQAUIDpQIFRCq90/EQ=;
+        b=cptcjbWdAm8NuEMBFUb7G4NJ5xtAfbn4966lQAUKvsjPYwwkST6VbEGArMy7hwBDfpM/Ct
+        J6CXNZe0aMglbgHTwC+qxh7OqRmpR2PC3Wb6xFPRJAKDD1BKMz9LweaajK3Aust0S9S724
+        EEFnDZ/0a6aKKXhWIDApMy4HNU/Yyvk=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-589-JuZtLnPKMFiFHbzJbwaggQ-1; Sat, 24 Oct 2020 09:59:17 -0400
+X-MC-Unique: JuZtLnPKMFiFHbzJbwaggQ-1
+Received: by mail-oo1-f71.google.com with SMTP id f12so312983oos.23
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 06:59:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=8KmBaS2YJr8kWdyqWOIZ92IbUvQAUIDpQIFRCq90/EQ=;
+        b=jDwRBu+OsYVpRzTxILG9GOZv/q4pBozs6fgstt1ZVSmmqmtBSGJAqW8628/FYY0ZFy
+         lWXQurMSgI2UQNhSo/H62UmVm0HJ/k4J8sWzbhBKYY90YFwDI6FXXXcB9ZUmqOR1+toj
+         nY8gu1UrbyDm1ugkXKDAKExWOhgvxff9zTuNqOmETsC8EKc3ga7Np0Ka4y9q6xEKv5zE
+         q6IQ4D8FJ8OcclW4PRHzqfEfEyqk3VkBD32WJIiZ8kKqLfeHz6G8KwfCsD78WNk4hxse
+         S2gPJgm+NfiWkume1IMyz0uGDtq/cmLoLgVmjg3KNIaANQuhwuBwwh0Ido90ogGhK94E
+         y2/A==
+X-Gm-Message-State: AOAM5325/++q/fcgch6jkyrwUucXBLTWev8HHLr7dXptO7kO5criKECW
+        i5yBcpZZ64OAqPXBdE5b+zeBRZUnGKjRqKo++rW8vYwfBDYxASHpdxe+nnaLAQ1K1Hf+2CPzc5q
+        YFt81SIyBmeVDuIx8M2mj/paH
+X-Received: by 2002:aca:c64e:: with SMTP id w75mr5758440oif.134.1603547956985;
+        Sat, 24 Oct 2020 06:59:16 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxwVMVRpyHW964SEFmnh2ALQAff7JNNO5mS4ANH9Zf1jv0VgDT8+gvJOe2QUE14WeZWABsnsQ==
+X-Received: by 2002:aca:c64e:: with SMTP id w75mr5758417oif.134.1603547956725;
+        Sat, 24 Oct 2020 06:59:16 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id d11sm1262078oti.69.2020.10.24.06.59.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Oct 2020 06:59:16 -0700 (PDT)
+Subject: Re: [RFC PATCH 2/6] fpga: dfl: export network configuration info for
+ DFL based FPGA
+To:     Xu Yilun <yilun.xu@intel.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        mdf@kernel.org, lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        netdev@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
+References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
+ <1603442745-13085-3-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <23767a73-dbd7-949a-1f58-176cf3d2d380@redhat.com>
+Date:   Sat, 24 Oct 2020 06:59:14 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023121941.GB18499@lst.de>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- phishscore=0 mlxscore=0 spamscore=0 bulkscore=0 malwarescore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010240105
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9783 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010240106
+In-Reply-To: <1603442745-13085-3-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:19:41PM +0200, Christoph Hellwig wrote:
-> > diff --git a/drivers/gpu/drm/i915/gt/shmem_utils.c b/drivers/gpu/drm/i915/gt/shmem_utils.c
-> > index f011ea42487e..7eb542018219 100644
-> > --- a/drivers/gpu/drm/i915/gt/shmem_utils.c
-> > +++ b/drivers/gpu/drm/i915/gt/shmem_utils.c
-> > @@ -52,8 +52,9 @@ struct file *shmem_create_from_object(struct drm_i915_gem_object *obj)
-> >  void *shmem_pin_map(struct file *file)
-> >  {
-> >  	struct page **pages;
-> > -	size_t n_pages, i;
-> > +	size_t n_pages;
-> >  	void *vaddr;
-> > +	int i;
-> >  
-> >  	n_pages = file->f_mapping->host->i_size >> PAGE_SHIFT;
-> >  	pages = kvmalloc_array(n_pages, sizeof(*pages), GFP_KERNEL);
-> 
-> This assumes we never have more than INT_MAX worth of pages before
-> a failure. 
 
-Doh.  Yeah.  My bad.
+On 10/23/20 1:45 AM, Xu Yilun wrote:
+> This patch makes preparation for supporting DFL Ether Group private
+> feature driver, which reads bitstream_id.vendor_net_cfg field to
+> determin the interconnection of network components on FPGA device.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
+> ---
+>  drivers/fpga/dfl-fme-main.c | 10 ++--------
+>  drivers/fpga/dfl.c          | 21 +++++++++++++++++++++
+>  drivers/fpga/dfl.h          | 12 ++++++++++++
+>  include/linux/dfl.h         |  2 ++
+>  4 files changed, 37 insertions(+), 8 deletions(-)
+>
+> diff --git a/drivers/fpga/dfl-fme-main.c b/drivers/fpga/dfl-fme-main.c
+> index 77ea04d..a2b8ba0 100644
+> --- a/drivers/fpga/dfl-fme-main.c
+> +++ b/drivers/fpga/dfl-fme-main.c
+> @@ -46,14 +46,8 @@ static DEVICE_ATTR_RO(ports_num);
+>  static ssize_t bitstream_id_show(struct device *dev,
+>  				 struct device_attribute *attr, char *buf)
+>  {
+> -	void __iomem *base;
+> -	u64 v;
+> -
+> -	base = dfl_get_feature_ioaddr_by_id(dev, FME_FEATURE_ID_HEADER);
+> -
+> -	v = readq(base + FME_HDR_BITSTREAM_ID);
+> -
+> -	return scnprintf(buf, PAGE_SIZE, "0x%llx\n", (unsigned long long)v);
+> +	return scnprintf(buf, PAGE_SIZE, "0x%llx\n",
+> +			 (unsigned long long)dfl_get_bitstream_id(dev));
+should use sysfs_emit()
+>  }
+>  static DEVICE_ATTR_RO(bitstream_id);
+>  
+> diff --git a/drivers/fpga/dfl.c b/drivers/fpga/dfl.c
+> index bc35750..ca3c678 100644
+> --- a/drivers/fpga/dfl.c
+> +++ b/drivers/fpga/dfl.c
+> @@ -537,6 +537,27 @@ void dfl_driver_unregister(struct dfl_driver *dfl_drv)
+>  }
+>  EXPORT_SYMBOL(dfl_driver_unregister);
+>  
+> +int dfl_dev_get_vendor_net_cfg(struct dfl_device *dfl_dev)
+> +{
+> +	struct device *fme_dev;
+> +	u64 v;
+> +
+> +	if (!dfl_dev)
+> +		return -EINVAL;
+> +
+> +	if (dfl_dev->type == FME_ID)
+> +		fme_dev = dfl_dev->dev.parent;
+> +	else
+> +		fme_dev = dfl_dev->cdev->fme_dev;
+> +
+> +	if (!fme_dev)
+> +		return -EINVAL;
+> +
+> +	v = dfl_get_bitstream_id(fme_dev);
+> +	return (int)FIELD_GET(FME_BID_VENDOR_NET_CFG, v);
+> +}
+> +EXPORT_SYMBOL_GPL(dfl_dev_get_vendor_net_cfg);
+> +
+>  #define is_header_feature(feature) ((feature)->id == FEATURE_ID_FIU_HEADER)
+>  
+>  /**
+> diff --git a/drivers/fpga/dfl.h b/drivers/fpga/dfl.h
+> index 2b82c96..6c7a6961 100644
+> --- a/drivers/fpga/dfl.h
+> +++ b/drivers/fpga/dfl.h
+> @@ -104,6 +104,9 @@
+>  #define FME_CAP_CACHE_SIZE	GENMASK_ULL(43, 32)	/* cache size in KB */
+>  #define FME_CAP_CACHE_ASSOC	GENMASK_ULL(47, 44)	/* Associativity */
+>  
+> +/* FME BITSTREAM_ID Register Bitfield */
+> +#define FME_BID_VENDOR_NET_CFG	GENMASK_ULL(35, 32)     /* vendor net cfg */
 
-regards,
-dan carpenter
+Are there any other similar #defines that could be added here for completeness?
+
+> +
+>  /* FME Port Offset Register Bitfield */
+>  /* Offset to port device feature header */
+>  #define FME_PORT_OFST_DFH_OFST	GENMASK_ULL(23, 0)
+> @@ -397,6 +400,15 @@ static inline bool is_dfl_feature_present(struct device *dev, u16 id)
+>  	return !!dfl_get_feature_ioaddr_by_id(dev, id);
+>  }
+>  
+> +static inline u64 dfl_get_bitstream_id(struct device *dev)
+> +{
+> +	void __iomem *base;
+> +
+> +	base = dfl_get_feature_ioaddr_by_id(dev, FME_FEATURE_ID_HEADER);
+> +
+> +	return readq(base + FME_HDR_BITSTREAM_ID);
+> +}
+
+This is is a generic change and should be split out.
+
+Tom
+
+> +
+>  static inline
+>  struct device *dfl_fpga_pdata_to_parent(struct dfl_feature_platform_data *pdata)
+>  {
+> diff --git a/include/linux/dfl.h b/include/linux/dfl.h
+> index e1b2471..5ee2b1e 100644
+> --- a/include/linux/dfl.h
+> +++ b/include/linux/dfl.h
+> @@ -67,6 +67,8 @@ struct dfl_driver {
+>  #define to_dfl_dev(d) container_of(d, struct dfl_device, dev)
+>  #define to_dfl_drv(d) container_of(d, struct dfl_driver, drv)
+>  
+> +int dfl_dev_get_vendor_net_cfg(struct dfl_device *dfl_dev);
+> +
+>  /*
+>   * use a macro to avoid include chaining to get THIS_MODULE.
+>   */
+
