@@ -2,796 +2,504 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8BEA0297CF1
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 16:53:05 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id C9A7B297CFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 17:04:03 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411215AbgJXOxD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 10:53:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54218 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2389303AbgJXOxC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 10:53:02 -0400
-Received: from localhost (83-86-74-64.cable.dynamic.v4.ziggo.nl [83.86.74.64])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5693021D43;
-        Sat, 24 Oct 2020 14:52:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603551180;
-        bh=xczsv2KwiGqR+gkD9Ljm723PpHMDl8CDg0fJHl2R+B8=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fRvVtnprwVoGT+kPeMudxsujdUN4VdtX+EEVndo3oq1FEQoKEA8a5RJNmRJYLDtV2
-         prp/NiAtEYZs8mAwd1Clnct3VIhH58RyTrnWKOkK42qcAMXL8Gyym2pZQ7ifuFLFOa
-         xrYbrlFH4Uq0g2lGvYKDi87sQg/QG+DTN++KHQck=
-Date:   Sat, 24 Oct 2020 16:53:33 +0200
-From:   Greg KH <gregkh@linuxfoundation.org>
-To:     Sergei Shtepa <sergei.shtepa@veeam.com>
-Cc:     axboe@kernel.dk, viro@zeniv.linux.org.uk, hch@infradead.org,
-        darrick.wong@oracle.com, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, rjw@rjwysocki.net,
-        len.brown@intel.com, pavel@ucw.cz, akpm@linux-foundation.org,
-        johannes.thumshirn@wdc.com, ming.lei@redhat.com, jack@suse.cz,
-        tj@kernel.org, gustavo@embeddedor.com, bvanassche@acm.org,
-        osandov@fb.com, koct9i@gmail.com, damien.lemoal@wdc.com,
-        steve@sk2.org, linux-block@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH 1/2] Block layer filter - second version
-Message-ID: <20201024145333.GA4091047@kroah.com>
-References: <1603271049-20681-1-git-send-email-sergei.shtepa@veeam.com>
- <1603271049-20681-2-git-send-email-sergei.shtepa@veeam.com>
+        id S1758594AbgJXPEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 11:04:02 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:60868 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1758451AbgJXPEB (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sat, 24 Oct 2020 11:04:01 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603551837;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=H9MFfO8od2aiFCz3CMwI5BriTDlUJh0SREwJpQ4f9ng=;
+        b=dqz/5Nr+qRnPmBNrIt9muPt3bP/JJYAjAqrTRUWQL9UniFqf3IblI8bj8LzLvKSqVyRASI
+        GIGLek38jgrbQ94RA7kOurBhJtw9nZ0TNaZZpndX7ppBu+rvIp+R0vZ75V3ubFKZz415iu
+        LOgUty1kSo/ZjL20ZI1N6HDR24hx8tA=
+Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
+ [209.85.161.71]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-393-Lp2_5JT0NKaErI9f6nHtZQ-1; Sat, 24 Oct 2020 11:03:55 -0400
+X-MC-Unique: Lp2_5JT0NKaErI9f6nHtZQ-1
+Received: by mail-oo1-f71.google.com with SMTP id g14so3334883oov.19
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 08:03:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-transfer-encoding
+         :content-language;
+        bh=H9MFfO8od2aiFCz3CMwI5BriTDlUJh0SREwJpQ4f9ng=;
+        b=dNslbo9nFKPdijF3nmMkcHsjgIpntyOTbbOpRswQgXo8xI4L99z3fqrW3ljBtxo8GS
+         MuOP/rNRY72itlMu48COtVKO6omX+grTI76WUXbReeSFYfRQVYo6WBApmKEXpWvzjz35
+         0DIcdo20HONNDOCxcFKl1JT9EMWNX8D+eZDNkvmGJ90YJu9ug0M126e/9xyFdO9r7xvR
+         3Zkq8MDKpywA09vM/JJTY1JCIO6CZKvXDU9xqDmepSdzpwermLVBb3q1eJ7rLN2PwalZ
+         X6KkwsubNKLpMmoSSZMmQK4Xz9H+/nifpyGf6c/ygUD2l1AnZVfsfZJHf3mWGFo1MSYC
+         Tieg==
+X-Gm-Message-State: AOAM531EnIEUHEHk2fBkxaXiPV35KXDf0AwwEethAGi26FZigBoW/aO3
+        3QAg418YupDdzAHjqeUfOqs3IrSJWGWpjdfEVUBUkjDNmd6GH5m3cAWUhptN0Zx82OxybsHIEIe
+        r/5ZqNHn5i00rfFyrRdzH8gcR
+X-Received: by 2002:aca:f557:: with SMTP id t84mr5127850oih.13.1603551834733;
+        Sat, 24 Oct 2020 08:03:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxekjvzUfY2oWS++ceFKMHvtDCgNIiUJNJXWgfcROoUeFyKHxSbDVw1kQoSKAy1bq9C/M3oaQ==
+X-Received: by 2002:aca:f557:: with SMTP id t84mr5127820oih.13.1603551834447;
+        Sat, 24 Oct 2020 08:03:54 -0700 (PDT)
+Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
+        by smtp.gmail.com with ESMTPSA id f2sm1268532ots.64.2020.10.24.08.03.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 24 Oct 2020 08:03:53 -0700 (PDT)
+Subject: Re: [RFC PATCH 4/6] ethernet: m10-retimer: add support for retimers
+ on Intel MAX 10 BMC
+To:     Xu Yilun <yilun.xu@intel.com>, jesse.brandeburg@intel.com,
+        anthony.l.nguyen@intel.com, davem@davemloft.net, kuba@kernel.org,
+        mdf@kernel.org, lee.jones@linaro.org
+Cc:     linux-kernel@vger.kernel.org, linux-fpga@vger.kernel.org,
+        netdev@vger.kernel.org, lgoncalv@redhat.com, hao.wu@intel.com
+References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
+ <1603442745-13085-5-git-send-email-yilun.xu@intel.com>
+From:   Tom Rix <trix@redhat.com>
+Message-ID: <dbc77c18-8076-bcfd-b4f7-03e62dc46a97@redhat.com>
+Date:   Sat, 24 Oct 2020 08:03:51 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.6.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603271049-20681-2-git-send-email-sergei.shtepa@veeam.com>
+In-Reply-To: <1603442745-13085-5-git-send-email-yilun.xu@intel.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 12:04:08PM +0300, Sergei Shtepa wrote:
-> Signed-off-by: Sergei Shtepa <sergei.shtepa@veeam.com>
 
-I know I don't take patches without any changelog text.
+On 10/23/20 1:45 AM, Xu Yilun wrote:
+> This driver supports the ethernet retimers (Parkvale) for the Intel PAC
+> (Programmable Acceleration Card) N3000, which is a FPGA based Smart NIC.
 
-Maybe some maintainers are more lax...
+Parkvale is a code name, it would be better if the public name was used.
 
-Also, "second version" doesn't belong in the subject line, the
-documentation shows how to properly version patch series, please do
-that.
+As this is a physical chip that could be used on other cards,
 
-thanks,
+I think the generic parts should be split out of intel-m10-bmc-retimer.c
 
-greg k-h
+into a separate file, maybe retimer-c827.c
 
+Tom
+
+>
+> Parkvale is an Intel(R) Ethernet serdes transceiver chip that supports up
+> to 100G transfer. On Intel PAC N3000 there are 2 Parkvale chips managed
+> by the Intel MAX 10 BMC firmware. They are configured in 4 ports 10G/25G
+> retimer mode. Host could query their link status via retimer interfaces
+> (Shared registers) on Intel MAX 10 BMC.
+>
+> The driver adds the phy device for each port of the 2 retimer chips.
+> Since the phys are not accessed by the real MDIO bus, it creates a virtual
+> mdio bus for each NIC device instance, and a dedicated phy driver which
+> only provides the supported features and link state.
+>
+> A DFL Ether Group driver will create net devices and connect to these
+> phys.
+>
+> Signed-off-by: Xu Yilun <yilun.xu@intel.com>
 > ---
->  block/Kconfig               |  11 ++
->  block/Makefile              |   1 +
->  block/blk-core.c            |  52 +++++--
->  block/blk-filter-internal.h |  29 ++++
->  block/blk-filter.c          | 286 ++++++++++++++++++++++++++++++++++++
->  block/partitions/core.c     |  14 +-
->  fs/block_dev.c              |   6 +-
->  fs/direct-io.c              |   2 +-
->  fs/iomap/direct-io.c        |   2 +-
->  include/linux/bio.h         |   4 +-
->  include/linux/blk-filter.h  |  76 ++++++++++
->  include/linux/genhd.h       |   8 +-
->  kernel/power/swap.c         |   2 +-
->  mm/page_io.c                |   4 +-
->  14 files changed, 471 insertions(+), 26 deletions(-)
->  create mode 100644 block/blk-filter-internal.h
->  create mode 100644 block/blk-filter.c
->  create mode 100644 include/linux/blk-filter.h
-> 
-> diff --git a/block/Kconfig b/block/Kconfig
-> index bbad5e8bbffe..a308801b4376 100644
-> --- a/block/Kconfig
-> +++ b/block/Kconfig
-> @@ -204,6 +204,17 @@ config BLK_INLINE_ENCRYPTION_FALLBACK
->  	  by falling back to the kernel crypto API when inline
->  	  encryption hardware is not present.
->  
-> +config BLK_FILTER
-> +	bool "Enable support for block layer filters"
-> +	default y
-> +	depends on MODULES
-> +	help
-> +	  Enabling this lets third-party kernel modules intercept
-> +	  bio requests for any block device. This allows them to implement
-> +	  changed block tracking and snapshots without any reconfiguration of
-> +	  the existing setup. For example, this option allows snapshotting of
-> +	  a block device without adding it to LVM.
-> +
->  menu "Partition Types"
->  
->  source "block/partitions/Kconfig"
-> diff --git a/block/Makefile b/block/Makefile
-> index 8d841f5f986f..b8ee50b8e031 100644
-> --- a/block/Makefile
-> +++ b/block/Makefile
-> @@ -38,3 +38,4 @@ obj-$(CONFIG_BLK_SED_OPAL)	+= sed-opal.o
->  obj-$(CONFIG_BLK_PM)		+= blk-pm.o
->  obj-$(CONFIG_BLK_INLINE_ENCRYPTION)	+= keyslot-manager.o blk-crypto.o
->  obj-$(CONFIG_BLK_INLINE_ENCRYPTION_FALLBACK)	+= blk-crypto-fallback.o
-> +obj-$(CONFIG_BLK_FILTER)	+= blk-filter.o
-> diff --git a/block/blk-core.c b/block/blk-core.c
-> index 10c08ac50697..cc06402af695 100644
-> --- a/block/blk-core.c
-> +++ b/block/blk-core.c
-> @@ -1216,23 +1216,20 @@ blk_qc_t submit_bio_noacct(struct bio *bio)
->  EXPORT_SYMBOL(submit_bio_noacct);
->  
->  /**
-> - * submit_bio - submit a bio to the block device layer for I/O
-> - * @bio: The &struct bio which describes the I/O
-> - *
-> - * submit_bio() is used to submit I/O requests to block devices.  It is passed a
-> - * fully set up &struct bio that describes the I/O that needs to be done.  The
-> - * bio will be send to the device described by the bi_disk and bi_partno fields.
-> + * submit_bio_direct - submit a bio to the block device layer for I/O
-> + * bypass filter.
-> + * @bio:  The bio describing the location in memory and on the device.
->   *
-> - * The success/failure status of the request, along with notification of
-> - * completion, is delivered asynchronously through the ->bi_end_io() callback
-> - * in @bio.  The bio must NOT be touched by thecaller until ->bi_end_io() has
-> - * been called.
-> + * Description:
-> + *    This is a version of submit_bio() that shall only be used for I/O
-> + *    that cannot be intercepted by block layer filters.
-> + *    All file systems and other upper level users of the block layer
-> + *    should use submit_bio() instead.
-> + *    Use this function to access the swap partition and directly access
-> + *    the block device file.
->   */
-> -blk_qc_t submit_bio(struct bio *bio)
-> +blk_qc_t submit_bio_direct(struct bio *bio)
->  {
-> -	if (blkcg_punt_bio_submit(bio))
-> -		return BLK_QC_T_NONE;
-> -
->  	/*
->  	 * If it's a regular read/write or a barrier with data attached,
->  	 * go through the normal accounting stuff before submission.
-> @@ -1282,8 +1279,35 @@ blk_qc_t submit_bio(struct bio *bio)
->  
->  	return submit_bio_noacct(bio);
->  }
-> +EXPORT_SYMBOL(submit_bio_direct);
-> +
-> +/**
-> + * submit_bio - submit a bio to the block device layer for I/O
-> + * @bio: The &struct bio which describes the I/O
-> + *
-> + * submit_bio() is used to submit I/O requests to block devices.  It is passed a
-> + * fully set up &struct bio that describes the I/O that needs to be done.  The
-> + * bio will be send to the device described by the bi_disk and bi_partno fields.
-> + *
-> + * The success/failure status of the request, along with notification of
-> + * completion, is delivered asynchronously through the ->bi_end_io() callback
-> + * in @bio.  The bio must NOT be touched by thecaller until ->bi_end_io() has
-> + * been called.
-> + */
-> +void submit_bio(struct bio *bio)
-> +{
-> +	if (blkcg_punt_bio_submit(bio))
-> +		return;
-> +
-> +#ifdef CONFIG_BLK_FILTER
-> +	blk_filter_submit_bio(bio);
-> +#else
-> +	submit_bio_direct(bio);
-> +#endif
-> +}
->  EXPORT_SYMBOL(submit_bio);
->  
-> +
->  /**
->   * blk_cloned_rq_check_limits - Helper function to check a cloned request
->   *                              for the new queue limits
-> diff --git a/block/blk-filter-internal.h b/block/blk-filter-internal.h
-> new file mode 100644
-> index 000000000000..d456a09f50db
-> --- /dev/null
-> +++ b/block/blk-filter-internal.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + *
-> + * Block device filters internal declarations
-> + */
-> +
-> +#ifndef BLK_FILTER_INTERNAL_H
-> +#define BLK_FILTER_INTERNAL_H
-> +
-> +#ifdef CONFIG_BLK_FILTER
-> +#include <linux/blk-filter.h>
-> +
-> +void blk_filter_part_add(struct hd_struct *part, dev_t devt);
-> +
-> +void blk_filter_part_del(struct hd_struct *part);
-> +
-> +#else /* CONFIG_BLK_FILTER */
-> +
-> +
-> +static inline void blk_filter_part_add(struct hd_struct *part, dev_t devt)
-> +{ };
-> +
-> +static inline void blk_filter_part_del(struct hd_struct *part)
-> +{ };
-> +
-> +#endif /* CONFIG_BLK_FILTER */
-> +
-> +#endif
-> diff --git a/block/blk-filter.c b/block/blk-filter.c
-> new file mode 100644
-> index 000000000000..f6de16c45a16
-> --- /dev/null
-> +++ b/block/blk-filter.c
-> @@ -0,0 +1,286 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +
-> +#include <linux/genhd.h>
-> +#include <linux/bio.h>
-> +#include <linux/blkdev.h>
-> +#include "blk-filter-internal.h"
-> +#include <linux/rwsem.h>
-> +
-> +
-> +LIST_HEAD(filters);
-> +DECLARE_RWSEM(filters_lock);
-> +
-> +static void blk_filter_release(struct kref *kref)
-> +{
-> +	struct blk_filter *flt = container_of(kref, struct blk_filter, kref);
-> +
-> +	kfree(flt);
-> +}
-> +
-> +static inline void blk_filter_get(struct blk_filter *flt)
-> +{
-> +	kref_get(&flt->kref);
-> +}
-> +
-> +static inline void blk_filter_put(struct blk_filter *flt)
-> +{
-> +	kref_put(&flt->kref, blk_filter_release);
-> +}
-> +
-> +
-> +/**
-> + * blk_filter_part_add() - Notify filters when a new partition is added.
-> + * @part: The partition for new block device.
-> + * @devt: Device id for new block device.
-> + *
-> + * Description:
-> + *    When the block device is appears in the system, call the filter
-> + *    callback to notify that the block device appears.
-> + */
-> +void blk_filter_part_add(struct hd_struct *part, dev_t devt)
-> +{
-> +	down_read(&filters_lock);
-> +	if (!list_empty(&filters)) {
-> +		struct list_head *_list_head;
-> +
-> +		list_for_each(_list_head, &filters) {
-> +			void *filter_data;
-> +			bool attached = false;
-> +			struct blk_filter *flt;
-> +
-> +			flt = list_entry(_list_head, struct blk_filter, link);
-> +
-> +			attached = flt->ops->part_add(devt, &filter_data);
-> +			if (attached) {
-> +				blk_filter_get(flt);
-> +				part->filter = flt;
-> +				part->filter_data = filter_data;
-> +				break;
-> +			}
-> +		}
-> +	}
-> +	up_read(&filters_lock);
-> +}
-> +
-> +/**
-> + * blk_filter_part_del() - Notify filters when the partition is deleted.
-> + * @part: The partition of block device.
-> + *
-> + * Description:
-> + *    When the block device is destroying and the partition is releasing,
-> + *    call the filter callback to notify that the block device will be
-> + *    deleted.
-> + */
-> +void blk_filter_part_del(struct hd_struct *part)
-> +{
-> +	struct blk_filter *flt = part->filter;
-> +
-> +	if (!flt)
-> +		return;
-> +
-> +	flt->ops->part_del(part->filter_data);
-> +
-> +	part->filter_data = NULL;
-> +	part->filter = NULL;
-> +	blk_filter_put(flt);
-> +}
-> +
-> +
-> +/**
-> + * blk_filter_submit_bio() - Send new bio to filters for processing.
-> + * @bio: The new bio for block I/O layer.
-> + *
-> + * Description:
-> + *    This function is an implementation of block layer filter
-> + *    interception. If the filter is attached to this block device,
-> + *    then bio will be redirected to the filter kernel module.
-> + */
-> +void blk_filter_submit_bio(struct bio *bio)
-> +{
-> +	bool intercepted = false;
-> +	struct hd_struct *part;
-> +
-> +	bio_get(bio);
-> +
-> +	part = disk_get_part(bio->bi_disk, bio->bi_partno);
-> +	if (unlikely(!part)) {
-> +		bio->bi_status = BLK_STS_IOERR;
-> +		bio_endio(bio);
-> +
-> +		bio_put(bio);
-> +		return;
-> +	}
-> +
-> +	down_read(&part->filter_rw_lockup);
-> +
-> +	if (part->filter)
-> +		intercepted = part->filter->ops->filter_bio(bio, part->filter_data);
-> +
-> +	up_read(&part->filter_rw_lockup);
-> +
-> +	if (!intercepted)
-> +		submit_bio_direct(bio);
-> +
-> +	disk_put_part(part);
-> +
-> +	bio_put(bio);
-> +}
-> +EXPORT_SYMBOL(blk_filter_submit_bio);
-> +
-> +/**
-> + * blk_filter_register() - Register block layer filter.
-> + * @ops: New filter callbacks.
-> + *
-> + * Return:
-> + *     Filter ID, a pointer to the service structure of the filter.
-> + *
-> + * Description:
-> + *    Create new filter structure.
-> + *    Use blk_filter_attach to attach devices to filter.
-> + */
-> +void *blk_filter_register(struct blk_filter_ops *ops)
-> +{
-> +	struct blk_filter *flt;
-> +
-> +	flt = kzalloc(sizeof(struct blk_filter), GFP_KERNEL);
-> +	if (!flt)
-> +		return NULL;
-> +
-> +	kref_init(&flt->kref);
-> +	flt->ops = ops;
-> +
-> +	down_write(&filters_lock);
-> +	list_add_tail(&flt->link, &filters);
-> +	up_write(&filters_lock);
-> +
-> +	return flt;
-> +}
-> +EXPORT_SYMBOL(blk_filter_register);
-> +
-> +/**
-> + * blk_filter_unregister() - Unregister block layer filter.
-> + * @filter: filter identifier.
-> + *
-> + * Description:
-> + *    Before call blk_filter_unregister() and unload filter module all
-> + *    partitions MUST be detached. Otherwise, the system will have a
-> + *    filter with non-existent interception functions.
-> + */
-> +void blk_filter_unregister(void *filter)
-> +{
-> +	struct blk_filter *flt = filter;
-> +
-> +	down_write(&filters_lock);
-> +	list_del(&flt->link);
-> +	up_write(&filters_lock);
-> +
-> +	blk_filter_put(flt);
-> +}
-> +EXPORT_SYMBOL(blk_filter_unregister);
-> +
-> +/**
-> + * blk_filter_attach() - Attach block layer filter.
-> + * @devt: The block device identification number.
-> + * @filter: Filter identifier.
-> + * @filter_data: Specific filters data for this device.
-> + *
-> + * Return:
-> + *    Return code.
-> + *    -ENODEV - cannot find this device, it is OK if the device does not exist yet.
-> + *    -EALREADY - this device is already attached to this filter.
-> + *    -EBUSY - this device is already attached to the another filter.
-> + *
-> + * Description:
-> + *    Attach the device to the block layer filter.
-> + *    Only one filter can be attached to a single device.
-> + */
-> +int blk_filter_attach(dev_t devt, void *filter, void *filter_data)
-> +{
-> +	int ret = 0;
-> +	struct blk_filter *flt = filter;
-> +	struct block_device *blk_dev;
-> +
-> +
-> +	blk_dev = bdget(devt);
-> +	if (!blk_dev)
-> +		return -ENODEV;
-> +
-> +	blk_filter_freeze(blk_dev);
-> +
-> +	if (blk_dev->bd_part->filter) {
-> +		if (blk_dev->bd_part->filter == flt)
-> +			ret = -EALREADY;
-> +		else
-> +			ret = -EBUSY;
-> +	} else {
-> +		blk_filter_get(flt);
-> +		blk_dev->bd_part->filter = flt;
-> +		blk_dev->bd_part->filter_data = filter_data;
-> +	}
-> +
-> +	blk_filter_thaw(blk_dev);
-> +
-> +	bdput(blk_dev);
-> +
-> +	return ret;
-> +}
-> +EXPORT_SYMBOL(blk_filter_attach);
-> +
-> +/**
-> + * blk_filter_detach() - Detach block layer filter.
-> + * @devt: The block device identification number.
-> + *
-> + * Description:
-> + *    Detach the device from the block layer filter.
-> + *    Do not forget detach all devices before calling the
-> + *    blk_filter_unregister() function and unload the module!
-> + */
-> +void blk_filter_detach(dev_t devt)
-> +{
-> +	struct blk_filter *flt;
-> +	struct block_device *blk_dev;
-> +
-> +	blk_dev = bdget(devt);
-> +	if (!blk_dev)
-> +		return;
-> +
-> +	blk_filter_freeze(blk_dev);
-> +
-> +	flt = blk_dev->bd_part->filter;
-> +	if (flt) {
-> +		blk_dev->bd_part->filter_data = NULL;
-> +		blk_dev->bd_part->filter = NULL;
-> +		blk_filter_put(flt);
-> +	}
-> +
-> +	blk_filter_thaw(blk_dev);
-> +
-> +	bdput(blk_dev);
-> +}
-> +EXPORT_SYMBOL(blk_filter_detach);
-> +
-> +/**
-> + * blk_filter_freeze() - Lock bio submitting.
-> + * @bdev: The block device pointer.
-> + *
-> + * Description:
-> + *    Stop bio processing.
-> + */
-> +void blk_filter_freeze(struct block_device *bdev)
-> +{
-> +	down_write(&bdev->bd_part->filter_rw_lockup);
-> +}
-> +EXPORT_SYMBOL(blk_filter_freeze);
-> +
-> +/**
-> + * blk_filter_thaw() - Unlock bio submitting.
-> + * @bdev: The block device pointer.
-> + *
-> + * Description:
-> + *    Resume bio processing.
-> + */
-> +void blk_filter_thaw(struct block_device *bdev)
-> +{
-> +	up_write(&bdev->bd_part->filter_rw_lockup);
-> +}
-> +EXPORT_SYMBOL(blk_filter_thaw);
-> diff --git a/block/partitions/core.c b/block/partitions/core.c
-> index 722406b841df..6b845e98b9a1 100644
-> --- a/block/partitions/core.c
-> +++ b/block/partitions/core.c
-> @@ -11,6 +11,7 @@
->  #include <linux/blktrace_api.h>
->  #include <linux/raid/detect.h>
->  #include "check.h"
-> +#include "../blk-filter-internal.h"
->  
->  static int (*check_part[])(struct parsed_partitions *) = {
->  	/*
-> @@ -320,9 +321,11 @@ int hd_ref_init(struct hd_struct *part)
->   */
->  void delete_partition(struct gendisk *disk, struct hd_struct *part)
->  {
-> -	struct disk_part_tbl *ptbl =
-> -		rcu_dereference_protected(disk->part_tbl, 1);
-> +	struct disk_part_tbl *ptbl;
-> +
-> +	blk_filter_part_del(part);
->  
-> +	ptbl = rcu_dereference_protected(disk->part_tbl, 1);
->  	/*
->  	 * ->part_tbl is referenced in this part's release handler, so
->  	 *  we have to hold the disk device
-> @@ -412,6 +415,9 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
->  	p->nr_sects = len;
->  	p->partno = partno;
->  	p->policy = get_disk_ro(disk);
-> +#ifdef CONFIG_BLK_FILTER
-> +	init_rwsem(&p->filter_rw_lockup);
-> +#endif
->  
->  	if (info) {
->  		struct partition_meta_info *pinfo;
-> @@ -469,6 +475,9 @@ static struct hd_struct *add_partition(struct gendisk *disk, int partno,
->  	/* everything is up and running, commence */
->  	rcu_assign_pointer(ptbl->part[partno], p);
->  
-> +	/*inform filter about a new partition*/
-> +	blk_filter_part_add(p, devt);
-> +
->  	/* suppress uevent if the disk suppresses it */
->  	if (!dev_get_uevent_suppress(ddev))
->  		kobject_uevent(&pdev->kobj, KOBJ_ADD);
-> @@ -552,6 +561,7 @@ int bdev_del_partition(struct block_device *bdev, int partno)
->  		goto out_unlock;
->  
->  	sync_blockdev(bdevp);
-> +
->  	invalidate_bdev(bdevp);
->  
->  	delete_partition(bdev->bd_disk, part);
-> diff --git a/fs/block_dev.c b/fs/block_dev.c
-> index 8ae833e00443..431eae17fd8f 100644
-> --- a/fs/block_dev.c
-> +++ b/fs/block_dev.c
-> @@ -237,7 +237,7 @@ __blkdev_direct_IO_simple(struct kiocb *iocb, struct iov_iter *iter,
->  	if (iocb->ki_flags & IOCB_HIPRI)
->  		bio_set_polled(&bio, iocb);
->  
-> -	qc = submit_bio(&bio);
-> +	qc = submit_bio_direct(&bio);
->  	for (;;) {
->  		set_current_state(TASK_UNINTERRUPTIBLE);
->  		if (!READ_ONCE(bio.bi_private))
-> @@ -400,7 +400,7 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
->  				polled = true;
->  			}
->  
-> -			qc = submit_bio(bio);
-> +			qc = submit_bio_direct(bio);
->  
->  			if (polled)
->  				WRITE_ONCE(iocb->ki_cookie, qc);
-> @@ -421,7 +421,7 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
->  			atomic_inc(&dio->ref);
->  		}
->  
-> -		submit_bio(bio);
-> +		submit_bio_direct(bio);
->  		bio = bio_alloc(GFP_KERNEL, nr_pages);
->  	}
->  
-> diff --git a/fs/direct-io.c b/fs/direct-io.c
-> index 183299892465..d9bb1b6f6814 100644
-> --- a/fs/direct-io.c
-> +++ b/fs/direct-io.c
-> @@ -459,7 +459,7 @@ static inline void dio_bio_submit(struct dio *dio, struct dio_submit *sdio)
->  		sdio->submit_io(bio, dio->inode, sdio->logical_offset_in_bio);
->  		dio->bio_cookie = BLK_QC_T_NONE;
->  	} else
-> -		dio->bio_cookie = submit_bio(bio);
-> +		dio->bio_cookie = submit_bio_direct(bio);
->  
->  	sdio->bio = NULL;
->  	sdio->boundary = 0;
-> diff --git a/fs/iomap/direct-io.c b/fs/iomap/direct-io.c
-> index c1aafb2ab990..e05f20ce8b5f 100644
-> --- a/fs/iomap/direct-io.c
-> +++ b/fs/iomap/direct-io.c
-> @@ -73,7 +73,7 @@ static void iomap_dio_submit_bio(struct iomap_dio *dio, struct iomap *iomap,
->  				file_inode(dio->iocb->ki_filp),
->  				iomap, bio, pos);
->  	else
-> -		dio->submit.cookie = submit_bio(bio);
-> +		dio->submit.cookie = submit_bio_direct(bio);
->  }
->  
->  static ssize_t iomap_dio_complete(struct iomap_dio *dio)
-> diff --git a/include/linux/bio.h b/include/linux/bio.h
-> index c6d765382926..5b0a32697207 100644
-> --- a/include/linux/bio.h
-> +++ b/include/linux/bio.h
-> @@ -10,6 +10,7 @@
->  #include <linux/ioprio.h>
->  /* struct bio, bio_vec and BIO_* flags are defined in blk_types.h */
->  #include <linux/blk_types.h>
-> +#include <linux/blk-filter.h>
->  
->  #define BIO_DEBUG
->  
-> @@ -411,7 +412,8 @@ static inline struct bio *bio_kmalloc(gfp_t gfp_mask, unsigned int nr_iovecs)
->  	return bio_alloc_bioset(gfp_mask, nr_iovecs, NULL);
->  }
->  
-> -extern blk_qc_t submit_bio(struct bio *);
-> +extern blk_qc_t submit_bio_direct(struct bio *bio);
-> +extern void submit_bio(struct bio *bio);
->  
->  extern void bio_endio(struct bio *);
->  
-> diff --git a/include/linux/blk-filter.h b/include/linux/blk-filter.h
-> new file mode 100644
-> index 000000000000..f3e79e5b4586
-> --- /dev/null
-> +++ b/include/linux/blk-filter.h
-> @@ -0,0 +1,76 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +
-> +/*
-> + * API declarations for kernel modules utilizing block device filters
-> + */
-> +
-> +#ifndef BLK_FILTER_H
-> +#define BLK_FILTER_H
-> +
-> +#ifdef CONFIG_BLK_FILTER
-> +#include <linux/kref.h>
-> +
-> +struct blk_filter_ops {
-> +	/*
-> +	 * Intercept bio callback.
-> +	 *
-> +	 * Returns true if the request was intercepted and placed in the
-> +	 * queue for processing. Otherwise submit_bio_direct() calling
-> +	 * needed.
-> +	 */
-> +	bool (*filter_bio)(struct bio *bio, void *filter_data);
-> +
-> +	/*
-> +	 * Callback to a request to add block device to the filter.
-> +	 *
-> +	 * Returns true if the block device will be filtered.
-> +	 * p_filter_data gets a pointer to data that is unique to
-> +	 * this device.
-> +	 */
-> +	bool (*part_add)(dev_t devt, void **p_filter_data);
-> +
-> +	/*
-> +	 * Callback to remove block device from the filter.
-> +	 */
-> +	void (*part_del)(void *filter_data);
-> +};
-> +
-> +struct blk_filter {
-> +	struct list_head link;
-> +	struct kref kref;
-> +	struct blk_filter_ops *ops;
-> +};
-> +
-> +/*
-> + * Register/unregister device to filter
-> + */
-> +void *blk_filter_register(struct blk_filter_ops *ops);
-> +
-> +void blk_filter_unregister(void *filter);
-> +
-> +/*
-> + * Attach/detach device to filter
-> + */
-> +int blk_filter_attach(dev_t devt, void *filter, void *filter_data);
-> +
-> +void blk_filter_detach(dev_t devt);
-> +
-> +/*
-> + * For a consistent state of the file system use the freeze_bdev/thaw_bdav.
-> + * But in addition, to ensure that the filter is not in the state of
-> + * intercepting the next BIO, you need to call black_filter_freeze/blk_filter_thaw.
-> + * This is especially actual if there is no file system on the disk.
-> + */
-> +
-> +void blk_filter_freeze(struct block_device *bdev);
-> +
-> +void blk_filter_thaw(struct block_device *bdev);
-> +
-> +/*
-> + * Filters intercept function
-> + */
-> +void blk_filter_submit_bio(struct bio *bio);
-> +
-> +#endif /* CONFIG_BLK_FILTER */
-> +
-> +#endif
-> diff --git a/include/linux/genhd.h b/include/linux/genhd.h
-> index 4ab853461dff..514fab6b947e 100644
-> --- a/include/linux/genhd.h
-> +++ b/include/linux/genhd.h
-> @@ -4,7 +4,7 @@
->  
->  /*
->   * 	genhd.h Copyright (C) 1992 Drew Eckhardt
-> - *	Generic hard disk header file by  
-> + *	Generic hard disk header file by
->   * 		Drew Eckhardt
->   *
->   *		<drew@colorado.edu>
-> @@ -75,6 +75,12 @@ struct hd_struct {
->  	int make_it_fail;
->  #endif
->  	struct rcu_work rcu_work;
-> +
-> +#ifdef CONFIG_BLK_FILTER
-> +	struct rw_semaphore filter_rw_lockup; /* for freezing block device*/
-> +	struct blk_filter *filter; /* block layer filter*/
-> +	void *filter_data; /*specific for each block device filters data*/
-> +#endif
+>  drivers/fpga/dfl-n3000-nios.c                      |  11 +-
+>  drivers/mfd/intel-m10-bmc.c                        |  18 ++
+>  drivers/net/ethernet/intel/Kconfig                 |  12 ++
+>  drivers/net/ethernet/intel/Makefile                |   2 +
+>  drivers/net/ethernet/intel/intel-m10-bmc-retimer.c | 229 +++++++++++++++++++++
+>  include/linux/mfd/intel-m10-bmc.h                  |  16 ++
+>  6 files changed, 286 insertions(+), 2 deletions(-)
+>  create mode 100644 drivers/net/ethernet/intel/intel-m10-bmc-retimer.c
+>
+> diff --git a/drivers/fpga/dfl-n3000-nios.c b/drivers/fpga/dfl-n3000-nios.c
+> index 4983a2b..096931a 100644
+> --- a/drivers/fpga/dfl-n3000-nios.c
+> +++ b/drivers/fpga/dfl-n3000-nios.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/io-64-nonatomic-lo-hi.h>
+>  #include <linux/kernel.h>
+>  #include <linux/module.h>
+> +#include <linux/mfd/intel-m10-bmc.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/regmap.h>
+>  #include <linux/stddef.h>
+> @@ -159,6 +160,8 @@ struct n3000_nios {
+>  	struct regmap *regmap;
+>  	struct device *dev;
+>  	struct platform_device *altera_spi;
+> +	struct intel_m10bmc_platdata m10bmc_pdata;
+> +	struct intel_m10bmc_retimer_pdata m10bmc_retimer_pdata;
 >  };
 >  
->  /**
-> diff --git a/kernel/power/swap.c b/kernel/power/swap.c
-> index 01e2858b5fe3..5287346b87a1 100644
-> --- a/kernel/power/swap.c
-> +++ b/kernel/power/swap.c
-> @@ -283,7 +283,7 @@ static int hib_submit_io(int op, int op_flags, pgoff_t page_off, void *addr,
->  		bio->bi_end_io = hib_end_io;
->  		bio->bi_private = hb;
->  		atomic_inc(&hb->count);
-> -		submit_bio(bio);
-> +		submit_bio_direct(bio);
->  	} else {
->  		error = submit_bio_wait(bio);
->  		bio_put(bio);
-> diff --git a/mm/page_io.c b/mm/page_io.c
-> index e485a6e8a6cd..4540426400b3 100644
-> --- a/mm/page_io.c
-> +++ b/mm/page_io.c
-> @@ -362,7 +362,7 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
->  	count_swpout_vm_event(page);
->  	set_page_writeback(page);
->  	unlock_page(page);
-> -	submit_bio(bio);
-> +	submit_bio_direct(bio);
->  out:
->  	return ret;
->  }
-> @@ -434,7 +434,7 @@ int swap_readpage(struct page *page, bool synchronous)
+>  static ssize_t nios_fw_version_show(struct device *dev,
+> @@ -412,7 +415,8 @@ static struct spi_board_info m10_n3000_info = {
+>  	.chip_select = 0,
+>  };
+>  
+> -static int create_altera_spi_controller(struct n3000_nios *nn)
+> +static int create_altera_spi_controller(struct n3000_nios *nn,
+> +					struct device *retimer_master)
+>  {
+>  	struct altera_spi_platform_data pdata = { 0 };
+>  	struct platform_device_info pdevinfo = { 0 };
+> @@ -431,6 +435,9 @@ static int create_altera_spi_controller(struct n3000_nios *nn)
+>  	pdata.bits_per_word_mask =
+>  		SPI_BPW_RANGE_MASK(1, FIELD_GET(N3000_NS_PARAM_DATA_WIDTH, v));
+>  
+> +	nn->m10bmc_retimer_pdata.retimer_master = retimer_master;
+> +	nn->m10bmc_pdata.retimer = &nn->m10bmc_retimer_pdata;
+> +	m10_n3000_info.platform_data = &nn->m10bmc_pdata;
+>  	pdata.num_devices = 1;
+>  	pdata.devices = &m10_n3000_info;
+>  
+> @@ -549,7 +556,7 @@ static int n3000_nios_probe(struct dfl_device *ddev)
+>  	if (ret)
+>  		return ret;
+>  
+> -	ret = create_altera_spi_controller(nn);
+> +	ret = create_altera_spi_controller(nn, dfl_dev_get_base_dev(ddev));
+>  	if (ret)
+>  		dev_err(dev, "altera spi controller create failed: %d\n", ret);
+>  
+> diff --git a/drivers/mfd/intel-m10-bmc.c b/drivers/mfd/intel-m10-bmc.c
+> index b84579b..adbfb177 100644
+> --- a/drivers/mfd/intel-m10-bmc.c
+> +++ b/drivers/mfd/intel-m10-bmc.c
+> @@ -23,6 +23,21 @@ static struct mfd_cell m10bmc_pacn3000_subdevs[] = {
+>  	{ .name = "n3000bmc-secure" },
+>  };
+>  
+> +static void
+> +m10bmc_init_cells_platdata(struct intel_m10bmc_platdata *pdata,
+> +			   struct mfd_cell *cells, int n_cell)
+> +{
+> +	int i;
+> +
+> +	for (i = 0; i < n_cell; i++) {
+> +		if (!strcmp(cells[i].name, "n3000bmc-retimer")) {
+> +			cells[i].platform_data = pdata->retimer;
+> +			cells[i].pdata_size =
+> +				pdata->retimer ? sizeof(*pdata->retimer) : 0;
+> +		}
+> +	}
+> +}
+> +
+>  static struct regmap_config intel_m10bmc_regmap_config = {
+>  	.reg_bits = 32,
+>  	.val_bits = 32,
+> @@ -97,6 +112,7 @@ static int check_m10bmc_version(struct intel_m10bmc *ddata)
+>  
+>  static int intel_m10_bmc_spi_probe(struct spi_device *spi)
+>  {
+> +	struct intel_m10bmc_platdata *pdata = dev_get_platdata(&spi->dev);
+>  	const struct spi_device_id *id = spi_get_device_id(spi);
+>  	struct device *dev = &spi->dev;
+>  	struct mfd_cell *cells;
+> @@ -134,6 +150,8 @@ static int intel_m10_bmc_spi_probe(struct spi_device *spi)
+>  		return -ENODEV;
 >  	}
->  	count_vm_event(PSWPIN);
->  	bio_get(bio);
-> -	qc = submit_bio(bio);
-> +	qc = submit_bio_direct(bio);
->  	while (synchronous) {
->  		set_current_state(TASK_UNINTERRUPTIBLE);
->  		if (!READ_ONCE(bio->bi_private))
-> -- 
-> 2.20.1
-> 
+>  
+> +	m10bmc_init_cells_platdata(pdata, cells, n_cell);
+> +
+>  	ret = devm_mfd_add_devices(dev, PLATFORM_DEVID_AUTO, cells, n_cell,
+>  				   NULL, 0, NULL);
+>  	if (ret)
+> diff --git a/drivers/net/ethernet/intel/Kconfig b/drivers/net/ethernet/intel/Kconfig
+> index 5aa8631..81c43d4 100644
+> --- a/drivers/net/ethernet/intel/Kconfig
+> +++ b/drivers/net/ethernet/intel/Kconfig
+> @@ -343,4 +343,16 @@ config IGC
+>  	  To compile this driver as a module, choose M here. The module
+>  	  will be called igc.
+>  
+> +config INTEL_M10_BMC_RETIMER
+> +	tristate "Intel(R) MAX 10 BMC ethernet retimer support"
+> +	depends on MFD_INTEL_M10_BMC
+> +	select PHYLIB
+> +        help
+> +          This driver supports the ethernet retimer (Parkvale) on
+> +	  Intel(R) MAX 10 BMC, which is used by Intel PAC N3000 FPGA based
+> +	  Smart NIC.
+> +
+> +	  To compile this driver as a module, choose M here. The module
+> +	  will be called intel-m10-bmc-retimer.
+> +
+>  endif # NET_VENDOR_INTEL
+> diff --git a/drivers/net/ethernet/intel/Makefile b/drivers/net/ethernet/intel/Makefile
+> index 3075290..5965447 100644
+> --- a/drivers/net/ethernet/intel/Makefile
+> +++ b/drivers/net/ethernet/intel/Makefile
+> @@ -16,3 +16,5 @@ obj-$(CONFIG_IXGB) += ixgb/
+>  obj-$(CONFIG_IAVF) += iavf/
+>  obj-$(CONFIG_FM10K) += fm10k/
+>  obj-$(CONFIG_ICE) += ice/
+> +
+> +obj-$(CONFIG_INTEL_M10_BMC_RETIMER) += intel-m10-bmc-retimer.o
+> diff --git a/drivers/net/ethernet/intel/intel-m10-bmc-retimer.c b/drivers/net/ethernet/intel/intel-m10-bmc-retimer.c
+> new file mode 100644
+> index 0000000..c7b0558
+> --- /dev/null
+> +++ b/drivers/net/ethernet/intel/intel-m10-bmc-retimer.c
+> @@ -0,0 +1,229 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/* Intel Max10 BMC Retimer Interface Driver
+> + *
+> + * Copyright (C) 2018-2020 Intel Corporation. All rights reserved.
+> + *
+> + */
+> +#include <linux/device.h>
+> +#include <linux/mfd/intel-m10-bmc.h>
+> +#include <linux/module.h>
+> +#include <linux/phy.h>
+> +#include <linux/platform_device.h>
+> +
+> +#define NUM_CHIP	2
+> +#define MAX_LINK	4
+> +
+> +#define BITS_MASK(nbits)	((1 << (nbits)) - 1)
+> +
+> +#define N3000BMC_RETIMER_DEV_NAME "n3000bmc-retimer"
+> +#define M10BMC_RETIMER_MII_NAME "m10bmc retimer mii"
+> +
+> +struct m10bmc_retimer {
+> +	struct device *dev;
+> +	struct intel_m10bmc *m10bmc;
+> +	int num_devs;
+> +	struct device *base_dev;
+> +	struct mii_bus *retimer_mii_bus;
+> +};
+> +
+> +#define RETIMER_LINK_STAT_BIT(retimer_id, link_id) \
+> +	BIT(((retimer_id) << 2) + (link_id))
+> +
+> +static u32 retimer_get_link(struct m10bmc_retimer *retimer, int index)
+> +{
+> +	unsigned int val;
+> +
+> +	if (m10bmc_sys_read(retimer->m10bmc, PKVL_LINK_STATUS, &val)) {
+> +		dev_err(retimer->dev, "fail to read PKVL_LINK_STATUS\n");
+> +		return 0;
+> +	}
+> +
+> +	if (val & BIT(index))
+> +		return 1;
+> +
+> +	return 0;
+> +}
+> +
+> +static int m10bmc_retimer_phy_match(struct phy_device *phydev)
+> +{
+> +	if (phydev->mdio.bus->name &&
+> +	    !strcmp(phydev->mdio.bus->name, M10BMC_RETIMER_MII_NAME)) {
+> +		return 1;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static int m10bmc_retimer_phy_probe(struct phy_device *phydev)
+> +{
+> +	struct m10bmc_retimer *retimer = phydev->mdio.bus->priv;
+> +
+> +	phydev->priv = retimer;
+> +
+> +	return 0;
+> +}
+> +
+> +static void m10bmc_retimer_phy_remove(struct phy_device *phydev)
+> +{
+> +	if (phydev->attached_dev)
+> +		phy_disconnect(phydev);
+> +}
+> +
+> +static int m10bmc_retimer_read_status(struct phy_device *phydev)
+> +{
+> +	struct m10bmc_retimer *retimer = phydev->priv;
+> +
+> +	phydev->link = retimer_get_link(retimer, phydev->mdio.addr);
+> +
+> +	phydev->duplex = DUPLEX_FULL;
+> +
+> +	return 0;
+> +}
+> +
+> +static int m10bmc_retimer_get_features(struct phy_device *phydev)
+> +{
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseT_Full_BIT,
+> +			 phydev->supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseSR_Full_BIT,
+> +			 phydev->supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_10000baseLR_Full_BIT,
+> +			 phydev->supported);
+> +
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_25000baseCR_Full_BIT,
+> +			 phydev->supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_25000baseSR_Full_BIT,
+> +			 phydev->supported);
+> +
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_40000baseCR4_Full_BIT,
+> +			 phydev->supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_40000baseSR4_Full_BIT,
+> +			 phydev->supported);
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_40000baseLR4_Full_BIT,
+> +			 phydev->supported);
+> +
+> +	linkmode_set_bit(ETHTOOL_LINK_MODE_Asym_Pause_BIT, phydev->supported);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct phy_driver m10bmc_retimer_phy_driver = {
+> +	.phy_id			= 0xffffffff,
+> +	.phy_id_mask		= 0xffffffff,
+> +	.name			= "m10bmc retimer PHY",
+> +	.match_phy_device	= m10bmc_retimer_phy_match,
+> +	.probe			= m10bmc_retimer_phy_probe,
+> +	.remove			= m10bmc_retimer_phy_remove,
+> +	.read_status		= m10bmc_retimer_read_status,
+> +	.get_features		= m10bmc_retimer_get_features,
+> +	.read_mmd		= genphy_read_mmd_unsupported,
+> +	.write_mmd		= genphy_write_mmd_unsupported,
+> +};
+> +
+> +static int m10bmc_retimer_read(struct mii_bus *bus, int addr, int regnum)
+> +{
+> +	struct m10bmc_retimer *retimer = bus->priv;
+> +
+> +	if (addr < retimer->num_devs &&
+> +	    (regnum == MII_PHYSID1 || regnum == MII_PHYSID2))
+> +		return 0;
+> +
+> +	return 0xffff;
+> +}
+> +
+> +static int m10bmc_retimer_write(struct mii_bus *bus, int addr, int regnum, u16 val)
+> +{
+> +	return 0;
+> +}
+> +
+> +static int m10bmc_retimer_mii_bus_init(struct m10bmc_retimer *retimer)
+> +{
+> +	struct mii_bus *bus;
+> +	int ret;
+> +
+> +	bus = devm_mdiobus_alloc(retimer->dev);
+> +	if (!bus)
+> +		return -ENOMEM;
+> +
+> +	bus->priv = (void *)retimer;
+> +	bus->name = M10BMC_RETIMER_MII_NAME;
+> +	bus->read = m10bmc_retimer_read;
+> +	bus->write = m10bmc_retimer_write;
+> +	snprintf(bus->id, MII_BUS_ID_SIZE, "%s-mii",
+> +		 dev_name(retimer->base_dev));
+> +	bus->parent = retimer->dev;
+> +	bus->phy_mask = ~(BITS_MASK(retimer->num_devs));
+> +
+> +	ret = mdiobus_register(bus);
+> +	if (ret)
+> +		return ret;
+> +
+> +	retimer->retimer_mii_bus = bus;
+> +
+> +	return 0;
+> +}
+> +
+> +static void m10bmc_retimer_mii_bus_uinit(struct m10bmc_retimer *retimer)
+> +{
+> +	mdiobus_unregister(retimer->retimer_mii_bus);
+> +}
+> +
+> +static int intel_m10bmc_retimer_probe(struct platform_device *pdev)
+> +{
+> +	struct intel_m10bmc_retimer_pdata *pdata = dev_get_platdata(&pdev->dev);
+> +	struct intel_m10bmc *m10bmc = dev_get_drvdata(pdev->dev.parent);
+> +	struct m10bmc_retimer *retimer;
+> +
+> +	retimer = devm_kzalloc(&pdev->dev, sizeof(*retimer), GFP_KERNEL);
+> +	if (!retimer)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&pdev->dev, retimer);
+> +
+> +	retimer->dev = &pdev->dev;
+> +	retimer->m10bmc = m10bmc;
+> +	retimer->base_dev = pdata->retimer_master;
+> +	retimer->num_devs = NUM_CHIP * MAX_LINK;
+> +
+> +	return m10bmc_retimer_mii_bus_init(retimer);
+> +}
+> +
+> +static int intel_m10bmc_retimer_remove(struct platform_device *pdev)
+> +{
+> +	struct m10bmc_retimer *retimer = dev_get_drvdata(&pdev->dev);
+> +
+> +	m10bmc_retimer_mii_bus_uinit(retimer);
+> +
+> +	return 0;
+> +}
+> +
+> +static struct platform_driver intel_m10bmc_retimer_driver = {
+> +	.probe = intel_m10bmc_retimer_probe,
+> +	.remove = intel_m10bmc_retimer_remove,
+> +	.driver = {
+> +		.name = N3000BMC_RETIMER_DEV_NAME,
+> +	},
+> +};
+> +
+> +static int __init intel_m10bmc_retimer_init(void)
+> +{
+> +	int ret;
+> +
+> +	ret = phy_driver_register(&m10bmc_retimer_phy_driver, THIS_MODULE);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return platform_driver_register(&intel_m10bmc_retimer_driver);
+> +}
+> +module_init(intel_m10bmc_retimer_init);
+> +
+> +static void __exit intel_m10bmc_retimer_exit(void)
+> +{
+> +	platform_driver_unregister(&intel_m10bmc_retimer_driver);
+> +	phy_driver_unregister(&m10bmc_retimer_phy_driver);
+> +}
+> +module_exit(intel_m10bmc_retimer_exit);
+> +
+> +MODULE_ALIAS("platform:" N3000BMC_RETIMER_DEV_NAME);
+> +MODULE_AUTHOR("Intel Corporation");
+> +MODULE_DESCRIPTION("Intel MAX 10 BMC retimer driver");
+> +MODULE_LICENSE("GPL");
+> diff --git a/include/linux/mfd/intel-m10-bmc.h b/include/linux/mfd/intel-m10-bmc.h
+> index c8ef2f1..3d9d22c 100644
+> --- a/include/linux/mfd/intel-m10-bmc.h
+> +++ b/include/linux/mfd/intel-m10-bmc.h
+> @@ -21,6 +21,22 @@
+>  #define M10BMC_VER_PCB_INFO_MSK		GENMASK(31, 24)
+>  #define M10BMC_VER_LEGACY_INVALID	0xffffffff
+>  
+> +/* PKVL related registers, in system register region */
+> +#define PKVL_LINK_STATUS		0x164
+> +
+> +/**
+> + * struct intel_m10bmc_retimer_pdata - subdev retimer platform data
+> + *
+> + * @retimer_master: the NIC device which connects to the retimers on m10bmc
+> + */
+> +struct intel_m10bmc_retimer_pdata {
+> +	struct device *retimer_master;
+> +};
+> +
+> +struct intel_m10bmc_platdata {
+> +	struct intel_m10bmc_retimer_pdata *retimer;
+> +};
+> +
+>  /**
+>   * struct intel_m10bmc - Intel MAX 10 BMC parent driver data structure
+>   * @dev: this device
+
