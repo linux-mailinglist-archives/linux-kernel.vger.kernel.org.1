@@ -2,88 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B4B202979FE
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:30:00 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 56FD02979F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 02:29:04 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1754346AbgJXA3Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 20:29:16 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:38420 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S463294AbgJXA3Q (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 20:29:16 -0400
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [IPv6:2001:4b98:dc2:55:216:3eff:fef7:d647])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id F0644C0613CE;
-        Fri, 23 Oct 2020 17:29:15 -0700 (PDT)
-Received: from pendragon.ideasonboard.com (62-78-145-57.bb.dnainternet.fi [62.78.145.57])
-        by perceval.ideasonboard.com (Postfix) with ESMTPSA id 80AD49BF;
-        Sat, 24 Oct 2020 02:29:11 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-        s=mail; t=1603499351;
-        bh=IlzYRBOsDD97czhYETs7QIf9PdFJSskIenhWtRzn4PE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=joPX14W8Yq06KznIRrxKnuvb+f2QR1HTUedDdIku3TRdlCdgFLgxF7WQGM9PnkKiA
-         X3KTUjeFCH0BdCqE++Iq93Zdq3UUb5dtADSO6UFmy7epLXU2OTf/5or6K17EZAme7E
-         4lMr9uvjtKNnX+PfVcLGiDY+V9BETP6uxNwwmMEo=
-Date:   Sat, 24 Oct 2020 03:28:25 +0300
-From:   Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To:     Daniel Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linux.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
-        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
-        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
-        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com,
-        dan.carpenter@oracle.org
-Subject: Re: [RFC PATCH v3 5/9] ipu3-cio2: Add T: entry to MAINTAINERS
-Message-ID: <20201024002825.GQ5979@pendragon.ideasonboard.com>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-6-djrscally@gmail.com>
+        id S1756435AbgJXA2q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 20:28:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41690 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1756390AbgJXA2q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 20:28:46 -0400
+Received: from localhost (cpc102338-sgyl38-2-0-cust404.18-2.cable.virginm.net [77.102.33.149])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9958622274;
+        Sat, 24 Oct 2020 00:28:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603499326;
+        bh=32XWQhmf2fVSD8v1CY5v7gHT3K2lKMcNN/oPnMyqnMM=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=JPGAuEs7+4VUhMKKdXZG/LQTnx1a+EStQyyQ6fkoVqfPgjFgmepkBZDsV/h20Bd4B
+         P8/Sm6HsBShl7Ko/IhG8Q/XiWPSgahyb4A/ColiqD4Bp4V2NuyHnN+DXyO3bC3cG8/
+         +x+Cj8IJzevU9ULTEYXsTeiKGuhdL0W4QfHr/CoQ=
+Date:   Sat, 24 Oct 2020 01:28:44 +0100
+From:   Mark Brown <broonie@kernel.org>
+To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Cc:     lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20201023095849.22894-1-srinivas.kandagatla@linaro.org>
+References: <20201023095849.22894-1-srinivas.kandagatla@linaro.org>
+Subject: Re: [PATCH] ASoC: qcom: sdm845: set driver name correctly
+Message-Id: <160349931942.28438.7096729717850687887.b4-ty@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201019225903.14276-6-djrscally@gmail.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-Thank you for the patch.
-
-On Mon, Oct 19, 2020 at 11:58:59PM +0100, Daniel Scally wrote:
-> Development for the ipu3-cio2 driver is taking place in media_tree, but
-> there's no T: entry in MAINTAINERS to denote that - rectify that oversight
+On Fri, 23 Oct 2020 10:58:49 +0100, Srinivas Kandagatla wrote:
+> With the current state of code, we would endup with something like
+> below in /proc/asound/cards for 2 machines based on this driver.
 > 
-> Signed-off-by: Daniel Scally <djrscally@gmail.com>
-
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-
-> ---
-> Changes in v3:
-> 	- patch introduced.
-> 	
->  MAINTAINERS | 1 +
->  1 file changed, 1 insertion(+)
+> Machine 1:
+>  0 [DB845c            ]: DB845c - DB845c
+>                        DB845c
+> Machine 2:
+>  0 [LenovoYOGAC6301]: Lenovo-YOGA-C63 - Lenovo-YOGA-C630-13Q50
+>                      LENOVO-81JL-LenovoYOGAC630_13Q50-LNVNB161216
 > 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 43a025039..5d768d5ad 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -8851,6 +8851,7 @@ M:	Bingbu Cao <bingbu.cao@intel.com>
->  R:	Tianshu Qiu <tian.shu.qiu@intel.com>
->  L:	linux-media@vger.kernel.org
->  S:	Maintained
-> +T:	git git://linuxtv.org/media_tree.git
->  F:	Documentation/userspace-api/media/v4l/pixfmt-srggb10-ipu3.rst
->  F:	drivers/media/pci/intel/ipu3/
+> [...]
 
--- 
-Regards,
+Applied to
 
-Laurent Pinchart
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+
+Thanks!
+
+[1/1] ASoC: qcom: sdm845: set driver name correctly
+      commit: 3f48b6eba15ea342ef4cb420b580f5ed6605669f
+
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
+
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
