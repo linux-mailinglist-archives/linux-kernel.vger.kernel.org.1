@@ -2,38 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C975297D32
+	by mail.lfdr.de (Postfix) with ESMTP id A43CC297D33
 	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 17:53:26 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1762096AbgJXPod (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 11:44:33 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:41078 "EHLO
+        id S1762117AbgJXPom (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 11:44:42 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:32207 "EHLO
         us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1756857AbgJXPoc (ORCPT
+        by vger.kernel.org with ESMTP id S1761098AbgJXPol (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 11:44:32 -0400
+        Sat, 24 Oct 2020 11:44:41 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603554271;
+        s=mimecast20190719; t=1603554280;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
          to:to:cc:cc:mime-version:mime-version:content-type:content-type:
          in-reply-to:in-reply-to:references:references;
-        bh=mI5GbpgU1NnbT11QNPGPODS/+cPzVZHr6APt9Y3KhDg=;
-        b=eCNsbyUjTIuTlGMOZQ997GycZJ66fukQbD6nUUjpd6311ziaS0Gh6WBMTBjbZGudK81hK7
-        vTvaUGL/tzsIbMkhjrAismkRj6CeihBwqgoexBCOgVjKzWtrr/obzgPbwAISrsMTaJAcu5
-        h7SmxjIia5rBGOnqkHymtGzQIggnavw=
+        bh=32NgTVPVkV+hTa4Fp4UdRpCuBFT6chXDih3qL8r3EJ4=;
+        b=Q9kswszBQ2x+rSBjoF5zThz9IVuxSGp8ldfvbt9FeWnJkfksoHcoSQVj4ObvbsPyMpVg9O
+        N9Awz7RInoX+pFOJ46GMvhKqXX9cjUt1l1EFG9SOBkhRo447rz38NoFMIlt5WVdseZfhv9
+        UtvSqt9qW61qB7Wp6JMi4glsGCz/S0Y=
 Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
  [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-386-tKtnOXtrNjSuwb_Lp1DUuQ-1; Sat, 24 Oct 2020 11:44:27 -0400
-X-MC-Unique: tKtnOXtrNjSuwb_Lp1DUuQ-1
+ us-mta-66-wxqpZYWnMPSSSnyVjilsJw-1; Sat, 24 Oct 2020 11:44:35 -0400
+X-MC-Unique: wxqpZYWnMPSSSnyVjilsJw-1
 Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
         (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
         (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id E693C804B6A;
-        Sat, 24 Oct 2020 15:44:25 +0000 (UTC)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 4A1F51868404;
+        Sat, 24 Oct 2020 15:44:34 +0000 (UTC)
 Received: from krava (unknown [10.40.192.80])
-        by smtp.corp.redhat.com (Postfix) with SMTP id 0DA4860CD0;
-        Sat, 24 Oct 2020 15:44:23 +0000 (UTC)
-Date:   Sat, 24 Oct 2020 17:44:23 +0200
+        by smtp.corp.redhat.com (Postfix) with SMTP id 6389360C84;
+        Sat, 24 Oct 2020 15:44:32 +0000 (UTC)
+Date:   Sat, 24 Oct 2020 17:44:31 +0200
 From:   Jiri Olsa <jolsa@redhat.com>
 To:     Alexey Budankov <alexey.budankov@linux.intel.com>
 Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
@@ -44,45 +44,70 @@ Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
         Peter Zijlstra <peterz@infradead.org>,
         Ingo Molnar <mingo@redhat.com>,
         linux-kernel <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 08/15] perf record: write trace data into mmap trace
- files
-Message-ID: <20201024154423.GG2589351@krava>
+Subject: Re: [PATCH v2 09/15] perf record: introduce thread specific objects
+ for trace streaming
+Message-ID: <20201024154431.GH2589351@krava>
 References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
- <1202e665-6321-28d4-eca3-b21693364467@linux.intel.com>
+ <bede5b00-8419-c03f-8595-7011679d363a@linux.intel.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1202e665-6321-28d4-eca3-b21693364467@linux.intel.com>
+In-Reply-To: <bede5b00-8419-c03f-8595-7011679d363a@linux.intel.com>
 X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 07:02:56PM +0300, Alexey Budankov wrote:
+On Wed, Oct 21, 2020 at 07:03:48PM +0300, Alexey Budankov wrote:
+> 
+> Introduce thread local data object and its array to be used for
+> threaded trace streaming.
+> 
+> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+> ---
+>  tools/perf/builtin-record.c | 18 ++++++++++++++++++
+>  1 file changed, 18 insertions(+)
+> 
+> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+> index ba26d75c51d6..8e512096a060 100644
+> --- a/tools/perf/builtin-record.c
+> +++ b/tools/perf/builtin-record.c
+> @@ -85,11 +85,29 @@ struct switch_output {
+>  	int		 cur_file;
+>  };
+>  
+> +struct thread_data {
+> +	pid_t		   tid;
+> +	struct {
+> +		int	   msg[2];
+> +		int	   ack[2];
+> +	} comm;
+> +	struct fdarray	   pollfd;
+> +	int		   ctlfd_pos;
+> +	struct mmap	   *maps;
+> +	int		   nr_mmaps;
+> +	struct record	   *rec;
+> +	unsigned long long samples;
+> +	unsigned long	   waking;
+> +	u64		   bytes_written;
+> +};
 
-SNIP
-
->  
->  	record__synthesize(rec, true);
-> -	/* this will be recalculated during process_buildids() */
-> -	rec->samples = 0;
->  
->  	if (!err) {
->  		if (!rec->timestamp_filename) {
-> @@ -2680,9 +2709,12 @@ int cmd_record(int argc, const char **argv)
->  
->  	}
->  
-> -	if (rec->opts.kcore)
-> +	if (rec->opts.kcore || record__threads_enabled(rec))
->  		rec->data.is_dir = true;
->  
-> +	if (record__threads_enabled(rec))
-> +		rec->opts.affinity = PERF_AFFINITY_CPU;
-
-so all the threads will pin to cpu and back before reading?
-it makes sense for one thread, but why not pin every thread
-at the start?
+please merge the struct with the code that's using it
 
 jirka
+
+> +
+>  struct record {
+>  	struct perf_tool	tool;
+>  	struct record_opts	opts;
+>  	u64			bytes_written;
+>  	struct perf_data	data;
+> +	struct thread_data	*thread_data;
+> +	int			nr_thread_data;
+>  	struct auxtrace_record	*itr;
+>  	struct evlist	*evlist;
+>  	struct perf_session	*session;
+> -- 
+> 2.24.1
+> 
 
