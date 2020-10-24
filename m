@@ -2,160 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CFF8B297A50
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:09:48 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 90FBC297A52
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 04:13:44 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1758900AbgJXCJe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 22:09:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:53664 "EHLO
+        id S1757082AbgJXCNd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 22:13:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:54262 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1756462AbgJXCJe (ORCPT
+        with ESMTP id S1756727AbgJXCNd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 22:09:34 -0400
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 31DD4C0613CE
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:09:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=RzNHOCYQ4xJRdKe5TcT6iQTXGCT7yybZ343knApl/AA=; b=AD2j7MmhRRxAwLhKomRXF3tlDJ
-        CpvodUK4U4D9S5o2yX+9N2c0hZ2izTgcwzrAIjBEAt0YN0gL97/UUpWt8S8rSt6RWuRCQHww86g3V
-        Z0RHtsOuXlrZ272JVhhtIYePWYhRzF5DMaGyLn5m9MOdb2mT1oWDtrGPHK3Z9daemIXsrPaP6+UHo
-        8G2oLQbRBTYUlldc29uenjMaJA3n+2AuZvkdfPcH0i2Hg/HoCsJuFFT7NBFdzYd8PsHYTroJu28sP
-        6hmBhaciBE0oJ2fHDNTXCpmCp8/NCF4NUgoDa7T+IZLFuCrdbVuDA3XZVwfb9355G6wygXNf3s9Xj
-        s+PluDkQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kW8zi-00086a-3F; Sat, 24 Oct 2020 02:09:22 +0000
-Date:   Sat, 24 Oct 2020 03:09:22 +0100
-From:   Matthew Wilcox <willy@infradead.org>
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Hugh Dickins <hughd@google.com>, Yu Xu <xuyu@linux.alibaba.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Mel Gorman <mgorman@suse.de>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        linux-kernel@vger.kernel.org, kernel-team@fb.com,
-        linux-mm@kvack.org, Vlastimil Babka <vbabka@suse.cz>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v4] mm,thp,shmem: limit shmem THP alloc gfp_mask
-Message-ID: <20201024020922.GH20115@casper.infradead.org>
-References: <20201023204804.3f8d19c1@imladris.surriel.com>
+        Fri, 23 Oct 2020 22:13:33 -0400
+Received: from mail-oi1-x243.google.com (mail-oi1-x243.google.com [IPv6:2607:f8b0:4864:20::243])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 461E2C0613CE
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:13:33 -0700 (PDT)
+Received: by mail-oi1-x243.google.com with SMTP id f8so4009439oij.10
+        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 19:13:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=0Ujqe4ZUZFtu/lYhqxeeV/BQscYr5R12aTQxmFkXZqQ=;
+        b=RnL9+h3MHknkfWyccUeUFg+CuFhAHssEBLufs1jVN8iAXg7+elkF2mZSLEjRLAAp4I
+         Fvqus6nnfgFlkX4FYfdqgPqe+/nAutGI8c2G1IAdi/kIvXRrWugrguUi/VM3oDI3vl8+
+         goY8Nlvmw4piK+AIlMpVqTtOwhsyAMrr0mbOwoXLTHbLFIxdJSWNPGgr4CfzfL8FzC4q
+         idUW6u00cHwfjTxnQV6srSNOVhvFWN+T4KkTf+Gpq9NrT41O0nGwROc/o4DJlHgTO4GZ
+         yQ66Ic9cXdxyQPXL8d7f4fkuyLxbIxUd1Vmxx/PK1uMiLUU8efwDmznSvLQ0hOvUSFiX
+         AZWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc
+         :content-transfer-encoding;
+        bh=0Ujqe4ZUZFtu/lYhqxeeV/BQscYr5R12aTQxmFkXZqQ=;
+        b=pWhL5xSAOrBr+/5oLdt8AocYwdShilR0CdAqEgOvQlLPdSxy1URO6ouwURyGIaIgrQ
+         f+070ecbv14uy9HQPHoA4ZrnRb3wO0GjAuNappGcIQ0S3T9sIkaRqqQc1UFNwnV8Rt7B
+         fF5obDy0YK2FPlKjSt7VU5plC02uFCW5/dD2TZrEBuDoJU95X50pL/HFt/XnlS4/Dbke
+         AP6YyMXX8nN8aptgulL7gBFsIntTGK8Gaa8bzPfwqmnmxERUlLijFybpDPURiQe/tNDf
+         J0ceWo1AQbOuTZDAUr0au58i8IntQ7qHiQxuqtSVRzuYmIknJk5grw5jAPrNMIV6DkoR
+         RPiA==
+X-Gm-Message-State: AOAM533iai0cf7ofnV05v7cynhqs0qOvcrVkbQ5KpH1iPo3p9w8/znJM
+        3puCeLQYdurjryf0OfPWwIu2DrcpEP8FJLQmpB5clA==
+X-Google-Smtp-Source: ABdhPJylPkgfbyKnnnP8iIPPmlxSrfJUSjgIrcloB7NBlcY8qCf2tlR3+0iPpZ3lSJ8/DSepEaoAnPT/pTnbAUpD86U=
+X-Received: by 2002:a05:6808:605:: with SMTP id y5mr4332428oih.172.1603505612450;
+ Fri, 23 Oct 2020 19:13:32 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023204804.3f8d19c1@imladris.surriel.com>
+From:   =?UTF-8?B?RGFuaWVsIETDrWF6?= <daniel.diaz@linaro.org>
+Date:   Fri, 23 Oct 2020 21:13:21 -0500
+Message-ID: <CAEUSe7_bptXLQQt5TkUoVitnFbnAF-KkyqQpcZnYuKgSGuBpPw@mail.gmail.com>
+Subject: kvm: x86-32 fails to link with tdp_mmu
+To:     Ben Gardon <bgardon@google.com>
+Cc:     Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+        X86 ML <x86@kernel.org>, "H. Peter Anvin" <hpa@zytor.com>,
+        kvm list <kvm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 08:48:04PM -0400, Rik van Riel wrote:
-> The allocation flags of anonymous transparent huge pages can be controlled
-> through the files in /sys/kernel/mm/transparent_hugepage/defrag, which can
-> help the system from getting bogged down in the page reclaim and compaction
-> code when many THPs are getting allocated simultaneously.
-> 
-> However, the gfp_mask for shmem THP allocations were not limited by those
-> configuration settings, and some workloads ended up with all CPUs stuck
-> on the LRU lock in the page reclaim code, trying to allocate dozens of
-> THPs simultaneously.
-> 
-> This patch applies the same configurated limitation of THPs to shmem
-> hugepage allocations, to prevent that from happening.
-> 
-> This way a THP defrag setting of "never" or "defer+madvise" will result
-> in quick allocation failures without direct reclaim when no 2MB free
-> pages are available.
-> 
-> With this patch applied, THP allocations for tmpfs will be a little
-> more aggressive than today for files mmapped with MADV_HUGEPAGE,
-> and a little less aggressive for files that are not mmapped or
-> mapped without that flag.
+Hello!
 
-How about this code path though?
+We found the following problem building torvalds/master, which
+recently merged the for-linus tag from the KVM tree, when building
+with gcc 7.3.0 and glibc 2.27 for x86 32-bits under OpenEmbedded:
 
-shmem_get_pages() [ in i915 ]
-  shmem_read_mapping_page_gfp(__GFP_NORETRY | __GFP_NOWARN)
-    shmem_getpage_gfp()
-      shmem_alloc_and_acct_page()
-        shmem_alloc_hugepage()
+|   LD      vmlinux.o
+|   MODPOST vmlinux.symvers
+|   MODINFO modules.builtin.modinfo
+|   GEN     modules.builtin
+|   LD      .tmp_vmlinux.kallsyms1
+| arch/x86/kvm/mmu/tdp_mmu.o: In function `__handle_changed_spte':
+| tdp_mmu.c:(.text+0x78a): undefined reference to `__umoddi3'
+| /srv/oe/build/tmp-lkft-glibc/work-shared/intel-core2-32/kernel-source/Mak=
+efile:1164:
+recipe for target 'vmlinux' failed
+| make[1]: *** [vmlinux] Error 1
+| /srv/oe/build/tmp-lkft-glibc/work-shared/intel-core2-32/kernel-source/Mak=
+efile:185:
+recipe for target '__sub-make' failed
+| make: *** [__sub-make] Error 2
 
-I feel like the NORETRY from i915 should override whatever is set
-in sysfs for anon THPs.  What do others think?
+This builds fine for x86 (64 bits) and arm (32/64 bits) with the same
+toolchain. This also builds correctly (outside OpenEmbedded) with
+gcc-8, gcc-9 and gcc-10 for: x86 (32/64 bits), arm (32/64 bits), MIPS,
+and RISCV; and gcc-8 and gcc-9 for ARC.
 
-> Signed-off-by: Rik van Riel <riel@surriel.com>
-> --- 
-> v4: rename alloc_hugepage_direct_gfpmask to vma_thp_gfp_mask (Matthew Wilcox)
-> v3: fix NULL vma issue spotted by Hugh Dickins & tested
-> v2: move gfp calculation to shmem_getpage_gfp as suggested by Yu Xu
-> 
-> diff --git a/include/linux/gfp.h b/include/linux/gfp.h
-> index c603237e006c..c7615c9ba03c 100644
-> --- a/include/linux/gfp.h
-> +++ b/include/linux/gfp.h
-> @@ -614,6 +614,8 @@ bool gfp_pfmemalloc_allowed(gfp_t gfp_mask);
->  extern void pm_restrict_gfp_mask(void);
->  extern void pm_restore_gfp_mask(void);
->  
-> +extern gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma);
-> +
->  #ifdef CONFIG_PM_SLEEP
->  extern bool pm_suspended_storage(void);
->  #else
-> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-> index 9474dbc150ed..c5d03b2f2f2f 100644
-> --- a/mm/huge_memory.c
-> +++ b/mm/huge_memory.c
-> @@ -649,9 +649,9 @@ static vm_fault_t __do_huge_pmd_anonymous_page(struct vm_fault *vmf,
->   *	    available
->   * never: never stall for any thp allocation
->   */
-> -static inline gfp_t alloc_hugepage_direct_gfpmask(struct vm_area_struct *vma)
-> +gfp_t vma_thp_gfp_mask(struct vm_area_struct *vma)
->  {
-> -	const bool vma_madvised = !!(vma->vm_flags & VM_HUGEPAGE);
-> +	const bool vma_madvised = vma && (vma->vm_flags & VM_HUGEPAGE);
->  
->  	/* Always do synchronous compaction */
->  	if (test_bit(TRANSPARENT_HUGEPAGE_DEFRAG_DIRECT_FLAG, &transparent_hugepage_flags))
-> @@ -744,7 +744,7 @@ vm_fault_t do_huge_pmd_anonymous_page(struct vm_fault *vmf)
->  			pte_free(vma->vm_mm, pgtable);
->  		return ret;
->  	}
-> -	gfp = alloc_hugepage_direct_gfpmask(vma);
-> +	gfp = vma_thp_gfp_mask(vma);
->  	page = alloc_hugepage_vma(gfp, vma, haddr, HPAGE_PMD_ORDER);
->  	if (unlikely(!page)) {
->  		count_vm_event(THP_FAULT_FALLBACK);
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 537c137698f8..6c3cb192a88d 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -1545,8 +1545,8 @@ static struct page *shmem_alloc_hugepage(gfp_t gfp,
->  		return NULL;
->  
->  	shmem_pseudo_vma_init(&pvma, info, hindex);
-> -	page = alloc_pages_vma(gfp | __GFP_COMP | __GFP_NORETRY | __GFP_NOWARN,
-> -			HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(), true);
-> +	page = alloc_pages_vma(gfp, HPAGE_PMD_ORDER, &pvma, 0, numa_node_id(),
-> +			       true);
->  	shmem_pseudo_vma_destroy(&pvma);
->  	if (page)
->  		prep_transhuge_page(page);
-> @@ -1802,6 +1802,7 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  	struct page *page;
->  	enum sgp_type sgp_huge = sgp;
->  	pgoff_t hindex = index;
-> +	gfp_t huge_gfp;
->  	int error;
->  	int once = 0;
->  	int alloced = 0;
-> @@ -1887,7 +1888,8 @@ static int shmem_getpage_gfp(struct inode *inode, pgoff_t index,
->  	}
->  
->  alloc_huge:
-> -	page = shmem_alloc_and_acct_page(gfp, inode, index, true);
-> +	huge_gfp = vma_thp_gfp_mask(vma);
-> +	page = shmem_alloc_and_acct_page(huge_gfp, inode, index, true);
->  	if (IS_ERR(page)) {
->  alloc_nohuge:
->  		page = shmem_alloc_and_acct_page(gfp, inode,
+We first noticed this when 0adc313c4f20 was pushed, but reverting
+f9a705ad1c07 ("Merge tag 'for-linus' of
+git://git.kernel.org/pub/scm/virt/kvm/kvm") brought it back into
+building.
+
+A follow-up bisection led to faaf05b00aec ("kvm: x86/mmu: Support
+zapping SPTEs in the TDP MMU"). In that commit, the problematic code
+was:
+
+        handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_spte=
+,
+                            iter->level);
+
+which was later changed by f8e144971c68 ("kvm: x86/mmu: Add access
+tracking for tdp_mmu") to:
+
+        __handle_changed_spte(kvm, as_id, iter->gfn, iter->old_spte, new_sp=
+te,
+                              iter->level);
+
+Greetings!
+
+Daniel D=C3=ADaz
+daniel.diaz@linaro.org
