@@ -2,236 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4B6C8297A78
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:10:14 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id A0FA2297A7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 05:12:20 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759307AbgJXDKE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 23:10:04 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58178 "EHLO mail.kernel.org"
+        id S1759319AbgJXDMI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 23:12:08 -0400
+Received: from mga06.intel.com ([134.134.136.31]:38867 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1759300AbgJXDKC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 23:10:02 -0400
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F0F8D22272
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 03:10:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603509001;
-        bh=T2MY35WzTyMya24fc1ZRV/JbBaR5f7YTXksJCq7PiYg=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=lSEpSy2qpv44JkKtncmsE8Ns/GpLo+I5kNHv92N1+B/azneD2Bp3+1DPrvhxzpMCV
-         qbNVXOrpmMjZUJPfORP7SLQy7i88IMOEcg81BdTP1FXQMjgPA3TPPPlVyKFLxvfkSQ
-         RqmvAG1u6euo4PGB1FoeRyU/BZkCTZhDMktLyqxs=
-Received: by mail-lf1-f45.google.com with SMTP id c141so4452622lfg.5
-        for <linux-kernel@vger.kernel.org>; Fri, 23 Oct 2020 20:10:00 -0700 (PDT)
-X-Gm-Message-State: AOAM530WtCoOcSNw1LWWlBz3E0WEH/6ARLZHo8dfd+VTsj1JSnzHy/0Z
-        faa84cxwUZZPc7buhIlbZlw1YFjHmJJBiWIo1nk=
-X-Google-Smtp-Source: ABdhPJzk/Eff6yLqLbwZHcWOxTj59jpy4SEfa8P10MfMEwbh3atXnMPy370F7GDb5S/xd9ADT89o8s4JLP5bLoauvL8=
-X-Received: by 2002:a19:e305:: with SMTP id a5mr1595530lfh.549.1603508999204;
- Fri, 23 Oct 2020 20:09:59 -0700 (PDT)
+        id S1759309AbgJXDMH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 23:12:07 -0400
+IronPort-SDR: D5OXP6KpamIb9aVNOSFKkZTTJQT7tLUkUDHFFUhlJuDOi3uzpsPSYjD3vlYiti0N+VOhBuitJp
+ /2r60hwkENaA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9783"; a="229389569"
+X-IronPort-AV: E=Sophos;i="5.77,410,1596524400"; 
+   d="scan'208";a="229389569"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Oct 2020 20:11:59 -0700
+IronPort-SDR: bIZ2xj+aw96+Sk1yGTWgbb5Ogmaor9oKaSj9duSyedbvH1saqltNxrA9rOPpS3/YmqrJibpRFZ
+ nKVX7ZkXQj6w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,410,1596524400"; 
+   d="scan'208";a="354637310"
+Received: from sjchrist-coffee.jf.intel.com ([10.54.74.160])
+  by fmsmga002.fm.intel.com with ESMTP; 23 Oct 2020 20:11:59 -0700
+From:   Sean Christopherson <sean.j.christopherson@intel.com>
+To:     Paolo Bonzini <pbonzini@redhat.com>,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>, kvm@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        =?UTF-8?q?Daniel=20D=C3=ADaz?= <daniel.diaz@linaro.org>
+Subject: [PATCH] KVM: x86/mmu: Avoid modulo operator on 64-bit value to fix i386 build
+Date:   Fri, 23 Oct 2020 20:11:50 -0700
+Message-Id: <20201024031150.9318-1-sean.j.christopherson@intel.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-References: <1603448245-79429-1-git-send-email-guoren@kernel.org> <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com>
-In-Reply-To: <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com>
-From:   Guo Ren <guoren@kernel.org>
-Date:   Sat, 24 Oct 2020 11:09:47 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
-Message-ID: <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
-Subject: Re: [PATCH 1/3] irqchip/irq-sifive-plic: Fixup wrong size of
- xxx_PER_HART and reg base
-To:     Anup Patel <anup@brainfault.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, wesley@sifive.com,
-        Yash Shah <yash.shah@sifive.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 8:31 PM Anup Patel <anup@brainfault.org> wrote:
->
-> On Fri, Oct 23, 2020 at 3:48 PM <guoren@kernel.org> wrote:
-> >
-> > From: Guo Ren <guoren@linux.alibaba.com>
-> >
-> > ENABLE and CONTEXT registers contain M & S status for per-hart, so
-> > ref to the specification the correct definition is double to the
-> > current value.
-> >
-> > The value of hart_base and enable_base should be calculated by real
-> > physical hartid not software id. Sometimes the CPU node's <reg>
-> > from dts is not equal to the sequence index.
-> >
-> > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > ---
-> >  drivers/irqchip/irq-sifive-plic.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > index eaa3e9f..2e56576 100644
-> > --- a/drivers/irqchip/irq-sifive-plic.c
-> > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > @@ -44,16 +44,16 @@
-> >   * Each hart context has a vector of interrupt enable bits associated with it.
-> >   * There's one bit for each interrupt source.
-> >   */
-> > -#define ENABLE_BASE                    0x2000
-> > -#define     ENABLE_PER_HART            0x80
-> > +#define ENABLE_BASE                    0x2080
-> > +#define     ENABLE_PER_HART            0x100
-> >
-> >  /*
-> >   * Each hart context has a set of control registers associated with it.  Right
-> >   * now there's only two: a source priority threshold over which the hart will
-> >   * take an interrupt, and a register to claim interrupts.
-> >   */
-> > -#define CONTEXT_BASE                   0x200000
-> > -#define     CONTEXT_PER_HART           0x1000
-> > +#define CONTEXT_BASE                   0x201000
-> > +#define     CONTEXT_PER_HART           0x2000
-> >  #define     CONTEXT_THRESHOLD          0x00
-> >  #define     CONTEXT_CLAIM              0x04
-> >
-> > @@ -358,10 +358,10 @@ static int __init plic_init(struct device_node *node,
-> >                 cpumask_set_cpu(cpu, &priv->lmask);
-> >                 handler->present = true;
-> >                 handler->hart_base =
-> > -                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
-> > +                       priv->regs + CONTEXT_BASE + hartid * CONTEXT_PER_HART;
-> >                 raw_spin_lock_init(&handler->enable_lock);
-> >                 handler->enable_base =
-> > -                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
-> > +                       priv->regs + ENABLE_BASE + hartid * ENABLE_PER_HART;
-> >                 handler->priv = priv;
-> >  done:
-> >                 for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
-> > --
-> > 2.7.4
-> >
->
-> There is no one-to-one mapping between PLIC context and HARTID. Instead,
-> we have many-to-one mapping between PLIC contexts and HARTID. In other
-> words, we have one PLIC context for each interrupt capable mode (i.e.
-> M/S-mode) of each HART.
->
-> For example, on SiFive Unleashed we have 5 HARTs but HARTID=0 has
-> only M-mode capable of taking interrupts so we have total (1 + 2x4) = 9
-> PLIC contexts.
-That's OK, but what the bug I want to point out is enable_base &
-context_base should be calculated by 'hartid' not 'i'.
+Replace a modulo operator with the more common pattern for computing the
+gfn "offset" of a huge page to fix an i386 build error.
 
-For example, how we deal with below dts configuration:
-        cpus {
-                #address-cells = <1>;
-                #size-cells = <0>;
-                timebase-frequency = <3000000>;
-                cpu@0 {
-                        device_type = "cpu";
-                        reg = <2>;  //********* different from index
-                        status = "okay";
-                        compatible = "riscv";
-                        riscv,isa = "rv64imafdcsu";
-                        mmu-type = "riscv,sv39";
-                        cpu0_intc: interrupt-controller {
-                                #interrupt-cells = <1>;
-                                compatible = "riscv,cpu-intc";
-                                interrupt-controller;
-                        };
-                };
-                cpu@1 {
-                        device_type = "cpu";
-                        reg = <3>; //********* different from index
-                        status = "fail";
-                        compatible = "riscv";
-                        riscv,isa = "rv64imafdcsu";
-                        mmu-type = "riscv,sv39";
-                        cpu1_intc: interrupt-controller {
-                                #interrupt-cells = <1>;
-                                compatible = "riscv,cpu-intc";
-                                interrupt-controller;
-                        };
-                };
-      }
+  arch/x86/kvm/mmu/tdp_mmu.c:212: undefined reference to `__umoddi3'
 
->
-> I would also like to highlight that this patch is forcing PLIC driver to always
-> use PLIC S-mode context for each HART which breaks the Linux RISC-V
-> NoMMU kernel.
-Yes, I forgot M-mode and I will correct it.
+Fixes: 2f2fad0897cb ("kvm: x86/mmu: Add functions to handle changed TDP SPTEs")
+Reported-by: Daniel Díaz <daniel.diaz@linaro.org>
+Signed-off-by: Sean Christopherson <sean.j.christopherson@intel.com>
+---
 
->
-> There is no issue with the existing defines because these are aligned with
-> above and latest PLIC spec.
-> (Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc)
->
-> NACK to this patch from my side.
+Linus, do you want to take this directly so that it's in rc1?  I don't
+know whether Paolo will be checking mail before then.
 
-Here is my new patch which fixup m-mode linux:
+ arch/x86/kvm/mmu/tdp_mmu.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/irqchip/irq-sifive-plic.c
-b/drivers/irqchip/irq-sifive-plic.c
-index 4048657..e34e1d9 100644
---- a/drivers/irqchip/irq-sifive-plic.c
-+++ b/drivers/irqchip/irq-sifive-plic.c
-@@ -45,7 +45,13 @@
-  * There's one bit for each interrupt source.
-  */
- #define ENABLE_BASE                    0x2000
--#define     ENABLE_PER_HART            0x80
-+#define     ENABLE_PER_HART            0x100
-+#ifdef CONFIG_RISCV_M_MODE
-+#define     ENABLE_OFFSET              0
-+#else
-+#define     ENABLE_OFFSET              0x80
-+#endif
-+
+diff --git a/arch/x86/kvm/mmu/tdp_mmu.c b/arch/x86/kvm/mmu/tdp_mmu.c
+index e246d71b8ea2..27e381c9da6c 100644
+--- a/arch/x86/kvm/mmu/tdp_mmu.c
++++ b/arch/x86/kvm/mmu/tdp_mmu.c
+@@ -209,7 +209,7 @@ static void __handle_changed_spte(struct kvm *kvm, int as_id, gfn_t gfn,
+ 
+ 	WARN_ON(level > PT64_ROOT_MAX_LEVEL);
+ 	WARN_ON(level < PG_LEVEL_4K);
+-	WARN_ON(gfn % KVM_PAGES_PER_HPAGE(level));
++	WARN_ON(gfn & (KVM_PAGES_PER_HPAGE(level) - 1));
+ 
+ 	/*
+ 	 * If this warning were to trigger it would indicate that there was a
+-- 
+2.28.0
 
- /*
-  * Each hart context has a set of control registers associated with it.  Right
-@@ -53,9 +59,14 @@
-  * take an interrupt, and a register to claim interrupts.
-  */
- #define CONTEXT_BASE                   0x200000
--#define     CONTEXT_PER_HART           0x1000
-+#define     CONTEXT_PER_HART           0x2000
- #define     CONTEXT_THRESHOLD          0x00
- #define     CONTEXT_CLAIM              0x04
-+#ifdef CONFIG_RISCV_M_MODE
-+#define     CONTEXT_OFFSET             0
-+#else
-+#define     CONTEXT_OFFSET             0x1000
-+#endif
-
- #define        PLIC_DISABLE_THRESHOLD          0x7
- #define        PLIC_ENABLE_THRESHOLD           0
-@@ -358,10 +369,10 @@ static int __init plic_init(struct device_node *node,
-                cpumask_set_cpu(cpu, &priv->lmask);
-                handler->present = true;
-                handler->hart_base =
--                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
-+                       priv->regs + CONTEXT_BASE + hartid *
-CONTEXT_PER_HART + CONTEXT_OFFSET;
-                raw_spin_lock_init(&handler->enable_lock);
-                handler->enable_base =
--                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
-+                       priv->regs + ENABLE_BASE + hartid *
-ENABLE_PER_HART + ENABLE_OFFSET;
-                handler->priv = priv;
- done:
-                for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
-
---
-Best Regards
- Guo Ren
-
-ML: https://lore.kernel.org/linux-csky/
