@@ -2,103 +2,76 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1533E297CB4
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 16:01:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id F1DEB297CB6
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 16:04:13 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1761840AbgJXOBV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 10:01:21 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:34385 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1761831AbgJXOBV (ORCPT
+        id S1761849AbgJXOEC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 10:04:02 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49510 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1761835AbgJXOEB (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 10:01:21 -0400
-Received: from mail-wr1-f71.google.com ([209.85.221.71])
-        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <andrea.righi@canonical.com>)
-        id 1kWK6g-0002N1-GE
-        for linux-kernel@vger.kernel.org; Sat, 24 Oct 2020 14:01:18 +0000
-Received: by mail-wr1-f71.google.com with SMTP id 31so2368612wrg.12
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 07:01:18 -0700 (PDT)
+        Sat, 24 Oct 2020 10:04:01 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 374D6C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 07:04:01 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x203so261553oia.10
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 07:04:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:reply-to:from:date:message-id:subject:to
+         :content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=sObIObjEzCfGqE0trbes1u4SgZl2bpsbcnpjhMF1zTMxcA+yW4qUhvzY/c2HnOjkRA
+         EwJmFzqSxzaY+zHrpsP9Ed4b6wqzG1+z7epYH2iItJitNLU3i1uAx3Jq3XWrm3GNxTCu
+         KbydxGdXz3edZZSxtSr8OVdvqZUG8bI57X0TOMC6tt6TVaA+5KcgTtk2ggPGbiO7iL67
+         aqeLfSosn3CDvAnx4VzY3a7t2/h4m56AjsUi6e5okYNtIzYXGv55CBge+vhSfK7MMhme
+         XgXsp/g+aFiVfUV9jz5sOHvAW8Q5SK6dFdufo0/KPdkmyj4W/ge+qaZvHZ1+0Ih7QbjK
+         L/gQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=/4dnRbgtO5meSxIccl+sy9toA1tYJ9rK+hI6ilGPRo4=;
-        b=XubVY0CpFm/YcSTbMs1kbYX54z4rt55K8uY8SJ9agkpWvH5mCqbaFiEhJ9CDHvTOqC
-         N6cWAqwclEI4nxTa5T+SGY22ToSu1xAZz9QNAnff/pzKhin4tygLHZEoYmMc+Slfepkn
-         s51sPODz2x/aS9bGlQOxV6DfgUDyzFdN+yUJRkS+oj5lObEaMu3BDQPmhnn8qD4iU7nX
-         JCHAu3Z7K5yZGF2FTjPcLGMdDpFnRvfNdWZfj0ul+fj6TTO50xCF5YaUQBOKsY3iSLqP
-         L8EM9fdbhhNmSIJ1WLbtv096cNuwRNOYsf/m6kK8Xuc/UrcVaTenKYro3EO6KCrWgpMH
-         LPgQ==
-X-Gm-Message-State: AOAM530XYneumeLI81yrQHzsEKlp0+iXCcXi6yrQmu/bcH9bmPsyK417
-        N6L8kRC7RtlPV9Wmfy7zfSt5W+05e0oi8vXgKsR7whg5BatSXwC5EDg0cHP0inSQRu0TfJe7N+I
-        rfxN3q8Q4p8yUQAYpcxASxJlvWLp1unTRdzU9MyfwJg==
-X-Received: by 2002:adf:8bd4:: with SMTP id w20mr7778116wra.391.1603548078085;
-        Sat, 24 Oct 2020 07:01:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzl5aHCrBCmQWQvMRVyFFJyBfnEfh6V+Dl+qBJLj2fgLt4sE+1k4yNyDkYldshGsfPL7KrF5g==
-X-Received: by 2002:adf:8bd4:: with SMTP id w20mr7778085wra.391.1603548077822;
-        Sat, 24 Oct 2020 07:01:17 -0700 (PDT)
-Received: from localhost (host-79-33-123-6.retail.telecomitalia.it. [79.33.123.6])
-        by smtp.gmail.com with ESMTPSA id o4sm10476690wrv.8.2020.10.24.07.01.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 07:01:17 -0700 (PDT)
-Date:   Sat, 24 Oct 2020 16:01:15 +0200
-From:   Andrea Righi <andrea.righi@canonical.com>
-To:     Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc:     Theodore Ts'o <tytso@mit.edu>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH] ext4: properly check for dirty state in
- ext4_inode_datasync_dirty()
-Message-ID: <20201024140115.GA35973@xps-13-7390>
+        h=x-gm-message-state:mime-version:reply-to:from:date:message-id
+         :subject:to:content-transfer-encoding;
+        bh=xzxdWyHrXhHu6b7fYfNflc4EJF5/TpK4zPGY4/WRmDk=;
+        b=JJqB+NbEETQQ8BChXZRt5bQ9IwjQps5KZlsACD6EtejDb9MlIyJCkizg0DoomX+L63
+         7z7DDuVKnuawVZCv2UrfM7BVKUCCRUACZIXXUqjMQzdYXgQeArQWZmHiIkToY8x1sNg+
+         Hm0UoeQrJBUDfLvcpF8b1tiLgso7zEkylcWb6K8BZhOPbdXs0f9ao1kJleWk6fYvSHhq
+         MsbKcCpGBrUyBf8M4LHtMZAldXn7RzfCEloy4w2d2e8lSeUrDsiJTghSLEy5j1gLrt4H
+         UozRxUQ6y81OH0b9oFZQ5XZmRtDYamMnOmiAUU5nzxcFDBOVinkznXvdkO+uxFG/E/za
+         aQQg==
+X-Gm-Message-State: AOAM531Sgf7+Pn27SsoK/e5h/8XXxw1+9u7cG7Tonj/EDYATGu/qgc6E
+        RBxQIddIvDjh0ZADSfNVlHzFHNrgUAOLUc27LJ4=
+X-Google-Smtp-Source: ABdhPJxtEoUbSgj7eUgsQrMz8mjvmzXXEDOLo+isocJOEKFfTOnzljU4jwPGFwAOIu2HZgIjS4ediGnOb2D5l+kjMh4=
+X-Received: by 2002:aca:af4f:: with SMTP id y76mr4890947oie.145.1603548240523;
+ Sat, 24 Oct 2020 07:04:00 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Received: by 2002:a8a:cc:0:0:0:0:0 with HTTP; Sat, 24 Oct 2020 07:04:00 -0700 (PDT)
+Reply-To: georgemike7031@gmail.com
+From:   george mike <moordavis0003@gmail.com>
+Date:   Sat, 24 Oct 2020 16:04:00 +0200
+Message-ID: <CAH26tOH3XpW_-ER=7+_fdHCaP3R4y4rJ9SYK8Pxd75uFRJMwaw@mail.gmail.com>
+Subject: 
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ext4_inode_datasync_dirty() needs to return 'true' if the inode is
-dirty, 'false' otherwise, but the logic seems to be incorrectly changed
-by commit aa75f4d3daae ("ext4: main fast-commit commit path").
+Hallo
 
-This introduces a problem with swap files that are always failing to be
-activated, showing this error in dmesg:
+Mein Name ist George Mike. Ich bin von Beruf Rechtsanwalt. Ich m=C3=B6chte
+Ihnen anbieten
+der n=C3=A4chste Verwandte meines Klienten. Sie erben die Summe von (8,5
+Millionen US-Dollar)
+Dollar, die mein Kunde vor seinem Tod auf der Bank gelassen hat.
 
- [   34.406479] swapon: file is not committed
+Mein Kunde ist ein Staatsb=C3=BCrger Ihres Landes, der mit seiner Frau bei
+einem Autounfall ums Leben gekommen ist
+und einziger Sohn. Ich habe Anspruch auf 50% des Gesamtfonds, 50% darauf
+sein f=C3=BCr dich.
+Bitte kontaktieren Sie meine private E-Mail hier f=C3=BCr weitere
+Informationen: georgemike7031@gmail.com
 
-Simple test case to reproduce the problem:
-
-  # fallocate -l 8G swapfile
-  # chmod 0600 swapfile
-  # mkswap swapfile
-  # swapon swapfile
-
-Fix the logic to return the proper state of the inode.
-
-Link: https://lore.kernel.org/lkml/20201024131333.GA32124@xps-13-7390
-Fixes: aa75f4d3daae ("ext4: main fast-commit commit path")
-Signed-off-by: Andrea Righi <andrea.righi@canonical.com>
----
- fs/ext4/inode.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 03c2253005f0..a890a17ab7e1 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3308,8 +3308,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
- 	if (journal) {
- 		if (jbd2_transaction_committed(journal,
- 					EXT4_I(inode)->i_datasync_tid))
--			return true;
--		return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) >=
-+			return false;
-+		return atomic_read(&EXT4_SB(inode->i_sb)->s_fc_subtid) <
- 			EXT4_I(inode)->i_fc_committed_subtid;
- 	}
- 
--- 
-2.27.0
-
+Vielen Dank im Voraus,
+Mr. George Mike,
