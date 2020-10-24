@@ -2,80 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80597297A2E
-	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 03:30:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTP id 87FA2297A30
+	for <lists+linux-kernel@lfdr.de>; Sat, 24 Oct 2020 03:31:25 +0200 (CEST)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1759111AbgJXBag (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Fri, 23 Oct 2020 21:30:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34616 "EHLO mail.kernel.org"
+        id S1759118AbgJXBbD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Fri, 23 Oct 2020 21:31:03 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35110 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1758374AbgJXBaf (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Fri, 23 Oct 2020 21:30:35 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.6])
+        id S1758421AbgJXBbC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Fri, 23 Oct 2020 21:31:02 -0400
+Received: from devnote2 (NE2965lan1.rev.em-net.ne.jp [210.141.244.193])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E759F24248;
-        Sat, 24 Oct 2020 01:30:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3605924248;
+        Sat, 24 Oct 2020 01:31:16 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603503048;
-        bh=x5Z3BxJamZWJHbN/ae8iRgL3C6hpakpG7U7uZIwqix0=;
+        s=default; t=1603503077;
+        bh=3bvdQpcDajIOAP+NZa60PaBpOWVSUIRRs73iCB/PJYg=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K/ghEOJzPZajtixQ73DFYy7GPpMcaNqLOAm7LvdLGVLgLDpUWePbJ+PIJurvgeOx2
-         g4YiAcDGht7T0jWlQEyJinlHPJ65v38eHRJjw06ZmwkCmoai/vEj4MFUdFJGGigN4C
-         R/Bc5RFzgjsjwdAbPXHoUEiDgqx6nxVYtAxB8ZV4=
-Date:   Fri, 23 Oct 2020 18:30:47 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Alex Elder <elder@linaro.org>
-Cc:     davem@davemloft.net, evgreen@chromium.org, subashab@codeaurora.org,
-        cpratapa@codeaurora.org, bjorn.andersson@linaro.org,
-        swboyd@chromium.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH net] net: ipa: command payloads already mapped
-Message-ID: <20201023183047.42e315c1@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201022010029.11877-1-elder@linaro.org>
-References: <20201022010029.11877-1-elder@linaro.org>
-MIME-Version: 1.0
+        b=VJUuzDMyLzhSfjNDGnzhTiRlYAJygQ/WpGw+lktpMqgGFJ4vREbf0tzwRqvCNARyX
+         RTQjhCmSQ2v7r0dRb4dSrUAZ3NHGoLu+81ygMn80B2WQYanEcxkOeuZd4blB8xwuxH
+         85GJL0KHhX2ffLQk/i048N6ieHn/9Z5XM8wAgnVo=
+Date:   Sat, 24 Oct 2020 10:31:12 +0900
+From:   Masami Hiramatsu <mhiramat@kernel.org>
+To:     Steven Rostedt <rostedt@goodmis.org>
+Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>
+Subject: Re: [PATCH] selftests/ftrace: remove _do_fork() leftovers
+Message-Id: <20201024103112.64372203e6729279e9ef92f5@kernel.org>
+In-Reply-To: <20201023093523.65c495f8@gandalf.local.home>
+References: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
+        <20201023093523.65c495f8@gandalf.local.home>
+X-Mailer: Sylpheed 3.7.0 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 20:00:29 -0500 Alex Elder wrote:
-> IPA transactions describe actions to be performed by the IPA
-> hardware.  Three cases use IPA transactions:  transmitting a socket
-> buffer; providing a page to receive packet data; and issuing an IPA
-> immediate command.  An IPA transaction contains a scatter/gather
-> list (SGL) to hold the set of actions to be performed.
-> 
-> We map buffers in the SGL for DMA at the time they are added to the
-> transaction.  For skb TX transactions, we fill the SGL with a call
-> to skb_to_sgvec().  Page RX transactions involve a single page
-> pointer, and that is recorded in the SGL with sg_set_page().  In
-> both of these cases we then map the SGL for DMA with a call to
-> dma_map_sg().
-> 
-> Immediate commands are different.  The payload for an immediate
-> command comes from a region of coherent DMA memory, which must
-> *not* be mapped for DMA.  For that reason, gsi_trans_cmd_add()
-> sort of hand-crafts each SGL entry added to a command transaction.
-> 
-> This patch fixes a problem with the code that crafts the SGL entry
-> for an immediate command.  Previously a portion of the SGL entry was
-> updated using sg_set_buf().  However this is not valid because it
-> includes a call to virt_to_page() on the buffer, but the command
-> buffer pointer is not a linear address.
-> 
-> Since we never actually map the SGL for command transactions, there
-> are very few fields in the SGL we need to fill.  Specifically, we
-> only need to record the DMA address and the length, so they can be
-> used by __gsi_trans_commit() to fill a TRE.  We additionally need to
-> preserve the SGL flags so for_each_sg() still works.  For that we
-> can simply assign a null page pointer for command SGL entries.
-> 
-> Fixes: 9dd441e4ed575 ("soc: qcom: ipa: GSI transactions")
-> Reported-by: Stephen Boyd <swboyd@chromium.org>
-> Tested-by: Stephen Boyd <swboyd@chromium.org>
-> Signed-off-by: Alex Elder <elder@linaro.org>
+On Fri, 23 Oct 2020 09:35:23 -0400
+Steven Rostedt <rostedt@goodmis.org> wrote:
 
-Applied, thanks!
+> On Fri, 23 Oct 2020 10:52:03 +0200
+> Alexander Gordeev <agordeev@linux.ibm.com> wrote:
+> 
+> > diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> > index acb17ce..0ddb948 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-notrace-pid.tc
+> > @@ -39,7 +39,7 @@ do_test() {
+> >      disable_tracing
+> >  
+> >      echo do_execve* > set_ftrace_filter
+> > -    echo *do_fork >> set_ftrace_filter
+> > +    echo kernel_clone >> set_ftrace_filter
+> >  
+> >      echo $PID > set_ftrace_notrace_pid
+> >      echo function > current_tracer
+> > diff --git a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> > index 9f0a968..71319b3 100644
+> > --- a/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> > +++ b/tools/testing/selftests/ftrace/test.d/ftrace/func-filter-pid.tc
+> > @@ -39,7 +39,7 @@ do_test() {
+> >      disable_tracing
+> >  
+> >      echo do_execve* > set_ftrace_filter
+> > -    echo *do_fork >> set_ftrace_filter
+> > +    echo kernel_clone >> set_ftrace_filter
+> >  
+> >      echo $PID > set_ftrace_pid
+> >      echo function > current_tracer
+> 
+> The issue I have with this, is that I run these tests on older kernels too,
+> and tests that use to work on older kernels should still work. In fact,
+> this fails on the kernel I'm currently adding new changes to!
+> 
+> Perhaps we should have:
+> 
+> 	# older kernels have do_fork, but newer kernels have kernel_clone
+> 	echo kernel_clone >> set_ftrace_filter || echo *do_fork >> set_ftrace_filter
+
+Good catch. BTW, can we check the filter-bility by grep the pattern from set_ftrace_filter?
+
+Thank you,
+
+
+-- 
+Masami Hiramatsu <mhiramat@kernel.org>
