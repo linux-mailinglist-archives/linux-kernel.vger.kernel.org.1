@@ -2,127 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F1B7D298505
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 00:32:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E35329850A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 00:43:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1420583AbgJYXcZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 19:32:25 -0400
-Received: from aserp2120.oracle.com ([141.146.126.78]:42952 "EHLO
-        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1420565AbgJYXcY (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 19:32:24 -0400
-Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
-        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09PNSHQE044031;
-        Sun, 25 Oct 2020 23:32:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
- mime-version : subject : from : in-reply-to : date : cc :
- content-transfer-encoding : message-id : references : to;
- s=corp-2020-01-29; bh=W+E4vs32mttsE6FHSgjydHJbUAZvV25zza8/TXMNrEg=;
- b=YUlezSwucoZwfhOz48q5oSLUtM0nNOmfWeZ8e+RHv3g2bLh/CNF+mSjesjiKzXOXoth3
- 9fStL+3YfmDc8A1+GGJCCc9xhuxuhQMgQyTqybV5Ydqzq3yGOYdjrAp+0O7HYn/Cs3o4
- 9k+0s5BDJPj4OUS4/NsCXVnGo12GFz5btg0I1O3UtNvD5omomjkNEr1/o6gNkN/woGLE
- hlUaIVRXUwhVyEI3UHtt46R4dEwTgVbzHTcPk+8jppqJjbJvmYT0h8IX7q9Dq5MQHMoN
- E+11Z+rF8iRlxRzrfe8z9Ic1gQEmNffRexBPqAYB+GMvIPQsPr7ySXoQpFtihsX8fZW8 Nw== 
-Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
-        by aserp2120.oracle.com with ESMTP id 34cc7kjgr7-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Sun, 25 Oct 2020 23:32:01 +0000
-Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
-        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09PNJsuT104653;
-        Sun, 25 Oct 2020 23:32:01 GMT
-Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
-        by aserp3020.oracle.com with ESMTP id 34cx5vgvsu-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Sun, 25 Oct 2020 23:32:00 +0000
-Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
-        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09PNVwom027328;
-        Sun, 25 Oct 2020 23:31:58 GMT
-Received: from dhcp-10-159-151-51.vpn.oracle.com (/10.159.151.51)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Sun, 25 Oct 2020 16:31:58 -0700
-Content-Type: text/plain;
-        charset=us-ascii
-Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
-Subject: Re: [PATCH linux-5.9 1/1] net: netfilter: fix KASAN:
- slab-out-of-bounds Read in nft_flow_rule_create
-From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-In-Reply-To: <3BE1A64B-7104-4220-BAD1-870338A33B15@oracle.com>
-Date:   Sun, 25 Oct 2020 16:31:57 -0700
-Cc:     Pablo Neira Ayuso <pablo@netfilter.org>, stable@vger.kernel.org,
-        linux-kernel@vger.kernel.org, kadlec@netfilter.org, fw@strlen.de,
-        davem@davemloft.net, kuba@kernel.org,
-        netfilter-devel@vger.kernel.org, coreteam@netfilter.org,
-        netdev@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <566D38F7-7C99-40F4-A948-03F2F0439BBB@oracle.com>
-References: <20201019172532.3906-1-saeed.mirzamohammadi@oracle.com>
- <20201020115047.GA15628@salvia>
- <28C74722-8F35-4397-B567-FA5BCF525891@oracle.com>
- <3BE1A64B-7104-4220-BAD1-870338A33B15@oracle.com>
-To:     Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>,
-        stable@vger.kernel.org
-X-Mailer: Apple Mail (2.3608.120.23.2.1)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9785 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=999
- suspectscore=3 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010250177
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9785 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
- malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=3
- priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
- mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010250177
+        id S1420678AbgJYXnw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 19:43:52 -0400
+Received: from bilbo.ozlabs.org ([203.11.71.1]:34447 "EHLO ozlabs.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1420670AbgJYXnw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 19:43:52 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        (No client certificate requested)
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKF0g5zh7z9s0b;
+        Mon, 26 Oct 2020 10:43:47 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603669427;
+        bh=yq9xAEUZVAHUaR8bnjtbMsYwAObveC8YBvZ9c6NadHQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=ubUzI9tXuFSTXzLzn90O/ASPXSAVfpG2SzB7Thmv+o38miZdtqEOMTs40MocA01Xn
+         z41Z6061ERw7eofhFqQOy1HuthmR6CmU2P8BvTMF5URhjArjpOZLXHQwy6siHSxFOZ
+         5G0dOzyoRhg7Je6pbPAhiJ13k0GylO4XSx5ckI7uMG6bg3LkP45elO0dsuaAgeyxDE
+         UoJ3fgQu4HzmgZAmpK7SB8jw1+k7vWr3bYO91egUjntcPsnXNki1aq+QJnyjQuBNla
+         J97P2Gy5HPYum+c181WfAO8U7OVubOOwjWNUsWnujT2AXer5fMY5nzI+15YwuDtfwY
+         LdNmMX9ahx/2Q==
+Date:   Mon, 26 Oct 2020 10:43:45 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: stats
+Message-ID: <20201026104345.1f819bd6@canb.auug.org.au>
+In-Reply-To: <CAHk-=whcRFYSm0jj3Xh3xCyBaxCHA1ZMNO0h_gZso_WZFDUtiQ@mail.gmail.com>
+References: <CAHk-=whcRFYSm0jj3Xh3xCyBaxCHA1ZMNO0h_gZso_WZFDUtiQ@mail.gmail.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/RDZLPtvSWw0D4zSmC.dVQd6";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Adding stable.
+--Sig_/RDZLPtvSWw0D4zSmC.dVQd6
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
+Hi all,
 
-> On Oct 21, 2020, at 1:08 PM, Saeed Mirzamohammadi =
-<saeed.mirzamohammadi@oracle.com> wrote:
->=20
-> Attached the syzkaller C repro.
->=20
-> Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
-> <repro.c>
->> On Oct 20, 2020, at 9:45 AM, Saeed Mirzamohammadi =
-<saeed.mirzamohammadi@oracle.com> wrote:
->>=20
->> Thanks! Yes, that looks good to me.
->>=20
->> Saeed
->>=20
->>> On Oct 20, 2020, at 4:50 AM, Pablo Neira Ayuso <pablo@netfilter.org> =
-wrote:
->>>=20
->>> On Mon, Oct 19, 2020 at 10:25:32AM -0700, =
-saeed.mirzamohammadi@oracle.com wrote:
->>>> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
->>>>=20
->>>> This patch fixes the issue due to:
->>>>=20
->>>> BUG: KASAN: slab-out-of-bounds in nft_flow_rule_create+0x622/0x6a2
->>>> net/netfilter/nf_tables_offload.c:40
->>>> Read of size 8 at addr ffff888103910b58 by task =
-syz-executor227/16244
->>>>=20
->>>> The error happens when expr->ops is accessed early on before =
-performing the boundary check and after nft_expr_next() moves the expr =
-to go out-of-bounds.
->>>>=20
->>>> This patch checks the boundary condition before expr->ops that =
-fixes the slab-out-of-bounds Read issue.
->>>=20
->>> Thanks. I made a slight variant of your patch.
->>>=20
->>> I'm attaching it, it is also fixing the problem but it introduced
->>> nft_expr_more() and use it everywhere.
->>>=20
->>> Let me know if this looks fine to you.
->>> <0001-netfilter-fix-KASAN-slab-out-of-bounds-Read-in-nft_f.patch>
->>=20
->=20
+As usual, the executive friendly graph is at
+http://neuling.org/linux-next-size.html :-)
 
+(No merge commits counted, next-20201009 was the first linux-next after
+the merge window opened.)
+
+Commits in v5.10-rc1 (relative to v5.9):           13903
+Commits in next-20201009:                          13046
+Commits with the same SHA1:                        11911
+Commits with the same patch_id:                      563 (1)
+Commits with the same subject line:                   46 (1)
+
+(1) not counting those in the lines above.
+
+So commits in -rc1 that were in next-20201009:     12520 90%
+
+Some breakdown of the list of extra commits (relative to next-20201009)
+in -rc1:
+
+Top ten first word of commit summary:
+
+    158 kvm
+    112 perf
+     77 net
+     53 docs
+     43 io_uring
+     43 drm
+     32 bpf
+     31 dt-bindings
+     30 clk
+     28 nfsd
+
+Top ten authors:
+
+     77 mchehab+huawei@kernel.org
+     64 sean.j.christopherson@intel.com
+     28 asml.silence@gmail.com
+     20 bgardon@google.com
+     19 axboe@kernel.dk
+     18 jgross@suse.com
+     17 stfrench@microsoft.com
+     17 chuck.lever@oracle.com
+     16 namhyung@kernel.org
+     16 moshe@mellanox.com
+
+Top ten commiters:
+
+    165 kuba@kernel.org
+    163 pbonzini@redhat.com
+    113 acme@redhat.com
+     81 axboe@kernel.dk
+     75 mchehab+huawei@kernel.org
+     43 bfields@redhat.com
+     35 sboyd@kernel.org
+     29 rafael.j.wysocki@intel.com
+     27 stfrench@microsoft.com
+     27 idryomov@gmail.com
+
+There are also 526 commits in next-20201009 that didn't make it into
+v5.10-rc1.
+
+Top ten first word of commit summary:
+
+     81 drm
+     45 arm
+     32 tools
+     21 soc
+     19 bus
+     16 mm
+     13 dt-bindings
+     13 arm64
+     12 rcu
+      9 x86
+
+Top ten authors:
+
+     64 paulmck@kernel.org
+     32 ray.huang@amd.com
+     16 akpm@linux-foundation.org
+     14 gustavoars@kernel.org
+     13 tglx@linutronix.de
+     13 olof@lixom.net
+     12 bbhatt@codeaurora.org
+     11 ysato@users.sourceforge.jp
+     10 joel@jms.id.au
+      9 jhubbard@nvidia.com
+
+Some of Andrew's patches are fixes for other patches in his tree (and
+have been merged into those).
+
+Top ten commiters:
+
+    103 paulmck@kernel.org
+     83 sfr@canb.auug.org.au
+     71 alexander.deucher@amd.com
+     26 maxime@cerno.tech
+     19 manivannan.sadhasivam@linaro.org
+     17 joel@jms.id.au
+     15 gregory.clement@bootlin.com
+     14 ysato@users.sourceforge.jp
+     14 davem@davemloft.net
+     13 olof@lixom.net
+
+Those commits by me are from Andrew's mmotm tree.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/RDZLPtvSWw0D4zSmC.dVQd6
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+WDbEACgkQAVBC80lX
+0GzFZggAotZcq7rKwd8uZa8y032ipn3ol+50kmJJpfGF3vPVA91LvM9opy0T7JEl
+1yh02WEFG8gWHG11L5t6K/xEatOJGXPS/3uiU5cz3zRgKdepYTZQX7Aid5xCSQkB
+/6lUsilNWxQszIgpDzh+mjkBlSO27KHMcuUxyLP7ddkYfZShVXesJbdPlrn2ZduE
+5IH5M9PQodLYutdfn+d5uip+nFGfzjV1PI5k6vmwaFULHO30qYws5x7Mnh1q0BI3
+Nslyh9H/c8gNHcdzaZqN0LK8E6RRHVRgfs75214NmLssRpG0U25OnHRtHA/psiYC
+C2yD06sFeXXDWQKBo1JOwOvs9PUU+w==
+=+deb
+-----END PGP SIGNATURE-----
+
+--Sig_/RDZLPtvSWw0D4zSmC.dVQd6--
