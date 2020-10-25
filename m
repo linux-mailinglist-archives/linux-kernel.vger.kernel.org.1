@@ -2,119 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 278EE29837D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 21:27:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 69FA6298389
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 21:49:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418692AbgJYU1b (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 16:27:31 -0400
-Received: from mail2-relais-roc.national.inria.fr ([192.134.164.83]:9629 "EHLO
-        mail2-relais-roc.national.inria.fr" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1727925AbgJYU1a (ORCPT
+        id S1418744AbgJYUt2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 16:49:28 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:49670 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2409589AbgJYUt2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 16:27:30 -0400
-X-IronPort-AV: E=Sophos;i="5.77,417,1596492000"; 
-   d="scan'208";a="474226999"
-Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
-  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2020 21:27:27 +0100
-Date:   Sun, 25 Oct 2020 21:27:27 +0100 (CET)
-From:   Julia Lawall <julia.lawall@inria.fr>
-X-X-Sender: jll@hadrien
-To:     Markus Elfring <Markus.Elfring@web.de>
-cc:     Coccinelle <cocci@systeme.lip6.fr>,
-        Gilles Muller <Gilles.Muller@lip6.fr>,
-        Michal Marek <michal.lkml@markovi.net>,
-        Nicolas Palix <nicolas.palix@imag.fr>,
-        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: =?UTF-8?Q?Re=3A_=5BCocci=5D_Coccinelle=3A_null=3A_Optimise_disj?=
- =?UTF-8?Q?unctions_in_SmPL_script_=E2=80=9Ceno=2Ecocci=E2=80=9D?=
-In-Reply-To: <bee0c5df-8f28-ee9d-99e2-abbf84df76e6@web.de>
-Message-ID: <alpine.DEB.2.22.394.2010252122320.2714@hadrien>
-References: <0d1575b0-ab37-663e-2464-278fd76280b5@web.de> <alpine.DEB.2.22.394.2010251924290.2714@hadrien> <8f58a94e-b093-a587-c56a-a0ea0fc1f3ea@web.de> <alpine.DEB.2.22.394.2010251955280.2714@hadrien> <bee0c5df-8f28-ee9d-99e2-abbf84df76e6@web.de>
-User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
+        Sun, 25 Oct 2020 16:49:28 -0400
+Received: from mail-pf1-x441.google.com (mail-pf1-x441.google.com [IPv6:2607:f8b0:4864:20::441])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 12EEEC061755;
+        Sun, 25 Oct 2020 13:49:28 -0700 (PDT)
+Received: by mail-pf1-x441.google.com with SMTP id w65so2183788pfd.3;
+        Sun, 25 Oct 2020 13:49:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:thread-topic:thread-index:date:message-id
+         :references:in-reply-to:accept-language:content-language
+         :content-transfer-encoding:mime-version;
+        bh=LguKRcbWckkgvDwu3bbwQd9I6/8cYuASCMO5kIuQCSM=;
+        b=LPTZpWAXXYsG+bcLPhJGse3KcUOB98133ysnXInBzKhkz/8fUHoZP3ObryFB0e34ep
+         Y5/e2h1Ls81JOO3c1hV6nfpWHLKDhHtU40Tolh+LAtjxJfASKQxHA6KUIoD2YxU2pEwN
+         lTDEY10xQc/jhjFZy/YwX9Jjakq6y+p0N3rV6Q4EWy4L0KVE7kn90eXTv5YqG5lPv5u0
+         cI63yzXTumYl6jPKJyzCbYkc4P9iONKHjLlHq58R29KR5hK+9PZHUHwtETmfDcTPj4f9
+         tH/C82xmDIUfTBuc6p4lsvpoK6hv6z6bOfcqN83fQSy6IWMXGN3UiExe+M38ASF43ddj
+         g2bQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:thread-topic:thread-index
+         :date:message-id:references:in-reply-to:accept-language
+         :content-language:content-transfer-encoding:mime-version;
+        bh=LguKRcbWckkgvDwu3bbwQd9I6/8cYuASCMO5kIuQCSM=;
+        b=YUJiThZ4aVQrNvtbB7CZcbznOONJXNjVrpGYSEaLJTHNsqQuiZffMDlPyGfG65fiDS
+         AjPp20WvwhECkTvJwEyF6UnJdavNfiK3jFg65kiw8BQVF0QN84yBPCmfvltXkb0k1lKH
+         eAyc+tkxlxHDCwA010mMqg7w0b3vZtwQ8W0hix9fr5RnCauylrS2vlHRCHUMbmArUiMZ
+         KQQ3mAEw6exAytNM7Sta2ROJ+7mFG+8MusfZ4jU9jshWpz1XKyIV3qRKzKCOqtOOK35f
+         3P+bVFuV7CR1IwZjg3q98gd3iLembXr4ape+1zIqVQItGnaFdgXKJuCU07EJJCXKaf/O
+         MfEA==
+X-Gm-Message-State: AOAM530ie3LO5vTcAr9C+9qMWGfhGBa68eXCp36ScGNy4nwrADlwTpa7
+        E/LI4eumK6RoEeRNL30hR6E=
+X-Google-Smtp-Source: ABdhPJy+/x3gfuTDxQZ/lNLCRzfaD7Rm9ZtQRIBP7UI1bLRcZJsHklk+DdHhIkrt1SijucAbkH87mA==
+X-Received: by 2002:a65:684d:: with SMTP id q13mr13067243pgt.372.1603658967454;
+        Sun, 25 Oct 2020 13:49:27 -0700 (PDT)
+Received: from SLXP216MB0477.KORP216.PROD.OUTLOOK.COM ([2603:1046:100:9::5])
+        by smtp.gmail.com with ESMTPSA id w19sm10087136pff.6.2020.10.25.13.49.23
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 25 Oct 2020 13:49:26 -0700 (PDT)
+From:   Jingoo Han <jingoohan1@gmail.com>
+To:     Vidya Sagar <vidyas@nvidia.com>,
+        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
+        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
+        "bhelgaas@google.com" <bhelgaas@google.com>,
+        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
+        "robh@kernel.org" <robh@kernel.org>,
+        "treding@nvidia.com" <treding@nvidia.com>,
+        "jonathanh@nvidia.com" <jonathanh@nvidia.com>
+CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "kthota@nvidia.com" <kthota@nvidia.com>,
+        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
+        "sagar.tv@gmail.com" <sagar.tv@gmail.com>,
+        Han Jingoo <jingoohan1@gmail.com>
+Subject: Re: [PATCH 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Topic: [PATCH 2/2] PCI: dwc: Add support to configure for ECRC
+Thread-Index: AQHWqqDjcEvvIfJZ20eYN0/hpzWvqamoy1qz
+X-MS-Exchange-MessageSentRepresentingType: 1
+Date:   Sun, 25 Oct 2020 20:49:20 +0000
+Message-ID: <SLXP216MB0477AAC31DF68862BE5BC3EEAA180@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
+References: <20201025073113.31291-1-vidyas@nvidia.com>
+ <20201025073113.31291-3-vidyas@nvidia.com>
+In-Reply-To: <20201025073113.31291-3-vidyas@nvidia.com>
+Accept-Language: ko-KR, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-Exchange-Organization-SCL: -1
+X-MS-TNEF-Correlator: 
+X-MS-Exchange-Organization-RecordReviewCfmType: 0
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323329-1179668747-1603657647=:2714"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323329-1179668747-1603657647=:2714
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8BIT
-
-
-
-On Sun, 25 Oct 2020, Markus Elfring wrote:
-
-> >> Would you become interested to configure a representative test environment
-> >> for safe comparisons of corresponding run time characteristics
-> >> of the affected software?
-> >
-> > In what sense could the comparison possibly be unsafe?
+On 10/25/20, 3:31 AM, Vidya Sagar wrote:
+>=20
+> DesignWare core has a TLP digest (TD) override bit in one of the control
+> registers of ATU. This bit also needs to be programmed for proper ECRC
+> functionality. This is currently identified as an issue with DesignWare
+> IP version 4.90a. This patch does the required programming in ATU upon
+> querying the system policy for ECRC.
 >
-> * Our test systems are obviously different.
->   Thus concerns can be considered for reproducibility of test results
->   on other possible configurations.
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
+>  drivers/pci/controller/dwc/pcie-designware.h | 2 ++
+>  2 files changed, 8 insertions(+), 2 deletions(-)
 >
-> * We share only a tiny fraction of technical information which would probably
->   be needed for “benchmarks”.
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/c=
+ontroller/dwc/pcie-designware.c
+> index b5e438b70cd5..810dcbdbe869 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -245,7 +245,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct d=
+w_pcie *pci, u8 func_no,
+>  				 lower_32_bits(pci_addr));
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
+>  				 upper_32_bits(pci_addr));
+> -	val =3D type | PCIE_ATU_FUNC_NUM(func_no);
+> +	val =3D type | PCIE_ATU_FUNC_NUM(func_no) | pci->td << PCIE_ATU_TD_SHIF=
+T;
+>  	val =3D upper_32_bits(size - 1) ?
+>  		val | PCIE_ATU_INCREASE_REGION_SIZE : val;
+>  	dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
+> @@ -295,7 +295,8 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pci=
+e *pci, u8 func_no,
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
+>  			   upper_32_bits(pci_addr));
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
+> -			   PCIE_ATU_FUNC_NUM(func_no));
+> +			   PCIE_ATU_FUNC_NUM(func_no) |
+> +			   pci->td << PCIE_ATU_TD_SHIFT);
+>  	dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
 >
+>  	/*
+> @@ -565,6 +566,9 @@ void dw_pcie_setup(struct dw_pcie *pci)
+>  	dev_dbg(pci->dev, "iATU unroll: %s\n", pci->iatu_unroll_enabled ?
+>  		"enabled" : "disabled");
 >
-> > Just use time and run spatch on whatever machine you want.
+> +	if (pci->version =3D=3D 0x490A)
+> +		pci->td =3D pcie_is_ecrc_enabled();
+> +
+>  	if (pci->link_gen > 0)
+>  		dw_pcie_link_set_max_speed(pci, pci->link_gen);
 >
-> fring@Sonne:~/Projekte/Linux/next-patched>
-> elfring@Sonne:~/Projekte/Linux/next-patched> git checkout next-20201023 && XX=$(date) && time spatch -D patch --timeout 9 --jobs 4 --chunksize 1 --include-headers --no-includes --dir . scripts/coccinelle/null/eno.cocci > ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno1.diff 2> ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno1-errors.txt; YY=$(date) && echo "$XX | $YY"
-> …
-> real	2m54,266s
-> user	10m15,553s
-> sys	0m4,004s
-> So 25. Okt 20:53:56 CET 2020 | So 25. Okt 20:56:51 CET 2020
-> elfring@Sonne:~/Projekte/Linux/next-patched> git checkout next-20201023 && XX=$(date) && time spatch -D context --timeout 9 --jobs 4 --chunksize 1 --include-headers --no-includes --dir . scripts/coccinelle/null/eno.cocci > ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno2.txt 2> ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno2-errors.txt; YY=$(date) && echo "$XX | $YY"
-> …
-> real	2m38,494s
-> user	9m39,364s
-> sys	0m4,094s
-> So 25. Okt 20:58:05 CET 2020 | So 25. Okt 21:00:44 CET 2020
-> elfring@Sonne:~/Projekte/Linux/next-patched> git checkout optimise_disjunction_in_eno.cocci-1 && XX=$(date) && time spatch -D patch --timeout 9 --jobs 4 --chunksize 1 --include-headers --no-includes --dir . scripts/coccinelle/null/eno.cocci > ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno3.diff 2> ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno3-errors.txt; YY=$(date) && echo "$XX | $YY"
-> …
-> real	2m46,097s
-> user	10m15,467s
-> sys	0m3,984s
-> So 25. Okt 21:00:56 CET 2020 | So 25. Okt 21:03:42 CET 2020
-> elfring@Sonne:~/Projekte/Linux/next-patched> git checkout optimise_disjunction_in_eno.cocci-1 && XX=$(date) && time spatch -D context --timeout 9 --jobs 4 --chunksize 1 --include-headers --no-includes --dir . scripts/coccinelle/null/eno.cocci > ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno4.txt 2> ~/Projekte/Bau/Linux/scripts/Coccinelle/call_checks/20201023/eno4-errors.txt; YY=$(date) && echo "$XX | $YY"
-> …
-> real	2m41,472s
-> user	9m37,492s
-> sys	0m3,834s
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/c=
+ontroller/dwc/pcie-designware.h
+> index 21dd06831b50..d34723e42e79 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -90,6 +90,7 @@
+>  #define PCIE_ATU_TYPE_IO		0x2
+>  #define PCIE_ATU_TYPE_CFG0		0x4
+>  #define PCIE_ATU_TYPE_CFG1		0x5
+> +#define PCIE_ATU_TD_SHIFT		8
+>  #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
+>  #define PCIE_ATU_CR2			0x908
+>  #define PCIE_ATU_ENABLE			BIT(31)
+> @@ -276,6 +277,7 @@ struct dw_pcie {
+>  	int			num_lanes;
+>  	int			link_gen;
+>  	u8			n_fts[2];
+> +	bool			td;	/* TLP Digest (for ECRC purpose) */
 
-In the patch case, the user and system time are essentially identical.  In
-the context case, the difference in user time is 2 seconds out of 9.5
-minutes, 0.3%.
+If possible, don't add a new variable to 'dw_pcie' structure.
+Please find a way to set TD bit without adding a new variable to 'dw_pcie' =
+structure'.
 
-In the patch case, the real time is a bit slower.  But I believe that this
-is due to the time to read in the data from the file system.  I also had a
-number like that, but the difference disappeared when I reran it
-afterwards, which meant running that case in the same conditions as the
-others.
+Best regards,
+Jingoo Han
 
-In the context case, the real time is slightly slower with your patch.
+>  };
+>
+>  #define to_dw_pcie_from_pp(port) container_of((port), struct dw_pcie, pp=
+)
+> --=20
+> 2.17.1
 
-So I see no compelling evidence for making the change.
-
-julia
-
-> So 25. Okt 21:03:56 CET 2020 | So 25. Okt 21:06:37 CET 2020
->
->
-> > Intel(R) Core(TM) i5-6200U CPU @ 2.30GHz
->
-> AMD Phenom(tm) II X4 850 Processor
->
-> Will any other aspects become relevant?
->
-> Regards,
-> Markus
->
---8323329-1179668747-1603657647=:2714--
