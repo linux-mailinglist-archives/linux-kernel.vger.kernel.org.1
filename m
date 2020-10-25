@@ -2,236 +2,113 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC29529809A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 07:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B9E1A29809F
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 08:00:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1767711AbgJYGwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 02:52:24 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34950 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1767703AbgJYGwX (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 02:52:23 -0400
-Received: from mail-pg1-x543.google.com (mail-pg1-x543.google.com [IPv6:2607:f8b0:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3A66EC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 23:52:05 -0700 (PDT)
-Received: by mail-pg1-x543.google.com with SMTP id f38so4203087pgm.2
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 23:52:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bCPmgUWprMxajeTKkhQ9CgmDvrrA7j8uD3bhsde/MbU=;
-        b=IYwDecotTzxO2siq7u3wM71/vTJC+82XhIraXU+X7MEVjhMhWY1zditCoDJL0LVf6C
-         iPsnH4ygRIQyLL40JAZ8z5OK954c8XiTIcLVIArD3zeOAnLaCjYZ98keJnqARfHp78Dg
-         y2+6gUQh26OxSihYEh0Weim56uZeGxmmgyI6fFTsabkJKhIA+Wd1EHRtuVTHEEXMIS7F
-         4IJQlNDUIYhkm+AyCyNCirKTN54EiyaPDFTqUBNTCebFbnSf+b1PnotRXzsdn9Ki6A2q
-         M/HRcyDfMacG/qtS+Nn/jRGcSf5Xeu9rOZ0fcgm30GxZrvONlJAcb82o1AV5bp8xcs3J
-         FrAQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bCPmgUWprMxajeTKkhQ9CgmDvrrA7j8uD3bhsde/MbU=;
-        b=UpueZm6vT935gOOk2LwV/tE4wwn0FS54lGH1OMBekbsVxi77Da4sfxuRgQmS5A0dXJ
-         PezjYvjUEzPK0ibWcdIkFpczjK/3GwnUBSi36elcD13hXpX1vx4jedTrwmwPtgUzntCw
-         751wxNsaQXWZekuhq0fjouR/Q7xa4ocGo56ugCtI3R24qZXJ8kUO2YE4GzYbEAlWxv9g
-         uoJ9dnb5HSc2d5VFeoFy/Tj1eJadATEE2CkZPppXME7l626DTFEKxSu38bmtICeclbR2
-         G3kSWQBZ6P51N3XPSM9wtuGFfvV+ZoqM0MsxBepmBec+577qFsnswathCa6bze0My9qA
-         d2rA==
-X-Gm-Message-State: AOAM530P8aOki3x+8bTTqPE1NK/umozMYwZXUS5M1NTGwZAReTz8wt7B
-        ak/rT6IZrG7hoah1doHFZqo=
-X-Google-Smtp-Source: ABdhPJyv9shsaS1JzUANl3TORQcoxGd3nAbEcQlwQbgr9dbsVm4Lcse/yfT9icwU5/P0H4cdt42Keg==
-X-Received: by 2002:a63:180f:: with SMTP id y15mr8629523pgl.324.1603608722873;
-        Sat, 24 Oct 2020 23:52:02 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:60a7:4fb7:1d05:966d:919e])
-        by smtp.gmail.com with ESMTPSA id o15sm8326691pfd.16.2020.10.24.23.52.00
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 23:52:02 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH v4] checkpatch: extend attributes check to handle more patterns
-Date:   Sun, 25 Oct 2020 12:21:34 +0530
-Message-Id: <20201025065134.21737-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        id S1767742AbgJYHAO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 03:00:14 -0400
+Received: from mail-eopbgr20077.outbound.protection.outlook.com ([40.107.2.77]:58298
+        "EHLO EUR02-VE1-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1767730AbgJYHAD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 03:00:03 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ARNG7nEISsaifMmufJcoS1Q80jAPtzazdyPkZRNx8hskG/fet0WT3VGYVdvAwm7x+aHKArKvq6WYfWQfQRtFueoQVVIqphpeeMaYM3JSKSSdAn3arneV0Na08MhSP62nZahGisU7I4FVy7fO9X1HUSKy5e8YMDxEeXzo9Nd9IRlOHFnFU/a97R/fBi74P/xGcPhjwdh8HHH8IZhNrta+gjngx3OBPxNJR4CswrCjOvfycZCVpNbBCY7woQ79TEUYypQd+fAInbzzKJZyG/T9b8pXHvVoZT55DktX/wTt3NtTHOJThN84OCP7D78udxOPhWCg7nIICWPfGLVTaXHjoQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ExT1E/vovGjsb2BsWR4V2OkMt2T0WQ4+w3CH5VGk3RQ=;
+ b=l8BldvycmeF7x7rWdl09HwdDfOTw3sFqk4NW1KTBB7kf/aroNtdc++T8jMOrTuqc32QJSnyu2EWhOz+JURY6j58ow9/odk1St38yJVsmq3AH56ozMbeSBX7fsL0ghxiqmrLx3o0W/S0NNzVvG/NhVcSfWby7vZEw/Oo0Oca/AEHT+cJBdvKj8UYJ/6KzZlMkLiZBvlKxg/hZtu45yiclYwECcfVS7tOGno5d96hddiI3fDbghmTz9/tr6tYzZQ36kkyHGBm6n8AFv9CEQmjHP/8KrmkQZosDkRtReoqVMjFyxFc2hmfLnfGFu+zsNXXsc2aGP9ZMpzj5LGEjbV4S+w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ExT1E/vovGjsb2BsWR4V2OkMt2T0WQ4+w3CH5VGk3RQ=;
+ b=ExCPbwoFrf1q1AqHxsOIf1hue3NJlJRjXkHOk4UucqGFtDieZQcJQeqNQlZsCGoOghMbLm7FqIan8iLZMqLcu353MDVrQk135LvR8TY0zFuYvWLdN81eOg6t6ZUytzKfWJDXzWZ8YxsCoMNfqkJb79wWfZImmpmNun62VQUj2bA=
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com (2603:10a6:803:e7::13)
+ by VE1PR04MB7341.eurprd04.prod.outlook.com (2603:10a6:800:1a6::18) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Sun, 25 Oct
+ 2020 06:59:58 +0000
+Received: from VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d]) by VI1PR04MB5696.eurprd04.prod.outlook.com
+ ([fe80::983b:73a7:cc93:e63d%3]) with mapi id 15.20.3499.018; Sun, 25 Oct 2020
+ 06:59:58 +0000
+From:   Vladimir Oltean <vladimir.oltean@nxp.com>
+To:     Nikolay Aleksandrov <nikolay@nvidia.com>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "bridge@lists.linux-foundation.org" 
+        <bridge@lists.linux-foundation.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        Roopa Prabhu <roopa@nvidia.com>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "kuba@kernel.org" <kuba@kernel.org>,
+        "vivien.didelot@gmail.com" <vivien.didelot@gmail.com>,
+        "jiri@mellanox.com" <jiri@mellanox.com>,
+        "idosch@idosch.org" <idosch@idosch.org>,
+        "f.fainelli@gmail.com" <f.fainelli@gmail.com>,
+        "andrew@lunn.ch" <andrew@lunn.ch>
+Subject: Re: [RFC PATCH] net: bridge: multicast: add support for L2 entries
+Thread-Topic: [RFC PATCH] net: bridge: multicast: add support for L2 entries
+Thread-Index: AQHWpLUt1nu/YGQhyEC74ZUB+LFl9KmhzHqAgAYjAYA=
+Date:   Sun, 25 Oct 2020 06:59:58 +0000
+Message-ID: <20201025065957.5736elloorffcdif@skbuf>
+References: <20201017184139.2331792-1-vladimir.oltean@nxp.com>
+ <98ac64d9b048278d2296f5b0ff3320c70ea13c72.camel@nvidia.com>
+In-Reply-To: <98ac64d9b048278d2296f5b0ff3320c70ea13c72.camel@nvidia.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+authentication-results: nvidia.com; dkim=none (message not signed)
+ header.d=none;nvidia.com; dmarc=none action=none header.from=nxp.com;
+x-originating-ip: [188.25.2.177]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-ht: Tenant
+x-ms-office365-filtering-correlation-id: 0da3ae2d-5769-4ece-3f04-08d878b39608
+x-ms-traffictypediagnostic: VE1PR04MB7341:
+x-microsoft-antispam-prvs: <VE1PR04MB734143AD48250C66E57F4DFCE0180@VE1PR04MB7341.eurprd04.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:1303;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: XXu4kXExMInXeP7V7JxLzgjGvnDKC/hGEsXb9abGqwhbgGB54fPI9pl5W0WWr8q56IpVQz99Mdy44LYH7AtlvYD0YJguxeI2QYV7w1u7Li9FmCNzlYqPlSgTyK+hupk3++2vQ3OoT7iOoikdgXZIQSdrb4zVaCla76BOnzCjitZtl2xMMEdf8pJTZN6z7rMWV4Saepw1yBB5L3KqzC45lgP1Eh2a4k75gx4eUAzme5nHDSBo/1+8uS0kBG19CszvCWmVnMPQddS86huHL5iJOJiTaT6V0jk3UkmCuOSoMfcVuxuu58l1BAYrqq7MBGWVYdrNtUsmnM+6FexPX7I/Jw==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB5696.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(7916004)(376002)(136003)(366004)(346002)(396003)(39850400004)(86362001)(2906002)(478600001)(6486002)(83380400001)(8936002)(6916009)(26005)(8676002)(186003)(316002)(54906003)(33716001)(4326008)(71200400001)(4744005)(1076003)(6506007)(9686003)(66446008)(6512007)(64756008)(44832011)(66476007)(66946007)(66556008)(76116006)(7416002)(5660300002);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: DDrC5q1xLWKf7Vva6pbVjser137/jEgyJGb2SwsPDANRh8bxoKyVxEqGhXbshpQJ/Z2bHRS2mp4jPwesOIChHtelsnG5+RNMdatHo3Bf8crJCxHkXZQCyFxntUUtj2+2+aXUMo45XDBH4F8eudy/1ypvNYLhQMvJ6bXUxMSoaAxAcXCosPjKrNGvsNjz5/o6MQTZmOdXYCmH0ufNJOCXub6AcPSutJTBSYdzryaOSunUcgJHD6wrpuP+TTV+alZwuTJb5hHsQ3/jPDEE/KwN+5wcUlObkLdNETOzBi7rFLa2W2Pmo+gTMgQJOlvEKcfebct0UTMD3NpjnXKaLKGfKVTkOoyF6GbVBSB+bqdmVr6eHLIQBK5sfroWSvFzmrUs9Rma/85c8IraB8l0ZJfEZgIAZta1bDjWPj9wbhU+ZJQFX7idXQtc3crphdDJ6Hao3WoODIWbJkdVWOSL+WgZrbL34Bc1bYwYFTVVWrPh09/j0R282S/jx/vLjAfWy5ZWkfY01/lziBOohCgnjrj2nYF5YylYAB2ck1F0KcbSHiemm1hLw5N5gdeAbgUWRnk8PCt4Dn/RxouU4uPlWxzpUvzLfxcdsMhRR2iNLOVMino73eq0W3juwrSEsgGwqi++wKk02IsJkaxNN3lMUV2+/g==
+x-ms-exchange-transport-forked: True
+Content-Type: text/plain; charset="us-ascii"
+Content-ID: <E16C77FF765849479CDE86712DB1ACC8@eurprd04.prod.outlook.com>
+Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB5696.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0da3ae2d-5769-4ece-3f04-08d878b39608
+X-MS-Exchange-CrossTenant-originalarrivaltime: 25 Oct 2020 06:59:58.3467
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 8LgDo4lvMyi2JaQEOkUgma37m2C6I4gEJenmaORX9DoS4bIbll0O/U2x9EozTi/DTuwfcVd2AQ9DEM8TcpCt6w==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VE1PR04MB7341
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is generally preferred that the macros from
-include/linux/compiler_attributes.h are used, unless there
-is a reason not to.
+On Wed, Oct 21, 2020 at 09:17:07AM +0000, Nikolay Aleksandrov wrote:
+> > diff --git a/include/uapi/linux/if_bridge.h b/include/uapi/linux/if_bri=
+dge.h
+> > index 4c687686aa8f..a25f6f9aa8c3 100644
+> > --- a/include/uapi/linux/if_bridge.h
+> > +++ b/include/uapi/linux/if_bridge.h
+> > @@ -520,12 +520,14 @@ struct br_mdb_entry {
+> >  #define MDB_FLAGS_FAST_LEAVE	(1 << 1)
+> >  #define MDB_FLAGS_STAR_EXCL	(1 << 2)
+> >  #define MDB_FLAGS_BLOCKED	(1 << 3)
+> > +#define MDB_FLAGS_L2		(1 << 5)
+>=20
+> I think this should be 4.
+>=20
 
-checkpatch currently checks __attribute__ for each of
-packed, aligned, printf, scanf, and weak. Other declarations
-in compiler_attributes.h are not handled.
-
-Add a generic test to check the presence of such attributes.
-Some attributes require more specific handling and are kept
-separate.
-
-New attributes which are now handled are:
-
-__alias__(#symbol)
-__always_inline__
-__assume_aligned__(a, ## __VA_ARGS__)
-__cold__
-__const__
-__copy__(symbol)
-__designated_init__
-__externally_visible__
-__gnu_inline__
-__malloc__
-__mode__(x)
-__no_caller_saved_registers__
-__noclone__
-__noinline__
-__nonstring__
-__noreturn__
-__pure__
-__unused__
-__used__
-
-Also add fixes for the generic attributes check.
-
-Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 107 ++++++++++++++++++++++++++++--------------
- 1 file changed, 71 insertions(+), 36 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7e505688257a..1b736e9042d2 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6155,50 +6155,85 @@ sub process {
- 			}
- 		}
- 
--# Check for __attribute__ packed, prefer __packed
-+# Check for compiler attributes
- 		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
--			WARN("PREFER_PACKED",
--			     "__packed is preferred over __attribute__((packed))\n" . $herecurr);
--		}
-+		    $rawline =~ /\b__attribute__\s*\(\s*($balanced_parens)\s*\)/) {
-+			my $attr = $1;
-+			$attr =~ s/\s*\(\s*(.*)\)\s*/$1/;
-+
-+			my %attr_list = (
-+				"alias"				=> "__alias",
-+				"aligned"			=> "__aligned",
-+				"always_inline"			=> "__always_inline",
-+				"assume_aligned"		=> "__assume_aligned",
-+				"cold"				=> "__cold",
-+				"const"				=> "__const",
-+				"copy"				=> "__copy",
-+				"designated_init"		=> "__designated_init",
-+				"externally_visible"		=> "__visible",
-+				"gnu_inline"			=> "__gnu_inline",
-+				"malloc"			=> "__malloc",
-+				"mode"				=> "__mode",
-+				"no_caller_saved_registers"	=> "__no_caller_saved_registers",
-+				"noclone"			=> "__noclone",
-+				"noinline"			=> "noinline",
-+				"nonstring"			=> "__nonstring",
-+				"noreturn"			=> "__noreturn",
-+				"packed"			=> "__packed",
-+				"pure"				=> "__pure",
-+				"used"				=> "__used"
-+			);
-+
-+			if ($attr =~ /^(\w+)\s*(${balanced_parens})?/) {
-+				my $curr_attr = $1;
-+				my $params = '';
-+				$params = $2 if defined($2);
-+				$curr_attr =~ s/^[\s_]+|[\s_]+$//g;
-+
-+				if (exists($attr_list{$curr_attr})) {
-+					my $new = $attr_list{$curr_attr};
-+					if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+					         "$new$params is preferred over __attribute__(($attr))\n" . $herecurr) &&
-+						$fix) {
-+						$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*\Q$attr\E\s*\)\s*\)/$new$params/;
-+					}
-+				}
-+			}
- 
--# Check for __attribute__ aligned, prefer __aligned
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
--			WARN("PREFER_ALIGNED",
--			     "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
--		}
-+			# Check for __attribute__ format(printf, prefer __printf
-+			if ($attr =~ /^_*format_*\s*\(\s*printf/) {
-+				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				         "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
-+					$fix) {
-+					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*format_*\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
- 
--# Check for __attribute__ section, prefer __section
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
--			my $old = substr($rawline, $-[1], $+[1] - $-[1]);
--			my $new = substr($old, 1, -1);
--			if (WARN("PREFER_SECTION",
--				 "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
-+				}
- 			}
--		}
- 
--# Check for __attribute__ format(printf, prefer __printf
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
--			if (WARN("PREFER_PRINTF",
--				 "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
-+			# Check for __attribute__ format(scanf, prefer __scanf
-+			if ($attr =~ /^_*format_*\s*\(\s*scanf\b/) {
-+				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				         "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
-+					$fix) {
-+					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*format_*\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
-+				}
-+			}
- 
-+			# Check for __attribute__ section, prefer __section
-+			if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
-+				my $old = substr($attr, $-[1], $+[1] - $-[1]);
-+				my $new = substr($old, 1, -1);
-+				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				         "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
-+					$fix) {
-+					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
-+				}
- 			}
--		}
- 
--# Check for __attribute__ format(scanf, prefer __scanf
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
--			if (WARN("PREFER_SCANF",
--				 "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
-+			# Check for __attribute__ unused, prefer __always_unused or __maybe_unused
-+			if ($attr =~ /^_*unused/) {
-+				WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				     "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
- 			}
- 		}
- 
--- 
-2.27.0
-
+Shouldn't this be in sync with MDB_PG_FLAGS_L2 though? We also have
+MDB_PG_FLAGS_BLOCKED which is BIT(4).=
