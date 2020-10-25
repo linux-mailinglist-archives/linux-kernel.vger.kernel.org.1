@@ -2,80 +2,62 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8A39D298358
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:17:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 594FB29835C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:23:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418494AbgJYTRM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 15:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55162 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732057AbgJYTRL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 15:17:11 -0400
-Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DBC1622260;
-        Sun, 25 Oct 2020 19:17:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603653431;
-        bh=2vUyCRMxJX2pxLnOxASbAhuopJdZm9nVaG50ILhnBrk=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=vzt1O+eR4ITDOnR6HYR0VXgjlEvUYBYbD/2L0AT0IvlDvAfTFtSDurpuLJcZy+0ZG
-         7gYfwflnSci8k0BJ8AzNu8iL8EiH/rhrDJ+SbadtBIl2PZHS9+dxkjSk8zYZTZit7Z
-         E7LLTQtyhZx0Af+dKf04YcJzpadBniSn0+kquUQk=
-Date:   Sun, 25 Oct 2020 12:17:08 -0700
-From:   Andrew Morton <akpm@linux-foundation.org>
-To:     kernel test robot <lkp@intel.com>
+        id S1418514AbgJYTXZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 15:23:25 -0400
+Received: from smtprelay0069.hostedemail.com ([216.40.44.69]:50434 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1418507AbgJYTXZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 15:23:25 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay01.hostedemail.com (Postfix) with ESMTP id DFF89100E7B42;
+        Sun, 25 Oct 2020 19:23:23 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:857:960:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1714:1730:1747:1777:1792:2393:2553:2559:2562:2828:3138:3139:3140:3141:3142:3350:3622:3865:3866:3871:3872:3874:4321:4605:5007:8603:8879:9121:10004:10400:10471:10848:10967:11026:11232:11233:11658:11914:12043:12297:12438:12740:12760:12895:13069:13161:13229:13255:13311:13357:13439:14181:14659:14721:21080:21611:21627:21660:21773:30012:30054:30062:30064:30090:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:2,LUA_SUMMARY:none
+X-HE-Tag: view04_0705c4a2726d
+X-Filterd-Recvd-Size: 1750
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf10.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 25 Oct 2020 19:23:22 +0000 (UTC)
+Message-ID: <7e76d1c3239bf2d33889c4874bc9919fee6b6ebe.camel@perches.com>
+Subject: Re: drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame
+ size of 13472 bytes in function 'ltv350qv_power'
+From:   Joe Perches <joe@perches.com>
+To:     Andrew Morton <akpm@linux-foundation.org>,
+        kernel test robot <lkp@intel.com>
 Cc:     Andrey Konovalov <andreyknvl@google.com>, kbuild-all@lists.01.org,
         clang-built-linux@googlegroups.com, linux-kernel@vger.kernel.org,
         Linux Memory Management List <linux-mm@kvack.org>
-Subject: Re: drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame
- size of 13472 bytes in function 'ltv350qv_power'
-Message-Id: <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
-In-Reply-To: <202010260230.VivTG0Gb-lkp@intel.com>
+Date:   Sun, 25 Oct 2020 12:23:21 -0700
+In-Reply-To: <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
 References: <202010260230.VivTG0Gb-lkp@intel.com>
-X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+         <20201025121708.04d4070a44e28146baf9a6a7@linux-foundation.org>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 02:15:37 +0800 kernel test robot <lkp@intel.com> wrote:
-
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   d76913908102044f14381df865bb74df17a538cb
-> commit: cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4 kasan: allow enabling stack tagging for tag-based mode
-> date:   3 months ago
-> config: arm64-randconfig-r005-20201026 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project 1c8371692dfe8245bc6690ff1262dcced4649d21)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install arm64 cross compiling tool for clang build
->         # apt-get install binutils-aarch64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout cae9dc35ed9ff82a99754e51d57ff6c332e1f7e4
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=arm64 
+On Sun, 2020-10-25 at 12:17 -0700, Andrew Morton wrote:
+> On Mon, 26 Oct 2020 02:15:37 +0800 kernel test robot <lkp@intel.com> wrote:
+> > vim +/ltv350qv_power +192 drivers/video/backlight/ltv350qv.c
 > 
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> drivers/video/backlight/ltv350qv.c:192:12: warning: stack frame size of 13472 bytes in function 'ltv350qv_power' [-Wframe-larger-than=]
+> Odd - the code looks pretty normal.  It is possible that your compiler
+> is (crazily) inlining ltv350qv_write_reg()?
 
-That's a lot of stack.
+There's a lot of stack used when gcc's compiler options include
 
->    static int ltv350qv_power(struct ltv350qv *lcd, int power)
->               ^
->    1 warning generated.
-> 
-> vim +/ltv350qv_power +192 drivers/video/backlight/ltv350qv.c
+           -fsanitize=object-size
+               This option enables instrumentation of memory references using
+               the "__builtin_object_size" function.  Various out of bounds
+               pointer accesses are detected.
 
-Odd - the code looks pretty normal.  It is possible that your compiler
-is (crazily) inlining ltv350qv_write_reg()?
+Perhaps this config enables it?
+
+
