@@ -2,90 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BF17298330
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:49:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71763298333
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:51:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418211AbgJYStL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 14:49:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59614 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1418204AbgJYStL (ORCPT
+        id S1418305AbgJYSvX convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Oct 2020 14:51:23 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:36891 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1418242AbgJYSvX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 14:49:11 -0400
-Received: from mail-ot1-x342.google.com (mail-ot1-x342.google.com [IPv6:2607:f8b0:4864:20::342])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0A097C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 11:49:11 -0700 (PDT)
-Received: by mail-ot1-x342.google.com with SMTP id h62so6117447oth.9
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 11:49:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=LSg549qy70Mq7dxJx8/6H70bAuT8V5694im40uZ0SNs=;
-        b=WmeUWocI/jqPKq73+rYbo+xz2qdR0hRyoH4pjmzU9LtqMXqYYWenX11WTMuk5zQSzO
-         U4+RTBdGoKLpecF3Cl5qICawY1f/84Tizup3ZyMgxTph0ryPQvnEQDPtB6+k+aCLfuR+
-         A6keO3DgOhi5kMbVvA8psDTdZd6YD5pvAt8HTkQTfwijdM6fzH5MNAtFMUa07FmhbUXD
-         HRSRlEM5yqQUu228lqFff3z67Nm5VRnzpawKbKSIe0sd0ip/ouSUtv7wH5AQE2OssiIt
-         +AvR/01/R4DASlEWqdFyoWJO5vKpKHqxz+ShW6A7gXXcdNZ8kXwaJ3kMyIj22Xb+WbgG
-         4aFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=LSg549qy70Mq7dxJx8/6H70bAuT8V5694im40uZ0SNs=;
-        b=BStWpcksFEysRgzMKA/nzt7mRG5S96S32HOgEpISBYXpGjOFm+8SCZQ9qr+JR2fjR5
-         8TyMlcaYBc2mDZ5p/Y2sQcLOMeagMyZudqo3M+g+A9GfTdE6ZKHdWJw9fwfI1bVo37sa
-         g+8Yob5fkCmaiFaB3B+UOY1Xe4rS7sIGSTsyK/4HMK9MvNEadRJmfBIGLwHeaRDGPj8x
-         SuxBuxVHu7JyzhxPxLZzNgYB3Tu2F8aIergiXt8mizoG/niNJSDHvJjevx9xbuAPGVm1
-         G03BZjOYOoZfiWvAheOdp9dnf95GyEGuN1y2f+mx25AAYGjHfF78BIafrQvQcAVRYPee
-         f+CA==
-X-Gm-Message-State: AOAM533wMl75E5JCFSgL8ZyVHjDsNMf6od6+MNk898YXCmmaFAqRmKUY
-        evzMhmrz5o1q7pIwV/9TeOAaAOornQ599UNHV6um5NQpOeMc16xo
-X-Google-Smtp-Source: ABdhPJywsp59BNbGZIhRY2VFs0P/GUR4cmO5ePdL2IzHwq77KfL/KwynUQctQCzCm3jrGYrmuTR3mk+Vsu420cK4VF8=
-X-Received: by 2002:a05:6830:1db1:: with SMTP id z17mr11626632oti.30.1603651750122;
- Sun, 25 Oct 2020 11:49:10 -0700 (PDT)
+        Sun, 25 Oct 2020 14:51:23 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mta-211-jt4E6GO0NJaVgBLGtth6tQ-1; Sun, 25 Oct 2020 18:51:18 +0000
+X-MC-Unique: jt4E6GO0NJaVgBLGtth6tQ-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Sun, 25 Oct 2020 18:51:18 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Sun, 25 Oct 2020 18:51:18 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>
+CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "Eric Biggers" <ebiggers@google.com>
+Subject: RE: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
+Thread-Topic: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
+Thread-Index: AQHWqtuIw2smrl1NBkSqLe7bNPuvsKmonqLg
+Date:   Sun, 25 Oct 2020 18:51:18 +0000
+Message-ID: <05150bdb3a4c4b2682ab9cb8fb2ed411@AcuMS.aculab.com>
+References: <20201025143119.1054168-1-nivedita@alum.mit.edu>
+ <20201025143119.1054168-7-nivedita@alum.mit.edu>
+In-Reply-To: <20201025143119.1054168-7-nivedita@alum.mit.edu>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
 MIME-Version: 1.0
-References: <20201025101537.59133-1-dwaipayanray1@gmail.com> <52f88d0bb938c5063ede693a05bf64961af5a496.camel@perches.com>
-In-Reply-To: <52f88d0bb938c5063ede693a05bf64961af5a496.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Mon, 26 Oct 2020 00:18:40 +0530
-Message-ID: <CABJPP5Azq7Pnq+Ki5gKjAGuymHGxK0HwTKsWWw6t3p4dmOSzaw@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: extend attributes check to handle more patterns
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-> > +                     if (scalar @conv_array > 0 && $conv_possible == 1) {
-> > +                             my $replace = join(' ', @conv_array);
-> > +                             if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-> > +                                      "$replace is preferred over __attribute__(($attr))\n" . $herecurr) &&
-> > +                                     $fix) {
-> > +                                     $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*\Q$attr\E\s*\)\s*\)/$replace/;
->
-> I looks it would be useful to add
->                                         $fixed[$fixlinenr] =~ s/\}\Q$replace\E/} $replace/;
-> so there's a space added between } and any replacements.
->
-Hi once again,
-Sorry to interrupt your work so many times.
+From: Arvind Sankar
+> Sent: 25 October 2020 14:31
+> 
+> Unrolling the LOAD and BLEND loops improves performance by ~8% on x86_64
+> (tested on Broadwell Xeon) while not increasing code size too much.
 
-I tried this and seems the space is being applied even without this
-fix.
-I think the spacing check applies this fix already.
+I can't believe unrolling the BLEND loop makes any difference.
 
-if (ERROR("SPACING",
-"space required after that close brace '}'\n" . $herecurr) &&
-$fix) {
-$fixed[$fixlinenr] =~
-s/}((?!(?:,|;|\)))\S)/} $1/;
-}
+Unrolling the LOAD one might - but you don't need 8 times,
+once should be more than enough.
+The LOAD loop needs a memory read, memory write and BSWAP per iteration.
+The loop control is add + compare + jmp.
+On sandy bridge and later the compare and jmp become a single u-op.
+So the loop has the read, write (can happen together) and 3 other u-ops.
+That won't run at 1 clock per iteration on Sandy Bridge.
+However just unroll once and you need 4 non-memory u-op per loop iteration.
+That might run at 2 clocks per 8 bytes.
 
-So do you think it's okay without that perhaps?
+Fiddling the loop to remove the compare (ie run from -64 to 0)
+should merge the 'add' and 'jnz' into a single u-op.
+That might be enough to get the 'rolled up' loop to run in 1 clock
+on sandy bridge, certainly on slightly later cpu.
 
-Thanks,
-Dwaipayan.
+That is theoretical for intel cpu sandy bridge onwards.
+I've an i7-7700 (Kaby Lake?) that I belive has an extra
+instruction pipeline and might run the initial loop in 1 clock.
+
+I don't have any recent AMD cpu, nor any ARM or PPC ones.
+But fully out-of-order cpu are likely to be similar.
+
+One of the other test systems I've got is an Atom C2758.
+This 8 core but mostly in-order.
+Running sha256_transform() on that tend to give one of two
+TSC counts, one of which is double the other!
+That is pretty consistent even for 100 iterations.
+
+WRT patch 5.
+On the C2758 the original unrolled code is slightly faster.
+On the i7-7700 the 8 unroll is a bit faster 'hot cache',
+but slower 'cold cache' - probably because of the d-cache
+loads for K[].
+
+Non-x86 architectures might need to use d-cache reads for
+the 32bit 'K' constants even in the unrolled loop.
+X86 can use 'lea' with a 32bit offset to avoid data reads.
+So the cold-cache case for the old code may be similar.
+
+Interestingly I had to write an asm ror32() to get reasonable
+code (in userspace). The C version the kernel uses didn't work.
+
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
+
