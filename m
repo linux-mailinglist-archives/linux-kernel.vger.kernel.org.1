@@ -2,110 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3CC0298184
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 79D39298182
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:52:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415520AbgJYLwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 07:52:12 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:52352 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1415513AbgJYLwL (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 07:52:11 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6BEF1C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 04:51:55 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id b19so3337612pld.0
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 04:51:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id;
-        bh=1KiygqGWwb0F23sQdKfIGxFeP8lZb1Vly0G9w/101ss=;
-        b=y/DXhF2Fqdumgt3Pn9ix0eB8zltPQXKFobDlC+s+Gy3EYJnN6bNZ6GiSh1q49Ryyts
-         3kbXB3zqV2t1RB+apb5MB21aaO0Y3bJ5wzz0KtxT3HEh+wOiaBnsES6jQ35l3jpnPdZU
-         EAtF1m+9Kx9VhqcjY4O9cE3Fi1fC/JyYE44EzlkNKBiHar5gRRglKGHICWmboBXDaREa
-         n83pjMWieUbnY9M3aH0deeluCrnfdMC/gwfQxyXZtN0U5uKigD7/phsu+I3iM6eywBil
-         jm4y43ZGTY8TzshFJNrlzINHO6ITTn21atoxGf66wjlMGwkHgazdw1zUTW41ulLfDOkl
-         mzjQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=1KiygqGWwb0F23sQdKfIGxFeP8lZb1Vly0G9w/101ss=;
-        b=cgUq2EChMafvgCEt6qcY9ta2ljM1YPcMd2J+9aGeD5Jrn2PvjrWK11dIrjVxUiPfuU
-         faZYpRoMKdy7X0XsgWLOAFJ9c3EnhXKo7JA07oXnU5+xfqa5dajgToVYkfO3DSa79h/5
-         HVRHRL92A+x2b37/f5CIzVpyk5Bdx4fa65SaaRk/94PLXvBQLKq+KKde9SxusHRtcdeP
-         P3D56pvfWMqg7+YkIzz4Y3d+nbKRprTktFPG/fHMXJXshrEWjAHn0Ml4S9OqXgLs+JQf
-         DvOkm4ABgyf6vGsFroPK+O+ytwlQM2nOAo0DLyoSZ4I/y10BMUz0QJkrSTBGmThnznso
-         XkjA==
-X-Gm-Message-State: AOAM532LF+7wvnehmTzIw5kVJnv/qn3+ye7Af1JxJaG/rq8Pqq7sSJqI
-        pVw6/fitxWyqxPYtF5JhSjnBWUgheSULJA==
-X-Google-Smtp-Source: ABdhPJx1F1ZJkSgr74ZVrgG2Doqqo6qZpxGo/7X3N66an+FJd02Y5pof4gQDqWmycZHAtJoDUaGBwg==
-X-Received: by 2002:a17:90a:17a8:: with SMTP id q37mr11244997pja.44.1603626714849;
-        Sun, 25 Oct 2020 04:51:54 -0700 (PDT)
-Received: from libai.bytedance.net ([61.120.150.71])
-        by smtp.gmail.com with ESMTPSA id q23sm8825394pfg.192.2020.10.25.04.51.51
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Sun, 25 Oct 2020 04:51:54 -0700 (PDT)
-From:   zhenwei pi <pizhenwei@bytedance.com>
-To:     kbusch@kernel.org, axboe@fb.com, hch@lst.de, sagi@grimberg.me
-Cc:     linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org,
-        lengchao@huawei.com, pizhenwei@bytedance.com
-Subject: [PATCH v3] nvme-rdma: handle nvme completion data length
-Date:   Sun, 25 Oct 2020 19:51:24 +0800
-Message-Id: <20201025115124.1430678-1-pizhenwei@bytedance.com>
-X-Mailer: git-send-email 2.11.0
+        id S1415511AbgJYLvb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 07:51:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54144 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731893AbgJYLvb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 07:51:31 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 543A921D41;
+        Sun, 25 Oct 2020 11:51:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603626690;
+        bh=Y628XiExNaybMG+0qV8apMIusz2ZNiURDLMRnRSO5+c=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=LCotHgYNOGdwEW7O1OTxPplr9j4so/P+W4GnAHt5S9Yc4dYp1Kfr255/nx49/AUr6
+         wtpESBjytvFvLBXkeQ/ru/e82+wqXlaenGwOx/0k9l9TVDbTLYJYknYe3LFG0UWDw4
+         lKsnw+QlhjJMSXoSZjaxrC8OYnm3A1ZLzCcfZogg=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kWeYa-0043Dq-GQ; Sun, 25 Oct 2020 11:51:28 +0000
+Date:   Sun, 25 Oct 2020 11:51:27 +0000
+Message-ID: <87v9eyo75s.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Neil Armstrong <narmstrong@baylibre.com>
+Cc:     jbrunet@baylibre.com, linux-amlogic@lists.infradead.org,
+        khilman@baylibre.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/2] irq-meson-gpio: make it possible to build as a module
+In-Reply-To: <20201020072532.949137-1-narmstrong@baylibre.com>
+References: <20201020072532.949137-1-narmstrong@baylibre.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: narmstrong@baylibre.com, jbrunet@baylibre.com, linux-amlogic@lists.infradead.org, khilman@baylibre.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hit a kernel warning:
-refcount_t: underflow; use-after-free.
-WARNING: CPU: 0 PID: 0 at lib/refcount.c:28
+On Tue, 20 Oct 2020 08:25:30 +0100,
+Neil Armstrong <narmstrong@baylibre.com> wrote:
+> 
+> In order to reduce the kernel Image size on multi-platform distributions,
+> make it possible to build the Amlogic GPIO IRQ controller as a module
+> by switching it to a platform driver.
+> 
+> The second patch removes MESON_IRQ_GPIO selection from ARCH_MESON to allow
+> building the driver as module.
+> 
+> Neil Armstrong (2):
+>   irqchip: irq-meson-gpio: make it possible to build as a module
+>   arm64: meson: remove MESON_IRQ_GPIO selection
+> 
+>  arch/arm64/Kconfig.platforms     |  1 -
+>  drivers/irqchip/Kconfig          |  5 +-
+>  drivers/irqchip/irq-meson-gpio.c | 89 ++++++++++++++++++++------------
+>  3 files changed, 59 insertions(+), 36 deletions(-)
 
-RIP: 0010:refcount_warn_saturate+0xd9/0xe0
-Call Trace:
- <IRQ>
- nvme_rdma_recv_done+0xf3/0x280 [nvme_rdma]
- __ib_process_cq+0x76/0x150 [ib_core]
- ...
+I've tried this series on my vim3l with the this driver compiled as a
+module, and lost the Ethernet interface in the process, as the phy
+wasn't able to resolve its interrupt and things fail later on:
 
-The reason is that a zero bytes message received from target, and the
-host side continues to process without length checking, then the
-previous CQE is processed twice.
+[   72.238291] meson8b-dwmac ff3f0000.ethernet eth1: no phy at addr -1
+[   72.238917] meson8b-dwmac ff3f0000.ethernet eth1: stmmac_open: Cannot attach to PHY (error: -19)
 
-Do sanity check on received data length, try to recovery for corrupted
-CQE case.
+This is a generic problem with making DT-based interrupt controllers
+modular when not *all* the drivers can deal with probing deferral.
 
-Because zero bytes message in not defined in spec, using zero bytes
-message to detect dead connections on transport layer is not
-standard, currently still treat it as illegal.
+	M.
 
-Thanks to Chao Leng & Sagi for suggestions.
-
-Signed-off-by: zhenwei pi <pizhenwei@bytedance.com>
----
- drivers/nvme/host/rdma.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
-
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index aad829a2b50d..40a0a3b6476c 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1768,6 +1768,14 @@ static void nvme_rdma_recv_done(struct ib_cq *cq, struct ib_wc *wc)
- 		return;
- 	}
- 
-+	/* sanity checking for received data length */
-+	if (unlikely(wc->byte_len < len)) {
-+		dev_err(queue->ctrl->ctrl.device,
-+			"Unexpected nvme completion length(%d)\n", wc->byte_len);
-+		nvme_rdma_error_recovery(queue->ctrl);
-+		return;
-+	}
-+
- 	ib_dma_sync_single_for_cpu(ibdev, qe->dma, len, DMA_FROM_DEVICE);
- 	/*
- 	 * AEN requests are special as they don't time out and can
 -- 
-2.11.0
-
+Without deviation from the norm, progress is not possible.
