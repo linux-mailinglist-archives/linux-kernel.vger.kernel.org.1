@@ -2,138 +2,336 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7A7DE2982A1
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 17:56:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AF812982B0
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 18:07:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1417413AbgJYQ4v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 12:56:51 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:43620 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1417402AbgJYQ4u (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 12:56:50 -0400
-Received: by mail-lf1-f68.google.com with SMTP id l28so8807614lfp.10;
-        Sun, 25 Oct 2020 09:56:47 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=ePQFbJ/3Ad8/iX5Bs449C4InLn8t8GvqBrcAtxnaBrw=;
-        b=BN7peJ0WhFsbpRxrqDoNZMuuIT8pVQ6tHBWiC2EwoJVFBKTOcKbMJVs4GvKrzSax0l
-         u8ZXnFM5ZE6rzH1Gs0sLJhfw7qs/kYm0RS7Kx4xblEAsOOSCBVpNXIevkyohZTPgFmrz
-         A4DhR9T3u5C6264AflnPeRghIyKmVO21KEIJkwBOC/yF2Dkn+PWQ/4OQIItXvcRPr8R1
-         oeynbBebwD2KtwffAKlqrhmwljydPGYrLkiP4HW3a29uAGDlgzp3UaQCoLuJ31b7j918
-         a2bWOI4PQLfG5BLoRwYCoy2cR3zKYkPXHfC/78PyP5mwi261wqu9z7/qU+S0GIEB8EAs
-         winw==
-X-Gm-Message-State: AOAM530FzgQCdyyWLz92DK5eOYG6MxNbiF9Ew96NmpdiKv6rUBmG5AMQ
-        uxQkf78u2Fdaj/ifYPH8e3o=
-X-Google-Smtp-Source: ABdhPJw0J0QYFNhrbQ5xJk2wEIsCh8he6dIVwqhUM/8GfMALjY8iyY5XhCPb37I1yXtuPPPcMA5RlQ==
-X-Received: by 2002:a05:6512:331a:: with SMTP id k26mr3457916lfe.349.1603645006196;
-        Sun, 25 Oct 2020 09:56:46 -0700 (PDT)
-Received: from xi.terra (c-beaee455.07-184-6d6c6d4.bbcust.telenor.se. [85.228.174.190])
-        by smtp.gmail.com with ESMTPSA id c202sm778432lfg.133.2020.10.25.09.56.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 09:56:44 -0700 (PDT)
-Received: from johan by xi.terra with local (Exim 4.93.0.4)
-        (envelope-from <johan@kernel.org>)
-        id 1kWjK3-0004fv-U4; Sun, 25 Oct 2020 17:56:48 +0100
-Date:   Sun, 25 Oct 2020 17:56:47 +0100
-From:   Johan Hovold <johan@kernel.org>
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Johan Hovold <johan@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org,
-        Thomas Winischhofer <thomas@winischhofer.net>,
-        Mathias Nyman <mathias.nyman@intel.com>,
-        Valentina Manea <valentina.manea.m@gmail.com>,
-        Shuah Khan <shuah@kernel.org>,
-        Alan Stern <stern@rowland.harvard.edu>,
-        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
-        Duncan Sands <duncan.sands@free.fr>
-Subject: Re: [patch V2 02/13] USB: serial: keyspan_pda: Replace
- in_interrupt() usage
-Message-ID: <20201025165647.GR26280@localhost>
-References: <20201019100629.419020859@linutronix.de>
- <20201019101109.753597069@linutronix.de>
+        id S1417523AbgJYRHI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 13:07:08 -0400
+Received: from mout.gmx.net ([212.227.17.21]:51833 "EHLO mout.gmx.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1417514AbgJYRHI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 13:07:08 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603645607;
+        bh=qJWyMrjXpeE+rjYpUtbfZPi2nfj0bI6PEUYZ+A9TfME=;
+        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
+        b=NPKRYkx+eOfNAIhW+xIuStO2QsD5wrLZ6ymsj/ZQ2esY+11mnjL7KCoHWp9p8RjW0
+         o35wV9q8kHxPGoWUz3XJYyVL+yUUst/CvuCdSopsp9Ht2kEvdOvGyzABNDK5NEmSKV
+         hQtNR3KZ3P1RK64oeyh1sqRkNyFthyjXwf2Z/eg0=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from localhost.localdomain ([83.52.231.59]) by mail.gmx.com
+ (mrgmx104 [212.227.17.174]) with ESMTPSA (Nemesis) id
+ 1MLi8m-1koOt509Cq-00HjZH; Sun, 25 Oct 2020 18:06:47 +0100
+From:   John Wood <john.wood@gmx.com>
+To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
+Cc:     John Wood <john.wood@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        kernel-hardening@lists.openwall.com
+Subject: [PATCH v2 5/8] security/brute: Mitigate a fork brute force attack
+Date:   Sun, 25 Oct 2020 14:45:37 +0100
+Message-Id: <20201025134540.3770-6-john.wood@gmx.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201025134540.3770-1-john.wood@gmx.com>
+References: <20201025134540.3770-1-john.wood@gmx.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201019101109.753597069@linutronix.de>
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:77xi6IvKdGSSBMMKfua9wA0Oa9DZLborxMu1NdaOiO2Lj+qhobI
+ e38gbQKHc3gzjETsO/vAVViY33uuYot1GogAhq+40KanLotMoD8GGMw4JBxbMp2O8Y2mKYO
+ d7BOq5wvtqJOWvevUTmA6D/NNTQhrPrYRqhRrITCDA4zhhJ62rUvMLc0nnU4gWnaDe+mg9A
+ QlYZBFz4U2KzsP6JvLKGg==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:T2PcRj1NkPg=:nHqPkat2rraJOPUjD5nn47
+ ip6v6TVOH0UHQFsLGj/QxRW/1FEgBtIWu46PUzycDhjzsEf/hAqZEVhXdj0NRqYDHk+A+/K6Y
+ byJP6l93IOzGX0X3iJXZyc39BUHrU+P8t29c715bdTLMUPj1aoMOOQ6BLaBuyD1Ncnr99UVbR
+ hqKcHmMpUhBjnrRbYUpBqgufMPgqSphdHaJNEuo0zO0KJut1U3S8obTnnBcu2z6gXPfghBfh8
+ THxCN/rdVxDccxxJIg/Pwmw450W3MlQQzDjAUHBlpH1YNjRmearOtpxVHbnBbHTdiPD6/94Ps
+ xi0JYeFbmh4NQNIiGJOw0FtUSaU7V3qVR2qMWjh6TzWtX7xl5r9d92tcrtRj0MpNhThfWAwyX
+ Jaafed1Ir6/E2GPpDIRPSRKydit+Cr5IqyaVm53FdvnTRiTmHDqgEweYvR6+E1NKmFlhht55T
+ n3LqXUaZLSOSHHfzQvSwzgsp39tk0kBtBGGXsWjB9tFLtE4oI2xfbU+EbtwunU61ZqoHdraB9
+ j8opcY7Eb5nDskXBCE+8VBKHMEBJ2pibx0DhZ+K73YL6loYMClMIwjju54ZdVZw+b6blf1kp/
+ QlFyX+GkX50+hgnuRPBiJR3WuMn/ZEyArSsw4HBW2VqSrBBZvoQTha0xzgYfoSpUaKfr/CSCV
+ RhqsyGXMNr2thrimFjFn2FXS5xQKT9IOwhWKmlfGBI69kDqDOVLO4NZlKx0PUS1EmF/mzXEmw
+ /s1R3d8u6qT67cu2Nz7aeg3uX7bUOEGGAaEMmrv93yC3B9Sd4T1EZ2+7ddMC5bd35JNcnH20f
+ rxO6/U4Qy3wVSfmp8AyqXPnTGXKmyidn8JDLaKh9/jQjEsJVGigFgeihmuYAOZWLudErigRsv
+ iCNREpE+jL4hXCdQn+sA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19, 2020 at 12:06:31PM +0200, Thomas Gleixner wrote:
-> keyspan_pda_write() uses in_interrupt() to check whether it is safe to
-> invoke functions which might sleep.
-> 
-> The usage of in_interrupt() in drivers is phased out and Linus clearly
-> requested that code which changes behaviour depending on context should
-> either be seperated or the context be conveyed in an argument passed by the
-> caller, which usually knows the context.
-> 
-> Aside of that it does not cover all contexts which cannot sleep,
-> e.g. preempt disabled regions which cannot be reliably detected on all
-> kernel configurations.
-> 
-> With the current printk() implementation console->write() can be invoked
-> from almost any context. The upcoming rework of the console core will
-> provide thread context for console drivers which require to sleep.
-> 
-> For now, restrict the room query which can sleep to tty writes which happen
-> from preemptible task context.
-> 
-> The usability for dmesg output is limited anyway because it's almost
-> guaranteed to drop the 'LF' which is submitted after the dmesg line because
-> the device supports only one transfer on flight. Same for any printk()
-> which is coming in before the previous transfer has been done.
-> 
-> This new restriction does not make it worse than before, but it makes the
-> condition correct under all circumstances.
-> 
-> Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
-> Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Cc: Johan Hovold <johan@kernel.org>
-> Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> Cc: linux-usb@vger.kernel.org
-> 
-> ---
->  drivers/usb/serial/keyspan_pda.c |   10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> --- a/drivers/usb/serial/keyspan_pda.c
-> +++ b/drivers/usb/serial/keyspan_pda.c
-> @@ -477,10 +477,12 @@ static int keyspan_pda_write(struct tty_
->  
->  	count = (count > port->bulk_out_size) ? port->bulk_out_size : count;
->  
-> -	/* Check if we might overrun the Tx buffer.   If so, ask the
-> -	   device how much room it really has.  This is done only on
-> -	   scheduler time, since usb_control_msg() sleeps. */
-> -	if (count > priv->tx_room && !in_interrupt()) {
-> +	/*
-> +	 * Check if we might overrun the Tx buffer. If so, ask the device
-> +	 * how much room it really has. This can only be invoked for tty
-> +	 * usage because the console write can't sleep.
-> +	 */
-> +	if (count > priv->tx_room && tty) {
->  		u8 *room;
->  
->  		room = kmalloc(1, GFP_KERNEL);
+In order to mitigate a fork brute force attack it is necessary to kill
+all the offending tasks. This tasks are all the ones that share the
+statistical data with the current task (the task that has crashed).
 
-There's a ton of issues with this driver, but this is arguably making
-things worse. A line discipline may call write() from just about any
-context so we cannot rely on tty being non-NULL here (e.g. PPP).
+Since the attack detection is done in the task_fatal_signal LSM hook
+only is needed to kill the other tasks that share the same statistical
+data, not the ones that have the same group_leader that the current task
+since the latter are in the path to be killed.
 
-I've prepared a series fixing up the driver's write implementation
-that does away with this room check in the write path instead.
+When the SIGKILL signal is sent to the offending tasks, the
+brute_kill_offending_tasks function will be called in a recursive way
+from the task_fatal_signal LSM hook due to a small crash period. So, to
+avoid kill again the same tasks due to a recursive call of this
+function, it is necessary to disable the attack detection for this fork
+hierarchy.
 
-Johan
+To disable this attack detection, empty the last crashes timestamps list
+and avoid to compute the application crash period if the size of this
+list is zero.
+
+Signed-off-by: John Wood <john.wood@gmx.com>
+=2D--
+ security/brute/brute.c | 144 ++++++++++++++++++++++++++++++++++++++---
+ 1 file changed, 135 insertions(+), 9 deletions(-)
+
+diff --git a/security/brute/brute.c b/security/brute/brute.c
+index 223a18c2084a..a1bdf25ffcf9 100644
+=2D-- a/security/brute/brute.c
++++ b/security/brute/brute.c
+@@ -3,6 +3,7 @@
+ #define pr_fmt(fmt) KBUILD_MODNAME ": " fmt
+
+ #include <asm/current.h>
++#include <asm/rwonce.h>
+ #include <linux/bug.h>
+ #include <linux/cache.h>
+ #include <linux/compiler.h>
+@@ -14,9 +15,14 @@
+ #include <linux/limits.h>
+ #include <linux/list.h>
+ #include <linux/lsm_hooks.h>
++#include <linux/pid.h>
+ #include <linux/printk.h>
+ #include <linux/refcount.h>
++#include <linux/rwlock.h>
+ #include <linux/sched.h>
++#include <linux/sched/signal.h>
++#include <linux/sched/task.h>
++#include <linux/signal.h>
+ #include <linux/slab.h>
+ #include <linux/spinlock.h>
+ #include <linux/sysctl.h>
+@@ -295,23 +301,39 @@ static void brute_task_execve(struct linux_binprm *b=
+prm)
+ }
+
+ /**
+- * brute_stats_free() - Deallocate a statistics structure.
+- * @stats: Statistics to be freed.
++ * brute_timestamps_free() - Empty a last crashes timestamp list.
++ * @timestamps: Last crashes timestamps list to be emptied.
+  *
+- * Deallocate all the last crashes timestamps list entries and then the
+- * statistics structure. The statistics to be freed cannot be NULL.
++ * Empty the last crashes timestamps list and deallocate all the entries.=
+ This
++ * list cannot be NULL.
+  *
+- * Context: Must be called with stats->lock held and this function releas=
+es it.
++ * Context: Must be called with stats->lock held.
+  */
+-static void brute_stats_free(struct brute_stats *stats)
++static void brute_timestamps_free(struct list_head *timestamps)
+ {
+ 	struct brute_timestamp *timestamp, *next;
+
+-	list_for_each_entry_safe(timestamp, next, &stats->timestamps, node) {
++	if (list_empty(timestamps))
++		return;
++
++	list_for_each_entry_safe(timestamp, next, timestamps, node) {
+ 		list_del(&timestamp->node);
+ 		kfree(timestamp);
+ 	}
++}
+
++/**
++ * brute_stats_free() - Deallocate a statistics structure.
++ * @stats: Statistics to be freed.
++ *
++ * Deallocate all the last crashes timestamps list entries and then the
++ * statistics structure. The statistics to be freed cannot be NULL.
++ *
++ * Context: Must be called with stats->lock held and this function releas=
+es it.
++ */
++static void brute_stats_free(struct brute_stats *stats)
++{
++	brute_timestamps_free(&stats->timestamps);
+ 	spin_unlock(&stats->lock);
+ 	kfree(stats);
+ }
+@@ -426,6 +448,104 @@ static u64 brute_get_crash_period(struct brute_times=
+tamp *new_entry,
+ 	return jiffies64_to_msecs(jiffies);
+ }
+
++/**
++ * brute_disabled() - Test the fork brute force attack detection disablin=
+g.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * The fork brute force attack detection enabling / disabling is based on=
+ the
++ * last crashes timestamps list current size. A size of zero indicates th=
+at this
++ * feature is disabled. A size greater than zero indicates that this atta=
+ck
++ * detection is enabled.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * It's mandatory to disable interrupts before acquiring the lock since t=
+he
++ * task_free hook can be called from an IRQ context during the execution =
+of the
++ * task_fatal_signal hook.
++ *
++ * Return: True if the fork brute force attack detection is disabled. Fal=
+se
++ *         otherwise.
++ */
++static bool brute_disabled(struct brute_stats *stats)
++{
++	unsigned long flags;
++	bool disabled;
++
++	spin_lock_irqsave(&stats->lock, flags);
++	disabled =3D !stats->timestamps_size;
++	spin_unlock_irqrestore(&stats->lock, flags);
++
++	return disabled;
++}
++
++/**
++ * brute_disable() - Disable the fork brute force attack detection.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * To disable the fork brute force attack detection it's only necessary t=
+o empty
++ * the last crashes timestamps list. So, a list size of zero indicates th=
+at this
++ * feature is disabled and a list size greater than zero indicates that t=
+his
++ * attack detection is enabled.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * Context: Must be called with stats->lock held.
++ */
++static void brute_disable(struct brute_stats *stats)
++{
++	brute_timestamps_free(&stats->timestamps);
++	stats->timestamps_size =3D 0;
++}
++
++/**
++ * brute_kill_offending_tasks() - Kill the offending tasks.
++ * @stats: Statistical data shared by all the fork hierarchy processes.
++ *
++ * When a fork brute force attack is detected it is necessary to kill all=
+ the
++ * offending tasks involved in the attack. In other words, it is necessar=
+y to
++ * kill all the tasks that share the same statistical data but not the on=
+es that
++ * have the same group_leader that the current task since the latter are =
+in the
++ * path to be killed.
++ *
++ * When the SIGKILL signal is sent to the offending tasks, this function =
+will be
++ * called again from the task_fatal_signal hook due to a small crash peri=
+od. So,
++ * to avoid kill again the same tasks due to a recursive call of this fun=
+ction,
++ * it is necessary to disable the attack detection for this fork hierarch=
+y.
++ *
++ * The statistical data shared by all the fork hierarchy processes cannot=
+ be
++ * NULL.
++ *
++ * Context: Must be called with stats->lock held.
++ */
++static void brute_kill_offending_tasks(struct brute_stats *stats)
++{
++	struct task_struct *p;
++	struct brute_stats **p_stats;
++
++	if (refcount_read(&stats->refc) =3D=3D 1)
++		return;
++
++	brute_disable(stats);
++	read_lock(&tasklist_lock);
++
++	for_each_process(p) {
++		if (p->group_leader =3D=3D current->group_leader)
++			continue;
++
++		p_stats =3D brute_stats_ptr(p);
++		if (READ_ONCE(*p_stats) !=3D stats)
++			continue;
++
++		do_send_sig_info(SIGKILL, SEND_SIG_PRIV, p, PIDTYPE_PID);
++		pr_warn_ratelimited("Offending process %d (%s) killed\n",
++				    p->pid, p->comm);
++	}
++
++	read_unlock(&tasklist_lock);
++}
++
+ /**
+  * brute_task_fatal_signal() - Target for the task_fatal_signal hook.
+  * @siginfo: Contains the signal information.
+@@ -433,7 +553,8 @@ static u64 brute_get_crash_period(struct brute_timesta=
+mp *new_entry,
+  * To detect a fork brute force attack is necessary that the list that ho=
+lds the
+  * last crashes timestamps be updated in every fatal crash. Then, an only=
+ when
+  * this list is large enough, the application crash period can be compute=
+d an
+- * compared with the defined threshold.
++ * compared with the defined threshold. If at this moment an attack is de=
+tected,
++ * all the offending tasks must be killed.
+  *
+  * It's mandatory to disable interrupts before acquiring the lock since t=
+he
+  * task_free hook can be called from an IRQ context during the execution =
+of the
+@@ -450,6 +571,9 @@ static void brute_task_fatal_signal(const kernel_sigin=
+fo_t *siginfo)
+ 	if (WARN(!*stats, "No statistical data\n"))
+ 		return;
+
++	if (brute_disabled(*stats))
++		return;
++
+ 	new_entry =3D brute_new_timestamp();
+ 	if (WARN(!new_entry, "Cannot allocate last crash timestamp\n"))
+ 		return;
+@@ -461,8 +585,10 @@ static void brute_task_fatal_signal(const kernel_sigi=
+nfo_t *siginfo)
+ 		crash_period =3D brute_get_crash_period(new_entry, old_entry);
+ 		kfree(old_entry);
+
+-		if (crash_period < (u64)brute_crash_period_threshold)
++		if (crash_period < (u64)brute_crash_period_threshold) {
+ 			pr_warn("Fork brute force attack detected\n");
++			brute_kill_offending_tasks(*stats);
++		}
+ 	}
+
+ 	spin_unlock_irqrestore(&(*stats)->lock, flags);
+=2D-
+2.25.1
+
