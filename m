@@ -2,241 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 16070298360
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:33:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E56E3298364
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:38:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418537AbgJYTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 15:31:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416759AbgJYTbi (ORCPT
+        id S1418552AbgJYTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 15:36:38 -0400
+Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:34448 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S2408835AbgJYTgi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 15:31:38 -0400
-Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DA1C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:31:38 -0700 (PDT)
-Received: by mail-pl1-x642.google.com with SMTP id v22so3626659ply.12
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:31:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bw7Y/6Dgm4OYeBVasv5zxdWpIx2iMbuxYOG+poUDizA=;
-        b=Dt/6OmggmVain+OMmgWnDGmts50vmpoONv/GXrQSVmwwqflhWG3Pstnv60aSeqxKer
-         +AU0JOpQ4rjj3hdUclYPJQw09rbLzulYyHTAH2a6QxFx92onHsIk1XDEPtb/SdLLdVBC
-         6HlyNPtY3SFIXnO7uCa2c/XKushWCbcIpFCD5HPsAQNkrUwVAkJWGTHgph0bvJJNxO2T
-         rq7qTRFuBdd9qQow36WA67YBgT5Eg+jMgFuNcBDbgjWZ658effWIP2ePWwa5m/ZBU/oX
-         ndRy6e1WQ0U9hYNf4A4f/hb8R00HwOjfpwrPM77XWxb72WQr62uqoEe7dU3Ke16R8sIV
-         9v/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=bw7Y/6Dgm4OYeBVasv5zxdWpIx2iMbuxYOG+poUDizA=;
-        b=Wyz6XAkeByP3kezRBMO9lhIpq9qy7eFEWlIMhga/YqtpjmBV998DoyuWEzK0q2XySA
-         tI0cgHma05A5gQOdyYLzMf7BJxlWc/bUF89w+16BaRO1M8UE33Y4tt5sNmxPXu7XXvQW
-         JK4XFd3GO430au6TgcLBAaKNbe53jq67zURL9MSg4d6zEonIc5RvL83DWUjjWvBUrQqg
-         FxV0yFnt0Y3INP6S0SJ6TkGE0FpNnKWBL30mVgxr9Mu4TVNKjMVcRLCZr8LLUrmv3v+g
-         5bDWYgEOreT+KJEa68XMZbJz5wpWJpUquz82Gu5Gf8FWNDxi29EDvuONDt+Znccc8/zr
-         lIlQ==
-X-Gm-Message-State: AOAM532jsTcI2ye561RsizGi+OIbKaRE4YCibIXG+WA3295gyIkyUCiL
-        eRfbNdfYkHhleNZWI/OKZZ0=
-X-Google-Smtp-Source: ABdhPJw1e3wt23zR+nz/7Q1vklcBM98Xwp9KKXavRanVu+EjWmn5U3NpqvaicRAN7cc0Orz2UiDA9g==
-X-Received: by 2002:a17:90a:ee98:: with SMTP id i24mr7772849pjz.205.1603654297944;
-        Sun, 25 Oct 2020 12:31:37 -0700 (PDT)
-Received: from localhost.localdomain ([2405:201:9004:60a7:4fb7:1d05:966d:919e])
-        by smtp.gmail.com with ESMTPSA id j5sm9939228pjb.56.2020.10.25.12.31.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 12:31:37 -0700 (PDT)
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-To:     joe@perches.com
+        Sun, 25 Oct 2020 15:36:38 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 7D45D18224D66;
+        Sun, 25 Oct 2020 19:36:37 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7514:7974:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12679:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21325:21433:21627:21811:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: worm17_151350d2726d
+X-Filterd-Recvd-Size: 1653
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf05.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 25 Oct 2020 19:36:36 +0000 (UTC)
+Message-ID: <a2b8af8c655f28071faa24b8e60681bca40a16da.camel@perches.com>
+Subject: Re: [PATCH v6] checkpatch: extend attributes check to handle more
+ patterns
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
-        lukas.bulwahn@gmail.com
-Subject: [PATCH v6] checkpatch: extend attributes check to handle more patterns
-Date:   Mon, 26 Oct 2020 01:01:03 +0530
-Message-Id: <20201025193103.23223-1-dwaipayanray1@gmail.com>
-X-Mailer: git-send-email 2.27.0
+        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
+Date:   Sun, 25 Oct 2020 12:36:35 -0700
+In-Reply-To: <20201025193103.23223-1-dwaipayanray1@gmail.com>
+References: <20201025193103.23223-1-dwaipayanray1@gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-It is generally preferred that the macros from
-include/linux/compiler_attributes.h are used, unless there
-is a reason not to.
+On Mon, 2020-10-26 at 01:01 +0530, Dwaipayan Ray wrote:
+> It is generally preferred that the macros from
+> include/linux/compiler_attributes.h are used, unless there
+> is a reason not to.
+> 
+> checkpatch currently checks __attribute__ for each of
+> packed, aligned, section, printf, scanf, and weak. Other
+> declarations in compiler_attributes.h are not handled.
+> 
+> Add a generic test to check the presence of such attributes.
+> Some attributes require more specific handling and are kept
+> separate.
+> 
+> Also add fixes to the generic attributes check to substitute
+> the correct conversions.
+	
+Thanks Dwaipayan.
 
-checkpatch currently checks __attribute__ for each of
-packed, aligned, section, printf, scanf, and weak. Other
-declarations in compiler_attributes.h are not handled.
+Andrew, can you pick this up please?
 
-Add a generic test to check the presence of such attributes.
-Some attributes require more specific handling and are kept
-separate.
+Link: https://lore.kernel.org/lkml/20201025193103.23223-1-dwaipayanray1@gmail.com/raw
 
-Also add fixes to the generic attributes check to substitute
-the correct conversions.
-
-New attributes which are now handled are:
-
-__always_inline__
-__assume_aligned__(a, ## __VA_ARGS__)
-__cold__
-__const__
-__copy__(symbol)
-__designated_init__
-__externally_visible__
-__gnu_inline__
-__malloc__
-__mode__(x)
-__no_caller_saved_registers__
-__noclone__
-__noinline__
-__nonstring__
-__noreturn__
-__pure__
-__unused__
-__used__
-
-Declarations which contain multiple attributes like
-__attribute__((__packed__, __cold__)) are also handled except
-when proper conversions for one or more attributes of the list
-cannot be determined.
-
-Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
-Suggested-by: Joe Perches <joe@perches.com>
-Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
----
- scripts/checkpatch.pl | 109 +++++++++++++++++++++++++++---------------
- 1 file changed, 71 insertions(+), 38 deletions(-)
-
-diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
-index 7e505688257a..eeebd8149be9 100755
---- a/scripts/checkpatch.pl
-+++ b/scripts/checkpatch.pl
-@@ -6155,50 +6155,83 @@ sub process {
- 			}
- 		}
- 
--# Check for __attribute__ packed, prefer __packed
-+# Check for compiler attributes
- 		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
--			WARN("PREFER_PACKED",
--			     "__packed is preferred over __attribute__((packed))\n" . $herecurr);
--		}
--
--# Check for __attribute__ aligned, prefer __aligned
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
--			WARN("PREFER_ALIGNED",
--			     "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
--		}
--
--# Check for __attribute__ section, prefer __section
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
--			my $old = substr($rawline, $-[1], $+[1] - $-[1]);
--			my $new = substr($old, 1, -1);
--			if (WARN("PREFER_SECTION",
--				 "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
-+		    $rawline =~ /\b__attribute__\s*\(\s*($balanced_parens)\s*\)/) {
-+			my $attr = $1;
-+			$attr =~ s/\s*\(\s*(.*)\)\s*/$1/;
-+
-+			my %attr_list = (
-+				"aligned"			=> "__aligned",
-+				"always_inline"			=> "__always_inline",
-+				"assume_aligned"		=> "__assume_aligned",
-+				"cold"				=> "__cold",
-+				"const"				=> "__attribute_const__",
-+				"copy"				=> "__copy",
-+				"designated_init"		=> "__designated_init",
-+				"externally_visible"		=> "__visible",
-+				"format"			=> "printf|scanf",
-+				"gnu_inline"			=> "__gnu_inline",
-+				"malloc"			=> "__malloc",
-+				"mode"				=> "__mode",
-+				"no_caller_saved_registers"	=> "__no_caller_saved_registers",
-+				"noclone"			=> "__noclone",
-+				"noinline"			=> "noinline",
-+				"nonstring"			=> "__nonstring",
-+				"noreturn"			=> "__noreturn",
-+				"packed"			=> "__packed",
-+				"pure"				=> "__pure",
-+				"used"				=> "__used"
-+			);
-+
-+			my @conv_array = ();
-+			my $conv_possible = 1;
-+
-+			while ($attr =~ /\s*(\w+)\s*(${balanced_parens})?/g) {
-+				my $curr_attr = $1;
-+				my $params = '';
-+				$params = $2 if defined($2);
-+				$curr_attr =~ s/^[\s_]+|[\s_]+$//g;
-+
-+				if (exists($attr_list{$curr_attr})) {
-+					if ($curr_attr eq "format" && $params) {
-+						$params =~ /^\s*\(\s*(\w+)\s*,\s*(.*)/;
-+						push(@conv_array, "__$1\($2");
-+					} else {
-+						my $new = $attr_list{$curr_attr};
-+						push(@conv_array, "$new$params");
-+					}
-+				} else {
-+					$conv_possible = 0;
-+					last;
-+				}
- 			}
--		}
- 
--# Check for __attribute__ format(printf, prefer __printf
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
--			if (WARN("PREFER_PRINTF",
--				 "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
-+			if (scalar @conv_array > 0 && $conv_possible == 1) {
-+				my $replace = join(' ', @conv_array);
-+				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				         "$replace is preferred over __attribute__(($attr))\n" . $herecurr) &&
-+					$fix) {
-+					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*\Q$attr\E\s*\)\s*\)/$replace/;
-+					$fixed[$fixlinenr] =~ s/\}\Q$replace\E/} $replace/;
-+				}
-+			}
- 
-+			# Check for __attribute__ section, prefer __section
-+			if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
-+				my $old = substr($attr, $-[1], $+[1] - $-[1]);
-+				my $new = substr($old, 1, -1);
-+				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				         "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
-+					$fix) {
-+					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
-+				}
- 			}
--		}
- 
--# Check for __attribute__ format(scanf, prefer __scanf
--		if ($realfile !~ m@\binclude/uapi/@ &&
--		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
--			if (WARN("PREFER_SCANF",
--				 "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
--			    $fix) {
--				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
-+			# Check for __attribute__ unused, prefer __always_unused or __maybe_unused
-+			if ($attr =~ /^_*unused/) {
-+				WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
-+				     "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
- 			}
- 		}
- 
--- 
-2.27.0
 
