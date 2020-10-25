@@ -2,136 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C029A298116
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:49:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E96929811C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:52:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414937AbgJYJtJ convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Oct 2020 05:49:09 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:57536 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1414938AbgJYJtI (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 05:49:08 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-79-APpQa5EwNZOHyfX3wdwU4Q-1; Sun, 25 Oct 2020 09:49:04 +0000
-X-MC-Unique: APpQa5EwNZOHyfX3wdwU4Q-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 25 Oct 2020 09:49:03 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 25 Oct 2020 09:49:03 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'David Woodhouse' <dwmw2@infradead.org>,
-        "x86@kernel.org" <x86@kernel.org>
-CC:     kvm <kvm@vger.kernel.org>,
-        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
-        "joro@8bytes.org" <joro@8bytes.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        "linux-hyperv@vger.kernel.org" <linux-hyperv@vger.kernel.org>,
-        "maz@misterjones.org" <maz@misterjones.org>,
-        Dexuan Cui <decui@microsoft.com>
-Subject: RE: [PATCH v3 17/35] x86/pci/xen: Use msi_msg shadow structs
-Thread-Topic: [PATCH v3 17/35] x86/pci/xen: Use msi_msg shadow structs
-Thread-Index: AQHWqk3aux8nicxw2kqi6TJIJCakiamoEtJw
-Date:   Sun, 25 Oct 2020 09:49:03 +0000
-Message-ID: <3e69326016524d97bcdea35d0765cc68@AcuMS.aculab.com>
-References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org>
- <20201024213535.443185-1-dwmw2@infradead.org>
- <20201024213535.443185-18-dwmw2@infradead.org>
-In-Reply-To: <20201024213535.443185-18-dwmw2@infradead.org>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
-MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+        id S1414987AbgJYJwN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 05:52:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48968 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1414980AbgJYJwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 05:52:12 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 9CB5E22284;
+        Sun, 25 Oct 2020 09:52:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603619531;
+        bh=oAXfvHzROiIAchD8Y3+9mWqjMiIAFBfr4ge5LH7qpEg=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=0Sciwr7fKR4KR1rr5vJ8UDM0uTOSzPJ49v+93GOdbuMF1bhiMIt0qT0UaxXdhzuH1
+         aTjfMKWaTgHjUCHwMpbn8THNc7F7aGkfi6H+W5+KCrUEkKSlidVTOwYlq/iIY/ZcaP
+         CmjOzW1NRC1tDUzWrv3wX5sxqFn1jlxnc5wt0NCs=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kWch7-0041v2-I6; Sun, 25 Oct 2020 09:52:09 +0000
+Date:   Sun, 25 Oct 2020 09:52:09 +0000
+Message-ID: <871rhmpr92.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     Gavin Shan <gshan@redhat.com>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        will@kernel.org, alexandru.elisei@arm.com
+Subject: Re: [PATCH 1/3] KVM: arm64: Check if 52-bits PA is enabled
+In-Reply-To: <20201025002739.5804-2-gshan@redhat.com>
+References: <20201025002739.5804-1-gshan@redhat.com>
+        <20201025002739.5804-2-gshan@redhat.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: gshan@redhat.com, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, alexandru.elisei@arm.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: David Woodhouse
-> Sent: 24 October 2020 22:35
+On Sun, 25 Oct 2020 01:27:37 +0100,
+Gavin Shan <gshan@redhat.com> wrote:
 > 
-> From: Thomas Gleixner <tglx@linutronix.de>
+> The 52-bits physical address is disabled until CONFIG_ARM64_PA_BITS_52
+> is chosen. This uses option for that check, to avoid the unconditional
+> check on PAGE_SHIFT in the hot path and thus save some CPU cycles.
+
+PAGE_SHIFT is known at compile time, and this code is dropped by the
+compiler if the selected page size is not 64K. This patch really only
+makes the code slightly less readable and the "CPU cycles" argument
+doesn't hold at all.
+
+So what are you trying to solve exactly?
+
+	M.
+
 > 
-> Use the msi_msg shadow structs and compose the message with named bitfields
-> instead of the unreadable macro maze.
-> 
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Gavin Shan <gshan@redhat.com>
 > ---
->  arch/x86/pci/xen.c | 26 +++++++++++---------------
->  1 file changed, 11 insertions(+), 15 deletions(-)
+>  arch/arm64/kvm/hyp/pgtable.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/arch/x86/pci/xen.c b/arch/x86/pci/xen.c
-> index c552cd2d0632..3d41a09c2c14 100644
-> --- a/arch/x86/pci/xen.c
-> +++ b/arch/x86/pci/xen.c
-> @@ -152,7 +152,6 @@ static int acpi_register_gsi_xen(struct device *dev, u32 gsi,
-> 
->  #if defined(CONFIG_PCI_MSI)
->  #include <linux/msi.h>
-> -#include <asm/msidef.h>
-> 
->  struct xen_pci_frontend_ops *xen_pci_frontend;
->  EXPORT_SYMBOL_GPL(xen_pci_frontend);
-> @@ -210,23 +209,20 @@ static int xen_setup_msi_irqs(struct pci_dev *dev, int nvec, int type)
->  	return ret;
->  }
-> 
-> -#define XEN_PIRQ_MSI_DATA  (MSI_DATA_TRIGGER_EDGE | \
-> -		MSI_DATA_LEVEL_ASSERT | (3 << 8) | MSI_DATA_VECTOR(0))
-> -
->  static void xen_msi_compose_msg(struct pci_dev *pdev, unsigned int pirq,
->  		struct msi_msg *msg)
+> diff --git a/arch/arm64/kvm/hyp/pgtable.c b/arch/arm64/kvm/hyp/pgtable.c
+> index 0cdf6e461cbd..fd850353ee89 100644
+> --- a/arch/arm64/kvm/hyp/pgtable.c
+> +++ b/arch/arm64/kvm/hyp/pgtable.c
+> @@ -132,8 +132,9 @@ static u64 kvm_pte_to_phys(kvm_pte_t pte)
 >  {
-> -	/* We set vector == 0 to tell the hypervisor we don't care about it,
-> -	 * but we want a pirq setup instead.
-> -	 * We use the dest_id field to pass the pirq that we want. */
-> -	msg->address_hi = MSI_ADDR_BASE_HI | MSI_ADDR_EXT_DEST_ID(pirq);
-> -	msg->address_lo =
-> -		MSI_ADDR_BASE_LO |
-> -		MSI_ADDR_DEST_MODE_PHYSICAL |
-> -		MSI_ADDR_REDIRECTION_CPU |
-> -		MSI_ADDR_DEST_ID(pirq);
-> -
-> -	msg->data = XEN_PIRQ_MSI_DATA;
-> +	/*
-> +	 * We set vector == 0 to tell the hypervisor we don't care about
-> +	 * it, but we want a pirq setup instead.  We use the dest_id fields
-> +	 * to pass the pirq that we want.
-> +	 */
-> +	memset(msg, 0, sizeof(*msg));
-> +	msg->address_hi = X86_MSI_BASE_ADDRESS_HIGH;
-> +	msg->arch_addr_hi.destid_8_31 = pirq >> 8;
-> +	msg->arch_addr_lo.destid_0_7 = pirq & 0xFF;
-> +	msg->arch_addr_lo.base_address = X86_MSI_BASE_ADDRESS_LOW;
-> +	msg->arch_data.delivery_mode = APIC_DELIVERY_MODE_EXTINT;
+>  	u64 pa = pte & KVM_PTE_ADDR_MASK;
+>  
+> -	if (PAGE_SHIFT == 16)
+> -		pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+> +#ifdef CONFIG_ARM64_PA_BITS_52
+> +	pa |= FIELD_GET(KVM_PTE_ADDR_51_48, pte) << 48;
+> +#endif
+>  
+>  	return pa;
 >  }
+> @@ -142,8 +143,9 @@ static kvm_pte_t kvm_phys_to_pte(u64 pa)
+>  {
+>  	kvm_pte_t pte = pa & KVM_PTE_ADDR_MASK;
+>  
+> -	if (PAGE_SHIFT == 16)
+> -		pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
+> +#ifdef CONFIG_ARM64_PA_BITS_52
+> +	pte |= FIELD_PREP(KVM_PTE_ADDR_51_48, pa >> 48);
+> +#endif
+>  
+>  	return pte;
+>  }
+> -- 
+> 2.23.0
+> 
+> 
 
-Just looking at a random one of these patches...
-
-Does the compiler manage to optimise that reasonably?
-Or does it generate a lot of shifts and masks as each
-bitfield is set?
-
-The code generation for bitfields is often a lot worse
-that that for |= setting bits in a word.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
-
+-- 
+Without deviation from the norm, progress is not possible.
