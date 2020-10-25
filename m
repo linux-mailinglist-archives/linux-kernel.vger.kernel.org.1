@@ -2,58 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 393F62980DB
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B191B2980D5
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:43:51 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414591AbgJYIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 04:48:10 -0400
-Received: from smtprelay0172.hostedemail.com ([216.40.44.172]:40036 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S1414581AbgJYIsK (ORCPT
+        id S1414566AbgJYIna (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 04:43:30 -0400
+Received: from mailoutvs44.siol.net ([185.57.226.235]:60932 "EHLO
+        mail.siol.net" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1730760AbgJYIna (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 04:48:10 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6A7A818224D77;
-        Sun, 25 Oct 2020 08:48:07 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:4321:5007:10004:10400:10848:11026:11232:11658:11914:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:21063:21080:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: back55_03039e727269
-X-Filterd-Recvd-Size: 1522
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf19.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 25 Oct 2020 08:48:06 +0000 (UTC)
-Message-ID: <5789da1346a215e7c351c14562101ff07bc3de2a.camel@perches.com>
-Subject: Re: [PATCH v4] checkpatch: extend attributes check to handle more
- patterns
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Date:   Sun, 25 Oct 2020 01:48:05 -0700
-In-Reply-To: <CABJPP5AY7Vm4CBhhnqYo_LWFYY6PB2fgtk6CLR3tUEV1ZJNQpg@mail.gmail.com>
-References: <20201025065134.21737-1-dwaipayanray1@gmail.com>
-         <e96f8306d57e9a2ce7118b545db197e819e97b19.camel@perches.com>
-         <CABJPP5D9ziuyPpPPyPM+n101vT1LGEjHj+JQjOhdN533t8Ud7w@mail.gmail.com>
-         <80280a389782858c72fcd56a54da1a1f4153216c.camel@perches.com>
-         <CABJPP5AY7Vm4CBhhnqYo_LWFYY6PB2fgtk6CLR3tUEV1ZJNQpg@mail.gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 25 Oct 2020 04:43:30 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTP id 68315529C22;
+        Sun, 25 Oct 2020 09:43:27 +0100 (CET)
+X-Virus-Scanned: amavisd-new at psrvmta09.zcs-production.pri
+Received: from mail.siol.net ([127.0.0.1])
+        by localhost (psrvmta09.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id OjagYDs5MP9s; Sun, 25 Oct 2020 09:43:27 +0100 (CET)
+Received: from mail.siol.net (localhost [127.0.0.1])
+        by mail.siol.net (Postfix) with ESMTPS id 24A37529C56;
+        Sun, 25 Oct 2020 09:43:27 +0100 (CET)
+Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
+        (Authenticated sender: jernej.skrabec@siol.net)
+        by mail.siol.net (Postfix) with ESMTPA id D57CF529C22;
+        Sun, 25 Oct 2020 09:43:26 +0100 (CET)
+From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@kernel.org>
+Cc:     linux-sunxi@googlegroups.com, Chen-Yu Tsai <wens@csie.org>,
+        devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 06/10] ARM: dts: sun8i: a83t: Enable both RGMII RX/TX delay on Ethernet PHY
+Date:   Sun, 25 Oct 2020 09:48:56 +0100
+Message-ID: <12058304.OfRq56rs3M@kista>
+In-Reply-To: <20201024162515.30032-6-wens@kernel.org>
+References: <20201024162515.30032-1-wens@kernel.org> <20201024162515.30032-6-wens@kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 2020-10-25 at 14:12 +0530, Dwaipayan Ray wrote:
-> Suppose we have non handled attributes in one such
-> multi attribute macro. (not present in our hash)
+Dne sobota, 24. oktober 2020 ob 18:25:11 CET je Chen-Yu Tsai napisal(a):
+> From: Chen-Yu Tsai <wens@csie.org>
 > 
-> Like __attribute__((__packed, __something_not_handled))
+> The Ethernet PHY on the Bananapi M3 and Cubietruck Plus have the RX
+> and TX delays enabled on the PHY, using pull-ups on the RXDLY and
+> TXDLY pins.
 > 
-> For this case, do I skip the warning totally? Or something else?
+> Fix the phy-mode description to correct reflect this so that the
+> implementation doesn't reconfigure the delays incorrectly. This
+> happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
+> rx/tx delay config").
+> 
+> Fixes: 039359948a4b ("ARM: dts: sun8i: a83t: Enable Ethernet on two boards")
+> Signed-off-by: Chen-Yu Tsai <wens@csie.org>
 
-Emit the warning, skip the fix unless all converted.
+Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+
+Best regards,
+Jernej
 
 
