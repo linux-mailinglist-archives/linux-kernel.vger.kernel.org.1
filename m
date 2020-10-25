@@ -2,88 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3C2A62980C7
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:29:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EEE1D2980CA
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:33:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768259AbgJYI26 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 04:28:58 -0400
-Received: from mailoutvs9.siol.net ([185.57.226.200]:54241 "EHLO mail.siol.net"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1765994AbgJYI26 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 04:28:58 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTP id 811C852A64E;
-        Sun, 25 Oct 2020 09:28:55 +0100 (CET)
-X-Virus-Scanned: amavisd-new at psrvmta12.zcs-production.pri
-Received: from mail.siol.net ([127.0.0.1])
-        by localhost (psrvmta12.zcs-production.pri [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id zjUPgiDvtWlK; Sun, 25 Oct 2020 09:28:55 +0100 (CET)
-Received: from mail.siol.net (localhost [127.0.0.1])
-        by mail.siol.net (Zimbra) with ESMTPS id 3227952A6BF;
-        Sun, 25 Oct 2020 09:28:55 +0100 (CET)
-Received: from kista.localnet (cpe1-5-97.cable.triera.net [213.161.5.97])
-        (Authenticated sender: jernej.skrabec@siol.net)
-        by mail.siol.net (Zimbra) with ESMTPA id DFAA752A6BE;
-        Sun, 25 Oct 2020 09:28:54 +0100 (CET)
-From:   Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@siol.net>
-To:     Chen-Yu Tsai <wens@kernel.org>,
-        Corentin Labbe <clabbe.montjoie@gmail.com>
-Cc:     Maxime Ripard <mripard@kernel.org>, linux-sunxi@googlegroups.com,
-        Chen-Yu Tsai <wens@csie.org>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: Re: [linux-sunxi] [PATCH 10/10] arm64: dts: allwinner: a64: bananapi-m64: Enable RGMII RX/TX delay on PHY
-Date:   Sun, 25 Oct 2020 09:34:24 +0100
-Message-ID: <10346945.z8tZaDcLle@kista>
-In-Reply-To: <20201024195803.GA30672@Red>
-References: <20201024162515.30032-1-wens@kernel.org> <20201024162515.30032-10-wens@kernel.org> <20201024195803.GA30672@Red>
+        id S1768283AbgJYIdE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 04:33:04 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50250 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1768277AbgJYIdC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 04:33:02 -0400
+Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7AAD5C0613CE
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 01:33:02 -0700 (PDT)
+Received: by mail-oi1-x242.google.com with SMTP id x203so1989079oia.10
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 01:33:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=HLu2puIBJMzkzJcyETQ70Rj2NF1EgRhiqjPv9k4/Hbw=;
+        b=Mr4mn1+FR3HZCuyy4+0BMHkQ8h0CUi7LYMc3AAeQMtqHJZd+KqerUdOini7ZQgZ53f
+         RwOoDlyX4Wc03dLjDEp06Aa5gQP4dFUldP8+oPMnONo1/64I27vEFDQMxfKKvn4a5W8w
+         3k1TzqvDfCnudR9MuPoXazebofCkG16abo+msgiQdFl0Tw9Jph3QBiMLVaH7kP1HHICF
+         Jaw8qr6gWz/0JfR6/e7Ds3E3TmWq6oAoBXr/IFlCst/Hyp9aRIya4DYW++6sNhjPSmqG
+         yJWBjadSxi3UyW+r5S781nMOi8FdtgG6UAN/42aG28lxqsqqTfgBNPJrhhaqolHRM+Zr
+         KULg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=HLu2puIBJMzkzJcyETQ70Rj2NF1EgRhiqjPv9k4/Hbw=;
+        b=Zeltq9Emfs+CFMzXIIV4eVdgwwERoUT2qXue34Q2A3X1CiEI3T2DE5rA7Rxeq1Yg0A
+         rQoDvqwPI1CAgm4XD4YPSV4kSto0A9hMJ96q53DXw/J3R3FGHxLp30drYSNIe+QC7lrF
+         D8JRWEj3qvPxty5/3FroG2KsgNV4Omi7MWW/MQ/DbRJgLbPnY8e3k086V1UQrhjNt2Nm
+         KlcQALJb9i5OSVrKFU6b11Ber4pXOO/E+wo8Em4davW6ws62w9U7CQ0MHho0qqwTF5Ao
+         AsnbEYvWpWkQEGamUjlkuOQawvdy0yKU35gB0ilqUEuPdthcSRp8OJFzE/Rd/pONiAe+
+         Eo7Q==
+X-Gm-Message-State: AOAM5310KnQ2+u/UrG8uDYfGD1Om7aJMVUCUyk+ok8C4xQe9w+3gKBcc
+        bxAmXDcCwu4lBsqS9EyT6C8g3hshd69topUUsxg=
+X-Google-Smtp-Source: ABdhPJyDyXw2oz1MklvsLGfAzReADRUl/YEU8DSnSp18ZEZTrTns8VmzGmn6PBUuALmQ1HSl8wr12ngyhGjRSNEieIE=
+X-Received: by 2002:aca:420a:: with SMTP id p10mr7002175oia.117.1603614781589;
+ Sun, 25 Oct 2020 01:33:01 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+References: <20201025065134.21737-1-dwaipayanray1@gmail.com> <e96f8306d57e9a2ce7118b545db197e819e97b19.camel@perches.com>
+In-Reply-To: <e96f8306d57e9a2ce7118b545db197e819e97b19.camel@perches.com>
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+Date:   Sun, 25 Oct 2020 14:02:32 +0530
+Message-ID: <CABJPP5D9ziuyPpPPyPM+n101vT1LGEjHj+JQjOhdN533t8Ud7w@mail.gmail.com>
+Subject: Re: [PATCH v4] checkpatch: extend attributes check to handle more patterns
+To:     Joe Perches <joe@perches.com>
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Dne sobota, 24. oktober 2020 ob 21:58:03 CET je Corentin Labbe napisal(a):
-> On Sun, Oct 25, 2020 at 12:25:15AM +0800, Chen-Yu Tsai wrote:
-> > From: Chen-Yu Tsai <wens@csie.org>
-> > 
-> > The Ethernet PHY on the Bananapi M64 has the RX and TX delays
-> > enabled on the PHY, using pull-ups on the RXDLY and TXDLY pins.
-> > 
-> > Fix the phy-mode description to correct reflect this so that the
-> > implementation doesn't reconfigure the delays incorrectly. This
-> > happened with commit bbc4d71d6354 ("net: phy: realtek: fix rtl8211e
-> > rx/tx delay config").
-> > 
-> > Fixes: e7295499903d ("arm64: allwinner: bananapi-m64: Enable dwmac-sun8i")
-> > Fixes: 94f442886711 ("arm64: dts: allwinner: A64: Restore EMAC changes")
-> > Signed-off-by: Chen-Yu Tsai <wens@csie.org>
-> > ---
-> >  arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts b/
-arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> > index 3ea5182ca489..e5e840b9fbb4 100644
-> > --- a/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> > +++ b/arch/arm64/boot/dts/allwinner/sun50i-a64-bananapi-m64.dts
-> > @@ -105,7 +105,7 @@ &ehci1 {
-> >  &emac {
-> >  	pinctrl-names = "default";
-> >  	pinctrl-0 = <&rgmii_pins>;
-> > -	phy-mode = "rgmii";
-> > +	phy-mode = "rgmii-id";
-> >  	phy-handle = <&ext_rgmii_phy>;
-> >  	phy-supply = <&reg_dc1sw>;
-> >  	status = "okay";
-> > -- 
-> > 2.28.0
-> 
-> Tested-by: Corentin Labbe <clabbe.montjoie@gmail.com>
+On Sun, Oct 25, 2020 at 1:52 PM Joe Perches <joe@perches.com> wrote:
+>
+> On Sun, 2020-10-25 at 12:21 +0530, Dwaipayan Ray wrote:
+> > It is generally preferred that the macros from
+> > include/linux/compiler_attributes.h are used, unless there
+> > is a reason not to.
+> >
+> > checkpatch currently checks __attribute__ for each of
+> > packed, aligned, printf, scanf, and weak. Other declarations
+> > in compiler_attributes.h are not handled.
+> >
+> > Add a generic test to check the presence of such attributes.
+> > Some attributes require more specific handling and are kept
+> > separate.
+> []
+> > Also add fixes for the generic attributes check.
+> []
+> > diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+> []
+> > +                             if (exists($attr_list{$curr_attr})) {
+> > +                                     my $new = $attr_list{$curr_attr};
+> > +                                     if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
+> > +                                              "$new$params is preferred over __attribute__(($attr))\n" . $herecurr) &&
+> > +                                             $fix) {
+> > +                                             $fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*\Q$attr\E\s*\)\s*\)/$new$params/;
+>
+> Thanks.
+>
+> This fix would only work for the single conversions
+> and would not work for multiple attributes like:
+>
+>         __attribute__((aligned(4), packed))
+>
+> It would be nice to be able to convert this to
+>
+>         __aligned(4) __packed
+>
+> One mechanism to do that might be to:
+>
+>         create an empty array
+>         for each attr
+>                 push(@array, conversion)
+>         s/__attribute__(...)/join(' ', @array)/
+>
+> if all attrs were converted.
+>
 
-Acked-by: Jernej Skrabec <jernej.skrabec@siol.net>
+Okay sure I will try doing that.
 
-Best regards,
-Jernej
+I think I need to also change the test to correctly display
+the warning for those having multiple attributes too.
+Because now only single attributes are reported.
 
+And also do you think there should be a separate check
+for __alias__(#symbol)? I think it expects a string and that should
+be trimmed in the fix.
 
+Thanks,
+Dwaipayan.
