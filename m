@@ -2,247 +2,153 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C7822981EE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 14:47:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 562FB2981FB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 14:52:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416414AbgJYNq6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 09:46:58 -0400
-Received: from mout.gmx.net ([212.227.15.18]:42737 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1416405AbgJYNq6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 09:46:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603633591;
-        bh=JrGm1wF1k+vuYjU+ydHvebWusyZNCIY3jwUYaN/WjbM=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date;
-        b=KgGaiq/ArcYLp/0WMWClI/Gb2FikP3xypikJV9avt8L4sIsY84hmfseob3wtkvdkl
-         ZNmDfNOwp2aKhTfMC/wkBU36lnKno8sSMl0OEe09231s0CaJOPFYzKNn6ASq4TrxoL
-         Jl292ate8uJHrZDodOOJZkou2JA1O03LYbNN/x/I=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.231.59]) by mail.gmx.com
- (mrgmx005 [212.227.17.184]) with ESMTPSA (Nemesis) id
- 1M59GA-1kVaQF2ZIi-001D3K; Sun, 25 Oct 2020 14:46:31 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     John Wood <john.wood@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v2 0/8] Fork brute force attack mitigation
-Date:   Sun, 25 Oct 2020 14:45:32 +0100
-Message-Id: <20201025134540.3770-1-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
+        id S1416443AbgJYNwL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 09:52:11 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:42434 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1414920AbgJYNwL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 09:52:11 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1DE6C0613CE;
+        Sun, 25 Oct 2020 06:52:10 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id p10so5782817ile.3;
+        Sun, 25 Oct 2020 06:52:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=/t3/fDWbrPxN2Fbi74TsOZV6Um8+Rh4eDT5vDwSkaRQ=;
+        b=GN8SENdQGhJrW/rxuQ0P77Dl/EUOl6C8NANF4waJC5cITKnK89oUxgu2pBoWDlWqwm
+         WbE5TybthyXSvgUGTDdJvJkK1s3cGnUlJj6lP0c3QPHS2I0oivs2PEXmPGR//YuPJc2U
+         FGJgX9Ir315NfkXXbZfhMfyf4rhjfeOwaBBm7jzMyEe2hYgI6dTp0pzW+ucDYPB7MZWt
+         s/aVNXRxU/NX5wiRfapJMJP1SHRFL7Yqhnz4tx0NgizliR0JSjOaZit1nR455pYFVH1P
+         MMt9EIgtC/DOr5gpTOYfd8+YfWc+LJoKT/q79LQk5n2lO17tramElU73ykpcCRvPm1Ke
+         emdg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=/t3/fDWbrPxN2Fbi74TsOZV6Um8+Rh4eDT5vDwSkaRQ=;
+        b=nIyxefD4c0Uf9meOaQQCBY7WcKd/AeEo8V9w2h1GvNJpw2McRedB1Xk5ZKfKNDQNbC
+         7CR07OpnIESw2rVZexEyGy/Id4H8oMZ0oSjrTmQhkars+3omaDvXxO7DQqtARGIQVAvU
+         //82Tk9n2GDK8g1e965fBnjapPXvisgsu1EpMh84AEBqJfWtq4P7U56tZBZXNd8DvoMt
+         mndyliWs8ElLqGlt8yOme3lhCWK+jvEo3mJjYCHq6YCpat5AyofU6bSCABCxCAdxnB+t
+         qAoX4RZVbULzWZP6JDOUCOWyHsZbK/+u2NbZ+4wdWegTuINfpLFRhRG0ZFZ2DUkByOdr
+         Y4fw==
+X-Gm-Message-State: AOAM530lo2zNR693ohEMiKXA4vLzD4CT5LlXu1Tf2EPtr3DxOBCs4CPQ
+        siDcS5uiVhSnNEiDxJU1UgJl5e1czx9kYigbqaU=
+X-Google-Smtp-Source: ABdhPJwkcxh5oBkZ7eykeseQWPspvr5+nqoFJoUVm9U44/qOuwEmO+lnpnA4f8o/NNfLH73pcbvINl+neiaFP0aoVTY=
+X-Received: by 2002:a92:9a8c:: with SMTP id c12mr7787569ill.186.1603633930162;
+ Sun, 25 Oct 2020 06:52:10 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:hEzp76Q+KEFfGVP4vNspP5jFakx1Js4QivuR+o6uUwr9wu09z8Q
- tz98LL1d9unta8it5qbwAKNt7C+hOpOsA2kvCE3lLY3mp2H44wTlTuRWzSJf/b3AL3WLdtT
- j70oL7JVkFsOKMUoqSdbJ4LDteiKJXDpLpXwG9bNC8YfCkhMMcXuFQUtwhLuaHYS3yBbh/K
- o4A7QMmo39c20xaC/K10g==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:kzlZC/xxXng=:1r6hgD56eUFw5BLisPGNR6
- FkqA5cq9zOz1R61OuxOIB1ZcY6j5MqI5zO6kZi2/zPLwpQM/lrdwDTAKll15z3EdR+YxsUsLg
- zSAqcmhAe4rJzDBtIVsuRK6NZaOC+cQItJYNxia/kN5C8T05zSukJVsab/R3fdGbFHZtn/Vgf
- 9tt4NCHhZDboqupnb1fAoqHTUoSNlxNGX4MifwMIfYjOy+E/Ad53hRbrpuM2mLPn2+NU2S7J6
- 3Irb7MP5lrXznFe9hPizURJfStd4AbMUAzxc1OX32FNVZMya2SgrrA1zCqbvBF6zrC2pEUBqD
- EW+Uirn96Sd5eP2cK0SIhmFDs/65a7l/ZNKa9bH3deEwsyD5z6hNr/fr9uJKumekqPodEef21
- C1F254k8TZIulTIfHzWcYCm5aygubc9e2Af9Ko5GVWeJinVrCs2wrPHXA9C/d6oChE3yOLw/n
- V76q81f5PCkJcLIKz7H8608vAM1ynTNZOJU4GxIotiOo77mKCmSd55Lm0iGF04z3Su1qPFF+G
- crOkqpLN+O6BAgJbHmIe98FhP5HYIKEk5/tFFUBlPkKKcj3OI7zW2Fmmg39t8BnJ/UXme2TRd
- w9MDU9WmdLXDc4Yq+PpXGFkv6lgPAfRT78p+LrDgCccZikgLvbumzuFBNx7UpwlraXmTrU6TJ
- fQwza6dKl5VPUwYtumBwrLb6WP2ej+9cbW0rLVuZj8yTB+2ESXBiM/FFKwlkCDKl+vRUqAr11
- BhJ/ZHQybUQu+SO8lCiEmsvjFrKY2vuAvuzNmRAPRuR5nIzWrDVNiLyS0dtIiGQcawr1NU8tc
- 2JRyrYT/kwVPksHSOgLrp25chbcMOmLy8YWVtxUXMU8foBM7IUMsvIqKv1JscPqVegJOkv4Vg
- L9hw+c14ZeWTa1+BA/2w==
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
+ <871rhq7j1h.fsf@nanos.tec.linutronix.de> <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com>
+ <CAOSf1CG=Pvr8Yw_+6J3c4VOD0QJwv58iRtSAqBFpeZM6S=7Viw@mail.gmail.com> <CAFgQCTveoz0fOELrwUY5ZSG_iNKkjGJ32QW1POo-OfjvXM=YLQ@mail.gmail.com>
+In-Reply-To: <CAFgQCTveoz0fOELrwUY5ZSG_iNKkjGJ32QW1POo-OfjvXM=YLQ@mail.gmail.com>
+From:   "Oliver O'Halloran" <oohall@gmail.com>
+Date:   Mon, 26 Oct 2020 00:51:58 +1100
+Message-ID: <CAOSf1CGHPUZUBQV0Zm3onMxCZ-zBpOxE9tmMeBODeKUyuO3Rpg@mail.gmail.com>
+Subject: Re: [Skiboot] [PATCH 0/3] warn and suppress irqflood
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Oliver Neukum <oneukum@suse.com>,
+        Jonathan Corbet <corbet@lwn.net>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "Guilherme G. Piccoli" <gpiccoli@canonical.com>,
+        linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+        Lina Iyer <ilina@codeaurora.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Kexec Mailing List <kexec@lists.infradead.org>,
+        Mike Kravetz <mike.kravetz@oracle.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attacks against vulnerable userspace applications with the purpose to brea=
-k
-ASLR or bypass canaries traditionaly use some level of brute force with th=
-e
-help of the fork system call. This is possible since when creating a new
-process using fork its memory contents are the same as those of the parent
-process (the process that called the fork system call). So, the attacker
-can test the memory infinite times to find the correct memory values or th=
-e
-correct memory addresses without worrying about crashing the application.
+On Mon, Oct 26, 2020 at 12:11 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> On Sun, Oct 25, 2020 at 8:21 PM Oliver O'Halloran <oohall@gmail.com> wrote:
+> >
+> > On Sun, Oct 25, 2020 at 10:22 PM Pingfan Liu <kernelfans@gmail.com> wrote:
+> > >
+> > > On Thu, Oct 22, 2020 at 4:37 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> > > >
+> > > > On Thu, Oct 22 2020 at 13:56, Pingfan Liu wrote:
+> > > > > I hit a irqflood bug on powerpc platform, and two years ago, on a x86 platform.
+> > > > > When the bug happens, the kernel is totally occupies by irq.  Currently, there
+> > > > > may be nothing or just soft lockup warning showed in console. It is better
+> > > > > to warn users with irq flood info.
+> > > > >
+> > > > > In the kdump case, the kernel can move on by suppressing the irq flood.
+> > > >
+> > > > You're curing the symptom not the cause and the cure is just magic and
+> > > > can't work reliably.
+> > > Yeah, it is magic. But at least, it is better to printk something and
+> > > alarm users about what happens. With current code, it may show nothing
+> > > when system hangs.
+> > > >
+> > > > Where is that irq flood originated from and why is none of the
+> > > > mechanisms we have in place to shut it up working?
+> > > The bug originates from a driver tpm_i2c_nuvoton, which calls i2c-bus
+> > > driver (i2c-opal.c). After i2c_opal_send_request(), the bug is
+> > > triggered.
+> > >
+> > > But things are complicated by introducing a firmware layer: Skiboot.
+> > > This software layer hides the detail of manipulating the hardware from
+> > > Linux.
+> > >
+> > > I guess the software logic can not enter a sane state when kernel crashes.
+> > >
+> > > Cc Skiboot and ppc64 community to see whether anyone has idea about it.
+> >
+> > What system are you using?
+>
+> Here is the info, if not enough, I will get more.
+>  Product Name          : OpenPOWER Firmware
+>  Product Version       : open-power-SUPERMICRO-P9DSU-V1.16-20180531-imp
+>  Product Extra         : op-build-e4b3eb5
+>  Product Extra         : skiboot-v6.0-p1da203b
+>  Product Extra         : hostboot-f911e5c-pda8239f
+>  Product Extra         : occ-77bb5e6-p623d1cd
+>  Product Extra         : linux-4.16.7-openpower2-pbc45895
+>  Product Extra         : petitboot-v1.7.1-pf773c0d
+>  Product Extra         : machine-xml-218a77a
 
-Based on the above scenario it would be nice to have this detected and
-mitigated, and this is the goal of this patch serie.
+Unfortunately I don't have a schematic for that one.
 
-Other implementations
-=2D--------------------
+> > There's an external interrupt pin which is supposed to be wired to the
+> > TPM. I think we bounce that interrupt to FW by default since the
+> > external interrupt is sometimes used for other system-specific
+> > purposes. Odds are FW doesn't know what to do with it so you
+> > effectively have an always-on LSI. I fixed a similar bug a while ago
+> > by having skiboot mask any interrupts it doesn't have a handler for,
+>
+> This sounds like the root cause. But here Skiboot should have handler,
+> otherwise the first kernel can not run smoothly.
 
-The public version of grsecurity, as a summary, is based on the idea of
-delay the fork system call if a child died due to a fatal error. This has
-some issues:
+I don't know why the TPM interrupt is asserted. If the TPM driver is
+polling for a response it might clear the underlying condition as a
+side effect of it's normal operation.
 
-1.- Bad practices: Add delays to the kernel is, in general, a bad idea.
+> Do you have any idea about an unexpected re-initialization introducing
+> an unsane stage?
 
-2.- Weak points: This protection can be bypassed using two different
-    methods since it acts only when the fork is called after a child has
-    crashed.
+No idea, but those TPMs have a history of bricking themselves if you
+do anything slightly odd to them. It wouldn't surprise me if the
+re-probe can cause issues.
 
-    2.1.- Bypass 1: So, it would still be possible for an attacker to fork
-          a big amount of children (in the order of thousands), then probe
-          all of them, and finally wait the protection time before repeat
-          the steps.
-
-    2.2.- Bypass 2: This method is based on the idea that the protection
-          doesn't act if the parent crashes. So, it would still be possibl=
-e
-          for an attacker to fork a process and probe itself. Then, fork
-          the child process and probe itself again. This way, these steps
-          can be repeated infinite times without any mitigation.
-
-This implementation
-=2D------------------
-
-The main idea behind this implementation is to improve the existing ones
-focusing on the weak points annotated before. The solution for the first
-bypass method is to detect a fast crash rate instead of only one simple
-crash. For the second bypass method the solution is to detect both the
-crash of parent and child processes. Moreover, as a mitigation method it i=
-s
-better to kill all the offending tasks involve in the attack instead of us=
-e
-delays.
-
-So, the solution to the two bypass methods previously commented is to use
-some statistical data shared across all the processes that can have the
-same memory contents. Or in other words, a statistical data shared between
-all the fork hierarchy processes after an execve system call.
-
-The purpose of these statistics is to compute the application crash period
-in order to detect an attack. This crash period is the time between the
-execve system call and the first fault or the time between two consecutive=
-s
-faults, but this has a drawback. If an application crashes once quickly
-from the execve system call or crashes twice in a short period of time for
-some reason, a false positive attack will be triggered. To avoid this
-scenario the shared statistical data holds a list of the i last crashes
-timestamps and the application crash period is computed as follows:
-
-crash_period =3D (n_last_timestamp - n_minus_i_timestamp) / i;
-
-This ways, the size of the last crashes timestamps list allows to fine
-tuning the detection sensibility.
-
-When this crash period falls under a certain threshold there is a clear
-signal that something malicious is happening. Once detected, the mitigatio=
-n
-only kills the processes that share the same statistical data and so, all
-the tasks that can have the same memory contents. This way, an attack is
-rejected.
-
-1.- Per system enabling: This feature can be enabled at build time using
-    the CONFIG_SECURITY_FORK_BRUTE option or using the visual config
-    application under the following menu:
-
-    Security options ---> Fork brute force attack detection and mitigation
-
-2.- Per process enabling/disabling: To allow that specific applications ca=
-n
-    turn off or turn on the detection and mitigation of a fork brute force
-    attack when required, there are two new prctls.
-
-    prctl(PR_SECURITY_FORK_BRUTE_ENABLE, 0, 0, 0, 0)
-    prctl(PR_SECURITY_FORK_BRUTE_DISABLE, 0, 0, 0, 0)
-
-3.- Fine tuning: To customize the detection's sensibility there are two ne=
-w
-    sysctl attributes that allow to set the last crashes timestamps list
-    size and the application crash period threshold (in milliseconds). Bot=
-h
-    are accessible through the following files respectively.
-
-    /proc/sys/kernel/brute/timestamps_list_size
-    /proc/sys/kernel/brute/crash_period_threshold
-
-    The list size allows to avoid false positives due to crashes unrelated
-    with a real attack. The period threshold sets the time limit to detect
-    an attack. And, since a fork brute force attack will be detected if th=
-e
-    application crash period falls under this threshold, the higher this
-    value, the more sensitive the detection will be.
-
-So, knowing all this information I will explain now the different patches:
-
-The 1/8 patch defines a new LSM hook to get the fatal signal of a task.
-This will be useful during the attack detection phase.
-
-The 2/8 patch defines a new LSM and manages the statistical data shared by
-all the fork hierarchy processes.
-
-The 3/8 patch adds the sysctl attributes to fine tuning the detection.
-
-Patchs 4/8 and 5/8 detect and mitigate a fork brute force attack.
-
-Patch 6/8 adds the prctls to allow per process enabling/disabling.
-
-Patch 7/8 adds the documentation to explain this implementation.
-
-Patch 8/8 updates the maintainers file.
-
-This patch series is a task of the KSPP [1] and can also be accessed from
-my github tree [2] in the "brute_v2" branch.
-
-[1] https://github.com/KSPP/linux/issues/39
-[2] https://github.com/johwood/linux/
-
-The first version can be found in:
-
-https://lore.kernel.org/kernel-hardening/20200910202107.3799376-1-keescook=
-@chromium.org/
-
-Changelog RFC -> v2
-=2D------------------
-- Rename this feature with a more appropiate name (Jann Horn, Kees Cook).
-- Convert the code to an LSM (Kees Cook).
-- Add locking  to avoid data races (Jann Horn).
-- Add a new LSM hook to get the fatal signal of a task (Jann Horn, Kees
-  Cook).
-- Add the last crashes timestamps list to avoid false positives in the
-  attack detection (Jann Horn).
-- Use "period" instead of "rate" (Jann Horn).
-- Other minor changes suggested (Jann Horn, Kees Cook).
-
-John Wood (8):
-  security: Add LSM hook at the point where a task gets a fatal signal
-  security/brute: Define a LSM and manage statistical data
-  security/brute: Add sysctl attributes to allow detection fine tuning
-  security/brute: Detect a fork brute force attack
-  security/brute: Mitigate a fork brute force attack
-  security/brute: Add prctls to enable/disable the fork attack detection
-  Documentation: Add documentation for the Brute LSM
-  MAINTAINERS: Add a new entry for the Brute LSM
-
- Documentation/admin-guide/LSM/Brute.rst | 118 ++++
- Documentation/admin-guide/LSM/index.rst |   1 +
- MAINTAINERS                             |   7 +
- include/brute/brute.h                   |  16 +
- include/linux/lsm_hook_defs.h           |   1 +
- include/linux/lsm_hooks.h               |   4 +
- include/linux/security.h                |   4 +
- include/uapi/linux/prctl.h              |   4 +
- kernel/signal.c                         |   1 +
- kernel/sys.c                            |   8 +
- security/Kconfig                        |  11 +-
- security/Makefile                       |   4 +
- security/brute/Kconfig                  |  13 +
- security/brute/Makefile                 |   2 +
- security/brute/brute.c                  | 749 ++++++++++++++++++++++++
- security/security.c                     |   5 +
- 16 files changed, 943 insertions(+), 5 deletions(-)
- create mode 100644 Documentation/admin-guide/LSM/Brute.rst
- create mode 100644 include/brute/brute.h
- create mode 100644 security/brute/Kconfig
- create mode 100644 security/brute/Makefile
- create mode 100644 security/brute/brute.c
-
-=2D-
-2.25.1
-
+> Thanks,
+> Pingfan
