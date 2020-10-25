@@ -2,88 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 10C702981AE
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:38:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 57E322981B1
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:38:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415761AbgJYMiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 08:38:03 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47702 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415754AbgJYMiC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 08:38:02 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AE4D320853;
-        Sun, 25 Oct 2020 12:38:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603629481;
-        bh=u9aO31NgT1SvFDW2GvB0R9LiOmuKo0V5PSlXi+W2nu8=;
-        h=From:To:Subject:Date:In-Reply-To:References:From;
-        b=Io5OkQe1OQQZAHZzvWPDWH8vgW/Y9GQ3GwZazyVF8EcOU4YMcRUllVwjGaE479BVe
-         m5cJrsHu1wrrbTXTC0J7KYcGYEXvKSnWtbaeWhhnhMNmMJYMMoO8tMiFkjdAXV42m5
-         Ap4xVLNHHMK1yLlQN4sA3EO6CFWsOAE38dRf+wn4=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kWfHb-0043br-GQ; Sun, 25 Oct 2020 12:37:59 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     jason@lakedaemon.net, paul.walmsley@sifive.com,
-        linux-riscv@lists.infradead.org, palmer@dabbelt.com,
-        Greentime Hu <greentime.hu@sifive.com>,
-        linux-kernel@vger.kernel.org, tglx@linutronix.de
-Subject: Re: [PATCH] irqchip/sifive-plic: Fix broken irq_set_affinity() callback
-Date:   Sun, 25 Oct 2020 12:37:51 +0000
-Message-Id: <160362942369.263990.3256848447079854839.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201020081532.2377-1-greentime.hu@sifive.com>
-References: <20201020081532.2377-1-greentime.hu@sifive.com>
+        id S1415773AbgJYMid (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 08:38:33 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:59456 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2392429AbgJYMia (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 08:38:30 -0400
+Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 13A46C0613CE;
+        Sun, 25 Oct 2020 05:38:30 -0700 (PDT)
+Received: by mail-pl1-x644.google.com with SMTP id j5so3357161plk.7;
+        Sun, 25 Oct 2020 05:38:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=fvuSDo2wkE4QwOENh8boyLlP4PQz8fyvgGKS3pbuxLw=;
+        b=p8dQBhRkN7fEu+O1NeZ4Xa+o73YiAbgZRasX+99jvsgirWRrEOVNpP7cNFzQBV1ej4
+         2yKfOCiJbHBFbSfeJL9eLJdKGeYPtNn3YQLKvJrrjQ1ppj4OlCR7oHYutNr+JenXWiuv
+         aKNpIA8usS4sSxh+VhqWnEvjE9VeMFW6334nns9Ooffb6A7GOwRrY0uknwFiL+K5mX5i
+         PsvxFI9yR1TNyUVhfhEIb3fkD+j8yZiyIjRLADqgR7gcxsvxoe7uDRnc3lZtaDewPiS+
+         h9Ve59Ul9ji3VvEDomkSf6l7Md438NCLLh+ZOm83oYeNxB5oUiipDtuTYneR4oTF+ATF
+         n2qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=fvuSDo2wkE4QwOENh8boyLlP4PQz8fyvgGKS3pbuxLw=;
+        b=UyDAuC0c91j0v/uVaR8C7e530FiMY7VjZ2U3zCLpdO3v85PemZzmq/GGBONZJFvy99
+         2tXtBmP6ps1wVlI8gE0+YkNVqTL+Iju/i1wE555WxM7zaWPXC19A/WSXITJAlloK1sYg
+         cSIc74DVznxgBJggdJzvFIR4IoqVsN7DTyGhz7e2edCwzoB0BAAzawRTtwOxTqsQjm48
+         hr6uEPCBnbdxKdtF6W6tLI/V7m6MMeHwnXa1dEmPlUB1uW8FmCWEE4bW/L/ZFFHFMZFo
+         XsCrDmabyoecIheYPckwyzy+o01kMN8kBrn0Gu2w0eRJED243uMcg0zWizo/2OMkW0wN
+         SJ6g==
+X-Gm-Message-State: AOAM532VxtrIFwTRoMkKCMU/et6EPIzB5+h2Vdri9WaEX2naRhsOLp5V
+        Axms06MEpQLhtgMd5blXvq1oKI5uwwGG+O8Q4ws=
+X-Google-Smtp-Source: ABdhPJw6EPtQqi2auFy61TxpN2g6nCTZxCBfBMdZEJBnxR41xBu40iSeXHfknEXojy0kMHOCOFIkhvaaQYW4yrijlyo=
+X-Received: by 2002:a17:902:6bc8:b029:d6:d9d:f28c with SMTP id
+ m8-20020a1709026bc8b02900d60d9df28cmr4532185plt.17.1603629509336; Sun, 25 Oct
+ 2020 05:38:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: jason@lakedaemon.net, paul.walmsley@sifive.com, linux-riscv@lists.infradead.org, palmer@dabbelt.com, greentime.hu@sifive.com, linux-kernel@vger.kernel.org, tglx@linutronix.de
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+References: <20201022151349.47436-1-98.arpi@gmail.com> <20201023173108.GG32486@alley>
+In-Reply-To: <20201023173108.GG32486@alley>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Sun, 25 Oct 2020 14:38:13 +0200
+Message-ID: <CAHp75VeEcb3CtQWeZXQz-UFMgqL6ERwDjudPmcCCNJgHesb3pg@mail.gmail.com>
+Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
+To:     Petr Mladek <pmladek@suse.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>, kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 16:15:32 +0800, Greentime Hu wrote:
-> It will always enable the interrupt after calling plic_set_affinity()
-> however it should set to it previous setting. Staying disabled or enabled.
-> 
-> This patch can also fix this pwm hang issue in Unleashed board.
-> 
-> [  919.015783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  919.020922] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=105807
-> [  919.030295]  (detected by 1, t=225825 jiffies, g=1561, q=3496)
-> [  919.036109] Task dump for CPU 0:
-> [  919.039321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  919.046359] Workqueue: events set_brightness_delayed
-> [  919.051302] Call Trace:
-> [  919.053738] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [  982.035783] rcu: INFO: rcu_sched detected stalls on CPUs/tasks:
-> [  982.040923] rcu:     0-...0: (0 ticks this GP)
-> idle=7d2/1/0x4000000000000002 softirq=1424/1424 fqs=113325
-> [  982.050294]  (detected by 1, t=241580 jiffies, g=1561, q=3509)
-> [  982.056108] Task dump for CPU 0:
-> [  982.059321] kworker/0:1     R  running task        0    30      2 0x00000008
-> [  982.066359] Workqueue: events set_brightness_delayed
-> [  982.071302] Call Trace:
-> [  982.073739] [<ffffffe000930d92>] __schedule+0x194/0x4de
-> [..]
+On Sat, Oct 24, 2020 at 2:07 AM Petr Mladek <pmladek@suse.com> wrote:
+> On Thu 2020-10-22 20:43:49, Arpitha Raghunandan wrote:
+> > Convert test lib/test_printf.c to KUnit. More information about
 
-Applied to irq/irqchip-next, with some commit message adjustments.
+...
 
-[1/1] irqchip/sifive-plic: Fix broken irq_set_affinity() callback
-      commit: a7480c5d725c4ecfc627e70960f249c34f5d13e8
+> > not ok 1 - printf-kunit-test
+>
+> > --- a/lib/test_printf.c
+> > +++ b/lib/printf_kunit.c
+>
+> There is no standard at the moment.
 
-Cheers,
+JFYI: from v5.10-rc1 it is expected to have documentation clarifying
+the naming scheme. Also there is a pending series [1] to move KUnit
+based test cases to the defined schema.
 
-	M.
+> Please, either unify names of all the above modules or keep test_printf.c
+
+[1]: https://lore.kernel.org/linux-kselftest/20201016110836.52613-1-andriy.shevchenko@linux.intel.com/
+
+
 -- 
-Without deviation from the norm, progress is not possible.
-
-
+With Best Regards,
+Andy Shevchenko
