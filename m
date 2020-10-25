@@ -2,298 +2,199 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815832980F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:18:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B77152980FD
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:34:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414760AbgJYJSG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 05:18:06 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:57152 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1414752AbgJYJSF (ORCPT
+        id S1414820AbgJYJdJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 05:33:09 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:3428 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1727793AbgJYJdI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 05:18:05 -0400
-Received: from mail-wm1-x341.google.com (mail-wm1-x341.google.com [IPv6:2a00:1450:4864:20::341])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5C580C0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 02:18:00 -0700 (PDT)
-Received: by mail-wm1-x341.google.com with SMTP id c194so8212883wme.2
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 02:18:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=brainfault-org.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=RaBV5OGSgizc6bOjbQAcBV6/+c0YkBXr0HBp0wiO2C4=;
-        b=qYv8LP6BYP30hyFi4I6uJhDIbsZqGNJF95Lmm3CTlq9IUd4PeCDyeYWr8v613s8Zi0
-         2bRuHQc/zWhruysDT2dcdfX9OOPxPxdhka9SmHSfXWqIz/l0MuDenz82f2i1J1+nUmZg
-         2KGvYs8CdmSHYH8z6sMgVd2KIQpwxPCpyj0k/P/46aWsHMyk9qNKgFdKfrUmML82RMuq
-         xkfSknx0o03zd1B16lde5AKl8y3jHaicMAytC83hSY+C7LzAUhv0FREpbpzn1v1m2Ebf
-         CenGAa8vi2+9E/+Xxuu7WpTkxZM06TzMvfXD8VdUQtb1HpRPecK1f9SFQkkbetLTCxV2
-         Ew6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=RaBV5OGSgizc6bOjbQAcBV6/+c0YkBXr0HBp0wiO2C4=;
-        b=Yhtd6SToj9yb3Bnt/q3lxxBtrtFEYLx/3vpb7HAVImV0n3hDnED0OR10zCP+ROmRyg
-         PI+nwfoO4U8VX0usqbUpjHTkVWJYxaThUnUnp7uvnuVp9HxMDokiOUq8Ft9Gt2Xs9eIt
-         YuqXDx67T/Uh3sAkvrl56WaovvoWMBWhc1wdqVcvUE4ssqcbB3eD7DToVNKM+4gP59kt
-         S+rRuSfilATB8GhG9s1HawUw+BqHpKfWmIy2fuWdPkXsVfb6+ACqDDHprv8N6v6mgPep
-         h9JbBCkVp7VTcm4Sr0InxufDclU1auR90vxyrieoKqcHshA+PGRDbAf5mfHkH6Qt5LqQ
-         6Wgg==
-X-Gm-Message-State: AOAM530Je9DhYl1u8CxbTEjMt4vhU56bCVM9l/JKzOScc8hybglAupvI
-        8RrxBj2034APFnV/aE3ejGqmizrJUW+JSAqu9Cx7+Q==
-X-Google-Smtp-Source: ABdhPJzqljm3rNjuFJ0TcMA11xsO/2wA5XDCmDKyV+cnBRdnwYg9pK3iZWkiGftU6hNatz9ef03f2R7TCanD3XDyUCg=
-X-Received: by 2002:a7b:c92c:: with SMTP id h12mr11184462wml.134.1603617478740;
- Sun, 25 Oct 2020 02:17:58 -0700 (PDT)
+        Sun, 25 Oct 2020 05:33:08 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f95465c0000>; Sun, 25 Oct 2020 02:33:16 -0700
+Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 25 Oct
+ 2020 09:32:43 +0000
+Date:   Sun, 25 Oct 2020 11:32:39 +0200
+From:   Eli Cohen <elic@nvidia.com>
+To:     Jason Wang <jasowang@redhat.com>
+CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
+        <linux-kernel@vger.kernel.org>, <rob.miller@broadcom.com>,
+        <lingshan.zhu@intel.com>, <eperezma@redhat.com>, <lulu@redhat.com>,
+        <shahafs@mellanox.com>, <hanand@xilinx.com>,
+        <mhabets@solarflare.com>, <gdawar@xilinx.com>,
+        <saugatm@xilinx.com>, <vmireyno@marvell.com>,
+        <zhangweining@ruijie.com.cn>, <eli@mellanox.com>
+Subject: Re: [PATCH V3 2/3] vhost: vdpa: report iova range
+Message-ID: <20201025093239.GB189473@mtl-vdi-166.wap.labs.mlnx>
+References: <20201023022454.24402-1-jasowang@redhat.com>
+ <20201023022454.24402-3-jasowang@redhat.com>
 MIME-Version: 1.0
-References: <1603448245-79429-1-git-send-email-guoren@kernel.org>
- <CAAhSdy1rqZBt5LSgs9yQwewwKXvaS23ou5Ah7Xfu3n7S9sK6RA@mail.gmail.com> <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
-In-Reply-To: <CAJF2gTQtcKf0R-8nJK=Jb5BdQZ1giZTEuqHjZdHEU4Gks-i+Qw@mail.gmail.com>
-From:   Anup Patel <anup@brainfault.org>
-Date:   Sun, 25 Oct 2020 14:47:47 +0530
-Message-ID: <CAAhSdy3sQuErgEXp-cc15d=wJpFh6THe0dCMCQy4W-MO8ud5KQ@mail.gmail.com>
-Subject: Re: [PATCH 1/3] irqchip/irq-sifive-plic: Fixup wrong size of
- xxx_PER_HART and reg base
-To:     Guo Ren <guoren@kernel.org>
-Cc:     Palmer Dabbelt <palmerdabbelt@google.com>,
-        Paul Walmsley <paul.walmsley@sifive.com>,
-        Greentime Hu <greentime.hu@sifive.com>,
-        Zong Li <zong.li@sifive.com>,
-        Atish Patra <atish.patra@wdc.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Jason Cooper <jason@lakedaemon.net>,
-        Marc Zyngier <maz@kernel.org>, wesley@sifive.com,
-        Yash Shah <yash.shah@sifive.com>,
-        Christoph Hellwig <hch@lst.de>,
-        linux-riscv <linux-riscv@lists.infradead.org>,
-        "linux-kernel@vger.kernel.org List" <linux-kernel@vger.kernel.org>,
-        Guo Ren <guoren@linux.alibaba.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20201023022454.24402-3-jasowang@redhat.com>
+User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603618396; bh=Eyl7fsMdnIftwHgp3OSxS7VtjJZre+idt3z1TdxFCcY=;
+        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
+         X-Originating-IP:X-ClientProxiedBy;
+        b=m+sg1QNNPik4ZOTQtAHTn8tNmohPPyubyfwpQY6cCTQYT95PkeEeC2c4jDI7btmOp
+         N5O0LMfvFTPsVLf5yYsC19ZXYKLxKL4t+/8kemk1KY8RrAhmHBejDvTmlRlpgHJzYq
+         phsRjQbsXHKq9OuiFhmU6L8dNhgW0+Ehm9z4JviGsqzjKsn/ikdGq1QwuBUpA1UgUp
+         S0qx+vdKaRagCH+s6aDHoYlRJiC3PUhfZm2zwkQbTNLztDxdVwlKTFhPoiyVi3P6xn
+         FUTKn0l7SB2Iurc2eAIKCb3JcGFb6nykZHd+szC2BemdlOpW2Kw21rVNiDQN+IrO+2
+         1B2vvFv5lh0xw==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 8:40 AM Guo Ren <guoren@kernel.org> wrote:
->
-> On Fri, Oct 23, 2020 at 8:31 PM Anup Patel <anup@brainfault.org> wrote:
-> >
-> > On Fri, Oct 23, 2020 at 3:48 PM <guoren@kernel.org> wrote:
-> > >
-> > > From: Guo Ren <guoren@linux.alibaba.com>
-> > >
-> > > ENABLE and CONTEXT registers contain M & S status for per-hart, so
-> > > ref to the specification the correct definition is double to the
-> > > current value.
-> > >
-> > > The value of hart_base and enable_base should be calculated by real
-> > > physical hartid not software id. Sometimes the CPU node's <reg>
-> > > from dts is not equal to the sequence index.
-> > >
-> > > Signed-off-by: Guo Ren <guoren@linux.alibaba.com>
-> > > ---
-> > >  drivers/irqchip/irq-sifive-plic.c | 12 ++++++------
-> > >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > >
-> > > diff --git a/drivers/irqchip/irq-sifive-plic.c b/drivers/irqchip/irq-sifive-plic.c
-> > > index eaa3e9f..2e56576 100644
-> > > --- a/drivers/irqchip/irq-sifive-plic.c
-> > > +++ b/drivers/irqchip/irq-sifive-plic.c
-> > > @@ -44,16 +44,16 @@
-> > >   * Each hart context has a vector of interrupt enable bits associated with it.
-> > >   * There's one bit for each interrupt source.
-> > >   */
-> > > -#define ENABLE_BASE                    0x2000
-> > > -#define     ENABLE_PER_HART            0x80
-> > > +#define ENABLE_BASE                    0x2080
-> > > +#define     ENABLE_PER_HART            0x100
-> > >
-> > >  /*
-> > >   * Each hart context has a set of control registers associated with it.  Right
-> > >   * now there's only two: a source priority threshold over which the hart will
-> > >   * take an interrupt, and a register to claim interrupts.
-> > >   */
-> > > -#define CONTEXT_BASE                   0x200000
-> > > -#define     CONTEXT_PER_HART           0x1000
-> > > +#define CONTEXT_BASE                   0x201000
-> > > +#define     CONTEXT_PER_HART           0x2000
-> > >  #define     CONTEXT_THRESHOLD          0x00
-> > >  #define     CONTEXT_CLAIM              0x04
-> > >
-> > > @@ -358,10 +358,10 @@ static int __init plic_init(struct device_node *node,
-> > >                 cpumask_set_cpu(cpu, &priv->lmask);
-> > >                 handler->present = true;
-> > >                 handler->hart_base =
-> > > -                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
-> > > +                       priv->regs + CONTEXT_BASE + hartid * CONTEXT_PER_HART;
-> > >                 raw_spin_lock_init(&handler->enable_lock);
-> > >                 handler->enable_base =
-> > > -                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
-> > > +                       priv->regs + ENABLE_BASE + hartid * ENABLE_PER_HART;
-> > >                 handler->priv = priv;
-> > >  done:
-> > >                 for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
-> > > --
-> > > 2.7.4
-> > >
-> >
-> > There is no one-to-one mapping between PLIC context and HARTID. Instead,
-> > we have many-to-one mapping between PLIC contexts and HARTID. In other
-> > words, we have one PLIC context for each interrupt capable mode (i.e.
-> > M/S-mode) of each HART.
-> >
-> > For example, on SiFive Unleashed we have 5 HARTs but HARTID=0 has
-> > only M-mode capable of taking interrupts so we have total (1 + 2x4) = 9
-> > PLIC contexts.
-> That's OK, but what the bug I want to point out is enable_base &
-> context_base should be calculated by 'hartid' not 'i'.
-
-There is no relation between PLIC context number and HART IDs. The
-PLIC context to HART mapping is discovered from the "interrupts-extended"
-DT property of PLIC DT node. The "i" in the loop is PLIC context number.
-
-The PLIC spec does not mandate any ordering/pattern of PLIC context to
-HART mappings. Also, the interrupts-extended DT property is generic
-enough to represent any kind of PLIC context to HART mappings.
-
-Your patch breaks SiFive Unleashed board and NoMMU kernel because
-of incorrect assumptions about PLIC contexts to HART mappings.
-
->
-> For example, how we deal with below dts configuration:
->         cpus {
->                 #address-cells = <1>;
->                 #size-cells = <0>;
->                 timebase-frequency = <3000000>;
->                 cpu@0 {
->                         device_type = "cpu";
->                         reg = <2>;  //********* different from index
->                         status = "okay";
->                         compatible = "riscv";
->                         riscv,isa = "rv64imafdcsu";
->                         mmu-type = "riscv,sv39";
->                         cpu0_intc: interrupt-controller {
->                                 #interrupt-cells = <1>;
->                                 compatible = "riscv,cpu-intc";
->                                 interrupt-controller;
->                         };
->                 };
->                 cpu@1 {
->                         device_type = "cpu";
->                         reg = <3>; //********* different from index
->                         status = "fail";
->                         compatible = "riscv";
->                         riscv,isa = "rv64imafdcsu";
->                         mmu-type = "riscv,sv39";
->                         cpu1_intc: interrupt-controller {
->                                 #interrupt-cells = <1>;
->                                 compatible = "riscv,cpu-intc";
->                                 interrupt-controller;
->                         };
->                 };
->       }
-
-For above DTS configuration, we need a PLIC with just 4 contexts
-(irrespective to the HART IDs).
-
-The PLIC context to HART mapping can be described using the
-interrupts-extended DT property of PLIC DT node as follows:
-    interrupts-extended = <&cpu0_intc 11 &cpu0_intc 9
-                                         &cpu1_intc 11 &cpu1_intc 9>;
-
->
-> >
-> > I would also like to highlight that this patch is forcing PLIC driver to always
-> > use PLIC S-mode context for each HART which breaks the Linux RISC-V
-> > NoMMU kernel.
-> Yes, I forgot M-mode and I will correct it.
->
-> >
-> > There is no issue with the existing defines because these are aligned with
-> > above and latest PLIC spec.
-> > (Refer, https://github.com/riscv/riscv-plic-spec/blob/master/riscv-plic.adoc)
-> >
-> > NACK to this patch from my side.
->
-> Here is my new patch which fixup m-mode linux:
->
-> diff --git a/drivers/irqchip/irq-sifive-plic.c
-> b/drivers/irqchip/irq-sifive-plic.c
-> index 4048657..e34e1d9 100644
-> --- a/drivers/irqchip/irq-sifive-plic.c
-> +++ b/drivers/irqchip/irq-sifive-plic.c
-> @@ -45,7 +45,13 @@
->   * There's one bit for each interrupt source.
->   */
->  #define ENABLE_BASE                    0x2000
-> -#define     ENABLE_PER_HART            0x80
-> +#define     ENABLE_PER_HART            0x100
-> +#ifdef CONFIG_RISCV_M_MODE
-> +#define     ENABLE_OFFSET              0
-> +#else
-> +#define     ENABLE_OFFSET              0x80
-> +#endif
+On Fri, Oct 23, 2020 at 10:24:53AM +0800, Jason Wang wrote:
+> This patch introduces a new ioctl for vhost-vdpa device that can
+> report the iova range by the device.
+> 
+> For device that implements get_iova_range() method, we fetch it from
+> the vDPA device. If device doesn't implement get_iova_range() but
+> depends on platform IOMMU, we will query via DOMAIN_ATTR_GEOMETRY,
+> otherwise [0, ULLONG_MAX] is assumed.
+> 
+> For safety, this patch also rules out the map request which is not in
+> the valid range.
+> 
+> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> ---
+>  drivers/vhost/vdpa.c             | 40 ++++++++++++++++++++++++++++++++
+>  include/uapi/linux/vhost.h       |  4 ++++
+>  include/uapi/linux/vhost_types.h |  9 +++++++
+>  3 files changed, 53 insertions(+)
+> 
+> diff --git a/drivers/vhost/vdpa.c b/drivers/vhost/vdpa.c
+> index a2dbc85e0b0d..562ed99116d1 100644
+> --- a/drivers/vhost/vdpa.c
+> +++ b/drivers/vhost/vdpa.c
+> @@ -47,6 +47,7 @@ struct vhost_vdpa {
+>  	int minor;
+>  	struct eventfd_ctx *config_ctx;
+>  	int in_batch;
+> +	struct vdpa_iova_range range;
+>  };
+>  
+>  static DEFINE_IDA(vhost_vdpa_ida);
+> @@ -337,6 +338,16 @@ static long vhost_vdpa_set_config_call(struct vhost_vdpa *v, u32 __user *argp)
+>  	return 0;
+>  }
+>  
+> +static long vhost_vdpa_get_iova_range(struct vhost_vdpa *v, u32 __user *argp)
+> +{
+> +	struct vhost_vdpa_iova_range range = {
+> +		.first = v->range.first,
+> +		.last = v->range.last,
+> +	};
 > +
->
->  /*
->   * Each hart context has a set of control registers associated with it.  Right
-> @@ -53,9 +59,14 @@
->   * take an interrupt, and a register to claim interrupts.
->   */
->  #define CONTEXT_BASE                   0x200000
-> -#define     CONTEXT_PER_HART           0x1000
-> +#define     CONTEXT_PER_HART           0x2000
->  #define     CONTEXT_THRESHOLD          0x00
->  #define     CONTEXT_CLAIM              0x04
-> +#ifdef CONFIG_RISCV_M_MODE
-> +#define     CONTEXT_OFFSET             0
-> +#else
-> +#define     CONTEXT_OFFSET             0x1000
-> +#endif
->
->  #define        PLIC_DISABLE_THRESHOLD          0x7
->  #define        PLIC_ENABLE_THRESHOLD           0
-> @@ -358,10 +369,10 @@ static int __init plic_init(struct device_node *node,
->                 cpumask_set_cpu(cpu, &priv->lmask);
->                 handler->present = true;
->                 handler->hart_base =
-> -                       priv->regs + CONTEXT_BASE + i * CONTEXT_PER_HART;
-> +                       priv->regs + CONTEXT_BASE + hartid *
-> CONTEXT_PER_HART + CONTEXT_OFFSET;
->                 raw_spin_lock_init(&handler->enable_lock);
->                 handler->enable_base =
-> -                       priv->regs + ENABLE_BASE + i * ENABLE_PER_HART;
-> +                       priv->regs + ENABLE_BASE + hartid *
-> ENABLE_PER_HART + ENABLE_OFFSET;
->                 handler->priv = priv;
->  done:
->                 for (hwirq = 1; hwirq <= nr_irqs; hwirq++)
->
+> +	return copy_to_user(argp, &range, sizeof(range));
+> +}
+> +
+>  static long vhost_vdpa_vring_ioctl(struct vhost_vdpa *v, unsigned int cmd,
+>  				   void __user *argp)
+>  {
+> @@ -470,6 +481,8 @@ static long vhost_vdpa_unlocked_ioctl(struct file *filep,
+>  	case VHOST_GET_BACKEND_FEATURES:
+>  		features = VHOST_VDPA_BACKEND_FEATURES;
+>  		r = copy_to_user(featurep, &features, sizeof(features));
 
-This modified patch still breaks SiFive Unleashed board because
-it has following PLIC context to HART mappings:
-PLIC_context_0 (offset 0x0000) => HART0_M_mode_irq
-PLIC_context_1 (offset 0x1000) => HART1_M_mode_irq
-PLIC_context_2 (offset 0x2000) => HART1_S_mode_irq
-PLIC_context_3 (offset 0x3000) => HART2_M_mode_irq
-PLIC_context_4 (offset 0x4000) => HART2_S_mode_irq
-PLIC_context_5 (offset 0x5000) => HART3_M_mode_irq
-PLIC_context_6 (offset 0x6000) => HART3_S_mode_irq
-PLIC_context_7 (offset 0x7000) => HART4_M_mode_irq
-PLIC_context_8 (offset 0x8000) => HART4_S_mode_irq
+missing break statement.
 
-As-per your patch, the Linux S-mode kernel will use
-PLIC_context_3 (offset 0x3000) for HART1 which is in-correct
-because PLIC_context_3 maps to HART2 M-mode IRQ.
-
-Further with your patch, the Linux M-mode kernel will use
-PLIC_context_2 (offset 0x2000) for HART1 which is in-correct
-because PLIC_context_2 maps to HART1 S-mode IRQ.
-
-Clearly your modified patch breaks both Linux S-mode kernel
-and Linux M-mode kernel on SiFive Unleashed board.
-
-The current driver handles all above cases correctly by parsing
-the PLIC context to HART mappings from the interrupts-extended
-DT property. I don't see any bug here.
-
-Regards,
-Anup
+> +	case VHOST_VDPA_GET_IOVA_RANGE:
+> +		r = vhost_vdpa_get_iova_range(v, argp);
+>  		break;
+>  	default:
+>  		r = vhost_dev_ioctl(&v->vdev, cmd, argp);
+> @@ -597,6 +610,10 @@ static int vhost_vdpa_process_iotlb_update(struct vhost_vdpa *v,
+>  	long pinned;
+>  	int ret = 0;
+>  
+> +	if (msg->iova < v->range.first ||
+> +	    msg->iova + msg->size - 1 > v->range.last)
+> +		return -EINVAL;
+> +
+>  	if (vhost_iotlb_itree_first(iotlb, msg->iova,
+>  				    msg->iova + msg->size - 1))
+>  		return -EEXIST;
+> @@ -783,6 +800,27 @@ static void vhost_vdpa_free_domain(struct vhost_vdpa *v)
+>  	v->domain = NULL;
+>  }
+>  
+> +static void vhost_vdpa_set_iova_range(struct vhost_vdpa *v)
+> +{
+> +	struct vdpa_iova_range *range = &v->range;
+> +	struct iommu_domain_geometry geo;
+> +	struct vdpa_device *vdpa = v->vdpa;
+> +	const struct vdpa_config_ops *ops = vdpa->config;
+> +
+> +	if (ops->get_iova_range) {
+> +		*range = ops->get_iova_range(vdpa);
+> +	} else if (v->domain &&
+> +		   !iommu_domain_get_attr(v->domain,
+> +		   DOMAIN_ATTR_GEOMETRY, &geo) &&
+> +		   geo.force_aperture) {
+> +		range->first = geo.aperture_start;
+> +		range->last = geo.aperture_end;
+> +	} else {
+> +		range->first = 0;
+> +		range->last = ULLONG_MAX;
+> +	}
+> +}
+> +
+>  static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>  {
+>  	struct vhost_vdpa *v;
+> @@ -823,6 +861,8 @@ static int vhost_vdpa_open(struct inode *inode, struct file *filep)
+>  	if (r)
+>  		goto err_init_iotlb;
+>  
+> +	vhost_vdpa_set_iova_range(v);
+> +
+>  	filep->private_data = v;
+>  
+>  	return 0;
+> diff --git a/include/uapi/linux/vhost.h b/include/uapi/linux/vhost.h
+> index 75232185324a..c998860d7bbc 100644
+> --- a/include/uapi/linux/vhost.h
+> +++ b/include/uapi/linux/vhost.h
+> @@ -146,4 +146,8 @@
+>  
+>  /* Set event fd for config interrupt*/
+>  #define VHOST_VDPA_SET_CONFIG_CALL	_IOW(VHOST_VIRTIO, 0x77, int)
+> +
+> +/* Get the valid iova range */
+> +#define VHOST_VDPA_GET_IOVA_RANGE	_IOR(VHOST_VIRTIO, 0x78, \
+> +					     struct vhost_vdpa_iova_range)
+>  #endif
+> diff --git a/include/uapi/linux/vhost_types.h b/include/uapi/linux/vhost_types.h
+> index 9a269a88a6ff..f7f6a3a28977 100644
+> --- a/include/uapi/linux/vhost_types.h
+> +++ b/include/uapi/linux/vhost_types.h
+> @@ -138,6 +138,15 @@ struct vhost_vdpa_config {
+>  	__u8 buf[0];
+>  };
+>  
+> +/* vhost vdpa IOVA range
+> + * @first: First address that can be mapped by vhost-vDPA
+> + * @last: Last address that can be mapped by vhost-vDPA
+> + */
+> +struct vhost_vdpa_iova_range {
+> +	__u64 first;
+> +	__u64 last;
+> +};
+> +
+>  /* Feature bits */
+>  /* Log all write descriptors. Can be changed while device is active. */
+>  #define VHOST_F_LOG_ALL 26
+> -- 
+> 2.20.1
+> 
