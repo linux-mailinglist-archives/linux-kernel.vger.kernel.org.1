@@ -2,51 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DA21F298322
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:35:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9219929832B
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:37:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418182AbgJYSfa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 14:35:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46600 "EHLO mail.kernel.org"
+        id S1417163AbgJYSh1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 14:37:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49324 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1418148AbgJYSfZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 14:35:25 -0400
-Subject: Re: [GIT pull] timers/urgent for 5.10-rc1
+        id S1415361AbgJYSh0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 14:37:26 -0400
+Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1DC612072C;
+        Sun, 25 Oct 2020 18:37:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603650924;
-        bh=jIBxxx/Lcu7r80aGuw2Mi2rfNhTAYcJtdMVS0wrpDOM=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=MPBaprONwkS05KRB0TugP2nTqRXfWR8dV4naz/xx4Zm+yP6iNPHw91voDD4aYfk42
-         RYwIFrTBmhwBsHyiXQxFE24/rdFYHwXPpMasn2vMcTDlE+JtYcFXFlG6HSG/bc/Pj7
-         49xGTTrxr9BiRPLtcLjaHAr/gkJBTHlVJxwJeTFY=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <160363590826.1234.17293019096180328200.tglx@nanos>
-References: <160363590465.1234.11586095980767794789.tglx@nanos> <160363590826.1234.17293019096180328200.tglx@nanos>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <160363590826.1234.17293019096180328200.tglx@nanos>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-10-25
-X-PR-Tracked-Commit-Id: a4fd8414659bf470e2146b352574bbd274e54b7a
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 672f8871261597894d46454b8fa1660d6c952af6
-Message-Id: <160365092422.20889.15180692713430027789.pr-tracker-bot@kernel.org>
-Date:   Sun, 25 Oct 2020 18:35:24 +0000
-To:     Thomas Gleixner <tglx@linutronix.de>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, x86@kernel.org
+        s=default; t=1603651046;
+        bh=AKPWbbhGU2lDq8bH1SvgMMUeWmC+dVgo7ZU0pT2CqBo=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=NrxUh7Ba2gTECKM/q2Nb8g7MqpeqjWVu+CAWoTjJUX/Xn1y/Q5hnn6KlhM+GpLPkg
+         2tNRiG7gHYOqtaJXG05Ww3O7BpZlEBqcme73OYOcJpfFNaDI0CpD94hEw4kvO5XbRg
+         hNzx1hkDDMKIB1YweVadIc2+HdMbcNwoITFZpxe8=
+Date:   Sun, 25 Oct 2020 11:37:25 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Johannes Weiner <hannes@cmpxchg.org>
+Cc:     Michal Hocko <mhocko@suse.com>, linux-mm@kvack.org,
+        cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-team@fb.com
+Subject: Re: [PATCH] mm: memcontrol: add file_thp, shmem_thp to memory.stat
+Message-Id: <20201025113725.b60f2b08d7331a31edf009a1@linux-foundation.org>
+In-Reply-To: <20201022151844.489337-1-hannes@cmpxchg.org>
+References: <20201022151844.489337-1-hannes@cmpxchg.org>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Sun, 25 Oct 2020 14:25:08 -0000:
+On Thu, 22 Oct 2020 11:18:44 -0400 Johannes Weiner <hannes@cmpxchg.org> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git timers-urgent-2020-10-25
+> As huge page usage in the page cache and for shmem files proliferates
+> in our production environment, the performance monitoring team has
+> asked for per-cgroup stats on those pages.
+> 
+> We already track and export anon_thp per cgroup. We already track file
+> THP and shmem THP per node, so making them per-cgroup is only a matter
+> of switching from node to lruvec counters. All callsites are in places
+> where the pages are charged and locked, so page->memcg is stable.
+> 
+> ...
+>
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -1507,6 +1507,8 @@ static struct memory_stat memory_stats[] = {
+>  	 * constant(e.g. powerpc).
+>  	 */
+>  	{ "anon_thp", 0, NR_ANON_THPS },
+> +	{ "file_thp", 0, NR_FILE_THPS },
+> +	{ "shmem_thp", 0, NR_SHMEM_THPS },
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/672f8871261597894d46454b8fa1660d6c952af6
+Documentation/admin-guide/cgroup-v2.rst is owed an update?
 
-Thank you!
-
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
