@@ -2,89 +2,63 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 345B82981BF
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 14:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA112981C2
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 14:06:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416153AbgJYNBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 09:01:06 -0400
-Received: from fgw21-7.mail.saunalahti.fi ([62.142.5.82]:34218 "EHLO
-        fgw21-7.mail.saunalahti.fi" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1416146AbgJYNBF (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 09:01:05 -0400
-Received: from localhost (88-115-248-186.elisa-laajakaista.fi [88.115.248.186])
-        by fgw21.mail.saunalahti.fi (Halon) with ESMTP
-        id e49f1d72-16bf-11eb-9eb8-005056bdd08f;
-        Sun, 25 Oct 2020 14:44:59 +0200 (EET)
-Date:   Sun, 25 Oct 2020 14:44:59 +0200
-From:   andy@surfacebook.localdomain
-To:     SeongJae Park <sjpark@amazon.com>
-Cc:     Brendan Higgins <brendanhiggins@google.com>,
-        SeongJae Park <sjpark@amazon.de>,
-        Shuah Khan <skhan@linuxfoundation.org>,
-        "open list:KERNEL SELFTEST FRAMEWORK" 
-        <linux-kselftest@vger.kernel.org>,
-        KUnit Development <kunit-dev@googlegroups.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 2/2] kunit: tool: Mark 'kunittest_config' as constant
- again
-Message-ID: <20201025124459.GA1157488@surfacebook.localdomain>
-References: <CAFd5g44CxPuXbHund397PJSQPHGhWy1-7ij7JnJNzCO0NF6dCA@mail.gmail.com>
- <20201022063526.12554-1-sjpark@amazon.com>
+        id S1416169AbgJYNGs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 09:06:48 -0400
+Received: from foss.arm.com ([217.140.110.172]:45730 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1416161AbgJYNGr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 09:06:47 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id C581812FC;
+        Sun, 25 Oct 2020 06:06:46 -0700 (PDT)
+Received: from e107158-lin (e107158-lin.cambridge.arm.com [10.1.194.78])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D00D3F66B;
+        Sun, 25 Oct 2020 06:06:45 -0700 (PDT)
+Date:   Sun, 25 Oct 2020 13:06:42 +0000
+From:   Qais Yousef <qais.yousef@arm.com>
+To:     Elliot Berman <eberman@codeaurora.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Trilok Soni <tsoni@codeaurora.org>,
+        Prasad Sodagudi <psodagud@codeaurora.org>,
+        linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Lukasz Luba <lukasz.luba@arm.com>,
+        Valentin Schneider <valentin.schneider@arm.com>
+Subject: Re: [PATCH] smp: Add bootcpus parameter to boot subset of CPUs
+Message-ID: <20201025130642.yurgta7s63aecgrj@e107158-lin>
+References: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20201022063526.12554-1-sjpark@amazon.com>
+In-Reply-To: <1603404243-5536-1-git-send-email-eberman@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 22, 2020 at 08:35:26AM +0200, SeongJae Park wrote:
-> On Wed, 21 Oct 2020 14:32:52 -0700 Brendan Higgins <brendanhiggins@google.com> wrote:
-> 
-> > On Mon, Oct 12, 2020 at 3:27 AM SeongJae Park <sjpark@amazon.com> wrote:
-> > >
-> > > From: SeongJae Park <sjpark@amazon.de>
-> > >
-> > > 'kunit_kernel.kunittest_config' was constant at first, and therefore it
-> > > used UPPER_SNAKE_CASE naming convention that usually means it is
-> > > constant in Python world.  But, commit e3212513a8f0 ("kunit: Create
-> > > default config in '--build_dir'") made it modifiable to fix a use case
-> > > of the tool and thus the naming also changed to lower_snake_case.
-> > > However, this resulted in a confusion.  As a result, some successing
-> > > changes made the tool unittest fail, and a fix[1] of it again incurred
-> > > the '--build_dir' use case failure.
-> > >
-> > > As the previous commit fixed the '--build_dir' use case without
-> > > modifying the variable again, this commit marks the variable as constant
-> > > again with UPPER_SNAKE_CASE, to reduce future confusions.
-> > >
-> > > [1] Commit d43c7fb05765 ("kunit: tool: fix improper treatment of file location")
-> > >
-> > > Signed-off-by: SeongJae Park <sjpark@amazon.de>
-> > 
-> > Reviewed-by: Brendan Higgins <brendanhiggins@google.com>
-> 
-> Thanks :)
-> 
-> > 
-> > Thanks for this! This is something I meant to fix a while ago and forgot about.
-> > 
-> > One minor issue, this patch does not apply on torvalds/master right
-> > now. Could you please rebase this?
-> 
-> Surely of course, I will send next version soon.
+Hi Elliot
 
-May I ask what happened to [1]?
-I mean it seems these two are goind to collide.
+On 10/22/20 15:04, Elliot Berman wrote:
+> In a heterogeneous multiprocessor system, specifying the 'maxcpus'
+> parameter on kernel command line does not provide sufficient control
+> over which CPUs are brought online at kernel boot time, since CPUs may
+> have nonuniform performance characteristics. Thus, add bootcpus kernel
 
-Brendan?
+Are you seeing boot time issues on big.LITTLE systems that's why you need this
+extra config? If so it'll be good to elaborate on the problem. Scheduler should
+place the heavy tasks on bigs. It'll be good to understand what's failing in
+here as this might not be addressing the root cause.
 
-[1]: https://lore.kernel.org/linux-kselftest/20201015152348.65147-1-andriy.shevchenko@linux.intel.com/
+Thanks
 
+--
+Qais Yousef
 
--- 
-With Best Regards,
-Andy Shevchenko
-
-
+> parameter to control which CPUs should be brought online during kernel
+> boot. When both maxcpus and bootcpus is set, the more restrictive of the
+> two are booted.
