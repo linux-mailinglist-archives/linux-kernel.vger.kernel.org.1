@@ -2,66 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E56E3298364
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:38:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA9CA298376
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 21:18:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418552AbgJYTgi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 15:36:38 -0400
-Received: from smtprelay0179.hostedemail.com ([216.40.44.179]:34448 "EHLO
-        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
-        by vger.kernel.org with ESMTP id S2408835AbgJYTgi (ORCPT
+        id S1418671AbgJYUSY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 16:18:24 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:44938 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1418663AbgJYUSY (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 15:36:38 -0400
-Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
-        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 7D45D18224D66;
-        Sun, 25 Oct 2020 19:36:37 +0000 (UTC)
-X-Session-Marker: 6A6F6540706572636865732E636F6D
-X-Spam-Summary: 50,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:800:967:973:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1539:1593:1594:1711:1730:1747:1777:1792:1981:2194:2199:2393:2525:2560:2563:2682:2685:2828:2859:2902:2933:2937:2939:2942:2945:2947:2951:2954:3022:3138:3139:3140:3141:3142:3352:3622:3865:3866:3867:3868:3870:3871:3872:3873:3874:3934:3936:3938:3941:3944:3947:3950:3953:3956:3959:4321:4362:5007:7514:7974:9025:10004:10400:10848:11232:11658:11914:12043:12296:12297:12555:12679:12740:12760:12895:12986:13069:13311:13357:13439:14096:14097:14181:14659:14721:21080:21325:21433:21627:21811:21939:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
-X-HE-Tag: worm17_151350d2726d
-X-Filterd-Recvd-Size: 1653
-Received: from XPS-9350.home (unknown [47.151.133.149])
-        (Authenticated sender: joe@perches.com)
-        by omf05.hostedemail.com (Postfix) with ESMTPA;
-        Sun, 25 Oct 2020 19:36:36 +0000 (UTC)
-Message-ID: <a2b8af8c655f28071faa24b8e60681bca40a16da.camel@perches.com>
-Subject: Re: [PATCH v6] checkpatch: extend attributes check to handle more
- patterns
-From:   Joe Perches <joe@perches.com>
-To:     Dwaipayan Ray <dwaipayanray1@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel@vger.kernel.org, lukas.bulwahn@gmail.com
-Date:   Sun, 25 Oct 2020 12:36:35 -0700
-In-Reply-To: <20201025193103.23223-1-dwaipayanray1@gmail.com>
-References: <20201025193103.23223-1-dwaipayanray1@gmail.com>
-Content-Type: text/plain; charset="ISO-8859-1"
-User-Agent: Evolution 3.38.1-1 
+        Sun, 25 Oct 2020 16:18:24 -0400
+Received: from mail-qt1-x844.google.com (mail-qt1-x844.google.com [IPv6:2607:f8b0:4864:20::844])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DE980C061755;
+        Sun, 25 Oct 2020 13:18:23 -0700 (PDT)
+Received: by mail-qt1-x844.google.com with SMTP id m9so5301834qth.7;
+        Sun, 25 Oct 2020 13:18:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=sender:from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=4uNUycYHnRpOc67Mp8vwXOgNXt47TgJImjX3H53BPeI=;
+        b=E+jvyzoeV2+pKYSB9cSCEFLTqsYO5x9TsdHQBKXkK5wWp5DKQLaUfkHI+okykmw7Ke
+         vu/rXzd/KCOT6QeO/kTrZtFXQM5w7kAPSg+1bitmwkOdxDfznn7xDJtiAtGwsxgP63li
+         NVCtDCk+4ZBFSVSoRLOIGC4HmQ6EOu2rDxnuDj511c40Paj3rNcDdsN1Omg1DN+rDDfj
+         B51QBz11DW2tEggHqwkH1sMcpSYO9y9S8ZlJe/PNCxuG1vp2YWMYId/PfXpISPTBiVzD
+         hfdHq+q6BDR1/AMny0fDlG0BiTBeD6S7IBjbq6f6AEzx0k3SYHHL6iGyMYJaE+lCkIkK
+         ZnQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
+         :references:mime-version:content-disposition:in-reply-to;
+        bh=4uNUycYHnRpOc67Mp8vwXOgNXt47TgJImjX3H53BPeI=;
+        b=JorTvTdouiNP5gYGQbZ4HXfwrTRM9yT82esVF9flcG2mAjCH73IS2DYk/Gu0EujKer
+         m/6iPetgQhAdNA9Oymiy/OyPFTiEl6CNCppuQLi77T7ZMb3DYnBKJQzj61KEL0Nzhi0k
+         4NOAF1ZFxzYxDhtTZ/LdfBTbjr9tfEKVanQwJBh7+Em3DHeOYRaUeA/45FEpMxuyJHZZ
+         rpMeMDnMzk4OZT6ZnAKHXGxAmg+d6IN/Y4f/VifJPByb6Zlx7H7QWhzEHTqHLAwQvZ5Z
+         +LXXtRvIgY5bk8Z5ypwo6oZYzOYmit51VFyf0t10ttn1MA8YlJHAf1daOoXxLzCPdo1A
+         U8WA==
+X-Gm-Message-State: AOAM530xh2vLNx6dXLg1hYbpBbGtG5U0AAxAtzvVIVAeIR/ORxaS13OZ
+        COX7omNBigMKpWtS+jfUAns=
+X-Google-Smtp-Source: ABdhPJxsRZ4TAY9yeYwNWSL1+hHB0sj8zbk6BjdfLfGKXhU+hPW6BbFF+sEKbnMJSnTk4bfll9g4gA==
+X-Received: by 2002:ac8:3975:: with SMTP id t50mr13575931qtb.53.1603657102368;
+        Sun, 25 Oct 2020 13:18:22 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id a20sm5568856qtk.67.2020.10.25.13.18.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 13:18:21 -0700 (PDT)
+Sender: Arvind Sankar <niveditas98@gmail.com>
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
+Date:   Sun, 25 Oct 2020 16:18:20 -0400
+To:     David Laight <David.Laight@ACULAB.COM>
+Cc:     'Arvind Sankar' <nivedita@alum.mit.edu>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Eric Biggers <ebiggers@google.com>
+Subject: Re: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
+Message-ID: <20201025201820.GA1237388@rani.riverdale.lan>
+References: <20201025143119.1054168-1-nivedita@alum.mit.edu>
+ <20201025143119.1054168-7-nivedita@alum.mit.edu>
+ <05150bdb3a4c4b2682ab9cb8fb2ed411@AcuMS.aculab.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <05150bdb3a4c4b2682ab9cb8fb2ed411@AcuMS.aculab.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 2020-10-26 at 01:01 +0530, Dwaipayan Ray wrote:
-> It is generally preferred that the macros from
-> include/linux/compiler_attributes.h are used, unless there
-> is a reason not to.
+On Sun, Oct 25, 2020 at 06:51:18PM +0000, David Laight wrote:
+> From: Arvind Sankar
+> > Sent: 25 October 2020 14:31
+> > 
+> > Unrolling the LOAD and BLEND loops improves performance by ~8% on x86_64
+> > (tested on Broadwell Xeon) while not increasing code size too much.
 > 
-> checkpatch currently checks __attribute__ for each of
-> packed, aligned, section, printf, scanf, and weak. Other
-> declarations in compiler_attributes.h are not handled.
+> I can't believe unrolling the BLEND loop makes any difference.
+
+It's actually the BLEND loop that accounts for almost all of the
+difference. The LOAD loop doesn't matter much in general: even replacing
+it with a plain memcpy() only increases performance by 3-4%. But
+unrolling it is low cost in code size terms, and clang actually does it
+without being asked.
+
+> WRT patch 5.
+> On the C2758 the original unrolled code is slightly faster.
+> On the i7-7700 the 8 unroll is a bit faster 'hot cache',
+> but slower 'cold cache' - probably because of the d-cache
+> loads for K[].
 > 
-> Add a generic test to check the presence of such attributes.
-> Some attributes require more specific handling and are kept
-> separate.
+> Non-x86 architectures might need to use d-cache reads for
+> the 32bit 'K' constants even in the unrolled loop.
+> X86 can use 'lea' with a 32bit offset to avoid data reads.
+> So the cold-cache case for the old code may be similar.
+
+Not sure I follow: in the old code, the K's are 32-bit immediates, so
+they should come from the i-cache whether an add or an lea is used?
+
+Why is the cold-cache case relevant anyway? If the code is only being
+executed a couple of times or so, i.e. you're hashing a single say
+64-128 byte input once in a blue moon, the performance of the hash
+doesn't really matter, no?
+
 > 
-> Also add fixes to the generic attributes check to substitute
-> the correct conversions.
-	
-Thanks Dwaipayan.
-
-Andrew, can you pick this up please?
-
-Link: https://lore.kernel.org/lkml/20201025193103.23223-1-dwaipayanray1@gmail.com/raw
-
-
+> Interestingly I had to write an asm ror32() to get reasonable
+> code (in userspace). The C version the kernel uses didn't work.
+> 
+> 	David
+> 
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+> Registration No: 1397386 (Wales)
+> 
