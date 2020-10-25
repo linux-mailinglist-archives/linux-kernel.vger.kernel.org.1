@@ -2,87 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4EDBB29830D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:27:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 712D7298312
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:28:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418047AbgJYS0e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 14:26:34 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:56150 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1418040AbgJYS0d (ORCPT
+        id S1418071AbgJYS2F (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 14:28:05 -0400
+Received: from mail3-relais-sop.national.inria.fr ([192.134.164.104]:57034
+        "EHLO mail3-relais-sop.national.inria.fr" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1732784AbgJYS2E (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 14:26:33 -0400
-Received: from mail-oi1-x242.google.com (mail-oi1-x242.google.com [IPv6:2607:f8b0:4864:20::242])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 53583C061755
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 11:26:32 -0700 (PDT)
-Received: by mail-oi1-x242.google.com with SMTP id x1so470544oic.13
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 11:26:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=x67Xs7cDC5M+fx38P4s5d7Yp9lo5OaAtAzZ3xPA+vSk=;
-        b=eKB7skNqyjyJU+VyjQrlo5csNL4bvCx+guk+76Np1XRpkZsRRcGWOz721Najlt1EnL
-         lD9Y+AGjldgTY/nJN0merC1WDL/fZRIoZpdcQ4H2CBMqSkUVALs7KxUKz9EIyFQ1H1/t
-         dSWCs1SxwlJ5rhibzF/8PcqFllLCGuTX7arAt9ebfyS5JZx4DnydR8fptMF8X1Tt2HFP
-         s2lM56dnboWfODq1h1mcoAlZ1cFPv+SqKnPIJApF/qnk7/22OXRG+qSe+otOXBpY6qZQ
-         m98lMm4yNOJdmtzQRMcFq/SJexdj9pd5woYQlZpUgcjIOdtgB52aDPtqSXhpkRnQQtWm
-         Kcig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=x67Xs7cDC5M+fx38P4s5d7Yp9lo5OaAtAzZ3xPA+vSk=;
-        b=cYKN9JIDZEPWG7Pip/ZPF/K+9kbbnTle39yBCsYKWCgnKBjcFXP64fEiWQNIBjETgs
-         9ECewDfwbLwutDZ+pNcETHaiIJjMhe084b4a9m9DpaNPrLnmfkyp8zRUQRTyBVBWvnWC
-         Us4STHI2Q/Edw2S28KZ66c6y6r+xBEqYT5hbXnzknZh6sG00xPwxrg/pI//0q1CNevas
-         HdStnaUL71fkNon+8z1RZKIuX96FS3aRdRZniC1dy1+8M+Li3VTw2r6M/sng7oW7RM4z
-         ZXEbVlQx+V2LHuIRUA0UletzmLcXaEu2x9TFPSAiRx4e0y4JOqbI+8P1lWhw4zV2sout
-         ET2w==
-X-Gm-Message-State: AOAM533iRtl1hvn1wCXyW+5bJXO+XL41ArDcNfhwNs4IuQ0hm7/L17Tc
-        cCyrIVGI0K1nJOrELkyYSK4xtOI4mPK/h2JM2Dx/6HhsXl0/4A==
-X-Google-Smtp-Source: ABdhPJzdDeF2zVZrUT1wnh+ZYhv+2rWkXggi+FrhntvzAl7wqTjMWOi/91Q36prlwieQ3A/vRrBugPEp7R6ALOt+TeA=
-X-Received: by 2002:aca:420a:: with SMTP id p10mr8296719oia.117.1603650391544;
- Sun, 25 Oct 2020 11:26:31 -0700 (PDT)
+        Sun, 25 Oct 2020 14:28:04 -0400
+X-IronPort-AV: E=Sophos;i="5.77,416,1596492000"; 
+   d="scan'208";a="362719074"
+Received: from 173.121.68.85.rev.sfr.net (HELO hadrien) ([85.68.121.173])
+  by mail3-relais-sop.national.inria.fr with ESMTP/TLS/DHE-RSA-AES256-GCM-SHA384; 25 Oct 2020 19:28:02 +0100
+Date:   Sun, 25 Oct 2020 19:28:01 +0100 (CET)
+From:   Julia Lawall <julia.lawall@inria.fr>
+X-X-Sender: jll@hadrien
+To:     Markus Elfring <Markus.Elfring@web.de>
+cc:     Coccinelle <cocci@systeme.lip6.fr>,
+        Gilles Muller <Gilles.Muller@lip6.fr>,
+        Michal Marek <michal.lkml@markovi.net>,
+        Nicolas Palix <nicolas.palix@imag.fr>,
+        kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: =?UTF-8?Q?Re=3A_=5BCocci=5D_=5BPATCH=5D_Coccinelle=3A_null=3A_O?=
+ =?UTF-8?Q?ptimise_disjunctions_in_SmPL_script_=E2=80=9Ceno=2Eco?=
+ =?UTF-8?Q?cci=E2=80=9D?=
+In-Reply-To: <0d1575b0-ab37-663e-2464-278fd76280b5@web.de>
+Message-ID: <alpine.DEB.2.22.394.2010251924290.2714@hadrien>
+References: <0d1575b0-ab37-663e-2464-278fd76280b5@web.de>
+User-Agent: Alpine 2.22 (DEB 394 2020-01-19)
 MIME-Version: 1.0
-References: <20201025101537.59133-1-dwaipayanray1@gmail.com>
- <52f88d0bb938c5063ede693a05bf64961af5a496.camel@perches.com>
- <CABJPP5Cec7jKfaygRaxm-z5gzhg-7cBX1GP46NRQDM6rfhg3Ww@mail.gmail.com> <6c1c62cd8ac119a6d8a84f262f11eb509ba0e7cc.camel@perches.com>
-In-Reply-To: <6c1c62cd8ac119a6d8a84f262f11eb509ba0e7cc.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sun, 25 Oct 2020 23:56:00 +0530
-Message-ID: <CABJPP5Cc9H5w57qko372iU4t+_if2cp1TbOfTNRd9zt7bGDW5w@mail.gmail.com>
-Subject: Re: [PATCH v5] checkpatch: extend attributes check to handle more patterns
-To:     Joe Perches <joe@perches.com>
-Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/mixed; boundary="8323329-685740588-1603650482=:2714"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 11:49 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sun, 2020-10-25 at 23:40 +0530, Dwaipayan Ray wrote:
-> > On Sun, Oct 25, 2020 at 11:29 PM Joe Perches <joe@perches.com> wrote:
-> []
-> > > Using $rawline would also change comments and that seems wrong.
-> > > Any reason to use $rawline instead of $line?
-> > Yes I used $line initially but changed it because quoted
-> > strings were being replaced.
-> >
-> > Like:
-> > __attribute__((__section__("_ftrace_events")))
->
-> Right thanks, that's a very sensible tradeoff to reduce code complexity.
->
+  This message is in MIME format.  The first part should be readable text,
+  while the remaining parts are likely unreadable without MIME-aware tools.
 
-Okay. Do you see anything else that I should cover in the next
-iteration?
+--8323329-685740588-1603650482=:2714
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8BIT
 
-If there is no other problem, I will do the space addition one and
-resend it to you.
 
-Thanks,
-Dwaipayan.
+
+On Sun, 25 Oct 2020, Markus Elfring wrote:
+
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Sun, 25 Oct 2020 18:54:36 +0100
+>
+> A disjunction is applied by this script for the semantic patch language.
+> This construct uses short-circuit evaluation. It has got the consequence
+> that the last element of the specified condition will only be checked
+> if all previous parts did not match. Such a technical detail leads to
+> a recommended ordering of condition parts if you would like to care for
+> optimal run time characteristics of SmPL code.
+>
+> An usage incidence was determined for the specified identifiers in source
+> files from the software “Linux next-20201023” by another SmPL script.
+>
+> See also:
+> Determination of an usage statistic for memory allocation calls
+> https://lore.kernel.org/cocci/2774601.u91sIFNy1E@sonne/
+>
+> This analysis result indicates a clear ranking for such function calls.
+> Thus reorder the SmPL disjunction items according to their usage incidence.
+
+Did you actually test this before and after the change and see a
+difference in performance?  On my laptop, I see absolutely no difference,
+for the patch mode and for the context mode.  I didn't try the other
+cases.
+
+Before the change:
+
+patch: 440.182u 2.049s 1:53.12 390.9%	0+0k 0+232io 4pf+0w
+context: 392.931u 2.164s 1:41.53 389.1%	0+0k 432+360io 5pf+0w
+
+After the change:
+
+patch: 442.182u 2.090s 1:54.13 389.2%	0+0k 0+240io 4pf+0w
+context: 392.742u 2.035s 1:41.37 389.4%	0+0k 0+360io 4pf+0w
+
+julia
+
+>
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+> ---
+>  scripts/coccinelle/null/eno.cocci | 15 +++++++++++----
+>  1 file changed, 11 insertions(+), 4 deletions(-)
+>
+> diff --git a/scripts/coccinelle/null/eno.cocci b/scripts/coccinelle/null/eno.cocci
+> index 81584ff87956..969cab5116a9 100644
+> --- a/scripts/coccinelle/null/eno.cocci
+> +++ b/scripts/coccinelle/null/eno.cocci
+> @@ -17,8 +17,16 @@ virtual report
+>  @depends on patch@
+>  expression x,E;
+>  @@
+> -
+> -x = \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|kmem_cache_alloc_node\|kmalloc_node\|kzalloc_node\)(...)
+> + x =
+> +(kzalloc
+> +|kmalloc
+> +|kcalloc
+> +|kmem_cache_alloc
+> +|kmem_cache_zalloc
+> +|kzalloc_node
+> +|kmalloc_node
+> +|kmem_cache_alloc_node
+> +)(...)
+>  ... when != x = E
+>  - IS_ERR(x)
+>  + !x
+> @@ -27,8 +35,7 @@ x = \(kmalloc\|kzalloc\|kcalloc\|kmem_cache_alloc\|kmem_cache_zalloc\|kmem_cache
+>  expression x,E;
+>  position p1,p2;
+>  @@
+> -
+> -*x = \(kmalloc@p1\|kzalloc@p1\|kcalloc@p1\|kmem_cache_alloc@p1\|kmem_cache_zalloc@p1\|kmem_cache_alloc_node@p1\|kmalloc_node@p1\|kzalloc_node@p1\)(...)
+> +*x = \(kzalloc@p1\|kmalloc@p1\|kcalloc@p1\|kmem_cache_alloc@p1\|kmem_cache_zalloc@p1\|kzalloc_node@p1\|kmalloc_node@p1\|kmem_cache_alloc_node@p1\)(...)
+>  ... when != x = E
+>  * IS_ERR@p2(x)
+>
+> --
+> 2.29.1
+>
+> _______________________________________________
+> Cocci mailing list
+> Cocci@systeme.lip6.fr
+> https://systeme.lip6.fr/mailman/listinfo/cocci
+>
+--8323329-685740588-1603650482=:2714--
