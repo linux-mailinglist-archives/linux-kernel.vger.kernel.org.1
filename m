@@ -2,248 +2,147 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C8FA829827C
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 17:27:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 61E85298271
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 17:05:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1417151AbgJYQ1K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 12:27:10 -0400
-Received: from mout.gmx.net ([212.227.17.20]:43621 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1417124AbgJYQ1J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 12:27:09 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603643204;
-        bh=pNENR6NYpvtez0wq6byw3Bmq32UAhJHvRjyV0Y2UrCw=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=Nf18DFPn1FJtAhUjcCn9Myacw3Ib7PWLI1PH/jkfN9J+q9kWo+6ADefF0fhpZ2pKV
-         rFDx7pNMtfAEuyNjRZVL4jBc/ADnzd2xVxPefyn4SPF8qEpy+KYrWfgW3O3+AgR098
-         bKABUvh1zpHrNUdcXfjqSJ+zItP41th/vo7sODc4=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.231.59]) by mail.gmx.com
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1Mv31c-1kF3Tf3PEG-00qyN1; Sun, 25 Oct 2020 17:26:43 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     John Wood <john.wood@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v2 4/8] security/brute: Detect a fork brute force attack
-Date:   Sun, 25 Oct 2020 14:45:36 +0100
-Message-Id: <20201025134540.3770-5-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201025134540.3770-1-john.wood@gmx.com>
-References: <20201025134540.3770-1-john.wood@gmx.com>
+        id S1417101AbgJYQFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 12:05:45 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:34592 "EHLO
+        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1417082AbgJYQFo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 12:05:44 -0400
+Received: from mail-il1-x144.google.com (mail-il1-x144.google.com [IPv6:2607:f8b0:4864:20::144])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9195EC0613CE;
+        Sun, 25 Oct 2020 09:05:44 -0700 (PDT)
+Received: by mail-il1-x144.google.com with SMTP id q1so5937598ilt.6;
+        Sun, 25 Oct 2020 09:05:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=a+vqcSmOOY97IzaN1+1HCH355O2NZAY2HbI1jkN79hI=;
+        b=maK0k18LOlWzmcfX5FXU4OHIBpi6XXy2fqu4lstMQYTI4yzpfEEspmuoyHji6l7g8v
+         iTZuFTrSeqHCzSF1WlPyLE+pEoxwmIRwfPmAxCtcCh/Ee6YKH1MimIrI7hmCEqYIxdnS
+         3u0vlKwhTERYGrqNlfif+c5n5tp2Z4Ybm2NzzOmILBn9ch3A89L3QmWOUoTTsN3oUYgm
+         GG+IsAYrU8R7zC+cj/cs6++7A04oABXFoe7XzDH68lBAcudOsGDqbvWvPYDkIUOXa+wZ
+         qF+bpht1aG2Nn3xAn74ii4CY8/XkwQ/sI+bpoomfn4vO4/L3s4zEB0DVe5G7IguyE+O2
+         bNIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=a+vqcSmOOY97IzaN1+1HCH355O2NZAY2HbI1jkN79hI=;
+        b=L3ci2Rr/d7R1ZwEObU/L8tGoNo3U9KVDFYPLpJGL79ZbchXldn22LyRpN6jr7CBNkP
+         mnGA5MwGtXdsPIQiLPvd/8u5ysaiK9Uw7+vMD4zm5weY8sRZRxDlH/K+rAHXZqKyb22X
+         s3EN93cgEe4in2pTyCBmB+tMgG1BoutUvv6aZLZMAOOXvxzA6xHH7TpDvu+Svc/glJCJ
+         hKa61f0PxfO+QULB1N9QvWd/6ZaupT9tR2QYWYEPc/4o+R1DiuVAhlla8Yiyc8QOY6ib
+         43z5mk6SqbSslDA+BGgvw/Yvbyw0HGgPTLfFFGpkA+MVZNQ0W26R7lF4d4J7T8+l0PpL
+         QZxw==
+X-Gm-Message-State: AOAM530yUJdH86ig1k9dH53ZF6wddchX43xu5uJ7mBYpA8i5KVettgfj
+        0URZEecwVSpN98GkNQcj9gWkuNd8h34AqzAzZxQ=
+X-Google-Smtp-Source: ABdhPJy2SHNZr1Dd8yNo+sGV/CJn5rnBcSlG2J20vuJGPkaYNODFUa+hQZqgdDqFhUPKeLpwICVWIzmkCNuY08MMUc0=
+X-Received: by 2002:a05:6e02:52c:: with SMTP id h12mr7774166ils.196.1603641943584;
+ Sun, 25 Oct 2020 09:05:43 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:jpDULrgTFkzvRL5MdNbDprGG+7NOjPXmtdh02SKJ/gibuend0zu
- 4FpzOT6e517C6yk6mpkDK5zei6S+mowxi3z8/XZLVMRF+SCI9NLVVW308BINp9aOwL11bnm
- GGjKkNzTDqhcTjSA6oZTLTsTRCHa2Tzfa08wIZatg80wkAAMYfXLKS+dKySQcJDQ4GEV6EZ
- qE8Gtl25sCH5YHq3cx5OQ==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:wZBrcUl8kvA=:NnjH4p8YLrCWYMo+aDWE0E
- a13no4H61b/h3tkI6THq0QraQmfKXpzJxOLL8cZGl58ociWuQ/jrAKbJ68gyLiMWVabs9RLC7
- OKPJgTyr5NMHtTGf39WBqn2i5SDoti5fhXq7FW7syccRZNOMIQB8PT7dVBTyp2knaAY/aJrjS
- 2nLFZgy46qwzkewLjoMp9PFnc7vsB7LBDgMEObNtYvS4+d7sS0mTkR6j+UPOcexwkxu7whk1T
- rO4/NZIeRVoEyrPsLiBhSj5BiQe6VxkGT/jYIXVALluh9ncqcSxT7AZiZ7mcOHthuK9SDYJuJ
- rH/LknJBZS2vBSI3DueTKCv31vMphq3DN87teMlbC+z1+KKW6s9NXU92aAT9nO3u946aOpEBx
- JqXItebzpQ3enyVaLLjo8K9dDvsSED/5sXA6ItNi0sNSX8CPWgKo5Ue4sbF8msaslx0zqcaJr
- sDZNsQesD73hi26icj/kT+a7ggWX41NKvwIiIyHjfCa73qygqsJyKHgOGMqkGeIH/HmdL3Efc
- 9FicgxJQyRCrNAW9FFb34VlcZTpQ63ulxHLggD3oG2/y8OCYUinU5jKDpYYySIpTZhO+A5d2t
- AksmbPeyr8LSbMAD+nzqc2H7DfnkU4dGhu+N/FHIiFvqzx72uU0UczeX7dKA1aOo195cmz23m
- KUfodjC7RYpdz6wOd7ivozh3zoaZkiCu78Hc/yyBnbSU94z3KedTBSDscZtGtBiMAqPNaGE5t
- 2dToidE3hJe+rE50vFsvRI6VGSaL02wYu+7wffC3g8H9YTFK6FxpgieO+3mNnyIb0iGZzgU3R
- ed7ZK+M8ptVn6miIunqVtGU+1V4vTYUwmZNjKEi0Q+d7KVb5gMqghoqZy1m11LrFYr1GwwClR
- EEGFjubBkxpO1jqUHhIw==
+References: <20201024162016.1003041-1-aford173@gmail.com> <20201024202335.y3npwtgragpp5wcz@fsr-ub1664-175>
+ <CAHCN7xJiygvLStO56v4xSnOEqR_5fbYQHn5juA8YeDiWh2awbg@mail.gmail.com>
+ <20201025120509.r5kl76wo5mdmapo5@fsr-ub1664-175> <3dadade8-6e77-e27f-d5a6-307de17a4dd0@denx.de>
+In-Reply-To: <3dadade8-6e77-e27f-d5a6-307de17a4dd0@denx.de>
+From:   Adam Ford <aford173@gmail.com>
+Date:   Sun, 25 Oct 2020 11:05:32 -0500
+Message-ID: <CAHCN7xLC-gKquDNS3ToQCff=g610PscQE+T4zfO=_05GpLyK4w@mail.gmail.com>
+Subject: Re: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
+To:     Marek Vasut <marex@denx.de>
+Cc:     Abel Vesa <abel.vesa@nxp.com>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-To detect a fork brute force attack is necessary that the list that
-holds the last crashes timestamps be updated in every fatal crash. To do
-so, use the "task_fatal_signal" LSM hook added in a previous step.
+On Sun, Oct 25, 2020 at 7:19 AM Marek Vasut <marex@denx.de> wrote:
+>
+> On 10/25/20 1:05 PM, Abel Vesa wrote:
+>
+> [...]
+>
+> >> Together, both the GPC and the clk-blk driver should be able to pull
+> >> the multimedia block out of reset.  Currently, the GPC can handle the
+> >> USB OTG and the GPU, but the LCDIF and MIPI DSI appear to be gated by
+> >> the clock block
+> >>
+> >> My original patch RFC didn't include the imx8mn node, because it
+> >> hangs, but the node I added looks like:
+> >>
+> >> media_blk_ctl: clock-controller@32e28000 {
+> >>      compatible = "fsl,imx8mn-media-blk-ctl", "syscon";
+> >>      reg = <0x32e28000 0x1000>;
+> >>      #clock-cells = <1>;
+> >>      #reset-cells = <1>;
+> >> };
+> >>
+> >> I was hoping you might have some feedback on the 8mn clk-blk driver
+> >> since you did the 8mp clk-blk drive and they appear to be very
+> >> similar.
+> >>
+> >
+> > I'll do you one better still. I'll apply the patch in my tree and give it
+> > a test tomorrow morning.
 
-Then, an only when this list is large enough, the application crash
-period can be computed as the difference between the newest crash
-timestamp and the oldest one divided by the size of the list. This way,
-the scenario where an application crashes few times in a short period of
-time due to reasons unrelated to a real attack is avoided.
+I do have some more updates on how to get the system to not hang, and
+to enumerate more clocks.
+Looking at Marek's work on enabling clocks in the 8MM, he added a
+power-domain in dispmix_blk_ctl pointing to the dispmix in the GPC.
+By forcing the GPC driver to write 0x1fff  to 32e28004, 0x7f to
+32e28000 and 0x30000 to 32e28008, the i.MX8MM can bring the display
+clocks out of reset.
 
-Finally, an application crash period that falls under the defined
-threshold shows that the application is crashing quickly and there is a
-clear signal that an attack is happening.
+Unfortunately, the i.MX8MN needs to have 0x100 written to both
+32e28000 and 32e28004, and the values written for the 8MM are not
+compatible.
+By forcing the GPC to write those values, I can get  lcdif_pixel_clk
+and the mipi_dsi_clkref  appearing on the Nano.
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- security/brute/brute.c | 130 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 130 insertions(+)
+ video_pll1_ref_sel                0        0        0    24000000
+     0     0  50000
+       video_pll1                     0        0        0   594000000
+        0     0  50000
+          video_pll1_bypass           0        0        0   594000000
+        0     0  50000
+             video_pll1_out           0        0        0   594000000
+        0     0  50000
+                disp_pixel            0        0        0   594000000
+        0     0  50000
+                   lcdif_pixel_clk       0        0        0
+594000000          0     0  50000
+                   disp_pixel_clk       0        0        0
+594000000          0     0  50000
+                dsi_phy_ref           0        0        0    27000000
+        0     0  50000
+                   mipi_dsi_clkref       0        0        0
+27000000          0     0  50000
 
-diff --git a/security/brute/brute.c b/security/brute/brute.c
-index 29835fe2f141..223a18c2084a 100644
-=2D-- a/security/brute/brute.c
-+++ b/security/brute/brute.c
-@@ -339,6 +339,135 @@ static void brute_task_free(struct task_struct *task=
-)
- 		spin_unlock(&(*stats)->lock);
- }
+I am not 100% certain the clock parents  in the clk block driver for
+the 8MN are correct, and I am not seeing the mipi_dsi_pclk
 
-+/**
-+ * brute_add_timestamp() - Add a new entry to the last crashes timestamps=
- list.
-+ * @stats: Statistics that hold the last crashes timestamps list.
-+ * @new_entry: New timestamp to add to the list.
-+ *
-+ * The statistics that hold the last crashes timestamps list cannot be NU=
-LL. The
-+ * new timestamp to add to the list cannot be NULL.
-+ *
-+ * Context: Must be called with stats->lock held.
-+ */
-+static void brute_add_timestamp(struct brute_stats *stats,
-+				struct brute_timestamp *new_entry)
-+{
-+	list_add_tail(&new_entry->node, &stats->timestamps);
-+	stats->timestamps_size +=3D 1;
-+}
-+
-+/**
-+ * brute_old_timestamp_entry() - Get the oldest timestamp entry.
-+ * @head: Last crashes timestamps list.
-+ *
-+ * Context: Must be called with stats->lock held.
-+ * Return: The oldest entry added to the last crashes timestamps list.
-+ */
-+#define brute_old_timestamp_entry(head) \
-+	list_first_entry(head, struct brute_timestamp, node)
-+
-+/**
-+ * brute_update_timestamps_list() - Update the last crashes timestamps li=
-st.
-+ * @stats: Statistics that hold the last crashes timestamps list.
-+ * @new_entry: New timestamp to update the list.
-+ *
-+ * Add a new timestamp structure to the list if this one has not reached =
-the
-+ * maximum size yet. Replace the oldest timestamp entry otherwise.
-+ *
-+ * The statistics that hold the last crashes timestamps list cannot be NU=
-LL. The
-+ * new timestamp to update the list cannot be NULL.
-+ *
-+ * Context: Must be called with stats->lock held.
-+ * Return: The oldest timestamp that has been replaced. NULL otherwise.
-+ */
-+static struct brute_timestamp *
-+brute_update_timestamps_list(struct brute_stats *stats,
-+			     struct brute_timestamp *new_entry)
-+{
-+	unsigned int list_size;
-+	struct brute_timestamp *old_entry;
-+
-+	list_size =3D (unsigned int)stats->timestamps_size;
-+	if (list_size < brute_timestamps_list_size) {
-+		brute_add_timestamp(stats, new_entry);
-+		return NULL;
-+	}
-+
-+	old_entry =3D brute_old_timestamp_entry(&stats->timestamps);
-+	list_replace(&old_entry->node, &new_entry->node);
-+	list_rotate_left(&stats->timestamps);
-+
-+	return old_entry;
-+}
-+
-+/**
-+ * brute_get_crash_period() - Get the application crash period.
-+ * @new_entry: New timestamp added to the last crashes timestamps list.
-+ * @old_entry: Old timestamp replaced in the last crashes timestamps list=
-.
-+ *
-+ * The application crash period is computed as the difference between the=
- newest
-+ * crash timestamp and the oldest one divided by the size of the list. Th=
-is way,
-+ * the scenario where an application crashes few times in a short period =
-of time
-+ * due to reasons unrelated to a real attack is avoided.
-+ *
-+ * The new and old timestamp cannot be NULL.
-+ *
-+ * Context: Must be called with stats->lock held.
-+ * Return: The application crash period in milliseconds.
-+ */
-+static u64 brute_get_crash_period(struct brute_timestamp *new_entry,
-+				  struct brute_timestamp *old_entry)
-+{
-+	u64 jiffies;
-+
-+	jiffies =3D new_entry->jiffies - old_entry->jiffies;
-+	jiffies /=3D (u64)brute_timestamps_list_size;
-+
-+	return jiffies64_to_msecs(jiffies);
-+}
-+
-+/**
-+ * brute_task_fatal_signal() - Target for the task_fatal_signal hook.
-+ * @siginfo: Contains the signal information.
-+ *
-+ * To detect a fork brute force attack is necessary that the list that ho=
-lds the
-+ * last crashes timestamps be updated in every fatal crash. Then, an only=
- when
-+ * this list is large enough, the application crash period can be compute=
-d an
-+ * compared with the defined threshold.
-+ *
-+ * It's mandatory to disable interrupts before acquiring the lock since t=
-he
-+ * task_free hook can be called from an IRQ context during the execution =
-of the
-+ * task_fatal_signal hook.
-+ */
-+static void brute_task_fatal_signal(const kernel_siginfo_t *siginfo)
-+{
-+	struct brute_stats **stats;
-+	struct brute_timestamp *new_entry, *old_entry;
-+	unsigned long flags;
-+	u64 crash_period;
-+
-+	stats =3D brute_stats_ptr(current);
-+	if (WARN(!*stats, "No statistical data\n"))
-+		return;
-+
-+	new_entry =3D brute_new_timestamp();
-+	if (WARN(!new_entry, "Cannot allocate last crash timestamp\n"))
-+		return;
-+
-+	spin_lock_irqsave(&(*stats)->lock, flags);
-+	old_entry =3D brute_update_timestamps_list(*stats, new_entry);
-+
-+	if (old_entry) {
-+		crash_period =3D brute_get_crash_period(new_entry, old_entry);
-+		kfree(old_entry);
-+
-+		if (crash_period < (u64)brute_crash_period_threshold)
-+			pr_warn("Fork brute force attack detected\n");
-+	}
-+
-+	spin_unlock_irqrestore(&(*stats)->lock, flags);
-+}
-+
- /**
-  * brute_hooks - Targets for the LSM's hooks.
-  */
-@@ -346,6 +475,7 @@ static struct security_hook_list brute_hooks[] __lsm_r=
-o_after_init =3D {
- 	LSM_HOOK_INIT(task_alloc, brute_task_alloc),
- 	LSM_HOOK_INIT(bprm_committing_creds, brute_task_execve),
- 	LSM_HOOK_INIT(task_free, brute_task_free),
-+	LSM_HOOK_INIT(task_fatal_signal, brute_task_fatal_signal),
- };
+Once the dust settles on the GPC decision for Mini and Nano, I think
+we'll need a more generic way to pass the bits we need to set in clock
+block to the GPC.
 
- #ifdef CONFIG_SYSCTL
-=2D-
-2.25.1
-
+adam
+>
+> You can also apply the one for 8MM:
+> https://lore.kernel.org/linux-arm-kernel/20201003224555.163780-5-marex@denx.de/
