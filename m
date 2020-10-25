@@ -2,75 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 72489298193
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:08:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A253298195
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:08:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415614AbgJYMI0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 08:08:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55648 "EHLO mail.kernel.org"
+        id S1415622AbgJYMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 08:08:30 -0400
+Received: from mout.gmx.net ([212.227.17.21]:35821 "EHLO mout.gmx.net"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415604AbgJYMG3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 08:06:29 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id ACF3F22202;
-        Sun, 25 Oct 2020 12:06:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603627588;
-        bh=nUS2kYGYuhzsne/r04hu9MAGBT2diuzU21HdRmbbVqg=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=PYj+khaNLYyL3OTVke9xc2SyeZgh8R0qQFdpGJRvgnqu1fKnl4aXO9GIFN9MbC72H
-         4czmgTFqOpn36EB/108Kg4Eikqx9YJpBiIebtuNE2m9usdO9Y+clR9SsmwA5nPZLtE
-         OVG/DTfU9xGYDbZJOAKLwsU5yaEPC07WVOOZikbw=
-Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.lan)
-        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <maz@kernel.org>)
-        id 1kWen4-0043Ku-Sg; Sun, 25 Oct 2020 12:06:26 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     tglx@linutronix.de, alexandre.torgue@st.com,
-        Fabrice Gasnier <fabrice.gasnier@st.com>, jason@lakedaemon.net
-Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com
-Subject: Re: [PATCH 0/3] Add STM32 LP timer EXTI interrupts
-Date:   Sun, 25 Oct 2020 12:06:23 +0000
-Message-Id: <160362752949.263598.6286411876181120842.b4-ty@kernel.org>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <1602859219-15684-1-git-send-email-fabrice.gasnier@st.com>
-References: <1602859219-15684-1-git-send-email-fabrice.gasnier@st.com>
+        id S1415610AbgJYMIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 08:08:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
+        s=badeba3b8450; t=1603627669;
+        bh=kr4lAkfZK+JhsGbXUMfhJcfAO4ZwYjRZcd2ae5vRSKI=;
+        h=X-UI-Sender-Class:Date:From:To:Subject;
+        b=diTSK3Pv1tagA0oSje1EDLjb+ssqjBNqgGQhCUuvdMG2ZsedJpMoBcWjUfj/M1Yej
+         ZunEojH1nj7sM2S0xwMxUFxlCz9L9nQssUZKUgFkEFzrfSWH0iSqYxIXmvmIYCnSV2
+         bjsx27PP6dsrTnxTKDrHvcOsZmZ4oCOiaohyzovw=
+X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
+Received: from ls3530.fritz.box ([92.116.190.61]) by mail.gmx.com (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mf078-1jvx9D1I9i-00gWVd; Sun, 25
+ Oct 2020 13:07:49 +0100
+Date:   Sun, 25 Oct 2020 13:07:47 +0100
+From:   Helge Deller <deller@gmx.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>,
+        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
+        James Bottomley <James.Bottomley@hansenpartnership.com>,
+        John David Anglin <dave.anglin@bell.net>
+Subject: [GIT PULL] parisc architecture updates for kernel v5.10-rc1
+Message-ID: <20201025120747.GA6138@ls3530.fritz.box>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SA-Exim-Connect-IP: 62.31.163.78
-X-SA-Exim-Rcpt-To: tglx@linutronix.de, alexandre.torgue@st.com, fabrice.gasnier@st.com, jason@lakedaemon.net, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org, linux-stm32@st-md-mailman.stormreply.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Provags-ID: V03:K1:JQYu7Gw8bu7D4sLXEJdA163Ie4JB4iKBg/2yOQVec1edvWc6qzE
+ DsbjUu+CXHbGRpgI6rSDCoiNsEKh2DQfbYo5wCRUxWHr3S2X5JOPNsU89ArltBnP8LXj4lI
+ 39K7wIob13yphOCaj+1lPE353KrN8Fjlb6vYpX3H0NxvEeQIlnCgcLqfDdRPcq9jdrk8s9t
+ KuWQMpS47I+ED5Ct6Hfug==
+X-Spam-Flag: NO
+X-UI-Out-Filterresults: notjunk:1;V03:K0:doGlenfDa8A=:JfBIctl0C1WqxHGzc/Jxaz
+ 1ZGvgH/2Af9SC25CKBoU7SlEruN1kxYdzMwp+arOq6g2SPHcBSX4SFaELH5JpaRnmGthXbv16
+ fU1IY7xYjUVeQikVOZ87R10GOKXKV1Jzw3VdPYmfEMV/OKu246eB7fJQbTPuxWOFmEt0QWaFr
+ OZfrPHkEuor+KXctioKxQ0Zmu7MpuzAWvwUGWw/IUlr0KuseK9n+xRBvod85Ak2/mlzCKjbbH
+ 1UIaQQJH7ReXTabLavAE9MBD5TQTLgW97lo3Ar/B185CdxIZ9iv94i/C+Om05RZAIBB5xXI8j
+ vV2gZz10mSS4Ww1jNi3wf86Ed7eQxsyeZzCwGUVQfTvc4hIFgCEoL+0+2M4I+flTSqXAyfIzn
+ AlUQ0l3cPVe/Ah5ZBvIefFlkWBn945UdQuS1IdBa4UOeFpvWOW5v+ECarXNsnwiSTy/zvT6zN
+ Ea9ohCR6i/FX6OHBw5xV5p+/WknomZ8uq9SzZuuCV0ZYBij2X1nzHAKBcK0gYenZ2mDW4/6v5
+ 9a3nKX9VFyYJ4BDyxw8glZAFlF5jjegpL5VX+nIUDSiRcXiUtQ/JnVhbo0jjrgqn5xzbo/dtl
+ jIujHBV3tVstI0AscHIWh1pEg02JYDuyPTkkxltcei5Bj/cKlZ1gjT0Wb/NFP7hHhiHb+4RAE
+ qUZAGYZ0ecTBnA4OX1v8mwbCMMOKBc1AhC+D5ZULdyN+gFCesvhtzNf97g1FBL4zIqDL+k+8M
+ fpe9OkhFa9/ze7zEyi20+ytaWR4DmXoL7qbV4jxqBodAGYv+Wg+AqQ9++UMYhipTxP4qnXkTA
+ /8+kz7xgzGWkTyQHoyvYE/Gf6bWZkbAVbR7k7x4PQtR9OImJSm7oFVIaGcO0g7ZXOsQjjlufD
+ N9QBk+PJoP6V1UXh7JsA==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 16 Oct 2020 16:40:16 +0200, Fabrice Gasnier wrote:
-> STM32 LP timer that's available on STM32MP15x can wakeup the platform
-> using EXTI interrupts.
-> 
-> This series add:
-> - LP timer EXTI - GIC interrupt events to EXTI driver and device-tree
-> - LP timer wakeup-source to device-tree
-> 
-> [...]
+Hi Linus,
 
-Applied to irq/irqchip-next, thanks!
+please pull a few last fixes and updates for the parisc architecture for kernel 5.10-rc1 from:
 
-[1/3] irqchip/stm32-exti: Add all LP timer exti direct events support
-      commit: a00e85b581fd5ee47e770b6b8d2038dbebbe81f9
+  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-2
 
-Please route the last two patches via arm-soc.
+This patchset includes:
 
-Cheers,
+* During this merge window O_NONBLOCK was changed to become 000200000, but we
+  missed that the syscalls timerfd_create(), signalfd4(), eventfd2(), pipe2(),
+  inotify_init1() and userfaultfd() do a strict bit-wise check of the flags
+  parameter. To provide backward compatibility with existing userspace we introduce
+  parisc specific wrappers for those syscalls which filter out the old O_NONBLOCK
+  value and replaces it with the new one.
 
-	M.
--- 
-Without deviation from the norm, progress is not possible.
+* Prevent HIL bus driver to get stuck when keyboard or mouse isn't attached
 
+* Improve error return codes when setting rtc time
 
+* Minor documentation fix in pata_ns87415.c
+
+Thanks,
+Helge
+
+----------------------------------------------------------------
+The following changes since commit f9893351acaecf0a414baf9942b48d5bb5c688c6:
+
+  Merge tag 'kconfig-v5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild (2020-10-22 13:20:39 -0700)
+
+are available in the Git repository at:
+
+  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-2
+
+for you to fetch changes up to 2e34ae02a9b49d1f459d811ae77d72d300584a69:
+
+  ata: pata_ns87415.c: Document support on parisc with superio chip (2020-10-23 20:23:47 +0200)
+
+----------------------------------------------------------------
+Helge Deller (4):
+      parisc: Improve error return codes when setting rtc time
+      hil/parisc: Disable HIL driver when it gets stuck
+      parisc: Add wrapper syscalls to fix O_NONBLOCK flag usage
+      ata: pata_ns87415.c: Document support on parisc with superio chip
+
+ arch/parisc/kernel/sys_parisc.c         | 73 ++++++++++++++++++++++++++++++++-
+ arch/parisc/kernel/syscalls/syscall.tbl | 12 +++---
+ arch/parisc/kernel/time.c               | 11 ++++-
+ drivers/ata/pata_ns87415.c              |  3 +-
+ drivers/input/serio/hil_mlc.c           | 21 ++++++++--
+ drivers/input/serio/hp_sdc_mlc.c        |  8 ++--
+ include/linux/hil_mlc.h                 |  2 +-
+ 7 files changed, 111 insertions(+), 19 deletions(-)
