@@ -2,163 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 44FCA29825A
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 16:43:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6AC3D29825D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 16:43:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1417034AbgJYPnC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 11:43:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54030 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1417004AbgJYPnB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 11:43:01 -0400
-Received: from kernel.org (unknown [87.70.96.83])
+        id S1417045AbgJYPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 11:43:53 -0400
+Received: from asavdk3.altibox.net ([109.247.116.14]:56586 "EHLO
+        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1417037AbgJYPnw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 11:43:52 -0400
+Received: from ravnborg.org (unknown [188.228.123.71])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2DD4A2080A;
-        Sun, 25 Oct 2020 15:42:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603640580;
-        bh=N9t4JcJRF9OlaznQ2CFo7tNstRd5AmQcgZvZA/hb9NE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=ATpSfOCdRRUdJQptjMZHclSfdxad8SDeNY3zHu3y587NyCGZewV+oW2Jq/G7h43fl
-         njWo4IwZxGaYXtNI7OHQr3hg41mJAdPRrr5sJVyCXHKNhVcDD8OfgjTVPb6cSB0fSF
-         KyBsBEF5Dr1uJGRxAkIt9ppFFPrRkvkhL7mqv4Gw=
-Date:   Sun, 25 Oct 2020 17:42:53 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Zhenhua Huang <zhenhuah@codeaurora.org>
-Cc:     akpm@linux-foundation.org, linux-kernel@vger.kernel.org,
-        linux-mm@kvack.org
-Subject: Re: [PATCH] mm: fix page_owner initializing issue for arm32
-Message-ID: <20201025154253.GH392079@kernel.org>
-References: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
+        by asavdk3.altibox.net (Postfix) with ESMTPS id 4B2DF20024;
+        Sun, 25 Oct 2020 16:43:48 +0100 (CET)
+Date:   Sun, 25 Oct 2020 16:43:46 +0100
+From:   Sam Ravnborg <sam@ravnborg.org>
+To:     Lubomir Rintel <lkundrak@v3.sk>
+Cc:     Andrzej Hajda <a.hajda@samsung.com>, devicetree@vger.kernel.org,
+        Jernej Skrabec <jernej.skrabec@siol.net>,
+        Jonas Karlman <jonas@kwiboo.se>,
+        David Airlie <airlied@linux.ie>,
+        Neil Armstrong <narmstrong@baylibre.com>,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        Rob Herring <robh+dt@kernel.org>,
+        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
+Subject: Re: [RESEND PATCH v5 2/2] drm/bridge: hx8837: add a Himax HX8837
+ display controller driver
+Message-ID: <20201025154346.GA37040@ravnborg.org>
+References: <20200926000719.229204-1-lkundrak@v3.sk>
+ <20200926000719.229204-3-lkundrak@v3.sk>
+ <20201016200734.GD1345100@ravnborg.org>
+ <20201025151942.GA526002@demiurge.local>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <1602839640-13125-1-git-send-email-zhenhuah@codeaurora.org>
+In-Reply-To: <20201025151942.GA526002@demiurge.local>
+X-CMAE-Score: 0
+X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
+        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
+        a=kj9zAlcOel0A:10 a=uv0L9p8A0TvxXRDgSEoA:9 a=CjuIK1q_8ugA:10
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 16, 2020 at 05:14:00PM +0800, Zhenhua Huang wrote:
-> Page owner of pages used by page owner itself used is missing on arm32 targets.
-> The reason is dummy_handle and failure_handle is not initialized correctly.
-> Buddy allocator is used to initialize these two handles. However, buddy
-> allocator is not ready when page owner calls it. This change fixed that by
-> initializing page owner after buddy initialization.
-> 
-> The working flow before and after this change are:
-> original logic:
-> 1. allocated memory for page_ext(using memblock).
+Hi Lubomir.
 
-Is anything that requires a memblock allocation FLATMEM?
-Any fundamental reason why wouldn't alloc_pages_exact_nid/vzalloc_node()
-work in this case?
+> > > +static int hx8837_bl_update_status(struct backlight_device *bl)
+> > > +{
+> > > +	struct hx8837_priv *priv = bl_get_data(bl);
+> > > +	unsigned int val;
+> > > +	int ret;
+> > > +
+> > > +	ret = regmap_update_bits(priv->regmap, DCON_REG_BRIGHT,
+> > > +					       0x000f,
+> > > +					       bl->props.brightness);
+> > 
+> > Use backlight_get_brightness() to get the brightness.
+> > This will also make sure 0 is returned when backlight is off so the
+> > logic a few lines down is correct.
+> 
+> I'm not sure I understand this one. I'm wondering if you could help me out
+> with it before I follow up with v4.
+> 
+> Currently I read in the current brightness level in probe() (which
+> prevents struct backlight_properties, below, from being const) and the
+> nthe brightness is entirely in control of the driver via
+> update_status().
+> 
+> What would I need get_brightness() for? We know that whatever the driver
+> set is the current level. It doesn't seem to be called on backlight
+> device registration so it doesn't make the readin in probe()
+> unnecessary either.
 
-It seems to me that for FLATMEM configuration we can allocate the
-page_ext using alloc_pages() with a fallback to vzalloc_node() and then
-we can unify lot's of page_ext code and entirely drop
-page_ext_init_flatmem().
+The request here is to replace the direct access to backlight properties
+"bl->props.brightness" with the helper backlight_get_brightness(bl).
 
-> 2. invoke the init callback of page_ext_ops like
-> page_owner(using buddy allocator).
-> 3. initialize buddy.
-> 
-> after this change:
-> 1. allocated memory for page_ext(using memblock).
-> 2. initialize buddy.
-> 3. invoke the init callback of page_ext_ops like
-> page_owner(using buddy allocator).
-> 
-> with the change, failure/dummy_handle can get its correct value and
-> page owner output for example has the one for page owner itself:
-> Page allocated via order 2, mask 0x6202c0(GFP_USER|__GFP_NOWARN), pid 1006, ts
-> 67278156558 ns
-> PFN 543776 type Unmovable Block 531 type Unmovable Flags 0x0()
->  init_page_owner+0x28/0x2f8
->  invoke_init_callbacks_flatmem+0x24/0x34
->  start_kernel+0x33c/0x5d8
->    (null)
-> 
-> Signed-off-by: Zhenhua Huang <zhenhuah@codeaurora.org>
-> ---
->  include/linux/page_ext.h | 8 ++++++++
->  init/main.c              | 2 ++
->  mm/page_ext.c            | 8 +++++++-
->  3 files changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/page_ext.h b/include/linux/page_ext.h
-> index cfce186..aff81ba 100644
-> --- a/include/linux/page_ext.h
-> +++ b/include/linux/page_ext.h
-> @@ -44,8 +44,12 @@ static inline void page_ext_init_flatmem(void)
->  {
->  }
->  extern void page_ext_init(void);
-> +static inline void page_ext_init_flatmem_late(void)
-> +{
-> +}
->  #else
->  extern void page_ext_init_flatmem(void);
-> +extern void page_ext_init_flatmem_late(void);
->  static inline void page_ext_init(void)
->  {
->  }
-> @@ -76,6 +80,10 @@ static inline void page_ext_init(void)
->  {
->  }
->  
-> +static inline void page_ext_init_flatmem_late(void)
-> +{
-> +}
-> +
->  static inline void page_ext_init_flatmem(void)
->  {
->  }
-> diff --git a/init/main.c b/init/main.c
-> index 130376e..b34c475 100644
-> --- a/init/main.c
-> +++ b/init/main.c
-> @@ -818,6 +818,8 @@ static void __init mm_init(void)
->  	init_debug_pagealloc();
->  	report_meminit();
->  	mem_init();
-> +	/* page_owner must be initialized after buddy is ready */
-> +	page_ext_init_flatmem_late();
->  	kmem_cache_init();
->  	kmemleak_init();
->  	pgtable_init();
-> diff --git a/mm/page_ext.c b/mm/page_ext.c
-> index a3616f7..373f7a1 100644
-> --- a/mm/page_ext.c
-> +++ b/mm/page_ext.c
-> @@ -99,6 +99,13 @@ static void __init invoke_init_callbacks(void)
->  	}
->  }
->  
-> +#if !defined(CONFIG_SPARSEMEM)
-> +void __init page_ext_init_flatmem_late(void)
-> +{
-> +	invoke_init_callbacks();
-> +}
-> +#endif
-> +
->  static inline struct page_ext *get_entry(void *base, unsigned long index)
->  {
->  	return base + page_ext_size * index;
-> @@ -177,7 +184,6 @@ void __init page_ext_init_flatmem(void)
->  			goto fail;
->  	}
->  	pr_info("allocated %ld bytes of page_ext\n", total_usage);
-> -	invoke_init_callbacks();
->  	return;
->  
->  fail:
-> -- 
-> The Qualcomm Innovation Center, Inc. is a member of the Code Aurora Forum,
-> a Linux Foundation Collaborative Project
-> 
-> 
-
--- 
-Sincerely yours,
-Mike.
+	Sam
