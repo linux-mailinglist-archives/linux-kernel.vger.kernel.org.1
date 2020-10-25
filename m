@@ -2,81 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AC3D29825D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 16:43:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A8F5429826C
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 16:57:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1417045AbgJYPnx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 11:43:53 -0400
-Received: from asavdk3.altibox.net ([109.247.116.14]:56586 "EHLO
-        asavdk3.altibox.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1417037AbgJYPnw (ORCPT
+        id S1417081AbgJYP5K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 11:57:10 -0400
+Received: from outgoing-auth-1.mit.edu ([18.9.28.11]:44138 "EHLO
+        outgoing.mit.edu" rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1732094AbgJYP5K (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 11:43:52 -0400
-Received: from ravnborg.org (unknown [188.228.123.71])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by asavdk3.altibox.net (Postfix) with ESMTPS id 4B2DF20024;
-        Sun, 25 Oct 2020 16:43:48 +0100 (CET)
-Date:   Sun, 25 Oct 2020 16:43:46 +0100
-From:   Sam Ravnborg <sam@ravnborg.org>
-To:     Lubomir Rintel <lkundrak@v3.sk>
-Cc:     Andrzej Hajda <a.hajda@samsung.com>, devicetree@vger.kernel.org,
-        Jernej Skrabec <jernej.skrabec@siol.net>,
-        Jonas Karlman <jonas@kwiboo.se>,
-        David Airlie <airlied@linux.ie>,
-        Neil Armstrong <narmstrong@baylibre.com>,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        Rob Herring <robh+dt@kernel.org>,
-        Laurent Pinchart <Laurent.pinchart@ideasonboard.com>
-Subject: Re: [RESEND PATCH v5 2/2] drm/bridge: hx8837: add a Himax HX8837
- display controller driver
-Message-ID: <20201025154346.GA37040@ravnborg.org>
-References: <20200926000719.229204-1-lkundrak@v3.sk>
- <20200926000719.229204-3-lkundrak@v3.sk>
- <20201016200734.GD1345100@ravnborg.org>
- <20201025151942.GA526002@demiurge.local>
+        Sun, 25 Oct 2020 11:57:10 -0400
+Received: from callcc.thunk.org (pool-72-74-133-215.bstnma.fios.verizon.net [72.74.133.215])
+        (authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+        by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 09PFurBB000490
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 25 Oct 2020 11:56:57 -0400
+Received: by callcc.thunk.org (Postfix, from userid 15806)
+        id D81A1420107; Sun, 25 Oct 2020 11:56:52 -0400 (EDT)
+Date:   Sun, 25 Oct 2020 11:56:52 -0400
+From:   "Theodore Y. Ts'o" <tytso@mit.edu>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     linux-block@vger.kernel.org, Christoph Hellwig <hch@lst.de>,
+        linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [RFC] Removing b_end_io
+Message-ID: <20201025155652.GB5691@mit.edu>
+References: <20201025044438.GI20115@casper.infradead.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201025151942.GA526002@demiurge.local>
-X-CMAE-Score: 0
-X-CMAE-Analysis: v=2.3 cv=S433PrkP c=1 sm=1 tr=0
-        a=S6zTFyMACwkrwXSdXUNehg==:117 a=S6zTFyMACwkrwXSdXUNehg==:17
-        a=kj9zAlcOel0A:10 a=uv0L9p8A0TvxXRDgSEoA:9 a=CjuIK1q_8ugA:10
+In-Reply-To: <20201025044438.GI20115@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Lubomir.
+On Sun, Oct 25, 2020 at 04:44:38AM +0000, Matthew Wilcox wrote:
+> @@ -3068,6 +3069,12 @@ static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
+>  	}
+>  
+>  	submit_bio(bio);
+> +}
+> +
+> +static int submit_bh_wbc(int op, int op_flags, struct buffer_head *bh,
+> +			 enum rw_hint write_hint, struct writeback_control *wbc)
+> +{
+> +	__bh_submit(bh, op | op_flags, write_hint, wbc, end_bio_bh_io_sync);
+>  	return 0;
+>  }
+>
 
-> > > +static int hx8837_bl_update_status(struct backlight_device *bl)
-> > > +{
-> > > +	struct hx8837_priv *priv = bl_get_data(bl);
-> > > +	unsigned int val;
-> > > +	int ret;
-> > > +
-> > > +	ret = regmap_update_bits(priv->regmap, DCON_REG_BRIGHT,
-> > > +					       0x000f,
-> > > +					       bl->props.brightness);
-> > 
-> > Use backlight_get_brightness() to get the brightness.
-> > This will also make sure 0 is returned when backlight is off so the
-> > logic a few lines down is correct.
-> 
-> I'm not sure I understand this one. I'm wondering if you could help me out
-> with it before I follow up with v4.
-> 
-> Currently I read in the current brightness level in probe() (which
-> prevents struct backlight_properties, below, from being const) and the
-> nthe brightness is entirely in control of the driver via
-> update_status().
-> 
-> What would I need get_brightness() for? We know that whatever the driver
-> set is the current level. It doesn't seem to be called on backlight
-> device registration so it doesn't make the readin in probe()
-> unnecessary either.
+I believe this will break use cases where the file system sets
+bh->b_end_io and then calls submit_bh(), which then calls
+submit_bh_wbc().  That's because with this change, calls to
+submit_bh_wbc() --- include submit_bh() --- ignores bh->b_end_io and
+results in end_bio_bh_io_sync getting used.
 
-The request here is to replace the direct access to backlight properties
-"bl->props.brightness" with the helper backlight_get_brightness(bl).
+Filesystems that do this includes fs/ntfs, fs/resiserfs.
 
-	Sam
+In this case, that can probably be fixed by changing submit_bh() to
+pass in bh->b_end_io, or switching those users to use the new
+bh_submit() function to prevent these breakages.
+
+						- Ted
