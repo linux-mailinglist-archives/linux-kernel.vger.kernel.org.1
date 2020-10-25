@@ -2,651 +2,339 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7CC18297FC9
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 02:23:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2250A297FCC
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 02:26:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1766570AbgJYBN6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 21:13:58 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:40002 "EHLO
+        id S1766596AbgJYB0W (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 21:26:22 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:41884 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S374196AbgJYBN6 (ORCPT
+        with ESMTP id S1766587AbgJYB0V (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 21:13:58 -0400
-Received: from mail-ed1-x543.google.com (mail-ed1-x543.google.com [IPv6:2a00:1450:4864:20::543])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 55825C0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 18:13:57 -0700 (PDT)
-Received: by mail-ed1-x543.google.com with SMTP id a6so4327252edx.6
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 18:13:57 -0700 (PDT)
+        Sat, 24 Oct 2020 21:26:21 -0400
+Received: from mail-il1-x141.google.com (mail-il1-x141.google.com [IPv6:2607:f8b0:4864:20::141])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 95183C0613CE
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 18:26:21 -0700 (PDT)
+Received: by mail-il1-x141.google.com with SMTP id j8so5008616ilk.0
+        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 18:26:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=sartura-hr.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LLQl0LuxPfwp/e02pBc3QgmMKEdvqIMMEjTyCfs5WgA=;
-        b=16U2YS6ShJDkmhwl5pd/2AkoaNbtwn7S0sfbhe5cWVL9uCI0f6P2FpKcu+ncWmGOEo
-         Wyl/rPHekD3v5PcV4XVEGOUqC/2wKFZpMesS5aOnvrnqNtow6uZRxOt6p0y/+bdIfUmw
-         q5bkpmjjF3lSdxK3USfqpGW8MrlWHrO6vVoMA7Y1p9kExXCrGGvo7oF7GVS1He8E3Xt8
-         xzp2eUB2B8KlTX4fAu1Qjo75LTVqWydBwkzuYWJJvHmbws+MsLINCyEtP/w/y+3GuPFN
-         d1X96ZdhRtyIzmkEly744e5/i5NFUsyD+IzudLR0O3gmVLuk7T1+iye7hGfyVEPZ+lCr
-         oLPw==
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=VxZ3UxYxPemlnwMfICb3ouhVPNv37y0m3jFPS6sTZAI=;
+        b=z1/9xfa0xNt9bKy6jznsVmPFDEft1KY6ada9+geUK3QxnnX9QmdrHGdxvctK2NBZB1
+         4o6nAEiUYnrLrcC9+0okKny0+z4ntOu86oDV+bntPBd2imDzjloNtMpswPOEwnDs7mjF
+         t8Wh/B+g6zWtIKuXce4nhueNoWlx65Pl0pMHX1gYxfeyAc8l6nrgKWGDzc0Q6sHiXKI0
+         cujDKrUPvoKFULaR4INtdxCt7tQfEIKlTzNOEPnvMXYDGag8tze/uwSw1fNPHZtsCYMC
+         WxyfZX2e9ANHngGx5sgrJCj+fGaeIUYDrX6akqLBHPADD6nntQKdJ32Wi48LdaINFxxF
+         YgkA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=LLQl0LuxPfwp/e02pBc3QgmMKEdvqIMMEjTyCfs5WgA=;
-        b=MTWXtcO826TARFVYBitWtTMxSZ7Y8huAw4pPVh8mTNcKsZlxvNn61dlnwRVMlCw3IW
-         AUs9c6M+ofJP0eeb57P0dWQE61gey5NYE4a4OJaHgVr1iVwpZS8YCHF7EDMhQerY0SdI
-         11eQm7AYaZ6fI0VjLlk0uGChrVveY8wULto3jDocZGwjHhbpAW1XXnJDDJZZEyDhQKgz
-         0DaXNsZQlUODj0aC/gjh+UdCU1qOsGru+8ZYKsYAm+f+Be5ZWoG9+CxrddPG7iF++kRK
-         +RgzFml1OCII+expU94cpvxiaZlliwFjOBKEnifeOxVPa7EgIWqzodLnWhbl91N37ppy
-         vK4A==
-X-Gm-Message-State: AOAM5331yliZnPhNPx6C5p3TosYR0vQAq2jXlDJwFkci800LUGU4s2OC
-        SgEraFp3I1juRlPoZqRsK5Avuw41LTYjH1paN9yUlq/ZWYx9agDaT9yxChxjqTdsgWeMuZSfie1
-        p/bJGQhS9dGSoQa12WCILmA6bWfTr0CJmRDfI/Phjwj/DEdfLIEAJ2IyHBNUmB0hmPafswAO8t6
-        2FjTkdQxA=
-X-Google-Smtp-Source: ABdhPJwQyajlC1qvybhM8/PqRcxce2q3DMV8Imp1NknNiBVbik9U1rnzy3k0zmZBv2BdO1Wovl83zQ==
-X-Received: by 2002:aa7:c0d2:: with SMTP id j18mr9820094edp.89.1603588435230;
-        Sat, 24 Oct 2020 18:13:55 -0700 (PDT)
-Received: from localhost.localdomain ([2a00:ee2:4b0d:3001:fbc5:498b:ed6d:cfac])
-        by smtp.gmail.com with ESMTPSA id n25sm3107757ejd.114.2020.10.24.18.13.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 18:13:54 -0700 (PDT)
-From:   Luka Kovacic <luka.kovacic@sartura.hr>
-To:     linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Cc:     robh+dt@kernel.org, andrew@lunn.ch, jason@lakedaemon.net,
-        gregory.clement@bootlin.com, marek.behun@nic.cz,
-        luka.perkov@sartura.hr, robert.marko@sartura.hr,
-        Luka Kovacic <luka.kovacic@sartura.hr>
-Subject: [PATCH v2 1/1] arm64: dts: marvell: Add a device tree for the IEI Puzzle-M801 board
-Date:   Sun, 25 Oct 2020 02:13:51 +0100
-Message-Id: <20201025011351.65770-1-luka.kovacic@sartura.hr>
-X-Mailer: git-send-email 2.26.2
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=VxZ3UxYxPemlnwMfICb3ouhVPNv37y0m3jFPS6sTZAI=;
+        b=ciavfftomvnl4m5P41Zxwu6Xtu/4D1oc/PVswumRgoF+RXWoDDzVtB+a6qyjWsXTfi
+         Dy+79VDQvSIwGuaZGF0uE9+d1KVLfYxVAPicEKZMOiqdcd0WuN4oK4O5f8hfJDegLKWB
+         xWV2+l+KyfXRNIJ1CBTU87uSzr9bi3v+eNHnOYjXkVecu3vAtxZC+pH+nvB4fIJgKx84
+         T+RUlkjBxLm215Q4uY6dAFeHCJVAVi/QxOgDV9YFFQsgt/aWzvFkMuTxShZBN/XuhR2K
+         u30Lo5DUTwnQ71/LuDYPYphFHADW8c2ULcEpiPY0MSxRxo3k6dt/oRN/B0ABq4pC7JOM
+         3r2Q==
+X-Gm-Message-State: AOAM530gK+JorP7J/aVi7dw3KwZlFVNPgYIsoilcAOBXQHZrZbrF/x3t
+        mKjViDFkVq6Lm61ijHtzPxZ/Ndz0nK950krgm6tWLg==
+X-Google-Smtp-Source: ABdhPJyQ5F1jYZX1GW3RGMs0me1Sbr5z1qRVTDsOlzdRwvUaGoafecphAFiH9UrCRY+479pEq5XNthpQ3n8Sowkp/ug=
+X-Received: by 2002:a92:1e02:: with SMTP id e2mr6770636ile.294.1603589180763;
+ Sat, 24 Oct 2020 18:26:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201019221859.56680-1-luka.kovacic@sartura.hr>
+ <20201019221859.56680-4-luka.kovacic@sartura.hr> <CAHp75VdnOJKwvZUOsj3bbT8tK9uZN=NufDrdhUvS886bNUpWhA@mail.gmail.com>
+ <CADZsf3ZmeUZppsJaR7bT8y16L3Mj12tUfzo=hkV4nFgjN64Jqw@mail.gmail.com>
+In-Reply-To: <CADZsf3ZmeUZppsJaR7bT8y16L3Mj12tUfzo=hkV4nFgjN64Jqw@mail.gmail.com>
+From:   Luka Kovacic <luka.kovacic@sartura.hr>
+Date:   Sun, 25 Oct 2020 02:26:09 +0100
+Message-ID: <CADZsf3Yp7LvZU7DNaOBP6KDx3cdV-fqsg74cMzXxSV1Rc+tt4g@mail.gmail.com>
+Subject: Re: [PATCH v6 3/6] drivers: hwmon: Add the iEi WT61P803 PUZZLE HWMON driver
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        Luka Perkov <luka.perkov@sartura.hr>,
+        Robert Marko <robert.marko@sartura.hr>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add initial support for the IEI Puzzle-M801 1U Rackmount Network
-Appliance board.
+Hello Andy,
 
-The board is based on the quad-core Marvell Armada 8040 SoC and supports
-up to 16 GB of DDR4 2400 MHz ECC RAM. It has a PCIe x16 slot (x2 lanes
-only) and an M.2 type B slot.
+On Fri, Oct 23, 2020 at 11:47 PM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> Hi Andy,
+>
+> On Tue, Oct 20, 2020 at 10:59 AM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> >
+> > On Tue, Oct 20, 2020 at 1:19 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+> > >
+> > > Add the iEi WT61P803 PUZZLE HWMON driver, that handles the fan speed
+> > > control via PWM, reading fan speed and reading on-board temperature
+> > > sensors.
+> > >
+> > > The driver registers a HWMON device and a simple thermal cooling device to
+> > > enable in-kernel fan management.
+> > >
+> > > This driver depends on the iEi WT61P803 PUZZLE MFD driver.
+> >
+> > ...
+> >
+> > > +// SPDX-License-Identifier: GPL-2.0-only
+> > > +/* iEi WT61P803 PUZZLE MCU HWMON Driver
+> >
+> > Shouldn't be
+> > /*
+> >  * IEI ...
+> >
+> > ?
+> >
+> > ...
+> >
+> > > +/**
+> > > + * struct iei_wt61p803_puzzle_thermal_cooling_device - Thermal cooling device instance
+> >
+> > > + *
+> >
+> > Please, remove all these blank lines in kernel doc descriptions.
+> >
+> > > + * @mcu_hwmon:         MCU HWMON struct pointer
+> > > + * @tcdev:             Thermal cooling device pointer
+> > > + * @name:              Thermal cooling device name
+> > > + * @pwm_channel:       PWM channel (0 or 1)
+> > > + * @cooling_levels:    Thermal cooling device cooling levels
+> > > + */
+> >
+> > ...
+> >
+> > > +struct iei_wt61p803_puzzle_hwmon {
+> > > +       struct iei_wt61p803_puzzle *mcu;
+> > > +       unsigned char *response_buffer;
+> > > +       bool thermal_cooling_dev_present[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
+> > > +       struct iei_wt61p803_puzzle_thermal_cooling_device
+> > > +               *cdev[IEI_WT61P803_PUZZLE_HWMON_MAX_PWM_NUM];
+> >
+> > Isn't this constant a bit too long? Perhaps drop NUM (MAX would
+> > suffice I think) for a starter.
+>
+> Okay, I'll drop NUM.
+>
+> >
+> > > +};
+> >
+> > ...
+> >
+> > > +       static unsigned char temp_sensor_ntc_cmd[4] = {
+> > > +               IEI_WT61P803_PUZZLE_CMD_HEADER_START,
+> > > +               IEI_WT61P803_PUZZLE_CMD_TEMP,
+> > > +               IEI_WT61P803_PUZZLE_CMD_TEMP_ALL
+> >
+> > + comma.
+> >
+> > > +       };
+> >
+> > Why not to be consistent with the rest assignments, choose either
+> > above form, or like you have done in the below functions.
+>
+> Assignments, where the array content will not be modified with custom
+> values are done as above.
+> Although I could change these to the other form, if that makes it clearer.
 
-Main system hardware:
-2x USB 3.0
-4x Gigabit Ethernet
-2x SFP+
-1x SATA 3.0
-1x M.2 type B
-1x RJ45 UART
-1x SPI flash
-1x IEI WT61P803 PUZZLE Microcontroller
-1x EPSON RX8010 RTC (used instead of the integrated Marvell RTC controller)
-6x SFP+ LED
-1x HDD LED
+I sent out a new patchset that fixes all of the mentioned points,
+except this one.
+I'd like to keep the assignments, which aren't changed later in the
+code assigned,
+when the variable is defined.
 
-All of the hardware listed above is supported and tested in this port.
+Kind regards,
+Luka
 
-Signed-off-by: Luka Kovacic <luka.kovacic@sartura.hr>
-Acked-by: Andrew Lunn <andrew@lunn.ch>
-Cc: Luka Perkov <luka.perkov@sartura.hr>
-Cc: Robert Marko <robert.marko@sartura.hr>
----
-Changes for v2:
-  - Use the correct vendor title (IEI instead of iEi)
-  - Sync the device tree with dt-bindings
-
-This patch is now sent separately from the IEI WT61P803 PUZZLE MCU
-patchset. Go to the following link for reference:
-https://lore.kernel.org/linux-hwmon/20201025005916.64747-1-luka.kovacic@sartura.hr/
-
- arch/arm64/boot/dts/marvell/Makefile          |   1 +
- .../dts/marvell/armada-8040-puzzle-m801.dts   | 523 ++++++++++++++++++
- 2 files changed, 524 insertions(+)
- create mode 100644 arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-
-diff --git a/arch/arm64/boot/dts/marvell/Makefile b/arch/arm64/boot/dts/marvell/Makefile
-index 3e5f2e7a040c..e413c3261792 100644
---- a/arch/arm64/boot/dts/marvell/Makefile
-+++ b/arch/arm64/boot/dts/marvell/Makefile
-@@ -12,6 +12,7 @@ dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-clearfog-gt-8k.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-mcbin-singleshot.dtb
-+dtb-$(CONFIG_ARCH_MVEBU) += armada-8040-puzzle-m801.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += armada-8080-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9130-db.dtb
- dtb-$(CONFIG_ARCH_MVEBU) += cn9131-db.dtb
-diff --git a/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-new file mode 100644
-index 000000000000..dac85fa748de
---- /dev/null
-+++ b/arch/arm64/boot/dts/marvell/armada-8040-puzzle-m801.dts
-@@ -0,0 +1,523 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2016 Marvell Technology Group Ltd.
-+ * Copyright (C) 2020 Sartura Ltd.
-+ *
-+ * Device Tree file for IEI Puzzle-M801
-+ */
-+
-+#include "armada-8040.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/leds/common.h>
-+
-+/ {
-+	model = "IEI-Puzzle-M801";
-+	compatible = "marvell,armada8040", "marvell,armada-ap806-quad", "marvell,armada-ap806";
-+
-+	aliases {
-+		ethernet0 = &cp0_eth0;
-+		ethernet1 = &cp1_eth0;
-+		ethernet2 = &cp0_eth1;
-+		ethernet3 = &cp0_eth2;
-+		ethernet4 = &cp1_eth1;
-+		ethernet5 = &cp1_eth2;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	memory@0 {
-+		device_type = "memory";
-+		reg = <0x0 0x0 0x0 0x80000000>;
-+	};
-+
-+	/* Regulator labels correspond with schematics */
-+	v_3_3: regulator-3-3v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v_3_3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+		status = "okay";
-+	};
-+
-+	v_5v0_usb3_hst_vbus: regulator-usb3-vbus0 {
-+		compatible = "regulator-fixed";
-+		enable-active-high;
-+		gpio = <&cp0_gpio2 15 GPIO_ACTIVE_HIGH>;
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&cp0_xhci_vbus_pins>;
-+		regulator-name = "v_5v0_usb3_hst_vbus";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		status = "okay";
-+	};
-+
-+	v_vddo_h: regulator-1-8v {
-+		compatible = "regulator-fixed";
-+		regulator-name = "v_vddo_h";
-+		regulator-min-microvolt = <1800000>;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-always-on;
-+		status = "okay";
-+	};
-+
-+	sfp_cp0_eth0: sfp-cp0-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&sfpplus0_i2c>;
-+		los-gpio = <&sfpplus_gpio 11 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfpplus_gpio 10 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfpplus_gpio 9 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfpplus_gpio 8 GPIO_ACTIVE_HIGH>;
-+		maximum-power-milliwatt = <3000>;
-+	};
-+
-+	sfp_cp1_eth0: sfp-cp1-eth0 {
-+		compatible = "sff,sfp";
-+		i2c-bus = <&sfpplus1_i2c>;
-+		los-gpio = <&sfpplus_gpio 3 GPIO_ACTIVE_HIGH>;
-+		mod-def0-gpio = <&sfpplus_gpio 2 GPIO_ACTIVE_LOW>;
-+		tx-disable-gpio = <&sfpplus_gpio 1 GPIO_ACTIVE_HIGH>;
-+		tx-fault-gpio  = <&sfpplus_gpio 0 GPIO_ACTIVE_HIGH>;
-+		maximum-power-milliwatt = <3000>;
-+	};
-+
-+	leds {
-+		compatible = "gpio-leds";
-+		status = "okay";
-+		pinctrl-0 = <&cp0_sfpplus_led_pins &cp1_sfpplus_led_pins>;
-+		pinctrl-names = "default";
-+
-+		led-0 {
-+			/* SFP+ port 2: Activity */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <0>;
-+			gpios = <&cp1_gpio1 6 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-1 {
-+			/* SFP+ port 1: Activity */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <1>;
-+			gpios = <&cp1_gpio1 14 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-2 {
-+			/* SFP+ port 2: 10 Gbps indicator */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <2>;
-+			gpios = <&cp1_gpio1 7 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-3 {
-+			/* SFP+ port 2: 1 Gbps indicator */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <3>;
-+			gpios = <&cp1_gpio1 8 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-4 {
-+			/* SFP+ port 1: 10 Gbps indicator */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <4>;
-+			gpios = <&cp1_gpio1 10 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-5 {
-+			/* SFP+ port 1: 1 Gbps indicator */
-+			function = LED_FUNCTION_LAN;
-+			function-enumerator = <5>;
-+			gpios = <&cp1_gpio1 31 GPIO_ACTIVE_LOW>;
-+		};
-+
-+		led-6 {
-+			function = LED_FUNCTION_DISK;
-+			linux,default-trigger = "disk-activity";
-+			gpios = <&cp0_gpio2 22 GPIO_ACTIVE_HIGH>;
-+		};
-+
-+	};
-+};
-+
-+&ap_sdhci0 {
-+	bus-width = <8>;
-+	/*
-+	 * Not stable in HS modes - phy needs "more calibration", so add
-+	 * the "slow-mode" and disable SDR104, SDR50 and DDR50 modes.
-+	 */
-+	marvell,xenon-phy-slow-mode;
-+	no-1-8-v;
-+	no-sd;
-+	no-sdio;
-+	non-removable;
-+	status = "okay";
-+	vqmmc-supply = <&v_vddo_h>;
-+};
-+
-+&ap_thermal_cpu1 {
-+	trips {
-+		cpu_active: cpu-active {
-+			temperature = <44000>;
-+			hysteresis = <2000>;
-+			type = "active";
-+		};
-+	};
-+	cooling-maps {
-+		fan-map {
-+			trip = <&cpu_active>;
-+			cooling-device = <&chassis_fan_group0 64 THERMAL_NO_LIMIT>,
-+					<&chassis_fan_group1 64 THERMAL_NO_LIMIT>;
-+		};
-+	};
-+};
-+
-+&i2c0 {
-+	clock-frequency = <100000>;
-+	status = "okay";
-+
-+	rtc@32 {
-+		compatible = "epson,rx8010";
-+		reg = <0x32>;
-+	};
-+};
-+
-+&spi0 {
-+	status = "okay";
-+	spi-flash@0 {
-+		#address-cells = <0x1>;
-+		#size-cells = <0x1>;
-+		compatible = "jedec,spi-nor";
-+		reg = <0x0>;
-+		spi-max-frequency = <20000000>;
-+		partition@u-boot {
-+			label = "u-boot";
-+			reg = <0x00000000 0x001f0000>;
-+		};
-+		partition@u-boot-env {
-+			label = "u-boot-env";
-+			reg = <0x001f0000 0x00010000>;
-+		};
-+		partition@ubi1 {
-+			label = "ubi1";
-+			reg = <0x00200000 0x03f00000>;
-+		};
-+		partition@ubi2 {
-+			label = "ubi2";
-+			reg = <0x04100000 0x03f00000>;
-+		};
-+	};
-+};
-+
-+&uart0 {
-+	status = "okay";
-+	pinctrl-0 = <&uart0_pins>;
-+	pinctrl-names = "default";
-+};
-+
-+&uart1 {
-+	status = "okay";
-+	/* IEI WT61P803 PUZZLE MCU Controller */
-+	mcu {
-+		compatible = "iei,wt61p803-puzzle";
-+		current-speed = <115200>;
-+		enable-beep;
-+
-+		leds {
-+			compatible = "iei,wt61p803-puzzle-leds";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			led@0 {
-+				reg = <0>;
-+				function = LED_FUNCTION_POWER;
-+				color = <LED_COLOR_ID_BLUE>;
-+			};
-+		};
-+
-+		hwmon {
-+			compatible = "iei,wt61p803-puzzle-hwmon";
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+
-+			chassis_fan_group0:fan-group@0 {
-+				#cooling-cells = <2>;
-+				reg = <0x00>;
-+				cooling-levels = <64 102 170 230 250>;
-+			};
-+
-+			chassis_fan_group1:fan-group@1 {
-+				#cooling-cells = <2>;
-+				reg = <0x01>;
-+				cooling-levels = <64 102 170 230 250>;
-+			};
-+		};
-+	};
-+};
-+
-+&cp0_rtc {
-+	status = "disabled";
-+};
-+
-+&cp0_i2c0 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c0_pins>;
-+	status = "okay";
-+
-+	sfpplus_gpio: gpio@21 {
-+		compatible = "nxp,pca9555";
-+		reg = <0x21>;
-+		gpio-controller;
-+		#gpio-cells = <2>;
-+	};
-+
-+	eeprom@54 {
-+		compatible = "atmel,24c04";
-+		reg = <0x54>;
-+	};
-+};
-+
-+&cp0_i2c1 {
-+	clock-frequency = <100000>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_i2c1_pins>;
-+	status = "okay";
-+
-+	i2c-switch@70 {
-+		compatible = "nxp,pca9544";
-+		#address-cells = <1>;
-+		#size-cells = <0>;
-+		reg = <0x70>;
-+
-+		sfpplus0_i2c: i2c@0 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <0>;
-+		};
-+
-+		sfpplus1_i2c: i2c@1 {
-+			#address-cells = <1>;
-+			#size-cells = <0>;
-+			reg = <1>;
-+		};
-+	};
-+};
-+
-+&cp0_uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_uart1_pins>;
-+	status = "okay";
-+};
-+
-+&cp0_mdio {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	status = "okay";
-+
-+	ge_phy2: ethernet-phy@0 {
-+		reg = <0>;
-+	};
-+
-+	ge_phy3: ethernet-phy@1 {
-+		reg = <1>;
-+	};
-+};
-+
-+&cp0_pcie0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_pcie_pins>;
-+	num-lanes = <1>;
-+	num-viewport = <8>;
-+	reset-gpios = <&cp0_gpio2 20 GPIO_ACTIVE_LOW>;
-+	ranges = <0x82000000 0x0 0xc0000000 0x0 0xc0000000 0x0 0x20000000>;
-+	phys = <&cp0_comphy0 0>;
-+	phy-names = "cp0-pcie0-x1-phy";
-+	status = "okay";
-+};
-+
-+&cp0_pinctrl {
-+	cp0_ge_mdio_pins: ge-mdio-pins {
-+		marvell,pins = "mpp32", "mpp34";
-+		marvell,function = "ge";
-+	};
-+	cp0_i2c1_pins: i2c1-pins {
-+		marvell,pins = "mpp35", "mpp36";
-+		marvell,function = "i2c1";
-+	};
-+	cp0_i2c0_pins: i2c0-pins {
-+		marvell,pins = "mpp37", "mpp38";
-+		marvell,function = "i2c0";
-+	};
-+	cp0_uart1_pins: uart1-pins {
-+		marvell,pins = "mpp40", "mpp41";
-+		marvell,function = "uart1";
-+	};
-+	cp0_xhci_vbus_pins: xhci0-vbus-pins {
-+		marvell,pins = "mpp47";
-+		marvell,function = "gpio";
-+	};
-+	cp0_pcie_pins: pcie-pins {
-+		marvell,pins = "mpp52";
-+		marvell,function = "gpio";
-+	};
-+	cp0_sdhci_pins: sdhci-pins {
-+		marvell,pins = "mpp55", "mpp56", "mpp57", "mpp58", "mpp59",
-+			       "mpp60", "mpp61";
-+		marvell,function = "sdio";
-+	};
-+	cp0_sfpplus_led_pins: sfpplus-led-pins {
-+		marvell,pins = "mpp54";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+&cp0_ethernet {
-+	status = "okay";
-+};
-+
-+&cp0_eth0 {
-+	status = "okay";
-+	phy-mode = "10gbase-r";
-+	phys = <&cp0_comphy4 0>;
-+	local-mac-address = [ae 00 00 00 ff 00];
-+	sfp = <&sfp_cp0_eth0>;
-+	managed = "in-band-status";
-+};
-+
-+&cp0_eth1 {
-+	status = "okay";
-+	phy = <&ge_phy2>;
-+	phy-mode = "sgmii";
-+	local-mac-address = [ae 00 00 00 ff 01];
-+	phys = <&cp0_comphy3 1>;
-+};
-+
-+&cp0_eth2 {
-+	status = "okay";
-+	phy-mode = "sgmii";
-+	phys = <&cp0_comphy1 2>;
-+	local-mac-address = [ae 00 00 00 ff 02];
-+	phy = <&ge_phy3>;
-+};
-+
-+&cp0_sata0 {
-+	status = "okay";
-+
-+	sata-port@0 {
-+		phys = <&cp0_comphy2 0>;
-+		phy-names = "cp0-sata0-0-phy";
-+	};
-+
-+	sata-port@1 {
-+		phys = <&cp0_comphy5 1>;
-+		phy-names = "cp0-sata0-1-phy";
-+	};
-+};
-+
-+&cp0_sdhci0 {
-+	broken-cd;
-+	bus-width = <4>;
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&cp0_sdhci_pins>;
-+	status = "okay";
-+	vqmmc-supply = <&v_3_3>;
-+};
-+
-+&cp0_usb3_0 {
-+	status = "okay";
-+};
-+
-+&cp0_usb3_1 {
-+	status = "okay";
-+};
-+
-+&cp1_i2c0 {
-+	clock-frequency = <100000>;
-+	status = "disabled";
-+};
-+
-+&cp1_i2c1 {
-+	clock-frequency = <100000>;
-+	status = "disabled";
-+};
-+
-+&cp1_rtc {
-+	status = "disabled";
-+};
-+
-+&cp1_ethernet {
-+	status = "okay";
-+};
-+
-+&cp1_eth0 {
-+	status = "okay";
-+	phy-mode = "10gbase-r";
-+	phys = <&cp1_comphy4 0>;
-+	local-mac-address = [ae 00 00 00 ff 03];
-+	sfp = <&sfp_cp1_eth0>;
-+	managed = "in-band-status";
-+};
-+
-+&cp1_eth1 {
-+	status = "okay";
-+	phy = <&ge_phy4>;
-+	phy-mode = "sgmii";
-+	local-mac-address = [ae 00 00 00 ff 04];
-+	phys = <&cp1_comphy3 1>;
-+};
-+
-+&cp1_eth2 {
-+	status = "okay";
-+	phy-mode = "sgmii";
-+	local-mac-address = [ae 00 00 00 ff 05];
-+	phys = <&cp1_comphy5 2>;
-+	phy = <&ge_phy5>;
-+};
-+
-+&cp1_pinctrl {
-+	cp1_sfpplus_led_pins: sfpplus-led-pins {
-+		marvell,pins = "mpp6", "mpp7", "mpp8", "mpp10", "mpp14", "mpp31";
-+		marvell,function = "gpio";
-+	};
-+};
-+
-+&cp1_uart0 {
-+	status = "disabled";
-+};
-+
-+&cp1_comphy2 {
-+	cp1_usbh0_con: connector {
-+		compatible = "usb-a-connector";
-+		phy-supply = <&v_5v0_usb3_hst_vbus>;
-+	};
-+};
-+
-+&cp1_usb3_0 {
-+	phys = <&cp1_comphy2 0>;
-+	phy-names = "cp1-usb3h0-comphy";
-+	status = "okay";
-+};
-+
-+&cp1_mdio {
-+	#address-cells = <1>;
-+	#size-cells = <0>;
-+
-+	status = "okay";
-+
-+	ge_phy4: ethernet-phy@1 {
-+		reg = <1>;
-+	};
-+	ge_phy5: ethernet-phy@0 {
-+		reg = <0>;
-+	};
-+};
-+
-+&cp1_pcie0 {
-+	num-lanes = <2>;
-+	phys = <&cp1_comphy0 0>, <&cp1_comphy1 0>;
-+	phy-names = "cp1-pcie0-x2-lane0-phy", "cp1-pcie0-x2-lane1-phy";
-+	status = "okay";
-+};
--- 
-2.26.2
-
+>
+> > Also, why 4?
+>
+> 1 additional character is always required, as this array is passed by reference
+> to the iei_wt61p803_puzzle_write_command() function, which requires it to
+> store a calculated checksum of the array content.
+>
+> This is done to avoid unnecessary copying of the array inside the MFD driver.
+>
+> The checksum is a part of the command, so the driver and the MCU can check
+> the integrity of the sent data.
+>
+> >
+> > > +       size_t reply_size = 0;
+> >
+> > How is it used in all these functions?
+>
+> I will add an additional check for the size of the received reply, as
+> it should be fixed.
+>
+> >
+> > > +       int ret;
+> > > +
+> > > +       ret = iei_wt61p803_puzzle_write_command(mcu_hwmon->mcu, temp_sensor_ntc_cmd,
+> > > +                                               sizeof(temp_sensor_ntc_cmd), resp_buf,
+> > > +                                               &reply_size);
+> > > +
+> > > +       if (ret)
+> > > +               return ret;
+> > > +
+> > > +       /* Check the number of NTC values (should be 0x32/'2') */
+> >
+> > > +       if (resp_buf[3] != 0x32)
+> >
+> > Instead of comment in the parentheses, just do it here
+> > " != '2')"
+> >
+> > > +               return -EIO;
+> >
+> > ...
+> >
+> > > +static int iei_wt61p803_puzzle_read(struct device *dev, enum hwmon_sensor_types type,
+> > > +                                   u32 attr, int channel, long *val)
+> > > +{
+> > > +       struct iei_wt61p803_puzzle_hwmon *mcu_hwmon = dev_get_drvdata(dev->parent);
+> > > +       int ret;
+> > > +
+> > > +       switch (type) {
+> > > +       case hwmon_pwm:
+> >
+> > > +               ret = iei_wt61p803_puzzle_read_pwm_channel(mcu_hwmon, channel, val);
+> > > +               return ret;
+> >
+> >   return iei_...(...);
+> > in all such cases.
+> >
+> > > +       case hwmon_fan:
+> > > +               ret = iei_wt61p803_puzzle_read_fan_speed(mcu_hwmon, channel, val);
+> > > +               return ret;
+> > > +       case hwmon_temp:
+> > > +               ret = iei_wt61p803_puzzle_read_temp_sensor(mcu_hwmon, channel, val);
+> > > +               return ret;
+> > > +       default:
+> > > +               return -EINVAL;
+> > > +       }
+> > > +}
+> >
+> > ...
+> >
+> > > +static umode_t iei_wt61p803_puzzle_is_visible(const void *data, enum hwmon_sensor_types type,
+> > > +                                             u32 attr, int channel)
+> > > +{
+> > > +       switch (type) {
+> > > +       case hwmon_pwm:
+> >
+> > > +               switch (attr) {
+> > > +               case hwmon_pwm_input:
+> > > +                       return 0644;
+> > > +               default:
+> > > +                       return 0;
+> > > +               }
+> >
+> > Isn't too long for
+> >   if (attr == ...)
+> >     return 0644;
+> >   break;
+> >
+> > ...see below...
+> >
+> > > +       case hwmon_fan:
+> > > +               switch (attr) {
+> > > +               case hwmon_fan_input:
+> > > +                       return 0444;
+> > > +               default:
+> > > +                       return 0;
+> > > +               }
+> > > +       case hwmon_temp:
+> > > +               switch (attr) {
+> > > +               case hwmon_temp_input:
+> > > +                       return 0444;
+> > > +               default:
+> > > +                       return 0;
+> > > +               }
+> >
+> > > +       default:
+> > > +               return 0;
+> >
+> > break;
+> >
+> > > +       }
+> >
+> > return 0;
+> >
+> > ?
+> >
+> > > +}
+> >
+> > ...
+> >
+> > > +       mcu_hwmon->thermal_cooling_dev_present[pwm_channel] = true;
+> > > +
+> >
+> > > +       num_levels = fwnode_property_read_u8_array(child, "cooling-levels", NULL, 0);
+> >
+> > fwnode_property_count_u8()
+> >
+> > > +       if (num_levels > 0) {
+> >
+> > You can improve readability by reducing indentation level via
+> > replacement to negative conditional.
+> >
+> > > +               cdev = devm_kzalloc(dev, sizeof(*cdev), GFP_KERNEL);
+> > > +               if (!cdev)
+> > > +                       return -ENOMEM;
+> > > +
+> > > +               cdev->cooling_levels = devm_kzalloc(dev, num_levels, GFP_KERNEL);
+> >
+> > For the sake of cleaness, shouldn't it be devm_kmalloc_array() ?
+> > (Note, zeroing is not needed if you read entire array)
+>
+> I agree, this can be converted to devm_kmalloc_array().
+>
+> >
+> > > +               if (!cdev->cooling_levels)
+> > > +                       return -ENOMEM;
+> > > +
+> > > +               ret = fwnode_property_read_u8_array(child, "cooling-levels",
+> > > +                                                   cdev->cooling_levels,
+> > > +                                                   num_levels);
+> > > +               if (ret) {
+> > > +                       dev_err(dev, "Couldn't read property 'cooling-levels'");
+> > > +                       return ret;
+> > > +               }
+> > > +
+> > > +               snprintf(cdev->name, THERMAL_NAME_LENGTH, "iei_wt61p803_puzzle_%d", pwm_channel);
+> > > +
+> > > +               cdev->tcdev = devm_thermal_of_cooling_device_register(dev, NULL,
+> > > +                               cdev->name, cdev, &iei_wt61p803_puzzle_cooling_ops);
+> > > +               if (IS_ERR(cdev->tcdev))
+> > > +                       return PTR_ERR(cdev->tcdev);
+> > > +
+> > > +               cdev->mcu_hwmon = mcu_hwmon;
+> > > +               cdev->pwm_channel = pwm_channel;
+> > > +
+> > > +               mcu_hwmon->cdev[pwm_channel] = cdev;
+> > > +       }
+> > > +       return 0;
+> > > +}
+> >
+> > --
+> > With Best Regards,
+> > Andy Shevchenko
+>
+> I'll fix the issues you have mentioned above in the next patchset.
+>
+> Kind regards,
+> Luka
