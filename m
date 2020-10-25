@@ -2,109 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5A253298195
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:08:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE9FF29819A
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 13:19:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415622AbgJYMIa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 08:08:30 -0400
-Received: from mout.gmx.net ([212.227.17.21]:35821 "EHLO mout.gmx.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1415610AbgJYMIQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 08:08:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603627669;
-        bh=kr4lAkfZK+JhsGbXUMfhJcfAO4ZwYjRZcd2ae5vRSKI=;
-        h=X-UI-Sender-Class:Date:From:To:Subject;
-        b=diTSK3Pv1tagA0oSje1EDLjb+ssqjBNqgGQhCUuvdMG2ZsedJpMoBcWjUfj/M1Yej
-         ZunEojH1nj7sM2S0xwMxUFxlCz9L9nQssUZKUgFkEFzrfSWH0iSqYxIXmvmIYCnSV2
-         bjsx27PP6dsrTnxTKDrHvcOsZmZ4oCOiaohyzovw=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from ls3530.fritz.box ([92.116.190.61]) by mail.gmx.com (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mf078-1jvx9D1I9i-00gWVd; Sun, 25
- Oct 2020 13:07:49 +0100
-Date:   Sun, 25 Oct 2020 13:07:47 +0100
-From:   Helge Deller <deller@gmx.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
-        James Bottomley <James.Bottomley@hansenpartnership.com>,
-        John David Anglin <dave.anglin@bell.net>
-Subject: [GIT PULL] parisc architecture updates for kernel v5.10-rc1
-Message-ID: <20201025120747.GA6138@ls3530.fritz.box>
+        id S1415656AbgJYMTW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 08:19:22 -0400
+Received: from mail-out.m-online.net ([212.18.0.9]:54072 "EHLO
+        mail-out.m-online.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1415647AbgJYMTV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 08:19:21 -0400
+Received: from frontend01.mail.m-online.net (unknown [192.168.8.182])
+        by mail-out.m-online.net (Postfix) with ESMTP id 4CJxpt32Pjz1qs1B;
+        Sun, 25 Oct 2020 13:19:18 +0100 (CET)
+Received: from localhost (dynscan1.mnet-online.de [192.168.6.70])
+        by mail.m-online.net (Postfix) with ESMTP id 4CJxpt1TVbz1r0m3;
+        Sun, 25 Oct 2020 13:19:18 +0100 (CET)
+X-Virus-Scanned: amavisd-new at mnet-online.de
+Received: from mail.mnet-online.de ([192.168.8.182])
+        by localhost (dynscan1.mail.m-online.net [192.168.6.70]) (amavisd-new, port 10024)
+        with ESMTP id A2gxUHxS7zm1; Sun, 25 Oct 2020 13:19:15 +0100 (CET)
+X-Auth-Info: Oy5A8u/kFGTBqcA/O1cCc3OeJHETH+IazF66OtuW++w=
+Received: from [IPv6:::1] (p578adb1c.dip0.t-ipconnect.de [87.138.219.28])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.mnet-online.de (Postfix) with ESMTPSA;
+        Sun, 25 Oct 2020 13:19:15 +0100 (CET)
+Subject: Re: [RFC 0/3] clk: imx: Implement blk-ctl driver for i.MX8MN
+To:     Abel Vesa <abel.vesa@nxp.com>, Adam Ford <aford173@gmail.com>
+Cc:     linux-clk <linux-clk@vger.kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <s.hauer@pengutronix.de>,
+        Pengutronix Kernel Team <kernel@pengutronix.de>,
+        Fabio Estevam <festevam@gmail.com>,
+        NXP Linux Team <linux-imx@nxp.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>
+References: <20201024162016.1003041-1-aford173@gmail.com>
+ <20201024202335.y3npwtgragpp5wcz@fsr-ub1664-175>
+ <CAHCN7xJiygvLStO56v4xSnOEqR_5fbYQHn5juA8YeDiWh2awbg@mail.gmail.com>
+ <20201025120509.r5kl76wo5mdmapo5@fsr-ub1664-175>
+From:   Marek Vasut <marex@denx.de>
+Message-ID: <3dadade8-6e77-e27f-d5a6-307de17a4dd0@denx.de>
+Date:   Sun, 25 Oct 2020 13:18:48 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Provags-ID: V03:K1:JQYu7Gw8bu7D4sLXEJdA163Ie4JB4iKBg/2yOQVec1edvWc6qzE
- DsbjUu+CXHbGRpgI6rSDCoiNsEKh2DQfbYo5wCRUxWHr3S2X5JOPNsU89ArltBnP8LXj4lI
- 39K7wIob13yphOCaj+1lPE353KrN8Fjlb6vYpX3H0NxvEeQIlnCgcLqfDdRPcq9jdrk8s9t
- KuWQMpS47I+ED5Ct6Hfug==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:doGlenfDa8A=:JfBIctl0C1WqxHGzc/Jxaz
- 1ZGvgH/2Af9SC25CKBoU7SlEruN1kxYdzMwp+arOq6g2SPHcBSX4SFaELH5JpaRnmGthXbv16
- fU1IY7xYjUVeQikVOZ87R10GOKXKV1Jzw3VdPYmfEMV/OKu246eB7fJQbTPuxWOFmEt0QWaFr
- OZfrPHkEuor+KXctioKxQ0Zmu7MpuzAWvwUGWw/IUlr0KuseK9n+xRBvod85Ak2/mlzCKjbbH
- 1UIaQQJH7ReXTabLavAE9MBD5TQTLgW97lo3Ar/B185CdxIZ9iv94i/C+Om05RZAIBB5xXI8j
- vV2gZz10mSS4Ww1jNi3wf86Ed7eQxsyeZzCwGUVQfTvc4hIFgCEoL+0+2M4I+flTSqXAyfIzn
- AlUQ0l3cPVe/Ah5ZBvIefFlkWBn945UdQuS1IdBa4UOeFpvWOW5v+ECarXNsnwiSTy/zvT6zN
- Ea9ohCR6i/FX6OHBw5xV5p+/WknomZ8uq9SzZuuCV0ZYBij2X1nzHAKBcK0gYenZ2mDW4/6v5
- 9a3nKX9VFyYJ4BDyxw8glZAFlF5jjegpL5VX+nIUDSiRcXiUtQ/JnVhbo0jjrgqn5xzbo/dtl
- jIujHBV3tVstI0AscHIWh1pEg02JYDuyPTkkxltcei5Bj/cKlZ1gjT0Wb/NFP7hHhiHb+4RAE
- qUZAGYZ0ecTBnA4OX1v8mwbCMMOKBc1AhC+D5ZULdyN+gFCesvhtzNf97g1FBL4zIqDL+k+8M
- fpe9OkhFa9/ze7zEyi20+ytaWR4DmXoL7qbV4jxqBodAGYv+Wg+AqQ9++UMYhipTxP4qnXkTA
- /8+kz7xgzGWkTyQHoyvYE/Gf6bWZkbAVbR7k7x4PQtR9OImJSm7oFVIaGcO0g7ZXOsQjjlufD
- N9QBk+PJoP6V1UXh7JsA==
+In-Reply-To: <20201025120509.r5kl76wo5mdmapo5@fsr-ub1664-175>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On 10/25/20 1:05 PM, Abel Vesa wrote:
 
-please pull a few last fixes and updates for the parisc architecture for kernel 5.10-rc1 from:
+[...]
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-2
+>> Together, both the GPC and the clk-blk driver should be able to pull
+>> the multimedia block out of reset.  Currently, the GPC can handle the
+>> USB OTG and the GPU, but the LCDIF and MIPI DSI appear to be gated by
+>> the clock block
+>>
+>> My original patch RFC didn't include the imx8mn node, because it
+>> hangs, but the node I added looks like:
+>>
+>> media_blk_ctl: clock-controller@32e28000 {
+>>      compatible = "fsl,imx8mn-media-blk-ctl", "syscon";
+>>      reg = <0x32e28000 0x1000>;
+>>      #clock-cells = <1>;
+>>      #reset-cells = <1>;
+>> };
+>>
+>> I was hoping you might have some feedback on the 8mn clk-blk driver
+>> since you did the 8mp clk-blk drive and they appear to be very
+>> similar.
+>>
+> 
+> I'll do you one better still. I'll apply the patch in my tree and give it
+> a test tomorrow morning.
 
-This patchset includes:
-
-* During this merge window O_NONBLOCK was changed to become 000200000, but we
-  missed that the syscalls timerfd_create(), signalfd4(), eventfd2(), pipe2(),
-  inotify_init1() and userfaultfd() do a strict bit-wise check of the flags
-  parameter. To provide backward compatibility with existing userspace we introduce
-  parisc specific wrappers for those syscalls which filter out the old O_NONBLOCK
-  value and replaces it with the new one.
-
-* Prevent HIL bus driver to get stuck when keyboard or mouse isn't attached
-
-* Improve error return codes when setting rtc time
-
-* Minor documentation fix in pata_ns87415.c
-
-Thanks,
-Helge
-
-----------------------------------------------------------------
-The following changes since commit f9893351acaecf0a414baf9942b48d5bb5c688c6:
-
-  Merge tag 'kconfig-v5.10' of git://git.kernel.org/pub/scm/linux/kernel/git/masahiroy/linux-kbuild (2020-10-22 13:20:39 -0700)
-
-are available in the Git repository at:
-
-  http://git.kernel.org/pub/scm/linux/kernel/git/deller/parisc-linux.git parisc-5.10-2
-
-for you to fetch changes up to 2e34ae02a9b49d1f459d811ae77d72d300584a69:
-
-  ata: pata_ns87415.c: Document support on parisc with superio chip (2020-10-23 20:23:47 +0200)
-
-----------------------------------------------------------------
-Helge Deller (4):
-      parisc: Improve error return codes when setting rtc time
-      hil/parisc: Disable HIL driver when it gets stuck
-      parisc: Add wrapper syscalls to fix O_NONBLOCK flag usage
-      ata: pata_ns87415.c: Document support on parisc with superio chip
-
- arch/parisc/kernel/sys_parisc.c         | 73 ++++++++++++++++++++++++++++++++-
- arch/parisc/kernel/syscalls/syscall.tbl | 12 +++---
- arch/parisc/kernel/time.c               | 11 ++++-
- drivers/ata/pata_ns87415.c              |  3 +-
- drivers/input/serio/hil_mlc.c           | 21 ++++++++--
- drivers/input/serio/hp_sdc_mlc.c        |  8 ++--
- include/linux/hil_mlc.h                 |  2 +-
- 7 files changed, 111 insertions(+), 19 deletions(-)
+You can also apply the one for 8MM:
+https://lore.kernel.org/linux-arm-kernel/20201003224555.163780-5-marex@denx.de/
