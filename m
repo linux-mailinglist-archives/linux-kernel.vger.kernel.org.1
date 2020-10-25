@@ -2,91 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C572229834F
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:07:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A3D3298351
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:09:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418443AbgJYTHQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 15:07:16 -0400
-Received: from mout.gmx.net ([212.227.17.20]:57935 "EHLO mout.gmx.net"
+        id S1418451AbgJYTJJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 15:09:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54644 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1732698AbgJYTHQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 15:07:16 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=gmx.net;
-        s=badeba3b8450; t=1603652816;
-        bh=OzBPTWP4HniyfRVhLuAvnT82ocK2l9QTQfTuhozWfks=;
-        h=X-UI-Sender-Class:From:To:Cc:Subject:Date:In-Reply-To:References;
-        b=iKiHad+oFYBEo2S4MDbobe8L98THGorbfMtWMACwPoO8Dw97vLJaBmG9OLmlgSKQx
-         +ghSM309QDA31mODmy4e7gatEmuMovE9YgK0nGPM/C5QHQFBTv5Bw6ACD1yrVjOkhr
-         10iBRZXuDykHriiTPgyDwBRisAB3xWd9BXeSaA6A=
-X-UI-Sender-Class: 01bb95c1-4bf8-414a-932a-4f6e2808ef9c
-Received: from localhost.localdomain ([83.52.231.59]) by mail.gmx.com
- (mrgmx105 [212.227.17.174]) with ESMTPSA (Nemesis) id
- 1N8ofO-1kIr973kgg-015ob9; Sun, 25 Oct 2020 20:06:56 +0100
-From:   John Wood <john.wood@gmx.com>
-To:     Kees Cook <keescook@chromium.org>, Jann Horn <jannh@google.com>
-Cc:     John Wood <john.wood@gmx.com>, Jonathan Corbet <corbet@lwn.net>,
-        James Morris <jmorris@namei.org>,
-        "Serge E. Hallyn" <serge@hallyn.com>, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        kernel-hardening@lists.openwall.com
-Subject: [PATCH v2 8/8] MAINTAINERS: Add a new entry for the Brute LSM
-Date:   Sun, 25 Oct 2020 14:45:40 +0100
-Message-Id: <20201025134540.3770-9-john.wood@gmx.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201025134540.3770-1-john.wood@gmx.com>
-References: <20201025134540.3770-1-john.wood@gmx.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:XIkBc5Sdz3SQJ6bMKfEKk7IVGMhrkpkVRcigKF7B9QVK89FXQOG
- 0OXXB3iAd6TG2csWcgUkrut1+4mdxqWBqpFO83i3YUtRy96voZE6A9FMgIZ/yQDRvxXmkRS
- HGMpll8CeJps9oY3WGx9ISJlW5QCpU/dGSm4rYvOqqTUX4F+l8LfJhR8dyAGu9J0DIlpxTP
- plBlxnkMnCnQWNLeICoig==
-X-Spam-Flag: NO
-X-UI-Out-Filterresults: notjunk:1;V03:K0:Ads6fhSOCR4=:3aznbMalMEe0vjYLyMH/EA
- E/VnASCMh9PuPYgko4bSmr76hG594GPyUWhJC+LzestMxYRLMtE5a9kbL8Erdz/4Zz7nJlgVA
- D+D70QFEDrWD00lU69ZZawkE6jw2uVm8/4KQlbWzdYgNRP7WXqIIbzdiiMxhj3T8ErTBGf/eP
- VZXhTzu1HXkdBCrwVh8tN3D7RYYXFTxoktpmCT0HX6n8AmvVViHKW2Mk8INbwdY34LMNc5iEO
- s8do4oXXxrXhGoa+yAor7VK8nLsVxPKT66j65Hq8JGnRSAXgXNJbxJ/Pew/DtUr/BgcYf4vfg
- O3nZzwxJLw28X+TuoBSLFdE+67SIzxxb5dLzKqTKMgLQvYKrz7FNeWAYxAOLyA+JvHn+Cfp5K
- gF43XgJBwrOxQcUWP4cccUAG6B8J5pmNpVAzapUZtLBLPn+GLiqFcep1PFPDfMUz+2ZaAGi59
- A/yCVU8MKPpqd3ZdzMBENw3/++klckQt7h5Dqp2/BhgIRLtHhGcsS2J4DsE1N6arr42SuNoIB
- ng7PiDh+No/qMh+xNIDCAnIxFQu5mjqczemIAvpifbYrtnou6t2qpZ1SJvsmVmfkzOXWWEJ2J
- tUzySvpoIIurMlxr4Pbb3JRleKUtzdKHjQJCxEfl/1+Hqe72y82JiwcFtriR5FZnF+GR4SWfv
- pP1HOxunDZf4Hq/nL8rFKjnz5vAv3tJDaBtIxZVrXQx33r5IvUH1R4TQIF3FahULszB0kglJX
- VRM2IoZWPfwMwaos8aDNWV0A9ifg4J2EP9+g9SxqDaSvqIvYX4jyyEesKpMfkgRl95fcyoR1C
- fqWANcuXVvbzyT8k3K0vCNXxe4VnbjlIbXpxjf4iYG0s4wTEq2mwXadK8+2eJBTRWwgCVAdLz
- hL46VgBWfWhB2DKAvZxA==
+        id S1418418AbgJYTJJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 15:09:09 -0400
+Received: from X1 (nat-ab2241.sltdut.senawave.net [162.218.216.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4C29322260;
+        Sun, 25 Oct 2020 19:09:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603652948;
+        bh=ddZPlRqimDU7rLmpMhXbvcFt4mtSB1kneJwidpS5uPM=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=vRYoT5LyFwn/q/sz2HWHGF270bB/S51nax4AnxJMRmBlrRExFv/DILuauxfgVynMz
+         Ez6EbZ4vSpOe7R99yfmwyCwIOEoI3NOJfh15aFGqKx4Qa0hdRWv7zyfR8ahPjIvO5e
+         alxd0EOirg9UEbC+NLsd4hbhPMbO2C6P5yfYSuus=
+Date:   Sun, 25 Oct 2020 12:09:07 -0700
+From:   Andrew Morton <akpm@linux-foundation.org>
+To:     Xianting Tian <tian.xianting@h3c.com>
+Cc:     <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        Jens Axboe <axboe@kernel.dk>
+Subject: Re: [PATCH] mm: bio_alloc never fails when set GFP_NOIO, GFP_KERNEL
+Message-Id: <20201025120907.699d178b9d27be114e338680@linux-foundation.org>
+In-Reply-To: <20201021031128.14100-1-tian.xianting@h3c.com>
+References: <20201021031128.14100-1-tian.xianting@h3c.com>
+X-Mailer: Sylpheed 3.5.1 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In order to maintain the code for the Brute LSM add a new entry to the
-maintainers list.
+On Wed, 21 Oct 2020 11:11:28 +0800 Xianting Tian <tian.xianting@h3c.com> wrote:
 
-Signed-off-by: John Wood <john.wood@gmx.com>
-=2D--
- MAINTAINERS | 7 +++++++
- 1 file changed, 7 insertions(+)
+> bio_alloc with __GFP_DIRECT_RECLAIM(which is included in GFP_NOIO,
+> GFP_KERNEL) never fails, as stated in the comments of bio_alloc_bioset.
+> 
+> So we can remove multiple unneeded null checks of bio_alloc and simplify
+> the code.
+> 
+> We have done it in fs/ext4/readpage.c, fs/ext4/page-io.c, fs/direct-io.c,
+> and so forth.
+> 
 
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 867157311dc8..3d3b34f87913 100644
-=2D-- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -3734,6 +3734,13 @@ L:	netdev@vger.kernel.org
- S:	Supported
- F:	drivers/net/ethernet/brocade/bna/
+(cc Jens)
 
-+BRUTE SECURITY MODULE
-+M:	John Wood <john.wood@gmx.com>
-+S:	Maintained
-+F:	Documentation/admin-guide/LSM/Brute.rst
-+F:	include/brute/
-+F:	security/brute/
-+
- BSG (block layer generic sg v4 driver)
- M:	FUJITA Tomonori <fujita.tomonori@lab.ntt.co.jp>
- L:	linux-scsi@vger.kernel.org
-=2D-
-2.25.1
+> --- a/mm/page_io.c
+> +++ b/mm/page_io.c
+> @@ -30,18 +30,20 @@ static struct bio *get_swap_bio(gfp_t gfp_flags,
+>  				struct page *page, bio_end_io_t end_io)
+>  {
+>  	struct bio *bio;
+> +	struct block_device *bdev;
+>  
+> +	/*
+> +	 * bio_alloc will _always_ be able to allocate a bio if
+> +	 * __GFP_DIRECT_RECLAIM is set, see comments for bio_alloc_bioset().
+> +	 */
+>  	bio = bio_alloc(gfp_flags, 1);
+> -	if (bio) {
+> -		struct block_device *bdev;
+> +	bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
+> +	bio_set_dev(bio, bdev);
+> +	bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
+> +	bio->bi_end_io = end_io;
+>  
+> -		bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
+> -		bio_set_dev(bio, bdev);
+> -		bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
+> -		bio->bi_end_io = end_io;
+> +	bio_add_page(bio, page, thp_size(page), 0);
+>  
+> -		bio_add_page(bio, page, thp_size(page), 0);
+> -	}
+>  	return bio;
+>  }
+>  
+> @@ -351,19 +353,13 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
+>  
+>  	ret = 0;
+>  	bio = get_swap_bio(GFP_NOIO, page, end_write_func);
+> -	if (bio == NULL) {
+> -		set_page_dirty(page);
+> -		unlock_page(page);
+> -		ret = -ENOMEM;
+> -		goto out;
+> -	}
+>  	bio->bi_opf = REQ_OP_WRITE | REQ_SWAP | wbc_to_write_flags(wbc);
+>  	bio_associate_blkg_from_page(bio, page);
+>  	count_swpout_vm_event(page);
+>  	set_page_writeback(page);
+>  	unlock_page(page);
+>  	submit_bio(bio);
+> -out:
+> +
+>  	return ret;
+>  }
+>  
+> @@ -416,11 +412,6 @@ int swap_readpage(struct page *page, bool synchronous)
+>  
+>  	ret = 0;
+>  	bio = get_swap_bio(GFP_KERNEL, page, end_swap_bio_read);
+> -	if (bio == NULL) {
+> -		unlock_page(page);
+> -		ret = -ENOMEM;
+> -		goto out;
+> -	}
+>  	disk = bio->bi_disk;
+>  	/*
+>  	 * Keep this task valid during swap readpage because the oom killer may
 
+I'm reluctant to remove these checks - yours is a fairly subtle
+discovery and things might change in the future.  Intentionally or
+otherwise!
