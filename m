@@ -2,107 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B260C298100
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D241329810E
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 10:41:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414860AbgJYJfN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 05:35:13 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:13419 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1414681AbgJYJfN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 05:35:13 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9546bb0000>; Sun, 25 Oct 2020 02:34:51 -0700
-Received: from mtl-vdi-166.wap.labs.mlnx (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Sun, 25 Oct
- 2020 09:34:46 +0000
-Date:   Sun, 25 Oct 2020 11:34:43 +0200
-From:   Eli Cohen <elic@nvidia.com>
-To:     Jason Wang <jasowang@redhat.com>
-CC:     <mst@redhat.com>, <virtualization@lists.linux-foundation.org>,
-        <linux-kernel@vger.kernel.org>, <rob.miller@broadcom.com>,
-        <lingshan.zhu@intel.com>, <eperezma@redhat.com>, <lulu@redhat.com>,
-        <shahafs@mellanox.com>, <hanand@xilinx.com>,
-        <mhabets@solarflare.com>, <gdawar@xilinx.com>,
-        <saugatm@xilinx.com>, <vmireyno@marvell.com>,
-        <zhangweining@ruijie.com.cn>, <eli@mellanox.com>
-Subject: Re: [PATCH V4 3/3] vdpa_sim: implement get_iova_range()
-Message-ID: <20201025093442.GD189473@mtl-vdi-166.wap.labs.mlnx>
-References: <20201023090043.14430-1-jasowang@redhat.com>
- <20201023090043.14430-4-jasowang@redhat.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20201023090043.14430-4-jasowang@redhat.com>
-User-Agent: Mutt/1.9.5 (bf161cf53efb) (2018-04-13)
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL101.nvidia.com (172.20.187.10) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603618492; bh=stNXL2ug/knTeKu9ulfDtR8849WCFlPbe7OYw5ndaxs=;
-        h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-         Content-Type:Content-Disposition:In-Reply-To:User-Agent:
-         X-Originating-IP:X-ClientProxiedBy;
-        b=eMkUOVr73hVRoPNsAmvwLm6Jg5VckgLLF8akHmIG5wtNX2Bzv1U1PU9SCgMj0n4Qa
-         5qmzkHHDe2aNy4pc9015IdLw9iT9/WhPEOvbOP+K0BrmUljcvf7D/1wXn4yxNxPODB
-         7ch9r3kKM4klHfA879AJA0azEayRHgkPthis+NyO9JnRMRYpw962PVXI5Gxc0GJ6Od
-         kis9rcB+ve8cbiZT3PqmCwE+V16wXJkMnh2TairdeXoJkWBY5v0lWTtZw38/TPTXm7
-         glVWC1z9mD8eEvznf3CRlIhmADuu6hz2AGNr7UdiCyxTnFDmCizP1Ur38RRz/98cgq
-         mxaPnybs8tSMQ==
+        id S1414921AbgJYJlP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 05:41:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46204 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1414910AbgJYJlO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 05:41:14 -0400
+Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2871D22284;
+        Sun, 25 Oct 2020 09:41:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603618874;
+        bh=kp4tBzl/d322MshJi6IkrrrXZvkCUwynlItkWMiT3Rw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=oCaPHBEX3SsSOsHUpk8UYzj5Q8oNDyjyYS1LhIINzZxiO2tYBGUlz3E3QZ+tAxc0T
+         xgcCbqnJjLmZl3Q5N9rNRqZkjymnMrXPhsshz71ridpu6/XVl8lp0wsOmv5k+WBHCC
+         KwRznIn9UWwOLolXoF/D+YwDRH0Ty/rxjfBPdh7Y=
+Received: from 78.163-31-62.static.virginmediabusiness.co.uk ([62.31.163.78] helo=wait-a-minute.misterjones.org)
+        by disco-boy.misterjones.org with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <maz@kernel.org>)
+        id 1kWcWW-0041qC-4M; Sun, 25 Oct 2020 09:41:12 +0000
+Date:   Sun, 25 Oct 2020 09:41:11 +0000
+Message-ID: <873622prrc.wl-maz@kernel.org>
+From:   Marc Zyngier <maz@kernel.org>
+To:     David Woodhouse <dwmw2@infradead.org>
+Cc:     x86@kernel.org, kvm <kvm@vger.kernel.org>,
+        iommu@lists.linux-foundation.org, joro@8bytes.org,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        linux-hyperv@vger.kernel.org, Dexuan Cui <decui@microsoft.com>
+Subject: Re: [PATCH v3 22/35] genirq/irqdomain: Implement get_name() method on irqchip fwnodes
+In-Reply-To: <20201024213535.443185-23-dwmw2@infradead.org>
+References: <e6601ff691afb3266e365a91e8b221179daf22c2.camel@infradead.org>
+        <20201024213535.443185-1-dwmw2@infradead.org>
+        <20201024213535.443185-23-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL/10.8 EasyPG/1.0.0 Emacs/26.3
+ (x86_64-pc-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 62.31.163.78
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, x86@kernel.org, kvm@vger.kernel.org, iommu@lists.linux-foundation.org, joro@8bytes.org, tglx@linutronix.de, pbonzini@redhat.com, linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org, decui@microsoft.com
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 05:00:43PM +0800, Jason Wang wrote:
-> This implements a sample get_iova_range() for the simulator which
-> advertise [0, ULLONG_MAX] as the valid range.
+Hi David,
+
+nit: please use my kernel.org address for kernel related stuff.
+
+On Sat, 24 Oct 2020 22:35:22 +0100,
+David Woodhouse <dwmw2@infradead.org> wrote:
 > 
-> Signed-off-by: Jason Wang <jasowang@redhat.com>
+> From: David Woodhouse <dwmw@amazon.co.uk>
+> 
+> Prerequesite to make x86 more irqdomain compliant.
 
-Reviewed-by: Eli Cohen <elic@nvidia.com>
+Prerequisite?
 
+> 
+> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
 > ---
->  drivers/vdpa/vdpa_sim/vdpa_sim.c | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
+>  kernel/irq/irqdomain.c | 11 ++++++++++-
+>  1 file changed, 10 insertions(+), 1 deletion(-)
 > 
-> diff --git a/drivers/vdpa/vdpa_sim/vdpa_sim.c b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> index 62d640327145..ff6c9fd8d879 100644
-> --- a/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> +++ b/drivers/vdpa/vdpa_sim/vdpa_sim.c
-> @@ -574,6 +574,16 @@ static u32 vdpasim_get_generation(struct vdpa_device *vdpa)
->  	return vdpasim->generation;
->  }
+> diff --git a/kernel/irq/irqdomain.c b/kernel/irq/irqdomain.c
+> index cf8b374b892d..673fa64c1c44 100644
+> --- a/kernel/irq/irqdomain.c
+> +++ b/kernel/irq/irqdomain.c
+> @@ -42,7 +42,16 @@ static inline void debugfs_add_domain_dir(struct irq_domain *d) { }
+>  static inline void debugfs_remove_domain_dir(struct irq_domain *d) { }
+>  #endif
 >  
-> +static struct vdpa_iova_range vdpasim_get_iova_range(struct vdpa_device *vdpa)
+> -const struct fwnode_operations irqchip_fwnode_ops;
+> +static const char *irqchip_fwnode_get_name(const struct fwnode_handle *fwnode)
 > +{
-> +	struct vdpa_iova_range range = {
-> +		.first = 0ULL,
-> +		.last = ULLONG_MAX,
-> +	};
+> +	struct irqchip_fwid *fwid = container_of(fwnode, struct irqchip_fwid, fwnode);
 > +
-> +	return range;
+> +	return fwid->name;
 > +}
 > +
->  static int vdpasim_set_map(struct vdpa_device *vdpa,
->  			   struct vhost_iotlb *iotlb)
->  {
-> @@ -657,6 +667,7 @@ static const struct vdpa_config_ops vdpasim_net_config_ops = {
->  	.get_config             = vdpasim_get_config,
->  	.set_config             = vdpasim_set_config,
->  	.get_generation         = vdpasim_get_generation,
-> +	.get_iova_range         = vdpasim_get_iova_range,
->  	.dma_map                = vdpasim_dma_map,
->  	.dma_unmap              = vdpasim_dma_unmap,
->  	.free                   = vdpasim_free,
-> @@ -683,6 +694,7 @@ static const struct vdpa_config_ops vdpasim_net_batch_config_ops = {
->  	.get_config             = vdpasim_get_config,
->  	.set_config             = vdpasim_set_config,
->  	.get_generation         = vdpasim_get_generation,
-> +	.get_iova_range         = vdpasim_get_iova_range,
->  	.set_map                = vdpasim_set_map,
->  	.free                   = vdpasim_free,
->  };
-> -- 
-> 2.20.1
-> 
+> +const struct fwnode_operations irqchip_fwnode_ops = {
+> +	.get_name = irqchip_fwnode_get_name,
+> +};
+>  EXPORT_SYMBOL_GPL(irqchip_fwnode_ops);
+>  
+>  /**
+
+Acked-by: Marc Zyngier <maz@kernel.org>
+
+-- 
+Without deviation from the norm, progress is not possible.
