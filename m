@@ -2,88 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD5E12980D3
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:43:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 393F62980DB
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 09:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1414556AbgJYInJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 04:43:09 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51800 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729267AbgJYInI (ORCPT
+        id S1414591AbgJYIsK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 04:48:10 -0400
+Received: from smtprelay0172.hostedemail.com ([216.40.44.172]:40036 "EHLO
+        smtprelay.hostedemail.com" rhost-flags-OK-OK-OK-FAIL)
+        by vger.kernel.org with ESMTP id S1414581AbgJYIsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 04:43:08 -0400
-Received: from mail-oi1-x244.google.com (mail-oi1-x244.google.com [IPv6:2607:f8b0:4864:20::244])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7D8AAC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 01:43:08 -0700 (PDT)
-Received: by mail-oi1-x244.google.com with SMTP id z23so2123817oic.1
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 01:43:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=bLzorS3TcgRe0ZBnPGj0ERMoN5Ek0iJXkA9guMm2xqQ=;
-        b=DRwLy3nL46RKVhP5wEmCcsJSQuZSSCU+HrydmZ0fQsT/cnaX8ID8TDU9DAkU+stR2O
-         vd3qkqY29FIULYVK4QJCzyYv8XmXBSZflhWqs/c45rT6dKG8DvVmY3vutsIxOF5Jdjbe
-         jP7CSHPY4DQkqYfi5LPbFPb8wb4eQOGmEFbWjyxcnBMZuYTlU6DZKjfSui0OJQRFZYCu
-         ECNicMF5h78dFW6dMlejakvN8meWU/Hgtd+VzqYwrsHP3DUcdF6i6rRK3gyVFAiFp+t6
-         qI4aWKIIBUfeXzvOgpe4jffrGuyrGgYizTlwYyRQ+RGbH3PFHYMVQBRzaRVswZJHpcLc
-         YVWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=bLzorS3TcgRe0ZBnPGj0ERMoN5Ek0iJXkA9guMm2xqQ=;
-        b=uAvEzJj1QLc4hOco/crTpmuDBe7QauAdoJTY7dsrjSVksDIL7ljBbsC4Nj5tPXUqOT
-         4IFbpi8L3t72YkRSzRe0G25ElVJlFn+l0174f219Nq+Cr4IbJ/gsWSswF+JsLqkXZ/EI
-         mf/pQG06kyIjHrcpIP4c8iBgu9cuea5u5kDw+1RnzAiXMU1/eCbprzKyd2OCNH4oKLU2
-         kYnJE5kLnjO6MFMlzSRsrXWfV5eppUAMeL8QiuQ1xf9PPiFvM5ewEZw+tFhi5KwK9G5f
-         he2HUVomf85wOosr8fc0/fwM0hOdyjFq6PM24uWyOvHXPMST338BdKW75jGVP3UUsHof
-         4EVQ==
-X-Gm-Message-State: AOAM532kilGUvDfye6qNdlvStOO4HZ3FAYi8djfmxe4D89p0rywb1p4w
-        KPPoJijiuqwgcwJaGd051bm/zWszg14q5FI8/y0=
-X-Google-Smtp-Source: ABdhPJzXIU8lyPwuASWHr3WR6PJ41ohdF+Jw64aaSvj5VBv1HjvHVgs8gqGFa8T4AyBiPxapLNu3b2pVaOBpNo2Rr2I=
-X-Received: by 2002:aca:d5d2:: with SMTP id m201mr8356150oig.74.1603615387747;
- Sun, 25 Oct 2020 01:43:07 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201025065134.21737-1-dwaipayanray1@gmail.com>
- <e96f8306d57e9a2ce7118b545db197e819e97b19.camel@perches.com>
- <CABJPP5D9ziuyPpPPyPM+n101vT1LGEjHj+JQjOhdN533t8Ud7w@mail.gmail.com> <80280a389782858c72fcd56a54da1a1f4153216c.camel@perches.com>
-In-Reply-To: <80280a389782858c72fcd56a54da1a1f4153216c.camel@perches.com>
-From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
-Date:   Sun, 25 Oct 2020 14:12:38 +0530
-Message-ID: <CABJPP5AY7Vm4CBhhnqYo_LWFYY6PB2fgtk6CLR3tUEV1ZJNQpg@mail.gmail.com>
-Subject: Re: [PATCH v4] checkpatch: extend attributes check to handle more patterns
-To:     Joe Perches <joe@perches.com>
+        Sun, 25 Oct 2020 04:48:10 -0400
+Received: from filter.hostedemail.com (clb03-v110.bra.tucows.net [216.40.38.60])
+        by smtprelay06.hostedemail.com (Postfix) with ESMTP id 6A7A818224D77;
+        Sun, 25 Oct 2020 08:48:07 +0000 (UTC)
+X-Session-Marker: 6A6F6540706572636865732E636F6D
+X-Spam-Summary: 2,0,0,,d41d8cd98f00b204,joe@perches.com,,RULES_HIT:41:355:379:599:988:989:1260:1277:1311:1313:1314:1345:1359:1437:1515:1516:1518:1534:1537:1566:1593:1594:1711:1714:1730:1747:1777:1792:2393:2559:2562:2828:3138:3139:3140:3141:3142:3622:3865:3870:4321:5007:10004:10400:10848:11026:11232:11658:11914:12297:12438:12740:12760:12895:13069:13311:13357:13439:14659:21063:21080:21433:21627:30054:30070:30091,0,RBL:none,CacheIP:none,Bayesian:0.5,0.5,0.5,Netcheck:none,DomainCache:0,MSF:not bulk,SPF:,MSBL:0,DNSBL:none,Custom_rules:0:0:0,LFtime:1,LUA_SUMMARY:none
+X-HE-Tag: back55_03039e727269
+X-Filterd-Recvd-Size: 1522
+Received: from XPS-9350.home (unknown [47.151.133.149])
+        (Authenticated sender: joe@perches.com)
+        by omf19.hostedemail.com (Postfix) with ESMTPA;
+        Sun, 25 Oct 2020 08:48:06 +0000 (UTC)
+Message-ID: <5789da1346a215e7c351c14562101ff07bc3de2a.camel@perches.com>
+Subject: Re: [PATCH v4] checkpatch: extend attributes check to handle more
+ patterns
+From:   Joe Perches <joe@perches.com>
+To:     Dwaipayan Ray <dwaipayanray1@gmail.com>
 Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
         linux-kernel <linux-kernel@vger.kernel.org>,
         Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Date:   Sun, 25 Oct 2020 01:48:05 -0700
+In-Reply-To: <CABJPP5AY7Vm4CBhhnqYo_LWFYY6PB2fgtk6CLR3tUEV1ZJNQpg@mail.gmail.com>
+References: <20201025065134.21737-1-dwaipayanray1@gmail.com>
+         <e96f8306d57e9a2ce7118b545db197e819e97b19.camel@perches.com>
+         <CABJPP5D9ziuyPpPPyPM+n101vT1LGEjHj+JQjOhdN533t8Ud7w@mail.gmail.com>
+         <80280a389782858c72fcd56a54da1a1f4153216c.camel@perches.com>
+         <CABJPP5AY7Vm4CBhhnqYo_LWFYY6PB2fgtk6CLR3tUEV1ZJNQpg@mail.gmail.com>
+Content-Type: text/plain; charset="ISO-8859-1"
+User-Agent: Evolution 3.38.1-1 
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 2:08 PM Joe Perches <joe@perches.com> wrote:
->
-> On Sun, 2020-10-25 at 14:02 +0530, Dwaipayan Ray wrote:
-> > And also do you think there should be a separate check
-> > for __alias__(#symbol)? I think it expects a string and that should
-> > be trimmed in the fix.
->
-> For now, I think you should avoid both alias and section.
->
-> There are patches to convert both of these macros to remove
-> the stringify.
->
->
-Okay I will do that.
+On Sun, 2020-10-25 at 14:12 +0530, Dwaipayan Ray wrote:
+> Suppose we have non handled attributes in one such
+> multi attribute macro. (not present in our hash)
+> 
+> Like __attribute__((__packed, __something_not_handled))
+> 
+> For this case, do I skip the warning totally? Or something else?
 
-And another quick question please.
-Suppose we have non handled attributes in one such
-multi attribute macro. (not present in our hash)
+Emit the warning, skip the fix unless all converted.
 
-Like __attribute__((__packed, __something_not_handled))
 
-For this case, do I skip the warning totally? Or something else?
-
-Thanks,
-Dwaipayan.
