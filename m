@@ -2,163 +2,241 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D835B29835D
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:24:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 16070298360
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 20:33:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418525AbgJYTYL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 15:24:11 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:36716 "EHLO
+        id S1418537AbgJYTbj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 15:31:39 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:37850 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1418518AbgJYTYK (ORCPT
+        with ESMTP id S1416759AbgJYTbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 15:24:10 -0400
-Received: from mail-pl1-x644.google.com (mail-pl1-x644.google.com [IPv6:2607:f8b0:4864:20::644])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 546ADC061755
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:24:10 -0700 (PDT)
-Received: by mail-pl1-x644.google.com with SMTP id h2so3626330pll.11
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:24:10 -0700 (PDT)
+        Sun, 25 Oct 2020 15:31:38 -0400
+Received: from mail-pl1-x642.google.com (mail-pl1-x642.google.com [IPv6:2607:f8b0:4864:20::642])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id C0DA1C061755
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:31:38 -0700 (PDT)
+Received: by mail-pl1-x642.google.com with SMTP id v22so3626659ply.12
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 12:31:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=v0qMtD14nA7HrLM/MdCWb6JdQx3iF+CcKyq2qfja9yM=;
-        b=hmjLI5PQcBXCIPYFwrcxxUyn+bgIfTT5+1VUIwMieE8zkTZfem26vmyWR4YX1M/giX
-         dvWay5fp3eZthz10ozJ1y0/AbyD5Jd8BLlfTpCc/qEPANy1KAMyKvUKIycQppnGXJKrR
-         aU57HbNxDrt/SgCcXslXpU7zkXvMA5m0kLXVaKgK2b9EFSYj67pWwMfruUwnqloyDGkq
-         J2y8p7IASijC+JTKB+QAJPZFFtvrZQ3XXnkBnkiKnuAnnb+H/0D7ExliNgQ4iLNdeFBk
-         3eorHoS3ooNfCzAZ8JGwuaMAiTNqwc4taevCMMUouogboNGIyRcau93d7MMGjqk9pmuX
-         fWIw==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=bw7Y/6Dgm4OYeBVasv5zxdWpIx2iMbuxYOG+poUDizA=;
+        b=Dt/6OmggmVain+OMmgWnDGmts50vmpoONv/GXrQSVmwwqflhWG3Pstnv60aSeqxKer
+         +AU0JOpQ4rjj3hdUclYPJQw09rbLzulYyHTAH2a6QxFx92onHsIk1XDEPtb/SdLLdVBC
+         6HlyNPtY3SFIXnO7uCa2c/XKushWCbcIpFCD5HPsAQNkrUwVAkJWGTHgph0bvJJNxO2T
+         rq7qTRFuBdd9qQow36WA67YBgT5Eg+jMgFuNcBDbgjWZ658effWIP2ePWwa5m/ZBU/oX
+         ndRy6e1WQ0U9hYNf4A4f/hb8R00HwOjfpwrPM77XWxb72WQr62uqoEe7dU3Ke16R8sIV
+         9v/Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=v0qMtD14nA7HrLM/MdCWb6JdQx3iF+CcKyq2qfja9yM=;
-        b=dFaZrjXWD7hoc6KDyZDiu0gjHsQt4ddrRgXtEPcqwFVFoYh4bapEgca3n0C9Bo9y1J
-         m7bZLYAjyL9tSi1i9bN/toFYBt/7uKr7UgSrJjgAF9xFQIuSMvBzkpTxdkA5NsLQkcCU
-         SALUtRJroX1kXdxMiwP79Z+Zlp+c4zBCIZc4e8Y7ftURH9wsPlGWU3WYRATD0Q6gxS/u
-         jub9FWs6weKjT4eHG0NXQglqEUC6vy3cLOo52FCmwidtvP6llcHZzSjN7n/ho4VwLWV5
-         F4IHHxKsMHBFfsW/pF3crI6EOoD3Bc2XNpJt1gd0rg41sTDICk1y1OsYsb3jHudxIOWh
-         ilKQ==
-X-Gm-Message-State: AOAM533wIgLeEf0+as5WG/MSzDiy7iPsoQggHaLI3yjqEbSasvg9eGMH
-        0OYd/9Vz0/ydB5Fyf2lnHvjyH7QG0dXzsA==
-X-Google-Smtp-Source: ABdhPJzzmw93U0N+QGMOqFiV/h0ffhblCS3IHUxDYgjlyEE9myUO6NMBDbnxhpz10IVfYfomSrgMzA==
-X-Received: by 2002:a17:90a:ab86:: with SMTP id n6mr15996092pjq.82.1603653849636;
-        Sun, 25 Oct 2020 12:24:09 -0700 (PDT)
-Received: from [192.168.1.134] ([66.219.217.173])
-        by smtp.gmail.com with ESMTPSA id x2sm9718314pfc.133.2020.10.25.12.24.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 25 Oct 2020 12:24:08 -0700 (PDT)
-Subject: Re: [PATCH] mm: bio_alloc never fails when set GFP_NOIO, GFP_KERNEL
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Xianting Tian <tian.xianting@h3c.com>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <20201021031128.14100-1-tian.xianting@h3c.com>
- <20201025120907.699d178b9d27be114e338680@linux-foundation.org>
-From:   Jens Axboe <axboe@kernel.dk>
-Message-ID: <53ffff64-da56-7911-ff95-9201476de9e4@kernel.dk>
-Date:   Sun, 25 Oct 2020 13:24:07 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        bh=bw7Y/6Dgm4OYeBVasv5zxdWpIx2iMbuxYOG+poUDizA=;
+        b=Wyz6XAkeByP3kezRBMO9lhIpq9qy7eFEWlIMhga/YqtpjmBV998DoyuWEzK0q2XySA
+         tI0cgHma05A5gQOdyYLzMf7BJxlWc/bUF89w+16BaRO1M8UE33Y4tt5sNmxPXu7XXvQW
+         JK4XFd3GO430au6TgcLBAaKNbe53jq67zURL9MSg4d6zEonIc5RvL83DWUjjWvBUrQqg
+         FxV0yFnt0Y3INP6S0SJ6TkGE0FpNnKWBL30mVgxr9Mu4TVNKjMVcRLCZr8LLUrmv3v+g
+         5bDWYgEOreT+KJEa68XMZbJz5wpWJpUquz82Gu5Gf8FWNDxi29EDvuONDt+Znccc8/zr
+         lIlQ==
+X-Gm-Message-State: AOAM532jsTcI2ye561RsizGi+OIbKaRE4YCibIXG+WA3295gyIkyUCiL
+        eRfbNdfYkHhleNZWI/OKZZ0=
+X-Google-Smtp-Source: ABdhPJw1e3wt23zR+nz/7Q1vklcBM98Xwp9KKXavRanVu+EjWmn5U3NpqvaicRAN7cc0Orz2UiDA9g==
+X-Received: by 2002:a17:90a:ee98:: with SMTP id i24mr7772849pjz.205.1603654297944;
+        Sun, 25 Oct 2020 12:31:37 -0700 (PDT)
+Received: from localhost.localdomain ([2405:201:9004:60a7:4fb7:1d05:966d:919e])
+        by smtp.gmail.com with ESMTPSA id j5sm9939228pjb.56.2020.10.25.12.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 12:31:37 -0700 (PDT)
+From:   Dwaipayan Ray <dwaipayanray1@gmail.com>
+To:     joe@perches.com
+Cc:     linux-kernel-mentees@lists.linuxfoundation.org,
+        dwaipayanray1@gmail.com, linux-kernel@vger.kernel.org,
+        lukas.bulwahn@gmail.com
+Subject: [PATCH v6] checkpatch: extend attributes check to handle more patterns
+Date:   Mon, 26 Oct 2020 01:01:03 +0530
+Message-Id: <20201025193103.23223-1-dwaipayanray1@gmail.com>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-In-Reply-To: <20201025120907.699d178b9d27be114e338680@linux-foundation.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/25/20 1:09 PM, Andrew Morton wrote:
-> On Wed, 21 Oct 2020 11:11:28 +0800 Xianting Tian <tian.xianting@h3c.com> wrote:
-> 
->> bio_alloc with __GFP_DIRECT_RECLAIM(which is included in GFP_NOIO,
->> GFP_KERNEL) never fails, as stated in the comments of bio_alloc_bioset.
->>
->> So we can remove multiple unneeded null checks of bio_alloc and simplify
->> the code.
->>
->> We have done it in fs/ext4/readpage.c, fs/ext4/page-io.c, fs/direct-io.c,
->> and so forth.
->>
-> 
-> (cc Jens)
-> 
->> --- a/mm/page_io.c
->> +++ b/mm/page_io.c
->> @@ -30,18 +30,20 @@ static struct bio *get_swap_bio(gfp_t gfp_flags,
->>  				struct page *page, bio_end_io_t end_io)
->>  {
->>  	struct bio *bio;
->> +	struct block_device *bdev;
->>  
->> +	/*
->> +	 * bio_alloc will _always_ be able to allocate a bio if
->> +	 * __GFP_DIRECT_RECLAIM is set, see comments for bio_alloc_bioset().
->> +	 */
->>  	bio = bio_alloc(gfp_flags, 1);
->> -	if (bio) {
->> -		struct block_device *bdev;
->> +	bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
->> +	bio_set_dev(bio, bdev);
->> +	bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
->> +	bio->bi_end_io = end_io;
->>  
->> -		bio->bi_iter.bi_sector = map_swap_page(page, &bdev);
->> -		bio_set_dev(bio, bdev);
->> -		bio->bi_iter.bi_sector <<= PAGE_SHIFT - 9;
->> -		bio->bi_end_io = end_io;
->> +	bio_add_page(bio, page, thp_size(page), 0);
->>  
->> -		bio_add_page(bio, page, thp_size(page), 0);
->> -	}
->>  	return bio;
->>  }
->>  
->> @@ -351,19 +353,13 @@ int __swap_writepage(struct page *page, struct writeback_control *wbc,
->>  
->>  	ret = 0;
->>  	bio = get_swap_bio(GFP_NOIO, page, end_write_func);
->> -	if (bio == NULL) {
->> -		set_page_dirty(page);
->> -		unlock_page(page);
->> -		ret = -ENOMEM;
->> -		goto out;
->> -	}
->>  	bio->bi_opf = REQ_OP_WRITE | REQ_SWAP | wbc_to_write_flags(wbc);
->>  	bio_associate_blkg_from_page(bio, page);
->>  	count_swpout_vm_event(page);
->>  	set_page_writeback(page);
->>  	unlock_page(page);
->>  	submit_bio(bio);
->> -out:
->> +
->>  	return ret;
->>  }
->>  
->> @@ -416,11 +412,6 @@ int swap_readpage(struct page *page, bool synchronous)
->>  
->>  	ret = 0;
->>  	bio = get_swap_bio(GFP_KERNEL, page, end_swap_bio_read);
->> -	if (bio == NULL) {
->> -		unlock_page(page);
->> -		ret = -ENOMEM;
->> -		goto out;
->> -	}
->>  	disk = bio->bi_disk;
->>  	/*
->>  	 * Keep this task valid during swap readpage because the oom killer may
-> 
-> I'm reluctant to remove these checks - yours is a fairly subtle
-> discovery and things might change in the future.  Intentionally or
-> otherwise!
+It is generally preferred that the macros from
+include/linux/compiler_attributes.h are used, unless there
+is a reason not to.
 
-On the block/bio side, it all boils down to the mempool backing of the
-bio allocations. If __GFP_DIRECT_RECLAIM is set for that, then we'll
-always wait on allocations for a bio. That is intentional, by design, to
-guarantee forward progress. It used to be __GFP_WAIT based, but I guess
-that changed at some point...
+checkpatch currently checks __attribute__ for each of
+packed, aligned, section, printf, scanf, and weak. Other
+declarations in compiler_attributes.h are not handled.
 
+Add a generic test to check the presence of such attributes.
+Some attributes require more specific handling and are kept
+separate.
+
+Also add fixes to the generic attributes check to substitute
+the correct conversions.
+
+New attributes which are now handled are:
+
+__always_inline__
+__assume_aligned__(a, ## __VA_ARGS__)
+__cold__
+__const__
+__copy__(symbol)
+__designated_init__
+__externally_visible__
+__gnu_inline__
+__malloc__
+__mode__(x)
+__no_caller_saved_registers__
+__noclone__
+__noinline__
+__nonstring__
+__noreturn__
+__pure__
+__unused__
+__used__
+
+Declarations which contain multiple attributes like
+__attribute__((__packed__, __cold__)) are also handled except
+when proper conversions for one or more attributes of the list
+cannot be determined.
+
+Link: https://lore.kernel.org/linux-kernel-mentees/3ec15b41754b01666d94b76ce51b9832c2dd577a.camel@perches.com/
+Suggested-by: Joe Perches <joe@perches.com>
+Signed-off-by: Dwaipayan Ray <dwaipayanray1@gmail.com>
+---
+ scripts/checkpatch.pl | 109 +++++++++++++++++++++++++++---------------
+ 1 file changed, 71 insertions(+), 38 deletions(-)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 7e505688257a..eeebd8149be9 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -6155,50 +6155,83 @@ sub process {
+ 			}
+ 		}
+ 
+-# Check for __attribute__ packed, prefer __packed
++# Check for compiler attributes
+ 		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*\bpacked\b/) {
+-			WARN("PREFER_PACKED",
+-			     "__packed is preferred over __attribute__((packed))\n" . $herecurr);
+-		}
+-
+-# Check for __attribute__ aligned, prefer __aligned
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*aligned/) {
+-			WARN("PREFER_ALIGNED",
+-			     "__aligned(size) is preferred over __attribute__((aligned(size)))\n" . $herecurr);
+-		}
+-
+-# Check for __attribute__ section, prefer __section
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(.*_*section_*\s*\(\s*("[^"]*")/) {
+-			my $old = substr($rawline, $-[1], $+[1] - $-[1]);
+-			my $new = substr($old, 1, -1);
+-			if (WARN("PREFER_SECTION",
+-				 "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++		    $rawline =~ /\b__attribute__\s*\(\s*($balanced_parens)\s*\)/) {
++			my $attr = $1;
++			$attr =~ s/\s*\(\s*(.*)\)\s*/$1/;
++
++			my %attr_list = (
++				"aligned"			=> "__aligned",
++				"always_inline"			=> "__always_inline",
++				"assume_aligned"		=> "__assume_aligned",
++				"cold"				=> "__cold",
++				"const"				=> "__attribute_const__",
++				"copy"				=> "__copy",
++				"designated_init"		=> "__designated_init",
++				"externally_visible"		=> "__visible",
++				"format"			=> "printf|scanf",
++				"gnu_inline"			=> "__gnu_inline",
++				"malloc"			=> "__malloc",
++				"mode"				=> "__mode",
++				"no_caller_saved_registers"	=> "__no_caller_saved_registers",
++				"noclone"			=> "__noclone",
++				"noinline"			=> "noinline",
++				"nonstring"			=> "__nonstring",
++				"noreturn"			=> "__noreturn",
++				"packed"			=> "__packed",
++				"pure"				=> "__pure",
++				"used"				=> "__used"
++			);
++
++			my @conv_array = ();
++			my $conv_possible = 1;
++
++			while ($attr =~ /\s*(\w+)\s*(${balanced_parens})?/g) {
++				my $curr_attr = $1;
++				my $params = '';
++				$params = $2 if defined($2);
++				$curr_attr =~ s/^[\s_]+|[\s_]+$//g;
++
++				if (exists($attr_list{$curr_attr})) {
++					if ($curr_attr eq "format" && $params) {
++						$params =~ /^\s*\(\s*(\w+)\s*,\s*(.*)/;
++						push(@conv_array, "__$1\($2");
++					} else {
++						my $new = $attr_list{$curr_attr};
++						push(@conv_array, "$new$params");
++					}
++				} else {
++					$conv_possible = 0;
++					last;
++				}
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(printf, prefer __printf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf/) {
+-			if (WARN("PREFER_PRINTF",
+-				 "__printf(string-index, first-to-check) is preferred over __attribute__((format(printf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*printf\s*,\s*(.*)\)\s*\)\s*\)/"__printf(" . trim($1) . ")"/ex;
++			if (scalar @conv_array > 0 && $conv_possible == 1) {
++				my $replace = join(' ', @conv_array);
++				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				         "$replace is preferred over __attribute__(($attr))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*\Q$attr\E\s*\)\s*\)/$replace/;
++					$fixed[$fixlinenr] =~ s/\}\Q$replace\E/} $replace/;
++				}
++			}
+ 
++			# Check for __attribute__ section, prefer __section
++			if ($attr =~ /^_*section_*\s*\(\s*("[^"]*")/) {
++				my $old = substr($attr, $-[1], $+[1] - $-[1]);
++				my $new = substr($old, 1, -1);
++				if (WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				         "__section($new) is preferred over __attribute__((section($old)))\n" . $herecurr) &&
++					$fix) {
++					$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*_*section_*\s*\(\s*\Q$old\E\s*\)\s*\)\s*\)/__section($new)/;
++				}
+ 			}
+-		}
+ 
+-# Check for __attribute__ format(scanf, prefer __scanf
+-		if ($realfile !~ m@\binclude/uapi/@ &&
+-		    $line =~ /\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\b/) {
+-			if (WARN("PREFER_SCANF",
+-				 "__scanf(string-index, first-to-check) is preferred over __attribute__((format(scanf, string-index, first-to-check)))\n" . $herecurr) &&
+-			    $fix) {
+-				$fixed[$fixlinenr] =~ s/\b__attribute__\s*\(\s*\(\s*format\s*\(\s*scanf\s*,\s*(.*)\)\s*\)\s*\)/"__scanf(" . trim($1) . ")"/ex;
++			# Check for __attribute__ unused, prefer __always_unused or __maybe_unused
++			if ($attr =~ /^_*unused/) {
++				WARN("PREFER_DEFINED_ATTRIBUTE_MACRO",
++				     "__always_unused or __maybe_unused is preferred over __attribute__((__unused__))\n" . $herecurr);
+ 			}
+ 		}
+ 
 -- 
-Jens Axboe
+2.27.0
 
