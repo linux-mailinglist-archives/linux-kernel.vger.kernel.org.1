@@ -2,76 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 36421298208
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 15:18:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0DCB229820D
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 15:26:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416504AbgJYORM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 10:17:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46148 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1733290AbgJYORM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 10:17:12 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 15CD422226;
-        Sun, 25 Oct 2020 14:17:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603635431;
-        bh=CoHyOzDXRIyiI8+Y6QIv52+Qp9AQ46O3BTgdQ1ZDXxE=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nryzDadHK6eET9ANsik9TzVfAC9A0ShBYEgfmKa8JGuLUZ/cy2wfrc34n8Ga/f2AH
-         yjKpaRiwL9lUuhYQNq1r5UjAIC4knRz6S4MvU1HHEn53/Yd1qX6zpCcO50RWKADBTh
-         VKex//kiVso1nBAVdI+CHCzeaE8N6BJYxwyFpi78=
-Date:   Sun, 25 Oct 2020 16:17:04 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     Vlastimil Babka <vbabka@suse.cz>
-Cc:     linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        Michal Hocko <mhocko@kernel.org>,
-        Pavel Tatashin <pasha.tatashin@soleen.com>,
-        David Hildenbrand <david@redhat.com>,
-        Oscar Salvador <osalvador@suse.de>,
-        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-        Michal Hocko <mhocko@suse.com>
-Subject: Re: [PATCH v2 1/7] mm, page_alloc: clean up pageset high and batch
- update
-Message-ID: <20201025141704.GG392079@kernel.org>
-References: <20201008114201.18824-1-vbabka@suse.cz>
- <20201008114201.18824-2-vbabka@suse.cz>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201008114201.18824-2-vbabka@suse.cz>
+        id S1416576AbgJYOZn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 10:25:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:34638 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416477AbgJYOZm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 10:25:42 -0400
+Date:   Sun, 25 Oct 2020 14:25:04 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603635941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BNakxmUGe+TYDOFRTCAWwHt7WAczZvtIVJLM7+rIxjM=;
+        b=kO4qU5pmeX6+Q9V2SvVBo6qJEAMGcRU/eER5w6Uz/QADToRpcb5x1wJo6QqzR6gC6gzIUa
+        Y1b7T4G0lMm10T7f9B3X9C7Gz1hqHSSqr+WbijBV2fnJCQgtuAB1hiS8aS1P8v4PDNu8YK
+        kCDZn7voKwbzyFIxOf7AhkZ9tmcf15CXSDxz6dIbLYD1NPAviqcW9usSncGlJUqJGAE2ge
+        i0k+vCqpq6zVqCgTu565gL0JCFq6rF+G4fnCxgpJ7YxKNAg0+PbDBOYuWovokD9O1KIHds
+        8u9R0OwzTp2kx/4xiZ+7woWa6lJ2e36Wc5e6p48+Piy0wxwacCKskh0K8qO+YQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603635941;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=BNakxmUGe+TYDOFRTCAWwHt7WAczZvtIVJLM7+rIxjM=;
+        b=Frg0mkHDMf89sFVMpVxN4UCwSWq82e72uMV8K9igD4HUa3voD8y6JuQTeC9QaxfLmJLRv8
+        N/+xDoQHXNu3e5Aw==
+From:   Thomas Gleixner <tglx@linutronix.de>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
+Subject: [GIT pull] locking/urgent for 5.10-rc1
+Message-ID: <160363590465.1234.11586095980767794789.tglx@nanos>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 08, 2020 at 01:41:55PM +0200, Vlastimil Babka wrote:
-> The updates to pcplists' high and batch valued are handled by multiple
+Linus,
 
-Nit:                                     ^ values
+please pull the latest locking/urgent branch from:
 
-> functions that make the calculations hard to follow. Consolidate everything
-> to pageset_set_high_and_batch() and remove pageset_set_batch() and
-> pageset_set_high() wrappers.
-> 
-> The only special case using one of the removed wrappers was:
-> build_all_zonelists_init()
->   setup_pageset()
->     pageset_set_batch()
-> which was hardcoding batch as 0, so we can just open-code a call to
-> pageset_update() with constant parameters instead.
-> 
-> No functional change.
-> 
-> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
-> Reviewed-by: Oscar Salvador <osalvador@suse.de>
-> Reviewed-by: David Hildenbrand <david@redhat.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> ---
->  mm/page_alloc.c | 49 ++++++++++++++++++++-----------------------------
->  1 file changed, 20 insertions(+), 29 deletions(-)
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git locking-urgent-2020-10-25
+
+up to:  ed3e453798d4: locking/seqlocks: Fix kernel-doc warnings
+
+Just a trivial fix for kernel-doc warnings.
+
+Thanks,
+
+	tglx
+
+------------------>
+Mauro Carvalho Chehab (1):
+      locking/seqlocks: Fix kernel-doc warnings
+
+
+ include/linux/seqlock.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/linux/seqlock.h b/include/linux/seqlock.h
+index ac5b07f558b0..cbfc78b92b65 100644
+--- a/include/linux/seqlock.h
++++ b/include/linux/seqlock.h
+@@ -154,7 +154,7 @@ static inline void seqcount_lockdep_reader_access(const seqcount_t *s)
+ #define __SEQ_LOCK(expr)
+ #endif
  
---
-Sincerely yours,
-Mike.
+-/**
++/*
+  * typedef seqcount_LOCKNAME_t - sequence counter with LOCKNAME associated
+  * @seqcount:	The real sequence counter
+  * @lock:	Pointer to the associated lock
+
