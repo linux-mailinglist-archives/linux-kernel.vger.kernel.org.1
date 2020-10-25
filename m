@@ -2,116 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C61D297FDC
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 03:20:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C513297FE9
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 04:36:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1766690AbgJYCUH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sat, 24 Oct 2020 22:20:07 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:50050 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1766683AbgJYCUG (ORCPT
+        id S1766943AbgJYDgI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sat, 24 Oct 2020 23:36:08 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:46686 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1762952AbgJYDgI (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sat, 24 Oct 2020 22:20:06 -0400
-Received: from mail-qk1-x742.google.com (mail-qk1-x742.google.com [IPv6:2607:f8b0:4864:20::742])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6AF6AC0613CE
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 19:20:06 -0700 (PDT)
-Received: by mail-qk1-x742.google.com with SMTP id r7so5347740qkf.3
-        for <linux-kernel@vger.kernel.org>; Sat, 24 Oct 2020 19:20:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Jyb14OtReYweMvVoCijrCzRYw8bKyGrGIBysmq4Dh4Y=;
-        b=hhHs+YTp8W8WUcVs3MdoVQ2Ymz+6E7/Xs4CAkWNHVBZ64V9CuMBGXR0cNE/1HWtfbF
-         YGubjua5GSq5gqyR5LRAPKe4+eE7N9cMt2t2zrSzfhCgXsp7mRbWm2Apf4mWbSyV4kET
-         NbNQJLqaQMQdt0D2YaaqoNIVrXvHm5CI+XZBv1BDsj3O2beJyWSFEFUROa06Zktai2VB
-         u3mDiheXJ2rrhigVLfxXQipbX/XVnYGg+Tlhf8M3qG+UAbM2fgXGaJdaBhr3pA4PUktt
-         vNawcs5EWqTi5eQmdbHawxRMqvO+FPQDNgzPgtG4LJS37P1eXYf9m1m67EDr2mI1d7rM
-         SV2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Jyb14OtReYweMvVoCijrCzRYw8bKyGrGIBysmq4Dh4Y=;
-        b=XiuMMFn6OmbuTDhHMufEWNmtci11zbo70z18aeZ4Lw+KTmZx9MChNuqFbId5sIm/hr
-         9l3v4njvJAiqaxKMFo4oGPtcTxYaajLrK9JYX1vbJRQYuoWAp6MmckEBGQpMFAOIXUWs
-         cKXdUB8VMophhap3nwmtI23hWuWHxDcYA3k0oul7RzK5eYBAGk2/tk0QbMeRtf6KOcXT
-         UcNOWlB5fcVq6pTg6kYy0y0UHtFM1oTJN4TjmcMSbLm3Lu41aa8KOTDvTo5DWKfebCcC
-         VsfXjjQYx7z8ifN4iEfwzFCrhjV0HWB48Jj2oAPCVIGccvdVV1YetAGCM8iYuMSoWR9/
-         nd7Q==
-X-Gm-Message-State: AOAM5339rxoZ00dcAiBGlpOks8B4+mZ8fsBCDhm5HRK7PtyyAjkl8x1A
-        vO2hlhEyu2dcDVya0aXLju0=
-X-Google-Smtp-Source: ABdhPJzZ72uflWIVu2JdQvt4KM+4AiN5hF/KFrpmJpPa+dtRn5gdx0wmiduCb+iQjvD7Q6Sy8glYQg==
-X-Received: by 2002:a37:6688:: with SMTP id a130mr9984602qkc.219.1603592405469;
-        Sat, 24 Oct 2020 19:20:05 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id l14sm4305235qti.34.2020.10.24.19.20.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Oct 2020 19:20:04 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Sat, 24 Oct 2020 22:20:03 -0400
-To:     Arvind Sankar <nivedita@alum.mit.edu>
-Cc:     x86@kernel.org, linux-kernel@vger.kernel.org,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>,
-        Kees Cook <keescook@chromium.org>,
-        Joerg Roedel <jroedel@suse.de>
-Subject: Re: RFC x86/boot/64: BOOT_PGT_SIZE definition for compressed kernel
-Message-ID: <20201025022003.GA971914@rani.riverdale.lan>
-References: <20201025004158.GA767345@rani.riverdale.lan>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201025004158.GA767345@rani.riverdale.lan>
+        Sat, 24 Oct 2020 23:36:08 -0400
+Received: from pps.filterd (m0098410.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09P3Vfpa048417;
+        Sat, 24 Oct 2020 23:36:02 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=f6c5YRP6wKJcOYJ6F1ufzms6nMkKE3xLN5sdbD90VrM=;
+ b=ifGNjgOfwjK1lmoqls57eVdLtj/Yf467Q0wCDEkYt1lhwjQmoGtW5Y4U6Wqhk9BgHybN
+ 7l4P4rkWHWQ/GWthPn+0d+1LfExETAE/tvj+FRIuMp+Gd7/gj1wPRjungRpEwgO5/6DX
+ hkBexZu3pvdOl87pLN1I4GziQC/M1WJIyGC7++M3LgDCQo+I9zdLadMsVRQkefsJk0Nk
+ ElWlEHZUMZeS5LuYUejdm2Z0N64h0VcDQTgeIiiTMWWgFduAkFDZvNOKsJRqMDaF2mXX
+ gKFm4s63cTNeUgYcBRgI7Y4+5F6d5//Ln4DsD+jFwSteTH63QLj2J4TCSJu419KD98wM EQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34d0xs8qmy-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 24 Oct 2020 23:36:02 -0400
+Received: from m0098410.ppops.net (m0098410.ppops.net [127.0.0.1])
+        by pps.reinject (8.16.0.36/8.16.0.36) with SMTP id 09P3a2NB060532;
+        Sat, 24 Oct 2020 23:36:02 -0400
+Received: from ppma05fra.de.ibm.com (6c.4a.5195.ip4.static.sl-reverse.com [149.81.74.108])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34d0xs8qmj-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sat, 24 Oct 2020 23:36:02 -0400
+Received: from pps.filterd (ppma05fra.de.ibm.com [127.0.0.1])
+        by ppma05fra.de.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09P3UBRi027808;
+        Sun, 25 Oct 2020 03:35:59 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma05fra.de.ibm.com with ESMTP id 34cbw88e5h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Sun, 25 Oct 2020 03:35:59 +0000
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (b06wcsmtp001.portsmouth.uk.ibm.com [9.149.105.160])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09P3ZvoH37159234
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Sun, 25 Oct 2020 03:35:57 GMT
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 86DDAA4065;
+        Sun, 25 Oct 2020 03:35:57 +0000 (GMT)
+Received: from b06wcsmtp001.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 23FCEA405B;
+        Sun, 25 Oct 2020 03:35:54 +0000 (GMT)
+Received: from sig-9-65-192-162.ibm.com (unknown [9.65.192.162])
+        by b06wcsmtp001.portsmouth.uk.ibm.com (Postfix) with ESMTP;
+        Sun, 25 Oct 2020 03:35:53 +0000 (GMT)
+Message-ID: <2c7da61fbeb17c577253b117829b3bd544d8cf44.camel@linux.ibm.com>
+Subject: Re: [PATCH v4 0/6] IMA: Infrastructure for measurement of critical
+ kernel data
+From:   Mimi Zohar <zohar@linux.ibm.com>
+To:     Tushar Sugandhi <tusharsu@linux.microsoft.com>,
+        stephen.smalley.work@gmail.com, casey@schaufler-ca.com,
+        agk@redhat.com, snitzer@redhat.com, gmazyland@gmail.com
+Cc:     tyhicks@linux.microsoft.com, sashal@kernel.org, jmorris@namei.org,
+        nramas@linux.microsoft.com, linux-integrity@vger.kernel.org,
+        selinux@vger.kernel.org, linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dm-devel@redhat.com
+Date:   Sat, 24 Oct 2020 23:35:53 -0400
+In-Reply-To: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
+References: <20200923192011.5293-1-tusharsu@linux.microsoft.com>
+Content-Type: text/plain; charset="ISO-8859-15"
+X-Mailer: Evolution 3.28.5 (3.28.5-12.el8) 
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-25_01:2020-10-23,2020-10-25 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 spamscore=0
+ adultscore=0 suspectscore=3 impostorscore=0 mlxscore=0 priorityscore=1501
+ malwarescore=0 bulkscore=0 lowpriorityscore=0 clxscore=1015
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010250022
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 08:41:58PM -0400, Arvind Sankar wrote:
-> Hi, I think the definition of BOOT_PGT_SIZE in
-> arch/x86/include/asm/boot.h is insufficient, especially after
->   ca0e22d4f011 ("x86/boot/compressed/64: Always switch to own page table")
-> 
-> Currently, it allocates 6 pages if KASLR is disabled, and either 17 or
-> 19 pages depending on X86_VERBOSE_BOOTUP if KASLR is enabled.
-> 
-> - The X86_VERBOSE_BOOTUP test shouldn't be done: that only disables
->   debug messages, but warnings/errors are always output to VGA memory,
->   so the two extra pages for mapping video RAM are always needed.
-> 
-> - The calculation wasn't updated for X86_5LEVEL, which requires at least
->   one more page for the P4D level, and in theory could require two extra
->   pages for each of the 4 mappings (compressed kernel, output kernel,
->   boot_params and command line), though that would require a system with
->   truly ginormous amounts of RAM.
-> 
-> - If KASLR is disabled, there are only 6 pages, but now that we're
->   always setting up our own page table, we need 1+(2+2)*3 (one PGD, and
->   two PUD and two PMD pages for kernel, boot_params and command line),
->   and 2 more pages for the video RAM, and more for 5-level. Even for
->   !RELOCATABLE, 13 pages might be needed.
-> 
-> - SEV-ES needs one more page because it needs to do a PTE-level mapping
->   for the GHCB page.
-> 
-> - The static calculation is also busted because
->   boot/compressed/{kaslr.c,acpi.c} can scan the setup data, EFI
->   configuration tables and the EFI memmap, and none of these are
->   accounted for. They used to be scanned while still on the
->   firmware/bootloader page tables, but now our page tables have to cover
->   them as well. Trying to add up the worst case for all of these, and
->   anything else the compressed kernel might potentially access seems
->   like a lost cause.
-> 
-> We could do something similar to what the main kernel does with
-> early_dynamic_pgts: map the compressed kernel at a fixed virtual
-> address (in negative address space, say); recycle all the other mappings
-> until we're done with decompression, and then map the output,
-> boot_params and command line. The number of pages needed for this can be
-> statically calculated, for 4-level paging we'd need 2 pages for the
-> fixed mapping, 12 pages for the other three, and one PGD page.
-> 
-> Thoughts?
+Hi Tushar,
 
-Or just bump BOOT_PGT_SIZE to some largeish number?
+On Wed, 2020-09-23 at 12:20 -0700, Tushar Sugandhi wrote:
+> There are several kernel components that contain critical data which if
+> accidentally or maliciously altered, can compromise the security of the
+> kernel. Example of such components would include LSMs like SELinux, or
+> AppArmor; or device-mapper targets like dm-crypt, dm-verity etc.
+
+^"the integrity of the system."
+
+This cover letter needs to be re-written from a higher perspective,
+explaining what is meant by "critical data" (e.g. kernel subsystem
+specific information only stored in kernel memory).
+
+> 
+> Many of these components do not use the capabilities provided by kernel
+> integrity subsystem (IMA), and thus they don't use the benefits of
+> extended TPM PCR quotes and ultimately the benefits of remote attestation.
+
+True, up until recently IMA only measured files, nothing else.  Why is
+this paragraph needed?  What new information is provided?
+
+> This series bridges this gap, so that potential kernel components that
+> contain data critical to the security of the kernel could take advantage
+> of IMA's measuring and quoting abilities - thus ultimately enabling
+> remote attestation for their specific data.
+
+Perhaps, something more along the lines, "This patch set defines a new
+IMA hook named ... to measure critical data."
+
+> 
+> System administrators may want to pick and choose which kernel
+> components they would want to enable for measurements, quoting, and
+> remote attestation. To enable that, a new IMA policy is introduced.
+
+Reverse the order of this paragraph and the following one, describing
+the new feature and only afterwards explaining how it may be
+constrained.
+
+> 
+> And lastly, the functionality is exposed through a function
+> ima_measure_critical_data(). The functionality is generic enough to
+> measure the data of any kernel component at run-time. To ensure that
+> only data from supported sources are measured, the kernel component
+> needs to be added to a compile-time list of supported sources (an
+> "allowed list of components"). IMA validates the source passed to
+> ima_measure_critical_data() against this allowed list at run-time.
+
+This patch set must include at least one example of measuring critical
+data, before it can be upstreamed.  Tushar, please coordinate with
+Lakshmi and Raphael.
+
+thanks,
+
+Mimi
+
