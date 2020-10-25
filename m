@@ -2,78 +2,233 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 63D80298171
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:19:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23523298174
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 12:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1415387AbgJYLSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 07:18:50 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47328 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1415378AbgJYLSt (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 07:18:49 -0400
-Received: from hillosipuli.retiisi.eu (hillosipuli.retiisi.eu [IPv6:2a01:4f9:c010:4572::81:2])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 41922C0613CE;
-        Sun, 25 Oct 2020 04:18:49 -0700 (PDT)
-Received: from valkosipuli.localdomain (valkosipuli.retiisi.org.uk [IPv6:2a01:4f9:c010:4572::80:2])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+        id S1415402AbgJYLX0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 07:23:26 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45978 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1415395AbgJYLXZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 07:23:25 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by hillosipuli.retiisi.eu (Postfix) with ESMTPS id 02001634C92;
-        Sun, 25 Oct 2020 13:18:23 +0200 (EET)
-Received: from sailus by valkosipuli.localdomain with local (Exim 4.92)
-        (envelope-from <sakari.ailus@retiisi.org.uk>)
-        id 1kWe2b-0001Gy-4E; Sun, 25 Oct 2020 13:18:25 +0200
-Date:   Sun, 25 Oct 2020 13:18:25 +0200
-From:   Sakari Ailus <sakari.ailus@iki.fi>
-To:     Dan Scally <djrscally@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linus.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
-        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
-        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
-        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-Message-ID: <20201025111824.GB3774@valkosipuli.retiisi.org.uk>
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201024151458.GA3774@valkosipuli.retiisi.org.uk>
- <18a3661c-4bee-7421-9121-acd65401cf16@gmail.com>
+        by mail.kernel.org (Postfix) with ESMTPSA id 5205E222E8;
+        Sun, 25 Oct 2020 11:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603625004;
+        bh=wsyWi0whkTqHhXLDxOJJ5R69Qo3xgR/xs/zAJvhAmm0=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=n5/5E1gYP0gcNcUMnlMimgW0cncit8L8M4+u7oLANwVVnyuDQsCS7AP3xnKg4bW/W
+         61gfWW4S6WpPYXWkCwRp2Ws5Z1Ve+jqtaLGapdYlZJYE0RkRfncrVaDukL0dXUNInk
+         y6Cqg/97uoPHs+41euzYx6CV0IrfK1SXNS2iC6C8=
+Date:   Sun, 25 Oct 2020 13:23:16 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     akpm@linux-foundation.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: Optional full ASLR for mmap() and mremap()
+Message-ID: <20201025112316.GF392079@kernel.org>
+References: <20201002110917.4227-1-toiwoton@gmail.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <18a3661c-4bee-7421-9121-acd65401cf16@gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201002110917.4227-1-toiwoton@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Daniel,
-
-On Sat, Oct 24, 2020 at 09:28:07PM +0100, Dan Scally wrote:
-...
-> >> +int cio2_bridge_build(struct pci_dev *cio2)
-> >> +{
-> >> +	struct fwnode_handle *fwnode;
-> >> +	int ret;
-> >> +
-> >> +	pci_dev_get(cio2);
-> > Could you check that this isn't used by more than one user? The current
-> > implementation assumes that. I'm not sure if there could be more instances
-> > of CIO2 but if there were, that'd be an issue currently.
+On Fri, Oct 02, 2020 at 02:09:17PM +0300, Topi Miettinen wrote:
+> Writing a new value of 3 to /proc/sys/kernel/randomize_va_space
+> enables full randomization of memory mappings created with mmap(NULL,
+> ...). With 2, the base of the VMA used for such mappings is random,
+> but the mappings are created in predictable places within the VMA and
+> in sequential order. With 3, new VMAs are created to fully randomize
+> the mappings. Also mremap(..., MREMAP_MAYMOVE) will move the mappings
+> even if not necessary.
 > 
-> I can check; can't think of anything better than just failing out if it
-> turns out to be in use already though - any ideas or is that appropriate?
+> On 32 bit systems this may cause problems due to increased VM
+> fragmentation if the address space gets crowded.
+> 
+> In this example, with value of 2, ld.so.cache, libc, an anonymous mmap
+> and locale-archive are located close to each other:
+> $ strace /bin/sync
+> ...
+> openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+> fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
+> mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e7f2000
+> ...
+> openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+> read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
+> fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
+> mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7d9c1e7f0000
+> mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7d9c1e62b000
+> ...
+> openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+> fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
+> mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7d9c1e0c9000
+> 
+> With 3, they are located in unrelated addresses:
+> $ echo 3 > /proc/sys/kernel/randomize_va_space
+> $ /bin/sync
+> ...
+> openat(AT_FDCWD, "/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+> fstat(3, {st_mode=S_IFREG|0644, st_size=189096, ...}) = 0
+> mmap(NULL, 189096, PROT_READ, MAP_PRIVATE, 3, 0) = 0xeda4fbea000
+> ...
+> openat(AT_FDCWD, "/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+> read(3, "\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\0n\2\0\0\0\0\0"..., 832) = 832
+> fstat(3, {st_mode=S_IFREG|0755, st_size=1839792, ...}) = 0
+> mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0xb8fb9c1d000
+> mmap(NULL, 1852680, PROT_READ, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0xaabd8598000
+> ...
+> openat(AT_FDCWD, "/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+> fstat(3, {st_mode=S_IFREG|0644, st_size=5642592, ...}) = 0
+> mmap(NULL, 5642592, PROT_READ, MAP_PRIVATE, 3, 0) = 0xbe351ab8000
 
-A negative error code would be appropriate, e.g. -EBUSY.
+Nit: this can be better illustrated with /proc/$pid/maps
+
+> Signed-off-by: Topi Miettinen <toiwoton@gmail.com>
+> ---
+> v2: also randomize mremap(..., MREMAP_MAYMOVE)
+> ---
+>  Documentation/admin-guide/hw-vuln/spectre.rst |  6 +++---
+>  Documentation/admin-guide/sysctl/kernel.rst   | 11 +++++++++++
+>  init/Kconfig                                  |  2 +-
+>  mm/mmap.c                                     |  7 ++++++-
+>  mm/mremap.c                                   | 15 +++++++++++++++
+>  5 files changed, 36 insertions(+), 5 deletions(-)
+> 
+> diff --git a/Documentation/admin-guide/hw-vuln/spectre.rst b/Documentation/admin-guide/hw-vuln/spectre.rst
+> index e05e581af5cf..9ea250522077 100644
+> --- a/Documentation/admin-guide/hw-vuln/spectre.rst
+> +++ b/Documentation/admin-guide/hw-vuln/spectre.rst
+> @@ -254,7 +254,7 @@ Spectre variant 2
+>     left by the previous process will also be cleared.
+>  
+>     User programs should use address space randomization to make attacks
+> -   more difficult (Set /proc/sys/kernel/randomize_va_space = 1 or 2).
+> +   more difficult (Set /proc/sys/kernel/randomize_va_space = 1, 2 or 3).
+>  
+>  3. A virtualized guest attacking the host
+>  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> @@ -499,8 +499,8 @@ Spectre variant 2
+>     more overhead and run slower.
+>  
+>     User programs should use address space randomization
+> -   (/proc/sys/kernel/randomize_va_space = 1 or 2) to make attacks more
+> -   difficult.
+> +   (/proc/sys/kernel/randomize_va_space = 1, 2 or 3) to make attacks
+> +   more difficult.
+>  
+>  3. VM mitigation
+>  ^^^^^^^^^^^^^^^^
+> diff --git a/Documentation/admin-guide/sysctl/kernel.rst b/Documentation/admin-guide/sysctl/kernel.rst
+> index d4b32cc32bb7..acd0612155d9 100644
+> --- a/Documentation/admin-guide/sysctl/kernel.rst
+> +++ b/Documentation/admin-guide/sysctl/kernel.rst
+> @@ -1060,6 +1060,17 @@ that support this feature.
+>      Systems with ancient and/or broken binaries should be configured
+>      with ``CONFIG_COMPAT_BRK`` enabled, which excludes the heap from process
+>      address space randomization.
+> +
+> +3   Additionally enable full randomization of memory mappings created
+> +    with mmap(NULL, ...). With 2, the base of the VMA used for such
+> +    mappings is random, but the mappings are created in predictable
+> +    places within the VMA and in sequential order. With 3, new VMAs
+> +    are created to fully randomize the mappings. Also mremap(...,
+> +    MREMAP_MAYMOVE) will move the mappings even if not necessary.
+> +
+> +    On 32 bit systems this may cause problems due to increased VM
+> +    fragmentation if the address space gets crowded.
+> +
+>  ==  ===========================================================================
+>  
+>  
+> diff --git a/init/Kconfig b/init/Kconfig
+> index d6a0b31b13dc..c5ea2e694f6a 100644
+> --- a/init/Kconfig
+> +++ b/init/Kconfig
+> @@ -1859,7 +1859,7 @@ config COMPAT_BRK
+>  	  also breaks ancient binaries (including anything libc5 based).
+>  	  This option changes the bootup default to heap randomization
+>  	  disabled, and can be overridden at runtime by setting
+> -	  /proc/sys/kernel/randomize_va_space to 2.
+> +	  /proc/sys/kernel/randomize_va_space to 2 or 3.
+>  
+>  	  On non-ancient distros (post-2000 ones) N is usually a safe choice.
+>  
+> diff --git a/mm/mmap.c b/mm/mmap.c
+> index 40248d84ad5f..489368f43af1 100644
+> --- a/mm/mmap.c
+> +++ b/mm/mmap.c
+> @@ -47,6 +47,7 @@
+>  #include <linux/pkeys.h>
+>  #include <linux/oom.h>
+>  #include <linux/sched/mm.h>
+> +#include <linux/elf-randomize.h>
+>  
+>  #include <linux/uaccess.h>
+>  #include <asm/cacheflush.h>
+> @@ -206,7 +207,7 @@ SYSCALL_DEFINE1(brk, unsigned long, brk)
+>  #ifdef CONFIG_COMPAT_BRK
+>  	/*
+>  	 * CONFIG_COMPAT_BRK can still be overridden by setting
+> -	 * randomize_va_space to 2, which will still cause mm->start_brk
+> +	 * randomize_va_space to >= 2, which will still cause mm->start_brk
+>  	 * to be arbitrarily shifted
+>  	 */
+>  	if (current->brk_randomized)
+> @@ -1407,6 +1408,10 @@ unsigned long do_mmap(struct file *file, unsigned long addr,
+>  	if (mm->map_count > sysctl_max_map_count)
+>  		return -ENOMEM;
+>  
+> +	/* Pick a random address even outside current VMAs? */
+> +	if (!addr && randomize_va_space >= 3)
+> +		addr = arch_mmap_rnd();
+> +
+>  	/* Obtain the address to map to. we verify (or select) it and ensure
+>  	 * that it represents a valid section of the address space.
+>  	 */
+> diff --git a/mm/mremap.c b/mm/mremap.c
+> index 138abbae4f75..c7fd1ab5fb5f 100644
+> --- a/mm/mremap.c
+> +++ b/mm/mremap.c
+> @@ -24,6 +24,7 @@
+>  #include <linux/uaccess.h>
+>  #include <linux/mm-arch-hooks.h>
+>  #include <linux/userfaultfd_k.h>
+> +#include <linux/elf-randomize.h>
+>  
+>  #include <asm/cacheflush.h>
+>  #include <asm/tlbflush.h>
+> @@ -720,6 +721,20 @@ SYSCALL_DEFINE5(mremap, unsigned long, addr, unsigned long, old_len,
+>  		goto out;
+>  	}
+>  
+> +	if ((flags & MREMAP_MAYMOVE) && randomize_va_space >= 3) {
+> +		/*
+> +		 * Caller is happy with a different address, so let's
+> +		 * move even if not necessary!
+> +		 */
+> +		new_addr = arch_mmap_rnd();
+> +
+> +		ret = mremap_to(addr, old_len, new_addr, new_len,
+> +				&locked, flags, &uf, &uf_unmap_early,
+> +				&uf_unmap);
+> +		goto out;
+> +	}
+> +
+> +
+>  	/*
+>  	 * Always allow a shrinking remap: that just unmaps
+>  	 * the unnecessary pages..
+> -- 
+> 2.28.0
+> 
+> 
 
 -- 
-Regards,
-
-Sakari Ailus
+Sincerely yours,
+Mike.
