@@ -2,112 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 71763298333
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:51:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5825E298335
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 19:54:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1418305AbgJYSvX convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Sun, 25 Oct 2020 14:51:23 -0400
-Received: from eu-smtp-delivery-151.mimecast.com ([185.58.86.151]:36891 "EHLO
-        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1418242AbgJYSvX (ORCPT
+        id S1418318AbgJYSxn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 14:53:43 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:31204 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1418309AbgJYSxn (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 14:51:23 -0400
-Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
- TLS) by relay.mimecast.com with ESMTP id
- uk-mta-211-jt4E6GO0NJaVgBLGtth6tQ-1; Sun, 25 Oct 2020 18:51:18 +0000
-X-MC-Unique: jt4E6GO0NJaVgBLGtth6tQ-1
-Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
- AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
- Server (TLS) id 15.0.1347.2; Sun, 25 Oct 2020 18:51:18 +0000
-Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
- AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
- Sun, 25 Oct 2020 18:51:18 +0000
-From:   David Laight <David.Laight@ACULAB.COM>
-To:     'Arvind Sankar' <nivedita@alum.mit.edu>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        Eric Biggers <ebiggers@kernel.org>
-CC:     "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "Eric Biggers" <ebiggers@google.com>
-Subject: RE: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
-Thread-Topic: [PATCH v4 6/6] crypto: lib/sha256 - Unroll LOAD and BLEND loops
-Thread-Index: AQHWqtuIw2smrl1NBkSqLe7bNPuvsKmonqLg
-Date:   Sun, 25 Oct 2020 18:51:18 +0000
-Message-ID: <05150bdb3a4c4b2682ab9cb8fb2ed411@AcuMS.aculab.com>
-References: <20201025143119.1054168-1-nivedita@alum.mit.edu>
- <20201025143119.1054168-7-nivedita@alum.mit.edu>
-In-Reply-To: <20201025143119.1054168-7-nivedita@alum.mit.edu>
-Accept-Language: en-GB, en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-x-ms-exchange-transport-fromentityheader: Hosted
-x-originating-ip: [10.202.205.107]
+        Sun, 25 Oct 2020 14:53:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603652021;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=l9opdhjO8wDOyQJdye7Bnt0YjHd2izk2OycmVO/q0mQ=;
+        b=W2yXOFEBm47KDKGeWvL+aJGphLiAoPvnF1LoE5uvOTaq7SX1R0h8G6p80D/95Nr/xShYJG
+        63EAUV8HApWjsb/YEiLCKnI0OwccyPcPrBPi2tmSX6gpXh7SZfO4JWQlE55AvaBefxU4SL
+        PItBLyODJ4wdURVJZXznyLVeJcZy9jE=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-446-wcY7MhUGM2WbMGhLo1lHeA-1; Sun, 25 Oct 2020 14:53:38 -0400
+X-MC-Unique: wcY7MhUGM2WbMGhLo1lHeA-1
+Received: by mail-qk1-f198.google.com with SMTP id z16so5020293qkg.15
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 11:53:38 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=l9opdhjO8wDOyQJdye7Bnt0YjHd2izk2OycmVO/q0mQ=;
+        b=aCNZfI2BvlVK09mLeZXm2li2N8e93FioAkFRnMBtVb4Dv+fGkLbXmkOAQolD4QzVwn
+         fqydhjIJWszUyDEg03MRQfRXYOWM4mPDJdgR1j81f3cDd9h4jGz+OEE1BT4FN/92QdRb
+         50PWMPni0klstLT4y971AvqlBQFUoQOh/dewCRAP3guy+sm5GW5Yw/aH3j3ZoTUxxK5g
+         vplG1niUnrDtslpGujru8lwckGPZErkflsUtb6j57NOTEXqiGyT30XWTGlFSHpuSAhQg
+         4oiZAMXIEbx6q3ZOpWuKm9sAkt9QXfb3EBpeydMw8wD6f2xRP4p5Bkn4DMqt2yq5LSwn
+         dxmA==
+X-Gm-Message-State: AOAM531jcS+fGcYl3WIxvzEQs2eJreee4sOfTXDXNMDz+z7oC0dSFtzU
+        BTz/Qci542qx9Wq6dRlT4irMJCjwAnWqGFb/pijT187QaJbAmkRdcR7fYQornLZHaan58qWbKGy
+        4yPAGIGNWgUKxYMGEUT+teNvf
+X-Received: by 2002:ac8:3510:: with SMTP id y16mr13427399qtb.300.1603652017282;
+        Sun, 25 Oct 2020 11:53:37 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJx5KhSGchYzMGbuUSH7VwFwskXs0eZ8seChI+2sD6xWskBYWXULVezbnh/8TWgCLDUqJS/SKA==
+X-Received: by 2002:ac8:3510:: with SMTP id y16mr13427384qtb.300.1603652017070;
+        Sun, 25 Oct 2020 11:53:37 -0700 (PDT)
+Received: from xz-x1.redhat.com (toroon474qw-lp140-04-174-95-215-133.dsl.bell.ca. [174.95.215.133])
+        by smtp.gmail.com with ESMTPSA id y3sm5305224qto.2.2020.10.25.11.53.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 11:53:36 -0700 (PDT)
+From:   Peter Xu <peterx@redhat.com>
+To:     linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Cc:     Vitaly Kuznetsov <vkuznets@redhat.com>, peterx@redhat.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>
+Subject: [PATCH 0/2] Fix null pointer dereference in kvm_msr_ignored_check
+Date:   Sun, 25 Oct 2020 14:53:32 -0400
+Message-Id: <20201025185334.389061-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.26.2
+Content-Type: text/plain; charset="utf-8"
 MIME-Version: 1.0
-Authentication-Results: relay.mimecast.com;
-        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
-X-Mimecast-Spam-Score: 0
-X-Mimecast-Originator: aculab.com
-Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8BIT
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arvind Sankar
-> Sent: 25 October 2020 14:31
-> 
-> Unrolling the LOAD and BLEND loops improves performance by ~8% on x86_64
-> (tested on Broadwell Xeon) while not increasing code size too much.
-
-I can't believe unrolling the BLEND loop makes any difference.
-
-Unrolling the LOAD one might - but you don't need 8 times,
-once should be more than enough.
-The LOAD loop needs a memory read, memory write and BSWAP per iteration.
-The loop control is add + compare + jmp.
-On sandy bridge and later the compare and jmp become a single u-op.
-So the loop has the read, write (can happen together) and 3 other u-ops.
-That won't run at 1 clock per iteration on Sandy Bridge.
-However just unroll once and you need 4 non-memory u-op per loop iteration.
-That might run at 2 clocks per 8 bytes.
-
-Fiddling the loop to remove the compare (ie run from -64 to 0)
-should merge the 'add' and 'jnz' into a single u-op.
-That might be enough to get the 'rolled up' loop to run in 1 clock
-on sandy bridge, certainly on slightly later cpu.
-
-That is theoretical for intel cpu sandy bridge onwards.
-I've an i7-7700 (Kaby Lake?) that I belive has an extra
-instruction pipeline and might run the initial loop in 1 clock.
-
-I don't have any recent AMD cpu, nor any ARM or PPC ones.
-But fully out-of-order cpu are likely to be similar.
-
-One of the other test systems I've got is an Atom C2758.
-This 8 core but mostly in-order.
-Running sha256_transform() on that tend to give one of two
-TSC counts, one of which is double the other!
-That is pretty consistent even for 100 iterations.
-
-WRT patch 5.
-On the C2758 the original unrolled code is slightly faster.
-On the i7-7700 the 8 unroll is a bit faster 'hot cache',
-but slower 'cold cache' - probably because of the d-cache
-loads for K[].
-
-Non-x86 architectures might need to use d-cache reads for
-the 32bit 'K' constants even in the unrolled loop.
-X86 can use 'lea' with a 32bit offset to avoid data reads.
-So the cold-cache case for the old code may be similar.
-
-Interestingly I had to write an asm ror32() to get reasonable
-code (in userspace). The C version the kernel uses didn't work.
-
-	David
-
--
-Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
-Registration No: 1397386 (Wales)
+Bug report: https://lore.kernel.org/kvm/bug-209845-28872@https.bugzilla.ker=
+nel.org%2F/=0D
+=0D
+Unit test attached, which can reproduce the same issue.=0D
+=0D
+Thanks,=0D
+=0D
+Peter Xu (2):=0D
+  KVM: selftests: Add get featured msrs test case=0D
+  KVM: X86: Fix null pointer reference for KVM_GET_MSRS=0D
+=0D
+ arch/x86/kvm/x86.c                            |  4 +-=0D
+ .../testing/selftests/kvm/include/kvm_util.h  |  3 +=0D
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 14 +++++=0D
+ .../testing/selftests/kvm/x86_64/state_test.c | 58 +++++++++++++++++++=0D
+ 4 files changed, 77 insertions(+), 2 deletions(-)=0D
+=0D
+-- =0D
+2.26.2=0D
+=0D
 
