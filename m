@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 759A5298210
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 15:26:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 64A25298221
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 15:32:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416604AbgJYOZv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 10:25:51 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:47544 "EHLO
-        lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1416587AbgJYOZr (ORCPT
+        id S1416761AbgJYObb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 10:31:31 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:40859 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1416752AbgJYOba (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 10:25:47 -0400
-Received: from galois.linutronix.de (Galois.linutronix.de [IPv6:2a0a:51c0:0:12e:550::1])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 778EEC0613CE
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 07:25:47 -0700 (PDT)
-Date:   Sun, 25 Oct 2020 14:25:09 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603635946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XsWgXoHwPfDwgi0mOtNPh2+NZeCVxNltsspdsh+8Uu0=;
-        b=Odx2EHJvfZpzJJeWYSCJQXQdbRh/Jy9wVthgjsK7bXtoIXqEXM3KmVhapsDTwbAd0JjzTX
-        ejspuWmsjWOGGAe19XFm84iULfAYuXhRbs8Po4kL3W17JeOxgYv+zsFVpJL/lmygkpXHXd
-        lga7wsszypTcKXiM0/nkqedh57s5FvbNEDNX/eonZHfwH1MbuA4/3KFZ6O9EzVV2NS5tIV
-        ewLMe9jHfLSbeFJ/WTTTJSPD09XaeIWS4Bne0NHbBpDp2R4D/UB71ojeoLEbdszod5pBfg
-        H70/++3Kvlouj9goWPgwnvnjc9yXeAQ752h8AAy0a6HhMy9t4MTaG5gkQqIAkg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603635946;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:  references:references;
-        bh=XsWgXoHwPfDwgi0mOtNPh2+NZeCVxNltsspdsh+8Uu0=;
-        b=zEE6wooFnUoLejuU3xGeEziX55c6jGZ0Vgcc9E56SJPIkufcJD/XXFLemTb9BtvvQn/5Il
-        H70TNzIobd3hKaDw==
-From:   Thomas Gleixner <tglx@linutronix.de>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     linux-kernel@vger.kernel.org, x86@kernel.org
-Subject: [GIT pull] x86/urgent for 5.10-rc1
-References: <160363590465.1234.11586095980767794789.tglx@nanos>
-Message-ID: <160363590947.1234.141731936248952516.tglx@nanos>
-Content-Type: text/plain; charset="utf-8"
+        Sun, 25 Oct 2020 10:31:30 -0400
+Received: by mail-qk1-f194.google.com with SMTP id h140so6049522qke.7;
+        Sun, 25 Oct 2020 07:31:22 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=x2UMZm4fcybM+vIIp7oarjvWnFnvnqafI+zu+Zq1CF8=;
+        b=CByY9S5eChDUvReJ8HF4vtDOzK9ugiI2BDLU/wTQwlHPdU7EnCjBf9jEIUq3L/iCrH
+         JkUR0zwURpR8llp5WwRZk4eg/ktKF2mbwdA0EPAgHay5t0hpeT8Pa0gGenhFVfCeCC46
+         MgOmdV+yfvuT2ODbAdRvq5hqbBBh+QZtiWBcj+8zRjHQPMo8JUejRlrEEI4edMx5aVIG
+         UHQtLFOJp7rFHn4swbCqVjHfVHbHAD801WjoCYIt7qTfwN47YG6KIHnanTvBubtmFrmO
+         +GKCfKrFq4MZfrhcryYD0PcL8/2gzf7KZz2kLmNinuo0MQug2P7JITXegHRr9ewIVs5u
+         Aqjg==
+X-Gm-Message-State: AOAM5319/1Avqa2sd5g8Q3J2wUSLqGaO0breg8CUq/ouwitiJmwj5Doh
+        18q+W4ULbERu8EQYAC4KaolM0HhQVLHNgg==
+X-Google-Smtp-Source: ABdhPJw10C/oZFL0qO/mz2dWvCyInZZwaHLUbNWqaIcyU4bXqKKyKpVCWOIhjtZYT3CzjtqlzBos0Q==
+X-Received: by 2002:a05:620a:21d1:: with SMTP id h17mr13082876qka.368.1603636282234;
+        Sun, 25 Oct 2020 07:31:22 -0700 (PDT)
+Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
+        by smtp.gmail.com with ESMTPSA id s73sm4740898qke.71.2020.10.25.07.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 07:31:21 -0700 (PDT)
+From:   Arvind Sankar <nivedita@alum.mit.edu>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        Eric Biggers <ebiggers@kernel.org>,
+        David Laight <David.Laight@aculab.com>
+Cc:     linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/6] crypto: lib/sha256 - cleanup/optimization
+Date:   Sun, 25 Oct 2020 10:31:13 -0400
+Message-Id: <20201025143119.1054168-1-nivedita@alum.mit.edu>
+X-Mailer: git-send-email 2.26.2
+MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Linus,
+Patch 1/2 -- Use memzero_explicit() instead of structure assignment/plain
+memset() to clear sensitive state.
 
-please pull the latest x86/urgent branch from:
+Patch 3 -- Currently the temporary variables used in the generic sha256
+implementation are cleared, but the clearing is optimized away due to
+lack of compiler barriers. Drop the clearing.
 
-   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git x86-urgent-2020-10-25
+The last three patches are optimizations for generic sha256.
 
-up to:  20802fef73a5: x86/traps: Fix #DE Oops message regression
+v4:
+- Split the first patch into two, the first one just does
+  lib/crypto/sha256.c, so that the second one can be applied or dropped
+  depending on the outcome of the discussion between Herbert/Eric.
 
+v3:
+- Add some more files to patch 1
+- Reword commit message for patch 2
+- Reformat SHA256_K array
+- Drop v2 patch combining K and W arrays
 
-Restore the original #DE Oops message so tools which parse crash or dmesg
-find what they expect.
+v2:
+- Add patch to combine K and W arrays, suggested by David
+- Reformat SHA256_ROUND() macro a little
 
-Thanks,
+Arvind Sankar (6):
+  crypto: lib/sha256 - Use memzero_explicit() for clearing state
+  crypto: Use memzero_explicit() for clearing state
+  crypto: lib/sha256 - Don't clear temporary variables
+  crypto: lib/sha256 - Clear W[] in sha256_update() instead of
+    sha256_transform()
+  crypto: lib/sha256 - Unroll SHA256 loop 8 times intead of 64
+  crypto: lib/sha256 - Unroll LOAD and BLEND loops
 
-	tglx
+ arch/arm64/crypto/ghash-ce-glue.c |   2 +-
+ arch/arm64/crypto/poly1305-glue.c |   2 +-
+ arch/arm64/crypto/sha3-ce-glue.c  |   2 +-
+ arch/x86/crypto/poly1305_glue.c   |   2 +-
+ include/crypto/sha1_base.h        |   3 +-
+ include/crypto/sha256_base.h      |   3 +-
+ include/crypto/sha512_base.h      |   3 +-
+ include/crypto/sm3_base.h         |   3 +-
+ lib/crypto/sha256.c               | 212 +++++++++---------------------
+ 9 files changed, 76 insertions(+), 156 deletions(-)
 
------------------->
-Thomas Gleixner (1):
-      x86/traps: Fix #DE Oops message regression
-
-
- arch/x86/kernel/traps.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
-index 81a2fb711091..316ce1c09e84 100644
---- a/arch/x86/kernel/traps.c
-+++ b/arch/x86/kernel/traps.c
-@@ -195,7 +195,7 @@ static __always_inline void __user *error_get_trap_addr(struct pt_regs *regs)
- 
- DEFINE_IDTENTRY(exc_divide_error)
- {
--	do_error_trap(regs, 0, "divide_error", X86_TRAP_DE, SIGFPE,
-+	do_error_trap(regs, 0, "divide error", X86_TRAP_DE, SIGFPE,
- 		      FPE_INTDIV, error_get_trap_addr(regs));
- }
- 
+-- 
+2.26.2
 
