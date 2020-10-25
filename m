@@ -2,178 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A0262982F5
-	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 18:53:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1581A2982F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 25 Oct 2020 18:56:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1416433AbgJYRxj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 13:53:39 -0400
-Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51094 "EHLO
+        id S1416880AbgJYRyw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 13:54:52 -0400
+Received: from lindbergh.monkeyblade.net ([23.128.96.19]:51278 "EHLO
         lindbergh.monkeyblade.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1415571AbgJYRxj (ORCPT
+        with ESMTP id S1416754AbgJYRyv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 13:53:39 -0400
-Received: from mail-qt1-x842.google.com (mail-qt1-x842.google.com [IPv6:2607:f8b0:4864:20::842])
-        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E1157C061755;
-        Sun, 25 Oct 2020 10:53:38 -0700 (PDT)
-Received: by mail-qt1-x842.google.com with SMTP id j62so5147317qtd.0;
-        Sun, 25 Oct 2020 10:53:38 -0700 (PDT)
+        Sun, 25 Oct 2020 13:54:51 -0400
+Received: from mail-lj1-x22e.google.com (mail-lj1-x22e.google.com [IPv6:2a00:1450:4864:20::22e])
+        by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7013BC061755
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 10:54:51 -0700 (PDT)
+Received: by mail-lj1-x22e.google.com with SMTP id a4so7289168lji.12
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 10:54:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=WnvTU6VDuLEf+Rt2Zn1Gdt5ZWfNTNLLVWS72IF0h6Yk=;
-        b=PqE+NIkCpidtvg9ccnzTZ8R6ZKaslUFa6jUfX78jzuqP4FeCXm1ehopZIeOpEIGvfV
-         zUwuE0941wfby2vncTggj2xmv+C0VoORDdNOy4uXuo6t84MB+9Jla4/6B2D3nBcAmUlC
-         aGa8wseNCWKTJIvsysxLs50d+eJ1g55WHEfTD7j9cwtlAf88IIkv6OPx1cr9xuFcHk+b
-         5mSZhYaceFpLEH7rkUNZgE5+zS/aHWq0j4XV3a8tEOAtltuqSLK1g4N62B+dBd1H+EAK
-         Mi0g35eg6z2LdugxurSJut//sA73JpywiRfozrHFzOXvzEr3jekwqHflohiZowC6/zua
-         ofvA==
+        d=linux-foundation.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=+ggYmrSHY803yXkxxFpr8c9ktR4N+VPXPUnvy1vJqsI=;
+        b=Bl0echuUtFDLnzPfg4i5SkRU1dPT0elshJP0RN/DyWfiqQZ+UN+tXJAnCXe7RU48b2
+         9fsgwl7hSA/chuzxcXlwgVR9Xyox7VfjXV05FDGgWS8yDbYTYK3i3FPKYUT7opuImSOD
+         3fTRb/iGMyWIEKlEaff9D3/wUexS99Ik09pBo=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=WnvTU6VDuLEf+Rt2Zn1Gdt5ZWfNTNLLVWS72IF0h6Yk=;
-        b=W9etE+1hoTC9JgGR4mTquglR4B+6K4IApFE4tG+jW4DbKrI2uijDxkAXwDlQmaT6a1
-         3mupNEe1F75umrs87VOvOI2nSsAJXn5oD33rfBpKtwLRugDJte3USTBQWKzVIjzVx2Us
-         Obm1l6cl25Mnx4nGWzrm4etOfA+gsUSNNLuxItKYhoFmXdjgJP+8vnTyGvbZOYgnLrAP
-         ik5sC+BmjOzZMGZPwqEHaUh29GDi8If0DilvJ/KuLbCIA31Ely+OsVi0oLBKn9Kvp5Yj
-         6CYAF0L5xOTUW7+44R+ZrE6N4t8CuyLiYduV7Easx1HrqxZVTS2ts0bu0Fqui6O57H27
-         vwlA==
-X-Gm-Message-State: AOAM531x6nVg2YUadVnzvBDQOEDEmU6uKxnK5VygJwSj+E5dTZrpYM5V
-        zb2Qcl4CDnBWkrzfv2Vnx28=
-X-Google-Smtp-Source: ABdhPJzNvr9/llgZ98dNMu3rcpa5WW5aUblpGe3+LAoh76G4bw+2TtSIZwfILvnr82QMbJLFomHv6A==
-X-Received: by 2002:ac8:7c97:: with SMTP id y23mr13455309qtv.48.1603648418004;
-        Sun, 25 Oct 2020 10:53:38 -0700 (PDT)
-Received: from shinobu (072-189-064-225.res.spectrum.com. [72.189.64.225])
-        by smtp.gmail.com with ESMTPSA id k64sm4949218qkc.97.2020.10.25.10.53.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 10:53:36 -0700 (PDT)
-Date:   Sun, 25 Oct 2020 13:53:22 -0400
-From:   William Breathitt Gray <vilhelm.gray@gmail.com>
-To:     David Lechner <david@lechnology.com>
-Cc:     jic23@kernel.org, kamel.bouhara@bootlin.com, gwendal@chromium.org,
-        alexandre.belloni@bootlin.com, linux-iio@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, syednwaris@gmail.com,
-        patrick.havelange@essensium.com, fabrice.gasnier@st.com,
-        mcoquelin.stm32@gmail.com, alexandre.torgue@st.com
-Subject: Re: [PATCH v5 3/5] counter: Add character device interface
-Message-ID: <20201025175322.GA14219@shinobu>
-References: <cover.1601170670.git.vilhelm.gray@gmail.com>
- <00be1fccc672c5207f3b04fe4cc09c29e22641f4.1601170670.git.vilhelm.gray@gmail.com>
- <cc1f7e4d-18d1-bc28-8ce3-e3edcd91bcab@lechnology.com>
- <20201018165822.GE231549@shinobu>
- <f2bac8b2-108d-fa4c-cb63-8ff85ce04d1f@lechnology.com>
- <20201025131809.GB3458@shinobu>
- <e0b7989f-6a99-0fae-471c-8d06c8e951b0@lechnology.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=+ggYmrSHY803yXkxxFpr8c9ktR4N+VPXPUnvy1vJqsI=;
+        b=Yc7qEN1TwBveTk60TOzv2yEuAQVzNRJuH6cvOh2SGDdKgrOnJ4d3d9RvXj30Et4AKj
+         dw3QbKLHGkaMKfOnmpEC8xXbj+KTcUp5rXLBVlx+8cM0dd2aUz9NQvmeUflm+mRvcPAA
+         /+LPo1Bdb1zUvUWAxkArsmOMmOd/Ep8Dj6W2gHFNfRTtSINaLjzdDQ+3wzzc0rRFncMT
+         2G9/gpMuJdjdAkPkwwAvEQSD/dxZQ8WJgVkwSh12Bdl0T86+WRc4C7uheg3MqwpicIC6
+         nF/L4W3SA5YCdyFHGkjvCoWgLh0dlbt5eqHtcanGFipkfuGQ7pHFmVI/eFPul+1HHXjw
+         2NtQ==
+X-Gm-Message-State: AOAM533V7ucrLYxo1mBlwTUuudFtZyeFUFPb7srsotB6zTnWxPxjNpCo
+        7rKmXX/d45RS18SRyNwXCldA8Gez4LJXQA==
+X-Google-Smtp-Source: ABdhPJy9AhNXJY215SxpaQOi5vlYKApdl4p7Vc3eEZHP3yeR72xhprShNh/p/xRskQkJG66fEW0FNw==
+X-Received: by 2002:a2e:8194:: with SMTP id e20mr4460429ljg.405.1603648489446;
+        Sun, 25 Oct 2020 10:54:49 -0700 (PDT)
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com. [209.85.167.45])
+        by smtp.gmail.com with ESMTPSA id j83sm320495lfj.221.2020.10.25.10.54.47
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 25 Oct 2020 10:54:47 -0700 (PDT)
+Received: by mail-lf1-f45.google.com with SMTP id v6so8907745lfa.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 10:54:47 -0700 (PDT)
+X-Received: by 2002:a19:9142:: with SMTP id y2mr3431981lfj.352.1603648486915;
+ Sun, 25 Oct 2020 10:54:46 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="NzB8fVQJ5HfG6fxh"
-Content-Disposition: inline
-In-Reply-To: <e0b7989f-6a99-0fae-471c-8d06c8e951b0@lechnology.com>
+References: <CAJ-EccOQxDjSgUL0AsCywoKDbOUNWDyxCKHQc+s6+ZemUh9Uzw@mail.gmail.com>
+ <CAHk-=wg3kHxMP67XmQyCg7J+KfFgAsQqj1goUa3dKR-A812ZbA@mail.gmail.com>
+ <CAJ-EccPLAD5TGg=KQ-m54ymrVdd++Dg7A_UR+v535iOVRsDe4w@mail.gmail.com>
+ <CAHk-=wi_BD0OVHgj09kKgiuwyrth3ora_ZgLznW_q-+z-BR=3w@mail.gmail.com> <CAJ-EccMu_AGfOYASyteGosdOc1SMHeVTLax5aoZSQf7_n0Xq2Q@mail.gmail.com>
+In-Reply-To: <CAJ-EccMu_AGfOYASyteGosdOc1SMHeVTLax5aoZSQf7_n0Xq2Q@mail.gmail.com>
+From:   Linus Torvalds <torvalds@linux-foundation.org>
+Date:   Sun, 25 Oct 2020 10:54:31 -0700
+X-Gmail-Original-Message-ID: <CAHk-=whAYrg_N9ZZ38C5YqPQT4eyCj8JoJ4oax479DpOkdH07w@mail.gmail.com>
+Message-ID: <CAHk-=whAYrg_N9ZZ38C5YqPQT4eyCj8JoJ4oax479DpOkdH07w@mail.gmail.com>
+Subject: Re: [GIT PULL] SafeSetID changes for v5.10
+To:     Micah Morton <mortonm@chromium.org>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-security-module <linux-security-module@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, Oct 23, 2020 at 12:15 PM Micah Morton <mortonm@chromium.org> wrote:
+>
+> Ok so before the rebase ("reparent"), the commits were based on top of
+> some commit that was months old at this point (can't quite remember
+> now, I think one of the -rc's for v5.8).
 
---NzB8fVQJ5HfG6fxh
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Nobody cares if the old parent is old. In fact, that's usually a good
+sign that the code has had testing and is changing things that aren't
+in flux for other reasons.
 
-On Sun, Oct 25, 2020 at 11:34:43AM -0500, David Lechner wrote:
-> On 10/25/20 8:18 AM, William Breathitt Gray wrote:
-> > On Tue, Oct 20, 2020 at 11:06:42AM -0500, David Lechner wrote:
-> >> On 10/18/20 11:58 AM, William Breathitt Gray wrote:
-> >>> On Wed, Oct 14, 2020 at 05:40:44PM -0500, David Lechner wrote:
-> >>>> On 9/26/20 9:18 PM, William Breathitt Gray wrote:
-> >>>>> +static ssize_t counter_chrdev_read(struct file *filp, char __user =
-*buf,
-> >>>>> +				   size_t len, loff_t *f_ps)
-> >>>>> +{
-> >>>>> +	struct counter_device *const counter =3D filp->private_data;
-> >>>>> +	int err;
-> >>>>> +	unsigned long flags;
-> >>>>> +	unsigned int copied;
-> >>>>> +
-> >>>>> +	if (len < sizeof(struct counter_event))
-> >>>>> +		return -EINVAL;
-> >>>>> +
-> >>>>> +	do {
-> >>>>> +		if (kfifo_is_empty(&counter->events)) {
-> >>>>> +			if (filp->f_flags & O_NONBLOCK)
-> >>>>> +				return -EAGAIN;
-> >>>>> +
-> >>>>> +			err =3D wait_event_interruptible(counter->events_wait,
-> >>>>> +					!kfifo_is_empty(&counter->events));
-> >>>>> +			if (err)
-> >>>>> +				return err;
-> >>>>> +		}
-> >>>>> +
-> >>>>> +		raw_spin_lock_irqsave(&counter->events_lock, flags);
-> >>>>> +		err =3D kfifo_to_user(&counter->events, buf, len, &copied);
-> >>>>> +		raw_spin_unlock_irqrestore(&counter->events_lock, flags);
-> >>>>> +		if (err)
-> >>>>> +			return err;
-> >>>>> +	} while (!copied);
-> >>>>> +
-> >>>>> +	return copied;
-> >>>>> +}
-> >>>>
-> >>>> All other uses of kfifo_to_user() I saw use a mutex instead of spin
-> >>>> lock. I don't see a reason for disabling interrupts here.
-> >>>
-> >>> The Counter character device interface is special in this case because
-> >>> counter->events could be accessed from an interrupt context. This is
-> >>> possible if counter_push_event() is called for an interrupt (as is the
-> >>> case for the 104_quad_8 driver). In this case, we can't use mutex
-> >>> because we can't sleep in an interrupt context, so our only option is=
- to
-> >>> use spin lock.
-> >>>
-> >>
-> >>
-> >> The way I understand it, locking is only needed for concurrent readers
-> >> and locking between reader and writer is not needed.
-> >=20
-> > You're right, it does say in the kfifo.h comments that with only one
-> > concurrent reader and one current write, we don't need extra locking to
-> > use these macros. Because we only have one kfifo_to_user() operating on
-> > counter->events, does that mean we don't need locking at all here for
-> > the counter_chrdev_read() function?
-> >=20
-> > William Breathitt Gray
-> >=20
->=20
-> Even if we have the policy that only one file handle to the chrdev
-> can be open at a time, it is still possible that the it could be
-> read from multiple threads. So it I think it makes sense to keep
-> it just to be safe.
+It's often a good idea to make a test-merge and verify that things are
+ok, but that's for your _personal_ verification, and shouldn't be
+something that anybody else sees.
 
-All right, I'll keep the locks in the code for now to keep it safe in
-case we have multiple threads reading.
+And even with a test-merge, it doesn't matter if there is some simple
+conflict - we have those all the time, and conflicts aren't bad. In
+fact, they allow me to see "ok, things have changed here in parallel",
+and I'll be aware of it.
 
-William Breathitt Gray
+The main reason to rebase is if things have changed _so_ much that you
+really need to re-do things, or if there is some major bug in _your_
+branch that simply needs to be fixed.
 
---NzB8fVQJ5HfG6fxh
-Content-Type: application/pgp-signature; name="signature.asc"
+>    So I had basically considered it
+> a no-op rebase. I probably should have explained this in the pull
+> request.
 
------BEGIN PGP SIGNATURE-----
+If it's a no-op rebase, thern DON'T DO IT. Really. It just means that
+now you have lost all the testing.
 
-iQIzBAABCgAdFiEEk5I4PDJ2w1cDf/bghvpINdm7VJIFAl+Vu3IACgkQhvpINdm7
-VJL6Gg/+Mlx2N3lg0kRzevbHYdReGI0UFjEyLqM3u6BmeS5zhbkHY+/QYF9Ak2Th
-AEe1tI0KJ3KrTiPRH8oEkbZ5f1eY58AovHPYByxzOBMDHx9Z2PUtRmdDF9jqU1mA
-kw0x/SMHc/Rznkzu44VHl1vLTRxpPDJ3a91PmuKEe5prF0BufeCh+4WdMpwQq1yH
-RmeaXWg5aKjQtIpjVFivkLjp5sBlP2dh51r34bEd1LA9wQ1FcSdoDe3Jxwwt8Wnx
-wySRy7nh/RIDp0CkgxdtJfNgSskJ+m/5/bVWCIqKcRkVJCApndX5N02c7C0573so
-biLq7YKWbF27KjMIyl22XwPxdhBW0CfN+nXGDM0rv8WtzE2qqtEbRe1t3oYGfMZK
-6CtXjDL03JyGVIaZCT8XyeAkHhUJM5gxGKygfCRq+O1ftVdzsnDtlhxnmm4Wtn44
-YKJvjN2Na66BN1jObZZvfaCSU+iaBqNapkcImB1BHGo6uiAjo/u63ZZNYDABvbbK
-corwSbj3kgu3kHXgnX9u6sR2pSMZeqcGT+uBNXt3F8tPkDd7UwSNjKswADQrY5GN
-bNIeee2fI5kmxdqitRPqCYSM4OgB4P/WsI7KgLcLsbH3uFRpb2rIIHGRgdfnWCc5
-t/T9hQH0gczN1Beuyj+8MPM657zoQojz9l39rY1XA9dJ5iXhZuM=
-=gnpW
------END PGP SIGNATURE-----
+Thinking that it's a no-op doesn't really help. No bugs are
+_intentional_, I would seriously hope. Lack of testing is lack of
+testing, regardless of whether you think it would not matter.
 
---NzB8fVQJ5HfG6fxh--
+It also destroys the real history of the code, which is sad.
+
+Now, sometimes you may _want_ to destroy the real history of the code
+(as in "Oh, this history is too ugly to survive, and makes bisection
+impossible because some of the intermediate state was seriously
+buggy"). That is then one of those few valid reasons to rebase (see
+the "major bug in your branch" case above).
+
+But 99% of the time, rebasing is bad. If it was in linux-next and
+there were no horrible problems with it, and it got tested there, then
+just leave it alone and don't destroy the testing it did get.
+
+Anyway, I've pulled this now, but honestly, don't do this again. Stop
+rebasing without a big and immediate reason, and stop destroying
+whatever testing it got in linux-next.
+
+And if you _do_ rebase, and you _do_ have a real and very serious
+reason, then mention that reason and explain it. But no "the rebase
+didn't make any difference" isn't a reason. Quite the reverse.
+
+               Linus
+
+                   Linus
