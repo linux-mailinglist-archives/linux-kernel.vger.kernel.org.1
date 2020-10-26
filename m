@@ -2,297 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5E058298522
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 01:35:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F1F9298527
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 01:39:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1420866AbgJZAc3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 20:32:29 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:41774 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1420858AbgJZAc3 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 20:32:29 -0400
-Received: by mail-pl1-f195.google.com with SMTP id w11so3881708pll.8
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 17:32:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:content-transfer-encoding:in-reply-to;
-        bh=CsIU/W0BTwXYVtKEV+7B6DvVVf887wE6s7LJfI5jPZQ=;
-        b=gjSx9OkYK0F201HMOba+DaS1gfGu88uaAWHzay0NvfJMz8deRRj88ibYk07CrEjiAk
-         zj0Q+JE+AMt5fUHiAH/GVv7jPzOnznxhcPWZ0CVIUYrBxOiIGA3YLDIDm8eFuRsCX4yA
-         oeTE6RhmL80X/x/JvK7tz/XlSr88LW4SKm1ME=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=CsIU/W0BTwXYVtKEV+7B6DvVVf887wE6s7LJfI5jPZQ=;
-        b=LLQMETE0OxXHtEKExV4YDyQUrVmEHgNToSIQbrhlvSlqraNCIR/M/xAWkhRLOpb6Ql
-         ub/s9or0HLhZZGkN+KcY1jH40G1PTDXLq9gF/Aw7XNw+GLcXMW6nc75cElQB03M7kT5n
-         K1OGqy8pTQRUTGo1uEjQs7eoQcxs8t9WRHf5TOylENv1SOrfiVCtNsUhkJQLPVaQosgS
-         +JJzSivjmXDsX8lJ19OLUDoLVqmTL699W5ka6/5iJMzwB7jdGO+U25OWy1PfvG2CHmAk
-         8V2ufiWloiOa2Mnf0j/xn1TQa1C55eDDmDuOo++lkIw/+GR+h8fvoApkTUQyUaBkvy/k
-         R+XA==
-X-Gm-Message-State: AOAM5326pwWJH0NLbHEnig5enYB+DJIdCnRCvN4C2xdLMkjeiQ9Yt/Z9
-        k+uPntDFeK1AyibTI0rQbEmHtg==
-X-Google-Smtp-Source: ABdhPJwr1X6t3j45azHrIhS2mdTinP5F/ALvbWtggXrg1TXkO52IHM8o2EHJ9eVysLv3wSDWuvXFLw==
-X-Received: by 2002:a17:902:204:b029:d3:9c43:3715 with SMTP id 4-20020a1709020204b02900d39c433715mr5895361plc.74.1603672347924;
-        Sun, 25 Oct 2020 17:32:27 -0700 (PDT)
-Received: from www.outflux.net (smtp.outflux.net. [198.145.64.163])
-        by smtp.gmail.com with ESMTPSA id 198sm2997682pfx.194.2020.10.25.17.32.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 17:32:26 -0700 (PDT)
-Date:   Sun, 25 Oct 2020 17:32:25 -0700
-From:   Kees Cook <keescook@chromium.org>
-To:     Jann Horn <jannh@google.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-Message-ID: <202010251725.2BD96926E3@keescook>
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco>
- <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco>
- <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco>
- <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+        id S1420882AbgJZAjS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 20:39:18 -0400
+Received: from mga03.intel.com ([134.134.136.65]:30125 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1420874AbgJZAih (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 20:38:37 -0400
+IronPort-SDR: V2GiecckMO9ZhhG4weZv8NX2EwdiYwAlSm4K0jhd45l/F9ov+cU6Pfpg/CFuGa+VBcS0GEhn0Z
+ NJbNYzZ9jqbA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="167960000"
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="167960000"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 25 Oct 2020 17:38:36 -0700
+IronPort-SDR: NWnfmoweVKhceYnJFLmUykx2hcUpt8jp2DbEv0eIW9LVg/qjt+3EeNBwUDR27kN1v6J2l7J1Kq
+ mWtdmKVb8Kug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="467730532"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by orsmga004.jf.intel.com with ESMTP; 25 Oct 2020 17:38:35 -0700
+Received: from fmsmsx607.amr.corp.intel.com (10.18.126.87) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 25 Oct 2020 17:38:35 -0700
+Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
+ fmsmsx607.amr.corp.intel.com (10.18.126.87) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Sun, 25 Oct 2020 17:38:34 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.1713.5
+ via Frontend Transport; Sun, 25 Oct 2020 17:38:34 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.172)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.1713.5; Sun, 25 Oct 2020 17:38:33 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=ec+qzFkPOjHk/MJQ1bDtHBfoQ2TolaeShfPqSxzuCzNhVk4LaiV72VxGC3I4OEzHwx0CUWmnVL5gipsf6eYgwmRpnCjtvEgntxD70tPdliRAgnVABqregaXtHhdxyS0KobKjyIux25njdrh69Qrw6MvhkoebYwmKBvhhF02PYAUvzAOzKVm+0NNlvUNXENGSPyVklMiVvKwfG1OGSfYX6drl+vPg+2bP6RLkA2cy8s5O286SSQGgLwJwcfwWW4huGBv3nVwCqlLqoZ+09xLSsGx3zLhQLhJw8Ijx14j1mvotyrwqpk4CLYGEDqO0Rvji65LohR+ImQP9kL4quHIQag==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=POHANa+eDkgXYJDNU3Y0iPAgKW1aGHYmuM+lFsPa7vs=;
+ b=b/W7tbQ9DshCRAV5JowNuPRHBJq4VshbGdnOKlkrtCTF25wpWXUkASzEvv7e9nCtY6/+VphCN3fAxgiQaicGLNRi+REs1nRuWvYez6fGuNcMxSlFNTgjIRGYM8ot4W9fwcByrxHoRFUVQdoplJzCZYkl0v682YcADNstfusumkmBi3FHBfh1ZR+3L31W3wru2OexCpNyZ1p8AS+z7jKn5i1foVs7lyzhYlMqnV4OkqOImcp36VRH8fEPDwIx2MsoQoGe3Nl7NmQsioK1dng41Y1H0mHFoIdRYTGSK/YzwCfBWfS3z/iVRxnpkRbolA9Y41fq1zzNp6dmNadApaePOw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=intel.onmicrosoft.com;
+ s=selector2-intel-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=POHANa+eDkgXYJDNU3Y0iPAgKW1aGHYmuM+lFsPa7vs=;
+ b=gospHVgXqRS7jku2UwYT8z+JZjzp1XGy7Qu41uyGtgo/EYsZkaxJeHNueKmIka9FfzpUDaIqmWAijsiimEKwGbbN3ZuHUStfUduNan4SK5cR2KkjY9TIYFbX7RWxwS19KeVKv0Atyr1v9NxkN2mxbNZQr3DUPmPAgL60XY5vJGM=
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com (2603:10b6:805:bd::17)
+ by SN6PR11MB3230.namprd11.prod.outlook.com (2603:10b6:805:b8::29) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18; Mon, 26 Oct
+ 2020 00:38:32 +0000
+Received: from SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::b901:8e07:4340:6704]) by SN6PR11MB3184.namprd11.prod.outlook.com
+ ([fe80::b901:8e07:4340:6704%7]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
+ 00:38:32 +0000
+From:   "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+To:     "rppt@kernel.org" <rppt@kernel.org>,
+        "akpm@linux-foundation.org" <akpm@linux-foundation.org>
+CC:     "david@redhat.com" <david@redhat.com>,
+        "cl@linux.com" <cl@linux.com>,
+        "gor@linux.ibm.com" <gor@linux.ibm.com>,
+        "hpa@zytor.com" <hpa@zytor.com>,
+        "peterz@infradead.org" <peterz@infradead.org>,
+        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
+        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
+        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
+        "will@kernel.org" <will@kernel.org>,
+        "penberg@kernel.org" <penberg@kernel.org>,
+        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
+        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
+        "kirill@shutemov.name" <kirill@shutemov.name>,
+        "rientjes@google.com" <rientjes@google.com>,
+        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
+        "paulus@samba.org" <paulus@samba.org>,
+        "hca@linux.ibm.com" <hca@linux.ibm.com>,
+        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
+        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
+        "luto@kernel.org" <luto@kernel.org>,
+        "davem@davemloft.net" <davem@davemloft.net>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        "tglx@linutronix.de" <tglx@linutronix.de>,
+        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
+        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
+        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
+        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+        "x86@kernel.org" <x86@kernel.org>,
+        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>,
+        "palmer@dabbelt.com" <palmer@dabbelt.com>,
+        "Brown, Len" <len.brown@intel.com>,
+        "mingo@redhat.com" <mingo@redhat.com>,
+        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
+Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages in
+ the direct map
+Thread-Topic: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
+ in the direct map
+Thread-Index: AQHWqrf6LRJhAvsqzE2DP+hB1ynbOKmpCzYA
+Date:   Mon, 26 Oct 2020 00:38:32 +0000
+Message-ID: <f20900a403bea9eb3f0814128e5ea46f6580f5a5.camel@intel.com>
+References: <20201025101555.3057-1-rppt@kernel.org>
+         <20201025101555.3057-3-rppt@kernel.org>
+In-Reply-To: <20201025101555.3057-3-rppt@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+user-agent: Evolution 3.30.1 (3.30.1-1.fc29) 
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=intel.com;
+x-originating-ip: [192.55.55.43]
+x-ms-publictraffictype: Email
+x-ms-office365-filtering-correlation-id: 5ad491d3-357f-4953-91f1-08d879477746
+x-ms-traffictypediagnostic: SN6PR11MB3230:
+x-ms-exchange-transport-forked: True
+x-microsoft-antispam-prvs: <SN6PR11MB323086788B7DC160D562C876C9190@SN6PR11MB3230.namprd11.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:3513;
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: cb1AbnusLUbxe3Z2OFEwyuQmnllpwLPiW2RpHypzcRYXBmx3CeRUtPwEmrbYX4Do0WwJpUx8dI4/FTEmGH1fynKKw2XbPVRSOaXqEhegw8TOUHreZ/XiAduKTnj44K0OxxirL9ypiZkuTz3k7BsJOBJ1l6/mr8V+PwOJ8twMRnuxeC9yKwWf027hLwdRWn2AScZRwmbmX0xNO0/QpBRUj4PE6WffuoSohBNqYGbqZxIDyY74lpJ3YugJ8u3rylLXai2JHfP0FvTWo5re8gq/96+kBmPJc02PDk8AMa545uL/sHxV5j+O9XiLw9+vxY1T5+Wejo2JDiKr3QhEErD3Vg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SN6PR11MB3184.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(366004)(346002)(396003)(39860400002)(136003)(376002)(91956017)(4326008)(478600001)(66446008)(7406005)(66946007)(66556008)(36756003)(86362001)(66476007)(6506007)(76116006)(7416002)(110136005)(5660300002)(64756008)(186003)(2906002)(8936002)(54906003)(316002)(83380400001)(26005)(2616005)(6512007)(6486002)(8676002)(4001150100001)(71200400001);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata: glmLmLB12U0y5RY0L+ZT1Mi/9/Lz/KB/6WAVVycPk1YVeMOwoGyGUWU4Fq1MVzaBaZukNjhLe5PIBbbdY3d+VVjt9Fl6xRXYUGpfjJmWIWZun4seSr0uF+OSZyJo8Z91mRWPTmCFJXeFJbXdgyTNr1d8zGfztjMC3TKVel+Vpcbv54fKsjYIPOfWIP4XgjdG//4b5fNq6tKs/LR0iALRreua4medRAoUnZodcCHhxttXr+vOg85DRBUCF2uj7DJZSNfk8bu23YNOYfNwkNG4nc7E61V9uIErZ3kUL7xtLNAhbfjxRTDx1bu5MKEbQ2tkaRQq5TRtMoNxSHae3wqOFEW6LsIScfQypJUmfFhOxe0NK+qJs4e5ZBTbE9bH8OuJkMKxmpJqxMs6exVbM5lx8SvPvDm5OhEAV1zcZOmvjdP5TGEwtmPNtotm5fo/pQFfaJtSaazRa50xGa6WNz6IKHxVYbxneMyg8iPwwfBUv0Siqv2vv/L68HBwEi+xK1NW+KJ/rOLgMtYzy8fjEq9kcLNDy1una7Xc2p/gb5eiBRJDTyYQ+0sH9DHRydMNU73L7I1Hm6RYifUr7bRVb5shA0iEUX10uRGV6sIZfwp+wg3no4kbrvxjQNpJkaCbOXu+gute91p7zWzUiPuNP/m7tw==
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <1A64047B5DCE1A409D92B085E6D25DC1@namprd11.prod.outlook.com>
+Content-Transfer-Encoding: base64
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR11MB3184.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5ad491d3-357f-4953-91f1-08d879477746
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2020 00:38:32.2198
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: EOqvkWZ3MNaT13nksG4s0qRyOCAw2mCf4k3JN5qlMHbWP/+ykROXQciwCEC8QPjPYsTstcrDbcEkIe/faBMY7w6mZB6T8UpndsedXRzgLyM=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN6PR11MB3230
+X-OriginatorOrg: intel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu, Oct 01, 2020 at 03:52:02AM +0200, Jann Horn wrote:
-> On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
-> > > On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wrote:
-> > > > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pages) wrote:
-> > > > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> > > > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pages) wrote:
-> > > > > >>        ┌─────────────────────────────────────────────────────┐
-> > > > > >>        │FIXME                                                │
-> > > > > >>        ├─────────────────────────────────────────────────────┤
-> > > > > >>        │From my experiments,  it  appears  that  if  a  SEC‐ │
-> > > > > >>        │COMP_IOCTL_NOTIF_RECV   is  done  after  the  target │
-> > > > > >>        │process terminates, then the ioctl()  simply  blocks │
-> > > > > >>        │(rather than returning an error to indicate that the │
-> > > > > >>        │target process no longer exists).                    │
-> > > > > >
-> > > > > > Yeah, I think Christian wanted to fix this at some point,
-> > > > >
-> > > > > Do you have a pointer that discussion? I could not find it with a
-> > > > > quick search.
-> > > > >
-> > > > > > but it's a
-> > > > > > bit sticky to do.
-> > > > >
-> > > > > Can you say a few words about the nature of the problem?
-> > > >
-> > > > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("seccomp:
-> > > > notify about unused filter"). So maybe there's a bug here?
-> > >
-> > > That thing only notifies on ->poll, it doesn't unblock ioctls; and
-> > > Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
-> > > commit doesn't have any effect on this kind of usage.
-> >
-> > Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
-> > we don't have a count of all of them, unfortunately.
-> >
-> > We could maybe look inside the wait_list, but that will probably make
-> > people angry :)
-> 
-> The easiest way would probably be to open-code the semaphore-ish part,
-> and let the semaphore and poll share the waitqueue. The current code
-> kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
-> entire semaphore would IMO be cleaner than that. And it's not like
-> semaphore semantics are even a good fit for this code anyway.
-> 
-> Let's see... if we didn't have the existing UAPI to worry about, I'd
-> do it as follows (*completely* untested). That way, the ioctl would
-> block exactly until either there actually is a request to deliver or
-> there are no more users of the filter. The problem is that if we just
-> apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
-> an event loop and don't set O_NONBLOCK will be screwed. So we'd
-
-Wait, why? Do you mean a ioctl calling loop (rather than a poll event
-loop)? I think poll would be fine, but a "try calling RECV and expect to
-return ENOENT" loop would change. But I don't think anyone would do this
-exactly because it _currently_ acts like O_NONBLOCK, yes?
-
-> probably also have to add some stupid counter in place of the
-> semaphore's counter that we can use to preserve the old behavior of
-> returning -ENOENT once for each cancelled request. :(
-
-I only see this in Debian Code Search:
-https://sources.debian.org/src/crun/0.15+dfsg-1/src/libcrun/seccomp_notify.c/?hl=166#L166
-which is using epoll_wait():
-https://sources.debian.org/src/crun/0.15+dfsg-1/src/libcrun/container.c/?hl=1326#L1326
-
-I expect LXC is using it. :)
-
-Let's change it ASAP! ;)
-
--Kees
-
-> 
-> I guess this is a nice point in favor of Michael's usual complaint
-> that if there are no man pages for a feature by the time the feature
-> lands upstream, there's a higher chance that the UAPI will suck
-> forever...
-> 
-> 
-> 
-> diff --git a/kernel/seccomp.c b/kernel/seccomp.c
-> index 676d4af62103..f0f4c68e0bc6 100644
-> --- a/kernel/seccomp.c
-> +++ b/kernel/seccomp.c
-> @@ -138,7 +138,6 @@ struct seccomp_kaddfd {
->   * @notifications: A list of struct seccomp_knotif elements.
->   */
->  struct notification {
-> -       struct semaphore request;
->         u64 next_id;
->         struct list_head notifications;
->  };
-> @@ -859,7 +858,6 @@ static int seccomp_do_user_notification(int this_syscall,
->         list_add(&n.list, &match->notif->notifications);
->         INIT_LIST_HEAD(&n.addfd);
-> 
-> -       up(&match->notif->request);
->         wake_up_poll(&match->wqh, EPOLLIN | EPOLLRDNORM);
->         mutex_unlock(&match->notify_lock);
-> 
-> @@ -1175,9 +1173,10 @@ find_notification(struct seccomp_filter *filter, u64 id)
-> 
-> 
->  static long seccomp_notify_recv(struct seccomp_filter *filter,
-> -                               void __user *buf)
-> +                               void __user *buf, bool blocking)
->  {
->         struct seccomp_knotif *knotif = NULL, *cur;
-> +       DECLARE_WAITQUEUE(wait, current);
->         struct seccomp_notif unotif;
->         ssize_t ret;
-> 
-> @@ -1190,11 +1189,9 @@ static long seccomp_notify_recv(struct
-> seccomp_filter *filter,
-> 
->         memset(&unotif, 0, sizeof(unotif));
-> 
-> -       ret = down_interruptible(&filter->notif->request);
-> -       if (ret < 0)
-> -               return ret;
-> -
->         mutex_lock(&filter->notify_lock);
-> +
-> +retry:
->         list_for_each_entry(cur, &filter->notif->notifications, list) {
->                 if (cur->state == SECCOMP_NOTIFY_INIT) {
->                         knotif = cur;
-> @@ -1202,14 +1199,32 @@ static long seccomp_notify_recv(struct
-> seccomp_filter *filter,
->                 }
->         }
-> 
-> -       /*
-> -        * If we didn't find a notification, it could be that the task was
-> -        * interrupted by a fatal signal between the time we were woken and
-> -        * when we were able to acquire the rw lock.
-> -        */
->         if (!knotif) {
-> -               ret = -ENOENT;
-> -               goto out;
-> +               /* This has to happen before checking &filter->users. */
-> +               prepare_to_wait(&filter->wqh, &wait, TASK_INTERRUPTIBLE);
-> +
-> +               /*
-> +                * If all users of the filter are gone, throw an error instead
-> +                * of pointlessly continuing to block.
-> +                */
-> +               if (refcount_read(&filter->users) == 0) {
-> +                       ret = -ENOTCON;
-> +                       goto out;
-> +               }
-> +               if (blocking) {
-> +                       /* No notifications pending - wait for one,
-> then retry. */
-> +                       mutex_unlock(&filter->notify_lock);
-> +                       schedule();
-> +                       mutex_lock(&filter->notify_lock);
-> +                       if (signal_pending(current)) {
-> +                               ret = -EINTR;
-> +                               goto out;
-> +                       }
-> +                       goto retry;
-> +               } else {
-> +                       ret = -ENOENT;
-> +                       goto out;
-> +               }
->         }
-> 
->         unotif.id = knotif->id;
-> @@ -1220,6 +1235,7 @@ static long seccomp_notify_recv(struct
-> seccomp_filter *filter,
->         wake_up_poll(&filter->wqh, EPOLLOUT | EPOLLWRNORM);
->         ret = 0;
->  out:
-> +       finish_wait(&filter->wqh, &wait);
->         mutex_unlock(&filter->notify_lock);
-> 
->         if (ret == 0 && copy_to_user(buf, &unotif, sizeof(unotif))) {
-> @@ -1233,10 +1249,8 @@ static long seccomp_notify_recv(struct
-> seccomp_filter *filter,
->                  */
->                 mutex_lock(&filter->notify_lock);
->                 knotif = find_notification(filter, unotif.id);
-> -               if (knotif) {
-> +               if (knotif)
->                         knotif->state = SECCOMP_NOTIFY_INIT;
-> -                       up(&filter->notif->request);
-> -               }
->                 mutex_unlock(&filter->notify_lock);
->         }
-> 
-> @@ -1412,11 +1426,12 @@ static long seccomp_notify_ioctl(struct file
-> *file, unsigned int cmd,
->  {
->         struct seccomp_filter *filter = file->private_data;
->         void __user *buf = (void __user *)arg;
-> +       bool blocking = !(file->f_flags & O_NONBLOCK);
-> 
->         /* Fixed-size ioctls */
->         switch (cmd) {
->         case SECCOMP_IOCTL_NOTIF_RECV:
-> -               return seccomp_notify_recv(filter, buf);
-> +               return seccomp_notify_recv(filter, buf, blocking);
->         case SECCOMP_IOCTL_NOTIF_SEND:
->                 return seccomp_notify_send(filter, buf);
->         case SECCOMP_IOCTL_NOTIF_ID_VALID_WRONG_DIR:
-> @@ -1485,7 +1500,6 @@ static struct file *init_listener(struct
-> seccomp_filter *filter)
->         if (!filter->notif)
->                 goto out;
-> 
-> -       sema_init(&filter->notif->request, 0);
->         filter->notif->next_id = get_random_u64();
->         INIT_LIST_HEAD(&filter->notif->notifications);
-
--- 
-Kees Cook
+T24gU3VuLCAyMDIwLTEwLTI1IGF0IDEyOjE1ICswMjAwLCBNaWtlIFJhcG9wb3J0IHdyb3RlOg0K
+PiBGcm9tOiBNaWtlIFJhcG9wb3J0IDxycHB0QGxpbnV4LmlibS5jb20+DQo+IA0KPiBXaGVuIERF
+QlVHX1BBR0VBTExPQyBvciBBUkNIX0hBU19TRVRfRElSRUNUX01BUCBpcyBlbmFibGVkIGEgcGFn
+ZSBtYXkNCj4gYmUNCj4gbm90IHByZXNlbnQgaW4gdGhlIGRpcmVjdCBtYXAgYW5kIGhhcyB0byBi
+ZSBleHBsaWNpdGx5IG1hcHBlZCBiZWZvcmUNCj4gaXQNCj4gY291bGQgYmUgY29waWVkLg0KPiAN
+Cj4gT24gYXJtNjQgaXQgaXMgcG9zc2libGUgdGhhdCBhIHBhZ2Ugd291bGQgYmUgcmVtb3ZlZCBm
+cm9tIHRoZSBkaXJlY3QNCj4gbWFwDQo+IHVzaW5nIHNldF9kaXJlY3RfbWFwX2ludmFsaWRfbm9m
+bHVzaCgpIGJ1dCBfX2tlcm5lbF9tYXBfcGFnZXMoKSB3aWxsDQo+IHJlZnVzZQ0KPiB0byBtYXAg
+dGhpcyBwYWdlIGJhY2sgaWYgREVCVUdfUEFHRUFMTE9DIGlzIGRpc2FibGVkLg0KDQpJdCBsb29r
+cyB0byBtZSB0aGF0IGFybTY0IF9fa2VybmVsX21hcF9wYWdlcygpIHdpbGwgc3RpbGwgYXR0ZW1w
+dCB0bw0KbWFwIGl0IGlmIHJvZGF0YV9mdWxsIGlzIHRydWUsIGhvdyBkb2VzIHRoaXMgaGFwcGVu
+Pw0KDQo+IEV4cGxpY2l0bHkgdXNlIHNldF9kaXJlY3RfbWFwX3tkZWZhdWx0LGludmFsaWR9X25v
+Zmx1c2goKSBmb3INCj4gQVJDSF9IQVNfU0VUX0RJUkVDVF9NQVAgY2FzZSBhbmQgZGVidWdfcGFn
+ZWFsbG9jX21hcF9wYWdlcygpIGZvcg0KPiBERUJVR19QQUdFQUxMT0MgY2FzZS4NCj4gDQo+IFdo
+aWxlIG9uIHRoYXQsIHJlbmFtZSBrZXJuZWxfbWFwX3BhZ2VzKCkgdG8gaGliZXJuYXRlX21hcF9w
+YWdlKCkgYW5kDQo+IGRyb3ANCj4gbnVtcGFnZXMgcGFyYW1ldGVyLg0KPiANCj4gU2lnbmVkLW9m
+Zi1ieTogTWlrZSBSYXBvcG9ydCA8cnBwdEBsaW51eC5pYm0uY29tPg0KPiAtLS0NCj4gIGtlcm5l
+bC9wb3dlci9zbmFwc2hvdC5jIHwgMjkgKysrKysrKysrKysrKysrKysrKy0tLS0tLS0tLS0NCj4g
+IDEgZmlsZSBjaGFuZ2VkLCAxOSBpbnNlcnRpb25zKCspLCAxMCBkZWxldGlvbnMoLSkNCj4gDQo+
+IGRpZmYgLS1naXQgYS9rZXJuZWwvcG93ZXIvc25hcHNob3QuYyBiL2tlcm5lbC9wb3dlci9zbmFw
+c2hvdC5jDQo+IGluZGV4IGZhNDk5NDY2ZjY0NS4uZWNiN2IzMmNlNzdjIDEwMDY0NA0KPiAtLS0g
+YS9rZXJuZWwvcG93ZXIvc25hcHNob3QuYw0KPiArKysgYi9rZXJuZWwvcG93ZXIvc25hcHNob3Qu
+Yw0KPiBAQCAtNzYsMTYgKzc2LDI1IEBAIHN0YXRpYyBpbmxpbmUgdm9pZA0KPiBoaWJlcm5hdGVf
+cmVzdG9yZV9wcm90ZWN0X3BhZ2Uodm9pZCAqcGFnZV9hZGRyZXNzKSB7fQ0KPiAgc3RhdGljIGlu
+bGluZSB2b2lkIGhpYmVybmF0ZV9yZXN0b3JlX3VucHJvdGVjdF9wYWdlKHZvaWQNCj4gKnBhZ2Vf
+YWRkcmVzcykge30NCj4gICNlbmRpZiAvKiBDT05GSUdfU1RSSUNUX0tFUk5FTF9SV1ggICYmIENP
+TkZJR19BUkNIX0hBU19TRVRfTUVNT1JZICovDQo+ICANCj4gLSNpZiBkZWZpbmVkKENPTkZJR19E
+RUJVR19QQUdFQUxMT0MpIHx8DQo+IGRlZmluZWQoQ09ORklHX0FSQ0hfSEFTX1NFVF9ESVJFQ1Rf
+TUFQKQ0KPiAtc3RhdGljIGlubGluZSB2b2lkDQo+IC1rZXJuZWxfbWFwX3BhZ2VzKHN0cnVjdCBw
+YWdlICpwYWdlLCBpbnQgbnVtcGFnZXMsIGludCBlbmFibGUpDQo+ICtzdGF0aWMgaW5saW5lIHZv
+aWQgaGliZXJuYXRlX21hcF9wYWdlKHN0cnVjdCBwYWdlICpwYWdlLCBpbnQgZW5hYmxlKQ0KPiAg
+ew0KPiAtCV9fa2VybmVsX21hcF9wYWdlcyhwYWdlLCBudW1wYWdlcywgZW5hYmxlKTsNCj4gKwlp
+ZiAoSVNfRU5BQkxFRChDT05GSUdfQVJDSF9IQVNfU0VUX0RJUkVDVF9NQVApKSB7DQo+ICsJCXVu
+c2lnbmVkIGxvbmcgYWRkciA9ICh1bnNpZ25lZCBsb25nKXBhZ2VfYWRkcmVzcyhwYWdlKTsNCj4g
+KwkJaW50IHJldDsNCj4gKw0KPiArCQlpZiAoZW5hYmxlKQ0KPiArCQkJcmV0ID0gc2V0X2RpcmVj
+dF9tYXBfZGVmYXVsdF9ub2ZsdXNoKHBhZ2UpOw0KPiArCQllbHNlDQo+ICsJCQlyZXQgPSBzZXRf
+ZGlyZWN0X21hcF9pbnZhbGlkX25vZmx1c2gocGFnZSk7DQo+ICsNCj4gKwkJaWYgKFdBUk5fT04o
+cmV0KSkNCj4gKwkJCXJldHVybjsNCj4gKw0KPiArCQlmbHVzaF90bGJfa2VybmVsX3JhbmdlKGFk
+ZHIsIGFkZHIgKyBQQUdFX1NJWkUpOw0KPiArCX0gZWxzZSB7DQo+ICsJCWRlYnVnX3BhZ2VhbGxv
+Y19tYXBfcGFnZXMocGFnZSwgMSwgZW5hYmxlKTsNCj4gKwl9DQo+ICB9DQo+IC0jZWxzZQ0KPiAt
+c3RhdGljIGlubGluZSB2b2lkDQo+IC1rZXJuZWxfbWFwX3BhZ2VzKHN0cnVjdCBwYWdlICpwYWdl
+LCBpbnQgbnVtcGFnZXMsIGludCBlbmFibGUpIHt9DQo+IC0jZW5kaWYNCj4gIA0KPiAgc3RhdGlj
+IGludCBzd3N1c3BfcGFnZV9pc19mcmVlKHN0cnVjdCBwYWdlICopOw0KPiAgc3RhdGljIHZvaWQg
+c3dzdXNwX3NldF9wYWdlX2ZvcmJpZGRlbihzdHJ1Y3QgcGFnZSAqKTsNCj4gQEAgLTEzNjYsOSAr
+MTM3NSw5IEBAIHN0YXRpYyB2b2lkIHNhZmVfY29weV9wYWdlKHZvaWQgKmRzdCwgc3RydWN0DQo+
+IHBhZ2UgKnNfcGFnZSkNCj4gIAlpZiAoa2VybmVsX3BhZ2VfcHJlc2VudChzX3BhZ2UpKSB7DQo+
+ICAJCWRvX2NvcHlfcGFnZShkc3QsIHBhZ2VfYWRkcmVzcyhzX3BhZ2UpKTsNCj4gIAl9IGVsc2Ug
+ew0KPiAtCQlrZXJuZWxfbWFwX3BhZ2VzKHNfcGFnZSwgMSwgMSk7DQo+ICsJCWhpYmVybmF0ZV9t
+YXBfcGFnZShzX3BhZ2UsIDEpOw0KPiAgCQlkb19jb3B5X3BhZ2UoZHN0LCBwYWdlX2FkZHJlc3Mo
+c19wYWdlKSk7DQo+IC0JCWtlcm5lbF9tYXBfcGFnZXMoc19wYWdlLCAxLCAwKTsNCj4gKwkJaGli
+ZXJuYXRlX21hcF9wYWdlKHNfcGFnZSwgMCk7DQo+ICAJfQ0KPiAgfQ0KPiAgDQoNCklmIHNvbWVo
+b3cgYSBwYWdlIHdhcyB1bm1hcHBlZCBzdWNoIHRoYXQNCnNldF9kaXJlY3RfbWFwX2RlZmF1bHRf
+bm9mbHVzaCgpIHdvdWxkIGZhaWwsIHRoZW4gdGhpcyBjb2RlIGludHJvZHVjZXMNCmEgV0FSTiwg
+YnV0IGl0IHdpbGwgc3RpbGwgdHJ5IHRvIHJlYWQgdGhlIHVubWFwcGVkIHBhZ2UuIFdoeSBub3Qg
+anVzdA0KaGF2ZSB0aGUgV0FSTidzIGluc2lkZSBvZiBfX2tlcm5lbF9tYXBfcGFnZXMoKSBpZiB0
+aGV5IGZhaWwgYW5kIHRoZW4NCmhhdmUgYSB3YXJuaW5nIGZvciB0aGUgZGVidWcgcGFnZSBhbGxv
+YyBjYXNlcyBhcyB3ZWxsPyBTaW5jZSBsb2dpYw0KYXJvdW5kIGJvdGggZXhwZWN0cyB0aGVtIG5v
+dCB0byBmYWlsLg0KDQoNCg==
