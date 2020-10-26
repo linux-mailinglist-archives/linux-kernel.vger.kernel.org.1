@@ -2,194 +2,267 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D93DC2985D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:12:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EF672985D8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:13:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421820AbgJZDMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 23:12:03 -0400
-Received: from z5.mailgun.us ([104.130.96.5]:58024 "EHLO z5.mailgun.us"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1421812AbgJZDMC (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 23:12:02 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603681921; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=GkQq1NKiH6b1ab589HosLYnWoE9lNlF7O6rZsWzr/SA=;
- b=PbbVPrCIjC3mVTf/qfVlhsUKueGzohnZFMDhXu5ZHUXvSQufd44E6PtJFwS9+LrunvUDYHdA
- 9yfRmST0jwn6MefAmK7A/0up8huNY0mntKHzRYmy9MgaOq8mydmVJkYObhL5dTTeWyWlxr6E
- a8nFVUzW2ZtowZjPcKkpfQnbcUg=
-X-Mailgun-Sending-Ip: 104.130.96.5
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n06.prod.us-west-2.postgun.com with SMTP id
- 5f963e8107e1682233949a0c (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 03:12:01
- GMT
-Sender: cang=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 28FD3C433C9; Mon, 26 Oct 2020 03:12:01 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=ham autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: cang)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4243EC433CB;
-        Mon, 26 Oct 2020 03:12:00 +0000 (UTC)
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 11:12:00 +0800
-From:   Can Guo <cang@codeaurora.org>
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
-In-Reply-To: <20201022201825.GA3329812@google.com>
-References: <20201020195258.2005605-1-jaegeuk@kernel.org>
- <20201020195258.2005605-6-jaegeuk@kernel.org>
- <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
- <20201021045213.GB3004521@google.com>
- <e3e58a89474d23f1b9446fe2e38a7426@codeaurora.org>
- <20201022201825.GA3329812@google.com>
-Message-ID: <ccf9079dc1767c7d200fe55b5a849ba0@codeaurora.org>
-X-Sender: cang@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+        id S1421827AbgJZDNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 23:13:05 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:54521 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2389855AbgJZDNE (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 23:13:04 -0400
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+        by mailnew.nyi.internal (Postfix) with ESMTP id ED81B5802E9;
+        Sun, 25 Oct 2020 23:12:54 -0400 (EDT)
+Received: from imap2 ([10.202.2.52])
+  by compute3.internal (MEProxy); Sun, 25 Oct 2020 23:12:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
+        mime-version:message-id:in-reply-to:references:date:from:to:cc
+        :subject:content-type; s=fm1; bh=M7CjQS2/FxcHf/vflaSSIDT/4BTmr/w
+        OMuomiSkQL04=; b=Vk1NGZAVYCuOuG0Aj/d8t7C9cB89JQkzA5SijAiP6sn4XwS
+        +69WiB4Q+rko2XvtDX2+3UFIUO9SMnDgyF+ICHqLYEY9z4uKaXjdtTyukPFNiuqM
+        rfz+DQXUO6wPB7vxv02glOQcG2dkTEAPx+4A1V9v1EGfMe0zMlHFFo/Ih7EEusCO
+        nEwg6XUJquoD+BAOgVEA3g/7W6KH0ARMr5mJ2SCiD2ZYthA+IufQLaseC5jwfuYK
+        nI7fcpJ5uSJ4P4gBG1ui62HZl29nM083YyFJ9fPT2XKJZMuw3EDk4CYmHBOwwczU
+        M0RnN8KsauAJ28wKAvwwBXm/AxN+QSzNa/N3qfQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=M7CjQS
+        2/FxcHf/vflaSSIDT/4BTmr/wOMuomiSkQL04=; b=dJWXH/p5lDcshfSDxiAceF
+        z++cycO9V9r820d6JVqFRPW6LO981af7HCXN5OvT18U+bH91iJQxJBDWF6SU8TNV
+        h0ShXyQ74cLrp6de1nbwnAtjuyI1KbyK9tv5IMFD1ZJ5UhpvcgvLyQ3ixZmG4yV9
+        gv+iSDrISep4DCH8k/YvwPcMa9my5/cT6y74xFe6FGGq39FaLliGUU/T3PP7Q/tr
+        SGVx85Pw5KmVBumuz+WtlxhsZKUoKfiowaAmeuAa/hCSLaOMh9x/jKUPQtruB2QW
+        1aDt4B3Q24d4ImWEvczIgys3TpjtEWCZrKSGmcsgW+D7H3Gb/IKMWFW5rXY8uzWw
+        ==
+X-ME-Sender: <xms:tD6WX1gZC4pDyj9dtRd4WuyfTNq1JJp5zuFCCw9dRG_Mg-GE5Bq8gA>
+    <xme:tD6WX6D2lLS9LyAcPTh148T5bQJiNrg4bt0uYHMiS_EbFERzjOCSc1fF2pQ7jevj0
+    9PjfbPfRSGKZTzj3w>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeehgdehjecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
+    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
+    htthgvrhhnpeduffdtvdevkeffgfetffffueevgeejleeghfffjedthedthfelgfekfefh
+    feekieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
+X-ME-Proxy: <xmx:tD6WX1Ea4cthkd0OprPOUBKbH5Q_-nfEA3HQANhxa6AMcelVRBOqTQ>
+    <xmx:tD6WX6RmDNIs5wIq1oKS1Q-idf5dDD00Veq9JyBKII5R8D8ONEoecA>
+    <xmx:tD6WXyzQ8qaKE1zQoFVkIm5ei1fgoD6jAG5hIiwY8VwsBEM4zmYWEQ>
+    <xmx:tj6WX3IG7ZREDdpIdzbhUd6gIcxjrrVrRmOiL6pnzV78t2eW7HMTDg>
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+        id 9FC70E050B; Sun, 25 Oct 2020 23:12:50 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.3.0-529-g69105b1-fm-20201021.003-g69105b13
+Mime-Version: 1.0
+Message-Id: <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
+In-Reply-To: <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
+References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
+ <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
+Date:   Mon, 26 Oct 2020 13:42:08 +1030
+From:   "Andrew Jeffery" <andrew@aj.id.au>
+To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
+        "Rob Herring" <robh+dt@kernel.org>, "Joel Stanley" <joel@jms.id.au>
+Cc:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
+        "Lee Jones" <lee.jones@linaro.org>,
+        "Corey Minyard" <minyard@acm.org>, "Arnd Bergmann" <arnd@arndb.de>,
+        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+        "Linus Walleij" <linus.walleij@linaro.org>,
+        "Haiyue Wang" <haiyue.wang@linux.intel.com>,
+        "Cyril Bur" <cyrilbur@gmail.com>,
+        "Robert Lippert" <rlippert@google.com>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org
+Subject: Re: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-23 08:53, Jaegeuk Kim wrote:
-> On 10/21, Can Guo wrote:
->> On 2020-10-21 12:52, jaegeuk@kernel.org wrote:
->> > On 10/21, Can Guo wrote:
->> > > On 2020-10-21 03:52, Jaegeuk Kim wrote:
->> > > > The below call stack prevents clk_gating at every IO completion.
->> > > > We can remove the condition, ufshcd_any_tag_in_use(), since
->> > > > clkgating_work
->> > > > will check it again.
->> > > >
->> > >
->> > > I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
->> > > gate_work() can break UFS clk gating's functionality.
->> > >
->> > > ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use.
->> > > However,
->> > > they are not exactly same - ufshcd_any_tag_in_use() returns true if
->> > > any tag
->> > > assigned from block layer is still in use, but tags are released
->> > > asynchronously
->> > > (through block softirq), meaning it does not reflect the real
->> > > occupation of
->> > > UFS host.
->> > > That is after UFS host finishes all tasks, ufshcd_any_tag_in_use()
->> > > can still
->> > > return true.
->> > >
->> > > This change only removes the check of ufshcd_any_tag_in_use() in
->> > > ufshcd_release(),
->> > > but having the check of it in gate_work() can still prevent gating
->> > > from
->> > > happening.
->> > > The current change works for you maybe because the tags are release
->> > > before
->> > > hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is
->> > > shorter
->> > > or
->> > > somehow block softirq is retarded, gate_work() may have chance to see
->> > > ufshcd_any_tag_in_use()
->> > > returns true. What do you think?
->> >
->> > I don't think this breaks clkgating, but fix the wrong condition check
->> > which
->> > prevented gate_work at all. As you mentioned, even if this schedules
->> > gate_work
->> > by racy conditions, gate_work will handle it as a last resort.
->> >
->> 
->> If clocks cannot be gated after the last task is cleared from UFS 
->> host, then
->> clk gating
->> is broken, no? Assume UFS has completed the last task in its queue, as 
->> this
->> change says,
->> ufshcd_any_tag_in_use() is preventing ufshcd_release() from invoking
->> gate_work().
->> Similarly, ufshcd_any_tag_in_use() can prevent gate_work() from doing 
->> its
->> real work -
->> disabling the clocks. Do you agree?
->> 
->>         if (hba->clk_gating.active_reqs
->>                 || hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
->>                 || ufshcd_any_tag_in_use(hba) || 
->> hba->outstanding_tasks
->>                 || hba->active_uic_cmd || hba->uic_async_done)
->>                 goto rel_lock;
+Hi Wang Chia-Wei,
+
+On Mon, 5 Oct 2020, at 18:58, Chia-Wei, Wang wrote:
+> The LPC controller has no concept of the BMC and the Host partitions.
+> This patch fixes the documentation by removing the description on LPC
+> partitions. The register offsets illustrated in the DTS node examples
+> are also fixed to adapt to the LPC DTS change.
 > 
-> I see the point, but this happens only when clkgate_delay_ms is too 
-> short
-> to give enough time for releasing tag. If it's correctly set, I think 
-> there'd
-> be no problem, unless softirq was delayed by other RT threads which is 
-> just
-> a corner case tho.
+> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
+
+The documentation at [1] suggests this should probably be patch 1/5 rather than 
+5/5, so if you send the series again I'd probably rearrange it. Following the 
+steps outlined in [1] helps catch Rob's attention in the right way :)
+
+[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/submitting-patches.rst?h=v5.9
+
+Rob:
+
+The changes here go some way towards cleaning up mistakes I made in the Aspeed 
+LPC controller binding. The proposed change is very much not backwards 
+compatible, but Joel and I don't want to live with the resulting mess in the 
+drivers of catering to both layouts. Another way we could avoid the driver mess 
+is to rev all the bindings and immediately drop support for the old compatibles 
+in the drivers. This creates a bit more churn in the bindings. What are you 
+willing to accommodate?
+
+All consumers I'm aware of ship the Aspeed BMC dtb in FIT images alongside the 
+kernel, so while backwards-incompatible changes are rightly frowned upon I feel 
+we probably wouldn't cause too much damage if we went that path.
+
+Andrew
+
+> ---
+>  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 85 +++----------------
+>  1 file changed, 14 insertions(+), 71 deletions(-)
 > 
-
-Yes, we are fixing corner cases, aren't we? I thought you would like to
-address it since you are fixing clk gating.
-
-Regards,
-
-Can Guo.
-
->> 
->> Thanks,
->> 
->> Can Guo.
->> 
->> > >
->> > > Thanks,
->> > >
->> > > Can Guo.
->> > >
->> > > In __ufshcd_transfer_req_compl
->> > > Ihba->lrb_in_use is cleared immediately when UFS driver
->> > > finishes all tasks
->> > >
->> > > > ufshcd_complete_requests(struct ufs_hba *hba)
->> > > >   ufshcd_transfer_req_compl()
->> > > >     __ufshcd_transfer_req_compl()
->> > > >       __ufshcd_release(hba)
->> > > >         if (ufshcd_any_tag_in_use() == 1)
->> > > >            return;
->> > > >   ufshcd_tmc_handler(hba);
->> > > >     blk_mq_tagset_busy_iter();
->> > > >
->> > > > Cc: Alim Akhtar <alim.akhtar@samsung.com>
->> > > > Cc: Avri Altman <avri.altman@wdc.com>
->> > > > Cc: Can Guo <cang@codeaurora.org>
->> > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
->> > > > ---
->> > > >  drivers/scsi/ufs/ufshcd.c | 2 +-
->> > > >  1 file changed, 1 insertion(+), 1 deletion(-)
->> > > >
->> > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
->> > > > index b5ca0effe636..cecbd4ace8b4 100644
->> > > > --- a/drivers/scsi/ufs/ufshcd.c
->> > > > +++ b/drivers/scsi/ufs/ufshcd.c
->> > > > @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
->> > > >
->> > > >  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
->> > > >  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
->> > > > -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
->> > > > +	    hba->outstanding_tasks ||
->> > > >  	    hba->active_uic_cmd || hba->uic_async_done)
->> > > >  		return;
+> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt 
+> b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> index a92acf1dd491..866f54a09e09 100644
+> --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
+> @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a 
+> slave on the bus
+>  conditions it can also take the role of bus master.
+>  
+>  The LPC controller is represented as a multi-function device to account for the
+> -mix of functionality it provides. The principle split is between the register
+> -layout at the start of the I/O space which is, to quote the Aspeed datasheet,
+> -"basically compatible with the [LPC registers from the] popular BMC controller
+> -H8S/2168[1]", and everything else, where everything else is an eclectic
+> -collection of functions with a esoteric register layout. "Everything else",
+> -here labeled the "host" portion of the controller, includes, but is not limited
+> -to:
+> +mix of functionality, which includes, but is not limited to:
+>  
+>  * An IPMI Block Transfer[2] Controller
+>  
+> @@ -44,8 +38,8 @@ Required properties
+>  ===================
+>  
+>  - compatible:	One of:
+> -		"aspeed,ast2400-lpc", "simple-mfd"
+> -		"aspeed,ast2500-lpc", "simple-mfd"
+> +		"aspeed,ast2400-lpc", "simple-mfd", "syscon"
+> +		"aspeed,ast2500-lpc", "simple-mfd", "syscon"
+>  
+>  - reg:		contains the physical address and length values of the Aspeed
+>                  LPC memory region.
+> @@ -55,66 +49,17 @@ Required properties
+>  - ranges: 	Maps 0 to the physical address and length of the LPC memory
+>                  region
+>  
+> -Required LPC Child nodes
+> -========================
+> -
+> -BMC Node
+> ---------
+> -
+> -- compatible:	One of:
+> -		"aspeed,ast2400-lpc-bmc"
+> -		"aspeed,ast2500-lpc-bmc"
+> -
+> -- reg:		contains the physical address and length values of the
+> -                H8S/2168-compatible LPC controller memory region
+> -
+> -Host Node
+> ----------
+> -
+> -- compatible:   One of:
+> -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
+> -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
+> -
+> -- reg:		contains the address and length values of the host-related
+> -                register space for the Aspeed LPC controller
+> -
+> -- #address-cells: <1>
+> -- #size-cells:	<1>
+> -- ranges: 	Maps 0 to the address and length of the host-related LPC memory
+> -                region
+> -
+>  Example:
+>  
+>  lpc: lpc@1e789000 {
+> -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
+> +	compatible = "aspeed,ast2500-lpc", "simple-mfd", "syscon";
+>  	reg = <0x1e789000 0x1000>;
+>  
+>  	#address-cells = <1>;
+>  	#size-cells = <1>;
+>  	ranges = <0x0 0x1e789000 0x1000>;
+> -
+> -	lpc_bmc: lpc-bmc@0 {
+> -		compatible = "aspeed,ast2500-lpc-bmc";
+> -		reg = <0x0 0x80>;
+> -	};
+> -
+> -	lpc_host: lpc-host@80 {
+> -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
+> -		reg = <0x80 0x1e0>;
+> -		reg-io-width = <4>;
+> -
+> -		#address-cells = <1>;
+> -		#size-cells = <1>;
+> -		ranges = <0x0 0x80 0x1e0>;
+> -	};
+>  };
+>  
+> -BMC Node Children
+> -==================
+> -
+> -
+> -Host Node Children
+> -==================
+>  
+>  LPC Host Interface Controller
+>  -------------------
+> @@ -145,14 +90,12 @@ Optional properties:
+>  
+>  Example:
+>  
+> -lpc-host@80 {
+> -	lpc_ctrl: lpc-ctrl@0 {
+> -		compatible = "aspeed,ast2500-lpc-ctrl";
+> -		reg = <0x0 0x80>;
+> -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> -		memory-region = <&flash_memory>;
+> -		flash = <&spi>;
+> -	};
+> +lpc_ctrl: lpc-ctrl@80 {
+> +	compatible = "aspeed,ast2500-lpc-ctrl";
+> +	reg = <0x80 0x80>;
+> +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
+> +	memory-region = <&flash_memory>;
+> +	flash = <&spi>;
+>  };
+>  
+>  LPC Host Controller
+> @@ -174,9 +117,9 @@ Required properties:
+>  
+>  Example:
+>  
+> -lhc: lhc@20 {
+> +lhc: lhc@a0 {
+>  	compatible = "aspeed,ast2500-lhc";
+> -	reg = <0x20 0x24 0x48 0x8>;
+> +	reg = <0xa0 0x24 0xc8 0x8>;
+>  };
+>  
+>  LPC reset control
+> @@ -194,8 +137,8 @@ Required properties:
+>  
+>  Example:
+>  
+> -lpc_reset: reset-controller@18 {
+> +lpc_reset: reset-controller@98 {
+>          compatible = "aspeed,ast2500-lpc-reset";
+> -        reg = <0x18 0x4>;
+> +        reg = <0x98 0x4>;
+>          #reset-cells = <1>;
+>  };
+> -- 
+> 2.17.1
+> 
+>
