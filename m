@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3DD8A29A070
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:31:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 84AA529A094
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:32:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409781AbgJZXwf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:52:35 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54202 "EHLO mail.kernel.org"
+        id S2443652AbgJ0Abd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:31:33 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54234 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409649AbgJZXwL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:11 -0400
+        id S2409653AbgJZXwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:12 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B8BDD21655;
-        Mon, 26 Oct 2020 23:52:09 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0878E20882;
+        Mon, 26 Oct 2020 23:52:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756330;
-        bh=U4B/0X6tZ+S10/tnV+8pBx5isrKe4N4+lJJrH4AokzE=;
+        s=default; t=1603756331;
+        bh=lcasvV20dzHVbxUCDTwqYc1WGmUNFgV/A9VWpSiQnPE=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=1+pJGSPX02MLR8DrxA43zIIHkKrJDMCsobbn0ZYlaGNeWZn0F7hHeJRF5YMOo6EyU
-         zRaBfclJvmrWhoew9AZIo/bl6h57RYFoJeWEbXW0Mhv2O4cWMSKLmRhdG+gUDLDwc/
-         djQUSy5mGlUP93KOzxkrVjyy1htHjq2vcoTqA4Y0=
+        b=qitAQA36snlovyeZM4fpDReqeJRt8Tda+My0qehoWOtupOrAyLbhACOfVqjY1jY/d
+         TuRRnai0QSiHSO5XuDzNHinnV9Dk2C+kNXRzYUsIxIjIAhXdPzimlOJoJBWesWaC79
+         KCr7By0N7FlYUxyacn5ZMFwKeTP7PhKNCEy0h9GU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Ravi Bangoria <ravi.bangoria@linux.ibm.com>,
-        Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>,
+Cc:     Nicholas Piggin <npiggin@gmail.com>,
+        Peter Zijlstra <peterz@infradead.org>,
         Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH AUTOSEL 5.8 004/132] powerpc/watchpoint/ptrace: Fix SETHWDEBUG when CONFIG_HAVE_HW_BREAKPOINT=N
-Date:   Mon, 26 Oct 2020 19:49:56 -0400
-Message-Id: <20201026235205.1023962-4-sashal@kernel.org>
+        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 005/132] mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race
+Date:   Mon, 26 Oct 2020 19:49:57 -0400
+Message-Id: <20201026235205.1023962-5-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,42 +43,114 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+From: Nicholas Piggin <npiggin@gmail.com>
 
-[ Upstream commit 9b6b7c680cc20971444d9f836e49fc98848bcd0a ]
+[ Upstream commit d53c3dfb23c45f7d4f910c3a3ca84bf0a99c6143 ]
 
-When kernel is compiled with CONFIG_HAVE_HW_BREAKPOINT=N, user can
-still create watchpoint using PPC_PTRACE_SETHWDEBUG, with limited
-functionalities. But, such watchpoints are never firing because of
-the missing privilege settings. Fix that.
+Reading and modifying current->mm and current->active_mm and switching
+mm should be done with irqs off, to prevent races seeing an intermediate
+state.
 
-It's safe to set HW_BRK_TYPE_PRIV_ALL because we don't really leak
-any kernel address in signal info. Setting HW_BRK_TYPE_PRIV_ALL will
-also help to find scenarios when kernel accesses user memory.
+This is similar to commit 38cf307c1f20 ("mm: fix kthread_use_mm() vs TLB
+invalidate"). At exec-time when the new mm is activated, the old one
+should usually be single-threaded and no longer used, unless something
+else is holding an mm_users reference (which may be possible).
 
-Reported-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
-Suggested-by: Pedro Miraglia Franco de Carvalho <pedromfc@linux.ibm.com>
-Signed-off-by: Ravi Bangoria <ravi.bangoria@linux.ibm.com>
+Absent other mm_users, there is also a race with preemption and lazy tlb
+switching. Consider the kernel_execve case where the current thread is
+using a lazy tlb active mm:
+
+  call_usermodehelper()
+    kernel_execve()
+      old_mm = current->mm;
+      active_mm = current->active_mm;
+      *** preempt *** -------------------->  schedule()
+                                               prev->active_mm = NULL;
+                                               mmdrop(prev active_mm);
+                                             ...
+                      <--------------------  schedule()
+      current->mm = mm;
+      current->active_mm = mm;
+      if (!old_mm)
+          mmdrop(active_mm);
+
+If we switch back to the kernel thread from a different mm, there is a
+double free of the old active_mm, and a missing free of the new one.
+
+Closing this race only requires interrupts to be disabled while ->mm
+and ->active_mm are being switched, but the TLB problem requires also
+holding interrupts off over activate_mm. Unfortunately not all archs
+can do that yet, e.g., arm defers the switch if irqs are disabled and
+expects finish_arch_post_lock_switch() to be called to complete the
+flush; um takes a blocking lock in activate_mm().
+
+So as a first step, disable interrupts across the mm/active_mm updates
+to close the lazy tlb preempt race, and provide an arch option to
+extend that to activate_mm which allows architectures doing IPI based
+TLB shootdowns to close the second race.
+
+This is a bit ugly, but in the interest of fixing the bug and backporting
+before all architectures are converted this is a compromise.
+
+Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
+Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200902042945.129369-4-ravi.bangoria@linux.ibm.com
+Link: https://lore.kernel.org/r/20200914045219.3736466-2-npiggin@gmail.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/powerpc/kernel/ptrace/ptrace-noadv.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/Kconfig |  7 +++++++
+ fs/exec.c    | 17 +++++++++++++++--
+ 2 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/arch/powerpc/kernel/ptrace/ptrace-noadv.c b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-index 697c7e4b5877f..57a0ab822334f 100644
---- a/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-+++ b/arch/powerpc/kernel/ptrace/ptrace-noadv.c
-@@ -217,7 +217,7 @@ long ppc_set_hwdebug(struct task_struct *child, struct ppc_hw_breakpoint *bp_inf
- 		return -EIO;
+diff --git a/arch/Kconfig b/arch/Kconfig
+index 8cc35dc556c72..2fb97d79e7693 100644
+--- a/arch/Kconfig
++++ b/arch/Kconfig
+@@ -411,6 +411,13 @@ config MMU_GATHER_NO_GATHER
+ 	bool
+ 	depends on MMU_GATHER_TABLE_FREE
  
- 	brk.address = ALIGN_DOWN(bp_info->addr, HW_BREAKPOINT_SIZE);
--	brk.type = HW_BRK_TYPE_TRANSLATE;
-+	brk.type = HW_BRK_TYPE_TRANSLATE | HW_BRK_TYPE_PRIV_ALL;
- 	brk.len = DABR_MAX_LEN;
- 	if (bp_info->trigger_type & PPC_BREAKPOINT_TRIGGER_READ)
- 		brk.type |= HW_BRK_TYPE_READ;
++config ARCH_WANT_IRQS_OFF_ACTIVATE_MM
++	bool
++	help
++	  Temporary select until all architectures can be converted to have
++	  irqs disabled over activate_mm. Architectures that do IPI based TLB
++	  shootdowns should enable this.
++
+ config ARCH_HAVE_NMI_SAFE_CMPXCHG
+ 	bool
+ 
+diff --git a/fs/exec.c b/fs/exec.c
+index e6e8a9a703278..791384bb02b05 100644
+--- a/fs/exec.c
++++ b/fs/exec.c
+@@ -1103,11 +1103,24 @@ static int exec_mmap(struct mm_struct *mm)
+ 	}
+ 
+ 	task_lock(tsk);
+-	active_mm = tsk->active_mm;
+ 	membarrier_exec_mmap(mm);
+-	tsk->mm = mm;
++
++	local_irq_disable();
++	active_mm = tsk->active_mm;
+ 	tsk->active_mm = mm;
++	tsk->mm = mm;
++	/*
++	 * This prevents preemption while active_mm is being loaded and
++	 * it and mm are being updated, which could cause problems for
++	 * lazy tlb mm refcounting when these are updated by context
++	 * switches. Not all architectures can handle irqs off over
++	 * activate_mm yet.
++	 */
++	if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
++		local_irq_enable();
+ 	activate_mm(active_mm, mm);
++	if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
++		local_irq_enable();
+ 	tsk->mm->vmacache_seqnum = 0;
+ 	vmacache_flush(tsk);
+ 	task_unlock(tsk);
 -- 
 2.25.1
 
