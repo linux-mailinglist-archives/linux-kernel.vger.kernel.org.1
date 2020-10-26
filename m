@@ -2,105 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D62E4298834
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:20:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 68071298836
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:21:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771546AbgJZIUV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:20:21 -0400
-Received: from mail-wm1-f65.google.com ([209.85.128.65]:50402 "EHLO
-        mail-wm1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1768911AbgJZIUU (ORCPT
+        id S1771552AbgJZIVd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:21:33 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:42449 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769297AbgJZIVc (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:20:20 -0400
-Received: by mail-wm1-f65.google.com with SMTP id 13so10681328wmf.0;
-        Mon, 26 Oct 2020 01:20:18 -0700 (PDT)
+        Mon, 26 Oct 2020 04:21:32 -0400
+Received: by mail-lj1-f196.google.com with SMTP id h20so8812427lji.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:21:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-transfer-encoding:content-language;
-        bh=QV58dqmkH1DfYF96dLxD/X4lVkmb76mPN7rMpGdDayE=;
-        b=tb5rjma5QkiAgPeIFRCui6TlZZOGsVsGEbVrKMp9O7+35xZ6YQP2K3MtjqGPfI11t2
-         VxF/VugXSwM5ERng/7D3m6bSHyvaI44l4k7fkJT/nnQVCvqusGNlHF9BTwYJUYcYm7AH
-         19v0538aW4ng+DfhfXea1pRRxegusVX2/3mwCeNGrQ4Irjnjbd7ZTTWfA/ZPHKAtoiLR
-         JUlCuTG+B/MV5Vz5mgeIr4iPsmipZCbCP1anNDHtlQmRLTQmzZ5RolcHSQuMnzystw+y
-         lvU8xO766pInwVD0c+H5ztOWaoTvtOj7hGxX3jDX2CfKmEz25RB5rSTY/GlTAIU/4yEy
-         gUyg==
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=r6LXcxUBFULLz9MajPuPGZldQp5EFd4JcICdU+XliWA=;
+        b=cKUvRpw74n4m6xMHyyRmm6ZAkVenzokix5npG5c2OIZjGN1JJYN+H6mjYGmDi0+dAc
+         clKFDYG+g0NLxygz0iHEZRXOh6rdOkjosujsEp9H40mHHrS+yplz5YJpdABE/J2XkviS
+         sUEuobrk/dU1GwNRRoLrjbJXU6fn58yKXP1fMSMMiDOks/frHcAOC6xmKjAVPmRfNfZU
+         9PXaYveOs6hrmOntKb7jEscH8Wu/mYGQ8dqNxvku1pyPWzBK+lGLQyPYLqhUFhLALpmz
+         VhFh3nut+YNLfiPq3vNqmjdNvd9D3jVecECItccAjc7xlh3e5lsH23yK2WhNBkyyDJ9N
+         a9sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-transfer-encoding
-         :content-language;
-        bh=QV58dqmkH1DfYF96dLxD/X4lVkmb76mPN7rMpGdDayE=;
-        b=iCaJo/64l0uhf7A7Xu1dba6MZhkjhc4zvJD3HwvCM7KmsUuLdqmTp4/oeXFnzFhmdK
-         FEHpWtw9XXtmcqvyE0v1LGRyiSwnKC2MzlCHy3b6Cvuaug2JsKZcscvgO9MzeUFxZbDi
-         40B3+6rj74TUM/OJeFS/SwT83OGQOhHQpPC2VEuQLKu59c1MCIfxhkQjBNytYJCwd2MU
-         gXJYg5p0nDezLakhZgnFQ9Ry5o7P302PIZHd4d3X/Mc7vKRoWnD3B7HSB2qz3SuKi7rx
-         PN5DbZ25d7vDXN683LTbqebeBshZY80+HtiaY6Eb7X+b2S73fBQHj1/4DEQMZ34XIVII
-         EFmw==
-X-Gm-Message-State: AOAM531ueyQ8dpkotczDQgSGIKyoljTb/X7C1piF6cURSvuUUZ624+Hp
-        eEm/MmsJVymsZaKMuvDy88M=
-X-Google-Smtp-Source: ABdhPJy8OdrKvvz1ExXqrJ8YxhXVk7TipRS5MumO7ODp+rA03nVeHU5FgbF4mj+thXY5spTk04M+PQ==
-X-Received: by 2002:a1c:2901:: with SMTP id p1mr15217931wmp.170.1603700417672;
-        Mon, 26 Oct 2020 01:20:17 -0700 (PDT)
-Received: from [192.168.1.211] ([2.29.20.56])
-        by smtp.gmail.com with ESMTPSA id f8sm21102594wrw.85.2020.10.26.01.20.15
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=r6LXcxUBFULLz9MajPuPGZldQp5EFd4JcICdU+XliWA=;
+        b=kDCODAjM0KhnbGU2cv/LZRjZ5sFTnTiLnjrwzMp0MDUVbMacP1vPyTxIyU9o+hJ5+R
+         wKKtbmvmuCUYnG6224eNsyH9hjTP6/m99jsvWvtH179lXdFx1V/IrgK5BSlaMgaSTuYR
+         BH3JPyf1BxKI8+qQci4Y5hy3Mlr6amqZ5VO7KhU769oq09zRBzhIZX28xfAwed099+mr
+         nMCsiq+Qbwk1Qo6ksVrGZf4Inevdmt8BBLtZw0nihJIWeRWugGBFxQvGO+nTh1Q3KxdT
+         1pB1JfsB1Q5ftasD8NGZnf6tPfTUZE8oE138XgOnkyUExiwl8LV83tLw2cntLVnlRWNv
+         naQg==
+X-Gm-Message-State: AOAM530g6ttwfoKjBIKlR5xzJsJlsjvqrxK5qITJstdaxa7HyWwqoKXE
+        hnPC+yDuB5Fy/7tprLTfW6k=
+X-Google-Smtp-Source: ABdhPJwYwd8XycOmnhHs61RFx8JbPGF7AhXd6Kk3xN4t2DKuX3wANha4ESglwu17auYerKoNNFAGNw==
+X-Received: by 2002:a2e:b015:: with SMTP id y21mr5656138ljk.367.1603700490083;
+        Mon, 26 Oct 2020 01:21:30 -0700 (PDT)
+Received: from [192.168.0.10] (89-109-58-109.dynamic.mts-nn.ru. [89.109.58.109])
+        by smtp.gmail.com with ESMTPSA id y3sm1092748ljn.6.2020.10.26.01.21.29
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 01:20:16 -0700 (PDT)
-Subject: Re: [RFC PATCH v3 9/9] ipu3-cio2: Add functionality allowing
- software_node connections to sensors on platforms designed for Windows
-To:     Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc:     linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-        linus.walleij@linaro.org, prabhakar.mahadev-lad.rj@bp.renesas.com,
-        heikki.krogerus@linux.intel.com, dmitry.torokhov@gmail.com,
-        laurent.pinchart+renesas@ideasonboard.com,
-        kieran.bingham+renesas@ideasonboard.com, jacopo+renesas@jmondi.org,
-        robh@kernel.org, davem@davemloft.net, linux@rasmusvillemoes.dk,
-        andriy.shevchenko@linux.intel.com, sergey.senozhatsky@gmail.com,
-        rostedt@goodmis.org, pmladek@suse.com, mchehab@kernel.org,
-        tian.shu.qiu@intel.com, bingbu.cao@intel.com,
-        sakari.ailus@linux.intel.com, yong.zhi@intel.com,
-        rafael@kernel.org, gregkh@linuxfoundation.org, kitakar@gmail.com
-References: <20201019225903.14276-1-djrscally@gmail.com>
- <20201019225903.14276-10-djrscally@gmail.com>
- <20201024012411.GT5979@pendragon.ideasonboard.com>
- <d188f8b5-ed3b-f91b-171a-26afeb7d213e@gmail.com>
- <20201024093702.GA3939@pendragon.ideasonboard.com>
- <748d34c3-a146-12fe-22c0-8dfef9006ea0@gmail.com>
- <20201024223628.GG3943@pendragon.ideasonboard.com>
-From:   Dan Scally <djrscally@gmail.com>
-Message-ID: <703d5108-5b10-802d-2bac-c719150430af@gmail.com>
-Date:   Mon, 26 Oct 2020 08:20:14 +0000
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 26 Oct 2020 01:21:29 -0700 (PDT)
+Subject: Re: [PATCH v2 12/15] perf record: introduce thread local variable for
+ trace streaming
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        budankov.lore@gmail.com
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <b1a2fc8c-1106-63d6-40f1-376165490a59@linux.intel.com>
+ <20201024154357.GD2589351@krava>
+From:   Alexei Budankov <budankov.lore@gmail.com>
+Organization: Intel Corp.
+Message-ID: <6eb97205-4d13-6487-8e15-a85f63d3f0cc@gmail.com>
+Date:   Mon, 26 Oct 2020 11:21:28 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-In-Reply-To: <20201024223628.GG3943@pendragon.ideasonboard.com>
+In-Reply-To: <20201024154357.GD2589351@krava>
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
 Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 24/10/2020 23:36, Laurent Pinchart wrote:
-> Hi Dan,
->
-> On Sat, Oct 24, 2020 at 11:28:06PM +0100, Daniel Scally wrote:
->> On 24/10/2020 10:37, Laurent Pinchart wrote:
->>>>> I wonder if we could avoid depending on the I2C device being created by
->>>>> getting the fwnode from adev, and setting ->secondary manually. adev
->>>>> would need to be passed to get_acpi_ssdb_sensor_data() instead of dev.
->>>> Let me try that; I initially wanted to do
->>>> set_secondary_fwnode(&adev->dev, fwnode) to avoid depending on the I2C
->>>> dev being created but it turns out &adev->dev isn't the same pointer. I
->>>> shall try it and see.
->> Actually, thinking on this further I think maybe we can't avoid that -
->> it's not actually in this patch series but during assigning GPIO
->> resources parsed from PMIC's ACPI node to the sensor, I'm using
->> dev_name() on the i2c dev to pass to .dev_id member of gpiod_lookup_table
-> Any chance we can construct the I2C device name from the ACPI device,
-> the same way that the ACPI/I2C core does ? It may be a dead end, but if
-> we could avoid depending on the I2C device, I think it will make
-> initialization easier. I have a feeling that will be difficult though,
-> as we'll need the I2C bus number, which won't be readily available.
-OK yeah; the i2c core does indeed just prefix "i2c-" onto the acpi
-device name, so I will make this change too.
+
+On 24.10.2020 18:43, Jiri Olsa wrote:
+> On Wed, Oct 21, 2020 at 07:07:00PM +0300, Alexey Budankov wrote:
+>>
+>> Introduce thread local variable and use it for threaded trace streaming.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  tools/perf/builtin-record.c | 71 ++++++++++++++++++++++++++++++++-----
+>>  1 file changed, 62 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index 89cb8e913fb3..3b7e9026f25b 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -101,6 +101,8 @@ struct thread_data {
+>>  	u64		   bytes_written;
+>>  };
+>>  
+>> +static __thread struct thread_data *thread;
+>> +
+>>  struct record {
+>>  	struct perf_tool	tool;
+>>  	struct record_opts	opts;
+>> @@ -587,7 +589,11 @@ static int record__pushfn(struct mmap *map, void *to, void *bf, size_t size)
+>>  		}
+>>  	}
+>>  
+>> -	rec->samples++;
+>> +	if (thread)
+>> +		thread->samples++;
+>> +	else
+>> +		rec->samples++;
+> 
+> this is really wrong, let's keep just single samples counter
+> ditto for all the other places in this patch
+
+This does look like data parallelism [1] which is very true for
+threaded trace streaming so your prototype design looks optimal.
+
+For this specific place incrementing global counter in memory is
+less performant and faces scalability limitations as a number of
+cores grow.
+
+Not sure why you have changed your mind.
+
+Alexei
+
+[1] https://en.wikipedia.org/wiki/Data_parallelism#:~:text=Data%20parallelism%20is%20parallelization%20across,on%20each%20element%20in%20parallel.
