@@ -2,72 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CDF81298845
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:27:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A411D298847
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:28:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771679AbgJZI1g (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:27:36 -0400
-Received: from jabberwock.ucw.cz ([46.255.230.98]:37904 "EHLO
-        jabberwock.ucw.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769975AbgJZI1f (ORCPT
+        id S1771690AbgJZI2B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:28:01 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:39334 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771683AbgJZI2A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:27:35 -0400
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-        id 32A6A1C0BA2; Mon, 26 Oct 2020 09:27:33 +0100 (CET)
-Date:   Mon, 26 Oct 2020 09:27:32 +0100
-From:   Pavel Machek <pavel@ucw.cz>
-To:     Martin Botka <martin.botka1@gmail.com>
-Cc:     Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
-        Andy Gross <agross@kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
-        Linux LED Subsystem <linux-leds@vger.kernel.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-arm-msm@vger.kernel.org, linux-pwm@vger.kernel.org
-Subject: Re: [PATCH v5 2/4] leds: Add driver for Qualcomm LPG
-Message-ID: <20201026082732.GB8884@duo.ucw.cz>
-References: <20201017052057.2698588-1-bjorn.andersson@linaro.org>
- <20201017052057.2698588-3-bjorn.andersson@linaro.org>
- <CADQ2G_Exk7+uXMcoyFu-VOcSf48Qjvg9KUCm0P6yXdQn8K_3wQ@mail.gmail.com>
+        Mon, 26 Oct 2020 04:28:00 -0400
+Received: by mail-lf1-f67.google.com with SMTP id 184so10636214lfd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:27:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=4q79d55ID3Bf9O2H+Un8Zr9ufQ3leLyMW7CEeiGEmtE=;
+        b=XBdr2IkuNHK2a0R61eLOEMb/qNEha7Oxs9+R/wiQRJeZUF3cIousXkxwQdgl15gzVA
+         Fyc0Vr3A2hO2cDOIaoH6TGTBWsnak1pZCaSKMJoeCcg8Vxolc1IymOGLyS7kW4c0mKto
+         hmuA0xrfDwI+hONsw1TjVSUhjL96t+raB2fO62AGghwKuplvvYiIxqiBgQaft/Yickh1
+         phdZu4XRvlKMKWBx0xifEbVjBoxkdQfKlZAOO9QKAXy554M1uiE9ImglWqBs9wEhQGkJ
+         A+NPg8XvX6EV5sN2ju+AeGHoKCKQ6hTkWNvJFgjyxIyr5s9d0Qj6MCA1ofa6/MBBdmhD
+         vTjw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=4q79d55ID3Bf9O2H+Un8Zr9ufQ3leLyMW7CEeiGEmtE=;
+        b=Ay7ehjjd6tsT2GRf9mwG/3iohGFkSKTS0wJ/G37YD/cC0RS7d1fns3SUo6DsfPU1qX
+         YkdvCzQ44B5F3LbRdSzrPBTP9TycMwog03PD3fiCVK3jNDNSf8brOrW5mUcXlrAp5x0m
+         2JG54xHsnT3mwffvJtlU/3mN4ZlF06XUSeZC1qkwsFf9irnItSIsrSRu1EEn0pU697wa
+         gx3jHVzswwz3f84XUeKjCB+kXfyI8dqSoMPpWi69VrmUfRnJVozVBZ7zasPyJGhaIex7
+         hHZhWADaIyZziR+3RxB6t31fXyB7C1ICfYkZ2HuMzJ+G1+2ALX9HVAmTnTvIHvP3/0yB
+         Hi4w==
+X-Gm-Message-State: AOAM531XZN1atw0sbqYf8y8MBvYFB8M4r+CLVo4cCkXa770hMGkPqtT/
+        P38jwqA3t2QarvycQkcEwuWaD+5qZXS+HfUOb4Wcbw==
+X-Google-Smtp-Source: ABdhPJyAZ1kYr8wb0J+VNfSip1H3LgwRgXs/qQ2d44b3JJ0rJyyfQXycIaLmqhsl3/rS/34EUnCesEou2UWBIXJ3Wtk=
+X-Received: by 2002:a19:4a88:: with SMTP id x130mr4401986lfa.31.1603700878745;
+ Mon, 26 Oct 2020 01:27:58 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-        protocol="application/pgp-signature"; boundary="24zk1gE8NUlDmwG9"
-Content-Disposition: inline
-In-Reply-To: <CADQ2G_Exk7+uXMcoyFu-VOcSf48Qjvg9KUCm0P6yXdQn8K_3wQ@mail.gmail.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201022134354.3485-1-vincent.guittot@linaro.org>
+ <jhj1rhqqplq.mognet@arm.com> <CAKfTPtBP8GntXP40mkq6NeppeFU1vZfFN_u41Athwouw-BBAMA@mail.gmail.com>
+ <2a2699ee-e62f-1590-c846-009af0478c59@arm.com>
+In-Reply-To: <2a2699ee-e62f-1590-c846-009af0478c59@arm.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 26 Oct 2020 09:27:47 +0100
+Message-ID: <CAKfTPtBFy2aG3wVAgF2CwhORBn194dm7M_4RpCAm5YpUv8YPpQ@mail.gmail.com>
+Subject: Re: [PATCH] sched/fair: prefer prev cpu in asymmetric wakeup path
+To:     Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc:     Valentin Schneider <valentin.schneider@arm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        Morten Rasmussen <morten.rasmussen@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Fri, 23 Oct 2020 at 19:14, Dietmar Eggemann <dietmar.eggemann@arm.com> wrote:
+>
+> On 22/10/2020 17:33, Vincent Guittot wrote:
+> > On Thu, 22 Oct 2020 at 16:53, Valentin Schneider
+> > <valentin.schneider@arm.com> wrote:
+> >>
+> >>
+> >> Hi Vincent,
+> >>
+> >> On 22/10/20 14:43, Vincent Guittot wrote:
+>
+> [...]
+>
+> >>>  static int
+> >>> -select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
+> >>> +select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int prev, int target)
+> >>>  {
+> >>>       unsigned long best_cap = 0;
+> >>>       int cpu, best_cpu = -1;
+> >>> @@ -6178,9 +6178,22 @@ select_idle_capacity(struct task_struct *p, struct sched_domain *sd, int target)
+> >>>
+> >>>       sync_entity_load_avg(&p->se);
+> >>>
+> >>> +     if ((available_idle_cpu(target) || sched_idle_cpu(target)) &&
+> >>> +         task_fits_capacity(p, capacity_of(target)))
+> >>> +             return target;
+> >>> +
+> >>
+> >> I think we still need to check for CPU affinity here.
+> >
+> > yes good point
+>
+> We don't check CPU affinity on target and prev in the symmetric case.
 
---24zk1gE8NUlDmwG9
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hi!
-
-> With the changes done to in V5 i have nothing to add.
-
-Good way to say that is "Patches 7 and 28, Reviewed-by:"...
-
-Best regards,
-							Pavel
-
---=20
-http://www.livejournal.com/~pavelmachek
-
---24zk1gE8NUlDmwG9
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCX5aIdAAKCRAw5/Bqldv6
-8iRmAJ4z+fRZ1vlEpQzMltk3jyClTjYu2gCfb+D61DMMnrWZohAPVlPfkcIyUNE=
-=T0VA
------END PGP SIGNATURE-----
-
---24zk1gE8NUlDmwG9--
+Yes that's what i have noticed while reworking the patch to merge asym
+and symmetric
+>
+> I always thought that since we:
+>
+> (1) check 'want_affine = ... && cpumask_test_cpu(cpu, p->cpus_ptr);' in
+>     select_task_rq_fair() and
+>
+> (2) we have the select_fallback_rq() in select_task_rq() for prev
+>
+> that this would be sufficient?
+>
+> [...]
