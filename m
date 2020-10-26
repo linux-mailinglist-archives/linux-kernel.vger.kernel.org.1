@@ -2,219 +2,160 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1DCD72995B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:50:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 188072995BA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:50:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790425AbgJZSt6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:49:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42052 "EHLO mail.kernel.org"
+        id S1790439AbgJZSu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:50:27 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790418AbgJZSt6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:49:58 -0400
-Received: from tzanussi-mobl (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1790428AbgJZSu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:50:26 -0400
+Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3A1CC2085B;
-        Mon, 26 Oct 2020 18:49:57 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0994E21D7B;
+        Mon, 26 Oct 2020 18:50:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603738197;
-        bh=55QRZhxIDeLuMT0qzLtsHRGbu+SpFgd+RBNCY3NlGXc=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=vCacWCS8r+9eE7BExNc/r6W5ENROZIn51mjHty8CLLmXSI/DVC9bv38b13Ze38FiV
-         QVW+zvai4+BlISShbZxM6DAazyLcG4Rr1nHAo241pw/GqIAugZnApVU2gyFCpGTFyR
-         UNcW1x0rdVF2Hl1ySnKUM+jeDANrX2NuhXpanRYU=
-Message-ID: <ab35261ac6f392af4cbfec8f8cd690b5db7a0807.camel@kernel.org>
-Subject: Re: [PATCH v2] tracing, synthetic events: Replace buggy strcat()
- with seq_buf operations
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>
-Date:   Mon, 26 Oct 2020 13:49:56 -0500
-In-Reply-To: <20201026125314.705e53ba@gandalf.local.home>
-References: <20201026125314.705e53ba@gandalf.local.home>
+        s=default; t=1603738225;
+        bh=JEfVtUKlInYQ0fbZNP15BzK/44fyha6rG+E01FErsoI=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=GyCJH3GnwmV0wipG6wOYC3nVU3PlrHTgpXU3b1JWRJp1l0FOE90L9xOBL8S61nXxZ
+         iC4n7KkeAbHn/P+OGGWGwPkHWtmnJhSXbcknOrj2NQ4R//G+jzlOhvILBcSqkgRNsw
+         rx+5USq7aLTZvH667Fw5CP+JEf564NYUn0kSAHLc=
+Received: by mail-ot1-f50.google.com with SMTP id m22so8955228ots.4;
+        Mon, 26 Oct 2020 11:50:25 -0700 (PDT)
+X-Gm-Message-State: AOAM531tPk2RAsgXaavrS92v5QaO7bcJnV7MzwG5gYNyUVia1tWHBI1W
+        7Mi+f2zJHqjtxfKESIdOd3ev/+rcRw+dlBGHkQ==
+X-Google-Smtp-Source: ABdhPJyfr6yceNd2s4etvOsL23XkDwfTp8P2FO2SzBaZUDnJYThZWlzTsHVErNne3YqAOFIv7OY2MdlaqZZm6+aOALY=
+X-Received: by 2002:a9d:62d1:: with SMTP id z17mr15766887otk.192.1603738224263;
+ Mon, 26 Oct 2020 11:50:24 -0700 (PDT)
+MIME-Version: 1.0
+References: <CGME20201023075756eucas1p2c27cc3e6372127d107e5b84c810ba98f@eucas1p2.samsung.com>
+ <20201023075744.26200-1-m.szyprowski@samsung.com> <20201023075744.26200-5-m.szyprowski@samsung.com>
+In-Reply-To: <20201023075744.26200-5-m.szyprowski@samsung.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 26 Oct 2020 13:50:12 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
+Message-ID: <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
+Subject: Re: [PATCH v2 4/6] phy: samsung: phy-exynos-pcie: rework driver to
+ support Exynos5433 PCIe PHY
+To:     Marek Szyprowski <m.szyprowski@samsung.com>
+Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
+        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jaehoon Chung <jh80.chung@samsung.com>,
+        Jingoo Han <jingoohan1@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Kishon Vijay Abraham I <kishon@ti.com>
 Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5-0ubuntu0.18.04.1 
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Steve,
-
-On Mon, 2020-10-26 at 12:53 -0400, Steven Rostedt wrote:
-> From: "Steven Rostedt (VMware)" <rostedt@goodmis.org>
-> 
-> There was a memory corruption bug happening while running the
-> synthetic
-> event selftests:
-> 
->  kmemleak: Cannot insert 0xffff8c196fa2afe5 into the object search
-> tree (overlaps existing)
->  CPU: 5 PID: 6866 Comm: ftracetest Tainted: G        W         5.9.0-
-> rc5-test+ #577
->  Hardware name: Hewlett-Packard HP Compaq Pro 6300 SFF/339A, BIOS K01
-> v03.03 07/14/2016
->  Call Trace:
->   dump_stack+0x8d/0xc0
->   create_object.cold+0x3b/0x60
->   slab_post_alloc_hook+0x57/0x510
->   ? tracing_map_init+0x178/0x340
->   __kmalloc+0x1b1/0x390
->   tracing_map_init+0x178/0x340
->   event_hist_trigger_func+0x523/0xa40
->   trigger_process_regex+0xc5/0x110
->   event_trigger_write+0x71/0xd0
->   vfs_write+0xca/0x210
->   ksys_write+0x70/0xf0
->   do_syscall_64+0x33/0x40
->   entry_SYSCALL_64_after_hwframe+0x44/0xa9
->  RIP: 0033:0x7fef0a63a487
->  Code: 64 89 02 48 c7 c0 ff ff ff ff eb bb 0f 1f 80 00 00 00 00 f3 0f
-> 1e fa 64 8b 04 25 18 00 00 00 85 c0 75 10 b8 01 00 00 00 0f 05 <48>
-> 3d 00 f0 ff ff 77 51 c3 48 83 ec 28 48 89 54 24 18 48 89 74 24
->  RSP: 002b:00007fff76f18398 EFLAGS: 00000246 ORIG_RAX:
-> 0000000000000001
->  RAX: ffffffffffffffda RBX: 0000000000000039 RCX: 00007fef0a63a487
->  RDX: 0000000000000039 RSI: 000055eb3b26d690 RDI: 0000000000000001
->  RBP: 000055eb3b26d690 R08: 000000000000000a R09: 0000000000000038
->  R10: 000055eb3b2cdb80 R11: 0000000000000246 R12: 0000000000000039
->  R13: 00007fef0a70b500 R14: 0000000000000039 R15: 00007fef0a70b700
->  kmemleak: Kernel memory leak detector disabled
->  kmemleak: Object 0xffff8c196fa2afe0 (size 8):
->  kmemleak:   comm "ftracetest", pid 6866, jiffies 4295082531
->  kmemleak:   min_count = 1
->  kmemleak:   count = 0
->  kmemleak:   flags = 0x1
->  kmemleak:   checksum = 0
->  kmemleak:   backtrace:
->       __kmalloc+0x1b1/0x390
->       tracing_map_init+0x1be/0x340
->       event_hist_trigger_func+0x523/0xa40
->       trigger_process_regex+0xc5/0x110
->       event_trigger_write+0x71/0xd0
->       vfs_write+0xca/0x210
->       ksys_write+0x70/0xf0
->       do_syscall_64+0x33/0x40
->       entry_SYSCALL_64_after_hwframe+0x44/0xa9
-> 
-> The cause came down to a use of strcat() that was adding an string
-> that was
-> shorten, but the strcat() did not take that into account.
-> 
-> strcat() is extremely dangerous as it does not care how big the
-> buffer is.
-> Replace it with seq_buf operations that prevent the buffer from being
-> overwritten if what is being written is bigger than the buffer.
-> 
-> Fixes: 10819e25799a ("tracing: Handle synthetic event array field
-> type checking correctly")
-> Signed-off-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+On Fri, Oct 23, 2020 at 2:58 AM Marek Szyprowski
+<m.szyprowski@samsung.com> wrote:
+>
+> From: Jaehoon Chung <jh80.chung@samsung.com>
+>
+> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
+> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
+> variant found in the Exynos5433 SoCs.
+>
+> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
+> [mszyprow: reworked the driver to support only Exynos5433 variant, rebased
+>            onto current kernel code, rewrote commit message]
+> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
 > ---
-> 
-> Changes since v1, Dan's scripts detected a double free.
->    Just needed to move, the freeing after the error branch
->    to freeing.
-> 
-
-Looks fine to me, thanks for fixing this.
-
-Reviewed-by: Tom Zanussi <zanussi@kernel.org>
-Tested-by: Tom Zanussi <zanussi@kernel.org>
-
-
-
->  kernel/trace/trace_events_synth.c | 36 +++++++++++++++++++--------
-> ----
->  1 file changed, 22 insertions(+), 14 deletions(-)
-> 
-> diff --git a/kernel/trace/trace_events_synth.c
-> b/kernel/trace/trace_events_synth.c
-> index 3212e2c653b3..84b7cab55291 100644
-> --- a/kernel/trace/trace_events_synth.c
-> +++ b/kernel/trace/trace_events_synth.c
-> @@ -585,6 +585,7 @@ static struct synth_field *parse_synth_field(int
-> argc, const char **argv,
->  	struct synth_field *field;
->  	const char *prefix = NULL, *field_type = argv[0], *field_name,
-> *array;
->  	int len, ret = 0;
-> +	struct seq_buf s;
->  	ssize_t size;
->  
->  	if (field_type[0] == ';')
-> @@ -630,13 +631,9 @@ static struct synth_field *parse_synth_field(int
-> argc, const char **argv,
->  		field_type++;
->  	len = strlen(field_type) + 1;
->  
-> -        if (array) {
-> -                int l = strlen(array);
-> +	if (array)
-> +		len += strlen(array);
->  
-> -                if (l && array[l - 1] == ';')
-> -                        l--;
-> -                len += l;
-> -        }
->  	if (prefix)
->  		len += strlen(prefix);
->  
-> @@ -645,14 +642,18 @@ static struct synth_field
-> *parse_synth_field(int argc, const char **argv,
->  		ret = -ENOMEM;
->  		goto free;
->  	}
-> +	seq_buf_init(&s, field->type, len);
->  	if (prefix)
-> -		strcat(field->type, prefix);
-> -	strcat(field->type, field_type);
-> +		seq_buf_puts(&s, prefix);
-> +	seq_buf_puts(&s, field_type);
->  	if (array) {
-> -		strcat(field->type, array);
-> -		if (field->type[len - 1] == ';')
-> -			field->type[len - 1] = '\0';
-> +		seq_buf_puts(&s, array);
-> +		if (s.buffer[s.len - 1] == ';')
-> +			s.len--;
->  	}
-> +	if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-> +		goto free;
-> +	s.buffer[s.len] = '\0';
->  
->  	size = synth_field_size(field->type);
->  	if (size < 0) {
-> @@ -663,14 +664,21 @@ static struct synth_field
-> *parse_synth_field(int argc, const char **argv,
->  		if (synth_field_is_string(field->type)) {
->  			char *type;
->  
-> -			type = kzalloc(sizeof("__data_loc ") +
-> strlen(field->type) + 1, GFP_KERNEL);
-> +			len = sizeof("__data_loc ") + strlen(field-
-> >type) + 1;
-> +			type = kzalloc(len, GFP_KERNEL);
->  			if (!type) {
->  				ret = -ENOMEM;
->  				goto free;
->  			}
->  
-> -			strcat(type, "__data_loc ");
-> -			strcat(type, field->type);
-> +			seq_buf_init(&s, type, len);
-> +			seq_buf_puts(&s, "__data_loc ");
-> +			seq_buf_puts(&s, field->type);
+>  drivers/phy/samsung/phy-exynos-pcie.c | 304 ++++++++++----------------
+>  1 file changed, 112 insertions(+), 192 deletions(-)
+>
+> diff --git a/drivers/phy/samsung/phy-exynos-pcie.c b/drivers/phy/samsung/phy-exynos-pcie.c
+> index 7e28b1aea0d1..d91de323dd0e 100644
+> --- a/drivers/phy/samsung/phy-exynos-pcie.c
+> +++ b/drivers/phy/samsung/phy-exynos-pcie.c
+> @@ -4,70 +4,41 @@
+>   *
+>   * Phy provider for PCIe controller on Exynos SoC series
+>   *
+> - * Copyright (C) 2017 Samsung Electronics Co., Ltd.
+> + * Copyright (C) 2017-2020 Samsung Electronics Co., Ltd.
+>   * Jaehoon Chung <jh80.chung@samsung.com>
+>   */
+>
+> -#include <linux/delay.h>
+>  #include <linux/io.h>
+> -#include <linux/iopoll.h>
+> -#include <linux/init.h>
+>  #include <linux/mfd/syscon.h>
+> -#include <linux/of.h>
+> -#include <linux/of_address.h>
+>  #include <linux/of_platform.h>
+>  #include <linux/platform_device.h>
+>  #include <linux/phy/phy.h>
+>  #include <linux/regmap.h>
+>
+> -/* PCIe Purple registers */
+> -#define PCIE_PHY_GLOBAL_RESET          0x000
+> -#define PCIE_PHY_COMMON_RESET          0x004
+> -#define PCIE_PHY_CMN_REG               0x008
+> -#define PCIE_PHY_MAC_RESET             0x00c
+> -#define PCIE_PHY_PLL_LOCKED            0x010
+> -#define PCIE_PHY_TRSVREG_RESET         0x020
+> -#define PCIE_PHY_TRSV_RESET            0x024
+> -
+> -/* PCIe PHY registers */
+> -#define PCIE_PHY_IMPEDANCE             0x004
+> -#define PCIE_PHY_PLL_DIV_0             0x008
+> -#define PCIE_PHY_PLL_BIAS              0x00c
+> -#define PCIE_PHY_DCC_FEEDBACK          0x014
+> -#define PCIE_PHY_PLL_DIV_1             0x05c
+> -#define PCIE_PHY_COMMON_POWER          0x064
+> -#define PCIE_PHY_COMMON_PD_CMN         BIT(3)
+> -#define PCIE_PHY_TRSV0_EMP_LVL         0x084
+> -#define PCIE_PHY_TRSV0_DRV_LVL         0x088
+> -#define PCIE_PHY_TRSV0_RXCDR           0x0ac
+> -#define PCIE_PHY_TRSV0_POWER           0x0c4
+> -#define PCIE_PHY_TRSV0_PD_TSV          BIT(7)
+> -#define PCIE_PHY_TRSV0_LVCC            0x0dc
+> -#define PCIE_PHY_TRSV1_EMP_LVL         0x144
+> -#define PCIE_PHY_TRSV1_RXCDR           0x16c
+> -#define PCIE_PHY_TRSV1_POWER           0x184
+> -#define PCIE_PHY_TRSV1_PD_TSV          BIT(7)
+> -#define PCIE_PHY_TRSV1_LVCC            0x19c
+> -#define PCIE_PHY_TRSV2_EMP_LVL         0x204
+> -#define PCIE_PHY_TRSV2_RXCDR           0x22c
+> -#define PCIE_PHY_TRSV2_POWER           0x244
+> -#define PCIE_PHY_TRSV2_PD_TSV          BIT(7)
+> -#define PCIE_PHY_TRSV2_LVCC            0x25c
+> -#define PCIE_PHY_TRSV3_EMP_LVL         0x2c4
+> -#define PCIE_PHY_TRSV3_RXCDR           0x2ec
+> -#define PCIE_PHY_TRSV3_POWER           0x304
+> -#define PCIE_PHY_TRSV3_PD_TSV          BIT(7)
+> -#define PCIE_PHY_TRSV3_LVCC            0x31c
+> -
+> -struct exynos_pcie_phy_data {
+> -       const struct phy_ops    *ops;
+> -};
+> +#define PCIE_PHY_OFFSET(x)             ((x) * 0x4)
 > +
-> +			if (WARN_ON_ONCE(!seq_buf_buffer_left(&s)))
-> +				goto free;
-> +			s.buffer[s.len] = '\0';
-> +
->  			kfree(field->type);
->  			field->type = type;
->  
+> +/* Sysreg FSYS register offsets and bits for Exynos5433 */
+> +#define PCIE_EXYNOS5433_PHY_MAC_RESET          0x0208
+> +#define PCIE_MAC_RESET_MASK                    0xFF
+> +#define PCIE_MAC_RESET                         BIT(4)
+> +#define PCIE_EXYNOS5433_PHY_L1SUB_CM_CON       0x1010
+> +#define PCIE_REFCLK_GATING_EN                  BIT(0)
+> +#define PCIE_EXYNOS5433_PHY_COMMON_RESET       0x1020
+> +#define PCIE_PHY_RESET                         BIT(0)
+> +#define PCIE_EXYNOS5433_PHY_GLOBAL_RESET       0x1040
+> +#define PCIE_GLOBAL_RESET                      BIT(0)
 
+Resets, why is this block not a reset provider?
+
+> +#define PCIE_REFCLK                            BIT(1)
+> +#define PCIE_REFCLK_MASK                       0x16
+> +#define PCIE_APP_REQ_EXIT_L1_MODE              BIT(5)
