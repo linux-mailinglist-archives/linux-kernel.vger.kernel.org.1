@@ -2,109 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C4339299B61
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 21A4B299B0D
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:49:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409224AbgJZXux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:50:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49604 "EHLO mail.kernel.org"
+        id S2408439AbgJZXrm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:47:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44752 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409087AbgJZXuT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:19 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408428AbgJZXrl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:47:41 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7E0C420878;
-        Mon, 26 Oct 2020 23:50:18 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C9A220720;
+        Mon, 26 Oct 2020 23:47:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756219;
-        bh=w3JkVNCIRSKrBRbmcS4UCLqmpO6rnt5fDhHhUT7MU18=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=NK+LFwWPPgBnJphHsKzhj9SjJcujNIS4pgXRs6IQzrtu2vOeORVZ/uJzRclsvlCV9
-         PeJheW4w6/jsOF9mWtnRg1yEAh22JT5nbRaDca/TYN9+o7vAI3xjrGuxwcn0w3ynye
-         oGCb8Z+vFRQGvHovZVyRfLdBCFW7gdOduYLs6uLk=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Daniel Thompson <daniel.thompson@linaro.org>,
-        Sasha Levin <sashal@kernel.org>,
-        kgdb-bugreport@lists.sourceforge.net
-Subject: [PATCH AUTOSEL 5.9 059/147] kgdb: Make "kgdbcon" work properly with "kgdb_earlycon"
-Date:   Mon, 26 Oct 2020 19:47:37 -0400
-Message-Id: <20201026234905.1022767-59-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+        s=default; t=1603756061;
+        bh=O9oOmhQqr/swTftdk1U4Yhto01YHEKLALSchC3G0wKs=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=mcb/oCxIIA/GPtmCGUCUJkiPY5UXhCRlPvRgdBMJIM4koBExABfxdZqDMDTBZrbBs
+         pef5VhMPS6h66HzTCwKeU1io8XmVviCKRNxIuZnIyy9tPUwG9Fkknsieoz3kwPdx/T
+         jQZizyhQK83e7+1/L1rg4ksaTE++/yxagYqa/2jc=
+Date:   Mon, 26 Oct 2020 23:47:37 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Alexander Kochetkov <al.kochet@gmail.com>
+Cc:     linux-spi@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org
+In-Reply-To: <20201022075221.23332-1-akochetkov@lintech.ru>
+References: <20201022075221.23332-1-akochetkov@lintech.ru>
+Subject: Re: [PATCH v3] spi: spi-sun6i: implement DMA-based transfer mode
+Message-Id: <160375605709.32342.188457165098247494.b4-ty@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Anderson <dianders@chromium.org>
+On Thu, 22 Oct 2020 10:52:21 +0300, Alexander Kochetkov wrote:
+> DMA-based transfer will be enabled if data length is larger than FIFO size
+> (64 bytes for A64). This greatly reduce number of interrupts for
+> transferring data.
+> 
+> For smaller data size PIO mode will be used. In PIO mode whole buffer will
+> be loaded into FIFO.
+> 
+> [...]
 
-[ Upstream commit b18b099e04f450cdc77bec72acefcde7042bd1f3 ]
+Applied to
 
-On my system the kernel processes the "kgdb_earlycon" parameter before
-the "kgdbcon" parameter.  When we setup "kgdb_earlycon" we'll end up
-in kgdb_register_callbacks() and "kgdb_use_con" won't have been set
-yet so we'll never get around to starting "kgdbcon".  Let's remedy
-this by detecting that the IO module was already registered when
-setting "kgdb_use_con" and registering the console then.
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
 
-As part of this, to avoid pre-declaring things, move the handling of
-the "kgdbcon" further down in the file.
+Thanks!
 
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
-Link: https://lore.kernel.org/r/20200630151422.1.I4aa062751ff5e281f5116655c976dff545c09a46@changeid
-Signed-off-by: Daniel Thompson <daniel.thompson@linaro.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- kernel/debug/debug_core.c | 22 ++++++++++++++--------
- 1 file changed, 14 insertions(+), 8 deletions(-)
+[1/1] spi: spi-sun6i: implement DMA-based transfer mode
+      commit: 345980a3a5e5e1c99fc621e2ce878fb150ad2287
 
-diff --git a/kernel/debug/debug_core.c b/kernel/debug/debug_core.c
-index b16dbc1bf0567..404d6d47a11da 100644
---- a/kernel/debug/debug_core.c
-+++ b/kernel/debug/debug_core.c
-@@ -94,14 +94,6 @@ int dbg_switch_cpu;
- /* Use kdb or gdbserver mode */
- int dbg_kdb_mode = 1;
- 
--static int __init opt_kgdb_con(char *str)
--{
--	kgdb_use_con = 1;
--	return 0;
--}
--
--early_param("kgdbcon", opt_kgdb_con);
--
- module_param(kgdb_use_con, int, 0644);
- module_param(kgdbreboot, int, 0644);
- 
-@@ -920,6 +912,20 @@ static struct console kgdbcons = {
- 	.index		= -1,
- };
- 
-+static int __init opt_kgdb_con(char *str)
-+{
-+	kgdb_use_con = 1;
-+
-+	if (kgdb_io_module_registered && !kgdb_con_registered) {
-+		register_console(&kgdbcons);
-+		kgdb_con_registered = 1;
-+	}
-+
-+	return 0;
-+}
-+
-+early_param("kgdbcon", opt_kgdb_con);
-+
- #ifdef CONFIG_MAGIC_SYSRQ
- static void sysrq_handle_dbg(int key)
- {
--- 
-2.25.1
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
+
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
+
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
