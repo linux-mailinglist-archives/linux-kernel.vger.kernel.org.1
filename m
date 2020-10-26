@@ -2,152 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69AF02999CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:40:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3901B2999D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:43:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394629AbgJZWko (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:40:44 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:41479 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394618AbgJZWkn (ORCPT
+        id S2394655AbgJZWnH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:43:07 -0400
+Received: from mail-pj1-f67.google.com ([209.85.216.67]:51625 "EHLO
+        mail-pj1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394645AbgJZWnG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:40:43 -0400
-Received: by mail-lf1-f65.google.com with SMTP id 126so3195646lfi.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:40:39 -0700 (PDT)
+        Mon, 26 Oct 2020 18:43:06 -0400
+Received: by mail-pj1-f67.google.com with SMTP id a17so3997202pju.1;
+        Mon, 26 Oct 2020 15:43:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=p5mpdK7QEfDL5slMiMMuatEPuKSHdDFbWljAr9yhKWI=;
-        b=v55KPbIzkQ6XpCeJxtQgHmpkBNNN3Vy4h0+4aIkEH2igYiZnH3CJAMrDuHf4tTQvx5
-         +wXxRLMS9dNA15/QVPY7OUGem1hJkBceu7Qdttdve4KhzOvZExMdsVKYf6MXC5q5nBxM
-         ISMeVIjjKOUupiKOaEUrZycc/H68pAdqeHFEeGIWgKeX/aVznb3gEMTl0+pY3SlQwmhL
-         4P0OPOFRSDesfWW6znsYcdBpbch5cxisQWglfrmvWLm7vAWsovJGRlypeM3gwYPgCVsJ
-         Iz2407lA5bXQ2uYEgM/3LbzxpmTCudk6S2cEF3eN8yhmyvi0FvkkcZ22BJTwAtCS1z+8
-         VgWg==
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=5MfRXofF9NlrBG9ZLP3LfU6oLq4PML8/2jaAtOVRPAE=;
+        b=GEesgwUvUQx4cf0Qe1lkyvKBaJjqtEle2qmu0urkRafskaqjdbpMeWf/VtJYR4AOr1
+         SEI3t8eyiGbBN2BAb9qTkOTv0yeB2aUXL32AsAmyfhPTsphAk2iv6193YqoDdYyPk8YL
+         b+aJlQSs8OZhZ+VEYlrXMKWXE4Z/aW4N2na7MUCaiMiJmKeHSx8iNM8AH8U1uNLTGleM
+         PxQJIZYgIJ2OGCNMkfxeXnm3CIiIFDIcCHH096yC6+PSzLUqSPabSt10PRIKJk87liEU
+         8YgRwBBj72/8VSxMWI3AAnHLp+3GIoXZSqZG+tAFIvCSqWIPq3A5luFBfqul19us01WU
+         MVzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=p5mpdK7QEfDL5slMiMMuatEPuKSHdDFbWljAr9yhKWI=;
-        b=qWhBYnlayfBhv/DbBm8nwUjmhvpeMHqIZXjz98S+QGsmTzs4ZHKCVAE+ZzihlB4Mrx
-         e4+AxBAq9/TZlihAQ/OuKs1ba79zSKlkysrJJK6cfDOl49d8LSB1vJQVwQx76PXq6+1b
-         7qXkxQZpeaJkox5KpbUO0IkCMPJIYag5RuSIHZ5TH2XuynzeMmUkfyzDm1UEgjw5u0/t
-         G3YqtfklcHPwvbYNTt/g7xmy5n3Ga7u3Vcg8GsCb47NmRxChSOB3B4WFjVV9+TDGeZZa
-         xmyAYdrVyegagfmrgV1SoFzmwwCgcgMkMumpwwWpArYsgM+nIWmADISw/JQU4g1C1cVJ
-         5P+Q==
-X-Gm-Message-State: AOAM5323ehLCWo+74pOG3puV2YJzv/EIOKSududuOZwIBICM0qxvpP8J
-        nAzF/AZW0uH/0CjbrAInElqOUAEPdFUs+wWaHhgCkw==
-X-Google-Smtp-Source: ABdhPJxjFDjWOwRZrKpaQ7DfqAb76Wdq0EnB5RBSKFjRVQvhEwDyFBnOIEaqJQyewYmpprB2TRhB0ucxFKBwT21u16o=
-X-Received: by 2002:a05:6512:52f:: with SMTP id o15mr5593174lfc.381.1603752038729;
- Mon, 26 Oct 2020 15:40:38 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=5MfRXofF9NlrBG9ZLP3LfU6oLq4PML8/2jaAtOVRPAE=;
+        b=H9595bHcHoXapJNuPaC4uhJoieDF/gRxAHtlnrvCCc3khVKDek0MxzoQGuHCxwqM5h
+         4hgwCPEdySY3lxJEOnFrytoprj5uY+ZSTVB9nwvlOoTGCA+YVDh1bQ6OgHRyXbVnD/ET
+         lvcced7XqNr/k//RgwgxZ9iF0BlG54zID+MORD6mtWWI12N0JA3sZsyzKuIpOOIKC2Je
+         XgSedhCJRu8wqY5Y7WnOGkJnBw1z2IzSqkCqo1a6sUrXKyQb+jdXlu0405nRJtptQRJI
+         z3MiWNH+JVp9xrOQBWxq6W2OXpScLnpdFvl+QXAs4okoTRimsNBRVwl12zn+u5SF8qdb
+         edpg==
+X-Gm-Message-State: AOAM5337ZWT1jIZp98ECTgBul2TqW6jhywxve7k1rDItnGZupYBks3yk
+        dgh2PuUnfWaqcXeGXLqatB8=
+X-Google-Smtp-Source: ABdhPJwcxuwbKgQ6X3xbkftQBCMvgARuDZaWPpd81LUnrw9AZKB6TdU30C5OwqH62tUfNSGuou0Y+A==
+X-Received: by 2002:a17:902:690b:b029:d6:41d8:bdc7 with SMTP id j11-20020a170902690bb02900d641d8bdc7mr45315plk.7.1603752185932;
+        Mon, 26 Oct 2020 15:43:05 -0700 (PDT)
+Received: from ast-mbp.dhcp.thefacebook.com ([2620:10d:c090:400::4:e0b4])
+        by smtp.gmail.com with ESMTPSA id i1sm12086337pfa.168.2020.10.26.15.43.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 15:43:04 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 15:43:01 -0700
+From:   Alexei Starovoitov <alexei.starovoitov@gmail.com>
+To:     Michael Jeanson <mjeanson@efficios.com>
+Cc:     linux-kernel@vger.kernel.org, mathieu.desnoyers@efficios.com,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>,
+        "Paul E . McKenney" <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Joel Fernandes <joel@joelfernandes.org>, bpf@vger.kernel.org
+Subject: Re: [RFC PATCH 1/6] tracing: introduce sleepable tracepoints
+Message-ID: <20201026224301.gi4bakmj3pov5zyu@ast-mbp.dhcp.thefacebook.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com>
+ <20201023195352.26269-2-mjeanson@efficios.com>
 MIME-Version: 1.0
-References: <CACT4Y+beaHrWisaSsV90xQn+t2Xn-bxvVgmx8ih_h=yJYPjs4A@mail.gmail.com>
- <20201026200715.170261-1-ebiggers@kernel.org> <CAG48ez2Og6fWUKZbNO5EtYK-jS+J8rf6r+rOyfUp1MUuy4kMyA@mail.gmail.com>
- <20201026215658.GA185792@sol.localdomain>
-In-Reply-To: <20201026215658.GA185792@sol.localdomain>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 26 Oct 2020 23:40:12 +0100
-Message-ID: <CAG48ez2u-B_DQ5yyiexycTz6okQZvU0rB3+MG1nAFtoahfPa6Q@mail.gmail.com>
-Subject: Re: [PATCH] crypto: af_alg - avoid undefined behavior accessing salg_name
-To:     Eric Biggers <ebiggers@kernel.org>
-Cc:     "open list:HARDWARE RANDOM NUMBER GENERATOR CORE" 
-        <linux-crypto@vger.kernel.org>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        syzkaller-bugs <syzkaller-bugs@googlegroups.com>,
-        linux-hardening@vger.kernel.org,
-        Linux API <linux-api@vger.kernel.org>,
-        kernel list <linux-kernel@vger.kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Elena Petrova <lenaptr@google.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        stable <stable@vger.kernel.org>,
-        syzbot <syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201023195352.26269-2-mjeanson@efficios.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:57 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> On Mon, Oct 26, 2020 at 10:23:35PM +0100, 'Jann Horn' via syzkaller-bugs wrote:
-> > On Mon, Oct 26, 2020 at 9:08 PM Eric Biggers <ebiggers@kernel.org> wrote:
-> > > Commit 3f69cc60768b ("crypto: af_alg - Allow arbitrarily long algorithm
-> > > names") made the kernel start accepting arbitrarily long algorithm names
-> > > in sockaddr_alg.
-> >
-> > That's not true; it's still limited by the size of struct
-> > sockaddr_storage (128 bytes total for the entire address).
->
-> Interesting, so the actual limit is 104 bytes.  It seems like the intent of that
-> commit was to make it unlimited, though...
->
-> > If you make it longer, __copy_msghdr_from_user() will silently truncate the
-> > size.
->
-> That's used for sys_sendmsg(), which AFAICT isn't relevant here.  sockaddr_alg
-> is used with sys_bind(), which fails with EINVAL if the address is longer than
-> sizeof(struct sockaddr_storage).
+On Fri, Oct 23, 2020 at 03:53:47PM -0400, Michael Jeanson wrote:
+> -#define __DO_TRACE(tp, proto, args, cond, rcuidle)			\
+> +#define __DO_TRACE(tp, proto, args, cond, rcuidle, tp_flags)		\
+>  	do {								\
+>  		struct tracepoint_func *it_func_ptr;			\
+>  		void *it_func;						\
+>  		void *__data;						\
+>  		int __maybe_unused __idx = 0;				\
+> +		bool maysleep = (tp_flags) & TRACEPOINT_MAYSLEEP;	\
+>  									\
+>  		if (!(cond))						\
+>  			return;						\
+> @@ -170,8 +178,13 @@ static inline struct tracepoint *tracepoint_ptr_deref(tracepoint_ptr_t *p)
+>  		/* srcu can't be used from NMI */			\
+>  		WARN_ON_ONCE(rcuidle && in_nmi());			\
+>  									\
+> -		/* keep srcu and sched-rcu usage consistent */		\
+> -		preempt_disable_notrace();				\
+> +		if (maysleep) {						\
+> +			might_sleep();					\
 
-Ugh, of course you're right, sorry.
+The main purpose of the patch set is to access user memory in tracepoints, right?
+In such case I suggest to use stronger might_fault() here.
+We used might_sleep() in sleepable bpf and it wasn't enough to catch
+a combination where sleepable hook was invoked while mm->mmap_lock was
+taken which may cause a deadlock.
 
-> However, since sys_sendmsg() is truncating overly-long addresses, it's probably
-> the case that sizeof(struct sockaddr_storage) can never be increased in the
-> future...
-
-Eh, I think there'd probably be bigger issues with that elsewhere.
-
-> > > This is broken because the kernel can access indices >= 64 in salg_name,
-> > > which is undefined behavior -- even though the memory that is accessed
-> > > is still located within the sockaddr structure.  It would only be
-> > > defined behavior if the array were properly marked as arbitrary-length
-> > > (either by making it a flexible array, which is the recommended way
-> > > these days, or by making it an array of length 0 or 1).
-> > >
-> > > We can't simply change salg_name into a flexible array, since that would
-> > > break source compatibility with userspace programs that embed
-> > > sockaddr_alg into another struct, or (more commonly) declare a
-> > > sockaddr_alg like 'struct sockaddr_alg sa = { .salg_name = "foo" };'.
-> > >
-> > > One solution would be to change salg_name into a flexible array only
-> > > when '#ifdef __KERNEL__'.  However, that would keep userspace without an
-> > > easy way to actually use the longer algorithm names.
-> > >
-> > > Instead, add a new structure 'sockaddr_alg_new' that has the flexible
-> > > array field, and expose it to both userspace and the kernel.
-> > > Make the kernel use it correctly in alg_bind().
-> > [...]
-> > > @@ -147,7 +147,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
-> > >         const u32 allowed = CRYPTO_ALG_KERN_DRIVER_ONLY;
-> > >         struct sock *sk = sock->sk;
-> > >         struct alg_sock *ask = alg_sk(sk);
-> > > -       struct sockaddr_alg *sa = (void *)uaddr;
-> > > +       struct sockaddr_alg_new *sa = (void *)uaddr;
-> > >         const struct af_alg_type *type;
-> > >         void *private;
-> > >         int err;
-> > > @@ -155,7 +155,11 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
-> > >         if (sock->state == SS_CONNECTED)
-> > >                 return -EINVAL;
-> > >
-> > > -       if (addr_len < sizeof(*sa))
-> > > +       BUILD_BUG_ON(offsetof(struct sockaddr_alg_new, salg_name) !=
-> > > +                    offsetof(struct sockaddr_alg, salg_name));
-> > > +       BUILD_BUG_ON(offsetof(struct sockaddr_alg, salg_name) != sizeof(*sa));
-> > > +
-> > > +       if (addr_len < sizeof(*sa) + 1)
-> > >                 return -EINVAL;
-> > >
-> > >         /* If caller uses non-allowed flag, return error. */
-> > > @@ -163,7 +167,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
-> > >                 return -EINVAL;
-> > >
-> > >         sa->salg_type[sizeof(sa->salg_type) - 1] = 0;
-> > > -       sa->salg_name[sizeof(sa->salg_name) + addr_len - sizeof(*sa) - 1] = 0;
-> > > +       sa->salg_name[addr_len - sizeof(*sa) - 1] = 0;
-> >
-> > This looks like an out-of-bounds write in the case `addr_len ==
-> > sizeof(struct sockaddr_storage)`.
-
-Sorry, I've been unusually unconcentrated today. Sorry about the
-noise, ignore what I said.
+> +			rcu_read_lock_trace();				\
+> +		} else {						\
+> +			/* keep srcu and sched-rcu usage consistent */	\
+> +			preempt_disable_notrace();			\
+> +		}							\
