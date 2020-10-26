@@ -2,162 +2,57 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 58B7A299A4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:16:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EBE78299A4C
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:17:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404166AbgJZXQx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:16:53 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:46142 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404078AbgJZXQx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:16:53 -0400
-Received: by mail-pl1-f195.google.com with SMTP id x10so3217648plm.13;
-        Mon, 26 Oct 2020 16:16:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=glKnVskAvq0DaS01zSqToelSdPvN+I0Lwp6u1+qZsmk=;
-        b=KCTRDLHK1sDl3AYXKhVZ5c0nOowUUL/oW1v44QU8IKvzoaSPyd4dVbHio3fldeh1tV
-         v/qpdSc1TOOYf4PfGJOSCHAP+sUXxJXbCFRa0my67+NnVYlAViNZK2qFEX4oTEimf4V3
-         /VSSFPSS6FPZjdKMfMlnY4Y3KoFdN7hXuxwzhtdD6YYGE4lwkcfaqzuBXd4gtiJOlYdZ
-         ArlN5NUfZfMTxMQkBly1NlnAXKd/7M5uR7DIc7BjFFS4Q/0+Wlh4MdwJi5b1tgNryYib
-         BQPPheWlLFmCa9bHoJqf0CF5oqMGhdLWIF1IXr4yEHwM4CEUuCedVnb/F+rbK2rjxdfE
-         dfww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=glKnVskAvq0DaS01zSqToelSdPvN+I0Lwp6u1+qZsmk=;
-        b=ZVRqdwueMRLB+jmGSMfor9YxUXWSxwlnO7E0rqmtS3gYkcN6iGFNdBzy9oj8IeQDi3
-         Pk0m+EOtrEWrF4m3FU48IvHNXRNKEARXBFQodH2N9UdJ2tTTNdWZrbS0w/Pp1Fegu2Vk
-         07hv+TSrcwhlDyVrZiPVtOCYyWsUk/giX/nS3ua2J+Onb6AUi2/hpeY8SP0FJGNK1DV1
-         xioIeGY0oGA5dnDLaG78tRst5lg+Oy5B8LHbfj3A35/9YJk6QpnYgJx4eAR4tFB0pGrV
-         tzZGzf3HJPm8X6vVP8j1zE1M6WPGgYmhm3gVHwIm+8YHd1PL8JR2OCt9NtLBevjvonRL
-         30vw==
-X-Gm-Message-State: AOAM530xXfWhS0nA45lrofFPO35JtPQ0W3RXJgI9oF0YTE2yySxrVfTz
-        mTuzNkDTcpskyOpmm7hSzCU=
-X-Google-Smtp-Source: ABdhPJzYiTBndONP2HpGsAfuvj+Nxh+lwcEIlZ1hw55wYHlTUqsZbyisfKsp0uURWP3Y4I/UCFpwRQ==
-X-Received: by 2002:a17:90b:111:: with SMTP id p17mr23265643pjz.159.1603754212404;
-        Mon, 26 Oct 2020 16:16:52 -0700 (PDT)
-Received: from localhost ([2001:e42:102:1532:160:16:113:140])
-        by smtp.gmail.com with ESMTPSA id f17sm13064570pfq.141.2020.10.26.16.16.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 16:16:51 -0700 (PDT)
-From:   Coiby Xu <coiby.xu@gmail.com>
-X-Google-Original-From: Coiby Xu <Coiby.Xu@gmail.com>
-Date:   Tue, 27 Oct 2020 07:16:31 +0800
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] pinctrl: amd: print debounce filter info in debugfs
-Message-ID: <20201026231631.6l6kei3z45cunzmx@Rk>
-References: <20201026151600.2703-1-coiby.xu@gmail.com>
- <CAHp75VfZ+-rJFWVpowXyViA99_9tA5VaFLfJGH1WF4W=kQHr8w@mail.gmail.com>
+        id S2404273AbgJZXRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:17:46 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2404185AbgJZXRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:17:46 -0400
+Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87D2E207F7;
+        Mon, 26 Oct 2020 23:17:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603754266;
+        bh=U/wIU2YMem/MeIDvQSzY3yk+i3x+N3W+1pbbwvqLGGQ=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=UbqsEJLm4qA0OAi1ZR3Q5IM2RJ639hqnmxdmi3JIlqZ+yDdhrcpPzOduukTHgLc2a
+         CUPMtXAAJSg7D/qFPxKUQ0WspSIgN3LvAfPWAdpdiP1dO6+eXzda2XzLVmektjgewj
+         Aj4Dt2lxheTmiStRERhN0i8aQ3gqPJdCcsjuOIgo=
+Date:   Mon, 26 Oct 2020 16:17:44 -0700
+From:   Jakub Kicinski <kuba@kernel.org>
+To:     Dan Carpenter <dan.carpenter@oracle.com>
+Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
+        Salil Mehta <salil.mehta@huawei.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Huazhong Tan <tanhuazhong@huawei.com>,
+        Yonglong Liu <liuyonglong@huawei.com>,
+        Yufeng Mo <moyufeng@huawei.com>,
+        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
+        Guangbin Huang <huangguangbin2@huawei.com>,
+        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH net] net: hns3: clean up a return in hclge_tm_bp_setup()
+Message-ID: <20201026161744.4235569d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201023112212.GA282278@mwanda>
+References: <20201023112212.GA282278@mwanda>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <CAHp75VfZ+-rJFWVpowXyViA99_9tA5VaFLfJGH1WF4W=kQHr8w@mail.gmail.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:22:45PM +0200, Andy Shevchenko wrote:
->On Mon, Oct 26, 2020 at 5:16 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->>
->> Print the status of debounce filter as follows,
->> $ cat /sys/kernel/debug/gpio
->> pin129          interrupt is disabled| interrupt is masked| disable wakeup in S0i3 state| disable wakeup in S3 state|
->>  disable wakeup in S4/S5 state| input is high|   pull-up is disabled| Pull-down is disabled|   output is disabled| debouncing filter disabled|   0x50000
->> pin130          interrupt is disabled| interrupt is masked| disable wakeup in S0i3 state| disable wakeup in S3 state|
->>  disable wakeup in S4/S5 state| input is high|   pull-up is disabled| Pull-down is disabled|   output is disabled| debouncing filter (high) enabled| debouncing timeout is 124800 (us)| 0x503c8
->>                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
->
->Thanks for an update!
->In general looks good, one nit below (sorry, missed it in v1 round)
->
-Thank you for the feedbacks!
->...
->
->> +       char debounce_value[40];
->
->(1)
->
->...
->
->> +                               if (tmr_large) {
->> +                                       if (tmr_out_unit)
->> +                                               unit = 62500;
->> +                                       else
->
->> +                                               unit = 15600;
->
->Side note: Hmm... Shouldn't be 15625? As 1/4.
+On Fri, 23 Oct 2020 14:22:12 +0300 Dan Carpenter wrote:
+> Smatch complains that "ret" might be uninitialized if we don't enter
+> the loop.  We do always enter the loop so it's a false positive, but
+> it's cleaner to just return a literal zero and that silences the
+> warning as well.
+> 
+> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
 
-Thank you for discovering the inconsistency! I wrote these code based on
-amd_gpio_set_debounce. I'll send an email to the original author to
-confirm it.
-
-static int amd_gpio_set_debounce(struct gpio_chip *gc, unsigned offset,
-		unsigned debounce)
-{
-     ...
-	if (debounce) {
-		pin_reg |= DB_TYPE_REMOVE_GLITCH << DB_CNTRL_OFF;
-		pin_reg &= ~DB_TMR_OUT_MASK;
-		/*
-		Debounce	Debounce	Timer	Max
-		TmrLarge	TmrOutUnit	Unit	Debounce
-							Time
-		0	0	61 usec (2 RtcClk)	976 usec
-		0	1	244 usec (8 RtcClk)	3.9 msec
-		1	0	15.6 msec (512 RtcClk)	250 msec
-		1	1	62.5 msec (2048 RtcClk)	1 sec
-		*/
-
-		if (debounce < 61) {
-			pin_reg |= 1;
-			pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
-			pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
-		} else if (debounce < 976) {
-			time = debounce / 61;
-			pin_reg |= time & DB_TMR_OUT_MASK;
-			pin_reg &= ~BIT(DB_TMR_OUT_UNIT_OFF);
-			pin_reg &= ~BIT(DB_TMR_LARGE_OFF);
-         ...
->
->> +                               } else {
->> +                                       if (tmr_out_unit)
->> +                                               unit = 244;
->> +                                       else
->> +                                               unit = 61;
->
->...
->
->
->> +                               snprintf(debounce_value, 40,
->> +                                        "debouncing timeout is %u (us)|", time * unit);
->
->(2)
->
->...
->
->> +                               snprintf(debounce_value, 40, " ");
->
->(3)
->
->Because of definition (1) can you in (2) and (3) use sizeof() ?
->
-I've considered defining a constant. Obviously sizeof is a better
-idea:)
-
->--
->With Best Regards,
->Andy Shevchenko
-
---
-Best regards,
-Coiby
+Applied, thanks!
