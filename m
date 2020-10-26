@@ -2,84 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B35DA2990C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:15:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B78582990C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:16:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783515AbgJZPPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:15:21 -0400
-Received: from mail-lj1-f175.google.com ([209.85.208.175]:46806 "EHLO
-        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783039AbgJZPPU (ORCPT
+        id S1783530AbgJZPQA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:16:00 -0400
+Received: from mail-qk1-f194.google.com ([209.85.222.194]:36580 "EHLO
+        mail-qk1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783522AbgJZPP6 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:15:20 -0400
-Received: by mail-lj1-f175.google.com with SMTP id c21so10556851ljn.13;
-        Mon, 26 Oct 2020 08:15:19 -0700 (PDT)
+        Mon, 26 Oct 2020 11:15:58 -0400
+Received: by mail-qk1-f194.google.com with SMTP id r7so8635999qkf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:15:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
-        b=iq3pZ6/QL6OMAVcMvrFMnH1DLI4OH8H7cZIKqo1wIUCGQls8T2Ro6vl24nuNS66i39
-         1n4aOeHzimhTFvpeNNyqHSXxsdHiCTV7961Vh1j0/RIdXUUh7vfPw9EgQoojJjM1GIbP
-         SePccVKqHjpMn2iFa52sFKDoftFLI8Sc8B3F9xTfRQcHlK6C90dV3D6T9cOqQTOtzMB9
-         VEhkuuNnDKsSFho0KBPX39zlpQpW28t0W63Y4eGIO/cg8WOanlYSqdBLxWgUhc8/50YW
-         wLtSt97cenoqHIDALpfpuN6b/PhPTtuqzvaiFMfsxRYtTHrZ920TFNyq1kncFEMCgZp6
-         YYJw==
+        d=0x0f.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=buOSgYj8nesBJduFGburfbQ47xwt4bpG9JY6+8gKov4=;
+        b=iYn35eWa/XewaG2MxDAW6amkL78yH6RaWqiOQTAYYuFqpJstL0IazZysjd93a39Y60
+         BCv/crpm3lNlkyYlvFrts8btSTlJCkJQ1n2hiZ9ZPp7p4sxQG9cSQ8hOfKH3QHPYsJrm
+         2tEB1TEGjR2Zlgdl5lNZbjMCenXSZGLfcnoFc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
-        b=s8qwNRNRq3sFfsJrtmqJlwIimj8GxqHZ2Aph+iYkMF40tjs9GbO7MBw6GryJmkukmr
-         UtbLDn4ZZB5Nu253C6tokV6cCEZwfoHqGQVw0BTuc72cz31olHbsMXEKs+Iwol73WuRc
-         tEInaUmc8ubXyRVUg1Ne5rAkYrdYd1QAd0irQuDR6HAly0uIQBVlMD7k1QZYZrgVgZ78
-         ARJj+CUqU0fRIGCYM/r4yqs773UsnSSwpJGq8nYIqCCp8wIBtIzYsoAEagKKTGSp7GBs
-         k6S4+Luv5q49uV/Pz37euJg6tkdIfX8c5fqCK8CG9XIQORJKxiVRvDxh5rGzSiDKiW3w
-         gVAg==
-X-Gm-Message-State: AOAM533MBcsp7NV9utBLJrL4ASbUowfhonVl5EamclCuqc0sLecM+wDY
-        0MPBCoDihgRkAr5HAHHv2/8=
-X-Google-Smtp-Source: ABdhPJx7L2+12gO/j37FRejcJ/XkwTqNVFm3xPzzs1Xo/tzk231g6fRUxZsozHLljba2yIitR2elGA==
-X-Received: by 2002:a05:651c:3d0:: with SMTP id f16mr5618129ljp.454.1603725317660;
-        Mon, 26 Oct 2020 08:15:17 -0700 (PDT)
-Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
-        by smtp.gmail.com with ESMTPSA id x19sm1071749lff.189.2020.10.26.08.15.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:15:16 -0700 (PDT)
-From:   Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date:   Mon, 26 Oct 2020 16:15:14 +0100
-To:     Richard Palethorpe <rpalethorpe@suse.de>
-Cc:     Joel Fernandes <joel@joelfernandes.org>,
-        Alexander Potapenko <glider@google.com>, rcu@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: Re: [BUG] Lockdep splat during kvfree_call_rcu and stack_depot_save
-Message-ID: <20201026151514.GA3942@pc636>
-References: <87a6w9uiz3.fsf@suse.de>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=buOSgYj8nesBJduFGburfbQ47xwt4bpG9JY6+8gKov4=;
+        b=IaoXQzkK7s/FHG+ckE/SSKw53FrPABkYtvuTN55GGuIT53BDSwH8DNQRsWjWI8uewa
+         CQGMiy355V+z38yKZ0V3CrSFoJxLFL6JnAq0d1NzqC8HLP94h7hr1xJXW1veu8yf3tHY
+         IhudwegegVaCssEQd5gCY4A3DYzWdTonPEepEqksa8+mWZQggFpybWgOTrfz+k2WMY66
+         nak4jMfdRMleQUOT6md6A3MHcuJxuvEds03lsG8k/6c5DflvlHzaCQQ4ADhHMpzm8p99
+         T6FII6w5+V72Cw8ks3/GlBO7nyVA7vXPx/rRBnWSeBWEg5DCIrNIxvf1B+Z15cfTV0R6
+         NWtA==
+X-Gm-Message-State: AOAM530ahDcJvu5X6CLNPsKgz8TAR7Ykr/nWR+HdphOVTUiqNrmw+Iu1
+        eF7H5Qw3UwMFegcsbaGWCGqvzqgcPkDfOmYGbT6Q/g==
+X-Google-Smtp-Source: ABdhPJzKvXMXDrmyVSP4kBSPjVcLXMaCfUmvAVBzFodzU54xWpGYxUXTnQVPmdZl2pZjxna3DgRbeae53Vc3ti/oSoY=
+X-Received: by 2002:ae9:e807:: with SMTP id a7mr1269594qkg.443.1603725355881;
+ Mon, 26 Oct 2020 08:15:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87a6w9uiz3.fsf@suse.de>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20201019141008.871177-1-daniel@0x0f.com> <20201019141008.871177-2-daniel@0x0f.com>
+ <20201026134604.GA43947@bogus>
+In-Reply-To: <20201026134604.GA43947@bogus>
+From:   Daniel Palmer <daniel@0x0f.com>
+Date:   Tue, 27 Oct 2020 00:15:45 +0900
+Message-ID: <CAFr9PXmuOCRoUiqNAdMi=xX142U46=Vnk-EHp9H02L8nut0esQ@mail.gmail.com>
+Subject: Re: [PATCH v2 1/5] dt-bindings: gpio: Add a binding header for the
+ MSC313 GPIO driver
+To:     Rob Herring <robh@kernel.org>
+Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        DTML <devicetree@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello.
+Hi Rob,
 
-> Hello,
-> 
-> The kmem memcg selftest causes the following lockdep splat on 5.9+
-> 
-> [   67.534319] =============================
-> [   67.534410] [ BUG: Invalid wait context ]
-> [   67.534522] 5.9.1-22-default #125 Not tainted
-> [   67.534647] -----------------------------
+On Mon, 26 Oct 2020 at 22:46, Rob Herring <robh@kernel.org> wrote:
 >
-Working on it. We are aware about it.
+> On Mon, Oct 19, 2020 at 11:10:04PM +0900, Daniel Palmer wrote:
+> > Header adds defines for the gpio number of each pin
+> > from the driver view. The gpio block seems to support 128 lines
+> > but what line is mapped to a physical pin depends on the chip.
+> > The driver itself uses the index of a pin's offset in an array
+> > of the possible offsets for a chip as the gpio number.
+> >
+> > The defines remove the need to work out that index to consume
+> > a pin in the device tree.
+>
+> I'd expect the DT to have 0-127 numbering... If you need to map that to
+> another number, then an array property in DT could handle that.
+>
 
-Thanks!
+Thank you for the comments on this header and the binding description.
 
---
-Vlad Rezki
+Thinking about this again I'm thinking about having the GPIO numbers
+be 0-127 like you say but supplying the valid offsets for that
+specific chip and the pad/pin names to make visible to the user via an
+array/arrays that contains the pin register offsets and the pin names.
+Basically my per-chip table moves out of the driver and into the DT.
+Does that sound acceptable? The main thing I want to avoid is
+presenting the user with 128 gpios when the actually chip only has <10
+of them wired up.
+
+Thanks,
+
+Daniel
