@@ -2,86 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2510229892F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:12:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3A178298932
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:12:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772733AbgJZJMD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:12:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51298 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772726AbgJZJMD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:12:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 519D9AC35;
-        Mon, 26 Oct 2020 09:12:01 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id F37711E0EAA; Mon, 26 Oct 2020 10:11:55 +0100 (CET)
-Date:   Mon, 26 Oct 2020 10:11:55 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Jan Kara <jack@suse.cz>, linux-mm@kvack.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        William Kucharski <william.kucharski@oracle.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 12/12] mm/filemap: Return only head pages from
- find_get_entries
-Message-ID: <20201026091155.GB28769@quack2.suse.cz>
-References: <20200914130042.11442-1-willy@infradead.org>
- <20200914130042.11442-13-willy@infradead.org>
- <20200930121512.GT10896@quack2.suse.cz>
- <20200930123637.GP20115@casper.infradead.org>
- <20200930170807.GA15977@quack2.suse.cz>
- <20200930172321.GS20115@casper.infradead.org>
- <20201001071728.GA17860@quack2.suse.cz>
- <20201025231934.GL20115@casper.infradead.org>
+        id S1772745AbgJZJMX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:12:23 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:53423 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1772737AbgJZJMX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:12:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603703542;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=aBk/GB0BzK9NShbG1b7/o+zqziza4YabuXFT6JJKtRI=;
+        b=PQ6TExnhrnZogtoIWfDN5ecYa8Ru8C0ZUP12TMz6pp4jCcpMWIYhMcdezHPSrUbr/jOGbV
+        1ZFKkDU0/jYgURaD9TkUX5UbW/YdU6cCEAcDePj2oGCLyFrnLJOsAxvJxugnX15m9o7eTK
+        GWBNnKuk1fbNN0a1ziFRwAqs94DoVSE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-558-zK_bwg7VOfWDzBJYSoBMuw-1; Mon, 26 Oct 2020 05:12:17 -0400
+X-MC-Unique: zK_bwg7VOfWDzBJYSoBMuw-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id DB890425E9;
+        Mon, 26 Oct 2020 09:12:15 +0000 (UTC)
+Received: from warthog.procyon.org.uk (ovpn-120-70.rdu2.redhat.com [10.10.120.70])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 63D605C1C2;
+        Mon, 26 Oct 2020 09:12:11 +0000 (UTC)
+Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
+        Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
+        Kingdom.
+        Registered in England and Wales under Company Registration No. 3798903
+Subject: [PATCH] cachefiles: Handle readpage error correctly
+From:   David Howells <dhowells@redhat.com>
+To:     torvalds@linux-foundation.org
+Cc:     stable@vger.kernel.org,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        dhowells@redhat.com, linux-cachefs@redhat.com,
+        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Date:   Mon, 26 Oct 2020 09:12:10 +0000
+Message-ID: <160370353064.1014444.12358832243259407276.stgit@warthog.procyon.org.uk>
+User-Agent: StGit/0.23
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201025231934.GL20115@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun 25-10-20 23:19:34, Matthew Wilcox wrote:
-> On Thu, Oct 01, 2020 at 09:17:28AM +0200, Jan Kara wrote:
-> > > I have a followup patch which isn't part of this series which fixes it:
-> > > 
-> > > http://git.infradead.org/users/willy/pagecache.git/commitdiff/364283163847d1c106463223b858308c730592a1
-> > 
-> > Yeah, that looks good. How about partial THPs? The way you've implemented
-> > it we will now possibly evict more than strictly required. But OTOH
-> > evicting exactly may require THP split which is a bit unfortunate. But
-> > probably still a better option because otherwise we could have pages being
-> > repeatedly brought in and out of cache just because e.g. workload mixes
-> > direct and buffered IO and is not aligned to THP boundary (and although I
-> > find loads mixing buffered and direct IO to the same file badly designed,
-> > I know for a fact that they do exist and if the file ranges are not
-> > overlapping, it is not that insane design).
-> 
-> Sorry, forgot to reply to this.
-> 
-> In this patchset, THPs are created by readahead.  We always start
-> out by allocating order-0 pages and only ramp up after hitting a page
-> marked as PageReadahead.  So it's not like tmpfs where we'll try to jump
-> straight to order-9 pages and have to worry about the behaviour you're
-> describing above.  That means in this kind of scenario, we might have,
-> eg, an order-6 page in the cache, remove the whole thing, then bring
-> back in some order-0 pages.  If we hit on those, we'll bring in some
-> order-2 pages.  We won't bring in order-6 pages again until we've hit
-> in the readahead window twice more.
-> 
-> I think the ramp-up is probably too aggressive, but it's fun for testing.
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-OK, sounds good then. Thanks for explanation.
+If ->readpage returns an error, it has already unlocked the page.
 
-								Honza
+Fixes: 5e929b33c393 ("CacheFiles: Handle truncate unlocking the page we're reading")
+Cc: stable@vger.kernel.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Signed-off-by: David Howells <dhowells@redhat.com>
+---
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ fs/cachefiles/rdwr.c |    3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/cachefiles/rdwr.c b/fs/cachefiles/rdwr.c
+index 5b4cee71fa32..e027c718ca01 100644
+--- a/fs/cachefiles/rdwr.c
++++ b/fs/cachefiles/rdwr.c
+@@ -121,7 +121,7 @@ static int cachefiles_read_reissue(struct cachefiles_object *object,
+ 		_debug("reissue read");
+ 		ret = bmapping->a_ops->readpage(NULL, backpage);
+ 		if (ret < 0)
+-			goto unlock_discard;
++			goto discard;
+ 	}
+ 
+ 	/* but the page may have been read before the monitor was installed, so
+@@ -138,6 +138,7 @@ static int cachefiles_read_reissue(struct cachefiles_object *object,
+ 
+ unlock_discard:
+ 	unlock_page(backpage);
++discard:
+ 	spin_lock_irq(&object->work_lock);
+ 	list_del(&monitor->op_link);
+ 	spin_unlock_irq(&object->work_lock);
+
+
