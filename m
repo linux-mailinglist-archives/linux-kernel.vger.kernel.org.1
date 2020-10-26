@@ -2,160 +2,73 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D527929854E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 02:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1ED3B298553
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 02:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421138AbgJZB10 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 21:27:26 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:35771 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1421129AbgJZB1Z (ORCPT
+        id S1421153AbgJZBbi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 21:31:38 -0400
+Received: from mailgw02.mediatek.com ([1.203.163.81]:45896 "EHLO
+        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1421144AbgJZBbi (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 21:27:25 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id C49565801B5;
-        Sun, 25 Oct 2020 21:27:21 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 25 Oct 2020 21:27:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=gaue3BiVVr+JMcjmKil+EpRgMuCh70g
-        7cL5x/wqNOWU=; b=KhWmSJ0kDjL5WNg8yAfql+Q9gaX/+QXyEaOhWNP36LusNLC
-        byPwAOuzy78uWpm8v3Z2lyZE4W7zqbdg6l4j28bG8Ha3f7QglJ+ZSWGPkzjWSfLM
-        xZQ+DWam4iFTa70hJVhODLY/A6j95Wqttjkz2Ip+Px83L7oROwPrelP1CBmbhyzt
-        2xAT72G9PowhkD41+8rceVM1fFOQS12ZTlR8GWqUfwIS01qzzdj1FeTU3yt9Yc5/
-        6qJCeIxgz22WrEAvPpy2TzBF6DzX+AqO6xzUBIlNQddIlvUzyfbR5jmp/UZe0RXF
-        f/RTBbD5jI1yjY2PkISswFKbyjvthDYiswb7xKA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=gaue3B
-        iVVr+JMcjmKil+EpRgMuCh70g7cL5x/wqNOWU=; b=bEwo3usEhKgfDDVC0rO+Fc
-        2kr+3/Q9b8v9PtDzSfjQasw56j37pc9LySCoF/Z+u+lVgcJHU7zXqdOn+tv2nd3B
-        33wNHINWu1MwLeU7Xh47+7vm3jIhutFxlOmRE0cRrsGBMjhjNYCiLb20To7UKk1a
-        IQysBxH/gjUlAaQx/2yJeZOqQA8t79yiKzpeyNVgVH9qL2CO0k0Ob4EPoJtrCNWZ
-        CoQ04je+IjMwJVWgHaQ817ZEO/HajRSAQ8JjZJ3O/fOjwvA0otFLw8jmkbZLb9Yc
-        ueh7Xm3gSbPTijiIghxJXxraOHSiIpW9X/3H6a78M7DYAJ07ozkMiNII7j+s3t0w
-        ==
-X-ME-Sender: <xms:-CWWXxbzXuaJy7dKsy-Fwj8Oqwl01nHAQE3Mgl84bXmQehJBIDFkdw>
-    <xme:-CWWX4ZgEdmlDXI_C08B8SIZKA8ma9d5uxaRHxV4rhCwM4DAXuye2OvrVcIGOD7Qs
-    R82K_qpFd4xnG2d0g>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeehgdefiecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeehhfefkefgkeduveehffehieehudejfeejveejfedugfefuedtuedvhefh
-    veeuffenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    grnhgurhgvfiesrghjrdhiugdrrghu
-X-ME-Proxy: <xmx:-CWWXz_VBjBCNMaGiRLBXwclTW08oFwnOseZ7D7z3RGuSUiGfR7FZA>
-    <xmx:-CWWX_rRdhN0KsHpDN_Qe-0WwT1BaqdtZh8AA7S3UOAInl_1HNT4EA>
-    <xmx:-CWWX8rH-aSR3ZBId5Pt5OKaxpsYtG5g-c2Fzq0uZ7RdgfWrpaAxkw>
-    <xmx:-SWWXz1lLOF9QJlH8j-UxmDo-UaXLK-oBkNNEjshSUGbyIiOoZo2mg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id E9D39E04F6; Sun, 25 Oct 2020 21:27:18 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-529-g69105b1-fm-20201021.003-g69105b13
-Mime-Version: 1.0
-Message-Id: <ce3dce98-1daa-47bb-a688-0d5a743e45b2@www.fastmail.com>
-In-Reply-To: <20201012033150.21056-4-billy_tsai@aspeedtech.com>
-References: <20201012033150.21056-1-billy_tsai@aspeedtech.com>
- <20201012033150.21056-4-billy_tsai@aspeedtech.com>
-Date:   Mon, 26 Oct 2020 11:56:59 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Billy Tsai" <billy_tsai@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Joel Stanley" <joel@jms.id.au>, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Bartosz Golaszewski" <bgolaszewski@baylibre.com>,
-        linux-gpio@vger.kernel.org, openbmc@lists.ozlabs.org
-Cc:     BMC-SW@aspeedtech.com
-Subject: Re: [PATCH 3/3] pinctrl: aspeed-g6: Add sgpiom2 pinctrl setting
-Content-Type: text/plain
+        Sun, 25 Oct 2020 21:31:38 -0400
+X-UUID: d813a77c2ec0400499b3d8f1a6b5064f-20201026
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=vVvfkbUAMLnEGPVp22orf6GiMNv3USdQoc6xNCO1YfM=;
+        b=HC7eHEWqrJsZ2BjdniBzyPPGb/8uJ0nKKMfyeF3N/czBIvUUbF1Q3QBT8Htn0m4jpYIo5SZWx/vxIlAzfRUHqmIGcIetQhp1365VUGo+7HfsD18qI2uhSZ233af+zxNO9fb0Xhdaqo82JnCBGmaRjJFvxsJFtnfjM4waUrVQNr0=;
+X-UUID: d813a77c2ec0400499b3d8f1a6b5064f-20201026
+Received: from mtkcas35.mediatek.inc [(172.27.4.253)] by mailgw02.mediatek.com
+        (envelope-from <qii.wang@mediatek.com>)
+        (mailgw01.mediatek.com ESMTP with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 785108375; Mon, 26 Oct 2020 09:31:33 +0800
+Received: from MTKCAS36.mediatek.inc (172.27.4.186) by MTKMBS31N2.mediatek.inc
+ (172.27.4.87) with Microsoft SMTP Server (TLS) id 15.0.1497.2; Mon, 26 Oct
+ 2020 09:31:26 +0800
+Received: from [10.17.3.153] (10.17.3.153) by MTKCAS36.mediatek.inc
+ (172.27.4.170) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Oct 2020 09:31:26 +0800
+Message-ID: <1603675886.25719.15.camel@mhfsdcap03>
+Subject: Re: [PATCH] i2c: mediatek: remove redundant null check
+From:   Qii Wang <qii.wang@mediatek.com>
+To:     Xu Wang <vulab@iscas.ac.cn>
+CC:     <Leilk.Liu@mediatek.com>, <matthias.bgg@gmail.com>,
+        <linux-i2c@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Date:   Mon, 26 Oct 2020 09:31:26 +0800
+In-Reply-To: <20200930084233.53085-1-vulab@iscas.ac.cn>
+References: <20200930084233.53085-1-vulab@iscas.ac.cn>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.10.4-0ubuntu2 
+MIME-Version: 1.0
+X-TM-SNTS-SMTP: C5F9B31DFEC0D8FA081D2D8373472B423FFF94D55D1C916320D7C9D4142E35FF2000:8
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+VGhhbmtzLCBpdCBsb29rcyBnb29kIGZvciBtZSwgaXQgd291bGQgYmUgYmV0dGVyIHRvIHJlbW92
+ZSBhbGwgdXNlbGVzcw0KbWVtYmVycw0KDQpPbiBXZWQsIDIwMjAtMDktMzAgYXQgMDg6NDIgKzAw
+MDAsIFh1IFdhbmcgd3JvdGU6DQo+IEJlY2F1c2UgY2xrX2Rpc2FibGVfdW5wcmVwYXJlIGFscmVh
+ZHkgY2hlY2tlZCBOVUxMIGNsb2NrIHBhcmFtZXRlciwNCj4gc28gdGhlIGFkZGl0aW9uYWwgY2hl
+Y2tzIGFyZSB1bm5lY2Vzc2FyeSwganVzdCByZW1vdmUgaXQNCj4gDQo+IFNpZ25lZC1vZmYtYnk6
+IFh1IFdhbmcgPHZ1bGFiQGlzY2FzLmFjLmNuPg0KPiAtLS0NCj4gIGRyaXZlcnMvaTJjL2J1c3Nl
+cy9pMmMtbXQ2NXh4LmMgfCA5ICsrKy0tLS0tLQ0KPiAgMSBmaWxlIGNoYW5nZWQsIDMgaW5zZXJ0
+aW9ucygrKSwgNiBkZWxldGlvbnMoLSkNCj4gDQo+IGRpZmYgLS1naXQgYS9kcml2ZXJzL2kyYy9i
+dXNzZXMvaTJjLW10NjV4eC5jIGIvZHJpdmVycy9pMmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiBp
+bmRleCAwY2JkZmJlNjA1YjUuLjQ4ZDM3ZGU4MjdlMSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy9p
+MmMvYnVzc2VzL2kyYy1tdDY1eHguYw0KPiArKysgYi9kcml2ZXJzL2kyYy9idXNzZXMvaTJjLW10
+NjV4eC5jDQo+IEBAIC00NDksOCArNDQ5LDcgQEAgc3RhdGljIGludCBtdGtfaTJjX2Nsb2NrX2Vu
+YWJsZShzdHJ1Y3QgbXRrX2kyYyAqaTJjKQ0KPiAgCXJldHVybiAwOw0KPiAgDQo+ICBlcnJfYXJi
+Og0KPiAtCWlmIChpMmMtPmhhdmVfcG1pYykNCj4gLQkJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGky
+Yy0+Y2xrX3BtaWMpOw0KPiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19wbWljKTsN
+Cj4gIGVycl9wbWljOg0KPiAgCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19tYWluKTsN
+Cj4gIGVycl9tYWluOg0KPiBAQCAtNDYxLDExICs0NjAsOSBAQCBzdGF0aWMgaW50IG10a19pMmNf
+Y2xvY2tfZW5hYmxlKHN0cnVjdCBtdGtfaTJjICppMmMpDQo+ICANCj4gIHN0YXRpYyB2b2lkIG10
+a19pMmNfY2xvY2tfZGlzYWJsZShzdHJ1Y3QgbXRrX2kyYyAqaTJjKQ0KPiAgew0KPiAtCWlmIChp
+MmMtPmNsa19hcmIpDQo+IC0JCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19hcmIpOw0K
+PiArCWNsa19kaXNhYmxlX3VucHJlcGFyZShpMmMtPmNsa19hcmIpOw0KPiAgDQo+IC0JaWYgKGky
+Yy0+aGF2ZV9wbWljKQ0KPiAtCQljbGtfZGlzYWJsZV91bnByZXBhcmUoaTJjLT5jbGtfcG1pYyk7
+DQo+ICsJY2xrX2Rpc2FibGVfdW5wcmVwYXJlKGkyYy0+Y2xrX3BtaWMpOw0KPiAgDQo+ICAJY2xr
+X2Rpc2FibGVfdW5wcmVwYXJlKGkyYy0+Y2xrX21haW4pOw0KPiAgCWNsa19kaXNhYmxlX3VucHJl
+cGFyZShpMmMtPmNsa19kbWEpOw0KDQo=
 
-
-On Mon, 12 Oct 2020, at 14:01, Billy Tsai wrote:
-> At ast2600a1 we change feature of master sgpio to 2 sets.
-> So this patch is used to add the pinctrl setting of the new sgpio.
-> 
-> Signed-off-by: Billy Tsai <billy_tsai@aspeedtech.com>
-> ---
->  arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi   |  5 ++++
->  drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c | 30 +++++++++++++++++++---
->  2 files changed, 31 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi 
-> b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> index 7028e21bdd98..a16ecf08e307 100644
-> --- a/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> +++ b/arch/arm/boot/dts/aspeed-g6-pinctrl.dtsi
-> @@ -862,6 +862,11 @@
->  		groups = "SGPM1";
->  	};
->  
-> +	pinctrl_sgpm2_default: sgpm2_default {
-> +		function = "SGPM2";
-> +		groups = "SGPM2";
-> +	};
-> +
->  	pinctrl_sgps1_default: sgps1_default {
->  		function = "SGPS1";
->  		groups = "SGPS1";
-> diff --git a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c 
-> b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> index 34803a6c7664..b673a44ffa3b 100644
-> --- a/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> +++ b/drivers/pinctrl/aspeed/pinctrl-aspeed-g6.c
-> @@ -46,8 +46,10 @@
->  #define SCU620		0x620 /* Disable GPIO Internal Pull-Down #4 */
->  #define SCU634		0x634 /* Disable GPIO Internal Pull-Down #5 */
->  #define SCU638		0x638 /* Disable GPIO Internal Pull-Down #6 */
-> +#define SCU690		0x690 /* Multi-function Pin Control #24 */
->  #define SCU694		0x694 /* Multi-function Pin Control #25 */
->  #define SCU69C		0x69C /* Multi-function Pin Control #27 */
-> +#define SCU6D0		0x6D0 /* Multi-function Pin Control #28 */
->  #define SCUC20		0xC20 /* PCIE configuration Setting Control */
->  
->  #define ASPEED_G6_NR_PINS 256
-> @@ -81,13 +83,21 @@ FUNC_GROUP_DECL(I2C12, L26, K24);
->  #define K26 4
->  SIG_EXPR_LIST_DECL_SESG(K26, MACLINK1, MACLINK1, SIG_DESC_SET(SCU410, 4));
->  SIG_EXPR_LIST_DECL_SESG(K26, SCL13, I2C13, SIG_DESC_SET(SCU4B0, 4));
-> -PIN_DECL_2(K26, GPIOA4, MACLINK1, SCL13);
-> +/*SGPM2 is A1 Only */
-> +SIG_EXPR_LIST_DECL_SESG(K26, SGPM2CLK, SGPM2, SIG_DESC_SET(SCU6D0, 4),
-> +			  SIG_DESC_CLEAR(SCU410, 4), SIG_DESC_CLEAR(SCU4B0, 4),
-> +			  SIG_DESC_CLEAR(SCU690, 4));
-> +PIN_DECL_3(K26, GPIOA4, SGPM2CLK, MACLINK1, SCL13);
->  FUNC_GROUP_DECL(MACLINK1, K26);
->  
->  #define L24 5
->  SIG_EXPR_LIST_DECL_SESG(L24, MACLINK2, MACLINK2, SIG_DESC_SET(SCU410, 5));
->  SIG_EXPR_LIST_DECL_SESG(L24, SDA13, I2C13, SIG_DESC_SET(SCU4B0, 5));
-> -PIN_DECL_2(L24, GPIOA5, MACLINK2, SDA13);
-> +/*SGPM2 is A1 Only */
-> +SIG_EXPR_LIST_DECL_SESG(L24, SGPM2LD, SGPM2, SIG_DESC_SET(SCU6D0, 5),
-> +			  SIG_DESC_CLEAR(SCU410, 5), SIG_DESC_CLEAR(SCU4B0, 5),
-> +			  SIG_DESC_CLEAR(SCU690, 5));
-
-A few things:
-
-1. It looks like the Multi-function Pins Mapping and Control table in section 5.1 of the datasheet only tells part of the story. It lists SGPS2 on the pins you've modified in this patch but not SGPM2. However, the table in section 2.1 (Pin Description) does outline SGPM2 and SGPS2 are routed via the same pins, though this does not listed the associated registers and bit fields. Can we fix the table in 5.1 so it's easier to review this patch?
-
-2. We don't need to specify the _CLEAR() behaviour here as this is implied by the process to disable the higher priority mux configurations. It should be enough to do:
-
-SIG_EXPR_LIST_DECL_SESG(L24, SGPM2LD, SGPM2, SIG_DESC_SET(SCU6D0, 5));
-
-However, this requires that we also define the priorities correctly, so:
-
-3. Can we add both the SGPS2 and SGPM2 configurations so we have a complete definition for the pins?
-
-Cheers,
-
-Andrew
