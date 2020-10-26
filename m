@@ -2,57 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EBE78299A4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:17:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 89EBF299A4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:19:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404273AbgJZXRq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:17:46 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54574 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404185AbgJZXRq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:17:46 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87D2E207F7;
-        Mon, 26 Oct 2020 23:17:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603754266;
-        bh=U/wIU2YMem/MeIDvQSzY3yk+i3x+N3W+1pbbwvqLGGQ=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=UbqsEJLm4qA0OAi1ZR3Q5IM2RJ639hqnmxdmi3JIlqZ+yDdhrcpPzOduukTHgLc2a
-         CUPMtXAAJSg7D/qFPxKUQ0WspSIgN3LvAfPWAdpdiP1dO6+eXzda2XzLVmektjgewj
-         Aj4Dt2lxheTmiStRERhN0i8aQ3gqPJdCcsjuOIgo=
-Date:   Mon, 26 Oct 2020 16:17:44 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Dan Carpenter <dan.carpenter@oracle.com>
-Cc:     Yisen Zhuang <yisen.zhuang@huawei.com>,
-        Salil Mehta <salil.mehta@huawei.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        Huazhong Tan <tanhuazhong@huawei.com>,
-        Yonglong Liu <liuyonglong@huawei.com>,
-        Yufeng Mo <moyufeng@huawei.com>,
-        Pankaj Bharadiya <pankaj.laxminarayan.bharadiya@intel.com>,
-        Guangbin Huang <huangguangbin2@huawei.com>,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] net: hns3: clean up a return in hclge_tm_bp_setup()
-Message-ID: <20201026161744.4235569d@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201023112212.GA282278@mwanda>
-References: <20201023112212.GA282278@mwanda>
+        id S2404362AbgJZXS7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:18:59 -0400
+Received: from mail-lj1-f194.google.com ([209.85.208.194]:33255 "EHLO
+        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404304AbgJZXS7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:18:59 -0400
+Received: by mail-lj1-f194.google.com with SMTP id c21so12414811ljj.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:18:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cJqtnZ8asq4bny750fVTQgJnYnxKe9lnoylCtFpur88=;
+        b=RqM+nxRCebPhd7s1uKaV6vz/hsqV7luhwvkGZt4aL6WxyWg4vSdi+IGsr3XWhD/qT3
+         eR27XfcEHxeUlkkc14UyZz5R9QL73pdKw0ZqC5KELHimaVyinTp4jKET8EwFTeX9ZUTl
+         h3WEnYUOhvVUudj96KxPwCj4ckNBSmADYDaBHlEGykjLTxqVGPIR+x2cQ0+KJJgpCEXh
+         QVh/LvZXIkcPi4y+xP6cXpFUumcDYuQbVt5kQlS0zwPcmKIdl92dQT+gqEtgp9/oO2kF
+         pLQaDhV8jXvZFKphgTnhEEkRKZw3B8xeG3fUe267N6GrN53TnPn+lOeJQ3mtu9+vlVC/
+         jMvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cJqtnZ8asq4bny750fVTQgJnYnxKe9lnoylCtFpur88=;
+        b=fillm7qLPOMOfc6Ntkhs+rariYUBFsqOYI7KYXEKLH0CNpPySksj/eKUfFPGtNO1O7
+         US0QzhZXh/CU+yHHjnA66z5TL3j8xCvPyhfIcXkDOiFzYCsj9oIEniH1tuikAI1ESr5Q
+         w97cnh7bKPyFJzqlJeGJIfPvl24FNLgg+n2i0A1HFxXnilGIxmhm6HIa/LSP1BTa9mIP
+         dLy5ZHy6oEx5uzGPDVybj8TcXWQA/GI6ec8doYSpEDyRr5gLYyUm2s6Qao0DJu7PV6Lw
+         3R0Oq7p1FgD3yoPZ+yhRwbfvUk8NzrpV+YS/Hb0VvLtYp3J2kzWarYJ363gIozvZPYgu
+         mnnQ==
+X-Gm-Message-State: AOAM532+mmKgNTb8I0hMhIPXvoJJrsjYMOQBA2F55+W6bPSrIeObiTk1
+        96x3n4iya7QhI62q2bY/UUaO9UcraoePN5Nv9nU=
+X-Google-Smtp-Source: ABdhPJzsleTazzH4s3ND9aMfT4WQrWA1iR79yBLH0tok4g5DotVCnirrIOAuRnOuDqANgg0ROdaFf4VqrJeKwiQ1ElY=
+X-Received: by 2002:a05:651c:130d:: with SMTP id u13mr7705266lja.265.1603754335662;
+ Mon, 26 Oct 2020 16:18:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20201026041656.2785980-1-daeho43@gmail.com> <20201026190406.GL858@sol.localdomain>
+ <CACOAw_xFijZOokM4R1XYKoFvRthk-ZfC+hNz0c-HqQuurjp87g@mail.gmail.com> <20201026230555.GB1947033@gmail.com>
+In-Reply-To: <20201026230555.GB1947033@gmail.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 27 Oct 2020 08:18:44 +0900
+Message-ID: <CACOAw_wLE_om3YChs_jsBTORrOsp2M6SZ+t2arP9tHQeojsgKQ@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION ioctl
+To:     Eric Biggers <ebiggers@kernel.org>
+Cc:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Daeho Jeong <daehojeong@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 14:22:12 +0300 Dan Carpenter wrote:
-> Smatch complains that "ret" might be uninitialized if we don't enter
-> the loop.  We do always enter the loop so it's a false positive, but
-> it's cleaner to just return a literal zero and that silences the
-> warning as well.
-> 
-> Signed-off-by: Dan Carpenter <dan.carpenter@oracle.com>
+I checked that. We seem to need to complement missing parts including
+other ioctls in Documentation/filesystems/fscrypt.rst.
 
-Applied, thanks!
+Thanks~
+
+2020=EB=85=84 10=EC=9B=94 27=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 8:05, =
+Eric Biggers <ebiggers@kernel.org>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> On Tue, Oct 27, 2020 at 08:02:18AM +0900, Daeho Jeong wrote:
+> > I thought I gave the information about that in the commit message. Is
+> > this not enough for you?
+> > Actually, there is no space for F2FS ioctl documentation now. :(
+> >
+>
+> The commit message doesn't really matter.  What I am asking for are actua=
+l
+> documentation and tests.
+>
+> The fscrypt ioctls, for example, are all documented in
+> Documentation/filesystems/fscrypt.rst, and they have tests in xfstests.
+>
+> - Eric
