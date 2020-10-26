@@ -2,180 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 99E9D2986CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:20:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 78D572986D2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:20:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770314AbgJZGTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 02:19:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:56708 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1770305AbgJZGTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 02:19:53 -0400
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2D59520853;
-        Mon, 26 Oct 2020 06:19:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603693193;
-        bh=ZMumJDxtizppcRhEvLccB7zDX1rEZFjVHF761knJgmg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=pBd3JBzdGzJPLr0Nblc/VL0kcj3LHkF1QkK2ZIhWfuplBJJU6zXfQReJdXqsbkH5A
-         FTzidI8lUc+CCE1gYIWuL3Dreay3Lbt8h4VzjbDFIDvd6JbiPFaK+8MA0MBeiA8C/c
-         baHvrucRmV9WOodK/nw37PIg9KYtCfTQmQVqm6uc=
-Date:   Sun, 25 Oct 2020 23:19:51 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>
-Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
-Message-ID: <20201026061951.GB2517102@google.com>
-References: <20201020195258.2005605-1-jaegeuk@kernel.org>
- <20201020195258.2005605-6-jaegeuk@kernel.org>
- <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
- <20201021045213.GB3004521@google.com>
- <e3e58a89474d23f1b9446fe2e38a7426@codeaurora.org>
- <20201022201825.GA3329812@google.com>
- <ccf9079dc1767c7d200fe55b5a849ba0@codeaurora.org>
+        id S1770341AbgJZGUx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 02:20:53 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:36573 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1421050AbgJZGUw (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 02:20:52 -0400
+X-UUID: 5beb7359ae7b45ef8a6a455afdece6c2-20201026
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=XLrInF8GgdwjAwEAE1PEiTWBLKaCKIMlSZI9fSZKKDU=;
+        b=JLaCcSPTI6bU0Xv6wD/N8h+7AI3tWiCShN6PzmPhSD8dbeBV89RZaGh8esDhjfMz1tHtj6j17bl0hqwGhCv40nfoenzySttM+7r/hQd0U93OcjKOWqPOQAjx2ESyDJ4iIxBaoulmDNAGpfEPIkC8Mgh0P1txBKI31dldJwORsVA=;
+X-UUID: 5beb7359ae7b45ef8a6a455afdece6c2-20201026
+Received: from mtkcas08.mediatek.inc [(172.21.101.126)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 142169136; Mon, 26 Oct 2020 14:20:43 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 26 Oct 2020 14:20:34 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Oct 2020 14:20:33 +0800
+Message-ID: <1603693234.20535.9.camel@mtkswgap22>
+Subject: Re: [PATCH v1] cpufreq: mediatek-hw: Add support for Mediatek
+ cpufreq HW driver
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        "Stephen Boyd" <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Mon, 26 Oct 2020 14:20:34 +0800
+In-Reply-To: <20201023092720.qpws5wivqb4u6fwl@vireshk-i7>
+References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
+         <20201023082817.5vp4cvi2lmpaozcn@vireshk-i7>
+         <1603444138.20224.19.camel@mtkswgap22>
+         <20201023092720.qpws5wivqb4u6fwl@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ccf9079dc1767c7d200fe55b5a849ba0@codeaurora.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26, Can Guo wrote:
-> On 2020-10-23 08:53, Jaegeuk Kim wrote:
-> > On 10/21, Can Guo wrote:
-> > > On 2020-10-21 12:52, jaegeuk@kernel.org wrote:
-> > > > On 10/21, Can Guo wrote:
-> > > > > On 2020-10-21 03:52, Jaegeuk Kim wrote:
-> > > > > > The below call stack prevents clk_gating at every IO completion.
-> > > > > > We can remove the condition, ufshcd_any_tag_in_use(), since
-> > > > > > clkgating_work
-> > > > > > will check it again.
-> > > > > >
-> > > > >
-> > > > > I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
-> > > > > gate_work() can break UFS clk gating's functionality.
-> > > > >
-> > > > > ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use.
-> > > > > However,
-> > > > > they are not exactly same - ufshcd_any_tag_in_use() returns true if
-> > > > > any tag
-> > > > > assigned from block layer is still in use, but tags are released
-> > > > > asynchronously
-> > > > > (through block softirq), meaning it does not reflect the real
-> > > > > occupation of
-> > > > > UFS host.
-> > > > > That is after UFS host finishes all tasks, ufshcd_any_tag_in_use()
-> > > > > can still
-> > > > > return true.
-> > > > >
-> > > > > This change only removes the check of ufshcd_any_tag_in_use() in
-> > > > > ufshcd_release(),
-> > > > > but having the check of it in gate_work() can still prevent gating
-> > > > > from
-> > > > > happening.
-> > > > > The current change works for you maybe because the tags are release
-> > > > > before
-> > > > > hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is
-> > > > > shorter
-> > > > > or
-> > > > > somehow block softirq is retarded, gate_work() may have chance to see
-> > > > > ufshcd_any_tag_in_use()
-> > > > > returns true. What do you think?
-> > > >
-> > > > I don't think this breaks clkgating, but fix the wrong condition check
-> > > > which
-> > > > prevented gate_work at all. As you mentioned, even if this schedules
-> > > > gate_work
-> > > > by racy conditions, gate_work will handle it as a last resort.
-> > > >
-> > > 
-> > > If clocks cannot be gated after the last task is cleared from UFS
-> > > host, then
-> > > clk gating
-> > > is broken, no? Assume UFS has completed the last task in its queue,
-> > > as this
-> > > change says,
-> > > ufshcd_any_tag_in_use() is preventing ufshcd_release() from invoking
-> > > gate_work().
-> > > Similarly, ufshcd_any_tag_in_use() can prevent gate_work() from
-> > > doing its
-> > > real work -
-> > > disabling the clocks. Do you agree?
-> > > 
-> > >         if (hba->clk_gating.active_reqs
-> > >                 || hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
-> > >                 || ufshcd_any_tag_in_use(hba) ||
-> > > hba->outstanding_tasks
-> > >                 || hba->active_uic_cmd || hba->uic_async_done)
-> > >                 goto rel_lock;
-> > 
-> > I see the point, but this happens only when clkgate_delay_ms is too
-> > short
-> > to give enough time for releasing tag. If it's correctly set, I think
-> > there'd
-> > be no problem, unless softirq was delayed by other RT threads which is
-> > just
-> > a corner case tho.
-> > 
-> 
-> Yes, we are fixing corner cases, aren't we? I thought you would like to
-> address it since you are fixing clk gating.
+T24gRnJpLCAyMDIwLTEwLTIzIGF0IDE0OjU3ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+IE9uIDIzLTEwLTIwLCAxNzowOCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gT24gRnJpLCAyMDIw
+LTEwLTIzIGF0IDEzOjU4ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+ID4gPiBPbiAyMy0x
+MC0yMCwgMTY6MjQsIEhlY3RvciBZdWFuIHdyb3RlOg0KPiA+ID4gPiBUaGlzIHBhdGNoc2V0IGlu
+Y2x1ZGVzIDYgcGF0Y2hlcyBhbmQgZGVwZW5kcyBvbiB0aGUgTVQ2Nzc5IERUUyBwYXRjaFsxXSBz
+dWJtaXR0ZWQgYnkgSGFua3MgQ2hlbi4NCj4gPiA+ID4gVGhlIGZpcnN0IDMgcGF0Y2hlcyBhcmUg
+Zm9yIENQVUZSRVEgSFcgZHJpdmVyIGFuZCBkZXZpY2UgdHJlZSBiaW5kaW5nLCB3aGljaCBhcmUg
+YWxyZWFkeSBzZW50IGJlZm9yZSBzZXBhcmF0ZWx5IFsyXVszXS4gRm9yIGJpbmRpbmcgcGFydCwg
+SSBhZGQgYSBuZXcgcGF0Y2ggdG8gYWRkIHByb3BlcnR5IGluIGNwdSBzY2hlbWEuDQo+ID4gPiA+
+IEJlc2lkZXMsIHdlIGFkZCB0aHJlZSBtb3JlIHBhdGNoZXMgaW5jbHVkaW5nIEVNIHBvd2VyIHRh
+YmxlLCBTVlMgQ1BVIGluaXRpYWxpemUsIGFuZCBjb29saW5nIGRldmljZS4NCj4gPiA+IA0KPiA+
+ID4gQW5kIGV2ZW4gYWZ0ZXIgc28gbWFueSB2ZXJzaW9ucyBvZiB0aGVzZSB5b3UgY2hvc2UgdG8g
+bmFtZSB0aGlzIFYxLiBJdA0KPiA+ID4gaXMgdmVyeSBkaWZmaWN1bHQgZm9yIHJldmlld2VycyB0
+byBmaW5kIHRpbWUgdG8gcmV2aWV3IHlvdXIgc3R1ZmYsIGFuZA0KPiA+ID4gdGhleSBleHBlY3Qg
+c29tZSBzb3J0IG9mIHN1bW1hcnkgZnJvbSB5b3Ugb24gd2hhdCBleGFjdGx5IGNoYW5nZWQgZnJv
+bQ0KPiA+ID4gbGFzdCB2ZXJzaW9uIGFuZCB5b3UgYWxzbyBuZWVkIHRvIG5hbWUgdGhlIGN1cnJl
+bnQgdmVyc2lvbiBjdXJyZW50bHkuDQo+ID4gPiANCj4gPiA+IFRoaXMgc2hvdWxkIGhhdmUgYmVl
+biBWOCBhbmQgeW91IHNob3VsZCBoYXZlIGFkZGVkIGEgIlY3LT5WOCBkaWZmOiINCj4gPiA+IHNl
+Y3Rpb24gaGVyZSwgbmFtaW5nIGFsbCB0aGUgY2hhbmdlcyB5b3UgZGlkLiBQbGVhc2Ugc2VuZCB0
+aGF0IGFzDQo+ID4gPiByZXBseSB0byB0aGlzIGVtYWlsLCBzbyBJIGNhbiBzZWUgd2hhdCByZWFs
+bHkgY2hhbmdlZC4NCj4gPiA+IA0KPiA+IEhpLCBWaXJlc2gNCj4gPiANCj4gPiBTb3JyeSBmb3Ig
+eW91ciBpbmNvbnZlbmllbmNlLg0KPiA+ICMxfiMzIGlzIGZvciBjcHVmcmVxIGRyaXZlciB3ZSBo
+YXZlIHJldmlld2VkIGFuZCB0aGUgYmluZGluZ3Mgd2hpY2gNCj4gPiBzZXBhcmF0ZSBmcmVxIGRv
+bWFpbiB0byBDUFUgc2NoZW1hLlRoZXJlIGlzIG5vIGNoYW5nZSBmb3IgdGhlIGRyaXZlcg0KPiA+
+IGl0c2VsZi4NCj4gPiAgIDEuIGNwdWZyZXE6IG1lZGlhdGVrLWh3OiBBZGQgc3VwcG9ydCBmb3Ig
+Q1BVRlJFUSBIVw0KPiA+ICAgMi4gZHQtYmluZGluZ3M6IGFybTogY3B1czogRG9jdW1lbnQgJ210
+ayxmcmVxLWRvbWFpbicgcHJvcGVydHkNCj4gPiAgIDMuIGR0LWJpbmRpbmdzOiBjcHVmcmVxOiBh
+ZGQgYmluZGluZ3MgZm9yIE1lZGlhVGVrIGNwdWZyZXEgSFcNCj4gPiANCj4gPiAjNH4jNiBpcyBm
+b3Igb3RoZXIgQ1BVIGZlYXR1cmVzLCBpLmUuIFNWUyBbMV0NCj4gPiAgIDQuIGNwdWZyZXE6IG1l
+ZGlhdGVrLWh3OiByZWdpc3RlciBFTSBwb3dlciB0YWJsZQ0KPiA+ICAgNS4gY3B1ZnJlcTogbWVk
+aWF0ZWstaHc6IEFkZCBTVlMgQ1BVIGluaXRpYWxpemF0aW9uDQo+ID4gICA2LiBjcHVmcmVxOiBt
+ZWRpYXRlay1odzogQWRkIGNvb2xpbmcgZGV2IGZsYWcNCj4gPiANCj4gPiBJIHN1cHBvc2VkIHRo
+YXQgaXQgY291bGQgYmUgbW9yZSBjbGVhbiB0byBzZXBhcmF0ZSAjNH4jNiBpbiBhbm90aGVyDQo+
+ID4gcGF0Y2hzZXQuTWF5IEkga25vdyBpcyBpdCBva2F5IHRvIHlvdT8gT3IgSSBzaG91bGQgbWVy
+Z2UgYWxsIG9mIGNoYW5nZXMNCj4gPiBpbnRvIHY4IGxpa2UgeW91IG1lbnRpb25lZD8gVGhhbmsg
+eW91Lg0KPiANCj4gTWVyZ2UgdGhlbSBhbGwgdG9nZXRoZXIgYW5kIGV4cGxhaW4gYW55IHNwZWNp
+YWwgZmVhdHVyZXMgKGxpa2UgU1ZTKSBpbg0KPiB0aGUgY29tbWl0IGxvZy4gSXQgd2lsbCBhbHNv
+IGhlbHAgaW4gZnV0dXJlIHdoZW4gcGVvcGxlIHdhbnQgdG8NCj4gdW5kZXJzdGFuZCB5b3VyIGRy
+aXZlci4gRXhwbGFpbiB3aGF0ZXZlciBpcyB3b3J0aCBleHBsYWluaW5nIHRoZXJlIGFuZA0KPiBp
+cyBub3Qgc3RyYWlnaHQgZm9yd2FyZC4NCj4gDQo+IFRoYW5rcyBmb3IgdGhlIGRldGFpbHMuDQo+
+IA0KT0ssIEkgd2lsbCBtZXJnZSBhbGwgY2hhbmdlcyBpbiB2OC4gQW5kIGV4cGxhaW4gZGV0YWls
+cyBpbiBjb3Zlci1sZXR0ZXIuDQpUaGFuayB5b3UuIA0KDQo=
 
-I think that can be fixed by a separate patch which controls delay_ms when
-user tries to change it from default 150 ms?
-
-> 
-> Regards,
-> 
-> Can Guo.
-> 
-> > > 
-> > > Thanks,
-> > > 
-> > > Can Guo.
-> > > 
-> > > > >
-> > > > > Thanks,
-> > > > >
-> > > > > Can Guo.
-> > > > >
-> > > > > In __ufshcd_transfer_req_compl
-> > > > > Ihba->lrb_in_use is cleared immediately when UFS driver
-> > > > > finishes all tasks
-> > > > >
-> > > > > > ufshcd_complete_requests(struct ufs_hba *hba)
-> > > > > >   ufshcd_transfer_req_compl()
-> > > > > >     __ufshcd_transfer_req_compl()
-> > > > > >       __ufshcd_release(hba)
-> > > > > >         if (ufshcd_any_tag_in_use() == 1)
-> > > > > >            return;
-> > > > > >   ufshcd_tmc_handler(hba);
-> > > > > >     blk_mq_tagset_busy_iter();
-> > > > > >
-> > > > > > Cc: Alim Akhtar <alim.akhtar@samsung.com>
-> > > > > > Cc: Avri Altman <avri.altman@wdc.com>
-> > > > > > Cc: Can Guo <cang@codeaurora.org>
-> > > > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
-> > > > > > ---
-> > > > > >  drivers/scsi/ufs/ufshcd.c | 2 +-
-> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > >
-> > > > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > > > > > index b5ca0effe636..cecbd4ace8b4 100644
-> > > > > > --- a/drivers/scsi/ufs/ufshcd.c
-> > > > > > +++ b/drivers/scsi/ufs/ufshcd.c
-> > > > > > @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
-> > > > > >
-> > > > > >  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
-> > > > > >  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
-> > > > > > -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
-> > > > > > +	    hba->outstanding_tasks ||
-> > > > > >  	    hba->active_uic_cmd || hba->uic_async_done)
-> > > > > >  		return;
