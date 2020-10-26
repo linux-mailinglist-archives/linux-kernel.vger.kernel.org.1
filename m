@@ -2,103 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2633E2988C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:53:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DF4762988CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:53:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772260AbgJZIxY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:53:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52372 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1772253AbgJZIxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:53:24 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A3CE4223B0;
-        Mon, 26 Oct 2020 08:53:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603702403;
-        bh=BN1CJvXBWrhfQmD3H1MNkc/u7KBp/bYmj7nVgj9rSEE=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=GKqVAAn3+Fm/53b6hlK+WHRR0degozeoSsGef08f7hJI15hw/JaS3p46XrQF0stfU
-         oLeB007ziiD+uiKwMz/hPhyNDa6BdG35yPcG8OgbxlaqlazAEyxl0bob8C5+/ONbbD
-         dKMwblE+5XKp1b7NqtmhX34Y8ee4LSBUVSRBf3m4=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kWyFl-004Gtp-EU; Mon, 26 Oct 2020 08:53:21 +0000
+        id S1772268AbgJZIx1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:53:27 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:39896 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772252AbgJZIxZ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:53:25 -0400
+Received: by mail-lf1-f68.google.com with SMTP id 184so10715771lfd.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:53:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=C4bZm2eS2zgsQIGp/wEVKkAI+z4jJ4XW2OwJLttIGe0=;
+        b=SbrC2mBiF9FkY6uAv3Er1XPIF0IcE+yPSs+OgVoxhb3h2HS+SXrd09PZkO9InXOix7
+         Gb9ZnuO4GxDBphGnxGCOkaqnNMRnSTxZHLWv3QaUPus10yTbvsHCNIrTJtkde7PDZ5k4
+         /wnv4/XstVXIevYQcf1Rsz8jUqDeO+ZbHcvwqefJXpIFGKrRlfS4aHl8387Q5/LCnPoj
+         5gQlgY5/3c5G6hrpgl06BYZOY2QtLdRxU1+woIiBp9cKcIkAn5Rm4q2h7mLQCTjYn+Dc
+         N+1z1coWCKz9qlkA8oP/dxCpG2ySLXxHrbHKhRGG5rCB3nlk65GZgXIO1P5UfK/6NLXh
+         TxFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=C4bZm2eS2zgsQIGp/wEVKkAI+z4jJ4XW2OwJLttIGe0=;
+        b=h6gTPn0j/klkbGg57BiHaTcoU0UTwd+9RndGz6vnxQnJAu5NCLUwuGvddZQON2K0ef
+         XrM+Iq8O0nBdBwbXfvT30HtXDLEPIRvHlzrRIL/7S/N47b0QSiIuB/Dzuc+BSTK49ljq
+         xJJHoHGpMSOudbClwNOkt1XUBPD9BW2pvygs42Pv03i3XyVHPV7JXisQo034PfL+yVy2
+         qsp4+0Z80I6H+/n/bBUqBAUl78sPZbvjPB7uB3YrNIbJdVgD/bA0hElVDGy8/6X1Meqh
+         sM/Fz+58XutQvDflmE+xjPIsugSiIfwm5aOg38XjjWXKGUb5zUjxKmID03MPRho2sVX2
+         15MQ==
+X-Gm-Message-State: AOAM531Z1wQe76VZFoTgFSfWt8Kv9Ye41VgpIKbkVu3zDBrcx6QXlwlu
+        hwtjl9h5eqDwjwOy9F1GKy0jBFa+ty6tIg==
+X-Google-Smtp-Source: ABdhPJzDrY+LRGazqefpg0gDb49Mym0w+n2g0HHXb47Uk7MqsTBzqJaii+lifwlFtuXkvkrZtSlQgw==
+X-Received: by 2002:a05:6512:2090:: with SMTP id t16mr4206617lfr.83.1603702402640;
+        Mon, 26 Oct 2020 01:53:22 -0700 (PDT)
+Received: from [192.168.0.10] (89-109-58-109.dynamic.mts-nn.ru. [89.109.58.109])
+        by smtp.gmail.com with ESMTPSA id m9sm970722lfd.86.2020.10.26.01.53.21
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 01:53:22 -0700 (PDT)
+Subject: Re: [PATCH v2 09/15] perf record: introduce thread specific objects
+ for trace streaming
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <bede5b00-8419-c03f-8595-7011679d363a@linux.intel.com>
+ <20201024154431.GH2589351@krava>
+From:   Alexei Budankov <budankov.lore@gmail.com>
+Organization: Intel Corp.
+Message-ID: <04657d10-dd5c-1dc6-77b8-665265ea66b9@gmail.com>
+Date:   Mon, 26 Oct 2020 11:53:21 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201024154431.GH2589351@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 08:53:21 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Gavin Shan <gshan@redhat.com>
-Cc:     kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
-        will@kernel.org, alexandru.elisei@arm.com
-Subject: Re: [PATCH 1/3] KVM: arm64: Check if 52-bits PA is enabled
-In-Reply-To: <333451bd-4730-4ebb-f76c-28fa5d0e1f7d@redhat.com>
-References: <20201025002739.5804-1-gshan@redhat.com>
- <20201025002739.5804-2-gshan@redhat.com> <871rhmpr92.wl-maz@kernel.org>
- <333451bd-4730-4ebb-f76c-28fa5d0e1f7d@redhat.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <a676f540d19fba2468fd1a801948826a@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: gshan@redhat.com, kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org, will@kernel.org, alexandru.elisei@arm.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-25 22:23, Gavin Shan wrote:
-> Hi Marc,
-> 
-> On 10/25/20 8:52 PM, Marc Zyngier wrote:
->> On Sun, 25 Oct 2020 01:27:37 +0100,
->> Gavin Shan <gshan@redhat.com> wrote:
->>> 
->>> The 52-bits physical address is disabled until 
->>> CONFIG_ARM64_PA_BITS_52
->>> is chosen. This uses option for that check, to avoid the 
->>> unconditional
->>> check on PAGE_SHIFT in the hot path and thus save some CPU cycles.
->> 
->> PAGE_SHIFT is known at compile time, and this code is dropped by the
->> compiler if the selected page size is not 64K. This patch really only
->> makes the code slightly less readable and the "CPU cycles" argument
->> doesn't hold at all.
->> 
->> So what are you trying to solve exactly?
->> 
-> 
-> There are two points covered by the patch: (1) The 52-bits physical 
-> address
-> is visible only when CONFIG_ARM64_PA_BITS_52 is enabled in arch/arm64 
-> code.
-> The code looks consistent with this option used here. (2) I had the 
-> assumption
-> that gcc doesn't optimize the code and PAGE_SHIFT is always checked in 
-> order
-> to get higher 4 physical address bits, but you said gcc should optimize 
-> the
-> code accordingly. However, it would be still nice to make the code 
-> explicit.
 
-Conditional compilation only results in more breakages, specially for 
-configs
-that hardly anyone uses (big-endian and 64K pages are the two that 
-bitrot very
-quickly).
 
-So if anything can build without #ifdef, I'll take that anytime. If the 
-compiler
-doesn't optimize it away, let's fix the compiler.
+On 24.10.2020 18:44, Jiri Olsa wrote:
+> On Wed, Oct 21, 2020 at 07:03:48PM +0300, Alexey Budankov wrote:
+>>
+>> Introduce thread local data object and its array to be used for
+>> threaded trace streaming.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  tools/perf/builtin-record.c | 18 ++++++++++++++++++
+>>  1 file changed, 18 insertions(+)
+>>
+>> diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
+>> index ba26d75c51d6..8e512096a060 100644
+>> --- a/tools/perf/builtin-record.c
+>> +++ b/tools/perf/builtin-record.c
+>> @@ -85,11 +85,29 @@ struct switch_output {
+>>  	int		 cur_file;
+>>  };
+>>  
+>> +struct thread_data {
+>> +	pid_t		   tid;
+>> +	struct {
+>> +		int	   msg[2];
+>> +		int	   ack[2];
+>> +	} comm;
+>> +	struct fdarray	   pollfd;
+>> +	int		   ctlfd_pos;
+>> +	struct mmap	   *maps;
+>> +	int		   nr_mmaps;
+>> +	struct record	   *rec;
+>> +	unsigned long long samples;
+>> +	unsigned long	   waking;
+>> +	u64		   bytes_written;
+>> +};
+> 
+> please merge the struct with the code that's using it
+
+Corrected in v3.
 
 Thanks,
+Alexei
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+> 
+> jirka
+> 
+>> +
+>>  struct record {
+>>  	struct perf_tool	tool;
+>>  	struct record_opts	opts;
+>>  	u64			bytes_written;
+>>  	struct perf_data	data;
+>> +	struct thread_data	*thread_data;
+>> +	int			nr_thread_data;
+>>  	struct auxtrace_record	*itr;
+>>  	struct evlist	*evlist;
+>>  	struct perf_session	*session;
+>> -- 
+>> 2.24.1
+>>
+> 
