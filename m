@@ -2,179 +2,141 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 015CE299463
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:53:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D7FB1299467
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:53:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788604AbgJZRxP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:53:15 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:34705 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781399AbgJZRxP (ORCPT
+        id S1788613AbgJZRxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:53:42 -0400
+Received: from casper.infradead.org ([90.155.50.34]:46426 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781494AbgJZRxl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:53:15 -0400
-Received: by mail-ot1-f66.google.com with SMTP id k3so8214056otp.1;
-        Mon, 26 Oct 2020 10:53:14 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=aSP7w6hGOtdU2uA5tvPlkM6OwSpoT9pVdwMoOdt+1fQ=;
-        b=Cv+rJF6Y4NZozdmD79G0UFQ60mhIHnJF0O4c0Gd7Jj6j+JEWuL4KtrydHy0foChe6o
-         csZItIZpCP19LoNHVzX9sszguH31MGDTBZgBHNKITG4V5QwyzV1xv8EJqHpUJKSmdUiV
-         KWgZJSdjzX6lERZ1j421wHnYePNW/chWC4a4yKUC2MGTlfV9vjrWTFHEjhoiuGLcjjnL
-         1hlqz1XDQWuOWfe1fe9bX+zVzCKh1DdOpw0rrcItcVH45XpwzcSFfubXXk67S2k8K0VP
-         EMbSnzc5TF8BxGS1381+l7Zfq7HkGPSF9gBIz8KNSeNZq/mPyleoGslPUVsAFQ+HTQXU
-         T/pA==
-X-Gm-Message-State: AOAM5328KH5k6U0t5G2xX1pfiVmbWUWJEfkEnxHOTFC9yqfv9xgc4sbV
-        ZUOfxT3ow+s7nl4v9ffEXLeWKez2yxG8GPendlw=
-X-Google-Smtp-Source: ABdhPJzyLS3lSQG+HGr+V6jPcJm2j+7DqH4t1c+0Dyl/dUwUJFnTsFRRuWj5SDZDmDC54eq2tej3wmmsezKdR5Pt/uo=
-X-Received: by 2002:a05:6830:210a:: with SMTP id i10mr14302905otc.145.1603734793886;
- Mon, 26 Oct 2020 10:53:13 -0700 (PDT)
+        Mon, 26 Oct 2020 13:53:41 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+        MIME-Version:Message-Id:Date:Subject:To:From:Reply-To:Cc:Content-Type:
+        Content-ID:Content-Description:In-Reply-To:References;
+        bh=FBYzkNP+Cx2t2+3fMBPbsAF59I/mFG4FBtQVNq5FELU=; b=OOi9IhPPOXxjSjoIy5MiTJk6Zk
+        3x3IjQEqzm0akf8SgC6HRY7vPt354oCO5ldxZDm7wddxMLSxc/06+SWeIfqeFjR7YZ/GvzdaTqLjO
+        D4SOc3xGC94d8GQtMsKBjt3GvrIxgo/RuTORS5H+24MfdUd3yePkQbFfntv0AgRR942Z8cC/EWrza
+        JmFm3I7Rrc+y8uBWe/nVAqfh27Ho1ScOTfkzNwJVGWozsi4skFFQOgoTGDP1UCx7ZEQTGlsI8hoLm
+        sKgSQbmrSsX5O+qzHWG9ENThF5W7P1BsEgLTOHd/I5Oe0ZjuFwu1Hw+4cP38ZpKthir9fUflqH79r
+        udE24Rww==;
+Received: from i7.infradead.org ([2001:8b0:10b:1:21e:67ff:fecb:7a92])
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX6gQ-0008Em-C8; Mon, 26 Oct 2020 17:53:27 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.93 #3 (Red Hat Linux))
+        id 1kX6gP-002SMG-Um; Mon, 26 Oct 2020 17:53:25 +0000
+From:   David Woodhouse <dwmw2@infradead.org>
+To:     Ingo Molnar <mingo@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Juri Lelli <juri.lelli@redhat.com>,
+        Vincent Guittot <vincent.guittot@linaro.org>,
+        Dietmar Eggemann <dietmar.eggemann@arm.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+        Daniel Bristot de Oliveira <bristot@redhat.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: [RFC PATCH 1/2] sched/wait: Add add_wait_queue_priority()
+Date:   Mon, 26 Oct 2020 17:53:24 +0000
+Message-Id: <20201026175325.585623-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
- <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
- <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
- <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com>
- <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com> <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
-In-Reply-To: <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Oct 2020 18:53:02 +0100
-Message-ID: <CAMuHMdX+PSdT02jxA+dJCjyT5Kktn+NnVsk0563XCLnn1fazgQ@mail.gmail.com>
-Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
-To:     Nick Desaulniers <ndesaulniers@google.com>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Nick,
+From: David Woodhouse <dwmw@amazon.co.uk>
 
-On Mon, Oct 26, 2020 at 6:49 PM Nick Desaulniers
-<ndesaulniers@google.com> wrote:
-> On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
-> <geert@linux-m68k.org> wrote:
-> > On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > > On Fri, Aug 21, 2020 at 9:56 PM Kees Cook <keescook@chromium.org> wrote:
-> > > > > > > In preparation for warning on orphan sections, discard
-> > > > > > > unwanted non-zero-sized generated sections, and enforce other
-> > > > > > > expected-to-be-zero-sized sections (since discarding them might hide
-> > > > > > > problems with them suddenly gaining unexpected entries).
-> > > > > > >
-> > > > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > > >
-> > > > > > This is now commit be2881824ae9eb92 ("arm64/build: Assert for unwanted
-> > > > > > sections") in v5.10-rc1, and is causing the following error with
-> > > > > > renesas_defconfig[1]:
-> > > > > >
-> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> > > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> > > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> > > > > >
-> > > > > > I cannot reproduce this with the standard arm64 defconfig.
-> > > > > >
-> > > > > > I bisected the error to the aforementioned commit, but understand this
-> > > > > > is not the real reason.  If I revert this commit, I still get:
-> > > > > >
-> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.got.plt' from
-> > > > > > `arch/arm64/kernel/head.o' being placed in section `.got.plt'
-> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.plt' from
-> > > > > > `arch/arm64/kernel/head.o' being placed in section `.plt'
-> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.data.rel.ro' from
-> > > > > > `arch/arm64/kernel/head.o' being placed in section `.data.rel.ro'
-> > > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> > > > > >
-> > > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
-> > > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
-> > > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
-> > > > > > placement"), which is another red herring.
-> > > > >
-> > > > > kernel/bpf/core.o is the only file containing an eh_frame section,
-> > > > > causing the warning.
->
-> When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
-> missing from someone's KBUILD_CFLAGS.
-> But I don't see anything curious in kernel/bpf/Makefile, unless
-> cc-disable-warning is somehow broken.
+This allows an exclusive wait_queue_entry to be added at the head of the
+queue, instead of the tail as normal. Thus, it gets to consume events
+first.
 
-Yeah, I noticed it's added in arch/arm64/Makefile, and verified that it is
-actually passed when building kernel/bpf/core.o.
+The problem I'm trying to solve here is interrupt remapping invalidation
+vs. MSI interrupts from VFIO. I'd really like KVM IRQFD to be able to
+consume events before (and indeed instead of) userspace.
 
-> > > > > If I compile core.c with "-g" added, like arm64 defconfig does, the
-> > > > > eh_frame section is no longer emitted.
-> > > > >
-> > > > > Hence setting CONFIG_DEBUG_INFO=y, cfr. arm64 defconfig, the warning
-> > > > > is gone, but I'm back to the the "Unexpected GOT/PLT entries" below...
-> > > > >
-> > > > > > Note that even on plain be2881824ae9eb92, I get:
-> > > > > >
-> > > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> > > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> > > > > >
-> > > > > > The parent commit obviously doesn't show that (but probably still has
-> > > > > > the problem).
-> > > >
-> > > > Reverting both
-> > > > b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section placement")
-> > > > be2881824ae9eb92 ("arm64/build: Assert for unwanted sections")
-> > > > seems to solve my problems, without any ill effects?
-> > > >
-> > >
-> > > I cannot reproduce the issue here with my distro GCC+binutils (Debian 8.3.0)
-> > >
-> > > The presence of .data.rel.ro and .got.plt sections suggests that the
-> > > toolchain is using -fpie and/or -z relro to build shared objects
-> > > rather than a fully linked bare metal binary.
-> > >
-> > > Which toolchain are you using? Does adding -fno-pie to the compiler
-> >
-> > gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)  from Ubuntu 20.04LTS.
-> >
-> > > command line and/or adding -z norelro to the linker command line make
-> > > any difference?
-> >
-> > I'll give that a try later...
->
-> This patch just got picked up into the for-next branch of the arm64
-> tree; it enables `-z norelro` regardless of configs.
-> https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/core&id=3b92fa7485eba16b05166fddf38ab42f2ff6ab95
-> If you apply that, that should help you test `-z norelro` quickly.
+When the remapped MSI target in the KVM routing table is invalidated,
+the VMM needs to *deassociate* the IRQFD and fall back to handling the
+next IRQ in userspace, so it can be retranslated and a fault reported
+if appropriate.
 
-Thanks, will give that a try, too.
+It's possible to do that by constantly registering and deregistering the
+fd in the userspace poll loop, but it gets ugly especially because the
+fallback handler isn't really local to the core MSI handling.
 
-Gr{oetje,eeting}s,
+It's much nicer if the userspace handler can just remain registered all
+the time, and it just doesn't get any events when KVM steals them first.
+Which is precisely what happens with posted interrupts, and this makes
+it consistent. (Unless I'm missing something that prevents posted
+interrupts from working when there's another listener on the eventfd?)
 
-                        Geert
+Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
+---
+ include/linux/wait.h | 12 +++++++++++-
+ kernel/sched/wait.c  | 11 +++++++++++
+ 2 files changed, 22 insertions(+), 1 deletion(-)
 
+diff --git a/include/linux/wait.h b/include/linux/wait.h
+index 27fb99cfeb02..fe10e8570a52 100644
+--- a/include/linux/wait.h
++++ b/include/linux/wait.h
+@@ -22,6 +22,7 @@ int default_wake_function(struct wait_queue_entry *wq_entry, unsigned mode, int
+ #define WQ_FLAG_BOOKMARK	0x04
+ #define WQ_FLAG_CUSTOM		0x08
+ #define WQ_FLAG_DONE		0x10
++#define WQ_FLAG_PRIORITY	0x20
+ 
+ /*
+  * A single wait-queue entry structure:
+@@ -164,11 +165,20 @@ static inline bool wq_has_sleeper(struct wait_queue_head *wq_head)
+ 
+ extern void add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+ extern void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
++extern void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+ extern void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry);
+ 
+ static inline void __add_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+ {
+-	list_add(&wq_entry->entry, &wq_head->head);
++	struct list_head *head = &wq_head->head;
++	struct wait_queue_entry *wq;
++
++	list_for_each_entry(wq, &wq_head->head, entry) {
++		if (!(wq->flags & WQ_FLAG_PRIORITY))
++			break;
++		head = &wq->entry;
++	}
++	list_add(&wq_entry->entry, head);
+ }
+ 
+ /*
+diff --git a/kernel/sched/wait.c b/kernel/sched/wait.c
+index 01f5d3020589..d2a84c8e88bf 100644
+--- a/kernel/sched/wait.c
++++ b/kernel/sched/wait.c
+@@ -37,6 +37,17 @@ void add_wait_queue_exclusive(struct wait_queue_head *wq_head, struct wait_queue
+ }
+ EXPORT_SYMBOL(add_wait_queue_exclusive);
+ 
++void add_wait_queue_priority(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
++{
++	unsigned long flags;
++
++	wq_entry->flags |= WQ_FLAG_EXCLUSIVE | WQ_FLAG_PRIORITY;
++	spin_lock_irqsave(&wq_head->lock, flags);
++	__add_wait_queue(wq_head, wq_entry);
++	spin_unlock_irqrestore(&wq_head->lock, flags);
++}
++EXPORT_SYMBOL_GPL(add_wait_queue_priority);
++
+ void remove_wait_queue(struct wait_queue_head *wq_head, struct wait_queue_entry *wq_entry)
+ {
+ 	unsigned long flags;
 -- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+2.26.2
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
