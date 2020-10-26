@@ -2,144 +2,159 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1E262299336
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:00:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71AC0299341
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:02:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787058AbgJZRAt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:00:49 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:54105 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1775582AbgJZRAr (ORCPT
+        id S1775672AbgJZRCl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:02:41 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:34406 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775678AbgJZRCf (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:00:47 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 8D8D75805DF;
-        Mon, 26 Oct 2020 13:00:46 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute6.internal (MEProxy); Mon, 26 Oct 2020 13:00:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=C2vT4YWldJbuxSY1g9g5EETM2zW
-        xr1fwz0Zt7cC50Ks=; b=UGqDC3y+c6CfUFj4e9uOe+gGA5WC6bYlniMNyOZlum1
-        wHmoClQJc/d7CmU9FK+UXbnPe7TJMsjr4BUaJaKxK91Eiqcjeqk3yO2zFnGSOoLw
-        qnJ/vCgRiaD9qAggPd6LYaEwJvE5c+fmrXu1N5y1atHiK7MtSB5/EWgy1hg20LwO
-        AHAO5AtrcqYUaJ+hE86VVDZHlCZNRg4sVaOFUvC3DjM5iCG12GfECe7pposwYO05
-        zvgek4ktJK4x/qnwRSvx/uXBvIkqH5eRG7YnFUAkPbdEUy8bl93lxDXw5nlEJ/d3
-        nvNA+zqL3GtrWfHTDENwjDdHM4rhSX2znpOtv7uMmAQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=C2vT4Y
-        WldJbuxSY1g9g5EETM2zWxr1fwz0Zt7cC50Ks=; b=LZYxVdBt+VytNDBZwg3ILL
-        uBCamcXGvYcz8uSMfYZZLmpvb3HlqiK0Vpvj78yQAak6O2oOy6W47TftHp8FD4aQ
-        eX8e0EIngTvm6ZUNugrDSQFa+/gy5KZAyfol+56hLYUftd9eBBFQmU+xxGdvvep4
-        Y4ygSJJl9Dx9CjGZyoGgUACpfge4x2KlxthOBzinlEOGCuw226EGawqxSuvIm7K9
-        YG7i7sPF69qvA0R3NTTEFqEbcQBrTWphcZaQaoodFi6wOPj5Bp+mmsG/ViRpeM/w
-        p/m0bVE2MwH1gO0wOFqrWf9ozw31AyK2QprdiydFhTvM+sCOUnSVunTDvnnUB6Sw
-        ==
-X-ME-Sender: <xms:uwCXX-ILvrkKYZU_q3XlYxh8EhtZviUsPUAc0yAZVq_qdjy8sAccwg>
-    <xme:uwCXX2I35gzBUB-w07WupOXqO-PmMnwUQLvTjJZatJ6UeMx2Ai6PkWsLhES6R-gYn
-    7Vq1PSxyi2opHhzEHg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtudenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeduvdduhfekkeehgffftefflefgffdtheffudffgeevteffheeuiedvvdejvdfg
-    veenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:uwCXX-v4f1VoDPQ0qKwBjnaoVDGoD4vBy9dPkPXoBBTN8i9Qojd05A>
-    <xmx:uwCXXzaKp-iYeJd-w-56B1hgT8la6bqH58zehO8jV5km6zqwphvYEA>
-    <xmx:uwCXX1Yhjg86n5kkEHXaMmnsdD2dYkOqapxIzpIGb9ec8HQUc3Gusg>
-    <xmx:vgCXXySnKFYtW-gQXpz9FmU-tCdCSJGlJj8hHYtXogExLdLvDjxe9w>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id 065263280063;
-        Mon, 26 Oct 2020 13:00:42 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 18:00:41 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 12/14] media: sunxi: Add support for the A83T MIPI CSI-2
- controller
-Message-ID: <20201026170041.qsjzxlurufuuhcsq@gilmour.lan>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-13-paul.kocialkowski@bootlin.com>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="fifha5mo6q7tep5s"
-Content-Disposition: inline
-In-Reply-To: <20201023174546.504028-13-paul.kocialkowski@bootlin.com>
+        Mon, 26 Oct 2020 13:02:35 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QGt29M030539;
+        Mon, 26 Oct 2020 17:02:22 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=content-type :
+ mime-version : subject : from : in-reply-to : date : cc :
+ content-transfer-encoding : message-id : references : to;
+ s=corp-2020-01-29; bh=44GDkLc6kJbDFvAd8EZbxYxwh8jmuWu+PJUUda+TNTU=;
+ b=giUG0iJNhnf6C0MouW+Nny0iMj9i6GXMDm7rfyFf5LXLBN15gAS0uN/jBIJB51NCHeh5
+ OGqO19z/4FXL/Wz64DcoBfY6wgpT0wPUIproBzKw8j4ULOFoyJgt5owROirY2TY6OAXr
+ 5ycrH/jtf11k58BBo7b85WopU43xtkEd5/nVWYUF5OUBBKZrNzhZg5ZySi6TgdeZ8SKm
+ jYUW9OjD1TiR8lBbXQ3Dfp3ygCu+IiQnn0Bg0NHki1Q2wd9z7SkAeArwTokRUSF8Cdy0
+ 4pAvWoeSJg+6/4kBGwsgThWDBlnBLX3ncrpkFHLjJzRi1ZBFB9ftob6URKuhknKgE6Vv 4Q== 
+Received: from aserp3030.oracle.com (aserp3030.oracle.com [141.146.126.71])
+        by aserp2120.oracle.com with ESMTP id 34cc7knr76-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 17:02:22 +0000
+Received: from pps.filterd (aserp3030.oracle.com [127.0.0.1])
+        by aserp3030.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QGuLq1186614;
+        Mon, 26 Oct 2020 17:00:22 GMT
+Received: from aserv0121.oracle.com (aserv0121.oracle.com [141.146.126.235])
+        by aserp3030.oracle.com with ESMTP id 34cwuke7by-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 17:00:22 +0000
+Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
+        by aserv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09QH0CI3009581;
+        Mon, 26 Oct 2020 17:00:13 GMT
+Received: from dhcp-10-159-254-24.vpn.oracle.com (/10.159.254.24)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 10:00:12 -0700
+Content-Type: text/plain;
+        charset=utf-8
+Mime-Version: 1.0 (Mac OS X Mail 13.4 \(3608.120.23.2.1\))
+Subject: Re: [PATCH 1/1] video: fbdev: fix divide error in fbcon_switch
+From:   Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+In-Reply-To: <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
+Date:   Mon, 26 Oct 2020 10:00:11 -0700
+Cc:     Thomas Zimmermann <tzimmermann@suse.de>,
+        linux-kernel@vger.kernel.org, linux-fbdev@vger.kernel.org,
+        b.zolnierkie@samsung.com, jani.nikula@intel.com,
+        daniel.vetter@ffwll.ch, gustavoars@kernel.org,
+        dri-devel@lists.freedesktop.org, akpm@linux-foundation.org,
+        rppt@kernel.org
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <3294C797-1BBB-4410-812B-4A4BB813F002@oracle.com>
+References: <20201021235758.59993-1-saeed.mirzamohammadi@oracle.com>
+ <ad87c5c1-061d-8a81-7b2c-43a8687a464f@suse.de>
+To:     stable@vger.kernel.org
+X-Mailer: Apple Mail (2.3608.120.23.2.1)
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 bulkscore=0
+ spamscore=0 adultscore=0 malwarescore=0 mlxlogscore=999 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260114
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1015 mlxscore=0 suspectscore=0
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260114
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Thanks, adding stable.
 
---fifha5mo6q7tep5s
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Saeed
 
-On Fri, Oct 23, 2020 at 07:45:44PM +0200, Paul Kocialkowski wrote:
-> The A83T supports MIPI CSI-2 with a composite controller, covering both t=
-he
-> protocol logic and the D-PHY implementation. This controller seems to be =
-found
-> on the A83T only and probably was abandonned since.
+> On Oct 22, 2020, at 12:34 AM, Thomas Zimmermann <tzimmermann@suse.de> =
+wrote:
 >=20
-> This implementation splits the protocol and D-PHY registers and uses the =
-PHY
-> framework internally. The D-PHY is not registered as a standalone PHY dri=
-ver
-> since it cannot be used with any other controller.
+> Hi
 >=20
-> There are a few notable points about the controller:
-> - The initialisation sequence involes writing specific magic init values =
-that
->   do not seem to make any particular sense given the concerned register f=
-ields.
-> - Interrupts appear to be hitting regardless of the interrupt mask regist=
-ers,
->   which can cause a serious flood when transmission errors occur.
-
-Ah, so it's a separate driver too.
-
-> This work is based on the first version of the driver submitted by
-> K=E9vin L'h=F4pital, which was adapted to mainline from the Allwinner BSP.
-> This version integrates MIPI CSI-2 support as a standalone V4L2 subdev
-> instead of merging it in the sun6i-csi driver.
+> On 22.10.20 01:57, saeed.mirzamohammadi@oracle.com wrote:
+>> From: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+>>=20
+>> This patch fixes the issue due to:
+>>=20
+>> [   89.572883] divide_error: 0000 [#1] SMP KASAN PTI
+>> [   89.572897] CPU: 3 PID: 16083 Comm: repro Not tainted =
+5.9.0-rc7.20200930.rc1.allarch-19-g3e32d0d.syzk #5
+>> [   89.572902] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), =
+BIOS 0.5.1 01/01/2011
+>> [   89.572934] RIP: 0010:cirrusfb_check_var+0x84/0x1260
 >=20
-> It was tested on a Banana Pi M3 board with an OV8865 sensor in a 4-lane
-> configuration.
+> BTW, if you run qemu with cirrus, there's also a DRM driver named
+> cirrus.ko. Might be a better choice than the old fbdev driver. If you
+> just care about qemu, but not the actual graphics device, take a look =
+at
+>=20
+>  =
+https://urldefense.com/v3/__https://www.kraxel.org/blog/2014/10/qemu-using=
+-cirrus-considered-harmful/__;!!GqivPVa7Brio!LmgeM-pVBVH80uVELF1P1nBGAbAlh=
+vnxKKE_ZrEc9d76AznvAAgP1FAp3_zNa2frKaIUZteK$=20
+>=20
+> Anyway, thanks for your patch.
+>=20
+> Best regards
+> Thomas
+>=20
+>>=20
+>> The error happens when the pixels value is calculated before =
+performing the sanity checks on bits_per_pixel.
+>> A bits_per_pixel set to zero causes divide by zero error.
+>>=20
+>> This patch moves the calculation after the sanity check.
+>>=20
+>> Signed-off-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+>> Tested-by: Saeed Mirzamohammadi <saeed.mirzamohammadi@oracle.com>
+>> ---
+>> drivers/video/fbdev/cirrusfb.c | 3 ++-
+>> 1 file changed, 2 insertions(+), 1 deletion(-)
+>>=20
+>> diff --git a/drivers/video/fbdev/cirrusfb.c =
+b/drivers/video/fbdev/cirrusfb.c
+>> index 15a9ee7cd734..a7749101b094 100644
+>> --- a/drivers/video/fbdev/cirrusfb.c
+>> +++ b/drivers/video/fbdev/cirrusfb.c
+>> @@ -531,7 +531,7 @@ static int cirrusfb_check_var(struct =
+fb_var_screeninfo *var,
+>> {
+>> 	int yres;
+>> 	/* memory size in pixels */
+>> -	unsigned pixels =3D info->screen_size * 8 / var->bits_per_pixel;
+>> +	unsigned int pixels;
+>> 	struct cirrusfb_info *cinfo =3D info->par;
+>>=20
+>> 	switch (var->bits_per_pixel) {
+>> @@ -573,6 +573,7 @@ static int cirrusfb_check_var(struct =
+fb_var_screeninfo *var,
+>> 		return -EINVAL;
+>> 	}
+>>=20
+>> +	pixels =3D info->screen_size * 8 / var->bits_per_pixel;
+>> 	if (var->xres_virtual < var->xres)
+>> 		var->xres_virtual =3D var->xres;
+>> 	/* use highest possible virtual resolution */
+>>=20
+>=20
+> --=20
+> Thomas Zimmermann
+> Graphics Driver Developer
+> SUSE Software Solutions Germany GmbH
+> Maxfeldstr. 5, 90409 N=C3=BCrnberg, Germany
+> (HRB 36809, AG N=C3=BCrnberg)
+> Gesch=C3=A4ftsf=C3=BChrer: Felix Imend=C3=B6rffer
 
-Co-developped-by and SoB from Kevin?
-
-Looking at the driver, the same comments from the v3s apply there
-
-Maxime
-
---fifha5mo6q7tep5s
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5cAuQAKCRDj7w1vZxhR
-xQA7AQCD+RWN+ye76Hyh+RC2HCeFniYs1GUZ+zYbJ4AwNgCE9QEA3lh5d35xT4LL
-Q85GQqjRb2oIKo8G2euZT7n4hqW5hwY=
-=3VJd
------END PGP SIGNATURE-----
-
---fifha5mo6q7tep5s--
