@@ -2,135 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0EC4C2991A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:02:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 77EE02991AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:02:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784691AbgJZQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        id S1784682AbgJZQCL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Oct 2020 12:02:11 -0400
-Received: from mail-ot1-f66.google.com ([209.85.210.66]:40191 "EHLO
-        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773890AbgJZQBh (ORCPT
+Received: from casper.infradead.org ([90.155.50.34]:44296 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773903AbgJZQCA (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:01:37 -0400
-Received: by mail-ot1-f66.google.com with SMTP id f97so8452527otb.7;
-        Mon, 26 Oct 2020 09:01:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=asUJBtXsqUx3cRgU1NNSgl2otnJ/rjwe37VOtYFH0nY=;
-        b=WyuQhwHY0btZowk4UvP2KtA00bvttBpF6ZCVn2YlBFAZGx/aVnuYQlzEYejda8I/tw
-         /UMvlHtz0S4Ccx8f9J0iYSJMCeJgjYQ7FyhO33HARqMO338327lkHnCjluPAnlnInYl7
-         fsHMv2rIewlaMw7C4QEAiFGeJCwPCq4GHhOO/iRZnSjCx1ZtVWccOhXJ0pfx6G83UG39
-         WkAR/TuSS2c5J3CoM6cjztr0ZyPOgw12FVXSDpz1D2f6YBbyXPiVRXavNBDTglxYDyKw
-         ocGPhCXBysJD1IawsPlcNpzB4+s8tq0vSfHyEJ/Viyy4Uq5vgXvI1xsj4nDb4QSUcG33
-         6tVg==
-X-Gm-Message-State: AOAM533ww+RT/DBROtZHoIsZcbjqxcNOm0NP1M/AhXwlkIvKGHF4Nklr
-        lJCxwIuYmKBbuJJDcAm6sxD+uwuUShKORexkxjc=
-X-Google-Smtp-Source: ABdhPJxPI+usSlZbZdx1IIlBwkjAFNrQaHoxsJAFSYYUxD2jVsGeXmh3ZzBEHoa089xtWunX1BF5lEiWHp0IZeVW1xM=
-X-Received: by 2002:a9d:5e14:: with SMTP id d20mr11342816oti.107.1603728095846;
- Mon, 26 Oct 2020 09:01:35 -0700 (PDT)
+        Mon, 26 Oct 2020 12:02:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8TVIxK2IWHpuqHBc4eLrHU3NsRBpnzeQBP922ubxUsY=; b=ThBdvIzzZaCa3Dx9qeQ/RMuIrV
+        YxcSthJvRwgK6//jhlniyzDTttj/bb1s0R7A+Non8lS7NnSx8n6JuV6djMUXUb5Drq2SX7GwZN+rC
+        +nJ8RjYgn61A3WTyOF3MWyiowabi2n295+OwN+D6dWMMR8aym4aRViWY6Aas2S5AVh3PDBvKZjxtK
+        w/Toe4KXEDwzlmkRoo6LllzoXnsFdGb6aajoewcbEwIvsSAEioTTR2rQBGT0+oftUAehBSQOyJo/Q
+        WVkeKxrqyt0ZUub6POVvN636iIwGT5r/veP0bNScYarjIgtcz2G9sny8tSFKCAQsLgrELajFJWfAo
+        E1pAQo7w==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX4wI-0000Pc-Uy; Mon, 26 Oct 2020 16:01:43 +0000
+Date:   Mon, 26 Oct 2020 16:01:42 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Muchun Song <songmuchun@bytedance.com>
+Cc:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
+        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
+        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
+        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
+        paulmck@kernel.org, mchehab+huawei@kernel.org,
+        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
+        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
+        almasrymina@google.com, rientjes@google.com,
+        duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 07/19] mm/hugetlb: Free the vmemmap pages associated
+ with each hugetlb page
+Message-ID: <20201026160142.GT20115@casper.infradead.org>
+References: <20201026145114.59424-1-songmuchun@bytedance.com>
+ <20201026145114.59424-8-songmuchun@bytedance.com>
 MIME-Version: 1.0
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
- <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
-In-Reply-To: <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Oct 2020 17:01:24 +0100
-Message-ID: <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
-Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
-To:     Kees Cook <keescook@chromium.org>
-Cc:     Ingo Molnar <mingo@kernel.org>, Ard Biesheuvel <ardb@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026145114.59424-8-songmuchun@bytedance.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > On Fri, Aug 21, 2020 at 9:56 PM Kees Cook <keescook@chromium.org> wrote:
-> > > In preparation for warning on orphan sections, discard
-> > > unwanted non-zero-sized generated sections, and enforce other
-> > > expected-to-be-zero-sized sections (since discarding them might hide
-> > > problems with them suddenly gaining unexpected entries).
-> > >
-> > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> >
-> > This is now commit be2881824ae9eb92 ("arm64/build: Assert for unwanted
-> > sections") in v5.10-rc1, and is causing the following error with
-> > renesas_defconfig[1]:
-> >
-> >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> >
-> > I cannot reproduce this with the standard arm64 defconfig.
-> >
-> > I bisected the error to the aforementioned commit, but understand this
-> > is not the real reason.  If I revert this commit, I still get:
-> >
-> >     aarch64-linux-gnu-ld: warning: orphan section `.got.plt' from
-> > `arch/arm64/kernel/head.o' being placed in section `.got.plt'
-> >     aarch64-linux-gnu-ld: warning: orphan section `.plt' from
-> > `arch/arm64/kernel/head.o' being placed in section `.plt'
-> >     aarch64-linux-gnu-ld: warning: orphan section `.data.rel.ro' from
-> > `arch/arm64/kernel/head.o' being placed in section `.data.rel.ro'
-> >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> >
-> > I.e. including the ".eh_frame" warning. I have tried bisecting that
-> > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
-> > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
-> > placement"), which is another red herring.
->
-> kernel/bpf/core.o is the only file containing an eh_frame section,
-> causing the warning.
-> If I compile core.c with "-g" added, like arm64 defconfig does, the
-> eh_frame section is no longer emitted.
->
-> Hence setting CONFIG_DEBUG_INFO=y, cfr. arm64 defconfig, the warning
-> is gone, but I'm back to the the "Unexpected GOT/PLT entries" below...
->
-> > Note that even on plain be2881824ae9eb92, I get:
-> >
-> >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> >
-> > The parent commit obviously doesn't show that (but probably still has
-> > the problem).
+On Mon, Oct 26, 2020 at 10:51:02PM +0800, Muchun Song wrote:
+> +static void split_vmemmap_pmd(pmd_t *pmd, pte_t *pte_p, unsigned long addr)
+> +{
+> +	struct mm_struct *mm = &init_mm;
+> +	struct page *page;
+> +	pmd_t old_pmd, _pmd;
+> +	int i;
+> +
+> +	old_pmd = READ_ONCE(*pmd);
+> +	page = pmd_page(old_pmd);
+> +	pmd_populate_kernel(mm, &_pmd, pte_p);
+> +
+> +	for (i = 0; i < VMEMMAP_HPAGE_NR; i++, addr += PAGE_SIZE) {
+> +		pte_t entry, *pte;
+> +
+> +		entry = mk_pte(page + i, PAGE_KERNEL);
 
-Reverting both
-b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section placement")
-be2881824ae9eb92 ("arm64/build: Assert for unwanted sections")
-seems to solve my problems, without any ill effects?
+I'd be happier if that were:
 
-Gr{oetje,eeting}s,
+	pgprot_t pgprot = PAGE_KERNEL;
+...
+	for (i = 0; i < VMEMMAP_HPAGE_NR; i++, addr += PAGE_SIZE) {
+		pte_t entry, *pte;
 
-                        Geert
+		entry = mk_pte(page + i, pgprot);
+		pgprot = PAGE_KERNEL_RO;
 
--- 
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
+so that all subsequent tail pages are mapped read-only.
 
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
