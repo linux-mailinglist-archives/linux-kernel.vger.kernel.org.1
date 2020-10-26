@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82A1429A050
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:31:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7BCA429A054
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:31:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409423AbgJZXv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:51:28 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51232 "EHLO mail.kernel.org"
+        id S2409483AbgJZXvi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:51:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51686 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409297AbgJZXvE (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:51:04 -0400
+        id S2409344AbgJZXvO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:51:14 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 73EDF21655;
-        Mon, 26 Oct 2020 23:51:02 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DF35121BE5;
+        Mon, 26 Oct 2020 23:51:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756263;
-        bh=TBbf0P1iaTM9dF80Ec24hVxJ+5R1xA26OQgZCbEpp9Q=;
+        s=default; t=1603756273;
+        bh=Iv6oWJLm2ZeV/TBAkasOqZMrTumMK7Ca24ww5LvigYI=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=W2pIRt0QJDcj5XANghpl19SOyHYiDTuPmaRhhKIDy5PlQZQKsDm2MYTZX0ifHQ7N1
-         UrLwuo7mBXatOdseN+NUJy731/WlinT+h/d7q+w8BYpIHXpHXSe5H/H6LJRFSmfubK
-         LO6fdYZguTPA75jJVBJ+/fAhYttwIEFwT47CoV/8=
+        b=IL7p3mWhez48DCins3LAInHKlV8JK36/+HkHSFVB5k+zSHp6Gmbg4xuX7ZXfnKJOn
+         MVFGYvI2wBELq1fSKoIa+Cc8aE6zOB2AFMUwoNdnydtN9ZI+HO3d8jjbnD+u4LoYel
+         uYEV4BUBA9AReWjwuHaxMdoaJDjjufrpqKThYhNE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 096/147] bus: mhi: core: Abort suspends due to outgoing pending packets
-Date:   Mon, 26 Oct 2020 19:48:14 -0400
-Message-Id: <20201026234905.1022767-96-sashal@kernel.org>
+Cc:     Zhao Heming <heming.zhao@suse.com>,
+        Song Liu <songliubraving@fb.com>,
+        Sasha Levin <sashal@kernel.org>, linux-raid@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 105/147] md/bitmap: md_bitmap_get_counter returns wrong blocks
+Date:   Mon, 26 Oct 2020 19:48:23 -0400
+Message-Id: <20201026234905.1022767-105-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,49 +42,51 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+From: Zhao Heming <heming.zhao@suse.com>
 
-[ Upstream commit 515847c557dd33167be86cb429fc0674a331bc88 ]
+[ Upstream commit d837f7277f56e70d82b3a4a037d744854e62f387 ]
 
-Add the missing check to abort suspends if a client driver has pending
-outgoing packets to send to the device. This allows better utilization
-of the MHI bus wherein clients on the host are not left waiting for
-longer suspend or resume cycles to finish for data transfers.
+md_bitmap_get_counter() has code:
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20200929175218.8178-4-manivannan.sadhasivam@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+```
+    if (bitmap->bp[page].hijacked ||
+        bitmap->bp[page].map == NULL)
+        csize = ((sector_t)1) << (bitmap->chunkshift +
+                      PAGE_COUNTER_SHIFT - 1);
+```
+
+The minus 1 is wrong, this branch should report 2048 bits of space.
+With "-1" action, this only report 1024 bit of space.
+
+This bug code returns wrong blocks, but it doesn't inflence bitmap logic:
+1. Most callers focus this function return value (the counter of offset),
+   not the parameter blocks.
+2. The bug is only triggered when hijacked is true or map is NULL.
+   the hijacked true condition is very rare.
+   the "map == null" only true when array is creating or resizing.
+3. Even the caller gets wrong blocks, current code makes caller just to
+   call md_bitmap_get_counter() one more time.
+
+Signed-off-by: Zhao Heming <heming.zhao@suse.com>
+Signed-off-by: Song Liu <songliubraving@fb.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/core/pm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/md/md-bitmap.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 7960980780832..661d704c8093d 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -686,7 +686,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
- 		return -EIO;
- 
- 	/* Return busy if there are any pending resources */
--	if (atomic_read(&mhi_cntrl->dev_wake))
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts))
- 		return -EBUSY;
- 
- 	/* Take MHI out of M2 state */
-@@ -712,7 +713,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
- 
- 	write_lock_irq(&mhi_cntrl->pm_lock);
- 
--	if (atomic_read(&mhi_cntrl->dev_wake)) {
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts)) {
- 		write_unlock_irq(&mhi_cntrl->pm_lock);
- 		return -EBUSY;
- 	}
+diff --git a/drivers/md/md-bitmap.c b/drivers/md/md-bitmap.c
+index b10c51988c8ee..4894c107f72ce 100644
+--- a/drivers/md/md-bitmap.c
++++ b/drivers/md/md-bitmap.c
+@@ -1367,7 +1367,7 @@ __acquires(bitmap->lock)
+ 	if (bitmap->bp[page].hijacked ||
+ 	    bitmap->bp[page].map == NULL)
+ 		csize = ((sector_t)1) << (bitmap->chunkshift +
+-					  PAGE_COUNTER_SHIFT - 1);
++					  PAGE_COUNTER_SHIFT);
+ 	else
+ 		csize = ((sector_t)1) << bitmap->chunkshift;
+ 	*blocks = csize - (offset & (csize - 1));
 -- 
 2.25.1
 
