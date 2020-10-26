@@ -2,101 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F0074299180
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:56:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0402829918F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:58:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784544AbgJZP4S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:56:18 -0400
-Received: from casper.infradead.org ([90.155.50.34]:44154 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1770092AbgJZPzs (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:55:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=FgbbqYAnGRF35zH2OzYSRfHYC7ZQ87tXva+0UcTDb5w=; b=MrvSKnSLtJmHzqtvMqSYWqMul7
-        0Yue1TcCQOsl0ShSsVMwDfT12FmklmGSDwt5S+rR/DLKKstAo18MgPjTlP4JFw1MBgYjGus5ojIqT
-        XgUFKpsy393uHiochr5Mi+QV74/Du2zhZsTed/nuXO1VTRd7Wcj+fF/5cJQTq5FzKVGWNl81/w3/G
-        g5y9wszVwrshv6c0KoHv+l2GB4aRnJw61ci9NkzJFDXWj92nX6YagARqwJtWrrUL08gdC0DQgk/gh
-        8x1eLnbHruJ9FVeikM/J1c6MIRW8BaigwdEvy16I80Lq4JxDNWwQ8JluJkH+BhcYGT7PsZF0dHhHN
-        5vcpQdmQ==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX4qA-0008QW-RC; Mon, 26 Oct 2020 15:55:23 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 588F43006D0;
-        Mon, 26 Oct 2020 16:55:21 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 3E75E20116727; Mon, 26 Oct 2020 16:55:21 +0100 (CET)
-Date:   Mon, 26 Oct 2020 16:55:21 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Kyle Huey <me@kylehuey.com>
-Cc:     open list <linux-kernel@vger.kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
-        Linus Torvalds <torvalds@linux-foundation.org>,
-        Robert O'Callahan <rocallahan@gmail.com>,
-        Alexandre Chartre <alexandre.chartre@oracle.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Frederic Weisbecker <frederic@kernel.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Masami Hiramatsu <mhiramat@kernel.org>,
-        Petr Mladek <pmladek@suse.com>,
-        Joel Fernandes <joel@joelfernandes.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
-        Juergen Gross <jgross@suse.com>,
-        Brian Gerst <brgerst@gmail.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Josh Poimboeuf <jpoimboe@redhat.com>,
-        Daniel Thompson <daniel.thompson@linaro.org>
-Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
- longer reported in dr6
-Message-ID: <20201026155521.GQ2594@hirez.programming.kicks-ass.net>
-References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+        id S1784626AbgJZP6h (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:58:37 -0400
+Received: from foss.arm.com ([217.140.110.172]:43166 "EHLO foss.arm.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1784512AbgJZP4v (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:56:51 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 05B5C1042;
+        Mon, 26 Oct 2020 08:56:50 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 3D86B3F719;
+        Mon, 26 Oct 2020 08:56:48 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 15:56:35 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Catalin Marinas <catalin.marinas@arm.com>
+Cc:     Topi Miettinen <toiwoton@gmail.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        systemd-devel@lists.freedesktop.org,
+        Kees Cook <keescook@chromium.org>,
+        kernel-hardening@lists.openwall.com,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        linux-hardening@vger.kernel.org, libc-alpha@sourceware.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+Message-ID: <20201026155628.GA27285@arm.com>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022075447.GO3819@arm.com>
+ <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
+ <202010221256.A4F95FD11@keescook>
+ <20201023090232.GA25736@gaia>
+ <cf655c11-d854-281a-17ae-262ddf0aaa08@gmail.com>
+ <20201026145245.GD3117@gaia>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+In-Reply-To: <20201026145245.GD3117@gaia>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 07:33:08AM -0700, Kyle Huey wrote:
-> After resuming a ptracee with PTRACE_SINGLESTEP, in the following
-> ptrace stop retrieving the dr6 value for the tracee gets a value that
-> does not include DR_STEP (it is in fact always DR6_RESERVED). I
-> bisected this to the 13cb73490f475f8e7669f9288be0bcfa85399b1f merge. I
-> did not bisect further.
+On Mon, Oct 26, 2020 at 02:52:46PM +0000, Catalin Marinas via Libc-alpha wrote:
+> On Sat, Oct 24, 2020 at 02:01:30PM +0300, Topi Miettinen wrote:
+> > On 23.10.2020 12.02, Catalin Marinas wrote:
+> > > On Thu, Oct 22, 2020 at 01:02:18PM -0700, Kees Cook wrote:
+> > > > Regardless, it makes sense to me to have the kernel load the executable
+> > > > itself with BTI enabled by default. I prefer gaining Catalin's suggested
+> > > > patch[2]. :)
+> > > [...]
+> > > > [2] https://lore.kernel.org/linux-arm-kernel/20201022093104.GB1229@gaia/
+> > > 
+> > > I think I first heard the idea at Mark R ;).
+> > > 
+> > > It still needs glibc changes to avoid the mprotect(), or at least ignore
+> > > the error. Since this is an ABI change and we don't know which kernels
+> > > would have it backported, maybe better to still issue the mprotect() but
+> > > ignore the failure.
+> > 
+> > What about kernel adding an auxiliary vector as a flag to indicate that BTI
+> > is supported and recommended by the kernel? Then dynamic loader could use
+> > that to detect that a) the main executable is BTI protected and there's no
+> > need to mprotect() it and b) PROT_BTI flag should be added to all PROT_EXEC
+> > pages.
 > 
-> I don't see any handling to ever set DR_STEP in virtual_dr6, so I
-> think this code is just broken.
+> We could add a bit to AT_FLAGS, it's always been 0 for Linux.
 > 
-> Sorry for not testing this when I was CCd on the original patch series :)
+> > In absence of the vector, the dynamic loader might choose to skip doing
+> > PROT_BTI at all (since the main executable isn't protected anyway either, or
+> > maybe even the kernel is up-to-date but it knows that it's not recommended
+> > for some reason, or maybe the kernel is so ancient that it doesn't know
+> > about BTI). Optionally it could still read the flag from ELF later (for
+> > compatibility with old kernels) and then do the mprotect() dance, which may
+> > trip seccomp filters, possibly fatally.
+> 
+> I think the safest is for the dynamic loader to issue an mprotect() and
+> ignore the EPERM error. Not all user deployments have this seccomp
+> filter, so they can still benefit, and user can't tell whether the
+> kernel change has been backported.
+> 
+> Now, if the dynamic loader silently ignores the mprotect() failure on
+> the main executable, is there much value in exposing a flag in the aux
+> vectors? It saves a few (one?) mprotect() calls but I don't think it
+> matters much. Anyway, I don't mind the flag.
 
-Urgh, now I have to try and remember how all that worked again ...
+I don't see a problem with the aforementioned patch [2] to pre-set BTI
+on the pages of the main binary.
 
-I suspect it's either one (or both) of the last two:
+The original rationale here was that ld.so doesn't _need_ this, since it
+is going to examine the binary's ELF headers anyway.  But equally, if
+the binary is marked as supporting BTI then it's safe to enable BTI for
+the binary's own pages.
 
-  f4956cf83ed1 ("x86/debug: Support negative polarity DR6 bits")
-  d53d9bc0cf78 ("x86/debug: Change thread.debugreg6 to thread.virtual_dr6")
+
+I'd tend to agree that an AT_FLAGS flag doesn't add much.  I think real
+EPERMs would only be seen in assert-fail type situations.  Failure of
+mmap() is likely to result in a segfault later on, or correct operation
+with weakened permissions on some pages.  Given the likely failure
+modes, that situation doesn't feel too bad.
 
 
-Just to clarify, the sequence is something like:
+> The only potential risk is if the dynamic loader decides not to turn
+> PROT_BTI one because of some mix and match of objects but AFAIK BTI
+> allows interworking.
 
- - tracer: ptrace(PTRACE_SINGLESTEP)
- - tracee: #DB, DR6 contains DR_STEP
- - tracer: ptrace_get_debugreg(6)
+Yes, the design means that a page's PROT_BTI can be set safely if the
+code in that page was compiled for BTI, irrespective of how other pages
+were compiled.  The reasons why we don't do this at finer granularity
+are (a) is't not very useful, and (b) ELF images only contain a BTI
+property note for the whole image, not per segment.
 
-?
+I think that ld.so already makes this decision at ELF image granularity
+(unless someone contradicts me).
 
-You're right that that would be broken, let me try and figure out what
-the best way would be 'fix' that.
-
-Also, can you confirm that pthread_set_debugreg(6) should not do
-anything useful?
+Cheers
+---Dave
