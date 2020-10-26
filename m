@@ -2,35 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0236D299B72
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:51:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6BBFF299B76
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:51:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409432AbgJZXva (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:51:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51342 "EHLO mail.kernel.org"
+        id S2409454AbgJZXve (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:51:34 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51448 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409308AbgJZXvH (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:51:07 -0400
+        id S2409258AbgJZXvJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:51:09 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AABCB21BE5;
-        Mon, 26 Oct 2020 23:51:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1919820B1F;
+        Mon, 26 Oct 2020 23:51:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756266;
-        bh=CrB6/OrwiBYznvNDffIExnezDMuDC+LEIk22ZuZdcIE=;
+        s=default; t=1603756269;
+        bh=SbFHCpjFUIgnRes5SSzBfbN3T+ObB3Aq3esfOYYDvAw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=xfC6mpCoDStY8v4UzkSXHNjJkOheVWGBUyNK8P9XW2ATzGOogRmQpTlQyCWJMJGfu
-         Ryjojms0O6pggmOXKaKvW/Fd17Nj99yyvUVf03MSss1Ar10Z9XM0vz02eV9DGymtNV
-         WiFpgI9c5ObBj0yWS2AR16XQiXHX0NK3CFFwrsqA=
+        b=wTRRimrOytpWvFAuwXfJw/g4fTnygSiMZhyPK/U7NhTvMb7HHZfuN8ihv+iiB8t1c
+         1MKwWuUouc61UsRS/L3NeFScxmZtOhf51h2tTZMU8ddEstI4v9n5MDmTEGW0g+JtcO
+         pOolzRxHHSx+Xd835u0Sv5z9O1F7rTcaWETC4TeI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
-        Sebastian Reichel <sebastian.reichel@collabora.com>,
-        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 099/147] power: supply: test_power: add missing newlines when printing parameters by sysfs
-Date:   Mon, 26 Oct 2020 19:48:17 -0400
-Message-Id: <20201026234905.1022767-99-sashal@kernel.org>
+Cc:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
+        Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        Eryk Brol <eryk.brol@amd.com>,
+        Alex Deucher <alexander.deucher@amd.com>,
+        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
+        dri-devel@lists.freedesktop.org
+Subject: [PATCH AUTOSEL 5.9 101/147] drm/amd/display: Avoid set zero in the requested clk
+Date:   Mon, 26 Oct 2020 19:48:19 -0400
+Message-Id: <20201026234905.1022767-101-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -42,81 +45,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
 
-[ Upstream commit c07fa6c1631333f02750cf59f22b615d768b4d8f ]
+[ Upstream commit 2f8be0e516803cc3fd87c1671247896571a5a8fb ]
 
-When I cat some module parameters by sysfs, it displays as follows.
-It's better to add a newline for easy reading.
+[Why]
+Sometimes CRTCs can be disabled due to display unplugging or temporarily
+transition in the userspace; in these circumstances, DCE tries to set
+the minimum clock threshold. When we have this situation, the function
+bw_calcs is invoked with number_of_displays set to zero, making DCE set
+dispclk_khz and sclk_khz to zero. For these reasons, we have seen some
+ATOM bios errors that look like:
 
-root@syzkaller:~# cd /sys/module/test_power/parameters/
-root@syzkaller:/sys/module/test_power/parameters# cat ac_online
-onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
-trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
-goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
-dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
-LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
-onroot@syzkaller:/sys/module/test_power/parameters#
+[drm:atom_op_jump [amdgpu]] *ERROR* atombios stuck in loop for more than
+5secs aborting
+[drm:amdgpu_atom_execute_table_locked [amdgpu]] *ERROR* atombios stuck
+executing EA8A (len 761, WS 0, PS 0) @ 0xEABA
 
-Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
-Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
+[How]
+This error happens due to an attempt to optimize the bandwidth using the
+sclk, and the dispclk clock set to zero. Technically we handle this in
+the function dce112_set_clock, but we are not considering the case that
+this value is set to zero. This commit fixes this issue by ensuring that
+we never set a minimum value below the minimum clock threshold.
+
+Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+Reviewed-by: Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>
+Acked-by: Eryk Brol <eryk.brol@amd.com>
+Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/power/supply/test_power.c | 6 ++++++
- 1 file changed, 6 insertions(+)
+ drivers/gpu/drm/amd/display/dc/clk_mgr/dce112/dce112_clk_mgr.c | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
 
-diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
-index 04acd76bbaa12..4895ee5e63a9a 100644
---- a/drivers/power/supply/test_power.c
-+++ b/drivers/power/supply/test_power.c
-@@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
- static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
+diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dce112/dce112_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dce112/dce112_clk_mgr.c
+index d031bd3d30724..807dca8f7d7aa 100644
+--- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dce112/dce112_clk_mgr.c
++++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dce112/dce112_clk_mgr.c
+@@ -79,8 +79,7 @@ int dce112_set_clock(struct clk_mgr *clk_mgr_base, int requested_clk_khz)
+ 	memset(&dce_clk_params, 0, sizeof(dce_clk_params));
  
-@@ -366,6 +367,7 @@ static int param_set_usb_online(const char *key, const struct kernel_param *kp)
- static int param_get_usb_online(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
+ 	/* Make sure requested clock isn't lower than minimum threshold*/
+-	if (requested_clk_khz > 0)
+-		requested_clk_khz = max(requested_clk_khz,
++	requested_clk_khz = max(requested_clk_khz,
+ 				clk_mgr_dce->base.dentist_vco_freq_khz / 62);
  
-@@ -380,6 +382,7 @@ static int param_set_battery_status(const char *key,
- static int param_get_battery_status(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -394,6 +397,7 @@ static int param_set_battery_health(const char *key,
- static int param_get_battery_health(char *buffer, const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -409,6 +413,7 @@ static int param_get_battery_present(char *buffer,
- 					const struct kernel_param *kp)
- {
- 	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
-@@ -426,6 +431,7 @@ static int param_get_battery_technology(char *buffer,
- {
- 	strcpy(buffer,
- 		map_get_key(map_technology, battery_technology, "unknown"));
-+	strcat(buffer, "\n");
- 	return strlen(buffer);
- }
- 
+ 	dce_clk_params.target_clock_frequency = requested_clk_khz;
 -- 
 2.25.1
 
