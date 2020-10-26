@@ -2,93 +2,191 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BAA02298D32
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D796D298D40
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775641AbgJZMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:52:28 -0400
-Received: from mail-il1-f195.google.com ([209.85.166.195]:44110 "EHLO
-        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773136AbgJZMw2 (ORCPT
+        id S1775745AbgJZMxG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:53:06 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:51035 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775702AbgJZMwr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:52:28 -0400
-Received: by mail-il1-f195.google.com with SMTP id z2so8156385ilh.11
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:52:27 -0700 (PDT)
+        Mon, 26 Oct 2020 08:52:47 -0400
+Received: by mail-wm1-f66.google.com with SMTP id 13so11520502wmf.0;
+        Mon, 26 Oct 2020 05:52:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=mime-version:sender:from:date:message-id:subject:to;
-        bh=evBtr2U3jyh/gD7lsrm2w8eoclcl6R4P/duCxIhxtAo=;
-        b=pAWCSLFbe8JMzA/ukqOU5VTizUIMSexSOAv628k5mG/fjYEdWgpUTcB3UweEsb7sYk
-         S3D43/WHWlAWrbWCpC242qgYtjY7Ur/QRmeSWoTpTrgfPmpoHBl0r1RLVB2/tNbVEEl9
-         yPFV6fGHCz4EuZMrF0mr1tS5T/QCnf1XAK/aT6wVDbFw+h3tE3k9jMG0UUuAjUAvKvOu
-         Id+E9hEn0jYbGnAEusFECaqtZx/5aeiqHnyChczTsrCeJy4nSsGkgCWoNnsK9j1qJG4h
-         ejrjy8iAmAYrKvyxiWswY9xuW3DnQ5czG2i6M8brb6F+kw1ltHKwWS8l7ET3nRmsp81N
-         AFsg==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zIZSI5eymRh7YleTXMPveAGwP5JgMGOTN1Kj60Qisgw=;
+        b=Wh9KLOGg6biS1w0GfT8TZ3i/0yZCu5gbkCT89jb7Vt6NZRdYTD1EM30crU5xXFD5dd
+         OBnWh50eHsPR0xpWZ9ul3AaEqGVHC12nJ78rDbuKfWPNehjBUCEcqonD1RyBAXn/6kUj
+         g9Vf1Sp9by4n4laduAxA6qWm2FQZrJ7sqKe16nvCQI/kFEcg72HAbjni+NY77VaaTIFh
+         oeffbQpSyulFeghqvNl9krhJCC7FuN8fqQm4gW5KNbjB8uSEzN7o3JX2o9jJmINTZ3Ym
+         FT8gCwCOt+5BycHLYXD3qleRdLNJSYYpReNCtJFr76LCT7fAT5MvR0FwBAiv0eFC+y/Q
+         7OnQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
-         :to;
-        bh=evBtr2U3jyh/gD7lsrm2w8eoclcl6R4P/duCxIhxtAo=;
-        b=a5xLp8s00C2FdH6m4wYes1kWqzTEFAl2Ww3KOI3V6GFPE55daw7LiisPDfrx048KR9
-         z7OuE0bEbDX8RwO0VdruBNROpsdFbgOTaNeH85cocry+4CZVJPwYk4phb+c2cJl//1lZ
-         qNynSYYbMPASGD+qNhLdgy/TGC7OFsBZkGAVaA7DpmBuLrbvCERIDd0rWjOGqbl2YzDd
-         mHV7DNt3iO+FEj1kZfGqW2ENjONIPCTLwj4vp7B+/Zb3f5SYrmRupNS8wCP8ub2YNfmO
-         SexZZKlN5vOAwqc69MXW9xAxN+BK6edwYDHLD/teqTmmLX+Mp/PgJqP8RdN4DrX8vUxH
-         Ug8w==
-X-Gm-Message-State: AOAM531JsWT65Xa99uJuFbvrtJMledJtC4ZA+NlPde32t95k1yquf5Rr
-        9SswsEICfvJ6tNZM721AUzSuHNFoXU3/GEH+Y1c=
-X-Google-Smtp-Source: ABdhPJw9Ox871wxlu42LYvK7nLBJQCSuE29Pi6GrKadhWwroexU+S1TCTaoMFxhGobRJHmiigyr1bAWA0BFDXg+XQe8=
-X-Received: by 2002:a05:6e02:6d1:: with SMTP id p17mr10094258ils.190.1603716746960;
- Mon, 26 Oct 2020 05:52:26 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zIZSI5eymRh7YleTXMPveAGwP5JgMGOTN1Kj60Qisgw=;
+        b=h6mUFhjVT0OYQRrIhSmrpA+mRlkZdaTQ4wzyjKkg2mw+7Z0a9dAP71GQWPNQuTebOI
+         Kg2W6iq0DMTBobK5bkbFW8x4G5KfcqbzNaBmlkgS9+cwduJ29qQowWygdpP0Zz4SSgYz
+         WYLcX0SCQLy8fEwCKigbGQ+Un8W+BmXAQngumIlVVAMjKoAWxBKKwr2zY6436JPe5tF8
+         xJQVLNMifp8UMAXEOd03mMu7RZN/+nXDa4AzeedCnOBpSiLBD9MKGClMS8CpBxNPKYOF
+         iYNRVQNnmcDjtqEb5je5GuOfxu5c4zutz4CWJxRgkikqLMjNFaw4coU2eJSnsCTk2Bb/
+         fb2A==
+X-Gm-Message-State: AOAM530XvlfRiZPZ2wq+vzkVcfDCp2GavSS1+5UwiC8dwB+IqlZcW7An
+        XhiSXUHI/+bsHEKXqLT5kek=
+X-Google-Smtp-Source: ABdhPJwKkDno9qbO9MaqAcgNA/pS8/cSxp5lHmNo4iy6PT5uYdmBjERtJd3yuL1/Ir647NtEfspeAw==
+X-Received: by 2002:a1c:4085:: with SMTP id n127mr15399157wma.183.1603716765582;
+        Mon, 26 Oct 2020 05:52:45 -0700 (PDT)
+Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
+        by smtp.gmail.com with ESMTPSA id a3sm23551139wrh.94.2020.10.26.05.52.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 05:52:45 -0700 (PDT)
+From:   Aleksandr Nogikh <a.nogikh@gmail.com>
+To:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com
+Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
+        glider@google.com, keescook@google.com,
+        linux-kernel@vger.kernel.org,
+        linux-security-module@vger.kernel.org,
+        Aleksandr Nogikh <nogikh@google.com>
+Subject: [RFC PATCH v2 1/2] security: add fault injection capability
+Date:   Mon, 26 Oct 2020 12:52:26 +0000
+Message-Id: <20201026125227.54520-2-a.nogikh@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+In-Reply-To: <20201026125227.54520-1-a.nogikh@gmail.com>
+References: <20201026125227.54520-1-a.nogikh@gmail.com>
 MIME-Version: 1.0
-Sender: kbanmoon5@gmail.com
-Received: by 2002:a92:bbcd:0:0:0:0:0 with HTTP; Mon, 26 Oct 2020 05:52:26
- -0700 (PDT)
-From:   UNITED NATIONS <unitednationawardwinner@gmail.com>
-Date:   Mon, 26 Oct 2020 05:52:26 -0700
-X-Google-Sender-Auth: mF-n5nDBNJ6fWuI1hMJB1cdDnGw
-Message-ID: <CANjgFQ2hEHyjwW+-v2SBVVXsenB_Sy0AgDy=2QDFUuK=geem=Q@mail.gmail.com>
-Subject: Your long awaited part payment of $5.5.000.00Usd
-To:     undisclosed-recipients:;
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Attention: Beneficiary,
+From: Aleksandr Nogikh <nogikh@google.com>
 
-Your long awaited part payment of $5.5.000.00Usd (FIVE MILLION FIVE
-Hundred Thousand United State Dollars) is ready for immediate release
-to you, and it was electronically credited into an ATM Visa Card for
-easy delivery.
+Add a fault injection capability to call_int_hook macro. This will
+facilitate testing of fault tolerance of the code that invokes
+security hooks as well as the fault tolerance of the LSM
+implementations themselves.
 
-Your new Payment Reference No.- 6363836,
-Password No: 006786,
-Pin Code No: 1787
-Your Certificate of Merit Payment No: 05872,
-Released Code No: 1134;
-Immediate Telex confirmation No:- 043612;
-Secret Code No: TBKTA28
+Add a KConfig option (CONFIG_FAIL_LSM_HOOKS) that controls whether the
+capability is enabled. In order to enable configuration from the user
+space, add the standard debugfs entries for fault injection (if
+CONFIG_FAULT_INJECTION_DEBUG_FS is enabled).
 
-Re-Confirm;
-Your Names: |
-Address: |
-Cell Phone: |
-Fax: |
-Amount: |
-Your immediate response is needed UBA Bank
+Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+---
+v2:
+- Renamed should_fail_lsm_hook() to should_fail_lsm_hook().
+---
+ lib/Kconfig.debug   |  6 +++++
+ security/security.c | 53 ++++++++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 56 insertions(+), 3 deletions(-)
 
-Person to Contact:MR KELLY HALL the Director of the International
-Audit unit ATM Payment Center,
+diff --git a/lib/Kconfig.debug b/lib/Kconfig.debug
+index 537cf3c2937d..80d289591e29 100644
+--- a/lib/Kconfig.debug
++++ b/lib/Kconfig.debug
+@@ -1803,6 +1803,12 @@ config FAIL_MAKE_REQUEST
+ 	help
+ 	  Provide fault-injection capability for disk IO.
+ 
++config FAIL_LSM_HOOKS
++	bool "Fault-injection capability for LSM hooks"
++	depends on FAULT_INJECTION
++	help
++	  Provide fault-injection capability for LSM hooks.
++
+ config FAIL_IO_TIMEOUT
+ 	bool "Fault-injection capability for faking disk interrupts"
+ 	depends on FAULT_INJECTION && BLOCK
+diff --git a/security/security.c b/security/security.c
+index 69ff6e2e2cd4..1105ad0f6891 100644
+--- a/security/security.c
++++ b/security/security.c
+@@ -28,6 +28,7 @@
+ #include <linux/backing-dev.h>
+ #include <linux/string.h>
+ #include <linux/msg.h>
++#include <linux/fault-inject.h>
+ #include <net/flow.h>
+ 
+ #define MAX_LSM_EVM_XATTR	2
+@@ -669,6 +670,51 @@ static void __init lsm_early_task(struct task_struct *task)
+ 		panic("%s: Early task alloc failed.\n", __func__);
+ }
+ 
++
++#ifdef CONFIG_FAIL_LSM_HOOKS
++
++static struct {
++	struct fault_attr attr;
++	int retval;
++} fail_lsm_hooks = {
++	.attr = FAULT_ATTR_INITIALIZER,
++	.retval = -EACCES
++};
++
++static int __init setup_fail_lsm_hooks(char *str)
++{
++	return setup_fault_attr(&fail_lsm_hooks.attr, str);
++}
++__setup("fail_lsm_hooks=", setup_fail_lsm_hooks);
++
++static int lsm_hooks_inject_fail(void)
++{
++	return should_fail(&fail_lsm_hooks.attr, 1) ? fail_lsm_hooks.retval : 0;
++}
++
++#ifdef CONFIG_FAULT_INJECTION_DEBUG_FS
++
++static int __init fail_lsm_hooks_debugfs(void)
++{
++	umode_t mode = S_IFREG | 0600;
++	struct dentry *dir;
++
++	dir = fault_create_debugfs_attr("fail_lsm_hooks", NULL,
++					&fail_lsm_hooks.attr);
++	debugfs_create_u32("retval", mode, dir, &fail_lsm_hooks.retval);
++	return 0;
++}
++
++late_initcall(fail_lsm_hooks_debugfs);
++
++#endif /* CONFIG_FAULT_INJECTION_DEBUG_FS */
++
++#else
++
++static inline int lsm_hooks_inject_fail(void) { return 0; }
++
++#endif /* CONFIG_FAIL_LSM_HOOKS */
++
+ /*
+  * The default value of the LSM hook is defined in linux/lsm_hook_defs.h and
+  * can be accessed with:
+@@ -707,16 +753,17 @@ static void __init lsm_early_task(struct task_struct *task)
+ 	} while (0)
+ 
+ #define call_int_hook(FUNC, IRC, ...) ({			\
+-	int RC = IRC;						\
+-	do {							\
++	int RC = lsm_hooks_inject_fail();			\
++	if (RC == 0) {								\
+ 		struct security_hook_list *P;			\
++		RC = IRC;								\
+ 								\
+ 		hlist_for_each_entry(P, &security_hook_heads.FUNC, list) { \
+ 			RC = P->hook.FUNC(__VA_ARGS__);		\
+ 			if (RC != 0)				\
+ 				break;				\
+ 		}						\
+-	} while (0);						\
++	}							\
+ 	RC;							\
+ })
+ 
+-- 
+2.29.0.rc1.297.gfa9743e501-goog
 
-Email: unitedbankforafrica_bf011@financier.com
-WHAT`S UP : +226 75417896
-
-Note: Your file will expire after 14 days if there is no response, and
-then we will not have any option than to return your fund to IMF as
-unclaimed.
-
-Your swift response will enhance our service,thanks for your co-operation;
-
-Regards.
-Mr JOHN MARK.
