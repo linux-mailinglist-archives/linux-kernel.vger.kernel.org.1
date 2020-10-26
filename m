@@ -2,115 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB9DD2990EC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:21:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B98362990EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:23:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783731AbgJZPV5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:21:57 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:34272 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783704AbgJZPV5 (ORCPT
+        id S1783751AbgJZPXH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:23:07 -0400
+Received: from casper.infradead.org ([90.155.50.34]:43662 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783632AbgJZPXH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:21:57 -0400
-Received: by mail-pl1-f194.google.com with SMTP id r3so4839066plo.1;
-        Mon, 26 Oct 2020 08:21:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oOkWxKNS7OgYcgr9AtuikvRP6VQyPR3f6F1K+1Zo1kQ=;
-        b=LmCoNC6Ua8HAVPvByC9bsoozCVkd2hq1VykdP1PgLd+mNUcO2yAbtatRvOrWF2lhdX
-         +STcJKR4Be3HsKEN+Y+sxBpGggDqHhp0KbwVHXhGaRiDGyoOsphrkWpwhpIwxDpLpGOP
-         8JWcS4tkSB7ZnrDLDPyo4Et7OWq/fNFOZ8XFca3sZiasR17l7eYDWZVGqF6dfxlHEEwj
-         d6tRummJL0LIMsaYwgWzosqI/qkcfdFRwzRcLchXH+ZfuDDkhk2tHxUzem72Zn69XJwc
-         cDm+3zLHNIKBW1d8CbwMTglwYlW/korgVg7SxrzXLw6kOBe2NQ+NDf0bH7LXlLNq5Hg2
-         CGfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oOkWxKNS7OgYcgr9AtuikvRP6VQyPR3f6F1K+1Zo1kQ=;
-        b=eqWrP0nlHDe9c65iWQ43mThungp564nZCQHYMhkgJHa3KbvLos22DgWYnFFkmvM6YK
-         aL+wqDvGvB0w8m5SHgOrEDaWV9J0GFBkv4xYz2l1QtD4Gx2EE14zi/+aqx3HVk82QWbv
-         DJNIgW5gtfI2l1guyNo9/mhQKErVgfCHLvu7xACtXmQuqIkYJ4OThppA5gSz4jX8gIs8
-         rqsgsgqaLI1mEuOhpqTLwBexqTxdooJEQIsMWQCxZ0pM7oLuTe84hfZGFmIMMTYLfyQa
-         RTlfSt2elcvFQLvi4z+GAavFd0n2bPkMpodtBnG1mCmOL1iOyhX5AkePTtK098igWPpt
-         CirQ==
-X-Gm-Message-State: AOAM532hqvOJvbGQx2ZeY5xPg/dMU9YxVYASlaYHnnH4Z3ARg1zrIH2p
-        mOHruI8wgekLoBGGeXOzKoY8n+cyP5ShSt29SwQ=
-X-Google-Smtp-Source: ABdhPJznEhCG/CtbsgET7HjL9PYwS6J3NDldIiYWYXp1Z7NeTSBhiQDAvJixd931Q/i4cOkOFqG+tG/prof3qtOOwsA=
-X-Received: by 2002:a17:902:aa8a:b029:d3:c9dd:77d1 with SMTP id
- d10-20020a170902aa8ab02900d3c9dd77d1mr8806039plr.0.1603725716344; Mon, 26 Oct
- 2020 08:21:56 -0700 (PDT)
+        Mon, 26 Oct 2020 11:23:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=bip8z4aUZCGvDHwLoTkSRBUmu9biveNZBCHkBHA07+0=; b=iCCwKMTuiOiPMz9tmBkpNxQEGQ
+        x2APCosl2yqUlDwL8HK2wGhkKDGtmTbfwRCChF6gyzM1BIlbIFC2Uwx3lVyM8hMunuBpmYAYt6k7+
+        S3jPx/k+6TWMaGYHp2PX3a9idVpMnFhipxQvThvpbSHTZSxB7TtEizDm0SfPZHCYGSqxxshJLVxvv
+        j7w24REuFkjx6NJSxrvOwZAQLLfdDk4EZadIN2bsJrEwD4Whqpqw2fMQcseSPSELjSGbCwDnIvRt/
+        4t3FAwhfBgQgFTFhjq4m+VAC9TZRX3BuLEw0qNONmk0cyyQaBgsbG4b9/tSxWJNJyZjfqtpR37icG
+        ZfBVGfNQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX4Kp-0006bq-P7; Mon, 26 Oct 2020 15:23:00 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id D9B1C302526;
+        Mon, 26 Oct 2020 16:22:56 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id C79A7203BE3CA; Mon, 26 Oct 2020 16:22:56 +0100 (CET)
+Date:   Mon, 26 Oct 2020 16:22:56 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Filipe Manana <fdmanana@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>, matorola@gmail.com,
+        mingo@kernel.org
+Subject: Re: possible lockdep regression introduced by 4d004099a668
+ ("lockdep: Fix lockdep recursion")
+Message-ID: <20201026152256.GB2651@hirez.programming.kicks-ass.net>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+ <20201026125524.GP2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <20201026151600.2703-1-coiby.xu@gmail.com>
-In-Reply-To: <20201026151600.2703-1-coiby.xu@gmail.com>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Oct 2020 17:22:45 +0200
-Message-ID: <CAHp75VfZ+-rJFWVpowXyViA99_9tA5VaFLfJGH1WF4W=kQHr8w@mail.gmail.com>
-Subject: Re: [PATCH v2] pinctrl: amd: print debounce filter info in debugfs
-To:     Coiby Xu <coiby.xu@gmail.com>
-Cc:     "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Hans de Goede <hdegoede@redhat.com>,
-        open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026125524.GP2594@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 5:16 PM Coiby Xu <coiby.xu@gmail.com> wrote:
->
-> Print the status of debounce filter as follows,
-> $ cat /sys/kernel/debug/gpio
-> pin129          interrupt is disabled| interrupt is masked| disable wakeup in S0i3 state| disable wakeup in S3 state|
->  disable wakeup in S4/S5 state| input is high|   pull-up is disabled| Pull-down is disabled|   output is disabled| debouncing filter disabled|   0x50000
-> pin130          interrupt is disabled| interrupt is masked| disable wakeup in S0i3 state| disable wakeup in S3 state|
->  disable wakeup in S4/S5 state| input is high|   pull-up is disabled| Pull-down is disabled|   output is disabled| debouncing filter (high) enabled| debouncing timeout is 124800 (us)| 0x503c8
->                                                                                                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
+> On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+> > > That smells like the same issue reported here:
+> > > 
+> > >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+> > > 
+> > > Make sure you have commit:
+> > > 
+> > >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+> > > 
+> > > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+> > 
+> > Yes, CONFIG_DEBUG_PREEMPT is enabled.
+> 
+> Bummer :/
+> 
+> > I'll try with that commit and let you know, however it's gonna take a
+> > few hours to build a kernel and run all fstests (on that test box it
+> > takes over 3 hours) to confirm that fixes the issue.
+> 
+> *ouch*, 3 hours is painful. How long to make it sick with the current
+> kernel? quicker I would hope?
+> 
+> > Thanks for the quick reply!
+> 
+> Anyway, I don't think that commit can actually explain the issue :/
+> 
+> The false positive on lockdep_assert_held() happens when the recursion
+> count is !0, however we _should_ be having IRQs disabled when
+> lockdep_recursion > 0, so that should never be observable.
+> 
+> My hope was that DEBUG_PREEMPT would trigger on one of the
+> __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+> then be a clear violation.
+> 
+> And you're seeing this on x86, right?
+> 
+> Let me puzzle moar..
 
-Thanks for an update!
-In general looks good, one nit below (sorry, missed it in v1 round)
+So I might have an explanation for the Sparc64 fail, but that can't
+explain x86 :/
 
-...
+I initially thought raw_cpu_read() was OK, since if it is !0 we have
+IRQs disabled and can't get migrated, so if we get migrated both CPUs
+must have 0 and it doesn't matter which 0 we read.
 
-> +       char debounce_value[40];
+And while that is true; it isn't the whole store, on pretty much all
+architectures (except x86) this can result in computing the address for
+one CPU, getting migrated, the old CPU continuing execution with another
+task (possibly setting recursion) and then the new CPU reading the value
+of the old CPU, which is no longer 0.
 
-(1)
+I already fixed a bunch of that in:
 
-...
+  baffd723e44d ("lockdep: Revert "lockdep: Use raw_cpu_*() for per-cpu variables"")
 
-> +                               if (tmr_large) {
-> +                                       if (tmr_out_unit)
-> +                                               unit = 62500;
-> +                                       else
+but clearly this one got crossed.
 
-> +                                               unit = 15600;
+Still, that leaves me puzzled over you seeing this on x86 :/
 
-Side note: Hmm... Shouldn't be 15625? As 1/4.
+Anatoly, could you try linus+tip/locking/urgent and the below on your
+Sparc, please?
 
-> +                               } else {
-> +                                       if (tmr_out_unit)
-> +                                               unit = 244;
-> +                                       else
-> +                                               unit = 61;
-
-...
-
-
-> +                               snprintf(debounce_value, 40,
-> +                                        "debouncing timeout is %u (us)|", time * unit);
-
-(2)
-
-...
-
-> +                               snprintf(debounce_value, 40, " ");
-
-(3)
-
-Because of definition (1) can you in (2) and (3) use sizeof() ?
-
--- 
-With Best Regards,
-Andy Shevchenko
+---
+diff --git a/kernel/locking/lockdep.c b/kernel/locking/lockdep.c
+index 3e99dfef8408..a3041463e42d 100644
+--- a/kernel/locking/lockdep.c
++++ b/kernel/locking/lockdep.c
+@@ -84,7 +84,7 @@ static inline bool lockdep_enabled(void)
+ 	if (!debug_locks)
+ 		return false;
+ 
+-	if (raw_cpu_read(lockdep_recursion))
++	if (this_cpu_read(lockdep_recursion))
+ 		return false;
+ 
+ 	if (current->lockdep_recursion)
