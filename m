@@ -2,140 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 898DB29904C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80247299054
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:59:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782765AbgJZO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:57:16 -0400
-Received: from mail-lf1-f68.google.com ([209.85.167.68]:34698 "EHLO
-        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782217AbgJZO5M (ORCPT
+        id S1782868AbgJZO7o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:59:44 -0400
+Received: from mail.efficios.com ([167.114.26.124]:33752 "EHLO
+        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782779AbgJZO7l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:57:12 -0400
-Received: by mail-lf1-f68.google.com with SMTP id z2so12487134lfr.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:57:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=AY1upMRPHFh+EW7yKRAkdO69ELLWbe4gw5pBY2cxk6s=;
-        b=D9Kko86wO1ttI/fVOr7v2knDtTaUlZGkmjlWzvOjqYf3FmvKeeNM4kpXxLHSEXB5WR
-         AfeJxGyLY4+blFUSGJhIaW+WKWXt4LVZozwR99H6jgFyv37T9MLdVm5gvaDEeoz4nlqt
-         QND10MFbm2EFTgLLbhS3EwHoQFISHcDBH4B4KFhcPvSanJb8qLTatt+9MIZ39PgVkA0H
-         5i0zux1NLV2B65jTNmB4GNRtmWdxsNMHgpems3UOpHiAr48YB9X5WYZ+luqOaRNlu/gd
-         odR91di5I0DJK6yZa0FPBEziB9m81chmdxD+MWckpFHYYD0bBw/okgjsRMSaSm8pYWVt
-         IWow==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=AY1upMRPHFh+EW7yKRAkdO69ELLWbe4gw5pBY2cxk6s=;
-        b=ENqKzmSKNfH2jCbuhXYwsHcNRAGOwK5jmX/Dmb8ehtvOEC9GFaq6mnekVkcWnNPi25
-         As8pcMG1/hA9svsH0V/tl7ex6JJyK+5sqIT/mIYKhen06Yw3ti/rhBrbVz9kcznTeGbn
-         8HRkFdZ48/qN18lMg0zb+85uwxtLArcI3cLryUG45muNfJtltrnmjOKi/slErqqprJ8W
-         v++hJKSr6jRzmFzouOTcCFHkLf7sg6nqoMMqjzDP8RO68aCDWp7oNRS6pE0BRIZ8F7U2
-         rZHxZgkbtQbksdB6SOGr0vNlNN7jr7niP6Bxz/IfHYVzZ63dMMDI8Hj1kOWgjdkAO14s
-         vRCw==
-X-Gm-Message-State: AOAM53150DGu9s4GGtll9eSCMKQA3msT4363i3CaUqqMOcPJtAy4ot29
-        GFUvOQ4iVnweYOnZwoSPLk9cjTlpYQ+t459EMQGwTg==
-X-Google-Smtp-Source: ABdhPJwc1n7JM8fZBxOp3v96LygjYE7dZmpo6zmmkl4iXWC7QHIjblXt8Axw+TmQM/GZzleczQStTu5zjtPB6P147K0=
-X-Received: by 2002:a19:d10:: with SMTP id 16mr4918093lfn.385.1603724229502;
- Mon, 26 Oct 2020 07:57:09 -0700 (PDT)
+        Mon, 26 Oct 2020 10:59:41 -0400
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id 21C44241037;
+        Mon, 26 Oct 2020 10:59:40 -0400 (EDT)
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
+        with ESMTP id G7pQKe8Qcx9t; Mon, 26 Oct 2020 10:59:39 -0400 (EDT)
+Received: from localhost (localhost [127.0.0.1])
+        by mail.efficios.com (Postfix) with ESMTP id BD460241036;
+        Mon, 26 Oct 2020 10:59:39 -0400 (EDT)
+DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com BD460241036
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
+        s=default; t=1603724379;
+        bh=wEIBiJ3QMm3QOpyR3tdXCbxMtI6b1O3DxiirHqrjjIQ=;
+        h=Date:From:To:Message-ID:MIME-Version;
+        b=ByniI8Jv/3HwcAT9v0h+YhV9JP3s1GryDNFTPFR5oxR1k0l0os5Zu0tlONv3Tv4Oa
+         HVZL5lFQQZlV5F3AR4glOtR5JiSvJVTNhVvtfoVmRmcHnYB5uROcL7ezH5Babn4tYY
+         cn2oNzkCugReRSKwLNpT5nKz5r7L1EaB/yj+nb/zl0ksV6w4g36O460ztaBs/V3saF
+         bgGcDA2hI8sRtMc8loTc8a67VIfEydxuyEDqSjWmjCV5o33GhAECQV3Xuxn8aUMA0M
+         0gJbllaspwSnjntYRPwcd3Hil45Mev4s42xM4yxZWcj/JFpfenncBbEAH5LKiunFJ0
+         ZkEt3c/yDryXg==
+X-Virus-Scanned: amavisd-new at efficios.com
+Received: from mail.efficios.com ([127.0.0.1])
+        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id Cai7GuYWN-nm; Mon, 26 Oct 2020 10:59:39 -0400 (EDT)
+Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
+        by mail.efficios.com (Postfix) with ESMTP id A52A32411A1;
+        Mon, 26 Oct 2020 10:59:39 -0400 (EDT)
+Date:   Mon, 26 Oct 2020 10:59:39 -0400 (EDT)
+From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To:     peter enderborg <peter.enderborg@sony.com>
+Cc:     Michael Jeanson <mjeanson@efficios.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        rostedt <rostedt@goodmis.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
+        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Jiri Olsa <jolsa@redhat.com>,
+        Namhyung Kim <namhyung@kernel.org>,
+        "Joel Fernandes, Google" <joel@joelfernandes.org>,
+        bpf <bpf@vger.kernel.org>
+Message-ID: <1771115581.37989.1603724379532.JavaMail.zimbra@efficios.com>
+In-Reply-To: <083f3ffa-3395-d66b-bb8b-d6a3fd7f6177@sony.com>
+References: <20201023195352.26269-1-mjeanson@efficios.com> <083f3ffa-3395-d66b-bb8b-d6a3fd7f6177@sony.com>
+Subject: Re: [RFC PATCH 0/6] Sleepable tracepoints
 MIME-Version: 1.0
-References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com> <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
- <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com> <20201026142455.GA13495@vingu-book>
- <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
-In-Reply-To: <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 26 Oct 2020 15:56:58 +0100
-Message-ID: <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
-Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework load_balance()"
-To:     Rik van Riel <riel@surriel.com>
-Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [167.114.26.124]
+X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
+Thread-Topic: Sleepable tracepoints
+Thread-Index: AMUC8e/DFHMGexX5Gfm6w6o6aqmr8g==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 15:38, Rik van Riel <riel@surriel.com> wrote:
->
-> On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
-> > Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=A9crit=
- :
-> > > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
-> > >
-> > > > Hi Chris
-> > > >
-> > > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
-> > > > > Hi everyone,
-> > > > >
-> > > > > We=E2=80=99re validating a new kernel in the fleet, and compared =
-with
-> > > > > v5.2,
-> > > >
-> > > > Which version are you using ?
-> > > > several improvements have been added since v5.5 and the rework of
-> > > > load_balance
-> > >
-> > > We=E2=80=99re validating v5.6, but all of the numbers referenced in t=
-his
-> > > patch are
-> > > against v5.9.  I usually try to back port my way to victory on this
-> > > kind of
-> > > thing, but mainline seems to behave exactly the same as
-> > > 0b0695f2b34a wrt
-> > > this benchmark.
-> >
-> > ok. Thanks for the confirmation
-> >
-> > I have been able to reproduce the problem on my setup.
-> >
-> > Could you try the fix below ?
-> >
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -9049,7 +9049,8 @@ static inline void calculate_imbalance(struct
-> > lb_env *env, struct sd_lb_stats *s
-> >          * emptying busiest.
-> >          */
-> >         if (local->group_type =3D=3D group_has_spare) {
-> > -               if (busiest->group_type > group_fully_busy) {
-> > +               if ((busiest->group_type > group_fully_busy) &&
-> > +                   (busiest->group_weight > 1)) {
-> >                         /*
-> >                          * If busiest is overloaded, try to fill
-> > spare
-> >                          * capacity. This might end up creating spare
-> > capacity
-> >
-> >
-> > When we calculate an imbalance at te smallest level, ie between CPUs
-> > (group_weight =3D=3D 1),
-> > we should try to spread tasks on cpus instead of trying to fill spare
-> > capacity.
->
-> Should we also spread tasks when balancing between
-> multi-threaded CPU cores on the same socket?
+----- On Oct 26, 2020, at 8:05 AM, peter enderborg peter.enderborg@sony.com wrote:
 
-My explanation is probably misleading. In fact we already try to
-spread tasks. we just use spare capacity instead of nr_running when
-there is more than 1 CPU in the group and the group is overloaded.
-Using spare capacity is a bit more conservative because it tries to
-not pull more utilization than spare capacity
+> On 10/23/20 9:53 PM, Michael Jeanson wrote:
+>> When invoked from system call enter/exit instrumentation, accessing
+>> user-space data is a common use-case for tracers. However, tracepoints
+>> currently disable preemption around iteration on the registered
+>> tracepoint probes and invocation of the probe callbacks, which prevents
+>> tracers from handling page faults.
+>>
+>> Extend the tracepoint and trace event APIs to allow specific tracer
+>> probes to take page faults. Adapt ftrace, perf, and ebpf to allow being
+>> called from sleepable context, and convert the system call enter/exit
+>> instrumentation to sleepable tracepoints.
+> 
+> Will this not be a problem for analyse of the trace? It get two
+> relevant times, one it when it is called and one when it returns.
 
->
-> Say we have groups of CPUs
-> (0, 2) and CPUs (1, 3),
-> with CPU 2 idle, and 3 tasks spread between CPUs
-> 1 & 3.
->
-> Since they are all on the same LLC, and the task
-> wakeup code has absolutely no hesitation in moving
-> them around, should the load balancer also try to
-> keep tasks within a socket spread across all CPUs?
->
-> --
-> All Rights Reversed.
+It will depend on what the tracer chooses to do. If we call the side-effect
+of what is being traced a "transaction" (e.g. actually opening a file
+descriptor and adding it to a process'file descriptor table as the result
+of an open(2) system call), we have to consider that already today the
+timestamp which we get is either slightly before or after the actual
+side-effect of the transaction in the kernel. That is true even without
+being preemptable.
+
+Sometimes it's not relevant to have a tracepoint before and after the
+transaction, e.g. when all we care about is to know that the transaction
+has successfully happened or not.
+
+In the case of system calls, we have sys_enter and sys_exit to mark the
+beginning and end of the "transaction". Whatever side-effects are done by
+the system call happens in between.
+
+I think the question here is whether it is relevant to know whether page
+faults triggered by accessing system call input parameters need to
+happen after we trace a "system call entry" event. If the tracers care,
+then it would be up to them to first trace that "system call entry" event,
+and have a separate event for the argument payload. But there are other
+ways to identify whether page faults happen within the system call or
+from user-space, for instance by using the instruction pointer associated
+with the page fault. So when observing page faults happening before sys
+enter, but associated with a kernel instruction pointer, a trace analysis
+tool could theoretically figure out who is to blame for that page fault,
+*if* it cares.
+
+> 
+> It makes things harder to correlate in what order things happen.
+
+The alternative is to have partial payloads like LTTng does today for
+system call arguments. If reading a string from userspace (e.g. open(2)
+file name) requires to take a page fault, LTTng truncates the string. This
+is pretty bad for automated analysis as well.
+
+> 
+> And handling of tracing of contexts that already are not preamptable?
+
+The sleepable tracepoints are only meant to be used in contexts which can sleep.
+For tracepoints placed in non-preemptible contexts, those should never take
+a page fault to begin with.
+
+> 
+> Eg the same tracepoint are used in different places and contexts.
+
+As far as considering that a given tracepoint "name" could be registered to
+by both a sleepable and non-sleepable tracer probes, I would like to see an
+actual use-case for this. I don't have any.
+
+I can envision that some tracer code will want to be allowed to work in
+both sleepable and non-sleepable context, e.g. take page faults in
+sleepable context (and called from a sleepable tracepoint), but have a
+truncation behavior when called from non-sleepable context. This can actually
+be done by looking at the new "TRACEPOINT_MAYSLEEP" tp flag. Passing that
+tp_flags to code shared between sleepable and non-sleepable probes would allow
+the callee to know whether it can take a page fault or not.
+
+Thanks,
+
+Mathieu
+
+-- 
+Mathieu Desnoyers
+EfficiOS Inc.
+http://www.efficios.com
