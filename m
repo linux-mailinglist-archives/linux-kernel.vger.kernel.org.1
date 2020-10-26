@@ -2,86 +2,84 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6DF22990BD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:13:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B35DA2990C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:15:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783422AbgJZPN4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:13:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46954 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1783343AbgJZPN4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:13:56 -0400
-Received: from localhost (p54b335fd.dip0.t-ipconnect.de [84.179.53.253])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 735CB2222C;
-        Mon, 26 Oct 2020 15:13:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603725235;
-        bh=rdypqWru50mKsVqtG1SbMdaWW5DpSTgT2JsspxBvrBM=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=kRIa4GuxF5XYhTsdWuV4S9Z82noyYZpSGBxpZXOcvqkGCaHx1jda7mHC2hV9lT4xH
-         5Vo+rCci5gtwT4gXwL700meVOPdh7lsY/tuyZvZQdpOCyh5P0CCAERJ0XY73KX1P5o
-         zB6B3esvWd6sLNna5vjEQmJBYAG6Ivy65RBeG1l8=
-Date:   Mon, 26 Oct 2020 16:13:51 +0100
-From:   Wolfram Sang <wsa@kernel.org>
-To:     Bjorn Andersson <bjorn.andersson@linaro.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-i2c@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] Revert "i2c: i2c-qcom-geni: Fix DMA transfer race"
-Message-ID: <20201026151351.GB1044@ninjato>
-References: <20201013212531.428538-1-dianders@chromium.org>
- <20201013142448.v2.2.I7b22281453b8a18ab16ef2bfd4c641fb1cc6a92c@changeid>
- <20201026150500.GA26921@builder.lan>
+        id S1783515AbgJZPPV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:15:21 -0400
+Received: from mail-lj1-f175.google.com ([209.85.208.175]:46806 "EHLO
+        mail-lj1-f175.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783039AbgJZPPU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:15:20 -0400
+Received: by mail-lj1-f175.google.com with SMTP id c21so10556851ljn.13;
+        Mon, 26 Oct 2020 08:15:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:date:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to:user-agent;
+        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
+        b=iq3pZ6/QL6OMAVcMvrFMnH1DLI4OH8H7cZIKqo1wIUCGQls8T2Ro6vl24nuNS66i39
+         1n4aOeHzimhTFvpeNNyqHSXxsdHiCTV7961Vh1j0/RIdXUUh7vfPw9EgQoojJjM1GIbP
+         SePccVKqHjpMn2iFa52sFKDoftFLI8Sc8B3F9xTfRQcHlK6C90dV3D6T9cOqQTOtzMB9
+         VEhkuuNnDKsSFho0KBPX39zlpQpW28t0W63Y4eGIO/cg8WOanlYSqdBLxWgUhc8/50YW
+         wLtSt97cenoqHIDALpfpuN6b/PhPTtuqzvaiFMfsxRYtTHrZ920TFNyq1kncFEMCgZp6
+         YYJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:date:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=ymFwX4dMeWO3X/lArDe4pdm35TrYA8Kz/hMAxunSNTs=;
+        b=s8qwNRNRq3sFfsJrtmqJlwIimj8GxqHZ2Aph+iYkMF40tjs9GbO7MBw6GryJmkukmr
+         UtbLDn4ZZB5Nu253C6tokV6cCEZwfoHqGQVw0BTuc72cz31olHbsMXEKs+Iwol73WuRc
+         tEInaUmc8ubXyRVUg1Ne5rAkYrdYd1QAd0irQuDR6HAly0uIQBVlMD7k1QZYZrgVgZ78
+         ARJj+CUqU0fRIGCYM/r4yqs773UsnSSwpJGq8nYIqCCp8wIBtIzYsoAEagKKTGSp7GBs
+         k6S4+Luv5q49uV/Pz37euJg6tkdIfX8c5fqCK8CG9XIQORJKxiVRvDxh5rGzSiDKiW3w
+         gVAg==
+X-Gm-Message-State: AOAM533MBcsp7NV9utBLJrL4ASbUowfhonVl5EamclCuqc0sLecM+wDY
+        0MPBCoDihgRkAr5HAHHv2/8=
+X-Google-Smtp-Source: ABdhPJx7L2+12gO/j37FRejcJ/XkwTqNVFm3xPzzs1Xo/tzk231g6fRUxZsozHLljba2yIitR2elGA==
+X-Received: by 2002:a05:651c:3d0:: with SMTP id f16mr5618129ljp.454.1603725317660;
+        Mon, 26 Oct 2020 08:15:17 -0700 (PDT)
+Received: from pc636 (h5ef52e31.seluork.dyn.perspektivbredband.net. [94.245.46.49])
+        by smtp.gmail.com with ESMTPSA id x19sm1071749lff.189.2020.10.26.08.15.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 08:15:16 -0700 (PDT)
+From:   Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date:   Mon, 26 Oct 2020 16:15:14 +0100
+To:     Richard Palethorpe <rpalethorpe@suse.de>
+Cc:     Joel Fernandes <joel@joelfernandes.org>,
+        Alexander Potapenko <glider@google.com>, rcu@vger.kernel.org,
+        linux-kernel@vger.kernel.org,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Uladzislau Rezki <urezki@gmail.com>
+Subject: Re: [BUG] Lockdep splat during kvfree_call_rcu and stack_depot_save
+Message-ID: <20201026151514.GA3942@pc636>
+References: <87a6w9uiz3.fsf@suse.de>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-        protocol="application/pgp-signature"; boundary="EuxKj2iCbKjpUGkD"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026150500.GA26921@builder.lan>
+In-Reply-To: <87a6w9uiz3.fsf@suse.de>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hello.
 
---EuxKj2iCbKjpUGkD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> Hello,
+> 
+> The kmem memcg selftest causes the following lockdep splat on 5.9+
+> 
+> [   67.534319] =============================
+> [   67.534410] [ BUG: Invalid wait context ]
+> [   67.534522] 5.9.1-22-default #125 Not tainted
+> [   67.534647] -----------------------------
+>
+Working on it. We are aware about it.
 
+Thanks!
 
-> Wolfram, would you like to pick this patch or would you prefer that it
-> goes together with the other two through the soc tree?
-
-Actually, I prefer the soc tree because of the functional dependency. I
-am not aware of any pending qcom-geni patches, yet I think an immutable
-branch for me to pull in would be nice in this case. Could you provide
-one for me?
-
-
---EuxKj2iCbKjpUGkD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAl+W56sACgkQFA3kzBSg
-Kbag5Q/+MDIQrIrcVr4d8UHc9MsdoSJUNYl64v50xdhP2yxGys+USr2rgJ1gcUCy
-R9YR65gJL3m8ogdMDJ+TT35LcIXEtlWWPV+UXDE/LqkicwyuTxLOTqdpCZg1X9Jx
-jQmnal61gEdBh+ShT4rQCY7iRFqm4aMkuYXraWk4H7rF008F2lfapB7zL9R0sHXX
-t7NXKCQaAw52gxdPJEgisbGHKyUrUVKUXRVBp+TivOJ4MJ8pZhcSjylKWzXeHaxI
-k9XTKVGqmqmvke5TVllo+aQeA5NvKzmPLvpVKQwfHTcjTwTqLbT8dSe4m36k/Xjn
-2g0mvDb3THcyQHw955OUH8qAuV35I04eHTOFgiKa9JOaEIvoM7K6zcukwPkTNHLi
-PGD6uK6bJ5dALt14KnLB4k4w+6Gy9C+tKs6Dz8szhKUZzeniVQ8C0Fl1aSuZky8v
-vugl4R//IK44cdTWhy+tZnOKvw2LwiTiSgNuCvVUTc1Y22LGD1r9sU3eP2MB/HAA
-thelzmWzhZULTH/HpZNCgRc7BGRYN71f8+v6oyZ391Uj/O9BlvWLreikSxkkMcO1
-e70inxFQV4R70epazvqhK9ZFizpMC+Wg1VBZbkxJVU38QMAIXVwgO+C0SkZbVpRk
-yARhc/eTgaSxeSMUMm1fT/RXYa8EzU2JR2YY2iOsjvPyS7gWrUA=
-=mSR+
------END PGP SIGNATURE-----
-
---EuxKj2iCbKjpUGkD--
+--
+Vlad Rezki
