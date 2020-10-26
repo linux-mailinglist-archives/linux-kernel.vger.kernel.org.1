@@ -2,101 +2,122 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3845B299833
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:48:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 294FE299838
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:52:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726149AbgJZUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:48:45 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:27668 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726060AbgJZUso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:48:44 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603745323; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=oFDR6qmZLnKNEKIuDsewlJH60yHYnynf6ZZ7kWQJihw=;
- b=JOMCXQK0MlQl4xJ40CSJCj7eJ7X2UGCEQ8Dt9hmVp4Sn0o0iDGPHGdxcgG/yll6E4R6n4cW0
- vNe5eU+3zcrEW1Af0Gn9ZoQSqF5307jAYR4PNDD869szsNMg/jD1/obnKw850fC1mKNvQLIX
- GCeMn1lO5X7zhM3c8tWfS/GJkbQ=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f97362b2421c5ebfbd5f9de (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 20:48:43
- GMT
-Sender: nguyenb=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 57F53C43382; Mon, 26 Oct 2020 20:48:42 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: nguyenb)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4A3FC433FE;
-        Mon, 26 Oct 2020 20:48:41 +0000 (UTC)
+        id S1728000AbgJZUwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:52:40 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8330 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726423AbgJZUwM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 16:52:12 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f9737030000>; Mon, 26 Oct 2020 13:52:19 -0700
+Received: from [10.2.57.113] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
+ 2020 20:52:08 +0000
+Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
+ access guest memory
+To:     Matthew Wilcox <willy@infradead.org>
+CC:     "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        "Peter Zijlstra" <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        "Sean Christopherson" <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        "Liran Alon" <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, <x86@kernel.org>,
+        <kvm@vger.kernel.org>, <linux-mm@kvack.org>,
+        <linux-kernel@vger.kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
+ <c8b0405f-14ed-a1bb-3a91-586a30bdf39b@nvidia.com>
+ <20201022114946.GR20115@casper.infradead.org>
+ <30ce6691-fd70-76a2-8b61-86d207c88713@nvidia.com>
+ <20201026042158.GN20115@casper.infradead.org>
+ <ee308d1d-8762-6bcf-193e-85fea29743c3@nvidia.com>
+ <20201026132830.GQ20115@casper.infradead.org>
+From:   John Hubbard <jhubbard@nvidia.com>
+Message-ID: <e78fb7af-627b-ce80-275e-51f97f1f3168@nvidia.com>
+Date:   Mon, 26 Oct 2020 13:52:07 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201026132830.GQ20115@casper.infradead.org>
+Content-Type: text/plain; charset="utf-8"; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 13:48:41 -0700
-From:   nguyenb@codeaurora.org
-To:     cang@codeaurora.org, asutoshd@codeaurora.org,
-        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
-Cc:     linux-arm-msm@vger.kernel.org,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        Avri Altman <avri.altman@wdc.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
-In-Reply-To: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
-References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
-Message-ID: <ed90f20f8deb0e322b7961a4b0a65681@codeaurora.org>
-X-Sender: nguyenb@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603745539; bh=En7RBhVPDASyx1ikAPEMmxLBTKzCwYVMSmAZAOLt4F0=;
+        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=f0ZInIoMhho0FwiYGbQmy/cFCjcszWJ4ksz0xVHxCfriMfXl/ArnCzev6eJCdK5Kk
+         SKcPrGBhvbj9FFXYX8Kulgwm5LFJf/IF7ahfg9uFG11y1RvMDvuI37jYONs5JdsFSg
+         CxTXCx0QKuCpH2ZkZxYB1l7X5xDV7JdA2Du5WAkA56/8NFydmbJwGc5RoWQehk9kqm
+         Z5+4oEawXJxSHhRq56HXamNmJcwBNs2E97FfuQjnEN8NwaLF/fEVnvK2FXYZeu8GDF
+         /AKMvqHg1ckc040vGzeuNsTOkhUWrgg0uCbyuLSpMP4N+gNEOlUGPQaNqNBEiWf5lp
+         dv+cEOmOP0/IQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-08-31 18:19, Bao D. Nguyen wrote:
-> UFS version 3.0 and later devices require Vcc and Vccq power supplies
-> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
-> devices, the Vcc and Vccq2 are required with Vccq being optional.
-> Check the required power supplies used by the device
-> and set the device's supported Icc level properly.
+On 10/26/20 6:28 AM, Matthew Wilcox wrote:
+> On Sun, Oct 25, 2020 at 09:44:07PM -0700, John Hubbard wrote:
+>> On 10/25/20 9:21 PM, Matthew Wilcox wrote:
+>>> I don't think the page pinning approach is ever valid.  For file
+>>
+>> Could you qualify that? Surely you don't mean that the entire pin_user_pages
+>> story is a waste of time--I would have expected you to make more noise
+>> earlier if you thought that, yes?
 > 
-> Signed-off-by: Can Guo <cang@codeaurora.org>
-> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
-> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
-> ---
->  drivers/scsi/ufs/ufshcd.c | 5 +++--
->  1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index 06e2439..fdd1d3e 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -6845,8 +6845,9 @@ static u32
-> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
->  {
->  	u32 icc_level = 0;
-> 
-> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
-> -						!hba->vreg_info.vccq2) {
-> +	if (!hba->vreg_info.vcc ||
-> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
-> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
->  		dev_err(hba->dev,
->  			"%s: Regulator capability was not set, actvIccLevel=%d",
->  							__func__, icc_level);
-Hello,
-Could you please help review?
-Thank you.
+> I do think page pinning is the wrong approach for everything.  I did say
+
+
+Not *everything*, just "pinning for DMA", right? Because I don't recall
+any viable solutions for Direct IO that avoided gup/pup!
+
+Also, back to Case 5: I *could* create a small patchset to change over
+the very few Case 5 call sites to use "gup, lock_page(), write to
+page...etc", instead of pup. And also, update pin_user_pages.rst to
+recommend that approach in similar situations. After all, it's not
+really a long-term DMA pin, which is really what pin_user_pages*() is
+intended for.
+
+Would that be something you'd like to see happen? It's certainly easy
+enough to fix that up. And your retroactive NAK is sufficient motivation
+to do so.
+
+
+> so at the time, and I continue to say so when the opportunity presents
+> itself.  But shouting about it constantly only annoys people, so I don't
+> generally bother.  I have other things to work on, and they're productive,
+> so I don't need to spend my time arguing.
+
+
+Sure. As a practical matter, I've assumed that page pinning is not going
+to go away any time soon, so I want it to work properly while it's here.
+But if there is a viable way to eventually replace dma-pinning with
+something better, then let's keep thinking about it. I'm glad to help in
+that area.
+
+
+thanks,
+-- 
+John Hubbard
+NVIDIA
