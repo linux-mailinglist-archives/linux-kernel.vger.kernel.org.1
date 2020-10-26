@@ -2,158 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8E1BB298EC3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:03:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D6DEA298EC9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:03:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780896AbgJZODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:03:03 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55984 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780884AbgJZODD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:03:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 83880AD83;
-        Mon, 26 Oct 2020 14:03:00 +0000 (UTC)
-Message-ID: <13068cff8e3a994df5d8fbe19deb068a741365f3.camel@suse.de>
-Subject: Re: [PATCH v2 10/10] pwm: Add Raspberry Pi Firmware based PWM bus
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Lee Jones <lee.jones@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-pwm@vger.kernel.org,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        linux-input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        id S1780910AbgJZODS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:03:18 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40242 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780899AbgJZODS (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:03:18 -0400
+Date:   Mon, 26 Oct 2020 15:03:13 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603720995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/XYLTnd4F+MtBkIEH9ciCsQ1o4o3fSs6saBPeUcCQRg=;
+        b=aEC/DFGAzRNOiLoJ+IZswCQThDVstB95WznPoAR3plToyC0oKuWMntD/MsM7Q80qKg/2jO
+        adPxZGvGg7lvDVSirCUS9D2Wta9ebe+TvRe5/DRNz1FIfM2t7IK1H5pDHy9BCMcIONVuvf
+        hIXkpKAYZqrxK0McvVoaTZpzdMK5Xh0abpfujx6J8MPwp7QXTpLwMbLPesXEXLxSbrA1YW
+        1sQ3ujDlOgt1oJHCdV5ZGIrBRDEVIx3GCOuMnAivzUpwnptyXAeoUTcDm4qnFcFG15p4Ge
+        GcW+gOXJLp4nIiVi6zivJuwi5MeCguM7AjBDbyU7GMGleDGoKn+dN6uaA4m15w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603720995;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=/XYLTnd4F+MtBkIEH9ciCsQ1o4o3fSs6saBPeUcCQRg=;
+        b=MBgKbLCjynQlRvNZZxzHBvGsL2zC0Jh0u6i5DMLd7ximjnilFbLyHFIc1rye4RBzvKe46v
+        c744gr3dJcGlRwDg==
+From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To:     Johan Hovold <johan@kernel.org>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Ahmed S. Darwish" <a.darwish@linutronix.de>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-Date:   Mon, 26 Oct 2020 15:02:58 +0100
-In-Reply-To: <CAHp75VcB5oxXs38UH5taVGj21wUi3sHYdRPOj3wxa3yXg0vmUA@mail.gmail.com>
-References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
-         <20201022155858.20867-11-nsaenzjulienne@suse.de>
-         <CAHp75VcB5oxXs38UH5taVGj21wUi3sHYdRPOj3wxa3yXg0vmUA@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-TTVm3kIKIXd08z1jOMlD"
-User-Agent: Evolution 3.36.5 
+        linux-usb@vger.kernel.org,
+        Thomas Winischhofer <thomas@winischhofer.net>,
+        Mathias Nyman <mathias.nyman@intel.com>,
+        Valentina Manea <valentina.manea.m@gmail.com>,
+        Shuah Khan <shuah@kernel.org>,
+        Alan Stern <stern@rowland.harvard.edu>,
+        linux-omap@vger.kernel.org, Kukjin Kim <kgene@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, Felipe Balbi <balbi@kernel.org>,
+        Duncan Sands <duncan.sands@free.fr>
+Subject: [PATCH v3 04/13 ] USB: serial: digi_acceleport: Remove
+ in_interrupt() usage
+Message-ID: <20201026140313.dpg3hkhkje2os4hw@linutronix.de>
+References: <20201019100629.419020859@linutronix.de>
+ <20201019101110.019266389@linutronix.de>
+ <20201025171613.GT26280@localhost>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201025171613.GT26280@localhost>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+=46rom: "Ahmed S. Darwish" <a.darwish@linutronix.de>
 
---=-TTVm3kIKIXd08z1jOMlD
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+The usage of in_interrupt() in drivers is phased out and Linus clearly
+requested that code which changes behaviour depending on context should
+either be separated or the context be conveyed in an argument passed by the
+caller, which usually knows the context.
 
-Hi Andy, thanks for the review!
+The debug printk() in digi_write() prints in_interrupt() as context
+information. This information is imprecisely as it does not distinguish
+between hard-IRQ or disabled botton half and it does consider disabled
+interrupts or preemption. It is not really helpful.
 
-On Thu, 2020-10-22 at 21:53 +0300, Andy Shevchenko wrote:
-> On Thu, Oct 22, 2020 at 9:05 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > Adds support to control the PWM bus available in official Raspberry Pi
-> > PoE HAT. Only RPi's co-processor has access to it, so commands have to
-> > be sent through RPi's firmware mailbox interface.
-> >  drivers/pwm/pwm-raspberrypi.c | 221 ++++++++++++++++++++++++++++++++++
->=20
-> Name is completely confusing.
-> Please, make it unique enough to understand that this is exactly the
-> device it serves for.
->=20
-> For example, pwm-rpi-poe is better.
+Remove the in_interrupt() printout.
 
-Sounds reasonable, I'll change that.
+Signed-off-by: Ahmed S. Darwish <a.darwish@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Johan Hovold <johan@kernel.org>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org
+---
+v2=E2=80=A6v3:
+  - Don't make dev_dbg() conditional on `tty'
+  - Remove the part "tty happens always in process context" from the
+    commit message. Johan pointed out that for PPP it may happen in
+    bottom half.
 
->=20
-> ...
->=20
-> > + *  - Only normal polarity
->=20
-> Can't it be emulated? Isn't it 100% - duty cycle % ?
+ drivers/usb/serial/digi_acceleport.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-I guess it can, OTOH given the rather specific use case, I doubt it'll be
-worth the effort.
-
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pwm.h>
->=20
-> ...
->=20
-> > +       ret =3D rpi_firmware_property(firmware, RPI_FIRMWARE_SET_POE_HA=
-T_VAL,
-> > +                                   &msg, sizeof(msg));
-> > +       if (ret)
-> > +               return ret;
-> > +       else if (msg.ret)
->=20
-> Redundant 'else'
-
-Noted.
-
-> > +       firmware_node =3D of_get_parent(dev->of_node);
-> > +       if (!firmware_node) {
-> > +               dev_err(dev, "Missing firmware node\n");
-> > +               return -ENOENT;
-> > +       }
-> > +
-> > +       firmware =3D rpi_firmware_get(firmware_node);
-> > +       of_node_put(firmware_node);
-> > +       if (!firmware)
-> > +               return -EPROBE_DEFER;
->=20
-> Looks like a hack.
-
-This is the pattern we've been using on all firmware dependent devices so f=
-ar.
-Feel free to suggest a better way, I'll be happy to look into it.
-
->=20
-> ...
->=20
-> > +       ret =3D pwmchip_remove(&rpipwm->chip);
-> > +       if (!ret)
-> > +               rpi_firmware_put(rpipwm->firmware);
-> > +
-> > +       return ret;
->=20
-> Can't you use the usual pattern?
-
-Yes of course. Don't know why I went this way.
-
-Regards,
-Nicolas
-
-
---=-TTVm3kIKIXd08z1jOMlD
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W1xIACgkQlfZmHno8
-x/4NJgf/d3PqOAENee9eHOK6FqBMAsNsGn4fscamb7Q7MXABE4U/nFCFY7hg1Xo3
-g47j4m8+pNlzE3SjXX0ZyPle4beIWvNQWidQjSyprckUv+wNkJ1Wbt0lFH26GCig
-w8mRGcXYm12zKKDSpGf5Wg/qAhE9qV2ruti8nc94lkSoiP2kSlfp6j5MZZYzEd2p
-y4khOBqxT1e4Trh+QOhKke2pW43WHNZT0TW6ZhJxKq4UNq7lxzer9TFHWgda16oy
-C4kdNiGm9MDQicgNWAq18ctJTZvPoR1scLrBNpJOapJ1UuY0mCqjpMZJDi9W+/EB
-7FRq+EXSXY7hpOmPUUJ1pJm1mUNoOw==
-=ljds
------END PGP SIGNATURE-----
-
---=-TTVm3kIKIXd08z1jOMlD--
+diff --git a/drivers/usb/serial/digi_acceleport.c b/drivers/usb/serial/digi=
+_acceleport.c
+index 91055a191995f..016e7dec31962 100644
+--- a/drivers/usb/serial/digi_acceleport.c
++++ b/drivers/usb/serial/digi_acceleport.c
+@@ -911,9 +911,8 @@ static int digi_write(struct tty_struct *tty, struct us=
+b_serial_port *port,
+ 	unsigned char *data =3D port->write_urb->transfer_buffer;
+ 	unsigned long flags =3D 0;
+=20
+-	dev_dbg(&port->dev,
+-		"digi_write: TOP: port=3D%d, count=3D%d, in_interrupt=3D%ld\n",
+-		priv->dp_port_num, count, in_interrupt());
++	dev_dbg(&port->dev, "digi_write: TOP: port=3D%d, count=3D%d\n",
++		priv->dp_port_num, count);
+=20
+ 	/* copy user data (which can sleep) before getting spin lock */
+ 	count =3D min(count, port->bulk_out_size-2);
+--=20
+2.28.0
 
