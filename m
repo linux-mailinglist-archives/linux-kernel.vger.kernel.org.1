@@ -2,164 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7F65C298616
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 05:14:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CE98729861D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 05:17:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1422042AbgJZEOY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 00:14:24 -0400
-Received: from casper.infradead.org ([90.155.50.34]:59612 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1421992AbgJZEOP (ORCPT
+        id S1420661AbgJZERK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 00:17:10 -0400
+Received: from mail-pf1-f194.google.com ([209.85.210.194]:46844 "EHLO
+        mail-pf1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1728541AbgJZERJ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 00:14:15 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-        References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:
-        Content-Type:Content-ID:Content-Description;
-        bh=kpUczdeKYi1+38xZwHEXixHpdmrDrWMrdTwGd2Ba8x0=; b=YcfZjdNN1aDe/LcHqu+I3/RUD7
-        ZB/2qcxmUEd0z/Z+O9YaxXNnWUummKleEY3HmDXPF9Z9OOL/EfnAFqBUH5T9hRUaOQTScouC78Aq3
-        xw8jSrszyqXqn+fwCOXxEUMcOyXHpzE8nFgzbwL/2K7eVO4HPakPOm+rnQy6p2csVx+4pPDsObLRm
-        OZKyyMBUt4CJHQbpNVhyAGYa00xjzg9iaQ0UP/sx8iI2v8g0Ng5KC4SMhk37oLj49g8y97KRZo4Y9
-        keDM8o968FrKmDot2d98jRh6+ozGlQarsJz4VWaUjUssDqRLKqQCDReXLZw7XEU3VvvmQOfpsEwMJ
-        prUEKttw==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kWttd-0006as-1o; Mon, 26 Oct 2020 04:14:13 +0000
-From:   "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To:     linux-mm@kvack.org
-Cc:     "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: [PATCH v3 12/12] mm/filemap: Return only head pages from find_get_entries
-Date:   Mon, 26 Oct 2020 04:14:08 +0000
-Message-Id: <20201026041408.25230-13-willy@infradead.org>
-X-Mailer: git-send-email 2.21.3
-In-Reply-To: <20201026041408.25230-1-willy@infradead.org>
-References: <20201026041408.25230-1-willy@infradead.org>
+        Mon, 26 Oct 2020 00:17:09 -0400
+Received: by mail-pf1-f194.google.com with SMTP id y14so5458270pfp.13
+        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 21:17:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TgJnVhZ++DLjTZN2JC7MwIDGm1rQwn+cwIsU1CQlwyM=;
+        b=UhZECgGbXap75eC+90RNG+ayMieTzqzLAxsgnvjP/BXWrZWPtXHQlqCH8qy4FKnpYP
+         9ny4zO2unSSfxqUxwhO5L09yKPMJraJtuMeWRy8DQahJ1htARl0DhsQgmDXtvs/yekQz
+         lM7I1J0dMg6kmExe7ugMSASqC/xrD6BqY8oVTB8lAMepHED4MppbwCj7TGYYNOUWpJHr
+         7CmSkzvCpovxLCQAUnFqnfXholQtnBWMsWkBBtrbz9wRjKRi0rHl7uE6QrVWAtcq5bXY
+         Ez6eKc4NLe+gP2r+5BDbPKsdlXV7ufQKIumLACbfUExrDXq8LJw5noxpbRuZe3lWkhnU
+         l5+A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=TgJnVhZ++DLjTZN2JC7MwIDGm1rQwn+cwIsU1CQlwyM=;
+        b=opImcRZW9MQ3LYkTY/fvs8D9QdrUTU8KYTWNGjg2MFlNicolBuyruMslw2jPI2kUts
+         bWIldvR5vaIl5V1kHSgz8oUtYP/jJ3AOBrpAO6/UmMGLjciaWx0KUqRFK7rmwKDv9nbd
+         9OevRxkTePLyq629vMM4QHmnoRJ9VpFDuY8XXAFHEdzZTYSSfSG6035loSKKCFl/rIOa
+         QpX8jERjyUa5hbdwl/1HE2TiVwd2i6RX8AZMhlVmjcUo4ck0Nd0Z29hOCvSTu9HDBwud
+         ZYUlFXmIHlvEkaY3xqdKycpt6CtcTZ3DqpZJRE6FSForexkuETXKyeAAE0u7lAwS1yq3
+         w4ww==
+X-Gm-Message-State: AOAM531o0Sd9Cb7oPFYoNRNcF+u2+RhTvoRDe5J3D7YMZjsVkkGwjX+7
+        TDDXa0S6VKoC5Chq833pVFnN+jtBQyY=
+X-Google-Smtp-Source: ABdhPJwI+ywh+mS+mgkh5h/tjgWrBuqpNGniIBdB8tSsk839l0YQL1c30rwkC/PcrkjxSlrvHoLWsQ==
+X-Received: by 2002:a63:f40a:: with SMTP id g10mr12532875pgi.66.1603685827217;
+        Sun, 25 Oct 2020 21:17:07 -0700 (PDT)
+Received: from daehojeong1.seo.corp.google.com ([2401:fa00:d:11:a6ae:11ff:fe18:6ce2])
+        by smtp.gmail.com with ESMTPSA id b20sm10030627pft.55.2020.10.25.21.17.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 21:17:06 -0700 (PDT)
+From:   Daeho Jeong <daeho43@gmail.com>
+To:     linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Cc:     Daeho Jeong <daehojeong@google.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Subject: [PATCH v3 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION ioctl
+Date:   Mon, 26 Oct 2020 13:16:55 +0900
+Message-Id: <20201026041656.2785980-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All callers now expect head (and base) pages, and can handle multiple
-head pages in a single batch, so make find_get_entries() behave that way.
-Also take the opportunity to make it use the pagevec infrastructure
-instead of open-coding how pvecs behave.  This has the side-effect of
-being able to append to a pagevec with existing contents, although we
-don't make use of that functionality anywhere yet.
+From: Daeho Jeong <daehojeong@google.com>
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: William Kucharski <william.kucharski@oracle.com>
+Added a new F2FS_IOC_GET_COMPRESS_OPTION ioctl to get file compression
+option of a file.
+
+struct f2fs_comp_option {
+    u8 algorithm;         => compression algorithm
+                          => 0:lzo, 1:lz4, 2:zstd, 3:lzorle
+    u8 log_cluster_size;  => log scale cluster size
+                          => 2 ~ 8
+};
+
+struct f2fs_comp_option option;
+
+ioctl(fd, F2FS_IOC_GET_COMPRESS_OPTION, &option);
+
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+Reviewed-by: Eric Biggers <ebiggers@kernel.org>
 ---
- include/linux/pagemap.h |  2 --
- mm/filemap.c            | 36 ++++++++----------------------------
- mm/internal.h           |  2 ++
- 3 files changed, 10 insertions(+), 30 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index f0bbe29de732..8938c64f418b 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -449,8 +449,6 @@ static inline struct page *find_subpage(struct page *head, pgoff_t index)
- 	return head + (index & (thp_nr_pages(head) - 1));
+v3: changed the error number more specific.
+v2: added ioctl description.
+---
+ fs/f2fs/f2fs.h |  7 +++++++
+ fs/f2fs/file.c | 30 ++++++++++++++++++++++++++++++
+ 2 files changed, 37 insertions(+)
+
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 53fe2853579c..a33c90cf979b 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -433,6 +433,8 @@ static inline bool __has_cursum_space(struct f2fs_journal *journal,
+ 					_IOR(F2FS_IOCTL_MAGIC, 19, __u64)
+ #define F2FS_IOC_SEC_TRIM_FILE		_IOW(F2FS_IOCTL_MAGIC, 20,	\
+ 						struct f2fs_sectrim_range)
++#define F2FS_IOC_GET_COMPRESS_OPTION	_IOR(F2FS_IOCTL_MAGIC, 21,	\
++						struct f2fs_comp_option)
+ 
+ /*
+  * should be same as XFS_IOC_GOINGDOWN.
+@@ -481,6 +483,11 @@ struct f2fs_sectrim_range {
+ 	u64 flags;
+ };
+ 
++struct f2fs_comp_option {
++	u8 algorithm;
++	u8 log_cluster_size;
++};
++
+ /* for inline stuff */
+ #define DEF_INLINE_RESERVED_SIZE	1
+ static inline int get_extra_isize(struct inode *inode);
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index ef5a844de53f..8922ab191a9d 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -3936,6 +3936,33 @@ static int f2fs_sec_trim_file(struct file *filp, unsigned long arg)
+ 	return ret;
  }
  
--unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
--		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- unsigned find_get_pages_range(struct address_space *mapping, pgoff_t *start,
- 			pgoff_t end, unsigned int nr_pages,
- 			struct page **pages);
-diff --git a/mm/filemap.c b/mm/filemap.c
-index e0fa943011d8..a117718ec1a8 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -1905,49 +1905,29 @@ static inline struct page *xas_find_get_entry(struct xa_state *xas,
-  * the mapping.  The entries are placed in @pvec.  find_get_entries()
-  * takes a reference on any actual pages it returns.
-  *
-- * The search returns a group of mapping-contiguous page cache entries
-- * with ascending indexes.  There may be holes in the indices due to
-- * not-present pages.
-+ * The entries have ascending indexes.  The indices may not be consecutive
-+ * due to not-present entries or THPs.
-  *
-  * Any shadow entries of evicted pages, or swap entries from
-  * shmem/tmpfs, are included in the returned array.
-  *
-- * If it finds a Transparent Huge Page, head or tail, find_get_entries()
-- * stops at that page: the caller is likely to have a better way to handle
-- * the compound page as a whole, and then skip its extent, than repeatedly
-- * calling find_get_entries() to return all its tails.
-- *
-- * Return: the number of pages and shadow entries which were found.
-+ * Return: The number of entries which were found.
-  */
- unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
- 		pgoff_t end, struct pagevec *pvec, pgoff_t *indices)
++static int f2fs_ioc_get_compress_option(struct file *filp, unsigned long arg)
++{
++	struct inode *inode = file_inode(filp);
++	struct f2fs_comp_option option;
++
++	if (!f2fs_sb_has_compression(F2FS_I_SB(inode)))
++		return -EOPNOTSUPP;
++
++	inode_lock(inode);
++
++	if (!f2fs_compressed_file(inode)) {
++		inode_unlock(inode);
++		return -ENODATA;
++	}
++
++	option.algorithm = F2FS_I(inode)->i_compress_algorithm;
++	option.log_cluster_size = F2FS_I(inode)->i_log_cluster_size;
++
++	inode_unlock(inode);
++
++	if (copy_to_user((struct f2fs_comp_option __user *)arg, &option,
++				sizeof(option)))
++		return -EFAULT;
++
++	return 0;
++}
++
+ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
  {
- 	XA_STATE(xas, &mapping->i_pages, start);
- 	struct page *page;
--	unsigned int ret = 0;
--	unsigned nr_entries = PAGEVEC_SIZE;
- 
- 	rcu_read_lock();
- 	while ((page = xas_find_get_entry(&xas, end, XA_PRESENT))) {
--		/*
--		 * Terminate early on finding a THP, to allow the caller to
--		 * handle it all at once; but continue if this is hugetlbfs.
--		 */
--		if (!xa_is_value(page) && PageTransHuge(page) &&
--				!PageHuge(page)) {
--			page = find_subpage(page, xas.xa_index);
--			nr_entries = ret + 1;
--		}
--
--		indices[ret] = xas.xa_index;
--		pvec->pages[ret] = page;
--		if (++ret == nr_entries)
-+		indices[pvec->nr] = xas.xa_index;
-+		if (!pagevec_add(pvec, page))
- 			break;
+ 	if (unlikely(f2fs_cp_error(F2FS_I_SB(file_inode(filp)))))
+@@ -4024,6 +4051,8 @@ long f2fs_ioctl(struct file *filp, unsigned int cmd, unsigned long arg)
+ 		return f2fs_reserve_compress_blocks(filp, arg);
+ 	case F2FS_IOC_SEC_TRIM_FILE:
+ 		return f2fs_sec_trim_file(filp, arg);
++	case F2FS_IOC_GET_COMPRESS_OPTION:
++		return f2fs_ioc_get_compress_option(filp, arg);
+ 	default:
+ 		return -ENOTTY;
  	}
- 	rcu_read_unlock();
- 
--	pvec->nr = ret;
--	return ret;
-+	return pagevec_count(pvec);
- }
- 
- /**
-@@ -1966,8 +1946,8 @@ unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
-  * not returned.
-  *
-  * The entries have ascending indexes.  The indices may not be consecutive
-- * due to not-present entries, THP pages, pages which could not be locked
-- * or pages under writeback.
-+ * due to not-present entries, THPs, pages which could not be locked or
-+ * pages under writeback.
-  *
-  * Return: The number of entries which were found.
-  */
-diff --git a/mm/internal.h b/mm/internal.h
-index 194572e1ab49..5aca7d7bc57c 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -62,6 +62,8 @@ static inline void force_page_cache_readahead(struct address_space *mapping,
- 
- struct page *find_get_entry(struct address_space *mapping, pgoff_t index);
- struct page *find_lock_entry(struct address_space *mapping, pgoff_t index);
-+unsigned find_get_entries(struct address_space *mapping, pgoff_t start,
-+		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- unsigned find_lock_entries(struct address_space *mapping, pgoff_t start,
- 		pgoff_t end, struct pagevec *pvec, pgoff_t *indices);
- 
+@@ -4194,6 +4223,7 @@ long f2fs_compat_ioctl(struct file *file, unsigned int cmd, unsigned long arg)
+ 	case F2FS_IOC_RELEASE_COMPRESS_BLOCKS:
+ 	case F2FS_IOC_RESERVE_COMPRESS_BLOCKS:
+ 	case F2FS_IOC_SEC_TRIM_FILE:
++	case F2FS_IOC_GET_COMPRESS_OPTION:
+ 		break;
+ 	default:
+ 		return -ENOIOCTLCMD;
 -- 
-2.28.0
+2.29.0.rc1.297.gfa9743e501-goog
 
