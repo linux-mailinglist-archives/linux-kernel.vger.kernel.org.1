@@ -2,57 +2,66 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 77A7F298AB3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:48:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0A5F7298AC6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771199AbgJZKsP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:48:15 -0400
-Received: from mx2.suse.de ([195.135.220.15]:55424 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1771043AbgJZKsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:48:13 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 10409AE46;
-        Mon, 26 Oct 2020 10:48:12 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id A3B706078A; Mon, 26 Oct 2020 11:48:11 +0100 (CET)
-Date:   Mon, 26 Oct 2020 11:48:11 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     linux-s390@vger.kernel.org, Joe Perches <joe@perches.com>
-Cc:     linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
-Subject: [Regression] s390x build broken with 5.10-rc1 (bisected)
-Message-ID: <20201026104811.22ta4pby2chmz4pv@lion.mk-sys.cz>
+        id S1771885AbgJZKwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:52:24 -0400
+Received: from szxga06-in.huawei.com ([45.249.212.32]:3488 "EHLO
+        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771850AbgJZKwV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 06:52:21 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
+        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CKWr81nlhzhZ37;
+        Mon, 26 Oct 2020 18:52:24 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Mon, 26 Oct 2020 18:52:09 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
+CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
+Subject: [RESEND PATCH] scsi: hisi_sas: Stop using queue #0 always for v2 hw
+Date:   Mon, 26 Oct 2020 18:48:33 +0800
+Message-ID: <1603709313-185482-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
+In commit 8d98416a55eb ("scsi: hisi_sas: Switch v3 hw to MQ"), the dispatch
+function was changed to choose the delivery queue based on the request tag
+HW queue index.
 
-5.10-rc1 builds on s390x fail with
+This heavily degrades performance for v2 hw, since the HW queues are not
+exposed there, and, as such, HW queue #0 is used for every command.
 
-  make -f ./scripts/Makefile.build obj=arch/s390/boot arch/s390/boot/bzImage
-  make -f ./scripts/Makefile.modpost
-  make -f ./scripts/Makefile.modfinal
-  make -f ./scripts/Makefile.build obj=arch/s390/boot/compressed arch/s390/boot/compressed/vmlinux
-          s1=`s390x-suse-linux-objdump -t -j ".boot.data" "vmlinux" | sort | sed -n "/0000000000000000/! s/.*\s.boot.data\s\+//p" | sha256sum`; s2=`s390x-suse-linux-objdump -t -j ".boot.data" "arch/s390/boot/compressed/vmlinux" | sort | sed -n "/0000000000000000/! s/.*\s.boot.data\s\+//p" | sha256sum`; if [ "$s1" != "$s2" ]; then echo "error: section .boot.data differs between vmlinux and arch/s390/boot/compressed/vmlinux" >&2; exit 1; fi; touch arch/s390/boot/section_cmp.boot.data
-          s1=`s390x-suse-linux-objdump -t -j ".boot.preserved.data" "vmlinux" | sort | sed -n "/0000000000000000/! s/.*\s.boot.preserved.data\s\+//p" | sha256sum`; s2=`s390x-suse-linux-objdump -t -j ".boot.preserved.data" "arch/s390/boot/compressed/vmlinux" | sort | sed -n "/0000000000000000/! s/.*\s.boot.preserved.data\s\+//p" | sha256sum`; if [ "$s1" != "$s2" ]; then echo "error: section .boot.preserved.data differs between vmlinux and arch/s390/boot/compressed/vmlinux" >&2; exit 1; fi; touch arch/s390/boot/section_cmp.boot.preserved.data
-  error: section .boot.data differs between vmlinux and arch/s390/boot/compressed/vmlinux
-  make[1]: *** [arch/s390/boot/Makefile:65: arch/s390/boot/section_cmp.boot.data] Error 1
-  make[1]: *** Waiting for unfinished jobs....
-  error: section .boot.preserved.data differs between vmlinux and arch/s390/boot/compressed/vmlinux
-  make[1]: *** [arch/s390/boot/Makefile:65: arch/s390/boot/section_cmp.boot.preserved.data] Error 1
-  make: *** [arch/s390/Makefile:153: bzImage] Error 2
-  make: *** Waiting for unfinished jobs....
+Revert to previous behaviour for when nr_hw_queues is not set, that being
+to choose the HW queue based on target device index.
 
-Bisect identified commit 33def8498fdd ("treewide: Convert macro and uses
-of __section(foo) to __section("foo")"), i.e. the very last commit
-before tagging v5.10-rc1.
+Fixes: 8d98416a55eb ("scsi: hisi_sas: Switch v3 hw to MQ")
+Signed-off-by: John Garry <john.garry@huawei.com>
+---
+Please include as a v5.10 fix, thanks!
 
-I can reproduce this with e.g. defconfig and both native s390x build and
-build on x86_64 using cross compiler. I used gcc 10.2.1 and binutils 2.34.
+diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
+index a994c7b8d26f..fd980a86aa21 100644
+--- a/drivers/scsi/hisi_sas/hisi_sas_main.c
++++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
+@@ -444,7 +444,7 @@ static int hisi_sas_task_prep(struct sas_task *task,
+ 		}
+ 	}
+ 
+-	if (scmd) {
++	if (scmd && hisi_hba->shost->nr_hw_queues) {
+ 		unsigned int dq_index;
+ 		u32 blk_tag;
+ 
+-- 
+2.26.2
 
-Michal
