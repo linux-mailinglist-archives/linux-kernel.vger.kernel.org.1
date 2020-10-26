@@ -2,76 +2,136 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C184298F7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:38:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6B578298F8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:40:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781666AbgJZOiF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:38:05 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:37853 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781581AbgJZOiE (ORCPT
+        id S1781779AbgJZOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:40:13 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:55304 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781541AbgJZOid (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:38:04 -0400
-Received: by mail-ot1-f67.google.com with SMTP id m22so8178436ots.4;
-        Mon, 26 Oct 2020 07:38:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Dmc6xs39pOcvaguHHkLHxd4UeG9+n4WiLiCISEFRVvE=;
-        b=QNzSufadAIFPypbUPh8FSEdeb3L7uSEbpVO02bmHaeRNdvSfxjxiDZKXs0oEpgWclm
-         czcpS6ltZnGaVVXr0Og5OolpG3A/cRV+r5zijcJSb0dNSUvo0HUS5XkUpEFKvC/zcm5+
-         GWhNhXmzQCpyznzQ24WlgJrC70CVSDBYO69ImN85+oO1kI6eRZ4J+Bzi5Yr6loGvG2xc
-         wmKmfvVN21pyzFOmw45t0/FQXkZZkaGzb+wCjjDJt4PtybHlFKgXv3TRx4gYJIJv1x0/
-         UcWJutViWrz3YfzPPD3FGTAjjoyJVUlZv5K/Akt4ulrNXL9OTufvMNKKANYItJoSDOWP
-         QaHg==
-X-Gm-Message-State: AOAM533WDlPuFWFUn2jhGSDKrL/+89mQ+8GlCLED4cRzRAHpdidlKqaf
-        npu8Tm848xWqkNl24qbTwQ==
-X-Google-Smtp-Source: ABdhPJxI/8VTP5i/7wxqiKj0bWHUYN05SkqR0BiJs/0nllrZpJVEWuPVO0ce25saT4lDP9QNHLdr9Q==
-X-Received: by 2002:a9d:411:: with SMTP id 17mr14374161otc.191.1603723083071;
-        Mon, 26 Oct 2020 07:38:03 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id u22sm4032299oor.13.2020.10.26.07.38.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:38:01 -0700 (PDT)
-Received: (nullmailer pid 123037 invoked by uid 1000);
-        Mon, 26 Oct 2020 14:38:01 -0000
-Date:   Mon, 26 Oct 2020 09:38:01 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     linux-rpi-kernel@lists.infradead.org, catalin.marinas@arm.com,
-        jeremy.linton@arm.com, iommu@lists.linux-foundation.org,
-        linux-arm-kernel@lists.infradead.org, robh+dt@kernel.org,
-        hch@lst.de, linux-kernel@vger.kernel.org,
-        devicetree@vger.kernel.org, ardb@kernel.org, will@kernel.org,
-        guohanjun@huawei.com, robin.murphy@arm.com,
-        Frank Rowand <frowand.list@gmail.com>,
-        lorenzo.pieralisi@arm.com
-Subject: Re: [PATCH v4 4/7] of: unittest: Add test for
- of_dma_get_max_cpu_address()
-Message-ID: <20201026143801.GA122988@bogus>
-References: <20201021123437.21538-1-nsaenzjulienne@suse.de>
- <20201021123437.21538-5-nsaenzjulienne@suse.de>
+        Mon, 26 Oct 2020 10:38:33 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kX3dg-0003AN-4n; Mon, 26 Oct 2020 10:38:24 -0400
+Message-ID: <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
+ load_balance()"
+From:   Rik van Riel <riel@surriel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>,
+        Chris Mason <clm@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 26 Oct 2020 10:38:23 -0400
+In-Reply-To: <20201026142455.GA13495@vingu-book>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
+         <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+         <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
+         <20201026142455.GA13495@vingu-book>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-FbC/ZK+CB+Qj4hOykJPj"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201021123437.21538-5-nsaenzjulienne@suse.de>
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, 21 Oct 2020 14:34:34 +0200, Nicolas Saenz Julienne wrote:
-> Introduce a test for of_dma_get_max_cup_address(), it uses the same DT
-> data as the rest of dma-ranges unit tests.
-> 
-> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> 
-> ---
-> Changes since v3:
->  - Remove HAS_DMA guards
-> 
->  drivers/of/unittest.c | 18 ++++++++++++++++++
->  1 file changed, 18 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--=-FbC/ZK+CB+Qj4hOykJPj
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
+> Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=A9crit :
+> > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
+> >=20
+> > > Hi Chris
+> > >=20
+> > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+> > > > Hi everyone,
+> > > >=20
+> > > > We=E2=80=99re validating a new kernel in the fleet, and compared wi=
+th
+> > > > v5.2,
+> > >=20
+> > > Which version are you using ?
+> > > several improvements have been added since v5.5 and the rework of
+> > > load_balance
+> >=20
+> > We=E2=80=99re validating v5.6, but all of the numbers referenced in thi=
+s
+> > patch are
+> > against v5.9.  I usually try to back port my way to victory on this
+> > kind of
+> > thing, but mainline seems to behave exactly the same as
+> > 0b0695f2b34a wrt
+> > this benchmark.
+>=20
+> ok. Thanks for the confirmation
+>=20
+> I have been able to reproduce the problem on my setup.
+>=20
+> Could you try the fix below ?
+>=20
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -9049,7 +9049,8 @@ static inline void calculate_imbalance(struct
+> lb_env *env, struct sd_lb_stats *s
+>          * emptying busiest.
+>          */
+>         if (local->group_type =3D=3D group_has_spare) {
+> -               if (busiest->group_type > group_fully_busy) {
+> +               if ((busiest->group_type > group_fully_busy) &&
+> +                   (busiest->group_weight > 1)) {
+>                         /*
+>                          * If busiest is overloaded, try to fill
+> spare
+>                          * capacity. This might end up creating spare
+> capacity
+>=20
+>=20
+> When we calculate an imbalance at te smallest level, ie between CPUs
+> (group_weight =3D=3D 1),
+> we should try to spread tasks on cpus instead of trying to fill spare
+> capacity.
+
+Should we also spread tasks when balancing between
+multi-threaded CPU cores on the same socket?
+
+Say we have groups of CPUs
+(0, 2) and CPUs (1, 3),
+with CPU 2 idle, and 3 tasks spread between CPUs
+1 & 3.
+
+Since they are all on the same LLC, and the task
+wakeup code has absolutely no hesitation in moving
+them around, should the load balancer also try to
+keep tasks within a socket spread across all CPUs?
+
+--=20
+All Rights Reversed.
+
+--=-FbC/ZK+CB+Qj4hOykJPj
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+W318ACgkQznnekoTE
+3oPRJwf/ekaSHMN/L8hJqdMIYltLVYfygVSAtGgPBkOpmPLPk5eL9eqdL1vq6Rrt
+FwvI4O2D6g4rHdiLDs7TavOvoObeWkvl55P5XZSC/csv22RSr0opPMViYB0G+JYM
+r2iJiLom2JnrVb3c0426yBhDw0MXIt+5YYlyQFrMS0ApICPyLqCvj29U3iyV9avu
+Gyfn9aX7q4seK3YjN5ZvfO68PrsWy2Q6NjELHDJvqn+x8s2UZoC+8WAISJLy1YLm
+n9YgZ80wAdaGGGzXFMvWR+PMnFkoWjDg3AnW5E3ddLj/yX4QVUjYZngYo3nS14F8
+vobufUfweqzaA4BCZz+tkISfw1ZR0w==
+=BfCB
+-----END PGP SIGNATURE-----
+
+--=-FbC/ZK+CB+Qj4hOykJPj--
+
