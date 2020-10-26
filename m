@@ -2,54 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E9C7299458
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:52:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA34B299460
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:52:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788555AbgJZRw3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:52:29 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44730 "EHLO mail.kernel.org"
+        id S1788590AbgJZRwk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:52:40 -0400
+Received: from foss.arm.com ([217.140.110.172]:46326 "EHLO foss.arm.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1788547AbgJZRw2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:52:28 -0400
-Subject: Re: [GIT PULL] Crypto Fixes for 5.10
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603734748;
-        bh=V5d3zpQhymxIHeGJoy+l8Yh+NdrCgDZXPbmGWJXNayU=;
-        h=From:In-Reply-To:References:Date:To:Cc:From;
-        b=l7X8CtPfywJn0ZA+rB6FHwEcrsOEiOuWUZHVHbOdo/UGx5uxzMZZRngQfa8iuHc7E
-         8y65weUfA8M7IZ89AOXZOsndKC7K3r9G3kLTqVw/VvGfrMwm1SlUj60dBAhlV8K01M
-         DiAlJ1sbLR7YfLzgN6+TLNJXLm6YqGQ+pPcNNp44=
-From:   pr-tracker-bot@kernel.org
-In-Reply-To: <20201026011159.GA2428@gondor.apana.org.au>
-References: <20200803044024.GA6429@gondor.apana.org.au>
- <20200830223304.GA16882@gondor.apana.org.au> <20201026011159.GA2428@gondor.apana.org.au>
-X-PR-Tracked-List-Id: <linux-crypto.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20201026011159.GA2428@gondor.apana.org.au>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
-X-PR-Tracked-Commit-Id: c3a98c3ad5c0dc60a1ac66bf91147a3f39cac96b
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 41ba50b0572e90ed3d24fe4def54567e9050bc47
-Message-Id: <160373474836.18562.14943712215644627613.pr-tracker-bot@kernel.org>
-Date:   Mon, 26 Oct 2020 17:52:28 +0000
-To:     Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Crypto Mailing List <linux-crypto@vger.kernel.org>
+        id S1788579AbgJZRwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:52:37 -0400
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 43CD7139F;
+        Mon, 26 Oct 2020 10:52:36 -0700 (PDT)
+Received: from arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
+        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B2B113F66E;
+        Mon, 26 Oct 2020 10:52:34 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 17:52:31 +0000
+From:   Dave Martin <Dave.Martin@arm.com>
+To:     Szabolcs Nagy <szabolcs.nagy@arm.com>
+Cc:     Mark Rutland <mark.rutland@arm.com>,
+        systemd-devel@lists.freedesktop.org,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        Mark Brown <broonie@kernel.org>, toiwoton@gmail.com,
+        libc-alpha@sourceware.org,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+Message-ID: <20201026175230.GC27285@arm.com>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201026162410.GB27285@arm.com>
+ <20201026165755.GV3819@arm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026165755.GV3819@arm.com>
+User-Agent: Mutt/1.5.23 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The pull request you sent on Mon, 26 Oct 2020 12:11:59 +1100:
+On Mon, Oct 26, 2020 at 04:57:55PM +0000, Szabolcs Nagy via Libc-alpha wrote:
+> The 10/26/2020 16:24, Dave Martin via Libc-alpha wrote:
+> > Unrolling this discussion a bit, this problem comes from a few sources:
+> > 
+> > 1) systemd is trying to implement a policy that doesn't fit SECCOMP
+> > syscall filtering very well.
+> > 
+> > 2) The program is trying to do something not expressible through the
+> > syscall interface: really the intent is to set PROT_BTI on the page,
+> > with no intent to set PROT_EXEC on any page that didn't already have it
+> > set.
+> > 
+> > 
+> > This limitation of mprotect() was known when I originally added PROT_BTI,
+> > but at that time we weren't aware of a clear use case that would fail.
+> > 
+> > 
+> > Would it now help to add something like:
+> > 
+> > int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
+> > {
+> > 	int ret = -EINVAL;
+> > 	mmap_write_lock(current->mm);
+> > 	if (all vmas in [addr .. addr + len) have
+> > 			their mprotect flags set to old_flags) {
+> > 
+> > 		ret = mprotect(addr, len, new_flags);
+> > 	}
+> > 	
+> > 	mmap_write_unlock(current->mm);
+> > 	return ret;
+> > }
+> 
+> if more prot flags are introduced then the exact
+> match for old_flags may be restrictive and currently
+> there is no way to query these flags to figure out
+> how to toggle one prot flag in a future proof way,
+> so i don't think this solves the issue completely.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/herbert/crypto-2.6.git linus
+Ack -- I illustrated this model because it makes the seccomp filter's
+job easy, but it does have limitations.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/41ba50b0572e90ed3d24fe4def54567e9050bc47
+> i think we might need a new api, given that aarch64
+> now has PROT_BTI and PROT_MTE while existing code
+> expects RWX only, but i don't know what api is best.
 
-Thank you!
+An alternative option would be a call that sets / clears chosen
+flags and leaves others unchanged.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+The trouble with that is that the MDWX policy then becomes hard to
+implement again.
+
+
+But policies might be best set via another route, such as a prctl,
+rather than being implemented completely in a seccomp filter.
+
+Cheers
+---Dave
