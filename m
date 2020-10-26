@@ -2,126 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 33E4B29884D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:29:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADD03298852
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:31:40 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771728AbgJZI24 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:28:56 -0400
-Received: from youngberry.canonical.com ([91.189.89.112]:44716 "EHLO
-        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771719AbgJZI2z (ORCPT
+        id S1771754AbgJZIba (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:31:30 -0400
+Received: from casper.infradead.org ([90.155.50.34]:33838 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771712AbgJZIb3 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:28:55 -0400
-Received: from 61-220-137-37.hinet-ip.hinet.net ([61.220.137.37] helo=localhost)
-        by youngberry.canonical.com with esmtpsa (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
-        (Exim 4.86_2)
-        (envelope-from <kai.heng.feng@canonical.com>)
-        id 1kWxrz-0005Rg-Ks; Mon, 26 Oct 2020 08:28:48 +0000
-From:   Kai-Heng Feng <kai.heng.feng@canonical.com>
-To:     marcel@holtmann.org, johan.hedberg@gmail.com
-Cc:     max.chou@realtek.com, alex_lu@realsil.com.cn,
-        Kai-Heng Feng <kai.heng.feng@canonical.com>,
-        linux-bluetooth@vger.kernel.org (open list:BLUETOOTH DRIVERS),
-        linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH v2] Bluetooth: btrtl: Ask 8821C to drop old firmware
-Date:   Mon, 26 Oct 2020 16:28:38 +0800
-Message-Id: <20201026082838.26532-1-kai.heng.feng@canonical.com>
-X-Mailer: git-send-email 2.17.1
+        Mon, 26 Oct 2020 04:31:29 -0400
+X-Greylist: delayed 1222 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 04:31:29 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=zkQv6PP/jqP7JpBqkyIwYWH1C5UcJlu2KgKr/pNdSNs=; b=K/Ee07W7BXL26gQPzNcZFTdGaE
+        idve07W5yNIGZ5ZVQg6P6GBgsyCS/e7I3oISmp0Pa5mojhAFma72JdjztC9fN2EyT1pFygN7gwZyF
+        dhHxivnLlozdFPbSq8x1dQUkw2EYwaBo1mVzy38AjDhxlhukMmLlhEy7HTr7xrUCKFeJFz5WfO3lC
+        UybBh8L1Rjs839EuclWBjgIhjm2WHzR9npIErGCO0HtosTjyvXDscnDzqWeSDBVdDOeoB+ZruRU6v
+        6H6O1yalKplcxq2O9s4nY5lVhumRQEJDZnaHcLjx7C+68fRw/ZcW+sb13qfWKWmWxlDR58R3HAtsS
+        FyqUbY7Q==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kWxan-000481-3r; Mon, 26 Oct 2020 08:11:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id DC7353010D2;
+        Mon, 26 Oct 2020 09:10:59 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id CAD6520325EC8; Mon, 26 Oct 2020 09:10:59 +0100 (CET)
+Date:   Mon, 26 Oct 2020 09:10:59 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 49/56] refcount.h: fix a kernel-doc markup
+Message-ID: <20201026081059.GB2628@hirez.programming.kicks-ass.net>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+ <fd94a95cfe01b97190b6ffb9e942cb4bbeeaa6bf.1603469755.git.mchehab+huawei@kernel.org>
+ <202010231039.DE05B63@keescook>
+ <20201023193907.GI2974@worktop.programming.kicks-ass.net>
+ <20201023134757.628f91b7@lwn.net>
+ <20201024082827.08ad3010@coco.lan>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201024082827.08ad3010@coco.lan>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some platforms keep USB power even when they are powered off and in S5,
-this makes Realtek 8821C keep its firmware even after a cold boot, and
-make 8821C never load new firmware.
+On Sat, Oct 24, 2020 at 08:28:27AM +0200, Mauro Carvalho Chehab wrote:
+> If the intent is to document the struct and its internal fields,
+> this kernel-doc should work:
+> 
+> 	/**
+> 	 * struct refcount_struct - variant of atomic_t specialized for reference counts
+> 	 * @refs: atomic_t counter field
+> 	 *
+> 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> 	 * there. This avoids wrapping the counter and causing 'spurious'
+> 	 * use-after-free bugs.
+> 	 */
+> 
+> Which produces this result:
 
-So use vendor specific HCI command to ask 8821C drop its firmware after
-system shutdown.
+Who cares... :-(
 
-Newer firmware doesn't have this issue so we only use this trick for old
-8821C firmware version.
+> If you want both, then you would either split struct and typedef, e. g.
+> with something like:
+> 
+> 	/**
+> 	 * struct refcount_struct - variant of atomic_t specialized for reference counts
+> 	 * @refs: atomic_t counter field
+> 	 *
+> 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> 	 * there. This avoids wrapping the counter and causing 'spurious'
+> 	 * use-after-free bugs.
+> 	 */
+> 	struct refcount_struct {
+> 	        atomic_t refs;
+> 	};
+> 
+> 	/**
+> 	 * typedef refcount_t - variant of atomic_t specialized for reference counts
+> 	 * @refs: atomic_t counter field
+> 	 *
+> 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> 	 * there. This avoids wrapping the counter and causing 'spurious'
+> 	 * use-after-free bugs.
+> 	 */
+> 	typedef struct refcount_struct refcount_t;
+> 
+> Or, you could add the member at the description field. E. g. something
+> like this:
+> 
+> 	/**
+> 	 * typedef refcount_t - variant of atomic_t specialized for reference counts
+> 	 *
+> 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> 	 * there. This avoids wrapping the counter and causing 'spurious'
+> 	 * use-after-free bugs.
+> 	 *
+> 	 * Members:
+> 	 *   ``refs``
+> 	 *        atomic_t counter field
+> 	 */
+> 	typedef struct refcount_struct {
+> 	        atomic_t refs;
+> 	} refcount_t;
+> 
+> If you want to test it, you can run kernel-doc directly, to see how
+> it will parse it. For ReST output, that's the syntax:
+> 
+> 	./scripts/kernel-doc --sphinx-version 3 include/linux/refcount.h
 
-Suggested-by: Max Chou <max.chou@realtek.com>
-Signed-off-by: Kai-Heng Feng <kai.heng.feng@canonical.com>
----
-v2:
- - Fix incorrect parAnthesis on le16_to_cpu.
- - Ensure firmware gets re-uploaded in initialization.
+I'll just go ahead and remove the superfluous * from the comment... It's
+trivially clear what is meant. If the stupid tool can't deal with that,
+I don't care.
 
- drivers/bluetooth/btrtl.c | 46 +++++++++++++++++++++++++++++++++++++++
- 1 file changed, 46 insertions(+)
-
-diff --git a/drivers/bluetooth/btrtl.c b/drivers/bluetooth/btrtl.c
-index 3a9afc905f24..37e24bbb2eb4 100644
---- a/drivers/bluetooth/btrtl.c
-+++ b/drivers/bluetooth/btrtl.c
-@@ -55,6 +55,7 @@ struct btrtl_device_info {
- 	int fw_len;
- 	u8 *cfg_data;
- 	int cfg_len;
-+	bool drop_fw;
- };
- 
- static const struct id_table ic_id_table[] = {
-@@ -563,6 +564,8 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
- 	u16 hci_rev, lmp_subver;
- 	u8 hci_ver;
- 	int ret;
-+	u16 opcode;
-+	u8 cmd[2];
- 
- 	btrtl_dev = kzalloc(sizeof(*btrtl_dev), GFP_KERNEL);
- 	if (!btrtl_dev) {
-@@ -584,6 +587,49 @@ struct btrtl_device_info *btrtl_initialize(struct hci_dev *hdev,
- 	hci_ver = resp->hci_ver;
- 	hci_rev = le16_to_cpu(resp->hci_rev);
- 	lmp_subver = le16_to_cpu(resp->lmp_subver);
-+
-+	if (resp->hci_ver == 0x8 && le16_to_cpu(resp->hci_rev) == 0x826c &&
-+	    resp->lmp_ver == 0x8 && le16_to_cpu(resp->lmp_subver) == 0xa99e)
-+		btrtl_dev->drop_fw = true;
-+
-+	if (btrtl_dev->drop_fw) {
-+		opcode = hci_opcode_pack(0x3f, 0x66);
-+		cmd[0] = opcode & 0xff;
-+		cmd[1] = opcode >> 8;
-+
-+		skb = bt_skb_alloc(sizeof(cmd), GFP_KERNEL);
-+		if (IS_ERR(skb))
-+			goto out_free;
-+
-+		skb_put_data(skb, cmd, sizeof(cmd));
-+		hci_skb_pkt_type(skb) = HCI_COMMAND_PKT;
-+
-+		hdev->send(hdev, skb);
-+
-+		/* Ensure the above vendor command is sent to controller and
-+		 * process has done.
-+		 */
-+		msleep(200);
-+
-+		/* Read the local version again. Expect to have the vanilla
-+		 * version as cold boot.
-+		 */
-+		skb = btrtl_read_local_version(hdev);
-+		if (IS_ERR(skb)) {
-+			ret = PTR_ERR(skb);
-+			goto err_free;
-+		}
-+
-+		resp = (struct hci_rp_read_local_version *)skb->data;
-+		rtl_dev_info(hdev, "examining hci_ver=%02x hci_rev=%04x lmp_ver=%02x lmp_subver=%04x",
-+			     resp->hci_ver, resp->hci_rev,
-+			     resp->lmp_ver, resp->lmp_subver);
-+
-+		hci_ver = resp->hci_ver;
-+		hci_rev = le16_to_cpu(resp->hci_rev);
-+		lmp_subver = le16_to_cpu(resp->lmp_subver);
-+	}
-+out_free:
- 	kfree_skb(skb);
- 
- 	btrtl_dev->ic_info = btrtl_match_ic(lmp_subver, hci_rev, hci_ver,
--- 
-2.17.1
-
+All this wanking about docs and making perfectly fine comments bloody
+unreadable shit has to stop.
