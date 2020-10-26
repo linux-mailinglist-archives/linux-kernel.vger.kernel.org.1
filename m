@@ -2,35 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C6A5A29A0C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 67CBA29A127
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408819AbgJZXtx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:49:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47362 "EHLO mail.kernel.org"
+        id S2441308AbgJ0Aic (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:38:32 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47446 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408700AbgJZXt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:27 -0400
+        id S2408716AbgJZXt2 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:28 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7A57F20874;
-        Mon, 26 Oct 2020 23:49:24 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D9F4721655;
+        Mon, 26 Oct 2020 23:49:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756165;
-        bh=nksza5iCpnm+4xa9HEAgJXLYfk5ntV499XW6S+PXOdM=;
+        s=default; t=1603756167;
+        bh=zA3TN2s9EocaOBBFvSSP2eqBB7DlwkuhEswl9PDTfiY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=cmkqjEW6UKIQCzjvp4Mmm4M2u1txaOikdKX56u+rqm/S8i2Cs+4vTs6V2Hx6joMKL
-         O+jdG1NpuHD4NJzdkR3gfnC3EN9BAcehWUxVVWD9BiRTjm+y3X8uhdl1pRByYoo4xP
-         KAJfB1tgkqZm09P3TI/0OKeid5recefzv+c8ltsA=
+        b=woOELujzToHTz2/GCKhzpIzsfEcT2vyl94Z018bjiNBygFJcwhACiWlweIcXdJugb
+         JMktW4qymaNoKVGLK2JnpBzsrb1K+fFnRKh3lTalaX8LAYXwUYaYEOc9P34JKdIgn5
+         dRBVZS9jFR0KuFOHrBdGCMsn2UuNWCU074IUaI8I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Harald Freudenberger <freude@linux.ibm.com>,
-        Vasily Gorbik <gor@linux.ibm.com>,
-        Sasha Levin <sashal@kernel.org>, linux-s390@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 015/147] s390/ap/zcrypt: revisit ap and zcrypt error handling
-Date:   Mon, 26 Oct 2020 19:46:53 -0400
-Message-Id: <20201026234905.1022767-15-sashal@kernel.org>
+Cc:     Jaegeuk Kim <jaegeuk@kernel.org>,
+        syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com,
+        Chao Yu <yuchao0@huawei.com>, Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.9 017/147] f2fs: handle errors of f2fs_get_meta_page_nofail
+Date:   Mon, 26 Oct 2020 19:46:55 -0400
+Message-Id: <20201026234905.1022767-17-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -42,461 +43,129 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Harald Freudenberger <freude@linux.ibm.com>
+From: Jaegeuk Kim <jaegeuk@kernel.org>
 
-[ Upstream commit e0332629e33d1926c93348d918aaaf451ef9a16b ]
+[ Upstream commit 86f33603f8c51537265ff7ac0320638fd2cbdb1b ]
 
-Revisit the ap queue error handling: Based on discussions and
-evaluatios with the firmware folk here is now a rework of the response
-code handling for all the AP instructions. The idea is to distinguish
-between failures because of some kind of invalid request where a retry
-does not make any sense and a failure where another attempt to send
-the very same request may succeed. The first case is handled by
-returning EINVAL to the userspace application. The second case results
-in retries within the zcrypt API controlled by a per message retry
-counter.
+First problem is we hit BUG_ON() in f2fs_get_sum_page given EIO on
+f2fs_get_meta_page_nofail().
 
-Revisit the zcrpyt error handling: Similar here, based on discussions
-with the firmware people here comes a rework of the handling of all
-the reply codes.  Main point here is that there are only very few
-cases left, where a zcrypt device queue is switched to offline. It
-should never be the case that an AP reply message is 'unknown' to the
-device driver as it indicates a total mismatch between device driver
-and crypto card firmware. In all other cases, the code distinguishes
-between failure because of invalid message (see above - EINVAL) or
-failures of the infrastructure (see above - EAGAIN).
+Quick fix was not to give any error with infinite loop, but syzbot caught
+a case where it goes to that loop from fuzzed image. In turned out we abused
+f2fs_get_meta_page_nofail() like in the below call stack.
 
-Signed-off-by: Harald Freudenberger <freude@linux.ibm.com>
-Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+- f2fs_fill_super
+ - f2fs_build_segment_manager
+  - build_sit_entries
+   - get_current_sit_page
+
+INFO: task syz-executor178:6870 can't die for more than 143 seconds.
+task:syz-executor178 state:R
+ stack:26960 pid: 6870 ppid:  6869 flags:0x00004006
+Call Trace:
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/1179:
+ #0: ffffffff8a554da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x53/0x260 kernel/locking/lockdep.c:6242
+1 lock held by systemd-journal/3920:
+1 lock held by in:imklog/6769:
+ #0: ffff88809eebc130 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0xe9/0x100 fs/file.c:930
+1 lock held by syz-executor178/6870:
+ #0: ffff8880925120e0 (&type->s_umount_key#47/1){+.+.}-{3:3}, at: alloc_super+0x201/0xaf0 fs/super.c:229
+
+Actually, we didn't have to use _nofail in this case, since we could return
+error to mount(2) already with the error handler.
+
+As a result, this patch tries to 1) remove _nofail callers as much as possible,
+2) deal with error case in last remaining caller, f2fs_get_sum_page().
+
+Reported-by: syzbot+ee250ac8137be41d7b13@syzkaller.appspotmail.com
+Reviewed-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/s390/crypto/ap_bus.h           |  1 +
- drivers/s390/crypto/ap_queue.c         |  8 +--
- drivers/s390/crypto/zcrypt_debug.h     |  8 +++
- drivers/s390/crypto/zcrypt_error.h     | 88 +++++++++---------------
- drivers/s390/crypto/zcrypt_msgtype50.c | 50 +++++++-------
- drivers/s390/crypto/zcrypt_msgtype6.c  | 92 +++++++++++++-------------
- 6 files changed, 116 insertions(+), 131 deletions(-)
+ fs/f2fs/checkpoint.c |  2 +-
+ fs/f2fs/f2fs.h       |  2 +-
+ fs/f2fs/node.c       |  2 +-
+ fs/f2fs/segment.c    | 12 +++++++++---
+ 4 files changed, 12 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/s390/crypto/ap_bus.h b/drivers/s390/crypto/ap_bus.h
-index 1ea046324e8f6..c4afca0d773c6 100644
---- a/drivers/s390/crypto/ap_bus.h
-+++ b/drivers/s390/crypto/ap_bus.h
-@@ -50,6 +50,7 @@ static inline int ap_test_bit(unsigned int *ptr, unsigned int nr)
- #define AP_RESPONSE_NO_FIRST_PART	0x13
- #define AP_RESPONSE_MESSAGE_TOO_BIG	0x15
- #define AP_RESPONSE_REQ_FAC_NOT_INST	0x16
-+#define AP_RESPONSE_INVALID_DOMAIN	0x42
- 
- /*
-  * Known device types
-diff --git a/drivers/s390/crypto/ap_queue.c b/drivers/s390/crypto/ap_queue.c
-index 688ebebbf98cb..99f73bbb1c751 100644
---- a/drivers/s390/crypto/ap_queue.c
-+++ b/drivers/s390/crypto/ap_queue.c
-@@ -237,6 +237,9 @@ static enum ap_sm_wait ap_sm_write(struct ap_queue *aq)
- 	case AP_RESPONSE_RESET_IN_PROGRESS:
- 		aq->sm_state = AP_SM_STATE_RESET_WAIT;
- 		return AP_SM_WAIT_TIMEOUT;
-+	case AP_RESPONSE_INVALID_DOMAIN:
-+		AP_DBF(DBF_WARN, "AP_RESPONSE_INVALID_DOMAIN on NQAP\n");
-+		fallthrough;
- 	case AP_RESPONSE_MESSAGE_TOO_BIG:
- 	case AP_RESPONSE_REQ_FAC_NOT_INST:
- 		list_del_init(&ap_msg->list);
-@@ -278,11 +281,6 @@ static enum ap_sm_wait ap_sm_reset(struct ap_queue *aq)
- 		aq->sm_state = AP_SM_STATE_RESET_WAIT;
- 		aq->interrupt = AP_INTR_DISABLED;
- 		return AP_SM_WAIT_TIMEOUT;
--	case AP_RESPONSE_BUSY:
--		return AP_SM_WAIT_TIMEOUT;
--	case AP_RESPONSE_Q_NOT_AVAIL:
--	case AP_RESPONSE_DECONFIGURED:
--	case AP_RESPONSE_CHECKSTOPPED:
- 	default:
- 		aq->sm_state = AP_SM_STATE_BORKED;
- 		return AP_SM_WAIT_NONE;
-diff --git a/drivers/s390/crypto/zcrypt_debug.h b/drivers/s390/crypto/zcrypt_debug.h
-index 241dbb5f75bf3..3225489a1c411 100644
---- a/drivers/s390/crypto/zcrypt_debug.h
-+++ b/drivers/s390/crypto/zcrypt_debug.h
-@@ -21,6 +21,14 @@
- 
- #define ZCRYPT_DBF(...)					\
- 	debug_sprintf_event(zcrypt_dbf_info, ##__VA_ARGS__)
-+#define ZCRYPT_DBF_ERR(...)					\
-+	debug_sprintf_event(zcrypt_dbf_info, DBF_ERR, ##__VA_ARGS__)
-+#define ZCRYPT_DBF_WARN(...)					\
-+	debug_sprintf_event(zcrypt_dbf_info, DBF_WARN, ##__VA_ARGS__)
-+#define ZCRYPT_DBF_INFO(...)					\
-+	debug_sprintf_event(zcrypt_dbf_info, DBF_INFO, ##__VA_ARGS__)
-+#define ZCRYPT_DBF_DBG(...)					\
-+	debug_sprintf_event(zcrypt_dbf_info, DBF_DEBUG, ##__VA_ARGS__)
- 
- extern debug_info_t *zcrypt_dbf_info;
- 
-diff --git a/drivers/s390/crypto/zcrypt_error.h b/drivers/s390/crypto/zcrypt_error.h
-index 54a04f8c38ef9..39e626e3a3794 100644
---- a/drivers/s390/crypto/zcrypt_error.h
-+++ b/drivers/s390/crypto/zcrypt_error.h
-@@ -52,7 +52,6 @@ struct error_hdr {
- #define REP82_ERROR_INVALID_COMMAND	    0x30
- #define REP82_ERROR_MALFORMED_MSG	    0x40
- #define REP82_ERROR_INVALID_SPECIAL_CMD	    0x41
--#define REP82_ERROR_INVALID_DOMAIN_PRECHECK 0x42
- #define REP82_ERROR_RESERVED_FIELDO	    0x50 /* old value	*/
- #define REP82_ERROR_WORD_ALIGNMENT	    0x60
- #define REP82_ERROR_MESSAGE_LENGTH	    0x80
-@@ -67,7 +66,6 @@ struct error_hdr {
- #define REP82_ERROR_ZERO_BUFFER_LEN	    0xB0
- 
- #define REP88_ERROR_MODULE_FAILURE	    0x10
--
- #define REP88_ERROR_MESSAGE_TYPE	    0x20
- #define REP88_ERROR_MESSAGE_MALFORMD	    0x22
- #define REP88_ERROR_MESSAGE_LENGTH	    0x23
-@@ -85,78 +83,56 @@ static inline int convert_error(struct zcrypt_queue *zq,
- 	int queue = AP_QID_QUEUE(zq->queue->qid);
- 
- 	switch (ehdr->reply_code) {
--	case REP82_ERROR_OPERAND_INVALID:
--	case REP82_ERROR_OPERAND_SIZE:
--	case REP82_ERROR_EVEN_MOD_IN_OPND:
--	case REP88_ERROR_MESSAGE_MALFORMD:
--	case REP82_ERROR_INVALID_DOMAIN_PRECHECK:
--	case REP82_ERROR_INVALID_DOMAIN_PENDING:
--	case REP82_ERROR_INVALID_SPECIAL_CMD:
--	case REP82_ERROR_FILTERED_BY_HYPERVISOR:
--	//   REP88_ERROR_INVALID_KEY		// '82' CEX2A
--	//   REP88_ERROR_OPERAND		// '84' CEX2A
--	//   REP88_ERROR_OPERAND_EVEN_MOD	// '85' CEX2A
--		/* Invalid input data. */
-+	case REP82_ERROR_INVALID_MSG_LEN:	 /* 0x23 */
-+	case REP82_ERROR_RESERVD_FIELD:		 /* 0x24 */
-+	case REP82_ERROR_FORMAT_FIELD:		 /* 0x29 */
-+	case REP82_ERROR_MALFORMED_MSG:		 /* 0x40 */
-+	case REP82_ERROR_INVALID_SPECIAL_CMD:	 /* 0x41 */
-+	case REP82_ERROR_MESSAGE_LENGTH:	 /* 0x80 */
-+	case REP82_ERROR_OPERAND_INVALID:	 /* 0x82 */
-+	case REP82_ERROR_OPERAND_SIZE:		 /* 0x84 */
-+	case REP82_ERROR_EVEN_MOD_IN_OPND:	 /* 0x85 */
-+	case REP82_ERROR_INVALID_DOMAIN_PENDING: /* 0x8A */
-+	case REP82_ERROR_FILTERED_BY_HYPERVISOR: /* 0x8B */
-+	case REP82_ERROR_PACKET_TRUNCATED:	 /* 0xA0 */
-+	case REP88_ERROR_MESSAGE_MALFORMD:	 /* 0x22 */
-+	case REP88_ERROR_KEY_TYPE:		 /* 0x34 */
-+		/* RY indicates malformed request */
- 		ZCRYPT_DBF(DBF_WARN,
--			   "device=%02x.%04x reply=0x%02x => rc=EINVAL\n",
-+			   "dev=%02x.%04x RY=0x%02x => rc=EINVAL\n",
- 			   card, queue, ehdr->reply_code);
- 		return -EINVAL;
--	case REP82_ERROR_MESSAGE_TYPE:
--	//   REP88_ERROR_MESSAGE_TYPE		// '20' CEX2A
-+	case REP82_ERROR_MACHINE_FAILURE:	 /* 0x10 */
-+	case REP82_ERROR_MESSAGE_TYPE:		 /* 0x20 */
-+	case REP82_ERROR_TRANSPORT_FAIL:	 /* 0x90 */
- 		/*
--		 * To sent a message of the wrong type is a bug in the
--		 * device driver. Send error msg, disable the device
--		 * and then repeat the request.
-+		 * Msg to wrong type or card/infrastructure failure.
-+		 * Trigger rescan of the ap bus, trigger retry request.
- 		 */
- 		atomic_set(&zcrypt_rescan_req, 1);
--		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
--		       card, queue);
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x reply=0x%02x => online=0 rc=EAGAIN\n",
--			   card, queue, ehdr->reply_code);
--		return -EAGAIN;
--	case REP82_ERROR_TRANSPORT_FAIL:
--		/* Card or infrastructure failure, disable card */
--		atomic_set(&zcrypt_rescan_req, 1);
--		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
--		       card, queue);
- 		/* For type 86 response show the apfs value (failure reason) */
--		if (ehdr->type == TYPE86_RSP_CODE) {
-+		if (ehdr->reply_code == REP82_ERROR_TRANSPORT_FAIL &&
-+		    ehdr->type == TYPE86_RSP_CODE) {
- 			struct {
- 				struct type86_hdr hdr;
- 				struct type86_fmt2_ext fmt2;
- 			} __packed * head = reply->msg;
- 			unsigned int apfs = *((u32 *)head->fmt2.apfs);
- 
--			ZCRYPT_DBF(DBF_ERR,
--				   "device=%02x.%04x reply=0x%02x apfs=0x%x => online=0 rc=EAGAIN\n",
--				   card, queue, apfs, ehdr->reply_code);
-+			ZCRYPT_DBF(DBF_WARN,
-+				   "dev=%02x.%04x RY=0x%02x apfs=0x%x => bus rescan, rc=EAGAIN\n",
-+				   card, queue, ehdr->reply_code, apfs);
- 		} else
--			ZCRYPT_DBF(DBF_ERR,
--				   "device=%02x.%04x reply=0x%02x => online=0 rc=EAGAIN\n",
-+			ZCRYPT_DBF(DBF_WARN,
-+				   "dev=%02x.%04x RY=0x%02x => bus rescan, rc=EAGAIN\n",
- 				   card, queue, ehdr->reply_code);
- 		return -EAGAIN;
--	case REP82_ERROR_MACHINE_FAILURE:
--	//   REP88_ERROR_MODULE_FAILURE		// '10' CEX2A
--		/* If a card fails disable it and repeat the request. */
--		atomic_set(&zcrypt_rescan_req, 1);
--		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
--		       card, queue);
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x reply=0x%02x => online=0 rc=EAGAIN\n",
--			   card, queue, ehdr->reply_code);
--		return -EAGAIN;
- 	default:
--		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
--		       card, queue);
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x reply=0x%02x => online=0 rc=EAGAIN\n",
-+		/* Assume request is valid and a retry will be worth it */
-+		ZCRYPT_DBF(DBF_WARN,
-+			   "dev=%02x.%04x RY=0x%02x => rc=EAGAIN\n",
- 			   card, queue, ehdr->reply_code);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		return -EAGAIN;
- 	}
+diff --git a/fs/f2fs/checkpoint.c b/fs/f2fs/checkpoint.c
+index 0b7aec059f112..4a97fe4ddf789 100644
+--- a/fs/f2fs/checkpoint.c
++++ b/fs/f2fs/checkpoint.c
+@@ -107,7 +107,7 @@ struct page *f2fs_get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index)
+ 	return __get_meta_page(sbi, index, true);
  }
  
-diff --git a/drivers/s390/crypto/zcrypt_msgtype50.c b/drivers/s390/crypto/zcrypt_msgtype50.c
-index 7aedc338b4459..88916addd513e 100644
---- a/drivers/s390/crypto/zcrypt_msgtype50.c
-+++ b/drivers/s390/crypto/zcrypt_msgtype50.c
-@@ -356,15 +356,15 @@ static int convert_type80(struct zcrypt_queue *zq,
- 	if (t80h->len < sizeof(*t80h) + outputdatalength) {
- 		/* The result is too short, the CEXxA card may not do that.. */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x code=0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x code=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   t80h->code);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       t80h->code);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x code=0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       t80h->code);
-+		return -EAGAIN;
- 	}
- 	if (zq->zcard->user_space_type == ZCRYPT_CEX2A)
- 		BUG_ON(t80h->len > CEX2A_MAX_RESPONSE_SIZE);
-@@ -376,10 +376,10 @@ static int convert_type80(struct zcrypt_queue *zq,
- 	return 0;
- }
- 
--static int convert_response(struct zcrypt_queue *zq,
--			    struct ap_message *reply,
--			    char __user *outputdata,
--			    unsigned int outputdatalength)
-+static int convert_response_cex2a(struct zcrypt_queue *zq,
-+				  struct ap_message *reply,
-+				  char __user *outputdata,
-+				  unsigned int outputdatalength)
+-struct page *f2fs_get_meta_page_nofail(struct f2fs_sb_info *sbi, pgoff_t index)
++struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index)
  {
- 	/* Response type byte is the second byte in the response. */
- 	unsigned char rtype = ((unsigned char *) reply->msg)[1];
-@@ -393,15 +393,15 @@ static int convert_response(struct zcrypt_queue *zq,
- 				      outputdata, outputdatalength);
- 	default: /* Unknown response type, this should NEVER EVER happen */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rtype=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (unsigned int) rtype);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) rtype);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) rtype);
-+		return -EAGAIN;
- 	}
+ 	struct page *page;
+ 	int count = 0;
+diff --git a/fs/f2fs/f2fs.h b/fs/f2fs/f2fs.h
+index 98c4b166f192b..d44c6c36de678 100644
+--- a/fs/f2fs/f2fs.h
++++ b/fs/f2fs/f2fs.h
+@@ -3385,7 +3385,7 @@ enum rw_hint f2fs_io_type_to_rw_hint(struct f2fs_sb_info *sbi,
+ void f2fs_stop_checkpoint(struct f2fs_sb_info *sbi, bool end_io);
+ struct page *f2fs_grab_meta_page(struct f2fs_sb_info *sbi, pgoff_t index);
+ struct page *f2fs_get_meta_page(struct f2fs_sb_info *sbi, pgoff_t index);
+-struct page *f2fs_get_meta_page_nofail(struct f2fs_sb_info *sbi, pgoff_t index);
++struct page *f2fs_get_meta_page_retry(struct f2fs_sb_info *sbi, pgoff_t index);
+ struct page *f2fs_get_tmp_page(struct f2fs_sb_info *sbi, pgoff_t index);
+ bool f2fs_is_valid_blkaddr(struct f2fs_sb_info *sbi,
+ 					block_t blkaddr, int type);
+diff --git a/fs/f2fs/node.c b/fs/f2fs/node.c
+index cb1b5b61a1dab..cc4700f6240db 100644
+--- a/fs/f2fs/node.c
++++ b/fs/f2fs/node.c
+@@ -109,7 +109,7 @@ static void clear_node_page_dirty(struct page *page)
+ 
+ static struct page *get_current_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+ {
+-	return f2fs_get_meta_page_nofail(sbi, current_nat_addr(sbi, nid));
++	return f2fs_get_meta_page(sbi, current_nat_addr(sbi, nid));
  }
  
-@@ -476,8 +476,9 @@ static long zcrypt_cex2a_modexpo(struct zcrypt_queue *zq,
- 	if (rc == 0) {
- 		rc = ap_msg.rc;
- 		if (rc == 0)
--			rc = convert_response(zq, &ap_msg, mex->outputdata,
--					      mex->outputdatalength);
-+			rc = convert_response_cex2a(zq, &ap_msg,
-+						    mex->outputdata,
-+						    mex->outputdatalength);
- 	} else
- 		/* Signal pending. */
- 		ap_cancel_message(zq->queue, &ap_msg);
-@@ -520,8 +521,9 @@ static long zcrypt_cex2a_modexpo_crt(struct zcrypt_queue *zq,
- 	if (rc == 0) {
- 		rc = ap_msg.rc;
- 		if (rc == 0)
--			rc = convert_response(zq, &ap_msg, crt->outputdata,
--					      crt->outputdatalength);
-+			rc = convert_response_cex2a(zq, &ap_msg,
-+						    crt->outputdata,
-+						    crt->outputdatalength);
- 	} else
- 		/* Signal pending. */
- 		ap_cancel_message(zq->queue, &ap_msg);
-diff --git a/drivers/s390/crypto/zcrypt_msgtype6.c b/drivers/s390/crypto/zcrypt_msgtype6.c
-index d77991c74c252..21ea3b73c8674 100644
---- a/drivers/s390/crypto/zcrypt_msgtype6.c
-+++ b/drivers/s390/crypto/zcrypt_msgtype6.c
-@@ -650,23 +650,22 @@ static int convert_type86_ica(struct zcrypt_queue *zq,
- 		    (service_rc == 8 && service_rs == 72) ||
- 		    (service_rc == 8 && service_rs == 770) ||
- 		    (service_rc == 12 && service_rs == 769)) {
--			ZCRYPT_DBF(DBF_DEBUG,
--				   "device=%02x.%04x rc/rs=%d/%d => rc=EINVAL\n",
--				   AP_QID_CARD(zq->queue->qid),
--				   AP_QID_QUEUE(zq->queue->qid),
--				   (int) service_rc, (int) service_rs);
-+			ZCRYPT_DBF_WARN("dev=%02x.%04x rc/rs=%d/%d => rc=EINVAL\n",
-+					AP_QID_CARD(zq->queue->qid),
-+					AP_QID_QUEUE(zq->queue->qid),
-+					(int) service_rc, (int) service_rs);
- 			return -EINVAL;
- 		}
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x rc/rs=%d/%d online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rc/rs=%d/%d => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (int) service_rc, (int) service_rs);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) service_rc, (int) service_rs);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x rc/rs=%d/%d => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) service_rc, (int) service_rs);
-+		return -EAGAIN;
- 	}
- 	data = msg->text;
- 	reply_len = msg->length - 2;
-@@ -800,17 +799,18 @@ static int convert_response_ica(struct zcrypt_queue *zq,
- 			return convert_type86_ica(zq, reply,
- 						  outputdata, outputdatalength);
- 		fallthrough;	/* wrong cprb version is an unknown response */
--	default: /* Unknown response type, this should NEVER EVER happen */
-+	default:
-+		/* Unknown response type, this should NEVER EVER happen */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rtype=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (int) msg->hdr.type);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) msg->hdr.type);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) msg->hdr.type);
-+		return -EAGAIN;
- 	}
+ static struct page *get_next_nat_page(struct f2fs_sb_info *sbi, nid_t nid)
+diff --git a/fs/f2fs/segment.c b/fs/f2fs/segment.c
+index e247a5ef3713f..2628406f43f64 100644
+--- a/fs/f2fs/segment.c
++++ b/fs/f2fs/segment.c
+@@ -2344,7 +2344,9 @@ int f2fs_npages_for_summary_flush(struct f2fs_sb_info *sbi, bool for_ra)
+  */
+ struct page *f2fs_get_sum_page(struct f2fs_sb_info *sbi, unsigned int segno)
+ {
+-	return f2fs_get_meta_page_nofail(sbi, GET_SUM_BLOCK(sbi, segno));
++	if (unlikely(f2fs_cp_error(sbi)))
++		return ERR_PTR(-EIO);
++	return f2fs_get_meta_page_retry(sbi, GET_SUM_BLOCK(sbi, segno));
  }
  
-@@ -836,15 +836,15 @@ static int convert_response_xcrb(struct zcrypt_queue *zq,
- 	default: /* Unknown response type, this should NEVER EVER happen */
- 		xcRB->status = 0x0008044DL; /* HDD_InvalidParm */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rtype=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (int) msg->hdr.type);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) msg->hdr.type);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) msg->hdr.type);
-+		return -EAGAIN;
- 	}
+ void f2fs_update_meta_page(struct f2fs_sb_info *sbi,
+@@ -2616,7 +2618,11 @@ static void change_curseg(struct f2fs_sb_info *sbi, int type)
+ 	__next_free_blkoff(sbi, curseg, 0);
+ 
+ 	sum_page = f2fs_get_sum_page(sbi, new_segno);
+-	f2fs_bug_on(sbi, IS_ERR(sum_page));
++	if (IS_ERR(sum_page)) {
++		/* GC won't be able to use stale summary pages by cp_error */
++		memset(curseg->sum_blk, 0, SUM_ENTRY_SIZE);
++		return;
++	}
+ 	sum_node = (struct f2fs_summary_block *)page_address(sum_page);
+ 	memcpy(curseg->sum_blk, sum_node, SUM_ENTRY_SIZE);
+ 	f2fs_put_page(sum_page, 1);
+@@ -3781,7 +3787,7 @@ int f2fs_lookup_journal_in_cursum(struct f2fs_journal *journal, int type,
+ static struct page *get_current_sit_page(struct f2fs_sb_info *sbi,
+ 					unsigned int segno)
+ {
+-	return f2fs_get_meta_page_nofail(sbi, current_sit_addr(sbi, segno));
++	return f2fs_get_meta_page(sbi, current_sit_addr(sbi, segno));
  }
  
-@@ -865,15 +865,15 @@ static int convert_response_ep11_xcrb(struct zcrypt_queue *zq,
- 		fallthrough;	/* wrong cprb version is an unknown resp */
- 	default: /* Unknown response type, this should NEVER EVER happen */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rtype=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (int) msg->hdr.type);
--		return -EAGAIN; /* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) msg->hdr.type);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) msg->hdr.type);
-+		return -EAGAIN;
- 	}
- }
- 
-@@ -895,15 +895,15 @@ static int convert_response_rng(struct zcrypt_queue *zq,
- 		fallthrough;	/* wrong cprb version is an unknown response */
- 	default: /* Unknown response type, this should NEVER EVER happen */
- 		zq->online = 0;
--		pr_err("Cryptographic device %02x.%04x failed and was set offline\n",
-+		pr_err("Crypto dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
- 		       AP_QID_CARD(zq->queue->qid),
--		       AP_QID_QUEUE(zq->queue->qid));
--		ZCRYPT_DBF(DBF_ERR,
--			   "device=%02x.%04x rtype=0x%02x => online=0 rc=EAGAIN\n",
--			   AP_QID_CARD(zq->queue->qid),
--			   AP_QID_QUEUE(zq->queue->qid),
--			   (int) msg->hdr.type);
--		return -EAGAIN;	/* repeat the request on a different device. */
-+		       AP_QID_QUEUE(zq->queue->qid),
-+		       (int) msg->hdr.type);
-+		ZCRYPT_DBF_ERR("dev=%02x.%04x unknown response type 0x%02x => online=0 rc=EAGAIN\n",
-+			       AP_QID_CARD(zq->queue->qid),
-+			       AP_QID_QUEUE(zq->queue->qid),
-+			       (int) msg->hdr.type);
-+		return -EAGAIN;
- 	}
- }
- 
+ static struct page *get_next_sit_page(struct f2fs_sb_info *sbi,
 -- 
 2.25.1
 
