@@ -2,105 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F30C8299124
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:36:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 65AAF299129
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:36:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784019AbgJZPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:36:21 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56604 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1783972AbgJZPgU (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:36:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603726578;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=4T8J9h8aHDWVKUpT3UKKBDgLYCTKNVpvy5H15xGKCd0=;
-        b=ImZQLNz6+xCVSx0n+riRa+PQUkmnHxPu3MxofY/9K9tmozIMRx8VRBkyx+KQce6qjZpGxs
-        5IYOwP9sWhrTg8ibHv2QA5bAnUfjrp4SUNzTyFeOWGKH5pCLn6QHni9Yl32WeGZ73iE+GN
-        UMpfnePiN7XQKIfIin1iVcYhVIcO7PI=
-Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
- [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-128-Pwr4L6NJOg2jbONSADGgNQ-1; Mon, 26 Oct 2020 11:36:16 -0400
-X-MC-Unique: Pwr4L6NJOg2jbONSADGgNQ-1
-Received: by mail-ed1-f70.google.com with SMTP id be19so4547577edb.22
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:36:16 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=4T8J9h8aHDWVKUpT3UKKBDgLYCTKNVpvy5H15xGKCd0=;
-        b=pNg/W5m9qqD/qMwnEtaZaCNnVYGQj0/cvh9QT3pQaZKAw/PfHn/8dTYFME/BE4vLn0
-         U+OdJ7M+v3MQ10/CIr3yx5XSCm+VjWGVLpEjWsFX8M+V9FA3HPaIzSCpFn8TCB3Gcnfy
-         fH/jo2kUehxRj1ZaUIM3ZvIQlaV4pw6lJOYtcscR5RXWnm1HcqPh3TBRIGHw0XMqkxzH
-         Cs7AnBF/aT/ZuF1V2KeGqUFBHLZ3AqVzI2xaon/Fneuinjx6LZlTG+adWH5a5nqztJlt
-         rF6UaLzhIjRTIemooYTNLnkK2m6EIPF2rqSTW7E0D2WF8BCPl4LsrEuH6Ywr6oXkfy3O
-         Rk2Q==
-X-Gm-Message-State: AOAM531bqF7tttraxjS1IOliRX15sCDAT/VziOlAgh6gd+VQY0/wYuDK
-        9IPlivwrXVPhqx0cbXNkm24AZDXOIymgTUeQ7HdcqwHH9U/+C9io2Eu+tqbsQz8JKy+qwaXtAHn
-        h2EphwobwPwgjIocCvycqavks
-X-Received: by 2002:a05:6402:1615:: with SMTP id f21mr16888468edv.257.1603726575232;
-        Mon, 26 Oct 2020 08:36:15 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJzRiV17XlEk9Alol3IXbaQKVZJaHSEnTXtXAKR+AVqFgAOQj00dGvz+dxPWGkm6yB+z64/rRA==
-X-Received: by 2002:a05:6402:1615:: with SMTP id f21mr16888443edv.257.1603726575039;
-        Mon, 26 Oct 2020 08:36:15 -0700 (PDT)
-Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
-        by smtp.gmail.com with ESMTPSA id rl1sm6136899ejb.36.2020.10.26.08.36.14
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 08:36:14 -0700 (PDT)
-Subject: Re: [PATCH v6] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-Cc:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        mark gross <mgross@linux.intel.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-References: <20201006082618.209287-1-divya.bharathi@dell.com>
- <101db8e3-70f0-4e85-b4b9-008995939b1a@redhat.com>
- <DM6PR19MB2636A7CAF82D8CB7DEEF7B2DFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
-From:   Hans de Goede <hdegoede@redhat.com>
-Message-ID: <4e415aea-d855-e8a5-0b61-785b67efeb59@redhat.com>
-Date:   Mon, 26 Oct 2020 16:36:13 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S1784031AbgJZPg2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:36:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:60260 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1783972AbgJZPg1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:36:27 -0400
+Received: from kozik-lap.mshome.net (unknown [194.230.155.184])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4AF722404;
+        Mon, 26 Oct 2020 15:36:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603726586;
+        bh=0nSgFPUCz1doewmaEwSrcCLEaOm85Iixrcmcb5glcxg=;
+        h=From:To:Cc:Subject:Date:From;
+        b=GsnGTtsubdanGJaWCG8+skz9VY+W7vlRpoPJVR5/4YylDQnZ/chlZDS6zJYULemPi
+         TOVJoiw0K6rubvfvDJn1YIi0snC5TSZgkLw0kSS4y5jmDcN74wymB/MSjXa6RYTXcB
+         J0O44mYQYqyy7/HK5nbRrobECYsk3Y5yV6Crvkr4=
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Dan Murphy <dmurphy@ti.com>,
+        Wolfgang Grandegger <wg@grandegger.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        linux-can@vger.kernel.org, netdev@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Rob Herring <robh@kernel.org>
+Subject: [RESEND PATCH v2] dt-bindings: net: correct interrupt flags in examples
+Date:   Mon, 26 Oct 2020 16:36:20 +0100
+Message-Id: <20201026153620.89268-1-krzk@kernel.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-In-Reply-To: <DM6PR19MB2636A7CAF82D8CB7DEEF7B2DFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
+GPIO_ACTIVE_x flags are not correct in the context of interrupt flags.
+These are simple defines so they could be used in DTS but they will not
+have the same meaning:
+1. GPIO_ACTIVE_HIGH = 0 = IRQ_TYPE_NONE
+2. GPIO_ACTIVE_LOW  = 1 = IRQ_TYPE_EDGE_RISING
 
-On 10/26/20 4:25 PM, Limonciello, Mario wrote:
->>> +
->>> +	print_hex_dump_bytes("set attribute data: ", DUMP_PREFIX_NONE, buffer,
->> buffer_size);
->>
->> This seems to be a debugging left-over?
-> 
-> Yes it was for debugging, but its configurable to turn on by dynamic
-> debug as I can tell.  Is that not correct?
+Correct the interrupt flags, assuming the author of the code wanted same
+logical behavior behind the name "ACTIVE_xxx", this is:
+  ACTIVE_LOW  => IRQ_TYPE_LEVEL_LOW
+  ACTIVE_HIGH => IRQ_TYPE_LEVEL_HIGH
 
-Since it does not have debug in its name I sorta assumed it would
-always do the print. But you are right, this is a shorthand macro
-for print_hex_dump_debug() (which takes a few more arguments), so
-this only dumps the buffer when debugging is enabled.
+Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+Acked-by: Rob Herring <robh@kernel.org>
+Acked-by: Marc Kleine-Budde <mkl@pengutronix.de> # for tcan4x5x.txt
 
-IOW keeping this "as is" is fine, sorry for the noise.
+---
 
-Regards,
+Changes since v1:
+1. Add acks
+---
+ Documentation/devicetree/bindings/net/can/tcan4x5x.txt | 2 +-
+ Documentation/devicetree/bindings/net/nfc/nxp-nci.txt  | 2 +-
+ Documentation/devicetree/bindings/net/nfc/pn544.txt    | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-Has
+diff --git a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+index 3613c2c8f75d..0968b40aef1e 100644
+--- a/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
++++ b/Documentation/devicetree/bindings/net/can/tcan4x5x.txt
+@@ -33,7 +33,7 @@ tcan4x5x: tcan4x5x@0 {
+ 		spi-max-frequency = <10000000>;
+ 		bosch,mram-cfg = <0x0 0 0 32 0 0 1 1>;
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <14 GPIO_ACTIVE_LOW>;
++		interrupts = <14 IRQ_TYPE_LEVEL_LOW>;
+ 		device-state-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 		device-wake-gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;
+ 		reset-gpios = <&gpio1 27 GPIO_ACTIVE_HIGH>;
+diff --git a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+index cfaf88998918..9e4dc510a40a 100644
+--- a/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
++++ b/Documentation/devicetree/bindings/net/nfc/nxp-nci.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with NPC100 NFC controller on I2C2):
+ 		clock-frequency = <100000>;
+ 
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <29 GPIO_ACTIVE_HIGH>;
++		interrupts = <29 IRQ_TYPE_LEVEL_HIGH>;
+ 
+ 		enable-gpios = <&gpio0 30 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio0 31 GPIO_ACTIVE_HIGH>;
+diff --git a/Documentation/devicetree/bindings/net/nfc/pn544.txt b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+index 92f399ec22b8..2bd82562ce8e 100644
+--- a/Documentation/devicetree/bindings/net/nfc/pn544.txt
++++ b/Documentation/devicetree/bindings/net/nfc/pn544.txt
+@@ -25,7 +25,7 @@ Example (for ARM-based BeagleBone with PN544 on I2C2):
+ 		clock-frequency = <400000>;
+ 
+ 		interrupt-parent = <&gpio1>;
+-		interrupts = <17 GPIO_ACTIVE_HIGH>;
++		interrupts = <17 IRQ_TYPE_LEVEL_HIGH>;
+ 
+ 		enable-gpios = <&gpio3 21 GPIO_ACTIVE_HIGH>;
+ 		firmware-gpios = <&gpio3 19 GPIO_ACTIVE_HIGH>;
+-- 
+2.25.1
 
