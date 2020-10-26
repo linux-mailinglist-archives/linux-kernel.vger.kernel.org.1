@@ -2,284 +2,207 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AA7D0298856
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:32:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 901A5298864
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:38:16 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771775AbgJZIcS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:32:18 -0400
-Received: from mail-lj1-f195.google.com ([209.85.208.195]:47098 "EHLO
-        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771767AbgJZIcR (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:32:17 -0400
-Received: by mail-lj1-f195.google.com with SMTP id c21so8809595ljn.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:32:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=oxOQTRFoUnIXjv41Nm9Lj/oPqYXmvrurKIw6PMm2Cl4=;
-        b=wjRra/zqebpE7vi4fidQCHKHP7qpkadSr324yXAaiYmtSk6AiWrqcdxlXsluoUCjbU
-         4VMkbQJX8FKkzho+GyemsjXf/78S1AgMef6cU7MQCItzjamZBsihSLVJ9FaqO+HgaHqz
-         XW3EjyX+0zpf7SzxB5qIVxn0tHp5YRF48YJpojobD2c8A+5+Iu5Usa4mhDUAhWpLOAEL
-         ug139ZUNM5TevPklAKX87zGe088ZsjYZHb+Kir+dstMSmcKhBdutBcwUpnqAOR2g/AiJ
-         8BNnrkXsL77B/Atz+m8wpLjPJs6l5xhoMvgsmUnzgMR2XVb5sZGXPwEpHa47ZlgVgbxa
-         AU6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=oxOQTRFoUnIXjv41Nm9Lj/oPqYXmvrurKIw6PMm2Cl4=;
-        b=su8ZoQPF0oR7Trxd79GhUcCjjM7nCNWwxVFlXFcmF4Tvm9KR6YFXTFIUI0MsdQHTfA
-         JaO+ra++fa5b76VZII3G5wnb76AaDpm1Dxxfo5WIuQvQHJxCYvUjjiDwIoE0cVZrHWVG
-         sxsz8IdSHCwiHeXk68fM1NGehQddbJ7UulDdAjNqwYO73KHBdoIaqlpYdEQss9R6Vqz9
-         Wqe0yglZFW38IhO/L23WRQQqB0KBCHGXGuH6/Bym43HjkwAp2xHgSpw2Hzs5MtBESFdF
-         qfdMQJm2E82Jk8Onjrg6VMu0QTmp/u2jcq832J2EQiN5XaDYx7aHZXiSnu+XNblPBTGV
-         qu1w==
-X-Gm-Message-State: AOAM532A7S/n4lIG5n/LrOnzxJhBo/WXomq3GiBNnu9h3JrrQcMYbq+E
-        i1+Qupxr8PqmmDAf6S48Va9nwdbEBNjuqFdUWe9qRQ==
-X-Google-Smtp-Source: ABdhPJyjnxRUcH0uN4o/Hj0rz8UTOudr1uW5cARvi0ws5xluCQCyl86oClkCYCadfZRiILySXoAz+pdT/yFuo+CUXxg=
-X-Received: by 2002:a2e:8787:: with SMTP id n7mr5710036lji.111.1603701133815;
- Mon, 26 Oct 2020 01:32:13 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201024225716.2854163-1-xii@google.com> <20201024225716.2854163-2-xii@google.com>
-In-Reply-To: <20201024225716.2854163-2-xii@google.com>
-From:   Vincent Guittot <vincent.guittot@linaro.org>
-Date:   Mon, 26 Oct 2020 09:32:02 +0100
-Message-ID: <CAKfTPtDf_PXjk62sctdBAuVPSYg2gVdFtX=UgJn+JEOyog8YSQ@mail.gmail.com>
-Subject: Re: [PATCH v3 1/1] sched: watchdog: Touch kernel watchdog with sched count
-To:     Xi Wang <xii@google.com>
-Cc:     Ingo Molnar <mingo@redhat.com>,
+        id S1771825AbgJZIiL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:38:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47788 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1770139AbgJZIiK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:38:10 -0400
+Received: from aquarius.haifa.ibm.com (nesher1.haifa.il.ibm.com [195.110.40.7])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 45392223B0;
+        Mon, 26 Oct 2020 08:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603701489;
+        bh=OUb5d3QtiZpYTjK7sEHmPoLojCJLpplUoBwVFg6u6zs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=nF4ru/gKWJs1mrs4YQv7QK/DWqPZRmtCXGkf1YbCkJFDVn9pD0ddIbYgxaPWgVYfI
+         TmhiE2vvv4IJ2bSJc+7QV2RSuGHHqoJ2umZ4lVZJvVac9sP+Gg//L7MNCJ1pAyogFj
+         80yoX41QIhmwbypTjkQbfU/N4qzVBJY5rfYdpLLY=
+From:   Mike Rapoport <rppt@kernel.org>
+To:     Andrew Morton <akpm@linux-foundation.org>
+Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andy Lutomirski <luto@kernel.org>,
+        Arnd Bergmann <arnd@arndb.de>, Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christopher Lameter <cl@linux.com>,
+        Dan Williams <dan.j.williams@intel.com>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Hildenbrand <david@redhat.com>,
+        Elena Reshetova <elena.reshetova@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>, Ingo Molnar <mingo@redhat.com>,
+        James Bottomley <jejb@linux.ibm.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Matthew Wilcox <willy@infradead.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Mike Rapoport <rppt@kernel.org>,
+        Michael Kerrisk <mtk.manpages@gmail.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
         Peter Zijlstra <peterz@infradead.org>,
+        Rick Edgecombe <rick.p.edgecombe@intel.com>,
+        Shuah Khan <shuah@kernel.org>,
         Thomas Gleixner <tglx@linutronix.de>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Josh Don <joshdon@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Tycho Andersen <tycho@tycho.ws>, Will Deacon <will@kernel.org>,
+        linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+        linux-nvdimm@lists.01.org, linux-riscv@lists.infradead.org,
+        x86@kernel.org
+Subject: [PATCH v7 0/7] mm: introduce memfd_secret system call to create "secret" memory areas
+Date:   Mon, 26 Oct 2020 10:37:45 +0200
+Message-Id: <20201026083752.13267-1-rppt@kernel.org>
+X-Mailer: git-send-email 2.28.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, 25 Oct 2020 at 00:57, Xi Wang <xii@google.com> wrote:
->
-> Instead of periodically resetting watchdogs from thread context,
-> this patch simply forces resched and checks rq->sched_count.
-> Watchdog is reset if the sched count increases. If the same thread
-> is picked by pick_next_task during resched, there is no context
-> switch.
->
-> With the new method we lose coverage on: a migration/n thread
-> actually gets picked and we actually context switch to the
-> migration/n thread. These steps are unlikely to silently fail.
-> The change would provide nearly the same level of protection with
-> less latency / jitter.
+From: Mike Rapoport <rppt@linux.ibm.com>
 
-When a patch provides an improvement, it's usually good to give
-figures that show the improvement
+Hi,
 
->
-> Suggested-by: Paul Turner <pjt@google.com>
-> Suggested-by: Peter Zijlstra <peterz@infradead.org>
-> Signed-off-by: Xi Wang <xii@google.com>
-> ---
->  include/linux/sched.h |  4 ++++
->  kernel/sched/core.c   | 23 +++++++++++++++++++--
->  kernel/sched/sched.h  |  6 +++++-
->  kernel/watchdog.c     | 47 +++++++++++++------------------------------
->  4 files changed, 44 insertions(+), 36 deletions(-)
->
-> diff --git a/include/linux/sched.h b/include/linux/sched.h
-> index d383cf09e78f..1e3bef9a9cdb 100644
-> --- a/include/linux/sched.h
-> +++ b/include/linux/sched.h
-> @@ -1662,6 +1662,10 @@ extern int sched_setattr(struct task_struct *, const struct sched_attr *);
->  extern int sched_setattr_nocheck(struct task_struct *, const struct sched_attr *);
->  extern struct task_struct *idle_task(int cpu);
->
-> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> +extern unsigned int sched_get_count(int cpu);
-> +#endif
-> +
->  /**
->   * is_idle_task - is the specified task an idle task?
->   * @p: the task in question.
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 8160ab5263f8..378f0f36c402 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4293,8 +4293,6 @@ static inline void schedule_debug(struct task_struct *prev, bool preempt)
->         rcu_sleep_check();
->
->         profile_hit(SCHED_PROFILING, __builtin_return_address(0));
-> -
-> -       schedstat_inc(this_rq()->sched_count);
->  }
->
->  static void put_prev_task_balance(struct rq *rq, struct task_struct *prev,
-> @@ -4492,6 +4490,12 @@ static void __sched notrace __schedule(bool preempt)
->         clear_tsk_need_resched(prev);
->         clear_preempt_need_resched();
->
-> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> +       this_rq()->sched_count++; /* sched count is also used by watchdog */
-> +#else
-> +       schedstat_inc(this_rq()->sched_count);
-> +#endif
-> +
->         if (likely(prev != next)) {
->                 rq->nr_switches++;
->                 /*
-> @@ -5117,6 +5121,21 @@ struct task_struct *idle_task(int cpu)
->         return cpu_rq(cpu)->idle;
->  }
->
-> +#ifdef CONFIG_SOFTLOCKUP_DETECTOR
-> +
-> +/**
-> + * sched_get_count - get the sched count of a CPU.
-> + * @cpu: the CPU in question.
-> + *
-> + * Return: sched count.
-> + */
-> +unsigned int sched_get_count(int cpu)
-> +{
-> +       return cpu_rq(cpu)->sched_count;
-> +}
-> +
-> +#endif
-> +
->  /**
->   * find_process_by_pid - find a process with a matching PID value.
->   * @pid: the pid in question.
-> diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-> index 28709f6b0975..f23255981d52 100644
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -959,6 +959,11 @@ struct rq {
->         u64                     clock_pelt;
->         unsigned long           lost_idle_time;
->
-> +#if defined(CONFIG_SCHEDSTATS) || defined(CONFIG_SOFTLOCKUP_DETECTOR)
-> +       /* Also used by watchdog - no longer grouping with other sched stats */
-> +       unsigned int            sched_count;
-> +#endif
-> +
->         atomic_t                nr_iowait;
->
->  #ifdef CONFIG_MEMBARRIER
-> @@ -1036,7 +1041,6 @@ struct rq {
->         unsigned int            yld_count;
->
->         /* schedule() stats */
-> -       unsigned int            sched_count;
->         unsigned int            sched_goidle;
->
->         /* try_to_wake_up() stats */
-> diff --git a/kernel/watchdog.c b/kernel/watchdog.c
-> index 5abb5b22ad13..22f87aded95a 100644
-> --- a/kernel/watchdog.c
-> +++ b/kernel/watchdog.c
-> @@ -170,6 +170,7 @@ static bool softlockup_initialized __read_mostly;
->  static u64 __read_mostly sample_period;
->
->  static DEFINE_PER_CPU(unsigned long, watchdog_touch_ts);
-> +static DEFINE_PER_CPU(unsigned int, watchdog_sched_prev);
->  static DEFINE_PER_CPU(struct hrtimer, watchdog_hrtimer);
->  static DEFINE_PER_CPU(bool, softlockup_touch_sync);
->  static DEFINE_PER_CPU(bool, soft_watchdog_warn);
-> @@ -239,6 +240,7 @@ static void set_sample_period(void)
->  static void __touch_watchdog(void)
->  {
->         __this_cpu_write(watchdog_touch_ts, get_timestamp());
-> +       __this_cpu_write(watchdog_sched_prev, sched_get_count(smp_processor_id()));
->  }
->
->  /**
-> @@ -318,25 +320,6 @@ static void watchdog_interrupt_count(void)
->         __this_cpu_inc(hrtimer_interrupts);
->  }
->
-> -static DEFINE_PER_CPU(struct completion, softlockup_completion);
-> -static DEFINE_PER_CPU(struct cpu_stop_work, softlockup_stop_work);
-> -
-> -/*
-> - * The watchdog thread function - touches the timestamp.
-> - *
-> - * It only runs once every sample_period seconds (4 seconds by
-> - * default) to reset the softlockup timestamp. If this gets delayed
-> - * for more than 2*watchdog_thresh seconds then the debug-printout
-> - * triggers in watchdog_timer_fn().
-> - */
-> -static int softlockup_fn(void *data)
-> -{
-> -       __touch_watchdog();
-> -       complete(this_cpu_ptr(&softlockup_completion));
-> -
-> -       return 0;
-> -}
-> -
->  /* watchdog kicker functions */
->  static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->  {
-> @@ -351,15 +334,6 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->         /* kick the hardlockup detector */
->         watchdog_interrupt_count();
->
-> -       /* kick the softlockup detector */
-> -       if (completion_done(this_cpu_ptr(&softlockup_completion))) {
-> -               reinit_completion(this_cpu_ptr(&softlockup_completion));
-> -               stop_one_cpu_nowait(smp_processor_id(),
-> -                               softlockup_fn, NULL,
-> -                               this_cpu_ptr(&softlockup_stop_work));
-> -       }
-> -
-> -       /* .. and repeat */
->         hrtimer_forward_now(hrtimer, ns_to_ktime(sample_period));
->
->         if (touch_ts == SOFTLOCKUP_RESET) {
-> @@ -378,6 +352,18 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->                 return HRTIMER_RESTART;
->         }
->
-> +       /* Trigger reschedule for the next round */
-> +       set_tsk_need_resched(current);
-> +       set_preempt_need_resched();
-> +
-> +       /* sched_count increase in __schedule is taken as watchdog touched */
-> +       if (sched_get_count(smp_processor_id()) -
-> +           __this_cpu_read(watchdog_sched_prev)) {
-> +               __touch_watchdog();
-> +               __this_cpu_write(soft_watchdog_warn, false);
-> +               return HRTIMER_RESTART;
-> +       }
-> +
->         /* check for a softlockup
->          * This is done by making sure a high priority task is
->          * being scheduled.  The task touches the watchdog to
-> @@ -443,13 +429,9 @@ static enum hrtimer_restart watchdog_timer_fn(struct hrtimer *hrtimer)
->  static void watchdog_enable(unsigned int cpu)
->  {
->         struct hrtimer *hrtimer = this_cpu_ptr(&watchdog_hrtimer);
-> -       struct completion *done = this_cpu_ptr(&softlockup_completion);
->
->         WARN_ON_ONCE(cpu != smp_processor_id());
->
-> -       init_completion(done);
-> -       complete(done);
-> -
->         /*
->          * Start the timer first to prevent the NMI watchdog triggering
->          * before the timer has a chance to fire.
-> @@ -479,7 +461,6 @@ static void watchdog_disable(unsigned int cpu)
->          */
->         watchdog_nmi_disable(cpu);
->         hrtimer_cancel(hrtimer);
-> -       wait_for_completion(this_cpu_ptr(&softlockup_completion));
->  }
->
->  static int softlockup_stop_fn(void *data)
-> --
-> 2.29.0.rc2.309.g374f81d7ae-goog
->
+This is an implementation of "secret" mappings backed by a file descriptor.
+
+The file descriptor backing secret memory mappings is created using a
+dedicated memfd_secret system call The desired protection mode for the
+memory is configured using flags parameter of the system call. The mmap()
+of the file descriptor created with memfd_secret() will create a "secret"
+memory mapping. The pages in that mapping will be marked as not present in
+the direct map and will have desired protection bits set in the user page
+table. For instance, current implementation allows uncached mappings.
+
+Although normally Linux userspace mappings are protected from other users,
+such secret mappings are useful for environments where a hostile tenant is
+trying to trick the kernel into giving them access to other tenants
+mappings.
+
+Additionally, in the future the secret mappings may be used as a mean to
+protect guest memory in a virtual machine host.
+
+For demonstration of secret memory usage we've created a userspace library
+
+https://git.kernel.org/pub/scm/linux/kernel/git/jejb/secret-memory-preloader.git
+
+that does two things: the first is act as a preloader for openssl to
+redirect all the OPENSSL_malloc calls to secret memory meaning any secret
+keys get automatically protected this way and the other thing it does is
+expose the API to the user who needs it. We anticipate that a lot of the
+use cases would be like the openssl one: many toolkits that deal with
+secret keys already have special handling for the memory to try to give
+them greater protection, so this would simply be pluggable into the
+toolkits without any need for user application modification.
+
+Hiding secret memory mappings behind an anonymous file allows (ab)use of
+the page cache for tracking pages allocated for the "secret" mappings as
+well as using address_space_operations for e.g. page migration callbacks.
+
+The anonymous file may be also used implicitly, like hugetlb files, to
+implement mmap(MAP_SECRET) and use the secret memory areas with "native" mm
+ABIs in the future.
+
+To limit fragmentation of the direct map to splitting only PUD-size pages,
+I've added an amortizing cache of PMD-size pages to each file descriptor
+that is used as an allocation pool for the secret memory areas.
+
+It is easy to add boot time reservation of the memory for secretmem
+needs. There was an implementation in earlier version of this set, but I've
+dropped it for now as there is no consensus whether the boot time
+reservation should be done from memblock or from CMA. I beleive we can have
+this discussion after straightening out the basic implementation.
+
+v7:
+* Use set_direct_map() instead of __kernel_map_pages() to ensure error
+  handling in case the direct map update fails
+* Add accounting of large pages used to reduce the direct map fragmentation
+* Teach get_user_pages() and frieds to refuse get/pin secretmem pages
+
+v6: https://lore.kernel.org/lkml/20200924132904.1391-1-rppt@kernel.org
+* Silence the warning about missing syscall, thanks to Qian Cai
+* Replace spaces with tabs in Kconfig additions, per Randy
+* Add a selftest.
+
+v5: https://lore.kernel.org/lkml/20200916073539.3552-1-rppt@kernel.org
+* rebase on v5.9-rc5
+* drop boot time memory reservation patch
+
+v4: https://lore.kernel.org/lkml/20200818141554.13945-1-rppt@kernel.org
+* rebase on v5.9-rc1
+* Do not redefine PMD_PAGE_ORDER in fs/dax.c, thanks Kirill
+* Make secret mappings exclusive by default and only require flags to
+  memfd_secret() system call for uncached mappings, thanks again Kirill :)
+
+v3: https://lore.kernel.org/lkml/20200804095035.18778-1-rppt@kernel.org
+* Squash kernel-parameters.txt update into the commit that added the
+  command line option.
+* Make uncached mode explicitly selectable by architectures. For now enable
+  it only on x86.
+
+v2: https://lore.kernel.org/lkml/20200727162935.31714-1-rppt@kernel.org
+* Follow Michael's suggestion and name the new system call 'memfd_secret'
+* Add kernel-parameters documentation about the boot option
+* Fix i386-tinyconfig regression reported by the kbuild bot.
+  CONFIG_SECRETMEM now depends on !EMBEDDED to disable it on small systems
+  from one side and still make it available unconditionally on
+  architectures that support SET_DIRECT_MAP.
+
+v1: https://lore.kernel.org/lkml/20200720092435.17469-1-rppt@kernel.org
+
+Mike Rapoport (8):
+  mm: add definition of PMD_PAGE_ORDER
+  mmap: make mlock_future_check() global
+  set_memory: allow set_direct_map_*_noflush() for multiple pages
+  mm: introduce memfd_secret system call to create "secret" memory areas
+  arch, mm: wire up memfd_secret system call were relevant
+  mm: secretmem: use PMD-size pages to amortize direct map fragmentation
+  secretmem: test: add basic selftest for memfd_secret(2)
+  mm: secretmem: add ability to reserve memory at boot
+
+ arch/Kconfig                              |   7 +
+ arch/arm64/include/asm/cacheflush.h       |   4 +-
+ arch/arm64/include/asm/unistd.h           |   2 +-
+ arch/arm64/include/asm/unistd32.h         |   2 +
+ arch/arm64/include/uapi/asm/unistd.h      |   1 +
+ arch/arm64/mm/pageattr.c                  |  10 +-
+ arch/riscv/include/asm/set_memory.h       |   4 +-
+ arch/riscv/include/asm/unistd.h           |   1 +
+ arch/riscv/mm/pageattr.c                  |   8 +-
+ arch/x86/Kconfig                          |   1 +
+ arch/x86/entry/syscalls/syscall_32.tbl    |   1 +
+ arch/x86/entry/syscalls/syscall_64.tbl    |   1 +
+ arch/x86/include/asm/set_memory.h         |   4 +-
+ arch/x86/mm/pat/set_memory.c              |   8 +-
+ fs/dax.c                                  |  11 +-
+ include/linux/pgtable.h                   |   3 +
+ include/linux/set_memory.h                |   4 +-
+ include/linux/syscalls.h                  |   1 +
+ include/uapi/asm-generic/unistd.h         |   7 +-
+ include/uapi/linux/magic.h                |   1 +
+ include/uapi/linux/secretmem.h            |   8 +
+ kernel/sys_ni.c                           |   2 +
+ mm/Kconfig                                |   4 +
+ mm/Makefile                               |   1 +
+ mm/gup.c                                  |  10 +
+ mm/internal.h                             |   3 +
+ mm/mmap.c                                 |   5 +-
+ mm/secretmem.c                            | 487 ++++++++++++++++++++++
+ mm/vmalloc.c                              |   5 +-
+ scripts/checksyscalls.sh                  |   4 +
+ tools/testing/selftests/vm/.gitignore     |   1 +
+ tools/testing/selftests/vm/Makefile       |   3 +-
+ tools/testing/selftests/vm/memfd_secret.c | 296 +++++++++++++
+ tools/testing/selftests/vm/run_vmtests    |  17 +
+ 34 files changed, 892 insertions(+), 35 deletions(-)
+ create mode 100644 include/uapi/linux/secretmem.h
+ create mode 100644 mm/secretmem.c
+ create mode 100644 tools/testing/selftests/vm/memfd_secret.c
+
+--
+2.28.0
