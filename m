@@ -2,38 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA6D7299BD6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5FED299BD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410164AbgJZXxm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:42 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57130 "EHLO mail.kernel.org"
+        id S2410180AbgJZXxr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:47 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57382 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409833AbgJZXxM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:12 -0400
+        id S2410019AbgJZXxR (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:17 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 82071221F8;
-        Mon, 26 Oct 2020 23:53:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C1C9020770;
+        Mon, 26 Oct 2020 23:53:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756391;
-        bh=CtXkxi4z3ePz3347kCygJai6J6gCO1+WxDFYAEUk9so=;
+        s=default; t=1603756396;
+        bh=sJKzSfQY8uzihmpRwVTN/EAgVg3GpFoCkG/vfM+f3PY=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=R+tW6BJ+XIDm0LWgrUu1Qat7iPGzPOBgOYqcXlbsLItt0JuXF9Fv+Gl41/h8esCz1
-         XwQWF3u4eLhc6UPVGPGrH0xW4dVKGRxG7HgzpeMsdtWcSYviSEvvAYa3cB1OniGS2i
-         TNJWufo165TMbwJQVzz+fowqLxnps87MaknU10f8=
+        b=xbWSfZyKJo6NREr6QmFYZDQsmXnVwnFq6LJyCpMMKDKdLa0zXp+Q8gMn27qH/fXwR
+         hjC++SEMySPZzA+wbhRvjIjzu1V8R7O0mA6dWrJCzNuK5EgsnyOfsTJb6ruFpfUL1T
+         0OAgOF+29yx9hInqvzqy2+V0hgPwpO8NMkYo5ptw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
-        Andrzej Hajda <a.hajda@samsung.com>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org,
-        linux-arm-kernel@lists.infradead.org,
-        linux-samsung-soc@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 053/132] drm: exynos: fix common struct sg_table related issues
-Date:   Mon, 26 Oct 2020 19:50:45 -0400
-Message-Id: <20201026235205.1023962-53-sashal@kernel.org>
+Cc:     "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>,
+        Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
+        Sasha Levin <sashal@kernel.org>, linux-media@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 057/132] media: uvcvideo: Fix dereference of out-of-bound list iterator
+Date:   Mon, 26 Oct 2020 19:50:49 -0400
+Message-Id: <20201026235205.1023962-57-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -45,70 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Marek Szyprowski <m.szyprowski@samsung.com>
+From: "Daniel W. S. Almeida" <dwlsalmeida@gmail.com>
 
-[ Upstream commit 84404614167b829f7b58189cd24b6c0c74897171 ]
+[ Upstream commit f875bcc375c738bf2f599ff2e1c5b918dbd07c45 ]
 
-The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
-returns the number of the created entries in the DMA address space.
-However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
-dma_unmap_sg must be called with the original number of the entries
-passed to the dma_map_sg().
+Fixes the following coccinelle report:
 
-struct sg_table is a common structure used for describing a non-contiguous
-memory buffer, used commonly in the DRM and graphics subsystems. It
-consists of a scatterlist with memory pages and DMA addresses (sgl entry),
-as well as the number of scatterlist entries: CPU pages (orig_nents entry)
-and DMA mapped pages (nents entry).
+drivers/media/usb/uvc/uvc_ctrl.c:1860:5-11:
+ERROR: invalid reference to the index variable of the iterator on line 1854
 
-It turned out that it was a common mistake to misuse nents and orig_nents
-entries, calling DMA-mapping functions with a wrong number of entries or
-ignoring the number of mapped entries returned by the dma_map_sg()
-function.
+by adding a boolean variable to check if the loop has found the
 
-To avoid such issues, lets use a common dma-mapping wrappers operating
-directly on the struct sg_table objects and use scatterlist page
-iterators where possible. This, almost always, hides references to the
-nents and orig_nents entries, making the code robust, easier to follow
-and copy/paste safe.
+Found using - Coccinelle (http://coccinelle.lip6.fr)
 
-Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-Reviewed-by: Andrzej Hajda <a.hajda@samsung.com>
-Acked-by : Inki Dae <inki.dae@samsung.com>
+[Replace cursor variable with bool found]
+
+Signed-off-by: Daniel W. S. Almeida <dwlsalmeida@gmail.com>
+Signed-off-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/exynos/exynos_drm_g2d.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/media/usb/uvc/uvc_ctrl.c | 13 +++++++++----
+ 1 file changed, 9 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-index 03be314271811..967a5cdc120e3 100644
---- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-+++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-@@ -395,8 +395,8 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
- 		return;
+diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+index e399b9fad7574..aed84528758f6 100644
+--- a/drivers/media/usb/uvc/uvc_ctrl.c
++++ b/drivers/media/usb/uvc/uvc_ctrl.c
+@@ -1844,30 +1844,35 @@ int uvc_xu_ctrl_query(struct uvc_video_chain *chain,
+ {
+ 	struct uvc_entity *entity;
+ 	struct uvc_control *ctrl;
+-	unsigned int i, found = 0;
++	unsigned int i;
++	bool found;
+ 	u32 reqflags;
+ 	u16 size;
+ 	u8 *data = NULL;
+ 	int ret;
  
- out:
--	dma_unmap_sg(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt->sgl,
--			g2d_userptr->sgt->nents, DMA_BIDIRECTIONAL);
-+	dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
-+			  DMA_BIDIRECTIONAL, 0);
- 
- 	pages = frame_vector_pages(g2d_userptr->vec);
- 	if (!IS_ERR(pages)) {
-@@ -511,10 +511,10 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
- 
- 	g2d_userptr->sgt = sgt;
- 
--	if (!dma_map_sg(to_dma_dev(g2d->drm_dev), sgt->sgl, sgt->nents,
--				DMA_BIDIRECTIONAL)) {
-+	ret = dma_map_sgtable(to_dma_dev(g2d->drm_dev), sgt,
-+			      DMA_BIDIRECTIONAL, 0);
-+	if (ret) {
- 		DRM_DEV_ERROR(g2d->dev, "failed to map sgt with dma region.\n");
--		ret = -ENOMEM;
- 		goto err_sg_free_table;
+ 	/* Find the extension unit. */
++	found = false;
+ 	list_for_each_entry(entity, &chain->entities, chain) {
+ 		if (UVC_ENTITY_TYPE(entity) == UVC_VC_EXTENSION_UNIT &&
+-		    entity->id == xqry->unit)
++		    entity->id == xqry->unit) {
++			found = true;
+ 			break;
++		}
  	}
  
+-	if (entity->id != xqry->unit) {
++	if (!found) {
+ 		uvc_trace(UVC_TRACE_CONTROL, "Extension unit %u not found.\n",
+ 			xqry->unit);
+ 		return -ENOENT;
+ 	}
+ 
+ 	/* Find the control and perform delayed initialization if needed. */
++	found = false;
+ 	for (i = 0; i < entity->ncontrols; ++i) {
+ 		ctrl = &entity->controls[i];
+ 		if (ctrl->index == xqry->selector - 1) {
+-			found = 1;
++			found = true;
+ 			break;
+ 		}
+ 	}
 -- 
 2.25.1
 
