@@ -2,108 +2,65 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE58B299257
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:26:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD0DA299268
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:29:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785921AbgJZQ0X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:26:23 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47980 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404162AbgJZQ0W (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:26:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id EEE67AC48;
-        Mon, 26 Oct 2020 16:26:19 +0000 (UTC)
-Message-ID: <160f3f542a89e0263d5d375fdae796af6017c33c.camel@suse.de>
-Subject: Re: [PATCH v2 01/10] firmware: raspberrypi: Introduce
- rpi_firmware_put()
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Ray Jui <rjui@broadcom.com>,
-        Scott Branden <sbranden@broadcom.com>,
-        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
-        linux-pwm@vger.kernel.org,
-        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
-        devicetree <devicetree@vger.kernel.org>,
-        Stefan Wahren <wahrenst@gmx.net>,
-        linux-input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
-Date:   Mon, 26 Oct 2020 17:26:17 +0100
-In-Reply-To: <CAHp75Vej4UfsySRB6qXL7fFN7SjnTjy=p4Xkn1xBO0YOFy-kcQ@mail.gmail.com>
-References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
-         <20201022155858.20867-2-nsaenzjulienne@suse.de>
-         <CAHp75Vej4UfsySRB6qXL7fFN7SjnTjy=p4Xkn1xBO0YOFy-kcQ@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-+M2bTZi8S7Ge32C0tkNp"
-User-Agent: Evolution 3.36.5 
+        id S1785930AbgJZQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:29:26 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:38721 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773930AbgJZQ30 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:29:26 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n18so13354575wrs.5;
+        Mon, 26 Oct 2020 09:29:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to:user-agent;
+        bh=cWeA8CWri32QkONqVW1NoL41XQcJqip3DA/la05shNE=;
+        b=jy3CkCAEDlaxLE0dtPYJlWGZ45KBW7vOvTatZzqoiYYJdDVqHt7UMn4MjQOkKqhUX4
+         z4Zkednq+wi5Ny6OB/fg4MXsmNMWWn7rgU8IBpW6TBGE80+1CjyrMFfsKjFiPkA21b+V
+         IXP0hNsmNJbWRxsxTPkrP3W2RovMa9+A/UXCA57TdUV0rOeFH3Wpi51/CVVUkEDFi9jD
+         kd7IWVTrtTfYAQtRjP0Rc+yhawD9B13YbI/ngwNhZO9P+8TF3pk770cPWH9VFhFThqhE
+         4vWuJNBAnEQjJ49E1diK2AEuwWEAZqnE/lAUVPURtn8g20smYwID55Anu7kRNc6gxBkc
+         c1Qg==
+X-Gm-Message-State: AOAM532DBF+vl57rNrsjLo2h27U7LSKzS36KJHK/IT7d7JIeLfydpzWd
+        nlJxn2KTzRBzoE57cIbJv5M=
+X-Google-Smtp-Source: ABdhPJz5EooO394mqACvRY2chbha+0h00JUXjmbZ5NmUQw3+2pZDLwSdqyxLZlxLWpcUSNrE8YXzlQ==
+X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr18624693wrt.221.1603729763369;
+        Mon, 26 Oct 2020 09:29:23 -0700 (PDT)
+Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
+        by smtp.gmail.com with ESMTPSA id t62sm22130579wmf.22.2020.10.26.09.29.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 09:29:22 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 16:29:21 +0000
+From:   Wei Liu <wei.liu@kernel.org>
+To:     Michael Kelley <mikelley@microsoft.com>
+Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
+        peterz@infradead.org, kys@microsoft.com, sthemmin@microsoft.com,
+        wei.liu@kernel.org, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, linux-hyperv@vger.kernel.org
+Subject: Re: [PATCH 1/1] x86/hyperv: Clarify comment on x2apic mode
+Message-ID: <20201026162921.4kj47twy2wl43jji@liuwe-devbox-debian-v2>
+References: <1603723972-81303-1-git-send-email-mikelley@microsoft.com>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603723972-81303-1-git-send-email-mikelley@microsoft.com>
+User-Agent: NeoMutt/20180716
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 07:52:52AM -0700, Michael Kelley wrote:
+> The comment about Hyper-V accessors is unclear regarding their
+> potential use in x2apic mode, as is the associated commit message
+> in e211288b72f1.  Clarify that while the architectural and
+> synthetic MSRs are equivalent in x2apic mode, the full set of xapic
+> accessors cannot be used because of register layout differences.
+> 
+> Fixes: e211288b72f1 ("x86/hyperv: Make vapic support x2apic mode")
+> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
 
---=-+M2bTZi8S7Ge32C0tkNp
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, 2020-10-22 at 21:46 +0300, Andy Shevchenko wrote:
-> On Thu, Oct 22, 2020 at 9:06 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > When unbinding the firmware device we need to make sure it has no
-> > consumers left. Otherwise we'd leave them with a firmware handle
-> > pointing at freed memory.
-> >=20
-> > Keep a reference count of all consumers and make sure they all finished
-> > unbinding before we do.
->=20
-> Wait, if it's a device, why do we need all these?
-> get_device() / put_device() along with module_get() / module_put()
-> should be sufficient, no?
-
-Could you expand here a little, I do see how I could use get_device()'s
-reference count. But it seems to me I'd be digging way too deep into kobj i=
-n
-order to get the functionality I need.
-
-If you meant to say that it should be automatically taken care by the platf=
-orm
-bus, just FYI we're using 'simple-mfd' in DT. Where firmware supplier is th=
-e
-parent and all consumers are children.
-
-Regards,
-Nicolas
-
-
---=-+M2bTZi8S7Ge32C0tkNp
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W+KkACgkQlfZmHno8
-x/6XwQf+N4Vi5LyZRLbYPf2alcEVhV4rJF362cZVbIn76rK576WGug740xSWsiwO
-gfzWfNuZQ8dHdYtromdKWWMK3JYZ1EYnhWwxzQVC9bhKypTweP7tpIxNgdQLfoi0
-qS6Omn19ldcynO+YlLCEp76lrapt5ADWIGR5phjOWOj2yPHYJN0TsaQ80bNsNHZL
-caC8ddA5LxpEZKe8NEd9tqOdhB9rnvTHmPLG4A7CdjCsNdwcO6TXUTM4os21JNVv
-IB/eaEzZp7DLTWVAUJxV+HIX0SSdy80TCryzgCsfbcd8q6AuD2RWtWpVQ88Qtrbl
-fFrXd+Hf3/iVhraCCi5GKegidy4SyA==
-=30G8
------END PGP SIGNATURE-----
-
---=-+M2bTZi8S7Ge32C0tkNp--
-
+Applied to hyperv-fixes. Thanks.
