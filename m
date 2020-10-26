@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 94566299FC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:25:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CFCC0299FE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:26:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410147AbgJZXxk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:40 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57060 "EHLO mail.kernel.org"
+        id S2393731AbgJ0A0C (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:26:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57148 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409972AbgJZXxL (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:11 -0400
+        id S2409996AbgJZXxN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:13 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EDFB22151B;
-        Mon, 26 Oct 2020 23:53:08 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D86B722202;
+        Mon, 26 Oct 2020 23:53:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756389;
-        bh=lBTaitZwC3DCh27k3l38N89/0TU95O7CiRGAQNlNUdc=;
+        s=default; t=1603756392;
+        bh=j8+aveAqrJQEVzbm2fQkpi44naYHrixzixT0DdUmo5A=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hc2MqyvQma7Eyi++QFkJAQZsDg3fwR9BqWh7ms7fxzVR/qDTvKnusOfDlJW6JwmRV
-         kscV9c2kFR++8Am3Y6SSXg6BIXhTEMKnTXgLG9+m7pIiMON6UsNjN+nEm+Y/2vXfqC
-         4ZRI+nCOP0L8qFlGmo6HNtfNjWgrCzUxz6+n3A8s=
+        b=hMDjDuYtIUSPBB9B21/4bfkTHLyW6e8q+6pzDlVwQZtGtKTsoUYGPD0YYYZmihC5U
+         l4AXo+sqP6cf37YCIqdwqF0VwUmATsw0NAqs9E51pAneZNAFjYXnlryUjmpDmHsqU6
+         ZP6YauC5AYL556Q9tQ3qmDbCROVimmHwqRP0ncT0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Yonghong Song <yhs@fb.com>, Alexei Starovoitov <ast@kernel.org>,
-        Andrii Nakryiko <andriin@fb.com>,
-        Sasha Levin <sashal@kernel.org>, netdev@vger.kernel.org,
-        bpf@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.8 052/132] bpf: Permit map_ptr arithmetic with opcode add and offset 0
-Date:   Mon, 26 Oct 2020 19:50:44 -0400
-Message-Id: <20201026235205.1023962-52-sashal@kernel.org>
+Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
+        Juergen Gross <jgross@suse.com>,
+        Sasha Levin <sashal@kernel.org>, xen-devel@lists.xenproject.org
+Subject: [PATCH AUTOSEL 5.8 054/132] xen: gntdev: fix common struct sg_table related issues
+Date:   Mon, 26 Oct 2020 19:50:46 -0400
+Message-Id: <20201026235205.1023962-54-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,117 +42,78 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Yonghong Song <yhs@fb.com>
+From: Marek Szyprowski <m.szyprowski@samsung.com>
 
-[ Upstream commit 7c6967326267bd5c0dded0a99541357d70dd11ac ]
+[ Upstream commit d1749eb1ab85e04e58c29e58900e3abebbdd6e82 ]
 
-Commit 41c48f3a98231 ("bpf: Support access
-to bpf map fields") added support to access map fields
-with CORE support. For example,
+The Documentation/DMA-API-HOWTO.txt states that the dma_map_sg() function
+returns the number of the created entries in the DMA address space.
+However the subsequent calls to the dma_sync_sg_for_{device,cpu}() and
+dma_unmap_sg must be called with the original number of the entries
+passed to the dma_map_sg().
 
-            struct bpf_map {
-                    __u32 max_entries;
-            } __attribute__((preserve_access_index));
+struct sg_table is a common structure used for describing a non-contiguous
+memory buffer, used commonly in the DRM and graphics subsystems. It
+consists of a scatterlist with memory pages and DMA addresses (sgl entry),
+as well as the number of scatterlist entries: CPU pages (orig_nents entry)
+and DMA mapped pages (nents entry).
 
-            struct bpf_array {
-                    struct bpf_map map;
-                    __u32 elem_size;
-            } __attribute__((preserve_access_index));
+It turned out that it was a common mistake to misuse nents and orig_nents
+entries, calling DMA-mapping functions with a wrong number of entries or
+ignoring the number of mapped entries returned by the dma_map_sg()
+function.
 
-            struct {
-                    __uint(type, BPF_MAP_TYPE_ARRAY);
-                    __uint(max_entries, 4);
-                    __type(key, __u32);
-                    __type(value, __u32);
-            } m_array SEC(".maps");
+To avoid such issues, lets use a common dma-mapping wrappers operating
+directly on the struct sg_table objects and use scatterlist page
+iterators where possible. This, almost always, hides references to the
+nents and orig_nents entries, making the code robust, easier to follow
+and copy/paste safe.
 
-            SEC("cgroup_skb/egress")
-            int cg_skb(void *ctx)
-            {
-                    struct bpf_array *array = (struct bpf_array *)&m_array;
-
-                    /* .. array->map.max_entries .. */
-            }
-
-In kernel, bpf_htab has similar structure,
-
-	    struct bpf_htab {
-		    struct bpf_map map;
-                    ...
-            }
-
-In the above cg_skb(), to access array->map.max_entries, with CORE, the clang will
-generate two builtin's.
-            base = &m_array;
-            /* access array.map */
-            map_addr = __builtin_preserve_struct_access_info(base, 0, 0);
-            /* access array.map.max_entries */
-            max_entries_addr = __builtin_preserve_struct_access_info(map_addr, 0, 0);
-	    max_entries = *max_entries_addr;
-
-In the current llvm, if two builtin's are in the same function or
-in the same function after inlining, the compiler is smart enough to chain
-them together and generates like below:
-            base = &m_array;
-            max_entries = *(base + reloc_offset); /* reloc_offset = 0 in this case */
-and we are fine.
-
-But if we force no inlining for one of functions in test_map_ptr() selftest, e.g.,
-check_default(), the above two __builtin_preserve_* will be in two different
-functions. In this case, we will have code like:
-   func check_hash():
-            reloc_offset_map = 0;
-            base = &m_array;
-            map_base = base + reloc_offset_map;
-            check_default(map_base, ...)
-   func check_default(map_base, ...):
-            max_entries = *(map_base + reloc_offset_max_entries);
-
-In kernel, map_ptr (CONST_PTR_TO_MAP) does not allow any arithmetic.
-The above "map_base = base + reloc_offset_map" will trigger a verifier failure.
-  ; VERIFY(check_default(&hash->map, map));
-  0: (18) r7 = 0xffffb4fe8018a004
-  2: (b4) w1 = 110
-  3: (63) *(u32 *)(r7 +0) = r1
-   R1_w=invP110 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-  ; VERIFY_TYPE(BPF_MAP_TYPE_HASH, check_hash);
-  4: (18) r1 = 0xffffb4fe8018a000
-  6: (b4) w2 = 1
-  7: (63) *(u32 *)(r1 +0) = r2
-   R1_w=map_value(id=0,off=0,ks=4,vs=8,imm=0) R2_w=invP1 R7_w=map_value(id=0,off=4,ks=4,vs=8,imm=0) R10=fp0
-  8: (b7) r2 = 0
-  9: (18) r8 = 0xffff90bcb500c000
-  11: (18) r1 = 0xffff90bcb500c000
-  13: (0f) r1 += r2
-  R1 pointer arithmetic on map_ptr prohibited
-
-To fix the issue, let us permit map_ptr + 0 arithmetic which will
-result in exactly the same map_ptr.
-
-Signed-off-by: Yonghong Song <yhs@fb.com>
-Signed-off-by: Alexei Starovoitov <ast@kernel.org>
-Acked-by: Andrii Nakryiko <andriin@fb.com>
-Link: https://lore.kernel.org/bpf/20200908175702.2463625-1-yhs@fb.com
+Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Acked-by: Juergen Gross <jgross@suse.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- kernel/bpf/verifier.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ drivers/xen/gntdev-dmabuf.c | 13 ++++++-------
+ 1 file changed, 6 insertions(+), 7 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 89b07db146763..2b318db54bf39 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -5042,6 +5042,10 @@ static int adjust_ptr_min_max_vals(struct bpf_verifier_env *env,
- 			dst, reg_type_str[ptr_reg->type]);
- 		return -EACCES;
- 	case CONST_PTR_TO_MAP:
-+		/* smin_val represents the known value */
-+		if (known && smin_val == 0 && opcode == BPF_ADD)
-+			break;
-+		/* fall-through */
- 	case PTR_TO_PACKET_END:
- 	case PTR_TO_SOCKET:
- 	case PTR_TO_SOCKET_OR_NULL:
+diff --git a/drivers/xen/gntdev-dmabuf.c b/drivers/xen/gntdev-dmabuf.c
+index b1b6eebafd5de..4c13cbc99896a 100644
+--- a/drivers/xen/gntdev-dmabuf.c
++++ b/drivers/xen/gntdev-dmabuf.c
+@@ -247,10 +247,9 @@ static void dmabuf_exp_ops_detach(struct dma_buf *dma_buf,
+ 
+ 		if (sgt) {
+ 			if (gntdev_dmabuf_attach->dir != DMA_NONE)
+-				dma_unmap_sg_attrs(attach->dev, sgt->sgl,
+-						   sgt->nents,
+-						   gntdev_dmabuf_attach->dir,
+-						   DMA_ATTR_SKIP_CPU_SYNC);
++				dma_unmap_sgtable(attach->dev, sgt,
++						  gntdev_dmabuf_attach->dir,
++						  DMA_ATTR_SKIP_CPU_SYNC);
+ 			sg_free_table(sgt);
+ 		}
+ 
+@@ -288,8 +287,8 @@ dmabuf_exp_ops_map_dma_buf(struct dma_buf_attachment *attach,
+ 	sgt = dmabuf_pages_to_sgt(gntdev_dmabuf->pages,
+ 				  gntdev_dmabuf->nr_pages);
+ 	if (!IS_ERR(sgt)) {
+-		if (!dma_map_sg_attrs(attach->dev, sgt->sgl, sgt->nents, dir,
+-				      DMA_ATTR_SKIP_CPU_SYNC)) {
++		if (dma_map_sgtable(attach->dev, sgt, dir,
++				    DMA_ATTR_SKIP_CPU_SYNC)) {
+ 			sg_free_table(sgt);
+ 			kfree(sgt);
+ 			sgt = ERR_PTR(-ENOMEM);
+@@ -633,7 +632,7 @@ dmabuf_imp_to_refs(struct gntdev_dmabuf_priv *priv, struct device *dev,
+ 
+ 	/* Now convert sgt to array of pages and check for page validity. */
+ 	i = 0;
+-	for_each_sg_page(sgt->sgl, &sg_iter, sgt->nents, 0) {
++	for_each_sgtable_page(sgt, &sg_iter, 0) {
+ 		struct page *page = sg_page_iter_page(&sg_iter);
+ 		/*
+ 		 * Check if page is valid: this can happen if we are given
 -- 
 2.25.1
 
