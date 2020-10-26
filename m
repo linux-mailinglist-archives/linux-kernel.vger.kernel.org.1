@@ -2,76 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0C7E02990CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:16:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4B5972990D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:16:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783557AbgJZPQd convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 11:16:33 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:38686 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2404034AbgJZPQc (ORCPT
+        id S1783566AbgJZPQm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:16:42 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:60404 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1783559AbgJZPQm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:16:32 -0400
-Received: by mail-ej1-f67.google.com with SMTP id ce10so14116299ejc.5;
-        Mon, 26 Oct 2020 08:16:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:content-transfer-encoding
-         :in-reply-to;
-        bh=ykn7mDr6IhgGPaHcJ3ODS02eBmjPYrOJE/dTqRU9Lm4=;
-        b=Icywda8CCtcospo/+MQz1jQ83jTDgkg4oHEpreSqxj13EQbRTl9IRYuDwhuZ4ivgM9
-         TkUjWYr0Ke0Ob6Wvl/YZlTsir8JCo7MqfTStRIOeCQgLLW8+PO0pO3s25AKfB/VTGtjt
-         s1bxGAoUr+94tyOahx+KQ+DNZOWiE+JlrigyH+tynswAeXRMQHEn/Kj9RtKslrQoOwQ0
-         cZ+NW7McivO3Mip85/BdtCZmKoWFTR3IpH/9LaNm4O/3QDxwpjg8oh3cajCu1ouxcjkN
-         c1OmUVcDetcFIu+w2cTf6fP8BWGLzLgxpye6FhSVr2z9IdMzedui5Ok4apPj4f5Mek9a
-         N4LQ==
-X-Gm-Message-State: AOAM532BiyWEtB/kPhDeKbQSlXXwK4bG1QpxHZomwiBaDhxxn9YrOqGj
-        2wUWADSiId2HQfsPH5wnE6k=
-X-Google-Smtp-Source: ABdhPJyFdl9tOTZ46nbpEA1jYNhgGin081i0VgSbLf/9INiPjEinm6ayfLrzWjebiXYrKUHhWfyciw==
-X-Received: by 2002:a17:906:430a:: with SMTP id j10mr15929122ejm.21.1603725389660;
-        Mon, 26 Oct 2020 08:16:29 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id a19sm5354005edb.84.2020.10.26.08.16.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:16:27 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:16:24 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     =?utf-8?B?UGF3ZcWC?= Chmiel <pawel.mikolaj.chmiel@gmail.com>
-Cc:     kgene@kernel.org, mturquette@baylibre.com, sboyd@kernel.org,
-        s.nawrocki@samsung.com, tomasz.figa@gmail.com,
-        cw00.choi@samsung.com, linux-samsung-soc@vger.kernel.org,
-        linux-clk@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] clk: exynos7: Mark aclk_fsys1_200 as critical
-Message-ID: <20201026151624.GB87050@kozik-lap>
-References: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
+        Mon, 26 Oct 2020 11:16:42 -0400
+Received: from [127.0.0.1] (localhost [127.0.0.1])
+        (Authenticated sender: eballetbo)
+        with ESMTPSA id 27E241F44A65
+From:   Enric Balletbo i Serra <enric.balletbo@collabora.com>
+Subject: Re: [PATCH 07/12] soc: mediatek: pm-domains: Add extra sram control
+To:     Matthias Brugger <mbrugger@suse.com>, linux-kernel@vger.kernel.org
+Cc:     Collabora Kernel ML <kernel@collabora.com>, fparent@baylibre.com,
+        matthias.bgg@gmail.com, drinkcat@chromium.org, hsinyi@chromium.org,
+        weiyi.lu@mediatek.com, linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org
+References: <20200910172826.3074357-1-enric.balletbo@collabora.com>
+ <20200910172826.3074357-8-enric.balletbo@collabora.com>
+ <277b1656-4a64-4fdd-865d-88cf253b7b0e@suse.com>
+Message-ID: <59d2decc-029a-709b-7796-fc9f370b67c6@collabora.com>
+Date:   Mon, 26 Oct 2020 16:16:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <277b1656-4a64-4fdd-865d-88cf253b7b0e@suse.com>
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8BIT
-In-Reply-To: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 05:43:46PM +0200, Paweł Chmiel wrote:
-> This clock must be always enabled to allow access to any registers in
-> fsys1 CMU. Until proper solution based on runtime PM is applied
-> (similar to what was done for Exynos5433), mark that clock as critical
-> so it won't be disabled.
-> 
-> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
-> UFS module is probed before pmic used to power that device.
-> In this case defer probe was happening and that clock was disabled by
-> UFS driver, causing whole boot to hang on next CMU access.
-> 
-> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
-> ---
->  drivers/clk/samsung/clk-exynos7.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+Hi Matthias,
 
-Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
+On 10/9/20 20:27, Matthias Brugger wrote:
+> 
+> 
+> On 10/09/2020 19:28, Enric Balletbo i Serra wrote:
+>> From: Matthias Brugger <mbrugger@suse.com>
+>>
+>> For some power domains like vpu_core on MT8183 whose sram need to do clock
+>> and internal isolation while power on/off sram. We add a cap
+>> "MTK_SCPD_SRAM_ISO" to judge if we need to do the extra sram isolation
+>> control or not.
+>>
+>> Signed-off-by: Weiyi Lu <weiyi.lu@mediatek.com>
+>> Signed-off-by: Matthias Brugger <mbrugger@suse.com>
+>> Signed-off-by: Enric Balletbo i Serra <enric.balletbo@collabora.com>
+>> ---
+>>
+>>   drivers/soc/mediatek/mtk-pm-domains.c | 22 ++++++++++++++++++++--
+>>   1 file changed, 20 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/drivers/soc/mediatek/mtk-pm-domains.c
+>> b/drivers/soc/mediatek/mtk-pm-domains.c
+>> index 3aa430a60602..0802eccc3a0b 100644
+>> --- a/drivers/soc/mediatek/mtk-pm-domains.c
+>> +++ b/drivers/soc/mediatek/mtk-pm-domains.c
+>> @@ -21,6 +21,7 @@
+>>     #define MTK_SCPD_ACTIVE_WAKEUP        BIT(0)
+>>   #define MTK_SCPD_FWAIT_SRAM        BIT(1)
+>> +#define MTK_SCPD_SRAM_ISO        BIT(2)
+>>   #define MTK_SCPD_CAPS(_scpd, _x)    ((_scpd)->data->caps & (_x))
+>>     #define SPM_VDE_PWR_CON            0x0210
+>> @@ -42,6 +43,8 @@
+>>   #define PWR_ON_BIT            BIT(2)
+>>   #define PWR_ON_2ND_BIT            BIT(3)
+>>   #define PWR_CLK_DIS_BIT            BIT(4)
+>> +#define PWR_SRAM_CLKISO_BIT        BIT(5)
+>> +#define PWR_SRAM_ISOINT_B_BIT        BIT(6)
+>>     #define PWR_STATUS_DISP            BIT(3)
+>>   #define PWR_STATUS_MFG            BIT(4)
+>> @@ -162,6 +165,14 @@ static int scpsys_sram_enable(struct scpsys_domain *pd,
+>> void __iomem *ctl_addr)
+>>       if (ret < 0)
+>>           return ret;
+>>   +    if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO))    {
+>> +        val = readl(ctl_addr) | PWR_SRAM_ISOINT_B_BIT;
+>> +        writel(val, ctl_addr);
+>> +        udelay(1);
+>> +        val &= ~PWR_SRAM_CLKISO_BIT;
+>> +        writel(val, ctl_addr);
+>> +    }
+>> +
+>>       return 0;
+>>   }
+>>   @@ -171,8 +182,15 @@ static int scpsys_sram_disable(struct scpsys_domain
+>> *pd, void __iomem *ctl_addr)
+>>       u32 val;
+>>       int tmp;
+>>   -    val = readl(ctl_addr);
+>> -    val |= pd->data->sram_pdn_bits;
+>> +    if (MTK_SCPD_CAPS(pd, MTK_SCPD_SRAM_ISO))    {
+>> +        val = readl(ctl_addr) | PWR_SRAM_CLKISO_BIT;
+>> +        writel(val, ctl_addr);
+>> +        val &= ~PWR_SRAM_ISOINT_B_BIT;
+>> +        writel(val, ctl_addr);
+>> +        udelay(1);
+>> +    }
+>> +
+>> +    val = readl(ctl_addr) | pd->data->sram_pdn_bits;
+> 
+> Nit, I'd prefer:
+> val = readl(ctl_addr);
+> val |= pd->data->sram_pdn_bits;
+> 
 
-Best regards,
-Krzysztof
+done in next version.
+
+> 
+>>       writel(val, ctl_addr);
+>>         /* Either wait until SRAM_PDN_ACK all 1 or 0 */
+>>
