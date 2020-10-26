@@ -2,86 +2,103 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DE7F129964D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D9B43299659
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:00:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1791090AbgJZS60 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:58:26 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55085 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1791072AbgJZS6V (ORCPT
+        id S1791380AbgJZTAn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:00:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:41806 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407524AbgJZTAm (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:58:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603738700;
+        Mon, 26 Oct 2020 15:00:42 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603738839;
         h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=kaOCH2p3/Nu0DCrQ0FgXRUQNXyBXyy87Pagb1Hdgksw=;
-        b=LYGrILgW3Fmbm3/21S1GL28RXBq4BAtDw2m9/hj7BRKre+oLGXLVSSoI5lNIKOA4w7YcQO
-        cKs+cm8jrGdavz5nDav4RvutIquHIMjEWUqgFZn5DDB/PDHWRH4UsvkQCugVAa5bcwIrmp
-        Dkrm9Gs+KTP7RS2ZVG8B79DyuDGOCGQ=
-Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com
- [209.85.161.70]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-591-CGvO4J_5ORKanH-_BA2fkQ-1; Mon, 26 Oct 2020 14:58:19 -0400
-X-MC-Unique: CGvO4J_5ORKanH-_BA2fkQ-1
-Received: by mail-oo1-f70.google.com with SMTP id g9so6070046ooq.17
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:58:18 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=kaOCH2p3/Nu0DCrQ0FgXRUQNXyBXyy87Pagb1Hdgksw=;
-        b=GtC3utfImzbzbon7PvEiSWc6i+FJwd5OuCIYCVhhZo9v/LAECPhH4oZ3LJssPPlAk+
-         S8+X/L4bCxnJG44YQFzhDW71S/aleYWB7kMr4RoB0+S1z8ReIvCZhQAHmbi/YRryzAUl
-         aOK/tlaBkYPwbCNdHB/tDoghnAp3y5np7Ijcpzspl0LNDjjPSsU0eEkY1VwMt1804wXI
-         Yqa/mSPuCXhB8uMVcU9kEitOZ2r420OK+xXB0VysSKanElpP878jTpUp5GNayLYPOTyV
-         98eVon2joQjEN9nJHbSqmv6B4tidzp1B1xJ0uUCoe2eHuQjDoIvFAk9LShcGf2yt/FgF
-         3jsg==
-X-Gm-Message-State: AOAM530vIrK7T1JQAYVvkUC/zD9CHpnNyy46PFeJbj9X+5NfkLiwfoZ1
-        rr32/OknL+rcnz1AO1mCggl3w7n8LK9oqCmN7+YnoF44PvZj0UjNP4y2RdlsNY0z7UjP83rzEkR
-        SneVXrQPRgoY5mKbWbC+mw0h+
-X-Received: by 2002:a9d:65c7:: with SMTP id z7mr16068721oth.327.1603738698274;
-        Mon, 26 Oct 2020 11:58:18 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxnbxRJ34NQlGUWZAODFv8pRoOSuBSReKA6tvsTH8368c1uhSb/dA9yoQ2cjXek2pdoLPyawg==
-X-Received: by 2002:a9d:65c7:: with SMTP id z7mr16068703oth.327.1603738698033;
-        Mon, 26 Oct 2020 11:58:18 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id l204sm3100893oia.32.2020.10.26.11.58.16
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:58:17 -0700 (PDT)
-From:   trix@redhat.com
-To:     mathias.nyman@intel.com, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] usb: host: xhci-mem: remove unneeded break
-Date:   Mon, 26 Oct 2020 11:58:12 -0700
-Message-Id: <20201026185812.1427461-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9QvUMf5PqeNQlMPTahrZW6OrL4d+7Sf7dM1LOD6g9Y8=;
+        b=sABnPwPQKFh6X9EOykr/dujf0/BDYdGvouZaj0zKCcdjFh8cxYhWlV7ouzHx/9AuiAOkeG
+        W+nnFVlZuj9S6fziXQWunzPixauZqnZQ9nLrh0JuKn4b6GiiYM8MGZ/Hp12D/qpqd9gEzP
+        slpm4V3s9owptbHMS5+4tv4aJ9WAaMh2weKt7qrAKu8qPdMl5trskBHj5yfxBb40QBrKGe
+        /ySnUN5ZPONi+9PPcb8jktC0ZuQCfW5Crt2M7PWUjDfFZ7bcbb7tkpCg1/yeBTjfJrVvDM
+        1P2ToGRRopEgY3n7+DLY+WNFdQpiTNbQ74qPaf9Rj6gCNlFiOI7v2XszgBH7ww==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603738839;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=9QvUMf5PqeNQlMPTahrZW6OrL4d+7Sf7dM1LOD6g9Y8=;
+        b=gNKSesjquFk4p1+yIEyYQTEdbXn5nw5BA42TTDi3QdQl6il8MyloLrDdzKgZxPyLpDN/6W
+        iJvGWftarXbD6IBw==
+To:     Marcelo Tosatti <mtosatti@redhat.com>
+Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        lgoncalv@redhat.com
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
+In-Reply-To: <20201026173012.GA377978@fuller.cnet>
+References: <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <20201026173012.GA377978@fuller.cnet>
+Date:   Mon, 26 Oct 2020 20:00:39 +0100
+Message-ID: <875z6w4xt4.fsf@nanos.tec.linutronix.de>
+MIME-Version: 1.0
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Mon, Oct 26 2020 at 14:30, Marcelo Tosatti wrote:
+> On Fri, Oct 23, 2020 at 11:00:52PM +0200, Thomas Gleixner wrote:
+>> So without information from the driver which tells what the best number
+>> of interrupts is with a reduced number of CPUs, this cutoff will cause
+>> more problems than it solves. Regressions guaranteed.
+>
+> One might want to move from one interrupt per isolated app core
+> to zero, or vice versa. It seems that "best number of interrupts 
+> is with reduced number of CPUs" information, is therefore in userspace, 
+> not in driver...
 
-A break is not needed if it is preceded by a return.
+How does userspace know about the driver internals? Number of management
+interrupts, optimal number of interrupts per queue?
 
-Signed-off-by: Tom Rix <trix@redhat.com>
----
-v2: split out as single changed file
----
- drivers/usb/host/xhci-mem.c | 1 -
- 1 file changed, 1 deletion(-)
+>> Managed interrupts base their interrupt allocation and spreading on
+>> information which is handed in by the individual driver and not on crude
+>> assumptions. They are not imposing restrictions on the use case.
+>> 
+>> It's perfectly fine for isolated work to save a data set to disk after
+>> computation has finished and that just works with the per-cpu I/O queue
+>> which is otherwise completely silent. 
+>
+> Userspace could only change the mask of interrupts which are not 
+> triggered by requests from the local CPU (admin, error, mgmt, etc),
+> to avoid the vector exhaustion problem.
+>
+> However, there is no explicit way for userspace to know that, as far as
+> i know.
+>
+>  130:      34845          0          0          0          0          0          0          0  IR-PCI-MSI 33554433-edge      nvme0q1
+>  131:          0      27062          0          0          0          0          0          0  IR-PCI-MSI 33554434-edge      nvme0q2
+>  132:          0          0      24393          0          0          0          0          0  IR-PCI-MSI 33554435-edge      nvme0q3
+>  133:          0          0          0      24313          0          0          0          0  IR-PCI-MSI 33554436-edge      nvme0q4
+>  134:          0          0          0          0      20608          0          0          0  IR-PCI-MSI 33554437-edge      nvme0q5
+>  135:          0          0          0          0          0      22163          0          0  IR-PCI-MSI 33554438-edge      nvme0q6
+>  136:          0          0          0          0          0          0      23020          0  IR-PCI-MSI 33554439-edge      nvme0q7
+>  137:          0          0          0          0          0          0          0      24285  IR-PCI-MSI 33554440-edge      nvme0q8
+>
+> Can that be retrieved from PCI-MSI information, or drivers
+> have to inform this?
 
-diff --git a/drivers/usb/host/xhci-mem.c b/drivers/usb/host/xhci-mem.c
-index fe405cd38dbc..b46ef45c4d25 100644
---- a/drivers/usb/host/xhci-mem.c
-+++ b/drivers/usb/host/xhci-mem.c
-@@ -1144,7 +1144,6 @@ int xhci_setup_addressable_virt_dev(struct xhci_hcd *xhci, struct usb_device *ud
- 	case USB_SPEED_WIRELESS:
- 		xhci_dbg(xhci, "FIXME xHCI doesn't support wireless speeds\n");
- 		return -EINVAL;
--		break;
- 	default:
- 		/* Speed was set earlier, this shouldn't happen. */
- 		return -EINVAL;
--- 
-2.18.1
+The driver should use a different name for the admin queues.
 
+Thanks,
+
+        tglx
