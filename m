@@ -2,69 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2E99729927C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:32:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 23EAA299281
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:33:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786035AbgJZQcw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:32:52 -0400
-Received: from jax4mhob18.registeredsite.com ([64.69.218.106]:50046 "EHLO
-        jax4mhob18.registeredsite.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404060AbgJZQcw (ORCPT
+        id S1786046AbgJZQdC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:33:02 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:52767 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1421201AbgJZQc7 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:32:52 -0400
-Received: from mailpod.hostingplatform.com ([10.30.71.205])
-        by jax4mhob18.registeredsite.com (8.14.4/8.14.4) with ESMTP id 09QGWnMF072760
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL)
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:32:49 -0400
-Received: (qmail 4608 invoked by uid 0); 26 Oct 2020 16:32:50 -0000
-X-TCPREMOTEIP: 81.173.50.109
-X-Authenticated-UID: mike@milosoftware.com
-Received: from unknown (HELO phenom.domain?not?set.invalid) (mike@milosoftware.com@81.173.50.109)
-  by 0 with ESMTPA; 26 Oct 2020 16:32:49 -0000
-From:   Mike Looijmans <mike.looijmans@topic.nl>
-To:     devicetree@vger.kernel.org
-Cc:     linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linus.walleij@linaro.org, bgolaszewski@baylibre.com,
-        robh+dt@kernel.org, krzk@kernel.org,
-        Mike Looijmans <mike.looijmans@topic.nl>
-Subject: [PATCH v4] dt-bindings: gpio: pca953x: Add support for the NXP PCAL9554B/C
-Date:   Mon, 26 Oct 2020 17:32:43 +0100
-Message-Id: <20201026163244.21610-1-mike.looijmans@topic.nl>
-X-Mailer: git-send-email 2.17.1
+        Mon, 26 Oct 2020 12:32:59 -0400
+Received: from pty.hi.pengutronix.de ([2001:67c:670:100:1d::c5])
+        by metis.ext.pengutronix.de with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kX5QQ-0006mY-Gm; Mon, 26 Oct 2020 17:32:50 +0100
+Received: from ukl by pty.hi.pengutronix.de with local (Exim 4.89)
+        (envelope-from <ukl@pengutronix.de>)
+        id 1kX5QP-0001bZ-NK; Mon, 26 Oct 2020 17:32:49 +0100
+Date:   Mon, 26 Oct 2020 17:32:47 +0100
+From:   Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To:     trix@redhat.com
+Cc:     gregkh@linuxfoundation.org, jirislaby@kernel.org,
+        shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+        festevam@gmail.com, linux-imx@nxp.com,
+        linux-arm-kernel@lists.infradead.org, linux-serial@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] tty: serial: imx: remove unneeded break
+Message-ID: <20201026163247.q4bmvrifrdbtgsia@pengutronix.de>
+References: <20201020130709.28096-1-trix@redhat.com>
+MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="vzimvxfmuac2j7x3"
+Content-Disposition: inline
+In-Reply-To: <20201020130709.28096-1-trix@redhat.com>
+X-SA-Exim-Connect-IP: 2001:67c:670:100:1d::c5
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The NXP PCAL9554B is a variant of the PCA953x GPIO expander,
-with 8 GPIOs, latched interrupts and some advanced configuration
-options. The "C" version only differs in I2C address.
 
-This adds the entry to the devicetree bindings.
+--vzimvxfmuac2j7x3
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mike Looijmans <mike.looijmans@topic.nl>
-Acked-by: Rob Herring <robh@kernel.org>
-Reviewed-by: Linus Walleij <linus.walleij@linaro.org>
-Reviewed-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
----
-v2: Split devicetree and code into separate patches
-v3: Devicetree bindings in yaml format
-v4: Rebase on v5.10-rc1
+Hello,
 
- Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml | 1 +
- 1 file changed, 1 insertion(+)
+On Tue, Oct 20, 2020 at 06:07:09AM -0700, trix@redhat.com wrote:
+> From: Tom Rix <trix@redhat.com>
+>=20
+> A break is not needed if it is preceded by a return
+>=20
+> Signed-off-by: Tom Rix <trix@redhat.com>
 
-diff --git a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
-index 183ec23eda39..f5ee23c2df60 100644
---- a/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
-+++ b/Documentation/devicetree/bindings/gpio/gpio-pca95xx.yaml
-@@ -48,6 +48,7 @@ properties:
-       - nxp,pcal6416
-       - nxp,pcal6524
-       - nxp,pcal9535
-+      - nxp,pcal9554b
-       - nxp,pcal9555a
-       - onnn,cat9554
-       - onnn,pca9654
--- 
-2.17.1
+Just for the record: I commented for v1:
 
+> this might be subjective, but I like the break being there for clearity.
+> So I object to make a patch to remove them. In case I'm outvoted I'd at
+> least want empty lines instead.
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--vzimvxfmuac2j7x3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEfnIqFpAYrP8+dKQLwfwUeK3K7AkFAl+W+i0ACgkQwfwUeK3K
+7AnpoAf/Y8OoGJ+UtuOHsBVBS6E+pOdwlh7CYmtGnrCSLOUvkiIUJBMTbIIePCaC
+1ahyEPKCdhtTZCV0UU/GegMsfm65jLlzSQiLn1Vu9OZbuI2mU1XL84LBRROBclNq
+PGnwTvCJmXf/TcJnJzrfct+NaF9ew4+dKgJ0Fg+6X/KQ5yycIs9FcmFzOJ+yvcT6
+fYD3z/7H0GG1pkuk38IMUfFJVyvsOmtBTMNgM/1GoxAKB1N3GbV80o/IrQpGdKWo
+CCt3Lj6Fcv1qv+mCvHUWqJKZAc2VWqOsMg8/TRJ5LWXG+AVZcvoGACT3OUPKL6z/
+2rFBqvdoqBAqH9vNb1gJGRWuodFGew==
+=2rL2
+-----END PGP SIGNATURE-----
+
+--vzimvxfmuac2j7x3--
