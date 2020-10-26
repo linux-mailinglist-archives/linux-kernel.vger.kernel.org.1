@@ -2,109 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 54705298D3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:52:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 424BA298D4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:54:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775715AbgJZMwv (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:52:51 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39844 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775668AbgJZMwj (ORCPT
+        id S1775791AbgJZMyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:54:04 -0400
+Received: from mail-oi1-f193.google.com ([209.85.167.193]:36013 "EHLO
+        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773220AbgJZMyD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:52:39 -0400
-Date:   Mon, 26 Oct 2020 12:52:37 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603716758;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/xrKcqz2UIwg/Q8cfRTWfEHLz8qfVeEVrJfwrDBxk8E=;
-        b=IXmW3I6N6Go0MBOF16Yy/M22Rs+s/GOe+y98ZTFmVWdKGPcwOgR6OX/hbhEGqRn/NIAMAJ
-        i9EvCUUb2g+abMf51Ul1xXaMF4n6UMSs+7wB/SlHVva3uh52QqfD603IC73N+KcAW7jEoQ
-        C7HjQOfZwAvpjhlSpcYHHAByxjNFiCdlEbc+/kP0rW95KYH7/KsDi7/ifw1ajZ45e9xXh3
-        CiIJxqxTyELe0r81T88T7+saJK6OUuQNufhYl/85idHgsu0BMRSbbXy2kO/pftBXWnz7b7
-        CfhyDHj0M3Azvrca0fkdronbyw3hsJP0vNTolQ/nVjMWBnwSeXud9BgdjKdu6g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603716758;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=/xrKcqz2UIwg/Q8cfRTWfEHLz8qfVeEVrJfwrDBxk8E=;
-        b=ETCvjm1eLcJQa16RhO1rlCLOB3YGujn/9nBVJeC3JSs8FMRsE5v78NIHxGdwS2lEOsaGCB
-        ueYORWrpXE5E0wBg==
-From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/compat: Simplify compat syscall userspace allocation
-Cc:     Andy Lutomirski <luto@kernel.org>,
-        Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201004032536.1229030-3-krisman@collabora.com>
-References: <20201004032536.1229030-3-krisman@collabora.com>
+        Mon, 26 Oct 2020 08:54:03 -0400
+Received: by mail-oi1-f193.google.com with SMTP id y186so3254966oia.3;
+        Mon, 26 Oct 2020 05:54:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=yKhaiyp8o4C1y5luwNhjTKE76jL0ByEm2cHFMlzWIhk=;
+        b=tdmczljyldK6Msd3NJ2b8nUoyRGDdvA8pwPfW9Qiy73wUo/YwX05/8U03b+eqlBXzz
+         +1/677ukU/lW7IDgDOL7l3DYyMZU+6zoAg8ux9+4Fgl1SJp4EYbiiUsqb37IrfZKhTVq
+         0wFYLPEmo7kFaB1Og3Fy8k6unxCJ8uXj28Z6Vsg7/JmnCQahvi01XFxL6WMSbSe4ViqM
+         CQn4CxRbL8I6ts5HF+RfOr472IIwPlcYqExkjIwEoxcvcFVUeeyB8T2V8xfBChV5Mn4O
+         4FjuL/RBqh7KkstdYCuib/4cioDRNY3dfTnA/qAvtiLsZTTCVsjjJNSIidCdsUt0mxN0
+         ByoQ==
+X-Gm-Message-State: AOAM532fE9n+bAEJvl2P2iyubZqx7c8D6khoSqE/PGDGrhUqChEJ5vtM
+        onxqLIsPIVIR5eWVGKJ5jQ==
+X-Google-Smtp-Source: ABdhPJybZJ5oswZfP815J5Hc0QpjQXYiSS307yqcvpo6u3h8YYof7K/iDB4HdQOIkBYqDLqj8Xt2Uw==
+X-Received: by 2002:aca:3687:: with SMTP id d129mr6612346oia.100.1603716842449;
+        Mon, 26 Oct 2020 05:54:02 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id m65sm3499761otc.36.2020.10.26.05.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 05:54:01 -0700 (PDT)
+Received: (nullmailer pid 4173474 invoked by uid 1000);
+        Mon, 26 Oct 2020 12:54:00 -0000
+Date:   Mon, 26 Oct 2020 07:54:00 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-tegra@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
+Subject: Re: [PATCH RESEND v4 1/4] dt-bindings: mfd: Add ENE KB930 Embedded
+ Controller binding
+Message-ID: <20201026125400.GA4171254@bogus>
+References: <20201025230153.11729-1-digetx@gmail.com>
+ <20201025230153.11729-2-digetx@gmail.com>
 MIME-Version: 1.0
-Message-ID: <160371675721.397.3164323953920306327.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201025230153.11729-2-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the x86/cleanups branch of tip:
+On Mon, 26 Oct 2020 02:01:50 +0300, Dmitry Osipenko wrote:
+> Add binding document for the ENE KB930 Embedded Controller.
+> 
+> Reviewed-by: Rob Herring <robh@kernel.org>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../devicetree/bindings/mfd/ene-kb930.yaml    | 66 +++++++++++++++++++
+>  1 file changed, 66 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
+> 
 
-Commit-ID:     214f0e804358cdd13b5cbe4445189f23e30618b4
-Gitweb:        https://git.kernel.org/tip/214f0e804358cdd13b5cbe4445189f23e30618b4
-Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
-AuthorDate:    Sat, 03 Oct 2020 23:25:28 -04:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 26 Oct 2020 13:46:46 +01:00
 
-x86/compat: Simplify compat syscall userspace allocation
+My bot found errors running 'make dt_binding_check' on your patch:
 
-When allocating user memory space for a compat system call, don't consider
-whether the originating code is IA32 or X32, just allocate from a safe
-region for both, beyond the redzone.  This should be safe for IA32, and has
-the benefit of avoiding TIF_IA32, which is about to be removed.
+yamllint warnings/errors:
+./Documentation/devicetree/bindings/mfd/ene-kb930.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+./Documentation/devicetree/bindings/mfd/ene-kb930.yaml:22:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
 
-Suggested-by: Andy Lutomirski <luto@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201004032536.1229030-3-krisman@collabora.com
+dtschema/dtc warnings/errors:
+/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/ene-kb930.example.dt.yaml: battery-cell: 'operating-range-celsius' does not match any of the regexes: '^ocv-capacity-table-[0-9]+$', 'pinctrl-[0-9]+'
+	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/battery.yaml
 
----
- arch/x86/include/asm/compat.h | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
 
-diff --git a/arch/x86/include/asm/compat.h b/arch/x86/include/asm/compat.h
-index 0e327a0..f145e33 100644
---- a/arch/x86/include/asm/compat.h
-+++ b/arch/x86/include/asm/compat.h
-@@ -177,14 +177,13 @@ typedef struct user_regs_struct compat_elf_gregset_t;
- 
- static inline void __user *arch_compat_alloc_user_space(long len)
- {
--	compat_uptr_t sp;
--
--	if (test_thread_flag(TIF_IA32)) {
--		sp = task_pt_regs(current)->sp;
--	} else {
--		/* -128 for the x32 ABI redzone */
--		sp = task_pt_regs(current)->sp - 128;
--	}
-+	compat_uptr_t sp = task_pt_regs(current)->sp;
-+
-+	/*
-+	 * -128 for the x32 ABI redzone.  For IA32, it is not strictly
-+	 * necessary, but not harmful.
-+	 */
-+	sp -= 128;
- 
- 	return (void __user *)round_down(sp - len, 16);
- }
+See https://patchwork.ozlabs.org/patch/1387346
+
+The base for the patch is generally the last rc1. Any dependencies
+should be noted.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit.
+
