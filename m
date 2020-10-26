@@ -2,98 +2,224 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8C943299567
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:33:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9995B29956B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:33:37 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789858AbgJZSdN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:33:13 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:26043 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789851AbgJZSdN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:33:13 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603737192; h=Message-ID: References: In-Reply-To: Subject:
- Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
- MIME-Version: Sender; bh=zXwlccfMR6GOFBjsJE59HoBnP80goXv5jTvLHdCwyJI=;
- b=jz0nHowdNglyp55THJmGz+ptkqa3QeV4R24mnJjlfNNC2p5ncEfD7/QUkmSPtGmPlhNwBzXp
- EuWyIHDScQnVO1InEfUJf3z6+nQBKe9gxRR89sOdu4CSOTSM2nJV1ui4OoMJM5tn3/wo1DlE
- iOEsENo2Lx6d/h+hKZwpnlHmKOw=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n02.prod.us-west-2.postgun.com with SMTP id
- 5f9716686311e6e920e16d39 (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 18:33:12
- GMT
-Sender: asutoshd=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id F1A96C433FF; Mon, 26 Oct 2020 18:33:11 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
-Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
-        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        (Authenticated sender: asutoshd)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id 4AD88C433FE;
-        Mon, 26 Oct 2020 18:33:11 +0000 (UTC)
+        id S1789871AbgJZSdg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:33:36 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:32863 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1789864AbgJZSdf (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:33:35 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603737213;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=5rzN8xtO7O+TraWbLdrWrZIHELIhUQEP4fjr6CDKufA=;
+        b=csgw9yNtICu9nWKiKUkJbg/w2i/r5q23/wOFY2bN/AkZ08GLHMsFXYV9r1YXQ42dbtg4C0
+        vaAeRNi5DOqJQkf82oxi6qE2ybPu8jkb/NxVGtUcJCqMwxwhgPDFMqepAcIrDpCVtzRU4t
+        c+/x07GKAZ0LgYUW1QkMxSv2E9zmpUA=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-521-bGf4B4ByOfWqBh4JGWBbCg-1; Mon, 26 Oct 2020 14:33:32 -0400
+X-MC-Unique: bGf4B4ByOfWqBh4JGWBbCg-1
+Received: by mail-ed1-f69.google.com with SMTP id m1so2617974edr.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:33:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=5rzN8xtO7O+TraWbLdrWrZIHELIhUQEP4fjr6CDKufA=;
+        b=eA8c+S56XltKqLu7JIL6mQcWnx8bnAfiFkMtOYCWCSN3cu7AtRQOhyFh2VaKCme8Bv
+         YbNCFyBhUNlGu7hn3TInctK/DNeMQ9BQ4cKZrTSJ4MsActm10YgGqmx2bRc7wa7QTR61
+         wiWCzU19VmskkoHpWXy7pVGJZ5paulDNO37UUId/crZXGRda5XCdC3qU+PdFWMKRPHcd
+         7UQ0xbXDhzSkyK2wbnm8qO8TnvktBGpTU5bV5PIPexNlnqH2SOJxRVMNruwKGhh9lrDf
+         CGAvdfAgtC2V/hF/i9oOn4zyiyNqXb/dtlx9JUnXiTrLoI0iLVo3F2lx/Q7hP4Se8wZ5
+         /I/A==
+X-Gm-Message-State: AOAM532uOaQfffD6fZKHyMxbcVa+9soD9yxyhDDixK4EEPQABdlYTFON
+        COte4caX31BVwr7k8tHikE+UFAXOqHn8s6jWcX09Os9kSzMu4DAPpC2yFrJHAQypC+nwxzAED/A
+        JSwnuiTQTcLGzGSDmLdkh3c0f
+X-Received: by 2002:aa7:c4cc:: with SMTP id p12mr384470edr.77.1603737209495;
+        Mon, 26 Oct 2020 11:33:29 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxc7yieirk6V4fyLFmVp4QgXtXwAqn7MqgB2uT437fmfWnfpIjeCn56kJSZr7QmP/n7KXA+vg==
+X-Received: by 2002:aa7:c4cc:: with SMTP id p12mr384438edr.77.1603737209193;
+        Mon, 26 Oct 2020 11:33:29 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id b25sm5625353eds.66.2020.10.26.11.33.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 11:33:28 -0700 (PDT)
+Subject: Re: [PATCH] [RFC] Documentation: Add documentation for new
+ platform_profile sysfs attribute
+To:     Mark Pearson <markpearson@lenovo.com>
+Cc:     dvhart@infradead.org, mgross@linux.intel.com,
+        mario.limonciello@dell.com, eliadevito@gmail.com,
+        hadess@hadess.net, bberg@redhat.com, linux-pm@vger.kernel.org,
+        linux-acpi@vger.kernel.org, platform-driver-x86@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+References: <markpearson@lenovo.com>
+ <20201026174444.866545-1-markpearson@lenovo.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <23f52638-274d-b474-1fd7-38c75760e35e@redhat.com>
+Date:   Mon, 26 Oct 2020 19:33:27 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+In-Reply-To: <20201026174444.866545-1-markpearson@lenovo.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 11:33:11 -0700
-From:   asutoshd@codeaurora.org
-To:     Jaegeuk Kim <jaegeuk@kernel.org>
-Cc:     linux-kernel@vger.kernel.org, linux-@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
-        bvanassche@acm.org
-Subject: Re: [PATCH v3 5/5] scsi: ufs: fix clkgating on/off correctly
-In-Reply-To: <20201024150646.1790529-6-jaegeuk@kernel.org>
-References: <20201024150646.1790529-1-jaegeuk@kernel.org>
- <20201024150646.1790529-6-jaegeuk@kernel.org>
-Message-ID: <9dbeb21b7a899d742670a243a9ffad7d@codeaurora.org>
-X-Sender: asutoshd@codeaurora.org
-User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-24 08:06, Jaegeuk Kim wrote:
-> The below call stack prevents clk_gating at every IO completion.
-> We can remove the condition, ufshcd_any_tag_in_use(), since 
-> clkgating_work
-> will check it again.
+Hi Mark,
+
+Thank you for this new version.
+
+On 10/26/20 6:44 PM, Mark Pearson wrote:
+> From: Hans de Goede <hdegoede@redhat.com>
 > 
-> ufshcd_complete_requests(struct ufs_hba *hba)
->   ufshcd_transfer_req_compl()
->     __ufshcd_transfer_req_compl()
->       __ufshcd_release(hba)
->         if (ufshcd_any_tag_in_use() == 1)
->            return;
->   ufshcd_tmc_handler(hba);
->     blk_mq_tagset_busy_iter();
+> On modern systems the platform performance, temperature, fan and other
+> hardware related characteristics are often dynamically configurable. The
+> profile is often automatically adjusted to the load by somei
+> automatic-mechanism (which may very well live outside the kernel).
 > 
-> Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> These auto platform-adjustment mechanisms often can be configured with
+> one of several 'platform-profiles', with either a bias towards low-power
+> consumption or towards performance (and higher power consumption and
+> thermals).
+> 
+> Introduce a new platform_profile sysfs API which offers a generic API for
+> selecting the performance-profile of these automatic-mechanisms.
+> 
+> Co-developed-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Mark Pearson <markpearson@lenovo.com>
+> Signed-off-by: Hans de Goede <hdegoede@redhat.com>
 > ---
-
-Reviewed-by: Asutosh Das <asutoshd@codeaurora.org>
-
->  drivers/scsi/ufs/ufshcd.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  .../ABI/testing/sysfs-platform_profile        | 85 +++++++++++++++++++
+>  1 file changed, 85 insertions(+)
+>  create mode 100644 Documentation/ABI/testing/sysfs-platform_profile
 > 
-> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> index c94610cbecae..38043c6b8d5f 100644
-> --- a/drivers/scsi/ufs/ufshcd.c
-> +++ b/drivers/scsi/ufs/ufshcd.c
-> @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
+> diff --git a/Documentation/ABI/testing/sysfs-platform_profile b/Documentation/ABI/testing/sysfs-platform_profile
+> new file mode 100644
+> index 000000000000..37cb6275946c
+> --- /dev/null
+> +++ b/Documentation/ABI/testing/sysfs-platform_profile
+> @@ -0,0 +1,85 @@
+> +Platform-profile selection (e.g. /sys/firmware/acpi/platform_profile)
+> +
+> +On modern systems the platform performance, temperature, fan and other
+> +hardware related characteristics are often dynamically configurable. The
+> +profile is often automatically adjusted to the load by some
+> +automatic-mechanism (which may very well live outside the kernel).
+> +
+> +These auto platform-adjustment mechanisms often can be configured with
+> +one of several 'platform-profiles', with either a bias towards low-power
+> +consumption or towards performance (and higher power consumption and
+> +thermals).
+> +
+> +The purpose of the platform_profile attribute is to offer a generic sysfs
+> +API for selecting the platform-profile of these automatic-mechanisms.
+> +
+> +Note that this API is only for selecting the platform-profile, it is
+> +NOT a goal of this API to allow monitoring the resulting performance
+> +characteristics. Monitoring performance is best done with device/vendor
+> +specific tools such as e.g. turbostat.
+> +
+> +Specifically when selecting a high-performance profile the actual achieved
+> +performance may be limited by various factors such as: the heat generated
+> +by other components, room temperature, free air flow at the bottom of a
+> +laptop, etc. It is explicitly NOT a goal of this API to let userspace know
+> +about any sub-optimal conditions which are impeding reaching the requested
+> +performance level.
+> +
+> +Since numbers are a rather meaningless way to describe platform-profiles
+> +this API uses strings to describe the various profiles. To make sure that
+> +userspace gets a consistent experience when using this API this API
+> +document defines a fixed set of profile-names. Drivers *must* map their
+> +internal profile representation/names onto this fixed set.
+> +
+> +If for some reason there is no good match when mapping then a new profile-name
+> +may be added. Drivers which wish to introduce new profile-names must:
+> +1. Have very good reasons to do so.
+> +2. Add the new profile-name to this document, so that future drivers which also
+> +   have a similar problem can use the same new.
+
+s/same new/same name/
+
+> + Usually new profile-names will
+> +   be added to the "extra profile-names" section of this document. But in some
+> +   cases the set of standard profile-names may be extended.
+
+With the change from a more generic API to this new one more targeted towards DPTF
+I would drop this part.
+
+
+> +
+> +What:		/sys/firmware/acpi/platform_profile_choices
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives a space separated list of profiles
+> +		supported for this device.
+> +
+> +		Drivers must use the following standard profile-names whenever
+> +		possible:
+> +
+> +		low-power:		Emphasises low power consumption
+> +		quiet:			Offers quieter operation (lower fan
+> +					speed but with higher performance and
+> +					temperatures then seen in low-power
+
+I think the description here is a bit too specific, this may cause userspace
+to have expectations which are not necessary true. I would describe this as
+just:
+
+		quiet:			Emphasises quieter operation
+
+> +		balanced:		Balance between low power consumption
+> +					and performance
+> +		performance:		Emphasises performance (and may lead to
+> +					higher temperatures and fan speeds)
+> +
+> +		Userspace may expect drivers to offer at least several of these
+> +		standard profile-names! If none of the above are a good match
+> +		for some of the drivers profiles, then drivers may use one of
+> +		these extra profile-names:
+> +		<reserved for future use>
+> +
+> +What:		/sys/firmware/acpi/platform_profile
+> +Date:		October 2020
+> +Contact:	Hans de Goede <hdegoede@redhat.com>
+> +Description:
+> +		Reading this file gives the current selected profile for this
+> +		device. Writing this file with one of the strings from
+> +		available_profiles changes the profile to the new value.
+
+The part about custom profiles below may be dropped. That was intended for use
+with e.g. GPUs but since this now strictly is a system-level profile API, the
+part below can be dropped now.
+
+
+> +
+> +		Reading this file may also return "custom". This is intended for
+> +		drivers which have and export multiple knobs. Such drivers may
+> +		very well still want to offer a set of profiles for easy of use
+> +		and to be able to offer a consistent standard API (this API) to
+> +		userspace for configuring their performance. The "custom" value
+> +		is intended for when ai user has directly configured the knobs
+> +		(through e.g. some advanced control-panel for a GPU) and the
+> +		knob values do not match any of the presets represented by the
+> +		platform-profiles. In this case writing this file will
+> +		override the modifications and restore the selected presets.
+> +
 > 
->  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
->  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
-> -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
-> +	    hba->outstanding_tasks ||
->  	    hba->active_uic_cmd || hba->uic_async_done)
->  		return;
+
+Regards,
+
+Hans
+
