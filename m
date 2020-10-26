@@ -2,280 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 75FA0298D72
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:05:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3019298D79
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:07:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1776193AbgJZNF1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:05:27 -0400
-Received: from foss.arm.com ([217.140.110.172]:38348 "EHLO foss.arm.com"
+        id S1776219AbgJZNHy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:07:54 -0400
+Received: from mga01.intel.com ([192.55.52.88]:18176 "EHLO mga01.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391920AbgJZNFY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:05:24 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A9F391529;
-        Mon, 26 Oct 2020 06:05:22 -0700 (PDT)
-Received: from e110176-lin.arm.com (unknown [172.31.20.19])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 32EB83F68F;
-        Mon, 26 Oct 2020 06:05:20 -0700 (PDT)
-From:   Gilad Ben-Yossef <gilad@benyossef.com>
-To:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>
-Cc:     Ofir Drang <ofir.drang@arm.com>, linux-crypto@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-raid@vger.kernel.org
-Subject: [PATCH 4/4] crypto: ccree: re-introduce ccree eboiv support
-Date:   Mon, 26 Oct 2020 15:04:47 +0200
-Message-Id: <20201026130450.6947-5-gilad@benyossef.com>
-X-Mailer: git-send-email 2.28.0
-In-Reply-To: <20201026130450.6947-1-gilad@benyossef.com>
-References: <20201026130450.6947-1-gilad@benyossef.com>
+        id S1773920AbgJZNHx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 09:07:53 -0400
+IronPort-SDR: z1ZAUR0Ecj3TGol77GdcYiKbGoNSYdERzGWf+KeEc7x60KZNVtcv2ucHclM4RVt3Vcxw+BqwWs
+ qttJFUvr0m5g==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="185644041"
+X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
+   d="scan'208";a="185644041"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 06:05:25 -0700
+IronPort-SDR: zM/xi1SkIfHhwXPa0Want6A593UHClAIAWlA9t1jJoEYhWIxF/AQQ8gYEm4x/J9ly4paZhtCUD
+ rY57F6XYcOyQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
+   d="scan'208";a="424088518"
+Received: from kuha.fi.intel.com ([10.237.72.162])
+  by fmsmga001.fm.intel.com with SMTP; 26 Oct 2020 06:05:22 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 26 Oct 2020 15:05:22 +0200
+Date:   Mon, 26 Oct 2020 15:05:22 +0200
+From:   Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To:     Sriharsha Allenki <sallenki@codeaurora.org>
+Cc:     gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jackp@codeaurora.org,
+        mgautam@codeaurora.org, stable@vger.kernel.org
+Subject: Re: [PATCH] usb: typec: Prevent setting invalid opmode value
+Message-ID: <20201026130522.GC1442058@kuha.fi.intel.com>
+References: <1603359734-2931-1-git-send-email-sallenki@codeaurora.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1603359734-2931-1-git-send-email-sallenki@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-BitLocker eboiv support, which was removed in
-commit 1d8b41ff6991 ("crypto: ccree - remove bitlocker cipher")
-is reintroduced based on the crypto API new support for
-eboiv.
+On Thu, Oct 22, 2020 at 03:12:14PM +0530, Sriharsha Allenki wrote:
+> Setting opmode to invalid values would lead to a
+> paging fault failure when there is an access to the
+> power_operation_mode.
+> 
+> Prevent this by checking the validity of the value
+> that the opmode is being set.
+> 
+> Cc: <stable@vger.kernel.org>
+> Fixes: fab9288428ec ("usb: USB Type-C connector class")
+> Signed-off-by: Sriharsha Allenki <sallenki@codeaurora.org>
+> ---
+>  drivers/usb/typec/class.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+> index 35eec70..63efe16 100644
+> --- a/drivers/usb/typec/class.c
+> +++ b/drivers/usb/typec/class.c
+> @@ -1427,7 +1427,8 @@ void typec_set_pwr_opmode(struct typec_port *port,
+>  {
+>  	struct device *partner_dev;
+>  
+> -	if (port->pwr_opmode == opmode)
+> +	if ((port->pwr_opmode == opmode) || (opmode < TYPEC_PWR_MODE_USB) ||
 
-Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-Fixes: 1d8b41ff6991 ("crypto: ccree - remove bitlocker cipher")
----
- drivers/crypto/ccree/cc_cipher.c     | 130 +++++++++++++++++++--------
- drivers/crypto/ccree/cc_crypto_ctx.h |   1 +
- 2 files changed, 94 insertions(+), 37 deletions(-)
+You don't need to check if opmode < anything. opmode is enum which
+apparently means that GCC handles it as unsigned. Since
+TYPEC_PWR_MODE_USB is 0 it means opmode < TYPEC_PWR_MODE_USB is never
+true.
 
-diff --git a/drivers/crypto/ccree/cc_cipher.c b/drivers/crypto/ccree/cc_cipher.c
-index b5568de86ca4..23407063bd40 100644
---- a/drivers/crypto/ccree/cc_cipher.c
-+++ b/drivers/crypto/ccree/cc_cipher.c
-@@ -95,10 +95,14 @@ static int validate_keys_sizes(struct cc_cipher_ctx *ctx_p, u32 size)
- 	case S_DIN_to_AES:
- 		switch (size) {
- 		case CC_AES_128_BIT_KEY_SIZE:
--		case CC_AES_192_BIT_KEY_SIZE:
- 			if (ctx_p->cipher_mode != DRV_CIPHER_XTS)
- 				return 0;
- 			break;
-+		case CC_AES_192_BIT_KEY_SIZE:
-+			if (ctx_p->cipher_mode != DRV_CIPHER_XTS &&
-+			    ctx_p->cipher_mode != DRV_CIPHER_BITLOCKER)
-+				return 0;
-+			break;
- 		case CC_AES_256_BIT_KEY_SIZE:
- 			return 0;
- 		case (CC_AES_192_BIT_KEY_SIZE * 2):
-@@ -141,6 +145,7 @@ static int validate_data_size(struct cc_cipher_ctx *ctx_p,
- 		case DRV_CIPHER_ECB:
- 		case DRV_CIPHER_CBC:
- 		case DRV_CIPHER_ESSIV:
-+		case DRV_CIPHER_BITLOCKER:
- 			if (IS_ALIGNED(size, AES_BLOCK_SIZE))
- 				return 0;
- 			break;
-@@ -366,7 +371,8 @@ static int cc_cipher_sethkey(struct crypto_skcipher *sktfm, const u8 *key,
- 		}
+> +						(opmode > TYPEC_PWR_MODE_PD))
+>  		return;
+
+You really need to print an error at the very least. Otherwise we will
+just silently hide possible driver bugs.
+
+To be honest, I'm not a big fan of this kind of checks. They have
+created more problems than they have fixed in more than one occasion
+to me. For example, there really is no guarantee that the maximum will
+always be TYPEC_PWR_MODE_PD, which means we probable should have
+something like TYPEC_PWR_MODE_MAX defined somewhere that you compare
+the opmode value to instead of TYPEC_PWR_MODE_PD to play it safe, but
+let's not bother with that for now (it will create other problems).
+
+Basically, with functions like this, especially since it doesn't
+return anything, the responsibility of checking the validity of the
+parameters that the caller supplies to it belongs to the caller IMO,
+not the function itself. I would be happy to explain that in the
+kernel doc style comment of the function.
+
+If you still feel that this change is really necessary, meaning you
+have some actual case where the caller can _not_ check the range
+before calling this function, then explain the case you have carefully
+in the commit message and add the check as a separate condition:
+
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 35eec707cb512..7de6913d90f9c 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -1430,6 +1430,11 @@ void typec_set_pwr_opmode(struct typec_port *port,
+        if (port->pwr_opmode == opmode)
+                return;
  
- 		if (ctx_p->cipher_mode == DRV_CIPHER_XTS ||
--		    ctx_p->cipher_mode == DRV_CIPHER_ESSIV) {
-+		    ctx_p->cipher_mode == DRV_CIPHER_ESSIV ||
-+		    ctx_p->cipher_mode == DRV_CIPHER_BITLOCKER) {
- 			if (hki.hw_key1 == hki.hw_key2) {
- 				dev_err(dev, "Illegal hw key numbers (%d,%d)\n",
- 					hki.hw_key1, hki.hw_key2);
-@@ -564,6 +570,7 @@ static void cc_setup_readiv_desc(struct crypto_tfm *tfm,
- 		break;
- 	case DRV_CIPHER_XTS:
- 	case DRV_CIPHER_ESSIV:
-+	case DRV_CIPHER_BITLOCKER:
- 		/*  IV */
- 		hw_desc_init(&desc[*seq_size]);
- 		set_setup_mode(&desc[*seq_size], SETUP_WRITE_STATE1);
-@@ -618,6 +625,7 @@ static void cc_setup_state_desc(struct crypto_tfm *tfm,
- 		break;
- 	case DRV_CIPHER_XTS:
- 	case DRV_CIPHER_ESSIV:
-+	case DRV_CIPHER_BITLOCKER:
- 		break;
- 	default:
- 		dev_err(dev, "Unsupported cipher mode (%d)\n", cipher_mode);
-@@ -637,56 +645,68 @@ static void cc_setup_xex_state_desc(struct crypto_tfm *tfm,
- 	int flow_mode = ctx_p->flow_mode;
- 	int direction = req_ctx->gen_ctx.op_type;
- 	dma_addr_t key_dma_addr = ctx_p->user.key_dma_addr;
--	unsigned int key_len = (ctx_p->keylen / 2);
- 	dma_addr_t iv_dma_addr = req_ctx->gen_ctx.iv_dma_addr;
--	unsigned int key_offset = key_len;
-+	unsigned int key_len;
-+	unsigned int key_offset;
- 
- 	switch (cipher_mode) {
- 	case DRV_CIPHER_ECB:
--		break;
- 	case DRV_CIPHER_CBC:
- 	case DRV_CIPHER_CBC_CTS:
- 	case DRV_CIPHER_CTR:
- 	case DRV_CIPHER_OFB:
--		break;
--	case DRV_CIPHER_XTS:
--	case DRV_CIPHER_ESSIV:
-+		/* No secondary key for these ciphers, so just return */
-+		return;
- 
--		if (cipher_mode == DRV_CIPHER_ESSIV)
--			key_len = SHA256_DIGEST_SIZE;
-+	case DRV_CIPHER_XTS:
-+		/* Secondary key is same size as primary key and stored after primary key */
-+		key_len = ctx_p->keylen / 2;
-+		key_offset = key_len;
-+		break;
- 
--		/* load XEX key */
--		hw_desc_init(&desc[*seq_size]);
--		set_cipher_mode(&desc[*seq_size], cipher_mode);
--		set_cipher_config0(&desc[*seq_size], direction);
--		if (cc_key_type(tfm) == CC_HW_PROTECTED_KEY) {
--			set_hw_crypto_key(&desc[*seq_size],
--					  ctx_p->hw.key2_slot);
--		} else {
--			set_din_type(&desc[*seq_size], DMA_DLLI,
--				     (key_dma_addr + key_offset),
--				     key_len, NS_BIT);
--		}
--		set_xex_data_unit_size(&desc[*seq_size], nbytes);
--		set_flow_mode(&desc[*seq_size], S_DIN_to_AES2);
--		set_key_size_aes(&desc[*seq_size], key_len);
--		set_setup_mode(&desc[*seq_size], SETUP_LOAD_XEX_KEY);
--		(*seq_size)++;
-+	case DRV_CIPHER_ESSIV:
-+		/* Secondary key is a digest of primary key and stored after primary key */
-+		key_len = SHA256_DIGEST_SIZE;
-+		key_offset = ctx_p->keylen / 2;
-+		break;
- 
--		/* Load IV */
--		hw_desc_init(&desc[*seq_size]);
--		set_setup_mode(&desc[*seq_size], SETUP_LOAD_STATE1);
--		set_cipher_mode(&desc[*seq_size], cipher_mode);
--		set_cipher_config0(&desc[*seq_size], direction);
--		set_key_size_aes(&desc[*seq_size], key_len);
--		set_flow_mode(&desc[*seq_size], flow_mode);
--		set_din_type(&desc[*seq_size], DMA_DLLI, iv_dma_addr,
--			     CC_AES_BLOCK_SIZE, NS_BIT);
--		(*seq_size)++;
-+	case DRV_CIPHER_BITLOCKER:
-+		/* Secondary key is same as primary key */
-+		key_len = ctx_p->keylen;
-+		key_offset = 0;
- 		break;
++       if (opmode > TYPEC_PWR_OPMODE_PD) {
++               dev_err(&port->dev, "blah-blah-blah\n");
++               return;
++       }
 +
- 	default:
- 		dev_err(dev, "Unsupported cipher mode (%d)\n", cipher_mode);
- 	}
-+
-+	/* load XEX key */
-+	hw_desc_init(&desc[*seq_size]);
-+	set_cipher_mode(&desc[*seq_size], cipher_mode);
-+	set_cipher_config0(&desc[*seq_size], direction);
-+	if (cc_key_type(tfm) == CC_HW_PROTECTED_KEY) {
-+		set_hw_crypto_key(&desc[*seq_size],
-+				  ctx_p->hw.key2_slot);
-+	} else {
-+		set_din_type(&desc[*seq_size], DMA_DLLI,
-+			     (key_dma_addr + key_offset),
-+			     key_len, NS_BIT);
-+	}
-+	set_xex_data_unit_size(&desc[*seq_size], nbytes);
-+	set_flow_mode(&desc[*seq_size], S_DIN_to_AES2);
-+	set_key_size_aes(&desc[*seq_size], key_len);
-+	set_setup_mode(&desc[*seq_size], SETUP_LOAD_XEX_KEY);
-+	(*seq_size)++;
-+
-+	/* Load IV */
-+	hw_desc_init(&desc[*seq_size]);
-+	set_setup_mode(&desc[*seq_size], SETUP_LOAD_STATE1);
-+	set_cipher_mode(&desc[*seq_size], cipher_mode);
-+	set_cipher_config0(&desc[*seq_size], direction);
-+	set_key_size_aes(&desc[*seq_size], key_len);
-+	set_flow_mode(&desc[*seq_size], flow_mode);
-+	set_din_type(&desc[*seq_size], DMA_DLLI, iv_dma_addr, CC_AES_BLOCK_SIZE, NS_BIT);
-+	(*seq_size)++;
- }
- 
- static int cc_out_flow_mode(struct cc_cipher_ctx *ctx_p)
-@@ -723,6 +743,7 @@ static void cc_setup_key_desc(struct crypto_tfm *tfm,
- 	case DRV_CIPHER_CTR:
- 	case DRV_CIPHER_OFB:
- 	case DRV_CIPHER_ECB:
-+	case DRV_CIPHER_BITLOCKER:
- 		/* Load key */
- 		hw_desc_init(&desc[*seq_size]);
- 		set_cipher_mode(&desc[*seq_size], cipher_mode);
-@@ -1061,6 +1082,24 @@ static const struct cc_alg_template skcipher_algs[] = {
- 		.std_body = CC_STD_NIST,
- 		.sec_func = true,
- 	},
-+	{
-+		.name = "eboiv(cbc(paes))",
-+		.driver_name = "eboiv-cbc-paes-ccree",
-+		.blocksize = AES_BLOCK_SIZE,
-+		.template_skcipher = {
-+			.setkey = cc_cipher_sethkey,
-+			.encrypt = cc_cipher_encrypt,
-+			.decrypt = cc_cipher_decrypt,
-+			.min_keysize = CC_HW_KEY_SIZE,
-+			.max_keysize = CC_HW_KEY_SIZE,
-+			.ivsize = AES_BLOCK_SIZE,
-+			},
-+		.cipher_mode = DRV_CIPHER_BITLOCKER,
-+		.flow_mode = S_DIN_to_AES,
-+		.min_hw_rev = CC_HW_REV_712,
-+		.std_body = CC_STD_NIST,
-+		.sec_func = true,
-+	},
- 	{
- 		.name = "ecb(paes)",
- 		.driver_name = "ecb-paes-ccree",
-@@ -1189,6 +1228,23 @@ static const struct cc_alg_template skcipher_algs[] = {
- 		.min_hw_rev = CC_HW_REV_712,
- 		.std_body = CC_STD_NIST,
- 	},
-+	{
-+		.name = "eboiv(cbc(aes))",
-+		.driver_name = "eboiv-cbc-aes-ccree",
-+		.blocksize = AES_BLOCK_SIZE,
-+		.template_skcipher = {
-+			.setkey = cc_cipher_setkey,
-+			.encrypt = cc_cipher_encrypt,
-+			.decrypt = cc_cipher_decrypt,
-+			.min_keysize = AES_MIN_KEY_SIZE,
-+			.max_keysize = AES_MAX_KEY_SIZE,
-+			.ivsize = AES_BLOCK_SIZE,
-+			},
-+		.cipher_mode = DRV_CIPHER_BITLOCKER,
-+		.flow_mode = S_DIN_to_AES,
-+		.min_hw_rev = CC_HW_REV_712,
-+		.std_body = CC_STD_NIST,
-+	},
- 	{
- 		.name = "ecb(aes)",
- 		.driver_name = "ecb-aes-ccree",
-diff --git a/drivers/crypto/ccree/cc_crypto_ctx.h b/drivers/crypto/ccree/cc_crypto_ctx.h
-index bd9a1c0896b3..ccf960a0d989 100644
---- a/drivers/crypto/ccree/cc_crypto_ctx.h
-+++ b/drivers/crypto/ccree/cc_crypto_ctx.h
-@@ -108,6 +108,7 @@ enum drv_cipher_mode {
- 	DRV_CIPHER_CBC_CTS = 11,
- 	DRV_CIPHER_GCTR = 12,
- 	DRV_CIPHER_ESSIV = 13,
-+	DRV_CIPHER_BITLOCKER = 14,
- 	DRV_CIPHER_RESERVE32B = S32_MAX
- };
- 
+        port->pwr_opmode = opmode;
+        sysfs_notify(&port->dev.kobj, NULL, "power_operation_mode");
+        kobject_uevent(&port->dev.kobj, KOBJ_CHANGE);
+
+Otherwise you can just propose a patch that improves the documentation
+of this function, explaining that it does not take any responsibility
+over the parameters passed to it for now.
+
+
+thanks,
+
 -- 
-2.28.0
-
+heikki
