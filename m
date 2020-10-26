@@ -2,92 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7DE09298C2C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:40:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09994298C31
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:44:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773925AbgJZLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:40:23 -0400
-Received: from merlin.infradead.org ([205.233.59.134]:41156 "EHLO
-        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773910AbgJZLkV (ORCPT
+        id S1773941AbgJZLoT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:44:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39414 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771217AbgJZLoT (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:40:21 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=k3myULEFtog5AWC/ZKa5hJLaQTgjEDatFr9wR9ogfpo=; b=NuU1N7sN8NattmmlDC8V+bEd+l
-        zfhZdRaZvHfaBPsfUKrp9qaC6tt+N3brens4A/LsYDP4Z0om3Kbwc7dxeqMVN2AlPpfMM2rwrlTkS
-        LNf768HPO4jP2dDNcWvlCTAmMmxtdKkWBcppfP1fqQ4eCjlkJazAxZiAyKz8fndNkCCHqvD0yy0lX
-        Xc5waFkHH7ky9Ss13la9z7EQ1ON52GBv1QyqWx5sOCQh3E1ifK9u5/HguoELPwpzQdBLLi/DXGXbj
-        MJrF7j84cYhUyINJcsVB4/niMRlJiA4tuiD+rzvzNIwsPaCfzrISQFJtkKzTb22VmCNYwhqZF2+0G
-        XR72hLow==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX0rF-0005tu-7c; Mon, 26 Oct 2020 11:40:13 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE09F302526;
-        Mon, 26 Oct 2020 12:40:09 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id AA5342B411E57; Mon, 26 Oct 2020 12:40:09 +0100 (CET)
-Date:   Mon, 26 Oct 2020 12:40:09 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Filipe Manana <fdmanana@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: possible lockdep regression introduced by 4d004099a668
- ("lockdep: Fix lockdep recursion")
-Message-ID: <20201026114009.GN2594@hirez.programming.kicks-ass.net>
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+        Mon, 26 Oct 2020 07:44:19 -0400
+Date:   Mon, 26 Oct 2020 11:44:15 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603712656;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9r0tmz7BJI34Wwq31VAwC2xPjtcvmpNA56buUqVOcOo=;
+        b=W3GpE84T1A6n5ckz4wCAIA6dvRt6z2uGrwlkh4yuCr2m939OO3FyVB3al0Fmaooi+/fgyC
+        drEPFo5HB+XHQFED7jBejDjh2vbtcEhhDYzMyXZ7c14aTvPnHg0O0uKtRJ1St1wUJhmxF0
+        22W197FfXS96SiFwzDUUrfqHeHE4o3j3kM4Rz69GU3wAwDFXx7S3nsaXtonh0Dx4WO0/o+
+        d676+9DRLbleXzt0mJjvZiAD8yt9hIiOHWYuNHmyYWifJMIWIf2HOiXVZeJz9ZjPQARGbP
+        vY7IlfRj6aY1vMJfOAhhaMeu/Dypqmh53Tmqldik43Cxd6xuMQHQgOOq3e4DGA==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603712656;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=9r0tmz7BJI34Wwq31VAwC2xPjtcvmpNA56buUqVOcOo=;
+        b=nTtYFSVkw3cPyD3wYjlew0VSNoM9guvZ/u9wqrVaVyd/kMMclvcWOOYoc3Al888rnMlie2
+        4orKAm9Qnz3ihODA==
+From:   "tip-bot2 for Steve Wahl" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: x86/misc] MAINTAINERS: Cleanup SGI-related entries
+Cc:     Robin Holt <robinmholt@gmail.com>, Steve Wahl <steve.wahl@hpe.com>,
+        Borislav Petkov <bp@suse.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201019203533.GA1203217@swahl-home.5wahls.com>
+References: <20201019203533.GA1203217@swahl-home.5wahls.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+Message-ID: <160371265538.397.7808863211578338393.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:26:49AM +0000, Filipe Manana wrote:
-> Hello,
-> 
-> I've recently started to hit a warning followed by tasks hanging after
-> attempts to freeze a filesystem. A git bisection pointed to the
-> following commit:
-> 
-> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
-> Author: Peter Zijlstra <peterz@infradead.org>
-> Date:   Fri Oct 2 11:04:21 2020 +0200
-> 
->     lockdep: Fix lockdep recursion
-> 
-> This happens very reliably when running all xfstests with lockdep
-> enabled, and the tested filesystem is btrfs (haven't tried other
-> filesystems, but it shouldn't matter). The warning and task hangs always
-> happen at either test generic/068 or test generic/390, and (oddly)
-> always have to run all tests for it to trigger, running those tests
-> individually on an infinite loop doesn't seem to trigger it (at least
-> for a couple hours).
-> 
-> The warning triggered is at fs/super.c:__sb_start_write() which always
-> results later in several tasks hanging on a percpu rw_sem:
-> 
-> https://pastebin.com/qnLvf94E
-> 
-> What happens is percpu_rwsem_is_held() is apparently returning a false
-> positive,
+The following commit has been merged into the x86/misc branch of tip:
 
-That smells like the same issue reported here:
+Commit-ID:     632211cdd6ad0efeef32c53ac731901b4bed3b94
+Gitweb:        https://git.kernel.org/tip/632211cdd6ad0efeef32c53ac731901b4bed3b94
+Author:        Steve Wahl <steve.wahl@hpe.com>
+AuthorDate:    Mon, 19 Oct 2020 15:35:33 -05:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 26 Oct 2020 12:39:05 +01:00
 
-  https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+MAINTAINERS: Cleanup SGI-related entries
 
-Make sure you have commit:
+UV platforms are the only ones which currently use the XP/XPC/XPNET
+driver, so it seems fair HPE should take some responsibility as
+maintainers of it; so add Mike Travis and Steve Wahl. Cliff Whickman's
+email address is no longer valid, so remove it. Robin Holt was contacted
+and wishes to remain as a maintainer.
 
-  f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+Update Dimitri Sivanich's email address for the SGI GRU driver.
 
-(in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+Add Mike Travis to HPE Superdome Flex (UV) platform.
 
+ [ bp: Massage commit message. ]
 
+Acked-by: Robin Holt <robinmholt@gmail.com>
+Signed-off-by: Steve Wahl <steve.wahl@hpe.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201019203533.GA1203217@swahl-home.5wahls.com
+---
+ MAINTAINERS | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index e73636b..e706e14 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -15833,13 +15833,14 @@ F:	include/linux/sfp.h
+ K:	phylink\.h|struct\s+phylink|\.phylink|>phylink_|phylink_(autoneg|clear|connect|create|destroy|disconnect|ethtool|helper|mac|mii|of|set|start|stop|test|validate)
+ 
+ SGI GRU DRIVER
+-M:	Dimitri Sivanich <sivanich@sgi.com>
++M:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
+ S:	Maintained
+ F:	drivers/misc/sgi-gru/
+ 
+ SGI XP/XPC/XPNET DRIVER
+-M:	Cliff Whickman <cpw@sgi.com>
+ M:	Robin Holt <robinmholt@gmail.com>
++M:	Steve Wahl <steve.wahl@hpe.com>
++R:	Mike Travis <mike.travis@hpe.com>
+ S:	Maintained
+ F:	drivers/misc/sgi-xp/
+ 
+@@ -19085,6 +19086,7 @@ F:	arch/x86/platform
+ 
+ X86 PLATFORM UV HPE SUPERDOME FLEX
+ M:	Steve Wahl <steve.wahl@hpe.com>
++R:	Mike Travis <mike.travis@hpe.com>
+ R:	Dimitri Sivanich <dimitri.sivanich@hpe.com>
+ R:	Russ Anderson <russ.anderson@hpe.com>
+ S:	Supported
