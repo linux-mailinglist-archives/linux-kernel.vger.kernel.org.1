@@ -2,44 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C024429991F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:52:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D5E83299921
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:52:45 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390985AbgJZVwM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:52:12 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51940 "EHLO mail.kernel.org"
+        id S2391046AbgJZVwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:52:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:52312 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390424AbgJZVwM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:52:12 -0400
+        id S2390998AbgJZVwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:52:44 -0400
 Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AC8FE2084C;
-        Mon, 26 Oct 2020 21:52:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id DCA6B20708;
+        Mon, 26 Oct 2020 21:52:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603749131;
-        bh=v6OsJivCdqa8FhOgFvDk5JK3W+zbBx3yaUVMWwwWQvc=;
+        s=default; t=1603749163;
+        bh=+A7DvgqVh3Qf7w5qcuvrismxVJ2EIHUYl5GuVTb5ydQ=;
         h=From:To:Cc:Subject:Date:From;
-        b=BxA2YZqjTyWIqNjLHBHj2zO4GoKKXVxgO0rzh5dgmrUaNu/HjVIdq1k+yR+7C1m3P
-         Qdfg12ta7m5CbYf7Ynz7yEtIpAejDD9EIEhe51afSRPCZbglz7OZx4L6B9oIiAsTfo
-         btwvYqcrqMSjaOZzd20QSXW5bG86OEmLpfq+ZdoI=
+        b=wyVVhrq93KdEDAvh1iHH2almfUrbFHJf9tQ0VURpt6O1AVUWpGAUzkMMzNf6JUkzQ
+         j0HGfydVjDgeUVhEXRS/sfBjXBiDj+gzYAAEwex+U0V6X0j/lL7/7E332J3D2gg7Hp
+         t8mXYMpIsPWH/7gi3k2BKF9jocoCy6Pxn9mX1mNo=
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Borislav Petkov <bp@alien8.de>, x86@kernel.org,
-        Vaibhav Shankar <vaibhav.shankar@intel.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        "H. Peter Anvin" <hpa@zytor.com>,
-        Kan Liang <kan.liang@linux.intel.com>,
-        Andi Kleen <ak@linux.intel.com>, linux-kernel@vger.kernel.org
-Subject: [PATCH] perf/x86/intel/uncore: fix Add BW copypasta
-Date:   Mon, 26 Oct 2020 22:51:57 +0100
-Message-Id: <20201026215203.3893972-1-arnd@kernel.org>
+To:     Kentaro Takeda <takedakn@nttdata.co.jp>,
+        Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>,
+        James Morris <jmorris@namei.org>,
+        "Serge E. Hallyn" <serge@hallyn.com>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Toshiharu Harada <haradats@nttdata.co.jp>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        linux-security-module@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH] tomoyo: fix clang pointer arithmetic warning
+Date:   Mon, 26 Oct 2020 22:52:31 +0100
+Message-Id: <20201026215236.3894200-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -49,34 +46,33 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-gcc -Wextra points out a duplicate initialization of one array
-member:
+clang warns about additions on NULL pointers being undefined in C:
 
-arch/x86/events/intel/uncore_snb.c:478:37: warning: initialized field overwritten [-Woverride-init]
-  478 |  [SNB_PCI_UNCORE_IMC_DATA_READS]  = { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
+security/tomoyo/securityfs_if.c:226:59: warning: arithmetic on a null pointer treated as a cast from integer to pointer is a GNU extension [-Wnull-pointer-arithmetic]
+        securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
 
-The only sensible explanation is that a duplicate 'READS' was used
-instead of the correct 'WRITES', so change it back.
+Change the code to instead use a cast through uintptr_t to avoid
+the warning.
 
-Fixes: 24633d901ea4 ("perf/x86/intel/uncore: Add BW counters for GT, IA and IO breakdown")
+Fixes: 9590837b89aa ("Common functions for TOMOYO Linux.")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- arch/x86/events/intel/uncore_snb.c | 2 +-
+ security/tomoyo/securityfs_if.c | 2 +-
  1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/x86/events/intel/uncore_snb.c b/arch/x86/events/intel/uncore_snb.c
-index 39e632ed6ca9..bbd1120ae161 100644
---- a/arch/x86/events/intel/uncore_snb.c
-+++ b/arch/x86/events/intel/uncore_snb.c
-@@ -475,7 +475,7 @@ enum perf_snb_uncore_imc_freerunning_types {
- static struct freerunning_counters snb_uncore_imc_freerunning[] = {
- 	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_READS_BASE,
- 							0x0, 0x0, 1, 32 },
--	[SNB_PCI_UNCORE_IMC_DATA_READS]		= { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
-+	[SNB_PCI_UNCORE_IMC_DATA_WRITES]	= { SNB_UNCORE_PCI_IMC_DATA_WRITES_BASE,
- 							0x0, 0x0, 1, 32 },
- 	[SNB_PCI_UNCORE_IMC_GT_REQUESTS]	= { SNB_UNCORE_PCI_IMC_GT_REQUESTS_BASE,
- 							0x0, 0x0, 1, 32 },
+diff --git a/security/tomoyo/securityfs_if.c b/security/tomoyo/securityfs_if.c
+index 546281c5b233..0a5f00073ef1 100644
+--- a/security/tomoyo/securityfs_if.c
++++ b/security/tomoyo/securityfs_if.c
+@@ -223,7 +223,7 @@ static const struct file_operations tomoyo_operations = {
+ static void __init tomoyo_create_entry(const char *name, const umode_t mode,
+ 				       struct dentry *parent, const u8 key)
+ {
+-	securityfs_create_file(name, mode, parent, ((u8 *) NULL) + key,
++	securityfs_create_file(name, mode, parent, (u8 *)(uintptr_t)key,
+ 			       &tomoyo_operations);
+ }
+ 
 -- 
 2.27.0
 
