@@ -2,31 +2,31 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3303C2991FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:12:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 830892991FF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:12:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785129AbgJZQMU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:12:20 -0400
-Received: from inva020.nxp.com ([92.121.34.13]:45878 "EHLO inva020.nxp.com"
+        id S1785168AbgJZQMk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:12:40 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:45890 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1785063AbgJZQKs (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:10:48 -0400
+        id S1785059AbgJZQKt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:10:49 -0400
 Received: from inva020.nxp.com (localhost [127.0.0.1])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id CA4DF1A0C97;
-        Mon, 26 Oct 2020 17:10:46 +0100 (CET)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 296EA1A04BA;
+        Mon, 26 Oct 2020 17:10:47 +0100 (CET)
 Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
-        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id BCA2A1A0287;
-        Mon, 26 Oct 2020 17:10:46 +0100 (CET)
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 1C3381A0287;
+        Mon, 26 Oct 2020 17:10:47 +0100 (CET)
 Received: from fsr-ub1864-126.ea.freescale.net (fsr-ub1864-126.ea.freescale.net [10.171.82.212])
-        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 71B5F20308;
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id CB94620308;
         Mon, 26 Oct 2020 17:10:46 +0100 (CET)
 From:   Ioana Ciornei <ioana.ciornei@nxp.com>
 To:     shawnguo@kernel.org
 Cc:     robh+dt@kernel.org, leoyang.li@nxp.com, devicetree@vger.kernel.org,
         linux-kernel@vger.kernel.org, Ioana Ciornei <ioana.ciornei@nxp.com>
-Subject: [PATCH v4 09/11] arm64: dts: ls208xa: add PCS MDIO and PCS PHY nodes
-Date:   Mon, 26 Oct 2020 18:10:03 +0200
-Message-Id: <20201026161005.5421-10-ioana.ciornei@nxp.com>
+Subject: [PATCH v4 10/11] arm64: dts: lx2160a: add PCS MDIO and PCS PHY nodes
+Date:   Mon, 26 Oct 2020 18:10:04 +0200
+Message-Id: <20201026161005.5421-11-ioana.ciornei@nxp.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20201026161005.5421-1-ioana.ciornei@nxp.com>
 References: <20201026161005.5421-1-ioana.ciornei@nxp.com>
@@ -35,8 +35,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Add PCS MDIO nodes for the internal MDIO buses on the LS208x SoCs, along
-with their internal PCS PHYs which will be used when the DPMAC object is
+Add PCS MDIO nodes for the internal MDIO buses on the LX2160A, along
+with their internal PCS PHYs, which will be used when the DPMAC is
 in TYPE_PHY mode.
 Also, rename the dpmac@x nodes to ethernet@x in order to be compliant
 with the naming convention used by ethernet controllers.
@@ -50,55 +50,14 @@ Changes in v3:
 Changes in v4:
  - none
 
- .../boot/dts/freescale/fsl-ls2088a-rdb.dts    |  32 +++
- .../arm64/boot/dts/freescale/fsl-ls208xa.dtsi | 256 ++++++++++++++++--
- 2 files changed, 272 insertions(+), 16 deletions(-)
+ .../arm64/boot/dts/freescale/fsl-lx2160a.dtsi | 288 ++++++++++++++++--
+ 1 file changed, 270 insertions(+), 18 deletions(-)
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts b/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-index 037c7a8f3d5b..6f279667fc6f 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls2088a-rdb.dts
-@@ -104,3 +104,35 @@ mdio2_phy4: emdio2_phy@4 {
- 		reg = <0x3>;
- 	};
- };
-+
-+&pcs_mdio1 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio2 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio3 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio4 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio5 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio6 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio7 {
-+	status = "okay";
-+};
-+
-+&pcs_mdio8 {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-index 76aab49f0d50..4da70343f8e4 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls208xa.dtsi
-@@ -476,6 +476,214 @@ emdio2: mdio@8b97000 {
+diff --git a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+index 83072da6f6c6..f4e69c5f9c68 100644
+--- a/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
++++ b/arch/arm64/boot/dts/freescale/fsl-lx2160a.dtsi
+@@ -1305,6 +1305,240 @@ emdio2: mdio@8b97000 {
  			status = "disabled";
  		};
  
@@ -310,10 +269,36 @@ index 76aab49f0d50..4da70343f8e4 100644
 +			};
 +		};
 +
++		pcs_mdio17: mdio@8c47000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c47000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs17: pcs-phy@0 {
++				reg = <0>;
++			};
++		};
++
++		pcs_mdio18: mdio@8c4b000 {
++			compatible = "fsl,fman-memac-mdio";
++			reg = <0x0 0x8c4b000 0x0 0x1000>;
++			little-endian;
++			#address-cells = <1>;
++			#size-cells = <0>;
++			status = "disabled";
++
++			pcs18: pcs-phy@0 {
++				reg = <0>;
++			};
++		};
++
  		fsl_mc: fsl-mc@80c000000 {
  			compatible = "fsl,qoriq-mc";
- 			reg = <0x00000008 0x0c000000 0 0x40>,	 /* MC portal base */
-@@ -500,84 +708,100 @@ dpmacs {
+ 			reg = <0x00000008 0x0c000000 0 0x40>,
+@@ -1330,94 +1564,112 @@ dpmacs {
  				#address-cells = <1>;
  				#size-cells = <0>;
  
@@ -427,6 +412,20 @@ index 76aab49f0d50..4da70343f8e4 100644
  					compatible = "fsl,qoriq-mc-dpmac";
  					reg = <0x10>;
 +					pcs-handle = <&pcs16>;
+ 				};
+ 
+-				dpmac17: dpmac@11 {
++				dpmac17: ethernet@11 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <0x11>;
++					pcs-handle = <&pcs17>;
+ 				};
+ 
+-				dpmac18: dpmac@12 {
++				dpmac18: ethernet@12 {
+ 					compatible = "fsl,qoriq-mc-dpmac";
+ 					reg = <0x12>;
++					pcs-handle = <&pcs18>;
  				};
  			};
  		};
