@@ -2,112 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A7CB62986C0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:13:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 80ABB2986CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:20:07 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770271AbgJZGNQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 02:13:16 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55836 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390548AbgJZGNQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 02:13:16 -0400
-Received: from google.com (unknown [104.132.1.66])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7B35220738;
-        Mon, 26 Oct 2020 06:13:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603692795;
-        bh=aQujr3c5hIwOeShsApFTb7WRP6b5nsUJBe4uo9YQeTU=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fDUIHOJzpTjLbbSu5shv3Avsw6Lwv0dRHZOu7umJUvvcoyetO36tCj6evv9gJ3Beo
-         GKR61mkFHuZr3qIQp+K5P9HbWFsEt1DWCRRpjkYainBlffaRnKcSQH4uWEwFNW/Rkc
-         ZWvjJ18r2gf8HsdWophkenPqDIiffXEe3SURJ/TQ=
-Date:   Sun, 25 Oct 2020 23:13:13 -0700
-From:   Jaegeuk Kim <jaegeuk@kernel.org>
-To:     Can Guo <cang@codeaurora.org>
-Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
-        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
-        alim.akhtar@samsung.com, avri.altman@wdc.com, bvanassche@acm.org
-Subject: Re: [PATCH v3 1/5] scsi: ufs: atomic update for clkgating_enable
-Message-ID: <20201026061313.GA2517102@google.com>
-References: <20201024150646.1790529-1-jaegeuk@kernel.org>
- <20201024150646.1790529-2-jaegeuk@kernel.org>
- <68cf5fe17691653f07544db5fe390c97@codeaurora.org>
+        id S1770325AbgJZGT5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 02:19:57 -0400
+Received: from mailgw01.mediatek.com ([210.61.82.183]:35867 "EHLO
+        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
+        with ESMTP id S1770305AbgJZGT4 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 02:19:56 -0400
+X-UUID: a67159984eeb43d094518b94ac1390cd-20201026
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=N5cnpKHxqvg4FtGCE4b75ACj8g4RCxqwiKLoHCbkZXs=;
+        b=mYfw8KvPCSjMBAofj5hJ4YeIHYfuBEyXUnJCHj7Wu27/RexTQTKdR1vfWdX18u2P2UL411QFhb0jUTO+0GYxckMn8MuIzpw9T6vBN8gRBjR+1Yy9RpmDBDPTvIvd55llakCn4OclKL+ntK0UH9St0n2WDtOGMGHRNhvUeEag86o=;
+X-UUID: a67159984eeb43d094518b94ac1390cd-20201026
+Received: from mtkcas10.mediatek.inc [(172.21.101.39)] by mailgw01.mediatek.com
+        (envelope-from <hector.yuan@mediatek.com>)
+        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
+        with ESMTP id 65964395; Mon, 26 Oct 2020 14:14:37 +0800
+Received: from mtkcas07.mediatek.inc (172.21.101.84) by
+ mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.2; Mon, 26 Oct 2020 14:14:13 +0800
+Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
+ (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
+ Transport; Mon, 26 Oct 2020 14:14:12 +0800
+Message-ID: <1603692853.20535.4.camel@mtkswgap22>
+Subject: Re: [PATCH v1 2/6] dt-bindings: arm: cpus: Document
+ 'mtk,freq-domain' property
+From:   Hector Yuan <hector.yuan@mediatek.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     <linux-mediatek@lists.infradead.org>,
+        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
+        "Rob Herring" <robh+dt@kernel.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Maxime Ripard <mripard@kernel.org>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Amit Kucheria <amit.kucheria@linaro.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Dave Gerlach <d-gerlach@ti.com>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Robin Murphy <robin.murphy@arm.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <wsd_upstream@mediatek.com>
+Date:   Mon, 26 Oct 2020 14:14:13 +0800
+In-Reply-To: <20201023082941.yfjewzdsnspug7by@vireshk-i7>
+References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
+         <1603441493-18554-3-git-send-email-hector.yuan@mediatek.com>
+         <20201023082941.yfjewzdsnspug7by@vireshk-i7>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.2.3-0ubuntu6 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <68cf5fe17691653f07544db5fe390c97@codeaurora.org>
+X-MTK:  N
+Content-Transfer-Encoding: base64
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26, Can Guo wrote:
-> On 2020-10-24 23:06, Jaegeuk Kim wrote:
-> > From: Jaegeuk Kim <jaegeuk@google.com>
-> > 
-> > When giving a stress test which enables/disables clkgating, we hit
-> > device
-> > timeout sometimes. This patch avoids subtle racy condition to address
-> > it.
-> > 
-> > If we use __ufshcd_release(), I've seen that gate_work can be called in
-> > parallel
-> > with ungate_work, which results in UFS timeout when doing hibern8.
-> > Should avoid it.
-> > 
-> 
-> I don't understand this comment. gate_work and ungate_work are queued on
-> an ordered workqueue and an ordered workqueue executes at most one work item
-> at any given time in the queued order. How can the two run in parallel?
+T24gRnJpLCAyMDIwLTEwLTIzIGF0IDEzOjU5ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
+IE9uIDIzLTEwLTIwLCAxNjoyNCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gRnJvbTogIkhlY3Rv
+ci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IEFkZCBkZXZpY2V0
+cmVlIGRvY3VtZW50YXRpb24gZm9yICdtdGssZnJlcS1kb21haW4nIHByb3BlcnR5IHNwZWNpZmlj
+DQo+ID4gdG8gTWVkaWF0ZWsgQ1BVcy4gVGhpcyBwcm9wZXJ0eSBpcyB1c2VkIHRvIHJlZmVyZW5j
+ZSB0aGUgQ1BVRlJFUSBub2RlDQo+ID4gYWxvbmcgd2l0aCB0aGUgZG9tYWluIGlkLg0KPiA+IA0K
+PiA+IFNpZ25lZC1vZmYtYnk6IEhlY3Rvci5ZdWFuIDxoZWN0b3IueXVhbkBtZWRpYXRlay5jb20+
+DQo+ID4gLS0tDQo+ID4gIERvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vY3B1
+cy55YW1sIHwgICAgNiArKysrKysNCj4gPiAgMSBmaWxlIGNoYW5nZWQsIDYgaW5zZXJ0aW9ucygr
+KQ0KPiA+IA0KPiA+IGRpZmYgLS1naXQgYS9Eb2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGlu
+Z3MvYXJtL2NwdXMueWFtbCBiL0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0v
+Y3B1cy55YW1sDQo+ID4gaW5kZXggMTIyMmJmMS4uMDZhNmY1YiAxMDA2NDQNCj4gPiAtLS0gYS9E
+b2N1bWVudGF0aW9uL2RldmljZXRyZWUvYmluZGluZ3MvYXJtL2NwdXMueWFtbA0KPiA+ICsrKyBi
+L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9hcm0vY3B1cy55YW1sDQo+ID4gQEAg
+LTI1NSw2ICsyNTUsMTIgQEAgcHJvcGVydGllczoNCj4gPiAgDQo+ID4gICAgICAgIHdoZXJlIHZv
+bHRhZ2UgaXMgaW4gViwgZnJlcXVlbmN5IGlzIGluIE1Iei4NCj4gPiAgDQo+ID4gKyAgbXRrLWZy
+ZXEtZG9tYWluOg0KPiA+ICsgICAgJHJlZjogJy9zY2hlbWFzL3R5cGVzLnlhbWwjL2RlZmluaXRp
+b25zL3BoYW5kbGUtYXJyYXknDQo+ID4gKyAgICBkZXNjcmlwdGlvbjoNCj4gPiArICAgICAgQ1BV
+cyBzdXBwb3J0aW5nIGZyZXEtZG9tYWluIG11c3Qgc2V0IHRoZWlyICJtdGstZnJlcS1kb21haW4i
+IHByb3BlcnR5DQo+ID4gKyAgICAgIHdpdGggcGhhbmRsZSB0byBhIGNwdWZyZXFfaHcgbm9kZSBm
+b2xsb3dlZCBieSB0aGUgZG9tYWluIGlkLg0KPiA+ICsNCj4gDQo+IE5hbWUgc2hvdWxkIGhhdmUg
+YmVlbiBtdGssZnJlcS1kb21haW4gSSBiZWxpZXZlLiBSb2Igd2lsbCBjb25maXJtIHRoZQ0KPiBy
+ZXN0Lg0KPiANCk9LLCB3aWxsIG5hbWUgaXQgYXMgbWVkaWF0ZWssZnJlcS1kb21haW4uIFRoYW5r
+IHlvdS4NCg0KPiA+ICAgIHBvd2VyLWRvbWFpbnM6DQo+ID4gICAgICAkcmVmOiAnL3NjaGVtYXMv
+dHlwZXMueWFtbCMvZGVmaW5pdGlvbnMvcGhhbmRsZS1hcnJheScNCj4gPiAgICAgIGRlc2NyaXB0
+aW9uOg0KPiA+IC0tIA0KPiA+IDEuNy45LjUNCj4gDQoNCg==
 
-When I hit UFS stuck, I saw this by clkgating tracepoint.
-
-- REQ_CLK_OFF
-- CLKS_OFF
-- REQ_CLK_OFF
-- REQ_CLKS_ON
-..
-
-By using active_req, I don't see any problem.
-
-> 
-> Thanks,
-> 
-> Can Guo.
-> 
-> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
-> > ---
-> >  drivers/scsi/ufs/ufshcd.c | 12 ++++++------
-> >  1 file changed, 6 insertions(+), 6 deletions(-)
-> > 
-> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
-> > index b8f573a02713..e0b479f9eb8a 100644
-> > --- a/drivers/scsi/ufs/ufshcd.c
-> > +++ b/drivers/scsi/ufs/ufshcd.c
-> > @@ -1807,19 +1807,19 @@ static ssize_t
-> > ufshcd_clkgate_enable_store(struct device *dev,
-> >  		return -EINVAL;
-> > 
-> >  	value = !!value;
-> > +
-> > +	spin_lock_irqsave(hba->host->host_lock, flags);
-> >  	if (value == hba->clk_gating.is_enabled)
-> >  		goto out;
-> > 
-> > -	if (value) {
-> > -		ufshcd_release(hba);
-> > -	} else {
-> > -		spin_lock_irqsave(hba->host->host_lock, flags);
-> > +	if (value)
-> > +		hba->clk_gating.active_reqs--;
-> > +	else
-> >  		hba->clk_gating.active_reqs++;
-> > -		spin_unlock_irqrestore(hba->host->host_lock, flags);
-> > -	}
-> > 
-> >  	hba->clk_gating.is_enabled = value;
-> >  out:
-> > +	spin_unlock_irqrestore(hba->host->host_lock, flags);
-> >  	return count;
-> >  }
