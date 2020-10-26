@@ -2,68 +2,227 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BD6A5299317
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:57:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9191429932D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:59:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786766AbgJZQ5s (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:57:48 -0400
-Received: from m12-18.163.com ([220.181.12.18]:46116 "EHLO m12-18.163.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1786737AbgJZQ5f (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:57:35 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-        s=s110527; h=Date:From:Subject:Message-ID:MIME-Version; bh=5UgJD
-        aZxvrA37eNyjgYmRvwWAPd5d2FMzatNwQgd0Iw=; b=moSyN+YQ6aS13hpxSBC/u
-        rfqcpR25npzyEyhxecnJX5h5hOEqaDkM8/d3SLmz22fAXrPGBl0rGshT6oFHO3MY
-        VkLv0XuJrBAN2lQBVjBdMp0BlXN5cZNYUe6ut5Z2Q2H33NR4M/0hYonH75wlSqbA
-        u981InXC990KDY8oOzvL1I=
-Received: from localhost (unknown [101.86.209.121])
-        by smtp14 (Coremail) with SMTP id EsCowAA3yRjd_5ZfI8kjAQ--.61294S2;
-        Tue, 27 Oct 2020 00:57:01 +0800 (CST)
-Date:   Tue, 27 Oct 2020 00:57:00 +0800
-From:   Hui Su <sh_def@163.com>
-To:     davem@davemloft.net, kuba@kernel.org, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] net/atm: use list_is_singular() in br2684_setfilt()
-Message-ID: <20201026165700.GA8218@rlk>
+        id S1786868AbgJZQ6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:58:53 -0400
+Received: from mail-il1-f196.google.com ([209.85.166.196]:45587 "EHLO
+        mail-il1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1786708AbgJZQ5W (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:57:22 -0400
+Received: by mail-il1-f196.google.com with SMTP id g7so8953382ilr.12
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:57:21 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=o0HlbzC/PMbUoOBDvB5+gaRsmOaPMHvpgw6up7a4aZQ=;
+        b=GBa7YXIDiGtb+Nlv2bI3d/omOSevIhtZXCE3FrV/+H8FYa94InqigxYjoxTL2ZkQSC
+         30B9g1Y/K8gbpjEsnYDLrRSvP2PbZ221Oeh6zctLkDuFktZhGrZEdNrro6ytt7+vVe7v
+         hkaP6yok+KgFS6aM2skIqVY1ViUnWxzvzAqktv7WjGtMyAffAyOzyqWSkfJwF6UjqWHQ
+         vxvNxJX4FL67jsXfY2luZnUMO+Hs/wFz8yOUnYkn3LuZk48bpKPgE9Ji3Y+w+tqo/XFy
+         h1sr8HK+oSOHprrb3QzJsRIFqserIdqxFIUC5Mn6sYhwferk3qADftvOvr73s6ubj9Js
+         Zdlw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=o0HlbzC/PMbUoOBDvB5+gaRsmOaPMHvpgw6up7a4aZQ=;
+        b=nL2jmoZYxC1rAX+mq1Pfi8QEFrANFIWuF2TIotGkiIb/1rSYvMH5tlqpW9DJ31/JTp
+         BHUas+mcEB7cMmv2YYhJO3qN/b3CXhh0SnHvKhHC5bMhoXcmCTvFcAdJS8WEVwJtEGKf
+         9I8176lras09sIyl8PvJA/2wUOujRiYCx3rL/fHfiu2tgkPoh+k4MR+cUlCYIXYjnu5z
+         mWk3LruEe2t6ZWrgs/saAbk25jwlahE71fXntjeNmhdJm1I/P9CtnFpLB+YjHiyMdCxr
+         r15hWtms8rNd/WPtBWyU5vzp0w5a0XB54KF7pIlO1UwgUrScUXH2anuiXoDDae0v4zzq
+         puow==
+X-Gm-Message-State: AOAM531cjnL5j6fhYieBhlOm6nFpZ8gKua61K5WQ4nrQ8O1wpmQu3W4q
+        dJ05oaaVk/y9Acsmb/OdiLcZAcNaf46z9ey0eHmiWw==
+X-Google-Smtp-Source: ABdhPJzTcCzQFsCUeEWDLmb9ob+imX6d8YOW4nsHVzM7OxlhxTHymdjAvsixI9JQvx60k+H/WSh9cH0RCCc03v8JWw4=
+X-Received: by 2002:a05:6e02:5c7:: with SMTP id l7mr11810940ils.43.1603731440940;
+ Mon, 26 Oct 2020 09:57:20 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID: EsCowAA3yRjd_5ZfI8kjAQ--.61294S2
-X-Coremail-Antispam: 1Uf129KBjvdXoW7JFyUKF1rXF1xZw1rGw45Wrg_yoW3KrbEqF
-        1Fkws7WrW5Jw4kKw4Fyws8try3Jr93u393XF1Ivas3AryrGrn5WFWkGF95Jry7W39rKF1f
-        Xr1DGF45Gw1SkjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-        9fnUUvcSsGvfC2KfnxnUUI43ZEXa7IU8xuctUUUUU==
-X-Originating-IP: [101.86.209.121]
-X-CM-SenderInfo: xvkbvvri6rljoofrz/1tbiOR3JX1XlvO01HgAAs4
+References: <20201011082936.4131726-1-lokeshgidra@google.com>
+In-Reply-To: <20201011082936.4131726-1-lokeshgidra@google.com>
+From:   Lokesh Gidra <lokeshgidra@google.com>
+Date:   Mon, 26 Oct 2020 09:57:09 -0700
+Message-ID: <CA+EESO6YRQKsU21_3hcRi7V30CXbxThfxCu8KEG4hac+DsFCSg@mail.gmail.com>
+Subject: Re: [PATCH v10 0/3] SELinux support for anonymous inodes and UFFD
+To:     Alexander Viro <viro@zeniv.linux.org.uk>,
+        James Morris <jmorris@namei.org>,
+        Stephen Smalley <stephen.smalley.work@gmail.com>,
+        Casey Schaufler <casey@schaufler-ca.com>,
+        Eric Biggers <ebiggers@kernel.org>
+Cc:     "Serge E. Hallyn" <serge@hallyn.com>,
+        Paul Moore <paul@paul-moore.com>,
+        Eric Paris <eparis@parisplace.org>,
+        Daniel Colascione <dancol@dancol.org>,
+        Kees Cook <keescook@chromium.org>,
+        "Eric W. Biederman" <ebiederm@xmission.com>,
+        KP Singh <kpsingh@google.com>,
+        David Howells <dhowells@redhat.com>,
+        Thomas Cedeno <thomascedeno@google.com>,
+        Anders Roxell <anders.roxell@linaro.org>,
+        Sami Tolvanen <samitolvanen@google.com>,
+        Matthew Garrett <matthewgarrett@google.com>,
+        Aaron Goidel <acgoide@tycho.nsa.gov>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
+        YueHaibing <yuehaibing@huawei.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>,
+        Adrian Reber <areber@redhat.com>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Linux FS Devel <linux-fsdevel@vger.kernel.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>,
+        LSM List <linux-security-module@vger.kernel.org>,
+        SElinux list <selinux@vger.kernel.org>,
+        Kalesh Singh <kaleshsingh@google.com>,
+        Calin Juravle <calin@google.com>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Nick Kralevich <nnk@google.com>,
+        Jeffrey Vander Stoep <jeffv@google.com>,
+        "Cc: Android Kernel" <kernel-team@android.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-list_is_singular() can tell whether a list has just one entry.
-So we use list_is_singular（) here.
+On Sun, Oct 11, 2020 at 1:29 AM Lokesh Gidra <lokeshgidra@google.com> wrote:
+>
+> Userfaultfd in unprivileged contexts could be potentially very
+> useful. We'd like to harden userfaultfd to make such unprivileged use
+> less risky. This patch series allows SELinux to manage userfaultfd
+> file descriptors and in the future, other kinds of
+> anonymous-inode-based file descriptor.  SELinux policy authors can
+> apply policy types to anonymous inodes by providing name-based
+> transition rules keyed off the anonymous inode internal name (
+> "[userfaultfd]" in the case of userfaultfd(2) file descriptors) and
+> applying policy to the new SIDs thus produced.
+>
+> With SELinux managed userfaultfd, an admin can control creation and
+> movement of the file descriptors. In particular, handling of
+> a userfaultfd descriptor by a different process is essentially a
+> ptrace access into the process, without any of the corresponding
+> security_ptrace_access_check() checks. For privacy, the admin may
+> want to deny such accesses, which is possible with SELinux support.
+>
+> Inside the kernel, a new anon_inode interface, anon_inode_getfd_secure,
+> allows callers to opt into this SELinux management. In this new "secure"
+> mode, anon_inodes create new ephemeral inodes for anonymous file objects
+> instead of reusing the normal anon_inodes singleton dummy inode. A new
+> LSM hook gives security modules an opportunity to configure and veto
+> these ephemeral inodes.
+>
+> This patch series is one of two fork of [1] and is an
+> alternative to [2].
+>
+> The primary difference between the two patch series is that this
+> partch series creates a unique inode for each "secure" anonymous
+> inode, while the other patch series ([2]) continues using the
+> singleton dummy anonymous inode and adds a way to attach SELinux
+> security information directly to file objects.
+>
+> I prefer the approach in this patch series because 1) it's a smaller
+> patch than [2], and 2) it produces a more regular security
+> architecture: in this patch series, secure anonymous inodes aren't
+> S_PRIVATE and they maintain the SELinux property that the label for a
+> file is in its inode. We do need an additional inode per anonymous
+> file, but per-struct-file inode creation doesn't seem to be a problem
+> for pipes and sockets.
+>
+> The previous version of this feature ([1]) created a new SELinux
+> security class for userfaultfd file descriptors. This version adopts
+> the generic transition-based approach of [2].
+>
+> This patch series also differs from [2] in that it doesn't affect all
+> anonymous inodes right away --- instead requiring anon_inodes callers
+> to opt in --- but this difference isn't one of basic approach. The
+> important question to resolve is whether we should be creating new
+> inodes or enhancing per-file data.
+>
+> Changes from the first version of the patch:
+>
+>   - Removed some error checks
+>   - Defined a new anon_inode SELinux class to resolve the
+>     ambiguity in [3]
+>   - Inherit sclass as well as descriptor from context inode
+>
+> Changes from the second version of the patch:
+>
+>   - Fixed example policy in the commit message to reflect the use of
+>     the new anon_inode class.
+>
+> Changes from the third version of the patch:
+>
+>   - Dropped the fops parameter to the LSM hook
+>   - Documented hook parameters
+>   - Fixed incorrect class used for SELinux transition
+>   - Removed stray UFFD changed early in the series
+>   - Removed a redundant ERR_PTR(PTR_ERR())
+>
+> Changes from the fourth version of the patch:
+>
+>   - Removed an unused parameter from an internal function
+>   - Fixed function documentation
+>
+> Changes from the fifth version of the patch:
+>
+>   - Fixed function documentation in fs/anon_inodes.c and
+>     include/linux/lsm_hooks.h
+>   - Used anon_inode_getfd_secure() in userfaultfd() syscall and removed
+>     owner from userfaultfd_ctx.
+>
+> Changes from the sixth version of the patch:
+>
+>   - Removed definition of anon_inode_getfile_secure() as there are no
+>     callers.
+>   - Simplified function description of anon_inode_getfd_secure().
+>   - Elaborated more on the purpose of 'context_inode' in commit message.
+>
+> Changes from the seventh version of the patch:
+>
+>   - Fixed error handling in _anon_inode_getfile().
+>   - Fixed minor comment and indentation related issues.
+>
+> Changes from the eighth version of the patch:
+>
+>   - Replaced selinux_state.initialized with selinux_state.initialized
+>
+> Changes from the ninth version of the patch:
+>
+>   - Fixed function names in fs/anon_inodes.c
+>   - Fixed comment of anon_inode_getfd_secure()
+>   - Fixed name of the patch wherein userfaultfd code uses
+>     anon_inode_getfd_secure()
+>
+> [1] https://lore.kernel.org/lkml/20200211225547.235083-1-dancol@google.com/
+> [2] https://lore.kernel.org/linux-fsdevel/20200213194157.5877-1-sds@tycho.nsa.gov/
+> [3] https://lore.kernel.org/lkml/23f725ca-5b5a-5938-fcc8-5bbbfc9ba9bc@tycho.nsa.gov/
+>
+> Daniel Colascione (3):
+>   Add a new LSM-supporting anonymous inode interface
+>   Teach SELinux about anonymous inodes
+>   Use secure anon inodes for userfaultfd
+>
+>  fs/anon_inodes.c                    | 148 ++++++++++++++++++++--------
+>  fs/userfaultfd.c                    |  19 ++--
+>  include/linux/anon_inodes.h         |   8 ++
+>  include/linux/lsm_hook_defs.h       |   2 +
+>  include/linux/lsm_hooks.h           |   9 ++
+>  include/linux/security.h            |  10 ++
+>  security/security.c                 |   8 ++
+>  security/selinux/hooks.c            |  53 ++++++++++
+>  security/selinux/include/classmap.h |   2 +
+>  9 files changed, 210 insertions(+), 49 deletions(-)
+>
+> --
+> 2.28.0.1011.ga647a8990f-goog
+>
 
-Signed-off-by: Hui Su <sh_def@163.com>
----
- net/atm/br2684.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+Any suggestions on how to get VFS folks' (already CC'ed) attention on
+this patch series?
 
-diff --git a/net/atm/br2684.c b/net/atm/br2684.c
-index 3e17a5ecaa94..398f7e086cf4 100644
---- a/net/atm/br2684.c
-+++ b/net/atm/br2684.c
-@@ -372,8 +372,7 @@ static int br2684_setfilt(struct atm_vcc *atmvcc, void __user * arg)
- 		struct br2684_dev *brdev;
- 		read_lock(&devs_lock);
- 		brdev = BRPRIV(br2684_find_dev(&fs.ifspec));
--		if (brdev == NULL || list_empty(&brdev->brvccs) ||
--		    brdev->brvccs.next != brdev->brvccs.prev)	/* >1 VCC */
-+		if (brdev == NULL || !list_is_singular(&brdev->brvccs))	/* >1 VCC */
- 			brvcc = NULL;
- 		else
- 			brvcc = list_entry_brvcc(brdev->brvccs.next);
--- 
-2.25.1
-
-
+In the meantime, I humbly request the SELinux/LSM/UFFD
+reviewers/maintainers to provide their reviews.
