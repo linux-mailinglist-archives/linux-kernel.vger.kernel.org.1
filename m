@@ -2,40 +2,48 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2C790299AF2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:45:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0FD299AF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:46:12 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408102AbgJZXpp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:45:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41800 "EHLO mail.kernel.org"
+        id S2408119AbgJZXp4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:45:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42084 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408071AbgJZXpo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:45:44 -0400
+        id S2408108AbgJZXpz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:45:55 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E02C420872;
-        Mon, 26 Oct 2020 23:45:42 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 74BDD20874;
+        Mon, 26 Oct 2020 23:45:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603755943;
-        bh=yizclJtwFHsgpdbAeytsLNpgwGTh0czj9w5bj6puFao=;
+        s=default; t=1603755955;
+        bh=5T4AL1BqRu1ARMLqlPYicJ4G84AujjuS4vWXEtGsgds=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=HM/xoo0iHClbn3JNr7iBUB8MqDDL+S3IgGq4nMlUf5NisfoG+WdcI3CdUZKBkFTLW
-         vj+Yue/oLQuqXpd9x3pvqu/Xlhytm1uOixd5CTmdsDFw6H1bnnuFJtIpKSiq918E62
-         bpYGx+6MTtYDUlL6yIXNHJcizQe1K0Rx7S7LumfQ=
-Date:   Mon, 26 Oct 2020 23:45:39 +0000
+        b=k0yy62xyK6pARRGeQH/8tZh7EQvK+Pk4WiCSWb1+LFc5QFneQ0G327u4wby7WIl3D
+         Yf6pruWjkRFbttJ/itSDa5AXhtf/n//zacPvMvI0H4IggveE4OYc/TlSMWuFcFFV6J
+         bIyT+yGjcFDcaBVkg9p6wOPf1CabCQbD6f5jj9Jc=
+Date:   Mon, 26 Oct 2020 23:45:50 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     mark.rutland@arm.com, lgirdwood@gmail.com, robh@kernel.org,
-        perex@perex.cz, tiwai@suse.com, alexandre.torgue@st.com,
-        Olivier Moysan <olivier.moysan@st.com>
-Cc:     linux-stm32@st-md-mailman.stormreply.com,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        arnaud.pouliquen@st.com, alsa-devel@alsa-project.org,
-        linux-arm-kernel@lists.infradead.org
-In-Reply-To: <20201020155709.2621-1-olivier.moysan@st.com>
-References: <20201020155709.2621-1-olivier.moysan@st.com>
-Subject: Re: [PATCH v2 0/2] dt-bindings: stm32: convert audio dfsdm to json-schema
-Message-Id: <160375592348.31132.11289357992457782423.b4-ty@kernel.org>
+To:     linuxppc-dev@lists.ozlabs.org, Liam Girdwood <lgirdwood@gmail.com>,
+        Timur Tabi <timur@kernel.org>,
+        Nicolin Chen <nicoleotsuka@gmail.com>,
+        Viorel Suman <viorel.suman@nxp.com>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Shengjiu Wang <shengjiu.wang@gmail.com>,
+        Cosmin-Gabriel Samoila <cosmin.samoila@nxp.com>,
+        linux-kernel@vger.kernel.org, Fabio Estevam <festevam@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Xiubo Li <Xiubo.Lee@gmail.com>,
+        Matthias Schiffer <matthias.schiffer@ew.tq-group.com>,
+        Jaroslav Kysela <perex@perex.cz>, devicetree@vger.kernel.org,
+        Takashi Iwai <tiwai@suse.com>,
+        "Viorel Suman (OSS)" <viorel.suman@oss.nxp.com>,
+        alsa-devel@alsa-project.org
+In-Reply-To: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
+References: <20201013121733.83684-1-viorel.suman@oss.nxp.com>
+Subject: Re: [PATCH v4 0/2] DAI driver for new XCVR IP
+Message-Id: <160375592347.31132.18055383544502605577.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -43,14 +51,20 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 17:57:07 +0200, Olivier Moysan wrote:
-> Some audio properties documented in st,stm32-adfsdm.txt are already documented
-> in Documentation/devicetree/bindings/iio/adc/st,stm32-dfsdm-adc.yaml bindings.
-> Move remaining properties from st,stm32-adfsdm.txt to st,stm32-dfsdm-adc.yaml,
-> and remove st,stm32-adfsdm.txt.
+On Tue, 13 Oct 2020 15:17:31 +0300, Viorel Suman (OSS) wrote:
+> DAI driver for new XCVR IP found in i.MX8MP.
 > 
-> Changes in v2:
-> - Complete st,stm32-dfsdm-adc.yaml rather than converting st,stm32-adfsdm.txt
+> Viorel Suman (2):
+>   ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+>   ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+> 
+> Changes since v1:
+>  - improved 6- and 12-ch layout comment
+>  - used regmap polling function, improved
+>    clocks handling in runtime_resume
+>  - added FW size check in FW load function,
+>    improved IRQ handler, removed dummy IRQ handlers
+>  - fixed yaml file
 > 
 > [...]
 
@@ -60,10 +74,10 @@ Applied to
 
 Thanks!
 
-[1/2] dt-bindings: stm32: dfsdm: update audio properties
-      commit: f24fd10bea5961629f22e1da0f56e8c918bdb2da
-[2/2] ASoC: dt-bindings: stm32: dfsdm: remove stm32-adfsdm.txt binding
-      commit: ea8650730332ee3c707883a2de37756ea9122981
+[1/2] ASoC: fsl_xcvr: Add XCVR ASoC CPU DAI driver
+      commit: 28564486866fa889b78264360022c94836fa8072
+[2/2] ASoC: dt-bindings: fsl_xcvr: Add document for XCVR
+      commit: 0afb88d5a602488f877380ad1ec37cc20c927c68
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
