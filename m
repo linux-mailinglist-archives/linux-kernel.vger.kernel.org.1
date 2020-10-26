@@ -2,117 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AE5902998C3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:30:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7EAD62998C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:31:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387519AbgJZVaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:30:21 -0400
-Received: from metis.ext.pengutronix.de ([85.220.165.71]:36391 "EHLO
-        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1733222AbgJZVaV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:30:21 -0400
-Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
-        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
-        (envelope-from <a.fatoum@pengutronix.de>)
-        id 1kXA4J-00088d-AK; Mon, 26 Oct 2020 22:30:19 +0100
-Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
- for tamp node
-To:     Rob Herring <robh@kernel.org>
-Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
-        Alexandre Torgue <alexandre.torgue@st.com>,
-        Christophe Roullier <christophe.roullier@st.com>,
-        kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
-        devicetree@vger.kernel.org,
-        linux-stm32@st-md-mailman.stormreply.com,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
- <20201026143656.GA118160@bogus>
-From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
-Message-ID: <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
-Date:   Mon, 26 Oct 2020 22:30:17 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.1
+        id S2388017AbgJZVbQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:31:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43726 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2387801AbgJZVbQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:31:16 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C81C207F7;
+        Mon, 26 Oct 2020 21:31:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603747875;
+        bh=p5uj4RGvyoKHE87/45mHPImVbf4as4DA9p8vyIS1yT0=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=2krs2xxVmoA1jSTDR/S6RMZKD+bJI25pQuu/lG1B6B2VCUe1Wh/veJH/cFKoXjhXu
+         d4SUonCybAW8BJ0F7i31jUsyf6N5H9dlHWOlHJt9OjRdk3igsW8ynXzyibt6XjEr11
+         LRg9H1N3q6/NRY/31oXgANuLJaYw1uJxAny5vvUc=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Jouni Malinen <j@w1.fi>, Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Cong Wang <xiyou.wangcong@gmail.com>,
+        Taehee Yoo <ap420073@gmail.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH net-next 02/11] net: hostap: fix function cast warning
+Date:   Mon, 26 Oct 2020 22:29:49 +0100
+Message-Id: <20201026213040.3889546-2-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
+In-Reply-To: <20201026213040.3889546-1-arnd@kernel.org>
+References: <20201026213040.3889546-1-arnd@kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20201026143656.GA118160@bogus>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
-X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Rob,
+From: Arnd Bergmann <arnd@arndb.de>
 
-On 10/26/20 3:36 PM, Rob Herring wrote:
-> On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
->> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
->> and features 32 backup registers that, being in the RTC domain, may
->> survive even with Vdd switched off.
->>
->> This makes it suitable for use to communicate a reboot mode from OS
->> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
->> to support probing such a child node. The actual reboot mode
->> node could then be defined in a board.dts or fixed up by the bootloader.
-> 
-> 'simple-mfd' implies there is no dependency on the parent node for the 
-> child (such as the regmap perhaps). Is that the case here?
+gcc -Wextra complains about the function type cast:
 
-No, there's a dependency and the Linux driver does syscon_node_to_regmap
-on the device tree node's parent but that's how the syscon-reboot-mode binding
-is documented:
+drivers/net/wireless/intersil/hostap/hostap_hw.c:3173:48: warning: cast between incompatible function types from ‘void (*)(struct tasklet_struct *)’ to ‘void (*)(long unsigned int)’ [-Wcast-function-type]
 
-  The SYSCON mapped register is retrieved from the
-  parental dt-node plus the offset. So the SYSCON reboot-mode node
-  should be represented as a sub-node of a "syscon", "simple-mfd" node.
+Avoid this by just using the regular tasklet_setup() function instead
+of the incorrect homegrown version.
 
-How would you prefer this being done instead?
+Fixes: 7433c9690318 ("intersil: convert tasklets to use new tasklet_setup() API")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ .../net/wireless/intersil/hostap/hostap_hw.c    | 17 +++++------------
+ 1 file changed, 5 insertions(+), 12 deletions(-)
 
-Cheers,
-Ahmad
-
-> 
->>
->> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
->> ---
->> v1 available here:
->> https://lore.kernel.org/linux-arm-kernel/20200916142216.25142-1-a.fatoum@pengutronix.de/
->>
->> v1 -> v2:
->>  - new patch, rebased on top of
->>    https://lore.kernel.org/r/20201014125441.2457-1-arnaud.pouliquen@st.com
->> ---
->>  .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml       | 5 ++++-
->>  1 file changed, 4 insertions(+), 1 deletion(-)
->>
->> diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
->> index 6634b3e0853e..4684017a42e4 100644
->> --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
->> +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
->> @@ -19,8 +19,11 @@ properties:
->>                - st,stm32mp151-pwr-mcu
->>                - st,stm32-syscfg
->>                - st,stm32-power-config
->> -              - st,stm32-tamp
->>            - const: syscon
->> +      - items:
->> +          - const: st,stm32-tamp
->> +          - const: syscon
->> +          - const: simple-mfd
->>  
->>    reg:
->>      maxItems: 1
->> -- 
->> 2.28.0
->>
-> 
-
+diff --git a/drivers/net/wireless/intersil/hostap/hostap_hw.c b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+index 22cfb6452644..9a19046217df 100644
+--- a/drivers/net/wireless/intersil/hostap/hostap_hw.c
++++ b/drivers/net/wireless/intersil/hostap/hostap_hw.c
+@@ -3169,22 +3169,15 @@ prism2_init_local_data(struct prism2_helper_functions *funcs, int card_idx,
+ 
+ 	/* Initialize tasklets for handling hardware IRQ related operations
+ 	 * outside hw IRQ handler */
+-#define HOSTAP_TASKLET_INIT(q, f, d) \
+-do { memset((q), 0, sizeof(*(q))); (q)->func = (void(*)(unsigned long))(f); } \
+-while (0)
+-	HOSTAP_TASKLET_INIT(&local->bap_tasklet, hostap_bap_tasklet,
+-			    (unsigned long) local);
+-
+-	HOSTAP_TASKLET_INIT(&local->info_tasklet, hostap_info_tasklet,
+-			    (unsigned long) local);
++	tasklet_setup(&local->bap_tasklet, hostap_bap_tasklet);
++	tasklet_setup(&local->info_tasklet, hostap_info_tasklet);
+ 	hostap_info_init(local);
+ 
+-	HOSTAP_TASKLET_INIT(&local->rx_tasklet,
+-			    hostap_rx_tasklet, (unsigned long) local);
++	tasklet_setup(&local->rx_tasklet, hostap_rx_tasklet);
+ 	skb_queue_head_init(&local->rx_list);
+ 
+-	HOSTAP_TASKLET_INIT(&local->sta_tx_exc_tasklet,
+-			    hostap_sta_tx_exc_tasklet, (unsigned long) local);
++	tasklet_setup(&local->sta_tx_exc_tasklet,
++			    hostap_sta_tx_exc_tasklet);
+ 	skb_queue_head_init(&local->sta_tx_exc_list);
+ 
+ 	INIT_LIST_HEAD(&local->cmd_queue);
 -- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+2.27.0
+
