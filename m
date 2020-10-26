@@ -2,148 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35A0729864F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:23:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AACB5298655
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:24:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768303AbgJZFWz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 01:22:55 -0400
-Received: from esa1.hgst.iphmx.com ([68.232.141.245]:3524 "EHLO
-        esa1.hgst.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1768243AbgJZFWy (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 01:22:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
-  d=wdc.com; i=@wdc.com; q=dns/txt; s=dkim.wdc.com;
-  t=1603689773; x=1635225773;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=Nb6LF5bRK6CKsc1ZpUuS6Tjb3KmxBXBhtGywhbJd/HU=;
-  b=jw2H2txMl4q8et0HM9XizZsnQIMQV6FysNeTNxCT3EZrcyBMhnbeeDBn
-   vpKQW21Fw0X3fH82VIJR+DZaEUuSFdk0Nso+WkT1s/lNBsldpTDcGSYy+
-   dV/r6lStl4fGGRquq3bHuu1J+ttyWt2l/5e/EJ/WnSOxtvBFItTm/jtlL
-   kzauGbyxFUk8+1nUwJMvtr1vYqF8rAqG0vATJ7MNOLqDQixLoCD1jdINz
-   fQSeHbJSXzsIbszO+9PCSV/1MP8coDN68TSHaLTvxBlpI5sw7hXYsEiKh
-   vCTkjoe8RZo7e4BVeGeYsBS28L7m0RHTMxk189z6A+jIDe0RNPvbw9XEF
-   Q==;
-IronPort-SDR: irs/A6VTzQ1otfWw+OYX1rPeXUsbACh5xG2/x/7IKAUOnPMSojcEOx5EXe2RTUAwrsPBZ24LAI
- hxTDtTUsbYXUFV/wu4fDExux5gE0iUbH8T5FjUNSsVqDotaRbF7GVWrRdrX7y4c6nQoxZv1h32
- wekjhy22VXEeNhBHo/BlS+6YZRe+jj3PUMX55rJXS456vlc5fy3TJRXF2aOiSeKKz9K0db9MFL
- wvcg1RvtJkrkNlcRHcGngGqhyxuTfy/qeGA0uFfGdD7C1LbTDkeZQUB+njwSp08kXq+kuRKElX
- ArA=
-X-IronPort-AV: E=Sophos;i="5.77,417,1596470400"; 
-   d="scan'208";a="260780034"
-Received: from mail-bn3nam04lp2057.outbound.protection.outlook.com (HELO NAM04-BN3-obe.outbound.protection.outlook.com) ([104.47.46.57])
-  by ob1.hgst.iphmx.com with ESMTP; 26 Oct 2020 13:22:50 +0800
+        id S1768377AbgJZFYH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 01:24:07 -0400
+Received: from nat-hk.nvidia.com ([203.18.50.4]:11312 "EHLO nat-hk.nvidia.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1768351AbgJZFYG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 01:24:06 -0400
+Received: from HKMAIL102.nvidia.com (Not Verified[10.18.92.9]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f965d740002>; Mon, 26 Oct 2020 13:24:04 +0800
+Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL102.nvidia.com
+ (10.18.16.11) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
+ 2020 05:23:52 +0000
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.108)
+ by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
+ 15.0.1473.3 via Frontend Transport; Mon, 26 Oct 2020 05:23:51 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=P/TMXiUVFzTPBik7EK2tl3vE1a47pqLInnl7M+xRquVyE5o3ys3E16xZ2yz89EK94PIt9MKZUnLRRvU35vtUxpXIVgHPgzUGB/+s6dwSDM4rxL1DZ6TO6yU/axXZoUz4cvZbuvfrOvEMPqMOqvSgz2uN7GIbngczQ5Ht/lhpse9kyYs/8keNY6vn/zsoHpP3fNQTckni9LIMvPWPRpMK/SshcDt2nPoV4BlhLAk05yIJaS85O3T1jviI39f5V5pbzoiqMl9lZYGPaPw4yj2BgNd+WNxTCnJHdIJwL0gtvzF3OZZR8qnTGoDVHDCSsFpc601qgzg4o7OtDBy8W7k/tw==
+ b=AP+9bidxNVRZPCeIYcrgqDiVBhlURUe4mvJh8BCpwtn8k48AcsSn3mSt+0yNOv5xOTw9n2pCGmo/b00j6JP93lIA7NnboxH0rypaMnTvzAJvmkAtc0/DV3Rf/4hwUDdR5YAPCxgcIj6asK/6IEaFrINdP5I5nXwB/JNzqW/nL4NWhA+GkKGqUEFHmMN9Ujzs+XmtJmZ1QlaYdKjHD4qPzAfIjLxNgS9n7BGQSwEE++BGhF5gvWCrtK1bOi6MLEcrKctQXx8Mbjpv7pwJycBO7ywyK8qCturi6m41Qcq9d8h2bm4DjlF+0D7LjgSn5bjv2RPyp+8pI3UEc99d7IAsMw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nb6LF5bRK6CKsc1ZpUuS6Tjb3KmxBXBhtGywhbJd/HU=;
- b=kGWJz56VlE9tKQnk3EdlF4nTrliTlVlMYs+ytQBbjoqZH97Oz+Usw1dAZHmSXf0NYwWDrmUUJtqcAO7sRttdlj7Aa/P4uZYs9vZFYxqDejaAOAXljVRsvMog/3ZQM5/RTRq+6w+1YQYgloIBruZ2nijxeyjJrOEjwUzF/jVWta4biAnt0vqE/DIMioGLPbFKbR5MjdX9NL/a5ZBR1+lHR5FDJJhbx3NjrIuoSKPfHxZEmpShMC2QL9X3gQXfiyynrUTCtJwncZ9TjZ974nuwHIRIaLaY2Qn6seMOqN14dmJvYVuU1tdQG4NYBVzyaMVb+dsq6nEWbenPLgR/YJma2Q==
+ bh=tbMLpDqrsvU0+iByqjIAN0xatWbwA6AlnyCh2OwMIvU=;
+ b=KDNG1u7F/Vqz1klep1mD6dQU3nw/9NdSXYalEe6W//2lyfUzVwwNp9rzQ7zgELAze2nNUyrHfbKH7wSR1nMXOhDp/TMQqnd/qEf/NxWWLFdOD4HPDxYhTPTe79WUNmTRPDBNGQtCDPBKOCUFiyRzBOdn7cpF3pWGGepPFkt7WfaLSmPCGLE7yZw3wHQ4Ou+Orb8xCJNDp8kpfGJvfY4pC4CWqEHEpT4zcurDpDi4C/iaV0ZfE86qWfSGqytps+bFd1MNKf1DY3K2aR5JDz5/VFdk16wGHg4d4rkeRX5T8eegcxUlTqPZjwI5ET7bRo+9CGNE6U3/vYhMCRDFzVkiAw==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=wdc.com; dmarc=pass action=none header.from=wdc.com; dkim=pass
- header.d=wdc.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=sharedspace.onmicrosoft.com; s=selector2-sharedspace-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Nb6LF5bRK6CKsc1ZpUuS6Tjb3KmxBXBhtGywhbJd/HU=;
- b=u4kdvcrqe4dze9YbAM6MH2iTacZcCHRE5Z9elQkK0Hc0H79ssDb59MR6RHXdpQUTqWnkFjG/OI7Y7RM1vbHun5AkCg7zVXa7dVqbvgv9A0qokDPA5yT+KR1kJy/xVuDlcWEw15FV+B8L3eiy0EiWlw+/kXBwwi5lNfVhK2RrzK0=
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com (2603:10b6:a03:220::8)
- by BY5PR04MB6454.namprd04.prod.outlook.com (2603:10b6:a03:1e1::9) with
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com (2603:10b6:a03:20a::20)
+ by BY5PR12MB3842.namprd12.prod.outlook.com (2603:10b6:a03:1ab::31) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.20; Mon, 26 Oct
- 2020 05:22:49 +0000
-Received: from BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::709c:ec54:b10b:2d90]) by BY5PR04MB6705.namprd04.prod.outlook.com
- ([fe80::709c:ec54:b10b:2d90%9]) with mapi id 15.20.3477.029; Mon, 26 Oct 2020
- 05:22:49 +0000
-From:   Avri Altman <Avri.Altman@wdc.com>
-To:     Can Guo <cang@codeaurora.org>
-CC:     "asutoshd@codeaurora.org" <asutoshd@codeaurora.org>,
-        "nguyenb@codeaurora.org" <nguyenb@codeaurora.org>,
-        "hongwus@codeaurora.org" <hongwus@codeaurora.org>,
-        "rnayak@codeaurora.org" <rnayak@codeaurora.org>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>,
-        "kernel-team@android.com" <kernel-team@android.com>,
-        "saravanak@google.com" <saravanak@google.com>,
-        "salyzyn@google.com" <salyzyn@google.com>,
-        Alim Akhtar <alim.akhtar@samsung.com>,
-        "James E.J. Bottomley" <jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        Stanley Chu <stanley.chu@mediatek.com>,
-        Bean Huo <beanhuo@micron.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        open list <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
- ufshcd_read_desc_param()
-Thread-Topic: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
- ufshcd_read_desc_param()
-Thread-Index: AQHWqDiMF/4I9jj2BU+KaBIJftcln6mjKqFAgAYSn4CAACGX0A==
-Date:   Mon, 26 Oct 2020 05:22:49 +0000
-Message-ID: <BY5PR04MB67056EDDDA22DEDAFD1972C1FC190@BY5PR04MB6705.namprd04.prod.outlook.com>
-References: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
- <BY5PR04MB6705D719530D5E188ECB724EFC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
- <5271e570f2e38770da3b23f13e739e41@codeaurora.org>
-In-Reply-To: <5271e570f2e38770da3b23f13e739e41@codeaurora.org>
+ 2020 05:23:48 +0000
+Received: from BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105]) by BY5PR12MB4322.namprd12.prod.outlook.com
+ ([fe80::3c25:6e4c:d506:6105%6]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
+ 05:23:48 +0000
+From:   Parav Pandit <parav@nvidia.com>
+To:     Jakub Kicinski <kuba@kernel.org>,
+        syzbot <syzbot+34dc2fea3478e659af01@syzkaller.appspotmail.com>
+CC:     "christian.koenig@amd.com" <christian.koenig@amd.com>,
+        "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+        "hch@lst.de" <hch@lst.de>,
+        "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linaro-mm-sig-owner@lists.linaro.org" 
+        <linaro-mm-sig-owner@lists.linaro.org>,
+        "linaro-mm-sig@lists.linaro.org" <linaro-mm-sig@lists.linaro.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "m.szyprowski@samsung.com" <m.szyprowski@samsung.com>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "robin.murphy@arm.com" <robin.murphy@arm.com>,
+        "sumit.semwal@linaro.org" <sumit.semwal@linaro.org>,
+        "syzkaller-bugs@googlegroups.com" <syzkaller-bugs@googlegroups.com>,
+        "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>
+Subject: RE: WARNING in dma_map_page_attrs
+Thread-Topic: WARNING in dma_map_page_attrs
+Thread-Index: AQHWqbLPPEPI9mnwmUSeVEeL/Zim3qmnD9kAgAJKk0A=
+Date:   Mon, 26 Oct 2020 05:23:48 +0000
+Message-ID: <BY5PR12MB4322CC03CE0D34B83269676ADC190@BY5PR12MB4322.namprd12.prod.outlook.com>
+References: <000000000000335adc05b23300f6@google.com>
+        <000000000000a0f8a305b261fe4a@google.com>
+ <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201024111516.59abc9ec@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
 Accept-Language: en-US
 Content-Language: en-US
 X-MS-Has-Attach: 
 X-MS-TNEF-Correlator: 
-authentication-results: codeaurora.org; dkim=none (message not signed)
- header.d=none;codeaurora.org; dmarc=none action=none header.from=wdc.com;
-x-originating-ip: [212.25.79.133]
+authentication-results: kernel.org; dkim=none (message not signed)
+ header.d=none;kernel.org; dmarc=none action=none header.from=nvidia.com;
+x-originating-ip: [49.207.195.223]
 x-ms-publictraffictype: Email
-x-ms-office365-filtering-ht: Tenant
-x-ms-office365-filtering-correlation-id: 1359f5bd-4735-4da5-c2ed-08d8796f2e07
-x-ms-traffictypediagnostic: BY5PR04MB6454:
-x-microsoft-antispam-prvs: <BY5PR04MB64547CF118BD3AB6DB6AD0FFFC190@BY5PR04MB6454.namprd04.prod.outlook.com>
-wdcipoutbound: EOP-TRUE
-x-ms-oob-tlc-oobclassifiers: OLM:9508;
+x-ms-office365-filtering-correlation-id: b1011120-8eb3-4bd9-1576-08d8796f5156
+x-ms-traffictypediagnostic: BY5PR12MB3842:
+x-microsoft-antispam-prvs: <BY5PR12MB38420528634827441C4D31F2DC190@BY5PR12MB3842.namprd12.prod.outlook.com>
+x-ms-oob-tlc-oobclassifiers: OLM:2582;
 x-ms-exchange-senderadcheck: 1
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: qWqxfoDtrZ9exjoinDvryXpwf3KFdQeWYC5dEWve+lktC2BwFgkR+TnNVgFkzJV3x4+OzQxlWKyiPST+/mEyH+Fq5GKmRwoFjI6Zr0kiZlOWBT8xppQCL/J6QEXI2LA5vKej6X3EgZDpk33PYEDq+y639CvH8I/1/yUSrpQBE2TGsKHNLZfB5M+EFVrT3dMtbTYPVHD4dE39C0SOB7JIcJxySxozlTEleM4MbPjMvHL9K1Dql56kBWc8Kse+E2saRt8uKM9n28NppAxqt0Sq222IxEwomaFS6Cp7CzwJCf3If/7Boy45mMejFQ7bcLLvl0Vtvz/qwP6qTatXrCD0XA==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR04MB6705.namprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(39860400002)(346002)(366004)(376002)(396003)(136003)(9686003)(316002)(55016002)(6916009)(7696005)(53546011)(71200400001)(478600001)(8936002)(86362001)(5660300002)(6506007)(54906003)(33656002)(66476007)(4744005)(66946007)(83380400001)(66556008)(66446008)(4326008)(76116006)(4001150100001)(64756008)(2906002)(186003)(52536014)(8676002)(26005)(7416002);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata: QZBc5WzqkTvnMqRC77MI5lXIfIVazz/ne4qxkHeSQfCgC0mlfhjGBu2EJwzi0fkUB7bFLVssMUJc2Gck6NzJSwV1N9BvVNGzwpsKv+ZXcBqOo90ykRp11TIq1TNI0XyxYoPXSGCgmc0H74zPUH7GeHE6pnvyCsYy8z16sy/8131/tbMb1LdSbLjKlq/U5kTUEBOkh98WhzeEBK7/Z1UozSPfo04KrsC7LxSUhqzd4D13KOVMH522uOPETMdSaDlcnP631W2ypsNOhlj30SJaMSTaxdkycBjbW1r6eos/XGm5CP+Neuh0J17iScuu2Vy6BZOczzU59P4rGrzcB+mGcfmOOlRwGDClvFp4Cbv/wtygK9ARkzlTzIiRDLHIxycu0vbLfz3GeKjytxYehr5R7ZBISG7iJhqHqsNMC6xU/7jmC9NdtErsJe6qv4I7BfTuzf/URfcs5RwlBOyoFL0Gh29n3JMtJLUO0AGcXTTxLPIDGWFGhP9CzZIxethnpLDRFASBJuqpNOcGnC1dnog4KD434vwPSHN3pCbWu8MfX+o4Le55et6cUS1ZWXx1pYiOFiQTD3eyDBG5GHa/1qYLlBgcY9Shd2jLmGawmXDBgjAFKDDBUW6AQ87SCv4h5kRzav5n4k2qoZORwjDOXBNJEA==
+x-microsoft-antispam-message-info: Y+3F1SaWjx/zRrb0K3rSjRkyshOOTTlkfAS0S1MJ4igzSWAV2f3LtcEhi460dXZxxU2pN8pUb78Y4T6P41a8xczXqoWyEzM62ZnocZI0JrJFE/G8d/WGfU1MgvGDJ6AjP+Lfy3iRMawvAGBlJG2tqBehHhS2Gbu81eJvuuz75CMDrSSKWHtUUoBOJalPislzN9Asp3iph7H6eWt5ZPoWl/iJJbrzcJyOvnhCsBYaka4S0WOUsGdN+BJKO2z5wHM16cr4v0W5MczTGyteinrPQMtzu8lN2Ki50G2i6ES7iqde6hDO4j3V7T5WocvsNiZV/36238gDctiW4ESwprkSwi6YB0X+rMADd9WJKhb/7WPHttI7xXKPSsda5aEHJa19iTJlQ+jnc9OYvhyZVQfjRg==
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BY5PR12MB4322.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(366004)(376002)(39860400002)(396003)(346002)(7116003)(2906002)(7416002)(66946007)(4326008)(8936002)(5660300002)(55016002)(33656002)(478600001)(45080400002)(83380400001)(966005)(110136005)(66476007)(64756008)(66556008)(86362001)(52536014)(76116006)(66446008)(186003)(71200400001)(316002)(26005)(54906003)(6506007)(55236004)(8676002)(7696005)(9686003);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata: um3a6/B+qi795WTVO+zikuAuO8OsftQsFvKddYoBgSHg2hFOq3JYHAg3cBbzLf3ZEVu6879ppX1b+qU0dGbCyPSdK9K3yn/lI3+N16kTt+hHJX/B6rZoXJK1dorMF/hczLrQAZsYLrsywJ03tA0WRdir4A39dVBQfOtUqOsbEG/+WK+4+wkBRh6zPVPTtY8JdDr0dhXzNVn6oa8+s/vDapiBpC4Ovupjo+tQJFDITjSN21v2NOP86elQzuqS8G4RFGttTqycN2/adA4eDdhkgytvVPHEeaGJO3Y2QpRIrDztz+i6XFsLODOz+SoJShDuVONjPJlScYY85FpJajOi+xoBlBndq5TzCFSH62ZyndokB4tdAI8xJhmwV5cgBJUi3eYox6aZZEBhaG2tElYDLhQ0uHbTon2V9MCJTnFPG9dRFhubTuoNOkVbfI7rm+/srWBwXT3tJUWWgDCa8/76YXcq8inTMbx9PpZ97H07g4vOo8dWj2izaFahSUZOGXmgj8FlQxgrEvZqa3Rqjnl5xUbb4WFR6gzzzK3sjovsb3pqh4Aq93/iCyubG/JgZ9GzzzuEI33e/kSQdBw/9hUsP/rtUtA82maaQAnA/jS2JRt7Hz/VRSSqEn9hkL+rHK9kAW4UroyhPhhUTr5RiYLjMA==
 x-ms-exchange-transport-forked: True
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 MIME-Version: 1.0
-X-OriginatorOrg: wdc.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: BY5PR04MB6705.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1359f5bd-4735-4da5-c2ed-08d8796f2e07
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2020 05:22:49.2690
+X-MS-Exchange-CrossTenant-AuthSource: BY5PR12MB4322.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: b1011120-8eb3-4bd9-1576-08d8796f5156
+X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2020 05:23:48.4438
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: b61c8803-16f3-4c35-9b17-6f65f441df86
+X-MS-Exchange-CrossTenant-id: 43083d15-7273-40c1-b7db-39efd9ccc17a
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: wb4I1FnugmlSGJUacoraYboC5vidFrdRK0LtxrtWTKwji295rNrNmFn8o1Yprnhhfcifadoyi/QF/Xfp/ULnsQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR04MB6454
+X-MS-Exchange-CrossTenant-userprincipalname: 34yrQB1V5yaoAvaBs06eEUzOtttYEuGETHA7nEqHb+pxirXG1j7n/hCF44Wjy4VsQlyitKkXvStD+e0K612ohA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB3842
+X-OriginatorOrg: Nvidia.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603689844; bh=tbMLpDqrsvU0+iByqjIAN0xatWbwA6AlnyCh2OwMIvU=;
+        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:From:To:
+         CC:Subject:Thread-Topic:Thread-Index:Date:Message-ID:References:
+         In-Reply-To:Accept-Language:Content-Language:X-MS-Has-Attach:
+         X-MS-TNEF-Correlator:authentication-results:x-originating-ip:
+         x-ms-publictraffictype:x-ms-office365-filtering-correlation-id:
+         x-ms-traffictypediagnostic:x-microsoft-antispam-prvs:
+         x-ms-oob-tlc-oobclassifiers:x-ms-exchange-senderadcheck:
+         x-microsoft-antispam:x-microsoft-antispam-message-info:
+         x-forefront-antispam-report:x-ms-exchange-antispam-messagedata:
+         x-ms-exchange-transport-forked:Content-Type:
+         Content-Transfer-Encoding:MIME-Version:
+         X-MS-Exchange-CrossTenant-AuthAs:
+         X-MS-Exchange-CrossTenant-AuthSource:
+         X-MS-Exchange-CrossTenant-Network-Message-Id:
+         X-MS-Exchange-CrossTenant-originalarrivaltime:
+         X-MS-Exchange-CrossTenant-fromentityheader:
+         X-MS-Exchange-CrossTenant-id:X-MS-Exchange-CrossTenant-mailboxtype:
+         X-MS-Exchange-CrossTenant-userprincipalname:
+         X-MS-Exchange-Transport-CrossTenantHeadersStamped:X-OriginatorOrg;
+        b=IAOVmhswVe83Qe3IsX4Xt7Ei3P+qa6kSxmgtT6+zEwaQyqKnS+BiXAA1ymF2RTzzf
+         RPYBKBKp4vRRAzwLESbu/NUG+f9jdcgOQvzEser5dWyVDxsG2c1/eM0olFqrq8kT0d
+         ZnD2OlDb/OlbBJRjrbi52t6BdIsFKe/vsgw9UtauzK2POwYvoDA02eTJWIoNBGlmRZ
+         nbXRj4qKCASD4U2f0kWTd68wv7lonaxkQLXALrD4Z5gPAHUTOe9wWhj4D+JrONuDT0
+         qS7b7wwKknKCpSKq8VcuHXm7eplpBzEP9W1wDzEY8ZG0YiH5jmX0h6WFdybRtK1kDn
+         VWyqhRUUqEnUg==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-=20
-> On 2020-10-22 14:37, Avri Altman wrote:
-> >> Since WB feature has been added, WB related sysfs entries can be
-> >> accessed
-> >> even when an UFS device does not support WB feature. In that case, the
-> >> descriptors which are not supported by the UFS device may be wrongly
-> >> reported when they are accessed from their corrsponding sysfs entries.
-> >> Fix it by adding a sanity check of parameter offset against the actual
-> >> decriptor length.s
-> > This should be a bug fix IMO, and be dealt with similarly like
-> > ufshcd_is_wb_attrs or ufshcd_is_wb_flag.
-> > Thanks,
-> > Avri
->=20
-> Could you please elaborate on ufshcd_is_wb_attrs or ufshcd_is_wb_flag?
-> Sorry that I don't quite get it.
-Since this change is only protecting illegal access from sysfs entries,
-I am suggesting to handle it there, just like ufshcd_is_wb_attrs or ufshcd_=
-is_wb_flag
-Are doing it for flags and attributes.
+Hi Christoph,
 
-Thanks,
-Avri
+> From: Jakub Kicinski <kuba@kernel.org>
+> Sent: Saturday, October 24, 2020 11:45 PM
+>=20
+> CC: rdma, looks like rdma from the stack trace
+>=20
+> On Fri, 23 Oct 2020 20:07:17 -0700 syzbot wrote:
+> > syzbot has found a reproducer for the following issue on:
+> >
+> > HEAD commit:    3cb12d27 Merge tag 'net-5.10-rc1' of git://git.kernel.o=
+rg/..
+
+In [1] you mentioned that dma_mask should not be set for dma_virt_ops.
+So patch [2] removed it.
+
+But check to validate the dma mask for all dma_ops was added in [3].
+
+What is the right way? Did I misunderstood your comment about dma_mask in [=
+1]?
+
+[1] https://www.spinics.net/lists/linux-rdma/msg96374.html
+[2] e0477b34d9d ("RDMA: Explicitly pass in the dma_device to ib_register_de=
+vice")
+[3] f959dcd6ddfd ("dma-direct: Fix potential NULL pointer dereference")
+
+> > WARNING: CPU: 1 PID: 8488 at kernel/dma/mapping.c:149
+> > dma_map_page_attrs+0x493/0x700 kernel/dma/mapping.c:149 Modules
+> linked in:
+> >  dma_map_single_attrs include/linux/dma-mapping.h:279 [inline]
+> > ib_dma_map_single include/rdma/ib_verbs.h:3967 [inline]
+> >  ib_mad_post_receive_mads+0x23f/0xd60
+> > drivers/infiniband/core/mad.c:2715
+> >  ib_mad_port_start drivers/infiniband/core/mad.c:2862 [inline]
+> > ib_mad_port_open drivers/infiniband/core/mad.c:3016 [inline]
+> >  ib_mad_init_device+0x72b/0x1400 drivers/infiniband/core/mad.c:3092
+> >  add_client_context+0x405/0x5e0 drivers/infiniband/core/device.c:680
+> >  enable_device_and_get+0x1d5/0x3c0
+> > drivers/infiniband/core/device.c:1301
+> >  ib_register_device drivers/infiniband/core/device.c:1376 [inline]
+> >  ib_register_device+0x7a7/0xa40 drivers/infiniband/core/device.c:1335
+> >  rxe_register_device+0x46d/0x570
+> > drivers/infiniband/sw/rxe/rxe_verbs.c:1182
+> >  rxe_add+0x12fe/0x16d0 drivers/infiniband/sw/rxe/rxe.c:247
+> >  rxe_net_add+0x8c/0xe0 drivers/infiniband/sw/rxe/rxe_net.c:507
+> >  rxe_newlink drivers/infiniband/sw/rxe/rxe.c:269 [inline]
+> >  rxe_newlink+0xb7/0xe0 drivers/infiniband/sw/rxe/rxe.c:250
+> >  nldev_newlink+0x30e/0x540 drivers/infiniband/core/nldev.c:1555
+> >  rdma_nl_rcv_msg+0x367/0x690 drivers/infiniband/core/netlink.c:195
+> >  rdma_nl_rcv_skb drivers/infiniband/core/netlink.c:239 [inline]
+> >  rdma_nl_rcv+0x2f2/0x440 drivers/infiniband/core/netlink.c:259
+> >  netlink_unicast_kernel net/netlink/af_netlink.c:1304 [inline]
+> >  netlink_unicast+0x533/0x7d0 net/netlink/af_netlink.c:1330
+> >  netlink_sendmsg+0x856/0xd90 net/netlink/af_netlink.c:1919
+> > sock_sendmsg_nosec net/socket.c:651 [inline]
+> >  sock_sendmsg+0xcf/0x120 net/socket.c:671
+> >  ____sys_sendmsg+0x6e8/0x810 net/socket.c:2353
+> >  ___sys_sendmsg+0xf3/0x170 net/socket.c:2407
+> >  __sys_sendmsg+0xe5/0x1b0 net/socket.c:2440
+> >  do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
+> >  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+> > RIP: 0033:0x443699
+> > Code: 18 89 d0 c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 48 89 f8 48
+> > 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d
+> > 01 f0 ff ff 0f 83 db 0d fc ff c3 66 2e 0f 1f 84 00 00 00 00
+> > RSP: 002b:00007ffc067db418 EFLAGS: 00000246 ORIG_RAX:
+> 000000000000002e
+> > RAX: ffffffffffffffda RBX: 0000000000000003 RCX: 0000000000443699
+> > RDX: 0000000000000000 RSI: 00000000200002c0 RDI: 0000000000000003
+> > RBP: 00007ffc067db420 R08: 0000000001bbbbbb R09: 0000000001bbbbbb
+> > R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc067db430
+> > R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+> >
+
