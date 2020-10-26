@@ -2,119 +2,188 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0AEC299733
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:41:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E3DF0299741
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:43:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1726198AbgJZTld (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:41:33 -0400
-Received: from mail-ot1-f68.google.com ([209.85.210.68]:33253 "EHLO
-        mail-ot1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725920AbgJZTlc (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:41:32 -0400
-Received: by mail-ot1-f68.google.com with SMTP id x7so4875955ota.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:41:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=5UMWGuOLcjC1cO+fKd8FsBCsk5aBoRgWF22+6G/UdwY=;
-        b=g6RS9T7l8auC4GFcmim2BCZTWwq9F1LIqnl14iDbBdZwkoj/h5gzNZXmVgf0FoLqEd
-         FwrZnEGkTtCTcmKZ90sAuaIiafOx63Vee2FqZitIQ78vjFc3fclWAJTzMcaayjMZwc8V
-         /1SAKk8o3mMqBV/XzAgC16BjRscO0uq8NGH04ACOh/lU+rR2XNBQ46HNr0E1sniN6Von
-         7LYyUFnGSs5wsFNyotHzIiePtJQxrsuc0Pv3NTpoZSmzSaZKyeJk6qQ61Mqu1ddgKiGy
-         n/N8e+SqOc413tsbPQGV18m6kpipCYpIVuRlSMDbmC8Z9btmQDYSImF/PGqRlhD5NdC0
-         0NfA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=5UMWGuOLcjC1cO+fKd8FsBCsk5aBoRgWF22+6G/UdwY=;
-        b=WlYXrD9RSM3dxWPDKzD/gxjwzreYk2lX0at/PYlknoVT8CmT+xxKiklPpTQ4ZIoLrm
-         GrEf6yOgNf9OTBbtQ2RZIq+BU9UJSpVADZlsg7RlWExCxtZbtVl5CKOdxfXda3NUOYGq
-         9euYwj3e9o8IEs3gzxUY6d2phmaEyNYLM+tqk8zmFh5gdd2IVINiFinz6SMjomfnQ5WN
-         AiCMO4IjCvrV0jaEZCTcRqW6ojzSsKQDkVA1QGnuNwmaEWmOjJ+aq2/Jiz7LT5O20Ebh
-         7eljjR2ooLKkSAFnbkRIC6u/cBGB/umpWyG5s3aqcF9FuuwZVHs55aszjidXf7HVt977
-         g6Uw==
-X-Gm-Message-State: AOAM530aJX9PoSTtmJKpJf17COiMpJ4axx3aHraWmbsb+PKGpTKHMK6p
-        UEmpr6CVGUNOZNJUZ3vl4E8=
-X-Google-Smtp-Source: ABdhPJz/D7hWcfTIhSRMpGb6Pw553ZqCSWa2i8mdG5VESpK2OySkc+7wZ92Sz2i6nGBTuJ3wWTL+6A==
-X-Received: by 2002:a9d:61:: with SMTP id 88mr12036238ota.109.1603741289548;
-        Mon, 26 Oct 2020 12:41:29 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id t5sm4032472otl.22.2020.10.26.12.41.28
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 12:41:28 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 26 Oct 2020 12:41:27 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Joe Perches <joe@perches.com>
-Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev@lists.ozlabs.org
-Subject: Re: [PATCH] treewide: Convert macro and uses of __section(foo) to
- __section("foo")
-Message-ID: <20201026194127.GA106214@roeck-us.net>
-References: <fe8abcc88cff676ead8ee48db1e993e63b0611c7.1603327264.git.joe@perches.com>
+        id S1727016AbgJZTnj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:43:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:45358 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726826AbgJZTnj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:43:39 -0400
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D6DF2087C;
+        Mon, 26 Oct 2020 19:43:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603741417;
+        bh=pRjS0+eZxaeWEj3A+YYqBWF7ikHcSLUa5f9mmCAZJnI=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=JblqeucZceheoI2hlEcCyC6I7gByQsxGY3o3pMWCzYEB6g9aEtDaljR04JOUrcfHk
+         I0knx8IWohjlrFY+McoMohaWy/WyR9m/z84XL3VuULmDV0n5LRdTUyI3/ao3vAekof
+         n5ccA7nyv1UrjDZ6YDGr/mwtKAoTwxQhaC75jc1s=
+Date:   Mon, 26 Oct 2020 12:43:36 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     asutoshd@codeaurora.org
+Cc:     linux-kernel@vger.kernel.org, linux-@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        cang@codeaurora.org, alim.akhtar@samsung.com, avri.altman@wdc.com,
+        bvanassche@acm.org
+Subject: Re: [PATCH v3 2/5] scsi: ufs: clear UAC for FFU and RPMB LUNs
+Message-ID: <20201026194336.GA226134@google.com>
+References: <20201024150646.1790529-1-jaegeuk@kernel.org>
+ <20201024150646.1790529-3-jaegeuk@kernel.org>
+ <84bad19305642b7faf21a1a48eb3e46f@codeaurora.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <fe8abcc88cff676ead8ee48db1e993e63b0611c7.1603327264.git.joe@perches.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <84bad19305642b7faf21a1a48eb3e46f@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 07:36:07PM -0700, Joe Perches wrote:
-> Use a more generic form for __section that requires quotes to avoid
-> complications with clang and gcc differences.
+On 10/26, asutoshd@codeaurora.org wrote:
+> On 2020-10-24 08:06, Jaegeuk Kim wrote:
+> > From: Jaegeuk Kim <jaegeuk@google.com>
+> > 
+> > In order to conduct FFU or RPMB operations, UFS needs to clear UAC. This
+> > patch
+> > clears it explicitly, so that we could get no failure given early
+> > execution.
+> > 
 > 
-> Remove the quote operator # from compiler_attributes.h __section macro.
-> 
-> Convert all unquoted __section(foo) uses to quoted __section("foo").
-> Also convert __attribute__((section("foo"))) uses to __section("foo")
-> even if the __attribute__ has multiple list entry forms.
-> 
-> Conversion done using a script:
-> 
-> Link: https://lore.kernel.org/lkml/75393e5ddc272dc7403de74d645e6c6e0f4e70eb.camel@perches.com/2-convert_section.pl
-> 
-> Signed-off-by: Joe Perches <joe@perches.com>
-> Reviewed-by: Nick Desaulniers <ndesaulniers@gooogle.com>
-> Reviewed-by: Miguel Ojeda <ojeda@kernel.org>
-> ---
-> 
-make ARCH=um SUBARCH=x86_64 defconfig:
+> What's the meaning of 'given early execution'?
 
-Building um:defconfig ... failed
---------------
-Error log:
-arch/um/kernel/skas/clone.c:24:16: error: expected declaration specifiers or '...' before string constant
-   24 | void __section(".__syscall_stub")
-      |                ^~~~~~~~~~~~~~~~~
-make[3]: *** [arch/um/kernel/skas/clone.o] Error 1
-make[3]: *** Waiting for unfinished jobs....
-make[2]: *** [arch/um/kernel/skas] Error 2
-make[2]: *** Waiting for unfinished jobs....
-arch/um/os-Linux/signal.c: In function 'sig_handler_common':
-arch/um/os-Linux/signal.c:51:1: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-   51 | }
-      | ^
-arch/um/os-Linux/signal.c: In function 'timer_real_alarm_handler':
-arch/um/os-Linux/signal.c:95:1: warning: the frame size of 2960 bytes is larger than 1024 bytes [-Wframe-larger-than=]
-   95 | }
-      | ^
-make[1]: *** [arch/um/kernel] Error 2
-make[1]: *** Waiting for unfinished jobs....
-arch/x86/um/stub_segv.c:11:16: error: expected declaration specifiers or '...' before string constant
-   11 | void __section(".__syscall_stub")
-      |                ^~~~~~~~~~~~~~~~~
-make[2]: *** [arch/x86/um/stub_segv.o] Error 1
-make[1]: *** [arch/x86/um] Error 2
-make: *** [__sub-make] Error 2
+I saw there's hba->wlun_dev_clr_ua to clear UA at ufshcd_set_dev_pwr_mode(),
+and thus, assumed there's other path to clear UA. So, with this patch, user
+can try FFU or RPMB requests regardless of that being done.
 
-As with s390, reverting this patch fixes the problem.
-
-Guenter
+> 
+> > Signed-off-by: Jaegeuk Kim <jaegeuk@google.com>
+> > ---
+> >  drivers/scsi/ufs/ufshcd.c | 70 +++++++++++++++++++++++++++++++++++----
+> >  drivers/scsi/ufs/ufshcd.h |  1 +
+> >  2 files changed, 65 insertions(+), 6 deletions(-)
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > index e0b479f9eb8a..011e80a21170 100644
+> > --- a/drivers/scsi/ufs/ufshcd.c
+> > +++ b/drivers/scsi/ufs/ufshcd.c
+> > @@ -7057,7 +7057,6 @@ static inline void
+> > ufshcd_blk_pm_runtime_init(struct scsi_device *sdev)
+> >  static int ufshcd_scsi_add_wlus(struct ufs_hba *hba)
+> >  {
+> >  	int ret = 0;
+> > -	struct scsi_device *sdev_rpmb;
+> >  	struct scsi_device *sdev_boot;
+> > 
+> >  	hba->sdev_ufs_device = __scsi_add_device(hba->host, 0, 0,
+> > @@ -7070,14 +7069,14 @@ static int ufshcd_scsi_add_wlus(struct ufs_hba
+> > *hba)
+> >  	ufshcd_blk_pm_runtime_init(hba->sdev_ufs_device);
+> >  	scsi_device_put(hba->sdev_ufs_device);
+> > 
+> > -	sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
+> > +	hba->sdev_rpmb = __scsi_add_device(hba->host, 0, 0,
+> >  		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_RPMB_WLUN), NULL);
+> > -	if (IS_ERR(sdev_rpmb)) {
+> > -		ret = PTR_ERR(sdev_rpmb);
+> > +	if (IS_ERR(hba->sdev_rpmb)) {
+> > +		ret = PTR_ERR(hba->sdev_rpmb);
+> >  		goto remove_sdev_ufs_device;
+> >  	}
+> > -	ufshcd_blk_pm_runtime_init(sdev_rpmb);
+> > -	scsi_device_put(sdev_rpmb);
+> > +	ufshcd_blk_pm_runtime_init(hba->sdev_rpmb);
+> > +	scsi_device_put(hba->sdev_rpmb);
+> > 
+> >  	sdev_boot = __scsi_add_device(hba->host, 0, 0,
+> >  		ufshcd_upiu_wlun_to_scsi_wlun(UFS_UPIU_BOOT_WLUN), NULL);
+> > @@ -7601,6 +7600,63 @@ static int ufshcd_add_lus(struct ufs_hba *hba)
+> >  	return ret;
+> >  }
+> > 
+> > +static int
+> > +ufshcd_send_request_sense(struct ufs_hba *hba, struct scsi_device
+> > *sdp);
+> > +
+> > +static int ufshcd_clear_ua_wlun(struct ufs_hba *hba, u8 wlun)
+> > +{
+> > +	struct scsi_device *sdp;
+> > +	unsigned long flags;
+> > +	int ret = 0;
+> > +
+> > +	spin_lock_irqsave(hba->host->host_lock, flags);
+> > +	if (wlun  == UFS_UPIU_UFS_DEVICE_WLUN)
+> > +		sdp = hba->sdev_ufs_device;
+> > +	else if (wlun  == UFS_UPIU_RPMB_WLUN)
+> > +		sdp = hba->sdev_rpmb;
+> > +	else
+> > +		BUG_ON(1);
+> > +	if (sdp) {
+> > +		ret = scsi_device_get(sdp);
+> > +		if (!ret && !scsi_device_online(sdp)) {
+> > +			ret = -ENODEV;
+> > +			scsi_device_put(sdp);
+> > +		}
+> > +	} else {
+> > +		ret = -ENODEV;
+> > +	}
+> > +	spin_unlock_irqrestore(hba->host->host_lock, flags);
+> > +	if (ret)
+> > +		goto out_err;
+> > +
+> > +	ret = ufshcd_send_request_sense(hba, sdp);
+> > +	scsi_device_put(sdp);
+> > +out_err:
+> > +	if (ret)
+> > +		dev_err(hba->dev, "%s: UAC clear LU=%x ret = %d\n",
+> > +				__func__, wlun, ret);
+> > +	return ret;
+> > +}
+> > +
+> > +static int ufshcd_clear_ua_wluns(struct ufs_hba *hba)
+> > +{
+> > +	int ret = 0;
+> > +
+> > +	if (!hba->wlun_dev_clr_ua)
+> > +		goto out;
+> > +
+> > +	ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_UFS_DEVICE_WLUN);
+> > +	if (!ret)
+> > +		ret = ufshcd_clear_ua_wlun(hba, UFS_UPIU_RPMB_WLUN);
+> > +	if (!ret)
+> > +		hba->wlun_dev_clr_ua = false;
+> > +out:
+> > +	if (ret)
+> > +		dev_err(hba->dev, "%s: Failed to clear UAC WLUNS ret = %d\n",
+> > +				__func__, ret);
+> > +	return ret;
+> > +}
+> > +
+> >  /**
+> >   * ufshcd_probe_hba - probe hba to detect device and initialize
+> >   * @hba: per-adapter instance
+> > @@ -7720,6 +7776,8 @@ static void ufshcd_async_scan(void *data,
+> > async_cookie_t cookie)
+> >  		pm_runtime_put_sync(hba->dev);
+> >  		ufshcd_exit_clk_scaling(hba);
+> >  		ufshcd_hba_exit(hba);
+> > +	} else {
+> > +		ufshcd_clear_ua_wluns(hba);
+> >  	}
+> >  }
+> > 
+> > diff --git a/drivers/scsi/ufs/ufshcd.h b/drivers/scsi/ufs/ufshcd.h
+> > index 47eb1430274c..718881d038f5 100644
+> > --- a/drivers/scsi/ufs/ufshcd.h
+> > +++ b/drivers/scsi/ufs/ufshcd.h
+> > @@ -681,6 +681,7 @@ struct ufs_hba {
+> >  	 * "UFS device" W-LU.
+> >  	 */
+> >  	struct scsi_device *sdev_ufs_device;
+> > +	struct scsi_device *sdev_rpmb;
+> > 
+> >  	enum ufs_dev_pwr_mode curr_dev_pwr_mode;
+> >  	enum uic_link_state uic_link_state;
