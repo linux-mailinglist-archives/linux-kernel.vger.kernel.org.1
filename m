@@ -2,199 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E0328298D2F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:52:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8B6E3298D2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:51:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775635AbgJZMwE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:52:04 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:38598 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775631AbgJZMwD (ORCPT
+        id S1775611AbgJZMvr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:51:47 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:37886 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775602AbgJZMvq (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:52:03 -0400
-Received: by mail-wr1-f65.google.com with SMTP id n18so12366843wrs.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:52:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=android.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=gcgBSno187aQNdhvd4N5jly+A7zB4BHcwgXiG2B//N8=;
-        b=mlOM4XI1khkSgoo5fH4K5JNpXT7Awm84134FjHcN081ek0aPls57KS+kLhzx5mzoNA
-         jk5ZZDTsJkFJ4DUS9zSIUxZ+BszBTOnGFBu2KystEnePEFTkdq1kGQa68LyTowdZ5Rxg
-         mxikb7wM3mKXfzDd/OUcGPAqZrP0Cm7Rv6NqeR+HMZhmB6/qQc1HDRwRu48kyK241O95
-         Mz6srSYgICO7m4lizZwqLRet3eJfCUFM/4NYsI0926uB5UWNy5fCXdhXUVk+oNQJz3VH
-         ue7yFrl1oSHq3I0kcnIRTUWgzAOQFp65k12+zKjaGkhTCOUtgoYiQD44PDlAN3LXwUL4
-         B+oA==
+        Mon, 26 Oct 2020 08:51:46 -0400
+Received: by mail-ot1-f65.google.com with SMTP id m22so7858460ots.4;
+        Mon, 26 Oct 2020 05:51:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=gcgBSno187aQNdhvd4N5jly+A7zB4BHcwgXiG2B//N8=;
-        b=BSlJolU4/WTkxy+mk0Y8qleV4+MOMILy+Dd4QuHvpfWJTqSYc113coFOIPj2jnZFAu
-         xP4Ci0YjZ9jhrGUMBjn6CwWMMkjrCu7lUV65N10J45w3BPZGmhG09sXc+ejgr7WAZOzq
-         MFy1bvzl+5ibX57be7tE3DJ9aXAC/Y+Hhh+V+Xo66XD+yOgT9Iyn1FjkjY+oO90vyxnt
-         Su7MhQ5oq6Q47aKdBaoS2+bfiA9gM1utxutLY+T6w9WMmNSyVcWrRvH1djJsp5XMJ2Ll
-         wfvN4wfZI4FLiELqH/s94QGAALJynHj+IAbAjjNBD5hcPDtUflOZ7a3/r35WChS49Pgp
-         OGyA==
-X-Gm-Message-State: AOAM533DOWgNseSJvUO15bZxOUl/4hV2eLjOTt5vm1NgGuy4C+3/Cy1c
-        Zh7hxT8YTkbO5xHC8F+nRypW3g==
-X-Google-Smtp-Source: ABdhPJyFOMU6T+owZA0xINIT11Tj46q+KH+V135ZjsSHI/oDFrAOsbqBfE4aDhI18cgmWjR1husmGw==
-X-Received: by 2002:adf:e849:: with SMTP id d9mr19065260wrn.25.1603716720303;
-        Mon, 26 Oct 2020 05:52:00 -0700 (PDT)
-Received: from balsini.lon.corp.google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id r1sm24423262wro.18.2020.10.26.05.51.59
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=7vcZvKgWj3tvpCdWw11KvF34FDIuvpLAkBuN1aheOyE=;
+        b=Gi0+8MZtJJfmCqMGjEWHn1JxrjZjNLDoLavqa7+91lRiLfrKcOWuxWgtBM3zugeUbF
+         7MYRvAWMqhDG7VRSNEr7RJAOOVzLnbuJfx6dgllXdDVij1Rgviv35n9en8DZowCzxba5
+         kuzLJE1vbheNQzEKUTpFCLSu03ElDQKbeUQJv920pbWXglm2SQE/G5kMiRfugt2vOvbb
+         kczTgOvyQIfm2hNt/AIqlT2OQ+0znLodTIaCBL4X0kvQEapSZnttppVgyJGsM2UGK81X
+         kpvuGE9v8buhRqDyu5poCoBxC7QnSa3AhMCfVFytLYXiTl8H6V2gWkJ4P30LPoYBkm2u
+         hAgA==
+X-Gm-Message-State: AOAM531My91CYwEXOBnrAkCEFlo6Z0p3WwjGylZlvX0SrT/4d3vsMvYB
+        zp8M3yMttlvf/YJBbSDKmN8znFWT4w==
+X-Google-Smtp-Source: ABdhPJwtQ8qXPYNncRhuW2K59WC9pM4KV3qQo7AARhnKaGe2bwX3DRc0S3phoNePbEXYmvRskbucJw==
+X-Received: by 2002:a05:6830:448:: with SMTP id d8mr8698533otc.318.1603716705097;
+        Mon, 26 Oct 2020 05:51:45 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id a16sm3524919otk.39.2020.10.26.05.51.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:51:59 -0700 (PDT)
-From:   Alessio Balsini <balsini@android.com>
-To:     Miklos Szeredi <miklos@szeredi.hu>
-Cc:     Akilesh Kailash <akailash@google.com>,
-        Amir Goldstein <amir73il@gmail.com>,
-        Antonio SJ Musumeci <trapexit@spawn.link>,
-        David Anderson <dvander@google.com>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Jann Horn <jannh@google.com>, Jens Axboe <axboe@kernel.dk>,
-        Martijn Coenen <maco@android.com>,
-        Palmer Dabbelt <palmer@dabbelt.com>,
-        Paul Lawrence <paullawrence@google.com>,
-        Stefano Duo <duostefano93@gmail.com>,
-        Zimuzo Ezeozue <zezeozue@google.com>,
-        fuse-devel@lists.sourceforge.net, kernel-team@android.com,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V10 5/5] fuse: Use daemon creds in passthrough mode
-Date:   Mon, 26 Oct 2020 12:50:16 +0000
-Message-Id: <20201026125016.1905945-6-balsini@android.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201026125016.1905945-1-balsini@android.com>
-References: <20201026125016.1905945-1-balsini@android.com>
+        Mon, 26 Oct 2020 05:51:44 -0700 (PDT)
+Received: (nullmailer pid 4170335 invoked by uid 1000);
+        Mon, 26 Oct 2020 12:51:43 -0000
+Date:   Mon, 26 Oct 2020 07:51:43 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Dmitry Osipenko <digetx@gmail.com>
+Cc:     MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>, linux-tegra@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, Viresh Kumar <vireshk@kernel.org>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        devicetree@vger.kernel.org, linux-pm@vger.kernel.org,
+        Krzysztof Kozlowski <krzk@kernel.org>,
+        Chanwoo Choi <cw00.choi@samsung.com>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 13/52] dt-bindings: memory: tegra124: emc: Document
+ new interconnect property
+Message-ID: <20201026125143.GA4170168@bogus>
+References: <20201025221735.3062-1-digetx@gmail.com>
+ <20201025221735.3062-14-digetx@gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201025221735.3062-14-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-When using FUSE passthrough, read/write operations are directly forwarded
-to the lower file system file through VFS, but there is no guarantee that
-the process that is triggering the request has the right permissions to
-access the lower file system. This would cause the read/write access to
-fail.
+On Mon, 26 Oct 2020 01:16:56 +0300, Dmitry Osipenko wrote:
+> External memory controller is interconnected with memory controller and
+> with external memory. Document new interconnect property which turns
+> External Memory Controller into interconnect provider.
+> 
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
+> ---
+>  .../bindings/memory-controllers/nvidia,tegra124-emc.yaml   | 7 +++++++
+>  1 file changed, 7 insertions(+)
+> 
 
-In passthrough file systems, where the FUSE daemon is responsible for the
-enforcement of the lower file system access policies, often happens that
-the process dealing with the FUSE file system doesn't have access to the
-lower file system.
-Being the FUSE daemon in charge of implementing the FUSE file operations,
-that in the case of read/write operations usually simply results in the
-copy of memory buffers from/to the lower file system respectively, these
-operations are executed with the FUSE daemon privileges.
-
-This patch adds a reference to the FUSE daemon credentials, referenced at
-FUSE_DEV_IOC_PASSTHROUGH_OPEN ioctl() time so that they can be used to
-temporarily raise the user credentials when accessing lower file system
-files in passthrough.
-The process accessing the FUSE file with passthrough enabled temporarily
-receives the privileges of the FUSE daemon while performing read/write
-operations. Similar behavior is implemented in overlayfs.
-These privileges will be reverted as soon as the IO operation completes.
-This feature does not provide any higher security privileges to those
-processes accessing the FUSE file system with passthrough enabled. This is
-because it is still the FUSE daemon responsible for enabling or not the
-passthrough feature at file open time, and should enable the feature only
-after appropriate access policy checks.
-
-Signed-off-by: Alessio Balsini <balsini@android.com>
----
- fs/fuse/fuse_i.h      |  5 ++++-
- fs/fuse/passthrough.c | 11 +++++++++++
- 2 files changed, 15 insertions(+), 1 deletion(-)
-
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index a888d3df5877..59e033a59551 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -165,10 +165,13 @@ struct fuse_release_args;
- 
- /**
-  * Reference to lower filesystem file for read/write operations handled in
-- * passthrough mode
-+ * passthrough mode.
-+ * This struct also tracks the credentials to be used for handling read/write
-+ * operations.
-  */
- struct fuse_passthrough {
- 	struct file *filp;
-+	struct cred *cred;
- };
- 
- /** FUSE specific file data */
-diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-index 10b6872cdaa7..ab81dd8f010b 100644
---- a/fs/fuse/passthrough.c
-+++ b/fs/fuse/passthrough.c
-@@ -67,6 +67,7 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
- 				   struct iov_iter *iter)
- {
- 	ssize_t ret;
-+	const struct cred *old_cred;
- 	struct file *fuse_filp = iocb_fuse->ki_filp;
- 	struct fuse_file *ff = fuse_filp->private_data;
- 	struct file *passthrough_filp = ff->passthrough.filp;
-@@ -74,6 +75,7 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
- 	if (!iov_iter_count(iter))
- 		return 0;
- 
-+	old_cred = override_creds(ff->passthrough.cred);
- 	if (is_sync_kiocb(iocb_fuse)) {
- 		ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
- 				    iocb_to_rw_flags(iocb_fuse->ki_flags));
-@@ -91,6 +93,7 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
- 		if (ret != -EIOCBQUEUED)
- 			fuse_aio_cleanup_handler(aio_req);
- 	}
-+	revert_creds(old_cred);
- 
- 	return ret;
- }
-@@ -99,6 +102,7 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
- 				    struct iov_iter *iter)
- {
- 	ssize_t ret;
-+	const struct cred *old_cred;
- 	struct file *fuse_filp = iocb_fuse->ki_filp;
- 	struct fuse_file *ff = fuse_filp->private_data;
- 	struct inode *fuse_inode = file_inode(fuse_filp);
-@@ -110,6 +114,7 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
- 
- 	inode_lock(fuse_inode);
- 
-+	old_cred = override_creds(ff->passthrough.cred);
- 	if (is_sync_kiocb(iocb_fuse)) {
- 		file_start_write(passthrough_filp);
- 		ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
-@@ -137,6 +142,7 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
- 			fuse_aio_cleanup_handler(aio_req);
- 	}
- out:
-+	revert_creds(old_cred);
- 	inode_unlock(fuse_inode);
- 
- 	return ret;
-@@ -174,6 +180,7 @@ int fuse_passthrough_open(struct fuse_dev *fud,
- 		return -ENOMEM;
- 
- 	passthrough->filp = passthrough_filp;
-+	passthrough->cred = prepare_creds();
- 
- 	idr_preload(GFP_KERNEL);
- 	spin_lock(&fc->passthrough_req_lock);
-@@ -231,4 +238,8 @@ void fuse_passthrough_release(struct fuse_passthrough *passthrough)
- 		fput(passthrough->filp);
- 		passthrough->filp = NULL;
- 	}
-+	if (passthrough->cred) {
-+		put_cred(passthrough->cred);
-+		passthrough->cred = NULL;
-+	}
- }
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Reviewed-by: Rob Herring <robh@kernel.org>
