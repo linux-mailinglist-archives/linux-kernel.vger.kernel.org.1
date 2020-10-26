@@ -2,152 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3D7C029913D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:40:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9B62929913B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:39:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784005AbgJZPjq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:39:46 -0400
-Received: from mx0a-00154904.pphosted.com ([148.163.133.20]:25090 "EHLO
-        mx0a-00154904.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1773479AbgJZPjq (ORCPT
+        id S1773430AbgJZPjl (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:39:41 -0400
+Received: from mail-qt1-f193.google.com ([209.85.160.193]:43806 "EHLO
+        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772929AbgJZPjl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:39:46 -0400
-Received: from pps.filterd (m0170391.ppops.net [127.0.0.1])
-        by mx0a-00154904.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QFaeeS018093;
-        Mon, 26 Oct 2020 11:39:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dell.com; h=from : to : cc :
- subject : date : message-id : references : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=smtpout1;
- bh=7cgYTowMLsLulpZqxmQ/IS8IkeCUXdwt93CYFLHW/Uc=;
- b=W/5JEF42t76fQHgmLObo3i9sJOxZ5pBCWRlLGn1mUzixLYOc3UAdOlJzZbN1AlLbcJBv
- 1E0O4rMx+KH6Bji4WPmuAnnritsOwLQJLCgcwljb2VeST5G77TO4cImHQT3dYlFaAkBm
- b2JaNFGLZSKl1hpkAhDFteiHGap/PJvnMNjuRi6dcI86ddhf1vSYE4ipqvmKHNiu6UQu
- YSDIIQovh0hBQ/5tPjgAtQdjSZwaaF4wFya/tpQxoORVKfEGrhOUVYFMEXTTHuwmB6S5
- fB/VVkWfEkyK7NC43AEq4PMi7tNHF8//Xc3yNdYIGlc7ej45FSXv1jYTl6gJX/ilcbYd +Q== 
-Received: from mx0b-00154901.pphosted.com (mx0a-00154901.pphosted.com [67.231.149.39])
-        by mx0a-00154904.pphosted.com with ESMTP id 34cfdwf00y-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 11:39:38 -0400
-Received: from pps.filterd (m0090350.ppops.net [127.0.0.1])
-        by mx0b-00154901.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QFVb8w116221;
-        Mon, 26 Oct 2020 11:39:37 -0400
-Received: from nam04-co1-obe.outbound.protection.outlook.com (mail-co1nam04lp2058.outbound.protection.outlook.com [104.47.45.58])
-        by mx0b-00154901.pphosted.com with ESMTP id 34e161g43p-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Oct 2020 11:39:37 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NX4Lh5Aj+s5v5m+MOG9xx2lmXX/y7eWZBUKSyq9+s0b/suMypu3FtxqZJg8NMhAlQIUhkyKL7Yo/CB63/E03ZNzrFFKpWAwjuL9MfBh0rzC9QzxGzl2rDLcvTLj3ftItns1tZ70tDWcvx1tm0VcjH8q8agvpyVAmpPLfviom92mJeijI/xXNEeO8JsR3YsB7yocU2zdicIr6qeKtf6KRKOV+76nqj7/2g8I3mg56kU7ujhzEiUOcAkl4xeSwWKxnkYc3Z/5ezx4wdjLzwxf0BSiV4UsvHccv/e81u3oxcWNCT6ggtbfWTMgHXWRf1GC4PtOUiUptFC5oeEdzASR0mQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7cgYTowMLsLulpZqxmQ/IS8IkeCUXdwt93CYFLHW/Uc=;
- b=BoyFXMbe652T8bH330j46tFkA7yFKmyMPdq8FuxMZ9sG1MWSJ07vjjDXZ9BKheYe+aen3hFHCHUd8HU1/avkxqb1dtalX/QmQuWHp6P2WIRDD9mIru6TwB/WO/6mJq5x7mZurhw5pgK0k7JoEdVF5ixh2Y0U3wUJCND6eaRCUU1HnlVTgIfb6kbF2vuX4mDuV/TsHVC6fy7xFV8vuXsG7Lq7Ohow5uI6t/UkqTe8gsSwnzyvPXlsYx8cAdVwPaT7y+wMcLFE9kOoafB3oSjDehiuMXcJ/4EbDN+xlUJ2tGVcENEoVzbPzKVN48WqI9firCYMxKz+MsJUE97THJfuzA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=dell.com; dmarc=pass action=none header.from=dell.com;
- dkim=pass header.d=dell.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Dell.onmicrosoft.com;
- s=selector1-Dell-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=7cgYTowMLsLulpZqxmQ/IS8IkeCUXdwt93CYFLHW/Uc=;
- b=AO/lUoWYn4I19XWhY0+tU0TjdFYyQSbW65odKMIeIt0YUk2xQiYuM+zDH8sk13oAEJWljual4cusbR4ZknjjVEwYcyKt5QyFfQ+z6k6PfqNHWbE0ZU5953TWu17XiuG42uwC5s2wwXokD7zuTKP4qhc0w7W7CwrFbcfQMZxB3RA=
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com (2603:10b6:5:15f::15)
- by DM5PR1901MB2117.namprd19.prod.outlook.com (2603:10b6:4:a6::38) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Mon, 26 Oct
- 2020 15:39:35 +0000
-Received: from DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2]) by DM6PR19MB2636.namprd19.prod.outlook.com
- ([fe80::a4b8:d5c9:29da:39b2%4]) with mapi id 15.20.3477.029; Mon, 26 Oct 2020
- 15:39:34 +0000
-From:   "Limonciello, Mario" <Mario.Limonciello@dell.com>
-To:     Hans de Goede <hdegoede@redhat.com>,
-        Divya Bharathi <divya27392@gmail.com>,
-        "dvhart@infradead.org" <dvhart@infradead.org>
-CC:     LKML <linux-kernel@vger.kernel.org>,
-        "platform-driver-x86@vger.kernel.org" 
-        <platform-driver-x86@vger.kernel.org>,
-        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>,
-        mark gross <mgross@linux.intel.com>,
-        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
-Subject: RE: [PATCH v6] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-Thread-Topic: [PATCH v6] Introduce support for Systems Management Driver over
- WMI for Dell Systems
-Thread-Index: AQHWm7qb+Fl+xPp0qE6t08FS2LR06KmqE3oAgAARPYA=
-Date:   Mon, 26 Oct 2020 15:39:34 +0000
-Message-ID: <DM6PR19MB26367BCFE51C45BC00D13F6BFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
-References: <20201006082618.209287-1-divya.bharathi@dell.com>
- <101db8e3-70f0-4e85-b4b9-008995939b1a@redhat.com>
-In-Reply-To: <101db8e3-70f0-4e85-b4b9-008995939b1a@redhat.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-msip_labels: MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Enabled=True;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SiteId=945c199a-83a2-4e80-9f8c-5a91be5752dd;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Owner=Mario_Limonciello@Dell.com;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_SetDate=2020-10-26T15:39:30.6439617Z;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Name=External Public;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Application=Microsoft Azure
- Information Protection;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_ActionId=c12848c9-2e22-40f7-9c4b-8f6f8e7dd7cc;
- MSIP_Label_17cb76b2-10b8-4fe1-93d4-2202842406cd_Extended_MSFT_Method=Manual
-authentication-results: redhat.com; dkim=none (message not signed)
- header.d=none;redhat.com; dmarc=none action=none header.from=Dell.com;
-x-originating-ip: [76.251.167.31]
-x-ms-publictraffictype: Email
-x-ms-office365-filtering-correlation-id: 00c0c144-ae75-423d-d889-08d879c55718
-x-ms-traffictypediagnostic: DM5PR1901MB2117:
-x-ms-exchange-transport-forked: True
-x-microsoft-antispam-prvs: <DM5PR1901MB2117C10E468EA9F73DEA378CFA190@DM5PR1901MB2117.namprd19.prod.outlook.com>
-x-exotenant: 2khUwGVqB6N9v58KS13ncyUmMJd8q4
-x-ms-oob-tlc-oobclassifiers: OLM:8882;
-x-ms-exchange-senderadcheck: 1
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: X16GW+b98zMhouBcebuseVFUSpcn0u9qkRZ2fAg+lCoaGJvWyENhAOgWtKPRxwPSSqfmpkD9Qcxjf+h1e0pcC1dmVjJ9kKjxxhuba5EG/Icy1xI4o2RBKM1CoExxkJ1io1eqDULyZT9wq4B90t1DIX2sJnx2srvoNIHyRdfB0WphfhvT33EOFIWo4V3AFVR4rkhzbJaGYft9Kb93kHjxaPCYCSMBJlx8DQjIitrdPBjCVkM2Mnj5V06v2NN81M3zRb5Jqx//3bk5VKanBYBNcxdifJzId6ZCxZ5G2Iu4hNs/+9UVb7boMAlLI+a98Hgj9U1B5ojarrsxt0AOFG8B0A==
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR19MB2636.namprd19.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(346002)(376002)(136003)(39860400002)(366004)(316002)(6506007)(86362001)(478600001)(66476007)(64756008)(54906003)(186003)(83380400001)(66446008)(66556008)(76116006)(66946007)(26005)(7696005)(2906002)(8936002)(786003)(8676002)(4326008)(55016002)(71200400001)(9686003)(5660300002)(52536014)(107886003)(110136005)(33656002)(4744005);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata: JyLTGB8w4152JgSA/QKPlYTgleOA3gcViIU0VUHtwCFpx7afyLcdUSXcJ/eaAT0vnvN8z+2pJ5gb1wZoyExnNgk/uEsl16j8Nd4dsWwYUDfpo7mFPlQiR5ZvGbPgqALr/h6rNVerrfZww/Ddrr9j3DUbcrpR01IWt72RddOOtLxv7v2kJSKfgYc+k1x4+Ck9jxMIxmE22UglApiRDPFyRR/cm9IVhhYmjixwreRAatZIIRw4zwm5enP0x47QqmaJWeefXVwl4TPrbbHsusi+u6nt74cur5FOFEVzOOkQiJdLNjDmvzpT/Vs0fjNjlI6uSBng/jnUHez9mtIqial5dV4HZ2lBqSuQx4n5Xlean2gFtnLnBZXxx8NqVYR4KmX9CRcJWfBIT8PrfAu0bSyMvqVrGaXOOdpR6rVKoTOTiFvPPxYTU4b3bf723q0NdA45ocKT02NVyOzrDT4nzcBqc70rtGu6YT/d1tU9EbM4Qh2pKy2/1basBMnrnXo/y6kydic1yo3rsVOnUVey6GAuj0le9d8u4wJy3qb7pCo/jwYPDVX34ou8vhGdQ+CoI+163nv4i2cMSmC40h42x12eyIjkG3Iu77/Wmj8XR+QvH+bFIzW8W6oDJeFZnGbXCzxMhzVue9nu39lYGorxf+jMLw==
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+        Mon, 26 Oct 2020 11:39:41 -0400
+Received: by mail-qt1-f193.google.com with SMTP id e6so6985630qtw.10;
+        Mon, 26 Oct 2020 08:39:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=vLQei8ZmgmFcSxn2MPuUAP5brChetukYTYeEtCq2OjI=;
+        b=WZClcdFYON5jGkBEUsXDjjrC5+/8ykP+W6jK5+YeWAfaGlZD+93YguQywa1UlSp48E
+         uuGYiMGQ/K04Dg/M2ZDj65g6NI2HxWyDWw75mA2OiPTlu4gvZmkKphql2hKrPxoQ6XkI
+         KQDwxR3oSWF8+kE2PPMlU6jR7hvZSRY4CG0DkqzG5g1NmsiQ1zBanpyNT1bit/dYeJv+
+         fa8TvdDcGh3m0EpxlNz1RjSkouEZjkL+LvrvKe8ilMfCbxc0hKKrGjgEho1DM3INinLX
+         Z6gEQCXl+0JUCW9mEfYAx1I7W8SYlFzMt5uW3ji+qSjJskmQHCmirSbKgLG5odMoqpxW
+         jDbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=vLQei8ZmgmFcSxn2MPuUAP5brChetukYTYeEtCq2OjI=;
+        b=E00KcnsOh2BTaC/FqoiezxHRoTKA8w+mstyWzW3n+jX2ROYHqs7OjDulfZyKSdeW0d
+         6rCsQq/B0rF2Uyz/X0qtZ7KxJWYpFT9gIgIpn1aA+0xLa+sRxlCh/QHL5YWthiLGgAXQ
+         RbEMo5T0nHDiUlMIMHHBCo2A3N4Cu4mHh8lBZHbeScJpfH8E4BzFptyzgwmNbWoYX3Fq
+         CVLypePnW6tuHy2fcRUAuFQPeGst7XoSpPSuDDYOPigT6m4gBw5T6ou0WHnSy9QIwMiH
+         8Rm3vWErfDUa5B2tYPPTifUZAmaSoa9UxxfQbeh3Oz5OLUdB3yQvveellpOeaBT04QwS
+         GopQ==
+X-Gm-Message-State: AOAM531A8UPU72qiHttqr82iadoNwJCqkhVYsrX3NNAYDuiT8aKzlk1v
+        zk8atZqJ2r+rS6zP+WpZGxq1N1YPQbOM/g==
+X-Google-Smtp-Source: ABdhPJxwbjJpM7BXgATHrFMn/Ypqvv2ofYPBMDwSwLCNpEqKIsLxrJd136lnOkueYbC0g12unZabRA==
+X-Received: by 2002:ac8:4b4b:: with SMTP id e11mr3668273qts.29.1603726779530;
+        Mon, 26 Oct 2020 08:39:39 -0700 (PDT)
+Received: from ubuntu (ool-45785633.dyn.optonline.net. [69.120.86.51])
+        by smtp.gmail.com with ESMTPSA id 22sm4586589qtw.61.2020.10.26.08.39.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 08:39:38 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 11:39:36 -0400
+From:   Vivek Unune <npcomplete13@gmail.com>
+To:     Florian Fainelli <f.fainelli@gmail.com>
+Cc:     devicetree@vger.kernel.org, Hauke Mehrtens <hauke@hauke-m.de>,
+        =?utf-8?B?UmFmYcWCIE1pxYJlY2tp?= <zajec5@gmail.com>,
+        linux-kernel@vger.kernel.org, Rob Herring <robh+dt@kernel.org>,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] ARM: dts: BCM5301X: Linksys EA9500 add fixed partitions
+Message-ID: <20201026153936.GA258640@ubuntu>
+References: <20201026131351.258296-1-npcomplete13@gmail.com>
+ <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
 MIME-Version: 1.0
-X-OriginatorOrg: Dell.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR19MB2636.namprd19.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00c0c144-ae75-423d-d889-08d879c55718
-X-MS-Exchange-CrossTenant-originalarrivaltime: 26 Oct 2020 15:39:34.8590
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 945c199a-83a2-4e80-9f8c-5a91be5752dd
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: j6TWktBq8qcc+Xbp4uudPbrGyR2KanWyZv5vOuxriZh9RzNWbLTupgk3r7D2CCzN3gCC4wRMA4W6x/hPIywbTSLsiS3CuguYHSrzSG1T6qY=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM5PR1901MB2117
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-26_08:2020-10-26,2020-10-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- clxscore=1015 lowpriorityscore=0 impostorscore=0 malwarescore=0
- phishscore=0 mlxlogscore=999 spamscore=0 mlxscore=0 bulkscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260108
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 adultscore=0
- malwarescore=0 spamscore=0 bulkscore=0 mlxlogscore=999 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260109
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e64d76cc-90bb-5b54-04de-fde21542e4fe@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-PiBUaGlzIHdhcyBwcmVzZW50IGluIHByZXZpb3VzIHZlcnNpb25zIHRvbywgYnV0IEkganVzdCBu
-b3RpY2VkIHRoaXMgYXJlIHlvdQ0KPiBzdXJlIHRoYXQgdXNpbmcNCj4gLnN0cmluZy5wb2ludGVy
-IGlzIGNvcnJlY3QgaGVyZT8gVGhhdCBzZWVtcyB3cm9uZyBzaW5jZSB0aGUgcG9pbnRlciBnZXRz
-DQo+IGFsbG9jYXRlZCBieQ0KPiB0aGUgTGludXggQUNQSSBjb3JlLCBzbyBpdCBpcyBub3QgdW5k
-ZXIgaW5mbHVlbmNlIG9mIHRoZSBBTUwgY29kZT8NCj4gDQo+IEkgdGhpbmsgeW91IHdhbnQgLyBu
-ZWVkIHRvIHVzZSAiLmludGVnZXIudmFsdWUiIGhlcmUgPw0KPiANCj4gQW5kIG1heWJlIGZpcnN0
-IGRvIGEgdHlwZSBjaGVjaywgZS5nLjoNCj4gDQo+IAlpZiAob2JqLT5wYWNrYWdlLmVsZW1lbnRz
-W0NVUlJFTlRfVkFMXS50eXBlICE9IEFDUElfVFlQRV9JTlRFR0VSKSB7DQo+IAkJcmV0ID0gLUVJ
-TlZBTDsNCj4gCQlnb3RvIG91dDsNCj4gCX0NCj4gDQo+IEFkZGluZyB0aGlzIHR5cGUgY2hlY2sg
-d2lsbCBhbHNvIHNob3cgaWYgSSdtIHJpZ2h0IHRoYXQgeW91IHNob3VsZCB1c2UNCj4gLmludGVn
-ZXIudmFsdWUgLi4uDQo+IA0KPiAJcmV0ID0gc25wcmludGYoYnVmLCBQQUdFX1NJWkUsICIlbGxk
-XG4iLCBvYmotDQoNCldlJ2xsIG5lZWQgdG8gZG91YmxlIGNoZWNrIHRoaXMsIGJ1dCBJJ20gcHJl
-dHR5IHN1cmUgdGhlIGZpcm13YXJlIG91dHB1dHMNCmV2ZXJ5dGhpbmcgYXMgYSBzdHJpbmcuDQoN
-Cg0K
+On Mon, Oct 26, 2020 at 06:30:53AM -0700, Florian Fainelli wrote:
+> 
+> 
+> On 10/26/2020 6:13 AM, Vivek Unune wrote:
+> > This router has dual paritions to store trx firmware image and
+> > dual partitions for nvram. The second one in each of these cases acts
+> > as a backup store.
+> > 
+> > When tested with OpenWrt, the default partition parser causes two issues:
+> > 
+> > 1. It labels both nvram partitions as nvram. In factory, second one is
+> > labeled devinfo.
+> > 2. It parses second trx image and tries to create second 'linux' partition
+> > and fails with - cannot create duplicate 'linux' partition. I've set this
+> > partition to read-only for now
+> > 
+> > The following patch works around both of these issues.
+> > 
+> > Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
+> > ---
+> >   .../boot/dts/bcm47094-linksys-panamera.dts    | 41 +++++++++++++++++++
+> >   1 file changed, 41 insertions(+)
+> > 
+> > diff --git a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
+> > index 5d5930edfb9d..13da16c5de68 100644
+> > --- a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
+> > +++ b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
+> > @@ -292,3 +292,44 @@ fixed-link {
+> >   &usb3_phy {
+> >   	status = "okay";
+> >   };
+> > +
+> > +&nandcs {
+> > +	partitions {
+> > +		compatible = "fixed-partitions";
+> > +		#address-cells = <1>;
+> > +		#size-cells = <1>;
+> > +
+> > +		partition@0 {
+> > +			label = "boot";
+> > +			reg = <0x0000000 0x0080000>;
+> > +			read-only;
+> > +		};
+> > +
+> > +		partition@80000 {
+> > +			label = "nvram";
+> > +			reg = <0x080000 0x0100000>;
+> > +		};
+> > +
+> > +		partition@180000{
+> > +			label = "devinfo";
+> > +			reg = <0x0180000 0x080000>;
+> > +		};
+> > +
+> > +		partition@200000 {
+> > +			label = "firmware";
+> > +			reg = <0x0200000 0x01D00000>;
+> > +			compatible = "brcm,trx";
+> > +		};
+> > +
+> > +		partition@1F00000 {
+> > +			label = "failsafe";
+> > +			reg = <0x01F00000 0x01D00000>;
+> > +			read-only;
+> > +		};
+> > +
+> > +		partition@0x5200000 {
+> 
+> You would need to remove the 0x from the hex number here.
+
+Sure, I'll fix this in next version
+
+> 
+> > +			label = "brcmnand";
+> 
+> Not sure how useful naming this partition brcmnand is, can we find a better
+> name for it?
+
+I'll be more than happy to rename this that makes sense. Factory uses this
+name as well. This is used as a general persistent storage for system cofigs.
+Could we name it System?
+
+Thanks,
+
+Vivek
+
