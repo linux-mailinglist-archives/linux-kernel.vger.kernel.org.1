@@ -2,36 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F4A7299BC3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8666D299BC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409997AbgJZXxN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:55740 "EHLO mail.kernel.org"
+        id S2410036AbgJZXxT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55956 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409692AbgJZXwo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:44 -0400
+        id S2409879AbgJZXws (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:48 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1FE6E218AC;
-        Mon, 26 Oct 2020 23:52:43 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0FDCD2225C;
+        Mon, 26 Oct 2020 23:52:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756363;
-        bh=899kj4OFoGutfOJIbgzl2s7HGzYmf4My51J60XGMb2M=;
+        s=default; t=1603756368;
+        bh=9C528tZoQ9h5NstXknIAS/BD9iT7n94wKg9f1AkabPU=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=YL/E7Yf/rTjl/uaCYhqlrXqK6SsM0MzPh1VdOKp7O00a8rtB0k5oXBhr8DsMp0Aqd
-         eeNxB4dF5JNNeW6W6JRe3EQIp0G3pmiv9TBY9/02JmDUgoJE1w0pVxv8jgl2vgROZB
-         iCUrFzG6VSwkwuXdluBk2Za581ad7j83b1t5hcu8=
+        b=GDdj7PIcDfZQjklPQWMHgJSQ+KvuYvf+9qy+r9l1ZID5vjDXeThlo3Ts4Xb7XYd81
+         9CynvIeTGMlwJNGudiiDL07g2Lu/z5jCr2fIkvwWqCukiMfmnNheZlC+HKIegAro+v
+         vpFfWi+O6Sv6l2yPQcZKMF5Lg0h6ar9yCvjY4Gs8=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Sathishkumar Muruganandam <murugana@codeaurora.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
-        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 032/132] ath10k: fix VHT NSS calculation when STBC is enabled
-Date:   Mon, 26 Oct 2020 19:50:24 -0400
-Message-Id: <20201026235205.1023962-32-sashal@kernel.org>
+Cc:     Rander Wang <rander.wang@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Bard Liao <yung-chuan.liao@linux.intel.com>,
+        Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>,
+        Ranjani Sridharan <ranjani.sridharan@linux.intel.com>,
+        Mark Brown <broonie@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        sound-open-firmware@alsa-project.org, alsa-devel@alsa-project.org
+Subject: [PATCH AUTOSEL 5.8 035/132] ASoC: SOF: fix a runtime pm issue in SOF when HDMI codec doesn't work
+Date:   Mon, 26 Oct 2020 19:50:27 -0400
+Message-Id: <20201026235205.1023962-35-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,56 +47,53 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Sathishkumar Muruganandam <murugana@codeaurora.org>
+From: Rander Wang <rander.wang@intel.com>
 
-[ Upstream commit 99f41b8e43b8b4b31262adb8ac3e69088fff1289 ]
+[ Upstream commit 6c63c954e1c52f1262f986f36d95f557c6f8fa94 ]
 
-When STBC is enabled, NSTS_SU value need to be accounted for VHT NSS
-calculation for SU case.
+When hda_codec_probe() doesn't initialize audio component, we disable
+the codec and keep going. However,the resources are not released. The
+child_count of SOF device is increased in snd_hdac_ext_bus_device_init
+but is not decrease in error case, so SOF can't get suspended.
 
-Without this fix, 1SS + STBC enabled case was reported wrongly as 2SS
-in radiotap header on monitor mode capture.
+snd_hdac_ext_bus_device_exit will be invoked in HDA framework if it
+gets a error. Now copy this behavior to release resources and decrease
+SOF device child_count to release SOF device.
 
-Tested-on: QCA9984 10.4-3.10-00047
-
-Signed-off-by: Sathishkumar Muruganandam <murugana@codeaurora.org>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/1597392971-3897-1-git-send-email-murugana@codeaurora.org
+Signed-off-by: Rander Wang <rander.wang@intel.com>
+Reviewed-by: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+Reviewed-by: Bard Liao <yung-chuan.liao@linux.intel.com>
+Reviewed-by: Guennadi Liakhovetski <guennadi.liakhovetski@linux.intel.com>
+Signed-off-by: Ranjani Sridharan <ranjani.sridharan@linux.intel.com>
+Link: https://lore.kernel.org/r/20200825235040.1586478-3-ranjani.sridharan@linux.intel.com
+Signed-off-by: Mark Brown <broonie@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++++-
- 1 file changed, 7 insertions(+), 1 deletion(-)
+ sound/soc/sof/intel/hda-codec.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
-index cac05e7bb6b07..65fbc5957f94d 100644
---- a/drivers/net/wireless/ath/ath10k/htt_rx.c
-+++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
-@@ -941,6 +941,7 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
- 	u8 preamble = 0;
- 	u8 group_id;
- 	u32 info1, info2, info3;
-+	u32 stbc, nsts_su;
- 
- 	info1 = __le32_to_cpu(rxd->ppdu_start.info1);
- 	info2 = __le32_to_cpu(rxd->ppdu_start.info2);
-@@ -985,11 +986,16 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
+diff --git a/sound/soc/sof/intel/hda-codec.c b/sound/soc/sof/intel/hda-codec.c
+index 2c5c451fa19d7..c475955c6eeba 100644
+--- a/sound/soc/sof/intel/hda-codec.c
++++ b/sound/soc/sof/intel/hda-codec.c
+@@ -151,7 +151,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+ 		if (!hdev->bus->audio_component) {
+ 			dev_dbg(sdev->dev,
+ 				"iDisp hw present but no driver\n");
+-			return -ENOENT;
++			goto error;
+ 		}
+ 		hda_priv->need_display_power = true;
+ 	}
+@@ -174,7 +174,7 @@ static int hda_codec_probe(struct snd_sof_dev *sdev, int address,
+ 		 * other return codes without modification
  		 */
- 		bw = info2 & 3;
- 		sgi = info3 & 1;
-+		stbc = (info2 >> 3) & 1;
- 		group_id = (info2 >> 4) & 0x3F;
+ 		if (ret == 0)
+-			ret = -ENOENT;
++			goto error;
+ 	}
  
- 		if (GROUP_ID_IS_SU_MIMO(group_id)) {
- 			mcs = (info3 >> 4) & 0x0F;
--			nss = ((info2 >> 10) & 0x07) + 1;
-+			nsts_su = ((info2 >> 10) & 0x07);
-+			if (stbc)
-+				nss = (nsts_su >> 2) + 1;
-+			else
-+				nss = (nsts_su + 1);
- 		} else {
- 			/* Hardware doesn't decode VHT-SIG-B into Rx descriptor
- 			 * so it's impossible to decode MCS. Also since
+ 	return ret;
 -- 
 2.25.1
 
