@@ -2,108 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0F2212986E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:33:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 620BB2986E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:38:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770425AbgJZGdW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 02:33:22 -0400
-Received: from szxga05-in.huawei.com ([45.249.212.191]:2580 "EHLO
-        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1770418AbgJZGdW (ORCPT
+        id S1770484AbgJZGiD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 02:38:03 -0400
+Received: from mail-ej1-f66.google.com ([209.85.218.66]:37437 "EHLO
+        mail-ej1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1770472AbgJZGiC (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 02:33:22 -0400
-Received: from DGGEMS412-HUB.china.huawei.com (unknown [172.30.72.58])
-        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CKQ5K2rwtzhZp8;
-        Mon, 26 Oct 2020 14:33:25 +0800 (CST)
-Received: from [10.67.102.197] (10.67.102.197) by
- DGGEMS412-HUB.china.huawei.com (10.3.19.212) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 26 Oct 2020 14:33:10 +0800
-Subject: ping //Re: [PATCH v2] arm:traps: Don't print stack or raw PC/LR hex
- values in backtraces
-To:     <linux@armlinux.org.uk>, <dima@arista.com>, <will@kernel.org>,
-        <jpoimboe@redhat.com>, <akpm@linux-foundation.org>,
-        <christian.brauner@ubuntu.com>, <viro@zeniv.linux.org.uk>,
-        <ldufour@linux.ibm.com>, <amanieu@gmail.com>, <walken@google.com>,
-        <ben.dooks@codethink.co.uk>, <tglx@linutronix.de>,
-        <bigeasy@linutronix.de>, <mingo@kernel.org>,
-        <vincent.whitchurch@axis.com>
-CC:     <linux-arm-kernel@lists.infradead.org>,
-        <linux-kernel@vger.kernel.org>, <wangle6@huawei.com>,
-        <luohaizheng@huawei.com>
-References: <20201016023141.85300-1-nixiaoming@huawei.com>
-From:   Xiaoming Ni <nixiaoming@huawei.com>
-Message-ID: <23a3ce81-e1b6-337f-c217-5027134c0131@huawei.com>
-Date:   Mon, 26 Oct 2020 14:33:10 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.0.1
+        Mon, 26 Oct 2020 02:38:02 -0400
+Received: by mail-ej1-f66.google.com with SMTP id p9so11753052eji.4;
+        Sun, 25 Oct 2020 23:38:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=dpR6HKBvLiwoLwNCGNwWMmEuYGZxFvFCHdWRL099Ijk=;
+        b=APjI9pp3dxEgoubORj970OY1HMGaZmmrNtD6GSJ4ALYEzB1E/1Px55Qm+guW09n/ql
+         2qa9jNO7fJ+jf/NGCSX7aBm8UIjg5Ck7TfnQ686uc3F4JmI4v58GhhAMr8PMPn421qQw
+         V3Xt8wK6aSVa1x9iqUbBgf+U/YQfpxFGSMOjZGzLG7NTBnfq6oo+2wsAy5uBz8N8DRxm
+         VAK1lPJg1XlSSgG75NgHW7q4e78QnXtNAWQ9GoeN6rbD37wynMoh2grQhvzFulFFJKCb
+         IoYynB6xWsgkZhYE4A8DUjJ7Y/eJETanuaFZKj91osHhz/g6EyFTgDUPEDR3/8u7y/7H
+         4ULg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=dpR6HKBvLiwoLwNCGNwWMmEuYGZxFvFCHdWRL099Ijk=;
+        b=Y7yIzWM/PQOTKm7hdDKFWupV6Pi2hu9coWkshOLe1Jm3syM1rCMOXZy3bzTEnlu6uS
+         hj1FOXwNSkOYVm+sCmF6fwPq+Lu4AZYFsGN4G/kwU7d8Oj8GPCT9AQd/HZGV9ECIY1Ih
+         XzcKPqWq8ofO9vHl5bpxLPmC9QySzO1x0cHpK2PmtyaAfwQ7jDx0dk4YZ0Udyx6+d2py
+         XR91k1FStaL2jCCXNSteH3JzI5v+gh6AXZ+49Qd7UKCrOievBRGr1C1O3q1MxydT6tFy
+         8PphOFRh9iKndcL1DOqUs7vd/TJcyjDR+5Qm2X8jzHaDJEHycFsX0n807fVcpBqQQKfV
+         U1CQ==
+X-Gm-Message-State: AOAM532MtCSqMKAPdFc/4TiZYRu8M5ymOdbnRoPe4b6J9NQW6vxI0VQs
+        B3cdoxRyZptc+Po++aR2SGAvg1Nse5mio25D5/U=
+X-Google-Smtp-Source: ABdhPJxTwpbIrN+pmdDG9MX150R5eZazoaLR4My17R2VWPLwTd+VNsH9VziuTiklU0xBcEMNeT2Dz0YdXIs3x4wCMQ4=
+X-Received: by 2002:a17:906:a00d:: with SMTP id p13mr14561926ejy.183.1603694280382;
+ Sun, 25 Oct 2020 23:38:00 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201016023141.85300-1-nixiaoming@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.67.102.197]
-X-CFilter-Loop: Reflected
+References: <20201024154233.4024-1-fujiwara.masahiro@gmail.com> <20201025140550.1e29f770@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+In-Reply-To: <20201025140550.1e29f770@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+Date:   Mon, 26 Oct 2020 15:37:48 +0900
+Message-ID: <CABBAZC+oQ64BcMRDgtXHes-Ri=20bh2GC-DuSZy7gPpKTFRMQw@mail.gmail.com>
+Subject: Re: [PATCH net] gtp: fix an use-before-init in gtp_newlink()
+To:     Jakub Kicinski <kuba@kernel.org>
+Cc:     Pablo Neira Ayuso <pablo@netfilter.org>,
+        Harald Welte <laforge@gnumonks.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Andreas Schultz <aschultz@tpip.net>,
+        osmocom-net-gprs@lists.osmocom.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-ping
+Hi,
 
-On 2020/10/16 10:31, Xiaoming Ni wrote:
-> Printing raw pointer values in backtraces has potential security
-> implications and are of questionable value anyway.
-> 
-> This patch follows x86 and arm64's lead and removes the "Exception stack:"
-> dump from kernel backtraces:
-> 	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
-> 	 PC/LR values in backtraces")
-> 	commit bb5e5ce545f203 ("x86/dumpstack: Remove kernel text
-> 	 addresses from stack dump")
-> 
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
-> 
-> -------
-> v2:
->   Delete [<hex numbers>] from the stack according to the email discussion
->   in patch V1, Other information processing will be discussed in subsequent
->   patches.
-> 
-> v1: https://lore.kernel.org/lkml/20201009075957.110017-1-nixiaoming@huawei.com/
->    1. Don't print stack or raw PC/LR hex values in backtraces
->    2. Don't print stack mem in backtraces
->    3. if (!panic_on_oops), Don't print stack mem in __die()
-> ---
->   arch/arm/kernel/process.c | 3 +--
->   arch/arm/kernel/traps.c   | 4 ++--
->   2 files changed, 3 insertions(+), 4 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/process.c b/arch/arm/kernel/process.c
-> index 8e6ace03e960..71c9e5597d39 100644
-> --- a/arch/arm/kernel/process.c
-> +++ b/arch/arm/kernel/process.c
-> @@ -121,8 +121,7 @@ void __show_regs(struct pt_regs *regs)
->   
->   	printk("PC is at %pS\n", (void *)instruction_pointer(regs));
->   	printk("LR is at %pS\n", (void *)regs->ARM_lr);
-> -	printk("pc : [<%08lx>]    lr : [<%08lx>]    psr: %08lx\n",
-> -	       regs->ARM_pc, regs->ARM_lr, regs->ARM_cpsr);
-> +	printk("psr: %08lx\n", regs->ARM_cpsr);
->   	printk("sp : %08lx  ip : %08lx  fp : %08lx\n",
->   	       regs->ARM_sp, regs->ARM_ip, regs->ARM_fp);
->   	printk("r10: %08lx  r9 : %08lx  r8 : %08lx\n",
-> diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-> index 17d5a785df28..911bbf164875 100644
-> --- a/arch/arm/kernel/traps.c
-> +++ b/arch/arm/kernel/traps.c
-> @@ -68,8 +68,8 @@ void dump_backtrace_entry(unsigned long where, unsigned long from,
->   	unsigned long end = frame + 4 + sizeof(struct pt_regs);
->   
->   #ifdef CONFIG_KALLSYMS
-> -	printk("%s[<%08lx>] (%ps) from [<%08lx>] (%pS)\n",
-> -		loglvl, where, (void *)where, from, (void *)from);
-> +	printk("%s (%ps) from (%pS)\n",
-> +		loglvl, (void *)where, (void *)from);
->   #else
->   	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
->   		loglvl, where, from);
-> 
+Thanks for the review. Will send a new patch with the fixes soon.
 
+----
+Fujiwara
+
+On Mon, Oct 26, 2020 at 6:05 AM Jakub Kicinski <kuba@kernel.org> wrote:
+>
+> On Sat, 24 Oct 2020 15:42:33 +0000 Masahiro Fujiwara wrote:
+> > *_pdp_find() from gtp_encap_recv() would trigger a crash when a peer
+> > sends GTP packets while creating new GTP device.
+> >
+> > RIP: 0010:gtp1_pdp_find.isra.0+0x68/0x90 [gtp]
+> > <SNIP>
+> > Call Trace:
+> >  <IRQ>
+> >  gtp_encap_recv+0xc2/0x2e0 [gtp]
+> >  ? gtp1_pdp_find.isra.0+0x90/0x90 [gtp]
+> >  udp_queue_rcv_one_skb+0x1fe/0x530
+> >  udp_queue_rcv_skb+0x40/0x1b0
+> >  udp_unicast_rcv_skb.isra.0+0x78/0x90
+> >  __udp4_lib_rcv+0x5af/0xc70
+> >  udp_rcv+0x1a/0x20
+> >  ip_protocol_deliver_rcu+0xc5/0x1b0
+> >  ip_local_deliver_finish+0x48/0x50
+> >  ip_local_deliver+0xe5/0xf0
+> >  ? ip_protocol_deliver_rcu+0x1b0/0x1b0
+> >
+> > gtp_encap_enable() should be called after gtp_hastable_new() otherwise
+> > *_pdp_find() will access the uninitialized hash table.
+>
+> Looks good, minor nits:
+>
+>  - is the time zone broken on your system? Looks like your email has
+>    arrived with the date far in the past, so the build systems have
+>    missed it. Could you double check the time on your system?
+>
+> > Fixes: 1e3a3abd8 ("gtp: make GTP sockets in gtp_newlink optional")
+>
+> The hash looks short, should be at lest 12 chars:
+>
+> Fixes: 1e3a3abd8b28 ("gtp: make GTP sockets in gtp_newlink optional")
+>
+> > Signed-off-by: Masahiro Fujiwara <fujiwara.masahiro@gmail.com>
+>
+> > diff --git a/drivers/net/gtp.c b/drivers/net/gtp.c
+> > index 8e47d0112e5d..6c56337b02a3 100644
+> > --- a/drivers/net/gtp.c
+> > +++ b/drivers/net/gtp.c
+> > @@ -663,10 +663,6 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+> >
+> >       gtp = netdev_priv(dev);
+> >
+> > -     err = gtp_encap_enable(gtp, data);
+> > -     if (err < 0)
+> > -             return err;
+> > -
+> >       if (!data[IFLA_GTP_PDP_HASHSIZE]) {
+> >               hashsize = 1024;
+> >       } else {
+> > @@ -676,13 +672,18 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+> >       }
+> >
+> >       err = gtp_hashtable_new(gtp, hashsize);
+> > +     if (err < 0) {
+> > +             return err;
+> > +     }
+>
+> no need for braces around single statement
+>
+> > +
+> > +     err = gtp_encap_enable(gtp, data);
+> >       if (err < 0)
+> >               goto out_encap;
+> >
+> >       err = register_netdevice(dev);
+> >       if (err < 0) {
+> >               netdev_dbg(dev, "failed to register new netdev %d\n", err);
+> > -             goto out_hashtable;
+> > +             goto out_encap;
+> >       }
+> >
+> >       gn = net_generic(dev_net(dev), gtp_net_id);
+> > @@ -693,11 +694,10 @@ static int gtp_newlink(struct net *src_net, struct net_device *dev,
+> >
+> >       return 0;
+> >
+> > -out_hashtable:
+> > -     kfree(gtp->addr_hash);
+> > -     kfree(gtp->tid_hash);
+> >  out_encap:
+> >       gtp_encap_disable(gtp);
+>
+> I'd personally move the out_hashtable: label here and keep it, just for
+> clarity. Otherwise reader has to double check that gtp_encap_disable()
+> can be safely called before gtp_encap_enable().
+>
+> Also gtp_encap_disable() could change in the future breaking this
+> assumption.
+>
+> > +     kfree(gtp->addr_hash);
+> > +     kfree(gtp->tid_hash);
+> >       return err;
+> >  }
+> >
+>
