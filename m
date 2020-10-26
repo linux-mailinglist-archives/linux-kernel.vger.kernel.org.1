@@ -2,96 +2,166 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BE4D2299045
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:56:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 82906298FEB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:51:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782758AbgJZO4P (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:56:15 -0400
-Received: from mail-pf1-f193.google.com ([209.85.210.193]:37050 "EHLO
-        mail-pf1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781810AbgJZO4N (ORCPT
+        id S1782109AbgJZOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:51:14 -0400
+Received: from mail-pl1-f195.google.com ([209.85.214.195]:39275 "EHLO
+        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782091AbgJZOvN (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:56:13 -0400
-Received: by mail-pf1-f193.google.com with SMTP id 126so5904616pfu.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:56:12 -0700 (PDT)
+        Mon, 26 Oct 2020 10:51:13 -0400
+Received: by mail-pl1-f195.google.com with SMTP id y1so4845595plp.6;
+        Mon, 26 Oct 2020 07:51:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=y9ZdVN328O2uwwSHT+BoNnojVOi64nld5Tda2i3ROBA=;
-        b=woQEvtdrgcTt5KtaGjhWCUPSi5xXh9iNMRclvDRN/w23XTX07a197EfeoZ6etseu0z
-         HXL0T0o7N85P/lN88MJhzuImQQEUAV19uolyMnF24miX1HhhOwQN4x1OSwzwcABZippj
-         sx5kYtTF7ynotAqfdIaeuIul+5NLTLcNH+hJZ5Zl0QrxrDp9QpufqvYhP/XCDhvx+qKW
-         ldXpXuvCHSoxZ3uCWj2AU9BS2PV3x4vWCWEVTSbazHORQVQBMXia8+x+c6Ixdb4bsFrp
-         4qa3zzyXPfaUUWH9vKMn/vx/Isj4VcNou4jTwTkZy6REvM7nlsw0BxOwKxHDX80gUb6M
-         AqHw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=gNikXAjuHkXg4r5DKzPvHVQBXNUEltT2qWS8EWj+E+Y=;
+        b=oszyocZQSQTCBhptWS9xTRxvPO6wZRCJk/3at1phwpNfFKGUr7HMFQLuNUpVVSuGoH
+         2bOSvc0bIf6ylq1/Zm/b9VtdisXFutfO22LM+OSSMw77QP9emxu+HLTmCnbVuoe6kCvf
+         88SC3ViARGNqzTAONi3cOe11zD59exSD46OqwMUpdjr/sagSo7BHkiystWh9Guh7ZDbn
+         f3iGbv9Nt3qYo7D0M2n4Ue5JxqPhickNQnYSyRUEYgx0LSBTPGi4Yz7JY8lCGsun/fZU
+         ZDpI4uppoENzA2fvfGDBXFKphvL7Thkn39OoQTs3epv1BmHV2+mGUlu2onaedHeld97/
+         ck8Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=y9ZdVN328O2uwwSHT+BoNnojVOi64nld5Tda2i3ROBA=;
-        b=cbBezHRW4570tzHRJfaD/c/6Q0Gfc3f+k9M2tRd/L6UlGjkfTlk6N6SwVQCj6Jtl/O
-         j1d5CDHN54t6O0uPVj3lrVu9S0GAr6FJoMlbd3UZzy2m4K5uWNIrANVAfx05e0lAX9Y6
-         i1y4hhGrA+nJpLN2lBe7CGihHTN1cUzrdqZ5zhKyVFRrfGwyaaRdy/qUOHlcJEGtMAZ0
-         AIMJLIPUmsQsBi6+TkF+FVkgCuyOVso/FWzgashBHH0X97o2vaR6AESh6oLdcYDusW72
-         VrnQfRDaGB0jQ0UABPyRZKZE790J/EbbGMIIrKEYpyj73FZDi+cV/P4PNORGLBY96zQ7
-         gRpg==
-X-Gm-Message-State: AOAM5336mTOZ2v01YBnAJVdnCx1+YCA3bbwYgrnCRmU0eugRXD2RNb97
-        BuvJdnWZ4eYVfdPZW/AajMjHkw==
-X-Google-Smtp-Source: ABdhPJybtxEw8eg2MrMPnbUEKzS1LAsNT2c0RtK4JcGJiJczRjV0Xm8NBFRBQb7sIRhVCjvqm2TQ+w==
-X-Received: by 2002:a65:67d0:: with SMTP id b16mr17133830pgs.335.1603724172489;
-        Mon, 26 Oct 2020 07:56:12 -0700 (PDT)
-Received: from localhost.localdomain ([103.136.220.89])
-        by smtp.gmail.com with ESMTPSA id x123sm12042726pfb.212.2020.10.26.07.56.03
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Oct 2020 07:56:11 -0700 (PDT)
-From:   Muchun Song <songmuchun@bytedance.com>
-To:     corbet@lwn.net, mike.kravetz@oracle.com, tglx@linutronix.de,
-        mingo@redhat.com, bp@alien8.de, x86@kernel.org, hpa@zytor.com,
-        dave.hansen@linux.intel.com, luto@kernel.org, peterz@infradead.org,
-        viro@zeniv.linux.org.uk, akpm@linux-foundation.org,
-        paulmck@kernel.org, mchehab+huawei@kernel.org,
-        pawan.kumar.gupta@linux.intel.com, rdunlap@infradead.org,
-        oneukum@suse.com, anshuman.khandual@arm.com, jroedel@suse.de,
-        almasrymina@google.com, rientjes@google.com, willy@infradead.org
-Cc:     duanxiongchun@bytedance.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-        linux-fsdevel@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>
-Subject: [PATCH v2 19/19] mm/hugetlb: Add BUILD_BUG_ON to catch invalid usage of tail struct page
-Date:   Mon, 26 Oct 2020 22:51:14 +0800
-Message-Id: <20201026145114.59424-20-songmuchun@bytedance.com>
-X-Mailer: git-send-email 2.21.0 (Apple Git-122)
-In-Reply-To: <20201026145114.59424-1-songmuchun@bytedance.com>
-References: <20201026145114.59424-1-songmuchun@bytedance.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=gNikXAjuHkXg4r5DKzPvHVQBXNUEltT2qWS8EWj+E+Y=;
+        b=NJGHDZ4PaIF+3BWywc9cXSUip1W4nFOk1eJqlJwN3Rwq8kvIIlw/aAluMh0KO1BMJo
+         kfNqNUIRhK+HJ9NdBOWSoDT7hcWNuQAxaLqqCd56x5c2M0KzYjkiZeMP526s4cmHiSDR
+         WIFvrFhRt2Z38KPbeSjqv40Cl5O4TnEpzjb/h+FU5LGvmK3CAhd8tYbeIFzuGksSNbzD
+         qF6m9V36cAd07L8ThkU3GxCTAi7U8+T/IkZtYWUAWzaZw5eVB6sceVS1TUGnsjUbwJqA
+         HUHeNOL20uRzZpQ8Y4MyGaV7k5/9fC99SY19Q5B6zEl0xK2n10FPf8q5S0qvHuxIVchE
+         j/cg==
+X-Gm-Message-State: AOAM531JefGtkbg419bFfF6KGAAF4qnvnxHHUPopm06LTShqI23h+zoE
+        JWB1lcvJPsIiZFm3H+r8ises19CuIRZhbRYwM28=
+X-Google-Smtp-Source: ABdhPJw464wh5zeUw6bK1uYq90q4/MId3XTpaCzRCQOFOiZ3gzthS/+5KZ54RndlCRVNXiAuXqz3TjTTUFUPDcfoI90=
+X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr21641352pjb.129.1603723872066;
+ Mon, 26 Oct 2020 07:51:12 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-6-brgl@bgdev.pl>
+In-Reply-To: <20201026141839.28536-6-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Oct 2020 16:52:01 +0200
+Message-ID: <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
+Subject: Re: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset computation
+To:     Bartosz Golaszewski <brgl@bgdev.pl>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-There are only `RESERVE_VMEMMAP_SIZE / sizeof(struct page)` struct pages
-can be used when CONFIG_HUGETLB_PAGE_FREE_VMEMMAP, so add a BUILD_BUG_ON
-to catch this invalid usage of tail struct page.
+On Mon, Oct 26, 2020 at 4:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+>
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+>
+> Provide and use helpers for calculating the register address and bit
+> offset instead of hand coding it in every function.
 
-Signed-off-by: Muchun Song <songmuchun@bytedance.com>
----
- mm/hugetlb.c | 2 ++
- 1 file changed, 2 insertions(+)
+Can you check code generation on x86, for example?
 
-diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index 029b00ed52ed..b196373a2a39 100644
---- a/mm/hugetlb.c
-+++ b/mm/hugetlb.c
-@@ -3955,6 +3955,8 @@ static int __init hugetlb_init(void)
- 
- #ifdef CONFIG_HUGETLB_PAGE_FREE_VMEMMAP
- 	BUILD_BUG_ON_NOT_POWER_OF_2(sizeof(struct page));
-+	BUILD_BUG_ON(NR_USED_SUBPAGE >=
-+		     RESERVE_VMEMMAP_SIZE / sizeof(struct page));
- #endif
- 
- 	if (!hugepages_supported()) {
+Sometimes compilers are eager to use idiv assembly instruction which
+does simultaneously / and %.
+I dunno if a) it's used for / 8 and % 8 since 8 is 2^3, b) splitting
+to functions makes the above optimisation impossible.
+
+> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> ---
+>  drivers/gpio/gpio-exar.c | 40 ++++++++++++++++++++++++++++------------
+>  1 file changed, 28 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
+> index db366d85b6b4..629f4dad6919 100644
+> --- a/drivers/gpio/gpio-exar.c
+> +++ b/drivers/gpio/gpio-exar.c
+> @@ -33,6 +33,26 @@ struct exar_gpio_chip {
+>         unsigned int first_pin;
+>  };
+>
+> +static unsigned int
+> +exar_offset_to_sel_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
+> +{
+> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOSEL_HI
+> +                                                  : EXAR_OFFSET_MPIOSEL_LO;
+> +}
+> +
+> +static unsigned int
+> +exar_offset_to_lvl_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
+> +{
+> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOLVL_HI
+> +                                                  : EXAR_OFFSET_MPIOLVL_LO;
+> +}
+> +
+> +static unsigned int
+> +exar_offset_to_bit(struct exar_gpio_chip *exar_gpio, unsigned int offset)
+> +{
+> +       return (offset + exar_gpio->first_pin) % 8;
+> +}
+> +
+>  static void exar_update(struct gpio_chip *chip, unsigned int reg, int val,
+>                         unsigned int offset)
+>  {
+> @@ -52,9 +72,8 @@ static int exar_set_direction(struct gpio_chip *chip, int direction,
+>                               unsigned int offset)
+>  {
+>         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+> -               EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
+> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
+> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
+> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
+>
+>         exar_update(chip, addr, direction, bit);
+>         return 0;
+> @@ -75,9 +94,8 @@ static int exar_get(struct gpio_chip *chip, unsigned int reg)
+>  static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
+>  {
+>         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+> -               EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
+> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
+> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
+> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
+>
+>         if (exar_get(chip, addr) & BIT(bit))
+>                 return GPIO_LINE_DIRECTION_IN;
+> @@ -88,9 +106,8 @@ static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
+>  static int exar_get_value(struct gpio_chip *chip, unsigned int offset)
+>  {
+>         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+> -               EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
+> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
+> +       unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
+> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
+>
+>         return !!(exar_get(chip, addr) & BIT(bit));
+>  }
+> @@ -99,9 +116,8 @@ static void exar_set_value(struct gpio_chip *chip, unsigned int offset,
+>                            int value)
+>  {
+>         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
+> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
+> -               EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
+> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
+> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
+> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
+>
+>         exar_update(chip, addr, value, bit);
+>  }
+> --
+> 2.29.1
+>
+
+
 -- 
-2.20.1
-
+With Best Regards,
+Andy Shevchenko
