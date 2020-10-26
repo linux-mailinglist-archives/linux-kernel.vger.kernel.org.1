@@ -2,251 +2,112 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 013DB298F0C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:19:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47CAB298F16
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:20:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781232AbgJZOTw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:19:52 -0400
-Received: from mail-pf1-f196.google.com ([209.85.210.196]:32911 "EHLO
-        mail-pf1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780640AbgJZOTs (ORCPT
+        id S1781246AbgJZOT7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:19:59 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:53663 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781234AbgJZOTz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:19:48 -0400
-Received: by mail-pf1-f196.google.com with SMTP id j18so6289653pfa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:19:47 -0700 (PDT)
+        Mon, 26 Oct 2020 10:19:55 -0400
+Received: by mail-wm1-f67.google.com with SMTP id d78so11834866wmd.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:19:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:to:cc:subject:date:message-id:mime-version
+        d=linaro.org; s=google;
+        h=from:to:cc:subject:date:message-id:mime-version
          :content-transfer-encoding;
-        bh=HLswEjxQbu5C8xqq9SnuF68VVU78PUgJUWGbxqPwtoA=;
-        b=m6t9IQphtvIwRlk8C5fWq1mACXNIyHoLxQJ9uKsXrLTRqPykbQ/EJAbH/2/GrlhMTF
-         rxeEeOJ3q4Ezx/lzKtIhBosz6kYM/iFsF6zuwzMMWyaEcm1LYXV+BV5CNqbpPmi+fbGO
-         aOlhABcs6rLlz4jEZlQEr1j7sG8oNOnfTwwsxQwcUxXfzhQU5PXe/4hDZS6q3ZyQgkYq
-         KdXiUjIMK654STSoLJeUFWEwFoaIFHEfLbu7WAXj1UHnfyBAIbdMeq/hizXHlyQCl2Rf
-         CK7x8Sy9HD6vElcZRiEjq7XTJYhN2O0Um/Hht7UPKakFt4ibKq0xFEtdcpsCNVOWh7v5
-         Ra2A==
+        bh=El9u2gx0cY8E5dk5vr+otYOVhv3UfwiT3Ot69QdQhlU=;
+        b=Db3gnizCW/VQkOSs8aeOD0NxrO9VmMVr2LUbHAmPKG0/3Xfb3OHQncLEYrljyhDOzZ
+         iCHX3oKR9WYHYWywsKkVDvZ2wtcJhk47cqz/rt9estyguD/HwYh5kGV8+pznNP4A50qy
+         g8hz6ywjD185H5adqZW96eClNaNPs5uKeMpBPTP7TPTuql74VB8GZV6K4Vk7n2XfkeIh
+         H8mOSjXNZ7NzziLbKHNzHTgEBRk9qvw7CxoMw2Qf1sjVgmnS0oYlX4CLBA5ry85MtWhU
+         1jTcdFC425Z1VYdtqWnOsvujBiT1VtSydXbgmXx+BkbZCF8j+RPWGxJAEaRxi5gZ7TAl
+         8UBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:to:cc:subject:date:message-id
-         :mime-version:content-transfer-encoding;
-        bh=HLswEjxQbu5C8xqq9SnuF68VVU78PUgJUWGbxqPwtoA=;
-        b=BRPrUzhaW0OuQxShcc7uQycjbZpiXJOXwgYCLKHAuXh8Qk88Q+yvOT88HKc/6AA5sh
-         NJtpR73Ep2hPd4is/wh2QEqu1BaUFwiVOVqg/MmokSI2W+lolVSOAjKL+pW6xd4FKCSD
-         /d9aKTWwaFI9WO6XkkqYywDYQU7Hqb3pHJcrrTbpICQAb7b2+6LiD62B1gGQf59GWgaq
-         UvaOOPb6eELZnjJYJXWFKjXamgIH5xOKJDZS6bLX7nNP8rShSCUB2UmYP826ljgBlE1y
-         Uv4fyUNrELd7JGUEoNyB2ypIHd5i1VE9Ourfn2HK/myE0mIW1CLZyShSfFtkZSA260x/
-         jwbQ==
-X-Gm-Message-State: AOAM532m3Vm8eo0eC4d93zohRj4qxoyYNQfXCJjk18O6/oApPt9IdLUM
-        5Wc/tSPiVmfVKbwhIFvmen8=
-X-Google-Smtp-Source: ABdhPJzo3qUoWNjqzKS2/K+O2xJiaPl/6SFDfs1aQ+BU/M/2t4IGZETTh89rwRnc3qXQMgHXs/lJGg==
-X-Received: by 2002:a62:7d4d:0:b029:152:1b09:f34 with SMTP id y74-20020a627d4d0000b02901521b090f34mr13913830pfc.76.1603721987084;
-        Mon, 26 Oct 2020 07:19:47 -0700 (PDT)
-Received: from balhae.roam.corp.google.com ([101.235.31.111])
-        by smtp.gmail.com with ESMTPSA id b1sm8558342pjd.11.2020.10.26.07.19.40
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=El9u2gx0cY8E5dk5vr+otYOVhv3UfwiT3Ot69QdQhlU=;
+        b=nJ8ZZMNyHTl2hh9wl7olpME+xNBtjselUt9R/Mi/kJlmfsDMdKkVTTgimwqn9wj7ho
+         uPw/gYykWu+XJ+IEDL22l2xg9JEiz+Fv5WQj9Jm/LpORKWQ6bDex37I5DLRkVsejWt9Z
+         uP198lBJJtlg+BWrjagU09p4541a7a8ykykA+P7jC/zYJy0fWK6WUtP2ZCu2AIskOULp
+         x7ygmezmVOLa8cuCHAAcZikJTUNlbLMXf+U+IL0FHzxDUgJMt6ifNKNWw1RNmmwyLd9j
+         oKiC8kyTc+LARcklvOGW5HAobY0yItDysRwsgOwxXfbzZdk6SH09V9/YRCxX/S1A+bYE
+         eIZg==
+X-Gm-Message-State: AOAM532s+cYshu1AfAzTPygLL7SCZK4+LjUFAYVYbl6GYTm9dpmpWUuQ
+        tdQ0SzdkY+Wq3Y+aHNaYsoBIoWyLp2Ubtg==
+X-Google-Smtp-Source: ABdhPJzbH0P3E8eXb+xShrA9atwUMxNJnLkxwBqG4wEzCSmJ1lgdG1VKIKfuTvw93CNDLLlvgTS7RA==
+X-Received: by 2002:a1c:3882:: with SMTP id f124mr15720521wma.184.1603721993120;
+        Mon, 26 Oct 2020 07:19:53 -0700 (PDT)
+Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
+        by smtp.gmail.com with ESMTPSA id g4sm20253333wmh.13.2020.10.26.07.19.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:19:46 -0700 (PDT)
-Sender: Namhyung Kim <namhyung@gmail.com>
-From:   Namhyung Kim <namhyung@kernel.org>
-To:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Andi Kleen <ak@linux.intel.com>
-Cc:     Ingo Molnar <mingo@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Ian Rogers <irogers@google.com>
-Subject: [RFC] perf evlist: Warn if event group has mixed sw/hw events
-Date:   Mon, 26 Oct 2020 23:19:37 +0900
-Message-Id: <20201026141937.582087-1-namhyung@kernel.org>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        Mon, 26 Oct 2020 07:19:52 -0700 (PDT)
+From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+To:     broonie@kernel.org
+Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
+        linux-kernel@vger.kernel.org, plai@codeaurora.org,
+        spapothi@codeaurora.org, lgirdwood@gmail.com,
+        Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 0/6] ASoC: codecs: add support for LPASS Codec macros
+Date:   Mon, 26 Oct 2020 14:19:39 +0000
+Message-Id: <20201026141945.19707-1-srinivas.kandagatla@linaro.org>
+X-Mailer: git-send-email 2.21.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-I found that order of events in a group impacts performance during the
-open.  If a group has a software event as a leader and has other
-hardware events, the lead needs to be moved to a hardware context.
-This includes RCU synchronization which takes about 20 msec on my
-system.  And this is just for a single group, so total time increases
-in proportion to the number of event groups and the number of cpus.
+This patchset adds support for two Codec Macro blocks( WSA and VA) available in
+Qualcomm LPASS (Low Power Audio SubSystem).
 
-On my 36 cpu system, opening 3 groups system-wide takes more than 2
-seconds.  You can see and compare it easily with the following:
+There are WSA, VA, TX and RX Macros on LPASS IP, each of the Macro block
+has specific connectivity like WSA Macros are intended to connect
+to WSA Smart speaker codecs via SoundWire. VA Macro is intended for DMICs,
+and TX/RX for Analog codecs via SoundWire like other WCD Codecs to provide
+headphone/ear/lineout etc ..
 
-  $ time ./perf stat -a -e '{cs,cycles},{cs,cycles},{cs,cycles}' sleep 1
-  ...
-       1.006333430 seconds time elapsed
+Most of the work is derived from downstream Qualcomm kernels.
+Credits to various Qualcomm authors from Patrick Lai's team who have
+contributed to this code.
 
-  real	0m3.969s
-  user	0m0.089s
-  sys	0m0.074s
+This patchset has been tested on support to Qualcomm Robotics RB5 Development
+Kit based on QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers
+with onboard DMIC connected to internal LPASS codec via WSA  and VA macros
+respectively.
 
-  $ time ./perf stat -a -e '{cycles,cs},{cycles,cs},{cycles,cs}' sleep 1
-  ...
-       1.006755292 seconds time elapsed
+yaml bindings depend on gfm headers from "clk: qcom : add sm8250 LPASS GFM drivers"
+patches posted at
+https://www.mail-archive.com/linux-kernel@vger.kernel.org/msg2352255.html
 
-  real	0m1.144s
-  user	0m0.067s
-  sys	0m0.083s
+Thanks,
+srini
 
-This patch just added a warning before running it.  I'd really want to
-fix the kernel if possible but don't have a good idea.  Thoughts?
+Srinivas Kandagatla (6):
+  ASoC: qcom: dt-bindings: add bindings for lpass wsa macro codec
+  ASoC: codecs: lpass-wsa-macro: Add support to WSA Macro
+  ASoC: codecs: lpass-wsa-macro: add dapm widgets and route
+  ASoC: qcom: dt-bindings: add bindings for lpass va macro codec
+  ASoC: codecs: lpass-va-macro: Add support to VA Macro
+  ASoC: codecs: lpass-va-macro: add dapm widgets and routes
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
----
- tools/perf/builtin-record.c |  2 +
- tools/perf/builtin-stat.c   |  2 +
- tools/perf/builtin-top.c    |  2 +
- tools/perf/util/evlist.c    | 78 +++++++++++++++++++++++++++++++++++++
- tools/perf/util/evlist.h    |  1 +
- 5 files changed, 85 insertions(+)
+ .../bindings/sound/qcom,lpass-va-macro.yaml   |   68 +
+ .../bindings/sound/qcom,lpass-wsa-macro.yaml  |   70 +
+ sound/soc/codecs/Kconfig                      |    8 +
+ sound/soc/codecs/Makefile                     |    4 +
+ sound/soc/codecs/lpass-va-macro.c             | 1500 ++++++++++
+ sound/soc/codecs/lpass-wsa-macro.c            | 2503 +++++++++++++++++
+ sound/soc/codecs/lpass-wsa-macro.h            |   15 +
+ 7 files changed, 4168 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-va-macro.yaml
+ create mode 100644 Documentation/devicetree/bindings/sound/qcom,lpass-wsa-macro.yaml
+ create mode 100644 sound/soc/codecs/lpass-va-macro.c
+ create mode 100644 sound/soc/codecs/lpass-wsa-macro.c
+ create mode 100644 sound/soc/codecs/lpass-wsa-macro.h
 
-diff --git a/tools/perf/builtin-record.c b/tools/perf/builtin-record.c
-index adf311d15d3d..c0b08cacbae0 100644
---- a/tools/perf/builtin-record.c
-+++ b/tools/perf/builtin-record.c
-@@ -912,6 +912,8 @@ static int record__open(struct record *rec)
- 
- 	perf_evlist__config(evlist, opts, &callchain_param);
- 
-+	evlist__warn_mixed_group(evlist);
-+
- 	evlist__for_each_entry(evlist, pos) {
- try_again:
- 		if (evsel__open(pos, pos->core.cpus, pos->core.threads) < 0) {
-diff --git a/tools/perf/builtin-stat.c b/tools/perf/builtin-stat.c
-index b01af171d94f..d5d4e02bda69 100644
---- a/tools/perf/builtin-stat.c
-+++ b/tools/perf/builtin-stat.c
-@@ -738,6 +738,8 @@ static int __run_perf_stat(int argc, const char **argv, int run_idx)
- 	if (affinity__setup(&affinity) < 0)
- 		return -1;
- 
-+	evlist__warn_mixed_group(evsel_list);
-+
- 	evlist__for_each_cpu (evsel_list, i, cpu) {
- 		affinity__set(&affinity, cpu);
- 
-diff --git a/tools/perf/builtin-top.c b/tools/perf/builtin-top.c
-index 7c64134472c7..9ad319cea948 100644
---- a/tools/perf/builtin-top.c
-+++ b/tools/perf/builtin-top.c
-@@ -1027,6 +1027,8 @@ static int perf_top__start_counters(struct perf_top *top)
- 
- 	perf_evlist__config(evlist, opts, &callchain_param);
- 
-+	evlist__warn_mixed_group(evlist);
-+
- 	evlist__for_each_entry(evlist, counter) {
- try_again:
- 		if (evsel__open(counter, top->evlist->core.cpus,
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 8bdf3d2c907c..02cff39e509e 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -28,6 +28,7 @@
- #include <unistd.h>
- #include <sched.h>
- #include <stdlib.h>
-+#include <dirent.h>
- 
- #include "parse-events.h"
- #include <subcmd/parse-options.h>
-@@ -1980,3 +1981,80 @@ struct evsel *evlist__find_evsel(struct evlist *evlist, int idx)
- 	}
- 	return NULL;
- }
-+
-+static int *sw_types;
-+static int nr_sw_types;
-+
-+static void collect_software_pmu_types(void)
-+{
-+	const char *known_sw_pmu[] = {
-+		"software", "tracepoint", "breakpoint", "kprobe", "uprobe", "msr"
-+	};
-+	DIR *dir;
-+	struct dirent *d;
-+	char path[PATH_MAX];
-+	int i;
-+
-+	if (sw_types != NULL)
-+		return;
-+
-+	nr_sw_types = ARRAY_SIZE(known_sw_pmu);
-+	sw_types = calloc(nr_sw_types, sizeof(int));
-+	if (sw_types == NULL) {
-+		pr_err("Memory allocation failed!\n");
-+		return;
-+	}
-+
-+	dir = opendir("/sys/bus/event_source/devices");
-+	while ((d = readdir(dir)) != NULL) {
-+		for (i = 0; i < nr_sw_types; i++) {
-+			if (strcmp(d->d_name, known_sw_pmu[i]))
-+				continue;
-+
-+			snprintf(path, sizeof(path), "%s/%s/type",
-+				 "bus/event_source/devices", d->d_name);
-+			sysfs__read_int(path, &sw_types[i]);
-+		}
-+	}
-+	closedir(dir);
-+}
-+
-+static bool is_software_event(struct evsel *evsel)
-+{
-+	int i;
-+
-+	for (i = 0; i < nr_sw_types; i++) {
-+		if (evsel->core.attr.type == (unsigned)sw_types[i])
-+			return true;
-+	}
-+	return false;
-+}
-+
-+void evlist__warn_mixed_group(struct evlist *evlist)
-+{
-+	struct evsel *leader, *evsel;
-+	bool warn = true;
-+
-+	collect_software_pmu_types();
-+
-+	/* Warn if an event group has a sw leader and hw siblings */
-+	evlist__for_each_entry(evlist, leader) {
-+		if (!evsel__is_group_event(leader))
-+			continue;
-+
-+		if (!is_software_event(leader))
-+			continue;
-+
-+		for_each_group_member(evsel, leader) {
-+			if (is_software_event(evsel))
-+				continue;
-+			if (!warn)
-+				continue;
-+
-+			pr_warning("WARNING: Event group has mixed hw/sw events.\n"
-+				   "This will slow down the perf_event_open syscall.\n"
-+				   "Consider putting a hw event as a leader.\n\n");
-+			warn = false;
-+		}
-+	}
-+}
-diff --git a/tools/perf/util/evlist.h b/tools/perf/util/evlist.h
-index e1a450322bc5..a5b0a1d03a00 100644
---- a/tools/perf/util/evlist.h
-+++ b/tools/perf/util/evlist.h
-@@ -387,4 +387,5 @@ int evlist__ctlfd_ack(struct evlist *evlist);
- #define EVLIST_DISABLED_MSG "Events disabled\n"
- 
- struct evsel *evlist__find_evsel(struct evlist *evlist, int idx);
-+void evlist__warn_mixed_group(struct evlist *evlist);
- #endif /* __PERF_EVLIST_H */
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+2.21.0
 
