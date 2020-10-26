@@ -2,134 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6D55299153
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:42:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E66B299156
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:42:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784339AbgJZPmi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:42:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36922 "EHLO mail.kernel.org"
+        id S1784347AbgJZPmm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:42:42 -0400
+Received: from ozlabs.org ([203.11.71.1]:47829 "EHLO ozlabs.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784330AbgJZPmh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:42:37 -0400
-Received: from disco-boy.misterjones.org (disco-boy.misterjones.org [51.254.78.96])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1784337AbgJZPmj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:42:39 -0400
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 5B30F223EA;
-        Mon, 26 Oct 2020 15:42:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603726956;
-        bh=8zxNZBAeRbUdw6Afzgm/VslFGniJ39IqtKKdnPltv/A=;
+        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKfH05TdBz9sSn;
+        Tue, 27 Oct 2020 02:42:36 +1100 (AEDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
+        s=201702; t=1603726956;
+        bh=tMMOyqEm51Rc4GJaI8wp4Jh6kU7FOg9GryCQolZ5OLg=;
         h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=CsCfBfJjNMero4wtZLh6oI46/Jc0PUbWnF/HcxV5pcrP1dP8VsKgzMI4o5HcgH/DP
-         UP0FRM6mAE7gI9JOAUtz7nSKfzdnndOK7boEpRwW6jrGf0YYKu/1r7+GoOFKHZJJNC
-         owX4x4uFggFk6V4e48es5zT9uoBhFGyvO20/4sb8=
-Received: from disco-boy.misterjones.org ([51.254.78.96] helo=www.loen.fr)
-        by disco-boy.misterjones.org with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-        (Exim 4.94)
-        (envelope-from <maz@kernel.org>)
-        id 1kX4dm-004N9T-8b; Mon, 26 Oct 2020 15:42:34 +0000
+        b=q62kjboprjsJoRG1Rs6N9ZeNl8cPXPpaCjpNh8XqZitir7rNhMUmRFh3gZ8yc7ng+
+         RAITDYWB/lCp4LEL2sE1yzlbLx4ftE6zBA6/aT/hV4L21hIWN6t000Te5ipMtEtML4
+         BNukSzOeblTU20DDvwlW8ov6Qnvu8kPzYGDB2QybH+mbekii0GYl+NWgsa4+7DmZ+s
+         KjZZF8q3BS2bYeL6r8gBjZrw1dTCp0I2gnLkLU+487FbZ71fYrpGlsRCHZYipmEdQs
+         8m+nQ4UdkztNWAys6YRA2e9a5CjePZ4qfv4auvs7ecSsaI6AfZiBISXJbyRngC6A2e
+         GbEcRrfqq5idQ==
+Date:   Tue, 27 Oct 2020 02:42:35 +1100
+From:   Stephen Rothwell <sfr@canb.auug.org.au>
+To:     Arnd Bergmann <arnd@arndb.de>
+Cc:     Masahiro Yamada <masahiroy@kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>
+Subject: Re: linux-next: the uniphier trees
+Message-ID: <20201027024235.58062ebb@canb.auug.org.au>
+In-Reply-To: <CAK8P3a00yOGpZgJKMvZch6jTFmvExK90hY5K2Vo+QZCSLgTBuQ@mail.gmail.com>
+References: <20201027015310.1450413b@canb.auug.org.au>
+        <CAK8P3a00yOGpZgJKMvZch6jTFmvExK90hY5K2Vo+QZCSLgTBuQ@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-Content-Transfer-Encoding: 7bit
-Date:   Mon, 26 Oct 2020 15:42:34 +0000
-From:   Marc Zyngier <maz@kernel.org>
-To:     Leo Li <leoyang.li@nxp.com>
-Cc:     Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        "Biwen Li (OSS)" <biwen.li@oss.nxp.com>, shawnguo@kernel.org,
-        robh+dt@kernel.org, mark.rutland@arm.com,
-        "Z.q. Hou" <zhiqiang.hou@nxp.com>, tglx@linutronix.de,
-        jason@lakedaemon.net, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jiafei Pan <jiafei.pan@nxp.com>,
-        Xiaobo Xie <xiaobo.xie@nxp.com>,
-        linux-arm-kernel@lists.infradead.org, Biwen Li <biwen.li@nxp.com>
-Subject: Re: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
- interrupt
-In-Reply-To: <VE1PR04MB668737DF1DDA6E1007BCA24C8F190@VE1PR04MB6687.eurprd04.prod.outlook.com>
-References: <20201026080127.40499-1-biwen.li@oss.nxp.com>
- <31d8971374c261003aee9f4807c8ac8c@kernel.org>
- <3448c822-31b1-7f9d-fedf-49912418fc3f@rasmusvillemoes.dk>
- <b65acafab54b62a2a22aa942089b8033@kernel.org>
- <VE1PR04MB668737DF1DDA6E1007BCA24C8F190@VE1PR04MB6687.eurprd04.prod.outlook.com>
-User-Agent: Roundcube Webmail/1.4.9
-Message-ID: <19b5f5e7bd5e7a41621ecad2239e4bd6@kernel.org>
-X-Sender: maz@kernel.org
-X-SA-Exim-Connect-IP: 51.254.78.96
-X-SA-Exim-Rcpt-To: leoyang.li@nxp.com, linux@rasmusvillemoes.dk, biwen.li@oss.nxp.com, shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com, zhiqiang.hou@nxp.com, tglx@linutronix.de, jason@lakedaemon.net, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, jiafei.pan@nxp.com, xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org, biwen.li@nxp.com
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+Content-Type: multipart/signed; boundary="Sig_/D1=9zpqX+xQVJO4A/7djU=w";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 15:06, Leo Li wrote:
->> -----Original Message-----
->> From: Marc Zyngier <maz@kernel.org>
->> Sent: Monday, October 26, 2020 4:23 AM
->> To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
->> Cc: Biwen Li (OSS) <biwen.li@oss.nxp.com>; shawnguo@kernel.org;
->> robh+dt@kernel.org; mark.rutland@arm.com; Leo Li <leoyang.li@nxp.com>;
->> Z.q. Hou <zhiqiang.hou@nxp.com>; tglx@linutronix.de;
->> jason@lakedaemon.net; devicetree@vger.kernel.org; linux-
->> kernel@vger.kernel.org; Jiafei Pan <jiafei.pan@nxp.com>; Xiaobo Xie
->> <xiaobo.xie@nxp.com>; linux-arm-kernel@lists.infradead.org; Biwen Li
->> <biwen.li@nxp.com>
->> Subject: Re: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A 
->> external
->> interrupt
->> 
->> On 2020-10-26 09:06, Rasmus Villemoes wrote:
->> > On 26/10/2020 09.44, Marc Zyngier wrote:
->> >> On 2020-10-26 08:01, Biwen Li wrote:
->> >>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
->> >>>
->> >>> Add an new IRQ chip declaration for LS1043A and LS1088A
->> >>> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A
->> >>> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
->> >>
->> >> Three things:
->> >> - This commit message doesn't describe the bit_reverse change
->> >
->> > Yeah, please elaborate on that, as the RM for 1043 or 1046 doesn't
->> > mention anything about bit reversal for the scfg registers - they
->> > don't seem to have the utter nonsense that is SCFG_SCFGREVCR, but
->> > perhaps, instead of removing it, that has just become a hard-coded
->> > part of the IP.
->> >
->> > Also, IANAL etc., but
->> >
->> >>> +// Copyright 2019-2020 NXP
->> >
->> > really? Seems to be a bit of a stretch.
->> >
->> > At the very least, cc'ing the original author and only person to ever
->> > touch that file would have been appreciated.
->> 
->> Huh. Well spotted. That's definitely not on.
->> NXP people, please talk to your legal department.
-> 
-> We do have an internal policy to require developer adding/updating NXP
-> copyright on non-trivial changes.  I'm not sure if this change should
-> be considered trivial, but adding copyright claim on a file without
-> prior copyright claims could causing confusion like in this case.
+--Sig_/D1=9zpqX+xQVJO4A/7djU=w
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-The copyright exists implicitly, and doesn't require a copyright claim
-in the file itself. Please talk to your legal department.
+Hi all,
 
-> One
-> potential solution is to add a more specific description on the NXP
-> change together with the copyright claim.  But maybe an easier
-> solution is to add Rasmus your Copyright claim first if you are ok
-> with it.
+On Mon, 26 Oct 2020 16:29:52 +0100 Arnd Bergmann <arnd@arndb.de> wrote:
+>
+> On Mon, Oct 26, 2020 at 3:53 PM Stephen Rothwell <sfr@canb.auug.org.au> w=
+rote:
+> >
+> > I noticed this commit in arm-soc-fixes:
+> >
+> >   6d7fe8aa4503 ("MAINTAINERS: step down as maintainer of UniPhier SoCs =
+and Denali driver")
+> >
+> > I assume that the correct thing for me to do is drop the uniphier and
+> > uniphier-fixes trees from linux-next? =20
+>=20
+> Yes, that sounds like a good idea, thanks for paying attention here.
 
-That's for Rasmus to decide whether he wants to add such a claim,
-given that it exists implicitly. Adding copyright claims for any
-odd change you make isn't acceptable either (your changes are already
-unambiguously identified in git).
+Done.
 
-For the time being, I'm not taking any NXP patch carrying additional
-copyright update until this is clarified.
+--=20
+Cheers,
+Stephen Rothwell
 
-         M.
--- 
-Jazz is not dead. It just smells funny...
+--Sig_/D1=9zpqX+xQVJO4A/7djU=w
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+W7msACgkQAVBC80lX
+0Gy33gf/UMrcjsc6UJUjcRzilojEGAW/HvIumkVlyi1xwDokpTqeLPOwFGYamQbi
+8p3s/xa/reyVzLvViPoV8quaPytm8jdrile8VqfkQEH28aunE9m6mNxXwZxjZOU9
+ZJEgcq64yXCLFyCqdSzc2vrlRdMllUm/doxaXGYShqWlpgQa9GlU0CawEVOaxDee
+qFsxhWToouJ/7lUIPJ0+HcDwqX7Qcu/Dwqs5BJspbKDy6vfTIJzU3c8E99XCWCzT
+KaqQU6riE+xgpkyzbMrXkMwCHn1rbk5/EP6frBWP9w5AnL3nQkgwoh7W4UfL+aZ5
+F1gGDBZ3e8SKGrtxvruxmBJYdcTzhQ==
+=yVVe
+-----END PGP SIGNATURE-----
+
+--Sig_/D1=9zpqX+xQVJO4A/7djU=w--
