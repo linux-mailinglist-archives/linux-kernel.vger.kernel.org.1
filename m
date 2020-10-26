@@ -2,192 +2,192 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39A6F298CC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:14:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 953B5298CCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774897AbgJZMOp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:14:45 -0400
-Received: from mail-wr1-f65.google.com ([209.85.221.65]:39398 "EHLO
-        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774890AbgJZMOo (ORCPT
+        id S1772551AbgJZMRd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:17:33 -0400
+Received: from casper.infradead.org ([90.155.50.34]:38660 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1730361AbgJZMRd (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:14:44 -0400
-Received: by mail-wr1-f65.google.com with SMTP id y12so12177972wrp.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:14:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=date:from:to:cc:subject:message-id:mime-version:content-disposition;
-        bh=9XiXFBGQEoweypTgUIFL5kZ+Amj93MlM0t0ZCMvklW0=;
-        b=iTKZFezCsqq2n2F4JPAbKdXTaWRh9kTrhFstv9NgLlaNfbTkeeLpyWOp95hc3X1SrX
-         E8SD4Ww212pal2CIkC6EB9bc0oNGUIojxrZuo2fLQBvicj3LxX4HiRTGyky+vi7WTYwr
-         mYq4X1mZZb82+f6KykkQ0c+hSxkBbh1kexNLcdT8oKLLk2Q2TI1wnYWYQpw1ca4RBNB2
-         /zSBtSneE9LOw5+KEu7fn6Rh6SE2ZWxHjlTrzmdmLIfcE1kfePIH2PtNAIGeikfSV9pg
-         oE+r2G6b0ahFd53hpM64HeKlEwhpShrtizhpkZgqRB2MZ3pTNloT3+PNYJWmr+uoeQJL
-         kd/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:mime-version
-         :content-disposition;
-        bh=9XiXFBGQEoweypTgUIFL5kZ+Amj93MlM0t0ZCMvklW0=;
-        b=RYqUU2YRkZ68FRjPqExSBTlJ+bTBcA2bZsS+5yFq5mo033H4uG4JeXjm9DzqD0rzi7
-         +3S7rFlnD7lAok+qP0v8QJ/DaFR1Pcx58JYFh3Hfwj8FP0eCgtOzfMqAXVdn+B4MsjlG
-         rmP0wF2HCEV2QO/l3fyCbGjkTB7+o6H3HB7eOSpIdholXtC5wxgnhKWaoTsZFJCryIZg
-         euAVjpWsB1mZqMA0R4pM0HQtxD9NYUlD2orGBWd+EpANK9jj7wqNjXduGLWJD01PbGQa
-         o+7lomgSIrPXC6DaTWn4bNly2gb5WrNlkS+t1apLLxXsARYIfMdZy0suzTGlbudyKQW6
-         Dihg==
-X-Gm-Message-State: AOAM531RV7oKvsuL7Tvl30qIvvE6J0gM2WVP1qNYoUZeLQtaPuE21eP1
-        SuLEAF1A6mfOkjPHbeSI1Nw=
-X-Google-Smtp-Source: ABdhPJwPpJyXIs3pUGwvBR+/ENMixM97/4OI0vdyYuXXn8soG6754hhxDYQq9ez/zErVZ5L/5ABVdQ==
-X-Received: by 2002:a5d:40c3:: with SMTP id b3mr19024728wrq.157.1603714481408;
-        Mon, 26 Oct 2020 05:14:41 -0700 (PDT)
-Received: from LEGION ([103.150.154.170])
-        by smtp.gmail.com with ESMTPSA id v189sm20241764wmg.14.2020.10.26.05.14.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:14:40 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 17:14:35 +0500
-From:   Muhammad Usama Anjum <musamaanjum@gmail.com>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-kernel@vger.kernel.org, devel@driverdev.osuosl.org,
-        musamaanjum@gmail.com
-Subject: [PATCH] staging: rtl8192e, rtl8192u: use correct notation to define
- pointer
-Message-ID: <20201026121435.GA782465@LEGION>
+        Mon, 26 Oct 2020 08:17:33 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=TJ7A8YWRqbXP5svQLVghfVUxrZ30JvU6Kp7xKSa+O5c=; b=JMlUFYQZKGONkoMhM1DBe2cJsD
+        MiXQGrSkT0HCmvIJagpbuBsXuI73bgoCzqh5b3YlCPgX+0TyFHs7u+G+51vL84P8Mtlkxb1cWPeWw
+        POdnJdauLKy52Yr0ZoFQUaDKel/rkj9MAPuzRM/YHN0I6M0cKmoHRpvPwj+UeQD2jvRUMRK1IIxIe
+        kZY/QbhPWWFUQGK3ezw8dZizTegpl+GXj6qnDreCG63DjgogYEJfVkZR6ZiJ4bQvso+R4qbKTw8ZJ
+        n0tL9QzgAfD3Od5qytdnuY8JebWKjU/P9Uanp08daI+jAlUsvUaMhd4taLo8XH2t06rKkAzAT0daR
+        Ggr/PhBw==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX1RH-0002T5-Kg; Mon, 26 Oct 2020 12:17:27 +0000
+Date:   Mon, 26 Oct 2020 12:17:27 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Hugh Dickins <hughd@google.com>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Yang Shi <yang.shi@linux.alibaba.com>,
+        Dave Chinner <dchinner@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        William Kucharski <william.kucharski@oracle.com>
+Subject: Re: [PATCH v3 04/12] mm/filemap: Add mapping_seek_hole_data
+Message-ID: <20201026121727.GO20115@casper.infradead.org>
+References: <20201026041408.25230-1-willy@infradead.org>
+ <20201026041408.25230-5-willy@infradead.org>
+ <20201026104806.GB29758@quack2.suse.cz>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20201026104806.GB29758@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Use pointer notation instead of using array notation as info_element is
-a pointer not array.
+On Mon, Oct 26, 2020 at 11:48:06AM +0100, Jan Kara wrote:
+> > +static inline loff_t page_seek_hole_data(struct page *page,
+> > +		loff_t start, loff_t end, bool seek_data)
+> > +{
+> > +	if (xa_is_value(page) || PageUptodate(page))
+> 
+> Please add a comment here that this is currently tmpfs specific treating
+> exceptional entries as swapped out pages and thus data. It took me quite a
+> while to figure this out. You can remove the comment later when it is no
+> longer true...
 
-Warnings from sparse:
-drivers/staging/rtl8192u/ieee80211/ieee80211.h:1013:51: warning: array of flexible structures
-drivers/staging/rtl8192u/ieee80211/ieee80211.h:985:51: warning: array of flexible structures
-drivers/staging/rtl8192u/ieee80211/ieee80211.h:963:51: warning: array of flexible structures
-drivers/staging/rtl8192u/ieee80211/ieee80211.h:996:51: warning: array of flexible structures
-drivers/staging/rtl8192u/ieee80211/ieee80211.h:974:51: warning: array of flexible structures
+But it's not tmpfs specific.  If the value entry is a DAX entry, there's
+data here, and if the value entry is a shadow entry, there's data here
+too.  Not that it should be called for either of those cases because the
+filesystem should know, but a value entry always means there's data here.
 
-drivers/staging/rtl8192e/rtllib.h:832:48: warning: array of flexible structures
-drivers/staging/rtl8192e/rtllib.h:851:48: warning: array of flexible structures
-drivers/staging/rtl8192e/rtllib.h:805:48: warning: array of flexible structures
-drivers/staging/rtl8192e/rtllib.h:843:48: warning: array of flexible structures
-drivers/staging/rtl8192e/rtllib.h:821:48: warning: array of flexible structures
+I'm open to adding a comment, but saying "A value entry always means data"
+seems a little redundant with the code.  What would have helped?
 
-Signed-off-by: Muhammad Usama Anjum <musamaanjum@gmail.com>
----
- drivers/staging/rtl8192e/rtllib.h              | 10 +++++-----
- drivers/staging/rtl8192u/ieee80211/ieee80211.h | 12 ++++++------
- 2 files changed, 11 insertions(+), 11 deletions(-)
+> > +		return seek_data ? start : end;
+> > +	return seek_data ? end : start;
+> > +}
+> > +
+> > +static inline
+> > +unsigned int seek_page_size(struct xa_state *xas, struct page *page)
+> > +{
+> > +	if (xa_is_value(page))
+> > +		return PAGE_SIZE << xa_get_order(xas->xa, xas->xa_index);
+> > +	return thp_size(page);
+> > +}
+> > +
+> > +/**
+> > + * mapping_seek_hole_data - Seek for SEEK_DATA / SEEK_HOLE in the page cache.
+> > + * @mapping: Address space to search.
+> > + * @start: First byte to consider.
+> > + * @end: Limit of search (exclusive).
+> > + * @whence: Either SEEK_HOLE or SEEK_DATA.
+> > + *
+> > + * If the page cache knows which blocks contain holes and which blocks
+> > + * contain data, your filesystem can use this function to implement
+> > + * SEEK_HOLE and SEEK_DATA.  This is useful for filesystems which are
+> > + * entirely memory-based such as tmpfs, and filesystems which support
+> > + * unwritten extents.
+> > + *
+> > + * Return: The requested offset on successs, or -ENXIO if @whence specifies
+> > + * SEEK_DATA and there is no data after @start.  There is an implicit hole
+> > + * after @end - 1, so SEEK_HOLE returns @end if all the bytes between @start
+> > + * and @end contain data.
+> > + */
+> > +loff_t mapping_seek_hole_data(struct address_space *mapping, loff_t start,
+> > +		loff_t end, int whence)
+> > +{
+> > +	XA_STATE(xas, &mapping->i_pages, start >> PAGE_SHIFT);
+> > +	pgoff_t max = (end - 1) / PAGE_SIZE;
+> > +	bool seek_data = (whence == SEEK_DATA);
+> > +	struct page *page;
+> > +
+> > +	if (end <= start)
+> > +		return -ENXIO;
+> > +
+> > +	rcu_read_lock();
+> > +	while ((page = xas_find_get_entry(&xas, max, XA_PRESENT))) {
+> > +		loff_t pos = xas.xa_index * PAGE_SIZE;
+> > +
+> > +		if (start < pos) {
+> > +			if (!seek_data)
+> > +				goto unlock;
+> > +			start = pos;
+> > +		}
+> > +
+> > +		pos += seek_page_size(&xas, page);
+> > +		start = page_seek_hole_data(page, start, pos, seek_data);
+> > +		if (start < pos)
+> > +			goto unlock;
+> 
+> Uh, I was staring at this function for half an hour but I still couldn't
+> convince myself that it is correct in all the corner cases. Maybe I'm dumb
+> but I'd wish this was more intuitive (and I have to say that the original
+> tmpfs function is much more obviously correct to me). It would more 
+> understandable for me if we had a code like:
+> 
+> 		if (page_seek_match(page, seek_data))
+> 			goto unlock;
+> 
+> which would be just the condition in page_seek_hole_data(). Honestly at the
+> moment I fail to see why you bother with 'pos' in the above four lines at
+> all.
 
-diff --git a/drivers/staging/rtl8192e/rtllib.h b/drivers/staging/rtl8192e/rtllib.h
-index b84f00b8d18b..1dab9c3d08a8 100644
---- a/drivers/staging/rtl8192e/rtllib.h
-+++ b/drivers/staging/rtl8192e/rtllib.h
-@@ -802,7 +802,7 @@ struct rtllib_authentication {
- 	__le16 transaction;
- 	__le16 status;
- 	/*challenge*/
--	struct rtllib_info_element info_element[];
-+	struct rtllib_info_element *info_element;
- } __packed;
- 
- struct rtllib_disauth {
-@@ -818,7 +818,7 @@ struct rtllib_disassoc {
- struct rtllib_probe_request {
- 	struct rtllib_hdr_3addr header;
- 	/* SSID, supported rates */
--	struct rtllib_info_element info_element[];
-+	struct rtllib_info_element *info_element;
- } __packed;
- 
- struct rtllib_probe_response {
-@@ -829,7 +829,7 @@ struct rtllib_probe_response {
- 	/* SSID, supported rates, FH params, DS params,
- 	 * CF params, IBSS params, TIM (if beacon), RSN
- 	 */
--	struct rtllib_info_element info_element[];
-+	struct rtllib_info_element *info_element;
- } __packed;
- 
- /* Alias beacon for probe_response */
-@@ -840,7 +840,7 @@ struct rtllib_assoc_request_frame {
- 	__le16 capability;
- 	__le16 listen_interval;
- 	/* SSID, supported rates, RSN */
--	struct rtllib_info_element info_element[];
-+	struct rtllib_info_element *info_element;
- } __packed;
- 
- struct rtllib_assoc_response_frame {
-@@ -848,7 +848,7 @@ struct rtllib_assoc_response_frame {
- 	__le16 capability;
- 	__le16 status;
- 	__le16 aid;
--	struct rtllib_info_element info_element[]; /* supported rates */
-+	struct rtllib_info_element *info_element; /* supported rates */
- } __packed;
- 
- struct rtllib_txb {
-diff --git a/drivers/staging/rtl8192u/ieee80211/ieee80211.h b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-index 39f4ddd86796..37b240dd0b1f 100644
---- a/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-+++ b/drivers/staging/rtl8192u/ieee80211/ieee80211.h
-@@ -960,7 +960,7 @@ struct ieee80211_authentication {
- 	__le16 transaction;
- 	__le16 status;
- 	/*challenge*/
--	struct ieee80211_info_element info_element[];
-+	struct ieee80211_info_element *info_element;
- } __packed;
- 
- struct ieee80211_disassoc {
-@@ -971,7 +971,7 @@ struct ieee80211_disassoc {
- struct ieee80211_probe_request {
- 	struct rtl_80211_hdr_3addr header;
- 	/* SSID, supported rates */
--	struct ieee80211_info_element info_element[];
-+	struct ieee80211_info_element *info_element;
- } __packed;
- 
- struct ieee80211_probe_response {
-@@ -982,7 +982,7 @@ struct ieee80211_probe_response {
- 	/* SSID, supported rates, FH params, DS params,
- 	 * CF params, IBSS params, TIM (if beacon), RSN
- 	 */
--	struct ieee80211_info_element info_element[];
-+	struct ieee80211_info_element *info_element;
- } __packed;
- 
- /* Alias beacon for probe_response */
-@@ -993,7 +993,7 @@ struct ieee80211_assoc_request_frame {
- 	__le16 capability;
- 	__le16 listen_interval;
- 	/* SSID, supported rates, RSN */
--	struct ieee80211_info_element info_element[];
-+	struct ieee80211_info_element *info_element;
- } __packed;
- 
- struct ieee80211_reassoc_request_frame {
-@@ -1002,7 +1002,7 @@ struct ieee80211_reassoc_request_frame {
- 	__le16 listen_interval;
- 	u8 current_ap[ETH_ALEN];
- 	/* SSID, supported rates, RSN */
--	struct ieee80211_info_element info_element[];
-+	struct ieee80211_info_element *info_element;
- } __packed;
- 
- struct ieee80211_assoc_response_frame {
-@@ -1010,7 +1010,7 @@ struct ieee80211_assoc_response_frame {
- 	__le16 capability;
- 	__le16 status;
- 	__le16 aid;
--	struct ieee80211_info_element info_element[]; /* supported rates */
-+	struct ieee80211_info_element *info_element; /* supported rates */
- } __packed;
- 
- struct ieee80211_txb {
--- 
-2.25.1
+So this?
 
+static bool page_seek_match(struct page *page, bool seek_data)
+{
+	/* Swap, shadow & DAX entries all represent data */
+	if (xa_is_value(page) || PageUptodate(page))
+		return seek_data;
+	return !seek_data;
+}
+
+...
+
+		if (page_seek_match(page, seek_data))
+			goto unlock;
+		start = pos + seek_page_size(&xas, page);
+
+The function makes more sense when page_seek_hole_data() gains the
+ability to look at sub-page uptodate status and it needs to return
+where in the page the data (or hole) starts.  But that can be delayed
+for the later patch.
+
+With those changes,
+
+Ran: generic/285 generic/286 generic/436 generic/445 generic/448 generic/490 generic/539
+Passed all 7 tests
+
+> BTW I suspect that this loop forgets to release the page reference it has got
+> when doing SEEK_HOLE.
+
+You're right.  I need a put_page() at the end of the loop.  Also true
+for the case where we find a !Uptodate page when doing SEEK_DATA.
+
+> > +	}
+> > +	rcu_read_unlock();
+> > +
+> > +	if (seek_data)
+> > +		return -ENXIO;
+> > +	goto out;
+> > +
+> > +unlock:
+> > +	rcu_read_unlock();
+> > +	if (!xa_is_value(page))
+> > +		put_page(page);
+> > +out:
+> > +	if (start > end)
+> > +		return end;
+> > +	return start;
+> > +}
+> 
+> 
+> 								Honza
+> 
+> -- 
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
