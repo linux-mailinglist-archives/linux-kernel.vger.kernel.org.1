@@ -2,92 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CC03D299B0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:49:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 72EDB299B5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408416AbgJZXrZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:47:25 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44376 "EHLO mail.kernel.org"
+        id S2409173AbgJZXum (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:50:42 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49198 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408400AbgJZXrY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:47:24 -0400
-Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S2409041AbgJZXuJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:09 -0400
+Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 34F4B20872;
-        Mon, 26 Oct 2020 23:47:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 034AE20874;
+        Mon, 26 Oct 2020 23:50:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756043;
-        bh=CCd/1eClEmV4GdkYGGj4s8i+deHWYDJGw3SoCtNf2O8=;
-        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=HEJKt+S9wdzTfdcyniRnE8GEYdxxMBjI4RH+tQDmKl+RC2dU/9SdSyui3E7dsz6Z0
-         mUBHYtTOGfwRwTWGDVW7XbDz2ng6Ck+gBlEW6x+HbAjKjoO5BvwnmitmzHiefY1Dvq
-         hM2QD+afILHXb5BCNVUFGshMpVbGIWJb5WqnBvVk=
-Date:   Mon, 26 Oct 2020 23:47:19 +0000
-From:   Mark Brown <broonie@kernel.org>
-To:     Liam Girdwood <lgirdwood@gmail.com>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Andy Gross <agross@kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        Jonathan Marek <jonathan@marek.ca>
-Cc:     linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        linux-clk@vger.kernel.org, devicetree@vger.kernel.org
-In-Reply-To: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
-References: <20201023131925.334864-1-dmitry.baryshkov@linaro.org>
-Subject: Re: [PATCH v2 0/5]
-Message-Id: <160375603445.32304.15800152990447798405.b4-ty@kernel.org>
+        s=default; t=1603756209;
+        bh=fKL3J8CPBrYLpzUa1ey64r5goiIaDA6PJaNOwE4RVXI=;
+        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+        b=bdoCtbgzgEwsvQNMaxpT3653tDxli6JnZpGZJ5RMeN3LDEbMvjrRQd8S+pGiNjWAM
+         WqHs4d43euKtdh8B3DDIMSe9+EAlee/nYTeN82PuCfbaFw7GmN5LKzriny7XKK8ggr
+         ybBjVIZJmDZQn/GwEIactwWboBHH/9LphO/WOeLc=
+From:   Sasha Levin <sashal@kernel.org>
+To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
+        Ulf Hansson <ulf.hansson@linaro.org>,
+        Sasha Levin <sashal@kernel.org>, linux-mmc@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 051/147] mmc: via-sdmmc: Fix data race bug
+Date:   Mon, 26 Oct 2020 19:47:29 -0400
+Message-Id: <20201026234905.1022767-51-sashal@kernel.org>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
+References: <20201026234905.1022767-1-sashal@kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+X-stable: review
+X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 23 Oct 2020 16:19:20 +0300, Dmitry Baryshkov wrote:
-> On SM8250 MDSS_GDSC (and the rest of display clock controller) is
-> supplied power by MMCX power domain. Handle this link in GDSC code by
-> binding the power domain in dts file.
-> 
-> This patchset depends on [1]
-> 
-> Changes since v1:
->  - Define fixed-regulator-domain regulator using power domain
->    performance state for enabling/disabling.
->  - Rework to use new fixed regulator type (fixed-regulator-domain)
->    instead of controlling power domain directly from gdsc code.
-> 
-> [...]
+From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
 
-Applied to
+[ Upstream commit 87d7ad089b318b4f319bf57f1daa64eb6d1d10ad ]
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
+via_save_pcictrlreg() should be called with host->lock held
+as it writes to pm_pcictrl_reg, otherwise there can be a race
+condition between via_sd_suspend() and via_sdc_card_detect().
+The same pattern is used in the function via_reset_pcictrl()
+as well, where via_save_pcictrlreg() is called with host->lock
+held.
 
-Thanks!
+Found by Linux Driver Verification project (linuxtesting.org).
 
-[1/2] regulator: fixed: provide bindings using power domain
-      commit: d4189bc55d5c40251abaa1f341796aac84ddfb10
-[2/2] regulator: fixed: support using power domain for enable/disable
-      commit: bf3a28cf42412c0a85631da94f198048bb37a8e5
+Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+Link: https://lore.kernel.org/r/20200822061528.7035-1-madhuparnabhowmik10@gmail.com
+Signed-off-by: Ulf Hansson <ulf.hansson@linaro.org>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ drivers/mmc/host/via-sdmmc.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
+diff --git a/drivers/mmc/host/via-sdmmc.c b/drivers/mmc/host/via-sdmmc.c
+index 49dab9f42b6d6..9b755ea0fa03c 100644
+--- a/drivers/mmc/host/via-sdmmc.c
++++ b/drivers/mmc/host/via-sdmmc.c
+@@ -1257,11 +1257,14 @@ static void __maybe_unused via_init_sdc_pm(struct via_crdr_mmc_host *host)
+ static int __maybe_unused via_sd_suspend(struct device *dev)
+ {
+ 	struct via_crdr_mmc_host *host;
++	unsigned long flags;
+ 
+ 	host = dev_get_drvdata(dev);
+ 
++	spin_lock_irqsave(&host->lock, flags);
+ 	via_save_pcictrlreg(host);
+ 	via_save_sdcreg(host);
++	spin_unlock_irqrestore(&host->lock, flags);
+ 
+ 	device_wakeup_enable(dev);
+ 
+-- 
+2.25.1
 
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
