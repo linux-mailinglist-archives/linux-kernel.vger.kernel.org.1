@@ -2,114 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 65A37298CAC
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 396AF298CAE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:06:42 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774712AbgJZMFW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:05:22 -0400
-Received: from jptosegrel01.sonyericsson.com ([124.215.201.71]:2659 "EHLO
-        JPTOSEGREL01.sonyericsson.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1770973AbgJZMFV (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:05:21 -0400
-Subject: Re: [RFC PATCH 0/6] Sleepable tracepoints
-To:     Michael Jeanson <mjeanson@efficios.com>,
-        <linux-kernel@vger.kernel.org>
-CC:     <mathieu.desnoyers@efficios.com>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>,
-        "Paul E . McKenney" <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>,
-        Joel Fernandes <joel@joelfernandes.org>, <bpf@vger.kernel.org>
-References: <20201023195352.26269-1-mjeanson@efficios.com>
-From:   peter enderborg <peter.enderborg@sony.com>
-Message-ID: <083f3ffa-3395-d66b-bb8b-d6a3fd7f6177@sony.com>
-Date:   Mon, 26 Oct 2020 13:05:09 +0100
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1774723AbgJZMGi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:06:38 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47926 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1772859AbgJZMGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:06:38 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6044E22281;
+        Mon, 26 Oct 2020 12:06:37 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603713997;
+        bh=k/lA6Dkda+6vd6SRahMsDzJ+uJdsADh3oKw7p28hhps=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=akE2NGKii2ZnovqzsJkTwwqEs2qwcaC50pS828uzpgJDyQpFoaTuGLPyhs00oV2tD
+         ta59UUokKoDcKKRS040UbeWrbwuHxv7hFreIPZzg6qy6kJ1n4iFf/fkR4EWZ6w/F/g
+         IJJrnZkMoK+r+LUOS1bzd6IVRE0AcFFcoJiuoN3g=
+Date:   Mon, 26 Oct 2020 12:06:33 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     =?utf-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>
+Cc:     Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Liam Girdwood <lgirdwood@gmail.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>,
+        Stephen Warren <swarren@nvidia.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-tegra@vger.kernel.org, alsa-devel@alsa-project.org
+Subject: Re: [RESEND v2] ASoC: tegra20-spdif: remove "default m"
+Message-ID: <20201026120633.GA7402@sirena.org.uk>
+References: <e6e89abff9004e8ed2e79a9ccf1377eeac9e4134.1603542719.git.mirq-linux@rere.qmqm.pl>
 MIME-Version: 1.0
-In-Reply-To: <20201023195352.26269-1-mjeanson@efficios.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Content-Language: en-GB
-X-SEG-SpamProfiler-Analysis: v=2.3 cv=EbK2v8uC c=1 sm=1 tr=0 a=CGteIMthFL3x4Fb36c5kWA==:117 a=IkcTkHD0fZMA:10 a=afefHYAZSVUA:10 a=meVymXHHAAAA:8 a=JfrnYn6hAAAA:8 a=VwQbUJbxAAAA:8 a=FOH2dFAWAAAA:8 a=20KFwNOVAAAA:8 a=7CQSdrXTAAAA:8 a=QyXUC8HyAAAA:8 a=qqdB56dbAAAA:8 a=3C5PsIaMDjZkp0q5FAMA:9 a=QEXdDO2ut3YA:10 a=2JgSa4NbpEOStq-L5dxp:22 a=1CNFftbPRP8L7MoqJWF3:22 a=AjGcO6oz07-iQ99wixmX:22 a=i3VuKzQdj-NEYjvDI-p3:22 a=a-qgeE7W1pNrGK8U0ZQC:22 a=ccaIO3UgQCpleZvgly2v:22
-X-SEG-SpamProfiler-Score: 0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="9jxsPFA5p3P2qPhR"
+Content-Disposition: inline
+In-Reply-To: <e6e89abff9004e8ed2e79a9ccf1377eeac9e4134.1603542719.git.mirq-linux@rere.qmqm.pl>
+X-Cookie: Safety Third.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/23/20 9:53 PM, Michael Jeanson wrote:
-> When invoked from system call enter/exit instrumentation, accessing
-> user-space data is a common use-case for tracers. However, tracepoints
-> currently disable preemption around iteration on the registered
-> tracepoint probes and invocation of the probe callbacks, which prevents
-> tracers from handling page faults.
->
-> Extend the tracepoint and trace event APIs to allow specific tracer
-> probes to take page faults. Adapt ftrace, perf, and ebpf to allow being
-> called from sleepable context, and convert the system call enter/exit
-> instrumentation to sleepable tracepoints.
 
-Will this not be a problem for analyse of the trace? It get two
-relevant times, one it when it is called and one when it returns.
+--9jxsPFA5p3P2qPhR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It makes things harder to correlate in what order things happen.
+On Sat, Oct 24, 2020 at 02:34:14PM +0200, Micha=C5=82 Miros=C5=82aw wrote:
+> Make tegra20-spdif default to N as all other drivers do.
+> Add the selection to defconfigs instead.
 
-And handling of tracing of contexts that already are not preamptable?
+Please send defconfig updates as separate patches, they are merged via
+arm-soc.
 
-Eg the same tracepoint are used in different places and contexts.
+--9jxsPFA5p3P2qPhR
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
 
-> This series only implements the tracepoint infrastructure required to
-> allow tracers to handle page faults. Modifying each tracer to handle
-> those page faults would be a next step after we all agree on this piece
-> of instrumentation infrastructure.
->
-> This patchset is base on v5.9.1.
->
-> Cc: Steven Rostedt (VMware) <rostedt@goodmis.org>
-> Cc: Peter Zijlstra <peterz@infradead.org>
-> Cc: Alexei Starovoitov <ast@kernel.org>
-> Cc: Yonghong Song <yhs@fb.com>
-> Cc: Paul E. McKenney <paulmck@kernel.org>
-> Cc: Ingo Molnar <mingo@redhat.com>
-> Cc: Arnaldo Carvalho de Melo <acme@kernel.org>
-> Cc: Mark Rutland <mark.rutland@arm.com>
-> Cc: Alexander Shishkin <alexander.shishkin@linux.intel.com>
-> Cc: Jiri Olsa <jolsa@redhat.com>
-> Cc: Namhyung Kim <namhyung@kernel.org>
-> Cc: Joel Fernandes (Google) <joel@joelfernandes.org>
-> Cc: bpf@vger.kernel.org
->
-> Mathieu Desnoyers (1):
->   tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
->
-> Michael Jeanson (5):
->   tracing: introduce sleepable tracepoints
->   tracing: ftrace: add support for sleepable tracepoints
->   tracing: bpf-trace: add support for sleepable tracepoints
->   tracing: perf: add support for sleepable tracepoints
->   tracing: convert sys_enter/exit to sleepable tracepoints
->
->  include/linux/tracepoint-defs.h |  11 ++++
->  include/linux/tracepoint.h      | 104 +++++++++++++++++++++-----------
->  include/trace/bpf_probe.h       |  23 ++++++-
->  include/trace/define_trace.h    |   7 +++
->  include/trace/events/syscalls.h |   4 +-
->  include/trace/perf.h            |  26 ++++++--
->  include/trace/trace_events.h    |  79 ++++++++++++++++++++++--
->  init/Kconfig                    |   1 +
->  kernel/trace/bpf_trace.c        |   5 +-
->  kernel/trace/trace_events.c     |  15 ++++-
->  kernel/trace/trace_syscalls.c   |  68 +++++++++++++--------
->  kernel/tracepoint.c             | 104 +++++++++++++++++++++++++-------
->  12 files changed, 351 insertions(+), 96 deletions(-)
->
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+Wu8UACgkQJNaLcl1U
+h9BsEQf/bJ8JpSs01wcZxMpvZJtL2CZcnbcK2LRCO/xTGEM1bQa9z/NzruQ83TDf
+3Mfn8UafejS24D1FYRylHRGvxPQb4fJmkINXRT/qGar1cgDKW3V+l53/o5WMuwwR
+44qb4iTj1KaN0lZKR0D9u8aviRxqN2nmVWX1bjDxoqFLSSeQMqmUio0ovqsRf9WQ
+RuPKzsNoXlL9xM/kfjtRgTM1/4uyhy2pHuCnH4EFDV8QJC1CVEyhVqNnu4+z+v/X
+FV/CpiBbMR64UanqL56ehez0qeS8s4uobivn/MjkeNKchQF+ZFeB7cZlJVRq16XX
+OECo4aEGG/F0a3Pwa4c6L05BRLts0A==
+=jdIz
+-----END PGP SIGNATURE-----
 
+--9jxsPFA5p3P2qPhR--
