@@ -2,39 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03B3F29A13C
+	by mail.lfdr.de (Postfix) with ESMTP id DFB3129A13E
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:47:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2444517AbgJ0Aix (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:38:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49314 "EHLO mail.kernel.org"
+        id S2444530AbgJ0Aiy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:38:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49510 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409049AbgJZXuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:12 -0400
+        id S2408786AbgJZXuQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 320B820872;
-        Mon, 26 Oct 2020 23:50:11 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2BEFE21741;
+        Mon, 26 Oct 2020 23:50:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756212;
-        bh=4+TPWeG1+cUWlkPTZtOZhsSL0qfQ3uIWebqfR5ND2pI=;
+        s=default; t=1603756216;
+        bh=QwFa3IjnosEP+SlfiLKA9TIGqPClMmg+S6U8A4LoDt4=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=CoanZDCYxDBTvbzvWlsLCpdDR/5nB2C6uofr/HxJq3fmXjIKmIjYMpf45+DVJ7zT4
-         OjT0vk44E6khRt//hs6hpS6x01zdTrkJAL2bntAdrapQs71M2Hy277KLQdGvCo0G/G
-         HvijOk+hKwfUI73P8LQlfwbNmEj57CIwGcF+wbB0=
+        b=kfnF7nvHho2X5FMb0qYLDifEfA4MWrbrlc3NNAWW8VCrV3784xbkjFCNTPXIqiBV5
+         lR6uK0kY35ZUUgv3Rnwi2wSRV1MQCbYMS4rvlyGsKa3ySpENgwo5Ib0LWUrr5MzxfR
+         LKVZwUV4KWZJwegyqDUgtDEURDGG7kCocj670dww=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dmitry Osipenko <digetx@gmail.com>,
-        Arend van Spriel <arend.vanspriel@broadcom.com>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-wireless@vger.kernel.org,
-        brcm80211-dev-list.pdl@broadcom.com,
-        brcm80211-dev-list@cypress.com, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 053/147] brcmfmac: increase F2 watermark for BCM4329
-Date:   Mon, 26 Oct 2020 19:47:31 -0400
-Message-Id: <20201026234905.1022767-53-sashal@kernel.org>
+Cc:     John Ogness <john.ogness@linutronix.de>,
+        kernel test robot <lkp@intel.com>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Petr Mladek <pmladek@suse.com>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.9 056/147] printk: reduce LOG_BUF_SHIFT range for H8300
+Date:   Mon, 26 Oct 2020 19:47:34 -0400
+Message-Id: <20201026234905.1022767-56-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -46,38 +44,40 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dmitry Osipenko <digetx@gmail.com>
+From: John Ogness <john.ogness@linutronix.de>
 
-[ Upstream commit 317da69d10b0247c4042354eb90c75b81620ce9d ]
+[ Upstream commit 550c10d28d21bd82a8bb48debbb27e6ed53262f6 ]
 
-This patch fixes SDHCI CRC errors during of RX throughput testing on
-BCM4329 chip if SDIO BUS is clocked above 25MHz. In particular the
-checksum problem is observed on NVIDIA Tegra20 SoCs. The good watermark
-value is borrowed from downstream BCMDHD driver and it's matching to the
-value that is already used for the BCM4339 chip, hence let's re-use it
-for BCM4329.
+The .bss section for the h8300 is relatively small. A value of
+CONFIG_LOG_BUF_SHIFT that is larger than 19 will create a static
+printk ringbuffer that is too large. Limit the range appropriately
+for the H8300.
 
-Reviewed-by: Arend van Spriel <arend.vanspriel@broadcom.com>
-Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
-Link: https://lore.kernel.org/r/20200830191439.10017-2-digetx@gmail.com
+Reported-by: kernel test robot <lkp@intel.com>
+Signed-off-by: John Ogness <john.ogness@linutronix.de>
+Reviewed-by: Sergey Senozhatsky <sergey.senozhatsky@gmail.com>
+Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
+Signed-off-by: Petr Mladek <pmladek@suse.com>
+Link: https://lore.kernel.org/r/20200812073122.25412-1-john.ogness@linutronix.de
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c | 1 +
- 1 file changed, 1 insertion(+)
+ init/Kconfig | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-index 3c07d1bbe1c6e..ac3ee93a23780 100644
---- a/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-+++ b/drivers/net/wireless/broadcom/brcm80211/brcmfmac/sdio.c
-@@ -4278,6 +4278,7 @@ static void brcmf_sdio_firmware_callback(struct device *dev, int err,
- 			brcmf_sdiod_writeb(sdiod, SBSDIO_FUNC1_MESBUSYCTRL,
- 					   CY_43012_MESBUSYCTRL, &err);
- 			break;
-+		case SDIO_DEVICE_ID_BROADCOM_4329:
- 		case SDIO_DEVICE_ID_BROADCOM_4339:
- 			brcmf_dbg(INFO, "set F2 watermark to 0x%x*4 bytes for 4339\n",
- 				  CY_4339_F2_WATERMARK);
+diff --git a/init/Kconfig b/init/Kconfig
+index d6a0b31b13dc9..2a5df1cf838c6 100644
+--- a/init/Kconfig
++++ b/init/Kconfig
+@@ -682,7 +682,8 @@ config IKHEADERS
+ 
+ config LOG_BUF_SHIFT
+ 	int "Kernel log buffer size (16 => 64KB, 17 => 128KB)"
+-	range 12 25
++	range 12 25 if !H8300
++	range 12 19 if H8300
+ 	default 17
+ 	depends on PRINTK
+ 	help
 -- 
 2.25.1
 
