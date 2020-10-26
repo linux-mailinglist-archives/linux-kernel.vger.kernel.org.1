@@ -2,149 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F2565298C83
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DB448298C8C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:00:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774576AbgJZL7R (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:59:17 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44204 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768339AbgJZL7Q (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:59:16 -0400
-Received: from localhost (unknown [176.177.109.29])
+        id S1774613AbgJZMAh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:00:37 -0400
+Received: from casper.infradead.org ([90.155.50.34]:38410 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769221AbgJZMAg (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:00:36 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=u20lWUbRrbd3iYR1FUzEq+iuwdVgwCFfuhJCV3CaHs4=; b=XcPe+CfBjxe2ido98eQLKGmr14
+        TFZPSUhBEo0tsRr55rjM5ePFo8VJsu3VGcLhE+9f25OacBF67rq9cT8dtuUrgdWtHBE8xSw6Bcbfh
+        yg4Yhkoe5OezvY6jmQOh/paX5v6PbuKiZTeoeqOtL6fH8iIFmzO743EHjg7B90YCDDthmbgpdO5QT
+        BsX9E19dS8iotkA//7O54dBw8rkNcMl5WkpMKQjCOiCCVd9wqWpdzdR4d78dt/PHubflxxK13gTPu
+        MNV1qy8BGTqOGBY925aSetvKA2PPVNuNVfFhP0/MViJyEj+qLII2v9yNXMYnEt2SRFA9FsyFK9+7E
+        2pFqTpRg==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX19u-0001O8-A8; Mon, 26 Oct 2020 11:59:30 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9567D22263;
-        Mon, 26 Oct 2020 11:59:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603713556;
-        bh=fSvCbWkOYAE55YrySkaKg42rvS6y1QT5lH2vxbsz9KA=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=nWz8/Bl8lCNaNNrtXVx4kCA89iMjsDqAAayiF4V3CcAmVi1fBj8fx+GZjg4Axky2t
-         riCp4lEZ+QLX85p6rbfm+MRRCz54qYBz7j9Vkp9cr4RsQy2bzpiEv+fiDM0U0MC/Gj
-         K6BNLO1eIUMj+uBEsRhhoNtq6y93jUL86yFStpZ0=
-Date:   Mon, 26 Oct 2020 12:59:13 +0100
-From:   Frederic Weisbecker <frederic@kernel.org>
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BA2EA305815;
+        Mon, 26 Oct 2020 12:59:27 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 997F3214ECD42; Mon, 26 Oct 2020 12:59:27 +0100 (CET)
+Date:   Mon, 26 Oct 2020 12:59:27 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
 To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v8 3/6] rcu/trace: Add tracing for how segcb list changes
-Message-ID: <20201026115913.GE104441@lothringen>
-References: <20201021190813.3005054-1-joel@joelfernandes.org>
- <20201021190813.3005054-4-joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com,
+        Vineeth Remanan Pillai <vpillai@digitalocean.com>,
+        Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 03/26] sched: Core-wide rq->lock
+Message-ID: <20201026115927.GH2628@hirez.programming.kicks-ass.net>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-4-joel@joelfernandes.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201021190813.3005054-4-joel@joelfernandes.org>
+In-Reply-To: <20201020014336.2076526-4-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 03:08:10PM -0400, Joel Fernandes (Google) wrote:
-> Track how the segcb list changes before/after acceleration, during
-> queuing and during dequeuing.
-> 
-> This has proved useful to discover an optimization to avoid unwanted GP
-> requests when there are no callbacks accelerated. The overhead is minimal as
-> each segment's length is now stored in the respective segment.
-> 
-> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> ---
->  include/trace/events/rcu.h | 25 +++++++++++++++++++++++++
->  kernel/rcu/rcu_segcblist.c | 31 +++++++++++++++++++++++++++++++
->  kernel/rcu/rcu_segcblist.h |  5 +++++
->  kernel/rcu/tree.c          |  9 +++++++++
->  4 files changed, 70 insertions(+)
-> 
-> diff --git a/include/trace/events/rcu.h b/include/trace/events/rcu.h
-> index 155b5cb43cfd..9f2237d9b0c8 100644
-> --- a/include/trace/events/rcu.h
-> +++ b/include/trace/events/rcu.h
-> @@ -505,6 +505,31 @@ TRACE_EVENT_RCU(rcu_callback,
->  		  __entry->qlen)
->  );
->  
-> +TRACE_EVENT_RCU(rcu_segcb,
+On Mon, Oct 19, 2020 at 09:43:13PM -0400, Joel Fernandes (Google) wrote:
+> +	if (!core_rq) {
+> +		for_each_cpu(i, smt_mask) {
+> +			rq = cpu_rq(i);
+> +			if (rq->core && rq->core == rq)
+> +				core_rq = rq;
+> +			init_sched_core_irq_work(rq);
 
-You might extend the segcblist tracing in the future to trace queue/dequeue/merge whatever...
-Which would give trace_rcu_segcb_queue, trace_rcu_segcb_dequeue, etc...
+That function doesn't exist quite yet.
 
-So I suggest you rename this one to something like rcu_segcb_stats for precision.
-
-
-> +
-> +		TP_PROTO(const char *ctx, int *cb_count, unsigned long *gp_seq),
-> +
-> +		TP_ARGS(ctx, cb_count, gp_seq),
-> +
-> +		TP_STRUCT__entry(
-> +			__field(const char *, ctx)
-> +			__array(int, cb_count, RCU_CBLIST_NSEGS)
-> +			__array(unsigned long, gp_seq, RCU_CBLIST_NSEGS)
-> +		),
-> +
-> +		TP_fast_assign(
-> +			__entry->ctx = ctx;
-> +			memcpy(__entry->cb_count, cb_count, RCU_CBLIST_NSEGS * sizeof(int));
-> +			memcpy(__entry->gp_seq, gp_seq, RCU_CBLIST_NSEGS * sizeof(unsigned long));
-> +		),
-> +
-> +		TP_printk("%s cb_count: (DONE=%d, WAIT=%d, NEXT_READY=%d, NEXT=%d) "
-> +			  "gp_seq: (DONE=%lu, WAIT=%lu, NEXT_READY=%lu, NEXT=%lu)", __entry->ctx,
-> +			  __entry->cb_count[0], __entry->cb_count[1], __entry->cb_count[2], __entry->cb_count[3],
-> +			  __entry->gp_seq[0], __entry->gp_seq[1], __entry->gp_seq[2], __entry->gp_seq[3])
-> +
-> +);
-> +
->  /*
->   * Tracepoint for the registration of a single RCU callback of the special
->   * kvfree() form.  The first argument is the RCU type, the second argument
-> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
-> index 357c19bbcb00..b0aaa51e0ee6 100644
-> --- a/kernel/rcu/rcu_segcblist.c
-> +++ b/kernel/rcu/rcu_segcblist.c
-> @@ -14,6 +14,7 @@
->  #include <linux/types.h>
->  
->  #include "rcu_segcblist.h"
-> +#include "rcu.h"
->  
->  /* Initialize simple callback list. */
->  void rcu_cblist_init(struct rcu_cblist *rclp)
-> @@ -328,6 +329,36 @@ void rcu_segcblist_extract_done_cbs(struct rcu_segcblist *rsclp,
->  	rcu_segcblist_set_seglen(rsclp, RCU_DONE_TAIL, 0);
->  }
->  
-> +/*
-> + * Return how many CBs each segment along with their gp_seq values.
-> + *
-> + * This function is O(N) where N is the number of segments. Only used from
-> + * tracing code which is usually disabled in production.
-> + */
-> +#ifdef CONFIG_RCU_TRACE
-> +static void rcu_segcblist_countseq(struct rcu_segcblist *rsclp,
-> +			 int cbcount[RCU_CBLIST_NSEGS],
-> +			 unsigned long gpseq[RCU_CBLIST_NSEGS])
-> +{
-> +	int i;
-> +
-> +	for (i = 0; i < RCU_CBLIST_NSEGS; i++) {
-> +		cbcount[i] = rcu_segcblist_get_seglen(rsclp, i);
-> +		gpseq[i] = rsclp->gp_seq[i];
-> +	}
-> +}
-
-So that is called all the time even if the trace event isn't enabled. The
-goal of trace events are also to avoid the overhead of tracing when its off.
-
-This should be moved inside the trace event definition. We can even avoid the
-loop altogether.
-
-Thanks.
+> +		}
