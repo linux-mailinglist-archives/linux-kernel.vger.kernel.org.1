@@ -2,100 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AD2D2998B8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:27:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E9722998BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:29:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732961AbgJZV1l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:27:41 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:33524 "EHLO
+        id S1733133AbgJZV3e (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:29:34 -0400
+Received: from mail-ot1-f67.google.com ([209.85.210.67]:42206 "EHLO
         mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732807AbgJZV1k (ORCPT
+        with ESMTP id S1733019AbgJZV3c (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:27:40 -0400
-Received: by mail-ot1-f67.google.com with SMTP id x7so5132512ota.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 14:27:40 -0700 (PDT)
+        Mon, 26 Oct 2020 17:29:32 -0400
+Received: by mail-ot1-f67.google.com with SMTP id h62so9334906oth.9;
+        Mon, 26 Oct 2020 14:29:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
         h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=C7iBjVOiLEiQoedNWLzG0TU122Ys5J9UkVQlTCn6OG0=;
-        b=Pqd4GnvUr+B2JvTVqwqbFlWxMLV2LObPZ4c+MTIC+SwRJ/9jzzMrC6VJQ/bDupFQQ6
-         r9dygtM+n/axiWu3QjlRPIovSioa/dAxTF6owNTM5H8/hgaHUj+Jc7rVZCaG2LyrJr85
-         3WHM6VKZNrIEXAfAkDFutw4STcy+HGSIWr5DtX+B5c14HjHtQMsmJYBZOsMDp6mgZnNx
-         sci8SyUdyJVP9gw7jp8JBhqFa0v7YMtxMqX8GoQ7rvfyDuo5FmF3UBJTH40xYCLNgR9+
-         7X05mSDI7LPiMMdhftnK42AARU4EpUqHN1xA52KS9Wv0LZESebQAZco1QJbmjhq6w1zn
-         9rtA==
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=70oatzaSg8bxxmWOPeOnuHXCY727QGvpglybBnXvoPE=;
+        b=U47BT3xmo/M18aD/HHFCUr8I+5CWNGR8pGE7v/FU7c2ptWS7OCfYzIesEAMnRIORoE
+         56g7YO5QDj5TfD6r8oN/gcim4XYdNE+lponqZSXhe0xWM/ZkKHWZc10XUjujyCZbHN/h
+         VU7vxs1cBrRWz6K2jIvG+lpwAp/DbCjiVQsiBoBB6+jqeKRyfkSaciw0Q8ieHFyxWsjT
+         xSvtKOTuXYaDX4NjRF+oq6leESUliC69L9EWRPGWXlJ9r/sb8Ty2Y4J26Q01+O7U3gj/
+         bHfrCDSINbEmz27L/cg/q4A382/WXfrXuEA7dfoKCF7GOyUj3dDmHEVJxeM+TOy3rQAw
+         TlQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=C7iBjVOiLEiQoedNWLzG0TU122Ys5J9UkVQlTCn6OG0=;
-        b=evSJOTlUVegCeKMKQRr2pZv/JvpeaRxoo4D2xHgMaGCNLIhqwCo5i0meeYdljXJxOU
-         Bqc/DPugorPuf2mF87LKcK1mS/iEiNLD4iLIqqQ8D3fU7JOigdSj37B4E43T3+cGVlFh
-         2youlVKF9yDrCCZv7puzrw0RrgTCXUVQIM8hG3M6lzp4vP3hBJd0J+4eOOsE6vslYHVs
-         cclwIJqu5Q5kkUSdRlMwkF7qyqLjyfhVJeGdOP1zuR4A+SPIGd8+ZwcJgixG6d2GovJf
-         k2FUZutZPhzshZoj1BTam0ZLVBQhp7wVDcataJqb6J+/rwpokUSsspqMyg6rI7TjGhT2
-         KToA==
-X-Gm-Message-State: AOAM531CVwa1uHkgVEmjU/8W/8ZmtfgkoqUcOnrxcwkkIDbD4tUPdw1F
-        xg0DOMbPKBQXIWWbo2C8VbA=
-X-Google-Smtp-Source: ABdhPJz1vN6K9yTkkjKQPr0ZAPtg/mJJjnFmssNQCA+3zVoPVwLMAmGnsLsqjBFQWgQ6U3A3+AULrg==
-X-Received: by 2002:a9d:71dc:: with SMTP id z28mr12227830otj.249.1603747659773;
-        Mon, 26 Oct 2020 14:27:39 -0700 (PDT)
+         :references:mime-version:content-disposition
+         :content-transfer-encoding:in-reply-to:user-agent;
+        bh=70oatzaSg8bxxmWOPeOnuHXCY727QGvpglybBnXvoPE=;
+        b=L4ylhplVRHmSR4SmlSkEQ4MzmtNXK8TFMTru30Td/giQDWXBK6M4C0F0apZEL7kbM/
+         RQuYQDtBnt73K1VJHZugyc9Bctn3MSPTbPGT5UI8q233T8blUE8myIGQwGYryuwmlmQt
+         yfkMrPmrimnZg2Mz1ZgMvSag5BuyB7kHsSIdvpCxANmkew/3MSszsRxRbShtHZ6yxW6Z
+         9sOsGOP7RJYXbZS6MLUEibQjOPvPspBK3im9bPOjqNEdZCJ0XEX+D6u0q/K9hWw5K4dp
+         KezAyRMb1SA70nGeB2aRj/P1KvvP7Hwh3QYY0oGZt7sLQn/OKczOXwkOSFKf/IdKpxM5
+         cYlQ==
+X-Gm-Message-State: AOAM533LAjkbndTFhCDeu6fDBYvViP8+XL+8O+G1/G3Jtha8KEAOQ0qb
+        CTUIOQyZmF6z63yOptUe5If7ig12+Kg=
+X-Google-Smtp-Source: ABdhPJyRNZeUXYQ67LV5KVcPAl/1vIhrVluPakg6gVscaXsAuOKDwkCknlP5obXGD5ZhSsvmwCeomQ==
+X-Received: by 2002:a05:6830:10d2:: with SMTP id z18mr12201380oto.41.1603747771591;
+        Mon, 26 Oct 2020 14:29:31 -0700 (PDT)
 Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id r8sm4298695otq.43.2020.10.26.14.27.39
+        by smtp.gmail.com with ESMTPSA id v22sm4903500oia.7.2020.10.26.14.29.30
         (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 14:27:39 -0700 (PDT)
+        Mon, 26 Oct 2020 14:29:31 -0700 (PDT)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 26 Oct 2020 14:27:37 -0700
+Date:   Mon, 26 Oct 2020 14:29:30 -0700
 From:   Guenter Roeck <linux@roeck-us.net>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Subject: Re: [PATCH] treewide: Convert macro and uses of __section(foo) to
- __section("foo")
-Message-ID: <20201026212737.GA113829@roeck-us.net>
-References: <fe8abcc88cff676ead8ee48db1e993e63b0611c7.1603327264.git.joe@perches.com>
- <20201026194127.GA106214@roeck-us.net>
- <CAHk-=whjhHuwANGerJLJyn7jXCfMQMiaBAW+o2r_T+n=Ki+New@mail.gmail.com>
+To:     Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc:     Qiang Zhao <qiang.zhao@nxp.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Bruno Thomsen <bruno.thomsen@gmail.com>,
+        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
+        "a.zummo@towertech.it" <a.zummo@towertech.it>,
+        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "robh+dt@kernel.org" <robh+dt@kernel.org>,
+        "kernel@pengutronix.de" <kernel@pengutronix.de>,
+        Wim Van Sebroeck <wim@linux-watchdog.org>
+Subject: Re: [PATCH 0/2] rtc: pcf2127: only use watchdog when explicitly
+ available
+Message-ID: <20201026212930.GB113829@roeck-us.net>
+References: <20200924074715.GT9675@piout.net>
+ <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
+ <VE1PR04MB676864E851C6371F97877FA291190@VE1PR04MB6768.eurprd04.prod.outlook.com>
+ <20201026204811.GD75353@piout.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAHk-=whjhHuwANGerJLJyn7jXCfMQMiaBAW+o2r_T+n=Ki+New@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026204811.GD75353@piout.net>
 User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:33:48PM -0700, Linus Torvalds wrote:
-> On Mon, Oct 26, 2020 at 12:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
-> >
-> > make ARCH=um SUBARCH=x86_64 defconfig:
-> >
-> > Building um:defconfig ... failed
-> > --------------
-> > Error log:
-> > arch/um/kernel/skas/clone.c:24:16: error: expected declaration specifiers or '...' before string constant
-> > arch/x86/um/stub_segv.c:11:16: error: expected declaration specifiers or '...' before string constant
+On Mon, Oct 26, 2020 at 09:48:11PM +0100, Alexandre Belloni wrote:
+> On 26/10/2020 07:23:26+0000, Qiang Zhao wrote:
+> > Any update for this patchset?
+> > 
 > 
-> Weird. Is __section() not defined somehow for those files?
+> The whole point would be to get the DT and the watchdog maintainers
+> agree on the property name. Once done, the driver implementation is
+> trivial and will get applied.
 > 
-> It does look like they have very minimal headers, so undoing that
-> patch just for those two files is likely the right thing to do.
-> 
-> > As with s390, reverting this patch fixes the problem.
-> 
-> s390 should be fixed already.
-> 
-> Is the attached minimal patch sufficient for um to get back to working
-> order, or is there something else hiding there too?
-> 
-That works for me.
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+DT maintainers make that decision.
 
-Thanks,
 Guenter
+
+> > Best Regards
+> > Qiang Zhao
+> > 
+> > > -----Original Message-----
+> > > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
+> > > Sent: 2020年9月24日 18:53
+> > > To: Alexandre Belloni <alexandre.belloni@bootlin.com>; Qiang Zhao
+> > > <qiang.zhao@nxp.com>; Bruno Thomsen <bruno.thomsen@gmail.com>
+> > > Cc: linux-rtc@vger.kernel.org; a.zummo@towertech.it;
+> > > linux-watchdog@vger.kernel.org; devicetree@vger.kernel.org;
+> > > linux-kernel@vger.kernel.org; robh+dt@kernel.org; kernel@pengutronix.de;
+> > > Wim Van Sebroeck <wim@linux-watchdog.org>; Guenter Roeck
+> > > <linux@roeck-us.net>
+> > > Subject: [PATCH 0/2] rtc: pcf2127: only use watchdog when explicitly available
+> > > 
+> > > Hello,
+> > > 
+> > > now that there are two people stumbling over the pcf2127 driver providing a
+> > > non-functional watchdog device, here comes an RFC patch to address this.
+> > > 
+> > > Note this is only compile tested and dt-documentation is still missing.
+> > > Still send this series because the cleanup is nice independent of this discussion
+> > > and to have something to argue about.
+> > > 
+> > > Does someone can offer a better name than "has-watchdog", is there a scheme
+> > > that could be used already that I'm not aware of?
+> > > 
+> > > Best regards
+> > > Uwe
+> > > 
+> > > Uwe Kleine-König (2):
+> > >   rtc: pcf2127: move watchdog initialisation to a separate function
+> > >   [RFC] rtc: pcf2127: only use watchdog when explicitly available
+> > > 
+> > >  drivers/rtc/rtc-pcf2127.c | 57 ++++++++++++++++++++++-----------------
+> > >  1 file changed, 32 insertions(+), 25 deletions(-)
+> > > 
+> > > --
+> > > 2.28.0
+> > 
+> 
+> -- 
+> Alexandre Belloni, Bootlin
+> Embedded Linux and Kernel engineering
+> https://bootlin.com
