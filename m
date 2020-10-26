@@ -2,53 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D37E6298D45
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 52017298D3E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775749AbgJZMxR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:53:17 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39812 "EHLO
+        id S1775708AbgJZMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:52:48 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39822 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775647AbgJZMwh (ORCPT
+        with ESMTP id S1773153AbgJZMwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:52:37 -0400
-Date:   Mon, 26 Oct 2020 12:52:34 -0000
+        Mon, 26 Oct 2020 08:52:39 -0400
+Date:   Mon, 26 Oct 2020 12:52:35 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603716755;
+        s=2020; t=1603716756;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0i8S4VmJkahrkJHlUzRFlkFPLK4tmrxJPrfUuq6JmpU=;
-        b=QTs4Z1Lcl8L37PdCGWKzFfw4gI739Rlzf3NfztfuU8WynowR+79oqm51RlBo+cs+iT1b1r
-        MVE1oKNCap97FlCLuSt2duKa+WmG7C5dlDLF5lGQAL3pjE7PxZrGGYeB60J+XGBlCLpuaP
-        uUGdCDfkS7xYYFjd10wHTcYiUeFKQ5wqYtYDUprTOyYNpA7uTaIfvnQnDmekDyMO1A8yEU
-        3RRVjg4jfsPmle8e/n+vWb0iBSnsSzd/U7o58QAWJdn4xGEF1p3nDMNh8Y1x4Hklh/+W9H
-        pA+EhCfLPqOQRW+eKWNypqtNIPQYdtoRxdu8M32QsQPGjXd+TaEsSB6+v82f6g==
+        bh=fb9+gjwENfRPWJUTHHuvHRxj5wYQesZR3Xa4pqv6mps=;
+        b=zc0oGSBYswlF5B9zrfQYQwWzKVP1qGFxbXefLkza7Rw09d+eWB0NjZTMnoY8OaUUoLnhHP
+        SmB3m+s+YcoZnWSnpQOr7mecwUXFYu5iuwQr+SsFGIgA7mkO9sIdp+rybHWjnIoL+YXa18
+        fQy2t4RSS5cY9B2/U9Gl9jq5ZNXRC/qH77VNxwVeD0ZY9HOYvCMUlrAbk2gnYs1554D+PF
+        zHW/+RxT4GZ1NCmEzvheSLkn7Bs0W7KbUSpQwlvL9fc1Q6R131pD1Jc/5x1PS+FInX92xP
+        ek+JKeU+uOkDYLmHDJYmBOzLiZId9MASshpLhtUSfWD1b+vlsa44pSNCRfE2pw==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603716755;
+        s=2020e; t=1603716756;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=0i8S4VmJkahrkJHlUzRFlkFPLK4tmrxJPrfUuq6JmpU=;
-        b=qNGLNgBZynIPXV2j1J1Y+s5mg4oiXj3bCWQLAINnBBMhTT3VZMP1l/x6r0wc/j/bNPbjef
-        pm9kYHg1uIvAtWAQ==
+        bh=fb9+gjwENfRPWJUTHHuvHRxj5wYQesZR3Xa4pqv6mps=;
+        b=IeQroH/OMF/0E+Wm8HTTvk9YBDGF3D+UJowvByV7otrOqLzIAdZHMJ6zR8N35hHDn0Wkya
+        38FK6FOojlH04uCw==
 From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] x86/elf: Use e_machine to select start_thread for x32
+Subject: [tip: x86/cleanups] elf: Expose ELF header in compat_start_thread()
 Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        Andy Lutomirski <luto@kernel.org>, x86 <x86@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201004032536.1229030-7-krisman@collabora.com>
-References: <20201004032536.1229030-7-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-6-krisman@collabora.com>
+References: <20201004032536.1229030-6-krisman@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160371675483.397.13437948801906513925.tip-bot2@tip-bot2>
+Message-ID: <160371675542.397.5183477135451020077.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -59,65 +58,82 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     2424b14605c71a7187c14edd525044eb36bdea47
-Gitweb:        https://git.kernel.org/tip/2424b14605c71a7187c14edd525044eb36bdea47
+Commit-ID:     bc3d7bf61a9eaecccc84dc2ecc2a9a3fa4f5ec47
+Gitweb:        https://git.kernel.org/tip/bc3d7bf61a9eaecccc84dc2ecc2a9a3fa4f5ec47
 Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
-AuthorDate:    Sat, 03 Oct 2020 23:25:32 -04:00
+AuthorDate:    Sat, 03 Oct 2020 23:25:31 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Mon, 26 Oct 2020 13:46:46 +01:00
 
-x86/elf: Use e_machine to select start_thread for x32
+elf: Expose ELF header in compat_start_thread()
 
-Since TIF_X32 is going away, avoid using it to find the ELF type in
-compat_start_thread.
+Like it is done for SET_PERSONALITY with x86, which requires the ELF header
+to select correct personality parameters, x86 requires the headers on
+compat_start_thread() to choose starting CS for ELF32 binaries, instead of
+relying on the going-away TIF_IA32/X32 flags.
 
-According to SysV AMD64 ABI Draft, an AMD64 ELF object using ILP32 must
-have ELFCLASS32 with (E_MACHINE == EM_X86_64), so use that ELF field to
-differentiate a x32 object from a IA32 object when executing start_thread()
-in compat mode.
+Add an indirection macro to ELF invocations of START_THREAD, that x86 can
+reimplement to receive the extra parameter just for ELF files.  This
+requires no changes to other architectures who don't need the header
+information, they can continue to use the original start_thread for ELF and
+non-ELF binaries, and it prevents affecting non-ELF code paths for x86.
 
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Reviewed-by: Andy Lutomirski <luto@kernel.org>
-Link: https://lore.kernel.org/r/20201004032536.1229030-7-krisman@collabora.com
-
+Link: https://lore.kernel.org/r/20201004032536.1229030-6-krisman@collabora.com
 
 ---
- arch/x86/include/asm/elf.h   | 5 +++--
- arch/x86/kernel/process_64.c | 5 ++---
- 2 files changed, 5 insertions(+), 5 deletions(-)
+ fs/binfmt_elf.c        |  2 +-
+ fs/compat_binfmt_elf.c |  9 +++++++--
+ include/linux/elf.h    |  5 +++++
+ 3 files changed, 13 insertions(+), 3 deletions(-)
 
-diff --git a/arch/x86/include/asm/elf.h b/arch/x86/include/asm/elf.h
-index 9220efc..109697a 100644
---- a/arch/x86/include/asm/elf.h
-+++ b/arch/x86/include/asm/elf.h
-@@ -186,8 +186,9 @@ static inline void elf_common_init(struct thread_struct *t,
- #define	COMPAT_ELF_PLAT_INIT(regs, load_addr)		\
- 	elf_common_init(&current->thread, regs, __USER_DS)
- 
--void compat_start_thread(struct pt_regs *regs, u32 new_ip, u32 new_sp);
--#define compat_start_thread compat_start_thread
-+void compat_start_thread(struct pt_regs *regs, u32 new_ip, u32 new_sp, bool x32);
-+#define COMPAT_START_THREAD(ex, regs, new_ip, new_sp)	\
-+	compat_start_thread(regs, new_ip, new_sp, ex->e_machine == EM_X86_64)
- 
- void set_personality_ia32(bool);
- #define COMPAT_SET_PERSONALITY(ex)			\
-diff --git a/arch/x86/kernel/process_64.c b/arch/x86/kernel/process_64.c
-index df342be..5fb4103 100644
---- a/arch/x86/kernel/process_64.c
-+++ b/arch/x86/kernel/process_64.c
-@@ -511,11 +511,10 @@ start_thread(struct pt_regs *regs, unsigned long new_ip, unsigned long new_sp)
- EXPORT_SYMBOL_GPL(start_thread);
- 
- #ifdef CONFIG_COMPAT
--void compat_start_thread(struct pt_regs *regs, u32 new_ip, u32 new_sp)
-+void compat_start_thread(struct pt_regs *regs, u32 new_ip, u32 new_sp, bool x32)
- {
- 	start_thread_common(regs, new_ip, new_sp,
--			    test_thread_flag(TIF_X32)
--			    ? __USER_CS : __USER32_CS,
-+			    x32 ? __USER_CS : __USER32_CS,
- 			    __USER_DS, __USER_DS);
- }
+diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+index b6b3d05..b23f755 100644
+--- a/fs/binfmt_elf.c
++++ b/fs/binfmt_elf.c
+@@ -1307,7 +1307,7 @@ out_free_interp:
  #endif
+ 
+ 	finalize_exec(bprm);
+-	start_thread(regs, elf_entry, bprm->p);
++	START_THREAD(elf_ex, regs, elf_entry, bprm->p);
+ 	retval = 0;
+ out:
+ 	return retval;
+diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
+index 2d24c76..12b9913 100644
+--- a/fs/compat_binfmt_elf.c
++++ b/fs/compat_binfmt_elf.c
+@@ -106,8 +106,13 @@
+ #endif
+ 
+ #ifdef	compat_start_thread
+-#undef	start_thread
+-#define	start_thread		compat_start_thread
++#define COMPAT_START_THREAD(ex, regs, new_ip, new_sp)	\
++	compat_start_thread(regs, new_ip, new_sp)
++#endif
++
++#ifdef	COMPAT_START_THREAD
++#undef	START_THREAD
++#define START_THREAD		COMPAT_START_THREAD
+ #endif
+ 
+ #ifdef	compat_arch_setup_additional_pages
+diff --git a/include/linux/elf.h b/include/linux/elf.h
+index 5d5b032..6dbcfe7 100644
+--- a/include/linux/elf.h
++++ b/include/linux/elf.h
+@@ -22,6 +22,11 @@
+ 	SET_PERSONALITY(ex)
+ #endif
+ 
++#ifndef START_THREAD
++#define START_THREAD(elf_ex, regs, elf_entry, start_stack)	\
++	start_thread(regs, elf_entry, start_stack)
++#endif
++
+ #define ELF32_GNU_PROPERTY_ALIGN	4
+ #define ELF64_GNU_PROPERTY_ALIGN	8
+ 
