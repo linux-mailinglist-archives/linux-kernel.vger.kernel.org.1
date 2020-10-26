@@ -2,108 +2,68 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E8C40298FBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:45:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AA56A298FD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:49:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781907AbgJZOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:45:25 -0400
-Received: from mga03.intel.com ([134.134.136.65]:27523 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781562AbgJZOpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:45:24 -0400
-IronPort-SDR: Rr7aR6GM1q9ic1KoL0lKL5bH7krBL2VVNaLdoIxioKW5EEnZUT0VcRcXEWKDqrvATa7094BDW7
- DRiHVEy9abeg==
-X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="168031792"
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="168031792"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 07:45:23 -0700
-IronPort-SDR: QiNaUaNQh/pEOODGqs2lfdV8v8vw2bVnIdIfb7ZzEvuY+FdmKoFpFR7+OMBr/ueqXnECPsJ5M9
- U3HVU9zl3jvw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="467946901"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga004.jf.intel.com with ESMTP; 26 Oct 2020 07:45:21 -0700
-Subject: Re: [PATCH v2] usb: xhci: Workaround for S3 issue on AMD SNPS 3.0 xHC
-To:     Sandeep Singh <Sandeep.Singh@amd.com>, mathias.nyman@intel.com,
-        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
-        linux-kernel@vger.kernel.org, sanket.goswami@amd.com,
-        Nehal-bakulchandra.Shah@amd.com
-Cc:     Shyam-sundar.S-k@amd.com
-References: <20201023131503.759671-1-Sandeep.Singh@amd.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <ed3847f0-f219-547a-e887-cd0d48f77dda@linux.intel.com>
-Date:   Mon, 26 Oct 2020 16:46:50 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1781954AbgJZOtN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:49:13 -0400
+Received: from mail-oi1-f195.google.com ([209.85.167.195]:41558 "EHLO
+        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781912AbgJZOtM (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:49:12 -0400
+Received: by mail-oi1-f195.google.com with SMTP id k65so10168937oih.8;
+        Mon, 26 Oct 2020 07:49:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=s+NfVc4x3xLzw7Zn7dJWrSR2PBWNHUkCvBLVaRL098Q=;
+        b=omv5mE2yntYrky8kthMnkVDYTXw9qu0DC6Xi/MqTUsyM0Zxqv4shSA/PgybZRyfyAL
+         dspbVJmE4XUjX2PFADtgJULxwbZj/uwAy5RYCso78AjEBHjmUlgzyI6vtkCZ7/UsSAk7
+         eRHYPd1n4HhXdVA0cFrnm4QrK4B2NRpIRcZNgxe3om93IC3DbDSEQyQ33BliqmXxsreb
+         V3LgfxHy2TKYYzTgrmPokc5C9HjLtK2dhDGhkY0FmcKl3xF1uSmComT1F/sb/g8nY/1t
+         xsOQoR+JWYVve2zIFZoDFJDqT15VcAktNMlrlS2CmaWCRmx29TaTYLGQWzbTISeGPV4C
+         5OhQ==
+X-Gm-Message-State: AOAM530wokFLKZkYq/AiawdeOHTAfzugbLO2ILBXGi/wy2ttHXGYIBX9
+        fGTliJHJotCpHh7ih21kUSdFftvQjQ==
+X-Google-Smtp-Source: ABdhPJxKK4fATZtny24CZPPg4Vw0oKX9Rpv6avltgTIyqzxCcII9w+9KmnT1CZ4tBPj5owmyhB/E3w==
+X-Received: by 2002:aca:ab0d:: with SMTP id u13mr3417806oie.178.1603723752073;
+        Mon, 26 Oct 2020 07:49:12 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id o8sm4051605oog.47.2020.10.26.07.49.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 07:49:11 -0700 (PDT)
+Received: (nullmailer pid 138088 invoked by uid 1000);
+        Mon, 26 Oct 2020 14:49:10 -0000
+Date:   Mon, 26 Oct 2020 09:49:10 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Fabien Parent <fparent@baylibre.com>
+Cc:     devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        daniel.lezcano@linaro.org, matthias.bgg@gmail.com,
+        linux-arm-kernel@lists.infradead.org,
+        linux-mediatek@lists.infradead.org, robh+dt@kernel.org,
+        amitk@kernel.org, linux-pm@vger.kernel.org, rui.zhang@intel.com
+Subject: Re: [PATCH 1/3] dt-bindings: thermal: mediatek: make resets property
+ optional
+Message-ID: <20201026144910.GA138041@bogus>
+References: <20201021164231.3029956-1-fparent@baylibre.com>
 MIME-Version: 1.0
-In-Reply-To: <20201023131503.759671-1-Sandeep.Singh@amd.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021164231.3029956-1-fparent@baylibre.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 23.10.2020 16.15, Sandeep Singh wrote:
-> From: Sandeep Singh <sandeep.singh@amd.com>
+On Wed, 21 Oct 2020 18:42:29 +0200, Fabien Parent wrote:
+> MT8516 Thermal IP does not support reset. Make the resets property
+> optional in order to be able to support MT8516 SoC.
 > 
-> On some platform of AMD, S3 fails with HCE and SRE errors. To fix this,
-> need to disable a bit which is enable in sparse controller.
-> 
-> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
-> Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
+> Signed-off-by: Fabien Parent <fparent@baylibre.com>
 > ---
-> Changes since v1:(https://lkml.org/lkml/2020/10/23/368)
-> 	-> Add xhci.h changes
+>  Documentation/devicetree/bindings/thermal/mediatek-thermal.txt | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 
-Added to queue.
-This looks like it should go to stable as well.
-
--Mathias
+Acked-by: Rob Herring <robh@kernel.org>
