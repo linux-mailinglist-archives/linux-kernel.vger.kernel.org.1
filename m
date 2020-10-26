@@ -2,72 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9BC392989A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:46:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 633FB2989B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:46:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768315AbgJZJpy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:45:54 -0400
-Received: from mga01.intel.com ([192.55.52.88]:4797 "EHLO mga01.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768282AbgJZJpx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:45:53 -0400
-IronPort-SDR: fmHk5fMQA5os4DbZWAIPiOIU8T2AZNymLo9fDMXnOay5xcmGn+VDI8joJALf2BZKZUzHutTEae
- Uaa7hORBI3Gw==
-X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="185622741"
-X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
-   d="scan'208";a="185622741"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga007.jf.intel.com ([10.7.209.58])
-  by fmsmga101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 02:45:52 -0700
-IronPort-SDR: Xw4R43w1s0z4lg6BoZKWc3MOWpfDCCiZqels9+iA7shHhLV+ot1t3RzakqvSVDey47az00RKQi
- q0CM2g9tMvfQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
-   d="scan'208";a="360934112"
-Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
-  by orsmga007.jf.intel.com with ESMTP; 26 Oct 2020 02:45:48 -0700
-From:   "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-To:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        robh+dt@kernel.org
-Cc:     devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
-        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com,
-        Ramuthevar Vadivel Murugan 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Subject: [PATCH v3 6/6] dt-bindings: spi: Add compatible for Intel LGM SoC
-Date:   Mon, 26 Oct 2020 17:45:19 +0800
-Message-Id: <20201026094519.56083-7-vadivel.muruganx.ramuthevar@linux.intel.com>
-X-Mailer: git-send-email 2.11.0
-In-Reply-To: <20201026094519.56083-1-vadivel.muruganx.ramuthevar@linux.intel.com>
-References: <20201026094519.56083-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+        id S1768336AbgJZJqW convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 05:46:22 -0400
+Received: from eu-smtp-delivery-151.mimecast.com ([207.82.80.151]:60009 "EHLO
+        eu-smtp-delivery-151.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1768337AbgJZJqV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:46:21 -0400
+Received: from AcuMS.aculab.com (156.67.243.126 [156.67.243.126]) (Using
+ TLS) by relay.mimecast.com with ESMTP id
+ uk-mtapsc-6-JpohbFICN5eunT0tPS-E1w-1; Mon, 26 Oct 2020 09:46:17 +0000
+X-MC-Unique: JpohbFICN5eunT0tPS-E1w-1
+Received: from AcuMS.Aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) by
+ AcuMS.aculab.com (fd9f:af1c:a25b:0:43c:695e:880f:8750) with Microsoft SMTP
+ Server (TLS) id 15.0.1347.2; Mon, 26 Oct 2020 09:46:17 +0000
+Received: from AcuMS.Aculab.com ([fe80::43c:695e:880f:8750]) by
+ AcuMS.aculab.com ([fe80::43c:695e:880f:8750%12]) with mapi id 15.00.1347.000;
+ Mon, 26 Oct 2020 09:46:17 +0000
+From:   David Laight <David.Laight@ACULAB.COM>
+To:     'Stefano Garzarella' <sgarzare@redhat.com>
+CC:     Colin King <colin.king@canonical.com>,
+        "David S . Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>,
+        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] vsock: ratelimit unknown ioctl error message
+Thread-Topic: [PATCH] vsock: ratelimit unknown ioctl error message
+Thread-Index: AQHWqUY0CPRviIGx7UytnIgbPi7/0amltMKAgAPgtgCAAAejEIAACBeAgAAAcdA=
+Date:   Mon, 26 Oct 2020 09:46:17 +0000
+Message-ID: <3e34e4121f794355891fd7577c9dfbc0@AcuMS.aculab.com>
+References: <20201023122113.35517-1-colin.king@canonical.com>
+ <20201023140947.kurglnklaqteovkp@steredhat>
+ <e535c07df407444880d8b678bc215d9f@AcuMS.aculab.com>
+ <20201026084300.5ag24vck3zeb4mcz@steredhat>
+ <d893e3251f804cffa797b6eb814944fd@AcuMS.aculab.com>
+ <20201026093917.5zgginii65pq6ezd@steredhat>
+In-Reply-To: <20201026093917.5zgginii65pq6ezd@steredhat>
+Accept-Language: en-GB, en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-exchange-transport-fromentityheader: Hosted
+x-originating-ip: [10.202.205.107]
+MIME-Version: 1.0
+Authentication-Results: relay.mimecast.com;
+        auth=pass smtp.auth=C51A453 smtp.mailfrom=david.laight@aculab.com
+X-Mimecast-Spam-Score: 0
+X-Mimecast-Originator: aculab.com
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8BIT
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
+From: Stefano Garzarella
+> Sent: 26 October 2020 09:39
+> 
+> On Mon, Oct 26, 2020 at 09:13:23AM +0000, David Laight wrote:
+> >From: Stefano Garzarella
+> >> Sent: 26 October 2020 08:43
+> >...
+> >> >Isn't the canonical error for unknown ioctl codes -ENOTTY?
+> >> >
+> >>
+> >> Oh, thanks for pointing that out!
+> >>
+> >> I had not paid attention to the error returned, but looking at it I
+> >> noticed that perhaps the most appropriate would be -ENOIOCTLCMD.
+> >> In the ioctl syscall we return -ENOTTY, if the callback returns
+> >> -ENOIOCTLCMD.
+> >>
+> >> What do you think?
+> >
+> >It is 729 v 443 in favour of ENOTTY (based on grep).
+> 
+> Under net/ it is 6 vs 83 in favour of ENOIOCTLCMD.
+> 
+> >
+> >No idea where ENOIOCTLCMD comes from, but ENOTTY probably
+> >goes back to the early 1970s.
+> 
+> Me too.
+> 
+> >
+> >The fact that the ioctl wrapper converts the value is a good
+> >hint that userspace expects ENOTTY.
+> 
+> Agree on that, but since we are not interfacing directly with userspace,
+> I think it is better to return the more specific error (ENOIOCTLCMD).
 
-Add compatible string for Intel LGM SoC.
+I bet Linux thought it could use a different error code then
+found that 'unknown ioctl' was spelt ENOTTY.
 
-Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
----
- Documentation/devicetree/bindings/spi/cadence-quadspi.yaml | 1 +
- 1 file changed, 1 insertion(+)
+Back in the old days error values were probably almost unique.
+strerror(EAGIAN) was "No more processes" for a long time!
 
-diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-index b1b3d3ce0cc2..2b862190b552 100644
---- a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-+++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-@@ -19,6 +19,7 @@ properties:
-          - const: cdns,qspi-nor
-          - const: ti,k2g-qspi, cdns,qspi-nor
-          - const: ti,am654-ospi, cdns,qspi-nor
-+         - const: intel,lgm-qspi, cdns,qspi-nor
- 
-   reg:
-     items:
--- 
-2.11.0
+	David
+
+-
+Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1 1PT, UK
+Registration No: 1397386 (Wales)
 
