@@ -2,109 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 48DC3299080
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:06:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3EB95299085
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:07:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783145AbgJZPGe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:06:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44402 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1783114AbgJZPGY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:06:24 -0400
-Received: from localhost.localdomain (c-73-209-127-30.hsd1.il.comcast.net [73.209.127.30])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 936B622460;
-        Mon, 26 Oct 2020 15:06:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603724783;
-        bh=xgOBus5e/9Dm2CNFG/dmYKTPsdUbEBzhnA2rRSLxD64=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:In-Reply-To:
-         References:From;
-        b=O2voQrMJb1pF7R63KfYeWzowkd/v1PrXxv5qfJBYB1EUVWbG8KddeN300FP3LhrmC
-         yZmpu8C9KVxXZ73ECFGp1/HDN3zmCIgMQdduvstUYxyPhfRc+fSpqx9gOUj4153yZZ
-         DTWE+1USZWxxG1TEgAJbuFhZzT419pxFnNbHW+jI=
-From:   Tom Zanussi <zanussi@kernel.org>
-To:     rostedt@goodmis.org, axelrasmussen@google.com
-Cc:     mhiramat@kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH v3 5/5] selftests/ftrace: Update synthetic event syntax errors
-Date:   Mon, 26 Oct 2020 10:06:13 -0500
-Message-Id: <9368bf0823ba2eb7c311975befbdf69c5c5ae243.1603723933.git.zanussi@kernel.org>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1603723933.git.zanussi@kernel.org>
-References: <cover.1603723933.git.zanussi@kernel.org>
-In-Reply-To: <cover.1603723933.git.zanussi@kernel.org>
-References: <cover.1603723933.git.zanussi@kernel.org>
+        id S1783165AbgJZPG6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:06:58 -0400
+Received: from youngberry.canonical.com ([91.189.89.112]:56590 "EHLO
+        youngberry.canonical.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1747645AbgJZPG5 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:06:57 -0400
+Received: from mail-ej1-f71.google.com ([209.85.218.71])
+        by youngberry.canonical.com with esmtps (TLS1.2:ECDHE_RSA_AES_128_GCM_SHA256:128)
+        (Exim 4.86_2)
+        (envelope-from <guilherme.piccoli@canonical.com>)
+        id 1kX45H-0004Ps-8I
+        for linux-kernel@vger.kernel.org; Mon, 26 Oct 2020 15:06:55 +0000
+Received: by mail-ej1-f71.google.com with SMTP id b19so5156447eju.7
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:06:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=EnLWDCtLm8RMcdow/BSYVBH9rX7uMoRshyF3616LTAE=;
+        b=gLYwcqgaFAUD/8U8GAd2v75QVcddcIyLmqHSW/ksUYFRW8V7s3uYkupVsB1AOT++AR
+         fTKYBBtmbQ5W5uWHQc45vwaNEQNgU+13kt4Q5MIVWx7LXi+zSQ+UGOql+JG3x5lytmQ2
+         Ryq62mG9Qf8VbRtcMkFESKJLwfHqoKpICCBfVMij4QPIKvIIueXmUXBwnKcERZlGwwXT
+         Ex7DvL2SpbJwKkQzr8BXA3NtERd5oT3BTbcofcdJQs1m6uEswreyrRX1H7OIokA29PgN
+         axJzaQryam20sQ1LBJ3/Io9DB16g2g18X4WY5iUKXMkUN0IMSTCVjtaov3TkeBQZ9U0S
+         iCcg==
+X-Gm-Message-State: AOAM530WP+Y5ru+mFNUS6ISYID85Ra6NOiO4V34K1kXGoiwYDbjT2Wm1
+        auk9ZC0kFgSLiZ4sZa1zwNTY7IFCw0h55F1BSZh0qx7SgAzeh8RT0Vbx99mxfJLnJTQJbzSa8K8
+        EtPi16D1CW8bn0gM1MHGDeeA5IQqsEdANEqT7NgmmH6f+jcmAUMqCWDFA1A==
+X-Received: by 2002:a17:906:c7d9:: with SMTP id dc25mr16060255ejb.482.1603724814867;
+        Mon, 26 Oct 2020 08:06:54 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJxy2+1nDxG6rQe5jCDR4OJ+uU4A2LI5vFUSrKkDIr9eqbArccXIMK+FWxloSfXRldQDtErReSz9wiiCYnUurTw=
+X-Received: by 2002:a17:906:c7d9:: with SMTP id dc25mr16060111ejb.482.1603724813209;
+ Mon, 26 Oct 2020 08:06:53 -0700 (PDT)
+MIME-Version: 1.0
+References: <1603346163-21645-1-git-send-email-kernelfans@gmail.com>
+ <871rhq7j1h.fsf@nanos.tec.linutronix.de> <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com>
+In-Reply-To: <CAFgQCTvFwvvtPE0Eow4cebCEe5OD5OhgAQarckpbFc38Bphaag@mail.gmail.com>
+From:   Guilherme Piccoli <gpiccoli@canonical.com>
+Date:   Mon, 26 Oct 2020 12:06:17 -0300
+Message-ID: <CAHD1Q_x99XW1zDr5HpVR27F_ksHLkaxc2W83e-N6F_xLYKyGbQ@mail.gmail.com>
+Subject: Re: [PATCH 0/3] warn and suppress irqflood
+To:     Pingfan Liu <kernelfans@gmail.com>
+Cc:     Thomas Gleixner <tglx@linutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Jisheng Zhang <Jisheng.Zhang@synaptics.com>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Petr Mladek <pmladek@suse.com>, Marc Zyngier <maz@kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        afzal mohammed <afzal.mohd.ma@gmail.com>,
+        Lina Iyer <ilina@codeaurora.org>,
+        "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Maulik Shah <mkshah@codeaurora.org>,
+        Al Viro <viro@zeniv.linux.org.uk>,
+        Jonathan Corbet <corbet@lwn.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Mike Kravetz <mike.kravetz@oracle.com>,
+        Oliver Neukum <oneukum@suse.com>, linux-doc@vger.kernel.org,
+        Kexec Mailing List <kexec@lists.infradead.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some of the synthetic event errors and positions have changed in the
-code - update those and add several more tests.
+On Sun, Oct 25, 2020 at 8:12 AM Pingfan Liu <kernelfans@gmail.com> wrote:
+>
+> On Thu, Oct 22, 2020 at 4:37 PM Thomas Gleixner <tglx@linutronix.de> wrote:
+> >
+> > On Thu, Oct 22 2020 at 13:56, Pingfan Liu wrote:
+> > > I hit a irqflood bug on powerpc platform, and two years ago, on a x86 platform.
+> > > When the bug happens, the kernel is totally occupies by irq.  Currently, there
+> > > may be nothing or just soft lockup warning showed in console. It is better
+> > > to warn users with irq flood info.
+> > >
+> > > In the kdump case, the kernel can move on by suppressing the irq flood.
+> >
+> > You're curing the symptom not the cause and the cure is just magic and
+> > can't work reliably.
+> Yeah, it is magic. But at least, it is better to printk something and
+> alarm users about what happens. With current code, it may show nothing
+> when system hangs.
 
-Also add a runtime check to ensure that the kernel supports dynamic
-strings in synthetic events, which these tests require.
+Thanks Pingfan and Thomas for the points - I'd like to have a
+mechanism in the kernel to warn users when an IRQ flood is potentially
+happening.
+Some time ago (2 years) we faced a similar issue in x86-64, a hard to
+debug problem in kdump, that eventually was narrowed to a buggy NIC FW
+flooding IRQs in kdump kernel, and no messages showed (although kernel
+changed a lot since that time, today we might have better IRQ
+handling/warning). We tried an early-boot fix, by disabling MSIs (as
+per PCI spec) early in x86 boot, but it wasn't accepted - Bjorn asked
+pertinent questions that I couldn't respond (I lost the reproducer)
+[0].
 
-Fixes: 81ff92a93d95 (selftests/ftrace: Add test case for synthetic
-event syntax errors)
+Cheers,
 
-Reported-by: Masami Hiramatsu <mhiramat@kernel.org>
-Signed-off-by: Tom Zanussi <zanussi@kernel.org>
----
- .../trigger-synthetic_event_syntax_errors.tc  | 35 ++++++++++++++-----
- 1 file changed, 27 insertions(+), 8 deletions(-)
 
-diff --git a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-index ada594fe16cb..955e3ceea44b 100644
---- a/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-+++ b/tools/testing/selftests/ftrace/test.d/trigger/inter-event/trigger-synthetic_event_syntax_errors.tc
-@@ -1,19 +1,38 @@
- #!/bin/sh
- # SPDX-License-Identifier: GPL-2.0
- # description: event trigger - test synthetic_events syntax parser errors
--# requires: synthetic_events error_log
-+# requires: synthetic_events error_log "char name[]' >> synthetic_events":README
- 
- check_error() { # command-with-error-pos-by-^
-     ftrace_errlog_check 'synthetic_events' "$1" 'synthetic_events'
- }
- 
-+check_dyn_error() { # command-with-error-pos-by-^
-+    ftrace_errlog_check 'synthetic_events' "$1" 'dynamic_events'
-+}
-+
- check_error 'myevent ^chr arg'			# INVALID_TYPE
--check_error 'myevent ^char str[];; int v'	# INVALID_TYPE
--check_error 'myevent char ^str]; int v'		# INVALID_NAME
--check_error 'myevent char ^str;[]'		# INVALID_NAME
--check_error 'myevent ^char str[; int v'		# INVALID_TYPE
--check_error '^mye;vent char str[]'		# BAD_NAME
--check_error 'myevent char str[]; ^int'		# INVALID_FIELD
--check_error '^myevent'				# INCOMPLETE_CMD
-+check_error 'myevent ^unsigned arg'		# INCOMPLETE_TYPE
-+
-+check_error 'myevent char ^str]; int v'		# BAD_NAME
-+check_error '^mye-vent char str[]'		# BAD_NAME
-+check_error 'myevent char ^st-r[]'		# BAD_NAME
-+
-+check_error 'myevent char str;^[]'		# INVALID_FIELD
-+check_error 'myevent char str; ^int'		# INVALID_FIELD
-+
-+check_error 'myevent char ^str[; int v'		# INVALID_ARRAY_SPEC
-+check_error 'myevent char ^str[kdjdk]'		# INVALID_ARRAY_SPEC
-+check_error 'myevent char ^str[257]'		# INVALID_ARRAY_SPEC
-+
-+check_error '^mye;vent char str[]'		# INVALID_CMD
-+check_error '^myevent ; char str[]'		# INVALID_CMD
-+check_error '^myevent; char str[]'		# INVALID_CMD
-+check_error '^myevent ;char str[]'		# INVALID_CMD
-+check_error '^; char str[]'			# INVALID_CMD
-+check_error '^;myevent char str[]'		# INVALID_CMD
-+check_error '^myevent'				# INVALID_CMD
-+
-+check_dyn_error '^s:junk/myevent char str['	# INVALID_DYN_CMD
- 
- exit 0
--- 
-2.17.1
+Guilherme
 
+[0] lore.kernel.org/linux-pci/20181018183721.27467-1-gpiccoli@canonical.com
