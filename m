@@ -2,63 +2,172 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E42F4299AA6
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:35:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 85D12299A75
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:30:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407063AbgJZXfi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:35:38 -0400
-Received: from mga07.intel.com ([134.134.136.100]:30095 "EHLO mga07.intel.com"
+        id S2406324AbgJZXat (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:30:49 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32784 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407035AbgJZXfg (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:35:36 -0400
-IronPort-SDR: vhuByCjrenkefYdUdfWTyhVMiftPoXpNknzZ++KzssUOQA11NXFOVqCzYxNlfDg6mMAgvNl12Y
- agKHkp+mOqVA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="232190082"
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="232190082"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 16:35:35 -0700
-IronPort-SDR: xhntSIvCFsesKXT9kxPtkP1xvtKAiWcb5uP5guYIIjWIEGv4qc3BQyOhlR9kz0IwuJd4xR3WB9
- SlqebZLZZYqg==
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="524475083"
-Received: from tanguye1-mobl2.amr.corp.intel.com (HELO [10.209.126.195]) ([10.209.126.195])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 16:35:34 -0700
-Subject: Re: [PATCH v1 6/6] ASoC: codecs: lpass-va-macro: add dapm widgets and
- routes
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        broonie@kernel.org
-Cc:     alsa-devel@alsa-project.org, plai@codeaurora.org,
-        lgirdwood@gmail.com, linux-kernel@vger.kernel.org,
-        spapothi@codeaurora.org
-References: <20201026141945.19707-1-srinivas.kandagatla@linaro.org>
- <20201026141945.19707-7-srinivas.kandagatla@linaro.org>
-From:   Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
-Message-ID: <55ba8a1a-df67-8451-dedd-49e6c0cf82a6@linux.intel.com>
-Date:   Mon, 26 Oct 2020 15:01:52 -0500
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S2406250AbgJZXaq (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:30:46 -0400
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 675A0206DB
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:30:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603755045;
+        bh=HGEo1Vp0eHrX0uYPz8ISeIcKVqaXNHvUFyeBXs1dDow=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=Qh1WEL/4Ru5brZ5hnrEKPb/kGNDpiysrF2mR6JhLBvd3CHaSHxpm061VjFTAA0Im6
+         eClFuQKvh4Gy+Rtg+jJWKelSksww7hhTNEEDT5i3h4+KGfwRWz9aFG7zKES2OrpkVS
+         xpcy+tN1KQFGqax8OW0KTGIb4anKsOwjihAe/rGI=
+Received: by mail-wr1-f41.google.com with SMTP id n15so14977945wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:30:45 -0700 (PDT)
+X-Gm-Message-State: AOAM533bVcqiD5BjyfRDzGB/jsgdUTK4snyqDgI8qXWjwxU7Hs3OS/qM
+        84befGtIcy+t4hQ6v1oEE2s0o6hADzWqQLINfbBvOA==
+X-Google-Smtp-Source: ABdhPJyMAjguYwVKORqB+YASt595ET3GIDMTdzbCZ1xrDD5HblwKX8dvrljDO/8DqC4ctdD80AExACyU6Ubk/EUgBls=
+X-Received: by 2002:adf:df03:: with SMTP id y3mr20031829wrl.70.1603755043953;
+ Mon, 26 Oct 2020 16:30:43 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201026141945.19707-7-srinivas.kandagatla@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+ <20201026155521.GQ2594@hirez.programming.kicks-ass.net> <20201026160513.GC2651@hirez.programming.kicks-ass.net>
+ <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+ <20201026163100.GR2594@hirez.programming.kicks-ass.net> <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 26 Oct 2020 16:30:32 -0700
+X-Gmail-Original-Message-ID: <CALCETrVwzcpk88jWeNb+iCGBFsyzgbZ0E9_x330A2P-CMzSr4g@mail.gmail.com>
+Message-ID: <CALCETrVwzcpk88jWeNb+iCGBFsyzgbZ0E9_x330A2P-CMzSr4g@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
+ longer reported in dr6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Kyle Huey <me@kylehuey.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 9:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Oct 26, 2020 at 05:31:00PM +0100, Peter Zijlstra wrote:
+> > In that respect, I think the current virtual_dr6 = 0 is placed wrong, it
+> > should only be in exc_debug_user(). The only 'problem' then is that we
+> > seem to be able to loose BTF, but perhaps that is already an extant bug.
+> >
+> > Consider:
+> >
+> >  - perf: setup in-kernel #DB
+> >  - tracer: ptrace(PTRACE_SINGLEBLOCK)
+> >  - tracee: #DB on perf breakpoint, looses BTF
+> >  - tracee .. never triggers actual blockstep
+> >
+> > Hmm ? Should we re-set BTF when TIF_BLOCKSTEP && !user_mode(regs) ?
+>
+> Something like so then.
+>
+> Or sould we also have the userspace #DB re-set BTF when it was !DR_STEP?
+> I need to go untangle that ptrace stuff :/
+>
+> diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> index 3c70fb34028b..31de8b0980ca 100644
+> --- a/arch/x86/kernel/traps.c
+> +++ b/arch/x86/kernel/traps.c
+> @@ -793,19 +793,6 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
+>         set_debugreg(DR6_RESERVED, 6);
+>         dr6 ^= DR6_RESERVED; /* Flip to positive polarity */
+>
+> -       /*
+> -        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> -        * things we want signals for.
+> -        */
+> -       current->thread.virtual_dr6 = 0;
+> -
+> -       /*
+> -        * The SDM says "The processor clears the BTF flag when it
+> -        * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+> -        * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+> -        */
+> -       clear_thread_flag(TIF_BLOCKSTEP);
+> -
+>         return dr6;
+>  }
+>
+> @@ -873,6 +860,20 @@ static __always_inline void exc_debug_kernel(struct pt_regs *regs,
+>          */
+>         WARN_ON_ONCE(user_mode(regs));
+>
+> +       if (test_thread_flag(TIF_BLOCKSTEP)) {
+> +               /*
+> +                * The SDM says "The processor clears the BTF flag when it
+> +                * generates a debug exception." but PTRACE_BLOCKSTEP requested
+> +                * it for userspace, but we just took a kernel #DB, so re-set
+> +                * BTF.
+> +                */
+> +               unsigned long debugctl;
+> +
+> +               rdmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> +               debugctl |= DEBUGCTLMSR_BTF;
+> +               wrmsrl(MSR_IA32_DEBUGCTLMSR, debugctl);
+> +       }
+> +
+>         /*
+>          * Catch SYSENTER with TF set and clear DR_STEP. If this hit a
+>          * watchpoint at the same time then that will still be handled.
+> @@ -935,6 +936,26 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+>         irqentry_enter_from_user_mode(regs);
+>         instrumentation_begin();
+>
+> +       /*
+> +        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> +        * things we want signals for.
+> +        */
+> +       current->thread.virtual_dr6 = 0;
+> +
+> +       /*
+> +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
+> +        * the ptrace visible DR6 copy.
+> +        */
+> +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
+> +               current->thread.virtual_dr6 |= (dr6 & DR_STEP);
 
-> +static int va_dmic_clk_enable(struct snd_soc_component *component,
-> +			      u32 dmic, bool enable)
-> +{
-> +	struct va_macro *va = snd_soc_component_get_drvdata(component);
-> +	u8  dmic_clk_en = 0x01;
-> +	u16 dmic_clk_reg = 0;
-> +	s32 *dmic_clk_cnt = NULL;
-> +	u8 *dmic_clk_div = NULL;
-> +	u8 freq_change_mask = 0;
+I'm guessing that this would fail a much simpler test, though: have a
+program use PUSHF to set TF and then read out DR6 from the SIGTRAP.  I
+can whip up such a test if you like.
 
-the 4 initializations above are ignored, remove?
+Is there any compelling reason not to just drop the condition and do:
 
+current->thread.virtual_dr6 |= (dr6 & DR_STEP);
+
+unconditionally?  This DR6 cause, along with ICEBP, have the
+regrettable distinctions of being the only causes that a user program
+can trigger all on its own without informing the kernel first.  This
+means that we can't fully separate the concept of "user mode is
+single-stepping itself" from "ptrace or something else is causing the
+kernel to single step a program."
+
+I bet that, without making this tweak, the virtual_dr6 change will
+regress some horrific Wine use case.
+
+--Andy
