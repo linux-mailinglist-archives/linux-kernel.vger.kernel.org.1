@@ -2,89 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BF6CE298D53
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:55:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 842E1298D56
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:57:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773331AbgJZMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:55:28 -0400
-Received: from casper.infradead.org ([90.155.50.34]:39218 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772266AbgJZMz2 (ORCPT
+        id S1773433AbgJZM5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:57:11 -0400
+Received: from hqnvemgate24.nvidia.com ([216.228.121.143]:8459 "EHLO
+        hqnvemgate24.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769233AbgJZM5L (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:55:28 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=OVC/8ufCPdq+6mgXa8rH1fqWXxtwPmsOC8FTITP0Ogg=; b=lmrPgvmTrlLJY4lFSLK93bv8oi
-        lqKNouM/F5wE7yAL6T3q9AWeeewXG7xxnCWF+NkLhH4JdAvWo4OnHK0zDNmL7LJBeXaSidLqfH1yd
-        ivFdZbL98R9+66M4jbXnLan8kHsGdt6MYI6ZjYfUYZFc61JyKCISRich3D1H39FkaoyNa1ZA3yByJ
-        hqIip4B0CRrzTA/CjPPN5PkcbOmTbxa4iXbNbirMqSrPHkxjfy+gk8htNtb/7hPqY2E+VEljahXND
-        lgoMZp0KdI4mGBN8uaqV1AF7LN3LT3wVL2zpG7z/aztbMMkmK51E1sFhTXg32Q/Tv0v6W0obt6DiK
-        Oee+t9og==;
-Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
-        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX221-00056D-6h; Mon, 26 Oct 2020 12:55:25 +0000
-Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (Client did not present a certificate)
-        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A40663006D0;
-        Mon, 26 Oct 2020 13:55:24 +0100 (CET)
-Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
-        id 8BD3E2141F77F; Mon, 26 Oct 2020 13:55:24 +0100 (CET)
-Date:   Mon, 26 Oct 2020 13:55:24 +0100
-From:   Peter Zijlstra <peterz@infradead.org>
-To:     Filipe Manana <fdmanana@suse.com>
-Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
-        David Sterba <dsterba@suse.com>
-Subject: Re: possible lockdep regression introduced by 4d004099a668
- ("lockdep: Fix lockdep recursion")
-Message-ID: <20201026125524.GP2594@hirez.programming.kicks-ass.net>
-References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
- <20201026114009.GN2594@hirez.programming.kicks-ass.net>
- <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+        Mon, 26 Oct 2020 08:57:11 -0400
+Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate24.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
+        id <B5f96c7ae0000>; Mon, 26 Oct 2020 05:57:18 -0700
+Received: from [10.26.45.122] (10.124.1.5) by HQMAIL107.nvidia.com
+ (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
+ 2020 12:57:09 +0000
+Subject: Re: [PATCH V2] cpufreq: tegra186: Fix initial frequency
+From:   Jon Hunter <jonathanh@nvidia.com>
+To:     Viresh Kumar <viresh.kumar@linaro.org>
+CC:     "Rafael J . Wysocki" <rjw@rjwysocki.net>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        <linux-pm@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>
+References: <20200824145907.331899-1-jonathanh@nvidia.com>
+ <20200825055003.qfsuktsv7cyouxei@vireshk-i7>
+ <09ac354e-a55b-5300-12ae-3f24c8f8b193@nvidia.com>
+ <20201016040700.wzfegk7hmabxgpff@vireshk-i7>
+ <9c37db70-9406-8005-3478-dc4a5e94c566@nvidia.com>
+Message-ID: <c6ab92fe-e5ea-4568-6457-7a28c8496114@nvidia.com>
+Date:   Mon, 26 Oct 2020 12:57:07 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+In-Reply-To: <9c37db70-9406-8005-3478-dc4a5e94c566@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Originating-IP: [10.124.1.5]
+X-ClientProxiedBy: HQMAIL111.nvidia.com (172.20.187.18) To
+ HQMAIL107.nvidia.com (172.20.187.13)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
+        t=1603717038; bh=ksNzLqPs+U0EdGuNq1xOrbKFnEf3bcjA/ee9MYo5WzA=;
+        h=Subject:From:To:CC:References:Message-ID:Date:User-Agent:
+         MIME-Version:In-Reply-To:Content-Type:Content-Language:
+         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
+        b=J16gu04SdEGV1qO2R1jKTmKzgUWZCz5o9jepWSQ7CS8OjzazfybO2S0oOZwgh+7+u
+         h/cgEK4kbd7h3WoT788ulP9dvcWQ0YDMS11jGWOMBVYOm7iLK6kPJ2zeePHjH+g5sE
+         bkXagLIZgC3TqptN5oOmjRdgKBsduJ20EIG4TIGlX7CzmTW5WQNCwPOWvxrB/zTiNn
+         zfCHl8dhMhagO6EuF+08PGexQnNn33rqcuMZOVnWMLtk20nbq4Uhnf12bQbgMgqk+l
+         cIdkLyouPyZlC9tGxym2gtxGyttKpq4kucThfmEKbr7CauRI1/JDy59Oz7HtRVKCIa
+         tRxAQzMCeqfkQ==
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
-> > That smells like the same issue reported here:
-> > 
-> >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
-> > 
-> > Make sure you have commit:
-> > 
-> >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
-> > 
-> > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+
+On 19/10/2020 10:33, Jon Hunter wrote:
 > 
-> Yes, CONFIG_DEBUG_PREEMPT is enabled.
+> On 16/10/2020 05:07, Viresh Kumar wrote:
+>> On 15-10-20, 15:03, Jon Hunter wrote:
+>>> If not too late, would you mind dropping this patch for v5.10?
+>>
+>> It is already part of Linus's master now.
+> 
+> OK, thanks. I will send a revert for this once rc1 is out.
 
-Bummer :/
 
-> I'll try with that commit and let you know, however it's gonna take a
-> few hours to build a kernel and run all fstests (on that test box it
-> takes over 3 hours) to confirm that fixes the issue.
+Thinking about this some more, what are your thoughts on making the
+following change? 
 
-*ouch*, 3 hours is painful. How long to make it sick with the current
-kernel? quicker I would hope?
+Basically, if the driver sets the CPUFREQ_NEED_INITIAL_FREQ_CHECK,
+then I wonder if we should not fail if the frequency return by
+>get() is not known. This would fix the problem I see on Tegra186
+where the initial boot frequency may not be in the frequency table.
 
-> Thanks for the quick reply!
+Cheers
+Jon
 
-Anyway, I don't think that commit can actually explain the issue :/
+diff --git a/drivers/cpufreq/cpufreq.c b/drivers/cpufreq/cpufreq.c
+index f4b60663efe6..b7d3b61577b0 100644
+--- a/drivers/cpufreq/cpufreq.c
++++ b/drivers/cpufreq/cpufreq.c
+@@ -1426,13 +1426,8 @@ static int cpufreq_online(unsigned int cpu)
+                                CPUFREQ_CREATE_POLICY, policy);
+        }
+ 
+-       if (cpufreq_driver->get && has_target()) {
++       if (cpufreq_driver->get && has_target())
+                policy->cur = cpufreq_driver->get(policy->cpu);
+-               if (!policy->cur) {
+-                       pr_err("%s: ->get() failed\n", __func__);
+-                       goto out_destroy_policy;
+-               }
+-       }
+ 
+        /*
+         * Sometimes boot loaders set CPU frequency to a value outside of
+@@ -1471,6 +1466,11 @@ static int cpufreq_online(unsigned int cpu)
+                        pr_info("%s: CPU%d: Running at unlisted initial frequency: %u KHz, changing to: %u KHz\n",
+                                __func__, policy->cpu, old_freq, policy->cur);
+                }
++       } else {
++               if (!policy->cur) {
++                       pr_err("%s: ->get() failed\n", __func__);
++                       goto out_destroy_policy;
++               }
+        }
+ 
+        if (new_policy) {
 
-The false positive on lockdep_assert_held() happens when the recursion
-count is !0, however we _should_ be having IRQs disabled when
-lockdep_recursion > 0, so that should never be observable.
-
-My hope was that DEBUG_PREEMPT would trigger on one of the
-__this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
-then be a clear violation.
-
-And you're seeing this on x86, right?
-
-Let me puzzle moar..
+-- 
+nvpublic
