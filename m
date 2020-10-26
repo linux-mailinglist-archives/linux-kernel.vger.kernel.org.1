@@ -2,77 +2,98 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C2D86299906
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:48:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44B6A299910
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:49:32 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390370AbgJZVsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:48:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50172 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390340AbgJZVsp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:48:45 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B123B207E8;
-        Mon, 26 Oct 2020 21:48:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603748924;
-        bh=R7zMDymsvhTfopdeoblEJpa47TFpLO5lTLpTKm/lObU=;
-        h=From:To:Cc:Subject:Date:From;
-        b=M1NDeXoK7s+A7e/qV2TipTvaMbyCdFn9rmPhQfFtkGEE+WLsz6dUA5bBa9eq4cGQi
-         7NisPujAUpEBgQPdKNI6+2Iw841e9J/v6CDtRcvVi5XviiscjH10RBB54UB+tXIoNH
-         TJ9BzYliB8YVx5TbF48VMknMIbvtKwtxbb2ZE7rQ=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <lenb@kernel.org>, Yinghai Lu <yinghai@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-        Hanjun Guo <guohanjun@huawei.com>, linux-acpi@vger.kernel.org,
+        id S2390575AbgJZVtZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:49:25 -0400
+Received: from aserp2120.oracle.com ([141.146.126.78]:47442 "EHLO
+        aserp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2390490AbgJZVtU (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:49:20 -0400
+Received: from pps.filterd (aserp2120.oracle.com [127.0.0.1])
+        by aserp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QLZ6gW168672;
+        Mon, 26 Oct 2020 21:49:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=2X3YcfcTT6osreVd59azJkjkTihIedx3qJ0QrfQX8AA=;
+ b=i9S/CPzMjMRZ6Gtskvz1LRg0QqRN77cLbcXPnn/PK0A55NwKB6ApGhcBO722Wo8bYm+U
+ 8lqdbqJCGMXnuNpLvb9P/SRN8uA/gkhQm/jqfjIM0S8OuB0hlW1Wv7v750CGJ87luspj
+ aBzHRojQbs0OiJwMv2CVfJ8Z7F3LsBF8VtPZTRZ8ZaefFXqdvppN8CDT+7JGECftgFW2
+ lUsTPjkKea/2/5VJox4al/KZuXaQIYqnxJ+g2mDtFkCC7D97bB5yiMhwYTc/UnSuN+P3
+ gKpXoc/0Msg7PEVKMVg7z7Txw7frVsEopBKWI3JJs0wfWugjXXHDa+ZtuIi/HPkALACb qA== 
+Received: from aserp3020.oracle.com (aserp3020.oracle.com [141.146.126.70])
+        by aserp2120.oracle.com with ESMTP id 34cc7kpypa-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 21:49:13 +0000
+Received: from pps.filterd (aserp3020.oracle.com [127.0.0.1])
+        by aserp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QLTxn7027379;
+        Mon, 26 Oct 2020 21:49:13 GMT
+Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
+        by aserp3020.oracle.com with ESMTP id 34cx5wdh43-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 21:49:13 +0000
+Received: from abhmp0020.oracle.com (abhmp0020.oracle.com [141.146.116.26])
+        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09QLn7AE023460;
+        Mon, 26 Oct 2020 21:49:07 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 14:49:07 -0700
+To:     Keita Suzuki <keitasuzuki.park@sslab.ics.keio.ac.jp>
+Cc:     takafumi@sslab.ics.keio.ac.jp, Don Brace <don.brace@microsemi.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Kevin Barnett <kevin.barnett@microsemi.com>,
+        Johannes Thumshirn <jthumshirn@suse.de>,
+        Scott Teel <scott.teel@microsemi.com>,
+        esc.storagedev@microsemi.com, linux-scsi@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: [PATCH] ACPI: dock: fix enum-conversion warning
-Date:   Mon, 26 Oct 2020 22:48:34 +0100
-Message-Id: <20201026214838.3892471-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+Subject: Re: [RESEND PATCH v2] scsi: hpsa: fix memory leak in hpsa_init_one
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq1d0148xza.fsf@ca-mkp.ca.oracle.com>
+References: <20200930155100.11528-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+Date:   Mon, 26 Oct 2020 17:49:04 -0400
+In-Reply-To: <20200930155100.11528-1-keitasuzuki.park@sslab.ics.keio.ac.jp>
+        (Keita Suzuki's message of "Wed, 30 Sep 2020 15:50:59 +0000")
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 mlxlogscore=608
+ suspectscore=5 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260140
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 adultscore=0
+ malwarescore=0 spamscore=0 clxscore=1011 mlxscore=0 suspectscore=5
+ priorityscore=1501 impostorscore=0 bulkscore=0 phishscore=0
+ mlxlogscore=601 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260140
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
 
-gcc points out a type mismatch:
+Keita,
 
-drivers/acpi/dock.c: In function 'hot_remove_dock_devices':
-drivers/acpi/dock.c:234:53: warning: implicit conversion from 'enum <anonymous>' to 'enum dock_callback_type' [-Wenum-conversion]
-  234 |   dock_hotplug_event(dd, ACPI_NOTIFY_EJECT_REQUEST, false);
+> When hpsa_scsi_add_host fails, h->lastlogicals is leaked since it lacks
+> free in the error handler.
+>
+> Fix this by adding free when hpsa_scsi_add_host fails.
+>
+> This patch also renames the numbered labels to detailed names.
 
-This is harmless because 'false' still has the correct numeric value,
-but passing DOCK_CALL_HANDLER documents better what is going on
-and avoids the warning.
+While I am no fan of numbered labels, these initialization stages are
+referenced several other places in the driver. As a result, renaming the
+labels makes the rest of the code harder to follow.
 
-Fixes: 37f908778f20 ("ACPI / dock: Walk list in reverse order during removal of devices")
-Fixes: f09ce741a03a ("ACPI / dock / PCI: Drop ACPI dock notifier chain")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/acpi/dock.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+I suggest you submit a fix for just the leak. And then, if the hpsa
+maintainers agree, we can entertain a separate patch to improve the
+naming.
 
-diff --git a/drivers/acpi/dock.c b/drivers/acpi/dock.c
-index 45d4b7b69de8..24e076f44d23 100644
---- a/drivers/acpi/dock.c
-+++ b/drivers/acpi/dock.c
-@@ -231,7 +231,8 @@ static void hot_remove_dock_devices(struct dock_station *ds)
- 	 * between them).
- 	 */
- 	list_for_each_entry_reverse(dd, &ds->dependent_devices, list)
--		dock_hotplug_event(dd, ACPI_NOTIFY_EJECT_REQUEST, false);
-+		dock_hotplug_event(dd, ACPI_NOTIFY_EJECT_REQUEST,
-+				   DOCK_CALL_HANDLER);
- 
- 	list_for_each_entry_reverse(dd, &ds->dependent_devices, list)
- 		acpi_bus_trim(dd->adev);
+Thank you!
+
 -- 
-2.27.0
-
+Martin K. Petersen	Oracle Linux Engineering
