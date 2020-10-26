@@ -2,160 +2,203 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 188072995BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:50:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD01C2995C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:51:13 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790439AbgJZSu1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:50:27 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42362 "EHLO mail.kernel.org"
+        id S1790460AbgJZSvK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:51:10 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:35430 "EHLO inva020.nxp.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1790428AbgJZSu0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:50:26 -0400
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0994E21D7B;
-        Mon, 26 Oct 2020 18:50:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603738225;
-        bh=JEfVtUKlInYQ0fbZNP15BzK/44fyha6rG+E01FErsoI=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=GyCJH3GnwmV0wipG6wOYC3nVU3PlrHTgpXU3b1JWRJp1l0FOE90L9xOBL8S61nXxZ
-         iC4n7KkeAbHn/P+OGGWGwPkHWtmnJhSXbcknOrj2NQ4R//G+jzlOhvILBcSqkgRNsw
-         rx+5USq7aLTZvH667Fw5CP+JEf564NYUn0kSAHLc=
-Received: by mail-ot1-f50.google.com with SMTP id m22so8955228ots.4;
-        Mon, 26 Oct 2020 11:50:25 -0700 (PDT)
-X-Gm-Message-State: AOAM531tPk2RAsgXaavrS92v5QaO7bcJnV7MzwG5gYNyUVia1tWHBI1W
-        7Mi+f2zJHqjtxfKESIdOd3ev/+rcRw+dlBGHkQ==
-X-Google-Smtp-Source: ABdhPJyfr6yceNd2s4etvOsL23XkDwfTp8P2FO2SzBaZUDnJYThZWlzTsHVErNne3YqAOFIv7OY2MdlaqZZm6+aOALY=
-X-Received: by 2002:a9d:62d1:: with SMTP id z17mr15766887otk.192.1603738224263;
- Mon, 26 Oct 2020 11:50:24 -0700 (PDT)
-MIME-Version: 1.0
-References: <CGME20201023075756eucas1p2c27cc3e6372127d107e5b84c810ba98f@eucas1p2.samsung.com>
- <20201023075744.26200-1-m.szyprowski@samsung.com> <20201023075744.26200-5-m.szyprowski@samsung.com>
-In-Reply-To: <20201023075744.26200-5-m.szyprowski@samsung.com>
-From:   Rob Herring <robh+dt@kernel.org>
-Date:   Mon, 26 Oct 2020 13:50:12 -0500
-X-Gmail-Original-Message-ID: <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
-Message-ID: <CAL_JsqLUT7aLnQsLvcCOHCaoVAao9VSmEhoscBxu3ARXX33zrA@mail.gmail.com>
-Subject: Re: [PATCH v2 4/6] phy: samsung: phy-exynos-pcie: rework driver to
- support Exynos5433 PCIe PHY
-To:     Marek Szyprowski <m.szyprowski@samsung.com>
-Cc:     linux-samsung-soc <linux-samsung-soc@vger.kernel.org>,
-        PCI <linux-pci@vger.kernel.org>, devicetree@vger.kernel.org,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Jaehoon Chung <jh80.chung@samsung.com>,
-        Jingoo Han <jingoohan1@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Bjorn Helgaas <bhelgaas@google.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>
-Content-Type: text/plain; charset="UTF-8"
+        id S1790447AbgJZSvI (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:51:08 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 26B591A125F;
+        Mon, 26 Oct 2020 19:51:06 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id 194FC1A006E;
+        Mon, 26 Oct 2020 19:51:06 +0100 (CET)
+Received: from fsr-ub1664-175.ea.freescale.net (fsr-ub1664-175.ea.freescale.net [10.171.82.40])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 7DB3A20308;
+        Mon, 26 Oct 2020 19:51:05 +0100 (CET)
+From:   Abel Vesa <abel.vesa@nxp.com>
+To:     Mike Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        Sascha Hauer <kernel@pengutronix.de>,
+        Fabio Estevam <fabio.estevam@nxp.com>,
+        Anson Huang <anson.huang@nxp.com>,
+        Jacky Bai <ping.bai@nxp.com>, Peng Fan <peng.fan@nxp.com>,
+        Dong Aisheng <aisheng.dong@nxp.com>
+Cc:     NXP Linux Team <linux-imx@nxp.com>,
+        linux-arm-kernel@lists.infradead.org,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-clk@vger.kernel.org, Abel Vesa <abel.vesa@nxp.com>
+Subject: [PATCH] clk: imx: gate2: Fix the is_enabled op
+Date:   Mon, 26 Oct 2020 20:50:48 +0200
+Message-Id: <1603738248-8193-1-git-send-email-abel.vesa@nxp.com>
+X-Mailer: git-send-email 2.7.4
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 2:58 AM Marek Szyprowski
-<m.szyprowski@samsung.com> wrote:
->
-> From: Jaehoon Chung <jh80.chung@samsung.com>
->
-> Exynos5440 SoC support has been dropped since commit 8c83315da1cf ("ARM:
-> dts: exynos: Remove Exynos5440"). Rework this driver to support PCIe PHY
-> variant found in the Exynos5433 SoCs.
->
-> Signed-off-by: Jaehoon Chung <jh80.chung@samsung.com>
-> [mszyprow: reworked the driver to support only Exynos5433 variant, rebased
->            onto current kernel code, rewrote commit message]
-> Signed-off-by: Marek Szyprowski <m.szyprowski@samsung.com>
-> Acked-by: Krzysztof Kozlowski <krzk@kernel.org>
-> ---
->  drivers/phy/samsung/phy-exynos-pcie.c | 304 ++++++++++----------------
->  1 file changed, 112 insertions(+), 192 deletions(-)
->
-> diff --git a/drivers/phy/samsung/phy-exynos-pcie.c b/drivers/phy/samsung/phy-exynos-pcie.c
-> index 7e28b1aea0d1..d91de323dd0e 100644
-> --- a/drivers/phy/samsung/phy-exynos-pcie.c
-> +++ b/drivers/phy/samsung/phy-exynos-pcie.c
-> @@ -4,70 +4,41 @@
->   *
->   * Phy provider for PCIe controller on Exynos SoC series
->   *
-> - * Copyright (C) 2017 Samsung Electronics Co., Ltd.
-> + * Copyright (C) 2017-2020 Samsung Electronics Co., Ltd.
->   * Jaehoon Chung <jh80.chung@samsung.com>
->   */
->
-> -#include <linux/delay.h>
->  #include <linux/io.h>
-> -#include <linux/iopoll.h>
-> -#include <linux/init.h>
->  #include <linux/mfd/syscon.h>
-> -#include <linux/of.h>
-> -#include <linux/of_address.h>
->  #include <linux/of_platform.h>
->  #include <linux/platform_device.h>
->  #include <linux/phy/phy.h>
->  #include <linux/regmap.h>
->
-> -/* PCIe Purple registers */
-> -#define PCIE_PHY_GLOBAL_RESET          0x000
-> -#define PCIE_PHY_COMMON_RESET          0x004
-> -#define PCIE_PHY_CMN_REG               0x008
-> -#define PCIE_PHY_MAC_RESET             0x00c
-> -#define PCIE_PHY_PLL_LOCKED            0x010
-> -#define PCIE_PHY_TRSVREG_RESET         0x020
-> -#define PCIE_PHY_TRSV_RESET            0x024
-> -
-> -/* PCIe PHY registers */
-> -#define PCIE_PHY_IMPEDANCE             0x004
-> -#define PCIE_PHY_PLL_DIV_0             0x008
-> -#define PCIE_PHY_PLL_BIAS              0x00c
-> -#define PCIE_PHY_DCC_FEEDBACK          0x014
-> -#define PCIE_PHY_PLL_DIV_1             0x05c
-> -#define PCIE_PHY_COMMON_POWER          0x064
-> -#define PCIE_PHY_COMMON_PD_CMN         BIT(3)
-> -#define PCIE_PHY_TRSV0_EMP_LVL         0x084
-> -#define PCIE_PHY_TRSV0_DRV_LVL         0x088
-> -#define PCIE_PHY_TRSV0_RXCDR           0x0ac
-> -#define PCIE_PHY_TRSV0_POWER           0x0c4
-> -#define PCIE_PHY_TRSV0_PD_TSV          BIT(7)
-> -#define PCIE_PHY_TRSV0_LVCC            0x0dc
-> -#define PCIE_PHY_TRSV1_EMP_LVL         0x144
-> -#define PCIE_PHY_TRSV1_RXCDR           0x16c
-> -#define PCIE_PHY_TRSV1_POWER           0x184
-> -#define PCIE_PHY_TRSV1_PD_TSV          BIT(7)
-> -#define PCIE_PHY_TRSV1_LVCC            0x19c
-> -#define PCIE_PHY_TRSV2_EMP_LVL         0x204
-> -#define PCIE_PHY_TRSV2_RXCDR           0x22c
-> -#define PCIE_PHY_TRSV2_POWER           0x244
-> -#define PCIE_PHY_TRSV2_PD_TSV          BIT(7)
-> -#define PCIE_PHY_TRSV2_LVCC            0x25c
-> -#define PCIE_PHY_TRSV3_EMP_LVL         0x2c4
-> -#define PCIE_PHY_TRSV3_RXCDR           0x2ec
-> -#define PCIE_PHY_TRSV3_POWER           0x304
-> -#define PCIE_PHY_TRSV3_PD_TSV          BIT(7)
-> -#define PCIE_PHY_TRSV3_LVCC            0x31c
-> -
-> -struct exynos_pcie_phy_data {
-> -       const struct phy_ops    *ops;
-> -};
-> +#define PCIE_PHY_OFFSET(x)             ((x) * 0x4)
-> +
-> +/* Sysreg FSYS register offsets and bits for Exynos5433 */
-> +#define PCIE_EXYNOS5433_PHY_MAC_RESET          0x0208
-> +#define PCIE_MAC_RESET_MASK                    0xFF
-> +#define PCIE_MAC_RESET                         BIT(4)
-> +#define PCIE_EXYNOS5433_PHY_L1SUB_CM_CON       0x1010
-> +#define PCIE_REFCLK_GATING_EN                  BIT(0)
-> +#define PCIE_EXYNOS5433_PHY_COMMON_RESET       0x1020
-> +#define PCIE_PHY_RESET                         BIT(0)
-> +#define PCIE_EXYNOS5433_PHY_GLOBAL_RESET       0x1040
-> +#define PCIE_GLOBAL_RESET                      BIT(0)
+The clock is considered to be enabled only if the controlling bits
+match the cgr_val mask. Also make sure the is_enabled returns the
+correct vaule by locking the access to the register.
 
-Resets, why is this block not a reset provider?
+Signed-off-by: Abel Vesa <abel.vesa@nxp.com>
+Fixes: 1e54afe9fcfe ("clk: imx: gate2: Allow single bit gating clock")
+---
+ drivers/clk/imx/clk-gate2.c | 60 ++++++++++++++++++++-------------------------
+ drivers/clk/imx/clk.h       |  8 ++----
+ 2 files changed, 29 insertions(+), 39 deletions(-)
 
-> +#define PCIE_REFCLK                            BIT(1)
-> +#define PCIE_REFCLK_MASK                       0x16
-> +#define PCIE_APP_REQ_EXIT_L1_MODE              BIT(5)
+diff --git a/drivers/clk/imx/clk-gate2.c b/drivers/clk/imx/clk-gate2.c
+index 7eed708..f320bd2b 100644
+--- a/drivers/clk/imx/clk-gate2.c
++++ b/drivers/clk/imx/clk-gate2.c
+@@ -37,10 +37,22 @@ struct clk_gate2 {
+ 
+ #define to_clk_gate2(_hw) container_of(_hw, struct clk_gate2, hw)
+ 
++static void clk_gate2_do_shared_clks(struct clk_hw *hw, bool enable)
++{
++	struct clk_gate2 *gate = to_clk_gate2(hw);
++	u32 reg;
++
++	reg = readl(gate->reg);
++	if (enable)
++		reg |= gate->cgr_val << gate->bit_idx;
++	else
++		reg &= ~(gate->cgr_val << gate->bit_idx);
++	writel(reg, gate->reg);
++}
++
+ static int clk_gate2_enable(struct clk_hw *hw)
+ {
+ 	struct clk_gate2 *gate = to_clk_gate2(hw);
+-	u32 reg;
+ 	unsigned long flags;
+ 	int ret = 0;
+ 
+@@ -49,15 +61,7 @@ static int clk_gate2_enable(struct clk_hw *hw)
+ 	if (gate->share_count && (*gate->share_count)++ > 0)
+ 		goto out;
+ 
+-	if (gate->flags & IMX_CLK_GATE2_SINGLE_BIT) {
+-		ret = clk_gate_ops.enable(hw);
+-	} else {
+-		reg = readl(gate->reg);
+-		reg &= ~(3 << gate->bit_idx);
+-		reg |= gate->cgr_val << gate->bit_idx;
+-		writel(reg, gate->reg);
+-	}
+-
++	clk_gate2_do_shared_clks(hw, true);
+ out:
+ 	spin_unlock_irqrestore(gate->lock, flags);
+ 
+@@ -67,7 +71,6 @@ static int clk_gate2_enable(struct clk_hw *hw)
+ static void clk_gate2_disable(struct clk_hw *hw)
+ {
+ 	struct clk_gate2 *gate = to_clk_gate2(hw);
+-	u32 reg;
+ 	unsigned long flags;
+ 
+ 	spin_lock_irqsave(gate->lock, flags);
+@@ -79,23 +82,16 @@ static void clk_gate2_disable(struct clk_hw *hw)
+ 			goto out;
+ 	}
+ 
+-	if (gate->flags & IMX_CLK_GATE2_SINGLE_BIT) {
+-		clk_gate_ops.disable(hw);
+-	} else {
+-		reg = readl(gate->reg);
+-		reg &= ~(3 << gate->bit_idx);
+-		writel(reg, gate->reg);
+-	}
+-
++	clk_gate2_do_shared_clks(hw, false);
+ out:
+ 	spin_unlock_irqrestore(gate->lock, flags);
+ }
+ 
+-static int clk_gate2_reg_is_enabled(void __iomem *reg, u8 bit_idx)
++static int clk_gate2_reg_is_enabled(void __iomem *reg, u8 bit_idx, u8 cgr_val)
+ {
+ 	u32 val = readl(reg);
+ 
+-	if (((val >> bit_idx) & 1) == 1)
++	if (((val >> bit_idx) & cgr_val) == cgr_val)
+ 		return 1;
+ 
+ 	return 0;
+@@ -104,29 +100,27 @@ static int clk_gate2_reg_is_enabled(void __iomem *reg, u8 bit_idx)
+ static int clk_gate2_is_enabled(struct clk_hw *hw)
+ {
+ 	struct clk_gate2 *gate = to_clk_gate2(hw);
++	unsigned long flags;
++	int ret;
+ 
+-	if (gate->flags & IMX_CLK_GATE2_SINGLE_BIT)
+-		return clk_gate_ops.is_enabled(hw);
++	spin_lock_irqsave(gate->lock, flags);
+ 
+-	return clk_gate2_reg_is_enabled(gate->reg, gate->bit_idx);
++	ret = clk_gate2_reg_is_enabled(gate->reg, gate->bit_idx, gate->cgr_val);
++
++	spin_unlock_irqrestore(gate->lock, flags);
++
++	return ret;
+ }
+ 
+ static void clk_gate2_disable_unused(struct clk_hw *hw)
+ {
+ 	struct clk_gate2 *gate = to_clk_gate2(hw);
+ 	unsigned long flags;
+-	u32 reg;
+-
+-	if (gate->flags & IMX_CLK_GATE2_SINGLE_BIT)
+-		return;
+ 
+ 	spin_lock_irqsave(gate->lock, flags);
+ 
+-	if (!gate->share_count || *gate->share_count == 0) {
+-		reg = readl(gate->reg);
+-		reg &= ~(3 << gate->bit_idx);
+-		writel(reg, gate->reg);
+-	}
++	if (!gate->share_count || *gate->share_count == 0)
++		clk_gate2_do_shared_clks(hw, false);
+ 
+ 	spin_unlock_irqrestore(gate->lock, flags);
+ }
+diff --git a/drivers/clk/imx/clk.h b/drivers/clk/imx/clk.h
+index 3b796b3..069b07d 100644
+--- a/drivers/clk/imx/clk.h
++++ b/drivers/clk/imx/clk.h
+@@ -6,8 +6,6 @@
+ #include <linux/spinlock.h>
+ #include <linux/clk-provider.h>
+ 
+-#define IMX_CLK_GATE2_SINGLE_BIT	1
+-
+ extern spinlock_t imx_ccm_lock;
+ 
+ void imx_check_clocks(struct clk *clks[], unsigned int count);
+@@ -383,10 +381,8 @@ static inline struct clk_hw *imx_dev_clk_hw_gate_shared(struct device *dev,
+ 				void __iomem *reg, u8 shift,
+ 				unsigned int *share_count)
+ {
+-	return clk_hw_register_gate2(NULL, name, parent, CLK_SET_RATE_PARENT |
+-					CLK_OPS_PARENT_ENABLE, reg, shift, 0x3,
+-					IMX_CLK_GATE2_SINGLE_BIT,
+-					&imx_ccm_lock, share_count);
++	return clk_hw_register_gate2(dev, name, parent, CLK_SET_RATE_PARENT | CLK_OPS_PARENT_ENABLE, reg,
++					shift, 0x1, 0, &imx_ccm_lock, share_count);
+ }
+ 
+ static inline struct clk *imx_clk_gate2_cgr(const char *name,
+-- 
+2.7.4
+
