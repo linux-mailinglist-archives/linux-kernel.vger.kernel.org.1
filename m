@@ -2,121 +2,87 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E56729980D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:34:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 63DC8299813
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:36:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1732575AbgJZUeK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:34:10 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:43880 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1732551AbgJZUeJ (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:34:09 -0400
-Received: by mail-lj1-f194.google.com with SMTP id d24so11788462ljg.10
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:34:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=ACP42UCPZC0vmZHAXGjbnSsMTmLOQ+k7BANgbzBdmHc=;
-        b=JDFEz1Z+CsmWTeME3clWFGO+2+dJW7zjxmL+2uh6H7ZlR+OWpH9MIc1pezLVSRon7B
-         55j1VaDTLlR2dn4klq6PgExMzdUQcYV4fNVnEc9K9fMooZT4kQAStIpTWH02GLqeI4Sj
-         sJOVLzOeikIBBjAv+vQgoIlo0hUH30twNOQf4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=ACP42UCPZC0vmZHAXGjbnSsMTmLOQ+k7BANgbzBdmHc=;
-        b=NB6R8lPzelN7lzsMBUeyKKuXjEAVw5fi0wvJLtRt4ifZ4fVT7lVBUdJoPM8aZ+xq+Z
-         Hbke1LdtwlVGBXXM6TbS3X85kk9hNc2cuhryq2NcIgw2tsUFMf3Y42R6vBpWQ7c7opNx
-         FAsojB9JtHvm+Lz2nYsFXcbsrq4j8oFCm3x/Y1HvDDbZRRkxZ0f0FxR2bW2HrV+Clpzu
-         u1hU7kRGEihuGFhiybWMfeS/DvVqWhRerfb5P8WwldGaI8drrNorle2ixa6ShLa0w/uu
-         gs6JEq8C4jGJJzceKsr1uOU2g8oYzuPnLqjOMMP77NONcSpEcapXyLf9IndPYDouDTZ5
-         muWA==
-X-Gm-Message-State: AOAM533f3LX9RNXljQY6eaqrLZcGXwpaEp6OBm+6A2IlVimkChMP10PT
-        +l5HCZ9nqO7v8mLE4hma/Kqxcg6bci0AmQ==
-X-Google-Smtp-Source: ABdhPJzMpiAofD4gyI4/Th2NZbfK+s2X3y4NQ2SnKL9eSdJPJQlUGHOywDBB+422io1aaDo0lJbrBg==
-X-Received: by 2002:a2e:8750:: with SMTP id q16mr6263368ljj.53.1603744446899;
-        Mon, 26 Oct 2020 13:34:06 -0700 (PDT)
-Received: from mail-lj1-f176.google.com (mail-lj1-f176.google.com. [209.85.208.176])
-        by smtp.gmail.com with ESMTPSA id x27sm1150874lfc.273.2020.10.26.13.34.05
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 13:34:05 -0700 (PDT)
-Received: by mail-lj1-f176.google.com with SMTP id i2so11803887ljg.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 13:34:05 -0700 (PDT)
-X-Received: by 2002:a2e:a16b:: with SMTP id u11mr234204ljl.421.1603744445140;
- Mon, 26 Oct 2020 13:34:05 -0700 (PDT)
+        id S2388545AbgJZUgh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:36:37 -0400
+Received: from mx2.suse.de ([195.135.220.15]:43850 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2388529AbgJZUgh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 16:36:37 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 7C04CAC7D;
+        Mon, 26 Oct 2020 20:36:35 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 0055ADA6E2; Mon, 26 Oct 2020 21:35:01 +0100 (CET)
+Date:   Mon, 26 Oct 2020 21:35:01 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Filipe Manana <fdmanana@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: possible lockdep regression introduced by 4d004099a668
+ ("lockdep: Fix lockdep recursion")
+Message-ID: <20201026203501.GU6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz, Peter Zijlstra <peterz@infradead.org>,
+        Filipe Manana <fdmanana@suse.com>,
+        LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
+ <20201026125524.GP2594@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
-References: <fe8abcc88cff676ead8ee48db1e993e63b0611c7.1603327264.git.joe@perches.com>
- <20201026194127.GA106214@roeck-us.net>
-In-Reply-To: <20201026194127.GA106214@roeck-us.net>
-From:   Linus Torvalds <torvalds@linux-foundation.org>
-Date:   Mon, 26 Oct 2020 13:33:48 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whjhHuwANGerJLJyn7jXCfMQMiaBAW+o2r_T+n=Ki+New@mail.gmail.com>
-Message-ID: <CAHk-=whjhHuwANGerJLJyn7jXCfMQMiaBAW+o2r_T+n=Ki+New@mail.gmail.com>
-Subject: Re: [PATCH] treewide: Convert macro and uses of __section(foo) to __section("foo")
-To:     Guenter Roeck <linux@roeck-us.net>
-Cc:     Joe Perches <joe@perches.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
-        linuxppc-dev <linuxppc-dev@lists.ozlabs.org>
-Content-Type: multipart/mixed; boundary="000000000000f6c96705b298d94b"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026125524.GP2594@hirez.programming.kicks-ass.net>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---000000000000f6c96705b298d94b
-Content-Type: text/plain; charset="UTF-8"
+On Mon, Oct 26, 2020 at 01:55:24PM +0100, Peter Zijlstra wrote:
+> On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+> > > That smells like the same issue reported here:
+> > > 
+> > >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+> > > 
+> > > Make sure you have commit:
+> > > 
+> > >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+> > > 
+> > > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
+> > 
+> > Yes, CONFIG_DEBUG_PREEMPT is enabled.
+> 
+> Bummer :/
 
-On Mon, Oct 26, 2020 at 12:41 PM Guenter Roeck <linux@roeck-us.net> wrote:
->
-> make ARCH=um SUBARCH=x86_64 defconfig:
->
-> Building um:defconfig ... failed
-> --------------
-> Error log:
-> arch/um/kernel/skas/clone.c:24:16: error: expected declaration specifiers or '...' before string constant
-> arch/x86/um/stub_segv.c:11:16: error: expected declaration specifiers or '...' before string constant
+My builds don't have that enabled (CONFIG_PREEMPT_NONE=y) but I still
+see the warning (same scenario as for Filipe). That is with today's
+master branch + your fix from locking/urgent.
 
-Weird. Is __section() not defined somehow for those files?
+> > I'll try with that commit and let you know, however it's gonna take a
+> > few hours to build a kernel and run all fstests (on that test box it
+> > takes over 3 hours) to confirm that fixes the issue.
+> 
+> *ouch*, 3 hours is painful. How long to make it sick with the current
+> kernel? quicker I would hope?
+> 
+> > Thanks for the quick reply!
+> 
+> Anyway, I don't think that commit can actually explain the issue :/
+> 
+> The false positive on lockdep_assert_held() happens when the recursion
+> count is !0, however we _should_ be having IRQs disabled when
+> lockdep_recursion > 0, so that should never be observable.
+> 
+> My hope was that DEBUG_PREEMPT would trigger on one of the
+> __this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+> then be a clear violation.
 
-It does look like they have very minimal headers, so undoing that
-patch just for those two files is likely the right thing to do.
-
-> As with s390, reverting this patch fixes the problem.
-
-s390 should be fixed already.
-
-Is the attached minimal patch sufficient for um to get back to working
-order, or is there something else hiding there too?
-
-                   Linus
-
---000000000000f6c96705b298d94b
-Content-Type: application/octet-stream; name=patch
-Content-Disposition: attachment; filename=patch
-Content-Transfer-Encoding: base64
-Content-ID: <f_kgr00tti0>
-X-Attachment-Id: f_kgr00tti0
-
-IGFyY2gvdW0va2VybmVsL3NrYXMvY2xvbmUuYyB8IDIgKy0KIGFyY2gveDg2L3VtL3N0dWJfc2Vn
-di5jICAgICB8IDIgKy0KIDIgZmlsZXMgY2hhbmdlZCwgMiBpbnNlcnRpb25zKCspLCAyIGRlbGV0
-aW9ucygtKQoKZGlmZiAtLWdpdCBiL2FyY2gvdW0va2VybmVsL3NrYXMvY2xvbmUuYyBhL2FyY2gv
-dW0va2VybmVsL3NrYXMvY2xvbmUuYwppbmRleCA5NWMzNTUxODFkY2QuLmJmYjcwYzQ1NmIzMCAx
-MDA2NDQKLS0tIGIvYXJjaC91bS9rZXJuZWwvc2thcy9jbG9uZS5jCisrKyBhL2FyY2gvdW0va2Vy
-bmVsL3NrYXMvY2xvbmUuYwpAQCAtMjEsNyArMjEsNyBAQAogICogb24gc29tZSBzeXN0ZW1zLgog
-ICovCiAKLXZvaWQgX19zZWN0aW9uKCIuX19zeXNjYWxsX3N0dWIiKQordm9pZCBfX2F0dHJpYnV0
-ZV9fICgoX19zZWN0aW9uX18gKCIuX19zeXNjYWxsX3N0dWIiKSkpCiBzdHViX2Nsb25lX2hhbmRs
-ZXIodm9pZCkKIHsKIAlzdHJ1Y3Qgc3R1Yl9kYXRhICpkYXRhID0gKHN0cnVjdCBzdHViX2RhdGEg
-KikgU1RVQl9EQVRBOwpkaWZmIC0tZ2l0IGIvYXJjaC94ODYvdW0vc3R1Yl9zZWd2LmMgYS9hcmNo
-L3g4Ni91bS9zdHViX3NlZ3YuYwppbmRleCBmZGNkNThhZjcwN2EuLjI3MzYxY2JiN2NhOSAxMDA2
-NDQKLS0tIGIvYXJjaC94ODYvdW0vc3R1Yl9zZWd2LmMKKysrIGEvYXJjaC94ODYvdW0vc3R1Yl9z
-ZWd2LmMKQEAgLTgsNyArOCw3IEBACiAjaW5jbHVkZSA8c3lzZGVwL21jb250ZXh0Lmg+CiAjaW5j
-bHVkZSA8c3lzL3Vjb250ZXh0Lmg+CiAKLXZvaWQgX19zZWN0aW9uKCIuX19zeXNjYWxsX3N0dWIi
-KQordm9pZCBfX2F0dHJpYnV0ZV9fICgoX19zZWN0aW9uX18gKCIuX19zeXNjYWxsX3N0dWIiKSkp
-CiBzdHViX3NlZ3ZfaGFuZGxlcihpbnQgc2lnLCBzaWdpbmZvX3QgKmluZm8sIHZvaWQgKnApCiB7
-CiAJdWNvbnRleHRfdCAqdWMgPSBwOwo=
---000000000000f6c96705b298d94b--
+I can start another round (in my case it's more than 4 hours to
+reproduce it) with DEBUG_PREEMPT, unless you have something else to
+test.
