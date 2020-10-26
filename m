@@ -2,136 +2,94 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0149E298FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:45:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4A84B298FC5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:45:54 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781911AbgJZOpe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:45:34 -0400
-Received: from mail-ed1-f68.google.com ([209.85.208.68]:40614 "EHLO
-        mail-ed1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781913AbgJZOpd (ORCPT
+        id S1781935AbgJZOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:45:52 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:39228 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781926AbgJZOpv (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:45:33 -0400
-Received: by mail-ed1-f68.google.com with SMTP id p13so9644482edi.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:45:32 -0700 (PDT)
+        Mon, 26 Oct 2020 10:45:51 -0400
+Received: by mail-pj1-f65.google.com with SMTP id m3so3210046pjf.4;
+        Mon, 26 Oct 2020 07:45:51 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=108wjdzd0/xglJPKdUFBrU/U8qTH53Q7ViQVBUZc56k=;
-        b=1OrMnfHHqDBoo2mYxJrLQ9UlNNI6ec8McsUQXHPbq7sKgz+s/nXE8wC/tcI/BwH3BA
-         YcAIrjszEI+afPxnRmUMsSafZo++P4xTvrdEqggzBABUFDbbV/e9xn+YZ3cB/dPnf3kl
-         9ZGuOQRnd6APa67+wQwTCEP61nfTjrToUqGBWbolTmKWKeyz73rYrmvMumShSk9TWAF9
-         +MREeJUOnaLftLucXz5QGIgOkw2duaObvPbDmqRNRkJj959McPu1ur7Zk48voZsuQ9ZO
-         vX1M9rjAraSINox0yzNORVihGBwgnebY6oKbYvqhxGWZ/XB/jl58QutvGrPjQrUPCTJW
-         JjqA==
+        bh=vAbD5pPtU3ThLzaI4nC9N49Q4nZl815/lE7BJtV5/80=;
+        b=SGiqEhsprkLFhCW42iwff1fo8jDOeHE++peyz8Jn/LHdybqgaipsfSb2QEEAfj+2C3
+         TWOZnaFTSGBj3lUwt8ld0nkmZZmCTtcrG6s/BrxBjS9M4AtNB/+on47QGayljDCGmCAM
+         Ic/tH9oXeg/Zu0d6HS7KIqdQd9tUzZHuGE9CL8Teo4zyBpYHqS92KWru3fy77x5IP5g3
+         XnzNUSHSxppP4S2ABYWv0H5DLoE7c3l8JIReagM0RQhHlAN3AQO6pmjZtW/Ul5J0fn0G
+         n82CKfmOuwNfd8nxg+SAfVdSpHfD3XbMR/Aklh615a1QCMbQ1PGyvBaudlaSwnYNg2V6
+         6Gog==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=108wjdzd0/xglJPKdUFBrU/U8qTH53Q7ViQVBUZc56k=;
-        b=n2IBe87Ym+431hg0Zio95AUNL1I75LF9XyhAM4Ql9M6G+XggofXopSnUa6hM2oP9+e
-         I25sLtk5GlwCQTBt0M6tHV3RUkfx6rNZlK2ypqVIEPVylMy/+xIU/iZy2n/bArt1ApJT
-         /myfXp0PuMasCeN08ATF9wVCGwgxfGE/ZJznH/iWwjBvwQNtxfBRVOD8IAg/mZVrbHP6
-         w3o8ZBqMxyANwuWr8cswp6UvOKquNi4SknciK7uWGkcpHsIp8Ia8+9WU4+EQ9SaRw/ma
-         BoM/XF9D5NIw3ZpyT9zQsR2TwZhjACpVi8WPeY2xnHLDzdxggB17HzT5X4/YMVhClfIX
-         b6xA==
-X-Gm-Message-State: AOAM533kPIJgIpt7nWqWfQi7AWV3Ufx2Io/lhliyPLh8cMYgmgUQ9EGk
-        5FUSMA3tpglWnfNgpBLxNi8ouQ182SvPpBhEYEOJVA==
-X-Google-Smtp-Source: ABdhPJwpLZGnNpfAXvm5XX2UTeeOpwB6YzeBR/r0R25NPP/c93Zb+pjiQMB4mwWWBByibX0wj7kl731YGtPxH+pE/SM=
-X-Received: by 2002:a50:e442:: with SMTP id e2mr16721662edm.186.1603723528358;
- Mon, 26 Oct 2020 07:45:28 -0700 (PDT)
+        bh=vAbD5pPtU3ThLzaI4nC9N49Q4nZl815/lE7BJtV5/80=;
+        b=V3FVWi/P+P+1EjynGBovy6EBN7X7drjkoW4r/9i3eFjkz0yHQtZiMk/COoEqpRDilh
+         P4k5fT2tMXbuSzDgM9s3QS/OHKazTT7dA4mvE73ZIpI+A9EfJeOpcE2Pxc64cWA7ES9A
+         Y+OQE1tHTvYqcy4ebwdJLJn00Q3qME2yJHg1t54DXpxa+qBcnAYVBvuvh8Z+dviX9cEb
+         GuCb+SGPEzqsRL2FhM2sshF+Q7YsZ6QOC/+JEUB5Ivh6llRJxtv4VogRUtUurCdf9hVK
+         Pi6dHZ6KaJutBwZCTc6BXsPlaPE59zW0aYGm4kX6rqjeEhKH3im8rgn/KVwsfbtIDyTf
+         tsEQ==
+X-Gm-Message-State: AOAM530rWB5UuqPRU5zhnVFZYbcIwq2aiCUAFS74VLYI9HhUoD25WiO8
+        Ebgobw9HaAs2BHlP8DMb+puj/T9l5GCHJ8jeJmcaJMNVe5Y=
+X-Google-Smtp-Source: ABdhPJzhQC8fKyt4wwBORn7QhDdA+TldreARroO5Vs8lmgLb4WkRsq7pOc4NPX+KUKoWafcy85byeXI8fgYJ0Tyft10=
+X-Received: by 2002:a17:902:101:b029:d5:bb23:b731 with SMTP id
+ 1-20020a1709020101b02900d5bb23b731mr12329264plb.82.1603723550691; Mon, 26 Oct
+ 2020 07:45:50 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
- <20201022155858.20867-4-nsaenzjulienne@suse.de> <CAMpxmJXw12hKYCuMDjG-Ns6n=mXmr4B2x3HJaAJ19wH_xDUMag@mail.gmail.com>
- <700a149849222f3efbec73cb8a6be56b4b1c5bcb.camel@suse.de>
-In-Reply-To: <700a149849222f3efbec73cb8a6be56b4b1c5bcb.camel@suse.de>
-From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Date:   Mon, 26 Oct 2020 15:45:17 +0100
-Message-ID: <CAMpxmJWTuREXQKLtc37uo6+6aG_-Tkb-P+8Ozjkz+7-DixvpDQ@mail.gmail.com>
-Subject: Re: [PATCH v2 03/10] gpio: raspberrypi-exp: Release firmware handle
- on unbind
-To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
+References: <20201026141839.28536-1-brgl@bgdev.pl>
+In-Reply-To: <20201026141839.28536-1-brgl@bgdev.pl>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Oct 2020 16:46:39 +0200
+Message-ID: <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
+Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
         Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 3:42 PM Nicolas Saenz Julienne
-<nsaenzjulienne@suse.de> wrote:
+On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
 >
-> On Mon, 2020-10-26 at 15:40 +0100, Bartosz Golaszewski wrote:
-> > On Thu, Oct 22, 2020 at 5:59 PM Nicolas Saenz Julienne
-> > <nsaenzjulienne@suse.de> wrote:
-> > > Upon unbinding the device make sure we release RPi's firmware interface.
-> > >
-> > > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > > ---
-> > >  drivers/gpio/gpio-raspberrypi-exp.c | 14 +++++++++++++-
-> > >  1 file changed, 13 insertions(+), 1 deletion(-)
-> > >
-> > > diff --git a/drivers/gpio/gpio-raspberrypi-exp.c b/drivers/gpio/gpio-raspberrypi-exp.c
-> > > index bb100e0124e6..c008336e1131 100644
-> > > --- a/drivers/gpio/gpio-raspberrypi-exp.c
-> > > +++ b/drivers/gpio/gpio-raspberrypi-exp.c
-> > > @@ -231,8 +231,19 @@ static int rpi_exp_gpio_probe(struct platform_device *pdev)
-> > >         rpi_gpio->gc.get = rpi_exp_gpio_get;
-> > >         rpi_gpio->gc.set = rpi_exp_gpio_set;
-> > >         rpi_gpio->gc.can_sleep = true;
-> > > +       platform_set_drvdata(pdev, rpi_gpio);
-> > >
-> > > -       return devm_gpiochip_add_data(dev, &rpi_gpio->gc, rpi_gpio);
-> > > +       return gpiochip_add_data(&rpi_gpio->gc, rpi_gpio);
-> > > +}
-> > > +
-> > > +static int rpi_exp_gpio_remove(struct platform_device *pdev)
-> > > +{
-> > > +       struct rpi_exp_gpio *rpi_gpio = platform_get_drvdata(pdev);
-> > > +
-> > > +       gpiochip_remove(&rpi_gpio->gc);
-> > > +       rpi_firmware_put(rpi_gpio->fw);
-> > > +
-> > > +       return 0;
-> > >  }
-> > >
-> > >  static const struct of_device_id rpi_exp_gpio_ids[] = {
-> > > @@ -247,6 +258,7 @@ static struct platform_driver rpi_exp_gpio_driver = {
-> > >                 .of_match_table = of_match_ptr(rpi_exp_gpio_ids),
-> > >         },
-> > >         .probe  = rpi_exp_gpio_probe,
-> > > +       .remove = rpi_exp_gpio_remove,
-> > >  };
-> > >  module_platform_driver(rpi_exp_gpio_driver);
-> > >
-> > > --
-> > > 2.28.0
-> > >
-> >
-> > Why not introduce devm_rpi_firmware_get()? That would allow you to
-> > keep the driver elegant without re-adding remove().
+> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
 >
-> I like the idea, I'll look into it.
+> I just wanted to convert the driver to using simpler IDA API but ended up
+> quickly converting it to using regmap. Unfortunately I don't have the HW
+> to test it so marking the patches that introduce functional change as RFT
+> and Cc'ing the original author.
+
++Cc: Jan, AFAIR their devices are using Exar UART.
+
+> Bartosz Golaszewski (7):
+>   gpio: exar: add a newline after the copyright notice
+>   gpio: exar: include idr.h
+>   gpio: exar: switch to a simpler IDA interface
+>   gpio: exar: use a helper variable for &pdev->dev
+>   gpio: exar: unduplicate address and offset computation
+>   gpio: exar: switch to using regmap
+>   gpio: exar: use devm action for freeing the IDA and drop remove()
 >
-> Thanks,
-> Nicolas
+>  drivers/gpio/Kconfig     |   1 +
+>  drivers/gpio/gpio-exar.c | 155 +++++++++++++++++++--------------------
+>  2 files changed, 77 insertions(+), 79 deletions(-)
+>
+> --
+> 2.29.1
 >
 
-If you can't do it for some reason, then even using devm_add_action() is fine.
 
-Bartosz
+-- 
+With Best Regards,
+Andy Shevchenko
