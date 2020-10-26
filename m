@@ -2,157 +2,134 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A26F329862C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 05:37:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0E42429862A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 05:31:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1422240AbgJZEha (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 00:37:30 -0400
-Received: from mail-eopbgr10043.outbound.protection.outlook.com ([40.107.1.43]:49735
-        "EHLO EUR02-HE1-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1421452AbgJZEh3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 00:37:29 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MF7m9WUcVPc8WgM/RRG0i22Hrk1mXTqVuoi2EcvFQobvZj0r/pfl0hT90byxVjbUhb+qgk5elsz8AXVZtZmzXGWElKMSpvGbdrCv3K8A9BVzyej9+URtplO3YGQgxvci5p6IIBwQunPxHxMcAIuaBSMXNtAVQuG/sVqZHy7JpPWwdnmgBFz/HY96tNtLu2dfcdm9jaDs29q/As/3M33MGkjlrY9SoJPp7DPDBZFuYvYQl4OTOwILJK7Pwe8zbc8EU/9y8vC/Quj2y9DlAyeU4hLlAPAki11PAgy3OtwU5VTvVi5Kcn/l8tymdizAnv4hG19Q07Qmlc5gYfj2pvc9/w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+k8NSHboDbgK1R/2mYZQ2qt+Ex4mBtHNtlcAJu3NJLU=;
- b=jfDCqw0P6ks5ODIsf/TOBq/eLFhUjtrzw4V7UDWZYqEnCQNlmNC3ovO4rsy6qG3k9j4iouxYkO9DM6J404YaEb6CdteLgo0IiclF4wJ5y7izE8g+EmIFjv/Ho69yW95yWP7o4U5Tqx1koT3wDStU6l4+gf1kgSkXA1bz8qJQOAffWDjePQfY7dDzze2Y+AH64nGbNXIZQ8pwnEQaFzMnMSrxuDqT81fdritxZQIpjJT/2E3Ynf50bKEcNRhUgA/YBgb6QMBPUxD/WleRzaA0ACpGoMnFWB/h4CV4KkSpMpsYSlVOjpCDRGWDBquBUVT3Ze0fxYFiCZTNLjS5Ebrdpg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+k8NSHboDbgK1R/2mYZQ2qt+Ex4mBtHNtlcAJu3NJLU=;
- b=HhLfwyRTsy7o+EdBeUL0hNZ1koSgicBCxzlfMuTdUPRR/lPyK4X9HfbRio+465QN6K3Q1svNmbEs280MvpNC6DnC3qeaKxGQVkaFqNVj1ysq7sokF8Ohtm7InHmRlTD27h4fSswwtCqiBdpeKeUr9Bc2fgS8QlI3D9hsToNuhWk=
-Authentication-Results: vger.kernel.org; dkim=none (message not signed)
- header.d=none;vger.kernel.org; dmarc=none action=none header.from=nxp.com;
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
- by HE1PR0402MB3579.eurprd04.prod.outlook.com (2603:10a6:7:88::22) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.27; Mon, 26 Oct
- 2020 04:37:24 +0000
-Received: from HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::f882:7106:de07:1e1e]) by HE1PR0402MB3371.eurprd04.prod.outlook.com
- ([fe80::f882:7106:de07:1e1e%4]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
- 04:37:24 +0000
-From:   Zhiqiang Hou <Zhiqiang.Hou@nxp.com>
-To:     linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, shawnguo@kernel.org,
-        robh+dt@kernel.org, leoyang.li@nxp.com
-Cc:     Xiaowei Bao <xiaowei.bao@nxp.com>,
-        Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Subject: [PATCHv9] arm64: dts: layerscape: Add PCIe EP node for ls1088a
-Date:   Mon, 26 Oct 2020 12:27:59 +0800
-Message-Id: <20201026042759.15155-1-Zhiqiang.Hou@nxp.com>
-X-Mailer: git-send-email 2.17.1
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.73]
-X-ClientProxiedBy: SG2PR0601CA0021.apcprd06.prod.outlook.com (2603:1096:3::31)
- To HE1PR0402MB3371.eurprd04.prod.outlook.com (2603:10a6:7:85::27)
+        id S1421380AbgJZE3O (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 00:29:14 -0400
+Received: from sonic303-23.consmr.mail.gq1.yahoo.com ([98.137.64.204]:37460
+        "EHLO sonic303-23.consmr.mail.gq1.yahoo.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1421352AbgJZE3N (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 00:29:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.ca; s=s2048; t=1603686550; bh=Ec0o3sOEszY2eGhyJjVpQa883vnHjbcvEnzaYM+SLms=; h=Date:From:Subject:To:Cc:References:From:Subject; b=r1sUzoU9X/EqJJSAah3dvDKhyW3qjjE2gSneDsimHmvIgHbL7T8fTZ2W1rZRUJJeIfdE+HgXeYIbybBF9eXVUh59iKdskUT10I28YZk+18DptCqYnFE50lGgytOJHafIUotYEciHgndIQqXV/2QbGZdPAl6weU+WjR+sySGB3yVfhhPe/3vDJL2FXvUi/95cFDXHFHr98Q8bE2cj+vZTP0fehJvguoRruzQ1705EJw9HlZoh0zNmQIcbRAL/33ZuTq+p0MnhjsxRIsbxUDfR9Ly1g4RcpJUZs2l8A8ejTu4M5XAq4aCi9D6AVR8f1E4sXuKdASBeQUwnWI17JUF0tg==
+X-SONIC-DKIM-SIGN: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yahoo.com; s=s2048; t=1603686550; bh=wVqlNBio//oZFVJv3jbjVUrOm5tGZUfYPC1LBOZF/vc=; h=Date:From:Subject:To; b=M2yOKKkfjBtDzIJvrCMmfQH9YSSHVLYoVA8JGkX2FdycYeLN+1yj0D7xgwbBkLsQBz04qNWBE3WLy6w381t9CPwJcHCOG9yxxawyhqlfWAFCalNAOHFAW+2XxsGvQyRm9XKnmqxpNeAh8gxV5Kd1LVDANGjvmacJARqcIFCCobHLn4ZFarRN0A7mB8IxwKja4CWq0TEsClVHYrezf2MO7HSRiqmsHwBZRS/YoYfhZQyw7s6W56bOcxbpQ86n5e4hQWS4rYBBxWWUB0mUC+W3/KZuIVD4GW8AcOdnjif/Ttj+agFHacED/1t/lBF7el16fowXTXu2Dp2rTF5UIcDYEg==
+X-YMail-OSG: iLdTl9sVM1nhVlX2udGG.kdDn_5rEVY3GIdINw1ITRwm3glyTJBtgXtLftZQ8pM
+ y7s2K8JCAm5KdaQhRYnx2mqc8rK3e6.tx0CglXuv.gtacRU0ocw2lXjqufgLRiHlbfstkrIZ.NgS
+ JkKMJp6CSOk1y2sG5BWvyldD3tR4HsinTwl2Uru4R2mrRH2eg46ozT5FurNnWa1YZIL9PimLTo1n
+ DBCFBCHklDgDchPorjOaI0rtT6jyZVkHvb3cRI6.NNw8_FVP_X1JBJno_PR8jv5tJDlilkukkVta
+ JNDdv36TYVmrZzAMRkqvgldrdBdP.jFhBFPoWgqLYOC0COnSn8hQObMF.ZOLbu_IlMJre90vYO3N
+ 2Kao28dAZ4UF.MVrKSPvW4AQPwkyTlJdBUm4oQfL1zsU47DlpnHCmP2Ec408bro0hBB70SBpzxzg
+ hCDJrMYmieSbOUNyb_tgEE49N5eGKy9iSqfG45xg2CTn.MrmoqelMsGeJU45WsaNDzYIz9TJDpJ9
+ Kui6PYkx2K9bDCxugFlcJZo78K44yuRRCvtUZq_WWczKlqXi5djhI5Hakxs_BYMFbdoGFBdH9kDH
+ jTqiRO1J_taVb4VoFdjFLPO7mmVVGrtNnSgfSJ0KoC.3t3x1c8RxbbD_9b_6jcuK1htDFGVF8mP6
+ ls4aqtknZGSPV0jKvZpkXOcLwOyjIoQ7T2tXHoI_gNI68QOJhO3mAGIkcP1Y8aeCybhgEN_RD7N2
+ w4jGexBPrrZ3bAhNzMGOjPLatRDG26Cay1ZWpmfY.5njNSGlSCvRwh08R.m1NyNUASIIx1rBcCYJ
+ pHDodjfG2qYlh9yNQ_qMqewrgxOizo1cSa8MgifhwkBh1QUb9R4JPAM72xRa9HNPG6uZ86hNoMQB
+ UTFYUKDKZ6kY2uGtcjdUaLdPIJIBfgSBtf6kfb_0_4mwZFyXpGGV8bPZZM4gBgZitNlPefZ8Lyip
+ iAXbrRBES8cCmtrebpkP6f0KDmlkV9iLbfEAVeFR1ia.jEXBr1K7coiVky634GDL.UKc4b2URBUU
+ bHBiLLlq1JH2TVxuVw51rv9sKTNbScQ2XKoas5KqBUawl.bpfcj8ff6BrAK7gu6RYlDTaC9PyGKC
+ gFpn7INmhbt8hFNJefDeNALHGEHYNP.GGNTA968oy7CByWVKkURiU74QwOySXjr4Wa5m04KRyi0N
+ vfyxzBXN4bOAkozR7J9O6zmBAXIDc4r9FWeMEo_INHye_0TwqAOP5ngusO3dT9jyXHKH4XT.KeDX
+ VDoLwGyrkY7_QWEQmjsY48sogTUfWxTFdR6OE8Dyqf_7qTBbOAf86HM9qhl6c6ImYJGBX2P8ey8b
+ Ng_LDVjH0w7YDJgNPXnxQPcpL8kZfrjjpSgBJZKFXVE9tXn07RboXdnMvJc_ZF63bsvN0z0ciIGW
+ QZZrWAd0Zb0_YWY7aCEOhYXMnvfwYD8UDZvPvuxhq8LLFlO2JcI9n3Abd3FkcGHzXM3d6Keq97eH
+ bKNpPpsYGUZ83Gn9R5cvaAE.q13OwFS75XppUfalT6mY0J9EGdkNoqgBK2qMzxmhZ7sYVYESGFrb
+ bSz3GuIyqPlQ2kmZGrj1Bb6JNvgz3_tnGHh84YFNqFdu9VIMR4tI4re8I7PAwFV83_150WleFulA
+ qbSkoWssnk7QuNC0KSLAMrR3IDDh5hYsTsH1rwDdlgsSapCQIVKspRXOvWqriCWnrTPc7PID6VYt
+ cF.YaHRFg2Ut5vTT9Vw1_ZLt9gTHr2Qvpt0LPrPgtNUsVT07JD9THic.CEXyxNVtFNi3_98GLlGQ
+ fKMCY8tkbhpmmHIMD8lwP9xT7bY1AhNA0.drtrpZj0li1Qb9jlVCkGQcR10s.qS6.FQ9lliFuUrh
+ fmuS2EiYrQ_pNrsU.sOizo4v81IMnQ64IgVvEfOmKGzGWktfAklLacedwcGoGD2bCQgViRZxABOo
+ rsLTpzaBs.YClM..iqE4JTubnXth5qKafdwPkrVZQe3a4wHwC3Jo8WHDKHhtQsRaQVjdr61BEACI
+ sU3p.UBUJ6nAvl5K5qkWbVv1OECiurO6zYUPtaI6TzuHkxcluGb0_SwaZzOgOmVLS7zrkH94HeP2
+ pPb9xuMRCX8tssCKYbCtFjJWklplShIISlgiVBstddQfItEKig6xwRSxKtAxEBfbHzOLATLKnM28
+ Fx5YcLGucZT_skPMyYwD37FtgNA0O8FpHh_ECOaH3DQrkpvnUgwX6KaOMnftPbO.Pf.KSnf205a7
+ q8r.K4gGGFk.QnaRq5dhUxl.FR8HhmsM5JUZTXItEr7PSwjxJG5bxBTUWrBMeUgKYOM8OQwWHQH.
+ _ECGz8Y.pdOa.3QgOyT7PC13Aq0ICZ3RKIivyUbycQjOdtLN2ybwV1MFemgHe0YnsGKcARIkGJR6
+ iUnwQxtFQfVuqqRjxVLPFO.ql6pKCdW9YsNNhL9QsrlLX.HgXIjiaCPKFbvrPiZM3E87U9CEfxJl
+ im4iinkhhE0S6.nioTzmGillMU0oy.6hqFGEhLhUkhLH3N1xQCV4.Ok6PYiNMmOtLrcf4naW0pKn
+ RlNPu4PfIs4uqGqztVENpPemBK28ctHpl8VH6wYs9jzoILtgaI5AkQDaLLs10_b0f8h8WbTwT1JM
+ qJTKgJ_immptCM3fx1r8.O_YfqPU8VPJD.StLGO5j1iiYDwLwNEb4yAPuP0ZO3GvMJwH9xDdNYQX
+ IuSIkdGaRkodSS7Ht6TkTTC4feF.Azuz_RQf_dl734WcMh.eDgBTQF5wApZFxRm5t1ejujC7CX3k
+ ToU7xqfYNVkqxm4LgbQ5ho2NBOBCRN8Zj
+Received: from sonic.gate.mail.ne1.yahoo.com by sonic303.consmr.mail.gq1.yahoo.com with HTTP; Mon, 26 Oct 2020 04:29:10 +0000
+Received: by smtp401.mail.ne1.yahoo.com (VZM Hermes SMTP Server) with ESMTPA ID 6a7b32f6e8bbe21d3dc245690167a96c;
+          Mon, 26 Oct 2020 04:29:05 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 00:29:00 -0400
+From:   "Alex Xu (Hello71)" <alex_y_xu@yahoo.ca>
+Subject: amdgpu crashes on OOM
+To:     Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
+        alexander.deucher@amd.com, Harry Wentland <harry.wentland@amd.com>,
+        Leo Li <sunpeng.li@amd.com>, amd-gfx@lists.freedesktop.org
+Cc:     linux-kernel@vger.kernel.org
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from localhost.localdomain (119.31.174.73) by SG2PR0601CA0021.apcprd06.prod.outlook.com (2603:1096:3::31) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 26 Oct 2020 04:37:20 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: dfddab30-4fed-40bf-de36-08d87968d541
-X-MS-TrafficTypeDiagnostic: HE1PR0402MB3579:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <HE1PR0402MB35796218469ABC1122D8956A84190@HE1PR0402MB3579.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:5797;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Pb7GeyQIpHNfcPa0DuF3hJO6uoZgzYrFNF6nP3v/wSWbJ064l51YpY/VU0Lg6jr6RuLUaD71NpkH5njfC67IE3VhDfR/mK+6xccxspotso9eXlfoeiCIa2Wgi8P5LFqrKg0MXdgmc7nuLnH7U/EgceI0IlHXnar507Fw4ukz78XkqYOyCfgZ/er/T5U4tW7VlJQA39q+5Q43hYi7JFuQ2DuUv7iQ5EL1BIHPnoZcYtj7PEQXvWgSFpw7+Yk5QXawsKhIJ3uTguiKt9BMbCbkY0vSDhho/dfF+s4OB0R/iIz892SgyeqjTZuZcV7adSA51I6WLQR54S3gG9oI5xrZ2CJLeRFYwAItLdClv02PaPk5ANaqqutbwaG/zLw1iM5E
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:HE1PR0402MB3371.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(136003)(346002)(366004)(396003)(39860400002)(376002)(6636002)(316002)(66556008)(66946007)(5660300002)(83380400001)(66476007)(52116002)(69590400008)(478600001)(86362001)(36756003)(956004)(6506007)(2616005)(1076003)(6512007)(26005)(186003)(54906003)(8676002)(8936002)(2906002)(4326008)(16526019)(6666004)(6486002);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: 31NY/k5ZqwKjgS1Pxr5AXgAp/AkOit5JNA5VEYoF5Od2ZIdKI/Z25voZwsRKwVM20RxMqBtFfGNRrO671ahgfqsBcklT2FrXFgeXuiMzUQ3VyMlnw3pA0YUbK6O/rsIGIAuaAn9a0uPFrSyZzN+u8OZGazGQfquTvFvZ0rooIHkz0nvX4LPe+kwkgZVp1HUAgtfZ26cbbOwde6RRXI6U8u0hegphtvwKKHoQ+o+Jh3kpD4BjoiyXn479DHPRHZvxsCtAv3HyV0bBLR36iZI0DhTjiks0Gt/q3r3yva6qhZinfn4TeshJi5wFruEpOON+1m82nfjzhKhI5N6gOSqpihNBg7Boz+7BH+AcyDW0dZ8GxVjkr8CXV+gksH6ir+PKAG44kyvINRCq2gdocGZVAIaxRndTZtNsYynTkXCNmepNXYNrVezYyyeaNiJ8TOV3YwnqV2PmRjH+BDca3e4bZYczSN6PvUi7GAyKpW5rNJJJpGSGIs/vxh8K3nVRzIaDDIg40p7uxsEVpr8iilxl4OED8lGboJGC1TW82BelTyndXS6JHgXNws6yfMkJVX/yA8WyzD7melfUHW1/j0zqqRKkU3RY1xPFpUi1dX9t3pghOLtSr6Xt9YyLeIFziFhgah8etmSE+cdWodVK6/Jijw==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfddab30-4fed-40bf-de36-08d87968d541
-X-MS-Exchange-CrossTenant-AuthSource: HE1PR0402MB3371.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2020 04:37:24.0175
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: UrHgfiIPtUmRm7fGqfewGEuiV01mBBOu4sc183u08H/PUirMY7RpigCeyaHXxdtnrE06UAy+GlYQoY5tHq4Gpg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: HE1PR0402MB3579
+Message-Id: <1603684905.h43s1t0y05.none@localhost>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+References: <1603684905.h43s1t0y05.none.ref@localhost>
+X-Mailer: WebService/1.1.16868 mail.backend.jedi.jws.acl:role.jedi.acl.token.atz.jws.hermes.yahoo Apache-HttpAsyncClient/4.1.4 (Java/11.0.7)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Xiaowei Bao <xiaowei.bao@nxp.com>
+Hi,
 
-Add PCIe EP node for ls1088a to support EP mode.
+I frequently encounter OOM on my system, mostly due to my own fault.=20
+Recently, I noticed that not only does a swap storm happen and OOM=20
+killer gets invoked, but the graphics output freezes permanently.=20
+Checking the kernel messages, I see:
 
-Signed-off-by: Xiaowei Bao <xiaowei.bao@nxp.com>
-Signed-off-by: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
-Reviewed-by: Andrew Murray <andrew.murray@arm.com>
----
-V9:
- - Rebase the patch since V8 patch was not accepted due to conflict.
- - Correct the number of outbound windows.
- - Add lables for EP nodes.
+kworker/u24:4: page allocation failure: order:5, mode:0x40dc0(GFP_KERNEL|__=
+GFP_COMP|__GFP_ZERO), nodemask=3D(null)
+CPU: 6 PID: 279469 Comm: kworker/u24:4 Tainted: G        W         5.9.0-14=
+732-g20b1adb60cf6 #2
+Hardware name: To Be Filled By O.E.M. To Be Filled By O.E.M./B450 Pro4, BIO=
+S P4.20 06/18/2020
+Workqueue: events_unbound commit_work
+Call Trace:
+ ? dump_stack+0x57/0x6a
+ ? warn_alloc.cold+0x69/0xcd
+ ? __alloc_pages_direct_compact+0xfb/0x116
+ ? __alloc_pages_slowpath.constprop.0+0x9c2/0xc14
+ ? __alloc_pages_nodemask+0x143/0x167
+ ? kmalloc_order+0x24/0x64
+ ? dc_create_state+0x1a/0x4d
+ ? amdgpu_dm_atomic_commit_tail+0x1b19/0x227d
 
- .../arm64/boot/dts/freescale/fsl-ls1088a.dtsi | 31 +++++++++++++++++++
- 1 file changed, 31 insertions(+)
+followed by:
 
-diff --git a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-index ff5805206a28..8d8e610acba6 100644
---- a/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-+++ b/arch/arm64/boot/dts/freescale/fsl-ls1088a.dtsi
-@@ -517,6 +517,17 @@
- 			status = "disabled";
- 		};
- 
-+		pcie_ep1: pcie-ep@3400000 {
-+			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-+			reg = <0x00 0x03400000 0x0 0x00100000
-+			       0x20 0x00000000 0x8 0x00000000>;
-+			reg-names = "regs", "addr_space";
-+			num-ib-windows = <24>;
-+			num-ob-windows = <256>;
-+			max-functions = /bits/ 8 <2>;
-+			status = "disabled";
-+		};
-+
- 		pcie2: pcie@3500000 {
- 			compatible = "fsl,ls1088a-pcie";
- 			reg = <0x00 0x03500000 0x0 0x00100000   /* controller registers */
-@@ -543,6 +554,16 @@
- 			status = "disabled";
- 		};
- 
-+		pcie_ep2: pcie-ep@3500000 {
-+			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-+			reg = <0x00 0x03500000 0x0 0x00100000
-+			       0x28 0x00000000 0x8 0x00000000>;
-+			reg-names = "regs", "addr_space";
-+			num-ib-windows = <6>;
-+			num-ob-windows = <6>;
-+			status = "disabled";
-+		};
-+
- 		pcie3: pcie@3600000 {
- 			compatible = "fsl,ls1088a-pcie";
- 			reg = <0x00 0x03600000 0x0 0x00100000   /* controller registers */
-@@ -569,6 +590,16 @@
- 			status = "disabled";
- 		};
- 
-+		pcie_ep3: pcie-ep@3600000 {
-+			compatible = "fsl,ls1088a-pcie-ep","fsl,ls-pcie-ep";
-+			reg = <0x00 0x03600000 0x0 0x00100000
-+			       0x30 0x00000000 0x8 0x00000000>;
-+			reg-names = "regs", "addr_space";
-+			num-ib-windows = <6>;
-+			num-ob-windows = <6>;
-+			status = "disabled";
-+		};
-+
- 		smmu: iommu@5000000 {
- 			compatible = "arm,mmu-500";
- 			reg = <0 0x5000000 0 0x800000>;
--- 
-2.17.1
+WARNING: CPU: 6 PID: 279469 at drivers/gpu/drm/amd/amdgpu/../display/amdgpu=
+_dm/amdgpu_dm.c:7511 amdgpu_dm_atomic_commit_tail+0x217c/0x227d
 
+followed by:
+
+BUG: unable to handle page fault for address: 0000000000012480
+#PF: supervisor read access in kernel mode
+#PF: error_code(0x0000) - not-present page
+[ ... ]
+RIP: 0010:dc_resource_state_copy_construct+0x10/0x455
+[ ... ]
+Call Trace:
+ ? amdgpu_dm_atomic_commit_tail+0x2193/0x227
+
+This area of code is quite odd:
+
+dc_state_temp =3D dc_create_state(dm->dc);
+ASSERT(dc_state_temp);
+dc_state =3D dc_state_temp;
+dc_resource_state_copy_construct_current(dm->dc, dc_state);
+
+This ASSERT macro is misleading: unless CONFIG_DEBUG_KERNEL_DC is set,=20
+it is actually WARN_ON_ONCE(!(expr)). Therefore, this code fails to=20
+allocate memory (causing a warning to be printed), prints another=20
+warning that it failed, then proceeds to immediately dereference it,=20
+crashing the thread (and the kernel if panic_on_oops is set).
+
+While I am not by any means a graphics or kernel expert, it seems to me=20
+like there should be a better solution than crashing. If nothing else,=20
+the OOM killer should be invoked and the operation retried. We may lose=20
+some frames or see some corruption, but that's far better than totally=20
+breaking.
+
+Thanks,
+Alex.
