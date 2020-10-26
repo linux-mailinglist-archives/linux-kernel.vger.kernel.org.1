@@ -2,105 +2,107 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2495C299A8D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:34:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3D3299ADB
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:40:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2406501AbgJZXdz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:33:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:34140 "EHLO mail.kernel.org"
+        id S2407464AbgJZXkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:40:13 -0400
+Received: from mail.kernel.org ([198.145.29.99]:37002 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2406482AbgJZXdy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:33:54 -0400
-Received: from paulmck-ThinkPad-P72.home (50-39-104-11.bvtn.or.frontiernet.net [50.39.104.11])
+        id S2407433AbgJZXkM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:40:12 -0400
+Received: from gmail.com (unknown [104.132.1.76])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 770AB207F7;
-        Mon, 26 Oct 2020 23:33:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8C14C206FB;
+        Mon, 26 Oct 2020 23:40:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603755234;
-        bh=h5PlIxa4ZroXjXOWgcwrmR9enb6Ft9n2YfGjVCy91xk=;
-        h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-        b=yr68WEiluw82hwtVZxkXmux5uN59xgHlKXToFRvPOT5v0RIyGTM+Efu2zXoUcofsM
-         lJZ+0jzzuFvQUXow7IxBXoL+b/aC75S6imFLO1mva0V5NS4DNHODxv7ePUaDQKZYF7
-         IcOKF6LU9zgQcQ97u7tpv+amWfvk7pDIAlqvTpnc=
-Received: by paulmck-ThinkPad-P72.home (Postfix, from userid 1000)
-        id 41A9135226C8; Mon, 26 Oct 2020 16:33:54 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:33:54 -0700
-From:   "Paul E. McKenney" <paulmck@kernel.org>
-To:     Marco Elver <elver@google.com>
-Cc:     mark.rutland@arm.com, dvyukov@google.com,
-        kasan-dev@googlegroups.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] kcsan: Fix encoding masks and regain address bit
-Message-ID: <20201026233354.GV3249@paulmck-ThinkPad-P72>
-Reply-To: paulmck@kernel.org
-References: <20201023121224.3630272-1-elver@google.com>
+        s=default; t=1603755611;
+        bh=ZgbflWpbtTfBxG7usPJTb2WZqEYqd438hFIgnDyXuZk=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=s4jrG+TkxPz3M1yPMrS2r30WcawYO1jYf1AyyGHiEtn1vMdQ1ui0K8jDexcGCGsR4
+         qgptXFeRExv0dD6gh+fJm5OBVo/+BvYnP2/KSs6/f7rLeJY31E+VlYDOdJudJL6N96
+         sKfCkkyZpbO6hx2jpem2/n1ODJmzZYKLLznl6ih8=
+Date:   Mon, 26 Oct 2020 16:40:10 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc:     linux-crypto@vger.kernel.org,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        syzkaller-bugs@googlegroups.com, linux-hardening@vger.kernel.org,
+        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Jann Horn <jannh@google.com>,
+        Kees Cook <keescook@chromium.org>,
+        Elena Petrova <lenaptr@google.com>,
+        Vegard Nossum <vegard.nossum@oracle.com>,
+        stable@vger.kernel.org,
+        syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
+Subject: Re: [PATCH] crypto: af_alg - avoid undefined behavior accessing
+ salg_name
+Message-ID: <20201026234010.GD1947033@gmail.com>
+References: <CACT4Y+beaHrWisaSsV90xQn+t2Xn-bxvVgmx8ih_h=yJYPjs4A@mail.gmail.com>
+ <20201026200715.170261-1-ebiggers@kernel.org>
+ <20201026212148.GA26823@embeddedor>
+ <20201026231059.GB26823@embeddedor>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201023121224.3630272-1-elver@google.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201026231059.GB26823@embeddedor>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 02:12:24PM +0200, Marco Elver wrote:
-> The watchpoint encoding masks for size and address were off-by-one bit
-> each, with the size mask using 1 unnecessary bit and the address mask
-> missing 1 bit. However, due to the way the size is shifted into the
-> encoded watchpoint, we were effectively wasting and never using the
-> extra bit.
+On Mon, Oct 26, 2020 at 06:10:59PM -0500, Gustavo A. R. Silva wrote:
+> On Mon, Oct 26, 2020 at 04:21:48PM -0500, Gustavo A. R. Silva wrote:
+> > > +/*
+> > > + * Linux v4.12 and later removed the 64-byte limit on salg_name[]; it's now an
+> > > + * arbitrary-length field.  We had to keep the original struct above for source
+> > > + * compatibility with existing userspace programs, though.  Use the new struct
+> > > + * below if support for very long algorithm names is needed.  To do this,
+> > > + * allocate 'sizeof(struct sockaddr_alg_new) + strlen(algname) + 1' bytes, and
+> > > + * copy algname (including the null terminator) into salg_name.
+> > > + */
+> > > +struct sockaddr_alg_new {
+> > > +	__u16	salg_family;
+> > > +	__u8	salg_type[14];
+> > > +	__u32	salg_feat;
+> > > +	__u32	salg_mask;
+> > > +	__u8	salg_name[];
+> > > +};
+> > > +
+> > 
+> > How something like this, instead:
+> > 
+> >  struct sockaddr_alg {
+> > -	__u16	salg_family;
+> > -	__u8	salg_type[14];
+> > -	__u32	salg_feat;
+> > -	__u32	salg_mask;
+> > -	__u8	salg_name[64];
+> > +	union {
+> > +		struct {
+> > +			__u16	salg_v1_family;
+> > +			__u8	salg_v1_type[14];
+> > +			__u32	salg_v1_feat;
+> > +			__u32	salg_v1_mask;
+> > +			__u8	salg_name[64];
+> > +		};
+> > +		struct {
+> > +			__u16	salg_family;
+> > +			__u8	salg_type[14];
+> > +			__u32	salg_feat;
+> > +			__u32	salg_mask;
+> > +			__u8	salg_name_new[];
+> > +		};
+> > +	};
+> >  };
+> > 
 > 
-> For example, on x86 with PAGE_SIZE==4K, we have 1 bit for the is-write
-> bit, 14 bits for the size bits, and then 49 bits left for the address.
-> Prior to this fix we would end up with this usage:
+> Something similar to the following approach might work:
 > 
-> 	[ write<1> | size<14> | wasted<1> | address<48> ]
+> https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git/commit/?h=testing/uapi/gntalloc&id=db46c8aba41c436edb0b4ef2941bd7390b0e5d61
 > 
-> Fix it by subtracting 1 bit from the GENMASK() end and start ranges of
-> size and address respectively. The added static_assert()s verify that
-> the masks are as expected. With the fixed version, we get the expected
-> usage:
-> 
-> 	[ write<1> | size<14> |             address<49> ]
-> 
-> Functionally no change is expected, since that extra address bit is
-> insignificant for enabled architectures.
-> 
-> Signed-off-by: Marco Elver <elver@google.com>
 
-Queued and pushed, thank you!!!
+I suppose so.  It's very confusing to see a union like that at first glance,
+though.  It definitely needs an explanatory comment...
 
-							Thanx, Paul
-
-> ---
->  kernel/kcsan/encoding.h | 14 ++++++--------
->  1 file changed, 6 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/kcsan/encoding.h b/kernel/kcsan/encoding.h
-> index 64b3c0f2a685..fc5154dd2475 100644
-> --- a/kernel/kcsan/encoding.h
-> +++ b/kernel/kcsan/encoding.h
-> @@ -37,14 +37,12 @@
->   */
->  #define WATCHPOINT_ADDR_BITS (BITS_PER_LONG-1 - WATCHPOINT_SIZE_BITS)
->  
-> -/*
-> - * Masks to set/retrieve the encoded data.
-> - */
-> -#define WATCHPOINT_WRITE_MASK BIT(BITS_PER_LONG-1)
-> -#define WATCHPOINT_SIZE_MASK                                                   \
-> -	GENMASK(BITS_PER_LONG-2, BITS_PER_LONG-2 - WATCHPOINT_SIZE_BITS)
-> -#define WATCHPOINT_ADDR_MASK                                                   \
-> -	GENMASK(BITS_PER_LONG-3 - WATCHPOINT_SIZE_BITS, 0)
-> +/* Bitmasks for the encoded watchpoint access information. */
-> +#define WATCHPOINT_WRITE_MASK	BIT(BITS_PER_LONG-1)
-> +#define WATCHPOINT_SIZE_MASK	GENMASK(BITS_PER_LONG-2, BITS_PER_LONG-1 - WATCHPOINT_SIZE_BITS)
-> +#define WATCHPOINT_ADDR_MASK	GENMASK(BITS_PER_LONG-2 - WATCHPOINT_SIZE_BITS, 0)
-> +static_assert(WATCHPOINT_ADDR_MASK == (1UL << WATCHPOINT_ADDR_BITS) - 1);
-> +static_assert((WATCHPOINT_WRITE_MASK ^ WATCHPOINT_SIZE_MASK ^ WATCHPOINT_ADDR_MASK) == ~0UL);
->  
->  static inline bool check_encodable(unsigned long addr, size_t size)
->  {
-> -- 
-> 2.29.0.rc1.297.gfa9743e501-goog
-> 
+- Eric
