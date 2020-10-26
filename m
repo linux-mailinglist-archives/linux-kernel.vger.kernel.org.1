@@ -2,140 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 90B01298D39
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:52:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BAA02298D32
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:52:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775698AbgJZMwo (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:52:44 -0400
-Received: from mail-wr1-f68.google.com ([209.85.221.68]:35169 "EHLO
-        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775666AbgJZMwj (ORCPT
+        id S1775641AbgJZMw2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:52:28 -0400
+Received: from mail-il1-f195.google.com ([209.85.166.195]:44110 "EHLO
+        mail-il1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773136AbgJZMw2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:52:39 -0400
-Received: by mail-wr1-f68.google.com with SMTP id n15so12398330wrq.2;
-        Mon, 26 Oct 2020 05:52:38 -0700 (PDT)
+        Mon, 26 Oct 2020 08:52:28 -0400
+Received: by mail-il1-f195.google.com with SMTP id z2so8156385ilh.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:52:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SJHGLhZvy94WcA+VjI8D5ZopjjY0MdjndnUVjDz37Ks=;
-        b=m1rGedWjIF9HoBQqqiH7KLY5qBc8rEQeUZEYUoyrc+ygUe//E3I5sUBhfLyz6ztlyN
-         SKzIgnDeEhY3w2YL7gCxwMQMWxkdN+VWTWJRUDLMxgtiQLjWFRGq4iStfWbw4b/iEwe9
-         QXtK+UfRzuyv2+y1en+F4KCgKYv2+2cgv+1WOiwluCfiZVI8rIZ2cYRWX0o+istIXGQM
-         ILisTSl3ceMD62AKOYT0jHXs8Ws6y/+HLBgVJCSaP3tJNaPJyN+YjYPnGik5k1uQK3y5
-         pBvZ0t3wGBrqKcIZOh6CzHOS36eFTWcR+Db+q7wCziGjd0HZoy9fNi+HBGekhADOPt8J
-         OJsA==
+        h=mime-version:sender:from:date:message-id:subject:to;
+        bh=evBtr2U3jyh/gD7lsrm2w8eoclcl6R4P/duCxIhxtAo=;
+        b=pAWCSLFbe8JMzA/ukqOU5VTizUIMSexSOAv628k5mG/fjYEdWgpUTcB3UweEsb7sYk
+         S3D43/WHWlAWrbWCpC242qgYtjY7Ur/QRmeSWoTpTrgfPmpoHBl0r1RLVB2/tNbVEEl9
+         yPFV6fGHCz4EuZMrF0mr1tS5T/QCnf1XAK/aT6wVDbFw+h3tE3k9jMG0UUuAjUAvKvOu
+         Id+E9hEn0jYbGnAEusFECaqtZx/5aeiqHnyChczTsrCeJy4nSsGkgCWoNnsK9j1qJG4h
+         ejrjy8iAmAYrKvyxiWswY9xuW3DnQ5czG2i6M8brb6F+kw1ltHKwWS8l7ET3nRmsp81N
+         AFsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=SJHGLhZvy94WcA+VjI8D5ZopjjY0MdjndnUVjDz37Ks=;
-        b=BjqURpjHvLs2A5TLBCcwKCv2sxPl8P7aIxy/JyI03fiIsHSoEBxf8kvKFBRKjaKddJ
-         CBnP/gMxnLktTJinZd9DTSiMgjgceD8imngTpZHA4eBgk9/VxYalTlqt2X4NYQDSRj0K
-         FgTWNzS4Zl/5sYfe+i02MjplEdQR2opnyd3pfkoJlcYGPPhovCyYDoW8pa3rvQRE0DtM
-         RjidDaO8ZCTZRNwDswR1rAVmjv5XRrh8tx/fKmSVYbS69jGXtNhkEXrjGqz2hAHsy8VI
-         F7uVwvJVp8MtEedyeF3Th9OwT4Mc0HIXEtMfVqcdTdDgLUWW4gmlrV+G/YllVH4TX62N
-         ekfw==
-X-Gm-Message-State: AOAM531LAs5twBYGhZ7UU4JuCnxwJ0RNFq5pZc5YqxTyqwxOX+Tfnytt
-        MeNYGlJ99RRinZ1v0JLaRhc=
-X-Google-Smtp-Source: ABdhPJxAt2n2wH+0DloibyeWjgzXrU0ZFO9u6R9k74Gz2/tBKHlrJJvBW7lC0ohi3KEWpDCp/YO8fg==
-X-Received: by 2002:adf:fe48:: with SMTP id m8mr17520787wrs.127.1603716757123;
-        Mon, 26 Oct 2020 05:52:37 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id a3sm23551139wrh.94.2020.10.26.05.52.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:52:36 -0700 (PDT)
-From:   Aleksandr Nogikh <a.nogikh@gmail.com>
-To:     jmorris@namei.org, serge@hallyn.com, akinobu.mita@gmail.com
-Cc:     andreyknvl@google.com, dvyukov@google.com, elver@google.com,
-        glider@google.com, keescook@google.com,
-        linux-kernel@vger.kernel.org,
-        linux-security-module@vger.kernel.org,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: [RFC PATCH v2 0/2] security: add fault injection to LSM hooks
-Date:   Mon, 26 Oct 2020 12:52:25 +0000
-Message-Id: <20201026125227.54520-1-a.nogikh@gmail.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
+        h=x-gm-message-state:mime-version:sender:from:date:message-id:subject
+         :to;
+        bh=evBtr2U3jyh/gD7lsrm2w8eoclcl6R4P/duCxIhxtAo=;
+        b=a5xLp8s00C2FdH6m4wYes1kWqzTEFAl2Ww3KOI3V6GFPE55daw7LiisPDfrx048KR9
+         z7OuE0bEbDX8RwO0VdruBNROpsdFbgOTaNeH85cocry+4CZVJPwYk4phb+c2cJl//1lZ
+         qNynSYYbMPASGD+qNhLdgy/TGC7OFsBZkGAVaA7DpmBuLrbvCERIDd0rWjOGqbl2YzDd
+         mHV7DNt3iO+FEj1kZfGqW2ENjONIPCTLwj4vp7B+/Zb3f5SYrmRupNS8wCP8ub2YNfmO
+         SexZZKlN5vOAwqc69MXW9xAxN+BK6edwYDHLD/teqTmmLX+Mp/PgJqP8RdN4DrX8vUxH
+         Ug8w==
+X-Gm-Message-State: AOAM531JsWT65Xa99uJuFbvrtJMledJtC4ZA+NlPde32t95k1yquf5Rr
+        9SswsEICfvJ6tNZM721AUzSuHNFoXU3/GEH+Y1c=
+X-Google-Smtp-Source: ABdhPJw9Ox871wxlu42LYvK7nLBJQCSuE29Pi6GrKadhWwroexU+S1TCTaoMFxhGobRJHmiigyr1bAWA0BFDXg+XQe8=
+X-Received: by 2002:a05:6e02:6d1:: with SMTP id p17mr10094258ils.190.1603716746960;
+ Mon, 26 Oct 2020 05:52:26 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Sender: kbanmoon5@gmail.com
+Received: by 2002:a92:bbcd:0:0:0:0:0 with HTTP; Mon, 26 Oct 2020 05:52:26
+ -0700 (PDT)
+From:   UNITED NATIONS <unitednationawardwinner@gmail.com>
+Date:   Mon, 26 Oct 2020 05:52:26 -0700
+X-Google-Sender-Auth: mF-n5nDBNJ6fWuI1hMJB1cdDnGw
+Message-ID: <CANjgFQ2hEHyjwW+-v2SBVVXsenB_Sy0AgDy=2QDFUuK=geem=Q@mail.gmail.com>
+Subject: Your long awaited part payment of $5.5.000.00Usd
+To:     undisclosed-recipients:;
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+Attention: Beneficiary,
 
-Fault injection capabilities[Documentation/fault-injection/fault-injection.rst]
-facilitate testing of the stability of the Linux kernel by providing
-means to force a number of kernel interfaces to return error
-codes. This RFC proposes adding such fault injection capability into
-LSM hooks.
+Your long awaited part payment of $5.5.000.00Usd (FIVE MILLION FIVE
+Hundred Thousand United State Dollars) is ready for immediate release
+to you, and it was electronically credited into an ATM Visa Card for
+easy delivery.
 
-The intent is to make it possible to test whether the existing kernel
-code properly handles negative return values of LSM hooks. Syzbot
-[https://github.com/google/syzkaller/blob/master/docs/syzbot.md] will
-automatically do that with the aid of instrumentation tools once these
-changes are merged.
+Your new Payment Reference No.- 6363836,
+Password No: 006786,
+Pin Code No: 1787
+Your Certificate of Merit Payment No: 05872,
+Released Code No: 1134;
+Immediate Telex confirmation No:- 043612;
+Secret Code No: TBKTA28
 
-Is the attached implementation consistent with the ideas behind LSM
-stacking in its current state? In particular, is it reasonable to
-expect the existing LSMs to operate normally when they are active and
-such fault injection happens?
+Re-Confirm;
+Your Names: |
+Address: |
+Cell Phone: |
+Fax: |
+Amount: |
+Your immediate response is needed UBA Bank
 
-Local fuzzing of a Linux kernel with this patch has almost instantly
-led to two crashes. I'm not sure whether they correspond to actual
-issues as the LSM fault injection implementation (and the concept
-itself) can be wrong. Here they are:
+Person to Contact:MR KELLY HALL the Director of the International
+Audit unit ATM Payment Center,
 
-1. "general protection fault in selinux_inode_free_security". This is
-caused by executing security_inode_free() when a fault was injected to
-inode_alloc_security() and therefore selinux_inode_alloc_security()
-was not executed. In this case, the subsequent inode_free_security()
-call executes list_del_init() on an uninitialized list. Theoretically,
-this may happen if some other LSM precedes selinux in the hooks list
-and its inode_alloc_security hook fails.
+Email: unitedbankforafrica_bf011@financier.com
+WHAT`S UP : +226 75417896
 
-A fault was injected to this call_int_hook():
-https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L975
+Note: Your file will expire after 14 days if there is no response, and
+then we will not have any option than to return your fund to IMF as
+unclaimed.
 
-Below you can find a call trace for the subsequent crash.
-__list_del_entry include/linux/list.h:132 [inline]
-list_del_init include/linux/list.h:204 [inline]
-inode_free_security security/selinux/hooks.c:337 [inline]
-selinux_inode_free_security+0xf0/0x290 security/selinux/hooks.c:2839
-security_inode_free+0x46/0xc0 security/security.c:1042
-security_inode_alloc+0x161/0x1a0 security/security.c:1027
-inode_init_always+0x5a7/0xd10 fs/inode.c:171
-alloc_inode+0x82/0x230 fs/inode.c:239
-new_inode_pseudo+0x14/0xe0 fs/inode.c:928
-sock_alloc+0x3c/0x260 net/socket.c:573
-__sock_create+0xb9/0x780 net/socket.c:1391
-sock_create net/socket.c:1478 [inline]
-__sys_socket+0xef/0x200 net/socket.c:1520
-__do_sys_socket net/socket.c:1529 [inline]
-__se_sys_socket net/socket.c:1527 [inline]
-__x64_sys_socket+0x6f/0xb0 net/socket.c:1527
-do_syscall_64+0x2d/0x70 arch/x86/entry/common.c:46
-entry_SYSCALL_64_after_hwframe+0x44/0xa9
+Your swift response will enhance our service,thanks for your co-operation;
 
-2. BUG_ON inside security_skb_classify_flow(). Why is it needed there?
-https://elixir.bootlin.com/linux/v5.9/source/security/security.c#L2426
-
----
-v2:
-* Renamed should_fail_lsm_hook() to should_fail_lsm_hook().
-* Extended the documentation.
-
-Aleksandr Nogikh (2):
-  security: add fault injection capability
-  docs: add fail_lsm_hooks info to fault-injection.rst
-
- .../fault-injection/fault-injection.rst       |  6 +++
- lib/Kconfig.debug                             |  6 +++
- security/security.c                           | 53 +++++++++++++++++--
- 3 files changed, 62 insertions(+), 3 deletions(-)
-
-
-base-commit: 2ef991b5fdbe828dc8fb8af473dab160729570ed
--- 
-2.29.0.rc1.297.gfa9743e501-goog
-
+Regards.
+Mr JOHN MARK.
