@@ -2,100 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03A75298EBB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:01:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8E1BB298EC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:03:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780880AbgJZOBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:01:00 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:42443 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780870AbgJZOA7 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:00:59 -0400
-Received: by mail-oi1-f193.google.com with SMTP id c72so1162770oig.9;
-        Mon, 26 Oct 2020 07:00:59 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=pG/9G2wHZKjQaOLnT3vSPF5oyrBjZ7juAO9aLYBUT1w=;
-        b=V3LMea63jn8rzLiplabmZG6NU3Xw6N/OFAJ31hr99bpAOJq3hJa5axopx1YuuiT6VS
-         /LmseEkdrXhW3IHdZ9NI5EfuTBINGRkRJ0/70ktm9ZWm8AwCfJwoordHhLYaUZANBhGS
-         LFjou0nae+mvP8SNn8QN2LC92/vPuffbsbNGfq7eel90yeTV20AnQUhHALXi8vG4iBeZ
-         bQJHfWo2W4JrvfZqzmq1yJURrst4h7k3pt+UwjUqd/HIaD0+OGL+Rn7M9MGNjZwWSwbP
-         KpagUtN/nacCfQ4VeA3p69890zRMzyEVWnY/CvE0IhzWjTZbd9oy5JGJLLXjXWNqGPpl
-         fydg==
-X-Gm-Message-State: AOAM533kmRlpx8xK0eepmDmVyn+jejFhQSBg+4zS+vAC3w7pEBlv4sLk
-        W5IFrd4abXRz8uiJ78s3jupiHL3NVg==
-X-Google-Smtp-Source: ABdhPJwn+Ve27BSpW3nxAtoP8gce2Vj4YxzDnsNpZoqeACCTOBKA8PL5AzZu8NUmFTMVsuMOzyYcww==
-X-Received: by 2002:aca:be56:: with SMTP id o83mr14057156oif.1.1603720858647;
-        Mon, 26 Oct 2020 07:00:58 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id p10sm3992214oig.37.2020.10.26.07.00.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 07:00:57 -0700 (PDT)
-Received: (nullmailer pid 73839 invoked by uid 1000);
-        Mon, 26 Oct 2020 14:00:56 -0000
-Date:   Mon, 26 Oct 2020 09:00:56 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Badhri Jagan Sridharan <badhri@google.com>
-Cc:     Thierry Reding <treding@nvidia.com>,
-        Prashant Malani <pmalani@chromium.org>,
-        Rob Herring <robh+dt@kernel.org>,
+        id S1780896AbgJZODD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:03:03 -0400
+Received: from mx2.suse.de ([195.135.220.15]:55984 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1780884AbgJZODD (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:03:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 83880AD83;
+        Mon, 26 Oct 2020 14:03:00 +0000 (UTC)
+Message-ID: <13068cff8e3a994df5d8fbe19deb068a741365f3.camel@suse.de>
+Subject: Re: [PATCH v2 10/10] pwm: Add Raspberry Pi Firmware based PWM bus
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Lee Jones <lee.jones@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-pwm@vger.kernel.org,
+        bcm-kernel-feedback-list <bcm-kernel-feedback-list@broadcom.com>,
+        linux-arm Mailing List <linux-arm-kernel@lists.infradead.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Stefan Wahren <wahrenst@gmx.net>,
+        linux-input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
         Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        linux-usb@vger.kernel.org, devicetree@vger.kernel.org,
-        Lee Jones <lee.jones@linaro.org>, linux-kernel@vger.kernel.org,
-        Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Alexandre Belloni <alexandre.belloni@bootlin.com>,
-        Mark Brown <broonie@kernel.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH v11 01/10] dt-bindings: connector: Add property to set
- initial current cap for FRS
-Message-ID: <20201026140056.GA73720@bogus>
-References: <20201020093627.256885-1-badhri@google.com>
- <20201020093627.256885-2-badhri@google.com>
+        "open list:STAGING SUBSYSTEM" <devel@driverdev.osuosl.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel <linux-rpi-kernel@lists.infradead.org>
+Date:   Mon, 26 Oct 2020 15:02:58 +0100
+In-Reply-To: <CAHp75VcB5oxXs38UH5taVGj21wUi3sHYdRPOj3wxa3yXg0vmUA@mail.gmail.com>
+References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
+         <20201022155858.20867-11-nsaenzjulienne@suse.de>
+         <CAHp75VcB5oxXs38UH5taVGj21wUi3sHYdRPOj3wxa3yXg0vmUA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-TTVm3kIKIXd08z1jOMlD"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201020093627.256885-2-badhri@google.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 20 Oct 2020 02:36:18 -0700, Badhri Jagan Sridharan wrote:
-> This change adds frs-typec-current which allows setting the initial current
-> capability of the new source when vSafe5V is applied during PD3.0
-> sink Fast Role Swap.
-> 
-> Signed-off-by: Badhri Jagan Sridharan <badhri@google.com>
-> ---
-> Changes since v1:
-> - Changing patch version to v6 to fix version number confusion.
-> 
-> Changes since v6:
-> - Removed the redundant usb-connector.txt that I created by mistake.
-> - Moved to yaml.
-> 
-> Changes since v7:
-> - Rebase
-> 
-> Changes since v8:
-> - Redefine new-source-frs-typec-current as string enums to address
->   Rob Herring's comment.
-> 
-> Changes since v9:
-> - Removed FRS constants from usb bindings.
-> 
-> Changes since v10:
-> - Suggestions from Rob Herring:
->  - Going back to u32 for new-source-frs-typec-current
->  - Removed the definition for "not-supported"
-> - Bringing back FRS constants for usb pd binding.
-> ---
->  .../bindings/connector/usb-connector.yaml     | 19 +++++++++++++++++++
->  include/dt-bindings/usb/pd.h                  |  8 ++++++++
->  2 files changed, 27 insertions(+)
-> 
 
-Reviewed-by: Rob Herring <robh@kernel.org>
+--=-TTVm3kIKIXd08z1jOMlD
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+
+Hi Andy, thanks for the review!
+
+On Thu, 2020-10-22 at 21:53 +0300, Andy Shevchenko wrote:
+> On Thu, Oct 22, 2020 at 9:05 PM Nicolas Saenz Julienne
+> <nsaenzjulienne@suse.de> wrote:
+> > Adds support to control the PWM bus available in official Raspberry Pi
+> > PoE HAT. Only RPi's co-processor has access to it, so commands have to
+> > be sent through RPi's firmware mailbox interface.
+> >  drivers/pwm/pwm-raspberrypi.c | 221 ++++++++++++++++++++++++++++++++++
+>=20
+> Name is completely confusing.
+> Please, make it unique enough to understand that this is exactly the
+> device it serves for.
+>=20
+> For example, pwm-rpi-poe is better.
+
+Sounds reasonable, I'll change that.
+
+>=20
+> ...
+>=20
+> > + *  - Only normal polarity
+>=20
+> Can't it be emulated? Isn't it 100% - duty cycle % ?
+
+I guess it can, OTOH given the rather specific use case, I doubt it'll be
+worth the effort.
+
+> > +#include <linux/module.h>
+> > +#include <linux/of.h>
+> > +#include <linux/platform_device.h>
+> > +#include <linux/pwm.h>
+>=20
+> ...
+>=20
+> > +       ret =3D rpi_firmware_property(firmware, RPI_FIRMWARE_SET_POE_HA=
+T_VAL,
+> > +                                   &msg, sizeof(msg));
+> > +       if (ret)
+> > +               return ret;
+> > +       else if (msg.ret)
+>=20
+> Redundant 'else'
+
+Noted.
+
+> > +       firmware_node =3D of_get_parent(dev->of_node);
+> > +       if (!firmware_node) {
+> > +               dev_err(dev, "Missing firmware node\n");
+> > +               return -ENOENT;
+> > +       }
+> > +
+> > +       firmware =3D rpi_firmware_get(firmware_node);
+> > +       of_node_put(firmware_node);
+> > +       if (!firmware)
+> > +               return -EPROBE_DEFER;
+>=20
+> Looks like a hack.
+
+This is the pattern we've been using on all firmware dependent devices so f=
+ar.
+Feel free to suggest a better way, I'll be happy to look into it.
+
+>=20
+> ...
+>=20
+> > +       ret =3D pwmchip_remove(&rpipwm->chip);
+> > +       if (!ret)
+> > +               rpi_firmware_put(rpipwm->firmware);
+> > +
+> > +       return ret;
+>=20
+> Can't you use the usual pattern?
+
+Yes of course. Don't know why I went this way.
+
+Regards,
+Nicolas
+
+
+--=-TTVm3kIKIXd08z1jOMlD
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W1xIACgkQlfZmHno8
+x/4NJgf/d3PqOAENee9eHOK6FqBMAsNsGn4fscamb7Q7MXABE4U/nFCFY7hg1Xo3
+g47j4m8+pNlzE3SjXX0ZyPle4beIWvNQWidQjSyprckUv+wNkJ1Wbt0lFH26GCig
+w8mRGcXYm12zKKDSpGf5Wg/qAhE9qV2ruti8nc94lkSoiP2kSlfp6j5MZZYzEd2p
+y4khOBqxT1e4Trh+QOhKke2pW43WHNZT0TW6ZhJxKq4UNq7lxzer9TFHWgda16oy
+C4kdNiGm9MDQicgNWAq18ctJTZvPoR1scLrBNpJOapJ1UuY0mCqjpMZJDi9W+/EB
+7FRq+EXSXY7hpOmPUUJ1pJm1mUNoOw==
+=ljds
+-----END PGP SIGNATURE-----
+
+--=-TTVm3kIKIXd08z1jOMlD--
+
