@@ -2,37 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A6E04299BE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2D8A0299BE9
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410318AbgJZXyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:54:06 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58300 "EHLO mail.kernel.org"
+        id S2410337AbgJZXyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:54:10 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58444 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410135AbgJZXxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:38 -0400
+        id S2410156AbgJZXxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:41 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id CACD72151B;
-        Mon, 26 Oct 2020 23:53:36 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2C1C421D41;
+        Mon, 26 Oct 2020 23:53:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756417;
-        bh=7sls8PMAfUqr7ij8tdXGHPZOgpn+K7ANFmQZNjCWRFk=;
+        s=default; t=1603756420;
+        bh=2t8kO8WFsyV07ciYJ/d+3KZs6NqB/0TRoF4jvh+bFco=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=gwRBwHQUn1TGp+5chfbZge1Nyfuo6ZxROYkJo74hXtcHAb/KoPy46wL5R+T/IApuc
-         pOuWAD73QGnRm5D7Db43130NfKLOKEGP62xI1LEjBSQCMLZdFwWJkHf0jaQk/ZZqbK
-         xHHyMOEITZxcSN1QbLF3scgOYp+2vNa+QanHcRIE=
+        b=l5S5/mni4X15cQes6XEtABCBcAdHm/xLR5ylPARM1LA2/T3s/i0M2PwXhSRiAhjqn
+         r7eiaG098Oeehq5FK075mVaywNd5c1ezqQ/1p5bKdu/akdsld4/8lI45nn8Xl0h8fz
+         jbVZ+l+a7/12GkOMD+INGj81hqWWfvBJMNW1qlro=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
-        Sean Nyekjaer <sean@geanix.com>,
-        Marc Kleine-Budde <mkl@pengutronix.de>,
-        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 074/132] can: flexcan: disable clocks during stop mode
-Date:   Mon, 26 Oct 2020 19:51:06 -0400
-Message-Id: <20201026235205.1023962-74-sashal@kernel.org>
+Cc:     Gao Xiang <hsiangkao@redhat.com>,
+        "Darrick J . Wong" <darrick.wong@oracle.com>,
+        Brian Foster <bfoster@redhat.com>,
+        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 077/132] xfs: avoid LR buffer overrun due to crafted h_len
+Date:   Mon, 26 Oct 2020 19:51:09 -0400
+Message-Id: <20201026235205.1023962-77-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -44,83 +43,117 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Joakim Zhang <qiangqing.zhang@nxp.com>
+From: Gao Xiang <hsiangkao@redhat.com>
 
-[ Upstream commit 02f71c6605e1f8259c07f16178330db766189a74 ]
+[ Upstream commit f692d09e9c8fd0f5557c2e87f796a16dd95222b8 ]
 
-Disable clocks while CAN core is in stop mode.
+Currently, crafted h_len has been blocked for the log
+header of the tail block in commit a70f9fe52daa ("xfs:
+detect and handle invalid iclog size set by mkfs").
 
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
-Tested-by: Sean Nyekjaer <sean@geanix.com>
-Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
-Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
+However, each log record could still have crafted h_len
+and cause log record buffer overrun. So let's check
+h_len vs buffer size for each log record as well.
+
+Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
+Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Brian Foster <bfoster@redhat.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
- 1 file changed, 20 insertions(+), 10 deletions(-)
+ fs/xfs/xfs_log_recover.c | 39 +++++++++++++++++++--------------------
+ 1 file changed, 19 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
-index 94d10ec954a05..de7599d99b4b5 100644
---- a/drivers/net/can/flexcan.c
-+++ b/drivers/net/can/flexcan.c
-@@ -1700,8 +1700,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
- 			err = flexcan_chip_disable(priv);
- 			if (err)
- 				return err;
--
--			err = pm_runtime_force_suspend(device);
- 		}
- 		netif_stop_queue(dev);
- 		netif_device_detach(dev);
-@@ -1727,10 +1725,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
- 			if (err)
- 				return err;
- 		} else {
--			err = pm_runtime_force_resume(device);
--			if (err)
--				return err;
--
- 			err = flexcan_chip_enable(priv);
- 		}
+diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
+index ec015df55b77a..e862f9137bf6e 100644
+--- a/fs/xfs/xfs_log_recover.c
++++ b/fs/xfs/xfs_log_recover.c
+@@ -2905,7 +2905,8 @@ STATIC int
+ xlog_valid_rec_header(
+ 	struct xlog		*log,
+ 	struct xlog_rec_header	*rhead,
+-	xfs_daddr_t		blkno)
++	xfs_daddr_t		blkno,
++	int			bufsize)
+ {
+ 	int			hlen;
+ 
+@@ -2921,10 +2922,14 @@ xlog_valid_rec_header(
+ 		return -EFSCORRUPTED;
  	}
-@@ -1761,8 +1755,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, true);
-+	if (netif_running(dev)) {
-+		int err;
+-	/* LR body must have data or it wouldn't have been written */
++	/*
++	 * LR body must have data (or it wouldn't have been written)
++	 * and h_len must not be greater than LR buffer size.
++	 */
+ 	hlen = be32_to_cpu(rhead->h_len);
+-	if (XFS_IS_CORRUPT(log->l_mp, hlen <= 0 || hlen > INT_MAX))
++	if (XFS_IS_CORRUPT(log->l_mp, hlen <= 0 || hlen > bufsize))
+ 		return -EFSCORRUPTED;
 +
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, true);
-+
-+		err = pm_runtime_force_suspend(device);
-+		if (err)
-+			return err;
-+	}
+ 	if (XFS_IS_CORRUPT(log->l_mp,
+ 			   blkno > log->l_logBBsize || blkno > INT_MAX))
+ 		return -EFSCORRUPTED;
+@@ -2985,9 +2990,6 @@ xlog_do_recovery_pass(
+ 			goto bread_err1;
  
- 	return 0;
- }
-@@ -1772,8 +1774,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
- 	struct net_device *dev = dev_get_drvdata(device);
- 	struct flexcan_priv *priv = netdev_priv(dev);
+ 		rhead = (xlog_rec_header_t *)offset;
+-		error = xlog_valid_rec_header(log, rhead, tail_blk);
+-		if (error)
+-			goto bread_err1;
  
--	if (netif_running(dev) && device_may_wakeup(device))
--		flexcan_enable_wakeup_irq(priv, false);
-+	if (netif_running(dev)) {
-+		int err;
-+
-+		err = pm_runtime_force_resume(device);
-+		if (err)
-+			return err;
-+
-+		if (device_may_wakeup(device))
-+			flexcan_enable_wakeup_irq(priv, false);
-+	}
+ 		/*
+ 		 * xfsprogs has a bug where record length is based on lsunit but
+@@ -3002,21 +3004,18 @@ xlog_do_recovery_pass(
+ 		 */
+ 		h_size = be32_to_cpu(rhead->h_size);
+ 		h_len = be32_to_cpu(rhead->h_len);
+-		if (h_len > h_size) {
+-			if (h_len <= log->l_mp->m_logbsize &&
+-			    be32_to_cpu(rhead->h_num_logops) == 1) {
+-				xfs_warn(log->l_mp,
++		if (h_len > h_size && h_len <= log->l_mp->m_logbsize &&
++		    rhead->h_num_logops == cpu_to_be32(1)) {
++			xfs_warn(log->l_mp,
+ 		"invalid iclog size (%d bytes), using lsunit (%d bytes)",
+-					 h_size, log->l_mp->m_logbsize);
+-				h_size = log->l_mp->m_logbsize;
+-			} else {
+-				XFS_ERROR_REPORT(__func__, XFS_ERRLEVEL_LOW,
+-						log->l_mp);
+-				error = -EFSCORRUPTED;
+-				goto bread_err1;
+-			}
++				 h_size, log->l_mp->m_logbsize);
++			h_size = log->l_mp->m_logbsize;
+ 		}
  
- 	return 0;
- }
++		error = xlog_valid_rec_header(log, rhead, tail_blk, h_size);
++		if (error)
++			goto bread_err1;
++
+ 		if ((be32_to_cpu(rhead->h_version) & XLOG_VERSION_2) &&
+ 		    (h_size > XLOG_HEADER_CYCLE_SIZE)) {
+ 			hblks = h_size / XLOG_HEADER_CYCLE_SIZE;
+@@ -3097,7 +3096,7 @@ xlog_do_recovery_pass(
+ 			}
+ 			rhead = (xlog_rec_header_t *)offset;
+ 			error = xlog_valid_rec_header(log, rhead,
+-						split_hblks ? blk_no : 0);
++					split_hblks ? blk_no : 0, h_size);
+ 			if (error)
+ 				goto bread_err2;
+ 
+@@ -3178,7 +3177,7 @@ xlog_do_recovery_pass(
+ 			goto bread_err2;
+ 
+ 		rhead = (xlog_rec_header_t *)offset;
+-		error = xlog_valid_rec_header(log, rhead, blk_no);
++		error = xlog_valid_rec_header(log, rhead, blk_no, h_size);
+ 		if (error)
+ 			goto bread_err2;
+ 
 -- 
 2.25.1
 
