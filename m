@@ -2,87 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3BD33299AE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:42:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 55951299AE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:45:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2407554AbgJZXm0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:42:26 -0400
-Received: from ozlabs.org ([203.11.71.1]:53783 "EHLO ozlabs.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2407529AbgJZXmZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:42:25 -0400
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-        (using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-         key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-        (No client certificate requested)
-        by mail.ozlabs.org (Postfix) with ESMTPSA id 4CKrwb0562z9sRK;
-        Tue, 27 Oct 2020 10:42:22 +1100 (AEDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=canb.auug.org.au;
-        s=201702; t=1603755743;
-        bh=RjmCqO2BnA4TuUQaHh8VtpB6CSW2j+Ct4Fx0s9z9wK8=;
-        h=Date:From:To:Cc:Subject:From;
-        b=OAEdhCnJRtYXRgOOcfdOWH62t/0dZ3jvcO3Wubm9B1Sw0CzYmIfHBet8/QXg82ZH+
-         x3sQgX2Bzj+EA8kjkt750Q7bt5a0wfOfsn4PBHtygE8FtPILyTe5sFtgxf5iV3N3ia
-         gicKj1ELadRjHpqF5iinEFEpvBX+P6pAxphIHhlsByHYTMGt8ZqtucQ8HOBJcT4tTW
-         Tod2R5Fto3ey9POtKonejhgxa4c9gGPmaEQsPp9xpJpYuGVuE6rSIuNWQuFR/rz2ko
-         7WpHYuh14lnZYaB0WDvKN6kLAWXQoEevEUxOtQrQXNb0a9odyWetJgDLtC1TwlUvGK
-         kXCLPqxMYJOtg==
-Date:   Tue, 27 Oct 2020 10:42:20 +1100
-From:   Stephen Rothwell <sfr@canb.auug.org.au>
-To:     Maxime Ripard <mripard@kernel.org>, Chen-Yu Tsai <wens@csie.org>
-Cc:     Yu-Tung Chang <mtwget@gmail.com>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux Next Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: build failure after merge of the sunxi tree
-Message-ID: <20201027104220.0c8167d0@canb.auug.org.au>
+        id S2408006AbgJZXpA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:45:00 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:38216 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2407993AbgJZXo7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:44:59 -0400
+Received: by mail-lf1-f65.google.com with SMTP id c141so14672111lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:44:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=U+ci8HfK0Jx/bpDWJmMVdhckawMI3McUJ3Muf62Y3os=;
+        b=AiXZUswtdTYC3oZ4+GUHPWtVP9jG18MnP79xWB/+b5a0T/FWq6q/+HReapl8Mjdyta
+         AC3tnFDBxmu2mNZBS5h3nlUUY/L+X8ndPHc0sVuYATjf3U+cHkR/7sCAcQEcHsDmZkX0
+         8F0y9YI7Mti9Up+dZ8Wq4KqMaSxOLeteiaLDLw91zaDQyys/tVyzaRlkrWTLRwyzLC+T
+         FQje7c7Mn6OTXDhLi4l1IJoI9Ufe7yZ27TDH5OxywgPzx82BfrnJGbiaeCnwbhHRQoXw
+         B9f+8raORPERSnfpRA8CP0S0JcnRgtXKSDhzM8ENJL3hGK3P7DazLlzc3BnGJDOk/jmj
+         ssaA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=U+ci8HfK0Jx/bpDWJmMVdhckawMI3McUJ3Muf62Y3os=;
+        b=H0oHQ0FLOpLLqA2BviGWZCLFeQ+IRns0OFVFkqkTswDqZ39sb+GIOvq+K7iW8nTKgM
+         jWO7iWwTUd46rDX34aHnNCrwRNCdnn9ulFRLLZuYAwG5R0XYlcIrbKN7Y9j2uH+XFZUR
+         7hwI3mXBe/Btxzdz7uwKZ5rGOJ3xtk9PXa97UwtGGbuFhHF68gZyUPi7KX/0usXQ51x+
+         1BV46K4/KQ9Ev4AWHjnYIsNExgTpSNh4WfNNNn7Fwuqinee1IvVM8rdtmBzVhd/ewODC
+         qk6miRbAJpz92R22hzQm8g2UoghpjneiiIitjhslE0aM031Ls4I+lA07ET6eIGQNAiZG
+         huUA==
+X-Gm-Message-State: AOAM5311Tqvw1ymYsLLGj4CoWiTliK/nwcNG9/7JqqMw2VOfreuqch/Z
+        IgWWSIshah7h8o0L7X3r9gltvVRxBhxyePt5n8I=
+X-Google-Smtp-Source: ABdhPJy7g9BoxTMajgkhgTXmYywo57QYN/3JVTnSY/v2Anbz2XwZHF5bXTKb/yYHnp+DPltcJ7Qhsnpzm62OdfT5o1c=
+X-Received: by 2002:a19:f71a:: with SMTP id z26mr5752205lfe.90.1603755897185;
+ Mon, 26 Oct 2020 16:44:57 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/XNOYqW7Z48YmYNK7Ct753sp";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+References: <20201026041656.2785980-1-daeho43@gmail.com> <20201026190406.GL858@sol.localdomain>
+ <CACOAw_xFijZOokM4R1XYKoFvRthk-ZfC+hNz0c-HqQuurjp87g@mail.gmail.com>
+ <20201026230555.GB1947033@gmail.com> <CACOAw_wLE_om3YChs_jsBTORrOsp2M6SZ+t2arP9tHQeojsgKQ@mail.gmail.com>
+ <20201026232712.GC1947033@gmail.com> <CABdZyew=D=S7MmitF55K8Jd6QiVzdJzFuQ2JkJ6x_T_a=AVMvQ@mail.gmail.com>
+In-Reply-To: <CABdZyew=D=S7MmitF55K8Jd6QiVzdJzFuQ2JkJ6x_T_a=AVMvQ@mail.gmail.com>
+From:   Daeho Jeong <daeho43@gmail.com>
+Date:   Tue, 27 Oct 2020 08:44:46 +0900
+Message-ID: <CACOAw_xYHr7YY_e-cLYUurh07T-T=CNTM6gKUv5VKjYp9=h9nw@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] f2fs: add F2FS_IOC_GET_COMPRESS_OPTION ioctl
+To:     Daeho Jeong <daehojeong@google.com>
+Cc:     Eric Biggers <ebiggers@kernel.org>, linux-kernel@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
---Sig_/XNOYqW7Z48YmYNK7Ct753sp
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Oops, typos...
 
-Hi all,
-
-After merging the sunxi tree, today's linux-next build (arm
-multi_v7_defconfig) failed like this:
-
-arch/arm/boot/dts/sun8i-h3-zeropi.dts:53.25-63.4: ERROR (phandle_references=
-): /gmac-3v3: Reference to non-existent node or label "gmac_power_pin_nanop=
-i"
-
-ERROR: Input tree has errors, aborting (use -f to force output)
-
-Caused by commit
-
-  89cfb6d76fdc ("ARM: dts: sun8i: add FriendlyArm ZeroPi support")
-
-I have reverted that commit for today.
-
-
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/XNOYqW7Z48YmYNK7Ct753sp
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAl+XXt0ACgkQAVBC80lX
-0GznwQf/QwXYNlsLqNu/qM7tJxKSsYLbxs9zwQpb1pRj46eugl/T2Q9X/oZUC16s
-BUIAIarQ9pEt45NlvMT50Kz8LTL8AA6sNJxpevUAefWJqvcW1KxRuWYEmp5BRclM
-ZCCtVKxFs/i4HBTbMwkSVvfp3bArNHcJVcj+kAMFRXyd+oO5zpfr7LHSa2sRLPar
-wqTf3Rti0WHL58onMD5U178V6EnMBgIV8HA20pwRDChafQCW/mrhGNyTDR/KAc90
-A7JwQoQMtGsfBcI/zL+pDIxzvazMWBln61F+dUceV51QfAaAA2QvgFX69xYqRfpy
-uvcEyezEfzhzbfPIZqJGgpFk+Y9Sbg==
-=9ZDu
------END PGP SIGNATURE-----
-
---Sig_/XNOYqW7Z48YmYNK7Ct753sp--
+2020=EB=85=84 10=EC=9B=94 27=EC=9D=BC (=ED=99=94) =EC=98=A4=EC=A0=84 8:43, =
+Daeho Jeong <daehojeong@google.com>=EB=8B=98=EC=9D=B4 =EC=9E=91=EC=84=B1:
+>
+> Oops, typos...
+>
+> On Tue, Oct 27, 2020 at 8:27 AM Eric Biggers <ebiggers@kernel.org> wrote:
+>>
+>> On Tue, Oct 27, 2020 at 08:18:44AM +0900, Daeho Jeong wrote:
+>> > I checked that. We seem to need to complement missing parts including
+>> > other ioctls in Documentation/filesystems/fscrypt.rst.
+>> >
+>> > Thanks~
+>> >
+>>
+>> Well, the f2fs-specific ioctls should probably be documented in
+>> Documentation/filesystems/f2fs.rst.
+>>
+>> - Eric
