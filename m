@@ -2,172 +2,474 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 40F2B299865
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:01:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0FC4B299874
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:03:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1729201AbgJZVBG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:01:06 -0400
-Received: from mail-yb1-f201.google.com ([209.85.219.201]:38928 "EHLO
-        mail-yb1-f201.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1729156AbgJZVBE (ORCPT
+        id S1729398AbgJZVCe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:02:34 -0400
+Received: from mailout1.w1.samsung.com ([210.118.77.11]:48054 "EHLO
+        mailout1.w1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729358AbgJZVCe (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:01:04 -0400
-Received: by mail-yb1-f201.google.com with SMTP id j19so5297782ybg.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 14:01:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=sender:date:in-reply-to:message-id:mime-version:references:subject
-         :from:to:cc;
-        bh=7bRLqN/4G8Vg/p+SruLvrAF5HknNrILrTJkN47+Yh/M=;
-        b=qUQ0TpNVF/6695W1cT5dGQhemHPYRPVve802NdyObcUXlPd6c3stDHVd1mIZ0R9eYJ
-         I2UHv9LxFCZhP1FQrl2GaUQ/WqVYVjm78mGGggW8O/ByiGHopRQQsdKs5sTtwtcCkp46
-         MOk84ZlRjr83ZZ9k87sskBOD2HG942PvsYUVgI7IQeuJWQI2h2KstlF/Pv4h1vYubIcT
-         MQkOFXtVZGdnGk54/ur9rHHGX/e6t3nK7EPjyfMP/jNDHvB5B6/aHlor6ouyhvhDrqRj
-         sRAZM7Z0rqozcZl7nJIydgV4bijKcNwphJY5Y6H4rlZ8nMiuq7P1Os+JIxxLJ370EIdB
-         XBmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:in-reply-to:message-id:mime-version
-         :references:subject:from:to:cc;
-        bh=7bRLqN/4G8Vg/p+SruLvrAF5HknNrILrTJkN47+Yh/M=;
-        b=Zq0Umo/lIv38lcoo804bfvFbzQaaNEcjDRqeEVZobjl0NM5OBQ8Ln0boYfmibk1kUg
-         TkrrzjgVlfkwxtsJjcxSV9qDGPXDzEKj/+EUDhHIshAmecp6y6GsGy8qxXrh0oBe0SML
-         u4H9igMEqj3HjywEKS9FsyD2uDUwXAsIsTj3J27MTyqKPMbK3EcKOKNtKf/7tqh/sJtE
-         xUx4H4Y3uSK8EeqHltcYbMA30ZAnREIutpA9+9mrWVt/2Svwaqn7dvdF6mf1cUZeVRZC
-         guhMVWNCIqnpS/MEkPS1PwYOxH9wcxJooMwzrcYqQ4lnSycYQAp0MyFC223tCS7q1taS
-         coag==
-X-Gm-Message-State: AOAM533KvNxIBNn1g3XwY/Yj8gMvt9bgtYOUq2r74u03hS5HTQeVYlTS
-        9i5cJozxnYbSF/f696I4AGOKCEWOV3jixYPH7Q==
-X-Google-Smtp-Source: ABdhPJwJFVtsOUaTVRuXfb3Nz4/S8X9LHGpjLsx9VPYaqBfCR0ehkImK/3tlePxr6gX82slucTbmbk948IwHR51PXw==
-Sender: "lokeshgidra via sendgmr" <lokeshgidra@lg.mtv.corp.google.com>
-X-Received: from lg.mtv.corp.google.com ([2620:15c:211:202:f693:9fff:fef4:29dd])
- (user=lokeshgidra job=sendgmr) by 2002:a25:1c1:: with SMTP id
- 184mr26679062ybb.243.1603746062678; Mon, 26 Oct 2020 14:01:02 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 14:00:52 -0700
-In-Reply-To: <20201026210052.3775167-1-lokeshgidra@google.com>
-Message-Id: <20201026210052.3775167-3-lokeshgidra@google.com>
-Mime-Version: 1.0
-References: <20201026210052.3775167-1-lokeshgidra@google.com>
-X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-Subject: [PATCH v6 2/2] Add user-mode only option to unprivileged_userfaultfd
- sysctl knob
-From:   Lokesh Gidra <lokeshgidra@google.com>
-To:     Kees Cook <keescook@chromium.org>,
-        Jonathan Corbet <corbet@lwn.net>, Peter Xu <peterx@redhat.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
-        Andrew Morton <akpm@linux-foundation.org>
-Cc:     Alexander Viro <viro@zeniv.linux.org.uk>,
-        Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Eric Biggers <ebiggers@kernel.org>,
-        Lokesh Gidra <lokeshgidra@google.com>,
-        Daniel Colascione <dancol@dancol.org>,
-        "Joel Fernandes (Google)" <joel@joelfernandes.org>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-doc@vger.kernel.org, kaleshsingh@google.com,
-        calin@google.com, surenb@google.com, nnk@google.com,
-        jeffv@google.com, kernel-team@android.com,
-        Mike Rapoport <rppt@linux.vnet.ibm.com>,
-        Shaohua Li <shli@fb.com>, Jerome Glisse <jglisse@redhat.com>,
-        Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Mel Gorman <mgorman@techsingularity.net>,
-        Nitin Gupta <nigupta@nvidia.com>,
-        Vlastimil Babka <vbabka@suse.cz>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Luis Chamberlain <mcgrof@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+        Mon, 26 Oct 2020 17:02:34 -0400
+Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
+        by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20201026210221euoutp010ce5b0339a55cb23ae88f542a4b58264~Bpp5OXQpD2246522465euoutp01N
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 21:02:21 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20201026210221euoutp010ce5b0339a55cb23ae88f542a4b58264~Bpp5OXQpD2246522465euoutp01N
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603746141;
+        bh=7OWS+PYKKfHyI+SvTeQCwPN4+VdMSSBxGKv5skSZcA4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=UKmL4K6WvT2dYcVK+/aygwMf8wbwy4YUVbBnV8uw3nsrVAbJ1X5rTmj5mCmiHmrFF
+         +LdXU2yc5pYc99kLYN6ewmcFtHEignub12sozyjFF3076tNsPWmDJX9vY59Ydd5DJ6
+         uPyCCewWxqNPaKHB2L7ZYdcT4itrGNHfvVtbXiB8=
+Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTP id
+        20201026210210eucas1p1310c441bebfee60b33663d2022a4a803~BppvwGq7n1795517955eucas1p1m;
+        Mon, 26 Oct 2020 21:02:10 +0000 (GMT)
+Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
+        eusmges1new.samsung.com (EUCPMTA) with SMTP id 64.1A.06456.259379F5; Mon, 26
+        Oct 2020 21:02:10 +0000 (GMT)
+Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
+        eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+        20201026210210eucas1p146aa91763070b383193f061b24f235cb~BppvYXVab2626026260eucas1p1H;
+        Mon, 26 Oct 2020 21:02:10 +0000 (GMT)
+Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
+        eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
+        20201026210210eusmtrp1d2376b89c4119c1074c10908a3b5e26a~BppvXrtkH2665726657eusmtrp19;
+        Mon, 26 Oct 2020 21:02:10 +0000 (GMT)
+X-AuditID: cbfec7f2-7efff70000001938-b6-5f9739523b42
+Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
+        eusmgms1.samsung.com (EUCPMTA) with SMTP id 28.EC.06314.259379F5; Mon, 26
+        Oct 2020 21:02:10 +0000 (GMT)
+Received: from [106.210.88.143] (unknown [106.210.88.143]) by
+        eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201026210209eusmtip1fa6917250d954800bacb0662e0a40641~BppuyyUPR3104031040eusmtip1a;
+        Mon, 26 Oct 2020 21:02:09 +0000 (GMT)
+Subject: Re: [PATCH 04/12] ARM: dts: exynos: adjust node names to DT spec in
+ Exynos4412 boards
+To:     Krzysztof Kozlowski <krzk@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Kukjin Kim <kgene@kernel.org>, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-samsung-soc@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>,
+        Sylwester Nawrocki <snawrocki@kernel.org>,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Chanwoo Choi <cw00.choi@samsung.com>
+From:   Marek Szyprowski <m.szyprowski@samsung.com>
+Message-ID: <7832e031-81b0-c77e-57fa-cf122cd989d4@samsung.com>
+Date:   Mon, 26 Oct 2020 22:02:10 +0100
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0)
+        Gecko/20100101 Thunderbird/78.4.0
+MIME-Version: 1.0
+In-Reply-To: <20201026181528.163143-5-krzk@kernel.org>
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFtrDKsWRmVeSWpSXmKPExsWy7djP87pBltPjDeb8N7d4MG8bm8XGGetZ
+        La5/ec5qMf/IOVaL/sevmS3On9/AbrHp8TVWi8u75rBZzDi/j8mide8Rdov2py+ZHbg9Nq3q
+        ZPPYvKTeo2/LKkaPz5vkAliiuGxSUnMyy1KL9O0SuDJmzHjPXvAxoKKjZzp7A+N3my5GTg4J
+        AROJFw/3s3YxcnEICaxglFh2fy4jhPOFUaL7STcbhPOZUWLbvh52mJYbHd+hqpYzSkxafhGq
+        /z2jRGPDYkaQKmGBBInDb08xgSREQNovT77GDOIwC2xhlJj4ZRobSBWbgKFE19suMJtXwE5i
+        6tdNYDtYBFQl3m97ChYXFUiS+Pv5DzNEjaDEyZlPWEBsTgEzifUrfoPZzALyEtvfzmGGsMUl
+        bj2ZD7ZZQuAUu0TztjfMEIe7SPw8fwHKFpZ4dXwL1EMyEqcn97BANDQzSjw8t5YdwukBurtp
+        BiNElbXEnXO/gE7iAFqhKbF+lz5E2FFi6s8uZpCwhACfxI23ghBH8ElM2jYdKswr0dEmBFGt
+        JjHr+Dq4tQcvXGKewKg0C8lrs5C8MwvJO7MQ9i5gZFnFKJ5aWpybnlpsmJdarlecmFtcmpeu
+        l5yfu4kRmKZO/zv+aQfj10tJhxgFOBiVeHgvvJ0WL8SaWFZcmXuIUYKDWUmE1+ns6Tgh3pTE
+        yqrUovz4otKc1OJDjNIcLErivMaLXsYKCaQnlqRmp6YWpBbBZJk4OKUaGP0Omj83Ut8f8kHz
+        /1ndhTuXL4o++W3SCydR4211+R9sE6sZzCZYFegkTSkqOa6Uut1JPvtOwekjTlz9XU2cfg+z
+        G3rXHijSKZRVkzp06tRDxsp4d965q2qkE5liPl1c8ND9+4YAm4iyh+83vzn77cg/bjf2xc4C
+        RkLck2b+qUyUf30h03/nXyWW4oxEQy3mouJEAJLC2HJPAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFjrHIsWRmVeSWpSXmKPExsVy+t/xu7pBltPjDSZtVbR4MG8bm8XGGetZ
+        La5/ec5qMf/IOVaL/sevmS3On9/AbrHp8TVWi8u75rBZzDi/j8mide8Rdov2py+ZHbg9Nq3q
+        ZPPYvKTeo2/LKkaPz5vkAlii9GyK8ktLUhUy8otLbJWiDS2M9AwtLfSMTCz1DI3NY62MTJX0
+        7WxSUnMyy1KL9O0S9DJmzHjPXvAxoKKjZzp7A+N3my5GTg4JAROJGx3fGbsYuTiEBJYySnS8
+        O8AOkZCRODmtgRXCFpb4c62LDaLoLaPEwunrGUESwgIJEoffnmICSYgIfGaUeNa4iRnEYRbY
+        wihxZ9I2FoiWrYwSax/PZQZpYRMwlOh6CzKLk4NXwE5i6tdNYPtYBFQl3m97ChYXFUiSeHlh
+        KhNEjaDEyZlPWEBsTgEzifUrfoPZzED2vM0PmSFseYntb+dA2eISt57MZ5rAKDQLSfssJC2z
+        kLTMQtKygJFlFaNIamlxbnpusaFecWJucWleul5yfu4mRmBcbjv2c/MOxksbgw8xCnAwKvHw
+        Xng7LV6INbGsuDL3EKMEB7OSCK/T2dNxQrwpiZVVqUX58UWlOanFhxhNgZ6byCwlmpwPTBl5
+        JfGGpobmFpaG5sbmxmYWSuK8HQIHY4QE0hNLUrNTUwtSi2D6mDg4pRoYWdI9bpa3b7gkf0H8
+        p/p18xSB5f/lu94taChu4m6V9pI4Wfv+T9bNf3em3rrRIzv3beCF20yOYY0db3d93/fnWuGE
+        Jwxqm8xWTMw0PrvqEbeIxG5VTfMHz9hW+xzhvCa60ytWj9Hy4eGg+J/tlsWKgQFcuU0BXUuY
+        FRi3xgrPfPbia+mmK6tYlFiKMxINtZiLihMBgHPid+ECAAA=
+X-CMS-MailID: 20201026210210eucas1p146aa91763070b383193f061b24f235cb
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20201026181555eucas1p265c52e647f7cd28d410135ccbd236b70
+X-EPHeader: CA
+CMS-TYPE: 201P
+X-CMS-RootMailID: 20201026181555eucas1p265c52e647f7cd28d410135ccbd236b70
+References: <20201026181528.163143-1-krzk@kernel.org>
+        <CGME20201026181555eucas1p265c52e647f7cd28d410135ccbd236b70@eucas1p2.samsung.com>
+        <20201026181528.163143-5-krzk@kernel.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-With this change, when the knob is set to 0, it allows unprivileged
-users to call userfaultfd, like when it is set to 1, but with the
-restriction that page faults from only user-mode can be handled.
-In this mode, an unprivileged user (without SYS_CAP_PTRACE capability)
-must pass UFFD_USER_MODE_ONLY to userfaultd or the API will fail with
-EPERM.
 
-This enables administrators to reduce the likelihood that an attacker
-with access to userfaultfd can delay faulting kernel code to widen
-timing windows for other exploits.
+On 26.10.2020 19:15, Krzysztof Kozlowski wrote:
+> The Devicetree specification expects device node names to have a generic
+> name, representing the class of a device.  Also the convention for node
+> names is to use hyphens, not underscores.
+>
+> No functional changes.
+>
+> Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
+> ---
+>   arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi   |  8 ++++----
+>   arch/arm/boot/dts/exynos4412-itop-elite.dts   |  2 +-
+>   .../boot/dts/exynos4412-itop-scp-core.dtsi    |  2 +-
+>   arch/arm/boot/dts/exynos4412-midas.dtsi       | 12 +++++------
+>   arch/arm/boot/dts/exynos4412-n710x.dts        |  2 +-
+>   .../boot/dts/exynos4412-odroid-common.dtsi    |  8 ++++----
+>   arch/arm/boot/dts/exynos4412-odroidx.dts      |  4 ++--
+>   arch/arm/boot/dts/exynos4412-origen.dts       | 14 ++++++-------
+>   arch/arm/boot/dts/exynos4412-smdk4412.dts     | 20 +++++++++----------
+>   9 files changed, 36 insertions(+), 36 deletions(-)
+>
+> diff --git a/arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi b/arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi
+> index 89ed81fb348d..db91678f5648 100644
+> --- a/arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi
+> +++ b/arch/arm/boot/dts/exynos4412-galaxy-s3.dtsi
+> @@ -15,7 +15,7 @@ aliases {
+>   		i2c10 = &i2c_cm36651;
+>   	};
+>   
+> -	aat1290 {
+> +	led-controller {
+>   		compatible = "skyworks,aat1290";
+>   		flen-gpios = <&gpj1 1 GPIO_ACTIVE_HIGH>;
+>   		enset-gpios = <&gpj1 2 GPIO_ACTIVE_HIGH>;
+> @@ -60,7 +60,7 @@ i2c_ak8975: i2c-gpio-0 {
+>   		#size-cells = <0>;
+>   		status = "okay";
+>   
+> -		ak8975@c {
+> +		magnetometer@c {
+>   			compatible = "asahi-kasei,ak8975";
+>   			reg = <0x0c>;
+>   			gpios = <&gpj0 7 GPIO_ACTIVE_HIGH>;
+> @@ -75,7 +75,7 @@ i2c_cm36651: i2c-gpio-2 {
+>   		#address-cells = <1>;
+>   		#size-cells = <0>;
+>   
+> -		cm36651@18 {
+> +		sensor@18 {
+light-sensor?
+>   			compatible = "capella,cm36651";
+>   			reg = <0x18>;
+>   			interrupt-parent = <&gpx0>;
+> @@ -133,7 +133,7 @@ timing-0 {
+>   };
+>   
+>   &i2c_3 {
+> -	mms114-touchscreen@48 {
+> +	touchscreen@48 {
+>   		compatible = "melfas,mms114";
+>   		reg = <0x48>;
+>   		interrupt-parent = <&gpm2>;
+> diff --git a/arch/arm/boot/dts/exynos4412-itop-elite.dts b/arch/arm/boot/dts/exynos4412-itop-elite.dts
+> index f6d0a5f5d339..3063e44fcbcc 100644
+> --- a/arch/arm/boot/dts/exynos4412-itop-elite.dts
+> +++ b/arch/arm/boot/dts/exynos4412-itop-elite.dts
+> @@ -175,7 +175,7 @@ &i2c_4 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	codec: wm8960@1a {
+> +	codec: codec@1a {
+audio-codec?
+>   		compatible = "wlf,wm8960";
+>   		reg = <0x1a>;
+>   		clocks = <&pmu_system_controller 0>;
+> diff --git a/arch/arm/boot/dts/exynos4412-itop-scp-core.dtsi b/arch/arm/boot/dts/exynos4412-itop-scp-core.dtsi
+> index dfceb155b3a7..4583d342af39 100644
+> --- a/arch/arm/boot/dts/exynos4412-itop-scp-core.dtsi
+> +++ b/arch/arm/boot/dts/exynos4412-itop-scp-core.dtsi
+> @@ -134,7 +134,7 @@ &i2c_1 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	s5m8767: s5m8767-pmic@66 {
+> +	s5m8767: pmic@66 {
+>   		compatible = "samsung,s5m8767-pmic";
+>   		reg = <0x66>;
+>   
+> diff --git a/arch/arm/boot/dts/exynos4412-midas.dtsi b/arch/arm/boot/dts/exynos4412-midas.dtsi
+> index 7e7c243ff196..52a4f6e6c7f2 100644
+> --- a/arch/arm/boot/dts/exynos4412-midas.dtsi
+> +++ b/arch/arm/boot/dts/exynos4412-midas.dtsi
+> @@ -220,7 +220,7 @@ i2c_max77693_fuel: i2c-gpio-3 {
+>   		#size-cells = <0>;
+>   		status = "okay";
+>   
+> -		max77693-fuel-gauge@36 {
+> +		fuel-gauge@36 {
+>   			compatible = "maxim,max17047";
+>   			interrupt-parent = <&gpx2>;
+>   			interrupts = <3 IRQ_TYPE_EDGE_FALLING>;
+> @@ -550,7 +550,7 @@ &i2c_0 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	s5c73m3: s5c73m3@3c {
+> +	s5c73m3: sensor@3c {
+image-sensor?
+>   		compatible = "samsung,s5c73m3";
+>   		reg = <0x3c>;
+>   		xshutdown-gpios = <&gpf1 3 GPIO_ACTIVE_LOW>; /* ISP_RESET */
+> @@ -577,7 +577,7 @@ &i2c1_isp {
+>   	pinctrl-0 = <&fimc_is_i2c1>;
+>   	pinctrl-names = "default";
+>   
+> -	s5k6a3@10 {
+> +	sensor@10 {
+image-sensor?
+>   		compatible = "samsung,s5k6a3";
+>   		reg = <0x10>;
+>   		svdda-supply = <&cam_io_reg>;
+> @@ -616,7 +616,7 @@ &i2c_4 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	wm1811: wm1811@1a {
+> +	wm1811: codec@1a {
+audio-codec?
+>   		compatible = "wlf,wm1811";
+>   		reg = <0x1a>;
+>   		clocks = <&pmu_system_controller 0>,
+> @@ -665,7 +665,7 @@ &i2c_7 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	max77686: max77686_pmic@9 {
+> +	max77686: pmic@9 {
+>   		compatible = "maxim,max77686";
+>   		interrupt-parent = <&gpx0>;
+>   		interrupts = <7 IRQ_TYPE_NONE>;
+> @@ -1407,7 +1407,7 @@ &spi_1 {
+>   	cs-gpios = <&gpb 5 GPIO_ACTIVE_HIGH>;
+>   	status = "okay";
+>   
+> -	s5c73m3_spi: s5c73m3@0 {
+> +	s5c73m3_spi: sensor@0 {
+image-sensor?
+>   		compatible = "samsung,s5c73m3";
+>   		spi-max-frequency = <50000000>;
+>   		reg = <0>;
+> diff --git a/arch/arm/boot/dts/exynos4412-n710x.dts b/arch/arm/boot/dts/exynos4412-n710x.dts
+> index a47b7f35fc80..c49dbb7847b8 100644
+> --- a/arch/arm/boot/dts/exynos4412-n710x.dts
+> +++ b/arch/arm/boot/dts/exynos4412-n710x.dts
+> @@ -45,7 +45,7 @@ &i2c_3 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	mms152-touchscreen@48 {
+> +	touchscreen@48 {
+>   		compatible = "melfas,mms152";
+>   		reg = <0x48>;
+>   		interrupt-parent = <&gpm2>;
+> diff --git a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+> index c3b6e6d367ab..3dcd7f7f10f3 100644
+> --- a/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+> +++ b/arch/arm/boot/dts/exynos4412-odroid-common.dtsi
+> @@ -27,7 +27,7 @@ gpio_keys: gpio-keys {
+>   		pinctrl-names = "default";
+>   		pinctrl-0 = <&gpio_power_key>;
+>   
+> -		power_key {
+> +		power-key {
+>   			gpios = <&gpx1 3 GPIO_ACTIVE_LOW>;
+>   			linux,code = <KEY_POWER>;
+>   			label = "power key";
+> @@ -171,7 +171,7 @@ cooling_map1: map1 {
+>   };
+>   
+>   &pinctrl_1 {
+> -	gpio_power_key: power_key {
+> +	gpio_power_key: power-key {
+>   		samsung,pins = "gpx1-3";
+>   		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
+>   	};
+> @@ -266,7 +266,7 @@ &i2c_0 {
+>   	samsung,i2c-max-bus-freq = <400000>;
+>   	status = "okay";
+>   
+> -	usb3503: usb3503@8 {
+> +	usb3503: usb-hub@8 {
+>   		compatible = "smsc,usb3503";
+>   		reg = <0x08>;
+>   
+> @@ -492,7 +492,7 @@ buck8_reg: BUCK8 {
+>   
+>   &i2c_1 {
+>   	status = "okay";
+> -	max98090: max98090@10 {
+> +	max98090: codec@10 {
+audio-codec?
+>   		compatible = "maxim,max98090";
+>   		reg = <0x10>;
+>   		interrupt-parent = <&gpx0>;
+> diff --git a/arch/arm/boot/dts/exynos4412-odroidx.dts b/arch/arm/boot/dts/exynos4412-odroidx.dts
+> index 68fe88074d1d..46381e9097f4 100644
+> --- a/arch/arm/boot/dts/exynos4412-odroidx.dts
+> +++ b/arch/arm/boot/dts/exynos4412-odroidx.dts
+> @@ -36,7 +36,7 @@ led2 {
+>   		};
+>   	};
+>   
+> -	regulator_p3v3 {
+> +	regulator-1 {
+>   		compatible = "regulator-fixed";
+>   		regulator-name = "p3v3_en";
+>   		regulator-min-microvolt = <3300000>;
+> @@ -81,7 +81,7 @@ &mshc_0 {
+>   };
+>   
+>   &pinctrl_1 {
+> -	gpio_home_key: home_key {
+> +	gpio_home_key: home-key {
+>   		samsung,pins = "gpx2-2";
+>   		samsung,pin-pud = <EXYNOS_PIN_PULL_NONE>;
+>   	};
+> diff --git a/arch/arm/boot/dts/exynos4412-origen.dts b/arch/arm/boot/dts/exynos4412-origen.dts
+> index c2e793b69e7d..e1f6de53e20e 100644
+> --- a/arch/arm/boot/dts/exynos4412-origen.dts
+> +++ b/arch/arm/boot/dts/exynos4412-origen.dts
+> @@ -116,7 +116,7 @@ &i2c_0 {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	s5m8767_pmic@66 {
+> +	pmic@66 {
+>   		compatible = "samsung,s5m8767-pmic";
+>   		reg = <0x66>;
+>   
+> @@ -453,37 +453,37 @@ &keypad {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	key_home {
+> +	key-home {
+>   		keypad,row = <0>;
+>   		keypad,column = <0>;
+>   		linux,code = <KEY_HOME>;
+>   	};
+>   
+> -	key_down {
+> +	key-down {
+>   		keypad,row = <0>;
+>   		keypad,column = <1>;
+>   		linux,code = <KEY_DOWN>;
+>   	};
+>   
+> -	key_up {
+> +	key-up {
+>   		keypad,row = <1>;
+>   		keypad,column = <0>;
+>   		linux,code = <KEY_UP>;
+>   	};
+>   
+> -	key_menu {
+> +	key-menu {
+>   		keypad,row = <1>;
+>   		keypad,column = <1>;
+>   		linux,code = <KEY_MENU>;
+>   	};
+>   
+> -	key_back {
+> +	key-back {
+>   		keypad,row = <2>;
+>   		keypad,column = <0>;
+>   		linux,code = <KEY_BACK>;
+>   	};
+>   
+> -	key_enter {
+> +	key-enter {
+>   		keypad,row = <2>;
+>   		keypad,column = <1>;
+>   		linux,code = <KEY_ENTER>;
+> diff --git a/arch/arm/boot/dts/exynos4412-smdk4412.dts b/arch/arm/boot/dts/exynos4412-smdk4412.dts
+> index 49971203a8aa..cc99b955af0c 100644
+> --- a/arch/arm/boot/dts/exynos4412-smdk4412.dts
+> +++ b/arch/arm/boot/dts/exynos4412-smdk4412.dts
+> @@ -71,61 +71,61 @@ &keypad {
+>   	pinctrl-names = "default";
+>   	status = "okay";
+>   
+> -	key_1 {
+> +	key-1 {
+>   		keypad,row = <1>;
+>   		keypad,column = <3>;
+>   		linux,code = <2>;
+>   	};
+>   
+> -	key_2 {
+> +	key-2 {
+>   		keypad,row = <1>;
+>   		keypad,column = <4>;
+>   		linux,code = <3>;
+>   	};
+>   
+> -	key_3 {
+> +	key-3 {
+>   		keypad,row = <1>;
+>   		keypad,column = <5>;
+>   		linux,code = <4>;
+>   	};
+>   
+> -	key_4 {
+> +	key-4 {
+>   		keypad,row = <1>;
+>   		keypad,column = <6>;
+>   		linux,code = <5>;
+>   	};
+>   
+> -	key_5 {
+> +	key-5 {
+>   		keypad,row = <1>;
+>   		keypad,column = <7>;
+>   		linux,code = <6>;
+>   	};
+>   
+> -	key_A {
+> +	key-A {
+>   		keypad,row = <2>;
+>   		keypad,column = <6>;
+>   		linux,code = <30>;
+>   	};
+>   
+> -	key_B {
+> +	key-B {
+>   		keypad,row = <2>;
+>   		keypad,column = <7>;
+>   		linux,code = <48>;
+>   	};
+>   
+> -	key_C {
+> +	key-C {
+>   		keypad,row = <0>;
+>   		keypad,column = <5>;
+>   		linux,code = <46>;
+>   	};
+>   
+> -	key_D {
+> +	key-D {
+>   		keypad,row = <2>;
+>   		keypad,column = <5>;
+>   		linux,code = <32>;
+>   	};
+>   
+> -	key_E {
+> +	key-E {
+>   		keypad,row = <0>;
+>   		keypad,column = <7>;
+>   		linux,code = <18>;
 
-The default value of this knob is changed to 0. This is required for
-correct functioning of pipe mutex. However, this will fail postcopy
-live migration, which will be unnoticeable to the VM guests. To avoid
-this, set 'vm.userfault = 1' in /sys/sysctl.conf.
-
-The main reason this change is desirable as in the short term is that
-the Android userland will behave as with the sysctl set to zero. So
-without this commit, any Linux binary using userfaultfd to manage its
-memory would behave differently if run within the Android userland.
-For more details, refer to Andrea's reply [1].
-
-[1] https://lore.kernel.org/lkml/20200904033438.GI9411@redhat.com/
-
-Signed-off-by: Lokesh Gidra <lokeshgidra@google.com>
-Reviewed-by: Andrea Arcangeli <aarcange@redhat.com>
----
- Documentation/admin-guide/sysctl/vm.rst | 15 ++++++++++-----
- fs/userfaultfd.c                        | 10 ++++++++--
- 2 files changed, 18 insertions(+), 7 deletions(-)
-
-diff --git a/Documentation/admin-guide/sysctl/vm.rst b/Documentation/admin-guide/sysctl/vm.rst
-index f455fa00c00f..d06a98b2a4e7 100644
---- a/Documentation/admin-guide/sysctl/vm.rst
-+++ b/Documentation/admin-guide/sysctl/vm.rst
-@@ -873,12 +873,17 @@ file-backed pages is less than the high watermark in a zone.
- unprivileged_userfaultfd
- ========================
- 
--This flag controls whether unprivileged users can use the userfaultfd
--system calls.  Set this to 1 to allow unprivileged users to use the
--userfaultfd system calls, or set this to 0 to restrict userfaultfd to only
--privileged users (with SYS_CAP_PTRACE capability).
-+This flag controls the mode in which unprivileged users can use the
-+userfaultfd system calls. Set this to 0 to restrict unprivileged users
-+to handle page faults in user mode only. In this case, users without
-+SYS_CAP_PTRACE must pass UFFD_USER_MODE_ONLY in order for userfaultfd to
-+succeed. Prohibiting use of userfaultfd for handling faults from kernel
-+mode may make certain vulnerabilities more difficult to exploit.
- 
--The default value is 1.
-+Set this to 1 to allow unprivileged users to use the userfaultfd system
-+calls without any restrictions.
-+
-+The default value is 0.
- 
- 
- user_reserve_kbytes
-diff --git a/fs/userfaultfd.c b/fs/userfaultfd.c
-index 605599fde015..894cc28142e7 100644
---- a/fs/userfaultfd.c
-+++ b/fs/userfaultfd.c
-@@ -28,7 +28,7 @@
- #include <linux/security.h>
- #include <linux/hugetlb.h>
- 
--int sysctl_unprivileged_userfaultfd __read_mostly = 1;
-+int sysctl_unprivileged_userfaultfd __read_mostly;
- 
- static struct kmem_cache *userfaultfd_ctx_cachep __read_mostly;
- 
-@@ -1966,8 +1966,14 @@ SYSCALL_DEFINE1(userfaultfd, int, flags)
- 	struct userfaultfd_ctx *ctx;
- 	int fd;
- 
--	if (!sysctl_unprivileged_userfaultfd && !capable(CAP_SYS_PTRACE))
-+	if (!sysctl_unprivileged_userfaultfd &&
-+	    (flags & UFFD_USER_MODE_ONLY) == 0 &&
-+	    !capable(CAP_SYS_PTRACE)) {
-+		printk_once(KERN_WARNING "uffd: Set unprivileged_userfaultfd "
-+			"sysctl knob to 1 if kernel faults must be handled "
-+			"without obtaining CAP_SYS_PTRACE capability\n");
- 		return -EPERM;
-+	}
- 
- 	BUG_ON(!current->mm);
- 
+Best regards
 -- 
-2.29.0.rc1.297.gfa9743e501-goog
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
 
