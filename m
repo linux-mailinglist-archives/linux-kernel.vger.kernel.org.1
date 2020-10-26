@@ -2,71 +2,140 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E5BA229903F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:56:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 898DB29904C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:57:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782740AbgJZO4B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:56:01 -0400
-Received: from fllv0016.ext.ti.com ([198.47.19.142]:42720 "EHLO
-        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782136AbgJZOz6 (ORCPT
+        id S1782765AbgJZO5Q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:57:16 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:34698 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782217AbgJZO5M (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:55:58 -0400
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09QEtiCF099910;
-        Mon, 26 Oct 2020 09:55:44 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-        s=ti-com-17Q1; t=1603724144;
-        bh=eVGkIN+pY+QMWvxrhNpmuGBvJCfkOJmqqUjfqbRkEbc=;
-        h=Date:From:To:CC:Subject:References:In-Reply-To;
-        b=ZocVfrLSBi5q/1jf152PwrRrHixwatZwB9M7ybPQSL5fWFEwIVpQ6vsSiccCgbczh
-         bP//FJyPkAlvpred3OokKOA8lwBUVH+F+ffQNxvaWBZCQerQznJ3q2p2DjRhI7NnxV
-         g70SClGJYvh+OEi2jwmStl61B7A+YQmJXkyq9l4U=
-Received: from DLEE115.ent.ti.com (dlee115.ent.ti.com [157.170.170.26])
-        by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09QEthPc073307
-        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 26 Oct 2020 09:55:43 -0500
-Received: from DLEE115.ent.ti.com (157.170.170.26) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 26
- Oct 2020 09:55:42 -0500
-Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE115.ent.ti.com
- (157.170.170.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
- Frontend Transport; Mon, 26 Oct 2020 09:55:42 -0500
-Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
-        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09QEtgxi044454;
-        Mon, 26 Oct 2020 09:55:42 -0500
-Date:   Mon, 26 Oct 2020 09:55:42 -0500
-From:   Nishanth Menon <nm@ti.com>
-To:     Faiz Abbas <faiz_abbas@ti.com>
-CC:     <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <t-kristo@ti.com>, <robh+dt@kernel.org>, <will@kernel.org>,
-        <linux-arm-kernel@lists.infradead.org>
-Subject: Re: [PATCH 0/8] Add support for UHS modes in TI's J721e and J7200
- boards
-Message-ID: <20201026145542.4woe7faowvp657at@dislodge>
-References: <20201001190541.6364-1-faiz_abbas@ti.com>
- <20201001191302.dlp2tzbvkk35vzgd@akan>
- <2a7ceab9-37ec-9117-1d98-9f307b4b5390@ti.com>
- <20201002124926.rr5dk5hhygavgqs3@akan>
- <00746c65-d240-e7e9-810d-b6e33655cc57@ti.com>
+        Mon, 26 Oct 2020 10:57:12 -0400
+Received: by mail-lf1-f68.google.com with SMTP id z2so12487134lfr.1
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:57:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=AY1upMRPHFh+EW7yKRAkdO69ELLWbe4gw5pBY2cxk6s=;
+        b=D9Kko86wO1ttI/fVOr7v2knDtTaUlZGkmjlWzvOjqYf3FmvKeeNM4kpXxLHSEXB5WR
+         AfeJxGyLY4+blFUSGJhIaW+WKWXt4LVZozwR99H6jgFyv37T9MLdVm5gvaDEeoz4nlqt
+         QND10MFbm2EFTgLLbhS3EwHoQFISHcDBH4B4KFhcPvSanJb8qLTatt+9MIZ39PgVkA0H
+         5i0zux1NLV2B65jTNmB4GNRtmWdxsNMHgpems3UOpHiAr48YB9X5WYZ+luqOaRNlu/gd
+         odR91di5I0DJK6yZa0FPBEziB9m81chmdxD+MWckpFHYYD0bBw/okgjsRMSaSm8pYWVt
+         IWow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=AY1upMRPHFh+EW7yKRAkdO69ELLWbe4gw5pBY2cxk6s=;
+        b=ENqKzmSKNfH2jCbuhXYwsHcNRAGOwK5jmX/Dmb8ehtvOEC9GFaq6mnekVkcWnNPi25
+         As8pcMG1/hA9svsH0V/tl7ex6JJyK+5sqIT/mIYKhen06Yw3ti/rhBrbVz9kcznTeGbn
+         8HRkFdZ48/qN18lMg0zb+85uwxtLArcI3cLryUG45muNfJtltrnmjOKi/slErqqprJ8W
+         v++hJKSr6jRzmFzouOTcCFHkLf7sg6nqoMMqjzDP8RO68aCDWp7oNRS6pE0BRIZ8F7U2
+         rZHxZgkbtQbksdB6SOGr0vNlNN7jr7niP6Bxz/IfHYVzZ63dMMDI8Hj1kOWgjdkAO14s
+         vRCw==
+X-Gm-Message-State: AOAM53150DGu9s4GGtll9eSCMKQA3msT4363i3CaUqqMOcPJtAy4ot29
+        GFUvOQ4iVnweYOnZwoSPLk9cjTlpYQ+t459EMQGwTg==
+X-Google-Smtp-Source: ABdhPJwc1n7JM8fZBxOp3v96LygjYE7dZmpo6zmmkl4iXWC7QHIjblXt8Axw+TmQM/GZzleczQStTu5zjtPB6P147K0=
+X-Received: by 2002:a19:d10:: with SMTP id 16mr4918093lfn.385.1603724229502;
+ Mon, 26 Oct 2020 07:57:09 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <00746c65-d240-e7e9-810d-b6e33655cc57@ti.com>
-User-Agent: NeoMutt/20171215
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com> <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+ <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com> <20201026142455.GA13495@vingu-book>
+ <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+In-Reply-To: <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 26 Oct 2020 15:56:58 +0100
+Message-ID: <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework load_balance()"
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 21:39-20201002, Faiz Abbas wrote:
-> Ok. I'll send only the defconfig patches in a new series and repost v2 of this at rc1.
-> 
+On Mon, 26 Oct 2020 at 15:38, Rik van Riel <riel@surriel.com> wrote:
+>
+> On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
+> > Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=A9crit=
+ :
+> > > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
+> > >
+> > > > Hi Chris
+> > > >
+> > > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+> > > > > Hi everyone,
+> > > > >
+> > > > > We=E2=80=99re validating a new kernel in the fleet, and compared =
+with
+> > > > > v5.2,
+> > > >
+> > > > Which version are you using ?
+> > > > several improvements have been added since v5.5 and the rework of
+> > > > load_balance
+> > >
+> > > We=E2=80=99re validating v5.6, but all of the numbers referenced in t=
+his
+> > > patch are
+> > > against v5.9.  I usually try to back port my way to victory on this
+> > > kind of
+> > > thing, but mainline seems to behave exactly the same as
+> > > 0b0695f2b34a wrt
+> > > this benchmark.
+> >
+> > ok. Thanks for the confirmation
+> >
+> > I have been able to reproduce the problem on my setup.
+> >
+> > Could you try the fix below ?
+> >
+> > --- a/kernel/sched/fair.c
+> > +++ b/kernel/sched/fair.c
+> > @@ -9049,7 +9049,8 @@ static inline void calculate_imbalance(struct
+> > lb_env *env, struct sd_lb_stats *s
+> >          * emptying busiest.
+> >          */
+> >         if (local->group_type =3D=3D group_has_spare) {
+> > -               if (busiest->group_type > group_fully_busy) {
+> > +               if ((busiest->group_type > group_fully_busy) &&
+> > +                   (busiest->group_weight > 1)) {
+> >                         /*
+> >                          * If busiest is overloaded, try to fill
+> > spare
+> >                          * capacity. This might end up creating spare
+> > capacity
+> >
+> >
+> > When we calculate an imbalance at te smallest level, ie between CPUs
+> > (group_weight =3D=3D 1),
+> > we should try to spread tasks on cpus instead of trying to fill spare
+> > capacity.
+>
+> Should we also spread tasks when balancing between
+> multi-threaded CPU cores on the same socket?
 
-Just a reminder, please retest and repost based off v5.10-rc1
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+My explanation is probably misleading. In fact we already try to
+spread tasks. we just use spare capacity instead of nr_running when
+there is more than 1 CPU in the group and the group is overloaded.
+Using spare capacity is a bit more conservative because it tries to
+not pull more utilization than spare capacity
+
+>
+> Say we have groups of CPUs
+> (0, 2) and CPUs (1, 3),
+> with CPU 2 idle, and 3 tasks spread between CPUs
+> 1 & 3.
+>
+> Since they are all on the same LLC, and the task
+> wakeup code has absolutely no hesitation in moving
+> them around, should the load balancer also try to
+> keep tasks within a socket spread across all CPUs?
+>
+> --
+> All Rights Reversed.
