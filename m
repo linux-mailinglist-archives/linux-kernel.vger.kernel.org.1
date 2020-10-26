@@ -2,122 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D3240298B98
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:17:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0B07E298B9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:19:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772273AbgJZLR1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:17:27 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39210 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771658AbgJZLR1 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:17:27 -0400
-Date:   Mon, 26 Oct 2020 11:17:22 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603711044;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNDs6bpZpK+4fqKA7xYj7+yLSIpGYZIr6FmNG8YWfaM=;
-        b=c6ea4/xkOHuR5XuSya9Jy/sYvJRjr2Anx1mzgXmPqpeDEIYC4LetSJv4i0p8rU/rDCuIuq
-        q9OA/nok6zj3NoeEtP5uAotYTym3aU7T1iXE0ipzOOZmsYISyY1DrTQUCPU2yqhiulGPiZ
-        2k5Ab0SYTmdV4jprbkcmrBTyzwRPJG9rzSbZUlrGDL+i/jxOx/e+vGQLxdiM/6hN7jUHgO
-        HVJvOlKtgxOna+g68gfJr5ZrihUx3fWvriMxCaKjZQh6c0QMDKmUXHfjn2TtFFBhuEjooZ
-        9LTqw19TYSLphzU07vsYzaAA3UWZMe6l3d4/3AlaS0NzXvSOEIWQZPNwAMmRpg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603711044;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=rNDs6bpZpK+4fqKA7xYj7+yLSIpGYZIr6FmNG8YWfaM=;
-        b=WnfT42vuMr+h7keSCV1GwxGX3SOecrZyHF4oFNubqad0xri25krNHFZ116LnHiTe8ghWfG
-        8OOHCuzE8vKfoFDw==
-From:   "tip-bot2 for Zong Li" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: smp/urgent] stop_machine, rcu: Mark functions as notrace
-Cc:     Zong Li <zong.li@sifive.com>, Thomas Gleixner <tglx@linutronix.de>,
-        Atish Patra <atish.patra@wdc.com>,
-        Colin Ian King <colin.king@canonical.com>,
-        "Steven Rostedt (VMware)" <rostedt@goodmis.org>,
-        "Paul E. McKenney" <paulmck@kernel.org>, stable@vger.kernel.org,
-        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201021073839.43935-1-zong.li@sifive.com>
-References: <20201021073839.43935-1-zong.li@sifive.com>
+        id S1772465AbgJZLTC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:19:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47768 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1771082AbgJZLTB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:19:01 -0400
+Received: from localhost (unknown [213.57.247.131])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 216BE22263;
+        Mon, 26 Oct 2020 11:19:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603711140;
+        bh=rDc4LrhNla/X0Y0kVRg1oVTgFH8K5B4hmP11PJqBBvs=;
+        h=From:To:Cc:Subject:Date:From;
+        b=jMwOk3RgdhNUiWW4vSv8C+tkoK9jrhnfZlLVnFH4/yrDSi0BFjfdwx9xFJfFoQ6HG
+         MVuO1jOvrBOxoJXb3F485USFw1jEu193MJNCftrahGqOp2U+dMSKdc5CfL9kyfocju
+         YKGfd0vkg5xqjtm1C4Sv9oaGfuoCMzdKLC7lsJ7A=
+From:   Leon Romanovsky <leon@kernel.org>
+To:     Doug Ledford <dledford@redhat.com>,
+        Jason Gunthorpe <jgg@nvidia.com>
+Cc:     Leon Romanovsky <leonro@nvidia.com>,
+        Jakub Kicinski <kuba@kernel.org>,
+        Jason Wang <jasowang@redhat.com>, linux-rdma@vger.kernel.org,
+        "Michael S. Tsirkin" <mst@redhat.com>, netdev@vger.kernel.org,
+        Parav Pandit <parav@nvidia.com>, Roi Dayan <roid@nvidia.com>,
+        Saeed Mahameed <saeedm@nvidia.com>,
+        virtualization@lists.linux-foundation.org,
+        alsa-devel@alsa-project.org, tiwai@suse.de, broonie@kernel.org,
+        "David S . Miller" <davem@davemloft.net>,
+        ranjani.sridharan@linux.intel.com,
+        pierre-louis.bossart@linux.intel.com, fred.oh@linux.intel.com,
+        shiraz.saleem@intel.com, dan.j.williams@intel.com,
+        kiran.patil@intel.com, linux-kernel@vger.kernel.org
+Subject: [PATCH mlx5-next 00/11] Convert mlx5 to use auxiliary bus
+Date:   Mon, 26 Oct 2020 13:18:38 +0200
+Message-Id: <20201026111849.1035786-1-leon@kernel.org>
+X-Mailer: git-send-email 2.26.2
 MIME-Version: 1.0
-Message-ID: <160371104269.397.18106018255287440015.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the smp/urgent branch of tip:
+From: Leon Romanovsky <leonro@nvidia.com>
 
-Commit-ID:     4230e2deaa484b385aa01d598b2aea8e7f2660a6
-Gitweb:        https://git.kernel.org/tip/4230e2deaa484b385aa01d598b2aea8e7f2660a6
-Author:        Zong Li <zong.li@sifive.com>
-AuthorDate:    Wed, 21 Oct 2020 15:38:39 +08:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 26 Oct 2020 12:12:27 +01:00
+Hi,
 
-stop_machine, rcu: Mark functions as notrace
+This patch set converts mlx5 driver to use auxiliary bus [1].
 
-Some architectures assume that the stopped CPUs don't make function calls
-to traceable functions when they are in the stopped state. See also commit
-cb9d7fd51d9f ("watchdog: Mark watchdog touch functions as notrace").
+In this series, we are connecting three subsystems (VDPA, netdev and
+RDMA) through mlx5_core PCI driver. That driver is responsible to create
+proper devices based on supported firmware.
 
-Violating this assumption causes kernel crashes when switching tracer on
-RISC-V.
+First four patches are preparitions and fixes that were spotted during
+code development, rest is the conversion itself.
 
-Mark rcu_momentary_dyntick_idle() and stop_machine_yield() notrace to
-prevent this.
+Thanks
 
-Fixes: 4ecf0a43e729 ("processor: get rid of cpu_relax_yield")
-Fixes: 366237e7b083 ("stop_machine: Provide RCU quiescent state in multi_cpu_stop()")
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Tested-by: Atish Patra <atish.patra@wdc.com>
-Tested-by: Colin Ian King <colin.king@canonical.com>
-Acked-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Acked-by: Paul E. McKenney <paulmck@kernel.org>
-Cc: stable@vger.kernel.org
-Link: https://lore.kernel.org/r/20201021073839.43935-1-zong.li@sifive.com
----
- kernel/rcu/tree.c     | 2 +-
- kernel/stop_machine.c | 2 +-
- 2 files changed, 2 insertions(+), 2 deletions(-)
+[1] https://lore.kernel.org/lkml/20201023003338.1285642-1-david.m.ertman@intel.com
 
-diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-index 06895ef..2a52f42 100644
---- a/kernel/rcu/tree.c
-+++ b/kernel/rcu/tree.c
-@@ -409,7 +409,7 @@ bool rcu_eqs_special_set(int cpu)
-  *
-  * The caller must have disabled interrupts and must not be idle.
-  */
--void rcu_momentary_dyntick_idle(void)
-+notrace void rcu_momentary_dyntick_idle(void)
- {
- 	int special;
- 
-diff --git a/kernel/stop_machine.c b/kernel/stop_machine.c
-index 865bb02..890b79c 100644
---- a/kernel/stop_machine.c
-+++ b/kernel/stop_machine.c
-@@ -178,7 +178,7 @@ static void ack_state(struct multi_stop_data *msdata)
- 		set_state(msdata, msdata->state + 1);
- }
- 
--void __weak stop_machine_yield(const struct cpumask *cpumask)
-+notrace void __weak stop_machine_yield(const struct cpumask *cpumask)
- {
- 	cpu_relax();
- }
+Leon Romanovsky (11):
+  net/mlx5: Don't skip vport check
+  net/mlx5: Properly convey driver version to firmware
+  net/mlx5_core: Clean driver version and name
+  vdpa/mlx5: Make hardware definitions visible to all mlx5 devices
+  net/mlx5: Register mlx5 devices to auxiliary virtual bus
+  vdpa/mlx5: Connect mlx5_vdpa to auxiliary bus
+  net/mlx5e: Connect ethernet part to auxiliary bus
+  RDMA/mlx5: Convert mlx5_ib to use auxiliary bus
+  net/mlx5: Delete custom device management logic
+  net/mlx5: Simplify eswitch mode check
+  RDMA/mlx5: Remove IB representors dead code
+
+ drivers/infiniband/hw/mlx5/counters.c         |   7 -
+ drivers/infiniband/hw/mlx5/ib_rep.c           | 113 ++--
+ drivers/infiniband/hw/mlx5/ib_rep.h           |  45 +-
+ drivers/infiniband/hw/mlx5/main.c             | 148 +++--
+ drivers/infiniband/hw/mlx5/mlx5_ib.h          |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/Kconfig   |   1 +
+ drivers/net/ethernet/mellanox/mlx5/core/dev.c | 504 ++++++++++--------
+ .../net/ethernet/mellanox/mlx5/core/devlink.c |   4 +-
+ .../ethernet/mellanox/mlx5/core/en_ethtool.c  |   4 +-
+ .../net/ethernet/mellanox/mlx5/core/en_main.c | 135 ++---
+ .../net/ethernet/mellanox/mlx5/core/en_rep.c  |  42 +-
+ .../net/ethernet/mellanox/mlx5/core/en_rep.h  |   6 +-
+ .../net/ethernet/mellanox/mlx5/core/en_tc.c   |   8 +-
+ .../mellanox/mlx5/core/esw/devlink_port.c     |   2 +-
+ .../net/ethernet/mellanox/mlx5/core/eswitch.c |  28 +-
+ .../mellanox/mlx5/core/eswitch_offloads.c     |   6 +
+ .../mellanox/mlx5/core/ipoib/ethtool.c        |   2 +-
+ drivers/net/ethernet/mellanox/mlx5/core/lag.c |  58 +-
+ .../net/ethernet/mellanox/mlx5/core/main.c    |  43 +-
+ .../ethernet/mellanox/mlx5/core/mlx5_core.h   |  28 +-
+ drivers/vdpa/mlx5/Makefile                    |   2 +-
+ drivers/vdpa/mlx5/net/main.c                  |  76 ---
+ drivers/vdpa/mlx5/net/mlx5_vnet.c             |  55 +-
+ drivers/vdpa/mlx5/net/mlx5_vnet.h             |  24 -
+ include/linux/mlx5/driver.h                   |  36 +-
+ include/linux/mlx5/eswitch.h                  |   8 +-
+ .../linux/mlx5/mlx5_ifc_vdpa.h                |   6 +-
+ 27 files changed, 731 insertions(+), 664 deletions(-)
+ delete mode 100644 drivers/vdpa/mlx5/net/main.c
+ delete mode 100644 drivers/vdpa/mlx5/net/mlx5_vnet.h
+ rename drivers/vdpa/mlx5/core/mlx5_vdpa_ifc.h => include/linux/mlx5/mlx5_ifc_vdpa.h (97%)
+
+--
+2.26.2
+
