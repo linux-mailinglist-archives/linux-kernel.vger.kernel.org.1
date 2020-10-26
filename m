@@ -2,82 +2,128 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C53A298EE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:14:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 06FDF298EF0
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:16:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781065AbgJZOOa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:14:30 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54616 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780363AbgJZOO3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:14:29 -0400
-Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id EE24021655;
-        Mon, 26 Oct 2020 14:14:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603721669;
-        bh=2qLSIc7k4XMXAWyWMEK9MRLmkYAUIzU/1aq7uRh/K/k=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=K3IKflmpxBRU6TXMyWrNEDYrZiZ1oNRms/Eio7YpPVPZaOwdl5rWt97pyF8z+9ps3
-         XG1fXkbVdFO09ithiMvD56yHvQbdxY9RGmYGJJsRk/dAAj4giiNV3vZRVdXRUIbmPA
-         l6sUeiBCrc8TRn5cbSA7Uy0WgzTiqGnVtQsdQ+Yo=
-Date:   Mon, 26 Oct 2020 15:14:23 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Takashi Iwai <tiwai@suse.de>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        =?UTF-8?B?TWljaGHFgiBNaXJvc8WCYXc=?= <mirq-linux@rere.qmqm.pl>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Baolin Wang <baolin.wang@linaro.org>,
-        Dan Carpenter <dan.carpenter@oracle.com>,
-        Jaroslav Kysela <perex@perex.cz>,
-        Lars-Peter Clausen <lars@metafoo.de>,
-        Liam Girdwood <lgirdwood@gmail.com>,
-        Mark Brown <broonie@kernel.org>, Takashi Iwai <tiwai@suse.com>,
-        Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-        Vinod Koul <vkoul@kernel.org>, alsa-devel@alsa-project.org,
-        linux-kernel@vger.kernel.org, paulhsia <paulhsia@chromium.org>
-Subject: Re: [PATCH v3 48/56] sound: fix kernel-doc markups
-Message-ID: <20201026151423.622f847e@coco.lan>
-In-Reply-To: <s5h5z6x5cdg.wl-tiwai@suse.de>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-        <535182d6f55d7a7de293dda9676df68f5f60afc6.1603469755.git.mchehab+huawei@kernel.org>
-        <s5h5z6x5cdg.wl-tiwai@suse.de>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1781076AbgJZOQI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:16:08 -0400
+Received: from mail-qk1-f196.google.com ([209.85.222.196]:43464 "EHLO
+        mail-qk1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780366AbgJZOQG (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:16:06 -0400
+Received: by mail-qk1-f196.google.com with SMTP id q199so8384390qke.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:16:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ziepe.ca; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:in-reply-to;
+        bh=3S2YjeCUC6K3doI4vgMQKoCwvJ4YN6LMw0KanLSj+uM=;
+        b=MocRZOBqXvmKFTBQqlf9654tnqlf+n6zq+i2QdNLLQNEIAKlRxznKNH8lCVuCZXtx8
+         sL2hKpGdKOCK17bDT9PJq98n7qUnhsRxnYoL99XDVZ6GR99eNglEwr2LPb973O7RQ7HA
+         pDW4sDBWyUQViJzK19iQsGqbK+MeQAGCD5TQEeKrBoKzCOYX/duYkiXTcQ4Qp8ccSABs
+         Hftqzs+se0kaaq/6hY4MO1EHYC4oBnMYtT0YdyYt/VzKZq3XOZwc/e29IfN7g/5xfmSM
+         QqCOBeeAbUr2ljY3/WF8B6umAyrwtt7+dYB8AO4wemgwHV5cww4O71ZknMmTdweIplAH
+         m9wQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=3S2YjeCUC6K3doI4vgMQKoCwvJ4YN6LMw0KanLSj+uM=;
+        b=AQKQiut5lxQd2bwOBo493fG9nyB6ZagxIrXXSnIAXagofAGJCU0I7buoEoksNE7iPP
+         KHhcqSkWyk9jFTma2QpXAyMhCb+qWFxUlvh00ub/wRrJFhbNNCaYgbXnqfGcAFEFgIvs
+         cFQGJoVaDWuzUIc7oh4VfxYGtLgnK2bxZ8BkaHPGrF7VjothDF1w3MeopzQqbzJTgYlV
+         rm9uQTSbX6zpjVNg8zNsFyJE5eSKrA8ChPgAoJ8eQKa2NZSXWEjqRX44StIlVk6bQH0S
+         DW8LcZ7C8E2fLzf6LI9EjTrBjlhGmU0/KeYeLnl82a6PCc9AlpW5St+GXjsF98B+bFUe
+         I+YA==
+X-Gm-Message-State: AOAM533ChFlQsXnG9mSqS+/Uh8EgG5zSbW9V0zik/LlB1NsJtERo42bc
+        GbRbX1QRj8H+NdRtk0n1xOKNsA==
+X-Google-Smtp-Source: ABdhPJyf953+FiRgW2dasVQsjm4zhSEzqYl6uwWT9W1zEpP8TS/DVtOK2Vqx2OZ03E5I04lE/XNsLg==
+X-Received: by 2002:a05:620a:849:: with SMTP id u9mr17366693qku.419.1603721762676;
+        Mon, 26 Oct 2020 07:16:02 -0700 (PDT)
+Received: from ziepe.ca (hlfxns017vw-156-34-48-30.dhcp-dynamic.fibreop.ns.bellaliant.net. [156.34.48.30])
+        by smtp.gmail.com with ESMTPSA id y77sm6331920qkb.57.2020.10.26.07.16.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 07:16:01 -0700 (PDT)
+Received: from jgg by mlx with local (Exim 4.94)
+        (envelope-from <jgg@ziepe.ca>)
+        id 1kX3I1-008TP8-5d; Mon, 26 Oct 2020 11:16:01 -0300
+Date:   Mon, 26 Oct 2020 11:16:01 -0300
+From:   Jason Gunthorpe <jgg@ziepe.ca>
+To:     Matthew Wilcox <willy@infradead.org>
+Cc:     John Hubbard <jhubbard@nvidia.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, x86@kernel.org,
+        kvm@vger.kernel.org, linux-mm@kvack.org,
+        linux-kernel@vger.kernel.org,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Subject: Re: [RFCv2 08/16] KVM: Use GUP instead of copy_from/to_user() to
+ access guest memory
+Message-ID: <20201026141601.GT36674@ziepe.ca>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <20201020061859.18385-9-kirill.shutemov@linux.intel.com>
+ <c8b0405f-14ed-a1bb-3a91-586a30bdf39b@nvidia.com>
+ <20201022114946.GR20115@casper.infradead.org>
+ <30ce6691-fd70-76a2-8b61-86d207c88713@nvidia.com>
+ <20201026042158.GN20115@casper.infradead.org>
+ <ee308d1d-8762-6bcf-193e-85fea29743c3@nvidia.com>
+ <20201026132830.GQ20115@casper.infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026132830.GQ20115@casper.infradead.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Mon, 26 Oct 2020 14:46:03 +0100
-Takashi Iwai <tiwai@suse.de> escreveu:
+On Mon, Oct 26, 2020 at 01:28:30PM +0000, Matthew Wilcox wrote:
 
-> On Fri, 23 Oct 2020 18:33:35 +0200,
-> Mauro Carvalho Chehab wrote:
+> > > It's been five years since DAX was merged, and page pinning still
+> > > doesn't work.  How much longer before the people who are pushing it
+> > > realise that it's fundamentally flawed?
 > > 
-> > Kernel-doc markups should use this format:
-> >         identifier - description
-> > 
-> > There is a common comment marked, instead, with kernel-doc
-> > notation.
-> > 
-> > Some identifiers have different names between their prototypes
-> > and the kernel-doc markup.
-> > 
-> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>  
+> > Is this a separate rant about *only* DAX, or is general RDMA in your sights
+> > too? :)
 > 
-> Shall I merge this through sound git tree?
-> 
-> Or if this goes via doc tree, feel free to take my ack
->   Reviewed-by: Takashi Iwai <tiwai@suse.de>
+> This is a case where it's not RDMA's _fault_ that there's no good API
+> for it to do what it needs to do.  There's a lot of work needed to wean
+> Linux device drivers off their assumption that there's a struct page
+> for every byte of memory.
 
-Thanks for reviewing it!
+People who care seem to have just given up and are using RDMA ODP, so
+I'm not optimistic this DAX issue will ever be solved. I've also
+almost removed all the struct page references from this flow in RDMA,
+so if there is some way that helps it is certainly doable.
 
-Feel free to merge it though sound tree.
- 
-Thanks,
-Mauro
+Regardless of DAX the pinning indication is now being used during
+fork() for some good reasons, and seems to make sense in other use
+cases. It just doesn't seem like a way to solve the DAX issue.
+
+More or less it seems to mean that pages pinned cannot be write
+protected and more broadly the kernel should not change the PTEs for
+those pages independently of the application. ie the more agressive
+COW on fork() caused data corruption regressions...
+
+I wonder if the point here is that some page owners can't/won't
+support DMA pinning and should just be blocked completely for them.
+
+I'd much rather have write access pin_user_pages() just fail than oops
+the kernel on ext4 owned VMAs, for instance.
+
+Jason
