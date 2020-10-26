@@ -2,196 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4093F2991A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:00:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1E826299179
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:54:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784562AbgJZP42 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:56:28 -0400
-Received: from mail-lj1-f193.google.com ([209.85.208.193]:39691 "EHLO
-        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1784512AbgJZPyg (ORCPT
+        id S1784498AbgJZPyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:54:22 -0400
+Received: from mail-lf1-f65.google.com ([209.85.167.65]:35316 "EHLO
+        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773467AbgJZPyW (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:54:36 -0400
-Received: by mail-lj1-f193.google.com with SMTP id m16so10741829ljo.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:54:34 -0700 (PDT)
+        Mon, 26 Oct 2020 11:54:22 -0400
+Received: by mail-lf1-f65.google.com with SMTP id 77so12726203lfl.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:54:20 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=linaro.org; s=google;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc:content-transfer-encoding;
-        bh=f9BpXZd1dePTO41DoQrRpftD/OWsykwv67IUek0mRlE=;
-        b=ds1ibtfW9ahR96Tlz4l3O2V/NUXaipvZr+aslTh6VXSfEM3kHadDmcLxHX3+fim6vJ
-         XY0aMB/b/crNHJ+KYUBJZ9iGD5uXLpL3GlW/LXPeqfuahvJ/oHJALa+ujnz4qCr+aF3G
-         r3YPp5iqz7DHWZi7sVTcnGmjsSpbh0UvP+A1D/jSGedwgiDcEzQA2CCrlL6Pp0TOOfRR
-         YMZcHkmybCLa/INJ/1vhYw0788bYvORlLQPrQTIeXQW7YGQIcVcM1gEQN52jutOBxAoP
-         ZwBh7dYIIgqLz9FcZRZd4P1UVyI45sguGjVKNUDIESjDnNWyFcFcsZjbvjMRfKowcfFd
-         EtFw==
+        bh=wvpGTKmgqXTaCkFn5ppd9Kxb5MBsrTErP0SBkxdXHXk=;
+        b=xb/ABWqj+sqSF8V/fTF5+dlX2f60b9dYyMv5NTKSnQIRqCdKZnCZ+iDUe4IuxDH16a
+         q5Q5pmZSrwPBdQ9wj4+vKcP5D8KBsKD5xkOex6wESksPjdxkJbpbE+UeLQ87BrIRflwK
+         qWxSDc1K62RuR3J3qOc5WEQHqJ8P78o/YuqY6TdpHKM6q9q7hgxHao2HWafn4sqPaKCE
+         3NruaZphSlvCRzNT+6fMqEwJIut0ccxqp1TL/cMeqWPOrjUQfqAI+uxDhgqjHbaBDtXm
+         qQyyYW+biT5VsiBJFyXk9rROcjKtV3ximFDnVx3hq64KSADUhXsNmZUGM9C5u3z7Pmek
+         68cQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc:content-transfer-encoding;
-        bh=f9BpXZd1dePTO41DoQrRpftD/OWsykwv67IUek0mRlE=;
-        b=U4W4XbGo6VKw3/+p85phEp4oVuEpDP/Iw7HgTJWGtlA6e+O4gRL7WZKlDgdJqugEAB
-         SzhFrq9uBzkJqs7/7SL7gVW0TAJX4lzIagI0+NOaOQYa0OTHbgoPro9zskKCXCKTXAj7
-         PWYW9xOV45STmu4V/IrSPUXi8WI1HsRtH0rNbVRS6S1eFiCT0DtmkdX3UEQzx2l0H2iP
-         W3jTSXTvRQP26uSl3nBUtFnjWiA/dhgCVkUszGo6us7mlN7x+xHN13sd1L8imbQKBOH+
-         REYjVl1fgtKf6R8UyNCqtOmchSb6hjE+QQ/dtvk/z0jMcLy1t037zjiZwizRCuP+9w2D
-         vXfw==
-X-Gm-Message-State: AOAM533WLV1rq8CfTbqr+GWtucQnVA/FzPYPFNAb6AJlCAmVWOxuTYUJ
-        aZZE8+Li+tKENdFlBWeBHzerfmBRd3WtDorSlum/IA==
-X-Google-Smtp-Source: ABdhPJyfsg6Pn+1Y835UYicEETWbwyo+C5rrlUHlNo3ycyK5+vUjxRkzYBMWwSKKTQZitV4IVanOMj2G237Mp8vT7As=
-X-Received: by 2002:a2e:9c84:: with SMTP id x4mr5972527lji.326.1603727672694;
- Mon, 26 Oct 2020 08:54:32 -0700 (PDT)
+        bh=wvpGTKmgqXTaCkFn5ppd9Kxb5MBsrTErP0SBkxdXHXk=;
+        b=pCrHSMFr90fi0QDW1pQHn61kxT/phDkOo3sE14GBIm2SyCxDerTpojLAzgeotRp9wv
+         1fw3N4828svFMqFwqIZTuo4G1F8jmF92+glU3Jt7DXOStuxMdLb3+MFDhPe8gxflJOD4
+         RuiclcZGkLiYri8kjTM9SvIxBuVKR2enJqhA654jdpn5bplCczlqz6rpDYOcW+BlGvph
+         X0gem3XeKezwdflqXzenCObRiJwHPpwf+43yeQkxnLhqSbPMeP0KxNw7w9Rfe73eCUBP
+         SHv5zhE1qG+FsCn/9oLdBAOB6Z5ee/z3XR82T0jZLBEyg3pwtHzv65qyTCjcGLANtPvR
+         OkuQ==
+X-Gm-Message-State: AOAM532/aBAesMxE1XkhytX7daTSGpQxCaz/L4XsgMRqTN5AJtavLlSP
+        VuFmVp+x7zfj8GQCA8AemvZHND64g7WQhlnH7OYKVQ==
+X-Google-Smtp-Source: ABdhPJx9uAKy9F7uLrWqV5xtLjpNnwuDv1E4TZXk8PfaU/Wk3rfyceKphig+2gTGKPMhaOrknq7J5WvZvyDgy91mXsc=
+X-Received: by 2002:ac2:5e6c:: with SMTP id a12mr5933096lfr.568.1603727658945;
+ Mon, 26 Oct 2020 08:54:18 -0700 (PDT)
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
- <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
- <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
- <CAG48ez3kpEDO1x_HfvOM2R9M78Ach9O_4+Pjs-vLLfqvZL+13A@mail.gmail.com> <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com>
-In-Reply-To: <656a37b5-75e3-0ded-6ba8-3bb57b537b24@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 26 Oct 2020 16:54:05 +0100
-Message-ID: <CAG48ez2Uy8=Tz9k1hcr0suLPHjbJi1qUviSGzDQ-XWEGsdNU+A@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com> <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+ <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com> <20201026142455.GA13495@vingu-book>
+ <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+ <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+ <334f491d2887a6ed7c5347d5125412849feb8a0a.camel@surriel.com> <CAKfTPtAfKn0jzOpPNR4NUb0zLs02iLQq2_UCDSCEwhTB2LDAig@mail.gmail.com>
+In-Reply-To: <CAKfTPtAfKn0jzOpPNR4NUb0zLs02iLQq2_UCDSCEwhTB2LDAig@mail.gmail.com>
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+Date:   Mon, 26 Oct 2020 16:54:07 +0100
+Message-ID: <CAKfTPtC10+xn3EGz8agfPCK_xarTDSOPENqoGYJ3mvJCtMUeYw@mail.gmail.com>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework load_balance()"
+To:     Rik van Riel <riel@surriel.com>
+Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 25, 2020 at 5:32 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/1/20 4:14 AM, Jann Horn wrote:
-> > On Thu, Oct 1, 2020 at 3:52 AM Jann Horn <jannh@google.com> wrote:
-> >> On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrot=
-e:
-> >>> On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
-> >>>> On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> wr=
-ote:
-> >>>>> On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-page=
-s) wrote:
-> >>>>>> On 9/30/20 5:03 PM, Tycho Andersen wrote:
-> >>>>>>> On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (man-pa=
-ges) wrote:
-> >>>>>>>>        =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
-> >>>>>>>>        =E2=94=82FIXME                                           =
-     =E2=94=82
-> >>>>>>>>        =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
-=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
-=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
-=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
-> >>>>>>>>        =E2=94=82From my experiments,  it  appears  that  if  a  =
-SEC=E2=80=90 =E2=94=82
-> >>>>>>>>        =E2=94=82COMP_IOCTL_NOTIF_RECV   is  done  after  the  ta=
-rget =E2=94=82
-> >>>>>>>>        =E2=94=82process terminates, then the ioctl()  simply  bl=
-ocks =E2=94=82
-> >>>>>>>>        =E2=94=82(rather than returning an error to indicate that=
- the =E2=94=82
-> >>>>>>>>        =E2=94=82target process no longer exists).               =
-     =E2=94=82
-> >>>>>>>
-> >>>>>>> Yeah, I think Christian wanted to fix this at some point,
-> >>>>>>
-> >>>>>> Do you have a pointer that discussion? I could not find it with a
-> >>>>>> quick search.
-> >>>>>>
-> >>>>>>> but it's a
-> >>>>>>> bit sticky to do.
-> >>>>>>
-> >>>>>> Can you say a few words about the nature of the problem?
-> >>>>>
-> >>>>> I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("secco=
-mp:
-> >>>>> notify about unused filter"). So maybe there's a bug here?
-> >>>>
-> >>>> That thing only notifies on ->poll, it doesn't unblock ioctls; and
-> >>>> Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So that
-> >>>> commit doesn't have any effect on this kind of usage.
-> >>>
-> >>> Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
-> >>> we don't have a count of all of them, unfortunately.
-> >>>
-> >>> We could maybe look inside the wait_list, but that will probably make
-> >>> people angry :)
-> >>
-> >> The easiest way would probably be to open-code the semaphore-ish part,
-> >> and let the semaphore and poll share the waitqueue. The current code
-> >> kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
-> >> entire semaphore would IMO be cleaner than that. And it's not like
-> >> semaphore semantics are even a good fit for this code anyway.
-> >>
-> >> Let's see... if we didn't have the existing UAPI to worry about, I'd
-> >> do it as follows (*completely* untested). That way, the ioctl would
-> >> block exactly until either there actually is a request to deliver or
-> >> there are no more users of the filter. The problem is that if we just
-> >> apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
-> >> an event loop and don't set O_NONBLOCK will be screwed. So we'd
-> >> probably also have to add some stupid counter in place of the
-> >> semaphore's counter that we can use to preserve the old behavior of
-> >> returning -ENOENT once for each cancelled request. :(
-> >>
-> >> I guess this is a nice point in favor of Michael's usual complaint
-> >> that if there are no man pages for a feature by the time the feature
-> >> lands upstream, there's a higher chance that the UAPI will suck
-> >> forever...
+On Mon, 26 Oct 2020 at 16:42, Vincent Guittot
+<vincent.guittot@linaro.org> wrote:
+>
+> On Mon, 26 Oct 2020 at 16:04, Rik van Riel <riel@surriel.com> wrote:
 > >
-> > And I guess this would be the UAPI-compatible version - not actually
-> > as terrible as I thought it might be. Do y'all want this? If so, feel
-> > free to either turn this into a proper patch with Co-developed-by, or
-> > tell me that I should do it and I'll try to get around to turning it
-> > into something proper.
+> > On Mon, 2020-10-26 at 15:56 +0100, Vincent Guittot wrote:
+> > > On Mon, 26 Oct 2020 at 15:38, Rik van Riel <riel@surriel.com> wrote:
+> > > > On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
+> > > > > Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=
+=A9crit :
+> > > > > > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
+> > > > > >
+> > > > > > > Hi Chris
+> > > > > > >
+> > > > > > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+> > > > > > > > Hi everyone,
+> > > > > > > >
+> > > > > > > > We=E2=80=99re validating a new kernel in the fleet, and com=
+pared
+> > > > > > > > with
+> > > > > > > > v5.2,
+> > > > > > >
+> > > > > > > Which version are you using ?
+> > > > > > > several improvements have been added since v5.5 and the
+> > > > > > > rework of
+> > > > > > > load_balance
+> > > > > >
+> > > > > > We=E2=80=99re validating v5.6, but all of the numbers reference=
+d in
+> > > > > > this
+> > > > > > patch are
+> > > > > > against v5.9.  I usually try to back port my way to victory on
+> > > > > > this
+> > > > > > kind of
+> > > > > > thing, but mainline seems to behave exactly the same as
+> > > > > > 0b0695f2b34a wrt
+> > > > > > this benchmark.
+> > > > >
+> > > > > ok. Thanks for the confirmation
+> > > > >
+> > > > > I have been able to reproduce the problem on my setup.
+> > > > >
+> > > > > Could you try the fix below ?
+> > > > >
+> > > > > --- a/kernel/sched/fair.c
+> > > > > +++ b/kernel/sched/fair.c
+> > > > > @@ -9049,7 +9049,8 @@ static inline void
+> > > > > calculate_imbalance(struct
+> > > > > lb_env *env, struct sd_lb_stats *s
+> > > > >          * emptying busiest.
+> > > > >          */
+> > > > >         if (local->group_type =3D=3D group_has_spare) {
+> > > > > -               if (busiest->group_type > group_fully_busy) {
+> > > > > +               if ((busiest->group_type > group_fully_busy) &&
+> > > > > +                   (busiest->group_weight > 1)) {
+> > > > >                         /*
+> > > > >                          * If busiest is overloaded, try to fill
+> > > > > spare
+> > > > >                          * capacity. This might end up creating
+> > > > > spare
+> > > > > capacity
+> > > > >
+> > > > >
+> > > > > When we calculate an imbalance at te smallest level, ie between
+> > > > > CPUs
+> > > > > (group_weight =3D=3D 1),
+> > > > > we should try to spread tasks on cpus instead of trying to fill
+> > > > > spare
+> > > > > capacity.
+> > > >
+> > > > Should we also spread tasks when balancing between
+> > > > multi-threaded CPU cores on the same socket?
+> > >
+> > > My explanation is probably misleading. In fact we already try to
+> > > spread tasks. we just use spare capacity instead of nr_running when
+> > > there is more than 1 CPU in the group and the group is overloaded.
+> > > Using spare capacity is a bit more conservative because it tries to
+> > > not pull more utilization than spare capacity
+> >
+> > Could utilization estimates be off, either lagging or
+> > simply having a wrong estimate for a task, resulting
+> > in no task getting pulled sometimes, while doing a
+> > migrate_task imbalance always moves over something?
 >
-> Thanks for taking a shot at this.
+> task and cpu utilization are not always up to fully synced and may lag
+> a bit which explains that sometimes LB can fail to migrate for a small
+> diff
+
+And also from util_est which reports the max utilization of the task
+to be sure that LB migrates a task on a cpu that will have enough
+available capacity
+
 >
-> I tried applying the patch below to vanilla 5.9.0.
-> (There's one typo: s/ENOTCON/ENOTCONN).
->
-> It seems not to work though; when I send a signal to my test
-> target process that is sleeping waiting for the notification
-> response, the process enters the uninterruptible D state.
-> Any thoughts?
-
-Ah, yeah, I think I was completely misusing the wait API. I'll go change th=
-at.
-
-(Btw, in general, for reports about hangs like that, it can be helpful
-to have the contents of /proc/$pid/stack. And for cases where CPUs are
-spinning, the relevant part from the output of the "L" sysrq, or
-something like that.)
-
-Also, I guess we can probably break this part of UAPI after all, since
-the only user of this interface seems to currently be completely
-broken in this case anyway? So I think we want the other
-implementation without the ->canceled_reqs logic after all.
-
-I'm a bit on the fence now on whether non-blocking mode should use
-ENOTCONN or not... I guess if we returned ENOENT even when there are
-no more listeners, you'd have to disambiguate through the poll()
-revents, which would be kinda ugly?
-
-I'll try to turn this into a proper patch submission...
+> >
+> > Within an LLC we might not need to worry too much
+> > about spare capacity, considering select_idle_sibling
+> > doesn't give a hoot about capacity, either.
+> >
+> > --
+> > All Rights Reversed.
