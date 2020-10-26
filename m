@@ -2,105 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2420D298910
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:05:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2AFA6298917
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:07:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772553AbgJZJFp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:05:45 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58514 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390998AbgJZJFo (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:05:44 -0400
-Received: from kernel.org (unknown [87.70.96.83])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4F28122242;
-        Mon, 26 Oct 2020 09:05:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603703144;
-        bh=qV1j3o8b5aO+jtdBDoJyX5701vJJcUPPuK5bWgUroMs=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=n6pQeRtZ1dQZQwNLzcRvocBVxWOThQ2A3ohdsbB1ku0q9Z1z2DOVNvIaiR/xbrSRK
-         5zQtm2aEbLsKv3mU1aC9GYppS4t99gNCuK2wQoR74ofGRKXtqAOsYTKvXA+WFU2Lid
-         njOARSpftIz0V7Pd9Gh+IjN51p6qFKYl2MBmmm2s=
-Date:   Mon, 26 Oct 2020 11:05:26 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 0/4] arch, mm: improve robustness of direct map
- manipulation
-Message-ID: <20201026090526.GA1154158@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
+        id S1772576AbgJZJHF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:07:05 -0400
+Received: from mail-wm1-f46.google.com ([209.85.128.46]:54357 "EHLO
+        mail-wm1-f46.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1747015AbgJZJG7 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:06:59 -0400
+Received: by mail-wm1-f46.google.com with SMTP id w23so9714992wmi.4
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 02:06:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rasmusvillemoes.dk; s=google;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=2H9Y4JmiHcK3j+qZ0aFUfBDG3AKu1KtGzluos1f8AIA=;
+        b=MZcJ0J/fr058lVbFMWmXM92OuD9yOOuBGnXm3mH9s+Q+qvXuLJ1AMk++0cJYjL8/8O
+         O3IJehgooJ4RrhhzQO+E0kIuBzm4OwHBdxA8UbvcYVkZ7U2D4ZBSnEu9yGWalJ0k4cnx
+         UvsrfG5qIj0S9cjO324WDWRqyW/EdovKxkL9o=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=2H9Y4JmiHcK3j+qZ0aFUfBDG3AKu1KtGzluos1f8AIA=;
+        b=ZJPgMrUE5PN3Pl5rBD3sD1FFV8FJVeh3rEh4bnTxABKpiRm9RjazBICxahURDJqphQ
+         psG4hOsAnc3yMbDB9yAZpOzL+6IXSJJWdCLvOtmGiD51VA4rgWWADSMA6W3Obi8Rv+Z1
+         6bY1Z6lfioYmaHGvrbbkzRz5spe9bds9mAW/XdsAKNKfK+i6DpDn/MivqXD2ZD7756Eo
+         rcofQDrQUVmJzdiU3yYyz+GGgmOvUna7MDiZYO32bcnNwAe6oMwxNcNJlRnFCUO/cTol
+         rrU9IkZK4OBc6vVZybCXkZYROL3vVo7m6XAwR1X5lgludZxofJEYOHOQX18Q0f4kKlga
+         VMtA==
+X-Gm-Message-State: AOAM531FSvyaipKPyV2nRaQq/AeR/3WjmnGjAOu/GYEe/aPfINaXLP1O
+        au2oRWGv2FH/NqEhDxgPu+M7Cg==
+X-Google-Smtp-Source: ABdhPJz/dSh4WYOhOiSM/B+RWa4o7p1CXRC3GSQeuPYc6Si2kr9wemYErENZN/vvuGa/ZdX08vCt1g==
+X-Received: by 2002:a1c:417:: with SMTP id 23mr14851965wme.1.1603703216102;
+        Mon, 26 Oct 2020 02:06:56 -0700 (PDT)
+Received: from [172.16.11.132] ([81.216.59.226])
+        by smtp.gmail.com with ESMTPSA id f5sm19077441wmh.16.2020.10.26.02.06.54
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 02:06:55 -0700 (PDT)
+Subject: Re: [RESEND 01/11] irqchip: ls-extirq: Add LS1043A, LS1088A external
+ interrupt
+To:     Marc Zyngier <maz@kernel.org>, Biwen Li <biwen.li@oss.nxp.com>
+Cc:     shawnguo@kernel.org, robh+dt@kernel.org, mark.rutland@arm.com,
+        leoyang.li@nxp.com, zhiqiang.hou@nxp.com, tglx@linutronix.de,
+        jason@lakedaemon.net, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jiafei.pan@nxp.com,
+        xiaobo.xie@nxp.com, linux-arm-kernel@lists.infradead.org,
+        Biwen Li <biwen.li@nxp.com>
+References: <20201026080127.40499-1-biwen.li@oss.nxp.com>
+ <31d8971374c261003aee9f4807c8ac8c@kernel.org>
+From:   Rasmus Villemoes <linux@rasmusvillemoes.dk>
+Message-ID: <3448c822-31b1-7f9d-fedf-49912418fc3f@rasmusvillemoes.dk>
+Date:   Mon, 26 Oct 2020 10:06:54 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ae82f905a0092adb7e0f0ac206335c1883b3170f.camel@intel.com>
+In-Reply-To: <31d8971374c261003aee9f4807c8ac8c@kernel.org>
+Content-Type: text/plain; charset=windows-1252
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:13:52AM +0000, Edgecombe, Rick P wrote:
-> On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
-> > Indeed, for architectures that define CONFIG_ARCH_HAS_SET_DIRECT_MAP
-> > it is
-> > possible that __kernel_map_pages() would fail, but since this
-> > function is
-> > void, the failure will go unnoticed.
+On 26/10/2020 09.44, Marc Zyngier wrote:
+> On 2020-10-26 08:01, Biwen Li wrote:
+>> From: Hou Zhiqiang <Zhiqiang.Hou@nxp.com>
+>>
+>> Add an new IRQ chip declaration for LS1043A and LS1088A
+>> - compatible "fsl,ls1043a-extirq" for LS1043A, LS1046A
+>> - compatible "fsl,ls1088a-extirq" for LS1088A, LS208xA, LX216xA
 > 
-> Could you elaborate on how this could happen? Do you mean during
-> runtime today or if something new was introduced?
+> Three things:
+> - This commit message doesn't describe the bit_reverse change
 
-A failure in__kernel_map_pages() may happen today. For instance, on x86
-if the kernel is built with DEBUG_PAGEALLOC.
+Yeah, please elaborate on that, as the RM for 1043 or 1046 doesn't
+mention anything about bit reversal for the scfg registers - they don't
+seem to have the utter nonsense that is SCFG_SCFGREVCR, but perhaps,
+instead of removing it, that has just become a hard-coded part of the IP.
 
-	__kernel_map_pages(page, 1, 0);
+Also, IANAL etc., but
 
-will need to split, say, 2M page and during the split an allocation of
-page table could fail.
+>> +// Copyright 2019-2020 NXP
 
-Currently, the only user of __kernel_map_pages() outside DEBUG_PAGEALLOC
-is hibernation, but I think it would be safer to entirely prevent usage
-of __kernel_map_pages() when DEBUG_PAGEALLOC=n.
+really? Seems to be a bit of a stretch.
 
--- 
-Sincerely yours,
-Mike.
+At the very least, cc'ing the original author and only person to ever
+touch that file would have been appreciated.
+
+Rasmus
