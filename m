@@ -2,94 +2,80 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B7E8298E45
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:41:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 296BD298E4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:43:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780403AbgJZNlU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:41:20 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:38207 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780394AbgJZNlT (ORCPT
+        id S1780418AbgJZNnF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:43:05 -0400
+Received: from mail-pg1-f195.google.com ([209.85.215.195]:47010 "EHLO
+        mail-pg1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1774028AbgJZNnE (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:41:19 -0400
-Received: by mail-qt1-f193.google.com with SMTP id q26so6650222qtb.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 06:41:18 -0700 (PDT)
+        Mon, 26 Oct 2020 09:43:04 -0400
+Received: by mail-pg1-f195.google.com with SMTP id n16so6071254pgv.13;
+        Mon, 26 Oct 2020 06:43:03 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=Is8Ndd9dIIOH5Ln0+KPpq3sguokvidqL7+W/lmE7uFw=;
-        b=s+Co15GsJi18U1mgkjWFvIaLqiwFeHg7V+a9VVcdmHo1Zog8I9StYIzdngDyShVzDw
-         NLYerOlJyVMiBlIHdMXOeZdXPwdyiJBhL875UAJ/KMnr79U7Hwq5pDtmiyodO4FNSUZn
-         TGwW6uvauww5Sl9C86F4dzdBVLAAR6TD4UORDa8es1CiPKxRYf0nMJhVtIyo74RO/rQP
-         v2CJXXx5a/Cq0IUZyy+UrkA0m8RoQD4p/Uu2vwdOS8W0Jkpw5gCwWP0Oqb3pwug4W9IS
-         leAPrRNAnpa9EgBwnCS/Qm0hyOKALQZDNDfQRmL7lCEqK9nV634iU42p1VPZfH77dGyM
-         WcSg==
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=fgWFMA33L1wvVRbeOYuXc7gj+7AZelua6opSAb+G+Hc=;
+        b=fOIjnYXQVOfuRo/MdtRMnsMNy5NGagFoJuCz2NulddbeM1dHB2Q7Wm0/gE19Sa9oY0
+         Dww3X/lnEnsI2j5vPrmjJHmzrmLciycPPROhhxU/VKkTBDZdww+F6gkovoYsSGP+MSnm
+         4y9p00TcGkfCdXddvuGHK9qsBZ9wDWO6HMhmcda6xoumTNzeUCGu6N/SJEiMJlq1GViN
+         zq4tt4CJjjCY9VgPHi8MsCrc0pQe+YTmCSiknmvhRtcBKi3/LN9dI0aFL/vJnfvaZNlu
+         udifmrrlmA/kxHZOnNMC2XJk6de9kj0DxV9JmGxWEoUlsXo1LOR1ZmhAB2tRPFRJpJ+m
+         NyIg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=Is8Ndd9dIIOH5Ln0+KPpq3sguokvidqL7+W/lmE7uFw=;
-        b=IeEkvm2y2cgqth3Bj1VjnpNe9QQ2g3nMVcToFLirgNUXJ26ODm1jn0WRKWFbdeN8Cr
-         nAumDMTM5D3uoTNnJ+We6U4qwvay4JOs13/mOLPSY90F/Z+oHySujWueE9xemF9p/VBc
-         OKSrKR/8kR+vG1439woGgMq6urt8pAd0/XsNIxmjpTgwkB2El2Wbf2BrxTk/mw6CW9cm
-         Jp04N/HS4T8r/qTRfQp3gmXza0wG4LWiTzLcnlYuCbDuls44UaAgtc175B1nRHv0MqmF
-         vND3inwL2Vtn1EssnHCJx8VXXOkVEC5oowirLXbNAsl3MumPOrbtcAJxyH6z8kYE/o+D
-         3BJA==
-X-Gm-Message-State: AOAM533Rcvbigx1ak/T/rha+jzQBi9X+G68pvAySQc0a3RA9xKaK9Pay
-        noeCRa6wqTyMkOFttuZF0vo=
-X-Google-Smtp-Source: ABdhPJxlmsw7CFyINq07gVGdS1LDX+QeTwQsT7BCd2TNkNAA2NWTtYk2i8Jyj7MHnJw4OgGmrxYEQg==
-X-Received: by 2002:ac8:4a07:: with SMTP id x7mr17679588qtq.110.1603719678157;
-        Mon, 26 Oct 2020 06:41:18 -0700 (PDT)
-Received: from localhost (dhcp-48-d6-d5-c6-42-27.cpe.echoes.net. [199.96.181.106])
-        by smtp.gmail.com with ESMTPSA id d7sm6528705qkg.29.2020.10.26.06.41.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:41:17 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date:   Mon, 26 Oct 2020 09:41:14 -0400
-From:   Tejun Heo <tj@kernel.org>
-To:     qiang.zhang@windriver.com
-Cc:     jiangshanlai@gmail.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] workqueue: replace call_rcu with kfree_rcu
-Message-ID: <20201026134010.GA73258@mtj.duckdns.org>
-References: <20201014083145.16959-1-qiang.zhang@windriver.com>
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=fgWFMA33L1wvVRbeOYuXc7gj+7AZelua6opSAb+G+Hc=;
+        b=WfCpo2+S08u4NRAdGd4GPXU1rVkaSe5y7DP6EuCZhm+wA3KT0NoRbUhn/Tw5KSatzN
+         6EJdjJlJ+KUp4RJn5nD+6o8azYnScwApiKzlHxiElZtKwQgdcWYnABa9pMvrvc16sks3
+         GWt6Y8wXA3XgLGeQlimTW7rXEVhhJbnBLYnCVrBJjCX51iEeD4gcvgliAQznH2eEcaoN
+         /EwVjDC7GMacxbh1gZd6fbspnFVCuRyrg82fRl5OCC2tj4Kt5t1DQxbEMJ15ujvU8zNl
+         XKuRyjxCAxueKHwi5zVInFu1TzTCzQ2t202ZKcd/k7aqYzHqri89DF+gWTKDuBrBOgsk
+         ZOPw==
+X-Gm-Message-State: AOAM533XDXWKR7O6YvmzHNEPxGm81QS4mOCSAgEFM/QgBkoRy76URtJI
+        9l4F2yfkxftLvhhBGww8JHU=
+X-Google-Smtp-Source: ABdhPJxVwznCid7iDM8IYdViDJcHAxHIJAQ1nRyq3A5AE3TEi/QrgGrB5JCpDGMkFeqExIKKdZ3Tlw==
+X-Received: by 2002:a63:180f:: with SMTP id y15mr13420281pgl.324.1603719783482;
+        Mon, 26 Oct 2020 06:43:03 -0700 (PDT)
+Received: from [10.230.28.230] ([192.19.223.252])
+        by smtp.gmail.com with ESMTPSA id j1sm2068724pfa.96.2020.10.26.06.43.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 06:43:02 -0700 (PDT)
+Subject: Re: [PATCH v4 2/3] Add phy interface for 5GBASER mode
+To:     Pavana Sharma <pavana.sharma@digi.com>, andrew@lunn.ch
+Cc:     davem@davemloft.net, gregkh@linuxfoundation.org, kuba@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        vivien.didelot@gmail.com
+References: <cover.1603690201.git.pavana.sharma@digi.com>
+ <156717e3151d58bd51aef7b0e491ae5c63c07938.1603690202.git.pavana.sharma@digi.com>
+From:   Florian Fainelli <f.fainelli@gmail.com>
+Message-ID: <ea23320a-26bd-96bd-d46b-25eb3582b49e@gmail.com>
+Date:   Mon, 26 Oct 2020 06:42:59 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Firefox/78.0 Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201014083145.16959-1-qiang.zhang@windriver.com>
+In-Reply-To: <156717e3151d58bd51aef7b0e491ae5c63c07938.1603690202.git.pavana.sharma@digi.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 14, 2020 at 04:31:45PM +0800, qiang.zhang@windriver.com wrote:
-> diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-> index ac088ce6059b..8d4fe649631a 100644
-> --- a/kernel/workqueue.c
-> +++ b/kernel/workqueue.c
-> @@ -3653,11 +3653,6 @@ static struct worker_pool *get_unbound_pool(const struct workqueue_attrs *attrs)
->  	return NULL;
->  }
->  
-> -static void rcu_free_pwq(struct rcu_head *rcu)
-> -{
-> -	kmem_cache_free(pwq_cache,
-> -			container_of(rcu, struct pool_workqueue, rcu));
-> -}
->  
->  /*
->   * Scheduled on system_wq by put_pwq() when an unbound pwq hits zero refcnt
-> @@ -3683,7 +3678,7 @@ static void pwq_unbound_release_workfn(struct work_struct *work)
->  	put_unbound_pool(pool);
->  	mutex_unlock(&wq_pool_mutex);
->  
-> -	call_rcu(&pwq->rcu, rcu_free_pwq);
-> +	kfree_rcu(pwq, rcu);
 
-kfree_rcu() eventually calls kfree() which is different from
-kmem_cache_free(). It can only be used for kmalloc'd areas, not
-kmem_cache_alloc'd ones.
 
-Thanks.
+On 10/25/2020 10:58 PM, Pavana Sharma wrote:
+> Signed-off-by: Pavana Sharma <pavana.sharma@digi.com>
 
+Please subject this patch properly with "net: phy: Add 5GBASER interface 
+mode" and please also consider updating other files that are relevant here:
+
+Documentation/devicetree/bindings/net/ethernet-controller.yaml
+drivers/net/phy/phy-core.c
 -- 
-tejun
+Florian
