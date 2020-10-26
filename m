@@ -2,95 +2,81 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A482F2998AA
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:22:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CA8AF2998AC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:23:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1731561AbgJZVWp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:22:45 -0400
-Received: from mail-ot1-f67.google.com ([209.85.210.67]:35764 "EHLO
-        mail-ot1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731508AbgJZVWp (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:22:45 -0400
-Received: by mail-ot1-f67.google.com with SMTP id n11so9347276ota.2;
-        Mon, 26 Oct 2020 14:22:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=VmNejhIxbwZr0QHNkLPt+u87p3b3DQWpfaWDeZvLjj8=;
-        b=E9kJ7MmwEA7+su/st6egr5S8QWGNkH3yz9EL9BIVxYjSzQwCQB7VfBOeHQmWkwAMxL
-         DTxLuraa1u0rN/T6bud8jKvrHG5Y+cao2C27yn/i9cVs9ElhezmWulBHC8iJTospkEKy
-         iL5hdHmsVNCd5WljaANIIU+Vu5GDGdfGpeCdrbqKyKftxqZloMUqhclBEle/LBFKV8Ad
-         bo5lQrr+gc/dNXJ/6lnLDTPUVpAuvetpdDtuXu1tdI83yrGSfomkQL7ghNX2r1aTMAdF
-         gr4leXt/zf4K+9Soc6gz7UCw0Ez517ZoeiMzzt84dglMzdmiE9+7cJut7xfxdfRbfzJy
-         Tr6Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=VmNejhIxbwZr0QHNkLPt+u87p3b3DQWpfaWDeZvLjj8=;
-        b=kbSyUVblV9dRg+5oKG/XhkqvFhTWCFxRS4ens4UBnj0aDystV/Ta+qlWwTxTWl36aj
-         toCUXZ8O+9mOK7LCQ4mNzaFaCYMfJ1kwFrBeOeWuNAd0GNpxlyS5o+IkIH84WrwQ4d55
-         MfRXuagUSF/92OtMKtGgtnLCr2gVN3RZEW9KCB6qF1V2Or0LesJJaRt5NOcIBhxnwriH
-         F7NI4Jytz5sVpFE32wXIhdZAno3RJslX0mWBpW5mNADGY10LD29LQgSh76D3OxxxcDfS
-         2Vrtrf2Ifm9gGl1Rd96kQEfZp600gl7v56hc2h/Luz0LEPBCpIEi5RmeMFkKr3W100yn
-         T4RA==
-X-Gm-Message-State: AOAM5327oKSiaRJLa3Y0Vri9OAdeMdV/MgkVhuX3d05xoJbgkG0kC6GL
-        BUwBXaiIGohgMok60TZWz84=
-X-Google-Smtp-Source: ABdhPJw2Tqon8noPXohD5vqPyijBWCLfnZbYROAB54pfc6gLrm5TI+5uI/Movq1Ob/NqjSOHd/o8vg==
-X-Received: by 2002:a9d:6013:: with SMTP id h19mr15231445otj.262.1603747364234;
-        Mon, 26 Oct 2020 14:22:44 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id z22sm2934637ooe.21.2020.10.26.14.22.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 14:22:43 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 26 Oct 2020 14:22:42 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Wilken Gottwalt <wilken.gottwalt@mailbox.org>
-Cc:     linux-kernel@vger.kernel.org, Jean Delvare <jdelvare@suse.com>,
-        Jonathan Corbet <corbet@lwn.net>, linux-hwmon@vger.kernel.org
-Subject: Re: [PATCH v2] hwmon: add Corsair PSU HID controller driver
-Message-ID: <20201026212242.GA108745@roeck-us.net>
-References: <20201026152515.GA55313@roeck-us.net>
- <20201026183504.777cd579@monster.powergraphx.local>
- <20201026184151.GA60513@roeck-us.net>
- <20201026202953.505d94e2@monster.powergraphx.local>
+        id S1731679AbgJZVXb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:23:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39588 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1731589AbgJZVXb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:23:31 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1046D207F7;
+        Mon, 26 Oct 2020 21:23:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603747410;
+        bh=1cdNvddUdNByOuemIzD0FWBYLNf7FJXR1LgisTFtu5c=;
+        h=From:To:Cc:Subject:Date:From;
+        b=fAmEUO8nuXZRXASZgXCPeG5+iN//fc3aROoRzkMVOZkDIAONM1oZaat9MyBjNX9N4
+         TllIkCzBqn+TFbd+aQ+zxHjZUquYwSfMZwgmCYH/fosS/dWSYbORZFpbmbOR/NP0UG
+         zrEIordMT+Ufgx5Mbkb8lLXaH4BvECr3PKN14YW4=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Yan-Hsuan Chuang <yhchuang@realtek.com>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S. Miller" <davem@davemloft.net>,
+        Jakub Kicinski <kuba@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Nathan Chancellor <natechancellor@gmail.com>,
+        Nick Desaulniers <ndesaulniers@google.com>,
+        Tzu-En Huang <tehuang@realtek.com>,
+        Ping-Ke Shih <pkshih@realtek.com>,
+        Chin-Yen Lee <timlee@realtek.com>,
+        Kai-Heng Feng <kai.heng.feng@canonical.com>,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
+Subject: [PATCH\ net] rtw88: fix fw dump support detection
+Date:   Mon, 26 Oct 2020 22:22:55 +0100
+Message-Id: <20201026212323.3888550-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026202953.505d94e2@monster.powergraphx.local>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 08:29:53PM +0100, Wilken Gottwalt wrote:
-> On Mon, 26 Oct 2020 11:41:51 -0700
-> Guenter Roeck <linux@roeck-us.net> wrote:
-> > I have to admit that it is quite new for me as well, but I find it convenient.
-> > And it is kind of odd tht it needs three dots (and it may need spaces before
-> > and after the '...').
-> 
-> Well, the spaces make sense. Without it the syntax would conflict with the
-> the float formats ".1" and "1.". Though I looked up at least 5 different
-> c/c++ references and it wasn't mentioned in any of them. I often use this
-> three dot syntax in c++ variadic template functions, but this is a bit
-> different. I wonder if this is gcc specific.
-> 
-Unlikely, because it is usd in various places and the kernel compiles with
-clang.
+From: Arnd Bergmann <arnd@arndb.de>
 
-> Is it okay if I switch my email address in the next version of the patch?
-> I mean, is there a best practice for this case? My secure email provider
-> insists on encrypted smtp transport and caches the most secure cipher
-> encountered and the TLS options for vger.kernel.org changed 20+ hours ago.
-> Since then not a single mail sent to vger arrived. You may have noticed it.
-> Looks like I have to learn LKML submitting the most hard way. :-D
-> 
-Ah, that explains why v2 of your patch did not make it into patchwork.
+clang points out a useless check that was recently added:
 
-No problem if you change the e-mail address, as long as you keep your name.
+drivers/net/wireless/realtek/rtw88/fw.c:1485:21: warning: address of array 'rtwdev->chip->fw_fifo_addr' will always evaluate to 'true' [-Wpointer-bool-conversion]
+        if (!rtwdev->chip->fw_fifo_addr) {
+            ~~~~~~~~~~~~~~~^~~~~~~~~~~~
 
-Guenter
+Apparently this was meant to check the contents of the array
+rather than the address, so check it accordingly.
+
+Fixes: 0fbc2f0f34cc ("rtw88: add dump firmware fifo support")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ drivers/net/wireless/realtek/rtw88/fw.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/net/wireless/realtek/rtw88/fw.c b/drivers/net/wireless/realtek/rtw88/fw.c
+index 042015bc8055..b2fd87834f23 100644
+--- a/drivers/net/wireless/realtek/rtw88/fw.c
++++ b/drivers/net/wireless/realtek/rtw88/fw.c
+@@ -1482,7 +1482,7 @@ static bool rtw_fw_dump_check_size(struct rtw_dev *rtwdev,
+ int rtw_fw_dump_fifo(struct rtw_dev *rtwdev, u8 fifo_sel, u32 addr, u32 size,
+ 		     u32 *buffer)
+ {
+-	if (!rtwdev->chip->fw_fifo_addr) {
++	if (!rtwdev->chip->fw_fifo_addr[0]) {
+ 		rtw_dbg(rtwdev, RTW_DBG_FW, "chip not support dump fw fifo\n");
+ 		return -ENOTSUPP;
+ 	}
+-- 
+2.27.0
+
