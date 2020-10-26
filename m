@@ -2,89 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CE8C229A2E2
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:00:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8732429A2E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 04:01:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410118AbgJ0C75 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 22:59:57 -0400
-Received: from smtp2207-205.mail.aliyun.com ([121.197.207.205]:42236 "EHLO
-        smtp2207-205.mail.aliyun.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1729206AbgJ0C75 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 22:59:57 -0400
-X-Alimail-AntiSpam: AC=CONTINUE;BC=0.06900273|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_system_inform|0.0230261-0.00797704-0.968997;FP=0|0|0|0|0|-1|-1|-1;HT=ay29a033018047188;MF=fuyao@allwinnertech.com;NM=1;PH=DS;RN=13;RT=13;SR=0;TI=SMTPD_---.Iotm-GP_1603767592;
-Received: from localhost(mailfrom:fuyao@allwinnertech.com fp:SMTPD_---.Iotm-GP_1603767592)
-          by smtp.aliyun-inc.com(10.147.44.129);
-          Tue, 27 Oct 2020 10:59:52 +0800
-Date:   Tue, 27 Oct 2020 10:59:52 +0800
-From:   fuyao <fuyao@allwinnertech.com>
-To:     liush <liush@allwinnertech.com>
-Cc:     paul.walmsley@sifive.com, palmer@dabbelt.com,
-        aou@eecs.berkeley.edu, penberg@kernel.org,
-        akpm@linux-foundation.org, peterx@redhat.com, vbabka@suse.cz,
-        walken@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?6bqm6ZSu5qif?= <maijianzhang@allwinnertech.com>,
-        =?utf-8?B?6buE6Ie754Kc?= <huangzhenwei@allwinnertech.com>
-Subject: Re: [PATCH v4] riscv: fix pfn_to_virt err in do_page_fault().
-Message-ID: <20201027025952.GK9517@g8Exdroid64>
-Mail-Followup-To: liush <liush@allwinnertech.com>, paul.walmsley@sifive.com,
-        palmer@dabbelt.com, aou@eecs.berkeley.edu, penberg@kernel.org,
-        akpm@linux-foundation.org, peterx@redhat.com, vbabka@suse.cz,
-        walken@google.com, linux-riscv@lists.infradead.org,
-        linux-kernel@vger.kernel.org,
-        =?utf-8?B?6bqm6ZSu5qif?= <maijianzhang@allwinnertech.com>,
-        =?utf-8?B?6buE6Ie754Kc?= <huangzhenwei@allwinnertech.com>
-References: <1603716368-29896-1-git-send-email-liush@allwinnertech.com>
+        id S2410324AbgJ0DB0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 23:01:26 -0400
+Received: from mx.dsbt.gov.ua ([185.160.91.87]:61131 "EHLO mail.dsbt.gov.ua"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2410277AbgJ0DBZ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 23:01:25 -0400
+X-Greylist: delayed 594 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 23:01:24 EDT
+Received: from mail.dsbt.gov.ua (localhost [127.0.0.1])
+        by mail.dsbt.gov.ua (Postfix) with ESMTP id 4CKx6k5jV6z43c9J
+        for <linux-kernel@vger.kernel.org>; Tue, 27 Oct 2020 04:51:26 +0200 (EET)
+Authentication-Results: mail.dsbt.gov.ua (amavisd-new); dkim=pass
+        reason="pass (just generated, assumed good)" header.d=udxc.net.ua
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=udxc.net.ua; h=
+        user-agent:message-id:reply-to:organization:subject:subject:to
+        :from:from:date:date:content-transfer-encoding:content-type
+        :content-type:mime-version; s=dkim; t=1603767076; x=1606359077;
+         bh=848fShshWwgtUShn9oKoVIAnyW2XdIN1D3v6nF7Q3YI=; b=JsybQhbmjBls
+        R4Fa3vqLd1D7hOc51857qb94WyM2IV8Y0oIwCvpgQ9Jv69PCoDaVIn6OuzEcCDmD
+        Gi+BMmdsww5U8D2xQVPEBFYJw9RPd1vBs/rfU+NR8aClQQPVMSXJk22gtTDndD/o
+        qm/KTLNJ+O37DuxMdFmG9wkPaiHjkb4=
+X-Virus-Scanned: amavisd-new at mail.dsbt.gov.ua
+X-Spam-Flag: NO
+X-Spam-Score: 2.604
+X-Spam-Level: **
+X-Spam-Status: No, score=2.604 tagged_above=2 required=6.2
+        tests=[ALL_TRUSTED=-1, DCC_CHECK=1.1, FREEMAIL_FORGED_REPLYTO=2.503,
+        FSL_BULK_SIG=0.001] autolearn=no autolearn_force=no
+Received: from mail.dsbt.gov.ua ([127.0.0.1])
+        by mail.dsbt.gov.ua (mail.dsbt.gov.ua [127.0.0.1]) (amavisd-new, port 10026)
+        with ESMTP id MsH8J1USyPMR for <linux-kernel@vger.kernel.org>;
+        Tue, 27 Oct 2020 04:51:16 +0200 (EET)
+Received: from _ (localhost [127.0.0.1])
+        by mail.dsbt.gov.ua (Postfix) with ESMTPSA id 4CKm8b5t3Lz43YgJ;
+        Mon, 26 Oct 2020 22:07:27 +0200 (EET)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603716368-29896-1-git-send-email-liush@allwinnertech.com>
-User-Agent: Mutt/1.12.1 (2019-06-15)
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 26 Oct 2020 21:07:27 +0100
+From:   BBT Loan <31@dsbt.gov.ua>
+To:     undisclosed-recipients:;
+Subject: Re: Loan Offer
+Organization: info@bbtloan.org
+Reply-To: bbtloans@gmail.com
+Mail-Reply-To: bbtloans@gmail.com
+Message-ID: <449f924f29b6d4fca39cf754935f8a39@dsbt.gov.ua>
+X-Sender: 31@dsbt.gov.ua
+User-Agent: Roundcube Webmail
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-have you seen the main line?
 
-it already corrected.
-
-On Mon, Oct 26, 2020 at 08:46:08PM +0800, liush wrote:
-> From: Shaohua Liu <liush@allwinnertech.com>
-> 
-> The argument to pfn_to_virt() should be pfn not the value of CSR_SATP.
-> 
-> Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-> Reviewed-by: Anup Patel <anup@brainfault.org>
-> Signed-off-by: liush <liush@allwinnertech.com>
-> ---
->  arch/riscv/mm/fault.c | 4 +++-
->  1 file changed, 3 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/riscv/mm/fault.c b/arch/riscv/mm/fault.c
-> index 1359e21..3c8b9e4 100644
-> --- a/arch/riscv/mm/fault.c
-> +++ b/arch/riscv/mm/fault.c
-> @@ -86,6 +86,7 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
->  	pmd_t *pmd, *pmd_k;
->  	pte_t *pte_k;
->  	int index;
-> +	unsigned long pfn;
->  
->  	/* User mode accesses just cause a SIGSEGV */
->  	if (user_mode(regs))
-> @@ -100,7 +101,8 @@ static inline void vmalloc_fault(struct pt_regs *regs, int code, unsigned long a
->  	 * of a task switch.
->  	 */
->  	index = pgd_index(addr);
-> -	pgd = (pgd_t *)pfn_to_virt(csr_read(CSR_SATP)) + index;
-> +	pfn = csr_read(CSR_SATP) & SATP_PPN;
-> +	pgd = (pgd_t *)pfn_to_virt(pfn) + index;
->  	pgd_k = init_mm.pgd + index;
->  
->  	if (!pgd_present(*pgd_k)) {
-> -- 
-> 2.7.4
 
 -- 
-Nimflorie frostades seda!
+Hello,
+
+Do you need an urgent loan? We offer Educational loan, Business loan,
+Housing loan, Agricultural loan, Personal loan, auto loan, and other
+good reasons at 3%. Contact us for more details
+
+Admin,
+BBT Loan.
