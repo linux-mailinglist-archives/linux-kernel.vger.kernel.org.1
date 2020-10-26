@@ -2,148 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1175D299073
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:05:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E29429906E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:04:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783059AbgJZPFF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:05:05 -0400
-Received: from mail-oo1-f67.google.com ([209.85.161.67]:39787 "EHLO
-        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1744559AbgJZPFE (ORCPT
+        id S1782963AbgJZPE1 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:04:27 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33191 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782732AbgJZPE0 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:05:04 -0400
-Received: by mail-oo1-f67.google.com with SMTP id c10so2373673oon.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:05:03 -0700 (PDT)
+        Mon, 26 Oct 2020 11:04:26 -0400
+Received: by mail-pl1-f194.google.com with SMTP id b19so4878141pld.0;
+        Mon, 26 Oct 2020 08:04:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=kq+7FxltUFEKWao6Ng5CqD92DLdJvQHqtziMujIoaWU=;
-        b=wlhwRO0BCTyvIsi7sRjI5lW4fI6pRs0Bui2pdXQKTQJ880xC5sP7Fe8MirJ3hkd+/c
-         nOd/Vbt0Qbbft+k2qsnraq/QdQSHpn+4cH1kGkHjcbzVFYttw/yYo998lm9cBKTefNVw
-         kvEovFR+M4dysgPr2gqhtbf0ns1eLN3/083vz7wHD4LBbmaH6Hn8UTAR65qG4Awo1kLo
-         6nnrNS2PBxireJez3tw3lTqn2hrs66XpkLsrwKTb52YleHik/K7vIA48aQhOzEbm8Shl
-         Fo7HdDssxskYZk+jdDCQMPEB/6rlw4VC+axLNu92uRf40MjFMLliEq37UIYpbyJIilgi
-         NqZw==
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=AbLsbm02Lh+z37x0H0yu85jzJjOQgE7KPLtNhac1AZI=;
+        b=vCDZr4GXaSEFbiAljxRmLSiQ7mJykVLaWEDYtAN0yM1vCPRaRJRMF2pGjsZaYpKp7E
+         5feHiepcYZXlArUd/yht+hY3RWhBd+wFNRdeyRwmaucd+DFJxQo+HrCPu9eAm0vfZD9u
+         5eU9zM3Kn3ypuU3wfQtywq0S2IwC8IX/ja0IQ1/LbFEu57b1UjlyRvpDG0reWzPNQclE
+         YIlWVu7Jmogbt/11so6O+41F0jVwzNNqndNHrxk6yrbivUrCarPpJrC/IAzggJKVBQkh
+         VdEP6MJ1oevGVgTXqyn6IvPw1K4MoCwCh4aZv6IRCMDQ+59hMu3h3a7gvdDMLvPAA9JS
+         FKqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=kq+7FxltUFEKWao6Ng5CqD92DLdJvQHqtziMujIoaWU=;
-        b=ETfT2l2EBvAvtMZ5wC81lGIJ0kZeqBAmA22KJPq40Q2iGLsfedkCkpMRavsVsAJz+M
-         QejYmNogxTe9xKHVIlKKQ22268DtU0KxqArcHW300/xyGgyYyJ3Z+DaShjL0Bbkgz/jr
-         hjzONJTMA6p6ERYNHclmdxKKTeF73jFXGV+bxwIgQwgRdWREpu7gaNhV+kYwJEaCgUKW
-         Lyc7txayCslgdkpENpAjXMCzVVOSmtsjT15J0uHosyABFWmxZ29Lufz6Il5vivOTPDPV
-         /dPYjwayoIUQdO4vCTPXvd4SljjWR5FXcTBqhIYDKYAOTlBMiJY3H0P+lTE2M9mz+PCI
-         3IQw==
-X-Gm-Message-State: AOAM53286I2O+wxO7obzYb0p4S3ol3R9+JDy6dqUpNRiRE207o70FJGb
-        ufEVlqnN2F07fWW+40s5XIvc+Q==
-X-Google-Smtp-Source: ABdhPJyibHqcT9VCcuN+aYxjNELmt6onDRja6XEXW3drk+d3dVDNWAIVZThTKuFx5JVa8NWEfCVGEw==
-X-Received: by 2002:a4a:af03:: with SMTP id w3mr12579646oon.93.1603724703143;
-        Mon, 26 Oct 2020 08:05:03 -0700 (PDT)
-Received: from builder.lan (104-57-184-186.lightspeed.austtx.sbcglobal.net. [104.57.184.186])
-        by smtp.gmail.com with ESMTPSA id h5sm3689953otb.11.2020.10.26.08.05.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:05:02 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 10:05:00 -0500
-From:   Bjorn Andersson <bjorn.andersson@linaro.org>
-To:     Wolfram Sang <wsa@kernel.org>
-Cc:     Douglas Anderson <dianders@chromium.org>,
-        Akash Asthana <akashast@codeaurora.org>,
-        linux-i2c@vger.kernel.org,
-        Roja Rani Yarubandi <rojay@codeaurora.org>,
-        Stephen Boyd <swboyd@chromium.org>,
-        Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-        linux-arm-msm@vger.kernel.org, Andy Gross <agross@kernel.org>,
-        Mukesh Savaliya <msavaliy@codeaurora.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/3] Revert "i2c: i2c-qcom-geni: Fix DMA transfer race"
-Message-ID: <20201026150500.GA26921@builder.lan>
-References: <20201013212531.428538-1-dianders@chromium.org>
- <20201013142448.v2.2.I7b22281453b8a18ab16ef2bfd4c641fb1cc6a92c@changeid>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=AbLsbm02Lh+z37x0H0yu85jzJjOQgE7KPLtNhac1AZI=;
+        b=VJ4OJWB/ZPcIHG+zOzLR24IxKDgb5JWO1WRqchJdTINVkbLtqOjyDygJ+mzh674nr5
+         WIuTtVuYWyS/eur3J3RsAXh9HFUQrle/ob7puW4q22nHmyXR7t9ZZSnojmel0utKRwx/
+         z33kSuVF8zHpMyDTda3QgYBzdXXzxV3f7Fkp2I8CgHVP5Vf8FRMTFk6ycUZ6kIS7+llt
+         KQczpfMIzPXSif83zZ8M1kHoOwPsga9MesFJ4XrqC5iId1GGqz2A3HUg65RVQkE7+OPa
+         pwJru97krjrS9fit0nQt8jAU4KMv6fVZegTiFGqj+Si/l4rlC5VWsV0y5lv8i3n0XnZ2
+         eZow==
+X-Gm-Message-State: AOAM532kEaQ9iW4aYrOloA8TWcXKWMBPH4XQdch10CZcs1c35n+PVqDT
+        PwAEPqS0gEByeYdEdFV7hh+F4IlGM4c7eIqG7A8=
+X-Google-Smtp-Source: ABdhPJyGLpj0bfD54rlt29Jq2CAHLKMzKIQgDfG4efVD540s+GK+/sAolciF/zSSICRvNxKkpeQEpF29/XiFr64cV3k=
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr21134657pjb.228.1603724665896;
+ Mon, 26 Oct 2020 08:04:25 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201013142448.v2.2.I7b22281453b8a18ab16ef2bfd4c641fb1cc6a92c@changeid>
+References: <20201026141839.28536-1-brgl@bgdev.pl> <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
+In-Reply-To: <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Oct 2020 17:05:14 +0200
+Message-ID: <CAHp75Ve5d3acvsLoVckrAEh7+PeQWjeA29UqwjOyiXMG+HDF1Q@mail.gmail.com>
+Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
+To:     Bartosz Golaszewski <brgl@bgdev.pl>,
+        Jan Kiszka <jan.kiszka@siemens.com>
+Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue 13 Oct 16:25 CDT 2020, Douglas Anderson wrote:
+On Mon, Oct 26, 2020 at 4:46 PM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
+>
+> On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
+> >
+> > From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+> >
+> > I just wanted to convert the driver to using simpler IDA API but ended up
+> > quickly converting it to using regmap. Unfortunately I don't have the HW
+> > to test it so marking the patches that introduce functional change as RFT
+> > and Cc'ing the original author.
+>
+> +Cc: Jan, AFAIR their devices are using Exar UART.
 
-> This reverts commit 02b9aec59243c6240fc42884acc958602146ddf6.
-> 
-> As talked about in the patch ("soc: qcom: geni: More properly switch
-> to DMA mode"), swapping the order of geni_se_setup_m_cmd() and
-> geni_se_xx_dma_prep() can sometimes cause corrupted transfers.  Thus
-> we traded one problem for another.  Now that we've debugged the
-> problem further and fixed the geni helper functions to more disable
-> FIFO interrupts when we move to DMA mode we can revert it and end up
-> with (hopefully) zero problems!
-> 
-> To be explicit, the patch ("soc: qcom: geni: More properly switch
-> to DMA mode") is a prerequisite for this one.
-> 
-> Fixes: 02b9aec59243 ("i2c: i2c-qcom-geni: Fix DMA transfer race")
-> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> Reviewed-by: Stephen Boyd <swboyd@chromium.org>
-> Reviewed-by: Akash Asthana <akashast@codeaurora.org>
-> Tested-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+From code perspective looks good to me, FWIW,
+Reviewed-by: Andy Shevchenko <andy.shevchenko@gmail.com>
 
-Wolfram, would you like to pick this patch or would you prefer that it
-goes together with the other two through the soc tree?
+(One nit to one patch, but I think it should be fine)
 
-Per Doug's description it has a functional dependency on patch 1, but as
-long as all three patches makes it into v5.11 I'm okay with either way.
+> > Bartosz Golaszewski (7):
+> >   gpio: exar: add a newline after the copyright notice
+> >   gpio: exar: include idr.h
+> >   gpio: exar: switch to a simpler IDA interface
+> >   gpio: exar: use a helper variable for &pdev->dev
+> >   gpio: exar: unduplicate address and offset computation
+> >   gpio: exar: switch to using regmap
+> >   gpio: exar: use devm action for freeing the IDA and drop remove()
 
-Regards,
-Bjorn
 
-> ---
-> 
-> (no changes since v1)
-> 
->  drivers/i2c/busses/i2c-qcom-geni.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/i2c/busses/i2c-qcom-geni.c b/drivers/i2c/busses/i2c-qcom-geni.c
-> index dead5db3315a..32b2a9921b14 100644
-> --- a/drivers/i2c/busses/i2c-qcom-geni.c
-> +++ b/drivers/i2c/busses/i2c-qcom-geni.c
-> @@ -367,6 +367,7 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  		geni_se_select_mode(se, GENI_SE_FIFO);
->  
->  	writel_relaxed(len, se->base + SE_I2C_RX_TRANS_LEN);
-> +	geni_se_setup_m_cmd(se, I2C_READ, m_param);
->  
->  	if (dma_buf && geni_se_rx_dma_prep(se, dma_buf, len, &rx_dma)) {
->  		geni_se_select_mode(se, GENI_SE_FIFO);
-> @@ -374,8 +375,6 @@ static int geni_i2c_rx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  		dma_buf = NULL;
->  	}
->  
-> -	geni_se_setup_m_cmd(se, I2C_READ, m_param);
-> -
->  	time_left = wait_for_completion_timeout(&gi2c->done, XFER_TIMEOUT);
->  	if (!time_left)
->  		geni_i2c_abort_xfer(gi2c);
-> @@ -409,6 +408,7 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  		geni_se_select_mode(se, GENI_SE_FIFO);
->  
->  	writel_relaxed(len, se->base + SE_I2C_TX_TRANS_LEN);
-> +	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
->  
->  	if (dma_buf && geni_se_tx_dma_prep(se, dma_buf, len, &tx_dma)) {
->  		geni_se_select_mode(se, GENI_SE_FIFO);
-> @@ -416,8 +416,6 @@ static int geni_i2c_tx_one_msg(struct geni_i2c_dev *gi2c, struct i2c_msg *msg,
->  		dma_buf = NULL;
->  	}
->  
-> -	geni_se_setup_m_cmd(se, I2C_WRITE, m_param);
-> -
->  	if (!dma_buf) /* Get FIFO IRQ */
->  		writel_relaxed(1, se->base + SE_GENI_TX_WATERMARK_REG);
->  
-> -- 
-> 2.28.0.1011.ga647a8990f-goog
-> 
+-- 
+With Best Regards,
+Andy Shevchenko
