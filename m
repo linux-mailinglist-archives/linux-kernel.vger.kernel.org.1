@@ -2,75 +2,54 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7AB8E29945D
+	by mail.lfdr.de (Postfix) with ESMTP id 0CE5729945B
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:52:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788577AbgJZRwe (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:52:34 -0400
-Received: from mail.kernel.org ([198.145.29.99]:44842 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1788565AbgJZRwd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        id S1788566AbgJZRwd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Oct 2020 13:52:33 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id C592020790;
-        Mon, 26 Oct 2020 17:52:32 +0000 (UTC)
+Received: from mail.kernel.org ([198.145.29.99]:44816 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1788547AbgJZRwc (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:52:32 -0400
+Subject: Re: [GIT PULL] s390 compile fix for 5.10-rc2
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603734753;
-        bh=KFtu/NZNvgNe6TTGzBuUKpV14ikFgvjMFkZhl1sUIDg=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=fzrH56fSrUIOoyFYI+1aFazvExThzR1aHA4Av7NPY3zN3ebfvdu4fJqU3KZkXJS9H
-         vkbdy7g4v//mzg/0gJ+wH2gC9BoAJOZ4Nuh7ECj560RYjOZzAsRHV1bZaj54aLcUjk
-         1lqxtsGk7nXiN4m7N6JdKhbo38El8wgaEZQQxqmQ=
-Date:   Mon, 26 Oct 2020 10:52:31 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Gilad Ben-Yossef <gilad@benyossef.com>
-Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-Message-ID: <20201026175231.GG858@sol.localdomain>
-References: <20201026130450.6947-1-gilad@benyossef.com>
- <20201026130450.6947-4-gilad@benyossef.com>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026130450.6947-4-gilad@benyossef.com>
+        s=default; t=1603734752;
+        bh=/71UilDrvmpgNjMzM2RBa3jBiyVqJBHvzIQMn8BVl7g=;
+        h=From:In-Reply-To:References:Date:To:Cc:From;
+        b=Prcqx4hR3kWH/0dyDmw9hWEtxAHclyWwwMrWCTBfYY3v9sd/hrFaO80rPmObBhrz9
+         jJUtg2rFvv0ueL16GZNEgp7ED+DlVzM4zNIwohn7HYjrz4gJ8ogY2ouXB9Uby2ZKLR
+         ihJnr2OypU8jOibzvJEQ564Af8mb+kC7B/FoyzS0=
+From:   pr-tracker-bot@kernel.org
+In-Reply-To: <20201026142956.GA9584@osiris>
+References: <20201026142956.GA9584@osiris>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20201026142956.GA9584@osiris>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-2
+X-PR-Tracked-Commit-Id: 8e90b4b1305a80b1d7712370a163eff269ac1ba2
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 7e2b2da60658ee6cf7a421596a3c9eb619c810f9
+Message-Id: <160373475213.18562.4220019802574082477.pr-tracker-bot@kernel.org>
+Date:   Mon, 26 Oct 2020 17:52:32 +0000
+To:     Heiko Carstens <hca@linux.ibm.com>
+Cc:     Linus Torvalds <torvalds@linux-foundation.org>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Joe Perches <joe@perches.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
-> Replace the explicit EBOIV handling in the dm-crypt driver with calls
-> into the crypto API, which now possesses the capability to perform
-> this processing within the crypto subsystem.
-> 
-> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> 
-> ---
->  drivers/md/Kconfig    |  1 +
->  drivers/md/dm-crypt.c | 61 ++++++++++++++-----------------------------
->  2 files changed, 20 insertions(+), 42 deletions(-)
-> 
-> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-> index 30ba3573626c..ca6e56a72281 100644
-> --- a/drivers/md/Kconfig
-> +++ b/drivers/md/Kconfig
-> @@ -273,6 +273,7 @@ config DM_CRYPT
->  	select CRYPTO
->  	select CRYPTO_CBC
->  	select CRYPTO_ESSIV
-> +	select CRYPTO_EBOIV
->  	help
->  	  This device-mapper target allows you to create a device that
->  	  transparently encrypts the data on it. You'll need to activate
+The pull request you sent on Mon, 26 Oct 2020 15:29:56 +0100:
 
-Can CRYPTO_EBOIV please not be selected by default?  If someone really wants
-Bitlocker compatibility support, they can select this option themselves.
+> git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-2
 
-- Eric
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/7e2b2da60658ee6cf7a421596a3c9eb619c810f9
+
+Thank you!
+
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
