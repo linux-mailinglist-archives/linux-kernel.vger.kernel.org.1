@@ -2,118 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7453299586
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:38:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1AEEE299589
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:39:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790096AbgJZSib (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:38:31 -0400
-Received: from mail-io1-f65.google.com ([209.85.166.65]:40538 "EHLO
-        mail-io1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2442385AbgJZSib (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:38:31 -0400
-Received: by mail-io1-f65.google.com with SMTP id r9so11169473ioo.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:38:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=1XLqJl5vO2wWqmgb9LT+ITrNAM4FaYnH32PMkyjUkwU=;
-        b=U6rgcLPopeY+yLxDRznBLJXxFLKGgrzqcjfFpNlkRuTjUZU3L6L4X9PU1ee3RvMa7+
-         tCNGjsczrHyLeuJpp1FJgIusoZAD2HQRw/b0XMwu3MjheCJPPp5miFBqKhQ2awQB5ARS
-         Quh6VF2ccXhCSoc422X2K9Iw5F7vGpvUkXKgZhR2yBiTYrLcv6qBpFW6o+pyFKIvFLdi
-         IH0K6HDRCn6/4tc3gyOB5Sju904nMvGLHbtkK83c+fIFJE5RKwlKJpWXosyPofqszADl
-         RkjngwAtJtRSWaxQVC5doRFFBX+p+JxbGtgkaher5nXaaL7lLDWPrzrTVor88nQkjsKu
-         ILHg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=1XLqJl5vO2wWqmgb9LT+ITrNAM4FaYnH32PMkyjUkwU=;
-        b=GVcV/7AGgF766lg+xCBt7bK+UJtLJUX/Jcabr3pHsLLxG30NwYZ4LW4eQwthBkY1Qo
-         6LPCRGqsy5PLEsGWaFd0/eCTxadwYpXriNKedlK7hMUzp/kfDIp8S1b6xyNnbqRWtqC9
-         agTAAbETTSSkQku4R+QN0qBwqLk7FZHSh+4KdKvkNuXy5/wLFVpDOyYhSU/zvSwifDCu
-         9u5+cbAK1c6aMkMBT2Th7AaiZQdx7FNEbeZ9zohuMoskrRGC2zCAQ9zpZIQtcckpnffY
-         +nsjh+G4PtbsBFrfVZyn7f7uky32sDIhMJ++Neob7BKzLKvw35V1f4AlD9fV/mqVH8DI
-         AYZQ==
-X-Gm-Message-State: AOAM530T1jVd2Ulx3R8r2DpU+Xc+EhDMHns9C9f63q0Ety3sEPbCC+1E
-        D4yOaoSbTnxRlBSKJWNj03/181HDD87G+dpsAtAJ7Q==
-X-Google-Smtp-Source: ABdhPJwf56+lb7bD44CUrLWq/bsLRBUFkrCwKEnxLO52La3PA3TL1ljkGdJ1n02YMO6sRL1kgcUE4qOIFcgHOMQErFw=
-X-Received: by 2002:a05:6602:2d8c:: with SMTP id k12mr5570349iow.46.1603737510347;
- Mon, 26 Oct 2020 11:38:30 -0700 (PDT)
+        id S1790106AbgJZSjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:39:39 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1741485AbgJZSjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:39:39 -0400
+Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3E4152084C;
+        Mon, 26 Oct 2020 18:39:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603737578;
+        bh=7VmhnHRkwkCNWziVvSpwif+hE8EvvT/r7OJAvNDEhz4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=e4m0UFZbr26BzGxHLiHYpbVuFRZtg9GrOwzWOJU9mVMavylkIeZhVVJFg+/I81tFK
+         SIuOw7GoaH+CT2wdVC8TrnSGWROQxIO1cPzaIti2DC0j2HymzmOgSdVNIatT0f7Rvi
+         XxMVFJUtLfl+5euCYkTAWP4U0nccEK0q7iXc18Wo=
+Date:   Mon, 26 Oct 2020 11:39:36 -0700
+From:   Eric Biggers <ebiggers@kernel.org>
+To:     Milan Broz <gmazyland@gmail.com>
+Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org
+Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
+Message-ID: <20201026183936.GJ858@sol.localdomain>
+References: <20201026130450.6947-1-gilad@benyossef.com>
+ <20201026130450.6947-4-gilad@benyossef.com>
+ <20201026175231.GG858@sol.localdomain>
+ <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
 MIME-Version: 1.0
-References: <20201024200304.1427864-1-fparent@baylibre.com>
- <20201026121316.GB7402@sirena.org.uk> <CAOwMV_w5N0_Qgg3MFph1147cbvFP1Y=mUtNjGbcr-Tca4ZJ3yA@mail.gmail.com>
- <20201026172431.GI7402@sirena.org.uk>
-In-Reply-To: <20201026172431.GI7402@sirena.org.uk>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Mon, 26 Oct 2020 19:38:14 +0100
-Message-ID: <CAOwMV_xt=OV6cKqQTZUUSAvYKxUUQZAUywAHtFFHL=E5xVu-Zg@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
+On Mon, Oct 26, 2020 at 07:29:57PM +0100, Milan Broz wrote:
+> On 26/10/2020 18:52, Eric Biggers wrote:
+> > On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
+> >> Replace the explicit EBOIV handling in the dm-crypt driver with calls
+> >> into the crypto API, which now possesses the capability to perform
+> >> this processing within the crypto subsystem.
+> >>
+> >> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+> >>
+> >> ---
+> >>  drivers/md/Kconfig    |  1 +
+> >>  drivers/md/dm-crypt.c | 61 ++++++++++++++-----------------------------
+> >>  2 files changed, 20 insertions(+), 42 deletions(-)
+> >>
+> >> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+> >> index 30ba3573626c..ca6e56a72281 100644
+> >> --- a/drivers/md/Kconfig
+> >> +++ b/drivers/md/Kconfig
+> >> @@ -273,6 +273,7 @@ config DM_CRYPT
+> >>  	select CRYPTO
+> >>  	select CRYPTO_CBC
+> >>  	select CRYPTO_ESSIV
+> >> +	select CRYPTO_EBOIV
+> >>  	help
+> >>  	  This device-mapper target allows you to create a device that
+> >>  	  transparently encrypts the data on it. You'll need to activate
+> > 
+> > Can CRYPTO_EBOIV please not be selected by default?  If someone really wants
+> > Bitlocker compatibility support, they can select this option themselves.
+> 
+> Please no! Until this move of IV to crypto API, we can rely on
+> support in dm-crypt (if it is not supported, it is just a very old kernel).
+> (Actually, this was the first thing I checked in this patchset - if it is
+> unconditionally enabled for compatibility once dmcrypt is selected.)
+> 
+> People already use removable devices with BitLocker.
+> It was the whole point that it works out-of-the-box without enabling anything.
+> 
+> If you insist on this to be optional, please better keep this IV inside dmcrypt.
+> (EBOIV has no other use than for disk encryption anyway.)
+> 
+> Or maybe another option would be to introduce option under dm-crypt Kconfig that
+> defaults to enabled (like support for foreign/legacy disk encryption schemes) and that
+> selects these IVs/modes.
+> But requiring some random switch in crypto API will only confuse users.
 
-On Mon, Oct 26, 2020 at 6:24 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Mon, Oct 26, 2020 at 06:18:35PM +0100, Fabien Parent wrote:
-> > On Mon, Oct 26, 2020 at 1:13 PM Mark Brown <broonie@kernel.org> wrote:
->
-> > > On Sat, Oct 24, 2020 at 10:03:03PM +0200, Fabien Parent wrote:
->
-> > > > +Required properties:
-> > > > +- compatible: "mediatek,mt6392-regulator"
->
-> > > This is no longer used by the driver, should be unneeded and therefore
-> > > should be removed.
->
-> > It is not used by the driver but it will be used by the MFD driver [0]
-> > like this:
-> > static const struct mfd_cell mt6392_devs[] = {
-> >     {
-> >         [snip]
-> >     }, {
-> >         [snip]
-> >     }, {
-> >         .name = "mt6392-regulator",
-> >         .of_compatible = "mediatek,mt6392-regulator"
->
-> This is still unneeded, it's just a reflection of Linux implementation
-> details and should be removed.   The MFD can just register the child
-> without supplying a compatible and things will continue to work just as
-> well.
+CONFIG_DM_CRYPT can either select every weird combination of algorithms anyone
+can ever be using, or it can select some defaults and require any other needed
+algorithms to be explicitly selected.
 
-I'm not exactly sure how it is supposed to work. mfd_add_devices seems
-to register devices based on of_compatible or acpi_match from the
-mfd_cell. This platform does not have ACPI so I don't understand how
-the regulator driver would probe without this line. Anyway I tried to
-remove the lines below in the MFD driver and the device tree and the
-boot of the board failed because the regulator driver didn't probe.
-Any help to get me understand how it should work without this line
-would be helpful, thanks.
+In reality, dm-crypt has never even selected any particular block ciphers, even
+AES.  Nor has it ever selected XTS.  So it's actually always made users (or
+kernel distributors) explicitly select algorithms.  Why the Bitlocker support
+suddenly different?
 
+I'd think a lot of dm-crypt users don't want to bloat their kernels with random
+legacy algorithms.
 
-                regulators {
--                       compatible = "mediatek,mt6392-regulator";
--
-                        mt6392_vproc_reg: buck-vproc {
-
-
-@@ -135,7 +135,6 @@ static const struct mfd_cell mt6392_devs[] = {
-                .of_compatible = "mediatek,mt6392-keys"
-        }, {
-                .name = "mt6392-regulator",
--               .of_compatible = "mediatek,mt6392-regulator"
-        }, {
+- Eric
