@@ -2,76 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 522B82992BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 195042992BC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786354AbgJZQq3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:46:29 -0400
-Received: from casper.infradead.org ([90.155.50.34]:45024 "EHLO
-        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2408380AbgJZQot (ORCPT
+        id S1786329AbgJZQqV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:46:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55454 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1780212AbgJZQpz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:44:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-        References:Message-ID:Subject:To:From:Date:Sender:Reply-To:Cc:
-        Content-Transfer-Encoding:Content-ID:Content-Description;
-        bh=ulnqTjMrBKaF480Abr2+mk3fNXPi753tTvCmHg1d4pg=; b=f1NI3CAsOSysuZzKkwfJhVuIWR
-        3mXIQtiVD7DD/2SdiUrYbTpuJuX6lgF28b/95rFLxUerMdwSVmj/ZV+tnAz6dfDbVkSdMl8QQJJ3n
-        rpRsqBFIv8JAhq+bzsja5A3WUI151bKwWdqER6/6DpsxpQ5cju9L+9HnwftwJrMUJsnBY7ZyiSaZE
-        8qIFt38vcTDLCQX9rCsElOM2Ls24D0mI6Qa8Th4tgk+hFQHG+OuASqdjaqYMzYmn28LiHoaDg4WOl
-        jNsaZjcAxkuv+tE9b6PitSKZTpk4b1W73VyFNGg8Te+nIR/QvFEqofI+P0lH20xmNgUMLOXbB4jLN
-        dNv1gxow==;
-Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
-        id 1kX5bu-0003Lt-GL; Mon, 26 Oct 2020 16:44:42 +0000
-Date:   Mon, 26 Oct 2020 16:44:42 +0000
-From:   Matthew Wilcox <willy@infradead.org>
-To:     dsterba@suse.cz, linux-fsdevel@vger.kernel.org, ericvh@gmail.com,
-        lucho@ionkov.net, viro@zeniv.linux.org.uk, jlayton@kernel.org,
-        idryomov@gmail.com, mark@fasheh.com, jlbec@evilplan.org,
-        joseph.qi@linux.alibaba.com, v9fs-developer@lists.sourceforge.net,
-        linux-kernel@vger.kernel.org, ceph-devel@vger.kernel.org,
-        ocfs2-devel@oss.oracle.com, linux-btrfs@vger.kernel.org,
-        clm@fb.com, josef@toxicpanda.com, dsterba@suse.com,
-        stable@vger.kernel.org
-Subject: Re: [PATCH 6/7] btrfs: Promote to unsigned long long before shifting
-Message-ID: <20201026164442.GU20115@casper.infradead.org>
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-7-willy@infradead.org>
- <20201026163546.GP6756@twin.jikos.cz>
+        Mon, 26 Oct 2020 12:45:55 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603730753;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=EtQ7ATZf42jwj5zA9pcp/oVxiJsLAJssQKkbBhG+zyg=;
+        b=WhU8hFXq6r60r7p6nPa0werS3FQw2gn8ny1eL5ecfRnW2dV/Q35dyUgG5SLu4pMwg9yVza
+        /TOtR2bzd6zTZWIzDJeExl50eDnFwiAbctyzZI7c4Z4vamjfOvdEjhmbj3HQ/WxB29+/YT
+        rgQrCmbIhLPoLe3IX0N0bOrVEiSpJQU=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-437-N3pw_MRnMBKF2Of_PM6O7A-1; Mon, 26 Oct 2020 12:45:49 -0400
+X-MC-Unique: N3pw_MRnMBKF2Of_PM6O7A-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.phx2.redhat.com [10.5.11.16])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BC861879526;
+        Mon, 26 Oct 2020 16:45:46 +0000 (UTC)
+Received: from oldenburg2.str.redhat.com (ovpn-114-87.ams2.redhat.com [10.36.114.87])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 495D65C1BB;
+        Mon, 26 Oct 2020 16:45:44 +0000 (UTC)
+From:   Florian Weimer <fweimer@redhat.com>
+To:     Dave Martin via Libc-alpha <libc-alpha@sourceware.org>
+Cc:     Jeremy Linton <jeremy.linton@arm.com>,
+        Dave Martin <Dave.Martin@arm.com>,
+        Mark Rutland <mark.rutland@arm.com>,
+        systemd-devel@lists.freedesktop.org,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Brown <broonie@kernel.org>, toiwoton@gmail.com,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+        <20201026162410.GB27285@arm.com>
+Date:   Mon, 26 Oct 2020 17:45:42 +0100
+In-Reply-To: <20201026162410.GB27285@arm.com> (Dave Martin via Libc-alpha's
+        message of "Mon, 26 Oct 2020 16:24:11 +0000")
+Message-ID: <87r1pl9brd.fsf@oldenburg2.str.redhat.com>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/27.1 (gnu/linux)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026163546.GP6756@twin.jikos.cz>
+Content-Type: text/plain
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.16
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:35:46PM +0100, David Sterba wrote:
-> On Sun, Oct 04, 2020 at 07:04:27PM +0100, Matthew Wilcox (Oracle) wrote:
-> > On 32-bit systems, this shift will overflow for files larger than 4GB.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
-> > Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> > ---
-> >  fs/btrfs/raid56.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> > index 255490f42b5d..5ee0a53301bd 100644
-> > --- a/fs/btrfs/raid56.c
-> > +++ b/fs/btrfs/raid56.c
-> > @@ -1089,7 +1089,7 @@ static int rbio_add_io_page(struct btrfs_raid_bio *rbio,
-> >  	u64 disk_start;
-> >  
-> >  	stripe = &rbio->bbio->stripes[stripe_nr];
-> > -	disk_start = stripe->physical + (page_index << PAGE_SHIFT);
-> > +	disk_start = stripe->physical + ((loff_t)page_index << PAGE_SHIFT);
-> 
-> It seems that this patch is mechanical replacement. If you check the
-> callers, the page_index is passed from an int that iterates over bits
-> set in an unsigned long (bitmap). The result won't overflow.
+* Dave Martin via Libc-alpha:
 
-Not mechanical, but I clearly made mistakes.  Will you pick up the
-patches which actually fix bugs?
+> Would it now help to add something like:
+>
+> int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
+> {
+> 	int ret = -EINVAL;
+> 	mmap_write_lock(current->mm);
+> 	if (all vmas in [addr .. addr + len) have
+> 			their mprotect flags set to old_flags) {
+>
+> 		ret = mprotect(addr, len, new_flags);
+> 	}
+> 	
+> 	mmap_write_unlock(current->mm);
+> 	return ret;
+> }
+
+I suggested something similar as well.  Ideally, the interface would
+subsume pkey_mprotect, though, and have a separate flags argument from
+the protection flags.  But then we run into argument list length limits.
+
+Thanks,
+Florian
+-- 
+Red Hat GmbH, https://de.redhat.com/ , Registered seat: Grasbrunn,
+Commercial register: Amtsgericht Muenchen, HRB 153243,
+Managing Directors: Charles Cachera, Brian Klemm, Laurie Krebs, Michael O'Neill
+
