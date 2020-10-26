@@ -2,125 +2,118 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04EC2298F66
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:34:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B67E6298F58
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:32:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781522AbgJZOan (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:30:43 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:43911 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781510AbgJZOan (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:30:43 -0400
-Received: by mail-ot1-f65.google.com with SMTP id k68so8129752otk.10;
-        Mon, 26 Oct 2020 07:30:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:reply-to:from:date:message-id
-         :subject:to:cc;
-        bh=+62REvLl90oSoyuDks7xdfiXCVRonn7cl65cbO1ln/E=;
-        b=JnQ0MIpC39NGj7T4hBFlbdnbI8BIWOudxMb9DwRB+2vErYWqGaeDk6rew3qbtnq6zE
-         xTQK3COatM2HRhx7Xj9lHlrGrcm71hnK8BNlqHvJIskesC/YoT/AlMOcjB5nyYP/qEr5
-         nGqst5eVhCd7URgCMzm/Z1ajkuwlpxD5SqPAKMFSs8E/vhjMV8gwqMpNkgRp9Bp6Xpn4
-         RRyiGkWI03aSsA5qqbLzT5bAviyyV57u+uzzZa6LYP23zz1MUbbGQTIEtIrCFOljySFY
-         9LUzk5kBx9rPqA30qiWylDiDgAPXMjP9b5T3y/ZQo5jB7TcU7uUb3usgvmVod9XA6i/4
-         aeSw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:reply-to
-         :from:date:message-id:subject:to:cc;
-        bh=+62REvLl90oSoyuDks7xdfiXCVRonn7cl65cbO1ln/E=;
-        b=iMxpJoL3xGlJWe9fCAkw24Z183mbIYd+7RyuQdsh6cPdOspTKXn1hCDi2vp1rWUyAy
-         e8rd8yiNDtMp9Df9KMNJxunQ02g2ONkTN3e/fkhMG37Td8RL/0sGY9BUj+n6gbKy6EGl
-         z7A2cDAO5+Dm2la8NgQK6WvHN3lTDG76+x+kPlNeaQ1HcK7ooPXvFKRItsgE2wGGlpFw
-         20HpOGYoE2acRxVruARID/EaZKvxBA8AJyWytISZpmq767jNGUeKuJw4w7tmU1cFD4uU
-         69RxQO50mFc+rw/y/iSHtPW3OVeyN8V80ft5/EKgXxLbacJQrFxaeSpVkTQnKL+ilRKC
-         iLIw==
-X-Gm-Message-State: AOAM5316PNo3JKV79GREk3Sr8ZPa2mzYVfqSbC2UcN9L/at3LWAeD4qI
-        AAtCm+MNej5yse5c58OWJRtw4CpFcq3Dz5T5ZuPLhkfL4gI=
-X-Google-Smtp-Source: ABdhPJwW15tzyEC/krpp35iEMIIcjSyagUOGYZYuoOMQvqf+nEg1onUBKRqqUolszW2AyHG3hi9a91s1aH2f5EGSzME=
-X-Received: by 2002:a05:6830:22eb:: with SMTP id t11mr13557647otc.114.1603722641926;
- Mon, 26 Oct 2020 07:30:41 -0700 (PDT)
+        id S1781547AbgJZOc0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:32:26 -0400
+Received: from mx2.suse.de ([195.135.220.15]:51442 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1781420AbgJZObw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:31:52 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 3D1FAAD07;
+        Mon, 26 Oct 2020 14:31:50 +0000 (UTC)
+Message-ID: <2ca7430db77ca2924cb6f4b99e858f155d261a18.camel@suse.de>
+Subject: Re: [PATCH v2 05/10] soc: bcm: raspberrypi-power: Release firmware
+ handle on unbind
+From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+To:     u.kleine-koenig@pengutronix.de, linux-kernel@vger.kernel.org
+Cc:     f.fainelli@gmail.com, linux-pwm@vger.kernel.org,
+        bcm-kernel-feedback-list@broadcom.com,
+        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+        wahrenst@gmx.net, linux-input@vger.kernel.org,
+        dmitry.torokhov@gmail.com, gregkh@linuxfoundation.org,
+        devel@driverdev.osuosl.org, p.zabel@pengutronix.de,
+        linux-gpio@vger.kernel.org, linus.walleij@linaro.org,
+        linux-clk@vger.kernel.org, sboyd@kernel.org,
+        linux-rpi-kernel@lists.infradead.org
+Date:   Mon, 26 Oct 2020 15:31:47 +0100
+In-Reply-To: <20201022155858.20867-6-nsaenzjulienne@suse.de>
+References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
+         <20201022155858.20867-6-nsaenzjulienne@suse.de>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-iro0+jQoAZrbRkqhy4O6"
+User-Agent: Evolution 3.36.5 
 MIME-Version: 1.0
-References: <63598b4f-6ce3-5a11-4552-cdfe308f68e4@gmail.com> <20201026135418.GN1884107@cisco>
-In-Reply-To: <20201026135418.GN1884107@cisco>
-Reply-To: mtk.manpages@gmail.com
-From:   "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Date:   Mon, 26 Oct 2020 15:30:29 +0100
-Message-ID: <CAKgNAkgbvuEJ0rkLrZGgCf0OTC8YH2vxemNic8SsDxjh=Z22uw@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page [v2]
-To:     Tycho Andersen <tycho@tycho.pizza>
-Cc:     Sargun Dhillon <sargun@sargun.me>,
-        Christian Brauner <christian@brauner.io>,
-        Kees Cook <keescook@chromium.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Song Liu <songliubraving@fb.com>,
-        Robert Sesek <rsesek@google.com>,
-        Containers <containers@lists.linux-foundation.org>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>, Jann Horn <jannh@google.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Andy Lutomirski <luto@amacapital.net>
-Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Tycho,
 
-Thanks for getting back to me.
+--=-iro0+jQoAZrbRkqhy4O6
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 26 Oct 2020 at 14:54, Tycho Andersen <tycho@tycho.pizza> wrote:
->
-> On Mon, Oct 26, 2020 at 10:55:04AM +0100, Michael Kerrisk (man-pages) wrote:
-> > Hi all (and especially Tycho and Sargun),
-> >
-> > Following review comments on the first draft (thanks to Jann, Kees,
-> > Christian and Tycho), I've made a lot of changes to this page.
-> > I've also added a few FIXMEs relating to outstanding API issues.
-> > I'd like a second pass review of the page before I release it.
-> > But also, this mail serves as a way of noting the outstanding API
-> > issues.
-> >
-> > Tycho: I still have an outstanding question for you at [2].
-> > [2] https://lore.kernel.org/linux-man/8f20d586-9609-ef83-c85a-272e37e684d8@gmail.com/
->
-> I don't have that thread in my inbox any more, but I can reply here:
-> no, I don't know any users of this info, but I also don't anticipate
-> knowing how people will all use this feature :)
+On Thu, 2020-10-22 at 17:58 +0200, Nicolas Saenz Julienne wrote:
+> Upon unbinding the device make sure we release RPi's firmware interface.
+>=20
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
+>  drivers/soc/bcm/raspberrypi-power.c | 15 +++++++++++++++
+>  1 file changed, 15 insertions(+)
+>=20
+> diff --git a/drivers/soc/bcm/raspberrypi-power.c b/drivers/soc/bcm/raspbe=
+rrypi-power.c
+> index 5d1aacdd84ef..a0b38db5886c 100644
+> --- a/drivers/soc/bcm/raspberrypi-power.c
+> +++ b/drivers/soc/bcm/raspberrypi-power.c
+> @@ -225,6 +225,20 @@ static int rpi_power_probe(struct platform_device *p=
+dev)
+>  	return 0;
+>  }
+> =20
+> +static int rpi_power_remove(struct platform_device *pdev)
+> +{
+> +	struct rpi_power_domains *rpi_domains =3D platform_get_drvdata(pdev);
+> +
+> +	of_genpd_del_provider(dev->of_node);
+> +
+> +	for (i =3D 0; i < RPI_POWER_DOMAIN_COUNT; i++)
+> +		pm_genpd_remove(&rpi_domains->domains[i].base);
+> +
+> +	rpi_firmware_put(rpi_domaina->fw);
 
-Yes, but my questions were:
+I Just realised I failed to squash a fix for this patch, so this will not
+build. Sorry for that.
 
-[[
-[1] So, I think maybe I now understand what you intended with setting
-POLLOUT: the notification has been received ("read") and now the
-FD can be used to NOTIFY_SEND ("write") a response. Right?
+Regards,
+Nicolas
 
-[2] If that's correct, I don't have a problem with it. I just wonder:
-is it useful? IOW: are there situations where the process doing the
-NOTIFY_SEND might want to test for POLLOUT because the it doesn't
-know whether a NOTIFY_RECV has occurred?
-]]
-
-So, do I understand right in [1]? (The implication from your reply is
-yes, but I want to be sure...)
-
-For [2], my question was not about users, but *use cases*. The
-question I asked myself is: why does the feature exist? Hence my
-question [2] reworded: "when you designed this, did you have in mind
-scenarios here the process doing the NOTIFY_SEND might need to test
-for POLLOUT because it doesn't know whether a NOTIFY_RECV has
-occurred?"
-
-Thanks,
-
-Michael
+> +
+> +	return 0;
+> +}
+> +
+>  static const struct of_device_id rpi_power_of_match[] =3D {
+>  	{ .compatible =3D "raspberrypi,bcm2835-power", },
+>  	{},
+> @@ -237,6 +251,7 @@ static struct platform_driver rpi_power_driver =3D {
+>  		.of_match_table =3D rpi_power_of_match,
+>  	},
+>  	.probe		=3D rpi_power_probe,
+> +	.remove		=3D rpi_power_remove,
+>  };
+>  builtin_platform_driver(rpi_power_driver);
+> =20
 
 
--- 
-Michael Kerrisk
-Linux man-pages maintainer; http://www.kernel.org/doc/man-pages/
-Linux/UNIX System Programming Training: http://man7.org/training/
+--=-iro0+jQoAZrbRkqhy4O6
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W3dMACgkQlfZmHno8
+x/7DPAf/W6V8Brdbgq2QtE27YW5fEMV34Zg8X73FdarZ4ek3YR4/DxGnBXwz6/o3
+Uf4CVOLfSOnlwf+nO26rHfvMl8WBwo14AR37nVAiHBFUOSiTvExBO+aHFDvHfHRP
+LMcZeVRWNrH1XiVuYsXMlQ5BgeTba6ii+awS2itDOeR61xraPONJHgc0sVSbnjh+
+AqDo4TxRZHP7CifFfwTZFC/yYt5RXYGyVYvvi4rWu9FZbwjy06rlmMcGZyguGpgj
+grC4TlIs1actEIgrFa8cSS+zLNpcYCBgFe5HzVjqkyrhGu5lJZbFqmgbACV27+Jr
+nBhLMJ/JZSnUSDFMhDuAJtC0/132LA==
+=AyH+
+-----END PGP SIGNATURE-----
+
+--=-iro0+jQoAZrbRkqhy4O6--
+
