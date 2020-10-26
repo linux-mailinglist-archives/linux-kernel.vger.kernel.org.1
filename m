@@ -2,97 +2,174 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 24083299147
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:40:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9D488299149
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:41:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784281AbgJZPkz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:40:55 -0400
-Received: from mail-wr1-f67.google.com ([209.85.221.67]:35605 "EHLO
-        mail-wr1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1784274AbgJZPky (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:40:54 -0400
-Received: by mail-wr1-f67.google.com with SMTP id n15so13177768wrq.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:40:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Y8KnB6WQ6hnwXYvVwKUwP7/9fw5cwUH/Ducej8yDecI=;
-        b=hx/9mALBPLHrmx+V9KVUGZuTU552IL81yLtuZLv9sSXLFZqLZQOw/dCDP4uToCR+gp
-         pzIMoJRYa904I9opdv3PA8bQ4x7pbUyCLA1JW32PiNhsctGx9Est1XDuMLgvRJzpa8Ni
-         0ZGLYyRBnlm5f5uj/eCh1aKu0xUyKbAVhDADaZzDJ9nj4rE9/SI9/HS8O9rgK4IeRETc
-         X9StrO3z2IMv8kN+0qWgM8qd6US4D0I/3aoPD72cjez6ofBu02brfKQb41x/XqC57OtN
-         YhxMGzx1rC/kc16XivYMxGGkTJtMwxTUzjeQZeBQqaJ6TUtBTzadm36KI6Jn97GQYRKL
-         nN+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Y8KnB6WQ6hnwXYvVwKUwP7/9fw5cwUH/Ducej8yDecI=;
-        b=pfXxD2HiYvPxiWipf1qRX806a9EOTW8kgyn9Gs0n0ZuEY6r221gVsvO2y9Ge8gkrBo
-         CPinQb9dk7IaWglzAtK4zY4rx2caYyLA2PyYH4saCkk4k1bTuUHu4czjv4O0TJ3pIfZz
-         PZoxrtQidg1SyLwsvsWr3z57z/FDugVGIS3P1G9IMmKfY8UrofMdTqR0PWD4GusIv2oK
-         YbbRRuSc9D0hk59dWmKJXQIHaOlU7wRAAGRtd/2LZxvYRwIQJNWKCUq9jEuFUxsLvjMH
-         LOzuo0JjybWXvAjoXSWuHzfZRom5O2eFox7cZnF6ayJcxcemdRnymDQ7GrpGG0UbS+5S
-         B00Q==
-X-Gm-Message-State: AOAM530xDZdyCXE2M00GhOW9eqRncYVlQgWKkoTAdOzPg4VWbBIt5jbk
-        83Vi7msh9pIPNURxpZu9KajOZWd92BKMsd4JAGhIWg==
-X-Google-Smtp-Source: ABdhPJzHop1BRomp4oOm+x1BEG1zBGs0Rws3clbK5s/p75nXNyPrU/FcUBFnlcNyShtGn6cdR9YnyE433LTBIytXfV4=
-X-Received: by 2002:adf:b641:: with SMTP id i1mr17840787wre.376.1603726851498;
- Mon, 26 Oct 2020 08:40:51 -0700 (PDT)
+        id S1784290AbgJZPlC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:41:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35464 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1784274AbgJZPlB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:41:01 -0400
+Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id D92BE2242A;
+        Mon, 26 Oct 2020 15:41:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603726861;
+        bh=On1puDX3q0PmU4wb7lNbIX0t14xreWLTAZs/PTcSHbw=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=rwhuTTFr7RmihUwkHv3J3UfV5Y76DuFXIbAsZVyaCVuTBaJZuB0nwcREVNoG5gwQv
+         PveS10nE0JcE2GWcSYIQdp6tkYqy0HwBWbJ4cdeyAaHGR35AkbuVjAMb9x7DimBzAQ
+         PZFy5YiUduO6/Y4M+/QHIE6K3/iTgnUquyRdTHvs=
+Received: by mail-oi1-f172.google.com with SMTP id u127so10889884oib.6;
+        Mon, 26 Oct 2020 08:41:00 -0700 (PDT)
+X-Gm-Message-State: AOAM530x6pmuQ3yXcRSnRC71nfT9gPP798Lg2qpkuXJbtRLzZjblcSvr
+        7CUvJsHUnJIK8CzNO/BLnSZ377ovSQ5cL2ZIZw==
+X-Google-Smtp-Source: ABdhPJwG7r6OCD247gug+6UcyA11VYpVkShlq/R+HXcH3OsuhZLtTc9S2gv/h9HFnYWYGRrg967JZshcNWAw073n5DE=
+X-Received: by 2002:aca:5dc2:: with SMTP id r185mr13272586oib.106.1603726860182;
+ Mon, 26 Oct 2020 08:41:00 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201024025918.453431-1-namhyung@kernel.org>
-In-Reply-To: <20201024025918.453431-1-namhyung@kernel.org>
-From:   Ian Rogers <irogers@google.com>
-Date:   Mon, 26 Oct 2020 08:40:39 -0700
-Message-ID: <CAP-5=fVOJ=7RwJmDX7r-k_YUhNAznHF0xkorLT_TrSa_arifGQ@mail.gmail.com>
-Subject: Re: [PATCH 1/2] perf test: Use generic event for expand_libpfm_events()
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Jiri Olsa <jolsa@redhat.com>, Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>
+References: <20201023195655.11242-1-vidyas@nvidia.com> <20201023195655.11242-4-vidyas@nvidia.com>
+In-Reply-To: <20201023195655.11242-4-vidyas@nvidia.com>
+From:   Rob Herring <robh@kernel.org>
+Date:   Mon, 26 Oct 2020 10:40:48 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJ2yO-es3AnE3tGcEx0c4ANxyAeZWjsbsrMA6LVzNa1tA@mail.gmail.com>
+Message-ID: <CAL_JsqJ2yO-es3AnE3tGcEx0c4ANxyAeZWjsbsrMA6LVzNa1tA@mail.gmail.com>
+Subject: Re: [PATCH 3/3] PCI: dwc: Add support to handle prefetchable memory mapping
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Jingoo Han <jingoohan1@gmail.com>,
+        Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Andrew Murray <amurray@thegoodpenguin.co.uk>,
+        Thierry Reding <treding@nvidia.com>,
+        Jon Hunter <jonathanh@nvidia.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kthota@nvidia.com, Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        sagar.tv@gmail.com
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 7:59 PM Namhyung Kim <namhyung@kernel.org> wrote:
+On Fri, Oct 23, 2020 at 2:57 PM Vidya Sagar <vidyas@nvidia.com> wrote:
 >
-> I found that the UNHALTED_CORE_CYCLES event is only available in the
-> Intel machines and it makes other vendors/archs fail on the test.  As
-> libpfm4 can parse the generic events like cycles, let's use them.
+> DWC sub-system currently doesn't differentiate between prefetchable and
+> non-prefetchable memory aperture entries in the 'ranges' property and
+> provides ATU mapping only for the first memory aperture entry out of all
+> the entries present. This was introduced by the
+> commit 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources").
+> Mapping for a memory apreture is required if its CPU address and the bus
+> address are different and the current mechanism works only if the memory
+> aperture which needs mapping happens to be the first entry. It doesn't
+> work either if the memory aperture that needs mapping is not the first
+> entry or if both prefetchable and non-prefetchable apertures need mapping.
 >
-> Fixes: 40b74c30ffb9 ("perf test: Add expand cgroup event test")
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> This patch fixes this issue by differentiating between prefetchable and
+> non-prefetchable apertures in the 'ranges' property there by removing the
+> dependency on the order in which they are specified and adds support for
+> mapping prefetchable aperture using ATU region-3 if required.
+>
+> Fixes: 0f71c60ffd26 ("PCI: dwc: Remove storing of PCI resources")
 
-Acked-by: Ian Rogers <irogers@google.com>
+Fixes should come first, then new features.
 
-Thanks,
-Ian
+> Link: http://patchwork.ozlabs.org/project/linux-pci/patch/20200513190855.23318-1-vidyas@nvidia.com/
 
+'Link' is the link for this message and should be a lore.kernel.org
+link. Maintainers will add it.
+
+>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
 > ---
->  tools/perf/tests/expand-cgroup.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> Changes from previous versions:
+> * Addressed Rob's comments and as part of that split the patch into three sub-patches
+> * Rewrote commit subject and description
+> * Addressed review comments from Lorenzo
 >
-> diff --git a/tools/perf/tests/expand-cgroup.c b/tools/perf/tests/expand-cgroup.c
-> index d5771e4d094f..4c59f3ae438f 100644
-> --- a/tools/perf/tests/expand-cgroup.c
-> +++ b/tools/perf/tests/expand-cgroup.c
-> @@ -145,7 +145,7 @@ static int expand_libpfm_events(void)
->         int ret;
->         struct evlist *evlist;
->         struct rblist metric_events;
-> -       const char event_str[] = "UNHALTED_CORE_CYCLES";
-> +       const char event_str[] = "CYCLES";
->         struct option opt = {
->                 .value = &evlist,
->         };
+>  .../pci/controller/dwc/pcie-designware-host.c | 39 ++++++++++++++++---
+>  drivers/pci/controller/dwc/pcie-designware.h  |  1 +
+>  2 files changed, 34 insertions(+), 6 deletions(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pcie-designware-host.c b/drivers/pci/controller/dwc/pcie-designware-host.c
+> index 674f32db85ca..a1f319ccd816 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware-host.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware-host.c
+> @@ -529,9 +529,39 @@ static struct pci_ops dw_pcie_ops = {
+>         .write = pci_generic_config_write,
+>  };
+>
+> +static void dw_pcie_setup_mem_atu(struct pcie_port *pp,
+> +                                 struct resource_entry *win)
+> +{
+> +       struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+> +
+> +       /* Check for prefetchable memory aperture */
+> +       if (win->res->flags & IORESOURCE_PREFETCH) {
+> +               /* Number of view ports must at least be 4 to enable mapping */
+> +               if (pci->num_viewport < 4) {
+> +                       dev_warn(pci->dev,
+> +                                "Insufficient ATU regions to map Prefetchable memory\n");
+> +               } else {
+> +                       dw_pcie_prog_outbound_atu(pci,
+> +                                                 PCIE_ATU_REGION_INDEX3,
+> +                                                 PCIE_ATU_TYPE_MEM,
+> +                                                 win->res->start,
+> +                                                 win->res->start - win->offset,
+> +                                                 resource_size(win->res));
+> +               }
+> +       } else { /* Non-prefetchable memory aperture */
+> +               dw_pcie_prog_outbound_atu(pci,
+> +                                         PCIE_ATU_REGION_INDEX0,
+> +                                         PCIE_ATU_TYPE_MEM,
+> +                                         win->res->start,
+> +                                         win->res->start - win->offset,
+> +                                         resource_size(win->res));
+> +       }
+> +}
+> +
+
+This is in no way a minimal fix. I'll send my proposed fix.
+
+>  void dw_pcie_setup_rc(struct pcie_port *pp)
+>  {
+>         u32 val, ctrl, num_ctrls;
+> +       struct resource_entry *win;
+>         struct dw_pcie *pci = to_dw_pcie_from_pp(pp);
+>
+>         /*
+> @@ -586,13 +616,10 @@ void dw_pcie_setup_rc(struct pcie_port *pp)
+>          * ATU, so we should not program the ATU here.
+>          */
+>         if (pp->bridge->child_ops == &dw_child_pcie_ops) {
+> -               struct resource_entry *entry =
+> -                       resource_list_first_type(&pp->bridge->windows, IORESOURCE_MEM);
+> +               resource_list_for_each_entry(win, &pp->bridge->windows)
+> +                       if (resource_type(win->res) == IORESOURCE_MEM)
+> +                               dw_pcie_setup_mem_atu(pp, win);
+>
+> -               dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX0,
+> -                                         PCIE_ATU_TYPE_MEM, entry->res->start,
+> -                                         entry->res->start - entry->offset,
+> -                                         resource_size(entry->res));
+>                 if (pci->num_viewport > 2)
+>                         dw_pcie_prog_outbound_atu(pci, PCIE_ATU_REGION_INDEX2,
+>                                                   PCIE_ATU_TYPE_IO, pp->io_base,
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
+> index e7f441441db2..21dd06831b50 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.h
+> +++ b/drivers/pci/controller/dwc/pcie-designware.h
+> @@ -80,6 +80,7 @@
+>  #define PCIE_ATU_VIEWPORT              0x900
+>  #define PCIE_ATU_REGION_INBOUND                BIT(31)
+>  #define PCIE_ATU_REGION_OUTBOUND       0
+> +#define PCIE_ATU_REGION_INDEX3         0x3
+>  #define PCIE_ATU_REGION_INDEX2         0x2
+>  #define PCIE_ATU_REGION_INDEX1         0x1
+>  #define PCIE_ATU_REGION_INDEX0         0x0
 > --
-> 2.29.0.rc1.297.gfa9743e501-goog
+> 2.17.1
 >
