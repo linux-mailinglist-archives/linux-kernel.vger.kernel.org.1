@@ -2,151 +2,106 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C9A8329872E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:01:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97512298737
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:08:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769905AbgJZG7f (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 02:59:35 -0400
-Received: from hqnvemgate26.nvidia.com ([216.228.121.65]:18389 "EHLO
-        hqnvemgate26.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730770AbgJZG7f (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 02:59:35 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate26.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9673c20000>; Sun, 25 Oct 2020 23:59:14 -0700
-Received: from [10.40.202.195] (10.124.1.5) by HQMAIL107.nvidia.com
- (172.20.187.13) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 06:59:23 +0000
-Subject: Re: [PATCH 2/2] PCI: dwc: Add support to configure for ECRC
-To:     Jingoo Han <jingoohan1@gmail.com>,
-        "gustavo.pimentel@synopsys.com" <gustavo.pimentel@synopsys.com>,
-        "lorenzo.pieralisi@arm.com" <lorenzo.pieralisi@arm.com>,
-        "bhelgaas@google.com" <bhelgaas@google.com>,
-        "amurray@thegoodpenguin.co.uk" <amurray@thegoodpenguin.co.uk>,
-        "robh@kernel.org" <robh@kernel.org>,
-        "treding@nvidia.com" <treding@nvidia.com>,
-        "jonathanh@nvidia.com" <jonathanh@nvidia.com>
-CC:     "linux-pci@vger.kernel.org" <linux-pci@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "kthota@nvidia.com" <kthota@nvidia.com>,
-        "mmaddireddy@nvidia.com" <mmaddireddy@nvidia.com>,
-        "sagar.tv@gmail.com" <sagar.tv@gmail.com>
-References: <20201025073113.31291-1-vidyas@nvidia.com>
- <20201025073113.31291-3-vidyas@nvidia.com>
- <SLXP216MB0477AAC31DF68862BE5BC3EEAA180@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
-From:   Vidya Sagar <vidyas@nvidia.com>
-Message-ID: <ccec2428-0efe-101c-11be-28766738951d@nvidia.com>
-Date:   Mon, 26 Oct 2020 12:29:18 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.2
+        id S1736796AbgJZHCn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 03:02:43 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:62511 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1736786AbgJZHCn (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 03:02:43 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603695762; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=4W30NrG0crD/eXRgkUetS2eftLP50C0CS9VL2EWCFO0=;
+ b=k5RbIx4Wazvu/uYrWU2VB3XjwCrLQ2rVJ7Cm/itDZCiKHiqQAUlnTLI4uW7r3nFLNPabCvlN
+ mjxNixqPZM9hgs7YpHCMnIEkMWMo3e4Q764U+SLsxAiHHrlyiF+z0vNxPIJlzQfzIx62JxIR
+ Gqz5TX2WZ69iLjfDjBv/OUXxRO0=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f96745babdbaddfebb337fd (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 07:01:47
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id B14C2C433FF; Mon, 26 Oct 2020 07:01:46 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id E6EDCC433F0;
+        Mon, 26 Oct 2020 07:01:45 +0000 (UTC)
 MIME-Version: 1.0
-In-Reply-To: <SLXP216MB0477AAC31DF68862BE5BC3EEAA180@SLXP216MB0477.KORP216.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="utf-8"; format=flowed
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
 Content-Transfer-Encoding: 7bit
-X-Originating-IP: [10.124.1.5]
-X-ClientProxiedBy: HQMAIL105.nvidia.com (172.20.187.12) To
- HQMAIL107.nvidia.com (172.20.187.13)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603695554; bh=EZR6bOvonAhqaAmY5+zlrFqM8/4BkLY98W9Jb8B95Lw=;
-        h=Subject:To:CC:References:From:Message-ID:Date:User-Agent:
-         MIME-Version:In-Reply-To:Content-Type:Content-Language:
-         Content-Transfer-Encoding:X-Originating-IP:X-ClientProxiedBy;
-        b=Kiw+sBzZSVZof0ZTSkPAD5J72NB0cEk7U8Gmx50l+pTAJ9FIX+DzKkmMUudhd8VLl
-         Xa2KWvVQ2/PhMExM45+fnswj1Hf/G8rRVjgYarZEtdPMjOV8hU8zfeMDkOFvAGfEqt
-         cUlcNzjMu2YFCwES8ulPBl13VN0/uP1fCLID5jQebG/Zg852zNlAiYOL0c4QdjetHj
-         2cUCIbWMGIR/VXeIDgnNgBKfnS06vuDsXmSxlvQk6TP14p61yuyHGrxSygpqEmPB/G
-         Tg9jHUfK83887g8xC5nHDalEacZRDKDZpJMp+5M/Nj8Z9zhP7f9q8vJTbAIZizOZ8J
-         yuRG9ORhZQjSA==
+Date:   Mon, 26 Oct 2020 15:01:45 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
+ ufshcd_read_desc_param()
+In-Reply-To: <BY5PR04MB67056EDDDA22DEDAFD1972C1FC190@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
+ <BY5PR04MB6705D719530D5E188ECB724EFC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
+ <5271e570f2e38770da3b23f13e739e41@codeaurora.org>
+ <BY5PR04MB67056EDDDA22DEDAFD1972C1FC190@BY5PR04MB6705.namprd04.prod.outlook.com>
+Message-ID: <28555cab045fb631c91262c77b71d9fc@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On 2020-10-26 13:22, Avri Altman wrote:
+>> On 2020-10-22 14:37, Avri Altman wrote:
+>> >> Since WB feature has been added, WB related sysfs entries can be
+>> >> accessed
+>> >> even when an UFS device does not support WB feature. In that case, the
+>> >> descriptors which are not supported by the UFS device may be wrongly
+>> >> reported when they are accessed from their corrsponding sysfs entries.
+>> >> Fix it by adding a sanity check of parameter offset against the actual
+>> >> decriptor length.s
+>> > This should be a bug fix IMO, and be dealt with similarly like
+>> > ufshcd_is_wb_attrs or ufshcd_is_wb_flag.
+>> > Thanks,
+>> > Avri
+>> 
+>> Could you please elaborate on ufshcd_is_wb_attrs or ufshcd_is_wb_flag?
+>> Sorry that I don't quite get it.
+> Since this change is only protecting illegal access from sysfs entries,
+> I am suggesting to handle it there, just like ufshcd_is_wb_attrs or
+> ufshcd_is_wb_flag
+> Are doing it for flags and attributes.
+> 
+> Thanks,
+> Avri
 
+This is a general problem - if later we have HPB entries added into 
+sysfs,
+we will hit it again. We cannot keep adding checks like 
+ufshcd_is_xxx_attrs
+or ufshcd_is_xxx_flag to block them, right?
 
-On 10/26/2020 2:19 AM, Jingoo Han wrote:
-> External email: Use caution opening links or attachments
-> 
-> 
-> On 10/25/20, 3:31 AM, Vidya Sagar wrote:
->>
->> DesignWare core has a TLP digest (TD) override bit in one of the control
->> registers of ATU. This bit also needs to be programmed for proper ECRC
->> functionality. This is currently identified as an issue with DesignWare
->> IP version 4.90a. This patch does the required programming in ATU upon
->> querying the system policy for ECRC.
->>
->> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
->> ---
->>   drivers/pci/controller/dwc/pcie-designware.c | 8 ++++++--
->>   drivers/pci/controller/dwc/pcie-designware.h | 2 ++
->>   2 files changed, 8 insertions(+), 2 deletions(-)
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
->> index b5e438b70cd5..810dcbdbe869 100644
->> --- a/drivers/pci/controller/dwc/pcie-designware.c
->> +++ b/drivers/pci/controller/dwc/pcie-designware.c
->> @@ -245,7 +245,7 @@ static void dw_pcie_prog_outbound_atu_unroll(struct dw_pcie *pci, u8 func_no,
->>                                 lower_32_bits(pci_addr));
->>        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_UPPER_TARGET,
->>                                 upper_32_bits(pci_addr));
->> -     val = type | PCIE_ATU_FUNC_NUM(func_no);
->> +     val = type | PCIE_ATU_FUNC_NUM(func_no) | pci->td << PCIE_ATU_TD_SHIFT;
->>        val = upper_32_bits(size - 1) ?
->>                val | PCIE_ATU_INCREASE_REGION_SIZE : val;
->>        dw_pcie_writel_ob_unroll(pci, index, PCIE_ATU_UNR_REGION_CTRL1, val);
->> @@ -295,7 +295,8 @@ static void __dw_pcie_prog_outbound_atu(struct dw_pcie *pci, u8 func_no,
->>        dw_pcie_writel_dbi(pci, PCIE_ATU_UPPER_TARGET,
->>                           upper_32_bits(pci_addr));
->>        dw_pcie_writel_dbi(pci, PCIE_ATU_CR1, type |
->> -                        PCIE_ATU_FUNC_NUM(func_no));
->> +                        PCIE_ATU_FUNC_NUM(func_no) |
->> +                        pci->td << PCIE_ATU_TD_SHIFT);
->>        dw_pcie_writel_dbi(pci, PCIE_ATU_CR2, PCIE_ATU_ENABLE);
->>
->>        /*
->> @@ -565,6 +566,9 @@ void dw_pcie_setup(struct dw_pcie *pci)
->>        dev_dbg(pci->dev, "iATU unroll: %s\n", pci->iatu_unroll_enabled ?
->>                "enabled" : "disabled");
->>
->> +     if (pci->version == 0x490A)
->> +             pci->td = pcie_is_ecrc_enabled();
->> +
->>        if (pci->link_gen > 0)
->>                dw_pcie_link_set_max_speed(pci, pci->link_gen);
->>
->> diff --git a/drivers/pci/controller/dwc/pcie-designware.h b/drivers/pci/controller/dwc/pcie-designware.h
->> index 21dd06831b50..d34723e42e79 100644
->> --- a/drivers/pci/controller/dwc/pcie-designware.h
->> +++ b/drivers/pci/controller/dwc/pcie-designware.h
->> @@ -90,6 +90,7 @@
->>   #define PCIE_ATU_TYPE_IO             0x2
->>   #define PCIE_ATU_TYPE_CFG0           0x4
->>   #define PCIE_ATU_TYPE_CFG1           0x5
->> +#define PCIE_ATU_TD_SHIFT            8
->>   #define PCIE_ATU_FUNC_NUM(pf)           ((pf) << 20)
->>   #define PCIE_ATU_CR2                 0x908
->>   #define PCIE_ATU_ENABLE                      BIT(31)
->> @@ -276,6 +277,7 @@ struct dw_pcie {
->>        int                     num_lanes;
->>        int                     link_gen;
->>        u8                      n_fts[2];
->> +     bool                    td;     /* TLP Digest (for ECRC purpose) */
-> 
-> If possible, don't add a new variable to 'dw_pcie' structure.
-> Please find a way to set TD bit without adding a new variable to 'dw_pcie' structure'.
+Thanks,
 
-I can use pcie_is_ecrc_enabled() directly in place of pci->td. That 
-should be fine right? BTW, curious to know if there is any specific 
-reason behind asking not to add any new variables to 'dw_pcie' structure?
-
-> 
-> Best regards,
-> Jingoo Han
-> 
->>   };
->>
->>   #define to_dw_pcie_from_pp(port) container_of((port), struct dw_pcie, pp)
->> --
->> 2.17.1
-> 
+Can Guo.
