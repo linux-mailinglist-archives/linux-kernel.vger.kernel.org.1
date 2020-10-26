@@ -2,107 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 81DB0299A34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A1CCC299A37
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:11:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2395448AbgJZXIO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:08:14 -0400
-Received: from mga11.intel.com ([192.55.52.93]:39672 "EHLO mga11.intel.com"
+        id S2395484AbgJZXK5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:10:57 -0400
+Received: from mail.kernel.org ([198.145.29.99]:53028 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394676AbgJZXIN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:08:13 -0400
-IronPort-SDR: C0HKN+3xVxuhHup+b8wKNn5CD+V6moJckNtJIXbUN05IuMXEg5AFWXEUu8Z85WuxQatCL/28zj
- bU9dRqa88mTA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="164500454"
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="164500454"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 16:08:12 -0700
-IronPort-SDR: zy8W979PBVagL8i+Jv+r805cLR1FVBAasdYfpwLnnY5dMEYS9mo977q0BeEUHtu8ZSPkUShL6e
- ejjJSj2+O2cA==
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="524468975"
-Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.215.218]) ([10.212.215.218])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 16:08:10 -0700
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
- CPUs
-To:     Thomas Gleixner <tglx@linutronix.de>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com,
-        Jakub Kicinski <kuba@kernel.org>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
- <20201019140005.GB17287@fuller.cnet>
- <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
- <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
- <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
- <20201026173012.GA377978@fuller.cnet>
- <875z6w4xt4.fsf@nanos.tec.linutronix.de>
- <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
- <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
- <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
- <87lffs3bd6.fsf@nanos.tec.linutronix.de>
- <959997ee-f393-bab0-45c0-4144c37b9185@redhat.com>
- <875z6w38n4.fsf@nanos.tec.linutronix.de>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-Organization: Intel Corporation
-Message-ID: <586e249a-1078-9fe9-22d4-b3c1ec0a3a5e@intel.com>
-Date:   Mon, 26 Oct 2020 16:08:08 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S2395475AbgJZXK4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:10:56 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6A32F20759;
+        Mon, 26 Oct 2020 23:10:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603753856;
+        bh=+rA3mXse0duYebj29NlP/iv4vLfme+C3PEBv33IDzrs=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=qHjp+5jrlZUjjS4s9kch5YsSP5uJuL32CjMBRUGnmzQsCPbIQTMYiby7XugKM1gVy
+         Ef6vxvWkE8+t6r+VzMiqZ0YCq6Yoyhp3g4IouKpfw+h+BpJSFV8B8oodDAOh6K6xrs
+         3kSvxOS/fL+4dkwOH1wyjxOMiX5KPtqSOp+x770Q=
+Date:   Mon, 26 Oct 2020 23:10:51 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Tomasz Figa <tfiga@chromium.org>
+Cc:     alsa-devel@alsa-project.org, linux-kernel@vger.kernel.org,
+        Cezary Rojewski <cezary.rojewski@intel.com>,
+        Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>,
+        Liam Girdwood <liam.r.girdwood@linux.intel.com>,
+        Jie Yang <yang.jie@linux.intel.com>,
+        Jaroslav Kysela <perex@perex.cz>,
+        Takashi Iwai <tiwai@suse.com>, cujomalainey@chromium.org,
+        =?utf-8?Q?=C5=81ukasz?= Majczak <lmajczak@google.com>
+Subject: Re: [PATCH] ASoC: Intel: kbl_rt5663_max98927: Fix kabylake_ssp_fixup
+ function
+Message-ID: <20201026231051.GK7402@sirena.org.uk>
+References: <20201014141624.4143453-1-tfiga@chromium.org>
+ <20201014190226.GE4580@sirena.org.uk>
+ <20201026222747.GD2802004@chromium.org>
 MIME-Version: 1.0
-In-Reply-To: <875z6w38n4.fsf@nanos.tec.linutronix.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+        protocol="application/pgp-signature"; boundary="T4Djgzn3z2HSNnx0"
+Content-Disposition: inline
+In-Reply-To: <20201026222747.GD2802004@chromium.org>
+X-Cookie: Safety Third.
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
 
+--T4Djgzn3z2HSNnx0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 10/26/2020 3:49 PM, Thomas Gleixner wrote:
-> On Mon, Oct 26 2020 at 18:22, Nitesh Narayan Lal wrote:
->> On 10/26/20 5:50 PM, Thomas Gleixner wrote:
->>> But I still think that for curing that isolation stuff we want at least
->>> some information from the driver. Alternative solution would be to grant
->>> the allocation of interrupts and queues and have some sysfs knob to shut
->>> down queues at runtime. If that shutdown results in releasing the queue
->>> interrupt (via free_irq()) then the vector exhaustion problem goes away.
->>
->> I think this is close to what I and Marcelo were discussing earlier today
->> privately.
->>
->> I don't think there is currently a way to control the enablement/disablement of
->> interrupts from the userspace.
-> 
-> You cannot just disable the interrupt. You need to make sure that the
-> associated queue is shutdown or quiesced _before_ the interrupt is shut
-> down.
-> 
-> Thanks,
-> 
->         tglx
-> 
+On Mon, Oct 26, 2020 at 10:27:47PM +0000, Tomasz Figa wrote:
+> On Wed, Oct 14, 2020 at 08:02:26PM +0100, Mark Brown wrote:
 
-Could this be handled with a callback to the driver/hw? I know Intel HW
-should support this type of quiesce/shutdown.
+> > Please think hard before including complete backtraces in upstream
+> > reports, they are very large and contain almost no useful information
+> > relative to their size so often obscure the relevant content in your
+> > message. If part of the backtrace is usefully illustrative (it often is
+> > for search engines if nothing else) then it's usually better to pull out
+> > the relevant sections.
 
-Thanks,
-Jake
+> Okay, I'll trim things down next time. Somehow I was convinced it's a
+> common practice.
+
+It is unfortunately far more common than it should be but that doesn't
+mean that it's a good idea!
+
+--T4Djgzn3z2HSNnx0
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAl+XV3oACgkQJNaLcl1U
+h9DHEQf+P9XM66VGrpm7CJvgSRIOiFF94Fk/gQFsulGNkv+W9YcF+z4wsrEsR3kh
+5bZuxRsp06aabr2ESWJ5pwQzMyH5q8E4Ou7UhOBxJHzBqr6imfzshTm/1X+4Orq2
+tlkrkSxHdJt7Gm9/joTRrzs5S7agkKfRZKZdSpIN2ve5ztRqKL5tc310LMAwyOJF
+k6pezKd5Hb9ds7zWQ/yHMCTi/AUzPB9aPwI0nq5tgWbndsZ0hgSCI1Ze1gi05v/d
+y7jKlPQmYP5hvWRDNqsXx63M1jJKsh40+it8XQnxuaFG8k9kd9s8lGifmAGBEraE
+RBYD2VOBrziPtYW2uH3IT+G6xbSy3A==
+=oJS/
+-----END PGP SIGNATURE-----
+
+--T4Djgzn3z2HSNnx0--
