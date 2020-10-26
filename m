@@ -2,100 +2,156 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A2FA9299393
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:18:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7AAF3299396
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:20:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787497AbgJZRSu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:18:50 -0400
-Received: from mail-il1-f194.google.com ([209.85.166.194]:39360 "EHLO
-        mail-il1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1787489AbgJZRSt (ORCPT
+        id S1787601AbgJZRUZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:20:25 -0400
+Received: from new4-smtp.messagingengine.com ([66.111.4.230]:58575 "EHLO
+        new4-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1787591AbgJZRUZ (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:18:49 -0400
-Received: by mail-il1-f194.google.com with SMTP id q1so9039108ilt.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:18:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=kf2slL13S23kIiTkgcu/XH/I01QmvP7nzqRqwTpjchE=;
-        b=ErGh25PWSgrRKBR+lrdUtyDZ/6bplQJCyolB3cw/latSi/0fcmf4wuOGOcPlXU3ARd
-         /BgN9xUjvux1jSiDAvEtTq7bVbWcd502M4QRu0g8KwHhPLAk5u8QlLTvk7fr69OYtUOD
-         pd7oSx2wggH/oh3Fhowo3o1M5CfK5T2ENGfX02C0YLUCqo/haiER/qnns9IbZRSd9GXa
-         l/AwzDHEWS9sH0duGobt9yg6Eid7CwK7TmniMjUgN1JQQeSXRSjRo46iathsVBUiCb/8
-         Z+dT6jgYR/hcukkj/MUqfA3LFpDBk2/ifZRuAw700nFqfpzGjilxVzVI255cE6fOubN8
-         oyvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=kf2slL13S23kIiTkgcu/XH/I01QmvP7nzqRqwTpjchE=;
-        b=CAMmNhi7Wk2RUfRFs8i0fqTqy6WKcP0aeBRFLNlo6gHHsTkSw7logSYQ4Ipsg7Yk+B
-         IHn4vemLuEpciAHVERibKqjeyKyCgrTHt/ZBITtfhdtIVjj3puKHaxcIYqO45i12mZrm
-         2t4f+Z9LN7lWPEC+8g5qRsXiA4049ZhmXuAEUdRVMzKZi5fbC4v7SNLgOk+BjjQFDq6F
-         QP8ocWZYsyAcXq55daGe7sAeRm9ArW85Jh0c1O+ZjQmLzd5EOESzf/TEeAkCoaYzko9D
-         JY4hpNmqsp8aAQLdvp7FuOqonhwUN0bTVpbyn1eA6aZL2w76uR7IOQqduMFGDpS6fkab
-         iEQw==
-X-Gm-Message-State: AOAM533wS9cI7nWnVly0cLu6ziLYCATiSRppDPLXq9JquxR/gLC79wel
-        tKOnTRj+4hG6hH9bf0Ag8IsydBGjQcDvSFz+o6frrg==
-X-Google-Smtp-Source: ABdhPJxaAiZJ2N/5BbUTyaLVKpzqQmGKuG6ERNt1o/WUN1lABApvRd853FwGYPcM3XwTnI0qUj9PzWNbrjk9LiIH7+k=
-X-Received: by 2002:a92:7f10:: with SMTP id a16mr12296656ild.134.1603732726663;
- Mon, 26 Oct 2020 10:18:46 -0700 (PDT)
+        Mon, 26 Oct 2020 13:20:25 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id 152175803F7;
+        Mon, 26 Oct 2020 13:20:24 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 26 Oct 2020 13:20:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=TcpGAKNjl4jtncZ0mFVjE/dr1/2
+        VlzvT3toqDw/S2hw=; b=D6J2x6rfDTCv5PM8XS7If79M0UUXFSVzheNc/c4fo/4
+        3Ke7U/29MavDCJmS59fd9K69lhpnvsHQxM7ihcykgHmTuBgCOGXfJ40o8jBqfeJC
+        MwNG96Mlc2T3rIMCIMv/p3hKailWJq+gCpLCgmIVfEX1wcgqNNkUYCHy620igIlK
+        gekKCJI3whuaLYfrwfPrKeTQHLrBKMqCpu1FqhGXOs35OxUFYjaV6Ro1bo9nWrYW
+        pbPFhDQU0jGEU8nNP/MCHRFYM8RYYYk3lLV6OiuH9TsQpM3tkzynnlJvyhnGmBgQ
+        KaB+OyE67VLpEjz0chnqfubG8SqAaI/zWwpqn0ZTWpg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=TcpGAK
+        Njl4jtncZ0mFVjE/dr1/2VlzvT3toqDw/S2hw=; b=ikTh1NGlx5CjvaW3ERRTJC
+        DeYAWeO9pPP20WpAUeoArRvGiiw1ox4diDCWxM5PQl1p3Fvr07d6FY4eVMdoSBXT
+        IQ1p5FGT0Mr7r2XB4SVzFLaYU5gD7q2t3AEhkwRtuGKlXYC2hKXLFJMgjwm37YOR
+        8clzaADzD5pPtV54HG/iK9SnY8bbpWCAPglYk3nLJDMCZiT2HdO6FqRHMcPOcqZ2
+        qpf+5x6HokZBr7V4llQFZ3o08uuiaNaU2dRfAK7tcWYEJTugwA99wiclkL2he/Lo
+        AS51tvd6AiUI8CBmGw9kaudFJN/BV58JGzE8rNRBFwQVSVnqm3WM8evD1Ohq+yog
+        ==
+X-ME-Sender: <xms:VQWXX69zH3xMbFkUe3vnANNE2mGgMRiHTaSqklwU205CqBu-2gqS6Q>
+    <xme:VQWXX6uXncqYmZR-pkDRmZ-aaNhJh_Yzta2OPua7GxEBO6kaN2JdjY7QBwxZFcOEC
+    pyJ8ldDkrI-OSFMzWQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgdeifecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
+    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
+    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
+X-ME-Proxy: <xmx:VgWXXwCOYe7vU_O7Tn2B2ApGVs4JUGDiaogykmGI3Qn4AIHwWwg80g>
+    <xmx:VgWXXyfiAFL0kWR4BR7qAsXSvFP2g1dXiOnRP4XfNYUH-hrMpv8hIw>
+    <xmx:VgWXX_MYxz8WNL3lOzT_DPKFVsUIQNj1KMysF0XocJsUAstoJq-ZWA>
+    <xmx:WAWXX6EeWCvFafkgWCMMdZgXkq2QD1yEsdpgNAtsfH-sZ5K4Elekgg>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id A87883280059;
+        Mon, 26 Oct 2020 13:20:21 -0400 (EDT)
+Date:   Mon, 26 Oct 2020 18:20:20 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 00/14] Allwinner MIPI CSI-2 support for A31/V3s/A83T
+Message-ID: <20201026172020.u6nxsvpqnilo4ghe@gilmour.lan>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-References: <20201024200304.1427864-1-fparent@baylibre.com> <20201026121316.GB7402@sirena.org.uk>
-In-Reply-To: <20201026121316.GB7402@sirena.org.uk>
-From:   Fabien Parent <fparent@baylibre.com>
-Date:   Mon, 26 Oct 2020 18:18:35 +0100
-Message-ID: <CAOwMV_w5N0_Qgg3MFph1147cbvFP1Y=mUtNjGbcr-Tca4ZJ3yA@mail.gmail.com>
-Subject: Re: [PATCH v5 1/2] dt-bindings: regulator: add support for MT6392
-To:     Mark Brown <broonie@kernel.org>
-Cc:     "moderated list:ARM/Mediatek SoC support" 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        DTML <devicetree@vger.kernel.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>, lgirdwood@gmail.com,
-        Rob Herring <robh@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="cljab7upzvbgmdt2"
+Content-Disposition: inline
+In-Reply-To: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Mark,
 
-On Mon, Oct 26, 2020 at 1:13 PM Mark Brown <broonie@kernel.org> wrote:
->
-> On Sat, Oct 24, 2020 at 10:03:03PM +0200, Fabien Parent wrote:
->
-> > +Required properties:
-> > +- compatible: "mediatek,mt6392-regulator"
->
-> This is no longer used by the driver, should be unneeded and therefore
-> should be removed.
+--cljab7upzvbgmdt2
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-It is not used by the driver but it will be used by the MFD driver [0]
-like this:
-static const struct mfd_cell mt6392_devs[] = {
-    {
-        [snip]
-    }, {
-        [snip]
-    }, {
-        .name = "mt6392-regulator",
-        .of_compatible = "mediatek,mt6392-regulator"
-    }, {
-        [snip]
-    },
-};
+On Fri, Oct 23, 2020 at 07:45:32PM +0200, Paul Kocialkowski wrote:
+> This series introduces support for MIPI CSI-2, with the A31 controller th=
+at is
+> found on most SoCs (A31, V3s and probably V5) as well as the A83T-specific
+> controller. While the former uses the same MIPI D-PHY that is already sup=
+ported
+> for DSI, the latter embeds its own D-PHY.
+>=20
+> In order to distinguish the use of the D-PHY between Rx mode (for MIPI CS=
+I-2)
+> and Tx mode (for MIPI DSI), a submode is introduced for D-PHY in the PHY =
+API.
+> This allows adding Rx support in the A31 D-PHY driver.
+>=20
+> A few changes and fixes are applied to the A31 CSI controller driver, in =
+order
+> to support the MIPI CSI-2 use-case.
+>=20
+> Follows is the V4L2 device topology representing the interactions between
+> the MIPI CSI-2 sensor, the MIPI CSI-2 controller (which controls the D-PH=
+Y)
+> and the CSI controller:
+> - entity 1: sun6i-csi (1 pad, 1 link)
+>             type Node subtype V4L flags 0
+>             device node name /dev/video0
+> 	pad0: Sink
+> 		<- "sun6i-mipi-csi2":1 [ENABLED,IMMUTABLE]
+>=20
+> - entity 5: sun6i-mipi-csi2 (2 pads, 2 links)
+>             type V4L2 subdev subtype Unknown flags 0
+> 	pad0: Sink
+> 		<- "ov5648 0-0036":0 [ENABLED,IMMUTABLE]
+> 	pad1: Source
+> 		-> "sun6i-csi":0 [ENABLED,IMMUTABLE]
+>=20
+> - entity 8: ov5648 0-0036 (1 pad, 1 link)
+>             type V4L2 subdev subtype Sensor flags 0
+>             device node name /dev/v4l-subdev0
+> 	pad0: Source
+> 		[fmt:SBGGR8_1X8/640x480@1/30 field:none colorspace:raw xfer:none ycbcr:=
+601 quantization:full-range]
+> 		-> "sun6i-mipi-csi2":0 [ENABLED,IMMUTABLE]
+>=20
+> Happy reviewing!
 
-[0] drivers/mfd/mt6397-core.c
+I mentioned it to Kevin in the first version, but you should have a
+v4l2-compliance run here.
 
->
-> > +- mt6392regulator: List of regulators provided by this controller. It is named
->
-> This property doesn't seem to appear anywhere - there's regulators, the
-> collection of subnodes for each individual regulator which I think is
-> what is referenced here, but nothing called mt6392regulator.
+If you have some time, it would be great to run libcamera as well.
 
-Indeed, I will fix it in the next rev.
+Maxime
+
+--cljab7upzvbgmdt2
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5cFVAAKCRDj7w1vZxhR
+xUl0AQCVEwC0SDfZKQxtG2cYrZtnF4KmKQoRJSWZMnLqG1WUNgD/Qak2xE1j8KWy
+ZCV3doyuO20VG3S7tICkhrs25T5koQ0=
+=iMp2
+-----END PGP SIGNATURE-----
+
+--cljab7upzvbgmdt2--
