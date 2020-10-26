@@ -2,134 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 146D1298FA4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:42:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C832A298FAB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:42:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781834AbgJZOmM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:42:12 -0400
-Received: from mx2.suse.de ([195.135.220.15]:36072 "EHLO mx2.suse.de"
+        id S1781842AbgJZOm4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:42:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:35306 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1781658AbgJZOmK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:42:10 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 2EF1CB8E1;
-        Mon, 26 Oct 2020 14:42:08 +0000 (UTC)
-Message-ID: <700a149849222f3efbec73cb8a6be56b4b1c5bcb.camel@suse.de>
-Subject: Re: [PATCH v2 03/10] gpio: raspberrypi-exp: Release firmware handle
- on unbind
-From:   Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-To:     Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Cc:     Uwe =?ISO-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
-        arm-soc <linux-arm-kernel@lists.infradead.org>,
-        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
-        Linux Input <linux-input@vger.kernel.org>,
-        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
-        Greg KH <gregkh@linuxfoundation.org>,
-        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
-        linux-gpio <linux-gpio@vger.kernel.org>,
-        linux-clk <linux-clk@vger.kernel.org>,
-        Stephen Boyd <sboyd@kernel.org>,
-        linux-rpi-kernel@lists.infradead.org
-Date:   Mon, 26 Oct 2020 15:42:06 +0100
-In-Reply-To: <CAMpxmJXw12hKYCuMDjG-Ns6n=mXmr4B2x3HJaAJ19wH_xDUMag@mail.gmail.com>
-References: <20201022155858.20867-1-nsaenzjulienne@suse.de>
-         <20201022155858.20867-4-nsaenzjulienne@suse.de>
-         <CAMpxmJXw12hKYCuMDjG-Ns6n=mXmr4B2x3HJaAJ19wH_xDUMag@mail.gmail.com>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-4RJXy1XArEUanWEz7Yut"
-User-Agent: Evolution 3.36.5 
+        id S1781724AbgJZOm4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:42:56 -0400
+Received: from localhost (bny93-h09-176-172-152-46.dsl.sta.abo.bbox.fr [176.172.152.46])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6767722263;
+        Mon, 26 Oct 2020 14:42:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603723375;
+        bh=bpuObpcLJtZiDmzQS2y2dFX1l3G60DHiaBNVEThZDbU=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=fUVz3TRnfuRrFaO/UAEVAr9jUymYgKp/NAytBrlIhlN2CgjYE1yYNJDMS2PImwoM3
+         IzmWevNpz4hxj6Myk55TEOpz+54cPW7VNOSLUXGigLvHuV1h9QepGVyMcUmyTezrHU
+         4ntZU9tWMjK5NRxRAfeGiiFSJr9ExqCxM277aYo4=
+Date:   Mon, 26 Oct 2020 15:42:53 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        linux-kernel@vger.kernel.org,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Xu <peterx@redhat.com>
+Subject: Re: [patch 1/2] nohz: only wakeup a single target cpu when kicking a
+ task
+Message-ID: <20201026144253.GB120760@lothringen>
+References: <20201007180151.623061463@redhat.com>
+ <20201007180229.724302019@redhat.com>
+ <20201008122256.GW2628@hirez.programming.kicks-ass.net>
+ <20201008175409.GB14207@fuller.cnet>
+ <20201008195444.GB86389@lothringen>
+ <20201013171328.GA19284@fuller.cnet>
+ <20201014083321.GA2628@hirez.programming.kicks-ass.net>
+ <20201014234053.GA86158@lothringen>
+ <20201015101235.GA2611@hirez.programming.kicks-ass.net>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201015101235.GA2611@hirez.programming.kicks-ass.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 15, 2020 at 12:12:35PM +0200, Peter Zijlstra wrote:
+> On Thu, Oct 15, 2020 at 01:40:53AM +0200, Frederic Weisbecker wrote:
+> > > re tick_nohz_task_switch() being placed wrong, it should probably be
+> > > placed before finish_lock_switch(). Something like so.
+> > > 
+> > > 
+> > > diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+> > > index cf044580683c..5c92c959824f 100644
+> > > --- a/kernel/sched/core.c
+> > > +++ b/kernel/sched/core.c
+> > > @@ -4084,6 +4084,7 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> > >  	vtime_task_switch(prev);
+> > >  	perf_event_task_sched_in(prev, current);
+> > >  	finish_task(prev);
+> > > +	tick_nohz_task_switch();
+> > >  	finish_lock_switch(rq);
+> > >  	finish_arch_post_lock_switch();
+> > >  	kcov_finish_switch(current);
+> > > @@ -4121,7 +4122,6 @@ static struct rq *finish_task_switch(struct task_struct *prev)
+> > >  		put_task_struct_rcu_user(prev);
+> > >  	}
+> > >  
+> > > -	tick_nohz_task_switch();
+> > 
+> > IIRC, we wanted to keep it outside rq lock because it shouldn't it...
+> 
+> But now you've created a window with IRQs on and cause additional IRQ
+> state changes.
+> 
+> If you're really worried about rq->lock, I suppose we can do:
+> 
+> 	rq_unlock(rq->lock);
+> 	tick_nohz_task_switch();
+> 	local_irq_enable();
+> 
+> (much like we do at the beginning of __schedule for RCU)
 
---=-4RJXy1XArEUanWEz7Yut
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Right. Well I'm not that worried about rq->lock though. If you're ok
+with it I can just move it before finish_lock_switch().
 
-On Mon, 2020-10-26 at 15:40 +0100, Bartosz Golaszewski wrote:
-> On Thu, Oct 22, 2020 at 5:59 PM Nicolas Saenz Julienne
-> <nsaenzjulienne@suse.de> wrote:
-> > Upon unbinding the device make sure we release RPi's firmware interface=
-.
-> >=20
-> > Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
-> > ---
-> >  drivers/gpio/gpio-raspberrypi-exp.c | 14 +++++++++++++-
-> >  1 file changed, 13 insertions(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/gpio/gpio-raspberrypi-exp.c b/drivers/gpio/gpio-ra=
-spberrypi-exp.c
-> > index bb100e0124e6..c008336e1131 100644
-> > --- a/drivers/gpio/gpio-raspberrypi-exp.c
-> > +++ b/drivers/gpio/gpio-raspberrypi-exp.c
-> > @@ -231,8 +231,19 @@ static int rpi_exp_gpio_probe(struct platform_devi=
-ce *pdev)
-> >         rpi_gpio->gc.get =3D rpi_exp_gpio_get;
-> >         rpi_gpio->gc.set =3D rpi_exp_gpio_set;
-> >         rpi_gpio->gc.can_sleep =3D true;
-> > +       platform_set_drvdata(pdev, rpi_gpio);
-> >=20
-> > -       return devm_gpiochip_add_data(dev, &rpi_gpio->gc, rpi_gpio);
-> > +       return gpiochip_add_data(&rpi_gpio->gc, rpi_gpio);
-> > +}
-> > +
-> > +static int rpi_exp_gpio_remove(struct platform_device *pdev)
-> > +{
-> > +       struct rpi_exp_gpio *rpi_gpio =3D platform_get_drvdata(pdev);
-> > +
-> > +       gpiochip_remove(&rpi_gpio->gc);
-> > +       rpi_firmware_put(rpi_gpio->fw);
-> > +
-> > +       return 0;
-> >  }
-> >=20
-> >  static const struct of_device_id rpi_exp_gpio_ids[] =3D {
-> > @@ -247,6 +258,7 @@ static struct platform_driver rpi_exp_gpio_driver =
-=3D {
-> >                 .of_match_table =3D of_match_ptr(rpi_exp_gpio_ids),
-> >         },
-> >         .probe  =3D rpi_exp_gpio_probe,
-> > +       .remove =3D rpi_exp_gpio_remove,
-> >  };
-> >  module_platform_driver(rpi_exp_gpio_driver);
-> >=20
-> > --
-> > 2.28.0
-> >=20
->=20
-> Why not introduce devm_rpi_firmware_get()? That would allow you to
-> keep the driver elegant without re-adding remove().
-
-I like the idea, I'll look into it.
-
-Thanks,
-Nicolas
-
-
---=-4RJXy1XArEUanWEz7Yut
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEErOkkGDHCg2EbPcGjlfZmHno8x/4FAl+W4D4ACgkQlfZmHno8
-x/4RVwf/UZbRYwQfpY+67Gru7U3IMExckiPcjOHqeN3IO1Aqys6hi0LcCgQmZoRS
-yDES/QK4HITWb2LEOikdeICzUhcAmHLuD6l9Si1lOw/g7RZAcNoB+gejoLIKsxsJ
-BvBSsCz+ARcANf68gksyv52nsVLhMNlvZpnoVV6p9VTzTb0q7+QOBy7KndC73pyM
-cLs3LcbX7jTY71QjVIAVJql7UiQmzjA9V08bxNan8AF/yttAj0PgtZga1WYXQHG/
-ipUuvMADCJYB9WrHAhtY8TV1G1pGs0b+OTU6cEZukdSAUaNXzL+DKDHm3nlMi887
-7aRyD6vm++8u7ecNrtj2/Iug3MLyQg==
-=FwXW
------END PGP SIGNATURE-----
-
---=-4RJXy1XArEUanWEz7Yut--
-
+Thanks.
