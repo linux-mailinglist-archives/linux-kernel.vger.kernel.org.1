@@ -2,215 +2,104 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1C3442988EF
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:59:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 813E42988F8
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:01:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772441AbgJZI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:59:01 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44316 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1746404AbgJZI7A (ORCPT
+        id S1772466AbgJZJBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:01:07 -0400
+Received: from wout5-smtp.messagingengine.com ([64.147.123.21]:59295 "EHLO
+        wout5-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1770950AbgJZJBH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:59:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603702739;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=0W2XV7td4g59j+SiwCCjGLZgDGW6nxbV5ceZZFZ+5jU=;
-        b=RD+XD0rmE041DblMQJjWH3AyLRUb49UgS6N+RQCe4R22lzXgA9GcVNHD8Kp2MixriHFbj0
-        Vpkt9FIinwEv+9XbDFt7VgTRTXMVUp+9u1hZH6jdDOtKe/Z9DsszH2XIfusisCPxsMaUZA
-        eJg3dbkmfiLQtC69DlONwvaYLjNlMC0=
-Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
- [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-70-w9zXk0BhNgCd_hnboTjCAA-1; Mon, 26 Oct 2020 04:58:57 -0400
-X-MC-Unique: w9zXk0BhNgCd_hnboTjCAA-1
-Received: by mail-ed1-f69.google.com with SMTP id b16so3866809edn.6
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:58:57 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=0W2XV7td4g59j+SiwCCjGLZgDGW6nxbV5ceZZFZ+5jU=;
-        b=WCq/ygG44lyBuVsJ35lhvq2Ur7cX8fp58ITq7rTgG4246i30G1f0gJtBrwDwez+pCP
-         VWZhB7IDQhJcxqKpuo9iorwV9pPED14acwqb3DaEzTTb5IN0XF/trOn7LJKBgI5wLnVQ
-         DTC8JPVReU8C0bYFIa9VWpXpCVE0mQiVfK159arBgqzP7zdIC2Yn9kFgcMVPx2sTWwe+
-         HR14QRFFdwqrESkMV1xZFonXERsoaq3qC/j3AOTQd2affQ3n/KzgJSqnV4Xb84XpAQqb
-         p2/7rCyVJCxF2XI/5XgRiYzjSIneqpGOsUMbvu7yE3VFyUtKUdn/vR4rAodKC+yC4/IU
-         V7+A==
-X-Gm-Message-State: AOAM5302HPqO8eXFkYIHA3nhMMYLW9c5dIqBjZYaCk20Jt/lBj6hiSsn
-        g1KdZ68hfwoetxiFA3ET5ewFdB8w43tUMNWKe4zMubfX8lUtqh3ThEHgSjFNgV9S6v5jUCC0hS2
-        o4MeogN5Du1GfSPbcJCR3t75Z
-X-Received: by 2002:a17:906:ae09:: with SMTP id le9mr14268841ejb.425.1603702736214;
-        Mon, 26 Oct 2020 01:58:56 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJw7/gViufjlDk0R/qXYVAbxhJp+F9jCWBIBk7lqRPPHeMS/KzUmAt2aAnWxoUOMKzZYuuYRbA==
-X-Received: by 2002:a17:906:ae09:: with SMTP id le9mr14268833ejb.425.1603702735966;
-        Mon, 26 Oct 2020 01:58:55 -0700 (PDT)
-Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
-        by smtp.gmail.com with ESMTPSA id f7sm5457783ejz.23.2020.10.26.01.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 01:58:55 -0700 (PDT)
-From:   Vitaly Kuznetsov <vkuznets@redhat.com>
-To:     Peter Xu <peterx@redhat.com>
-Cc:     peterx@redhat.com,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH 1/2] KVM: selftests: Add get featured msrs test case
-In-Reply-To: <20201025185334.389061-2-peterx@redhat.com>
-References: <20201025185334.389061-1-peterx@redhat.com> <20201025185334.389061-2-peterx@redhat.com>
-Date:   Mon, 26 Oct 2020 09:58:54 +0100
-Message-ID: <874kmh2wj5.fsf@vitty.brq.redhat.com>
+        Mon, 26 Oct 2020 05:01:07 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailout.west.internal (Postfix) with ESMTP id 993202C3;
+        Mon, 26 Oct 2020 05:01:05 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 26 Oct 2020 05:01:06 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=ZVhHc08kr8nC7KZ5EUcxT1LIt24
+        PpsTE58kIRlGmRW4=; b=bQzXef1tXDRnCa/26+53msw8Xg91eXl9QWlymg0lZln
+        5S4frg+zJraqih8PKZKpH/HPLNFYaxxSultsU6la/DvqlINC2xeFxPzxZnSWUmKs
+        VjKsOMjjoMkxeEkzx2sl4iMxIZ4zhgtdWq9xbrB0L5VzzfMBhLnke8NXDEdONhwS
+        yGo1EBbA088V030MatRUS4vd8+HF2PxuPah18BKHqEjJJOcxYIDpz3PqnRi5AXNJ
+        taCyeQSVvDdb8LxbnaRhhmjUbyLGL+P32N9/yTuJpbG4MlXsk1Amj70QCLLbHgpp
+        ml5MPbrVcpRNYxDdB968yEWZcxaP7Idq2vEpffqaE1A==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=ZVhHc0
+        8kr8nC7KZ5EUcxT1LIt24PpsTE58kIRlGmRW4=; b=dF1MKdU5kKLuIAC9rfeqy2
+        TzsKYbaNy8rgDiddB4Bg2AlhoFgcxZKX3w/SFSnmsENh7K1t4tB+dlKUZ8F5BO7Z
+        X9qz30MLxyC1hzKP5NVMF6Kr1cXNGkfpMcLDvgsIydvB2VBNlNIwdotdWDr9EYib
+        tIJaTXr92+mHuKrmzCvfnBz6fsBZJDwTCd5tlXbc20wTb0DjvO4S+RAdJtiZlUP/
+        dzxWMjAVbntjhb/8oOTjhoH2KmXOVtfFZgDPZnt9uqYS0EU6bPDCPF+T8wvSBaZ0
+        57sJe6LE9LZ1d8ABJv3GYtumQRsd2vKa8cQiSTQAkEZyNaQqwwnHKt3b1z6JEM5Q
+        ==
+X-ME-Sender: <xms:T5CWX_dIn3s1P0D0qF1uQp965GJvZUflpNcjul-YHiTWLPHSRy_S4A>
+    <xme:T5CWX1MXCnwrPChC3GQQ680OF5znlR_78k93YaIDFrv4971q5w_fXinke3uOVMTWq
+    iv9qmxbuNz32gT-7T8>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeehgdduvdelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepfffhvffukfhfgggtuggjsehgtderredttddvnecuhfhrohhmpeforgigihhm
+    vgcutfhiphgrrhguuceomhgrgihimhgvsegtvghrnhhordhtvggthheqnecuggftrfgrth
+    htvghrnhepleekgeehhfdutdeljefgleejffehfffgieejhffgueefhfdtveetgeehieeh
+    gedunecukfhppeeltddrkeelrdeikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenuc
+    frrghrrghmpehmrghilhhfrhhomhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:T5CWX4jYJFNuc3Pqf7kuuYN2W0ioDXxvtuebR8KTsTQZr44_tbvi2w>
+    <xmx:T5CWXw_OfVMgF-OeYptAzRXE6VD2go4ZPv3LMWMyfBNEvAk6KY0Luw>
+    <xmx:T5CWX7v6yceZNQQGtVjyasP9T-1e-FMRpB_aVjTOE6Ms-ZA347Zr4A>
+    <xmx:UZCWX1Jhvs8jLTy_vW2H5RexT5KLX0Qe595Bbzx7SDAnsXvlTd63Sw>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 74028328005A;
+        Mon, 26 Oct 2020 05:01:03 -0400 (EDT)
+Date:   Mon, 26 Oct 2020 10:01:01 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Jernej Skrabec <jernej.skrabec@siol.net>
+Cc:     wens@csie.org, robh+dt@kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-sunxi@googlegroups.com
+Subject: Re: [PATCH] arm64: dts: allwinner: h5: OrangePi PC2: Fix ethernet
+ node
+Message-ID: <20201026090101.v573ultstlrp3npa@gilmour.lan>
+References: <20201023184858.3272918-1-jernej.skrabec@siol.net>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="mliymakqdhxd5k4d"
+Content-Disposition: inline
+In-Reply-To: <20201023184858.3272918-1-jernej.skrabec@siol.net>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Peter Xu <peterx@redhat.com> writes:
 
-> Try to fetch any supported featured msr.  Currently it won't fail, so at least
-> we can check against valid ones (which should be >0).
->
-> This reproduces [1] too by trying to fetch one invalid msr there.
->
-> [1] https://bugzilla.kernel.org/show_bug.cgi?id=209845
->
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
->  .../testing/selftests/kvm/include/kvm_util.h  |  3 +
->  tools/testing/selftests/kvm/lib/kvm_util.c    | 14 +++++
->  .../testing/selftests/kvm/x86_64/state_test.c | 58 +++++++++++++++++++
->  3 files changed, 75 insertions(+)
->
-> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
-> index 919e161dd289..e34cf263b20a 100644
-> --- a/tools/testing/selftests/kvm/include/kvm_util.h
-> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
-> @@ -66,6 +66,9 @@ int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
->  
->  struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
->  struct kvm_vm *_vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
-> +void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
-> +				       struct kvm_msr_list *list);
-> +int kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs);
->  void kvm_vm_free(struct kvm_vm *vmp);
->  void kvm_vm_restart(struct kvm_vm *vmp, int perm);
->  void kvm_vm_release(struct kvm_vm *vmp);
-> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
-> index 74776ee228f2..3c16fa044335 100644
-> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
-> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
-> @@ -132,6 +132,20 @@ static const struct vm_guest_mode_params vm_guest_mode_params[] = {
->  _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
->  	       "Missing new mode params?");
->  
-> +void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
-> +				       struct kvm_msr_list *list)
-> +{
-> +	int r = ioctl(vm->kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, list);
-> +
-> +	TEST_ASSERT(r == 0, "KVM_GET_MSR_FEATURE_INDEX_LIST failed: %d\n",
-> +		    -errno);
-> +}
-> +
-> +int kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs)
-> +{
-> +	return ioctl(vm->kvm_fd, KVM_GET_MSRS, msrs);
-> +}
+--mliymakqdhxd5k4d
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-I *think* that the non-written rule for kvm selftests is that functions
-without '_' prefix check ioctl return value with TEST_ASSERT() and
-functions with it don't (e.g. _vcpu_run()/vcpu_run()) but maybe it's
-just me.
+On Fri, Oct 23, 2020 at 08:48:58PM +0200, Jernej Skrabec wrote:
+> RX and TX delay are provided by ethernet PHY. Reflect that in ethernet
+> node.
+>=20
+> Fixes: 44a94c7ef989 ("arm64: dts: allwinner: H5: Restore EMAC changes")
+> Signed-off-by: Jernej Skrabec <jernej.skrabec@siol.net>
 
-> +
->  /*
->   * VM Create
->   *
-> diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
-> index f6c8b9042f8a..7ce9920e526a 100644
-> --- a/tools/testing/selftests/kvm/x86_64/state_test.c
-> +++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+Applied, thanks
 
-I would not overload state_test with this new check and create a new
-one. The benefit is that when one of these tests fail we still get the
-result of the other one so it's not 'everything works' vs 'everything is
-broken' type of log.
+Maxime
 
-> @@ -152,6 +152,61 @@ static void __attribute__((__flatten__)) guest_code(void *arg)
->  	GUEST_DONE();
->  }
->  
-> +#define  KVM_MSR_FEATURE_N  64
-> +
-> +static int test_kvm_get_feature_msr_one(struct kvm_vm *vm, __u32 index,
-> +					struct kvm_msrs *msrs)
-> +{
-> +	msrs->nmsrs = 1;
-> +	msrs->entries[0].index = index;
-> +	return kvm_vm_get_feature_msrs(vm, msrs);
-> +}
-> +
-> +static void test_kvm_get_msr_features(struct kvm_vm *vm)
-> +{
-> +	struct kvm_msr_list *msr_list;
-> +	struct kvm_msrs *msrs;
-> +	int i, ret, sum;
-> +
-> +	if (!kvm_check_cap(KVM_CAP_GET_MSR_FEATURES)) {
-> +		pr_info("skipping kvm get msr features test\n");
-> +		return;
-> +	}
-> +
-> +	msr_list = calloc(1, sizeof(struct kvm_msr_list) +
-> +			  sizeof(__u32) * KVM_MSR_FEATURE_N);
-> +	msr_list->nmsrs = KVM_MSR_FEATURE_N;
-> +
-> +	TEST_ASSERT(msr_list, "msr_list allocation failed\n");
-> +
-> +	kvm_vm_get_msr_feature_index_list(vm, msr_list);
-> +
-> +	msrs = calloc(1, sizeof(struct kvm_msrs) +
-> +		      sizeof(struct kvm_msr_entry));
-> +
-> +	TEST_ASSERT(msrs, "msr entries allocation failed\n");
-> +
-> +	sum = 0;
-> +	for (i = 0; i < msr_list->nmsrs; i++) {
-> +		ret = test_kvm_get_feature_msr_one(vm, msr_list->indices[i],
-> +						    msrs);
-> +		TEST_ASSERT(ret >= 0, "KVM_GET_MSR failed: %d\n", ret);
-> +		sum += ret;
-> +	}
-> +	TEST_ASSERT(sum > 0, "KVM_GET_MSR has no feature msr\n");
-> +
-> +	/*
-> +	 * Test invalid msr.  Note the retcode can be either 0 or 1 depending
-> +	 * on kvm.ignore_msrs
-> +	 */
-> +	ret = test_kvm_get_feature_msr_one(vm, (__u32)-1, msrs);
-> +	TEST_ASSERT(ret >= 0 && ret <= 1,
-> +		    "KVM_GET_MSR on invalid msr error: %d\n", ret);
-> +
-> +	free(msrs);
-> +	free(msr_list);
-> +}
-> +
->  int main(int argc, char *argv[])
->  {
->  	vm_vaddr_t nested_gva = 0;
-> @@ -168,6 +223,9 @@ int main(int argc, char *argv[])
->  	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
->  	run = vcpu_state(vm, VCPU_ID);
->  
-> +	/* Test KVM_GET_MSR for VM */
-> +	test_kvm_get_msr_features(vm);
-> +
->  	vcpu_regs_get(vm, VCPU_ID, &regs1);
->  
->  	if (kvm_check_cap(KVM_CAP_NESTED_STATE)) {
+--mliymakqdhxd5k4d
+Content-Type: application/pgp-signature; name="signature.asc"
 
--- 
-Vitaly
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5aQTQAKCRDj7w1vZxhR
+xWIWAP0QsbzMvoQtRlXCw4aCHUYm0HC6H0vL70IZepvHn78/3wD/eWGNRJm6/b4y
+OZ+LCDx9GHvvv5QMQjSlLHoz9Ff+wgs=
+=+DVr
+-----END PGP SIGNATURE-----
+
+--mliymakqdhxd5k4d--
