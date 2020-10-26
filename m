@@ -2,27 +2,27 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CA964299509
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:16:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5B7D829950B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:16:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789445AbgJZSQN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:16:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59778 "EHLO mail.kernel.org"
+        id S1789454AbgJZSQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:16:16 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59830 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789422AbgJZSQK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:16:10 -0400
+        id S1789441AbgJZSQN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:16:13 -0400
 Received: from kozik-lap.mshome.net (unknown [194.230.155.184])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DE3F222C8;
-        Mon, 26 Oct 2020 18:16:07 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 7C7782224E;
+        Mon, 26 Oct 2020 18:16:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603736170;
-        bh=IVXlBUpxQ4agibYhuw0CHkeH7WSC7dcxpSQU3O92NTc=;
+        s=default; t=1603736173;
+        bh=KApyVe39+tX3pYLnAPgNjOWbYuqQ5EG8GIfyKGGv2YQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=hc5872OP7xWzgn92s3rrYLflV3BzP50075PZ0rTqsimMjtHZa4RMJ3n563SFFs3bW
-         c+iaJ55qMvzIRtG6G9Dj6J63BN1ThsLxtRfHyNcGdEok2sxqQQeB+zuOKxIoLBila8
-         MuK92IlSElbwL2RajxPYAQJxvN5bOA+41SFZOi04=
+        b=k8aYr6neRIghVzvMhJUHYP5XNqKtYtiyNMvPdbFAyx4j3NC9PCl7vm8Lyp/HWHja7
+         G2qm3xlTHjWI+7WD9BRwlC0ZZn4RYA4WQ4JEsnKhO9wBOaimkhmR3P6/fsd7ejtKq3
+         ZEp0I+BdH1mIGQGmjvxZiax2P6YrngQp1ULxUhsw=
 From:   Krzysztof Kozlowski <krzk@kernel.org>
 To:     Rob Herring <robh+dt@kernel.org>, Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
@@ -33,9 +33,9 @@ Cc:     Marek Szyprowski <m.szyprowski@samsung.com>,
         Sylwester Nawrocki <snawrocki@kernel.org>,
         Alim Akhtar <alim.akhtar@samsung.com>,
         Chanwoo Choi <cw00.choi@samsung.com>
-Subject: [PATCH 10/12] arm64: dts: exynos: adjust node names to DT spec in Exynos5433 TM2
-Date:   Mon, 26 Oct 2020 19:15:26 +0100
-Message-Id: <20201026181528.163143-11-krzk@kernel.org>
+Subject: [PATCH 11/12] arm64: dts: exynos: adjust node names to DT spec in Exynos7 Espresso
+Date:   Mon, 26 Oct 2020 19:15:27 +0100
+Message-Id: <20201026181528.163143-12-krzk@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026181528.163143-1-krzk@kernel.org>
 References: <20201026181528.163143-1-krzk@kernel.org>
@@ -53,58 +53,22 @@ No functional changes.
 
 Signed-off-by: Krzysztof Kozlowski <krzk@kernel.org>
 ---
- arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ arch/arm64/boot/dts/exynos/exynos7-espresso.dts | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-index 829fea23d4ab..143f45eaa953 100644
---- a/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-+++ b/arch/arm64/boot/dts/exynos/exynos5433-tm2-common.dtsi
-@@ -94,7 +94,7 @@ i2c_max98504: i2c-gpio-0 {
- 		#size-cells = <0>;
- 		status = "okay";
- 
--		max98504: max98504@31 {
-+		max98504: codec@31 {
- 			compatible = "maxim,max98504";
- 			reg = <0x31>;
- 			maxim,rx-path = <1>;
-@@ -386,7 +386,7 @@ &hsi2c_0 {
+diff --git a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+index 92fecc539c6c..695d4c140646 100644
+--- a/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
++++ b/arch/arm64/boot/dts/exynos/exynos7-espresso.dts
+@@ -87,7 +87,7 @@ &hsi2c_4 {
+ 	samsung,i2c-max-bus-freq = <200000>;
  	status = "okay";
- 	clock-frequency = <2500000>;
  
--	s2mps13-pmic@66 {
+-	s2mps15_pmic@66 {
 +	pmic@66 {
- 		compatible = "samsung,s2mps13-pmic";
- 		interrupt-parent = <&gpa0>;
- 		interrupts = <7 IRQ_TYPE_NONE>;
-@@ -817,7 +817,7 @@ &hsi2c_7 {
- 	status = "okay";
- 	clock-frequency = <1000000>;
- 
--	sii8620@39 {
-+	bridge@39 {
- 		reg = <0x39>;
- 		compatible = "sil,sii8620";
- 		cvcc10-supply = <&ldo36_reg>;
-@@ -852,7 +852,7 @@ mhl_to_musb_con: endpoint {
- &hsi2c_8 {
- 	status = "okay";
- 
--	max77843@66 {
-+	pmic@66 {
- 		compatible = "maxim,max77843";
- 		interrupt-parent = <&gpa1>;
- 		interrupts = <5 IRQ_TYPE_EDGE_FALLING>;
-@@ -1231,7 +1231,7 @@ &spi_1 {
- 	cs-gpios = <&gpd6 3 GPIO_ACTIVE_HIGH>;
- 	status = "okay";
- 
--	wm5110: wm5110-codec@0 {
-+	wm5110: codec@0 {
- 		compatible = "wlf,wm5110";
- 		reg = <0x0>;
- 		spi-max-frequency = <20000000>;
+ 		compatible = "samsung,s2mps15-pmic";
+ 		reg = <0x66>;
+ 		interrupts = <2 IRQ_TYPE_NONE>;
 -- 
 2.25.1
 
