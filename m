@@ -2,171 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5719C29931D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:58:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1F6B829930F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:56:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786792AbgJZQ6J (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:58:09 -0400
-Received: from mail-vs1-f66.google.com ([209.85.217.66]:46192 "EHLO
-        mail-vs1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1786741AbgJZQ5e (ORCPT
+        id S1786704AbgJZQ44 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:56:56 -0400
+Received: from new3-smtp.messagingengine.com ([66.111.4.229]:44053 "EHLO
+        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1786610AbgJZQ4z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:57:34 -0400
-Received: by mail-vs1-f66.google.com with SMTP id s6so5110402vss.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:57:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=U0IxDbw9xkqiRVjMXASTPx8jLKp0WDhukG7QJqTfdjM=;
-        b=RfB8rPwjTA8vs3E4K0ZnlkEs3pC7qo0cqceU3vJpfmcdf24Z+E6Jt+ETsXZSJjcxjR
-         UR0TOtj/NLEDWilkee0H9Mb787VHCc9Ab+boZIUrhzTLGIzGyCbOF5zjB0vKMlewdEMK
-         u0gLdIqrEwDC+kXzOwdV3BKPuCS4qMO2hVNOftHYqDeIBwkkMPVCbg9eSMUl41wBN1Dk
-         POy3ShUIQtOQUbcjNwTfQIarlS4x679gUxlein935yq0X22uDWo6f92fGAl0rsyArYwl
-         XoeJngjPMZ4l5G0jOkIPxUFFlL0AtqNuzoIsQQFiIa+fkw2k6BZeIDMTDQfHqDIwyVi9
-         oHhA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=U0IxDbw9xkqiRVjMXASTPx8jLKp0WDhukG7QJqTfdjM=;
-        b=Wo5iLroi0I9cLkpByT6TprR5nw6mhZmMoqtpgMvdfNGoLH/BPL0cYOYK5gp3RhvPfB
-         szi72VQKRTEhijVRD9fo3hF13mltahqXLP+tqOKE8G/v/MnZDOgBocPL+11NiJFMkQzb
-         jXsTYrKF4FabR+Dwl5iblSw6P6GYk68sFapUSeT3Lb9dxdhxRut9i217uenAU9ZCVTu8
-         OG6NmNvFrdrLNjwZ/1iWNO9RJ+66vn9goLOpBOH39izdaMVSwKXMeTjxx+BlPgRHWMCp
-         2xgETrYxqfxC48f3Y9Am2L1IuVNfZj1h0/4xN9WbLAOz/tD5LQHhYRXl9azigPtmJzY6
-         BCqA==
-X-Gm-Message-State: AOAM533pOF5ND8aLvDGBSXlmfZil68ll+Cc4zWJWaE/btYm6s4f1V1l8
-        ewG3jfhMb5DK9kJzCuWMqPGT6slwtkQ=
-X-Google-Smtp-Source: ABdhPJzOjnBBh2oAUrkUcBrfSXOWkxJX7AxtoUfN5DAcQQriePfx1iCeYC5mlCe35w++qn+9ZScJlg==
-X-Received: by 2002:a67:6ec6:: with SMTP id j189mr19110528vsc.58.1603731452418;
-        Mon, 26 Oct 2020 09:57:32 -0700 (PDT)
-Received: from mail-vs1-f43.google.com (mail-vs1-f43.google.com. [209.85.217.43])
-        by smtp.gmail.com with ESMTPSA id e125sm1512234vkh.44.2020.10.26.09.57.29
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 09:57:30 -0700 (PDT)
-Received: by mail-vs1-f43.google.com with SMTP id s6so5110293vss.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:57:29 -0700 (PDT)
-X-Received: by 2002:a67:b607:: with SMTP id d7mr19582090vsm.28.1603731449199;
- Mon, 26 Oct 2020 09:57:29 -0700 (PDT)
+        Mon, 26 Oct 2020 12:56:55 -0400
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
+        by mailnew.nyi.internal (Postfix) with ESMTP id B6E705805D4;
+        Mon, 26 Oct 2020 12:56:54 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 26 Oct 2020 12:56:54 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
+        date:from:to:cc:subject:message-id:references:mime-version
+        :content-type:in-reply-to; s=fm1; bh=faYAJTfSctlHM7ABJz6moYFCpWA
+        /waoqzYu5Nvlv+4U=; b=JdZVuvaVqf34Umv5FYsqDKtQdoElrwkrZNA+wQNLm7B
+        3dQhE0NCRSIY16BIzfYiD7pKDJvP+mv/I9/MQpro7W27b6oR/o0pvO8Cx7RMs5bk
+        uNXpA8hJUqj6ygbbHZVGD5yv/BkbxFDFWeKducgwiNo+yG3/i1mi0wPFiyx5XjgH
+        Zxsxj684oVzrysWHvgcGFpuOK6KebJOl2yWPbOAvmrz1nUWsjb6N7eUse6l1TfNs
+        q6l/dXvMGho4MhNo4M+J8bCHSLUR3YEg1C//XVpazg4Eux1aDz0alKXlbWRfMucT
+        k9iexVVKshlAva5G2YgTYRynumYp6jWK11UbgemltsA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+        messagingengine.com; h=cc:content-type:date:from:in-reply-to
+        :message-id:mime-version:references:subject:to:x-me-proxy
+        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=faYAJT
+        fSctlHM7ABJz6moYFCpWA/waoqzYu5Nvlv+4U=; b=N9aGMUbWXFygf3Vv8R4BQs
+        XyqcKVMMOMcDerpQs3g4tns8353Hx7HUWLiPXddddrFmt+hjRoRmKpWwWZDCBwx8
+        gkzBziA0zGNYLnw2YTVm8wcakzE/YuuQkhyox7MgKIUhPYLk0DR6a2sZtAvjvOwi
+        lpmG4M1NnETtbRxjG9g5IRrKARK3l56BN/ZnLiNmGLUyNLiuwG5FbvhSP0+M3A8u
+        b279+MxiVfLTu49mMeyFbKGftCNX4cL+YgOjdAZhZxYs7kc2qn7MBXab7CoBlpvH
+        P5K4mKTXt1KIi9LnhiU+/Iod9SbyjUCNZ6H3TW5qRuBY1+b+9akSPP1Ox4yv6Zmg
+        ==
+X-ME-Sender: <xms:1v-WX15H6yufn1RkLEn7ov3-9nkpD0FQyRQLJZv_1wCVZX6kjTUl7Q>
+    <xme:1v-WXy7z6auCdkjJJbHQdSIeZi-NMR0E6jKl2li4aaMmYQHL3u_ol5xjmhU8S6kR7
+    CZv9IxkO6iEcc2tOVc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgdehlecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
+    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
+    gvrhhnpeffteetveeijeetuefhffegkeetgffhieelheehtdduudethffhjedtvddtudel
+    vdenucffohhmrghinhepuggvvhhitggvthhrvggvrdhorhhgnecukfhppeeltddrkeelrd
+    eikedrjeeinecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhho
+    mhepmhgrgihimhgvsegtvghrnhhordhtvggthh
+X-ME-Proxy: <xmx:1v-WX8c24GxEXI311O4UO8Eoi17n8ByHP10HefptpYL_w21nscYx0w>
+    <xmx:1v-WX-KIBSMFILfDY86nDlD4CwYKFe9eli9AWGeh7keS5wrR2nXisQ>
+    <xmx:1v-WX5IY8kpNmabaJORbYAb1U4oxskEOgJhtDn49o83brkeR1OI0nw>
+    <xmx:1v-WX-DwAxMhQAQfn6hCoa63GUxBobN0AvAnAG3rlZGCRZ4KoRVr8g>
+Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
+        by mail.messagingengine.com (Postfix) with ESMTPA id 36ED7328005A;
+        Mon, 26 Oct 2020 12:56:54 -0400 (EDT)
+Date:   Mon, 26 Oct 2020 17:56:53 +0100
+From:   Maxime Ripard <maxime@cerno.tech>
+To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
+        Mauro Carvalho Chehab <mchehab@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+        Yong Deng <yong.deng@magewell.com>,
+        Kishon Vijay Abraham I <kishon@ti.com>,
+        Vinod Koul <vkoul@kernel.org>,
+        Helen Koike <helen.koike@collabora.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Philipp Zabel <p.zabel@pengutronix.de>,
+        Hans Verkuil <hans.verkuil@cisco.com>,
+        Sakari Ailus <sakari.ailus@linux.intel.com>,
+        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
+Subject: Re: [PATCH 11/14] dt-bindings: media: i2c: Add A83T MIPI CSI-2
+ bindings documentation
+Message-ID: <20201026165653.7tzo2hlagee633ra@gilmour.lan>
+References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
+ <20201023174546.504028-12-paul.kocialkowski@bootlin.com>
 MIME-Version: 1.0
-References: <20201026150851.528148-1-aleksandrnogikh@gmail.com> <20201026150851.528148-3-aleksandrnogikh@gmail.com>
-In-Reply-To: <20201026150851.528148-3-aleksandrnogikh@gmail.com>
-From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-Date:   Mon, 26 Oct 2020 12:56:52 -0400
-X-Gmail-Original-Message-ID: <CA+FuTSeR5n4xSpzMxAYX=kyy0aJYz52FVR=EjqK8_-LVqcqpXA@mail.gmail.com>
-Message-ID: <CA+FuTSeR5n4xSpzMxAYX=kyy0aJYz52FVR=EjqK8_-LVqcqpXA@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] net: add kcov handle to skb extensions
-To:     Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-Cc:     David Miller <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Johannes Berg <johannes@sipsolutions.net>,
-        Eric Dumazet <edumazet@google.com>,
-        Andrey Konovalov <andreyknvl@google.com>,
-        Dmitry Vyukov <dvyukov@google.com>,
-        Marco Elver <elver@google.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        Network Development <netdev@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-        Aleksandr Nogikh <nogikh@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="7ovabmptobm3zx7w"
+Content-Disposition: inline
+In-Reply-To: <20201023174546.504028-12-paul.kocialkowski@bootlin.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:11 AM Aleksandr Nogikh
-<aleksandrnogikh@gmail.com> wrote:
->
-> From: Aleksandr Nogikh <nogikh@google.com>
->
-> Remote KCOV coverage collection enables coverage-guided fuzzing of the
-> code that is not reachable during normal system call execution. It is
-> especially helpful for fuzzing networking subsystems, where it is
-> common to perform packet handling in separate work queues even for the
-> packets that originated directly from the user space.
->
-> Enable coverage-guided frame injection by adding kcov remote handle to
-> skb extensions. Default initialization in __alloc_skb and
-> __build_skb_around ensures that no socket buffer that was generated
-> during a system call will be missed.
->
-> Code that is of interest and that performs packet processing should be
-> annotated with kcov_remote_start()/kcov_remote_stop().
->
-> An alternative approach is to determine kcov_handle solely on the
-> basis of the device/interface that received the specific socket
-> buffer. However, in this case it would be impossible to distinguish
-> between packets that originated during normal background network
-> processes or were intentionally injected from the user space.
->
-> Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
-> --
-> v2 -> v3:
-> * Reimplemented this change. Now kcov handle is added to skb
-> extensions instead of sk_buff.
-> v1 -> v2:
-> * Updated the commit message.
+
+--7ovabmptobm3zx7w
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+On Fri, Oct 23, 2020 at 07:45:43PM +0200, Paul Kocialkowski wrote:
+> This introduces YAML bindings documentation for the A83T MIPI CSI-2
+> controller.
+>=20
+> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+
+What is the difference with the a31/v3s one?
+
 > ---
->  include/linux/skbuff.h | 31 +++++++++++++++++++++++++++++++
->  net/core/skbuff.c      | 11 +++++++++++
->  2 files changed, 42 insertions(+)
->
-> diff --git a/include/linux/skbuff.h b/include/linux/skbuff.h
-> index a828cf99c521..b63d90faa8e9 100644
-> --- a/include/linux/skbuff.h
-> +++ b/include/linux/skbuff.h
-> @@ -4150,6 +4150,9 @@ enum skb_ext_id {
->  #endif
->  #if IS_ENABLED(CONFIG_MPTCP)
->         SKB_EXT_MPTCP,
-> +#endif
-> +#if IS_ENABLED(CONFIG_KCOV)
-> +       SKB_EXT_KCOV_HANDLE,
->  #endif
->         SKB_EXT_NUM, /* must be last */
->  };
-> @@ -4605,5 +4608,33 @@ static inline void skb_reset_redirect(struct sk_buff *skb)
->  #endif
->  }
->
-> +#ifdef CONFIG_KCOV
+>  .../media/allwinner,sun8i-a83t-mipi-csi2.yaml | 158 ++++++++++++++++++
+>  1 file changed, 158 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/media/allwinner,sun=
+8i-a83t-mipi-csi2.yaml
+>=20
+> diff --git a/Documentation/devicetree/bindings/media/allwinner,sun8i-a83t=
+-mipi-csi2.yaml b/Documentation/devicetree/bindings/media/allwinner,sun8i-a=
+83t-mipi-csi2.yaml
+> new file mode 100644
+> index 000000000000..2384ae4e7be0
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/media/allwinner,sun8i-a83t-mipi-c=
+si2.yaml
+> @@ -0,0 +1,158 @@
+> +# SPDX-License-Identifier: GPL-2.0
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/media/allwinner,sun8i-a83t-mipi-csi2.=
+yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +static inline void skb_set_kcov_handle(struct sk_buff *skb, const u64 kcov_handle)
-> +{
-> +       /* No reason to allocate skb extensions to set kcov_handle if kcov_handle is 0. */
-
-If the handle does not need to be set if zero, why then set it if the
-skb has extensions?
-
-> +       if (skb_has_extensions(skb) || kcov_handle) {
-> +               u64 *kcov_handle_ptr = skb_ext_add(skb, SKB_EXT_KCOV_HANDLE);
-
-skb_ext_add and skb_ext_find are not defined unless CONFIG_SKB_EXTENSIONS.
-
-Perhaps CONFIG_KCOV should be made to select that?
-
-
-
-
+> +title: Allwinner A83T MIPI CSI-2 Device Tree Bindings
 > +
-> +               if (kcov_handle_ptr)
-> +                       *kcov_handle_ptr = kcov_handle;
-> +       }
-> +}
+> +maintainers:
+> +  - Paul Kocialkowski <paul.kocialkowski@bootlin.com>
 > +
-> +static inline u64 skb_get_kcov_handle(struct sk_buff *skb)
-> +{
-> +       u64 *kcov_handle = skb_ext_find(skb, SKB_EXT_KCOV_HANDLE);
+> +properties:
+> +  compatible:
+> +    const: allwinner,sun8i-a83t-mipi-csi2
 > +
-> +       return kcov_handle ? *kcov_handle : 0;
-> +}
+> +  reg:
+> +    maxItems: 1
 > +
-> +#else
+> +  interrupts:
+> +    maxItems: 1
 > +
-> +static inline void skb_set_kcov_handle(struct sk_buff *skb, const u64 kcov_handle) { }
+> +  clocks:
+> +    items:
+> +      - description: Bus Clock
+> +      - description: Module Clock
+> +      - description: MIPI-specific Clock
+> +      - description: Misc CSI Clock
 > +
-> +static inline u64 skb_get_kcov_handle(struct sk_buff *skb) { return 0; }
-> +
-> +#endif /* CONFIG_KCOV */
+> +  clock-names:
+> +    items:
+> +      - const: bus
+> +      - const: mod
+> +      - const: mipi
+> +      - const: misc
+
+If it's only due to the clock, it's soemething you can deal with in the
+first schema, there's no need to duplicate them.
+
+Maxime
+
+--7ovabmptobm3zx7w
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5b/1QAKCRDj7w1vZxhR
+xakfAP4kStUeYLhitiX6TMzIOuSCGkToCSiTRV+OOxZG6u/ebwD+O9sQfYacFXnD
+437JGBI8Re7cmk9kw508jaZyC2EA6gI=
+=ZOtr
+-----END PGP SIGNATURE-----
+
+--7ovabmptobm3zx7w--
