@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 38658299BE3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A6E04299BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:19 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410275AbgJZXx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
+        id S2410318AbgJZXyG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:54:06 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58300 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410080AbgJZXx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:27 -0400
+        id S2410135AbgJZXxi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id D502921D41;
-        Mon, 26 Oct 2020 23:53:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CACD72151B;
+        Mon, 26 Oct 2020 23:53:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756406;
-        bh=SeK5CVTW6eYkfAWLEimvt5WJvBNvy3G2Vk7/auIrGeg=;
+        s=default; t=1603756417;
+        bh=7sls8PMAfUqr7ij8tdXGHPZOgpn+K7ANFmQZNjCWRFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iKr2sT4eTeCG3LdN5nurZP5/MIJTh5K0l3TqbtB26z64nHnUrEwucnzq+o4nLsrM5
-         aBlviH02Jbo2imvriTa/5X73y4l0BPW24n+68Vv4w2ieY4YQjH6KDp7WD4l7TlnQAq
-         X/1yn4Rz/dZ/9JAwUZmt+uv0GbqvZrvUIAfafBR0=
+        b=gwRBwHQUn1TGp+5chfbZge1Nyfuo6ZxROYkJo74hXtcHAb/KoPy46wL5R+T/IApuc
+         pOuWAD73QGnRm5D7Db43130NfKLOKEGP62xI1LEjBSQCMLZdFwWJkHf0jaQk/ZZqbK
+         xHHyMOEITZxcSN1QbLF3scgOYp+2vNa+QanHcRIE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Oliver Neukum <oneukum@suse.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 065/132] USB: adutux: fix debugging
-Date:   Mon, 26 Oct 2020 19:50:57 -0400
-Message-Id: <20201026235205.1023962-65-sashal@kernel.org>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 074/132] can: flexcan: disable clocks during stop mode
+Date:   Mon, 26 Oct 2020 19:51:06 -0400
+Message-Id: <20201026235205.1023962-74-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,33 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Oliver Neukum <oneukum@suse.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
+[ Upstream commit 02f71c6605e1f8259c07f16178330db766189a74 ]
 
-Handling for removal of the controller was missing at one place.
-Add it.
+Disable clocks while CAN core is in stop mode.
 
-Signed-off-by: Oliver Neukum <oneukum@suse.com>
-Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/misc/adutux.c | 1 +
- 1 file changed, 1 insertion(+)
+ drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
-index d8d157c4c271d..96495fcd952aa 100644
---- a/drivers/usb/misc/adutux.c
-+++ b/drivers/usb/misc/adutux.c
-@@ -209,6 +209,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 94d10ec954a05..de7599d99b4b5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1700,8 +1700,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			err = flexcan_chip_disable(priv);
+ 			if (err)
+ 				return err;
+-
+-			err = pm_runtime_force_suspend(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+@@ -1727,10 +1725,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = pm_runtime_force_resume(device);
+-			if (err)
+-				return err;
+-
+ 			err = flexcan_chip_enable(priv);
+ 		}
+ 	}
+@@ -1761,8 +1755,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
- 	if (status != 0) {
- 		if ((status != -ENOENT) &&
-+		    (status != -ESHUTDOWN) &&
- 		    (status != -ECONNRESET)) {
- 			dev_dbg(&dev->udev->dev,
- 				"%s :nonzero status received: %d\n", __func__,
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, true);
++	if (netif_running(dev)) {
++		int err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, true);
++
++		err = pm_runtime_force_suspend(device);
++		if (err)
++			return err;
++	}
+ 
+ 	return 0;
+ }
+@@ -1772,8 +1774,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, false);
++	if (netif_running(dev)) {
++		int err;
++
++		err = pm_runtime_force_resume(device);
++		if (err)
++			return err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, false);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
