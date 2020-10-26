@@ -2,104 +2,180 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4BAF62986D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:21:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99E9D2986CC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 07:20:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1770352AbgJZGVf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 02:21:35 -0400
-Received: from mailgw02.mediatek.com ([210.61.82.184]:54523 "EHLO
-        mailgw02.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1770343AbgJZGVf (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 02:21:35 -0400
-X-UUID: 29f335cd3a40456eaaeff45935fe4b5a-20201026
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=ovD35jwSjQ+wqlOD/MbETU9+rdGO8IPjUS8gPRDFFlI=;
-        b=qDm0b8LmRcF0QV/N2EyDfpo/uDDfVGwQO0/EuWC3ZAFJI/1pXfunz+buRkn4M+d/xgnOdoH6Le253uoA5L2kgqICfbazLPLW/OjzT0zDlfHcDWuZxKP/NPQPKVZ6KWGGhAIwiOkkxhH6HSbBaE4X3mnXhIPXdzLtwYmZXlChiX4=;
-X-UUID: 29f335cd3a40456eaaeff45935fe4b5a-20201026
-Received: from mtkcas06.mediatek.inc [(172.21.101.30)] by mailgw02.mediatek.com
-        (envelope-from <hector.yuan@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 104698409; Mon, 26 Oct 2020 14:21:24 +0800
-Received: from mtkcas07.mediatek.inc (172.21.101.84) by
- mtkmbs01n2.mediatek.inc (172.21.101.79) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Oct 2020 14:17:34 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas07.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Oct 2020 14:17:34 +0800
-Message-ID: <1603693055.20535.7.camel@mtkswgap22>
-Subject: Re: [PATCH v1 3/6] dt-bindings: cpufreq: add bindings for MediaTek
- cpufreq HW
-From:   Hector Yuan <hector.yuan@mediatek.com>
-To:     Viresh Kumar <viresh.kumar@linaro.org>
-CC:     <linux-mediatek@lists.infradead.org>,
-        <linux-arm-kernel@lists.infradead.org>, <linux-pm@vger.kernel.org>,
-        "Rob Herring" <robh+dt@kernel.org>,
-        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
-        Maxime Ripard <mripard@kernel.org>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Amit Kucheria <amit.kucheria@linaro.org>,
-        "Stephen Boyd" <sboyd@kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>,
-        Dave Gerlach <d-gerlach@ti.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <wsd_upstream@mediatek.com>
-Date:   Mon, 26 Oct 2020 14:17:35 +0800
-In-Reply-To: <20201023083538.f6hhcyizvlf2ufjr@vireshk-i7>
-References: <1603441493-18554-1-git-send-email-hector.yuan@mediatek.com>
-         <1603441493-18554-4-git-send-email-hector.yuan@mediatek.com>
-         <20201023083538.f6hhcyizvlf2ufjr@vireshk-i7>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1770314AbgJZGTy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 02:19:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:56708 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1770305AbgJZGTx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 02:19:53 -0400
+Received: from google.com (unknown [104.132.1.66])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 2D59520853;
+        Mon, 26 Oct 2020 06:19:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603693193;
+        bh=ZMumJDxtizppcRhEvLccB7zDX1rEZFjVHF761knJgmg=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=pBd3JBzdGzJPLr0Nblc/VL0kcj3LHkF1QkK2ZIhWfuplBJJU6zXfQReJdXqsbkH5A
+         FTzidI8lUc+CCE1gYIWuL3Dreay3Lbt8h4VzjbDFIDvd6JbiPFaK+8MA0MBeiA8C/c
+         baHvrucRmV9WOodK/nw37PIg9KYtCfTQmQVqm6uc=
+Date:   Sun, 25 Oct 2020 23:19:51 -0700
+From:   Jaegeuk Kim <jaegeuk@kernel.org>
+To:     Can Guo <cang@codeaurora.org>
+Cc:     linux-kernel@vger.kernel.org, linux-scsi@vger.kernel.org,
+        linux-f2fs-devel@lists.sourceforge.net, kernel-team@android.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>
+Subject: Re: [PATCH v2 5/5] scsi: ufs: fix clkgating on/off correctly
+Message-ID: <20201026061951.GB2517102@google.com>
+References: <20201020195258.2005605-1-jaegeuk@kernel.org>
+ <20201020195258.2005605-6-jaegeuk@kernel.org>
+ <2a8ecc4185b3a5411077f4e3fc66000f@codeaurora.org>
+ <20201021045213.GB3004521@google.com>
+ <e3e58a89474d23f1b9446fe2e38a7426@codeaurora.org>
+ <20201022201825.GA3329812@google.com>
+ <ccf9079dc1767c7d200fe55b5a849ba0@codeaurora.org>
 MIME-Version: 1.0
-X-TM-SNTS-SMTP: E1F42458ABCB867985AE95354FADF6F53CB2514EB2DD0DF40D93A33E308990832000:8
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ccf9079dc1767c7d200fe55b5a849ba0@codeaurora.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEwLTIzIGF0IDE0OjA1ICswNTMwLCBWaXJlc2ggS3VtYXIgd3JvdGU6DQo+
-IE9uIDIzLTEwLTIwLCAxNjoyNCwgSGVjdG9yIFl1YW4gd3JvdGU6DQo+ID4gRnJvbTogIkhlY3Rv
-ci5ZdWFuIiA8aGVjdG9yLnl1YW5AbWVkaWF0ZWsuY29tPg0KPiA+IA0KPiA+IEFkZCBkZXZpY2V0
-cmVlIGJpbmRpbmdzIGZvciBNZWRpYVRlayBIVyBkcml2ZXIuDQo+ID4gDQo+ID4gU2lnbmVkLW9m
-Zi1ieTogSGVjdG9yLll1YW4gPGhlY3Rvci55dWFuQG1lZGlhdGVrLmNvbT4NCj4gPiAtLS0NCj4g
-PiAgLi4uL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sICAgICAgfCAg
-IDQ2ICsrKysrKysrKysrKysrKysrKysrDQo+ID4gIDEgZmlsZSBjaGFuZ2VkLCA0NiBpbnNlcnRp
-b25zKCspDQo+ID4gIGNyZWF0ZSBtb2RlIDEwMDY0NCBEb2N1bWVudGF0aW9uL2RldmljZXRyZWUv
-YmluZGluZ3MvY3B1ZnJlcS9jcHVmcmVxLW1lZGlhdGVrLWh3LnlhbWwNCj4gPiANCj4gPiBkaWZm
-IC0tZ2l0IGEvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2NwdWZyZXEvY3B1ZnJl
-cS1tZWRpYXRlay1ody55YW1sIGIvRG9jdW1lbnRhdGlvbi9kZXZpY2V0cmVlL2JpbmRpbmdzL2Nw
-dWZyZXEvY3B1ZnJlcS1tZWRpYXRlay1ody55YW1sDQo+ID4gbmV3IGZpbGUgbW9kZSAxMDA2NDQN
-Cj4gPiBpbmRleCAwMDAwMDAwLi5hOTlmNDRmDQo+ID4gLS0tIC9kZXYvbnVsbA0KPiA+ICsrKyBi
-L0RvY3VtZW50YXRpb24vZGV2aWNldHJlZS9iaW5kaW5ncy9jcHVmcmVxL2NwdWZyZXEtbWVkaWF0
-ZWstaHcueWFtbA0KPiA+IEBAIC0wLDAgKzEsNDYgQEANCj4gPiArIyBTUERYLUxpY2Vuc2UtSWRl
-bnRpZmllcjogKEdQTC0yLjAtb25seSBPUiBCU0QtMi1DbGF1c2UpDQo+ID4gKyVZQU1MIDEuMg0K
-PiA+ICstLS0NCj4gPiArJGlkOiBodHRwOi8vZGV2aWNldHJlZS5vcmcvc2NoZW1hcy9jcHVmcmVx
-L2NwdWZyZXEtbWVkaWF0ZWstaHcueWFtbCMNCj4gPiArJHNjaGVtYTogaHR0cDovL2RldmljZXRy
-ZWUub3JnL21ldGEtc2NoZW1hcy9jb3JlLnlhbWwjDQo+ID4gKw0KPiA+ICt0aXRsZTogTWVkaWFU
-ZWsncyBDUFVGUkVRIEJpbmRpbmdzDQo+ID4gKw0KPiA+ICttYWludGFpbmVyczoNCj4gPiArICAt
-IEhlY3RvciBZdWFuIDxoZWN0b3IueXVhbkBtZWRpYXRlay5jb20+DQo+ID4gKw0KPiA+ICtkZXNj
-cmlwdGlvbjoNCj4gPiArICBDUFVGUkVRIEhXIGlzIGEgaGFyZHdhcmUgZW5naW5lIHVzZWQgYnkg
-TWVkaWFUZWsNCj4gPiArICBTb0NzIHRvIG1hbmFnZSBmcmVxdWVuY3kgaW4gaGFyZHdhcmUuIEl0
-IGlzIGNhcGFibGUgb2YgY29udHJvbGxpbmcgZnJlcXVlbmN5DQo+ID4gKyAgZm9yIG11bHRpcGxl
-IGNsdXN0ZXJzLg0KPiA+ICsNCj4gPiArcHJvcGVydGllczoNCj4gPiArICBjb21wYXRpYmxlOg0K
-PiA+ICsgICAgY29uc3Q6IG1lZGlhdGVrLGNwdWZyZXEtaHcNCj4gPiArDQo+ID4gKyAgcmVnOg0K
-PiA+ICsgICAgbWluSXRlbXM6IDENCj4gPiArICAgIG1heEl0ZW1zOiAyDQo+ID4gKyAgICBkZXNj
-cmlwdGlvbjogfA0KPiA+ICsgICAgICBBZGRyZXNzZXMgYW5kIHNpemVzIGZvciB0aGUgbWVtb3J5
-IG9mIHRoZSBIVyBiYXNlcyBpbiBlYWNoIGZyZXF1ZW5jeSBkb21haW4uDQo+ID4gKw0KPiA+ICty
-ZXF1aXJlZDoNCj4gPiArICAtIGNvbXBhdGlibGUNCj4gPiArICAtIHJlZw0KPiA+ICsNCj4gPiAr
-ZXhhbXBsZXM6DQo+ID4gKyAgLSB8DQo+ID4gKyAgICBzb2Mgew0KPiA+ICsgICAgICAgICNhZGRy
-ZXNzLWNlbGxzID0gPDI+Ow0KPiA+ICsgICAgICAgICNzaXplLWNlbGxzID0gPDI+Ow0KPiA+ICsN
-Cj4gPiArICAgICAgICBjcHVmcmVxX2h3OiBjcHVmcmVxQDExYmMwMCB7DQo+ID4gKyAgICAgICAg
-ICAgIGNvbXBhdGlibGUgPSAibWVkaWF0ZWssY3B1ZnJlcS1odyI7DQo+ID4gKyAgICAgICAgICAg
-IHJlZyA9IDwwIDB4MTFiYzEwIDAgMHg4Yz4sDQo+ID4gKyAgICAgICAgICAgICAgIDwwIDB4MTFi
-Y2EwIDAgMHg4Yz47DQo+ID4gKyAgICAgICAgfTsNCj4gPiArICAgIH07DQo+IA0KPiBZb3Ugc3Rp
-bGwgbmVlZCB0byBrZWVwIHRoZSBDUFUgc3BlY2lmaWMgcGFydCBoZXJlIGFuZCBleHBsYWluIGhv
-dyB0aGlzDQo+IGJsb2NrIGlzIGdvaW5nIHRvIGdldCB1c2VkIHVzaW5nIHRoZSBvdGhlciBiaW5k
-aW5nIHlvdSBhZGRlZC4NCj4gDQpPSywgd2lsbCBhZGQgY3B1IHBhcnQgaGVyZSBpbiB2OC4NCg0K
-DQo=
+On 10/26, Can Guo wrote:
+> On 2020-10-23 08:53, Jaegeuk Kim wrote:
+> > On 10/21, Can Guo wrote:
+> > > On 2020-10-21 12:52, jaegeuk@kernel.org wrote:
+> > > > On 10/21, Can Guo wrote:
+> > > > > On 2020-10-21 03:52, Jaegeuk Kim wrote:
+> > > > > > The below call stack prevents clk_gating at every IO completion.
+> > > > > > We can remove the condition, ufshcd_any_tag_in_use(), since
+> > > > > > clkgating_work
+> > > > > > will check it again.
+> > > > > >
+> > > > >
+> > > > > I think checking ufshcd_any_tag_in_use() in either ufshcd_release() or
+> > > > > gate_work() can break UFS clk gating's functionality.
+> > > > >
+> > > > > ufshcd_any_tag_in_use() was introduced to replace hba->lrb_in_use.
+> > > > > However,
+> > > > > they are not exactly same - ufshcd_any_tag_in_use() returns true if
+> > > > > any tag
+> > > > > assigned from block layer is still in use, but tags are released
+> > > > > asynchronously
+> > > > > (through block softirq), meaning it does not reflect the real
+> > > > > occupation of
+> > > > > UFS host.
+> > > > > That is after UFS host finishes all tasks, ufshcd_any_tag_in_use()
+> > > > > can still
+> > > > > return true.
+> > > > >
+> > > > > This change only removes the check of ufshcd_any_tag_in_use() in
+> > > > > ufshcd_release(),
+> > > > > but having the check of it in gate_work() can still prevent gating
+> > > > > from
+> > > > > happening.
+> > > > > The current change works for you maybe because the tags are release
+> > > > > before
+> > > > > hba->clk_gating.delay_ms expires, but if hba->clk_gating.delay_ms is
+> > > > > shorter
+> > > > > or
+> > > > > somehow block softirq is retarded, gate_work() may have chance to see
+> > > > > ufshcd_any_tag_in_use()
+> > > > > returns true. What do you think?
+> > > >
+> > > > I don't think this breaks clkgating, but fix the wrong condition check
+> > > > which
+> > > > prevented gate_work at all. As you mentioned, even if this schedules
+> > > > gate_work
+> > > > by racy conditions, gate_work will handle it as a last resort.
+> > > >
+> > > 
+> > > If clocks cannot be gated after the last task is cleared from UFS
+> > > host, then
+> > > clk gating
+> > > is broken, no? Assume UFS has completed the last task in its queue,
+> > > as this
+> > > change says,
+> > > ufshcd_any_tag_in_use() is preventing ufshcd_release() from invoking
+> > > gate_work().
+> > > Similarly, ufshcd_any_tag_in_use() can prevent gate_work() from
+> > > doing its
+> > > real work -
+> > > disabling the clocks. Do you agree?
+> > > 
+> > >         if (hba->clk_gating.active_reqs
+> > >                 || hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL
+> > >                 || ufshcd_any_tag_in_use(hba) ||
+> > > hba->outstanding_tasks
+> > >                 || hba->active_uic_cmd || hba->uic_async_done)
+> > >                 goto rel_lock;
+> > 
+> > I see the point, but this happens only when clkgate_delay_ms is too
+> > short
+> > to give enough time for releasing tag. If it's correctly set, I think
+> > there'd
+> > be no problem, unless softirq was delayed by other RT threads which is
+> > just
+> > a corner case tho.
+> > 
+> 
+> Yes, we are fixing corner cases, aren't we? I thought you would like to
+> address it since you are fixing clk gating.
 
+I think that can be fixed by a separate patch which controls delay_ms when
+user tries to change it from default 150 ms?
+
+> 
+> Regards,
+> 
+> Can Guo.
+> 
+> > > 
+> > > Thanks,
+> > > 
+> > > Can Guo.
+> > > 
+> > > > >
+> > > > > Thanks,
+> > > > >
+> > > > > Can Guo.
+> > > > >
+> > > > > In __ufshcd_transfer_req_compl
+> > > > > Ihba->lrb_in_use is cleared immediately when UFS driver
+> > > > > finishes all tasks
+> > > > >
+> > > > > > ufshcd_complete_requests(struct ufs_hba *hba)
+> > > > > >   ufshcd_transfer_req_compl()
+> > > > > >     __ufshcd_transfer_req_compl()
+> > > > > >       __ufshcd_release(hba)
+> > > > > >         if (ufshcd_any_tag_in_use() == 1)
+> > > > > >            return;
+> > > > > >   ufshcd_tmc_handler(hba);
+> > > > > >     blk_mq_tagset_busy_iter();
+> > > > > >
+> > > > > > Cc: Alim Akhtar <alim.akhtar@samsung.com>
+> > > > > > Cc: Avri Altman <avri.altman@wdc.com>
+> > > > > > Cc: Can Guo <cang@codeaurora.org>
+> > > > > > Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
+> > > > > > ---
+> > > > > >  drivers/scsi/ufs/ufshcd.c | 2 +-
+> > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > > > > >
+> > > > > > diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> > > > > > index b5ca0effe636..cecbd4ace8b4 100644
+> > > > > > --- a/drivers/scsi/ufs/ufshcd.c
+> > > > > > +++ b/drivers/scsi/ufs/ufshcd.c
+> > > > > > @@ -1746,7 +1746,7 @@ static void __ufshcd_release(struct ufs_hba *hba)
+> > > > > >
+> > > > > >  	if (hba->clk_gating.active_reqs || hba->clk_gating.is_suspended ||
+> > > > > >  	    hba->ufshcd_state != UFSHCD_STATE_OPERATIONAL ||
+> > > > > > -	    ufshcd_any_tag_in_use(hba) || hba->outstanding_tasks ||
+> > > > > > +	    hba->outstanding_tasks ||
+> > > > > >  	    hba->active_uic_cmd || hba->uic_async_done)
+> > > > > >  		return;
