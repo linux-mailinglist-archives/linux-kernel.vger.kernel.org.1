@@ -2,311 +2,154 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E3A3298D7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:08:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 32576298D94
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:14:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1776226AbgJZNIz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:08:55 -0400
-Received: from mail-ot1-f65.google.com ([209.85.210.65]:39805 "EHLO
-        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2391728AbgJZNIz (ORCPT
+        id S1772512AbgJZNNi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:13:38 -0400
+Received: from mail-lj1-f195.google.com ([209.85.208.195]:36010 "EHLO
+        mail-lj1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1734631AbgJZNLR (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:08:55 -0400
-Received: by mail-ot1-f65.google.com with SMTP id o14so7901649otj.6;
-        Mon, 26 Oct 2020 06:08:53 -0700 (PDT)
+        Mon, 26 Oct 2020 09:11:17 -0400
+Received: by mail-lj1-f195.google.com with SMTP id 134so8943790ljj.3;
+        Mon, 26 Oct 2020 06:11:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Qixz5MZ8UvuVGnSzUYcMGABBBz62xcYc9zeA7e0GfQM=;
+        b=Q48pgQhGX3TOn712PqBnY6XdJHZZ/ZMpAzvDI1Ra1pqW/cLDtSoR0s3SA8aHo2Kprt
+         xKm0b2LRfh2iWjIqxc9L5Yn14xwKEENZc1CUu/J30DxvwCpwMgM4JyDp+7cniDONvf7F
+         xLNcVohutpCbf4QHpzYV7BUSEkuI2pJKve/jDe41pbj2KNE6kBo8oDr3Xz/BGVdkrDul
+         RYXE1AQ8ouONlvJ0aLF+bMlT+NMuj2OgzGvqmM8q36htpCv/26+LPdlnyz67HP+fCkRL
+         dWxB0BmM9tCbo7hgOaRxfSKJifZsmLL8hfcHe9XPXlwydlJmxoqQJ5NfI5dE0kaTxA8N
+         7B8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=C0AapkGCAYKL1BU+HVGQ9J2to9uxrwCh8jPPvS0Mfd4=;
-        b=JzPLhqa8kMSZTlh1WW1UnNW8VE4Vj+7YP01Km/Qrm9m7Lg91Ly360hnGub7glKhyhi
-         q4thWtb29UeOBAlYc3OdA4yGaqnZbZGZdas21onbIMCX9v9vrBMfwtX/aZhEy0GtW3ag
-         OzHWPVwfMf+DY5SBi0t6CkBz3O4ETpj7wEtsLLBS3mdsv7IqjYIgeDDRTpJZYAc5/G4Z
-         ReT3PY+DTmL1eTvGn1SATyxPUdMh5+jQrTXwMjF3qEEZq5s/QDTPwEHJMMidY7HA0FXD
-         3eWyTrGEZ7NaQ0GZHrn2kHYkM6GSyX6hWYoOErPx1CRdRWvPirItev7+sbo/x6BMa1Eo
-         vEKA==
-X-Gm-Message-State: AOAM531JzCu9Wkyb0/0k+ALcAJ0Ih4uXVPdGu0IO8b/N8rprvIo7GhCs
-        gULjPYXC3c/EkSUpebQNqTgEsOXAVw==
-X-Google-Smtp-Source: ABdhPJyJjFGkPcGeNsXTzjMy3D5x28KqnBSFWGoeUUJ8jUQSB0AZ2mp0j6lb3XLAwovFLJ9+DNmHBw==
-X-Received: by 2002:a9d:7993:: with SMTP id h19mr13516656otm.129.1603717733178;
-        Mon, 26 Oct 2020 06:08:53 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id x13sm3834754oot.24.2020.10.26.06.08.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:08:52 -0700 (PDT)
-Received: (nullmailer pid 3553 invoked by uid 1000);
-        Mon, 26 Oct 2020 13:08:51 -0000
-Date:   Mon, 26 Oct 2020 08:08:51 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     "Ramuthevar,Vadivel MuruganX" 
-        <vadivel.muruganx.ramuthevar@linux.intel.com>
-Cc:     broonie@kernel.org, vigneshr@ti.com, tudor.ambarus@microchip.com,
-        linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
-        devicetree@vger.kernel.org, miquel.raynal@bootlin.com,
-        simon.k.r.goldschmidt@gmail.com, dinguyen@kernel.org,
-        richard@nod.at, cheol.yong.kim@intel.com, qi-ming.wu@intel.com
-Subject: Re: [PATCH v3 5/6] dt-bindings: spi: Convert cadence-quadspi.txt to
- cadence-quadspi.yaml
-Message-ID: <20201026130851.GA4188139@bogus>
-References: <20201026094519.56083-1-vadivel.muruganx.ramuthevar@linux.intel.com>
- <20201026094519.56083-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Qixz5MZ8UvuVGnSzUYcMGABBBz62xcYc9zeA7e0GfQM=;
+        b=QvgPmPC3GJTDrYyRd243QivfhuY3hzq5NcAarA7rWJoydTnAEs0oP7nlHLRyYCOS0E
+         LCAtDEHNvfKN51jTBvZIZuL2Kk89L1C3XYiJypsydxWjow74bneok1yiyogRIX/yK1rs
+         cx05Lk/DmHOvUrtAd9vzLpBRYrmUO8SyPBNe432DBktpu8OFrec7LZ6iuh9GLRUVwkSs
+         UgwKfRMdCQrr6lCqaE674XxBSnViK1dLzxf2Wyo5iCuznGaIvSTqnfu7bZknnVwyOVPd
+         NlmH2RVXDHkeB/p7xRf3xPThp7/63FEW7nt0kkw2ovD5t+ZuARWNEkffIM02utCzpG5s
+         AwOw==
+X-Gm-Message-State: AOAM533UDtD4k9Yonu3Hb98tiFj4w9JJUPnJ2CuI954Day8gpfyk3Rh5
+        LaZAYGthvFGX7nu7ATlyqJpHJl/Pk1nEPHQ/7tA=
+X-Google-Smtp-Source: ABdhPJzfOSzdFejjwUyHTTfaeT9ZzI27JdQ31zEaJgwQbyhHs25/WWDf+pSyObqgiBccV5qmK7SR/EkYYQe2Z9kPar0=
+X-Received: by 2002:a2e:7007:: with SMTP id l7mr6177004ljc.185.1603717874674;
+ Mon, 26 Oct 2020 06:11:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026094519.56083-6-vadivel.muruganx.ramuthevar@linux.intel.com>
+References: <20201023124804.11457-1-jandryuk@gmail.com>
+In-Reply-To: <20201023124804.11457-1-jandryuk@gmail.com>
+From:   Jason Andryuk <jandryuk@gmail.com>
+Date:   Mon, 26 Oct 2020 09:11:03 -0400
+Message-ID: <CAKf6xpt_S9WJ5dnhQoUH75QSPWXJA5-wiMym+e4EgR_BstgbHA@mail.gmail.com>
+Subject: Re: [PATCH] i915: Add QUIRK_EDP_CHANNEL_EQ for Dell 7200 2-in-1
+To:     Jani Nikula <jani.nikula@linux.intel.com>,
+        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
+        Rodrigo Vivi <rodrigo.vivi@intel.com>
+Cc:     stable@vger.kernel.org, David Airlie <airlied@linux.ie>,
+        Daniel Vetter <daniel@ffwll.ch>,
+        intel-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+        open list <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:45:18PM +0800, Ramuthevar,Vadivel MuruganX wrote:
-> From: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> 
-> Convert the cadence-quadspi.txt documentation to cadence-quadspi.yaml
-> remove the cadence-quadspi.txt from Documentation/devicetree/bindings/spi/
-> 
-> Signed-off-by: Ramuthevar Vadivel Murugan <vadivel.muruganx.ramuthevar@linux.intel.com>
-> ---
->  .../devicetree/bindings/spi/cadence-quadspi.txt    |  67 ----------
->  .../devicetree/bindings/spi/cadence-quadspi.yaml   | 148 +++++++++++++++++++++
->  2 files changed, 148 insertions(+), 67 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.txt
->  create mode 100644 Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt b/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
-> deleted file mode 100644
-> index 945be7d5b236..000000000000
-> --- a/Documentation/devicetree/bindings/spi/cadence-quadspi.txt
-> +++ /dev/null
-> @@ -1,67 +0,0 @@
-> -* Cadence Quad SPI controller
-> -
-> -Required properties:
-> -- compatible : should be one of the following:
-> -	Generic default - "cdns,qspi-nor".
-> -	For TI 66AK2G SoC - "ti,k2g-qspi", "cdns,qspi-nor".
-> -	For TI AM654 SoC  - "ti,am654-ospi", "cdns,qspi-nor".
-> -- reg : Contains two entries, each of which is a tuple consisting of a
-> -	physical address and length. The first entry is the address and
-> -	length of the controller register set. The second entry is the
-> -	address and length of the QSPI Controller data area.
-> -- interrupts : Unit interrupt specifier for the controller interrupt.
-> -- clocks : phandle to the Quad SPI clock.
-> -- cdns,fifo-depth : Size of the data FIFO in words.
-> -- cdns,fifo-width : Bus width of the data FIFO in bytes.
-> -- cdns,trigger-address : 32-bit indirect AHB trigger address.
-> -
-> -Optional properties:
-> -- cdns,is-decoded-cs : Flag to indicate whether decoder is used or not.
-> -- cdns,rclk-en : Flag to indicate that QSPI return clock is used to latch
-> -  the read data rather than the QSPI clock. Make sure that QSPI return
-> -  clock is populated on the board before using this property.
-> -
-> -Optional subnodes:
-> -Subnodes of the Cadence Quad SPI controller are spi slave nodes with additional
-> -custom properties:
-> -- cdns,read-delay : Delay for read capture logic, in clock cycles
-> -- cdns,tshsl-ns : Delay in nanoseconds for the length that the master
-> -                  mode chip select outputs are de-asserted between
-> -		  transactions.
-> -- cdns,tsd2d-ns : Delay in nanoseconds between one chip select being
-> -                  de-activated and the activation of another.
-> -- cdns,tchsh-ns : Delay in nanoseconds between last bit of current
-> -                  transaction and deasserting the device chip select
-> -		  (qspi_n_ss_out).
-> -- cdns,tslch-ns : Delay in nanoseconds between setting qspi_n_ss_out low
-> -                  and first bit transfer.
-> -- resets	: Must contain an entry for each entry in reset-names.
-> -		  See ../reset/reset.txt for details.
-> -- reset-names	: Must include either "qspi" and/or "qspi-ocp".
-> -
-> -Example:
-> -
-> -	qspi: spi@ff705000 {
-> -		compatible = "cdns,qspi-nor";
-> -		#address-cells = <1>;
-> -		#size-cells = <0>;
-> -		reg = <0xff705000 0x1000>,
-> -		      <0xffa00000 0x1000>;
-> -		interrupts = <0 151 4>;
-> -		clocks = <&qspi_clk>;
-> -		cdns,is-decoded-cs;
-> -		cdns,fifo-depth = <128>;
-> -		cdns,fifo-width = <4>;
-> -		cdns,trigger-address = <0x00000000>;
-> -		resets = <&rst QSPI_RESET>, <&rst QSPI_OCP_RESET>;
-> -		reset-names = "qspi", "qspi-ocp";
-> -
-> -		flash0: n25q00@0 {
-> -			...
-> -			cdns,read-delay = <4>;
-> -			cdns,tshsl-ns = <50>;
-> -			cdns,tsd2d-ns = <50>;
-> -			cdns,tchsh-ns = <4>;
-> -			cdns,tslch-ns = <4>;
-> -		};
-> -	};
-> diff --git a/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> new file mode 100644
-> index 000000000000..b1b3d3ce0cc2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/spi/cadence-quadspi.yaml
-> @@ -0,0 +1,148 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/spi/cadence-quadspi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Cadence Quad SPI controller
-> +
-> +maintainers:
-> +  - Vadivel Murugan <vadivel.muruganx.ramuthevar@intel.com>
-> +
-> +allOf:
-> +  - $ref: "spi-controller.yaml#"
-> +
-> +properties:
-> +  compatible:
-> +    oneOf:
-> +      - items:
-> +         - const: cdns,qspi-nor
-> +         - const: ti,k2g-qspi, cdns,qspi-nor
-> +         - const: ti,am654-ospi, cdns,qspi-nor
-> +
-> +  reg:
-> +    items:
-> +      - description: the controller register set
-> +      - description: the controller data area
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  cdns,fifo-depth:
-> +    description:
-> +      Size of the data FIFO in words.
-> +    $ref: "/schemas/types.yaml#/definitions/uint32"
-> +    enum: [ 128, 256 ]
-> +    default: 128
-> +
-> +  cdns,fifo-width:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Bus width of the data FIFO in bytes.
-> +    default: 4
-> +
-> +  cdns,trigger-address:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      32-bit indirect AHB trigger address.
-> +
-> +  cdns,is-decoded-cs:
-> +    type: boolean
-> +    description:
-> +      Flag to indicate whether decoder is used or not.
-> +
-> +  cdns,rclk-en:
-> +    type: boolean
-> +    description:
-> +      Flag to indicate that QSPI return clock is used to latch the read
-> +      data rather than the QSPI clock. Make sure that QSPI return clock
-> +      is populated on the board before using this property.
-> +
-> +  resets:
-> +    maxItems : 2
-> +
-> +  reset-names:
-> +    minItems: 1
-> +    maxItems: 2
-> +    items:
-> +      enum: [ qspi, qspi-ocp ]
-> +
-> +# subnode's properties
-> +patternProperties:
-> +  "@[0-9a-f]+$":
-> +    type: object
-> +    description:
-> +      flash device uses the subnodes below defined properties.
-> +
-> +  cdns,read-delay:
-> +    $ref: /schemas/types.yaml#/definitions/uint32
-> +    description:
-> +      Delay for read capture logic, in clock cycles.
+On Fri, Oct 23, 2020 at 8:48 AM Jason Andryuk <jandryuk@gmail.com> wrote:
+>
+> We're seeing channel equalization "fail" consistently coming out of DPMS
+> on the eDP of a Dell Latitude 7200 2-in-1.  When the display tries to
+> come out of DPMS, it briefly flashes on before going dark.  This repeats
+> once per second, and the system is unusable.  ssh-ing into the system,
+> it also seems to be sluggish when in this state.  You have to reboot to
+> get the display back.
+>
+> In intel_dp_link_training_channel_equalization, lane 0 can get to state
+> 0x7 by the 3rd pattern, but lane 1 never gets further than 0x1.
+> [drm] ln0_1:0x0 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x0 adj_req2_3:0x0
+> [drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x44 adj_req2_3:0x0
+> [drm] ln0_1:0x11 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x88 adj_req2_3:0x0
+> [drm] ln0_1:0x71 ln2_3:0x0 align:0x80 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+> [drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+> [drm] ln0_1:0x71 ln2_3:0x0 align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+>
+> Narrow fast vs. wide slow is not an option because the max clock is
+> 270000 and the 1920x1280 resolution requires 2x270000.
+> [drm] DP link computation with lane count min/max 1/2 270000/270000 bpp
+> min/max 18/24 pixel clock 164250KHz
+>
+> The display is functional even though lane 1 is in state 0x1, so just
+> return success for channel equalization on eDP.
+>
+> Introduce QUIRK_EDP_CHANNEL_EQ and match the DMI for a Dell Latitude
+> 7200 2-in-1.  This quirk allows channel equalization to succeed even
+> though it failed.
+>
+> Workaround for https://gitlab.freedesktop.org/drm/intel/-/issues/1378
 
-As-is, these apply to the parent (controller) node. If these apply to 
-the child nodes, then they need to be under 'properties' under 
-'@[0-9a-f]+$'.
+CI reported the patch doesn't apply to drm-tip.  It was developed
+against 5.4 and forward ported to 5.10-rc1-ish when I submitted it.
+It applied there but not to drm-tip.
 
-> +
-> +  cdns,tshsl-ns:
-> +    description: |
+5.4 & 5.6.6 is fine until DPMS.  Then when it tries to come out, it
+fails link training and gives the flashing.
+5.8.16 starts flashing during boot.  I guess the driver now runs link
+training during boot?
 
-Don't need '|' if there's no formatting to preserve.
+drm-tip doesn't have the flashing issue.  I guess "drm/i915: Switch to
+LTTPR non-transparent mode link training"  or some of the other link
+training change lets the hardware succeed?
 
-> +      Delay in nanoseconds for the length that the master mode chip select
-> +      outputs are de-asserted between transactions.
-> +
-> +  cdns,tsd2d-ns:
-> +    description: |
-> +      Delay in nanoseconds between one chip select being de-activated
-> +      and the activation of another.
-> +
-> +  cdns,tchsh-ns:
-> +    description: |
-> +      Delay in nanoseconds between last bit of current transaction and
-> +      deasserting the device chip select (qspi_n_ss_out).
-> +
-> +  cdns,tslch-ns:
-> +    description: |
-> +      Delay in nanoseconds between setting qspi_n_ss_out low and
-> +      first bit transfer.
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +  - clocks
-> +  - cdns,fifo-depth
-> +  - cdns,fifo-width
-> +  - cdns,trigger-address
-> +  - cdns,is-decoded-cs
-> +  - cdns,rclk-en
-> +  - resets
-> +  - reset-names
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    qspi: spi@ff705000 {
-> +      compatible = "cadence,qspi","cdns,qpsi-nor";
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +      reg = <0xff705000 0x1000>,
-> +            <0xffa00000 0x1000>;
-> +      interrupts = <0 151 4>;
-> +      clocks = <&qspi_clk>;
-> +      cdns,fifo-depth = <128>;
-> +      cdns,fifo-width = <4>;
-> +      cdns,trigger-address = <0x00000000>;
-> +      resets = <&rst 0x1>, <&rst 0x2>;
-> +      reset-names = "qspi", "qspi-ocp";
-> +
-> +      flash@0 {
-> +              compatible = "jedec,spi-nor";
-> +              reg = <0x0>;
-> +              cdns,read-delay = <4>;
-> +              cdns,tshsl-ns = <50>;
-> +              cdns,tsd2d-ns = <50>;
-> +              cdns,tchsh-ns = <4>;
-> +              cdns,tslch-ns = <4>;
-> +     };
-> +
-> +    };
-> +
-> +...
-> -- 
-> 2.11.0
-> 
+Oh, this is interesting:
+kernel: i915 0000:00:02.0: [drm:hsw_set_signal_levels [i915]] Using
+signal levels 02000000
+kernel: [drm:intel_dp_link_train_phy [i915]] ln0_1:0x71 ln2_3:0x0
+align:0x0 sink:0x0 adj_req0_1:0x84 adj_req2_3:0x0
+kernel: i915 0000:00:02.0: [drm:intel_dp_link_train_phy [i915]]
+Channel equalization failed 5 times
+kernel: i915 0000:00:02.0: [drm:intel_dp_link_train_phy [i915]]
+[CONNECTOR:95:eDP-1] Link Training failed at link rate = 270000, lane
+count = 2, at DPRX
+kernel: i915 0000:00:02.0: [drm:intel_enable_pipe [i915]] enabling pipe A
+
+Note DPRX above, so not using LTTPR.
+
+Looks like the link training logic is wrong. :
+
+intel_dp_link_training_channel_equalization fails, so
+intel_dp_link_train_phy fails, but:
+
+intel_dp_link_train_all_phys(struct intel_dp *intel_dp,
+                             const struct intel_crtc_state *crtc_state,
+                             int lttpr_count)
+{
+        bool ret = true;
+        int i;
+
+        intel_dp_prepare_link_train(intel_dp, crtc_state);
+
+        for (i = lttpr_count - 1; i >= 0; i--) {
+                enum drm_dp_phy dp_phy = DP_PHY_LTTPR(i);
+
+                ret = intel_dp_link_train_phy(intel_dp, crtc_state, dp_phy);
+                intel_dp_disable_dpcd_training_pattern(intel_dp, dp_phy);
+
+                if (!ret)
+                        break;
+        }
+
+        if (ret)
+                intel_dp_link_train_phy(intel_dp, crtc_state, DP_PHY_DPRX);
+
+Here we don't update ret, so linking training "succeeds" for DPRX.
+
+This does let the 7200 display "work", but it's probably not what you
+want in general.
+
+Regards,
+Jason
