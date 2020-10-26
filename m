@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2D8A0299BE9
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 24FE2299BF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:34 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410337AbgJZXyK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:54:10 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58444 "EHLO mail.kernel.org"
+        id S2410418AbgJZXyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:54:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58782 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410156AbgJZXxl (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:41 -0400
+        id S2410020AbgJZXxv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:51 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 2C1C421D41;
-        Mon, 26 Oct 2020 23:53:40 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 923A82151B;
+        Mon, 26 Oct 2020 23:53:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756420;
-        bh=2t8kO8WFsyV07ciYJ/d+3KZs6NqB/0TRoF4jvh+bFco=;
+        s=default; t=1603756430;
+        bh=/Ny9nL70gQfwPl8eFqxBy9bRTaiD1dYg9H+cXob8Jac=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=l5S5/mni4X15cQes6XEtABCBcAdHm/xLR5ylPARM1LA2/T3s/i0M2PwXhSRiAhjqn
-         r7eiaG098Oeehq5FK075mVaywNd5c1ezqQ/1p5bKdu/akdsld4/8lI45nn8Xl0h8fz
-         jbVZ+l+a7/12GkOMD+INGj81hqWWfvBJMNW1qlro=
+        b=DSsRbVxxR9oW7z2vWRnH8UnGCsvRvCPG7rXrMTBoIvsj0WrLpSH6TLYiqGRDYsMLe
+         dx98R/ZkLNiKYMgyH1+XZuTFYBas3n0yrOpqirDf89BN0L0bFnJcS4ofaezNvHhCok
+         Fptnag4vO4MCNRNaMOWm6Y8v1iHAqXsGdtwYFcXU=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Gao Xiang <hsiangkao@redhat.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Brian Foster <bfoster@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 077/132] xfs: avoid LR buffer overrun due to crafted h_len
-Date:   Mon, 26 Oct 2020 19:51:09 -0400
-Message-Id: <20201026235205.1023962-77-sashal@kernel.org>
+Cc:     Wen Gong <wgong@codeaurora.org>, Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath11k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 085/132] ath11k: change to disable softirqs for ath11k_regd_update to solve deadlock
+Date:   Mon, 26 Oct 2020 19:51:17 -0400
+Message-Id: <20201026235205.1023962-85-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,117 +42,134 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Gao Xiang <hsiangkao@redhat.com>
+From: Wen Gong <wgong@codeaurora.org>
 
-[ Upstream commit f692d09e9c8fd0f5557c2e87f796a16dd95222b8 ]
+[ Upstream commit df648808c6b9989555e247530d8ca0ad0094b361 ]
 
-Currently, crafted h_len has been blocked for the log
-header of the tail block in commit a70f9fe52daa ("xfs:
-detect and handle invalid iclog size set by mkfs").
+After base_lock which occupy by ath11k_regd_update, the softirq run for
+WMI_REG_CHAN_LIST_CC_EVENTID maybe arrived and it also need to accuire
+the spin lock, then deadlock happend, change to disable softirqis to solve it.
 
-However, each log record could still have crafted h_len
-and cause log record buffer overrun. So let's check
-h_len vs buffer size for each log record as well.
+[  235.576990] ================================
+[  235.576991] WARNING: inconsistent lock state
+[  235.576993] 5.9.0-rc5-wt-ath+ #196 Not tainted
+[  235.576994] --------------------------------
+[  235.576995] inconsistent {IN-SOFTIRQ-W} -> {SOFTIRQ-ON-W} usage.
+[  235.576997] kworker/u16:1/98 [HC0[0]:SC0[0]:HE1:SE1] takes:
+[  235.576998] ffff9655f75cad98 (&ab->base_lock){+.?.}-{2:2}, at: ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577009] {IN-SOFTIRQ-W} state was registered at:
+[  235.577013]   __lock_acquire+0x219/0x6e0
+[  235.577015]   lock_acquire+0xb6/0x270
+[  235.577018]   _raw_spin_lock+0x2c/0x70
+[  235.577023]   ath11k_reg_chan_list_event.isra.0+0x10d/0x1e0 [ath11k]
+[  235.577028]   ath11k_wmi_tlv_op_rx+0x3c3/0x560 [ath11k]
+[  235.577033]   ath11k_htc_rx_completion_handler+0x207/0x370 [ath11k]
+[  235.577039]   ath11k_ce_recv_process_cb+0x15e/0x1e0 [ath11k]
+[  235.577041]   ath11k_pci_ce_tasklet+0x10/0x30 [ath11k_pci]
+[  235.577043]   tasklet_action_common.constprop.0+0xd4/0xf0
+[  235.577045]   __do_softirq+0xc9/0x482
+[  235.577046]   asm_call_on_stack+0x12/0x20
+[  235.577048]   do_softirq_own_stack+0x49/0x60
+[  235.577049]   irq_exit_rcu+0x9a/0xd0
+[  235.577050]   common_interrupt+0xa1/0x190
+[  235.577052]   asm_common_interrupt+0x1e/0x40
+[  235.577053]   cpu_idle_poll.isra.0+0x2e/0x60
+[  235.577055]   do_idle+0x5f/0xe0
+[  235.577056]   cpu_startup_entry+0x14/0x20
+[  235.577058]   start_kernel+0x443/0x464
+[  235.577060]   secondary_startup_64+0xa4/0xb0
+[  235.577061] irq event stamp: 432035
+[  235.577063] hardirqs last  enabled at (432035): [<ffffffff968d12b4>] _raw_spin_unlock_irqrestore+0x34/0x40
+[  235.577064] hardirqs last disabled at (432034): [<ffffffff968d10d3>] _raw_spin_lock_irqsave+0x63/0x80
+[  235.577066] softirqs last  enabled at (431998): [<ffffffff967115c1>] inet6_fill_ifla6_attrs+0x3f1/0x430
+[  235.577067] softirqs last disabled at (431996): [<ffffffff9671159f>] inet6_fill_ifla6_attrs+0x3cf/0x430
+[  235.577068]
+[  235.577068] other info that might help us debug this:
+[  235.577069]  Possible unsafe locking scenario:
+[  235.577069]
+[  235.577070]        CPU0
+[  235.577070]        ----
+[  235.577071]   lock(&ab->base_lock);
+[  235.577072]   <Interrupt>
+[  235.577073]     lock(&ab->base_lock);
+[  235.577074]
+[  235.577074]  *** DEADLOCK ***
+[  235.577074]
+[  235.577075] 3 locks held by kworker/u16:1/98:
+[  235.577076]  #0: ffff9655f75b1d48 ((wq_completion)ath11k_qmi_driver_event){+.+.}-{0:0}, at: process_one_work+0x1d3/0x5d0
+[  235.577079]  #1: ffffa33cc02f3e70 ((work_completion)(&ab->qmi.event_work)){+.+.}-{0:0}, at: process_one_work+0x1d3/0x5d0
+[  235.577081]  #2: ffff9655f75cad50 (&ab->core_lock){+.+.}-{3:3}, at: ath11k_core_qmi_firmware_ready.part.0+0x4e/0x160 [ath11k]
+[  235.577087]
+[  235.577087] stack backtrace:
+[  235.577088] CPU: 3 PID: 98 Comm: kworker/u16:1 Not tainted 5.9.0-rc5-wt-ath+ #196
+[  235.577089] Hardware name: Intel(R) Client Systems NUC8i7HVK/NUC8i7HVB, BIOS HNKBLi70.86A.0049.2018.0801.1601 08/01/2018
+[  235.577095] Workqueue: ath11k_qmi_driver_event ath11k_qmi_driver_event_work [ath11k]
+[  235.577096] Call Trace:
+[  235.577100]  dump_stack+0x77/0xa0
+[  235.577102]  mark_lock_irq.cold+0x15/0x3c
+[  235.577104]  mark_lock+0x1d7/0x540
+[  235.577105]  mark_usage+0xc7/0x140
+[  235.577107]  __lock_acquire+0x219/0x6e0
+[  235.577108]  ? sched_clock_cpu+0xc/0xb0
+[  235.577110]  lock_acquire+0xb6/0x270
+[  235.577116]  ? ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577118]  ? atomic_notifier_chain_register+0x2d/0x40
+[  235.577120]  _raw_spin_lock+0x2c/0x70
+[  235.577125]  ? ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577130]  ath11k_regd_update+0x28/0x1d0 [ath11k]
+[  235.577136]  __ath11k_mac_register+0x3fb/0x480 [ath11k]
+[  235.577141]  ath11k_mac_register+0x119/0x180 [ath11k]
+[  235.577146]  ath11k_core_pdev_create+0x17/0xe0 [ath11k]
+[  235.577150]  ath11k_core_qmi_firmware_ready.part.0+0x65/0x160 [ath11k]
+[  235.577155]  ath11k_qmi_driver_event_work+0x1c5/0x230 [ath11k]
+[  235.577158]  process_one_work+0x265/0x5d0
+[  235.577160]  worker_thread+0x49/0x300
+[  235.577161]  ? process_one_work+0x5d0/0x5d0
+[  235.577163]  kthread+0x135/0x150
+[  235.577164]  ? kthread_create_worker_on_cpu+0x60/0x60
+[  235.577166]  ret_from_fork+0x22/0x30
 
-Signed-off-by: Gao Xiang <hsiangkao@redhat.com>
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Brian Foster <bfoster@redhat.com>
+Tested-on: QCA6390 hw2.0 PCI WLAN.HST.1.0.1-01740-QCAHSTSWPLZ_V2_TO_X86-1
+
+Signed-off-by: Wen Gong <wgong@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1601399736-3210-7-git-send-email-kvalo@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_log_recover.c | 39 +++++++++++++++++++--------------------
- 1 file changed, 19 insertions(+), 20 deletions(-)
+ drivers/net/wireless/ath/ath11k/reg.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/fs/xfs/xfs_log_recover.c b/fs/xfs/xfs_log_recover.c
-index ec015df55b77a..e862f9137bf6e 100644
---- a/fs/xfs/xfs_log_recover.c
-+++ b/fs/xfs/xfs_log_recover.c
-@@ -2905,7 +2905,8 @@ STATIC int
- xlog_valid_rec_header(
- 	struct xlog		*log,
- 	struct xlog_rec_header	*rhead,
--	xfs_daddr_t		blkno)
-+	xfs_daddr_t		blkno,
-+	int			bufsize)
- {
- 	int			hlen;
+diff --git a/drivers/net/wireless/ath/ath11k/reg.c b/drivers/net/wireless/ath/ath11k/reg.c
+index 453aa9c069691..dc52d701ad08f 100644
+--- a/drivers/net/wireless/ath/ath11k/reg.c
++++ b/drivers/net/wireless/ath/ath11k/reg.c
+@@ -202,7 +202,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 	ab = ar->ab;
+ 	pdev_id = ar->pdev_idx;
  
-@@ -2921,10 +2922,14 @@ xlog_valid_rec_header(
- 		return -EFSCORRUPTED;
+-	spin_lock(&ab->base_lock);
++	spin_lock_bh(&ab->base_lock);
+ 
+ 	if (init) {
+ 		/* Apply the regd received during init through
+@@ -223,7 +223,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 
+ 	if (!regd) {
+ 		ret = -EINVAL;
+-		spin_unlock(&ab->base_lock);
++		spin_unlock_bh(&ab->base_lock);
+ 		goto err;
  	}
  
--	/* LR body must have data or it wouldn't have been written */
-+	/*
-+	 * LR body must have data (or it wouldn't have been written)
-+	 * and h_len must not be greater than LR buffer size.
-+	 */
- 	hlen = be32_to_cpu(rhead->h_len);
--	if (XFS_IS_CORRUPT(log->l_mp, hlen <= 0 || hlen > INT_MAX))
-+	if (XFS_IS_CORRUPT(log->l_mp, hlen <= 0 || hlen > bufsize))
- 		return -EFSCORRUPTED;
-+
- 	if (XFS_IS_CORRUPT(log->l_mp,
- 			   blkno > log->l_logBBsize || blkno > INT_MAX))
- 		return -EFSCORRUPTED;
-@@ -2985,9 +2990,6 @@ xlog_do_recovery_pass(
- 			goto bread_err1;
+@@ -234,7 +234,7 @@ int ath11k_regd_update(struct ath11k *ar, bool init)
+ 	if (regd_copy)
+ 		ath11k_copy_regd(regd, regd_copy);
  
- 		rhead = (xlog_rec_header_t *)offset;
--		error = xlog_valid_rec_header(log, rhead, tail_blk);
--		if (error)
--			goto bread_err1;
+-	spin_unlock(&ab->base_lock);
++	spin_unlock_bh(&ab->base_lock);
  
- 		/*
- 		 * xfsprogs has a bug where record length is based on lsunit but
-@@ -3002,21 +3004,18 @@ xlog_do_recovery_pass(
- 		 */
- 		h_size = be32_to_cpu(rhead->h_size);
- 		h_len = be32_to_cpu(rhead->h_len);
--		if (h_len > h_size) {
--			if (h_len <= log->l_mp->m_logbsize &&
--			    be32_to_cpu(rhead->h_num_logops) == 1) {
--				xfs_warn(log->l_mp,
-+		if (h_len > h_size && h_len <= log->l_mp->m_logbsize &&
-+		    rhead->h_num_logops == cpu_to_be32(1)) {
-+			xfs_warn(log->l_mp,
- 		"invalid iclog size (%d bytes), using lsunit (%d bytes)",
--					 h_size, log->l_mp->m_logbsize);
--				h_size = log->l_mp->m_logbsize;
--			} else {
--				XFS_ERROR_REPORT(__func__, XFS_ERRLEVEL_LOW,
--						log->l_mp);
--				error = -EFSCORRUPTED;
--				goto bread_err1;
--			}
-+				 h_size, log->l_mp->m_logbsize);
-+			h_size = log->l_mp->m_logbsize;
- 		}
- 
-+		error = xlog_valid_rec_header(log, rhead, tail_blk, h_size);
-+		if (error)
-+			goto bread_err1;
-+
- 		if ((be32_to_cpu(rhead->h_version) & XLOG_VERSION_2) &&
- 		    (h_size > XLOG_HEADER_CYCLE_SIZE)) {
- 			hblks = h_size / XLOG_HEADER_CYCLE_SIZE;
-@@ -3097,7 +3096,7 @@ xlog_do_recovery_pass(
- 			}
- 			rhead = (xlog_rec_header_t *)offset;
- 			error = xlog_valid_rec_header(log, rhead,
--						split_hblks ? blk_no : 0);
-+					split_hblks ? blk_no : 0, h_size);
- 			if (error)
- 				goto bread_err2;
- 
-@@ -3178,7 +3177,7 @@ xlog_do_recovery_pass(
- 			goto bread_err2;
- 
- 		rhead = (xlog_rec_header_t *)offset;
--		error = xlog_valid_rec_header(log, rhead, blk_no);
-+		error = xlog_valid_rec_header(log, rhead, blk_no, h_size);
- 		if (error)
- 			goto bread_err2;
- 
+ 	if (!regd_copy) {
+ 		ret = -ENOMEM;
 -- 
 2.25.1
 
