@@ -2,106 +2,158 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DF1C32999E5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:51:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3241E2999EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:52:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394813AbgJZWv2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:51:28 -0400
-Received: from mail-ua1-f66.google.com ([209.85.222.66]:42200 "EHLO
-        mail-ua1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394700AbgJZWv2 (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:51:28 -0400
-Received: by mail-ua1-f66.google.com with SMTP id f15so3388713uaq.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:51:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=19k3R6N9Mjf8/fy6EgCnmozd0vTjcVDdUyOxd/Efois=;
-        b=Xzdx9ayiwtEuil1EnIQHZmAft9rvmOipRojP7rR3Fnk/see8OvPnyG1nbyIFQHlYbp
-         kQfz4zASOQYuOXi9MKYgpoj06g8IVWj80iDvbVi2c8ClU8zEfrXtCRj4r/dsU5vRazpK
-         h0ku93hW4MFhYyb3VCN2IcBlvAI2kEcKai1Kg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=19k3R6N9Mjf8/fy6EgCnmozd0vTjcVDdUyOxd/Efois=;
-        b=ZIntPvLVNWWHpHRMTaKyNXtUlBzxBSxzB7iw+9UgTcQdWPJEWsu+kwvoQUPVzEw+sK
-         GLUq2BMPsfhu2aFjOCkx4MlWCOKKfAGfYcoCzr75GTYzZFJPsbvvdz3E1rEz49EE7De8
-         1A223ZXyW0YmK9eEY+BqnJaOso0uNvHJx1mA6nGGy4IYJPfH39Mm6+fKR52Qw9fgDhFO
-         gN+6Fog6lePVTt+Ze2T394KPrL9M3AImpvbNIdVw8iaL+dRsOeX6qoK34PFXvtJqm14A
-         9pohdnwwWqzNqaA/m4CUrePF6JxRHKqU0bWkqkWSmZRCNL2oBnbO2MNOB3kliekY9v2N
-         EeIg==
-X-Gm-Message-State: AOAM531SqkyR3TGAZtFZIUZhLA4lDEEyoD/64dOc4oLD+A/YirBvkTBd
-        pYL1MyUwd3fl3/ChvPgxubuaxylmV1K8Qg==
-X-Google-Smtp-Source: ABdhPJysURSwNTkRgqmB/cRPoTpxUShQi/c9KluKp0O5EJHRgqGDDAUcmTo6oGQkRAaEtcuFfq7OuA==
-X-Received: by 2002:ab0:5e95:: with SMTP id y21mr21543942uag.21.1603752686566;
-        Mon, 26 Oct 2020 15:51:26 -0700 (PDT)
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com. [209.85.217.53])
-        by smtp.gmail.com with ESMTPSA id e9sm1467362uad.20.2020.10.26.15.51.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
-Received: by mail-vs1-f53.google.com with SMTP id n18so5718257vsl.2
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
-X-Received: by 2002:a67:e3b9:: with SMTP id j25mr17631109vsm.37.1603752685047;
- Mon, 26 Oct 2020 15:51:25 -0700 (PDT)
+        id S2394844AbgJZWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:52:52 -0400
+Received: from mga09.intel.com ([134.134.136.24]:11848 "EHLO mga09.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2394824AbgJZWwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 18:52:51 -0400
+IronPort-SDR: XPbHC5JMJMU2xW6M8l2C9gLy4FHt0WMLfMM3Ftq6Mc0chG9HCj77tODfIAn5QLH39Yvvz00XUL
+ QtkokZ2J7vZA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="168123846"
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="168123846"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga006.fm.intel.com ([10.253.24.20])
+  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 15:52:50 -0700
+IronPort-SDR: aEwpMeqlhYqUHNDZFgDcDWzInPxKt8h0og0IVJlvQeR8o+MACMLgKh45YQL3V9NANMG+TdoSNR
+ U/z7oHF4AhOg==
+X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
+   d="scan'208";a="524464467"
+Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.215.218]) ([10.212.215.218])
+  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 15:52:49 -0700
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
+ CPUs
+To:     Jakub Kicinski <kuba@kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
+        Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
+        bhelgaas@google.com, mike.marciniszyn@intel.com,
+        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
+        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
+        vincent.guittot@linaro.org, lgoncalv@redhat.com
+References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
+ <20201019140005.GB17287@fuller.cnet>
+ <20201020073055.GY2611@hirez.programming.kicks-ass.net>
+ <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
+ <20201020134128.GT2628@hirez.programming.kicks-ass.net>
+ <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
+ <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
+ <20201023085826.GP2611@hirez.programming.kicks-ass.net>
+ <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
+ <87ft6464jf.fsf@nanos.tec.linutronix.de>
+ <20201026173012.GA377978@fuller.cnet>
+ <875z6w4xt4.fsf@nanos.tec.linutronix.de>
+ <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
+ <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
+ <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
+ <87lffs3bd6.fsf@nanos.tec.linutronix.de>
+ <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+From:   Jacob Keller <jacob.e.keller@intel.com>
+Organization: Intel Corporation
+Message-ID: <63c3484d-327e-5f37-7860-3af277c26711@intel.com>
+Date:   Mon, 26 Oct 2020 15:52:46 -0700
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.3
 MIME-Version: 1.0
-References: <20201020000506.1.Ifbc28707942179f1cefc7491e995814564495270@changeid>
- <CAD=FV=Xv7Usev=S_ViWPPsa0xL42KDymjEkqJF7S4CzDiuxP3g@mail.gmail.com>
- <CACTWRwtqcMxZKhDR-Q+3CyOw0Ju=iR+ZMg2pVrHEuzbOUebjOg@mail.gmail.com> <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
-In-Reply-To: <001a01d6aa24$6ceaf390$46c0dab0$@codeaurora.org>
-From:   Doug Anderson <dianders@chromium.org>
-Date:   Mon, 26 Oct 2020 15:51:13 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-Message-ID: <CAD=FV=X5cVdMq9H+cABHmscZvJpswqGZONjqv7FL8kqRNvuHnQ@mail.gmail.com>
-Subject: Re: [PATCH] ath10k: add option for chip-id based BDF selection
-To:     Rakesh Pillai <pillair@codeaurora.org>
-Cc:     Abhishek Kumar <kuabhs@chromium.org>,
-        Kalle Valo <kvalo@codeaurora.org>,
-        ath10k <ath10k@lists.infradead.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-wireless <linux-wireless@vger.kernel.org>,
-        Brian Norris <briannorris@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi,
 
-On Sat, Oct 24, 2020 at 9:40 AM Rakesh Pillai <pillair@codeaurora.org> wrot=
-e:
->
-> >         if (bd_ie_type =3D=3D ATH10K_BD_IE_BOARD) {
-> > +               /* With variant and chip id */
-> >                 ret =3D ath10k_core_create_board_name(ar, boardname,
-> > -                                                   sizeof(boardname), =
-true);
-> > +                                               sizeof(boardname), true=
-, true);
->
-> Instead of adding a lot of code to generate a second fallback name, its b=
-etter to just modify the condition inside the function =E2=80=9Cath10k_core=
-_create_board_name=E2=80=9D to allow the generation of BDF tag using chip i=
-d, even =E2=80=9Cif ar->id.bdf_ext[0] =3D=3D '\0 =E2=80=9C.
->
-> This will make sure that the variant string is NULL, and just board-id an=
-d chip-id is used. This will help avoid most of the code changes.
-> The code would look as shown below
->
-> @@ -1493,7 +1493,7 @@ static int ath10k_core_create_board_name(struct ath=
-10k *ar, char *name,
->         }
->
->         if (ar->id.qmi_ids_valid) {
-> -               if (with_variant && ar->id.bdf_ext[0] !=3D '\0')
-> +               if (with_variant)
 
-Wouldn't the above just be "if (with_chip_id)" instead?  ...but yeah,
-that would be a cleaner way to do this.  Abhishek: do you want to post
-a v2?
+On 10/26/2020 3:13 PM, Jakub Kicinski wrote:
+> On Mon, 26 Oct 2020 22:50:45 +0100 Thomas Gleixner wrote:
+>> On Mon, Oct 26 2020 at 14:11, Jacob Keller wrote:
+>>> On 10/26/2020 1:11 PM, Thomas Gleixner wrote:  
+>>>> On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:  
+>>>>> Are there drivers which use more than one interrupt per queue? I know
+>>>>> drivers have multiple management interrupts.. and I guess some drivers
+>>>>> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
+>>>>> have multiple queues for one interrupt .. I'm not sure how a single
+>>>>> queue with multiple interrupts would work though.  
+>>>>
+>>>> For block there is always one interrupt per queue. Some Network drivers
+>>>> seem to have seperate RX and TX interrupts per queue.  
+>>> That's true when thinking of Tx and Rx as a single queue. Another way to
+>>> think about it is "one rx queue" and "one tx queue" each with their own
+>>> interrupt...
+>>>
+>>> Even if there are devices which force there to be exactly queue pairs,
+>>> you could still think of them as separate entities?  
+>>
+>> Interesting thought.
+>>
+>> But as Jakub explained networking queues are fundamentally different
+>> from block queues on the RX side. For block the request issued on queue
+>> X will raise the complete interrupt on queue X.
+>>
+>> For networking the TX side will raise the TX interrupt on the queue on
+>> which the packet was queued obviously or should I say hopefully. :)
+>>
+>> But incoming packets will be directed to some receive queue based on a
+>> hash or whatever crystallball logic the firmware decided to implement.
+>>
+>> Which makes this not really suitable for the managed interrupt and
+>> spreading approach which is used by block-mq. Hrm...
+>>
+>> But I still think that for curing that isolation stuff we want at least
+>> some information from the driver. Alternative solution would be to grant
+>> the allocation of interrupts and queues and have some sysfs knob to shut
+>> down queues at runtime. If that shutdown results in releasing the queue
+>> interrupt (via free_irq()) then the vector exhaustion problem goes away.
+>>
+>> Needs more thought and information (for network oblivious folks like
+>> me).
+> 
+> One piece of information that may be useful is that even tho the RX
+> packets may be spread semi-randomly the user space can still control
+> which queues are included in the mechanism. There is an indirection
+> table in the HW which allows to weigh queues differently, or exclude
+> selected queues from the spreading. Other mechanisms exist to filter
+> flows onto specific queues.
+> 
+> IOW just because a core has an queue/interrupt does not mean that
+> interrupt will ever fire, provided its excluded from RSS.
+> 
+> Another piece is that by default we suggest drivers allocate 8 RX
+> queues, and online_cpus TX queues. The number of queues can be
+> independently controlled via ethtool -L. Drivers which can't support
+> separate queues will default to online_cpus queue pairs, and let
+> ethtool -L only set the "combined" parameter.
+> 
 
--Doug
+I know the Intel drivers usually have defaulted to trying to maintain
+queue pairs. I do not believe this is technically a HW restriction, but
+it is heavily built into the way the drivers work today.
+
+> There are drivers which always allocate online_cpus interrupts, 
+> and then some of them will go unused if #qs < #cpus.
+> 
+> 
+
+Right.
+
+> My unpopular opinion is that for networking devices all the heuristics
+> we may come up with are going to be a dead end. We need an explicit API
+> to allow users placing queues on cores, and use managed IRQs for data
+> queues. (I'm assuming that managed IRQs will let us reliably map a MSI-X
+> vector to a core :))
+> 
+
+I don't think it is that unpopular... This is the direction I'd like to
+see us go as well.
