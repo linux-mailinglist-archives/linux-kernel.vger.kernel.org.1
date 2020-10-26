@@ -2,78 +2,117 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 56FBA2998C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:30:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AE5902998C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:30:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2387720AbgJZVas (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:30:48 -0400
-Received: from mail.kernel.org ([198.145.29.99]:43456 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2387588AbgJZVas (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:30:48 -0400
-Received: from localhost.localdomain (unknown [192.30.34.233])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 89612207F7;
-        Mon, 26 Oct 2020 21:30:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603747847;
-        bh=LD/9TNQnrUu8vBtBBBr6HN9mRHCkAG1JzcNRgZIuFss=;
-        h=From:To:Cc:Subject:Date:From;
-        b=AmkM87HXTYOCoxtZ3kxeyJonodGVFniSH62c6M7OzRrU8+N82YsLKy8GQfhknXMoQ
-         EJnJwtPL4O1f/bRdbnzjiV0cWYFs0IMExwD8Ol6AXLexHL/iCKvzbDwCHurw4P/4Q8
-         nPs6vEnKFjZKCaNEVqvangcN+b2T5/Z5fkzvwvjI=
-From:   Arnd Bergmann <arnd@kernel.org>
-To:     Chas Williams <3chas3@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Nick Desaulniers <ndesaulniers@google.com>,
-        "David S. Miller" <davem@davemloft.net>,
-        linux-atm-general@lists.sourceforge.net, netdev@vger.kernel.org,
-        linux-kernel@vger.kernel.org, clang-built-linux@googlegroups.com
-Subject: [PATCH net-next 01/11] atm: horizon: shut up clang null pointer arithmetic warning
-Date:   Mon, 26 Oct 2020 22:29:48 +0100
-Message-Id: <20201026213040.3889546-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.27.0
+        id S2387519AbgJZVaV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:30:21 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:36391 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1733222AbgJZVaV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:30:21 -0400
+Received: from gallifrey.ext.pengutronix.de ([2001:67c:670:201:5054:ff:fe8d:eefb] helo=[IPv6:::1])
+        by metis.ext.pengutronix.de with esmtp (Exim 4.92)
+        (envelope-from <a.fatoum@pengutronix.de>)
+        id 1kXA4J-00088d-AK; Mon, 26 Oct 2020 22:30:19 +0100
+Subject: Re: [PATCH v2 1/2] dt-bindings: arm: stm32: add simple-mfd compatible
+ for tamp node
+To:     Rob Herring <robh@kernel.org>
+Cc:     Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+        Alexandre Torgue <alexandre.torgue@st.com>,
+        Christophe Roullier <christophe.roullier@st.com>,
+        kernel@pengutronix.de, Arnaud Pouliquen <arnaud.pouliquen@st.com>,
+        devicetree@vger.kernel.org,
+        linux-stm32@st-md-mailman.stormreply.com,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20201021102855.18026-1-a.fatoum@pengutronix.de>
+ <20201026143656.GA118160@bogus>
+From:   Ahmad Fatoum <a.fatoum@pengutronix.de>
+Message-ID: <23e423ba-25f2-c3ed-ea65-2c2d86ae9522@pengutronix.de>
+Date:   Mon, 26 Oct 2020 22:30:17 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201026143656.GA118160@bogus>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-SA-Exim-Connect-IP: 2001:67c:670:201:5054:ff:fe8d:eefb
+X-SA-Exim-Mail-From: a.fatoum@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Arnd Bergmann <arnd@arndb.de>
+Hello Rob,
 
-Building a "W=1" kernel with clang produces a warning about
-suspicous pointer arithmetic:
+On 10/26/20 3:36 PM, Rob Herring wrote:
+> On Wed, Oct 21, 2020 at 12:28:55PM +0200, Ahmad Fatoum wrote:
+>> The stm32mp1 TAMP (Tamper and backup registers) does tamper detection
+>> and features 32 backup registers that, being in the RTC domain, may
+>> survive even with Vdd switched off.
+>>
+>> This makes it suitable for use to communicate a reboot mode from OS
+>> to bootloader via the syscon-reboot-mode binding. Add a "simple-mfd"
+>> to support probing such a child node. The actual reboot mode
+>> node could then be defined in a board.dts or fixed up by the bootloader.
+> 
+> 'simple-mfd' implies there is no dependency on the parent node for the 
+> child (such as the regmap perhaps). Is that the case here?
 
-drivers/atm/horizon.c:1844:52: warning: performing pointer arithmetic
-on a null pointer has undefined behavior [-Wnull-pointer-arithmetic]
-  for (mem = (HDW *) memmap; mem < (HDW *) (memmap + 1); ++mem)
+No, there's a dependency and the Linux driver does syscon_node_to_regmap
+on the device tree node's parent but that's how the syscon-reboot-mode binding
+is documented:
 
-The way that the addresses are handled is very obscure, and
-rewriting it to be more conventional seems fairly pointless, given
-that this driver probably has no users.
-Shut up this warning by adding a cast to uintptr_t.
+  The SYSCON mapped register is retrieved from the
+  parental dt-node plus the offset. So the SYSCON reboot-mode node
+  should be represented as a sub-node of a "syscon", "simple-mfd" node.
 
-Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
- drivers/atm/horizon.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+How would you prefer this being done instead?
 
-diff --git a/drivers/atm/horizon.c b/drivers/atm/horizon.c
-index 4f2951cbe69c..cd368786b216 100644
---- a/drivers/atm/horizon.c
-+++ b/drivers/atm/horizon.c
-@@ -1841,7 +1841,7 @@ static int hrz_init(hrz_dev *dev)
-   
-   printk (" clearing memory");
-   
--  for (mem = (HDW *) memmap; mem < (HDW *) (memmap + 1); ++mem)
-+  for (mem = (HDW *) memmap; mem < (HDW *) ((uintptr_t)memmap + 1); ++mem)
-     wr_mem (dev, mem, 0);
-   
-   printk (" tx channels");
+Cheers,
+Ahmad
+
+> 
+>>
+>> Signed-off-by: Ahmad Fatoum <a.fatoum@pengutronix.de>
+>> ---
+>> v1 available here:
+>> https://lore.kernel.org/linux-arm-kernel/20200916142216.25142-1-a.fatoum@pengutronix.de/
+>>
+>> v1 -> v2:
+>>  - new patch, rebased on top of
+>>    https://lore.kernel.org/r/20201014125441.2457-1-arnaud.pouliquen@st.com
+>> ---
+>>  .../devicetree/bindings/arm/stm32/st,stm32-syscon.yaml       | 5 ++++-
+>>  1 file changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+>> index 6634b3e0853e..4684017a42e4 100644
+>> --- a/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+>> +++ b/Documentation/devicetree/bindings/arm/stm32/st,stm32-syscon.yaml
+>> @@ -19,8 +19,11 @@ properties:
+>>                - st,stm32mp151-pwr-mcu
+>>                - st,stm32-syscfg
+>>                - st,stm32-power-config
+>> -              - st,stm32-tamp
+>>            - const: syscon
+>> +      - items:
+>> +          - const: st,stm32-tamp
+>> +          - const: syscon
+>> +          - const: simple-mfd
+>>  
+>>    reg:
+>>      maxItems: 1
+>> -- 
+>> 2.28.0
+>>
+> 
+
 -- 
-2.27.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
