@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 04000299B6B
+	by mail.lfdr.de (Postfix) with ESMTP id 88B03299B6D
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:51:24 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409355AbgJZXvP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:51:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50466 "EHLO mail.kernel.org"
+        id S2409371AbgJZXvR (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:51:17 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50666 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409172AbgJZXum (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:42 -0400
+        id S2409196AbgJZXur (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:47 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 444F320882;
-        Mon, 26 Oct 2020 23:50:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3971B20773;
+        Mon, 26 Oct 2020 23:50:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756242;
-        bh=LEOzesVKSbDDx512NULGkFfnLWlkMR5U4KXl2lzpGSk=;
+        s=default; t=1603756247;
+        bh=7sls8PMAfUqr7ij8tdXGHPZOgpn+K7ANFmQZNjCWRFk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=RKHv3nsPpheBYMXp0+Q1umftxh3vBeSMEPFzeSDjqZHGRZNUWsGO9WLmuMM3OZ4qd
-         G4BkK1uXI3hQnykoJm5rpoxY7VZMmjhb2ZLWZn7B2g85JH1uxFZLr9JqXlc6np0x3L
-         4r0SawbOtBHdc1vKgPPvixwafpz3wk9nWhqrWcCs=
+        b=sSlhglzLunywcIN092+3r2qYC7o4BlYbSKlbeDERhBViXdO/94tFdwPH5mnoGrOL/
+         u8OZAg7eq0ZNb/LxWf53iaryx5E7sSy5GpzFzAecVjxeLR6RjZUvIMs/BoA9oGLcEZ
+         RaahCVNGDRm5Qfjl2NBwZj1qutcZnd6Asm3sbrJI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Peter Chen <peter.chen@nxp.com>, Jun Li <jun.li@nxp.com>,
-        Mathias Nyman <mathias.nyman@linux.intel.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 078/147] usb: xhci: omit duplicate actions when suspending a runtime suspended host.
-Date:   Mon, 26 Oct 2020 19:47:56 -0400
-Message-Id: <20201026234905.1022767-78-sashal@kernel.org>
+Cc:     Joakim Zhang <qiangqing.zhang@nxp.com>,
+        Sean Nyekjaer <sean@geanix.com>,
+        Marc Kleine-Budde <mkl@pengutronix.de>,
+        Sasha Levin <sashal@kernel.org>, linux-can@vger.kernel.org,
+        netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 082/147] can: flexcan: disable clocks during stop mode
+Date:   Mon, 26 Oct 2020 19:48:00 -0400
+Message-Id: <20201026234905.1022767-82-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,55 +44,83 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Peter Chen <peter.chen@nxp.com>
+From: Joakim Zhang <qiangqing.zhang@nxp.com>
 
-[ Upstream commit 18a367e8947d72dd91b6fc401e88a2952c6363f7 ]
+[ Upstream commit 02f71c6605e1f8259c07f16178330db766189a74 ]
 
-If the xhci-plat.c is the platform driver, after the runtime pm is
-enabled, the xhci_suspend is called if nothing is connected on
-the port. When the system goes to suspend, it will call xhci_suspend again
-if USB wakeup is enabled.
+Disable clocks while CAN core is in stop mode.
 
-Since the runtime suspend wakeup setting is not always the same as
-system suspend wakeup setting, eg, at runtime suspend we always need
-wakeup if the controller is in low power mode; but at system suspend,
-we may not need wakeup. So, we move the judgement after changing
-wakeup setting.
-
-[commit message rewording -Mathias]
-
-Reviewed-by: Jun Li <jun.li@nxp.com>
-Signed-off-by: Peter Chen <peter.chen@nxp.com>
-Signed-off-by: Mathias Nyman <mathias.nyman@linux.intel.com>
-Link: https://lore.kernel.org/r/20200918131752.16488-8-mathias.nyman@linux.intel.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
+Tested-by: Sean Nyekjaer <sean@geanix.com>
+Link: https://lore.kernel.org/r/20191210085721.9853-2-qiangqing.zhang@nxp.com
+Signed-off-by: Marc Kleine-Budde <mkl@pengutronix.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/usb/host/xhci.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/net/can/flexcan.c | 30 ++++++++++++++++++++----------
+ 1 file changed, 20 insertions(+), 10 deletions(-)
 
-diff --git a/drivers/usb/host/xhci.c b/drivers/usb/host/xhci.c
-index f4cedcaee14b3..4cfb95104c26b 100644
---- a/drivers/usb/host/xhci.c
-+++ b/drivers/usb/host/xhci.c
-@@ -982,12 +982,15 @@ int xhci_suspend(struct xhci_hcd *xhci, bool do_wakeup)
- 			xhci->shared_hcd->state != HC_STATE_SUSPENDED)
- 		return -EINVAL;
- 
--	xhci_dbc_suspend(xhci);
+diff --git a/drivers/net/can/flexcan.c b/drivers/net/can/flexcan.c
+index 94d10ec954a05..de7599d99b4b5 100644
+--- a/drivers/net/can/flexcan.c
++++ b/drivers/net/can/flexcan.c
+@@ -1700,8 +1700,6 @@ static int __maybe_unused flexcan_suspend(struct device *device)
+ 			err = flexcan_chip_disable(priv);
+ 			if (err)
+ 				return err;
 -
- 	/* Clear root port wake on bits if wakeup not allowed. */
- 	if (!do_wakeup)
- 		xhci_disable_port_wake_on_bits(xhci);
+-			err = pm_runtime_force_suspend(device);
+ 		}
+ 		netif_stop_queue(dev);
+ 		netif_device_detach(dev);
+@@ -1727,10 +1725,6 @@ static int __maybe_unused flexcan_resume(struct device *device)
+ 			if (err)
+ 				return err;
+ 		} else {
+-			err = pm_runtime_force_resume(device);
+-			if (err)
+-				return err;
+-
+ 			err = flexcan_chip_enable(priv);
+ 		}
+ 	}
+@@ -1761,8 +1755,16 @@ static int __maybe_unused flexcan_noirq_suspend(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
  
-+	if (!HCD_HW_ACCESSIBLE(hcd))
-+		return 0;
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, true);
++	if (netif_running(dev)) {
++		int err;
 +
-+	xhci_dbc_suspend(xhci);
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, true);
 +
- 	/* Don't poll the roothubs on bus suspend. */
- 	xhci_dbg(xhci, "%s: stopping port polling.\n", __func__);
- 	clear_bit(HCD_FLAG_POLL_RH, &hcd->flags);
++		err = pm_runtime_force_suspend(device);
++		if (err)
++			return err;
++	}
+ 
+ 	return 0;
+ }
+@@ -1772,8 +1774,16 @@ static int __maybe_unused flexcan_noirq_resume(struct device *device)
+ 	struct net_device *dev = dev_get_drvdata(device);
+ 	struct flexcan_priv *priv = netdev_priv(dev);
+ 
+-	if (netif_running(dev) && device_may_wakeup(device))
+-		flexcan_enable_wakeup_irq(priv, false);
++	if (netif_running(dev)) {
++		int err;
++
++		err = pm_runtime_force_resume(device);
++		if (err)
++			return err;
++
++		if (device_may_wakeup(device))
++			flexcan_enable_wakeup_irq(priv, false);
++	}
+ 
+ 	return 0;
+ }
 -- 
 2.25.1
 
