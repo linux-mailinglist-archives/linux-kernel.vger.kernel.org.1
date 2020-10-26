@@ -2,154 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E23B7299C76
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 66B5A299C81
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410355AbgJZX7N (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:59:13 -0400
-Received: from nat-hk.nvidia.com ([203.18.50.4]:13105 "EHLO nat-hk.nvidia.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2404516AbgJZX7L (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:59:11 -0400
-Received: from HKMAIL103.nvidia.com (Not Verified[10.18.92.100]) by nat-hk.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9762ce0000>; Tue, 27 Oct 2020 07:59:10 +0800
-Received: from HKMAIL103.nvidia.com (10.18.16.12) by HKMAIL103.nvidia.com
- (10.18.16.12) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 23:59:10 +0000
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.176)
- by HKMAIL103.nvidia.com (10.18.16.12) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 26 Oct 2020 23:59:09 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mpbTM169MJNAx26lZqpvhlZhIl1OGv/jAFhOng5txp7ykVW60l/TzTCFh6mpx70nBxow96TgdP4leTvlhAfJbepJ0JbfmIvaMW6TgSD0GVswdq8v3Ork1hUhwzG3lAZwHTk62UvXP7CapzD/hwe8kvzc8YSaIppeJMmKI3ZJvzSZthbJ9W/Kn/L3tAs/w+V6PEzpUZEcS6yxq9SPji4VKCBNou1IShOqLNBwqQ4+gS8YWW3RMFXkgX06KW1s/B/wsCeWPaZ0VkMvaLpF10RLneCZyJBSIqtDKjQbZWTOc2VFF7bKJtxlZGJK+TJ6LF1JQEqQrK5hFk6YDgQbXN283Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=0G2MtcEyKqDowZPRjXkL9Xo5WtQtV8ZJaFSxUo6t9Zg=;
- b=PuR8XHuPmK6LiZV0gU0LPuVfffj3JE8HQTPLgODi92MH7a06LXNmPUHPzN4APBVwAEC8+20NOl7yP07lVbh7D7/oZOo2JBQ4aXkHVgKcdE14lbv0cRH5PyuP804JAfeehYKBUqVsUrsS6VEt26NF6zPgKLjNi66IO2OkhKws4qnTp1s/FC5D0tVmdCd80TFvuV/0MslP+zyxv8n+FKcEnVrQoP5781KAfdSfCusgT3o1bVI3aZLwScTr0ofMjfqR+/8zyuaDB1Y2T5+dOOtdXAIXzofxRol80Od1LvvPDGLWtj5GNzrsWtFTGVcj8FghUfLd1h4YSABBiPOWdDIblg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0203.namprd12.prod.outlook.com (2603:10b6:4:56::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.28; Mon, 26 Oct
- 2020 23:59:05 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
- 23:59:05 +0000
-Date:   Mon, 26 Oct 2020 20:59:03 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     John Hubbard <jhubbard@nvidia.com>
-CC:     <linux-kernel@vger.kernel.org>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Hellwig <hch@lst.de>,
-        Hugh Dickins <hughd@google.com>, Jan Kara <jack@suse.cz>,
-        Jann Horn <jannh@google.com>,
-        Kirill Shutemov <kirill@shutemov.name>,
-        Kirill Tkhai <ktkhai@virtuozzo.com>,
-        Linux-MM <linux-mm@kvack.org>, Michal Hocko <mhocko@suse.com>,
-        Oleg Nesterov <oleg@redhat.com>, Peter Xu <peterx@redhat.com>
-Subject: Re: [PATCH 1/2] mm: reorganize internal_get_user_pages_fast()
-Message-ID: <20201026235903.GE1523783@nvidia.com>
-References: <1-v1-281e425c752f+2df-gup_fork_jgg@nvidia.com>
- <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <16c50bb0-431d-5bfb-7b80-a8af0b4da90f@nvidia.com>
-X-ClientProxiedBy: YTBPR01CA0036.CANPRD01.PROD.OUTLOOK.COM
- (2603:10b6:b01:14::49) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        id S2411297AbgJZX7w (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:59:52 -0400
+Received: from mail-lj1-f193.google.com ([209.85.208.193]:40352 "EHLO
+        mail-lj1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411175AbgJZX7s (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:59:48 -0400
+Received: by mail-lj1-f193.google.com with SMTP id 23so12535093ljv.7;
+        Mon, 26 Oct 2020 16:59:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=vA0yqlgv8BZU4FzIR60Mj5pzfuiNbfmhCbso2KenTsE=;
+        b=I8WlpO2r7AFvoimcwGj4E2mHNAM7VhcQEEvGsXo39CzqzsIDb+bNZqNd01K8cBseNw
+         +M9mkAJCcor5Vmo+fY4Io1ZsqYFFHFlxXAwPvkki3Fs+r4IXpWlKouVCfIvVHFFQOgRB
+         Kq23xwdrwxa3Q3L3+YhZOCmdvMFk2RR6AhSSxE5OhaKMclXwGvAV02BNWSgcP949Y86O
+         TJvGY13YOXt+QA5FxABhPXbrqPjKgyG3QqYMj1mddNxxg3YvD7Ay9YGu99mVMt3dtIDt
+         qI0kLIz1BTPgr+QfmgPSthq+4bwS/CpX8VMIuqnt1WkZtSwNY0eiTIXbHP5tf+gloyDE
+         Cm8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=vA0yqlgv8BZU4FzIR60Mj5pzfuiNbfmhCbso2KenTsE=;
+        b=Z31oqS7JLB/JDGf98XTB0lDzwREECfXVQGca998tTWG4G8uGeoeVye8RVmRcB9sCGI
+         Zkowvqk7lbsifirGiLhRt40SItwLQlM/jVJN+7sPBC2XxAvX/NiXSTiaR8ETIElMj2Jk
+         lARL1TqgPUMgjPt85USXNGtj4a5Y0pba0OFhPxFjEecOEYeeIAkDfdrzSDhku8MYiO58
+         geIv+CJ4XqIiwe/QKWKBWXwrVWf59Q2PGIXc1vyY5BXpdzE6EmaneqNLsBIA/2mkL43t
+         y2Cg5uYL+RL8qWl4Oe34LZeTK/tJOR6w78g0lDt4qPoayHZCSignIQCumNicg7hJLhBO
+         cagg==
+X-Gm-Message-State: AOAM531RCIgMnzb0SMy51tECMfkNPf9xTFbQH9JMA1Iq1umIhh67601U
+        X3Yr7MnCvR8qdR5Fq0rblxI1OKSHAME0ecTZ1pHTWE9P7SQ=
+X-Google-Smtp-Source: ABdhPJyUmCq7ePK2IjaqPj9d6K+LEMjvSZw6c+p36G6enWe34rn9YpAgfDwSixwcqaynfYcxKca7kNf/8V2BTzIBN+g=
+X-Received: by 2002:a2e:99ca:: with SMTP id l10mr6621825ljj.218.1603756785501;
+ Mon, 26 Oct 2020 16:59:45 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (206.223.160.26) by YTBPR01CA0036.CANPRD01.PROD.OUTLOOK.COM (2603:10b6:b01:14::49) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 26 Oct 2020 23:59:05 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXCOF-00958G-OB; Mon, 26 Oct 2020 20:59:03 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603756750; bh=0G2MtcEyKqDowZPRjXkL9Xo5WtQtV8ZJaFSxUo6t9Zg=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=YB25exIyAL+YAPKP7yj154gTGRS2pmOJB+2EbNMUvuBicq9xzuxiLEQWM/AXIA2qs
-         fiV5QxFtNSEu7a1QJdKWgJtE5hXjqFhtJx4LXh0U07R+57TsEb9HvKEIpuhVMLbcA9
-         /xmV5Uak31mcgCoaQZ/3SeTd/CkqOfT3pKnJkgh1jQnvAos7RE55hwCxIcDCIC9zBc
-         fI1bT26a+U5C9x/MbkocNLBlhMMlGl/eyi53TgH85spMxC4BicaNbXzLueHJB6+vpg
-         wLnHkVpOR9YXNh4oaW9TR7+JlckQROz/iCUsj0cVbB5QMGVvFjn9BvFvDJFyiZVB84
-         Jur+Vpb0chEqw==
+References: <20201026234905.1022767-1-sashal@kernel.org> <20201026234905.1022767-131-sashal@kernel.org>
+In-Reply-To: <20201026234905.1022767-131-sashal@kernel.org>
+From:   Fabio Estevam <festevam@gmail.com>
+Date:   Mon, 26 Oct 2020 20:59:34 -0300
+Message-ID: <CAOMZO5CF=KewxQm5jwXuwGDDeB1b_UqF4JZ5GqJpjV7LPR62zw@mail.gmail.com>
+Subject: Re: [PATCH AUTOSEL 5.9 131/147] soc: imx: gpcv2: Use dev_err_probe()
+ to simplify error handling
+To:     Sasha Levin <sashal@kernel.org>
+Cc:     linux-kernel <linux-kernel@vger.kernel.org>,
+        stable <stable@vger.kernel.org>,
+        =?UTF-8?Q?Guido_G=C3=BCnther?= <agx@sigxcpu.org>,
+        Shawn Guo <shawnguo@kernel.org>,
+        "moderated list:ARM/FREESCALE IMX / MXC ARM ARCHITECTURE" 
+        <linux-arm-kernel@lists.infradead.org>,
+        Anson Huang <Anson.Huang@nxp.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 09:44:17PM -0700, John Hubbard wrote:
-> > Signed-off-by: Jason Gunthorpe <jgg@nvidia.com>
-> >   mm/gup.c | 88 +++++++++++++++++++++++++++++---------------------------
-> >   1 file changed, 46 insertions(+), 42 deletions(-)
-> > 
-> > diff --git a/mm/gup.c b/mm/gup.c
-> > index 102877ed77a4b4..ecbe1639ea2af7 100644
-> > +++ b/mm/gup.c
-> > @@ -2671,13 +2671,42 @@ static int __gup_longterm_unlocked(unsigned long start, int nr_pages,
-> >   	return ret;
-> >   }
-> > +static unsigned int lockless_pages_from_mm(unsigned long addr,
-> 
-> It would be slightly more consistent to use "start" here, too, instead of addr.
-> 
-> Separately, I'm not joyful about the change to unsigned int for the
-> return type. I understand why you did it and that's perfectly sound
-> reasoning: there is no -ERRNO possible here, and nr_pinned will always
-> be >=0. And it's correct, although it does have a type mismatch in the
-> return value.
+Hi Sasha,
 
-I did it because I had to check that ignoring a negative return or
-doing some wonky negative arithmetic wasn't some sneaky beahvior. It
-isn't, the value is really unsigned. So I documented it to save the
-next person this work.
+On Mon, Oct 26, 2020 at 8:56 PM Sasha Levin <sashal@kernel.org> wrote:
+>
+> From: Anson Huang <Anson.Huang@nxp.com>
+>
+> [ Upstream commit b663b798d04fb73f1ad4d54c46582d2fde7a76d6 ]
+>
+> dev_err_probe() can reduce code size, uniform error handling and record t=
+he
+> defer probe reason etc., use it to simplify the code.
+>
+> Signed-off-by: Anson Huang <Anson.Huang@nxp.com>
+> Reviewed-by: Guido G=C3=BCnther <agx@sigxcpu.org>
+> Signed-off-by: Shawn Guo <shawnguo@kernel.org>
+> Signed-off-by: Sasha Levin <sashal@kernel.org>
 
-I think the proper response is to ultimately change the
-gup_pgd_range() call tree to take the unsigned as well.
-
-> a) change all the nr_pages and nr_pinned throughout, to "long", or
-> 
-> b) change all the nr_pages and nr_pinned all function args, and use int
-> return types throughout, as a "O or -ERRNO, only" return value
-> convention.
-
-The gup_pgd_range() this stuff largely does return
-
-I think gup_pgd_range() works as it does due to 
- 
-> > +	start += (unsigned long)nr_pinned << PAGE_SHIFT;
-> > +	pages += nr_pinned;
-> > +	ret = __gup_longterm_unlocked(start, nr_pages - nr_pinned, gup_flags,
-> > +				      pages);
-> > +	if (ret < 0) {
-> >   		/* Have to be a bit careful with return values */
-> 
-> ...and can we move that comment up one level, so that it reads:
-> 
-> 	/* Have to be a bit careful with return values */
-> 	if (ret < 0) {
-> 		if (nr_pinned)
-> 			return nr_pinned;
-> 		return ret;
-> 	}
-> 	return ret + nr_pinned;
-
-I actually deliberately put it inside the if because there is nothing
-tricky about ret < 0, that is basically perfectly normal. It is only
-the logic to drop the error code sometimes that is tricky..
-
-> Thinking about this longer term, it would be nice if the whole gup/pup API
-> set just stopped pretending that anyone cares about partial success, because
-> they *don't*. If we had return values of "0 or -ERRNO" throughout, and an
-> additional set of API wrappers that did some sort of limited retry just like
-> some of the callers do, that would be a happier story.
-
-It seems like a good idea to me
-
-I'll get the other notes in a v2
-
-Thanks,
-Jason
+Does this qualify for stable since it is just a cleanup and not a bug fix?
