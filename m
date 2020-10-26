@@ -2,155 +2,97 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 57D652997A0
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:08:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C323929979C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:07:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730039AbgJZUIN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:08:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51858 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1726059AbgJZUIM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:08:12 -0400
-Received: from sol.attlocal.net (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B276821BE5;
-        Mon, 26 Oct 2020 20:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603742892;
-        bh=nqiSiVnZ0rhfYdOwfE4FtrcQRW3wI+osVJOzPMj6Cy4=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=npYKCGJQlwbwQhm4NR1Gi5cNRyMVPcd5j98huT1AmLqbzY0vjhXRVyt0cBkicSMq3
-         nAIlja9fAjuPvq0rGI5IlX6CBG0JlbCMM6leyx6mLdEN5U5xeBiW3p1N/uqa+NSdpy
-         sSR65LGWv72V7FdOFHPniH6rJAQdKJ6rJ7lgTt4Y=
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     linux-crypto@vger.kernel.org,
-        Herbert Xu <herbert@gondor.apana.org.au>
-Cc:     syzkaller-bugs@googlegroups.com, linux-hardening@vger.kernel.org,
-        linux-api@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jann Horn <jannh@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Elena Petrova <lenaptr@google.com>,
-        Vegard Nossum <vegard.nossum@oracle.com>,
-        "Gustavo A . R . Silva" <gustavoars@kernel.org>,
-        stable@vger.kernel.org,
-        syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
-Subject: [PATCH] crypto: af_alg - avoid undefined behavior accessing salg_name
-Date:   Mon, 26 Oct 2020 13:07:15 -0700
-Message-Id: <20201026200715.170261-1-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.29.1
-In-Reply-To: <CACT4Y+beaHrWisaSsV90xQn+t2Xn-bxvVgmx8ih_h=yJYPjs4A@mail.gmail.com>
-References: <CACT4Y+beaHrWisaSsV90xQn+t2Xn-bxvVgmx8ih_h=yJYPjs4A@mail.gmail.com>
+        id S1730003AbgJZUHq convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 16:07:46 -0400
+Received: from szxga01-in.huawei.com ([45.249.212.187]:3652 "EHLO
+        szxga01-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1729962AbgJZUHp (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 16:07:45 -0400
+Received: from DGGEMM404-HUB.china.huawei.com (unknown [172.30.72.53])
+        by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4CKm9103g5zXfvM;
+        Tue, 27 Oct 2020 04:07:49 +0800 (CST)
+Received: from dggemi711-chm.china.huawei.com (10.3.20.110) by
+ DGGEMM404-HUB.china.huawei.com (10.3.20.212) with Microsoft SMTP Server (TLS)
+ id 14.3.487.0; Tue, 27 Oct 2020 04:07:43 +0800
+Received: from dggemi761-chm.china.huawei.com (10.1.198.147) by
+ dggemi711-chm.china.huawei.com (10.3.20.110) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id
+ 15.1.1913.5; Tue, 27 Oct 2020 04:07:43 +0800
+Received: from dggemi761-chm.china.huawei.com ([10.9.49.202]) by
+ dggemi761-chm.china.huawei.com ([10.9.49.202]) with mapi id 15.01.1913.007;
+ Tue, 27 Oct 2020 04:07:43 +0800
+From:   "Song Bao Hua (Barry Song)" <song.bao.hua@hisilicon.com>
+To:     Robin Murphy <robin.murphy@arm.com>, "hch@lst.de" <hch@lst.de>
+CC:     "iommu@lists.linux-foundation.org" <iommu@lists.linux-foundation.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] dma: Per-NUMA-node CMA should depend on NUMA
+Thread-Topic: [PATCH] dma: Per-NUMA-node CMA should depend on NUMA
+Thread-Index: AQHWq5MUDdH3/+jmF0KiWtaQJmX8fKmqTnfw
+Date:   Mon, 26 Oct 2020 20:07:43 +0000
+Message-ID: <75cad228694b4f1587265a887069b241@hisilicon.com>
+References: <74b66725883f065eb7d156f866678abb5be934bd.1603714996.git.robin.murphy@arm.com>
+In-Reply-To: <74b66725883f065eb7d156f866678abb5be934bd.1603714996.git.robin.murphy@arm.com>
+Accept-Language: en-GB, en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-originating-ip: [10.126.203.184]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Eric Biggers <ebiggers@google.com>
 
-Commit 3f69cc60768b ("crypto: af_alg - Allow arbitrarily long algorithm
-names") made the kernel start accepting arbitrarily long algorithm names
-in sockaddr_alg.  However, the actual length of the salg_name field
-stayed at the original 64 bytes.
 
-This is broken because the kernel can access indices >= 64 in salg_name,
-which is undefined behavior -- even though the memory that is accessed
-is still located within the sockaddr structure.  It would only be
-defined behavior if the array were properly marked as arbitrary-length
-(either by making it a flexible array, which is the recommended way
-these days, or by making it an array of length 0 or 1).
+> -----Original Message-----
+> From: Robin Murphy [mailto:robin.murphy@arm.com]
+> Sent: Tuesday, October 27, 2020 1:25 AM
+> To: hch@lst.de
+> Cc: iommu@lists.linux-foundation.org; linux-kernel@vger.kernel.org; Song Bao
+> Hua (Barry Song) <song.bao.hua@hisilicon.com>
+> Subject: [PATCH] dma: Per-NUMA-node CMA should depend on NUMA
+> 
+> Offering DMA_PERNUMA_CMA to non-NUMA configs is pointless.
+> 
 
-We can't simply change salg_name into a flexible array, since that would
-break source compatibility with userspace programs that embed
-sockaddr_alg into another struct, or (more commonly) declare a
-sockaddr_alg like 'struct sockaddr_alg sa = { .salg_name = "foo" };'.
+This is right.
 
-One solution would be to change salg_name into a flexible array only
-when '#ifdef __KERNEL__'.  However, that would keep userspace without an
-easy way to actually use the longer algorithm names.
+> Signed-off-by: Robin Murphy <robin.murphy@arm.com>
+> ---
+>  kernel/dma/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/dma/Kconfig b/kernel/dma/Kconfig
+> index c99de4a21458..964b74c9b7e3 100644
+> --- a/kernel/dma/Kconfig
+> +++ b/kernel/dma/Kconfig
+> @@ -125,7 +125,8 @@ if  DMA_CMA
+> 
+>  config DMA_PERNUMA_CMA
+>  	bool "Enable separate DMA Contiguous Memory Area for each NUMA
+> Node"
+> -	default NUMA && ARM64
+> +	depends on NUMA
+> +	default ARM64
 
-Instead, add a new structure 'sockaddr_alg_new' that has the flexible
-array field, and expose it to both userspace and the kernel.
-Make the kernel use it correctly in alg_bind().
+On the other hand, at this moment, only ARM64 is calling the init code
+to get per_numa cma. Do we need to
+depends on NUMA && ARM64 ?
+so that this is not enabled by non-arm64?
 
-This addresses the syzbot report
-"UBSAN: array-index-out-of-bounds in alg_bind"
-(https://syzkaller.appspot.com/bug?extid=92ead4eb8e26a26d465e).
-
-Reported-by: syzbot+92ead4eb8e26a26d465e@syzkaller.appspotmail.com
-Fixes: 3f69cc60768b ("crypto: af_alg - Allow arbitrarily long algorithm names")
-Cc: <stable@vger.kernel.org> # v4.12+
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- crypto/af_alg.c             | 10 +++++++---
- include/uapi/linux/if_alg.h | 16 ++++++++++++++++
- 2 files changed, 23 insertions(+), 3 deletions(-)
-
-diff --git a/crypto/af_alg.c b/crypto/af_alg.c
-index d11db80d24cd1..9acb9d2c4bcf9 100644
---- a/crypto/af_alg.c
-+++ b/crypto/af_alg.c
-@@ -147,7 +147,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 	const u32 allowed = CRYPTO_ALG_KERN_DRIVER_ONLY;
- 	struct sock *sk = sock->sk;
- 	struct alg_sock *ask = alg_sk(sk);
--	struct sockaddr_alg *sa = (void *)uaddr;
-+	struct sockaddr_alg_new *sa = (void *)uaddr;
- 	const struct af_alg_type *type;
- 	void *private;
- 	int err;
-@@ -155,7 +155,11 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 	if (sock->state == SS_CONNECTED)
- 		return -EINVAL;
+>  	help
+>  	  Enable this option to get pernuma CMA areas so that devices like
+>  	  ARM64 SMMU can get local memory by DMA coherent APIs.
+> --
  
--	if (addr_len < sizeof(*sa))
-+	BUILD_BUG_ON(offsetof(struct sockaddr_alg_new, salg_name) !=
-+		     offsetof(struct sockaddr_alg, salg_name));
-+	BUILD_BUG_ON(offsetof(struct sockaddr_alg, salg_name) != sizeof(*sa));
-+
-+	if (addr_len < sizeof(*sa) + 1)
- 		return -EINVAL;
- 
- 	/* If caller uses non-allowed flag, return error. */
-@@ -163,7 +167,7 @@ static int alg_bind(struct socket *sock, struct sockaddr *uaddr, int addr_len)
- 		return -EINVAL;
- 
- 	sa->salg_type[sizeof(sa->salg_type) - 1] = 0;
--	sa->salg_name[sizeof(sa->salg_name) + addr_len - sizeof(*sa) - 1] = 0;
-+	sa->salg_name[addr_len - sizeof(*sa) - 1] = 0;
- 
- 	type = alg_get_type(sa->salg_type);
- 	if (PTR_ERR(type) == -ENOENT) {
-diff --git a/include/uapi/linux/if_alg.h b/include/uapi/linux/if_alg.h
-index 60b7c2efd921c..dc52a11ba6d15 100644
---- a/include/uapi/linux/if_alg.h
-+++ b/include/uapi/linux/if_alg.h
-@@ -24,6 +24,22 @@ struct sockaddr_alg {
- 	__u8	salg_name[64];
- };
- 
-+/*
-+ * Linux v4.12 and later removed the 64-byte limit on salg_name[]; it's now an
-+ * arbitrary-length field.  We had to keep the original struct above for source
-+ * compatibility with existing userspace programs, though.  Use the new struct
-+ * below if support for very long algorithm names is needed.  To do this,
-+ * allocate 'sizeof(struct sockaddr_alg_new) + strlen(algname) + 1' bytes, and
-+ * copy algname (including the null terminator) into salg_name.
-+ */
-+struct sockaddr_alg_new {
-+	__u16	salg_family;
-+	__u8	salg_type[14];
-+	__u32	salg_feat;
-+	__u32	salg_mask;
-+	__u8	salg_name[];
-+};
-+
- struct af_alg_iv {
- 	__u32	ivlen;
- 	__u8	iv[0];
+Thanks
+Barry
 
-base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
--- 
-2.29.1
 
