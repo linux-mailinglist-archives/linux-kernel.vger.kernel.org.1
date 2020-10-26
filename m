@@ -2,37 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DAF1F299912
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9F683299918
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 22:50:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2390716AbgJZVuO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 17:50:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50928 "EHLO mail.kernel.org"
+        id S2390866AbgJZVux (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 17:50:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51152 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2390552AbgJZVuM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 17:50:12 -0400
+        id S2390765AbgJZVuv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 17:50:51 -0400
 Received: from localhost.localdomain (unknown [192.30.34.233])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id A0D4F207E8;
-        Mon, 26 Oct 2020 21:50:10 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id B0BDD207F7;
+        Mon, 26 Oct 2020 21:50:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603749012;
-        bh=a5p2zcjEZXDEMV9zHQ1iLUdn3M8KFB1aTdOYacbsc94=;
+        s=default; t=1603749050;
+        bh=Ce6Z/v4C/uHsQ5uIPnR5h2yHOXb4YAK05bn+Jpyu/R4=;
         h=From:To:Cc:Subject:Date:From;
-        b=OJqxDI/F+wMsc8XunJ8uKh3IL2wCmFn6iPJ4hwAMLxSXfP2PEcEWgBLiHMLNaqq9E
-         jBBxgS/XFbBWIh8mxcMVpvmuaPE/0QzD4M3rCdxzyE9WyH6ChILIv2iE25hYdQdyMw
-         9Jk73mD+TwqF1TxVB0iTj8hL/rXKU7scA8Uy9ro8=
+        b=YKh7GKQOTqTowF0V35OFfN6eL/TeNp6jOkDzKl6IjFTUXMol3IVKkD9L5A2Ui1ue7
+         iZJjT+tg+1mdcCWp/9vgP8ClqXf+Tha/Q2fKiRo+dejnm9IfnzcCBa0Ay8V4Xlsf6u
+         kAUfDe/OUbOE7y1aHxM2w0JQYjO3I7e8WWRSg+OY=
 From:   Arnd Bergmann <arnd@kernel.org>
-To:     Andrew Morton <akpm@linux-foundation.org>,
-        Petr Mladek <pmladek@suse.com>,
-        =?UTF-8?q?Uwe=20Kleine-K=C3=B6nig?= <uwe@kleine-koenig.org>,
-        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-        Andy Shevchenko <andy.shevchenko@gmail.com>
-Cc:     Arnd Bergmann <arnd@arndb.de>, linux-kernel@vger.kernel.org
-Subject: [PATCH] printf: fix Woverride-init warning for EDEADLK errno
-Date:   Mon, 26 Oct 2020 22:49:59 +0100
-Message-Id: <20201026215004.3893088-1-arnd@kernel.org>
+To:     Philipp Reisner <philipp.reisner@linbit.com>,
+        Lars Ellenberg <lars.ellenberg@linbit.com>,
+        Jens Axboe <axboe@kernel.dk>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        "David S. Miller" <davem@davemloft.net>, Coly Li <colyli@suse.de>,
+        David Sterba <dsterba@suse.com>,
+        Jackie Liu <liuyun01@kylinos.cn>,
+        Dan Carpenter <dan.carpenter@oracle.com>,
+        drbd-dev@lists.linbit.com, linux-block@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [PATCH 1/2] drbd: fix duplicate array initializer
+Date:   Mon, 26 Oct 2020 22:50:33 +0100
+Message-Id: <20201026215043.3893318-1-arnd@kernel.org>
 X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
@@ -42,44 +46,81 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 From: Arnd Bergmann <arnd@arndb.de>
 
-On most architectures, gcc -Wextra warns about the list of error
-numbers containing both EDEADLK and EDEADLOCK:
+There are two initializers for P_RETRY_WRITE:
 
-lib/errname.c:15:67: warning: initialized field overwritten [-Woverride-init]
-   15 | #define E(err) [err + BUILD_BUG_ON_ZERO(err <= 0 || err > 300)] = "-" #err
-      |                                                                   ^~~
-lib/errname.c:172:2: note: in expansion of macro 'E'
-  172 |  E(EDEADLK), /* EDEADLOCK */
-      |  ^
-lib/errname.c:15:67: note: (near initialization for 'names_0[35]')
-   15 | #define E(err) [err + BUILD_BUG_ON_ZERO(err <= 0 || err > 300)] = "-" #err
-      |                                                                   ^~~
-lib/errname.c:172:2: note: in expansion of macro 'E'
-  172 |  E(EDEADLK), /* EDEADLOCK */
-      |  ^
+drivers/block/drbd/drbd_main.c:3676:22: warning: initialized field overwritten [-Woverride-init]
 
-Make that line conditional on the two values being distinct.
+Remove the first one since it was already ignored by the compiler
+and reorder the list to match the enum definition. As P_ZEROES had
+no entry, add that one instead.
 
-Fixes: 57f5677e535b ("printf: add support for printing symbolic error names")
+Fixes: 036b17eaab93 ("drbd: Receiving part for the PROTOCOL_UPDATE packet")
+Fixes: f31e583aa2c2 ("drbd: introduce P_ZEROES (REQ_OP_WRITE_ZEROES on the "wire")")
 Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
- lib/errname.c | 2 ++
- 1 file changed, 2 insertions(+)
+ drivers/block/drbd/drbd_main.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
-diff --git a/lib/errname.c b/lib/errname.c
-index 0c4d3e66170e..6adff0bf2445 100644
---- a/lib/errname.c
-+++ b/lib/errname.c
-@@ -169,7 +169,9 @@ static const char *names_0[] = {
- 	E(ECANCELED), /* ECANCELLED */
- 	E(EAGAIN), /* EWOULDBLOCK */
- 	E(ECONNREFUSED), /* EREFUSED */
-+#if EDEADLK != EDEADLOCK
- 	E(EDEADLK), /* EDEADLOCK */
-+#endif
- };
- #undef E
+diff --git a/drivers/block/drbd/drbd_main.c b/drivers/block/drbd/drbd_main.c
+index 65b95aef8dbc..6102efbe57ab 100644
+--- a/drivers/block/drbd/drbd_main.c
++++ b/drivers/block/drbd/drbd_main.c
+@@ -3628,9 +3628,8 @@ const char *cmdname(enum drbd_packet cmd)
+ 	 * when we want to support more than
+ 	 * one PRO_VERSION */
+ 	static const char *cmdnames[] = {
++
+ 		[P_DATA]	        = "Data",
+-		[P_WSAME]	        = "WriteSame",
+-		[P_TRIM]	        = "Trim",
+ 		[P_DATA_REPLY]	        = "DataReply",
+ 		[P_RS_DATA_REPLY]	= "RSDataReply",
+ 		[P_BARRIER]	        = "Barrier",
+@@ -3641,7 +3640,6 @@ const char *cmdname(enum drbd_packet cmd)
+ 		[P_DATA_REQUEST]	= "DataRequest",
+ 		[P_RS_DATA_REQUEST]     = "RSDataRequest",
+ 		[P_SYNC_PARAM]	        = "SyncParam",
+-		[P_SYNC_PARAM89]	= "SyncParam89",
+ 		[P_PROTOCOL]            = "ReportProtocol",
+ 		[P_UUIDS]	        = "ReportUUIDs",
+ 		[P_SIZES]	        = "ReportSizes",
+@@ -3649,6 +3647,7 @@ const char *cmdname(enum drbd_packet cmd)
+ 		[P_SYNC_UUID]           = "ReportSyncUUID",
+ 		[P_AUTH_CHALLENGE]      = "AuthChallenge",
+ 		[P_AUTH_RESPONSE]	= "AuthResponse",
++		[P_STATE_CHG_REQ]       = "StateChgRequest",
+ 		[P_PING]		= "Ping",
+ 		[P_PING_ACK]	        = "PingAck",
+ 		[P_RECV_ACK]	        = "RecvAck",
+@@ -3659,24 +3658,26 @@ const char *cmdname(enum drbd_packet cmd)
+ 		[P_NEG_DREPLY]	        = "NegDReply",
+ 		[P_NEG_RS_DREPLY]	= "NegRSDReply",
+ 		[P_BARRIER_ACK]	        = "BarrierAck",
+-		[P_STATE_CHG_REQ]       = "StateChgRequest",
+ 		[P_STATE_CHG_REPLY]     = "StateChgReply",
+ 		[P_OV_REQUEST]          = "OVRequest",
+ 		[P_OV_REPLY]            = "OVReply",
+ 		[P_OV_RESULT]           = "OVResult",
+ 		[P_CSUM_RS_REQUEST]     = "CsumRSRequest",
+ 		[P_RS_IS_IN_SYNC]	= "CsumRSIsInSync",
++		[P_SYNC_PARAM89]	= "SyncParam89",
+ 		[P_COMPRESSED_BITMAP]   = "CBitmap",
+ 		[P_DELAY_PROBE]         = "DelayProbe",
+ 		[P_OUT_OF_SYNC]		= "OutOfSync",
+-		[P_RETRY_WRITE]		= "RetryWrite",
+ 		[P_RS_CANCEL]		= "RSCancel",
+ 		[P_CONN_ST_CHG_REQ]	= "conn_st_chg_req",
+ 		[P_CONN_ST_CHG_REPLY]	= "conn_st_chg_reply",
+ 		[P_RETRY_WRITE]		= "retry_write",
+ 		[P_PROTOCOL_UPDATE]	= "protocol_update",
++		[P_TRIM]	        = "Trim",
+ 		[P_RS_THIN_REQ]         = "rs_thin_req",
+ 		[P_RS_DEALLOCATED]      = "rs_deallocated",
++		[P_WSAME]	        = "WriteSame",
++		[P_ZEROES]		= "Zeroes",
  
+ 		/* enum drbd_packet, but not commands - obsoleted flags:
+ 		 *	P_MAY_IGNORE
 -- 
 2.27.0
 
