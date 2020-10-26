@@ -2,102 +2,164 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE37298692
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:46:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ADB6D298690
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:33:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769502AbgJZFqB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 01:46:01 -0400
-Received: from mail-il1-f193.google.com ([209.85.166.193]:42975 "EHLO
-        mail-il1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769493AbgJZFqB (ORCPT
+        id S1768880AbgJZFcr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 01:32:47 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:39231 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1768870AbgJZFcr (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 01:46:01 -0400
-Received: by mail-il1-f193.google.com with SMTP id c11so4075590iln.9
-        for <linux-kernel@vger.kernel.org>; Sun, 25 Oct 2020 22:45:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=VPdTQ1PhfZhRRPXMROU07q6mswRw0Z2rrWcG2UvF3K4=;
-        b=qi6Sj4Li60olorDiCltHElQhHrEOEUkilTwugUpbXAL5bEgaerax0LSJP052TT7FsZ
-         ttIQoWdBRnRzpMMiDtZFobiVaj4CT+Wy3YZ9UKS1MYvSUC6dwhQIrXgDEzXUHulrUR6n
-         YtZqsCxZfvkZsxvN29YRNKGrT5YF39ncILQ4c=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=VPdTQ1PhfZhRRPXMROU07q6mswRw0Z2rrWcG2UvF3K4=;
-        b=JrAEHYtDcXcB00DVMqiT0e7XHjXQqV+/ceYCDABTDwNfXKdUS4l6JGfe/OZJzJ48k1
-         sXPSJS95FlPWbUAw/eTDpjV952FKRPimeFyzTtD8d1CXuTHC0KvWW/QctHEMVx9GJDfh
-         8p0uv7CIWks2Dn3nvjMaWECjI60m1ukwMuvnBHF5ADTVlmvi1L/8w7nEcD0519UEKwJC
-         xysZrEoked4iKcYBLWuDUqKORqP8UnfIEMzTIl8MrqqScDP7gMRQ2/UerukVB0D1s/W/
-         /4kETuKnX2Y4qDuw4cl8i6SKh8qLe6kYH6f7xpL5ONv7p3hlFBBcQwJzcLxmDg//M1iT
-         kIrQ==
-X-Gm-Message-State: AOAM531PsjE8JNya1h6thpqfxYXj9FMtStF7ax4huIB6AGY4bYnpsENQ
-        VJRhmfRoxaUQj8oh6HWl5jRQ1Q==
-X-Google-Smtp-Source: ABdhPJzxULDj+S29M5YgN9h83NkEIYBykH1HhRuUGajq9t05NEPOZUO8o7stxRu2lUnNE3b4Yz2tQQ==
-X-Received: by 2002:a92:5b46:: with SMTP id p67mr7692480ilb.150.1603691158960;
-        Sun, 25 Oct 2020 22:45:58 -0700 (PDT)
-Received: from localhost ([2620:15c:6:411:cad3:ffff:feb3:bd59])
-        by smtp.gmail.com with ESMTPSA id e4sm4835132ils.75.2020.10.25.22.45.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 22:45:58 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 01:45:57 -0400
-From:   Joel Fernandes <joel@joelfernandes.org>
-To:     Frederic Weisbecker <frederic@kernel.org>
-Cc:     linux-kernel@vger.kernel.org,
-        Josh Triplett <josh@joshtriplett.org>,
-        Lai Jiangshan <jiangshanlai@gmail.com>,
-        Marco Elver <elver@google.com>,
-        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
-        Steven Rostedt <rostedt@goodmis.org>,
-        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
-        neeraj.iitr10@gmail.com
-Subject: Re: [PATCH v8 2/6] rcu/segcblist: Add counters to segcblist
- datastructure
-Message-ID: <20201026054557.GB4192074@google.com>
-References: <20201021190813.3005054-1-joel@joelfernandes.org>
- <20201021190813.3005054-3-joel@joelfernandes.org>
- <20201026005058.GB104441@lothringen>
+        Mon, 26 Oct 2020 01:32:47 -0400
+Received: from epcas1p2.samsung.com (unknown [182.195.41.46])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201026053242epoutp01224ec29ea36f1c685fe40ad1047b19a1~Bc_NnM1IS0789207892epoutp01g
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:32:42 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201026053242epoutp01224ec29ea36f1c685fe40ad1047b19a1~Bc_NnM1IS0789207892epoutp01g
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603690362;
+        bh=Xf9YaH5Y5eh9HJzLFW03RhhfJZQBOHOWIOe0XC3xzo4=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=F3O49Iaw3S2j8JqaXPhXyXPqriHcHwsLYcDYg45SMl2UJHgUWf51Lh6r53Bmtukxj
+         XfokWsKUpkgu56D9hdtZ2WbIdSE4pCwYjaTZBcx0nWF4DPRbWMDSJE+25M8ggqUZ09
+         7CgLAqD0trIPNo6azYOAotb23YgVShFOqHl68niw=
+Received: from epsnrtp3.localdomain (unknown [182.195.42.164]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201026053242epcas1p2fd5d4e03c94ab84af527e3f46ed52b28~Bc_NEM6vA1160511605epcas1p2-;
+        Mon, 26 Oct 2020 05:32:42 +0000 (GMT)
+Received: from epsmges1p3.samsung.com (unknown [182.195.40.152]) by
+        epsnrtp3.localdomain (Postfix) with ESMTP id 4CKNlD0gS7zMqYkh; Mon, 26 Oct
+        2020 05:32:40 +0000 (GMT)
+Received: from epcas1p3.samsung.com ( [182.195.41.47]) by
+        epsmges1p3.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F6.02.09582.47F569F5; Mon, 26 Oct 2020 14:32:36 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p3.samsung.com (KnoxPortal) with ESMTPA id
+        20201026053235epcas1p3fc6aafa2a1e33066b70535824385b0c7~Bc_GzZFmj0633206332epcas1p3S;
+        Mon, 26 Oct 2020 05:32:35 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201026053235epsmtrp27ea959520b7960279ad2768d0a4af03c~Bc_GyrEhM0177401774epsmtrp2x;
+        Mon, 26 Oct 2020 05:32:35 +0000 (GMT)
+X-AuditID: b6c32a37-899ff7000000256e-6d-5f965f741a71
+Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        4D.D4.08745.37F569F5; Mon, 26 Oct 2020 14:32:35 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+        20201026053235epsmtip2184f98d87a9a3c0045043aa06d1285a2~Bc_GlRiKt2730627306epsmtip2D;
+        Mon, 26 Oct 2020 05:32:35 +0000 (GMT)
+Subject: Re: [PATCH] clk: exynos7: Mark aclk_fsys1_200 as critical
+To:     =?UTF-8?Q?Pawe=c5=82_Chmiel?= <pawel.mikolaj.chmiel@gmail.com>,
+        kgene@kernel.org, krzk@kernel.org, mturquette@baylibre.com,
+        sboyd@kernel.org
+Cc:     s.nawrocki@samsung.com, tomasz.figa@gmail.com,
+        linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <56fb4ede-e81a-5721-1927-77f2410d5885@samsung.com>
+Date:   Mon, 26 Oct 2020 14:46:24 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026005058.GB104441@lothringen>
+In-Reply-To: <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFlrHJsWRmVeSWpSXmKPExsWy7bCmvm5J/LR4g533uC36H79mtjh/fgO7
+        xabH11gtPvbcY7W4vGsOm8WM8/uYLC6ecrX4cbyP2eLwm3ZWi3/XNrJYrNr1h9GB2+P9jVZ2
+        j52z7rJ7bFrVyeaxeUm9R9+WVYwenzfJBbBFZdtkpCampBYppOYl56dk5qXbKnkHxzvHm5oZ
+        GOoaWlqYKynkJeam2iq5+AToumXmAF2npFCWmFMKFApILC5W0rezKcovLUlVyMgvLrFVSi1I
+        ySmwLNArTswtLs1L10vOz7UyNDAwMgUqTMjOaGzdxVrwgL/i3OqEBsYW3i5GTg4JAROJGbc/
+        MXYxcnEICexglHh/6QwzSEJI4BOjRN/kCIjEZ0aJ5tmPmLoYOcA6Hk6UhIjvYpR4vvsLVMN7
+        RokJDVUgtrCAk8ThxfdYQIpEBCYxSvx98JoVxGEW2M4osenONnaQKjYBLYn9L26wgdj8AooS
+        V388ZgSxeQXsJNo/3GcCsVkEVCU6e4+zgtiiAmESJ7e1QNUISpyc+YQFxOYUcJb4smsKWD2z
+        gLjErSfzoWx5ieats5lBFksIHOCQaPmxkgniaReJkz/+MkPYwhKvjm9hh7ClJD6/28sGYVdL
+        rDx5hA2iuYNRYsv+C6wQCWOJ/Usng8OCWUBTYv0ufYiwosTO33MZIRbzSbz72sMKCS5eiY42
+        IYgSZYnLD+5CnSApsbi9k20Co9IsJO/MQvLCLCQvzEJYtoCRZRWjWGpBcW56arFhgTFyZG9i
+        BCdcLfMdjNPeftA7xMjEwXiIUYKDWUmEd47M1Hgh3pTEyqrUovz4otKc1OJDjKbAAJ7ILCWa
+        nA9M+Xkl8YamRsbGxhYmhmamhoZK4rx/tDvihQTSE0tSs1NTC1KLYPqYODilGph8xcxcfht7
+        qr71Z7xwYoLdDHHFoPR19yM8dyRq+Hzp/yr/Nvjd3iotMRalH/vntb5kUueM+BI+5xq70aqJ
+        sab5IQHdM0MnGsVxHczs4rqz7VPw05fXHKJKeJr+X3imeXGrbqYjn8N2uZaE93f4muxtLl++
+        z5yY6K/b5XNCodNh3gpPJf6J57mWxMg+v6P7c97LEj7H2WI3GV7N6J0x8xObavbJiVVbF4qe
+        v7ydLU1G2cNe++EOl3/rZ/XsWNOT9OXY67y13daPUw9P8hVq6+l4t9uq++8nAUcpzpW9Sw1C
+        Zn9TTGSuvNUi69L8+vn6bi4lqdWh/ydmSwU+2JU5+fV9rh1G970KWLPMSqU37FViKc5INNRi
+        LipOBAA6pPrsQQQAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsWy7bCSvG5x/LR4g923pCz6H79mtjh/fgO7
+        xabH11gtPvbcY7W4vGsOm8WM8/uYLC6ecrX4cbyP2eLwm3ZWi3/XNrJYrNr1h9GB2+P9jVZ2
+        j52z7rJ7bFrVyeaxeUm9R9+WVYwenzfJBbBFcdmkpOZklqUW6dslcGU0tu5iLXjAX3FudUID
+        YwtvFyMHh4SAicTDiZJdjFwcQgI7GCVeX33I2sXICRSXlJh28SgzRI2wxOHDxRA1bxklNu95
+        yAhSIyzgJHF48T0WkISIwCRGiU8fO9lBHGaB7YwSXw8eYAKpEhKYxijRv9UMxGYT0JLY/+IG
+        G4jNL6AocfXHY7BJvAJ2Eu0f7oPVswioSnT2Hge7QlQgTGLnksdMEDWCEidnPmEBsTkFnCW+
+        7JoCFmcWUJf4M+8SM4QtLnHryXyouLxE89bZzBMYhWchaZ+FpGUWkpZZSFoWMLKsYpRMLSjO
+        Tc8tNiwwykst1ytOzC0uzUvXS87P3cQIjj0trR2Me1Z90DvEyMTBeIhRgoNZSYR3jszUeCHe
+        lMTKqtSi/Pii0pzU4kOM0hwsSuK8X2ctjBMSSE8sSc1OTS1ILYLJMnFwSjUwNcx0yTk29Uwz
+        p9wy2a88dgE77O9VqXnLGl5ZVft7tbXaT1PjSz9N1/rnxr9Ynv8608rylPoCTqVSx9aG3y87
+        p7YuX/ryVWjWKqXoHuEFzzZEfZg63zGUJ/Lgoqz5x1fyuDsdtpaeLaYZH8YcOaVpe0d+2Zlz
+        zlZ5ejVbQqaFiO54ZR6gzSB0at0NFYO6lrD9iYdZYxcbW6xI/elvsal+l3bz3e9TVrFIFif+
+        XH5ixktmqZcTC55z7+5xqWlcbu6U+59306NL1rbe51W+eWlaJghHx5+YanHK4pMNW8p36xzX
+        E1+vPTBjYluS8dJFdfKdfS67D4reM3nZ9T18fTz/H7HLuxbeOMypksm0W9pciaU4I9FQi7mo
+        OBEAA8zKtiwDAAA=
+X-CMS-MailID: 20201026053235epcas1p3fc6aafa2a1e33066b70535824385b0c7
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201024154433epcas1p3e6cbd7855e24cb5798026134e61c05b1
+References: <CGME20201024154433epcas1p3e6cbd7855e24cb5798026134e61c05b1@epcas1p3.samsung.com>
+        <20201024154346.9589-1-pawel.mikolaj.chmiel@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 01:50:58AM +0100, Frederic Weisbecker wrote:
-> On Wed, Oct 21, 2020 at 03:08:09PM -0400, Joel Fernandes (Google) wrote:
-> >  bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
-> >  {
-> > -	int i;
-> > +	int i, j;
-> >  
-> >  	WARN_ON_ONCE(!rcu_segcblist_is_enabled(rsclp));
-> >  	if (rcu_segcblist_restempty(rsclp, RCU_DONE_TAIL))
-> > @@ -487,6 +508,10 @@ bool rcu_segcblist_accelerate(struct rcu_segcblist *rsclp, unsigned long seq)
-> >  	if (rcu_segcblist_restempty(rsclp, i) || ++i >= RCU_NEXT_TAIL)
-> >  		return false;
-> >  
-> > +	/* Accounting: everything below i is about to get merged into i. */
-> > +	for (j = i + 1; j <= RCU_NEXT_TAIL; j++)
-> > +		rcu_segcblist_move_seglen(rsclp, j, i);
-> > +
+Hi Paweł Chmiel,
+
+On 10/25/20 12:43 AM, Paweł Chmiel wrote:
+> This clock must be always enabled to allow access to any registers in
+> fsys1 CMU. Until proper solution based on runtime PM is applied
+> (similar to what was done for Exynos5433), mark that clock as critical
+> so it won't be disabled.
 > 
-> Can you perhaps reuse the below loop to move the seglen?
+> It was observed on Samsung Galaxy S6 device (based on Exynos7420), where
+> UFS module is probed before pmic used to power that device.
+> In this case defer probe was happening and that clock was disabled by
+> UFS driver, causing whole boot to hang on next CMU access.
+> 
+> Signed-off-by: Paweł Chmiel <pawel.mikolaj.chmiel@gmail.com>
+> ---
+>  drivers/clk/samsung/clk-exynos7.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/clk/samsung/clk-exynos7.c b/drivers/clk/samsung/clk-exynos7.c
+> index c1ff715e960c..1048d83f097b 100644
+> --- a/drivers/clk/samsung/clk-exynos7.c
+> +++ b/drivers/clk/samsung/clk-exynos7.c
+> @@ -538,7 +538,8 @@ static const struct samsung_gate_clock top1_gate_clks[] __initconst = {
+>  		ENABLE_ACLK_TOP13, 28, CLK_SET_RATE_PARENT |
+>  		CLK_IS_CRITICAL, 0),
+>  	GATE(CLK_ACLK_FSYS1_200, "aclk_fsys1_200", "dout_aclk_fsys1_200",
+> -		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT, 0),
+> +		ENABLE_ACLK_TOP13, 24, CLK_SET_RATE_PARENT |
+> +		CLK_IS_CRITICAL, 0),
 
-Not easily, because we will need to store 'i' into another variable then, which
-does not change.
+As you commented, in order to keep the always on state,
+we can use CLK_IS_CRITICAL. Instead, you can enable the specific clock
+with detailed comment on clk-exynos7.c as following merged patches[1][2]:
+[1] 67f96ff7c8f0 ("clk: samsung: exynos5420: Keep top G3D clocks enabled")
+[2] 0212a0483b0a ("clk: samsung: Keep top BPLL mux on Exynos542x enabled")
 
-Besides IMHO, the code is more readable with the loops separated.
+The patches[1][2] enable the clock with clk_prepare_enable()
+instead of adding CLK_IS_CRITICAL. You can refer to it.
 
-thanks,
+>  
+>  	GATE(CLK_SCLK_PHY_FSYS1_26M, "sclk_phy_fsys1_26m",
+>  		"dout_sclk_phy_fsys1_26m", ENABLE_SCLK_TOP1_FSYS11,
+> 
 
- - Joel
- 
 
-> >  	/*
-> >  	 * Merge all later callbacks, including newly arrived callbacks,
-> >  	 * into the segment located by the for-loop above.  Assign "seq"
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
