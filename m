@@ -2,267 +2,171 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3EF672985D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:13:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 487002985C1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:03:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421827AbgJZDNF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 23:13:05 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:54521 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2389855AbgJZDNE (ORCPT
+        id S1421667AbgJZDCt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 23:02:49 -0400
+Received: from mailout1.samsung.com ([203.254.224.24]:17478 "EHLO
+        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389589AbgJZDCs (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 23:13:04 -0400
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-        by mailnew.nyi.internal (Postfix) with ESMTP id ED81B5802E9;
-        Sun, 25 Oct 2020 23:12:54 -0400 (EDT)
-Received: from imap2 ([10.202.2.52])
-  by compute3.internal (MEProxy); Sun, 25 Oct 2020 23:12:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=aj.id.au; h=
-        mime-version:message-id:in-reply-to:references:date:from:to:cc
-        :subject:content-type; s=fm1; bh=M7CjQS2/FxcHf/vflaSSIDT/4BTmr/w
-        OMuomiSkQL04=; b=Vk1NGZAVYCuOuG0Aj/d8t7C9cB89JQkzA5SijAiP6sn4XwS
-        +69WiB4Q+rko2XvtDX2+3UFIUO9SMnDgyF+ICHqLYEY9z4uKaXjdtTyukPFNiuqM
-        rfz+DQXUO6wPB7vxv02glOQcG2dkTEAPx+4A1V9v1EGfMe0zMlHFFo/Ih7EEusCO
-        nEwg6XUJquoD+BAOgVEA3g/7W6KH0ARMr5mJ2SCiD2ZYthA+IufQLaseC5jwfuYK
-        nI7fcpJ5uSJ4P4gBG1ui62HZl29nM083YyFJ9fPT2XKJZMuw3EDk4CYmHBOwwczU
-        M0RnN8KsauAJ28wKAvwwBXm/AxN+QSzNa/N3qfQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=M7CjQS
-        2/FxcHf/vflaSSIDT/4BTmr/wOMuomiSkQL04=; b=dJWXH/p5lDcshfSDxiAceF
-        z++cycO9V9r820d6JVqFRPW6LO981af7HCXN5OvT18U+bH91iJQxJBDWF6SU8TNV
-        h0ShXyQ74cLrp6de1nbwnAtjuyI1KbyK9tv5IMFD1ZJ5UhpvcgvLyQ3ixZmG4yV9
-        gv+iSDrISep4DCH8k/YvwPcMa9my5/cT6y74xFe6FGGq39FaLliGUU/T3PP7Q/tr
-        SGVx85Pw5KmVBumuz+WtlxhsZKUoKfiowaAmeuAa/hCSLaOMh9x/jKUPQtruB2QW
-        1aDt4B3Q24d4ImWEvczIgys3TpjtEWCZrKSGmcsgW+D7H3Gb/IKMWFW5rXY8uzWw
-        ==
-X-ME-Sender: <xms:tD6WX1gZC4pDyj9dtRd4WuyfTNq1JJp5zuFCCw9dRG_Mg-GE5Bq8gA>
-    <xme:tD6WX6D2lLS9LyAcPTh148T5bQJiNrg4bt0uYHMiS_EbFERzjOCSc1fF2pQ7jevj0
-    9PjfbPfRSGKZTzj3w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeehgdehjecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefofgggkfgjfhffhffvufgtsehttdertderredtnecuhfhrohhmpedftehnughr
-    vgifucflvghffhgvrhihfdcuoegrnhgurhgvfiesrghjrdhiugdrrghuqeenucggtffrrg
-    htthgvrhhnpeduffdtvdevkeffgfetffffueevgeejleeghfffjedthedthfelgfekfefh
-    feekieenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivg
-    eptdenucfrrghrrghmpehmrghilhhfrhhomheprghnughrvgifsegrjhdrihgurdgruh
-X-ME-Proxy: <xmx:tD6WX1Ea4cthkd0OprPOUBKbH5Q_-nfEA3HQANhxa6AMcelVRBOqTQ>
-    <xmx:tD6WX6RmDNIs5wIq1oKS1Q-idf5dDD00Veq9JyBKII5R8D8ONEoecA>
-    <xmx:tD6WXyzQ8qaKE1zQoFVkIm5ei1fgoD6jAG5hIiwY8VwsBEM4zmYWEQ>
-    <xmx:tj6WX3IG7ZREDdpIdzbhUd6gIcxjrrVrRmOiL6pnzV78t2eW7HMTDg>
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-        id 9FC70E050B; Sun, 25 Oct 2020 23:12:50 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.3.0-529-g69105b1-fm-20201021.003-g69105b13
-Mime-Version: 1.0
-Message-Id: <2e2d3a02-6677-4b0e-b538-d3130a3b20d1@www.fastmail.com>
-In-Reply-To: <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
-References: <20201005082806.28899-1-chiawei_wang@aspeedtech.com>
- <20201005082806.28899-6-chiawei_wang@aspeedtech.com>
-Date:   Mon, 26 Oct 2020 13:42:08 +1030
-From:   "Andrew Jeffery" <andrew@aj.id.au>
-To:     "Chia-Wei, Wang" <chiawei_wang@aspeedtech.com>,
-        "Rob Herring" <robh+dt@kernel.org>, "Joel Stanley" <joel@jms.id.au>
-Cc:     "Ryan Chen" <ryan_chen@aspeedtech.com>,
-        "Lee Jones" <lee.jones@linaro.org>,
-        "Corey Minyard" <minyard@acm.org>, "Arnd Bergmann" <arnd@arndb.de>,
-        "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
-        "Linus Walleij" <linus.walleij@linaro.org>,
-        "Haiyue Wang" <haiyue.wang@linux.intel.com>,
-        "Cyril Bur" <cyrilbur@gmail.com>,
-        "Robert Lippert" <rlippert@google.com>,
-        linux-arm-kernel@lists.infradead.org,
-        linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
-        openbmc@lists.ozlabs.org, linux-gpio@vger.kernel.org
-Subject: Re: [PATCH v2 5/5] dt-bindings: aspeed-lpc: Remove LPC partitioning
-Content-Type: text/plain
+        Sun, 25 Oct 2020 23:02:48 -0400
+Received: from epcas1p4.samsung.com (unknown [182.195.41.48])
+        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201026030245epoutp0185ab20a164bb5a54b12e9a3a2470c9a4~Ba7STGYCp1996719967epoutp01h
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 03:02:45 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201026030245epoutp0185ab20a164bb5a54b12e9a3a2470c9a4~Ba7STGYCp1996719967epoutp01h
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+        s=mail20170921; t=1603681365;
+        bh=hknHZ+cLjuYOEjh3nIdJbQqtqS+z8612JQBoz407ctU=;
+        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
+        b=CmzQJL3+wRGl/IKU2IG/Dhe5UZ3dVq5ni+0BQKi9af6rg/kY9JO6AsbfC6eF8u1cV
+         +T9tNSNCmGOCnkqI0V7Z5FAuoTD9qwKbh7QTQJVynb157v09+n3raSC6NP0rkvX7xp
+         kg2u7EyeLYrVwxqijw+TgwJEP93l29FTkUUY3jVc=
+Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTP id
+        20201026030245epcas1p2a8d5d3e9eb326c4c895023ef2a850daf~Ba7RwZoyZ1357213572epcas1p2o;
+        Mon, 26 Oct 2020 03:02:45 +0000 (GMT)
+Received: from epsmges1p1.samsung.com (unknown [182.195.40.155]) by
+        epsnrtp2.localdomain (Postfix) with ESMTP id 4CKKQB5Y6bzMqYkW; Mon, 26 Oct
+        2020 03:02:42 +0000 (GMT)
+Received: from epcas1p4.samsung.com ( [182.195.41.48]) by
+        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
+        B1.10.09543.25C369F5; Mon, 26 Oct 2020 12:02:42 +0900 (KST)
+Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
+        epcas1p2.samsung.com (KnoxPortal) with ESMTPA id
+        20201026030241epcas1p219980df0fe3d9d3dc107b02b8a4f20cc~Ba7O5mfk41794217942epcas1p2i;
+        Mon, 26 Oct 2020 03:02:41 +0000 (GMT)
+Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
+        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
+        20201026030241epsmtrp26d438f82cbb8d4266fe6b3e886368b65~Ba7O4ov1m3128731287epsmtrp20;
+        Mon, 26 Oct 2020 03:02:41 +0000 (GMT)
+X-AuditID: b6c32a35-347ff70000002547-cd-5f963c523034
+Received: from epsmtip1.samsung.com ( [182.195.34.30]) by
+        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
+        F1.A6.08745.15C369F5; Mon, 26 Oct 2020 12:02:41 +0900 (KST)
+Received: from [10.113.221.102] (unknown [10.113.221.102]) by
+        epsmtip1.samsung.com (KnoxPortal) with ESMTPA id
+        20201026030241epsmtip10fa986889482099bb846bf373ea2a4d3~Ba7OllRRi1057310573epsmtip1Y;
+        Mon, 26 Oct 2020 03:02:41 +0000 (GMT)
+Subject: Re: [PATCH v6 47/52] PM / devfreq: tegra20: Silence deferred probe
+ error
+To:     Dmitry Osipenko <digetx@gmail.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jonathan Hunter <jonathanh@nvidia.com>,
+        Georgi Djakov <georgi.djakov@linaro.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Stephen Boyd <sboyd@kernel.org>,
+        Peter De Schrijver <pdeschrijver@nvidia.com>,
+        MyungJoo Ham <myungjoo.ham@samsung.com>,
+        Kyungmin Park <kyungmin.park@samsung.com>,
+        Mikko Perttunen <cyndis@kapsi.fi>,
+        Viresh Kumar <vireshk@kernel.org>,
+        Peter Geis <pgwipeout@gmail.com>,
+        Nicolas Chauvet <kwizart@gmail.com>,
+        Krzysztof Kozlowski <krzk@kernel.org>
+Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
+        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
+        devicetree@vger.kernel.org
+From:   Chanwoo Choi <cw00.choi@samsung.com>
+Organization: Samsung Electronics
+Message-ID: <6c4169da-6648-d93b-75a6-4a41a61b7ad9@samsung.com>
+Date:   Mon, 26 Oct 2020 12:16:31 +0900
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
+        Thunderbird/59.0
+MIME-Version: 1.0
+In-Reply-To: <20201025221735.3062-48-digetx@gmail.com>
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Te0xTVxzHc24vt4Wt210BOSNkK5eYKI5HxbIjAiPTkeswG5E4t7mt3tEb
+        YJS26WM6kQx5VEBBmQLaMXk4HLKZTR7KMwxsoCUiTApRgahBjENsESSW8Brt3TL++5zf+f5+
+        v/P9nXMEPNFTwleQotSxGiWjoAgP/NqNzaFBeyNLZaGzP29EttlJN1RhuuWGfn0+AZB13k6g
+        so56AuUYq3E0MPAHHzVN/oah/qxpPhpqLSfQXKEJoPwXRgL91fcBGj1WS6AfrpQA1P84DuV2
+        mPhoZeQqjhZaL+Co4UEPEeNF2+/k8ukW4zifvn1riUfX1+UT9NhIO0HfP9GL0YXZNoIuaqwD
+        9Fz9W/Hun6dGJrOMnNWIWWWiSp6iTIqi4hJkO2XS8FBJkGQ7epcSK5k0NoratSc+KDZFseaM
+        En/LKPRroXhGq6VCoiM1Kr2OFSertLooilXLFert6mAtk6bVK5OCE1VpEZLQ0K3SNeHB1OTq
+        ihxC7fA4vPDSBjKBQ1AA3AWQ3AazzEv8AuAhEJHNAJZa7uPcYhbAwuJRjFvMATiXswoKgMCV
+        0mbRcvFWAG1lnTxnKRFpB7D3T7GTPckE2HdvxFXJi7yLw19qVwjnBo88B+BYe4CTCTIQdj65
+        44q/TvrDYccEcLKQjIZ1jku4k3FyIyzvbHZpvMlPoOVazr+aN6Dl/COXxp0Mh0/bx3Guvg+8
+        96gC4/hteP1ZOc95CEiecYfVDTk4Z3oXXBhrARx7wqneRj7HvnDO1kFwnA4vW0wEl5wHYGPn
+        oBu3EQY7a85gzlHwyM3w99YQLuwPWxZ/Alzj16Bt/qQbNy0hzDOIOEkAHHowjnH8Jrx4PJ84
+        DSjjOjvGdRaM6ywY/29WCfA6sIFVa9OSWK1ELVl/2/XA9eoDpc2g+NlMcDfABKAbQAGP8hKW
+        +5XIREI5890RVqOSafQKVtsNpGsDLub5eieq1r6NUieTSLeGhYWhbZJwqURC+QiXtuTJRGQS
+        o2NTWVbNav7LwwTuvpmYV9bZJXvM1MRMwv4vypK/DG7i7a1drrP1fKz3pDaVShZehlfd/Cam
+        6kUWs5qYXi83tFIpi/ZYusmvY99DRVfu6Z6uLUfN1tH29pNjZ+WDk13dReaAd841KE3WEWOG
+        +BW/4B3L5/13Z1raQt5riw2r2ZFe6e1RI//0RL+9cqHx7+sROk8zdugIfHjA/HVj3qULH3rZ
+        /aevTBtKvi+yVtTOnMw7dvv48MXZEMOBDatLNzMjD+n0h5v2RMVFH60aNOTvDHRY7xqS9pv9
+        PsrAqtQWtelq9u7HlzdlRO+j838sOHVw6kZIz/C8uMGR/bzPx7H8ZGXo/UocfWZlIwZeFX6V
+        0dSySOHaZEYSyNNomX8AKyyx0X4EAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Ra0hTYRyHe885nZ2tlse57LVMcxCClWVpvJGZH5QOGZR2k7BstZOFbsmO
+        3Q20FFIxxXLpSVpeklo3W2bLNMHNUkttprKsdTMtKi+l1ox120bgt+fP73k+/Slc0kPMpvap
+        Uli1Sp4kI0VEjVHmsyg6VBO/5Hd2MBr61j8VaU3tU9HVr30AdY0Pk+hcvZ5EGXwZgTo6qgTo
+        Tv81DLWd+CJAz2pLSDSaawIoa4wnkbk1Er1Iv0yiguuFALUNRKHMepMA/e65RaCJ2gsEuv3m
+        IRkuZYYtmQLmHm8VMJ3tdpzR67JI5mVPHcm8znmEMbknh0jmdLUOMKN6nw3CbaJQBZu07yCr
+        Xhy2U7S3TJtBJttEhyd+DIE0YKOyAUVBOhjeb+GygZCS0AYAOzSxDoa0F9SYm3CX4gGNxn+K
+        6J8yCGB/Qb/A4XjQG2Frbw/hGKS0lYAFtl7SceB0EYD2qlsCV1INYOlYnjMh6QDY8NFCOtiN
+        9oPdtj7gYDEdBnW2SsLBBD0fljQYnM5Megu8V9GHuRx32FL83ukI6eXwc53VyTjtD+0XOnEX
+        z4K977WYi33h3cESPB948JNyflLCT0r4SclFQOiAF5vMKROUXFDyUhV7KJCTK7kDqoTA3fuV
+        euB8fUCAAdTpRgIbAUaBRgApXCYVl3gXxkvECvmRo6x6f7z6QBLLNYI5FCGbJR7nS3dI6AR5
+        CpvIssms+v+KUcLZaZii06L1exXXPLyqvEyfp/L+nmpMj4vM6uJPRpwRR42/i4lwN7TAeLsh
+        j8MjpGr/mOZ5OnvFroG+X4nLjt1I1WniYhIF5Tl5+UVuI982RdmuHeytl873MT0u9F17dE1N
+        RWzgus3aaX7P+RUfqjUhscIZEeVTTL6Nx5/uSQn2tOZ4NlXaY66aF6Zeas4xTnjvWc+Hb181
+        Kkn7aeGVY54DqZp1lqLmU9vOPnkQ2mUO84o71jRiPxMZwvx5NygixNiGmnRMtbmq0JS7uubT
+        3MTz2o3uh1uDFZWcf+bnrEuRb68sZ7ozFN7h1pXd5E3f6fnRIXOCNrlNWSJiitPfmLc2sQtk
+        BLdXHhSAqzn5X9u4i11pAwAA
+X-CMS-MailID: 20201026030241epcas1p219980df0fe3d9d3dc107b02b8a4f20cc
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-Sendblock-Type: SVC_REQ_APPROVE
+CMS-TYPE: 101P
+DLP-Filter: Pass
+X-CFilter-Loop: Reflected
+X-CMS-RootMailID: 20201025221928epcas1p48d77b56eaf6f05a8a5bf60dd468fdd41
+References: <20201025221735.3062-1-digetx@gmail.com>
+        <CGME20201025221928epcas1p48d77b56eaf6f05a8a5bf60dd468fdd41@epcas1p4.samsung.com>
+        <20201025221735.3062-48-digetx@gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Wang Chia-Wei,
-
-On Mon, 5 Oct 2020, at 18:58, Chia-Wei, Wang wrote:
-> The LPC controller has no concept of the BMC and the Host partitions.
-> This patch fixes the documentation by removing the description on LPC
-> partitions. The register offsets illustrated in the DTS node examples
-> are also fixed to adapt to the LPC DTS change.
+On 10/26/20 7:17 AM, Dmitry Osipenko wrote:
+> Tegra EMC driver was turned into a regular kernel driver, meaning that it
+> could be compiled as a loadable kernel module now. Hence EMC clock isn't
+> guaranteed to be available and clk_get("emc") may return -EPROBE_DEFER.
+> Let's silence the deferred probe error.
 > 
-> Signed-off-by: Chia-Wei, Wang <chiawei_wang@aspeedtech.com>
-
-The documentation at [1] suggests this should probably be patch 1/5 rather than 
-5/5, so if you send the series again I'd probably rearrange it. Following the 
-steps outlined in [1] helps catch Rob's attention in the right way :)
-
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/devicetree/bindings/submitting-patches.rst?h=v5.9
-
-Rob:
-
-The changes here go some way towards cleaning up mistakes I made in the Aspeed 
-LPC controller binding. The proposed change is very much not backwards 
-compatible, but Joel and I don't want to live with the resulting mess in the 
-drivers of catering to both layouts. Another way we could avoid the driver mess 
-is to rev all the bindings and immediately drop support for the old compatibles 
-in the drivers. This creates a bit more churn in the bindings. What are you 
-willing to accommodate?
-
-All consumers I'm aware of ship the Aspeed BMC dtb in FIT images alongside the 
-kernel, so while backwards-incompatible changes are rightly frowned upon I feel 
-we probably wouldn't cause too much damage if we went that path.
-
-Andrew
-
+> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
+> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
 > ---
->  .../devicetree/bindings/mfd/aspeed-lpc.txt    | 85 +++----------------
->  1 file changed, 14 insertions(+), 71 deletions(-)
+>  drivers/devfreq/tegra20-devfreq.c | 8 +++-----
+>  1 file changed, 3 insertions(+), 5 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt 
-> b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> index a92acf1dd491..866f54a09e09 100644
-> --- a/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> +++ b/Documentation/devicetree/bindings/mfd/aspeed-lpc.txt
-> @@ -9,13 +9,7 @@ primary use case of the Aspeed LPC controller is as a 
-> slave on the bus
->  conditions it can also take the role of bus master.
+> diff --git a/drivers/devfreq/tegra20-devfreq.c b/drivers/devfreq/tegra20-devfreq.c
+> index ff82bac9ee4e..fd801534771d 100644
+> --- a/drivers/devfreq/tegra20-devfreq.c
+> +++ b/drivers/devfreq/tegra20-devfreq.c
+> @@ -141,11 +141,9 @@ static int tegra_devfreq_probe(struct platform_device *pdev)
 >  
->  The LPC controller is represented as a multi-function device to account for the
-> -mix of functionality it provides. The principle split is between the register
-> -layout at the start of the I/O space which is, to quote the Aspeed datasheet,
-> -"basically compatible with the [LPC registers from the] popular BMC controller
-> -H8S/2168[1]", and everything else, where everything else is an eclectic
-> -collection of functions with a esoteric register layout. "Everything else",
-> -here labeled the "host" portion of the controller, includes, but is not limited
-> -to:
-> +mix of functionality, which includes, but is not limited to:
+>  	/* EMC is a system-critical clock that is always enabled */
+>  	tegra->emc_clock = devm_clk_get(&pdev->dev, "emc");
+> -	if (IS_ERR(tegra->emc_clock)) {
+> -		err = PTR_ERR(tegra->emc_clock);
+> -		dev_err(&pdev->dev, "failed to get emc clock: %d\n", err);
+> -		return err;
+> -	}
+> +	if (IS_ERR(tegra->emc_clock))
+> +		return dev_err_probe(&pdev->dev, PTR_ERR(tegra->emc_clock),
+> +				     "failed to get emc clock\n");
 >  
->  * An IPMI Block Transfer[2] Controller
+>  	tegra->regs = mc->regs;
 >  
-> @@ -44,8 +38,8 @@ Required properties
->  ===================
->  
->  - compatible:	One of:
-> -		"aspeed,ast2400-lpc", "simple-mfd"
-> -		"aspeed,ast2500-lpc", "simple-mfd"
-> +		"aspeed,ast2400-lpc", "simple-mfd", "syscon"
-> +		"aspeed,ast2500-lpc", "simple-mfd", "syscon"
->  
->  - reg:		contains the physical address and length values of the Aspeed
->                  LPC memory region.
-> @@ -55,66 +49,17 @@ Required properties
->  - ranges: 	Maps 0 to the physical address and length of the LPC memory
->                  region
->  
-> -Required LPC Child nodes
-> -========================
-> -
-> -BMC Node
-> ---------
-> -
-> -- compatible:	One of:
-> -		"aspeed,ast2400-lpc-bmc"
-> -		"aspeed,ast2500-lpc-bmc"
-> -
-> -- reg:		contains the physical address and length values of the
-> -                H8S/2168-compatible LPC controller memory region
-> -
-> -Host Node
-> ----------
-> -
-> -- compatible:   One of:
-> -		"aspeed,ast2400-lpc-host", "simple-mfd", "syscon"
-> -		"aspeed,ast2500-lpc-host", "simple-mfd", "syscon"
-> -
-> -- reg:		contains the address and length values of the host-related
-> -                register space for the Aspeed LPC controller
-> -
-> -- #address-cells: <1>
-> -- #size-cells:	<1>
-> -- ranges: 	Maps 0 to the address and length of the host-related LPC memory
-> -                region
-> -
->  Example:
->  
->  lpc: lpc@1e789000 {
-> -	compatible = "aspeed,ast2500-lpc", "simple-mfd";
-> +	compatible = "aspeed,ast2500-lpc", "simple-mfd", "syscon";
->  	reg = <0x1e789000 0x1000>;
->  
->  	#address-cells = <1>;
->  	#size-cells = <1>;
->  	ranges = <0x0 0x1e789000 0x1000>;
-> -
-> -	lpc_bmc: lpc-bmc@0 {
-> -		compatible = "aspeed,ast2500-lpc-bmc";
-> -		reg = <0x0 0x80>;
-> -	};
-> -
-> -	lpc_host: lpc-host@80 {
-> -		compatible = "aspeed,ast2500-lpc-host", "simple-mfd", "syscon";
-> -		reg = <0x80 0x1e0>;
-> -		reg-io-width = <4>;
-> -
-> -		#address-cells = <1>;
-> -		#size-cells = <1>;
-> -		ranges = <0x0 0x80 0x1e0>;
-> -	};
->  };
->  
-> -BMC Node Children
-> -==================
-> -
-> -
-> -Host Node Children
-> -==================
->  
->  LPC Host Interface Controller
->  -------------------
-> @@ -145,14 +90,12 @@ Optional properties:
->  
->  Example:
->  
-> -lpc-host@80 {
-> -	lpc_ctrl: lpc-ctrl@0 {
-> -		compatible = "aspeed,ast2500-lpc-ctrl";
-> -		reg = <0x0 0x80>;
-> -		clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> -		memory-region = <&flash_memory>;
-> -		flash = <&spi>;
-> -	};
-> +lpc_ctrl: lpc-ctrl@80 {
-> +	compatible = "aspeed,ast2500-lpc-ctrl";
-> +	reg = <0x80 0x80>;
-> +	clocks = <&syscon ASPEED_CLK_GATE_LCLK>;
-> +	memory-region = <&flash_memory>;
-> +	flash = <&spi>;
->  };
->  
->  LPC Host Controller
-> @@ -174,9 +117,9 @@ Required properties:
->  
->  Example:
->  
-> -lhc: lhc@20 {
-> +lhc: lhc@a0 {
->  	compatible = "aspeed,ast2500-lhc";
-> -	reg = <0x20 0x24 0x48 0x8>;
-> +	reg = <0xa0 0x24 0xc8 0x8>;
->  };
->  
->  LPC reset control
-> @@ -194,8 +137,8 @@ Required properties:
->  
->  Example:
->  
-> -lpc_reset: reset-controller@18 {
-> +lpc_reset: reset-controller@98 {
->          compatible = "aspeed,ast2500-lpc-reset";
-> -        reg = <0x18 0x4>;
-> +        reg = <0x98 0x4>;
->          #reset-cells = <1>;
->  };
-> -- 
-> 2.17.1
 > 
->
+
+Applied it. Thanks.
+
+-- 
+Best Regards,
+Chanwoo Choi
+Samsung Electronics
+ 
