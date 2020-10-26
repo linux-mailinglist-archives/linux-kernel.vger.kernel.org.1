@@ -2,36 +2,36 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 80ADB299BB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3671D299BBC
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:53:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409923AbgJZXw7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:52:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54966 "EHLO mail.kernel.org"
+        id S2409952AbgJZXxF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:05 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55410 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409753AbgJZXwb (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:31 -0400
+        id S2409796AbgJZXwi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:38 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 998652222C;
-        Mon, 26 Oct 2020 23:52:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 01A0620882;
+        Mon, 26 Oct 2020 23:52:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756350;
-        bh=mPBuKbaS/hmJtHA4/4Z3Ltibrw3uuXcBuYlOE2nTEe4=;
+        s=default; t=1603756357;
+        bh=X8lBN1La8+tYGxssc0c66XRKu04bVNdwauw8oNCdDSk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GEEj66RpvzbJAQ/gHVoEq564EZfFOnspGvE2yHwoiR4vsoAL8kcGBcNP0Kmpvb9A+
-         Opb7sCmKVtJQjw/maltbZD1W+Z3sbo1JhSHck+5aVNukgxfdTv7ZOFtQBPl6LOEVxM
-         ReoU0MdcSasGOVwbmtYJayi2VTokYejYHQ++EYWc=
+        b=Ik/53r9gQ01rLYRWgGChTckYnYJ3CnV0XsP/R4FuRrUiFnKH1kpwwaFJmdwtXD9ox
+         KCyLG97tu1ONPvPbpVaJ+eNeEe9ObD6Pjgm6p3vvv4LY3uhnpOhsbeqZXLyQpyUvse
+         9quOnqEhk4TU/fnG4OQi2LLW7Cnl1bnzxaWtMFvk=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chandan Babu R <chandanrlinux@gmail.com>,
-        "Darrick J . Wong" <darrick.wong@oracle.com>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 021/132] xfs: Set xfs_buf type flag when growing summary/bitmap files
-Date:   Mon, 26 Oct 2020 19:50:13 -0400
-Message-Id: <20201026235205.1023962-21-sashal@kernel.org>
+Cc:     Venkateswara Naralasetty <vnaralas@codeaurora.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        Sasha Levin <sashal@kernel.org>, ath10k@lists.infradead.org,
+        linux-wireless@vger.kernel.org, netdev@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 027/132] ath10k: fix retry packets update in station dump
+Date:   Mon, 26 Oct 2020 19:50:19 -0400
+Message-Id: <20201026235205.1023962-27-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,83 +43,73 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chandan Babu R <chandanrlinux@gmail.com>
+From: Venkateswara Naralasetty <vnaralas@codeaurora.org>
 
-[ Upstream commit 72cc95132a93293dcd0b6f68353f4741591c9aeb ]
+[ Upstream commit 67b927f9820847d30e97510b2f00cd142b9559b6 ]
 
-The following sequence of commands,
+When tx status enabled, retry count is updated from tx completion status.
+which is not working as expected due to firmware limitation where
+firmware can not provide per MSDU rate statistics from tx completion
+status. Due to this tx retry count is always 0 in station dump.
 
-  mkfs.xfs -f -m reflink=0 -r rtdev=/dev/loop1,size=10M /dev/loop0
-  mount -o rtdev=/dev/loop1 /dev/loop0 /mnt
-  xfs_growfs  /mnt
+Fix this issue by updating the retry packet count from per peer
+statistics. This patch will not break on SDIO devices since, this retry
+count is already updating from peer statistics for SDIO devices.
 
-... causes the following call trace to be printed on the console,
+Tested-on: QCA9984 PCI 10.4-3.6-00104
+Tested-on: QCA9882 PCI 10.2.4-1.0-00047
 
-XFS: Assertion failed: (bip->bli_flags & XFS_BLI_STALE) || (xfs_blft_from_flags(&bip->__bli_format) > XFS_BLFT_UNKNOWN_BUF && xfs_blft_from_flags(&bip->__bli_format) < XFS_BLFT_MAX_BUF), file: fs/xfs/xfs_buf_item.c, line: 331
-Call Trace:
- xfs_buf_item_format+0x632/0x680
- ? kmem_alloc_large+0x29/0x90
- ? kmem_alloc+0x70/0x120
- ? xfs_log_commit_cil+0x132/0x940
- xfs_log_commit_cil+0x26f/0x940
- ? xfs_buf_item_init+0x1ad/0x240
- ? xfs_growfs_rt_alloc+0x1fc/0x280
- __xfs_trans_commit+0xac/0x370
- xfs_growfs_rt_alloc+0x1fc/0x280
- xfs_growfs_rt+0x1a0/0x5e0
- xfs_file_ioctl+0x3fd/0xc70
- ? selinux_file_ioctl+0x174/0x220
- ksys_ioctl+0x87/0xc0
- __x64_sys_ioctl+0x16/0x20
- do_syscall_64+0x3e/0x70
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-This occurs because the buffer being formatted has the value of
-XFS_BLFT_UNKNOWN_BUF assigned to the 'type' subfield of
-bip->bli_formats->blf_flags.
-
-This commit fixes the issue by assigning one of XFS_BLFT_RTSUMMARY_BUF
-and XFS_BLFT_RTBITMAP_BUF to the 'type' subfield of
-bip->bli_formats->blf_flags before committing the corresponding
-transaction.
-
-Reviewed-by: Darrick J. Wong <darrick.wong@oracle.com>
-Reviewed-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Chandan Babu R <chandanrlinux@gmail.com>
-Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Signed-off-by: Venkateswara Naralasetty <vnaralas@codeaurora.org>
+Signed-off-by: Kalle Valo <kvalo@codeaurora.org>
+Link: https://lore.kernel.org/r/1591856446-26977-1-git-send-email-vnaralas@codeaurora.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/xfs/xfs_rtalloc.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ drivers/net/wireless/ath/ath10k/htt_rx.c | 8 +++++---
+ drivers/net/wireless/ath/ath10k/mac.c    | 5 +++--
+ 2 files changed, 8 insertions(+), 5 deletions(-)
 
-diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
-index 6209e7b6b895b..04b953c3ffa75 100644
---- a/fs/xfs/xfs_rtalloc.c
-+++ b/fs/xfs/xfs_rtalloc.c
-@@ -767,8 +767,14 @@ xfs_growfs_rt_alloc(
- 	struct xfs_bmbt_irec	map;		/* block map output */
- 	int			nmap;		/* number of block maps */
- 	int			resblks;	/* space reservation */
-+	enum xfs_blft		buf_type;
- 	struct xfs_trans	*tp;
+diff --git a/drivers/net/wireless/ath/ath10k/htt_rx.c b/drivers/net/wireless/ath/ath10k/htt_rx.c
+index d787cbead56ab..cac05e7bb6b07 100644
+--- a/drivers/net/wireless/ath/ath10k/htt_rx.c
++++ b/drivers/net/wireless/ath/ath10k/htt_rx.c
+@@ -3575,12 +3575,14 @@ ath10k_update_per_peer_tx_stats(struct ath10k *ar,
+ 	}
  
-+	if (ip == mp->m_rsumip)
-+		buf_type = XFS_BLFT_RTSUMMARY_BUF;
-+	else
-+		buf_type = XFS_BLFT_RTBITMAP_BUF;
+ 	if (ar->htt.disable_tx_comp) {
+-		arsta->tx_retries += peer_stats->retry_pkts;
+ 		arsta->tx_failed += peer_stats->failed_pkts;
+-		ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d tx failed %d\n",
+-			   arsta->tx_retries, arsta->tx_failed);
++		ath10k_dbg(ar, ATH10K_DBG_HTT, "tx failed %d\n",
++			   arsta->tx_failed);
+ 	}
+ 
++	arsta->tx_retries += peer_stats->retry_pkts;
++	ath10k_dbg(ar, ATH10K_DBG_HTT, "htt tx retries %d", arsta->tx_retries);
 +
- 	/*
- 	 * Allocate space to the file, as necessary.
- 	 */
-@@ -830,6 +836,8 @@ xfs_growfs_rt_alloc(
- 					mp->m_bsize, 0, &bp);
- 			if (error)
- 				goto out_trans_cancel;
+ 	if (ath10k_debug_is_extd_tx_stats_enabled(ar))
+ 		ath10k_accumulate_per_peer_tx_stats(ar, arsta, peer_stats,
+ 						    rate_idx);
+diff --git a/drivers/net/wireless/ath/ath10k/mac.c b/drivers/net/wireless/ath/ath10k/mac.c
+index 919d15584d4a2..d9d4b15a6d81c 100644
+--- a/drivers/net/wireless/ath/ath10k/mac.c
++++ b/drivers/net/wireless/ath/ath10k/mac.c
+@@ -8547,12 +8547,13 @@ static void ath10k_sta_statistics(struct ieee80211_hw *hw,
+ 	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_BITRATE);
+ 
+ 	if (ar->htt.disable_tx_comp) {
+-		sinfo->tx_retries = arsta->tx_retries;
+-		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
+ 		sinfo->tx_failed = arsta->tx_failed;
+ 		sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_FAILED);
+ 	}
+ 
++	sinfo->tx_retries = arsta->tx_retries;
++	sinfo->filled |= BIT_ULL(NL80211_STA_INFO_TX_RETRIES);
 +
-+			xfs_trans_buf_set_type(tp, bp, buf_type);
- 			memset(bp->b_addr, 0, mp->m_sb.sb_blocksize);
- 			xfs_trans_log_buf(tp, bp, 0, mp->m_sb.sb_blocksize - 1);
- 			/*
+ 	ath10k_mac_sta_get_peer_stats_info(ar, sta, sinfo);
+ }
+ 
 -- 
 2.25.1
 
