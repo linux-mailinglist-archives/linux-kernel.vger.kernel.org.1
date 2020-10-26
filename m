@@ -2,99 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 216C6298A1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:15:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5E06E298A14
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:12:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769290AbgJZKOj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:14:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:42606 "EHLO mail.kernel.org"
+        id S1768426AbgJZJsN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:48:13 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47420 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768388AbgJZJro (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:47:44 -0400
-Received: from mail.kernel.org (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9236B2242C;
-        Mon, 26 Oct 2020 09:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603705663;
-        bh=gJmp8cTYgH9MZLys45Ah0xGqa1fV26E8JRNpZkLrsiQ=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=MOwzvXelHyZJ9lbmhSYCx3ari6OvEMq8bTjsyQVlCItoJCNbePAzX5Llzjhs7RBsj
-         4RdHMEe5rAwgppwk6B1RFb8qFQyA5YLIIzd+xbivtX8SbI9UfuuOxQGlH2r7u4hyHF
-         R0HcrREOVpPXEtbppcBJFzI6CwllEdXb+MqKTY8I=
-Received: from mchehab by mail.kernel.org with local (Exim 4.94)
-        (envelope-from <mchehab@kernel.org>)
-        id 1kWz6J-0030t5-Nb; Mon, 26 Oct 2020 10:47:39 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        Mark Brown <broonie@kernel.org>
-Cc:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        "David S. Miller" <davem@davemloft.net>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Jakub Kicinski <kuba@kernel.org>, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org
-Subject: [PATCH RESEND 3/3] net: core: fix some kernel-doc markups
-Date:   Mon, 26 Oct 2020 10:47:38 +0100
-Message-Id: <492b5ee3aca655ffad6e95e61d9b4019e69b8e3a.1603705472.git.mchehab+huawei@kernel.org>
-X-Mailer: git-send-email 2.26.2
-In-Reply-To: <cover.1603705472.git.mchehab+huawei@kernel.org>
-References: <cover.1603705472.git.mchehab+huawei@kernel.org>
+        id S1768410AbgJZJsN (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:48:13 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+        t=1603705691;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=SlRTfCqLtyIBSnFe1uknaKbGad8itHiONy0aNY9FDgo=;
+        b=JhFDzd3J++hEnEzoRBaqwNWv2fiLphklER9BPvVbuQwTMEi8uzeaOfKsoLXM2yLuyKcr5X
+        I8nZTO8D3hFAHiJvimHHlxm7iJcufndpC0AhaJuxydfSsuznKUmN+cTRDJ0e1AHY6tM+zX
+        yYbzVwgKoyxVx+rXolhn++ggmuAvh8A=
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 01CBEB2CB;
+        Mon, 26 Oct 2020 09:48:11 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 10:48:10 +0100
+From:   Petr Mladek <pmladek@suse.com>
+To:     Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        Brendan Higgins <brendanhiggins@google.com>,
+        Shuah Khan <skhan@linuxfoundation.org>,
+        Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Sergey Senozhatsky <sergey.senozhatsky@gmail.com>,
+        Rasmus Villemoes <linux@rasmusvillemoes.dk>,
+        Alexandre Belloni <alexandre.belloni@bootlin.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Randy Dunlap <rdunlap@infradead.org>,
+        Ilya Dryomov <idryomov@gmail.com>, kunit-dev@googlegroups.com,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org
+Subject: Re: [PATCH v2] lib: Convert test_printf.c to KUnit
+Message-ID: <20201026094810.GJ32486@alley>
+References: <20201022151349.47436-1-98.arpi@gmail.com>
+ <20201023173108.GG32486@alley>
+ <CAHp75VeEcb3CtQWeZXQz-UFMgqL6ERwDjudPmcCCNJgHesb3pg@mail.gmail.com>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: Mauro Carvalho Chehab <mchehab@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHp75VeEcb3CtQWeZXQz-UFMgqL6ERwDjudPmcCCNJgHesb3pg@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Some identifiers have different names between their prototypes
-and the kernel-doc markup.
+On Sun 2020-10-25 14:38:13, Andy Shevchenko wrote:
+> On Sat, Oct 24, 2020 at 2:07 AM Petr Mladek <pmladek@suse.com> wrote:
+> > On Thu 2020-10-22 20:43:49, Arpitha Raghunandan wrote:
+> > > Convert test lib/test_printf.c to KUnit. More information about
+> 
+> ...
+> 
+> > > not ok 1 - printf-kunit-test
+> >
+> > > --- a/lib/test_printf.c
+> > > +++ b/lib/printf_kunit.c
+> >
+> > There is no standard at the moment.
+> 
+> JFYI: from v5.10-rc1 it is expected to have documentation clarifying
+> the naming scheme. Also there is a pending series [1] to move KUnit
+> based test cases to the defined schema.
+>
+> > Please, either unify names of all the above modules or keep test_printf.c
+> 
+> [1]: https://lore.kernel.org/linux-kselftest/20201016110836.52613-1-andriy.shevchenko@linux.intel.com/
 
-In the specific case of netif_subqueue_stopped(), keep the
-current markup for __netif_subqueue_stopped(), adding a
-new one for netif_subqueue_stopped().
+Great, thanks for the pointer. I seems that this patch actually
+follows the proposed naming schema. I am fine with it then.
 
-Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
----
- include/linux/netdevice.h | 11 +++++++++--
- 1 file changed, 9 insertions(+), 2 deletions(-)
-
-diff --git a/include/linux/netdevice.h b/include/linux/netdevice.h
-index 964b494b0e8d..db79ab7580dd 100644
---- a/include/linux/netdevice.h
-+++ b/include/linux/netdevice.h
-@@ -1490,7 +1490,7 @@ struct net_device_ops {
- };
- 
- /**
-- * enum net_device_priv_flags - &struct net_device priv_flags
-+ * enum netdev_priv_flags - &struct net_device priv_flags
-  *
-  * These are the &struct net_device, they are only set internally
-  * by drivers and used in the kernel. These flags are invisible to
-@@ -3576,7 +3576,7 @@ static inline void netif_stop_subqueue(struct net_device *dev, u16 queue_index)
- }
- 
- /**
-- *	netif_subqueue_stopped - test status of subqueue
-+ *	__netif_subqueue_stopped - test status of subqueue
-  *	@dev: network device
-  *	@queue_index: sub queue index
-  *
-@@ -3590,6 +3590,13 @@ static inline bool __netif_subqueue_stopped(const struct net_device *dev,
- 	return netif_tx_queue_stopped(txq);
- }
- 
-+/**
-+ *	netif_subqueue_stopped - test status of subqueue
-+ *	@dev: network device
-+ *	@skb: sub queue buffer pointer
-+ *
-+ * Check individual transmit queue of a device with multiple transmit queues.
-+ */
- static inline bool netif_subqueue_stopped(const struct net_device *dev,
- 					  struct sk_buff *skb)
- {
--- 
-2.26.2
-
+Best Regards,
+Petr
