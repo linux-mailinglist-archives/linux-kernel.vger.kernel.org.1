@@ -2,77 +2,85 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 269C92997B7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id D33A92997BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:13:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1730366AbgJZULF (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:11:05 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:42196 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1730303AbgJZULE (ORCPT
+        id S1726240AbgJZUNW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:13:22 -0400
+Received: from aserp2130.oracle.com ([141.146.126.79]:58070 "EHLO
+        aserp2130.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1726082AbgJZUNU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:11:04 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603743062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+PS6gYDSMvwJoN1FTHRdqvfX6lNIJ+gYdIEt2bNoQ8=;
-        b=kdQzswCGzg3Z+6EV7q0nZNMNXJ8qc9zZqXMPiqOeSORB6v2cw6FuaMmBBBt3doPeVr32cL
-        3Yc6LqeIgyNTfswN6zM6Aj84d6/Sb2E/hCRNiO2jZt4GEkAoOHzd8BTnn/XkFoJr1WsqKE
-        sizuxIbXYyMhe21s0gUlWhv9xlStvpfjpV5bOp/neVVPm7i+Jauf8Pz3jDa0cfiOc8ZYFn
-        pisu4H5ia1WUolOQKfrKF7nWkcH5WpR1ub7fhRk2dvExBoucgRUnvdwe9//eYaRIN/KjW7
-        cHdP5iVEDTNMYJWdZd2Fy39vXX0oWbq9HDQj5ctUlZR2viB/IAiV+nXli6769g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603743062;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=y+PS6gYDSMvwJoN1FTHRdqvfX6lNIJ+gYdIEt2bNoQ8=;
-        b=75kDgynk1PiCyVqyRR1lvYBAb/SvfUPyH4B4xZqU8aMuSg9TGlvtaEz7zktx1sVq92mIKw
-        qpgsGbcLl8lpunAQ==
-To:     Jacob Keller <jacob.e.keller@intel.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>
-Cc:     Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <20201026173012.GA377978@fuller.cnet> <875z6w4xt4.fsf@nanos.tec.linutronix.de> <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
-Date:   Mon, 26 Oct 2020 21:11:02 +0100
-Message-ID: <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
+        Mon, 26 Oct 2020 16:13:20 -0400
+Received: from pps.filterd (aserp2130.oracle.com [127.0.0.1])
+        by aserp2130.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QJx9kU002361;
+        Mon, 26 Oct 2020 20:13:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=to : cc : subject :
+ from : message-id : references : date : in-reply-to : mime-version :
+ content-type; s=corp-2020-01-29;
+ bh=iSJjVIqHD8zV7sVdSwfe1Wtw0iLXxpGMvl37bjbOvBk=;
+ b=fTRUI1t1c15SbyaPGEUXKCXOdE14np03eFYfL/sV4Ov2oX8c/eNOH37AEGKG25jC5PrM
+ Ky9Hdk4I6Pwig3piBzXfT6PEB+S92QPenDTDPAb0USnl3zELoon359kpHMdFbnpxfhwV
+ 2p1awY7/v33nBriVnQf2FJn/1gM67YBLFX27nPGOOVPrWVItjOUh1grPvI9iGEv1pLW3
+ 34X4BB+1YpZziQQaLVtMew+eJoQUqrCjM8nbbCEa0xn4FXvyEAaQQHS+7rVp68sooxeM
+ D6Y1nHTmXAE6RIwZLeob3i/0bgyasD6baje7F7GfoYMQq7SmJOY7KYoumXubPyeBVqPd 6w== 
+Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
+        by aserp2130.oracle.com with ESMTP id 34c9sapqxr-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 20:13:15 +0000
+Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
+        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09QK0IW3097405;
+        Mon, 26 Oct 2020 20:13:14 GMT
+Received: from aserv0122.oracle.com (aserv0122.oracle.com [141.146.126.236])
+        by userp3020.oracle.com with ESMTP id 34cx1pwjhw-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 20:13:14 +0000
+Received: from abhmp0006.oracle.com (abhmp0006.oracle.com [141.146.116.12])
+        by aserv0122.oracle.com (8.14.4/8.14.4) with ESMTP id 09QKDD9U025527;
+        Mon, 26 Oct 2020 20:13:13 GMT
+Received: from ca-mkp.ca.oracle.com (/10.159.214.123)
+        by default (Oracle Beehive Gateway v4.0)
+        with ESMTP ; Mon, 26 Oct 2020 13:13:13 -0700
+To:     Daniel Wagner <dwagner@suse.de>
+Cc:     Nilesh Javali <njavali@marvell.com>, Arun Easi <aeasi@marvell.com>,
+        linux-scsi@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Finn Thain <fthain@telegraphics.com.au>
+Subject: Re: [PATCH v4] qla2xxx: Return EBUSY on fcport deletion
+From:   "Martin K. Petersen" <martin.petersen@oracle.com>
+Organization: Oracle Corporation
+Message-ID: <yq18sbsagqx.fsf@ca-mkp.ca.oracle.com>
+References: <20201014073048.36219-1-dwagner@suse.de>
+Date:   Mon, 26 Oct 2020 16:13:11 -0400
+In-Reply-To: <20201014073048.36219-1-dwagner@suse.de> (Daniel Wagner's message
+        of "Wed, 14 Oct 2020 09:30:48 +0200")
 MIME-Version: 1.0
 Content-Type: text/plain
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
+ suspectscore=1 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
+ definitions=main-2010260132
+X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9786 signatures=668682
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 impostorscore=0
+ mlxlogscore=999 malwarescore=0 lowpriorityscore=0 bulkscore=0
+ priorityscore=1501 spamscore=0 phishscore=0 clxscore=1015 suspectscore=1
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260132
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:
-> On 10/26/2020 12:00 PM, Thomas Gleixner wrote:
->> How does userspace know about the driver internals? Number of management
->> interrupts, optimal number of interrupts per queue?
+
+Daniel,
+
+> When the fcport is about to be deleted we should return EBUSY instead
+> of ENODEV. Only for EBUSY the request will be requeued in a multipath
+> setup.
 >
-> I guess this is the problem solved in part by the queue management work
-> that would make queues a thing that userspace is aware of.
->
-> Are there drivers which use more than one interrupt per queue? I know
-> drivers have multiple management interrupts.. and I guess some drivers
-> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
-> have multiple queues for one interrupt .. I'm not sure how a single
-> queue with multiple interrupts would work though.
+> Also when the firmware has not yet started return EBUSY to avoid
+> dropping the request.
 
-For block there is always one interrupt per queue. Some Network drivers
-seem to have seperate RX and TX interrupts per queue.
+Applied to 5.10/scsi-fixes, thanks!
 
-Thanks,
-
-        tglx
+-- 
+Martin K. Petersen	Oracle Linux Engineering
