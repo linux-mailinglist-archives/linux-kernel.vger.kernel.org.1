@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC10E299BF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 2F0E4299BF6
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410438AbgJZXy0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:54:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58936 "EHLO mail.kernel.org"
+        id S2410454AbgJZXy3 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:54:29 -0400
+Received: from mail.kernel.org ([198.145.29.99]:58970 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410256AbgJZXxz (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:55 -0400
+        id S2410262AbgJZXx4 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:56 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 37F9620B1F;
-        Mon, 26 Oct 2020 23:53:54 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 4A75F20882;
+        Mon, 26 Oct 2020 23:53:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756434;
-        bh=qgHC9+KJFOVaZqnF2h2PQVHOpkvApWP1S7LFooBaEcw=;
+        s=default; t=1603756435;
+        bh=HOQPy0p4Pi0/XvfEJsVuHquvnr0IOxQpH7ArqHJntZk=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=biwpPb3kQPtfgmzCMoysDYKkVQk5DsPP0/g0mVu+GpdthQdKc4Dln9ijx8P4goFx9
-         bIDLbRQ6F7H9OnVKNgSdEbVXhGGu0cUpsP93bXU0u2/CuQppKsGmCN391Xwm86oumV
-         Ary+qUMEfnZthIV8jbtmoEXLHTlGH1lg32fFddDo=
+        b=ZSHRqqC6O0VD+2Udzw1/w8Tefpkjdojo5ZucRijGZqts+v8DZwtpI+24z6/p9Ww0l
+         vkmgvVdlDANTc0UwgN1UBrWYWuJXolLt59YBvMAtkgqbq4YPO0NtrOB/bEKzHtA8VW
+         JDrxkvL0lhGqK8H3GQrVpSLt346vFBKw3FpGCH3w=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Diana Craciun <diana.craciun@oss.nxp.com>,
-        Laurentiu Tudor <laurentiu.tudor@nxp.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.8 089/132] bus/fsl_mc: Do not rely on caller to provide non NULL mc_io
-Date:   Mon, 26 Oct 2020 19:51:21 -0400
-Message-Id: <20201026235205.1023962-89-sashal@kernel.org>
+Cc:     Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+        "Rafael J . Wysocki" <rafael.j.wysocki@intel.com>,
+        Sasha Levin <sashal@kernel.org>, linux-acpi@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 090/132] ACPI: HMAT: Fix handling of changes from ACPI 6.2 to ACPI 6.3
+Date:   Mon, 26 Oct 2020 19:51:22 -0400
+Message-Id: <20201026235205.1023962-90-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,41 +42,42 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Diana Craciun <diana.craciun@oss.nxp.com>
+From: Jonathan Cameron <Jonathan.Cameron@huawei.com>
 
-[ Upstream commit 5026cf605143e764e1785bbf9158559d17f8d260 ]
+[ Upstream commit 2c5b9bde95c96942f2873cea6ef383c02800e4a8 ]
 
-Before destroying the mc_io, check first that it was
-allocated.
+In ACPI 6.3, the Memory Proximity Domain Attributes Structure
+changed substantially.  One of those changes was that the flag
+for "Memory Proximity Domain field is valid" was deprecated.
 
-Reviewed-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Acked-by: Laurentiu Tudor <laurentiu.tudor@nxp.com>
-Signed-off-by: Diana Craciun <diana.craciun@oss.nxp.com>
-Link: https://lore.kernel.org/r/20200929085441.17448-11-diana.craciun@oss.nxp.com
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+This was because the field "Proximity Domain for the Memory"
+became a required field and hence having a validity flag makes
+no sense.
+
+So the correct logic is to always assume the field is there.
+Current code assumes it never is.
+
+Signed-off-by: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Signed-off-by: Rafael J. Wysocki <rafael.j.wysocki@intel.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/fsl-mc/mc-io.c | 7 ++++++-
- 1 file changed, 6 insertions(+), 1 deletion(-)
+ drivers/acpi/numa/hmat.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/bus/fsl-mc/mc-io.c b/drivers/bus/fsl-mc/mc-io.c
-index 6ae48ad804091..e1dfe4a765198 100644
---- a/drivers/bus/fsl-mc/mc-io.c
-+++ b/drivers/bus/fsl-mc/mc-io.c
-@@ -129,7 +129,12 @@ int __must_check fsl_create_mc_io(struct device *dev,
-  */
- void fsl_destroy_mc_io(struct fsl_mc_io *mc_io)
- {
--	struct fsl_mc_device *dpmcp_dev = mc_io->dpmcp_dev;
-+	struct fsl_mc_device *dpmcp_dev;
-+
-+	if (!mc_io)
-+		return;
-+
-+	dpmcp_dev = mc_io->dpmcp_dev;
+diff --git a/drivers/acpi/numa/hmat.c b/drivers/acpi/numa/hmat.c
+index 2c32cfb723701..6a91a55229aee 100644
+--- a/drivers/acpi/numa/hmat.c
++++ b/drivers/acpi/numa/hmat.c
+@@ -424,7 +424,8 @@ static int __init hmat_parse_proximity_domain(union acpi_subtable_headers *heade
+ 		pr_info("HMAT: Memory Flags:%04x Processor Domain:%u Memory Domain:%u\n",
+ 			p->flags, p->processor_PD, p->memory_PD);
  
- 	if (dpmcp_dev)
- 		fsl_mc_io_unset_dpmcp(mc_io);
+-	if (p->flags & ACPI_HMAT_MEMORY_PD_VALID && hmat_revision == 1) {
++	if ((hmat_revision == 1 && p->flags & ACPI_HMAT_MEMORY_PD_VALID) ||
++	    hmat_revision > 1) {
+ 		target = find_mem_target(p->memory_PD);
+ 		if (!target) {
+ 			pr_debug("HMAT: Memory Domain missing from SRAT\n");
 -- 
 2.25.1
 
