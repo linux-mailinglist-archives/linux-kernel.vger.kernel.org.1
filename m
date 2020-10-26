@@ -2,142 +2,176 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0DB9C299530
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:23:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 35F59299534
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:24:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784503AbgJZSXn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:23:43 -0400
-Received: from mail-pl1-f193.google.com ([209.85.214.193]:36039 "EHLO
-        mail-pl1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773393AbgJZSXm (ORCPT
+        id S1788790AbgJZSYS (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:24:18 -0400
+Received: from mail-wm1-f66.google.com ([209.85.128.66]:33245 "EHLO
+        mail-wm1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1784549AbgJZSYS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:23:42 -0400
-Received: by mail-pl1-f193.google.com with SMTP id r10so5130129plx.3
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:23:41 -0700 (PDT)
+        Mon, 26 Oct 2020 14:24:18 -0400
+Received: by mail-wm1-f66.google.com with SMTP id l20so5752588wme.0;
+        Mon, 26 Oct 2020 11:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
+        d=gmail.com; s=20161025;
         h=mime-version:references:in-reply-to:from:date:message-id:subject:to
          :cc;
-        bh=mTOMrjwlGlpuPftdkncxJgdOXaY5B7jezcTkXNur900=;
-        b=DNcGM/EaguEqHd5t2ecucaDZ4X9DFdeKYpya4xXcpfKceuD+cL0AOv7wKugaXYYVRJ
-         bxLlY9aF+iyjImZa596fAX0dedA9OZ+ecvdN4r234q2EIK4JhMRWR11flMyritFZyFd8
-         lxGmx7svt3i8Sky+4nX55PTZRJbbOKa/um4FzoNm0OBJK184w8+LmEUdUeyiczPIOYf/
-         b4nrtVnUOdFet/LdsFauNU1rL6mtyLQpW4u6TfcUkM+KDKVPtwgjrrkHW1bUVqBHr4aw
-         oGQMqnYfya95W3q0X0A/QB1iNy1wmGJS/NgZS3PMKUlLQsNMyuz19pSsWaw1HyTKT9Fn
-         V+rA==
+        bh=etvGadW+3Q8LgTJlwqBN3viqL9TDU3OPQW5Mj92hM1M=;
+        b=qLXPG59Gsqt6ffBX+s9FGywFCFRT0zE8R13zd7HwUYgijswWoDpF1+vlhjm+1ugFy2
+         5L0d3I9u7f5H+lrBF/Sz6T3p+d210t/EerXOhoVshoDA0jSjvaJQxWxmHEAfknVJb52j
+         RKAssGt+lmq1obeLlddpx8KDPBf5eautdn5/iArOGB4vGZ9AN2zfn07tx+B5cKmRV1/U
+         QoQZtIl5lslAuBh9KcmEEGJOYNCej+AeOaePm5cTYTOLeL3BjTvnD1hsDSp152NyFVTz
+         /+7IULo/SGTFPcGJKvKdF/30yPY2wGJiV3wWU6q9EMzx0csN3wyJlrJVz57mHQUneXWl
+         9+tQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:mime-version:references:in-reply-to:from:date
          :message-id:subject:to:cc;
-        bh=mTOMrjwlGlpuPftdkncxJgdOXaY5B7jezcTkXNur900=;
-        b=GgCEkBRp57HurXwgNnGJLOchCAEi8G0FJd7tbzaMeCvQMkqwwY7knHthPxJOZHvQGs
-         B+tz9CzWjMHJ5XEA7bsqcHsmrDwEfwk/5jGeacSdzuddiZusOV8fBbtbmEaUZamlf7+M
-         cxTxXIlrVx5jiXRrusE2ZhNcvWX4WuKCGowdcpeQEEVZJ39tgk5eU2aEcDmKH/y2WNH4
-         z3zzFIr4N74hsJWxQ6AfKYisDgnY3gLldM+x6HED899mlddx2++GeneyrSUJkRdXOFSt
-         wHvRAypFIEUAE4ZjQtmNX6I1HzS7ER82g3XjKbX5UPQ0t44drNsDzkIVzIB13uuECQom
-         Kk7A==
-X-Gm-Message-State: AOAM531BvJb3A+HMdyWCYHekpWy03KdAhLzeLaK//I2YZPNXlO9oKWtr
-        XSzl0q/cV4KL5glCBl9/BwU7aHy8QrW+/E/yqaV0eg==
-X-Google-Smtp-Source: ABdhPJzCWUN9tvvpwUwsnRWEXlRqttwztTfl+o6rk/gsuud5GK9GCXMifkKbMfQEJwXGl1KXBRwnlaQQihNkyKr8p38=
-X-Received: by 2002:a17:90a:740a:: with SMTP id a10mr17895934pjg.32.1603736620190;
- Mon, 26 Oct 2020 11:23:40 -0700 (PDT)
+        bh=etvGadW+3Q8LgTJlwqBN3viqL9TDU3OPQW5Mj92hM1M=;
+        b=gPC5WRYKJo/2kZBGayPHYGUX2PQXR6VomQDKJOhFbJY815h9f/Utrluo48st8unUCH
+         lrynVP7C3f71ZM+e+Sc6j0dChxd/iUzKYbSWKtnaBd/P+HjdTCnCBWsPx3igGK+FZxw3
+         ARZ2J2sjQHJvaIMVTW47FZQQhIrpaixB9pplQoMuYO0tGhc1LSrZ89xiJ6bxdKARDuFz
+         7/Z3+6YymUF8sabizynNaUJsfO/oDLDaSoDLsHKGJV/XEZV3kKSpdWpVCX9wSuF5FJn/
+         3KhvCZj+JfL4WV28JWlEoKswJbMFlXX0F0H0HSTJa7OMP3mpn7mIYpb2vFBGIEQUgxh3
+         4tsg==
+X-Gm-Message-State: AOAM532wrHjNGM8tytXpU/5HromyxRMpltHQuvzRUIYfzJbvC209AO4V
+        o4nFDfSgEfCTclS9Qe7v6ex6lBrNBtLOnwdJT6M=
+X-Google-Smtp-Source: ABdhPJz4bV0JFM77SRaYXyikcLHwfMO2Klyg87DVyBh54afs+S1MvMFy+2Gf0p/1uh68laXhnC3XK5+CSuwk/4yMaks=
+X-Received: by 2002:a7b:c015:: with SMTP id c21mr17167222wmb.22.1603736655213;
+ Mon, 26 Oct 2020 11:24:15 -0700 (PDT)
 MIME-Version: 1.0
-References: <20201026162336.3711040-1-arnd@kernel.org>
-In-Reply-To: <20201026162336.3711040-1-arnd@kernel.org>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 26 Oct 2020 11:23:29 -0700
-Message-ID: <CAKwvOdmdv6wABToSpJt5b66E1vD3Ec0QC3DnyZm7f2sJkcsNuw@mail.gmail.com>
-Subject: Re: [PATCH] ctype.h: remove duplicate isdigit() helper
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Arnd Bergmann <arnd@arndb.de>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>
+References: <20201024105111.15829-1-kholk11@gmail.com> <20201024105111.15829-3-kholk11@gmail.com>
+In-Reply-To: <20201024105111.15829-3-kholk11@gmail.com>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Mon, 26 Oct 2020 20:24:39 +0200
+Message-ID: <CAHp75VeRagDvpZBFZ4+T8JgsjOKxuZjxRHw_azXKQx5O3Cx5yw@mail.gmail.com>
+Subject: Re: [PATCH v7 2/3] Input: Add Novatek NT36xxx touchscreen driver
+To:     kholk11@gmail.com
+Cc:     Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Henrik Rydberg <rydberg@bitmath.org>, priv.luk@gmail.com,
+        linux-input <linux-input@vger.kernel.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        marijns95@gmail.com, Konrad Dybcio <konradybcio@gmail.com>,
+        Martin Botka <martin.botka1@gmail.com>,
+        phone-devel@vger.kernel.org,
+        devicetree <devicetree@vger.kernel.org>,
+        Krzysztof Kozlowski <krzk@kernel.org>
 Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 9:23 AM Arnd Bergmann <arnd@kernel.org> wrote:
+On Sat, Oct 24, 2020 at 1:51 PM <kholk11@gmail.com> wrote:
 >
-> From: Arnd Bergmann <arnd@arndb.de>
+> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 >
-> gcc warns a few thousand times about the isdigit() shadow:
+> This is a driver for the Novatek in-cell touch controller and
+> supports various chips from the NT36xxx family, currently
+> including NT36525, NT36672A, NT36676F, NT36772 and NT36870.
 >
-> include/linux/ctype.h:26:19: warning: declaration of 'isdigit' shadows a built-in function [-Wshadow]
-
-Don't all functions defined here shadow builtins in GCC?  Why is
-`isdigit` unique?  Is that because it's a `static inline` definition
-vs a function like macro?  If that's the case, what's the harm in
-converting it to a function like macro if that silences the warning?
-
+> Functionality like wake gestures and firmware flashing is not
+> included: I am not aware of any of these DrIC+Touch combo
+> chips not including a non-volatile memory and it should be
+> highly unlikely to find one, since the touch firmware is
+> embedded into the DriverIC one, which is obviously necessary
+> to drive the display unit.
 >
-> As there is already a compiler builtin, just use that, and make
-> it clear we do that by defining a macro.  Unfortunately, clang
-> does not have the isdigit() builtin, so this has to be conditional.
-
-TODO(Nick): finish the Clang patch that implements that.
-https://reviews.llvm.org/D86508
-
+> However, the necessary address for the firmware update
+> procedure was included into the address table in this driver
+> so, in the event that someone finds the need to implement it
+> for a reason or another, it will be pretty straightforward to.
 >
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
->  include/linux/ctype.h | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/ctype.h b/include/linux/ctype.h
-> index 363b004426db..c407acb258c2 100644
-> --- a/include/linux/ctype.h
-> +++ b/include/linux/ctype.h
-> @@ -23,10 +23,6 @@ extern const unsigned char _ctype[];
->  #define isalnum(c)     ((__ismask(c)&(_U|_L|_D)) != 0)
->  #define isalpha(c)     ((__ismask(c)&(_U|_L)) != 0)
->  #define iscntrl(c)     ((__ismask(c)&(_C)) != 0)
-> -static inline int isdigit(int c)
-> -{
-> -       return '0' <= c && c <= '9';
-> -}
->  #define isgraph(c)     ((__ismask(c)&(_P|_U|_L|_D)) != 0)
->  #define islower(c)     ((__ismask(c)&(_L)) != 0)
->  #define isprint(c)     ((__ismask(c)&(_P|_U|_L|_D|_SP)) != 0)
-> @@ -39,6 +35,18 @@ static inline int isdigit(int c)
->  #define isascii(c) (((unsigned char)(c))<=0x7f)
->  #define toascii(c) (((unsigned char)(c))&0x7f)
->
-> +#if defined __has_builtin
+> This driver is lightly based on the downstream implementation [1].
+> [1] https://github.com/Rasenkai/caf-tsoft-Novatek-nt36xxx
 
-#ifdef
+(From drafts, didn't have time to finish and see already v8, so please revisit)
 
-only use `defined` explicitly when there's more than one condition
-being checked with logical `&&` or `||`.
+...
 
-> +#if __has_builtin(__builtin_isdigit)
+> +#include <asm/unaligned.h>
+> +#include <linux/delay.h>
+> +#include <linux/i2c.h>
+> +#include <linux/interrupt.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+> +#include <linux/regmap.h>
+> +#include <linux/gpio/consumer.h>
+> +#include <linux/input/mt.h>
+> +#include <linux/input/touchscreen.h>
+> +#include <linux/regulator/consumer.h>
 
-GCC only recently gained the `__has_builtin` macro (I filed the bug);
-I would like to see something akin to
-include/linux/compiler_attributes.h but using `__has_builtin` like
-compiler_attributes.h uses `__has_attribute`.  That way we avoid
-spaghetti like this throughout the kernel.
+Perhaps sorted? Also, asm/* usually go after linux/*.
 
-> +#define isdigit(ch) __builtin_isdigit(ch)
-> +#endif
-> +#endif
-> +#ifndef isdigit
-> +static inline int isdigit(int c)
-> +{
-> +       return '0' <= c && c <= '9';
-> +}
-> +#endif
+...
+
+> +#define TOUCH_MAX_PRESSURE      1000
+
+Any units?
+
+...
+
+> +       ts = devm_kzalloc(&hw_client->dev, sizeof(struct nt36xxx_i2c), GFP_KERNEL);
+
+sizeof(*ts) ?
+
+> +       if (!ts)
+> +               return -ENOMEM;
 > +
->  static inline unsigned char __tolower(unsigned char c)
->  {
->         if (isupper(c))
-> --
-> 2.27.0
->
+> +       ts->supplies = devm_kcalloc(&hw_client->dev,
+> +                                   NT36XXX_NUM_SUPPLIES,
+
+> +                                   sizeof(struct regulator_bulk_data),
+
+sizeof(*ts->supplies) ?
+
+> +                                   GFP_KERNEL);
+> +       if (!ts->supplies)
+> +               return -ENOMEM;
+
+...
+
+> +       ret = devm_regulator_bulk_get(&hw_client->dev,
+> +                                     NT36XXX_NUM_SUPPLIES,
+> +                                     ts->supplies);
+
+> +       if (ret != 0) {
+
+if (ret)
+
+> +               if (ret != -EPROBE_DEFER)
+> +                       dev_err(&hw_client->dev,
+> +                               "Cannot get supplies: %d\n", ret);
+> +               return ret;
+> +       }
+
+...
+
+> +       input->phys = devm_kasprintf(&hw_client->dev, GFP_KERNEL,
+> +                                    "%s/input0", dev_name(&hw_client->dev));
+
+NULL check?
+
+...
+
+> +       ret = devm_request_threaded_irq(&hw_client->dev, hw_client->irq, NULL,
+> +                                       nt36xxx_i2c_irq_handler, IRQF_ONESHOT,
+> +                                       hw_client->name, ts);
+> +       if (ret) {
+> +               dev_err(&hw_client->dev, "request irq failed: %d\n", ret);
+
+> +               return ret;
+> +       }
+> +
+> +       return 0;
+
+return ret; ?
+
+> +}
 
 
--- 
-Thanks,
-~Nick Desaulniers
+--
+With Best Regards,
+Andy Shevchenko
