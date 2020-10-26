@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 70CAF299BDA
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4F0E9299BE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410199AbgJZXxu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57610 "EHLO mail.kernel.org"
+        id S2410260AbgJZXxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:55 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57790 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410043AbgJZXxV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:21 -0400
+        id S2410059AbgJZXxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:24 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id E8DD52151B;
-        Mon, 26 Oct 2020 23:53:19 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8441021655;
+        Mon, 26 Oct 2020 23:53:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756400;
-        bh=DDpaqNxkr21+3Q3+kpNcwRpQcITi2kQATmOHl+7rVrw=;
+        s=default; t=1603756404;
+        bh=FwGCC5je+qSALh6pUyJFCTlFd8RGLBo3/olgLlei+uQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b194IkUJNWPoXCMgK7N6hNMBo0g1sz4hBvRpz9t7G8bh5tJ/gmaSGUXJyBFlLU5jl
-         9R6TIb3oxuZtuylEQaZNyWXO6RlBVFWMcaw3QscQ0nlrrpCMkasR6CkP4oi4tyLNac
-         ADceNLhEHGI9g/qxpAyhWc1118dJp0uyrSxBzr1M=
+        b=Ru3mbC0sTCgi13OaA04ZnI0AY7LDJCn8EiCc37sSFrYPwE26zSN27yMLqV4ANWKpf
+         ziAtnKZP1RKrWqucVBbRmjRJ22pl7kuA5+Tn5Vnsb4Kgrt6Av27tv3jrtVlOADSznn
+         iTAr99qC2WBHLSBUR14TWojsSTYFuswQtYcPuY1k=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Stephen Smalley <stephen.smalley.work@gmail.com>,
-        Paul Moore <paul@paul-moore.com>,
-        Sasha Levin <sashal@kernel.org>, selinux@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 060/132] selinux: access policycaps with READ_ONCE/WRITE_ONCE
-Date:   Mon, 26 Oct 2020 19:50:52 -0400
-Message-Id: <20201026235205.1023962-60-sashal@kernel.org>
+Cc:     Zong Li <zong.li@sifive.com>,
+        Palmer Dabbelt <palmerdabbelt@google.com>,
+        Pekka Enberg <penberg@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-riscv@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.8 063/132] riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
+Date:   Mon, 26 Oct 2020 19:50:55 -0400
+Message-Id: <20201026235205.1023962-63-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,97 +44,36 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Stephen Smalley <stephen.smalley.work@gmail.com>
+From: Zong Li <zong.li@sifive.com>
 
-[ Upstream commit e8ba53d0023a76ba0f50e6ee3e6288c5442f9d33 ]
+[ Upstream commit b5fca7c55f9fbab5ad732c3bce00f31af6ba5cfa ]
 
-Use READ_ONCE/WRITE_ONCE for all accesses to the
-selinux_state.policycaps booleans to prevent compiler
-mischief.
+AT_VECTOR_SIZE_ARCH should be defined with the maximum number of
+NEW_AUX_ENT entries that ARCH_DLINFO can contain, but it wasn't defined
+for RISC-V at all even though ARCH_DLINFO will contain one NEW_AUX_ENT
+for the VDSO address.
 
-Signed-off-by: Stephen Smalley <stephen.smalley.work@gmail.com>
-Signed-off-by: Paul Moore <paul@paul-moore.com>
+Signed-off-by: Zong Li <zong.li@sifive.com>
+Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Reviewed-by: Pekka Enberg <penberg@kernel.org>
+Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- security/selinux/include/security.h | 14 +++++++-------
- security/selinux/ss/services.c      |  3 ++-
- 2 files changed, 9 insertions(+), 8 deletions(-)
+ arch/riscv/include/uapi/asm/auxvec.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/security/selinux/include/security.h b/security/selinux/include/security.h
-index b0e02cfe3ce14..8a432f646967e 100644
---- a/security/selinux/include/security.h
-+++ b/security/selinux/include/security.h
-@@ -177,49 +177,49 @@ static inline bool selinux_policycap_netpeer(void)
- {
- 	struct selinux_state *state = &selinux_state;
+diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
+index d86cb17bbabe6..22e0ae8884061 100644
+--- a/arch/riscv/include/uapi/asm/auxvec.h
++++ b/arch/riscv/include/uapi/asm/auxvec.h
+@@ -10,4 +10,7 @@
+ /* vDSO location */
+ #define AT_SYSINFO_EHDR 33
  
--	return state->policycap[POLICYDB_CAPABILITY_NETPEER];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NETPEER]);
- }
- 
- static inline bool selinux_policycap_openperm(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_OPENPERM];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_OPENPERM]);
- }
- 
- static inline bool selinux_policycap_extsockclass(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_EXTSOCKCLASS]);
- }
- 
- static inline bool selinux_policycap_alwaysnetwork(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_ALWAYSNETWORK]);
- }
- 
- static inline bool selinux_policycap_cgroupseclabel(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_CGROUPSECLABEL]);
- }
- 
- static inline bool selinux_policycap_nnp_nosuid_transition(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_NNP_NOSUID_TRANSITION]);
- }
- 
- static inline bool selinux_policycap_genfs_seclabel_symlinks(void)
- {
- 	struct selinux_state *state = &selinux_state;
- 
--	return state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS];
-+	return READ_ONCE(state->policycap[POLICYDB_CAPABILITY_GENFS_SECLABEL_SYMLINKS]);
- }
- 
- int security_mls_enabled(struct selinux_state *state);
-diff --git a/security/selinux/ss/services.c b/security/selinux/ss/services.c
-index ef0afd878bfca..04d1afe01838b 100644
---- a/security/selinux/ss/services.c
-+++ b/security/selinux/ss/services.c
-@@ -2103,7 +2103,8 @@ static void security_load_policycaps(struct selinux_state *state)
- 	struct ebitmap_node *node;
- 
- 	for (i = 0; i < ARRAY_SIZE(state->policycap); i++)
--		state->policycap[i] = ebitmap_get_bit(&p->policycaps, i);
-+		WRITE_ONCE(state->policycap[i],
-+			ebitmap_get_bit(&p->policycaps, i));
- 
- 	for (i = 0; i < ARRAY_SIZE(selinux_policycap_names); i++)
- 		pr_info("SELinux:  policy capability %s=%d\n",
++/* entries in ARCH_DLINFO */
++#define AT_VECTOR_SIZE_ARCH	1
++
+ #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
 -- 
 2.25.1
 
