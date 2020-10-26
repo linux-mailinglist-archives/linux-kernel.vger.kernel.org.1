@@ -2,105 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9791629906C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:04:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EA60299070
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:04:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782953AbgJZPET (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:04:19 -0400
-Received: from mx2.suse.de ([195.135.220.15]:34968 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1782284AbgJZPET (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:04:19 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 92456AD4A;
-        Mon, 26 Oct 2020 15:04:17 +0000 (UTC)
-User-agent: mu4e 1.4.13; emacs 27.1
-From:   Richard Palethorpe <rpalethorpe@suse.de>
-To:     Joel Fernandes <joel@joelfernandes.org>,
-        Alexander Potapenko <glider@google.com>
-Cc:     rcu@vger.kernel.org, linux-kernel@vger.kernel.org,
-        "Paul E. McKenney" <paulmck@kernel.org>,
-        Uladzislau Rezki <urezki@gmail.com>
-Subject: [BUG] Lockdep splat during kvfree_call_rcu and stack_depot_save
-Reply-To: rpalethorpe@suse.de
-Date:   Mon, 26 Oct 2020 15:04:16 +0000
-Message-ID: <87a6w9uiz3.fsf@suse.de>
+        id S1783047AbgJZPEr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:04:47 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:55400 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782998AbgJZPEo (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:04:44 -0400
+Received: from imladris.surriel.com ([96.67.55.152])
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kX437-0003c0-HP; Mon, 26 Oct 2020 11:04:41 -0400
+Message-ID: <334f491d2887a6ed7c5347d5125412849feb8a0a.camel@surriel.com>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
+ load_balance()"
+From:   Rik van Riel <riel@surriel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Date:   Mon, 26 Oct 2020 11:04:40 -0400
+In-Reply-To: <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
+         <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+         <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
+         <20201026142455.GA13495@vingu-book>
+         <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+         <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+Content-Type: multipart/signed; micalg="pgp-sha256";
+        protocol="application/pgp-signature"; boundary="=-uoSqbbpvT8hC+tuw0JPB"
+User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
 MIME-Version: 1.0
-Content-Type: text/plain
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello,
 
-The kmem memcg selftest causes the following lockdep splat on 5.9+
+--=-uoSqbbpvT8hC+tuw0JPB
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-[   67.534319] =============================
-[   67.534410] [ BUG: Invalid wait context ]
-[   67.534522] 5.9.1-22-default #125 Not tainted
-[   67.534647] -----------------------------
-[   67.534732] ksoftirqd/5/36 is trying to lock:
-[   67.534833] ffffffffa7802d58 (depot_lock){..-.}-{3:3}, at: stack_depot_save (lib/stackdepot.c:286)
-[   67.534993] other info that might help us debug this:
-[   67.535089] context-{3:3}
-[   67.535139] 3 locks held by ksoftirqd/5/36:
-[   67.535216] #0: ffffffffa769d3e0 (rcu_callback){....}-{0:0}, at: rcu_do_batch (./include/linux/rcupdate.h:241 kernel/rcu/tree.c:2425)
-[   67.535362] #1: ffffffffa769d4a0 (rcu_read_lock){....}-{1:3}, at: percpu_ref_switch_to_atomic_rcu (./arch/x86/include/asm/preempt.h:79 ./include/linux/rcupdate.h:60 ./include/linux/rcupdate.h:632 ./include/linux/percpu-refcount.h:304 ./include/linux/percpu-refcount.h:325 lib/percpu-refcount.c:131 lib/percpu-refcount.c:166)
-[   67.535556] #2: ffff96ca3b55e910 (krc.lock){..-.}-{2:2}, at: kvfree_call_rcu (kernel/rcu/tree.c:3301 kernel/rcu/tree.c:3404)
-[   67.535709] stack backtrace:
-[   67.535780] CPU: 5 PID: 36 Comm: ksoftirqd/5 Not tainted 5.9.1-22-default #125
-[   67.535907] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
-[   67.536108] Call Trace:
-[   67.536151] dump_stack (lib/dump_stack.c:120)
-[   67.536221] print_lock_invalid_wait_context.cold (kernel/locking/lockdep.c:4093)
-[   67.536311] __lock_acquire (kernel/locking/lockdep.c:4391)
-[   67.536377] ? validate_chain (kernel/locking/lockdep.c:2603 kernel/locking/lockdep.c:3218)
-[   67.536453] lock_acquire (kernel/locking/lockdep.c:398 kernel/locking/lockdep.c:5031)
-[   67.536521] ? stack_depot_save (lib/stackdepot.c:286)
-[   67.536590] ? arch_stack_walk (arch/x86/kernel/stacktrace.c:24)
-[   67.536662] _raw_spin_lock_irqsave (./include/linux/spinlock_api_smp.h:117 kernel/locking/spinlock.c:159)
-[   67.536873] ? stack_depot_save (lib/stackdepot.c:286)
-[   67.537108] stack_depot_save (lib/stackdepot.c:286)
-[   67.537284] save_stack (mm/page_owner.c:137)
-[   67.537382] ? prep_new_page (./include/linux/page_owner.h:31 mm/page_alloc.c:2220 mm/page_alloc.c:2226)
-[   67.537479] ? get_page_from_freelist (mm/page_alloc.c:3851)
-[   67.537664] ? __alloc_pages_nodemask (mm/page_alloc.c:4896)
-[   67.537843] ? __get_free_pages (mm/page_alloc.c:4940)
-[   67.537971] ? kvfree_call_rcu (kernel/rcu/tree.c:3336 kernel/rcu/tree.c:3404)
-[   67.538066] ? percpu_ref_switch_to_atomic_rcu (./include/linux/percpu-refcount.h:309 ./include/linux/percpu-refcount.h:325 lib/percpu-refcount.c:131 lib/percpu-refcount.c:166)
-[   67.538218] ? rcu_do_batch (./include/linux/rcupdate.h:246 kernel/rcu/tree.c:2432)
-[   67.538348] ? rcu_core (kernel/rcu/tree.c:2658)
-[   67.538409] ? __do_softirq (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/irq.h:142 kernel/softirq.c:299)
-[   67.538509] ? run_ksoftirqd (kernel/softirq.c:653 kernel/softirq.c:644)
-[   67.538640] ? smpboot_thread_fn (kernel/smpboot.c:165)
-[   67.538814] ? kthread (kernel/kthread.c:292)
-[   67.539004] ? ret_from_fork (arch/x86/entry/entry_64.S:300)
-[   67.539172] __set_page_owner (mm/page_owner.c:169 mm/page_owner.c:192)
-[   67.539281] prep_new_page (./include/linux/page_owner.h:31 mm/page_alloc.c:2220 mm/page_alloc.c:2226)
-[   67.539445] get_page_from_freelist (mm/page_alloc.c:3851)
-[   67.539653] ? kvfree_call_rcu (kernel/rcu/tree.c:3301 kernel/rcu/tree.c:3404)
-[   67.539823] __alloc_pages_nodemask (mm/page_alloc.c:4896)
-[   67.540020] __get_free_pages (mm/page_alloc.c:4940)
-[   67.540171] kvfree_call_rcu (kernel/rcu/tree.c:3336 kernel/rcu/tree.c:3404)
-[   67.540324] ? rcu_do_batch (./include/linux/rcupdate.h:241 kernel/rcu/tree.c:2425)
-[   67.540524] percpu_ref_switch_to_atomic_rcu (./include/linux/percpu-refcount.h:309 ./include/linux/percpu-refcount.h:325 lib/percpu-refcount.c:131 lib/percpu-refcount.c:166)
-[   67.540736] rcu_do_batch (./include/linux/rcupdate.h:246 kernel/rcu/tree.c:2432)
-[   67.540941] rcu_core (kernel/rcu/tree.c:2658)
-[   67.541169] __do_softirq (./arch/x86/include/asm/jump_label.h:25 ./include/linux/jump_label.h:200 ./include/trace/events/irq.h:142 kernel/softirq.c:299)
-[   67.541375] run_ksoftirqd (kernel/softirq.c:653 kernel/softirq.c:644)
-[   67.541574] smpboot_thread_fn (kernel/smpboot.c:165)
-[   67.541771] ? smpboot_register_percpu_thread (kernel/smpboot.c:108)
-[   67.542025] kthread (kernel/kthread.c:292)
-[   67.542219] ? kthread_create_worker_on_cpu (kernel/kthread.c:245)
+On Mon, 2020-10-26 at 15:56 +0100, Vincent Guittot wrote:
+> On Mon, 26 Oct 2020 at 15:38, Rik van Riel <riel@surriel.com> wrote:
+> > On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
+> > > Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=A9cr=
+it :
+> > > > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
+> > > >=20
+> > > > > Hi Chris
+> > > > >=20
+> > > > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+> > > > > > Hi everyone,
+> > > > > >=20
+> > > > > > We=E2=80=99re validating a new kernel in the fleet, and compare=
+d
+> > > > > > with
+> > > > > > v5.2,
+> > > > >=20
+> > > > > Which version are you using ?
+> > > > > several improvements have been added since v5.5 and the
+> > > > > rework of
+> > > > > load_balance
+> > > >=20
+> > > > We=E2=80=99re validating v5.6, but all of the numbers referenced in
+> > > > this
+> > > > patch are
+> > > > against v5.9.  I usually try to back port my way to victory on
+> > > > this
+> > > > kind of
+> > > > thing, but mainline seems to behave exactly the same as
+> > > > 0b0695f2b34a wrt
+> > > > this benchmark.
+> > >=20
+> > > ok. Thanks for the confirmation
+> > >=20
+> > > I have been able to reproduce the problem on my setup.
+> > >=20
+> > > Could you try the fix below ?
+> > >=20
+> > > --- a/kernel/sched/fair.c
+> > > +++ b/kernel/sched/fair.c
+> > > @@ -9049,7 +9049,8 @@ static inline void
+> > > calculate_imbalance(struct
+> > > lb_env *env, struct sd_lb_stats *s
+> > >          * emptying busiest.
+> > >          */
+> > >         if (local->group_type =3D=3D group_has_spare) {
+> > > -               if (busiest->group_type > group_fully_busy) {
+> > > +               if ((busiest->group_type > group_fully_busy) &&
+> > > +                   (busiest->group_weight > 1)) {
+> > >                         /*
+> > >                          * If busiest is overloaded, try to fill
+> > > spare
+> > >                          * capacity. This might end up creating
+> > > spare
+> > > capacity
+> > >=20
+> > >=20
+> > > When we calculate an imbalance at te smallest level, ie between
+> > > CPUs
+> > > (group_weight =3D=3D 1),
+> > > we should try to spread tasks on cpus instead of trying to fill
+> > > spare
+> > > capacity.
+> >=20
+> > Should we also spread tasks when balancing between
+> > multi-threaded CPU cores on the same socket?
+>=20
+> My explanation is probably misleading. In fact we already try to
+> spread tasks. we just use spare capacity instead of nr_running when
+> there is more than 1 CPU in the group and the group is overloaded.
+> Using spare capacity is a bit more conservative because it tries to
+> not pull more utilization than spare capacity
 
-This appears to be caused by
-8ac88f7177c7 ("rcu/tree: Keep kfree_rcu() awake during lock contention")
+Could utilization estimates be off, either lagging or
+simply having a wrong estimate for a task, resulting
+in no task getting pulled sometimes, while doing a
+migrate_task imbalance always moves over something?
 
-which switched krc.lock from a spinlock to a raw_spinlock. Indeed if I
-switch it back to a spinlock again then the splat is no longer
-reproducible.
+Within an LLC we might not need to worry too much
+about spare capacity, considering select_idle_sibling=20
+doesn't give a hoot about capacity, either.
 
--- 
-Thank you,
-Richard.
+--=20
+All Rights Reversed.
+
+--=-uoSqbbpvT8hC+tuw0JPB
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+Content-Transfer-Encoding: 7bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+W5YgACgkQznnekoTE
+3oNlGAgAtkGVNBd2a9XHIag/z/SA4HsBvh9aBDgkRFVq/c+5d6rO2Lg8cOYEU6hm
+oFcZDlMEXGXNPLa8MBsAEsDqY8r8kz/pjpFSjLk81oeodMpKM2ZUAwacmTXfvgfL
+9ZzYiuU6wKQVs1n78KTS15aRLd/1K1NLTR+kqW44Gi6UkWmV85YjqCagI8l2HbnB
+VXxaLsiLVhMtd0dOFGZybKYpllrehaG18Jszeli8xzDm80DQ88a+L91g79mLAbxS
+pfXc8x1rhw+J4dMwCJq185oT9qxcblANRH1lYrxZQV9xENdRPAMCpxjIar/T8jVK
+NzSVEs3ZUvNHSityHaXdURJEg2/fTA==
+=0/4b
+-----END PGP SIGNATURE-----
+
+--=-uoSqbbpvT8hC+tuw0JPB--
+
