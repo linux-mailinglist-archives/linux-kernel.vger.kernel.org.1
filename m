@@ -2,110 +2,83 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 47EE52999F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:55:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09845299A03
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:55:41 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394894AbgJZWzE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:55:04 -0400
-Received: from hqnvemgate25.nvidia.com ([216.228.121.64]:15214 "EHLO
-        hqnvemgate25.nvidia.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394885AbgJZWzE (ORCPT
+        id S2394924AbgJZWza (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:55:30 -0400
+Received: from mail-ed1-f66.google.com ([209.85.208.66]:44506 "EHLO
+        mail-ed1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394910AbgJZWz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:55:04 -0400
-Received: from hqmail.nvidia.com (Not Verified[216.228.121.13]) by hqnvemgate25.nvidia.com (using TLS: TLSv1.2, AES256-SHA)
-        id <B5f9753cc0000>; Mon, 26 Oct 2020 15:55:08 -0700
-Received: from HQMAIL101.nvidia.com (172.20.187.10) by HQMAIL109.nvidia.com
- (172.20.187.15) with Microsoft SMTP Server (TLS) id 15.0.1473.3; Mon, 26 Oct
- 2020 22:55:03 +0000
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.102)
- by HQMAIL101.nvidia.com (172.20.187.10) with Microsoft SMTP Server (TLS) id
- 15.0.1473.3 via Frontend Transport; Mon, 26 Oct 2020 22:55:03 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=K2mxZiLY9qs5vd+ch90cWV7/1hUhvw7cIRQKNdaNLHVaMrKw8XfNyOlVcxOZuyu1iMaKnCeoav6DI84Id0RbqBdv9vPkIX5qR19XPnW2sVujLx0Fs6m0xV/09ejZ3MnX0O5Q296kUU8mGV9/nO6fMENKhWbNk0RtgjGbKldjVKHZLZBXAVyNPgzEyo7lqcaOYe2oU99F+1qa2h6edFwsOI2g73Vog8fEMSBiR0jrd0EjHHVG9yJWEAeVR2gJJNByLloPrpvzsNH+OtDtBobtst1sn0d3sK09R3O58VMnWQmMb3HtaPYUlpKjDd0suuQMuskziOWVzNV1mkNKrCRMtw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=H69dbHhG/k/Y5cAzLva6gR5uHaZUphun0pkvJKhQeWY=;
- b=TUGsFFUr6KY/INwIBrFn0u1duqvvuiAKPSVLgsQwBCfyMT2wI1s5y+HA+qcGEtlDKiQrS+Z9R/8qgbA/LxQarPG5XdQmmH5/OAbOtk+JNjLRSF2528Up3jqx4kvAjAGKaMjmyu06wd4MOuMpq+QthXZMASmBjmfKBGJaHtd7ZDJ8OrC2q38zT5yQYLZuXWHYrLDj/bBGeCTuOLPkRVoy/1CDABnbJihPKHT5l+tH3XCPA/HI1wtzMc98QClvGLNY8hcp5lgMmGnhEaabgup5++VzgZIS+Kse9WPzALLJ+j60sjlOu9AFgNdjGspkv6lh3cvjtvPl7BNZmhZqslSGgA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com (2603:10b6:5:14a::12)
- by DM5PR1201MB0204.namprd12.prod.outlook.com (2603:10b6:4:51::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.23; Mon, 26 Oct
- 2020 22:55:01 +0000
-Received: from DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78]) by DM6PR12MB3834.namprd12.prod.outlook.com
- ([fe80::cdbe:f274:ad65:9a78%7]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
- 22:55:01 +0000
-Date:   Mon, 26 Oct 2020 19:54:59 -0300
-From:   Jason Gunthorpe <jgg@nvidia.com>
-To:     Joe Perches <joe@perches.com>
-CC:     Doug Ledford <dledford@redhat.com>, <linux-rdma@vger.kernel.org>,
-        <target-devel@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH-next 0/4] RDMA: sprintf to sysfs_emit conversions
-Message-ID: <20201026225459.GA2152135@nvidia.com>
-References: <cover.1602122879.git.joe@perches.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <cover.1602122879.git.joe@perches.com>
-X-ClientProxiedBy: MN2PR22CA0017.namprd22.prod.outlook.com
- (2603:10b6:208:238::22) To DM6PR12MB3834.namprd12.prod.outlook.com
- (2603:10b6:5:14a::12)
+        Mon, 26 Oct 2020 18:55:28 -0400
+Received: by mail-ed1-f66.google.com with SMTP id t20so11419520edr.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 15:55:25 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kylehuey.com; s=google;
+        h=mime-version:from:date:message-id:subject:to:cc;
+        bh=J/+n1x0TPOHJCTfSVoXlG/q+OLrGnnNxrysZ0ZyIy+Y=;
+        b=JQw5fA5cqXZCTLCd2xkURV07bnYrA8gTT/8l9H7r6P+PgM37GQ7tblZcETghImepsU
+         AcI0oUILLNpw7+Lob5wOxm8oxXKZgdxlvk1iOdkoLk31eLVc1crb3sEhxCSb6bD2V31l
+         b7OGa6zHv0zDl28Z8OMcIxY0WvmVK7pWJSrW3Zs4sWifuxNiQ2iEW7pkdOAgHIEek3Fp
+         L3yESbOX+0gb8ueK46K6rtDj34b55Vtmz8U4fPoQ/Dv2vqBsFOJNMTpbG7mznOfR5TaL
+         kpOlREDICaBo0Xi3+x/a4pHYfGgO73EI5dQFmBZNKgKh2ry9/Y+FL54IAgbsbpnA0Xzm
+         BeOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to:cc;
+        bh=J/+n1x0TPOHJCTfSVoXlG/q+OLrGnnNxrysZ0ZyIy+Y=;
+        b=ch7hrR4Zc+bpaNY3zmwwj7wBAeBMtaUGPNRvBWfuTMVf0f3IR6hsLH2Dg0VN8l8iiq
+         8HYLhv+7Q/CeOFUvMYRs+Hh0evDYOaIn2nksqQN57fGvoWGTCfY+zoc/IzBLbwLlvxH4
+         WihmThF4KAOuZNgUY7+NJgOYRlqS7RG3yjzwGJz2prTzF0kmJaMDQYP3yIj6Fc9jo7ZR
+         DZzvcNgAWOZFuF1u7fIgf8Csrgvvb7l71Y34UpziHYKeurD8vDVdJVLeThySTqIwCMK2
+         oj4n375Ep+xRtpgeduUMZ9EzzzDsXao/uQl739Ad+iFMhZyHT7czdnxTBNmyeDDLLuAQ
+         uXIg==
+X-Gm-Message-State: AOAM532qumlDIXRwcdFBTPWZqLmm9Rh0mnoB5qBxcoR45EaJwuPJh27X
+        tAU9vn2VhlZABXX3Adq8fPdMOJuFhT5v/SPWj1hCenCBm5R/0I/y/Yw=
+X-Google-Smtp-Source: ABdhPJyAci+5cM2zXs7C2dh5O8VDIKXSp+LVa6rVM/MPlgy6tZLvyXi43c6iWM9w5BW9l3CIsdr5O5Od75OK4rN9ByQ=
+X-Received: by 2002:aa7:d9ce:: with SMTP id v14mr12828586eds.203.1603752924617;
+ Mon, 26 Oct 2020 15:55:24 -0700 (PDT)
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from mlx.ziepe.ca (156.34.48.30) by MN2PR22CA0017.namprd22.prod.outlook.com (2603:10b6:208:238::22) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.18 via Frontend Transport; Mon, 26 Oct 2020 22:55:00 +0000
-Received: from jgg by mlx with local (Exim 4.94)        (envelope-from <jgg@nvidia.com>)        id 1kXBOF-0091ta-HQ; Mon, 26 Oct 2020 19:54:59 -0300
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nvidia.com; s=n1;
-        t=1603752908; bh=H69dbHhG/k/Y5cAzLva6gR5uHaZUphun0pkvJKhQeWY=;
-        h=ARC-Seal:ARC-Message-Signature:ARC-Authentication-Results:Date:
-         From:To:CC:Subject:Message-ID:References:Content-Type:
-         Content-Disposition:In-Reply-To:X-ClientProxiedBy:MIME-Version:
-         X-MS-Exchange-MessageSentRepresentingType;
-        b=Wy1ERsjVmRHE1nhLah6omYzPJOLytXxth5AxzFQgN0REuFyLV9s+wHydQ3llXyi6J
-         lkxsHI5V8P9flHoGD6bf41V42Mq35sysyXJ7eKeP6hB3lQyJiroyljhVglKTzMYDuU
-         aetCH+aprNfUi1c059e2MkfbGp6x+xtpSQv7FJLD17QKggJ3dmL2OZEqX0yobcAql2
-         DyxC4DG3IKtcMO5UyhuDjXFOY4qDid5VyE03ovdzElbdatr+3Z8B4I1SvuQcUuWFiQ
-         +m2q9cfpsXvSlI5hUp2InMZpAmjzlyTrvN1BUijPwE81mzk15ITawPANfJ+1s2tmEd
-         Pg4VviGP2Ggtw==
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Mon, 26 Oct 2020 15:55:13 -0700
+Message-ID: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+Subject: [REGRESSION] mm: process_vm_readv testcase no longer works after
+ compat_prcoess_vm_readv removed
+To:     open list <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     "Robert O'Callahan" <robert@ocallahan.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Jens Axboe <axboe@kernel.dk>, Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 07, 2020 at 07:36:23PM -0700, Joe Perches wrote:
-> A recent commit added a sysfs_emit and sysfs_emit_at to allow various
-> sysfs show functions to ensure that the PAGE_SIZE buffer argument is
-> never overrun and always NUL terminated.
-> 
-> Convert the RDMA/InfiniBand subsystem to use these new functions.
-> 
-> The first 2 patches exclusively used coccinelle to convert uses.
-> The third and fourth patches were done manually.
-> 
-> Compiled allyesconfig and defconfig with all infiniband options selected
-> no warnings, but untested, no hardward
-> 
-> Overall object size is reduced
-> 
-> total size: allyesconfig x86-64
-> new: 8364003	1680968	 131520	10176491 9b47eb	(TOTALS)
-> old: 8365883	1681032	 131520	10178435 9b4f83	(TOTALS)
-> 
-> total size: defconfig x86-64 with all infiniband selected
-> new; 1359153	 131228	   1910  1492291 16c543	(TOTALS)
-> old: 1359422	 131228	   1910  1492560 16c650	(TOTALS)
-> 
-> Joe Perches (4):
->   RDMA: Convert sysfs device * show functions to use sysfs_emit()
->   RDMA: Convert sysfs kobject * show functions to use sysfs_emit()
+A test program from the rr[0] test suite, vm_readv_writev[1], no
+longer works on 5.10-rc1 when compiled as a 32 bit binary and executed
+on a 64 bit kernel. The first process_vm_readv call (on line 35) now
+fails with EFAULT. I have bisected this to
+c3973b401ef2b0b8005f8074a10e96e3ea093823.
 
-First two applied to for-next
+It should be fairly straightforward to extract the test case from our
+repository into a standalone program.
 
->   RDMA: manual changes for sysfs_emit and neatening
->   RDMA: Convert various random sprintf sysfs _show uses to sysfs_emit
+- Kyle
 
-Will probably do these two later this week/next
-
-Thanks,
-Jason
+[0] https://rr-project.org/
+[1] https://github.com/mozilla/rr/blob/master/src/test/vm_readv_writev.c
