@@ -2,108 +2,90 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 1AEEE299589
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:39:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A621C29958E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:42:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790106AbgJZSjj (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:39:39 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38920 "EHLO mail.kernel.org"
+        id S1790191AbgJZSl6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:41:58 -0400
+Received: from mail.kernel.org ([198.145.29.99]:39212 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1741485AbgJZSjj (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:39:39 -0400
-Received: from sol.localdomain (172-10-235-113.lightspeed.sntcca.sbcglobal.net [172.10.235.113])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1785156AbgJZSl5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:41:57 -0400
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3E4152084C;
-        Mon, 26 Oct 2020 18:39:38 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3A9762222C;
+        Mon, 26 Oct 2020 18:41:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603737578;
-        bh=7VmhnHRkwkCNWziVvSpwif+hE8EvvT/r7OJAvNDEhz4=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=e4m0UFZbr26BzGxHLiHYpbVuFRZtg9GrOwzWOJU9mVMavylkIeZhVVJFg+/I81tFK
-         SIuOw7GoaH+CT2wdVC8TrnSGWROQxIO1cPzaIti2DC0j2HymzmOgSdVNIatT0f7Rvi
-         XxMVFJUtLfl+5euCYkTAWP4U0nccEK0q7iXc18Wo=
-Date:   Mon, 26 Oct 2020 11:39:36 -0700
-From:   Eric Biggers <ebiggers@kernel.org>
-To:     Milan Broz <gmazyland@gmail.com>
-Cc:     Gilad Ben-Yossef <gilad@benyossef.com>,
-        Herbert Xu <herbert@gondor.apana.org.au>,
-        "David S. Miller" <davem@davemloft.net>,
-        Alasdair Kergon <agk@redhat.com>,
-        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
-        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
-        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-raid@vger.kernel.org
-Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
-Message-ID: <20201026183936.GJ858@sol.localdomain>
-References: <20201026130450.6947-1-gilad@benyossef.com>
- <20201026130450.6947-4-gilad@benyossef.com>
- <20201026175231.GG858@sol.localdomain>
- <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
+        s=default; t=1603737716;
+        bh=ZHnDVzqCmHdL0T1F4BO4Y47EykJ5PDqzneLTnwI6ZRA=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=KdhX4ntAZx6gfgYbRCwmS5ZXbSIhAStlI4WxQZxVot2A6EgEa6Ne+sSA1Jra+zi1C
+         f/EHeO6pkRwGxtqsXP9yTgRA6dUyW+E5MXoSJPn2h0UOmqWCQD/Bako7xNmpTSJwo/
+         L43WN4dpKVOSrCCK72KNcygSYxZkExCxtE2dTy54=
+Received: by mail-ot1-f49.google.com with SMTP id k3so8355984otp.1;
+        Mon, 26 Oct 2020 11:41:56 -0700 (PDT)
+X-Gm-Message-State: AOAM531mtYIMj6PqohlQ5PeVx6q8wObdlwF7gR3GzcGsk3Lf1DKPEj+B
+        GRbxUHDVawr9IunB16pxd1z9Vn9EIVm11rajIQ==
+X-Google-Smtp-Source: ABdhPJyVlgX3wTNwjznavSrjvPKZgPsLOcYRv5S/5h+cGUJY0F3WJM+ZuvefjhUv5JIG7coKD86JdQgouxe51pp7RDU=
+X-Received: by 2002:a9d:62d1:: with SMTP id z17mr15737889otk.192.1603737715454;
+ Mon, 26 Oct 2020 11:41:55 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
+References: <20201026065459.28509-1-vidyas@nvidia.com> <20201026065459.28509-3-vidyas@nvidia.com>
+In-Reply-To: <20201026065459.28509-3-vidyas@nvidia.com>
+From:   Rob Herring <robh+dt@kernel.org>
+Date:   Mon, 26 Oct 2020 13:41:43 -0500
+X-Gmail-Original-Message-ID: <CAL_JsqJdwF26_2Fpz5=jGeLCGkySpdC0ZCJGaMvHFoGwJ898aQ@mail.gmail.com>
+Message-ID: <CAL_JsqJdwF26_2Fpz5=jGeLCGkySpdC0ZCJGaMvHFoGwJ898aQ@mail.gmail.com>
+Subject: Re: [PATCH 2/4] PCI: tegra: Map configuration space as strongly ordered
+To:     Vidya Sagar <vidyas@nvidia.com>
+Cc:     Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Bjorn Helgaas <bhelgaas@google.com>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Jon Hunter <jonathanh@nvidia.com>, amanharitsh123@gmail.com,
+        dinghao.liu@zju.edu.cn, Krzysztof Wilczynski <kw@linux.com>,
+        PCI <linux-pci@vger.kernel.org>,
+        linux-tegra <linux-tegra@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        kthota@nvidia.com, Manikanta Maddireddy <mmaddireddy@nvidia.com>,
+        sagar.tv@gmail.com
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 07:29:57PM +0100, Milan Broz wrote:
-> On 26/10/2020 18:52, Eric Biggers wrote:
-> > On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
-> >> Replace the explicit EBOIV handling in the dm-crypt driver with calls
-> >> into the crypto API, which now possesses the capability to perform
-> >> this processing within the crypto subsystem.
-> >>
-> >> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
-> >>
-> >> ---
-> >>  drivers/md/Kconfig    |  1 +
-> >>  drivers/md/dm-crypt.c | 61 ++++++++++++++-----------------------------
-> >>  2 files changed, 20 insertions(+), 42 deletions(-)
-> >>
-> >> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
-> >> index 30ba3573626c..ca6e56a72281 100644
-> >> --- a/drivers/md/Kconfig
-> >> +++ b/drivers/md/Kconfig
-> >> @@ -273,6 +273,7 @@ config DM_CRYPT
-> >>  	select CRYPTO
-> >>  	select CRYPTO_CBC
-> >>  	select CRYPTO_ESSIV
-> >> +	select CRYPTO_EBOIV
-> >>  	help
-> >>  	  This device-mapper target allows you to create a device that
-> >>  	  transparently encrypts the data on it. You'll need to activate
-> > 
-> > Can CRYPTO_EBOIV please not be selected by default?  If someone really wants
-> > Bitlocker compatibility support, they can select this option themselves.
-> 
-> Please no! Until this move of IV to crypto API, we can rely on
-> support in dm-crypt (if it is not supported, it is just a very old kernel).
-> (Actually, this was the first thing I checked in this patchset - if it is
-> unconditionally enabled for compatibility once dmcrypt is selected.)
-> 
-> People already use removable devices with BitLocker.
-> It was the whole point that it works out-of-the-box without enabling anything.
-> 
-> If you insist on this to be optional, please better keep this IV inside dmcrypt.
-> (EBOIV has no other use than for disk encryption anyway.)
-> 
-> Or maybe another option would be to introduce option under dm-crypt Kconfig that
-> defaults to enabled (like support for foreign/legacy disk encryption schemes) and that
-> selects these IVs/modes.
-> But requiring some random switch in crypto API will only confuse users.
+On Mon, Oct 26, 2020 at 1:55 AM Vidya Sagar <vidyas@nvidia.com> wrote:
+>
+> As specified in the comment for pci_remap_cfgspace() define in
+> arch/arm64/include/asm/io.h file, PCIe configuration space should be
+> mapped as strongly ordered. Hence changing to dev_pci_remap_cfgspace()
 
-CONFIG_DM_CRYPT can either select every weird combination of algorithms anyone
-can ever be using, or it can select some defaults and require any other needed
-algorithms to be explicitly selected.
+Strictly speaking, strongly ordered is ARMv6/7 terminology. For v8,
+it's 'nGnRnE' which is what the comment says.
 
-In reality, dm-crypt has never even selected any particular block ciphers, even
-AES.  Nor has it ever selected XTS.  So it's actually always made users (or
-kernel distributors) explicitly select algorithms.  Why the Bitlocker support
-suddenly different?
+> from devm_ioremap_resource() for mapping DBI space as that is nothing
+> but the root port's own configuration space.
+>
+> Signed-off-by: Vidya Sagar <vidyas@nvidia.com>
+> ---
+>  drivers/pci/controller/dwc/pcie-tegra194.c | 4 +++-
+>  1 file changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/pci/controller/dwc/pcie-tegra194.c b/drivers/pci/controller/dwc/pcie-tegra194.c
+> index b172b1d49713..7a0c64436861 100644
+> --- a/drivers/pci/controller/dwc/pcie-tegra194.c
+> +++ b/drivers/pci/controller/dwc/pcie-tegra194.c
+> @@ -2108,7 +2108,9 @@ static int tegra_pcie_dw_probe(struct platform_device *pdev)
+>         }
+>         pcie->dbi_res = dbi_res;
+>
+> -       pci->dbi_base = devm_ioremap_resource(dev, dbi_res);
+> +       pci->dbi_base = devm_pci_remap_cfgspace(dev,
+> +                                               dbi_res->start,
+> +                                               resource_size(dbi_res));
 
-I'd think a lot of dm-crypt users don't want to bloat their kernels with random
-legacy algorithms.
+This is all going to get removed anyways as I'm working on moving DBI
+and other region setup into the DWC core. I guess better to do this
+change first and make it explicit.
 
-- Eric
+Rob
