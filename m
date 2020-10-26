@@ -2,127 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BA0BC299C6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C90EB299C71
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437106AbgJZX6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:58:43 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47890 "EHLO mx2.suse.de"
+        id S2437131AbgJZX6x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:58:53 -0400
+Received: from mail.kernel.org ([198.145.29.99]:40898 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436664AbgJZX5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:57:03 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 306D1AC43;
-        Mon, 26 Oct 2020 23:57:01 +0000 (UTC)
-Received: by lion.mk-sys.cz (Postfix, from userid 1000)
-        id C881E60736; Tue, 27 Oct 2020 00:57:00 +0100 (CET)
-Date:   Tue, 27 Oct 2020 00:57:00 +0100
-From:   Michal Kubecek <mkubecek@suse.cz>
-To:     Vasily Gorbik <gor@linux.ibm.com>
-Cc:     linux-s390@vger.kernel.org, Joe Perches <joe@perches.com>,
-        linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
-Subject: Re: [PATCH 1/1] s390: correct __bootdata / __bootdata_preserved
- macros
-Message-ID: <20201026235700.3dga6r5obn7z5cxv@lion.mk-sys.cz>
-References: <20201026104811.22ta4pby2chmz4pv@lion.mk-sys.cz>
- <cover.thread-96dc81.your-ad-here.call-01603716370-ext-5478@work.hours>
- <patch-1.thread-96dc81.git-96dc8112cea9.your-ad-here.call-01603716370-ext-5478@work.hours>
+        id S2437084AbgJZX6k (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:58:40 -0400
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 88F2D2087C
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 23:58:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603756719;
+        bh=uLnVjN+bYvNodXPMnfZTZnXM5m0PwYS9okq64LRETLs=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=RRO3TzgdvpmKVD3bbCDkGZZSR1+Fm8OK5aueWvEPYKjc7d8a93MtphTmsqbvyTiDV
+         vFafi3oaHWEo+2qejFic18T+MDKTHSgZ5hWamXYCb2fVZsL+8d4q6JlAmQzfeoEiMv
+         i3ZtXn1kgq7xiQy4KNuv/PVAp7RliU3VNVBzODwI=
+Received: by mail-lj1-f173.google.com with SMTP id m16so12549720ljo.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:58:39 -0700 (PDT)
+X-Gm-Message-State: AOAM531SEipI+OqsPXl+ZWvktHxWNg2u4VgTCGdA5XkArHZ/nYYAF/HB
+        59Iju+mPR7BGl50GnOJWJ6bJTFaTAtYkyJXK5br7dQ==
+X-Google-Smtp-Source: ABdhPJwmJw2aLpySxeErc3LeZpMLqKpmzVGi3onJZb+wqiiUEro4x2ppyNy4SmMvqM3k0DIOULzz/xDwNF+C9355huA=
+X-Received: by 2002:a5d:6744:: with SMTP id l4mr20569606wrw.18.1603756716752;
+ Mon, 26 Oct 2020 16:58:36 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="qcfgs5eg7rfckcnu"
-Content-Disposition: inline
-In-Reply-To: <patch-1.thread-96dc81.git-96dc8112cea9.your-ad-here.call-01603716370-ext-5478@work.hours>
+References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
+ <CALCETrXn_ghtLK34jmKSSp5_SF6hh5GOfBLKdxXgp5ZTbN8uEA@mail.gmail.com> <20201026152910.happu7wic4qjxmp7@box>
+In-Reply-To: <20201026152910.happu7wic4qjxmp7@box>
+From:   Andy Lutomirski <luto@kernel.org>
+Date:   Mon, 26 Oct 2020 16:58:16 -0700
+X-Gmail-Original-Message-ID: <CALCETrVmW7Xsh+GVfHAV_a7Ro1eySqH4_a-vbmYQb_Z5mykMsA@mail.gmail.com>
+Message-ID: <CALCETrVmW7Xsh+GVfHAV_a7Ro1eySqH4_a-vbmYQb_Z5mykMsA@mail.gmail.com>
+Subject: Re: [RFCv2 00/16] KVM protected memory extension
+To:     "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Vitaly Kuznetsov <vkuznets@redhat.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Joerg Roedel <joro@8bytes.org>,
+        David Rientjes <rientjes@google.com>,
+        Andrea Arcangeli <aarcange@redhat.com>,
+        Kees Cook <keescook@chromium.org>,
+        Will Drewry <wad@chromium.org>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "Kleen, Andi" <andi.kleen@intel.com>,
+        Liran Alon <liran.alon@oracle.com>,
+        Mike Rapoport <rppt@kernel.org>, X86 ML <x86@kernel.org>,
+        kvm list <kvm@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
+        LKML <linux-kernel@vger.kernel.org>,
+        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Mon, Oct 26, 2020 at 8:29 AM Kirill A. Shutemov <kirill@shutemov.name> wrote:
+>
+> On Wed, Oct 21, 2020 at 11:20:56AM -0700, Andy Lutomirski wrote:
+> > > On Oct 19, 2020, at 11:19 PM, Kirill A. Shutemov <kirill@shutemov.name> wrote:
+> >
+> > > For removing the userspace mapping, use a trick similar to what NUMA
+> > > balancing does: convert memory that belongs to KVM memory slots to
+> > > PROT_NONE: all existing entries converted to PROT_NONE with mprotect() and
+> > > the newly faulted in pages get PROT_NONE from the updated vm_page_prot.
+> > > The new VMA flag -- VM_KVM_PROTECTED -- indicates that the pages in the
+> > > VMA must be treated in a special way in the GUP and fault paths. The flag
+> > > allows GUP to return the page even though it is mapped with PROT_NONE, but
+> > > only if the new GUP flag -- FOLL_KVM -- is specified. Any userspace access
+> > > to the memory would result in SIGBUS. Any GUP access without FOLL_KVM
+> > > would result in -EFAULT.
+> > >
+> >
+> > I definitely like the direction this patchset is going in, and I think
+> > that allowing KVM guests to have memory that is inaccessible to QEMU
+> > is a great idea.
+> >
+> > I do wonder, though: do we really want to do this with these PROT_NONE
+> > tricks, or should we actually come up with a way to have KVM guest map
+> > memory that isn't mapped into QEMU's mm_struct at all?  As an example
+> > of the latter, I mean something a bit like this:
+> >
+> > https://lkml.kernel.org/r/CALCETrUSUp_7svg8EHNTk3nQ0x9sdzMCU=h8G-Sy6=SODq5GHg@mail.gmail.com
+> >
+> > I don't mean to say that this is a requirement of any kind of
+> > protected memory like this, but I do think we should understand the
+> > tradeoffs, in terms of what a full implementation looks like, the
+> > effort and time frames involved, and the maintenance burden of
+> > supporting whatever gets merged going forward.
+>
+> I considered the PROT_NONE trick neat. Complete removing of the mapping
+> from QEMU would require more changes into KVM and I'm not really familiar
+> with it.
 
---qcfgs5eg7rfckcnu
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+I think it's neat.  The big tradeoff I'm concerned about is that it
+will likely become ABI once it lands.  That is, if this series lands,
+then we will always have to support the case in which QEMU has a
+special non-present mapping that is nonetheless reflected as present
+in a guest.  This is a bizarre state of affairs, it may become
+obsolete if a better API ever shows up, and it might end up placing
+constraints on the Linux VM that we don't love going forward.
 
-On Mon, Oct 26, 2020 at 01:49:08PM +0100, Vasily Gorbik wrote:
-> Currently s390 build is broken.
->=20
->   SECTCMP .boot.data
-> error: section .boot.data differs between vmlinux and arch/s390/boot/comp=
-ressed/vmlinux
-> make[2]: *** [arch/s390/boot/section_cmp.boot.data] Error 1
->   SECTCMP .boot.preserved.data
-> error: section .boot.preserved.data differs between vmlinux and arch/s390=
-/boot/compressed/vmlinux
-> make[2]: *** [arch/s390/boot/section_cmp.boot.preserved.data] Error 1
-> make[1]: *** [bzImage] Error 2
->=20
-> Commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
-> to __section("foo")") converted all __section(foo) to __section("foo").
-> This is wrong for __bootdata / __bootdata_preserved macros which want
-> variable names to be a part of intermediate section names .boot.data.<var
-> name> and .boot.preserved.data.<var name>. Those sections are later
-> sorted by alignment + name and merged together into final .boot.data
-> / .boot.preserved.data sections. Those sections must be identical in
-> the decompressor and the decompressed kernel (that is checked during
-> the build).
->=20
-> Fixes: 33def8498fdd ("treewide: Convert macro and uses of __section(foo) =
-to __section("foo")")
-> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
+I don't think my proposal in the referenced thread above is that crazy
+or that difficult to implement.  The basic idea is to have a way to
+create an mm_struct that is not loaded in CR3 anywhere.  Instead, KVM
+will reference it, much as it currently references QEMU's mm_struct,
+to mirror mappings into the guest.  This means it would be safe to
+have "protected" memory mapped into the special mm_struct because
+nothing other than KVM will ever reference the PTEs.  But I think that
+someone who really understands the KVM memory mapping code should
+chime in.
 
-Tested-by: Michal Kubecek <mkubecek@suse.cz>
-
-Thank you,
-Michal
-
-> ---
->  arch/s390/include/asm/sections.h | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
->=20
-> diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sec=
-tions.h
-> index a996d3990a02..0c2151451ba5 100644
-> --- a/arch/s390/include/asm/sections.h
-> +++ b/arch/s390/include/asm/sections.h
-> @@ -26,14 +26,14 @@ static inline int arch_is_kernel_initmem_freed(unsign=
-ed long addr)
->   * final .boot.data section, which should be identical in the decompress=
-or and
->   * the decompressed kernel (that is checked during the build).
->   */
-> -#define __bootdata(var) __section(".boot.data.var") var
-> +#define __bootdata(var) __section(".boot.data." #var) var
-> =20
->  /*
->   * .boot.preserved.data is similar to .boot.data, but it is not part of =
-the
->   * .init section and thus will be preserved for later use in the decompr=
-essed
->   * kernel.
->   */
-> -#define __bootdata_preserved(var) __section(".boot.preserved.data.var") =
-var
-> +#define __bootdata_preserved(var) __section(".boot.preserved.data." #var=
-) var
-> =20
->  extern unsigned long __sdma, __edma;
->  extern unsigned long __stext_dma, __etext_dma;
-> --=20
-> 2.25.4
-
---qcfgs5eg7rfckcnu
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAl+XYkcACgkQ538sG/LR
-dpWkIQf/ewe8ufeiPuicJmlgaV6TdHL3FAT8qcv6mHaTsLLX7wyxKw5IAjV7MQ5v
-qjREkYseptZ88CaoU6Rhzc1iGY2ugIpdQpPRrr/CbvgH5Kaw7AH0Ii9C/60W1CY8
-zJl9UPKuOV/s5RiMA1gP0AKTDNVGLk35/GYKh4GnvIIoY1jjxkoaoGqew+jBkCc8
-H6bJfChAHqb0YEhiOrB6quwEDbFBmongolgMmpHJ/kenhW/IeOyT1TRDt00jFr6i
-rpHMS48r4uhi5M0srNOW71mptisTBR1rjMzz/2maaNv8yntJsEFN3J2RbQ3Z/x1c
-TZ7UujMj5rSBT/RjXFwZcjPCp8KxOQ==
-=9yg/
------END PGP SIGNATURE-----
-
---qcfgs5eg7rfckcnu--
+>
+> About tradeoffs: the trick interferes with AutoNUMA. I didn't put much
+> thought into how we can get it work together. Need to look into it.
+>
+> Do you see other tradeoffs?
+>
+> --
+>  Kirill A. Shutemov
