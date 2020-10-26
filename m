@@ -2,112 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3756A2999D4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:46:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 930052999DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:48:15 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394681AbgJZWqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:46:37 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:43108 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2394668AbgJZWqg (ORCPT
+        id S2394712AbgJZWsL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:48:11 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:22621 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S2394704AbgJZWsK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:46:36 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603752394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+        Mon, 26 Oct 2020 18:48:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603752489;
+        h=from:from:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=EMtaedWvWnlr8FoOiOT3OcNE6XEhbc2X12bxau6EyFI=;
-        b=hEPCG2un8FH9qImCrJqicTU+VJY6N/dn8Vx214yYX5jTIIQO7JoERJ1eR3Jkhj9V4/Ti/R
-        SG7as2v78lmp83DCYPgalSSV8hv90SSVnyRs71ktVW1GDHLbBgWoimuqaP+0LbfLZtPaZm
-        GZcRqTA+v8cOCm1Fna4Vj5eAdy3BQOKDSRHu0faEku/nIgNErV57rBf7FKhxn8vJFITvtV
-        ZI4L4fobzqX25UN2isZHvaNPI8/SvShskRbcvRyNurbf+OA5gbU02GN3XO4NZhIeUn+zjM
-        dR+/CAl/QmdJ/Tc8p8/16dRiok0JXoUztki/dlYYg9SmRfnHP6EPYkUF1qoNSQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603752394;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=EMtaedWvWnlr8FoOiOT3OcNE6XEhbc2X12bxau6EyFI=;
-        b=/0MZUIzr/yPzfalGB8dky2AgJXYoZCXz552/jb8OMkHDcMOCA4OXvbG8ORFq2uO0pVJiLx
-        3TDr0Q1bRzyGSmAw==
-To:     Jakub Kicinski <kuba@kernel.org>
-Cc:     Jacob Keller <jacob.e.keller@intel.com>,
-        Marcelo Tosatti <mtosatti@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
-In-Reply-To: <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <20201026173012.GA377978@fuller.cnet> <875z6w4xt4.fsf@nanos.tec.linutronix.de> <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com> <87v9ew3fzd.fsf@nanos.tec.linutronix.de> <85b5f53e-5be2-beea-269a-f70029bea298@intel.com> <87lffs3bd6.fsf@nanos.tec.linutronix.de> <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Date:   Mon, 26 Oct 2020 23:46:34 +0100
-Message-ID: <878sbs38s5.fsf@nanos.tec.linutronix.de>
+        bh=QZENRY/OqurIFQi4CLnDtE3iXJd2mbvXnYEHQia0UHw=;
+        b=Z0qtGEy2pivgy8wWXeIWYPwmfNSoGdE3/DnL4bk6McU6Xau/5HzZTHNVgZbdVR7nnMxJDk
+        a4P3yzXijYwbKKXzpz89nrun1y5ZtHJpOmxal1ON0nQRDljAj+Y8b0uQT/A9HW5hHahYDE
+        aRvg8rLdAtTawIE+nHfRnrK86DZtBNc=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-422-0DUL1UT2NrKgBZJ7BUWjsA-1; Mon, 26 Oct 2020 18:48:07 -0400
+X-MC-Unique: 0DUL1UT2NrKgBZJ7BUWjsA-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.phx2.redhat.com [10.5.11.15])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 1268C186DD25;
+        Mon, 26 Oct 2020 22:48:06 +0000 (UTC)
+Received: from [10.64.54.78] (vpn2-54-78.bne.redhat.com [10.64.54.78])
+        by smtp.corp.redhat.com (Postfix) with ESMTPS id 636BC55781;
+        Mon, 26 Oct 2020 22:48:04 +0000 (UTC)
+Reply-To: Gavin Shan <gshan@redhat.com>
+Subject: Re: [PATCH 1/3] KVM: arm64: Check if 52-bits PA is enabled
+To:     Marc Zyngier <maz@kernel.org>
+Cc:     kvmarm@lists.cs.columbia.edu, linux-kernel@vger.kernel.org,
+        will@kernel.org, alexandru.elisei@arm.com
+References: <20201025002739.5804-1-gshan@redhat.com>
+ <20201025002739.5804-2-gshan@redhat.com> <871rhmpr92.wl-maz@kernel.org>
+ <333451bd-4730-4ebb-f76c-28fa5d0e1f7d@redhat.com>
+ <a676f540d19fba2468fd1a801948826a@kernel.org>
+From:   Gavin Shan <gshan@redhat.com>
+Message-ID: <11639356-397a-4a25-879a-0c91d9845041@redhat.com>
+Date:   Tue, 27 Oct 2020 09:48:01 +1100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.2.0
 MIME-Version: 1.0
-Content-Type: text/plain
+In-Reply-To: <a676f540d19fba2468fd1a801948826a@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.15
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26 2020 at 15:13, Jakub Kicinski wrote:
-> On Mon, 26 Oct 2020 22:50:45 +0100 Thomas Gleixner wrote:
->> But I still think that for curing that isolation stuff we want at least
->> some information from the driver. Alternative solution would be to grant
->> the allocation of interrupts and queues and have some sysfs knob to shut
->> down queues at runtime. If that shutdown results in releasing the queue
->> interrupt (via free_irq()) then the vector exhaustion problem goes away.
->> 
->> Needs more thought and information (for network oblivious folks like
->> me).
->
-> One piece of information that may be useful is that even tho the RX
-> packets may be spread semi-randomly the user space can still control
-> which queues are included in the mechanism. There is an indirection
-> table in the HW which allows to weigh queues differently, or exclude
-> selected queues from the spreading. Other mechanisms exist to filter
-> flows onto specific queues.
->
-> IOW just because a core has an queue/interrupt does not mean that
-> interrupt will ever fire, provided its excluded from RSS.
->
-> Another piece is that by default we suggest drivers allocate 8 RX
-> queues, and online_cpus TX queues. The number of queues can be
-> independently controlled via ethtool -L. Drivers which can't support
-> separate queues will default to online_cpus queue pairs, and let
-> ethtool -L only set the "combined" parameter.
->
-> There are drivers which always allocate online_cpus interrupts, 
-> and then some of them will go unused if #qs < #cpus.
+On 10/26/20 7:53 PM, Marc Zyngier wrote:
+> On 2020-10-25 22:23, Gavin Shan wrote:
+>> Hi Marc,
+>>
+>> On 10/25/20 8:52 PM, Marc Zyngier wrote:
+>>> On Sun, 25 Oct 2020 01:27:37 +0100,
+>>> Gavin Shan <gshan@redhat.com> wrote:
+>>>>
+>>>> The 52-bits physical address is disabled until CONFIG_ARM64_PA_BITS_52
+>>>> is chosen. This uses option for that check, to avoid the unconditional
+>>>> check on PAGE_SHIFT in the hot path and thus save some CPU cycles.
+>>>
+>>> PAGE_SHIFT is known at compile time, and this code is dropped by the
+>>> compiler if the selected page size is not 64K. This patch really only
+>>> makes the code slightly less readable and the "CPU cycles" argument
+>>> doesn't hold at all.
+>>>
+>>> So what are you trying to solve exactly?
+>>>
+>>
+>> There are two points covered by the patch: (1) The 52-bits physical address
+>> is visible only when CONFIG_ARM64_PA_BITS_52 is enabled in arch/arm64 code.
+>> The code looks consistent with this option used here. (2) I had the assumption
+>> that gcc doesn't optimize the code and PAGE_SHIFT is always checked in order
+>> to get higher 4 physical address bits, but you said gcc should optimize the
+>> code accordingly. However, it would be still nice to make the code explicit.
+> 
+> Conditional compilation only results in more breakages, specially for configs
+> that hardly anyone uses (big-endian and 64K pages are the two that bitrot very
+> quickly).
+> 
+> So if anything can build without #ifdef, I'll take that anytime. If the compiler
+> doesn't optimize it away, let's fix the compiler.
+> 
 
-Thanks for the enlightment.
+Ok. PATCH[1] and PATCH[2] have been dropped in v2.
 
-> My unpopular opinion is that for networking devices all the heuristics
-> we may come up with are going to be a dead end.
+Cheers,
+Gavin
 
-I agree. Heuristics suck.
-
-> We need an explicit API to allow users placing queues on cores, and
-> use managed IRQs for data queues. (I'm assuming that managed IRQs will
-> let us reliably map a MSI-X vector to a core :))
-
-Yes, they allow you to do that. That will need some tweaks to theway
-they work today (coming from the strict block mq semantics). You also
-need to be aware that managed irqs have also strict semantics vs. CPU
-hotplug. If the last CPU in the managed affinity set goes down then the
-interrupt is shut down by the irq core which means that you need to
-quiesce the associated queue before that happens. When the first CPU
-comes online again the interrupt is reenabled, so the queue should be
-able to handle it or has ensured that the device does not raise one
-before it is able to do so.
-
-Thanks,
-
-        tglx
