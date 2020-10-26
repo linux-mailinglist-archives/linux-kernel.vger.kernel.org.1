@@ -2,88 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C38942986A1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:55:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DAF7C2986A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 06:57:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769906AbgJZFyW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 01:54:22 -0400
-Received: from mx2.suse.de ([195.135.220.15]:51292 "EHLO mx2.suse.de"
+        id S1770005AbgJZFzs (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 01:55:48 -0400
+Received: from mail.kernel.org ([198.145.29.99]:51450 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1769866AbgJZFyV (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 01:54:21 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 47A4CADA2;
-        Mon, 26 Oct 2020 05:54:20 +0000 (UTC)
-From:   Jiri Slaby <jslaby@suse.cz>
-To:     gregkh@linuxfoundation.org
-Cc:     linux-serial@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Jiri Slaby <jslaby@suse.cz>, stable@vger.kernel.org,
-        Fabian Vogt <fvogt@suse.com>
-Subject: [PATCH] vt_ioctl: fix GIO_UNIMAP regression
-Date:   Mon, 26 Oct 2020 06:54:19 +0100
-Message-Id: <20201026055419.30518-1-jslaby@suse.cz>
-X-Mailer: git-send-email 2.29.1
+        id S1769991AbgJZFzr (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 01:55:47 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 147FB20878;
+        Mon, 26 Oct 2020 05:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603691746;
+        bh=NwqYhZ/xDwNlhSXG8TGaA11zmrf4vmrr4/1MfvVTn78=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=husNgAH+wT70FQ1Oz7EZf1cZWztgnDzIjE4uPsF1sIQrAN4Vbcl4cZfpcORdQXuWn
+         LwkmzsbGzoZmGsWfOC4ScJeeydwXO/EhD3Yvyay/evQc611z/vOPBhxU1BDNX5pJEc
+         G3TQD4QvGUVNLOc6DytEwxrjUTRCvhWhRIo6U+wo=
+Date:   Mon, 26 Oct 2020 06:55:42 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Jonathan Corbet <corbet@lwn.net>
+Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 01/56] scripts: kernel-doc: fix typedef parsing
+Message-ID: <20201026065542.709457a2@coco.lan>
+In-Reply-To: <20201023112226.4035e3f7@lwn.net>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+        <d0b2146c4ced3121342583bb3d962628fc96759b.1603469755.git.mchehab+huawei@kernel.org>
+        <20201023112226.4035e3f7@lwn.net>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 5ba127878722, we shuffled with the check of 'perm'. But my
-brain somehow inverted the condition in 'do_unimap_ioctl' (I thought
-it is ||, not &&), so GIO_UNIMAP stopped working completely.
+Em Fri, 23 Oct 2020 11:22:26 -0600
+Jonathan Corbet <corbet@lwn.net> escreveu:
 
-Move the 'perm' checks back to do_unimap_ioctl and do them right again.
-In fact, this reverts this part of code to the pre-5ba127878722 state.
-Except 'perm' is now a bool.
+> On Fri, 23 Oct 2020 18:32:48 +0200
+> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
+> 
+> > The include/linux/genalloc.h file defined this typedef:
+> > 
+> > 	typedef unsigned long (*genpool_algo_t)(unsigned long *map,unsigned long size,unsigned long start,unsigned int nr,void *data, struct gen_pool *pool, unsigned long start_addr);
+> > 
+> > Because it has a type composite of two words (unsigned long),
+> > the parser gets the typedef name wrong:
+> > 
+> > .. c:macro:: long
+> > 
+> >    **Typedef**: Allocation callback function type definition
+> > 
+> > Fix the regex in order to accept composite types when
+> > defining a typedef for a function pointer.
+> > 
+> > Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> > ---
+> >  scripts/kernel-doc | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> > 
+> > diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+> > index 99cd8418ff8a..311d213ee74d 100755
+> > --- a/scripts/kernel-doc
+> > +++ b/scripts/kernel-doc
+> > @@ -1438,7 +1438,7 @@ sub dump_typedef($$) {
+> >      $x =~ s@/\*.*?\*/@@gos;	# strip comments.
+> >  
+> >      # Parse function prototypes
+> > -    if ($x =~ /typedef\s+(\w+)\s*\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
+> > +    if ($x =~ /typedef\s+(\w+\s*){1,}\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||  
+> 
+> I sure wish we could find a way to make all these regexes more
+> understandable and maintainable.  Reviewing a change like this is ... fun.
+> 
+> Anyway, it seems to work, but it does now include trailing whitespace in
+> the type portion.  So, for example, from include/linux/xarray.h:
+> 
+>   typedef void (*xa_update_node_t)(struct xa_node *node);
+> 
+> The type is parsed as "void " where it was "void" before.  The only ill
+> effect I can see is that some non-breaking spaces get inserted into the
+> HTML output, but perhaps it's worth stripping off that trailing space
+> anyway?
 
-Signed-off-by: Jiri Slaby <jslaby@suse.cz>
-Fixes: 5ba127878722 ("vt_ioctl: move perm checks level up")
-Cc: stable@vger.kernel.org
-Reported-by:  Fabian Vogt <fvogt@suse.com>
----
- drivers/tty/vt/vt_ioctl.c | 11 +++++------
- 1 file changed, 5 insertions(+), 6 deletions(-)
+Yeah, this is one of the issues. There's another one, tough. While
+the above regex recognizes the typedef identifier, it only gets
+the last word of "unsigned long", in the case of something like:
 
-diff --git a/drivers/tty/vt/vt_ioctl.c b/drivers/tty/vt/vt_ioctl.c
-index 0a33b8ababe3..2321775ef098 100644
---- a/drivers/tty/vt/vt_ioctl.c
-+++ b/drivers/tty/vt/vt_ioctl.c
-@@ -549,7 +549,7 @@ static int vt_io_fontreset(struct console_font_op *op)
- }
+	typedef unsigned long (*genpool_algo_t)(unsigned long *map);
+
+Here, we have no option but to use a hidden group, e. g. using
+this regex:
+
+	typedef\s+((?:\w+\s*){1,})\(\*\s*(\w\S+)\s*\)\s*\((.*)\);
+
+I'm enclosing a second version with the above. 
+
+Yeah, reviewing it is even funnier, but regex101 can be used to
+double-check what the regex is doing:
+
+	https://regex101.com/r/bPTm18/2
+
+Thanks,
+Mauro
+
+[PATCH] scripts: kernel-doc: fix typedef parsing
+
+The include/linux/genalloc.h file defined this typedef:
+
+	typedef unsigned long (*genpool_algo_t)(unsigned long *map,unsigned long size,unsigned long start,unsigned int nr,void *data, struct gen_pool *pool, unsigned long start_addr);
+
+Because it has a type composite of two words (unsigned long),
+the parser gets the typedef name wrong:
+
+.. c:macro:: long
+
+   **Typedef**: Allocation callback function type definition
+
+Fix the regex in order to accept composite types when
+defining a typedef for a function pointer.
+
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/scripts/kernel-doc b/scripts/kernel-doc
+index 99cd8418ff8a..b37f3cf8a331 100755
+--- a/scripts/kernel-doc
++++ b/scripts/kernel-doc
+@@ -1438,13 +1438,14 @@ sub dump_typedef($$) {
+     $x =~ s@/\*.*?\*/@@gos;	# strip comments.
  
- static inline int do_unimap_ioctl(int cmd, struct unimapdesc __user *user_ud,
--		struct vc_data *vc)
-+		bool perm, struct vc_data *vc)
- {
- 	struct unimapdesc tmp;
+     # Parse function prototypes
+-    if ($x =~ /typedef\s+(\w+)\s*\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
++    if ($x =~ /typedef\s+((?:\w+\s*){1,})\(\*\s*(\w\S+)\s*\)\s*\((.*)\);/ ||
+ 	$x =~ /typedef\s+(\w+)\s*(\w\S+)\s*\s*\((.*)\);/) {
  
-@@ -557,9 +557,11 @@ static inline int do_unimap_ioctl(int cmd, struct unimapdesc __user *user_ud,
- 		return -EFAULT;
- 	switch (cmd) {
- 	case PIO_UNIMAP:
-+		if (!perm)
-+			return -EPERM;
- 		return con_set_unimap(vc, tmp.entry_ct, tmp.entries);
- 	case GIO_UNIMAP:
--		if (fg_console != vc->vc_num)
-+		if (!perm && fg_console != vc->vc_num)
- 			return -EPERM;
- 		return con_get_unimap(vc, tmp.entry_ct, &(user_ud->entry_ct),
- 				tmp.entries);
-@@ -639,10 +641,7 @@ static int vt_io_ioctl(struct vc_data *vc, unsigned int cmd, void __user *up,
+ 	# Function typedefs
+ 	$return_type = $1;
+ 	$declaration_name = $2;
+ 	my $args = $3;
++	$return_type =~ s/\s+$//;
  
- 	case PIO_UNIMAP:
- 	case GIO_UNIMAP:
--		if (!perm)
--			return -EPERM;
--
--		return do_unimap_ioctl(cmd, up, vc);
-+		return do_unimap_ioctl(cmd, up, perm, vc);
+ 	create_parameterlist($args, ',', $file, $declaration_name);
  
- 	default:
- 		return -ENOIOCTLCMD;
--- 
-2.29.1
 
