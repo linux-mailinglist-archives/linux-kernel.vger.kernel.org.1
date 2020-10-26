@@ -2,39 +2,41 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3D1A299C25
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:56:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 839C9299C2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:56:17 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2411001AbgJZXzz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:55:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:59816 "EHLO mail.kernel.org"
+        id S2411056AbgJZX4L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:56:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410368AbgJZXyO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:54:14 -0400
+        id S2410374AbgJZXyQ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:54:16 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1923E221F8;
-        Mon, 26 Oct 2020 23:54:13 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6435B21D7B;
+        Mon, 26 Oct 2020 23:54:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756453;
-        bh=/yDi3gbshJFjAfad5LA1t5ZG6Qb0CXX2KU/HWcpfXSU=;
+        s=default; t=1603756455;
+        bh=H6ry7Os++r5kVQ9RTuDztQX63AwHHBSJQ66YLrCVN0Y=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zWAnFK+HLO2+hJ+SYWlpEHncHAzcZfGKYTb++laeeN3tNBdwFBxvbjb8QTysDz+SF
-         TPI7fgoq/BgFT3HH8Vg8L7J8H9Wl1Pop5+askc0axtuc6El06PRm9hkmdZcgIgo++a
-         S45fNMhH3o9x1iWDuxZK0YJKfDTzBcoqJnI1ts5I=
+        b=AftVZ+sTTDOXlfqnqi2i6DkTL4THMUL5g/ODArAQbLokTodMrL1uG9V3pmfX0juBT
+         0g+YWXhBYTQdhDYAidEPpyzu+ln1SNlD9jKHatWSWFux0TxwIcCWDhssT5vL/r0blC
+         g2BIyIimkAcj3zVU3BvqYc0Rj7jWvnP4EMEr8Cfw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Hou Tao <houtao1@huawei.com>, Chuck Lever <chuck.lever@oracle.com>,
-        "J . Bruce Fields" <bfields@redhat.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 104/132] nfsd: rename delegation related tracepoints to make them less confusing
-Date:   Mon, 26 Oct 2020 19:51:36 -0400
-Message-Id: <20201026235205.1023962-104-sashal@kernel.org>
+Cc:     =?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+        Tomasz Maciej Nowak <tmn505@gmail.com>,
+        Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
+        Rob Herring <robh@kernel.org>, Sasha Levin <sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.8 105/132] phy: marvell: comphy: Convert internal SMCC firmware return codes to errno
+Date:   Mon, 26 Oct 2020 19:51:37 -0400
+Message-Id: <20201026235205.1023962-105-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 Content-Transfer-Encoding: 8bit
@@ -42,72 +44,111 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Hou Tao <houtao1@huawei.com>
+From: Pali Rohár <pali@kernel.org>
 
-[ Upstream commit 3caf91757ced158e6c4a44d8b105bd7b3e1767d8 ]
+[ Upstream commit ea17a0f153af2cd890e4ce517130dcccaa428c13 ]
 
-Now when a read delegation is given, two delegation related traces
-will be printed:
+Driver ->power_on and ->power_off callbacks leaks internal SMCC firmware
+return codes to phy caller. This patch converts SMCC error codes to
+standard linux errno codes. Include file linux/arm-smccc.h already provides
+defines for SMCC error codes, so use them instead of custom driver defines.
+Note that return value is signed 32bit, but stored in unsigned long type
+with zero padding.
 
-    nfsd_deleg_open: client 5f45b854:e6058001 stateid 00000030:00000001
-    nfsd_deleg_none: client 5f45b854:e6058001 stateid 0000002f:00000001
-
-Although the intention is to let developers know two stateid are
-returned, the traces are confusing about whether or not a read delegation
-is handled out. So renaming trace_nfsd_deleg_none() to trace_nfsd_open()
-and trace_nfsd_deleg_open() to trace_nfsd_deleg_read() to make
-the intension clearer.
-
-The patched traces will be:
-
-    nfsd_deleg_read: client 5f48a967:b55b21cd stateid 00000003:00000001
-    nfsd_open: client 5f48a967:b55b21cd stateid 00000002:00000001
-
-Suggested-by: Chuck Lever <chuck.lever@oracle.com>
-Signed-off-by: Hou Tao <houtao1@huawei.com>
-Signed-off-by: J. Bruce Fields <bfields@redhat.com>
+Tested-by: Tomasz Maciej Nowak <tmn505@gmail.com>
+Link: https://lore.kernel.org/r/20200902144344.16684-2-pali@kernel.org
+Signed-off-by: Pali Rohár <pali@kernel.org>
+Signed-off-by: Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>
+Reviewed-by: Rob Herring <robh@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfsd/nfs4state.c | 4 ++--
- fs/nfsd/trace.h     | 4 ++--
- 2 files changed, 4 insertions(+), 4 deletions(-)
+ drivers/phy/marvell/phy-mvebu-a3700-comphy.c | 14 +++++++++++---
+ drivers/phy/marvell/phy-mvebu-cp110-comphy.c | 14 +++++++++++---
+ 2 files changed, 22 insertions(+), 6 deletions(-)
 
-diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
-index cea682ce8aa12..2d568d0e55f78 100644
---- a/fs/nfsd/nfs4state.c
-+++ b/fs/nfsd/nfs4state.c
-@@ -5100,7 +5100,7 @@ nfs4_open_delegation(struct svc_fh *fh, struct nfsd4_open *open,
+diff --git a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+index 1a138be8bd6a0..810f25a476321 100644
+--- a/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
++++ b/drivers/phy/marvell/phy-mvebu-a3700-comphy.c
+@@ -26,7 +26,6 @@
+ #define COMPHY_SIP_POWER_ON			0x82000001
+ #define COMPHY_SIP_POWER_OFF			0x82000002
+ #define COMPHY_SIP_PLL_LOCK			0x82000003
+-#define COMPHY_FW_NOT_SUPPORTED			(-1)
  
- 	memcpy(&open->op_delegate_stateid, &dp->dl_stid.sc_stateid, sizeof(dp->dl_stid.sc_stateid));
+ #define COMPHY_FW_MODE_SATA			0x1
+ #define COMPHY_FW_MODE_SGMII			0x2
+@@ -112,10 +111,19 @@ static int mvebu_a3700_comphy_smc(unsigned long function, unsigned long lane,
+ 				  unsigned long mode)
+ {
+ 	struct arm_smccc_res res;
++	s32 ret;
  
--	trace_nfsd_deleg_open(&dp->dl_stid.sc_stateid);
-+	trace_nfsd_deleg_read(&dp->dl_stid.sc_stateid);
- 	open->op_delegate_type = NFS4_OPEN_DELEGATE_READ;
- 	nfs4_put_stid(&dp->dl_stid);
- 	return;
-@@ -5217,7 +5217,7 @@ nfsd4_process_open2(struct svc_rqst *rqstp, struct svc_fh *current_fh, struct nf
- 	nfs4_open_delegation(current_fh, open, stp);
- nodeleg:
- 	status = nfs_ok;
--	trace_nfsd_deleg_none(&stp->st_stid.sc_stateid);
-+	trace_nfsd_open(&stp->st_stid.sc_stateid);
- out:
- 	/* 4.1 client trying to upgrade/downgrade delegation? */
- 	if (open->op_delegate_type == NFS4_OPEN_DELEGATE_NONE && dp &&
-diff --git a/fs/nfsd/trace.h b/fs/nfsd/trace.h
-index 1861db1bdc670..99bf07800cd09 100644
---- a/fs/nfsd/trace.h
-+++ b/fs/nfsd/trace.h
-@@ -289,8 +289,8 @@ DEFINE_STATEID_EVENT(layout_recall_done);
- DEFINE_STATEID_EVENT(layout_recall_fail);
- DEFINE_STATEID_EVENT(layout_recall_release);
+ 	arm_smccc_smc(function, lane, mode, 0, 0, 0, 0, 0, &res);
++	ret = res.a0;
  
--DEFINE_STATEID_EVENT(deleg_open);
--DEFINE_STATEID_EVENT(deleg_none);
-+DEFINE_STATEID_EVENT(open);
-+DEFINE_STATEID_EVENT(deleg_read);
- DEFINE_STATEID_EVENT(deleg_break);
- DEFINE_STATEID_EVENT(deleg_recall);
+-	return res.a0;
++	switch (ret) {
++	case SMCCC_RET_SUCCESS:
++		return 0;
++	case SMCCC_RET_NOT_SUPPORTED:
++		return -EOPNOTSUPP;
++	default:
++		return -EINVAL;
++	}
+ }
+ 
+ static int mvebu_a3700_comphy_get_fw_mode(int lane, int port,
+@@ -220,7 +228,7 @@ static int mvebu_a3700_comphy_power_on(struct phy *phy)
+ 	}
+ 
+ 	ret = mvebu_a3700_comphy_smc(COMPHY_SIP_POWER_ON, lane->id, fw_param);
+-	if (ret == COMPHY_FW_NOT_SUPPORTED)
++	if (ret == -EOPNOTSUPP)
+ 		dev_err(lane->dev,
+ 			"unsupported SMC call, try updating your firmware\n");
+ 
+diff --git a/drivers/phy/marvell/phy-mvebu-cp110-comphy.c b/drivers/phy/marvell/phy-mvebu-cp110-comphy.c
+index e41367f36ee1c..53ad127b100fe 100644
+--- a/drivers/phy/marvell/phy-mvebu-cp110-comphy.c
++++ b/drivers/phy/marvell/phy-mvebu-cp110-comphy.c
+@@ -123,7 +123,6 @@
+ 
+ #define COMPHY_SIP_POWER_ON	0x82000001
+ #define COMPHY_SIP_POWER_OFF	0x82000002
+-#define COMPHY_FW_NOT_SUPPORTED	(-1)
+ 
+ /*
+  * A lane is described by the following bitfields:
+@@ -273,10 +272,19 @@ static int mvebu_comphy_smc(unsigned long function, unsigned long phys,
+ 			    unsigned long lane, unsigned long mode)
+ {
+ 	struct arm_smccc_res res;
++	s32 ret;
+ 
+ 	arm_smccc_smc(function, phys, lane, mode, 0, 0, 0, 0, &res);
++	ret = res.a0;
+ 
+-	return res.a0;
++	switch (ret) {
++	case SMCCC_RET_SUCCESS:
++		return 0;
++	case SMCCC_RET_NOT_SUPPORTED:
++		return -EOPNOTSUPP;
++	default:
++		return -EINVAL;
++	}
+ }
+ 
+ static int mvebu_comphy_get_mode(bool fw_mode, int lane, int port,
+@@ -819,7 +827,7 @@ static int mvebu_comphy_power_on(struct phy *phy)
+ 	if (!ret)
+ 		return ret;
+ 
+-	if (ret == COMPHY_FW_NOT_SUPPORTED)
++	if (ret == -EOPNOTSUPP)
+ 		dev_err(priv->dev,
+ 			"unsupported SMC call, try updating your firmware\n");
  
 -- 
 2.25.1
