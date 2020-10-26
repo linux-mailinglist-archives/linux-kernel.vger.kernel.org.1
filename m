@@ -2,52 +2,115 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D20D62991C4
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:04:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EE9272991C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:04:39 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784756AbgJZQE0 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:04:26 -0400
-Received: from mail.kernel.org ([198.145.29.99]:49184 "EHLO mail.kernel.org"
+        id S1784735AbgJZQEW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:04:22 -0400
+Received: from mail.kernel.org ([198.145.29.99]:49424 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784723AbgJZQD0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:03:26 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        id S1784724AbgJZQDu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:03:50 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id F2AFF22400;
-        Mon, 26 Oct 2020 16:03:25 +0000 (UTC)
-Date:   Mon, 26 Oct 2020 12:03:23 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Masami Hiramatsu <mhiramat@kernel.org>
-Cc:     Alexander Gordeev <agordeev@linux.ibm.com>,
-        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Subject: Re: [PATCH] selftests/ftrace: remove _do_fork() leftovers
-Message-ID: <20201026120323.14058f56@gandalf.local.home>
-In-Reply-To: <20201024103112.64372203e6729279e9ef92f5@kernel.org>
-References: <1603443123-17457-1-git-send-email-agordeev@linux.ibm.com>
-        <20201023093523.65c495f8@gandalf.local.home>
-        <20201024103112.64372203e6729279e9ef92f5@kernel.org>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        by mail.kernel.org (Postfix) with ESMTPSA id 1800722404;
+        Mon, 26 Oct 2020 16:03:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603728229;
+        bh=h5o3KPrk9jciKwrxsOK8xD5GWwug93Z9pyZ535cbSrE=;
+        h=From:To:Cc:Subject:Date:From;
+        b=aNA7OSHiRYPuMjVVMjUdSIVv6a1NrDK92k47wbUdSPoQOvkIlKpPsX1BnQg7JjVLE
+         aQTX2P85AAeknQA5/AXXy54ddpRIOs7+5ZbrdHoAuMjGUPQ/3Wzn8ijVUQoYOz4URS
+         UwFP3cBGkMFDwhhJELdCopkeTSErByPu/zp9lZvA=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>
+Cc:     Arnd Bergmann <arnd@arndb.de>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Marc Zyngier <maz@kernel.org>,
+        Stephen Boyd <swboyd@chromium.org>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        stable@vger.kernel.org, Marc Zyngier <marc.zyngier@arm.com>,
+        Sai Prakash Ranjan <saiprakash.ranjan@codeaurora.org>,
+        Steven Price <steven.price@arm.com>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: [PATCH 1/4] arm64: cpu_errata: fix override-init warnings
+Date:   Mon, 26 Oct 2020 17:03:28 +0100
+Message-Id: <20201026160342.3705327-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, 24 Oct 2020 10:31:12 +0900
-Masami Hiramatsu <mhiramat@kernel.org> wrote:
+From: Arnd Bergmann <arnd@arndb.de>
 
-> > Perhaps we should have:
-> > 
-> > 	# older kernels have do_fork, but newer kernels have kernel_clone
-> > 	echo kernel_clone >> set_ftrace_filter || echo *do_fork >> set_ftrace_filter  
-> 
-> Good catch. BTW, can we check the filter-bility by grep the pattern from set_ftrace_filter?
+The CPU table causes a handful of warnings because of fields that
+have more than one initializer, e.g.
 
-I think we need to use /proc/kallsyms, as the kprobe code should still work
-if function tracing is disabled, and the function filter files will not
-exist.
+arch/arm64/kernel/cpu_errata.c:127:13: warning: initialized field overwritten [-Woverride-init]
+  127 |  .matches = is_affected_midr_range,   \
+      |             ^~~~~~~~~~~~~~~~~~~~~~
+arch/arm64/kernel/cpu_errata.c:139:2: note: in expansion of macro 'CAP_MIDR_RANGE'
+  139 |  CAP_MIDR_RANGE(model, v_min, r_min, v_max, r_max)
+      |  ^~~~~~~~~~~~~~
+arch/arm64/kernel/cpu_errata.c:151:2: note: in expansion of macro 'ERRATA_MIDR_RANGE'
+  151 |  ERRATA_MIDR_RANGE(model, var, rev, var, rev)
+      |  ^~~~~~~~~~~~~~~~~
+arch/arm64/kernel/cpu_errata.c:317:3: note: in expansion of macro 'ERRATA_MIDR_REV'
+  317 |   ERRATA_MIDR_REV(MIDR_BRAHMA_B53, 0, 0),
+      |   ^~~~~~~~~~~~~~~
 
--- Steve
+Address all of these by removing the extra initializer that
+has no effect on the output.
+
+Fixes: 1cf45b8fdbb8 ("arm64: apply ARM64_ERRATUM_843419 workaround for Brahma-B53 core")
+Fixes: bf87bb0881d0 ("arm64: Allow booting of late CPUs affected by erratum 1418040")
+Fixes: 93916beb7014 ("arm64: Enable workaround for Cavium TX2 erratum 219 when running SMT")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+---
+ arch/arm64/kernel/cpu_errata.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
+
+diff --git a/arch/arm64/kernel/cpu_errata.c b/arch/arm64/kernel/cpu_errata.c
+index 24d75af344b1..2321f52e396f 100644
+--- a/arch/arm64/kernel/cpu_errata.c
++++ b/arch/arm64/kernel/cpu_errata.c
+@@ -307,13 +307,11 @@ static const struct midr_range erratum_845719_list[] = {
+ static const struct arm64_cpu_capabilities erratum_843419_list[] = {
+ 	{
+ 		/* Cortex-A53 r0p[01234] */
+-		.matches = is_affected_midr_range,
+ 		ERRATA_MIDR_REV_RANGE(MIDR_CORTEX_A53, 0, 0, 4),
+ 		MIDR_FIXED(0x4, BIT(8)),
+ 	},
+ 	{
+ 		/* Brahma-B53 r0p[0] */
+-		.matches = is_affected_midr_range,
+ 		ERRATA_MIDR_REV(MIDR_BRAHMA_B53, 0, 0),
+ 	},
+ 	{},
+@@ -475,7 +473,7 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+ 	{
+ 		.desc = "ARM erratum 1418040",
+ 		.capability = ARM64_WORKAROUND_1418040,
+-		ERRATA_MIDR_RANGE_LIST(erratum_1418040_list),
++		CAP_MIDR_RANGE_LIST(erratum_1418040_list),
+ 		/*
+ 		 * We need to allow affected CPUs to come in late, but
+ 		 * also need the non-affected CPUs to be able to come
+@@ -504,8 +502,8 @@ const struct arm64_cpu_capabilities arm64_errata[] = {
+ 	{
+ 		.desc = "Cavium ThunderX2 erratum 219 (KVM guest sysreg trapping)",
+ 		.capability = ARM64_WORKAROUND_CAVIUM_TX2_219_TVM,
+-		ERRATA_MIDR_RANGE_LIST(tx2_family_cpus),
+ 		.matches = needs_tx2_tvm_workaround,
++		.midr_range_list = tx2_family_cpus,
+ 	},
+ 	{
+ 		.desc = "Cavium ThunderX2 erratum 219 (PRFM removal)",
+-- 
+2.27.0
+
