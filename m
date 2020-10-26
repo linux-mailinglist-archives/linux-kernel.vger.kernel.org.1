@@ -2,149 +2,119 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D9DBA29914B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:41:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 00F4929914E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:41:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784303AbgJZPlK (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:41:10 -0400
-Received: from new3-smtp.messagingengine.com ([66.111.4.229]:32831 "EHLO
-        new3-smtp.messagingengine.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1784294AbgJZPlJ (ORCPT
+        id S1784317AbgJZPlx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:41:53 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:49231 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1773432AbgJZPlw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:41:09 -0400
-Received: from compute6.internal (compute6.nyi.internal [10.202.2.46])
-        by mailnew.nyi.internal (Postfix) with ESMTP id 301E258017D;
-        Mon, 26 Oct 2020 11:41:08 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute6.internal (MEProxy); Mon, 26 Oct 2020 11:41:08 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cerno.tech; h=
-        date:from:to:cc:subject:message-id:references:mime-version
-        :content-type:in-reply-to; s=fm1; bh=hIJ+XvEyejnh6CcFJ2Y0M5v0wXA
-        yARTMLQfqwCwAJ8k=; b=RcFMe1aH5q8/fJXsvjpLKMa9KOBoLJiresNyiSKMloi
-        ELN3mlL7d+d1EpSWdgAQOoLA0zCjacGwUmEZGdSgENtyEGPdJ7fyD1+6b6K8X1V8
-        JzSuhoZvTaUMLt/C2LlkV4k9aaIduEbRzUHWNZ/ptCIMmX7jCrBQW8Ryo8BTlekk
-        0apDrR75xzX254S8yqoHimqtEo2ci2F/lEwLz4xnZJAKJ2AWqtJF46jupAEJo2PM
-        RQumH7Ma1IXg0F4N5OM7rnrRilcU5sdzIjHpqX5fvh59T+8Vc2w++bGc+yz3bwzW
-        DClX/qLTFSGrEMprW9ls6JdiyrGy/KY7CYg3s9zuMeg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-        messagingengine.com; h=cc:content-type:date:from:in-reply-to
-        :message-id:mime-version:references:subject:to:x-me-proxy
-        :x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; bh=hIJ+Xv
-        Eyejnh6CcFJ2Y0M5v0wXAyARTMLQfqwCwAJ8k=; b=MN+9PY6uokYY/5td/O2d4V
-        aGzccbEjW3FwAUYrBxSjCTIpNKx1jiXUWYU3K1yLhpOQBwLs2BLh/LUDAMTk1gg9
-        0XU4nJwqxi75ZMNSSgTnOoE6D2T3+ofXJSxqE32maVuYsbxAhVxT4g4xXQEoH64C
-        VD/5odok3mzTQlTMnpFeYHspi7X/ymBNLEhxdKdllQrovnwDOCCB+t1GyGzg7IMb
-        A1VS6fF/h8JHq9OpqHS7S3ddbKNkWFd/jQMHsox4vFrldfnEPFRnkou/GdZLbB8d
-        arfmTK46z/DG3dljJHut13vqPGfKlHR2TpTxGqX/27pwPSX5qZjaHWYD9lQPloMQ
-        ==
-X-ME-Sender: <xms:Eu6WX52uSZ6DQTpukfuUVIFbRj1FXjltNtKBjdvI3qTlWMfjbqsKjQ>
-    <xme:Eu6WXwGD8v7UsR8Ry3IkBVtzFpzbMKfVd7jYZlFTdKFy3HQR2vc1VCfnLrJfXLy37
-    8r7b1IQPYATGSdetGE>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedujedrkeejgdegfecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesghdtreertddtvdenucfhrhhomhepofgrgihimhgv
-    ucftihhprghrugcuoehmrgigihhmvgestggvrhhnohdrthgvtghhqeenucggtffrrghtth
-    gvrhhnpeelkeeghefhuddtleejgfeljeffheffgfeijefhgfeufefhtdevteegheeiheeg
-    udenucfkphepledtrdekledrieekrdejieenucevlhhushhtvghrufhiiigvpedtnecurf
-    grrhgrmhepmhgrihhlfhhrohhmpehmrgigihhmvgestggvrhhnohdrthgvtghh
-X-ME-Proxy: <xmx:Eu6WX54FQQmcuJZWyOgOLgApuWDr0oGc96D8mML83yIBB7uEmswvfA>
-    <xmx:Eu6WX23ERtKS3RChKng7mv8RMSdHNehS1uNQdTvHXJFGEwFy3YhwDw>
-    <xmx:Eu6WX8FUW_NWT-wr64s_7IdAprNsZDdAzeW_L0gVXLhuNVqMVBDK5Q>
-    <xmx:FO6WX6_Fr7TaZ1kKJVa2lUx8epieL1SrP2ZG9cKP-n3cZVe_-RZe8Q>
-Received: from localhost (lfbn-tou-1-1502-76.w90-89.abo.wanadoo.fr [90.89.68.76])
-        by mail.messagingengine.com (Postfix) with ESMTPA id EB966306467D;
-        Mon, 26 Oct 2020 11:41:05 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 16:41:04 +0100
-From:   Maxime Ripard <maxime@cerno.tech>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
-        Yong Deng <yong.deng@magewell.com>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Hans Verkuil <hverkuil@xs4all.nl>, kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 03/14] media: sun6i-csi: Support an optional dedicated
- memory pool
-Message-ID: <20201026154104.v32up7uh6oryqxaf@gilmour.lan>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-4-paul.kocialkowski@bootlin.com>
+        Mon, 26 Oct 2020 11:41:52 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603726911;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=XxTRL/KCZQNPaBl6z/BK7HxMO/ugsS28Pfq4Yc2zsNs=;
+        b=GblMsFohwZ4chyIQdbAxzkbcqeOtYLh1PhI4lBahZfkVcam39hpf6Akeu8+ffH0F5jIo61
+        lpyjOS879+ty4vEdDP84RnrenddT+dVs3VlRDL3b8cTPwvQ29CEQ+ptCbjvDSHq5BqqOO2
+        CzclUoXivYrDGHZo17ncNz18bf3rrmY=
+Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
+ [209.85.218.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-209-4Al0waNiPIGo4L4sgpS99A-1; Mon, 26 Oct 2020 11:41:48 -0400
+X-MC-Unique: 4Al0waNiPIGo4L4sgpS99A-1
+Received: by mail-ej1-f69.google.com with SMTP id ha4so1395141ejb.9
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:41:47 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=XxTRL/KCZQNPaBl6z/BK7HxMO/ugsS28Pfq4Yc2zsNs=;
+        b=Os63a0xJEcI+CaDveOljyWoMGsw79Pv2ayDyVeyoc6ljMBXLgolBXfWWFYmrFywxis
+         nj18nAWu36acRFrAfFnxIwWooMbTErkPjFeBVlojd/UBqWf67BOcUL3p+9U4iJ53HgkX
+         JGXE4dKeEcIJMNeZCrpd0JfkaGzHu8+neyLit5S0iLe6W4MD7h2YZfReejGtujqK7k3O
+         czclWNu7dlTXJpJL0o0Q58xVoGiKval/ifiX6KLd++exH3MeW0bhG7fLzGebZrzNLk3m
+         7lfj8HENahaGuIinbggpcXo2E0o60tcZjEHl8xW9HChie3EoJGltdoXizZyovMb3/9bm
+         vdww==
+X-Gm-Message-State: AOAM530eNO2mGr6MV+SO1NLHfBmj1qnN7eqYiaPUzw2qP+XPEBvBobER
+        ppyzFpcs/Wqkevwdm6t6Q3/4WI6wJQaCJPXpJ91F+5P8/6sBYwLRF6IdO54nmQ49F0bI6ydt5OQ
+        5tA99vdmfNcx2r/j1YP2fxGJR
+X-Received: by 2002:aa7:c647:: with SMTP id z7mr3542523edr.350.1603726906746;
+        Mon, 26 Oct 2020 08:41:46 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzijRjaL5cxTNnxce+CH5tVZ5Z7zUs0Eo2Y0iQEs1wVNkENTg7loIfaBSfL3fK8YefmAtAilg==
+X-Received: by 2002:aa7:c647:: with SMTP id z7mr3542449edr.350.1603726905798;
+        Mon, 26 Oct 2020 08:41:45 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id q3sm5421050edv.17.2020.10.26.08.41.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 08:41:45 -0700 (PDT)
+Subject: Re: [PATCH v6] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        mark gross <mgross@linux.intel.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20201006082618.209287-1-divya.bharathi@dell.com>
+ <101db8e3-70f0-4e85-b4b9-008995939b1a@redhat.com>
+ <DM6PR19MB26367BCFE51C45BC00D13F6BFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <7f40bc72-83cc-c265-ac46-9543f74d228a@redhat.com>
+Date:   Mon, 26 Oct 2020 16:41:44 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-        protocol="application/pgp-signature"; boundary="ftdwovwtsifdduwo"
-Content-Disposition: inline
-In-Reply-To: <20201023174546.504028-4-paul.kocialkowski@bootlin.com>
+In-Reply-To: <DM6PR19MB26367BCFE51C45BC00D13F6BFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+Hi,
 
---ftdwovwtsifdduwo
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 10/26/20 4:39 PM, Limonciello, Mario wrote:
+>> This was present in previous versions too, but I just noticed this are you
+>> sure that using
+>> .string.pointer is correct here? That seems wrong since the pointer gets
+>> allocated by
+>> the Linux ACPI core, so it is not under influence of the AML code?
+>>
+>> I think you want / need to use ".integer.value" here ?
+>>
+>> And maybe first do a type check, e.g.:
+>>
+>> 	if (obj->package.elements[CURRENT_VAL].type != ACPI_TYPE_INTEGER) {
+>> 		ret = -EINVAL;
+>> 		goto out;
+>> 	}
+>>
+>> Adding this type check will also show if I'm right that you should use
+>> .integer.value ...
+>>
+>> 	ret = snprintf(buf, PAGE_SIZE, "%lld\n", obj-
+> 
+> We'll need to double check this, but I'm pretty sure the firmware outputs
+> everything as a string.
 
-On Fri, Oct 23, 2020 at 07:45:35PM +0200, Paul Kocialkowski wrote:
-> This allows selecting a dedicated CMA memory pool (specified via
-> device-tree) instead of the default one.
->=20
-> Signed-off-by: Paul Kocialkowski <paul.kocialkowski@bootlin.com>
+Ok, in that case it should probably be printed as a "%s" though and not interpret
+the buffer-address which the kernel allocated for storing the string as an
+integer.
 
-Why would that be needed?
+And it would still be good to do the type-check for this, but then checking
+for a type of ACPI_TYPE_STRING.
 
-> ---
->  drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c | 8 ++++++++
->  1 file changed, 8 insertions(+)
->=20
-> diff --git a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c b/drivers=
-/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> index 28e89340fed9..5d2389a5cd17 100644
-> --- a/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> +++ b/drivers/media/platform/sunxi/sun6i-csi/sun6i_csi.c
-> @@ -16,6 +16,7 @@
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/of_device.h>
-> +#include <linux/of_reserved_mem.h>
->  #include <linux/platform_device.h>
->  #include <linux/pm_runtime.h>
->  #include <linux/regmap.h>
-> @@ -849,6 +850,12 @@ static int sun6i_csi_resource_request(struct sun6i_c=
-si_dev *sdev,
->  		return PTR_ERR(sdev->regmap);
->  	}
-> =20
-> +	ret =3D of_reserved_mem_device_init(&pdev->dev);
-> +	if (ret && ret !=3D -ENODEV) {
-> +		dev_err(&pdev->dev, "Unable to init reserved memory\n");
-> +		return ret;
-> +	}
-> +
->  	sdev->clk_mod =3D devm_clk_get(&pdev->dev, "mod");
+Regards,
 
-If that clk_get or any subsequent function fail you'll end up leaking
-whatever the initialization of the reserved memory has allocated
+Hans
 
-Maxime
-
---ftdwovwtsifdduwo
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCX5buEAAKCRDj7w1vZxhR
-xbklAP9BmQpfRZjvnhSiQAttauRB1rDZXJo4lmDdUgbccMXk7gEAyHtNPq/k1qSJ
-hGynIa7hp7ldH2sMhWh5Is3l5nC52Q0=
-=Mnvp
------END PGP SIGNATURE-----
-
---ftdwovwtsifdduwo--
