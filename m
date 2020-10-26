@@ -2,188 +2,168 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 88D82298951
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:16:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5BCCB298953
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:16:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769184AbgJZJQO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:16:14 -0400
-Received: from mail.kernel.org ([198.145.29.99]:33602 "EHLO mail.kernel.org"
+        id S1420251AbgJZJQ2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:16:28 -0400
+Received: from mail.kernel.org ([198.145.29.99]:33864 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1730488AbgJZJQM (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:16:12 -0400
-Received: from kernel.org (unknown [87.70.96.83])
+        id S1725849AbgJZJQ1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:16:27 -0400
+Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B98A52076D;
-        Mon, 26 Oct 2020 09:15:59 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 953FD207C4;
+        Mon, 26 Oct 2020 09:16:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603703772;
-        bh=pop+GQ7xmiCTdiMy7B7WjKex9h5Ro/VhE9OJ7tV4F50=;
-        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-        b=QcsGfbDXA790Gjo2jSURCFd11bM6efKFvKFsUWyXN44//16ZrE/paF3TuAJVQB4Rr
-         mz78GEiiRdCUDL2DmSZQKmV3QOTV3troBBj6WAvp8CVBS8VJ7TSHYavrFKSKMBbgmb
-         ZMwdKEfod10n2z6aUqC33jSQaZUMycRaW8U5Xg+0=
-Date:   Mon, 26 Oct 2020 11:15:54 +0200
-From:   Mike Rapoport <rppt@kernel.org>
-To:     "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
-Cc:     "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-        "david@redhat.com" <david@redhat.com>,
-        "cl@linux.com" <cl@linux.com>,
-        "gor@linux.ibm.com" <gor@linux.ibm.com>,
-        "hpa@zytor.com" <hpa@zytor.com>,
-        "peterz@infradead.org" <peterz@infradead.org>,
-        "catalin.marinas@arm.com" <catalin.marinas@arm.com>,
-        "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>,
-        "borntraeger@de.ibm.com" <borntraeger@de.ibm.com>,
-        "will@kernel.org" <will@kernel.org>,
-        "penberg@kernel.org" <penberg@kernel.org>,
-        "iamjoonsoo.kim@lge.com" <iamjoonsoo.kim@lge.com>,
-        "aou@eecs.berkeley.edu" <aou@eecs.berkeley.edu>,
-        "kirill@shutemov.name" <kirill@shutemov.name>,
-        "rientjes@google.com" <rientjes@google.com>,
-        "rppt@linux.ibm.com" <rppt@linux.ibm.com>,
-        "paulus@samba.org" <paulus@samba.org>,
-        "hca@linux.ibm.com" <hca@linux.ibm.com>,
-        "pavel@ucw.cz" <pavel@ucw.cz>, "bp@alien8.de" <bp@alien8.de>,
-        "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
-        "mpe@ellerman.id.au" <mpe@ellerman.id.au>,
-        "luto@kernel.org" <luto@kernel.org>,
-        "davem@davemloft.net" <davem@davemloft.net>,
-        "linux-mm@kvack.org" <linux-mm@kvack.org>,
-        "tglx@linutronix.de" <tglx@linutronix.de>,
-        "rjw@rjwysocki.net" <rjw@rjwysocki.net>,
-        "linux-riscv@lists.infradead.org" <linux-riscv@lists.infradead.org>,
-        "benh@kernel.crashing.org" <benh@kernel.crashing.org>,
-        "linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
-        "x86@kernel.org" <x86@kernel.org>,
-        "linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-        "linux-arm-kernel@lists.infradead.org" 
-        <linux-arm-kernel@lists.infradead.org>,
-        "palmer@dabbelt.com" <palmer@dabbelt.com>,
-        "Brown, Len" <len.brown@intel.com>,
-        "mingo@redhat.com" <mingo@redhat.com>,
-        "linux-s390@vger.kernel.org" <linux-s390@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "paul.walmsley@sifive.com" <paul.walmsley@sifive.com>
-Subject: Re: [PATCH 2/4] PM: hibernate: improve robustness of mapping pages
- in the direct map
-Message-ID: <20201026091554.GB1154158@kernel.org>
-References: <20201025101555.3057-1-rppt@kernel.org>
- <20201025101555.3057-3-rppt@kernel.org>
- <f20900a403bea9eb3f0814128e5ea46f6580f5a5.camel@intel.com>
+        s=default; t=1603703786;
+        bh=pQKLqfcjbVUih5iUhFZ84v4gYr3t3Bambb8ZkFTJ3Zw=;
+        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+        b=elxWFOMcqfnVmAhlV5sWGJKCdgouHiwhbeVhEKknu4LkmH19Xdhpziqc+xqxyEhMn
+         DybyKhwMR9cFPCmXPWmmFGhwskg6mJib7Vdfb7LmYwl+8+6MK8gLiMEEYJKh+cau1h
+         7r62rzHVjjWOLjplCuOMlvilqEwk7UMjUwn0JDnI=
+Date:   Mon, 26 Oct 2020 10:16:20 +0100
+From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     Jonathan Corbet <corbet@lwn.net>,
+        Kees Cook <keescook@chromium.org>,
+        Linux Doc Mailing List <linux-doc@vger.kernel.org>,
+        Ard Biesheuvel <ardb@kernel.org>,
+        Ingo Molnar <mingo@kernel.org>, Jann Horn <jannh@google.com>,
+        Will Deacon <will@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 49/56] refcount.h: fix a kernel-doc markup
+Message-ID: <20201026101620.1a11ef3e@coco.lan>
+In-Reply-To: <20201026081059.GB2628@hirez.programming.kicks-ass.net>
+References: <cover.1603469755.git.mchehab+huawei@kernel.org>
+        <fd94a95cfe01b97190b6ffb9e942cb4bbeeaa6bf.1603469755.git.mchehab+huawei@kernel.org>
+        <202010231039.DE05B63@keescook>
+        <20201023193907.GI2974@worktop.programming.kicks-ass.net>
+        <20201023134757.628f91b7@lwn.net>
+        <20201024082827.08ad3010@coco.lan>
+        <20201026081059.GB2628@hirez.programming.kicks-ass.net>
+X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <f20900a403bea9eb3f0814128e5ea46f6580f5a5.camel@intel.com>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 12:38:32AM +0000, Edgecombe, Rick P wrote:
-> On Sun, 2020-10-25 at 12:15 +0200, Mike Rapoport wrote:
-> > From: Mike Rapoport <rppt@linux.ibm.com>
+Em Mon, 26 Oct 2020 09:10:59 +0100
+Peter Zijlstra <peterz@infradead.org> escreveu:
+
+> On Sat, Oct 24, 2020 at 08:28:27AM +0200, Mauro Carvalho Chehab wrote:
+> > If the intent is to document the struct and its internal fields,
+> > this kernel-doc should work:
 > > 
-> > When DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP is enabled a page may
-> > be
-> > not present in the direct map and has to be explicitly mapped before
-> > it
-> > could be copied.
+> > 	/**
+> > 	 * struct refcount_struct - variant of atomic_t specialized for reference counts
+> > 	 * @refs: atomic_t counter field
+> > 	 *
+> > 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> > 	 * there. This avoids wrapping the counter and causing 'spurious'
+> > 	 * use-after-free bugs.
+> > 	 */
 > > 
-> > On arm64 it is possible that a page would be removed from the direct
-> > map
-> > using set_direct_map_invalid_noflush() but __kernel_map_pages() will
-> > refuse
-> > to map this page back if DEBUG_PAGEALLOC is disabled.
+> > Which produces this result:  
 > 
-> It looks to me that arm64 __kernel_map_pages() will still attempt to
-> map it if rodata_full is true, how does this happen?
+> Who cares... :-(
 
-Unless I misread the code, arm64 requires both rodata_full and
-debug_pagealloc_enabled() to be true for __kernel_map_pages() to do
-anything.
-But rodata_full condition applies to set_direct_map_*_noflush() as well,
-so with !rodata_full the linear map won't be ever changed.
+Anyone that would need to use refcount_t, instead of atomic_t.
 
-> > Explicitly use set_direct_map_{default,invalid}_noflush() for
-> > ARCH_HAS_SET_DIRECT_MAP case and debug_pagealloc_map_pages() for
-> > DEBUG_PAGEALLOC case.
-> > 
-> > While on that, rename kernel_map_pages() to hibernate_map_page() and
-> > drop
-> > numpages parameter.
-> > 
-> > Signed-off-by: Mike Rapoport <rppt@linux.ibm.com>
-> > ---
-> >  kernel/power/snapshot.c | 29 +++++++++++++++++++----------
-> >  1 file changed, 19 insertions(+), 10 deletions(-)
-> > 
-> > diff --git a/kernel/power/snapshot.c b/kernel/power/snapshot.c
-> > index fa499466f645..ecb7b32ce77c 100644
-> > --- a/kernel/power/snapshot.c
-> > +++ b/kernel/power/snapshot.c
-> > @@ -76,16 +76,25 @@ static inline void
-> > hibernate_restore_protect_page(void *page_address) {}
-> >  static inline void hibernate_restore_unprotect_page(void
-> > *page_address) {}
-> >  #endif /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
-> >  
-> > -#if defined(CONFIG_DEBUG_PAGEALLOC) ||
-> > defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP)
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable)
-> > +static inline void hibernate_map_page(struct page *page, int enable)
-> >  {
-> > -	__kernel_map_pages(page, numpages, enable);
-> > +	if (IS_ENABLED(CONFIG_ARCH_HAS_SET_DIRECT_MAP)) {
-> > +		unsigned long addr = (unsigned long)page_address(page);
-> > +		int ret;
-> > +
-> > +		if (enable)
-> > +			ret = set_direct_map_default_noflush(page);
-> > +		else
-> > +			ret = set_direct_map_invalid_noflush(page);
-> > +
-> > +		if (WARN_ON(ret))
-> > +			return;
-> > +
-> > +		flush_tlb_kernel_range(addr, addr + PAGE_SIZE);
-> > +	} else {
-> > +		debug_pagealloc_map_pages(page, 1, enable);
-> > +	}
-> >  }
-> > -#else
-> > -static inline void
-> > -kernel_map_pages(struct page *page, int numpages, int enable) {}
-> > -#endif
-> >  
-> >  static int swsusp_page_is_free(struct page *);
-> >  static void swsusp_set_page_forbidden(struct page *);
-> > @@ -1366,9 +1375,9 @@ static void safe_copy_page(void *dst, struct
-> > page *s_page)
-> >  	if (kernel_page_present(s_page)) {
-> >  		do_copy_page(dst, page_address(s_page));
-> >  	} else {
-> > -		kernel_map_pages(s_page, 1, 1);
-> > +		hibernate_map_page(s_page, 1);
-> >  		do_copy_page(dst, page_address(s_page));
-> > -		kernel_map_pages(s_page, 1, 0);
-> > +		hibernate_map_page(s_page, 0);
-> >  	}
-> >  }
-> >  
 > 
-> If somehow a page was unmapped such that
-> set_direct_map_default_noflush() would fail, then this code introduces
-> a WARN, but it will still try to read the unmapped page. Why not just
-> have the WARN's inside of __kernel_map_pages() if they fail and then
-> have a warning for the debug page alloc cases as well? Since logic
-> around both expects them not to fail.
+> > If you want both, then you would either split struct and typedef, e. g.
+> > with something like:
+> > 
+> > 	/**
+> > 	 * struct refcount_struct - variant of atomic_t specialized for reference counts
+> > 	 * @refs: atomic_t counter field
+> > 	 *
+> > 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> > 	 * there. This avoids wrapping the counter and causing 'spurious'
+> > 	 * use-after-free bugs.
+> > 	 */
+> > 	struct refcount_struct {
+> > 	        atomic_t refs;
+> > 	};
+> > 
+> > 	/**
+> > 	 * typedef refcount_t - variant of atomic_t specialized for reference counts
+> > 	 * @refs: atomic_t counter field
+> > 	 *
+> > 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> > 	 * there. This avoids wrapping the counter and causing 'spurious'
+> > 	 * use-after-free bugs.
+> > 	 */
+> > 	typedef struct refcount_struct refcount_t;
+> > 
+> > Or, you could add the member at the description field. E. g. something
+> > like this:
+> > 
+> > 	/**
+> > 	 * typedef refcount_t - variant of atomic_t specialized for reference counts
+> > 	 *
+> > 	 * The counter saturates at REFCOUNT_SATURATED and will not move once
+> > 	 * there. This avoids wrapping the counter and causing 'spurious'
+> > 	 * use-after-free bugs.
+> > 	 *
+> > 	 * Members:
+> > 	 *   ``refs``
+> > 	 *        atomic_t counter field
+> > 	 */
+> > 	typedef struct refcount_struct {
+> > 	        atomic_t refs;
+> > 	} refcount_t;
+> > 
+> > If you want to test it, you can run kernel-doc directly, to see how
+> > it will parse it. For ReST output, that's the syntax:
+> > 
+> > 	./scripts/kernel-doc --sphinx-version 3 include/linux/refcount.h  
+> 
+> I'll just go ahead and remove the superfluous * from the comment... It's
+> trivially clear what is meant. If the stupid tool can't deal with that,
+> I don't care.
 
-The intention of this series is to disallow usage of
-__kernel_map_pages() when DEBUG_PAGEALLOC=n. I'll update this patch to
-better handle possible errors, but I still want to keep WARN in the
-caller.
+The tool is not that stupid. What's wrong here is that the markup is
+asking kernel-doc to document the struct, instead documenting the typedef:
 
--- 
-Sincerely yours,
-Mike.
+ 	/**
+ 	 * struct refcount_t - variant of atomic_t specialized for reference counts
+...
+
+There is no such struct!
+
+Just doing:
+
+	s/struct/typedef/
+
+will do what you intend to document.
+
+Thanks,
+Mauro
+
+[PATCH] refcount.h: fix a kernel-doc markup
+
+The kernel-doc markup is wrong: it is asking the tool to document
+struct refcount_struct, instead of documenting typedef refcount_t.
+
+Fix it.
+    
+Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+
+diff --git a/include/linux/refcount.h b/include/linux/refcount.h
+index 0e3ee25eb156..f572c62261a8 100644
+--- a/include/linux/refcount.h
++++ b/include/linux/refcount.h
+@@ -101,7 +101,7 @@
+ struct mutex;
+ 
+ /**
+- * struct refcount_t - variant of atomic_t specialized for reference counts
++ * typedef refcount_t - variant of atomic_t specialized for reference counts
+  * @refs: atomic_t counter field
+  *
+  * The counter saturates at REFCOUNT_SATURATED and will not move once
+
+
