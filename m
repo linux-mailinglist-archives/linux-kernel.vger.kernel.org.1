@@ -2,123 +2,125 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 12082298F44
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:28:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 815AC298F48
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:30:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781440AbgJZO2K (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:28:10 -0400
-Received: from mail.efficios.com ([167.114.26.124]:52272 "EHLO
-        mail.efficios.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781431AbgJZO2J (ORCPT
+        id S1781487AbgJZOaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:30:07 -0400
+Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57050 "EHLO
+        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1781103AbgJZOaG (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:28:09 -0400
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id 333A8241008;
-        Mon, 26 Oct 2020 10:28:08 -0400 (EDT)
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10032)
-        with ESMTP id Xg14e8EdwAjX; Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-        by mail.efficios.com (Postfix) with ESMTP id B696B240EA5;
-        Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.efficios.com B696B240EA5
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=efficios.com;
-        s=default; t=1603722487;
-        bh=b+GvRyxbmnlNapP2hfxVxVrD6YKJjDQAOCHDyfDeiQM=;
-        h=Date:From:To:Message-ID:MIME-Version;
-        b=vGsTu2H3JKJdzT8unx9/Fv4fVOf456LViyeWlMNx7UwqsFUquU4lfXmFtACDtQ3/J
-         miTb+yJ6YY7x+zlBpZoV/j7xlWrE5y83SKAX3WHCTgObaYMc1CjIYCVWxA3Lf7d10T
-         l5e7NMPDBzTixdEHrITvBwUCRsqhKW2Db77Ms0LtgJNNg8sO/b9LSaniK8b17Wg7ko
-         eJs7BnJB9GcHiiF/2aHoC9mTmbdJKiHdlK/ndo9hHq6MjaLdtJMhGF8FjzBnmfpFCM
-         5c761C+1Fx2AncVEVef3SDuGUd4AB/xxprSfe3vLnp/V1CYTCffLMleWUyzQNgty0Q
-         0T3g4sF2sROuw==
-X-Virus-Scanned: amavisd-new at efficios.com
-Received: from mail.efficios.com ([127.0.0.1])
-        by localhost (mail03.efficios.com [127.0.0.1]) (amavisd-new, port 10026)
-        with ESMTP id tcJv_BKkx5ct; Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Received: from mail03.efficios.com (mail03.efficios.com [167.114.26.124])
-        by mail.efficios.com (Postfix) with ESMTP id A226A240D1F;
-        Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-Date:   Mon, 26 Oct 2020 10:28:07 -0400 (EDT)
-From:   Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
-To:     Peter Zijlstra <peterz@infradead.org>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        "Joel Fernandes, Google" <joel@joelfernandes.org>
-Cc:     Michael Jeanson <mjeanson@efficios.com>,
-        linux-kernel <linux-kernel@vger.kernel.org>,
-        rostedt <rostedt@goodmis.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Yonghong Song <yhs@fb.com>, paulmck <paulmck@kernel.org>,
-        Ingo Molnar <mingo@redhat.com>, acme <acme@kernel.org>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        Jiri Olsa <jolsa@redhat.com>,
-        Namhyung Kim <namhyung@kernel.org>, bpf <bpf@vger.kernel.org>
-Message-ID: <73192641.37901.1603722487627.JavaMail.zimbra@efficios.com>
-In-Reply-To: <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-References: <20201023195352.26269-1-mjeanson@efficios.com> <20201023195352.26269-7-mjeanson@efficios.com> <20201023211359.GC3563800@google.com> <20201026082010.GC2628@hirez.programming.kicks-ass.net>
-Subject: Re: [RFC PATCH 6/6] tracing: use sched-RCU instead of SRCU for
- rcuidle tracepoints
+        Mon, 26 Oct 2020 10:30:06 -0400
+Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
+        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QEBcTq079427;
+        Mon, 26 Oct 2020 10:30:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : mime-version : content-type; s=pp1;
+ bh=2ml38pNjrKoInsF4gZ7lFKR7yyrY8IylOvmBAmZmUQw=;
+ b=A6e9pyfp8LVfFpPyp/wlkzcun/hYuBWiB/EVyO3bA/biljasGqSMftGFqHCmlmoKE04q
+ RogtPUgqyNhgFTk+Rc97LrBzMbKOms8/0AMx1582vNH3eX8W/iOAPqT585lQUPzeYQuF
+ IjaPeKdlh3/RDwdroF6dt2PGiHXI4GDjxru90m8VnxPMDUGeShbCEe0FlRhRxZ4HeUcK
+ Onag/di2lUAcGf/18RNqWMs/Zro0kKDZvqMQQtrjyijtPGejn5idBXd6SbAs306GRymL
+ hbn6g9pty8ySPkL7hRlmGI94HNSAPzicPfS4LgXkjLYQVEW/ed1XWi8RuKeajcRx9taG cQ== 
+Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
+        by mx0a-001b2d01.pphosted.com with ESMTP id 34dp1qrh9h-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Oct 2020 10:30:03 -0400
+Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
+        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09QERmbb017933;
+        Mon, 26 Oct 2020 14:30:01 GMT
+Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
+        by ppma03ams.nl.ibm.com with ESMTP id 34cbw7t9yn-1
+        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+        Mon, 26 Oct 2020 14:30:01 +0000
+Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
+        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09QETw6J34996646
+        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+        Mon, 26 Oct 2020 14:29:58 GMT
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id 2F78311C052;
+        Mon, 26 Oct 2020 14:29:58 +0000 (GMT)
+Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
+        by IMSVA (Postfix) with ESMTP id DDD1311C04C;
+        Mon, 26 Oct 2020 14:29:57 +0000 (GMT)
+Received: from osiris (unknown [9.171.92.46])
+        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
+        Mon, 26 Oct 2020 14:29:57 +0000 (GMT)
+Date:   Mon, 26 Oct 2020 15:29:56 +0100
+From:   Heiko Carstens <hca@linux.ibm.com>
+To:     Linus Torvalds <torvalds@linux-foundation.org>
+Cc:     Vasily Gorbik <gor@linux.ibm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Joe Perches <joe@perches.com>, linux-s390@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: [GIT PULL] s390 compile fix for 5.10-rc2
+Message-ID: <20201026142956.GA9584@osiris>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Originating-IP: [167.114.26.124]
-X-Mailer: Zimbra 8.8.15_GA_3968 (ZimbraWebClient - FF81 (Linux)/8.8.15_GA_3968)
-Thread-Topic: tracing: use sched-RCU instead of SRCU for rcuidle tracepoints
-Thread-Index: He6ZVtkzgwO4+WmVRRp7McQ4EPG+Cw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-TM-AS-GCONF: 00
+X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
+ definitions=2020-10-26_06:2020-10-26,2020-10-26 signatures=0
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
+ priorityscore=1501 malwarescore=0 clxscore=1011 phishscore=0
+ suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2009150000 definitions=main-2010260097
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
------ On Oct 26, 2020, at 4:20 AM, Peter Zijlstra peterz@infradead.org wrote:
+Hi Linus,
 
-> On Fri, Oct 23, 2020 at 05:13:59PM -0400, Joel Fernandes wrote:
->> On Fri, Oct 23, 2020 at 03:53:52PM -0400, Michael Jeanson wrote:
->> > From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
->> > 
->> > Considering that tracer callbacks expect RCU to be watching (for
->> > instance, perf uses rcu_read_lock), we need rcuidle tracepoints to issue
->> > rcu_irq_{enter,exit}_irqson around calls to the callbacks. So there is
->> > no point in using SRCU anymore given that rcuidle tracepoints need to
->> > ensure RCU is watching. Therefore, simply use sched-RCU like normal
->> > tracepoints for rcuidle tracepoints.
->> 
->> High level question:
->> 
->> IIRC, doing this increases overhead for general tracing that does not use
->> perf, for 'rcuidle' tracepoints such as the preempt/irq enable/disable
->> tracepoints. I remember adding SRCU because of this reason.
->> 
->> Can the 'rcuidle' information not be pushed down further, such that perf does
->> it because it requires RCU to be watching, so that it does not effect, say,
->> trace events?
-> 
-> There's very few trace_.*_rcuidle() users left. We should eradicate them
-> and remove the option. It's bugs to begin with.
-
-I agree with Peter. Removing the trace_.*_rcuidle weirdness from the tracepoint
-API and fixing all callers to ensure they trace from a context where RCU is
-watching would simplify instrumentation of the Linux kernel, thus making it harder
-for subtle bugs to hide and be unearthed only when tracing is enabled. This is
-AFAIU the general approach Thomas Gleixner has been aiming for recently, and I
-think it is a good thing.
-
-So if we consider this our target, and that the current state of things is that
-we need to have RCU watching around callback invocation, then removing the
-dependency on SRCU seems like an overall simplification which does not regress
-feature-wise nor speed-wise compared with what we have upstream today. The next
-steps would then be to audit all rcuidle tracepoints and make sure the context
-where they are placed has RCU watching already, so we can remove the tracepoint
-rcuidle API. That would effectively remove the calls to rcu_irq_{enter,exit}_irqson
-from the tracepoint code.
-
-This is however beyond the scope of the proposed patch set.
+please pull a simple fix, so that s390 compiles again after Joe Perches' commit
+33def8498fdd ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
+which went in just before 5.10-rc1.
 
 Thanks,
+Heiko
 
-Mathieu
+The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
 
--- 
-Mathieu Desnoyers
-EfficiOS Inc.
-http://www.efficios.com
+  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-2
+
+for you to fetch changes up to 8e90b4b1305a80b1d7712370a163eff269ac1ba2:
+
+  s390: correct __bootdata / __bootdata_preserved macros (2020-10-26 14:18:01 +0100)
+
+----------------------------------------------------------------
+- Fix s390 compile breakage caused by commit 33def8498fdd
+  ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
+
+----------------------------------------------------------------
+Vasily Gorbik (1):
+      s390: correct __bootdata / __bootdata_preserved macros
+
+ arch/s390/include/asm/sections.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sections.h
+index a996d3990a02..0c2151451ba5 100644
+--- a/arch/s390/include/asm/sections.h
++++ b/arch/s390/include/asm/sections.h
+@@ -26,14 +26,14 @@ static inline int arch_is_kernel_initmem_freed(unsigned long addr)
+  * final .boot.data section, which should be identical in the decompressor and
+  * the decompressed kernel (that is checked during the build).
+  */
+-#define __bootdata(var) __section(".boot.data.var") var
++#define __bootdata(var) __section(".boot.data." #var) var
+ 
+ /*
+  * .boot.preserved.data is similar to .boot.data, but it is not part of the
+  * .init section and thus will be preserved for later use in the decompressed
+  * kernel.
+  */
+-#define __bootdata_preserved(var) __section(".boot.preserved.data.var") var
++#define __bootdata_preserved(var) __section(".boot.preserved.data." #var) var
+ 
+ extern unsigned long __sdma, __edma;
+ extern unsigned long __stext_dma, __etext_dma;
