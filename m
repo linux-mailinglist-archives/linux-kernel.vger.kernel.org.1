@@ -2,78 +2,206 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8B4342989BE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:50:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C07302989DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:55:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768631AbgJZJtz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:49:55 -0400
-Received: from mx2.suse.de ([195.135.220.15]:47962 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768620AbgJZJtu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:49:50 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 8E924B2CB;
-        Mon, 26 Oct 2020 09:49:49 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E72A81E10F5; Mon, 26 Oct 2020 10:49:48 +0100 (CET)
-Date:   Mon, 26 Oct 2020 10:49:48 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     Matthew Wilcox <willy@infradead.org>
-Cc:     Qian Cai <cai@lca.pw>, Christoph Hellwig <hch@infradead.org>,
-        "Darrick J. Wong" <darrick.wong@oracle.com>,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
-        linux-mm@kvack.org
-Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
- BUG_ON(PageWriteback(page); ]
-Message-ID: <20201026094948.GA29758@quack2.suse.cz>
-References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
- <20201022004906.GQ20115@casper.infradead.org>
+        id S1747281AbgJZJvq (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:51:46 -0400
+Received: from mail-lj1-f196.google.com ([209.85.208.196]:38803 "EHLO
+        mail-lj1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1737062AbgJZJvc (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:51:32 -0400
+Received: by mail-lj1-f196.google.com with SMTP id m20so9081648ljj.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 02:51:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc:content-transfer-encoding;
+        bh=cvHwOhMOSComXSdb9JzaD65zvZyc8ZwqG/MT8SEmCr8=;
+        b=XQtZGUAHkXcAtHyAFMQ1vUo2SRdyz1VTbCBYc3OxQqPVEDxUROYbSDuXYTV+wPwvOs
+         bo6Whtw0w3Gch8zWAmLP2t9kbJxBFNr6Mi5f+xVH3J1ZAVGWhx0VWR2avbCuyOshfRO0
+         DWEXO8kzycOpjVtgfOBpaH+M5qb1mNKM5AJxU5TnoJPyU4x6nZfHSebAOZd3yCQV6g+8
+         oUjYGls24BaLCdidNGO5roRQAtdFSRSSyxhFr4rA8QHpe/nTUDkeMHDT527K8vAMYO/w
+         D3HWTTv7P6xwQKqO0U0SMYcZ/IboJdZHtFdbG8SQYIsx+ANP0tj6ZvjWn9VO557znNi2
+         x6hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc:content-transfer-encoding;
+        bh=cvHwOhMOSComXSdb9JzaD65zvZyc8ZwqG/MT8SEmCr8=;
+        b=d1p0HJ9ciWWp8VKGe1Dp2EzwBLFCEpQW0Ofs7lWU8DRdC2AlDySekO7rDfTJW4/Izs
+         +7/2Nr1k30OdroZ/I37os2urIM8n7uCs260G5Y0bjPmODOXz31g2+XwzU/1HoOOeLykI
+         Ez+U3hLgGCzGl/gQfVkLKHRFL1VZ5SZhdo0SyPnxyUxAbN4i2+rJH27L3E9B8M9hVBxf
+         V/cxy4lWS52QH0DlgiDIq8kMilVqXU4foUYYZfZMWwdg5yj2F7q+wVf2V+SjbyWbEOgQ
+         BCJVjWBfCNKpRizgkf+9ISxDn2AgxYDERI4xLiICda3AC4RAJQqYaKeOk0ZX71rMrn27
+         4QzQ==
+X-Gm-Message-State: AOAM532wRBoXOCF82fICOkoyA4vG2mfT0iw1C4F/h+zH0uXi1McXklXe
+        DC3WHUXBu2CbjKUZFxw+C0cuei5Nc8t4i9mnBap2hjK6uGgsdQ==
+X-Google-Smtp-Source: ABdhPJy3fjEBGpGIryQc4Y6LVPm/reRxy/Wkv+7lUQ8mQvLHz9l8MltT/z36Blg+feaWzbgimjmcpy0nt4YNvjefuK0=
+X-Received: by 2002:a2e:9f13:: with SMTP id u19mr5255189ljk.160.1603705889194;
+ Mon, 26 Oct 2020 02:51:29 -0700 (PDT)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201022004906.GQ20115@casper.infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
+ <20200930150330.GC284424@cisco> <8bcd956f-58d2-d2f0-ca7c-0a30f3fcd5b8@gmail.com>
+ <20200930230327.GA1260245@cisco> <CAG48ez1VOUEHVQyo-2+uO7J+-jN5rh7=KmrMJiPaFjwCbKR1Sg@mail.gmail.com>
+ <20200930232456.GB1260245@cisco> <CAG48ez2xn+_KznEztJ-eVTsTzkbf9CVgPqaAk7TpRNAqbdaRoA@mail.gmail.com>
+ <202010251725.2BD96926E3@keescook>
+In-Reply-To: <202010251725.2BD96926E3@keescook>
+From:   Jann Horn <jannh@google.com>
+Date:   Mon, 26 Oct 2020 10:51:02 +0100
+Message-ID: <CAG48ez2b-fnsp8YAR=H5uRMT4bBTid_hyU4m6KavHxDko1Efog@mail.gmail.com>
+Subject: Re: For review: seccomp_user_notif(2) manual page
+To:     Kees Cook <keescook@chromium.org>
+Cc:     Tycho Andersen <tycho@tycho.pizza>,
+        "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>,
+        Sargun Dhillon <sargun@sargun.me>,
+        Christian Brauner <christian@brauner.io>,
+        linux-man <linux-man@vger.kernel.org>,
+        lkml <linux-kernel@vger.kernel.org>,
+        Aleksa Sarai <cyphar@cyphar.com>,
+        Alexei Starovoitov <ast@kernel.org>,
+        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
+        Song Liu <songliubraving@fb.com>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        Andy Lutomirski <luto@amacapital.net>,
+        Linux Containers <containers@lists.linux-foundation.org>,
+        Giuseppe Scrivano <gscrivan@redhat.com>,
+        Robert Sesek <rsesek@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Thu 22-10-20 01:49:06, Matthew Wilcox wrote:
-> On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
-> > Today's linux-next starts to trigger this wondering if anyone has any clue.
-> 
-> I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
-> to try to get a clue about it.  Good to know it's not the THP patches
-> since they aren't in linux-next.
-> 
-> I don't understand how it can happen.  We have the page locked, and then we do:
-> 
->                         if (PageWriteback(page)) {
->                                 if (wbc->sync_mode != WB_SYNC_NONE)
->                                         wait_on_page_writeback(page);
->                                 else
->                                         goto continue_unlock;
->                         }
-> 
->                         VM_BUG_ON_PAGE(PageWriteback(page), page);
-> 
-> Nobody should be able to put this page under writeback while we have it
-> locked ... right?  The page can be redirtied by the code that's supposed
-> to be writing it back, but I don't see how anyone can make PageWriteback
-> true while we're holding the page lock.
+On Mon, Oct 26, 2020 at 1:32 AM Kees Cook <keescook@chromium.org> wrote:
+> On Thu, Oct 01, 2020 at 03:52:02AM +0200, Jann Horn wrote:
+> > On Thu, Oct 1, 2020 at 1:25 AM Tycho Andersen <tycho@tycho.pizza> wrote=
+:
+> > > On Thu, Oct 01, 2020 at 01:11:33AM +0200, Jann Horn wrote:
+> > > > On Thu, Oct 1, 2020 at 1:03 AM Tycho Andersen <tycho@tycho.pizza> w=
+rote:
+> > > > > On Wed, Sep 30, 2020 at 10:34:51PM +0200, Michael Kerrisk (man-pa=
+ges) wrote:
+> > > > > > On 9/30/20 5:03 PM, Tycho Andersen wrote:
+> > > > > > > On Wed, Sep 30, 2020 at 01:07:38PM +0200, Michael Kerrisk (ma=
+n-pages) wrote:
+> > > > > > >>        =E2=94=8C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=90
+> > > > > > >>        =E2=94=82FIXME                                       =
+         =E2=94=82
+> > > > > > >>        =E2=94=9C=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=
+=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=
+=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=
+=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=80=E2=94=A4
+> > > > > > >>        =E2=94=82From my experiments,  it  appears  that  if =
+ a  SEC=E2=80=90 =E2=94=82
+> > > > > > >>        =E2=94=82COMP_IOCTL_NOTIF_RECV   is  done  after  the=
+  target =E2=94=82
+> > > > > > >>        =E2=94=82process terminates, then the ioctl()  simply=
+  blocks =E2=94=82
+> > > > > > >>        =E2=94=82(rather than returning an error to indicate =
+that the =E2=94=82
+> > > > > > >>        =E2=94=82target process no longer exists).           =
+         =E2=94=82
+> > > > > > >
+> > > > > > > Yeah, I think Christian wanted to fix this at some point,
+> > > > > >
+> > > > > > Do you have a pointer that discussion? I could not find it with=
+ a
+> > > > > > quick search.
+> > > > > >
+> > > > > > > but it's a
+> > > > > > > bit sticky to do.
+> > > > > >
+> > > > > > Can you say a few words about the nature of the problem?
+> > > > >
+> > > > > I remembered wrong, it's actually in the tree: 99cdb8b9a573 ("sec=
+comp:
+> > > > > notify about unused filter"). So maybe there's a bug here?
+> > > >
+> > > > That thing only notifies on ->poll, it doesn't unblock ioctls; and
+> > > > Michael's sample code uses SECCOMP_IOCTL_NOTIF_RECV to wait. So tha=
+t
+> > > > commit doesn't have any effect on this kind of usage.
+> > >
+> > > Yes, thanks. And the ones stuck in RECV are waiting on a semaphore so
+> > > we don't have a count of all of them, unfortunately.
+> > >
+> > > We could maybe look inside the wait_list, but that will probably make
+> > > people angry :)
+> >
+> > The easiest way would probably be to open-code the semaphore-ish part,
+> > and let the semaphore and poll share the waitqueue. The current code
+> > kind of mirrors the semaphore's waitqueue in the wqh - open-coding the
+> > entire semaphore would IMO be cleaner than that. And it's not like
+> > semaphore semantics are even a good fit for this code anyway.
+> >
+> > Let's see... if we didn't have the existing UAPI to worry about, I'd
+> > do it as follows (*completely* untested). That way, the ioctl would
+> > block exactly until either there actually is a request to deliver or
+> > there are no more users of the filter. The problem is that if we just
+> > apply this patch, existing users of SECCOMP_IOCTL_NOTIF_RECV that use
+> > an event loop and don't set O_NONBLOCK will be screwed. So we'd
+>
+> Wait, why? Do you mean a ioctl calling loop (rather than a poll event
+> loop)?
 
-FWIW here's very similar report for ext4 [1] and I strongly suspect this
-started happening after Linus' rewrite of the page bit waiting logic. Linus
-thinks it's preexisting bug which just got exposed by his changes (which is
-possible). I've been searching a culprit for some time but so far I failed.
-It's good to know it isn't ext4 specific so we should be searching in the
-generic code ;). So far I was concentrating more on ext4 bits...
+No, I'm talking about poll event loops.
 
-								Honza
+> I think poll would be fine, but a "try calling RECV and expect to
+> return ENOENT" loop would change. But I don't think anyone would do this
+> exactly because it _currently_ acts like O_NONBLOCK, yes?
+>
+> > probably also have to add some stupid counter in place of the
+> > semaphore's counter that we can use to preserve the old behavior of
+> > returning -ENOENT once for each cancelled request. :(
+>
+> I only see this in Debian Code Search:
+> https://sources.debian.org/src/crun/0.15+dfsg-1/src/libcrun/seccomp_notif=
+y.c/?hl=3D166#L166
+> which is using epoll_wait():
+> https://sources.debian.org/src/crun/0.15+dfsg-1/src/libcrun/container.c/?=
+hl=3D1326#L1326
+>
+> I expect LXC is using it. :)
 
-[1] https://lore.kernel.org/lkml/000000000000d3a33205add2f7b2@google.com/
+The problem is the scenario where a process is interrupted while it's
+waiting for the supervisor to reply.
 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Consider the following scenario (with supervisor "S" and target "T"; S
+wants to wait for events on two file descriptors seccomp_fd and
+other_fd):
+
+S: starts poll() to wait for events on seccomp_fd and other_fd
+T: performs a syscall that's filtered with RET_USER_NOTIF
+S: poll() returns and signals readiness of seccomp_fd
+T: receives signal SIGUSR1
+T: syscall aborts, enters signal handler
+T: signal handler blocks on unfiltered syscall (e.g. write())
+S: starts SECCOMP_IOCTL_NOTIF_RECV
+S: blocks because no syscalls are pending
+
+Depending on what other_fd is, this could in a worst case even lead to
+a deadlock (if e.g. the signal handler wants to write to stdout, but
+the stdout fd is hooked up to other_fd in the supervisor, but the
+supervisor can't consume the data written because it's stuck in
+seccomp handling).
+
+So we have to ensure that when existing code (like that crun code you
+linked to) triggers this case, SECCOMP_IOCTL_NOTIF_RECV returns
+immediately instead of blocking.
+
+(Oh, but by the way, that crun code looks broken anyway, because
+AFAICS it treats all error returns from SECCOMP_IOCTL_NOTIF_RECV
+equally by bailing out; and it kinda looks like that bailout path then
+nukes the container, or something? So that needs to be fixed either
+way.)
