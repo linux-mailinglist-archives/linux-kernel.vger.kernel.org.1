@@ -2,89 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7DB299B44
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5A689299B06
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:49:05 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409047AbgJZXuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:50:11 -0400
-Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
+        id S2408389AbgJZXrT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:47:19 -0400
+Received: from mail.kernel.org ([198.145.29.99]:44208 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408796AbgJZXts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:48 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408372AbgJZXrT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:47:19 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 87AC9222D9;
-        Mon, 26 Oct 2020 23:49:47 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 3F74820809;
+        Mon, 26 Oct 2020 23:47:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756188;
-        bh=W2bEeiQAfoQioyqsnBUOJWlPraJVYRnpniBcf1u+A3w=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=XVxJQetIutCf6pWSF4NWuYMWmcHldexAM1Q0djcfge4o1TRc9LaMhg9g2kQgGjEBZ
-         K2/Mjt6MGpCAdiohMYKePXUtNxL/xum794pfFH7Etjnc4GMXWE6sYg2MapDDcrlnYc
-         FdXthSkmLZE/JU5R9q8tl54HFeTo7l49ARaVmOsc=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Tom Rix <trix@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
-        Sam Ravnborg <sam@ravnborg.org>,
-        Sasha Levin <sashal@kernel.org>,
-        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
-        clang-built-linux@googlegroups.com
-Subject: [PATCH AUTOSEL 5.9 034/147] video: fbdev: pvr2fb: initialize variables
-Date:   Mon, 26 Oct 2020 19:47:12 -0400
-Message-Id: <20201026234905.1022767-34-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+        s=default; t=1603756038;
+        bh=8e+JQ2x+eeQocyNPZN+4ob1xi20n6Ei8E+bl7jF11K0=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=QtYTOTdvAySWrJF70q4ODepiLXBFL6igOAC9lFp2BBCla+Y+12P1w3vdf/2UR71zH
+         bj8dOUVQmENpoauFpvYkP3SKQPBmBXbFmsLBRIUHo8EWjVsR2m/VUmv5WT8NhZVfTV
+         +g/O7bMaoLjHjAJCZE080R/Xc/vGJ18rJdBTNvWw=
+Date:   Mon, 26 Oct 2020 23:47:14 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Liam Girdwood <lgirdwood@gmail.com>,
+        Colin King <colin.king@canonical.com>
+Cc:     linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+In-Reply-To: <20201016222235.686981-1-colin.king@canonical.com>
+References: <20201016222235.686981-1-colin.king@canonical.com>
+Subject: Re: [PATCH] regulator: lp872x: make a const array static, makes object smaller
+Message-Id: <160375603445.32304.3851545649708481770.b4-ty@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+On Fri, 16 Oct 2020 23:22:35 +0100, Colin King wrote:
+> Don't populate const array lp872x_num_regulators  on the stack but
+> instead make it static. Makes the object code smaller by 29 bytes.
+> 
+> Before:
+>    text	   data	    bss	    dec	    hex	filename
+>   18441	   4624	     64	  23129	   5a59	drivers/regulator/lp872x.o
+> 
+> [...]
 
-[ Upstream commit 8e1ba47c60bcd325fdd097cd76054639155e5d2e ]
+Applied to
 
-clang static analysis reports this repesentative error
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regulator.git for-next
 
-pvr2fb.c:1049:2: warning: 1st function call argument
-  is an uninitialized value [core.CallAndMessage]
-        if (*cable_arg)
-        ^~~~~~~~~~~~~~~
+Thanks!
 
-Problem is that cable_arg depends on the input loop to
-set the cable_arg[0].  If it does not, then some random
-value from the stack is used.
+[1/1] regulator: lp872x: make a const array static, makes object smaller
+      commit: 390d828f56a602c9201601bff1170d9d2bf5801c
 
-A similar problem exists for output_arg.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-So initialize cable_arg and output_arg.
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-Signed-off-by: Tom Rix <trix@redhat.com>
-Acked-by: Arnd Bergmann <arnd@arndb.de>
-Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
-Link: https://patchwork.freedesktop.org/patch/msgid/20200720191845.20115-1-trix@redhat.com
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/video/fbdev/pvr2fb.c | 2 ++
- 1 file changed, 2 insertions(+)
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
-diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
-index 2d9f69b93392a..f4add36cb5f4d 100644
---- a/drivers/video/fbdev/pvr2fb.c
-+++ b/drivers/video/fbdev/pvr2fb.c
-@@ -1028,6 +1028,8 @@ static int __init pvr2fb_setup(char *options)
- 	if (!options || !*options)
- 		return 0;
- 
-+	cable_arg[0] = output_arg[0] = 0;
-+
- 	while ((this_opt = strsep(&options, ","))) {
- 		if (!*this_opt)
- 			continue;
--- 
-2.25.1
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
 
+Thanks,
+Mark
