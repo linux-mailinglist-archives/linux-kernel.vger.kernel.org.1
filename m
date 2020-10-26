@@ -2,82 +2,91 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4C5D129968A
+	by mail.lfdr.de (Postfix) with ESMTP id C99BA29968B
 	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:09 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792663AbgJZTOB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:14:01 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50924 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1737755AbgJZTH5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:07:57 -0400
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id DF50D21D41
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:07:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603739277;
-        bh=vYbDisG7UZadajXMw/nlAuSTCeEhQwUZQJvu+Behapk=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=PuwWMFp/Hsj/gr+Y8SP1Q3U7qxUYAKqGg6LvnPMe5gme1MoqHSQ4ThL3MQXwF1mUm
-         SLCKZdlQv6CpDQ9jrxyyHIKeVA6lKIwC8E7SwF71KPruU5t7riQ8SjQarBkp+soLrG
-         yOH8M5OK+z8ban5yRlNr+AjZhMXl19h8XVUpVupo=
-Received: by mail-qk1-f181.google.com with SMTP id h140so9441869qke.7
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:07:56 -0700 (PDT)
-X-Gm-Message-State: AOAM532hBwJ79owt0u48NN/w7RVCnMHxWnlQD+795DlmKnSQQ1OynN4f
-        GvXbkHFMveIPG+1OOc+KYGQc5ogJAvPC/qHjQHw=
-X-Google-Smtp-Source: ABdhPJx8U0mDhIpTto7EjkABKog5y1+ZMYZ6+1tpD5ozQ/zCb/L2KWLwDnaCbZCUVbwdDGbxrwuBUJcCJjpsIu4BhC0=
-X-Received: by 2002:a05:620a:b13:: with SMTP id t19mr16125103qkg.3.1603739276000;
- Mon, 26 Oct 2020 12:07:56 -0700 (PDT)
+        id S1792674AbgJZTOD (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:14:03 -0400
+Received: from fllv0016.ext.ti.com ([198.47.19.142]:36634 "EHLO
+        fllv0016.ext.ti.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1414514AbgJZTIQ (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:08:16 -0400
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+        by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 09QJ8B7Z062498;
+        Mon, 26 Oct 2020 14:08:11 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+        s=ti-com-17Q1; t=1603739291;
+        bh=UcpSL/0RIfG5zvTKLE0EY3GFJtn0K2reBaNq68a0YXs=;
+        h=Date:From:To:CC:Subject:References:In-Reply-To;
+        b=oXyzfU9jLxaDn+AVTwiU/kE5UPTRum/VmxxFHOrDRT26Lc17lbgb+SPCwGnqcPi8I
+         afcU988A0YCUGpgRZZOpTmkyKJdcU98WV45mZLE6pe5iBXHGxlNAtLQSaNNzRkc4SY
+         Ayba/2jpu6S+/MA6Oi8jBd9MnwQsN+3lDN05o71g=
+Received: from DLEE109.ent.ti.com (dlee109.ent.ti.com [157.170.170.41])
+        by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 09QJ8Ak5048272
+        (version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+        Mon, 26 Oct 2020 14:08:10 -0500
+Received: from DLEE110.ent.ti.com (157.170.170.21) by DLEE109.ent.ti.com
+ (157.170.170.41) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3; Mon, 26
+ Oct 2020 14:08:10 -0500
+Received: from fllv0040.itg.ti.com (10.64.41.20) by DLEE110.ent.ti.com
+ (157.170.170.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.1979.3 via
+ Frontend Transport; Mon, 26 Oct 2020 14:08:10 -0500
+Received: from localhost (ileax41-snat.itg.ti.com [10.172.224.153])
+        by fllv0040.itg.ti.com (8.15.2/8.15.2) with ESMTP id 09QJ89VJ122635;
+        Mon, 26 Oct 2020 14:08:09 -0500
+Date:   Mon, 26 Oct 2020 14:08:08 -0500
+From:   Nishanth Menon <nm@ti.com>
+To:     Lokesh Vutla <lokeshvutla@ti.com>
+CC:     Santosh Shilimkar <ssantosh@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>,
+        <linux-kernel@vger.kernel.org>,
+        Swapnil Jakhade <sjakhade@cadence.com>,
+        Jyri Sarha <jsarha@ti.com>,
+        Yuti Amonkar <yamonkar@cadence.com>,
+        Tomi Valkeinen <tomi.valkeinen@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, Sekhar Nori <nsekhar@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>
+Subject: Re: [PATCH] soc: ti: Kconfig: Drop ARM64 SoC specific configs
+Message-ID: <20201026190808.im4nb32jn4rd3xhu@crayon>
+References: <20201026170624.24241-1-nm@ti.com>
+ <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
 MIME-Version: 1.0
-References: <20201026161108.3707783-1-arnd@kernel.org> <20201026132300.6b175028@gandalf.local.home>
-In-Reply-To: <20201026132300.6b175028@gandalf.local.home>
-From:   Arnd Bergmann <arnd@kernel.org>
-Date:   Mon, 26 Oct 2020 20:07:39 +0100
-X-Gmail-Original-Message-ID: <CAK8P3a1ASxy3w62A16Ne9AkM2kfF5ZokYOfos53FSTQdkXha4Q@mail.gmail.com>
-Message-ID: <CAK8P3a1ASxy3w62A16Ne9AkM2kfF5ZokYOfos53FSTQdkXha4Q@mail.gmail.com>
-Subject: Re: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Ingo Molnar <mingo@redhat.com>, Jiri Kosina <jkosina@suse.cz>,
-        Petr Mladek <pmladek@suse.cz>,
-        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
-        Cezary Rojewski <cezary.rojewski@intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d741c4d0-9e76-99de-7081-10f3a7a5cb1a@ti.com>
+User-Agent: NeoMutt/20171215
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 6:23 PM Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> On Mon, 26 Oct 2020 17:10:58 +0100
-> Arnd Bergmann <arnd@kernel.org> wrote:
->
-> > From: Arnd Bergmann <arnd@arndb.de>
-> >
-> > Building with W=2 prints a number of warnings for one function that
-> > has a pointer type mismatch:
-> >
-> > linux/seq_buf.h: In function 'seq_buf_init':
-> > linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
->
-> I've always hated the warning about char * and unsigned char *, as they are
-> mostly meaningless. Yes, bugs happen with int to unsigned int conversions,
-> but this is dealing with strings, where unsigned char * and char * are
-> basically equivalent, except when it comes to one thing, which is why I
-> prefer unsigned char * over char *, and that is printing out the numerical
-> values of a buffer, if they go above 177, the char * prints the negative
-> value, but unsigned char * keeps printing what you would expect.
+On 23:30-20201026, Lokesh Vutla wrote:
+[..]
+> ➜  linux git:(master) git grep -in ARCH_K3_AM6_SOC
+> arch/arm64/configs/defconfig:961:CONFIG_ARCH_K3_AM6_SOC=y
+> drivers/soc/ti/Kconfig:7:config ARCH_K3_AM6_SOC
+> ➜  linux git:(master) git grep -in ARCH_K3_J721E_SOC
+> arch/arm64/configs/defconfig:962:CONFIG_ARCH_K3_J721E_SOC=y
+> drivers/gpu/drm/bridge/cadence/Kconfig:16:  depends on ARCH_K3_J721E_SOC ||
+> COMPILE_TEST
+> drivers/soc/ti/Kconfig:12:config ARCH_K3_J721E_SOC
+> 
+> 
+> I see drm bridge Kconfig is cleaned[0]. Please clean the defconfig as well.
+> 
+> [0]
+> https://patchwork.kernel.org/project/linux-arm-kernel/patch/20201026165441.22894-1-nm@ti.com/
+> 
 
-I agree it's a super annoying warning, which is exactly why I sent the
-fixes to shut it up in common headers. At least that way, building a specific
-driver with W=2 will only show the warnings in that driver, rather than
-those in header files as well.
+Yes, the defconfig patches have to be queued up in a different queue,
+Lets see where the two patches fall and will post the defconfig
+updates as well.
 
-> As this is just an annoyance (extra warnings), and not really a "fix", I'll
-> queue it up for the next merge window.
-
-Yes, that was the idea, thanks!
-
-        Arnd
+-- 
+Regards,
+Nishanth Menon
+Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
