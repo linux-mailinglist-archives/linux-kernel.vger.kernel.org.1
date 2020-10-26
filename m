@@ -2,120 +2,178 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C38F299575
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:35:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F301929957C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:36:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790013AbgJZSfz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:35:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:38096 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789893AbgJZSfy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:35:54 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 688292076A;
-        Mon, 26 Oct 2020 18:35:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603737354;
-        bh=lD2nhIglV/vA5k/ZCAjBHhi+Ake+rB+Lp1+U0V2o4MU=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=ZYxBH0VLlX/nUUSYKcUn1ax+2Ju+milofyjgY0bd2LeXa8B/eTL/VzEJHizx9+o3B
-         rDp98UnKSSrgfDobT6mFzmx+lPeJmtKHjVHpp6nmQ4jORVPkK4+2MEGFKm2tWsWUss
-         KopKkKKdoigYFSPWU9hEavlKcdr49sEa56nveNpk=
-Date:   Mon, 26 Oct 2020 11:35:52 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Xu Yilun <yilun.xu@intel.com>
-Cc:     Andrew Lunn <andrew@lunn.ch>, jesse.brandeburg@intel.com,
-        anthony.l.nguyen@intel.com, davem@davemloft.net, mdf@kernel.org,
-        lee.jones@linaro.org, linux-kernel@vger.kernel.org,
-        linux-fpga@vger.kernel.org, netdev@vger.kernel.org,
-        trix@redhat.com, lgoncalv@redhat.com, hao.wu@intel.com
-Subject: Re: [RFC PATCH 1/6] docs: networking: add the document for DFL
- Ether  Group driver
-Message-ID: <20201026113552.78e7a2b4@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201026173803.GA10743@yilunxu-OptiPlex-7050>
-References: <1603442745-13085-1-git-send-email-yilun.xu@intel.com>
-        <1603442745-13085-2-git-send-email-yilun.xu@intel.com>
-        <20201023153731.GC718124@lunn.ch>
-        <20201026085246.GC25281@yilunxu-OptiPlex-7050>
-        <20201026130001.GC836546@lunn.ch>
-        <20201026173803.GA10743@yilunxu-OptiPlex-7050>
+        id S1790041AbgJZSgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:36:24 -0400
+Received: from linux.microsoft.com ([13.77.154.182]:38712 "EHLO
+        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1790032AbgJZSgX (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:36:23 -0400
+Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
+        by linux.microsoft.com (Postfix) with ESMTPSA id 728F720B4905;
+        Mon, 26 Oct 2020 11:36:21 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 728F720B4905
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+        s=default; t=1603737382;
+        bh=8qHkrnzaEbS4RRTrIwve8nZUA9/BuXPOXtM1phzHgsU=;
+        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
+        b=GW0lo+xiMDmJ98rYQ6xS5lHJOMJVT3p/QXPfU/3ZtAMyS5Hymipt/pjt6MBEi6mol
+         YQRenmZ+7inoqVOZPno0JLTSIh1iOiYTAvAvNl8BQihiUcDNA1KncN2Rt8SLfCQDo5
+         GnhbSdAGcWPGayFc5obIU/mAK9iC36KgeA4q/LJY=
+Subject: Re: [PATCH v7 1/4] powerpc: Refactor kexec functions to move arch
+ independent code to kernel
+To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
+Cc:     Mimi Zohar <zohar@linux.ibm.com>, robh@kernel.org,
+        gregkh@linuxfoundation.org, james.morse@arm.com,
+        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
+        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
+        robh+dt@kernel.org, frowand.list@gmail.com,
+        vincenzo.frascino@arm.com, mark.rutland@arm.com,
+        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
+        pasha.tatashin@soleen.com, allison@lohutok.net,
+        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
+        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
+        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
+        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
+References: <20200930205941.1576-1-nramas@linux.microsoft.com>
+ <20200930205941.1576-2-nramas@linux.microsoft.com>
+ <bfaadaffafa3b8c12fce7e8491ea77e22a5821a8.camel@linux.ibm.com>
+ <81c4a9ce-c363-a87a-06de-4a8729702b97@linux.microsoft.com>
+ <a6c3e3ecb5c1c6f35b747f1ea4d8261667f9a376.camel@linux.ibm.com>
+ <af13db86-09c1-db12-330e-57e24bd07b9a@linux.microsoft.com>
+ <87v9f1eh8t.fsf@morokweng.localdomain>
+From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+Message-ID: <7b6dce85-983e-c344-4fb1-da103cf3dfb3@linux.microsoft.com>
+Date:   Mon, 26 Oct 2020 11:36:20 -0700
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <87v9f1eh8t.fsf@morokweng.localdomain>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 01:38:04 +0800 Xu Yilun wrote:
-> > > The line/host side Ether Group is not the terminal of the network dat=
-a stream.
-> > > Eth1 will not paticipate in the network data exchange to host.
-> > >=20
-> > > The main purposes for eth1 are:
-> > > 1. For users to monitor the network statistics on Line Side, and by c=
-omparing the
-> > > statistics between eth0 & eth1, users could get some knowledge of how=
- the User
-> > > logic is taking function.
-> > >=20
-> > > 2. Get the link state of the front panel. The XL710 is now connected =
-to
-> > > Host Side of the FPGA and the its link state would be always on. So to
-> > > check the link state of the front panel, we need to query eth1. =20
-> >=20
-> > This is very non-intuitive. We try to avoid this in the kernel and the
-> > API to userspace. Ethernet switches are always modelled as
-> > accelerators for what the Linux network stack can already do. You
-> > configure an Ethernet switch port in just the same way configure any
-> > other netdev. You add an IP address to the switch port, you get the
-> > Ethernet statistics from the switch port, routing protocols use the
-> > switch port.
-> >=20
-> > You design needs to be the same. All configuration needs to happen via
-> > eth1.
-> >=20
-> > Please look at the DSA architecture. What you have here is very
-> > similar to a two port DSA switch. In DSA terminology, we would call
-> > eth0 the master interface.  It needs to be up, but otherwise the user
-> > does not configure it. eth1 is the slave interface. It is the user
-> > facing interface of the switch. All configuration happens on this
-> > interface. Linux can also send/receive packets on this netdev. The
-> > slave TX function forwards the frame to the master interface netdev,
-> > via a DSA tagger. Frames which eth0 receive are passed through the
-> > tagger and then passed to the slave interface.
-> >=20
-> > All the infrastructure you need is already in place. Please use
-> > it. I'm not saying you need to write a DSA driver, but you should make
-> > use of the same ideas and low level hooks in the network stack which
-> > DSA uses. =20
->=20
-> I did some investigation about the DSA, and actually I wrote a
-> experimental DSA driver. It works and almost meets my need, I can make
-> configuration, run pktgen on slave inf.
->=20
-> A main concern for dsa is the wiring from slave inf to master inf depends
-> on the user logic. If FPGA users want to make their own user logic, they
-> may need a new driver. But our original design for the FPGA is, kernel
-> drivers support the fundamental parts - FPGA FIU (where Ether Group is in)
-> & other peripherals on board, and userspace direct I/O access for User
-> logic. Then FPGA user don't have to write & compile a driver for their
-> user logic change.
-> It seems not that case for netdev. The user logic is a part of the whole
-> functionality of the netdev, we cannot split part of the hardware
-> component to userspace and the rest in kernel. I really need to
-> reconsider this.
+On 10/22/20 8:46 PM, Thiago Jung Bauermann wrote:
 
-This is obviously on purpose. Your design as it stands will not fly
-upstream, sorry.
+Hi Thiago,
 
-=46rom netdev perspective the user should not care how many hardware
-blocks are in the pipeline, and on which piece of silicon. You have=20
-a 2 port (modulo port splitting) card, there should be 2 netdevs, and
-the link config and forwarding should be configured through those.
+> 
+> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
+> 
+>> On 10/20/20 8:17 PM, Mimi Zohar wrote:
+>>> On Tue, 2020-10-20 at 19:25 -0700, Lakshmi Ramasubramanian wrote:
+>>>> On 10/20/20 1:00 PM, Mimi Zohar wrote:
+>>>>> Hi Lakshmi,
+>>>>>
+>>>>> On Wed, 2020-09-30 at 13:59 -0700, Lakshmi Ramasubramanian wrote:
+>>>>>> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
+>>>>>> carrying forward the IMA measurement logs on kexec for powerpc do not
+>>>>>> have architecture specific code, but they are currently defined for
+>>>>>> powerpc only.
+>>>>>>
+>>>>>> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
+>>>>>> the IMA log entry from the device tree and free the memory reserved
+>>>>>> for the log. These functions need to be defined even if the current
+>>>>>> kernel does not support carrying forward IMA log across kexec since
+>>>>>> the previous kernel could have supported that and therefore the current
+>>>>>> kernel needs to free the allocation.
+>>>>>>
+>>>>>> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
+>>>>>> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in kernel.
+>>>>>> A later patch in this series will use these functions to free
+>>>>>> the allocation, if any, made by the previous kernel for ARM64.
+>>>>>>
+>>>>>> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
+>>>>>> "linux,ima-kexec-buffer", that is added to the DTB to hold
+>>>>>> the address and the size of the memory reserved to carry
+>>>>>> the IMA measurement log.
+>>>>>
+>>>>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
+>>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
+>>>>>> Reported-by: kernel test robot <lkp@intel.com> error: implicit declaration of function 'delete_fdt_mem_rsv' [-Werror,-Wimplicit-function-declaration]
+>>>>>
+>>>>> Much better!  This version limits unnecessarily changing the existing
+>>>>> code to adding a couple of debugging statements, but that looks to be
+>>>>> about it.
+>>>> Yes Mimi - that's correct.
+>>>>
+>>>>>
+>>>>> Based on Chester Lin's "ima_arch" support for arm64 discussion, the IMA generic
+>>>>> EFI support will be defined in ima/ima-efi.c.  Similarly, I think it would make sense to put the generic device tree support in ima/ima_kexec_fdt.c or ima/ima_fdt.c, as opposed to kernel/.  (Refer to my comments on 2/4 about the new file named ima_kexec_fdt.c.)
+>>>>
+>>>> The functions remove_ima_kexec_buffer() and delete_fdt_mem_rsv(), which
+>>>> are defined in kernel/ima_kexec.c and kernel/kexec_file_fdt.c
+>>>> respectively, are needed even when CONFIG_IMA is not defined. These
+>>>> functions need to be called by the current kernel to free the ima kexec
+>>>> buffer resources allocated by the previous kernel. This is the reason,
+>>>> these functions are defined under "kernel" instead of
+>>>> "security/integrity/ima".
+>>>>
+>>>> If there is a better location to move the above C files, please let me
+>>>> know. I'll move them.
+>>> Freeing the previous kernel measurement list is currently called from
+>>> ima_load_kexec_buffer(), only after the measurement list has been
+>>> restored.  The only other time the memory is freed is when the
+>>> allocated memory size isn't sufficient to hold the measurement list,
+>>> which could happen if there is a delay between loading and executing
+>>> the kexec.
+>>>
+>>
+>> There are two "free" operations we need to perform with respect to ima buffer on
+>> kexec:
+>>
+>> 1, The ima_free_kexec_buffer() called from ima_load_kexec_buffer() - the one you
+>> have stated above.
+>>
+>> Here we remove the "ima buffer" node from the "OF" tree and free the memory
+>> pages that were allocated for the measurement list.
+>>
+>> This one is already present in ima and there's no change in that in my patches.
+>>
+>> 2, The other one is remove_ima_kexec_buffer() called from setup_ima_buffer()
+>> defined in "arch/powerpc/kexec/ima.c"
+>>
+>>   This function removes the "ima buffer" node from the "FDT" and also frees the
+>> physical memory reserved for the "ima measurement list" by the previous kernel.
+>>
+>>   This "free" operation needs to be performed even if the current kernel does not
+>> support IMA kexec since the previous kernel could have passed the IMA
+>> measurement list (in FDT and reserved physical memory).
+>>
+>> For this reason, remove_ima_kexec_buffer() cannot be defined in "ima" but some
+>> other place which will be built even if ima is not enabled. I chose to define
+>> this function in "kernel" since that is guaranteed to be always built.
+>>
+>> thanks,
+>>   -lakshmi
+> 
+> That is true. I believe a more fitting place for these functions is
+> drivers/of/fdt.c rather than these new files in kernel/. Both CONFIG_PPC
+> and CONFIG_ARM64 select CONFIG_OF and CONFIG_OF_FLATTREE (indirectly,
+> via CONFIG_OF_EARLY_FLATTREE) so they will both build that file.
+> 
 
-Please let folks at Intel know that we don't like the "SDK in user
-space with reuse [/abuse] of parts of netdev infra" architecture.
-This is a second of those we see in a short time. Kernel is not a
-library for your SDK to use.=20
+I moved the above mentioned functions to drivers/of/fdt.c => it works.
+
+But I am not sure if "drivers/of" is the right place - this driver is 
+handling data from firmware and building FDT. I do not see any kexec 
+related operations being handled by this driver in the current 
+implementation.
+
+Also, being a driver can it be loaded/unloaded on-demand? If yes, it may 
+not be available when "ima kexec" calls are needed.
+
+@Rob Herring - what do you think?
+
+thanks,
+  -lakshmi
+
