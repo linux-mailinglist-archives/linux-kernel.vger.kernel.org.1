@@ -2,143 +2,363 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 15D0F298D0A
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:47:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B784B298D11
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:48:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775415AbgJZMrQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:47:16 -0400
-Received: from mail-yb1-f193.google.com ([209.85.219.193]:36019 "EHLO
-        mail-yb1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775403AbgJZMrP (ORCPT
+        id S1775442AbgJZMsc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:48:32 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:50236 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775434AbgJZMsa (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:47:15 -0400
-Received: by mail-yb1-f193.google.com with SMTP id f140so7537490ybg.3;
-        Mon, 26 Oct 2020 05:47:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=krigQ3i6dCn+qzXzyflYkj7VuDlk3im8wf3RIOQnyu0=;
-        b=pxj7fdi5TwNz1sp0SG2lcxXmD0z87mAO+WmV/PZXXxNp/FMCekwhBBg0DHy3OdGuOX
-         i31VsFgafs/VXGMZUvU6Biuar+lcVhGWctnL8wjUeER61KPnR/SQugSNcYNzTaweDqih
-         qMjYLUlUqfM6NUJ5Pt6dg8gnQMpOHvJF1ftBOrJrlCJGfDwMZ7OlyVIovhKARNYMfQZu
-         bdAx3bT4z5bDwJiEArnxN7p9prYUm3scJeMUnVVN8kF7wc0xSxdJNr4hOwYvfJgk5OlI
-         hoWBzGVln/nxok/OLuvN2VTGyymqZyPVj2wB17u+epv6X58lCuoMBJHhV888Sisqjtn3
-         G7kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=krigQ3i6dCn+qzXzyflYkj7VuDlk3im8wf3RIOQnyu0=;
-        b=UpL5IQp0KFjCDqpOXvACVdLGU9aPzh/qFcDxojT737Du/2C6OiyMNAVDfPzH8/piox
-         qlIVDh3JkXUUn+F9mx00cjjfnq8Dwpu5qgPOPZkhKjhyAF+SNGuoF1edwkVcqKsgymmC
-         +t4bcD8MCZLj1JkUt+TMJGWWvL5MJCj/GDWUbEm2Wmj8og/Z2Jr5K2cotDkdLGu8nTyn
-         P7XxlDxgrfbCUMUSI99bapD9slu6YttM8V6LdbsglsPDbsIwrs9/kLcpWkahuQOGjiQH
-         aPNYx5XfA2r7U+aIVYF/JrDc6lhB5rdsTh//wNGpFcwztH1oCxmSsgiCskkBqt0daLZ/
-         GXaQ==
-X-Gm-Message-State: AOAM533wuzqxsWRoZ36rtgQ9oe0v6VYvn7U0oxfY3c0+2UxPGuXtWWUm
-        sBsOa1rhNngwMXxpXt7AtE2izWLgbU2w1ROKeTXR3nrNEcQ=
-X-Google-Smtp-Source: ABdhPJzrnX+CzY0KVfOlcv5KZkRi5XGyHH+EvYDjHWe0C/bOb802ge8/+ABSQDcFQ2AVcpP57bskV/8mSTnyaYvKz7c=
-X-Received: by 2002:a25:2e4c:: with SMTP id b12mr20497894ybn.336.1603716433785;
- Mon, 26 Oct 2020 05:47:13 -0700 (PDT)
+        Mon, 26 Oct 2020 08:48:30 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8z7lC8inBjW/CfTmD5xG9915EkN6oe2dFKK/Pu9tyBA=; b=wCthTUegaCH95QRlc7RuVUiMg4
+        IBBCkAw9tE5PV+A9VYDbddF1kdTkawR9Ms+1ZfSLv3uEGQVTEM80821ED6e+mhMoD8J4L8QT7HVhA
+        tcKn6bwKad65gOGNvaJiYDTPy5dn1rMgbVpIxBjuZQPI2nYF14+HLANMauQjh6F2bdgfxlrrMu1oY
+        mQucxqhfEMrKcTFmyabCOaQ1KH8Lty5vMRoVb1+NnAdSxLR7V4HE5efjC4H58Y6Vri6bO6+TQhWc1
+        KOTAK5aXxkCXw3Pr3JT21Dk7iNFQ+ST9w1GAvkkVck4AHGdfTTKN+HSPfJUe7lOIUNu0vnb8no7YV
+        dDXDtnWA==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX1uJ-0000n3-GP; Mon, 26 Oct 2020 12:47:27 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 85526305815;
+        Mon, 26 Oct 2020 13:47:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 605922141F784; Mon, 26 Oct 2020 13:47:24 +0100 (CET)
+Date:   Mon, 26 Oct 2020 13:47:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     Nishanth Aravamudan <naravamudan@digitalocean.com>,
+        Julien Desfossez <jdesfossez@digitalocean.com>,
+        Tim Chen <tim.c.chen@linux.intel.com>,
+        Vineeth Pillai <viremana@linux.microsoft.com>,
+        Aaron Lu <aaron.lwe@gmail.com>,
+        Aubrey Li <aubrey.intel@gmail.com>, tglx@linutronix.de,
+        linux-kernel@vger.kernel.org, mingo@kernel.org,
+        torvalds@linux-foundation.org, fweisbec@gmail.com,
+        keescook@chromium.org, kerrnel@google.com,
+        Phil Auld <pauld@redhat.com>,
+        Valentin Schneider <valentin.schneider@arm.com>,
+        Mel Gorman <mgorman@techsingularity.net>,
+        Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>, vineeth@bitbyteword.org,
+        Chen Yu <yu.c.chen@intel.com>,
+        Christian Brauner <christian.brauner@ubuntu.com>,
+        Agata Gruza <agata.gruza@intel.com>,
+        Antonio Gomez Iglesias <antonio.gomez.iglesias@intel.com>,
+        graf@amazon.com, konrad.wilk@oracle.com, dfaggioli@suse.com,
+        pjt@google.com, rostedt@goodmis.org, derkling@google.com,
+        benbjiang@tencent.com,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        James.Bottomley@hansenpartnership.com, OWeisse@umich.edu,
+        Dhaval Giani <dhaval.giani@oracle.com>,
+        Junaid Shahid <junaids@google.com>, jsbarnes@google.com,
+        chris.hyser@oracle.com, Aubrey Li <aubrey.li@linux.intel.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Tim Chen <tim.c.chen@intel.com>
+Subject: Re: [PATCH v8 -tip 08/26] sched/fair: Snapshot the min_vruntime of
+ CPUs on force idle
+Message-ID: <20201026124724.GT2611@hirez.programming.kicks-ass.net>
+References: <20201020014336.2076526-1-joel@joelfernandes.org>
+ <20201020014336.2076526-9-joel@joelfernandes.org>
 MIME-Version: 1.0
-References: <20201026093907.13799-1-menglong8.dong@gmail.com> <acbb8a3a7bd83ee1121dfa91c207e4681a01d2d8.camel@redhat.com>
-In-Reply-To: <acbb8a3a7bd83ee1121dfa91c207e4681a01d2d8.camel@redhat.com>
-From:   Menglong Dong <menglong8.dong@gmail.com>
-Date:   Mon, 26 Oct 2020 20:47:01 +0800
-Message-ID: <CADxym3bwD+XBRmrtN6Bh1p9QQy_H7gx1o98eU+pWgPeDtVxX5w@mail.gmail.com>
-Subject: Re: [PATCH] net: udp: increase UDP_MIB_RCVBUFERRORS when ENOBUFS
-To:     Paolo Abeni <pabeni@redhat.com>, davem@davemloft.net
-Cc:     kuznet@ms2.inr.ac.ru, yoshfuji@linux-ipv6.org, kuba@kernel.org,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201020014336.2076526-9-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello~
+On Mon, Oct 19, 2020 at 09:43:18PM -0400, Joel Fernandes (Google) wrote:
 
-On Mon, Oct 26, 2020 at 5:52 PM Paolo Abeni <pabeni@redhat.com> wrote:
->
-> Hello,
->
-> On Mon, 2020-10-26 at 17:39 +0800, Menglong Dong wrote:
-> > The error returned from __udp_enqueue_schedule_skb is ENOMEM or ENOBUFS.
-> > For now, only ENOMEM is counted into UDP_MIB_RCVBUFERRORS in
-> > __udp_queue_rcv_skb. UDP_MIB_RCVBUFERRORS should count all of the
-> > failed skb because of memory errors during udp receiving, not just because of the limit of sock receive queue. We can see this
-> > in __udp4_lib_mcast_deliver:
-> >
-> >               nskb = skb_clone(skb, GFP_ATOMIC);
-> >
-> >               if (unlikely(!nskb)) {
-> >                       atomic_inc(&sk->sk_drops);
-> >                       __UDP_INC_STATS(net, UDP_MIB_RCVBUFERRORS,
-> >                                       IS_UDPLITE(sk));
-> >                       __UDP_INC_STATS(net, UDP_MIB_INERRORS,
-> >                                       IS_UDPLITE(sk));
-> >                       continue;
-> >               }
-> >
-> > See, UDP_MIB_RCVBUFERRORS is increased when skb clone failed. From this
-> > point, ENOBUFS from __udp_enqueue_schedule_skb should be counted, too.
-> > It means that the buffer used by all of the UDP sock is to the limit, and
-> > it ought to be counted.
-> >
-> > Signed-off-by: Menglong Dong <menglong8.dong@gmail.com>
-> > ---
-> >  net/ipv4/udp.c | 4 +---
-> >  net/ipv6/udp.c | 4 +---
-> >  2 files changed, 2 insertions(+), 6 deletions(-)
-> >
-> > diff --git a/net/ipv4/udp.c b/net/ipv4/udp.c
-> > index 09f0a23d1a01..49a69d8d55b3 100644
-> > --- a/net/ipv4/udp.c
-> > +++ b/net/ipv4/udp.c
-> > @@ -2035,9 +2035,7 @@ static int __udp_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
-> >               int is_udplite = IS_UDPLITE(sk);
-> >
-> >               /* Note that an ENOMEM error is charged twice */
-> > -             if (rc == -ENOMEM)
-> > -                     UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS,
-> > -                                     is_udplite);
-> > +             UDP_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS, is_udplite);
-> >               UDP_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
-> >               kfree_skb(skb);
-> >               trace_udp_fail_queue_rcv_skb(rc, sk);
-> > diff --git a/net/ipv6/udp.c b/net/ipv6/udp.c
-> > index 29d9691359b9..d5e23b150fd9 100644
-> > --- a/net/ipv6/udp.c
-> > +++ b/net/ipv6/udp.c
-> > @@ -634,9 +634,7 @@ static int __udpv6_queue_rcv_skb(struct sock *sk, struct sk_buff *skb)
-> >               int is_udplite = IS_UDPLITE(sk);
-> >
-> >               /* Note that an ENOMEM error is charged twice */
-> > -             if (rc == -ENOMEM)
-> > -                     UDP6_INC_STATS(sock_net(sk),
-> > -                                      UDP_MIB_RCVBUFERRORS, is_udplite);
-> > +             UDP6_INC_STATS(sock_net(sk), UDP_MIB_RCVBUFERRORS, is_udplite);
-> >               UDP6_INC_STATS(sock_net(sk), UDP_MIB_INERRORS, is_udplite);
-> >               kfree_skb(skb);
-> >               return -1;
->
-> The diffstat is nice, but I'm unsure we can do this kind of change
-> (well, I really think we should not do it): it will fool any kind of
-> existing users (application, scripts, admin) currently reading the
-> above counters and expecting UDP_MIB_RCVBUFERRORS being increased with
-> the existing schema.
->
-> Cheers,
->
-> Paolo
->
+> @@ -4723,6 +4714,14 @@ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+>  			update_rq_clock(rq_i);
+>  	}
+>  
+> +	/* Reset the snapshot if core is no longer in force-idle. */
+> +	if (!fi_before) {
+> +		for_each_cpu(i, smt_mask) {
+> +			struct rq *rq_i = cpu_rq(i);
+> +			rq_i->cfs.min_vruntime_fi = rq_i->cfs.min_vruntime;
+> +		}
+> +	}
 
-Well, your words make sense, this change isn't friendly for the existing users.
-It really puzzled me when this ENOBUFS happened, no counters were done and
-I hardly figured out what happened.
+So this is the thing that drags vruntime_fi along when (both?) siblings
+are active, right? But should we not do that after pick? Consider 2
+tasks a weight 1 and a weight 10 task, one for each sibling. By syncing
+the vruntime before picking, the cfs_prio_less() loop will not be able
+to distinguish between these two, since they'll both have effectively
+the same lag.
 
-So, is it a good idea to introduce a 'UDP_MIB_MEMERRORS'?
+If however, you syn after pick, then the weight 1 task will have accreud
+far more runtime than the weight 10 task, and consequently the weight 10
+task will have preference when a decision will have to be made.
 
-Cheers,
+(also, if this were the right place, the whole thing should've been part
+of the for_each_cpu() loop right before this)
 
-Menglong Dong
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index 56bea0decda1..9cae08c3fca1 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -10686,6 +10686,46 @@ static inline void task_tick_core(struct rq *rq, struct task_struct *curr)
+>  	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
+>  		resched_curr(rq);
+>  }
+> +
+> +bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
+> +{
+> +	bool samecpu = task_cpu(a) == task_cpu(b);
+> +	struct sched_entity *sea = &a->se;
+> +	struct sched_entity *seb = &b->se;
+> +	struct cfs_rq *cfs_rqa;
+> +	struct cfs_rq *cfs_rqb;
+> +	s64 delta;
+> +
+> +	if (samecpu) {
+> +		/* vruntime is per cfs_rq */
+> +		while (!is_same_group(sea, seb)) {
+> +			int sea_depth = sea->depth;
+> +			int seb_depth = seb->depth;
+> +			if (sea_depth >= seb_depth)
+> +				sea = parent_entity(sea);
+> +			if (sea_depth <= seb_depth)
+> +				seb = parent_entity(seb);
+> +		}
+> +
+> +		delta = (s64)(sea->vruntime - seb->vruntime);
+> +		goto out;
+> +	}
+> +
+> +	/* crosscpu: compare root level se's vruntime to decide priority */
+> +	while (sea->parent)
+> +		sea = sea->parent;
+> +	while (seb->parent)
+> +		seb = seb->parent;
+
+This seems unfortunate, I think we can do better.
+
+> +
+> +	cfs_rqa = sea->cfs_rq;
+> +	cfs_rqb = seb->cfs_rq;
+> +
+> +	/* normalize vruntime WRT their rq's base */
+> +	delta = (s64)(sea->vruntime - seb->vruntime) +
+> +		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
+> +out:
+> +	return delta > 0;
+> +}
+
+
+How's something like this?
+
+ - after each pick, such that the pick itself sees the divergence (see
+   above); either:
+
+    - pull the vruntime_fi forward, when !fi
+    - freeze the vruntime_fi, when newly fi    (A)
+
+ - either way, update vruntime_fi for each cfs_rq in the active
+   hierachy.
+
+ - when comparing, and fi, update the vruntime_fi hierachy until we
+   encounter a mark from (A), per doing it during the pick, but before
+   runtime, this guaranteees it hasn't moved since (A).
+
+XXX, still buggered on SMT>2, imagine having {ta, tb, fi, i} on an SMT4,
+then when comparing any two tasks that do not involve the fi, we should
+(probably) have pulled them fwd -- but we can't actually pull them,
+because then the fi thing would break, mooo.
+
+
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -115,19 +115,8 @@ static inline bool prio_less(struct task
+ 	if (pa == -1) /* dl_prio() doesn't work because of stop_class above */
+ 		return !dl_time_before(a->dl.deadline, b->dl.deadline);
+ 
+-	if (pa == MAX_RT_PRIO + MAX_NICE)  { /* fair */
+-		u64 vruntime = b->se.vruntime;
+-
+-		/*
+-		 * Normalize the vruntime if tasks are in different cpus.
+-		 */
+-		if (task_cpu(a) != task_cpu(b)) {
+-			vruntime -= task_cfs_rq(b)->min_vruntime;
+-			vruntime += task_cfs_rq(a)->min_vruntime;
+-		}
+-
+-		return !((s64)(a->se.vruntime - vruntime) <= 0);
+-	}
++	if (pa == MAX_RT_PRIO + MAX_NICE)	/* fair */
++		return cfs_prio_less(a, b);
+ 
+ 	return false;
+ }
+@@ -4642,12 +4631,15 @@ pick_task(struct rq *rq, const struct sc
+ 	return cookie_pick;
+ }
+ 
++extern void task_vruntime_update(struct rq *rq, struct task_struct *p);
++
+ static struct task_struct *
+ pick_next_task(struct rq *rq, struct task_struct *prev, struct rq_flags *rf)
+ {
+ 	struct task_struct *next, *max = NULL;
+ 	const struct sched_class *class;
+ 	const struct cpumask *smt_mask;
++	bool fi_before = false;
+ 	bool need_sync;
+ 	int i, j, cpu;
+ 
+@@ -4707,6 +4699,7 @@ pick_next_task(struct rq *rq, struct tas
+ 	need_sync = !!rq->core->core_cookie;
+ 	if (rq->core->core_forceidle) {
+ 		need_sync = true;
++		fi_before = true;
+ 		rq->core->core_forceidle = false;
+ 	}
+ 
+@@ -4757,6 +4750,11 @@ pick_next_task(struct rq *rq, struct tas
+ 				continue;
+ 
+ 			rq_i->core_pick = p;
++			if (rq_i->idle == p && rq_i->nr_running) {
++				rq->core->core_forceidle = true;
++				if (!fi_before)
++					rq->core->core_forceidle_seq++;
++			}
+ 
+ 			/*
+ 			 * If this new candidate is of higher priority than the
+@@ -4775,6 +4773,7 @@ pick_next_task(struct rq *rq, struct tas
+ 				max = p;
+ 
+ 				if (old_max) {
++					rq->core->core_forceidle = false;
+ 					for_each_cpu(j, smt_mask) {
+ 						if (j == i)
+ 							continue;
+@@ -4823,10 +4822,8 @@ pick_next_task(struct rq *rq, struct tas
+ 		if (!rq_i->core_pick)
+ 			continue;
+ 
+-		if (is_task_rq_idle(rq_i->core_pick) && rq_i->nr_running &&
+-		    !rq_i->core->core_forceidle) {
+-			rq_i->core->core_forceidle = true;
+-		}
++		if (!(fi_before && rq->core->core_forceidle))
++			task_vruntime_update(rq_i, rq_i->core_pick);
+ 
+ 		if (i == cpu) {
+ 			rq_i->core_pick = NULL;
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -10686,6 +10686,67 @@ static inline void task_tick_core(struct
+ 	    __entity_slice_used(&curr->se, MIN_NR_TASKS_DURING_FORCEIDLE))
+ 		resched_curr(rq);
+ }
++
++static void se_fi_update(struct sched_entity *se, unsigned int fi_seq, bool forceidle)
++{
++	for_each_sched_entity(se) {
++		struct cfs_rq *cfs_rq = cfs_rq_of(se);
++
++		if (forceidle) {
++			if (cfs_rq->forceidle_seq == fi_seq)
++				break;
++			cfs_rq->forceidle_seq = fi_seq;
++		}
++
++		cfs_rq->min_vruntime_fi = cfs_rq->min_vruntime;
++	}
++}
++
++void task_vruntime_update(struct rq *rq, struct task_struct *p)
++{
++	struct sched_entity *se = &p->se;
++
++	if (p->sched_class != &fair_sched_class)
++		return;
++
++	se_fi_update(se, rq->core->core_forceidle_seq, rq->core->core_forceidle);
++}
++
++bool cfs_prio_less(struct task_struct *a, struct task_struct *b)
++{
++	struct rq *rq = task_rq(a);
++	struct sched_entity *sea = &a->se;
++	struct sched_entity *seb = &b->se;
++	struct cfs_rq *cfs_rqa;
++	struct cfs_rq *cfs_rqb;
++	s64 delta;
++
++	SCHED_WARN_ON(task_rq(b)->core != rq->core);
++
++	while (sea->cfs_rq->tg != seb->cfs_rq->tg) {
++		int sea_depth = sea->depth;
++		int seb_depth = seb->depth;
++
++		if (sea_depth >= seb_depth)
++			sea = parent_entity(sea);
++		if (sea_depth <= seb_depth)
++			seb = parent_entity(seb);
++	}
++
++	if (rq->core->core_forceidle) {
++		se_fi_update(sea, rq->core->core_forceidle_seq, true);
++		se_fi_update(seb, rq->core->core_forceidle_seq, true);
++	}
++
++	cfs_rqa = sea->cfs_rq;
++	cfs_rqb = seb->cfs_rq;
++
++	/* normalize vruntime WRT their rq's base */
++	delta = (s64)(sea->vruntime - seb->vruntime) +
++		(s64)(cfs_rqb->min_vruntime_fi - cfs_rqa->min_vruntime_fi);
++
++	return delta > 0;
++}
+ #else
+ static inline void task_tick_core(struct rq *rq, struct task_struct *curr) {}
+ #endif
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -522,6 +522,11 @@ struct cfs_rq {
+ 	unsigned int		h_nr_running;      /* SCHED_{NORMAL,BATCH,IDLE} */
+ 	unsigned int		idle_h_nr_running; /* SCHED_IDLE */
+ 
++#ifdef CONFIG_SCHED_CORE
++	unsigned int		forceidle_seq;
++	u64			min_vruntime_fi;
++#endif
++
+ 	u64			exec_clock;
+ 	u64			min_vruntime;
+ #ifndef CONFIG_64BIT
+@@ -1061,7 +1066,8 @@ struct rq {
+ 	unsigned int		core_task_seq;
+ 	unsigned int		core_pick_seq;
+ 	unsigned long		core_cookie;
+-	unsigned char		core_forceidle;
++	unsigned int		core_forceidle;
++	unsigned int		core_forceidle_seq;
+ #endif
+ };
+ 
+@@ -1106,6 +1112,8 @@ static inline raw_spinlock_t *rq_lockp(s
+ 	return &rq->__lock;
+ }
+ 
++bool cfs_prio_less(struct task_struct *a, struct task_struct *b);
++
+ #else /* !CONFIG_SCHED_CORE */
+ 
+ static inline bool sched_core_enabled(struct rq *rq)
