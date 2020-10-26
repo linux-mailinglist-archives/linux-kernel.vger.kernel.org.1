@@ -2,111 +2,109 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6AF75298A00
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:07:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13B57298A08
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:09:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769076AbgJZKHb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:07:31 -0400
-Received: from mail.kernel.org ([198.145.29.99]:51198 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1768496AbgJZKHT (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:07:19 -0400
-Received: from coco.lan (ip5f5ad5a1.dynamic.kabel-deutschland.de [95.90.213.161])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8ACE320723;
-        Mon, 26 Oct 2020 10:07:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603706838;
-        bh=oRd2QZwcb5kvNpN6vkk7OPKwRr2fGcwBASgsEzTaYvA=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=TPv71Y5NKNxjMYIif68gFIjqobO5fdY6L9BaEwJBedVyaDLWrQoaDngZoQCtEwg3o
-         B2+YfCA9bI17y/jzdCHJvb5ShDz81KP3GbFKIaPWAJGz5rVw06hSbNVlAby53bOqwi
-         armEP65itz4B6iICAzPXmWu/pEfe3lW+vY28HAv8=
-Date:   Mon, 26 Oct 2020 11:07:12 +0100
-From:   Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-To:     Steven Rostedt <rostedt@goodmis.org>
-Cc:     Linux Doc Mailing List <linux-doc@vger.kernel.org>,
-        "Jonathan Corbet" <corbet@lwn.net>,
-        Ben Segall <bsegall@google.com>,
-        Daniel Bristot de Oliveira <bristot@redhat.com>,
-        Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Ingo Molnar <mingo@redhat.com>,
-        Juri Lelli <juri.lelli@redhat.com>,
-        Mel Gorman <mgorman@suse.de>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 53/56] shed: fix kernel-doc markup
-Message-ID: <20201026110712.2f9cec69@coco.lan>
-In-Reply-To: <20201023135341.450727fc@gandalf.local.home>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-        <21eac4426e02193aab877564f7d7d99114627a46.1603469755.git.mchehab+huawei@kernel.org>
-        <20201023135341.450727fc@gandalf.local.home>
-X-Mailer: Claws Mail 3.17.7 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
+        id S1769097AbgJZKJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:09:19 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:38796 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769086AbgJZKIm (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 06:08:42 -0400
+Date:   Mon, 26 Oct 2020 10:08:38 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603706920;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vs5OzYKLpnQ2AkS/hmuzsZRHAoKKIICOn5krQpUII3k=;
+        b=r5HTo8uMpKqnBP+E3EIRryGDhAlfV7hM84oDX/EU51Xj+p3xE1Fi0wKXVnriMb8NBKsl3C
+        xthV57tziCh7vdoPOyfKO2fRlbbasvnDf7ZB467qqguYsMmkZdYPVM9TON0IcKobjmQ3e2
+        +HzWBb9uutyUgohUULXPXyGncazYOAU/Yw0ZtaDjJA5GghM4aUJWvxPt1rgXWK1KbKKk3K
+        iT1dkV14mdosXZQPhdb/xYothuly0hzRpIy9CvSXEzf2nL1W6/ZRoCzZl6limSb49bb6QO
+        4n5HMM99h6S1eWqCdvZMkYmkWqCKXpNyiBe3zTbrMD4zPYsewYbyt+fMeNUneQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603706920;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=vs5OzYKLpnQ2AkS/hmuzsZRHAoKKIICOn5krQpUII3k=;
+        b=MbrcAeviOYshDvtXWc3PeWAhrBWaSxZNvkgFsrjcNzaY1F51YyBQ8f0EBExRXZh+zbxjb7
+        GlfPbYfZB3LEJvBQ==
+From:   "tip-bot2 for Davidlohr Bueso" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/core] timekeeping: Convert jiffies_seq to
+ seqcount_raw_spinlock_t
+Cc:     Davidlohr Bueso <dbueso@suse.de>,
+        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
+        LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201021190749.19363-1-dave@stgolabs.net>
+References: <20201021190749.19363-1-dave@stgolabs.net>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+Message-ID: <160370691856.397.3350703895486263181.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Em Fri, 23 Oct 2020 13:53:41 -0400
-Steven Rostedt <rostedt@goodmis.org> escreveu:
+The following commit has been merged into the timers/core branch of tip:
 
-> On Fri, 23 Oct 2020 18:33:40 +0200
-> Mauro Carvalho Chehab <mchehab+huawei@kernel.org> wrote:
-> 
-> > Kernel-doc requires that a kernel-doc markup to be immediatly
-> > below the function prototype, as otherwise it will rename it.
-> > So, move sys_sched_yield() markup to the right place.
-> > 
-> > Also fix the cpu_util() markup: Kernel-doc markups
-> > should use this format:
-> >         identifier - description  
-> 
-> The first change looks fine to me, but as I'm getting a new shed delivered
-> soon, I originally thought this email was about that delivery!
+Commit-ID:     1a2b85f1e2a93a3f84243e654d225e4088735336
+Gitweb:        https://git.kernel.org/tip/1a2b85f1e2a93a3f84243e654d225e4088735336
+Author:        Davidlohr Bueso <dave@stgolabs.net>
+AuthorDate:    Wed, 21 Oct 2020 12:07:49 -07:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 26 Oct 2020 11:04:14 +01:00
 
-:-)
+timekeeping: Convert jiffies_seq to seqcount_raw_spinlock_t
 
-> I do have a nit about the second change.
-> 
-> > diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
-> > index aa4c6227cd6d..94386fcfafcf 100644
-> > --- a/kernel/sched/fair.c
-> > +++ b/kernel/sched/fair.c
-> > @@ -6287,7 +6287,8 @@ static int select_idle_sibling(struct task_struct *p, int prev, int target)
-> >  }
-> >  
-> >  /**
-> > - * Amount of capacity of a CPU that is (estimated to be) used by CFS tasks
-> > + * cpu_util - Amount of capacity of a CPU that is (estimated to be)
-> > + *	used by CFS tasks  
-> 
-> The description is to be a single line. The line break is ugly, and the 80
-> col rule, is more of a guideline, and not something that *has* to be done.
-> 
-> Either shorten it, or just let it go a little longer.
+Use the new api and associate the seqcounter to the jiffies_lock enabling
+lockdep support - although for this particular case the write-side locking
+and non-preemptibility are quite obvious.
 
-Agreed, but there are already some other descriptions over there that have
-multiple lines[1]:
+Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Link: https://lore.kernel.org/r/20201021190749.19363-1-dave@stgolabs.net
 
-Anyway, on this specific case, I guess it can be easily shorten to
-80 columns without losing anything. Would that work for you?
+---
+ kernel/time/jiffies.c     | 3 ++-
+ kernel/time/timekeeping.h | 2 +-
+ 2 files changed, 3 insertions(+), 2 deletions(-)
 
-	/**
-	 * cpu_util - Estimates the amount of capacity of a CPU used by CFS tasks.
-
-Regards,
-Mauro
-
-[1] like this one:
-
-	/**
-	 * calculate_imbalance - Calculate the amount of imbalance present within the
-	 *			 groups of a given sched_domain during load balance.
-	 * @env: load balance environment
-	 * @sds: statistics of the sched_domain whose imbalance is to be calculated.
-	 */
-
+diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
+index eddcf49..a5cffe2 100644
+--- a/kernel/time/jiffies.c
++++ b/kernel/time/jiffies.c
+@@ -59,7 +59,8 @@ static struct clocksource clocksource_jiffies = {
+ };
+ 
+ __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(jiffies_lock);
+-__cacheline_aligned_in_smp seqcount_t jiffies_seq;
++__cacheline_aligned_in_smp seqcount_raw_spinlock_t jiffies_seq =
++	SEQCNT_RAW_SPINLOCK_ZERO(jiffies_seq, &jiffies_lock);
+ 
+ #if (BITS_PER_LONG < 64)
+ u64 get_jiffies_64(void)
+diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
+index 099737f..6c2cbd9 100644
+--- a/kernel/time/timekeeping.h
++++ b/kernel/time/timekeeping.h
+@@ -26,7 +26,7 @@ extern void do_timer(unsigned long ticks);
+ extern void update_wall_time(void);
+ 
+ extern raw_spinlock_t jiffies_lock;
+-extern seqcount_t jiffies_seq;
++extern seqcount_raw_spinlock_t jiffies_seq;
+ 
+ #define CS_NAME_LEN	32
+ 
