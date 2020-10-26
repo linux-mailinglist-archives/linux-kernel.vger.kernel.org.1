@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC432299FFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1CC9E299FF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:26:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409907AbgJZXw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:52:56 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54926 "EHLO mail.kernel.org"
+        id S2409938AbgJZXxB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:55288 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409749AbgJZXw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:52:29 -0400
+        id S2409784AbgJZXwh (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:37 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 84B03221F8;
-        Mon, 26 Oct 2020 23:52:28 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CEB3821BE5;
+        Mon, 26 Oct 2020 23:52:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756349;
-        bh=M7m7F8XvewI0zgBxlsuaCVECm9BU7hsOxf77ZbhlsVM=;
+        s=default; t=1603756356;
+        bh=G5u/P+M9cxw0aGemHQX2PaHhw/C9NPpD6hKT9YDESVQ=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=WwxSVKLNuGQEyeUFX71T9t768UzTQ5z8Xs43Plr7LlEA/bMCPwAK6DHg6r3c7gBMh
-         WKqaLeINo/xlBJBz3uevd711d+SPm7Ua1DPicHEU/MyCWYLdcBCoXd9jUuFNP2bi1v
-         IuqAGn/NjNyrV1mEQRGJXy5kkpo/nZ76HwDR9dSE=
+        b=xnkXOkq8joN6xKtav+M56YWrSkvW53UMl9TK2H09tbZfNyTH0BeBDDZjsmCx9wpAq
+         teHlRWtnxll2edcnTjGXhfzRDcyOZsKSsPX5N95TbKZ7VkZp4EOrP21cAzDsPhsxY/
+         ewqcHiHp1v4iGdS9u0ERM8dtw3XZWr7j6h0/ooi0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Dave Wysochanski <dwysocha@redhat.com>,
-        Anna Schumaker <Anna.Schumaker@Netapp.com>,
-        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 020/132] NFS4: Fix oops when copy_file_range is attempted with NFS4.0 source
-Date:   Mon, 26 Oct 2020 19:50:12 -0400
-Message-Id: <20201026235205.1023962-20-sashal@kernel.org>
+Cc:     "Darrick J. Wong" <darrick.wong@oracle.com>,
+        Chandan Babu R <chandanrlinux@gmail.com>,
+        Sasha Levin <sashal@kernel.org>, linux-xfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 026/132] xfs: fix realtime bitmap/summary file truncation when growing rt volume
+Date:   Mon, 26 Oct 2020 19:50:18 -0400
+Message-Id: <20201026235205.1023962-26-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,60 +42,67 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Dave Wysochanski <dwysocha@redhat.com>
+From: "Darrick J. Wong" <darrick.wong@oracle.com>
 
-[ Upstream commit d8a6ad913c286d4763ae20b14c02fe6f39d7cd9f ]
+[ Upstream commit f4c32e87de7d66074d5612567c5eac7325024428 ]
 
-The following oops is seen during xfstest/565 when the 'test'
-(source of the copy) is NFS4.0 and 'scratch' (destination) is NFS4.2
-[   59.692458] run fstests generic/565 at 2020-08-01 05:50:35
-[   60.613588] BUG: kernel NULL pointer dereference, address: 0000000000000008
-[   60.624970] #PF: supervisor read access in kernel mode
-[   60.627671] #PF: error_code(0x0000) - not-present page
-[   60.630347] PGD 0 P4D 0
-[   60.631853] Oops: 0000 [#1] SMP PTI
-[   60.634086] CPU: 6 PID: 2828 Comm: xfs_io Kdump: loaded Not tainted 5.8.0-rc3 #1
-[   60.637676] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
-[   60.639901] RIP: 0010:nfs4_check_serverowner_major_id+0x5/0x30 [nfsv4]
-[   60.642719] Code: 89 ff e8 3e b3 b8 e1 e9 71 fe ff ff 41 bc da d8 ff ff e9 c3 fe ff ff e8 e9 9d 08 e2 66 0f 1f 84 00 00 00 00 00 66 66 66 66 90 <8b> 57 08 31 c0 3b 56 08 75 12 48 83 c6 0c 48 83 c7 0c e8 c4 97 bb
-[   60.652629] RSP: 0018:ffffc265417f7e10 EFLAGS: 00010287
-[   60.655379] RAX: ffffa0664b066400 RBX: 0000000000000000 RCX: 0000000000000001
-[   60.658754] RDX: ffffa066725fb000 RSI: ffffa066725fd000 RDI: 0000000000000000
-[   60.662292] RBP: 0000000000020000 R08: 0000000000020000 R09: 0000000000000000
-[   60.666189] R10: 0000000000000003 R11: 0000000000000000 R12: ffffa06648258d00
-[   60.669914] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa06648258100
-[   60.673645] FS:  00007faa9fb35800(0000) GS:ffffa06677d80000(0000) knlGS:0000000000000000
-[   60.677698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[   60.680773] CR2: 0000000000000008 CR3: 0000000203f14000 CR4: 00000000000406e0
-[   60.684476] Call Trace:
-[   60.685809]  nfs4_copy_file_range+0xfc/0x230 [nfsv4]
-[   60.688704]  vfs_copy_file_range+0x2ee/0x310
-[   60.691104]  __x64_sys_copy_file_range+0xd6/0x210
-[   60.693527]  do_syscall_64+0x4d/0x90
-[   60.695512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
-[   60.698006] RIP: 0033:0x7faa9febc1bd
+The realtime bitmap and summary files are regular files that are hidden
+away from the directory tree.  Since they're regular files, inode
+inactivation will try to purge what it thinks are speculative
+preallocations beyond the incore size of the file.  Unfortunately,
+xfs_growfs_rt forgets to update the incore size when it resizes the
+inodes, with the result that inactivating the rt inodes at unmount time
+will cause their contents to be truncated.
 
-Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
-Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
+Fix this by updating the incore size when we change the ondisk size as
+part of updating the superblock.  Note that we don't do this when we're
+allocating blocks to the rt inodes because we actually want those blocks
+to get purged if the growfs fails.
+
+This fixes corruption complaints from the online rtsummary checker when
+running xfs/233.  Since that test requires rmap, one can also trigger
+this by growing an rt volume, cycling the mount, and creating rt files.
+
+Signed-off-by: Darrick J. Wong <darrick.wong@oracle.com>
+Reviewed-by: Chandan Babu R <chandanrlinux@gmail.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/nfs/nfs4file.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+ fs/xfs/xfs_rtalloc.c | 10 ++++++++--
+ 1 file changed, 8 insertions(+), 2 deletions(-)
 
-diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
-index a339707654673..af84787aa0631 100644
---- a/fs/nfs/nfs4file.c
-+++ b/fs/nfs/nfs4file.c
-@@ -145,7 +145,8 @@ static ssize_t __nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
- 	/* Only offload copy if superblock is the same */
- 	if (file_in->f_op != &nfs4_file_operations)
- 		return -EXDEV;
--	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY))
-+	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY) ||
-+	    !nfs_server_capable(file_inode(file_in), NFS_CAP_COPY))
- 		return -EOPNOTSUPP;
- 	if (file_inode(file_in) == file_inode(file_out))
- 		return -EOPNOTSUPP;
+diff --git a/fs/xfs/xfs_rtalloc.c b/fs/xfs/xfs_rtalloc.c
+index 48be55b18c494..3ecbf859d3522 100644
+--- a/fs/xfs/xfs_rtalloc.c
++++ b/fs/xfs/xfs_rtalloc.c
+@@ -1016,10 +1016,13 @@ xfs_growfs_rt(
+ 		xfs_ilock(mp->m_rbmip, XFS_ILOCK_EXCL);
+ 		xfs_trans_ijoin(tp, mp->m_rbmip, XFS_ILOCK_EXCL);
+ 		/*
+-		 * Update the bitmap inode's size.
++		 * Update the bitmap inode's size ondisk and incore.  We need
++		 * to update the incore size so that inode inactivation won't
++		 * punch what it thinks are "posteof" blocks.
+ 		 */
+ 		mp->m_rbmip->i_d.di_size =
+ 			nsbp->sb_rbmblocks * nsbp->sb_blocksize;
++		i_size_write(VFS_I(mp->m_rbmip), mp->m_rbmip->i_d.di_size);
+ 		xfs_trans_log_inode(tp, mp->m_rbmip, XFS_ILOG_CORE);
+ 		/*
+ 		 * Get the summary inode into the transaction.
+@@ -1027,9 +1030,12 @@ xfs_growfs_rt(
+ 		xfs_ilock(mp->m_rsumip, XFS_ILOCK_EXCL);
+ 		xfs_trans_ijoin(tp, mp->m_rsumip, XFS_ILOCK_EXCL);
+ 		/*
+-		 * Update the summary inode's size.
++		 * Update the summary inode's size.  We need to update the
++		 * incore size so that inode inactivation won't punch what it
++		 * thinks are "posteof" blocks.
+ 		 */
+ 		mp->m_rsumip->i_d.di_size = nmp->m_rsumsize;
++		i_size_write(VFS_I(mp->m_rsumip), mp->m_rsumip->i_d.di_size);
+ 		xfs_trans_log_inode(tp, mp->m_rsumip, XFS_ILOG_CORE);
+ 		/*
+ 		 * Copy summary data from old to new sizes.
 -- 
 2.25.1
 
