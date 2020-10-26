@@ -2,84 +2,190 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4834F298C25
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:36:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C3634298C4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:54:11 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773881AbgJZLfU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:35:20 -0400
-Received: from mail.kernel.org ([198.145.29.99]:54120 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773874AbgJZLfU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:35:20 -0400
-Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8D2BF22265
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:35:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603712119;
-        bh=zUCVQlSUHyz0braltijOZSb0AKH3UaTPB3ELignzrOQ=;
-        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-        b=STLnoTw5FoyGj6LFsk1wO4fJecN1TcC0Lyem5OK+p54UUu+MVlJKlkBHiUDfWoNbq
-         JUk0TbaWtZt+H6zJOga3796Lkj7k19eonVRkZBbtNRkZIA2nQVG/ISzTotMPha7AK+
-         AdFyy7o996vGVqEqPyyK00mnHK+JD0oWs009PPSE=
-Received: by mail-ej1-f52.google.com with SMTP id s15so8332804ejf.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 04:35:19 -0700 (PDT)
-X-Gm-Message-State: AOAM531MheFDIJdkLqQ9B33QMujH3unk6qx6tjJOofId2kE0YWQFBYxM
-        ff4i0UnRw3avjxGcyMPdAxve/Z55s7oG9ZBLj4U=
-X-Google-Smtp-Source: ABdhPJyo7UQ01ZozdFZFzUS2Ix+TXXwHZoEjCWA0snDvx3802nlbfY0Ayi9Qe2zKC9t4VfBtGIvtZ4+wKmU51YEByAE=
-X-Received: by 2002:a17:906:8401:: with SMTP id n1mr14780778ejx.215.1603712118127;
- Mon, 26 Oct 2020 04:35:18 -0700 (PDT)
-MIME-Version: 1.0
-References: <202010261451.N9cm8bod-lkp@intel.com>
-In-Reply-To: <202010261451.N9cm8bod-lkp@intel.com>
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-Date:   Mon, 26 Oct 2020 12:35:05 +0100
-X-Gmail-Original-Message-ID: <CAJKOXPdj2R3dQh5ZBALP_PCy5FTBVdYOtuU+dF50NAeRsDp1cw@mail.gmail.com>
-Message-ID: <CAJKOXPdj2R3dQh5ZBALP_PCy5FTBVdYOtuU+dF50NAeRsDp1cw@mail.gmail.com>
-Subject: Re: drivers/mmc/host/sunxi-mmc.c:1181:34: warning: unused variable 'sunxi_mmc_of_match'
-To:     kernel test robot <lkp@intel.com>
-Cc:     kbuild-all@lists.01.org, clang-built-linux@googlegroups.com,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        Ulf Hansson <ulf.hansson@linaro.org>
+        id S1772330AbgJZLyI convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 07:54:08 -0400
+Received: from metis.ext.pengutronix.de ([85.220.165.71]:45135 "EHLO
+        metis.ext.pengutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1771727AbgJZLyI (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:54:08 -0400
+Received: from lupine.hi.pengutronix.de ([2001:67c:670:100:3ad5:47ff:feaf:1a17] helo=lupine)
+        by metis.ext.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kX0mY-0002Sw-TZ; Mon, 26 Oct 2020 12:35:22 +0100
+Received: from pza by lupine with local (Exim 4.92)
+        (envelope-from <p.zabel@pengutronix.de>)
+        id 1kX0mX-00083t-G9; Mon, 26 Oct 2020 12:35:21 +0100
+Message-ID: <c8ea80c2eb79f80539911f3563398957beedaa41.camel@pengutronix.de>
+Subject: Re: [PATCH 9/9] remoteproc/wkup_m3: Use reset control driver if
+ available
+From:   Philipp Zabel <p.zabel@pengutronix.de>
+To:     Tony Lindgren <tony@atomide.com>, linux-omap@vger.kernel.org
+Cc:     "Andrew F . Davis" <afd@ti.com>, Dave Gerlach <d-gerlach@ti.com>,
+        Faiz Abbas <faiz_abbas@ti.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Grygorii Strashko <grygorii.strashko@ti.com>,
+        Keerthy <j-keerthy@ti.com>, Nishanth Menon <nm@ti.com>,
+        Peter Ujfalusi <peter.ujfalusi@ti.com>,
+        Roger Quadros <rogerq@ti.com>, Suman Anna <s-anna@ti.com>,
+        Tero Kristo <t-kristo@ti.com>, linux-kernel@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org,
+        linux-remoteproc@vger.kernel.org,
+        Bjorn Andersson <bjorn.andersson@linaro.org>,
+        Michael Turquette <mturquette@baylibre.com>,
+        Santosh Shilimkar <ssantosh@kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>, linux-clk@vger.kernel.org
+Date:   Mon, 26 Oct 2020 12:35:21 +0100
+In-Reply-To: <20201026111049.54835-10-tony@atomide.com>
+References: <20201026111049.54835-1-tony@atomide.com>
+         <20201026111049.54835-10-tony@atomide.com>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8BIT
+User-Agent: Evolution 3.30.5-1.1 
+MIME-Version: 1.0
+X-SA-Exim-Connect-IP: 2001:67c:670:100:3ad5:47ff:feaf:1a17
+X-SA-Exim-Mail-From: p.zabel@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.ext.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 at 07:01, kernel test robot <lkp@intel.com> wrote:
->
-> Hi Krzysztof,
->
-> First bad commit (maybe != root cause):
->
-> tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-> head:   3650b228f83adda7e5ee532e2b90429c03f7b9ec
-> commit: 54d8454436a205682bd89d66d8d9eedbc8452d15 mmc: host: Enable compile testing of multiple drivers
-> date:   7 weeks ago
-> config: x86_64-randconfig-r036-20201026 (attached as .config)
-> compiler: clang version 12.0.0 (https://github.com/llvm/llvm-project f2c25c70791de95d2466e09b5b58fc37f6ccd7a4)
-> reproduce (this is a W=1 build):
->         wget https://raw.githubusercontent.com/intel/lkp-tests/master/sbin/make.cross -O ~/bin/make.cross
->         chmod +x ~/bin/make.cross
->         # install x86_64 cross compiling tool for clang build
->         # apt-get install binutils-x86-64-linux-gnu
->         # https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=54d8454436a205682bd89d66d8d9eedbc8452d15
->         git remote add linus https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
->         git fetch --no-tags linus master
->         git checkout 54d8454436a205682bd89d66d8d9eedbc8452d15
->         # save the attached .config to linux build tree
->         COMPILER_INSTALL_PATH=$HOME/0day COMPILER=clang make.cross ARCH=x86_64
->
-> If you fix the issue, kindly add following tag as appropriate
-> Reported-by: kernel test robot <lkp@intel.com>
->
-> All warnings (new ones prefixed by >>):
->
-> >> drivers/mmc/host/sunxi-mmc.c:1181:34: warning: unused variable 'sunxi_mmc_of_match' [-Wunused-const-variable]
->    static const struct of_device_id sunxi_mmc_of_match[] = {
+Hi Tony,
 
-I'll send a fix.
+On Mon, 2020-10-26 at 13:10 +0200, Tony Lindgren wrote:
+> In order to move wkup_m3 to probe without platform data, let's add
+> support for using optional reset control driver if configured in the
+> dts. With this change and the related dts change, we can start
+> dropping the platform data for am335x.
+> 
+> And once wkup_m3 no longer needs platform data, we can simply drop the
+> related legacy reset platform data callbacks from wkup_m3 driver later
+> on after also am437x no longer depends on it.
+> 
+> Cc: linux-remoteproc@vger.kernel.org
+> Cc: Bjorn Andersson <bjorn.andersson@linaro.org>
+> Cc: Dave Gerlach <d-gerlach@ti.com>
+> Cc: Philipp Zabel <p.zabel@pengutronix.de>
+> Cc: Suman Anna <s-anna@ti.com>
+> Signed-off-by: Tony Lindgren <tony@atomide.com>
+> ---
+> 
+> Please review and ack if no issues. If you guys instead want to set up an
+> immutable remoteproc branch with just this patch in it against v5.10-rc1
+> that works too :)
+> 
+> ---
+>  drivers/remoteproc/wkup_m3_rproc.c | 28 +++++++++++++++++++++-------
+>  1 file changed, 21 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/remoteproc/wkup_m3_rproc.c b/drivers/remoteproc/wkup_m3_rproc.c
+> --- a/drivers/remoteproc/wkup_m3_rproc.c
+> +++ b/drivers/remoteproc/wkup_m3_rproc.c
+> @@ -17,6 +17,7 @@
+>  #include <linux/platform_device.h>
+>  #include <linux/pm_runtime.h>
+>  #include <linux/remoteproc.h>
+> +#include <linux/reset.h>
+>  
+>  #include <linux/platform_data/wkup_m3.h>
+>  
+> @@ -43,11 +44,13 @@ struct wkup_m3_mem {
+>   * @rproc: rproc handle
+>   * @pdev: pointer to platform device
+>   * @mem: WkupM3 memory information
+> + * @rsts: reset control
+>   */
+>  struct wkup_m3_rproc {
+>  	struct rproc *rproc;
+>  	struct platform_device *pdev;
+>  	struct wkup_m3_mem mem[WKUPM3_MEM_MAX];
+> +	struct reset_control *rsts;
+>  };
+>  
+>  static int wkup_m3_rproc_start(struct rproc *rproc)
+> @@ -57,6 +60,9 @@ static int wkup_m3_rproc_start(struct rproc *rproc)
+>  	struct device *dev = &pdev->dev;
+>  	struct wkup_m3_platform_data *pdata = dev_get_platdata(dev);
+>  
+> +	if (wkupm3->rsts)
 
-Best regards,
-Krzysztof
+No need for this check, reset_control_deassert() just returns 0 if the
+rstc parameter is NULL.
+
+> +		return reset_control_deassert(wkupm3->rsts);
+> +
+>  	if (pdata->deassert_reset(pdev, pdata->reset_name)) {
+>  		dev_err(dev, "Unable to reset wkup_m3!\n");
+>  		return -ENODEV;
+> @@ -72,6 +78,9 @@ static int wkup_m3_rproc_stop(struct rproc *rproc)
+>  	struct device *dev = &pdev->dev;
+>  	struct wkup_m3_platform_data *pdata = dev_get_platdata(dev);
+>  
+> +	if (wkupm3->rsts)
+
+Same as above.
+
+> +		return reset_control_assert(wkupm3->rsts);
+> +
+>  	if (pdata->assert_reset(pdev, pdata->reset_name)) {
+>  		dev_err(dev, "Unable to assert reset of wkup_m3!\n");
+>  		return -ENODEV;
+> @@ -132,12 +141,6 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
+>  	int ret;
+>  	int i;
+>  
+> -	if (!(pdata && pdata->deassert_reset && pdata->assert_reset &&
+> -	      pdata->reset_name)) {
+> -		dev_err(dev, "Platform data missing!\n");
+> -		return -ENODEV;
+> -	}
+> -
+>  	ret = of_property_read_string(dev->of_node, "ti,pm-firmware",
+>  				      &fw_name);
+>  	if (ret) {
+> @@ -165,6 +168,17 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
+>  	wkupm3->rproc = rproc;
+>  	wkupm3->pdev = pdev;
+>  
+> +	wkupm3->rsts = devm_reset_control_get_optional_shared(dev, "rstctrl");
+> +	if (PTR_ERR_OR_ZERO(wkupm3->rsts)) {
+
+Please properly return errors. rsts will be NULL if the optional rstctrl
+reset is not specified:
+
+	if (IS_ERR(wkump3->rsts))
+		return PTR_ERR(wkump3->rsts);
+
+	if (!wkump3->rsts) {
+> +		if (!(pdata && pdata->deassert_reset && pdata->assert_reset &&
+> +		      pdata->reset_name)) {
+> +			dev_err(dev, "Platform data missing!\n");
+> +			ret = -ENODEV;
+> +			goto err_put_rproc;
+> +		}
+> +		wkupm3->rsts = NULL;
+
+I assume this will later be dropped with the platform data support?
+
+> +	}
+> +
+>  	for (i = 0; i < ARRAY_SIZE(mem_names); i++) {
+>  		res = platform_get_resource_byname(pdev, IORESOURCE_MEM,
+>  						   mem_names[i]);
+> @@ -173,7 +187,7 @@ static int wkup_m3_rproc_probe(struct platform_device *pdev)
+>  			dev_err(&pdev->dev, "devm_ioremap_resource failed for resource %d\n",
+>  				i);
+>  			ret = PTR_ERR(wkupm3->mem[i].cpu_addr);
+> -			goto err;
+> +			goto err_put_rproc;
+>  		}
+>  		wkupm3->mem[i].bus_addr = res->start;
+>  		wkupm3->mem[i].size = resource_size(res);
+
+regards
+Philipp
