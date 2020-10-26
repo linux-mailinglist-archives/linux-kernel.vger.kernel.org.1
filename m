@@ -2,58 +2,58 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9086029936B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:10:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E840129936A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:10:03 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787359AbgJZRKA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:10:00 -0400
-Received: from mail-wr1-f43.google.com ([209.85.221.43]:45463 "EHLO
-        mail-wr1-f43.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1787165AbgJZRJ5 (ORCPT
+        id S1787351AbgJZRJ6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:09:58 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:43559 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1787104AbgJZRJ5 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Oct 2020 13:09:57 -0400
-Received: by mail-wr1-f43.google.com with SMTP id e17so13506922wru.12
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:09:53 -0700 (PDT)
+Received: by mail-wr1-f68.google.com with SMTP id g12so13519627wrp.10
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:09:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=linaro.org; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=2w2zKDInoE0nEOTDxRu7ShBOzqjTt9h0UybMigLUZ7A=;
-        b=QyVBpuNWrUnrnE3nTTLRUCTTT7/VWyI7mqP6SZtt6v6Yh+Vi69RNMQPZ3o69D3F35h
-         6DVQ0nFx8sAjMCDjq57ChbigaaQiARydxivJHmF76gmNGhyLkIr2iZop2GQokTPbviM5
-         HjsmiNXw1FVzyc7T8Dp4NavK4QbWTiK7BTQy4p0Qao49DiTdS34k1uRdczQnl/rfU211
-         DeDMue360GnBjFdGc+AS4BaSwFRudBqxnpjJ3cDw99VJajlid8o0K+YMkzG8KQU+b6wl
-         4TAGsmXNOaRQDEOYaeXTA096bZDNyY5gSOQ6DtZ0klKQbYbiOmNBOJ8TDDuJyLUsPaiy
-         hLwQ==
+        bh=rRUE6uAh5erOgzhAmZUD/lWQAfes5L6DiZUe9zh/gxQ=;
+        b=nn6ZgeQnM2dzxDtWcEo3cD3muN1MPnW7xxAgw0MdQaQ5/cCvc3a8nfijUqX+YnUr1l
+         /Sz+rYIfZGwBIZQxd7nhyZPVCLTILbnWEqEL1b+0bqSZ6/e0rtjFkHQMBLocDOKYnjnT
+         vBEgTJm8EqdqQ4RPWtC3u97p6DvQRlnLZ1D+OukGLkRW4gkXMvjKi2Jbn66grN4gbnqa
+         W46jAEoGTC+yGHNp9/MXhO8UywTEu1bW2Hnx97gTjopDW/KPnOAyZPwYCQw8gHbpdtCm
+         l1rONw/he+Ms+9HAu1HwS/oanKRJtBYFcAqGhRlyoEb5jmfDb9AdhRPw0EXU9AKpztef
+         LgPQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=2w2zKDInoE0nEOTDxRu7ShBOzqjTt9h0UybMigLUZ7A=;
-        b=NNYxe48eNms5BI6uKLE4SFSnDdXe53EF6FEgCMu8MdkCSJaDrN2oKSGMINIAlODrEv
-         TPdKKtp0EqdNQisf/+lbzt6cxe5RQ+jC+zNbfb400Sv93p2z3xXo1OLivJ7y+4Zj8Szp
-         bC5ld8Xf2BHRVj8/udWTD05YnqoAqUQVZqL9K9ASgvJ/fmyV2ieELVQMoi3BxDsS6n2d
-         Xml2lG8Geesv/MaBzVIxAoiXMvTwTeSudAwKaJKKHLJcj+bfkZnxDYT3BGCUwr9Qm235
-         a3UCCvnUOLeTSKj5qwRQoNn8jZRajO3jr4NuusTdoFtcFKs6vmEozxmnpz45aNGl9W/d
-         nzLg==
-X-Gm-Message-State: AOAM531mpaa3sSvbasPoOE8OeFnfRU8nBJ+DdKlTcqQEEVxLC+a0YIwf
-        vc+FHU3onxzd/l/AhtiAzyURIA==
-X-Google-Smtp-Source: ABdhPJzKEdmT+P+QVCtJT7v9CNbZUhOtFVFaiIx+8jOI4D+7abuPMZkk56f8H5emMxrZ2Xr3U3VXEg==
-X-Received: by 2002:adf:f44d:: with SMTP id f13mr18201344wrp.385.1603732192856;
-        Mon, 26 Oct 2020 10:09:52 -0700 (PDT)
+        bh=rRUE6uAh5erOgzhAmZUD/lWQAfes5L6DiZUe9zh/gxQ=;
+        b=Xm2rI8WC383A9UBy2C7eo6z4GdfECQd7cdCzkaBOBxwCTmufQKIpQPlfSYRTdrq2F4
+         jetu+XC8qagc/5dNeyfIZSS45FEQKzcg4J3aQnXQ2zmII0Rpc1cuJnzJyF+aWfbwCje7
+         pfcNNT34nqZ9Oi9QOQi1z6iAxwZKHue3s0ImfefPSfj1ssk0E092lpZS+wgupUqLRvFv
+         Z9UgdBrFsf9durmqM4X82G7wW0l6xpC19fD184WqDceohUwDnapjzjXS/K9TpFZ0gIP+
+         Lm4wDXgW62DzOn/xGx4Qk8Mq+1y+Tiz0Byipqr2o8C0B4RJBqvGnWDLTAPI2OFgsuC0O
+         kuHA==
+X-Gm-Message-State: AOAM531yeXhyT3CP3zXN36B+jt3prYBt7ovdco2QVH50lsClDoshF86k
+        XuBX7lQIAbMd2fXKM2uaGtFpeA==
+X-Google-Smtp-Source: ABdhPJxkVIFyw1Jgvnui9n/a9KCedJXKM1Ndg/etoojRDrAAR/EDPJ2ts0Rn9ou4VJwfXWvll+WVzQ==
+X-Received: by 2002:a5d:6681:: with SMTP id l1mr19135023wru.356.1603732194103;
+        Mon, 26 Oct 2020 10:09:54 -0700 (PDT)
 Received: from srini-hackbox.lan (cpc86377-aztw32-2-0-cust226.18-1.cable.virginm.net. [92.233.226.227])
-        by smtp.gmail.com with ESMTPSA id u133sm23136174wmb.6.2020.10.26.10.09.51
+        by smtp.gmail.com with ESMTPSA id u133sm23136174wmb.6.2020.10.26.10.09.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 10:09:52 -0700 (PDT)
+        Mon, 26 Oct 2020 10:09:53 -0700 (PDT)
 From:   Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 To:     broonie@kernel.org
 Cc:     perex@perex.cz, alsa-devel@alsa-project.org,
         linux-kernel@vger.kernel.org, plai@codeaurora.org,
         spapothi@codeaurora.org, lgirdwood@gmail.com,
         Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
-Subject: [PATCH v1 1/2] ASoC: qcom: dt-bindings: Add SM8250 sound card bindings
-Date:   Mon, 26 Oct 2020 17:09:46 +0000
-Message-Id: <20201026170947.10567-2-srinivas.kandagatla@linaro.org>
+Subject: [PATCH v1 2/2] ASoC: qcom: sm8250: add sound card qrb5165-rb5 support
+Date:   Mon, 26 Oct 2020 17:09:47 +0000
+Message-Id: <20201026170947.10567-3-srinivas.kandagatla@linaro.org>
 X-Mailer: git-send-email 2.21.0
 In-Reply-To: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
 References: <20201026170947.10567-1-srinivas.kandagatla@linaro.org>
@@ -63,183 +63,292 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch adds bindings required for SM8250 based soundcards
-for example Qualcomm Robotics RB5 Development Kit which makes
-use of ADSP and Internal LPASS codec.
+Add support to Qualcomm Robotics RB5 Development Kit based on
+QRB5165 Robotics SoC. This board has 2 WSA881X smart speakers
+with onboard DMIC connected to internal LPASS codec via WSA
+and VA macros respectively.
 
 Signed-off-by: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
 ---
- .../bindings/sound/qcom,sm8250.yaml           | 161 ++++++++++++++++++
- 1 file changed, 161 insertions(+)
- create mode 100644 Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+ sound/soc/qcom/Kconfig  |  11 ++
+ sound/soc/qcom/Makefile |   2 +
+ sound/soc/qcom/sm8250.c | 228 ++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 241 insertions(+)
+ create mode 100644 sound/soc/qcom/sm8250.c
 
-diff --git a/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
+diff --git a/sound/soc/qcom/Kconfig b/sound/soc/qcom/Kconfig
+index 2696ffcba880..484cad31da25 100644
+--- a/sound/soc/qcom/Kconfig
++++ b/sound/soc/qcom/Kconfig
+@@ -127,4 +127,15 @@ config SND_SOC_SDM845
+ 	  SDM845 SoC-based systems.
+ 	  Say Y if you want to use audio device on this SoCs.
+ 
++config SND_SOC_SM8250
++	tristate "SoC Machine driver for SM8250 boards"
++	depends on QCOM_APR && SOUNDWIRE
++	depends on COMMON_CLK
++	select SND_SOC_QDSP6
++	select SND_SOC_QCOM_COMMON
++	help
++	  To add support for audio on Qualcomm Technologies Inc.
++	  SM8250 SoC-based systems.
++	  Say Y if you want to use audio device on this SoCs.
++
+ endif #SND_SOC_QCOM
+diff --git a/sound/soc/qcom/Makefile b/sound/soc/qcom/Makefile
+index 0bd90d74e3db..effa4b3f58fa 100644
+--- a/sound/soc/qcom/Makefile
++++ b/sound/soc/qcom/Makefile
+@@ -19,12 +19,14 @@ snd-soc-storm-objs := storm.o
+ snd-soc-apq8016-sbc-objs := apq8016_sbc.o
+ snd-soc-apq8096-objs := apq8096.o
+ snd-soc-sdm845-objs := sdm845.o
++snd-soc-sm8250-objs := sm8250.o
+ snd-soc-qcom-common-objs := common.o
+ 
+ obj-$(CONFIG_SND_SOC_STORM) += snd-soc-storm.o
+ obj-$(CONFIG_SND_SOC_APQ8016_SBC) += snd-soc-apq8016-sbc.o
+ obj-$(CONFIG_SND_SOC_MSM8996) += snd-soc-apq8096.o
+ obj-$(CONFIG_SND_SOC_SDM845) += snd-soc-sdm845.o
++obj-$(CONFIG_SND_SOC_SM8250) += snd-soc-sm8250.o
+ obj-$(CONFIG_SND_SOC_QCOM_COMMON) += snd-soc-qcom-common.o
+ 
+ #DSP lib
+diff --git a/sound/soc/qcom/sm8250.c b/sound/soc/qcom/sm8250.c
 new file mode 100644
-index 000000000000..b8f97fe6e92c
+index 000000000000..7d43de6d909f
 --- /dev/null
-+++ b/Documentation/devicetree/bindings/sound/qcom,sm8250.yaml
-@@ -0,0 +1,161 @@
-+# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-+%YAML 1.2
-+---
-+$id: http://devicetree.org/schemas/sound/qcom,sm8250.yaml#
-+$schema: http://devicetree.org/meta-schemas/core.yaml#
++++ b/sound/soc/qcom/sm8250.c
+@@ -0,0 +1,228 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright (c) 2020, Linaro Limited
 +
-+title: Qualcomm Technologies Inc. SM8250 ASoC sound card driver
++#include <linux/module.h>
++#include <linux/platform_device.h>
++#include <linux/of_device.h>
++#include <sound/soc.h>
++#include <sound/soc-dapm.h>
++#include <sound/pcm.h>
++#include <linux/soundwire/sdw.h>
++#include "qdsp6/q6afe.h"
++#include "common.h"
 +
-+maintainers:
-+  - Srinivas Kandagatla <srinivas.kandagatla@linaro.org>
++#define DRIVER_NAME		"sm8250"
++#define MI2S_BCLK_RATE		1536000
++#define MAX_SDW_STREAMS		16
 +
-+description:
-+  This bindings describes SC8250 SoC based sound cards
-+  which uses LPASS internal codec for audio.
++struct sm8250_snd_data {
++	bool stream_prepared[MAX_SDW_STREAMS];
++	struct snd_soc_card *card;
++	struct sdw_stream_runtime *sruntime[MAX_SDW_STREAMS];
++};
 +
-+properties:
-+  compatible:
-+    oneOf:
-+      - const: qcom,qrb5165-rb5
-+      - items:
-+        - const: qcom,sm8250
-+        - const: qcom,qrb5165-rb5
++static int sm8250_be_hw_params_fixup(struct snd_soc_pcm_runtime *rtd,
++				     struct snd_pcm_hw_params *params)
++{
++	struct snd_interval *rate = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_RATE);
++	struct snd_interval *channels = hw_param_interval(params,
++					SNDRV_PCM_HW_PARAM_CHANNELS);
 +
-+  audio-routing:
-+    $ref: /schemas/types.yaml#/definitions/non-unique-string-array
-+    description:
-+      A list of the connections between audio components. Each entry is a
-+      pair of strings, the first being the connection's sink, the second
-+      being the connection's source. Valid names could be power supplies,
-+      MicBias of codec and the jacks on the board.
++	rate->min = rate->max = 48000;
++	channels->min = channels->max = 2;
 +
-+  model:
-+    $ref: /schemas/types.yaml#/definitions/string
-+    description: User visible long sound card name
++	return 0;
++}
 +
-+patternProperties:
-+  ".*-dai-link$":
-+    description:
-+      Each subnode represents a dai link. Subnodes of each dai links would be
-+      cpu/codec dais.
++static int sm8250_snd_startup(struct snd_pcm_substream *substream)
++{
++	unsigned int codec_dai_fmt = SND_SOC_DAIFMT_CBS_CFS;
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct snd_soc_dai *codec_dai = asoc_rtd_to_codec(rtd, 0);
 +
-+    type: object
++	switch (cpu_dai->id) {
++	case TERTIARY_MI2S_RX:
++		codec_dai_fmt |= SND_SOC_DAIFMT_NB_NF;
++		snd_soc_dai_set_sysclk(cpu_dai,
++			Q6AFE_LPASS_CLK_ID_TER_MI2S_IBIT,
++			MI2S_BCLK_RATE, SNDRV_PCM_STREAM_PLAYBACK);
++		snd_soc_dai_set_fmt(codec_dai, codec_dai_fmt);
++		break;
++	default:
++		break;
++	}
++	return 0;
++}
 +
-+    properties:
-+      link-name:
-+        description: Indicates dai-link name and PCM stream name.
-+        $ref: /schemas/types.yaml#/definitions/string
-+        maxItems: 1
++static int sm8250_snd_hw_params(struct snd_pcm_substream *substream,
++				struct snd_pcm_hw_params *params)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *codec_dai;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct sm8250_snd_data *pdata = snd_soc_card_get_drvdata(rtd->card);
++	struct sdw_stream_runtime *sruntime;
++	int i;
 +
-+      cpu:
-+        description: Holds subnode which indicates cpu dai.
-+        type: object
-+        properties:
-+          sound-dai: true
++	switch (cpu_dai->id) {
++	case WSA_CODEC_DMA_RX_0:
++		for_each_rtd_codec_dais(rtd, i, codec_dai) {
++			sruntime = snd_soc_dai_get_sdw_stream(codec_dai,
++						      substream->stream);
++			if (sruntime != ERR_PTR(-ENOTSUPP))
++				pdata->sruntime[cpu_dai->id] = sruntime;
++		}
++		break;
++	}
 +
-+      platform:
-+        description: Holds subnode which indicates platform dai.
-+        type: object
-+        properties:
-+          sound-dai: true
++	return 0;
 +
-+      codec:
-+        description: Holds subnode which indicates codec dai.
-+        type: object
-+        properties:
-+          sound-dai: true
++}
 +
-+    required:
-+      - link-name
-+      - cpu
++static int sm8250_snd_wsa_dma_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
++	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
++	int ret;
 +
-+    additionalProperties: false
++	if (!sruntime)
++		return 0;
 +
-+required:
-+  - compatible
-+  - model
++	if (data->stream_prepared[cpu_dai->id]) {
++		sdw_disable_stream(sruntime);
++		sdw_deprepare_stream(sruntime);
++		data->stream_prepared[cpu_dai->id] = false;
++	}
 +
-+additionalProperties: false
++	ret = sdw_prepare_stream(sruntime);
++	if (ret)
++		return ret;
 +
-+examples:
++	/**
++	 * NOTE: there is a strict hw requirement about the ordering of port
++	 * enables and actual WSA881x PA enable. PA enable should only happen
++	 * after soundwire ports are enabled if not DC on the line is
++	 * accumulated resulting in Click/Pop Noise
++	 * PA enable/mute are handled as part of codec DAPM and digital mute.
++	 */
 +
-+  - |
-+    #include <dt-bindings/sound/qcom,q6afe.h>
-+    #include <dt-bindings/sound/qcom,q6asm.h>
-+    sound {
-+        compatible = "qcom,qrb5165-rb5";
-+        model = "Qualcomm-qrb5165-RB5-WSA8815-Speakers-DMIC0";
-+        audio-routing = "SpkrLeft IN", "WSA_SPK1 OUT",
-+                    "SpkrRight IN", "WSA_SPK2 OUT",
-+                    "VA DMIC0", "vdd-micb",
-+                    "VA DMIC1", "vdd-micb",
-+                    "MM_DL1",  "MultiMedia1 Playback",
-+                    "MM_DL2",  "MultiMedia2 Playback",
-+                    "MultiMedia3 Capture", "MM_UL3";
++	ret = sdw_enable_stream(sruntime);
++	if (ret) {
++		sdw_deprepare_stream(sruntime);
++		return ret;
++	}
++	data->stream_prepared[cpu_dai->id]  = true;
 +
-+        mm1-dai-link {
-+            link-name = "MultiMedia0";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA1>;
-+            };
-+        };
++	return ret;
++}
 +
-+        mm2-dai-link {
-+            link-name = "MultiMedia2";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA2>;
-+            };
-+        };
++static int sm8250_snd_prepare(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
 +
-+        mm3-dai-link {
-+            link-name = "MultiMedia3";
-+            cpu {
-+                sound-dai = <&q6asmdai  MSM_FRONTEND_DAI_MULTIMEDIA3>;
-+            };
-+        };
++	switch (cpu_dai->id) {
++	case WSA_CODEC_DMA_RX_0:
++	case WSA_CODEC_DMA_RX_1:
++		return sm8250_snd_wsa_dma_prepare(substream);
++	default:
++		break;
++	}
 +
-+        hdmi-dai-link {
-+            link-name = "HDMI Playback";
-+            cpu {
-+                sound-dai = <&q6afedai TERTIARY_MI2S_RX>;
-+            };
++	return 0;
++}
 +
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
++static int sm8250_snd_hw_free(struct snd_pcm_substream *substream)
++{
++	struct snd_soc_pcm_runtime *rtd = substream->private_data;
++	struct sm8250_snd_data *data = snd_soc_card_get_drvdata(rtd->card);
++	struct snd_soc_dai *cpu_dai = asoc_rtd_to_cpu(rtd, 0);
++	struct sdw_stream_runtime *sruntime = data->sruntime[cpu_dai->id];
 +
-+            codec {
-+                sound-dai = <&lt9611_codec 0>;
-+            };
-+        };
++	switch (cpu_dai->id) {
++	case WSA_CODEC_DMA_RX_0:
++	case WSA_CODEC_DMA_RX_1:
++		if (sruntime && data->stream_prepared[cpu_dai->id]) {
++			sdw_disable_stream(sruntime);
++			sdw_deprepare_stream(sruntime);
++			data->stream_prepared[cpu_dai->id] = false;
++		}
++		break;
++	default:
++		break;
++	}
 +
-+        wsa-dai-link {
-+            link-name = "WSA Playback";
-+            cpu {
-+                sound-dai = <&q6afedai WSA_CODEC_DMA_RX_0>;
-+            };
++	return 0;
++}
 +
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
++static const struct snd_soc_ops sm8250_be_ops = {
++	.startup = sm8250_snd_startup,
++	.hw_params = sm8250_snd_hw_params,
++	.hw_free = sm8250_snd_hw_free,
++	.prepare = sm8250_snd_prepare,
++};
 +
-+            codec {
-+                sound-dai = <&left_spkr>, <&right_spkr>, <&swr0 0>, <&wsamacro>;
-+            };
-+        };
++static void sm8250_add_be_ops(struct snd_soc_card *card)
++{
++	struct snd_soc_dai_link *link;
++	int i;
 +
-+        va-dai-link {
-+            link-name = "VA Capture";
-+            cpu {
-+                sound-dai = <&q6afedai VA_CODEC_DMA_TX_0>;
-+            };
++	for_each_card_prelinks(card, i, link) {
++		if (link->no_pcm == 1) {
++			link->be_hw_params_fixup = sm8250_be_hw_params_fixup;
++			link->ops = &sm8250_be_ops;
++		}
++	}
++}
 +
-+            platform {
-+                sound-dai = <&q6routing>;
-+            };
++static int sm8250_platform_probe(struct platform_device *pdev)
++{
++	struct snd_soc_card *card;
++	struct sm8250_snd_data *data;
++	struct device *dev = &pdev->dev;
++	int ret;
 +
-+            codec {
-+                sound-dai = <&vamacro 0>;
-+            };
-+        };
-+    };
++	card = devm_kzalloc(dev, sizeof(*card), GFP_KERNEL);
++	if (!card)
++		return -ENOMEM;
++
++	/* Allocate the private data */
++	data = devm_kzalloc(dev, sizeof(*data), GFP_KERNEL);
++	if (!data)
++		return -ENOMEM;
++
++	card->dev = dev;
++	dev_set_drvdata(dev, card);
++	snd_soc_card_set_drvdata(card, data);
++	ret = qcom_snd_parse_of(card);
++	if (ret)
++		return ret;
++
++	card->driver_name = DRIVER_NAME;
++	sm8250_add_be_ops(card);
++	return devm_snd_soc_register_card(dev, card);
++}
++
++static const struct of_device_id snd_sm8250_dt_match[] = {
++	{.compatible = "qcom,sdm8250"},
++	{.compatible = "qcom,qrb5165-rb5"},
++	{}
++};
++
++MODULE_DEVICE_TABLE(of, snd_sm8250_dt_match);
++
++static struct platform_driver snd_sm8250_driver = {
++	.probe  = sm8250_platform_probe,
++	.driver = {
++		.name = "snd-sm8250",
++		.of_match_table = snd_sm8250_dt_match,
++	},
++};
++module_platform_driver(snd_sm8250_driver);
++MODULE_AUTHOR("Srinivas Kandagatla <srinivas.kandagatla@linaro.org");
++MODULE_DESCRIPTION("SM8250 ASoC Machine Driver");
++MODULE_LICENSE("GPL v2");
 -- 
 2.21.0
 
