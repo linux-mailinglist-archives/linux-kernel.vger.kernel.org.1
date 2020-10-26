@@ -2,407 +2,179 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8AE4E298B4E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:05:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 348A9298B54
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:05:49 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773078AbgJZLFQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:05:16 -0400
-Received: from mx2.suse.de ([195.135.220.15]:49648 "EHLO mx2.suse.de"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2391662AbgJZLFP (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:05:15 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id C1B95ABCC;
-        Mon, 26 Oct 2020 11:05:12 +0000 (UTC)
-Received: by quack2.suse.cz (Postfix, from userid 1000)
-        id E9C301E10F5; Mon, 26 Oct 2020 12:05:11 +0100 (CET)
-Date:   Mon, 26 Oct 2020 12:05:11 +0100
-From:   Jan Kara <jack@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Hugh Dickins <hughd@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Yang Shi <yang.shi@linux.alibaba.com>,
-        Dave Chinner <dchinner@redhat.com>,
-        linux-kernel@vger.kernel.org,
-        William Kucharski <william.kucharski@oracle.com>
-Subject: Re: [PATCH v3 11/12] mm/truncate,shmem: Handle truncates that split
- THPs
-Message-ID: <20201026110511.GC29758@quack2.suse.cz>
-References: <20201026041408.25230-1-willy@infradead.org>
- <20201026041408.25230-12-willy@infradead.org>
+        id S1773084AbgJZLFi (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:05:38 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:55548 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1772992AbgJZLFh (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:05:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603710335;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=uR3SoUQ38JQhR3FzkH7b6r+ChPHdaTScYhjRwjs5L+4=;
+        b=HlpA2vaWkks1DzlbhXHM5sNLLcmX9dG1Pwhi+ravy6rRl5hUvqozaIbZhnQB766Hlsda18
+        KxXPS3lad0m25HgEyRgcMMAv9IJjDkzL4ga6WxPH77/fU7SRcCMA16ep7sUqygbS1n3nJk
+        7md1Mprb4TBOVDrePmogd+bEQvJsu7w=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-301-pGgOFeOzOUSKAoeWEvAb1w-1; Mon, 26 Oct 2020 07:05:30 -0400
+X-MC-Unique: pGgOFeOzOUSKAoeWEvAb1w-1
+Received: from smtp.corp.redhat.com (int-mx07.intmail.prod.int.phx2.redhat.com [10.5.11.22])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 87FB0101F7B0;
+        Mon, 26 Oct 2020 11:05:25 +0000 (UTC)
+Received: from [10.36.113.62] (ovpn-113-62.ams2.redhat.com [10.36.113.62])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 00EE61043269;
+        Mon, 26 Oct 2020 11:05:14 +0000 (UTC)
+Subject: Re: [PATCH 1/4] mm: introduce debug_pagealloc_map_pages() helper
+To:     Mike Rapoport <rppt@kernel.org>,
+        Andrew Morton <akpm@linux-foundation.org>
+Cc:     Albert Ou <aou@eecs.berkeley.edu>,
+        Andy Lutomirski <luto@kernel.org>,
+        Benjamin Herrenschmidt <benh@kernel.crashing.org>,
+        Borislav Petkov <bp@alien8.de>,
+        Catalin Marinas <catalin.marinas@arm.com>,
+        Christian Borntraeger <borntraeger@de.ibm.com>,
+        Christoph Lameter <cl@linux.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Dave Hansen <dave.hansen@linux.intel.com>,
+        David Rientjes <rientjes@google.com>,
+        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
+        "H. Peter Anvin" <hpa@zytor.com>,
+        Heiko Carstens <hca@linux.ibm.com>,
+        Ingo Molnar <mingo@redhat.com>,
+        Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+        "Kirill A. Shutemov" <kirill@shutemov.name>,
+        Len Brown <len.brown@intel.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Mike Rapoport <rppt@linux.ibm.com>,
+        Palmer Dabbelt <palmer@dabbelt.com>,
+        Paul Mackerras <paulus@samba.org>,
+        Paul Walmsley <paul.walmsley@sifive.com>,
+        Pavel Machek <pavel@ucw.cz>, Pekka Enberg <penberg@kernel.org>,
+        Peter Zijlstra <peterz@infradead.org>,
+        "Rafael J. Wysocki" <rjw@rjwysocki.net>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Vasily Gorbik <gor@linux.ibm.com>,
+        Will Deacon <will@kernel.org>,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, linux-pm@vger.kernel.org,
+        linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, sparclinux@vger.kernel.org,
+        x86@kernel.org
+References: <20201025101555.3057-1-rppt@kernel.org>
+ <20201025101555.3057-2-rppt@kernel.org>
+From:   David Hildenbrand <david@redhat.com>
+Organization: Red Hat GmbH
+Message-ID: <8720c067-7dc5-2b02-918b-e54dd642bfd6@redhat.com>
+Date:   Mon, 26 Oct 2020 12:05:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026041408.25230-12-willy@infradead.org>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+In-Reply-To: <20201025101555.3057-2-rppt@kernel.org>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.22
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon 26-10-20 04:14:07, Matthew Wilcox (Oracle) wrote:
-> Handle THP splitting in the parts of the truncation functions which
-> already handle partial pages.  Factor all that code out into a new
-> function called truncate_inode_partial_page().
+On 25.10.20 11:15, Mike Rapoport wrote:
+> From: Mike Rapoport <rppt@linux.ibm.com>
 > 
-> We lose the easy 'bail out' path if a truncate or hole punch is entirely
-> within a single page.  We can add some more complex logic to restore
-> the optimisation if it proves to be worthwhile.
+> When CONFIG_DEBUG_PAGEALLOC is enabled, it unmaps pages from the
+> kernel direct mapping after free_pages(). The pages than need to be
+> mapped back before they could be used. Theese mapping operations use 
+> __kernel_map_pages() guarded with with debug_pagealloc_enabled().
 > 
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-> Reviewed-by: William Kucharski <william.kucharski@oracle.com>
-
-The patch looks good to me. You can add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  mm/internal.h |   1 +
->  mm/shmem.c    |  97 ++++++++++++++---------------------------
->  mm/truncate.c | 118 +++++++++++++++++++++++++++++++-------------------
->  3 files changed, 108 insertions(+), 108 deletions(-)
+> The only place that calls __kernel_map_pages() without checking
+> whether DEBUG_PAGEALLOC is enabled is the hibernation code that
+> presumes availability of this function when ARCH_HAS_SET_DIRECT_MAP
+> is set. Still, on arm64, __kernel_map_pages() will bail out when
+> DEBUG_PAGEALLOC is not enabled but set_direct_map_invalid_noflush()
+> may render some pages not present in the direct map and hibernation
+> code won't be able to save such pages.
 > 
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 8d79f4d21eaf..194572e1ab49 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -620,4 +620,5 @@ struct migration_target_control {
->  	gfp_t gfp_mask;
->  };
->  
-> +bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end);
->  #endif	/* __MM_INTERNAL_H */
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index 7880a245ac32..bcb4ecaa5949 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -857,32 +857,6 @@ void shmem_unlock_mapping(struct address_space *mapping)
->  	}
->  }
->  
-> -/*
-> - * Check whether a hole-punch or truncation needs to split a huge page,
-> - * returning true if no split was required, or the split has been successful.
-> - *
-> - * Eviction (or truncation to 0 size) should never need to split a huge page;
-> - * but in rare cases might do so, if shmem_undo_range() failed to trylock on
-> - * head, and then succeeded to trylock on tail.
-> - *
-> - * A split can only succeed when there are no additional references on the
-> - * huge page: so the split below relies upon find_get_entries() having stopped
-> - * when it found a subpage of the huge page, without getting further references.
-> - */
-> -static bool shmem_punch_compound(struct page *page, pgoff_t start, pgoff_t end)
-> -{
-> -	if (!PageTransCompound(page))
-> -		return true;
-> -
-> -	/* Just proceed to delete a huge page wholly within the range punched */
-> -	if (PageHead(page) &&
-> -	    page->index >= start && page->index + HPAGE_PMD_NR <= end)
-> -		return true;
-> -
-> -	/* Try to split huge page, so we can truly punch the hole or truncate */
-> -	return split_huge_page(page) >= 0;
-> -}
-> -
->  /*
->   * Remove range of pages and swap entries from page cache, and free them.
->   * If !unfalloc, truncate or punch hole; if unfalloc, undo failed fallocate.
-> @@ -894,13 +868,13 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
->  	struct shmem_inode_info *info = SHMEM_I(inode);
->  	pgoff_t start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
->  	pgoff_t end = (lend + 1) >> PAGE_SHIFT;
-> -	unsigned int partial_start = lstart & (PAGE_SIZE - 1);
-> -	unsigned int partial_end = (lend + 1) & (PAGE_SIZE - 1);
->  	struct pagevec pvec;
->  	pgoff_t indices[PAGEVEC_SIZE];
-> +	struct page *page;
->  	long nr_swaps_freed = 0;
->  	pgoff_t index;
->  	int i;
-> +	bool partial_end;
->  
->  	if (lend == -1)
->  		end = -1;	/* unsigned, so actually very big */
-> @@ -910,7 +884,7 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
->  	while (index < end && find_lock_entries(mapping, index, end - 1,
->  			&pvec, indices)) {
->  		for (i = 0; i < pagevec_count(&pvec); i++) {
-> -			struct page *page = pvec.pages[i];
-> +			page = pvec.pages[i];
->  
->  			index = indices[i];
->  
-> @@ -933,33 +907,37 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
->  		index++;
->  	}
->  
-> -	if (partial_start) {
-> -		struct page *page = NULL;
-> -		shmem_getpage(inode, start - 1, &page, SGP_READ);
-> -		if (page) {
-> -			unsigned int top = PAGE_SIZE;
-> -			if (start > end) {
-> -				top = partial_end;
-> -				partial_end = 0;
-> -			}
-> -			zero_user_segment(page, partial_start, top);
-> -			set_page_dirty(page);
-> -			unlock_page(page);
-> -			put_page(page);
-> +	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
-> +	page = NULL;
-> +	shmem_getpage(inode, lstart >> PAGE_SHIFT, &page, SGP_READ);
-> +	if (page) {
-> +		bool same_page;
-> +
-> +		page = thp_head(page);
-> +		same_page = lend < page_offset(page) + thp_size(page);
-> +		if (same_page)
-> +			partial_end = false;
-> +		set_page_dirty(page);
-> +		if (!truncate_inode_partial_page(page, lstart, lend)) {
-> +			start = page->index + thp_nr_pages(page);
-> +			if (same_page)
-> +				end = page->index;
->  		}
-> +		unlock_page(page);
-> +		put_page(page);
-> +		page = NULL;
->  	}
-> -	if (partial_end) {
-> -		struct page *page = NULL;
-> +
-> +	if (partial_end)
->  		shmem_getpage(inode, end, &page, SGP_READ);
-> -		if (page) {
-> -			zero_user_segment(page, 0, partial_end);
-> -			set_page_dirty(page);
-> -			unlock_page(page);
-> -			put_page(page);
-> -		}
-> +	if (page) {
-> +		page = thp_head(page);
-> +		set_page_dirty(page);
-> +		if (!truncate_inode_partial_page(page, lstart, lend))
-> +			end = page->index;
-> +		unlock_page(page);
-> +		put_page(page);
->  	}
-> -	if (start >= end)
-> -		return;
->  
->  	index = start;
->  	while (index < end) {
-> @@ -975,7 +953,7 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
->  			continue;
->  		}
->  		for (i = 0; i < pagevec_count(&pvec); i++) {
-> -			struct page *page = pvec.pages[i];
-> +			page = pvec.pages[i];
->  
->  			index = indices[i];
->  			if (xa_is_value(page)) {
-> @@ -1000,18 +978,9 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, loff_t lend,
->  					break;
->  				}
->  				VM_BUG_ON_PAGE(PageWriteback(page), page);
-> -				if (shmem_punch_compound(page, start, end))
-> -					truncate_inode_page(mapping, page);
-> -				else if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE)) {
-> -					/* Wipe the page and don't get stuck */
-> -					clear_highpage(page);
-> -					flush_dcache_page(page);
-> -					set_page_dirty(page);
-> -					if (index <
-> -					    round_up(start, HPAGE_PMD_NR))
-> -						start = index + 1;
-> -				}
-> +				truncate_inode_page(mapping, page);
->  			}
-> +			index = page->index + thp_nr_pages(page) - 1;
->  			unlock_page(page);
->  		}
->  		pagevec_remove_exceptionals(&pvec);
-> diff --git a/mm/truncate.c b/mm/truncate.c
-> index a96e44a5ce59..11ef90d7e3af 100644
-> --- a/mm/truncate.c
-> +++ b/mm/truncate.c
-> @@ -224,6 +224,53 @@ int truncate_inode_page(struct address_space *mapping, struct page *page)
->  	return 0;
->  }
->  
-> +/*
-> + * Handle partial (transparent) pages.  The page may be entirely within the
-> + * range if a split has raced with us.  If not, we zero the part of the
-> + * page that's within the [start, end] range, and then split the page if
-> + * it's a THP.  split_page_range() will discard pages which now lie beyond
-> + * i_size, and we rely on the caller to discard pages which lie within a
-> + * newly created hole.
-> + *
-> + * Returns false if THP splitting failed so the caller can avoid
-> + * discarding the entire page which is stubbornly unsplit.
-> + */
-> +bool truncate_inode_partial_page(struct page *page, loff_t start, loff_t end)
-> +{
-> +	loff_t pos = page_offset(page);
-> +	unsigned int offset, length;
-> +
-> +	if (pos < start)
-> +		offset = start - pos;
-> +	else
-> +		offset = 0;
-> +	length = thp_size(page);
-> +	if (pos + length <= (u64)end)
-> +		length = length - offset;
-> +	else
-> +		length = end + 1 - pos - offset;
-> +
-> +	wait_on_page_writeback(page);
-> +	if (length == thp_size(page)) {
-> +		truncate_inode_page(page->mapping, page);
-> +		return true;
-> +	}
-> +
-> +	/*
-> +	 * We may be zeroing pages we're about to discard, but it avoids
-> +	 * doing a complex calculation here, and then doing the zeroing
-> +	 * anyway if the page split fails.
-> +	 */
-> +	zero_user(page, offset, length);
-> +
-> +	cleancache_invalidate_page(page->mapping, page);
-> +	if (page_has_private(page))
-> +		do_invalidatepage(page, offset, length);
-> +	if (!PageTransHuge(page))
-> +		return true;
-> +	return split_huge_page(page) == 0;
-> +}
-> +
->  /*
->   * Used to get rid of pages on hardware memory corruption.
->   */
-> @@ -288,20 +335,16 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  {
->  	pgoff_t		start;		/* inclusive */
->  	pgoff_t		end;		/* exclusive */
-> -	unsigned int	partial_start;	/* inclusive */
-> -	unsigned int	partial_end;	/* exclusive */
->  	struct pagevec	pvec;
->  	pgoff_t		indices[PAGEVEC_SIZE];
->  	pgoff_t		index;
->  	int		i;
-> +	struct page *	page;
-> +	bool partial_end;
->  
->  	if (mapping->nrpages == 0 && mapping->nrexceptional == 0)
->  		goto out;
->  
-> -	/* Offsets within partial pages */
-> -	partial_start = lstart & (PAGE_SIZE - 1);
-> -	partial_end = (lend + 1) & (PAGE_SIZE - 1);
-> -
->  	/*
->  	 * 'start' and 'end' always covers the range of pages to be fully
->  	 * truncated. Partial pages are covered with 'partial_start' at the
-> @@ -334,48 +377,35 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  		cond_resched();
->  	}
->  
-> -	if (partial_start) {
-> -		struct page *page = find_lock_page(mapping, start - 1);
-> -		if (page) {
-> -			unsigned int top = PAGE_SIZE;
-> -			if (start > end) {
-> -				/* Truncation within a single page */
-> -				top = partial_end;
-> -				partial_end = 0;
-> -			}
-> -			wait_on_page_writeback(page);
-> -			zero_user_segment(page, partial_start, top);
-> -			cleancache_invalidate_page(mapping, page);
-> -			if (page_has_private(page))
-> -				do_invalidatepage(page, partial_start,
-> -						  top - partial_start);
-> -			unlock_page(page);
-> -			put_page(page);
-> +	partial_end = ((lend + 1) % PAGE_SIZE) > 0;
-> +	page = find_lock_head(mapping, lstart >> PAGE_SHIFT);
-> +	if (page) {
-> +		bool same_page = lend < page_offset(page) + thp_size(page);
-> +		if (same_page)
-> +			partial_end = false;
-> +		if (!truncate_inode_partial_page(page, lstart, lend)) {
-> +			start = page->index + thp_nr_pages(page);
-> +			if (same_page)
-> +				end = page->index;
->  		}
-> +		unlock_page(page);
-> +		put_page(page);
-> +		page = NULL;
->  	}
-> -	if (partial_end) {
-> -		struct page *page = find_lock_page(mapping, end);
-> -		if (page) {
-> -			wait_on_page_writeback(page);
-> -			zero_user_segment(page, 0, partial_end);
-> -			cleancache_invalidate_page(mapping, page);
-> -			if (page_has_private(page))
-> -				do_invalidatepage(page, 0,
-> -						  partial_end);
-> -			unlock_page(page);
-> -			put_page(page);
-> -		}
-> +
-> +	if (partial_end)
-> +		page = find_lock_head(mapping, end);
-> +	if (page) {
-> +		if (!truncate_inode_partial_page(page, lstart, lend))
-> +			end = page->index;
-> +		unlock_page(page);
-> +		put_page(page);
->  	}
-> -	/*
-> -	 * If the truncation happened within a single page no pages
-> -	 * will be released, just zeroed, so we can bail out now.
-> -	 */
-> -	if (start >= end)
-> -		goto out;
->  
->  	index = start;
-> -	for ( ; ; ) {
-> +	while (index < end) {
->  		cond_resched();
-> +
->  		if (!find_get_entries(mapping, index, end - 1, &pvec,
->  				indices)) {
->  			/* If all gone from start onwards, we're done */
-> @@ -387,7 +417,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  		}
->  
->  		for (i = 0; i < pagevec_count(&pvec); i++) {
-> -			struct page *page = pvec.pages[i];
-> +			page = pvec.pages[i];
->  
->  			/* We rely upon deletion not changing page->index */
->  			index = indices[i];
-> @@ -396,7 +426,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
->  				continue;
->  
->  			lock_page(page);
-> -			WARN_ON(page_to_index(page) != index);
-> +			index = page->index + thp_nr_pages(page) - 1;
->  			wait_on_page_writeback(page);
->  			truncate_inode_page(mapping, page);
->  			unlock_page(page);
-> -- 
-> 2.28.0
+> To make page allocation debugging and hibernation interaction more
+> robust, the dependency on DEBUG_PAGEALLOC or ARCH_HAS_SET_DIRECT_MAP
+> has to be made more explicit.
 > 
+> Start with combining the guard condition and the call to 
+> __kernel_map_pages() into a single debug_pagealloc_map_pages()
+> function to emphasize that __kernel_map_pages() should not be called
+> without DEBUG_PAGEALLOC and use this new function to map/unmap pages
+> when page allocation debug is enabled.
+> 
+> As the only remaining user of kernel_map_pages() is the hibernation
+> code, mode that function into kernel/power/snapshot.c closer to a
+> caller.
+
+s/mode/move/
+
+> 
+> Signed-off-by: Mike Rapoport <rppt@linux.ibm.com> --- 
+> include/linux/mm.h      | 16 +++++++--------- kernel/power/snapshot.c
+> | 11 +++++++++++ mm/memory_hotplug.c     |  3 +-- mm/page_alloc.c
+> |  6 ++---- mm/slab.c               |  8 +++----- 5 files changed, 24
+> insertions(+), 20 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h index
+> ef360fe70aaf..14e397f3752c 100644 --- a/include/linux/mm.h +++
+> b/include/linux/mm.h @@ -2927,21 +2927,19 @@ static inline bool
+> debug_pagealloc_enabled_static(void) #if
+> defined(CONFIG_DEBUG_PAGEALLOC) ||
+> defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP) extern void
+> __kernel_map_pages(struct page *page, int numpages, int enable);
+> 
+> -/* - * When called in DEBUG_PAGEALLOC context, the call should most
+> likely be - * guarded by debug_pagealloc_enabled() or
+> debug_pagealloc_enabled_static() - */ -static inline void 
+> -kernel_map_pages(struct page *page, int numpages, int enable) 
+> +static inline void debug_pagealloc_map_pages(struct page *page, +
+> int numpages, int enable) { -	__kernel_map_pages(page, numpages,
+> enable); +	if (debug_pagealloc_enabled_static()) +
+> __kernel_map_pages(page, numpages, enable); } + #ifdef
+> CONFIG_HIBERNATION extern bool kernel_page_present(struct page
+> *page); #endif	/* CONFIG_HIBERNATION */ #else	/*
+> CONFIG_DEBUG_PAGEALLOC || CONFIG_ARCH_HAS_SET_DIRECT_MAP */ -static
+> inline void -kernel_map_pages(struct page *page, int numpages, int
+> enable) {} +static inline void debug_pagealloc_map_pages(struct page
+> *page, +					     int numpages, int enable) {} #ifdef
+> CONFIG_HIBERNATION static inline bool kernel_page_present(struct page
+> *page) { return true; } #endif	/* CONFIG_HIBERNATION */ diff --git
+> a/kernel/power/snapshot.c b/kernel/power/snapshot.c index
+> 46b1804c1ddf..fa499466f645 100644 --- a/kernel/power/snapshot.c +++
+> b/kernel/power/snapshot.c @@ -76,6 +76,17 @@ static inline void
+> hibernate_restore_protect_page(void *page_address) {} static inline
+> void hibernate_restore_unprotect_page(void *page_address) {} #endif
+> /* CONFIG_STRICT_KERNEL_RWX  && CONFIG_ARCH_HAS_SET_MEMORY */
+> 
+> +#if defined(CONFIG_DEBUG_PAGEALLOC) ||
+> defined(CONFIG_ARCH_HAS_SET_DIRECT_MAP) +static inline void 
+> +kernel_map_pages(struct page *page, int numpages, int enable) +{ +
+> __kernel_map_pages(page, numpages, enable); +} +#else +static inline
+> void +kernel_map_pages(struct page *page, int numpages, int enable)
+> {} +#endif +
+
+That change should go into a separate patch.
+
+
+For the debug_pagealloc_map_pages() parts
+
+Reviewed-by: David Hildenbrand <david@redhat.com>
+
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks,
+
+David / dhildenb
+
