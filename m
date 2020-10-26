@@ -2,94 +2,108 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4A84B298FC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:45:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E8C40298FBA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:45:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781935AbgJZOpw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:45:52 -0400
-Received: from mail-pj1-f65.google.com ([209.85.216.65]:39228 "EHLO
-        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781926AbgJZOpv (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:45:51 -0400
-Received: by mail-pj1-f65.google.com with SMTP id m3so3210046pjf.4;
-        Mon, 26 Oct 2020 07:45:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=vAbD5pPtU3ThLzaI4nC9N49Q4nZl815/lE7BJtV5/80=;
-        b=SGiqEhsprkLFhCW42iwff1fo8jDOeHE++peyz8Jn/LHdybqgaipsfSb2QEEAfj+2C3
-         TWOZnaFTSGBj3lUwt8ld0nkmZZmCTtcrG6s/BrxBjS9M4AtNB/+on47QGayljDCGmCAM
-         Ic/tH9oXeg/Zu0d6HS7KIqdQd9tUzZHuGE9CL8Teo4zyBpYHqS92KWru3fy77x5IP5g3
-         XnzNUSHSxppP4S2ABYWv0H5DLoE7c3l8JIReagM0RQhHlAN3AQO6pmjZtW/Ul5J0fn0G
-         n82CKfmOuwNfd8nxg+SAfVdSpHfD3XbMR/Aklh615a1QCMbQ1PGyvBaudlaSwnYNg2V6
-         6Gog==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=vAbD5pPtU3ThLzaI4nC9N49Q4nZl815/lE7BJtV5/80=;
-        b=V3FVWi/P+P+1EjynGBovy6EBN7X7drjkoW4r/9i3eFjkz0yHQtZiMk/COoEqpRDilh
-         P4k5fT2tMXbuSzDgM9s3QS/OHKazTT7dA4mvE73ZIpI+A9EfJeOpcE2Pxc64cWA7ES9A
-         Y+OQE1tHTvYqcy4ebwdJLJn00Q3qME2yJHg1t54DXpxa+qBcnAYVBvuvh8Z+dviX9cEb
-         GuCb+SGPEzqsRL2FhM2sshF+Q7YsZ6QOC/+JEUB5Ivh6llRJxtv4VogRUtUurCdf9hVK
-         Pi6dHZ6KaJutBwZCTc6BXsPlaPE59zW0aYGm4kX6rqjeEhKH3im8rgn/KVwsfbtIDyTf
-         tsEQ==
-X-Gm-Message-State: AOAM530rWB5UuqPRU5zhnVFZYbcIwq2aiCUAFS74VLYI9HhUoD25WiO8
-        Ebgobw9HaAs2BHlP8DMb+puj/T9l5GCHJ8jeJmcaJMNVe5Y=
-X-Google-Smtp-Source: ABdhPJzhQC8fKyt4wwBORn7QhDdA+TldreARroO5Vs8lmgLb4WkRsq7pOc4NPX+KUKoWafcy85byeXI8fgYJ0Tyft10=
-X-Received: by 2002:a17:902:101:b029:d5:bb23:b731 with SMTP id
- 1-20020a1709020101b02900d5bb23b731mr12329264plb.82.1603723550691; Mon, 26 Oct
- 2020 07:45:50 -0700 (PDT)
+        id S1781907AbgJZOpZ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:45:25 -0400
+Received: from mga03.intel.com ([134.134.136.65]:27523 "EHLO mga03.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1781562AbgJZOpY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:45:24 -0400
+IronPort-SDR: Rr7aR6GM1q9ic1KoL0lKL5bH7krBL2VVNaLdoIxioKW5EEnZUT0VcRcXEWKDqrvATa7094BDW7
+ DRiHVEy9abeg==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="168031792"
+X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
+   d="scan'208";a="168031792"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from orsmga004.jf.intel.com ([10.7.209.38])
+  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 07:45:23 -0700
+IronPort-SDR: QiNaUaNQh/pEOODGqs2lfdV8v8vw2bVnIdIfb7ZzEvuY+FdmKoFpFR7+OMBr/ueqXnECPsJ5M9
+ U3HVU9zl3jvw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
+   d="scan'208";a="467946901"
+Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
+  by orsmga004.jf.intel.com with ESMTP; 26 Oct 2020 07:45:21 -0700
+Subject: Re: [PATCH v2] usb: xhci: Workaround for S3 issue on AMD SNPS 3.0 xHC
+To:     Sandeep Singh <Sandeep.Singh@amd.com>, mathias.nyman@intel.com,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org, sanket.goswami@amd.com,
+        Nehal-bakulchandra.Shah@amd.com
+Cc:     Shyam-sundar.S-k@amd.com
+References: <20201023131503.759671-1-Sandeep.Singh@amd.com>
+From:   Mathias Nyman <mathias.nyman@linux.intel.com>
+Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
+ 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 fiD/
+Message-ID: <ed3847f0-f219-547a-e887-cd0d48f77dda@linux.intel.com>
+Date:   Mon, 26 Oct 2020 16:46:50 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20201026141839.28536-1-brgl@bgdev.pl>
-In-Reply-To: <20201026141839.28536-1-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Oct 2020 16:46:39 +0200
-Message-ID: <CAHp75Vf07dsUXZ8Dr-KY-NFQv+C2QQVEOH_se7vYMT6hdm-U3Q@mail.gmail.com>
-Subject: Re: [PATCH 0/7] gpio: exar: refactor the driver
-To:     Bartosz Golaszewski <brgl@bgdev.pl>,
-        Jan Kiszka <jan.kiszka@siemens.com>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201023131503.759671-1-Sandeep.Singh@amd.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:22 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> I just wanted to convert the driver to using simpler IDA API but ended up
-> quickly converting it to using regmap. Unfortunately I don't have the HW
-> to test it so marking the patches that introduce functional change as RFT
-> and Cc'ing the original author.
+On 23.10.2020 16.15, Sandeep Singh wrote:
+> From: Sandeep Singh <sandeep.singh@amd.com>
+> 
+> On some platform of AMD, S3 fails with HCE and SRE errors. To fix this,
+> need to disable a bit which is enable in sparse controller.
+> 
+> Signed-off-by: Sanket Goswami <Sanket.Goswami@amd.com>
+> Signed-off-by: Sandeep Singh <sandeep.singh@amd.com>
+> ---
+> Changes since v1:(https://lkml.org/lkml/2020/10/23/368)
+> 	-> Add xhci.h changes
+> 
 
-+Cc: Jan, AFAIR their devices are using Exar UART.
+Added to queue.
+This looks like it should go to stable as well.
 
-> Bartosz Golaszewski (7):
->   gpio: exar: add a newline after the copyright notice
->   gpio: exar: include idr.h
->   gpio: exar: switch to a simpler IDA interface
->   gpio: exar: use a helper variable for &pdev->dev
->   gpio: exar: unduplicate address and offset computation
->   gpio: exar: switch to using regmap
->   gpio: exar: use devm action for freeing the IDA and drop remove()
->
->  drivers/gpio/Kconfig     |   1 +
->  drivers/gpio/gpio-exar.c | 155 +++++++++++++++++++--------------------
->  2 files changed, 77 insertions(+), 79 deletions(-)
->
-> --
-> 2.29.1
->
-
-
--- 
-With Best Regards,
-Andy Shevchenko
+-Mathias
