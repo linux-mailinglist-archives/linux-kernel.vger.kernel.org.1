@@ -2,75 +2,86 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B7C90299294
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:37:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E08D29929B
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:37:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786150AbgJZQhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:37:24 -0400
-Received: from mx2.suse.de ([195.135.220.15]:60662 "EHLO mx2.suse.de"
+        id S1786160AbgJZQhp convert rfc822-to-8bit (ORCPT
+        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 12:37:45 -0400
+Received: from mga06.intel.com ([134.134.136.31]:7429 "EHLO mga06.intel.com"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1738342AbgJZQhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:37:22 -0400
-X-Virus-Scanned: by amavisd-new at test-mx.suse.de
-Received: from relay2.suse.de (unknown [195.135.221.27])
-        by mx2.suse.de (Postfix) with ESMTP id 12AF3AD52;
-        Mon, 26 Oct 2020 16:37:21 +0000 (UTC)
-Received: by ds.suse.cz (Postfix, from userid 10065)
-        id 07BA3DA6E2; Mon, 26 Oct 2020 17:35:46 +0100 (CET)
-Date:   Mon, 26 Oct 2020 17:35:46 +0100
-From:   David Sterba <dsterba@suse.cz>
-To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
-Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, stable@vger.kernel.org
-Subject: Re: [PATCH 6/7] btrfs: Promote to unsigned long long before shifting
-Message-ID: <20201026163546.GP6756@twin.jikos.cz>
-Reply-To: dsterba@suse.cz
-Mail-Followup-To: dsterba@suse.cz,
-        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-        linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
-        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
-        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
-        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
-        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
-        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
-        dsterba@suse.com, stable@vger.kernel.org
-References: <20201004180428.14494-1-willy@infradead.org>
- <20201004180428.14494-7-willy@infradead.org>
+        id S1786153AbgJZQhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:37:45 -0400
+IronPort-SDR: 2BUutrjpUZYrjtIqXN7m8pYfh5no8ZiKTmYJg8zF0QN0X9prirwFnruDyjVwvKCaSCPH6QVUkh
+ vzO43wPSr47Q==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="229584923"
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="229584923"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 09:37:42 -0700
+IronPort-SDR: YEOvthm1SG3Pc3p9RQCPYcX74GCP4R2l9yoqfGpTbKYoNbx2Po7VcReuHg5YmmDPaQAc99QEIe
+ 1OapCFGUFlIw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="355241555"
+Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
+  by fmsmga002.fm.intel.com with ESMTP; 26 Oct 2020 09:37:40 -0700
+Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
+ IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.1713.5; Mon, 26 Oct 2020 16:37:39 +0000
+Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
+ irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
+ Mon, 26 Oct 2020 16:37:39 +0000
+From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
+To:     Arnd Bergmann <arnd@kernel.org>
+CC:     Steven Rostedt <rostedt@goodmis.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        "Jiri Kosina" <jkosina@suse.cz>, Petr Mladek <pmladek@suse.cz>,
+        Arnd Bergmann <arnd@arndb.de>,
+        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
+Thread-Topic: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
+Thread-Index: AQHWq7KliO24+notLUCpY3Gs9snQi6mqFBIg
+Date:   Mon, 26 Oct 2020 16:37:39 +0000
+Message-ID: <0fb5bff4b99c40e5956b8af34d5c1483@intel.com>
+References: <20201026161108.3707783-1-arnd@kernel.org>
+In-Reply-To: <20201026161108.3707783-1-arnd@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+dlp-product: dlpe-windows
+dlp-reaction: no-action
+dlp-version: 11.5.1.3
+x-originating-ip: [163.33.253.164]
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8BIT
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201004180428.14494-7-willy@infradead.org>
-User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sun, Oct 04, 2020 at 07:04:27PM +0100, Matthew Wilcox (Oracle) wrote:
-> On 32-bit systems, this shift will overflow for files larger than 4GB.
+On 2020-10-26 5:10 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
 > 
-> Cc: stable@vger.kernel.org
-> Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
-> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+> Building with W=2 prints a number of warnings for one function that
+> has a pointer type mismatch:
+> 
+> linux/seq_buf.h: In function 'seq_buf_init':
+> linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
+> 
+> Change the type in the function prototype according to the type in
+> the structure.
+> 
+> Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  fs/btrfs/raid56.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
-> index 255490f42b5d..5ee0a53301bd 100644
-> --- a/fs/btrfs/raid56.c
-> +++ b/fs/btrfs/raid56.c
-> @@ -1089,7 +1089,7 @@ static int rbio_add_io_page(struct btrfs_raid_bio *rbio,
->  	u64 disk_start;
->  
->  	stripe = &rbio->bbio->stripes[stripe_nr];
-> -	disk_start = stripe->physical + (page_index << PAGE_SHIFT);
-> +	disk_start = stripe->physical + ((loff_t)page_index << PAGE_SHIFT);
 
-It seems that this patch is mechanical replacement. If you check the
-callers, the page_index is passed from an int that iterates over bits
-set in an unsigned long (bitmap). The result won't overflow.
+Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+
+Thanks,
+Czarek
+
