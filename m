@@ -2,129 +2,155 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 11D022994DB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:09:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 28CE32994CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:04:10 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789225AbgJZSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:08:57 -0400
-Received: from pandora.armlinux.org.uk ([78.32.30.218]:46416 "EHLO
-        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1789214AbgJZSIz (ORCPT
+        id S1788992AbgJZSEI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:04:08 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:46421 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1783308AbgJZSEH (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:08:55 -0400
-X-Greylist: delayed 558 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 14:08:53 EDT
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-         bh=k86Sk2vzUdIAWAPQ+NHqfUDiJ+SZmpD+LsPmG5feGcA=; b=NDe/P1VbFb3pzpjR++6NAqOf/
-        fmUUQsRNOWIKCXzcPczLfURwp/QtACFvZyjzlhKp3Jk6iY/nhj6DjFlttHcU+FxYnWfe7Hf3glLn5
-        n2lrFShAAGVRtTC/MbE6zL/oCMMDOjj4rJvywS/RX29ErMLbPy3rAOozPwM4h1YL9bBuGGBoDjxHp
-        wIBNcGyvHnzpotXZxTMZE7Pg0tfOMdJN8reDhBH3lY6a2RnBYfnDcfXrjaiRlFWkkeIqhY97WGR+l
-        Z3+3prrjFtf27Q6at5sx8begjdB8Exaf3PBXNHjkiMxDHvxa/ldOKoWOFWXkOI5MCj6iAp18/NMkK
-        1KwEQC57Q==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51294)
-        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-        (Exim 4.92)
-        (envelope-from <linux@armlinux.org.uk>)
-        id 1kX6oA-0007uS-S1; Mon, 26 Oct 2020 18:01:26 +0000
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
-        (envelope-from <linux@shell.armlinux.org.uk>)
-        id 1kX6oA-0003CP-Ep; Mon, 26 Oct 2020 18:01:26 +0000
-Date:   Mon, 26 Oct 2020 18:01:26 +0000
-From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
-To:     Xiaoming Ni <nixiaoming@huawei.com>
-Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
-        vincent.whitchurch@axis.com, linux-arm-kernel@lists.infradead.org,
-        linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
-        bigeasy@linutronix.de, will.deacon@arm.com, wangle6@huawei.com
-Subject: Re: [PATCH] arm:traps:Don't dump the memory in non-system reset
- scenarios
-Message-ID: <20201026180126.GI1551@shell.armlinux.org.uk>
-References: <20201026063106.20744-1-nixiaoming@huawei.com>
+        Mon, 26 Oct 2020 14:04:07 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603735446;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=xyYk0jDTOiwDBvTIIH8x0g5Fzg4mMedC/eOz+dtv1vA=;
+        b=c3eta7Ngf/9oh1igcmZPsxxxu6YWtSLXEMe7hr/kxKHjjd8YTkkrrvzjYjY9LF1Ouyh+5T
+        RcQamFTsWsEt6hnCTGw7b6SP8kpzdcldFQbB1Ic/pdFND3DRNSVZJOBvOZ15FQK0WTi2U3
+        KWuk1P8FCXcbG2qd4UbQVBenad9j4eE=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-34-CJKsKjOFOAGlKBQTJpbv8A-1; Mon, 26 Oct 2020 14:03:11 -0400
+X-MC-Unique: CJKsKjOFOAGlKBQTJpbv8A-1
+Received: from smtp.corp.redhat.com (int-mx08.intmail.prod.int.phx2.redhat.com [10.5.11.23])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 12AD91015ED6;
+        Mon, 26 Oct 2020 18:03:09 +0000 (UTC)
+Received: from llong.remote.csb (ovpn-118-122.rdu2.redhat.com [10.10.118.122])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 762FD19647;
+        Mon, 26 Oct 2020 18:03:07 +0000 (UTC)
+Subject: Re: [PATCH] qspinlock: use signed temporaries for cmpxchg
+To:     Arnd Bergmann <arnd@kernel.org>, Arnd Bergmann <arnd@arndb.de>,
+        Matthew Wilcox <willy@infradead.org>,
+        Ingo Molnar <mingo@kernel.org>,
+        "Peter Zijlstra (Intel)" <peterz@infradead.org>,
+        Will Deacon <will@kernel.org>
+Cc:     Will Deacon <will.deacon@arm.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Nicholas Piggin <npiggin@gmail.com>,
+        Michael Ellerman <mpe@ellerman.id.au>,
+        Herbert Xu <herbert@gondor.apana.org.au>,
+        linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20201026165807.3724647-1-arnd@kernel.org>
+From:   Waiman Long <longman@redhat.com>
+Organization: Red Hat
+Message-ID: <022365e9-f7fe-5589-7867-d2ad2d33cfa3@redhat.com>
+Date:   Mon, 26 Oct 2020 14:03:06 -0400
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.4.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201026063106.20744-1-nixiaoming@huawei.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
-Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
+In-Reply-To: <20201026165807.3724647-1-arnd@kernel.org>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Transfer-Encoding: 7bit
+Content-Language: en-US
+X-Scanned-By: MIMEDefang 2.84 on 10.5.11.23
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 02:31:06PM +0800, Xiaoming Ni wrote:
-> Do not dump the memory in non-system reset scenarios to prevent virtual
->  address information leakage.
-> 
-> This patch follows x86 and arm64's lead and removes the "Exception stack:"
-> dump from kernel backtraces:
-> 	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
-> 	 PC/LR values in backtraces")
-> 	commit 0ee1dd9f5e7eae ("x86/dumpstack: Remove raw stack dump")
-
-Please make this conditional, so that if necessary this information can
-be retrieved for debugging purposes. I object extremely strongly to
-this "it's a security leak, let's rip out all the useful debugging that
-enables people to get to the bottom of problems" attitude that we now
-seem to have.
-
-If that's what people want, then do not expect me to ever look at a
-kernel crash again; other people can do the debugging and find out
-how painful it can be without extra information.
-
-> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+On 10/26/20 12:57 PM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+>
+> When building with W=2, the build log is flooded with
+>
+> include/asm-generic/qrwlock.h:65:56: warning: pointer targets in passing argument 2 of 'atomic_try_cmpxchg_acquire' differ in signedness [-Wpointer-sign]
+> include/asm-generic/qrwlock.h:92:53: warning: pointer targets in passing argument 2 of 'atomic_try_cmpxchg_acquire' differ in signedness [-Wpointer-sign]
+> include/asm-generic/qspinlock.h:68:55: warning: pointer targets in passing argument 2 of 'atomic_try_cmpxchg_acquire' differ in signedness [-Wpointer-sign]
+> include/asm-generic/qspinlock.h:82:52: warning: pointer targets in passing argument 2 of 'atomic_try_cmpxchg_acquire' differ in signedness [-Wpointer-sign]
+>
+> The atomics are built on top of signed integers, but the caller
+> doesn't actually care. Just use signed types as well.
+>
+> Fixes: 27df89689e25 ("locking/spinlocks: Remove an instruction from spin and write locks")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 > ---
->  arch/arm/kernel/traps.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
-> index 911bbf164875..34e268378972 100644
-> --- a/arch/arm/kernel/traps.c
-> +++ b/arch/arm/kernel/traps.c
-> @@ -60,13 +60,9 @@ static int __init user_debug_setup(char *str)
->  __setup("user_debug=", user_debug_setup);
->  #endif
->  
-> -static void dump_mem(const char *, const char *, unsigned long, unsigned long);
-> -
->  void dump_backtrace_entry(unsigned long where, unsigned long from,
->  			  unsigned long frame, const char *loglvl)
->  {
-> -	unsigned long end = frame + 4 + sizeof(struct pt_regs);
-> -
->  #ifdef CONFIG_KALLSYMS
->  	printk("%s (%ps) from (%pS)\n",
->  		loglvl, (void *)where, (void *)from);
-> @@ -74,9 +70,6 @@ void dump_backtrace_entry(unsigned long where, unsigned long from,
->  	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
->  		loglvl, where, from);
->  #endif
-> -
-> -	if (in_entry_text(from) && end <= ALIGN(frame, THREAD_SIZE))
-> -		dump_mem(loglvl, "Exception stack", frame + 4, end);
->  }
->  
->  void dump_backtrace_stm(u32 *stack, u32 instruction, const char *loglvl)
-> @@ -125,6 +118,12 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
->  	mm_segment_t fs;
->  	int i;
->  
-> +	/*
-> +	 * To prevent virtual address information leakage, memory
-> +	 * information cannot be printed in non-reset scenarios.
-> +	 */
-> +	if (panic_on_oops == 0)
-> +		return;
->  	/*
->  	 * We need to switch to kernel mode so that we can use __get_user
->  	 * to safely read from kernel space.  Note that we now dump the
-> -- 
-> 2.27.0
-> 
-> 
+>   include/asm-generic/qrwlock.h   | 8 ++++----
+>   include/asm-generic/qspinlock.h | 4 ++--
+>   2 files changed, 6 insertions(+), 6 deletions(-)
+>
+> diff --git a/include/asm-generic/qrwlock.h b/include/asm-generic/qrwlock.h
+> index 3aefde23dcea..84ce841ce735 100644
+> --- a/include/asm-generic/qrwlock.h
+> +++ b/include/asm-generic/qrwlock.h
+> @@ -37,7 +37,7 @@ extern void queued_write_lock_slowpath(struct qrwlock *lock);
+>    */
+>   static inline int queued_read_trylock(struct qrwlock *lock)
+>   {
+> -	u32 cnts;
+> +	int cnts;
+>   
+>   	cnts = atomic_read(&lock->cnts);
+>   	if (likely(!(cnts & _QW_WMASK))) {
+> @@ -56,7 +56,7 @@ static inline int queued_read_trylock(struct qrwlock *lock)
+>    */
+>   static inline int queued_write_trylock(struct qrwlock *lock)
+>   {
+> -	u32 cnts;
+> +	int cnts;
+>   
+>   	cnts = atomic_read(&lock->cnts);
+>   	if (unlikely(cnts))
+> @@ -71,7 +71,7 @@ static inline int queued_write_trylock(struct qrwlock *lock)
+>    */
+>   static inline void queued_read_lock(struct qrwlock *lock)
+>   {
+> -	u32 cnts;
+> +	int cnts;
+>   
+>   	cnts = atomic_add_return_acquire(_QR_BIAS, &lock->cnts);
+>   	if (likely(!(cnts & _QW_WMASK)))
+> @@ -87,7 +87,7 @@ static inline void queued_read_lock(struct qrwlock *lock)
+>    */
+>   static inline void queued_write_lock(struct qrwlock *lock)
+>   {
+> -	u32 cnts = 0;
+> +	int cnts = 0;
+>   	/* Optimize for the unfair lock case where the fair flag is 0. */
+>   	if (likely(atomic_try_cmpxchg_acquire(&lock->cnts, &cnts, _QW_LOCKED)))
+>   		return;
+> diff --git a/include/asm-generic/qspinlock.h b/include/asm-generic/qspinlock.h
+> index 4fe7fd0fe834..d74b13825501 100644
+> --- a/include/asm-generic/qspinlock.h
+> +++ b/include/asm-generic/qspinlock.h
+> @@ -60,7 +60,7 @@ static __always_inline int queued_spin_is_contended(struct qspinlock *lock)
+>    */
+>   static __always_inline int queued_spin_trylock(struct qspinlock *lock)
+>   {
+> -	u32 val = atomic_read(&lock->val);
+> +	int val = atomic_read(&lock->val);
+>   
+>   	if (unlikely(val))
+>   		return 0;
+> @@ -77,7 +77,7 @@ extern void queued_spin_lock_slowpath(struct qspinlock *lock, u32 val);
+>    */
+>   static __always_inline void queued_spin_lock(struct qspinlock *lock)
+>   {
+> -	u32 val = 0;
+> +	int val = 0;
+>   
+>   	if (likely(atomic_try_cmpxchg_acquire(&lock->val, &val, _Q_LOCKED_VAL)))
+>   		return;
 
--- 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
+Yes, it shouldn't really matter if the value is defined as int or u32. 
+However, the only caveat that I see is queued_spin_lock_slowpath() is 
+expecting a u32 argument. Maybe you should cast it back to (u32) when 
+calling it.
+
+Cheers,
+Longman
+
