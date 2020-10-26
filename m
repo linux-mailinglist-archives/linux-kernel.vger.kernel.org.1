@@ -2,158 +2,426 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 3241E2999EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:52:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5C1E32999F3
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 23:54:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2394844AbgJZWww (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 18:52:52 -0400
-Received: from mga09.intel.com ([134.134.136.24]:11848 "EHLO mga09.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2394824AbgJZWwv (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 18:52:51 -0400
-IronPort-SDR: XPbHC5JMJMU2xW6M8l2C9gLy4FHt0WMLfMM3Ftq6Mc0chG9HCj77tODfIAn5QLH39Yvvz00XUL
- QtkokZ2J7vZA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="168123846"
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="168123846"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga006.fm.intel.com ([10.253.24.20])
-  by orsmga102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 15:52:50 -0700
-IronPort-SDR: aEwpMeqlhYqUHNDZFgDcDWzInPxKt8h0og0IVJlvQeR8o+MACMLgKh45YQL3V9NANMG+TdoSNR
- U/z7oHF4AhOg==
-X-IronPort-AV: E=Sophos;i="5.77,421,1596524400"; 
-   d="scan'208";a="524464467"
-Received: from jekeller-mobl1.amr.corp.intel.com (HELO [10.212.215.218]) ([10.212.215.218])
-  by fmsmga006-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 15:52:49 -0700
-Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping
- CPUs
-To:     Jakub Kicinski <kuba@kernel.org>,
-        Thomas Gleixner <tglx@linutronix.de>
-Cc:     Marcelo Tosatti <mtosatti@redhat.com>,
-        Nitesh Narayan Lal <nitesh@redhat.com>,
-        Peter Zijlstra <peterz@infradead.org>, helgaas@kernel.org,
-        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
-        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
-        frederic@kernel.org, sassmann@redhat.com,
-        jesse.brandeburg@intel.com, lihong.yang@intel.com,
-        jeffrey.t.kirsher@intel.com, jlelli@redhat.com, hch@infradead.org,
-        bhelgaas@google.com, mike.marciniszyn@intel.com,
-        dennis.dalessandro@intel.com, thomas.lendacky@amd.com,
-        jiri@nvidia.com, mingo@redhat.com, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, lgoncalv@redhat.com
-References: <20201019111137.GL2628@hirez.programming.kicks-ass.net>
- <20201019140005.GB17287@fuller.cnet>
- <20201020073055.GY2611@hirez.programming.kicks-ass.net>
- <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com>
- <20201020134128.GT2628@hirez.programming.kicks-ass.net>
- <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com>
- <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com>
- <20201023085826.GP2611@hirez.programming.kicks-ass.net>
- <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com>
- <87ft6464jf.fsf@nanos.tec.linutronix.de>
- <20201026173012.GA377978@fuller.cnet>
- <875z6w4xt4.fsf@nanos.tec.linutronix.de>
- <86f8f667-bda6-59c4-91b7-6ba2ef55e3db@intel.com>
- <87v9ew3fzd.fsf@nanos.tec.linutronix.de>
- <85b5f53e-5be2-beea-269a-f70029bea298@intel.com>
- <87lffs3bd6.fsf@nanos.tec.linutronix.de>
- <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-From:   Jacob Keller <jacob.e.keller@intel.com>
-Organization: Intel Corporation
-Message-ID: <63c3484d-327e-5f37-7860-3af277c26711@intel.com>
-Date:   Mon, 26 Oct 2020 15:52:46 -0700
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.3.3
+        id S2394882AbgJZWys (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 18:54:48 -0400
+Received: from mail-pj1-f65.google.com ([209.85.216.65]:52274 "EHLO
+        mail-pj1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2394871AbgJZWyr (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 18:54:47 -0400
+Received: by mail-pj1-f65.google.com with SMTP id o1so4012166pjt.2;
+        Mon, 26 Oct 2020 15:54:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=ybg1/5U+SLFSAFY4Gzm8yOXjUCgQtBZ81JyKW3EFc9I=;
+        b=eGoz52hw8AawscTN5v3UBvzesNH/5L/Tc1FpHCjPcVjN/YuUCnO0EUAPnEEhlhPN0I
+         +Ot2awnOY5KsNgSXHUOF1egfjF/10xj0/c+mt+xR7h+Wu4Gn0HJHP9xDD3oB0AOSTPD2
+         2o6VaolUi/6P1Qiyrk9ZkGtAS1nLdErI+uf9oSEJdZ/TiMheWnc9poIq8hFO2lxga4Bz
+         KCPjtoEMl/jJU9BwsNUhoUGWuEvAKg/1ogDJVdrEqL2GsET3dF4LBLGHQBhJC7TiogQl
+         ItzhELPypGh1ubkLhMQK8enFLj0uSxQzYmDG98fzVL/9fcLjZcSlPzTn/H+qkSMp06Yn
+         28Hg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=ybg1/5U+SLFSAFY4Gzm8yOXjUCgQtBZ81JyKW3EFc9I=;
+        b=qES6Kw99nwfbkb81rEQwtluNy1yPJlZqJqvohdBWXIEW+dnXuo57WPwOonAHhHOw64
+         fggjI7PdubXaPHJffUir1gvjgpALUNlMzF0B21h9zHmWxfwvb9Wr/OF/H8lgMk+zsQP2
+         z37ifubITeKbQqKD6EQYOLDWFgaQUMdMV2BiYGJTFLi1kkoPzSyx/Hxy/12uw0Q+GTmI
+         Ty676sEtM8hdoSNRDpY17iSkJbr8Nl8lS8ZJftFZ3nSS0GCpBRL5sCLBQIetiQZQ6LQe
+         cnZuE0saRZxK/nClSBw+aw7Adq7TilgJsvIwYZwTcn/IRQ2evNyTEPbtH5XTWFL6DAPH
+         R2ag==
+X-Gm-Message-State: AOAM532eArAT52Fswam8BeBml/d5innVcqmb6rloMi8JVi3C31wLE+yp
+        urTrru8mrsW6ZqHKO05MVqBzBSRDnSk3OwPwXa5b2gn7/Pw=
+X-Google-Smtp-Source: ABdhPJzpsC3hXY2gqf3UEt9wN3AkGr3wW5/cC++uOFANRubiY/zHt+F9RuRVokc6IOV8W9U3wLbjeXN7Kigp+CCj3Vk=
+X-Received: by 2002:a17:90a:fb92:: with SMTP id cp18mr23227348pjb.228.1603752886070;
+ Mon, 26 Oct 2020 15:54:46 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <20201026151306.4af991a5@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201025005916.64747-1-luka.kovacic@sartura.hr> <20201025005916.64747-3-luka.kovacic@sartura.hr>
+In-Reply-To: <20201025005916.64747-3-luka.kovacic@sartura.hr>
+From:   Andy Shevchenko <andy.shevchenko@gmail.com>
+Date:   Tue, 27 Oct 2020 00:54:29 +0200
+Message-ID: <CAHp75Vd81cK+nhJ1fxgRC6cEKnBELVA9UtT8VPvq7nbHEdhecQ@mail.gmail.com>
+Subject: Re: [PATCH v7 2/6] drivers: mfd: Add a driver for IEI WT61P803 PUZZLE MCU
+To:     Luka Kovacic <luka.kovacic@sartura.hr>
+Cc:     Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-hwmon@vger.kernel.org,
+        Linux LED Subsystem <linux-leds@vger.kernel.org>,
+        devicetree <devicetree@vger.kernel.org>,
+        Lee Jones <lee.jones@linaro.org>, Pavel Machek <pavel@ucw.cz>,
+        Dan Murphy <dmurphy@ti.com>, Rob Herring <robh+dt@kernel.org>,
+        Jean Delvare <jdelvare@suse.com>,
+        Guenter Roeck <linux@roeck-us.net>,
+        =?UTF-8?B?TWFyZWsgQmVow7pu?= <marek.behun@nic.cz>,
+        luka.perkov@sartura.hr, robert.marko@sartura.hr
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Sun, Oct 25, 2020 at 3:59 AM Luka Kovacic <luka.kovacic@sartura.hr> wrote:
+>
+> Add a driver for the IEI WT61P803 PUZZLE microcontroller, used in some
+> IEI Puzzle series devices. The microcontroller controls system power,
+> temperature sensors, fans and LEDs.
+>
+> This driver implements the core functionality for device communication
+> over the system serial (serdev bus). It handles MCU messages and the
+> internal MCU properties. Some properties can be managed over sysfs.
+
+...
+
+> +#include <asm/unaligned.h>
+
+asm/* usually go after linux/*.
+If you get a comment against one place in your series it implies to
+check the other potential places to address.
+
+> +#include <linux/atomic.h>
+
+> +#include <linux/delay.h>
+> +#include <linux/delay.h>
+
+Delay should delay :-)
+
+> +#include <linux/export.h>
+> +#include <linux/init.h>
+> +#include <linux/kernel.h>
+> +#include <linux/mfd/iei-wt61p803-puzzle.h>
+> +#include <linux/mod_devicetable.h>
+> +#include <linux/module.h>
+
+> +#include <linux/of_device.h>
+
+Don't see a user of this, but of_platform.h seems to be missed.
+
+> +#include <linux/property.h>
+> +#include <linux/sched.h>
+> +#include <linux/serdev.h>
+> +#include <linux/slab.h>
+> +#include <linux/sysfs.h>
+
+...
+
+> +#define IEI_WT61P803_PUZZLE_MAX_COMMAND_LENGTH (20 + 2)
+
+Since it uses formula, can you add a comment explaining what is the
+meaning of each argument?
+
+...
+
+> +enum iei_wt61p803_puzzle_reply_state {
+> +       FRAME_OK = 0x00,
+> +       FRAME_PROCESSING = 0x01,
+> +       FRAME_STRUCT_EMPTY = 0xFF,
+> +       FRAME_TIMEOUT = 0xFE
+
+Hmm, why not ordered?
+
+> +};
+
+...
+
+> +struct iei_wt61p803_puzzle_mcu_version {
+> +       char version[IEI_WT61P803_PUZZLE_VERSION_VERSION_LENGTH + 1];
+> +       char build_info[IEI_WT61P803_PUZZLE_VERSION_BUILD_INFO_LENGTH + 1];
+> +       bool bootloader_mode;
+> +       char protocol_version[IEI_WT61P803_PUZZLE_VERSION_PROTOCOL_VERSION_LENGTH + 1];
+> +       char serial_number[IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH + 1];
+> +       char mac_address[8][IEI_WT61P803_PUZZLE_VERSION_MAC_LENGTH + 1];
+
+Perhaps additional constant to include (presumably) NUL ?
+
+Also, what about 8?
+
+> +};
+
+...
+
+> +struct iei_wt61p803_puzzle {
+> +       struct serdev_device *serdev;
+
+> +       struct kobject *kobj;
+
+It's quite strange you need this,
+
+> +       struct mutex reply_lock;
+> +       struct mutex bus_lock;
+> +       struct iei_wt61p803_puzzle_reply *reply;
+> +       struct iei_wt61p803_puzzle_mcu_version version;
+> +       struct iei_wt61p803_puzzle_mcu_status status;
+> +       unsigned char *response_buffer;
+> +       struct mutex lock;
+> +};
+
+...
+
+> +static int iei_wt61p803_puzzle_recv_buf(struct serdev_device *serdev,
+> +                                       const unsigned char *data, size_t size)
+> +{
+> +       struct iei_wt61p803_puzzle *mcu = serdev_device_get_drvdata(serdev);
+> +       int ret;
+> +
+> +       ret = iei_wt61p803_puzzle_process_resp(mcu, (unsigned char *)data, size);
+
+Dropping const, why?
+
+> +       /* Return the number of processed bytes if function returns error */
+> +       if (ret < 0)
+
+> +               return (int)size;
+
+Will be interesting result, maybe you wanted other way around?
+
+> +       return ret;
+> +}
+
+...
+
+> +       dev_err(dev, "%s: Command response timed out. Retries: %d", __func__, retry_count);
+
+Drop __func__, it should not be critical for properly formulated
+messages (for debug Dynamic Debug may take care of this at run time).
 
 
-On 10/26/2020 3:13 PM, Jakub Kicinski wrote:
-> On Mon, 26 Oct 2020 22:50:45 +0100 Thomas Gleixner wrote:
->> On Mon, Oct 26 2020 at 14:11, Jacob Keller wrote:
->>> On 10/26/2020 1:11 PM, Thomas Gleixner wrote:  
->>>> On Mon, Oct 26 2020 at 12:21, Jacob Keller wrote:  
->>>>> Are there drivers which use more than one interrupt per queue? I know
->>>>> drivers have multiple management interrupts.. and I guess some drivers
->>>>> do combined 1 interrupt per pair of Tx/Rx..  It's also plausible to to
->>>>> have multiple queues for one interrupt .. I'm not sure how a single
->>>>> queue with multiple interrupts would work though.  
->>>>
->>>> For block there is always one interrupt per queue. Some Network drivers
->>>> seem to have seperate RX and TX interrupts per queue.  
->>> That's true when thinking of Tx and Rx as a single queue. Another way to
->>> think about it is "one rx queue" and "one tx queue" each with their own
->>> interrupt...
->>>
->>> Even if there are devices which force there to be exactly queue pairs,
->>> you could still think of them as separate entities?  
->>
->> Interesting thought.
->>
->> But as Jakub explained networking queues are fundamentally different
->> from block queues on the RX side. For block the request issued on queue
->> X will raise the complete interrupt on queue X.
->>
->> For networking the TX side will raise the TX interrupt on the queue on
->> which the packet was queued obviously or should I say hopefully. :)
->>
->> But incoming packets will be directed to some receive queue based on a
->> hash or whatever crystallball logic the firmware decided to implement.
->>
->> Which makes this not really suitable for the managed interrupt and
->> spreading approach which is used by block-mq. Hrm...
->>
->> But I still think that for curing that isolation stuff we want at least
->> some information from the driver. Alternative solution would be to grant
->> the allocation of interrupts and queues and have some sysfs knob to shut
->> down queues at runtime. If that shutdown results in releasing the queue
->> interrupt (via free_irq()) then the vector exhaustion problem goes away.
->>
->> Needs more thought and information (for network oblivious folks like
->> me).
-> 
-> One piece of information that may be useful is that even tho the RX
-> packets may be spread semi-randomly the user space can still control
-> which queues are included in the mechanism. There is an indirection
-> table in the HW which allows to weigh queues differently, or exclude
-> selected queues from the spreading. Other mechanisms exist to filter
-> flows onto specific queues.
-> 
-> IOW just because a core has an queue/interrupt does not mean that
-> interrupt will ever fire, provided its excluded from RSS.
-> 
-> Another piece is that by default we suggest drivers allocate 8 RX
-> queues, and online_cpus TX queues. The number of queues can be
-> independently controlled via ethtool -L. Drivers which can't support
-> separate queues will default to online_cpus queue pairs, and let
-> ethtool -L only set the "combined" parameter.
-> 
+> +       return -ETIMEDOUT;
 
-I know the Intel drivers usually have defaulted to trying to maintain
-queue pairs. I do not believe this is technically a HW restriction, but
-it is heavily built into the way the drivers work today.
+...
 
-> There are drivers which always allocate online_cpus interrupts, 
-> and then some of them will go unused if #qs < #cpus.
-> 
-> 
+> +       struct device *dev = &mcu->serdev->dev;
+> +       int ret;
 
-Right.
+> +       int len = (int)size;
 
-> My unpopular opinion is that for networking devices all the heuristics
-> we may come up with are going to be a dead end. We need an explicit API
-> to allow users placing queues on cores, and use managed IRQs for data
-> queues. (I'm assuming that managed IRQs will let us reliably map a MSI-X
-> vector to a core :))
-> 
+Why len can't be size_t?
 
-I don't think it is that unpopular... This is the direction I'd like to
-see us go as well.
+Can it be also organized in reversed xmas tree order?
+
+...
+
+> +       ret = serdev_device_write(mcu->serdev, cmd, len, IEI_WT61P803_PUZZLE_GENERAL_TIMEOUT);
+
+> +
+
+Not a competition for LOCs, please drop unneeded blank lines here and there.
+
+> +       if (ret < 0) {
+> +               mutex_unlock(&mcu->bus_lock);
+> +               return ret;
+> +       }
+
+> +       if (!mcu->reply) {
+> +               ret = -EFAULT;
+
+Why this error code?
+
+> +               goto exit;
+> +       }
+
+...
+
+> +exit:
+
+Perhaps
+exit_unlock:
+?
+
+> +       mutex_unlock(&mcu->lock);
+> +       return ret;
+
+...
+
+> +       sprintf(mcu->version.version, "v%c.%c%c%c", rb[2], rb[3], rb[4], rb[5]);
+
+Can be '%.3s' for the second part, but it's up to you.
+
+...
+
+> +       sprintf(mcu->version.build_info, "%c%c/%c%c/%c%c%c%c %c%c:%c%c",
+> +               rb[8], rb[9], rb[6], rb[7], rb[2],
+> +               rb[3], rb[4], rb[5], rb[10], rb[11],
+> +               rb[12], rb[13]);
+
+Ditto.
+
+...
+
+> +       sprintf(mcu->version.protocol_version, "v%c.%c%c%c%c%c",
+> +               rb[7], rb[6], rb[5], rb[4], rb[3], rb[2]);
+
+Ditto.
+
+...
+
+> +err:
+
+err_unlock: ?
+
+> +       mutex_unlock(&mcu->lock);
+> +       return ret;
+
+...
+
+> +       /* Response format:
+> +        * (IDX RESPONSE)
+> +        * 0    @
+> +        * 1    O
+> +        * 2    S
+> +        * 3    S
+> +        * ...
+> +        * 5    AC Recovery Status Flag
+> +        * ...
+> +        * 10   Power Loss Recovery
+> +        * ...
+> +        * 19   Power Status (system power on method)
+> +        * 20   XOR checksum
+> +        */
+
+Shouldn't be rather defined data structure for response?
+
+...
+
+> +       size_t reply_size = 0;
+
+Dummy?
+
+...
+
+> +       sprintf(mcu->version.serial_number, "%.*s",
+> +               IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH, resp_buf + 4);
+
+Shouldn't you check for reply_size to be big enough?
+
+...
+
+> +               serial_number_header[2] = 0x0 + (0xC) * sn_counter;
+
+Why capital, why in parentheses?
+
+...
+
+> +               memcpy(serial_number_cmd + 4, serial_number + (0xC) * sn_counter, 0xC);
+
+Ditto.
+
+...
+
+> +               serial_number_cmd[sizeof(serial_number_cmd) - 1] = 0;
+
+You defined X+1 to then use sizeof() -1? Hmm...
+
+...
+
+> +               if (!(resp_buf[0] == IEI_WT61P803_PUZZLE_CMD_HEADER_START &&
+> +                     resp_buf[1] == IEI_WT61P803_PUZZLE_CMD_RESPONSE_OK &&
+> +                     resp_buf[2] == IEI_WT61P803_PUZZLE_CHECKSUM_RESPONSE_OK)) {
+> +                       ret = -EPROTO;
+> +                       goto err;
+> +               }
+
+I think it would be better to define data structure for replies and
+then check would be as simple as memcmp().
+
+...
+
+> +               if (reply_size < 22) {
+
+Looking at the code organisation it seems to me like if (reply_size <
+sizeof(struct_of_this_type_of_reply)).
+
+> +                       ret = -EIO;
+> +                       goto err;
+> +               }
+
+...
+
+> +       mac_address_header[2] = 0x24 + (0x11) * mac_address_idx;
+
+Why in parentheses?
+
+...
+
+> +       /* Concat mac_address_header, mac_address to mac_address_cmd */
+> +       memcpy(mac_address_cmd, mac_address_header, 4);
+> +       memcpy(mac_address_cmd + 4, mac_address, 17);
+
+Yeah, much easier to use specific field names instead of this 4 / + 4, 17, ...
+
+...
+
+> +       ret = snprintf(cmd_buf, sizeof(cmd_buf), "%d", power_loss_recovery_action);
+> +       if (ret < 0)
+> +               return ret;
+
+...
+
+> +       power_loss_recovery_cmd[3] = cmd_buf[0];
+
+One decimal (most significant) digit?! Isn't it a bit ambiguous?
+
+...
+
+> +#define sysfs_container(dev) \
+> +       (container_of((dev)->kobj.parent, struct device, kobj))
+> +
+> +static ssize_t version_show(struct device *dev, struct device_attribute *attr,
+> +                           char *buf)
+> +{
+> +       struct device *dev_container = sysfs_container(dev);
+> +       struct iei_wt61p803_puzzle *mcu = dev_get_drvdata(dev_container);
+> +
+> +       return sprintf(buf, "%s\n", mcu->version.version);
+> +}
+> +static DEVICE_ATTR_RO(version);
+
+I believe we have better approach than this. dev_groups, for example.
+
+...
+
+> +       if ((int)count != IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH + 1)
+> +               return -EINVAL;
+
+You need to revisit all of these strange castings here and there. It
+should be really rear to have explicit castings in C.
+
+...
+
+> +       memcpy(serial_number, (unsigned char *)buf, IEI_WT61P803_PUZZLE_VERSION_SN_LENGTH);
+
+This casting is not need. Basically any casting from or to void * is not needed.
+
+...
+
+> +       dev_info(dev, "Driver baud rate: %d", baud);
+
+Why being so noisy, how does it help user? Doesn't serdev has a
+facility to show this rather basic stuff?
+
+...
+
+> +       dev_info(dev, "MCU version: %s", mcu->version.version);
+> +       dev_info(dev, "MCU firmware build info: %s", mcu->version.build_info);
+> +       dev_info(dev, "MCU in bootloader mode: %s",
+> +                mcu->version.bootloader_mode ? "true" : "false");
+> +       dev_info(dev, "MCU protocol version: %s", mcu->version.protocol_version);
+
+How all of this can be useful for *working* case?
+
+...
+
+> +       ret = iei_wt61p803_puzzle_sysfs_create(dev, mcu);
+
+No check?
+
+...
+
+Have I missed ABI documentation?
+
+-- 
+With Best Regards,
+Andy Shevchenko
