@@ -2,178 +2,420 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id F301929957C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:36:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 4D48A299583
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:37:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790041AbgJZSgY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:36:24 -0400
-Received: from linux.microsoft.com ([13.77.154.182]:38712 "EHLO
-        linux.microsoft.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1790032AbgJZSgX (ORCPT
+        id S1790081AbgJZShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:37:13 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:33255 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1790047AbgJZShK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:36:23 -0400
-Received: from [192.168.0.104] (c-73-42-176-67.hsd1.wa.comcast.net [73.42.176.67])
-        by linux.microsoft.com (Postfix) with ESMTPSA id 728F720B4905;
-        Mon, 26 Oct 2020 11:36:21 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 728F720B4905
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-        s=default; t=1603737382;
-        bh=8qHkrnzaEbS4RRTrIwve8nZUA9/BuXPOXtM1phzHgsU=;
-        h=Subject:To:Cc:References:From:Date:In-Reply-To:From;
-        b=GW0lo+xiMDmJ98rYQ6xS5lHJOMJVT3p/QXPfU/3ZtAMyS5Hymipt/pjt6MBEi6mol
-         YQRenmZ+7inoqVOZPno0JLTSIh1iOiYTAvAvNl8BQihiUcDNA1KncN2Rt8SLfCQDo5
-         GnhbSdAGcWPGayFc5obIU/mAK9iC36KgeA4q/LJY=
-Subject: Re: [PATCH v7 1/4] powerpc: Refactor kexec functions to move arch
- independent code to kernel
-To:     Thiago Jung Bauermann <bauerman@linux.ibm.com>
-Cc:     Mimi Zohar <zohar@linux.ibm.com>, robh@kernel.org,
-        gregkh@linuxfoundation.org, james.morse@arm.com,
-        catalin.marinas@arm.com, sashal@kernel.org, will@kernel.org,
-        mpe@ellerman.id.au, benh@kernel.crashing.org, paulus@samba.org,
-        robh+dt@kernel.org, frowand.list@gmail.com,
-        vincenzo.frascino@arm.com, mark.rutland@arm.com,
-        dmitry.kasatkin@gmail.com, jmorris@namei.org, serge@hallyn.com,
-        pasha.tatashin@soleen.com, allison@lohutok.net,
-        kstewart@linuxfoundation.org, takahiro.akashi@linaro.org,
-        tglx@linutronix.de, masahiroy@kernel.org, bhsharma@redhat.com,
-        mbrugger@suse.com, hsinyi@chromium.org, tao.li@vivo.com,
-        christophe.leroy@c-s.fr, linux-integrity@vger.kernel.org,
-        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
-        prsriva@linux.microsoft.com, balajib@linux.microsoft.com
-References: <20200930205941.1576-1-nramas@linux.microsoft.com>
- <20200930205941.1576-2-nramas@linux.microsoft.com>
- <bfaadaffafa3b8c12fce7e8491ea77e22a5821a8.camel@linux.ibm.com>
- <81c4a9ce-c363-a87a-06de-4a8729702b97@linux.microsoft.com>
- <a6c3e3ecb5c1c6f35b747f1ea4d8261667f9a376.camel@linux.ibm.com>
- <af13db86-09c1-db12-330e-57e24bd07b9a@linux.microsoft.com>
- <87v9f1eh8t.fsf@morokweng.localdomain>
-From:   Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
-Message-ID: <7b6dce85-983e-c344-4fb1-da103cf3dfb3@linux.microsoft.com>
-Date:   Mon, 26 Oct 2020 11:36:20 -0700
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        Mon, 26 Oct 2020 14:37:10 -0400
+Received: by mail-pl1-f194.google.com with SMTP id b19so5158454pld.0;
+        Mon, 26 Oct 2020 11:37:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=KNb3aa4/7lLeB65oO/Y1tHmkRQneZk5eatkdpCxWGSo=;
+        b=aj/PygjzPPH0eEMElWirl46OqLcmYxzl8HbFFoGlFMLQPVuzA8iIscKygl34znPmH/
+         1EBK2eLHWc2QzAwLBoQHQ1puSmrjl1gTco9FR9bxk4Bh0G9aNVs1qrSfrAsUdyrOikqK
+         tcZQ+1OUtBV0oonjHFpL7oJRfIWrGNBa/2PKgiHkBoXHPHY4d/yOGvCpYGaXm12KVfDI
+         1Y/d2q28/hJEGSZjwFfUedDn/i/AtpwhSWeuF0hFszACXwjQ/6enTgzBKjRLeIKkcIgK
+         2701w6qA2VwOVqdvvO+c3m2sFGFAfJTZf724++fEYpTUFW7M7RO5cUAv8BJkW+331/VA
+         8WRw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=KNb3aa4/7lLeB65oO/Y1tHmkRQneZk5eatkdpCxWGSo=;
+        b=X1BScwV+1NIlGig/JIbqAZxTDKlhlBypchRfqeQzyIAugmDVIAHZBVPk6B/DbyfPtj
+         Wb5ncdHizOswaYgn4lMDTeSXl5v6VHemg/iW3AVbauLp6GfPxoeQ9JkkOMOacqYut7nX
+         qxBf9k3Ep9OYH3ts6h+pA1kDNmr1Gv+lAsLfPS5vDPAhKObGPi2QcMgs7HS0QdRoScd8
+         gBLzHDH9WtcmoDhRzGcWj+SMh86u3xNtGXZl0mFevVyZ/j+IuWzIqc09TaFyyQxkUCWP
+         lJjz8pli0TRR2RY5sAVT5MjuU2taYH5ylMs6bURpGonyEgRrNCKsUuVC0N6rsrMjZ7o+
+         s/FQ==
+X-Gm-Message-State: AOAM531zZ0BAAPXdpDO+SJORs/GoHxI+5/zKMjNN6Z+4+yIXvIbW420m
+        ZgnFRnJV7JsrodvYn3JDDFI=
+X-Google-Smtp-Source: ABdhPJwp3A//wWV0Z2sXb6ZWGjPnHReWlL48OvnbvrCVSuAef2MnphrN+LQ4bd3ENJu7WIpIR8zmjQ==
+X-Received: by 2002:a17:902:8c88:b029:d5:ffe1:6653 with SMTP id t8-20020a1709028c88b02900d5ffe16653mr16386997plo.22.1603737427679;
+        Mon, 26 Oct 2020 11:37:07 -0700 (PDT)
+Received: from arpitha-Inspiron-7570.lan ([106.51.240.100])
+        by smtp.gmail.com with ESMTPSA id s23sm11247799pgl.47.2020.10.26.11.37.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 11:37:06 -0700 (PDT)
+From:   Arpitha Raghunandan <98.arpi@gmail.com>
+To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
+        elver@google.com, yzaikin@google.com, tytso@mit.edu,
+        adilger.kernel@dilger.ca
+Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
+        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
+        linux-kernel@vger.kernel.org,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Subject: [PATCH v3 2/2] fs: ext4: Modify inode-test.c to use KUnit parameterized testing feature
+Date:   Tue, 27 Oct 2020 00:06:39 +0530
+Message-Id: <20201026183639.82883-1-98.arpi@gmail.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
+References: <20201026183523.82749-1-98.arpi@gmail.com>
 MIME-Version: 1.0
-In-Reply-To: <87v9f1eh8t.fsf@morokweng.localdomain>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/22/20 8:46 PM, Thiago Jung Bauermann wrote:
+Modify fs/ext4/inode-test.c to use the parameterized testing
+feature of KUnit.
 
-Hi Thiago,
+Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+---
+Changes v2->v3:
+- Marked hardcoded test data const
+- Modification based on latest implementation of KUnit parameterized testing
+Changes v1->v2:
+- Modification based on latest implementation of KUnit parameterized testing
 
-> 
-> Lakshmi Ramasubramanian <nramas@linux.microsoft.com> writes:
-> 
->> On 10/20/20 8:17 PM, Mimi Zohar wrote:
->>> On Tue, 2020-10-20 at 19:25 -0700, Lakshmi Ramasubramanian wrote:
->>>> On 10/20/20 1:00 PM, Mimi Zohar wrote:
->>>>> Hi Lakshmi,
->>>>>
->>>>> On Wed, 2020-09-30 at 13:59 -0700, Lakshmi Ramasubramanian wrote:
->>>>>> The functions remove_ima_buffer() and delete_fdt_mem_rsv() that handle
->>>>>> carrying forward the IMA measurement logs on kexec for powerpc do not
->>>>>> have architecture specific code, but they are currently defined for
->>>>>> powerpc only.
->>>>>>
->>>>>> remove_ima_buffer() and delete_fdt_mem_rsv() are used to remove
->>>>>> the IMA log entry from the device tree and free the memory reserved
->>>>>> for the log. These functions need to be defined even if the current
->>>>>> kernel does not support carrying forward IMA log across kexec since
->>>>>> the previous kernel could have supported that and therefore the current
->>>>>> kernel needs to free the allocation.
->>>>>>
->>>>>> Rename remove_ima_buffer() to remove_ima_kexec_buffer().
->>>>>> Define remove_ima_kexec_buffer() and delete_fdt_mem_rsv() in kernel.
->>>>>> A later patch in this series will use these functions to free
->>>>>> the allocation, if any, made by the previous kernel for ARM64.
->>>>>>
->>>>>> Define FDT_PROP_IMA_KEXEC_BUFFER for the chosen node, namely
->>>>>> "linux,ima-kexec-buffer", that is added to the DTB to hold
->>>>>> the address and the size of the memory reserved to carry
->>>>>> the IMA measurement log.
->>>>>
->>>>>> Co-developed-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>>>> Signed-off-by: Prakhar Srivastava <prsriva@linux.microsoft.com>
->>>>>> Signed-off-by: Lakshmi Ramasubramanian <nramas@linux.microsoft.com>
->>>>>> Reported-by: kernel test robot <lkp@intel.com> error: implicit declaration of function 'delete_fdt_mem_rsv' [-Werror,-Wimplicit-function-declaration]
->>>>>
->>>>> Much better!  This version limits unnecessarily changing the existing
->>>>> code to adding a couple of debugging statements, but that looks to be
->>>>> about it.
->>>> Yes Mimi - that's correct.
->>>>
->>>>>
->>>>> Based on Chester Lin's "ima_arch" support for arm64 discussion, the IMA generic
->>>>> EFI support will be defined in ima/ima-efi.c.  Similarly, I think it would make sense to put the generic device tree support in ima/ima_kexec_fdt.c or ima/ima_fdt.c, as opposed to kernel/.  (Refer to my comments on 2/4 about the new file named ima_kexec_fdt.c.)
->>>>
->>>> The functions remove_ima_kexec_buffer() and delete_fdt_mem_rsv(), which
->>>> are defined in kernel/ima_kexec.c and kernel/kexec_file_fdt.c
->>>> respectively, are needed even when CONFIG_IMA is not defined. These
->>>> functions need to be called by the current kernel to free the ima kexec
->>>> buffer resources allocated by the previous kernel. This is the reason,
->>>> these functions are defined under "kernel" instead of
->>>> "security/integrity/ima".
->>>>
->>>> If there is a better location to move the above C files, please let me
->>>> know. I'll move them.
->>> Freeing the previous kernel measurement list is currently called from
->>> ima_load_kexec_buffer(), only after the measurement list has been
->>> restored.  The only other time the memory is freed is when the
->>> allocated memory size isn't sufficient to hold the measurement list,
->>> which could happen if there is a delay between loading and executing
->>> the kexec.
->>>
->>
->> There are two "free" operations we need to perform with respect to ima buffer on
->> kexec:
->>
->> 1, The ima_free_kexec_buffer() called from ima_load_kexec_buffer() - the one you
->> have stated above.
->>
->> Here we remove the "ima buffer" node from the "OF" tree and free the memory
->> pages that were allocated for the measurement list.
->>
->> This one is already present in ima and there's no change in that in my patches.
->>
->> 2, The other one is remove_ima_kexec_buffer() called from setup_ima_buffer()
->> defined in "arch/powerpc/kexec/ima.c"
->>
->>   This function removes the "ima buffer" node from the "FDT" and also frees the
->> physical memory reserved for the "ima measurement list" by the previous kernel.
->>
->>   This "free" operation needs to be performed even if the current kernel does not
->> support IMA kexec since the previous kernel could have passed the IMA
->> measurement list (in FDT and reserved physical memory).
->>
->> For this reason, remove_ima_kexec_buffer() cannot be defined in "ima" but some
->> other place which will be built even if ima is not enabled. I chose to define
->> this function in "kernel" since that is guaranteed to be always built.
->>
->> thanks,
->>   -lakshmi
-> 
-> That is true. I believe a more fitting place for these functions is
-> drivers/of/fdt.c rather than these new files in kernel/. Both CONFIG_PPC
-> and CONFIG_ARM64 select CONFIG_OF and CONFIG_OF_FLATTREE (indirectly,
-> via CONFIG_OF_EARLY_FLATTREE) so they will both build that file.
-> 
+ fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
+ 1 file changed, 158 insertions(+), 156 deletions(-)
 
-I moved the above mentioned functions to drivers/of/fdt.c => it works.
-
-But I am not sure if "drivers/of" is the right place - this driver is 
-handling data from firmware and building FDT. I do not see any kexec 
-related operations being handled by this driver in the current 
-implementation.
-
-Also, being a driver can it be loaded/unloaded on-demand? If yes, it may 
-not be available when "ima kexec" calls are needed.
-
-@Rob Herring - what do you think?
-
-thanks,
-  -lakshmi
+diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
+index d62d802c9c12..3a449623b775 100644
+--- a/fs/ext4/inode-test.c
++++ b/fs/ext4/inode-test.c
+@@ -80,6 +80,139 @@ struct timestamp_expectation {
+ 	bool lower_bound;
+ };
+ 
++static const struct timestamp_expectation test_data[] = {
++	{
++		.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits = 0,
++		.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 0,
++		.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 0,
++		.expected = {0LL, 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 0,
++		.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 1,
++		.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
++		.msb_set = true,
++		.lower_bound = true,
++		.extra_bits =  2,
++		.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
++		.msb_set = true,
++		.lower_bound = false,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 2,
++		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 6,
++		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 0xFFFFFFFF,
++		.expected = {.tv_sec = 0x300000000LL,
++			     .tv_nsec = MAX_NANOSECONDS},
++	},
++
++	{
++		.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++		.msb_set = false,
++		.lower_bound = true,
++		.extra_bits = 3,
++		.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
++	},
++
++	{
++		.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
++		.msb_set = false,
++		.lower_bound = false,
++		.extra_bits = 3,
++		.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
++	}
++};
++
++KUNIT_PARAM_GENERATOR(ext4_inode, test_data);
++
+ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+ {
+ 	if (test->msb_set) {
+@@ -101,166 +234,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
+  */
+ static void inode_test_xtimestamp_decoding(struct kunit *test)
+ {
+-	const struct timestamp_expectation test_data[] = {
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 0,
+-			.expected = {0LL, 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 0,
+-			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 1,
+-			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = true,
+-			.extra_bits =  2,
+-			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
+-			.msb_set = true,
+-			.lower_bound = false,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 2,
+-			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 6,
+-			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 0xFFFFFFFF,
+-			.expected = {.tv_sec = 0x300000000LL,
+-				     .tv_nsec = MAX_NANOSECONDS},
+-		},
+-
+-		{
+-			.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = true,
+-			.extra_bits = 3,
+-			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
+-		},
+-
+-		{
+-			.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
+-			.msb_set = false,
+-			.lower_bound = false,
+-			.extra_bits = 3,
+-			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
+-		}
+-	};
+-
+ 	struct timespec64 timestamp;
+-	int i;
+-
+-	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
+-		timestamp.tv_sec = get_32bit_time(&test_data[i]);
+-		ext4_decode_extra_time(&timestamp,
+-				       cpu_to_le32(test_data[i].extra_bits));
+-
+-		KUNIT_EXPECT_EQ_MSG(test,
+-				    test_data[i].expected.tv_sec,
+-				    timestamp.tv_sec,
+-				    CASE_NAME_FORMAT,
+-				    test_data[i].test_case_name,
+-				    test_data[i].msb_set,
+-				    test_data[i].lower_bound,
+-				    test_data[i].extra_bits);
+-		KUNIT_EXPECT_EQ_MSG(test,
+-				    test_data[i].expected.tv_nsec,
+-				    timestamp.tv_nsec,
+-				    CASE_NAME_FORMAT,
+-				    test_data[i].test_case_name,
+-				    test_data[i].msb_set,
+-				    test_data[i].lower_bound,
+-				    test_data[i].extra_bits);
+-	}
++
++	struct timestamp_expectation *test_param =
++			(struct timestamp_expectation *)(test->param_values);
++
++	timestamp.tv_sec = get_32bit_time(test_param);
++	ext4_decode_extra_time(&timestamp,
++			       cpu_to_le32(test_param->extra_bits));
++
++	KUNIT_EXPECT_EQ_MSG(test,
++			    test_param->expected.tv_sec,
++			    timestamp.tv_sec,
++			    CASE_NAME_FORMAT,
++			    test_param->test_case_name,
++			    test_param->msb_set,
++			    test_param->lower_bound,
++			    test_param->extra_bits);
++	KUNIT_EXPECT_EQ_MSG(test,
++			    test_param->expected.tv_nsec,
++			    timestamp.tv_nsec,
++			    CASE_NAME_FORMAT,
++			    test_param->test_case_name,
++			    test_param->msb_set,
++			    test_param->lower_bound,
++			    test_param->extra_bits);
+ }
+ 
+ static struct kunit_case ext4_inode_test_cases[] = {
+-	KUNIT_CASE(inode_test_xtimestamp_decoding),
++	KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
+ 	{}
+ };
+ 
+-- 
+2.25.1
 
