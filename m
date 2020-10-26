@@ -2,176 +2,105 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9C8D429910D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:33:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F30C8299124
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:36:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783943AbgJZPdt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:33:49 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:40057 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769833AbgJZPds (ORCPT
+        id S1784019AbgJZPgV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:36:21 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:56604 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1783972AbgJZPgU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:33:48 -0400
-Received: by mail-oi1-f195.google.com with SMTP id m128so10869797oig.7;
-        Mon, 26 Oct 2020 08:33:46 -0700 (PDT)
+        Mon, 26 Oct 2020 11:36:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603726578;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=4T8J9h8aHDWVKUpT3UKKBDgLYCTKNVpvy5H15xGKCd0=;
+        b=ImZQLNz6+xCVSx0n+riRa+PQUkmnHxPu3MxofY/9K9tmozIMRx8VRBkyx+KQce6qjZpGxs
+        5IYOwP9sWhrTg8ibHv2QA5bAnUfjrp4SUNzTyFeOWGKH5pCLn6QHni9Yl32WeGZ73iE+GN
+        UMpfnePiN7XQKIfIin1iVcYhVIcO7PI=
+Received: from mail-ed1-f70.google.com (mail-ed1-f70.google.com
+ [209.85.208.70]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-128-Pwr4L6NJOg2jbONSADGgNQ-1; Mon, 26 Oct 2020 11:36:16 -0400
+X-MC-Unique: Pwr4L6NJOg2jbONSADGgNQ-1
+Received: by mail-ed1-f70.google.com with SMTP id be19so4547577edb.22
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:36:16 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Npr8JFXnNVuOd5JBeJSU1d/jU6NcSqcvSBeX3MQnMCw=;
-        b=sH8yJaENEr9zRQqaDTeQATgawIviJucH7DkUXXsgh8DUOOgsVqXmevMa7ZuxmlFGmy
-         1ohrWmb9/tj16yPG2s5pYTUROLtqGX/V10vi7a47Jgx1G2P18lLhl/NRZoc2dtnuTq9V
-         iVyOzl5cucanZmyyOk6EuYGtLfig1zg1LplGrstjAUprL4QMyZxP9eeOtIL4T9KcASBy
-         dPAqu+c9EVn3dbX04FohmSHSW+og8a7/byFE3+GVynRI9ZrKm5Ptkr7U8K3dpMPA10ky
-         4e7T0lFGmuvfJdjGN0eTaDtE7O6PF/pANZLirGwbTY+4ntfDrCUB2bj+Nk2Z+8MEGODV
-         J7Aw==
-X-Gm-Message-State: AOAM530FuyZkAkAPmr4PIiuMp5gaI7duxLyjIIOJe72FXaJ7sHD2h1pZ
-        tIVjAA9nkCzA72riuBn4rTS73gPBeriHdAJbV4Q=
-X-Google-Smtp-Source: ABdhPJwLqZF2nUpKrvhcxyI34nr4X7bBy8icWsJGObwdQ8i/5k3Ztdf2PJq2vrTAVMJP3VVhuKLd7HTBbICac/wUeIE=
-X-Received: by 2002:aca:c490:: with SMTP id u138mr13399294oif.54.1603726426441;
- Mon, 26 Oct 2020 08:33:46 -0700 (PDT)
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=4T8J9h8aHDWVKUpT3UKKBDgLYCTKNVpvy5H15xGKCd0=;
+        b=pNg/W5m9qqD/qMwnEtaZaCNnVYGQj0/cvh9QT3pQaZKAw/PfHn/8dTYFME/BE4vLn0
+         U+OdJ7M+v3MQ10/CIr3yx5XSCm+VjWGVLpEjWsFX8M+V9FA3HPaIzSCpFn8TCB3Gcnfy
+         fH/jo2kUehxRj1ZaUIM3ZvIQlaV4pw6lJOYtcscR5RXWnm1HcqPh3TBRIGHw0XMqkxzH
+         Cs7AnBF/aT/ZuF1V2KeGqUFBHLZ3AqVzI2xaon/Fneuinjx6LZlTG+adWH5a5nqztJlt
+         rF6UaLzhIjRTIemooYTNLnkK2m6EIPF2rqSTW7E0D2WF8BCPl4LsrEuH6Ywr6oXkfy3O
+         Rk2Q==
+X-Gm-Message-State: AOAM531bqF7tttraxjS1IOliRX15sCDAT/VziOlAgh6gd+VQY0/wYuDK
+        9IPlivwrXVPhqx0cbXNkm24AZDXOIymgTUeQ7HdcqwHH9U/+C9io2Eu+tqbsQz8JKy+qwaXtAHn
+        h2EphwobwPwgjIocCvycqavks
+X-Received: by 2002:a05:6402:1615:: with SMTP id f21mr16888468edv.257.1603726575232;
+        Mon, 26 Oct 2020 08:36:15 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJzRiV17XlEk9Alol3IXbaQKVZJaHSEnTXtXAKR+AVqFgAOQj00dGvz+dxPWGkm6yB+z64/rRA==
+X-Received: by 2002:a05:6402:1615:: with SMTP id f21mr16888443edv.257.1603726575039;
+        Mon, 26 Oct 2020 08:36:15 -0700 (PDT)
+Received: from x1.localdomain (2001-1c00-0c0c-fe00-d2ea-f29d-118b-24dc.cable.dynamic.v6.ziggo.nl. [2001:1c00:c0c:fe00:d2ea:f29d:118b:24dc])
+        by smtp.gmail.com with ESMTPSA id rl1sm6136899ejb.36.2020.10.26.08.36.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 08:36:14 -0700 (PDT)
+Subject: Re: [PATCH v6] Introduce support for Systems Management Driver over
+ WMI for Dell Systems
+To:     "Limonciello, Mario" <Mario.Limonciello@dell.com>,
+        Divya Bharathi <divya27392@gmail.com>,
+        "dvhart@infradead.org" <dvhart@infradead.org>
+Cc:     LKML <linux-kernel@vger.kernel.org>,
+        "platform-driver-x86@vger.kernel.org" 
+        <platform-driver-x86@vger.kernel.org>,
+        "Bharathi, Divya" <Divya.Bharathi@Dell.com>,
+        Andy Shevchenko <andy.shevchenko@gmail.com>,
+        mark gross <mgross@linux.intel.com>,
+        "Ksr, Prasanth" <Prasanth.Ksr@dell.com>
+References: <20201006082618.209287-1-divya.bharathi@dell.com>
+ <101db8e3-70f0-4e85-b4b9-008995939b1a@redhat.com>
+ <DM6PR19MB2636A7CAF82D8CB7DEEF7B2DFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
+From:   Hans de Goede <hdegoede@redhat.com>
+Message-ID: <4e415aea-d855-e8a5-0b61-785b67efeb59@redhat.com>
+Date:   Mon, 26 Oct 2020 16:36:13 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.3.1
 MIME-Version: 1.0
-References: <20200916061500.1970090-1-hch@lst.de> <20200916061500.1970090-7-hch@lst.de>
-In-Reply-To: <20200916061500.1970090-7-hch@lst.de>
-From:   Geert Uytterhoeven <geert@linux-m68k.org>
-Date:   Mon, 26 Oct 2020 16:33:34 +0100
-Message-ID: <CAMuHMdX9c0va_EqBw1wfD_JiVPpjiBPLzE88EmLGVLfVhECugw@mail.gmail.com>
-Subject: Re: [PATCH 6/6] dma-mapping: introduce DMA range map, supplanting dma_pfn_offset
-To:     Christoph Hellwig <hch@lst.de>,
-        Jim Quinlan <james.quinlan@broadcom.com>
-Cc:     Linux IOMMU <iommu@lists.linux-foundation.org>,
-        Russell King <linux@armlinux.org.uk>,
-        Santosh Shilimkar <ssantosh@kernel.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Robin Murphy <robin.murphy@arm.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Frank Rowand <frowand.list@gmail.com>,
-        Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        "open list:REMOTE PROCESSOR (REMOTEPROC) SUBSYSTEM" 
-        <linux-remoteproc@vger.kernel.org>,
-        USB list <linux-usb@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-sh list <linux-sh@vger.kernel.org>,
-        linux-pci <linux-pci@vger.kernel.org>,
-        ACPI Devel Maling List <linux-acpi@vger.kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS" 
-        <devicetree@vger.kernel.org>,
-        Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-        Marek Vasut <marek.vasut+renesas@gmail.com>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <DM6PR19MB2636A7CAF82D8CB7DEEF7B2DFA190@DM6PR19MB2636.namprd19.prod.outlook.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Christoph, Jim,
+Hi,
 
-On Wed, Sep 16, 2020 at 8:30 AM Christoph Hellwig <hch@lst.de> wrote:
-> From: Jim Quinlan <james.quinlan@broadcom.com>
->
-> The new field 'dma_range_map' in struct device is used to facilitate the
-> use of single or multiple offsets between mapping regions of cpu addrs and
-> dma addrs.  It subsumes the role of "dev->dma_pfn_offset" which was only
-> capable of holding a single uniform offset and had no region bounds
-> checking.
->
-> The function of_dma_get_range() has been modified so that it takes a single
-> argument -- the device node -- and returns a map, NULL, or an error code.
-> The map is an array that holds the information regarding the DMA regions.
-> Each range entry contains the address offset, the cpu_start address, the
-> dma_start address, and the size of the region.
->
-> of_dma_configure() is the typical manner to set range offsets but there are
-> a number of ad hoc assignments to "dev->dma_pfn_offset" in the kernel
-> driver code.  These cases now invoke the function
-> dma_direct_set_offset(dev, cpu_addr, dma_addr, size).
->
-> Signed-off-by: Jim Quinlan <james.quinlan@broadcom.com>
-> [hch: various interface cleanups]
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> Tested-by: Nathan Chancellor <natechancellor@gmail.com>
+On 10/26/20 4:25 PM, Limonciello, Mario wrote:
+>>> +
+>>> +	print_hex_dump_bytes("set attribute data: ", DUMP_PREFIX_NONE, buffer,
+>> buffer_size);
+>>
+>> This seems to be a debugging left-over?
+> 
+> Yes it was for debugging, but its configurable to turn on by dynamic
+> debug as I can tell.  Is that not correct?
 
-Thanks for your patch, which is now commit e0d072782c734d27
-("dma-mapping: introduce DMA range map, supplanting dma_pfn_offset") in
-v5.10-rc1, and to which I have bisected a PCIe failure on R-Car M2-W
-(r8a7791/koelsch).
+Since it does not have debug in its name I sorta assumed it would
+always do the print. But you are right, this is a shorthand macro
+for print_hex_dump_debug() (which takes a few more arguments), so
+this only dumps the buffer when debugging is enabled.
 
-The first PCI host bridge, containing USB, probes fine:
+IOW keeping this "as is" is fine, sorry for the noise.
 
- pci-rcar-gen2 ee090000.pci: host bridge /soc/pci@ee090000 ranges:
- pci-rcar-gen2 ee090000.pci:      MEM 0x00ee080000..0x00ee08ffff -> 0x00ee080000
- pci-rcar-gen2 ee090000.pci: PCI: revision 11
- pci-rcar-gen2 ee090000.pci: PCI host bridge to bus 0000:00
- pci_bus 0000:00: root bus resource [bus 00]
- pci_bus 0000:00: root bus resource [mem 0xee080000-0xee08ffff]
- pci 0000:00:00.0: [1033:0000] type 00 class 0x060000
- pci 0000:00:00.0: reg 0x10: [mem 0xee090800-0xee090bff]
- pci 0000:00:00.0: reg 0x14: [mem 0x40000000-0x7fffffff pref]
- pci 0000:00:01.0: [1033:0035] type 00 class 0x0c0310
- pci 0000:00:01.0: reg 0x10: [mem 0x00000000-0x00000fff]
- pci 0000:00:01.0: supports D1 D2
- pci 0000:00:01.0: PME# supported from D0 D1 D2 D3hot
- pci 0000:00:02.0: [1033:00e0] type 00 class 0x0c0320
- pci 0000:00:02.0: reg 0x10: [mem 0x00000000-0x000000ff]
- pci 0000:00:02.0: supports D1 D2
- pci 0000:00:02.0: PME# supported from D0 D1 D2 D3hot
- PCI: bus0: Fast back to back transfers disabled
- pci 0000:00:01.0: BAR 0: assigned [mem 0xee080000-0xee080fff]
- pci 0000:00:02.0: BAR 0: assigned [mem 0xee081000-0xee0810ff]
- pci 0000:00:01.0: enabling device (0140 -> 0142)
- pci 0000:00:02.0: enabling device (0140 -> 0142)
+Regards,
 
-The second PCI host bridge, connected to an (empty) PCIe slot, fails:
+Has
 
- pci-rcar-gen2 ee0d0000.pci: host bridge /soc/pci@ee0d0000 ranges:
- pci-rcar-gen2 ee0d0000.pci:      MEM 0x00ee0c0000..0x00ee0cffff -> 0x00ee0c0000
- pci-rcar-gen2 ee0d0000.pci: PCI: revision 11
- pci-rcar-gen2 ee0d0000.pci: PCI host bridge to bus 0001:01
- pci_bus 0001:01: root bus resource [bus 01]
- pci_bus 0001:01: root bus resource [mem 0xee0c0000-0xee0cffff]
- pci 0001:01:00.0: [1033:0000] type 00 class 0x060000
- pci 0001:01:00.0: reg 0x10: [mem 0xee0d0800-0xee0d0bff]
- pci 0001:01:00.0: reg 0x14: [mem 0x40000000-0x7fffffff pref]
- pci 0001:01:01.0: [1033:0035] type 00 class 0x0c0310
- pci 0001:01:01.0: reg 0x10: [mem 0x00000000-0x00000fff]
- pci 0001:01:01.0: supports D1 D2
- pci 0001:01:01.0: PME# supported from D0 D1 D2 D3hot
- pci 0001:01:02.0: [1033:00e0] type 00 class 0x0c0320
- pci 0001:01:02.0: reg 0x10: [mem 0x00000000-0x000000ff]
- pci 0001:01:02.0: supports D1 D2
- pci 0001:01:02.0: PME# supported from D0 D1 D2 D3hot
- PCI: bus1: Fast back to back transfers disabled
- pci 0001:01:01.0: BAR 0: assigned [mem 0xee0c0000-0xee0c0fff]
- pci 0001:01:02.0: BAR 0: assigned [mem 0xee0c1000-0xee0c10ff]
- pci 0001:01:01.0: enabling device (0140 -> 0142)
- pci 0001:01:02.0: enabling device (0140 -> 0142)
--rcar-pcie fe000000.pcie: host bridge /soc/pcie@fe000000 ranges:
--rcar-pcie fe000000.pcie:       IO 0x00fe100000..0x00fe1fffff -> 0x0000000000
--rcar-pcie fe000000.pcie:      MEM 0x00fe200000..0x00fe3fffff -> 0x00fe200000
--rcar-pcie fe000000.pcie:      MEM 0x0030000000..0x0037ffffff -> 0x0030000000
--rcar-pcie fe000000.pcie:      MEM 0x0038000000..0x003fffffff -> 0x0038000000
--rcar-pcie fe000000.pcie:   IB MEM 0x0040000000..0x00bfffffff -> 0x0040000000
--rcar-pcie fe000000.pcie:   IB MEM 0x0200000000..0x02ffffffff -> 0x0200000000
--rcar-pcie fe000000.pcie: PCIe link down
-+rcar-pcie fe000000.pcie: Adjusted size 0x0 invalid
-+rcar-pcie: probe of fe000000.pcie failed with error -22
-
-I've posted a patch "[PATCH] dma-mapping: Fix 32-bit overflow with
-CONFIG_ARM_LPAE=n"
-(https://lore.kernel.org/linux-arm-kernel/20201026152755.3738293-1-geert+renesas@glider.be/).
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
-
---
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-
-In personal conversations with technical people, I call myself a hacker. But
-when I'm talking to journalists I just say "programmer" or something like that.
-                                -- Linus Torvalds
