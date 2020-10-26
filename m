@@ -2,35 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CBBA3299B48
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5F7DB299B44
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409061AbgJZXuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:50:15 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47964 "EHLO mail.kernel.org"
+        id S2409047AbgJZXuL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:50:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:48238 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408786AbgJZXtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:42 -0400
+        id S2408796AbgJZXts (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:48 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 606C921741;
-        Mon, 26 Oct 2020 23:49:41 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 87AC9222D9;
+        Mon, 26 Oct 2020 23:49:47 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756182;
-        bh=6DudW/JqqtwV4WRtfvdDoaRR7NIbaoqPJeFKlaMc93I=;
+        s=default; t=1603756188;
+        bh=W2bEeiQAfoQioyqsnBUOJWlPraJVYRnpniBcf1u+A3w=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Y/gfptYP3XSBhaRyTH+N6Z5jNDtuE4YPNxTjwOP7Cyy6cmSQZ6Td3GrnjYnSeCkTm
-         hze5VwN425aCc/F7w/UwquL0j3tGiJDA+zKS81sdbig1B+JHpceJGCwDS42IQ83YJy
-         NIq//HYBLXfpcRK0XwlyOAu859Nz0O9MWkvft2xI=
+        b=XVxJQetIutCf6pWSF4NWuYMWmcHldexAM1Q0djcfge4o1TRc9LaMhg9g2kQgGjEBZ
+         K2/Mjt6MGpCAdiohMYKePXUtNxL/xum794pfFH7Etjnc4GMXWE6sYg2MapDDcrlnYc
+         FdXthSkmLZE/JU5R9q8tl54HFeTo7l49ARaVmOsc=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Pavel Begunkov <asml.silence@gmail.com>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
-        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 029/147] io_uring: don't set COMP_LOCKED if won't put
-Date:   Mon, 26 Oct 2020 19:47:07 -0400
-Message-Id: <20201026234905.1022767-29-sashal@kernel.org>
+Cc:     Tom Rix <trix@redhat.com>, Arnd Bergmann <arnd@arndb.de>,
+        Sam Ravnborg <sam@ravnborg.org>,
+        Sasha Levin <sashal@kernel.org>,
+        dri-devel@lists.freedesktop.org, linux-fbdev@vger.kernel.org,
+        clang-built-linux@googlegroups.com
+Subject: [PATCH AUTOSEL 5.9 034/147] video: fbdev: pvr2fb: initialize variables
+Date:   Mon, 26 Oct 2020 19:47:12 -0400
+Message-Id: <20201026234905.1022767-34-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -42,43 +44,47 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Pavel Begunkov <asml.silence@gmail.com>
+From: Tom Rix <trix@redhat.com>
 
-[ Upstream commit 368c5481ae7c6a9719c40984faea35480d9f4872 ]
+[ Upstream commit 8e1ba47c60bcd325fdd097cd76054639155e5d2e ]
 
-__io_kill_linked_timeout() sets REQ_F_COMP_LOCKED for a linked timeout
-even if it can't cancel it, e.g. it's already running. It not only races
-with io_link_timeout_fn() for ->flags field, but also leaves the flag
-set and so io_link_timeout_fn() may find it and decide that it holds the
-lock. Hopefully, the second problem is potential.
+clang static analysis reports this repesentative error
 
-Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+pvr2fb.c:1049:2: warning: 1st function call argument
+  is an uninitialized value [core.CallAndMessage]
+        if (*cable_arg)
+        ^~~~~~~~~~~~~~~
+
+Problem is that cable_arg depends on the input loop to
+set the cable_arg[0].  If it does not, then some random
+value from the stack is used.
+
+A similar problem exists for output_arg.
+
+So initialize cable_arg and output_arg.
+
+Signed-off-by: Tom Rix <trix@redhat.com>
+Acked-by: Arnd Bergmann <arnd@arndb.de>
+Signed-off-by: Sam Ravnborg <sam@ravnborg.org>
+Link: https://patchwork.freedesktop.org/patch/msgid/20200720191845.20115-1-trix@redhat.com
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/io_uring.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/video/fbdev/pvr2fb.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/fs/io_uring.c b/fs/io_uring.c
-index aae0ef2ec34d2..2145cf76a0d6a 100644
---- a/fs/io_uring.c
-+++ b/fs/io_uring.c
-@@ -1614,6 +1614,7 @@ static bool io_link_cancel_timeout(struct io_kiocb *req)
+diff --git a/drivers/video/fbdev/pvr2fb.c b/drivers/video/fbdev/pvr2fb.c
+index 2d9f69b93392a..f4add36cb5f4d 100644
+--- a/drivers/video/fbdev/pvr2fb.c
++++ b/drivers/video/fbdev/pvr2fb.c
+@@ -1028,6 +1028,8 @@ static int __init pvr2fb_setup(char *options)
+ 	if (!options || !*options)
+ 		return 0;
  
- 	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
- 	if (ret != -1) {
-+		req->flags |= REQ_F_COMP_LOCKED;
- 		io_cqring_fill_event(req, -ECANCELED);
- 		io_commit_cqring(ctx);
- 		req->flags &= ~REQ_F_LINK_HEAD;
-@@ -1636,7 +1637,6 @@ static bool __io_kill_linked_timeout(struct io_kiocb *req)
- 		return false;
- 
- 	list_del_init(&link->link_list);
--	link->flags |= REQ_F_COMP_LOCKED;
- 	wake_ev = io_link_cancel_timeout(link);
- 	req->flags &= ~REQ_F_LINK_TIMEOUT;
- 	return wake_ev;
++	cable_arg[0] = output_arg[0] = 0;
++
+ 	while ((this_opt = strsep(&options, ","))) {
+ 		if (!*this_opt)
+ 			continue;
 -- 
 2.25.1
 
