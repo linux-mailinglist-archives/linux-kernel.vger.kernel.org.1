@@ -2,296 +2,142 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 714DF2988E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 87D582988CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:54:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772405AbgJZI6S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:58:18 -0400
-Received: from mail-am6eur05on2070.outbound.protection.outlook.com ([40.107.22.70]:2305
-        "EHLO EUR05-AM6-obe.outbound.protection.outlook.com"
-        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
-        id S1772318AbgJZI6R (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:58:17 -0400
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=IcqBHqdmx61mh4RlyP6xrM5PF2FYzU1xwqwOOGjxtAMIfR7Qh4SpI3EKTByqZonvsuoPx9P6Zy4QNJLAY9hEfu7uQf4UY+jaOBw7OS0NmrgeALn6hnwxl3C3WzDRV+KEDx8HDX7iEXsb7rnHs2xBeg4I0EFOcfAcvr+g0EjSN6MKEToR7fNX5De2LKfhlGZ+cchOUVRux7j8bOC+SbGP/7R2XPWxqf4auwCw4yuBx/YuArpDcrf5NGod30gxhAJ9Lp/Y+Ac3ASG08+i3yJa3oHPlNl3ZlGdwWP5EN61zpk6SULCc2tYep5Yn1oEHwIaHOIL9Wo7rsi3KV24qWi/v9A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epXagXigPH1paH+CGn4/CrEOYtWWFRQR4gjNiGCY7Qg=;
- b=QQIOYPrCZl3JtOIHsuieiWI0MqSWePk3ZRXg3Y2bRULGGUqVLG01a45WsisTNlrnJHOXy7wOuUTjkFzoP+qsAUYD9bR5INgBcvb83q+JIyicT0KiJ839BByyY0KaOt7C35XjoPZKHtm9xKxPlf8H8Sy+XbSE25E4IcJh7xlot5eV3fKpSHJV9zM5zFBfwJo9bHCkiNiba2pQPBP1PiO4DlQukpZDocWIJlC3kQj4tJvk6EeDm1qpPyPR1e5ECI6OE8DKLThsQVCbkF0G1RRgvH49DtUw3hx7zS/cF05LVVnQ+Pvg2QPM5hVCedelJUmepnp1gl6NZhHIXqxdPfyKSA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=epXagXigPH1paH+CGn4/CrEOYtWWFRQR4gjNiGCY7Qg=;
- b=PpSBC4Z4aPoJwop8WN2R2tAo0+6Ch9tU6lgVB/cUaEbdYJpe6Pl5dA1qyMV+j3KKIBuXqSIBrHSngMuiqfOJ2bc5cSgXLaQOFDV+nUH+QprXt591TqgoeUso3JS/Ev6xnHmIjgKzRy77JtRe6IfYrsrw0OT4rMZ62M/WtWVoPBo=
-Authentication-Results: infradead.org; dkim=none (message not signed)
- header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
- by VI1PR04MB5758.eurprd04.prod.outlook.com (2603:10a6:803:e7::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Mon, 26 Oct
- 2020 08:55:37 +0000
-Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
- ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
- 08:55:37 +0000
-From:   Sherry Sun <sherry.sun@nxp.com>
-To:     hch@infradead.org, gregkh@linuxfoundation.org,
-        sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
-        kishon@ti.com, lorenzo.pieralisi@arm.com
-Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-        linux-imx@nxp.com, fugang.duan@nxp.com
-Subject: [PATCH V4 2/2] misc: vop: do not allocate and reassign the used ring
-Date:   Mon, 26 Oct 2020 16:53:35 +0800
-Message-Id: <20201026085335.30048-3-sherry.sun@nxp.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20201026085335.30048-1-sherry.sun@nxp.com>
-References: <20201026085335.30048-1-sherry.sun@nxp.com>
-Content-Type: text/plain
-X-Originating-IP: [119.31.174.71]
-X-ClientProxiedBy: SG2PR0401CA0010.apcprd04.prod.outlook.com
- (2603:1096:3:1::20) To VI1PR04MB4960.eurprd04.prod.outlook.com
- (2603:10a6:803:57::21)
+        id S1772278AbgJZIyM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:54:12 -0400
+Received: from mail-lf1-f68.google.com ([209.85.167.68]:35945 "EHLO
+        mail-lf1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772271AbgJZIyL (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:54:11 -0400
+Received: by mail-lf1-f68.google.com with SMTP id h6so10704470lfj.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:54:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:organization:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=oc9dTdhucISYbXveQ3zQvg8nChQDd969gjMkRh0Lt2k=;
+        b=CgI2FU+dy26y1KkTzCyrbyRg68N/YAkfUNMEAjio63rO3IthrFNWUD/aB76N59oTUy
+         K6KR6fOvFEPjNR3SJArwMjacHKkxzJ7ozU8vcLDO/rYn43vKA3PSylLBoySD166lr526
+         ZbpIaCvHeyD+tKPW81sbkQmcXqJO+UodJJj+99rer7r/qoy6xjgTvF5R3sLug9C/oNsu
+         4vnFLC7RtN/f3iafqCgrSmOxN6NRhombkNB71zRHZ6sRbpc9K/bcyPXPmRnwvdmFwAoh
+         OFVNhhA7IyWFol/28YTFyrAiFQ3ynba+2LNVgjx7P7lz2Jgcs4iGA2r+wv6RRcLFf30G
+         ExMg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:organization
+         :message-id:date:user-agent:mime-version:in-reply-to
+         :content-language:content-transfer-encoding;
+        bh=oc9dTdhucISYbXveQ3zQvg8nChQDd969gjMkRh0Lt2k=;
+        b=WEj+bSZDZlO5TIOFaibyTf9PzB+bgDtjHcLQ6EY9PYX/huDagIG+3UUvz/Bosenvwr
+         j4dyikKs3Xf05+nzjwpvk9wFSkP+Dfac4ol2Fo+FBCO0+vxQBdYFzAoNBv+4chSJPlIb
+         YZZgePOUVW7NomqtNmrUGWC6MO4By2/G862VaDNaq+Uo+KccWi+fzsLJjmYw2AUrJLOM
+         eCJbOA5prQZb0lO/GbfcgErWAF7YntyE7mVnNauVaemAynnLDNn+PEN87MJT+nfpCdjo
+         Oi0lW3WiGRxSng13hRk3ydG/qLoACJb7Ln3kBRu4Oz0u6QMejCy4kLyhIybs6xN1Yobx
+         Griw==
+X-Gm-Message-State: AOAM532dwduMMpnZic6asZP14uyIiET9a8sj5hnAhHdGrmtjegnJNJBB
+        we+Kfq7bMOuqKbovvU+njcGwX76rPTnyPA==
+X-Google-Smtp-Source: ABdhPJxEzXLstjotqX7zYJ9zYzYTqPtrBTFg24Vwq7Pxs2Nmv9jjeA8qBx+V9mjfKjL8wB/VrscV5Q==
+X-Received: by 2002:a19:8607:: with SMTP id i7mr4460797lfd.281.1603702448460;
+        Mon, 26 Oct 2020 01:54:08 -0700 (PDT)
+Received: from [192.168.0.10] (89-109-58-109.dynamic.mts-nn.ru. [89.109.58.109])
+        by smtp.gmail.com with ESMTPSA id o23sm1109902lji.68.2020.10.26.01.54.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 01:54:07 -0700 (PDT)
+Subject: Re: [PATCH v2 05/15] perf session: introduce decompressor into trace
+ reader object
+To:     Jiri Olsa <jolsa@redhat.com>,
+        Alexey Budankov <alexey.budankov@linux.intel.com>
+Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
+        Namhyung Kim <namhyung@kernel.org>,
+        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+        Adrian Hunter <adrian.hunter@intel.com>,
+        Andi Kleen <ak@linux.intel.com>,
+        Peter Zijlstra <peterz@infradead.org>,
+        Ingo Molnar <mingo@redhat.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+References: <1ec29ed6-0047-d22f-630b-a7f5ccee96b4@linux.intel.com>
+ <b3c73389-7b4c-89cd-423c-68b00fcc61c9@linux.intel.com>
+ <20201024154438.GI2589351@krava>
+From:   Alexei Budankov <budankov.lore@gmail.com>
+Organization: Intel Corp.
+Message-ID: <6f760b28-f4bd-9de4-fadb-1ee79b4fc33b@gmail.com>
+Date:   Mon, 26 Oct 2020 11:54:07 +0300
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-Received: from nxp.ap.freescale.net (119.31.174.71) by SG2PR0401CA0010.apcprd04.prod.outlook.com (2603:1096:3:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Mon, 26 Oct 2020 08:55:33 +0000
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-HT: Tenant
-X-MS-Office365-Filtering-Correlation-Id: 2c05fe0f-01b6-408d-96cd-08d8798ce814
-X-MS-TrafficTypeDiagnostic: VI1PR04MB5758:
-X-MS-Exchange-Transport-Forked: True
-X-Microsoft-Antispam-PRVS: <VI1PR04MB57589ED56AE75F25A645357492190@VI1PR04MB5758.eurprd04.prod.outlook.com>
-X-MS-Oob-TLC-OOBClassifiers: OLM:1201;
-X-MS-Exchange-SenderADCheck: 1
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 4rbHdGv0nj2hHSYnqYc6vWoD+TkeCLUFVSAu65AnU6cPgWb7c76S7CjR+jY+zlpFP7ORlFTm2yVNem2IrHEbtcx8apJ5DApgqilovsQNi0atZvO08zLD//bXnsFRJS5FEkMGrvqXxVcjiqscjiYJQD0LfeemfoqnIFSxaCp7rfJQFbhY+YWNv77CWtCPQxQ0zVMDj4/kL/6TjxkUcZzKRED98T3jiOYW5SfPwtmT1vH/Bv1QHxUCl7Vg86OXLYvTwRRRAdCL8+VBmzlXm+AMZ4mp76O90Pd/mPi/OYJ1Fspx+THNyqmB99G9L2+c3KJFqeQeEj+wfNmzFA7Bljiebg==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(66476007)(8936002)(316002)(86362001)(956004)(66946007)(36756003)(66556008)(6512007)(83380400001)(4326008)(2616005)(1076003)(6506007)(2906002)(186003)(26005)(8676002)(6486002)(16526019)(5660300002)(52116002)(478600001)(44832011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData: WKNqwEjxsvyUeUukp765z6+tdGQnfVEjoYI9FTf9lwVZKCUMBJlxxCbYMMpFsakPDBnStUnTgPyYnMAPswj51kJcqlXsQmiTyVxl1xqVM2ug6YskZvMcGbyeOo+xUQvi10fslbIyx4vAvNAr+Xn6LS/0Asgq4+fWqPIH0GdabV6YJ1tulpktXAbXb/UbvtLv/WsL04i1nseZSIRb+uhKatb5GsCZjEcJMlBeA09BIZ8wU2orjt/1SeVQPsUanQ3qj96N6PVHw+KPfmvYIwJfZxHqCQZGHxK5phdooExAcyCE+WukwNxAx4QRJclHkU4g6aXSXPqokzY8rYsKXHk0Tiv3CRQT5Skp18l+XXq7faUoyHDI6k80rv0YiJWNbB5Vh0ltLCauK7QrloiQOdluG7XCwng/IGVw8gK+u8qbBkRJoJmpZqt0JCWM2DQ5EQX4KWoFTTKsV+eKboDqsPoiWIiTDWDeW8WKqcUZhVch7GEPGTCvSAZcr7eEv0+MtqXdQ1mJFIg+YA3IQbXYa2m9ENxpLUZQXkzpk8HwYoDsyGDAyXVEzJH63FaD3tpWMjE4haO4X+QJ3IqD8yAINlFTzWgQlIm6jYCDZxVgGwrPrYRgkitLqomr9PVyshBNP0ORSBKGVqjnsbRojKU27hz2Dg==
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2c05fe0f-01b6-408d-96cd-08d8798ce814
-X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2020 08:55:37.1119
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /GXbj+bukHriO/rNQQck83QnGRZRJ2j8WsjHZsCs/UoAwS8Cr8aOpiOm/QbNThlUTzPzsYdEDQ3IItwUmR1i9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5758
+In-Reply-To: <20201024154438.GI2589351@krava>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-We don't need to allocate and reassign the used ring here and remove the
-used_address_updated flag.Since RC has allocated the entire vring,
-including the used ring. Simply add the corresponding offset can get the
-used ring address.
 
-If following the orginal way to reassign the used ring, will encounter a
-problem. When host finished with descriptor, it will update the used
-ring with putused_kern api, if reassign used ring at EP side, used
-ring will be io device memory for RC, use memcpy in putused_kern will
-cause kernel panic.
+On 24.10.2020 18:44, Jiri Olsa wrote:
+> On Wed, Oct 21, 2020 at 07:00:30PM +0300, Alexey Budankov wrote:
+>>
+>> Introduce decompressor to trace reader object so that decompression
+>> could be executed on per trace file basis separately for every
+>> trace file located in trace directory.
+>>
+>> Signed-off-by: Alexey Budankov <alexey.budankov@linux.intel.com>
+>> ---
+>>  tools/perf/util/session.c | 4 +++-
+>>  tools/perf/util/session.h | 1 +
+>>  2 files changed, 4 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/tools/perf/util/session.c b/tools/perf/util/session.c
+>> index 911b2dbcd0ac..6afc670fdf0c 100644
+>> --- a/tools/perf/util/session.c
+>> +++ b/tools/perf/util/session.c
+>> @@ -44,6 +44,8 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+>>  	u64 decomp_last_rem = 0;
+>>  	size_t mmap_len, decomp_len = session->header.env.comp_mmap_len;
+>>  	struct decomp *decomp, *decomp_last = session->decomp_last;
+>> +	struct zstd_data *zstd_data = session->reader ?
+>> +		&(session->reader->zstd_data) : &(session->zstd_data);
+> 
+> I don't think we're using braces in these cases, they are not necessary
 
-Signed-off-by: Sherry Sun <sherry.sun@nxp.com>
-Signed-off-by: Joakim Zhang <qiangqing.zhang@nxp.com>
----
- drivers/misc/mic/vop/vop_debugfs.c |  2 --
- drivers/misc/mic/vop/vop_main.c    | 51 ++++++------------------------
- drivers/misc/mic/vop/vop_vringh.c  | 31 ------------------
- include/uapi/linux/mic_common.h    |  5 ++-
- 4 files changed, 11 insertions(+), 78 deletions(-)
+Corrected in v3.
 
-diff --git a/drivers/misc/mic/vop/vop_debugfs.c b/drivers/misc/mic/vop/vop_debugfs.c
-index 9d4f175f4dd1..05eca4a98585 100644
---- a/drivers/misc/mic/vop/vop_debugfs.c
-+++ b/drivers/misc/mic/vop/vop_debugfs.c
-@@ -79,8 +79,6 @@ static int vop_dp_show(struct seq_file *s, void *pos)
- 		seq_printf(s, "Vdev reset %d\n", dc->vdev_reset);
- 		seq_printf(s, "Guest Ack %d ", dc->guest_ack);
- 		seq_printf(s, "Host ack %d\n", dc->host_ack);
--		seq_printf(s, "Used address updated %d ",
--			   dc->used_address_updated);
- 		seq_printf(s, "Vdev 0x%llx\n", dc->vdev);
- 		seq_printf(s, "c2h doorbell %d ", dc->c2h_vdev_db);
- 		seq_printf(s, "h2c doorbell %d\n", dc->h2c_vdev_db);
-diff --git a/drivers/misc/mic/vop/vop_main.c b/drivers/misc/mic/vop/vop_main.c
-index 714b94f42d38..07e2732b24bb 100644
---- a/drivers/misc/mic/vop/vop_main.c
-+++ b/drivers/misc/mic/vop/vop_main.c
-@@ -250,10 +250,6 @@ static void vop_del_vq(struct virtqueue *vq, int n)
- 	struct _vop_vdev *vdev = to_vopvdev(vq->vdev);
- 	struct vop_device *vpdev = vdev->vpdev;
- 
--	dma_unmap_single(&vpdev->dev, vdev->used[n],
--			 vdev->used_size[n], DMA_BIDIRECTIONAL);
--	free_pages((unsigned long)vdev->used_virt[n],
--		   get_order(vdev->used_size[n]));
- 	vring_del_virtqueue(vq);
- 	vpdev->hw_ops->unmap(vpdev, vdev->vr[n]);
- 	vdev->vr[n] = NULL;
-@@ -340,8 +336,9 @@ static struct virtqueue *vop_find_vq(struct virtio_device *dev,
- 	vdev->used_size[index] = PAGE_ALIGN(sizeof(__u16) * 3 +
- 					     sizeof(struct vring_used_elem) *
- 					     le16_to_cpu(config.num));
--	used = (void *)__get_free_pages(GFP_KERNEL | __GFP_ZERO,
--					get_order(vdev->used_size[index]));
-+	used = (void *)va + PAGE_ALIGN(sizeof(struct vring_desc) *
-+				       le16_to_cpu(config.num) + sizeof(__u16) *
-+				       (3 + le16_to_cpu(config.num)));
- 	vdev->used_virt[index] = used;
- 	if (!used) {
- 		err = -ENOMEM;
-@@ -355,27 +352,17 @@ static struct virtqueue *vop_find_vq(struct virtio_device *dev,
- 			       name, used);
- 	if (!vq) {
- 		err = -ENOMEM;
--		goto free_used;
-+		goto unmap;
- 	}
- 
--	vdev->used[index] = dma_map_single(&vpdev->dev, used,
--					    vdev->used_size[index],
--					    DMA_BIDIRECTIONAL);
--	if (dma_mapping_error(&vpdev->dev, vdev->used[index])) {
--		err = -ENOMEM;
--		dev_err(_vop_dev(vdev), "%s %d err %d\n",
--			__func__, __LINE__, err);
--		goto del_vq;
--	}
-+	vdev->used[index] = le64_to_cpu(config.address) +
-+			    PAGE_ALIGN(sizeof(struct vring_desc) *
-+				       le16_to_cpu(config.num) + sizeof(__u16) *
-+				       (3 + le16_to_cpu(config.num)));
- 	writeq(vdev->used[index], &vqconfig->used_address);
- 
- 	vq->priv = vdev;
- 	return vq;
--del_vq:
--	vring_del_virtqueue(vq);
--free_used:
--	free_pages((unsigned long)used,
--		   get_order(vdev->used_size[index]));
- unmap:
- 	vpdev->hw_ops->unmap(vpdev, vdev->vr[index]);
- 	return ERR_PTR(err);
-@@ -388,9 +375,7 @@ static int vop_find_vqs(struct virtio_device *dev, unsigned nvqs,
- 			struct irq_affinity *desc)
- {
- 	struct _vop_vdev *vdev = to_vopvdev(dev);
--	struct vop_device *vpdev = vdev->vpdev;
--	struct mic_device_ctrl __iomem *dc = vdev->dc;
--	int i, err, retry, queue_idx = 0;
-+	int i, err, queue_idx = 0;
- 
- 	/* We must have this many virtqueues. */
- 	if (nvqs > ioread8(&vdev->desc->num_vq))
-@@ -412,24 +397,6 @@ static int vop_find_vqs(struct virtio_device *dev, unsigned nvqs,
- 		}
- 	}
- 
--	iowrite8(1, &dc->used_address_updated);
--	/*
--	 * Send an interrupt to the host to inform it that used
--	 * rings have been re-assigned.
--	 */
--	vpdev->hw_ops->send_intr(vpdev, vdev->c2h_vdev_db);
--	for (retry = 100; --retry;) {
--		if (!ioread8(&dc->used_address_updated))
--			break;
--		msleep(100);
--	}
--
--	dev_dbg(_vop_dev(vdev), "%s: retry: %d\n", __func__, retry);
--	if (!retry) {
--		err = -ENODEV;
--		goto error;
--	}
--
- 	return 0;
- error:
- 	vop_del_vqs(dev);
-diff --git a/drivers/misc/mic/vop/vop_vringh.c b/drivers/misc/mic/vop/vop_vringh.c
-index df77681c97e6..15dd3405789c 100644
---- a/drivers/misc/mic/vop/vop_vringh.c
-+++ b/drivers/misc/mic/vop/vop_vringh.c
-@@ -53,33 +53,6 @@ static void _vop_notify(struct vringh *vrh)
- 		vpdev->hw_ops->send_intr(vpdev, db);
- }
- 
--static void vop_virtio_init_post(struct vop_vdev *vdev)
--{
--	struct mic_vqconfig *vqconfig = mic_vq_config(vdev->dd);
--	struct vop_device *vpdev = vdev->vpdev;
--	int i, used_size;
--
--	for (i = 0; i < vdev->dd->num_vq; i++) {
--		used_size = PAGE_ALIGN(sizeof(u16) * 3 +
--				sizeof(struct vring_used_elem) *
--				le16_to_cpu(vqconfig->num));
--		if (!le64_to_cpu(vqconfig[i].used_address)) {
--			dev_warn(vop_dev(vdev), "used_address zero??\n");
--			continue;
--		}
--		vdev->vvr[i].vrh.vring.used =
--			(void __force *)vpdev->hw_ops->remap(
--			vpdev,
--			le64_to_cpu(vqconfig[i].used_address),
--			used_size);
--	}
--
--	vdev->dc->used_address_updated = 0;
--
--	dev_info(vop_dev(vdev), "%s: device type %d LINKUP\n",
--		 __func__, vdev->virtio_id);
--}
--
- static inline void vop_virtio_device_reset(struct vop_vdev *vdev)
- {
- 	int i;
-@@ -130,9 +103,6 @@ static void vop_bh_handler(struct work_struct *work)
- 	struct vop_vdev *vdev = container_of(work, struct vop_vdev,
- 			virtio_bh_work);
- 
--	if (vdev->dc->used_address_updated)
--		vop_virtio_init_post(vdev);
--
- 	if (vdev->dc->vdev_reset)
- 		vop_virtio_device_reset(vdev);
- 
-@@ -250,7 +220,6 @@ static void vop_init_device_ctrl(struct vop_vdev *vdev,
- 	dc->guest_ack = 0;
- 	dc->vdev_reset = 0;
- 	dc->host_ack = 0;
--	dc->used_address_updated = 0;
- 	dc->c2h_vdev_db = -1;
- 	dc->h2c_vdev_db = -1;
- 	vdev->dc = dc;
-diff --git a/include/uapi/linux/mic_common.h b/include/uapi/linux/mic_common.h
-index 504e523f702c..fe660d486b20 100644
---- a/include/uapi/linux/mic_common.h
-+++ b/include/uapi/linux/mic_common.h
-@@ -56,8 +56,7 @@ struct mic_device_desc {
-  * @vdev_reset: Set to 1 by guest to indicate virtio device has been reset.
-  * @guest_ack: Set to 1 by guest to ack a command.
-  * @host_ack: Set to 1 by host to ack a command.
-- * @used_address_updated: Set to 1 by guest when the used address should be
-- * updated.
-+ * @must_be_zero: Reserved because this bit is no longer needed.
-  * @c2h_vdev_db: The doorbell number to be used by guest. Set by host.
-  * @h2c_vdev_db: The doorbell number to be used by host. Set by guest.
-  */
-@@ -67,7 +66,7 @@ struct mic_device_ctrl {
- 	__u8 vdev_reset;
- 	__u8 guest_ack;
- 	__u8 host_ack;
--	__u8 used_address_updated;
-+	__u8 must_be_zero;
- 	__s8 c2h_vdev_db;
- 	__s8 h2c_vdev_db;
- } __attribute__ ((aligned(8)));
--- 
-2.17.1
+Thanks,
+Alexei
 
+> 
+> jirka
+> 
+>>  
+>>  	if (decomp_last) {
+>>  		decomp_last_rem = decomp_last->size - decomp_last->head;
+>> @@ -71,7 +73,7 @@ static int perf_session__process_compressed_event(struct perf_session *session,
+>>  	src = (void *)event + sizeof(struct perf_record_compressed);
+>>  	src_size = event->pack.header.size - sizeof(struct perf_record_compressed);
+>>  
+>> -	decomp_size = zstd_decompress_stream(&(session->zstd_data), src, src_size,
+>> +	decomp_size = zstd_decompress_stream(zstd_data, src, src_size,
+>>  				&(decomp->data[decomp_last_rem]), decomp_len - decomp_last_rem);
+>>  	if (!decomp_size) {
+>>  		munmap(decomp, mmap_len);
+>> diff --git a/tools/perf/util/session.h b/tools/perf/util/session.h
+>> index abdb8518a81f..4fc9ccdf7970 100644
+>> --- a/tools/perf/util/session.h
+>> +++ b/tools/perf/util/session.h
+>> @@ -42,6 +42,7 @@ struct reader {
+>>  	u64		 data_size;
+>>  	u64		 data_offset;
+>>  	reader_cb_t	 process;
+>> +	struct zstd_data zstd_data;
+>>  };
+>>  
+>>  struct perf_session {
+>> -- 
+>> 2.24.1
+>>
+>>
+> 
