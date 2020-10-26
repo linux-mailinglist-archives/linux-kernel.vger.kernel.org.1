@@ -2,36 +2,37 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id DB95D299B34
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ECEFF299B36
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408696AbgJZXtY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:49:24 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46944 "EHLO mail.kernel.org"
+        id S2408736AbgJZXtb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:49:31 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47164 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408626AbgJZXtO (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:14 -0400
+        id S2408661AbgJZXtU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:20 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B4E7120773;
-        Mon, 26 Oct 2020 23:49:12 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id AD7A520773;
+        Mon, 26 Oct 2020 23:49:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756153;
-        bh=jL/nzThwVE3kIHHUDsWorn8dTrwZ96xtik9XrgKV73s=;
+        s=default; t=1603756159;
+        bh=VdYd0jj9ZMGqyNWWvSiCMk9u7hXc40vpCtEkyfaY488=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=mK3XZWbMMK1ezoYv3TgesLZcEXwoRbsDq6ZE2vsEcPOKqpB4eI6pToE8deKwxabMK
-         mJAKzoS4SVPuUXnIh9Fer6T4XQHMIglk81D8PYmI6blY/t+cS5MgKXzFUzqRANiJ0p
-         Gouvb6cQHI++NLInbSSjnSCEHDw3ApzrGOk+DLeM=
+        b=w0vZLPrYMeUm/rQ5ySLyRr3RZWd+SsDyBMO1dXCRH0JY0oCSavCv9a/PcsvSKNcNJ
+         0m9+4/Q1tJyPgLXOE9YsZGXEP6Dn94kHEHWO1oyjucC1nnndeoGQBWgDRuvN2cQHLa
+         kRNShqV5ACVIs1lFJj2mk+b+XxKzjcMPQO4eZcI4=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Nicholas Piggin <npiggin@gmail.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Michael Ellerman <mpe@ellerman.id.au>,
-        Sasha Levin <sashal@kernel.org>, linux-fsdevel@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 006/147] mm: fix exec activate_mm vs TLB shootdown and lazy tlb switching race
-Date:   Mon, 26 Oct 2020 19:46:44 -0400
-Message-Id: <20201026234905.1022767-6-sashal@kernel.org>
+Cc:     Chao Yu <yuchao0@huawei.com>,
+        syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com,
+        Jaegeuk Kim <jaegeuk@kernel.org>,
+        Sasha Levin <sashal@kernel.org>,
+        linux-f2fs-devel@lists.sourceforge.net
+Subject: [PATCH AUTOSEL 5.9 011/147] f2fs: fix uninit-value in f2fs_lookup
+Date:   Mon, 26 Oct 2020 19:46:49 -0400
+Message-Id: <20201026234905.1022767-11-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,114 +44,79 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Nicholas Piggin <npiggin@gmail.com>
+From: Chao Yu <yuchao0@huawei.com>
 
-[ Upstream commit d53c3dfb23c45f7d4f910c3a3ca84bf0a99c6143 ]
+[ Upstream commit 6d7ab88a98c1b7a47c228f8ffb4f44d631eaf284 ]
 
-Reading and modifying current->mm and current->active_mm and switching
-mm should be done with irqs off, to prevent races seeing an intermediate
-state.
+As syzbot reported:
 
-This is similar to commit 38cf307c1f20 ("mm: fix kthread_use_mm() vs TLB
-invalidate"). At exec-time when the new mm is activated, the old one
-should usually be single-threaded and no longer used, unless something
-else is holding an mm_users reference (which may be possible).
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x21c/0x280 lib/dump_stack.c:118
+ kmsan_report+0xf7/0x1e0 mm/kmsan/kmsan_report.c:122
+ __msan_warning+0x58/0xa0 mm/kmsan/kmsan_instr.c:219
+ f2fs_lookup+0xe05/0x1a80 fs/f2fs/namei.c:503
+ lookup_open fs/namei.c:3082 [inline]
+ open_last_lookups fs/namei.c:3177 [inline]
+ path_openat+0x2729/0x6a90 fs/namei.c:3365
+ do_filp_open+0x2b8/0x710 fs/namei.c:3395
+ do_sys_openat2+0xa88/0x1140 fs/open.c:1168
+ do_sys_open fs/open.c:1184 [inline]
+ __do_compat_sys_openat fs/open.c:1242 [inline]
+ __se_compat_sys_openat+0x2a4/0x310 fs/open.c:1240
+ __ia32_compat_sys_openat+0x56/0x70 fs/open.c:1240
+ do_syscall_32_irqs_on arch/x86/entry/common.c:80 [inline]
+ __do_fast_syscall_32+0x129/0x180 arch/x86/entry/common.c:139
+ do_fast_syscall_32+0x6a/0xc0 arch/x86/entry/common.c:162
+ do_SYSENTER_32+0x73/0x90 arch/x86/entry/common.c:205
+ entry_SYSENTER_compat_after_hwframe+0x4d/0x5c
 
-Absent other mm_users, there is also a race with preemption and lazy tlb
-switching. Consider the kernel_execve case where the current thread is
-using a lazy tlb active mm:
+In f2fs_lookup(), @res_page could be used before being initialized,
+because in __f2fs_find_entry(), once F2FS_I(dir)->i_current_depth was
+been fuzzed to zero, then @res_page will never be initialized, causing
+this kmsan warning, relocating @res_page initialization place to fix
+this bug.
 
-  call_usermodehelper()
-    kernel_execve()
-      old_mm = current->mm;
-      active_mm = current->active_mm;
-      *** preempt *** -------------------->  schedule()
-                                               prev->active_mm = NULL;
-                                               mmdrop(prev active_mm);
-                                             ...
-                      <--------------------  schedule()
-      current->mm = mm;
-      current->active_mm = mm;
-      if (!old_mm)
-          mmdrop(active_mm);
-
-If we switch back to the kernel thread from a different mm, there is a
-double free of the old active_mm, and a missing free of the new one.
-
-Closing this race only requires interrupts to be disabled while ->mm
-and ->active_mm are being switched, but the TLB problem requires also
-holding interrupts off over activate_mm. Unfortunately not all archs
-can do that yet, e.g., arm defers the switch if irqs are disabled and
-expects finish_arch_post_lock_switch() to be called to complete the
-flush; um takes a blocking lock in activate_mm().
-
-So as a first step, disable interrupts across the mm/active_mm updates
-to close the lazy tlb preempt race, and provide an arch option to
-extend that to activate_mm which allows architectures doing IPI based
-TLB shootdowns to close the second race.
-
-This is a bit ugly, but in the interest of fixing the bug and backporting
-before all architectures are converted this is a compromise.
-
-Signed-off-by: Nicholas Piggin <npiggin@gmail.com>
-Acked-by: Peter Zijlstra (Intel) <peterz@infradead.org>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://lore.kernel.org/r/20200914045219.3736466-2-npiggin@gmail.com
+Reported-by: syzbot+0eac6f0bbd558fd866d7@syzkaller.appspotmail.com
+Signed-off-by: Chao Yu <yuchao0@huawei.com>
+Signed-off-by: Jaegeuk Kim <jaegeuk@kernel.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/Kconfig |  7 +++++++
- fs/exec.c    | 17 +++++++++++++++--
- 2 files changed, 22 insertions(+), 2 deletions(-)
+ fs/f2fs/dir.c | 8 +++-----
+ 1 file changed, 3 insertions(+), 5 deletions(-)
 
-diff --git a/arch/Kconfig b/arch/Kconfig
-index af14a567b493f..94821e3f94d16 100644
---- a/arch/Kconfig
-+++ b/arch/Kconfig
-@@ -414,6 +414,13 @@ config MMU_GATHER_NO_GATHER
- 	bool
- 	depends on MMU_GATHER_TABLE_FREE
+diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
+index 069f498af1e38..ceb4431b56690 100644
+--- a/fs/f2fs/dir.c
++++ b/fs/f2fs/dir.c
+@@ -357,16 +357,15 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
+ 	unsigned int max_depth;
+ 	unsigned int level;
  
-+config ARCH_WANT_IRQS_OFF_ACTIVATE_MM
-+	bool
-+	help
-+	  Temporary select until all architectures can be converted to have
-+	  irqs disabled over activate_mm. Architectures that do IPI based TLB
-+	  shootdowns should enable this.
++	*res_page = NULL;
 +
- config ARCH_HAVE_NMI_SAFE_CMPXCHG
- 	bool
- 
-diff --git a/fs/exec.c b/fs/exec.c
-index a91003e28eaae..d4fb18baf1fb1 100644
---- a/fs/exec.c
-+++ b/fs/exec.c
-@@ -1130,11 +1130,24 @@ static int exec_mmap(struct mm_struct *mm)
+ 	if (f2fs_has_inline_dentry(dir)) {
+-		*res_page = NULL;
+ 		de = f2fs_find_in_inline_dir(dir, fname, res_page);
+ 		goto out;
  	}
  
- 	task_lock(tsk);
--	active_mm = tsk->active_mm;
- 	membarrier_exec_mmap(mm);
--	tsk->mm = mm;
-+
-+	local_irq_disable();
-+	active_mm = tsk->active_mm;
- 	tsk->active_mm = mm;
-+	tsk->mm = mm;
-+	/*
-+	 * This prevents preemption while active_mm is being loaded and
-+	 * it and mm are being updated, which could cause problems for
-+	 * lazy tlb mm refcounting when these are updated by context
-+	 * switches. Not all architectures can handle irqs off over
-+	 * activate_mm yet.
-+	 */
-+	if (!IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
-+		local_irq_enable();
- 	activate_mm(active_mm, mm);
-+	if (IS_ENABLED(CONFIG_ARCH_WANT_IRQS_OFF_ACTIVATE_MM))
-+		local_irq_enable();
- 	tsk->mm->vmacache_seqnum = 0;
- 	vmacache_flush(tsk);
- 	task_unlock(tsk);
+-	if (npages == 0) {
+-		*res_page = NULL;
++	if (npages == 0)
+ 		goto out;
+-	}
+ 
+ 	max_depth = F2FS_I(dir)->i_current_depth;
+ 	if (unlikely(max_depth > MAX_DIR_HASH_DEPTH)) {
+@@ -377,7 +376,6 @@ struct f2fs_dir_entry *__f2fs_find_entry(struct inode *dir,
+ 	}
+ 
+ 	for (level = 0; level < max_depth; level++) {
+-		*res_page = NULL;
+ 		de = find_in_level(dir, level, fname, res_page);
+ 		if (de || IS_ERR(*res_page))
+ 			break;
 -- 
 2.25.1
 
