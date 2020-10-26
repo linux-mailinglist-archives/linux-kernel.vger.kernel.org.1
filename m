@@ -2,93 +2,111 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E6F8C298EA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:56:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 07A97298EA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:57:58 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1780798AbgJZN4m (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:56:42 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:51976 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780756AbgJZN4m (ORCPT
+        id S1780836AbgJZN5x (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:57:53 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:40180 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780822AbgJZN5x (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:56:42 -0400
-Received: by mail-wm1-f67.google.com with SMTP id v5so11750324wmh.1
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 06:56:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=references:user-agent:from:to:cc:subject:in-reply-to:date
-         :message-id:mime-version;
-        bh=HgyBh+16fLRmJC5zM1itgabVQdxvIj/AWtqWUQEP6yc=;
-        b=Khw6HtXiUbQUTT15ZKtC1tSHL3G0pWYJkDmyqU4U9ImTpofZ96CxkjCjZ9pg8LVRRM
-         CXTTsNBHXMJo78LPCvCk6A+aSvBjPwytrmKcGGtDr75MUjLL4LIagO/lam1xV4wHMLIY
-         9r6xFeE65639FT8qnuT+eZs018NUkgAA9xmkkAIKpN4LBTswNYKjvsNsEAC+lyLHJpy3
-         gvxB22Jl4If0+HRow+pNI+MWIWzl9PUiloLBwEKeb+66jlRkAWg5LKwNnKv2qwihc32n
-         7BQna0hcFMIRKn6JexOMZAqGcD5D3+p6uHCgFsVceeNvj5TzGk0HCFXFAQb8VfK1LKEn
-         I/cA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:references:user-agent:from:to:cc:subject
-         :in-reply-to:date:message-id:mime-version;
-        bh=HgyBh+16fLRmJC5zM1itgabVQdxvIj/AWtqWUQEP6yc=;
-        b=PVOhQHMdOb59PcL1oR7suNScTt320uWt44ORYZeaUpgKod5nd98h3RRJKsZwtN1ewV
-         0PGyx3KHD9u6QUJrCM+avbWzZn2WYt2o05UEOkJ7lC8Ba8v1TQDd9vOnPzi+fgACD0TH
-         TBCCd7AQraxCtBWAxhCjDVzs5AUbVhT84QV2R8zgtkQsvi8o4b2w0IpZTnUDSYAXY/Gp
-         1OEAVCb5nUIdKprQPPhXs46YPACl6lxw0Lfv9yH2xfMA/CFGtIdLgltAugaJUzxoGDJV
-         WvjtRBdiTr63dvZVZs6KXwAHoe96zMGUK94ZvqT20esVG2Z8DZPX0OoYVn3OGRXxRxdB
-         6vBw==
-X-Gm-Message-State: AOAM532QqrC+rbQ63g9uCvfnmD23dTe88ENcO/itzrJgZj48ucCuKuFz
-        BX7gsvvBTxD8Oyb7TqjZ3UCtzw==
-X-Google-Smtp-Source: ABdhPJwhFRSy34ieLn1DstuSvVzZsmJTDrXtazaPwKq5GkCIxrsVvZ2CQeyoqavPfCy8A+wgZ4FTcQ==
-X-Received: by 2002:a1c:7214:: with SMTP id n20mr16444207wmc.93.1603720600298;
-        Mon, 26 Oct 2020 06:56:40 -0700 (PDT)
-Received: from localhost (82-65-169-74.subs.proxad.net. [82.65.169.74])
-        by smtp.gmail.com with ESMTPSA id u195sm23028274wmu.18.2020.10.26.06.56.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:56:39 -0700 (PDT)
-References: <20200915124553.8056-1-narmstrong@baylibre.com>
-User-agent: mu4e 1.3.3; emacs 26.3
-From:   Jerome Brunet <jbrunet@baylibre.com>
-To:     Neil Armstrong <narmstrong@baylibre.com>
-Cc:     linux-amlogic@lists.infradead.org, linux-clk@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 0/4] clk: meson: axg: add clocks for MIPI-DSI support
-In-reply-to: <20200915124553.8056-1-narmstrong@baylibre.com>
-Date:   Mon, 26 Oct 2020 14:56:39 +0100
-Message-ID: <1jeelljdk8.fsf@starbuckisacylon.baylibre.com>
+        Mon, 26 Oct 2020 09:57:53 -0400
+From:   Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603720670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h/OHUc3ZTxOnSdMTpC8YgapP1SujhOMZOgiAI8wwc4U=;
+        b=sXwkSST6XFQnFqHxHusBURIJifh54p6cswdp4kZT9Au+dIQKZwf+Cl6lOu99Ku1z4waAbv
+        S7Yba9KIEFyjoX1tdM2UUKI0YDPkMmXDWoJ0UzB/LlxfvMfoqtbvpHRM346XPxG4M4Q0h4
+        CMxYrvM/JwMDEV7BAzVgqefIjEclU/HcY4SsBT+26NUXk/txXB+Agqw6C5N7ekHZ4wVm6P
+        ozkzEVZ3FUkJ+iTf9A1TAFqiDPxYvcbOe14glk14VzbgFwTShw9/nL/UadaoxV+SRhvfDH
+        zYz4ZeM4HBkWUP5LO/4y3uq1bVf/wl1eqXDSoD1a2T197SIOCUzjA6toKVn1Hg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603720670;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=h/OHUc3ZTxOnSdMTpC8YgapP1SujhOMZOgiAI8wwc4U=;
+        b=YTD8pQVsZ/dvyFc0Ulx/a2JJ55MggdrwnYcIhkaJljDxKZJg9ScYPatGMDvfkoFxN1XCdn
+        MU+dolBlFXph34DA==
+To:     Nitesh Narayan Lal <nitesh@redhat.com>,
+        Peter Zijlstra <peterz@infradead.org>
+Cc:     Marcelo Tosatti <mtosatti@redhat.com>, helgaas@kernel.org,
+        linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
+        linux-pci@vger.kernel.org, intel-wired-lan@lists.osuosl.org,
+        frederic@kernel.org, sassmann@redhat.com,
+        jesse.brandeburg@intel.com, lihong.yang@intel.com,
+        jeffrey.t.kirsher@intel.com, jacob.e.keller@intel.com,
+        jlelli@redhat.com, hch@infradead.org, bhelgaas@google.com,
+        mike.marciniszyn@intel.com, dennis.dalessandro@intel.com,
+        thomas.lendacky@amd.com, jiri@nvidia.com, mingo@redhat.com,
+        juri.lelli@redhat.com, vincent.guittot@linaro.org,
+        lgoncalv@redhat.com
+Subject: Re: [PATCH v4 4/4] PCI: Limit pci_alloc_irq_vectors() to housekeeping CPUs
+In-Reply-To: <9529ddd0-28f7-fa74-e56f-39de84321a22@redhat.com>
+References: <20200928183529.471328-5-nitesh@redhat.com> <20201016122046.GP2611@hirez.programming.kicks-ass.net> <79f382a7-883d-ff42-394d-ec4ce81fed6a@redhat.com> <20201019111137.GL2628@hirez.programming.kicks-ass.net> <20201019140005.GB17287@fuller.cnet> <20201020073055.GY2611@hirez.programming.kicks-ass.net> <078e659e-d151-5bc2-a7dd-fe0070267cb3@redhat.com> <20201020134128.GT2628@hirez.programming.kicks-ass.net> <6736e643-d4ae-9919-9ae1-a73d5f31463e@redhat.com> <260f4191-5b9f-6dc1-9f11-085533ac4f55@redhat.com> <20201023085826.GP2611@hirez.programming.kicks-ass.net> <9ee77056-ef02-8696-5b96-46007e35ab00@redhat.com> <87ft6464jf.fsf@nanos.tec.linutronix.de> <9529ddd0-28f7-fa74-e56f-39de84321a22@redhat.com>
+Date:   Mon, 26 Oct 2020 14:57:50 +0100
+Message-ID: <878sbt3x9d.fsf@nanos.tec.linutronix.de>
 MIME-Version: 1.0
 Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-
-On Tue 15 Sep 2020 at 14:45, Neil Armstrong <narmstrong@baylibre.com> wrote:
-
-> This adds the VPU & VAPB clocks along the MIPI DSI Host clock.
+On Mon, Oct 26 2020 at 09:35, Nitesh Narayan Lal wrote:
+> On 10/23/20 5:00 PM, Thomas Gleixner wrote:
+>> An isolated setup, which I'm familiar with, has two housekeeping
+>> CPUs. So far I restricted the number of network queues with a module
+>> argument to two, which allocates two management interrupts for the
+>> device and two interrupts (RX/TX) per queue, i.e. a total of six.
 >
-> The clock scheme is based on the GXBB & G12A VPU clocks, with a different CTS
-> clock output used for MIPI-DSI.
->
-> Changes since v1 at [1]:
-> - update patch 3 commit message to reflect drm driver state
-> - added comments in patch 3 for clock specificities
-> - removed useless parents comments in patch 2
-> - fixed bad flags in patch 4
-> - removed holes in axg_vdin_meas_parent_data in patch 4
->
-> [1] https://lkml.kernel.org/r/20200907093810.6585-1-narmstrong@baylibre.com
->
-> Neil Armstrong (4):
->   dt-bindings: clk: axg-clkc: add Video Clocks
->   dt-bindings: clk: axg-clkc: add MIPI DSI Host clock binding
->   clk: meson: axg: add Video Clocks
->   clk: meson: axg: add MIPI DSI Host clock
+> Does it somehow take num_online_cpus() into consideration while deciding
+> the number of interrupts to create?
 
-Applied for v5.11 fixing 75 char per line patches 3 & 4 commit descriptions
+No, I just tell it to create two queues :)
 
+>> So without information from the driver which tells what the best number
+>> of interrupts is with a reduced number of CPUs, this cutoff will cause
+>> more problems than it solves. Regressions guaranteed.
 >
->  drivers/clk/meson/axg.c              | 819 +++++++++++++++++++++++++++
->  drivers/clk/meson/axg.h              |  23 +-
->  include/dt-bindings/clock/axg-clkc.h |  25 +
->  3 files changed, 866 insertions(+), 1 deletion(-)
+> Indeed.
+> I think one commonality among the drivers at the moment is the usage of
+> num_online_cpus() to determine the vectors to create.
+>
+> So, maybe instead of doing this kind of restrictions in a generic level
+> API, it will make more sense to do this on a per-device basis by replacing
+> the number of online CPUs with the housekeeping CPUs?
+>
+> This is what I have done in the i40e patch.
+> But that still sounds hackish and will impact the performance.
 
+You want an interface which allows the driver to say:
+
+  I need N interrupts for general management and ideally M interrupts
+  per queue.
+
+This is similar to the way drivers tell the core code about their
+requirements for managed interrupts for the spreading calculation.
+
+>> Managed interrupts base their interrupt allocation and spreading on
+>> information which is handed in by the individual driver and not on crude
+>> assumptions. They are not imposing restrictions on the use case.
+>
+> Right, FWIU it is irq_do_set_affinity that prevents the spreading of
+> managed interrupts to isolated CPUs if HK_FLAG_MANAGED_IRQ is enabled,
+> isn't?
+
+No. Spreading takes possible CPUs into account. HK_FLAG_MANAGED_IRQ does
+not influence spreading at all.
+
+It only handles the case that an interrupt is affine to more than one
+CPUs and the resulting affinity mask spawns both housekeeping and
+isolated CPUs. It then steers the interrupt to the housekeeping CPUs (as
+long as there is one online).
+
+Thanks,
+
+        tglx
