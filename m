@@ -2,104 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 69570299478
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:56:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B0D55299493
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:57:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781789AbgJZRz6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:55:58 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46090 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1788768AbgJZRzt (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:55:49 -0400
-Received: from kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net (unknown [163.114.132.4])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4517722265;
-        Mon, 26 Oct 2020 17:55:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603734949;
-        bh=NNIbbFb7W6DvybHlpLAu6+F1xGVbmScbL7eadIzXdQw=;
-        h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-        b=X9l0WbDg7VUsIKOma/+cLoSJ08IHOMTMYeie41y7jryFSAnwX9IlkWt5/q0rm6PtL
-         xvcgnozQixfJYrij1nvyoussMNAk5pPLd7SU9IrR6AlnOJz0/kE6RtFJBoRw+g2pw1
-         p5XniN5EQoAVHxB3abDvr7dyuhR5F5VV6oCfLpdk=
-Date:   Mon, 26 Oct 2020 10:55:48 -0700
-From:   Jakub Kicinski <kuba@kernel.org>
-To:     Stefano Garzarella <sgarzare@redhat.com>
-Cc:     David Laight <David.Laight@aculab.com>,
-        Colin King <colin.king@canonical.com>,
-        "David S . Miller" <davem@davemloft.net>,
-        "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
-        "kernel-janitors@vger.kernel.org" <kernel-janitors@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] vsock: ratelimit unknown ioctl error message
-Message-ID: <20201026105548.0cc911a8@kicinski-fedora-PC1C0HJN.hsd1.ca.comcast.net>
-In-Reply-To: <20201026100112.qaorff6c6vucakyg@steredhat>
-References: <20201023122113.35517-1-colin.king@canonical.com>
-        <20201023140947.kurglnklaqteovkp@steredhat>
-        <e535c07df407444880d8b678bc215d9f@AcuMS.aculab.com>
-        <20201026084300.5ag24vck3zeb4mcz@steredhat>
-        <d893e3251f804cffa797b6eb814944fd@AcuMS.aculab.com>
-        <20201026093917.5zgginii65pq6ezd@steredhat>
-        <3e34e4121f794355891fd7577c9dfbc0@AcuMS.aculab.com>
-        <20201026100112.qaorff6c6vucakyg@steredhat>
+        id S1782161AbgJZR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:57:45 -0400
+Received: from mail-pl1-f196.google.com ([209.85.214.196]:41333 "EHLO
+        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782033AbgJZR5o (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 13:57:44 -0400
+Received: by mail-pl1-f196.google.com with SMTP id w11so5087080pll.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:57:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WU3hID4rRFAfybLKsH6+3te5KdmTCS1oR9J+E9Kmf60=;
+        b=RmpKg4D4H93vwtvZknkbx3qsbYiuQISLZRbZIAWleMErWgdkSz9mEdzY86om5DxhXm
+         bNBM6juO4iHCKF5yrUxLgPtYo3WQ4t3bqLXEGzmXmPIPW/bilEXqnewaEqm3/QYI3uPo
+         7TbvmANVW/D0I5a5Y+Z0lswVWE9pWzeJimBf3VWrM5GDxg9by513JLpsg+pvW2OMHNx/
+         5IAeSY9tR+oewkEtWIiOPomZ11+kbstV+xIyja//xRgS9NRvMD+GIX4CftV0+DfflCLS
+         57pq4KROnHZ+ykYHeQAB567OoTLDPANGzO7oB6haIPT85QKz7RxtNyslKuxevCakxUP4
+         aLrQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=WU3hID4rRFAfybLKsH6+3te5KdmTCS1oR9J+E9Kmf60=;
+        b=oZ9vqY/qBtplDv3tQ6FbJFaWqf/ePaPtgqsMgd5D7b+2wzdCEwCgs9klXCTcGPTMGi
+         gl5SVmaKbRDds6StjjWOkVOJaygCGty+JsE1nur12mV8eBKO8wuyRn/jedB/XVOCchxM
+         MMQQUpQcRP8QwOd3FuMh0jxfsHm5N2NbtscNLR0SQ1tlkAboZ+/7X9X25olbaJ2nJYKJ
+         3/Xz0It0REApia3rqIaftF3ucPP4GVDjBSZHIcm4kZj+fNstLGjSmXxfkFy22cPM40Oo
+         FzIEbxhteXAF9IakfZQ2gc1p0Xxs9DQqnja8C3+MC1bZLYs8tZQCW64REmueU0SRpaAC
+         QpWQ==
+X-Gm-Message-State: AOAM532WqTvTdxe2pp0d6dVLykup23pxKLfHq4cG/Vv2TsT5KStRq8G1
+        ZAVSC9SWVU+NzUx/m5Bx5naA
+X-Google-Smtp-Source: ABdhPJzZvz44Tk4SHKhCGs9eVHRNgAAOnqgaIe89LtwV7lyl4vApI18Ycg1afAgRWbBo9/A0iBCJfw==
+X-Received: by 2002:a17:90b:3598:: with SMTP id mm24mr22162836pjb.172.1603735064009;
+        Mon, 26 Oct 2020 10:57:44 -0700 (PDT)
+Received: from localhost.localdomain ([116.68.74.56])
+        by smtp.gmail.com with ESMTPSA id o65sm11583088pga.42.2020.10.26.10.57.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 10:57:43 -0700 (PDT)
+From:   Vaishnav M A <vaishnav@beagleboard.org>
+To:     johan@kernel.org
+Cc:     ribalda@kernel.org, robh@kernel.org, gregkh@linuxfoundation.org,
+        jirislaby@kernel.org, masahiroy@kernel.org,
+        andriy.shevchenko@linux.intel.com, linux-kernel@vger.kernel.org,
+        linux-serial@vger.kernel.org, linux-kbuild@vger.kernel.org,
+        jkridner@beagleboard.org, drew@beagleboard.org,
+        robertcnelson@beagleboard.org, vaishnav@beagleboard.org
+Subject: [RFC PATCH 0/5] Add serdev_device_id for platform instantiation
+Date:   Mon, 26 Oct 2020 23:27:13 +0530
+Message-Id: <20201026175718.965773-1-vaishnav@beagleboard.org>
+X-Mailer: git-send-email 2.25.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 11:01:12 +0100 Stefano Garzarella wrote:
-> On Mon, Oct 26, 2020 at 09:46:17AM +0000, David Laight wrote:
-> >From: Stefano Garzarella  
-> >> Sent: 26 October 2020 09:39
-> >>
-> >> On Mon, Oct 26, 2020 at 09:13:23AM +0000, David Laight wrote:  
-> >> >From: Stefano Garzarella  
-> >> >> Sent: 26 October 2020 08:43  
-> >> >...  
-> >> >> >Isn't the canonical error for unknown ioctl codes -ENOTTY?
-> >> >> >  
-> >> >>
-> >> >> Oh, thanks for pointing that out!
-> >> >>
-> >> >> I had not paid attention to the error returned, but looking at it I
-> >> >> noticed that perhaps the most appropriate would be -ENOIOCTLCMD.
-> >> >> In the ioctl syscall we return -ENOTTY, if the callback returns
-> >> >> -ENOIOCTLCMD.
-> >> >>
-> >> >> What do you think?  
-> >> >
-> >> >It is 729 v 443 in favour of ENOTTY (based on grep).  
-> >>
-> >> Under net/ it is 6 vs 83 in favour of ENOIOCTLCMD.
-> >>  
-> >> >
-> >> >No idea where ENOIOCTLCMD comes from, but ENOTTY probably
-> >> >goes back to the early 1970s.  
-> >>
-> >> Me too.
-> >>  
-> >> >
-> >> >The fact that the ioctl wrapper converts the value is a good
-> >> >hint that userspace expects ENOTTY.  
-> >>
-> >> Agree on that, but since we are not interfacing directly with userspace,
-> >> I think it is better to return the more specific error (ENOIOCTLCMD).  
-> >
-> >I bet Linux thought it could use a different error code then
-> >found that 'unknown ioctl' was spelt ENOTTY.  
-> 
-> It could be :-)
-> 
-> Anyway, as you pointed out, I think we should change the -EINVAL with 
-> -ENOTTY or -ENOIOCTLCMD.
-> 
-> @Jakub what do you suggest?
+This patch series aims to add serdev_device_id to the serdev drivers
+so as to support platform instantiation of a serdev device.The first
+two patches adding the serdev_device_id has already been once submitted
+by Ricardo Ribalda Delgado(in CC) here:
+https://lore.kernel.org/lkml/20180611115240.32606-1-ricardo.ribalda@gmail.com/
 
-ENOIOCTLCMD is a kernel-internal high return code (515) which should 
-be returned by the driver, but it's then caught inside the core and
-translated to ENOTTY which is then returned to user space.
+The problem currently trying to solved is bit different from dynamically
+loading/removing serdev devices as addressed in the original patch series,
+the aim now is to attach a serdev driver once to a device that is not a part of
+the device tree or the ACPI table, Eg. a device on a greybus created gbphy uart.
 
-So you're both right, I guess? But the driver should use ENOIOCTLCMD.
+The patches were tested with a set of uBlox GNSS Receiver Clicks on a PocketBeagle.
+The serdev_device_id table is exported only for a single driver(drivers/gnss/ubx.c)
+for reference.
+
+Ricardo Ribalda (2):
+  serdev: Add serdev_device_id
+  file2alias: Support for serdev devices
+
+Vaishnav M A (3):
+  serdev: add of_ helper to get serdev controller
+  gnss: ubx add MODULE_DEVICE_TABLE(serdev)
+  gnss: change of_property_read to device_property_read
+
+ drivers/gnss/serial.c             |  3 +-
+ drivers/gnss/ubx.c                |  9 +++++
+ drivers/tty/serdev/core.c         | 58 +++++++++++++++++++++++++++----
+ include/linux/mod_devicetable.h   | 10 ++++++
+ include/linux/serdev.h            |  5 +++
+ scripts/mod/devicetable-offsets.c |  3 ++
+ scripts/mod/file2alias.c          | 10 ++++++
+ 7 files changed, 90 insertions(+), 8 deletions(-)
+
+-- 
+2.25.1
+
