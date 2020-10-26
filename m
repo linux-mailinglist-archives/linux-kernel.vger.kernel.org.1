@@ -2,86 +2,152 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9E08D29929B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:37:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id EF1662992A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:40:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786160AbgJZQhp convert rfc822-to-8bit (ORCPT
-        <rfc822;lists+linux-kernel@lfdr.de>); Mon, 26 Oct 2020 12:37:45 -0400
-Received: from mga06.intel.com ([134.134.136.31]:7429 "EHLO mga06.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1786153AbgJZQhp (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:37:45 -0400
-IronPort-SDR: 2BUutrjpUZYrjtIqXN7m8pYfh5no8ZiKTmYJg8zF0QN0X9prirwFnruDyjVwvKCaSCPH6QVUkh
- vzO43wPSr47Q==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="229584923"
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="229584923"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orsmga104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 09:37:42 -0700
-IronPort-SDR: YEOvthm1SG3Pc3p9RQCPYcX74GCP4R2l9yoqfGpTbKYoNbx2Po7VcReuHg5YmmDPaQAc99QEIe
- 1OapCFGUFlIw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="355241555"
-Received: from irsmsx606.ger.corp.intel.com ([163.33.146.139])
-  by fmsmga002.fm.intel.com with ESMTP; 26 Oct 2020 09:37:40 -0700
-Received: from irsmsx601.ger.corp.intel.com (163.33.146.7) by
- IRSMSX606.ger.corp.intel.com (163.33.146.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1713.5; Mon, 26 Oct 2020 16:37:39 +0000
-Received: from irsmsx601.ger.corp.intel.com ([163.33.146.7]) by
- irsmsx601.ger.corp.intel.com ([163.33.146.7]) with mapi id 15.01.1713.004;
- Mon, 26 Oct 2020 16:37:39 +0000
-From:   "Rojewski, Cezary" <cezary.rojewski@intel.com>
-To:     Arnd Bergmann <arnd@kernel.org>
-CC:     Steven Rostedt <rostedt@goodmis.org>,
-        Ingo Molnar <mingo@redhat.com>,
-        "Jiri Kosina" <jkosina@suse.cz>, Petr Mladek <pmladek@suse.cz>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Piotr Maziarz <piotrx.maziarz@linux.intel.com>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
-Thread-Topic: [PATCH] seq_buf: avoid type mismatch for seq_buf_init
-Thread-Index: AQHWq7KliO24+notLUCpY3Gs9snQi6mqFBIg
-Date:   Mon, 26 Oct 2020 16:37:39 +0000
-Message-ID: <0fb5bff4b99c40e5956b8af34d5c1483@intel.com>
-References: <20201026161108.3707783-1-arnd@kernel.org>
-In-Reply-To: <20201026161108.3707783-1-arnd@kernel.org>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach: 
-X-MS-TNEF-Correlator: 
-dlp-product: dlpe-windows
-dlp-reaction: no-action
-dlp-version: 11.5.1.3
-x-originating-ip: [163.33.253.164]
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: 8BIT
+        id S1786234AbgJZQkV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:40:21 -0400
+Received: from mail-lf1-f67.google.com ([209.85.167.67]:38597 "EHLO
+        mail-lf1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1741277AbgJZQkV (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:40:21 -0400
+Received: by mail-lf1-f67.google.com with SMTP id c141so12916429lfg.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 09:40:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=bYYpq/ODtlAp6N9v/jOmvwi4a5DwPQlK76zjEaH5y0U=;
+        b=hmCYvw9TPflPd9H/DK+zYCiLVpY5wiSnYliiGK03r7yuumwzjDfiWUfaETFJkuFXlL
+         QHuf3ENiQc9ybhv0U9lUsM06Seadp7EyAGOaVTxST1ou+WDqigqW997mKZ+cvV1uKUPP
+         e9e/u9S4WZl/5w277vCvBfQHhABwox7LdWIN5koZP7tYuaA5zLWQN9uidAWWVvoLUJYW
+         +w54kOvfmg0XpZYA3gMbNkug0gaWI0CMGdRGtc4zxGxSP8+d6YiFb39REgpsudDcnjBd
+         Ju4exspOqQOM1aJ+gMqmHnyYonF/xDUYbq0piU/yNKW0E67Amo6MdYhnN7/PnKmB9mQG
+         WRAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=bYYpq/ODtlAp6N9v/jOmvwi4a5DwPQlK76zjEaH5y0U=;
+        b=R6RbDX9Qqpqir7krevRZECCX83z+vv9zMcaGlfFFIBUIf7azWqzx9BV8hn09wfBdZ/
+         DzkQqQn6c1q4bb0LLapp7I5cQHFmqIIxPdEZl5CaoEPGrjRsjwyf7frSIwNp0qK2YJD2
+         1SkzEbvnPMuMNWCzNu9mgb9+GxjsolWFqz7j0c+E/ljpqAPkE7FDANrmqJfTlHK0/9c/
+         Oh11PN5GgOtLJDDH3G6Q19MSLbvc87XvYSyl0CwrlkhlQQ5T+pFxzc98kO67zZzPnFDF
+         gkXwECex9zcVr7AZoG10ojbe/uBRZ+ScHvdrB6c0yku+yPi+i/3IAf/tixifFNY25gU5
+         V0nQ==
+X-Gm-Message-State: AOAM530UHQ9vOdo9XM8XyNzzKKDeFboaiJLEvNBetTCnTAZfThGuRbEe
+        sRtMabFlbBTnySOHy5aBqwA=
+X-Google-Smtp-Source: ABdhPJxEWYhWIhaW1xu9iLYys/ET2q6xrt2OTX3z8cDhceYtdfps/1yk+gQ6n16gAaYymVA4Q5lPRg==
+X-Received: by 2002:a19:c3cd:: with SMTP id t196mr4934402lff.501.1603730418621;
+        Mon, 26 Oct 2020 09:40:18 -0700 (PDT)
+Received: from [192.168.1.112] (88-114-211-119.elisa-laajakaista.fi. [88.114.211.119])
+        by smtp.gmail.com with ESMTPSA id m22sm1091484lfq.12.2020.10.26.09.40.15
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 09:40:17 -0700 (PDT)
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+To:     Dave Martin <Dave.Martin@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>
+Cc:     "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
+        systemd-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Kees Cook <keescook@chromium.org>,
+        Catalin Marinas <Catalin.Marinas@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Mark Brown <broonie@kernel.org>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201026162410.GB27285@arm.com>
+From:   Topi Miettinen <toiwoton@gmail.com>
+Message-ID: <ed3407a9-8479-edf7-23eb-5354e77d2a58@gmail.com>
+Date:   Mon, 26 Oct 2020 18:39:55 +0200
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.12.0
 MIME-Version: 1.0
+In-Reply-To: <20201026162410.GB27285@arm.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 5:10 PM, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On 26.10.2020 18.24, Dave Martin wrote:
+> On Wed, Oct 21, 2020 at 10:44:46PM -0500, Jeremy Linton via Libc-alpha wrote:
+>> Hi,
+>>
+>> There is a problem with glibc+systemd on BTI enabled systems. Systemd
+>> has a service flag "MemoryDenyWriteExecute" which uses seccomp to deny
+>> PROT_EXEC changes. Glibc enables BTI only on segments which are marked as
+>> being BTI compatible by calling mprotect PROT_EXEC|PROT_BTI. That call is
+>> caught by the seccomp filter, resulting in service failures.
+>>
+>> So, at the moment one has to pick either denying PROT_EXEC changes, or BTI.
+>> This is obviously not desirable.
+>>
+>> Various changes have been suggested, replacing the mprotect with mmap calls
+>> having PROT_BTI set on the original mapping, re-mmapping the segments,
+>> implying PROT_EXEC on mprotect PROT_BTI calls when VM_EXEC is already set,
+>> and various modification to seccomp to allow particular mprotect cases to
+>> bypass the filters. In each case there seems to be an undesirable attribute
+>> to the solution.
+>>
+>> So, whats the best solution?
 > 
-> Building with W=2 prints a number of warnings for one function that
-> has a pointer type mismatch:
+> Unrolling this discussion a bit, this problem comes from a few sources:
 > 
-> linux/seq_buf.h: In function 'seq_buf_init':
-> linux/seq_buf.h:35:12: warning: pointer targets in assignment from 'unsigned char *' to 'char *' differ in signedness [-Wpointer-sign]
+> 1) systemd is trying to implement a policy that doesn't fit SECCOMP
+> syscall filtering very well.
 > 
-> Change the type in the function prototype according to the type in
-> the structure.
+> 2) The program is trying to do something not expressible through the
+> syscall interface: really the intent is to set PROT_BTI on the page,
+> with no intent to set PROT_EXEC on any page that didn't already have it
+> set.
 > 
-> Fixes: 9a7777935c34 ("tracing: Convert seq_buf fields to be like seq_file fields")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> ---
+> 
+> This limitation of mprotect() was known when I originally added PROT_BTI,
+> but at that time we weren't aware of a clear use case that would fail.
+> 
+> 
+> Would it now help to add something like:
+> 
+> int mchangeprot(void *addr, size_t len, int old_flags, int new_flags)
+> {
+> 	int ret = -EINVAL;
+> 	mmap_write_lock(current->mm);
+> 	if (all vmas in [addr .. addr + len) have
+> 			their mprotect flags set to old_flags) {
+> 
+> 		ret = mprotect(addr, len, new_flags);
+> 	}
+> 	
+> 	mmap_write_unlock(current->mm);
+> 	return ret;
+> }
+> 
+> 
+> libc would now be able to do
+> 
+> 	mchangeprot(addr, len, PROT_EXEC | PROT_READ,
+> 		PROT_EXEC | PROT_READ | PROT_BTI);
+> 
+> while systemd's MDWX filter would reject the call if
+> 
+> 	(new_flags & PROT_EXEC) &&
+> 		(!(old_flags & PROT_EXEC) || (new_flags & PROT_WRITE)
+> 
+> 
+> 
+> This won't magically fix current code, but something along these lines
+> might be better going forward.
+> 
+> 
+> Thoughts?
 
-Reviewed-by: Cezary Rojewski <cezary.rojewski@intel.com>
+Looks good to me.
 
-Thanks,
-Czarek
+-Topi
 
