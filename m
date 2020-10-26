@@ -2,116 +2,77 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 358B6299B3C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E0EB1299B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:49:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408805AbgJZXtu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:49:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47406 "EHLO mail.kernel.org"
+        id S2408364AbgJZXrB (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:47:01 -0400
+Received: from mail.kernel.org ([198.145.29.99]:43818 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408698AbgJZXt1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:27 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        id S2408354AbgJZXrB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:47:01 -0400
+Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 9C5E72075B;
-        Mon, 26 Oct 2020 23:49:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 6E14F20714;
+        Mon, 26 Oct 2020 23:47:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756166;
-        bh=QBMzE2TYiAzTYDYeREI8e45MI19Mj2RK6UJvoABnMWU=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=GH2+Bnxx6+AooS3gmwi+PABx6iiH+aGvZbFUE70Ytr1m1i0WLvI4VWw49PGvb8hYE
-         qCduMuxbLXmC2//dJCdE1Soez/yHYH61kFBjMBv6iceb9hSAgN1xE80pC9+PufzSro
-         nTlqPb1kWSkP9/wqPpNdjmySW+rRLOKXWbjNltOM=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Johannes Berg <johannes.berg@intel.com>,
-        Richard Weinberger <richard@nod.at>,
-        Sasha Levin <sashal@kernel.org>, linux-um@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.9 016/147] um: change sigio_spinlock to a mutex
-Date:   Mon, 26 Oct 2020 19:46:54 -0400
-Message-Id: <20201026234905.1022767-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+        s=default; t=1603756021;
+        bh=XWR7MwsgfltmFj47sfd/dwRi90Ev/Ns1xGylwEDA998=;
+        h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+        b=aIQQpbC1MGatxk8DEmQC51e09WaeB8M+qR5pa4ZbWyflREu/AGE5rzEY9CkjuR2F+
+         +BVI+vmO3i09T7rYouZAIY6BEAOxDdoXla6I65R2peTzlm0xqqQpFRR37ih1YIO2+z
+         rds1GcA7lJtNsV+EjyUwyu4xxAONoBCWDZUZM3fI=
+Date:   Mon, 26 Oct 2020 23:46:55 +0000
+From:   Mark Brown <broonie@kernel.org>
+To:     Adrian Ratiu <adrian.ratiu@collabora.com>
+Cc:     linux-kernel@vger.kernel.org, kernel@collabora.com,
+        "Rafael J. Wysocki" <rafael@kernel.org>
+In-Reply-To: <20201014203024.954369-1-adrian.ratiu@collabora.com>
+References: <20201014203024.954369-1-adrian.ratiu@collabora.com>
+Subject: Re: [PATCH v2] regmap: mmio: add config option to allow relaxed MMIO accesses
+Message-Id: <160375601585.32276.1378661556975438111.b4-ty@kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Johannes Berg <johannes.berg@intel.com>
+On Wed, 14 Oct 2020 23:30:24 +0300, Adrian Ratiu wrote:
+> On some platforms (eg armv7 due to the CONFIG_ARM_DMA_MEM_BUFFERABLE)
+> MMIO R/W operations always add memory barriers which can increase load,
+> decrease battery life or in general reduce performance unnecessarily
+> on devices which access a lot of configuration registers and where
+> ordering does not matter (eg. media accelerators like the Verisilicon /
+> Hantro video decoders).
+> 
+> [...]
 
-[ Upstream commit f2d05059e15af3f70502074f4e3a504530af504a ]
+Applied to
 
-Lockdep complains at boot:
+   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/regmap.git for-next
 
-=============================
-[ BUG: Invalid wait context ]
-5.7.0-05093-g46d91ecd597b #98 Not tainted
------------------------------
-swapper/1 is trying to lock:
-0000000060931b98 (&desc[i].request_mutex){+.+.}-{3:3}, at: __setup_irq+0x11d/0x623
-other info that might help us debug this:
-context-{4:4}
-1 lock held by swapper/1:
- #0: 000000006074fed8 (sigio_spinlock){+.+.}-{2:2}, at: sigio_lock+0x1a/0x1c
-stack backtrace:
-CPU: 0 PID: 1 Comm: swapper Not tainted 5.7.0-05093-g46d91ecd597b #98
-Stack:
- 7fa4fab0 6028dfd1 0000002a 6008bea5
- 7fa50700 7fa50040 7fa4fac0 6028e016
- 7fa4fb50 6007f6da 60959c18 00000000
-Call Trace:
- [<60023a0e>] show_stack+0x13b/0x155
- [<6028e016>] dump_stack+0x2a/0x2c
- [<6007f6da>] __lock_acquire+0x515/0x15f2
- [<6007eb50>] lock_acquire+0x245/0x273
- [<6050d9f1>] __mutex_lock+0xbd/0x325
- [<6050dc76>] mutex_lock_nested+0x1d/0x1f
- [<6008e27e>] __setup_irq+0x11d/0x623
- [<6008e8ed>] request_threaded_irq+0x169/0x1a6
- [<60021eb0>] um_request_irq+0x1ee/0x24b
- [<600234ee>] write_sigio_irq+0x3b/0x76
- [<600383ca>] sigio_broken+0x146/0x2e4
- [<60020bd8>] do_one_initcall+0xde/0x281
+Thanks!
 
-Because we hold sigio_spinlock and then get into requesting
-an interrupt with a mutex.
+[1/1] regmap: mmio: add config option to allow relaxed MMIO accesses
+      commit: 6e1e90ec027509a7e8d4efbd77a65b32b5a8b3ec
 
-Change the spinlock to a mutex to avoid that.
+All being well this means that it will be integrated into the linux-next
+tree (usually sometime in the next 24 hours) and sent to Linus during
+the next merge window (or sooner if it is a bug fix), however if
+problems are discovered then the patch may be dropped or reverted.
 
-Signed-off-by: Johannes Berg <johannes.berg@intel.com>
-Signed-off-by: Richard Weinberger <richard@nod.at>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- arch/um/kernel/sigio.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+You may get further e-mails resulting from automated or manual testing
+and review of the tree, please engage with people reporting problems and
+send followup patches addressing any issues that are reported if needed.
 
-diff --git a/arch/um/kernel/sigio.c b/arch/um/kernel/sigio.c
-index 10c99e058fcae..d1cffc2a7f212 100644
---- a/arch/um/kernel/sigio.c
-+++ b/arch/um/kernel/sigio.c
-@@ -35,14 +35,14 @@ int write_sigio_irq(int fd)
- }
- 
- /* These are called from os-Linux/sigio.c to protect its pollfds arrays. */
--static DEFINE_SPINLOCK(sigio_spinlock);
-+static DEFINE_MUTEX(sigio_mutex);
- 
- void sigio_lock(void)
- {
--	spin_lock(&sigio_spinlock);
-+	mutex_lock(&sigio_mutex);
- }
- 
- void sigio_unlock(void)
- {
--	spin_unlock(&sigio_spinlock);
-+	mutex_unlock(&sigio_mutex);
- }
--- 
-2.25.1
+If any updates are required or you are submitting further changes they
+should be sent as incremental updates against current git, existing
+patches will not be replaced.
 
+Please add any relevant lists and maintainers to the CCs when replying
+to this mail.
+
+Thanks,
+Mark
