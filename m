@@ -2,96 +2,69 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 861C42993D9
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:31:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7F6902993F5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:35:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787852AbgJZRbM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:31:12 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:41334 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1776217AbgJZRbL (ORCPT
+        id S1788031AbgJZRfn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:35:43 -0400
+Received: from szxga05-in.huawei.com ([45.249.212.191]:3626 "EHLO
+        szxga05-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1788000AbgJZRfj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:31:11 -0400
-Date:   Mon, 26 Oct 2020 18:31:07 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603733468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QV3FYqGCsnxmOC4xUQgDmTFEdUZLKcpDfcLiTasvEd0=;
-        b=VUw+KyhQar04G1nUAnp4mxqdbZxdgyUKKHgbosjtFoqg2KpLg6wFzQWd5L3KOV8CIVZvOS
-        cKfUghHftMO6Se7ySFUCEZ2CSVgw4oIt6Bs3WP0EuzuJOYiiPs+i430dBIPjR5iN41Ozu2
-        i8Cv1yS0mfuayUiuBYBCJxbsXBeGtGIE20/gMMvF0Msf5znyRj/NWe3GIOIAJmYwMVLW7W
-        MCe/eFlxx1lxElApQKBc7m1X3rkSNo+RD6gAyquX9AXumJN89DpQ33zwqnbs+KqLIuf/5X
-        fTU0dIscTSlMw1Rj2go3p+O7LjADXRZeS3P3N6x3whdTh2gyVZw/tx1owseU3g==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603733468;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=QV3FYqGCsnxmOC4xUQgDmTFEdUZLKcpDfcLiTasvEd0=;
-        b=90VFu1I1B4FyN+ygRu0tkuV7Jcqu3Wz9LoJhFUXVq7dFYHgu86pTpxH9cWi0FUtcZYSzV2
-        s96/F1HZPHh1riAw==
-From:   Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To:     Hillf Danton <hdanton@sina.com>
-Cc:     Mike Galbraith <efault@gmx.de>,
-        Thomas Gleixner <tglx@linutronix.de>,
-        LKML <linux-kernel@vger.kernel.org>,
-        linux-rt-users <linux-rt-users@vger.kernel.org>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Ben Skeggs <bskeggs@redhat.com>
-Subject: Re: kvm+nouveau induced lockdep  gripe
-Message-ID: <20201026173107.quylcy6fgjvrqat6@linutronix.de>
-References: <20201021125324.ualpvrxvzyie6d7d@linutronix.de>
- <a23a826af7c108ea5651e73b8fbae5e653f16e86.camel@gmx.de>
- <20201023090108.5lunh4vqfpkllmap@linutronix.de>
- <20201024022236.19608-1-hdanton@sina.com>
- <20201024050000.8104-1-hdanton@sina.com>
+        Mon, 26 Oct 2020 13:35:39 -0400
+Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.59])
+        by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4CKhnT1Ct6zLnB3;
+        Tue, 27 Oct 2020 01:35:41 +0800 (CST)
+Received: from localhost.localdomain (10.69.192.58) by
+ DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
+ 14.3.487.0; Tue, 27 Oct 2020 01:35:27 +0800
+From:   John Garry <john.garry@huawei.com>
+To:     <joro@8bytes.org>, <robin.murphy@arm.com>
+CC:     <xiyou.wangcong@gmail.com>, <linuxarm@huawei.com>,
+        <linux-kernel@vger.kernel.org>, <iommu@lists.linux-foundation.org>,
+        <chenxiang66@hisilicon.com>, <thunder.leizhen@huawei.com>,
+        John Garry <john.garry@huawei.com>
+Subject: [PATCH v2 0/4] iommu/iova: Solve longterm IOVA issue
+Date:   Tue, 27 Oct 2020 01:31:37 +0800
+Message-ID: <1603733501-211004-1-git-send-email-john.garry@huawei.com>
+X-Mailer: git-send-email 2.8.1
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201024050000.8104-1-hdanton@sina.com>
+Content-Type: text/plain
+X-Originating-IP: [10.69.192.58]
+X-CFilter-Loop: Reflected
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-24 13:00:00 [+0800], Hillf Danton wrote:
-> 
-> Hmm...curious how that word went into your mind. And when?
-> > [   30.457363]
-> >                other info that might help us debug this:
-> > [   30.457369]  Possible unsafe locking scenario:
-> > 
-> > [   30.457375]        CPU0
-> > [   30.457378]        ----
-> > [   30.457381]   lock(&mgr->vm_lock);
-> > [   30.457386]   <Interrupt>
-> > [   30.457389]     lock(&mgr->vm_lock);
-> > [   30.457394]
-> >                 *** DEADLOCK ***
-> > 
-> > <snips 999 lockdep lines and zillion ATOMIC_SLEEP gripes>
+This series contains a patch to solve the longterm IOVA issue which
+leizhen originally tried to address at [0].
 
-The backtrace contained the "normal" vm_lock. What should follow is the
-backtrace of the in-softirq usage.
+Along with this, I included the following:
+- A smaller helper to clear all IOVAs for a domain
+- Change polarity of the IOVA magazine helpers
+- Small optimisation from Cong Wang included, which was never applied [1].
+  There was some debate of the other patches in that series, but this one
+  is quite straightforward.
 
-> 
-> Dunno if blocking softint is a right cure.
-> 
-> --- a/drivers/gpu/drm/drm_vma_manager.c
-> +++ b/drivers/gpu/drm/drm_vma_manager.c
-> @@ -229,6 +229,7 @@ EXPORT_SYMBOL(drm_vma_offset_add);
->  void drm_vma_offset_remove(struct drm_vma_offset_manager *mgr,
->  			   struct drm_vma_offset_node *node)
->  {
-> +	local_bh_disable();
+Differences to v1:
+- Add IOVA clearing helper
+- Add patch to change polarity of mag helpers
+- Avoid logically-redundant extra variable in __iova_rcache_insert()
 
-There is write_lock_bh(). However changing only one will produce the
-same backtrace somewhere else unless all other users already run BH
-disabled region.
+[0] https://lore.kernel.org/linux-iommu/20190815121104.29140-3-thunder.leizhen@huawei.com/
+[1] https://lore.kernel.org/linux-iommu/4b74d40a-22d1-af53-fcb6-5d70183705a8@huawei.com/
 
->  	write_lock(&mgr->vm_lock);
->  
->  	if (drm_mm_node_allocated(&node->vm_node)) {
+Cong Wang (1):
+  iommu: avoid taking iova_rbtree_lock twice
 
-Sebastian
+John Garry (3):
+  iommu/iova: Add free_all_cpu_cached_iovas()
+  iommu/iova: Avoid double-negatives in magazine helpers
+  iommu/iova: Flush CPU rcache for when a depot fills
+
+ drivers/iommu/iova.c | 66 +++++++++++++++++++++++++-------------------
+ 1 file changed, 38 insertions(+), 28 deletions(-)
+
+-- 
+2.26.2
+
