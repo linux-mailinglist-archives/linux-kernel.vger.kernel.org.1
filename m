@@ -2,136 +2,123 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6B578298F8C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:40:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 927C1298F99
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:41:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781779AbgJZOkN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:40:13 -0400
-Received: from shelob.surriel.com ([96.67.55.147]:55304 "EHLO
-        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1781541AbgJZOid (ORCPT
+        id S1781792AbgJZOlM (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:41:12 -0400
+Received: from mail-ej1-f65.google.com ([209.85.218.65]:44877 "EHLO
+        mail-ej1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781770AbgJZOlK (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:38:33 -0400
-Received: from imladris.surriel.com ([96.67.55.152])
-        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-        (Exim 4.94)
-        (envelope-from <riel@shelob.surriel.com>)
-        id 1kX3dg-0003AN-4n; Mon, 26 Oct 2020 10:38:24 -0400
-Message-ID: <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
-Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
- load_balance()"
-From:   Rik van Riel <riel@surriel.com>
-To:     Vincent Guittot <vincent.guittot@linaro.org>,
-        Chris Mason <clm@fb.com>
-Cc:     Peter Zijlstra <peterz@infradead.org>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        linux-kernel <linux-kernel@vger.kernel.org>
-Date:   Mon, 26 Oct 2020 10:38:23 -0400
-In-Reply-To: <20201026142455.GA13495@vingu-book>
-References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
-         <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
-         <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
-         <20201026142455.GA13495@vingu-book>
-Content-Type: multipart/signed; micalg="pgp-sha256";
-        protocol="application/pgp-signature"; boundary="=-FbC/ZK+CB+Qj4hOykJPj"
-User-Agent: Evolution 3.34.4 (3.34.4-1.fc31) 
+        Mon, 26 Oct 2020 10:41:10 -0400
+Received: by mail-ej1-f65.google.com with SMTP id d6so9264762ejb.11
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=lDYrLy8MUIe7IoCpuFE7hK+pFTNu/TtbAvwKtQzdYkQ=;
+        b=sLh9lD/aEhUvcqIQXEWD7t5aDKLUDdR+uqzwDNqjQgdKANR+b3CYvFxcSZbZoia/vr
+         4pV66OyowpCbPkWGTKaHkNzEXXDXDLVs/2Au+libKtUB44Y6qk/gYUIc1eebF4oFDt79
+         tTk8TkWc5arOSKs7iOkVrAE4WBBMtrp5xmxj63/dFYZRAqMhUvGZwfvkRD1JUaLztwtP
+         fySCKqaIs4Gnn3iOsEGE1OUB2KaEzABTkDBjuG/jvsvUkYTH2qRjZb0Fsk2Hc5H1w8Xh
+         zWDPI2Bf93CUBZCgaf7WwQXZOvxC0mzLBEEwrf0fS1WQ4fobts9ef4tCi6yBGIBGpTF9
+         InFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=lDYrLy8MUIe7IoCpuFE7hK+pFTNu/TtbAvwKtQzdYkQ=;
+        b=WHuxONDzA0VJhmTjI0IrzEljKGO+HnSuXDXhGvWW5+WaSbYDEer8p04yrbKI8h4uyz
+         95X30Oruai74q4dTlbfbK4Z0PV45f7OVW/7qquvi04i9Ff5C7DINUONuHcGLJIXqTGqJ
+         w9m39Efsxgm/89uz7dMZW1EHdRAy0hhPvAVtLkfSKF3wTGZK7R9fTmwYeav7mWgsd9ug
+         51W45PkIc2ziRlyGzLRb/Bb3HSFm4ZE8sZwEJE6J90Po9om8CcVEtjA1VYNTyJXcJxSH
+         DBr2d66gSAd85XeajrkGISz4OOCFS3v/fSS0WyCMFIHuTV/Txv9/+VRDEYauagwZV+rB
+         2/XA==
+X-Gm-Message-State: AOAM532ppY2m5BcWusqchXSCDiXcq9wgWr1Lski4IXCYWYu96mtWjS2t
+        Pq/0QcBZWet4gonnkTrEt3/TgmDLwGZ8IQS9E6nIPw==
+X-Google-Smtp-Source: ABdhPJxQDYouxITNJmwaaThzvVD1XAnzZMqtFtlNEJHpFQRcHDR6KLCgV7rHNgQP+OYdjgQSxIklzpD34tDNLPLfNDQ=
+X-Received: by 2002:a17:906:3146:: with SMTP id e6mr15297794eje.363.1603723266555;
+ Mon, 26 Oct 2020 07:41:06 -0700 (PDT)
 MIME-Version: 1.0
-Sender: riel@shelob.surriel.com
+References: <20201022155858.20867-1-nsaenzjulienne@suse.de> <20201022155858.20867-4-nsaenzjulienne@suse.de>
+In-Reply-To: <20201022155858.20867-4-nsaenzjulienne@suse.de>
+From:   Bartosz Golaszewski <bgolaszewski@baylibre.com>
+Date:   Mon, 26 Oct 2020 15:40:55 +0100
+Message-ID: <CAMpxmJXw12hKYCuMDjG-Ns6n=mXmr4B2x3HJaAJ19wH_xDUMag@mail.gmail.com>
+Subject: Re: [PATCH v2 03/10] gpio: raspberrypi-exp: Release firmware handle
+ on unbind
+To:     Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+Cc:     =?UTF-8?Q?Uwe_Kleine=2DK=C3=B6nig?= 
+        <u.kleine-koenig@pengutronix.de>,
+        LKML <linux-kernel@vger.kernel.org>,
+        Linus Walleij <linus.walleij@linaro.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        linux-pwm@vger.kernel.org, bcm-kernel-feedback-list@broadcom.com,
+        arm-soc <linux-arm-kernel@lists.infradead.org>,
+        linux-devicetree <devicetree@vger.kernel.org>, wahrenst@gmx.net,
+        Linux Input <linux-input@vger.kernel.org>,
+        Dmitry Torokhov <dmitry.torokhov@gmail.com>,
+        Greg KH <gregkh@linuxfoundation.org>,
+        devel@driverdev.osuosl.org, Philipp Zabel <p.zabel@pengutronix.de>,
+        linux-gpio <linux-gpio@vger.kernel.org>,
+        linux-clk <linux-clk@vger.kernel.org>,
+        Stephen Boyd <sboyd@kernel.org>,
+        linux-rpi-kernel@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
+On Thu, Oct 22, 2020 at 5:59 PM Nicolas Saenz Julienne
+<nsaenzjulienne@suse.de> wrote:
+>
+> Upon unbinding the device make sure we release RPi's firmware interface.
+>
+> Signed-off-by: Nicolas Saenz Julienne <nsaenzjulienne@suse.de>
+> ---
+>  drivers/gpio/gpio-raspberrypi-exp.c | 14 +++++++++++++-
+>  1 file changed, 13 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/gpio/gpio-raspberrypi-exp.c b/drivers/gpio/gpio-raspberrypi-exp.c
+> index bb100e0124e6..c008336e1131 100644
+> --- a/drivers/gpio/gpio-raspberrypi-exp.c
+> +++ b/drivers/gpio/gpio-raspberrypi-exp.c
+> @@ -231,8 +231,19 @@ static int rpi_exp_gpio_probe(struct platform_device *pdev)
+>         rpi_gpio->gc.get = rpi_exp_gpio_get;
+>         rpi_gpio->gc.set = rpi_exp_gpio_set;
+>         rpi_gpio->gc.can_sleep = true;
+> +       platform_set_drvdata(pdev, rpi_gpio);
+>
+> -       return devm_gpiochip_add_data(dev, &rpi_gpio->gc, rpi_gpio);
+> +       return gpiochip_add_data(&rpi_gpio->gc, rpi_gpio);
+> +}
+> +
+> +static int rpi_exp_gpio_remove(struct platform_device *pdev)
+> +{
+> +       struct rpi_exp_gpio *rpi_gpio = platform_get_drvdata(pdev);
+> +
+> +       gpiochip_remove(&rpi_gpio->gc);
+> +       rpi_firmware_put(rpi_gpio->fw);
+> +
+> +       return 0;
+>  }
+>
+>  static const struct of_device_id rpi_exp_gpio_ids[] = {
+> @@ -247,6 +258,7 @@ static struct platform_driver rpi_exp_gpio_driver = {
+>                 .of_match_table = of_match_ptr(rpi_exp_gpio_ids),
+>         },
+>         .probe  = rpi_exp_gpio_probe,
+> +       .remove = rpi_exp_gpio_remove,
+>  };
+>  module_platform_driver(rpi_exp_gpio_driver);
+>
+> --
+> 2.28.0
+>
 
---=-FbC/ZK+CB+Qj4hOykJPj
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Why not introduce devm_rpi_firmware_get()? That would allow you to
+keep the driver elegant without re-adding remove().
 
-On Mon, 2020-10-26 at 15:24 +0100, Vincent Guittot wrote:
-> Le lundi 26 oct. 2020 =C3=A0 08:45:27 (-0400), Chris Mason a =C3=A9crit :
-> > On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
-> >=20
-> > > Hi Chris
-> > >=20
-> > > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
-> > > > Hi everyone,
-> > > >=20
-> > > > We=E2=80=99re validating a new kernel in the fleet, and compared wi=
-th
-> > > > v5.2,
-> > >=20
-> > > Which version are you using ?
-> > > several improvements have been added since v5.5 and the rework of
-> > > load_balance
-> >=20
-> > We=E2=80=99re validating v5.6, but all of the numbers referenced in thi=
-s
-> > patch are
-> > against v5.9.  I usually try to back port my way to victory on this
-> > kind of
-> > thing, but mainline seems to behave exactly the same as
-> > 0b0695f2b34a wrt
-> > this benchmark.
->=20
-> ok. Thanks for the confirmation
->=20
-> I have been able to reproduce the problem on my setup.
->=20
-> Could you try the fix below ?
->=20
-> --- a/kernel/sched/fair.c
-> +++ b/kernel/sched/fair.c
-> @@ -9049,7 +9049,8 @@ static inline void calculate_imbalance(struct
-> lb_env *env, struct sd_lb_stats *s
->          * emptying busiest.
->          */
->         if (local->group_type =3D=3D group_has_spare) {
-> -               if (busiest->group_type > group_fully_busy) {
-> +               if ((busiest->group_type > group_fully_busy) &&
-> +                   (busiest->group_weight > 1)) {
->                         /*
->                          * If busiest is overloaded, try to fill
-> spare
->                          * capacity. This might end up creating spare
-> capacity
->=20
->=20
-> When we calculate an imbalance at te smallest level, ie between CPUs
-> (group_weight =3D=3D 1),
-> we should try to spread tasks on cpus instead of trying to fill spare
-> capacity.
-
-Should we also spread tasks when balancing between
-multi-threaded CPU cores on the same socket?
-
-Say we have groups of CPUs
-(0, 2) and CPUs (1, 3),
-with CPU 2 idle, and 3 tasks spread between CPUs
-1 & 3.
-
-Since they are all on the same LLC, and the task
-wakeup code has absolutely no hesitation in moving
-them around, should the load balancer also try to
-keep tasks within a socket spread across all CPUs?
-
---=20
-All Rights Reversed.
-
---=-FbC/ZK+CB+Qj4hOykJPj
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-Content-Transfer-Encoding: 7bit
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEEKR73pCCtJ5Xj3yADznnekoTE3oMFAl+W318ACgkQznnekoTE
-3oPRJwf/ekaSHMN/L8hJqdMIYltLVYfygVSAtGgPBkOpmPLPk5eL9eqdL1vq6Rrt
-FwvI4O2D6g4rHdiLDs7TavOvoObeWkvl55P5XZSC/csv22RSr0opPMViYB0G+JYM
-r2iJiLom2JnrVb3c0426yBhDw0MXIt+5YYlyQFrMS0ApICPyLqCvj29U3iyV9avu
-Gyfn9aX7q4seK3YjN5ZvfO68PrsWy2Q6NjELHDJvqn+x8s2UZoC+8WAISJLy1YLm
-n9YgZ80wAdaGGGzXFMvWR+PMnFkoWjDg3AnW5E3ddLj/yX4QVUjYZngYo3nS14F8
-vobufUfweqzaA4BCZz+tkISfw1ZR0w==
-=BfCB
------END PGP SIGNATURE-----
-
---=-FbC/ZK+CB+Qj4hOykJPj--
-
+Bartosz
