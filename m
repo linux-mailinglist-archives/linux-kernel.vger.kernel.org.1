@@ -2,46 +2,46 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 027BB298B41
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:01:16 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1EE45298B3D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:01:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773050AbgJZLBA (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:01:00 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:33290 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772315AbgJZK63 (ORCPT
+        id S1773035AbgJZLAr (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:00:47 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:41161 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772400AbgJZK6b (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:58:29 -0400
-Received: by mail-wm1-f67.google.com with SMTP id l20so4893964wme.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 03:58:27 -0700 (PDT)
+        Mon, 26 Oct 2020 06:58:31 -0400
+Received: by mail-wr1-f66.google.com with SMTP id s9so11842338wro.8
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 03:58:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=ffwll.ch; s=google;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=5HSDx6z2iUpxgLk7STJ2LBrJWLho+Vrj3pPui9pXoI8=;
-        b=UlPNDMGyixYlC+gPNujgEL2rDmgBnacLev+zB09AcN9jWsIhwDD/rSZ38jOBVqq8xO
-         iKAMMw2Dn+O1sn5M45MuUANko75LMiByct+0sTK4Y1zG/mkhWRt6wfXXCeYyMZpxuDFP
-         ohoyHxlTs9ukBeuTT1XZ/1TieNop7LHOqq+kU=
+        bh=VujIMeu4s9glQHD7csuDCyNoNKl6Zu7MMMJFOASMnXs=;
+        b=Ghd448QeH/JpCHvVE51pHD/gv1aq9xL/1owNFBCiwBZSBWw36ulRGro2rbjavW8HCm
+         tpvgHYSA74mCT5+uyBNL8JCAIV8+TSzuSAdovyibD14KcIKytMRX6O8hoK25tjhehc2D
+         7GZJatk+wlASdgpbFnGrN0Wke1bO/fVz4YTuI=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=5HSDx6z2iUpxgLk7STJ2LBrJWLho+Vrj3pPui9pXoI8=;
-        b=fFZUIPHqyvLNKt70TETIIm3cVsUsPJEb151DKHvjV97el+WvUO6xDLXmQt/bE3WEd7
-         eYVlvUBIpbsthfo61BRh5+vVpskpYKkH1q4fkCUYH3+Ur6JCpCecj/5Fjiq35btLav1O
-         9GwAAJMtUMJjuP8rIQfxXcGwMux7/99bPTPiLFv30rrdrAqEIISWMf4seAiaVfFkWqK2
-         uNEn4EA8U0oj5cHaOa4l0h2L6tIvicXa/kxShqm0KyQ6+8I8rbirELcdW589zXlMrONL
-         CpBOuRLz8w94WhT1ro0PdKhAX9bh//0CJbrqJ8jtWntgVwIwTZD+ngEOKjhuo3eIvA6Z
-         vX4g==
-X-Gm-Message-State: AOAM532n/Zc7BqseiP7JxzH/2t7HUWNbIkWq6yD2OU7tQuKM4UgsDCgs
-        MP2HU3yMojnt1Ixfc4ocX6qubA==
-X-Google-Smtp-Source: ABdhPJwk+WyO7L+7DmDEv6NKzv9NT0FNUGzlLjoe/puysIw3cSVvPS9bRY2rLzmA6270BRM/TeV4wg==
-X-Received: by 2002:a05:600c:25a:: with SMTP id 26mr14956631wmj.39.1603709906608;
-        Mon, 26 Oct 2020 03:58:26 -0700 (PDT)
+        bh=VujIMeu4s9glQHD7csuDCyNoNKl6Zu7MMMJFOASMnXs=;
+        b=BIpFmn/qeKrOLvA7+pdtRQMSWLrrPClX7IlN84drV5tWBDFL42PfrMMh0vHb4PJuZF
+         JSKxZ31o0QE+nYVKJMKVl2Ju4qHZDlWYlQmaM6ukmWEmzo0QSGUoCSvVZpdjhnxpVmCS
+         BmsY61O9KT1lnc91ZCKoCKKWC2T3/t5W+fFYPm+gudJLT7E9Hhkq9nvOhyn1Up2bCsFd
+         q5t4zoYjYoRYAWqep4GcwjxAcqgQCIor4qzzptT9g2kVVFT76RPB4DuFqMqFzYzExf8B
+         GJ+ORuRN+yzh/VfEBcWnTSlRjn8l1cwqmPYbcoHOUsyTL9U3r5YPHMIa+56IpYLHTU4l
+         7U6Q==
+X-Gm-Message-State: AOAM5327aYW1sZeINnm2y7cYZ3uoW+12GrKdg9ZiISPybx2LP3eqZRpa
+        KR5oao76WlyTEGMjNdCaRamGxg==
+X-Google-Smtp-Source: ABdhPJypi/6Cbees0NGq1yum4JVfOyvtLJ54ljnHY5mG0+HM7dRuCdSdcl5NsPm+FmtB0NGqEYAv1Q==
+X-Received: by 2002:adf:f3cb:: with SMTP id g11mr18176883wrp.210.1603709908008;
+        Mon, 26 Oct 2020 03:58:28 -0700 (PDT)
 Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id w83sm21165156wmg.48.2020.10.26.03.58.25
+        by smtp.gmail.com with ESMTPSA id w83sm21165156wmg.48.2020.10.26.03.58.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 03:58:25 -0700 (PDT)
+        Mon, 26 Oct 2020 03:58:27 -0700 (PDT)
 From:   Daniel Vetter <daniel.vetter@ffwll.ch>
 To:     DRI Development <dri-devel@lists.freedesktop.org>,
         LKML <linux-kernel@vger.kernel.org>
@@ -49,7 +49,6 @@ Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
         linux-arm-kernel@lists.infradead.org,
         linux-samsung-soc@vger.kernel.org, linux-media@vger.kernel.org,
         linux-s390@vger.kernel.org, Daniel Vetter <daniel.vetter@ffwll.ch>,
-        John Hubbard <jhubbard@nvidia.com>,
         Daniel Vetter <daniel.vetter@intel.com>,
         Jason Gunthorpe <jgg@ziepe.ca>,
         Inki Dae <inki.dae@samsung.com>,
@@ -59,12 +58,13 @@ Cc:     kvm@vger.kernel.org, linux-mm@kvack.org,
         Kukjin Kim <kgene@kernel.org>,
         Krzysztof Kozlowski <krzk@kernel.org>,
         Andrew Morton <akpm@linux-foundation.org>,
+        John Hubbard <jhubbard@nvidia.com>,
         =?UTF-8?q?J=C3=A9r=C3=B4me=20Glisse?= <jglisse@redhat.com>,
         Jan Kara <jack@suse.cz>,
         Dan Williams <dan.j.williams@intel.com>
-Subject: [PATCH v4 01/15] drm/exynos: Stop using frame_vector helpers
-Date:   Mon, 26 Oct 2020 11:58:04 +0100
-Message-Id: <20201026105818.2585306-2-daniel.vetter@ffwll.ch>
+Subject: [PATCH v4 02/15] drm/exynos: Use FOLL_LONGTERM for g2d cmdlists
+Date:   Mon, 26 Oct 2020 11:58:05 +0100
+Message-Id: <20201026105818.2585306-3-daniel.vetter@ffwll.ch>
 X-Mailer: git-send-email 2.28.0
 In-Reply-To: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
 References: <20201026105818.2585306-1-daniel.vetter@ffwll.ch>
@@ -75,10 +75,9 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All we need are a pages array, pin_user_pages_fast can give us that
-directly. Plus this avoids the entire raw pfn side of get_vaddr_frames.
+The exynos g2d interface is very unusual, but it looks like the
+userptr objects are persistent. Hence they need FOLL_LONGTERM.
 
-Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 Signed-off-by: Daniel Vetter <daniel.vetter@intel.com>
 Cc: Jason Gunthorpe <jgg@ziepe.ca>
 Cc: Inki Dae <inki.dae@samsung.com>
@@ -97,129 +96,24 @@ Cc: linux-arm-kernel@lists.infradead.org
 Cc: linux-samsung-soc@vger.kernel.org
 Cc: linux-media@vger.kernel.org
 Signed-off-by: Daniel Vetter <daniel.vetter@ffwll.ch>
---
-v2: Use unpin_user_pages_dirty_lock (John)
 ---
- drivers/gpu/drm/exynos/Kconfig          |  1 -
- drivers/gpu/drm/exynos/exynos_drm_g2d.c | 47 +++++++++++--------------
- 2 files changed, 20 insertions(+), 28 deletions(-)
+ drivers/gpu/drm/exynos/exynos_drm_g2d.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/exynos/Kconfig b/drivers/gpu/drm/exynos/Kconfig
-index 6417f374b923..43257ef3c09d 100644
---- a/drivers/gpu/drm/exynos/Kconfig
-+++ b/drivers/gpu/drm/exynos/Kconfig
-@@ -88,7 +88,6 @@ comment "Sub-drivers"
- config DRM_EXYNOS_G2D
- 	bool "G2D"
- 	depends on VIDEO_SAMSUNG_S5P_G2D=n || COMPILE_TEST
--	select FRAME_VECTOR
- 	help
- 	  Choose this option if you want to use Exynos G2D for DRM.
- 
 diff --git a/drivers/gpu/drm/exynos/exynos_drm_g2d.c b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-index 967a5cdc120e..ecede41af9b9 100644
+index ecede41af9b9..1e0c5a7f206e 100644
 --- a/drivers/gpu/drm/exynos/exynos_drm_g2d.c
 +++ b/drivers/gpu/drm/exynos/exynos_drm_g2d.c
-@@ -205,7 +205,8 @@ struct g2d_cmdlist_userptr {
- 	dma_addr_t		dma_addr;
- 	unsigned long		userptr;
- 	unsigned long		size;
--	struct frame_vector	*vec;
-+	struct page		**pages;
-+	unsigned int		npages;
- 	struct sg_table		*sgt;
- 	atomic_t		refcount;
- 	bool			in_pool;
-@@ -378,7 +379,6 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
- 					bool force)
- {
- 	struct g2d_cmdlist_userptr *g2d_userptr = obj;
--	struct page **pages;
- 
- 	if (!obj)
- 		return;
-@@ -398,15 +398,9 @@ static void g2d_userptr_put_dma_addr(struct g2d_data *g2d,
- 	dma_unmap_sgtable(to_dma_dev(g2d->drm_dev), g2d_userptr->sgt,
- 			  DMA_BIDIRECTIONAL, 0);
- 
--	pages = frame_vector_pages(g2d_userptr->vec);
--	if (!IS_ERR(pages)) {
--		int i;
--
--		for (i = 0; i < frame_vector_count(g2d_userptr->vec); i++)
--			set_page_dirty_lock(pages[i]);
--	}
--	put_vaddr_frames(g2d_userptr->vec);
--	frame_vector_destroy(g2d_userptr->vec);
-+	unpin_user_pages_dirty_lock(g2d_userptr->pages, g2d_userptr->npages,
-+				    true);
-+	kvfree(g2d_userptr->pages);
- 
- 	if (!g2d_userptr->out_of_list)
- 		list_del_init(&g2d_userptr->list);
-@@ -474,35 +468,34 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
- 	offset = userptr & ~PAGE_MASK;
- 	end = PAGE_ALIGN(userptr + size);
- 	npages = (end - start) >> PAGE_SHIFT;
--	g2d_userptr->vec = frame_vector_create(npages);
--	if (!g2d_userptr->vec) {
-+	g2d_userptr->pages = kvmalloc_array(npages, sizeof(*g2d_userptr->pages),
-+					    GFP_KERNEL);
-+	if (!g2d_userptr->pages) {
- 		ret = -ENOMEM;
+@@ -475,7 +475,8 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
  		goto err_free;
  	}
  
--	ret = get_vaddr_frames(start, npages, FOLL_FORCE | FOLL_WRITE,
--		g2d_userptr->vec);
-+	ret = pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
-+				  g2d_userptr->pages);
+-	ret = pin_user_pages_fast(start, npages, FOLL_FORCE | FOLL_WRITE,
++	ret = pin_user_pages_fast(start, npages,
++				  FOLL_FORCE | FOLL_WRITE | FOLL_LONGTERM,
+ 				  g2d_userptr->pages);
  	if (ret != npages) {
  		DRM_DEV_ERROR(g2d->dev,
- 			      "failed to get user pages from userptr.\n");
- 		if (ret < 0)
--			goto err_destroy_framevec;
--		ret = -EFAULT;
--		goto err_put_framevec;
--	}
--	if (frame_vector_to_pages(g2d_userptr->vec) < 0) {
-+			goto err_destroy_pages;
-+		npages = ret;
- 		ret = -EFAULT;
--		goto err_put_framevec;
-+		goto err_unpin_pages;
- 	}
-+	g2d_userptr->npages = npages;
- 
- 	sgt = kzalloc(sizeof(*sgt), GFP_KERNEL);
- 	if (!sgt) {
- 		ret = -ENOMEM;
--		goto err_put_framevec;
-+		goto err_unpin_pages;
- 	}
- 
- 	ret = sg_alloc_table_from_pages(sgt,
--					frame_vector_pages(g2d_userptr->vec),
-+					g2d_userptr->pages,
- 					npages, offset, size, GFP_KERNEL);
- 	if (ret < 0) {
- 		DRM_DEV_ERROR(g2d->dev, "failed to get sgt from pages.\n");
-@@ -538,11 +531,11 @@ static dma_addr_t *g2d_userptr_get_dma_addr(struct g2d_data *g2d,
- err_free_sgt:
- 	kfree(sgt);
- 
--err_put_framevec:
--	put_vaddr_frames(g2d_userptr->vec);
-+err_unpin_pages:
-+	unpin_user_pages(g2d_userptr->pages, npages);
- 
--err_destroy_framevec:
--	frame_vector_destroy(g2d_userptr->vec);
-+err_destroy_pages:
-+	kvfree(g2d_userptr->pages);
- 
- err_free:
- 	kfree(g2d_userptr);
 -- 
 2.28.0
 
