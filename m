@@ -2,512 +2,277 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 55699299060
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:02:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AD9BD299065
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:02:43 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782912AbgJZPCf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:02:35 -0400
-Received: from mail-oi1-f195.google.com ([209.85.167.195]:46184 "EHLO
-        mail-oi1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782749AbgJZPCe (ORCPT
+        id S1782925AbgJZPCm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:02:42 -0400
+Received: from mail-ot1-f65.google.com ([209.85.210.65]:44772 "EHLO
+        mail-ot1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782749AbgJZPCl (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:02:34 -0400
-Received: by mail-oi1-f195.google.com with SMTP id x1so2967765oic.13;
-        Mon, 26 Oct 2020 08:02:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to:user-agent;
-        bh=homWwlI93slxiwqEak8Y1cJp7LwJAJvYpOxCzwQqMT8=;
-        b=VtV6YX9YRdZepfCDDvg4VmVQI+X6G1c5GMg6aa0TQYI3DGpGjlDUsD6cgZ1QUA33T8
-         R5ou+fOBRFBSdue2UWSEfP7uY42u54J+u5aF3UFu2sDLedt1JZ30h3dGB08MoN27jIUn
-         Vjgt4V8sV22mxq0OfGGHmzUMarWpQu/7eG8To5JWaTgcaEGA79cM4t2aVS56S8tyyCCb
-         2H2AFIRMFzumGtkQonjpCMGLNvYAJzAoZGrKxg+duD0Ll465zprY4YZZq5diwJZr83VH
-         i0w1q43hMoWAmx6tJYMyKMED9lxPah8Z7yPZEPNi5q7p8iJPDkpiR7hSH7um/6ZxsUCK
-         us+A==
+        Mon, 26 Oct 2020 11:02:41 -0400
+Received: by mail-ot1-f65.google.com with SMTP id e20so8222409otj.11;
+        Mon, 26 Oct 2020 08:02:38 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:date:from:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to:user-agent;
-        bh=homWwlI93slxiwqEak8Y1cJp7LwJAJvYpOxCzwQqMT8=;
-        b=ZT/iLDZqN3Q0OUYvuDGV1kcfA9OA7wwHIWi6w3fvjqFN0tr9c1FVwIcRA4q1FWrNnW
-         VQDZMn9jVJF3+vWsRvpz+i55PJ2fxYJCRjDzbi776f8sEI2L3ESupupvoYcqZ7k9Rkm8
-         uiK31yCLWmbLTQOnYCbhS7f0k6nosO/VJmOoOYix6H0ux73Yvh244rzRhglUdvEJ1p/B
-         Xcupzz6NqEfXRrgUc6otm4+nTjlG8Q8Km6iH2zkEZDbBBOWL7Dh46bvR/uZF6WZxhZPD
-         iM9txKKfBZG9bGcYAwy0gCqvTqWUlX9zl46mpPoc3mpBpBlmhzppzYCfvT3vejLQdW6A
-         zSkg==
-X-Gm-Message-State: AOAM532nUHJ2sgPGdGKsWOlVItahuvjXbjqpPAmFTfzcr2rU3Eygtx1L
-        SUMHxSO5RUeGHp5Hb029VZjJ4U6VKpA=
-X-Google-Smtp-Source: ABdhPJz2VrTLYQDQOcEfUYlLZ6kPAny2FEXfotOX/DMQBzakkYrKnIaC+MO2b+kCiWeEA1Wc9NrjFA==
-X-Received: by 2002:aca:d5c1:: with SMTP id m184mr12947573oig.19.1603724550500;
-        Mon, 26 Oct 2020 08:02:30 -0700 (PDT)
-Received: from localhost ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id g22sm3678575oti.26.2020.10.26.08.02.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Mon, 26 Oct 2020 08:02:29 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date:   Mon, 26 Oct 2020 08:02:28 -0700
-From:   Guenter Roeck <linux@roeck-us.net>
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Jean Delvare <jdelvare@suse.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        "David S . Miller" <davem@davemloft.net>,
-        Jakub Kicinski <kuba@kernel.org>,
-        Jesper Dangaard Brouer <hawk@kernel.org>,
-        John Fastabend <john.fastabend@gmail.com>,
-        linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, bpf@vger.kernel.org,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Subject: Re: [PATCH] hwmon: pmbus: shrink code and remove pmbus_do_remove()
-Message-ID: <20201026150228.GA54948@roeck-us.net>
-References: <20201026105352.20359-1-brgl@bgdev.pl>
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=2aiLRf1lQzD4dmA+9Qc8/8CVqPN/upZ+zNSr1+Xbbnk=;
+        b=jEihGHWA9JCNgqDH4vbBRr1h5JIKXLEiu0zTH/LPUrsH493KGpRFgTUekR91JUl4ZF
+         LmMvWhdthlQRVFTHnJFHgmCk8HRbysnfqFWnjNkLGrgvBQXgMai8eFVi2an95ACkwh3u
+         3s4o62T91kwrlCLiGMJhgAS5pjLap8JSmA3Se2EB93z1Kqdvq9vjh4z5lEbj+MGN8EeJ
+         5mcpBzTJ9HHBdD5K1r1AT72zT4+uLIdcb7v2nt4gMNOq2S8uoRDoaFSEL5R/NCFln3fk
+         h2cld9zAhzp9XH0r/3R671yoy8ik1kdqB4+uTUtXvucRoAiOiKsETSVMYUIZ9pX6bJwE
+         j6ug==
+X-Gm-Message-State: AOAM532Se/Tcq8S7/EHpkYwsfnEzitfwUs/w7VWaHilKMmZpxX3SDpVJ
+        rQmUW7aBAeiCU2uOD7WKHw==
+X-Google-Smtp-Source: ABdhPJwZIO7eFvyYC6iIW/01eosuWEdyWYpFD9Md2hkD3Kl2sB29RW5rARlUyAQvIWydhS7rQT12Jg==
+X-Received: by 2002:a9d:172f:: with SMTP id i47mr10180077ota.74.1603724557602;
+        Mon, 26 Oct 2020 08:02:37 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id h6sm4126286oia.51.2020.10.26.08.02.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 08:02:36 -0700 (PDT)
+Received: (nullmailer pid 156045 invoked by uid 1000);
+        Mon, 26 Oct 2020 15:02:35 -0000
+Date:   Mon, 26 Oct 2020 10:02:35 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Bjorn Andersson <bjorn.andersson@linaro.org>
+Cc:     Pavel Machek <pavel@ucw.cz>, Dan Murphy <dmurphy@ti.com>,
+        Andy Gross <agross@kernel.org>,
+        Thierry Reding <thierry.reding@gmail.com>,
+        Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
+        <u.kleine-koenig@pengutronix.de>, Lee Jones <lee.jones@linaro.org>,
+        Martin Botka <martin.botka1@gmail.com>,
+        linux-leds@vger.kernel.org, devicetree@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+        linux-pwm@vger.kernel.org
+Subject: Re: [PATCH v6 1/4] dt-bindings: leds: Add Qualcomm Light Pulse
+ Generator binding
+Message-ID: <20201026150235.GA140013@bogus>
+References: <20201021201224.3430546-1-bjorn.andersson@linaro.org>
+ <20201021201224.3430546-2-bjorn.andersson@linaro.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026105352.20359-1-brgl@bgdev.pl>
-User-Agent: Mutt/1.9.4 (2018-02-28)
+In-Reply-To: <20201021201224.3430546-2-bjorn.andersson@linaro.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 11:53:52AM +0100, Bartosz Golaszewski wrote:
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
+On Wed, Oct 21, 2020 at 01:12:21PM -0700, Bjorn Andersson wrote:
+> This adds the binding document describing the three hardware blocks
+> related to the Light Pulse Generator found in a wide range of Qualcomm
+> PMICs.
 > 
-> The only action currently performed in pmbus_do_remove() is removing the
-> debugfs hierarchy. We can schedule a devm action at probe time and remove
-> pmbus_do_remove() entirely from all pmbus drivers.
-> 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-
-Applied.
-
-Thanks,
-Guenter
-
+> Signed-off-by: Bjorn Andersson <bjorn.andersson@linaro.org>
 > ---
->  drivers/hwmon/pmbus/adm1266.c      |  1 -
->  drivers/hwmon/pmbus/adm1275.c      |  1 -
->  drivers/hwmon/pmbus/bel-pfe.c      |  1 -
->  drivers/hwmon/pmbus/ibm-cffps.c    |  1 -
->  drivers/hwmon/pmbus/inspur-ipsps.c |  1 -
->  drivers/hwmon/pmbus/ir35221.c      |  1 -
->  drivers/hwmon/pmbus/ir38064.c      |  1 -
->  drivers/hwmon/pmbus/irps5401.c     |  1 -
->  drivers/hwmon/pmbus/isl68137.c     |  1 -
->  drivers/hwmon/pmbus/lm25066.c      |  1 -
->  drivers/hwmon/pmbus/ltc2978.c      |  1 -
->  drivers/hwmon/pmbus/ltc3815.c      |  1 -
->  drivers/hwmon/pmbus/max16064.c     |  1 -
->  drivers/hwmon/pmbus/max16601.c     |  1 -
->  drivers/hwmon/pmbus/max20730.c     |  1 -
->  drivers/hwmon/pmbus/max20751.c     |  1 -
->  drivers/hwmon/pmbus/max31785.c     |  1 -
->  drivers/hwmon/pmbus/max34440.c     |  1 -
->  drivers/hwmon/pmbus/max8688.c      |  1 -
->  drivers/hwmon/pmbus/mp2975.c       |  1 -
->  drivers/hwmon/pmbus/pmbus.c        |  1 -
->  drivers/hwmon/pmbus/pmbus.h        |  1 -
->  drivers/hwmon/pmbus/pmbus_core.c   | 20 +++++++++-----------
->  drivers/hwmon/pmbus/pxe1610.c      |  1 -
->  drivers/hwmon/pmbus/tps40422.c     |  1 -
->  drivers/hwmon/pmbus/tps53679.c     |  1 -
->  drivers/hwmon/pmbus/ucd9000.c      |  1 -
->  drivers/hwmon/pmbus/ucd9200.c      |  1 -
->  drivers/hwmon/pmbus/xdpe12284.c    |  1 -
->  drivers/hwmon/pmbus/zl6100.c       |  1 -
->  30 files changed, 9 insertions(+), 40 deletions(-)
 > 
-> diff --git a/drivers/hwmon/pmbus/adm1266.c b/drivers/hwmon/pmbus/adm1266.c
-> index c7b373ba92f2..4d2e4ddcfbfd 100644
-> --- a/drivers/hwmon/pmbus/adm1266.c
-> +++ b/drivers/hwmon/pmbus/adm1266.c
-> @@ -502,7 +502,6 @@ static struct i2c_driver adm1266_driver = {
->  		   .of_match_table = adm1266_of_match,
->  		  },
->  	.probe_new = adm1266_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = adm1266_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/adm1275.c b/drivers/hwmon/pmbus/adm1275.c
-> index e7997f37b266..38a6515b0763 100644
-> --- a/drivers/hwmon/pmbus/adm1275.c
-> +++ b/drivers/hwmon/pmbus/adm1275.c
-> @@ -797,7 +797,6 @@ static struct i2c_driver adm1275_driver = {
->  		   .name = "adm1275",
->  		   },
->  	.probe_new = adm1275_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = adm1275_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/bel-pfe.c b/drivers/hwmon/pmbus/bel-pfe.c
-> index 2c5b853d6c7f..aed7542d7ce5 100644
-> --- a/drivers/hwmon/pmbus/bel-pfe.c
-> +++ b/drivers/hwmon/pmbus/bel-pfe.c
-> @@ -121,7 +121,6 @@ static struct i2c_driver pfe_pmbus_driver = {
->  		   .name = "bel-pfe",
->  	},
->  	.probe_new = pfe_pmbus_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = pfe_device_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ibm-cffps.c b/drivers/hwmon/pmbus/ibm-cffps.c
-> index 2fb7540ee952..d6bbbb223871 100644
-> --- a/drivers/hwmon/pmbus/ibm-cffps.c
-> +++ b/drivers/hwmon/pmbus/ibm-cffps.c
-> @@ -617,7 +617,6 @@ static struct i2c_driver ibm_cffps_driver = {
->  		.of_match_table = ibm_cffps_of_match,
->  	},
->  	.probe_new = ibm_cffps_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ibm_cffps_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/inspur-ipsps.c b/drivers/hwmon/pmbus/inspur-ipsps.c
-> index be493182174d..88c5865c4d6f 100644
-> --- a/drivers/hwmon/pmbus/inspur-ipsps.c
-> +++ b/drivers/hwmon/pmbus/inspur-ipsps.c
-> @@ -216,7 +216,6 @@ static struct i2c_driver ipsps_driver = {
->  		.of_match_table = of_match_ptr(ipsps_of_match),
->  	},
->  	.probe_new = ipsps_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ipsps_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ir35221.c b/drivers/hwmon/pmbus/ir35221.c
-> index 5fadb1def49f..3aebeb1443fd 100644
-> --- a/drivers/hwmon/pmbus/ir35221.c
-> +++ b/drivers/hwmon/pmbus/ir35221.c
-> @@ -137,7 +137,6 @@ static struct i2c_driver ir35221_driver = {
->  		.name	= "ir35221",
->  	},
->  	.probe_new	= ir35221_probe,
-> -	.remove		= pmbus_do_remove,
->  	.id_table	= ir35221_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ir38064.c b/drivers/hwmon/pmbus/ir38064.c
-> index 9ac563ce7dd8..46f17c4b4873 100644
-> --- a/drivers/hwmon/pmbus/ir38064.c
-> +++ b/drivers/hwmon/pmbus/ir38064.c
-> @@ -53,7 +53,6 @@ static struct i2c_driver ir38064_driver = {
->  		   .name = "ir38064",
->  		   },
->  	.probe_new = ir38064_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ir38064_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/irps5401.c b/drivers/hwmon/pmbus/irps5401.c
-> index 44aeafcbd56c..93ef6d64a33a 100644
-> --- a/drivers/hwmon/pmbus/irps5401.c
-> +++ b/drivers/hwmon/pmbus/irps5401.c
-> @@ -55,7 +55,6 @@ static struct i2c_driver irps5401_driver = {
->  		   .name = "irps5401",
->  		   },
->  	.probe_new = irps5401_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = irps5401_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/isl68137.c b/drivers/hwmon/pmbus/isl68137.c
-> index 7cad76e07f70..2bee930d3900 100644
-> --- a/drivers/hwmon/pmbus/isl68137.c
-> +++ b/drivers/hwmon/pmbus/isl68137.c
-> @@ -324,7 +324,6 @@ static struct i2c_driver isl68137_driver = {
->  		   .name = "isl68137",
->  		   },
->  	.probe_new = isl68137_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = raa_dmpvr_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/lm25066.c b/drivers/hwmon/pmbus/lm25066.c
-> index 429172a42902..c75a6bf39641 100644
-> --- a/drivers/hwmon/pmbus/lm25066.c
-> +++ b/drivers/hwmon/pmbus/lm25066.c
-> @@ -508,7 +508,6 @@ static struct i2c_driver lm25066_driver = {
->  		   .name = "lm25066",
->  		   },
->  	.probe_new = lm25066_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = lm25066_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ltc2978.c b/drivers/hwmon/pmbus/ltc2978.c
-> index 9a024cf70145..7e53fa95b92d 100644
-> --- a/drivers/hwmon/pmbus/ltc2978.c
-> +++ b/drivers/hwmon/pmbus/ltc2978.c
-> @@ -875,7 +875,6 @@ static struct i2c_driver ltc2978_driver = {
->  		   .of_match_table = of_match_ptr(ltc2978_of_match),
->  		   },
->  	.probe_new = ltc2978_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ltc2978_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ltc3815.c b/drivers/hwmon/pmbus/ltc3815.c
-> index 8328fb367ad6..e45e14d26c9a 100644
-> --- a/drivers/hwmon/pmbus/ltc3815.c
-> +++ b/drivers/hwmon/pmbus/ltc3815.c
-> @@ -200,7 +200,6 @@ static struct i2c_driver ltc3815_driver = {
->  		   .name = "ltc3815",
->  		   },
->  	.probe_new = ltc3815_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ltc3815_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max16064.c b/drivers/hwmon/pmbus/max16064.c
-> index 26e7f5ef9d7f..d79add99083e 100644
-> --- a/drivers/hwmon/pmbus/max16064.c
-> +++ b/drivers/hwmon/pmbus/max16064.c
-> @@ -103,7 +103,6 @@ static struct i2c_driver max16064_driver = {
->  		   .name = "max16064",
->  		   },
->  	.probe_new = max16064_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max16064_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max16601.c b/drivers/hwmon/pmbus/max16601.c
-> index 71bb74e27a5c..a960b86e72d2 100644
-> --- a/drivers/hwmon/pmbus/max16601.c
-> +++ b/drivers/hwmon/pmbus/max16601.c
-> @@ -302,7 +302,6 @@ static struct i2c_driver max16601_driver = {
->  		   .name = "max16601",
->  		   },
->  	.probe_new = max16601_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max16601_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max20730.c b/drivers/hwmon/pmbus/max20730.c
-> index 57923d72490c..bb0f38d9cfcc 100644
-> --- a/drivers/hwmon/pmbus/max20730.c
-> +++ b/drivers/hwmon/pmbus/max20730.c
-> @@ -779,7 +779,6 @@ static struct i2c_driver max20730_driver = {
->  		.of_match_table = max20730_of_match,
->  	},
->  	.probe_new = max20730_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max20730_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max20751.c b/drivers/hwmon/pmbus/max20751.c
-> index 921e92d82aec..9d42f82fdd99 100644
-> --- a/drivers/hwmon/pmbus/max20751.c
-> +++ b/drivers/hwmon/pmbus/max20751.c
-> @@ -43,7 +43,6 @@ static struct i2c_driver max20751_driver = {
->  		   .name = "max20751",
->  		   },
->  	.probe_new = max20751_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max20751_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max31785.c b/drivers/hwmon/pmbus/max31785.c
-> index 839b957bc03e..e5a9f4019cd5 100644
-> --- a/drivers/hwmon/pmbus/max31785.c
-> +++ b/drivers/hwmon/pmbus/max31785.c
-> @@ -390,7 +390,6 @@ static struct i2c_driver max31785_driver = {
->  		.of_match_table = max31785_of_match,
->  	},
->  	.probe_new = max31785_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max31785_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max34440.c b/drivers/hwmon/pmbus/max34440.c
-> index f4cb196aaaf3..dad66b3c0116 100644
-> --- a/drivers/hwmon/pmbus/max34440.c
-> +++ b/drivers/hwmon/pmbus/max34440.c
-> @@ -521,7 +521,6 @@ static struct i2c_driver max34440_driver = {
->  		   .name = "max34440",
->  		   },
->  	.probe_new = max34440_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max34440_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/max8688.c b/drivers/hwmon/pmbus/max8688.c
-> index 4b2239a6afd3..329dc851fc59 100644
-> --- a/drivers/hwmon/pmbus/max8688.c
-> +++ b/drivers/hwmon/pmbus/max8688.c
-> @@ -183,7 +183,6 @@ static struct i2c_driver max8688_driver = {
->  		   .name = "max8688",
->  		   },
->  	.probe_new = max8688_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = max8688_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-> index 1c3e2a9453b1..60fbdb371332 100644
-> --- a/drivers/hwmon/pmbus/mp2975.c
-> +++ b/drivers/hwmon/pmbus/mp2975.c
-> @@ -758,7 +758,6 @@ static struct i2c_driver mp2975_driver = {
->  		.of_match_table = of_match_ptr(mp2975_of_match),
->  	},
->  	.probe_new = mp2975_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = mp2975_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/pmbus.c b/drivers/hwmon/pmbus/pmbus.c
-> index 20f1af9165c2..a1b4260e75b2 100644
-> --- a/drivers/hwmon/pmbus/pmbus.c
-> +++ b/drivers/hwmon/pmbus/pmbus.c
-> @@ -238,7 +238,6 @@ static struct i2c_driver pmbus_driver = {
->  		   .name = "pmbus",
->  		   },
->  	.probe_new = pmbus_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = pmbus_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/pmbus.h b/drivers/hwmon/pmbus/pmbus.h
-> index 88a5df2633fb..4c30ec89f5bf 100644
-> --- a/drivers/hwmon/pmbus/pmbus.h
-> +++ b/drivers/hwmon/pmbus/pmbus.h
-> @@ -490,7 +490,6 @@ void pmbus_clear_faults(struct i2c_client *client);
->  bool pmbus_check_byte_register(struct i2c_client *client, int page, int reg);
->  bool pmbus_check_word_register(struct i2c_client *client, int page, int reg);
->  int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info);
-> -int pmbus_do_remove(struct i2c_client *client);
->  const struct pmbus_driver_info *pmbus_get_driver_info(struct i2c_client
->  						      *client);
->  int pmbus_get_fan_rate_device(struct i2c_client *client, int page, int id,
-> diff --git a/drivers/hwmon/pmbus/pmbus_core.c b/drivers/hwmon/pmbus/pmbus_core.c
-> index 170a9f82ca61..996393339be3 100644
-> --- a/drivers/hwmon/pmbus/pmbus_core.c
-> +++ b/drivers/hwmon/pmbus/pmbus_core.c
-> @@ -2388,6 +2388,13 @@ static int pmbus_debugfs_set_pec(void *data, u64 val)
->  DEFINE_DEBUGFS_ATTRIBUTE(pmbus_debugfs_ops_pec, pmbus_debugfs_get_pec,
->  			 pmbus_debugfs_set_pec, "%llu\n");
->  
-> +static void pmbus_remove_debugfs(void *data)
-> +{
-> +	struct dentry *entry = data;
+> Changes since v5:
+> - None
+> 
+>  .../bindings/leds/leds-qcom-lpg.yaml          | 170 ++++++++++++++++++
+>  1 file changed, 170 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> new file mode 100644
+> index 000000000000..5ccf0f3d8f1b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/leds/leds-qcom-lpg.yaml
+> @@ -0,0 +1,170 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/leds/leds-qcom-lpg.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
 > +
-> +	debugfs_remove_recursive(entry);
-> +}
+> +title: Qualcomm Light Pulse Generator
 > +
->  static int pmbus_init_debugfs(struct i2c_client *client,
->  			      struct pmbus_data *data)
->  {
-> @@ -2523,7 +2530,8 @@ static int pmbus_init_debugfs(struct i2c_client *client,
->  		}
->  	}
->  
-> -	return 0;
-> +	return devm_add_action_or_reset(data->dev,
-> +					pmbus_remove_debugfs, data->debugfs);
->  }
->  #else
->  static int pmbus_init_debugfs(struct i2c_client *client,
-> @@ -2610,16 +2618,6 @@ int pmbus_do_probe(struct i2c_client *client, struct pmbus_driver_info *info)
->  }
->  EXPORT_SYMBOL_GPL(pmbus_do_probe);
->  
-> -int pmbus_do_remove(struct i2c_client *client)
-> -{
-> -	struct pmbus_data *data = i2c_get_clientdata(client);
-> -
-> -	debugfs_remove_recursive(data->debugfs);
-> -
-> -	return 0;
-> -}
-> -EXPORT_SYMBOL_GPL(pmbus_do_remove);
-> -
->  struct dentry *pmbus_get_debugfs_dir(struct i2c_client *client)
->  {
->  	struct pmbus_data *data = i2c_get_clientdata(client);
-> diff --git a/drivers/hwmon/pmbus/pxe1610.c b/drivers/hwmon/pmbus/pxe1610.c
-> index fa5c5dd29b7a..da27ce34ee3f 100644
-> --- a/drivers/hwmon/pmbus/pxe1610.c
-> +++ b/drivers/hwmon/pmbus/pxe1610.c
-> @@ -131,7 +131,6 @@ static struct i2c_driver pxe1610_driver = {
->  			.name = "pxe1610",
->  			},
->  	.probe_new = pxe1610_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = pxe1610_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/tps40422.c b/drivers/hwmon/pmbus/tps40422.c
-> index edbdfa809d51..f7f00ab6f46c 100644
-> --- a/drivers/hwmon/pmbus/tps40422.c
-> +++ b/drivers/hwmon/pmbus/tps40422.c
-> @@ -43,7 +43,6 @@ static struct i2c_driver tps40422_driver = {
->  		   .name = "tps40422",
->  		   },
->  	.probe_new = tps40422_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = tps40422_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/tps53679.c b/drivers/hwmon/pmbus/tps53679.c
-> index db2bdf2a1f02..ba838fa311c3 100644
-> --- a/drivers/hwmon/pmbus/tps53679.c
-> +++ b/drivers/hwmon/pmbus/tps53679.c
-> @@ -251,7 +251,6 @@ static struct i2c_driver tps53679_driver = {
->  		.of_match_table = of_match_ptr(tps53679_of_match),
->  	},
->  	.probe_new = tps53679_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = tps53679_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ucd9000.c b/drivers/hwmon/pmbus/ucd9000.c
-> index f8017993e2b4..a15e6fe3e425 100644
-> --- a/drivers/hwmon/pmbus/ucd9000.c
-> +++ b/drivers/hwmon/pmbus/ucd9000.c
-> @@ -621,7 +621,6 @@ static struct i2c_driver ucd9000_driver = {
->  		.of_match_table = of_match_ptr(ucd9000_of_match),
->  	},
->  	.probe_new = ucd9000_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ucd9000_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/ucd9200.c b/drivers/hwmon/pmbus/ucd9200.c
-> index e111e25e1619..47cc7ca9d329 100644
-> --- a/drivers/hwmon/pmbus/ucd9200.c
-> +++ b/drivers/hwmon/pmbus/ucd9200.c
-> @@ -201,7 +201,6 @@ static struct i2c_driver ucd9200_driver = {
->  		.of_match_table = of_match_ptr(ucd9200_of_match),
->  	},
->  	.probe_new = ucd9200_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = ucd9200_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/xdpe12284.c b/drivers/hwmon/pmbus/xdpe12284.c
-> index c95ac934fde4..f8bc0f41cd5f 100644
-> --- a/drivers/hwmon/pmbus/xdpe12284.c
-> +++ b/drivers/hwmon/pmbus/xdpe12284.c
-> @@ -160,7 +160,6 @@ static struct i2c_driver xdpe122_driver = {
->  		.of_match_table = of_match_ptr(xdpe122_of_match),
->  	},
->  	.probe_new = xdpe122_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = xdpe122_id,
->  };
->  
-> diff --git a/drivers/hwmon/pmbus/zl6100.c b/drivers/hwmon/pmbus/zl6100.c
-> index e8bda340482b..69120ca7aaa8 100644
-> --- a/drivers/hwmon/pmbus/zl6100.c
-> +++ b/drivers/hwmon/pmbus/zl6100.c
-> @@ -396,7 +396,6 @@ static struct i2c_driver zl6100_driver = {
->  		   .name = "zl6100",
->  		   },
->  	.probe_new = zl6100_probe,
-> -	.remove = pmbus_do_remove,
->  	.id_table = zl6100_id,
->  };
->  
+> +maintainers:
+> +  - Bjorn Andersson <bjorn.andersson@linaro.org>
+> +
+> +description: >
+> +  The Qualcomm Light Pulse Generator consists of three different hardware blocks;
+> +  a ramp generator with lookup table, the light pulse generator and a three
+> +  channel current sink. These blocks are found in a wide range of Qualcomm PMICs.
+> +
+> +properties:
+> +  compatible:
+> +    enum:
+> +      - qcom,pm8916-pwm
+
+Are the LED properties valid when PWM is used/enabled? The schema 
+suggests yes, the example suggests no. If not, I think this should be 2 
+schema docs.
+
+> +      - qcom,pm8941-lpg
+> +      - qcom,pm8994-lpg
+> +      - qcom,pmi8994-lpg
+> +      - qcom,pmi8998-lpg
+> +
+> +  "#pwm-cells":
+> +    const: 2
+> +
+> +  "#address-cells":
+> +    const: 1
+> +
+> +  "#size-cells":
+> +    const: 0
+> +
+> +  qcom,power-source:
+> +    $ref: /schemas/types.yaml#definitions/uint32
+
+led-sources can't be made to work for this?
+
+> +    description: >
+> +      power-source used to drive the output, as defined in the datasheet.
+> +      Should be specified if the TRILED block is present
+> +    enum:
+> +      - 0
+> +      - 1
+> +      - 3
+> +
+> +  multi-led:
+> +    type: object
+> +    $ref: leds-class-multicolor.yaml#
+> +    properties:
+> +      "#address-cells":
+> +        const: 1
+> +
+> +      "#size-cells":
+> +        const: 0
+> +
+> +      "^led@[0-9a-f]$":
+> +        type: object
+> +        $ref: common.yaml#
+> +
+> +        properties:
+> +          "qcom,dtest":
+
+Don't need quotes.
+
+> +            $ref: /schemas/types.yaml#definitions/uint32-array
+
+The description sounds like a matrix rather than an array.
+
+> +            description: >
+> +              configures the output into an internal test line of the pmic. Specified
+> +              by a list of u32 pairs, one pair per channel, where each pair denotes the
+> +              test line to drive and the second configures how the value should be
+> +              outputed, as defined in the datasheet
+> +            minItems: 2
+> +            maxItems: 2
+
+If so, then you'd want:
+
+items:
+  minItems: 2
+  maxItems: 2
+
+> +
+> +        required:
+> +          - reg
+> +
+> +patternProperties:
+> +  "^led@[0-9a-f]$":
+> +    type: object
+> +    $ref: common.yaml#
+> +    properties:
+> +      "qcom,dtest":
+> +        $ref: /schemas/types.yaml#definitions/uint32-array
+> +        description: >
+> +          configures the output into an internal test line of the pmic. Specified
+> +          by a list of u32 pairs, one pair per channel, where each pair denotes the
+> +          test line to drive and the second configures how the value should be
+> +          outputed, as defined in the datasheet
+> +        minItems: 2
+> +        maxItems: 2
+> +
+> +    required:
+> +      - reg
+> +
+> +required:
+> +  - compatible
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    lpg {
+> +      compatible = "qcom,pmi8994-lpg";
+> +
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      qcom,power-source = <1>;
+> +
+> +      led@1 {
+> +        reg = <1>;
+> +        label = "green:user1";
+> +      };
+> +
+> +      led@2 {
+> +        reg = <2>;
+> +        label = "green:user0";
+> +        default-state = "on";
+> +      };
+> +
+> +      led@3 {
+> +        reg = <3>;
+> +        label = "green:user2";
+> +      };
+> +
+> +      led@4 {
+> +        reg = <4>;
+> +        label = "green:user3";
+> +
+> +        qcom,dtest = <4 1>;
+> +      };
+> +    };
+> +  - |
+> +    #include <dt-bindings/leds/common.h>
+> +
+> +    lpg {
+> +      compatible = "qcom,pmi8994-lpg";
+> +
+> +      #address-cells = <1>;
+> +      #size-cells = <0>;
+> +
+> +      qcom,power-source = <1>;
+> +
+> +      multi-led {
+> +        color = <LED_COLOR_ID_MULTI>;
+> +        label = "rgb:notification";
+> +
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        led@1 {
+> +          reg = <1>;
+> +          color = <LED_COLOR_ID_RED>;
+> +        };
+> +
+> +        led@2 {
+> +          reg = <2>;
+> +          color = <LED_COLOR_ID_GREEN>;
+> +        };
+> +
+> +        led@3 {
+> +          reg = <3>;
+> +          color = <LED_COLOR_ID_BLUE>;
+> +        };
+> +      };
+> +    };
+> +  - |
+> +    lpg {
+> +      compatible = "qcom,pm8916-pwm";
+> +      #pwm-cells = <2>;
+> +    };
+> +...
+> -- 
+> 2.28.0
+> 
