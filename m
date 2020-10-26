@@ -2,126 +2,56 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 83C302990FE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:29:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5408D299107
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:31:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783855AbgJZP3S (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:29:18 -0400
-Received: from mail-lj1-f194.google.com ([209.85.208.194]:42144 "EHLO
-        mail-lj1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1783845AbgJZP3P (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:29:15 -0400
-Received: by mail-lj1-f194.google.com with SMTP id h20so10644080lji.9
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:29:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shutemov-name.20150623.gappssmtp.com; s=20150623;
-        h=date:from:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=2ASN/DBUumncOIXrVy0+uLgrT6nDM6lupwXazfbf6yY=;
-        b=EPBJN71/a4yW2KNB4CZyN2SstX8ZPfZe1Yd139rZU2H/AwTqQzrPycVY6F8BH3y5le
-         M17ZN9EGRHCQoaOFgHizwD/0aSwS0IR8u9gI6qpG9095ryTwpm2quspWyd4aUNAEMJfS
-         dnuyNKQ3oEopLbKSb8KK1C5I5pTFhSC/KBYQRCMD1sojSqVQvF2PwE4ekq739Ek1IVMi
-         Osw4L0hbOLYHvCtZvPh+pb+sNDXAn2nQnXvmOVadPjo4KZF/eGYtRHF2abtExs28HhiO
-         vNOXFSDMNEs+i17/qL42Z/227K0y061wpPZyhXrmN3EsjeZorN4ietGRKYwjB8zr9wRx
-         Olbw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=2ASN/DBUumncOIXrVy0+uLgrT6nDM6lupwXazfbf6yY=;
-        b=S/R/ksa8meezQnUjBEY5HxiszyxoS0H6e1rzXaRbqyHMA2/nToNabMpZvNfc0NxyA7
-         MOGzoiGaLWN6ArHeEnA5b2sykPmHLnCR4C9KXlSj/X8G+aarIYSNvzaiqwl3yl7MfPmf
-         t5Ij/HQDGZ1edIpYBl87dUOV3zIz8PSBytXW4gU+tLWUOEhtdp2SLeaZ2CYVOD9k4ukx
-         mvf+xyzGPWgcMZ56c79NlOZJboLYBLip8r32jW/l/9TQkANEELfx2LwocgF7V0SHw8Ya
-         AXmWvHHQ9Sf//G2VuPg0N/NhbBUIpTaJNsI/t+SKfS6Bsjmg9ClY/DhUK9EvLNzheA2H
-         ULBQ==
-X-Gm-Message-State: AOAM533EHwgLK7qw+JeqGgId3rTcqeapnxkWIR6U45QNu0zBKjmIlS4B
-        cMY1LvBJ3xWknPQImdJ58VC2tg==
-X-Google-Smtp-Source: ABdhPJwgJmr5qqnTpZrUz2JUkooPo2pPwM+xTp1Z3a13ceXJJ/6BSAtswICdSIuB01sAfeHKJH2E+Q==
-X-Received: by 2002:a2e:9255:: with SMTP id v21mr6267205ljg.228.1603726150222;
-        Mon, 26 Oct 2020 08:29:10 -0700 (PDT)
-Received: from box.localdomain ([86.57.175.117])
-        by smtp.gmail.com with ESMTPSA id z11sm1222830ljk.7.2020.10.26.08.29.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:29:09 -0700 (PDT)
-Received: by box.localdomain (Postfix, from userid 1000)
-        id CAA6010366B; Mon, 26 Oct 2020 18:29:10 +0300 (+03)
-Date:   Mon, 26 Oct 2020 18:29:10 +0300
-From:   "Kirill A. Shutemov" <kirill@shutemov.name>
-To:     Andy Lutomirski <luto@amacapital.net>
-Cc:     Dave Hansen <dave.hansen@linux.intel.com>,
-        Andy Lutomirski <luto@kernel.org>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Paolo Bonzini <pbonzini@redhat.com>,
-        Sean Christopherson <sean.j.christopherson@intel.com>,
-        Vitaly Kuznetsov <vkuznets@redhat.com>,
-        Wanpeng Li <wanpengli@tencent.com>,
-        Jim Mattson <jmattson@google.com>,
-        Joerg Roedel <joro@8bytes.org>,
-        David Rientjes <rientjes@google.com>,
-        Andrea Arcangeli <aarcange@redhat.com>,
-        Kees Cook <keescook@chromium.org>,
-        Will Drewry <wad@chromium.org>,
-        "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>,
-        "Kleen, Andi" <andi.kleen@intel.com>,
-        Liran Alon <liran.alon@oracle.com>,
-        Mike Rapoport <rppt@kernel.org>, X86 ML <x86@kernel.org>,
-        kvm list <kvm@vger.kernel.org>, Linux-MM <linux-mm@kvack.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-Subject: Re: [RFCv2 00/16] KVM protected memory extension
-Message-ID: <20201026152910.happu7wic4qjxmp7@box>
-References: <20201020061859.18385-1-kirill.shutemov@linux.intel.com>
- <CALCETrXn_ghtLK34jmKSSp5_SF6hh5GOfBLKdxXgp5ZTbN8uEA@mail.gmail.com>
+        id S1783906AbgJZPby (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:31:54 -0400
+Received: from mga17.intel.com ([192.55.52.151]:64147 "EHLO mga17.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1783897AbgJZPbx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 11:31:53 -0400
+IronPort-SDR: yUGGHUg4V7QcFIae2F79HRr1yj3L/9m8/QB2hjvBNsVk+9KG/XLXdPkkWgim/qbcl3gSvfHsiO
+ CTAJgRWwoQIA==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="147795145"
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="147795145"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga004.fm.intel.com ([10.253.24.48])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 08:31:51 -0700
+IronPort-SDR: 5rYE6EcBTdOMe+GccR8gvcxNgSZQUIIpQhXQpDOeRZUPsakbGqXgUah8u6BhLjPnMET5B1u/JU
+ ++286BiylgqQ==
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="350152841"
+Received: from lahna.fi.intel.com (HELO lahna) ([10.237.72.163])
+  by fmsmga004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 08:31:48 -0700
+Received: by lahna (sSMTP sendmail emulation); Mon, 26 Oct 2020 17:31:45 +0200
+Date:   Mon, 26 Oct 2020 17:31:45 +0200
+From:   Mika Westerberg <mika.westerberg@linux.intel.com>
+To:     Jing Xiangfeng <jingxiangfeng@huawei.com>
+Cc:     andreas.noever@gmail.com, michael.jamet@intel.com,
+        YehezkelShB@gmail.com, andriy.shevchenko@linux.intel.com,
+        gregkh@linuxfoundation.org, linux-usb@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] thunderbolt: Add the missed ida_simple_remove() in
+ ring_request_msix()
+Message-ID: <20201026153145.GE2495@lahna.fi.intel.com>
+References: <20201015084053.56158-1-jingxiangfeng@huawei.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CALCETrXn_ghtLK34jmKSSp5_SF6hh5GOfBLKdxXgp5ZTbN8uEA@mail.gmail.com>
+In-Reply-To: <20201015084053.56158-1-jingxiangfeng@huawei.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Wed, Oct 21, 2020 at 11:20:56AM -0700, Andy Lutomirski wrote:
-> > On Oct 19, 2020, at 11:19 PM, Kirill A. Shutemov <kirill@shutemov.name> wrote:
+On Thu, Oct 15, 2020 at 04:40:53PM +0800, Jing Xiangfeng wrote:
+> ring_request_msix() misses to call ida_simple_remove() in an error path.
+> Add a label 'err_ida_remove' and jump to it.
 > 
-> > For removing the userspace mapping, use a trick similar to what NUMA
-> > balancing does: convert memory that belongs to KVM memory slots to
-> > PROT_NONE: all existing entries converted to PROT_NONE with mprotect() and
-> > the newly faulted in pages get PROT_NONE from the updated vm_page_prot.
-> > The new VMA flag -- VM_KVM_PROTECTED -- indicates that the pages in the
-> > VMA must be treated in a special way in the GUP and fault paths. The flag
-> > allows GUP to return the page even though it is mapped with PROT_NONE, but
-> > only if the new GUP flag -- FOLL_KVM -- is specified. Any userspace access
-> > to the memory would result in SIGBUS. Any GUP access without FOLL_KVM
-> > would result in -EFAULT.
-> >
-> 
-> I definitely like the direction this patchset is going in, and I think
-> that allowing KVM guests to have memory that is inaccessible to QEMU
-> is a great idea.
-> 
-> I do wonder, though: do we really want to do this with these PROT_NONE
-> tricks, or should we actually come up with a way to have KVM guest map
-> memory that isn't mapped into QEMU's mm_struct at all?  As an example
-> of the latter, I mean something a bit like this:
-> 
-> https://lkml.kernel.org/r/CALCETrUSUp_7svg8EHNTk3nQ0x9sdzMCU=h8G-Sy6=SODq5GHg@mail.gmail.com
-> 
-> I don't mean to say that this is a requirement of any kind of
-> protected memory like this, but I do think we should understand the
-> tradeoffs, in terms of what a full implementation looks like, the
-> effort and time frames involved, and the maintenance burden of
-> supporting whatever gets merged going forward.
+> Fixes: 046bee1f9ab8 ("thunderbolt: Add MSI-X support")
+> Signed-off-by: Jing Xiangfeng <jingxiangfeng@huawei.com>
 
-I considered the PROT_NONE trick neat. Complete removing of the mapping
-from QEMU would require more changes into KVM and I'm not really familiar
-with it.
-
-About tradeoffs: the trick interferes with AutoNUMA. I didn't put much
-thought into how we can get it work together. Need to look into it.
-
-Do you see other tradeoffs?
-
--- 
- Kirill A. Shutemov
+Applied to thunderbolt.git/fixes, thanks!
