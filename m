@@ -2,86 +2,129 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EAB2F2994C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 11D022994DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:09:00 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788980AbgJZSCh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:02:37 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:46504 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1731426AbgJZSCg (ORCPT
+        id S1789225AbgJZSI5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:08:57 -0400
+Received: from pandora.armlinux.org.uk ([78.32.30.218]:46416 "EHLO
+        pandora.armlinux.org.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1789214AbgJZSIz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:02:36 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n6so13701503wrm.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:02:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id;
-        bh=dr/M5m284ccLeNOnUZwOiheVtoOaVvfBzrCmSiaeimE=;
-        b=akulYrwlVSGJpPDC77vrNk+/ekLvFK7m9ZYXW18qFiVTxqz71UQD4kL34+wANlmTVv
-         AEB34pClXCQubR8meZl1EWal3gpTwjpHWc2Py4ypB2QtxS+yy9sealpLbbu2FF8Jnl0+
-         2+3nbJrORnVzZWi5pglb8E85aXluq/GZkhZ072/GAu0J4wnj3c90JbnN6WVg11WZ/jFr
-         iWC9+ljZvMqkDtPVJlQdcCkmYLsNoDjjvTXdaMAlkBnGq+H/acQ+lYXejcXMJdnd2ko6
-         VjxQqpHN9OXq77dI8p8ags+eJ2ixfImHotPQoNSY4/EKPBEFPwr2OyZCupD8u8zgmVOm
-         JOTQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=dr/M5m284ccLeNOnUZwOiheVtoOaVvfBzrCmSiaeimE=;
-        b=Q/vlXToVDwNJdyyBAM5Mau1udhpOzaKj5ZIg2DawoaGpM9Qn3Cz7gGC1cdf9sqsObI
-         v+pXwhN3bOFyGat+ruo7N5d6EIdxY6Wrui3bHMW7SAVD/APiVf+fnfPTSTyUtBQ1sjcN
-         +8ynFPM88vkcK2FZnzFROqMTJDkg0EEv/asjjkG/FDxdwdZxIRUvrqRL7sectbIj+G0W
-         ZXkmgjuH9EeWvUrO2R0n/XFtKyZIvFou5arYYpF7A8DUfzx2IxgnpwjNWv0qpjcwcSoj
-         voTm7PSbXZetxTiT8CFO343W1xscUzXPG7v1mf75qJWaX8Orkqey1riKGJk4qz/+oDBW
-         ZCDw==
-X-Gm-Message-State: AOAM531AYa1L5/keiyewP91CS4+EFIIuiggF8eP7hHlMu8CncenTLamp
-        O31Rp+Gxir+JkgO42KAfTZU=
-X-Google-Smtp-Source: ABdhPJy3v17H0nndO/wow3Iyw/sF1O6Mqems54hgdg6CPu8vTLvCzEuv3AXub44dapk3cnvbMC+Kiw==
-X-Received: by 2002:adf:e849:: with SMTP id d9mr20693375wrn.25.1603735355389;
-        Mon, 26 Oct 2020 11:02:35 -0700 (PDT)
-Received: from localhost.localdomain (host-92-5-241-147.as43234.net. [92.5.241.147])
-        by smtp.gmail.com with ESMTPSA id r1sm25575100wro.18.2020.10.26.11.02.34
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 26 Oct 2020 11:02:34 -0700 (PDT)
-From:   Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-To:     John Stultz <john.stultz@linaro.org>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc:     linux-kernel@vger.kernel.org, linux-safety@lists.elisa.tech,
-        Sudip Mukherjee <sudipm.mukherjee@gmail.com>
-Subject: [PATCH] misc: hisi_hikey_usb: use PTR_ERR_OR_ZERO
-Date:   Mon, 26 Oct 2020 18:00:26 +0000
-Message-Id: <20201026180026.3350-1-sudipm.mukherjee@gmail.com>
-X-Mailer: git-send-email 2.11.0
+        Mon, 26 Oct 2020 14:08:55 -0400
+X-Greylist: delayed 558 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 14:08:53 EDT
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
+        MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+        Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+        List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+         bh=k86Sk2vzUdIAWAPQ+NHqfUDiJ+SZmpD+LsPmG5feGcA=; b=NDe/P1VbFb3pzpjR++6NAqOf/
+        fmUUQsRNOWIKCXzcPczLfURwp/QtACFvZyjzlhKp3Jk6iY/nhj6DjFlttHcU+FxYnWfe7Hf3glLn5
+        n2lrFShAAGVRtTC/MbE6zL/oCMMDOjj4rJvywS/RX29ErMLbPy3rAOozPwM4h1YL9bBuGGBoDjxHp
+        wIBNcGyvHnzpotXZxTMZE7Pg0tfOMdJN8reDhBH3lY6a2RnBYfnDcfXrjaiRlFWkkeIqhY97WGR+l
+        Z3+3prrjFtf27Q6at5sx8begjdB8Exaf3PBXNHjkiMxDHvxa/ldOKoWOFWXkOI5MCj6iAp18/NMkK
+        1KwEQC57Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:51294)
+        by pandora.armlinux.org.uk with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+        (Exim 4.92)
+        (envelope-from <linux@armlinux.org.uk>)
+        id 1kX6oA-0007uS-S1; Mon, 26 Oct 2020 18:01:26 +0000
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.92)
+        (envelope-from <linux@shell.armlinux.org.uk>)
+        id 1kX6oA-0003CP-Ep; Mon, 26 Oct 2020 18:01:26 +0000
+Date:   Mon, 26 Oct 2020 18:01:26 +0000
+From:   Russell King - ARM Linux admin <linux@armlinux.org.uk>
+To:     Xiaoming Ni <nixiaoming@huawei.com>
+Cc:     akpm@linux-foundation.org, tglx@linutronix.de,
+        vincent.whitchurch@axis.com, linux-arm-kernel@lists.infradead.org,
+        linux-kernel@vger.kernel.org, jpoimboe@redhat.com,
+        bigeasy@linutronix.de, will.deacon@arm.com, wangle6@huawei.com
+Subject: Re: [PATCH] arm:traps:Don't dump the memory in non-system reset
+ scenarios
+Message-ID: <20201026180126.GI1551@shell.armlinux.org.uk>
+References: <20201026063106.20744-1-nixiaoming@huawei.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026063106.20744-1-nixiaoming@huawei.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+Sender: Russell King - ARM Linux admin <linux@armlinux.org.uk>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Coccinelle suggested using PTR_ERR_OR_ZERO() and looking at the code,
-we can use PTR_ERR_OR_ZERO() instead of checking IS_ERR() and then
-doing 'return 0'.
+On Mon, Oct 26, 2020 at 02:31:06PM +0800, Xiaoming Ni wrote:
+> Do not dump the memory in non-system reset scenarios to prevent virtual
+>  address information leakage.
+> 
+> This patch follows x86 and arm64's lead and removes the "Exception stack:"
+> dump from kernel backtraces:
+> 	commit a25ffd3a6302a6 ("arm64: traps: Don't print stack or raw
+> 	 PC/LR values in backtraces")
+> 	commit 0ee1dd9f5e7eae ("x86/dumpstack: Remove raw stack dump")
 
-Signed-off-by: Sudip Mukherjee <sudipm.mukherjee@gmail.com>
----
- drivers/misc/hisi_hikey_usb.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+Please make this conditional, so that if necessary this information can
+be retrieved for debugging purposes. I object extremely strongly to
+this "it's a security leak, let's rip out all the useful debugging that
+enables people to get to the bottom of problems" attitude that we now
+seem to have.
 
-diff --git a/drivers/misc/hisi_hikey_usb.c b/drivers/misc/hisi_hikey_usb.c
-index cc93569e601c..989d7d129469 100644
---- a/drivers/misc/hisi_hikey_usb.c
-+++ b/drivers/misc/hisi_hikey_usb.c
-@@ -168,10 +168,7 @@ static int hisi_hikey_usb_parse_kirin970(struct platform_device *pdev,
- 
- 	hisi_hikey_usb->reset = devm_gpiod_get(&pdev->dev, "hub_reset_en_gpio",
- 					       GPIOD_OUT_HIGH);
--	if (IS_ERR(hisi_hikey_usb->reset))
--		return PTR_ERR(hisi_hikey_usb->reset);
--
--	return 0;
-+	return PTR_ERR_OR_ZERO(hisi_hikey_usb->reset);
- }
- 
- static int hisi_hikey_usb_probe(struct platform_device *pdev)
+If that's what people want, then do not expect me to ever look at a
+kernel crash again; other people can do the debugging and find out
+how painful it can be without extra information.
+
+> Signed-off-by: Xiaoming Ni <nixiaoming@huawei.com>
+> ---
+>  arch/arm/kernel/traps.c | 13 ++++++-------
+>  1 file changed, 6 insertions(+), 7 deletions(-)
+> 
+> diff --git a/arch/arm/kernel/traps.c b/arch/arm/kernel/traps.c
+> index 911bbf164875..34e268378972 100644
+> --- a/arch/arm/kernel/traps.c
+> +++ b/arch/arm/kernel/traps.c
+> @@ -60,13 +60,9 @@ static int __init user_debug_setup(char *str)
+>  __setup("user_debug=", user_debug_setup);
+>  #endif
+>  
+> -static void dump_mem(const char *, const char *, unsigned long, unsigned long);
+> -
+>  void dump_backtrace_entry(unsigned long where, unsigned long from,
+>  			  unsigned long frame, const char *loglvl)
+>  {
+> -	unsigned long end = frame + 4 + sizeof(struct pt_regs);
+> -
+>  #ifdef CONFIG_KALLSYMS
+>  	printk("%s (%ps) from (%pS)\n",
+>  		loglvl, (void *)where, (void *)from);
+> @@ -74,9 +70,6 @@ void dump_backtrace_entry(unsigned long where, unsigned long from,
+>  	printk("%sFunction entered at [<%08lx>] from [<%08lx>]\n",
+>  		loglvl, where, from);
+>  #endif
+> -
+> -	if (in_entry_text(from) && end <= ALIGN(frame, THREAD_SIZE))
+> -		dump_mem(loglvl, "Exception stack", frame + 4, end);
+>  }
+>  
+>  void dump_backtrace_stm(u32 *stack, u32 instruction, const char *loglvl)
+> @@ -125,6 +118,12 @@ static void dump_mem(const char *lvl, const char *str, unsigned long bottom,
+>  	mm_segment_t fs;
+>  	int i;
+>  
+> +	/*
+> +	 * To prevent virtual address information leakage, memory
+> +	 * information cannot be printed in non-reset scenarios.
+> +	 */
+> +	if (panic_on_oops == 0)
+> +		return;
+>  	/*
+>  	 * We need to switch to kernel mode so that we can use __get_user
+>  	 * to safely read from kernel space.  Note that we now dump the
+> -- 
+> 2.27.0
+> 
+> 
+
 -- 
-2.11.0
-
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 40Mbps down 10Mbps up. Decent connectivity at last!
