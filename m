@@ -2,93 +2,78 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 724E129964C
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:58:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9729D299635
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:57:28 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1791083AbgJZS6Y (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:58:24 -0400
-Received: from mga03.intel.com ([134.134.136.65]:52496 "EHLO mga03.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1791041AbgJZS6J (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:58:09 -0400
-IronPort-SDR: ru2kJ1aa+mRV1WY1dAelTvO7s4i17NWbFGGoyLFxNxD34uygZUGv1CGjrCWW7XQGxDJV21S6t0
- pvL9EDUVT6vQ==
-X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="168073149"
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="168073149"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from fmsmga005.fm.intel.com ([10.253.24.32])
-  by orsmga103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 11:58:08 -0700
-IronPort-SDR: Acbb3fIgz6rL4CWP99tZwAz5kbTGjHDEKAmk1n8eMXwf6YylnYViBQrJC98lFMKh/Bs8jrxbIh
- SN5Y96ofpr1w==
-X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
-   d="scan'208";a="525607466"
-Received: from dhrubajy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.53])
-  by fmsmga005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 11:58:07 -0700
-From:   Kuppuswamy Sathyanarayanan 
-        <sathyanarayanan.kuppuswamy@linux.intel.com>
-To:     bhelgaas@google.com
-Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
-        knsathya@kernel.org
-Subject: [PATCH v10 5/5] PCI/DPC: Move AER/DPC dependency checks out of DPC driver
-Date:   Mon, 26 Oct 2020 11:56:43 -0700
-Message-Id: <3cb6923f879b64a80df3670facdee327bcc39a4c.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <cover.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <cover.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-In-Reply-To: <cover.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
-References: <cover.1603738449.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+        id S1791014AbgJZS50 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:57:26 -0400
+Received: from mail-ed1-f65.google.com ([209.85.208.65]:44106 "EHLO
+        mail-ed1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782903AbgJZS50 (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:57:26 -0400
+Received: by mail-ed1-f65.google.com with SMTP id t20so10554073edr.11;
+        Mon, 26 Oct 2020 11:57:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=/0/Qeh6M/INK2bAIaSZzTQvAeqNQLbqX6xwvUrGewQM=;
+        b=JoIrML2Au6DTkOy1BaPzzMZh5hR6QPaV9Sj/TwNhFSYlImF9kJY/9sLKPvB7Bg3KPb
+         Ewq5Ac7aYd97+w2YqlUjL0MNclRYFrz1RygBmN7UDyaasu/7VF3pfL4b7wEGpvXryXUb
+         R+Otisqjh34CGj7vqNAXjj2jQC4GQZ8kH4A2a8kZa1dd3A7VqPPt/yj8E9TojhDQ5S3y
+         7/6Q8z2yBBN4MO6Ee8ok7kDnljRopH+Qx8gEiF0q40skJ4A9Uoy7lxSut3IH2VTJfZKN
+         hthIk5rzkxk0lWj1hKVspDJBdRyGV55gHDykEPacfk2Z6/dbpOdPI2vM8HTM0i2iVKRa
+         VquQ==
+X-Gm-Message-State: AOAM532NarU1rxAfZVwSONUYNJaDfSuy5RH9G4D45aEBaUNrPns34PaV
+        iHk4EIhjFvhf1Yb7BwtveDyoChKo2Hg=
+X-Google-Smtp-Source: ABdhPJzQ+0K/G0r0EUW6jHQm6kneOPG5bCd1U7QCfa5Yuxq5JtGaFoWbaki4yVKHyJ89xooxO01GEQ==
+X-Received: by 2002:a50:eb8e:: with SMTP id y14mr17463199edr.285.1603738644205;
+        Mon, 26 Oct 2020 11:57:24 -0700 (PDT)
+Received: from kozik-lap ([194.230.155.184])
+        by smtp.googlemail.com with ESMTPSA id ss7sm6365398ejb.28.2020.10.26.11.57.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 11:57:22 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 19:57:20 +0100
+From:   Krzysztof Kozlowski <krzk@kernel.org>
+To:     Serge Semin <Sergey.Semin@baikalelectronics.ru>
+Cc:     Felipe Balbi <balbi@kernel.org>,
+        Florian Fainelli <f.fainelli@gmail.com>,
+        Rob Herring <robh+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kukjin Kim <kgene@kernel.org>,
+        Serge Semin <fancer.lancer@gmail.com>,
+        linux-arm-kernel@lists.infradead.org, linux-usb@vger.kernel.org,
+        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-samsung-soc@vger.kernel.org
+Subject: Re: [PATCH 26/29] arm64: dts: exynos: Harmonize DWC USB3 DT nodes
+ name
+Message-ID: <20201026185720.GC170936@kozik-lap>
+References: <20201020115959.2658-1-Sergey.Semin@baikalelectronics.ru>
+ <20201020115959.2658-27-Sergey.Semin@baikalelectronics.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20201020115959.2658-27-Sergey.Semin@baikalelectronics.ru>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Currently, AER and DPC Capabilities dependency checks is
-distributed between DPC and portdrv service drivers. So move
-them out of DPC driver.
+On Tue, Oct 20, 2020 at 02:59:56PM +0300, Serge Semin wrote:
+> In accordance with the DWC USB3 bindings the corresponding node
+> name is suppose to comply with the Generic USB HCD DT schema, which
+> requires the USB nodes to have the name acceptable by the regexp:
+> "^usb(@.*)?" . Make sure the "snps,dwc3"-compatible nodes are correctly
+> named.
+> 
+> Signed-off-by: Serge Semin <Sergey.Semin@baikalelectronics.ru>
+> ---
+>  arch/arm64/boot/dts/exynos/exynos5433.dtsi | 4 ++--
+>  arch/arm64/boot/dts/exynos/exynos7.dtsi    | 2 +-
+>  2 files changed, 3 insertions(+), 3 deletions(-)
 
-Also, since services & PCIE_PORT_SERVICE_AER check already
-ensures AER native ownership, no need to add additional
-pcie_aer_is_native() check.
+Thanks, applied.
 
-Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
----
- drivers/pci/pcie/dpc.c          | 4 ----
- drivers/pci/pcie/portdrv_core.c | 1 +
- 2 files changed, 1 insertion(+), 4 deletions(-)
-
-diff --git a/drivers/pci/pcie/dpc.c b/drivers/pci/pcie/dpc.c
-index 21f77420632b..a8b922044447 100644
---- a/drivers/pci/pcie/dpc.c
-+++ b/drivers/pci/pcie/dpc.c
-@@ -283,14 +283,10 @@ void pci_dpc_init(struct pci_dev *pdev)
- static int dpc_probe(struct pcie_device *dev)
- {
- 	struct pci_dev *pdev = dev->port;
--	struct pci_host_bridge *host = pci_find_host_bridge(pdev->bus);
- 	struct device *device = &dev->device;
- 	int status;
- 	u16 ctl, cap;
- 
--	if (!pcie_aer_is_native(pdev) && !host->native_dpc)
--		return -ENOTSUPP;
--
- 	status = devm_request_threaded_irq(device, dev->irq, dpc_irq,
- 					   dpc_handler, IRQF_SHARED,
- 					   "pcie-dpc", pdev);
-diff --git a/drivers/pci/pcie/portdrv_core.c b/drivers/pci/pcie/portdrv_core.c
-index e257a2ca3595..ffa1d9fc458e 100644
---- a/drivers/pci/pcie/portdrv_core.c
-+++ b/drivers/pci/pcie/portdrv_core.c
-@@ -252,6 +252,7 @@ static int get_port_device_capability(struct pci_dev *dev)
- 	 * permission to use AER.
- 	 */
- 	if (pci_find_ext_capability(dev, PCI_EXT_CAP_ID_DPC) &&
-+	    host->native_dpc &&
- 	    (host->native_dpc || (services & PCIE_PORT_SERVICE_AER)))
- 		services |= PCIE_PORT_SERVICE_DPC;
- 
--- 
-2.17.1
+Best regards,
+Krzysztof
 
