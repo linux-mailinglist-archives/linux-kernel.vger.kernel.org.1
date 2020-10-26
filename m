@@ -2,109 +2,185 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4E7BE2989E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:58:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C84862989E5
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:58:47 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1768785AbgJZJ47 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:56:59 -0400
-Received: from mailgw01.mediatek.com ([210.61.82.183]:43093 "EHLO
-        mailgw01.mediatek.com" rhost-flags-OK-FAIL-OK-FAIL) by vger.kernel.org
-        with ESMTP id S1768776AbgJZJzb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:55:31 -0400
-X-UUID: ffea3dbb561242eb947ed65158a5ab0a-20201026
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-        h=Content-Transfer-Encoding:MIME-Version:Content-Type:References:In-Reply-To:Date:CC:To:From:Subject:Message-ID; bh=20g0W1OHC8ECWUuvX8bYtkQwtQjsCCtxJSPzMi5pZ3Y=;
-        b=hnLHNoZt83lzo3EIi+h9NFGmBN9lxqgSR3A4N+lQmDENvgqZkaUzhWL5ZLkWdFUJgwitHtkAezv0DvsbiD9hebpU2iDLC1GzBLjck1mrkdukeV+IQDbI/p3KXjJYWeaEPLXgy7Qg0Yvkq+/i/3Lmce3BcbC/xoOta0XfX0cvaus=;
-X-UUID: ffea3dbb561242eb947ed65158a5ab0a-20201026
-Received: from mtkexhb01.mediatek.inc [(172.21.101.102)] by mailgw01.mediatek.com
-        (envelope-from <claude.yen@mediatek.com>)
-        (Cellopoint E-mail Firewall v4.1.14 Build 0819 with TLSv1.2 ECDHE-RSA-AES256-SHA384 256/256)
-        with ESMTP id 1559540824; Mon, 26 Oct 2020 17:55:20 +0800
-Received: from mtkcas08.mediatek.inc (172.21.101.126) by
- mtkmbs01n1.mediatek.inc (172.21.101.68) with Microsoft SMTP Server (TLS) id
- 15.0.1497.2; Mon, 26 Oct 2020 17:55:18 +0800
-Received: from [172.21.77.33] (172.21.77.33) by mtkcas08.mediatek.inc
- (172.21.101.73) with Microsoft SMTP Server id 15.0.1497.2 via Frontend
- Transport; Mon, 26 Oct 2020 17:55:18 +0800
-Message-ID: <1603706118.2127.2.camel@mtkswgap22>
-Subject: Re: [PATCH] PM / s2idle: Export s2idle_set_ops
-From:   claude yen <claude.yen@mediatek.com>
-To:     "Rafael J. Wysocki" <rafael@kernel.org>
-CC:     Sudeep Holla <sudeep.holla@arm.com>,
-        "Rafael J . Wysocki" <rjw@rjwysocki.net>,
-        Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        wsd_upstream <wsd_upstream@mediatek.com>,
-        Linux PM <linux-pm@vger.kernel.org>,
-        "Linux Kernel Mailing List" <linux-kernel@vger.kernel.org>,
-        "moderated list:ARM/Mediatek SoC..." 
-        <linux-mediatek@lists.infradead.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>
-Date:   Mon, 26 Oct 2020 17:55:18 +0800
-In-Reply-To: <CAJZ5v0jJHBBrxANa-+mHFE47TZfE4NKNpgp0-rq2BD=Yw7qMXg@mail.gmail.com>
-References: <20201022061748.13730-1-claude.yen@mediatek.com>
-         <20201022061748.13730-2-claude.yen@mediatek.com>
-         <20201022070154.hqvksoj4nss3er2e@bogus>
-         <1603427300.7573.6.camel@mtkswgap22>
-         <20201023144842.zos4pvpwv4r3rv4j@bogus>
-         <CAJZ5v0jJHBBrxANa-+mHFE47TZfE4NKNpgp0-rq2BD=Yw7qMXg@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.2.3-0ubuntu6 
+        id S1768806AbgJZJ6o (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:58:44 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47824 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1768801AbgJZJ5y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 05:57:54 -0400
+Received: from kernel.org (unknown [87.70.96.83])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 0C9D822202;
+        Mon, 26 Oct 2020 09:57:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603706273;
+        bh=wtdKbIZ2qTydFUtmnkADSICjasq+Dj2neVT/nOLvOb4=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=jsdvoezVXrGHZKVZ+w54EEmVFcXiA9XurYdgbiz+v6Gsg8kZb8M8QESWk5luEoUZa
+         rN5ZnhuyqRdn4qNSyx8BQwcWx6UaR0iV3czPt7Ib3rlB8dT6IaoxcPU/EtnW7mQIP3
+         1kBPGNI+uH8gWF10JJXwEptRrVmzY9/AFXleI764=
+Date:   Mon, 26 Oct 2020 11:57:45 +0200
+From:   Mike Rapoport <rppt@kernel.org>
+To:     John Hubbard <jhubbard@nvidia.com>
+Cc:     Andrew Morton <akpm@linux-foundation.org>,
+        LKML <linux-kernel@vger.kernel.org>, linux-mm@kvack.org,
+        Oleg Nesterov <oleg@redhat.com>
+Subject: Re: [PATCH] mm: cleanup: remove unused tsk arg from
+ __access_remote_vm
+Message-ID: <20201026095745.GE1154158@kernel.org>
+References: <20201026074137.4147787-1-jhubbard@nvidia.com>
 MIME-Version: 1.0
-X-MTK:  N
-Content-Transfer-Encoding: base64
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026074137.4147787-1-jhubbard@nvidia.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-T24gRnJpLCAyMDIwLTEwLTIzIGF0IDE2OjU4ICswMjAwLCBSYWZhZWwgSi4gV3lzb2NraSB3cm90
-ZToNCj4gT24gRnJpLCBPY3QgMjMsIDIwMjAgYXQgNDo0OCBQTSBTdWRlZXAgSG9sbGEgPHN1ZGVl
-cC5ob2xsYUBhcm0uY29tPiB3cm90ZToNCj4gPg0KPiA+IE9uIEZyaSwgT2N0IDIzLCAyMDIwIGF0
-IDEyOjI4OjIwUE0gKzA4MDAsIGNsYXVkZSB5ZW4gd3JvdGU6DQo+ID4gPiBPbiBUaHUsIDIwMjAt
-MTAtMjIgYXQgMDg6MDIgKzAxMDAsIFN1ZGVlcCBIb2xsYSB3cm90ZToNCj4gPiA+ID4gT24gVGh1
-LCBPY3QgMjIsIDIwMjAgYXQgMDI6MTc6NDhQTSArMDgwMCwgQ2xhdWRlIFllbiB3cm90ZToNCj4g
-PiA+ID4gPiBBcyBzdXNwZW5kX3NldF9vcHMgaXMgZXhwb3J0ZWQgaW4gY29tbWl0IGE1ZTRmZDg3
-ODNhMg0KPiA+ID4gPiA+ICgiUE0gLyBTdXNwZW5kOiBFeHBvcnQgc3VzcGVuZF9zZXRfb3BzLCBz
-dXNwZW5kX3ZhbGlkX29ubHlfbWVtIiksDQo+ID4gPiA+ID4gZXhwb3J0aW5nIHMyaWRsZV9zZXRf
-b3BzIHRvIG1ha2Uga2VybmVsIG1vZHVsZSBzZXR1cCBzMmlkbGUgb3BzIHRvby4NCj4gPiA+ID4g
-Pg0KPiA+ID4gPiA+IEluIHRoaXMgd2F5LCBrZXJuZWwgbW9kdWxlIGNhbiBob29rIHBsYXRmb3Jt
-IHN1c3BlbmQNCj4gPiA+ID4gPiBmdW5jdGlvbnMgcmVnYXJkbGVzcyBvZiBTdXNwZW5kLXRvLVJh
-bShTMlIpIG9yDQo+ID4gPiA+ID4gU3VzcGVuZC10by1JZGxlKFMySSkNCj4gPiA+ID4gPg0KPiA+
-ID4gPg0KPiA+ID4gPiBJZiB0aGlzIGlzIGZvciBhcm02NCBwbGF0Zm9ybSwgdGhlbiBOQUNLLiBZ
-b3UgbXVzdCB1c2UgUFNDSSBhbmQgaXQgd2lsbA0KPiA+ID4gPiBzZXQgdGhlIG9wcyBhbmQgaXQg
-Y2FuJ3QgYmUgbW9kdWxlLg0KPiA+ID4gPg0KPiA+ID4NCj4gPiA+IFBTQ0kgdXNlcyBzdXNwZW5k
-X3NldF9vcHMgaW5zdGVhZC4gQW5kIHN1c3BlbmRfc2V0X29wcyBoYXMgYmVlbg0KPiA+ID4gZXhw
-b3J0ZWQgeWVhcnMgYWdvLg0KPiA+ID4NCj4gPiA+IFN1c3BlbmQtdG9fSWRsZShTMkkpIGlzIGFu
-b3RoZXIgc3VzcGVuZCBtZXRob2Qgc3VwcG9ydGVkIGJ5IGxpbnV4DQo+ID4gPiBrZXJuZWwuIFRo
-ZSBjb3JyZXNwb25kaW5nIHMyaWRsZV9vcHMgY2FuIGJlIGhvb2tlZCBieSBzMmlkbGVfc2V0X29w
-cw0KPiA+ID4gYnkgdW5kZXJseWluZyBwbGF0Zm9ybXMuICBGb3IgZXhhbXBsZSwgUzJJIGlzIG5v
-dyBpbnRyb2R1Y2VkIGludG8NCj4gPiA+IE1lZGlhdGVrIFNvQyBwbGF0Zm9ybXMuIEJlc2lkZXMs
-IHBvd2VyIG1hbmFnZW1lbnQgZHJpdmVyIGlzIGJ1aWx0IGFzDQo+ID4gPiBrZXJuZWwgbW9kdWxl
-Lg0KPiA+ID4NCj4gPiA+IE1vYmlsZSBwbGF0Zm9ybXMgYXJlIG5vdyBjYWxsIGZvciBrZXJuZWwg
-ZHJpdmVycyB0byBiZSBrZXJuZWwgbW9kdWxlcy4NCj4gPiA+IFRoaXMgY291bGQgaGVscCBkcml2
-ZXJzIGVhc2llciB0byBtaWdyYXRlIHRvIG5ld2VyIGxpbnV4IGtlcm5lbC4NCj4gPiA+IFJlZjog
-aHR0cHM6Ly9saW51eHBsdW1iZXJzY29uZi5vcmcvZXZlbnQvNy9jb250cmlidXRpb25zLzc5MC8N
-Cj4gPiA+DQo+ID4NCj4gPiBJIHVuZGVyc3RhbmQgdGhhdC4gQnV0IEkgYW0gaW50ZXJlc3RlZCBp
-biBsb29raW5nIGF0IHRoZSBtb2R1bGUgeW91IHdhbnQNCj4gPiB0byB1c2UgdGhpcyBhbmQgaG93
-IHRoYXQgaW50ZXJhY3RzIHdpdGggUFNDSS4gSWYgdGhpcyBpcyBhcm02NCwgeW91IG11c3QNCj4g
-PiB1c2UgUFNDSSBmb3Igc3lzdGVtIHN1c3BlbmQgYW5kIGNwdSBzdXNwZW5kLiBXaGF0IGRvZXMg
-dGhpcyBtb2R1bGUgZG8gb24NCj4gPiB0b3Agb2YgdGhvc2UgaXMgd2hhdCBJIHdhbnQgdG8ga25v
-dy4gUGxlYXNlIHBvc3QgdGhhdCBtb2R1bGUgb3IgcG9pbnQNCj4gPiBtZSBpZiBpdCBpcyBhbHJl
-YWR5IHByZXNlbnQgaW4gdGhlIHRyZWUuDQo+IA0KPiBSZWdhcmRsZXNzLCBnZW5lcmFsbHkgc3Bl
-YWtpbmcsIHBhdGNoZXMgdGhhdCBleHBvcnQgc3R1ZmYgdG8gbW9kdWxlcw0KPiB3aXRob3V0IGFu
-IGluLXRoZS10cmVlIHVzZXIgbmVlZGluZyB0aGlzIGFyZSBub3QgYXBwbGljYWJsZSB0byB0aGUN
-Cj4gbWFpbmxpbmUga2VybmVsIHNvdXJjZSB0cmVlIElNVi4NCj4gDQo+IENoZWVycyENCg0KDQpU
-aGFuayBmb3IgeW91ciBmZWVkYmFja3MhDQoNCkluZGVlZCwgdGhlcmUgaXMgbm8gYWN0dWFsIGtl
-cm5lbCBtb2R1bGUgd2hpY2ggdXNlcyBzMmlkbGVfc2V0X29wcyBpbg0KTWFpbmxpbmUga2VybmVs
-IHJpZ2h0IG5vdy4NCg0KSG93ZXZlciwgR29vZ2xlIHJlY2VudGx5IGFzayBTb0MgdmVuZG9ycyB0
-byBidWlsZCBkcml2ZXJzIGFzIGtlcm5lbA0KbW9kdWxlcyBmb3IgcmVkdWNpbmcgbWlncmF0aW9u
-IGVmZm9ydHMuIEZvciBleGFtcGxlLCBUaGUgcG93ZXINCm1hbmFnZW1lbnQgZHJpdmVyIG9uIE1l
-ZGlhdGVrIHBsYXRmb3JtIGlzIG5vdyBidWlsdCBhcyB2ZW5kb3IgbW9kdWxlLA0Kd2hpY2ggaGFz
-IG5vIHBsYW4gdG8gdXBzdHJlYW0gc28gZmFyLiANCg0KRnJvbSBNYWlubGluZSBrZXJuZWwncyBw
-ZXJzcGVjdGl2ZSwgSSBhbSB3b25kZXJpbmcgd2hldGhlciBzdWNoIHZlbmRvcg0KbW9kdWxlcyBh
-cmUgYXBwbGljYWJsZSB0byBleHBvcnQgQVBJcy4gRXhwb3J0aW5nIEFQSXMgb25seSBhdCBHb29n
-bGUncw0KQW5kcm9pZCBDb21tb24gS2VybmVsIGlzIGFuIG9wdGlvbiwgYnV0IHRoaXMgd291bGQg
-bWFrZSBBbmRyb2lkIEtlcm5lbA0KYW5kIE1haW5saW5lIGtlcm5lbCBtdWNoIG1vcmUgZGl2ZXJz
-ZS4NCg0KUmVnYXJkcywNCkNsYXVkZQ0KDQo=
+On Mon, Oct 26, 2020 at 12:41:37AM -0700, John Hubbard wrote:
+> Despite a comment that said that page fault accounting would be charged
+> to whatever task_struct* was passed into __access_remote_vm(), the tsk
+> argument was actually unused.
+> 
+> Delete both the comment, and the argument.
 
+I'd also mention that making page fault accounting actually use this
+task struct is quite a project, so there is no point to keep tsk
+argument.
+
+> Signed-off-by: John Hubbard <jhubbard@nvidia.com>
+> Cc: Oleg Nesterov <oleg@redhat.com>
+
+FWIW:
+
+Reviewed-by: Mike Rapoport <rppt@linux.ibm.com>
+
+> ---
+> 
+> Hi,
+> 
+> Just something that caught my eye when I was reviewing a semi-related
+> patchset.
+> 
+> thanks,
+> John Hubbard
+> NVIDIA
+> 
+>  include/linux/mm.h |  4 ++--
+>  kernel/ptrace.c    |  2 +-
+>  mm/memory.c        | 11 +++++------
+>  mm/nommu.c         |  8 ++++----
+>  4 files changed, 12 insertions(+), 13 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index ef360fe70aaf..b3b85a5c5937 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1716,8 +1716,8 @@ extern int access_process_vm(struct task_struct *tsk, unsigned long addr,
+>  		void *buf, int len, unsigned int gup_flags);
+>  extern int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+>  		void *buf, int len, unsigned int gup_flags);
+> -extern int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+> -		unsigned long addr, void *buf, int len, unsigned int gup_flags);
+> +extern int __access_remote_vm(struct mm_struct *mm, unsigned long addr,
+> +			      void *buf, int len, unsigned int gup_flags);
+>  
+>  long get_user_pages_remote(struct mm_struct *mm,
+>  			    unsigned long start, unsigned long nr_pages,
+> diff --git a/kernel/ptrace.c b/kernel/ptrace.c
+> index 43d6179508d6..fbbe32443b18 100644
+> --- a/kernel/ptrace.c
+> +++ b/kernel/ptrace.c
+> @@ -57,7 +57,7 @@ int ptrace_access_vm(struct task_struct *tsk, unsigned long addr,
+>  		return 0;
+>  	}
+>  
+> -	ret = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
+> +	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
+>  	mmput(mm);
+>  
+>  	return ret;
+> diff --git a/mm/memory.c b/mm/memory.c
+> index c48f8df6e502..25b28bc251d5 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -4874,11 +4874,10 @@ EXPORT_SYMBOL_GPL(generic_access_phys);
+>  #endif
+>  
+>  /*
+> - * Access another process' address space as given in mm.  If non-NULL, use the
+> - * given task for page fault accounting.
+> + * Access another process' address space as given in mm.
+>   */
+> -int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+> -		unsigned long addr, void *buf, int len, unsigned int gup_flags)
+> +int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
+> +		       int len, unsigned int gup_flags)
+>  {
+>  	struct vm_area_struct *vma;
+>  	void *old_buf = buf;
+> @@ -4955,7 +4954,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+>  int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+>  		void *buf, int len, unsigned int gup_flags)
+>  {
+> -	return __access_remote_vm(NULL, mm, addr, buf, len, gup_flags);
+> +	return __access_remote_vm(mm, addr, buf, len, gup_flags);
+>  }
+>  
+>  /*
+> @@ -4973,7 +4972,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr,
+>  	if (!mm)
+>  		return 0;
+>  
+> -	ret = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
+> +	ret = __access_remote_vm(mm, addr, buf, len, gup_flags);
+>  
+>  	mmput(mm);
+>  
+> diff --git a/mm/nommu.c b/mm/nommu.c
+> index 0faf39b32cdb..870fea12823e 100644
+> --- a/mm/nommu.c
+> +++ b/mm/nommu.c
+> @@ -1675,8 +1675,8 @@ void filemap_map_pages(struct vm_fault *vmf,
+>  }
+>  EXPORT_SYMBOL(filemap_map_pages);
+>  
+> -int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+> -		unsigned long addr, void *buf, int len, unsigned int gup_flags)
+> +int __access_remote_vm(struct mm_struct *mm, unsigned long addr, void *buf,
+> +		       int len, unsigned int gup_flags)
+>  {
+>  	struct vm_area_struct *vma;
+>  	int write = gup_flags & FOLL_WRITE;
+> @@ -1722,7 +1722,7 @@ int __access_remote_vm(struct task_struct *tsk, struct mm_struct *mm,
+>  int access_remote_vm(struct mm_struct *mm, unsigned long addr,
+>  		void *buf, int len, unsigned int gup_flags)
+>  {
+> -	return __access_remote_vm(NULL, mm, addr, buf, len, gup_flags);
+> +	return __access_remote_vm(mm, addr, buf, len, gup_flags);
+>  }
+>  
+>  /*
+> @@ -1741,7 +1741,7 @@ int access_process_vm(struct task_struct *tsk, unsigned long addr, void *buf, in
+>  	if (!mm)
+>  		return 0;
+>  
+> -	len = __access_remote_vm(tsk, mm, addr, buf, len, gup_flags);
+> +	len = __access_remote_vm(mm, addr, buf, len, gup_flags);
+>  
+>  	mmput(mm);
+>  	return len;
+> 
+> base-commit: 3650b228f83adda7e5ee532e2b90429c03f7b9ec
+> -- 
+> 2.29.0
+> 
+> 
+
+-- 
+Sincerely yours,
+Mike.
