@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 6080C298D27
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:51:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6383F298D2D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:51:55 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775600AbgJZMvm (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:51:42 -0400
-Received: from mail-wm1-f42.google.com ([209.85.128.42]:39614 "EHLO
-        mail-wm1-f42.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1775591AbgJZMvl (ORCPT
+        id S1775623AbgJZMvx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:51:53 -0400
+Received: from mail-wr1-f65.google.com ([209.85.221.65]:36837 "EHLO
+        mail-wr1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1775614AbgJZMvw (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:51:41 -0400
-Received: by mail-wm1-f42.google.com with SMTP id d3so12346429wma.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:51:39 -0700 (PDT)
+        Mon, 26 Oct 2020 08:51:52 -0400
+Received: by mail-wr1-f65.google.com with SMTP id x7so12399422wrl.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 05:51:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=android.com; s=20161025;
         h=from:to:cc:subject:date:message-id:in-reply-to:references
          :mime-version:content-transfer-encoding;
-        bh=UlQHDovrNDKdm6IMWfQLoIWvimboiAorH8hQQgAJgW0=;
-        b=os91uLp57kt4nqat5HhkoFKu6bst0Qcip5dCGs+GvojC0bpuwZ87xH7J6IBws0VczG
-         XPofmJhdzL0jGnAl6RZjzKbExzR7Rc/VWc5QjqsGdhTHsX4SVHpZZX9ocf/p9DCdsrhj
-         FJEONn2hG6iPGGKJY98/OheZt1U7MlZX1Jwh+yQN55tcnKyxt4Krtpny80nszreQBFMP
-         dAcu9csc7hrNClTue7rOb3KSe7sVhPMhdBb1zF5D2KCaKh/0PzPqHqg7etkCNtu41qt/
-         8A57UamCKtKZYxYbvHxGZpgy7thVmw6xRGgHQVYUrmOhT7ST0eVjfOq/tusBWiLQI0Cw
-         gR0Q==
+        bh=9eIClT5rENq9kBsjIFF+DaoCpFvJQstMih7FfG4bpQI=;
+        b=JDXJgSQJ80djfaAPRIOkY7qkWmZDRbS9SFL476HVIgjsAc6wSRP1/i/v1IV8BMMYkp
+         B0EXwBBKYxl9+AGFZ4g/QiSgQ2Qjwh8a1W9uCMGhSrkaoV9bhAc8vQKI0pMz4TpbVugL
+         l9LBQsJCbYz7EZZ3ceGl/XYGw6QQ69Pz/gzHcm3PBAtl2mbGYSdGHgRqvLdZ6SALcNBG
+         50tu3ZWj0GYObEaxLQ9JTZMCL1rHqgAMqIR4CCbY8sNXhD2dsInDHE5FmQQG9PozEd5f
+         tT1UeQYxanLapsSaHir/m/ta4wr1rRd6ZAPhzMXeNtNrey4ICU9KsVoXmPtM9rHi8zlt
+         JCTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
         h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
          :references:mime-version:content-transfer-encoding;
-        bh=UlQHDovrNDKdm6IMWfQLoIWvimboiAorH8hQQgAJgW0=;
-        b=jAbNBsPlMwTkfAh9CE1+PKI7Va1Y7+VAIOWD37Bp5yWlAVvOiUOe2ztjB8ReXorJ0l
-         g0jgPh1IjkNLWeUqvuzTz5aVjrpjBVU2rBxEULBw02r4dgLucvBWbK+QfOt1KkwXpKR/
-         Z1SneG/YXKcYhQO71cSo+9In7Tvpx1hwsnAaZy2faJ2XtK4v9n7txjj+Vx4J5T/CyGw/
-         494F3J/RJntvazwDZooaZB8rXvcLuj7mmmA/k6r/Mqe4fwiFoYtdGwxpspxakQ+njzXr
-         Wn8NliMDhYkYyrfhaMq33F7iujSGlkRhmhn/Ngd/ji/lkf9pIwFDwIxUAS6az1tpPX41
-         MXuQ==
-X-Gm-Message-State: AOAM530R5sFLq63mrODtyfn9L9ujjB3Qt1jN6dvsuYiRoBI+WsXuST5i
-        FW2NKXF/cus/lZc1Rk13+LeagA==
-X-Google-Smtp-Source: ABdhPJz7wg2jt+vpyty1PDUJG2zT0AyXcJOSKop7mt8WbVzDGhWyUwqVGRB0zA/hvDJyZKOuEY00Eg==
-X-Received: by 2002:a1c:2c02:: with SMTP id s2mr16656471wms.66.1603716698330;
-        Mon, 26 Oct 2020 05:51:38 -0700 (PDT)
+        bh=9eIClT5rENq9kBsjIFF+DaoCpFvJQstMih7FfG4bpQI=;
+        b=lvBl9ge+lFYUkFUwXs/DURp5RNiuM4AJSx0L+78tiDK8MricRVRICYOWSgoaiPkE9j
+         zVZFMr838Rns5tet5NAOecSqtQN4zHNSwWGAY6/g1AEei1BMVngMTa3XCn4XK/qel58W
+         f7oAhfOMF9K2zVNshFSskkkoA4yTurA/ibM6eXku1cwNGloJWVjImRFN8OsLY0wbrUod
+         gSDRwvX4HGE3Xii9MclDvjd6Ad6sM5NwkdWJzGAHA382Csh9k61Pj4D6IDAZf1V+6uD2
+         znvvNtpVM/33dt2WoR+p6+Kc6FM7bRZxC1GoyBBZWhIlVcOwD9c4Eu/BePKL/KnBW4vO
+         f8Dg==
+X-Gm-Message-State: AOAM533PMIzkkypyZ1mW0ZjZ8S3WJRbWZPhfPiYEVcI2JQat9mapKzTW
+        qi2I0dZnNApFHcASwYsmVkB5KQ==
+X-Google-Smtp-Source: ABdhPJxnjjlEsdDTWZ5ovaMmfaaPyRK980t1YQWpq0a/B0eAQqt2YNlOhDcO6C7LQR2UDpxp+/8bJw==
+X-Received: by 2002:a5d:410a:: with SMTP id l10mr17506394wrp.274.1603716709164;
+        Mon, 26 Oct 2020 05:51:49 -0700 (PDT)
 Received: from balsini.lon.corp.google.com ([2a00:79e0:d:210:7220:84ff:fe09:7d5c])
-        by smtp.gmail.com with ESMTPSA id r1sm24423262wro.18.2020.10.26.05.51.37
+        by smtp.gmail.com with ESMTPSA id r1sm24423262wro.18.2020.10.26.05.51.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:51:37 -0700 (PDT)
+        Mon, 26 Oct 2020 05:51:48 -0700 (PDT)
 From:   Alessio Balsini <balsini@android.com>
 To:     Miklos Szeredi <miklos@szeredi.hu>
 Cc:     Akilesh Kailash <akailash@google.com>,
@@ -60,9 +60,9 @@ Cc:     Akilesh Kailash <akailash@google.com>,
         Zimuzo Ezeozue <zezeozue@google.com>,
         fuse-devel@lists.sourceforge.net, kernel-team@android.com,
         linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: [PATCH V10 3/5] fuse: Introduce synchronous read and write for passthrough
-Date:   Mon, 26 Oct 2020 12:50:14 +0000
-Message-Id: <20201026125016.1905945-4-balsini@android.com>
+Subject: [PATCH V10 4/5] fuse: Handle asynchronous read and write in passthrough
+Date:   Mon, 26 Oct 2020 12:50:15 +0000
+Message-Id: <20201026125016.1905945-5-balsini@android.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
 In-Reply-To: <20201026125016.1905945-1-balsini@android.com>
 References: <20201026125016.1905945-1-balsini@android.com>
@@ -72,156 +72,145 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-All the read and write operations performed on fuse_files which have the
-passthrough feature enabled are forwarded to the associated lower file
-system file via VFS.
+Extend the passthrough feature by handling asynchronous IO both for read
+and write operations.
 
-Sending the request directly to the lower file system avoids the userspace
-round-trip that, because of possible context switches and additional
-operations might reduce the overall performance, especially in those cases
-where caching doesn't help, for example in reads at random offsets.
-
-Verifying if a fuse_file has a lower file system file associated with can
-be done by checking the validity of its passthrough_filp pointer. This
-pointer is not NULL only if passthrough has been successfully enabled via
-the appropriate ioctl().
-When a read/write operation is requested for a FUSE file with passthrough
-enabled, a new equivalent VFS request is generated, which instead targets
-the lower file system file.
-The VFS layer performs additional checks that allow for safer operations
-but may cause the operation to fail if the process accessing the FUSE file
-system does not have access to the lower file system.
-
-This change only implements synchronous requests in passthrough, returning
-an error in the case of asynchronous operations, yet covering the majority
-of the use cases.
+When an AIO request is received, if the request targets a FUSE file with
+the passthrough functionality enabled, a new identical AIO request is
+created. The new request targets the lower file system file and gets
+assigned a special FUSE passthrough AIO completion callback.
+When the lower file system AIO request is completed, the FUSE passthrough
+AIO completion callback is executed and propagates the completion signal to
+the FUSE AIO request by triggering its completion callback as well.
 
 Signed-off-by: Alessio Balsini <balsini@android.com>
 ---
- fs/fuse/file.c        |  8 +++--
- fs/fuse/fuse_i.h      |  2 ++
- fs/fuse/passthrough.c | 70 +++++++++++++++++++++++++++++++++++++++++++
- 3 files changed, 78 insertions(+), 2 deletions(-)
+ fs/fuse/passthrough.c | 85 ++++++++++++++++++++++++++++++++++++++-----
+ 1 file changed, 76 insertions(+), 9 deletions(-)
 
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index 84daaf084197..f7a12489c0ef 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -1545,7 +1545,9 @@ static ssize_t fuse_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
- 	if (is_bad_inode(file_inode(file)))
- 		return -EIO;
- 
--	if (!(ff->open_flags & FOPEN_DIRECT_IO))
-+	if (ff->passthrough.filp)
-+		return fuse_passthrough_read_iter(iocb, to);
-+	else if (!(ff->open_flags & FOPEN_DIRECT_IO))
- 		return fuse_cache_read_iter(iocb, to);
- 	else
- 		return fuse_direct_read_iter(iocb, to);
-@@ -1559,7 +1561,9 @@ static ssize_t fuse_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	if (is_bad_inode(file_inode(file)))
- 		return -EIO;
- 
--	if (!(ff->open_flags & FOPEN_DIRECT_IO))
-+	if (ff->passthrough.filp)
-+		return fuse_passthrough_write_iter(iocb, from);
-+	else if (!(ff->open_flags & FOPEN_DIRECT_IO))
- 		return fuse_cache_write_iter(iocb, from);
- 	else
- 		return fuse_direct_write_iter(iocb, from);
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index 32da45ce86e0..a888d3df5877 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -1118,5 +1118,7 @@ int fuse_passthrough_open(struct fuse_dev *fud,
- int fuse_passthrough_setup(struct fuse_conn *fc, struct fuse_file *ff,
- 			   struct fuse_open_out *openarg);
- void fuse_passthrough_release(struct fuse_passthrough *passthrough);
-+ssize_t fuse_passthrough_read_iter(struct kiocb *iocb, struct iov_iter *to);
-+ssize_t fuse_passthrough_write_iter(struct kiocb *iocb, struct iov_iter *from);
- 
- #endif /* _FS_FUSE_I_H */
 diff --git a/fs/fuse/passthrough.c b/fs/fuse/passthrough.c
-index a135c955cc33..5a78cb336db4 100644
+index 5a78cb336db4..10b6872cdaa7 100644
 --- a/fs/fuse/passthrough.c
 +++ b/fs/fuse/passthrough.c
-@@ -4,6 +4,76 @@
- 
- #include <linux/fuse.h>
+@@ -6,6 +6,11 @@
  #include <linux/idr.h>
-+#include <linux/uio.h>
-+
-+static void fuse_copyattr(struct file *dst_file, struct file *src_file)
-+{
-+	struct inode *dst = file_inode(dst_file);
-+	struct inode *src = file_inode(src_file);
-+
-+	i_size_write(dst, i_size_read(src));
-+}
-+
-+static inline rwf_t iocb_to_rw_flags(int ifl)
-+{
-+	rwf_t flags = 0;
-+
-+	if (ifl & IOCB_APPEND)
-+		flags |= RWF_APPEND;
-+	if (ifl & IOCB_DSYNC)
-+		flags |= RWF_DSYNC;
-+	if (ifl & IOCB_HIPRI)
-+		flags |= RWF_HIPRI;
-+	if (ifl & IOCB_NOWAIT)
-+		flags |= RWF_NOWAIT;
-+	if (ifl & IOCB_SYNC)
-+		flags |= RWF_SYNC;
-+
-+	return flags;
-+}
-+
-+ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
-+				   struct iov_iter *iter)
-+{
-+	ssize_t ret;
-+	struct file *fuse_filp = iocb_fuse->ki_filp;
-+	struct fuse_file *ff = fuse_filp->private_data;
-+	struct file *passthrough_filp = ff->passthrough.filp;
-+
-+	if (!iov_iter_count(iter))
-+		return 0;
-+
-+	ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
-+			    iocb_to_rw_flags(iocb_fuse->ki_flags));
-+
-+	return ret;
-+}
-+
-+ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
-+				    struct iov_iter *iter)
-+{
-+	ssize_t ret;
-+	struct file *fuse_filp = iocb_fuse->ki_filp;
-+	struct fuse_file *ff = fuse_filp->private_data;
-+	struct inode *fuse_inode = file_inode(fuse_filp);
-+	struct file *passthrough_filp = ff->passthrough.filp;
-+
-+	if (!iov_iter_count(iter))
-+		return 0;
-+
-+	inode_lock(fuse_inode);
-+
-+	file_start_write(passthrough_filp);
-+	ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
-+			     iocb_to_rw_flags(iocb_fuse->ki_flags));
-+	file_end_write(passthrough_filp);
-+	if (ret > 0)
-+		fuse_copyattr(fuse_filp, passthrough_filp);
-+
-+	inode_unlock(fuse_inode);
-+
-+	return ret;
-+}
+ #include <linux/uio.h>
  
- int fuse_passthrough_open(struct fuse_dev *fud,
- 			  struct fuse_passthrough_out *pto)
++struct fuse_aio_req {
++	struct kiocb iocb;
++	struct kiocb *iocb_fuse;
++};
++
+ static void fuse_copyattr(struct file *dst_file, struct file *src_file)
+ {
+ 	struct inode *dst = file_inode(dst_file);
+@@ -32,6 +37,32 @@ static inline rwf_t iocb_to_rw_flags(int ifl)
+ 	return flags;
+ }
+ 
++static void fuse_aio_cleanup_handler(struct fuse_aio_req *aio_req)
++{
++	struct kiocb *iocb = &aio_req->iocb;
++	struct kiocb *iocb_fuse = aio_req->iocb_fuse;
++
++	if (iocb->ki_flags & IOCB_WRITE) {
++		__sb_writers_acquired(file_inode(iocb->ki_filp)->i_sb,
++				      SB_FREEZE_WRITE);
++		file_end_write(iocb->ki_filp);
++		fuse_copyattr(iocb_fuse->ki_filp, iocb->ki_filp);
++	}
++
++	iocb_fuse->ki_pos = iocb->ki_pos;
++	kfree(aio_req);
++}
++
++static void fuse_aio_rw_complete(struct kiocb *iocb, long res, long res2)
++{
++	struct fuse_aio_req *aio_req =
++		container_of(iocb, struct fuse_aio_req, iocb);
++	struct kiocb *iocb_fuse = aio_req->iocb_fuse;
++
++	fuse_aio_cleanup_handler(aio_req);
++	iocb_fuse->ki_complete(iocb_fuse, res, res2);
++}
++
+ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
+ 				   struct iov_iter *iter)
+ {
+@@ -43,8 +74,23 @@ ssize_t fuse_passthrough_read_iter(struct kiocb *iocb_fuse,
+ 	if (!iov_iter_count(iter))
+ 		return 0;
+ 
+-	ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
+-			    iocb_to_rw_flags(iocb_fuse->ki_flags));
++	if (is_sync_kiocb(iocb_fuse)) {
++		ret = vfs_iter_read(passthrough_filp, iter, &iocb_fuse->ki_pos,
++				    iocb_to_rw_flags(iocb_fuse->ki_flags));
++	} else {
++		struct fuse_aio_req *aio_req;
++
++		aio_req = kmalloc(sizeof(struct fuse_aio_req), GFP_KERNEL);
++		if (!aio_req)
++			return -ENOMEM;
++
++		aio_req->iocb_fuse = iocb_fuse;
++		kiocb_clone(&aio_req->iocb, iocb_fuse, passthrough_filp);
++		aio_req->iocb.ki_complete = fuse_aio_rw_complete;
++		ret = call_read_iter(passthrough_filp, &aio_req->iocb, iter);
++		if (ret != -EIOCBQUEUED)
++			fuse_aio_cleanup_handler(aio_req);
++	}
+ 
+ 	return ret;
+ }
+@@ -57,19 +103,40 @@ ssize_t fuse_passthrough_write_iter(struct kiocb *iocb_fuse,
+ 	struct fuse_file *ff = fuse_filp->private_data;
+ 	struct inode *fuse_inode = file_inode(fuse_filp);
+ 	struct file *passthrough_filp = ff->passthrough.filp;
++	struct inode *passthrough_inode = file_inode(passthrough_filp);
+ 
+ 	if (!iov_iter_count(iter))
+ 		return 0;
+ 
+ 	inode_lock(fuse_inode);
+ 
+-	file_start_write(passthrough_filp);
+-	ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
+-			     iocb_to_rw_flags(iocb_fuse->ki_flags));
+-	file_end_write(passthrough_filp);
+-	if (ret > 0)
+-		fuse_copyattr(fuse_filp, passthrough_filp);
+-
++	if (is_sync_kiocb(iocb_fuse)) {
++		file_start_write(passthrough_filp);
++		ret = vfs_iter_write(passthrough_filp, iter, &iocb_fuse->ki_pos,
++				     iocb_to_rw_flags(iocb_fuse->ki_flags));
++		file_end_write(passthrough_filp);
++		if (ret > 0)
++			fuse_copyattr(fuse_filp, passthrough_filp);
++	} else {
++		struct fuse_aio_req *aio_req;
++
++		aio_req = kmalloc(sizeof(struct fuse_aio_req), GFP_KERNEL);
++		if (!aio_req) {
++			ret = -ENOMEM;
++			goto out;
++		}
++
++		file_start_write(passthrough_filp);
++		__sb_writers_release(passthrough_inode->i_sb, SB_FREEZE_WRITE);
++
++		aio_req->iocb_fuse = iocb_fuse;
++		kiocb_clone(&aio_req->iocb, iocb_fuse, passthrough_filp);
++		aio_req->iocb.ki_complete = fuse_aio_rw_complete;
++		ret = call_write_iter(passthrough_filp, &aio_req->iocb, iter);
++		if (ret != -EIOCBQUEUED)
++			fuse_aio_cleanup_handler(aio_req);
++	}
++out:
+ 	inode_unlock(fuse_inode);
+ 
+ 	return ret;
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
