@@ -2,111 +2,79 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D85E32996D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:29:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBCB62996D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:31:06 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793102AbgJZT3q (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:29:46 -0400
-Received: from mail-io1-f66.google.com ([209.85.166.66]:33609 "EHLO
-        mail-io1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1793093AbgJZT3p (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:29:45 -0400
-Received: by mail-io1-f66.google.com with SMTP id p15so11424136ioh.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:29:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google;
-        h=subject:to:cc:references:from:message-id:date:user-agent
-         :mime-version:in-reply-to:content-language:content-transfer-encoding;
-        bh=UMV5byUKBjbBGS6Lt1DrWfPHlC3+k9ZgGBZmo2bLocc=;
-        b=Q2TAQigSsVBfc+3CtfsNyg/xBg6mB+wEu2UwOsnqhHvLtie0fi2k3LgUhq7gVqvQWa
-         1Eg0/mCkWS1xcmH5+MRIvOQx1MPUNHfsEqLjWKBULAjhKy2JjILOm99EqchS5v1emELF
-         o/9BMEgQEMRcPoFEofpxQb6etWgTp9KT1HNtI=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
-         :user-agent:mime-version:in-reply-to:content-language
-         :content-transfer-encoding;
-        bh=UMV5byUKBjbBGS6Lt1DrWfPHlC3+k9ZgGBZmo2bLocc=;
-        b=Dp5cLWIyEt0GpuOjO8T0vrtAMyPKo356aBgDLyLSqXNR/dZFEdtThF2n7UsgkonURi
-         w4kszgknVWWTsNiLE9/iCs0cFbA3TO0ZpjyYvegYtuwPgMZls730CONUhqyUGvPHrIzo
-         ucW7b7MzZMMaLafF3KVfhXsjOOExuSjk2pIXD8LJciuDLv6kqlWF2JCxIi0JL7NS9pLu
-         8oAjoKsOh3L4mQAiK7mzBnrvwAjOU2giekpsZJTWxuEfAA6458BeKNPrHzzOdWvRpMpT
-         vlNJHFrH/kDE8oPnRpeyNzgFmvIH2lFy7gQRHlXPN6Jctq42+gmFzAK2KWZ1ZXG0csSs
-         lSSQ==
-X-Gm-Message-State: AOAM531ddscZQ7ZRimqVzbrLELr6EapLJNI6SiEFQC45XpvpyoSPdbtx
-        8lchumO+Wa8m12EKJk9ucCPRnQ==
-X-Google-Smtp-Source: ABdhPJz50kxjhnGkA7tBJjMYJGZglHA4rKONQTN2uG2aHF17DqnA88/SVwblrea06Ncp3KP5nlY4MQ==
-X-Received: by 2002:a02:7348:: with SMTP id a8mr12316682jae.76.1603740584118;
-        Mon, 26 Oct 2020 12:29:44 -0700 (PDT)
-Received: from [192.168.1.112] (c-24-9-64-241.hsd1.co.comcast.net. [24.9.64.241])
-        by smtp.gmail.com with ESMTPSA id f85sm7066759ill.39.2020.10.26.12.29.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 26 Oct 2020 12:29:43 -0700 (PDT)
-Subject: Re: [PATCH v3 5/6] kunit: test: fix remaining kernel-doc warnings
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     Jonathan Corbet <corbet@lwn.net>,
-        Alan Maguire <alan.maguire@oracle.com>,
-        Brendan Higgins <brendanhiggins@google.com>,
-        Iurii Zaikin <yzaikin@google.com>,
-        Kees Cook <keescook@chromium.org>,
-        Stephen Boyd <sboyd@kernel.org>, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
-        Shuah Khan <skhan@linuxfoundation.org>
-References: <cover.1603282193.git.mchehab+huawei@kernel.org>
- <1c36d295423c5c20c21a7edede0eb29e338dd62a.1603282193.git.mchehab+huawei@kernel.org>
-From:   Shuah Khan <skhan@linuxfoundation.org>
-Message-ID: <7d7b8947-38db-2b96-21ca-78428b01365b@linuxfoundation.org>
-Date:   Mon, 26 Oct 2020 13:29:42 -0600
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1793110AbgJZTbC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:31:02 -0400
+Received: from mail.kernel.org ([198.145.29.99]:34622 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2443473AbgJZTbB (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:31:01 -0400
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id ABBAD2085B
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 19:31:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603740660;
+        bh=f7P82vPmD4tyivT8IKAlNL0tj2fOqyqNaKxejRNtMnc=;
+        h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+        b=uEIF0Ws0lck8OEWVlc5hCo+BdL/1lJcpsGNCIeA/ge3mg+dsDorqkDtuLOJMq9RsV
+         yB04+n/vEB7rJUuOqQSvwS4NN0Jbh9vYJT/W643Ru1R+xxuXMha3Rip5CSjlmwiJgY
+         bFgMfXE6gVtwsSDYUK44lm3FK3h1IkXBrpyByEDI=
+Received: by mail-qk1-f182.google.com with SMTP id a23so9497885qkg.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:31:00 -0700 (PDT)
+X-Gm-Message-State: AOAM533W1RJgWBnoeLM46U2oAfZwf2n5vsH1YZNn9ZF/SPPb69yRpr8I
+        t8xz95Ki261ZqItnUSy1HU9s4AS9o14P817Ky98=
+X-Google-Smtp-Source: ABdhPJyYMf/3S17bU7BdlSl94Cctz5Z5skGtfApcEBxa0lLxz3PIYxLdvfJZ6MrpWYTdifabR+azrln7b57cgP//Jyo=
+X-Received: by 2002:a37:4e57:: with SMTP id c84mr17640126qkb.394.1603740659790;
+ Mon, 26 Oct 2020 12:30:59 -0700 (PDT)
 MIME-Version: 1.0
-In-Reply-To: <1c36d295423c5c20c21a7edede0eb29e338dd62a.1603282193.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
+References: <20201026160342.3705327-1-arnd@kernel.org> <20201026160342.3705327-3-arnd@kernel.org>
+ <20201026170151.GB42952@C02TD0UTHF1T.local>
+In-Reply-To: <20201026170151.GB42952@C02TD0UTHF1T.local>
+From:   Arnd Bergmann <arnd@kernel.org>
+Date:   Mon, 26 Oct 2020 20:30:43 +0100
+X-Gmail-Original-Message-ID: <CAK8P3a16zU7CRJniQHKi4Qeie2+jAs52HoYX9tgK2j5hb4HtMg@mail.gmail.com>
+Message-ID: <CAK8P3a16zU7CRJniQHKi4Qeie2+jAs52HoYX9tgK2j5hb4HtMg@mail.gmail.com>
+Subject: Re: [PATCH 3/4] arm64: avoid -Woverride-init warning
+To:     Mark Rutland <mark.rutland@arm.com>
+Cc:     Catalin Marinas <catalin.marinas@arm.com>,
+        Will Deacon <will@kernel.org>,
+        Will Deacon <will.deacon@arm.com>,
+        Marc Zyngier <maz@kernel.org>,
+        James Morse <james.morse@arm.com>,
+        Anshuman Khandual <anshuman.khandual@arm.com>,
+        Suzuki K Poulose <suzuki.poulose@arm.com>,
+        "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+        Vincenzo Frascino <vincenzo.frascino@arm.com>,
+        Steven Price <steven.price@arm.com>,
+        Linux ARM <linux-arm-kernel@lists.infradead.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/21/20 6:17 AM, Mauro Carvalho Chehab wrote:
-> test.h still produce three warnings:
-> 
-> 	include/kunit/test.h:282: warning: Function parameter or member '__suites' not described in 'kunit_test_suites_for_module'
-> 	include/kunit/test.h:282: warning: Excess function parameter 'suites_list' description in 'kunit_test_suites_for_module'
-> 	include/kunit/test.h:314: warning: Excess function parameter 'suites' description in 'kunit_test_suites'
-> 
-> They're all due to errors at kernel-doc markups. Update them.
-> 
-> It should be noticed that this patch moved a kernel-doc
-> markup that were located at the wrong place, and using a wrong
-> name. Kernel-doc only supports kaving the markup just before the
-> function/macro declaration. Placing it elsewhere will make it do
-> wrong assumptions.
-> 
-> Fixes: aac35468ca20 ("kunit: test: create a single centralized executor for all tests")
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
-> ---
->   include/kunit/test.h | 16 ++++++++--------
->   1 file changed, 8 insertions(+), 8 deletions(-)
-> 
-> diff --git a/include/kunit/test.h b/include/kunit/test.h
-> index a423fffefea0..14224baca3be 100644
-> --- a/include/kunit/test.h
-> +++ b/include/kunit/test.h
+On Mon, Oct 26, 2020 at 6:01 PM Mark Rutland <mark.rutland@arm.com> wrote:
+> On Mon, Oct 26, 2020 at 05:03:30PM +0100, Arnd Bergmann wrote:
 
-Applied to linux-kselftest kunit-fixes branch
+> > @@ -335,6 +335,7 @@ static void cpuinfo_detect_icache_policy(struct cpuinfo_arm64 *info)
+> >               set_bit(ICACHEF_VPIPT, &__icache_flags);
+> >               break;
+> >       default:
+> > +     case ICACHE_POLICY_RESERVED:
+> >       case ICACHE_POLICY_VIPT:
+> >               /* Assume aliasing */
+> >               set_bit(ICACHEF_ALIASING, &__icache_flags);
+> >
+> ... but it's a bit weird to have both the default and
+> ICACHE_POLICY_RESERVED cases. If we get rid of the default case, does
+> any compiler warn? I suspect the masking in CTR_L1IP() might be
+> sufficient to let the compiler see we've handled all cases.
 
-after auto-fixing the checkpatch warn
+It's not an enum, so the compiler doesn't actually know what the
+complete set is and doesn't warn without the default. I'll send a v2.
 
-WARNING: please, no space before tabs
-#108: FILE: include/kunit/test.h:258:
-+ * ^I^I^I &struct kunit_suite with KUnit.$
-
-total: 0 errors, 1 warnings, 45 lines checked
-
-thanks,
--- Shuah
-
-
+      Arnd
