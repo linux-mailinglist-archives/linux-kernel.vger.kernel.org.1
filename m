@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 584F6299FB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:24:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 71229299FB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:24:22 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2438762AbgJ0AYN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:24:13 -0400
-Received: from mail.kernel.org ([198.145.29.99]:58910 "EHLO mail.kernel.org"
+        id S2441498AbgJ0AYI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:24:08 -0400
+Received: from mail.kernel.org ([198.145.29.99]:59000 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410252AbgJZXxy (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:54 -0400
+        id S2410264AbgJZXx5 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:57 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 17613221FC;
-        Mon, 26 Oct 2020 23:53:53 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 62AD721655;
+        Mon, 26 Oct 2020 23:53:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756433;
-        bh=TBbf0P1iaTM9dF80Ec24hVxJ+5R1xA26OQgZCbEpp9Q=;
+        s=default; t=1603756437;
+        bh=keheVkShG60cQcSzdAjbQ2YVjz1C4CXbzxCiI8UOwH0=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=c5v5x9vNryMkqNsbGvCCMnW79TZDQqrz+tGFhdlYDwTqrs6FVlRWaiKHoyGhAILwh
-         W2ndBBdX51rUFsMYGMXHFkqv6EXtyPrxqOJLlZfgZDTuZWF1qmEHCqBsd/S+OISa3l
-         UL9iWzJ/Fpvgrz4yJOl9hz2cxjh8Wl1OEZn2M1EY=
+        b=z3RrVjdMYiEnDd5R4QyDzMTmL8WffEWA1Wc+vbhq1NI1N3XgrWsBf3xNayZIp1HqN
+         lL/3yYpbqligQ7xt6fhluugySu8J/I/ciSFoVkFkbAjeqL8PF/JT/b82Lf+1zMJol0
+         uD7G0WrdGkr/lFd5+oZPuYHaC9ABsWc7hhvE0Dnw=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Bhaumik Bhatt <bbhatt@codeaurora.org>,
-        Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Sasha Levin <sashal@kernel.org>, linux-arm-msm@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.8 088/132] bus: mhi: core: Abort suspends due to outgoing pending packets
-Date:   Mon, 26 Oct 2020 19:51:20 -0400
-Message-Id: <20201026235205.1023962-88-sashal@kernel.org>
+Cc:     Xiongfeng Wang <wangxiongfeng2@huawei.com>,
+        Sebastian Reichel <sebastian.reichel@collabora.com>,
+        Sasha Levin <sashal@kernel.org>, linux-pm@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 091/132] power: supply: test_power: add missing newlines when printing parameters by sysfs
+Date:   Mon, 26 Oct 2020 19:51:23 -0400
+Message-Id: <20201026235205.1023962-91-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -43,49 +42,81 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Bhaumik Bhatt <bbhatt@codeaurora.org>
+From: Xiongfeng Wang <wangxiongfeng2@huawei.com>
 
-[ Upstream commit 515847c557dd33167be86cb429fc0674a331bc88 ]
+[ Upstream commit c07fa6c1631333f02750cf59f22b615d768b4d8f ]
 
-Add the missing check to abort suspends if a client driver has pending
-outgoing packets to send to the device. This allows better utilization
-of the MHI bus wherein clients on the host are not left waiting for
-longer suspend or resume cycles to finish for data transfers.
+When I cat some module parameters by sysfs, it displays as follows.
+It's better to add a newline for easy reading.
 
-Reviewed-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Signed-off-by: Bhaumik Bhatt <bbhatt@codeaurora.org>
-Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-Link: https://lore.kernel.org/r/20200929175218.8178-4-manivannan.sadhasivam@linaro.org
-Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+root@syzkaller:~# cd /sys/module/test_power/parameters/
+root@syzkaller:/sys/module/test_power/parameters# cat ac_online
+onroot@syzkaller:/sys/module/test_power/parameters# cat battery_present
+trueroot@syzkaller:/sys/module/test_power/parameters# cat battery_health
+goodroot@syzkaller:/sys/module/test_power/parameters# cat battery_status
+dischargingroot@syzkaller:/sys/module/test_power/parameters# cat battery_technology
+LIONroot@syzkaller:/sys/module/test_power/parameters# cat usb_online
+onroot@syzkaller:/sys/module/test_power/parameters#
+
+Signed-off-by: Xiongfeng Wang <wangxiongfeng2@huawei.com>
+Signed-off-by: Sebastian Reichel <sebastian.reichel@collabora.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/bus/mhi/core/pm.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+ drivers/power/supply/test_power.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
 
-diff --git a/drivers/bus/mhi/core/pm.c b/drivers/bus/mhi/core/pm.c
-index 7960980780832..661d704c8093d 100644
---- a/drivers/bus/mhi/core/pm.c
-+++ b/drivers/bus/mhi/core/pm.c
-@@ -686,7 +686,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
- 		return -EIO;
+diff --git a/drivers/power/supply/test_power.c b/drivers/power/supply/test_power.c
+index b3c05ff05783f..1bdce430246af 100644
+--- a/drivers/power/supply/test_power.c
++++ b/drivers/power/supply/test_power.c
+@@ -353,6 +353,7 @@ static int param_set_ac_online(const char *key, const struct kernel_param *kp)
+ static int param_get_ac_online(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_ac_online, ac_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
  
- 	/* Return busy if there are any pending resources */
--	if (atomic_read(&mhi_cntrl->dev_wake))
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts))
- 		return -EBUSY;
+@@ -366,6 +367,7 @@ static int param_set_usb_online(const char *key, const struct kernel_param *kp)
+ static int param_get_usb_online(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_ac_online, usb_online, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
  
- 	/* Take MHI out of M2 state */
-@@ -712,7 +713,8 @@ int mhi_pm_suspend(struct mhi_controller *mhi_cntrl)
+@@ -380,6 +382,7 @@ static int param_set_battery_status(const char *key,
+ static int param_get_battery_status(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_status, battery_status, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
  
- 	write_lock_irq(&mhi_cntrl->pm_lock);
+@@ -394,6 +397,7 @@ static int param_set_battery_health(const char *key,
+ static int param_get_battery_health(char *buffer, const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_health, battery_health, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
  
--	if (atomic_read(&mhi_cntrl->dev_wake)) {
-+	if (atomic_read(&mhi_cntrl->dev_wake) ||
-+	    atomic_read(&mhi_cntrl->pending_pkts)) {
- 		write_unlock_irq(&mhi_cntrl->pm_lock);
- 		return -EBUSY;
- 	}
+@@ -409,6 +413,7 @@ static int param_get_battery_present(char *buffer,
+ 					const struct kernel_param *kp)
+ {
+ 	strcpy(buffer, map_get_key(map_present, battery_present, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
+@@ -426,6 +431,7 @@ static int param_get_battery_technology(char *buffer,
+ {
+ 	strcpy(buffer,
+ 		map_get_key(map_technology, battery_technology, "unknown"));
++	strcat(buffer, "\n");
+ 	return strlen(buffer);
+ }
+ 
 -- 
 2.25.1
 
