@@ -2,134 +2,215 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D11D22988EE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:58:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 1C3442988EF
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:59:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772436AbgJZI6v (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:58:51 -0400
-Received: from mail-ej1-f67.google.com ([209.85.218.67]:45071 "EHLO
-        mail-ej1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1421379AbgJZI6t (ORCPT
+        id S1772441AbgJZI7B (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:59:01 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:44316 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1746404AbgJZI7A (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:58:49 -0400
-Received: by mail-ej1-f67.google.com with SMTP id dt13so12218963ejb.12;
-        Mon, 26 Oct 2020 01:58:47 -0700 (PDT)
+        Mon, 26 Oct 2020 04:59:00 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603702739;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+         in-reply-to:in-reply-to:references:references;
+        bh=0W2XV7td4g59j+SiwCCjGLZgDGW6nxbV5ceZZFZ+5jU=;
+        b=RD+XD0rmE041DblMQJjWH3AyLRUb49UgS6N+RQCe4R22lzXgA9GcVNHD8Kp2MixriHFbj0
+        Vpkt9FIinwEv+9XbDFt7VgTRTXMVUp+9u1hZH6jdDOtKe/Z9DsszH2XIfusisCPxsMaUZA
+        eJg3dbkmfiLQtC69DlONwvaYLjNlMC0=
+Received: from mail-ed1-f69.google.com (mail-ed1-f69.google.com
+ [209.85.208.69]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-70-w9zXk0BhNgCd_hnboTjCAA-1; Mon, 26 Oct 2020 04:58:57 -0400
+X-MC-Unique: w9zXk0BhNgCd_hnboTjCAA-1
+Received: by mail-ed1-f69.google.com with SMTP id b16so3866809edn.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 01:58:57 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=Hn9VYABYZTQaVzPUiES+tS13koBgi3MCBoJWKx2vDHY=;
-        b=M66m0U8bn2MiT68pSMLmqCesjN5/IQqN866oYn2hSvEtYgFSAR4mtca6+mU7OJYwQK
-         DuGw1P6QrPZIBywKGFt1gjK59GoSiOaV7f6GkRCLM9GTC6eYRC1xV+uMonmiANCh+yv1
-         HtZEU+mjHUZ143pimuLSZUBj3kXVxEa+ND6t88Uyu4Ac0gW9OUH6srV8QvZxaI4HUFo+
-         Q/734V3ab+kHQg3ne3OSSw8PwwCsmpVLvpSku1+KNAKyVs0gwqTdGHXg1Tyo+/qtTjih
-         gCUU7VM0ELMyQUwO4b3mkbI6O7Ehm/zp2Dvl9GqSnxzGtDsHtR7r8KAANy5knl7+vFHO
-         6luw==
-X-Gm-Message-State: AOAM531zFQcn3qrUROueKcVn2NkmIQsEDpkQNDcWU7VibL3CIBJLi/Ky
-        dQS8mbAxO+XUWoQw0qHWMbQ=
-X-Google-Smtp-Source: ABdhPJwFY2jEGzM5/BGA63kSRmTXKmL5TjLrrM/cx/jzntKQsUdmlHCo3mHGhn/wAPX2xXacX0CFcg==
-X-Received: by 2002:a17:906:857:: with SMTP id f23mr14493598ejd.3.1603702726697;
-        Mon, 26 Oct 2020 01:58:46 -0700 (PDT)
-Received: from kozik-lap ([194.230.155.184])
-        by smtp.googlemail.com with ESMTPSA id t8sm5443910ejc.45.2020.10.26.01.58.44
+        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
+         :message-id:mime-version;
+        bh=0W2XV7td4g59j+SiwCCjGLZgDGW6nxbV5ceZZFZ+5jU=;
+        b=WCq/ygG44lyBuVsJ35lhvq2Ur7cX8fp58ITq7rTgG4246i30G1f0gJtBrwDwez+pCP
+         VWZhB7IDQhJcxqKpuo9iorwV9pPED14acwqb3DaEzTTb5IN0XF/trOn7LJKBgI5wLnVQ
+         DTC8JPVReU8C0bYFIa9VWpXpCVE0mQiVfK159arBgqzP7zdIC2Yn9kFgcMVPx2sTWwe+
+         HR14QRFFdwqrESkMV1xZFonXERsoaq3qC/j3AOTQd2affQ3n/KzgJSqnV4Xb84XpAQqb
+         p2/7rCyVJCxF2XI/5XgRiYzjSIneqpGOsUMbvu7yE3VFyUtKUdn/vR4rAodKC+yC4/IU
+         V7+A==
+X-Gm-Message-State: AOAM5302HPqO8eXFkYIHA3nhMMYLW9c5dIqBjZYaCk20Jt/lBj6hiSsn
+        g1KdZ68hfwoetxiFA3ET5ewFdB8w43tUMNWKe4zMubfX8lUtqh3ThEHgSjFNgV9S6v5jUCC0hS2
+        o4MeogN5Du1GfSPbcJCR3t75Z
+X-Received: by 2002:a17:906:ae09:: with SMTP id le9mr14268841ejb.425.1603702736214;
+        Mon, 26 Oct 2020 01:58:56 -0700 (PDT)
+X-Google-Smtp-Source: ABdhPJw7/gViufjlDk0R/qXYVAbxhJp+F9jCWBIBk7lqRPPHeMS/KzUmAt2aAnWxoUOMKzZYuuYRbA==
+X-Received: by 2002:a17:906:ae09:: with SMTP id le9mr14268833ejb.425.1603702735966;
+        Mon, 26 Oct 2020 01:58:55 -0700 (PDT)
+Received: from vitty.brq.redhat.com (g-server-2.ign.cz. [91.219.240.2])
+        by smtp.gmail.com with ESMTPSA id f7sm5457783ejz.23.2020.10.26.01.58.55
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 01:58:45 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 09:58:43 +0100
-From:   Krzysztof Kozlowski <krzk@kernel.org>
-To:     kholk11@gmail.com
-Cc:     dmitry.torokhov@gmail.com, robh+dt@kernel.org, rydberg@bitmath.org,
-        priv.luk@gmail.com, linux-input@vger.kernel.org,
-        linux-kernel@vger.kernel.org, marijns95@gmail.com,
-        konradybcio@gmail.com, martin.botka1@gmail.com,
-        phone-devel@vger.kernel.org, devicetree@vger.kernel.org,
-        andy.shevchenko@gmail.com
-Subject: Re: [PATCH v7 3/3] dt-bindings: touchscreen: Add binding for Novatek
- NT36xxx series driver
-Message-ID: <20201026085843.GA8168@kozik-lap>
-References: <20201024105111.15829-1-kholk11@gmail.com>
- <20201024105111.15829-4-kholk11@gmail.com>
+        Mon, 26 Oct 2020 01:58:55 -0700 (PDT)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     Peter Xu <peterx@redhat.com>
+Cc:     peterx@redhat.com,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        linux-kernel@vger.kernel.org, kvm@vger.kernel.org
+Subject: Re: [PATCH 1/2] KVM: selftests: Add get featured msrs test case
+In-Reply-To: <20201025185334.389061-2-peterx@redhat.com>
+References: <20201025185334.389061-1-peterx@redhat.com> <20201025185334.389061-2-peterx@redhat.com>
+Date:   Mon, 26 Oct 2020 09:58:54 +0100
+Message-ID: <874kmh2wj5.fsf@vitty.brq.redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20201024105111.15829-4-kholk11@gmail.com>
+Content-Type: text/plain
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 12:51:11PM +0200, kholk11@gmail.com wrote:
-> From: AngeloGioacchino Del Regno <kholk11@gmail.com>
-> 
-> Add binding for the Novatek NT36xxx series touchscreen driver.
-> 
-> Signed-off-by: AngeloGioacchino Del Regno <kholk11@gmail.com>
+Peter Xu <peterx@redhat.com> writes:
+
+> Try to fetch any supported featured msr.  Currently it won't fail, so at least
+> we can check against valid ones (which should be >0).
+>
+> This reproduces [1] too by trying to fetch one invalid msr there.
+>
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=209845
+>
+> Signed-off-by: Peter Xu <peterx@redhat.com>
 > ---
->  .../bindings/input/touchscreen/nt36xxx.yaml   | 59 +++++++++++++++++++
->  1 file changed, 59 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-> 
-> diff --git a/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-> new file mode 100644
-> index 000000000000..1486b20d6c49
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
-> @@ -0,0 +1,59 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/input/touchscreen/nt36xxx.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>  .../testing/selftests/kvm/include/kvm_util.h  |  3 +
+>  tools/testing/selftests/kvm/lib/kvm_util.c    | 14 +++++
+>  .../testing/selftests/kvm/x86_64/state_test.c | 58 +++++++++++++++++++
+>  3 files changed, 75 insertions(+)
+>
+> diff --git a/tools/testing/selftests/kvm/include/kvm_util.h b/tools/testing/selftests/kvm/include/kvm_util.h
+> index 919e161dd289..e34cf263b20a 100644
+> --- a/tools/testing/selftests/kvm/include/kvm_util.h
+> +++ b/tools/testing/selftests/kvm/include/kvm_util.h
+> @@ -66,6 +66,9 @@ int vm_enable_cap(struct kvm_vm *vm, struct kvm_enable_cap *cap);
+>  
+>  struct kvm_vm *vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
+>  struct kvm_vm *_vm_create(enum vm_guest_mode mode, uint64_t phy_pages, int perm);
+> +void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
+> +				       struct kvm_msr_list *list);
+> +int kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs);
+>  void kvm_vm_free(struct kvm_vm *vmp);
+>  void kvm_vm_restart(struct kvm_vm *vmp, int perm);
+>  void kvm_vm_release(struct kvm_vm *vmp);
+> diff --git a/tools/testing/selftests/kvm/lib/kvm_util.c b/tools/testing/selftests/kvm/lib/kvm_util.c
+> index 74776ee228f2..3c16fa044335 100644
+> --- a/tools/testing/selftests/kvm/lib/kvm_util.c
+> +++ b/tools/testing/selftests/kvm/lib/kvm_util.c
+> @@ -132,6 +132,20 @@ static const struct vm_guest_mode_params vm_guest_mode_params[] = {
+>  _Static_assert(sizeof(vm_guest_mode_params)/sizeof(struct vm_guest_mode_params) == NUM_VM_MODES,
+>  	       "Missing new mode params?");
+>  
+> +void kvm_vm_get_msr_feature_index_list(struct kvm_vm *vm,
+> +				       struct kvm_msr_list *list)
+> +{
+> +	int r = ioctl(vm->kvm_fd, KVM_GET_MSR_FEATURE_INDEX_LIST, list);
 > +
-> +title: Novatek NT36xxx series touchscreen controller Bindings
+> +	TEST_ASSERT(r == 0, "KVM_GET_MSR_FEATURE_INDEX_LIST failed: %d\n",
+> +		    -errno);
+> +}
 > +
-> +maintainers:
-> +  - AngeloGioacchino Del Regno <kholk11@gmail.com>
-> +
-> +allOf:
-> +  - $ref: touchscreen.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    const: novatek,nt36525
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  interrupts:
-> +    maxItems: 1
-> +
-> +  reset-gpios:
-> +    maxItems: 1
-> +
-> +  vdd-supply:
-> +    description: Power supply regulator for VDD pin
-> +
-> +  vio-supply:
-> +    description: Power supply regulator on VDD-IO pin
-> +
-> +unevaluatedProperties: false
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - interrupts
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/irq.h>
-> +    #include <dt-bindings/gpio/gpio.h>
-> +
-> +    i2c {
-> +      #address-cells = <1>;
-> +      #size-cells = <0>;
-> +
-> +      touchscreen@62 {
-> +        compatible = "novatek,nt36525";
-> +        reg = <0x62>;
-> +        interrupt-parent = <&tlmm>;
-> +        interrupts = <45 IRQ_TYPE_EDGE_RISING>;
-> +        reset-gpio = <&tlmm 102 GPIO_ACTIVE_HIGH>;
+> +int kvm_vm_get_feature_msrs(struct kvm_vm *vm, struct kvm_msrs *msrs)
+> +{
+> +	return ioctl(vm->kvm_fd, KVM_GET_MSRS, msrs);
+> +}
 
-The same as for v5 - reset-gpios.
+I *think* that the non-written rule for kvm selftests is that functions
+without '_' prefix check ioctl return value with TEST_ASSERT() and
+functions with it don't (e.g. _vcpu_run()/vcpu_run()) but maybe it's
+just me.
 
-Best regards,
-Krzysztof
+> +
+>  /*
+>   * VM Create
+>   *
+> diff --git a/tools/testing/selftests/kvm/x86_64/state_test.c b/tools/testing/selftests/kvm/x86_64/state_test.c
+> index f6c8b9042f8a..7ce9920e526a 100644
+> --- a/tools/testing/selftests/kvm/x86_64/state_test.c
+> +++ b/tools/testing/selftests/kvm/x86_64/state_test.c
+
+I would not overload state_test with this new check and create a new
+one. The benefit is that when one of these tests fail we still get the
+result of the other one so it's not 'everything works' vs 'everything is
+broken' type of log.
+
+> @@ -152,6 +152,61 @@ static void __attribute__((__flatten__)) guest_code(void *arg)
+>  	GUEST_DONE();
+>  }
+>  
+> +#define  KVM_MSR_FEATURE_N  64
+> +
+> +static int test_kvm_get_feature_msr_one(struct kvm_vm *vm, __u32 index,
+> +					struct kvm_msrs *msrs)
+> +{
+> +	msrs->nmsrs = 1;
+> +	msrs->entries[0].index = index;
+> +	return kvm_vm_get_feature_msrs(vm, msrs);
+> +}
+> +
+> +static void test_kvm_get_msr_features(struct kvm_vm *vm)
+> +{
+> +	struct kvm_msr_list *msr_list;
+> +	struct kvm_msrs *msrs;
+> +	int i, ret, sum;
+> +
+> +	if (!kvm_check_cap(KVM_CAP_GET_MSR_FEATURES)) {
+> +		pr_info("skipping kvm get msr features test\n");
+> +		return;
+> +	}
+> +
+> +	msr_list = calloc(1, sizeof(struct kvm_msr_list) +
+> +			  sizeof(__u32) * KVM_MSR_FEATURE_N);
+> +	msr_list->nmsrs = KVM_MSR_FEATURE_N;
+> +
+> +	TEST_ASSERT(msr_list, "msr_list allocation failed\n");
+> +
+> +	kvm_vm_get_msr_feature_index_list(vm, msr_list);
+> +
+> +	msrs = calloc(1, sizeof(struct kvm_msrs) +
+> +		      sizeof(struct kvm_msr_entry));
+> +
+> +	TEST_ASSERT(msrs, "msr entries allocation failed\n");
+> +
+> +	sum = 0;
+> +	for (i = 0; i < msr_list->nmsrs; i++) {
+> +		ret = test_kvm_get_feature_msr_one(vm, msr_list->indices[i],
+> +						    msrs);
+> +		TEST_ASSERT(ret >= 0, "KVM_GET_MSR failed: %d\n", ret);
+> +		sum += ret;
+> +	}
+> +	TEST_ASSERT(sum > 0, "KVM_GET_MSR has no feature msr\n");
+> +
+> +	/*
+> +	 * Test invalid msr.  Note the retcode can be either 0 or 1 depending
+> +	 * on kvm.ignore_msrs
+> +	 */
+> +	ret = test_kvm_get_feature_msr_one(vm, (__u32)-1, msrs);
+> +	TEST_ASSERT(ret >= 0 && ret <= 1,
+> +		    "KVM_GET_MSR on invalid msr error: %d\n", ret);
+> +
+> +	free(msrs);
+> +	free(msr_list);
+> +}
+> +
+>  int main(int argc, char *argv[])
+>  {
+>  	vm_vaddr_t nested_gva = 0;
+> @@ -168,6 +223,9 @@ int main(int argc, char *argv[])
+>  	vcpu_set_cpuid(vm, VCPU_ID, kvm_get_supported_cpuid());
+>  	run = vcpu_state(vm, VCPU_ID);
+>  
+> +	/* Test KVM_GET_MSR for VM */
+> +	test_kvm_get_msr_features(vm);
+> +
+>  	vcpu_regs_get(vm, VCPU_ID, &regs1);
+>  
+>  	if (kvm_check_cap(KVM_CAP_NESTED_STATE)) {
+
+-- 
+Vitaly
+
