@@ -2,130 +2,75 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B787729928F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:35:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id B7C90299294
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:37:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786130AbgJZQfc (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:35:32 -0400
-Received: from mail-qt1-f196.google.com ([209.85.160.196]:36033 "EHLO
-        mail-qt1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1786122AbgJZQfb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:35:31 -0400
-Received: by mail-qt1-f196.google.com with SMTP id c5so7156619qtw.3;
-        Mon, 26 Oct 2020 09:35:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=sender:from:date:to:cc:subject:message-id:references:mime-version
-         :content-disposition:in-reply-to;
-        bh=ERc0BB3m56dqHl5HJ2w8Pcruz+ZjG3J2VixGsoMlKiE=;
-        b=H59SXVYZzuvc8pz6mMLluvoPUBaQ+n6VGpDxxsXjRPth9mNlPH8qSJm+TxeBmyMVSn
-         cJ8U6ATe5IeU/Jyv8UiZTzTqBgR1vkf57EGlrsVmnsTaVuk1U0GccRmhKfFmuTxSOS47
-         uuLbRBGhNTqY9yxLV39aLqpdVDT4hVOsJ9lDZktw6asztD1Wj10JvL3j8qfcJzlSrksR
-         GEgIWW5k+RQUT1A1u65xRkj5gdNRlKB1Ugi3L3+D2FGdLH8s2rtfqWjXUGGAMj6TH/NM
-         3TXo6S5jO+IxdViq51ec2mG34STdSdD8qLwXmaZ/IU2DrjOTiPkXIEkX/N8UfaEYc6Lk
-         YFXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:sender:from:date:to:cc:subject:message-id
-         :references:mime-version:content-disposition:in-reply-to;
-        bh=ERc0BB3m56dqHl5HJ2w8Pcruz+ZjG3J2VixGsoMlKiE=;
-        b=XTQkzqQ704u+WuG6rSkX4R0Xx+uc+18ljegLwly0wgFMWH9oBz4ycv8ZkQyRQoRqDp
-         QTjiw2mE4d/B7eQb+/Hv/rmtKQFg9YNhSa/ZrJfpD7aIIJu0L7DsLeAaBdAK5gVXuHDD
-         DPnNuP63TCkIeQFHhJlyXdCMmgjd5BrrV6moDSBi4+IonTVHZP6kntCcGDcjixB67WnR
-         GKJRKCa9IiqVRC2oI8p/WFt0z7nNspCAkUUinVWGYbjfytHJViE6t7FUQSgGxDZzZXFu
-         xeJgoDsPPVz0OEUBngP/RxivhEJMI5HOnFsczcNe//iKrHQtsuN+/5l9QNpCF8KbXFbm
-         a6+g==
-X-Gm-Message-State: AOAM530XDKdebSbAuf309jpLeJiDO1eC/Y4NEQ3paRs8jwYUda2Bc1hx
-        gU/uQfrw0J17aenLQzkK+H8=
-X-Google-Smtp-Source: ABdhPJzGh3bYL0DZPOM7nCweseTlpQ0R3vUaoZZUzIaHC2NbvYVVG44B41GrTTnPZKxMqDvlQAKyXA==
-X-Received: by 2002:ac8:5a10:: with SMTP id n16mr17525630qta.164.1603730127393;
-        Mon, 26 Oct 2020 09:35:27 -0700 (PDT)
-Received: from rani.riverdale.lan ([2001:470:1f07:5f3::b55f])
-        by smtp.gmail.com with ESMTPSA id z66sm6815852qkb.50.2020.10.26.09.35.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 09:35:26 -0700 (PDT)
-Sender: Arvind Sankar <niveditas98@gmail.com>
-From:   Arvind Sankar <nivedita@alum.mit.edu>
-X-Google-Original-From: Arvind Sankar <arvind@rani.riverdale.lan>
-Date:   Mon, 26 Oct 2020 12:35:24 -0400
-To:     Arnd Bergmann <arnd@kernel.org>
-Cc:     Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        Thierry Reding <treding@nvidia.com>,
-        Timo Alho <talho@nvidia.com>, linux-tegra@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] firmware: tegra: fix strncpy()/strncat() confusion
-Message-ID: <20201026163524.GA1491649@rani.riverdale.lan>
-References: <20201026161026.3707545-1-arnd@kernel.org>
+        id S1786150AbgJZQhY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:37:24 -0400
+Received: from mx2.suse.de ([195.135.220.15]:60662 "EHLO mx2.suse.de"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1738342AbgJZQhW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:37:22 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 12AF3AD52;
+        Mon, 26 Oct 2020 16:37:21 +0000 (UTC)
+Received: by ds.suse.cz (Postfix, from userid 10065)
+        id 07BA3DA6E2; Mon, 26 Oct 2020 17:35:46 +0100 (CET)
+Date:   Mon, 26 Oct 2020 17:35:46 +0100
+From:   David Sterba <dsterba@suse.cz>
+To:     "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc:     linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
+        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, stable@vger.kernel.org
+Subject: Re: [PATCH 6/7] btrfs: Promote to unsigned long long before shifting
+Message-ID: <20201026163546.GP6756@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+Mail-Followup-To: dsterba@suse.cz,
+        "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+        linux-fsdevel@vger.kernel.org, ericvh@gmail.com, lucho@ionkov.net,
+        viro@zeniv.linux.org.uk, jlayton@kernel.org, idryomov@gmail.com,
+        mark@fasheh.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        v9fs-developer@lists.sourceforge.net, linux-kernel@vger.kernel.org,
+        ceph-devel@vger.kernel.org, ocfs2-devel@oss.oracle.com,
+        linux-btrfs@vger.kernel.org, clm@fb.com, josef@toxicpanda.com,
+        dsterba@suse.com, stable@vger.kernel.org
+References: <20201004180428.14494-1-willy@infradead.org>
+ <20201004180428.14494-7-willy@infradead.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201026161026.3707545-1-arnd@kernel.org>
+In-Reply-To: <20201004180428.14494-7-willy@infradead.org>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 05:10:19PM +0100, Arnd Bergmann wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
+On Sun, Oct 04, 2020 at 07:04:27PM +0100, Matthew Wilcox (Oracle) wrote:
+> On 32-bit systems, this shift will overflow for files larger than 4GB.
 > 
-> The way that bpmp_populate_debugfs_inband() uses strncpy()
-> and strncat() makes no sense since the size argument for
-> the first is insufficient to contain the trailing '/'
-> and the second passes the length of the input rather than
-> the output, which triggers a warning:
-> 
-> In function 'strncat',
->     inlined from 'bpmp_populate_debugfs_inband' at ../drivers/firmware/tegra/bpmp-debugfs.c:422:4:
-> include/linux/string.h:289:30: warning: '__builtin_strncat' specified bound depends on the length of the source argument [-Wstringop-overflow=]
->   289 | #define __underlying_strncat __builtin_strncat
->       |                              ^
-> include/linux/string.h:367:10: note: in expansion of macro '__underlying_strncat'
->   367 |   return __underlying_strncat(p, q, count);
->       |          ^~~~~~~~~~~~~~~~~~~~
-> drivers/firmware/tegra/bpmp-debugfs.c: In function 'bpmp_populate_debugfs_inband':
-> include/linux/string.h:288:29: note: length computed here
->   288 | #define __underlying_strlen __builtin_strlen
->       |                             ^
-> include/linux/string.h:321:10: note: in expansion of macro '__underlying_strlen'
->   321 |   return __underlying_strlen(p);
-> 
-> Simplify this to use an snprintf() instead.
-> 
-> Fixes: 5e37b9c137ee ("firmware: tegra: Add support for in-band debug")
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> Cc: stable@vger.kernel.org
+> Fixes: 53b381b3abeb ("Btrfs: RAID5 and RAID6")
+> Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 > ---
->  drivers/firmware/tegra/bpmp-debugfs.c | 6 +-----
->  1 file changed, 1 insertion(+), 5 deletions(-)
+>  fs/btrfs/raid56.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/firmware/tegra/bpmp-debugfs.c b/drivers/firmware/tegra/bpmp-debugfs.c
-> index c1bbba9ee93a..9ec20ddc9a6b 100644
-> --- a/drivers/firmware/tegra/bpmp-debugfs.c
-> +++ b/drivers/firmware/tegra/bpmp-debugfs.c
-> @@ -412,16 +412,12 @@ static int bpmp_populate_debugfs_inband(struct tegra_bpmp *bpmp,
->  				goto out;
->  			}
+> diff --git a/fs/btrfs/raid56.c b/fs/btrfs/raid56.c
+> index 255490f42b5d..5ee0a53301bd 100644
+> --- a/fs/btrfs/raid56.c
+> +++ b/fs/btrfs/raid56.c
+> @@ -1089,7 +1089,7 @@ static int rbio_add_io_page(struct btrfs_raid_bio *rbio,
+>  	u64 disk_start;
 >  
-> -			len = strlen(ppath) + strlen(name) + 1;
-> +			len = snprintf("%s%s/", pathlen, ppath, name);
+>  	stripe = &rbio->bbio->stripes[stripe_nr];
+> -	disk_start = stripe->physical + (page_index << PAGE_SHIFT);
+> +	disk_start = stripe->physical + ((loff_t)page_index << PAGE_SHIFT);
 
-Didn't you get any warnings with this? It should be
-			len = snprintf(pathbuf, pathlen, "%s%s/", ppath, name);
-right?
-
->  			if (len >= pathlen) {
->  				err = -EINVAL;
->  				goto out;
->  			}
->  
-> -			strncpy(pathbuf, ppath, pathlen);
-> -			strncat(pathbuf, name, strlen(name));
-> -			strcat(pathbuf, "/");
-> -
->  			err = bpmp_populate_debugfs_inband(bpmp, dentry,
->  							   pathbuf);
->  			if (err < 0)
-> -- 
-> 2.27.0
-> 
+It seems that this patch is mechanical replacement. If you check the
+callers, the page_index is passed from an int that iterates over bits
+set in an unsigned long (bitmap). The result won't overflow.
