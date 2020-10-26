@@ -2,420 +2,135 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4D48A299583
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:37:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 09E5A29957F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:36:57 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1790081AbgJZShN (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:37:13 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:33255 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1790047AbgJZShK (ORCPT
+        id S1790053AbgJZSgz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:36:55 -0400
+Received: from mail-ed1-f67.google.com ([209.85.208.67]:46847 "EHLO
+        mail-ed1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1790047AbgJZSgz (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:37:10 -0400
-Received: by mail-pl1-f194.google.com with SMTP id b19so5158454pld.0;
-        Mon, 26 Oct 2020 11:37:08 -0700 (PDT)
+        Mon, 26 Oct 2020 14:36:55 -0400
+Received: by mail-ed1-f67.google.com with SMTP id 33so10490564edq.13
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 11:36:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=KNb3aa4/7lLeB65oO/Y1tHmkRQneZk5eatkdpCxWGSo=;
-        b=aj/PygjzPPH0eEMElWirl46OqLcmYxzl8HbFFoGlFMLQPVuzA8iIscKygl34znPmH/
-         1EBK2eLHWc2QzAwLBoQHQ1puSmrjl1gTco9FR9bxk4Bh0G9aNVs1qrSfrAsUdyrOikqK
-         tcZQ+1OUtBV0oonjHFpL7oJRfIWrGNBa/2PKgiHkBoXHPHY4d/yOGvCpYGaXm12KVfDI
-         1Y/d2q28/hJEGSZjwFfUedDn/i/AtpwhSWeuF0hFszACXwjQ/6enTgzBKjRLeIKkcIgK
-         2701w6qA2VwOVqdvvO+c3m2sFGFAfJTZf724++fEYpTUFW7M7RO5cUAv8BJkW+331/VA
-         8WRw==
+        d=kylehuey.com; s=google;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=Meb4Uu74gU/GLZTWsW7zoeEha865HBw11sRZdjUpX6E=;
+        b=cMe8xEycnXESgefU7nBMu2Cqc2Cbwfx9mbgBBopdZXk3pwI1T+Pc3k2e8D/clIofLm
+         FeYfjfDTq2n4TUzcCmiEcccS1UCft8oGPyRCKkdvz5Rn6YMXE97J8rzxQJRf9QP4Jnn5
+         e6sRaZohJhtLkKNqoVm0qvGSZ/MgxK26UYp2pCszeNrSVv3hBxxQuaFi/9pF+rkoG71h
+         F3WseHK88yGH1sfhxH9RcR9C/+OXxRshXkyIeVvRs9AWLyAkzBJMZdq/7QfeCZbFEC0w
+         +IHB+I3T8uJ4yNLvizWFtJYRqImjeobU2OPX1gAFqn3eIo/Ae96Bm9yRh4eT4YKuXS/k
+         cQpg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=KNb3aa4/7lLeB65oO/Y1tHmkRQneZk5eatkdpCxWGSo=;
-        b=X1BScwV+1NIlGig/JIbqAZxTDKlhlBypchRfqeQzyIAugmDVIAHZBVPk6B/DbyfPtj
-         Wb5ncdHizOswaYgn4lMDTeSXl5v6VHemg/iW3AVbauLp6GfPxoeQ9JkkOMOacqYut7nX
-         qxBf9k3Ep9OYH3ts6h+pA1kDNmr1Gv+lAsLfPS5vDPAhKObGPi2QcMgs7HS0QdRoScd8
-         gBLzHDH9WtcmoDhRzGcWj+SMh86u3xNtGXZl0mFevVyZ/j+IuWzIqc09TaFyyQxkUCWP
-         lJjz8pli0TRR2RY5sAVT5MjuU2taYH5ylMs6bURpGonyEgRrNCKsUuVC0N6rsrMjZ7o+
-         s/FQ==
-X-Gm-Message-State: AOAM531zZ0BAAPXdpDO+SJORs/GoHxI+5/zKMjNN6Z+4+yIXvIbW420m
-        ZgnFRnJV7JsrodvYn3JDDFI=
-X-Google-Smtp-Source: ABdhPJwp3A//wWV0Z2sXb6ZWGjPnHReWlL48OvnbvrCVSuAef2MnphrN+LQ4bd3ENJu7WIpIR8zmjQ==
-X-Received: by 2002:a17:902:8c88:b029:d5:ffe1:6653 with SMTP id t8-20020a1709028c88b02900d5ffe16653mr16386997plo.22.1603737427679;
-        Mon, 26 Oct 2020 11:37:07 -0700 (PDT)
-Received: from arpitha-Inspiron-7570.lan ([106.51.240.100])
-        by smtp.gmail.com with ESMTPSA id s23sm11247799pgl.47.2020.10.26.11.37.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 11:37:06 -0700 (PDT)
-From:   Arpitha Raghunandan <98.arpi@gmail.com>
-To:     brendanhiggins@google.com, skhan@linuxfoundation.org,
-        elver@google.com, yzaikin@google.com, tytso@mit.edu,
-        adilger.kernel@dilger.ca
-Cc:     Arpitha Raghunandan <98.arpi@gmail.com>,
-        linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com,
-        linux-kernel@vger.kernel.org,
-        linux-kernel-mentees@lists.linuxfoundation.org,
-        linux-ext4@vger.kernel.org
-Subject: [PATCH v3 2/2] fs: ext4: Modify inode-test.c to use KUnit parameterized testing feature
-Date:   Tue, 27 Oct 2020 00:06:39 +0530
-Message-Id: <20201026183639.82883-1-98.arpi@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
-References: <20201026183523.82749-1-98.arpi@gmail.com>
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=Meb4Uu74gU/GLZTWsW7zoeEha865HBw11sRZdjUpX6E=;
+        b=tyHEiBX5tAQr9BMKBQTTM3SH1zWrWHM2QJXiL42TN+fB3uo6vuBBsazgimt8sGBGTO
+         zic5CNWKRLD1sLcmEQe0eB9rh24xaHgFaISFlZvwca7tg/4BzSNS9h3vTlRyCTla1L4n
+         wWxqVkdAO+D7vP0yLV9YJTsjYtjA2vUcbp2exukQcakxMGkRLyb8rdjdZUhDbftGcYNs
+         DkKLtQxdi1ZntOw65fB1SJb8cwCDelIOZRsScpS8GVL6KoxCqWb1NyjwpQc//n8KsnQK
+         fdORiRXryTJXiMKP5155urlaaNQYmKhXlXlACXPrqWI3djt0+hVUtIo9mbM9ie+db2iU
+         P4+Q==
+X-Gm-Message-State: AOAM530w4cdYdGkyMbKNHtfCD8QXjQtsW9fGCOtUFTT+pmdvdaX0+ltj
+        gqDJRqBVPdleZAmN/qNCzJSNfEdA03VxHn+dgXKAtw==
+X-Google-Smtp-Source: ABdhPJwJogA5mwCJtEqMIZn3ZMl/qxEG+YaZBShGmHXsAMo1eWT9w00bFkmOoeUBKFApbjU5R4LgbEG94LDCJ4Kg/Zk=
+X-Received: by 2002:a05:6402:1148:: with SMTP id g8mr17681745edw.271.1603737412766;
+ Mon, 26 Oct 2020 11:36:52 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+ <20201026155521.GQ2594@hirez.programming.kicks-ass.net> <20201026160513.GC2651@hirez.programming.kicks-ass.net>
+ <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
+ <20201026163100.GR2594@hirez.programming.kicks-ass.net> <20201026165519.GD2651@hirez.programming.kicks-ass.net>
+ <CAP045ArgMKSpt3Qa3TwzeE+xc78BJ5DPRazaP+bxNi570s+A=Q@mail.gmail.com> <20201026171749.GW2611@hirez.programming.kicks-ass.net>
+In-Reply-To: <20201026171749.GW2611@hirez.programming.kicks-ass.net>
+From:   Kyle Huey <me@kylehuey.com>
+Date:   Mon, 26 Oct 2020 11:36:41 -0700
+Message-ID: <CAP045ArAxjGNwTHbf7ysfH4zGM2=cHUwgAxb9bJH3bjxrEptVA@mail.gmail.com>
+Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
+ longer reported in dr6
+To:     Peter Zijlstra <peterz@infradead.org>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        "Robert O'Callahan" <rocallahan@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Modify fs/ext4/inode-test.c to use the parameterized testing
-feature of KUnit.
+On Mon, Oct 26, 2020 at 10:18 AM Peter Zijlstra <peterz@infradead.org> wrote:
+>
+> On Mon, Oct 26, 2020 at 10:12:30AM -0700, Kyle Huey wrote:
+> > On Mon, Oct 26, 2020 at 9:55 AM Peter Zijlstra <peterz@infradead.org> wrote:
+> > > @@ -935,6 +936,26 @@ static __always_inline void exc_debug_user(struct pt_regs *regs,
+> > >         irqentry_enter_from_user_mode(regs);
+> > >         instrumentation_begin();
+> > >
+> > > +       /*
+> > > +        * Clear the virtual DR6 value, ptrace routines will set bits here for
+> > > +        * things we want signals for.
+> > > +        */
+> > > +       current->thread.virtual_dr6 = 0;
+> > > +
+> > > +       /*
+> > > +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
+> > > +        * the ptrace visible DR6 copy.
+> > > +        */
+> > > +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
+> > > +               current->thread.virtual_dr6 |= (dr6 & DR_STEP);
+> > > +
+> > > +       /*
+> > > +        * The SDM says "The processor clears the BTF flag when it
+> > > +        * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+> > > +        * TIF_BLOCKSTEP in sync with the hardware BTF flag.
+> > > +        */
+> > > +       clear_thread_flag(TIF_BLOCKSTEP);
+> > > +
+> > >         /*
+> > >          * If dr6 has no reason to give us about the origin of this trap,
+> > >          * then it's very likely the result of an icebp/int01 trap.
+> >
+> > This looks good to me (at least the non BTF parts), and I'll test it
+> > shortly, but especially now that clearing virtual_dr6 is moved to
+> > exc_debug_user I still don't see why it's not ok to copy the entire
+> > dr6 value into virtual_dr6 unconditionally.  Any extraneous dr6 state
+> > from an in-kernel #DB would have been picked up and cleared already
+> > when we entered exc_debug_kernel.
+>
+> There is !ptrace user breakpoints as well. Why should we want potential
+> random bits in dr6 ?
+>
+> Suppose perf and ptrace set a user breakpoint on the exact same
+> instruction. The #DB fires and has two DR_TRAP# bits set. perf consumes
+> one and ptrace consumes one.
+>
+> Only the ptrace one should be visible to ptrace, the perf one doesn't
+> affect the userspace execution at all and shouldn't be visible.
 
-Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
----
-Changes v2->v3:
-- Marked hardcoded test data const
-- Modification based on latest implementation of KUnit parameterized testing
-Changes v1->v2:
-- Modification based on latest implementation of KUnit parameterized testing
+Ok. Makes sense.
 
- fs/ext4/inode-test.c | 314 ++++++++++++++++++++++---------------------
- 1 file changed, 158 insertions(+), 156 deletions(-)
+I can confirm that your second patch does fix the behavior I was
+seeing and rr works again.
 
-diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-index d62d802c9c12..3a449623b775 100644
---- a/fs/ext4/inode-test.c
-+++ b/fs/ext4/inode-test.c
-@@ -80,6 +80,139 @@ struct timestamp_expectation {
- 	bool lower_bound;
- };
- 
-+static const struct timestamp_expectation test_data[] = {
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 0,
-+		.expected = {0LL, 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 0,
-+		.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 1,
-+		.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = true,
-+		.extra_bits =  2,
-+		.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
-+		.msb_set = true,
-+		.lower_bound = false,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 2,
-+		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 6,
-+		.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 0xFFFFFFFF,
-+		.expected = {.tv_sec = 0x300000000LL,
-+			     .tv_nsec = MAX_NANOSECONDS},
-+	},
-+
-+	{
-+		.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = true,
-+		.extra_bits = 3,
-+		.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
-+	},
-+
-+	{
-+		.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
-+		.msb_set = false,
-+		.lower_bound = false,
-+		.extra_bits = 3,
-+		.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
-+	}
-+};
-+
-+KUNIT_PARAM_GENERATOR(ext4_inode, test_data);
-+
- static time64_t get_32bit_time(const struct timestamp_expectation * const test)
- {
- 	if (test->msb_set) {
-@@ -101,166 +234,35 @@ static time64_t get_32bit_time(const struct timestamp_expectation * const test)
-  */
- static void inode_test_xtimestamp_decoding(struct kunit *test)
- {
--	const struct timestamp_expectation test_data[] = {
--		{
--			.test_case_name = LOWER_BOUND_NEG_NO_EXTRA_BITS_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits = 0,
--			.expected = {.tv_sec = -0x80000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_NO_EXTRA_BITS_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 0,
--			.expected = {.tv_sec = -1LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 0,
--			.expected = {0LL, 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_NO_EXTRA_BITS_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 0,
--			.expected = {.tv_sec = 0x7fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NEG_LO_1_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x80000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_LO_1_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0xffffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_LO_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x100000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_LO_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 1,
--			.expected = {.tv_sec = 0x17fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NEG_HI_1_CASE,
--			.msb_set = true,
--			.lower_bound = true,
--			.extra_bits =  2,
--			.expected = {.tv_sec = 0x180000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NEG_HI_1_CASE,
--			.msb_set = true,
--			.lower_bound = false,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x1ffffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_HI_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x200000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_HI_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 2,
--			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_HI_1_NS_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 6,
--			.expected = {.tv_sec = 0x27fffffffLL, .tv_nsec = 1L},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_HI_1_NS_MAX_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 0xFFFFFFFF,
--			.expected = {.tv_sec = 0x300000000LL,
--				     .tv_nsec = MAX_NANOSECONDS},
--		},
--
--		{
--			.test_case_name = LOWER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
--			.msb_set = false,
--			.lower_bound = true,
--			.extra_bits = 3,
--			.expected = {.tv_sec = 0x300000000LL, .tv_nsec = 0L},
--		},
--
--		{
--			.test_case_name = UPPER_BOUND_NONNEG_EXTRA_BITS_1_CASE,
--			.msb_set = false,
--			.lower_bound = false,
--			.extra_bits = 3,
--			.expected = {.tv_sec = 0x37fffffffLL, .tv_nsec = 0L},
--		}
--	};
--
- 	struct timespec64 timestamp;
--	int i;
--
--	for (i = 0; i < ARRAY_SIZE(test_data); ++i) {
--		timestamp.tv_sec = get_32bit_time(&test_data[i]);
--		ext4_decode_extra_time(&timestamp,
--				       cpu_to_le32(test_data[i].extra_bits));
--
--		KUNIT_EXPECT_EQ_MSG(test,
--				    test_data[i].expected.tv_sec,
--				    timestamp.tv_sec,
--				    CASE_NAME_FORMAT,
--				    test_data[i].test_case_name,
--				    test_data[i].msb_set,
--				    test_data[i].lower_bound,
--				    test_data[i].extra_bits);
--		KUNIT_EXPECT_EQ_MSG(test,
--				    test_data[i].expected.tv_nsec,
--				    timestamp.tv_nsec,
--				    CASE_NAME_FORMAT,
--				    test_data[i].test_case_name,
--				    test_data[i].msb_set,
--				    test_data[i].lower_bound,
--				    test_data[i].extra_bits);
--	}
-+
-+	struct timestamp_expectation *test_param =
-+			(struct timestamp_expectation *)(test->param_values);
-+
-+	timestamp.tv_sec = get_32bit_time(test_param);
-+	ext4_decode_extra_time(&timestamp,
-+			       cpu_to_le32(test_param->extra_bits));
-+
-+	KUNIT_EXPECT_EQ_MSG(test,
-+			    test_param->expected.tv_sec,
-+			    timestamp.tv_sec,
-+			    CASE_NAME_FORMAT,
-+			    test_param->test_case_name,
-+			    test_param->msb_set,
-+			    test_param->lower_bound,
-+			    test_param->extra_bits);
-+	KUNIT_EXPECT_EQ_MSG(test,
-+			    test_param->expected.tv_nsec,
-+			    timestamp.tv_nsec,
-+			    CASE_NAME_FORMAT,
-+			    test_param->test_case_name,
-+			    test_param->msb_set,
-+			    test_param->lower_bound,
-+			    test_param->extra_bits);
- }
- 
- static struct kunit_case ext4_inode_test_cases[] = {
--	KUNIT_CASE(inode_test_xtimestamp_decoding),
-+	KUNIT_CASE_PARAM(inode_test_xtimestamp_decoding, ext4_inode_gen_params),
- 	{}
- };
- 
--- 
-2.25.1
-
+- Kyle
