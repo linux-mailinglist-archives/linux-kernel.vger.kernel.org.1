@@ -2,185 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id CD35B29897B
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:36:05 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C37AC298976
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 10:34:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1422411AbgJZJcd (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 05:32:33 -0400
-Received: from mail-lf1-f65.google.com ([209.85.167.65]:46927 "EHLO
-        mail-lf1-f65.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1422404AbgJZJcd (ORCPT
+        id S1422424AbgJZJeP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 05:34:15 -0400
+Received: from mail-wr1-f66.google.com ([209.85.221.66]:34949 "EHLO
+        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1422416AbgJZJeM (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 05:32:33 -0400
-Received: by mail-lf1-f65.google.com with SMTP id v6so10816996lfa.13
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 02:32:30 -0700 (PDT)
+        Mon, 26 Oct 2020 05:34:12 -0400
+Received: by mail-wr1-f66.google.com with SMTP id n15so11604367wrq.2
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 02:34:08 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc:content-transfer-encoding;
-        bh=StRkGUih/x/ZPb5WlhQHkdi1r1gUGmh5+DpBU/QI0b8=;
-        b=bxArDnwnKKVb47+2JvvYUq8R/IEKsf7ylVrQGNciSnSoYPwE7dnVtR5YwfMO5uBNZw
-         fHEDR8Tr/1TRXyiJJq95vuLudMRzpJqxxDTnXOTuZKU6/Z3xjWXSTs4P9xyBhGIaB0Mj
-         dEj7BC/L/+TXKWqGb0DXEmgMH0eBzD3NgBeP5L0Bz4eQGAdM3hCz+SHgxO9GytIKoU4w
-         JiHeltxTxG2TscaaBmkbuFitP3camZYG1gpykQPwS9aCxt/gwIFltkyjA/3cOBDh9NN8
-         32EcuS/qkGiTUBRiM6AmttqPELBPELkKaBF1xwD7TWGHSMVEVSqBV892aAqbMi/3zsVw
-         Y4mQ==
+        d=ffwll.ch; s=google;
+        h=date:from:to:cc:subject:message-id:mail-followup-to:references
+         :mime-version:content-disposition:in-reply-to;
+        bh=gYzieEkyuY5GK4uIKGUgpkX8O/MjJBNKsXAywCS/qUs=;
+        b=RSgUj4PXQdjvjhUxcBC2NkgGKsRMLzp3PYY9p4Uj7B7AfgPG3ewdfVQ2Mxj+FvMlKu
+         0nM+RnXg+PoAL+CHWjAhOGn0dcjtQLB4B33Ee9ctifIVcnGBeey4DCtSyvZ/0tKbQpNJ
+         IBJhSVHrSrVQvlRbv8fS4LsmShIvyYlV2SRTk=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc:content-transfer-encoding;
-        bh=StRkGUih/x/ZPb5WlhQHkdi1r1gUGmh5+DpBU/QI0b8=;
-        b=in+PoyRmkEokzIp1ccDK8lDJXMvEqD+ywZyYPLqwhM3chstSa2C9t3dMOXj2Cu1e+n
-         eqlC6r4GwCnN8glcANBceeCVpbY5vdjqsjDKBUeGM3EE5vOvJiMqQF1SwCxNpSeGyxrc
-         YW9P8pzrIziptDnXFTu57nRPpKjX9rN5TdIT5MdUaSik+e0+9Eb5Nfj6QMGI4UqT29dZ
-         Iycx4yMhMeNnnAisxKB1Ne/7u/kd7zjFu/gBbVs52IvApF0K4f7tTUQfeBcBFfYUMXCZ
-         Ah7Wq3G90r/U1bKVqJopXbgL7mDbyRUt2Y6yVAqqsXEC19WcGCxekck+QoM7qZrRdjI3
-         rG5A==
-X-Gm-Message-State: AOAM533cCwz9cdSJ/E0jaimP9c4GbnLZxIGPE/6P/xX5OZIZYcdedt+e
-        cFCmDmqx6aVfA5tNCs16AK7f02ovVlgLHTo37nDWXw==
-X-Google-Smtp-Source: ABdhPJzBH+MPjCV8ct7DvlWTvTVhdnKL880/VXAqc2B1yNSMODbYCXhKALP0wqXMPnA3SOp/W9yOCEL7k8bIsiJOPMI=
-X-Received: by 2002:a05:6512:1182:: with SMTP id g2mr4425834lfr.198.1603704749529;
- Mon, 26 Oct 2020 02:32:29 -0700 (PDT)
+        h=x-gm-message-state:date:from:to:cc:subject:message-id
+         :mail-followup-to:references:mime-version:content-disposition
+         :in-reply-to;
+        bh=gYzieEkyuY5GK4uIKGUgpkX8O/MjJBNKsXAywCS/qUs=;
+        b=kRb+ENNlaxele4gQN2rl4ueO1IsJo8Bc9O0uNXee8SRCmcR2J+7S7eKykkh6rCbozK
+         HYT8kbQhdb/mgVOsb2zCqd/jLKsHnrQzFgOwO08L5v+zges45zc4CZIIctVvewEgtu/b
+         U1sZETOf36nzw00w3lTMkIbZSZ7tEIGMtwHySewKh9aF1VHWlkUtgVrbhKtn6X7CSoSC
+         dkxyTEa0fmCvuSPODIAL8SmLx/wwpXt/WZ4zen7WjYPk0oG7oseOykWFyuokgcCpb9Ie
+         vu7UpnzEmEquWd8s/hfHOWLO2bvi6/1y02vi82OCM29S5vb5ct5VbPeZyP8/3y+3YeF4
+         a7TQ==
+X-Gm-Message-State: AOAM530IY+zewahs+5hpQjqvDTjGAHyvzjLirJvXQbX1B9eLW8Z9jbUw
+        bc4bmfBGCSdWvyKUs56RCCUWGg==
+X-Google-Smtp-Source: ABdhPJwLY/UfUb4b5DuGG2QhDX+v52BtLVPVfOd8+FPAKqX9G1N3GacfhGqDO8qEumDJ6El2XwbvcQ==
+X-Received: by 2002:adf:a306:: with SMTP id c6mr16496122wrb.160.1603704848072;
+        Mon, 26 Oct 2020 02:34:08 -0700 (PDT)
+Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
+        by smtp.gmail.com with ESMTPSA id j5sm23591677wrx.88.2020.10.26.02.34.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 02:34:07 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 10:34:05 +0100
+From:   Daniel Vetter <daniel@ffwll.ch>
+To:     Rob Clark <robdclark@gmail.com>
+Cc:     Lucas Stach <l.stach@pengutronix.de>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>
+Subject: Re: [PATCH v4 23/23] drm/msm: Don't implicit-sync if only a single
+ ring
+Message-ID: <20201026093405.GG401619@phenom.ffwll.local>
+Mail-Followup-To: Rob Clark <robdclark@gmail.com>,
+        Lucas Stach <l.stach@pengutronix.de>,
+        Rob Clark <robdclark@chromium.org>,
+        freedreno <freedreno@lists.freedesktop.org>,
+        David Airlie <airlied@linux.ie>,
+        linux-arm-msm <linux-arm-msm@vger.kernel.org>,
+        open list <linux-kernel@vger.kernel.org>,
+        dri-devel <dri-devel@lists.freedesktop.org>,
+        "Kristian H . Kristensen" <hoegsberg@google.com>,
+        Sean Paul <sean@poorly.run>
+References: <20201023165136.561680-1-robdclark@gmail.com>
+ <20201023165136.561680-24-robdclark@gmail.com>
+ <d0fb714b99f13bea6000ecd17fba324433782ae5.camel@pengutronix.de>
+ <CAF6AEGsf=pJ5H4guvL-+AAkK0PwCZ5g9k3K=7UPYzFmr02ReoA@mail.gmail.com>
 MIME-Version: 1.0
-References: <45f07f17-18b6-d187-0914-6f341fe90857@gmail.com>
- <CAG48ez3aqLs_-xgU0bThOLqRiiDWGObxcg-X9iFe6D5RDnLVJg@mail.gmail.com>
- <5647b94a-4693-dad0-6e0d-ed178b495d65@gmail.com> <CAG48ez1PtJPQLrQ54P+uuuxbt6mri9wcP=1m1wgVuMWOSDMazg@mail.gmail.com>
- <0f41f776-9379-9ee6-df4b-e7538f69313e@gmail.com> <CAG48ez1e-xKoJ_1v0DGMZ62WQCG7o7AUw+89DYEVbDpHWrdweA@mail.gmail.com>
- <887d5a29-edaa-2761-1512-370c1f5c3a6f@gmail.com>
-In-Reply-To: <887d5a29-edaa-2761-1512-370c1f5c3a6f@gmail.com>
-From:   Jann Horn <jannh@google.com>
-Date:   Mon, 26 Oct 2020 10:32:03 +0100
-Message-ID: <CAG48ez2TcWb6SQ86XRJDdN-Ab_gO9-sXgpFnJODMXH60mCkBJQ@mail.gmail.com>
-Subject: Re: For review: seccomp_user_notif(2) manual page
-To:     "Michael Kerrisk (man-pages)" <mtk.manpages@gmail.com>
-Cc:     Tycho Andersen <tycho@tycho.pizza>,
-        Sargun Dhillon <sargun@sargun.me>,
-        Kees Cook <keescook@chromium.org>,
-        Christian Brauner <christian@brauner.io>,
-        linux-man <linux-man@vger.kernel.org>,
-        lkml <linux-kernel@vger.kernel.org>,
-        Aleksa Sarai <cyphar@cyphar.com>,
-        Alexei Starovoitov <ast@kernel.org>,
-        Will Drewry <wad@chromium.org>, bpf <bpf@vger.kernel.org>,
-        Song Liu <songliubraving@fb.com>,
-        Daniel Borkmann <daniel@iogearbox.net>,
-        Andy Lutomirski <luto@amacapital.net>,
-        Linux Containers <containers@lists.linux-foundation.org>,
-        Giuseppe Scrivano <gscrivan@redhat.com>,
-        Robert Sesek <rsesek@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAF6AEGsf=pJ5H4guvL-+AAkK0PwCZ5g9k3K=7UPYzFmr02ReoA@mail.gmail.com>
+X-Operating-System: Linux phenom 5.7.0-1-amd64 
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 2:53 PM Michael Kerrisk (man-pages)
-<mtk.manpages@gmail.com> wrote:
-> On 10/17/20 2:25 AM, Jann Horn wrote:
-> > On Fri, Oct 16, 2020 at 8:29 PM Michael Kerrisk (man-pages)
-> > <mtk.manpages@gmail.com> wrote:
-[...]
-> >> I'm not sure if I should write anything about this small UAPI
-> >> breakage in BUGS, or not. Your thoughts?
+On Fri, Oct 23, 2020 at 08:49:14PM -0700, Rob Clark wrote:
+> On Fri, Oct 23, 2020 at 11:20 AM Lucas Stach <l.stach@pengutronix.de> wrote:
 > >
-> > Thinking about it a bit more: Any code that relies on pause() or
-> > epoll_wait() not restarting is buggy anyway, right? Because a signal
-> > could also arrive directly before entering the syscall, while
-> > userspace code is still executing? So one could argue that we're just
-> > enlarging a preexisting race. (Unless the signal handler checks the
-> > interrupted register state to figure out whether we already entered
-> > syscall handling?)
->
-> Yes, that all makes sense.
->
-> > If userspace relies on non-restarting behavior, it should be using
-> > something like epoll_pwait(). And that stuff only unblocks signals
-> > after we've already past the seccomp checks on entry.
->
-> Thanks for elaborating that detail, since as soon as you talked
-> about "enlarging a preexisting race" above, I immediately wondered
-> sigsuspend(), pselect(), etc.
->
-> (Mind you, I still wonder about the effect on system calls that
-> are normally nonrestartable because they have timeouts. My
-> understanding is that the kernel doesn't restart those system
-> calls because it's impossible for the kernel to restart the call
-> with the right timeout value. I wonder what happens when those
-> system calls are restarted in the scenario we're discussing.)
+> > On Fr, 2020-10-23 at 09:51 -0700, Rob Clark wrote:
+> > > From: Rob Clark <robdclark@chromium.org>
+> > >
+> > > If there is only a single ring (no-preemption), everything is FIFO order
+> > > and there is no need to implicit-sync.
+> > >
+> > > Mesa should probably just always use MSM_SUBMIT_NO_IMPLICIT, as behavior
+> > > is undefined when fences are not used to synchronize buffer usage across
+> > > contexts (which is the only case where multiple different priority rings
+> > > could come into play).
+> >
+> > Really, doesn't this break cross-device implicit sync? Okay, you may
+> > not have many peripherals that rely on implicit sync on devices where
+> > Adreno is usually found, but it seems rather heavy-handed.
+> >
+> > Wouldn't it be better to only ignore fences from your own ring context
+> > in the implicit sync, like we do in the common DRM scheduler
+> > (drm_sched_dependency_optimized)?
+> 
+> we already do this.. as was discussed on an earlier iteration of this patchset
+> 
+> But I'm not aware of any other non-gpu related implicit sync use-case
+> (even on imx devices where display is decoupled from gpu).. I'll
+> revert the patch if someone comes up with one, but otherwise lets let
+> the implicit sync baggage die
 
-Ah, that's an interesting edge case...
+The thing is, dma_resv won't die, even if implicit sync is dead. We're
+using internally for activity tracking and memory management. If you don't
+set these, then we can't share generic code with msm, and I think everyone
+inventing their own memory management is a bit a mistake.
 
-> Anyway, returning to your point... So, to be clear (and to
-> quickly remind myself in case I one day reread this thread),
-> there is not a problem with sigsuspend(), pselect(), ppoll(),
-> and epoll_pwait() since:
->
-> * Before the syscall, signals are blocked in the target.
-> * Inside the syscall, signals are still blocked at the time
->   the check is made for seccomp filters.
-> * If a seccomp user-space notification  event kicks, the target
->   is put to sleep with the signals still blocked.
-> * The signal will only get delivered after the supervisor either
->   triggers a spoofed success/failure return in the target or the
->   supervisor sends a CONTINUE response to the kernel telling it
->   to execute the target's system call. Either way, there won't be
->   any restarting of the target's system call (and the supervisor
->   thus won't see multiple notifications).
->
-> (Right?)
+Now you only kill the implicit write sync stuff here, but I'm not sure
+that's worth much since you still install all the read fences for
+consistency. And if userspace doesn't want to be synced, they can set the
+flag and do this on their own: I think you should be able to achieve
+exactly the same thing in mesa.
 
-Yeah.
+Aside: If you're worried about overhead, you can do O(1) submit if you
+manage your ppgtt like amdgpu does.
+-Daniel
 
-[...]
-> > So we should probably document the restarting behavior as something
-> > the supervisor has to deal with in the manpage; but for the
-> > "non-restarting syscalls can restart from the target's perspective"
-> > aspect, it might be enough to document this as quirky behavior that
-> > can't actually break correct code? (Or not document it at all. Dunno.)
->
-> So, I've added the following to the page:
->
->    Interaction with SA_RESTART signal handlers
->        Consider the following scenario:
->
->        =C2=B7 The target process has used sigaction(2)  to  install  a  s=
-ignal
->          handler with the SA_RESTART flag.
->
->        =C2=B7 The target has made a system call that triggered a seccomp =
-user-
->          space notification and the target is currently blocked until the
->          supervisor sends a notification response.
->
->        =C2=B7 A  signal  is  delivered to the target and the signal handl=
-er is
->          executed.
->
->        =C2=B7 When  (if)  the  supervisor  attempts  to  send  a  notific=
-ation
->          response,  the SECCOMP_IOCTL_NOTIF_SEND ioctl(2)) operation will
->          fail with the ENOENT error.
->
->        In this scenario, the kernel  will  restart  the  target's  system
->        call.   Consequently,  the  supervisor  will receive another user-
->        space notification.  Thus, depending on how many times the blocked
->        system call is interrupted by a signal handler, the supervisor may
->        receive multiple notifications for the same  system  call  in  the
->        target.
->
->        One  oddity  is  that  system call restarting as described in this
->        scenario will occur even for the blocking system calls  listed  in
->        signal(7) that would never normally be restarted by the SA_RESTART
->        flag.
->
-> Does that seem okay?
+> 
+> BR,
+> -R
+> 
+> 
+> 
+> >
+> > Regards,
+> > Lucas
+> >
+> > > Signed-off-by: Rob Clark <robdclark@chromium.org>
+> > > Reviewed-by: Kristian H. Kristensen <hoegsberg@google.com>
+> > > ---
+> > >  drivers/gpu/drm/msm/msm_gem_submit.c | 7 ++++---
+> > >  1 file changed, 4 insertions(+), 3 deletions(-)
+> > >
+> > > diff --git a/drivers/gpu/drm/msm/msm_gem_submit.c b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > index d04c349d8112..b6babc7f9bb8 100644
+> > > --- a/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > +++ b/drivers/gpu/drm/msm/msm_gem_submit.c
+> > > @@ -283,7 +283,7 @@ static int submit_lock_objects(struct msm_gem_submit *submit)
+> > >       return ret;
+> > >  }
+> > >
+> > > -static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> > > +static int submit_fence_sync(struct msm_gem_submit *submit, bool implicit_sync)
+> > >  {
+> > >       int i, ret = 0;
+> > >
+> > > @@ -303,7 +303,7 @@ static int submit_fence_sync(struct msm_gem_submit *submit, bool no_implicit)
+> > >                               return ret;
+> > >               }
+> > >
+> > > -             if (no_implicit)
+> > > +             if (!implicit_sync)
+> > >                       continue;
+> > >
+> > >               ret = msm_gem_sync_object(&msm_obj->base, submit->ring->fctx,
+> > > @@ -774,7 +774,8 @@ int msm_ioctl_gem_submit(struct drm_device *dev, void *data,
+> > >       if (ret)
+> > >               goto out;
+> > >
+> > > -     ret = submit_fence_sync(submit, !!(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> > > +     ret = submit_fence_sync(submit, (gpu->nr_rings > 1) &&
+> > > +                     !(args->flags & MSM_SUBMIT_NO_IMPLICIT));
+> > >       if (ret)
+> > >               goto out;
+> > >
+> >
+> _______________________________________________
+> dri-devel mailing list
+> dri-devel@lists.freedesktop.org
+> https://lists.freedesktop.org/mailman/listinfo/dri-devel
 
-Sounds good to me.
-
-> In addition, I've queued a cross-reference in signal(7):
->
->        In certain circumstances, the seccomp(2) user-space notifi=E2=80=
-=90
->        cation  feature can lead to restarting of system calls that
->        would otherwise  never  be  restarted  by  SA_RESTART;  for
->        details, see seccomp_user_notif(2).
+-- 
+Daniel Vetter
+Software Engineer, Intel Corporation
+http://blog.ffwll.ch
