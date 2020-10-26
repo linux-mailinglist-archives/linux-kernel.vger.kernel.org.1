@@ -2,95 +2,89 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 424BA298D4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:54:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BF6CE298D53
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:55:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775791AbgJZMyE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:54:04 -0400
-Received: from mail-oi1-f193.google.com ([209.85.167.193]:36013 "EHLO
-        mail-oi1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773220AbgJZMyD (ORCPT
+        id S1773331AbgJZMz2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:55:28 -0400
+Received: from casper.infradead.org ([90.155.50.34]:39218 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1772266AbgJZMz2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:54:03 -0400
-Received: by mail-oi1-f193.google.com with SMTP id y186so3254966oia.3;
-        Mon, 26 Oct 2020 05:54:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to;
-        bh=yKhaiyp8o4C1y5luwNhjTKE76jL0ByEm2cHFMlzWIhk=;
-        b=tdmczljyldK6Msd3NJ2b8nUoyRGDdvA8pwPfW9Qiy73wUo/YwX05/8U03b+eqlBXzz
-         +1/677ukU/lW7IDgDOL7l3DYyMZU+6zoAg8ux9+4Fgl1SJp4EYbiiUsqb37IrfZKhTVq
-         0wFYLPEmo7kFaB1Og3Fy8k6unxCJ8uXj28Z6Vsg7/JmnCQahvi01XFxL6WMSbSe4ViqM
-         CQn4CxRbL8I6ts5HF+RfOr472IIwPlcYqExkjIwEoxcvcFVUeeyB8T2V8xfBChV5Mn4O
-         4FjuL/RBqh7KkstdYCuib/4cioDRNY3dfTnA/qAvtiLsZTTCVsjjJNSIidCdsUt0mxN0
-         ByoQ==
-X-Gm-Message-State: AOAM532fE9n+bAEJvl2P2iyubZqx7c8D6khoSqE/PGDGrhUqChEJ5vtM
-        onxqLIsPIVIR5eWVGKJ5jQ==
-X-Google-Smtp-Source: ABdhPJybZJ5oswZfP815J5Hc0QpjQXYiSS307yqcvpo6u3h8YYof7K/iDB4HdQOIkBYqDLqj8Xt2Uw==
-X-Received: by 2002:aca:3687:: with SMTP id d129mr6612346oia.100.1603716842449;
-        Mon, 26 Oct 2020 05:54:02 -0700 (PDT)
-Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
-        by smtp.gmail.com with ESMTPSA id m65sm3499761otc.36.2020.10.26.05.54.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 05:54:01 -0700 (PDT)
-Received: (nullmailer pid 4173474 invoked by uid 1000);
-        Mon, 26 Oct 2020 12:54:00 -0000
-Date:   Mon, 26 Oct 2020 07:54:00 -0500
-From:   Rob Herring <robh@kernel.org>
-To:     Dmitry Osipenko <digetx@gmail.com>
-Cc:     linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-tegra@vger.kernel.org, Sebastian Reichel <sre@kernel.org>,
-        Lee Jones <lee.jones@linaro.org>, Dan Murphy <dmurphy@ti.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        devicetree@vger.kernel.org, Rob Herring <robh+dt@kernel.org>
-Subject: Re: [PATCH RESEND v4 1/4] dt-bindings: mfd: Add ENE KB930 Embedded
- Controller binding
-Message-ID: <20201026125400.GA4171254@bogus>
-References: <20201025230153.11729-1-digetx@gmail.com>
- <20201025230153.11729-2-digetx@gmail.com>
+        Mon, 26 Oct 2020 08:55:28 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=OVC/8ufCPdq+6mgXa8rH1fqWXxtwPmsOC8FTITP0Ogg=; b=lmrPgvmTrlLJY4lFSLK93bv8oi
+        lqKNouM/F5wE7yAL6T3q9AWeeewXG7xxnCWF+NkLhH4JdAvWo4OnHK0zDNmL7LJBeXaSidLqfH1yd
+        ivFdZbL98R9+66M4jbXnLan8kHsGdt6MYI6ZjYfUYZFc61JyKCISRich3D1H39FkaoyNa1ZA3yByJ
+        hqIip4B0CRrzTA/CjPPN5PkcbOmTbxa4iXbNbirMqSrPHkxjfy+gk8htNtb/7hPqY2E+VEljahXND
+        lgoMZp0KdI4mGBN8uaqV1AF7LN3LT3wVL2zpG7z/aztbMMkmK51E1sFhTXg32Q/Tv0v6W0obt6DiK
+        Oee+t9og==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by casper.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX221-00056D-6h; Mon, 26 Oct 2020 12:55:25 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id A40663006D0;
+        Mon, 26 Oct 2020 13:55:24 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 8BD3E2141F77F; Mon, 26 Oct 2020 13:55:24 +0100 (CET)
+Date:   Mon, 26 Oct 2020 13:55:24 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Filipe Manana <fdmanana@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: possible lockdep regression introduced by 4d004099a668
+ ("lockdep: Fix lockdep recursion")
+Message-ID: <20201026125524.GP2594@hirez.programming.kicks-ass.net>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
+ <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+ <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201025230153.11729-2-digetx@gmail.com>
+In-Reply-To: <0c0d815c-bd5a-ff2d-1417-28a41173f2b4@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 26 Oct 2020 02:01:50 +0300, Dmitry Osipenko wrote:
-> Add binding document for the ENE KB930 Embedded Controller.
+On Mon, Oct 26, 2020 at 11:56:03AM +0000, Filipe Manana wrote:
+> > That smells like the same issue reported here:
+> > 
+> >   https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+> > 
+> > Make sure you have commit:
+> > 
+> >   f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+> > 
+> > (in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
 > 
-> Reviewed-by: Rob Herring <robh@kernel.org>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  .../devicetree/bindings/mfd/ene-kb930.yaml    | 66 +++++++++++++++++++
->  1 file changed, 66 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/mfd/ene-kb930.yaml
-> 
+> Yes, CONFIG_DEBUG_PREEMPT is enabled.
 
+Bummer :/
 
-My bot found errors running 'make dt_binding_check' on your patch:
+> I'll try with that commit and let you know, however it's gonna take a
+> few hours to build a kernel and run all fstests (on that test box it
+> takes over 3 hours) to confirm that fixes the issue.
 
-yamllint warnings/errors:
-./Documentation/devicetree/bindings/mfd/ene-kb930.yaml:20:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
-./Documentation/devicetree/bindings/mfd/ene-kb930.yaml:22:9: [warning] wrong indentation: expected 10 but found 8 (indentation)
+*ouch*, 3 hours is painful. How long to make it sick with the current
+kernel? quicker I would hope?
 
-dtschema/dtc warnings/errors:
-/builds/robherring/linux-dt-review/Documentation/devicetree/bindings/mfd/ene-kb930.example.dt.yaml: battery-cell: 'operating-range-celsius' does not match any of the regexes: '^ocv-capacity-table-[0-9]+$', 'pinctrl-[0-9]+'
-	From schema: /builds/robherring/linux-dt-review/Documentation/devicetree/bindings/power/supply/battery.yaml
+> Thanks for the quick reply!
 
+Anyway, I don't think that commit can actually explain the issue :/
 
-See https://patchwork.ozlabs.org/patch/1387346
+The false positive on lockdep_assert_held() happens when the recursion
+count is !0, however we _should_ be having IRQs disabled when
+lockdep_recursion > 0, so that should never be observable.
 
-The base for the patch is generally the last rc1. Any dependencies
-should be noted.
+My hope was that DEBUG_PREEMPT would trigger on one of the
+__this_cpu_{inc,dec}(lockdep_recursion) instance, because that would
+then be a clear violation.
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
+And you're seeing this on x86, right?
 
-pip3 install dtschema --upgrade
-
-Please check and re-submit.
-
+Let me puzzle moar..
