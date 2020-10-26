@@ -2,73 +2,95 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4FBD3298C8E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:01:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 13800298C8F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:01:20 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1774624AbgJZMBH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:01:07 -0400
-Received: from mail.kernel.org ([198.145.29.99]:46460 "EHLO mail.kernel.org"
+        id S1774635AbgJZMBO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:01:14 -0400
+Received: from mail.kernel.org ([198.145.29.99]:46542 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1769395AbgJZMBG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 08:01:06 -0400
-Received: from tleilax.poochiereds.net (68-20-15-154.lightspeed.rlghnc.sbcglobal.net [68.20.15.154])
+        id S1774626AbgJZMBJ (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 08:01:09 -0400
+Received: from localhost (unknown [176.177.109.29])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 4C97122263;
-        Mon, 26 Oct 2020 12:01:05 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 42D5B22281;
+        Mon, 26 Oct 2020 12:01:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603713666;
-        bh=CkldyogWfo/ivLO62VlJzz6D/OzTlHFeOpOL9uzt8ws=;
-        h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-        b=k492nic/qQb8HJzA+fwAwpk0/r1YvIdKoJLyndQDWWSNIZzxeW5NoASmTIPxfLB6C
-         Ra3TdEZnkeQhAguW6yWA5SSigg6EkYT1wxklv0ytqNl0tMRpwdQ+b5qdy7Boua7A1M
-         bS2AItSKlVAWs17f2NJUoZUzP1HiQxmrZbPVCTgI=
-Message-ID: <9a07dd50505d16d0a2db155ab3a3938ab35320a3.camel@kernel.org>
-Subject: Re: [PATCH v3 36/56] locks: fix a typo at a kernel-doc markup
-From:   Jeff Layton <jlayton@kernel.org>
-To:     Mauro Carvalho Chehab <mchehab+huawei@kernel.org>,
-        Linux Doc Mailing List <linux-doc@vger.kernel.org>
-Cc:     "J. Bruce Fields" <bfields@fieldses.org>,
-        Jonathan Corbet <corbet@lwn.net>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Date:   Mon, 26 Oct 2020 08:01:04 -0400
-In-Reply-To: <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
-References: <cover.1603469755.git.mchehab+huawei@kernel.org>
-         <901134db80ae9763d3ce2bc42faa1b2105c29d7f.1603469755.git.mchehab+huawei@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.36.5 (3.36.5-1.fc32) 
+        s=default; t=1603713668;
+        bh=qdf3h/zutIWsyOkbj2VUmEclleb3GPZkmclXVLokVKY=;
+        h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+        b=rbJZNQYTer006cByNMjTPUHvd3UNK0MlXIC2nTyROKg4alhernbaDnHKL74hstsjT
+         Dn7yIiWD90IZv5iYoHOtjzDB/m7dLXQtXprxPZN2Vzcv/OiW16YxIPcTfh+nfBHUI5
+         GAS3RubBikxT4OPWhVzsI6KHZM1elJyIOtwK7/ro=
+Date:   Mon, 26 Oct 2020 13:01:06 +0100
+From:   Frederic Weisbecker <frederic@kernel.org>
+To:     "Joel Fernandes (Google)" <joel@joelfernandes.org>
+Cc:     linux-kernel@vger.kernel.org,
+        Josh Triplett <josh@joshtriplett.org>,
+        Lai Jiangshan <jiangshanlai@gmail.com>,
+        Marco Elver <elver@google.com>,
+        Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>, rcu@vger.kernel.org,
+        Steven Rostedt <rostedt@goodmis.org>,
+        "Uladzislau Rezki (Sony)" <urezki@gmail.com>, fweisbec@gmail.com,
+        neeraj.iitr10@gmail.com
+Subject: Re: [PATCH v8 5/6] rcu/tree: segcblist: Remove redundant smp_mb()s
+Message-ID: <20201026120106.GF104441@lothringen>
+References: <20201021190813.3005054-1-joel@joelfernandes.org>
+ <20201021190813.3005054-6-joel@joelfernandes.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201021190813.3005054-6-joel@joelfernandes.org>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, 2020-10-23 at 18:33 +0200, Mauro Carvalho Chehab wrote:
-> locks_delete_lock -> locks_delete_block
+
+65;6003;1cOn Wed, Oct 21, 2020 at 03:08:12PM -0400, Joel Fernandes (Google) wrote:
+> This memory barrier is not needed as rcu_segcblist_add_len() already
+> includes a memory barrier *before* the length of the list is updated.
+
+*before* and *after*.
+
+As you have both cases below.
+
+Thanks
+
 > 
-> Signed-off-by: Mauro Carvalho Chehab <mchehab+huawei@kernel.org>
+> Same reasoning for rcu_segcblist_enqueue().
+> 
+> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 > ---
->  fs/locks.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  kernel/rcu/rcu_segcblist.c | 1 -
+>  kernel/rcu/tree.c          | 1 -
+>  2 files changed, 2 deletions(-)
 > 
-> diff --git a/fs/locks.c b/fs/locks.c
-> index 1f84a03601fe..f3c3ce82a455 100644
-> --- a/fs/locks.c
-> +++ b/fs/locks.c
-> @@ -750,7 +750,7 @@ static void __locks_wake_up_blocks(struct file_lock *blocker)
->  }
+> diff --git a/kernel/rcu/rcu_segcblist.c b/kernel/rcu/rcu_segcblist.c
+> index 19ff82b805fb..f0fcdf9d0f7f 100644
+> --- a/kernel/rcu/rcu_segcblist.c
+> +++ b/kernel/rcu/rcu_segcblist.c
+> @@ -268,7 +268,6 @@ void rcu_segcblist_enqueue(struct rcu_segcblist *rsclp,
+>  			   struct rcu_head *rhp)
+>  {
+>  	rcu_segcblist_inc_len(rsclp);
+> -	smp_mb(); /* Ensure counts are updated before callback is enqueued. */
+>  	rcu_segcblist_inc_seglen(rsclp, RCU_NEXT_TAIL);
+>  	rhp->next = NULL;
+>  	WRITE_ONCE(*rsclp->tails[RCU_NEXT_TAIL], rhp);
+> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> index 346a05506935..6c6d3c7036e6 100644
+> --- a/kernel/rcu/tree.c
+> +++ b/kernel/rcu/tree.c
+> @@ -2525,7 +2525,6 @@ static void rcu_do_batch(struct rcu_data *rdp)
 >  
->  /**
-> - *	locks_delete_lock - stop waiting for a file lock
-> + *	locks_delete_block - stop waiting for a file lock
->   *	@waiter: the lock which was waiting
->   *
->   *	lockd/nfsd need to disconnect the lock while working on it.
-
-Thanks, merged. Should make 5.11.
-
-Cheers,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+>  	/* Update counts and requeue any remaining callbacks. */
+>  	rcu_segcblist_insert_done_cbs(&rdp->cblist, &rcl);
+> -	smp_mb(); /* List handling before counting for rcu_barrier(). */
+>  	rcu_segcblist_add_len(&rdp->cblist, -count);
+>  
+>  	/* Reinstate batch limit if we have worked down the excess. */
+> -- 
+> 2.29.0.rc1.297.gfa9743e501-goog
+> 
