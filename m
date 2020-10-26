@@ -2,205 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 8F0472985E1
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:19:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BFA412985E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:20:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421863AbgJZDTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 23:19:31 -0400
-Received: from mail-pl1-f194.google.com ([209.85.214.194]:41879 "EHLO
-        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2389792AbgJZDTb (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 23:19:31 -0400
-Received: by mail-pl1-f194.google.com with SMTP id w11so4048466pll.8;
-        Sun, 25 Oct 2020 20:19:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QsMOJAAASmnBLciPsNTk5wBgO9ycp9uLTKdOg45VzbA=;
-        b=i6XNf7/psS6DfAyer4ZSjR/IclOovr7CeQfgqjlYHDU+kjvOOOflLxX5lw06L3Q0cp
-         NhPyI8ocfUhh446hbQ0FojFItq9MiKypG0/ztZEmK4fDSkqOdFZPA1r5Zd6sIa26A4Ye
-         JCcBzuBX7h3eCAnqPMevDG8wEjGghpaIxB3tnIMeXbJNcYy1F+rhwfq013OzFV+nthvD
-         XGgAnW9EUNqdB4DokMezq4S5zvQwESKLA0Jp+SBS7sNy4bVgbdL/3M+1kJ6P0BCIvX83
-         VrEUksjG0O/P9pJvP2mG6Omb2O1YHYqQfnftWpmEii6F4sYTPcuSh0IWBzYdzKO46Doq
-         VYwg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=QsMOJAAASmnBLciPsNTk5wBgO9ycp9uLTKdOg45VzbA=;
-        b=WlDatSOPZ1KzsC/Z4T7E0FHF8wZmlzXj3Z8Dz+/g1BU9H92e/B+1mln7CSLZwTAJoZ
-         CGd1RWuoVHZSOoIBiSMLmTrrob2b02JEbVmnde4Rm8YVs5NKd4sB0xBvuS2YiSCyEaej
-         iBkvMk+ryUO0xgusnAOY+ggZZm629UeKMVEMAKXJLnxI8/eJhPjQHyKpsz2xgyePY3DK
-         9eE5jaVo2fidyAw/LeJSSK9rO2p2d+okZaRzERZR/M9c5fJob9sVQgHR11g++VvFfOVN
-         /ff4SL/uuru0+NkeLgSLQwS77tNSyWn1zbCD35dMdi9lGhXdjbfBVF4b3/MzOAGBnCbR
-         fF9w==
-X-Gm-Message-State: AOAM5316jntvSciBEiMoSwrDxPXfdT5ZnWVkj7YGTqqxQTGuRX2qD1LG
-        RHSKA7MLLGxe9gn21xG3wmKDbMOf6DmF9Idz
-X-Google-Smtp-Source: ABdhPJybZb2hyA3CDBvO+N8OsbwFu/xFa9rDsbAq51JV5T4j61FmgkCXaFgOFPiyV3WI/xv+id4ssQ==
-X-Received: by 2002:a17:902:a3c2:b029:d6:3951:5bdc with SMTP id q2-20020a170902a3c2b02900d639515bdcmr7753644plb.71.1603682370255;
-        Sun, 25 Oct 2020 20:19:30 -0700 (PDT)
-Received: from ruantu-3.localdomain ([103.230.142.242])
-        by smtp.gmail.com with ESMTPSA id e1sm10512103pfd.198.2020.10.25.20.19.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 25 Oct 2020 20:19:29 -0700 (PDT)
-From:   Yu-Tung Chang <mtwget@gmail.com>
-To:     robh+dt@kernel.org
-Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        Yu-Tung Chang <mtwget@gmail.com>
-Subject: [PATCH v2] ARM: dts: sun8i: add FriendlyArm ZeroPi support
-Date:   Mon, 26 Oct 2020 11:19:22 +0800
-Message-Id: <20201026031922.12473-1-mtwget@gmail.com>
-X-Mailer: git-send-email 2.29.0
+        id S1421888AbgJZDT6 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 23:19:58 -0400
+Received: from z5.mailgun.us ([104.130.96.5]:16865 "EHLO z5.mailgun.us"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2389878AbgJZDT6 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Sun, 25 Oct 2020 23:19:58 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603682397; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=OSXsVLrma060OniBpnUdo6WkNY5oB43KMgRGs3wI2Mg=;
+ b=wpGd44orEp8uaJ7rek2tNJuETrTX6jVJlRKJRnbkgKp1ESE4TwlR4ru79Lc4WCf4Ldrow9+L
+ nrCYasVk0oT3GKagsJdhzjEEVG+x7l1Kp86vYZeLM3lB9nzrS0n9Cn/BvayIEE/VmpG9cOII
+ 0MQVC8fmKjA5TPUhq23NoUi8sZE=
+X-Mailgun-Sending-Ip: 104.130.96.5
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-west-2.postgun.com with SMTP id
+ 5f9640505ac36f7b89a02ebe (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 03:19:44
+ GMT
+Sender: cang=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57681C433A1; Mon, 26 Oct 2020 03:19:44 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00
+        autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: cang)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id 89741C433F0;
+        Mon, 26 Oct 2020 03:19:43 +0000 (UTC)
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 26 Oct 2020 11:19:43 +0800
+From:   Can Guo <cang@codeaurora.org>
+To:     Avri Altman <Avri.Altman@wdc.com>
+Cc:     asutoshd@codeaurora.org, nguyenb@codeaurora.org,
+        hongwus@codeaurora.org, rnayak@codeaurora.org,
+        linux-scsi@vger.kernel.org, kernel-team@android.com,
+        saravanak@google.com, salyzyn@google.com,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        "Martin K. Petersen" <martin.petersen@oracle.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        open list <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2 1/1] scsi: ufs: Fix unexpected values get from
+ ufshcd_read_desc_param()
+In-Reply-To: <BY5PR04MB6705D719530D5E188ECB724EFC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
+References: <1603346348-14149-1-git-send-email-cang@codeaurora.org>
+ <BY5PR04MB6705D719530D5E188ECB724EFC1D0@BY5PR04MB6705.namprd04.prod.outlook.com>
+Message-ID: <5271e570f2e38770da3b23f13e739e41@codeaurora.org>
+X-Sender: cang@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The ZeroPi is another fun board developed
-by FriendlyELEC for makers,
-hobbyists and fans.
+Hi Avri,
 
-ZeroPi key features
-- Allwinner H3, Quad-core Cortex-A7@1.2GHz
-- 256MB/512MB DDR3 RAM
-- microsd slot
-- 10/100/1000Mbps Ethernet
-- Debug Serial Port
-- DC 5V/2A power-supply
+On 2020-10-22 14:37, Avri Altman wrote:
+>> Since WB feature has been added, WB related sysfs entries can be 
+>> accessed
+>> even when an UFS device does not support WB feature. In that case, the
+>> descriptors which are not supported by the UFS device may be wrongly
+>> reported when they are accessed from their corrsponding sysfs entries.
+>> Fix it by adding a sanity check of parameter offset against the actual
+>> decriptor length.s
+> This should be a bug fix IMO, and be dealt with similarly like
+> ufshcd_is_wb_attrs or ufshcd_is_wb_flag.
+> Thanks,
+> Avri
 
-Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
----
- .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
- arch/arm/boot/dts/Makefile                    |  1 +
- arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 87 +++++++++++++++++++
- 3 files changed, 93 insertions(+)
- create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+Could you please elaborate on ufshcd_is_wb_attrs or ufshcd_is_wb_flag?
+Sorry that I don't quite get it.
 
-diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
-index efc9118233b4..9392a9a3f7e7 100644
---- a/Documentation/devicetree/bindings/arm/sunxi.yaml
-+++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
-@@ -246,6 +246,11 @@ properties:
-           - const: friendlyarm,nanopi-neo-plus2
-           - const: allwinner,sun50i-h5
- 
-+      - description: FriendlyARM ZeroPi
-+        items:
-+          - const: friendlyarm,zeropi
-+          - const: allwinner,sun50i-h3
-+
-       - description: Gemei G9 Tablet
-         items:
-           - const: gemei,g9
-diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
-index 4572db3fa5ae..f05e54257947 100644
---- a/arch/arm/boot/dts/Makefile
-+++ b/arch/arm/boot/dts/Makefile
-@@ -1187,6 +1187,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
- 	sun8i-h3-orangepi-plus2e.dtb \
- 	sun8i-h3-orangepi-zero-plus2.dtb \
- 	sun8i-h3-rervision-dvk.dtb \
-+	sun8i-h3-zeropi.dtb \
- 	sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
- 	sun8i-r16-bananapi-m2m.dtb \
- 	sun8i-r16-nintendo-nes-classic.dtb \
-diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-new file mode 100644
-index 000000000000..00cdd35222c5
---- /dev/null
-+++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
-@@ -0,0 +1,87 @@
-+/*
-+ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
-+ *
-+ * This file is dual-licensed: you can use it either under the terms
-+ * of the GPL or the X11 license, at your option. Note that this dual
-+ * licensing only applies to this file, and not this project as a
-+ * whole.
-+ *
-+ *  a) This file is free software; you can redistribute it and/or
-+ *     modify it under the terms of the GNU General Public License as
-+ *     published by the Free Software Foundation; either version 2 of the
-+ *     License, or (at your option) any later version.
-+ *
-+ *     This file is distributed in the hope that it will be useful,
-+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
-+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-+ *     GNU General Public License for more details.
-+ *
-+ * Or, alternatively,
-+ *
-+ *  b) Permission is hereby granted, free of charge, to any person
-+ *     obtaining a copy of this software and associated documentation
-+ *     files (the "Software"), to deal in the Software without
-+ *     restriction, including without limitation the rights to use,
-+ *     copy, modify, merge, publish, distribute, sublicense, and/or
-+ *     sell copies of the Software, and to permit persons to whom the
-+ *     Software is furnished to do so, subject to the following
-+ *     conditions:
-+ *
-+ *     The above copyright notice and this permission notice shall be
-+ *     included in all copies or substantial portions of the Software.
-+ *
-+ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
-+ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
-+ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-+ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-+ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
-+ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-+ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ *     OTHER DEALINGS IN THE SOFTWARE.
-+ */
-+
-+#include "sun8i-h3-nanopi.dtsi"
-+
-+/ {
-+	model = "FriendlyARM ZeroPi";
-+	compatible = "friendlyarm,zeropi", "allwinner,sun8i-h3";
-+
-+	aliases {
-+		ethernet0 = &emac;
-+	};
-+
-+	reg_gmac_3v3: gmac-3v3 {
-+		compatible = "regulator-fixed";
-+		pinctrl-names = "default";
-+		pinctrl-0 = <&gmac_power_pin_nanopi>;
-+		regulator-name = "gmac-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		startup-delay-us = <100000>;
-+		enable-active-high;
-+		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
-+	};
-+};
-+
-+&external_mdio {
-+	ext_rgmii_phy: ethernet-phy@7 {
-+		compatible = "ethernet-phy-ieee802.3-c22";
-+		reg = <7>;
-+	};
-+};
-+
-+&emac {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&emac_rgmii_pins>;
-+	phy-supply = <&reg_gmac_3v3>;
-+	phy-handle = <&ext_rgmii_phy>;
-+	phy-mode = "rgmii";
-+
-+	allwinner,leds-active-low;
-+	status = "okay";
-+};
-+
-+&usb_otg {
-+	status = "okay";
-+	dr_mode = "host";
-+};
--- 
-2.29.0
+Thanks,
 
+Can Guo.
