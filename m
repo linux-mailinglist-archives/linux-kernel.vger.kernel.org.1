@@ -2,176 +2,438 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 17412299447
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:49:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id E51A329944A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:50:44 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1788371AbgJZRtI (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:49:08 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:37495 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780225AbgJZRtI (ORCPT
+        id S1788508AbgJZRun (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:50:43 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:33746 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404664AbgJZRum (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:49:08 -0400
-Received: by mail-pl1-f196.google.com with SMTP id b12so2730560plr.4
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:49:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=w1/6VKuaxtnOQSh9u+GNtF0PEm0CXIxJ72v1J6ceCSU=;
-        b=NDuAWgRkWwi1znQBu90iZu25Zkc7g4j7Dy4U6gZntjNVYEVVAArppw0Wi1Vm6zNmEZ
-         dKlOldrTTTzdi0GigaEr83YkpSyOFsCGQ8Jnq7tSOC/wz/HQKn6tqEg+1ZD18p9NYKXT
-         g90cqjJ6/HYh67A7UVrq9VnosfDXBI90TNp5kJ6RZb5Rv300x9WQuLOpKmY2fesnahm3
-         jKAxyT2+vhK2JHEFYnJslrnhS76v03weyNqpNa3l+h37oBNdtWxWs3PUpHnvO6UhFPUf
-         sKAZp4V8UksMOrhiVishvBVNK2P7wPd8IwSlPqJ4tNPDxV+wzb8/JODamjtTG7D2SYp+
-         ShyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=w1/6VKuaxtnOQSh9u+GNtF0PEm0CXIxJ72v1J6ceCSU=;
-        b=RrGfUYfb7aHcAdHVYhpkzeGXrdHa7ddj/v7L6v/jQbpWriS4xC/LjifrCWTcjD2MS4
-         uIRVmbT/PCGQC4FnNP0rZ3hEOn6f2xXVqFPyPgs5iZSDs7NTDTBTQLj1Vv3lkzTx74XG
-         ffc4/WIE5SYwLUVdfwCyg9QBkwk71kwzj/nl3Bn7n+cz6t5Yn9wet3R3RGU3ED7cG6wW
-         Db5ru2D7vQSEjJn7ZOzReFg9XauOcub5uHJflUXw6iSw2L+sZj/2EjatPyS30CjxF+Sv
-         03dykYDfaJV6NYJRAAiwoObQyHlw0jPifYi+PA/AltQzh0pazgFo8D+I8G2OGOibqn9b
-         3q0g==
-X-Gm-Message-State: AOAM533bRGm/USUcWgsNRYwVq+RRH0MxwfqBlI/w7KLwx06tiY8Hyhy5
-        vrkAaugr/NnXWFkn3geooQChu1/cO3xAWcTGsGBe5Q==
-X-Google-Smtp-Source: ABdhPJwbU95UOraJNRLRxfcaOZqsVbX1K/+sURxS8YjWZQVyb3dxswgNTH7cDc7s5V04mdXJpLT2yCrlbxZl6xZ8hd4=
-X-Received: by 2002:a17:90a:6b04:: with SMTP id v4mr21709795pjj.101.1603734545479;
- Mon, 26 Oct 2020 10:49:05 -0700 (PDT)
+        Mon, 26 Oct 2020 13:50:42 -0400
+Received: from [IPv6:2003:c7:cf0c:ab00:29cf:35ae:fe00:641e] (p200300c7cf0cab0029cf35aefe00641e.dip0.t-ipconnect.de [IPv6:2003:c7:cf0c:ab00:29cf:35ae:fe00:641e])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: dafna)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 7BC3E1F44FB7;
+        Mon, 26 Oct 2020 17:50:39 +0000 (GMT)
+Subject: Re: [PATCH v2] media: staging: rkisp1: cap: refactor enable/disable
+ stream to allow multistreaming
+To:     Helen Koike <helen.koike@collabora.com>,
+        linux-media@vger.kernel.org
+Cc:     laurent.pinchart@ideasonboard.com, hverkuil@xs4all.nl,
+        kernel@collabora.com, sakari.ailus@linux.intel.com,
+        linux-rockchip@lists.infradead.org, mchehab@kernel.org,
+        tfiga@chromium.org, linux-kernel@vger.kernel.org
+References: <20201019160434.877568-1-helen.koike@collabora.com>
+From:   Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+Message-ID: <b0657648-2af9-c78a-c55a-9581ff3bd9ee@collabora.com>
+Date:   Mon, 26 Oct 2020 18:50:37 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-References: <20200821194310.3089815-1-keescook@chromium.org>
- <20200821194310.3089815-14-keescook@chromium.org> <CAMuHMdUg0WJHEcq6to0-eODpXPOywLot6UD2=GFHpzoj_hCoBQ@mail.gmail.com>
- <CAMuHMdUw9KwC=EVB60yjg7mA7Fg-efOiKE7577p+uEdGJVS2OQ@mail.gmail.com>
- <CAMuHMdUJFEt3LxWHk73AsLDGhjzBvJGAML76UAxeGzb4zOf96w@mail.gmail.com>
- <CAMj1kXHXk3BX6mz6X_03sj_pSLj9Ck-=1S57tV3__N9JQOcDEw@mail.gmail.com> <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
-In-Reply-To: <CAMuHMdV4jKccjKkoj38EFC-5yN99pBvthFyrX81EG4GpassZwA@mail.gmail.com>
-From:   Nick Desaulniers <ndesaulniers@google.com>
-Date:   Mon, 26 Oct 2020 10:48:54 -0700
-Message-ID: <CAKwvOdkq3ZwW+FEui1Wtj_dWBevi0Mrt4fHa4oiMZTUZKOMi3g@mail.gmail.com>
-Subject: Re: [PATCH v6 13/29] arm64/build: Assert for unwanted sections
-To:     Geert Uytterhoeven <geert@linux-m68k.org>
-Cc:     Ard Biesheuvel <ardb@kernel.org>,
-        Kees Cook <keescook@chromium.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Catalin Marinas <catalin.marinas@arm.com>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Peter Collingbourne <pcc@google.com>,
-        James Morse <james.morse@arm.com>,
-        Borislav Petkov <bp@suse.de>, Ingo Molnar <mingo@redhat.com>,
-        Russell King <linux@armlinux.org.uk>,
-        Masahiro Yamada <masahiroy@kernel.org>,
-        Arvind Sankar <nivedita@alum.mit.edu>,
-        Nathan Chancellor <natechancellor@gmail.com>,
-        Arnd Bergmann <arnd@arndb.de>,
-        "the arch/x86 maintainers" <x86@kernel.org>,
-        clang-built-linux <clang-built-linux@googlegroups.com>,
-        Linux-Arch <linux-arch@vger.kernel.org>,
-        linux-efi <linux-efi@vger.kernel.org>,
-        Linux ARM <linux-arm-kernel@lists.infradead.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Linux-Renesas <linux-renesas-soc@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <20201019160434.877568-1-helen.koike@collabora.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 10:44 AM Geert Uytterhoeven
-<geert@linux-m68k.org> wrote:
->
-> Hi Ard,
->
-> On Mon, Oct 26, 2020 at 6:39 PM Ard Biesheuvel <ardb@kernel.org> wrote:
-> > On Mon, 26 Oct 2020 at 17:01, Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > On Mon, Oct 26, 2020 at 2:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > On Mon, Oct 26, 2020 at 1:29 PM Geert Uytterhoeven <geert@linux-m68k.org> wrote:
-> > > > > On Fri, Aug 21, 2020 at 9:56 PM Kees Cook <keescook@chromium.org> wrote:
-> > > > > > In preparation for warning on orphan sections, discard
-> > > > > > unwanted non-zero-sized generated sections, and enforce other
-> > > > > > expected-to-be-zero-sized sections (since discarding them might hide
-> > > > > > problems with them suddenly gaining unexpected entries).
-> > > > > >
-> > > > > > Suggested-by: Ard Biesheuvel <ardb@kernel.org>
-> > > > > > Signed-off-by: Kees Cook <keescook@chromium.org>
-> > > > >
-> > > > > This is now commit be2881824ae9eb92 ("arm64/build: Assert for unwanted
-> > > > > sections") in v5.10-rc1, and is causing the following error with
-> > > > > renesas_defconfig[1]:
-> > > > >
-> > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> > > > >
-> > > > > I cannot reproduce this with the standard arm64 defconfig.
-> > > > >
-> > > > > I bisected the error to the aforementioned commit, but understand this
-> > > > > is not the real reason.  If I revert this commit, I still get:
-> > > > >
-> > > > >     aarch64-linux-gnu-ld: warning: orphan section `.got.plt' from
-> > > > > `arch/arm64/kernel/head.o' being placed in section `.got.plt'
-> > > > >     aarch64-linux-gnu-ld: warning: orphan section `.plt' from
-> > > > > `arch/arm64/kernel/head.o' being placed in section `.plt'
-> > > > >     aarch64-linux-gnu-ld: warning: orphan section `.data.rel.ro' from
-> > > > > `arch/arm64/kernel/head.o' being placed in section `.data.rel.ro'
-> > > > >     aarch64-linux-gnu-ld: warning: orphan section `.eh_frame' from
-> > > > > `kernel/bpf/core.o' being placed in section `.eh_frame'
-> > > > >
-> > > > > I.e. including the ".eh_frame" warning. I have tried bisecting that
-> > > > > warning (i.e. with be2881824ae9eb92 reverted), but that leads me to
-> > > > > commit b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section
-> > > > > placement"), which is another red herring.
-> > > >
-> > > > kernel/bpf/core.o is the only file containing an eh_frame section,
-> > > > causing the warning.
+Hi,
 
-When I see .eh_frame, I think -fno-asynchronous-unwind-tables is
-missing from someone's KBUILD_CFLAGS.
-But I don't see anything curious in kernel/bpf/Makefile, unless
-cc-disable-warning is somehow broken.
 
-> > > > If I compile core.c with "-g" added, like arm64 defconfig does, the
-> > > > eh_frame section is no longer emitted.
-> > > >
-> > > > Hence setting CONFIG_DEBUG_INFO=y, cfr. arm64 defconfig, the warning
-> > > > is gone, but I'm back to the the "Unexpected GOT/PLT entries" below...
-> > > >
-> > > > > Note that even on plain be2881824ae9eb92, I get:
-> > > > >
-> > > > >     aarch64-linux-gnu-ld: Unexpected GOT/PLT entries detected!
-> > > > >     aarch64-linux-gnu-ld: Unexpected run-time procedure linkages detected!
-> > > > >
-> > > > > The parent commit obviously doesn't show that (but probably still has
-> > > > > the problem).
-> > >
-> > > Reverting both
-> > > b3e5d80d0c48c0cc ("arm64/build: Warn on orphan section placement")
-> > > be2881824ae9eb92 ("arm64/build: Assert for unwanted sections")
-> > > seems to solve my problems, without any ill effects?
-> > >
-> >
-> > I cannot reproduce the issue here with my distro GCC+binutils (Debian 8.3.0)
-> >
-> > The presence of .data.rel.ro and .got.plt sections suggests that the
-> > toolchain is using -fpie and/or -z relro to build shared objects
-> > rather than a fully linked bare metal binary.
-> >
-> > Which toolchain are you using? Does adding -fno-pie to the compiler
->
-> gcc version 9.3.0 (Ubuntu 9.3.0-17ubuntu1~20.04)  from Ubuntu 20.04LTS.
->
-> > command line and/or adding -z norelro to the linker command line make
-> > any difference?
->
-> I'll give that a try later...
+Am 19.10.20 um 18:04 schrieb Helen Koike:
+> Allow streaming from self picture path and main picture path at the same
+> time.
+> 
+> Take care for s_stream() callbacks to not be called twice.
+> When starting a stream, s_stream(true) shouldn't be called for the isp
+> and the sensor if the other stream is already enabled (since it was
+> already called).
+> When stopping a stream, s_stream(false) shouldn't be called for isp and
+> the sensor if the other stream is still enabled.
+> 
+> Remove the callback function scheme for navigating through the topology,
+> simplifying the code, improving readability.
+> 
+> Remove multistreaming item from the TODO list.
+> 
+> Signed-off-by: Helen Koike <helen.koike@collabora.com>
+> ---
+> 
+> Hello,
+> 
+> Since we didn't reach an agreement on the helpers in the core[1], I'm
+> sending this patch to fix this limitation only for rkisp1.
+> 
+> [1] https://patchwork.linuxtv.org/project/linux-media/cover/20200415013044.1778572-1-helen.koike@collabora.com/
+> 
+> If we decide to add the helpers in the future, we can clean up drivers
+> even more, but I don't want to block this feature.
+> 
+> This Patch depends on patch:
+> "media: staging: rkisp1: validate links before powering and streaming"
+> https://patchwork.linuxtv.org/project/linux-media/patch/20201002184222.7094-2-dafna.hirschfeld@collabora.com/
+> 
+> Changes in V2:
+> ==============
+> - Rebase on top of patch
+> "media: staging: rkisp1: validate links before powering and streaming"
+> which fixes media_pipeline_{start,stop}() calling order.
+> - Fix commit message
+> - Fix disable order
+> - Disable capture when s_stream(true) of the resizer fails
+> 
+> Overview of the patch:
+> ======================
+> 
+> * Rename rkisp1_stream_{start,stop}() to
+>    rkisp1_cap_stream_{enable,disable}() to clarify the difference between
+>    other stream enable/disable functions
+> 
+> * Implement rkisp1_pipeline_stream_{enable,disable}() to replace
+>    rkisp1_pipeline_{enable,disable}_cb() and rkisp1_pipeline_sink_walk(),
+>    which were removed.
+> 
+> * Call rkisp1_cap_stream_{enable,disable}() from
+>    rkisp1_pipeline_stream_{enable,disable}() for better
+>    unwind handling and function name semantics.
+> 
+> * Remove item from TODO list (I also reviewed the use of the
+>    is_streaming var in the code and lgtm).
+> 
+> This patch was tested on rockpi4 board with:
+> ============================================
+> 
+> "media-ctl" "-d" "platform:rkisp1" "-r"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'imx219 4-0010':0 -> 'rkisp1_isp':0 [1]"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_selfpath':0 [1]"
+> "media-ctl" "-d" "platform:rkisp1" "-l" "'rkisp1_isp':2 -> 'rkisp1_resizer_mainpath':0 [1]"
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"imx219 4-0010":0 [fmt:SRGGB10_1X10/1640x1232]'
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":0 [fmt:SRGGB10_1X10/1640x1232 crop: (0,0)/1600x1200]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_isp":2 [fmt:YUYV8_2X8/1600x1200 crop: (0,0)/1500x1100]'
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_selfpath":1 [fmt:YUYV8_2X8/900x800]'
+> 
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "width=900,height=800,"
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "-v" "pixelformat=422P"
+> 
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":0 [fmt:YUYV8_2X8/1500x1100 crop: (300,400)/1400x1000]'
+> "media-ctl" "-d" "platform:rkisp1" "--set-v4l2" '"rkisp1_resizer_mainpath":1 [fmt:YUYV8_2X8/900x800]'
+> 
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "width=900,height=800,"
+> "v4l2-ctl" "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "-v" "pixelformat=422P"
+> 
+> sleep 1
+> 
+> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_mainpath" "--stream-mmap" "--stream-count" "100" &
+> time v4l2-ctl "-z" "platform:rkisp1" "-d" "rkisp1_selfpath" "--stream-mmap" "--stream-count" "100" &
+> 
+> wait
+> echo "Completed"
+> 
+> Thanks
+> Helen
+> ---
+>   drivers/staging/media/rkisp1/TODO             |   3 -
+>   drivers/staging/media/rkisp1/rkisp1-capture.c | 219 +++++++++---------
+>   2 files changed, 110 insertions(+), 112 deletions(-)
+> 
+> diff --git a/drivers/staging/media/rkisp1/TODO b/drivers/staging/media/rkisp1/TODO
+> index e7c8398fc2cef..a2dd0ad951c25 100644
+> --- a/drivers/staging/media/rkisp1/TODO
+> +++ b/drivers/staging/media/rkisp1/TODO
+> @@ -1,9 +1,6 @@
+>   * Fix pad format size for statistics and parameters entities.
+>   * Fix checkpatch errors.
+>   * Add uapi docs. Remember to add documentation of how quantization is handled.
+> -* streaming paths (mainpath and selfpath) check if the other path is streaming
+> -in several places of the code, review this, specially that it doesn't seem it
+> -supports streaming from both paths at the same time.
+>   
+>   NOTES:
+>   * All v4l2-compliance test must pass.
+> diff --git a/drivers/staging/media/rkisp1/rkisp1-capture.c b/drivers/staging/media/rkisp1/rkisp1-capture.c
+> index 9b4a12e13f135..13463c899b009 100644
+> --- a/drivers/staging/media/rkisp1/rkisp1-capture.c
+> +++ b/drivers/staging/media/rkisp1/rkisp1-capture.c
+> @@ -830,71 +830,43 @@ static void rkisp1_return_all_buffers(struct rkisp1_capture *cap,
+>   }
+>   
+>   /*
+> - * rkisp1_pipeline_sink_walk - Walk through the pipeline and call cb
+> - * @from: entity at which to start pipeline walk
+> - * @until: entity at which to stop pipeline walk
+> - *
+> - * Walk the entities chain starting at the pipeline video node and stop
+> - * all subdevices in the chain.
+> - *
+> - * If the until argument isn't NULL, stop the pipeline walk when reaching the
+> - * until entity. This is used to disable a partially started pipeline due to a
+> - * subdev start error.
+> + * Most of registers inside rockchip ISP1 have shadow register since
+> + * they must be not be changed during processing a frame.
+> + * Usually, each sub-module updates its shadow register after
+> + * processing the last pixel of a frame.
+>    */
+> -static int rkisp1_pipeline_sink_walk(struct media_entity *from,
+> -				     struct media_entity *until,
+> -				     int (*cb)(struct media_entity *from,
+> -					       struct media_entity *curr))
+> +static void rkisp1_cap_stream_enable(struct rkisp1_capture *cap)
+>   {
+> -	struct media_entity *entity = from;
+> -	struct media_pad *pad;
+> -	unsigned int i;
+> -	int ret;
+> -
+> -	while (1) {
+> -		pad = NULL;
+> -		/* Find remote source pad */
+> -		for (i = 0; i < entity->num_pads; i++) {
+> -			struct media_pad *spad = &entity->pads[i];
+> -
+> -			if (!(spad->flags & MEDIA_PAD_FL_SINK))
+> -				continue;
+> -			pad = media_entity_remote_pad(spad);
+> -			if (pad && is_media_entity_v4l2_subdev(pad->entity))
+> -				break;
+> -		}
+> -		if (!pad || !is_media_entity_v4l2_subdev(pad->entity))
+> -			break;
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +	struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+>   
+> -		entity = pad->entity;
+> -		if (entity == until)
+> -			break;
+> +	cap->ops->set_data_path(cap);
+> +	cap->ops->config(cap);
+>   
+> -		ret = cb(from, entity);
+> -		if (ret)
+> -			return ret;
+> +	/* Setup a buffer for the next frame */
+> +	spin_lock_irq(&cap->buf.lock);
+> +	rkisp1_set_next_buf(cap);
+> +	cap->ops->enable(cap);
+> +	/* It's safe to config ACTIVE and SHADOW regs for the
+> +	 * first stream. While when the second is starting, do NOT
+> +	 * force update because it also update the first one.
+> +	 *
+> +	 * The latter case would drop one more buf(that is 2) since
+> +	 * there's not buf in shadow when the second FE received. This's
+> +	 * also required because the second FE maybe corrupt especially
+> +	 * when run at 120fps.
+> +	 */
+> +	if (!other->is_streaming) {
+> +		/* force cfg update */
+> +		rkisp1_write(rkisp1,
+> +			     RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+> +		rkisp1_set_next_buf(cap);
+>   	}
+> -
+> -	return 0;
+> -}
+> -
+> -static int rkisp1_pipeline_disable_cb(struct media_entity *from,
+> -				      struct media_entity *curr)
+> -{
+> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+> -
+> -	return v4l2_subdev_call(sd, video, s_stream, false);
+> -}
+> -
+> -static int rkisp1_pipeline_enable_cb(struct media_entity *from,
+> -				     struct media_entity *curr)
+> -{
+> -	struct v4l2_subdev *sd = media_entity_to_v4l2_subdev(curr);
+> -
+> -	return v4l2_subdev_call(sd, video, s_stream, true);
+> +	spin_unlock_irq(&cap->buf.lock);
+> +	cap->is_streaming = true;
+>   }
+>   
+> -static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+> +static void rkisp1_cap_stream_disable(struct rkisp1_capture *cap)
+>   {
+>   	int ret;
+>   
+> @@ -911,6 +883,82 @@ static void rkisp1_stream_stop(struct rkisp1_capture *cap)
+>   	}
+>   }
+>   
+> +/*
+> + * rkisp1_pipeline_stream_disable - disable nodes in the pipeline
+> + *
+> + * Call s_stream(false) in the reverse order from
+> + * rkisp1_pipeline_stream_enable() and disable the DMA engine.
+> + * Should be called before media_pipeline_stop()
+> + */
+> +static void rkisp1_pipeline_stream_disable(struct rkisp1_capture *cap)
+> +	__must_hold(&cap->rkisp1->stream_lock)
+> +{
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +
+> +	/*
+> +	 * If the other capture is streaming, isp and sensor nodes shouldn't
+> +	 * be disabled, skip them.
+> +	 */
+> +	if (rkisp1->pipe.streaming_count < 2) {
+> +		v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+> +				 false);
+> +		v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+> +	}
+> +
+> +	v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+> +			 false);
+> +
+> +	rkisp1_cap_stream_disable(cap);
+> +}
+> +
+> +/*
+> + * rkisp1_pipeline_stream_enable - enable nodes in the pipeline
+> + *
+> + * Enable the DMA Engine and call s_stream(true) through the pipeline.
+> + * Should be called after media_pipeline_start()
+> + */
+> +static int rkisp1_pipeline_stream_enable(struct rkisp1_capture *cap)
+> +	__must_hold(&cap->rkisp1->stream_lock)
+> +{
+> +	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> +	int ret;
+> +
+> +	rkisp1_cap_stream_enable(cap);
+> +
+> +	ret = v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video,
+> +			       s_stream, true);
+> +	if (ret)
+> +		goto err_disable_cap;
+> +
+> +	/*
+> +	 * If the other capture is streaming, isp and sensor nodes are already
+> +	 * enabled, skip them.
+> +	 */
+> +	if (rkisp1->pipe.streaming_count > 1)
+> +		return 0;
+> +
+> +	ret = v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, true);
+> +	if (ret)
+> +		goto err_disable_rsz;
+> +
+> +	ret = v4l2_subdev_call(rkisp1->active_sensor->sd, video, s_stream,
+> +			       true);
+> +	if (ret)
+> +		goto err_disable_isp;
+> +
+> +	return 0;
+> +
+> +err_disable_isp:
+> +	v4l2_subdev_call(&rkisp1->isp.sd, video, s_stream, false);
+> +err_disable_rsz:
+> +	v4l2_subdev_call(&rkisp1->resizer_devs[cap->id].sd, video, s_stream,
+> +			 false);
+> +err_disable_cap:
+> +	rkisp1_cap_stream_disable(cap);
+> +
+> +	return ret;
+> +}
+> +
+>   static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   {
+>   	struct rkisp1_capture *cap = queue->drv_priv;
+> @@ -920,12 +968,7 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   
+>   	mutex_lock(&cap->rkisp1->stream_lock);
+>   
+> -	rkisp1_stream_stop(cap);
+> -	ret = rkisp1_pipeline_sink_walk(&node->vdev.entity, NULL,
+> -					rkisp1_pipeline_disable_cb);
+> -	if (ret)
+> -		dev_err(rkisp1->dev,
+> -			"pipeline stream-off failed error:%d\n", ret);
+> +	rkisp1_pipeline_stream_disable(cap);
+>   
+>   	rkisp1_return_all_buffers(cap, VB2_BUF_STATE_ERROR);
+>   
+> @@ -941,43 +984,6 @@ static void rkisp1_vb2_stop_streaming(struct vb2_queue *queue)
+>   	mutex_unlock(&cap->rkisp1->stream_lock);
+>   }
+>   
+> -/*
+> - * Most of registers inside rockchip ISP1 have shadow register since
+> - * they must be not be changed during processing a frame.
+> - * Usually, each sub-module updates its shadow register after
+> - * processing the last pixel of a frame.
+> - */
+> -static void rkisp1_stream_start(struct rkisp1_capture *cap)
+> -{
+> -	struct rkisp1_device *rkisp1 = cap->rkisp1;
+> -	struct rkisp1_capture *other = &rkisp1->capture_devs[cap->id ^ 1];
+> -
+> -	cap->ops->set_data_path(cap);
+> -	cap->ops->config(cap);
+> -
+> -	/* Setup a buffer for the next frame */
+> -	spin_lock_irq(&cap->buf.lock);
+> -	rkisp1_set_next_buf(cap);
+> -	cap->ops->enable(cap);
+> -	/* It's safe to config ACTIVE and SHADOW regs for the
+> -	 * first stream. While when the second is starting, do NOT
+> -	 * force update because it also update the first one.
+> -	 *
+> -	 * The latter case would drop one more buf(that is 2) since
+> -	 * there's not buf in shadow when the second FE received. This's
+> -	 * also required because the second FE maybe corrupt especially
+> -	 * when run at 120fps.
+> -	 */
+> -	if (!other->is_streaming) {
+> -		/* force cfg update */
+> -		rkisp1_write(rkisp1,
+> -			     RKISP1_CIF_MI_INIT_SOFT_UPD, RKISP1_CIF_MI_INIT);
+> -		rkisp1_set_next_buf(cap);
+> -	}
+> -	spin_unlock_irq(&cap->buf.lock);
+> -	cap->is_streaming = true;
+> -}
+> -
+>   static int
+>   rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>   {
+> @@ -1008,20 +1014,15 @@ rkisp1_vb2_start_streaming(struct vb2_queue *queue, unsigned int count)
+>   		goto err_pipe_pm_put;
+>   	}
+>   
+> -	rkisp1_stream_start(cap);
+> -
+> -	/* start sub-devices */
+> -	ret = rkisp1_pipeline_sink_walk(entity, NULL,
+> -					rkisp1_pipeline_enable_cb);
 
-This patch just got picked up into the for-next branch of the arm64
-tree; it enables `-z norelro` regardless of configs.
-https://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git/commit/?h=for-next/core&id=3b92fa7485eba16b05166fddf38ab42f2ff6ab95
-If you apply that, that should help you test `-z norelro` quickly.
+We should also make sure that the resizer is connected to the isp
+and fail if not.
+otherwise,
 
--- 
-Thanks,
-~Nick Desaulniers
+Reviewed-by: Dafna Hirschfeld <dafna.hirschfeld@collabora.com>
+
+> +	ret = rkisp1_pipeline_stream_enable(cap);
+>   	if (ret)
+> -		goto err_stop_stream;
+> +		goto err_v4l2_pm_put;
+>   
+>   	mutex_unlock(&cap->rkisp1->stream_lock);
+>   
+>   	return 0;
+>   
+> -err_stop_stream:
+> -	rkisp1_stream_stop(cap);
+> +err_v4l2_pm_put:
+>   	v4l2_pipeline_pm_put(entity);
+>   err_pipe_pm_put:
+>   	pm_runtime_put(cap->rkisp1->dev);
+> 
