@@ -2,125 +2,230 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 815AC298F48
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:30:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 97754298F4E
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:30:31 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781487AbgJZOaH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:30:07 -0400
-Received: from mx0a-001b2d01.pphosted.com ([148.163.156.1]:57050 "EHLO
-        mx0a-001b2d01.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1781103AbgJZOaG (ORCPT
+        id S1781508AbgJZOaa (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:30:30 -0400
+Received: from mail-oo1-f67.google.com ([209.85.161.67]:43465 "EHLO
+        mail-oo1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1781493AbgJZOa2 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:30:06 -0400
-Received: from pps.filterd (m0098409.ppops.net [127.0.0.1])
-        by mx0a-001b2d01.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QEBcTq079427;
-        Mon, 26 Oct 2020 10:30:03 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : mime-version : content-type; s=pp1;
- bh=2ml38pNjrKoInsF4gZ7lFKR7yyrY8IylOvmBAmZmUQw=;
- b=A6e9pyfp8LVfFpPyp/wlkzcun/hYuBWiB/EVyO3bA/biljasGqSMftGFqHCmlmoKE04q
- RogtPUgqyNhgFTk+Rc97LrBzMbKOms8/0AMx1582vNH3eX8W/iOAPqT585lQUPzeYQuF
- IjaPeKdlh3/RDwdroF6dt2PGiHXI4GDjxru90m8VnxPMDUGeShbCEe0FlRhRxZ4HeUcK
- Onag/di2lUAcGf/18RNqWMs/Zro0kKDZvqMQQtrjyijtPGejn5idBXd6SbAs306GRymL
- hbn6g9pty8ySPkL7hRlmGI94HNSAPzicPfS4LgXkjLYQVEW/ed1XWi8RuKeajcRx9taG cQ== 
-Received: from ppma03ams.nl.ibm.com (62.31.33a9.ip4.static.sl-reverse.com [169.51.49.98])
-        by mx0a-001b2d01.pphosted.com with ESMTP id 34dp1qrh9h-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 10:30:03 -0400
-Received: from pps.filterd (ppma03ams.nl.ibm.com [127.0.0.1])
-        by ppma03ams.nl.ibm.com (8.16.0.42/8.16.0.42) with SMTP id 09QERmbb017933;
-        Mon, 26 Oct 2020 14:30:01 GMT
-Received: from b06cxnps3074.portsmouth.uk.ibm.com (d06relay09.portsmouth.uk.ibm.com [9.149.109.194])
-        by ppma03ams.nl.ibm.com with ESMTP id 34cbw7t9yn-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-        Mon, 26 Oct 2020 14:30:01 +0000
-Received: from d06av25.portsmouth.uk.ibm.com (d06av25.portsmouth.uk.ibm.com [9.149.105.61])
-        by b06cxnps3074.portsmouth.uk.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 09QETw6J34996646
-        (version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Oct 2020 14:29:58 GMT
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id 2F78311C052;
-        Mon, 26 Oct 2020 14:29:58 +0000 (GMT)
-Received: from d06av25.portsmouth.uk.ibm.com (unknown [127.0.0.1])
-        by IMSVA (Postfix) with ESMTP id DDD1311C04C;
-        Mon, 26 Oct 2020 14:29:57 +0000 (GMT)
-Received: from osiris (unknown [9.171.92.46])
-        by d06av25.portsmouth.uk.ibm.com (Postfix) with ESMTPS;
-        Mon, 26 Oct 2020 14:29:57 +0000 (GMT)
-Date:   Mon, 26 Oct 2020 15:29:56 +0100
-From:   Heiko Carstens <hca@linux.ibm.com>
-To:     Linus Torvalds <torvalds@linux-foundation.org>
-Cc:     Vasily Gorbik <gor@linux.ibm.com>,
-        Christian Borntraeger <borntraeger@de.ibm.com>,
-        Joe Perches <joe@perches.com>, linux-s390@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [GIT PULL] s390 compile fix for 5.10-rc2
-Message-ID: <20201026142956.GA9584@osiris>
+        Mon, 26 Oct 2020 10:30:28 -0400
+Received: by mail-oo1-f67.google.com with SMTP id z14so2134564oom.10;
+        Mon, 26 Oct 2020 07:30:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to;
+        bh=EvODWLSlZb9Skc/iTD6aHWqmQrjOtvrwcbltSN0DUow=;
+        b=rWzr6iN68zpk98U3JGzl0S53BZqRTg7pSa0i2uxs6Yqn9nUnGdkqJk1DCfIdOKZYpQ
+         mEFQ7uKSFeaAywz6a6JoydTsZ/h9C17vxrdctJZUBR5xkOTzowlVwYo4PvTj4l25N/Da
+         cLh/3S0//dFZ0bEyUlkycYrCGoDIz1SZmjo25ZmCoz5NdjdHfo8oNV2w+4uR8f4mhlgZ
+         mYk5rnQnMN7oZedOuc06AdV67Xv0KapKiAvQ6XDxWGkYtHsWblTONaJI7A5kDkBYcCx9
+         gEsEfoeyJY6d1rHretYVfJ4eubV2qc59blS0ixf3t+bdT9V1VPNNRj0xotCJ5Q+lBWLZ
+         mIUw==
+X-Gm-Message-State: AOAM530mGykwy1ahxiUTg5SxoWeqOEcpZC+s9+60kDbtEgo6n4ftxNpb
+        DOOO8DGlZ72Oh4bBECCjMg==
+X-Google-Smtp-Source: ABdhPJy5jo0OcqXys+08F5mv4GOWXCDsbF7iHCxIexI76vlCOrGJygolE/VWzKBmZPl/afqlzltoDg==
+X-Received: by 2002:a4a:c98f:: with SMTP id u15mr14230219ooq.78.1603722625676;
+        Mon, 26 Oct 2020 07:30:25 -0700 (PDT)
+Received: from xps15 (24-155-109-49.dyn.grandenetworks.net. [24.155.109.49])
+        by smtp.gmail.com with ESMTPSA id b125sm2162575oii.19.2020.10.26.07.30.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Oct 2020 07:30:25 -0700 (PDT)
+Received: (nullmailer pid 112408 invoked by uid 1000);
+        Mon, 26 Oct 2020 14:30:24 -0000
+Date:   Mon, 26 Oct 2020 09:30:24 -0500
+From:   Rob Herring <robh@kernel.org>
+To:     Jerome Pouiller <Jerome.Pouiller@silabs.com>
+Cc:     linux-wireless@vger.kernel.org, netdev@vger.kernel.org,
+        devel@driverdev.osuosl.org, linux-kernel@vger.kernel.org,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Kalle Valo <kvalo@codeaurora.org>,
+        "David S . Miller" <davem@davemloft.net>,
+        devicetree@vger.kernel.org, linux-mmc@vger.kernel.org,
+        Pali =?iso-8859-1?Q?Roh=E1r?= <pali@kernel.org>,
+        Ulf Hansson <ulf.hansson@linaro.org>
+Subject: Re: [PATCH v2 02/24] dt-bindings: introduce silabs,wfx.yaml
+Message-ID: <20201026143024.GA95610@bogus>
+References: <20201020125817.1632995-1-Jerome.Pouiller@silabs.com>
+ <20201020125817.1632995-3-Jerome.Pouiller@silabs.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-X-TM-AS-GCONF: 00
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-26_06:2020-10-26,2020-10-26 signatures=0
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- adultscore=0 impostorscore=0 mlxlogscore=999 spamscore=0 bulkscore=0
- priorityscore=1501 malwarescore=0 clxscore=1011 phishscore=0
- suspectscore=2 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260097
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20201020125817.1632995-3-Jerome.Pouiller@silabs.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hi Linus,
+On Tue, Oct 20, 2020 at 02:57:55PM +0200, Jerome Pouiller wrote:
+> From: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> 
+> Signed-off-by: Jérôme Pouiller <jerome.pouiller@silabs.com>
+> ---
+>  .../bindings/net/wireless/silabs,wfx.yaml     | 133 ++++++++++++++++++
+>  1 file changed, 133 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> new file mode 100644
+> index 000000000000..2605e9fed185
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/net/wireless/silabs,wfx.yaml
+> @@ -0,0 +1,133 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +# Copyright (c) 2020, Silicon Laboratories, Inc.
+> +%YAML 1.2
+> +---
+> +
+> +$id: http://devicetree.org/schemas/net/wireless/silabs,wfx.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Silicon Labs WFxxx devicetree bindings
+> +
+> +maintainers:
+> +  - Jérôme Pouiller <jerome.pouiller@silabs.com>
+> +
+> +description: >
+> +  Support for the Wifi chip WFxxx from Silicon Labs. Currently, the only device
+> +  from the WFxxx series is the WF200 described here:
+> +     https://www.silabs.com/documents/public/data-sheets/wf200-datasheet.pdf
+> +  
+> +  The WF200 can be connected via SPI or via SDIO.
+> +  
+> +  For SDIO:
+> +  
+> +    Declaring the WFxxx chip in device tree is mandatory (usually, the VID/PID is
+> +    sufficient for the SDIO devices).
+> +  
+> +    It is recommended to declare a mmc-pwrseq on SDIO host above WFx. Without
+> +    it, you may encounter issues during reboot. The mmc-pwrseq should be
+> +    compatible with mmc-pwrseq-simple. Please consult
+> +    Documentation/devicetree/bindings/mmc/mmc-pwrseq-simple.txt for more
+> +    information.
+> +  
+> +  For SPI:
+> +  
+> +    In add of the properties below, please consult
+> +    Documentation/devicetree/bindings/spi/spi-controller.yaml for optional SPI
+> +    related properties.
+> +
+> +properties:
+> +  compatible:
+> +    const: silabs,wf200
+> +
+> +  reg:
+> +    description:
+> +      When used on SDIO bus, <reg> must be set to 1. When used on SPI bus, it is
+> +      the chip select address of the device as defined in the SPI devices
+> +      bindings.
+> +    maxItems: 1
+> +
+> +  spi-max-frequency: true
+> +
+> +  interrupts:
+> +    description: The interrupt line. Triggers IRQ_TYPE_LEVEL_HIGH and
+> +      IRQ_TYPE_EDGE_RISING are both supported by the chip and the driver. When
+> +      SPI is used, this property is required. When SDIO is used, the "in-band"
+> +      interrupt provided by the SDIO bus is used unless an interrupt is defined
+> +      in the Device Tree.
+> +    maxItems: 1
+> +
+> +  reset-gpios:
+> +    description: (SPI only) Phandle of gpio that will be used to reset chip
+> +      during probe. Without this property, you may encounter issues with warm
+> +      boot. (For legacy purpose, the gpio in inverted when compatible ==
+> +      "silabs,wfx-spi")
+> +
+> +      For SDIO, the reset gpio should declared using a mmc-pwrseq.
+> +    maxItems: 1
+> +
+> +  wakeup-gpios:
+> +    description: Phandle of gpio that will be used to wake-up chip. Without this
+> +      property, driver will disable most of power saving features.
+> +    maxItems: 1
+> +
+> +  config-file:
 
-please pull a simple fix, so that s390 compiles again after Joe Perches' commit
-33def8498fdd ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
-which went in just before 5.10-rc1.
+If this is antenna data/config, then make the property name more 
+specific. And it needs a vendor prefix as it is vendor specific.
 
-Thanks,
-Heiko
+> +    description: Use an alternative file as PDS. Default is `wf200.pds`.
+> +
+> +  local-mac-address:
+> +    $ref: /net/ethernet-controller.yaml#/properties/local-mac-address
+> +
+> +  mac-address:
+> +    $ref: /net/ethernet-controller.yaml#/properties/mac-address
 
-The following changes since commit 3650b228f83adda7e5ee532e2b90429c03f7b9ec:
+I'd rather see these properties refactored out to their own file. We 
+should probably have a wifi-controller.yaml that has these as well as 
+enforcing the node name 'wifi'.
 
-  Linux 5.10-rc1 (2020-10-25 15:14:11 -0700)
+> +
+> +additionalProperties: true
 
-are available in the Git repository at:
+What properties? This shouldn't be true. If you need spi-cpol or 
+spi-cpha, then you should list those. Really, if the SPI mode of the 
+device is fixed, then you should never use those. 
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/s390/linux.git tags/s390-5.10-2
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +
+> +examples:
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    spi0 {
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        wfx@0 {
+> +            compatible = "silabs,wf200";
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&wfx_irq &wfx_gpios>;
+> +            reg = <0>;
+> +            interrupts-extended = <&gpio 16 IRQ_TYPE_EDGE_RISING>;
+> +            wakeup-gpios = <&gpio 12 GPIO_ACTIVE_HIGH>;
+> +            reset-gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+> +            spi-max-frequency = <42000000>;
+> +        };
+> +    };
+> +
+> +  - |
+> +    #include <dt-bindings/gpio/gpio.h>
+> +    #include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +    wfx_pwrseq: wfx_pwrseq {
+> +        compatible = "mmc-pwrseq-simple";
+> +        pinctrl-names = "default";
+> +        pinctrl-0 = <&wfx_reset>;
+> +        reset-gpios = <&gpio 13 GPIO_ACTIVE_LOW>;
+> +    };
+> +
+> +    mmc0 {
+> +        mmc-pwrseq = <&wfx_pwrseq>;
+> +        #address-cells = <1>;
+> +        #size-cells = <0>;
+> +
+> +        mmc@1 {
 
-for you to fetch changes up to 8e90b4b1305a80b1d7712370a163eff269ac1ba2:
+wifi@1
 
-  s390: correct __bootdata / __bootdata_preserved macros (2020-10-26 14:18:01 +0100)
-
-----------------------------------------------------------------
-- Fix s390 compile breakage caused by commit 33def8498fdd
-  ("treewide: Convert macro and uses of __section(foo) to __section("foo")")
-
-----------------------------------------------------------------
-Vasily Gorbik (1):
-      s390: correct __bootdata / __bootdata_preserved macros
-
- arch/s390/include/asm/sections.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sections.h
-index a996d3990a02..0c2151451ba5 100644
---- a/arch/s390/include/asm/sections.h
-+++ b/arch/s390/include/asm/sections.h
-@@ -26,14 +26,14 @@ static inline int arch_is_kernel_initmem_freed(unsigned long addr)
-  * final .boot.data section, which should be identical in the decompressor and
-  * the decompressed kernel (that is checked during the build).
-  */
--#define __bootdata(var) __section(".boot.data.var") var
-+#define __bootdata(var) __section(".boot.data." #var) var
- 
- /*
-  * .boot.preserved.data is similar to .boot.data, but it is not part of the
-  * .init section and thus will be preserved for later use in the decompressed
-  * kernel.
-  */
--#define __bootdata_preserved(var) __section(".boot.preserved.data.var") var
-+#define __bootdata_preserved(var) __section(".boot.preserved.data." #var) var
- 
- extern unsigned long __sdma, __edma;
- extern unsigned long __stext_dma, __etext_dma;
+> +            compatible = "silabs,wf200";
+> +            pinctrl-names = "default";
+> +            pinctrl-0 = <&wfx_wakeup>;
+> +            reg = <1>;
+> +            wakeup-gpios = <&gpio 12 GPIO_ACTIVE_HIGH>;
+> +        };
+> +    };
+> +...
+> -- 
+> 2.28.0
+> 
