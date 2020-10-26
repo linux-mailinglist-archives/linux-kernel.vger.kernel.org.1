@@ -2,103 +2,214 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2908729876E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:30:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3FF2629876C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 08:30:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769627AbgJZHaf (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 03:30:35 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:37163 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769590AbgJZHad (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
+        id S1769616AbgJZHad (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
         Mon, 26 Oct 2020 03:30:33 -0400
-Received: by mail-pl1-f195.google.com with SMTP id b12so1978415plr.4;
-        Mon, 26 Oct 2020 00:30:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=5vgATSqJDubiiUAoouS4SwnpLi0yKdwIQc1C/2b6Fss=;
-        b=GSkhR7sR2r16FOr/A4qN9u2l/f44ZuVtGSZqUbWFeLDwqZfE0VoDBW3lGtyAJQjlrJ
-         UZjNXh4WJt2NqufYpwrdrdecEZcOCLZ94jvYS9SC2jnNXt4wozh+32Lx6Nr7nlGlVbEq
-         ukd9ep7Cvi2wb6xQvoCqe2+NoA9Hll4h8rye8vP1BNTiXKLrRKloLaIKK09id88gDt2l
-         qEw5NZTCJ2pq5u228WJdYglTJqMgf3lEvRXRe7txdkdmZa9qac7Wn2VcXOragL1sSbSM
-         GolPvTlfpl4WdvueXvBJR0p3A5AOQlP4PW30tGeRGKJgaEDcjj0MMhD0NLB6uWgwkQPu
-         3FAw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=5vgATSqJDubiiUAoouS4SwnpLi0yKdwIQc1C/2b6Fss=;
-        b=nsrWuZcCGCasd4hBqKx58Nc28twG52kERVrenLX4aDxLkdlHmareAHkZcXhZu1VxgA
-         ixmv0qY6PICHZxjwtcOn1hNsvwycrv9mxOYbQ7XFp1KpeypKWDpvwaflQ4RquRQMhPc2
-         bmmQGFQN98BJHu3ygG/djsVkVLQCKKwCX6O76AHq8kzRtSQRPnFL0OJO9ZfEUO3fWhh0
-         mF4ZGZtwiYDVozKwFLdyKuSUUdu/YrP/4hWUPx/KtJe/boK5f9ouxD9AYPtF3MXGe2JM
-         SkavWO/OTeHJfcHYiFe6ROsSK4uDVS3ViayO7Dmnohd7OL1AgKHpiXXzAJLz8fPv3moj
-         3Scg==
-X-Gm-Message-State: AOAM533VAaR1HS+cj2SUDsZXMaacXRej+XIxXgqVSwpbz5pqCnRGYy7n
-        EeFWqr/i5xEQyiraBSQglac=
-X-Google-Smtp-Source: ABdhPJwNvVMyI5v0koxjqQtJsefBJmycdMdETquI2b1T/Vzl8Q/K80KZ8axKvls0D/9g3hToeUgUDQ==
-X-Received: by 2002:a17:90b:942:: with SMTP id dw2mr18994461pjb.159.1603697433114;
-        Mon, 26 Oct 2020 00:30:33 -0700 (PDT)
-Received: from ubt.spreadtrum.com ([117.18.48.82])
-        by smtp.gmail.com with ESMTPSA id t10sm11384930pjr.37.2020.10.26.00.30.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 00:30:32 -0700 (PDT)
-From:   Chunyan Zhang <zhang.lyra@gmail.com>
-To:     Ohad Ben-Cohen <ohad@wizery.com>,
-        Bjorn Andersson <bjorn.andersson@linaro.org>,
-        Baolin Wang <baolin.wang7@gmail.com>
-Cc:     linux-remoteproc@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Orson Zhai <orsonzhai@gmail.com>,
-        Chunyan Zhang <zhang.lyra@gmail.com>,
-        Chunyan Zhang <chunyan.zhang@unisoc.com>
-Subject: [PATCH 2/2] hwspinlock: sprd: use module_platform_driver() instead postcore initcall
-Date:   Mon, 26 Oct 2020 15:30:09 +0800
-Message-Id: <20201026073009.24164-2-zhang.lyra@gmail.com>
-X-Mailer: git-send-email 2.20.1
-In-Reply-To: <20201026073009.24164-1-zhang.lyra@gmail.com>
-References: <20201026073009.24164-1-zhang.lyra@gmail.com>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Received: from mga14.intel.com ([192.55.52.115]:50223 "EHLO mga14.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1769590AbgJZHab (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 03:30:31 -0400
+IronPort-SDR: ThtwE2Rdj9lJgxsoxM9pFQRlEBH62PInj3n/As73RmYkU2MH+o7HeBG/jL8Ium7uplCC3fhKJ0
+ jZoPhzNKgbdQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="167105159"
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="167105159"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by fmsmga103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 00:30:28 -0700
+IronPort-SDR: tlBI9k2+lw9bttGWhFjM5TmfqR+cILX/PTk0nSPlYTaH7WtkIaFMfH1pBrLrDwor/y9jIUZ5Is
+ xTN4erFtnhNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="5.77,417,1596524400"; 
+   d="scan'208";a="424021383"
+Received: from sgsxdev004.isng.intel.com (HELO localhost) ([10.226.88.13])
+  by fmsmga001.fm.intel.com with ESMTP; 26 Oct 2020 00:30:23 -0700
+From:   "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+To:     vigneshr@ti.com, tudor.ambarus@microchip.com,
+        linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
+        robh+dt@kernel.org
+Cc:     boris.brezillon@collabora.com, devicetree@vger.kernel.org,
+        miquel.raynal@bootlin.com, simon.k.r.goldschmidt@gmail.com,
+        dinguyen@kernel.org, richard@nod.at, cheol.yong.kim@intel.com,
+        qi-ming.wu@intel.com,
+        "Ramuthevar,Vadivel MuruganX" 
+        <vadivel.muruganx.ramuthevar@linux.intel.com>
+Subject: [RESENDPATCH v15 0/2] mtd: rawnand: Add NAND controller support on Intel LGM SoC 
+Date:   Mon, 26 Oct 2020 15:30:19 +0800
+Message-Id: <20201026073021.33327-1-vadivel.muruganx.ramuthevar@linux.intel.com>
+X-Mailer: git-send-email 2.11.0
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chunyan Zhang <chunyan.zhang@unisoc.com>
+This patch adds the new IP of Nand Flash Controller(NFC) support
+on Intel's Lightning Mountain(LGM) SoC.
 
-The hardware spinlock devices are defined in the DT, there's no need for
-iinit calls order, remove boilerplate code by using module_platform_driver.
+DMA is used for burst data transfer operation, also DMA HW supports
+aligned 32bit memory address and aligned data access by default.
+DMA burst of 8 supported. Data register used to support the read/write
+operation from/to device.
 
-Signed-off-by: Chunyan Zhang <chunyan.zhang@unisoc.com>
+NAND controller also supports in-built HW ECC engine.
+
+NAND controller driver implements ->exec_op() to replace legacy hooks,
+these specific call-back method to execute NAND operations.
+
+Thanks Miquel, Boris, Andy, Arnd and Rob for the review comments and suggestions.
 ---
- drivers/hwspinlock/sprd_hwspinlock.c | 13 +------------
- 1 file changed, 1 insertion(+), 12 deletions(-)
+Resend-v15:
+  - Rebased to mtd/for-5.10
+v15:
+  - Address Miquel review comments update
+  - add common helper function for status check for
+    ebu_nand_waitrdy()
+v14:
+  - Address Andy's review comments
+  - align the headers and revome Duplicates
+  - replcace numerical const values by HZ_PER_MHZ and USEC_PER_SEC
+    defined macros
+  - add dev_err_probe() api instead of legacy err check
+  - add get_unaligned_le32() api instead of manual endiness
+  - remove redudent check
+  - split the lines logically in between and add require spaces
+v13:
+  - Address Miquel Raynal review comments
+  - update the return type with variable 'ret'
+  - handle err check statement properly
+  - change the naming convention aligned with recently changed the naming
+    around the data interface
+    data structure and function names
+  - replace by div 8 instead of <<4 in ecc calculation better code readability
+  - handle check_only properly like existing drivers
+v12-resend:
+  - No Change
+v12:
+  - address Miquel Raynal review comments update
+  - add/modify the comments for better understanding
+  - handle the check_only variable
+  - update the ecc function based on the existing drivers
+  - add newline
+  - verify that mtd->name is set after nand_set_flash_node()
+  - add the check WARN_ON(ret);
+v11-resend:
+  - Rebase to v5.8-rc1
+v11:
+  - No Change
+v10:
+  - No Change
+v9:
+  - No change
+v8:
+  - fix the kbuild bot warnings
+  - correct the typo's
+v7:
+  - indentation issue is fixed
+  - add error check for retrieve the resource from dt
+v6:
+  - update EBU_ADDR_SELx register base value build it from DT
+  - Add tabs in in Kconfig
+v5:
+  - replace by 'HSNAND_CLE_OFFS | HSNAND_CS_OFFS' to NAND_WRITE_CMD and NAND_WRITE_ADDR
+  - remove the unused macros
+  - update EBU_ADDR_MASK(x) macro
+  - update the EBU_ADDR_SELx register values to be written
+v4:
+  - add ebu_nand_cs structure for multiple-CS support
+  - mask/offset encoding for 0x51 value
+  - update macro HSNAND_CTL_ENABLE_ECC
+  - drop the op argument and un-used macros.
+  - updated the datatype and macros
+  - add function disable nand module
+  - remove ebu_host->dma_rx = NULL;
+  - rename MMIO address range variables to ebu and hsnand
+  - implement ->setup_data_interface()
+  - update label err_cleanup_nand and err_cleanup_dma
+  - add return value check in the nand_remove function
+  - add/remove tabs and spaces as per coding standard
+  - encoded CS ids by reg property
+v3:
+  - Add depends on MACRO in Kconfig
+  - file name update in Makefile
+  - file name update to intel-nand-controller
+  - modification of MACRO divided like EBU, HSNAND and NAND
+  - add NAND_ALE_OFFS, NAND_CLE_OFFS and NAND_CS_OFFS
+  - rename lgm_ to ebu_ and _va suffix is removed in the whole file
+  - rename structure and varaibles as per review comments.
+  - remove lgm_read_byte(), lgm_dev_ready() and cmd_ctrl() un-used function
+  - update in exec_op() as per review comments
+  - rename function lgm_dma_exit() by lgm_dma_cleanup()
+  - hardcoded magic value  for base and offset replaced by MACRO defined
+  - mtd_device_unregister() + nand_cleanup() instead of nand_release()
+v2:
+  - implement the ->exec_op() to replaces the legacy hook-up.
+  - update the commit message
+  - add MIPS maintainers and xway_nand driver author in CC
+v1:
+ - initial version
 
-diff --git a/drivers/hwspinlock/sprd_hwspinlock.c b/drivers/hwspinlock/sprd_hwspinlock.c
-index e7b55217293c..179231cec5a6 100644
---- a/drivers/hwspinlock/sprd_hwspinlock.c
-+++ b/drivers/hwspinlock/sprd_hwspinlock.c
-@@ -151,18 +151,7 @@ static struct platform_driver sprd_hwspinlock_driver = {
- 		.of_match_table = sprd_hwspinlock_of_match,
- 	},
- };
--
--static int __init sprd_hwspinlock_init(void)
--{
--	return platform_driver_register(&sprd_hwspinlock_driver);
--}
--postcore_initcall(sprd_hwspinlock_init);
--
--static void __exit sprd_hwspinlock_exit(void)
--{
--	platform_driver_unregister(&sprd_hwspinlock_driver);
--}
--module_exit(sprd_hwspinlock_exit);
-+module_platform_driver(sprd_hwspinlock_driver);
- 
- MODULE_LICENSE("GPL v2");
- MODULE_DESCRIPTION("Hardware spinlock driver for Spreadtrum");
+
+dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+---
+resend-v15:
+  - No change
+v15:
+  - No change
+v14:
+  - No change
+v13:
+  - No change
+v12-Resend:
+  - No Change
+v12:
+  - No change
+v11-resend:
+  - No change
+v11:
+  - Fixed the compatible issue with example
+10:
+  - fix bot errors
+v9:
+  - Rob's review comments address
+  - dual licensed
+  - compatible change
+  - add reg-names
+  - drop clock-names and clock-cells
+  - correct typo's
+v8:
+  No change
+v7:
+  - Rob's review comments addressed
+  - dt-schema build issue fixed with upgraded dt-schema
+v6:
+  - Rob's review comments addressed in YAML file
+  - add addr_sel0 and addr_sel1 reg-names in YAML example
+v5:
+  - add the example in YAML file
+v4:
+  - No change
+v3:
+  - No change
+v2:
+  YAML compatible string update to intel, lgm-nand-controller
+v1:
+  - initial version
+
+Ramuthevar Vadivel Murugan (2):
+  dt-bindings: mtd: Add Nand Flash Controller support for Intel LGM SoC
+  mtd: rawnand: Add NAND controller support on Intel LGM SoC
+
+ .../devicetree/bindings/mtd/intel,lgm-nand.yaml    |  99 +++
+ drivers/mtd/nand/raw/Kconfig                       |   8 +
+ drivers/mtd/nand/raw/Makefile                      |   1 +
+ drivers/mtd/nand/raw/intel-nand-controller.c       | 734 +++++++++++++++++++++
+ 4 files changed, 842 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/mtd/intel,lgm-nand.yaml
+ create mode 100644 drivers/mtd/nand/raw/intel-nand-controller.c
+
 -- 
-2.20.1
+2.11.0
 
