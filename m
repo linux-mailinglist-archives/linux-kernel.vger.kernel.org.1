@@ -2,180 +2,184 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C9D4299A47
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:16:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7FF77299A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:14:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2404040AbgJZXQQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:16:16 -0400
-Received: from mx0a-00082601.pphosted.com ([67.231.145.42]:3104 "EHLO
-        mx0a-00082601.pphosted.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S2404002AbgJZXQQ (ORCPT
+        id S2395534AbgJZXOV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:14:21 -0400
+Received: from mail-ot1-f66.google.com ([209.85.210.66]:39228 "EHLO
+        mail-ot1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2395526AbgJZXOS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:16:16 -0400
-Received: from pps.filterd (m0044012.ppops.net [127.0.0.1])
-        by mx0a-00082601.pphosted.com (8.16.0.42/8.16.0.42) with SMTP id 09QNGDLj007307
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:16:15 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fb.com; h=from : to : cc : subject
- : date : message-id : mime-version : content-transfer-encoding :
- content-type; s=facebook; bh=RcUc89hkwQPY09B0FZeXbWxMhSN7y/9kMmbiPrfw3DE=;
- b=LAYv2kHpzNRaR6DR44pp6fCE9SxHfDZeekRafahu5BwmQ7AFZ1+W1efYo8wBXsezO2e7
- kqdUJk5sKlD8i6H8EfYs26kWm6RKwjlg6hPCN+7HI1/hPKsRaoe4JI676ru69PTQHq5n
- 9paH2tSMW9FCFArnTyVrO5VEff4i1yHe+jo= 
-Received: from maileast.thefacebook.com ([163.114.130.16])
-        by mx0a-00082601.pphosted.com with ESMTP id 34d4b6fy6a-4
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:16:15 -0700
-Received: from intmgw004.06.prn3.facebook.com (2620:10d:c0a8:1b::d) by
- mail.thefacebook.com (2620:10d:c0a8:83::4) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.1979.3; Mon, 26 Oct 2020 16:15:42 -0700
-Received: by devvm1755.vll0.facebook.com (Postfix, from userid 111017)
-        id 5B8431C4B9B2; Mon, 26 Oct 2020 16:13:27 -0700 (PDT)
-From:   Roman Gushchin <guro@fb.com>
-To:     Andrew Morton <akpm@linux-foundation.org>
-CC:     Shakeel Butt <shakeelb@google.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Michal Hocko <mhocko@kernel.org>,
-        <linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-        <kernel-team@fb.com>, Roman Gushchin <guro@fb.com>,
-        <ltp@lists.linux.it>, Richard Palethorpe <rpalethorpe@suse.com>,
-        <stable@vger.kernel.org>
-Subject: [PATCH v2] mm: memcg: link page counters to root if use_hierarchy is false
-Date:   Mon, 26 Oct 2020 16:13:26 -0700
-Message-ID: <20201026231326.3212225-1-guro@fb.com>
-X-Mailer: git-send-email 2.24.1
+        Mon, 26 Oct 2020 19:14:18 -0400
+Received: by mail-ot1-f66.google.com with SMTP id o14so9557290otj.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:14:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20161025;
+        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
+         :cc;
+        bh=rtnCo2BEv8dnTOOlZbPQs4uRATJRDmvi8k9IkHEHV5Q=;
+        b=ruFYXNTj8pNpWPLqOuBoMGZdA1RA5EAmAmEILKFH8Jk1iMOYp6nHwx0GSH/4xR39CI
+         RVTtjQlCCTRUovbcRKK2VOnrn3NnoAVYcIj13VfKtN4wmHtAfvO+jPhyZKl9GHtxkJHN
+         rI+GONJ+IwxadIlUFjeBKrbrjcdjSqsR4Kj0fLI3RTJFM1n/w8JVC+gc5NS5Bcc972rY
+         aWXnHXzgbMgLjSYfYE7XdpA5SntRanq98SBIdHOz73VQjYh9r+U6FvFZgSESb24+XmAz
+         tjyd5V9ybLs2K7KBA/iGfAhmvd7KGimB/3Qih9/lJ2ra0BcP/AKWMWcq7WyK899g+DEt
+         XI5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
+         :message-id:subject:to:cc;
+        bh=rtnCo2BEv8dnTOOlZbPQs4uRATJRDmvi8k9IkHEHV5Q=;
+        b=rhoiwi3RhgTFXioLztntzXN6PZRAU6cZFOvnlZK0I7QwNpOzIYw+UWEDxz9pygc1YU
+         Ug2nyr6nkRjOUkUFjABsMFg0tB3oZtEtKpjhVJbXJ5+LyoUXZRZPU6ZtqSeD9z6eHLf+
+         ocdoQJgESgLnMdIjIOxP6UYx7E+glH8HPMaMtkApvVahwcYKbaP/JqxYbGHPTraP7AGZ
+         Wzh3qbcCgdoYQZpceq1G4y4IDKGKF4wuMUb335DPmTVecPTbBkMKuL/lcUDlarO+JysG
+         HCqJR638o18fEBkKmOIO6ji27nDk8U62gpGA/JKqW/zySg6dux6eTUup0jIIwZtq3JTA
+         QZkg==
+X-Gm-Message-State: AOAM530+ej9in15ovlaW51Qo8+LYEmRag8R4IvHrlk6EdHBlXzva66AN
+        sUt05p4wwdbNiUocWoL5zdDRZRmg80cl1788Fsm2fQ==
+X-Google-Smtp-Source: ABdhPJw0F4J4BcLEjSwsurEvo/n9/PqQmt7GchLvDFbNDOZ2IfLtrGTPdNrNvzacbvn5uqCj+klJlJlGCH/v1WBWOY0=
+X-Received: by 2002:a9d:649:: with SMTP id 67mr17364102otn.233.1603754054772;
+ Mon, 26 Oct 2020 16:14:14 -0700 (PDT)
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-FB-Internal: Safe
-Content-Type: text/plain
-X-Proofpoint-Virus-Version: vendor=fsecure engine=2.50.10434:6.0.235,18.0.737
- definitions=2020-10-26_17:2020-10-26,2020-10-26 signatures=0
-X-Proofpoint-Spam-Details: rule=fb_default_notspam policy=fb_default score=0 phishscore=0 spamscore=0
- mlxlogscore=999 clxscore=1015 malwarescore=0 priorityscore=1501
- bulkscore=0 lowpriorityscore=0 impostorscore=0 mlxscore=0 adultscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2009150000 definitions=main-2010260152
-X-FB-Internal: deliver
+References: <20201026183523.82749-1-98.arpi@gmail.com>
+In-Reply-To: <20201026183523.82749-1-98.arpi@gmail.com>
+From:   Marco Elver <elver@google.com>
+Date:   Tue, 27 Oct 2020 00:14:03 +0100
+Message-ID: <CANpmjNNQtGC_jDp8TSHRHOMXi7aTQgwjtUiCWE+YqBgq-G2z5Q@mail.gmail.com>
+Subject: Re: [PATCH v3 1/2] kunit: Support for Parameterized Testing
+To:     Arpitha Raghunandan <98.arpi@gmail.com>
+Cc:     Brendan Higgins <brendanhiggins@google.com>,
+        skhan@linuxfoundation.org, Iurii Zaikin <yzaikin@google.com>,
+        "Theodore Ts'o" <tytso@mit.edu>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "open list:KERNEL SELFTEST FRAMEWORK" 
+        <linux-kselftest@vger.kernel.org>,
+        KUnit Development <kunit-dev@googlegroups.com>,
+        LKML <linux-kernel@vger.kernel.org>,
+        linux-kernel-mentees@lists.linuxfoundation.org,
+        linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Richard reported a warning which can be reproduced by running the LTP
-madvise6 test (cgroup v1 in the non-hierarchical mode should be used):
+On Mon, 26 Oct 2020 at 19:36, Arpitha Raghunandan <98.arpi@gmail.com> wrote:
+>
+> Implementation of support for parameterized testing in KUnit.
+> This approach requires the creation of a test case using the
+> KUNIT_CASE_PARAM macro that accepts a generator function as input.
+> This generator function should return the next parameter given the
+> previous parameter in parameterized tests. It also provides
+> a macro to generate common-case generators.
+>
+> Signed-off-by: Arpitha Raghunandan <98.arpi@gmail.com>
+> Co-developed-by: Marco Elver <elver@google.com>
+> Signed-off-by: Marco Elver <elver@google.com>
+> ---
+> Changes v2->v3:
+> - Modifictaion of generator macro and method
 
-[    9.841552] ------------[ cut here ]------------
-[    9.841788] WARNING: CPU: 0 PID: 12 at mm/page_counter.c:57 page_count=
-er_uncharge (mm/page_counter.c:57 mm/page_counter.c:50 mm/page_counter.c:=
-156)
-[    9.841982] Modules linked in:
-[    9.842072] CPU: 0 PID: 12 Comm: kworker/0:1 Not tainted 5.9.0-rc7-22-=
-default #77
-[    9.842266] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIO=
-S rel-1.13.0-48-gd9c812d-rebuilt.opensuse.org 04/01/2014
-[    9.842571] Workqueue: events drain_local_stock
-[    9.842750] RIP: 0010:page_counter_uncharge (mm/page_counter.c:57 mm/p=
-age_counter.c:50 mm/page_counter.c:156)
-[ 9.842894] Code: 0f c1 45 00 4c 29 e0 48 89 ef 48 89 c3 48 89 c6 e8 2a f=
-e ff ff 48 85 db 78 10 48 8b 6d 28 48 85 ed 75 d8 5b 5d 41 5c 41 5d c3 <0=
-f> 0b eb ec 90 e8 4b f9 88 2a 48 8b 17 48 39 d6 72 41 41 54 49 89
-[    9.843438] RSP: 0018:ffffb1c18006be28 EFLAGS: 00010086
-[    9.843585] RAX: ffffffffffffffff RBX: ffffffffffffffff RCX: ffff94803=
-bc2cae0
-[    9.843806] RDX: 0000000000000001 RSI: ffffffffffffffff RDI: ffff94800=
-7d2b248
-[    9.844026] RBP: ffff948007d2b248 R08: ffff948007c58eb0 R09: ffff94800=
-7da05ac
-[    9.844248] R10: 0000000000000018 R11: 0000000000000018 R12: 000000000=
-0000001
-[    9.844477] R13: ffffffffffffffff R14: 0000000000000000 R15: ffff94803=
-bc2cac0
-[    9.844696] FS:  0000000000000000(0000) GS:ffff94803bc00000(0000) knlG=
-S:0000000000000000
-[    9.844915] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    9.845096] CR2: 00007f0579ee0384 CR3: 000000002cc0a000 CR4: 000000000=
-00006f0
-[    9.845319] Call Trace:
-[    9.845429] __memcg_kmem_uncharge (mm/memcontrol.c:3022)
-[    9.845582] drain_obj_stock (./include/linux/rcupdate.h:689 mm/memcont=
-rol.c:3114)
-[    9.845684] drain_local_stock (mm/memcontrol.c:2255)
-[    9.845789] process_one_work (./arch/x86/include/asm/jump_label.h:25 .=
-/include/linux/jump_label.h:200 ./include/trace/events/workqueue.h:108 ke=
-rnel/workqueue.c:2274)
-[    9.845898] worker_thread (./include/linux/list.h:282 kernel/workqueue=
-.c:2416)
-[    9.846034] ? process_one_work (kernel/workqueue.c:2358)
-[    9.846162] kthread (kernel/kthread.c:292)
-[    9.846271] ? __kthread_bind_mask (kernel/kthread.c:245)
-[    9.846420] ret_from_fork (arch/x86/entry/entry_64.S:300)
-[    9.846531] ---[ end trace 8b5647c1eba9d18a ]---
+Great to see it worked as expected!
 
-The problem occurs because in the non-hierarchical mode non-root page
-counters are not linked to root page counters, so the charge is not
-propagated to the root memory cgroup.
+> Changes v1->v2:
+> - Use of a generator method to access test case parameters
+>
+>  include/kunit/test.h | 32 ++++++++++++++++++++++++++++++++
+>  lib/kunit/test.c     | 20 +++++++++++++++++++-
+>  2 files changed, 51 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/kunit/test.h b/include/kunit/test.h
+> index a423fffefea0..16bf9f334e2c 100644
+> --- a/include/kunit/test.h
+> +++ b/include/kunit/test.h
+> @@ -142,6 +142,12 @@ struct kunit_case {
+>         void (*run_case)(struct kunit *test);
+>         const char *name;
+>
+> +       /*
+> +        * Pointer to test parameter generator function.
+> +        * Used only for parameterized tests.
 
-After the removal of the original memory cgroup and reparenting of the
-object cgroup, the root cgroup might be uncharged by draining a objcg
-stock, for example. It leads to an eventual underflow of the charge
-and triggers a warning.
+What I meant was to give a description of the protocol, so that if
+somebody wanted, they could (without reading the implementation)
+implement their own custom generator without the helper macro.
 
-Fix it by linking all page counters to corresponding root page
-counters in the non-hierarchical mode.
+E.g. something like: "The generator function is used to lazily
+generate a series of arbitrarily typed values that fit into a void*.
+The argument @prev is the previously returned value, which should be
+used to derive the next value; @prev is set to NULL on the initial
+generator call. When no more values are available, the generator must
+return NULL."
 
-Please note, that in the non-hierarchical mode all objcgs are always
-reparented to the root memory cgroup, even if the hierarchy has more
-than 1 level. This patch doesn't change it.
+> +        */
+> +       void* (*generate_params)(void *prev);
+> +
+>         /* private: internal use only. */
+>         bool success;
+>         char *log;
+> @@ -162,6 +168,9 @@ static inline char *kunit_status_to_string(bool status)
+>   * &struct kunit_case for an example on how to use it.
+>   */
+>  #define KUNIT_CASE(test_name) { .run_case = test_name, .name = #test_name }
+> +#define KUNIT_CASE_PARAM(test_name, gen_params)                        \
+> +               { .run_case = test_name, .name = #test_name,    \
+> +                 .generate_params = gen_params }
+>
+>  /**
+>   * struct kunit_suite - describes a related collection of &struct kunit_case
+> @@ -208,6 +217,15 @@ struct kunit {
+>         const char *name; /* Read only after initialization! */
+>         char *log; /* Points at case log after initialization */
+>         struct kunit_try_catch try_catch;
+> +       /* param_values points to test case parameters in parameterized tests */
+> +       void *param_values;
+> +       /*
+> +        * current_param stores the index of the parameter in
+> +        * the array of parameters in parameterized tests.
+> +        * current_param + 1 is printed to indicate the parameter
+> +        * that causes the test to fail in case of test failure.
+> +        */
+> +       int current_param;
+>         /*
+>          * success starts as true, and may only be set to false during a
+>          * test case; thus, it is safe to update this across multiple
+> @@ -1742,4 +1760,18 @@ do {                                                                            \
+>                                                 fmt,                           \
+>                                                 ##__VA_ARGS__)
+>
+> +/**
+> + * KUNIT_PARAM_GENERATOR() - Helper method for test parameter generators
+> + *                          required in parameterized tests.
 
-The patch also doesn't affect how the hierarchical mode is working,
-which is the only sane and truly supported mode now.
+This is only for arrays, which is why I suggested KUNIT_ARRAY_PARAM()
+as the name.
 
-Thanks to Richard for reporting, debugging and providing an
-alternative version of the fix!
+A generator can very well be implemented without an array, so this
+macro name is confusing. In future somebody might want to provide a
+macro that takes a start + end value (and maybe a step value) to
+generate a series of values. That generator could be named
+KUNIT_RANGE_PARAM(name, start, end, step) and gives us a generator
+that is also named name##_gen_params. (If you want to try implementing
+that macro, I'd suggest doing it as a separate patch.)
 
-Reported-by: ltp@lists.linux.it
-Debugged-by: Richard Palethorpe <rpalethorpe@suse.com>
-Fixes: bf4f059954dc ("mm: memcg/slab: obj_cgroup API")
-Signed-off-by: Roman Gushchin <guro@fb.com>
-Reviewed-by: Shakeel Butt <shakeelb@google.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-Cc: stable@vger.kernel.org
----
- mm/memcontrol.c | 15 ++++++++++-----
- 1 file changed, 10 insertions(+), 5 deletions(-)
+And I don't think we need to put "GENERATOR" into the name of these
+macros, because the generators are now the fundamental method with
+which to get parameterized tests. We don't need to state the obvious,
+in favor of some brevity.
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 2636f8bad908..009297017c87 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5339,17 +5339,22 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *=
-parent_css)
- 		memcg->swappiness =3D mem_cgroup_swappiness(parent);
- 		memcg->oom_kill_disable =3D parent->oom_kill_disable;
- 	}
--	if (parent && parent->use_hierarchy) {
-+	if (!parent) {
-+		page_counter_init(&memcg->memory, NULL);
-+		page_counter_init(&memcg->swap, NULL);
-+		page_counter_init(&memcg->kmem, NULL);
-+		page_counter_init(&memcg->tcpmem, NULL);
-+	} else if (parent->use_hierarchy) {
- 		memcg->use_hierarchy =3D true;
- 		page_counter_init(&memcg->memory, &parent->memory);
- 		page_counter_init(&memcg->swap, &parent->swap);
- 		page_counter_init(&memcg->kmem, &parent->kmem);
- 		page_counter_init(&memcg->tcpmem, &parent->tcpmem);
- 	} else {
--		page_counter_init(&memcg->memory, NULL);
--		page_counter_init(&memcg->swap, NULL);
--		page_counter_init(&memcg->kmem, NULL);
--		page_counter_init(&memcg->tcpmem, NULL);
-+		page_counter_init(&memcg->memory, &root_mem_cgroup->memory);
-+		page_counter_init(&memcg->swap, &root_mem_cgroup->swap);
-+		page_counter_init(&memcg->kmem, &root_mem_cgroup->kmem);
-+		page_counter_init(&memcg->tcpmem, &root_mem_cgroup->tcpmem);
- 		/*
- 		 * Deeper hierachy with use_hierarchy =3D=3D false doesn't make
- 		 * much sense so let cgroup subsystem know about this
---=20
-2.26.2
+> + * @name:  prefix of the name for the test parameter generator function.
+> + * @prev: a pointer to the previous test parameter, NULL for first parameter.
+> + * @array: a user-supplied pointer to an array of test parameters.
+> + */
+> +#define KUNIT_PARAM_GENERATOR(name, array)                                                     \
+> +       static void *name##_gen_params(void *prev)                                              \
+> +       {                                                                                       \
+> +               typeof((array)[0]) * __next = prev ? ((typeof(__next)) prev) + 1 : (array);     \
+> +               return __next - (array) < ARRAY_SIZE((array)) ? __next : NULL;                  \
+> +       }
+> +
+>  #endif /* _KUNIT_TEST_H */
 
+Thanks,
+-- Marco
