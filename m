@@ -2,88 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C3A60298C2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:40:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 7DE09298C2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773918AbgJZLkW (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:40:22 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:24977 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1773909AbgJZLkT (ORCPT
+        id S1773925AbgJZLkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:40:23 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:41156 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773910AbgJZLkV (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:40:19 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603712418;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         in-reply-to:in-reply-to:references:references;
-        bh=Yep4jRy6ziN1RLOThgwnCajSDdRmWtdV3n/5N4e8G8Q=;
-        b=Z5NeDghUNfUPBW6X72tTPJ9sMbLAgA2PlzvKvxgP1MN50LMtEGzLXq5jHx3rSrM5vWV0OL
-        JibzvzM7zLRL2vIyDlf+FbmyME7/tcqGfKf6Sfx6jimkgFZmDYT+umxbpKHgFvRtFg7wBp
-        OKPIE0zCgt82qlrrozOStaAk8RIMKkQ=
-Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
- [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-437-23dOgxJZMGCB8lCc8HljqA-1; Mon, 26 Oct 2020 07:40:14 -0400
-X-MC-Unique: 23dOgxJZMGCB8lCc8HljqA-1
-Received: from smtp.corp.redhat.com (int-mx02.intmail.prod.int.phx2.redhat.com [10.5.11.12])
-        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-        (No client certificate requested)
-        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id 216968030A9;
-        Mon, 26 Oct 2020 11:40:12 +0000 (UTC)
-Received: from krava (unknown [10.40.194.69])
-        by smtp.corp.redhat.com (Postfix) with SMTP id EF36860C07;
-        Mon, 26 Oct 2020 11:40:09 +0000 (UTC)
+        Mon, 26 Oct 2020 07:40:21 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=k3myULEFtog5AWC/ZKa5hJLaQTgjEDatFr9wR9ogfpo=; b=NuU1N7sN8NattmmlDC8V+bEd+l
+        zfhZdRaZvHfaBPsfUKrp9qaC6tt+N3brens4A/LsYDP4Z0om3Kbwc7dxeqMVN2AlPpfMM2rwrlTkS
+        LNf768HPO4jP2dDNcWvlCTAmMmxtdKkWBcppfP1fqQ4eCjlkJazAxZiAyKz8fndNkCCHqvD0yy0lX
+        Xc5waFkHH7ky9Ss13la9z7EQ1ON52GBv1QyqWx5sOCQh3E1ifK9u5/HguoELPwpzQdBLLi/DXGXbj
+        MJrF7j84cYhUyINJcsVB4/niMRlJiA4tuiD+rzvzNIwsPaCfzrISQFJtkKzTb22VmCNYwhqZF2+0G
+        XR72hLow==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX0rF-0005tu-7c; Mon, 26 Oct 2020 11:40:13 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id BE09F302526;
+        Mon, 26 Oct 2020 12:40:09 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id AA5342B411E57; Mon, 26 Oct 2020 12:40:09 +0100 (CET)
 Date:   Mon, 26 Oct 2020 12:40:09 +0100
-From:   Jiri Olsa <jolsa@redhat.com>
-To:     Namhyung Kim <namhyung@kernel.org>
-Cc:     Arnaldo Carvalho de Melo <acme@kernel.org>,
-        Ingo Molnar <mingo@kernel.org>,
-        Peter Zijlstra <a.p.zijlstra@chello.nl>,
-        Mark Rutland <mark.rutland@arm.com>,
-        Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-        LKML <linux-kernel@vger.kernel.org>,
-        Stephane Eranian <eranian@google.com>,
-        Andi Kleen <ak@linux.intel.com>,
-        Ian Rogers <irogers@google.com>
-Subject: Re: [PATCH v2 2/2] perf stat: Support regex pattern in
- --for-each-cgroup
-Message-ID: <20201026114009.GD2726983@krava>
-References: <20201024025918.453431-1-namhyung@kernel.org>
- <20201024025918.453431-2-namhyung@kernel.org>
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Filipe Manana <fdmanana@suse.com>
+Cc:     LKML <linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>,
+        David Sterba <dsterba@suse.com>
+Subject: Re: possible lockdep regression introduced by 4d004099a668
+ ("lockdep: Fix lockdep recursion")
+Message-ID: <20201026114009.GN2594@hirez.programming.kicks-ass.net>
+References: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20201024025918.453431-2-namhyung@kernel.org>
-X-Scanned-By: MIMEDefang 2.79 on 10.5.11.12
+In-Reply-To: <a5cf643b-842f-7a60-73c7-85d738a9276f@suse.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Sat, Oct 24, 2020 at 11:59:18AM +0900, Namhyung Kim wrote:
-> To make the command line even more compact with cgroups, support regex
-> pattern matching in cgroup names.
+On Mon, Oct 26, 2020 at 11:26:49AM +0000, Filipe Manana wrote:
+> Hello,
 > 
->   $ perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
+> I've recently started to hit a warning followed by tasks hanging after
+> attempts to freeze a filesystem. A git bisection pointed to the
+> following commit:
 > 
->           3,000.73 msec cpu-clock                 foo #    2.998 CPUs utilized
->     12,530,992,699      cycles                    foo #    7.517 GHz                      (100.00%)
->           1,000.61 msec cpu-clock                 foo/bar #    1.000 CPUs utilized
->      4,178,529,579      cycles                    foo/bar #    2.506 GHz                      (100.00%)
->           1,000.03 msec cpu-clock                 foo/baz #    0.999 CPUs utilized
->      4,176,104,315      cycles                    foo/baz #    2.505 GHz                      (100.00%)
+> commit 4d004099a668c41522242aa146a38cc4eb59cb1e
+> Author: Peter Zijlstra <peterz@infradead.org>
+> Date:   Fri Oct 2 11:04:21 2020 +0200
+> 
+>     lockdep: Fix lockdep recursion
+> 
+> This happens very reliably when running all xfstests with lockdep
+> enabled, and the tested filesystem is btrfs (haven't tried other
+> filesystems, but it shouldn't matter). The warning and task hangs always
+> happen at either test generic/068 or test generic/390, and (oddly)
+> always have to run all tests for it to trigger, running those tests
+> individually on an infinite loop doesn't seem to trigger it (at least
+> for a couple hours).
+> 
+> The warning triggered is at fs/super.c:__sb_start_write() which always
+> results later in several tasks hanging on a percpu rw_sem:
+> 
+> https://pastebin.com/qnLvf94E
+> 
+> What happens is percpu_rwsem_is_held() is apparently returning a false
+> positive,
 
-just curious.. there was another foo/XXX group using the
-rest of the cycles, right?
+That smells like the same issue reported here:
+
+  https://lkml.kernel.org/r/20201022111700.GZ2651@hirez.programming.kicks-ass.net
+
+Make sure you have commit:
+
+  f8e48a3dca06 ("lockdep: Fix preemption WARN for spurious IRQ-enable")
+
+(in Linus' tree by now) and do you have CONFIG_DEBUG_PREEMPT enabled?
 
 
-also perhaps we want to warn if there's no match found:
 
-	$ sudo ./perf stat -a -e cpu-clock,cycles --for-each-cgroup ^foo sleep 1
-
-	 Performance counter stats for 'system wide':
-
-
-	       1.002375575 seconds time elapsed
-
-jirka
 
