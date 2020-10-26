@@ -2,38 +2,40 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C474A299AEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 304E6299AF0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:45:46 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408068AbgJZXpg (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:45:36 -0400
-Received: from mail.kernel.org ([198.145.29.99]:41444 "EHLO mail.kernel.org"
+        id S2408082AbgJZXpk (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:45:40 -0400
+Received: from mail.kernel.org ([198.145.29.99]:41620 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408049AbgJZXpd (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:45:33 -0400
+        id S2408071AbgJZXpi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:45:38 -0400
 Received: from localhost (fw-tnat.cambridge.arm.com [217.140.96.140])
         (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 7726320714;
-        Mon, 26 Oct 2020 23:45:32 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id C4A1820809;
+        Mon, 26 Oct 2020 23:45:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603755933;
-        bh=lLxjByEzEqHVGHizHikGSChzrt/ikoW1DrIWmsD1Oog=;
+        s=default; t=1603755938;
+        bh=k1zrWp9O22qh+WuKS8rpiY1h0T+j/FYSrPVkMy4dspw=;
         h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-        b=SWTwigaZOVO7f3S++lfl04YJUrkFgbnxmXPHO31eWkDjAHTzjRRxJUWcs/7YaUTZc
-         ZC3mAbYhjZau+jyu1y3M2dHjO8sNBws+ZBr/jYLS+8rjghVgg50yv/S8HHL5XTtoCo
-         k5VHv1MqWslDAxir2E9h6unNdsc33hGRRi8BsPlM=
-Date:   Mon, 26 Oct 2020 23:45:28 +0000
+        b=myP7uDKxoFHaZTQufI/w7gt5mGhd5IKADw2XCX+IEerj7nZ6LmVRP0QYc5oOU89nl
+         hL998deP4S1ZUAOpVX/yhkmvkFqwBtcfD7Y035+MLEvDZRXceuggABVPKLXMSJYZx5
+         Ijh8i+fMGeqmfavLlPxtAugRsKSgYgaG81pLgsOk=
+Date:   Mon, 26 Oct 2020 23:45:33 +0000
 From:   Mark Brown <broonie@kernel.org>
-To:     alsa-devel@alsa-project.org,
-        Codrin Ciubotariu <codrin.ciubotariu@microchip.com>,
-        linux-kernel@vger.kernel.org
-Cc:     tiwai@suse.com, kernel@martin.sperl.org, florian.meier@koalo.de,
-        lgirdwood@gmail.com
-In-Reply-To: <20201012141911.3150996-1-codrin.ciubotariu@microchip.com>
-References: <20201012141911.3150996-1-codrin.ciubotariu@microchip.com>
-Subject: Re: [PATCH] ASoC: pcm5102a: Make codec selectable
-Message-Id: <160375592346.31132.3991305992600286336.b4-ty@kernel.org>
+To:     mark.rutland@arm.com, lgirdwood@gmail.com, robh@kernel.org,
+        perex@perex.cz, tiwai@suse.com, alexandre.torgue@st.com,
+        Olivier Moysan <olivier.moysan@st.com>
+Cc:     linux-stm32@st-md-mailman.stormreply.com,
+        linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+        arnaud.pouliquen@st.com, alsa-devel@alsa-project.org,
+        linux-arm-kernel@lists.infradead.org
+In-Reply-To: <20201009141051.27365-1-olivier.moysan@st.com>
+References: <20201009141051.27365-1-olivier.moysan@st.com>
+Subject: Re: [PATCH v4] ASoC: dt-bindings: stm32: convert sai to json-schema
+Message-Id: <160375592347.31132.11608590385209657603.b4-ty@kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
@@ -41,11 +43,8 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, 12 Oct 2020 17:19:11 +0300, Codrin Ciubotariu wrote:
-> The TI PCM5102A codec driver can be used with the generic sound card
-> drivers, so it should be selectable. For example, with the addition
-> of #sound-dai-cells = <0> property in DT, it can be used with simple/graph
-> card drivers.
+On Fri, 9 Oct 2020 16:10:51 +0200, Olivier Moysan wrote:
+> Convert the STM32 SAI bindings to DT schema format using json-schema.
 
 Applied to
 
@@ -53,8 +52,8 @@ Applied to
 
 Thanks!
 
-[1/1] ASoC: pcm5102a: Make codec selectable
-      commit: 76b5f68bbf7df9343b69fbee04d5edf50680c231
+[1/1] ASoC: dt-bindings: stm32: convert sai to json-schema
+      commit: 49491418c1dceb11ccb2ab841e4e5590e844378c
 
 All being well this means that it will be integrated into the linux-next
 tree (usually sometime in the next 24 hours) and sent to Linus during
