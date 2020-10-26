@@ -2,102 +2,114 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 46BE1299CB0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:01:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 47538299CE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:02:36 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2437280AbgJ0AAx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 20:00:53 -0400
-Received: from mail.kernel.org ([198.145.29.99]:36548 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436492AbgJZX4e (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:56:34 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 0C0C920770;
-        Mon, 26 Oct 2020 23:56:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756593;
-        bh=rF3Bs3s+nWvLHxRMvK0zTH0TD+YotFbPgtNExKl6fUY=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=iYO9YCL9Bb2EgEM3ouoOwqSqwIp6qoHsbY9BcENCEnyjXNSuvMEuRj408HFqrLThY
-         /qvky6ZHcMRXC1osw6LMC9aiR8iwahsQYTD3Ppn2EOg5RZU8KJ97CJKOGbWYxYZccv
-         Z4yXzgzHHrPudIqE8vZZqgpoa7laztmmBd8i7RNY=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>,
-        Guenter Roeck <linux@roeck-us.net>,
-        Florian Fainelli <f.fainelli@gmail.com>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Sasha Levin <sashal@kernel.org>, linux-watchdog@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.4 64/80] drivers: watchdog: rdc321x_wdt: Fix race condition bugs
-Date:   Mon, 26 Oct 2020 19:55:00 -0400
-Message-Id: <20201026235516.1025100-64-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
-References: <20201026235516.1025100-1-sashal@kernel.org>
+        id S2411114AbgJ0ACU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 20:02:20 -0400
+Received: from mail-pg1-f193.google.com ([209.85.215.193]:33375 "EHLO
+        mail-pg1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2411083AbgJZX4Q (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:56:16 -0400
+Received: by mail-pg1-f193.google.com with SMTP id l18so7003560pgg.0
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 16:56:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20150623.gappssmtp.com; s=20150623;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=wqqvkA3oKUwkO5eXRPOBy8lXyQg0CiUtokie2wwagwI=;
+        b=ZWDgA8+yUlKx2dZgiyZDe66Bv6aQYo4o4sBrgULvsJ7L1mqryuSoN/tRsTLtRNf5gl
+         QA5GzgrsJ4IIXk6KefYiWNloPp5dTgRya5PAi5H2X1Ck5liCNMZ9plZFbXAFJkRhGENX
+         zRADl3Fzwzqt5UTeMExAEl9+J6C00UJYGVeM9r+kQpMj10I4tNzbDp+KUhpG26z8ohQ5
+         u9LGW1VxEtuEY5uYo6W0qmYrYYX9WPLdyfh3K/l7hHXtbXds+UPAtJe/6QdzpKUrKNEa
+         IHnev7OPcOoKpcEMuZBXfSj3e5H/bPp0SHxbMGuGbkkGN2ORlWbNlGQCKJOUg6Ub1kcx
+         WOrg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=wqqvkA3oKUwkO5eXRPOBy8lXyQg0CiUtokie2wwagwI=;
+        b=ol6ndOU0ixa54YGQ24WE7UpQvRHfwhMk6noB7UOsEqdYEszBPLwfkG+Aph8abFYBs+
+         iqCWp8eIx6AjtUELgoporDwg0mieyfdok2+ADOX8lEt8+Jg1o+X2s8lF3Swl/Vpt5l9S
+         VxcRCyOHJkw7wA95d3O/DZUt5KH1iXMWp9dsE1v1tqaixpRSYuNYvOAvhQ7VJ0kiF3Op
+         yV7ZcMt0XPTyUUZOUYoZkpNvVNkb6Zqpa4HnNaoafkCnHaLwUHLsLteryvR4VDp/cPp8
+         vewcYxz6h9qk6CPn0DsTEdvsj6EbByuLBZuwfcpfQOSJxz3xAbdkyfZXw5tyUvI5LHkW
+         0XKA==
+X-Gm-Message-State: AOAM531bmC4PKRkmwrkw2M042PxNMS/fBFc61nHyjFIxZVy08PEgyafQ
+        esB3mCUWTKi8F2O2JMlD2bPfEg==
+X-Google-Smtp-Source: ABdhPJzXWytxnG400Dp//klgHvFRu6jftuSrTTs7sW7oWyETnW8LM2mlLlQ2a53Jfzf5mLG9B/rX/w==
+X-Received: by 2002:a63:5f42:: with SMTP id t63mr569296pgb.0.1603756574857;
+        Mon, 26 Oct 2020 16:56:14 -0700 (PDT)
+Received: from [192.168.1.134] ([66.219.217.173])
+        by smtp.gmail.com with ESMTPSA id s38sm3637009pgm.62.2020.10.26.16.56.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 16:56:14 -0700 (PDT)
+Subject: Re: [REGRESSION] mm: process_vm_readv testcase no longer works after
+ compat_prcoess_vm_readv removed
+To:     Kyle Huey <me@kylehuey.com>,
+        open list <linux-kernel@vger.kernel.org>,
+        Christoph Hellwig <hch@lst.de>
+Cc:     Robert O'Callahan <robert@ocallahan.org>,
+        Alexander Viro <viro@zeniv.linux.org.uk>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Arnd Bergmann <arnd@arndb.de>,
+        David Howells <dhowells@redhat.com>,
+        "moderated list:ARM PORT" <linux-arm-kernel@lists.infradead.org>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+        linuxppc-dev@lists.ozlabs.org, linux-s390@vger.kernel.org,
+        sparclinux@vger.kernel.org, linux-block@vger.kernel.org,
+        linux-scsi@vger.kernel.org,
+        "open list:FILESYSTEMS (VFS and infrastructure)" 
+        <linux-fsdevel@vger.kernel.org>, linux-aio@kvack.org,
+        io-uring@vger.kernel.org, linux-arch@vger.kernel.org,
+        linux-mm@kvack.org, netdev@vger.kernel.org,
+        keyrings@vger.kernel.org, linux-security-module@vger.kernel.org,
+        Linus Torvalds <torvalds@linux-foundation.org>
+References: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+From:   Jens Axboe <axboe@kernel.dk>
+Message-ID: <70d5569e-4ad6-988a-e047-5d12d298684c@kernel.dk>
+Date:   Mon, 26 Oct 2020 17:56:11 -0600
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAP045Aqrsb=CXHDHx4nS-pgg+MUDj14r-kN8_Jcbn-NAUziVag@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
+On 10/26/20 4:55 PM, Kyle Huey wrote:
+> A test program from the rr[0] test suite, vm_readv_writev[1], no
+> longer works on 5.10-rc1 when compiled as a 32 bit binary and executed
+> on a 64 bit kernel. The first process_vm_readv call (on line 35) now
+> fails with EFAULT. I have bisected this to
+> c3973b401ef2b0b8005f8074a10e96e3ea093823.
+> 
+> It should be fairly straightforward to extract the test case from our
+> repository into a standalone program.
 
-[ Upstream commit 4b2e7f99cdd314263c9d172bc17193b8b6bba463 ]
+Can you check with this applied?
 
-In rdc321x_wdt_probe(), rdc321x_wdt_device.queue is initialized
-after misc_register(), hence if ioctl is called before its
-initialization which can call rdc321x_wdt_start() function,
-it will see an uninitialized value of rdc321x_wdt_device.queue,
-hence initialize it before misc_register().
-Also, rdc321x_wdt_device.default_ticks is accessed in reset()
-function called from write callback, thus initialize it before
-misc_register().
+diff --git a/mm/process_vm_access.c b/mm/process_vm_access.c
+index fd12da80b6f2..05676722d9cd 100644
+--- a/mm/process_vm_access.c
++++ b/mm/process_vm_access.c
+@@ -273,7 +273,8 @@ static ssize_t process_vm_rw(pid_t pid,
+ 		return rc;
+ 	if (!iov_iter_count(&iter))
+ 		goto free_iov_l;
+-	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r, false);
++	iov_r = iovec_from_user(rvec, riovcnt, UIO_FASTIOV, iovstack_r,
++				in_compat_syscall());
+ 	if (IS_ERR(iov_r)) {
+ 		rc = PTR_ERR(iov_r);
+ 		goto free_iov_l;
 
-Found by Linux Driver Verification project (linuxtesting.org).
-
-Signed-off-by: Madhuparna Bhowmik <madhuparnabhowmik10@gmail.com>
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
-Reviewed-by: Florian Fainelli <f.fainelli@gmail.com>
-Link: https://lore.kernel.org/r/20200807112902.28764-1-madhuparnabhowmik10@gmail.com
-Signed-off-by: Guenter Roeck <linux@roeck-us.net>
-Signed-off-by: Wim Van Sebroeck <wim@linux-watchdog.org>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/watchdog/rdc321x_wdt.c | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/watchdog/rdc321x_wdt.c b/drivers/watchdog/rdc321x_wdt.c
-index 2e608ae6cbc78..e0efbc5831986 100644
---- a/drivers/watchdog/rdc321x_wdt.c
-+++ b/drivers/watchdog/rdc321x_wdt.c
-@@ -230,6 +230,8 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
- 
- 	rdc321x_wdt_device.sb_pdev = pdata->sb_pdev;
- 	rdc321x_wdt_device.base_reg = r->start;
-+	rdc321x_wdt_device.queue = 0;
-+	rdc321x_wdt_device.default_ticks = ticks;
- 
- 	err = misc_register(&rdc321x_wdt_misc);
- 	if (err < 0) {
-@@ -244,14 +246,11 @@ static int rdc321x_wdt_probe(struct platform_device *pdev)
- 				rdc321x_wdt_device.base_reg, RDC_WDT_RST);
- 
- 	init_completion(&rdc321x_wdt_device.stop);
--	rdc321x_wdt_device.queue = 0;
- 
- 	clear_bit(0, &rdc321x_wdt_device.inuse);
- 
- 	timer_setup(&rdc321x_wdt_device.timer, rdc321x_wdt_trigger, 0);
- 
--	rdc321x_wdt_device.default_ticks = ticks;
--
- 	dev_info(&pdev->dev, "watchdog init success\n");
- 
- 	return 0;
 -- 
-2.25.1
+Jens Axboe
 
