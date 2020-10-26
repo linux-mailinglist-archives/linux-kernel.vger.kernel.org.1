@@ -2,66 +2,131 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 0A5F7298AC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:52:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AFBA1298ABE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:51:14 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1771885AbgJZKwY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:52:24 -0400
-Received: from szxga06-in.huawei.com ([45.249.212.32]:3488 "EHLO
-        szxga06-in.huawei.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1771850AbgJZKwV (ORCPT
+        id S1771829AbgJZKvG (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:51:06 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39090 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1770960AbgJZKvF (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:52:21 -0400
-Received: from DGGEMS407-HUB.china.huawei.com (unknown [172.30.72.60])
-        by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4CKWr81nlhzhZ37;
-        Mon, 26 Oct 2020 18:52:24 +0800 (CST)
-Received: from localhost.localdomain (10.69.192.58) by
- DGGEMS407-HUB.china.huawei.com (10.3.19.207) with Microsoft SMTP Server id
- 14.3.487.0; Mon, 26 Oct 2020 18:52:09 +0800
-From:   John Garry <john.garry@huawei.com>
-To:     <jejb@linux.ibm.com>, <martin.petersen@oracle.com>
-CC:     <linux-scsi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linuxarm@huawei.com>, John Garry <john.garry@huawei.com>
-Subject: [RESEND PATCH] scsi: hisi_sas: Stop using queue #0 always for v2 hw
-Date:   Mon, 26 Oct 2020 18:48:33 +0800
-Message-ID: <1603709313-185482-1-git-send-email-john.garry@huawei.com>
-X-Mailer: git-send-email 2.8.1
+        Mon, 26 Oct 2020 06:51:05 -0400
+Date:   Mon, 26 Oct 2020 10:51:01 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603709462;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qAT90Ww8AO0M+YiJyfFcemR1v6O5CkiPMwWvyQYV/fY=;
+        b=JI5VgPrlb2sTVfT/EimV2Coyich9hMADy/nTs8fJ0wSeBt6g6kgFuvS4BrThrly+nihtjQ
+        rhvbypVaCm5OEE3UanpOVdBWg5a+jR9SMCnMfAo59UTRF1I3JcuGZfr4uyhwKVov83tYK+
+        Ca9XdnPF6wKGgsMbHCcr0R3CXoJdcf3JKcFde/qYrettkSKEoXxMJhROFPWUyujJmIuaM0
+        /ntZWqhnt0XMxzEm1etYlUxwh3f/kfmNH/Sv9q4PCosTzExDJ8WOE23naogACZpNIb59HU
+        /soV9A73uxCc4Tz9UcDzYPOOF4JA7wsGlYnbpbkuqyXrnC2pKSi6PRuAyAiIMw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603709462;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=qAT90Ww8AO0M+YiJyfFcemR1v6O5CkiPMwWvyQYV/fY=;
+        b=/EyD07S9+m1wwo4b3U5xNZT8cbgDs5As2B7r9hqv9utfobVOpsUCcNFT39wM1fuwc0Ctp3
+        O0XbT5N76ZQufhAQ==
+From:   "tip-bot2 for Zeng Tao" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] time: Prevent undefined behaviour in timespec64_to_ns()
+Cc:     Zeng Tao <prime.zeng@hisilicon.com>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        Arnd Bergmann <arnd@arndb.de>, stable@vger.kernel.org,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
+References: <1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Originating-IP: [10.69.192.58]
-X-CFilter-Loop: Reflected
+Message-ID: <160370946176.397.12992652264857362737.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-In commit 8d98416a55eb ("scsi: hisi_sas: Switch v3 hw to MQ"), the dispatch
-function was changed to choose the delivery queue based on the request tag
-HW queue index.
+The following commit has been merged into the timers/urgent branch of tip:
 
-This heavily degrades performance for v2 hw, since the HW queues are not
-exposed there, and, as such, HW queue #0 is used for every command.
+Commit-ID:     cb47755725da7b90fecbb2aa82ac3b24a7adb89b
+Gitweb:        https://git.kernel.org/tip/cb47755725da7b90fecbb2aa82ac3b24a7adb89b
+Author:        Zeng Tao <prime.zeng@hisilicon.com>
+AuthorDate:    Tue, 01 Sep 2020 17:30:13 +08:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Mon, 26 Oct 2020 11:48:11 +01:00
 
-Revert to previous behaviour for when nr_hw_queues is not set, that being
-to choose the HW queue based on target device index.
+time: Prevent undefined behaviour in timespec64_to_ns()
 
-Fixes: 8d98416a55eb ("scsi: hisi_sas: Switch v3 hw to MQ")
-Signed-off-by: John Garry <john.garry@huawei.com>
+UBSAN reports:
+
+Undefined behaviour in ./include/linux/time64.h:127:27
+signed integer overflow:
+17179869187 * 1000000000 cannot be represented in type 'long long int'
+Call Trace:
+ timespec64_to_ns include/linux/time64.h:127 [inline]
+ set_cpu_itimer+0x65c/0x880 kernel/time/itimer.c:180
+ do_setitimer+0x8e/0x740 kernel/time/itimer.c:245
+ __x64_sys_setitimer+0x14c/0x2c0 kernel/time/itimer.c:336
+ do_syscall_64+0xa1/0x540 arch/x86/entry/common.c:295
+
+Commit bd40a175769d ("y2038: itimer: change implementation to timespec64")
+replaced the original conversion which handled time clamping correctly with
+timespec64_to_ns() which has no overflow protection.
+
+Fix it in timespec64_to_ns() as this is not necessarily limited to the
+usage in itimers.
+
+[ tglx: Added comment and adjusted the fixes tag ]
+
+Fixes: 361a3bf00582 ("time64: Add time64.h header and define struct timespec64")
+Signed-off-by: Zeng Tao <prime.zeng@hisilicon.com>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+Cc: stable@vger.kernel.org
+Link: https://lore.kernel.org/r/1598952616-6416-1-git-send-email-prime.zeng@hisilicon.com
 ---
-Please include as a v5.10 fix, thanks!
+ include/linux/time64.h | 4 ++++
+ kernel/time/itimer.c   | 4 ----
+ 2 files changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/scsi/hisi_sas/hisi_sas_main.c b/drivers/scsi/hisi_sas/hisi_sas_main.c
-index a994c7b8d26f..fd980a86aa21 100644
---- a/drivers/scsi/hisi_sas/hisi_sas_main.c
-+++ b/drivers/scsi/hisi_sas/hisi_sas_main.c
-@@ -444,7 +444,7 @@ static int hisi_sas_task_prep(struct sas_task *task,
- 		}
- 	}
+diff --git a/include/linux/time64.h b/include/linux/time64.h
+index c9dcb3e..5117cb5 100644
+--- a/include/linux/time64.h
++++ b/include/linux/time64.h
+@@ -124,6 +124,10 @@ static inline bool timespec64_valid_settod(const struct timespec64 *ts)
+  */
+ static inline s64 timespec64_to_ns(const struct timespec64 *ts)
+ {
++	/* Prevent multiplication overflow */
++	if ((unsigned long long)ts->tv_sec >= KTIME_SEC_MAX)
++		return KTIME_MAX;
++
+ 	return ((s64) ts->tv_sec * NSEC_PER_SEC) + ts->tv_nsec;
+ }
  
--	if (scmd) {
-+	if (scmd && hisi_hba->shost->nr_hw_queues) {
- 		unsigned int dq_index;
- 		u32 blk_tag;
+diff --git a/kernel/time/itimer.c b/kernel/time/itimer.c
+index ca4e6d5..00629e6 100644
+--- a/kernel/time/itimer.c
++++ b/kernel/time/itimer.c
+@@ -172,10 +172,6 @@ static void set_cpu_itimer(struct task_struct *tsk, unsigned int clock_id,
+ 	u64 oval, nval, ointerval, ninterval;
+ 	struct cpu_itimer *it = &tsk->signal->it[clock_id];
  
--- 
-2.26.2
-
+-	/*
+-	 * Use the to_ktime conversion because that clamps the maximum
+-	 * value to KTIME_MAX and avoid multiplication overflows.
+-	 */
+ 	nval = timespec64_to_ns(&value->it_value);
+ 	ninterval = timespec64_to_ns(&value->it_interval);
+ 
