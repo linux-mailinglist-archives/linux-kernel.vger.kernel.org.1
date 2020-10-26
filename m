@@ -2,49 +2,49 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id B0D55299493
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:57:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 6F004299497
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:57:59 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782161AbgJZR5p (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:57:45 -0400
-Received: from mail-pl1-f196.google.com ([209.85.214.196]:41333 "EHLO
-        mail-pl1-f196.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782033AbgJZR5o (ORCPT
+        id S1788892AbgJZR5z (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:57:55 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:38815 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1782367AbgJZR5z (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:57:44 -0400
-Received: by mail-pl1-f196.google.com with SMTP id w11so5087080pll.8
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:57:44 -0700 (PDT)
+        Mon, 26 Oct 2020 13:57:55 -0400
+Received: by mail-pl1-f194.google.com with SMTP id f21so749726plr.5
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:57:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=beagleboard-org.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WU3hID4rRFAfybLKsH6+3te5KdmTCS1oR9J+E9Kmf60=;
-        b=RmpKg4D4H93vwtvZknkbx3qsbYiuQISLZRbZIAWleMErWgdkSz9mEdzY86om5DxhXm
-         bNBM6juO4iHCKF5yrUxLgPtYo3WQ4t3bqLXEGzmXmPIPW/bilEXqnewaEqm3/QYI3uPo
-         7TbvmANVW/D0I5a5Y+Z0lswVWE9pWzeJimBf3VWrM5GDxg9by513JLpsg+pvW2OMHNx/
-         5IAeSY9tR+oewkEtWIiOPomZ11+kbstV+xIyja//xRgS9NRvMD+GIX4CftV0+DfflCLS
-         57pq4KROnHZ+ykYHeQAB567OoTLDPANGzO7oB6haIPT85QKz7RxtNyslKuxevCakxUP4
-         aLrQ==
+        h=from:to:cc:subject:date:message-id:in-reply-to:references
+         :mime-version:content-transfer-encoding;
+        bh=zdwZb/8vCueVng7uQfENP1wxUMwC84r+n6kRBBfDO4Q=;
+        b=PkU3mM+7LhxcJsnVDtuswZz3ooy1YfPd53qjZhfQIiK8SaHwOgpKYba/oaddGT/tlr
+         hPAaX7h/uY/L35GsAnIINjyHIEYO+3+betYb9yJkZsbV+ZV+wUoCjVOT893SI8GcsSbo
+         J2ynmE2XWlH/gmjv1iu/Mib/6rWNjn1cSSyy5Spoxk9rZe7yl3XD84d1N+gcNm4Tx1j6
+         zBKxK7GIdtkQpdTA/9k3M41VGcKz+leq+ybkvrxi7TmAK8aNcK781TDj70Lc6hutc0W3
+         oyCrcLwhBzGCemlZdby8rj1zuv1VHa1RLqZEyiddD7br1bMBp/vlLYI/8JltlsvBp33V
+         lyfg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=WU3hID4rRFAfybLKsH6+3te5KdmTCS1oR9J+E9Kmf60=;
-        b=oZ9vqY/qBtplDv3tQ6FbJFaWqf/ePaPtgqsMgd5D7b+2wzdCEwCgs9klXCTcGPTMGi
-         gl5SVmaKbRDds6StjjWOkVOJaygCGty+JsE1nur12mV8eBKO8wuyRn/jedB/XVOCchxM
-         MMQQUpQcRP8QwOd3FuMh0jxfsHm5N2NbtscNLR0SQ1tlkAboZ+/7X9X25olbaJ2nJYKJ
-         3/Xz0It0REApia3rqIaftF3ucPP4GVDjBSZHIcm4kZj+fNstLGjSmXxfkFy22cPM40Oo
-         FzIEbxhteXAF9IakfZQ2gc1p0Xxs9DQqnja8C3+MC1bZLYs8tZQCW64REmueU0SRpaAC
-         QpWQ==
-X-Gm-Message-State: AOAM532WqTvTdxe2pp0d6dVLykup23pxKLfHq4cG/Vv2TsT5KStRq8G1
-        ZAVSC9SWVU+NzUx/m5Bx5naA
-X-Google-Smtp-Source: ABdhPJzZvz44Tk4SHKhCGs9eVHRNgAAOnqgaIe89LtwV7lyl4vApI18Ycg1afAgRWbBo9/A0iBCJfw==
-X-Received: by 2002:a17:90b:3598:: with SMTP id mm24mr22162836pjb.172.1603735064009;
-        Mon, 26 Oct 2020 10:57:44 -0700 (PDT)
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
+         :references:mime-version:content-transfer-encoding;
+        bh=zdwZb/8vCueVng7uQfENP1wxUMwC84r+n6kRBBfDO4Q=;
+        b=sQwGEU+0fV29/oAXqN/yPc34sE7ZSIrbY5q4uLDm7VYwCsySGSHb7EHHcUKMJ+phwy
+         lfcC2we1SRXjYWBcCxptdzaoUjLhKehazhMJBIS+K8TZjNszaamHPz6d6mDthB32qcQb
+         motzkrPxoWa2dOECJ8oGBYfrcqyXxuPSAckM/TjeEs3JU55BBIHbRTHPav1gGvUCPXlo
+         heoj+uXwMgBwTpW4vaqKEXBkz0/TNx02q63D9er34/lYOrinOPyUsARYW+dSbgWookb7
+         R0qGn5Mu8goKef0GtXNtm16azIRJZ3RjODznXyAgQxuUuESsYNOoNPAvBmNVJJnUbxZ3
+         nuRw==
+X-Gm-Message-State: AOAM530HRpJxwCFwXEHU26gjGhloJ4btLsz+lYY/7IMSzCAPZz30+zwd
+        huq+RSDJCyvUCyl5pJpndh1u
+X-Google-Smtp-Source: ABdhPJzyMepZDH89Xdy7E0fgsxyQn6K95GUGdr73fKNwZk6Z1CBEWb1cQpviZhBAwniC4A/ngeoqbw==
+X-Received: by 2002:a17:902:a503:b029:d6:d9d:f901 with SMTP id s3-20020a170902a503b02900d60d9df901mr11404419plq.54.1603735073836;
+        Mon, 26 Oct 2020 10:57:53 -0700 (PDT)
 Received: from localhost.localdomain ([116.68.74.56])
-        by smtp.gmail.com with ESMTPSA id o65sm11583088pga.42.2020.10.26.10.57.39
+        by smtp.gmail.com with ESMTPSA id o65sm11583088pga.42.2020.10.26.10.57.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 10:57:43 -0700 (PDT)
+        Mon, 26 Oct 2020 10:57:53 -0700 (PDT)
 From:   Vaishnav M A <vaishnav@beagleboard.org>
 To:     johan@kernel.org
 Cc:     ribalda@kernel.org, robh@kernel.org, gregkh@linuxfoundation.org,
@@ -53,49 +53,169 @@ Cc:     ribalda@kernel.org, robh@kernel.org, gregkh@linuxfoundation.org,
         linux-serial@vger.kernel.org, linux-kbuild@vger.kernel.org,
         jkridner@beagleboard.org, drew@beagleboard.org,
         robertcnelson@beagleboard.org, vaishnav@beagleboard.org
-Subject: [RFC PATCH 0/5] Add serdev_device_id for platform instantiation
-Date:   Mon, 26 Oct 2020 23:27:13 +0530
-Message-Id: <20201026175718.965773-1-vaishnav@beagleboard.org>
+Subject: [RFC PATCH 1/5] serdev: Add serdev_device_id
+Date:   Mon, 26 Oct 2020 23:27:14 +0530
+Message-Id: <20201026175718.965773-2-vaishnav@beagleboard.org>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20201026175718.965773-1-vaishnav@beagleboard.org>
+References: <20201026175718.965773-1-vaishnav@beagleboard.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This patch series aims to add serdev_device_id to the serdev drivers
-so as to support platform instantiation of a serdev device.The first
-two patches adding the serdev_device_id has already been once submitted
-by Ricardo Ribalda Delgado(in CC) here:
-https://lore.kernel.org/lkml/20180611115240.32606-1-ricardo.ribalda@gmail.com/
+Currently,a serdev device driver can only be used with devices that are
+nodes of a device tree, or are part of the ACPI table.id_table will be
+used for devices that are not part of the device tree nor the ACPI table
+(example: device on greybus gbphy created uart).
 
-The problem currently trying to solved is bit different from dynamically
-loading/removing serdev devices as addressed in the original patch series,
-the aim now is to attach a serdev driver once to a device that is not a part of
-the device tree or the ACPI table, Eg. a device on a greybus created gbphy uart.
+corresponding modalias field is introduced to name the driver to be
+used with the device, required for device(s) that are neither described
+by device tree nor ACPI table.serdev_device_uevent is also extended
+for modalias devices.
 
-The patches were tested with a set of uBlox GNSS Receiver Clicks on a PocketBeagle.
-The serdev_device_id table is exported only for a single driver(drivers/gnss/ubx.c)
-for reference.
+Signed-off-by: Ricardo Ribalda Delgado <ricardo.ribalda@gmail.com>
+Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+---
+ drivers/tty/serdev/core.c       | 41 ++++++++++++++++++++++++++++-----
+ include/linux/mod_devicetable.h | 10 ++++++++
+ include/linux/serdev.h          |  3 +++
+ 3 files changed, 48 insertions(+), 6 deletions(-)
 
-Ricardo Ribalda (2):
-  serdev: Add serdev_device_id
-  file2alias: Support for serdev devices
-
-Vaishnav M A (3):
-  serdev: add of_ helper to get serdev controller
-  gnss: ubx add MODULE_DEVICE_TABLE(serdev)
-  gnss: change of_property_read to device_property_read
-
- drivers/gnss/serial.c             |  3 +-
- drivers/gnss/ubx.c                |  9 +++++
- drivers/tty/serdev/core.c         | 58 +++++++++++++++++++++++++++----
- include/linux/mod_devicetable.h   | 10 ++++++
- include/linux/serdev.h            |  5 +++
- scripts/mod/devicetable-offsets.c |  3 ++
- scripts/mod/file2alias.c          | 10 ++++++
- 7 files changed, 90 insertions(+), 8 deletions(-)
-
+diff --git a/drivers/tty/serdev/core.c b/drivers/tty/serdev/core.c
+index c5f0d936b003..01b248fdc264 100644
+--- a/drivers/tty/serdev/core.c
++++ b/drivers/tty/serdev/core.c
+@@ -27,12 +27,17 @@ static ssize_t modalias_show(struct device *dev,
+ 			     struct device_attribute *attr, char *buf)
+ {
+ 	int len;
++	struct serdev_device *serdev = to_serdev_device(dev);
+ 
+ 	len = acpi_device_modalias(dev, buf, PAGE_SIZE - 1);
+ 	if (len != -ENODEV)
+ 		return len;
+ 
+-	return of_device_modalias(dev, buf, PAGE_SIZE);
++	len = of_device_modalias(dev, buf, PAGE_SIZE);
++	if (len != -ENODEV)
++		return len;
++
++	return sprintf(buf, "%s%s\n", SERDEV_MODULE_PREFIX, serdev->modalias);
+ }
+ static DEVICE_ATTR_RO(modalias);
+ 
+@@ -45,14 +50,18 @@ ATTRIBUTE_GROUPS(serdev_device);
+ static int serdev_device_uevent(struct device *dev, struct kobj_uevent_env *env)
+ {
+ 	int rc;
+-
+-	/* TODO: platform modalias */
++	struct serdev_device *serdev = to_serdev_device(dev);
+ 
+ 	rc = acpi_device_uevent_modalias(dev, env);
+ 	if (rc != -ENODEV)
+ 		return rc;
+ 
+-	return of_device_uevent_modalias(dev, env);
++	rc = of_device_uevent_modalias(dev, env);
++	if (rc != -ENODEV)
++		return rc;
++
++	return add_uevent_var(env, "MODALIAS=%s%s", SERDEV_MODULE_PREFIX,
++							serdev->modalias);
+ }
+ 
+ static void serdev_device_release(struct device *dev)
+@@ -83,16 +92,36 @@ static const struct device_type serdev_ctrl_type = {
+ 	.release	= serdev_ctrl_release,
+ };
+ 
++static int serdev_match_id(const struct serdev_device_id *id,
++			   const struct serdev_device *sdev)
++{
++	while (id->name[0]) {
++		if (!strcmp(sdev->modalias, id->name))
++			return 1;
++		id++;
++	}
++
++	return 0;
++}
++
+ static int serdev_device_match(struct device *dev, struct device_driver *drv)
+ {
++	const struct serdev_device *sdev = to_serdev_device(dev);
++	const struct serdev_device_driver *sdrv = to_serdev_device_driver(drv);
++
+ 	if (!is_serdev_device(dev))
+ 		return 0;
+ 
+-	/* TODO: platform matching */
+ 	if (acpi_driver_match_device(dev, drv))
+ 		return 1;
+ 
+-	return of_driver_match_device(dev, drv);
++	if (of_driver_match_device(dev, drv))
++		return 1;
++
++	if (sdrv->id_table)
++		return serdev_match_id(sdrv->id_table, sdev);
++
++	return strcmp(sdev->modalias, drv->name) == 0;
+ }
+ 
+ /**
+diff --git a/include/linux/mod_devicetable.h b/include/linux/mod_devicetable.h
+index 5b08a473cdba..656353952da2 100644
+--- a/include/linux/mod_devicetable.h
++++ b/include/linux/mod_devicetable.h
+@@ -486,6 +486,16 @@ struct i3c_device_id {
+ 	const void *data;
+ };
+ 
++/* serdev */
++
++#define SERDEV_NAME_SIZE	32
++#define SERDEV_MODULE_PREFIX	"serdev:"
++
++struct serdev_device_id {
++	char name[SERDEV_NAME_SIZE];
++	kernel_ulong_t driver_data;
++};
++
+ /* spi */
+ 
+ #define SPI_NAME_SIZE	32
+diff --git a/include/linux/serdev.h b/include/linux/serdev.h
+index 9f14f9c12ec4..0d9c90a250b0 100644
+--- a/include/linux/serdev.h
++++ b/include/linux/serdev.h
+@@ -7,6 +7,7 @@
+ 
+ #include <linux/types.h>
+ #include <linux/device.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/termios.h>
+ #include <linux/delay.h>
+ 
+@@ -45,6 +46,7 @@ struct serdev_device {
+ 	const struct serdev_device_ops *ops;
+ 	struct completion write_comp;
+ 	struct mutex write_lock;
++	char modalias[SERDEV_NAME_SIZE];
+ };
+ 
+ static inline struct serdev_device *to_serdev_device(struct device *d)
+@@ -63,6 +65,7 @@ struct serdev_device_driver {
+ 	struct device_driver driver;
+ 	int	(*probe)(struct serdev_device *);
+ 	void	(*remove)(struct serdev_device *);
++	const struct serdev_device_id *id_table;
+ };
+ 
+ static inline struct serdev_device_driver *to_serdev_device_driver(struct device_driver *d)
 -- 
 2.25.1
 
