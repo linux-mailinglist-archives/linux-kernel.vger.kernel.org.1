@@ -2,65 +2,93 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AD0DA299268
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:29:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9E8D829926D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:30:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1785930AbgJZQ30 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:29:26 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:38721 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773930AbgJZQ30 (ORCPT
+        id S1785970AbgJZQaY (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:30:24 -0400
+Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:35015 "EHLO
+        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
+        by vger.kernel.org with ESMTP id S1785959AbgJZQaX (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:29:26 -0400
-Received: by mail-wr1-f66.google.com with SMTP id n18so13354575wrs.5;
-        Mon, 26 Oct 2020 09:29:23 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
-         :mime-version:content-disposition:in-reply-to:user-agent;
-        bh=cWeA8CWri32QkONqVW1NoL41XQcJqip3DA/la05shNE=;
-        b=jy3CkCAEDlaxLE0dtPYJlWGZ45KBW7vOvTatZzqoiYYJdDVqHt7UMn4MjQOkKqhUX4
-         z4Zkednq+wi5Ny6OB/fg4MXsmNMWWn7rgU8IBpW6TBGE80+1CjyrMFfsKjFiPkA21b+V
-         IXP0hNsmNJbWRxsxTPkrP3W2RovMa9+A/UXCA57TdUV0rOeFH3Wpi51/CVVUkEDFi9jD
-         kd7IWVTrtTfYAQtRjP0Rc+yhawD9B13YbI/ngwNhZO9P+8TF3pk770cPWH9VFhFThqhE
-         4vWuJNBAnEQjJ49E1diK2AEuwWEAZqnE/lAUVPURtn8g20smYwID55Anu7kRNc6gxBkc
-         c1Qg==
-X-Gm-Message-State: AOAM532DBF+vl57rNrsjLo2h27U7LSKzS36KJHK/IT7d7JIeLfydpzWd
-        nlJxn2KTzRBzoE57cIbJv5M=
-X-Google-Smtp-Source: ABdhPJz5EooO394mqACvRY2chbha+0h00JUXjmbZ5NmUQw3+2pZDLwSdqyxLZlxLWpcUSNrE8YXzlQ==
-X-Received: by 2002:a5d:4ccd:: with SMTP id c13mr18624693wrt.221.1603729763369;
-        Mon, 26 Oct 2020 09:29:23 -0700 (PDT)
-Received: from liuwe-devbox-debian-v2 ([51.145.34.42])
-        by smtp.gmail.com with ESMTPSA id t62sm22130579wmf.22.2020.10.26.09.29.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 09:29:22 -0700 (PDT)
-Date:   Mon, 26 Oct 2020 16:29:21 +0000
-From:   Wei Liu <wei.liu@kernel.org>
-To:     Michael Kelley <mikelley@microsoft.com>
-Cc:     linux-kernel@vger.kernel.org, tglx@linutronix.de,
-        peterz@infradead.org, kys@microsoft.com, sthemmin@microsoft.com,
-        wei.liu@kernel.org, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
-        hpa@zytor.com, linux-hyperv@vger.kernel.org
-Subject: Re: [PATCH 1/1] x86/hyperv: Clarify comment on x2apic mode
-Message-ID: <20201026162921.4kj47twy2wl43jji@liuwe-devbox-debian-v2>
-References: <1603723972-81303-1-git-send-email-mikelley@microsoft.com>
+        Mon, 26 Oct 2020 12:30:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+        s=mimecast20190719; t=1603729823;
+        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+         to:to:cc:cc:mime-version:mime-version:
+         content-transfer-encoding:content-transfer-encoding;
+        bh=/qVZfErBgM2F849WNZFnK/2eCYeC9hSvuEZ0ZfgFC2c=;
+        b=IICIDXmf2plA1KisUBQb+wxheXRkKkCMeJifdYjTQ9/ed26CuA7uDooESZGBVIn87mzoEu
+        23g+lpqdM/qNbM/aypv0VzQIzBchgubO+zMtKagfiyDBkIcE8KVdowD1aKB1sdavEE10kK
+        pbUrcHJkE/X7g2i1b5eS4aZKl0nTFZI=
+Received: from mimecast-mx01.redhat.com (mimecast-mx01.redhat.com
+ [209.132.183.4]) (Using TLS) by relay.mimecast.com with ESMTP id
+ us-mta-398-FPXA-Ii3NUahKeN95qi7FQ-1; Mon, 26 Oct 2020 12:30:18 -0400
+X-MC-Unique: FPXA-Ii3NUahKeN95qi7FQ-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.phx2.redhat.com [10.5.11.11])
+        (using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        by mimecast-mx01.redhat.com (Postfix) with ESMTPS id BA7871084D64;
+        Mon, 26 Oct 2020 16:30:16 +0000 (UTC)
+Received: from vitty.brq.redhat.com (unknown [10.40.195.8])
+        by smtp.corp.redhat.com (Postfix) with ESMTP id 861CF5B4AC;
+        Mon, 26 Oct 2020 16:30:14 +0000 (UTC)
+From:   Vitaly Kuznetsov <vkuznets@redhat.com>
+To:     kvm@vger.kernel.org, Paolo Bonzini <pbonzini@redhat.com>
+Cc:     Sean Christopherson <sean.j.christopherson@intel.com>,
+        Wanpeng Li <wanpengli@tencent.com>,
+        Jim Mattson <jmattson@google.com>,
+        Eduardo Habkost <ehabkost@redhat.com>,
+        Jon Doron <arilou@gmail.com>, linux-kernel@vger.kernel.org
+Subject: [PATCH v4 0/2] KVM: x86: hyper-v: make KVM_GET_SUPPORTED_HV_CPUID more useful
+Date:   Mon, 26 Oct 2020 17:30:11 +0100
+Message-Id: <20201026163013.3164236-1-vkuznets@redhat.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1603723972-81303-1-git-send-email-mikelley@microsoft.com>
-User-Agent: NeoMutt/20180716
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 2.79 on 10.5.11.11
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 07:52:52AM -0700, Michael Kelley wrote:
-> The comment about Hyper-V accessors is unclear regarding their
-> potential use in x2apic mode, as is the associated commit message
-> in e211288b72f1.  Clarify that while the architectural and
-> synthetic MSRs are equivalent in x2apic mode, the full set of xapic
-> accessors cannot be used because of register layout differences.
-> 
-> Fixes: e211288b72f1 ("x86/hyperv: Make vapic support x2apic mode")
-> Signed-off-by: Michael Kelley <mikelley@microsoft.com>
+Changes since v3:
+- Rebase to the latest kvm/queue (KVM_CAP_SYS_HYPERV_CPUID changed to 191)
 
-Applied to hyperv-fixes. Thanks.
+QEMU series using the feature:
+https://lists.gnu.org/archive/html/qemu-devel/2020-09/msg02017.html
+
+Original description:
+
+KVM_GET_SUPPORTED_HV_CPUID was initially implemented as a vCPU ioctl but
+this is not very useful when VMM is just trying to query which Hyper-V
+features are supported by the host prior to creating VM/vCPUs. The data
+in KVM_GET_SUPPORTED_HV_CPUID is mostly static with a few exceptions but
+it seems we can change this. Add support for KVM_GET_SUPPORTED_HV_CPUID as
+a system ioctl as well.
+
+QEMU specific description:
+In some cases QEMU needs to collect the information about which Hyper-V
+features are supported by KVM and pass it up the stack. For non-hyper-v
+features this is done with system-wide KVM_GET_SUPPORTED_CPUID/
+KVM_GET_MSRS ioctls but Hyper-V specific features don't get in the output
+(as Hyper-V CPUIDs intersect with KVM's). In QEMU, CPU feature expansion
+happens before any KVM vcpus are created so KVM_GET_SUPPORTED_HV_CPUID
+can't be used in its current shape.
+
+Vitaly Kuznetsov (2):
+  KVM: x86: hyper-v: allow KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+  KVM: selftests: test KVM_GET_SUPPORTED_HV_CPUID as a system ioctl
+
+ Documentation/virt/kvm/api.rst                | 16 ++--
+ arch/x86/kvm/hyperv.c                         |  6 +-
+ arch/x86/kvm/hyperv.h                         |  4 +-
+ arch/x86/kvm/vmx/evmcs.c                      |  3 +-
+ arch/x86/kvm/x86.c                            | 45 ++++++----
+ include/uapi/linux/kvm.h                      |  3 +-
+ .../testing/selftests/kvm/include/kvm_util.h  |  2 +
+ tools/testing/selftests/kvm/lib/kvm_util.c    | 26 ++++++
+ .../selftests/kvm/x86_64/hyperv_cpuid.c       | 87 +++++++++++--------
+ 9 files changed, 123 insertions(+), 69 deletions(-)
+
+-- 
+2.25.4
+
