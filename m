@@ -2,318 +2,130 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 5F7012992C6
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:46:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 237D0299275
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:31:30 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1786367AbgJZQqh (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:46:37 -0400
-Received: from relay.felk.cvut.cz ([147.32.80.7]:52627 "EHLO
-        relay.felk.cvut.cz" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1780417AbgJZQok (ORCPT
+        id S1786012AbgJZQb2 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:31:28 -0400
+Received: from merlin.infradead.org ([205.233.59.134]:45284 "EHLO
+        merlin.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1786003AbgJZQb1 (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:44:40 -0400
-X-Greylist: delayed 1903 seconds by postgrey-1.27 at vger.kernel.org; Mon, 26 Oct 2020 12:44:35 EDT
-Received: from cmp.felk.cvut.cz (haar.felk.cvut.cz [147.32.84.19])
-        by relay.felk.cvut.cz (8.15.2/8.15.2) with ESMTP id 09QGBSGS098063;
-        Mon, 26 Oct 2020 17:11:28 +0100 (CET)
-        (envelope-from pisa@cmp.felk.cvut.cz)
-Received: from haar.felk.cvut.cz (localhost [127.0.0.1])
-        by cmp.felk.cvut.cz (8.14.0/8.12.3/SuSE Linux 0.6) with ESMTP id 09QGBRNo004427;
-        Mon, 26 Oct 2020 17:11:27 +0100
-Received: (from pisa@localhost)
-        by haar.felk.cvut.cz (8.14.0/8.13.7/Submit) id 09QGBRM9004426;
-        Mon, 26 Oct 2020 17:11:27 +0100
-X-Authentication-Warning: haar.felk.cvut.cz: pisa set sender to pisa@cmp.felk.cvut.cz using -f
-From:   Pavel Pisa <pisa@cmp.felk.cvut.cz>
-To:     Ondrej Ille <ondrej.ille@gmail.com>
-Subject: Re: [PATCH v6 3/6] can: ctucanfd: add support for CTU CAN FD open-source IP core - bus independent part.
-Date:   Mon, 26 Oct 2020 17:11:26 +0100
-User-Agent: KMail/1.9.10
-Cc:     Pavel Machek <pavel@ucw.cz>,
-        Marin Jerabek <martin.jerabek01@gmail.com>,
-        Jiri Novak <jnovak@fel.cvut.cz>,
-        Jaroslav Beran <jara.beran@gmail.com>,
-        linux-can@vger.kernel.org, devicetree@vger.kernel.org,
-        "Marc Kleine-Budde" <mkl@pengutronix.de>,
-        Oliver Hartkopp <socketcan@hartkopp.net>,
-        Wolfgang Grandegger <wg@grandegger.com>,
-        David Miller <davem@davemloft.net>,
-        Rob Herring <robh+dt@kernel.org>, mark.rutland@arm.com,
-        Carsten Emde <c.emde@osadl.org>, armbru@redhat.com,
-        netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Petr Porazil <porazil@pikron.com>,
-        Drew Fustini <pdp7pdp7@gmail.com>
-References: <cover.1603354744.git.pisa@cmp.felk.cvut.cz> <202010222221.31952.pisa@cmp.felk.cvut.cz> <CAA7Zjpam0uFCXwXS4_X5Sq3wJcNUSxOxPiTm860OXDNs-xHgyg@mail.gmail.com>
-In-Reply-To: <CAA7Zjpam0uFCXwXS4_X5Sq3wJcNUSxOxPiTm860OXDNs-xHgyg@mail.gmail.com>
-X-KMail-QuotePrefix: > 
+        Mon, 26 Oct 2020 12:31:27 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=merlin.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=8418oRRVSf4j+/KAvzQ3JMGBsl1wnAf6vFE04ew71fA=; b=olfBZEvTnx8bUo67pmMm/aWASZ
+        2fLxEVVNy1DKgRT0tLHmyxutuvSX1vAPLZ4BzlKzdWqLhaOod18ZdkxrWaeq8ZKH/+PGOix+lkhPh
+        E/wQTIspMoB1byzG6c/iymcPMICBVV2rPBlGp+hcDVdXP0l2L9oL1qzf67Mk1BaG3G6IC97MuQ1St
+        a2nF2aMAtjOyIUWHP47hiltSn7uHpimag1eBHGLDO6LdyDRL5YSoC2/w+faaB3sPeIIdBdAeSmlHk
+        EwyuKPx2Qhg97fK9f5s+XUO4C1A2lbQqS2XMKiXUxZqEY3xwia/dL3x8Mv+pNlsj95wuurouprneQ
+        G/DLq9CQ==;
+Received: from j217100.upc-j.chello.nl ([24.132.217.100] helo=noisy.programming.kicks-ass.net)
+        by merlin.infradead.org with esmtpsa (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX5Og-0000IZ-DY; Mon, 26 Oct 2020 16:31:02 +0000
+Received: from hirez.programming.kicks-ass.net (hirez.programming.kicks-ass.net [192.168.1.225])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (Client did not present a certificate)
+        by noisy.programming.kicks-ass.net (Postfix) with ESMTPS id 888FE3010D2;
+        Mon, 26 Oct 2020 17:31:00 +0100 (CET)
+Received: by hirez.programming.kicks-ass.net (Postfix, from userid 1000)
+        id 7D5FB203BE3CD; Mon, 26 Oct 2020 17:31:00 +0100 (CET)
+Date:   Mon, 26 Oct 2020 17:31:00 +0100
+From:   Peter Zijlstra <peterz@infradead.org>
+To:     Kyle Huey <me@kylehuey.com>
+Cc:     open list <linux-kernel@vger.kernel.org>,
+        Thomas Gleixner <tglx@linutronix.de>,
+        "maintainer:X86 ARCHITECTURE (32-BIT AND 64-BIT)" <x86@kernel.org>,
+        Linus Torvalds <torvalds@linux-foundation.org>,
+        Robert O'Callahan <rocallahan@gmail.com>,
+        Alexandre Chartre <alexandre.chartre@oracle.com>,
+        "Paul E. McKenney" <paulmck@kernel.org>,
+        Frederic Weisbecker <frederic@kernel.org>,
+        Paolo Bonzini <pbonzini@redhat.com>,
+        Sean Christopherson <sean.j.christopherson@intel.com>,
+        Masami Hiramatsu <mhiramat@kernel.org>,
+        Petr Mladek <pmladek@suse.com>,
+        Joel Fernandes <joel@joelfernandes.org>,
+        Steven Rostedt <rostedt@goodmis.org>,
+        Boris Ostrovsky <boris.ostrovsky@oracle.com>,
+        Juergen Gross <jgross@suse.com>,
+        Brian Gerst <brgerst@gmail.com>,
+        Andy Lutomirski <luto@kernel.org>,
+        Josh Poimboeuf <jpoimboe@redhat.com>,
+        Daniel Thompson <daniel.thompson@linaro.org>
+Subject: Re: [REGRESSION] x86/debug: After PTRACE_SINGLESTEP DR_STEP is no
+ longer reported in dr6
+Message-ID: <20201026163100.GR2594@hirez.programming.kicks-ass.net>
+References: <CAP045Ar5CtqknH66i5ti6xOvo9cC9ib5v-5+3fFKcp_DW91hYw@mail.gmail.com>
+ <20201026155521.GQ2594@hirez.programming.kicks-ass.net>
+ <20201026160513.GC2651@hirez.programming.kicks-ass.net>
+ <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
 MIME-Version: 1.0
-Content-Type: Text/Plain;
-  charset="utf-8"
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Message-Id: <202010261711.26754.pisa@cmp.felk.cvut.cz>
-X-FELK-MailScanner-Information: 
-X-MailScanner-ID: 09QGBSGS098063
-X-FELK-MailScanner: Found to be clean
-X-FELK-MailScanner-SpamCheck: not spam, SpamAssassin (not cached, score=-0.1,
-        required 6, BAYES_00 -0.50, KHOP_HELO_FCRDNS 0.40,
-        NICE_REPLY_A -0.00, SPF_HELO_NONE 0.00, SPF_NONE 0.00)
-X-FELK-MailScanner-From: pisa@cmp.felk.cvut.cz
-X-FELK-MailScanner-Watermark: 1604333494.02066@+0RJaPfulAdZwH/yVOP93g
-X-Spam-Status: No
+In-Reply-To: <CAP045ApB_9h5Pp=a0L+taA6qFURrR6Se+W77Vb7A_VOWJNKfng@mail.gmail.com>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Hello Ondrej and others,
-
-On Monday 26 of October 2020 14:38:59 Ondrej Ille wrote:
-> Hello Pavel and Pavel,
->
-> first of all, Pavel (Machek) thank you for review, we appreciate it.
-> We will try to fix as much mistakes as possible. Please, see my comments
-> below.
->
-> With Regards
-> Ondrej
->
-> On Thu, Oct 22, 2020 at 10:22 PM Pavel Pisa <pisa@cmp.felk.cvut.cz> wrote:
-...
-> > > > +/**
-> > > > + * ctucan_start_xmit - Starts the transmission
-> > > > + * @skb:   sk_buff pointer that contains data to be Txed
-> > > > + * @ndev:  Pointer to net_device structure
-> > > > + *
-> > > > + * This function is invoked from upper layers to initiate
+On Mon, Oct 26, 2020 at 09:14:13AM -0700, Kyle Huey wrote:
+> > diff --git a/arch/x86/kernel/traps.c b/arch/x86/kernel/traps.c
+> > index 3c70fb34028b..0e7641ac19a8 100644
+> > --- a/arch/x86/kernel/traps.c
+> > +++ b/arch/x86/kernel/traps.c
+> > @@ -799,6 +799,13 @@ static __always_inline unsigned long debug_read_clear_dr6(void)
+> >          */
+> >         current->thread.virtual_dr6 = 0;
 > >
-> > transmission.
-> >
-> > > > This + * function uses the next available free txbuf and populates
-> >
-> > their
-> >
-> > > > fields to + * start the transmission.
-> > > > + *
-> > > > + * Return: %NETDEV_TX_OK on success and failure value on error
-> > > > + */
-> > >
-> > > Based on other documentation, I'd expect this to return -ESOMETHING on
-> > > error, but it returns NETDEV_TX_BUSY.
-> >
-> > I add information about explicit error/need for postpone type.
->
-> Changing description, OK. Pavel Pisa, but why did you change handling of
-> insertion
-> failure to TXT Buffer to return NETDEV_TX_BUSY and increment tx_dropped?
-> Is there some preference on what should the driver return in case of HW
-> error?
-> Also, couldnt we afford not to check return value of ctucan_hw_insert_frame
-> ? Is purpose of
-> driver to be fail-safe against HW bug which says "There is TX buffer free
-> in Status register", but in reality,
-> no TXT Buffer is free?
->
-> If we look at when ctu_can_hw_insert_frame returns false, it is when:
->   1. We attempt to insert to non-existent TXT buffer -> Under drivers
-> control to do rotation correctly.
->   2. If cfg->len > CAN_FD_MAX_LEN. Couldnt this check be removed?
-> CAN_FD_MAX_LEN is
->       defined for Linux, so it is not OS agnostic... Also, is it possible
-> that driver will call insert with
->       cf->len > CAN_FD_MAX_LEN?
->   3. When there is HW bug (as mentioned earlier). There are assertions in
-> RTL checking this situation
->       will not happend!
-> So maybe we dont even need to check return value of this function at all?
+> > +       /*
+> > +        * If PTRACE requested SINGLE(BLOCK)STEP, make sure to reflect that in
+> > +        * the ptrace visible DR6 copy.
+> > +        */
+> > +       if (test_thread_flag(TIF_BLOCKSTEP) || test_thread_flag(TIF_SINGLESTEP))
+> > +               current->thread.virtual_dr6 |= dr6 & DR_STEP;
+> > +
+> >         /*
+> >          * The SDM says "The processor clears the BTF flag when it
+> >          * generates a debug exception."  Clear TIF_BLOCKSTEP to keep
+> 
+> I don't think the `& DR_STEP` should be necessary, that bit should be
+> set by the hardware, I believe.
 
-I try to follow other drivers.
-So if everything is OK then return NETDEV_TX_OK.
+Yeah, the idea is to only 'copy' the DR_STEP bit, not any others.
 
-If there is no Tx buffer available then return
-NETDEV_TX_BUSY. Some retransmit or drop should be handled by
-NET core in such case. This situation should not appear
-in reality, because Tx queue should be stopped if there is no
-free Tx buffer and should not be reenable earlien than
-at least one is available. So this situation is bug in
-driver logic or NET core.
+> Also if a program sets TF on itself in EFLAGS and generates a trap it
+> should still have DR_STEP set in the ptrace-visible dr6, which this
+> won't do.
 
-If the check for CAN FD frame format fails then it is right
-to drop SKB and it is handled with NETDEV_TX_OK return
-in other drivers as well. Only statistic counter increments.
-If the Tx buffer selected by driver s in incorrect state
-then it is even more serious bug so alternative is to
-stop whole driver and report fatal error.
+Why? The state was not requested by ptrace(). And the signal should have
+it's si_code set to TRACE_TRACE.
 
-> > > > +   /* Check for Bus Error interrupt */
-> > > > +   if (isr.s.bei) {
-> > > > +           netdev_info(ndev, "  bus error");
-> > >
-> > > Missing "if (dologerr)" here?
-> >
-> > Intention was to left this one to appear without rate limit, it is really
-> > indication of bigger problem. But on the other hand without dologerr
-> > would be quite short/unclear, but does not overflow the log buffers...
-> > We would discuss what to do with my colleagues, suggestions welcomed.
->
-> I agree with adding "dologerror" check here. It is true that arbitration
-> lost is not really an
-> error, and Bus error (error frame), therefore Bus error has higher
-> "severity". Could we
-> maybe do it that both have "dologerr" condition, but arbitration lost uses
-> "netdev_dbg"?
+> Is there a reason not to always copy dr6 into virtual_dr6 here,
+> regardless of TIF_SINGLESTEP/etc?
 
-Arbitration lost should not be reported nor generate interrupt
-for usual can application setup.
+Why should we expose DR6 bits that are the result of kernel internal
+actions?
 
-> > > > +static int ctucan_rx_poll(struct napi_struct *napi, int quota)
-> > > > +{
-> > > > +   struct net_device *ndev = napi->dev;
-> > > > +   struct ctucan_priv *priv = netdev_priv(ndev);
-> > > > +   int work_done = 0;
-> > > > +   union ctu_can_fd_status status;
-> > > > +   u32 framecnt;
-> > > > +
-> > > > +   framecnt = ctucan_hw_get_rx_frame_count(&priv->p);
-> > > > +   netdev_dbg(ndev, "rx_poll: %d frames in RX FIFO", framecnt);
-> > >
-> > > This will be rather noisy, right?
-> >
-> > It has use to debug during development but may be it should be removed
-> > or controlled by other option.
->
-> Maybe again suppress by "net_ratelimit" ?
+Suppose someone sets an in-kernel breakpoint (perf can do that for
+example), the #DB happens and we write whatever into virtual_dr6.
 
-I have removed this one and report only errors.
+Even if you have a userspace breakpoint not through ptrace(), then why
+should we expose that in dr6 ?
 
-...
-> > https://gitlab.fel.cvut.cz/canbus/ctucanfd_ip_core/-/blob/master/spec/CTU
-> >/ip/CAN_FD_IP_Core/2.1/CAN_FD_IP_Core.2.1.xml
-> >
-> > Which I consider as good option which should be preserved.
-> > I prefer to have only singe source of infomation
-> > which is kept with rest in automatic sync.
->
-> We are really trying only to use bitfields generated in ctu_can_fd_regs.
-> Whether it is bitfield or
-> mask, is up to debate, but we always use generated values. Linux driver is
-> only one part of it
-> all. The golden source (IP-XACT) is propagated to RTL, 2 different TB
-> packages, constant definitions,
-> generated documentation. This is the only way how to keep register map
-> consistent with limited
-> developer resources we have. If we corrupt this rule, we end up with 4
-> different representations
-> of register maps:
->    1. What Testebench thinks
->    2. What is in RTL
->    3. What is in documentation
->    4. What driver sees.
-> and then we will never put it back together again...
 
-I think that it is even important example for others. And there is not listed
-use of the generated header files for functional emulation in QEMU.
-I have even plan to use generator to prepare RO/RW mask for QEMU 
-and IP block emulation skeleton for QEMU automatically. This part
-has not been implemented during last bachelor thesis. That part
-was written manually but it is in QEMU mainline now.
+In that respect, I think the current virtual_dr6 = 0 is placed wrong, it
+should only be in exc_debug_user(). The only 'problem' then is that we
+seem to be able to loose BTF, but perhaps that is already an extant bug.
 
-If there is strong preferences for macros than bitfields
-we add macros generation alternative.
+Consider:
 
-> > > > +   {
-> > > > +           union ctu_can_fd_int_stat imask;
-> > > > +
-> > > > +           imask.u32 = 0xffffffff;
-> > > > +           ctucan_hw_int_ena_clr(&priv->p, imask);
-> > > > +           ctucan_hw_int_mask_set(&priv->p, imask);
-> > > > +   }
-> > >
-> > > More like this. Plus avoid block here...?
-> >
-> > Blocks is to document that imask is really local for these
-> > two lines, no need to look for it elsewhere in the function.
-> > But I can move declaration to start of the function.
->
-> I would also remove blocks here.
+ - perf: setup in-kernel #DB
+ - tracer: ptrace(PTRACE_SINGLEBLOCK)
+ - tracee: #DB on perf breakpoint, looses BTF
+ - tracee .. never triggers actual blockstep
 
-Flattened
+Hmm ? Should we re-set BTF when TIF_BLOCKSTEP && !user_mode(regs) ?
 
-> > > > +/**
-> > > > + * ctucan_close - Driver close routine
-> > > > + * @ndev:  Pointer to net_device structure
-> > > > + *
-> > > > + * Return: 0 always
-> > > > + */
-> > >
-> > > You see, this is better. No need to say "Driver close routine"
-> > > twice. Now, make the rest consistent :-).
-> > >
-> > > > +EXPORT_SYMBOL(ctucan_suspend);
-> > > > +EXPORT_SYMBOL(ctucan_resume);
-> > >
-> > > _GPL?
-> >
-> > Should we be so strict??? Ondrej Ille can provide his opinion there.
->
-> Is it really necessary? If yes, then we can change it.
 
-I see no reason that it is necessary. Without GPL some vendor can come
-with CTU CAN FD integration on such platform, where integration
-code stays unavailable to users. But common driver part has to be made 
-available. We can prevent such use of the driver code, but I see
-no big wind there or financial income instrument.
-
-...
-
-> > Hmmm, we can add special rules to tools to skip some special cases
-> > but actual files exactly math what is in documentation and VHDL
-> > sources and registers implementation. See page 61 / PDF 67 of
-> >
-> >   http://canbus.pages.fel.cvut.cz/ctucanfd_ip_core/Progdokum.pdf
-> >
-> > Yes there is still space for improvements but we need to have
-> > acceptable base for already running applications.
->
-> Point taken. These are indeed ridiculous. I was thinking about adding some
-> skip rule
-> to the register map generator, but I am out of IP-XACT fields to represent
-> this thing.
-> Maybe I can use vendor extensions do to hide it? Or custom switch? Anyway,
-> the
-> same thing needs to be resolved if HW design has dedicated test registers
-> which
-> are for debug. I will think about some solution.
-
-I personally prefer rules without exception. Defined 32-bit fields over
-whole register are harmless and if narrowed or reorganized later then
-in can help.
-
-....
-
-> > OK, I have invested lot of time after Marin Jerabek's submission of
-> > diploma theses to make code really documented etc.. I add there something
-> > even that it is really simple use of can_len2dlc. May it be, we can use
-> > that directly. It is Linux specific, but clean.
->
-> Using can_len2dlc seems as right option for me...
-
-Done
-
-> > > > +// TODO: AL_CAPTURE and ERROR_CAPTURE
-> >
-> > Again colleagues remark for future work. For me, it is important
-> > basic function under GNU/Linux.
->
-> Again, CAN be removed and moved to Issue tracker on Gitlab.
-
-Please add issue, I have removed this one already.
-
-> It is basically the same topic as above. We need to generate everything
-> from single
-> source, otherwise we are not able to keep all the targets (RTL, TB, driver,
-> docs)
-> consistent.
-
-Best wishes,
-
-Pavel
