@@ -2,35 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EACBF299C7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 39516299C55
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:57:21 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2436691AbgJZX5I (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:57:08 -0400
-Received: from mail.kernel.org ([198.145.29.99]:60982 "EHLO mail.kernel.org"
+        id S2436706AbgJZX5L (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:57:11 -0400
+Received: from mail.kernel.org ([198.145.29.99]:32788 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410557AbgJZXyu (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:54:50 -0400
+        id S2410560AbgJZXyw (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:54:52 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id B7108221FA;
-        Mon, 26 Oct 2020 23:54:49 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id CFDF4221FC;
+        Mon, 26 Oct 2020 23:54:50 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756490;
-        bh=J+Oujrui4lFnwR0Rb3yS5sD9yiaM5TCm4If9PALhwOI=;
+        s=default; t=1603756491;
+        bh=ETrYZXhGbgWZPcYXP/XlHrX/cKmPMpYgRFx8fNASlJw=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=b5s/N/Dh0XfcBbcze+6PhXu398qTzp1Gd5YTf3/rTldK+6WF1Y2vArqgO7XT+ls13
-         TNmtTeedhx6YhC4E9nopC1mxsMtRR8bmLKsAuWYaDC7qYwf0QyNWjN4EVt0QmfcD6Q
-         v1caFKr9OjZnMCT8cUsIFhixO+y7kHPTJNxZ8FqI=
+        b=EjfToXzfAx1Wwd5SbV1fo0b+gmsyHqShvLa8bFujLXaqw+Lp4ffZFPObTsEa8yQ2/
+         IyUQne1WcMlXUIGSvBBOjuY0X4Nuiu5u6eYG2S/DNWVQbGtAL9WIzVZXKaKQVVxR5/
+         q/hODRv0qqz7NhHIxPRneDvKg6dcMpQiElmrJkMA=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Douglas Gilbert <dgilbert@interlog.com>,
-        Bart Van Assche <bvanassche@acm.org>,
-        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>
-Subject: [PATCH AUTOSEL 5.8 131/132] sgl_alloc_order: fix memory leak
-Date:   Mon, 26 Oct 2020 19:52:03 -0400
-Message-Id: <20201026235205.1023962-131-sashal@kernel.org>
+Cc:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
+        Christoph Hellwig <hch@lst.de>,
+        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
+Subject: [PATCH AUTOSEL 5.8 132/132] nvme-rdma: fix crash when connect rejected
+Date:   Mon, 26 Oct 2020 19:52:04 -0400
+Message-Id: <20201026235205.1023962-132-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -42,40 +42,45 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Douglas Gilbert <dgilbert@interlog.com>
+From: Chao Leng <lengchao@huawei.com>
 
-[ Upstream commit b2a182a40278bc5849730e66bca01a762188ed86 ]
+[ Upstream commit 43efdb8e870ee0f58633fd579aa5b5185bf5d39e ]
 
-sgl_alloc_order() can fail when 'length' is large on a memory
-constrained system. When order > 0 it will potentially be
-making several multi-page allocations with the later ones more
-likely to fail than the earlier one. So it is important that
-sgl_alloc_order() frees up any pages it has obtained before
-returning NULL. In the case when order > 0 it calls the wrong
-free page function and leaks. In testing the leak was
-sufficient to bring down my 8 GiB laptop with OOM.
+A crash can happened when a connect is rejected.   The host establishes
+the connection after received ConnectReply, and then continues to send
+the fabrics Connect command.  If the controller does not receive the
+ReadyToUse capsule, host may receive a ConnectReject reply.
 
-Reviewed-by: Bart Van Assche <bvanassche@acm.org>
-Signed-off-by: Douglas Gilbert <dgilbert@interlog.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Call nvme_rdma_destroy_queue_ib after the host received the
+RDMA_CM_EVENT_REJECTED event.  Then when the fabrics Connect command
+times out, nvme_rdma_timeout calls nvme_rdma_complete_rq to fail the
+request.  A crash happenes due to use after free in
+nvme_rdma_complete_rq.
+
+nvme_rdma_destroy_queue_ib is redundant when handling the
+RDMA_CM_EVENT_REJECTED event as nvme_rdma_destroy_queue_ib is already
+called in connection failure handler.
+
+Signed-off-by: Chao Leng <lengchao@huawei.com>
+Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
+Signed-off-by: Christoph Hellwig <hch@lst.de>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- lib/scatterlist.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/nvme/host/rdma.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/lib/scatterlist.c b/lib/scatterlist.c
-index 5d63a8857f361..c448642e0f786 100644
---- a/lib/scatterlist.c
-+++ b/lib/scatterlist.c
-@@ -514,7 +514,7 @@ struct scatterlist *sgl_alloc_order(unsigned long long length,
- 		elem_len = min_t(u64, length, PAGE_SIZE << order);
- 		page = alloc_pages(gfp, order);
- 		if (!page) {
--			sgl_free(sgl);
-+			sgl_free_order(sgl, order);
- 			return NULL;
- 		}
- 
+diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
+index 4a0bc8927048a..99f627b0053f7 100644
+--- a/drivers/nvme/host/rdma.c
++++ b/drivers/nvme/host/rdma.c
+@@ -1900,7 +1900,6 @@ static int nvme_rdma_cm_handler(struct rdma_cm_id *cm_id,
+ 		complete(&queue->cm_done);
+ 		return 0;
+ 	case RDMA_CM_EVENT_REJECTED:
+-		nvme_rdma_destroy_queue_ib(queue);
+ 		cm_error = nvme_rdma_conn_rejected(queue, ev);
+ 		break;
+ 	case RDMA_CM_EVENT_ROUTE_ERROR:
 -- 
 2.25.1
 
