@@ -2,101 +2,101 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4ED9029982E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:48:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3845B299833
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 21:48:50 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1725972AbgJZUsQ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 16:48:16 -0400
-Received: from relay9-d.mail.gandi.net ([217.70.183.199]:42565 "EHLO
-        relay9-d.mail.gandi.net" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1725771AbgJZUsP (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 16:48:15 -0400
-X-Originating-IP: 90.65.88.165
-Received: from localhost (lfbn-lyo-1-1908-165.w90-65.abo.wanadoo.fr [90.65.88.165])
-        (Authenticated sender: alexandre.belloni@bootlin.com)
-        by relay9-d.mail.gandi.net (Postfix) with ESMTPSA id 32BDCFF808;
-        Mon, 26 Oct 2020 20:48:12 +0000 (UTC)
-Date:   Mon, 26 Oct 2020 21:48:11 +0100
-From:   Alexandre Belloni <alexandre.belloni@bootlin.com>
-To:     Qiang Zhao <qiang.zhao@nxp.com>
-Cc:     Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= 
-        <u.kleine-koenig@pengutronix.de>,
-        Bruno Thomsen <bruno.thomsen@gmail.com>,
-        "linux-rtc@vger.kernel.org" <linux-rtc@vger.kernel.org>,
-        "a.zummo@towertech.it" <a.zummo@towertech.it>,
-        "linux-watchdog@vger.kernel.org" <linux-watchdog@vger.kernel.org>,
-        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "robh+dt@kernel.org" <robh+dt@kernel.org>,
-        "kernel@pengutronix.de" <kernel@pengutronix.de>,
-        Wim Van Sebroeck <wim@linux-watchdog.org>,
-        Guenter Roeck <linux@roeck-us.net>
-Subject: Re: [PATCH 0/2] rtc: pcf2127: only use watchdog when explicitly
- available
-Message-ID: <20201026204811.GD75353@piout.net>
-References: <20200924074715.GT9675@piout.net>
- <20200924105256.18162-1-u.kleine-koenig@pengutronix.de>
- <VE1PR04MB676864E851C6371F97877FA291190@VE1PR04MB6768.eurprd04.prod.outlook.com>
+        id S1726149AbgJZUsp (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 16:48:45 -0400
+Received: from m42-4.mailgun.net ([69.72.42.4]:27668 "EHLO m42-4.mailgun.net"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1726060AbgJZUso (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 16:48:44 -0400
+DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
+ s=smtp; t=1603745323; h=Message-ID: References: In-Reply-To: Subject:
+ Cc: To: From: Date: Content-Transfer-Encoding: Content-Type:
+ MIME-Version: Sender; bh=oFDR6qmZLnKNEKIuDsewlJH60yHYnynf6ZZ7kWQJihw=;
+ b=JOMCXQK0MlQl4xJ40CSJCj7eJ7X2UGCEQ8Dt9hmVp4Sn0o0iDGPHGdxcgG/yll6E4R6n4cW0
+ vNe5eU+3zcrEW1Af0Gn9ZoQSqF5307jAYR4PNDD869szsNMg/jD1/obnKw850fC1mKNvQLIX
+ GCeMn1lO5X7zhM3c8tWfS/GJkbQ=
+X-Mailgun-Sending-Ip: 69.72.42.4
+X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
+Received: from smtp.codeaurora.org
+ (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
+ smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
+ 5f97362b2421c5ebfbd5f9de (version=TLS1.2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 20:48:43
+ GMT
+Sender: nguyenb=codeaurora.org@mg.codeaurora.org
+Received: by smtp.codeaurora.org (Postfix, from userid 1001)
+        id 57F53C43382; Mon, 26 Oct 2020 20:48:42 +0000 (UTC)
+X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
+        aws-us-west-2-caf-mail-1.web.codeaurora.org
+X-Spam-Level: 
+X-Spam-Status: No, score=-2.9 required=2.0 tests=ALL_TRUSTED,BAYES_00,
+        URIBL_BLOCKED autolearn=unavailable autolearn_force=no version=3.4.0
+Received: from mail.codeaurora.org (localhost.localdomain [127.0.0.1])
+        (using TLSv1 with cipher ECDHE-RSA-AES256-SHA (256/256 bits))
+        (No client certificate requested)
+        (Authenticated sender: nguyenb)
+        by smtp.codeaurora.org (Postfix) with ESMTPSA id A4A3FC433FE;
+        Mon, 26 Oct 2020 20:48:41 +0000 (UTC)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <VE1PR04MB676864E851C6371F97877FA291190@VE1PR04MB6768.eurprd04.prod.outlook.com>
+Content-Type: text/plain; charset=US-ASCII;
+ format=flowed
+Content-Transfer-Encoding: 7bit
+Date:   Mon, 26 Oct 2020 13:48:41 -0700
+From:   nguyenb@codeaurora.org
+To:     cang@codeaurora.org, asutoshd@codeaurora.org,
+        martin.petersen@oracle.com, linux-scsi@vger.kernel.org
+Cc:     linux-arm-msm@vger.kernel.org,
+        Alim Akhtar <alim.akhtar@samsung.com>,
+        Avri Altman <avri.altman@wdc.com>,
+        "James E.J. Bottomley" <jejb@linux.ibm.com>,
+        Stanley Chu <stanley.chu@mediatek.com>,
+        Bean Huo <beanhuo@micron.com>,
+        Bart Van Assche <bvanassche@acm.org>,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1 1/1] scsi: ufshcd: Properly set the device Icc Level
+In-Reply-To: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+References: <5c9d6f76303bbe5188bf839b2ea5e5bf530e7281.1598923023.git.nguyenb@codeaurora.org>
+Message-ID: <ed90f20f8deb0e322b7961a4b0a65681@codeaurora.org>
+X-Sender: nguyenb@codeaurora.org
+User-Agent: Roundcube Webmail/1.3.9
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 26/10/2020 07:23:26+0000, Qiang Zhao wrote:
-> Any update for this patchset?
+On 2020-08-31 18:19, Bao D. Nguyen wrote:
+> UFS version 3.0 and later devices require Vcc and Vccq power supplies
+> with Vccq2 being optional. While earlier UFS version 2.0 and 2.1
+> devices, the Vcc and Vccq2 are required with Vccq being optional.
+> Check the required power supplies used by the device
+> and set the device's supported Icc level properly.
 > 
-
-The whole point would be to get the DT and the watchdog maintainers
-agree on the property name. Once done, the driver implementation is
-trivial and will get applied.
-
-> Best Regards
-> Qiang Zhao
+> Signed-off-by: Can Guo <cang@codeaurora.org>
+> Signed-off-by: Asutosh Das <asutoshd@codeaurora.org>
+> Signed-off-by: Bao D. Nguyen <nguyenb@codeaurora.org>
+> ---
+>  drivers/scsi/ufs/ufshcd.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
 > 
-> > -----Original Message-----
-> > From: Uwe Kleine-König <u.kleine-koenig@pengutronix.de>
-> > Sent: 2020年9月24日 18:53
-> > To: Alexandre Belloni <alexandre.belloni@bootlin.com>; Qiang Zhao
-> > <qiang.zhao@nxp.com>; Bruno Thomsen <bruno.thomsen@gmail.com>
-> > Cc: linux-rtc@vger.kernel.org; a.zummo@towertech.it;
-> > linux-watchdog@vger.kernel.org; devicetree@vger.kernel.org;
-> > linux-kernel@vger.kernel.org; robh+dt@kernel.org; kernel@pengutronix.de;
-> > Wim Van Sebroeck <wim@linux-watchdog.org>; Guenter Roeck
-> > <linux@roeck-us.net>
-> > Subject: [PATCH 0/2] rtc: pcf2127: only use watchdog when explicitly available
-> > 
-> > Hello,
-> > 
-> > now that there are two people stumbling over the pcf2127 driver providing a
-> > non-functional watchdog device, here comes an RFC patch to address this.
-> > 
-> > Note this is only compile tested and dt-documentation is still missing.
-> > Still send this series because the cleanup is nice independent of this discussion
-> > and to have something to argue about.
-> > 
-> > Does someone can offer a better name than "has-watchdog", is there a scheme
-> > that could be used already that I'm not aware of?
-> > 
-> > Best regards
-> > Uwe
-> > 
-> > Uwe Kleine-König (2):
-> >   rtc: pcf2127: move watchdog initialisation to a separate function
-> >   [RFC] rtc: pcf2127: only use watchdog when explicitly available
-> > 
-> >  drivers/rtc/rtc-pcf2127.c | 57 ++++++++++++++++++++++-----------------
-> >  1 file changed, 32 insertions(+), 25 deletions(-)
-> > 
-> > --
-> > 2.28.0
+> diff --git a/drivers/scsi/ufs/ufshcd.c b/drivers/scsi/ufs/ufshcd.c
+> index 06e2439..fdd1d3e 100644
+> --- a/drivers/scsi/ufs/ufshcd.c
+> +++ b/drivers/scsi/ufs/ufshcd.c
+> @@ -6845,8 +6845,9 @@ static u32
+> ufshcd_find_max_sup_active_icc_level(struct ufs_hba *hba,
+>  {
+>  	u32 icc_level = 0;
 > 
-
--- 
-Alexandre Belloni, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+> -	if (!hba->vreg_info.vcc || !hba->vreg_info.vccq ||
+> -						!hba->vreg_info.vccq2) {
+> +	if (!hba->vreg_info.vcc ||
+> +		(!hba->vreg_info.vccq && hba->dev_info.wspecversion >= 0x300) ||
+> +		(!hba->vreg_info.vccq2 && hba->dev_info.wspecversion < 0x300)) {
+>  		dev_err(hba->dev,
+>  			"%s: Regulator capability was not set, actvIccLevel=%d",
+>  							__func__, icc_level);
+Hello,
+Could you please help review?
+Thank you.
