@@ -2,141 +2,82 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 39622299729
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:39:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 9AF3529972D
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:40:26 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1793307AbgJZTjx (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:39:53 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([63.128.21.124]:37504 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1786239AbgJZTjx (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:39:53 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603741191;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=lCWigmNkQYdFYX02ynyqvoR8Vn8yvpoh4XRQOBQT06E=;
-        b=aG7bhzWdQ0t7DYabcFq0HhBegsbo9SIlVEmHpzKzzJgkHGZ1RL2jCKrJ8hS4SrM8bYb5FS
-        Vf3t0JFnv0+NSZAPjgG7VO5G1hLcuoGghFp5i8YHjGieiSe1tUG6EF6aScb88IzKprEna1
-        wE9idhKosV/j+QOcyYbavRDZ/f3bNws=
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com
- [209.85.161.69]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-588-Ni8hQSynOMObMpMDTyoKEQ-1; Mon, 26 Oct 2020 15:39:49 -0400
-X-MC-Unique: Ni8hQSynOMObMpMDTyoKEQ-1
-Received: by mail-oo1-f69.google.com with SMTP id r25so6134308oop.0
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:39:49 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=lCWigmNkQYdFYX02ynyqvoR8Vn8yvpoh4XRQOBQT06E=;
-        b=f3xa3Q3ONjw5gjpuZxYxb7zCQy/+2vVRsgurD5MnSuDE9KDpsvBUJEs6IpgYBa0tv5
-         nKGY8vmx2y4e5eLaErMSoBHQWQ+zSy1Ap343BC2LJH8a+PT0uo3ekCReT/MNuxE/6Oem
-         hEDuufxmJZ04mpJq2jFip4GgO5XH+smSq27WeowLyNG6yTMmrT1uWgGmGu+SgFwG1qCx
-         2R7EwEQs9DdERhYLw8S0QhDUu7xLMnqV3YMCl8DaSTOrV56kYWhZfkQNummHq54HV8r0
-         d+OQ9t0ICzCMShgLcWKZDvVZ2RvmUzNjDuiEeOtH2elLnLhCEYnygrcxf4x6AhC2yRkg
-         ON8A==
-X-Gm-Message-State: AOAM532KSjXBTwBXdTRFqV4/i8SfZHxOBsfF4Wh5w1AbPniGoVhhPAPo
-        CEtp9SiJUbNjzmMopgGr5hayVGbYqmQ9qqwUqLVbHxGUwVokf92FtmScU1Q5WTj8hp8dUL3q4mb
-        dNWjbWlUZ6uJghcrphvJ23PIk
-X-Received: by 2002:a9d:2a88:: with SMTP id e8mr12231285otb.122.1603741188410;
-        Mon, 26 Oct 2020 12:39:48 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJwsyhAyUP2n2wv1fWsYURWnBm/cPB7m0J6DqoavC6i6FD6IAtB7NM8dGRZmoMdpumanQCoxXA==
-X-Received: by 2002:a9d:2a88:: with SMTP id e8mr12231270otb.122.1603741188215;
-        Mon, 26 Oct 2020 12:39:48 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id t29sm4230509otd.51.2020.10.26.12.39.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 12:39:47 -0700 (PDT)
-From:   trix@redhat.com
-To:     balbi@kernel.org, gregkh@linuxfoundation.org,
-        gustavoars@kernel.org, viro@zeniv.linux.org.uk
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] usb: gadget: f_hid: remove unneeded break
-Date:   Mon, 26 Oct 2020 12:39:33 -0700
-Message-Id: <20201026193933.1434490-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1736872AbgJZTkX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:40:23 -0400
+Received: from mail.kernel.org ([198.145.29.99]:42182 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2437922AbgJZTkW (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:40:22 -0400
+Received: from localhost.localdomain (unknown [192.30.34.233])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id 8D57220760;
+        Mon, 26 Oct 2020 19:40:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+        s=default; t=1603741222;
+        bh=nGR/itPh0jz6AbVxRkpFGc/DrAZq4nbxrqWJE5Gzyb0=;
+        h=From:To:Cc:Subject:Date:From;
+        b=0IfrEwAww116p9n62jgFdrxDrcJfSr3FN0QwP3khTPqJkzGE3ME/FMtgQOPBQBS2T
+         spYjXpTIVLHz1Em0QaHed7uYCzl8seSsArlUP18ei/XuCj1thrBV+1bKq+vodby961
+         TMzcY/KXq/xW7pUD3f0WY5q6Mzb7D4NaoFK+T354=
+From:   Arnd Bergmann <arnd@kernel.org>
+To:     Bartlomiej Zolnierkiewicz <b.zolnierkie@samsung.com>
+Cc:     Arnd Bergmann <arnd@arndb.de>, linux-fbdev@vger.kernel.org,
+        dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: [PATCH] matroxfb: avoid -Warray-bounds warning
+Date:   Mon, 26 Oct 2020 20:39:55 +0100
+Message-Id: <20201026194010.3817166-1-arnd@kernel.org>
+X-Mailer: git-send-email 2.27.0
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+From: Arnd Bergmann <arnd@arndb.de>
 
-A break is not needed if it is preceded by a goto.
+The open-coded list_for_each_entry() causes a harmless warning:
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+drivers/video/fbdev/matrox/matroxfb_base.c: In function 'matroxfb_register_driver':
+include/linux/kernel.h:856:3: warning: array subscript -98 is outside array bounds of 'struct list_head[1]' [-Warray-bounds]
+
+Use the normal list_for_each_entry instead.
+
+Fixes: 1da177e4c3f4 ("Linux-2.6.12-rc2")
+Signed-off-by: Arnd Bergmann <arnd@arndb.de>
 ---
-v2: split from larger patch
----
- drivers/usb/gadget/function/f_hid.c | 9 ---------
- 1 file changed, 9 deletions(-)
+ drivers/video/fbdev/matrox/matroxfb_base.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
-diff --git a/drivers/usb/gadget/function/f_hid.c b/drivers/usb/gadget/function/f_hid.c
-index 1125f4715830..5204769834d1 100644
---- a/drivers/usb/gadget/function/f_hid.c
-+++ b/drivers/usb/gadget/function/f_hid.c
-@@ -511,9 +511,7 @@ static int hidg_setup(struct usb_function *f,
- 		/* send an empty report */
- 		length = min_t(unsigned, length, hidg->report_length);
- 		memset(req->buf, 0x0, length);
--
- 		goto respond;
--		break;
+diff --git a/drivers/video/fbdev/matrox/matroxfb_base.c b/drivers/video/fbdev/matrox/matroxfb_base.c
+index 570439b32655..a3853421b263 100644
+--- a/drivers/video/fbdev/matrox/matroxfb_base.c
++++ b/drivers/video/fbdev/matrox/matroxfb_base.c
+@@ -1970,9 +1970,7 @@ int matroxfb_register_driver(struct matroxfb_driver* drv) {
+ 	struct matrox_fb_info* minfo;
  
- 	case ((USB_DIR_IN | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_GET_PROTOCOL):
-@@ -521,13 +519,11 @@ static int hidg_setup(struct usb_function *f,
- 		length = min_t(unsigned int, length, 1);
- 		((u8 *) req->buf)[0] = hidg->protocol;
- 		goto respond;
--		break;
+ 	list_add(&drv->node, &matroxfb_driver_list);
+-	for (minfo = matroxfb_l(matroxfb_list.next);
+-	     minfo != matroxfb_l(&matroxfb_list);
+-	     minfo = matroxfb_l(minfo->next_fb.next)) {
++	list_for_each_entry(minfo, &matroxfb_list, next_fb) {
+ 		void* p;
  
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_REPORT):
- 		VDBG(cdev, "set_report | wLength=%d\n", ctrl->wLength);
- 		goto stall;
--		break;
+ 		if (minfo->drivers_count == MATROXFB_MAX_FB_DRIVERS)
+@@ -1990,9 +1988,7 @@ void matroxfb_unregister_driver(struct matroxfb_driver* drv) {
+ 	struct matrox_fb_info* minfo;
  
- 	case ((USB_DIR_OUT | USB_TYPE_CLASS | USB_RECIP_INTERFACE) << 8
- 		  | HID_REQ_SET_PROTOCOL):
-@@ -544,7 +540,6 @@ static int hidg_setup(struct usb_function *f,
- 			goto respond;
- 		}
- 		goto stall;
--		break;
+ 	list_del(&drv->node);
+-	for (minfo = matroxfb_l(matroxfb_list.next);
+-	     minfo != matroxfb_l(&matroxfb_list);
+-	     minfo = matroxfb_l(minfo->next_fb.next)) {
++	list_for_each_entry(minfo, &matroxfb_list, next_fb) {
+ 		int i;
  
- 	case ((USB_DIR_IN | USB_TYPE_STANDARD | USB_RECIP_INTERFACE) << 8
- 		  | USB_REQ_GET_DESCRIPTOR):
-@@ -562,7 +557,6 @@ static int hidg_setup(struct usb_function *f,
- 						   hidg_desc_copy.bLength);
- 			memcpy(req->buf, &hidg_desc_copy, length);
- 			goto respond;
--			break;
- 		}
- 		case HID_DT_REPORT:
- 			VDBG(cdev, "USB_REQ_GET_DESCRIPTOR: REPORT\n");
-@@ -570,13 +564,11 @@ static int hidg_setup(struct usb_function *f,
- 						   hidg->report_desc_length);
- 			memcpy(req->buf, hidg->report_desc, length);
- 			goto respond;
--			break;
- 
- 		default:
- 			VDBG(cdev, "Unknown descriptor request 0x%x\n",
- 				 value >> 8);
- 			goto stall;
--			break;
- 		}
- 		break;
- 
-@@ -584,7 +576,6 @@ static int hidg_setup(struct usb_function *f,
- 		VDBG(cdev, "Unknown request 0x%x\n",
- 			 ctrl->bRequest);
- 		goto stall;
--		break;
- 	}
- 
- stall:
+ 		for (i = 0; i < minfo->drivers_count; ) {
 -- 
-2.18.1
+2.27.0
 
