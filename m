@@ -2,109 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 13B57298A08
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:09:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C2F3C298A39
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:17:35 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769097AbgJZKJT (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:09:19 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38796 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1769086AbgJZKIm (ORCPT
+        id S1769183AbgJZKRV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:17:21 -0400
+Received: from bhuna.collabora.co.uk ([46.235.227.227]:57576 "EHLO
+        bhuna.collabora.co.uk" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1422436AbgJZKRU (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:08:42 -0400
-Date:   Mon, 26 Oct 2020 10:08:38 -0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603706920;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vs5OzYKLpnQ2AkS/hmuzsZRHAoKKIICOn5krQpUII3k=;
-        b=r5HTo8uMpKqnBP+E3EIRryGDhAlfV7hM84oDX/EU51Xj+p3xE1Fi0wKXVnriMb8NBKsl3C
-        xthV57tziCh7vdoPOyfKO2fRlbbasvnDf7ZB467qqguYsMmkZdYPVM9TON0IcKobjmQ3e2
-        +HzWBb9uutyUgohUULXPXyGncazYOAU/Yw0ZtaDjJA5GghM4aUJWvxPt1rgXWK1KbKKk3K
-        iT1dkV14mdosXZQPhdb/xYothuly0hzRpIy9CvSXEzf2nL1W6/ZRoCzZl6limSb49bb6QO
-        4n5HMM99h6S1eWqCdvZMkYmkWqCKXpNyiBe3zTbrMD4zPYsewYbyt+fMeNUneQ==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603706920;
-        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
-         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
-         content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=vs5OzYKLpnQ2AkS/hmuzsZRHAoKKIICOn5krQpUII3k=;
-        b=MbrcAeviOYshDvtXWc3PeWAhrBWaSxZNvkgFsrjcNzaY1F51YyBQ8f0EBExRXZh+zbxjb7
-        GlfPbYfZB3LEJvBQ==
-From:   "tip-bot2 for Davidlohr Bueso" <tip-bot2@linutronix.de>
-Sender: tip-bot2@linutronix.de
-Reply-to: linux-kernel@vger.kernel.org
-To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: timers/core] timekeeping: Convert jiffies_seq to
- seqcount_raw_spinlock_t
-Cc:     Davidlohr Bueso <dbueso@suse.de>,
-        Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
-        LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201021190749.19363-1-dave@stgolabs.net>
-References: <20201021190749.19363-1-dave@stgolabs.net>
+        Mon, 26 Oct 2020 06:17:20 -0400
+Received: from [IPv6:2a00:23c5:9900:2d00:fa7c:ed23:2f0a:448d] (unknown [IPv6:2a00:23c5:9900:2d00:fa7c:ed23:2f0a:448d])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+        (No client certificate requested)
+        (Authenticated sender: obbardc)
+        by bhuna.collabora.co.uk (Postfix) with ESMTPSA id 49C851F44F40;
+        Mon, 26 Oct 2020 10:17:18 +0000 (GMT)
+Subject: Re: Build regressions/improvements in v5.10-rc1
+To:     Geert Uytterhoeven <geert@linux-m68k.org>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Cc:     linuxppc-dev <linuxppc-dev@lists.ozlabs.org>,
+        arcml <linux-snps-arc@lists.infradead.org>,
+        linux-um <linux-um@lists.infradead.org>,
+        Joe Perches <joe@perches.com>
+References: <20201026081811.3934205-1-geert@linux-m68k.org>
+ <CAMuHMdXbsJPnsXg6bA_e32zJkBG1Zzqj-ja5WzHDKL0d9OcfPg@mail.gmail.com>
+From:   Christopher Obbard <chris.obbard@collabora.com>
+Message-ID: <ed39a579-62c9-de88-3550-f21382b804a8@collabora.com>
+Date:   Mon, 26 Oct 2020 10:17:16 +0000
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
+ Thunderbird/68.10.0
 MIME-Version: 1.0
-Message-ID: <160370691856.397.3350703895486263181.tip-bot2@tip-bot2>
-Robot-ID: <tip-bot2.linutronix.de>
-Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <CAMuHMdXbsJPnsXg6bA_e32zJkBG1Zzqj-ja5WzHDKL0d9OcfPg@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8; format=flowed
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-The following commit has been merged into the timers/core branch of tip:
+Hi Geert,
 
-Commit-ID:     1a2b85f1e2a93a3f84243e654d225e4088735336
-Gitweb:        https://git.kernel.org/tip/1a2b85f1e2a93a3f84243e654d225e4088735336
-Author:        Davidlohr Bueso <dave@stgolabs.net>
-AuthorDate:    Wed, 21 Oct 2020 12:07:49 -07:00
-Committer:     Thomas Gleixner <tglx@linutronix.de>
-CommitterDate: Mon, 26 Oct 2020 11:04:14 +01:00
+On 26/10/2020 09:48, Geert Uytterhoeven wrote:
+> On Mon, Oct 26, 2020 at 10:46 AM Geert Uytterhoeven
+> <geert@linux-m68k.org> wrote:
+>> Below is the list of build error/warning regressions/improvements in
+>> v5.10-rc1[1] compared to v5.9[2].
+>>
+>> Summarized:
+>>    - build errors: +3/-7
+>>    - build warnings: +26/-28
+>>
+>> Happy fixing! ;-)
+>>
+>> Thanks to the linux-next team for providing the build service.
+>>
+>> [1] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/3650b228f83adda7e5ee532e2b90429c03f7b9ec/ (all 192 configs)
+>> [2] http://kisskb.ellerman.id.au/kisskb/branch/linus/head/bbf5c979011a099af5dc76498918ed7df445635b/ (all 192 configs)
+>>
+>>
+>> *** ERRORS ***
+>>
+>> 3 error regressions:
+>>    + /kisskb/src/arch/um/kernel/skas/clone.c: error: expected declaration specifiers or '...' before string constant:  => 24:16
 
-timekeeping: Convert jiffies_seq to seqcount_raw_spinlock_t
+For me, reverting commit 33def8498fdde180023444b08e12b72a9efed41d 
+("treewide: Convert macro and uses of __section(foo) to 
+__section("foo")") fixed this compile error and one other introduced by 
+the same patch.
+Unfortunately I wasn't able to come up with a fix for that, but I have 
+CC the author of that patch.
 
-Use the new api and associate the seqcounter to the jiffies_lock enabling
-lockdep support - although for this particular case the write-side locking
-and non-preemptibility are quite obvious.
+Thanks!
+Christopher Obbard
 
-Signed-off-by: Davidlohr Bueso <dbueso@suse.de>
-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201021190749.19363-1-dave@stgolabs.net
-
----
- kernel/time/jiffies.c     | 3 ++-
- kernel/time/timekeeping.h | 2 +-
- 2 files changed, 3 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/time/jiffies.c b/kernel/time/jiffies.c
-index eddcf49..a5cffe2 100644
---- a/kernel/time/jiffies.c
-+++ b/kernel/time/jiffies.c
-@@ -59,7 +59,8 @@ static struct clocksource clocksource_jiffies = {
- };
- 
- __cacheline_aligned_in_smp DEFINE_RAW_SPINLOCK(jiffies_lock);
--__cacheline_aligned_in_smp seqcount_t jiffies_seq;
-+__cacheline_aligned_in_smp seqcount_raw_spinlock_t jiffies_seq =
-+	SEQCNT_RAW_SPINLOCK_ZERO(jiffies_seq, &jiffies_lock);
- 
- #if (BITS_PER_LONG < 64)
- u64 get_jiffies_64(void)
-diff --git a/kernel/time/timekeeping.h b/kernel/time/timekeeping.h
-index 099737f..6c2cbd9 100644
---- a/kernel/time/timekeeping.h
-+++ b/kernel/time/timekeeping.h
-@@ -26,7 +26,7 @@ extern void do_timer(unsigned long ticks);
- extern void update_wall_time(void);
- 
- extern raw_spinlock_t jiffies_lock;
--extern seqcount_t jiffies_seq;
-+extern seqcount_raw_spinlock_t jiffies_seq;
- 
- #define CS_NAME_LEN	32
- 
+> 
+> um-all{mod,yes}config
+> 
+>>    + error: hotplug-memory.c: undefined reference to `of_drconf_to_nid_single':  => .text+0x5e0)
+> 
+> powerpc-gcc5/pseries_le_defconfig+NO_NUMA
+> 
+>>    + {standard input}: Error: inappropriate arguments for opcode 'adc':  => 170
+> 
+> arc-gcc10/axs101_defconfig
+> 
+> Gr{oetje,eeting}s,
+> 
+>                          Geert
+> 
