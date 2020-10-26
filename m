@@ -2,52 +2,52 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 52017298D3E
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 44F42298D44
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 13:53:18 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1775708AbgJZMws (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 08:52:48 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:39822 "EHLO
+        id S1775689AbgJZMwn (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 08:52:43 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39838 "EHLO
         galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1773153AbgJZMwj (ORCPT
+        with ESMTP id S1775643AbgJZMwj (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
         Mon, 26 Oct 2020 08:52:39 -0400
-Date:   Mon, 26 Oct 2020 12:52:35 -0000
+Date:   Mon, 26 Oct 2020 12:52:36 -0000
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603716756;
+        s=2020; t=1603716757;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fb9+gjwENfRPWJUTHHuvHRxj5wYQesZR3Xa4pqv6mps=;
-        b=zc0oGSBYswlF5B9zrfQYQwWzKVP1qGFxbXefLkza7Rw09d+eWB0NjZTMnoY8OaUUoLnhHP
-        SmB3m+s+YcoZnWSnpQOr7mecwUXFYu5iuwQr+SsFGIgA7mkO9sIdp+rybHWjnIoL+YXa18
-        fQy2t4RSS5cY9B2/U9Gl9jq5ZNXRC/qH77VNxwVeD0ZY9HOYvCMUlrAbk2gnYs1554D+PF
-        zHW/+RxT4GZ1NCmEzvheSLkn7Bs0W7KbUSpQwlvL9fc1Q6R131pD1Jc/5x1PS+FInX92xP
-        ek+JKeU+uOkDYLmHDJYmBOzLiZId9MASshpLhtUSfWD1b+vlsa44pSNCRfE2pw==
+        bh=ILQPtPU4iWvoqSRttb106bkOKp5DhQS8MKf6uxdvhCU=;
+        b=kAt5RoXB2HLA7w3Qp4SgMfYfurK+IYZbkIXWQhz1/KjujpOg8b84xvpSIlUaUO/KiV12TG
+        +0X9uNZnmdUvWLboS5DP5+dh99iP/OfRzGNh6oOZqdBoNFIccXM6qGdAVS1IpMor/eTLK6
+        DKM92Y/sNCz56yAf6TAsvPl/93F7sdtRfYjmxgn2o4p1SvDXBl0Ja4UasmyHf/eFP6XTcu
+        u57vSZNWZ3CuNcpiwrvFps82whtXPvt7jv0204Bq1hda5pVFkh76fDOjxzL9ByffId9t5U
+        v4Q0j2Y5RVGMRyqWREBctUoJbMw9CxOF8LWaY2/xD+sQl8guPznk77QiJ6dB5Q==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603716756;
+        s=2020e; t=1603716757;
         h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
          message-id:message-id:to:to:cc:cc:mime-version:mime-version:
          content-type:content-type:
          content-transfer-encoding:content-transfer-encoding:
          in-reply-to:in-reply-to:references:references;
-        bh=fb9+gjwENfRPWJUTHHuvHRxj5wYQesZR3Xa4pqv6mps=;
-        b=IeQroH/OMF/0E+Wm8HTTvk9YBDGF3D+UJowvByV7otrOqLzIAdZHMJ6zR8N35hHDn0Wkya
-        38FK6FOojlH04uCw==
+        bh=ILQPtPU4iWvoqSRttb106bkOKp5DhQS8MKf6uxdvhCU=;
+        b=4YKgeADVOvOjaFBp1ed5dyYYx+Fxm9X6l1xS8QbbigvS4Djcm8POf6KWXWuA5eWHO9eAce
+        uJSdqs/Kx2ndG5Cw==
 From:   "tip-bot2 for Gabriel Krisman Bertazi" <tip-bot2@linutronix.de>
 Sender: tip-bot2@linutronix.de
 Reply-to: linux-kernel@vger.kernel.org
 To:     linux-tip-commits@vger.kernel.org
-Subject: [tip: x86/cleanups] elf: Expose ELF header in compat_start_thread()
+Subject: [tip: x86/cleanups] x86/oprofile: Avoid TIF_IA32 when checking 64bit mode
 Cc:     Gabriel Krisman Bertazi <krisman@collabora.com>,
         Thomas Gleixner <tglx@linutronix.de>, x86 <x86@kernel.org>,
         LKML <linux-kernel@vger.kernel.org>
-In-Reply-To: <20201004032536.1229030-6-krisman@collabora.com>
-References: <20201004032536.1229030-6-krisman@collabora.com>
+In-Reply-To: <20201004032536.1229030-4-krisman@collabora.com>
+References: <20201004032536.1229030-4-krisman@collabora.com>
 MIME-Version: 1.0
-Message-ID: <160371675542.397.5183477135451020077.tip-bot2@tip-bot2>
+Message-ID: <160371675663.397.11073210370521166662.tip-bot2@tip-bot2>
 Robot-ID: <tip-bot2.linutronix.de>
 Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
 Content-Type: text/plain; charset="utf-8"
@@ -58,82 +58,36 @@ X-Mailing-List: linux-kernel@vger.kernel.org
 
 The following commit has been merged into the x86/cleanups branch of tip:
 
-Commit-ID:     bc3d7bf61a9eaecccc84dc2ecc2a9a3fa4f5ec47
-Gitweb:        https://git.kernel.org/tip/bc3d7bf61a9eaecccc84dc2ecc2a9a3fa4f5ec47
+Commit-ID:     47cd4dac1fb21759ffcfe0600827c87fa6acdfa7
+Gitweb:        https://git.kernel.org/tip/47cd4dac1fb21759ffcfe0600827c87fa6acdfa7
 Author:        Gabriel Krisman Bertazi <krisman@collabora.com>
-AuthorDate:    Sat, 03 Oct 2020 23:25:31 -04:00
+AuthorDate:    Sat, 03 Oct 2020 23:25:29 -04:00
 Committer:     Thomas Gleixner <tglx@linutronix.de>
 CommitterDate: Mon, 26 Oct 2020 13:46:46 +01:00
 
-elf: Expose ELF header in compat_start_thread()
+x86/oprofile: Avoid TIF_IA32 when checking 64bit mode
 
-Like it is done for SET_PERSONALITY with x86, which requires the ELF header
-to select correct personality parameters, x86 requires the headers on
-compat_start_thread() to choose starting CS for ELF32 binaries, instead of
-relying on the going-away TIF_IA32/X32 flags.
-
-Add an indirection macro to ELF invocations of START_THREAD, that x86 can
-reimplement to receive the extra parameter just for ELF files.  This
-requires no changes to other architectures who don't need the header
-information, they can continue to use the original start_thread for ELF and
-non-ELF binaries, and it prevents affecting non-ELF code paths for x86.
+In preparation to remove TIF_IA32, stop using it in oprofile code. Use
+user_64bit_mode() instead.
 
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-Link: https://lore.kernel.org/r/20201004032536.1229030-6-krisman@collabora.com
+Link: https://lore.kernel.org/r/20201004032536.1229030-4-krisman@collabora.com
 
 ---
- fs/binfmt_elf.c        |  2 +-
- fs/compat_binfmt_elf.c |  9 +++++++--
- include/linux/elf.h    |  5 +++++
- 3 files changed, 13 insertions(+), 3 deletions(-)
+ arch/x86/oprofile/backtrace.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-index b6b3d05..b23f755 100644
---- a/fs/binfmt_elf.c
-+++ b/fs/binfmt_elf.c
-@@ -1307,7 +1307,7 @@ out_free_interp:
- #endif
+diff --git a/arch/x86/oprofile/backtrace.c b/arch/x86/oprofile/backtrace.c
+index a2488b6..1d8391f 100644
+--- a/arch/x86/oprofile/backtrace.c
++++ b/arch/x86/oprofile/backtrace.c
+@@ -49,7 +49,7 @@ x86_backtrace_32(struct pt_regs * const regs, unsigned int depth)
+ 	struct stack_frame_ia32 *head;
  
- 	finalize_exec(bprm);
--	start_thread(regs, elf_entry, bprm->p);
-+	START_THREAD(elf_ex, regs, elf_entry, bprm->p);
- 	retval = 0;
- out:
- 	return retval;
-diff --git a/fs/compat_binfmt_elf.c b/fs/compat_binfmt_elf.c
-index 2d24c76..12b9913 100644
---- a/fs/compat_binfmt_elf.c
-+++ b/fs/compat_binfmt_elf.c
-@@ -106,8 +106,13 @@
- #endif
+ 	/* User process is IA32 */
+-	if (!current || !test_thread_flag(TIF_IA32))
++	if (!current || user_64bit_mode(regs))
+ 		return 0;
  
- #ifdef	compat_start_thread
--#undef	start_thread
--#define	start_thread		compat_start_thread
-+#define COMPAT_START_THREAD(ex, regs, new_ip, new_sp)	\
-+	compat_start_thread(regs, new_ip, new_sp)
-+#endif
-+
-+#ifdef	COMPAT_START_THREAD
-+#undef	START_THREAD
-+#define START_THREAD		COMPAT_START_THREAD
- #endif
- 
- #ifdef	compat_arch_setup_additional_pages
-diff --git a/include/linux/elf.h b/include/linux/elf.h
-index 5d5b032..6dbcfe7 100644
---- a/include/linux/elf.h
-+++ b/include/linux/elf.h
-@@ -22,6 +22,11 @@
- 	SET_PERSONALITY(ex)
- #endif
- 
-+#ifndef START_THREAD
-+#define START_THREAD(elf_ex, regs, elf_entry, start_stack)	\
-+	start_thread(regs, elf_entry, start_stack)
-+#endif
-+
- #define ELF32_GNU_PROPERTY_ALIGN	4
- #define ELF64_GNU_PROPERTY_ALIGN	8
- 
+ 	head = (struct stack_frame_ia32 *) regs->bp;
