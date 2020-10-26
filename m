@@ -2,166 +2,92 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 7C7C3298C27
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:36:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id DE33A298C2A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 12:38:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1773891AbgJZLgH (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 07:36:07 -0400
-Received: from foss.arm.com ([217.140.110.172]:36262 "EHLO foss.arm.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1773883AbgJZLgG (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 07:36:06 -0400
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-        by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id A68D3101E;
-        Mon, 26 Oct 2020 04:36:05 -0700 (PDT)
-Received: from [10.57.50.191] (unknown [10.57.50.191])
-        by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id A3DC63F719;
-        Mon, 26 Oct 2020 04:36:02 -0700 (PDT)
-Subject: Re: [PATCH v3 11/24] iommu/io-pgtable-arm-v7s: Quad lvl1 pgtable for
- MediaTek
-To:     Yong Wu <yong.wu@mediatek.com>
-Cc:     Joerg Roedel <joro@8bytes.org>,
-        Matthias Brugger <matthias.bgg@gmail.com>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski <krzk@kernel.org>,
-        Will Deacon <will@kernel.org>,
-        Evan Green <evgreen@chromium.org>,
-        Tomasz Figa <tfiga@google.com>,
-        linux-mediatek@lists.infradead.org, srv_heupstream@mediatek.com,
-        devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org,
-        iommu@lists.linux-foundation.org, youlin.pei@mediatek.com,
-        Nicolas Boichat <drinkcat@chromium.org>, anan.sun@mediatek.com,
-        chao.hao@mediatek.com, ming-fan.chen@mediatek.com,
-        Greg Kroah-Hartman <gregkh@google.com>, kernel-team@android.com
-References: <20200930070647.10188-1-yong.wu@mediatek.com>
- <20200930070647.10188-12-yong.wu@mediatek.com>
- <a5713949-1d95-40f1-d35d-d99735b48294@arm.com>
- <1603698083.26323.87.camel@mhfsdcap03>
-From:   Robin Murphy <robin.murphy@arm.com>
-Message-ID: <7a03faf4-b382-2923-b9fa-9a55861f49d6@arm.com>
-Date:   Mon, 26 Oct 2020 11:35:56 +0000
-User-Agent: Mozilla/5.0 (Windows NT 10.0; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1773904AbgJZLio (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 07:38:44 -0400
+Received: from Galois.linutronix.de ([193.142.43.55]:39364 "EHLO
+        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1773895AbgJZLin (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 07:38:43 -0400
+Date:   Mon, 26 Oct 2020 11:38:40 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020; t=1603712321;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/Hp1IZzQPnvyN8blfRC1FcHx3jPg+5MF1FJmSmsDs8=;
+        b=Vxyx6vBdfL2Soy1Jj1AbUeOF8/4fd9yZAP7Yqok5ujjlF1A0gf7g4tRRZFvl2XNl8HnL6d
+        VRbjmBeYUg8BKEDbWnLEPoP+H+4MuH1Rk8rRe07RLq2HQWMnHGlOWsU29lSn6BL+pp9oDR
+        OevJcq7h2J3rLSnrQ7Jzuo15feNawfJGU5Ap5gVk7voJf4E38jP7WLW3H8P6oMmVfPjxAU
+        R9Wb9bvZXi5hlcdT1llgqEVUb3YqKJOWt2lQfD5SAzxAmfP9YETGjQ0tCiAH+BI12X0nMd
+        OM8Y8PqC5P0eaERJQyOt0+oogfIHXYV53W6S5QrdHEA62WgKJ902iZ9DmEYWZQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+        s=2020e; t=1603712321;
+        h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+         message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+         content-type:content-type:
+         content-transfer-encoding:content-transfer-encoding:
+         in-reply-to:in-reply-to:references:references;
+        bh=g/Hp1IZzQPnvyN8blfRC1FcHx3jPg+5MF1FJmSmsDs8=;
+        b=q0hRJKGmnWAqXWan55tmGzrrd8g4WiYP/srRMfTumzWdDGnRYh76bHe1XDcPnsmZR1/cy6
+        filcNdBW2fWpWkBA==
+From:   "tip-bot2 for Tom Rix" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To:     linux-tip-commits@vger.kernel.org
+Subject: [tip: ras/core] x86/mce: Remove unneeded break
+Cc:     Tom Rix <trix@redhat.com>, Borislav Petkov <bp@suse.de>,
+        x86 <x86@kernel.org>, LKML <linux-kernel@vger.kernel.org>
+In-Reply-To: <20201019200803.17619-1-trix@redhat.com>
+References: <20201019200803.17619-1-trix@redhat.com>
 MIME-Version: 1.0
-In-Reply-To: <1603698083.26323.87.camel@mhfsdcap03>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Language: en-GB
+Message-ID: <160371232026.397.1039892966765369024.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2.linutronix.de>
+Robot-Unsubscribe: Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 2020-10-26 07:41, Yong Wu wrote:
-> On Fri, 2020-10-23 at 15:10 +0100, Robin Murphy wrote:
->> On 2020-09-30 08:06, Yong Wu wrote:
->>> The standard input iova bits is 32. MediaTek quad the lvl1 pagetable
->>> (4 * lvl1). No change for lvl2 pagetable. Then the iova bits can reach
->>> 34bit.
->>>
->>> Signed-off-by: Yong Wu <yong.wu@mediatek.com>
->>> ---
->>>    drivers/iommu/io-pgtable-arm-v7s.c | 13 ++++++++++---
->>>    drivers/iommu/mtk_iommu.c          |  2 +-
->>>    2 files changed, 11 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/drivers/iommu/io-pgtable-arm-v7s.c b/drivers/iommu/io-pgtable-arm-v7s.c
->>> index 8362fdf76657..306bae2755ed 100644
->>> --- a/drivers/iommu/io-pgtable-arm-v7s.c
->>> +++ b/drivers/iommu/io-pgtable-arm-v7s.c
->>> @@ -50,10 +50,17 @@
->>>     */
->>>    #define ARM_V7S_ADDR_BITS		32
->>>    #define _ARM_V7S_LVL_BITS(lvl)		(16 - (lvl) * 4)
->>> +/* MediaTek: totally 34bits, 14bits at lvl1 and 8bits at lvl2. */
->>> +#define _ARM_V7S_LVL_BITS_MTK(lvl)	(20 - (lvl) * 6)
->>
->> This should defined in terms of both lvl and cfg->ias. The formula here
->> is nothing more than a disgusting trick I made up since a linear
->> interpolation happened to fit the required numbers. That said, all of
->> these bits pretending that short-descriptor is a well-defined recursive
->> format only served to allow the rest of the code to look more like the
->> LPAE code - IIRC they've already diverged a fair bit since then, so
->> frankly a lot of this could stand to be unpicked and made considerably
->> clearer by simply accepting that level 1 and level 2 are different from
->> each other.
-> 
-> If the formula is not good and make it clearer, How about this?
-> 
-> 
-> /*
->   * We have 32 bits total; 12 bits resolved at level 1, 8 bits at level
-> 2,
-> -* and 12 bits in a page. With some carefully-chosen coefficients we can
-> -* hide the ugly inconsistencies behind these macros and at least let
-> the
-> -* rest of the code pretend to be somewhat sane.
-> +* and 12 bits in a page.
-> +*
-> +* MediaTek extend 2 bits to reach 34 bits, 14 bits at lvl1 and 8 bits
-> at lvl2.
->   */
-> 
-> -#define _ARM_V7S_LVL_BITS(lvl)		(16 - (lvl) * 4)
-> +#define _ARM_V7S_LVL1_BITS_NR(cfg)     (((cfg)->ias == 32) ? 12 : 14)
-> +#define _ARM_V7S_LVL2_BITS_NR		8
-> +
-> +#define _ARM_V7S_LVL_BITS(lvl, cfg)    \
-> +      (((lvl) == 1) ? _ARM_V7S_LVL1_BITS_NR(cfg):_ARM_V7S_LVL2_BITS_NR)
+The following commit has been merged into the ras/core branch of tip:
 
-Well, I'd have gone for something really simple and clear like:
+Commit-ID:     633cdaf29ec4aae29868320adb3a4f1c5b8c0eac
+Gitweb:        https://git.kernel.org/tip/633cdaf29ec4aae29868320adb3a4f1c5b8c0eac
+Author:        Tom Rix <trix@redhat.com>
+AuthorDate:    Mon, 19 Oct 2020 13:08:03 -07:00
+Committer:     Borislav Petkov <bp@suse.de>
+CommitterDate: Mon, 26 Oct 2020 12:24:35 +01:00
 
-#define ARM_V7S_LVL_BITS(lvl, cfg) ((lvl) == 1 ? (cfg)->ias - 20 : 8)
-#define ARM_V7S_LVL_SHIFT(lvl)     ((lvl) == 1 ? 20 : 12)
+x86/mce: Remove unneeded break
 
-Then maybe see if enough of the users could resolve lvl significantly 
-earlier to make it worth splitting things up further.
+A break is not needed if it is preceded by a return.
 
-Robin.
+Signed-off-by: Tom Rix <trix@redhat.com>
+Signed-off-by: Borislav Petkov <bp@suse.de>
+Link: https://lkml.kernel.org/r/20201019200803.17619-1-trix@redhat.com
+---
+ arch/x86/kernel/cpu/mce/core.c | 2 --
+ 1 file changed, 2 deletions(-)
 
->>>    #define ARM_V7S_LVL_SHIFT(lvl)		(ARM_V7S_ADDR_BITS - (4 + 8 * (lvl)))
->>>    #define ARM_V7S_TABLE_SHIFT		10
->>>    
->>> -#define ARM_V7S_PTES_PER_LVL(lvl, cfg)	(1 << _ARM_V7S_LVL_BITS(lvl))
->>> +#define ARM_V7S_PTES_PER_LVL(lvl, cfg)	({				\
->>> +	int _lvl = lvl;							\
->>> +	!arm_v7s_is_mtk_enabled(cfg) ?					\
->>> +	 (1 << _ARM_V7S_LVL_BITS(_lvl)) : (1 << _ARM_V7S_LVL_BITS_MTK(_lvl));\
->>> +})
->>> +
->>>    #define ARM_V7S_TABLE_SIZE(lvl, cfg)					\
->>>    	(ARM_V7S_PTES_PER_LVL(lvl, cfg) * sizeof(arm_v7s_iopte))
->>>    
->>> @@ -63,7 +70,7 @@
->>>    #define _ARM_V7S_IDX_MASK(lvl, cfg)	(ARM_V7S_PTES_PER_LVL(lvl, cfg) - 1)
->>>    #define ARM_V7S_LVL_IDX(addr, lvl, cfg)	({			\
->>>    	int _l = lvl;							\
->>> -	((u32)(addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
->>> +	((addr) >> ARM_V7S_LVL_SHIFT(_l)) & _ARM_V7S_IDX_MASK(_l, cfg); \
->>>    })
->>>    
->>>    /*
->>> @@ -755,7 +762,7 @@ static struct io_pgtable *arm_v7s_alloc_pgtable(struct io_pgtable_cfg *cfg,
->>>    {
->>>    	struct arm_v7s_io_pgtable *data;
->>>    
->>> -	if (cfg->ias > ARM_V7S_ADDR_BITS)
->>> +	if (cfg->ias > (arm_v7s_is_mtk_enabled(cfg) ? 34 : ARM_V7S_ADDR_BITS))
->>>    		return NULL;
->>>    
->>>    	if (cfg->oas > (arm_v7s_is_mtk_enabled(cfg) ? 35 : ARM_V7S_ADDR_BITS))
->>> diff --git a/drivers/iommu/mtk_iommu.c b/drivers/iommu/mtk_iommu.c
->>> index f6a2e3eb59d2..6e85c9976a33 100644
->>> --- a/drivers/iommu/mtk_iommu.c
->>> +++ b/drivers/iommu/mtk_iommu.c
->>> @@ -316,7 +316,7 @@ static int mtk_iommu_domain_finalise(struct mtk_iommu_domain *dom)
->>>    			IO_PGTABLE_QUIRK_TLBI_ON_MAP |
->>>    			IO_PGTABLE_QUIRK_ARM_MTK_EXT,
->>>    		.pgsize_bitmap = mtk_iommu_ops.pgsize_bitmap,
->>> -		.ias = 32,
->>> +		.ias = 34,
->>>    		.oas = 35,
->>>    		.tlb = &mtk_iommu_flush_ops,
->>>    		.iommu_dev = data->dev,
->>>
-> 
+diff --git a/arch/x86/kernel/cpu/mce/core.c b/arch/x86/kernel/cpu/mce/core.c
+index 4102b86..51bf910 100644
+--- a/arch/x86/kernel/cpu/mce/core.c
++++ b/arch/x86/kernel/cpu/mce/core.c
+@@ -1811,11 +1811,9 @@ static int __mcheck_cpu_ancient_init(struct cpuinfo_x86 *c)
+ 	case X86_VENDOR_INTEL:
+ 		intel_p5_mcheck_init(c);
+ 		return 1;
+-		break;
+ 	case X86_VENDOR_CENTAUR:
+ 		winchip_mcheck_init(c);
+ 		return 1;
+-		break;
+ 	default:
+ 		return 0;
+ 	}
