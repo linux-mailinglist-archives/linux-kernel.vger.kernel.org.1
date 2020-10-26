@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 03C54299B69
+	by mail.lfdr.de (Postfix) with ESMTP id 739A1299B6A
 	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:51:23 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409293AbgJZXvC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:51:02 -0400
-Received: from mail.kernel.org ([198.145.29.99]:50106 "EHLO mail.kernel.org"
+        id S2409323AbgJZXvJ (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:51:09 -0400
+Received: from mail.kernel.org ([198.145.29.99]:50218 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409131AbgJZXud (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:50:33 -0400
+        id S2409146AbgJZXug (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:50:36 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id AD0EE216FD;
-        Mon, 26 Oct 2020 23:50:31 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 5DFE12075B;
+        Mon, 26 Oct 2020 23:50:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756232;
-        bh=5SwOcDG6zpmV/M7GZH/CDE9DdYD5oGCjxlb8cnRuBac=;
+        s=default; t=1603756236;
+        bh=OFzC11YfrRh0q0oQKZZ86aMYYB+AqzJmLe+0Bx1Z31Q=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=yJ2v1KQZIpgv6OwuPY3gsmxilbcqFwXfRbC/8iCWE78Kh/s0a2GVnoiifqAsTwH6t
-         Wth2K5+BJaeqHNBOguKv7EFXOhxTRzJ4otbHaThlZrQv0o+h5xMAU/6m1ObGpVkXlV
-         SvHytwnR576G8r9ogGw4Pan+644VtaOT36VZ+/cc=
+        b=L9hrf3G6rZuimr5jqbGv0JKzew+OyDFNZ5HeW+Ds/uiBVb0hFjedWVwJf7ym2V4hX
+         RQ7IN81v2v2yV/gqcdssNHuWAcPKyEuQ73RB/YKHr/Zi4IOKNhiCMTPDcgLr9Mx5k6
+         WIUu84Tt12DkIuCThgC23uR7LQjLkwvnkcXP4Z7I=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-        Aurabindo Pillai <aurabindo.pillai@amd.com>,
-        Alex Deucher <alexander.deucher@amd.com>,
-        Sasha Levin <sashal@kernel.org>, amd-gfx@lists.freedesktop.org,
-        dri-devel@lists.freedesktop.org
-Subject: [PATCH AUTOSEL 5.9 070/147] drm/amd/display: Check clock table return
-Date:   Mon, 26 Oct 2020 19:47:48 -0400
-Message-Id: <20201026234905.1022767-70-sashal@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 073/147] USB: adutux: fix debugging
+Date:   Mon, 26 Oct 2020 19:47:51 -0400
+Message-Id: <20201026234905.1022767-73-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -44,58 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit 4b4f21ff7f5d11bb77e169b306dcbc5b216f5db5 ]
+[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
 
-During the load processes for Renoir, our display code needs to retrieve
-the SMU clock and voltage table, however, this operation can fail which
-means that we have to check this scenario. Currently, we are not
-handling this case properly and as a result, we have seen the following
-dmesg log during the boot:
+Handling for removal of the controller was missing at one place.
+Add it.
 
-RIP: 0010:rn_clk_mgr_construct+0x129/0x3d0 [amdgpu]
-...
-Call Trace:
- dc_clk_mgr_create+0x16a/0x1b0 [amdgpu]
- dc_create+0x231/0x760 [amdgpu]
-
-This commit fixes this issue by checking the return status retrieved
-from the clock table before try to populate any bandwidth.
-
-Signed-off-by: Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>
-Acked-by: Aurabindo Pillai <aurabindo.pillai@amd.com>
-Signed-off-by: Alex Deucher <alexander.deucher@amd.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ drivers/usb/misc/adutux.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
-index 21a3073c8929e..2f8fee05547ac 100644
---- a/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
-+++ b/drivers/gpu/drm/amd/display/dc/clk_mgr/dcn21/rn_clk_mgr.c
-@@ -761,6 +761,7 @@ void rn_clk_mgr_construct(
- {
- 	struct dc_debug_options *debug = &ctx->dc->debug;
- 	struct dpm_clocks clock_table = { 0 };
-+	enum pp_smu_status status = 0;
+diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
+index a7eefe11f31aa..45a3879799352 100644
+--- a/drivers/usb/misc/adutux.c
++++ b/drivers/usb/misc/adutux.c
+@@ -209,6 +209,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
  
- 	clk_mgr->base.ctx = ctx;
- 	clk_mgr->base.funcs = &dcn21_funcs;
-@@ -817,8 +818,10 @@ void rn_clk_mgr_construct(
- 	clk_mgr->base.bw_params = &rn_bw_params;
- 
- 	if (pp_smu && pp_smu->rn_funcs.get_dpm_clock_table) {
--		pp_smu->rn_funcs.get_dpm_clock_table(&pp_smu->rn_funcs.pp_smu, &clock_table);
--		if (ctx->dc_bios && ctx->dc_bios->integrated_info) {
-+		status = pp_smu->rn_funcs.get_dpm_clock_table(&pp_smu->rn_funcs.pp_smu, &clock_table);
-+
-+		if (status == PP_SMU_RESULT_OK &&
-+		    ctx->dc_bios && ctx->dc_bios->integrated_info) {
- 			rn_clk_mgr_helper_populate_bw_params (clk_mgr->base.bw_params, &clock_table, ctx->dc_bios->integrated_info);
- 		}
- 	}
+ 	if (status != 0) {
+ 		if ((status != -ENOENT) &&
++		    (status != -ESHUTDOWN) &&
+ 		    (status != -ECONNRESET)) {
+ 			dev_dbg(&dev->udev->dev,
+ 				"%s :nonzero status received: %d\n", __func__,
 -- 
 2.25.1
 
