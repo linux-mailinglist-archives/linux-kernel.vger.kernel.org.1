@@ -2,121 +2,96 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 35DBB2991CD
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:05:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 134092991CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 17:05:02 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784907AbgJZQFL (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 12:05:11 -0400
-Received: from m42-4.mailgun.net ([69.72.42.4]:52476 "EHLO m42-4.mailgun.net"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1784901AbgJZQFK (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 12:05:10 -0400
-DKIM-Signature: a=rsa-sha256; v=1; c=relaxed/relaxed; d=mg.codeaurora.org; q=dns/txt;
- s=smtp; t=1603728309; h=Content-Transfer-Encoding: Content-Type:
- In-Reply-To: MIME-Version: Date: Message-ID: From: References: Cc: To:
- Subject: Sender; bh=gENqlM/pPw1+/3BMakG5icMgcmU6s9phV5kM80xNKFU=; b=aZcYCJDWRxe+d5rbtGZqvkeI5oWkjXZdmfsOwd7cYFKGhRs3wM+Ondg4kkzuhHoacbrPNCMw
- S2qube/L2CVmd0jKpGo6wciLcVPZrUyJPrwmvfdefvSCJnSQaCwQvSXBVO6SnQO0/WoLYCem
- zVfCOZ5qSUjWZ0+WVbqy1JxtwHs=
-X-Mailgun-Sending-Ip: 69.72.42.4
-X-Mailgun-Sid: WyI0MWYwYSIsICJsaW51eC1rZXJuZWxAdmdlci5rZXJuZWwub3JnIiwgImJlOWU0YSJd
-Received: from smtp.codeaurora.org
- (ec2-35-166-182-171.us-west-2.compute.amazonaws.com [35.166.182.171]) by
- smtp-out-n05.prod.us-east-1.postgun.com with SMTP id
- 5f96f3993ecd8ffc948de9df (version=TLS1.2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256); Mon, 26 Oct 2020 16:04:41
- GMT
-Sender: srivasam=codeaurora.org@mg.codeaurora.org
-Received: by smtp.codeaurora.org (Postfix, from userid 1001)
-        id 8F812C433B6; Mon, 26 Oct 2020 16:04:40 +0000 (UTC)
-X-Spam-Checker-Version: SpamAssassin 3.4.0 (2014-02-07) on
-        aws-us-west-2-caf-mail-1.web.codeaurora.org
-X-Spam-Level: 
-X-Spam-Status: No, score=-5.1 required=2.0 tests=ALL_TRUSTED,BAYES_00,
-        NICE_REPLY_A,SPF_FAIL,URIBL_BLOCKED autolearn=unavailable autolearn_force=no
-        version=3.4.0
-Received: from [192.168.29.24] (unknown [49.37.139.237])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        (Authenticated sender: srivasam)
-        by smtp.codeaurora.org (Postfix) with ESMTPSA id E802BC433FF;
-        Mon, 26 Oct 2020 16:04:34 +0000 (UTC)
-DMARC-Filter: OpenDMARC Filter v1.3.2 smtp.codeaurora.org E802BC433FF
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; dmarc=none (p=none dis=none) header.from=codeaurora.org
-Authentication-Results: aws-us-west-2-caf-mail-1.web.codeaurora.org; spf=fail smtp.mailfrom=srivasam@codeaurora.org
-Subject: Re: [PATCH] Asoc: qcom: lpass-sc7180: Fix MI2S bitwidth field bit
- positions
-To:     Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-        agross@kernel.org, bjorn.andersson@linaro.org, lgirdwood@gmail.com,
-        broonie@kernel.org, robh+dt@kernel.org, plai@codeaurora.org,
-        bgoswami@codeaurora.org, perex@perex.cz, tiwai@suse.com,
-        rohitkr@codeaurora.org, linux-arm-msm@vger.kernel.org,
-        alsa-devel@alsa-project.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Cc:     V Sujith Kumar Reddy <vsujithk@codeaurora.org>
-References: <1603373219-19374-1-git-send-email-srivasam@codeaurora.org>
- <335f1d55-8a85-8501-fd69-0397f44e21af@linaro.org>
-From:   Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
-Organization: Qualcomm India Private Limited.
-Message-ID: <242284b2-ca3f-fbe0-af97-c0e8e5fe640d@codeaurora.org>
-Date:   Mon, 26 Oct 2020 21:34:32 +0530
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.4.0
+        id S1784893AbgJZQEy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 12:04:54 -0400
+Received: from shelob.surriel.com ([96.67.55.147]:55606 "EHLO
+        shelob.surriel.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1774040AbgJZQEx (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 12:04:53 -0400
+Received: from [2603:3005:d05:2b00:6e0b:84ff:fee2:98bb] (helo=imladris.surriel.com)
+        by shelob.surriel.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+        (Exim 4.94)
+        (envelope-from <riel@shelob.surriel.com>)
+        id 1kX4zF-0004Ss-JC; Mon, 26 Oct 2020 12:04:45 -0400
+Date:   Mon, 26 Oct 2020 12:04:45 -0400
+From:   Rik van Riel <riel@surriel.com>
+To:     Vincent Guittot <vincent.guittot@linaro.org>
+Cc:     Chris Mason <clm@fb.com>, Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
+ load_balance()"
+Message-ID: <20201026120445.6a5dbbbe@imladris.surriel.com>
+In-Reply-To: <CAKfTPtAfKn0jzOpPNR4NUb0zLs02iLQq2_UCDSCEwhTB2LDAig@mail.gmail.com>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
+        <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+        <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
+        <20201026142455.GA13495@vingu-book>
+        <465597a2250d69346cff73dd07817794d3e80244.camel@surriel.com>
+        <CAKfTPtCVzass7GM5oj3o3y0ru4HQViWZc2+D-RpFoLvg=__FrA@mail.gmail.com>
+        <334f491d2887a6ed7c5347d5125412849feb8a0a.camel@surriel.com>
+        <CAKfTPtAfKn0jzOpPNR4NUb0zLs02iLQq2_UCDSCEwhTB2LDAig@mail.gmail.com>
+X-Mailer: Claws Mail 3.17.6 (GTK+ 2.24.32; x86_64-redhat-linux-gnu)
 MIME-Version: 1.0
-In-Reply-To: <335f1d55-8a85-8501-fd69-0397f44e21af@linaro.org>
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
-Content-Language: en-US
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Sender: riel@shelob.surriel.com
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Thanks for your time srinivas!!!
+On Mon, 26 Oct 2020 16:42:14 +0100
+Vincent Guittot <vincent.guittot@linaro.org> wrote:
+> On Mon, 26 Oct 2020 at 16:04, Rik van Riel <riel@surriel.com> wrote:
 
-On 10/26/2020 8:31 PM, Srinivas Kandagatla wrote:
->
->
-> On 22/10/2020 14:26, Srinivasa Rao Mandadapu wrote:
->> From: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->>
->> Update SC7180 lpass_variant structure with proper I2S bitwidth
->> field bit positions, as bitwidth denotes 0 to 1 bits,
->> but previously used only 0 bit.
->>
->> Fixes: commit cba62c8b49bead ("Merge series "ASoC: qcom: Add support 
->> for SC7180 lpass variant" from Rohit kumar <rohitkr@codeaurora.org>:")
-> this should be 12 chars long, for this particular fix it should be!
->
-> Fixes: 24caf8d9eb108 ("ASoC: qcom: lpass-sc7180: Add platform driver 
-> for lpass audio")
->>
->
-> No empty line after Fixes tag!
->
-> Will coorect it in next patch.
+> > Could utilization estimates be off, either lagging or
+> > simply having a wrong estimate for a task, resulting
+> > in no task getting pulled sometimes, while doing a
+> > migrate_task imbalance always moves over something?  
+> 
+> task and cpu utilization are not always up to fully synced and may lag
+> a bit which explains that sometimes LB can fail to migrate for a small
+> diff
 
->> Signed-off-by: V Sujith Kumar Reddy <vsujithk@codeaurora.org>
->> Signed-off-by: Srinivasa Rao Mandadapu <srivasam@codeaurora.org>
->> ---
->>   sound/soc/qcom/lpass-sc7180.c | 2 +-
->>   1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/sound/soc/qcom/lpass-sc7180.c 
->> b/sound/soc/qcom/lpass-sc7180.c
->> index c6292f9e..bc998d5 100644
->> --- a/sound/soc/qcom/lpass-sc7180.c
->> +++ b/sound/soc/qcom/lpass-sc7180.c
->> @@ -188,7 +188,7 @@ static struct lpass_variant sc7180_data = {
->>       .micmode        = REG_FIELD_ID(0x1000, 4, 8, 3, 0x1000),
->>       .micmono        = REG_FIELD_ID(0x1000, 3, 3, 3, 0x1000),
->>       .wssrc            = REG_FIELD_ID(0x1000, 2, 2, 3, 0x1000),
->> -    .bitwidth        = REG_FIELD_ID(0x1000, 0, 0, 3, 0x1000),
->> +    .bitwidth        = REG_FIELD_ID(0x1000, 0, 1, 3, 0x1000),
->>         .rdma_dyncclk        = REG_FIELD_ID(0xC000, 21, 21, 5, 0x1000),
->>       .rdma_bursten        = REG_FIELD_ID(0xC000, 20, 20, 5, 0x1000),
->>
-> --srini
+OK, running with this little snippet below, I see latencies
+improve back to near where they used to be:
 
--- 
-Qualcomm India Private Limited, on behalf of Qualcomm Innovation Center, Inc.,
-is a member of Code Aurora Forum, a Linux Foundation Collaborative Project.
+Latency percentiles (usec) runtime 150 (s)
+        50.0th: 13
+        75.0th: 31
+        90.0th: 69
+        95.0th: 90
+        *99.0th: 761
+        99.5th: 2268
+        99.9th: 9104
+        min=1, max=16158
 
+I suspect the right/cleaner approach might be to use
+migrate_task more in !CPU_NOT_IDLE cases?
+
+Running a task to an idle CPU immediately, instead of refusing
+to have the load balancer move it, improves latencies for fairly
+obvious reasons.
+
+I am not entirely clear on why the load balancer should need to
+be any more conservative about moving tasks than the wakeup
+path is in eg. select_idle_sibling.
+
+
+diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+index 35bdc0cccfa6..60acf71a2d39 100644
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -7415,7 +7415,7 @@ static int detach_tasks(struct lb_env *env)
+ 		case migrate_util:
+ 			util = task_util_est(p);
+ 
+-			if (util > env->imbalance)
++			if (util > env->imbalance && env->idle == CPU_NOT_IDLE)
+ 				goto next;
+ 
+ 			env->imbalance -= util;
