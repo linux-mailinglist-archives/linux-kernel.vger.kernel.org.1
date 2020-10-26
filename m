@@ -2,106 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id BCF97299713
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:34:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 0197629971A
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:36:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1784933AbgJZTek (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:34:40 -0400
-Received: from mail-wm1-f67.google.com ([209.85.128.67]:55772 "EHLO
-        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1774611AbgJZTei (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:34:38 -0400
-Received: by mail-wm1-f67.google.com with SMTP id a72so12838642wme.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:34:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=Dt4AWesHgq95MuA9noAsqgwDvEHb5guDweoxzfn9TuQ=;
-        b=ua/skFVpbRauDrk7eU647JocRmuulattFN3tamwpD1R3kDFDul1hutbRR/NHpZZ4TR
-         QOi9sR0tej5ewSmtacJVK/RSoeta5RBfVfqvleriesi6pvhQp2yqoHNgM/2JLOD5xsSu
-         SFwtCTo5TYmVdyL75EcYwQo+6ROk+p0Al8X+CWVAoWDkxgsC7Pgcj+Lk8j8IbN8W2eJ+
-         uJn8gMZkGofT8ifLHiVV6l5SEiAp3MfwQmhnRswrc5p/tmX8M+Fkvqek1phdIvOxk02O
-         uV3lIfkgbFdyVEimgrwM8H3TCHAjSfgPXgQZQmJKhuHSxbqX1ZVYFNLJhYQdm8ellHs0
-         GdVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=Dt4AWesHgq95MuA9noAsqgwDvEHb5guDweoxzfn9TuQ=;
-        b=TEiz0eY9uraNi2NApze80TruV7m5M+E5rtpagBPmromYro5YpnrUeQue9eKUbYZAF9
-         t1dkVnq+9wxKyjeRcHUiw2gB+/bmLI3LSU9x4PV63quMeSGOQjbsmL0jmEFSvHk6a4Vi
-         QLXh5aySR6pR58hj1MeDFwopP0+6/jgWnmnieA/sp6vcCAX6GMtYnlHwifhWCzEUoEhQ
-         bugTWQG7IjK7pZgi4RpCn8xOxFPIdLDhzSx4p1YduKIa6DClT9YBtSOVV2k9eli8Eoud
-         9p1pVR4Oz/Ld9P1QJYJaaJ4zCuiboQjT68IHCpfnmtDYJ1uiD5bptgxaGQ+veQ/bXT6B
-         ISYw==
-X-Gm-Message-State: AOAM530dVZjbTcNRPUyMlmf51ci6JwYMbpRAQf3onZGIzkkgRMwXLJnk
-        bbH5Vz7GIKpWNw6BuZnVxtUygdnnHh1oE+zzXLQ=
-X-Google-Smtp-Source: ABdhPJx8VRcrhv9u5TFKRPzbWDC4InYcOACd443ZXQxhRMYnK4DNXUCXAYaxfxxQ6ex6FFNBDhBx6aM37v+/WXqsGi8=
-X-Received: by 2002:a1c:6302:: with SMTP id x2mr17930983wmb.56.1603740875736;
- Mon, 26 Oct 2020 12:34:35 -0700 (PDT)
-MIME-Version: 1.0
-References: <20201023074656.11855-1-tiwai@suse.de> <1d3e22ef-a301-f557-79ca-33d6520bb64e@amd.com>
-In-Reply-To: <1d3e22ef-a301-f557-79ca-33d6520bb64e@amd.com>
-From:   Alex Deucher <alexdeucher@gmail.com>
-Date:   Mon, 26 Oct 2020 15:34:24 -0400
-Message-ID: <CADnq5_OY8tRqs-bao9mkKxgcXC=305-_71U=04C5z9HM0+5MuQ@mail.gmail.com>
-Subject: Re: [PATCH 0/3] drm/amd/display: Fix kernel panic by breakpoint
-To:     Luben Tuikov <luben.tuikov@amd.com>
-Cc:     Takashi Iwai <tiwai@suse.de>,
-        Maling list - DRI developers 
-        <dri-devel@lists.freedesktop.org>,
-        LKML <linux-kernel@vger.kernel.org>,
-        amd-gfx list <amd-gfx@lists.freedesktop.org>
-Content-Type: text/plain; charset="UTF-8"
+        id S1785128AbgJZTgU (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:36:20 -0400
+Received: from mga12.intel.com ([192.55.52.136]:27389 "EHLO mga12.intel.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S1775692AbgJZTgU (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:36:20 -0400
+IronPort-SDR: +T50FyugZ5XT69M+5jlM7mui+nFGAAJ7XaA82M3J3LCGvuRrHTu/RKH+Zxv5KAxa+3BdzMQxdg
+ 4yG2IoBzE1mQ==
+X-IronPort-AV: E=McAfee;i="6000,8403,9786"; a="147260999"
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="147260999"
+X-Amp-Result: SKIPPED(no attachment in message)
+X-Amp-File-Uploaded: False
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 12:36:19 -0700
+IronPort-SDR: BSCAPzULLs5e8vWCOUvnKI1N676+/O0en7XKFgvIZeqpPlpxbWTVRyrMGuJTJ2DwwtCGktteT4
+ Jt5qQsnJWtLA==
+X-IronPort-AV: E=Sophos;i="5.77,420,1596524400"; 
+   d="scan'208";a="355290384"
+Received: from dhrubajy-mobl.amr.corp.intel.com (HELO skuppusw-mobl5.amr.corp.intel.com) ([10.254.101.53])
+  by fmsmga002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 12:36:19 -0700
+From:   Kuppuswamy Sathyanarayanan 
+        <sathyanarayanan.kuppuswamy@linux.intel.com>
+To:     bhelgaas@google.com
+Cc:     linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ashok.raj@intel.com, sathyanarayanan.kuppuswamy@linux.intel.com,
+        knsathya@kernel.org
+Subject: [PATCH v7 1/2] PCI/ERR: Call pci_bus_reset() before calling ->slot_reset() callback
+Date:   Mon, 26 Oct 2020 12:36:13 -0700
+Message-Id: <546d346644654915877365b19ea534378db0894d.1602788209.git.sathyanarayanan.kuppuswamy@linux.intel.com>
+X-Mailer: git-send-email 2.17.1
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Yes, looks good to me as well.  Series is:
-Acked-by: Alex Deucher <alexander.deucher@amd.com>
-I'll give the display guys a few more days to look this over, but if
-there are no objections, I'll apply them.
+Currently if report_error_detected() or report_mmio_enabled()
+functions requests PCI_ERS_RESULT_NEED_RESET, current
+pcie_do_recovery() implementation does not do the requested
+explicit device reset, but instead just calls the
+report_slot_reset() on all affected devices. Notifying about the
+reset via report_slot_reset() without doing the actual device
+reset is incorrect. So call pci_bus_reset() before triggering
+->slot_reset() callback.
 
-Thanks!
+Signed-off-by: Kuppuswamy Sathyanarayanan <sathyanarayanan.kuppuswamy@linux.intel.com>
+Reviewed-by: Sinan Kaya <okaya@kernel.org>
+Reviewed-by: Ashok Raj <ashok.raj@intel.com>
+---
+ Changes since v6:
+  * None.
 
-Alex
+ Changes since v5:
+  * Added Ashok's Reviewed-by tag.
 
-On Fri, Oct 23, 2020 at 7:16 PM Luben Tuikov <luben.tuikov@amd.com> wrote:
->
-> On 2020-10-23 03:46, Takashi Iwai wrote:
-> > Hi,
-> >
-> > the amdgpu driver's ASSERT_CRITICAL() macro calls the
-> > kgdb_breakpoing() even if no debug option is set, and this leads to a
-> > kernel panic on distro kernels.  The first two patches are the
-> > oneliner fixes for those, while the last one is the cleanup of those
-> > debug macros.
->
-> This looks like good work and solid. Hopefully it gets picked up.
->
-> Regards,
-> Luben
->
-> >
-> >
-> > Takashi
-> >
-> > ===
-> >
-> > Takashi Iwai (3):
-> >   drm/amd/display: Fix kernel panic by dal_gpio_open() error
-> >   drm/amd/display: Don't invoke kgdb_breakpoint() unconditionally
-> >   drm/amd/display: Clean up debug macros
-> >
-> >  drivers/gpu/drm/amd/display/Kconfig             |  1 +
-> >  drivers/gpu/drm/amd/display/dc/gpio/gpio_base.c |  4 +--
-> >  drivers/gpu/drm/amd/display/dc/os_types.h       | 33 +++++++++----------------
-> >  3 files changed, 15 insertions(+), 23 deletions(-)
-> >
->
-> _______________________________________________
-> amd-gfx mailing list
-> amd-gfx@lists.freedesktop.org
-> https://lists.freedesktop.org/mailman/listinfo/amd-gfx
+ Changes since v4:
+  * Added check for pci_reset_bus() return value.
+
+ drivers/pci/pcie/err.c | 12 +++++++-----
+ 1 file changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/pci/pcie/err.c b/drivers/pci/pcie/err.c
+index c543f419d8f9..315a4d559c4c 100644
+--- a/drivers/pci/pcie/err.c
++++ b/drivers/pci/pcie/err.c
+@@ -152,6 +152,7 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ {
+ 	pci_ers_result_t status = PCI_ERS_RESULT_CAN_RECOVER;
+ 	struct pci_bus *bus;
++	int ret;
+ 
+ 	/*
+ 	 * Error recovery runs on all subordinates of the first downstream port.
+@@ -181,11 +182,12 @@ pci_ers_result_t pcie_do_recovery(struct pci_dev *dev,
+ 	}
+ 
+ 	if (status == PCI_ERS_RESULT_NEED_RESET) {
+-		/*
+-		 * TODO: Should call platform-specific
+-		 * functions to reset slot before calling
+-		 * drivers' slot_reset callbacks?
+-		 */
++		ret = pci_reset_bus(dev);
++		if (ret < 0) {
++			pci_err(dev, "Failed to reset %d\n", ret);
++			status = PCI_ERS_RESULT_DISCONNECT;
++			goto failed;
++		}
+ 		status = PCI_ERS_RESULT_RECOVERED;
+ 		pci_dbg(dev, "broadcast slot_reset message\n");
+ 		pci_walk_bus(bus, report_slot_reset, &status);
+-- 
+2.17.1
+
