@@ -2,37 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 4F0E9299BE0
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 38658299BE3
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:54:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410260AbgJZXxz (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:53:55 -0400
-Received: from mail.kernel.org ([198.145.29.99]:57790 "EHLO mail.kernel.org"
+        id S2410275AbgJZXx7 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:53:59 -0400
+Received: from mail.kernel.org ([198.145.29.99]:57886 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2410059AbgJZXxY (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:53:24 -0400
+        id S2410080AbgJZXx1 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:53:27 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 8441021655;
-        Mon, 26 Oct 2020 23:53:23 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id D502921D41;
+        Mon, 26 Oct 2020 23:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756404;
-        bh=FwGCC5je+qSALh6pUyJFCTlFd8RGLBo3/olgLlei+uQ=;
+        s=default; t=1603756406;
+        bh=SeK5CVTW6eYkfAWLEimvt5WJvBNvy3G2Vk7/auIrGeg=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=Ru3mbC0sTCgi13OaA04ZnI0AY7LDJCn8EiCc37sSFrYPwE26zSN27yMLqV4ANWKpf
-         ziAtnKZP1RKrWqucVBbRmjRJ22pl7kuA5+Tn5Vnsb4Kgrt6Av27tv3jrtVlOADSznn
-         iTAr99qC2WBHLSBUR14TWojsSTYFuswQtYcPuY1k=
+        b=iKr2sT4eTeCG3LdN5nurZP5/MIJTh5K0l3TqbtB26z64nHnUrEwucnzq+o4nLsrM5
+         aBlviH02Jbo2imvriTa/5X73y4l0BPW24n+68Vv4w2ieY4YQjH6KDp7WD4l7TlnQAq
+         X/1yn4Rz/dZ/9JAwUZmt+uv0GbqvZrvUIAfafBR0=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zong Li <zong.li@sifive.com>,
-        Palmer Dabbelt <palmerdabbelt@google.com>,
-        Pekka Enberg <penberg@kernel.org>,
-        Sasha Levin <sashal@kernel.org>,
-        linux-riscv@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.8 063/132] riscv: Define AT_VECTOR_SIZE_ARCH for ARCH_DLINFO
-Date:   Mon, 26 Oct 2020 19:50:55 -0400
-Message-Id: <20201026235205.1023962-63-sashal@kernel.org>
+Cc:     Oliver Neukum <oneukum@suse.com>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Sasha Levin <sashal@kernel.org>, linux-usb@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 065/132] USB: adutux: fix debugging
+Date:   Mon, 26 Oct 2020 19:50:57 -0400
+Message-Id: <20201026235205.1023962-65-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
 References: <20201026235205.1023962-1-sashal@kernel.org>
@@ -44,36 +42,33 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zong Li <zong.li@sifive.com>
+From: Oliver Neukum <oneukum@suse.com>
 
-[ Upstream commit b5fca7c55f9fbab5ad732c3bce00f31af6ba5cfa ]
+[ Upstream commit c56150c1bc8da5524831b1dac2eec3c67b89f587 ]
 
-AT_VECTOR_SIZE_ARCH should be defined with the maximum number of
-NEW_AUX_ENT entries that ARCH_DLINFO can contain, but it wasn't defined
-for RISC-V at all even though ARCH_DLINFO will contain one NEW_AUX_ENT
-for the VDSO address.
+Handling for removal of the controller was missing at one place.
+Add it.
 
-Signed-off-by: Zong Li <zong.li@sifive.com>
-Reviewed-by: Palmer Dabbelt <palmerdabbelt@google.com>
-Reviewed-by: Pekka Enberg <penberg@kernel.org>
-Signed-off-by: Palmer Dabbelt <palmerdabbelt@google.com>
+Signed-off-by: Oliver Neukum <oneukum@suse.com>
+Link: https://lore.kernel.org/r/20200917112600.26508-1-oneukum@suse.com
+Signed-off-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/riscv/include/uapi/asm/auxvec.h | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/usb/misc/adutux.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/arch/riscv/include/uapi/asm/auxvec.h b/arch/riscv/include/uapi/asm/auxvec.h
-index d86cb17bbabe6..22e0ae8884061 100644
---- a/arch/riscv/include/uapi/asm/auxvec.h
-+++ b/arch/riscv/include/uapi/asm/auxvec.h
-@@ -10,4 +10,7 @@
- /* vDSO location */
- #define AT_SYSINFO_EHDR 33
+diff --git a/drivers/usb/misc/adutux.c b/drivers/usb/misc/adutux.c
+index d8d157c4c271d..96495fcd952aa 100644
+--- a/drivers/usb/misc/adutux.c
++++ b/drivers/usb/misc/adutux.c
+@@ -209,6 +209,7 @@ static void adu_interrupt_out_callback(struct urb *urb)
  
-+/* entries in ARCH_DLINFO */
-+#define AT_VECTOR_SIZE_ARCH	1
-+
- #endif /* _UAPI_ASM_RISCV_AUXVEC_H */
+ 	if (status != 0) {
+ 		if ((status != -ENOENT) &&
++		    (status != -ESHUTDOWN) &&
+ 		    (status != -ECONNRESET)) {
+ 			dev_dbg(&dev->udev->dev,
+ 				"%s :nonzero status received: %d\n", __func__,
 -- 
 2.25.1
 
