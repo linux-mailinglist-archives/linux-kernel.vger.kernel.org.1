@@ -2,136 +2,88 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id EA660298D9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:14:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id F1D1E298D9F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 14:15:01 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1776621AbgJZNO4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 09:14:56 -0400
-Received: from mail-qt1-f193.google.com ([209.85.160.193]:37070 "EHLO
-        mail-qt1-f193.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2407341AbgJZNOR (ORCPT
+        id S1738420AbgJZNOu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 09:14:50 -0400
+Received: from casper.infradead.org ([90.155.50.34]:39424 "EHLO
+        casper.infradead.org" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2406990AbgJZNOD (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 09:14:17 -0400
-Received: by mail-qt1-f193.google.com with SMTP id h19so6597242qtq.4;
-        Mon, 26 Oct 2020 06:14:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ArQe57gzFPxxZh8Z/D5KuSTLp6YyDg0xaQwMBg7tO24=;
-        b=SMnxD2B1iAKOIt7VRf0VogijjHB3So1ZOaAIt8Q2b0Jqf+9bbrqc2CjG6hkqaHlX8l
-         unP0y4vDjAazyP5ufrrRbmZUQPIpbzltcFXpSQzvQ0GWKEC8SH5cEBBlIT1a6qjqhsGl
-         HMTI0l/0yw0Ah8MPmfekwILnv/2uRTeCOhZWs8/Mp5ioYrDDMiPN66HCN1h8KxAVyKn/
-         /AvIFd9rSVs/yRKoqXCP0B36SOScqre6UHLJ4rD3fURAKVXxvfJh/1K76mCZKbuvMf+v
-         LEg2z6XbNFCOV4rPbXzgHyTrPwPs70SXSzzqyxPIgQTzDqf0h9WdcUCNmUPrTCdjqXdR
-         3VVg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
-         :content-transfer-encoding;
-        bh=ArQe57gzFPxxZh8Z/D5KuSTLp6YyDg0xaQwMBg7tO24=;
-        b=AcO/gqa7JPHI/aaXIWY/FgPh/B3Ol8Yi/7oToRKiTVkdJkLRWZ0/K2mosEQq98U3do
-         FIiI0SV0IwlIWmbt5euVcMtTAU1ESsdOs0qyAJuuW83c0D451dZxbu3kqMhwt2e5sVFx
-         5yjOfuwt/eD7oZsqXLygFiEojLULyGMHnb8khRFZ6HOvBoKXSAsxD0rST30ph4Si34S/
-         ZcQu63U9FOF3s+GRLlZA91RZymzuF7UHcAp8NbmTz7FW0CmoPz9CEjjHuADTiTanMBIH
-         5lu4YmbURLJPwUtoAOr1sfMydrY0kiNsGJPafH6E2aCASTzwJL+s3slBYkx3NJgR0qpa
-         FXzA==
-X-Gm-Message-State: AOAM533kMSP3OrBDKMyCXkY8ltb0WQ7LydCNQyFxB0oml/9LbgYdoPZn
-        MwovHN0C/YhVGqdWUMfqhCI=
-X-Google-Smtp-Source: ABdhPJwtj3nMNwHnoXTaw2Z8Wc4jWNqOGAI23KTp4ou5n8tA+t1AyeXS/WyPKgLG54dj8J2gE4Dfmw==
-X-Received: by 2002:ac8:1095:: with SMTP id a21mr16664144qtj.260.1603718054715;
-        Mon, 26 Oct 2020 06:14:14 -0700 (PDT)
-Received: from ubuntu.localdomain (ool-45785633.dyn.optonline.net. [69.120.86.51])
-        by smtp.googlemail.com with ESMTPSA id 61sm6598605qta.19.2020.10.26.06.14.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 06:14:13 -0700 (PDT)
-From:   Vivek Unune <npcomplete13@gmail.com>
-Cc:     Vivek Unune <npcomplete13@gmail.com>,
-        Hauke Mehrtens <hauke@hauke-m.de>,
-        =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>,
-        bcm-kernel-feedback-list@broadcom.com,
-        Rob Herring <robh+dt@kernel.org>,
-        linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: [PATCH] ARM: dts: BCM5301X: Linksys EA9500 add fixed partitions
-Date:   Mon, 26 Oct 2020 09:13:51 -0400
-Message-Id: <20201026131351.258296-1-npcomplete13@gmail.com>
-X-Mailer: git-send-email 2.25.1
+        Mon, 26 Oct 2020 09:14:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+        d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+        References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+        Content-Transfer-Encoding:Content-ID:Content-Description;
+        bh=lta2H3+0F6XrQvumNGK2SyvRq8bs5VV2UbSLAwhlWGE=; b=p3vct6D2uTGzWeM0J29gXSW59P
+        Z6fYSCZYhXh0jmldeAg2pwv82tIHgQj8ajZl5XmjJRSfxawBd6GKMI0wqaI08FmgIoie/EojZTMEx
+        uABPSw22X3nZcq+0buG1zj0qm42j28oyNBAmWEHCd1lR29iqRsYcm4DkaskFSETEDMNIDRHFpX2bA
+        m32PRa9MPYqUMrkjsw0m0m+c+3KQ0ErG0bhBM8q0cGUtP0P1CITvKJmkUGeGSEJ7dEyl1SIH4w2ye
+        SOyw39zOAAnEpj8qYS7HmLsuVxKxps235DF6V/0Gu03ETPRaEunyWlc1oRdrTSTeORAjJp/Ay4awP
+        wF9ysFdQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.92.3 #3 (Red Hat Linux))
+        id 1kX2Jt-00066K-9f; Mon, 26 Oct 2020 13:13:53 +0000
+Date:   Mon, 26 Oct 2020 13:13:53 +0000
+From:   Matthew Wilcox <willy@infradead.org>
+To:     Jan Kara <jack@suse.cz>
+Cc:     Qian Cai <cai@lca.pw>, Christoph Hellwig <hch@infradead.org>,
+        "Darrick J. Wong" <darrick.wong@oracle.com>,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+        linux-mm@kvack.org
+Subject: Re: kernel BUG at mm/page-writeback.c:2241 [
+ BUG_ON(PageWriteback(page); ]
+Message-ID: <20201026131353.GP20115@casper.infradead.org>
+References: <645a3f332f37e09057c10bc32f4f298ce56049bb.camel@lca.pw>
+ <20201022004906.GQ20115@casper.infradead.org>
+ <20201026094948.GA29758@quack2.suse.cz>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-To:     unlisted-recipients:; (no To-header on input)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20201026094948.GA29758@quack2.suse.cz>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-This router has dual paritions to store trx firmware image and
-dual partitions for nvram. The second one in each of these cases acts
-as a backup store.
+On Mon, Oct 26, 2020 at 10:49:48AM +0100, Jan Kara wrote:
+> On Thu 22-10-20 01:49:06, Matthew Wilcox wrote:
+> > On Wed, Oct 21, 2020 at 08:30:18PM -0400, Qian Cai wrote:
+> > > Today's linux-next starts to trigger this wondering if anyone has any clue.
+> > 
+> > I've seen that occasionally too.  I changed that BUG_ON to VM_BUG_ON_PAGE
+> > to try to get a clue about it.  Good to know it's not the THP patches
+> > since they aren't in linux-next.
+> > 
+> > I don't understand how it can happen.  We have the page locked, and then we do:
+> > 
+> >                         if (PageWriteback(page)) {
+> >                                 if (wbc->sync_mode != WB_SYNC_NONE)
+> >                                         wait_on_page_writeback(page);
+> >                                 else
+> >                                         goto continue_unlock;
+> >                         }
+> > 
+> >                         VM_BUG_ON_PAGE(PageWriteback(page), page);
+> > 
+> > Nobody should be able to put this page under writeback while we have it
+> > locked ... right?  The page can be redirtied by the code that's supposed
+> > to be writing it back, but I don't see how anyone can make PageWriteback
+> > true while we're holding the page lock.
+> 
+> FWIW here's very similar report for ext4 [1] and I strongly suspect this
+> started happening after Linus' rewrite of the page bit waiting logic. Linus
+> thinks it's preexisting bug which just got exposed by his changes (which is
+> possible). I've been searching a culprit for some time but so far I failed.
+> It's good to know it isn't ext4 specific so we should be searching in the
+> generic code ;). So far I was concentrating more on ext4 bits...
+> 
+> 								Honza
+> 
+> [1] https://lore.kernel.org/lkml/000000000000d3a33205add2f7b2@google.com/
 
-When tested with OpenWrt, the default partition parser causes two issues:
+Oh good, I was wondering if it was an XFS bug ;-)
 
-1. It labels both nvram partitions as nvram. In factory, second one is
-labeled devinfo.
-2. It parses second trx image and tries to create second 'linux' partition
-and fails with - cannot create duplicate 'linux' partition. I've set this
-partition to read-only for now
-
-The following patch works around both of these issues.
-
-Signed-off-by: Vivek Unune <npcomplete13@gmail.com>
----
- .../boot/dts/bcm47094-linksys-panamera.dts    | 41 +++++++++++++++++++
- 1 file changed, 41 insertions(+)
-
-diff --git a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-index 5d5930edfb9d..13da16c5de68 100644
---- a/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-+++ b/arch/arm/boot/dts/bcm47094-linksys-panamera.dts
-@@ -292,3 +292,44 @@ fixed-link {
- &usb3_phy {
- 	status = "okay";
- };
-+
-+&nandcs {
-+	partitions {
-+		compatible = "fixed-partitions";
-+		#address-cells = <1>;
-+		#size-cells = <1>;
-+
-+		partition@0 {
-+			label = "boot";
-+			reg = <0x0000000 0x0080000>;
-+			read-only;
-+		};
-+
-+		partition@80000 {
-+			label = "nvram";
-+			reg = <0x080000 0x0100000>;
-+		};
-+
-+		partition@180000{
-+			label = "devinfo";
-+			reg = <0x0180000 0x080000>;
-+		};
-+
-+		partition@200000 {
-+			label = "firmware";
-+			reg = <0x0200000 0x01D00000>;
-+			compatible = "brcm,trx";
-+		};
-+
-+		partition@1F00000 {
-+			label = "failsafe";
-+			reg = <0x01F00000 0x01D00000>;
-+			read-only;
-+		};
-+
-+		partition@0x5200000 {
-+			label = "brcmnand";
-+			reg = <0x05200000 0x02E00000>;
-+		};
-+	};
-+};
--- 
-2.25.1
-
+I hope Qian gets it to reproduce soon with the assert because that will
+tell us whether it's a spurious wakeup or someone calling SetPageWriteback
+without holding the page lock.
