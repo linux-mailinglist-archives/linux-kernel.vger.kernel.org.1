@@ -2,166 +2,100 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 82906298FEB
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:51:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id ED78C298FF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:52:56 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1782109AbgJZOvO (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:51:14 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:39275 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1782091AbgJZOvN (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:51:13 -0400
-Received: by mail-pl1-f195.google.com with SMTP id y1so4845595plp.6;
-        Mon, 26 Oct 2020 07:51:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20161025;
-        h=mime-version:references:in-reply-to:from:date:message-id:subject:to
-         :cc;
-        bh=gNikXAjuHkXg4r5DKzPvHVQBXNUEltT2qWS8EWj+E+Y=;
-        b=oszyocZQSQTCBhptWS9xTRxvPO6wZRCJk/3at1phwpNfFKGUr7HMFQLuNUpVVSuGoH
-         2bOSvc0bIf6ylq1/Zm/b9VtdisXFutfO22LM+OSSMw77QP9emxu+HLTmCnbVuoe6kCvf
-         88SC3ViARGNqzTAONi3cOe11zD59exSD46OqwMUpdjr/sagSo7BHkiystWh9Guh7ZDbn
-         f3iGbv9Nt3qYo7D0M2n4Ue5JxqPhickNQnYSyRUEYgx0LSBTPGi4Yz7JY8lCGsun/fZU
-         ZDpI4uppoENzA2fvfGDBXFKphvL7Thkn39OoQTs3epv1BmHV2+mGUlu2onaedHeld97/
-         ck8Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:mime-version:references:in-reply-to:from:date
-         :message-id:subject:to:cc;
-        bh=gNikXAjuHkXg4r5DKzPvHVQBXNUEltT2qWS8EWj+E+Y=;
-        b=NJGHDZ4PaIF+3BWywc9cXSUip1W4nFOk1eJqlJwN3Rwq8kvIIlw/aAluMh0KO1BMJo
-         kfNqNUIRhK+HJ9NdBOWSoDT7hcWNuQAxaLqqCd56x5c2M0KzYjkiZeMP526s4cmHiSDR
-         WIFvrFhRt2Z38KPbeSjqv40Cl5O4TnEpzjb/h+FU5LGvmK3CAhd8tYbeIFzuGksSNbzD
-         qF6m9V36cAd07L8ThkU3GxCTAi7U8+T/IkZtYWUAWzaZw5eVB6sceVS1TUGnsjUbwJqA
-         HUHeNOL20uRzZpQ8Y4MyGaV7k5/9fC99SY19Q5B6zEl0xK2n10FPf8q5S0qvHuxIVchE
-         j/cg==
-X-Gm-Message-State: AOAM531JefGtkbg419bFfF6KGAAF4qnvnxHHUPopm06LTShqI23h+zoE
-        JWB1lcvJPsIiZFm3H+r8ises19CuIRZhbRYwM28=
-X-Google-Smtp-Source: ABdhPJw464wh5zeUw6bK1uYq90q4/MId3XTpaCzRCQOFOiZ3gzthS/+5KZ54RndlCRVNXiAuXqz3TjTTUFUPDcfoI90=
-X-Received: by 2002:a17:90b:305:: with SMTP id ay5mr21641352pjb.129.1603723872066;
- Mon, 26 Oct 2020 07:51:12 -0700 (PDT)
+        id S1782145AbgJZOwy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:52:54 -0400
+Received: from mail.kernel.org ([198.145.29.99]:38014 "EHLO mail.kernel.org"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2442716AbgJZOwx (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:52:53 -0400
+Received: from gaia (unknown [95.145.162.19])
+        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+        (No client certificate requested)
+        by mail.kernel.org (Postfix) with ESMTPSA id AADC720773;
+        Mon, 26 Oct 2020 14:52:49 +0000 (UTC)
+Date:   Mon, 26 Oct 2020 14:52:46 +0000
+From:   Catalin Marinas <catalin.marinas@arm.com>
+To:     Topi Miettinen <toiwoton@gmail.com>
+Cc:     Kees Cook <keescook@chromium.org>,
+        Szabolcs Nagy <szabolcs.nagy@arm.com>,
+        Jeremy Linton <jeremy.linton@arm.com>,
+        "linux-arm-kernel@lists.infradead.org" 
+        <linux-arm-kernel@lists.infradead.org>, libc-alpha@sourceware.org,
+        systemd-devel@lists.freedesktop.org,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Mark Rutland <mark.rutland@arm.com>,
+        Mark Brown <broonie@kernel.org>,
+        Dave Martin <dave.martin@arm.com>,
+        Will Deacon <will.deacon@arm.com>,
+        Salvatore Mesoraca <s.mesoraca16@gmail.com>,
+        kernel-hardening@lists.openwall.com,
+        linux-hardening@vger.kernel.org
+Subject: Re: BTI interaction between seccomp filters in systemd and glibc
+ mprotect calls, causing service failures
+Message-ID: <20201026145245.GD3117@gaia>
+References: <8584c14f-5c28-9d70-c054-7c78127d84ea@arm.com>
+ <20201022075447.GO3819@arm.com>
+ <78464155-f459-773f-d0ee-c5bdbeb39e5d@gmail.com>
+ <202010221256.A4F95FD11@keescook>
+ <20201023090232.GA25736@gaia>
+ <cf655c11-d854-281a-17ae-262ddf0aaa08@gmail.com>
 MIME-Version: 1.0
-References: <20201026141839.28536-1-brgl@bgdev.pl> <20201026141839.28536-6-brgl@bgdev.pl>
-In-Reply-To: <20201026141839.28536-6-brgl@bgdev.pl>
-From:   Andy Shevchenko <andy.shevchenko@gmail.com>
-Date:   Mon, 26 Oct 2020 16:52:01 +0200
-Message-ID: <CAHp75VcQfGFhLX7gp_fSMA4+O2Z3yP1M4FDrp+GVMg7y4N6k=Q@mail.gmail.com>
-Subject: Re: [RFT PATCH 5/7] gpio: exar: unduplicate address and offset computation
-To:     Bartosz Golaszewski <brgl@bgdev.pl>
-Cc:     Sudip Mukherjee <sudipm.mukherjee@gmail.com>,
-        Linus Walleij <linus.walleij@linaro.org>,
-        "open list:GPIO SUBSYSTEM" <linux-gpio@vger.kernel.org>,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        Bartosz Golaszewski <bgolaszewski@baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cf655c11-d854-281a-17ae-262ddf0aaa08@gmail.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 26, 2020 at 4:23 PM Bartosz Golaszewski <brgl@bgdev.pl> wrote:
->
-> From: Bartosz Golaszewski <bgolaszewski@baylibre.com>
->
-> Provide and use helpers for calculating the register address and bit
-> offset instead of hand coding it in every function.
+On Sat, Oct 24, 2020 at 02:01:30PM +0300, Topi Miettinen wrote:
+> On 23.10.2020 12.02, Catalin Marinas wrote:
+> > On Thu, Oct 22, 2020 at 01:02:18PM -0700, Kees Cook wrote:
+> > > Regardless, it makes sense to me to have the kernel load the executable
+> > > itself with BTI enabled by default. I prefer gaining Catalin's suggested
+> > > patch[2]. :)
+> > [...]
+> > > [2] https://lore.kernel.org/linux-arm-kernel/20201022093104.GB1229@gaia/
+> > 
+> > I think I first heard the idea at Mark R ;).
+> > 
+> > It still needs glibc changes to avoid the mprotect(), or at least ignore
+> > the error. Since this is an ABI change and we don't know which kernels
+> > would have it backported, maybe better to still issue the mprotect() but
+> > ignore the failure.
+> 
+> What about kernel adding an auxiliary vector as a flag to indicate that BTI
+> is supported and recommended by the kernel? Then dynamic loader could use
+> that to detect that a) the main executable is BTI protected and there's no
+> need to mprotect() it and b) PROT_BTI flag should be added to all PROT_EXEC
+> pages.
 
-Can you check code generation on x86, for example?
+We could add a bit to AT_FLAGS, it's always been 0 for Linux.
 
-Sometimes compilers are eager to use idiv assembly instruction which
-does simultaneously / and %.
-I dunno if a) it's used for / 8 and % 8 since 8 is 2^3, b) splitting
-to functions makes the above optimisation impossible.
+> In absence of the vector, the dynamic loader might choose to skip doing
+> PROT_BTI at all (since the main executable isn't protected anyway either, or
+> maybe even the kernel is up-to-date but it knows that it's not recommended
+> for some reason, or maybe the kernel is so ancient that it doesn't know
+> about BTI). Optionally it could still read the flag from ELF later (for
+> compatibility with old kernels) and then do the mprotect() dance, which may
+> trip seccomp filters, possibly fatally.
 
-> Signed-off-by: Bartosz Golaszewski <bgolaszewski@baylibre.com>
-> ---
->  drivers/gpio/gpio-exar.c | 40 ++++++++++++++++++++++++++++------------
->  1 file changed, 28 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/gpio/gpio-exar.c b/drivers/gpio/gpio-exar.c
-> index db366d85b6b4..629f4dad6919 100644
-> --- a/drivers/gpio/gpio-exar.c
-> +++ b/drivers/gpio/gpio-exar.c
-> @@ -33,6 +33,26 @@ struct exar_gpio_chip {
->         unsigned int first_pin;
->  };
->
-> +static unsigned int
-> +exar_offset_to_sel_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOSEL_HI
-> +                                                  : EXAR_OFFSET_MPIOSEL_LO;
-> +}
-> +
-> +static unsigned int
-> +exar_offset_to_lvl_addr(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) / 8 ? EXAR_OFFSET_MPIOLVL_HI
-> +                                                  : EXAR_OFFSET_MPIOLVL_LO;
-> +}
-> +
-> +static unsigned int
-> +exar_offset_to_bit(struct exar_gpio_chip *exar_gpio, unsigned int offset)
-> +{
-> +       return (offset + exar_gpio->first_pin) % 8;
-> +}
-> +
->  static void exar_update(struct gpio_chip *chip, unsigned int reg, int val,
->                         unsigned int offset)
->  {
-> @@ -52,9 +72,8 @@ static int exar_set_direction(struct gpio_chip *chip, int direction,
->                               unsigned int offset)
->  {
->         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
-> -               EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
-> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
-> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
->
->         exar_update(chip, addr, direction, bit);
->         return 0;
-> @@ -75,9 +94,8 @@ static int exar_get(struct gpio_chip *chip, unsigned int reg)
->  static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
->  {
->         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
-> -               EXAR_OFFSET_MPIOSEL_HI : EXAR_OFFSET_MPIOSEL_LO;
-> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
-> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
->
->         if (exar_get(chip, addr) & BIT(bit))
->                 return GPIO_LINE_DIRECTION_IN;
-> @@ -88,9 +106,8 @@ static int exar_get_direction(struct gpio_chip *chip, unsigned int offset)
->  static int exar_get_value(struct gpio_chip *chip, unsigned int offset)
->  {
->         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
-> -               EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
-> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
-> +       unsigned int addr = exar_offset_to_lvl_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
->
->         return !!(exar_get(chip, addr) & BIT(bit));
->  }
-> @@ -99,9 +116,8 @@ static void exar_set_value(struct gpio_chip *chip, unsigned int offset,
->                            int value)
->  {
->         struct exar_gpio_chip *exar_gpio = gpiochip_get_data(chip);
-> -       unsigned int addr = (offset + exar_gpio->first_pin) / 8 ?
-> -               EXAR_OFFSET_MPIOLVL_HI : EXAR_OFFSET_MPIOLVL_LO;
-> -       unsigned int bit  = (offset + exar_gpio->first_pin) % 8;
-> +       unsigned int addr = exar_offset_to_sel_addr(exar_gpio, offset);
-> +       unsigned int bit = exar_offset_to_bit(exar_gpio, offset);
->
->         exar_update(chip, addr, value, bit);
->  }
-> --
-> 2.29.1
->
+I think the safest is for the dynamic loader to issue an mprotect() and
+ignore the EPERM error. Not all user deployments have this seccomp
+filter, so they can still benefit, and user can't tell whether the
+kernel change has been backported.
 
+Now, if the dynamic loader silently ignores the mprotect() failure on
+the main executable, is there much value in exposing a flag in the aux
+vectors? It saves a few (one?) mprotect() calls but I don't think it
+matters much. Anyway, I don't mind the flag.
+
+The only potential risk is if the dynamic loader decides not to turn
+PROT_BTI one because of some mix and match of objects but AFAIK BTI
+allows interworking.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+Catalin
