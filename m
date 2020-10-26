@@ -2,40 +2,38 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id ECCDC29A055
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:31:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AC432299FFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 01:26:52 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2409543AbgJZXvu (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:51:50 -0400
-Received: from mail.kernel.org ([198.145.29.99]:52186 "EHLO mail.kernel.org"
+        id S2409907AbgJZXw4 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:52:56 -0400
+Received: from mail.kernel.org ([198.145.29.99]:54926 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2409404AbgJZXv0 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:51:26 -0400
+        id S2409749AbgJZXw3 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:52:29 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 24C8520872;
-        Mon, 26 Oct 2020 23:51:25 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 84B03221F8;
+        Mon, 26 Oct 2020 23:52:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756286;
-        bh=s0rkcfRo2H2UVNq7sVdFjdowKR+FjljpilL/7POFG58=;
+        s=default; t=1603756349;
+        bh=M7m7F8XvewI0zgBxlsuaCVECm9BU7hsOxf77ZbhlsVM=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=zQKNFd1dRA7GUl2T0x4sWLtNfpSoO54RNuAq2IsOAr+xAOo2qkrvxRAMaJEisYJ1y
-         JZgijyE6fm5FvNXOAzDOm+eDl8lWPkYZgT4Cfwry0a5s0n+qN1k6EvhQ9LqPhJcI7Z
-         Vx/B8YC6zrQAq81NXBrQAh7j9uNlAveqetwmjnCU=
+        b=WwxSVKLNuGQEyeUFX71T9t768UzTQ5z8Xs43Plr7LlEA/bMCPwAK6DHg6r3c7gBMh
+         WKqaLeINo/xlBJBz3uevd711d+SPm7Ua1DPicHEU/MyCWYLdcBCoXd9jUuFNP2bi1v
+         IuqAGn/NjNyrV1mEQRGJXy5kkpo/nZ76HwDR9dSE=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Anant Thazhemadam <anant.thazhemadam@gmail.com>,
-        syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com,
-        Dominique Martinet <asmadeus@codewreck.org>,
-        Sasha Levin <sashal@kernel.org>,
-        v9fs-developer@lists.sourceforge.net, netdev@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 115/147] net: 9p: initialize sun_server.sun_path to have addr's value only when addr is valid
-Date:   Mon, 26 Oct 2020 19:48:33 -0400
-Message-Id: <20201026234905.1022767-115-sashal@kernel.org>
+Cc:     Dave Wysochanski <dwysocha@redhat.com>,
+        Anna Schumaker <Anna.Schumaker@Netapp.com>,
+        Sasha Levin <sashal@kernel.org>, linux-nfs@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.8 020/132] NFS4: Fix oops when copy_file_range is attempted with NFS4.0 source
+Date:   Mon, 26 Oct 2020 19:50:12 -0400
+Message-Id: <20201026235205.1023962-20-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
-References: <20201026234905.1022767-1-sashal@kernel.org>
+In-Reply-To: <20201026235205.1023962-1-sashal@kernel.org>
+References: <20201026235205.1023962-1-sashal@kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
@@ -44,42 +42,60 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Anant Thazhemadam <anant.thazhemadam@gmail.com>
+From: Dave Wysochanski <dwysocha@redhat.com>
 
-[ Upstream commit 7ca1db21ef8e0e6725b4d25deed1ca196f7efb28 ]
+[ Upstream commit d8a6ad913c286d4763ae20b14c02fe6f39d7cd9f ]
 
-In p9_fd_create_unix, checking is performed to see if the addr (passed
-as an argument) is NULL or not.
-However, no check is performed to see if addr is a valid address, i.e.,
-it doesn't entirely consist of only 0's.
-The initialization of sun_server.sun_path to be equal to this faulty
-addr value leads to an uninitialized variable, as detected by KMSAN.
-Checking for this (faulty addr) and returning a negative error number
-appropriately, resolves this issue.
+The following oops is seen during xfstest/565 when the 'test'
+(source of the copy) is NFS4.0 and 'scratch' (destination) is NFS4.2
+[   59.692458] run fstests generic/565 at 2020-08-01 05:50:35
+[   60.613588] BUG: kernel NULL pointer dereference, address: 0000000000000008
+[   60.624970] #PF: supervisor read access in kernel mode
+[   60.627671] #PF: error_code(0x0000) - not-present page
+[   60.630347] PGD 0 P4D 0
+[   60.631853] Oops: 0000 [#1] SMP PTI
+[   60.634086] CPU: 6 PID: 2828 Comm: xfs_io Kdump: loaded Not tainted 5.8.0-rc3 #1
+[   60.637676] Hardware name: Red Hat KVM, BIOS 0.5.1 01/01/2011
+[   60.639901] RIP: 0010:nfs4_check_serverowner_major_id+0x5/0x30 [nfsv4]
+[   60.642719] Code: 89 ff e8 3e b3 b8 e1 e9 71 fe ff ff 41 bc da d8 ff ff e9 c3 fe ff ff e8 e9 9d 08 e2 66 0f 1f 84 00 00 00 00 00 66 66 66 66 90 <8b> 57 08 31 c0 3b 56 08 75 12 48 83 c6 0c 48 83 c7 0c e8 c4 97 bb
+[   60.652629] RSP: 0018:ffffc265417f7e10 EFLAGS: 00010287
+[   60.655379] RAX: ffffa0664b066400 RBX: 0000000000000000 RCX: 0000000000000001
+[   60.658754] RDX: ffffa066725fb000 RSI: ffffa066725fd000 RDI: 0000000000000000
+[   60.662292] RBP: 0000000000020000 R08: 0000000000020000 R09: 0000000000000000
+[   60.666189] R10: 0000000000000003 R11: 0000000000000000 R12: ffffa06648258d00
+[   60.669914] R13: 0000000000000000 R14: 0000000000000000 R15: ffffa06648258100
+[   60.673645] FS:  00007faa9fb35800(0000) GS:ffffa06677d80000(0000) knlGS:0000000000000000
+[   60.677698] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   60.680773] CR2: 0000000000000008 CR3: 0000000203f14000 CR4: 00000000000406e0
+[   60.684476] Call Trace:
+[   60.685809]  nfs4_copy_file_range+0xfc/0x230 [nfsv4]
+[   60.688704]  vfs_copy_file_range+0x2ee/0x310
+[   60.691104]  __x64_sys_copy_file_range+0xd6/0x210
+[   60.693527]  do_syscall_64+0x4d/0x90
+[   60.695512]  entry_SYSCALL_64_after_hwframe+0x44/0xa9
+[   60.698006] RIP: 0033:0x7faa9febc1bd
 
-Link: http://lkml.kernel.org/r/20201012042404.2508-1-anant.thazhemadam@gmail.com
-Reported-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Tested-by: syzbot+75d51fe5bf4ebe988518@syzkaller.appspotmail.com
-Signed-off-by: Anant Thazhemadam <anant.thazhemadam@gmail.com>
-Signed-off-by: Dominique Martinet <asmadeus@codewreck.org>
+Signed-off-by: Dave Wysochanski <dwysocha@redhat.com>
+Signed-off-by: Anna Schumaker <Anna.Schumaker@Netapp.com>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- net/9p/trans_fd.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/nfs/nfs4file.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-diff --git a/net/9p/trans_fd.c b/net/9p/trans_fd.c
-index c0762a302162c..8f528e783a6c5 100644
---- a/net/9p/trans_fd.c
-+++ b/net/9p/trans_fd.c
-@@ -1023,7 +1023,7 @@ p9_fd_create_unix(struct p9_client *client, const char *addr, char *args)
- 
- 	csocket = NULL;
- 
--	if (addr == NULL)
-+	if (!addr || !strlen(addr))
- 		return -EINVAL;
- 
- 	if (strlen(addr) >= UNIX_PATH_MAX) {
+diff --git a/fs/nfs/nfs4file.c b/fs/nfs/nfs4file.c
+index a339707654673..af84787aa0631 100644
+--- a/fs/nfs/nfs4file.c
++++ b/fs/nfs/nfs4file.c
+@@ -145,7 +145,8 @@ static ssize_t __nfs4_copy_file_range(struct file *file_in, loff_t pos_in,
+ 	/* Only offload copy if superblock is the same */
+ 	if (file_in->f_op != &nfs4_file_operations)
+ 		return -EXDEV;
+-	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY))
++	if (!nfs_server_capable(file_inode(file_out), NFS_CAP_COPY) ||
++	    !nfs_server_capable(file_inode(file_in), NFS_CAP_COPY))
+ 		return -EOPNOTSUPP;
+ 	if (file_inode(file_in) == file_inode(file_out))
+ 		return -EOPNOTSUPP;
 -- 
 2.25.1
 
