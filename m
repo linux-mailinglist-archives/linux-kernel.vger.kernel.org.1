@@ -2,118 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 9797829909F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:09:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 5FE9929909C
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 16:09:29 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1783319AbgJZPJt (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 11:09:49 -0400
-Received: from mail-wr1-f66.google.com ([209.85.221.66]:33052 "EHLO
-        mail-wr1-f66.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S2444031AbgJZPJp (ORCPT
+        id S1783241AbgJZPJV (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 11:09:21 -0400
+Received: from mail-qk1-f195.google.com ([209.85.222.195]:36638 "EHLO
+        mail-qk1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2404121AbgJZPJS (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 11:09:45 -0400
-Received: by mail-wr1-f66.google.com with SMTP id b8so13056476wrn.0;
-        Mon, 26 Oct 2020 08:09:43 -0700 (PDT)
+        Mon, 26 Oct 2020 11:09:18 -0400
+Received: by mail-qk1-f195.google.com with SMTP id r7so8610318qkf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 08:09:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20161025;
-        h=from:to:cc:subject:date:message-id:in-reply-to:references
-         :mime-version:content-transfer-encoding;
-        bh=QjFg0mZ8avC6idJO43FWcJE7MDWVLercfhu1t4ztzhU=;
-        b=iWk0r6VgHJ/idi7eaEAYLS+0sY3MiDKm325KVAaG43StA7S4Ftm049iusCYU32fYqS
-         ZdfJT+zXzfHb6B8l4LlEyKstwDdRcQbsJq03D2XmwaVt8PI3+lNJujLq7EwimFmtp8uW
-         4KM0/L9acgUuSKonOvl1LHGZApmYDNiE7fIUtAtieRqeM8InrzMJ97HXa9vKsoEiogmn
-         caPUknB9w/yEq8QCJp9geZk3fg3um/xx4ickm3nvNJ1RleRfHjKaRwhPbLoogjXKmo+e
-         b+dUgnJk4l2QlIC6WhnN2beZadd5LT1FHXU1LZlep5AoxwAqoAjlElv7QE378+Nll5zE
-         mI1A==
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B4YqdmcMPdPqB+YkeBloGCTH3u/zuRKt+tiYUz7C5/o=;
+        b=g/zZWuPnS+OmEZYZPeK7x/E1XnpeBd8aHCSmNuplXqKOeHLPvjwfi+12zzHL2Aqi5M
+         dDD7RuRYlp2nN9TN+OGkKVwjalglB3HITHl3zRPK+XYLra2XlTiE/RW3IeDxcKtUid+z
+         coHhSuM/hG03V986aNh9Br43qw+AYiFR02w9ARm1GX2OQEqCeeuMUd4R5uVZCc0r6OAO
+         pRaUCg7DgKJx2T4ErtRy+7sVdeSAzknHXzy9B39/dYML6AyraL/KWUrtswqOZWWXg5Hj
+         iQ/+SyJ7p+1jgcbZuChwq+SpohvRepcPU1oMFy7E752CzOH3PINHwoufFzgq6pXgenKQ
+         i7aQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id:in-reply-to
-         :references:mime-version:content-transfer-encoding;
-        bh=QjFg0mZ8avC6idJO43FWcJE7MDWVLercfhu1t4ztzhU=;
-        b=SESs2xhZXCaNxe1QKIAwUAUH3SUhP60lW2J5UEjUfl+p4fKERFRrdJ1Ggn4tSxGCWj
-         MVrsRinVYQtr259VTRFYtYN5TKWYkfSrsCNHhZTqDfG1fiYaSHucWNS02ii1yc2bOBjg
-         1ioSOK2OgGwwGx7lZ5Jjoh3Wdtx3k1pEKW4s8LL0jhOK4UmL8HddWUSmHVp6kJ+Jv6n/
-         o7yXw0PdZCChSFjLzCoOX5scdK6ItD7PzwsuuMhhW6FgvBfH8FnmdD0fG6Ihj+cg4BEM
-         rCCNNy80auvHk4ByS2sEquSwGnh45oMVSlHwN38RVhP1Q1feBlXxSmj0UmfYyadk28aR
-         TbxA==
-X-Gm-Message-State: AOAM532psujFooljYf1vHbtCiZAi0iTss9hFFrxD60NMBhqIa2qQ+tfc
-        4TfVO6E83YimMOVBK+UIv24=
-X-Google-Smtp-Source: ABdhPJw53dWIv9EQncXT5M/kVl6SJeogeatP8PgPx1AAH9Pr252TUzKJFjlNPda4mkM8Rw6ki5+Nvw==
-X-Received: by 2002:adf:bc13:: with SMTP id s19mr19057557wrg.338.1603724983034;
-        Mon, 26 Oct 2020 08:09:43 -0700 (PDT)
-Received: from nogikh.c.googlers.com.com (88.140.78.34.bc.googleusercontent.com. [34.78.140.88])
-        by smtp.gmail.com with ESMTPSA id 24sm20043967wmf.44.2020.10.26.08.09.42
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=B4YqdmcMPdPqB+YkeBloGCTH3u/zuRKt+tiYUz7C5/o=;
+        b=JrBjU0XhwxS/OeGZ5rKxqRrpH8z7t9C7n8UvmTcN8zUSTMyBbdPMf4DeQf+EqONonU
+         bU+3xVqAVo21R7GNGgp0TSw5CKzpgYOAcyceVfrhEopynL03JQbe6x5txiaoeAfJ4++e
+         vyiFmChVI16LDo6Etuo5P9Yz76DVooGGqTonoMLCtGc/NWfXwat8za9RmRdKbYAbXP1f
+         8XQcDERc8kgD/IcuxQ4/pZzQQzp3vwnN98oytVW4LMWmmwl8rbQIYrW5GcR+iaS+dgNO
+         hUqlZDUwRd9xZUyVyCFvkvk7t4Uo/yDaVyrp6P8RB8uzG1WnXaeTqEdRKupq/OKc4Q5K
+         cRpQ==
+X-Gm-Message-State: AOAM531IVy3aQElgRwLROAR3uHtPhrG+HQkbloU7DkQlHyMjYN1bOaw9
+        tDbC5orZjuZqAfMSej1JNAwPsL9ZoD4=
+X-Google-Smtp-Source: ABdhPJzLcidrrwPSEFFtrqPErcXCKl4dl5hkj6tWupcOh6vVE2Bsnr2TtcOBHq6Sbo5rl2MeCO4NVg==
+X-Received: by 2002:a05:620a:1014:: with SMTP id z20mr1320367qkj.409.1603724956386;
+        Mon, 26 Oct 2020 08:09:16 -0700 (PDT)
+Received: from willemb.nyc.corp.google.com ([2620:0:1003:312:f693:9fff:fef4:3e8a])
+        by smtp.gmail.com with ESMTPSA id g24sm6518409qka.111.2020.10.26.08.09.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 08:09:42 -0700 (PDT)
-From:   Aleksandr Nogikh <aleksandrnogikh@gmail.com>
-To:     davem@davemloft.net, kuba@kernel.org, johannes@sipsolutions.net
-Cc:     edumazet@google.com, andreyknvl@google.com, dvyukov@google.com,
-        elver@google.com, linux-kernel@vger.kernel.org,
-        netdev@vger.kernel.org, linux-wireless@vger.kernel.org,
-        willemdebruijn.kernel@gmail.com,
-        Aleksandr Nogikh <nogikh@google.com>
-Subject: [PATCH v3 3/3] mac80211: add KCOV remote annotations to incoming frame processing
-Date:   Mon, 26 Oct 2020 15:08:51 +0000
-Message-Id: <20201026150851.528148-4-aleksandrnogikh@gmail.com>
+        Mon, 26 Oct 2020 08:09:15 -0700 (PDT)
+From:   Willem de Bruijn <willemdebruijn.kernel@gmail.com>
+To:     linux-kernel@vger.kernel.org
+Cc:     fenghua.yu@intel.com, reinette.chatre@intel.com,
+        tglx@linutronix.de, mingo@redhat.com, bp@alien8.de, x86@kernel.org,
+        hpa@zytor.com, Willem de Bruijn <willemb@google.com>
+Subject: [PATCH] x86/resctrl: Fix memory leak on kernfs dir removal
+Date:   Mon, 26 Oct 2020 11:09:13 -0400
+Message-Id: <20201026150913.2485171-1-willemdebruijn.kernel@gmail.com>
 X-Mailer: git-send-email 2.29.0.rc1.297.gfa9743e501-goog
-In-Reply-To: <20201026150851.528148-1-aleksandrnogikh@gmail.com>
-References: <20201026150851.528148-1-aleksandrnogikh@gmail.com>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Aleksandr Nogikh <nogikh@google.com>
+From: Willem de Bruijn <willemb@google.com>
 
-Add KCOV remote annotations to ieee80211_iface_work and
-ieee80211_rx. This will enable coverage-guided fuzzing of
-mac80211 code that processes incoming 802.11 frames.
+Resctrl takes an extra kernfs ref on directory entries, to access
+the entry on cleanup in rdtgroup_kn_unlock after removing the entire
+subtree with kfree_remove.
 
-Signed-off-by: Aleksandr Nogikh <nogikh@google.com>
+But the path takes an extra ref both on mkdir and on rmdir.
+
+The kernfs_get on mkdir causes a memleak in the unlikely exit with
+error in the same function, as no extra kernfs_put exists and no extra
+rdtgroup_kn_unlock occurs.
+
+More importantly, essentially the same happens in the normal path, as
+this simple program demonstrates:
+
+    for i in {1..200000}; do
+      mkdir /sys/fs/resctrl/task1
+      rmdir /sys/fs/resctrl/task1
+    done
+    slabtop
+
+When taking an extra ref for the duration of kernfs_remove, it is
+easiest to reason about when holding this extra ref as short as
+possible. For that, the refcnt on error reason and free on umount
+(rmdir_all_sub), remove the first kernfs_get on mkdir, leaving the
+other on rmdir.
+
+As the caller of rdtgroup_rmdir, kernfs_iop_rmdir, itself takes a
+reference on the kernfs object, the extra reference is possibly not
+needed at all.
+
+Fixes: 60cf5e101fd4 ("x86/intel_rdt: Add mkdir to resctrl file system")
+Signed-off-by: Willem de Bruijn <willemb@google.com>
 ---
-v1 -> v2:
-* The commit now affects ieee80211_rx instead of
-  ieee80211_tasklet_handler.
----
- include/net/mac80211.h | 2 ++
- net/mac80211/iface.c   | 2 ++
- 2 files changed, 4 insertions(+)
+ arch/x86/kernel/cpu/resctrl/rdtgroup.c | 8 --------
+ 1 file changed, 8 deletions(-)
 
-diff --git a/include/net/mac80211.h b/include/net/mac80211.h
-index e8e295dae744..f4c37a1b381e 100644
---- a/include/net/mac80211.h
-+++ b/include/net/mac80211.h
-@@ -4499,7 +4499,9 @@ void ieee80211_rx_napi(struct ieee80211_hw *hw, struct ieee80211_sta *sta,
-  */
- static inline void ieee80211_rx(struct ieee80211_hw *hw, struct sk_buff *skb)
- {
-+	kcov_remote_start_common(skb_get_kcov_handle(skb));
- 	ieee80211_rx_napi(hw, NULL, skb, NULL);
-+	kcov_remote_stop();
- }
- 
- /**
-diff --git a/net/mac80211/iface.c b/net/mac80211/iface.c
-index 1be775979132..56a1bcea2c1c 100644
---- a/net/mac80211/iface.c
-+++ b/net/mac80211/iface.c
-@@ -1356,6 +1356,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 	while ((skb = skb_dequeue(&sdata->skb_queue))) {
- 		struct ieee80211_mgmt *mgmt = (void *)skb->data;
- 
-+		kcov_remote_start_common(skb_get_kcov_handle(skb));
- 		if (ieee80211_is_action(mgmt->frame_control) &&
- 		    mgmt->u.action.category == WLAN_CATEGORY_BACK) {
- 			int len = skb->len;
-@@ -1465,6 +1466,7 @@ static void ieee80211_iface_work(struct work_struct *work)
- 		}
- 
- 		kfree_skb(skb);
-+		kcov_remote_stop();
+diff --git a/arch/x86/kernel/cpu/resctrl/rdtgroup.c b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+index 4d02ec8f371e..115a86bf6bd8 100644
+--- a/arch/x86/kernel/cpu/resctrl/rdtgroup.c
++++ b/arch/x86/kernel/cpu/resctrl/rdtgroup.c
+@@ -2839,14 +2839,6 @@ static int mkdir_rdt_prepare(struct kernfs_node *parent_kn,
  	}
+ 	rdtgrp->kn = kn;
  
- 	/* then other type-dependent work */
+-	/*
+-	 * kernfs_remove() will drop the reference count on "kn" which
+-	 * will free it. But we still need it to stick around for the
+-	 * rdtgroup_kn_unlock(kn} call below. Take one extra reference
+-	 * here, which will be dropped inside rdtgroup_kn_unlock().
+-	 */
+-	kernfs_get(kn);
+-
+ 	ret = rdtgroup_kn_set_ugid(kn);
+ 	if (ret) {
+ 		rdt_last_cmd_puts("kernfs perm error\n");
 -- 
 2.29.0.rc1.297.gfa9743e501-goog
 
