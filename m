@@ -2,71 +2,163 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id AC163298A5F
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:28:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 3B32B298A64
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 11:29:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1769755AbgJZK2j (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 06:28:39 -0400
-Received: from Galois.linutronix.de ([193.142.43.55]:38970 "EHLO
-        galois.linutronix.de" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1768430AbgJZK2j (ORCPT
+        id S1769835AbgJZK3l (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 06:29:41 -0400
+Received: from esa3.mentor.iphmx.com ([68.232.137.180]:63606 "EHLO
+        esa3.mentor.iphmx.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1769657AbgJZK3l (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 06:28:39 -0400
-From:   Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020; t=1603708117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c5fTWk6slj+E7imkK9HrK7ftFSS9/gEK4mhZa60fVww=;
-        b=a59eYWCjVaoI70IOQEnbNuzuWBVg+sv/beJmPWWVAZoa7wTcySRitCjwTg8UDoCOtLLljk
-        4LOVX1/a5bgJc0LAdJr8FwZrsnCJ1LF2EoyRl1pIaTBUTG2kcfLEOZ5nwr0BO6++sDnPFR
-        JxFoC0CPIJ7dBZI/cTDiB7RH+xPYl5XoAKOauL6gs/USy2ZXPwnX0wn6H0dzk7MVPlqDrN
-        P10oyZjMBUg0WPBxiYc2cyzNxSQbCPH0Vmx2A8lzbzG4A6G81R5qoqhOjkJrAPn1Q+cNxC
-        acY+xgZF9A7PxwhUXC819G4r7vHduvm2GjMj3dZqLi6hxGd/t8IZZcxM8VH5gA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-        s=2020e; t=1603708117;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-         content-transfer-encoding:content-transfer-encoding:
-         in-reply-to:in-reply-to:references:references;
-        bh=c5fTWk6slj+E7imkK9HrK7ftFSS9/gEK4mhZa60fVww=;
-        b=7HGCcKJw8egDLGjooY9uyvL/oAjzh0Cg+iV5QgyFo4Ggn9x20kUVnvK0CPmUtkpxcoZ49w
-        C+sQtg7wAE42b3Bg==
-To:     Michael =?utf-8?Q?Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>,
-        Andrei Vagin <avagin@gmail.com>,
-        Christian Brauner <christian.brauner@ubuntu.com>
-Cc:     Dmitry Safonov <0x7f454c46@gmail.com>,
-        linux-kernel@vger.kernel.org,
-        "J . Bruce Fields" <bfields@fieldses.org>,
-        Chuck Lever <chuck.lever@oracle.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna.schumaker@netapp.com>,
-        Michael =?utf-8?Q?Wei=C3=9F?= <michael.weiss@aisec.fraunhofer.de>
-Subject: Re: [PATCH v4 2/3] fs/proc: apply the time namespace offset to /proc/stat btime
-In-Reply-To: <20201019195257.10728-3-michael.weiss@aisec.fraunhofer.de>
-References: <20201019195257.10728-1-michael.weiss@aisec.fraunhofer.de> <20201019195257.10728-3-michael.weiss@aisec.fraunhofer.de>
-Date:   Mon, 26 Oct 2020 11:28:37 +0100
-Message-ID: <87eell46y2.fsf@nanos.tec.linutronix.de>
+        Mon, 26 Oct 2020 06:29:41 -0400
+IronPort-SDR: otwfDwVkQZr3NQwBywMU8ffQKo7cZtyxE47KOtsHGQi5MT1KQ5gUJAoLsxqst7UEMC9DOXr9e3
+ QzxaqF8yO2O+3q4FmafIijEyoB0ZCKANM6kMegymPPKSPF3IHUIR78RhWbyNWZyUlg8xbaNl8w
+ H0+SRGe7edkEmo2vGmNDRc+zYMO2HFU1BL261oqauRW6EnWzE36O3jyVH2FQmZ5o/l8OaU7UfT
+ tIBnBrjfS9qkIiMVQwQU/jlAwXsMMrLYQlxPxNh7DDhwpLDpad9rFbjtEyHntTsU8LW2zAllcw
+ i9E=
+X-IronPort-AV: E=Sophos;i="5.77,419,1596528000"; 
+   d="scan'208";a="54324541"
+Received: from orw-gwy-01-in.mentorg.com ([192.94.38.165])
+  by esa3.mentor.iphmx.com with ESMTP; 26 Oct 2020 02:29:39 -0800
+IronPort-SDR: O0g58AkoeYCj7u7+jb91zeViXBebA06j6obqBo10HcdbDlEj9EPxk/TZ0GB8xNe0zPKE2q5mHM
+ vCjrkkdepk4awBx/KXFvt4W45f4wZ7/L8B0vAgaOw8zp4+swW7zwqp9ifVmCUeBC9XKFqhbOiT
+ m0es60O02ASbx9mDk7ptCcYtPS+gmxOPgcIpc7neTts6WMuNUNrzKxYpQqQBqhSApyoatSNLXR
+ rIfY3ZW+9XbkjxUvL7goWDqcc2T07xFJvUl+qzuxhB/jDZutqls5ohQT9xin1ot95A4UsteoHC
+ CIA=
+From:   Andrew Gabbasov <andrew_gabbasov@mentor.com>
+To:     'Sergei Shtylyov' <sergei.shtylyov@gmail.com>
+CC:     <linux-renesas-soc@vger.kernel.org>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        "David S. Miller" <davem@davemloft.net>, <geert+renesas@glider.be>,
+        Julia Lawall <julia.lawall@inria.fr>,
+        "Behme, Dirk - Bosch" <dirk.behme@de.bosch.com>,
+        Eugeniu Rosca <erosca@de.adit-jv.com>
+References: <20200930192124.25060-1-andrew_gabbasov@mentor.com> <000001d697c2$71651d70$542f5850$@mentor.com> <2819a14d-500c-561b-337e-417201eb040f@gmail.com> <000001d6a5ea$16fe8e80$44fbab80$@mentor.com> <ead79908-7abd-93da-f943-2387f4137875@gmail.com>
+In-Reply-To: <ead79908-7abd-93da-f943-2387f4137875@gmail.com>
+Subject: RE: [PATCH net] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+Date:   Mon, 26 Oct 2020 13:29:26 +0300
+Organization: Mentor Graphics Corporation
+Message-ID: <000001d6ab82$e4fcf6d0$aef6e470$@mentor.com>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-Mailer: Microsoft Outlook 15.0
+Thread-Index: AQHWl179dggpQ/YNgUW3t7t7L6TDlKmcTonagAs3kmCAAk8jUA==
+Content-Language: en-us
+X-Originating-IP: [137.202.0.90]
+X-ClientProxiedBy: SVR-IES-MBX-04.mgc.mentorg.com (139.181.222.4) To
+ svr-ies-mbx-02.mgc.mentorg.com (139.181.222.2)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Mon, Oct 19 2020 at 21:52, Michael Wei=C3=9F wrote:
+Hi Sergei,
 
-> '/proc/stat' provides the field 'btime' which states the time stamp of
-> system boot in seconds. In case of time namespaces, the offset to the
-> boot time stamp was not applied earlier. However, in container
-> runtimes which utilize time namespaces to virtualize boottime of a
-> container, this leaks information about the host system boot time.
+Thank you for the review.
 
-Not sure if that qualifies as a leak. The point is that it confuses the
-tasks which are in a different time universe.
+> -----Original Message-----
+> From: Sergei Shtylyov [mailto:sergei.shtylyov@gmail.com]
+> Sent: Saturday, October 24, 2020 9:02 PM
+> To: Gabbasov, Andrew <Andrew_Gabbasov@mentor.com>
+> Cc: linux-renesas-soc@vger.kernel.org; netdev@vger.kernel.org; linux-kernel@vger.kernel.org; David S. Miller
+> <davem@davemloft.net>; geert+renesas@glider.be; Julia Lawall <julia.lawall@inria.fr>; Behme, Dirk - Bosch
+> <dirk.behme@de.bosch.com>; Eugeniu Rosca <erosca@de.adit-jv.com>
+> Subject: Re: [PATCH net] ravb: Fix bit fields checking in ravb_hwtstamp_get()
+> 
+> Hello!
+> 
+> On 10/19/20 10:32 AM, Andrew Gabbasov wrote:
+> 
+>    Sorry for the delay again, I keep forgetting about the mails I' couldn't reply
+> quickly. :-|
+> 
+> [...]
+> >>    The patch was set to the "Changes Requested" state -- most probably because of this
+> >> mail. Though unintentionally, it served to throttle actions on this patch. I did only
+> >> remember about this patch yesterday... :-)
+> >>
+> >> [...]
+> >>>> In the function ravb_hwtstamp_get() in ravb_main.c with the existing values
+> >>>> for RAVB_RXTSTAMP_TYPE_V2_L2_EVENT (0x2) and RAVB_RXTSTAMP_TYPE_ALL (0x6)
+> >>>>
+> >>>> if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_V2_L2_EVENT)
+> >>>> 	config.rx_filter = HWTSTAMP_FILTER_PTP_V2_L2_EVENT;
+> >>>> else if (priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE_ALL)
+> >>>> 	config.rx_filter = HWTSTAMP_FILTER_ALL;
+> >>>>
+> >>>> if the test on RAVB_RXTSTAMP_TYPE_ALL should be true, it will never be
+> >>>> reached.
+> >>>>
+> >>>> This issue can be verified with 'hwtstamp_config' testing program
+> >>>> (tools/testing/selftests/net/hwtstamp_config.c). Setting filter type to ALL
+> >>>> and subsequent retrieving it gives incorrect value:
+> >>>>
+> >>>> $ hwtstamp_config eth0 OFF ALL
+> >>>> flags = 0
+> >>>> tx_type = OFF
+> >>>> rx_filter = ALL
+> >>>> $ hwtstamp_config eth0
+> >>>> flags = 0
+> >>>> tx_type = OFF
+> >>>> rx_filter = PTP_V2_L2_EVENT
+> >>>>
+> >>>> Correct this by converting if-else's to switch.
+> >>>
+> >>> Earlier you proposed to fix this issue by changing the value
+> >>> of RAVB_RXTSTAMP_TYPE_ALL constant to 0x4.
+> >>> Unfortunately, simple changing of the constant value will not
+> >>> be enough, since the code in ravb_rx() (actually determining
+> >>> if timestamp is needed)
+> >>>
+> >>> u32 get_ts = priv->tstamp_rx_ctrl & RAVB_RXTSTAMP_TYPE;
+> >>> [...]
+> >>> get_ts &= (q == RAVB_NC) ?
+> >>>                 RAVB_RXTSTAMP_TYPE_V2_L2_EVENT :
+> >>>                 ~RAVB_RXTSTAMP_TYPE_V2_L2_EVENT;
+> >>>
+> >>> will work incorrectly and will need to be fixed too, making this
+> >>> piece of code more complicated.
+> 
+>    Judging on the above code, we can only stamp RAVB_RXTSTAMP_TYPE_V2_L2_EVENT
+> on the NC queue, and the rest only on the BE queue, right?
 
-Thanks,
+Yes, this is how it is implemented now. Frankly speaking, I didn't dig
+too deeply into the deriver code to understand whether it is correct
+and if there could be any other variants.
 
-        tglx
+> >>> So, it's probably easier and safer to keep the constant value and
+> >>> the code in ravb_rx() intact, and just fix the get ioctl code,
+> >>> where the issue is actually located.
+> >>
+> >>    We have one more issue with the current driver: bit 2 of priv->tstamp_rx_ctrl
+> >> can only be set as a part of the ALL mask, not individually. I'm now thinking we
+> >> should set RAVB_RXTSTAMP_TYPE[_ALL] to 2 (and probably just drop the ALL mask)...
+> >
+> > [skipped]
+> >
+> >>    Yeah, that's better. But do we really need am anonymous bit 2 that can't be
+> >> toggled other than via passing the ALL mask?
+> >
+> > The driver supports setting timestamps either for all packets or for some
+> > particular kind of packets (events). Bit 1 in internal mask corresponds
+> > to this selected kind. Bit 2 corresponds to all other packets, and ALL mask
+> > combines both variants. Although bit 2 can't be controlled individually
+> > (since there is no much sense to Request stamping of only packets, other than
+> > events, moreover, there is no user-visible filter constant to represent it),
+> > and that's why is anonymous, it provides a convenient way to handle stamping
+> > logic in ravb_rx(), so I don't see an immediate need to get rid of it.
+> 
+>     OK, you convinced me. :-)
+>     I suggest that you repost the patch since it's now applying with a large offset.
+
+I've resubmitted the patch as v2. It is re-based on top of the latest linux master.
+Since you sent your "Reviewed-by:" for this patch and there were no changes other
+than file offsets, I took the liberty to add "Reviewed-by:" with your name too.
+
+
+Thanks!
+
+Best regards,
+Andrew
+
