@@ -2,110 +2,150 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 50CCA298F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:22:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 99C53298F2F
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 15:25:04 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1781301AbgJZOWX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 10:22:23 -0400
-Received: from mga11.intel.com ([192.55.52.93]:59469 "EHLO mga11.intel.com"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1780807AbgJZOWX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 10:22:23 -0400
-IronPort-SDR: 5Pt77JnQPKV2SW/BVZ3sE6DMcdpPtgCkUOgfvkFNGMcQzkLBdL6knijIrSS6MARi9DWlWu3DND
- byv5E3kiO1tA==
-X-IronPort-AV: E=McAfee;i="6000,8403,9785"; a="164431854"
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="164431854"
-X-Amp-Result: SKIPPED(no attachment in message)
-X-Amp-File-Uploaded: False
-Received: from orsmga004.jf.intel.com ([10.7.209.38])
-  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Oct 2020 07:22:21 -0700
-IronPort-SDR: zx/ut50ICtaU6P7xooH9x7iTUdM05LLmQswxh9qX7+rEM7BI64wCqazhLSfOmolsnyTLTO3OVK
- CzdsByKKeh+A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="5.77,419,1596524400"; 
-   d="scan'208";a="467941137"
-Received: from mattu-haswell.fi.intel.com (HELO [10.237.72.170]) ([10.237.72.170])
-  by orsmga004.jf.intel.com with ESMTP; 26 Oct 2020 07:22:18 -0700
-Subject: Re: [PATCH] usb: remove unneeded break
-To:     trix@redhat.com, balbi@kernel.org, gregkh@linuxfoundation.org,
-        mathias.nyman@intel.com, johan@kernel.org,
-        stern@rowland.harvard.edu, gustavoars@kernel.org,
-        viro@zeniv.linux.org.uk, lee.jones@linaro.org
-Cc:     linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-        usb-storage@lists.one-eyed-alien.net
-References: <20201019150202.19713-1-trix@redhat.com>
-From:   Mathias Nyman <mathias.nyman@linux.intel.com>
-Autocrypt: addr=mathias.nyman@linux.intel.com; prefer-encrypt=mutual; keydata=
- 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 fiD/
-Message-ID: <845e43b3-1c53-3eed-b540-4efa109f33a9@linux.intel.com>
-Date:   Mon, 26 Oct 2020 16:23:47 +0200
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:68.0) Gecko/20100101
- Thunderbird/68.10.0
+        id S1781386AbgJZOZC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 10:25:02 -0400
+Received: from mail-wr1-f68.google.com ([209.85.221.68]:39017 "EHLO
+        mail-wr1-f68.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1780854AbgJZOZC (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 10:25:02 -0400
+Received: by mail-wr1-f68.google.com with SMTP id y12so12799580wrp.6
+        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 07:24:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google;
+        h=date:from:to:cc:subject:message-id:references:mime-version
+         :content-disposition:content-transfer-encoding:in-reply-to
+         :user-agent;
+        bh=g4Ny0lpZa+kqvC7NOSadrSZ1jZmqq4LSsWHBJuF2KCg=;
+        b=nG53+jQkO9eSJdSWrOiCBCMs+eLZn+NjnP03o5a9eOSFgKSR5u4QwgS098BPhw+OmY
+         Op6MiexN51LbN8DfX66z0+cihcbKkUvSAr4+2+JC3vhAtw1QDg4pYW6otWCrU4RKCrEg
+         ZNqdE35DX+9vXInrgY9crI/Pa9motrhyjMQntvyzaV4uA0P9ctrGR4nYOWGJRudjiRkG
+         zkfZd8qJogyVUIlbnAgDAGpr169AZRaBPw275Wv3pRcbFU1F/bdACd/gE0xlXri59m6O
+         nJllOOkf/FITpl1sIIunHG2yeQ9flmLF0u53YdhCWzYSC5m//8MsYa6Fg/KJRvvDR/xW
+         80UA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:date:from:to:cc:subject:message-id:references
+         :mime-version:content-disposition:content-transfer-encoding
+         :in-reply-to:user-agent;
+        bh=g4Ny0lpZa+kqvC7NOSadrSZ1jZmqq4LSsWHBJuF2KCg=;
+        b=mvy5RHpxBBqMW0B/ThjZBFZnp5NI0rV/2tCzUWwKNRGiLWsKXxXiknIX6ATlxVjea6
+         ebHWD1k07U7O0FgS4nWLzN2Q4j83gmwwgQU6Jq1orjUTEo0xm9pdNVnIqGDFAGo7sVYI
+         rXsyG3hNxPog/zb8UXSLe6SGAXg40AQ+IL9Rq96vSSJa78kwW0UxcPC7RYuje5EooMIq
+         GKDafYcGPN+B2bI7Xq9a4DpSDfVuVI2chPph1sq0fMbv+SKbugLiuE87zyIgayvI3DUu
+         PnTFV4zj00DyobHxMQq+ZPG2TiZjSZKj1Mp4J5HsiR3i6KBuOT4ULkuwRkQIXBg4LegP
+         U1xA==
+X-Gm-Message-State: AOAM533CTf53gA93OmablPjpMJYmGkDV/aSG/pbffIgdJMndbM6VupFI
+        z8G87uaNRrHMF6sfah2yhkitmIO1dwN2eg==
+X-Google-Smtp-Source: ABdhPJye4UkrgpjJJzwCmeVUBBnbH9z8xGQYdjDHGs4lYUElP/TshVLFvTDVV4WQDrQsRh5M4BDJBQ==
+X-Received: by 2002:adf:edc6:: with SMTP id v6mr18029625wro.273.1603722298588;
+        Mon, 26 Oct 2020 07:24:58 -0700 (PDT)
+Received: from vingu-book ([2a01:e0a:f:6020:e42d:d75b:ee18:e5c7])
+        by smtp.gmail.com with ESMTPSA id k203sm23402687wmb.37.2020.10.26.07.24.57
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Mon, 26 Oct 2020 07:24:57 -0700 (PDT)
+Date:   Mon, 26 Oct 2020 15:24:55 +0100
+From:   Vincent Guittot <vincent.guittot@linaro.org>
+To:     Chris Mason <clm@fb.com>
+Cc:     Peter Zijlstra <peterz@infradead.org>,
+        Johannes Weiner <hannes@cmpxchg.org>,
+        Rik van Riel <riel@surriel.com>,
+        linux-kernel <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] fix scheduler regression from "sched/fair: Rework
+ load_balance()"
+Message-ID: <20201026142455.GA13495@vingu-book>
+References: <DB4481A8-FD4E-4879-9CD2-275ABAFC09CF@fb.com>
+ <CAKfTPtBiOFXwV9SkZ=YBw16xoS6LSrKVR4sFX6r2hZPZ9_5-+A@mail.gmail.com>
+ <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
 MIME-Version: 1.0
-In-Reply-To: <20201019150202.19713-1-trix@redhat.com>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0014CA62-A632-495A-92B0-4B14C8CA193C@fb.com>
+User-Agent: Mutt/1.9.4 (2018-02-28)
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 19.10.2020 18.02, trix@redhat.com wrote:
-> From: Tom Rix <trix@redhat.com>
+Le lundi 26 oct. 2020 à 08:45:27 (-0400), Chris Mason a écrit :
+> On 26 Oct 2020, at 4:39, Vincent Guittot wrote:
 > 
-> A break is not needed if it is preceded by a return or goto
+> > Hi Chris
+> > 
+> > On Sat, 24 Oct 2020 at 01:49, Chris Mason <clm@fb.com> wrote:
+> > > 
+> > > Hi everyone,
+> > > 
+> > > We’re validating a new kernel in the fleet, and compared with v5.2,
+> > 
+> > Which version are you using ?
+> > several improvements have been added since v5.5 and the rework of
+> > load_balance
 > 
-> Signed-off-by: Tom Rix <trix@redhat.com>
-> ---
->  drivers/usb/gadget/function/f_hid.c | 9 ---------
->  drivers/usb/host/xhci-mem.c         | 1 -
->  drivers/usb/misc/iowarrior.c        | 3 ---
->  drivers/usb/serial/iuu_phoenix.c    | 2 --
->  drivers/usb/storage/freecom.c       | 1 -
->  5 files changed, 16 deletions(-)
+> We’re validating v5.6, but all of the numbers referenced in this patch are
+> against v5.9.  I usually try to back port my way to victory on this kind of
+> thing, but mainline seems to behave exactly the same as 0b0695f2b34a wrt
+> this benchmark.
 
-Would probably be better to split this into several patches.
-The xhci change looks good (as a separate patch)
+ok. Thanks for the confirmation
 
--Mathias
+I have been able to reproduce the problem on my setup.
+
+Could you try the fix below ?
+
+--- a/kernel/sched/fair.c
++++ b/kernel/sched/fair.c
+@@ -9049,7 +9049,8 @@ static inline void calculate_imbalance(struct lb_env *env, struct sd_lb_stats *s
+         * emptying busiest.
+         */
+        if (local->group_type == group_has_spare) {
+-               if (busiest->group_type > group_fully_busy) {
++               if ((busiest->group_type > group_fully_busy) &&
++                   (busiest->group_weight > 1)) {
+                        /*
+                         * If busiest is overloaded, try to fill spare
+                         * capacity. This might end up creating spare capacity
+
+
+When we calculate an imbalance at te smallest level, ie between CPUs (group_weight == 1),
+we should try to spread tasks on cpus instead of trying to fill spare capacity.
+
+
+> 
+> > 
+> > > performance is ~2-3% lower for some of our workloads.  After some
+> > > digging, Johannes found that our involuntary context switch rate was
+> > > ~2x
+> > > higher, and we were leaving a CPU idle a higher percentage of the
+> > > time,
+> > > even though the workload was trying to saturate the system.
+> > > 
+> > > We were able to reproduce the problem with schbench, and Johannes
+> > > bisected down to:
+> > > 
+> > > commit 0b0695f2b34a4afa3f6e9aa1ff0e5336d8dad912
+> > > Author: Vincent Guittot <vincent.guittot@linaro.org>
+> > > Date:   Fri Oct 18 15:26:31 2019 +0200
+> > > 
+> > >      sched/fair: Rework load_balance()
+> > > 
+> > > Our working theory is the load balancing changes are leaving
+> > > processes
+> > > behind busy CPUs instead of moving them onto idle ones.  I made a few
+> > > schbench modifications to make this easier to demonstrate:
+> > > 
+> > > https://git.kernel.org/pub/scm/linux/kernel/git/mason/schbench.git/
+> > > 
+> > > My VM has 40 cpus (20 cores, 2 threads per core), and my schbench
+> > > command line is:
+> > 
+> > What is the topology ? are they all part of the same LLC ?
+> 
+> We’ve seen the regression on both single socket and dual socket bare metal
+> intel systems.  On the VM I reproduced with, I saw similar latencies with
+> and without siblings configured into the topology.
+> 
+> -chris
