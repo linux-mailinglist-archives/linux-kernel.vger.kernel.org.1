@@ -2,173 +2,121 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C56BD2988D5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:56:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id AF6D82988CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 09:55:25 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1772340AbgJZI4X (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 04:56:23 -0400
-Received: from userp2120.oracle.com ([156.151.31.85]:58062 "EHLO
-        userp2120.oracle.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1772330AbgJZI4W (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 04:56:22 -0400
-Received: from pps.filterd (userp2120.oracle.com [127.0.0.1])
-        by userp2120.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09Q8mQJ6159501;
-        Mon, 26 Oct 2020 08:55:49 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : mime-version : content-type :
- in-reply-to; s=corp-2020-01-29;
- bh=2e+LVoIyB23J1NkAGnKiTWFanoothvTO+wSfsKbng90=;
- b=iY8/8EpYQqV0V2LvC7DBxuntjeb4dRJynW6g6crUJFH2U2kd2deoieeiqP8TELCcVdWV
- u+4f5AiYD+68D32irJ//mYeqeAORHhKIORxRqty8RgzBccR56Iqy8guPVleGslpj3tHL
- yr/zwIeDYjtye7pD4ZbUCUpgAF1hsO+YG2ap2U1CNNyHHk7KMPIJbEt7ZZAO5d1GIjNZ
- EcgxV23Oi/mw9p453GfoWPdH8D460jCFC3V9/DkN1PdVUZEp/eFK/EanbQYFpqdhgYOo
- p5QmicFqxdo+CvsD2+Qfm6WcAmHjZ76Z5JJht19jL3WkoSjE4+6PoXHAK+/NiQIH8/O9 yA== 
-Received: from userp3020.oracle.com (userp3020.oracle.com [156.151.31.79])
-        by userp2120.oracle.com with ESMTP id 34dgm3s778-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
-        Mon, 26 Oct 2020 08:55:49 +0000
-Received: from pps.filterd (userp3020.oracle.com [127.0.0.1])
-        by userp3020.oracle.com (8.16.0.42/8.16.0.42) with SMTP id 09Q8oCin105198;
-        Mon, 26 Oct 2020 08:53:48 GMT
-Received: from userv0121.oracle.com (userv0121.oracle.com [156.151.31.72])
-        by userp3020.oracle.com with ESMTP id 34cx1pb4f8-1
-        (version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-        Mon, 26 Oct 2020 08:53:48 +0000
-Received: from abhmp0004.oracle.com (abhmp0004.oracle.com [141.146.116.10])
-        by userv0121.oracle.com (8.14.4/8.13.8) with ESMTP id 09Q8rhIe002665;
-        Mon, 26 Oct 2020 08:53:43 GMT
-Received: from kadam (/41.57.98.10)
-        by default (Oracle Beehive Gateway v4.0)
-        with ESMTP ; Mon, 26 Oct 2020 01:53:42 -0700
-Date:   Mon, 26 Oct 2020 11:53:31 +0300
-From:   Dan Carpenter <dan.carpenter@oracle.com>
-To:     Paul Kocialkowski <paul.kocialkowski@bootlin.com>
-Cc:     linux-media@vger.kernel.org, devicetree@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-        devel@driverdev.osuosl.org, linux-sunxi@googlegroups.com,
-        Hans Verkuil <hverkuil@xs4all.nl>,
-        Philipp Zabel <p.zabel@pengutronix.de>,
-        Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Helen Koike <helen.koike@collabora.com>,
-        Vinod Koul <vkoul@kernel.org>,
-        Maxime Ripard <mripard@kernel.org>,
-        Kishon Vijay Abraham I <kishon@ti.com>,
-        Chen-Yu Tsai <wens@csie.org>, Rob Herring <robh+dt@kernel.org>,
-        Hans Verkuil <hans.verkuil@cisco.com>,
-        Yong Deng <yong.deng@magewell.com>,
-        Sakari Ailus <sakari.ailus@linux.intel.com>,
-        Mauro Carvalho Chehab <mchehab@kernel.org>,
-        kevin.lhopital@hotmail.com
-Subject: Re: [PATCH 12/14] media: sunxi: Add support for the A83T MIPI CSI-2
- controller
-Message-ID: <20201026085331.GC1042@kadam>
-References: <20201023174546.504028-1-paul.kocialkowski@bootlin.com>
- <20201023174546.504028-13-paul.kocialkowski@bootlin.com>
+        id S1772307AbgJZIzX (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 04:55:23 -0400
+Received: from mail-eopbgr00080.outbound.protection.outlook.com ([40.107.0.80]:58242
+        "EHLO EUR02-AM5-obe.outbound.protection.outlook.com"
+        rhost-flags-OK-OK-OK-FAIL) by vger.kernel.org with ESMTP
+        id S1772299AbgJZIzX (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 04:55:23 -0400
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e/7irHHPyMI39BbhgIqthYyFRC7DsSmwX2SGPSTLQ+tifamQywy8fgcuypikO4/USlOJUyKN86hpty/PR/Iwt8YbWbk1a/GL+Djt9TVzEvv1VRpTWQ+Gg8lJPLhUolh5enwDQes2tClh+LPI4F4DE6XBynJu4bJqZfAh8hSStKXTcTp7ekksD9fr+S49Tp7c0FagE/oeftSeLjPdceshTV735qJp6TBF2VJNloCqpdgzKZfbB9lnnBjV/H/DbiLnebOHWmMVWt5yLhaLxCRbfJtH8h7qk4Cc0wgwgpQHf9H4VRcIn15R7TCjZ+5MsQyNYJrqK9NamUewP7uvzSbYqQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N9zk4SJNSXoMOtTbfeDsEproOaAwlj/WxfuKFE5bVkI=;
+ b=mj89gRkGX9UwLYcDXmagqz6B99ELD71LSLtyCBffuxLaQYW871UneLNVbMlBFDa9RwcRUFTCxB0ByIMnUtgLfN+z/GKC/zw5AOYepwyDQql7zQ4ExhKRXwcoFqt0wbLYXi2lKiSf4zjLAp5GoLk/AimRSRdkGIEUqC4Igb5YcZKrdw+tvFYYRdthC2Iw0MIaaOJliAmomTtRwCUAtd0l7DepDGTkqFxCiF1VP6yhiGQkQWqM6xJOh54ZOQwAs4dmGJ/EBT2y2wZZqDcjXESuD1lKl6F7I+kVRKk1VDjBmMDETlprDzSTs3LpFlI3UkGEOQ/xd8j9QiMYDYRR9ZyhBw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=N9zk4SJNSXoMOtTbfeDsEproOaAwlj/WxfuKFE5bVkI=;
+ b=l5TOVp3BqNV4OjKIPBmjg8txPELhOpVoctfQ4eMQrAsItt2T1Fg0hyroLPXkBuaqXfvJzkLyaVjAzcO4jnxkKzcS8I1I6zLoRTr2PhH12fuGn9MjIvNAWxS/oTDphN+UUL08Yrw4uyFRbf9/YSL/AYy0XbaiZqY0/cRqw8l/haU=
+Authentication-Results: infradead.org; dkim=none (message not signed)
+ header.d=none;infradead.org; dmarc=none action=none header.from=nxp.com;
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com (2603:10a6:803:57::21)
+ by VI1PR04MB5758.eurprd04.prod.outlook.com (2603:10a6:803:e7::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3477.21; Mon, 26 Oct
+ 2020 08:55:18 +0000
+Received: from VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6]) by VI1PR04MB4960.eurprd04.prod.outlook.com
+ ([fe80::b178:a37b:1f9e:3a6%3]) with mapi id 15.20.3477.028; Mon, 26 Oct 2020
+ 08:55:18 +0000
+From:   Sherry Sun <sherry.sun@nxp.com>
+To:     hch@infradead.org, gregkh@linuxfoundation.org,
+        sudeep.dutt@intel.com, ashutosh.dixit@intel.com, arnd@arndb.de,
+        kishon@ti.com, lorenzo.pieralisi@arm.com
+Cc:     linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
+        linux-imx@nxp.com, fugang.duan@nxp.com
+Subject: [PATCH V4 0/2] Change vring space from nomal memory to dma coherent memory
+Date:   Mon, 26 Oct 2020 16:53:33 +0800
+Message-Id: <20201026085335.30048-1-sherry.sun@nxp.com>
+X-Mailer: git-send-email 2.17.1
+Content-Type: text/plain
+X-Originating-IP: [119.31.174.71]
+X-ClientProxiedBy: SG2PR0401CA0010.apcprd04.prod.outlook.com
+ (2603:1096:3:1::20) To VI1PR04MB4960.eurprd04.prod.outlook.com
+ (2603:10a6:803:57::21)
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20201023174546.504028-13-paul.kocialkowski@bootlin.com>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9785 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- suspectscore=0 malwarescore=0 mlxlogscore=999 mlxscore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010260064
-X-Proofpoint-Virus-Version: vendor=nai engine=6000 definitions=9785 signatures=668682
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 lowpriorityscore=0 impostorscore=0
- adultscore=0 bulkscore=0 spamscore=0 phishscore=0 mlxlogscore=999
- suspectscore=0 clxscore=1015 mlxscore=0 malwarescore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2009150000
- definitions=main-2010260064
+X-MS-Exchange-MessageSentRepresentingType: 1
+Received: from nxp.ap.freescale.net (119.31.174.71) by SG2PR0401CA0010.apcprd04.prod.outlook.com (2603:1096:3:1::20) with Microsoft SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.3499.19 via Frontend Transport; Mon, 26 Oct 2020 08:55:14 +0000
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-HT: Tenant
+X-MS-Office365-Filtering-Correlation-Id: 4e7edadd-4904-4d78-c2bc-08d8798cdcb2
+X-MS-TrafficTypeDiagnostic: VI1PR04MB5758:
+X-MS-Exchange-Transport-Forked: True
+X-Microsoft-Antispam-PRVS: <VI1PR04MB5758AD54DDD6EC2B8F58715492190@VI1PR04MB5758.eurprd04.prod.outlook.com>
+X-MS-Oob-TLC-OOBClassifiers: OLM:7219;
+X-MS-Exchange-SenderADCheck: 1
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 5rr3yTj1CExWLrXLmYrTxYyLZtKqVLPfbwjB5T1pL8kig4iNlWakvJ0ZSfFJEOXrlN8TqkeuuxnRKm1x9SMdoByE+4OAZWYmnIAhRSH9/O+l/lUQtK0DXXoq4cnAik1k5I5qg57qPOKEVnmC+lOakybx30ilWis4YYGm0lPWfLtNMcu9PpLK4w9/NGJf3CukfUqcA1C7T+UbBG7pcscu2B76vqRlrqmX9tBRw4J+JskTl2m+NRc9fot4ThnG5zlCNDGY1X0mHMUT1+RjHyeZoUvdgpZH0uwasLnBYQbCYxONUdVQdn6jNlbX5kgINU6G
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:VI1PR04MB4960.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(4636009)(396003)(136003)(39860400002)(366004)(376002)(346002)(66476007)(8936002)(316002)(86362001)(956004)(66946007)(36756003)(66556008)(6512007)(83380400001)(4326008)(2616005)(1076003)(6506007)(6666004)(2906002)(186003)(26005)(8676002)(6486002)(16526019)(5660300002)(52116002)(478600001)(44832011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData: ugod1v2CyjkBhFMvyT1Dtu/XBcBeFCyiB205q/rgDci7e3f/taL0Ca3u+/TK/Ubo7m2VgAy6Jl6L4He4ih5aBO2ASqoTh/GqsBNkQMy8Eff/rKs+OwJp8M1dM9jYSqZK8WNCuGTeB4nvOVDuFn52Zr+xaUicErpJQS3XK8PhlYjWMEh4tzzMTsIGaX6WJO6WNJXOvBdmB+4OVPhe6CcYGxSb9OeY2bgyv5kvRhWjEA8W6yZ9nX1wqbNAUUREXItQdOcdWzcSlEh4Rl2NIOAOnJGNFG2m+YXJ+/6Vqe/gXrfaSBTmDgMT1+GliRkt0oYvxlAYLgJ10ZBPNvxpi1eAt0bxQNeoVBDnz0fXxHCwwk5D6SGm1R/47FB2i1ejzhdWYFvVozwDsxZCsHj0jLVejsjatE1nzEIQIQXXht453asBFAz7AA1gZ2fCdKUiwDFcNpg6raJeeTANxsEKw4eWqYTE43dDj+kgcYUI/U2OmzGj2E7Mk63BHcfOhbGclJh3FU1RD45TnXv+EBUcJ+pqEddncHPTVBiFr4MihSa3r5CUem81f8TLJebEPTwrUQfvxcljBVZMqlqHtV2qprlPJmxEQvePn5U9ObvzWE4g4xZi4QHDiHHRKo9KH8P9nYDqmCj11CsbjoCifafjXnsjpw==
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e7edadd-4904-4d78-c2bc-08d8798cdcb2
+X-MS-Exchange-CrossTenant-AuthSource: VI1PR04MB4960.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Oct 2020 08:55:18.0868
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: FwjdHKGN4aToTVl1JSvV8aipCuCOI5hQPEEvf+0KJqmqf/Df11otscRD9PZD5caYaoIbqrTRSSFe0Iu6HupbiQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB5758
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Fri, Oct 23, 2020 at 07:45:44PM +0200, Paul Kocialkowski wrote:
-> +static int sun8i_a83t_mipi_csi2_v4l2_setup(struct sun8i_a83t_mipi_csi2_dev *cdev)
-> +{
-> +	struct sun8i_a83t_mipi_csi2_video *video = &cdev->video;
-> +	struct v4l2_subdev *subdev = &video->subdev;
-> +	struct v4l2_async_notifier *notifier = &video->notifier;
-> +	struct fwnode_handle *handle;
-> +	struct v4l2_fwnode_endpoint *endpoint;
-> +	int ret;
-> +
-> +	/* Subdev */
-> +
-> +	v4l2_subdev_init(subdev, &sun8i_a83t_mipi_csi2_subdev_ops);
-> +	subdev->dev = cdev->dev;
-> +	strscpy(subdev->name, MODULE_NAME, sizeof(subdev->name));
-> +	v4l2_set_subdevdata(subdev, cdev);
-> +
-> +	/* Entity */
-> +
-> +	subdev->entity.function = MEDIA_ENT_F_VID_IF_BRIDGE;
-> +	subdev->entity.ops = &sun8i_a83t_mipi_csi2_entity_ops;
-> +
-> +	/* Pads */
-> +
-> +	video->pads[0].flags = MEDIA_PAD_FL_SINK;
-> +	video->pads[1].flags = MEDIA_PAD_FL_SOURCE;
-> +
-> +	ret = media_entity_pads_init(&subdev->entity, 2, video->pads);
-> +	if (ret)
-> +		return ret;
-> +
-> +	/* Endpoint */
-> +
-> +	handle = fwnode_graph_get_endpoint_by_id(dev_fwnode(cdev->dev), 0, 0,
-> +						 FWNODE_GRAPH_ENDPOINT_NEXT);
-> +	if (!handle)
-> +		goto error_media_entity;
+Changes in V4:
+1. Change to use dma_mmap_coherent api for vop mmap callback. 
+2. Add dp_mmap callback to map device page to userspace instead of get_dp_dma
+callback.
+3. Move all the dma related changes to patch 1.  
+4. Kill the mic_dp_init/mic_dp_uninit and inline those into the callers as
+Christoph suggested.
+5. Keep the code following the 80-character line rule.
+6. Add endian swap for vqconfig[i].address. 
 
-Missing error code.
+The original vop driver only supports dma coherent device, as it allocates and
+maps vring by _get_free_pages and dma_map_single, but not use 
+dma_sync_single_for_cpu/device to sync the updates of device_page/vring between
+EP and RC, which will cause memory synchronization problem for device don't
+support hardware dma coherent.
 
-> +
-> +	endpoint = &video->endpoint;
-> +	endpoint->bus_type = V4L2_MBUS_CSI2_DPHY;
-> +
-> +	ret = v4l2_fwnode_endpoint_parse(handle, endpoint);
-> +	fwnode_handle_put(handle);
-> +	if (ret)
-> +		goto error_media_entity;
-> +
-> +	/* Notifier */
-> +
-> +	v4l2_async_notifier_init(notifier);
-> +
-> +	ret = v4l2_async_notifier_add_fwnode_remote_subdev(notifier, handle,
-> +							   &video->subdev_async);
-> +	if (ret)
-> +		goto error_media_entity;
-> +
-> +	video->notifier.ops = &sun8i_a83t_mipi_csi2_notifier_ops;
-> +
-> +	ret = v4l2_async_subdev_notifier_register(subdev, notifier);
-> +	if (ret < 0)
-> +		goto error_notifier;
-> +
-> +	/* Subdev */
-> +
-> +	ret = v4l2_async_register_subdev(subdev);
-> +	if (ret < 0)
-> +		goto error_notifier_registered;
-> +
-> +	return 0;
-> +
-> +error_notifier_registered:
-> +	v4l2_async_notifier_unregister(notifier);
-> +error_notifier:
-> +	v4l2_async_notifier_cleanup(notifier);
-> +error_media_entity:
-> +	media_entity_cleanup(&subdev->entity);
-> +
-> +	return ret;
-> +}
+And allocate vrings use dma_alloc_coherent is a common way in kernel, as the
+memory interacted between two systems should use consistent memory to avoid
+caching effects. So here add noncoherent platform support for vop driver.
+Also add some related dma changes to make sure noncoherent platform works
+well.
 
+Sherry Sun (2):
+  misc: vop: change the way of allocating vring and device page
+  misc: vop: do not allocate and reassign the used ring
 
-regards,
-dan carpenter
+ drivers/misc/mic/bus/vop_bus.h     |   2 +
+ drivers/misc/mic/host/mic_boot.c   |   9 +++
+ drivers/misc/mic/host/mic_main.c   |  43 +++--------
+ drivers/misc/mic/vop/vop_debugfs.c |   2 -
+ drivers/misc/mic/vop/vop_main.c    |  51 +++----------
+ drivers/misc/mic/vop/vop_vringh.c  | 110 +++++++++--------------------
+ include/uapi/linux/mic_common.h    |   5 +-
+ 7 files changed, 66 insertions(+), 156 deletions(-)
+
+-- 
+2.17.1
 
