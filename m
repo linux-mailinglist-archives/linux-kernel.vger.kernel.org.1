@@ -2,168 +2,205 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id 2EDDB2985CE
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:05:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 8F0472985E1
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 04:19:33 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1421729AbgJZDFC (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Sun, 25 Oct 2020 23:05:02 -0400
-Received: from mailout1.samsung.com ([203.254.224.24]:18527 "EHLO
-        mailout1.samsung.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1421719AbgJZDFB (ORCPT
+        id S1421863AbgJZDTb (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Sun, 25 Oct 2020 23:19:31 -0400
+Received: from mail-pl1-f194.google.com ([209.85.214.194]:41879 "EHLO
+        mail-pl1-f194.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S2389792AbgJZDTb (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Sun, 25 Oct 2020 23:05:01 -0400
-Received: from epcas1p3.samsung.com (unknown [182.195.41.47])
-        by mailout1.samsung.com (KnoxPortal) with ESMTP id 20201026030459epoutp01e8e84cdfe199baa8c9daee64b4ad3232~Ba9O53E2x2189221892epoutp01R
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 03:04:59 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.samsung.com 20201026030459epoutp01e8e84cdfe199baa8c9daee64b4ad3232~Ba9O53E2x2189221892epoutp01R
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-        s=mail20170921; t=1603681499;
-        bh=rAZaAtl0r+2j3+7h7buuCLddDxaE+Tu5embt/8DbLeM=;
-        h=Subject:To:Cc:From:Date:In-Reply-To:References:From;
-        b=c1tQLd+9imhZcPg8IUNDv1t6aZvlMYch4tcQj8xStqRSQUwqMTn5H+etHhcldZkwW
-         rQgVAXEWmW8udwpWp0F+N48R7jpgCLZicrtXo3Qsy9UsPef+ryc2G8XvXpt292EF8S
-         /9X+tYByjw4DjPM6sY6X+vXCMhWde7UA8AoL3VrI=
-Received: from epsnrtp2.localdomain (unknown [182.195.42.163]) by
-        epcas1p4.samsung.com (KnoxPortal) with ESMTP id
-        20201026030458epcas1p4a73df2f922afcf80e796270b60e333c5~Ba9OLNylC3146231462epcas1p4G;
-        Mon, 26 Oct 2020 03:04:58 +0000 (GMT)
-Received: from epsmges1p1.samsung.com (unknown [182.195.40.156]) by
-        epsnrtp2.localdomain (Postfix) with ESMTP id 4CKKSm13GxzMqYkV; Mon, 26 Oct
-        2020 03:04:56 +0000 (GMT)
-Received: from epcas1p1.samsung.com ( [182.195.41.45]) by
-        epsmges1p1.samsung.com (Symantec Messaging Gateway) with SMTP id
-        8A.60.09543.7DC369F5; Mon, 26 Oct 2020 12:04:56 +0900 (KST)
-Received: from epsmtrp2.samsung.com (unknown [182.195.40.14]) by
-        epcas1p1.samsung.com (KnoxPortal) with ESMTPA id
-        20201026030455epcas1p160c95fac388080dbadb353ae61526110~Ba9LjnbOE3236632366epcas1p1-;
-        Mon, 26 Oct 2020 03:04:55 +0000 (GMT)
-Received: from epsmgms1p2.samsung.com (unknown [182.195.42.42]) by
-        epsmtrp2.samsung.com (KnoxPortal) with ESMTP id
-        20201026030455epsmtrp279ae4c0cd9936ee26a3e60a6795033fb~Ba9LipXCr3214132141epsmtrp2Z;
-        Mon, 26 Oct 2020 03:04:55 +0000 (GMT)
-X-AuditID: b6c32a35-35dff70000002547-ff-5f963cd75e98
-Received: from epsmtip2.samsung.com ( [182.195.34.31]) by
-        epsmgms1p2.samsung.com (Symantec Messaging Gateway) with SMTP id
-        6D.D6.08745.7DC369F5; Mon, 26 Oct 2020 12:04:55 +0900 (KST)
-Received: from [10.113.221.102] (unknown [10.113.221.102]) by
-        epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
-        20201026030455epsmtip2303f08a45d26ce44df9d951ca26fc758~Ba9LPreLg1892518925epsmtip2F;
-        Mon, 26 Oct 2020 03:04:55 +0000 (GMT)
-Subject: Re: [PATCH v6 48/52] PM / devfreq: tegra20: Relax Kconfig
- dependency
-To:     Dmitry Osipenko <digetx@gmail.com>,
-        Thierry Reding <thierry.reding@gmail.com>,
-        Jonathan Hunter <jonathanh@nvidia.com>,
-        Georgi Djakov <georgi.djakov@linaro.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Michael Turquette <mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        Peter De Schrijver <pdeschrijver@nvidia.com>,
-        MyungJoo Ham <myungjoo.ham@samsung.com>,
-        Kyungmin Park <kyungmin.park@samsung.com>,
-        Mikko Perttunen <cyndis@kapsi.fi>,
-        Viresh Kumar <vireshk@kernel.org>,
-        Peter Geis <pgwipeout@gmail.com>,
-        Nicolas Chauvet <kwizart@gmail.com>,
-        Krzysztof Kozlowski <krzk@kernel.org>
-Cc:     linux-tegra@vger.kernel.org, linux-pm@vger.kernel.org,
-        linux-kernel@vger.kernel.org, dri-devel@lists.freedesktop.org,
-        devicetree@vger.kernel.org
-From:   Chanwoo Choi <cw00.choi@samsung.com>
-Organization: Samsung Electronics
-Message-ID: <c38862ec-cca5-39c8-25b2-327cbd0bd6a8@samsung.com>
-Date:   Mon, 26 Oct 2020 12:18:45 +0900
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:59.0) Gecko/20100101
-        Thunderbird/59.0
+        Sun, 25 Oct 2020 23:19:31 -0400
+Received: by mail-pl1-f194.google.com with SMTP id w11so4048466pll.8;
+        Sun, 25 Oct 2020 20:19:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QsMOJAAASmnBLciPsNTk5wBgO9ycp9uLTKdOg45VzbA=;
+        b=i6XNf7/psS6DfAyer4ZSjR/IclOovr7CeQfgqjlYHDU+kjvOOOflLxX5lw06L3Q0cp
+         NhPyI8ocfUhh446hbQ0FojFItq9MiKypG0/ztZEmK4fDSkqOdFZPA1r5Zd6sIa26A4Ye
+         JCcBzuBX7h3eCAnqPMevDG8wEjGghpaIxB3tnIMeXbJNcYy1F+rhwfq013OzFV+nthvD
+         XGgAnW9EUNqdB4DokMezq4S5zvQwESKLA0Jp+SBS7sNy4bVgbdL/3M+1kJ6P0BCIvX83
+         VrEUksjG0O/P9pJvP2mG6Omb2O1YHYqQfnftWpmEii6F4sYTPcuSh0IWBzYdzKO46Doq
+         VYwg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=QsMOJAAASmnBLciPsNTk5wBgO9ycp9uLTKdOg45VzbA=;
+        b=WlDatSOPZ1KzsC/Z4T7E0FHF8wZmlzXj3Z8Dz+/g1BU9H92e/B+1mln7CSLZwTAJoZ
+         CGd1RWuoVHZSOoIBiSMLmTrrob2b02JEbVmnde4Rm8YVs5NKd4sB0xBvuS2YiSCyEaej
+         iBkvMk+ryUO0xgusnAOY+ggZZm629UeKMVEMAKXJLnxI8/eJhPjQHyKpsz2xgyePY3DK
+         9eE5jaVo2fidyAw/LeJSSK9rO2p2d+okZaRzERZR/M9c5fJob9sVQgHR11g++VvFfOVN
+         /ff4SL/uuru0+NkeLgSLQwS77tNSyWn1zbCD35dMdi9lGhXdjbfBVF4b3/MzOAGBnCbR
+         fF9w==
+X-Gm-Message-State: AOAM5316jntvSciBEiMoSwrDxPXfdT5ZnWVkj7YGTqqxQTGuRX2qD1LG
+        RHSKA7MLLGxe9gn21xG3wmKDbMOf6DmF9Idz
+X-Google-Smtp-Source: ABdhPJybZb2hyA3CDBvO+N8OsbwFu/xFa9rDsbAq51JV5T4j61FmgkCXaFgOFPiyV3WI/xv+id4ssQ==
+X-Received: by 2002:a17:902:a3c2:b029:d6:3951:5bdc with SMTP id q2-20020a170902a3c2b02900d639515bdcmr7753644plb.71.1603682370255;
+        Sun, 25 Oct 2020 20:19:30 -0700 (PDT)
+Received: from ruantu-3.localdomain ([103.230.142.242])
+        by smtp.gmail.com with ESMTPSA id e1sm10512103pfd.198.2020.10.25.20.19.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 25 Oct 2020 20:19:29 -0700 (PDT)
+From:   Yu-Tung Chang <mtwget@gmail.com>
+To:     robh+dt@kernel.org
+Cc:     mripard@kernel.org, wens@csie.org, devicetree@vger.kernel.org,
+        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+        Yu-Tung Chang <mtwget@gmail.com>
+Subject: [PATCH v2] ARM: dts: sun8i: add FriendlyArm ZeroPi support
+Date:   Mon, 26 Oct 2020 11:19:22 +0800
+Message-Id: <20201026031922.12473-1-mtwget@gmail.com>
+X-Mailer: git-send-email 2.29.0
 MIME-Version: 1.0
-In-Reply-To: <20201025221735.3062-49-digetx@gmail.com>
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA01Te1BUVRz23Lt79y62eVtRT2QFl4rhvSvsckBwrFhnVSjSGaeaZFvhthDs
-        Y3YhezATKhCPNJEBYVsewlC2sIgroTAgtqwJziAG4YBAbKJMJS7GRoEyFMvFif++33e+7/x+
-        33mQuPA+4UWmajIYvUaZThMenNZu/+Dg4egyhaj2Jo6cs/e4qNp+g4sa/pwE6Oe5GQKd7rQS
-        KMdYy0H9/c089P29Rgz1HZ3mocF2E4Fcx+0AFfxlJNBP12Vo9MhZAp2ylALUN7UX5XbaeWjp
-        1nkOWmiv4qALjh+JnZ7ymeFcnrzNOM6TD9xYxOVWcwEhH7vVQcgniq5h8uPHnIT8RIsZyF3W
-        FxL476ZFpzDKZEbvzWiStMmpGlUMvXe/4nWFRCoSB4sjUQTtrVGqmRg6Ni4heFdq+nIy2vsj
-        ZXrmMpWgNBjo0B3Rem1mBuOdojVkxNCMLjldF6kLMSjVhkyNKiRJq44Si0TbJMvC99NSznVk
-        47rLHh/fvuqTDexkIeCTkAqH1qs2rBB4kELqEoATo49wtpgF0FLxiGALF4D366p5TyzGScuq
-        qh1A06m8VdUMgHe6fsXcqo3Um9Ay1bSi8qRGOPDbs0uEewGnygEc6/B1Y4IKgF2/Da/wGygf
-        ODQ/CQoBSQqoHXC00sdNc6iX4UKRY0WyiToAe1tzgBsLqGdgb8VdjhvzKSl0zpZx2e23wNt3
-        qzEWvwgvPjCtzACpr/lworMZZyPEwp6ReS6LN8I/rrWsRvOCLmcnweLP4He9doI15wPY0nVz
-        1RAGu+pLMPegOOUPz7WHsrQPbHtcCdjGT0Pn3JdctwRSApifJ2QlvnDQMY6x+FlY90UBcRLQ
-        xjVxjGsiGNdEMP7frAZwzGAzozOoVYxBrBOvvW0rWHn1AZJLoPjBwxAbwEhgA5DEaU+BaWup
-        QihIVn7yKaPXKvSZ6YzBBiTLB1yMe21K0i5/G02GQizZFhYWhsLFUolYTG8RLAbmK4SUSpnB
-        pDGMjtE/8WEk3ysbs6w/4kfuidjt83neYPlg/VeHA49tn/owsNsBDvp5LkR5jo2/2lltXmc7
-        akdthYcsPbxp37dal/rqyhp/74m/WNz/Tu4/Akd3zZnpMO91pqmt9ExQVBYvbo4Iiv83kRsx
-        61/xXOOhxeutw9KDivfiYuplCxHPA1H3/De+RknD34mV55NiTUV8mfptV1WdLGv4hF/R5ssV
-        hOoHbCRRVfPU+IHDkXiDWZDmsEVzH6uvDJXvL5PmxLtETREDV6wlzvDT0qELo4sDu/jzbzTV
-        Phzdt71UHsI1/hJ9BntNK9Tc6WlzJI5EfbDenKXfU1de1dxxUvbK+Ev7sFDRzmC/oJJUslFG
-        cwwpSnEArjco/wMe+SWifgQAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02RbUhTURjHObvXu7vB2s0tPGlouxDaUCupOB9s+aW4akEZRaRms24W+TLu
-        Mk0K7EV8WdqSMrtNTQmqlWhmljZT3MyyzPIt01JzGWptpWUomOV1BH77nf//+T3Ph0Ni7t24
-        J3k08TjLJWrjaUKK11hpn4B3wQUxa3Pa1cg5OeKGSmyv3dDdCTtAXVPfCXS1vopA5/kyHLW3
-        V4rRw5F7ItR29psYddaZCPQz1wZQ9i+eQG9bt6D+M7cJlF9+BaC2L+Eoo94mRnM993E0U1eM
-        owdDz4gQJfO9N0PM1PIfxUzH61mMqTJnE8yHHgvBDBpaREzuOSfB5FWbAfOzynuHZJ80+BAb
-        f/QEy63RHJAeqbCkY7qn0tS+ZlU6sJE5QEJCaj3k7eVYDpCS7tRjAPu+mghXsRwWvG2eL8h5
-        VkCrVe+acQA4OZZPCLmC2g4nrgcIuZL6iMP86T5CeGBUIYCzlffFLqMawMxLA0DYSlBq2DDa
-        u3BBTqlg97QdCJtklAb2F6mEGKdWwRnD0MLIMmoPrL1pFwkso5bCF9c+4wJLqI3QOVngJjBG
-        +cLZ4g7MxR6w73OJyMU+8JHDhBmBgl+k84sUfpHCL1JuANwMlrM6fUJcgn6dLiiRTQnUaxP0
-        yYlxgQeTEqrAws+r1Y+BxfwjsAmISNAEIInRSplpxZUYd9kh7ck0lkuK4ZLjWX0T8CJx2kM2
-        xZfud6fitMfZYyyrY7n/rYiUeKaL5KIW41iLv1z8V9IoXrk760JD6NfONb+X9A6k9Md6hHtG
-        hdRoVow3e8sx2ra6ZrLeWaE7fMeybYbTmTd1vzml6qLNl8beh94qT12rMGQ5B60RbGvYhrGT
-        Dqv/sahmv2L+l6pwpAHKNI7p591xhgP9s2G3vIaKox10xTPlZilWHWF8aK8xquseRConOl7l
-        Ac2umNLgbGeYl3Y0ZLVi+GKor7rrRFHQuJ/cL409PdxWFvTyT9ntLy+Tyk8np7WG6Gy2fEtk
-        LPdq0DurMe2Jc/hpiinzILavZO5weGQu/Vu2/x1m2BlAVn6yosapgWimOsJkVFzeuyk1Yiv3
-        ROFP4/oj2nVqjNNr/wG0H1tAaAMAAA==
-X-CMS-MailID: 20201026030455epcas1p160c95fac388080dbadb353ae61526110
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-Sendblock-Type: SVC_REQ_APPROVE
-CMS-TYPE: 101P
-DLP-Filter: Pass
-X-CFilter-Loop: Reflected
-X-CMS-RootMailID: 20201025222141epcas1p3561566981daa20ed096227f0e4a26b98
-References: <20201025221735.3062-1-digetx@gmail.com>
-        <CGME20201025222141epcas1p3561566981daa20ed096227f0e4a26b98@epcas1p3.samsung.com>
-        <20201025221735.3062-49-digetx@gmail.com>
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On 10/26/20 7:17 AM, Dmitry Osipenko wrote:
-> The Tegra EMC driver now could be compiled as a loadable kernel module.
-> Currently devfreq driver depends on the EMC/MC drivers in Kconfig, and
-> thus, devfreq is forced to be a kernel module if EMC is compiled as a
-> module. This build dependency could be relaxed since devfreq driver
-> checks MC/EMC presence on probe, allowing kernel configuration where
-> devfreq is a built-in driver and EMC driver is a loadable module.
-> This change puts Tegra20 devfreq Kconfig entry on a par with the Tegra30
-> devfreq entry.
-> 
-> Acked-by: Chanwoo Choi <cw00.choi@samsung.com>
-> Signed-off-by: Dmitry Osipenko <digetx@gmail.com>
-> ---
->  drivers/devfreq/Kconfig | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/devfreq/Kconfig b/drivers/devfreq/Kconfig
-> index 37dc40d1fcfb..0ee36ae2fa79 100644
-> --- a/drivers/devfreq/Kconfig
-> +++ b/drivers/devfreq/Kconfig
-> @@ -123,7 +123,7 @@ config ARM_TEGRA_DEVFREQ
->  
->  config ARM_TEGRA20_DEVFREQ
->  	tristate "NVIDIA Tegra20 DEVFREQ Driver"
-> -	depends on (TEGRA_MC && TEGRA20_EMC) || COMPILE_TEST
-> +	depends on ARCH_TEGRA_2x_SOC || COMPILE_TEST
->  	depends on COMMON_CLK
->  	select DEVFREQ_GOV_SIMPLE_ONDEMAND
->  	help
-> 
+The ZeroPi is another fun board developed
+by FriendlyELEC for makers,
+hobbyists and fans.
 
-Applied it.
+ZeroPi key features
+- Allwinner H3, Quad-core Cortex-A7@1.2GHz
+- 256MB/512MB DDR3 RAM
+- microsd slot
+- 10/100/1000Mbps Ethernet
+- Debug Serial Port
+- DC 5V/2A power-supply
 
+Signed-off-by: Yu-Tung Chang <mtwget@gmail.com>
+---
+ .../devicetree/bindings/arm/sunxi.yaml        |  5 ++
+ arch/arm/boot/dts/Makefile                    |  1 +
+ arch/arm/boot/dts/sun8i-h3-zeropi.dts         | 87 +++++++++++++++++++
+ 3 files changed, 93 insertions(+)
+ create mode 100644 arch/arm/boot/dts/sun8i-h3-zeropi.dts
+
+diff --git a/Documentation/devicetree/bindings/arm/sunxi.yaml b/Documentation/devicetree/bindings/arm/sunxi.yaml
+index efc9118233b4..9392a9a3f7e7 100644
+--- a/Documentation/devicetree/bindings/arm/sunxi.yaml
++++ b/Documentation/devicetree/bindings/arm/sunxi.yaml
+@@ -246,6 +246,11 @@ properties:
+           - const: friendlyarm,nanopi-neo-plus2
+           - const: allwinner,sun50i-h5
+ 
++      - description: FriendlyARM ZeroPi
++        items:
++          - const: friendlyarm,zeropi
++          - const: allwinner,sun50i-h3
++
+       - description: Gemei G9 Tablet
+         items:
+           - const: gemei,g9
+diff --git a/arch/arm/boot/dts/Makefile b/arch/arm/boot/dts/Makefile
+index 4572db3fa5ae..f05e54257947 100644
+--- a/arch/arm/boot/dts/Makefile
++++ b/arch/arm/boot/dts/Makefile
+@@ -1187,6 +1187,7 @@ dtb-$(CONFIG_MACH_SUN8I) += \
+ 	sun8i-h3-orangepi-plus2e.dtb \
+ 	sun8i-h3-orangepi-zero-plus2.dtb \
+ 	sun8i-h3-rervision-dvk.dtb \
++	sun8i-h3-zeropi.dtb \
+ 	sun8i-h3-emlid-neutis-n5h3-devboard.dtb \
+ 	sun8i-r16-bananapi-m2m.dtb \
+ 	sun8i-r16-nintendo-nes-classic.dtb \
+diff --git a/arch/arm/boot/dts/sun8i-h3-zeropi.dts b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
+new file mode 100644
+index 000000000000..00cdd35222c5
+--- /dev/null
++++ b/arch/arm/boot/dts/sun8i-h3-zeropi.dts
+@@ -0,0 +1,87 @@
++/*
++ * Copyright (C) 2020 Yu-Tung Chang <mtwget@gmail.com>
++ *
++ * This file is dual-licensed: you can use it either under the terms
++ * of the GPL or the X11 license, at your option. Note that this dual
++ * licensing only applies to this file, and not this project as a
++ * whole.
++ *
++ *  a) This file is free software; you can redistribute it and/or
++ *     modify it under the terms of the GNU General Public License as
++ *     published by the Free Software Foundation; either version 2 of the
++ *     License, or (at your option) any later version.
++ *
++ *     This file is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ * Or, alternatively,
++ *
++ *  b) Permission is hereby granted, free of charge, to any person
++ *     obtaining a copy of this software and associated documentation
++ *     files (the "Software"), to deal in the Software without
++ *     restriction, including without limitation the rights to use,
++ *     copy, modify, merge, publish, distribute, sublicense, and/or
++ *     sell copies of the Software, and to permit persons to whom the
++ *     Software is furnished to do so, subject to the following
++ *     conditions:
++ *
++ *     The above copyright notice and this permission notice shall be
++ *     included in all copies or substantial portions of the Software.
++ *
++ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
++ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
++ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
++ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ *     OTHER DEALINGS IN THE SOFTWARE.
++ */
++
++#include "sun8i-h3-nanopi.dtsi"
++
++/ {
++	model = "FriendlyARM ZeroPi";
++	compatible = "friendlyarm,zeropi", "allwinner,sun8i-h3";
++
++	aliases {
++		ethernet0 = &emac;
++	};
++
++	reg_gmac_3v3: gmac-3v3 {
++		compatible = "regulator-fixed";
++		pinctrl-names = "default";
++		pinctrl-0 = <&gmac_power_pin_nanopi>;
++		regulator-name = "gmac-3v3";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		startup-delay-us = <100000>;
++		enable-active-high;
++		gpio = <&pio 3 6 GPIO_ACTIVE_HIGH>; /* PD6 */
++	};
++};
++
++&external_mdio {
++	ext_rgmii_phy: ethernet-phy@7 {
++		compatible = "ethernet-phy-ieee802.3-c22";
++		reg = <7>;
++	};
++};
++
++&emac {
++	pinctrl-names = "default";
++	pinctrl-0 = <&emac_rgmii_pins>;
++	phy-supply = <&reg_gmac_3v3>;
++	phy-handle = <&ext_rgmii_phy>;
++	phy-mode = "rgmii";
++
++	allwinner,leds-active-low;
++	status = "okay";
++};
++
++&usb_otg {
++	status = "okay";
++	dr_mode = "host";
++};
 -- 
-Best Regards,
-Chanwoo Choi
-Samsung Electronics
+2.29.0
+
