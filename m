@@ -2,92 +2,120 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id C0ECA299551
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:30:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id 59B84299555
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 19:30:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1789785AbgJZS37 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 14:29:59 -0400
-Received: from mail.kernel.org ([198.145.29.99]:35788 "EHLO mail.kernel.org"
-        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S1789777AbgJZS37 (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 14:29:59 -0400
-Received: from gandalf.local.home (cpe-66-24-58-225.stny.res.rr.com [66.24.58.225])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 1B9F820756;
-        Mon, 26 Oct 2020 18:29:58 +0000 (UTC)
-Date:   Mon, 26 Oct 2020 14:29:56 -0400
-From:   Steven Rostedt <rostedt@goodmis.org>
-To:     Hui Su <sh_def@163.com>
-Cc:     mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
-        vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-        bsegall@google.com, mgorman@suse.de, bristot@redhat.com,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/rt.c: use list_is_singular() instead of '->prev
- != ->next'
-Message-ID: <20201026142956.0a429137@gandalf.local.home>
-In-Reply-To: <20201026174152.GA10163@rlk>
-References: <20201026174152.GA10163@rlk>
-X-Mailer: Claws Mail 3.17.3 (GTK+ 2.24.32; x86_64-pc-linux-gnu)
+        id S1789796AbgJZSaE (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 14:30:04 -0400
+Received: from mail-wm1-f67.google.com ([209.85.128.67]:34531 "EHLO
+        mail-wm1-f67.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1789777AbgJZSaD (ORCPT
+        <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 14:30:03 -0400
+Received: by mail-wm1-f67.google.com with SMTP id k21so6301305wmi.1;
+        Mon, 26 Oct 2020 11:30:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20161025;
+        h=subject:to:cc:references:from:message-id:date:user-agent
+         :mime-version:in-reply-to:content-language:content-transfer-encoding;
+        bh=Uvxk0V+v5R+Ui18EWs/4gGZzPd6uaBwxyhilQrUITXg=;
+        b=DYYBJPJxGMmJNF/y3y79mjSRcAW1v7JjG9JNYaZDgdpZOCygPjbMeRa0vQIfmRZsNn
+         xZgToB3m8fKrLviNRf3mJwvPMixZAun3LGDanXoDetiHUeD2OU3jJu19z124C2Lbr86b
+         f73wkIEMnIGrCER5eKz7unOkHWK228f2t0MNyEKh96YNQj4cjOLni6LIDLoaiO2jeHL4
+         36z6TROaA/c+oddr/xUpHRUslS2Z+vDtyFD0Ayv4wTYHwRNDS73S7E4FyRojYVUY3QHH
+         n88EDtjoNPIbL5UdFRViv+bzGPnc0yJvcjFH+fGD9HRujXFzcvQH7plt+iWhFLSaKrG0
+         gnjg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20161025;
+        h=x-gm-message-state:subject:to:cc:references:from:message-id:date
+         :user-agent:mime-version:in-reply-to:content-language
+         :content-transfer-encoding;
+        bh=Uvxk0V+v5R+Ui18EWs/4gGZzPd6uaBwxyhilQrUITXg=;
+        b=iZ3Q0XTW4Jid0ngdshFFIxhhx+1dHT/R22KjLvP6EZPqT/z8fqKetlvfgMI/wllKHt
+         9jEW6avsEFj6lsVjM/Ho9fKLxJ0Z3Ne/uwAHPZLsBVAPBgAF/wb5uT9D93lz5dHKoHbI
+         0pChcxjxNUSJTXLWo37m9JK97XKXAWrhFNN9FEwflHz5JY0tj1Wo2wxMWP2yCzcDFYsr
+         TfhqWbDuriT4I6M2IM2sXo2axfNgjBcQMo4B6NbFK/GcjpvjWLRZOvqyhRfAgT15tWZw
+         /EtQLE1JHOAU/nqXClB0qdGxhRzJkHOPSLquj0Haf0h+9wFS0ELoAf/Daz1XaPK8HRYq
+         qnLg==
+X-Gm-Message-State: AOAM5302kVdEwl8uNhp+lOyU8y6vZrK9VD46dswibkxX3ABFfDd+7GUN
+        /Bb8IBFDi3FHcPOfJd8MYyLeIfWLfzA=
+X-Google-Smtp-Source: ABdhPJxGuvImDDTPNUyAg2ANEUotzgD+NbaqgYewNtg3QdjYtiYNovB0ZP9faDoV/YdGSo52APdArQ==
+X-Received: by 2002:a1c:9c41:: with SMTP id f62mr17094373wme.23.1603737000340;
+        Mon, 26 Oct 2020 11:30:00 -0700 (PDT)
+Received: from [192.168.2.28] (39.35.broadband4.iol.cz. [85.71.35.39])
+        by smtp.gmail.com with ESMTPSA id j17sm22999314wrw.68.2020.10.26.11.29.58
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 26 Oct 2020 11:29:59 -0700 (PDT)
+Subject: Re: [PATCH 3/4] dm crypt: switch to EBOIV crypto API template
+To:     Eric Biggers <ebiggers@kernel.org>,
+        Gilad Ben-Yossef <gilad@benyossef.com>
+Cc:     Herbert Xu <herbert@gondor.apana.org.au>,
+        "David S. Miller" <davem@davemloft.net>,
+        Alasdair Kergon <agk@redhat.com>,
+        Mike Snitzer <snitzer@redhat.com>, dm-devel@redhat.com,
+        Song Liu <song@kernel.org>, Ofir Drang <ofir.drang@arm.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-raid@vger.kernel.org
+References: <20201026130450.6947-1-gilad@benyossef.com>
+ <20201026130450.6947-4-gilad@benyossef.com>
+ <20201026175231.GG858@sol.localdomain>
+From:   Milan Broz <gmazyland@gmail.com>
+Message-ID: <d07b062c-1405-4d72-b907-1c4dfa97aecb@gmail.com>
+Date:   Mon, 26 Oct 2020 19:29:57 +0100
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101
+ Thunderbird/78.4.0
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+In-Reply-To: <20201026175231.GG858@sol.localdomain>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-On Tue, 27 Oct 2020 01:41:52 +0800
-Hui Su <sh_def@163.com> wrote:
-
-> Use the list_is_singular(&rt_se->run_list) api instead of
-> 'rt_se->run_list.prev != rt_se->run_list.next'.
-> Fix a comment by the way, and make the comment more clearly.
+On 26/10/2020 18:52, Eric Biggers wrote:
+> On Mon, Oct 26, 2020 at 03:04:46PM +0200, Gilad Ben-Yossef wrote:
+>> Replace the explicit EBOIV handling in the dm-crypt driver with calls
+>> into the crypto API, which now possesses the capability to perform
+>> this processing within the crypto subsystem.
+>>
+>> Signed-off-by: Gilad Ben-Yossef <gilad@benyossef.com>
+>>
+>> ---
+>>  drivers/md/Kconfig    |  1 +
+>>  drivers/md/dm-crypt.c | 61 ++++++++++++++-----------------------------
+>>  2 files changed, 20 insertions(+), 42 deletions(-)
+>>
+>> diff --git a/drivers/md/Kconfig b/drivers/md/Kconfig
+>> index 30ba3573626c..ca6e56a72281 100644
+>> --- a/drivers/md/Kconfig
+>> +++ b/drivers/md/Kconfig
+>> @@ -273,6 +273,7 @@ config DM_CRYPT
+>>  	select CRYPTO
+>>  	select CRYPTO_CBC
+>>  	select CRYPTO_ESSIV
+>> +	select CRYPTO_EBOIV
+>>  	help
+>>  	  This device-mapper target allows you to create a device that
+>>  	  transparently encrypts the data on it. You'll need to activate
 > 
-> Signed-off-by: Hui Su <sh_def@163.com>
-> ---
->  kernel/sched/rt.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
-> 
-> diff --git a/kernel/sched/rt.c b/kernel/sched/rt.c
-> index 49ec096a8aa1..1479d00656b4 100644
-> --- a/kernel/sched/rt.c
-> +++ b/kernel/sched/rt.c
-> @@ -2381,7 +2381,7 @@ static inline void watchdog(struct rq *rq, struct task_struct *p) { }
->   *
->   * NOTE: This function can be called remotely by the tick offload that
->   * goes along full dynticks. Therefore no local assumption can be made
-> - * and everything must be accessed through the @rq and @curr passed in
-> + * and everything must be accessed through the @rq and @p passed in
->   * parameters.
->   */
->  static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
-> @@ -2406,11 +2406,11 @@ static void task_tick_rt(struct rq *rq, struct task_struct *p, int queued)
->  	p->rt.time_slice = sched_rr_timeslice;
->  
->  	/*
-> -	 * Requeue to the end of queue if we (and all of our ancestors) are not
-> -	 * the only element on the queue
-> +	 * Requeue to the end of rt_prio_array queue if we (and all of our
-> +	 * ancestors) are not the only element on the rt_prio_array queue.
->  	 */
->  	for_each_sched_rt_entity(rt_se) {
-> -		if (rt_se->run_list.prev != rt_se->run_list.next) {
-> +		if (!list_is_singular(&rt_se->run_list)) {
+> Can CRYPTO_EBOIV please not be selected by default?  If someone really wants
+> Bitlocker compatibility support, they can select this option themselves.
 
-Perhaps there should be a list_has_more_than_one() API, as list_is_singular
-requires two checks, and the "more_than_one" only requires a single check.
+Please no! Until this move of IV to crypto API, we can rely on
+support in dm-crypt (if it is not supported, it is just a very old kernel).
+(Actually, this was the first thing I checked in this patchset - if it is
+unconditionally enabled for compatibility once dmcrypt is selected.)
 
-list_is_singular() is:
+People already use removable devices with BitLocker.
+It was the whole point that it works out-of-the-box without enabling anything.
 
-		return !list_empty(list) && (list->next == list->prev);
+If you insist on this to be optional, please better keep this IV inside dmcrypt.
+(EBOIV has no other use than for disk encryption anyway.)
 
+Or maybe another option would be to introduce option under dm-crypt Kconfig that
+defaults to enabled (like support for foreign/legacy disk encryption schemes) and that
+selects these IVs/modes.
+But requiring some random switch in crypto API will only confuse users.
 
-which is more work than what you are replacing.
-
--- Steve
-
-
->  			requeue_task_rt(rq, p, 0);
->  			resched_curr(rq);
->  			return;
-
+Milan
