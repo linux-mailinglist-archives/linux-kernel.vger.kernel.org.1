@@ -2,36 +2,35 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id A86DB299B3D
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id CBBA3299B48
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:50:27 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2408841AbgJZXty (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:49:54 -0400
-Received: from mail.kernel.org ([198.145.29.99]:47534 "EHLO mail.kernel.org"
+        id S2409061AbgJZXuP (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:50:15 -0400
+Received: from mail.kernel.org ([198.145.29.99]:47964 "EHLO mail.kernel.org"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2408720AbgJZXta (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:49:30 -0400
+        id S2408786AbgJZXtm (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:49:42 -0400
 Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
         (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
         (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id 3DDD820773;
-        Mon, 26 Oct 2020 23:49:29 +0000 (UTC)
+        by mail.kernel.org (Postfix) with ESMTPSA id 606C921741;
+        Mon, 26 Oct 2020 23:49:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756170;
-        bh=K+pXON+EpeZwcukcdCKp2fT/ruRvzTT1E/1PKb+EpGg=;
+        s=default; t=1603756182;
+        bh=6DudW/JqqtwV4WRtfvdDoaRR7NIbaoqPJeFKlaMc93I=;
         h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=F7GB5vJs3mlYXdSWeIAV+jFCYP7OcQ9uhO7MQ3w9Q6gemMkPUdmH+2CtAOHykvbbH
-         UWimNqvFCRV1WxSDJ2Pv59oOqB/QSqbKVRE5wPZNUQzd2tTD2QIKmX+X58RX+YeKjg
-         zi1snuzVCxHKF4rSAYqF5fsK3/wX6kgZOYYdKRDI=
+        b=Y/gfptYP3XSBhaRyTH+N6Z5jNDtuE4YPNxTjwOP7Cyy6cmSQZ6Td3GrnjYnSeCkTm
+         hze5VwN425aCc/F7w/UwquL0j3tGiJDA+zKS81sdbig1B+JHpceJGCwDS42IQ83YJy
+         NIq//HYBLXfpcRK0XwlyOAu859Nz0O9MWkvft2xI=
 From:   Sasha Levin <sashal@kernel.org>
 To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Zejiang Tang <tangzejiang@loongson.cn>,
-        Steven Rostedt <rostedt@goodmis.org>,
-        Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-        Sasha Levin <sashal@kernel.org>, linux-mips@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.9 019/147] MIPS: ftrace: Remove redundant #ifdef CONFIG_DYNAMIC_FTRACE
-Date:   Mon, 26 Oct 2020 19:46:57 -0400
-Message-Id: <20201026234905.1022767-19-sashal@kernel.org>
+Cc:     Pavel Begunkov <asml.silence@gmail.com>,
+        Jens Axboe <axboe@kernel.dk>, Sasha Levin <sashal@kernel.org>,
+        io-uring@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: [PATCH AUTOSEL 5.9 029/147] io_uring: don't set COMP_LOCKED if won't put
+Date:   Mon, 26 Oct 2020 19:47:07 -0400
+Message-Id: <20201026234905.1022767-29-sashal@kernel.org>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20201026234905.1022767-1-sashal@kernel.org>
 References: <20201026234905.1022767-1-sashal@kernel.org>
@@ -43,35 +42,43 @@ Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Zejiang Tang <tangzejiang@loongson.cn>
+From: Pavel Begunkov <asml.silence@gmail.com>
 
-[ Upstream commit 39116103a7345927fa99644d08bc0cc9d45fea6f ]
+[ Upstream commit 368c5481ae7c6a9719c40984faea35480d9f4872 ]
 
-There exists redundant #ifdef CONFIG_DYNAMIC_FTRACE in ftrace.c, remove it.
+__io_kill_linked_timeout() sets REQ_F_COMP_LOCKED for a linked timeout
+even if it can't cancel it, e.g. it's already running. It not only races
+with io_link_timeout_fn() for ->flags field, but also leaves the flag
+set and so io_link_timeout_fn() may find it and decide that it holds the
+lock. Hopefully, the second problem is potential.
 
-Signed-off-by: Zejiang Tang <tangzejiang@loongson.cn>
-Reviewed-by: Steven Rostedt (VMware) <rostedt@goodmis.org>
-Signed-off-by: Thomas Bogendoerfer <tsbogend@alpha.franken.de>
+Signed-off-by: Pavel Begunkov <asml.silence@gmail.com>
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- arch/mips/kernel/ftrace.c | 4 ----
- 1 file changed, 4 deletions(-)
+ fs/io_uring.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/arch/mips/kernel/ftrace.c b/arch/mips/kernel/ftrace.c
-index 2625232bfe526..f57e68f40a348 100644
---- a/arch/mips/kernel/ftrace.c
-+++ b/arch/mips/kernel/ftrace.c
-@@ -37,10 +37,6 @@ void arch_ftrace_update_code(int command)
- 	ftrace_modify_all_code(command);
- }
+diff --git a/fs/io_uring.c b/fs/io_uring.c
+index aae0ef2ec34d2..2145cf76a0d6a 100644
+--- a/fs/io_uring.c
++++ b/fs/io_uring.c
+@@ -1614,6 +1614,7 @@ static bool io_link_cancel_timeout(struct io_kiocb *req)
  
--#endif
--
--#ifdef CONFIG_DYNAMIC_FTRACE
--
- #define JAL 0x0c000000		/* jump & link: ip --> ra, jump to target */
- #define ADDR_MASK 0x03ffffff	/*  op_code|addr : 31...26|25 ....0 */
- #define JUMP_RANGE_MASK ((1UL << 28) - 1)
+ 	ret = hrtimer_try_to_cancel(&req->io->timeout.timer);
+ 	if (ret != -1) {
++		req->flags |= REQ_F_COMP_LOCKED;
+ 		io_cqring_fill_event(req, -ECANCELED);
+ 		io_commit_cqring(ctx);
+ 		req->flags &= ~REQ_F_LINK_HEAD;
+@@ -1636,7 +1637,6 @@ static bool __io_kill_linked_timeout(struct io_kiocb *req)
+ 		return false;
+ 
+ 	list_del_init(&link->link_list);
+-	link->flags |= REQ_F_COMP_LOCKED;
+ 	wake_ev = io_link_cancel_timeout(link);
+ 	req->flags &= ~REQ_F_LINK_TIMEOUT;
+ 	return wake_ev;
 -- 
 2.25.1
 
