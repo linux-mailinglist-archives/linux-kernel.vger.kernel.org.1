@@ -2,85 +2,127 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E9C41299C7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:59:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id BA0BC299C6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 27 Oct 2020 00:58:48 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S2410560AbgJZX7i (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 19:59:38 -0400
-Received: from mail.kernel.org ([198.145.29.99]:37336 "EHLO mail.kernel.org"
+        id S2437106AbgJZX6n (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 19:58:43 -0400
+Received: from mx2.suse.de ([195.135.220.15]:47890 "EHLO mx2.suse.de"
         rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
-        id S2436633AbgJZX4y (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 19:56:54 -0400
-Received: from sasha-vm.mshome.net (c-73-47-72-35.hsd1.nh.comcast.net [73.47.72.35])
-        (using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-        (No client certificate requested)
-        by mail.kernel.org (Postfix) with ESMTPSA id BE21120770;
-        Mon, 26 Oct 2020 23:56:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-        s=default; t=1603756613;
-        bh=cCVgGMe5hoIQ+QFz+qgGojy6g3g+wPwt63Y5/vZUW0Q=;
-        h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-        b=LNZ57PDg6tQ8tF+AM7jHI41/PE8CfMhXrflkKYIrdMkTA4H6I6KZ/Q4xvAnjqwH1X
-         dK6wX6pbK7Kdl0Rm1/XOowwiYj8vkeXwSBWOGZVGdwYtnDWTISD19d6RyAb9PFh6e9
-         hUfp5yWmDdXACr0aVLg0A/ocdJOLrM7aIVaBn8Q8=
-From:   Sasha Levin <sashal@kernel.org>
-To:     linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Cc:     Chao Leng <lengchao@huawei.com>, Sagi Grimberg <sagi@grimberg.me>,
-        Christoph Hellwig <hch@lst.de>,
-        Sasha Levin <sashal@kernel.org>, linux-nvme@lists.infradead.org
-Subject: [PATCH AUTOSEL 5.4 80/80] nvme-rdma: fix crash when connect rejected
-Date:   Mon, 26 Oct 2020 19:55:16 -0400
-Message-Id: <20201026235516.1025100-80-sashal@kernel.org>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20201026235516.1025100-1-sashal@kernel.org>
-References: <20201026235516.1025100-1-sashal@kernel.org>
+        id S2436664AbgJZX5D (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 19:57:03 -0400
+X-Virus-Scanned: by amavisd-new at test-mx.suse.de
+Received: from relay2.suse.de (unknown [195.135.221.27])
+        by mx2.suse.de (Postfix) with ESMTP id 306D1AC43;
+        Mon, 26 Oct 2020 23:57:01 +0000 (UTC)
+Received: by lion.mk-sys.cz (Postfix, from userid 1000)
+        id C881E60736; Tue, 27 Oct 2020 00:57:00 +0100 (CET)
+Date:   Tue, 27 Oct 2020 00:57:00 +0100
+From:   Michal Kubecek <mkubecek@suse.cz>
+To:     Vasily Gorbik <gor@linux.ibm.com>
+Cc:     linux-s390@vger.kernel.org, Joe Perches <joe@perches.com>,
+        linux-kernel@vger.kernel.org, Jiri Slaby <jslaby@suse.cz>
+Subject: Re: [PATCH 1/1] s390: correct __bootdata / __bootdata_preserved
+ macros
+Message-ID: <20201026235700.3dga6r5obn7z5cxv@lion.mk-sys.cz>
+References: <20201026104811.22ta4pby2chmz4pv@lion.mk-sys.cz>
+ <cover.thread-96dc81.your-ad-here.call-01603716370-ext-5478@work.hours>
+ <patch-1.thread-96dc81.git-96dc8112cea9.your-ad-here.call-01603716370-ext-5478@work.hours>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+        protocol="application/pgp-signature"; boundary="qcfgs5eg7rfckcnu"
+Content-Disposition: inline
+In-Reply-To: <patch-1.thread-96dc81.git-96dc8112cea9.your-ad-here.call-01603716370-ext-5478@work.hours>
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Chao Leng <lengchao@huawei.com>
 
-[ Upstream commit 43efdb8e870ee0f58633fd579aa5b5185bf5d39e ]
+--qcfgs5eg7rfckcnu
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-A crash can happened when a connect is rejected.   The host establishes
-the connection after received ConnectReply, and then continues to send
-the fabrics Connect command.  If the controller does not receive the
-ReadyToUse capsule, host may receive a ConnectReject reply.
+On Mon, Oct 26, 2020 at 01:49:08PM +0100, Vasily Gorbik wrote:
+> Currently s390 build is broken.
+>=20
+>   SECTCMP .boot.data
+> error: section .boot.data differs between vmlinux and arch/s390/boot/comp=
+ressed/vmlinux
+> make[2]: *** [arch/s390/boot/section_cmp.boot.data] Error 1
+>   SECTCMP .boot.preserved.data
+> error: section .boot.preserved.data differs between vmlinux and arch/s390=
+/boot/compressed/vmlinux
+> make[2]: *** [arch/s390/boot/section_cmp.boot.preserved.data] Error 1
+> make[1]: *** [bzImage] Error 2
+>=20
+> Commit 33def8498fdd ("treewide: Convert macro and uses of __section(foo)
+> to __section("foo")") converted all __section(foo) to __section("foo").
+> This is wrong for __bootdata / __bootdata_preserved macros which want
+> variable names to be a part of intermediate section names .boot.data.<var
+> name> and .boot.preserved.data.<var name>. Those sections are later
+> sorted by alignment + name and merged together into final .boot.data
+> / .boot.preserved.data sections. Those sections must be identical in
+> the decompressor and the decompressed kernel (that is checked during
+> the build).
+>=20
+> Fixes: 33def8498fdd ("treewide: Convert macro and uses of __section(foo) =
+to __section("foo")")
+> Signed-off-by: Vasily Gorbik <gor@linux.ibm.com>
 
-Call nvme_rdma_destroy_queue_ib after the host received the
-RDMA_CM_EVENT_REJECTED event.  Then when the fabrics Connect command
-times out, nvme_rdma_timeout calls nvme_rdma_complete_rq to fail the
-request.  A crash happenes due to use after free in
-nvme_rdma_complete_rq.
+Tested-by: Michal Kubecek <mkubecek@suse.cz>
 
-nvme_rdma_destroy_queue_ib is redundant when handling the
-RDMA_CM_EVENT_REJECTED event as nvme_rdma_destroy_queue_ib is already
-called in connection failure handler.
+Thank you,
+Michal
 
-Signed-off-by: Chao Leng <lengchao@huawei.com>
-Reviewed-by: Sagi Grimberg <sagi@grimberg.me>
-Signed-off-by: Christoph Hellwig <hch@lst.de>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- drivers/nvme/host/rdma.c | 1 -
- 1 file changed, 1 deletion(-)
+> ---
+>  arch/s390/include/asm/sections.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+>=20
+> diff --git a/arch/s390/include/asm/sections.h b/arch/s390/include/asm/sec=
+tions.h
+> index a996d3990a02..0c2151451ba5 100644
+> --- a/arch/s390/include/asm/sections.h
+> +++ b/arch/s390/include/asm/sections.h
+> @@ -26,14 +26,14 @@ static inline int arch_is_kernel_initmem_freed(unsign=
+ed long addr)
+>   * final .boot.data section, which should be identical in the decompress=
+or and
+>   * the decompressed kernel (that is checked during the build).
+>   */
+> -#define __bootdata(var) __section(".boot.data.var") var
+> +#define __bootdata(var) __section(".boot.data." #var) var
+> =20
+>  /*
+>   * .boot.preserved.data is similar to .boot.data, but it is not part of =
+the
+>   * .init section and thus will be preserved for later use in the decompr=
+essed
+>   * kernel.
+>   */
+> -#define __bootdata_preserved(var) __section(".boot.preserved.data.var") =
+var
+> +#define __bootdata_preserved(var) __section(".boot.preserved.data." #var=
+) var
+> =20
+>  extern unsigned long __sdma, __edma;
+>  extern unsigned long __stext_dma, __etext_dma;
+> --=20
+> 2.25.4
 
-diff --git a/drivers/nvme/host/rdma.c b/drivers/nvme/host/rdma.c
-index abe4fe496d05c..a41ee9feab8e7 100644
---- a/drivers/nvme/host/rdma.c
-+++ b/drivers/nvme/host/rdma.c
-@@ -1679,7 +1679,6 @@ static int nvme_rdma_cm_handler(struct rdma_cm_id *cm_id,
- 		complete(&queue->cm_done);
- 		return 0;
- 	case RDMA_CM_EVENT_REJECTED:
--		nvme_rdma_destroy_queue_ib(queue);
- 		cm_error = nvme_rdma_conn_rejected(queue, ev);
- 		break;
- 	case RDMA_CM_EVENT_ROUTE_ERROR:
--- 
-2.25.1
+--qcfgs5eg7rfckcnu
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEEWN3j3bieVmp26mKO538sG/LRdpUFAl+XYkcACgkQ538sG/LR
+dpWkIQf/ewe8ufeiPuicJmlgaV6TdHL3FAT8qcv6mHaTsLLX7wyxKw5IAjV7MQ5v
+qjREkYseptZ88CaoU6Rhzc1iGY2ugIpdQpPRrr/CbvgH5Kaw7AH0Ii9C/60W1CY8
+zJl9UPKuOV/s5RiMA1gP0AKTDNVGLk35/GYKh4GnvIIoY1jjxkoaoGqew+jBkCc8
+H6bJfChAHqb0YEhiOrB6quwEDbFBmongolgMmpHJ/kenhW/IeOyT1TRDt00jFr6i
+rpHMS48r4uhi5M0srNOW71mptisTBR1rjMzz/2maaNv8yntJsEFN3J2RbQ3Z/x1c
+TZ7UujMj5rSBT/RjXFwZcjPCp8KxOQ==
+=9yg/
+-----END PGP SIGNATURE-----
+
+--qcfgs5eg7rfckcnu--
