@@ -2,86 +2,99 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id E3228299685
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:13:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id C67CE299689
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 20:14:08 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1792654AbgJZTNy (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 15:13:54 -0400
-Received: from us-smtp-delivery-124.mimecast.com ([216.205.24.124]:26283 "EHLO
-        us-smtp-delivery-124.mimecast.com" rhost-flags-OK-OK-OK-OK)
-        by vger.kernel.org with ESMTP id S1737697AbgJZTFK (ORCPT
-        <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 15:05:10 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-        s=mimecast20190719; t=1603739109;
-        h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-         to:to:cc:cc; bh=CeSxyJXbIAWmg9ma3wabvh6TND1xY66CvqM05CqNLic=;
-        b=cVu5URo45COpMDXCOUf4+3iwE+xtON6VgJc9qrNngICUyn65ZkB9VfSRy7PcuzEUuLVkdC
-        +ihGdwwLVX/tBUV8jA3mtUmro0Ng1YHvUVcIDIfLFyk2YGAWDOawXiXoItZtLgU9ODfN+T
-        xCJwfoOpHKwufqBSZzD8zUZVpBAP5bI=
-Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
- [209.85.210.71]) (Using TLS) by relay.mimecast.com with ESMTP id
- us-mta-81-8966TMy7N5qBJkFyqvQ9qw-1; Mon, 26 Oct 2020 15:05:05 -0400
-X-MC-Unique: 8966TMy7N5qBJkFyqvQ9qw-1
-Received: by mail-ot1-f71.google.com with SMTP id e1so3957722otb.21
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 12:05:05 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:date:message-id;
-        bh=CeSxyJXbIAWmg9ma3wabvh6TND1xY66CvqM05CqNLic=;
-        b=sG9+k7Etjlyp38T3jcQFM04/x/HFWn6otFZPAVMR7zI0YyomUH4dHquOztthfXTOkc
-         sEFdZ1jZcNB1kFiFLmi3e2Wrd0I9OEkOw1iFDYETcRBnwUsBJ2ZzEU4JN+0DhzoxmYKq
-         YVNe1FoK4eJzDgB1ZkbOpv/jG1xXo7vCf4JNDLPlnl39vGujkcDcTPK32uFwUmApZ391
-         O6mg4bgBJfg9BjwffsNfDlop37LY5LOnb5Hhww/e0KzWWUTZSA4Q6bntHiTzYvZP7Ggi
-         gcw55+YjM6DJcDiAPnhFs+U4ixjRcc/zdrvGpGtF+WcufPUXYZxNJwSOZy2FJawjghnI
-         8S5A==
-X-Gm-Message-State: AOAM531PCJdAGx8tYDZYb8WC29g/AQq4oy4aslLRp9GvLjbJa9HNPYni
-        jGGO9E+Lya2pHTWNg1YOkHmYBQmm7C6M8moFq+x7/tfAV4LP2+NNjYwwXywz+G58mKOV/tqGmpG
-        PqmIJ5nQRzNbhY8jIBZmS9WtK
-X-Received: by 2002:aca:2b05:: with SMTP id i5mr15353015oik.57.1603739104684;
-        Mon, 26 Oct 2020 12:05:04 -0700 (PDT)
-X-Google-Smtp-Source: ABdhPJxDzUzZb1se/ghFrljj0r4jK+qZOmg7H/2p/u6170SKKqrlq3uXimvsSk1NAmvcYmDQLE9vRA==
-X-Received: by 2002:aca:2b05:: with SMTP id i5mr15352977oik.57.1603739104214;
-        Mon, 26 Oct 2020 12:05:04 -0700 (PDT)
-Received: from trix.remote.csb (075-142-250-213.res.spectrum.com. [75.142.250.213])
-        by smtp.gmail.com with ESMTPSA id s27sm3044196otg.80.2020.10.26.12.05.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 12:05:03 -0700 (PDT)
-From:   trix@redhat.com
-To:     stern@rowland.harvard.edu, gregkh@linuxfoundation.org
-Cc:     linux-usb@vger.kernel.org, usb-storage@lists.one-eyed-alien.net,
-        linux-kernel@vger.kernel.org, Tom Rix <trix@redhat.com>
-Subject: [PATCH v2] usb: storage: freecom: remove unneeded break
-Date:   Mon, 26 Oct 2020 12:04:57 -0700
-Message-Id: <20201026190457.1428516-1-trix@redhat.com>
-X-Mailer: git-send-email 2.18.1
+        id S1792657AbgJZTN5 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 15:13:57 -0400
+Received: from inva020.nxp.com ([92.121.34.13]:48744 "EHLO inva020.nxp.com"
+        rhost-flags-OK-OK-OK-OK) by vger.kernel.org with ESMTP
+        id S2392992AbgJZTGi (ORCPT <rfc822;linux-kernel@vger.kernel.org>);
+        Mon, 26 Oct 2020 15:06:38 -0400
+Received: from inva020.nxp.com (localhost [127.0.0.1])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id E54FD1A056F;
+        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
+Received: from inva024.eu-rdc02.nxp.com (inva024.eu-rdc02.nxp.com [134.27.226.22])
+        by inva020.eu-rdc02.nxp.com (Postfix) with ESMTP id D85FA1A00AB;
+        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
+Received: from lorenz.ea.freescale.net (lorenz.ea.freescale.net [10.171.71.5])
+        by inva024.eu-rdc02.nxp.com (Postfix) with ESMTP id 6223820308;
+        Mon, 26 Oct 2020 20:06:35 +0100 (CET)
+From:   Iuliana Prodan <iuliana.prodan@nxp.com>
+To:     Herbert Xu <herbert@gondor.apana.org.au>,
+        Horia Geanta <horia.geanta@nxp.com>,
+        Aymen Sghaier <aymen.sghaier@nxp.com>
+Cc:     "David S. Miller" <davem@davemloft.net>,
+        Silvano Di Ninno <silvano.dininno@nxp.com>,
+        Franck Lenormand <franck.lenormand@nxp.com>,
+        linux-crypto@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-imx <linux-imx@nxp.com>,
+        Andrei Botila <andrei.botila@nxp.com>,
+        Dragos Rosioru <dragos.rosioru@nxp.com>,
+        Iuliana Prodan <iuliana.prodan@nxp.com>
+Subject: [PATCH v2] crypto: caam - enable crypto-engine retry mechanism
+Date:   Mon, 26 Oct 2020 21:06:26 +0200
+Message-Id: <1603739186-4007-1-git-send-email-iuliana.prodan@nxp.com>
+X-Mailer: git-send-email 2.1.0
+X-Virus-Scanned: ClamAV using ClamSMTP
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-From: Tom Rix <trix@redhat.com>
+Use the new crypto_engine_alloc_init_and_set() function to
+initialize crypto-engine and enable retry mechanism.
 
-A break is not needed if it is preceded by a return.
+Set the maximum size for crypto-engine software queue based on
+Job Ring size (JOBR_DEPTH) and a threshold (reserved for the
+non-crypto-API requests that are not passed through crypto-engine).
 
-Signed-off-by: Tom Rix <trix@redhat.com>
+The callback for do_batch_requests is NULL, since CAAM
+doesn't support linked requests.
+
+Signed-off-by: Iuliana Prodan <iuliana.prodan@nxp.com>
 ---
-v2 : split from original large patch
----
- drivers/usb/storage/freecom.c | 1 -
- 1 file changed, 1 deletion(-)
+Changes since v1:
+- add comment for THRESHOLD define;
+- update max size for crypto-engine queue.
 
-diff --git a/drivers/usb/storage/freecom.c b/drivers/usb/storage/freecom.c
-index 3d5f7d0ff0f1..2b098b55c4cb 100644
---- a/drivers/usb/storage/freecom.c
-+++ b/drivers/usb/storage/freecom.c
-@@ -431,7 +431,6 @@ static int freecom_transport(struct scsi_cmnd *srb, struct us_data *us)
- 			     us->srb->sc_data_direction);
- 		/* Return fail, SCSI seems to handle this better. */
- 		return USB_STOR_TRANSPORT_FAILED;
--		break;
+ drivers/crypto/caam/intern.h | 8 ++++++++
+ drivers/crypto/caam/jr.c     | 4 +++-
+ 2 files changed, 11 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/crypto/caam/intern.h b/drivers/crypto/caam/intern.h
+index 9112279..7d45b21 100644
+--- a/drivers/crypto/caam/intern.h
++++ b/drivers/crypto/caam/intern.h
+@@ -16,6 +16,14 @@
+ /* Currently comes from Kconfig param as a ^2 (driver-required) */
+ #define JOBR_DEPTH (1 << CONFIG_CRYPTO_DEV_FSL_CAAM_RINGSIZE)
+ 
++/*
++ * Maximum size for crypto-engine software queue based on Job Ring
++ * size (JOBR_DEPTH) and a THRESHOLD (reserved for the non-crypto-API
++ * requests that are not passed through crypto-engine)
++ */
++#define THRESHOLD 15
++#define CRYPTO_ENGINE_MAX_QLEN (JOBR_DEPTH - THRESHOLD)
++
+ /* Kconfig params for interrupt coalescing if selected (else zero) */
+ #ifdef CONFIG_CRYPTO_DEV_FSL_CAAM_INTC
+ #define JOBR_INTC JRCFG_ICEN
+diff --git a/drivers/crypto/caam/jr.c b/drivers/crypto/caam/jr.c
+index 6f66996..7f2b1101 100644
+--- a/drivers/crypto/caam/jr.c
++++ b/drivers/crypto/caam/jr.c
+@@ -550,7 +550,9 @@ static int caam_jr_probe(struct platform_device *pdev)
  	}
  
- 	return USB_STOR_TRANSPORT_GOOD;
+ 	/* Initialize crypto engine */
+-	jrpriv->engine = crypto_engine_alloc_init(jrdev, false);
++	jrpriv->engine = crypto_engine_alloc_init_and_set(jrdev, true, NULL,
++							  false,
++							  CRYPTO_ENGINE_MAX_QLEN);
+ 	if (!jrpriv->engine) {
+ 		dev_err(jrdev, "Could not init crypto-engine\n");
+ 		return -ENOMEM;
 -- 
-2.18.1
+2.1.0
 
