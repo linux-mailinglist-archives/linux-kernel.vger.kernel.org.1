@@ -2,121 +2,139 @@ Return-Path: <linux-kernel-owner@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from vger.kernel.org (vger.kernel.org [23.128.96.18])
-	by mail.lfdr.de (Postfix) with ESMTP id D6BFE2993C5
-	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:28:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTP id A41762993CD
+	for <lists+linux-kernel@lfdr.de>; Mon, 26 Oct 2020 18:30:53 +0100 (CET)
 Received: (majordomo@vger.kernel.org) by vger.kernel.org via listexpand
-        id S1787786AbgJZR20 (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
-        Mon, 26 Oct 2020 13:28:26 -0400
-Received: from mail-pl1-f195.google.com ([209.85.214.195]:38905 "EHLO
-        mail-pl1-f195.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
-        with ESMTP id S1787778AbgJZR20 (ORCPT
+        id S1787806AbgJZRaw (ORCPT <rfc822;lists+linux-kernel@lfdr.de>);
+        Mon, 26 Oct 2020 13:30:52 -0400
+Received: from mail-wm1-f47.google.com ([209.85.128.47]:54806 "EHLO
+        mail-wm1-f47.google.com" rhost-flags-OK-OK-OK-OK) by vger.kernel.org
+        with ESMTP id S1774034AbgJZRav (ORCPT
         <rfc822;linux-kernel@vger.kernel.org>);
-        Mon, 26 Oct 2020 13:28:26 -0400
-Received: by mail-pl1-f195.google.com with SMTP id f21so712103plr.5
-        for <linux-kernel@vger.kernel.org>; Mon, 26 Oct 2020 10:28:24 -0700 (PDT)
+        Mon, 26 Oct 2020 13:30:51 -0400
+Received: by mail-wm1-f47.google.com with SMTP id w23so11397214wmi.4;
+        Mon, 26 Oct 2020 10:30:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20150623.gappssmtp.com; s=20150623;
-        h=from:to:cc:subject:in-reply-to:references:date:message-id
-         :mime-version;
-        bh=RZLa3K0yUyDDt6WL3NskNHHGlNOc6iTJzksW2X6flDM=;
-        b=y0kJ3u3yZkSwyiAYhnsxoLLHT8X+UqAZTzY9WS0EI0KtA6qAfQUteGA+GRFKdOk6BL
-         aJ2hh7qb4B6fUQfgJKiBKIOVhWDYR0tdnltyaUAQjfKog/ErX1TZxA0MSVCvZK/7KlLD
-         01eDQbjcjixE0TmOkBmMDjtsw58tTn8XyUzY+9ciGdXnYHLXvY6j8WbKviRTHpVaP6sT
-         CG9SSThfXQEd9Mb+AcM0gxkOjCOI09ZVUSIkxOxldchuj6hz8ToRcb4I3CJx3/mCrO6Y
-         ULQZ6S87e+elRcet6mjt+UEd4A1BMKowqJ8M8sf6QrGFAhaZG1gIony+M/ec9SYb+2bG
-         kYdA==
+        d=gmail.com; s=20161025;
+        h=from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G4qqXRgm4LeNt9OId7TxB7hpNixh8yG80r+na0xzUmA=;
+        b=uoKXPEMkxYQNlOD01+ydycobz0fsk091jFO6eP5tKCfx4FNeWS32Y1950WZ2lyzLMT
+         7wundIsZKZDTmhaHOOS6d9WGBJKay1iFFIPutFAV3ndzMN/gG2exfgfXPSrZ9dD2sgyT
+         F6C7m1JOj4fak6m97VOp3BbfhPI1ljEVxdo4dM5fxe8XqaxeLcc9H4N75ZUGippHXglk
+         Nom/R5Sf3v4kvjE77FYL9QFIsLxNztNw4DYynkuBs0/01UUllmp9aCZhbwJSWBlMMDUb
+         HIqBpQVrUZ3iiBbb9djUaBwMoRZl+Y/6OXjCwea5V/fvujGHm0p5d4Qq6zRYdL/vtsHx
+         o+ZQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20161025;
-        h=x-gm-message-state:from:to:cc:subject:in-reply-to:references:date
-         :message-id:mime-version;
-        bh=RZLa3K0yUyDDt6WL3NskNHHGlNOc6iTJzksW2X6flDM=;
-        b=pnAGkgz1KEvBdelt2Iz+QgT8M0PCbCFBWX+GyFODQlNg//EeQm8c6kxoSG8/Flrf/c
-         dRsOBlA6Sc7pAF5ZNXFMeKTaW4Fj9fwlLl8XyfZ7BboMGZvOhMApwaMXMgOfuIi4bRNm
-         RnOxnJgYgqr/f2r7D/En2AtnvMoszQesgyKyMj91yGVsV0OiO/U5a3+/2/I0TlD2httK
-         EH2tIj2mIQg90bqbr6lvW9reIvIk8/J5lEDYdoGasAYKjx8xf93B8eL7t+HFUoowyElj
-         sYY9DY1jxOQTaAXYmTOD1YZGfrk0tDE9nU09Ooindonr262/kGszS3rIEPIEe54p138k
-         wDUw==
-X-Gm-Message-State: AOAM531+WqCQTKfWmqoEYJhOfnpmmReFLY2Lt00pM9EPTPwN657qNeDM
-        n3MoGmY0Rrm7j0ZIc92sNKCKdx447AiYvkad
-X-Google-Smtp-Source: ABdhPJzaEZwwz+BQVXD1x3jUrw7XUO725+SjVzU1V/pq3tDCWnUZ2mD5YSqI+kMyVe9g2QCRxNkv9A==
-X-Received: by 2002:a17:90a:ef81:: with SMTP id m1mr17959155pjy.212.1603733304302;
-        Mon, 26 Oct 2020 10:28:24 -0700 (PDT)
-Received: from localhost (c-71-197-186-152.hsd1.wa.comcast.net. [71.197.186.152])
-        by smtp.gmail.com with ESMTPSA id i24sm12289572pfd.15.2020.10.26.10.28.23
+        h=x-gm-message-state:from:to:cc:subject:date:message-id:mime-version
+         :content-transfer-encoding;
+        bh=G4qqXRgm4LeNt9OId7TxB7hpNixh8yG80r+na0xzUmA=;
+        b=kdHUDv9azimVU2+/DgTDQhNBUUaSSmlicYeMD33cWmsxotQ7P1KheRqa79Q9bM2woB
+         6jaxD4tj2ywk/PkTEg8JsqO16wvLxUxJgXjV/e/Mg2Ea92VNuozgEhOlLgmQLr3YhRDo
+         9yT9jgtRkAJZXBGGz0RfT7gB1NwQk0HpacPTsGfGWYtbgq/+MN2EhtA4SDshzlCQ1feg
+         ej3TneNJjggl/ETqg/paap/TlFoGJ/ouD8ZMfWxY31IbRUZySjczenS4Gds3FClBqqxC
+         2noUOod8UBFsg+a10iANHvWueB/4ieJY/zjubcgPFgDCkUs6WxB4KaNalIEqdN7cYaqe
+         HObQ==
+X-Gm-Message-State: AOAM530dvDwco5BJCEVtXkthTO+J3OinOnMiF4rRMo5quqVFCXrggW7f
+        OtbOwVplOVVf83qL0vj338U=
+X-Google-Smtp-Source: ABdhPJyBbKaiW8XKAYNkwotvpJMm28FEhpDE5GtfRf5SsEel4z1rKHYo5QktDg8CHkgMxnkw2TzRaQ==
+X-Received: by 2002:a7b:cd0c:: with SMTP id f12mr16618677wmj.62.1603733448687;
+        Mon, 26 Oct 2020 10:30:48 -0700 (PDT)
+Received: from IcarusMOD.eternityproject.eu ([2.237.20.237])
+        by smtp.gmail.com with ESMTPSA id b18sm1996808wmj.41.2020.10.26.10.30.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 26 Oct 2020 10:28:23 -0700 (PDT)
-From:   Kevin Hilman <khilman@baylibre.com>
-To:     Marc Zyngier <maz@kernel.org>
-Cc:     Neil Armstrong <narmstrong@baylibre.com>, jbrunet@baylibre.com,
-        linux-amlogic@lists.infradead.org,
-        linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/2] irq-meson-gpio: make it possible to build as a module
-In-Reply-To: <b0780e423d5fa527835ba55c64dba473@kernel.org>
-References: <20201020072532.949137-1-narmstrong@baylibre.com> <87v9eyo75s.wl-maz@kernel.org> <7ha6w9hsfm.fsf@baylibre.com> <b0780e423d5fa527835ba55c64dba473@kernel.org>
-Date:   Mon, 26 Oct 2020 10:28:23 -0700
-Message-ID: <7hy2jshp6w.fsf@baylibre.com>
+        Mon, 26 Oct 2020 10:30:48 -0700 (PDT)
+From:   kholk11@gmail.com
+To:     dmitry.torokhov@gmail.com
+Cc:     robh+dt@kernel.org, rydberg@bitmath.org, priv.luk@gmail.com,
+        linux-input@vger.kernel.org, linux-kernel@vger.kernel.org,
+        kholk11@gmail.com, marijns95@gmail.com, konradybcio@gmail.com,
+        martin.botka1@gmail.com, phone-devel@vger.kernel.org,
+        devicetree@vger.kernel.org, krzk@kernel.org,
+        andy.shevchenko@gmail.com
+Subject: [PATCH v8 0/3] Add Novatek NT36xxx touchscreen driver
+Date:   Mon, 26 Oct 2020 18:30:42 +0100
+Message-Id: <20201026173045.165236-1-kholk11@gmail.com>
+X-Mailer: git-send-email 2.28.0
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 List-ID: <linux-kernel.vger.kernel.org>
 X-Mailing-List: linux-kernel@vger.kernel.org
 
-Marc Zyngier <maz@kernel.org> writes:
+From: AngeloGioacchino Del Regno <kholk11@gmail.com>
 
-> On 2020-10-26 16:18, Kevin Hilman wrote:
->> Marc Zyngier <maz@kernel.org> writes:
->> 
->>> On Tue, 20 Oct 2020 08:25:30 +0100,
->>> Neil Armstrong <narmstrong@baylibre.com> wrote:
->>>> 
->>>> In order to reduce the kernel Image size on multi-platform 
->>>> distributions,
->>>> make it possible to build the Amlogic GPIO IRQ controller as a module
->>>> by switching it to a platform driver.
->>>> 
->>>> The second patch removes MESON_IRQ_GPIO selection from ARCH_MESON to 
->>>> allow
->>>> building the driver as module.
->>>> 
->>>> Neil Armstrong (2):
->>>>   irqchip: irq-meson-gpio: make it possible to build as a module
->>>>   arm64: meson: remove MESON_IRQ_GPIO selection
->>>> 
->>>>  arch/arm64/Kconfig.platforms     |  1 -
->>>>  drivers/irqchip/Kconfig          |  5 +-
->>>>  drivers/irqchip/irq-meson-gpio.c | 89 
->>>> ++++++++++++++++++++------------
->>>>  3 files changed, 59 insertions(+), 36 deletions(-)
->>> 
->>> I've tried this series on my vim3l with the this driver compiled as a
->>> module, and lost the Ethernet interface in the process, as the phy
->>> wasn't able to resolve its interrupt and things fail later on:
->>> 
->>> [   72.238291] meson8b-dwmac ff3f0000.ethernet eth1: no phy at addr -1
->>> [   72.238917] meson8b-dwmac ff3f0000.ethernet eth1: stmmac_open: 
->>> Cannot attach to PHY (error: -19)
->>> 
->>> This is a generic problem with making DT-based interrupt controllers
->>> modular when not *all* the drivers can deal with probing deferral.
->> 
->> Yes, but this series still keeps the default as built-in.
->> 
->> If you build as a module, and you add `fw_devlink=on` to the kernel
->> command-line, device-links will be created based on DT dependencies
->> which will ensure the right module load order.
->
-> It doesn't work here. I get the exact same error (well, with eth0 
-> instead
-> of eth1). In my experience, fw_devlink isn't reliable yet. Config on 
-> request.
+This patch series adds support for the Novatek NT36xxx Series' In-Cell
+touchscreen (integrated into the DriverIC).
 
-Other than CONFIG_MESON_IRQ_GPIO=m, are you using default upstream
-defconfig?
+This patch series has been tested against the following devices:
+ - Sony Xperia 10        (SDM630 Ganges Kirin)
+ - Sony Xperia 10 Plus   (SDM636 Ganges Mermaid)
 
-I just double-checked with this series on top of v5.10-rc1, and I have
-eth0 working with interrupts without needing fw_devlink=on.
+Changes in v2:
+- Fixed sparse warnings from lkp kernel test robot
 
-With the default upstream defconfig all the networking for these devices
-is already configured as modules.
+Changes in v3 (as requested by Dmitry Torokhov):
+- Using shorthand u16/u32 (sorry for the overlook!)
+- Now using more input and touchscreen APIs
+- Fixed useless workqueue involvements
+- Removed useless locking
+- Switched reads and writes to use regmap
+- Moved header contents to nt36xxx.c
+- Fixed reset gpio handling
+- Other cleanups
+- P.S.: Thanks, Dmitry!
 
-Kevin
+Changes in v4:
+- Fixed regmap read length for CRC_ERR_FLAG final check
+- Fixed YAML binding, as requested by Krzysztof Kozlowski
+
+Changes in v5:
+- Replaced subsystem maintainer's name with .. mine,
+  usage of additionalProperties to unevaluatedProperties
+  and a typo fix for reset-gpios as per Rob Herring's review
+- Changed compatible string as per Krzysztof K. request
+- Renamed the novatek,nt36xxx.yaml file to just nt36xxx.yaml
+  in order to now reflect the driver name instead of the DT
+  compatible
+- Fixed blank line at EOF
+
+Changes in v6:
+- Removed include of_gpio.h, added mod_devicetable.h and
+  gpio/consumer.h
+- Added kerneldoc to relevant functions/enum
+- Used traditional patterns for error checking where possible
+- Documented calls to usleep/msleep
+- Using be16_to_cpu / get_unaligned_be16 where possible
+- Added helper for CRC error check on retrieved buffer
+- Decreased indentation in the CRC reboot recovery function
+- Removed instances of error code sum
+- Dropped all likely/unlikely optimization as per request
+- Removed redundant reset_gpio checks
+- Dropped of_match_ptr and ifdefs for CONFIG_OF
+
+Changes in v7:
+- Fixed typo in nt36xxx.c
+
+Changes in v8:
+- Fixed typo reset-gpio -> reset-gpios in dt-bindings
+
+AngeloGioacchino Del Regno (3):
+  dt-bindings: Add vendor prefix for Novatek Microelectronics Corp.
+  Input: Add Novatek NT36xxx touchscreen driver
+  dt-bindings: touchscreen: Add binding for Novatek NT36xxx series
+    driver
+
+ .../bindings/input/touchscreen/nt36xxx.yaml   |  59 ++
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ drivers/input/touchscreen/Kconfig             |  12 +
+ drivers/input/touchscreen/Makefile            |   1 +
+ drivers/input/touchscreen/nt36xxx.c           | 895 ++++++++++++++++++
+ 5 files changed, 969 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/input/touchscreen/nt36xxx.yaml
+ create mode 100644 drivers/input/touchscreen/nt36xxx.c
+
+-- 
+2.28.0
+
